@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XD3HV-0002VZ-HQ
-	for ltp-list@lists.sourceforge.net; Fri, 01 Aug 2014 03:13:21 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XD3HT-0005Mi-2S
-	for ltp-list@lists.sourceforge.net; Fri, 01 Aug 2014 03:13:21 +0000
-Message-ID: <1406862756.2835.2.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 1 Aug 2014 11:12:36 +0800
-In-Reply-To: <53DA2E9A.5030902@oracle.com>
-References: <1406634124.3928.1.camel@G08JYZSD130126>
-	<53DA2E9A.5030902@oracle.com>
+	(envelope-from <xzhou@redhat.com>) id 1XKJjv-0004vN-AQ
+	for ltp-list@lists.sourceforge.net; Thu, 21 Aug 2014 04:12:43 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XKJju-0008No-0C
+	for ltp-list@lists.sourceforge.net; Thu, 21 Aug 2014 04:12:43 +0000
+Date: Thu, 21 Aug 2014 00:12:35 -0400 (EDT)
+From: Xiong Zhou <xzhou@redhat.com>
+Message-ID: <389062153.22364213.1408594355921.JavaMail.zimbra@redhat.com>
+In-Reply-To: <951473587.22362927.1408594230035.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 2/2] network ssh: some cleanup
+Subject: [LTP] [PATCH v3 1/3] fcntl16: Skip fcntl16 tests on NFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,539 +26,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey <alexey.kodanev@oracle.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-* Move do_setup and do_cleanup into the file of ssh_setup.
 
-* Use test.sh instead of net_cmdlib.sh
+According to nfs(5), NLM supports advisory file locks only. So skip
+fcntl16 test if NFS.
 
-* Abandon trap and use tst_exit.
-
-* Make the test like:
-	(set TCID TST_TOTAL ...)
-	setup
-	do_test
-	check_result
-	tst_exit
-
-* Some cleanup.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
 ---
- testcases/network/tcp_cmds/ssh/ssh01     | 82 +++++++++-----------------------
- testcases/network/tcp_cmds/ssh/ssh01_s1  | 36 ++++++++------
- testcases/network/tcp_cmds/ssh/ssh02     | 82 +++++++++-----------------------
- testcases/network/tcp_cmds/ssh/ssh02_s1  | 36 ++++++++------
- testcases/network/tcp_cmds/ssh/ssh03     | 77 +++++++-----------------------
- testcases/network/tcp_cmds/ssh/ssh03_s1  | 36 +++++++-------
- testcases/network/tcp_cmds/ssh/ssh_setup | 54 +++++++++++++++++++++
- 7 files changed, 180 insertions(+), 223 deletions(-)
- create mode 100755 testcases/network/tcp_cmds/ssh/ssh_setup
+ testcases/kernel/syscalls/fcntl/fcntl16.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/testcases/network/tcp_cmds/ssh/ssh01 b/testcases/network/tcp_cmds/ssh/ssh01
-index a0c66f5..28ae11a 100755
---- a/testcases/network/tcp_cmds/ssh/ssh01
-+++ b/testcases/network/tcp_cmds/ssh/ssh01
-@@ -25,69 +25,33 @@
- #  HISTORY:
- #    03/03 Jerone Young (jeroney@us.ibm.com)
- #
-+# DESCRIPTION:
-+#	Create test user
-+#	Make sure test user can't login with invalid password
-+#	Cleanup test user from system
-+#	Exit with exit code of script called upon
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
+index 44b6a80..7dba6ea 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl16.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
+@@ -51,6 +51,8 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
  
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup()
-+setup()
- {
--    export RHOST="localhost"
--    export TEST_USER="ssh_usr1"
--    export TEST_USER_PASSWD="now_this_is_a_good_ltp_test_password"
--    export TEST_USER_HOMEDIR="/home/$TEST_USER"
--
--    exists expect ssh ssh01_s1 useradd userdel
--
--    trap do_cleanup EXIT
--
--    # erase user if he/she already exists, so we can have a clean env
--    userdel -r $TEST_USER
--    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
--    sleep 1
--
--    tst_setup
--
--    if ! useradd -m -d "$TEST_USER_HOMEDIR" $TEST_USER; then
--        end_testcase "Could not add test user $TEST_USER to system $RHOST."
--    fi
--
--    echo "$TEST_USER_PASSWD" | passwd --stdin $TEST_USER
--
--    # create users home diretory (SLES 8 does not do this, even when specified
--    # in adduser)
--    if [ ! -d "$TEST_USER_HOMEDIR" ]; then
--        USER_UID=$(id -u $TEST_USER)
--        USER_GID=$(id -g $TEST_USER)
--        if ! mkdir -p "$TEST_USER_HOMEDIR"; then
--            end_testcase "Failed to create $TEST_USER_HOMEDIR"
--        fi
--        chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
--    fi
-+	tst_check_cmds ssh01_s1
-+	export TEST_USER="ssh_usr1"
- }
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_cleanup
--#-----------------------------------------------------------------------
-+TCID="$0"
-+TST_TOTAL=1
- 
--do_cleanup()
--{
--    userdel -r $TEST_USER
--    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
--    tst_cleanup
--}
-+. test.sh
-+. ssh_setup
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  MAIN
--#
--# DESCRIPTION: Create Test User
--#          Call upon script to make sure test user cannont log in with invalid password
--#          Cleanup Test User from system
--#          Exit with exit code of script called upon
--#-----------------------------------------------------------------------
--. net_cmdlib.sh
--
--read_opts $*
-+setup
- do_setup
--ssh01_s1 || end_testcase "Testcase failed"
--do_cleanup
-+TST_CLEANUP=do_cleanup
++#include "tst_fs_type.h"
 +
-+ssh01_s1
-+if [ $? -ne 0 ]; then
-+	tst_resm TFAIL "Test $TCID FAIL"
-+else
-+	tst_resm TPASS "Test $TCID PASS"
-+fi
-+
-+tst_exit
-diff --git a/testcases/network/tcp_cmds/ssh/ssh01_s1 b/testcases/network/tcp_cmds/ssh/ssh01_s1
-index c1cc127..ab86e2a 100755
---- a/testcases/network/tcp_cmds/ssh/ssh01_s1
-+++ b/testcases/network/tcp_cmds/ssh/ssh01_s1
-@@ -45,22 +45,28 @@ set PASSWD "invalid_password!"
- spawn ssh -l $RUSER $RHOST whoami
+ #define SKIPVAL 0x0f00
+ //#define       SKIP    SKIPVAL, 0, 0L, 0L, IGNORED
+ #define SKIP 0,0,0L,0L,0
+@@ -412,6 +414,12 @@ void setup(void)
  
- while 1 {
--    sleep 2
--    expect {
-+	sleep 2
-+	expect {
+ 	tst_tmpdir();
  
--        "Are you sure you want to continue connecting (yes/no)?" { exp_send "yes\r"}
--        "assword:" {exp_send "$PASSWD\r"}
--        -re "Permission denied (.*)\." {
--            send_user "SSH would not allow $RUSER to login with invalid password, Test Passed \n"
--            send_user "\nTEST_PASSED\n"
--            exit 0
--        }
--        "$RUSER" {
--            send_user "SSH allowed $RUSER to login with invalid pass, Test Failed \n"
--            exit 1
--        }
--    }
--    sleep 1
-+		"Are you sure you want to continue connecting (yes/no)?" {
-+			exp_send "yes\r"
-+		}
-+		"assword:" {
-+			exp_send "$PASSWD\r"
-+		}
-+		-re "Permission denied (.*)\." {
-+			send_user "SSH would not allow $RUSER to login with\
-+				   invalid password, Test Passed \n"
-+			send_user "\nTEST_PASSED\n"
-+			exit 0
-+		}
-+		"$RUSER" {
-+			send_user "SSH allowed $RUSER to login with invalid\
-+				   pass, Test Failed \n"
-+			exit 1
-+		}
++	/* On NFS or not */
++	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
++		tst_brkm(TCONF, cleanup, "Cannot test madatory locking "
++			"on a file located on an NFS filesystem");
 +	}
-+	sleep 1
- }
- 
- exit 1
-diff --git a/testcases/network/tcp_cmds/ssh/ssh02 b/testcases/network/tcp_cmds/ssh/ssh02
-index 2d82acb..9bb44e6 100755
---- a/testcases/network/tcp_cmds/ssh/ssh02
-+++ b/testcases/network/tcp_cmds/ssh/ssh02
-@@ -25,69 +25,33 @@
- #  HISTORY:
- #    03/03 Jerone Young (jeroney@us.ibm.com)
- #
-+# DESCRIPTION:
-+#	Create Test User
-+#	Make sure an invalid user can not have access
-+#	Cleanup Test User from system
-+#	Exit with exit code of script called upon
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup()
-+setup()
- {
--    export RHOST="localhost"
--    export TEST_USER="ssh_usr2"
--    export TEST_USER_PASSWD="now_this_is_a_good_ltp_test_password"
--    export TEST_USER_HOMEDIR="/home/$TEST_USER"
--
--    exists expect ssh ssh02_s1 useradd userdel
--
--    trap do_cleanup EXIT
--
--    # erase user if he/she already exists, so we can have a clean env
--    userdel -r $TEST_USER
--    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
--    sleep 1
--
--    tst_setup
--
--    if ! useradd -m -d "$TEST_USER_HOMEDIR" $TEST_USER; then
--        end_testcase "Could not add test user $TEST_USER to system $RHOST."
--    fi
--
--    echo "$TEST_USER_PASSWD" | passwd --stdin $TEST_USER
--
--    # create users home diretory (SLES 8 does not do this, even when specified
--    # in adduser)
--    if [ ! -d "$TEST_USER_HOMEDIR" ]; then
--        USER_UID=$(id -u $TEST_USER)
--        USER_GID=$(id -g $TEST_USER)
--        if ! mkdir -p "$TEST_USER_HOMEDIR"; then
--            end_testcase "Failed to create $TEST_USER_HOMEDIR"
--        fi
--        chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
--    fi
-+	tst_check_cmds ssh02_s1
-+	export TEST_USER="ssh_usr2"
- }
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_cleanup
--#-----------------------------------------------------------------------
-+TCID="$0"
-+TST_TOTAL=1
- 
--do_cleanup()
--{
--    userdel -r $TEST_USER
--    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
--    tst_cleanup
--}
-+. test.sh
-+. ssh_setup
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  MAIN
--#
--# DESCRIPTION: Create Test User
--#          Call upon script to make sure an invalid user can not have access
--#          Cleanup Test User from system
--#          Exit with exit code of script called upon
--#-----------------------------------------------------------------------
--. net_cmdlib.sh
--
--read_opts $*
-+setup
- do_setup
--ssh02_s1 || end_testcase "Testcase failed"
--do_cleanup
-+TST_CLEANUP=do_cleanup
 +
-+ssh02_s1
-+if [ $? -ne 0 ]; then
-+	tst_resm TFAIL "Test $TCID FAIL"
-+else
-+	tst_resm TPASS "Test $TCID PASS"
-+fi
-+
-+tst_exit
-diff --git a/testcases/network/tcp_cmds/ssh/ssh02_s1 b/testcases/network/tcp_cmds/ssh/ssh02_s1
-index d49e1e9..cf95709 100755
---- a/testcases/network/tcp_cmds/ssh/ssh02_s1
-+++ b/testcases/network/tcp_cmds/ssh/ssh02_s1
-@@ -46,22 +46,28 @@ set RUSER "Invaild_User"
- spawn ssh -l $RUSER $RHOST whoami
+ 	/* set up temp filename */
+ 	sprintf(tmpname, "fcntl4.%d", parent);
  
- while 1 {
--    sleep 2
--    expect {
-+	sleep 2
-+	expect {
- 
--        "Are you sure you want to continue connecting (yes/no)?" { exp_send "yes\r"}
--        "assword:" {exp_send "$PASSWD\r"}
--        -re "Permission denied (.*)\." {
--            send_user "SSH would not allow $RUSER to login with invalid password, Test Passed \n"
--            send_user "\nTEST_PASSED\n"
--            exit 0
--        }
--        "$RUSER" {
--            send_user "SSH allowed $RUSER to login with invalid pass, Test Failed \n"
--            exit 1
--        }
--    }
--    sleep 1
-+		"Are you sure you want to continue connecting (yes/no)?" {
-+			exp_send "yes\r"
-+		}
-+		"assword:" {
-+			exp_send "$PASSWD\r"
-+		}
-+		-re "Permission denied (.*)\." {
-+			send_user "SSH would not allow $RUSER to login with\
-+				   invalid password, Test Passed \n"
-+			send_user "\nTEST_PASSED\n"
-+			exit 0
-+		}
-+		"$RUSER" {
-+			send_user "SSH allowed $RUSER to login with invalid\
-+				   pass, Test Failed \n"
-+			exit 1
-+		}
-+	}
-+	sleep 1
- }
- 
- exit 1
-diff --git a/testcases/network/tcp_cmds/ssh/ssh03 b/testcases/network/tcp_cmds/ssh/ssh03
-index 49b6527..a8d3cd9 100755
---- a/testcases/network/tcp_cmds/ssh/ssh03
-+++ b/testcases/network/tcp_cmds/ssh/ssh03
-@@ -26,68 +26,27 @@
- #    03/03 Jerone Young (jeroney@us.ibm.com)
- #
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_setup
--#-----------------------------------------------------------------------
--
--do_setup()
-+setup()
- {
--    export RHOST="localhost"
--    export TEST_USER="ssh_usr3"
--    export TEST_USER_PASSWD="now_this_is_a_good_ltp_test_password"
--    export TEST_USER_HOMEDIR="/home/$TEST_USER"
--
--    exists expect ssh ssh03_s1 useradd userdel
--
--    trap do_cleanup EXIT
--
--    # erase user if he/she already exists, so we can have a clean env
--    userdel -r $TEST_USER
--    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
--    sleep 1
--
--    tst_setup
--
--    if ! useradd -m -d "$TEST_USER_HOMEDIR" $TEST_USER; then
--        end_testcase "Could not add test user $TEST_USER to system $RHOST."
--    fi
--
--    echo "$TEST_USER_PASSWD" | passwd --stdin $TEST_USER
--
--    # create users home diretory (SLES 8 does not do this, even when specified
--    # in adduser)
--    if [ ! -d "$TEST_USER_HOMEDIR" ]; then
--        USER_UID=$(id -u $TEST_USER)
--        USER_GID=$(id -g $TEST_USER)
--        if ! mkdir -p "$TEST_USER_HOMEDIR"; then
--            end_testcase "Failed to create $TEST_USER_HOMEDIR"
--        fi
--        chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
--    fi
-+	tst_check_cmds ssh03_s1
-+	export TEST_USER="ssh_usr3"
- }
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  do_cleanup
--#-----------------------------------------------------------------------
-+TCID="$0"
-+TST_TOTAL=1
- 
--do_cleanup()
--{
--    userdel -r $TEST_USER
--    [ -d "$TEST_USER_HOMEDIR" ] && rm -rf "$TEST_USER_HOMEDIR"
--    tst_cleanup
--}
-+. test.sh
-+. ssh_setup
- 
--#-----------------------------------------------------------------------
--# FUNCTION:  MAIN
--#
--# DESCRIPTION: Create Test User
--#          Call upon script to make sure a valid user can have access
--#          Cleanup Test User from system
--#          Exit with exit code of script called upon
--#-----------------------------------------------------------------------
--. net_cmdlib.sh
--
--read_opts $*
-+setup
- do_setup
--ssh03_s1 || end_testcase "Testcase failed"
--do_cleanup
-+TST_CLEANUP=do_cleanup
-+
-+ssh03_s1
-+if [ $? -ne 0 ]; then
-+	tst_resm TFAIL "Test $TCID FAIL"
-+else
-+	tst_resm TPASS "Test $TCID PASS"
-+fi
-+
-+tst_exit
-diff --git a/testcases/network/tcp_cmds/ssh/ssh03_s1 b/testcases/network/tcp_cmds/ssh/ssh03_s1
-index bf6aada..e3f8ceb 100755
---- a/testcases/network/tcp_cmds/ssh/ssh03_s1
-+++ b/testcases/network/tcp_cmds/ssh/ssh03_s1
-@@ -39,25 +39,29 @@ set timeout 90
- 
- send_user "TEST: SSH allow (non-root) valid User \n"
- 
--
- spawn ssh -l $RUSER $RHOST whoami
- 
- while 1 {
--    sleep 2
--    expect {
--
--        "Are you sure you want to continue connecting (yes/no)?" { exp_send "yes\r"}
--        "assword:" {exp_send "$PASSWD\r"}
--        -re "Permission denied (.*)\." {
--            send_user "\nSSH would not allow $RUSER to login, Test FAILED \n"
--            exit 1
--        }
--        "$RUSER" {
--            send_user "SSH allowed $RUSER to login, Test PASSED \n"
--            exit 0
--        }
--    }
--    sleep 1
-+	sleep 2
-+	expect {
-+
-+		"Are you sure you want to continue connecting (yes/no)?" {
-+			exp_send "yes\r"
-+		}
-+		"assword:" {
-+			exp_send "$PASSWD\r"
-+		}
-+		-re "Permission denied (.*)\." {
-+			send_user "\nSSH would not allow $RUSER to login, Test\
-+				   FAILED \n"
-+			exit 1
-+		}
-+		"$RUSER" {
-+			send_user "SSH allowed $RUSER to login, Test PASSED \n"
-+			exit 0
-+		}
-+	}
-+	sleep 1
- }
- 
- exit 1
-diff --git a/testcases/network/tcp_cmds/ssh/ssh_setup b/testcases/network/tcp_cmds/ssh/ssh_setup
-new file mode 100755
-index 0000000..5a55dd8
---- /dev/null
-+++ b/testcases/network/tcp_cmds/ssh/ssh_setup
-@@ -0,0 +1,54 @@
-+#!/bin/sh
-+################################################################################
-+## Copyright (c) International Business Machines  Corp., 2000                 ##
-+##                                                                            ##
-+## This program is free software;  you can redistribute it and/or modify      ##
-+## it under the terms of the GNU General Public License as published by       ##
-+## the Free Software Foundation; either version 2 of the License, or          ##
-+## (at your option) any later version.                                        ##
-+##                                                                            ##
-+## This program is distributed in the hope that it will be useful,            ##
-+## but WITHOUT ANY WARRANTY;  without even the implied warranty of            ##
-+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  ##
-+## the GNU General Public License for more details.                           ##
-+##                                                                            ##
-+## You should have received a copy of the GNU General Public License          ##
-+## along with this program;  if not, write to the Free Software Foundation,   ##
-+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
-+##                                                                            ##
-+################################################################################
-+
-+do_setup()
-+{
-+	export RHOST="localhost"
-+	export TEST_USER_PASSWD="now_this_is_a_good_ltp_test_password"
-+	export TEST_USER_HOMEDIR="/home/$TEST_USER"
-+
-+	tst_check_cmds expect ssh useradd userdel
-+
-+	# erase user if he/she already exists, so we can have a clean env
-+	do_cleanup
-+	sleep 1
-+
-+	if ! useradd -m -d "$TEST_USER_HOMEDIR" $TEST_USER; then
-+		tst_brkm TBROK "Failed to add user $TEST_USER to system $RHOST."
-+	fi
-+
-+	echo "$TEST_USER_PASSWD" | passwd --stdin $TEST_USER
-+
-+	# create users home diretory (SLES 8 does not do this, even when
-+	# specified in adduser)
-+	if [ ! -d "$TEST_USER_HOMEDIR" ]; then
-+		USER_UID=$(id -u $TEST_USER)
-+		USER_GID=$(id -g $TEST_USER)
-+		if ! mkdir -p "$TEST_USER_HOMEDIR"; then
-+			tst_brkm TBROK "Failed to create $TEST_USER_HOMEDIR"
-+		fi
-+		chown -Rf $USER_UID.$USER_GID "$TEST_USER_HOMEDIR"
-+	fi
-+}
-+
-+do_cleanup()
-+{
-+	userdel -r $TEST_USER 2> /dev/null
-+}
 -- 
-1.9.3
-
-
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
-Want fast and easy access to all the code in your enterprise? Index and
-search up to 200,000 lines of code with a free copy of Black Duck
-Code Sight - the same software that powers the world's largest code
-search on Ohloh, the Black Duck Open Hub! Try it now.
-http://p.sf.net/sfu/bds
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
