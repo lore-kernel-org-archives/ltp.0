@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XLuIp-0008HS-Gd
-	for ltp-list@lists.sourceforge.net; Mon, 25 Aug 2014 13:27:19 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XLuIj-0002qj-K9
-	for ltp-list@lists.sourceforge.net; Mon, 25 Aug 2014 13:27:19 +0000
-Received: from zmail17.collab.prod.int.phx2.redhat.com
-	(zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id s7PDR7B9013646
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 Aug 2014 09:27:07 -0400
-Date: Mon, 25 Aug 2014 09:27:07 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1258655320.12473248.1408973227573.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1583769408.12443176.1408972372985.JavaMail.zimbra@redhat.com>
-References: <f8ac54907cad048b8c762d0394f5e86c0ccaa5da.1408712259.git.jstancek@redhat.com>
-	<20140825124837.GA13295@rei.suse.cz>
-	<1583769408.12443176.1408972372985.JavaMail.zimbra@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1XKp0k-0005is-Fl
+	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 13:36:10 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XKp0j-0004QX-H3
+	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 13:36:10 +0000
+Message-ID: <53F7473C.5010306@oracle.com>
+Date: Fri, 22 Aug 2014 17:35:56 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] sendmsg02: fix parameter passed to semctl(SETVAL)
+References: <77268e159df98c56fa62012617a7c3f3b918f6b7.1408689882.git.jstancek@redhat.com>
+	<53F6F9BC.3040504@cn.fujitsu.com>
+In-Reply-To: <53F6F9BC.3040504@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] mmap15: don't fail if mmap returns EINVAL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,116 +26,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-
-
-
-
------ Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
-> To: chrubis@suse.cz
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Monday, 25 August, 2014 3:12:52 PM
-> Subject: Re: [LTP] [PATCH] sendmsg02: fix parameter passed to semctl(SETVAL)
-> 
-> 
-> 
-> 
-> 
-> ----- Original Message -----
-> > From: chrubis@suse.cz
-> > To: "Jan Stancek" <jstancek@redhat.com>
-> > Cc: ltp-list@lists.sourceforge.net
-> > Sent: Monday, 25 August, 2014 2:48:38 PM
-> > Subject: Re: [LTP] [PATCH] sendmsg02: fix parameter passed to
-> > semctl(SETVAL)
-> > 
-> > Hi!
-> > > The fourth has the type union semun.
-> > 
-> > The change looks good. I guess that this may have been failing on some
-> > big endian machine where sizeof(void*) != sizeof(int), am I right?
-> 
-> You're right it was big endian machine, but with sizeof(void *) == 4 and
-> sizeof(int) == 4.
-> 
-> Fourth parameter is expected to be passed by reference,
-> so it was actually crashing on RHEL5.10 ppc:
-> 
-> void func()
-> {
-> 	union semun a;
-> 	a.val = 0;
-> 	semctl(123, 456, SETVAL, a);
-> }
-> 
-> (gdb) disassemble func
-> Dump of assembler code for function func:
-> 0x1000047c <func+0>:	stwu    r1,-48(r1)
-> 0x10000480 <func+4>:	mflr    r0
-> 0x10000484 <func+8>:	stw     r31,44(r1)
-> 0x10000488 <func+12>:	stw     r0,52(r1)
-> 0x1000048c <func+16>:	mr      r31,r1
-> 0x10000490 <func+20>:	li      r0,0
-> 0x10000494 <func+24>:	stw     r0,8(r31)
-> 0x10000498 <func+28>:	lwz     r0,8(r31)
-> 0x1000049c <func+32>:	stw     r0,24(r31)
-> 0x100004a0 <func+36>:	addi    r0,r31,24
-> 0x100004a4 <func+40>:	li      r3,123
-> 0x100004a8 <func+44>:	li      r4,456
-> 0x100004ac <func+48>:	li      r5,16
-> 0x100004b0 <func+52>:	mr      r6,r0
-> 0x100004b4 <func+56>:	crclr   4*cr1+eq
-> 0x100004b8 <func+60>:	bl      0x10000870 <semctl@plt>
-> 0x100004bc <func+64>:	lwz     r11,0(r1)
-> 0x100004c0 <func+68>:	lwz     r0,4(r11)
-> 0x100004c4 <func+72>:	mtlr    r0
-> 0x100004c8 <func+76>:	lwz     r31,-4(r11)
-> 0x100004cc <func+80>:	mr      r1,r11
-> 0x100004d0 <func+84>:	blr
-> End of assembler dump.
-> 
-> (gdb) b *0x100004b8
-> Breakpoint 1 at 0x100004b8: file a.c, line 18.
-> 
-> (gdb) r
-> Starting program:
-> /mnt/tests/scratch/jstancek2/ltp-full-20140820/testcases/kernel/syscalls/sendmsg/a.out
-> 
-> Breakpoint 1, 0x100004b8 in func () at a.c:18
-> 18		semctl(123, 456, SETVAL, a);
-> 
-> (gdb) p &a
-> $1 = (union semun *) 0xffacf488
-> 
-> (gdb) p/x $r6
-> $2 = 0xffacf498
-
-Patch pushed.
-
-Regards,
-Jan
-
-> 
-> ------------------------------------------------------------------------------
-> Slashdot TV.
-> Video for Nerds.  Stuff that matters.
-> http://tv.slashdot.org/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
-------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgpPbiAwOC8yMi8yMDE0IDEyOjA1IFBNLCBXYW5sb25nIEdhbyB3cm90ZToKPiBPbiAwOC8yMi8y
+MDE0IDAyOjQ1IFBNLCBKYW4gU3RhbmNlayB3cm90ZToKPj4gT2xkZXIga2VybmVscyAoMi42LjMy
+KSBvbiBwcGM2NCByZXR1cm4gRUlOVkFMIGluc3RlYWQgb2YgRU5PTUVNLgo+Pgo+PiBNYW4gcGFn
+ZSBzYXlzOgo+PiAiRUlOVkFMIFdlIGRvbuKAmXQgbGlrZSBhZGRyLCBsZW5ndGgsIG9yIG9mZnNl
+dCAoZS5nLiwgdGhleSBhcmUgdG9vIGxhcmdlLAo+PiBvciBub3QgYWxpZ25lZCBvbiBhIHBhZ2Ug
+Ym91bmRhcnkpLiIsIHdoaWNoIHN1Z2dlc3RzIHRoYXQgYm90aAo+PiBFTk9NRU0gYW5kIEVJTlZB
+TCBzaG91bGQgYmUgY29uc2lkZXJlZC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogSmFuIFN0YW5jZWsg
+PGpzdGFuY2VrQHJlZGhhdC5jb20+Cj4KPiBBY2tlZC1ieTogV2FubG9uZyBHYW8gPGdhb3dhbmxv
+bmdAY24uZnVqaXRzdS5jb20+CgpNb2Rlcm4gc3BhcmM2NCBrZXJuZWxzIHJldHVybiBFSU5WQUwg
+YXMgd2VsbC4KCkFja2VkLWJ5OiBTdGFuaXNsYXYgS2hvbG1hbnNraWtoIDxzdGFuaXNsYXYua2hv
+bG1hbnNraWtoQG9yYWNsZS5jb20+CgoKPgo+PiAtLS0KPj4gICB0ZXN0Y2FzZXMva2VybmVsL3N5
+c2NhbGxzL21tYXAvbW1hcDE1LmMgfCAgICA0ICsrLS0KPj4gICAxIGZpbGVzIGNoYW5nZWQsIDIg
+aW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNl
+cy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2Fs
+bHMvbW1hcC9tbWFwMTUuYwo+PiBpbmRleCA0OWRiYmE0Li5mMWZjMjY3IDEwMDY0NAo+PiAtLS0g
+YS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21tYXAvbW1hcDE1LmMKPj4gKysrIGIvdGVzdGNh
+c2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21tYXAxNS5jCj4+IEBAIC04MCwxMCArODAsMTAgQEAg
+aW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCj4+ICAgCQkJY29udGludWU7Cj4+ICAgCQl9Cj4+
+Cj4+IC0JCWlmIChlcnJubyAhPSBFTk9NRU0pIHsKPj4gKwkJaWYgKGVycm5vICE9IEVOT01FTSAm
+JiBlcnJubyAhPSBFSU5WQUwpIHsKPj4gICAJCQl0c3RfcmVzbShURkFJTCB8IFRFUlJOTywgIm1t
+YXAgaW50byBoaWdoIHJlZ2lvbiAiCj4+ICAgCQkJCSAiZmFpbGVkIHVuZXhwZWN0ZWRseSAtIGV4
+cGVjdCAiCj4+IC0JCQkJICJlcnJubz1FTk9NRU0sIGdvdCIpOwo+PiArCQkJCSAiZXJybm89RU5P
+TUVNL0VJTlZBTCwgZ290Iik7CgpNYXliZSBhZGQgdGhpcyBFTk9NRU0vRUlOVkFMIGluIHRoZSBj
+b21tZW50IGZldyBzdGluZ3MgYWJvdmU6Ci8qIEF0dGVtcHQgdG8gbW1hcCBpbnRvIGhpZ2htZW0g
+YWRkciwgc2hvdWxkIGdldCBFTk9NRU0gKi8KCj8KClRoYW5rcy4KCj4+ICAgCQl9IGVsc2Ugewo+
+PiAgIAkJCXRzdF9yZXNtKFRQQVNTIHwgVEVSUk5PLCAibW1hcCBpbnRvIGhpZ2ggcmVnaW9uICIK
+Pj4gICAJCQkJICJmYWlsZWQgYXMgZXhwZWN0ZWQiKTsKPj4KPgo+Cj4gLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tCj4gU2xhc2hkb3QgVFYuCj4gVmlkZW8gZm9yIE5lcmRzLiAgU3R1ZmYgdGhhdCBtYXR0
+ZXJzLgo+IGh0dHA6Ly90di5zbGFzaGRvdC5vcmcvCj4gX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlz
+dEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
+aXN0cy9saXN0aW5mby9sdHAtbGlzdAo+CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KU2xhc2hkb3Qg
+VFYuICAKVmlkZW8gZm9yIE5lcmRzLiAgU3R1ZmYgdGhhdCBtYXR0ZXJzLgpodHRwOi8vdHYuc2xh
+c2hkb3Qub3JnLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0
+dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
