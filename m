@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1XJGvt-0003eu-FJ
-	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 07:00:45 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XJGvs-0008J1-J9
-	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 07:00:45 +0000
-Message-ID: <53F1A492.60108@oracle.com>
-Date: Mon, 18 Aug 2014 15:00:34 +0800
-From: Shuang Qiu <shuang.qiu@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xzhou@redhat.com>) id 1XKir3-0006JB-AZ
+	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 07:01:45 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XKir1-0008SH-Qz
+	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 07:01:45 +0000
+Date: Fri, 22 Aug 2014 03:01:37 -0400 (EDT)
+From: Xiong Zhou <xzhou@redhat.com>
+Message-ID: <584610704.23056069.1408690897403.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1350693778.23055155.1408690790005.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-References: <c3a64332100498deedfb1b27b83545e42deb2d54.1389101980.git.jstancek@redhat.com>
-	<7f26ec5fbdf900ddb77ec9a40debc5291498ab1b.1389101980.git.jstancek@redhat.com>
-In-Reply-To: <7f26ec5fbdf900ddb77ec9a40debc5291498ab1b.1389101980.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 2/3] cpuset/cpuset_syscall_test: check
-	HAVE_DECL_MPOL_F_MEMS_ALLOWED
+Subject: [LTP] [PATCH v4 2/3] diotest4: Skip some diotest4 cases on NFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,57 +23,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-SGkgSmFuLAoKSW4gdGhpcyBjYXNlLGlmIE1QT0xfRl9NRU1TX0FMTE9XRUQgaXMgdW5kZWNsYXJl
-ZCwicmV0ID0gLTEiIHdpbGwgbWFrZSAKc29tZSBvZiBjcHVzZXRfc3lzY2FsbF90ZXN0IGZhaWxl
-ZC4KaS5lLiB0ZXN0MTUgZmFpbGVkOiBjcHVzZXRfc3lzY2FsbCAxNSBURkFJTCA6IFRlc3QgdGFz
-ayBleGl0ZWQgCmFibm9ybWFsbHkuKGV4cGVjdCByZXR1cm4gdmFsdWUgaXMgMCkKV2h5IGRvIHdl
-IGZhaWwgdGhpcyB0ZXN0IGlmIE1QT0xfRl9NRU1TX0FMTE9XRUQgaXMgdW5kZWNsYXJlZCByYXRo
-ZXIgCnRoYW4gc2tpcCB0aGlzIHRlc3QuCgpUaGFua3MKU2h1YW5nCk9uIDAxLzA3LzIwMTQgMDk6
-NDYgUE0sIEphbiBTdGFuY2VrIHdyb3RlOgo+IFRoaXMgaXMgdG8gZml4IGNvbXBpbGF0aW9uIG9u
-IFJIRUw1LjM6Cj4gICAgZ2NjIC1nIC1PMiAtZyAtTzIgLWZuby1zdHJpY3QtYWxpYXNpbmcgLXBp
-cGUgLVdhbGwgLURfRk9SVElGWV9TT1VSQ0U9Mgo+ICAgIC1JL3Jvb3QvbHRwL3Rlc3RjYXNlcy9r
-ZXJuZWwvaW5jbHVkZSAtRE5VTUFfVkVSU0lPTjFfQ09NUEFUSUJJTElUWQo+ICAgIC1JLi4vLi4v
-Li4vLi4vLi4vaW5jbHVkZSAtSS4uLy4uLy4uLy4uLy4uL2luY2x1ZGUKPiAgICAtTC9yb290L2x0
-cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xsZXJzL2NwdXNldC9jcHVzZXRfc3lzY2FsbF90ZXN0
-Ly4uL2NwdXNldF9saWIKPiAgICAtTC9yb290L2x0cC90ZXN0Y2FzZXMva2VybmVsL2NvbnRyb2xs
-ZXJzL2NwdXNldC9jcHVzZXRfc3lzY2FsbF90ZXN0Ly4uLy4uL2xpYmNvbnRyb2xsZXJzCj4gICAg
-LUwuLi8uLi8uLi8uLi8uLi9saWIgIGNwdXNldF9zeXNjYWxsX3Rlc3QuYyAgIC1sbHRwIC1sY3B1
-X3NldAo+ICAgIC1sY29udHJvbGxlcnMgLWxsdHAgLWxudW1hIC1vIGNwdXNldF9zeXNjYWxsX3Rl
-c3QKPiAgICBjcHVzZXRfc3lzY2FsbF90ZXN0LmM6IEluIGZ1bmN0aW9uIOKAmHRlc3RfZ2V0X21l
-bXBvbGljeeKAmToKPiAgICBjcHVzZXRfc3lzY2FsbF90ZXN0LmM6MTkwOiBlcnJvcjog4oCYTVBP
-TF9GX01FTVNfQUxMT1dFROKAmSB1bmRlY2xhcmVkCj4gICAgKGZpcnN0IHVzZSBpbiB0aGlzIGZ1
-bmN0aW9uKQo+ICAgIGNwdXNldF9zeXNjYWxsX3Rlc3QuYzoxOTA6IGVycm9yOiAoRWFjaCB1bmRl
-Y2xhcmVkIGlkZW50aWZpZXIgaXMKPiAgICByZXBvcnRlZCBvbmx5IG9uY2UKPiAgICBjcHVzZXRf
-c3lzY2FsbF90ZXN0LmM6MTkwOiBlcnJvcjogZm9yIGVhY2ggZnVuY3Rpb24gaXQgYXBwZWFycyBp
-bi4pCj4gICAgbWFrZVs1XTogKioqIFtjcHVzZXRfc3lzY2FsbF90ZXN0XSBFcnJvciAxCj4KPiBU
-aGlzIHBhdGNoIHJlc3RvcmVzIGNoZWNrIHdoaWNoIGhhcyBiZWVuIHJlbW92ZWQgYnkgdGhpcyBj
-b21taXQ6Cj4gICAgY29tbWl0IDg3MTU2YTA1YTJmZmQ1MGY1ZTQ2N2Q2Zjk4NmRhYWU5ZGE3Yjlj
-ZjcKPiAgICBBdXRob3I6IFN0YW5pc2xhdiBLaG9sbWFuc2tpa2ggPHN0YW5pc2xhdi5raG9sbWFu
-c2tpa2hAb3JhY2xlLmNvbT4KPiAgICBEYXRlOiAgIFR1ZSBPY3QgMSAxNzo0NDo1MCAyMDEzICsw
-NDAwCj4gICAgICBjcHVzZXQvY3B1c2V0X3N5c2NhbGxfdGVzdDogZml4ZXMKPgo+IFNpZ25lZC1v
-ZmYtYnk6IEphbiBTdGFuY2VrIDxqc3RhbmNla0ByZWRoYXQuY29tPgo+IC0tLQo+ICAgLi4uL2Nw
-dXNldF9zeXNjYWxsX3Rlc3QvY3B1c2V0X3N5c2NhbGxfdGVzdC5jICAgICAgfCAgICA0ICsrKysK
-PiAgIDEgZmlsZXMgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCAwIGRlbGV0aW9ucygtKQo+Cj4g
-ZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udHJvbGxlcnMvY3B1c2V0L2NwdXNldF9z
-eXNjYWxsX3Rlc3QvY3B1c2V0X3N5c2NhbGxfdGVzdC5jIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250
-cm9sbGVycy9jcHVzZXQvY3B1c2V0X3N5c2NhbGxfdGVzdC9jcHVzZXRfc3lzY2FsbF90ZXN0LmMK
-PiBpbmRleCBkZDM1Y2QwLi5lMjAyMjk1IDEwMDY0NAo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwv
-Y29udHJvbGxlcnMvY3B1c2V0L2NwdXNldF9zeXNjYWxsX3Rlc3QvY3B1c2V0X3N5c2NhbGxfdGVz
-dC5jCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250cm9sbGVycy9jcHVzZXQvY3B1c2V0X3N5
-c2NhbGxfdGVzdC9jcHVzZXRfc3lzY2FsbF90ZXN0LmMKPiBAQCAtMTg2LDggKzE4NiwxMiBAQCB2
-b2lkIHRlc3RfZ2V0X21lbXBvbGljeSh2b2lkKQo+ICAgCQlyZXQgPSAxOwo+ICAgCQlyZXR1cm47
-Cj4gICAJfQo+ICsjaWYgSEFWRV9ERUNMX01QT0xfRl9NRU1TX0FMTE9XRUQKPiAgIAlyZXQgPSBn
-ZXRfbWVtcG9saWN5KE5VTEwsIGJpdG1hc2tfbWFzayhubWFzayksIGJpdG1hc2tfbmJpdHMobm1h
-c2spLCAwLAo+ICAgCQkJICAgIE1QT0xfRl9NRU1TX0FMTE9XRUQpOwo+ICsjZWxzZQo+ICsJcmV0
-ID0gLTE7Cj4gKyNlbmRpZgo+ICAgCj4gICAJYml0bWFza19kaXNwbGF5bGlzdChzdHIsIDI1Niwg
-bm1hc2spOwo+ICAgCXB1dHMoc3RyKTsKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBs
-aXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZv
-cmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+
+According to description of NFS and directIO in open(2), especially
+"The Linux NFS client places no alignment restrictions on
+O_DIRECT I/O", ignore "odd count"/"non-aligned" read-write FAILs
+in diotest4.
+
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+---
+ testcases/kernel/io/direct_io/diotest4.c | 51 +++++++++++---------------------
+ 1 file changed, 18 insertions(+), 33 deletions(-)
+
+diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
+index 12372d7..fa90a1e 100644
+--- a/testcases/kernel/io/direct_io/diotest4.c
++++ b/testcases/kernel/io/direct_io/diotest4.c
+@@ -71,9 +71,11 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "tst_fs_type.h"
+ 
+ char *TCID = "diotest4";	/* Test program identifier.    */
+ int TST_TOTAL = 17;		/* Total number of test conditions */
++int NO_NFS = 1;			/* Test on NFS or not */
+ 
+ #ifdef O_DIRECT
+ 
+@@ -265,13 +267,12 @@ int main(int argc, char *argv[])
+ 	if (write(fd, buf2, 4096) == -1) {
+ 		tst_resm(TFAIL, "can't write to file %d", ret);
+ 	}
+-	ret = runtest_f(fd, buf2, offset, count, EINVAL, 3, "odd count");
+-	if (ret != 0) {
+-		failed = TRUE;
+-		fail_count++;
+-		tst_resm(TFAIL, "Odd count of read and write");
++	if (NO_NFS) {
++		ret = runtest_f(fd, buf2, offset, count, EINVAL, 3, "odd count");
++		testcheck_end(ret, &failed, &fail_count,
++					"Odd count of read and write");
+ 	} else
+-		tst_resm(TPASS, "Odd count of read and write");
++		tst_resm(TCONF, "NFS support odd count IO");
+ 	total++;
+ 
+ 	/* Test-4: Read beyond the file size */
+@@ -432,39 +433,19 @@ int main(int argc, char *argv[])
+ 	/* Test-14: read, write with non-aligned buffer */
+ 	offset = 4096;
+ 	count = bufsize;
+-	l_fail = 0;
+ 	if ((fd = open(filename, O_DIRECT | O_RDWR)) < 0) {
+ 		tst_brkm(TBROK, cleanup, "can't open %s: %s",
+ 			 filename, strerror(errno));
+ 	}
+-	if (lseek(fd, offset, SEEK_SET) < 0) {
+-		tst_resm(TFAIL, "lseek before read failed: %s",
+-			 strerror(errno));
+-		l_fail = TRUE;
+-	} else {
+-		if ((ret = read(fd, buf2 + 1, count)) != -1) {
+-			tst_resm(TFAIL,
+-				 "allows read nonaligned buf. returns %d: %s",
+-				 ret, strerror(errno));
+-			l_fail = TRUE;
+-		}
+-	}
+-	if (lseek(fd, offset, SEEK_SET) < 0) {
+-		tst_resm(TFAIL, "lseek before read failed: %s",
+-			 strerror(errno));
+-		l_fail = TRUE;
+-	} else {
+-		if ((ret = write(fd, buf2 + 1, count)) != -1) {
+-			tst_resm(TFAIL,
+-				 "allows write nonaligned buf. returns %d: %s",
+-				 ret, strerror(errno));
+-			l_fail = TRUE;
+-		}
+-	}
+-	testcheck_end(l_fail, &failed, &fail_count,
++	if (NO_NFS) {
++		ret = runtest_f(fd, buf2 + 1, offset, count, EINVAL, 14,
++					" nonaligned buf");
++		testcheck_end(ret, &failed, &fail_count,
+ 				"read, write with non-aligned buffer");
+-	total++;
++	} else
++		tst_resm(TCONF, "NFS support read, write with non-aligned buffer");
+ 	close(fd);
++	total++;
+ 
+ 	/* Test-15: read, write buffer in read-only space */
+ 	offset = 4096;
+@@ -573,6 +554,10 @@ static void setup(void)
+ 			 strerror(errno));
+ 	}
+ 	close(fd1);
++
++	/* On NFS or not */
++	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
++		NO_NFS = 0;
+ }
+ 
+ static void cleanup(void)
+-- 
+1.8.3.1
+
+
+------------------------------------------------------------------------------
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
