@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XEvUS-0006No-Qd
-	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 07:18:28 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XEvUR-0005Xy-OJ
-	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 07:18:28 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s767IH8C018722
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Aug 2014 15:18:17 +0800
-Message-ID: <1407309452.2223.13.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 6 Aug 2014 15:17:32 +0800
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xzhou@redhat.com>) id 1XKioN-0006CE-Ch
+	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 06:58:59 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XKioL-0006Dd-J9
+	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 06:58:59 +0000
+Date: Fri, 22 Aug 2014 02:58:51 -0400 (EDT)
+From: Xiong Zhou <xzhou@redhat.com>
+Message-ID: <632812647.23054510.1408690731447.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1507651521.23053819.1408690655889.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] securebits/check_keepcaps.c: Add comments about
- cap_get_flag may return -1
+Subject: [LTP] [PATCH v4 1/3] diotest4: Some code cleanup in diotest4.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,51 +26,219 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-In RHEL7.0(3.10.0) the value of CAP_LAST_CAP in linux/capability.h is 36, it is
-greater than in the capability.h which is used to create
-libcap.so(libcap-2.22-8) and that value is 34. Then cap_get_flag returns -1, and
-errno is set to EINVAL. Add comments to make this clear.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
 ---
- testcases/kernel/security/securebits/check_keepcaps.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ testcases/kernel/io/direct_io/diotest4.c | 100 ++++++++++---------------------
+ 1 file changed, 32 insertions(+), 68 deletions(-)
 
-diff --git a/testcases/kernel/security/securebits/check_keepcaps.c b/testcases/kernel/security/securebits/check_keepcaps.c
-index 83e463e..a602fb5 100644
---- a/testcases/kernel/security/securebits/check_keepcaps.c
-+++ b/testcases/kernel/security/securebits/check_keepcaps.c
-@@ -38,6 +38,16 @@ static int eff_caps_empty(cap_t c)
+diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
+index 10281bf..12372d7 100644
+--- a/testcases/kernel/io/direct_io/diotest4.c
++++ b/testcases/kernel/io/direct_io/diotest4.c
+@@ -171,6 +171,16 @@ void prg_usage()
+ 	exit(1);
+ }
  
- 	for (i = 0; i < CAP_LAST_CAP; i++) {
- 		ret = cap_get_flag(c, i, CAP_PERMITTED, &v);
-+		/*
-+		 * If the value of CAP_LAST_CAP in linux/capability.h is greater
-+		 * than the value in the capability.h which is used to create
-+		 * libcap.so. Then cap_get_flag returns -1, and errno is set to
-+		 * EINVAL.
-+		 */
-+		if (ret == -1) {
-+			tst_brkm(TBROK | TERRNO, NULL,
-+				"Not expected. Please check arguments.");
-+		}
- 		if (ret || v)
- 			empty = 0;
++static void testcheck_end(int ret, int *failed, int *fail_count, char *msg)
++{
++	if (ret != 0) {
++		*failed = TRUE;
++		(*fail_count)++;
++		tst_resm(TFAIL, msg);
++	} else
++		tst_resm(TPASS, msg);
++}
++
+ static void setup(void);
+ static void cleanup(void);
+ static int fd1 = -1;
+@@ -290,12 +300,7 @@ int main(int argc, char *argv[])
+ 	count = bufsize;
+ 	newfd = -1;
+ 	ret = runtest_f(newfd, buf2, offset, count, EBADF, 5, "negative fd");
+-	if (ret != 0) {
+-		failed = TRUE;
+-		fail_count++;
+-		tst_resm(TFAIL, "Invalid file descriptor");
+-	} else
+-		tst_resm(TPASS, "Invalid file descriptor");
++	testcheck_end(ret, &failed, &fail_count, "Invalid file descriptor");
+ 	total++;
+ 
+ 	/* Test-6: Out of range file descriptor */
+@@ -306,15 +311,10 @@ int main(int argc, char *argv[])
+ 		failed = TRUE;
+ 		tst_resm(TFAIL, "Out of range file descriptor");
+ 	} else {
+-		ret =
+-		    runtest_f(newfd, buf2, offset, count, EBADF, 6,
++		ret = runtest_f(newfd, buf2, offset, count, EBADF, 6,
+ 			      "out of range fd");
+-		if (ret != 0) {
+-			failed = TRUE;
+-			fail_count++;
+-			tst_resm(TFAIL, "Out of range file descriptor");
+-		} else
+-			tst_resm(TPASS, "Out of range file descriptor");
++		testcheck_end(ret, &failed, &fail_count,
++					"Out of range file descriptor");
  	}
+ 	close(newfd);
+ 	total++;
+@@ -327,12 +327,7 @@ int main(int argc, char *argv[])
+ 			 strerror(errno));
+ 	}
+ 	ret = runtest_f(fd, buf2, offset, count, EBADF, 7, "closed fd");
+-	if (ret != 0) {
+-		failed = TRUE;
+-		fail_count++;
+-		tst_resm(TFAIL, "Closed file descriptor");
+-	} else
+-		tst_resm(TPASS, "Closed file descriptor");
++	testcheck_end(ret, &failed, &fail_count, "Closed file descriptor");
+ 	total++;
+ 
+ 	/* Test-9: removed */
+@@ -345,12 +340,8 @@ int main(int argc, char *argv[])
+ 		tst_resm(TCONF, "Direct I/O on /dev/null is not supported");
+ 	} else {
+ 		ret = runtest_s(newfd, buf2, offset, count, 9, "/dev/null");
+-		if (ret != 0) {
+-			failed = TRUE;
+-			fail_count++;
+-			tst_resm(TFAIL, "character device read, write");
+-		} else
+-			tst_resm(TPASS, "character device read, write");
++		testcheck_end(ret, &failed, &fail_count,
++					"character device read, write");
+ 	}
+ 	close(newfd);
+ 	total++;
+@@ -373,12 +364,8 @@ int main(int argc, char *argv[])
+ 			 strerror(errno));
+ 	}
+ 	ret = runtest_s(fd, buf2, offset, count, 10, "mmapped file");
+-	if (ret != 0) {
+-		failed = TRUE;
+-		fail_count++;
+-		tst_resm(TFAIL, "read, write to a mmaped file");
+-	} else
+-		tst_resm(TPASS, "read, write to a mmaped file");
++	testcheck_end(ret, &failed, &fail_count,
++				"read, write to a mmaped file");
+ 	total++;
+ 
+ 	/* Test-11: read, write to an unmaped file with munmap */
+@@ -387,12 +374,8 @@ int main(int argc, char *argv[])
+ 			 strerror(errno));
+ 	}
+ 	ret = runtest_s(fd, buf2, offset, count, 11, "unmapped file");
+-	if (ret != 0) {
+-		failed = TRUE;
+-		fail_count++;
+-		tst_resm(TFAIL, "read, write to an unmapped file");
+-	} else
+-		tst_resm(TPASS, "read, write to an unmapped file");
++	testcheck_end(ret, &failed, &fail_count,
++				"read, write to an unmapped file");
+ 	close(fd);
+ 	total++;
+ 
+@@ -478,12 +461,8 @@ int main(int argc, char *argv[])
+ 			l_fail = TRUE;
+ 		}
+ 	}
+-	if (l_fail) {
+-		failed = TRUE;
+-		fail_count++;
+-		tst_resm(TFAIL, "read, write with non-aligned buffer");
+-	} else
+-		tst_resm(TPASS, "read, write with non-aligned buffer");
++	testcheck_end(l_fail, &failed, &fail_count,
++				"read, write with non-aligned buffer");
+ 	total++;
+ 	close(fd);
+ 
+@@ -500,8 +479,7 @@ int main(int argc, char *argv[])
+ 			 strerror(errno));
+ 		l_fail = TRUE;
+ 	} else {
+-		ret =
+-		    read(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
++		ret = read(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
+ 			 count);
+ 		if (ret >= 0 || errno != EFAULT) {
+ 			tst_resm(TFAIL,
+@@ -515,8 +493,7 @@ int main(int argc, char *argv[])
+ 			 strerror(errno));
+ 		l_fail = TRUE;
+ 	} else {
+-		ret =
+-		    write(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
++		ret = write(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
+ 			  count);
+ 		if (ret < 0) {
+ 			tst_resm(TFAIL,
+@@ -525,12 +502,8 @@ int main(int argc, char *argv[])
+ 			l_fail = TRUE;
+ 		}
+ 	}
+-	if (l_fail) {
+-		failed = TRUE;
+-		fail_count++;
+-		tst_resm(TFAIL, "read, write buffer in read-only space");
+-	} else
+-		tst_resm(TPASS, "read, write buffer in read-only space");
++	testcheck_end(l_fail, &failed, &fail_count,
++				"read, write buffer in read-only space");
+ 	close(fd);
+ 	total++;
+ 
+@@ -545,15 +518,10 @@ int main(int argc, char *argv[])
+ 		tst_brkm(TBROK | TERRNO, cleanup,
+ 			 "open(%s, O_DIRECT|O_RDWR) failed", filename);
+ 	}
+-	ret =
+-	    runtest_f(fd, buf1, offset, count, EFAULT, 16,
++	ret = runtest_f(fd, buf1, offset, count, EFAULT, 16,
+ 		      " nonexistant space");
+-	if (ret != 0) {
+-		failed = TRUE;
+-		fail_count++;
+-		tst_resm(TFAIL, "read, write in non-existant space");
+-	} else
+-		tst_resm(TPASS, "read, write in non-existant space");
++	testcheck_end(ret, &failed, &fail_count,
++				"read, write in non-existant space");
+ 	total++;
+ 	close(fd);
+ 
+@@ -565,12 +533,8 @@ int main(int argc, char *argv[])
+ 			 "open(%s, O_DIRECT|O_RDWR|O_SYNC failed)", filename);
+ 	}
+ 	ret = runtest_s(fd, buf2, offset, count, 17, "opened with O_SYNC");
+-	if (ret != 0) {
+-		failed = TRUE;
+-		fail_count++;
+-		tst_resm(TFAIL, "read, write for file with O_SYNC");
+-	} else
+-		tst_resm(TPASS, "read, write for file with O_SYNC");
++	testcheck_end(ret, &failed, &fail_count,
++				"read, write for file with O_SYNC");
+ 	total++;
+ 	close(fd);
+ 
 -- 
-1.9.3
-
-
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
