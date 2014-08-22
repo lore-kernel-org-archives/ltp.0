@@ -1,21 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XNLYq-0001dl-KL
-	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 12:45:48 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XNLYo-0002g9-Ot
-	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 12:45:48 +0000
-Date: Fri, 29 Aug 2014 08:45:39 -0400 (EDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XKibw-0008IC-Kx
+	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 06:46:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XKibv-0005oB-Bh
+	for ltp-list@lists.sourceforge.net; Fri, 22 Aug 2014 06:46:08 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7M6jxvq011630
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Aug 2014 02:46:00 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s7M6jweO011797
+	for <ltp-list@lists.sourceforge.net>; Fri, 22 Aug 2014 02:45:59 -0400
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1216302144.15028306.1409316339710.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1409315070-11748-1-git-send-email-mmarhefk@redhat.com>
-References: <1408115809-18653-1-git-send-email-mmarhefk@redhat.com>
-	<1409315070-11748-1-git-send-email-mmarhefk@redhat.com>
+Date: Fri, 22 Aug 2014 08:45:56 +0200
+Message-Id: <77268e159df98c56fa62012617a7c3f3b918f6b7.1408689882.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 3/3 v4] containers: added mountns/mountns02.c
+Subject: [LTP] [PATCH] mmap15: don't fail if mmap returns EINVAL
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,288 +32,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-
-
------ Original Message -----
-> From: "Matus Marhefka" <mmarhefk@redhat.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Friday, 29 August, 2014 2:24:30 PM
-> Subject: [LTP] [PATCH 3/3 v4] containers: added mountns/mountns02.c
-> 
-> * Tests a private mount: private mount does not forward or receive
->   propagation.
-> 
-> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
-> ---
->  runtest/containers                              |   1 +
->  testcases/kernel/containers/.gitignore          |   1 +
->  testcases/kernel/containers/mountns/mountns02.c | 204
->  ++++++++++++++++++++++++
->  3 files changed, 206 insertions(+)
->  create mode 100644 testcases/kernel/containers/mountns/mountns02.c
-
-This series looks good to me. I also tested it on RHEL5.3/RHEL6.5/RHEL7.0.
-
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
-
-Regards,
-Jan
-
-> 
-> diff --git a/runtest/containers b/runtest/containers
-> index f298c7e..56977c0 100644
-> --- a/runtest/containers
-> +++ b/runtest/containers
-> @@ -57,3 +57,4 @@ utstest_clone_4 utstest clone 4
->  utstest_clone_5 utstest clone 5
->  
->  mountns01 mountns01
-> +mountns02 mountns02
-> diff --git a/testcases/kernel/containers/.gitignore
-> b/testcases/kernel/containers/.gitignore
-> index 254d1b9..f175296 100644
-> --- a/testcases/kernel/containers/.gitignore
-> +++ b/testcases/kernel/containers/.gitignore
-> @@ -1,2 +1,3 @@
->  /check_for_unshare
->  mountns/mountns01
-> +mountns/mountns02
-> diff --git a/testcases/kernel/containers/mountns/mountns02.c
-> b/testcases/kernel/containers/mountns/mountns02.c
-> new file mode 100644
-> index 0000000..bbc2b5b
-> --- /dev/null
-> +++ b/testcases/kernel/containers/mountns/mountns02.c
-> @@ -0,0 +1,204 @@
-> +/* Copyright (c) 2014 Red Hat, Inc.
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of version 2 the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-> + ***********************************************************************
-> + * File: mountns02.c
-> + *
-> + * Tests a private mount: private mount does not forward or receive
-> + * propagation.
-> + * Description:
-> + * 1. Creates directories "A", "B" and files "A/A", "B/B"
-> + * 2. Unshares mount namespace and makes it private (so mounts/umounts
-> + *    have no effect on a real system)
-> + * 3. Bind mounts directory "A" to "A" and "B" to "B"
-> + * 4. Makes both directories ("A" and "B") shared
-> + * 5. Clones a new child process with CLONE_NEWNS flag - the new child
-> + *    then mounts directory "A" as private and bind mounts directory
-> + *    "B" to "A" (now child must wait for parent to make check - wait
-> + *    is needed because mount ns in child stops exist as soon as child
-> + *    terminates)
-> + * 6. Parent checks if directory "A" doesn't contain the file "B"
-> + *    (changes in child should not be visible in parent as mount in child
-> + *    was private):
-> + *    - if it doesn't, test passes
-> + *    - if it does, test fails
-> + * 7. Parent allows child to terminate
-> + ***********************************************************************/
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <sys/mount.h>
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "libclone.h"
-> +#include "safe_macros.h"
-> +#include "safe_file_ops.h"
-> +#include "mountns_helper.h"
-> +
-> +
-> +#define DIRA "A"
-> +#define DIRB "B"
-> +char *TCID	= "mountns02";
-> +int TST_TOTAL	= 1;
-> +int pipefd1[2];
-> +int pipefd2[2];
-> +
-> +/* checks if following mountflags are defined */
-> +#if defined(MS_SHARED) && defined(MS_PRIVATE) && defined(MS_REC)
-> +
-> +static void cleanup(void)
-> +{
-> +	close(pipefd1[0]);
-> +	close(pipefd1[1]);
-> +	close(pipefd2[0]);
-> +	close(pipefd2[1]);
-> +	umount(DIRA);
-> +	umount(DIRB);
-> +	tst_rmdir();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_require_root(NULL);
-> +	check_newns();	/* from mountns_helper.h */
-> +	tst_tmpdir();
-> +	SAFE_MKDIR(cleanup, DIRA, 0777);
-> +	SAFE_MKDIR(cleanup, DIRB, 0777);
-> +	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
-> +	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
-> +}
-> +
-> +int child_func(void *arg)
-> +{
-> +	char buf;
-> +
-> +	/* makes DIRA private */
-> +	if (mount("none", DIRA, "none", MS_PRIVATE, NULL) == -1) {
-> +		perror("mount");
-> +		write(pipefd1[1], "1", 1);
-> +		return 1;
-> +	}
-> +
-> +	/* bind mounts DIRB to DIRA making contents of DIRB visible
-> +	 * in DIRA (should apply only for child as DIRA is private) */
-> +	if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1) {
-> +		perror("mount");
-> +		write(pipefd1[1], "1", 1);
-> +		return 1;
-> +	}
-> +
-> +	/* tells parent to stop waiting and continue */
-> +	write(pipefd1[1], "0", 1);
-> +
-> +	/* waits for parent approval to terminate */
-> +	read(pipefd2[0], &buf, 1);
-> +
-> +	umount(DIRA);
-> +	return 0;
-> +}
-> +
-> +static void test(void)
-> +{
-> +	int status, pass;
-> +	char buf;
-> +
-> +	/* creates a pipe for synchronization between parent and child */
-> +	SAFE_PIPE(cleanup, pipefd1);
-> +	SAFE_PIPE(cleanup, pipefd2);
-> +
-> +	/* unshares the mount ns */
-> +	if (unshare(CLONE_NEWNS) == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-> +	/* makes sure parent mounts/umounts have no effect on a real system */
-> +	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
-> +
-> +	/* bind mounts DIRA to itself */
-> +	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
-> +	/* bind mounts DIRB to itself */
-> +	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
-> +
-> +	/* makes mount DIRA shared */
-> +	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_SHARED, NULL);
-> +	/* makes mount DIRB shared */
-> +	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
-> +
-> +
-> +	if (do_clone_tests(CLONE_NEWNS, child_func, NULL, NULL, NULL) == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-> +
-> +	/* waits for child bind mount */
-> +	SAFE_READ(cleanup, 0, pipefd1[0], &buf, 1);
-> +
-> +	/* as child made private mount from DIRA, parent should not
-> +	 * see file "B" in DIRA; following checks if DIRA doesn't contain
-> +	 * file "B" */
-> +	if (access(DIRA"/B", F_OK) == -1)
-> +		pass = 1;
-> +	else
-> +		pass = 0;
-> +
-> +	/* tells child to terminate (if no error occured in child) */
-> +	SAFE_WRITE(cleanup, 0, pipefd2[1], "0", 1);
-> +
-> +
-> +	SAFE_WAIT(cleanup, &status);
-> +
-> +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-> +		tst_brkm(TBROK, cleanup, "child failed");
-> +
-> +	if (WIFSIGNALED(status)) {
-> +		tst_resm(TFAIL, "child was killed with signal %s",
-> +			 tst_strsig(WTERMSIG(status)));
-> +		return;
-> +	}
-> +
-> +	close(pipefd1[0]);
-> +	close(pipefd1[1]);
-> +	close(pipefd2[0]);
-> +	close(pipefd2[1]);
-> +	SAFE_UMOUNT(cleanup, DIRA);
-> +	SAFE_UMOUNT(cleanup, DIRB);
-> +
-> +	if (pass)
-> +		tst_resm(TPASS, "private mount passed");
-> +	else
-> +		tst_resm(TFAIL, "private mount failed");
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	const char *msg;
-> +	int lc;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++)
-> +		test();
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +#else /* MS_SHARED && MS_PRIVATE && MS_REC */
-> +int main(void)
-> +{
-> +	tst_brkm(TCONF, NULL, "needed mountflags are not defined");
-> +}
-> +#endif
-> --
-> 1.8.3.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> Slashdot TV.
-> Video for Nerds.  Stuff that matters.
-> http://tv.slashdot.org/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
-------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T2xkZXIga2VybmVscyAoMi42LjMyKSBvbiBwcGM2NCByZXR1cm4gRUlOVkFMIGluc3RlYWQgb2Yg
+RU5PTUVNLgoKTWFuIHBhZ2Ugc2F5czoKIkVJTlZBTCBXZSBkb27igJl0IGxpa2UgYWRkciwgbGVu
+Z3RoLCBvciBvZmZzZXQgKGUuZy4sIHRoZXkgYXJlIHRvbyBsYXJnZSwKb3Igbm90IGFsaWduZWQg
+b24gYSBwYWdlIGJvdW5kYXJ5KS4iLCB3aGljaCBzdWdnZXN0cyB0aGF0IGJvdGgKRU5PTUVNIGFu
+ZCBFSU5WQUwgc2hvdWxkIGJlIGNvbnNpZGVyZWQuCgpTaWduZWQtb2ZmLWJ5OiBKYW4gU3RhbmNl
+ayA8anN0YW5jZWtAcmVkaGF0LmNvbT4KLS0tCiB0ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL21t
+YXAvbW1hcDE1LmMgfCAgICA0ICsrLS0KIDEgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCsp
+LCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMv
+bW1hcC9tbWFwMTUuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvbW1hcC9tbWFwMTUuYwpp
+bmRleCA0OWRiYmE0Li5mMWZjMjY3IDEwMDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2Nh
+bGxzL21tYXAvbW1hcDE1LmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9tbWFwL21t
+YXAxNS5jCkBAIC04MCwxMCArODAsMTAgQEAgaW50IG1haW4oaW50IGFjLCBjaGFyICoqYXYpCiAJ
+CQljb250aW51ZTsKIAkJfQogCi0JCWlmIChlcnJubyAhPSBFTk9NRU0pIHsKKwkJaWYgKGVycm5v
+ICE9IEVOT01FTSAmJiBlcnJubyAhPSBFSU5WQUwpIHsKIAkJCXRzdF9yZXNtKFRGQUlMIHwgVEVS
+Uk5PLCAibW1hcCBpbnRvIGhpZ2ggcmVnaW9uICIKIAkJCQkgImZhaWxlZCB1bmV4cGVjdGVkbHkg
+LSBleHBlY3QgIgotCQkJCSAiZXJybm89RU5PTUVNLCBnb3QiKTsKKwkJCQkgImVycm5vPUVOT01F
+TS9FSU5WQUwsIGdvdCIpOwogCQl9IGVsc2UgewogCQkJdHN0X3Jlc20oVFBBU1MgfCBURVJSTk8s
+ICJtbWFwIGludG8gaGlnaCByZWdpb24gIgogCQkJCSAiZmFpbGVkIGFzIGV4cGVjdGVkIik7Ci0t
+IAoxLjcuMQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpTbGFzaGRvdCBUVi4gIApWaWRlbyBmb3Ig
+TmVyZHMuICBTdHVmZiB0aGF0IG1hdHRlcnMuCmh0dHA6Ly90di5zbGFzaGRvdC5vcmcvCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxp
+bmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
