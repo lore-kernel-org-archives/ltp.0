@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XMXsl-0002IS-0r
-	for ltp-list@lists.sourceforge.net; Wed, 27 Aug 2014 07:43:03 +0000
-Date: Wed, 27 Aug 2014 09:41:48 +0200
+	(envelope-from <metan@suse.de>) id 1XMCYA-0002ZC-VR
+	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 08:56:22 +0000
+Date: Tue, 26 Aug 2014 10:55:19 +0200
 From: chrubis@suse.cz
-Message-ID: <20140827074148.GA4259@rei.suse.cz>
-References: <0be2f82a131d32b119748e91a840cb038bf82960.1409046964.git.jstancek@redhat.com>
-	<20140826100642.GA27928@rei>
-	<1144259951.13045166.1409048187591.JavaMail.zimbra@redhat.com>
-	<20140826105516.GA28025@rei>
-	<1485901937.13089374.1409051869026.JavaMail.zimbra@redhat.com>
-	<20140826112410.GA3210@rei>
-	<555448176.13093369.1409052507826.JavaMail.zimbra@redhat.com>
-	<20140826135131.GA9525@rei> <20140826154257.GA27756@rei>
+Message-ID: <20140826085518.GA25390@rei.suse.cz>
+References: <d00e2fbc8b2b96403e841845b3df25104dada721.1408543124.git.jstancek@redhat.com>
+	<20140820143252.GA23782@rei>
+	<290231308.10805374.1408632310290.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20140826154257.GA27756@rei>
-Subject: Re: [LTP] [PATCH] tst_ncpus_max: use kernel_max if available
+In-Reply-To: <290231308.10805374.1408632310290.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH/RFC] profil01: don't use address of function
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,19 +30,33 @@ To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > And looking at my set of results there is last unexpected failure for
-> > read02 with /tmp on btrfs that fails to fail with O_DIRECT and unaligned
-> > buffers/lengths. But that may be a btrfs bug. I will look into this
-> > shortly and if no fix is found I would like to proceed with the release.
+> I think it was introduced in 90s, though not every architecture supported
+> it at first.
 > 
-> And I've got an answer from David Sterba that btrfs fallbacks to regular
-> I/O in this case. I will patch the testcase to take that into an account
-> on btrfs and after that the release would get a green light from me as
-> well.
+> I see it in very first release of clang 1.0 sources:
+> ./src/gcc/builtins.def:DEF_GCC_BUILTIN
+>         (BUILT_IN_RETURN_ADDRESS, "return_address", BT_FN_PTR_UNSIGNED, ATTR_NULL)
+> but I didn't try to compile it with that.
+> 
+> > 
+> > If we are in doubt, we should add a configure check and use it only when
+> > available. And probably to default to &test_profil in all cases but
+> > ppc64 BE which is known to fail.
+> 
+> I'm trying one other idea:
+> 
+> +static inline void *get_pc(void)
+> +{
+> +       extern void *profil01_label;
+> +
+> +       asm("profil01_label:");
+> +       return &profil01_label;
+> +}
 
-Hmm I seem to start a debate whether this behavior is a bug or not. I
-guess that we can wait and see if it's settled by today and if not we
-can proceed with the release leaving the testcase as it is.
+It looks like I've accidentally deleted your reply to this email, sorry.
+
+As both methods (the one with builtin and the one with asm()) seems to
+work fine, feel free to proceed with either one of them.
 
 -- 
 Cyril Hrubis
