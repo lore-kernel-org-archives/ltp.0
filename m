@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XFBjT-0005SC-Fi
-	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 00:39:03 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XFBjR-0004vX-Ky
-	for ltp-list@lists.sourceforge.net; Thu, 07 Aug 2014 00:39:03 +0000
-Message-ID: <53E2CA8D.9080406@cn.fujitsu.com>
-Date: Thu, 7 Aug 2014 08:38:37 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XMIug-0005y1-3y
+	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 15:44:02 +0000
+Date: Tue, 26 Aug 2014 17:42:57 +0200
+From: chrubis@suse.cz
+Message-ID: <20140826154257.GA27756@rei>
+References: <0be2f82a131d32b119748e91a840cb038bf82960.1409046964.git.jstancek@redhat.com>
+	<20140826100642.GA27928@rei>
+	<1144259951.13045166.1409048187591.JavaMail.zimbra@redhat.com>
+	<20140826105516.GA28025@rei>
+	<1485901937.13089374.1409051869026.JavaMail.zimbra@redhat.com>
+	<20140826112410.GA3210@rei>
+	<555448176.13093369.1409052507826.JavaMail.zimbra@redhat.com>
+	<20140826135131.GA9525@rei>
 MIME-Version: 1.0
-References: <e6cf00e941296bfd4d10edc44f1b9980a8b19489.1407313325.git.jstancek@redhat.com>
-In-Reply-To: <e6cf00e941296bfd4d10edc44f1b9980a8b19489.1407313325.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v2] madvise05: new testcase for Oops in
-	madvise_willneed
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <20140826135131.GA9525@rei>
+Subject: Re: [LTP] [PATCH] tst_ncpus_max: use kernel_max if available
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,161 +34,25 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 08/06/2014 04:31 PM, Jan Stancek wrote:
-> This is a regression test for madvise(2) system call. It tests
-> kernel for NULL ptr deref Oops fixed by:
->   commit ee53664bda169f519ce3c6a22d378f0b946c8178
->   Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->   Date:   Fri Dec 20 15:10:03 2013 +0200
->     mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Hi!
+> And looking at my set of results there is last unexpected failure for
+> read02 with /tmp on btrfs that fails to fail with O_DIRECT and unaligned
+> buffers/lengths. But that may be a btrfs bug. I will look into this
+> shortly and if no fix is found I would like to proceed with the release.
 
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+And I've got an answer from David Sterba that btrfs fallbacks to regular
+I/O in this case. I will patch the testcase to take that into an account
+on btrfs and after that the release would get a green light from me as
+well.
 
-
-> ---
-> Changes in v2:
-> 1. exclude this test from kernels < 3.9.
->    Older kernels do not support swap file prefetch,
->    which caused madvise to return EBADF. And if backing file is
->    added to mmap, reproducer no longer works.
-> 
->  runtest/syscalls                              |    1 +
->  testcases/kernel/syscalls/.gitignore          |    1 +
->  testcases/kernel/syscalls/madvise/madvise05.c |   90 +++++++++++++++++++++++++
->  3 files changed, 92 insertions(+), 0 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/madvise/madvise05.c
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 5e6e0f4..142c350 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -715,6 +715,7 @@ madvise01 madvise01
->  madvise02 madvise02
->  madvise03 madvise03
->  madvise04 madvise04
-> +madvise05 madvise05
->  
->  newuname01 newuname01
->  
-> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-> index fb2425e..fd52217 100644
-> --- a/testcases/kernel/syscalls/.gitignore
-> +++ b/testcases/kernel/syscalls/.gitignore
-> @@ -479,6 +479,7 @@
->  /madvise/madvise02
->  /madvise/madvise03
->  /madvise/madvise04
-> +/madvise/madvise05
->  /mallopt/mallopt01
->  /mbind/mbind01
->  /memcmp/memcmp01
-> diff --git a/testcases/kernel/syscalls/madvise/madvise05.c b/testcases/kernel/syscalls/madvise/madvise05.c
-> new file mode 100644
-> index 0000000..384dea7
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/madvise/madvise05.c
-> @@ -0,0 +1,90 @@
-> +/*
-> + *  Copyright (c) Linux Test Project, 2014
-> + *
-> + *  This program is free software; you can redistribute it and/or modify
-> + *  it under the terms of the GNU General Public License as published by
-> + *  the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + *  This program is distributed in the hope that it will be useful,
-> + *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *  GNU Library General Public License for more details.
-> + */
-> +/*
-> + * This is a regression test for madvise(2) system call. It tests kernel
-> + * for NULL ptr deref Oops fixed by:
-> + *   commit ee53664bda169f519ce3c6a22d378f0b946c8178
-> + *   Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> + *   Date:   Fri Dec 20 15:10:03 2013 +0200
-> + *     mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
-> + *
-> + * On buggy kernel with CONFIG_TRANSPARENT_HUGEPAGE=y CONFIG_DEBUG_LOCK_ALLOC=y
-> + * this testcase should produce Oops and/or be killed. On fixed/good kernel
-> + * this testcase runs to completion (retcode is 0)
-> + */
-> +
-> +#include <sys/mman.h>
-> +#include <errno.h>
-> +
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "safe_macros.h"
-> +
-> +#define ALLOC_SIZE (32 * 1024 * 1024)
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +char *TCID = "madvise05";
-> +int TST_TOTAL = 1;
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +	const char *msg = NULL;
-> +	void *p;
-> +
-> +	msg = parse_opts(argc, argv, NULL, NULL);
-> +	if (msg)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		p = SAFE_MMAP(cleanup, NULL, ALLOC_SIZE, PROT_READ,
-> +			MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
-> +		TEST(mprotect(p, ALLOC_SIZE, PROT_NONE));
-> +		if (TEST_RETURN == -1)
-> +			tst_brkm(TBROK | TTERRNO, cleanup, "mprotect failed");
-> +		TEST(madvise(p, ALLOC_SIZE, MADV_WILLNEED));
-> +		SAFE_MUNMAP(cleanup, p, ALLOC_SIZE);
-> +
-> +		if (TEST_RETURN == 0)
-> +			continue;
-> +
-> +		if (TEST_ERRNO == EBADF)
-> +			tst_brkm(TCONF, cleanup, "CONFIG_SWAP=n");
-> +		else
-> +			tst_brkm(TBROK | TTERRNO, cleanup, "madvise failed");
-> +	}
-> +
-> +	tst_resm(TPASS, "issue has not been reproduced");
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +	if (tst_kvercmp(3, 9, 0) < 0)
-> +		tst_brkm(TCONF, NULL, "madvise(MADV_WILLNEED) swap file "
-> +			"prefetch available only since 3.9");
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +}
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
