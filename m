@@ -1,27 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XHtKC-0006dY-8Q
-	for ltp-list@lists.sourceforge.net; Thu, 14 Aug 2014 11:36:08 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1XMDXv-00078Z-Dx
+	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 10:00:11 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XHtK7-0000Lf-CK
-	for ltp-list@lists.sourceforge.net; Thu, 14 Aug 2014 11:36:08 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7EBZu77003509
+	(Exim 4.76) id 1XMDXu-0008TW-2R
+	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 10:00:11 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7QA024S027085
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
 	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 14 Aug 2014 07:35:56 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s7EBZt2k018111
-	for <ltp-list@lists.sourceforge.net>; Thu, 14 Aug 2014 07:35:55 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 14 Aug 2014 13:35:57 +0200
-Message-Id: <02d3651008f483ee4298d802ace785c4944ce1de.1408015922.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] profil01: rewrite testcase
+	for <ltp-list@lists.sourceforge.net>; Tue, 26 Aug 2014 06:00:02 -0400
+Received: from cc-vtoe5.lab.eng.brq.redhat.com
+	(cc-vtoe5.lab.eng.brq.redhat.com [10.34.74.39])
+	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s7Q9xjB4003297
+	for <ltp-list@lists.sourceforge.net>; Tue, 26 Aug 2014 06:00:01 -0400
+From: Matus Marhefka <mmarhefk@redhat.com>
+Date: Tue, 26 Aug 2014 11:59:30 +0200
+Message-Id: <1409047170-18251-2-git-send-email-mmarhefk@redhat.com>
+In-Reply-To: <1409047170-18251-1-git-send-email-mmarhefk@redhat.com>
+References: <1409047170-18251-1-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH 2/2] containers: added mountns/mountns04.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,477 +40,169 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-The original testcase failed on ppc64le, because instead of using
-_start address it reads value stored there, which caused that
-calculated size of watched range (lotext, etext) was negative.
+* Tests an unbindable mount: unbindable mount is an unbindable
+  private mount
 
-profil() syscall is deprecated for at least decade, so this really
-excersises only glibc function. Since this test is in LTP for long
-time and is quite simple, I chose to rewrite it, so we keep coverage.
-
-Main changes are:
- 1. no arch ifdefs, test assumes that 16k buffer will cover all code
-    in test function
- 2. only single sanity test to check that profil records some data
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
 ---
- testcases/kernel/syscalls/profil/profil01.c |  441 ++++++++-------------------
- 1 files changed, 130 insertions(+), 311 deletions(-)
- rewrite testcases/kernel/syscalls/profil/profil01.c (81%)
+ runtest/containers                              |   1 +
+ testcases/kernel/containers/.gitignore          |   1 +
+ testcases/kernel/containers/mountns/mountns04.c | 120 ++++++++++++++++++++++++
+ 3 files changed, 122 insertions(+)
+ create mode 100644 testcases/kernel/containers/mountns/mountns04.c
 
-diff --git a/testcases/kernel/syscalls/profil/profil01.c b/testcases/kernel/syscalls/profil/profil01.c
-dissimilarity index 81%
-index 6d4627b..b5360d8 100644
---- a/testcases/kernel/syscalls/profil/profil01.c
-+++ b/testcases/kernel/syscalls/profil/profil01.c
-@@ -1,311 +1,130 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2002
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/* 01/02/2003	Port to LTP avenkat@us.ibm.com */
--/* 06/30/2001	Port to Linux	nsharoff@us.ibm.com */
--
--/*
-- * NAME
-- *	profil1.c  -- test profil procedure
-- *
-- * CALLS
-- *	profil(2), alarm(2), signal(2)
-- *
-- * ALGORITHM
-- *	Set up a profiling buffer, turn profiling on, set a timer for
-- *	cpu time, spin the pc and wait for timer to go off.
-- *	The profiling buffer should contain some info, highly concentrated.
-- *	We just do a "looks reasonable" check.
-- *
-- * RESTRICTIONS
-- */
--
--#ifndef _GNU_SOURCE
--#define _GNU_SOURCE 1
--#endif
--
--#include <features.h>
--#include <stdio.h>
--#include <signal.h>
--#include <limits.h>
--#include <stdlib.h>
--#include <unistd.h>
--#include <errno.h>
--#include <sys/types.h>
--#include <sys/wait.h>
--#include "test.h"
--#include "usctest.h"
--
--char *TCID = "profil01";
--
--#ifndef __UCLIBC__
--
--#ifdef __arm__
--#define ADDRESS_OFFSET 0x8000
--#else
--#define ADDRESS_OFFSET 0
--#endif
--
--#define FAILED 0
--#define PASSED 1
--
--#define P_TIME		10	/* profile for this many  seconds */
--
--extern int etext;
--
--volatile int t_flag;
--
--//char progname[]= "profil1()";
--
--/*****	LTP Port	*****/
--int local_flag = PASSED;
--int block_number;
--FILE *temp;
--int TST_TOTAL = 1;
--struct sigaction sigptr;
--
--int anyfail();
--int blenter();
--int blexit();
--void setup();
--void terror();
--void fail_exit();
--/*****	**	**	*****/
--
--u_short *pbuf;
--int stuff[11];
--int loops_completed;
--int ucount, scount;
--
--/*--------------------------------------------------------------*/
--int main(int argc, char *argv[])
--{
--	register int i;
--	int count, loc;
--	long int bsize;
--	void alrm();
--#ifdef __mips__
--#if _MIPS_SIM == _MIPS_SIM_ABI64
--	extern long int __start;
--	long int lotext = (long int)&__start;
--#else
--	extern int __start;
--	int lotext = (int)&__start;
--#endif
--#elif defined(__powerpc64__)
--	extern long int _start;
--	long int *lotextptr = (long *)&_start;
--	long int lotext = *lotextptr;
--#elif __WORDSIZE == 64
--	extern long int _start;
--	long int lotext = (long)&_start;
--#else
--	extern int _start;
--	int lotext = (int)&_start;
--#endif
--
--	bsize = (long int)&etext;
--	bsize -= lotext & ~4096;
--
--	count = loc = 0;
--
--	setup();		/* temp file is now open        */
--	/*
--	   if ((sigset(SIGALRM, alrm)) == SIG_ERR) {
--	   fprintf(temp,"signal failed. errno = %d\n",errno);
--	   fail_exit();
--	   } */
--	sigptr.sa_handler = (void (*)(int signal))alrm;
--	sigfillset(&sigptr.sa_mask);
--	sigptr.sa_flags = 0;
--	sigaddset(&sigptr.sa_mask, SIGALRM);
--	if (sigaction(SIGALRM, &sigptr, NULL) == -1) {
--		fprintf(temp, "Signal SIGALRM failed, errno = %d \n", errno);
--		fail_exit();
--	}
--
--/*--------------------------------------------------------------*/
--	blenter();
--
--	if ((pbuf =
--	     (u_short *) malloc(bsize * (sizeof(u_short)))) == (u_short *) 0) {
--		fprintf(temp, "\tcannot malloc buffer.\n");
--		fail_exit();
--	}
--
--	for (i = 0; i < bsize; i++)
--		pbuf[i] = 0;
--
--	if (profil(pbuf, bsize, ADDRESS_OFFSET, 0x10000)) {
--		fprintf(temp, "\tprofile (on) failed, errno = %d\n", errno);
--		fail_exit();
--	}
--
--	/*
--	 * Set timer.
--	 * Code will just loop in small area of text.
--	 */
--
--	alarm(P_TIME);
--
--	while (!t_flag) {
--		stuff[0] = 1;
--		stuff[1] = 1;
--		stuff[2] = 1;
--		stuff[3] = 1;
--		stuff[4] = 1;
--		stuff[5] = 1;
--		stuff[6] = 1;
--		stuff[7] = 1;
--		stuff[8] = 1;
--		stuff[9] = 1;
--		stuff[10] = 1;
--		loops_completed++;
--	}
--
--	if (profil(pbuf, bsize, ADDRESS_OFFSET, 0)) {
--		fprintf(temp, "\tprofile (off) failed, errno = %d\n", errno);
--		fail_exit();
--	}
--
--	blexit();
--/*--------------------------------------------------------------*/
--	blenter();
--
--	for (i = 0; i < bsize; i++) {
--		count += pbuf[i];
--		if (pbuf[i])
--			loc++;
--	}
--	ucount = count;
--
--	blexit();
--/*--------------------------------------------------------------*/
--	blenter();
--
--	if ((sigset(SIGCLD, SIG_IGN)) == SIG_ERR) {
--		fprintf(temp, "signal failed. errno = %d\n", errno);
--		fail_exit();
--	}
--	t_flag = 0;
--	setpgrp();
--	for (i = 0; i < bsize; i++)
--		pbuf[i] = 0;
--
--	if (profil(pbuf, bsize, ADDRESS_OFFSET, 0x10000)) {
--		fprintf(temp, "\tprofile (on) failed, errno = %d\n", errno);
--		fail_exit();
--	}
--
--	/*
--	 * Set timer. This loop will spend a lot of time in system code
--	 * (searching though proc table) that won't add to our buffer
--	 * since the pc isn't in our code.
--	 */
--
--	alarm(P_TIME);
--
--	while (!t_flag) {
--		kill(getpid(), SIGCLD);
--	}
--
--	if (profil(pbuf, bsize, ADDRESS_OFFSET, 0)) {
--		fprintf(temp, "\tprofile (off) failed, errno = %d\n", errno);
--		fail_exit();
--	}
--
--	count = 0;
--	for (i = 0; i < bsize; i++) {
--		count += pbuf[i];
--		if (pbuf[i])
--			loc++;
--	}
--	scount = count;
--
--	if (scount > ucount) {
--		fprintf(temp, "\tUnexpected profiling results.\n");
--		fprintf(temp, "\tExpected second value to be less.\n");
--		local_flag = FAILED;
--	}
--
--	blexit();
--/*--------------------------------------------------------------*/
--	anyfail();		/* THIS CALL DOES NOT RETURN - EXITS!!  */
--	tst_exit();
--}
--
--/*--------------------------------------------------------------*/
--
--void alrm(void)
--{
--	t_flag++;
--}
--
--/*****	LTP Port	*****/
--int anyfail(void)
--{
--	(local_flag == FAILED) ? tst_resm(TFAIL,
--					  "Test failed") : tst_resm(TPASS,
--								    "Test passed");
--	tst_exit();
--	return 0;
--}
--
--void setup(void)
--{
--	temp = stderr;
--}
--
--int blenter(void)
--{
--	//tst_resm(TINFO, "Enter block %d", block_number);
--	local_flag = PASSED;
--	return 0;
--}
--
--int blexit(void)
--{
--	//tst_resm(TINFO, "Exitng test");
--	(local_flag == FAILED) ? tst_resm(TFAIL,
--					  "Test failed") : tst_resm(TPASS,
--								    "Test passed");
--	return 0;
--}
--
--void terror(char *message)
--{
--	tst_resm(TBROK, "Reason: %s:%s", message, strerror(errno));
--}
--
--void fail_exit(void)
--{
--	local_flag = FAILED;
--	anyfail();
--
--}
--
--/*****	**	**	*****/
--
--#else
--int main(void)
--{
--	/* uClibc does not have profiling support */
--	tst_exit();
--}
--#endif
-+/*
-+ *   Copyright (c) International Business Machines  Corp., 2002
-+ *   Copyright (C) 2014 Linux Test Project, Inc.
+diff --git a/runtest/containers b/runtest/containers
+index 3653c9c..8e8e067 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -59,3 +59,4 @@ utstest_clone_5 utstest clone 5
+ mountns01 mountns01
+ mountns02 mountns02
+ mountns03 mountns03
++mountns04 mountns04
+diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+index 5b96cb9..4a98373 100644
+--- a/testcases/kernel/containers/.gitignore
++++ b/testcases/kernel/containers/.gitignore
+@@ -2,3 +2,4 @@
+ mountns/mountns01
+ mountns/mountns02
+ mountns/mountns03
++mountns/mountns04
+diff --git a/testcases/kernel/containers/mountns/mountns04.c b/testcases/kernel/containers/mountns/mountns04.c
+new file mode 100644
+index 0000000..470953e
+--- /dev/null
++++ b/testcases/kernel/containers/mountns/mountns04.c
+@@ -0,0 +1,120 @@
++/* Copyright (c) 2014 Red Hat, Inc.
 + *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
 + *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
-+ */
-+/*
-+ * ALGORITHM
-+ *	Set up a profiling buffer, turn profiling on, set a timer for
-+ *	cpu time, spin the pc and wait for timer to go off.
-+ *	The profiling buffer should contain some info, highly concentrated.
-+ *	We just do a "looks reasonable" check.
-+ */
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ ***********************************************************************
++ * File: mountns04.c
++ *
++ * Tests an unbindable mount: unbindable mount is an unbindable
++ * private mount.
++ * Description:
++ * 1. Creates directories "A", "B" and files "A/A", "B/B"
++ * 2. Unshares mount namespace and makes it private (so mounts/umounts
++ *    have no effect on a real system)
++ * 3. Bind mounts directory "A" to "A" and "B" to "B"
++ * 4. Makes directory "B" shared and directory "A" unbindable
++ * 5. Tries to bind mount unbindable "A" to "B":
++ *    - if it fails, test passes
++ *    - if it passes, test fails
++ ***********************************************************************/
 +
++#define _GNU_SOURCE
++#include <sys/wait.h>
++#include <sys/mount.h>
 +#include <stdio.h>
-+#include <signal.h>
-+#include <unistd.h>
 +#include <errno.h>
-+#include <sys/types.h>
 +#include "test.h"
-+#include "safe_macros.h"
 +#include "usctest.h"
++#include "libclone.h"
++#include "safe_macros.h"
++#include "safe_file_ops.h"
++#include "mountns_helper.h"
 +
-+#define PROFIL_TIME 5
 +
-+/* should be large enough to hold data for test_profil() .text
-+ * on x86_64 this is ~600 bytes, so 16k should enough for all arches */
-+#define PROFIL_BUFLEN (16*1024)
-+#define PROFIL_BUFSZ (16*1024*sizeof(short))
++#define DIRA "A"
++#define DIRB "B"
++char *TCID	= "mountns04";
++int TST_TOTAL	= 1;
 +
-+char *TCID = "profil01";
-+int TST_TOTAL = 1;
 +
-+#ifndef __UCLIBC__
-+
-+static volatile sig_atomic_t profil_done;
-+
-+static void alrm_handler(int sig)
++static void cleanup(void)
 +{
-+	(void) sig;
-+	profil_done = 1;
++	umount(DIRA);
++	umount(DIRB);
++	tst_rmdir();
 +}
 +
-+static void test_profil(void)
++static void setup(void)
 +{
-+	unsigned short buf[PROFIL_BUFSZ] = { 0 };
-+	size_t offset = (size_t) &test_profil, count = 0;
-+	int ret, i, data[8];
++	tst_require_root(NULL);
++	check_newns();	/* from mountns_helper.h */
 +
-+	/* make data depend on runtime value, so gcc can't make assumptions */
-+	memset(data, getpid(), sizeof(data));
++	/* checks if following mountflags are defined */
++	#if !defined(MS_SHARED) || !defined(MS_PRIVATE) \
++	    || !defined(MS_REC) || !defined(MS_UNBINDABLE)
++		tst_brkm(TCONF, NULL, "needed mountflags are not defined");
++	#endif
 +
-+	/* reset for test looping */
-+	profil_done = 0;
-+
-+	/* profil_count in glibc calculates offset as
-+	 *   i = (pc - pc_offset - (void *) 0) / 2
-+	 *   i = i * pc_scale / 65536
-+	 * set scale to 2*65536 to have 1:1 mapping for $pc */
-+	ret = profil(buf, PROFIL_BUFSZ, offset, 2*65536);
-+	if (ret)
-+		tst_brkm(TBROK, NULL, "profil returned: %d\n", ret);
-+
-+	signal(SIGALRM, alrm_handler);
-+	alarm(PROFIL_TIME);
-+
-+	while (!profil_done) {
-+		if (data[0])
-+			data[0] = -data[7];
-+		else
-+			data[1] = data[0] / 2;
-+		if (data[2])
-+			data[2] = data[1] * 2;
-+		else
-+			data[3] = data[2] + data[0];
-+		if (data[4])
-+			data[4] = data[3] - data[1];
-+		else
-+			data[5] = data[4] * data[2];
-+		if (data[6])
-+			data[6] = data[5] + data[3];
-+		else
-+			data[7] = data[6] - data[4];
-+	}
-+
-+	for (i = 0; i < PROFIL_BUFLEN; i++)
-+		if (buf[i]) {
-+			tst_resm(TINFO, "buf[0x%04x]=%d", i, buf[i]);
-+			count += buf[i];
-+		}
-+
-+	if (count > 0) {
-+		tst_resm(TPASS, "profil recorded some data");
-+	} else {
-+		/* don't let gcc optimize data away, use it */
-+		tst_resm(TINFO, "data[7]: %d", data[7]);
-+		tst_resm(TFAIL, "profil failed to record anything");
-+	}
++	tst_tmpdir();
++	SAFE_MKDIR(cleanup, DIRA, 0777);
++	SAFE_MKDIR(cleanup, DIRB, 0777);
++	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
++	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
 +}
 +
-+int main(int ac, char *av[])
++static void test(void)
 +{
-+	int lc;
++	/* unshares the mount ns */
++	if (unshare(CLONE_NEWNS) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
++	/* makes sure mounts/umounts have no effect on a real system */
++	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
++
++	/* bind mounts DIRA to itself */
++	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
++	/* bind mounts DIRB to itself */
++	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
++
++	/* makes mount DIRA unbindable */
++	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_UNBINDABLE, NULL);
++	/* makes mount DIRB shared */
++	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
++
++	/* tries to bind mount unbindable DIRA to DIRB which should fail */
++	if (mount(DIRA, DIRB, "none", MS_BIND, NULL) == -1)
++		tst_resm(TPASS, "unbindable mount passed");
++	else {
++		umount(DIRB);
++		tst_resm(TFAIL, "unbindable mount faled");
++	}
++
++	umount(DIRA);
++	umount(DIRB);
++}
++
++int main(int argc, char *argv[])
++{
 +	const char *msg;
++	int lc;
 +
-+	msg = parse_opts(ac, av, NULL, NULL);
++	msg = parse_opts(argc, argv, NULL, NULL);
 +	if (msg != NULL)
 +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
 +
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test_profil();
++	setup();
 +
++	for (lc = 0; TEST_LOOPING(lc); lc++)
++		test();
++
++	cleanup();
 +	tst_exit();
 +}
-+
-+#else
-+int main(void)
-+{
-+	/* uClibc does not have profiling support */
-+	tst_brkm(TCONF, NULL, "profil not available on uClibc");
-+}
-+#endif /* __UCLIBC__ */
 -- 
-1.7.1
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
