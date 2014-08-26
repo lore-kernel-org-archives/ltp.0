@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XHwEr-00032f-1u
-	for ltp-list@lists.sourceforge.net; Thu, 14 Aug 2014 14:42:49 +0000
-Date: Thu, 14 Aug 2014 16:41:52 +0200
-From: chrubis@suse.cz
-Message-ID: <20140814144152.GA29561@rei.suse.de>
-References: <618b542aea7f9084ee9a725572a35cbd2b8e4142.1406030190.git.jstancek@redhat.com>
-	<20140814135421.GA25594@rei.suse.de>
-	<1070857162.7225595.1408026186525.JavaMail.zimbra@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xzhou@redhat.com>) id 1XMAl7-0003Ln-9U
+	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 07:01:37 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XMAl5-0002R3-LK
+	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 07:01:37 +0000
+Date: Tue, 26 Aug 2014 03:01:26 -0400 (EDT)
+From: Xiong Zhou <xzhou@redhat.com>
+Message-ID: <496745505.24280864.1409036486630.JavaMail.zimbra@redhat.com>
+In-Reply-To: <53FAF335.7090506@oracle.com>
+References: <1291208815.23057199.1408691123381.JavaMail.zimbra@redhat.com>
+	<53FAF335.7090506@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1070857162.7225595.1408026186525.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] syslog-lib: add SystemLogSocketName to
-	rsyslog.conf
+Subject: Re: [LTP] [PATCH v4 3/3] fcntl16: Skip fcntl16 test block2 and
+ block3 on NFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,49 +29,127 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > I've read this twice and I'm still unsure what happens.
-> > 
-> > My guess is that on new enough RedHat all logging goes through systemd
-> > and the rsyslog configuration contains explicit option to create
-> > /dev/log for compatibility reasons? But if that is the problem why is
-> > the /dev/log missing after the configuration was restored and rsyslog
-> > restarted?
-> 
-> /dev/log is created by systemd-journald. Distro rsyslog config is setup
-> to use /run/systemd/journal/syslog. When rsyslog is stopped/restarted
-> it deletes whatever socket was configured.
-> 
-> This testcase doesn't configure any log socket explicitly in rsyslog
-> config. So rsyslog will use default, which is "/dev/log". Now
-> when you stop/restart rsyslog it deletes /dev/log and all applications
-> which use syslog(2) now fail to log anything.
-> 
-> I think the way it works is that journald reads message from /dev/log
-> and for compatibility reasons it forwards it to /run/systemd/journal/syslog
-> where rsyslog can read and process it.
+According to nfs(5), NLM supports advisory file locks only. So skip
+fcntl16 test block 1 if NFS.
 
-Ah, now it's clear to me. And the reason why this works in SUSE without
-any configuration is likely autodetection patch for rsyslog added as a
-result of this bug:
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+---
+ testcases/kernel/syscalls/fcntl/fcntl16.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
 
-https://bugzilla.novell.com/show_bug.cgi?id=747871
-
-Anyway the patch only tries to preserve the configuration so this should
-not break anything, acked, but please consider rewriting the commit
-message a bit so it's a bit clearer what exactly happens, i.e. describe
-a bit better that rsyslog deletes the node and it's not recreated after
-the config is restored and rsyslog started again because the system
-configuration overrides the default value.
-
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
+index 44b6a80..5ba508c 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl16.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
+@@ -51,6 +51,8 @@
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ 
++#include "tst_fs_type.h"
++
+ #define SKIPVAL 0x0f00
+ //#define       SKIP    SKIPVAL, 0, 0L, 0L, IGNORED
+ #define SKIP 0,0,0L,0L,0
+@@ -62,6 +64,7 @@
+ #define	NOBLOCK		2	/* immediate success */
+ #define	WILLBLOCK	3	/* blocks, succeeds, parent unlocks records */
+ #define	TIME_OUT	10
++int NO_NFS = 1;			/* Test on NFS or not */
+ 
+ typedef struct {
+ 	struct flock parent_a;
+@@ -412,6 +415,10 @@ void setup(void)
+ 
+ 	tst_tmpdir();
+ 
++	/* On NFS or not */
++	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
++		NO_NFS = 0;
++
+ 	/* set up temp filename */
+ 	sprintf(tmpname, "fcntl4.%d", parent);
+ 
+@@ -689,13 +696,17 @@ int main(int ac, char **av)
+ 		 * locking
+ 		 */
+ 		tst_resm(TINFO, "Entering block 2");
+-		if (run_test(O_CREAT | O_RDWR | O_TRUNC, S_ISGID |
++		if (NO_NFS && run_test(O_CREAT | O_RDWR | O_TRUNC, S_ISGID |
+ 			     S_IRUSR | S_IWUSR, 0, 11)) {
+ 			tst_resm(TINFO, "Test case 2: with mandatory record "
+ 				 "locking FAILED");
+ 		} else {
+-			tst_resm(TINFO, "Test case 2: with mandatory record "
+-				 "locking PASSED");
++			if (NO_NFS)
++				tst_resm(TINFO, "Test case 2: with mandatory"
++					 " record locking PASSED");
++			else
++				tst_resm(TCONF, "Test case 2: NFS does not"
++					 " support mandatory locking");
+ 		}
+ 		tst_resm(TINFO, "Exiting block 2");
+ 
+@@ -705,13 +716,17 @@ int main(int ac, char **av)
+ 		 * and no delay
+ 		 */
+ 		tst_resm(TINFO, "Entering block 3");
+-		if (run_test(O_CREAT | O_RDWR | O_TRUNC | O_NDELAY,
++		if (NO_NFS && run_test(O_CREAT | O_RDWR | O_TRUNC | O_NDELAY,
+ 			     S_ISGID | S_IRUSR | S_IWUSR, 0, 11)) {
+ 			tst_resm(TINFO, "Test case 3: mandatory locking with "
+ 				 "NODELAY FAILED");
+ 		} else {
+-			tst_resm(TINFO, "Test case 3: mandatory locking with "
+-				 "NODELAY PASSED");
++			if (NO_NFS)
++				tst_resm(TINFO, "Test case 3: mandatory"
++					 " locking with NODELAY PASSED");
++			else
++				tst_resm(TCONF, "Test case 3: NFS does not"
++					 " support mandatory locking");
+ 		}
+ 		tst_resm(TINFO, "Exiting block 3");
+ 	}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
+----- Original Message -----
+> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+> To: "Xiong Zhou" <xzhou@redhat.com>, ltp-list@lists.sourceforge.net
+> Sent: Monday, August 25, 2014 4:26:29 PM
+> Subject: Re: [LTP][PATCH v4 3/3] fcntl16: Skip fcntl16 test block2 and block3 on NFS
+> 
+> 
+> 
+> On 08/22/2014 11:05 AM, Xiong Zhou wrote:
+> >
+> > According to nfs(5), NLM supports advisory file locks only. So skip
+> > fcntl16 test block2 and block3 if NFS.
+> >
+> > Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+> > ---
+> 
+> The entire series looks good for me.
+> 
+> Just found removed spaces below, but there is no need to resend the
+> patch/series because it can be fixed at commit time. :)
+> 
+> Thanks.
+> 
+> Reviewed-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> 
+> 
 
 ------------------------------------------------------------------------------
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
