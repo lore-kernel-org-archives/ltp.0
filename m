@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XEyKU-0000zy-Qs
-	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 10:20:22 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XEyKT-0003Is-S0
-	for ltp-list@lists.sourceforge.net; Wed, 06 Aug 2014 10:20:22 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s76AKC2u032264
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 Aug 2014 18:20:12 +0800
-Message-ID: <1407320367.2223.16.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 6 Aug 2014 18:19:27 +0800
-In-Reply-To: <1404116297.3148.7.camel@G08JYZSD130126>
-References: <1404116297.3148.7.camel@G08JYZSD130126>
+	(envelope-from <metan@suse.de>) id 1XMXsl-0002IS-0r
+	for ltp-list@lists.sourceforge.net; Wed, 27 Aug 2014 07:43:03 +0000
+Date: Wed, 27 Aug 2014 09:41:48 +0200
+From: chrubis@suse.cz
+Message-ID: <20140827074148.GA4259@rei.suse.cz>
+References: <0be2f82a131d32b119748e91a840cb038bf82960.1409046964.git.jstancek@redhat.com>
+	<20140826100642.GA27928@rei>
+	<1144259951.13045166.1409048187591.JavaMail.zimbra@redhat.com>
+	<20140826105516.GA28025@rei>
+	<1485901937.13089374.1409051869026.JavaMail.zimbra@redhat.com>
+	<20140826112410.GA3210@rei>
+	<555448176.13093369.1409052507826.JavaMail.zimbra@redhat.com>
+	<20140826135131.GA9525@rei> <20140826154257.GA27756@rei>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] waitid/waitid02.c: Add new ECHILD errno test
+Content-Disposition: inline
+In-Reply-To: <20140826154257.GA27756@rei>
+Subject: Re: [LTP] [PATCH] tst_ncpus_max: use kernel_max if available
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,71 +31,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Ping. :)
+Hi!
+> > And looking at my set of results there is last unexpected failure for
+> > read02 with /tmp on btrfs that fails to fail with O_DIRECT and unaligned
+> > buffers/lengths. But that may be a btrfs bug. I will look into this
+> > shortly and if no fix is found I would like to proceed with the release.
+> 
+> And I've got an answer from David Sterba that btrfs fallbacks to regular
+> I/O in this case. I will patch the testcase to take that into an account
+> on btrfs and after that the release would get a green light from me as
+> well.
 
-Best regards,
-Zeng
-On Mon, 2014-06-30 at 16:18 +0800, Zeng Linggang wrote:
-> * Add new ECHILD errno test for waitid(2)
-> 	idtype and id (waitid()) is not a child of the calling process.
-> 
-> * Cleanup: remove an useless tst_exit()
-> 
-> * Add tst_count = 0
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/waitid/waitid02.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/waitid/waitid02.c b/testcases/kernel/syscalls/waitid/waitid02.c
-> index 3806655..6259fa3 100644
-> --- a/testcases/kernel/syscalls/waitid/waitid02.c
-> +++ b/testcases/kernel/syscalls/waitid/waitid02.c
-> @@ -130,6 +130,16 @@ struct testcase_t tdat[] = {
->  		.setup = setup6,
->  		.cleanup = cleanup6
->  	},
-> +	{
-> +		.msg = "P_PID, WEXITED not a child of the calling process",
-> +		.idtype = P_PID,
-> +		.id = 1,
-> +		.options = WEXITED,
-> +		.exp_ret = -1,
-> +		.exp_errno = ECHILD,
-> +		.setup = setup2,
-> +		.cleanup = cleanup2
-> +	},
->  
->  };
->  
-> @@ -281,13 +291,12 @@ int main(int ac, char **av)
->  	const char *msg;
->  
->  	msg = parse_opts(ac, av, NULL, NULL);
-> -	if (msg != NULL) {
-> +	if (msg != NULL)
->  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> -		tst_exit();
-> -	}
->  
->  	setup();
->  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-> +		tst_count = 0;
->  		for (testno = 0; testno < TST_TOTAL; testno++)
->  			test_waitid(&tdat[testno]);
->  	}
+Hmm I seem to start a debate whether this behavior is a bug or not. I
+guess that we can wait and see if it's settled by today and if not we
+can proceed with the release leaving the testcase as it is.
 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
