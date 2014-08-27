@@ -1,26 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XLuwf-0003Bb-Lt
-	for ltp-list@lists.sourceforge.net; Mon, 25 Aug 2014 14:08:29 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1XMfDi-00038f-3a
+	for ltp-list@lists.sourceforge.net; Wed, 27 Aug 2014 15:33:10 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XLuwd-0004I4-QR
-	for ltp-list@lists.sourceforge.net; Mon, 25 Aug 2014 14:08:29 +0000
+	(Exim 4.76) id 1XMfDg-0005QZ-EE
+	for ltp-list@lists.sourceforge.net; Wed, 27 Aug 2014 15:33:10 +0000
 Received: from int-mx10.intmail.prod.int.phx2.redhat.com
 	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7PE8KFK007210
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7RFX1RE017814
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
 	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 25 Aug 2014 10:08:20 -0400
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Aug 2014 11:33:01 -0400
+Received: from cc-vtoe10.lab.eng.brq.redhat.com
+	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s7RFX0cg016245
+	for <ltp-list@lists.sourceforge.net>; Wed, 27 Aug 2014 11:33:01 -0400
 From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Mon, 25 Aug 2014 16:08:08 +0200
-Message-Id: <1408975688-7728-1-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1408099965-15748-2-git-send-email-mmarhefk@redhat.com>
-References: <1408099965-15748-2-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH 2/3 v2] containers: added mountns dir and
-	mountns/mountns01.c
+Date: Wed, 27 Aug 2014 17:32:40 +0200
+Message-Id: <1409153560-10176-1-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH] containers: added netns/netns_interfaces.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,73 +38,59 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-* tests shared mount: shared mount can be replicated to as many
-  mountpoints and all the replicas continue to be exactly same.
+* Tests that a separate network namespace can only communicate over
+  the devices it sees
 
 Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
 ---
- runtest/containers                                 |   2 +
- testcases/kernel/containers/.gitignore             |   1 +
- testcases/kernel/containers/mountns/Makefile       |  23 ++++
- testcases/kernel/containers/mountns/mountns01.c    | 152 +++++++++++++++++++++
- .../kernel/containers/mountns/mountns_helper.h     |  39 ++++++
- 5 files changed, 217 insertions(+)
- create mode 100644 testcases/kernel/containers/mountns/Makefile
- create mode 100644 testcases/kernel/containers/mountns/mountns01.c
- create mode 100644 testcases/kernel/containers/mountns/mountns_helper.h
+ runtest/containers                                 |   1 +
+ testcases/kernel/containers/netns/.gitignore       |   1 +
+ testcases/kernel/containers/netns/Makefile         |   3 +-
+ .../kernel/containers/netns/netns_interfaces.c     | 205 +++++++++++++++++++++
+ 4 files changed, 209 insertions(+), 1 deletion(-)
+ create mode 100644 testcases/kernel/containers/netns/netns_interfaces.c
 
 diff --git a/runtest/containers b/runtest/containers
-index 558d7eb..f298c7e 100644
+index 7d01a44..01ed4cc 100644
 --- a/runtest/containers
 +++ b/runtest/containers
-@@ -55,3 +55,5 @@ utstest_clone_2 utstest clone 2
- utstest_clone_3 utstest clone 3
- utstest_clone_4 utstest clone 4
- utstest_clone_5 utstest clone 5
-+
-+mountns01 mountns01
-diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index f6f5b14..254d1b9 100644
---- a/testcases/kernel/containers/.gitignore
-+++ b/testcases/kernel/containers/.gitignore
-@@ -1 +1,2 @@
- /check_for_unshare
-+mountns/mountns01
-diff --git a/testcases/kernel/containers/mountns/Makefile b/testcases/kernel/containers/mountns/Makefile
+@@ -29,6 +29,7 @@ netns_crtchild_delchild netns_crtchild_delchild
+ netns_par_chld_ipv6 netns_par_chld_ipv6
+ netns_par_chld_ftp netns_par_chld_ftp.sh
+ netns_netlink netns_netlink
++netns_interfaces netns_interfaces
+ 
+ shmnstest_none shmnstest none
+ shmnstest_clone shmnstest clone
+diff --git a/testcases/kernel/containers/netns/.gitignore b/testcases/kernel/containers/netns/.gitignore
+index 65f96be..a134677 100644
+--- a/testcases/kernel/containers/netns/.gitignore
++++ b/testcases/kernel/containers/netns/.gitignore
+@@ -6,3 +6,4 @@
+ /netns_sysfsview
+ /netns_two_children_ns
+ /netns_netlink
++/netns_interfaces
+diff --git a/testcases/kernel/containers/netns/Makefile b/testcases/kernel/containers/netns/Makefile
+index eea0d88..cc8827f 100644
+--- a/testcases/kernel/containers/netns/Makefile
++++ b/testcases/kernel/containers/netns/Makefile
+@@ -31,7 +31,8 @@ LDLIBS			+= -lclone
+ MAKE_TARGETS		:= netns_create_container netns_crtchild \
+ 			   netns_crtchild_delchild netns_par_chld_ftp \
+ 			   netns_par_chld_ipv6 netns_sysfsview \
+-			   netns_two_children_ns netns_netlink
++			   netns_two_children_ns netns_netlink \
++			   netns_interfaces
+ 
+ $(MAKE_TARGETS): %: common.o %.o
+ 
+diff --git a/testcases/kernel/containers/netns/netns_interfaces.c b/testcases/kernel/containers/netns/netns_interfaces.c
 new file mode 100644
-index 0000000..f9b6b99
+index 0000000..b4b7834
 --- /dev/null
-+++ b/testcases/kernel/containers/mountns/Makefile
-@@ -0,0 +1,23 @@
-+# Copyright (c) 2014 Red Hat, Inc.
-+#
-+# This program is free software: you can redistribute it and/or modify
-+# it under the terms of version 2 the GNU General Public License as
-+# published by the Free Software Foundation.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+##############################################################################
-+
-+top_srcdir              ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(abs_srcdir)/../Makefile.inc
-+
-+LDLIBS                  := -lclone -lltp
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/containers/mountns/mountns01.c b/testcases/kernel/containers/mountns/mountns01.c
-new file mode 100644
-index 0000000..5932300
---- /dev/null
-+++ b/testcases/kernel/containers/mountns/mountns01.c
-@@ -0,0 +1,152 @@
++++ b/testcases/kernel/containers/netns/netns_interfaces.c
+@@ -0,0 +1,205 @@
 +/* Copyright (c) 2014 Red Hat, Inc.
 + *
 + * This program is free software: you can redistribute it and/or modify
@@ -117,125 +105,177 @@ index 0000000..5932300
 + * You should have received a copy of the GNU General Public License
 + * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 + ***********************************************************************
-+ * File: mountns01.c
++ * File: netns_interfaces.c
 + *
-+ * Tests a shared mount: shared mount can be replicated to as many
-+ * mountpoints and all the replicas continue to be exactly same.
-+ * Description:
-+ * 1. Creates directories "A", "B" and files "A/A", "B/B"
-+ * 2. Unshares mount namespace and makes it private (so mounts/umounts
-+ *    have no effect on a real system)
-+ * 3. Bind mounts directory "A" to "A" and "B" to "B"
-+ * 4. Makes both directories ("A" and "B") shared
-+ * 5. Clones a new child process with CLONE_NEWNS flag - the new child
-+ *    then bind mounts directory "B" to "A"
-+ * 6. Parent then checks if directory "A" contains the file "B"
-+ *    (changes in child should be visible in parent as mounts were
-+ *    shared):
-+ *    - if it does, test passes
-+ *    - if it doesn't, test fails
-+ ***********************************************************************/
++ * Tests that a separate network namespace can only communicate over
++ * the devices it sees. There are three test cases:
++ * 1. communication over paired veth (virtual ethernet) devices
++ *    from two different network namespaces (each namespace has
++ *    one device) should work
++ * 2. communication over the lo (localhost) device in a separate
++ *    network namespace should work
++ * 3. communication over a device which a separate network namespace
++ *    does not see should not work
++ */
 +
 +#define _GNU_SOURCE
 +#include <sys/wait.h>
-+#include <sys/mount.h>
 +#include <stdio.h>
++#include <stdlib.h>
 +#include <errno.h>
-+#include "test.h"
 +#include "usctest.h"
-+#include "libclone.h"
++#include "test.h"
 +#include "safe_macros.h"
-+#include "safe_file_ops.h"
-+#include "mountns_helper.h"
++#include "netns_helper.h"
 +
 +
-+#define DIRA "A"
-+#define DIRB "B"
-+char *TCID	= "mountns01";
-+int TST_TOTAL	= 1;
++/* by convention a named network namespace is an object
++ * at /var/run/netns/NAME that can be opened. (man 8 ip-netns) */
++#define NETNS     "/var/run/netns"
++char *TCID	= "netns_sendintf";
++int TST_TOTAL	= 3;
++int pipefd[2];
 +
 +
 +static void cleanup(void)
 +{
-+	umount(DIRA);
-+	umount(DIRA);
-+	umount(DIRB);
-+	tst_rmdir();
++	close(pipefd[0]);
++	close(pipefd[1]);
++
++	/* removes veth0 device (which also removes paired veth1 device) */
++	if (WEXITSTATUS(system("ip link delete veth0")))
++		perror("system");
++	/* removes the network namespace myns */
++	if (WEXITSTATUS(system("ip netns del myns")))
++		perror("system");
 +}
 +
 +static void setup(void)
 +{
 +	tst_require_root(NULL);
-+	check_newns();	/* from mountns_helper.h */
-+
-+	/* checks if MS_SHARED/MS_PRIVATE/MS_REC mountflags are defined */
-+	#if !defined(MS_SHARED) || !defined(MS_PRIVATE) || !defined(MS_SHARED)
-+		tst_brkm(TCONF, NULL, "needed mountflags are not defined");
-+	#endif
-+
-+	tst_tmpdir();
-+	SAFE_MKDIR(cleanup, DIRA, 0777);
-+	SAFE_MKDIR(cleanup, DIRB, 0777);
-+	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
-+	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
++	check_netns();
 +}
 +
-+int child_func(void *arg)
++int child_func(void)
 +{
-+	/* bind mounts DIRB to DIRA making contents of DIRB visible
-+	 * in DIRA */
-+	if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1) {
-+		perror("mount");
++	int status, fd;
++	char c;
++
++	fd = open(NETNS"/myns", O_RDONLY);
++	if (fd == -1) {
++		perror("open");
 +		return 1;
 +	}
++
++	/* associates child with the namespace referred by fd (myns) */
++	if (setns(fd, 0) == -1) {
++		perror("setns");
++		return 1;
++	}
++
++	/* setup for veth1 device */
++	if (WEXITSTATUS(system("ip address add 192.168.0.2/24 dev veth1"))) {
++		perror("system");
++		return 1;
++	}
++	if (WEXITSTATUS(system("ip link set dev veth1 up"))) {
++		perror("system");
++		return 1;
++	}
++
++	/* waits for parent to confirm that veth0 device setup is done */
++	if (read(pipefd[0], &c, 1) == -1) {
++		perror("read");
++		return 1;
++	}
++
++	/* ping veth0 address through veth1 device */
++	if (WEXITSTATUS(
++	    system("ping -q -c 2 -I veth1 192.168.0.1 &>/dev/null")))
++		return 1;
++
 +	return 0;
 +}
 +
 +static void test(void)
 +{
-+	int status;
++	pid_t pid;
++	int status, ret = 0;
 +
-+	/* unshares the mount ns */
-+	if (unshare(CLONE_NEWNS) == -1)
++	/* creates a pipe for synchronization between parent and child */
++	SAFE_PIPE(cleanup, pipefd);
++
++	/* unshares a network and a mount namespace */
++	if (unshare(CLONE_NEWNET|CLONE_NEWNS) == -1)
 +		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-+	/* makes sure parent mounts/umounts have no effect on a real system */
-+	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
-+
-+	/* bind mounts DIRA to itself */
-+	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
-+	/* bind mounts DIRB to itself */
-+	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
-+
-+	/* makes mount DIRA shared */
-+	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_SHARED, NULL);
-+	/* makes mount DIRB shared */
-+	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
 +
 +
-+	if (do_clone_tests(CLONE_NEWNS, child_func, NULL, NULL, NULL) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
++	/* TEST CASE #1 */
++	/* creates a pair of virtual ethernet devices */
++	if (WEXITSTATUS(system("ip link add veth0 type veth peer name veth1")))
++		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
++	/* creates a new network namespace "myns" (man 8 ip-netns) */
++	if (WEXITSTATUS(system("ip netns add myns")))
++		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
++	/* adds device veth1 to myns namespace */
++	if (WEXITSTATUS(system("ip link set veth1 netns myns")))
++		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
 +
-+	SAFE_WAIT(cleanup, &status);
 +
-+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-+		tst_brkm(TBROK, cleanup, "mount (in child) failed");
-+
-+	if (WIFSIGNALED(status)) {
-+		tst_resm(TFAIL, "child was killed with signal %s",
-+			 tst_strsig(WTERMSIG(status)));
-+		return;
++	pid = fork();
++	if (pid < 0) {  /* error */
++		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
++	}
++	if (pid == 0) { /* child */
++		_exit(child_func());
 +	}
 +
-+	/* as child shared mounts with parent, parent should also
-+	 * see file "B" in DIRA; following checks if DIRA contains file "B" */
-+	if (access(DIRA"/B", F_OK) != -1)
-+		tst_resm(TPASS, "share mount passed");
-+	else
-+		tst_resm(TFAIL, "share mount failed");
++	/* parent */
++	/* setup for veth0 device */
++	if (WEXITSTATUS(system("ip address add 192.168.0.1/24 dev veth0")))
++		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
++	if (WEXITSTATUS(system("ip link set dev veth0 up")))
++		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
 +
-+	umount(DIRA);
-+	umount(DIRA);
-+	umount(DIRB);
++	/* allow child to continue */
++	SAFE_WRITE(cleanup, 0, pipefd[1], "0", 1);
++
++	/* ping veth1 address through veth0 device */
++	ret = system("ping -q -c 2 -I veth0 192.168.0.2 &>/dev/null");
++	if (WEXITSTATUS(ret))
++		tst_resm(TFAIL, "communication over veth devices fail");
++
++	SAFE_WAITPID(cleanup, pid, &status, 0);
++	if (WIFEXITED(status) && WEXITSTATUS(status)) {
++		if (WEXITSTATUS(ret) == 0) {
++			tst_resm(TFAIL, "communication over veth devices fail");
++			ret = status;
++		}
++	}
++
++	if (WEXITSTATUS(ret) == 0)
++		tst_resm(TPASS, "communication over veth devices pass");
++
++
++	/* TEST CASE #2 */
++	/* enable lo device */
++	if (WEXITSTATUS(system("ip link set dev lo up")))
++		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
++	/* ping localhost */
++	if (WEXITSTATUS(system("ping -q -c 2 -I lo 127.0.0.1 &>/dev/null")))
++		tst_resm(TFAIL, "communication over lo device fail");
++	else
++		tst_resm(TPASS, "communication over lo device pass");
++
++
++	/* TEST CASE #3 */
++	/* ping over a device which this separate network namespace
++	 * does not see - this should not work */
++	if (WEXITSTATUS(
++	    system("ping -q -c 2 -I veth1 192.168.0.1 &>/dev/null")))
++		tst_resm(TPASS, "communication over non-existent device pass");
++	else
++		tst_resm(TFAIL, "communication over non-existent device fail");
 +}
 +
 +int main(int argc, char *argv[])
@@ -249,56 +289,12 @@ index 0000000..5932300
 +
 +	setup();
 +
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		test();
++		cleanup();
++	}
 +
-+	cleanup();
 +	tst_exit();
-+}
-diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
-new file mode 100644
-index 0000000..e305028
---- /dev/null
-+++ b/testcases/kernel/containers/mountns/mountns_helper.h
-@@ -0,0 +1,39 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include "libclone.h"
-+#include "test.h"
-+#include "safe_macros.h"
-+
-+static int dummy_child(void *v)
-+{
-+	(void) v;
-+	return 0;
-+}
-+
-+static int check_newns(void)
-+{
-+	int pid, status;
-+
-+	if (tst_kvercmp(2, 4, 19) < 0)
-+		tst_brkm(TCONF, NULL, "CLONE_NEWNS not supported");
-+
-+	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWNS, dummy_child, NULL);
-+	if (pid == -1)
-+		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWNS not supported");
-+	SAFE_WAIT(NULL, &status);
-+
-+	return 0;
 +}
 -- 
 1.8.3.1
