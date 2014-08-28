@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XMCyL-0003eq-1S
-	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 09:23:25 +0000
-Date: Tue, 26 Aug 2014 11:22:21 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XMv7f-00059T-Lv
+	for ltp-list@lists.sourceforge.net; Thu, 28 Aug 2014 08:31:59 +0000
+Date: Thu, 28 Aug 2014 10:31:50 +0200
 From: chrubis@suse.cz
-Message-ID: <20140826092221.GA25567@rei.suse.cz>
-References: <d00e2fbc8b2b96403e841845b3df25104dada721.1408543124.git.jstancek@redhat.com>
-	<20140820143252.GA23782@rei>
-	<290231308.10805374.1408632310290.JavaMail.zimbra@redhat.com>
-	<20140826085518.GA25390@rei.suse.cz>
-	<1624956800.12985322.1409044708265.JavaMail.zimbra@redhat.com>
+Message-ID: <20140828083150.GA4946@rei.suse.cz>
+References: <1409131918.14582.1.camel@G08JYZSD130126>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1624956800.12985322.1409044708265.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH/RFC] profil01: don't use address of function
+In-Reply-To: <1409131918.14582.1.camel@G08JYZSD130126>
+Subject: Re: [LTP] [PATCH] fs/ext4-new-features: Add absolute path for the
+	test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,18 +25,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > It looks like I've accidentally deleted your reply to this email, sorry.
-> > 
-> > As both methods (the one with builtin and the one with asm()) seems to
-> > work fine, feel free to proceed with either one of them.
-> 
-> Pushed. (I went with the gcc builtin)
+> After commit 33a4adff42a0f4f8310774bb689f42912505b51c
+> tests need absolute path. If not given it would return TBROK.
+> Add an absolute path before running fallocate0${i} in ext4-new-features.
 
-Tested that it fixed the failure I've been seeing on ia64.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
