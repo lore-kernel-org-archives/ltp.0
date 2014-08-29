@@ -1,25 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zlang@redhat.com>) id 1XJvkA-0001sD-BJ
-	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 02:35:22 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zlang@redhat.com>) id 1XNGEp-00061h-Om
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 07:04:47 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XJvk8-0001wL-3P
-	for ltp-list@lists.sourceforge.net; Wed, 20 Aug 2014 02:35:22 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7K2ZDTd010036
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XNGEo-0000W4-0C
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 07:04:47 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7T74doF030949
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 Aug 2014 22:35:13 -0400
-Message-ID: <53F4095E.2070205@redhat.com>
-Date: Wed, 20 Aug 2014 10:35:10 +0800
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 03:04:39 -0400
+Received: from dhcp-65-110.nay.redhat.com (dhcp-12-112.nay.redhat.com
+	[10.66.12.112])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s7T74b3O005461
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 03:04:38 -0400
+Message-ID: <54002604.6000007@redhat.com>
+Date: Fri, 29 Aug 2014 15:04:36 +0800
 From: Zorro Lang <zlang@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] [PATCH-V2]fs/fsstress: prevent orphan and zombie
- processes to be left
+Subject: [LTP] [PATCH-V2]fs/fsstress: prevent orphan and zombie processes to
+ be left
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,7 +50,7 @@ Hi,
 
 Ping ...
 
-I have sent my patch for a long time, but no response until now. If
+I have sent this patch for very long time, but no response until now. If
 there are any problems you don't want to merge it, please tell me.
 
 (Re-send this patch again now. )
