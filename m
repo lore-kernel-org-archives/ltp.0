@@ -1,30 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XIF98-0003hW-6f
-	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 10:54:10 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1XNLEd-0006lL-Ai
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 12:24:55 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XIF97-0005U1-2n
-	for ltp-list@lists.sourceforge.net; Fri, 15 Aug 2014 10:54:10 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7FAs24p016943
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XNLEb-0001rx-KH
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 12:24:55 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7TCOjrY015815
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 06:54:02 -0400
-Received: from cc-vtoe5.lab.eng.brq.redhat.com
-	(cc-vtoe5.lab.eng.brq.redhat.com [10.34.74.39])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s7FArMYa012634
-	for <ltp-list@lists.sourceforge.net>; Fri, 15 Aug 2014 06:54:02 -0400
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 08:24:46 -0400
+Received: from cc-vtoe10.lab.eng.brq.redhat.com
+	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s7TCOiPV028773
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 08:24:45 -0400
 From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Fri, 15 Aug 2014 12:52:45 +0200
-Message-Id: <1408099965-15748-3-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
-References: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH 3/3] containers: added mountns/mountns02.c
+Date: Fri, 29 Aug 2014 14:24:30 +0200
+Message-Id: <1409315070-11748-1-git-send-email-mmarhefk@redhat.com>
+In-Reply-To: <1408115809-18653-1-git-send-email-mmarhefk@redhat.com>
+References: <1408115809-18653-1-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH 3/3 v4] containers: added mountns/mountns02.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,27 +46,34 @@ To: ltp-list@lists.sourceforge.net
 Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
 ---
  runtest/containers                              |   1 +
- testcases/kernel/containers/mountns/mountns02.c | 151 ++++++++++++++++++++++++
- 2 files changed, 152 insertions(+)
+ testcases/kernel/containers/.gitignore          |   1 +
+ testcases/kernel/containers/mountns/mountns02.c | 204 ++++++++++++++++++++++++
+ 3 files changed, 206 insertions(+)
  create mode 100644 testcases/kernel/containers/mountns/mountns02.c
 
 diff --git a/runtest/containers b/runtest/containers
-index bf50ae4..ab16bc0 100644
+index f298c7e..56977c0 100644
 --- a/runtest/containers
 +++ b/runtest/containers
-@@ -15,5 +15,6 @@ pidns30 pidns30
- pidns31 pidns31
+@@ -57,3 +57,4 @@ utstest_clone_4 utstest clone 4
+ utstest_clone_5 utstest clone 5
  
  mountns01 mountns01
 +mountns02 mountns02
- 
- Containers	container_test.sh
+diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+index 254d1b9..f175296 100644
+--- a/testcases/kernel/containers/.gitignore
++++ b/testcases/kernel/containers/.gitignore
+@@ -1,2 +1,3 @@
+ /check_for_unshare
+ mountns/mountns01
++mountns/mountns02
 diff --git a/testcases/kernel/containers/mountns/mountns02.c b/testcases/kernel/containers/mountns/mountns02.c
 new file mode 100644
-index 0000000..8bd0100
+index 0000000..bbc2b5b
 --- /dev/null
 +++ b/testcases/kernel/containers/mountns/mountns02.c
-@@ -0,0 +1,151 @@
+@@ -0,0 +1,204 @@
 +/* Copyright (c) 2014 Red Hat, Inc.
 + *
 + * This program is free software: you can redistribute it and/or modify
@@ -93,18 +100,22 @@ index 0000000..8bd0100
 + * 4. Makes both directories ("A" and "B") shared
 + * 5. Clones a new child process with CLONE_NEWNS flag - the new child
 + *    then mounts directory "A" as private and bind mounts directory
-+ *    "B" to "A"
-+ * 6. Parent then checks if directory "A" doesn't contain the file "B"
++ *    "B" to "A" (now child must wait for parent to make check - wait
++ *    is needed because mount ns in child stops exist as soon as child
++ *    terminates)
++ * 6. Parent checks if directory "A" doesn't contain the file "B"
 + *    (changes in child should not be visible in parent as mount in child
 + *    was private):
 + *    - if it doesn't, test passes
 + *    - if it does, test fails
++ * 7. Parent allows child to terminate
 + ***********************************************************************/
 +
 +#define _GNU_SOURCE
 +#include <sys/wait.h>
 +#include <sys/mount.h>
 +#include <stdio.h>
++#include <unistd.h>
 +#include <errno.h>
 +#include "test.h"
 +#include "usctest.h"
@@ -118,11 +129,18 @@ index 0000000..8bd0100
 +#define DIRB "B"
 +char *TCID	= "mountns02";
 +int TST_TOTAL	= 1;
++int pipefd1[2];
++int pipefd2[2];
 +
++/* checks if following mountflags are defined */
++#if defined(MS_SHARED) && defined(MS_PRIVATE) && defined(MS_REC)
 +
 +static void cleanup(void)
 +{
-+	umount(DIRA);
++	close(pipefd1[0]);
++	close(pipefd1[1]);
++	close(pipefd2[0]);
++	close(pipefd2[1]);
 +	umount(DIRA);
 +	umount(DIRB);
 +	tst_rmdir();
@@ -141,25 +159,41 @@ index 0000000..8bd0100
 +
 +int child_func(void *arg)
 +{
++	char buf;
++
 +	/* makes DIRA private */
 +	if (mount("none", DIRA, "none", MS_PRIVATE, NULL) == -1) {
 +		perror("mount");
++		write(pipefd1[1], "1", 1);
 +		return 1;
 +	}
 +
 +	/* bind mounts DIRB to DIRA making contents of DIRB visible
 +	 * in DIRA (should apply only for child as DIRA is private) */
-+        if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1) {
++	if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1) {
 +		perror("mount");
++		write(pipefd1[1], "1", 1);
 +		return 1;
 +	}
 +
++	/* tells parent to stop waiting and continue */
++	write(pipefd1[1], "0", 1);
++
++	/* waits for parent approval to terminate */
++	read(pipefd2[0], &buf, 1);
++
++	umount(DIRA);
 +	return 0;
 +}
 +
 +static void test(void)
 +{
-+	int status;
++	int status, pass;
++	char buf;
++
++	/* creates a pipe for synchronization between parent and child */
++	SAFE_PIPE(cleanup, pipefd1);
++	SAFE_PIPE(cleanup, pipefd2);
 +
 +	/* unshares the mount ns */
 +	if (unshare(CLONE_NEWNS) == -1)
@@ -181,10 +215,25 @@ index 0000000..8bd0100
 +	if (do_clone_tests(CLONE_NEWNS, child_func, NULL, NULL, NULL) == -1)
 +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
 +
++	/* waits for child bind mount */
++	SAFE_READ(cleanup, 0, pipefd1[0], &buf, 1);
++
++	/* as child made private mount from DIRA, parent should not
++	 * see file "B" in DIRA; following checks if DIRA doesn't contain
++	 * file "B" */
++	if (access(DIRA"/B", F_OK) == -1)
++		pass = 1;
++	else
++		pass = 0;
++
++	/* tells child to terminate (if no error occured in child) */
++	SAFE_WRITE(cleanup, 0, pipefd2[1], "0", 1);
++
++
 +	SAFE_WAIT(cleanup, &status);
 +
 +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-+		tst_brkm(TBROK, cleanup, "mount (in child) failed");
++		tst_brkm(TBROK, cleanup, "child failed");
 +
 +	if (WIFSIGNALED(status)) {
 +		tst_resm(TFAIL, "child was killed with signal %s",
@@ -192,10 +241,14 @@ index 0000000..8bd0100
 +		return;
 +	}
 +
-+	/* as child made private mount from DIRA, parent should not
-+	 * see file "B" in DIRA; following checks if DIRA doesn't contain
-+	 * file "B" */
-+	if (access(DIRA"/B", F_OK) == -1)
++	close(pipefd1[0]);
++	close(pipefd1[1]);
++	close(pipefd2[0]);
++	close(pipefd2[1]);
++	SAFE_UMOUNT(cleanup, DIRA);
++	SAFE_UMOUNT(cleanup, DIRB);
++
++	if (pass)
 +		tst_resm(TPASS, "private mount passed");
 +	else
 +		tst_resm(TFAIL, "private mount failed");
@@ -218,11 +271,21 @@ index 0000000..8bd0100
 +	cleanup();
 +	tst_exit();
 +}
++
++#else /* MS_SHARED && MS_PRIVATE && MS_REC */
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "needed mountflags are not defined");
++}
++#endif
 -- 
 1.8.3.1
 
 
 ------------------------------------------------------------------------------
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
