@@ -1,30 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XNLEd-0006lL-Ai
-	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 12:24:55 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1XNLDV-0000Oj-Fn
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 12:23:45 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XNLEb-0001rx-KH
-	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 12:24:55 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7TCOjrY015815
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XNLDT-000328-Ou
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 12:23:45 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7TCNbrA011857
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
 	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 08:24:46 -0400
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 08:23:37 -0400
 Received: from cc-vtoe10.lab.eng.brq.redhat.com
 	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
-	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s7TCOiPV028773
-	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 08:24:45 -0400
+	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s7TCNa3T012998
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 08:23:37 -0400
 From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Fri, 29 Aug 2014 14:24:30 +0200
-Message-Id: <1409315070-11748-1-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1408115809-18653-1-git-send-email-mmarhefk@redhat.com>
-References: <1408115809-18653-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH 3/3 v4] containers: added mountns/mountns02.c
+Date: Fri, 29 Aug 2014 14:23:24 +0200
+Message-Id: <1409315004-11702-1-git-send-email-mmarhefk@redhat.com>
+In-Reply-To: <1408099965-15748-2-git-send-email-mmarhefk@redhat.com>
+References: <1408099965-15748-2-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH 2/3 v3] containers: added mountns dir and
+	mountns/mountns01.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,40 +41,73 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-* Tests a private mount: private mount does not forward or receive
-  propagation.
+* tests shared mount: shared mount can be replicated to as many
+  mountpoints and all the replicas continue to be exactly same.
 
 Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
 ---
- runtest/containers                              |   1 +
- testcases/kernel/containers/.gitignore          |   1 +
- testcases/kernel/containers/mountns/mountns02.c | 204 ++++++++++++++++++++++++
- 3 files changed, 206 insertions(+)
- create mode 100644 testcases/kernel/containers/mountns/mountns02.c
+ runtest/containers                                 |   2 +
+ testcases/kernel/containers/.gitignore             |   1 +
+ testcases/kernel/containers/mountns/Makefile       |  23 +++
+ testcases/kernel/containers/mountns/mountns01.c    | 156 +++++++++++++++++++++
+ .../kernel/containers/mountns/mountns_helper.h     |  39 ++++++
+ 5 files changed, 221 insertions(+)
+ create mode 100644 testcases/kernel/containers/mountns/Makefile
+ create mode 100644 testcases/kernel/containers/mountns/mountns01.c
+ create mode 100644 testcases/kernel/containers/mountns/mountns_helper.h
 
 diff --git a/runtest/containers b/runtest/containers
-index f298c7e..56977c0 100644
+index 558d7eb..f298c7e 100644
 --- a/runtest/containers
 +++ b/runtest/containers
-@@ -57,3 +57,4 @@ utstest_clone_4 utstest clone 4
+@@ -55,3 +55,5 @@ utstest_clone_2 utstest clone 2
+ utstest_clone_3 utstest clone 3
+ utstest_clone_4 utstest clone 4
  utstest_clone_5 utstest clone 5
- 
- mountns01 mountns01
-+mountns02 mountns02
++
++mountns01 mountns01
 diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index 254d1b9..f175296 100644
+index f6f5b14..254d1b9 100644
 --- a/testcases/kernel/containers/.gitignore
 +++ b/testcases/kernel/containers/.gitignore
-@@ -1,2 +1,3 @@
+@@ -1 +1,2 @@
  /check_for_unshare
- mountns/mountns01
-+mountns/mountns02
-diff --git a/testcases/kernel/containers/mountns/mountns02.c b/testcases/kernel/containers/mountns/mountns02.c
++mountns/mountns01
+diff --git a/testcases/kernel/containers/mountns/Makefile b/testcases/kernel/containers/mountns/Makefile
 new file mode 100644
-index 0000000..bbc2b5b
+index 0000000..f9b6b99
 --- /dev/null
-+++ b/testcases/kernel/containers/mountns/mountns02.c
-@@ -0,0 +1,204 @@
++++ b/testcases/kernel/containers/mountns/Makefile
+@@ -0,0 +1,23 @@
++# Copyright (c) 2014 Red Hat, Inc.
++#
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of version 2 the GNU General Public License as
++# published by the Free Software Foundation.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <http://www.gnu.org/licenses/>.
++##############################################################################
++
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(abs_srcdir)/../Makefile.inc
++
++LDLIBS                  := -lclone -lltp
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/containers/mountns/mountns01.c b/testcases/kernel/containers/mountns/mountns01.c
+new file mode 100644
+index 0000000..93600f4
+--- /dev/null
++++ b/testcases/kernel/containers/mountns/mountns01.c
+@@ -0,0 +1,156 @@
 +/* Copyright (c) 2014 Red Hat, Inc.
 + *
 + * This program is free software: you can redistribute it and/or modify
@@ -88,10 +122,10 @@ index 0000000..bbc2b5b
 + * You should have received a copy of the GNU General Public License
 + * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 + ***********************************************************************
-+ * File: mountns02.c
++ * File: mountns01.c
 + *
-+ * Tests a private mount: private mount does not forward or receive
-+ * propagation.
++ * Tests a shared mount: shared mount can be replicated to as many
++ * mountpoints and all the replicas continue to be exactly same.
 + * Description:
 + * 1. Creates directories "A", "B" and files "A/A", "B/B"
 + * 2. Unshares mount namespace and makes it private (so mounts/umounts
@@ -99,23 +133,18 @@ index 0000000..bbc2b5b
 + * 3. Bind mounts directory "A" to "A" and "B" to "B"
 + * 4. Makes both directories ("A" and "B") shared
 + * 5. Clones a new child process with CLONE_NEWNS flag - the new child
-+ *    then mounts directory "A" as private and bind mounts directory
-+ *    "B" to "A" (now child must wait for parent to make check - wait
-+ *    is needed because mount ns in child stops exist as soon as child
-+ *    terminates)
-+ * 6. Parent checks if directory "A" doesn't contain the file "B"
-+ *    (changes in child should not be visible in parent as mount in child
-+ *    was private):
-+ *    - if it doesn't, test passes
-+ *    - if it does, test fails
-+ * 7. Parent allows child to terminate
++ *    then bind mounts directory "B" to "A"
++ * 6. Parent then checks if directory "A" contains the file "B"
++ *    (changes in child should be visible in parent as mounts were
++ *    shared):
++ *    - if it does, test passes
++ *    - if it doesn't, test fails
 + ***********************************************************************/
 +
 +#define _GNU_SOURCE
 +#include <sys/wait.h>
 +#include <sys/mount.h>
 +#include <stdio.h>
-+#include <unistd.h>
 +#include <errno.h>
 +#include "test.h"
 +#include "usctest.h"
@@ -127,20 +156,16 @@ index 0000000..bbc2b5b
 +
 +#define DIRA "A"
 +#define DIRB "B"
-+char *TCID	= "mountns02";
++char *TCID	= "mountns01";
 +int TST_TOTAL	= 1;
-+int pipefd1[2];
-+int pipefd2[2];
++
 +
 +/* checks if following mountflags are defined */
 +#if defined(MS_SHARED) && defined(MS_PRIVATE) && defined(MS_REC)
 +
 +static void cleanup(void)
 +{
-+	close(pipefd1[0]);
-+	close(pipefd1[1]);
-+	close(pipefd2[0]);
-+	close(pipefd2[1]);
++	umount(DIRA);
 +	umount(DIRA);
 +	umount(DIRB);
 +	tst_rmdir();
@@ -159,41 +184,18 @@ index 0000000..bbc2b5b
 +
 +int child_func(void *arg)
 +{
-+	char buf;
-+
-+	/* makes DIRA private */
-+	if (mount("none", DIRA, "none", MS_PRIVATE, NULL) == -1) {
-+		perror("mount");
-+		write(pipefd1[1], "1", 1);
-+		return 1;
-+	}
-+
 +	/* bind mounts DIRB to DIRA making contents of DIRB visible
-+	 * in DIRA (should apply only for child as DIRA is private) */
++	 * in DIRA */
 +	if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1) {
 +		perror("mount");
-+		write(pipefd1[1], "1", 1);
 +		return 1;
 +	}
-+
-+	/* tells parent to stop waiting and continue */
-+	write(pipefd1[1], "0", 1);
-+
-+	/* waits for parent approval to terminate */
-+	read(pipefd2[0], &buf, 1);
-+
-+	umount(DIRA);
 +	return 0;
 +}
 +
 +static void test(void)
 +{
-+	int status, pass;
-+	char buf;
-+
-+	/* creates a pipe for synchronization between parent and child */
-+	SAFE_PIPE(cleanup, pipefd1);
-+	SAFE_PIPE(cleanup, pipefd2);
++	int status;
 +
 +	/* unshares the mount ns */
 +	if (unshare(CLONE_NEWNS) == -1)
@@ -215,25 +217,10 @@ index 0000000..bbc2b5b
 +	if (do_clone_tests(CLONE_NEWNS, child_func, NULL, NULL, NULL) == -1)
 +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
 +
-+	/* waits for child bind mount */
-+	SAFE_READ(cleanup, 0, pipefd1[0], &buf, 1);
-+
-+	/* as child made private mount from DIRA, parent should not
-+	 * see file "B" in DIRA; following checks if DIRA doesn't contain
-+	 * file "B" */
-+	if (access(DIRA"/B", F_OK) == -1)
-+		pass = 1;
-+	else
-+		pass = 0;
-+
-+	/* tells child to terminate (if no error occured in child) */
-+	SAFE_WRITE(cleanup, 0, pipefd2[1], "0", 1);
-+
-+
 +	SAFE_WAIT(cleanup, &status);
 +
 +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-+		tst_brkm(TBROK, cleanup, "child failed");
++		tst_brkm(TBROK, cleanup, "mount (in child) failed");
 +
 +	if (WIFSIGNALED(status)) {
 +		tst_resm(TFAIL, "child was killed with signal %s",
@@ -241,17 +228,16 @@ index 0000000..bbc2b5b
 +		return;
 +	}
 +
-+	close(pipefd1[0]);
-+	close(pipefd1[1]);
-+	close(pipefd2[0]);
-+	close(pipefd2[1]);
++	/* as child shared mounts with parent, parent should also
++	 * see file "B" in DIRA; following checks if DIRA contains file "B" */
++	if (access(DIRA"/B", F_OK) != -1)
++		tst_resm(TPASS, "share mount passed");
++	else
++		tst_resm(TFAIL, "share mount failed");
++
++	SAFE_UMOUNT(cleanup, DIRA);
 +	SAFE_UMOUNT(cleanup, DIRA);
 +	SAFE_UMOUNT(cleanup, DIRB);
-+
-+	if (pass)
-+		tst_resm(TPASS, "private mount passed");
-+	else
-+		tst_resm(TFAIL, "private mount failed");
 +}
 +
 +int main(int argc, char *argv[])
@@ -278,6 +264,51 @@ index 0000000..bbc2b5b
 +	tst_brkm(TCONF, NULL, "needed mountflags are not defined");
 +}
 +#endif
+diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
+new file mode 100644
+index 0000000..e305028
+--- /dev/null
++++ b/testcases/kernel/containers/mountns/mountns_helper.h
+@@ -0,0 +1,39 @@
++/* Copyright (c) 2014 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include "libclone.h"
++#include "test.h"
++#include "safe_macros.h"
++
++static int dummy_child(void *v)
++{
++	(void) v;
++	return 0;
++}
++
++static int check_newns(void)
++{
++	int pid, status;
++
++	if (tst_kvercmp(2, 4, 19) < 0)
++		tst_brkm(TCONF, NULL, "CLONE_NEWNS not supported");
++
++	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWNS, dummy_child, NULL);
++	if (pid == -1)
++		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWNS not supported");
++	SAFE_WAIT(NULL, &status);
++
++	return 0;
++}
 -- 
 1.8.3.1
 
