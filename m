@@ -1,19 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XMEQF-00033i-NH
-	for ltp-list@lists.sourceforge.net; Tue, 26 Aug 2014 10:56:19 +0000
-Date: Tue, 26 Aug 2014 12:55:16 +0200
-From: chrubis@suse.cz
-Message-ID: <20140826105516.GA28025@rei>
-References: <0be2f82a131d32b119748e91a840cb038bf82960.1409046964.git.jstancek@redhat.com>
-	<20140826100642.GA27928@rei>
-	<1144259951.13045166.1409048187591.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1144259951.13045166.1409048187591.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] tst_ncpus_max: use kernel_max if available
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XNK9a-0006JV-Gz
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 11:15:38 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XNK9Y-0004z4-72
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 11:15:38 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7TBFSmO014312
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 07:15:29 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s7TBFR9L028206
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 07:15:28 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 29 Aug 2014 13:15:26 +0200
+Message-Id: <fa6666c6075baadeaaa53f7cf8536ab65daf8b51.1409310860.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] ustat: check for ENOSYS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,34 +31,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> These two are still open / under discussion:
->   [PATCH] sbrk02: check for ret code in setup()
->   [PATCH] mmap15: don't fail if mmap returns EINVAL
-> 
-> mmap15 looks like old issue, so it could wait after release.
+ustat(2) says:
+  ustat() is deprecated and has only been provided for compatibility.
+  All new programs should use statfs(2) instead.
 
-Agreed.
+Detect if ustat() is deprecated by checking that errno is ENOSYS,
+and end with TCONF in that case.
 
-> sbrk02 can loop indefinitely in setup(), which is worse IMO.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/ustat/ustat01.c |    4 ++++
+ testcases/kernel/syscalls/ustat/ustat02.c |    5 +++++
+ 2 files changed, 9 insertions(+), 0 deletions(-)
 
-Ok.
-
-So the issue there is that sbrk() does not fail in setup() because
-the increment overflows.
-
-Does it work if we stop increasing the increment before that happen? Or
-does sbrk() fails to fail there?
-
+diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
+index 7d9c636..f8d8734 100644
+--- a/testcases/kernel/syscalls/ustat/ustat01.c
++++ b/testcases/kernel/syscalls/ustat/ustat01.c
+@@ -55,6 +55,10 @@ int main(int argc, char *argv[])
+ 			TEST(ustat(dev_num, &ubuf));
+ 
+ 			if (TEST_RETURN == -1) {
++				if (TEST_ERRNO == ENOSYS)
++					tst_brkm(TCONF, cleanup,
++						"ustat() not supported");
++
+ 				TEST_ERROR_LOG(TEST_ERRNO);
+ 				tst_resm(TFAIL, "ustat(2) failed and set"
+ 					 "the errno to %d : %s",
+diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
+index 90dad14..ad51860 100644
+--- a/testcases/kernel/syscalls/ustat/ustat02.c
++++ b/testcases/kernel/syscalls/ustat/ustat02.c
+@@ -97,6 +97,7 @@ int main(int ac, char **av)
+ static void setup(void)
+ {
+ 	struct stat buf;
++	static dev_t dev_num;
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+@@ -107,6 +108,10 @@ static void setup(void)
+ 	/* Find a valid device number */
+ 	SAFE_STAT(cleanup, "/", &buf);
+ 
++	TEST(ustat(dev_num, &ubuf));
++	if (TEST_RETURN == -1 && TEST_ERRNO == ENOSYS)
++		tst_brkm(TCONF, cleanup, "ustat() not supported");
++
+ 	root_dev = buf.st_dev;
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Slashdot TV.  
