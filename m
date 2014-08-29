@@ -1,18 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XGr9t-00040u-Jk
-	for ltp-list@lists.sourceforge.net; Mon, 11 Aug 2014 15:05:13 +0000
-Date: Mon, 11 Aug 2014 17:04:14 +0200
-From: chrubis@suse.cz
-Message-ID: <20140811150413.GC2022@rei.suse.cz>
-References: <20140520144246.GA30023@rei.suse.cz>
-	<1402996098-12697-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zlang@redhat.com>) id 1XNGG0-0005de-EB
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 07:06:00 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XNGFz-0001Ff-9Y
+	for ltp-list@lists.sourceforge.net; Fri, 29 Aug 2014 07:06:00 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s7T75q1v025403
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 03:05:52 -0400
+Received: from dhcp-65-110.nay.redhat.com (dhcp-12-112.nay.redhat.com
+	[10.66.12.112])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s7T75o2W006177
+	for <ltp-list@lists.sourceforge.net>; Fri, 29 Aug 2014 03:05:51 -0400
+Message-ID: <5400264D.5040500@redhat.com>
+Date: Fri, 29 Aug 2014 15:05:49 +0800
+From: Zorro Lang <zlang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1402996098-12697-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH V2 3/3] ltp_rt_sigaction.h: added SPARC support
+Subject: [LTP] [PATCH] fs/fsstress: modify compile warning about fsstress.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,44 +36,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-I've started to prepare for release and tried to build LTP on as much
-arch/distro combination I could, for ia64 the rt_sigaction fails with:
+when compile kernel/fs/fsstress/fsstress.c, some warning always be printed.
+Because there is a new field 'isxfs' be added in opdesc_t struct,
+but some lines of opdesc_t ops[] forget to init this field.
 
-In file included from rt_sigaction01.c:42:
-[  349s] ../../../../include/lapi/rt_sigaction.h: In function
-'ltp_rt_sigaction':
-[  349s] ../../../../include/lapi/rt_sigaction.h:206: error: 'struct
-sigaction' has no member named 'sa_restorer'
-[  349s] rt_sigaction01.c: In function 'set_handler':
-[  349s] rt_sigaction01.c:73: warning: unused parameter 'sig_to_mask'
-[  349s] make[4]: *** [rt_sigaction01] Error 1
-[  349s] make[4]: Leaving directory
-`/usr/src/packages/BUILD/ltp-full-git/testcases/kernel/syscalls/rt_sigaction'
-[  349s] make[3]: *** [all] Error 2
-[  349s] make[3]: Leaving directory
-`/usr/src/packages/BUILD/ltp-full-git/testcases/kernel/syscalls'
-[  349s] make[2]: *** [all] Error 2
-[  349s] make[2]: Leaving directory
-`/usr/src/packages/BUILD/ltp-full-git/testcases/kernel'
-[  349s] make[1]: *** [all] Error 2
-[  349s] make[1]: Leaving directory
-`/usr/src/packages/BUILD/ltp-full-git/testcases'
-[  349s] make: *** [testcases-all] Error 2
-[  349s] error: Bad exit status from /var/tmp/rpm-tmp.20244 (%build)
+Signed-off-by: Zorro Lang <zlang@redhat.com>
+---
 
-Looking into glibc they have #ifdef HAVE_SA_RESTORER around code that
-accesses the field. I guess that we have to add corresponding configure
-check and ifdef too...
+Hi,
 
+Ping ...
+
+I have sent my two patch for a long time, but no response until now. If
+there are any problems you don't want to merge it, please tell me.
+
+(Re-send this patch again now. )
+
+Thank you,
+Zorro Lang
+
+ testcases/kernel/fs/fsstress/fsstress.c | 40
+++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c
+b/testcases/kernel/fs/fsstress/fsstress.c
+index 4a8a1c2..1783783 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -164,35 +164,35 @@ opdesc_t ops[] = {
+ 	{OP_BULKSTAT, "bulkstat", bulkstat_f, 1, 0, 1},
+ 	{OP_BULKSTAT1, "bulkstat1", bulkstat1_f, 1, 0, 1},
+ #endif
+-	{OP_CHOWN, "chown", chown_f, 3, 1},
+-	{OP_CREAT, "creat", creat_f, 4, 1},
+-	{OP_DREAD, "dread", dread_f, 4, 0},
+-	{OP_DWRITE, "dwrite", dwrite_f, 4, 1},
+-	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1},
++	{OP_CHOWN, "chown", chown_f, 3, 1, 0},
++	{OP_CREAT, "creat", creat_f, 4, 1, 0},
++	{OP_DREAD, "dread", dread_f, 4, 0, 0},
++	{OP_DWRITE, "dwrite", dwrite_f, 4, 1, 0},
++	{OP_FDATASYNC, "fdatasync", fdatasync_f, 1, 1, 0},
+ #ifndef NO_XFS
+ 	{OP_FREESP, "freesp", freesp_f, 1, 1, 1},
+ #endif
+-	{OP_FSYNC, "fsync", fsync_f, 1, 1},
+-	{OP_GETDENTS, "getdents", getdents_f, 1, 0},
+-	{OP_LINK, "link", link_f, 1, 1},
+-	{OP_MKDIR, "mkdir", mkdir_f, 2, 1},
+-	{OP_MKNOD, "mknod", mknod_f, 2, 1},
+-	{OP_READ, "read", read_f, 1, 0},
+-	{OP_READLINK, "readlink", readlink_f, 1, 0},
+-	{OP_RENAME, "rename", rename_f, 2, 1},
++	{OP_FSYNC, "fsync", fsync_f, 1, 1, 0},
++	{OP_GETDENTS, "getdents", getdents_f, 1, 0, 0},
++	{OP_LINK, "link", link_f, 1, 1, 0},
++	{OP_MKDIR, "mkdir", mkdir_f, 2, 1, 0},
++	{OP_MKNOD, "mknod", mknod_f, 2, 1, 0},
++	{OP_READ, "read", read_f, 1, 0, 0},
++	{OP_READLINK, "readlink", readlink_f, 1, 0, 0},
++	{OP_RENAME, "rename", rename_f, 2, 1, 0},
+ #ifndef NO_XFS
+ 	{OP_RESVSP, "resvsp", resvsp_f, 1, 1, 1},
+ #endif
+-	{OP_RMDIR, "rmdir", rmdir_f, 1, 1},
+-	{OP_STAT, "stat", stat_f, 1, 0},
+-	{OP_SYMLINK, "symlink", symlink_f, 2, 1},
+-	{OP_SYNC, "sync", sync_f, 1, 0},
+-	{OP_TRUNCATE, "truncate", truncate_f, 2, 1},
+-	{OP_UNLINK, "unlink", unlink_f, 1, 1},
++	{OP_RMDIR, "rmdir", rmdir_f, 1, 1, 0},
++	{OP_STAT, "stat", stat_f, 1, 0, 0},
++	{OP_SYMLINK, "symlink", symlink_f, 2, 1, 0},
++	{OP_SYNC, "sync", sync_f, 1, 0, 0},
++	{OP_TRUNCATE, "truncate", truncate_f, 2, 1, 0},
++	{OP_UNLINK, "unlink", unlink_f, 1, 1, 0},
+ #ifndef NO_XFS
+ 	{OP_UNRESVSP, "unresvsp", unresvsp_f, 1, 1, 1},
+ #endif
+-	{OP_WRITE, "write", write_f, 4, 1},
++	{OP_WRITE, "write", write_f, 4, 1, 0},
+ }, *ops_end;
+  flist_t flist[FT_nft] = {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
