@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XEg04-0005zN-Bo
-	for ltp-list@lists.sourceforge.net; Tue, 05 Aug 2014 14:46:04 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XEg03-0000ed-1y
-	for ltp-list@lists.sourceforge.net; Tue, 05 Aug 2014 14:46:04 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s75EjuOD000471
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 5 Aug 2014 10:45:56 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue,  5 Aug 2014 16:45:53 +0200
-Message-Id: <c0760953d5915e17e43a5e899bad7f5d0a7fde80.1407249825.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] madvise05: new testcase for Oops in madvise_willneed
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XO2Rn-0000X8-Sn
+	for ltp-list@lists.sourceforge.net; Sun, 31 Aug 2014 10:33:23 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XO2Rm-0007ut-6a
+	for ltp-list@lists.sourceforge.net; Sun, 31 Aug 2014 10:33:23 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s7VAXDhJ013034
+	for <ltp-list@lists.sourceforge.net>; Sun, 31 Aug 2014 18:33:13 +0800
+Message-ID: <1409481091.6575.4.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Sun, 31 Aug 2014 18:31:31 +0800
+In-Reply-To: <1409480940.6575.1.camel@G08JYZSD130126>
+References: <1409480940.6575.1.camel@G08JYZSD130126>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH 4/4] multicast/mc_opts: Some cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,148 +28,254 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-This is a regression test for madvise(2) system call. It tests
-kernel for NULL ptr deref Oops fixed by:
-  commit ee53664bda169f519ce3c6a22d378f0b946c8178
-  Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-  Date:   Fri Dec 20 15:10:03 2013 +0200
-    mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
+* Delete trace_logic that is used to debug.
+* Use test.sh script and use tst_* instead of end_testcase.
+* Delete some unuseful comments.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+* Fix old-style function definition.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                              |    1 +
- testcases/kernel/syscalls/.gitignore          |    1 +
- testcases/kernel/syscalls/madvise/madvise05.c |   81 +++++++++++++++++++++++++
- 3 files changed, 83 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/madvise/madvise05.c
+ testcases/network/multicast/mc_opts/mc_opts  | 161 ++++++---------------------
+ testcases/network/multicast/mc_opts/opts.c   |   7 +-
+ testcases/network/multicast/mc_opts/opts_e.c |   6 +-
+ 3 files changed, 40 insertions(+), 134 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 5e6e0f4..142c350 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -715,6 +715,7 @@ madvise01 madvise01
- madvise02 madvise02
- madvise03 madvise03
- madvise04 madvise04
-+madvise05 madvise05
+diff --git a/testcases/network/multicast/mc_opts/mc_opts b/testcases/network/multicast/mc_opts/mc_opts
+index f40112c..5433deb 100755
+--- a/testcases/network/multicast/mc_opts/mc_opts
++++ b/testcases/network/multicast/mc_opts/mc_opts
+@@ -35,142 +35,55 @@ unset LIBPATH
+ #      -Ported
+ #
+ #******************************************************************************
+-#Uncomment the line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
  
- newuname01 newuname01
+-if [ -z $LTPBIN ]; then
+-  PATH=../../../bin/:./:$PATH
+-fi
+ TC=mc_opts
+-TCtmp=${TCtmp:-$LTPROOT/bin/$TC$$}
+-CLEANUP=${CLEANUP:-ON}
+ EXECUTABLES=${EXECUTABLES:-"opts opts_e"}
+-NUMLOOPS=${NUMLOOPS:-10}
+ IPADDR=${IPADDR:-$(mc_gethost `hostname`| grep address |awk '{ print $2 }')}
  
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index fb2425e..fd52217 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -479,6 +479,7 @@
- /madvise/madvise02
- /madvise/madvise03
- /madvise/madvise04
-+/madvise/madvise05
- /mallopt/mallopt01
- /mbind/mbind01
- /memcmp/memcmp01
-diff --git a/testcases/kernel/syscalls/madvise/madvise05.c b/testcases/kernel/syscalls/madvise/madvise05.c
-new file mode 100644
-index 0000000..043eb4d
---- /dev/null
-+++ b/testcases/kernel/syscalls/madvise/madvise05.c
-@@ -0,0 +1,81 @@
-+/*
-+ *  Copyright (c) Linux Test Project, 2014
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ *  This program is distributed in the hope that it will be useful,
-+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *  GNU Library General Public License for more details.
-+ */
-+/*
-+ * This is a regression test for madvise(2) system call. It tests kernel
-+ * for NULL ptr deref Oops fixed by:
-+ *   commit ee53664bda169f519ce3c6a22d378f0b946c8178
-+ *   Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-+ *   Date:   Fri Dec 20 15:10:03 2013 +0200
-+ *     mm: Fix NULL pointer dereference in madvise(MADV_WILLNEED) support
-+ *
-+ * On buggy kernel with CONFIG_DEBUG_LOCK_ALLOC=y this testcase should
-+ * produce Oops and/or be killed. On fixed/good kernel this testcase
-+ * runs to completion (retcode is 0)
-+ */
+ export TCID=$TC
+ export TST_TOTAL=1
+ export TST_COUNT=1
+ 
+-this_file=${0##*/}
+-trap "interrupt_test" 2
+-
+-setup()
+-{
+-  mkdir -p $TCtmp
+-  for i in $EXECUTABLES
+-  do
+-    install -m 0755 "$LTPROOT/testcases/bin/$i" "$TCtmp/."
+-  done
+-}
+-
+-#-----------------------------------------------------------------------
+-#
+-# FUNCTION:  do_test
+-# PURPOSE:   Executes the testcases.
+-# INPUT:     Number of iterations
+-# OUTPUT:    Error messages are logged when any verification test
+-#            fails.
+-#
+-#-----------------------------------------------------------------------
++. test.sh
+ 
+ do_test()
+ {
+-   $trace_logic
+-   echo "$this_file: doing $0."
+-
+-   COUNT=1
+-   while [ $COUNT -le $NUMLOOPS ]
+-   do
+-      # Run setsockopt/getsockopt test
+-      echo "Running mc_$EXECUTABLES on $IPADDR"
+-      for i in $EXECUTABLES
+-      do
+-        $TCtmp/$i $IPADDR
+-        [ $? = 0 ] || end_testcase "$i $IPADDR failed"
+-      done
+-
+-      echo "Running ping with bad values"
+-      ping -T 777 224.0.0.1 > /dev/null 2>&1
+-      [ $? = 0 ] && end_testcase "Multicast range should be out of range"
+-
+-      echo "Running ping on a invalid interface!"
+-      ping -I 3.3.3.3 224.0.0.1 > /dev/null 2>&1
+-      [ $? = 0 ] && end_testcase "ping on bogus interface should fail"
+-
+-      COUNT=$(( $COUNT + 1 ))
+-   done
++	echo "doing test."
 +
-+#include <sys/mman.h>
-+#include <errno.h>
++	COUNT=1
++	while [ $COUNT -le 10 ]
++	do
++		# Run setsockopt/getsockopt test
++		echo "Running mc_$EXECUTABLES on $IPADDR"
++		for i in $EXECUTABLES
++		do
++			$i $IPADDR
++			if [ $? -ne 0 ]; then
++				tst_brkm FAIL "$i $IPADDR failed"
++			fi
++		done
 +
-+#include "test.h"
-+#include "usctest.h"
-+#include "safe_macros.h"
++		echo "Running ping with bad values"
++		ping -T 777 224.0.0.1 > /dev/null 2>&1
++		if [ $? -eq 0 ]; then
++			tst_brkm FAIL "Multicast range should be out of range"
++		fi
 +
-+#define ALLOC_SIZE (32 * 1024 * 1024)
++		echo "Running ping on a invalid interface!"
++		ping -I 3.3.3.3 224.0.0.1 > /dev/null 2>&1
++		if [ $? -eq 0 ]; then
++			tst_brkm FAIL "ping on bogus interface should fail"
++		fi
 +
-+static void setup(void);
-+static void cleanup(void);
++		COUNT=$(( $COUNT + 1 ))
++	done
+ }
+ 
+-#-----------------------------------------------------------------------
+-#
+-# FUNCTION:     do_cleanup
+-# PURPOSE:      Called when the testcase is interrupted by the user
+-#               or by interrupt_testcase() when time limit expired
+-# INPUT:        None.
+-# OUTPUT:       None.
+-#
+-#-----------------------------------------------------------------------
+-
+-do_cleanup()
+-{
+-   $trace_logic
+-   echo "$this_file: doing $0."
+-
+-   cd /
+-   if [ "x$TCtmp" != "x$TCsrc" ]; then
+-      rm -rf $TCtmp
+-   fi
+-}
+-
+-#=============================================================================
+-# FUNCTION NAME:        end_testcase
+-#
+-# FUNCTION DESCRIPTION: Clean up
+-#
+-# PARAMETERS:           string, IF AND ONLY IF the testcase fails
+-#
+-# RETURNS:              None.
+-#=============================================================================
+-
+-end_testcase()
+-{
+-   $trace_logic
+-   echo "$this_file: doing $0."
+-
+-   # Call other cleanup functions
+-   [ $CLEANUP = "ON" ] && do_cleanup
+-
+-   [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
+-   tst_resm TFAIL "Test Failed: $@"
+-   exit 1
+-}
+-
+-#******************************************************************************
+-#
+-# FUNCTION:  interrupt_test
+-# PURPOSE:   Handle process interrupts set by trap.
+-# INPUT:     none
+-# OUTPUT:    none
+-#
+-#******************************************************************************
+-
+-interrupt_test()
+-{
+-   echo "test interrupted"
+-   end_testcase
+-}
+-
+-#******************************************************************************
+-#
+-# FUNCTION:  MAIN
+-# PURPOSE:   To invoke functions that perform the tasks as described in
+-#            the design in the prolog above.
+-# INPUT:     See SETUP in the prolog above.
+-# OUTPUT:    Logged run results written to testcase run log
+-#
+-#******************************************************************************
+-setup
+ do_test
+-end_testcase
++if [ $? -ne 0 ]; then
++	tst_resm TFAIL "Test Failed"
++else
++	tst_resm TPASS "Test Successful"
++fi
 +
-+char *TCID = "madvise05";
-+int TST_TOTAL = 1;
-+
++tst_exit
+diff --git a/testcases/network/multicast/mc_opts/opts.c b/testcases/network/multicast/mc_opts/opts.c
+index 0174d91..8a1f5c8 100644
+--- a/testcases/network/multicast/mc_opts/opts.c
++++ b/testcases/network/multicast/mc_opts/opts.c
+@@ -11,12 +11,9 @@
+ 
+ #define	MAXBUFSIZ	8096
+ 
+-char buff[MAXBUFSIZ];
+-int errors = 0;
++static int errors = 0;
+ 
+-int main(argc, argv)
+-int argc;
+-char *argv[];
 +int main(int argc, char *argv[])
-+{
-+	int lc;
-+	const char *msg = NULL;
-+	void *p;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		p = SAFE_MMAP(cleanup, NULL, ALLOC_SIZE, PROT_READ,
-+			MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
-+		TEST(mprotect(p, ALLOC_SIZE, PROT_NONE));
-+		if (TEST_RETURN == -1)
-+			tst_brkm(TBROK | TTERRNO, cleanup, "mprotect failed");
-+		TEST(madvise(p, ALLOC_SIZE, MADV_WILLNEED));
-+		if (TEST_RETURN == -1)
-+			tst_brkm(TBROK | TTERRNO, cleanup, "madvise failed");
-+		SAFE_MUNMAP(cleanup, p, ALLOC_SIZE);
-+	}
-+
-+	tst_resm(TPASS, "issue has not been reproduced");
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+}
+ {
+ 	int s;
+ 	struct in_addr gimr;
+diff --git a/testcases/network/multicast/mc_opts/opts_e.c b/testcases/network/multicast/mc_opts/opts_e.c
+index f91fa93..663032a 100644
+--- a/testcases/network/multicast/mc_opts/opts_e.c
++++ b/testcases/network/multicast/mc_opts/opts_e.c
+@@ -10,11 +10,7 @@
+ 
+ #define	MAXBUFSIZ	8096
+ 
+-char buff[MAXBUFSIZ];
+-
+-int main(argc, argv)
+-int argc;
+-char *argv[];
++int main(int argc, char *argv[])
+ {
+ 	int s;
+ 	struct in_addr simr, gimr;
 -- 
-1.7.1
+1.9.3
+
+
 
 
 ------------------------------------------------------------------------------
-Infragistics Professional
-Build stunning WinForms apps today!
-Reboot your WinForms applications with our WinForms controls. 
-Build a bridge from your legacy apps to the future.
-http://pubads.g.doubleclick.net/gampad/clk?id=153845071&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
