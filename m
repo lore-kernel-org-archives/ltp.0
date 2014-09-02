@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cebbert.lkml@gmail.com>) id 1XX7hE-0001T1-Ar
-	for ltp-list@lists.sourceforge.net; Thu, 25 Sep 2014 11:58:52 +0000
-Received: from mail-ob0-f174.google.com ([209.85.214.174])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XX7hD-00086o-43
-	for ltp-list@lists.sourceforge.net; Thu, 25 Sep 2014 11:58:52 +0000
-Received: by mail-ob0-f174.google.com with SMTP id m8so7964161obr.19
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 25 Sep 2014 04:58:43 -0700 (PDT)
-Date: Thu, 25 Sep 2014 06:58:38 -0500
-From: Chuck Ebbert <cebbert.lkml@gmail.com>
-Message-ID: <20140925065838.7faf7cef@as>
+	(envelope-from <metan@suse.de>) id 1XOni4-0004Fp-5s
+	for ltp-list@lists.sourceforge.net; Tue, 02 Sep 2014 13:01:20 +0000
+Date: Tue, 2 Sep 2014 15:01:08 +0200
+From: chrubis@suse.cz
+Message-ID: <20140902130108.GA7361@rei.suse.cz>
+References: <1400502716-8969-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1404291667-13198-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1404291667-13198-2-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH V2] recvfrom01: Fix invalid flags in testcase 4
+Content-Disposition: inline
+In-Reply-To: <1404291667-13198-2-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 2/2] hotplug/cpu_hotplug: add it to run default
+ and cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,60 +27,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The recv testcases had reported failures on 3.17-rc. [1]
+Hi!
+> Add cpu_hotplug tests to scenario_groups/default.
 
-Three of those failures were invalid assumptions about kernel behavior
-with every possible flag set. [2]
+Pushed without the addition to the scenario_groups/default.
 
-The fourth failure is because recfrom01 testcase 4 has invalid message
-flags in addition to its invalid address length, making it equivalent
-to test 6 (because the flags get checked  first).
+On single cpu machine most of the testcases fails with:
 
-Remove the invalid flags, and change the text so it's more clear what
-is being tested.
+cpuhotplug05 1 TBROK : CPU1 not found
 
-Also fix indentation that made it harder to spot this bug.
+or with:
 
-Version 2: Add better text and remove an erroneous change to the
-buffer length spotted by Jan Stancek.
+cat: /sys/devices/system/cpu/cpu1/online: No such file or directory
+/opt/ltp/testcases/bin/cpuhotplug_hotplug.sh: line 198: [: =: unary
+operator exp
+cpuhotplug07 1 TBROK : CPU1 cannot be onlined
 
-[1] https://bugzilla.redhat.com/show_bug.cgi?id=1145325
-[2] http://marc.info/?t=141148149900006&r=1&w=2
+The testcases should exit properly with TCONF in this case. I know that
+single cpu machines are not that common today, but we should we should
+work correctly even on these. Let's add it to the default run once this
+is fixed.
 
-Signed-off-by: Chuck Ebbert <cebbert.lkml@gmail.com>
-
---- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-+++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-@@ -105,9 +105,9 @@
- 		    0, ENOTSOCK, setup1, cleanup1, "invalid socket buffer"},
- /* 4 */
- 	{
--	PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), -1,
-+	PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), 0,
- 		    (struct sockaddr *)&from, &fromlen,
--		    -1, EINVAL, setup2, cleanup1, "invalid socket length"},
-+		    -1, EINVAL, setup2, cleanup1, "invalid socket addr length"},
- /* 5 */
- 	{
- 	PF_INET, SOCK_STREAM, 0, (void *)-1, sizeof(buf), 0,
-@@ -115,7 +115,7 @@
- 		    -1, EFAULT, setup1, cleanup1, "invalid recv buffer"},
- /* 6 */
- 	{
--PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), -1,
-+	PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), -1,
- 		    (struct sockaddr *)&from, &fromlen,
- 		    -1, EINVAL, setup1, cleanup1, "invalid flags set"},};
- 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
