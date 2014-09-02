@@ -1,30 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XPXCA-0000ZM-4C
-	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 13:35:26 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XPXC7-0007l9-Lb
-	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 13:35:26 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s84DZFNj032742
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 09:35:16 -0400
-Received: from cc-vtoe10.lab.eng.brq.redhat.com
-	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s84DXlY8016485
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 09:35:14 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Thu,  4 Sep 2014 15:33:32 +0200
-Message-Id: <1409837612-27052-3-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1409837612-27052-1-git-send-email-mmarhefk@redhat.com>
-References: <1409837612-27052-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH 3/3] containers: added sysvipc/sem_comm.c
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gary.robertson@linaro.org>) id 1XOuE9-0007K0-4A
+	for ltp-list@lists.sourceforge.net; Tue, 02 Sep 2014 19:58:53 +0000
+Received: from mail-wi0-f178.google.com ([209.85.212.178])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XOuE7-0001sF-8o
+	for ltp-list@lists.sourceforge.net; Tue, 02 Sep 2014 19:58:53 +0000
+Received: by mail-wi0-f178.google.com with SMTP id r20so8586908wiv.5
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 02 Sep 2014 12:58:45 -0700 (PDT)
+MIME-Version: 1.0
+Date: Tue, 2 Sep 2014 14:58:44 -0500
+Message-ID: <CAF7YWnxMVXpKKTbB3B4Sjqwp5K=u543PVbUBEy6jFGeq6YWkVw@mail.gmail.com>
+From: Gary Robertson <gary.robertson@linaro.org>
+Subject: [LTP] [RFC] Realtime tests - autoconf problems in OpenEmbedded
+ cross-build environment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,302 +26,154 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6609707873396499849=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
+Cc: Mike Holmes <mike.holmes@linaro.org>
 
-* Tests communication over semaphore sets with identical
-  keys between two separate IPC namespaces
+--===============6609707873396499849==
+Content-Type: multipart/alternative; boundary=001a11c238c003fb1b05021a8caf
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
----
- runtest/containers                             |   1 +
- testcases/kernel/containers/sysvipc/.gitignore |   1 +
- testcases/kernel/containers/sysvipc/sem_comm.c | 243 +++++++++++++++++++++++++
- 3 files changed, 245 insertions(+)
- create mode 100644 testcases/kernel/containers/sysvipc/sem_comm.c
+--001a11c238c003fb1b05021a8caf
+Content-Type: text/plain; charset=UTF-8
 
-diff --git a/runtest/containers b/runtest/containers
-index 7dbf049..6535628 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -50,6 +50,7 @@ sem_nstest_unshare sem_nstest unshare
- semtest_2ns_none semtest_2ns none
- semtest_2ns_clone semtest_2ns clone
- semtest_2ns_unshare semtest_2ns unshare
-+sem_comm sem_comm
- 
- utstest_unshare_1 utstest unshare 1
- utstest_unshare_2 utstest unshare 2
-diff --git a/testcases/kernel/containers/sysvipc/.gitignore b/testcases/kernel/containers/sysvipc/.gitignore
-index 68f18bf..815a717 100644
---- a/testcases/kernel/containers/sysvipc/.gitignore
-+++ b/testcases/kernel/containers/sysvipc/.gitignore
-@@ -5,3 +5,4 @@
- /shmnstest
- /shm_comm
- /msg_comm
-+/sem_comm
-diff --git a/testcases/kernel/containers/sysvipc/sem_comm.c b/testcases/kernel/containers/sysvipc/sem_comm.c
-new file mode 100644
-index 0000000..0b69a15
---- /dev/null
-+++ b/testcases/kernel/containers/sysvipc/sem_comm.c
-@@ -0,0 +1,243 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ ***********************************************************************
-+ * File: sem_comm.c
-+ *
-+ * Description:
-+ * 1. Clones two child processes with CLONE_NEWIPC flag, each child
-+ *    creates System V semaphore (sem) with the _identical_ key.
-+ * 2. Child1 locks the semaphore.
-+ * 3. Child2 locks the semaphore.
-+ * 4. Locking the semaphore with the identical key but from two different
-+ *    IPC namespaces should not interfere with each other, so if child2
-+ *    is able to lock the semaphore (after child1 locked it), test passes,
-+ *    otherwise test fails.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/ipc.h>
-+#include <sys/sem.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include "usctest.h"
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "libclone.h"
-+#include "ipcns_helper.h"
-+
-+
-+#define TESTKEY 124426L
-+char *TCID	= "sem_comm";
-+int TST_TOTAL	= 1;
-+int p1[2];
-+int p2[2];
-+
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+	check_newipc();
-+}
-+
-+int chld1_sem(void *arg)
-+{
-+	int id;
-+	char buf;
-+	struct sembuf sm;
-+
-+	close(p1[0]);
-+	close(p2[1]);
-+
-+	/* get a System V semaphore set identifier */
-+	id = semget(TESTKEY, 1, IPC_CREAT);
-+	if (id == -1) {
-+		perror("semget");
-+		close(p1[1]);
-+		close(p2[0]);
-+		return 2;
-+	}
-+
-+	/* set semval to 1 */
-+	if (semctl(id, 0, SETVAL, 1) == -1) {
-+		perror("semctl");
-+		close(p1[1]);
-+		close(p2[0]);
-+		semctl(id, 0, IPC_RMID);
-+		return 2;
-+	}
-+
-+	/* tell child2 to continue */
-+	write(p1[1], "1", 1);
-+
-+	/* wait for child2 to create the semaphore */
-+	read(p2[0], &buf, 1);
-+
-+	/* lock the semaphore */
-+	sm.sem_num = 0;
-+	sm.sem_op = -1;
-+	sm.sem_flg = IPC_NOWAIT;
-+	if (semop(id, &sm, 1) == -1) {
-+		perror("semop");
-+		close(p1[1]);
-+		close(p2[0]);
-+		semctl(id, 0, IPC_RMID);
-+		return 2;
-+	}
-+
-+	/* tell child2 to continue */
-+	write(p1[1], "1", 1);
-+
-+	/* wait for child2 to lock the semaphore */
-+	read(p2[0], &buf, 1);
-+	
-+	close(p1[1]);
-+	close(p2[0]);
-+
-+	/* unlock the semaphore */
-+	sm.sem_op = 1;
-+	semop(id, &sm, 1);
-+
-+	/* remove the semaphore */
-+	semctl(id, 0, IPC_RMID);
-+
-+	return 0;
-+}
-+
-+int chld2_sem(void *arg)
-+{
-+	int id, rval = 0;
-+	char buf;
-+	struct sembuf sm;
-+
-+	close(p1[1]);
-+	close(p2[0]);
-+
-+	/* wait for child1 to create the semaphore */
-+	read(p1[0], &buf, 1);
-+
-+	/* get a System V semaphore set identifier */
-+	id = semget(TESTKEY, 1, IPC_CREAT);
-+	if (id == -1) {
-+		perror("semget");
-+		close(p1[1]);
-+		close(p2[0]);
-+		return 2;
-+	}
-+
-+	/* set semval to 1 */
-+	if (semctl(id, 0, SETVAL, 1) == -1) {
-+		perror("semctl");
-+		close(p1[1]);
-+		close(p2[0]);
-+		semctl(id, 0, IPC_RMID);
-+		return 2;
-+	}
-+
-+	/* tell child1 to continue */
-+	write(p2[1], "1", 1);
-+
-+	/* wait for child1 to lock the semaphore */
-+	read(p1[0], &buf, 1);
-+
-+	/* lock the semaphore */
-+	sm.sem_num = 0;
-+	sm.sem_op = -1;
-+	sm.sem_flg = IPC_NOWAIT;
-+	if (semop(id, &sm, 1) == -1) {
-+		if (errno == EAGAIN) {
-+			rval = 1;
-+		} else {
-+			perror("semop");
-+			close(p1[1]);
-+			close(p2[0]);
-+			semctl(id, 0, IPC_RMID);
-+			return 2;
-+		}
-+	}
-+
-+	/* tell child1 to continue */
-+	write(p2[1], "1", 1);
-+
-+	close(p1[0]);
-+	close(p2[1]);
-+
-+	/* unlock the semaphore */
-+	sm.sem_op = 1;
-+	semop(id, &sm, 1);
-+
-+	/* remove the semaphore */
-+	semctl(id, 0, IPC_RMID);
-+
-+	return rval;
-+}
-+
-+static void test(void)
-+{
-+	int status, ret = 0;
-+
-+	SAFE_PIPE(NULL, p1);
-+	SAFE_PIPE(NULL, p2);
-+
-+	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld1_sem, NULL);
-+	if (ret == -1)
-+		tst_brkm(TBROK | TERRNO, NULL, "clone failed");
-+
-+	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld2_sem, NULL);
-+	if (ret == -1)
-+		tst_brkm(TBROK | TERRNO, NULL, "clone failed");
-+
-+	close(p1[0]);
-+	close(p1[1]);
-+	close(p2[0]);
-+	close(p2[1]);
-+
-+	/* wait for child processes */
-+	while (wait(&status) > 0) {
-+		if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
-+			ret = 1;
-+		if (WIFEXITED(status) && WEXITSTATUS(status) == 2)
-+			tst_brkm(TBROK | TERRNO, NULL, "error in child");
-+		if (WIFSIGNALED(status)) {
-+			tst_resm(TFAIL, "child was killed with signal %s",
-+					tst_strsig(WTERMSIG(status)));
-+			return;
-+		}
-+	}
-+
-+	if (ret)
-+		tst_resm(TFAIL, "SysV sem: communication with identical keys"
-+				" between namespaces");
-+	else
-+		tst_resm(TPASS, "SysV sem: communication with identical keys"
-+				" between namespaces");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test();
-+
-+	tst_exit();
-+}
--- 
-1.8.3.1
+LTP developers,
 
+The autoconf scripts in 'ltp/testcases/realtime/m4/check.m4' evaluate
+whether priority-inheriting mutexes and robust mutexes are supported on the
+system for which the LTP realtime tests are being targeted.  Portions of
+the LTP realtime test code required to test these features on the target
+are then conditionally included or excluded at compile time based on
+autoconf results.
+
+To check these features, the autoconf scripts attempt to compile and then
+execute initialization functions which rely on the features.  Is this done
+because the mere presence of the appropriate headers and protocol value
+definitions, etc. is insufficient proof that the features are supported?
+That is, are there cases in which the headers may contain the associated
+definitions but the installed runtime libraries lack the actual support
+code for the features?:
+
+The reason I ask is that in the OpenEmbedded cross-build environment, all
+code is theoretically cross-compiled for the build target system.  When the
+autoconf scripts subsequently attempt to execute the compiled code on the
+cross-development host, the execution fails.  Even if the code were to be
+compiled for the cross-development host and successfully executed, the
+results would be misleading as they represent feature support on the
+development host rather than on the test target system.
+
+Without knowing the history of configuration issues in LTP I don't know
+what conflicts may exist between the support for cross-build environments
+and the reliable configuration of features in a wide variety of
+native-build scenarios.
+
+If autoconf in LTP must rely on the execution of target system code in
+order to determine what features are supported on the target, then some
+sort of override is needed in cross-build environments... so my question
+is: what is the preferred method for handling this?
+
+Possible solutions under consideration include:
+
+
+   - adding command line options to be passed to the 'configure' script in
+   order to force inclusion of support for the features in question without
+   performing any tests, -or-
+   - adding local patches to the bitbake recipe for LTP which would
+   unconditionally patch either  the autoconf input files or the output of
+   autoconf operations in order to force support for the features in
+   question... and making no changes at the LTP level to address the problem.
+
+If command line override options are the preferable solution, I notice
+there are both '--with...' and '--enable...' options defined - but which
+would be the more appropriate prefix for these new options?
+
+OTOH, if the presence of the associated protocol name definitions, etc. in
+the target system's header files is a sufficient indication of support,
+could we just dispense with the execution of compiled target code and
+configure support for the features based on the header contents alone?
+
+I will be looking forward to your comments in order to determine the most
+effective and/or least offensive means of addressing this problem.
+
+Gary Robertson
+
+--001a11c238c003fb1b05021a8caf
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div><div><div><div>LTP developers,<br><br></div>The =
+autoconf scripts in &#39;ltp/testcases/realtime/m4/check.m4&#39; evaluate w=
+hether priority-inheriting mutexes and robust mutexes are supported on the =
+system for which the LTP realtime tests are being targeted.=C2=A0 Portions =
+of the LTP realtime test code required to test these features on the target=
+ are then conditionally included or excluded at compile time based on autoc=
+onf results.<br>
+<br></div>To check these features, the autoconf scripts attempt to compile =
+and then execute initialization functions which rely on the features.=C2=A0=
+ Is this done because the mere presence of the appropriate headers and prot=
+ocol value definitions, etc. is insufficient proof that the features are su=
+pported?=C2=A0 That is, are there cases in which the headers may contain th=
+e associated definitions but the installed runtime libraries lack the actua=
+l support code for the features?:<br>
+<br></div>The reason I ask is that in the OpenEmbedded cross-build environm=
+ent, all code is theoretically cross-compiled for the build target system.=
+=C2=A0 When the autoconf scripts subsequently attempt to execute the compil=
+ed code on the cross-development host, the execution fails.=C2=A0 Even if t=
+he code were to be compiled for the cross-development host and successfully=
+ executed, the results would be misleading as they represent feature suppor=
+t on the development host rather than on the test target system.<br>
+<br></div><div>Without knowing the history of configuration issues in LTP I=
+ don&#39;t know what conflicts may exist between the support for cross-buil=
+d environments and the reliable configuration of features in a wide variety=
+ of native-build scenarios.<br>
+</div><div><br></div>If autoconf in LTP must rely on the execution of targe=
+t system code in order to determine what features are supported on the targ=
+et, then some sort of override is needed in cross-build environments... so =
+my question is: what is the preferred method for handling this?<br>
+<br></div>Possible solutions under consideration include:<br><br><ul><li>ad=
+ding command line options to be passed to the &#39;configure&#39; script in=
+ order to force inclusion of support for the features in question without p=
+erforming any tests, -or-</li>
+<li>adding local patches to the bitbake recipe for LTP which would uncondit=
+ionally patch either=C2=A0 the autoconf input files or the output of autoco=
+nf operations in order to force support for the features in question... and=
+ making no changes at the LTP level to address the problem.</li>
+</ul><p>If command line override options are the preferable solution, I not=
+ice there are both &#39;--with...&#39; and &#39;--enable...&#39; options de=
+fined - but which would be the more appropriate prefix for these new option=
+s?</p>
+<p></p><p>OTOH, if the presence of the associated protocol name definitions=
+, etc. in the target system&#39;s header files is a sufficient indication o=
+f support, could we just dispense with the execution of compiled target cod=
+e and configure support for the features based on the header contents alone=
+?</p>
+<p>I will be looking forward to your comments in order to determine the mos=
+t effective and/or least offensive means of addressing this problem.</p><p>=
+Gary Robertson</p><p><br></p></div>
+
+--001a11c238c003fb1b05021a8caf--
+
+
+--===============6609707873396499849==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Slashdot TV.  
 Video for Nerds.  Stuff that matters.
 http://tv.slashdot.org/
+--===============6609707873396499849==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6609707873396499849==--
+
