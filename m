@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XWhig-0002IG-Sd
-	for ltp-list@lists.sourceforge.net; Wed, 24 Sep 2014 08:14:38 +0000
-Date: Wed, 24 Sep 2014 10:14:20 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XOjRV-0005ln-EL
+	for ltp-list@lists.sourceforge.net; Tue, 02 Sep 2014 08:27:57 +0000
+Date: Tue, 2 Sep 2014 10:27:46 +0200
 From: chrubis@suse.cz
-Message-ID: <20140924081420.GC10825@rei>
-References: <1409047170-18251-2-git-send-email-mmarhefk@redhat.com>
-	<1409320025-12778-1-git-send-email-mmarhefk@redhat.com>
+Message-ID: <20140902082745.GA6002@rei.suse.cz>
+References: <20140901183433.GT30210@waldemar-brodkorb.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1409320025-12778-1-git-send-email-mmarhefk@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2 v2] containers: added mountns/mountns04.c
+In-Reply-To: <20140901183433.GT30210@waldemar-brodkorb.de>
+Subject: Re: [LTP] issue #13
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,70 +24,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
+To: Waldemar Brodkorb <wbx@openadk.org>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> +static void setup(void)
-> +{
-> +	tst_require_root(NULL);
-> +	check_newns();	/* from mountns_helper.h */
+> I have added a comment to issue #13.
+> https://github.com/linux-test-project/ltp/issues/13
+> I was unable to reopen it.
+> 
+> Any ideas about the exp10 check problem?
 
-Please remove this comment.
+Does the trick suggested by Mike (vapier) works for you?
 
-> +	tst_tmpdir();
-> +	SAFE_MKDIR(cleanup, DIRA, 0777);
-> +	SAFE_MKDIR(cleanup, DIRB, 0777);
-> +	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
-> +	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
-> +}
-> +
-> +static void test(void)
-> +{
-> +	/* unshares the mount ns */
-> +	if (unshare(CLONE_NEWNS) == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-> +	/* makes sure mounts/umounts have no effect on a real system */
-> +	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
-> +
-> +	/* bind mounts DIRA to itself */
-> +	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
-> +	/* bind mounts DIRB to itself */
-> +	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
-> +
-> +	/* makes mount DIRA unbindable */
-> +	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_UNBINDABLE, NULL);
-> +	/* makes mount DIRB shared */
-> +	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
-> +
-> +	/* tries to bind mount unbindable DIRA to DIRB which should fail */
-> +	if (mount(DIRA, DIRB, "none", MS_BIND, NULL) == -1)
-> +		tst_resm(TPASS, "unbindable mount passed");
-> +	else {
-> +		SAFE_UMOUNT(cleanup, DIRB);
-> +		tst_resm(TFAIL, "unbindable mount faled");
-> +	}
-
-This is merely cosmetic, but LKML coding style preffers having curly
-brackets on both branches if they needs to be over one of them.
-
-> +#else /* MS_SHARED && MS_PRIVATE && MS_REC && MS_UNBINDABLE */
-
-And the comment about ifdefs applies here as well.
-
-
-Otherwise it looks good.
+I.e. changing the input of the exp10() function to (float)argc so that
+the compiler cannot assume that the vhole expression is a constant?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
