@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XW4qv-0006Wb-1Y
-	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 14:44:33 +0000
-Date: Mon, 22 Sep 2014 16:44:15 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XP5lR-00045P-MI
+	for ltp-list@lists.sourceforge.net; Wed, 03 Sep 2014 08:18:01 +0000
+Date: Wed, 3 Sep 2014 10:17:48 +0200
 From: chrubis@suse.cz
-Message-ID: <20140922144415.GA21875@rei.suse.cz>
-References: <20140922154742.71edd101@mats-desktop>
-	<20140922142631.GA12628@rei.suse.cz>
-	<20140922163759.068fcaf1@mats-desktop>
+Message-ID: <20140903081748.GA18674@rei.suse.cz>
+References: <1409672694-32108-1-git-send-email-zlang@redhat.com>
+	<20140903072238.GA16534@rei.suse.cz> <5406CE2C.5080006@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20140922163759.068fcaf1@mats-desktop>
-Subject: Re: [LTP] Failed out of tree compile
+In-Reply-To: <5406CE2C.5080006@redhat.com>
+Subject: Re: [LTP] [PATCH] fs/fsstress: modify compile warning about
+	fsstress.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,37 +26,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mats Liljegren <mats.liljegren@enea.com>
+To: Zorro Lang <zlang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Ok, thanks for the workaround, I'll try that!
+> >> when compile kernel/fs/fsstress/fsstress.c, some warning always be printed.
+> >> Because there is a new field 'isxfs' be added in opdesc_t struct,
+> >> but some lines of opdesc_t ops[] forget to init this field.
+> > Pushed, thanks.
+> >
+> Thank you very much.
 > 
-> I haven't played much with autotools as a developer, but I recently
-> dived into CMake. Seems like CMake scripts are easier to understand and
-> maintain. Are there thoughts about switching to CMake, or is there some
-> big disadvantage with CMake?
+> How about the other patch, named "fs/fsstress: prevent orphan and zombie 
+> processes to be left".
+> That is we really want to be merged.
 
-The usage of autotools in LTP is in fact quite limited. It's used only
-to create the configure script to check for various features, the rest
-uses hand written Makefile rules that are fine. The problem with ffsb in
-this case is that it's third party tool that came with the full
-autotools mess that tends to break...
-
-In short I do not see any advantages to switing to CMake or any other
-build system. The only thing that needs to be done it this case is
-fixing build for single ffsb binary.
+I will have a look ASAP.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
