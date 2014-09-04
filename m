@@ -1,26 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vgoyal@redhat.com>) id 1XWOvP-0008Gf-H1
-	for ltp-list@lists.sourceforge.net; Tue, 23 Sep 2014 12:10:31 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1XPXAk-0000SL-Uc
+	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 13:33:58 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XWOvO-0000va-9J
-	for ltp-list@lists.sourceforge.net; Tue, 23 Sep 2014 12:10:31 +0000
-Date: Tue, 23 Sep 2014 08:09:59 -0400
-From: Vivek Goyal <vgoyal@redhat.com>
-Message-ID: <20140923120959.GB1732@redhat.com>
-References: <145412866.25258463.1411119061796.JavaMail.zimbra@redhat.com>
-	<293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
-	<20140919132236.GB2190@redhat.com>
-	<594480021.25988504.1411355660836.JavaMail.zimbra@redhat.com>
-	<20140922144713.GA4250@redhat.com>
-	<1446076274.27552759.1411440835273.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1446076274.27552759.1411440835273.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [RFC] autokdump - automated kdump testsuite
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XPXAi-0004WS-8Y
+	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 13:33:58 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s84DXnUo022542
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 09:33:49 -0400
+Received: from cc-vtoe10.lab.eng.brq.redhat.com
+	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s84DXlY6016485
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 09:33:48 -0400
+From: Matus Marhefka <mmarhefk@redhat.com>
+Date: Thu,  4 Sep 2014 15:33:30 +0200
+Message-Id: <1409837612-27052-1-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH 1/3] containers: added sysvipc/shm_comm.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,44 +32,273 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, kexec <kexec@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, crash-utility <crash-utility@redhat.com>
+To: ltp-list@lists.sourceforge.net
 
-On Mon, Sep 22, 2014 at 10:53:55PM -0400, CAI Qian wrote:
+* Tests communication over shared memory segments (shm)
+  with identical keys between two separate IPC namespaces
 
-[..]
-> > Why not simply let the respective service on the host do this job and
-> > test only makes sure that kdump service is running. It feels little
-> > out of place that a test is generating custom initramfs.
-> Because not every distro will have a kdump service like Fedora.
+Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+---
+ runtest/containers                             |   1 +
+ testcases/kernel/containers/sysvipc/.gitignore |   1 +
+ testcases/kernel/containers/sysvipc/shm_comm.c | 215 +++++++++++++++++++++++++
+ 3 files changed, 217 insertions(+)
+ create mode 100644 testcases/kernel/containers/sysvipc/shm_comm.c
 
-So which distro does not have a service? Do we know this or we are
-assuming that distributions don't have a service to load/unload
-kdump kernel.
+diff --git a/runtest/containers b/runtest/containers
+index fc61ada..84ae736 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -39,6 +39,7 @@ shmnstest_unshare shmnstest unshare
+ shmem_2nstest_none shmem_2nstest none
+ shmem_2nstest_clone shmem_2nstest clone
+ shmem_2nstest_unshare shmem_2nstest unshare
++shm_comm shm_comm
+ mesgq_nstest_none mesgq_nstest none
+ mesgq_nstest_clone mesgq_nstest clone
+ mesgq_nstest_unshare mesgq_nstest unshare
+diff --git a/testcases/kernel/containers/sysvipc/.gitignore b/testcases/kernel/containers/sysvipc/.gitignore
+index 58cfbee..b5a4cbd 100644
+--- a/testcases/kernel/containers/sysvipc/.gitignore
++++ b/testcases/kernel/containers/sysvipc/.gitignore
+@@ -3,3 +3,4 @@
+ /semtest_2ns
+ /shmem_2nstest
+ /shmnstest
++/shm_comm
+diff --git a/testcases/kernel/containers/sysvipc/shm_comm.c b/testcases/kernel/containers/sysvipc/shm_comm.c
+new file mode 100644
+index 0000000..ef8803b
+--- /dev/null
++++ b/testcases/kernel/containers/sysvipc/shm_comm.c
+@@ -0,0 +1,215 @@
++/* Copyright (c) 2014 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ ***********************************************************************
++ * File: shm_comm.c
++ *
++ * Description:
++ * 1. Clones two child processes with CLONE_NEWIPC flag, each child
++ *    allocates System V shared memory segment (shm) with the _identical_
++ *    key and attaches that segment into its address space.
++ * 2. Child1 writes into the shared memory segment.
++ * 3. Child2 writes into the shared memory segment.
++ * 4. Writes to the shared memory segment with the identical key but from
++ *    two different IPC namespaces should not interfere with each other
++ *    and so child1 checks whether its shared segment wasn't changed
++ *    by child2, if it wasn't test passes, otherwise test fails.
++ */
++
++#define _GNU_SOURCE
++#include <sys/ipc.h>
++#include <sys/shm.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <stdio.h>
++#include <errno.h>
++#include "usctest.h"
++#include "test.h"
++#include "safe_macros.h"
++#include "libclone.h"
++#include "ipcns_helper.h"
++
++
++#define TESTKEY 124426L
++#define SHMSIZE 50
++char *TCID	= "shm_comm";
++int TST_TOTAL	= 1;
++int p1[2];
++int p2[2];
++
++
++static void setup(void)
++{
++	tst_require_root(NULL);
++	check_newipc();
++}
++
++int chld1_shm(void *arg)
++{
++	int id, rval = 0;
++	char *shmem, buf;
++
++	close(p1[0]);
++	close(p2[1]);
++
++	/* allocate a System V shared memory segment */
++	id = shmget(TESTKEY, SHMSIZE, IPC_CREAT);
++	if (id == -1) {
++		perror("shmget");
++		close(p1[1]);
++		close(p2[0]);
++		return 2;
++	}
++
++	/* attach the segment reffered by id into the child1 data space */
++	if ((shmem = shmat(id, NULL, 0)) == (char *) -1) {
++		perror("shmat");
++		close(p1[1]);
++		close(p2[0]);
++		shmctl(id, IPC_RMID, NULL);
++		return 2;
++	}
++
++	/* write to the shared segment */
++	*shmem = 'A';
++
++	/* tell child2 to continue */
++	write(p1[1], "1", 1);
++
++	/* wait for child2 */
++	read(p2[0], &buf, 1);
++
++	/* if child1 shared segment has changed (by child2) report fail */
++	if (*shmem != 'A')
++		rval = 1;
++
++	/* tell child2 to continue */
++	write(p1[1], "1", 1);
++
++	close(p1[1]);
++	close(p2[0]);
++
++	/* detaches the shared memory segment */
++	shmdt(shmem);
++	/* remove the shared memory segment */
++	shmctl(id, IPC_RMID, NULL);
++
++	return rval;
++}
++
++int chld2_shm(void *arg)
++{
++	int id;
++	char *shmem, buf;
++
++	close(p1[1]);
++	close(p2[0]);
++
++	/* allocate a System V shared memory segment */
++	id = shmget(TESTKEY, SHMSIZE, IPC_CREAT);
++	if (id == -1) {
++		perror("shmget");
++		close(p1[0]);
++		close(p2[1]);
++		return 2;
++	}
++
++	/* attach the segment referred by id into the child2 data space */
++	if ((shmem = shmat(id, NULL, 0)) == (char *) -1) {
++		perror("shmat");
++		close(p1[0]);
++		close(p2[1]);
++		shmctl(id, IPC_RMID, NULL);
++		return 2;
++	}
++
++	/* wait for child1 to write to his segment */
++	read(p1[0], &buf, 1);
++
++	/* write to the shared segment */
++	*shmem = 'B';
++
++	/* tell child1 to continue */
++	write(p2[1], "1", 1);
++
++	/* wait for child1 */
++	read(p1[0], &buf, 1);
++
++	close(p1[0]);
++	close(p2[1]);
++
++	/* detaches the shared memory segment */
++	shmdt(shmem);
++	/* remove the shared memory segment */
++	shmctl(id, IPC_RMID, NULL);
++
++	return 0;
++}
++
++static void test(void)
++{
++	int status, ret = 0;
++
++	SAFE_PIPE(NULL, p1);
++	SAFE_PIPE(NULL, p2);
++
++	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld1_shm, NULL);
++	if (ret == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "clone failed");
++
++	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld2_shm, NULL);
++	if (ret == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "clone failed");
++
++	close(p1[0]);
++	close(p1[1]);
++	close(p2[0]);
++	close(p2[1]);
++
++	/* wait for child processes */
++	while (wait(&status) > 0) {
++		if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
++			ret = 1;
++		if (WIFEXITED(status) && WEXITSTATUS(status) == 2)
++			tst_brkm(TBROK | TERRNO, NULL, "error in child");
++		if (WIFSIGNALED(status)) {
++			tst_resm(TFAIL, "child was killed with signal %s",
++					tst_strsig(WTERMSIG(status)));
++			return;
++		}
++	}
++
++	if (ret)
++		tst_resm(TFAIL, "SysV shm: communication with identical keys"
++				" between namespaces");
++	else
++		tst_resm(TPASS, "SysV shm: communication with identical keys"
++				" between namespaces");
++}
++
++int main(int argc, char *argv[])
++{
++	const char *msg;
++	int lc;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++)
++		test();
++
++	tst_exit();
++}
+-- 
+1.8.3.1
 
-[..]
-> > makedumpfile will reduce the vmcore file size to few hundreds of mega
-> > bytes on most of the systems. Especially, this is just a test, so
-> > system will be lightly loaded and vmcore will be small after filtering.
-> It probably actually have test cases to heavily loaded the memory before
-> dumping.
-
-Your original proposal does not take care of this case either. A test
-case could be heavily used memory and if user does not have sufficient
-memory to save core, so be it. That test will fail.
-
-Thanks
-Vivek
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
