@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XW3Cj-0005hc-14
-	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 12:58:57 +0000
-Date: Mon, 22 Sep 2014 14:58:39 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XPVWz-0003ea-Eq
+	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 11:48:49 +0000
+Date: Thu, 4 Sep 2014 13:48:37 +0200
 From: chrubis@suse.cz
-Message-ID: <20140922125839.GA11314@rei.suse.cz>
-References: <1411009276-1720-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140904114837.GA4869@rei.suse.cz>
+References: <1409672758-32402-1-git-send-email-zlang@redhat.com>
+	<20140904103019.GB3151@rei.suse.cz> <5408450C.6000201@redhat.com>
+	<20140904110743.GA4322@rei.suse.cz> <54084CF9.6060607@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1411009276-1720-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] runtest/containers: fix errors in
- netns_par_chld_ftp testcase that takes TCONF as TFAIL
+In-Reply-To: <54084CF9.6060607@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] [PATCH-V2]fs/fsstress: prevent orphan and
+ zombie processes to be left
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,36 +27,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+To: Zorro Lang <zlang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> In test case 'testcases/kernel/containers/netns/netns_par_chld_ftp.sh', if iproute tools
-> do not support setting network namespaces, child process will return TCONF, but parent
-> process took this as TFAIL wrongly.
+> There's no dissent from me, no matter how you will deal with this patch.
 > 
-> So in testcases/lib/test.sh, we introduce tst_record_childstatus()'s shell version, please
-> see doc/test-writing-guidelines.txt for detailed information this function, it helps to
-> propagate child process result(child exit status) to the parent process correctly.
-> 
-> In this patch, we fix this issue by using this function.
+> Sorry, this is the first time I send patch to LTP. I haven't been 
+> familiar about this. I will notice the rules about make patches for 
+> upstream in the furture.
+> I don't want to steal other people's contribution, I just hoped 
+> everything can be better.
 
-Nice fix ;).
-
-Pushed with cosmetic change (I've changed the tst_resm TWARN to tst_brkm
-TBROK so that the execution of the test is halted if something went
-wrong), thanks.
+I've modified the commit message to include the original commit message
+and pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
