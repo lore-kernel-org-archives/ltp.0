@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XJLPM-0002ZS-KQ
-	for ltp-list@lists.sourceforge.net; Mon, 18 Aug 2014 11:47:28 +0000
-Date: Mon, 18 Aug 2014 13:46:29 +0200
+	(envelope-from <metan@suse.de>) id 1XPX7H-0000YZ-P3
+	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 13:30:23 +0000
+Date: Thu, 4 Sep 2014 15:30:07 +0200
 From: chrubis@suse.cz
-Message-ID: <20140818114628.GA5202@rei.suse.cz>
-References: <02d3651008f483ee4298d802ace785c4944ce1de.1408015922.git.jstancek@redhat.com>
-	<20140818095931.GA3627@rei.suse.cz>
-	<805855742.8408932.1408357068816.JavaMail.zimbra@redhat.com>
+Message-ID: <20140904133007.GB9603@rei.suse.cz>
+References: <CA+G9fYvRGMkgNAkVCsnTNhTfQCW_CTAtH3LDV=tELpG0wjfxCQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <805855742.8408932.1408357068816.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] profil01: rewrite testcase
+In-Reply-To: <CA+G9fYvRGMkgNAkVCsnTNhTfQCW_CTAtH3LDV=tELpG0wjfxCQ@mail.gmail.com>
+Subject: Re: [LTP] LTP: overcommit_memory -R 0 failed due to
+ overcommit_ratio = 0 ?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,49 +25,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, Steve Capper <steve.capper@linaro.org>, Mark Brown <mark.brown@linaro.org>
 
 Hi!
-> > > +	size_t offset = (size_t) &test_profil, count = 0;
-> > > +	int ret, i, data[8];
-> > > +
-> > > +	/* make data depend on runtime value, so gcc can't make assumptions */
-> > > +	memset(data, getpid(), sizeof(data));
-> > > +
-> > > +	/* reset for test looping */
-> > > +	profil_done = 0;
-> > > +
-> > > +	/* profil_count in glibc calculates offset as
-> > > +	 *   i = (pc - pc_offset - (void *) 0) / 2
-> > > +	 *   i = i * pc_scale / 65536
-> > > +	 * set scale to 2*65536 to have 1:1 mapping for $pc */
-> > > +	ret = profil(buf, PROFIL_BUFSZ, offset, 2*65536);
-> >                             ^                   ^
-> > 			    sizeof(buf) ?       why 2* ?
-> 
-> profil_count() formula divides by 2, I'm not sure why.
-> It doesn't make a big difference for test, but it made it easier when
-> comparing output from testcase with disassembled code.
+> Test case : overcommit_memory -R 0
+> Test faild.
+> Because overcommit_ratio = 0 ???
+> Is this a test case bug or any thing missing in kernel ?
 
-Strange, looking into glibc sources to sysdeps/posix/profil.c
+The testcase seems to be broken unless you have big enough swap so that
+CommitLimit (which depends on size of the swap) is greater than
+Commit_AS. In your case the swap size was not big enough to be greater
+than the amount of currently overcommited memory (Commit_AS).
 
-/* Enable statistical profiling, writing samples of the PC into at most
-   SIZE bytes of SAMPLE_BUFFER; every processor clock tick while
-   profiling is enabled, the system examines the user PC and increments
-   SAMPLE_BUFFER[((PC - OFFSET) / 2) * SCALE / 65536].  If SCALE is zero,
-   disable profiling.  Returns zero on success, -1 on error. */
-
-but man page suggests that the formula is (PC - OFFSET) * SCALE / 65536
-
-The glibc sources mentions POSIX.1 but recent enough POSIX does not seem
-to contain any reference to profil()....
+The test should be changed to skip the particular testcase and give a
+beteter message if there is no room to alloace any memory in this case.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Slashdot TV.  
+Video for Nerds.  Stuff that matters.
+http://tv.slashdot.org/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
