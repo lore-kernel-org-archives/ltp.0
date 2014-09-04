@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XP5lR-00045P-MI
-	for ltp-list@lists.sourceforge.net; Wed, 03 Sep 2014 08:18:01 +0000
-Date: Wed, 3 Sep 2014 10:17:48 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XPY3Y-0003ok-QW
+	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 14:30:36 +0000
+Date: Thu, 4 Sep 2014 16:30:24 +0200
 From: chrubis@suse.cz
-Message-ID: <20140903081748.GA18674@rei.suse.cz>
-References: <1409672694-32108-1-git-send-email-zlang@redhat.com>
-	<20140903072238.GA16534@rei.suse.cz> <5406CE2C.5080006@redhat.com>
+Message-ID: <20140904143024.GA11408@rei.suse.cz>
+References: <20140901183433.GT30210@waldemar-brodkorb.de>
+	<20140902082745.GA6002@rei.suse.cz>
+	<20140903212151.GC19440@waldemar-brodkorb.de>
+	<20140904093348.GA15717@rei.suse.cz>
+	<20140904142634.GE19440@waldemar-brodkorb.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5406CE2C.5080006@redhat.com>
-Subject: Re: [LTP] [PATCH] fs/fsstress: modify compile warning about
-	fsstress.c
+In-Reply-To: <20140904142634.GE19440@waldemar-brodkorb.de>
+Subject: Re: [LTP] issue #13
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,22 +28,13 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zorro Lang <zlang@redhat.com>
+To: Waldemar Brodkorb <wbx@openadk.org>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >> when compile kernel/fs/fsstress/fsstress.c, some warning always be printed.
-> >> Because there is a new field 'isxfs' be added in opdesc_t struct,
-> >> but some lines of opdesc_t ops[] forget to init this field.
-> > Pushed, thanks.
-> >
-> Thank you very much.
-> 
-> How about the other patch, named "fs/fsstress: prevent orphan and zombie 
-> processes to be left".
-> That is we really want to be merged.
+> Works for me. Thx.
 
-I will have a look ASAP.
+Pushed, thanks for the testing.
 
 -- 
 Cyril Hrubis
