@@ -1,17 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XPW67-0006Cl-IM
-	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 12:25:07 +0000
-Date: Thu, 4 Sep 2014 14:24:55 +0200
-From: chrubis@suse.cz
-Message-ID: <20140904122455.GA9603@rei.suse.cz>
-References: <1405145148.3386.3.camel@G08JYZSD130126>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1405145148.3386.3.camel@G08JYZSD130126>
-Subject: Re: [LTP] [PATCH 1/2] security/p9auth: Cleanup
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1XPWOG-0006NB-4g
+	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 12:43:52 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XPWOD-0007Ja-CC
+	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 12:43:52 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s84Chgr9023969
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 08:43:42 -0400
+Received: from cc-vtoe10.lab.eng.brq.redhat.com
+	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s84CheCo000360
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 08:43:41 -0400
+From: Matus Marhefka <mmarhefk@redhat.com>
+Date: Thu,  4 Sep 2014 14:43:27 +0200
+Message-Id: <1409834607-22143-1-git-send-email-mmarhefk@redhat.com>
+In-Reply-To: <1409153560-10176-1-git-send-email-mmarhefk@redhat.com>
+References: <1409153560-10176-1-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH v3] containers: added netns/netns_devices.sh and
+	netns/netns_devices2.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,23 +35,274 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-The patches looks god, but looking at Linux kernel git the p9auth modue
-never made it to mainline. It was included in staging for a while then
-removed due to lack of interest.
+* Tests that a separate network namespace can configure and communicate
+  over the devices it sees
+* netns/netns_devices.sh  -- uses netlink(7) for configuration
+* netns/netns_devices2.sh -- uses ioctl(2) for configuration
 
-So there is no reason to maintain the code or add it to default run
-unless it's actually used somewhere.
+Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+---
+ runtest/containers                                 |   2 +
+ testcases/kernel/containers/netns/netns_devices.sh | 110 +++++++++++++++++++++
+ .../kernel/containers/netns/netns_devices2.sh      | 110 +++++++++++++++++++++
+ 3 files changed, 222 insertions(+)
+ create mode 100755 testcases/kernel/containers/netns/netns_devices.sh
+ create mode 100755 testcases/kernel/containers/netns/netns_devices2.sh
 
+diff --git a/runtest/containers b/runtest/containers
+index 7d01a44..69eac82 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -29,6 +29,8 @@ netns_crtchild_delchild netns_crtchild_delchild
+ netns_par_chld_ipv6 netns_par_chld_ipv6
+ netns_par_chld_ftp netns_par_chld_ftp.sh
+ netns_netlink netns_netlink
++netns_devices netns_devices.sh
++netns_devices2 netns_devices2.sh
+ 
+ shmnstest_none shmnstest none
+ shmnstest_clone shmnstest clone
+diff --git a/testcases/kernel/containers/netns/netns_devices.sh b/testcases/kernel/containers/netns/netns_devices.sh
+new file mode 100755
+index 0000000..df55971
+--- /dev/null
++++ b/testcases/kernel/containers/netns/netns_devices.sh
+@@ -0,0 +1,110 @@
++#!/bin/sh
++#==============================================================================
++# Copyright (c) 2014 Red Hat, Inc.
++#
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of version 2 the GNU General Public License as
++# published by the Free Software Foundation.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <http://www.gnu.org/licenses/>.
++#==============================================================================
++# File: netns_devices.sh
++#
++# Tests that a separate network namespace can configure and communicate
++# over the devices it sees. Tests are done using ip command which uses
++# netlink(7) sockets to control devices. There are two test cases:
++# 1. communication over paired veth (virtual ethernet) devices
++#    from two different network namespaces (each namespace has
++#    one device)
++# 2. communication over the lo (localhost) device in a separate
++#    network namespace
++#
++
++TCID=netns_devices
++TST_TOTAL=2
++. test.sh
++IP0=192.168.0.1
++IP1=192.168.0.2
++
++
++cleanup()
++{
++	# removes veth0 device (which also removes paired veth1 device)
++	ip link delete veth0
++	# removes the network namespace myns
++	ip netns del myns
++}
++
++
++# SETUP
++tst_require_root
++tst_check_cmds ip
++TST_CLEANUP=cleanup
++
++# creates a pair of virtual ethernet devices
++ip link add veth0 type veth peer name veth1 &>/dev/null || \
++	tst_brkm TBROK "unable to create veth pair devices"
++
++# creates a new network namespace "myns" (man 8 ip-netns)
++ip netns add myns &>/dev/null || \
++	tst_brkm TBROK "unable to create a new network namespace"
++
++# adds device veth1 to myns namespace
++ip link set veth1 netns myns &>/dev/null || \
++	tst_brkm TBROK "unable to add device veth1 to the network namespace myns"
++
++
++# TEST CASE #1
++# setup for veth0 device
++ip address add $IP0/24 dev veth0 || \
++	tst_brkm TBROK "adding address to veth0 failed"
++ip link set dev veth0 up || \
++	tst_brkm TBROK "enabling veth0 device failed"
++
++# setup for veth1 (which is inside myns namespace)
++ip netns exec myns ip address add $IP1/24 dev veth1 || \
++	tst_brkm TBROK "adding address to veth1 failed"
++ip netns exec myns ip link set dev veth1 up || \
++	tst_brkm TBROK "enabling veth1 device failed"
++
++ping -q -c 2 -I veth0 $IP1 &>/dev/null
++ret=$?
++failed=0
++if [ $ret -ne 0 ]; then
++	failed=1
++fi
++
++ip netns exec myns ping -q -c 2 -I veth1 $IP0 &>/dev/null
++ret=$?
++if [ $ret -ne 0 ]; then
++	failed=1
++fi
++
++if [ $failed -eq 0 ]; then
++	tst_resm TPASS "netlink configuration and communication over veth devices"
++else
++	tst_resm TFAIL "netlink configuration and communication over veth devices"
++fi
++
++
++# TEST CASE #2
++# enables lo device
++ip netns exec myns ip link set dev lo up || \
++	tst_brkm TBROK "enabling lo device failed"
++
++ip netns exec myns ping -q -c 2 -I lo 127.0.0.1 &>/dev/null
++ret=$?
++if [ $ret -eq 0 ]; then
++	tst_resm TPASS "netlink configuration and communication over lo device"
++else
++	tst_resm TFAIL "netlink configuration and communication over lo device"
++fi
++
++
++tst_exit
+diff --git a/testcases/kernel/containers/netns/netns_devices2.sh b/testcases/kernel/containers/netns/netns_devices2.sh
+new file mode 100755
+index 0000000..ed3f5eb
+--- /dev/null
++++ b/testcases/kernel/containers/netns/netns_devices2.sh
+@@ -0,0 +1,110 @@
++#!/bin/sh
++#==============================================================================
++# Copyright (c) 2014 Red Hat, Inc.
++#
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of version 2 the GNU General Public License as
++# published by the Free Software Foundation.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <http://www.gnu.org/licenses/>.
++#==============================================================================
++# File: netns_devices2.sh
++#
++# Tests that a separate network namespace can configure and communicate
++# over the devices it sees. Tests are done using ifconfig command which
++# uses ioctl(2) to control devices. There are two test cases:
++# 1. communication over paired veth (virtual ethernet) devices
++#    from two different network namespaces (each namespace has
++#    one device)
++# 2. communication over the lo (localhost) device in a separate
++#    network namespace
++#
++
++TCID=netns_devices2
++TST_TOTAL=2
++. test.sh
++IP0=192.168.0.1
++IP1=192.168.0.2
++
++
++cleanup()
++{
++	# removes veth0 device (which also removes paired veth1 device)
++	ip link delete veth0
++	# removes the network namespace myns
++	ip netns del myns
++}
++
++
++# SETUP
++tst_require_root
++tst_check_cmds ip ifconfig
++TST_CLEANUP=cleanup
++
++# creates a pair of virtual ethernet devices
++ip link add veth0 type veth peer name veth1 &>/dev/null || \
++	tst_brkm TBROK "unable to create veth pair devices"
++
++# creates a new network namespace "myns" (man 8 ip-netns)
++ip netns add myns &>/dev/null || \
++	tst_brkm TBROK "unable to create a new network namespace"
++
++# adds device veth1 to myns namespace
++ip link set veth1 netns myns &>/dev/null || \
++	tst_brkm TBROK "unable to add device veth1 to the network namespace myns"
++
++
++# TEST CASE #1
++# setup for veth0 device
++ifconfig veth0 $IP0/24 || \
++	tst_brkm TBROK "adding address to veth0 failed"
++ifconfig veth0 up || \
++	tst_brkm TBROK "enabling veth0 device failed"
++
++# setup for veth1 (which is inside myns namespace)
++ip netns exec myns ifconfig veth1 $IP1/24 || \
++	tst_brkm TBROK "adding address to veth1 failed"
++ip netns exec myns ifconfig veth1 up || \
++	tst_brkm TBROK "enabling veth1 device failed"
++
++ping -q -c 2 -I veth0 $IP1 &>/dev/null
++ret=$?
++failed=0
++if [ $ret -ne 0 ]; then
++	failed=1
++fi
++
++ip netns exec myns ping -q -c 2 -I veth1 $IP0 &>/dev/null
++ret=$?
++if [ $ret -ne 0 ]; then
++	failed=1
++fi
++
++if [ $failed -eq 0 ]; then
++	tst_resm TPASS "ioctl configuration and communication over veth devices"
++else
++	tst_resm TFAIL "ioctl configuration and communication over veth devices"
++fi
++
++
++# TEST CASE #2
++# enables lo device
++ip netns exec myns ifconfig lo up || \
++	tst_brkm TBROK "enabling lo device failed"
++
++ip netns exec myns ping -q -c 2 -I lo 127.0.0.1 &>/dev/null
++ret=$?
++if [ $ret -eq 0 ]; then
++	tst_resm TPASS "ioctl configuration and communication over lo device"
++else
++	tst_resm TFAIL "ioctl configuration and communication over lo device"
++fi
++
++
++tst_exit
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
 Slashdot TV.  
