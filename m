@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XPUtQ-0002tj-8L
-	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 11:07:56 +0000
-Date: Thu, 4 Sep 2014 13:07:43 +0200
-From: chrubis@suse.cz
-Message-ID: <20140904110743.GA4322@rei.suse.cz>
-References: <1409672758-32402-1-git-send-email-zlang@redhat.com>
-	<20140904103019.GB3151@rei.suse.cz> <5408450C.6000201@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1XQuzh-00058p-72
+	for ltp-list@lists.sourceforge.net; Mon, 08 Sep 2014 09:12:17 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XQuzd-0002WB-0m
+	for ltp-list@lists.sourceforge.net; Mon, 08 Sep 2014 09:12:17 +0000
+Message-ID: <540D72E3.3040009@oracle.com>
+Date: Mon, 08 Sep 2014 13:12:03 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5408450C.6000201@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] [PATCH-V2]fs/fsstress: prevent orphan and
- zombie processes to be left
+References: <1291208815.23057199.1408691123381.JavaMail.zimbra@redhat.com>
+	<53FAF335.7090506@oracle.com>
+In-Reply-To: <53FAF335.7090506@oracle.com>
+Subject: Re: [LTP] [PATCH v4 3/3] fcntl16: Skip fcntl16 test block2 and
+ block3 on NFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,38 +30,135 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zorro Lang <zlang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Sorry about that. That's a mistake and not intended.
-> I said it took from xfstests in my first email about this patch. I just 
-> forgot to do that after I ping you and re-created this patch several 
-> times. I will notice that in the future. Sorry again.
-> 
-> BTW, I am 'not' do nothing and just verbatim copy from xfstests. LTP 
-> fsstress.c is not all same with xfstests fsstress.c, I have tried to 
-> make the patch suitable for LTP, and did many test about the patch, to 
-> make sure it's good.
+Hi.
 
-Ok. This information is exactly what should have been included in the
-commit message. I.e. include the original message from the xfstest
-commit and add a paragraph about what you did.
+Could anybody look at the series?
 
-> You can write the original authors and without my name, I just hope this 
-> feature can be in fsstress. That will useful for our test.
+If there are no objections, I'm going to push it tomorrow.
 
-The right solution is to keep the original signed-off-by and since you
-ported the code back to LTP you should also add your signed-off-by.
+Thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On 08/25/2014 12:26 PM, Stanislav Kholmanskikh wrote:
+>
+>
+> On 08/22/2014 11:05 AM, Xiong Zhou wrote:
+>>
+>> According to nfs(5), NLM supports advisory file locks only. So skip
+>> fcntl16 test block2 and block3 if NFS.
+>>
+>> Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+>> ---
+>
+> The entire series looks good for me.
+>
+> Just found removed spaces below, but there is no need to resend the
+> patch/series because it can be fixed at commit time. :)
+>
+> Thanks.
+>
+> Reviewed-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+>
+>
+>>    testcases/kernel/syscalls/fcntl/fcntl16.c | 27 +++++++++++++++++++++------
+>>    1 file changed, 21 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
+>> index 44b6a80..67d3b17 100644
+>> --- a/testcases/kernel/syscalls/fcntl/fcntl16.c
+>> +++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
+>> @@ -51,6 +51,8 @@
+>>    #include <sys/types.h>
+>>    #include <sys/wait.h>
+>>
+>> +#include "tst_fs_type.h"
+>> +
+>>    #define SKIPVAL 0x0f00
+>>    //#define       SKIP    SKIPVAL, 0, 0L, 0L, IGNORED
+>>    #define SKIP 0,0,0L,0L,0
+>> @@ -62,6 +64,7 @@
+>>    #define	NOBLOCK		2	/* immediate success */
+>>    #define	WILLBLOCK	3	/* blocks, succeeds, parent unlocks records */
+>>    #define	TIME_OUT	10
+>> +int NO_NFS = 1;			/* Test on NFS or not */
+>>
+>>    typedef struct {
+>>    	struct flock parent_a;
+>> @@ -412,6 +415,10 @@ void setup(void)
+>>
+>>    	tst_tmpdir();
+>>
+>> +	/* On NFS or not */
+>> +	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
+>> +		NO_NFS = 0;
+>> +
+>>    	/* set up temp filename */
+>>    	sprintf(tmpname, "fcntl4.%d", parent);
+>>
+>> @@ -689,13 +696,17 @@ int main(int ac, char **av)
+>>    		 * locking
+>>    		 */
+>>    		tst_resm(TINFO, "Entering block 2");
+>> -		if (run_test(O_CREAT | O_RDWR | O_TRUNC, S_ISGID |
+>> +		if (NO_NFS && run_test(O_CREAT | O_RDWR | O_TRUNC, S_ISGID |
+>>    			     S_IRUSR | S_IWUSR, 0, 11)) {
+>>    			tst_resm(TINFO, "Test case 2: with mandatory record "
+>>    				 "locking FAILED");
+>>    		} else {
+>> -			tst_resm(TINFO, "Test case 2: with mandatory record "
+>> -				 "locking PASSED");
+>> +			if (NO_NFS)
+>> +				tst_resm(TINFO, "Test case 2: with mandatory"
+>> +					 "record locking PASSED");
+> We need a space here
+>
+>> +			else
+>> +				tst_resm(TCONF, "Test case 2: NFS does not"
+>> +					 " support mandatory locking");
+>>    		}
+>>    		tst_resm(TINFO, "Exiting block 2");
+>>
+>> @@ -705,13 +716,17 @@ int main(int ac, char **av)
+>>    		 * and no delay
+>>    		 */
+>>    		tst_resm(TINFO, "Entering block 3");
+>> -		if (run_test(O_CREAT | O_RDWR | O_TRUNC | O_NDELAY,
+>> +		if (NO_NFS && run_test(O_CREAT | O_RDWR | O_TRUNC | O_NDELAY,
+>>    			     S_ISGID | S_IRUSR | S_IWUSR, 0, 11)) {
+>>    			tst_resm(TINFO, "Test case 3: mandatory locking with "
+>>    				 "NODELAY FAILED");
+>>    		} else {
+>> -			tst_resm(TINFO, "Test case 3: mandatory locking with "
+>> -				 "NODELAY PASSED");
+>> +			if (NO_NFS)
+>> +				tst_resm(TINFO, "Test case 3: mandatory"
+>> +					 "locking with NODELAY PASSED");
+> and here
+>> +			else
+>> +				tst_resm(TCONF, "Test case 3: NFS does not"
+>> +					 " support mandatory locking");
+>>    		}
+>>    		tst_resm(TINFO, "Exiting block 3");
+>>    	}
+>>
+>
+> ------------------------------------------------------------------------------
+> Slashdot TV.
+> Video for Nerds.  Stuff that matters.
+> http://tv.slashdot.org/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
