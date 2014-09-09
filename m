@@ -1,32 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <shuang.qiu@oracle.com>) id 1XREwH-0003Qu-AG
-	for ltp-list@lists.sourceforge.net; Tue, 09 Sep 2014 06:30:05 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XREwG-0005Dl-D7
-	for ltp-list@lists.sourceforge.net; Tue, 09 Sep 2014 06:30:05 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s896Twsc029874
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Sep 2014 06:29:58 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s896TvAM027359
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Sep 2014 06:29:58 GMT
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	s896TuqK029807
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Sep 2014 06:29:56 GMT
-From: shuang.qiu@oracle.com
-Date: Tue,  9 Sep 2014 14:29:26 +0800
-Message-Id: <1410244166-5559-1-git-send-email-shuang.qiu@oracle.com>
-Subject: [LTP] [PATCH] pan/ltp-pan.c: TCONF testcases should not be written
-	to failcmdfile
+	(envelope-from <metan@suse.de>) id 1XRKMH-0007Li-CP
+	for ltp-list@lists.sourceforge.net; Tue, 09 Sep 2014 12:17:17 +0000
+Date: Tue, 9 Sep 2014 14:17:01 +0200
+From: chrubis@suse.cz
+Message-ID: <20140909121701.GA3891@rei>
+References: <1406553022-3436-1-git-send-email-alexey.kodanev@oracle.com>
+	<1406553022-3436-2-git-send-email-alexey.kodanev@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1406553022-3436-2-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH 2/2] network/stress/broken_ip: move common code to
+ library
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,38 +23,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
+Hi!
+> +tst_set_ipv4_addr()
+> +{
+> +	# Initialize test interfaces
+> +	# The number of the test link where tests run
+> +	LINK_NUM=${LINK_NUM:-0}
+> +
+> +	initialize_if lhost ${LINK_NUM}
+> +	initialize_if rhost ${LINK_NUM}
+> +
+> +	# Netmask of the IPv4 network
+> +	network_mask=24
+> +
+> +	tst_resm TINFO "set remote ipv4 addr '$IPV4_NETWORK $RHOST_IPV4_HOST'"
+> +	# Set IPv4 addresses to the interfaces
+> +	set_ipv4addr rhost $LINK_NUM $IPV4_NETWORK $RHOST_IPV4_HOST
+> +	if [ $? -ne 0 ]; then
+> +		tst_brkm TBROK "Failed to add any IP address at the remote host"
+> +	fi
+> +
+> +	tst_resm TINFO "set local ipv4 addr '$IPV4_NETWORK $LHOST_IPV4_HOST'"
+> +	set_ipv4addr lhost $LINK_NUM $IPV4_NETWORK $LHOST_IPV4_HOST
+> +	if [ $? -ne 0 ]; then
+> +		tst_brkm TBROK "Failed to add any IP address at the local host"
+> +	fi
+> +}
 
-After commit patch 6f6878f4e1406d79cae53564777c5e1245d2a124,the
-testcases which retrun TCONF should not be written to failcmdfile.
+I would love to get the code from initialize_if and set_ipv4addr to be
+cleaned and moved here to the test_net.sh but that would require
+changing all the stress testcases first.
 
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
----
- pan/ltp-pan.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+The changes looks good to me, acked.
 
-diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
-index 957199a..711c16a 100644
---- a/pan/ltp-pan.c
-+++ b/pan/ltp-pan.c
-@@ -802,7 +802,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
- 					fflush(logfile);
- 				}
- 
--				if ((failcmdfile != NULL) && (w != 0)) {
-+				if ((failcmdfile != NULL) && (w != 0) && (w != TCONF)) {
- 					fprintf(failcmdfile, "%s %s\n",
- 						running[i].cmd->name,
- 						running[i].cmd->cmdline);
 -- 
-1.7.7
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Want excitement?
