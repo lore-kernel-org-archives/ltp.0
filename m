@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XRLTU-00012e-Sm
-	for ltp-list@lists.sourceforge.net; Tue, 09 Sep 2014 13:28:48 +0000
-Date: Tue, 9 Sep 2014 15:28:33 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XRLf3-0002Sf-VP
+	for ltp-list@lists.sourceforge.net; Tue, 09 Sep 2014 13:40:45 +0000
+Date: Tue, 9 Sep 2014 15:40:27 +0200
 From: chrubis@suse.cz
-Message-ID: <20140909132833.GA5193@rei>
-References: <1408099965-15748-2-git-send-email-mmarhefk@redhat.com>
-	<1409315004-11702-1-git-send-email-mmarhefk@redhat.com>
+Message-ID: <20140909134027.GC5193@rei>
+References: <1408115809-18653-1-git-send-email-mmarhefk@redhat.com>
+	<1409315070-11748-1-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1409315004-11702-1-git-send-email-mmarhefk@redhat.com>
-Subject: Re: [LTP] [PATCH 2/3 v3] containers: added mountns dir and
- mountns/mountns01.c
+In-Reply-To: <1409315070-11748-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH 3/3 v4] containers: added mountns/mountns02.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,51 +29,8 @@ To: Matus Marhefka <mmarhefk@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <sys/mount.h>
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "usctest.h"
-> +#include "libclone.h"
-> +#include "safe_macros.h"
-> +#include "safe_file_ops.h"
-> +#include "mountns_helper.h"
-> +
-> +
-> +#define DIRA "A"
-> +#define DIRB "B"
-> +char *TCID	= "mountns01";
-> +int TST_TOTAL	= 1;
-> +
-> +
-> +/* checks if following mountflags are defined */
-
-This comment is close to "commenting the obvious" category. Everybody
-can tell what the preprocessor #if below do. I would personaly omit this
-comment.
-
-> +#if defined(MS_SHARED) && defined(MS_PRIVATE) && defined(MS_REC)
-> +
-> +static void cleanup(void)
-> +{
-> +	umount(DIRA);
-> +	umount(DIRA);
-> +	umount(DIRB);
-> +	tst_rmdir();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_require_root(NULL);
-> +	check_newns();	/* from mountns_helper.h */
-
-Here as well. It's not a good idea to comment where functions are
-implemented, it only makes the source code longer and less clear.
-
-
-The rest of the test looks good to me.
+The same two minor nits about the comments apply here as well, otherwise
+it looks good.
 
 -- 
 Cyril Hrubis
