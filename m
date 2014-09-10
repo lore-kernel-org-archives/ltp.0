@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vgoyal@redhat.com>) id 1XUysG-0004Qc-7O
-	for ltp-list@lists.sourceforge.net; Fri, 19 Sep 2014 14:09:24 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XUysF-0000P3-2f
-	for ltp-list@lists.sourceforge.net; Fri, 19 Sep 2014 14:09:24 +0000
-Date: Fri, 19 Sep 2014 09:22:36 -0400
-From: Vivek Goyal <vgoyal@redhat.com>
-Message-ID: <20140919132236.GB2190@redhat.com>
-References: <145412866.25258463.1411119061796.JavaMail.zimbra@redhat.com>
-	<293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
+	(envelope-from <jstancek@redhat.com>) id 1XRbX8-0006T0-1C
+	for ltp-list@lists.sourceforge.net; Wed, 10 Sep 2014 06:37:38 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XRbX6-00078g-Ev
+	for ltp-list@lists.sourceforge.net; Wed, 10 Sep 2014 06:37:37 +0000
+Date: Wed, 10 Sep 2014 02:37:24 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1984956924.20366068.1410331044710.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1410326757.6630.1.camel@G08JYZSD130126>
+References: <1410326757.6630.1.camel@G08JYZSD130126>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [RFC] autokdump - automated kdump testsuite
+Subject: Re: [LTP] [PATCH] tst_ncpus_conf: Instead of the old tst_ncpus_max
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,59 +27,186 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, kexec kdump redhat mailing list <kexec-kdump-list@redhat.com>, kexec <kexec@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, crash-utility <crash-utility@redhat.com>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Fri, Sep 19, 2014 at 05:52:25AM -0400, CAI Qian wrote:
-> I plan to release an automated kdump testsuite that will be
 
-So will this be a standalone test suit? Can it be merged with
-something already existing say, LTP.
 
-> focus on testing kernel and the crash utility. It should work
-> for all major distros since it will use none of distro-specific
-> stuff, and also support different arches including x86, ARM,
-> PPC64 and s390x.
+----- Original Message -----
+> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+> To: "ltp-list" <ltp-list@lists.sourceforge.net>
+> Sent: Wednesday, 10 September, 2014 7:25:57 AM
+> Subject: [LTP] [PATCH] tst_ncpus_conf: Instead of the old tst_ncpus_max
 > 
-> It does the following:
-> 1) check if there is a memory reserved for kdump. If not,
->    reserve the memory and reboot the system.
-> 2) once the system is back, load kexec on panic and
->    prepare a separate initramfs that including needed
->    modules to load a local filesystem and necessary utilities
-
-So you will write logic to prepare custom initramfs or will rely
-on dracut or some other utility for that.
-
->    in order to analyse /proc/vmcore in the 2nd kernel.
-> 3) trigger the system crash using methods like sysrq-c, NMI,
->    and panic_on_hung_task etc.
-> 4) in the 2nd kernel, mount a filesystem and use the crash
->    utility to analyse /proc/vmcore. Then, gather the analyse
->    logs, serial console output, dmesg etc into the filesystem.
-
-Why not save core and boot back in first kernel and then analyze. 
-
-Trying to work directly with /proc/vmcore does not test makedumfile
-which everybody uses. Also it will require more memory to be reserved
-and packing crash and debug vmlinux into initramfs.
-
-I think being able to test makedumpfile also is the key here.
-
-Thanks
-Vivek 
-> 5) reboot back into the 1st kernel.
+> In commit 84d608326c59b7177c8ad4228fbcd21569b4f2fd we have updated
+> tst_ncpus_max
+> function. But smt_smp_enabled.sh and smt_smp_affinity.sh need the old
+> tst_ncpus_max, otherwise they will fail. Use tst_ncpus_conf instead of the
+> old
+> tst_ncpus_max function.
 > 
-> implementation:
-> It will setup a daemon to handle reboots.
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+
+Looks good to me, ACK.
+
+Regards,
+Jan
+
+> ---
+>  include/test.h                                         |  1 +
+>  lib/tst_cpu.c                                          | 18
+>  ++++++++++++------
+>  .../hyperthreading/ht_affinity/smt_smp_affinity.sh     |  2 +-
+>  .../sched/hyperthreading/ht_enabled/smt_smp_enabled.sh |  2 +-
+>  tools/apicmds/.gitignore                               |  1 +
+>  tools/apicmds/Makefile                                 |  5 +++--
+>  tools/apicmds/ltpapicmd.c                              |  2 ++
+>  7 files changed, 21 insertions(+), 10 deletions(-)
 > 
-> plan:
-> I might also to test the makedumpfile all together later.
->    CAI Qian
+> diff --git a/include/test.h b/include/test.h
+> index b97d9a3..775ba39 100644
+> --- a/include/test.h
+> +++ b/include/test.h
+> @@ -270,6 +270,7 @@ int tst_get_path(const char *prog_name, char *buf, size_t
+> buf_len);
+>  
+>  /* lib/tst_cpu.c */
+>  long tst_ncpus(void);
+> +long tst_ncpus_conf(void);
+>  long tst_ncpus_max(void);
+>  
+>  /* lib/tst_run_cmd.c
+> diff --git a/lib/tst_cpu.c b/lib/tst_cpu.c
+> index b492dc2..033155e 100644
+> --- a/lib/tst_cpu.c
+> +++ b/lib/tst_cpu.c
+> @@ -33,6 +33,17 @@ long tst_ncpus(void)
+>  	return ncpus;
+>  }
+>  
+> +long tst_ncpus_conf(void)
+> +{
+> +	long ncpus_conf = -1;
+> +#ifdef _SC_NPROCESSORS_CONF
+> +	ncpus_conf = SAFE_SYSCONF(NULL, _SC_NPROCESSORS_CONF);
+> +#else
+> +	tst_brkm(TBROK, NULL, "could not determine number of CPUs configured");
+> +#endif
+> +	return ncpus_conf;
+> +}
+> +
+>  #define KERNEL_MAX "/sys/devices/system/cpu/kernel_max"
+>  
+>  long tst_ncpus_max(void)
+> @@ -56,12 +67,7 @@ long tst_ncpus_max(void)
+>  		ncpus_max++;
+>  	} else {
+>  		/* fall back to _SC_NPROCESSORS_CONF */
+> -#ifdef _SC_NPROCESSORS_CONF
+> -		ncpus_max = SAFE_SYSCONF(NULL, _SC_NPROCESSORS_CONF);
+> -#else
+> -		tst_brkm(TBROK, NULL, "could not determine number of CPUs"
+> -			" configured");
+> -#endif
+> +		ncpus_max = tst_ncpus_conf();
+>  	}
+>  	return ncpus_max;
+>  }
+> diff --git
+> a/testcases/kernel/sched/hyperthreading/ht_affinity/smt_smp_affinity.sh
+> b/testcases/kernel/sched/hyperthreading/ht_affinity/smt_smp_affinity.sh
+> index 26d564b..10eb250 100755
+> --- a/testcases/kernel/sched/hyperthreading/ht_affinity/smt_smp_affinity.sh
+> +++ b/testcases/kernel/sched/hyperthreading/ht_affinity/smt_smp_affinity.sh
+> @@ -54,7 +54,7 @@ else
+>  fi
+>  
+>  no_of_processor=`tst_ncpus`
+> -no_of_cpu=`tst_ncpus_max`
+> +no_of_cpu=`tst_ncpus_conf`
+>  
+>  if [ $no_of_processor -lt $no_of_cpu ];then
+>  
+> diff --git
+> a/testcases/kernel/sched/hyperthreading/ht_enabled/smt_smp_enabled.sh
+> b/testcases/kernel/sched/hyperthreading/ht_enabled/smt_smp_enabled.sh
+> index f4e23b5..c92d580 100755
+> --- a/testcases/kernel/sched/hyperthreading/ht_enabled/smt_smp_enabled.sh
+> +++ b/testcases/kernel/sched/hyperthreading/ht_enabled/smt_smp_enabled.sh
+> @@ -51,7 +51,7 @@ else
+>  fi
+>  
+>  no_of_processor=`tst_ncpus`
+> -no_of_cpu=`tst_ncpus_max`
+> +no_of_cpu=`tst_ncpus_conf`
+>  
+>  if [ $no_of_processor -lt $no_of_cpu ];then
+>  	test_op="Enable:/sys/devices/system/cpu/cpuX/online"
+> diff --git a/tools/apicmds/.gitignore b/tools/apicmds/.gitignore
+> index 0ac3e43..b4f7922 100644
+> --- a/tools/apicmds/.gitignore
+> +++ b/tools/apicmds/.gitignore
+> @@ -6,6 +6,7 @@ tst_get_unused_port
+>  tst_kvercmp
+>  tst_kvercmp2
+>  tst_ncpus
+> +tst_ncpus_conf
+>  tst_ncpus_max
+>  tst_res
+>  tst_resm
+> diff --git a/tools/apicmds/Makefile b/tools/apicmds/Makefile
+> index aa3eefe..9c9472d 100644
+> --- a/tools/apicmds/Makefile
+> +++ b/tools/apicmds/Makefile
+> @@ -26,8 +26,9 @@ include $(top_srcdir)/include/mk/testcases.mk
+>  
+>  CPPFLAGS		+= -D_GNU_SOURCE
+>  
+> -MAKE_TARGETS		:= $(addprefix tst_,brk brkm exit flush kvercmp kvercmp2 \
+> -				res resm ncpus ncpus_max get_unused_port fs_has_free)
+> +MAKE_TARGETS		:= $(addprefix tst_,brk brkm exit flush kvercmp \
+> +			     kvercmp2 res resm ncpus ncpus_conf ncpus_max \
+> +			     get_unused_port fs_has_free)
+>  
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>  
+> diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
+> index c7bffa1..5238328 100644
+> --- a/tools/apicmds/ltpapicmd.c
+> +++ b/tools/apicmds/ltpapicmd.c
+> @@ -441,6 +441,8 @@ int main(int argc, char *argv[])
+>  		apicmd_kvercmp2(argc, argv);
+>  	} else if (strcmp(cmd_name, "tst_ncpus") == 0) {
+>  		printf("%li\n", tst_ncpus());
+> +	} else if (strcmp(cmd_name, "tst_ncpus_conf") == 0) {
+> +		printf("%li\n", tst_ncpus_conf());
+>  	} else if (strcmp(cmd_name, "tst_ncpus_max") == 0) {
+>  		printf("%li\n", tst_ncpus_max());
+>  	} else if (strcmp(cmd_name, "tst_get_unused_port") == 0) {
+> --
+> 1.9.3
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Want excitement?
+> Manually upgrade your production database.
+> When you want reliability, choose Perforce
+> Perforce version control. Predictably reliable.
+> http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  Video for Nerds.  Stuff that Matters.
-http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
