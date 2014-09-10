@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XUy6r-0001ub-Gh
-	for ltp-list@lists.sourceforge.net; Fri, 19 Sep 2014 13:20:25 +0000
-Date: Fri, 19 Sep 2014 15:20:11 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XRkpH-00085l-8X
+	for ltp-list@lists.sourceforge.net; Wed, 10 Sep 2014 16:32:59 +0000
+Date: Wed, 10 Sep 2014 18:32:42 +0200
 From: chrubis@suse.cz
-Message-ID: <20140919132010.GC29490@rei>
-References: <1408610694-12939-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<5416DB00.5070303@oracle.com>
+Message-ID: <20140910163242.GC16633@rei>
+References: <8a36059fe9afea205712b2a1c9a0ca678b22b927.1410353116.git.jstancek@redhat.com>
+	<20140910151804.GA16633@rei>
+	<1162485694.20768561.1410363325469.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5416DB00.5070303@oracle.com>
-Subject: Re: [LTP] [RFC/PATCH] ltpstress.sh: added cmdline to set the block
- device
+In-Reply-To: <1162485694.20768561.1410363325469.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] add clock_gettime04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,23 +26,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Could anybody help to review this change, please?
+> Is it implemented? I don't see any lib function handling it:
+> 
+> $ grep "TRERRNO" -r .
+> ./include/tst_res_flags.h:#define TRERRNO       0x300   /* Capture errno information from TEST_RETURN to
 
-Sorry, I've read the email but forgot to reply the last time.
+I would call that a bug, feel free to push a patch fixing this.
 
-Looks good, acked.
+> > > +	if (opt_testtime) {
+> > > +		testtime = atoi(opt_testtimestr);
+> > > +		if (testtime <= 0) {
+> > > +			tst_brkm(TBROK, NULL, "Invalid arg for -T: %s",
+> > > +				opt_testtimestr);
+> > > +		}
+> > > +	}
+> > > +
+> > > +	setup();
+> > > +
+> > > +	test(testtime);
+> > 
+> > Shouldn't the test(testtime) be still inside the for () loop with
+> > TEST_LOOPING() because otherwise the test will gladly accept and ignore
+> > the standard parameters (-i -I etc).
+> 
+> I thought the -T would cover both, but I can add it back, with some
+> check to break that loop if anything fails.
+
+It would and wouldn't. Functionally it would, but the test would accept
+parameters that are completly ignored, which is bug from a user
+perspective.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Slashdot TV.  Video for Nerds.  Stuff that Matters.
-http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
