@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <qcai@redhat.com>) id 1XUus2-0001wO-VW
-	for ltp-list@lists.sourceforge.net; Fri, 19 Sep 2014 09:52:54 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XUus1-0007rJ-Nr
-	for ltp-list@lists.sourceforge.net; Fri, 19 Sep 2014 09:52:54 +0000
-Date: Fri, 19 Sep 2014 05:52:25 -0400 (EDT)
-From: CAI Qian <caiqian@redhat.com>
-Message-ID: <293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
-In-Reply-To: <145412866.25258463.1411119061796.JavaMail.zimbra@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XS14x-00068X-O5
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 09:54:15 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XS14w-0005Hd-7S
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 09:54:15 +0000
+Date: Thu, 11 Sep 2014 05:54:07 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1911165758.21206007.1410429247418.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1230443390.31148244.1410420886427.JavaMail.zimbra@redhat.com>
+References: <1409047992-15316-1-git-send-email-xzhou@redhat.com>
+	<1230443390.31148244.1410420886427.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [RFC] autokdump - automated kdump testsuite
+Subject: Re: [LTP] [PATCH 0/3] fix old commit about skipping tests on NFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,39 +28,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, crash-utility <crash-utility@redhat.com>, kexec <kexec@lists.infradead.org>, kexec kdump redhat mailing list <kexec-kdump-list@redhat.com>
+To: Xiong Zhou <xzhou@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-I plan to release an automated kdump testsuite that will be
-focus on testing kernel and the crash utility. It should work
-for all major distros since it will use none of distro-specific
-stuff, and also support different arches including x86, ARM,
-PPC64 and s390x.
 
-It does the following:
-1) check if there is a memory reserved for kdump. If not,
-   reserve the memory and reboot the system.
-2) once the system is back, load kexec on panic and
-   prepare a separate initramfs that including needed
-   modules to load a local filesystem and necessary utilities
-   in order to analyse /proc/vmcore in the 2nd kernel.
-3) trigger the system crash using methods like sysrq-c, NMI,
-   and panic_on_hung_task etc.
-4) in the 2nd kernel, mount a filesystem and use the crash
-   utility to analyse /proc/vmcore. Then, gather the analyse
-   logs, serial console output, dmesg etc into the filesystem.
-5) reboot back into the 1st kernel.
 
-implementation:
-It will setup a daemon to handle reboots.
+----- Original Message -----
+> From: "Xiong Zhou" <xzhou@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 11 September, 2014 9:34:46 AM
+> Subject: Re: [LTP] [PATCH 0/3] fix old commit about skipping tests on NFS
+> 
+> Ping :)
 
-plan:
-I might also to test the makedumpfile all together later.
-   CAI Qian
+Hi,
+
+I see this is a reply, but I can't find any other message from this thread
+in my inbox or in web archives:
+  http://thread.gmane.org/gmane.linux.ltp/21550
+
+Can you re-send the series?
+
+Regards,
+Jan
+
+> 
+> ----- Original Message -----
+> > From: "Xiong Zhou" <xzhou@redhat.com>
+> > To: ltp-list@lists.sourceforge.net
+> > Cc: "stanislav kholmanskikh" <stanislav.kholmanskikh@oracle.com>,
+> > xzhou@redhat.com
+> > Sent: Tuesday, August 26, 2014 6:13:09 PM
+> > Subject: [PATCH 0/3] fix old commit about skipping tests on NFS
+> > 
+> > Fix old commit 5387ba03ce8eaddc7ec330ed03e579eed92596cc
+> > Skip only one block in fcntl14 instead of the whole case.
+> > splice/tee/utime pass on NFS now, so update the obsolete
+> > info.
+> > 
+> > 
+> > Xiong Zhou (3):
+> >   fcntl14: dup code clean up
+> >   fcntl14: skip test block2 on NFS
+> >   splice01/tee01/utime: test back on NFS
+> > 
+> >  testcases/kernel/syscalls/fcntl/fcntl14.c   | 85
+> >  +++++++++++++----------------
+> >  testcases/kernel/syscalls/splice/splice01.c |  5 --
+> >  testcases/kernel/syscalls/tee/tee01.c       |  5 --
+> >  testcases/kernel/syscalls/utime/utime01.c   |  1 -
+> >  testcases/kernel/syscalls/utime/utime02.c   |  1 -
+> >  testcases/kernel/syscalls/utime/utime03.c   |  1 -
+> >  6 files changed, 38 insertions(+), 60 deletions(-)
+> > 
+> > --
+> > 1.8.3.1
+> > 
+> > 
+> 
+> ------------------------------------------------------------------------------
+> Want excitement?
+> Manually upgrade your production database.
+> When you want reliability, choose Perforce
+> Perforce version control. Predictably reliable.
+> http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  Video for Nerds.  Stuff that Matters.
-http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
