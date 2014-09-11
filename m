@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jjaburek@redhat.com>) id 1XS60U-0008No-47
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 15:09:58 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XS60R-0007zO-8a
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 15:09:58 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s8BF9mhS027007
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Sep 2014 11:09:48 -0400
-Message-ID: <5411BB3A.70308@redhat.com>
-Date: Thu, 11 Sep 2014 17:09:46 +0200
-From: Jiri Jaburek <jjaburek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XS3K2-0003GK-E9
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 12:17:58 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XS3Jv-0006ps-GJ
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 12:17:58 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s8BCHp2K013588
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Sep 2014 20:17:51 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Thu, 11 Sep 2014 20:15:27 +0800
+Message-ID: <1410437727-14764-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1409047170-18251-1-git-send-email-mmarhefk@redhat.com>	<1409319967-12730-1-git-send-email-mmarhefk@redhat.com>
-	<1803448098.18473481.1409840011670.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1803448098.18473481.1409840011670.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH 1/2 v2] containers: added mountns/mountns03.c
+Subject: [LTP] [PATCH] hotplug/cpu_hotplug: add it to run default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,244 +29,227 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 09/04/2014 04:13 PM, Jan Stancek wrote:
-> 
-> 
-> 
-> 
-> ----- Original Message -----
->> From: "Matus Marhefka" <mmarhefk@redhat.com>
->> To: ltp-list@lists.sourceforge.net
->> Sent: Friday, 29 August, 2014 3:46:07 PM
->> Subject: [LTP] [PATCH 1/2 v2] containers: added mountns/mountns03.c
->>
->> * Tests a slave mount: slave mount is like a shared mount except that
->>   mount and umount events only propagate towards it
->>
->> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
->> ---
->>  runtest/containers                              |   1 +
->>  testcases/kernel/containers/.gitignore          |   1 +
->>  testcases/kernel/containers/mountns/mountns03.c | 245
->>  ++++++++++++++++++++++++
->>  3 files changed, 247 insertions(+)
->>  create mode 100644 testcases/kernel/containers/mountns/mountns03.c
->>
->> diff --git a/runtest/containers b/runtest/containers
->> index 56977c0..3653c9c 100644
->> --- a/runtest/containers
->> +++ b/runtest/containers
->> @@ -58,3 +58,4 @@ utstest_clone_5 utstest clone 5
->>  
->>  mountns01 mountns01
->>  mountns02 mountns02
->> +mountns03 mountns03
->> diff --git a/testcases/kernel/containers/.gitignore
->> b/testcases/kernel/containers/.gitignore
->> index f175296..5b96cb9 100644
->> --- a/testcases/kernel/containers/.gitignore
->> +++ b/testcases/kernel/containers/.gitignore
->> @@ -1,3 +1,4 @@
->>  /check_for_unshare
->>  mountns/mountns01
->>  mountns/mountns02
->> +mountns/mountns03
->> diff --git a/testcases/kernel/containers/mountns/mountns03.c
->> b/testcases/kernel/containers/mountns/mountns03.c
->> new file mode 100644
->> index 0000000..acca44c
->> --- /dev/null
->> +++ b/testcases/kernel/containers/mountns/mountns03.c
->> @@ -0,0 +1,245 @@
->> +/* Copyright (c) 2014 Red Hat, Inc.
->> + *
->> + * This program is free software: you can redistribute it and/or modify
->> + * it under the terms of version 2 the GNU General Public License as
->> + * published by the Free Software Foundation.
->> + *
->> + * This program is distributed in the hope that it will be useful,
->> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
->> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
->> + * GNU General Public License for more details.
->> + *
->> + * You should have received a copy of the GNU General Public License
->> + * along with this program.  If not, see <http://www.gnu.org/licenses/>.
->> + ***********************************************************************
->> + * File: mountns03.c
->> + *
->> + * Tests a slave mount: slave mount is like a shared mount except that
->> + * mount and umount events only propagate towards it.
->> + * Description:
->> + * 1. Creates directories "A", "B", "C", "D" and files "A/A", "B/B"
->> + *    "C/C", "D/D"
->> + * 2. Unshares mount namespace and makes it private (so mounts/umounts
->> + *    have no effect on a real system)
-> 
-> Hi,
-> 
->> + * 3. Bind mounts directory "A" to "A" and "B" to "B"
-> 
-> is the "B" to "B" part necessary in this case? First thing child does is
-> it mounts A to B.
-> 
->> + * 4. Makes both directories ("A" and "B") shared
-> 
-> related to above, is it necessary to make B shared?
+Fix test cases' exit status with TCONF on single cpu
+machine, and add it to run default.
 
-The obvious answer would be "yes", because mount namespaces work with
-mount points - if you create a mountpoint, make it shared and *then*
-create a new namespace, both namespaces are going to share that mount
-point and any change to it (ie. bind mount over it) is going to be
-"propagated" to both (or all namespaces that share it).
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ scenario_groups/default                                      |  1 +
+ .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh    |  7 ++++---
+ .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh    |  9 +++++++--
+ .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh    |  9 +++++++--
+ .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh    |  5 +++++
+ .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh    |  9 +++++++--
+ .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh    |  7 ++++++-
+ .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh    | 10 ++++++++++
+ .../kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh | 12 ++++++++++++
+ 9 files changed, 59 insertions(+), 10 deletions(-)
 
-This is in contrast with slave mountpoints, which only "receive"
-propagation events, not "send" them to other namespaces.
-
-The logic however doesn't end there, a mountpoint can be both "shared"
-and "slave" at the same time, essentially "receiving" propagation events
-from one group of namespaces and "sending" local propagation events to
-a different group.
-
-However as the test logic is not really simple, I don't know if bind
-mounting "B" is in fact necessary for this test case, meaning the
-answer is not obvious (see also further below).
-
-
-I guess it could be simplified and extended by the "slave + shared" case
-like ie.:
-
-(the following expects A and B to be directories, with A bind-mounted
-to itself, creating a mount point, made private, with A having file
-a and B having file b, essentially A/a and B/b)
-(also, X, Y and Z are namespaces)
-
-To set-up:
-
-  private:
-    X) create Y
-
-  shared:
-    X) make A shared
-    X) create Y
-
-  slave:
-    X) make A shared
-    X) create Y
-    Y) make A slave
-
-  slave-shared:
-    X) make A shared
-    X) create Y
-    Y) make A slave
-    Y) make A shared
-    Y) create Z
-
-To test/verify:
-
-  private:
-    X) bind mount B over A
-    Y) see A/a
-    X) umount A
-    AND
-    Y) bind mount B over A
-    X) see A/a
-    Y) umount A
-
-  shared:
-    X) bind mount B over A
-    Y) see A/b
-    X) umount A
-    AND
-    Y) bind mount B over A
-    X) see A/b
-    Y) umount A
-
-  slave:
-    X) bind mount B over A
-    Y) see A/b
-    X) umount A
-    AND
-    Y) bind mount B over A
-    X) see A/a  # slave cannot propagate up (to master)
-    Y) umount A
-
-  slave-shared:
-    X) bind mount B over A
-    Y) see A/b
-    Z) see A/b
-    X) umount
-    AND
-    Y) bind mount B over A
-    X) see A/a  # slave cannot propagate up
-    Z) see A/b  # Z shares A with Y
-    Y) umount A
-    AND
-    Z) bind mount B over A
-    X) see A/a  # slave cannot propagate up
-    Y) see A/b  # Y shares A with Z
-    Z) umount A
-
-This could be continued with ie. slave-shared-slave (by making A slave
-in Z), but that wouldn't exercise any new code paths.
-
-See also the state/transition diagrams in the kernel docs,
-Documentation/filesystems/sharedsubtree.txt
-
-
-On 08/29/2014 03:46 PM, Matus Marhefka wrote:
-> + * 1. Creates directories "A", "B", "C", "D" and files "A/A", "B/B"
-> + *    "C/C", "D/D"
-> + * 2. Unshares mount namespace and makes it private (so mounts/umounts
-> + *    have no effect on a real system)
-> + * 3. Bind mounts directory "A" to "A" and "B" to "B"
-> + * 4. Makes both directories ("A" and "B") shared
-> + * 5. Clones a new child process with CLONE_NEWNS flag - the new child
-> + *    then:
-> + *    a) bind mounts directory "A" to directory "B"
-> + *    b) makes mount "B" a slave of "A"
-> + *    c) bind mounts directory "C" to "A"
-> + *    d) checks that mount in c) propagated also to direcoty "B" (as "B"
-> + *       is a slave of "A"):
-
-So you're checking slave propagation within the same (child) namespace?
-I guess it makes sense, since it should work on mountpoints in general,
-but then how do you "make mount B a slave of A" without a namespace
-switch? Doing MS_SLAVE on a MS_SHARED mountpoint with a single member in
-the peer group (no master) makes it MS_PRIVATE automatically.
-Does the parent process here serve as a placeholder to prevent that?
-
-> + *       - if it does, test #1 passes
-> + *       - if it doesn't, test #1 fails
-> + *    e) bind mounts direcory "D" to "B"
-> + *    f) waits for parent approval to terminate
-> + * 6. Parent checks if directory "A" doesn't contain the file "D"
-> + *    (as slave mount ("B") doesn't forward propagation (to "A")):
-> + *    - if it doesn't, test #2 passes
-> + *    - if it does, test #2 fails
-> + * 7. Parent allows child to terminate
-
-If I understood it correctly,
-
-     parent | child
------------ +--------
-A (shared)  | A (shared)
-            | |
-            | V
-B (shared)  | B (slave)
-
-with the tests being performed on B in the child. This raises a question
-- why do you need B at all? Why not do MS_SLAVE on A? In this sense,
-B (child) is not a slave of B (parent), but a slave of A (parent), with
-B (parent) being slave of A (parent) due to the shared propagation.
-
-(It's why my extended test matrix above doesn't make B a mountpoint,
-because all the testing is done on A).
-
-Thanks & feel free to ask,
-Jiri
+diff --git a/scenario_groups/default b/scenario_groups/default
+index 00da222..3a55702 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -31,3 +31,4 @@ pipes
+ dma_thread_diotest
+ cpuacct
+ can
++cpuhotplug
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+index e1a1855..f91cf88 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+@@ -116,7 +116,8 @@ LOOP_COUNT=1
+ 
+ tst_check_cmds perl
+ 
+-if ! get_all_cpus >/dev/null 2>&1; then
++get_cpus_num
++if [ $? -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
+@@ -124,9 +125,9 @@ if [ -z "${CPU_TO_TEST}" ]; then
+ 	tst_brkm TBROK "usage: ${0##*/} <CPU to online>"
+ fi
+ 
+-# Validate the specified CPU exists
++# Validate the specified CPU is available
+ if ! cpu_is_valid "${CPU_TO_TEST}" ; then
+-	tst_brkm TBROK "cpu${CPU_TO_TEST} not found"
++	tst_brkm TCONF "cpu${CPU_TO_TEST} doesn't support hotplug"
+ fi
+ 
+ if ! cpu_is_online "${CPU_TO_TEST}" ; then
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+index edfdd35..3b33720 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+@@ -54,13 +54,18 @@ done
+ 
+ LOOP_COUNT=1
+ 
++get_cpus_num
++if [ $? -lt 2 ]; then
++	tst_brkm TCONF "system doesn't have required CPU hotplug support"
++fi
++
+ if [ -z "${CPU_TO_TEST}" ]; then
+ 	tst_brkm TBROK "usage: ${0##*/} <CPU to online>"
+ fi
+ 
+-# Validate the specified CPU exists
++# Validate the specified CPU is available
+ if ! cpu_is_valid "${CPU_TO_TEST}" ; then
+-	tst_brkm TBROK "cpu${CPU_TO_TEST} not found"
++	tst_brkm TCONF "cpu${CPU_TO_TEST} doesn't support hotplug"
+ fi
+ 
+ # Validate the specified CPU is online; if not, online it
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+index 61c7ba5..8176fb3 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+@@ -66,13 +66,18 @@ done
+ 
+ LOOP_COUNT=1
+ 
++get_cpus_num
++if [ $? -lt 2 ]; then
++	tst_brkm TCONF "system doesn't have required CPU hotplug support"
++fi
++
+ if [ -z $CPU_TO_TEST ]; then
+ 	tst_brkm TBROK "usage: ${0##*} <CPU to online>"
+ fi
+ 
+-# Verify the specified CPU exists
++# Validate the specified CPU is available
+ if ! cpu_is_valid "${CPU_TO_TEST}" ; then
+-	tst_brkm TBROK "CPU${CPU_TO_TEST} not found"
++	tst_brkm TCONF "cpu${CPU_TO_TEST} doesn't support hotplug"
+ fi
+ 
+ TST_CLEANUP=do_clean
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+index 0e3d5f4..72fbc6e 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+@@ -57,6 +57,11 @@ done
+ 
+ LOOP_COUNT=1
+ 
++get_cpus_num
++if [ $? -lt 2 ]; then
++	tst_brkm TCONF "system doesn't have required CPU hotplug support"
++fi
++
+ TST_CLEANUP=do_clean
+ 
+ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+index 34b160a..bb0e896 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+@@ -54,13 +54,18 @@ LOOP_COUNT=1
+ 
+ tst_check_cmds sar
+ 
++get_cpus_num
++if [ $? -lt 2 ]; then
++	tst_brkm TCONF "system doesn't have required CPU hotplug support"
++fi
++
+ if [ -z "$CPU_TO_TEST" ]; then
+ 	tst_brkm TBROK "usage: ${0##*} <CPU to offline>"
+ fi
+ 
+-# Verify the specified CPU is available
++# Validate the specified CPU is available
+ if ! cpu_is_valid "${CPU_TO_TEST}" ; then
+-	tst_brkm TBROK "CPU${CPU_TO_TEST} not found"
++	tst_brkm TCONF "cpu${CPU_TO_TEST} doesn't support hotplug"
+ fi
+ 
+ # Check that the specified CPU is offline; if not, offline it
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+index d382fc8..2e48242 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+@@ -49,13 +49,18 @@ done
+ 
+ LOOP_COUNT=1
+ 
++get_cpus_num
++if [ $? -lt 2 ]; then
++	tst_brkm TCONF "system doesn't have required CPU hotplug support"
++fi
++
+ if [ -z "$CPU_TO_TEST" ]; then
+ 	tst_brkm TBROK "Usage: ${0##*/} <CPU to offline>"
+ fi
+ 
+ # Verify that the specified CPU is available
+ if ! cpu_is_valid "${CPU_TO_TEST}" ; then
+-	tst_brkm TBROK "CPU${CPU_TO_TEST} not found"
++	tst_brkm TCONF "cpu${CPU_TO_TEST} doesn't support hotplug"
+ fi
+ 
+ # Check that the specified CPU is online; if not, online it
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+index 32bbf1c..723f3de 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+@@ -55,6 +55,11 @@ done
+ 
+ LOOP_COUNT=1
+ 
++get_cpus_num
++if [ $? -lt 2 ]; then
++	tst_brkm TCONF "system doesn't have required CPU hotplug support"
++fi
++
+ if [ ! -d "${KERNEL_DIR}" ]; then
+ 	tst_brkm TCONF "kernel directory - $KERNEL_DIR - does not exist"
+ fi
+@@ -64,6 +69,11 @@ if [ -z "${CPU_TO_TEST}" ]; then
+ 		source code directory>"
+ fi
+ 
++# Validate the specified CPU is available
++if ! cpu_is_valid "${CPU_TO_TEST}" ; then
++	tst_brkm TCONF "cpu${CPU_TO_TEST} doesn't support hotplug"
++fi
++
+ if ! cpu_is_online ${CPU_TO_TEST}; then
+ 	if ! online_cpu ${CPU_TO_TEST}; then
+ 		tst_brkm TBROK "CPU${CPU_TO_TEST} cannot be onlined"
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+index 8ded6bb..dd8472f 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+@@ -97,6 +97,18 @@ offline_cpu()
+     return $RC
+ }
+ 
++# get_cpus_num()
++#
++#  Prints the number of all available CPUs, regardless of whether they're
++#  currently online or offline.
++#
++get_cpus_num()
++{
++	[ -d /sys/devices/system/cpu/cpu0 ] || return -1
++	NUM=`ls /sys/devices/system/cpu/ \
++			| grep -c "cpu[0-9][0-9]*"`
++	return $NUM
++}
+ 
+ # get_all_cpus()
+ #
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
