@@ -1,21 +1,41 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1XYdvP-0005lN-2f
-	for ltp-list@lists.sourceforge.net; Mon, 29 Sep 2014 16:35:47 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XYdvO-0000im-8s
-	for ltp-list@lists.sourceforge.net; Mon, 29 Sep 2014 16:35:47 +0000
-Message-ID: <54298ACA.1050101@oracle.com>
-Date: Mon, 29 Sep 2014 20:37:30 +0400
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1XRu6U-00052G-6F
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 02:27:22 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XRu6T-00027j-8i
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 02:27:22 +0000
+Received: from /spool/local
+	by e8.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+	Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
+	Wed, 10 Sep 2014 22:27:15 -0400
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com
+	[9.57.198.23])
+	by d01dlp03.pok.ibm.com (Postfix) with ESMTP id 146A9C90046
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Sep 2014 22:27:05 -0400 (EDT)
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	s8B2RDCV60489792
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Sep 2014 02:27:13 GMT
+Received: from d01av02.pok.ibm.com (localhost [127.0.0.1])
+	by d01av02.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	s8B2RD1i009397
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Sep 2014 22:27:13 -0400
+Received: from localhost.localdomain ([9.115.120.242])
+	by d01av02.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	s8B2RCeu009337
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Sep 2014 22:27:12 -0400
+Date: Thu, 11 Sep 2014 10:27:09 +0800
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Message-ID: <20140911022709.GA16027@localhost.localdomain>
 MIME-Version: 1.0
-References: <1411649975-17339-1-git-send-email-liuhangbin@gmail.com>
-In-Reply-To: <1411649975-17339-1-git-send-email-liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH v2] ltp-networking/tcp_cmds/finger: fix finger bad
- user and host test
+Content-Disposition: inline
+Subject: [LTP]  [PATCH] ldd01: using 'ppc' to check powerpc arch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,53 +48,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>, LTP List <ltp-list@lists.sourceforge.net>
-Cc: vasily.isaenko@oracle.com, Vincent Hsu <vincent.hsu@linaro.org>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
+Hello,
+The ldd01 always failed on some powerpc systems of ours. I have figured
+out a patch. Please take a look. Thanks in advance.
 
-On 09/25/2014 04:59 PM, Hangbin Liu wrote:
-> Finger always return 0 with bad user and host test. And it also return
-> different error message on different distros. So let's only check stderr
-> message and decide whether the test pass or fail.
->
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->   testcases/network/tcp_cmds/finger/finger01 | 9 +++------
->   1 file changed, 3 insertions(+), 6 deletions(-)
->
-> diff --git a/testcases/network/tcp_cmds/finger/finger01 b/testcases/network/tcp_cmds/finger/finger01
-> index 203d746..89693ff 100755
-> --- a/testcases/network/tcp_cmds/finger/finger01
-> +++ b/testcases/network/tcp_cmds/finger/finger01
-> @@ -115,13 +115,10 @@ do_test2()
->       finger -x 2>&1 1>/dev/null && end_testcase "finger -x should fail"
 
-I would change redirection here to  > /dev/null 2>&1 as we don't need to 
-print stderr.
+On some powerpc system, the 'uname -a' doesn't show 'powerpc' but will
+show 'ppc'. So we need using it to check the powerpc arch.
 
->   
->       tst_resm TINFO "finger -bad user "
-> -    finger $BADUSER 2>&1 1>/dev/null || end_testcase "finger $BADUSER"
-> -    finger @$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host" \
-> -        || end_testcase "finger @$BADHOST"
-> -    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null \
-> -        | grep "finger: unknown host"; then
-> +    [ "finger $BADUSER 2>&1 1>/dev/null" ] || end_testcase "finger $BADUSER"
-> +    [ "finger @$BADHOST 2>&1 1>/dev/null" ] || end_testcase "finger @$BADHOST"
-> +    [ "finger $BADUSER@$BADHOST 2>&1 1>/dev/null" ] || \
+Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+---
+ testcases/commands/ade/ldd/ldd01 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Checking string constants... not command output, forgot to add '$()'?
-
-Besides, it'd be great to get rid of obsolete 'net_cmdlib.sh' in the test.
-
-Thanks
-Alexey
+diff --git a/testcases/commands/ade/ldd/ldd01 b/testcases/commands/ade/ldd/ldd01
+index c60d3ac..569902e 100755
+--- a/testcases/commands/ade/ldd/ldd01
++++ b/testcases/commands/ade/ldd/ldd01
+@@ -47,7 +47,7 @@ do_setup()
+ 	mkdir $TCtmp
+ 
+ 	# Check for ppc64 architecture or x86_64 architecture
+-	if uname -a | grep -iq powerpc; then
++	if uname -a | grep -iq 'ppc\|powerpc'; then
+ 		file lddfile1.obj | grep 64-bit >/dev/null 2>&1
+ 		if [ $? -eq 0 ]; then
+ 			CFLAGS="-m64"
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  Videos for Nerds.  Stuff that Matters.
-http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
