@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cebbert.lkml@gmail.com>) id 1XX42X-00080j-Ty
-	for ltp-list@lists.sourceforge.net; Thu, 25 Sep 2014 08:04:37 +0000
-Received: from mail-oi0-f46.google.com ([209.85.218.46])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XX42W-0008UG-TI
-	for ltp-list@lists.sourceforge.net; Thu, 25 Sep 2014 08:04:37 +0000
-Received: by mail-oi0-f46.google.com with SMTP id x69so1435513oia.5
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 25 Sep 2014 01:04:31 -0700 (PDT)
-Date: Thu, 25 Sep 2014 03:04:26 -0500
-From: Chuck Ebbert <cebbert.lkml@gmail.com>
-Message-ID: <20140925030426.6cb63a6b@as>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xzhou@redhat.com>) id 1XS1fw-0006Ek-Hh
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 10:32:28 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XS1fv-00084N-Hw
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 10:32:28 +0000
+Received: from zmail22.collab.prod.int.phx2.redhat.com
+	(zmail22.collab.prod.int.phx2.redhat.com [10.5.83.26])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id s8BAWLKi004840
+	for <ltp-list@lists.sourceforge.net>; Thu, 11 Sep 2014 06:32:21 -0400
+Date: Thu, 11 Sep 2014 06:32:21 -0400 (EDT)
+From: Xiong Zhou <xzhou@redhat.com>
+Message-ID: <661064059.31210197.1410431541563.JavaMail.zimbra@redhat.com>
+In-Reply-To: <509126638.31210140.1410431519664.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] recvfrom01: Fix broken "invalid flags" test
+Subject: [LTP] [PATCH 3/3] splice01/tee01/utime: test back on NFS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,52 +32,95 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-The recv tests were making invalid assumptions about how flags are
-checked by the kernel. (It makes no explicit tests for invalid flags
-or combinations of flags.) [1]
+NFS support splice(2) tee(2) and utime(2) now.
 
-Replace the bogus test for invalid flags with two new tests that check
-return codes for invalid MSG_OOB and MSG_ERRQUEUE flags.
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+---
+ testcases/kernel/syscalls/splice/splice01.c | 5 -----
+ testcases/kernel/syscalls/tee/tee01.c       | 5 -----
+ testcases/kernel/syscalls/utime/utime01.c   | 1 -
+ testcases/kernel/syscalls/utime/utime02.c   | 1 -
+ testcases/kernel/syscalls/utime/utime03.c   | 1 -
+ 5 files changed, 13 deletions(-)
 
-Note that this introduces a failure on kernels before 3.17, which has
-a bug fix for MSG_ERRQUEUE flag handling. This failure is a legitimate
-bug on these older kernels.
-
-Additional test cases for invalid flags could be added after these two.
-And the recv01 and recvmsg01 tests need still need to be fixed, assuming
-this is the right solution.
-
-[Patch is on top of "Fix wrong args in recvfrom syscall testcase"
- patch I sent yesterday.]
-
-[1] http://marc.info/?t=141148149900006&r=1&w=2
-
---- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-+++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-@@ -115,9 +115,14 @@
- 		    -1, EFAULT, setup1, cleanup1, "invalid recv buffer"},
- /* 6 */
- 	{
--	PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), -1,
-+	PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), MSG_OOB,
- 		    (struct sockaddr *)&from, &fromlen,
--		    -1, EINVAL, setup1, cleanup1, "invalid flags set"},};
-+		    -1, EINVAL, setup1, cleanup1, "invalid MSG_OOB flag set"},
-+/* 7 */
-+	{
-+	PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), MSG_ERRQUEUE,
-+		    (struct sockaddr *)&from, &fromlen,
-+		    -1, EAGAIN, setup1, cleanup1, "invalid MSG_ERRQUEUE flag set"},};
+diff --git a/testcases/kernel/syscalls/splice/splice01.c b/testcases/kernel/syscalls/splice/splice01.c
+index e96ff6d..7bd53b8 100644
+--- a/testcases/kernel/syscalls/splice/splice01.c
++++ b/testcases/kernel/syscalls/splice/splice01.c
+@@ -134,11 +134,6 @@ static void setup(void)
  
- int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
+ 	tst_tmpdir();
  
+-	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
+-		tst_brkm(TCONF, cleanup,
+-			 "Cannot do splice on a file on NFS filesystem");
+-	}
+-
+ 	for (i = 0; i < TEST_BLOCK_SIZE; i++)
+ 		buffer[i] = i & 0xff;
+ 
+diff --git a/testcases/kernel/syscalls/tee/tee01.c b/testcases/kernel/syscalls/tee/tee01.c
+index 6ea6f18..f87df5d 100644
+--- a/testcases/kernel/syscalls/tee/tee01.c
++++ b/testcases/kernel/syscalls/tee/tee01.c
+@@ -146,11 +146,6 @@ static void setup(void)
+ 
+ 	tst_tmpdir();
+ 
+-	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
+-		tst_brkm(TCONF, cleanup,
+-			 "Cannot do tee on a file on NFS filesystem");
+-	}
+-
+ 	for (i = 0; i < TEST_BLOCK_SIZE; i++)
+ 		buffer[i] = i & 0xff;
+ 
+diff --git a/testcases/kernel/syscalls/utime/utime01.c b/testcases/kernel/syscalls/utime/utime01.c
+index 3128965..4c41bc7 100644
+--- a/testcases/kernel/syscalls/utime/utime01.c
++++ b/testcases/kernel/syscalls/utime/utime01.c
+@@ -114,7 +114,6 @@ int main(int ac, char **av)
+ 	setup();
+ 
+ 	switch ((type = tst_fs_type(cleanup, "."))) {
+-	case TST_NFS_MAGIC:
+ 	case TST_V9FS_MAGIC:
+ 		tst_brkm(TCONF, cleanup,
+ 			 "Cannot do utime on a file on %s filesystem",
+diff --git a/testcases/kernel/syscalls/utime/utime02.c b/testcases/kernel/syscalls/utime/utime02.c
+index cbd30da..6624695 100644
+--- a/testcases/kernel/syscalls/utime/utime02.c
++++ b/testcases/kernel/syscalls/utime/utime02.c
+@@ -120,7 +120,6 @@ int main(int ac, char **av)
+ 	setup();
+ 
+ 	switch ((type = tst_fs_type(cleanup, "."))) {
+-	case TST_NFS_MAGIC:
+ 	case TST_V9FS_MAGIC:
+ 		tst_brkm(TCONF, cleanup,
+ 			 "Cannot do utime on a file on %s filesystem",
+diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
+index 858f6ca..32b0d29 100644
+--- a/testcases/kernel/syscalls/utime/utime03.c
++++ b/testcases/kernel/syscalls/utime/utime03.c
+@@ -130,7 +130,6 @@ int main(int ac, char **av)
+ 	setup();
+ 
+ 	switch ((type = tst_fs_type(cleanup, "."))) {
+-	case TST_NFS_MAGIC:
+ 	case TST_V9FS_MAGIC:
+ 		tst_brkm(TCONF, cleanup,
+ 			 "Cannot do utime on a file on %s filesystem",
+-- 
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
