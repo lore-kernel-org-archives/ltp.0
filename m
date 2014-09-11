@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <avagin@gmail.com>) id 1XRei5-0000fJ-Gr
-	for ltp-list@lists.sourceforge.net; Wed, 10 Sep 2014 10:01:09 +0000
-Received: from mail-lb0-f181.google.com ([209.85.217.181])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XRei4-0000Vf-Fl
-	for ltp-list@lists.sourceforge.net; Wed, 10 Sep 2014 10:01:09 +0000
-Received: by mail-lb0-f181.google.com with SMTP id z11so7102460lbi.12
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 10 Sep 2014 03:01:01 -0700 (PDT)
-From: Andrey Vagin <avagin@openvz.org>
-Date: Wed, 10 Sep 2014 14:00:53 +0400
-Message-Id: <1410343254-2349-1-git-send-email-avagin@openvz.org>
-Subject: [LTP] [PATCH 1/2] inotify: fix warnings
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XS5Z9-0000LU-V3
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 14:41:44 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XS5Z8-0006tX-8M
+	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 14:41:43 +0000
+Message-ID: <5411B499.8020309@redhat.com>
+Date: Thu, 11 Sep 2014 16:41:29 +0200
+From: Jan Stancek <jstancek@redhat.com>
+MIME-Version: 1.0
+References: <20140911022709.GA16027@localhost.localdomain>
+In-Reply-To: <20140911022709.GA16027@localhost.localdomain>
+Content-Type: multipart/mixed; boundary="------------090609060402060000090703"
+Subject: Re: [LTP] [PATCH] ldd01: using 'ppc' to check powerpc arch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,72 +25,233 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: Andrey Vagin <avagin@openvz.org>
+To: ltp-list@lists.sourceforge.net, Han Pingtian <hanpt@linux.vnet.ibm.com>
 
-inotify04.c:200:10: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-  if (len == -1)
-          ^
-inotify04.c:206:11: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-  while (i < len) {
+This is a multi-part message in MIME format.
+--------------090609060402060000090703
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-inotify02.c:202:42: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-         && event_set[TST_TOTAL - 1].mask ==
-                                          ^
-inotify02.c:223:41: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
-    } else if ((event_set[test_num].mask == event->mask)
+On 09/11/2014 04:27 AM, Han Pingtian wrote:
+> Hello,
+> The ldd01 always failed on some powerpc systems of ours. I have figured
+> out a patch. Please take a look. Thanks in advance.
+> 
+> 
+> On some powerpc system, the 'uname -a' doesn't show 'powerpc' but will
+> show 'ppc'. So we need using it to check the powerpc arch.
+> 
+> Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+> ---
+>  testcases/commands/ade/ldd/ldd01 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/commands/ade/ldd/ldd01 b/testcases/commands/ade/ldd/ldd01
+> index c60d3ac..569902e 100755
+> --- a/testcases/commands/ade/ldd/ldd01
+> +++ b/testcases/commands/ade/ldd/ldd01
+> @@ -47,7 +47,7 @@ do_setup()
+>  	mkdir $TCtmp
+>  
+>  	# Check for ppc64 architecture or x86_64 architecture
+> -	if uname -a | grep -iq powerpc; then
+> +	if uname -a | grep -iq 'ppc\|powerpc'; then
+>  		file lddfile1.obj | grep 64-bit >/dev/null 2>&1
+>  		if [ $? -eq 0 ]; then
+>  			CFLAGS="-m64"
 
-Signed-off-by: Andrey Vagin <avagin@openvz.org>
+
+Hi,
+
+what is the purpose of those -m32/-m64 flags in this test?
+Can't we just compile it with LTP makefiles using whatever CFLAGS
+were passed to configure?
+
+Would you be willing to try attached patch, which moves the build
+of .so and a.out into Makefile? I have tested it on x86 with and
+without -m32 and it worked fine. Or alternatively, can you describe
+the ppc system where this is failing, so I could try to reproduce
+it myself?
+
+Regards,
+Jan
+
+
+
+
+
+--------------090609060402060000090703
+Content-Type: text/x-patch;
+ name="0001-v1.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-v1.patch"
+
+From 1ea966268e7a55f21d9254b62462d4adb40c7a0a Mon Sep 17 00:00:00 2001
+Message-Id: <1ea966268e7a55f21d9254b62462d4adb40c7a0a.1410445852.git.jstancek@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 11 Sep 2014 14:57:37 +0200
+Subject: [PATCH] v1
+
 ---
- testcases/kernel/syscalls/inotify/inotify02.c | 2 +-
- testcases/kernel/syscalls/inotify/inotify04.c | 7 +++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ testcases/commands/ade/ldd/Makefile   |   13 +++++++++++--
+ testcases/commands/ade/ldd/ldd01      |   28 ++++------------------------
+ testcases/commands/ade/ldd/lddfile1.c |    2 +-
+ testcases/commands/ade/ldd/lddfile2.c |    2 +-
+ testcases/commands/ade/ldd/lddfile3.c |    2 +-
+ testcases/commands/ade/ldd/lddfile4.c |    2 +-
+ testcases/commands/ade/ldd/lddfile5.c |    2 +-
+ 7 files changed, 20 insertions(+), 31 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/inotify/inotify02.c b/testcases/kernel/syscalls/inotify/inotify02.c
-index d07705b..f4f93fc 100644
---- a/testcases/kernel/syscalls/inotify/inotify02.c
-+++ b/testcases/kernel/syscalls/inotify/inotify02.c
-@@ -69,7 +69,7 @@ static int wd;
+diff --git a/testcases/commands/ade/ldd/Makefile b/testcases/commands/ade/ldd/Makefile
+index eae06cd..7119290 100644
+--- a/testcases/commands/ade/ldd/Makefile
++++ b/testcases/commands/ade/ldd/Makefile
+@@ -28,9 +28,18 @@ CPPFLAGS		+= -fpic
  
- struct event_t {
- 	char name[BUF_SIZE];
--	int mask;
-+	unsigned int mask;
- 	int len;
- };
- #define FILE_NAME1 "test_file1"
-diff --git a/testcases/kernel/syscalls/inotify/inotify04.c b/testcases/kernel/syscalls/inotify/inotify04.c
-index c1c8db1..7c3fdef 100644
---- a/testcases/kernel/syscalls/inotify/inotify04.c
-+++ b/testcases/kernel/syscalls/inotify/inotify04.c
-@@ -66,8 +66,8 @@ int TST_TOTAL = 4;
+ INSTALL_TARGETS		:= ldd01
  
- struct event_t {
- 	char name[BUF_SIZE];
--	int mask;
--	size_t len;
-+	unsigned int mask;
-+	unsigned int len;
- };
+-MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%.obj,$(wildcard $(abs_srcdir)/*.c))
++LDD_C_FILES		:= $(wildcard $(abs_srcdir)/lddfile*.c)
++LDD_SO_FILES		:= $(patsubst $(abs_srcdir)/%.c,%.obj.so,$(LDD_C_FILES))
++MAKE_TARGETS		:= $(LDD_SO_FILES) lddfile.out
++CLEAN_TARGETS		+= *.obj
  
- #define	TEST_DIR	"test_dir"
-@@ -147,8 +147,7 @@ static void setup(void)
- int main(int argc, char **argv)
+-$(MAKE_TARGETS): %.obj: %.o
++%.obj: %.o
+ 	mv $^ $@
+ 
++%.obj.so: %.obj
++	$(CC) $(CFLAGS) -shared -o $@ $^
++
++lddfile.out: main.obj $(LDD_SO_FILES)
++	$(CC) $(CFLAGS) -O -o $@ $(LDD_SO_FILES) main.obj
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/ade/ldd/ldd01 b/testcases/commands/ade/ldd/ldd01
+index c60d3ac..54188f7 100755
+--- a/testcases/commands/ade/ldd/ldd01
++++ b/testcases/commands/ade/ldd/ldd01
+@@ -35,42 +35,22 @@ $trace_logic
+ CC=${CC:=gcc}
+ LDD=${LDD:=ldd}
+ TCdat=${TCdat:-`pwd`}
+-TCtmp=${TCtmp:-/tmp/ldd01-$$}
+ 
+ do_cleanup()
  {
- 	const char *msg;
--	size_t len;
--	int i, test_num;
-+	int i, test_num, len;
+-	rm -rf $TCtmp
++	:
+ }
  
- 	i = 0;
- 	test_num = 0;
+ do_setup()
+ {
+-	mkdir $TCtmp
+-
+-	# Check for ppc64 architecture or x86_64 architecture
+-	if uname -a | grep -iq powerpc; then
+-		file lddfile1.obj | grep 64-bit >/dev/null 2>&1
+-		if [ $? -eq 0 ]; then
+-			CFLAGS="-m64"
+-		fi
+-	elif uname -a | grep -iq x86_64; then
+-		file lddfile1.obj | grep 32-bit >/dev/null 2>&1
+-		if [ $? -eq 0 ]; then
+-			CFLAGS="-m32"
+-		fi
+-	fi
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile1.obj.so $TCdat/lddfile1.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile2.obj.so $TCdat/lddfile2.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile3.obj.so $TCdat/lddfile3.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile4.obj.so $TCdat/lddfile4.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile5.obj.so $TCdat/lddfile5.obj
+-	$CC $CFLAGS -O -o $TCtmp/a.out $TCtmp/lddfile*.obj.so $TCdat/main.obj
++	:
+ }
+ 
+ do_test()
+ {
+ 	echo "  ASSERTION 1  "
+ 
+-	$LDD $TCtmp/a.out | grep -E "lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
++	$LDD lddfile.out | grep -E "lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
+ 	if [ $? -eq 0 ]; then
+ 		echo "ASSERTION #1 PASS"
+ 	else
+@@ -81,7 +61,7 @@ do_test()
+ 
+ 	echo " ASSERTION 2  "
+ 
+-	$LDD -v $TCtmp/a.out | grep -E "GLIBC|lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
++	$LDD -v lddfile.out | grep -E "GLIBC|lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
+ 	if [ $? -eq 0 ]; then
+ 		echo "ASSERTION #2 PASS"
+ 	else
+diff --git a/testcases/commands/ade/ldd/lddfile1.c b/testcases/commands/ade/ldd/lddfile1.c
+index 377f7a3..ccb5786 100644
+--- a/testcases/commands/ade/ldd/lddfile1.c
++++ b/testcases/commands/ade/ldd/lddfile1.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file1()
++void file1(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
+diff --git a/testcases/commands/ade/ldd/lddfile2.c b/testcases/commands/ade/ldd/lddfile2.c
+index 5fd2b4b..20aede3 100644
+--- a/testcases/commands/ade/ldd/lddfile2.c
++++ b/testcases/commands/ade/ldd/lddfile2.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file2()
++void file2(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
+diff --git a/testcases/commands/ade/ldd/lddfile3.c b/testcases/commands/ade/ldd/lddfile3.c
+index d6b4cc9..a4529f7 100644
+--- a/testcases/commands/ade/ldd/lddfile3.c
++++ b/testcases/commands/ade/ldd/lddfile3.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file3()
++void file3(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
+diff --git a/testcases/commands/ade/ldd/lddfile4.c b/testcases/commands/ade/ldd/lddfile4.c
+index 1db89bb..9dc339d 100644
+--- a/testcases/commands/ade/ldd/lddfile4.c
++++ b/testcases/commands/ade/ldd/lddfile4.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file4()
++void file4(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
+diff --git a/testcases/commands/ade/ldd/lddfile5.c b/testcases/commands/ade/ldd/lddfile5.c
+index 2f46cdb..3fbb7f6 100644
+--- a/testcases/commands/ade/ldd/lddfile5.c
++++ b/testcases/commands/ade/ldd/lddfile5.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file5()
++void file5(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
 -- 
-1.9.3
+1.7.1
 
+
+--------------090609060402060000090703
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Want excitement?
@@ -97,7 +259,16 @@ Manually upgrade your production database.
 When you want reliability, choose Perforce
 Perforce version control. Predictably reliable.
 http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+--------------090609060402060000090703
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------090609060402060000090703--
+
