@@ -1,21 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XS14x-00068X-O5
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 09:54:15 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XS14w-0005Hd-7S
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 09:54:15 +0000
-Date: Thu, 11 Sep 2014 05:54:07 -0400 (EDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XSMwf-0007nO-9C
+	for ltp-list@lists.sourceforge.net; Fri, 12 Sep 2014 09:15:09 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XSMwd-0008JF-Jb
+	for ltp-list@lists.sourceforge.net; Fri, 12 Sep 2014 09:15:09 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s8C9F11Y023394
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Sep 2014 05:15:01 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s8C9ExCI009599
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Sep 2014 05:15:00 -0400
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1911165758.21206007.1410429247418.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1230443390.31148244.1410420886427.JavaMail.zimbra@redhat.com>
-References: <1409047992-15316-1-git-send-email-xzhou@redhat.com>
-	<1230443390.31148244.1410420886427.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 0/3] fix old commit about skipping tests on NFS
+Date: Fri, 12 Sep 2014 11:14:56 +0200
+Message-Id: <79378c28685642da5fa56683fc1385eca55d1328.1410513010.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] ldd01: remove all -m32/-m64 logic
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,78 +31,205 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiong Zhou <xzhou@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+and build all binaries with same CFLAGS as rest of LTP build.
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/commands/ade/ldd/Makefile   |   13 ++++++++-
+ testcases/commands/ade/ldd/ldd01      |   42 +++-----------------------------
+ testcases/commands/ade/ldd/lddfile1.c |    2 +-
+ testcases/commands/ade/ldd/lddfile2.c |    2 +-
+ testcases/commands/ade/ldd/lddfile3.c |    2 +-
+ testcases/commands/ade/ldd/lddfile4.c |    2 +-
+ testcases/commands/ade/ldd/lddfile5.c |    2 +-
+ testcases/commands/ade/ldd/main.c     |   12 ++++----
+ 8 files changed, 26 insertions(+), 51 deletions(-)
 
------ Original Message -----
-> From: "Xiong Zhou" <xzhou@redhat.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Thursday, 11 September, 2014 9:34:46 AM
-> Subject: Re: [LTP] [PATCH 0/3] fix old commit about skipping tests on NFS
-> 
-> Ping :)
+diff --git a/testcases/commands/ade/ldd/Makefile b/testcases/commands/ade/ldd/Makefile
+index eae06cd..7119290 100644
+--- a/testcases/commands/ade/ldd/Makefile
++++ b/testcases/commands/ade/ldd/Makefile
+@@ -28,9 +28,18 @@ CPPFLAGS		+= -fpic
+ 
+ INSTALL_TARGETS		:= ldd01
+ 
+-MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%.obj,$(wildcard $(abs_srcdir)/*.c))
++LDD_C_FILES		:= $(wildcard $(abs_srcdir)/lddfile*.c)
++LDD_SO_FILES		:= $(patsubst $(abs_srcdir)/%.c,%.obj.so,$(LDD_C_FILES))
++MAKE_TARGETS		:= $(LDD_SO_FILES) lddfile.out
++CLEAN_TARGETS		+= *.obj
+ 
+-$(MAKE_TARGETS): %.obj: %.o
++%.obj: %.o
+ 	mv $^ $@
+ 
++%.obj.so: %.obj
++	$(CC) $(CFLAGS) -shared -o $@ $^
++
++lddfile.out: main.obj $(LDD_SO_FILES)
++	$(CC) $(CFLAGS) -O -o $@ $(LDD_SO_FILES) main.obj
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/ade/ldd/ldd01 b/testcases/commands/ade/ldd/ldd01
+index c60d3ac..de91eee 100755
+--- a/testcases/commands/ade/ldd/ldd01
++++ b/testcases/commands/ade/ldd/ldd01
+@@ -35,64 +35,30 @@ $trace_logic
+ CC=${CC:=gcc}
+ LDD=${LDD:=ldd}
+ TCdat=${TCdat:-`pwd`}
+-TCtmp=${TCtmp:-/tmp/ldd01-$$}
+-
+-do_cleanup()
+-{
+-	rm -rf $TCtmp
+-}
+-
+-do_setup()
+-{
+-	mkdir $TCtmp
+-
+-	# Check for ppc64 architecture or x86_64 architecture
+-	if uname -a | grep -iq powerpc; then
+-		file lddfile1.obj | grep 64-bit >/dev/null 2>&1
+-		if [ $? -eq 0 ]; then
+-			CFLAGS="-m64"
+-		fi
+-	elif uname -a | grep -iq x86_64; then
+-		file lddfile1.obj | grep 32-bit >/dev/null 2>&1
+-		if [ $? -eq 0 ]; then
+-			CFLAGS="-m32"
+-		fi
+-	fi
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile1.obj.so $TCdat/lddfile1.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile2.obj.so $TCdat/lddfile2.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile3.obj.so $TCdat/lddfile3.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile4.obj.so $TCdat/lddfile4.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile5.obj.so $TCdat/lddfile5.obj
+-	$CC $CFLAGS -O -o $TCtmp/a.out $TCtmp/lddfile*.obj.so $TCdat/main.obj
+-}
+ 
+ do_test()
+ {
+-	echo "  ASSERTION 1  "
++	export LD_LIBRARY_PATH=.:$LTPROOT/testcases/bin/:$LD_LIBRARY_PATH
+ 
+-	$LDD $TCtmp/a.out | grep -E "lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
++	echo "  ASSERTION 1  "
++	$LDD lddfile.out | grep -E "lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
+ 	if [ $? -eq 0 ]; then
+ 		echo "ASSERTION #1 PASS"
+ 	else
+ 		echo "ASSERTION #1 FAIL"
+-		do_cleanup
+ 		return 1
+ 	fi
+ 
+ 	echo " ASSERTION 2  "
+-
+-	$LDD -v $TCtmp/a.out | grep -E "GLIBC|lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
++	$LDD -v lddfile.out | grep -E "GLIBC|lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
+ 	if [ $? -eq 0 ]; then
+ 		echo "ASSERTION #2 PASS"
+ 	else
+ 		echo "ASSERTION #2 FAIL"
+-		do_cleanup
+ 		return 1
+ 	fi
+ 
+ 	echo "TEST PASSES"
+-	do_cleanup
+ 	return 0
+ }
+-do_setup
+ do_test
+diff --git a/testcases/commands/ade/ldd/lddfile1.c b/testcases/commands/ade/ldd/lddfile1.c
+index 377f7a3..ccb5786 100644
+--- a/testcases/commands/ade/ldd/lddfile1.c
++++ b/testcases/commands/ade/ldd/lddfile1.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file1()
++void file1(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
+diff --git a/testcases/commands/ade/ldd/lddfile2.c b/testcases/commands/ade/ldd/lddfile2.c
+index 5fd2b4b..20aede3 100644
+--- a/testcases/commands/ade/ldd/lddfile2.c
++++ b/testcases/commands/ade/ldd/lddfile2.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file2()
++void file2(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
+diff --git a/testcases/commands/ade/ldd/lddfile3.c b/testcases/commands/ade/ldd/lddfile3.c
+index d6b4cc9..a4529f7 100644
+--- a/testcases/commands/ade/ldd/lddfile3.c
++++ b/testcases/commands/ade/ldd/lddfile3.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file3()
++void file3(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
+diff --git a/testcases/commands/ade/ldd/lddfile4.c b/testcases/commands/ade/ldd/lddfile4.c
+index 1db89bb..9dc339d 100644
+--- a/testcases/commands/ade/ldd/lddfile4.c
++++ b/testcases/commands/ade/ldd/lddfile4.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file4()
++void file4(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
+diff --git a/testcases/commands/ade/ldd/lddfile5.c b/testcases/commands/ade/ldd/lddfile5.c
+index 2f46cdb..3fbb7f6 100644
+--- a/testcases/commands/ade/ldd/lddfile5.c
++++ b/testcases/commands/ade/ldd/lddfile5.c
+@@ -1,5 +1,5 @@
+ #include <stdio.h>
+-void file5()
++void file5(void)
+ {
+ 	printf("Control in function %s\n", __func__);
+ }
+diff --git a/testcases/commands/ade/ldd/main.c b/testcases/commands/ade/ldd/main.c
+index 0f23b8b..69e278e 100644
+--- a/testcases/commands/ade/ldd/main.c
++++ b/testcases/commands/ade/ldd/main.c
+@@ -1,12 +1,12 @@
+ #include <stdio.h>
+ 
+-void file1();
+-void file2();
+-void file3();
+-void file4();
+-void file5();
++void file1(void);
++void file2(void);
++void file3(void);
++void file4(void);
++void file5(void);
+ 
+-int main()
++int main(void)
+ {
+ 	file1();
+ 	file2();
+-- 
+1.7.1
 
-Hi,
-
-I see this is a reply, but I can't find any other message from this thread
-in my inbox or in web archives:
-  http://thread.gmane.org/gmane.linux.ltp/21550
-
-Can you re-send the series?
-
-Regards,
-Jan
-
-> 
-> ----- Original Message -----
-> > From: "Xiong Zhou" <xzhou@redhat.com>
-> > To: ltp-list@lists.sourceforge.net
-> > Cc: "stanislav kholmanskikh" <stanislav.kholmanskikh@oracle.com>,
-> > xzhou@redhat.com
-> > Sent: Tuesday, August 26, 2014 6:13:09 PM
-> > Subject: [PATCH 0/3] fix old commit about skipping tests on NFS
-> > 
-> > Fix old commit 5387ba03ce8eaddc7ec330ed03e579eed92596cc
-> > Skip only one block in fcntl14 instead of the whole case.
-> > splice/tee/utime pass on NFS now, so update the obsolete
-> > info.
-> > 
-> > 
-> > Xiong Zhou (3):
-> >   fcntl14: dup code clean up
-> >   fcntl14: skip test block2 on NFS
-> >   splice01/tee01/utime: test back on NFS
-> > 
-> >  testcases/kernel/syscalls/fcntl/fcntl14.c   | 85
-> >  +++++++++++++----------------
-> >  testcases/kernel/syscalls/splice/splice01.c |  5 --
-> >  testcases/kernel/syscalls/tee/tee01.c       |  5 --
-> >  testcases/kernel/syscalls/utime/utime01.c   |  1 -
-> >  testcases/kernel/syscalls/utime/utime02.c   |  1 -
-> >  testcases/kernel/syscalls/utime/utime03.c   |  1 -
-> >  6 files changed, 38 insertions(+), 60 deletions(-)
-> > 
-> > --
-> > 1.8.3.1
-> > 
-> > 
-> 
-> ------------------------------------------------------------------------------
-> Want excitement?
-> Manually upgrade your production database.
-> When you want reliability, choose Perforce
-> Perforce version control. Predictably reliable.
-> http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
 Want excitement?
