@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XRkpH-00085l-8X
-	for ltp-list@lists.sourceforge.net; Wed, 10 Sep 2014 16:32:59 +0000
-Date: Wed, 10 Sep 2014 18:32:42 +0200
-From: chrubis@suse.cz
-Message-ID: <20140910163242.GC16633@rei>
-References: <8a36059fe9afea205712b2a1c9a0ca678b22b927.1410353116.git.jstancek@redhat.com>
-	<20140910151804.GA16633@rei>
-	<1162485694.20768561.1410363325469.JavaMail.zimbra@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XSRhB-0003Rp-A7
+	for ltp-list@lists.sourceforge.net; Fri, 12 Sep 2014 14:19:29 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XSRh9-0001fQ-7J
+	for ltp-list@lists.sourceforge.net; Fri, 12 Sep 2014 14:19:29 +0000
+Date: Fri, 12 Sep 2014 10:19:21 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1922425954.22374005.1410531561034.JavaMail.zimbra@redhat.com>
+In-Reply-To: <5412F805.3050504@redhat.com>
+References: <1409047170-18251-1-git-send-email-mmarhefk@redhat.com>
+	<1409319967-12730-1-git-send-email-mmarhefk@redhat.com>
+	<1803448098.18473481.1409840011670.JavaMail.zimbra@redhat.com>
+	<5411BB3A.70308@redhat.com>
+	<1194817182.22301656.1410526772686.JavaMail.zimbra@redhat.com>
+	<5412F805.3050504@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1162485694.20768561.1410363325469.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] add clock_gettime04
+Subject: Re: [LTP] [PATCH 1/2 v2] containers: added mountns/mountns03.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,43 +32,192 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Jiri Jaburek <jjaburek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Is it implemented? I don't see any lib function handling it:
+
+
+
+
+----- Original Message -----
+> From: "Jiri Jaburek" <jjaburek@redhat.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "Matus Marhefka" <mmarhefk@redhat.com>, ltp-list@lists.sourceforge.net
+> Sent: Friday, 12 September, 2014 3:41:25 PM
+> Subject: Re: [LTP] [PATCH 1/2 v2] containers: added mountns/mountns03.c
 > 
-> $ grep "TRERRNO" -r .
-> ./include/tst_res_flags.h:#define TRERRNO       0x300   /* Capture errno information from TEST_RETURN to
-
-I would call that a bug, feel free to push a patch fixing this.
-
-> > > +	if (opt_testtime) {
-> > > +		testtime = atoi(opt_testtimestr);
-> > > +		if (testtime <= 0) {
-> > > +			tst_brkm(TBROK, NULL, "Invalid arg for -T: %s",
-> > > +				opt_testtimestr);
-> > > +		}
-> > > +	}
-> > > +
-> > > +	setup();
-> > > +
-> > > +	test(testtime);
+> On 09/12/2014 02:59 PM, Jan Stancek wrote:
 > > 
-> > Shouldn't the test(testtime) be still inside the for () loop with
-> > TEST_LOOPING() because otherwise the test will gladly accept and ignore
-> > the standard parameters (-i -I etc).
+> > 
+> > ----- Original Message -----
+> >> From: "Jiri Jaburek" <jjaburek@redhat.com>
+> >> To: "Matus Marhefka" <mmarhefk@redhat.com>
+> >> Cc: ltp-list@lists.sourceforge.net, "Jan Stancek" <jstancek@redhat.com>
+> >> Sent: Thursday, 11 September, 2014 5:09:46 PM
+> >> Subject: Re: [LTP] [PATCH 1/2 v2] containers: added mountns/mountns03.c
+> > 
+> >>>> +++ b/testcases/kernel/containers/mountns/mountns03.c
+> >>>> @@ -0,0 +1,245 @@
+> >>>> +/* Copyright (c) 2014 Red Hat, Inc.
+> >>>> + *
+> >>>> + * This program is free software: you can redistribute it and/or modify
+> >>>> + * it under the terms of version 2 the GNU General Public License as
+> >>>> + * published by the Free Software Foundation.
+> >>>> + *
+> >>>> + * This program is distributed in the hope that it will be useful,
+> >>>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> >>>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> >>>> + * GNU General Public License for more details.
+> >>>> + *
+> >>>> + * You should have received a copy of the GNU General Public License
+> >>>> + * along with this program.  If not, see
+> >>>> <http://www.gnu.org/licenses/>.
+> >>>> +
+> >>>> ***********************************************************************
+> >>>> + * File: mountns03.c
+> >>>> + *
+> >>>> + * Tests a slave mount: slave mount is like a shared mount except that
+> >>>> + * mount and umount events only propagate towards it.
+> >>>> + * Description:
+> >>>> + * 1. Creates directories "A", "B", "C", "D" and files "A/A", "B/B"
+> >>>> + *    "C/C", "D/D"
+> >>>> + * 2. Unshares mount namespace and makes it private (so mounts/umounts
+> >>>> + *    have no effect on a real system)
+> >>>
+> >>> Hi,
+> >>>
+> >>>> + * 3. Bind mounts directory "A" to "A" and "B" to "B"
+> >>>
+> >>> is the "B" to "B" part necessary in this case? First thing child does is
+> >>> it mounts A to B.
+> >>>
+> >>>> + * 4. Makes both directories ("A" and "B") shared
+> >>>
+> >>> related to above, is it necessary to make B shared?
+> >>
+> >> The obvious answer would be "yes", because ...
+> > 
+> > (atm. replying to this part only)
+> > 
+> > If you don't make B shared in parent, doesn't a bind operation in child
+> > make
+> > it shared regardless? You are bind mounting a shared mount to non-shared
+> > one.
 > 
-> I thought the -T would cover both, but I can add it back, with some
-> check to break that loop if anything fails.
+> No, not really. Consider the following situation:
+> 
+>     parent  |  child
+> ------------+-----------
+> A (shared)  | A (shared)
+> B (private) | B (shared)
+> 
+> (that is, you unshare a mount namespace from the parent and do
+> MS_SHARED on B in the child)
+> 
+> The "sharedness" of B isn't propagated to the parent...
 
-It would and wouldn't. Functionally it would, but the test would accept
-parameters that are completly ignored, which is bug from a user
-perspective.
+I was not implying it is. My point was that after bind in child,
+mount "B" receives and forwards event propagations with mount "A" in parent.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> The rule of thumb is that a private mountpoint cannot be affected by
+> other (mount) namespaces. In this case, if the child were to spawn its
+> own child, it would share B with it, but the original parent would still
+> have its own B.
+> 
+> IOW bind mounting A to B in the child in the situation illustrated above
+> would not affect the parent.
+> 
+> > 
+> >    ---------------------------------------------------------------------------
+> >    |         BIND MOUNT OPERATION
+> >    |         |
+> >    |**************************************************************************
+> >    |source(A)->| shared       |       private  |       slave    |
+> >    |unbindable |
+> >    | dest(B)  |               |                |                |
+> >    | |
+> >    |   |      |               |                |                |            |
+> >    |   v      |               |                |                |
+> >    |   |
+> >    |**************************************************************************
+> >    |  shared  | shared        |     shared     | shared & slave |  invalid
+> >    |  |
+> >    |          |               |                |                |            |
+> >    |non-shared| shared        |      private   |      slave     |  invalid
+> >    ||
+> >    ***************************************************************************
+> 
+> True, the mountpoint in the child is changed from private to shared,
+> but such operation doesn't affect the private mountpoint of the parent.
+
+I agree - I don't think we care what happens with "B" in parent, when test
+is about "A".
+
+> 
+> > I modified the mountns03 testcase, so it doesn't bind and make B shared,
+> > consider following strace output:
+> > 
+> > unshare(CLONE_NEWNS)                    = 0
+> > mount("none", "/", "none", MS_REC|MS_PRIVATE, NULL) = 0
+> > mount("A", "A", 0x407ab0, MS_BIND, NULL) = 0  --> bind mounts directory "A"
+> > to "A"
+> > mount("none", "A", "none", MS_SHARED, NULL) = 0  --> make "A" shared
+> > access("A/C", F_OK)                     = -1 ENOENT (No such file or
+> > directory)  --> there's no C file in "A"
+> > clone(child_stack=0x2597030, flags=CLONE_NEWNS|SIGCHLD) = 2396
+> > read(3, Process 2396 attached
+> >  <unfinished ...>
+> > [pid  2396] getpid()                    = 2396
+> > [pid  2396] mount("A", "B", 0x407ab0, MS_BIND, NULL) = 0  --> bind shared
+> > mount "A" to "B"
+> 
+> ... making B the same as A, so anything on B done directly on A.
+> 
+> > [pid  2396] mount("C", "B", 0x407ab0, MS_BIND, NULL) = 0  --> bind mount
+> > "C" to "B"
+> 
+> ... which is essentially bind mount C to A.
+> 
+> > [pid  2396] write(4, "0", 1 <unfinished ...>
+> > [pid  2394] <... read resumed> "0", 1)  = 1
+> > [pid  2394] access("A/C", F_OK)         = 0  --> parent can see file "C" in
+> > "A"
+> 
+> Indeed, but only because A was shared by the parent. This means the
+> child can affect it in any way (bind mount any number of additional
+> mountpoints to it, umount it, etc.). If you bind-mounted B to B and
+> made it private, it would retain its B/B file.
+> 
+> The test works likely due to reasons I mentioned before,
+> 
+> On 09/11/2014 05:09 PM, Jiri Jaburek wrote:
+> > This raises a question
+> > - why do you need B at all? Why not do MS_SLAVE on A? In this sense,
+> > B (child) is not a slave of B (parent), but a slave of A (parent), with
+> > B (parent) being slave of A (parent) due to the shared propagation.
+> 
+> Meaning that B could be entirely omitted, because it's not used for
+> anything in the parent, therefore it doesn't matter whether you
+> bind-mount it or not. Meaning, in essence, that you were originally
+> correct. :)
+> 
+> I would like to help Matus with this test case when he gets back to it.
+
+Looking at the discussion this triggered, the more simple we can make it, the better :-)
+
+Regards,
+Jan
+
+> 
+> 
+> I'm personally not a namespace kernel developer, so I may be wrong,
+> but my testing using multiple shells + mount(8) seems to confirm my
+> theories.
+> 
+> Jiri
+> 
+> 
 
 ------------------------------------------------------------------------------
 Want excitement?
