@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XRksp-0008Iy-Sx
-	for ltp-list@lists.sourceforge.net; Wed, 10 Sep 2014 16:36:39 +0000
-Date: Wed, 10 Sep 2014 18:36:23 +0200
-From: chrubis@suse.cz
-Message-ID: <20140910163623.GD16633@rei>
-References: <1407309452.2223.13.camel@G08JYZSD130126>
-	<20140909144034.GA6108@rei>
-	<1410317916.31685.34.camel@G08JYZSD130126>
-	<1095333434.20418604.1410337882836.JavaMail.zimbra@redhat.com>
+	(envelope-from <jstancek@redhat.com>) id 1XSQRx-0007We-VX
+	for ltp-list@lists.sourceforge.net; Fri, 12 Sep 2014 12:59:41 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XSQRv-0007Ig-8O
+	for ltp-list@lists.sourceforge.net; Fri, 12 Sep 2014 12:59:41 +0000
+Date: Fri, 12 Sep 2014 08:59:32 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1194817182.22301656.1410526772686.JavaMail.zimbra@redhat.com>
+In-Reply-To: <5411BB3A.70308@redhat.com>
+References: <1409047170-18251-1-git-send-email-mmarhefk@redhat.com>
+	<1409319967-12730-1-git-send-email-mmarhefk@redhat.com>
+	<1803448098.18473481.1409840011670.JavaMail.zimbra@redhat.com>
+	<5411BB3A.70308@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1095333434.20418604.1410337882836.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] securebits/check_keepcaps.c: Add comments about
- cap_get_flag may return -1
+Subject: Re: [LTP] [PATCH 1/2 v2] containers: added mountns/mountns03.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,25 +30,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Jiri Jaburek <jjaburek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > I think libcap was compiled with wrong kernel headers and it is a bug in
-> > distribution. I had installed these packages all from the default
-> > distribution. The value of CAP_LAST_CAP is different.
+
+
+----- Original Message -----
+> From: "Jiri Jaburek" <jjaburek@redhat.com>
+> To: "Matus Marhefka" <mmarhefk@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net, "Jan Stancek" <jstancek@redhat.com>
+> Sent: Thursday, 11 September, 2014 5:09:46 PM
+> Subject: Re: [LTP] [PATCH 1/2 v2] containers: added mountns/mountns03.c
+
+> >> +++ b/testcases/kernel/containers/mountns/mountns03.c
+> >> @@ -0,0 +1,245 @@
+> >> +/* Copyright (c) 2014 Red Hat, Inc.
+> >> + *
+> >> + * This program is free software: you can redistribute it and/or modify
+> >> + * it under the terms of version 2 the GNU General Public License as
+> >> + * published by the Free Software Foundation.
+> >> + *
+> >> + * This program is distributed in the hope that it will be useful,
+> >> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> >> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> >> + * GNU General Public License for more details.
+> >> + *
+> >> + * You should have received a copy of the GNU General Public License
+> >> + * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+> >> + ***********************************************************************
+> >> + * File: mountns03.c
+> >> + *
+> >> + * Tests a slave mount: slave mount is like a shared mount except that
+> >> + * mount and umount events only propagate towards it.
+> >> + * Description:
+> >> + * 1. Creates directories "A", "B", "C", "D" and files "A/A", "B/B"
+> >> + *    "C/C", "D/D"
+> >> + * 2. Unshares mount namespace and makes it private (so mounts/umounts
+> >> + *    have no effect on a real system)
+> > 
+> > Hi,
+> > 
+> >> + * 3. Bind mounts directory "A" to "A" and "B" to "B"
+> > 
+> > is the "B" to "B" part necessary in this case? First thing child does is
+> > it mounts A to B.
+> > 
+> >> + * 4. Makes both directories ("A" and "B") shared
+> > 
+> > related to above, is it necessary to make B shared?
 > 
-> Someone else reported it already:
->   Bug 1046008 - Some capabilities aren't be defined
->   https://bugzilla.redhat.com/show_bug.cgi?id=1046008
-> 
-> Patch looks good to me, it makes the bug more visible.
+> The obvious answer would be "yes", because ...
 
-Ok.
+(atm. replying to this part only)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+If you don't make B shared in parent, doesn't a bind operation in child make
+it shared regardless? You are bind mounting a shared mount to non-shared one.
+
+   ---------------------------------------------------------------------------
+   |         BIND MOUNT OPERATION                                            |
+   |**************************************************************************
+   |source(A)->| shared       |       private  |       slave    | unbindable |
+   | dest(B)  |               |                |                |            |
+   |   |      |               |                |                |            |
+   |   v      |               |                |                |            |
+   |**************************************************************************
+   |  shared  | shared        |     shared     | shared & slave |  invalid   |
+   |          |               |                |                |            |
+   |non-shared| shared        |      private   |      slave     |  invalid   |
+   ***************************************************************************
+
+I modified the mountns03 testcase, so it doesn't bind and make B shared,
+consider following strace output:
+
+unshare(CLONE_NEWNS)                    = 0
+mount("none", "/", "none", MS_REC|MS_PRIVATE, NULL) = 0
+mount("A", "A", 0x407ab0, MS_BIND, NULL) = 0  --> bind mounts directory "A" to "A"
+mount("none", "A", "none", MS_SHARED, NULL) = 0  --> make "A" shared
+access("A/C", F_OK)                     = -1 ENOENT (No such file or directory)  --> there's no C file in "A"
+clone(child_stack=0x2597030, flags=CLONE_NEWNS|SIGCHLD) = 2396
+read(3, Process 2396 attached
+ <unfinished ...>
+[pid  2396] getpid()                    = 2396
+[pid  2396] mount("A", "B", 0x407ab0, MS_BIND, NULL) = 0  --> bind shared mount "A" to "B"
+[pid  2396] mount("C", "B", 0x407ab0, MS_BIND, NULL) = 0  --> bind mount "C" to "B"
+[pid  2396] write(4, "0", 1 <unfinished ...>
+[pid  2394] <... read resumed> "0", 1)  = 1
+[pid  2394] access("A/C", F_OK)         = 0  --> parent can see file "C" in "A"
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 Want excitement?
