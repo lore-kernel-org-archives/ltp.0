@@ -2,40 +2,45 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1XRu6U-00052G-6F
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 02:27:22 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1XSd19-00074Y-E1
+	for ltp-list@lists.sourceforge.net; Sat, 13 Sep 2014 02:24:51 +0000
+Received: from e37.co.us.ibm.com ([32.97.110.158])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XRu6T-00027j-8i
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 02:27:22 +0000
+	(Exim 4.76) id 1XSd0u-0003pU-11
+	for ltp-list@lists.sourceforge.net; Sat, 13 Sep 2014 02:24:51 +0000
 Received: from /spool/local
-	by e8.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+	by e37.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
 	Violators will be prosecuted
 	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
-	Wed, 10 Sep 2014 22:27:15 -0400
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com
-	[9.57.198.23])
-	by d01dlp03.pok.ibm.com (Postfix) with ESMTP id 146A9C90046
+	Fri, 12 Sep 2014 20:24:30 -0600
+Received: from b03cxnp08025.gho.boulder.ibm.com
+	(b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+	by d03dlp03.boulder.ibm.com (Postfix) with ESMTP id B4C2119D803F
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 10 Sep 2014 22:27:05 -0400 (EDT)
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
-	s8B2RDCV60489792
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Sep 2014 02:27:13 GMT
-Received: from d01av02.pok.ibm.com (localhost [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	s8B2RD1i009397
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Sep 2014 22:27:13 -0400
-Received: from localhost.localdomain ([9.115.120.242])
-	by d01av02.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	s8B2RCeu009337
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Sep 2014 22:27:12 -0400
-Date: Thu, 11 Sep 2014 10:27:09 +0800
+	Fri, 12 Sep 2014 20:24:13 -0600 (MDT)
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with
+	ESMTP id s8D2OQak52428954
+	for <ltp-list@lists.sourceforge.net>; Sat, 13 Sep 2014 04:24:26 +0200
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP
+	id s8D2OQZn009960
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Sep 2014 20:24:26 -0600
+Received: from localhost.localdomain ([9.125.1.216])
+	by d03av04.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	s8D2OPmS009893
+	for <ltp-list@lists.sourceforge.net>; Fri, 12 Sep 2014 20:24:26 -0600
+Date: Sat, 13 Sep 2014 10:24:22 +0800
 From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Message-ID: <20140911022709.GA16027@localhost.localdomain>
+Message-ID: <20140913022422.GA3401@localhost.localdomain>
+References: <20140911022709.GA16027@localhost.localdomain>
+	<5411B499.8020309@redhat.com>
+	<20140912072845.GA3585@localhost.localdomain>
+	<1324550878.22071909.1410509701094.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP]  [PATCH] ldd01: using 'ppc' to check powerpc arch
+In-Reply-To: <1324550878.22071909.1410509701094.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] ldd01: using 'ppc' to check powerpc arch
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -50,34 +55,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hello,
-The ldd01 always failed on some powerpc systems of ours. I have figured
-out a patch. Please take a look. Thanks in advance.
+On Fri, Sep 12, 2014 at 04:15:01AM -0400, Jan Stancek wrote:
+> 
+> 
+> 
+> ----- Original Message -----
+> > From: "Han Pingtian" <hanpt@linux.vnet.ibm.com>
+> > To: ltp-list@lists.sourceforge.net
+> > Sent: Friday, 12 September, 2014 9:28:45 AM
+> > Subject: Re: [LTP] [PATCH] ldd01: using 'ppc' to check powerpc arch
+> > 
+> > On Thu, Sep 11, 2014 at 04:41:29PM +0200, Jan Stancek wrote:
+> > > Would you be willing to try attached patch, which moves the build
+> > > of .so and a.out into Makefile?
+> > I have tested your patch but ldd cannot find the lib files:
+> > 
+> 
+> That's only matter of setting correct LD_LIBRARY_PATH:
+> 
+> $ env LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH ./ldd01 
+Yes, it works after setting LD_LIBRARY_PATH like this on our systems.
+> > 
+> > > Or alternatively, can you describe
+> > > the ppc system where this is failing, so I could try to reproduce
+> > > it myself?
+> > This is a power 6 system, which running a beta version rhel5.11. Without
+> > my patch, it failed with those messages:
+> 
+> It also fails (with or without your patch) when built as 32-bit on RHEL7 ppc64:
+> 
+I have tested your patch with 32bit on the system, it works fine.
 
-
-On some powerpc system, the 'uname -a' doesn't show 'powerpc' but will
-show 'ppc'. So we need using it to check the powerpc arch.
-
-Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
----
- testcases/commands/ade/ldd/ldd01 | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/commands/ade/ldd/ldd01 b/testcases/commands/ade/ldd/ldd01
-index c60d3ac..569902e 100755
---- a/testcases/commands/ade/ldd/ldd01
-+++ b/testcases/commands/ade/ldd/ldd01
-@@ -47,7 +47,7 @@ do_setup()
- 	mkdir $TCtmp
- 
- 	# Check for ppc64 architecture or x86_64 architecture
--	if uname -a | grep -iq powerpc; then
-+	if uname -a | grep -iq 'ppc\|powerpc'; then
- 		file lddfile1.obj | grep 64-bit >/dev/null 2>&1
- 		if [ $? -eq 0 ]; then
- 			CFLAGS="-m64"
--- 
-1.9.3
 
 
 ------------------------------------------------------------------------------
