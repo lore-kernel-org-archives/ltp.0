@@ -1,22 +1,36 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gary.robertson@linaro.org>) id 1XOuE9-0007K0-4A
-	for ltp-list@lists.sourceforge.net; Tue, 02 Sep 2014 19:58:53 +0000
-Received: from mail-wi0-f178.google.com ([209.85.212.178])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XOuE7-0001sF-8o
-	for ltp-list@lists.sourceforge.net; Tue, 02 Sep 2014 19:58:53 +0000
-Received: by mail-wi0-f178.google.com with SMTP id r20so8586908wiv.5
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 02 Sep 2014 12:58:45 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1XTVMt-00021N-Dc
+	for ltp-list@lists.sourceforge.net; Mon, 15 Sep 2014 12:26:55 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XTVMs-00035Y-HG
+	for ltp-list@lists.sourceforge.net; Mon, 15 Sep 2014 12:26:55 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s8FCQmOF010557
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Sep 2014 12:26:48 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s8FCQlDU009986
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Sep 2014 12:26:47 GMT
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s8FCQkqq019049
+	for <ltp-list@lists.sourceforge.net>; Mon, 15 Sep 2014 12:26:47 GMT
+Message-ID: <5416DB00.5070303@oracle.com>
+Date: Mon, 15 Sep 2014 16:26:40 +0400
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Date: Tue, 2 Sep 2014 14:58:44 -0500
-Message-ID: <CAF7YWnxMVXpKKTbB3B4Sjqwp5K=u543PVbUBEy6jFGeq6YWkVw@mail.gmail.com>
-From: Gary Robertson <gary.robertson@linaro.org>
-Subject: [LTP] [RFC] Realtime tests - autoconf problems in OpenEmbedded
- cross-build environment
+References: <1408610694-12939-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1408610694-12939-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [RFC/PATCH] ltpstress.sh: added cmdline to set the block
+ device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,154 +40,82 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6609707873396499849=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
-Cc: Mike Holmes <mike.holmes@linaro.org>
-
---===============6609707873396499849==
-Content-Type: multipart/alternative; boundary=001a11c238c003fb1b05021a8caf
-
---001a11c238c003fb1b05021a8caf
-Content-Type: text/plain; charset=UTF-8
-
-LTP developers,
-
-The autoconf scripts in 'ltp/testcases/realtime/m4/check.m4' evaluate
-whether priority-inheriting mutexes and robust mutexes are supported on the
-system for which the LTP realtime tests are being targeted.  Portions of
-the LTP realtime test code required to test these features on the target
-are then conditionally included or excluded at compile time based on
-autoconf results.
-
-To check these features, the autoconf scripts attempt to compile and then
-execute initialization functions which rely on the features.  Is this done
-because the mere presence of the appropriate headers and protocol value
-definitions, etc. is insufficient proof that the features are supported?
-That is, are there cases in which the headers may contain the associated
-definitions but the installed runtime libraries lack the actual support
-code for the features?:
-
-The reason I ask is that in the OpenEmbedded cross-build environment, all
-code is theoretically cross-compiled for the build target system.  When the
-autoconf scripts subsequently attempt to execute the compiled code on the
-cross-development host, the execution fails.  Even if the code were to be
-compiled for the cross-development host and successfully executed, the
-results would be misleading as they represent feature support on the
-development host rather than on the test target system.
-
-Without knowing the history of configuration issues in LTP I don't know
-what conflicts may exist between the support for cross-build environments
-and the reliable configuration of features in a wide variety of
-native-build scenarios.
-
-If autoconf in LTP must rely on the execution of target system code in
-order to determine what features are supported on the target, then some
-sort of override is needed in cross-build environments... so my question
-is: what is the preferred method for handling this?
-
-Possible solutions under consideration include:
-
-
-   - adding command line options to be passed to the 'configure' script in
-   order to force inclusion of support for the features in question without
-   performing any tests, -or-
-   - adding local patches to the bitbake recipe for LTP which would
-   unconditionally patch either  the autoconf input files or the output of
-   autoconf operations in order to force support for the features in
-   question... and making no changes at the LTP level to address the problem.
-
-If command line override options are the preferable solution, I notice
-there are both '--with...' and '--enable...' options defined - but which
-would be the more appropriate prefix for these new options?
-
-OTOH, if the presence of the associated protocol name definitions, etc. in
-the target system's header files is a sufficient indication of support,
-could we just dispense with the execution of compiled target code and
-configure support for the features based on the header contents alone?
-
-I will be looking forward to your comments in order to determine the most
-effective and/or least offensive means of addressing this problem.
-
-Gary Robertson
-
---001a11c238c003fb1b05021a8caf
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div><div><div><div><div>LTP developers,<br><br></div>The =
-autoconf scripts in &#39;ltp/testcases/realtime/m4/check.m4&#39; evaluate w=
-hether priority-inheriting mutexes and robust mutexes are supported on the =
-system for which the LTP realtime tests are being targeted.=C2=A0 Portions =
-of the LTP realtime test code required to test these features on the target=
- are then conditionally included or excluded at compile time based on autoc=
-onf results.<br>
-<br></div>To check these features, the autoconf scripts attempt to compile =
-and then execute initialization functions which rely on the features.=C2=A0=
- Is this done because the mere presence of the appropriate headers and prot=
-ocol value definitions, etc. is insufficient proof that the features are su=
-pported?=C2=A0 That is, are there cases in which the headers may contain th=
-e associated definitions but the installed runtime libraries lack the actua=
-l support code for the features?:<br>
-<br></div>The reason I ask is that in the OpenEmbedded cross-build environm=
-ent, all code is theoretically cross-compiled for the build target system.=
-=C2=A0 When the autoconf scripts subsequently attempt to execute the compil=
-ed code on the cross-development host, the execution fails.=C2=A0 Even if t=
-he code were to be compiled for the cross-development host and successfully=
- executed, the results would be misleading as they represent feature suppor=
-t on the development host rather than on the test target system.<br>
-<br></div><div>Without knowing the history of configuration issues in LTP I=
- don&#39;t know what conflicts may exist between the support for cross-buil=
-d environments and the reliable configuration of features in a wide variety=
- of native-build scenarios.<br>
-</div><div><br></div>If autoconf in LTP must rely on the execution of targe=
-t system code in order to determine what features are supported on the targ=
-et, then some sort of override is needed in cross-build environments... so =
-my question is: what is the preferred method for handling this?<br>
-<br></div>Possible solutions under consideration include:<br><br><ul><li>ad=
-ding command line options to be passed to the &#39;configure&#39; script in=
- order to force inclusion of support for the features in question without p=
-erforming any tests, -or-</li>
-<li>adding local patches to the bitbake recipe for LTP which would uncondit=
-ionally patch either=C2=A0 the autoconf input files or the output of autoco=
-nf operations in order to force support for the features in question... and=
- making no changes at the LTP level to address the problem.</li>
-</ul><p>If command line override options are the preferable solution, I not=
-ice there are both &#39;--with...&#39; and &#39;--enable...&#39; options de=
-fined - but which would be the more appropriate prefix for these new option=
-s?</p>
-<p></p><p>OTOH, if the presence of the associated protocol name definitions=
-, etc. in the target system&#39;s header files is a sufficient indication o=
-f support, could we just dispense with the execution of compiled target cod=
-e and configure support for the features based on the header contents alone=
-?</p>
-<p>I will be looking forward to your comments in order to determine the mos=
-t effective and/or least offensive means of addressing this problem.</p><p>=
-Gary Robertson</p><p><br></p></div>
-
---001a11c238c003fb1b05021a8caf--
-
-
---===============6609707873396499849==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
+
+Hi!
+
+Could anybody help to review this change, please?
+
+Thanks.
+
+On 21.08.2014 12:44, Stanislav Kholmanskikh wrote:
+> I think it's not needed to use set_block_device(),
+> create_block_device() from runltp, because their logic
+> is in tst_acquire_device()/tst_release_device() now.
+>
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
+>   testscripts/ltpstress.sh |   13 +++++++++++--
+>   1 files changed, 11 insertions(+), 2 deletions(-)
+>
+> diff --git a/testscripts/ltpstress.sh b/testscripts/ltpstress.sh
+> index a0dc088..39a5caf 100755
+> --- a/testscripts/ltpstress.sh
+> +++ b/testscripts/ltpstress.sh
+> @@ -58,7 +58,8 @@ usage()
+>   {
+>
+>   	cat <<-END >&2
+> -	usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ] [ -n ] [ -p ] [ -q ] [ -t duration ] [ -x TMPDIR ] [ [-S]|[-T] ]
+> +    usage: ${0##*/} [ -d datafile ] [ -i # (in seconds) ] [ -I iofile ] [ -l logfile ] [ -m # (in Mb) ]
+> +    [ -n ] [ -p ] [ -q ] [ -t duration ] [ -x TMPDIR ] [-b DEVICE] [-B LTP_DEV_FS_TYPE] [ [-S]|[-T] ]
+>
+>       -d datafile     Data file for 'sar' or 'top' to log to. Default is "/tmp/ltpstress.data".
+>       -i # (in sec)   Interval that 'sar' or 'top' should take snapshots. Default is 10 seconds.
+> @@ -72,6 +73,10 @@ usage()
+>       -T              Use LTP's modified 'top' tool to measure data.
+>       -t duration     Execute the testsuite for given duration in hours. Default is 24.
+>       -x TMPDIR       Directory where temporary files will be created.
+> +    -b DEVICE       Some tests require an unmounted block device
+> +                    to run correctly. If DEVICE is not set, a loop device is
+> +                    created and used automatically.
+> +    -B LTP_DEV_FS_TYPE The file system of DEVICE.
+>
+>   	example: ${0##*/} -d /tmp/sardata -l /tmp/ltplog.$$ -m 128 -t 24 -S
+>   	END
+> @@ -88,7 +93,7 @@ check_memsize()
+>     leftover_memsize=$memsize
+>   }
+>
+> -while getopts d:hi:I:l:STt:m:npqx:\? arg
+> +while getopts d:hi:I:l:STt:m:npqx:b:B:\? arg
+>   do  case $arg in
+>
+>   	d)	datafile="$OPTARG";;
+> @@ -138,6 +143,10 @@ do  case $arg in
+>
+>   	x)	export TMPBASE=$(readlink -f ${OPTARG});;
+>
+> +	b)	export LTP_DEV=${OPTARG};;
+> +
+> +	B)	export LTP_DEV_FS_TYPE=${OPTARG};;
+> +
+>           \?)     echo "Help info:"
+>   		usage;;
+>           esac
+>
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
---===============6609707873396499849==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6609707873396499849==--
-
