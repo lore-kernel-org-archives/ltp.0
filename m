@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XPTeW-0007kq-Vh
-	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 09:48:29 +0000
-Date: Thu, 4 Sep 2014 11:48:16 +0200
-From: chrubis@suse.cz
-Message-ID: <20140904094816.GB15717@rei.suse.cz>
-References: <1409743563-15081-1-git-send-email-mmarhefk@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <ltp.task@gmail.com>) id 1XTl2M-0005D3-0j
+	for Ltp-list@lists.sourceforge.net; Tue, 16 Sep 2014 05:10:46 +0000
+Received: from mail-vc0-f196.google.com ([209.85.220.196])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XTl2L-0002RU-9C
+	for Ltp-list@lists.sourceforge.net; Tue, 16 Sep 2014 05:10:46 +0000
+Received: by mail-vc0-f196.google.com with SMTP id hq11so1513001vcb.3
+	for <Ltp-list@lists.sourceforge.net>;
+	Mon, 15 Sep 2014 22:10:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1409743563-15081-1-git-send-email-mmarhefk@redhat.com>
-Subject: Re: [LTP] [PATCH] containers: fixed libclone/libclone.c
+Date: Tue, 16 Sep 2014 10:40:39 +0530
+Message-ID: <CAD4NA3205uSovUYbfDOK0TnqOevjrGE=V9vaoQ5Hvq6aeu32hw@mail.gmail.com>
+From: M Ltp <ltp.task@gmail.com>
+Subject: [LTP] Couple of queries on LTP compilation and Hugetlb testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,28 +25,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0900931860722199953=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Ltp-list@lists.sourceforge.net
 
-Hi!
-> * fixed issue in do_plain_tests() function, where "return" was
->   used in child instead of "exit(3)" which caused that child executed
->   code from parent
+--===============0900931860722199953==
+Content-Type: multipart/alternative; boundary=e89a8f647193bb63dc050327c5c0
 
-Pushed, thanks.
+--e89a8f647193bb63dc050327c5c0
+Content-Type: text/plain; charset=UTF-8
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Hi,
+
+I have a couple of queries:
+ 1. Can we compile a single test case in LTP? If yes, please share the
+procedure.
+ 2. The hugetlb testcases present under
+'<ltp>/testcases/kernel/mem/hugetlb' are statically initializing the number
+of huge pages to 128. Is there any reason for the same? Please clarify.
+
+Thank you. Waiting for early reply.
+
+Regards
+Man
+
+--e89a8f647193bb63dc050327c5c0
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div><div><div><div>Hi,<br><br></div>I have a couple =
+of queries:<br></div>=C2=A01. Can we compile a single test case in LTP? If =
+yes, please share the procedure.<br></div>=C2=A02. The hugetlb testcases pr=
+esent under &#39;&lt;ltp&gt;/testcases/kernel/mem/hugetlb&#39; are statical=
+ly initializing the number of huge pages to 128. Is there any reason for th=
+e same? Please clarify.<br><br></div><div>Thank you. Waiting for early repl=
+y.<br><br></div>Regards<br></div>Man</div>
+
+--e89a8f647193bb63dc050327c5c0--
+
+
+--===============0900931860722199953==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Want excitement?
+Manually upgrade your production database.
+When you want reliability, choose Perforce.
+Perforce version control. Predictably reliable.
+http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+--===============0900931860722199953==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0900931860722199953==--
+
