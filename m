@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1XUtDj-0005ph-Qk
-	for ltp-list@lists.sourceforge.net; Fri, 19 Sep 2014 08:07:11 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XUtDi-0000FX-JM
-	for ltp-list@lists.sourceforge.net; Fri, 19 Sep 2014 08:07:11 +0000
-Message-ID: <541BE418.6020501@cn.fujitsu.com>
-Date: Fri, 19 Sep 2014 16:06:48 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1XUy6r-0001ub-Gh
+	for ltp-list@lists.sourceforge.net; Fri, 19 Sep 2014 13:20:25 +0000
+Date: Fri, 19 Sep 2014 15:20:11 +0200
+From: chrubis@suse.cz
+Message-ID: <20140919132010.GC29490@rei>
+References: <1408610694-12939-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<5416DB00.5070303@oracle.com>
 MIME-Version: 1.0
-References: <1410244166-5559-1-git-send-email-shuang.qiu@oracle.com>
-In-Reply-To: <1410244166-5559-1-git-send-email-shuang.qiu@oracle.com>
-Subject: Re: [LTP] [PATCH] pan/ltp-pan.c: TCONF testcases should not be
- written to failcmdfile
+Content-Disposition: inline
+In-Reply-To: <5416DB00.5070303@oracle.com>
+Subject: Re: [LTP] [RFC/PATCH] ltpstress.sh: added cmdline to set the block
+ device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,44 +26,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shuang.qiu@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+> Could anybody help to review this change, please?
 
-    I introduced this patch '6f6878f4e1406d79cae53564777c5e1245d2a124', sorry. I
-agree with you, patch looks good to me, thanks! Or we can also create a file to
-record test cases that return TCONF.
+Sorry, I've read the email but forgot to reply the last time.
 
-Regards,
-Xiaoguang Wang
- 
-On 09/09/2014 02:29 PM, shuang.qiu@oracle.com wrote:
-> From: Shuang Qiu <shuang.qiu@oracle.com>
-> 
-> After commit patch 6f6878f4e1406d79cae53564777c5e1245d2a124,the
-> testcases which retrun TCONF should not be written to failcmdfile.
-> 
-> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
-> ---
->  pan/ltp-pan.c |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
-> index 957199a..711c16a 100644
-> --- a/pan/ltp-pan.c
-> +++ b/pan/ltp-pan.c
-> @@ -802,7 +802,7 @@ check_pids(struct tag_pgrp *running, int *num_active, int keep_active,
->  					fflush(logfile);
->  				}
->  
-> -				if ((failcmdfile != NULL) && (w != 0)) {
-> +				if ((failcmdfile != NULL) && (w != 0) && (w != TCONF)) {
->  					fprintf(failcmdfile, "%s %s\n",
->  						running[i].cmd->name,
->  						running[i].cmd->cmdline);
-> 
+Looks good, acked.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Slashdot TV.  Video for Nerds.  Stuff that Matters.
