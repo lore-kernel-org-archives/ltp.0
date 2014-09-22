@@ -1,31 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XPWOG-0006NB-4g
-	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 12:43:52 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vgoyal@redhat.com>) id 1XW4tz-00029G-Pt
+	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 14:47:43 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XPWOD-0007Ja-CC
-	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 12:43:52 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s84Chgr9023969
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 08:43:42 -0400
-Received: from cc-vtoe10.lab.eng.brq.redhat.com
-	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s84CheCo000360
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 08:43:41 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Thu,  4 Sep 2014 14:43:27 +0200
-Message-Id: <1409834607-22143-1-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1409153560-10176-1-git-send-email-mmarhefk@redhat.com>
-References: <1409153560-10176-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH v3] containers: added netns/netns_devices.sh and
-	netns/netns_devices2.sh
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XW4ty-0000RN-9t
+	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 14:47:43 +0000
+Date: Mon, 22 Sep 2014 10:47:13 -0400
+From: Vivek Goyal <vgoyal@redhat.com>
+Message-ID: <20140922144713.GA4250@redhat.com>
+References: <145412866.25258463.1411119061796.JavaMail.zimbra@redhat.com>
+	<293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
+	<20140919132236.GB2190@redhat.com>
+	<594480021.25988504.1411355660836.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <594480021.25988504.1411355660836.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [RFC] autokdump - automated kdump testsuite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,279 +28,101 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: CAI Qian <caiqian@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, kexec kdump redhat mailing list <kexec-kdump-list@redhat.com>, kexec <kexec@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, crash-utility <crash-utility@redhat.com>
 
-* Tests that a separate network namespace can configure and communicate
-  over the devices it sees
-* netns/netns_devices.sh  -- uses netlink(7) for configuration
-* netns/netns_devices2.sh -- uses ioctl(2) for configuration
+On Mon, Sep 22, 2014 at 09:00:00AM -0400, CAI Qian wrote:
+> 
+> 
+> ----- Original Message -----
+> > From: "Vivek Goyal" <vgoyal@redhat.com>
+> > To: "CAI Qian" <caiqian@redhat.com>
+> > Cc: "linux-kernel" <linux-kernel@vger.kernel.org>, "ltp-list" <ltp-list@lists.sourceforge.net>, "crash-utility"
+> > <crash-utility@redhat.com>, "kexec" <kexec@lists.infradead.org>, "kexec kdump redhat mailing list"
+> > <kexec-kdump-list@redhat.com>
+> > Sent: Friday, September 19, 2014 9:22:36 PM
+> > Subject: Re: [RFC] autokdump - automated kdump testsuite
+> > 
+> > On Fri, Sep 19, 2014 at 05:52:25AM -0400, CAI Qian wrote:
+> > > I plan to release an automated kdump testsuite that will be
+> > 
+> > So will this be a standalone test suit? Can it be merged with
+> > something already existing say, LTP.
+> Yes, it is likely to be standalone. It won't make use of the LTP
+> API, and the LTP kdump test suite is outdated, so there is no
+> benefit to continue working over there.
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
----
- runtest/containers                                 |   2 +
- testcases/kernel/containers/netns/netns_devices.sh | 110 +++++++++++++++++++++
- .../kernel/containers/netns/netns_devices2.sh      | 110 +++++++++++++++++++++
- 3 files changed, 222 insertions(+)
- create mode 100755 testcases/kernel/containers/netns/netns_devices.sh
- create mode 100755 testcases/kernel/containers/netns/netns_devices2.sh
+So why make it standalone and not replace the old LTP kdump test suite
+with this new one?
 
-diff --git a/runtest/containers b/runtest/containers
-index 7d01a44..69eac82 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -29,6 +29,8 @@ netns_crtchild_delchild netns_crtchild_delchild
- netns_par_chld_ipv6 netns_par_chld_ipv6
- netns_par_chld_ftp netns_par_chld_ftp.sh
- netns_netlink netns_netlink
-+netns_devices netns_devices.sh
-+netns_devices2 netns_devices2.sh
- 
- shmnstest_none shmnstest none
- shmnstest_clone shmnstest clone
-diff --git a/testcases/kernel/containers/netns/netns_devices.sh b/testcases/kernel/containers/netns/netns_devices.sh
-new file mode 100755
-index 0000000..df55971
---- /dev/null
-+++ b/testcases/kernel/containers/netns/netns_devices.sh
-@@ -0,0 +1,110 @@
-+#!/bin/sh
-+#==============================================================================
-+# Copyright (c) 2014 Red Hat, Inc.
-+#
-+# This program is free software: you can redistribute it and/or modify
-+# it under the terms of version 2 the GNU General Public License as
-+# published by the Free Software Foundation.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+#==============================================================================
-+# File: netns_devices.sh
-+#
-+# Tests that a separate network namespace can configure and communicate
-+# over the devices it sees. Tests are done using ip command which uses
-+# netlink(7) sockets to control devices. There are two test cases:
-+# 1. communication over paired veth (virtual ethernet) devices
-+#    from two different network namespaces (each namespace has
-+#    one device)
-+# 2. communication over the lo (localhost) device in a separate
-+#    network namespace
-+#
-+
-+TCID=netns_devices
-+TST_TOTAL=2
-+. test.sh
-+IP0=192.168.0.1
-+IP1=192.168.0.2
-+
-+
-+cleanup()
-+{
-+	# removes veth0 device (which also removes paired veth1 device)
-+	ip link delete veth0
-+	# removes the network namespace myns
-+	ip netns del myns
-+}
-+
-+
-+# SETUP
-+tst_require_root
-+tst_check_cmds ip
-+TST_CLEANUP=cleanup
-+
-+# creates a pair of virtual ethernet devices
-+ip link add veth0 type veth peer name veth1 &>/dev/null || \
-+	tst_brkm TBROK "unable to create veth pair devices"
-+
-+# creates a new network namespace "myns" (man 8 ip-netns)
-+ip netns add myns &>/dev/null || \
-+	tst_brkm TBROK "unable to create a new network namespace"
-+
-+# adds device veth1 to myns namespace
-+ip link set veth1 netns myns &>/dev/null || \
-+	tst_brkm TBROK "unable to add device veth1 to the network namespace myns"
-+
-+
-+# TEST CASE #1
-+# setup for veth0 device
-+ip address add $IP0/24 dev veth0 || \
-+	tst_brkm TBROK "adding address to veth0 failed"
-+ip link set dev veth0 up || \
-+	tst_brkm TBROK "enabling veth0 device failed"
-+
-+# setup for veth1 (which is inside myns namespace)
-+ip netns exec myns ip address add $IP1/24 dev veth1 || \
-+	tst_brkm TBROK "adding address to veth1 failed"
-+ip netns exec myns ip link set dev veth1 up || \
-+	tst_brkm TBROK "enabling veth1 device failed"
-+
-+ping -q -c 2 -I veth0 $IP1 &>/dev/null
-+ret=$?
-+failed=0
-+if [ $ret -ne 0 ]; then
-+	failed=1
-+fi
-+
-+ip netns exec myns ping -q -c 2 -I veth1 $IP0 &>/dev/null
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	failed=1
-+fi
-+
-+if [ $failed -eq 0 ]; then
-+	tst_resm TPASS "netlink configuration and communication over veth devices"
-+else
-+	tst_resm TFAIL "netlink configuration and communication over veth devices"
-+fi
-+
-+
-+# TEST CASE #2
-+# enables lo device
-+ip netns exec myns ip link set dev lo up || \
-+	tst_brkm TBROK "enabling lo device failed"
-+
-+ip netns exec myns ping -q -c 2 -I lo 127.0.0.1 &>/dev/null
-+ret=$?
-+if [ $ret -eq 0 ]; then
-+	tst_resm TPASS "netlink configuration and communication over lo device"
-+else
-+	tst_resm TFAIL "netlink configuration and communication over lo device"
-+fi
-+
-+
-+tst_exit
-diff --git a/testcases/kernel/containers/netns/netns_devices2.sh b/testcases/kernel/containers/netns/netns_devices2.sh
-new file mode 100755
-index 0000000..ed3f5eb
---- /dev/null
-+++ b/testcases/kernel/containers/netns/netns_devices2.sh
-@@ -0,0 +1,110 @@
-+#!/bin/sh
-+#==============================================================================
-+# Copyright (c) 2014 Red Hat, Inc.
-+#
-+# This program is free software: you can redistribute it and/or modify
-+# it under the terms of version 2 the GNU General Public License as
-+# published by the Free Software Foundation.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+#==============================================================================
-+# File: netns_devices2.sh
-+#
-+# Tests that a separate network namespace can configure and communicate
-+# over the devices it sees. Tests are done using ifconfig command which
-+# uses ioctl(2) to control devices. There are two test cases:
-+# 1. communication over paired veth (virtual ethernet) devices
-+#    from two different network namespaces (each namespace has
-+#    one device)
-+# 2. communication over the lo (localhost) device in a separate
-+#    network namespace
-+#
-+
-+TCID=netns_devices2
-+TST_TOTAL=2
-+. test.sh
-+IP0=192.168.0.1
-+IP1=192.168.0.2
-+
-+
-+cleanup()
-+{
-+	# removes veth0 device (which also removes paired veth1 device)
-+	ip link delete veth0
-+	# removes the network namespace myns
-+	ip netns del myns
-+}
-+
-+
-+# SETUP
-+tst_require_root
-+tst_check_cmds ip ifconfig
-+TST_CLEANUP=cleanup
-+
-+# creates a pair of virtual ethernet devices
-+ip link add veth0 type veth peer name veth1 &>/dev/null || \
-+	tst_brkm TBROK "unable to create veth pair devices"
-+
-+# creates a new network namespace "myns" (man 8 ip-netns)
-+ip netns add myns &>/dev/null || \
-+	tst_brkm TBROK "unable to create a new network namespace"
-+
-+# adds device veth1 to myns namespace
-+ip link set veth1 netns myns &>/dev/null || \
-+	tst_brkm TBROK "unable to add device veth1 to the network namespace myns"
-+
-+
-+# TEST CASE #1
-+# setup for veth0 device
-+ifconfig veth0 $IP0/24 || \
-+	tst_brkm TBROK "adding address to veth0 failed"
-+ifconfig veth0 up || \
-+	tst_brkm TBROK "enabling veth0 device failed"
-+
-+# setup for veth1 (which is inside myns namespace)
-+ip netns exec myns ifconfig veth1 $IP1/24 || \
-+	tst_brkm TBROK "adding address to veth1 failed"
-+ip netns exec myns ifconfig veth1 up || \
-+	tst_brkm TBROK "enabling veth1 device failed"
-+
-+ping -q -c 2 -I veth0 $IP1 &>/dev/null
-+ret=$?
-+failed=0
-+if [ $ret -ne 0 ]; then
-+	failed=1
-+fi
-+
-+ip netns exec myns ping -q -c 2 -I veth1 $IP0 &>/dev/null
-+ret=$?
-+if [ $ret -ne 0 ]; then
-+	failed=1
-+fi
-+
-+if [ $failed -eq 0 ]; then
-+	tst_resm TPASS "ioctl configuration and communication over veth devices"
-+else
-+	tst_resm TFAIL "ioctl configuration and communication over veth devices"
-+fi
-+
-+
-+# TEST CASE #2
-+# enables lo device
-+ip netns exec myns ifconfig lo up || \
-+	tst_brkm TBROK "enabling lo device failed"
-+
-+ip netns exec myns ping -q -c 2 -I lo 127.0.0.1 &>/dev/null
-+ret=$?
-+if [ $ret -eq 0 ]; then
-+	tst_resm TPASS "ioctl configuration and communication over lo device"
-+else
-+	tst_resm TFAIL "ioctl configuration and communication over lo device"
-+fi
-+
-+
-+tst_exit
--- 
-1.8.3.1
+> > 
+> > > focus on testing kernel and the crash utility. It should work
+> > > for all major distros since it will use none of distro-specific
+> > > stuff, and also support different arches including x86, ARM,
+> > > PPC64 and s390x.
+> > > 
+> > > It does the following:
+> > > 1) check if there is a memory reserved for kdump. If not,
+> > >    reserve the memory and reboot the system.
+> > > 2) once the system is back, load kexec on panic and
+> > >    prepare a separate initramfs that including needed
+> > >    modules to load a local filesystem and necessary utilities
+> > 
+> > So you will write logic to prepare custom initramfs or will rely
+> > on dracut or some other utility for that.
+> I'll probably prepare custom initramfs for the sake of simplicity.
 
+Well, preparing custom initramfs will become very tricky. We used
+to do that and finally we switched to dracut.
+
+Why not simply let the respective service on the host do this job and
+test only makes sure that kdump service is running. It feels little
+out of place that a test is generating custom initramfs. 
+
+> > 
+> > >    in order to analyse /proc/vmcore in the 2nd kernel.
+> > > 3) trigger the system crash using methods like sysrq-c, NMI,
+> > >    and panic_on_hung_task etc.
+> > > 4) in the 2nd kernel, mount a filesystem and use the crash
+> > >    utility to analyse /proc/vmcore. Then, gather the analyse
+> > >    logs, serial console output, dmesg etc into the filesystem.
+> > 
+> > Why not save core and boot back in first kernel and then analyze.
+> > 
+> > Trying to work directly with /proc/vmcore does not test makedumfile
+> > which everybody uses. Also it will require more memory to be reserved
+> > and packing crash and debug vmlinux into initramfs.
+> The additional memory for vmlinux and the crash utility is predictable
+> and manageable, so it can just ask 256M memory reserved before running
+> the program. On the other hand, it is not usually feasible to ask
+> the systems under testing has enough available disk spaces bigger than
+> the memory size.
+
+makedumpfile will reduce the vmcore file size to few hundreds of mega
+bytes on most of the systems. Especially, this is just a test, so 
+system will be lightly loaded and vmcore will be small after filtering.
+
+If there is not enough space, test fails, period. I don't think there
+is any need to try to circumvent that and try to run crash in initramfs.
+And in the process we don't test makedumpfile which is very imporatnt
+component of this whole process.
+
+IMHO, just rely on "systemctl start kdump" to generate and load custom
+initramfs and save filtered vmcore to root fs by default and alanyze
+vmcore post reboot. That will keep things simple.
+
+Thanks
+Vivek
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
