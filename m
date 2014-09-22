@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XOTYA-0007yp-1E
-	for ltp-list@lists.sourceforge.net; Mon, 01 Sep 2014 15:29:46 +0000
-Date: Mon, 1 Sep 2014 17:29:33 +0200
-From: chrubis@suse.cz
-Message-ID: <20140901152932.GB27694@rei.suse.cz>
-References: <fa6666c6075baadeaaa53f7cf8536ab65daf8b51.1409310860.git.jstancek@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <dyoung@redhat.com>) id 1XVzfi-0005Ey-Tj
+	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 09:12:38 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XVzfh-0004s1-Rw
+	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 09:12:38 +0000
+Date: Mon, 22 Sep 2014 17:12:03 +0800
+From: Dave Young <dyoung@redhat.com>
+Message-ID: <20140922091203.GB23854@darkstar.nay.redhat.com>
+References: <145412866.25258463.1411119061796.JavaMail.zimbra@redhat.com>
+	<293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <fa6666c6075baadeaaa53f7cf8536ab65daf8b51.1409310860.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] ustat: check for ENOSYS
+In-Reply-To: <293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [RFC] autokdump - automated kdump testsuite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,27 +29,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: CAI Qian <caiqian@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, kexec <kexec@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
 
-Hi!
-> ustat(2) says:
->   ustat() is deprecated and has only been provided for compatibility.
->   All new programs should use statfs(2) instead.
+On 09/19/14 at 05:52am, CAI Qian wrote:
+> I plan to release an automated kdump testsuite that will be
+> focus on testing kernel and the crash utility. It should work
+> for all major distros since it will use none of distro-specific
+> stuff, and also support different arches including x86, ARM,
+> PPC64 and s390x.
 > 
-> Detect if ustat() is deprecated by checking that errno is ENOSYS,
-> and end with TCONF in that case.
+> It does the following:
+> 1) check if there is a memory reserved for kdump. If not,
+>    reserve the memory and reboot the system.
+> 2) once the system is back, load kexec on panic and
+>    prepare a separate initramfs that including needed
+>    modules to load a local filesystem and necessary utilities
+>    in order to analyse /proc/vmcore in the 2nd kernel.
+> 3) trigger the system crash using methods like sysrq-c, NMI,
+>    and panic_on_hung_task etc.
+> 4) in the 2nd kernel, mount a filesystem and use the crash
+>    utility to analyse /proc/vmcore. Then, gather the analyse
+>    logs, serial console output, dmesg etc into the filesystem.
+> 5) reboot back into the 1st kernel.
+> 
+> implementation:
+> It will setup a daemon to handle reboots.
+> 
+> plan:
+> I might also to test the makedumpfile all together later.
+>    CAI Qian
+> 
 
-Acked.
+Hi, Cai
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I noticed you cced redhat internal lists, you'd better to remove
+them from cc list so that people do not get confused by the auto reply.
+
+Thanks
+Dave 
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
