@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1XXUkv-0007ZW-AF
-	for ltp-list@lists.sourceforge.net; Fri, 26 Sep 2014 12:36:13 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XXUkt-0000o8-78
-	for ltp-list@lists.sourceforge.net; Fri, 26 Sep 2014 12:36:13 +0000
-Message-ID: <54255DB0.3080500@oracle.com>
-Date: Fri, 26 Sep 2014 16:36:00 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	(envelope-from <qcai@redhat.com>) id 1XW3EF-0005nf-Qb
+	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 13:00:31 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XW3EE-0002Vr-D9
+	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 13:00:31 +0000
+Date: Mon, 22 Sep 2014 09:00:00 -0400 (EDT)
+From: CAI Qian <caiqian@redhat.com>
+Message-ID: <594480021.25988504.1411355660836.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20140919132236.GB2190@redhat.com>
+References: <145412866.25258463.1411119061796.JavaMail.zimbra@redhat.com>
+	<293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
+	<20140919132236.GB2190@redhat.com>
 MIME-Version: 1.0
-References: <722837953.31209749.1410431446352.JavaMail.zimbra@redhat.com>
-	<5411ABF0.9070704@oracle.com>
-	<1039610982.34479102.1411109260676.JavaMail.zimbra@redhat.com>
-	<956604956.36871956.1411629477294.JavaMail.zimbra@redhat.com>
-	<5424057E.2000407@oracle.com>
-	<1096621493.37297301.1411701829900.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1096621493.37297301.1411701829900.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH v3 1/3] fcntl14: dup code clean up
+Subject: Re: [LTP] [RFC] autokdump - automated kdump testsuite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,129 +29,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiong Zhou <xzhou@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Vivek Goyal <vgoyal@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, kexec kdump redhat mailing list <kexec-kdump-list@redhat.com>, kexec <kexec@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, crash-utility <crash-utility@redhat.com>
 
-Hi!
 
-On 09/26/2014 07:23 AM, Xiong Zhou wrote:
->
->
-> ----- Original Message -----
->> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
->> To: "Xiong Zhou" <xzhou@redhat.com>
->> Cc: ltp-list@lists.sourceforge.net
->> Sent: Thursday, September 25, 2014 8:07:26 PM
->> Subject: Re: [LTP]  [PATCH v3 1/3] fcntl14: dup code clean up
->>
->> Hi!
->>
->> On 09/25/2014 11:17 AM, Xiong Zhou wrote:
->>>
->>> And block3 description message fix from "mandatory locking"
->>> to "negative whence".
->>>
->>> Signed-off-by: Xiong Zhou <xzhou@redhat.com>
->>> ---
->>
->> Patch 1 and patch 2 of the series are pushed.
->> Btw, patch 2 didn't apply to index correctly with 'git am', I had to
->> manually apply it.
->>
->
-> Sorry for the inconvenience.. I should keep my master branch updated.
->
->> I'm experiencing difficulties with checking patch 3. In particular,
->> after applying your patch utime02 fails on NFSv4 with
->> 2.6.32-431.29.2.el6.x86_64 kernel.
->
-> Yes, I got the same results on 2.6.32-431.29.2.el6 kernel, v3 pass v4 fail.
->
->>
->> I'm not quite sure if it's a kernel problem or test case error. Still
->> investigating.
->>
->> Could you please check the test case in your RHEL 6 environment as well?
->
-> I double checked that utime02 did pass on upstream 2.6.32 kernel
-> both NFSv3 and NFSv4 in my env.
-> On latest RHEL-6 kernel, both NFSv3 and NFSv4 passed utime02 test case.
->
-> All failed test_output are just like:
-> tst_tmpdir.c:158: chown(/nfsmnt/ltp-6L6Oqow6wv/utiMPq3y5, -1, 0) \
-> failed: errno=EPERM(1): Operation not permitted
 
-Sorry, I didn't get whether utime02+NFSv4 passed  with the latest RHEL-6 
-kernel. Could you elaborate on this?
-
->
-> One single clean chown(nfsfile, -1, 0) call to NFSv3/4 file succeeds
-> on multiple kernels include 2.6.32-431.29.2.el6.
->
-> Neither, I'm not sure about where the problem lies. Still checking.
-
-test.c:
-
-#include <error.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-
-int main(void)
-{
-	if (setuid(99)) {
-		perror("setuid() failed");
-		goto out;
-	}
-
-	if (mkdir("dir", 0700)) {
-		perror("mkdir() failed");
-		goto out;
-	}
-
-	if (chown("dir", -1, 0))
-		perror("chown() failed");
-
-out:
-	return 0;
-}
-
-99 is 'nobody'.
-
-With both upstream 2.6.32 and 2.6.32.63 `strace ./test` on a nfsv4 fs 
-will show:
-setuid(99)                              = 0
-mkdir("dir", 0700)                      = 0
-chown("dir", 4294967295, 0)             = 0
-
-[root@ol6-x64 nfsv4]# ls -ld dir
-drwx------ 2 nobody root 4096 Sep 26 13:14 dir
-
-But with 2.6.32-431.29.2.el6.x86_64:
-setuid(99)                              = 0
-mkdir("dir", 0700)                      = 0
-chown("dir", 4294967295, 0)             = -1 EPERM (Operation not permitted)
-
-[root@ol6-x64 nfsv4]# ls -ld dir
-drwx------ 2 nobody root 4096 Sep 26 13:19 dir
-
-So, most likely, it's a bug in the vendor kernels.
-
-So on I think that your patch may be pushed.
-
-If there are no objections, I would like to do it on Monday.
-
-Thanks.
-
->
-> Thanks for catching this!
->
-> --
-> xzhou
->
->>
->> Thank you.
->>
+----- Original Message -----
+> From: "Vivek Goyal" <vgoyal@redhat.com>
+> To: "CAI Qian" <caiqian@redhat.com>
+> Cc: "linux-kernel" <linux-kernel@vger.kernel.org>, "ltp-list" <ltp-list@lists.sourceforge.net>, "crash-utility"
+> <crash-utility@redhat.com>, "kexec" <kexec@lists.infradead.org>, "kexec kdump redhat mailing list"
+> <kexec-kdump-list@redhat.com>
+> Sent: Friday, September 19, 2014 9:22:36 PM
+> Subject: Re: [RFC] autokdump - automated kdump testsuite
+> 
+> On Fri, Sep 19, 2014 at 05:52:25AM -0400, CAI Qian wrote:
+> > I plan to release an automated kdump testsuite that will be
+> 
+> So will this be a standalone test suit? Can it be merged with
+> something already existing say, LTP.
+Yes, it is likely to be standalone. It won't make use of the LTP
+API, and the LTP kdump test suite is outdated, so there is no
+benefit to continue working over there.
+> 
+> > focus on testing kernel and the crash utility. It should work
+> > for all major distros since it will use none of distro-specific
+> > stuff, and also support different arches including x86, ARM,
+> > PPC64 and s390x.
+> > 
+> > It does the following:
+> > 1) check if there is a memory reserved for kdump. If not,
+> >    reserve the memory and reboot the system.
+> > 2) once the system is back, load kexec on panic and
+> >    prepare a separate initramfs that including needed
+> >    modules to load a local filesystem and necessary utilities
+> 
+> So you will write logic to prepare custom initramfs or will rely
+> on dracut or some other utility for that.
+I'll probably prepare custom initramfs for the sake of simplicity.
+> 
+> >    in order to analyse /proc/vmcore in the 2nd kernel.
+> > 3) trigger the system crash using methods like sysrq-c, NMI,
+> >    and panic_on_hung_task etc.
+> > 4) in the 2nd kernel, mount a filesystem and use the crash
+> >    utility to analyse /proc/vmcore. Then, gather the analyse
+> >    logs, serial console output, dmesg etc into the filesystem.
+> 
+> Why not save core and boot back in first kernel and then analyze.
+> 
+> Trying to work directly with /proc/vmcore does not test makedumfile
+> which everybody uses. Also it will require more memory to be reserved
+> and packing crash and debug vmlinux into initramfs.
+The additional memory for vmlinux and the crash utility is predictable
+and manageable, so it can just ask 256M memory reserved before running
+the program. On the other hand, it is not usually feasible to ask
+the systems under testing has enough available disk spaces bigger than
+the memory size.
+   CAI Qian
+> 
+> I think being able to test makedumpfile also is the key here.
+> 
+> Thanks
+> Vivek
+> > 5) reboot back into the 1st kernel.
+> > 
+> > implementation:
+> > It will setup a daemon to handle reboots.
+> > 
+> > plan:
+> > I might also to test the makedumpfile all together later.
+> >    CAI Qian
+> 
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
