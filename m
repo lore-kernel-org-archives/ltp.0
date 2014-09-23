@@ -1,18 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XWP8Z-0006pc-MT
-	for ltp-list@lists.sourceforge.net; Tue, 23 Sep 2014 12:24:07 +0000
-Date: Tue, 23 Sep 2014 14:23:50 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XWPDF-0003Ij-HW
+	for ltp-list@lists.sourceforge.net; Tue, 23 Sep 2014 12:28:57 +0000
+Date: Tue, 23 Sep 2014 14:28:39 +0200
 From: chrubis@suse.cz
-Message-ID: <20140923122350.GA19083@rei.suse.cz>
-References: <1411459183-20272-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Message-ID: <20140923122839.GA19150@rei.suse.cz>
+References: <20140922154742.71edd101@mats-desktop>
+	<20140922142631.GA12628@rei.suse.cz>
+	<20140923102909.689d3b39@mats-desktop>
+	<20140923084315.GA27073@rei.suse.cz>
+	<20140923111741.155ff484@mats-desktop>
+	<20140923094534.GB27355@rei.suse.cz>
+	<20140923123704.275d7beb@mats-desktop>
+	<20140923104854.GA29895@rei.suse.cz>
+	<20140923142234.746e3cf2@mats-desktop>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1411459183-20272-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] runltp,
- pan/ltp-pan.c: record test cases(not fully tested) into file
+In-Reply-To: <20140923142234.746e3cf2@mats-desktop>
+Subject: Re: [LTP] Failed out of tree compile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,19 +32,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+To: Mats Liljegren <mats.liljegren@enea.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Since commit 6f6878f4e1406d79cae53564777c5e1245d2a124, we start to
-> differentiate TCONF from TFAIL, but in pan/ltp-pan.c, we still write
-> test cases that return TCONF into failcmdfile, this is wrong, fix this.
+> > > Using Gerrit and Jenkins this would be solvable, but then you need
+> > > to find a host that supports this combination. Not use if
+> > > gerrithub.io does this.
+> > 
+> > That sounds like an interesting idea. Maybe we just need a github
+> > jenkins plugin to have it start a build for each push and send an
+> > email to the mailing list if it failed. But I have not idea how to
+> > setup such system :(
+> > 
 > 
-> Meanwhile we add a '-T' option for runltp, to let user record test cases
-> that return TCONF, namely, by this file, users can know what cases are not
-> fully tested.
+> The good thing with Gerrit is that it builds a commit queue, and you
+> can say no to a commit in the commit queue. Either because the testing
+> didn't pass, or because the review didn't pass. It also handles the
+> case when you retry a commit, knowing that this is the new attempt for
+> the same fix rather than a new unique commit.
 
-Pushed, thanks.
+I know how it works, but I do not like that it forces particular
+workflow. I think that doing automatic git rebuilds, while not ideal,
+should be enough for LTP. That way problems would be discovered in a
+matter of hours and fixed soon enough.
 
 -- 
 Cyril Hrubis
