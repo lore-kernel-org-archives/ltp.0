@@ -1,23 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1XQuzh-00058p-72
-	for ltp-list@lists.sourceforge.net; Mon, 08 Sep 2014 09:12:17 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XQuzd-0002WB-0m
-	for ltp-list@lists.sourceforge.net; Mon, 08 Sep 2014 09:12:17 +0000
-Message-ID: <540D72E3.3040009@oracle.com>
-Date: Mon, 08 Sep 2014 13:12:03 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vgoyal@redhat.com>) id 1XWOvP-0008Gf-H1
+	for ltp-list@lists.sourceforge.net; Tue, 23 Sep 2014 12:10:31 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XWOvO-0000va-9J
+	for ltp-list@lists.sourceforge.net; Tue, 23 Sep 2014 12:10:31 +0000
+Date: Tue, 23 Sep 2014 08:09:59 -0400
+From: Vivek Goyal <vgoyal@redhat.com>
+Message-ID: <20140923120959.GB1732@redhat.com>
+References: <145412866.25258463.1411119061796.JavaMail.zimbra@redhat.com>
+	<293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
+	<20140919132236.GB2190@redhat.com>
+	<594480021.25988504.1411355660836.JavaMail.zimbra@redhat.com>
+	<20140922144713.GA4250@redhat.com>
+	<1446076274.27552759.1411440835273.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-References: <1291208815.23057199.1408691123381.JavaMail.zimbra@redhat.com>
-	<53FAF335.7090506@oracle.com>
-In-Reply-To: <53FAF335.7090506@oracle.com>
-Subject: Re: [LTP] [PATCH v4 3/3] fcntl16: Skip fcntl16 test block2 and
- block3 on NFS
+Content-Disposition: inline
+In-Reply-To: <1446076274.27552759.1411440835273.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [RFC] autokdump - automated kdump testsuite
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,135 +33,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: CAI Qian <caiqian@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, kexec <kexec@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, crash-utility <crash-utility@redhat.com>
 
-Hi.
+On Mon, Sep 22, 2014 at 10:53:55PM -0400, CAI Qian wrote:
 
-Could anybody look at the series?
+[..]
+> > Why not simply let the respective service on the host do this job and
+> > test only makes sure that kdump service is running. It feels little
+> > out of place that a test is generating custom initramfs.
+> Because not every distro will have a kdump service like Fedora.
 
-If there are no objections, I'm going to push it tomorrow.
+So which distro does not have a service? Do we know this or we are
+assuming that distributions don't have a service to load/unload
+kdump kernel.
 
-Thanks.
+[..]
+> > makedumpfile will reduce the vmcore file size to few hundreds of mega
+> > bytes on most of the systems. Especially, this is just a test, so
+> > system will be lightly loaded and vmcore will be small after filtering.
+> It probably actually have test cases to heavily loaded the memory before
+> dumping.
 
-On 08/25/2014 12:26 PM, Stanislav Kholmanskikh wrote:
->
->
-> On 08/22/2014 11:05 AM, Xiong Zhou wrote:
->>
->> According to nfs(5), NLM supports advisory file locks only. So skip
->> fcntl16 test block2 and block3 if NFS.
->>
->> Signed-off-by: Xiong Zhou <xzhou@redhat.com>
->> ---
->
-> The entire series looks good for me.
->
-> Just found removed spaces below, but there is no need to resend the
-> patch/series because it can be fixed at commit time. :)
->
-> Thanks.
->
-> Reviewed-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
->
->
->>    testcases/kernel/syscalls/fcntl/fcntl16.c | 27 +++++++++++++++++++++------
->>    1 file changed, 21 insertions(+), 6 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/fcntl/fcntl16.c b/testcases/kernel/syscalls/fcntl/fcntl16.c
->> index 44b6a80..67d3b17 100644
->> --- a/testcases/kernel/syscalls/fcntl/fcntl16.c
->> +++ b/testcases/kernel/syscalls/fcntl/fcntl16.c
->> @@ -51,6 +51,8 @@
->>    #include <sys/types.h>
->>    #include <sys/wait.h>
->>
->> +#include "tst_fs_type.h"
->> +
->>    #define SKIPVAL 0x0f00
->>    //#define       SKIP    SKIPVAL, 0, 0L, 0L, IGNORED
->>    #define SKIP 0,0,0L,0L,0
->> @@ -62,6 +64,7 @@
->>    #define	NOBLOCK		2	/* immediate success */
->>    #define	WILLBLOCK	3	/* blocks, succeeds, parent unlocks records */
->>    #define	TIME_OUT	10
->> +int NO_NFS = 1;			/* Test on NFS or not */
->>
->>    typedef struct {
->>    	struct flock parent_a;
->> @@ -412,6 +415,10 @@ void setup(void)
->>
->>    	tst_tmpdir();
->>
->> +	/* On NFS or not */
->> +	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
->> +		NO_NFS = 0;
->> +
->>    	/* set up temp filename */
->>    	sprintf(tmpname, "fcntl4.%d", parent);
->>
->> @@ -689,13 +696,17 @@ int main(int ac, char **av)
->>    		 * locking
->>    		 */
->>    		tst_resm(TINFO, "Entering block 2");
->> -		if (run_test(O_CREAT | O_RDWR | O_TRUNC, S_ISGID |
->> +		if (NO_NFS && run_test(O_CREAT | O_RDWR | O_TRUNC, S_ISGID |
->>    			     S_IRUSR | S_IWUSR, 0, 11)) {
->>    			tst_resm(TINFO, "Test case 2: with mandatory record "
->>    				 "locking FAILED");
->>    		} else {
->> -			tst_resm(TINFO, "Test case 2: with mandatory record "
->> -				 "locking PASSED");
->> +			if (NO_NFS)
->> +				tst_resm(TINFO, "Test case 2: with mandatory"
->> +					 "record locking PASSED");
-> We need a space here
->
->> +			else
->> +				tst_resm(TCONF, "Test case 2: NFS does not"
->> +					 " support mandatory locking");
->>    		}
->>    		tst_resm(TINFO, "Exiting block 2");
->>
->> @@ -705,13 +716,17 @@ int main(int ac, char **av)
->>    		 * and no delay
->>    		 */
->>    		tst_resm(TINFO, "Entering block 3");
->> -		if (run_test(O_CREAT | O_RDWR | O_TRUNC | O_NDELAY,
->> +		if (NO_NFS && run_test(O_CREAT | O_RDWR | O_TRUNC | O_NDELAY,
->>    			     S_ISGID | S_IRUSR | S_IWUSR, 0, 11)) {
->>    			tst_resm(TINFO, "Test case 3: mandatory locking with "
->>    				 "NODELAY FAILED");
->>    		} else {
->> -			tst_resm(TINFO, "Test case 3: mandatory locking with "
->> -				 "NODELAY PASSED");
->> +			if (NO_NFS)
->> +				tst_resm(TINFO, "Test case 3: mandatory"
->> +					 "locking with NODELAY PASSED");
-> and here
->> +			else
->> +				tst_resm(TCONF, "Test case 3: NFS does not"
->> +					 " support mandatory locking");
->>    		}
->>    		tst_resm(TINFO, "Exiting block 3");
->>    	}
->>
->
-> ------------------------------------------------------------------------------
-> Slashdot TV.
-> Video for Nerds.  Stuff that matters.
-> http://tv.slashdot.org/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
+Your original proposal does not take care of this case either. A test
+case could be heavily used memory and if user does not have sufficient
+memory to save core, so be it. That test will fail.
+
+Thanks
+Vivek
 
 ------------------------------------------------------------------------------
-Want excitement?
-Manually upgrade your production database.
-When you want reliability, choose Perforce
-Perforce version control. Predictably reliable.
-http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
