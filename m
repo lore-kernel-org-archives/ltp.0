@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XXUrl-0008DV-3S
-	for ltp-list@lists.sourceforge.net; Fri, 26 Sep 2014 12:43:17 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XXUrj-00018A-3J
-	for ltp-list@lists.sourceforge.net; Fri, 26 Sep 2014 12:43:17 +0000
-Date: Fri, 26 Sep 2014 08:43:05 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1411718817.9511.9.camel@G08JYZSD130126>
-References: <1407402404.1347.29.camel@G08JYZSD130126>
-	<179118855.6420138.1407923193096.JavaMail.zimbra@redhat.com>
-	<1411718817.9511.9.camel@G08JYZSD130126>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XWNej-0003eQ-JS
+	for ltp-list@lists.sourceforge.net; Tue, 23 Sep 2014 10:49:13 +0000
+Date: Tue, 23 Sep 2014 12:48:54 +0200
+From: chrubis@suse.cz
+Message-ID: <20140923104854.GA29895@rei.suse.cz>
+References: <20140922154742.71edd101@mats-desktop>
+	<20140922142631.GA12628@rei.suse.cz>
+	<20140923102909.689d3b39@mats-desktop>
+	<20140923084315.GA27073@rei.suse.cz>
+	<20140923111741.155ff484@mats-desktop>
+	<20140923094534.GB27355@rei.suse.cz>
+	<20140923123704.275d7beb@mats-desktop>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] securebits: some cleanup
+Content-Disposition: inline
+In-Reply-To: <20140923123704.275d7beb@mats-desktop>
+Subject: Re: [LTP] Failed out of tree compile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,307 +30,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: ltp-list@lists.sourceforge.net
 
-
-
-
-
------ Original Message -----
-> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "ltp-list" <ltp-list@lists.sourceforge.net>
-> Sent: Friday, 26 September, 2014 10:06:57 AM
-> Subject: [PATCH v2] securebits: some cleanup
+Hi!
+> > But given the fact that this setup is less tested it tends to break
+> > occasionally :(
+> > 
 > 
-> * Remove .sh and divide into three seperate tests.
-> 
-> * Check the header <linux/securebits.h>.
-> 
-> * Use tst_brkm instead of tst_exit() that follows tst_resm.
-> 
-> * Some cleanup
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> Using Gerrit and Jenkins this would be solvable, but then you need to
+> find a host that supports this combination. Not use if gerrithub.io
+> does this.
 
-Is the modified testcase working for you?
+That sounds like an interesting idea. Maybe we just need a github
+jenkins plugin to have it start a build for each push and send an email
+to the mailing list if it failed. But I have not idea how to setup such
+system :(
 
-I'm getting segmentation fault:
-
-(gdb) bt
-#0  __GI__IO_fputs (str=str@entry=0x7fffffffa980 "keepcaps    0  TWARN  :  tst_brk_: Invalid Type: 0. Using TBROK\n", fp=0x0)
-    at iofputs.c:39
-#1  0x00000000004015ee in tst_print (tcid=0x4029ba "keepcaps", tnum=tnum@entry=0, ttype=ttype@entry=4, 
-    tmesg=tmesg@entry=0x605240 <Warn_mesg> "tst_brk_: Invalid Type: 0. Using TBROK") at tst_res.c:479
-#2  0x00000000004021f5 in tst_brk_ (file=file@entry=0x4028fe "check_keepcaps.c", lineno=lineno@entry=88, ttype=ttype@entry=0, 
-    fname=fname@entry=0x0, func=func@entry=0x0, arg_fmt=arg_fmt@entry=0x402ac6 "%s") at tst_res.c:656
-#3  0x00000000004026a8 in tst_brkm_ (file=file@entry=0x4028fe "check_keepcaps.c", lineno=lineno@entry=88, ttype=ttype@entry=0, 
-    func=func@entry=0x0, arg_fmt=arg_fmt@entry=0x402926 "dropped privs as expected") at tst_res.c:769
-#4  0x0000000000401460 in do_setuid (expect_privs=expect_privs@entry=0) at check_keepcaps.c:88
-#5  0x000000000040124f in main (argc=2, argv=0x7fffffffe528) at check_keepcaps.c:113
-
-and when I fix the crash (T_out is uninitialized) I get:
-
-# ./check_keepcaps 1
-keepcaps    0  TWARN  :  tst_brk_: Invalid Type: 0. Using TBROK
-keepcaps    1  TBROK  :  check_keepcaps.c:88: dropped privs as expected
-
-from lib/tst_res.c:
-        /*
-         * Only FAIL, BROK, CONF, and RETR are supported by tst_brk().
-         */
-
-Regards,
-Jan
-
-> ---
->  runtest/securebits                                 |  4 +-
->  testcases/kernel/security/securebits/Makefile      |  9 ++-
->  .../kernel/security/securebits/check_keepcaps.c    | 75
->  +++++++++-------------
->  .../kernel/security/securebits/run_securebits.sh   | 20 ------
->  4 files changed, 36 insertions(+), 72 deletions(-)
->  delete mode 100644 testcases/kernel/security/securebits/run_securebits.sh
-> 
-> diff --git a/runtest/securebits b/runtest/securebits
-> index d78a66f..64e6e0a 100644
-> --- a/runtest/securebits
-> +++ b/runtest/securebits
-> @@ -1,2 +1,4 @@
->  #DESCRIPTION:securebits tests
-> -Securebits	run_securebits.sh
-> +check_keepcaps01 check_keepcaps 1
-> +check_keepcaps02 check_keepcaps 2
-> +check_keepcaps03 check_keepcaps 3
-> diff --git a/testcases/kernel/security/securebits/Makefile
-> b/testcases/kernel/security/securebits/Makefile
-> index 51018d9..e379b7c 100644
-> --- a/testcases/kernel/security/securebits/Makefile
-> +++ b/testcases/kernel/security/securebits/Makefile
-> @@ -4,7 +4,8 @@
->  ##
->  ##
->  ## This program is free software;  you can redistribute it and#or modify
->  ##
->  ## it under the terms of the GNU General Public License as published by
->  ##
-> -## the Free Software Foundation; either version 2 of the License, or
-> ## ## (at your option) any later version.
-> ##
-> +## the Free Software Foundation; either version 2 of the License, or
-> ##
-> +## (at your option) any later version.
-> ##
->  ##
->  ##
->  ## This program is distributed in the hope that it will be useful, but
->  ##
->  ## WITHOUT ANY WARRANTY; without even the implied warranty of
->  MERCHANTABILITY ##
-> @@ -12,8 +13,8 @@
->  ## for more details.
->  ##
->  ##
->  ##
->  ## You should have received a copy of the GNU General Public License
->  ##
-> -## along with this program;  if not, write to the Free Software
-> ##
-> -## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301
-> USA    ##
-> +## along with this program;  if not, write to the Free Software Foundation,
-> ##
-> +## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> ##
->  ##
->  ##
->  ################################################################################
->  
-> @@ -23,6 +24,4 @@ include $(top_srcdir)/include/mk/testcases.mk
->  
->  LDLIBS			+= $(CAP_LIBS)
->  
-> -INSTALL_TARGETS		:= *.sh
-> -
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/security/securebits/check_keepcaps.c
-> b/testcases/kernel/security/securebits/check_keepcaps.c
-> index 6e195c6..3b6e24e 100644
-> --- a/testcases/kernel/security/securebits/check_keepcaps.c
-> +++ b/testcases/kernel/security/securebits/check_keepcaps.c
-> @@ -5,7 +5,6 @@
->  #include <sys/capability.h>
->  #endif
->  #include <sys/prctl.h>
-> -#include <linux/securebits.h>
->  #include "usctest.h"
->  #include "test.h"
->  
-> @@ -30,7 +29,9 @@
->  char *TCID = "keepcaps";
->  int TST_TOTAL = 1;
->  
-> -#ifdef HAVE_LIBCAP
-> +#if (HAVE_LINUX_SECUREBITS_H && HAVE_LIBCAP)
-> +#include <linux/securebits.h>
-> +
->  static int eff_caps_empty(cap_t c)
->  {
->  	int i, ret, empty = 1;
-> @@ -75,28 +76,19 @@ static void do_setuid(int expect_privs)
->  	int have_privs;
->  
->  	ret = setuid(1000);
-> -	if (ret) {
-> -		tst_resm(TERRNO | TFAIL, "setuid failed");
-> -		tst_exit();
-> -	}
-> +	if (ret)
-> +		tst_brkm(TERRNO | TFAIL, NULL, "setuid failed");
->  
->  	have_privs = am_privileged();
-> -	if (have_privs && expect_privs == EXPECT_PRIVS) {
-> -		tst_resm(TPASS, "kept privs as expected");
-> -		tst_exit();
-> -	}
-> -	if (!have_privs && expect_privs == EXPECT_PRIVS) {
-> -		tst_resm(TFAIL, "expected to keep privs but did not");
-> -		tst_exit();
-> -	}
-> -	if (!have_privs && expect_privs == EXPECT_NOPRIVS) {
-> -		tst_resm(TPASS, "dropped privs as expected");
-> -		tst_exit();
-> -	}
-> +	if (have_privs && expect_privs == EXPECT_PRIVS)
-> +		tst_brkm(TPASS, NULL, "kept privs as expected");
-> +	if (!have_privs && expect_privs == EXPECT_PRIVS)
-> +		tst_brkm(TFAIL, NULL, "expected to keep privs but did not");
-> +	if (!have_privs && expect_privs == EXPECT_NOPRIVS)
-> +		tst_brkm(TPASS, NULL, "dropped privs as expected");
->  
->  	/* have_privs && EXPECT_NOPRIVS */
-> -	tst_resm(TFAIL, "expected to drop privs but did not");
-> -	tst_exit();
-> +	tst_brkm(TFAIL, NULL, "expected to drop privs but did not");
->  }
->  
->  int main(int argc, char *argv[])
-> @@ -106,64 +98,55 @@ int main(int argc, char *argv[])
->  	tst_require_root(NULL);
->  
->  	ret = prctl(PR_GET_KEEPCAPS);
-> -	if (ret) {
-> -		tst_resm(TBROK, "keepcaps was already set?\n");
-> -		tst_exit();
-> -	}
-> +	if (ret)
-> +		tst_brkm(TBROK, NULL, "keepcaps was already set?\n");
-> +
-> +	if (argc < 2)
-> +		tst_brkm(TBROK, NULL, "Usage: %s <tescase_num>", argv[0]);
->  
-> -	if (argc < 2) {
-> -		tst_resm(TBROK, "Usage: %s <tescase_num>", argv[0]);
-> -		tst_exit();
-> -	}
->  	whichtest = atoi(argv[1]);
-> -	if (whichtest < 1 || whichtest > 3) {
-> -		tst_resm(TFAIL, "Valid tests are 1-3\n");
-> -		tst_exit();
-> -	}
-> +	if (whichtest < 1 || whichtest > 3)
-> +		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
-> +
->  	switch (whichtest) {
->  	case 1:
->  		do_setuid(EXPECT_NOPRIVS);	/* does not return */
->  	case 2:
->  		ret = prctl(PR_SET_KEEPCAPS, 1);
->  		if (ret == -1) {
-> -			tst_resm(TFAIL | TERRNO, "PR_SET_KEEPCAPS failed\n");
-> -			tst_exit();
-> +			tst_brkm(TFAIL | TERRNO, NULL,
-> +				 "PR_SET_KEEPCAPS failed\n");
->  		}
->  		ret = prctl(PR_GET_KEEPCAPS);
->  		if (!ret) {
-> -			tst_resm(TFAIL | TERRNO,
-> +			tst_brkm(TFAIL | TERRNO, NULL,
->  				 "PR_SET_KEEPCAPS did not set keepcaps\n");
-> -			tst_exit();
->  		}
->  		do_setuid(EXPECT_PRIVS);	/* does not return */
->  	case 3:
->  		ret = prctl(PR_GET_SECUREBITS);
->  		ret = prctl(PR_SET_SECUREBITS, ret | SECBIT_KEEP_CAPS);
->  		if (ret == -1) {
-> -			tst_resm(TFAIL | TERRNO, "PR_SET_SECUREBITS failed\n");
-> -			tst_exit();
-> +			tst_brkm(TFAIL | TERRNO, NULL,
-> +				 "PR_SET_SECUREBITS failed\n");
->  		}
->  		ret = prctl(PR_GET_KEEPCAPS);
->  		if (!ret) {
-> -			tst_resm(TFAIL | TERRNO,
-> +			tst_brkm(TFAIL | TERRNO, NULL,
->  				 "PR_SET_SECUREBITS did not set keepcaps\n");
-> -			tst_exit();
->  		}
->  		do_setuid(EXPECT_PRIVS);	/* does not return */
->  	default:
-> -		tst_resm(TFAIL, "should not reach here\n");
-> -		tst_exit();
-> +		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
->  	}
-> -	tst_resm(TFAIL, "should not reach here\n");
-> -	tst_exit();
-> +	tst_brkm(TFAIL, NULL, "should not reach here\n");
->  }
->  
->  #else
->  
->  int main(void)
->  {
-> -	tst_resm(TCONF, "Test was compiled without libcap.");
-> -	tst_exit();
-> +	tst_brkm(TCONF, NULL, "linux/securebits.h or libcap is not existence.");
->  }
->  
->  #endif /* HAVE_LIBCAP */
-> diff --git a/testcases/kernel/security/securebits/run_securebits.sh
-> b/testcases/kernel/security/securebits/run_securebits.sh
-> deleted file mode 100644
-> index 4d9e272..0000000
-> --- a/testcases/kernel/security/securebits/run_securebits.sh
-> +++ /dev/null
-> @@ -1,20 +0,0 @@
-> -#!/bin/sh
-> -
-> -echo "testing keepcaps"
-> -check_keepcaps 1
-> -tmp=$?
-> -if [ $tmp -ne 0 ]; then
-> -	exit_code=$tmp
-> -fi
-> -check_keepcaps 2
-> -tmp=$?
-> -if [ $tmp -ne 0 ]; then
-> -	exit_code=$tmp
-> -fi
-> -check_keepcaps 3
-> -tmp=$?
-> -if [ $tmp -ne 0 ]; then
-> -	exit_code=$tmp
-> -fi
-> -
-> -exit $exit_code
-> --
-> 1.9.3
-> 
-> 
-> 
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
