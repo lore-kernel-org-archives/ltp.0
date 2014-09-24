@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1XS4zP-0007iw-Vf
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 14:04:48 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XS4zO-0002tS-0R
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 14:04:47 +0000
-Message-ID: <5411ABF0.9070704@oracle.com>
-Date: Thu, 11 Sep 2014 18:04:32 +0400
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XWhR1-0002uw-VA
+	for ltp-list@lists.sourceforge.net; Wed, 24 Sep 2014 07:56:24 +0000
+Date: Wed, 24 Sep 2014 09:56:05 +0200
+From: chrubis@suse.cz
+Message-ID: <20140924075604.GB10825@rei>
+References: <1409047170-18251-1-git-send-email-mmarhefk@redhat.com>
+	<1409319967-12730-1-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
-References: <722837953.31209749.1410431446352.JavaMail.zimbra@redhat.com>
-In-Reply-To: <722837953.31209749.1410431446352.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] fcntl14: dup code clean up
+Content-Disposition: inline
+In-Reply-To: <1409319967-12730-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH 1/2 v2] containers: added mountns/mountns03.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,102 +25,223 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiong Zhou <xzhou@redhat.com>, ltp-list@lists.sourceforge.net
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-
-On 09/11/2014 02:30 PM, Xiong Zhou wrote:
-> And block3 description message fix from "mandatory locking"
-> to "negative whence".
->
-> Signed-off-by: Xiong Zhou <xzhou@redhat.com>
-> ---
->   testcases/kernel/syscalls/fcntl/fcntl14.c | 36 +++++++++++--------------------
->   1 file changed, 13 insertions(+), 23 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl14.c b/testcases/kernel/syscalls/fcntl/fcntl14.c
-> index 30a1ea9..9db88e8 100644
-> --- a/testcases/kernel/syscalls/fcntl/fcntl14.c
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl14.c
-> @@ -969,6 +969,15 @@ void catch1(int sig)
->   	got1++;
->   }
->
-> +static void testcheck_end(int check_fail, char *msg)
+> +static void setup(void)
 > +{
-> +	if (check_fail) {
-> +		tst_resm(TFAIL, "%s FAILED", msg);
-> +	} else {
-> +		tst_resm(TPASS, "%s PASSED", msg);
-> +	}
+> +	tst_require_root(NULL);
+> +	check_newns();	/* from mountns_helper.h */
+
+Please remove this comment.
+
+> +	tst_tmpdir();
+> +	SAFE_MKDIR(cleanup, DIRA, 0777);
+> +	SAFE_MKDIR(cleanup, DIRB, 0777);
+> +	SAFE_MKDIR(cleanup, DIRC, 0777);
+> +	SAFE_MKDIR(cleanup, DIRD, 0777);
+> +	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
+> +	SAFE_TOUCH(cleanup, DIRB"/B", 0, NULL);
+> +	SAFE_TOUCH(cleanup, DIRC"/C", 0, NULL);
+> +	SAFE_TOUCH(cleanup, DIRD"/D", 0, NULL);
 > +}
-
-There are many places left in fcntl14.c where you can put this 
-"deduplication". Why aren't you doing it? ;)
-
 > +
->   int main(int ac, char **av)
->   {
->   	int lc;
-> @@ -1009,20 +1018,11 @@ int main(int ac, char **av)
->   		 * mandatory locking
->   		 */
->   		(void)run_test(O_CREAT | O_RDWR | O_TRUNC, 0777, 0, 0, 36);
-> -		if (fail) {
-> -			tst_resm(TFAIL, "Block 1, test 1 FAILED");
-> -		} else {
-> -			tst_resm(TPASS, "Block 1, test 1 PASSED");
-> -		}
-> +		testcheck_end(fail, "Block 1, test 1");
->
->   		/* Now try with negative values for L_start and L_len */
->   		(void)run_test(O_CREAT | O_RDWR | O_TRUNC, 0777, 5, 36, 45);
-> -
-> -		if (fail) {
-> -			tst_resm(TFAIL, "Block 1, test 2 FAILED");
-> -		} else {
-> -			tst_resm(TPASS, "Block 1, test 2 PASSED");
-> -		}
-> +		testcheck_end(fail, "Block 1, test 2");
->
->   		tst_resm(TINFO, "Exit block 1");
->
-> @@ -1094,13 +1094,7 @@ int main(int ac, char **av)
->   		close(fd);
->   		unlink(tmpname);
->
-> -		if (fail) {
-> -			tst_resm(TINFO, "Test with mandatory "
-> -				 "locking FAILED");
-> -		} else {
-> -			tst_resm(TINFO, "Test with mandatory "
-> -				 "locking PASSED");
-> -		}
-> +		testcheck_end(fail, "Test with negative whence locking");
->   		tst_resm(TINFO, "Exit block 3");
->
->   /* //block4: */
-> @@ -1223,11 +1217,7 @@ int main(int ac, char **av)
->   		close(fd);
->   		unlink(tmpname);
->
-> -		if (fail) {
-> -			tst_resm(TINFO, "Test of locks on file FAILED");
-> -		} else {
-> -			tst_resm(TINFO, "Test of locks on file PASSED");
-> -		}
-> +		testcheck_end(fail, "Test of locks on file");
->   		tst_resm(TINFO, "Exit block 4");
->   	}
->   	cleanup();
->
+> +int child_func(void *arg)
+> +{
+> +	char buf;
+> +
+> +	/* bind mounts DIRA to DIRB making contents of DIRA visible
+> +	 * in DIRB */
+> +	if (mount(DIRA, DIRB, "none", MS_BIND, NULL) == -1) {
+> +		perror("mount");
+> +		write(pipefd1[1], "1", 1);
+> +		return 1;
+> +	}
+> +
+> +	/* makes mount DIRB a slave of DIRA (all slave mounts have
+> +	 * a master mount which is a shared mount) */
+> +	if (mount("none", DIRB, "none", MS_SLAVE, NULL) == -1) {
+> +		perror("mount");
+> +		umount(DIRB);
+> +		write(pipefd1[1], "1", 1);
+> +		return 1;
+> +	}
+> +
+> +	/* bind mounts DIRC to DIRA making contents of DIRC visible
+> +	 * in DIRA */
+> +	if (mount(DIRC, DIRA, "none", MS_BIND, NULL) == -1) {
+> +		perror("mount");
+> +		umount(DIRB);
+> +		write(pipefd1[1], "1", 1);
+> +		return 1;
+> +	}
+> +
+> +	/* as DIRB is a slave of DIRA, previous mount (DIRC to DIRA)
+> +	 * should be also propageted into DIRB */
+> +	if (access(DIRB"/C", F_OK) != -1)
+> +		tst_resm(TPASS, "propagation to slave mount passed");
+> +	else
+> +		tst_resm(TFAIL, "propagation to slave mount failed");
+> +
+> +	/* bind mounts DIRD to DIRB making contents of DIRD visible
+> +	 * in DIRB (should not propagate to DIRA as DIRB is its slave) */
+> +	if (mount(DIRD, DIRB, "none", MS_BIND, NULL) == -1) {
+> +		perror("mount");
+> +		umount(DIRA);
+> +		umount(DIRB);
+> +		write(pipefd1[1], "1", 1);
+> +		return 1;
+> +	}
+> +
+> +	/* tells parent to stop waiting and continue */
+> +	write(pipefd1[1], "0", 1);
+> +
+> +	/* waits for parent approval to terminate */
+> +	read(pipefd2[0], &buf, 1);
+
+We have a child-parent synchronization functions in the LTP test
+library. Have look at include/tst_checkpoint.h and
+lib/tests/tst_checkpoint* and make use of it.
+
+In short these two statements would became:
+
+TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
+TST_CHECKPOINT_CHILD_WAIT(&checkpoint);
+
+And you would have to declare checkpoint structure and initialize the
+checkpoint in setup with:
+
+struct tst_checkpoint checkpoint;
+
+...
+
+static void setup(void)
+{
+	...
+	TST_CHECKPOINT_INIT(&checkpoint);
+	...
+}
+
+The difference between doing write() and checkpoint interfaces is that
+checkpoint checks return values from write(), suppport timeouts, etc.
+
+> +	umount(DIRB);
+> +	umount(DIRA);
+> +	umount(DIRB);
+> +	return 0;
+> +}
+> +
+> +static void test(void)
+> +{
+> +	int status, pass;
+> +	char buf;
+> +
+> +	/* creates a pipe for synchronization between parent and child */
+> +	SAFE_PIPE(cleanup, pipefd1);
+> +	SAFE_PIPE(cleanup, pipefd2);
+> +
+> +	/* unshares the mount ns */
+> +	if (unshare(CLONE_NEWNS) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
+> +	/* makes sure parent mounts/umounts have no effect on a real system */
+> +	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
+> +
+> +	/* bind mounts DIRA to itself */
+> +	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
+> +	/* bind mounts DIRB to itself */
+> +	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
+> +
+> +	/* makes mount DIRA shared */
+> +	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_SHARED, NULL);
+> +	/* makes mount DIRB shared */
+> +	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
+> +
+> +	if (do_clone_tests(CLONE_NEWNS, child_func, NULL, NULL, NULL) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
+> +
+> +	/* waits for child bind mount */
+> +	SAFE_READ(cleanup, 0, pipefd1[0], &buf, 1);
+
+Here you should do TST_CHECKPOINT_PARENT_WAIT(cleanup, &checkpoint);
+
+> +	/* checks that mount in slave (DIRB) doesn't propagate to shared
+> +	 * mount (DIRA) */
+> +	if (access(DIRA"/D", F_OK) == -1)
+> +		pass = 1;
+> +	else
+> +		pass = 0;
+> +
+> +	/* tells child to terminate (if no error occured in child) */
+> +	SAFE_WRITE(cleanup, 0, pipefd2[1], "0", 1);
+
+Here you should do TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
+
+> +	SAFE_WAIT(cleanup, &status);
+> +
+> +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+> +		tst_brkm(TBROK, cleanup, "child failed");
+> +
+> +	if (WIFSIGNALED(status)) {
+> +		tst_resm(TFAIL, "child was killed with signal %s",
+> +			 tst_strsig(WTERMSIG(status)));
+> +		return;
+> +	}
+> +
+> +	close(pipefd1[0]);
+> +	close(pipefd1[1]);
+> +	close(pipefd2[0]);
+> +	close(pipefd2[1]);
+> +	SAFE_UMOUNT(cleanup, DIRA);
+> +	SAFE_UMOUNT(cleanup, DIRB);
+> +
+> +	if (pass)
+> +		tst_resm(TPASS, "propagation from slave mount passed");
+> +	else
+> +		tst_resm(TFAIL, "propagation form slave mount failed");
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	const char *msg;
+> +	int lc;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++)
+> +		test();
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +#else /* MS_SHARED && MS_PRIVATE && MS_REC && MS_SLAVE */
+
+Have we settled if we should go with ifdefs or with defining the
+constatns in include/lapi/?
+
+I remeber that we disscussed it in one of the latter patches.
+
+> +int main(void)
+> +{
+> +	tst_brkm(TCONF, NULL, "needed mountflags are not defined");
+> +}
+> +#endif
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Want excitement?
-Manually upgrade your production database.
-When you want reliability, choose Perforce
-Perforce version control. Predictably reliable.
-http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
