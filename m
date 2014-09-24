@@ -1,27 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XS0eO-0002OO-AT
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 09:26:48 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XS0eM-0000mE-IW
-	for ltp-list@lists.sourceforge.net; Thu, 11 Sep 2014 09:26:48 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s8B9QdpF002034
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Sep 2014 05:26:39 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s8B9Qbj5030334
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Sep 2014 05:26:38 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 11 Sep 2014 11:26:36 +0200
-Message-Id: <18212a6382077b1a49ca02422804fffb0189816b.1410427548.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] lib: implement TRERRNO
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XWige-0004GS-UN
+	for ltp-list@lists.sourceforge.net; Wed, 24 Sep 2014 09:16:36 +0000
+Date: Wed, 24 Sep 2014 11:16:17 +0200
+From: chrubis@suse.cz
+Message-ID: <20140924091617.GD10825@rei>
+References: <1409057073-2988-1-git-send-email-mmarhefk@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1409057073-2988-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH] containers: added netns/netns_netlink.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,178 +21,263 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-TRERRNO outputs errno information stored in TEST_RETURN.
-For example, this can be used for pthread-style API,
-where functions do not set errno on error, but return
-error code directly.
+Hi!
+> * Tests a netlink interface inside a new network namespace
+> 
+> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+> ---
+>  runtest/containers                                |   1 +
+>  testcases/kernel/containers/.gitignore            |   1 +
+>  testcases/kernel/containers/netns/Makefile        |   2 +-
+>  testcases/kernel/containers/netns/netns_netlink.c | 175 ++++++++++++++++++++++
+>  4 files changed, 178 insertions(+), 1 deletion(-)
+>  create mode 100644 testcases/kernel/containers/netns/netns_netlink.c
+> 
+> diff --git a/runtest/containers b/runtest/containers
+> index 8e8e067..7d01a44 100644
+> --- a/runtest/containers
+> +++ b/runtest/containers
+> @@ -28,6 +28,7 @@ netns_two_children_ns netns_two_children_ns
+>  netns_crtchild_delchild netns_crtchild_delchild
+>  netns_par_chld_ipv6 netns_par_chld_ipv6
+>  netns_par_chld_ftp netns_par_chld_ftp.sh
+> +netns_netlink netns_netlink
+>  
+>  shmnstest_none shmnstest none
+>  shmnstest_clone shmnstest clone
+> diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+> index 4a98373..95daf12 100644
+> --- a/testcases/kernel/containers/.gitignore
+> +++ b/testcases/kernel/containers/.gitignore
+> @@ -3,3 +3,4 @@ mountns/mountns01
+>  mountns/mountns02
+>  mountns/mountns03
+>  mountns/mountns04
+> +netns/netns_netlink
+> diff --git a/testcases/kernel/containers/netns/Makefile b/testcases/kernel/containers/netns/Makefile
+> index cdda23b..eea0d88 100644
+> --- a/testcases/kernel/containers/netns/Makefile
+> +++ b/testcases/kernel/containers/netns/Makefile
+> @@ -31,7 +31,7 @@ LDLIBS			+= -lclone
+>  MAKE_TARGETS		:= netns_create_container netns_crtchild \
+>  			   netns_crtchild_delchild netns_par_chld_ftp \
+>  			   netns_par_chld_ipv6 netns_sysfsview \
+> -			   netns_two_children_ns
+> +			   netns_two_children_ns netns_netlink
+>  
+>  $(MAKE_TARGETS): %: common.o %.o
+>  
+> diff --git a/testcases/kernel/containers/netns/netns_netlink.c b/testcases/kernel/containers/netns/netns_netlink.c
+> new file mode 100644
+> index 0000000..5f5d41f
+> --- /dev/null
+> +++ b/testcases/kernel/containers/netns/netns_netlink.c
+> @@ -0,0 +1,175 @@
+> +/* Copyright (c) 2014 Red Hat, Inc.
+> + *
+> + * This program is free software: you can redistribute it and/or modify
+> + * it under the terms of version 2 the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+> + ***********************************************************************
+> + * File: netns_netlink.c
+> + *
+> + * Tests a netlink interface inside a new network namespace.
+> + * Description:
+> + * 1. Unshares a network namespace (so network related actions
+> + *    have no effect on a real system)
+> + * 2. Forks a child which creates a NETLINK_ROUTE netlink socket
+> + *    and listens to RTMGRP_LINK (network interface create/delete/up/down)
+> + *    multicast group.
+> + * 4. Child then waits for parent approval to receive data from socket
+> + * 3. Parent creates a new TAP interface (dummy0) and immediately
+> + *    removes it (which should generate some data in child's netlink socket).
+> + *    Then it allows child to continue.
+> + * 4. As the child was listening to RTMGRP_LINK multicast group, it should
+> + *    detect the new interface creation (by reading data from netlink socket),
+> + *    if so, the test passes, otherwise it fails.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <sys/wait.h>
+> +#include <asm/types.h>
+> +#include <sys/socket.h>
+> +#include <linux/netlink.h>
+> +#include <linux/rtnetlink.h>
+> +#include <unistd.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <errno.h>
+> +#include "usctest.h"
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "netns_helper.h"
+> +
+> +
+> +char *TCID	= "netns_netlink";
+> +int TST_TOTAL	= 1;
+> +int pipefd[2];
+> +
+> +
+> +static void cleanup(void)
+> +{
+> +	close(pipefd[0]);
+> +	close(pipefd[1]);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_require_root(NULL);
+> +	check_netns();
+> +}
+> +
+> +int child_func(void)
+> +{
+> +	int fd, len;
+> +	struct sockaddr_nl sa;
+> +	char c, buffer[4096];
+> +	struct nlmsghdr *nlh;
+> +
+> +	/* child will listen to a network interface create/delete/up/down
+> +	 * events */
+> +	memset(&sa, 0, sizeof(sa));
+> +	sa.nl_family = AF_NETLINK;
+> +	sa.nl_groups = RTMGRP_LINK;
+> +	
+> +	fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
+> +	if (fd == -1) {
+> +		perror("socket");
+> +		return 1;
+> +	}
+> +	if (bind(fd, (struct sockaddr *) &sa, sizeof(sa)) == -1) {
+> +		perror("bind");
+> +		return 1;
+> +	}
+> +
+> +	/* waits for parent to create an interface */
+> +	read(pipefd[0], &c, 1);
+> +
+> +	nlh = (struct nlmsghdr *) buffer;
+> +	/* non-blocking recv call */
+> +	while ((len = recv(fd, nlh, sizeof(buffer), MSG_DONTWAIT)) > 0) {
+> +		/* stop receiving only on interface create event */
+> +		if (nlh->nlmsg_type == RTM_NEWLINK)
+> +			break;
+> +	}
+> +
+> +	if (len == -1) {
+> +		perror("recv");
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void test(void)
+> +{
+> +	pid_t pid;
+> +	int status;
+> +
+> +	/* creates a pipe for synchronization between parent and child */
+> +	SAFE_PIPE(cleanup, pipefd);
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .gitignore              |    1 +
- include/tst_res_flags.h |    2 +-
- lib/tests/trerrno.c     |   91 +++++++++++++++++++++++++++++++++++++++++++++++
- lib/tst_res.c           |   12 ++++++
- 4 files changed, 105 insertions(+), 1 deletions(-)
- create mode 100644 lib/tests/trerrno.c
+Use the CHECKPOINT interface instead.
 
-diff --git a/.gitignore b/.gitignore
-index 352ca23..1256236 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -67,3 +67,4 @@ logfile.*
- /lib/tests/tst_fs_fill_hardlinks
- /lib/tests/tst_device
- /lib/tests/tst_record_childstatus
-+/lib/tests/trerrno
-diff --git a/include/tst_res_flags.h b/include/tst_res_flags.h
-index 1f3d06d..b79d69a 100644
---- a/include/tst_res_flags.h
-+++ b/include/tst_res_flags.h
-@@ -23,7 +23,7 @@
- 
- #define TERRNO	0x100	/* Append errno information to output */
- #define TTERRNO	0x200	/* Append TEST_ERRNO information to output */
--#define TRERRNO	0x300	/* Capture errno information from TEST_RETURN to
-+#define TRERRNO	0x400	/* Capture errno information from TEST_RETURN to
- 			   output; useful for pthread-like APIs :). */
- 
- #endif /* TST_RES_FLAGS_H */
-diff --git a/lib/tests/trerrno.c b/lib/tests/trerrno.c
-new file mode 100644
-index 0000000..0c72328
---- /dev/null
-+++ b/lib/tests/trerrno.c
-@@ -0,0 +1,91 @@
-+/*
-+ * Copyright (C) 2014 Linux Test Project, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it is
-+ * free of the rightful claim of any third person regarding infringement
-+ * or the like.  Any license provided herein, whether implied or
-+ * otherwise, applies only to this software file.  Patent licenses, if
-+ * any, provided herein do not apply to combinations of this program with
-+ * other software, or any other product whatsoever.
-+ */
-+
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "usctest.h"
-+
-+#define OUTPUT_FNAME "output"
-+
-+char *TCID = "trerrno";
-+int TST_TOTAL = 1;
-+
-+static void setup(void)
-+{
-+	tst_tmpdir();
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
-+}
-+
-+int main(void)
-+{
-+	int fd, stdout_fd;
-+	char msg[4096], *pos;
-+	FILE *f;
-+
-+	setup();
-+
-+	/* redirect stdout to file */
-+	stdout_fd = dup(fileno(stdout));
-+	fd = SAFE_OPEN(NULL, OUTPUT_FNAME, O_RDWR | O_CREAT, 0666);
-+	TEST(dup2(fd, fileno(stdout)));
-+	if (TEST_RETURN == -1)
-+		tst_brkm(TBROK | TTERRNO, cleanup, "dup2");
-+
-+	errno = EPERM;
-+	TEST_ERRNO = EPERM;
-+	TEST_RETURN = EINVAL;
-+	tst_resm(TINFO | TRERRNO, "test");
-+	tst_flush();
-+
-+	/* restore stdout */
-+	TEST(dup2(stdout_fd, fileno(stdout)));
-+	if (TEST_RETURN == -1)
-+		tst_brkm(TBROK | TTERRNO, cleanup, "dup2");
-+
-+	/* read file and verify that output is as expected */
-+	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
-+	f = fdopen(fd, "r");
-+	if (!f)
-+		tst_brkm(TBROK | TERRNO, cleanup, "fdopen");
-+	if (!fgets(msg, sizeof(msg), f))
-+		tst_brkm(TBROK, cleanup, "fgets");
-+	fclose(f);
-+
-+	pos = strchr(msg, '\n');
-+	if (pos != NULL)
-+		*pos = '\0';
-+
-+	tst_resm(TINFO, "%s", msg);
-+	if (strstr(msg, "EPERM"))
-+		tst_resm(TFAIL, "EPERM shouldn't be in TRERRNO output");
-+	if (strstr(msg, "EINVAL"))
-+		tst_resm(TPASS, "EINVAL should be in TRERRNO output");
-+	else
-+		tst_resm(TFAIL, "EINVAL not found in TRERRNO output");
-+
-+	cleanup();
-+	tst_exit();
-+}
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index 569bfe2..7619ea2 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -456,6 +456,18 @@ static void tst_print(const char *tcid, int tnum, int ttype, const char *tmesg)
- 				 strerror(TEST_ERRNO));
- 	}
- 
-+	if (size >= sizeof(message)) {
-+		printf("%s: %i: line too long\n", __func__, __LINE__);
-+		abort();
-+	}
-+
-+	if (ttype & TRERRNO) {
-+		size += snprintf(message + size, sizeof(message) - size,
-+				 ": TEST_RETURN=%s(%i): %s",
-+				 tst_strerrno(TEST_RETURN), (int)TEST_RETURN,
-+				 strerror(TEST_RETURN));
-+	}
-+
- 	if (size + 1 >= sizeof(message)) {
- 		printf("%s: %i: line too long\n", __func__, __LINE__);
- 		abort();
+> +	/* unshares the network namespace */
+> +	if (unshare(CLONE_NEWNET) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
+> +
+> +	pid = fork();
+
+Use tst_fork() instead.
+
+> +	if (pid < 0) {  /* error */
+> +		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
+> +	}
+> +	if (pid == 0) { /* child */
+> +		_exit(child_func());
+> +	}
+> +
+> +	/* parent */
+
+No obvious comments like /* error */, /* child */, /* parent */, etc.
+please.
+
+> +	/* creates TAP network interface dummy0 */
+> +	if (system("ip tuntap add dev dummy0 mode tap") == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
+> +
+> +	/* removes previously created dummy0 device */
+> +	if (system("ip tuntap del mode tap dummy0") == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
+> +
+> +	/* allow child to continue */
+> +	SAFE_WRITE(cleanup, 0, pipefd[1], "0", 1);
+> +
+> +
+> +	SAFE_WAITPID(cleanup, pid, &status, 0);
+> +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+> +		tst_resm(TFAIL, "netlink interface fail");
+> +		return;
+> +	}
+> +	if (WIFSIGNALED(status)) {
+> +		tst_resm(TFAIL, "child was killed with signal %s",
+> +			 tst_strsig(WTERMSIG(status)));
+> +		return;
+> +	}
+> +
+> +	tst_resm(TPASS, "netlink interface pass");
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	const char *msg;
+> +	int lc;
+> +
+> +	msg = parse_opts(argc, argv, NULL, NULL);
+> +	if (msg != NULL)
+> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		test();
+> +		cleanup();
+> +		/* To get rid of "resource temporarily unavalable" errors
+> +		 * when testing with -i option */
+> +		sleep(1);
+
+		I do not like this sleep(), moreover looking into the
+		child_func() you forget to close the socked fd, is this
+		still needed even if the fd is closed there?
+> +	}
+> +
+> +	tst_exit();
+> +}
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Want excitement?
-Manually upgrade your production database.
-When you want reliability, choose Perforce
-Perforce version control. Predictably reliable.
-http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
