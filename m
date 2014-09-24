@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XWMYs-0006PD-RY
-	for ltp-list@lists.sourceforge.net; Tue, 23 Sep 2014 09:39:06 +0000
-Date: Tue, 23 Sep 2014 11:38:49 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XWkMl-0001Ei-Ab
+	for ltp-list@lists.sourceforge.net; Wed, 24 Sep 2014 11:04:11 +0000
+Date: Wed, 24 Sep 2014 13:03:52 +0200
 From: chrubis@suse.cz
-Message-ID: <20140923093848.GA27355@rei.suse.cz>
-References: <20140922154742.71edd101@mats-desktop>
-	<20140922142631.GA12628@rei.suse.cz>
-	<5421375C.3040706@cn.fujitsu.com>
+Message-ID: <20140924110352.GB24533@rei>
+References: <1409837612-27052-1-git-send-email-mmarhefk@redhat.com>
+	<1409837612-27052-3-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5421375C.3040706@cn.fujitsu.com>
-Subject: Re: [LTP] Failed out of tree compile
+In-Reply-To: <1409837612-27052-3-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH 3/3] containers: added sysvipc/sem_comm.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,18 +25,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+To: Matus Marhefka <mmarhefk@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
->     How about removing utils/ffsb-6.0-rc2 from LTP? Currently it seems that only 'ext4-new-features'
-> test suite use this tool, and 'utils/ffsb-6.0-rc2' maybe old, if user wants to run 'ext4-new-features',
-> he should install ffsb himself for his linux distribution or from upstream code. Meanwhile I noticed that
-> there were several reports about ffsb installing issues in the past, include this time, so removing this
-> may reduce complexity :)
-
-I think I've fixed for now (just pushed the fix). Let's see if that
-works or not and if it breaks again I would vote for removing it.
+And the same that applied to 1/3 applies to 2/3 and 3/3 as well.
 
 -- 
 Cyril Hrubis
