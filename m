@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gary.robertson@linaro.org>) id 1XZ4s3-0003id-7M
-	for ltp-list@lists.sourceforge.net; Tue, 30 Sep 2014 21:22:07 +0000
-Received: from mail-oi0-f52.google.com ([209.85.218.52])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XZ4s2-0006Kk-6i
-	for ltp-list@lists.sourceforge.net; Tue, 30 Sep 2014 21:22:07 +0000
-Received: by mail-oi0-f52.google.com with SMTP id a3so2809155oib.25
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cebbert.lkml@gmail.com>) id 1XX42X-00080j-Ty
+	for ltp-list@lists.sourceforge.net; Thu, 25 Sep 2014 08:04:37 +0000
+Received: from mail-oi0-f46.google.com ([209.85.218.46])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XX42W-0008UG-TI
+	for ltp-list@lists.sourceforge.net; Thu, 25 Sep 2014 08:04:37 +0000
+Received: by mail-oi0-f46.google.com with SMTP id x69so1435513oia.5
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 30 Sep 2014 14:22:00 -0700 (PDT)
-From: "Gary S. Robertson" <gary.robertson@linaro.org>
-Date: Tue, 30 Sep 2014 16:15:59 -0500
-Message-Id: <1412111759-22198-1-git-send-email-gary.robertson@linaro.org>
-Subject: [LTP] [PATCH] Realtime tests: Fix bad priority inheritance
-	conditionals
+	Thu, 25 Sep 2014 01:04:31 -0700 (PDT)
+Date: Thu, 25 Sep 2014 03:04:26 -0500
+From: Chuck Ebbert <cebbert.lkml@gmail.com>
+Message-ID: <20140925030426.6cb63a6b@as>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] recvfrom01: Fix broken "invalid flags" test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,56 +25,50 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: mike.holmes@linaro.org
 
-From: "Gary S. Robertson" <gary.robertson@linaro.org>
+The recv tests were making invalid assumptions about how flags are
+checked by the kernel. (It makes no explicit tests for invalid flags
+or combinations of flags.) [1]
 
-testcases/realtime/lib/librttest.c and
-testcases/realtime/stress/pi-tests/testpi-3.c
-both referenced a non-existent autoconf configuration setting variable.
-Replaced the invalid variable name with the variable actually created
-by autoconf.
+Replace the bogus test for invalid flags with two new tests that check
+return codes for invalid MSG_OOB and MSG_ERRQUEUE flags.
 
-Signed-off-by: Gary S. Robertson <gary.robertson@linaro.org>
----
- testcases/realtime/lib/librttest.c            |    2 +-
- testcases/realtime/stress/pi-tests/testpi-3.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Note that this introduces a failure on kernels before 3.17, which has
+a bug fix for MSG_ERRQUEUE flag handling. This failure is a legitimate
+bug on these older kernels.
 
-diff --git a/testcases/realtime/lib/librttest.c b/testcases/realtime/lib/librttest.c
-index c175148..3679058 100644
---- a/testcases/realtime/lib/librttest.c
-+++ b/testcases/realtime/lib/librttest.c
-@@ -586,7 +586,7 @@ void *busy_work_us(int us)
+Additional test cases for invalid flags could be added after these two.
+And the recv01 and recvmsg01 tests need still need to be fixed, assuming
+this is the right solution.
+
+[Patch is on top of "Fix wrong args in recvfrom syscall testcase"
+ patch I sent yesterday.]
+
+[1] http://marc.info/?t=141148149900006&r=1&w=2
+
+--- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
++++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+@@ -115,9 +115,14 @@
+ 		    -1, EFAULT, setup1, cleanup1, "invalid recv buffer"},
+ /* 6 */
+ 	{
+-	PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), -1,
++	PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), MSG_OOB,
+ 		    (struct sockaddr *)&from, &fromlen,
+-		    -1, EINVAL, setup1, cleanup1, "invalid flags set"},};
++		    -1, EINVAL, setup1, cleanup1, "invalid MSG_OOB flag set"},
++/* 7 */
++	{
++	PF_INET, SOCK_STREAM, 0, (void *)buf, sizeof(buf), MSG_ERRQUEUE,
++		    (struct sockaddr *)&from, &fromlen,
++		    -1, EAGAIN, setup1, cleanup1, "invalid MSG_ERRQUEUE flag set"},};
  
- void init_pi_mutex(pthread_mutex_t * m)
- {
--#if HAVE_DECL_PTHREAD_PRIO_INHERIT
-+#if HAS_PRIORITY_INHERIT
- 	pthread_mutexattr_t attr;
- 	int ret;
- 	int protocol;
-diff --git a/testcases/realtime/stress/pi-tests/testpi-3.c b/testcases/realtime/stress/pi-tests/testpi-3.c
-index 30f38f6..e483945 100644
---- a/testcases/realtime/stress/pi-tests/testpi-3.c
-+++ b/testcases/realtime/stress/pi-tests/testpi-3.c
-@@ -365,7 +365,7 @@ int main(int argc, char *argv[])
+ int TST_TOTAL = sizeof(tdat) / sizeof(tdat[0]);
  
- 	printf("Start %s\n", argv[0]);
- 
--#if HAVE_DECL_PTHREAD_PRIO_INHERIT
-+#if HAS_PRIORITY_INHERIT
- 	if (!nopi) {
- 		pthread_mutexattr_t mutexattr;
- 		int protocol;
--- 
-1.7.9.5
-
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
