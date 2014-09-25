@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XRjf4-0000oQ-2Y
-	for ltp-list@lists.sourceforge.net; Wed, 10 Sep 2014 15:18:22 +0000
-Date: Wed, 10 Sep 2014 17:18:05 +0200
-From: chrubis@suse.cz
-Message-ID: <20140910151804.GA16633@rei>
-References: <8a36059fe9afea205712b2a1c9a0ca678b22b927.1410353116.git.jstancek@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xzhou@redhat.com>) id 1XX3Pf-00040O-Jy
+	for ltp-list@lists.sourceforge.net; Thu, 25 Sep 2014 07:24:27 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XX3Pd-00046i-TE
+	for ltp-list@lists.sourceforge.net; Thu, 25 Sep 2014 07:24:27 +0000
+Date: Thu, 25 Sep 2014 03:24:19 -0400 (EDT)
+From: Xiong Zhou <xzhou@redhat.com>
+Message-ID: <385992509.36875157.1411629859497.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1793864039.34479334.1411109349130.JavaMail.zimbra@redhat.com>
+References: <661064059.31210197.1410431541563.JavaMail.zimbra@redhat.com>
+	<5411B637.2020104@oracle.com>
+	<1793864039.34479334.1411109349130.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <8a36059fe9afea205712b2a1c9a0ca678b22b927.1410353116.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] add clock_gettime04
+Subject: [LTP] [PATCH v3 3/3] splice01/tee01/utime: add kernel version check
+ for NFS test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,199 +30,129 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> +#define SAFE_PTHREAD(fn, ...) do { \
-> +	int ret = fn(__VA_ARGS__); \
-> +	if (ret) { \
-> +		TEST_ERRNO = ret; \
-> +		tst_brkm(TBROK | TTERRNO, cleanup, #fn); \
-                                   ^
-				 We have TRERRNO for the case of pthread
-				 functions.
-> +	} \
-> +} while (0)
-> +
-> +char *TCID = "clock_gettime04";
-> +int TST_TOTAL = 1;
-> +
-> +static volatile sig_atomic_t done_testing;
-> +static int opt_testtime;
-> +static char *opt_testtimestr;
-> +static option_t options[] = {
-> +	{"T:", &opt_testtime, &opt_testtimestr},
 
-There is no need to use both opt_testtime and opt_testtimestr, you can
-do just:
+Tests splice01 tee01 pass on NFS since 2.6.32 at least,
+and utime01/02/03 pass since 2.6.18 at least.
 
-	if (opt_testtimestr) {
-		...
-	}
+Signed-off-by: Xiong Zhou <xzhou@redhat.com>
+---
+ testcases/kernel/syscalls/splice/splice01.c | 5 +++--
+ testcases/kernel/syscalls/tee/tee01.c       | 5 +++--
+ testcases/kernel/syscalls/utime/utime01.c   | 7 ++++++-
+ testcases/kernel/syscalls/utime/utime02.c   | 7 ++++++-
+ testcases/kernel/syscalls/utime/utime03.c   | 7 ++++++-
+ 5 files changed, 24 insertions(+), 7 deletions(-)
 
-> +	{NULL, NULL, NULL}
-> +};
-> +static pthread_mutex_t exit_mutex = PTHREAD_MUTEX_INITIALIZER;
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +
-> +static void sigproc(int sig)
-> +{
-> +	(void) sig;
-> +	done_testing = 1;
-> +}
-
-Shouldn't we rather do:
-
-	if (!done_testing)
-		done_testing = 1;
-
-Because as far as I can see the alarm may stil fire between
-one of the threads set done_testing to 2 and the if (done_testing == 1)
-message.
-
-> +int64_t get_thread_cpu_time(pthread_t thread)
-> +{
-> +	clockid_t clockid;
-> +	int ret;
-> +	struct timespec tp;
-> +
-> +	SAFE_PTHREAD(pthread_getcpuclockid, thread, &clockid);
-> +
-> +	ret = clock_gettime(clockid, &tp);
-> +	if (ret)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "clock_gettime: %d", ret);
-> +
-> +	return (tp.tv_sec * NANOSECS_PER_SEC) + tp.tv_nsec;
-> +}
-> +
-> +static void *child(void *arg)
-> +{
-> +	struct timespec tim;
-> +	int64_t t, t_last = 0;
-> +	int check_own_cpu_time = *(int *)arg;
-> +
-> +	tim.tv_sec = 0;
-> +	tim.tv_nsec = 5000;
-> +
-> +	while (!done_testing) {
-> +		nanosleep(&tim, NULL);
-> +
-> +		if (!check_own_cpu_time)
-> +			continue;
-> +
-> +		t = get_thread_cpu_time(pthread_self());
-> +		if (t < t_last) {
-> +			tst_resm(TFAIL, "t: %" PRId64 " < t_last: %"
-> +				PRId64,	t, t_last);
-> +			done_testing = 2;
-> +		} else {
-> +			t_last = t;
-> +		}
-> +	}
-> +
-> +	SAFE_PTHREAD(pthread_mutex_lock, &exit_mutex);
-> +	SAFE_PTHREAD(pthread_mutex_unlock, &exit_mutex);
-> +
-> +	return NULL;
-> +}
-> +
-> +static void test(int seconds)
-> +{
-> +	int i, child_check_cpu_time[] = { 0, 1 };
-> +	pthread_t thread[THREAD_COUNT];
-> +	clockid_t clockid[THREAD_COUNT];
-> +	int64_t thread_time[THREAD_COUNT], cur_time;
-> +
-> +	done_testing = 0;
-> +	alarm(seconds);
-> +
-> +	/* create children and make every 2nd child check its own
-> +	 * cpu time as well. */
-> +	for (i = 0; i < THREAD_COUNT; i++) {
-> +		SAFE_PTHREAD(pthread_create, &thread[i], NULL, child,
-> +			&child_check_cpu_time[i % 2]);
-> +		SAFE_PTHREAD(pthread_getcpuclockid, thread[i], &clockid[i]);
-> +		tst_resm(TINFO, "thread no.: %d clockid: %d", i, clockid[i]);
-> +	}
-> +
-> +	for (i = 0; i < THREAD_COUNT; i++)
-> +		thread_time[i] = get_thread_cpu_time(thread[i]);
-> +
-> +	SAFE_PTHREAD(pthread_mutex_lock, &exit_mutex);
-
-Hmm, shouldn't this mutex be locked before we create the threads
-because otherwise some threads may have exited allready.
-
-> +	/* check periodically that cpu time of each thread
-> +	 * doesn't go backwards */
-> +	while (!done_testing) {
-> +		for (i = 0; i < THREAD_COUNT; i++) {
-> +			cur_time = get_thread_cpu_time(thread[i]);
-> +			if (cur_time < thread_time[i]) {
-> +				tst_resm(TFAIL, "cpu clock time went backwards "
-> +						"thread no. %d, clock id: %d"
-> +						" previous value: %" PRId64
-> +						" current value: %" PRId64,
-> +						i, clockid[i], thread_time[i],
-> +						cur_time);
-> +				done_testing = 2;
-> +				break;
-> +			}
-> +			thread_time[i] = cur_time;
-> +		}
-> +	}
-> +
-> +	/* allow children to exit now */
-> +	SAFE_PTHREAD(pthread_mutex_unlock, &exit_mutex);
-> +
-> +	for (i = 0; i < THREAD_COUNT; i++)
-> +		SAFE_PTHREAD(pthread_join, thread[i], NULL);
-> +
-> +	if (done_testing == 1)
-> +		tst_resm(TPASS, "Test completed, cpu times of all "
-> +				"thread clocks were monotonic");
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int testtime = DEFAULT_TEST_TIME;
-> +	const char *msg = NULL;
-> +
-> +	msg = parse_opts(argc, argv, options, NULL);
-> +	if (msg)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	if (opt_testtime) {
-> +		testtime = atoi(opt_testtimestr);
-> +		if (testtime <= 0) {
-> +			tst_brkm(TBROK, NULL, "Invalid arg for -T: %s",
-> +				opt_testtimestr);
-> +		}
-> +	}
-> +
-> +	setup();
-> +
-> +	test(testtime);
-
-Shouldn't the test(testtime) be still inside the for () loop with
-TEST_LOOPING() because otherwise the test will gladly accept and ignore
-the standard parameters (-i -I etc).
-
-Otherwise it looks OK to me.
-
+diff --git a/testcases/kernel/syscalls/splice/splice01.c b/testcases/kernel/syscalls/splice/splice01.c
+index e96ff6d..8896638 100644
+--- a/testcases/kernel/syscalls/splice/splice01.c
++++ b/testcases/kernel/syscalls/splice/splice01.c
+@@ -135,8 +135,9 @@ static void setup(void)
+ 	tst_tmpdir();
+ 
+ 	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
+-		tst_brkm(TCONF, cleanup,
+-			 "Cannot do splice on a file on NFS filesystem");
++		if  (tst_kvercmp(2, 6, 32) < 0)
++			tst_brkm(TCONF, cleanup, "Cannot do splice on a file"
++				" on NFS filesystem before 2.6.32");
+ 	}
+ 
+ 	for (i = 0; i < TEST_BLOCK_SIZE; i++)
+diff --git a/testcases/kernel/syscalls/tee/tee01.c b/testcases/kernel/syscalls/tee/tee01.c
+index 6ea6f18..3ba0804 100644
+--- a/testcases/kernel/syscalls/tee/tee01.c
++++ b/testcases/kernel/syscalls/tee/tee01.c
+@@ -147,8 +147,9 @@ static void setup(void)
+ 	tst_tmpdir();
+ 
+ 	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC) {
+-		tst_brkm(TCONF, cleanup,
+-			 "Cannot do tee on a file on NFS filesystem");
++		if ((tst_kvercmp(2, 6, 32)) < 0)
++			tst_brkm(TCONF, cleanup, "Cannot do tee on a file"
++				" on NFS filesystem before 2.6.32");
+ 	}
+ 
+ 	for (i = 0; i < TEST_BLOCK_SIZE; i++)
+diff --git a/testcases/kernel/syscalls/utime/utime01.c b/testcases/kernel/syscalls/utime/utime01.c
+index 3128965..0e0165d 100644
+--- a/testcases/kernel/syscalls/utime/utime01.c
++++ b/testcases/kernel/syscalls/utime/utime01.c
+@@ -115,11 +115,16 @@ int main(int ac, char **av)
+ 
+ 	switch ((type = tst_fs_type(cleanup, "."))) {
+ 	case TST_NFS_MAGIC:
++		if (tst_kvercmp(2, 6, 18) < 0)
++			tst_brkm(TCONF, cleanup, "Cannot do utime on a file"
++				" on %s filesystem before 2.6.18",
++				 tst_fs_type_name(type));
++		break;
+ 	case TST_V9FS_MAGIC:
+ 		tst_brkm(TCONF, cleanup,
+ 			 "Cannot do utime on a file on %s filesystem",
+ 			 tst_fs_type_name(type));
+-	break;
++		break;
+ 	}
+ 
+ 	/* set the expected errnos... */
+diff --git a/testcases/kernel/syscalls/utime/utime02.c b/testcases/kernel/syscalls/utime/utime02.c
+index cbd30da..aeaf6d6 100644
+--- a/testcases/kernel/syscalls/utime/utime02.c
++++ b/testcases/kernel/syscalls/utime/utime02.c
+@@ -121,11 +121,16 @@ int main(int ac, char **av)
+ 
+ 	switch ((type = tst_fs_type(cleanup, "."))) {
+ 	case TST_NFS_MAGIC:
++		if (tst_kvercmp(2, 6, 18) < 0)
++			tst_brkm(TCONF, cleanup, "Cannot do utime on a file"
++				" on %s filesystem before 2.6.18",
++				 tst_fs_type_name(type));
++		break;
+ 	case TST_V9FS_MAGIC:
+ 		tst_brkm(TCONF, cleanup,
+ 			 "Cannot do utime on a file on %s filesystem",
+ 			 tst_fs_type_name(type));
+-	break;
++		break;
+ 	}
+ 
+ 	/* set the expected errnos... */
+diff --git a/testcases/kernel/syscalls/utime/utime03.c b/testcases/kernel/syscalls/utime/utime03.c
+index 858f6ca..da1bf78 100644
+--- a/testcases/kernel/syscalls/utime/utime03.c
++++ b/testcases/kernel/syscalls/utime/utime03.c
+@@ -131,11 +131,16 @@ int main(int ac, char **av)
+ 
+ 	switch ((type = tst_fs_type(cleanup, "."))) {
+ 	case TST_NFS_MAGIC:
++		if (tst_kvercmp(2, 6, 18) < 0)
++			tst_brkm(TCONF, cleanup, "Cannot do utime on a file"
++				" on %s filesystem before 2.6.18",
++				 tst_fs_type_name(type));
++		break;
+ 	case TST_V9FS_MAGIC:
+ 		tst_brkm(TCONF, cleanup,
+ 			 "Cannot do utime on a file on %s filesystem",
+ 			 tst_fs_type_name(type));
+-	break;
++		break;
+ 	}
+ 
+ 	/* set the expected errnos... */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
-Want excitement?
-Manually upgrade your production database.
-When you want reliability, choose Perforce
-Perforce version control. Predictably reliable.
-http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
