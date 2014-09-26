@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vgoyal@redhat.com>) id 1XW4tz-00029G-Pt
-	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 14:47:43 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XW4ty-0000RN-9t
-	for ltp-list@lists.sourceforge.net; Mon, 22 Sep 2014 14:47:43 +0000
-Date: Mon, 22 Sep 2014 10:47:13 -0400
-From: Vivek Goyal <vgoyal@redhat.com>
-Message-ID: <20140922144713.GA4250@redhat.com>
-References: <145412866.25258463.1411119061796.JavaMail.zimbra@redhat.com>
-	<293476264.25264480.1411120345360.JavaMail.zimbra@redhat.com>
-	<20140919132236.GB2190@redhat.com>
-	<594480021.25988504.1411355660836.JavaMail.zimbra@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XXQYr-0004kw-Be
+	for ltp-list@lists.sourceforge.net; Fri, 26 Sep 2014 08:07:29 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XXQYo-0007Zw-Pk
+	for ltp-list@lists.sourceforge.net; Fri, 26 Sep 2014 08:07:29 +0000
+Message-ID: <1411718817.9511.9.camel@G08JYZSD130126>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 26 Sep 2014 16:06:57 +0800
+In-Reply-To: <179118855.6420138.1407923193096.JavaMail.zimbra@redhat.com>
+References: <1407402404.1347.29.camel@G08JYZSD130126>
+	<179118855.6420138.1407923193096.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <594480021.25988504.1411355660836.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [RFC] autokdump - automated kdump testsuite
+Subject: [LTP] [PATCH v2] securebits: some cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,91 +28,242 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: CAI Qian <caiqian@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, kexec kdump redhat mailing list <kexec-kdump-list@redhat.com>, kexec <kexec@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, crash-utility <crash-utility@redhat.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-On Mon, Sep 22, 2014 at 09:00:00AM -0400, CAI Qian wrote:
-> 
-> 
-> ----- Original Message -----
-> > From: "Vivek Goyal" <vgoyal@redhat.com>
-> > To: "CAI Qian" <caiqian@redhat.com>
-> > Cc: "linux-kernel" <linux-kernel@vger.kernel.org>, "ltp-list" <ltp-list@lists.sourceforge.net>, "crash-utility"
-> > <crash-utility@redhat.com>, "kexec" <kexec@lists.infradead.org>, "kexec kdump redhat mailing list"
-> > <kexec-kdump-list@redhat.com>
-> > Sent: Friday, September 19, 2014 9:22:36 PM
-> > Subject: Re: [RFC] autokdump - automated kdump testsuite
-> > 
-> > On Fri, Sep 19, 2014 at 05:52:25AM -0400, CAI Qian wrote:
-> > > I plan to release an automated kdump testsuite that will be
-> > 
-> > So will this be a standalone test suit? Can it be merged with
-> > something already existing say, LTP.
-> Yes, it is likely to be standalone. It won't make use of the LTP
-> API, and the LTP kdump test suite is outdated, so there is no
-> benefit to continue working over there.
+* Remove .sh and divide into three seperate tests.
 
-So why make it standalone and not replace the old LTP kdump test suite
-with this new one?
+* Check the header <linux/securebits.h>.
 
-> > 
-> > > focus on testing kernel and the crash utility. It should work
-> > > for all major distros since it will use none of distro-specific
-> > > stuff, and also support different arches including x86, ARM,
-> > > PPC64 and s390x.
-> > > 
-> > > It does the following:
-> > > 1) check if there is a memory reserved for kdump. If not,
-> > >    reserve the memory and reboot the system.
-> > > 2) once the system is back, load kexec on panic and
-> > >    prepare a separate initramfs that including needed
-> > >    modules to load a local filesystem and necessary utilities
-> > 
-> > So you will write logic to prepare custom initramfs or will rely
-> > on dracut or some other utility for that.
-> I'll probably prepare custom initramfs for the sake of simplicity.
+* Use tst_brkm instead of tst_exit() that follows tst_resm.
 
-Well, preparing custom initramfs will become very tricky. We used
-to do that and finally we switched to dracut.
+* Some cleanup
 
-Why not simply let the respective service on the host do this job and
-test only makes sure that kdump service is running. It feels little
-out of place that a test is generating custom initramfs. 
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ runtest/securebits                                 |  4 +-
+ testcases/kernel/security/securebits/Makefile      |  9 ++-
+ .../kernel/security/securebits/check_keepcaps.c    | 75 +++++++++-------------
+ .../kernel/security/securebits/run_securebits.sh   | 20 ------
+ 4 files changed, 36 insertions(+), 72 deletions(-)
+ delete mode 100644 testcases/kernel/security/securebits/run_securebits.sh
 
-> > 
-> > >    in order to analyse /proc/vmcore in the 2nd kernel.
-> > > 3) trigger the system crash using methods like sysrq-c, NMI,
-> > >    and panic_on_hung_task etc.
-> > > 4) in the 2nd kernel, mount a filesystem and use the crash
-> > >    utility to analyse /proc/vmcore. Then, gather the analyse
-> > >    logs, serial console output, dmesg etc into the filesystem.
-> > 
-> > Why not save core and boot back in first kernel and then analyze.
-> > 
-> > Trying to work directly with /proc/vmcore does not test makedumfile
-> > which everybody uses. Also it will require more memory to be reserved
-> > and packing crash and debug vmlinux into initramfs.
-> The additional memory for vmlinux and the crash utility is predictable
-> and manageable, so it can just ask 256M memory reserved before running
-> the program. On the other hand, it is not usually feasible to ask
-> the systems under testing has enough available disk spaces bigger than
-> the memory size.
+diff --git a/runtest/securebits b/runtest/securebits
+index d78a66f..64e6e0a 100644
+--- a/runtest/securebits
++++ b/runtest/securebits
+@@ -1,2 +1,4 @@
+ #DESCRIPTION:securebits tests
+-Securebits	run_securebits.sh
++check_keepcaps01 check_keepcaps 1
++check_keepcaps02 check_keepcaps 2
++check_keepcaps03 check_keepcaps 3
+diff --git a/testcases/kernel/security/securebits/Makefile b/testcases/kernel/security/securebits/Makefile
+index 51018d9..e379b7c 100644
+--- a/testcases/kernel/security/securebits/Makefile
++++ b/testcases/kernel/security/securebits/Makefile
+@@ -4,7 +4,8 @@
+ ##                                                                            ##
+ ## This program is free software;  you can redistribute it and#or modify      ##
+ ## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ## ## (at your option) any later version.                                        ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
+ ##                                                                            ##
+ ## This program is distributed in the hope that it will be useful, but        ##
+ ## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+@@ -12,8 +13,8 @@
+ ## for more details.                                                          ##
+ ##                                                                            ##
+ ## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+ ##                                                                            ##
+ ################################################################################
+ 
+@@ -23,6 +24,4 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS			+= $(CAP_LIBS)
+ 
+-INSTALL_TARGETS		:= *.sh
+-
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/security/securebits/check_keepcaps.c b/testcases/kernel/security/securebits/check_keepcaps.c
+index 6e195c6..3b6e24e 100644
+--- a/testcases/kernel/security/securebits/check_keepcaps.c
++++ b/testcases/kernel/security/securebits/check_keepcaps.c
+@@ -5,7 +5,6 @@
+ #include <sys/capability.h>
+ #endif
+ #include <sys/prctl.h>
+-#include <linux/securebits.h>
+ #include "usctest.h"
+ #include "test.h"
+ 
+@@ -30,7 +29,9 @@
+ char *TCID = "keepcaps";
+ int TST_TOTAL = 1;
+ 
+-#ifdef HAVE_LIBCAP
++#if (HAVE_LINUX_SECUREBITS_H && HAVE_LIBCAP)
++#include <linux/securebits.h>
++
+ static int eff_caps_empty(cap_t c)
+ {
+ 	int i, ret, empty = 1;
+@@ -75,28 +76,19 @@ static void do_setuid(int expect_privs)
+ 	int have_privs;
+ 
+ 	ret = setuid(1000);
+-	if (ret) {
+-		tst_resm(TERRNO | TFAIL, "setuid failed");
+-		tst_exit();
+-	}
++	if (ret)
++		tst_brkm(TERRNO | TFAIL, NULL, "setuid failed");
+ 
+ 	have_privs = am_privileged();
+-	if (have_privs && expect_privs == EXPECT_PRIVS) {
+-		tst_resm(TPASS, "kept privs as expected");
+-		tst_exit();
+-	}
+-	if (!have_privs && expect_privs == EXPECT_PRIVS) {
+-		tst_resm(TFAIL, "expected to keep privs but did not");
+-		tst_exit();
+-	}
+-	if (!have_privs && expect_privs == EXPECT_NOPRIVS) {
+-		tst_resm(TPASS, "dropped privs as expected");
+-		tst_exit();
+-	}
++	if (have_privs && expect_privs == EXPECT_PRIVS)
++		tst_brkm(TPASS, NULL, "kept privs as expected");
++	if (!have_privs && expect_privs == EXPECT_PRIVS)
++		tst_brkm(TFAIL, NULL, "expected to keep privs but did not");
++	if (!have_privs && expect_privs == EXPECT_NOPRIVS)
++		tst_brkm(TPASS, NULL, "dropped privs as expected");
+ 
+ 	/* have_privs && EXPECT_NOPRIVS */
+-	tst_resm(TFAIL, "expected to drop privs but did not");
+-	tst_exit();
++	tst_brkm(TFAIL, NULL, "expected to drop privs but did not");
+ }
+ 
+ int main(int argc, char *argv[])
+@@ -106,64 +98,55 @@ int main(int argc, char *argv[])
+ 	tst_require_root(NULL);
+ 
+ 	ret = prctl(PR_GET_KEEPCAPS);
+-	if (ret) {
+-		tst_resm(TBROK, "keepcaps was already set?\n");
+-		tst_exit();
+-	}
++	if (ret)
++		tst_brkm(TBROK, NULL, "keepcaps was already set?\n");
++
++	if (argc < 2)
++		tst_brkm(TBROK, NULL, "Usage: %s <tescase_num>", argv[0]);
+ 
+-	if (argc < 2) {
+-		tst_resm(TBROK, "Usage: %s <tescase_num>", argv[0]);
+-		tst_exit();
+-	}
+ 	whichtest = atoi(argv[1]);
+-	if (whichtest < 1 || whichtest > 3) {
+-		tst_resm(TFAIL, "Valid tests are 1-3\n");
+-		tst_exit();
+-	}
++	if (whichtest < 1 || whichtest > 3)
++		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
++
+ 	switch (whichtest) {
+ 	case 1:
+ 		do_setuid(EXPECT_NOPRIVS);	/* does not return */
+ 	case 2:
+ 		ret = prctl(PR_SET_KEEPCAPS, 1);
+ 		if (ret == -1) {
+-			tst_resm(TFAIL | TERRNO, "PR_SET_KEEPCAPS failed\n");
+-			tst_exit();
++			tst_brkm(TFAIL | TERRNO, NULL,
++				 "PR_SET_KEEPCAPS failed\n");
+ 		}
+ 		ret = prctl(PR_GET_KEEPCAPS);
+ 		if (!ret) {
+-			tst_resm(TFAIL | TERRNO,
++			tst_brkm(TFAIL | TERRNO, NULL,
+ 				 "PR_SET_KEEPCAPS did not set keepcaps\n");
+-			tst_exit();
+ 		}
+ 		do_setuid(EXPECT_PRIVS);	/* does not return */
+ 	case 3:
+ 		ret = prctl(PR_GET_SECUREBITS);
+ 		ret = prctl(PR_SET_SECUREBITS, ret | SECBIT_KEEP_CAPS);
+ 		if (ret == -1) {
+-			tst_resm(TFAIL | TERRNO, "PR_SET_SECUREBITS failed\n");
+-			tst_exit();
++			tst_brkm(TFAIL | TERRNO, NULL,
++				 "PR_SET_SECUREBITS failed\n");
+ 		}
+ 		ret = prctl(PR_GET_KEEPCAPS);
+ 		if (!ret) {
+-			tst_resm(TFAIL | TERRNO,
++			tst_brkm(TFAIL | TERRNO, NULL,
+ 				 "PR_SET_SECUREBITS did not set keepcaps\n");
+-			tst_exit();
+ 		}
+ 		do_setuid(EXPECT_PRIVS);	/* does not return */
+ 	default:
+-		tst_resm(TFAIL, "should not reach here\n");
+-		tst_exit();
++		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
+ 	}
+-	tst_resm(TFAIL, "should not reach here\n");
+-	tst_exit();
++	tst_brkm(TFAIL, NULL, "should not reach here\n");
+ }
+ 
+ #else
+ 
+ int main(void)
+ {
+-	tst_resm(TCONF, "Test was compiled without libcap.");
+-	tst_exit();
++	tst_brkm(TCONF, NULL, "linux/securebits.h or libcap is not existence.");
+ }
+ 
+ #endif /* HAVE_LIBCAP */
+diff --git a/testcases/kernel/security/securebits/run_securebits.sh b/testcases/kernel/security/securebits/run_securebits.sh
+deleted file mode 100644
+index 4d9e272..0000000
+--- a/testcases/kernel/security/securebits/run_securebits.sh
++++ /dev/null
+@@ -1,20 +0,0 @@
+-#!/bin/sh
+-
+-echo "testing keepcaps"
+-check_keepcaps 1
+-tmp=$?
+-if [ $tmp -ne 0 ]; then
+-	exit_code=$tmp
+-fi
+-check_keepcaps 2
+-tmp=$?
+-if [ $tmp -ne 0 ]; then
+-	exit_code=$tmp
+-fi
+-check_keepcaps 3
+-tmp=$?
+-if [ $tmp -ne 0 ]; then
+-	exit_code=$tmp
+-fi
+-
+-exit $exit_code
+-- 
+1.9.3
 
-makedumpfile will reduce the vmcore file size to few hundreds of mega
-bytes on most of the systems. Especially, this is just a test, so 
-system will be lightly loaded and vmcore will be small after filtering.
 
-If there is not enough space, test fails, period. I don't think there
-is any need to try to circumvent that and try to run crash in initramfs.
-And in the process we don't test makedumpfile which is very imporatnt
-component of this whole process.
 
-IMHO, just rely on "systemctl start kdump" to generate and load custom
-initramfs and save filtered vmcore to root fs by default and alanyze
-vmcore post reboot. That will keep things simple.
-
-Thanks
-Vivek
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
