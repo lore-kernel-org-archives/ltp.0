@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XUQGH-0007Fz-NN
-	for ltp-list@lists.sourceforge.net; Thu, 18 Sep 2014 01:11:53 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XUQGG-0003Q2-LV
-	for ltp-list@lists.sourceforge.net; Thu, 18 Sep 2014 01:11:53 +0000
-Message-ID: <1411002649.4012.12.camel@G08JYZSD130126>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 18 Sep 2014 09:10:49 +0800
-In-Reply-To: <717375298.24303522.1410954683925.JavaMail.zimbra@redhat.com>
-References: <1405145148.3386.3.camel@G08JYZSD130126>
-	<20140904122455.GA9603@rei.suse.cz>
-	<1409895039.17311.20.camel@G08JYZSD130126> <20140909101813.GA32553@rei>
-	<1410503722.8011.2.camel@G08JYZSD130126>
-	<717375298.24303522.1410954683925.JavaMail.zimbra@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XYcl9-0004a4-PL
+	for ltp-list@lists.sourceforge.net; Mon, 29 Sep 2014 15:21:07 +0000
+Date: Mon, 29 Sep 2014 17:20:41 +0200
+From: chrubis@suse.cz
+Message-ID: <20140929152041.GB11687@rei>
+References: <1411724164-18326-1-git-send-email-zlang@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] p9auth: remove this test
+Content-Disposition: inline
+In-Reply-To: <1411724164-18326-1-git-send-email-zlang@redhat.com>
+Subject: Re: [LTP] [PATCH] fs/ext4-inode-version: remove "./" before
+ "ext4_get_inode_version.sh" in ext4_test_inode_version.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,46 +25,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Zorro Lang <zlang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Wed, 2014-09-17 at 07:51 -0400, Jan Stancek wrote:
-> 
-> 
-> 
-> ----- Original Message -----
-> > From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> > To: "ltp-list" <ltp-list@lists.sourceforge.net>
-> > Sent: Friday, 12 September, 2014 8:35:22 AM
-> > Subject: [LTP] [PATCH] p9auth: remove this test
-> > 
-> > p9auth module was just included in staging for a while.
-> > It had been removed from kernel due to lack of interest.
-> > Remove it from LTP.
-> > 
-> > Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> > ---
-> 
-> Pushed with modified commit message (added commit # that 
-> removed p9auth from kernel)
-> 
+Hi!
+> when I test with ext4-inode-version, I always get "sh ./ext4_get_inode_version.sh: No such file".
+> Then I removed "./" of "ext4_get_inode_version.sh" in ext4_test_inode_version.c, everything
+> goes well.
 
-OK. And thank you very much.
+That is a valid fix because:
 
-Best regards,
-Zeng
+1. It is not guaranteed that test working directory is
+$LTPDIR/testcases/bin
 
-> Regards,
-> Jan
+2. It is guaranteed that $LTPDIR/testcases/bin is in $PATH
 
+Please resend with a changelog that simply says remove ./ from
+./ext4_get_inode_version.sh in ext4_test_inode_version.c.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Want excitement?
-Manually upgrade your production database.
-When you want reliability, choose Perforce
-Perforce version control. Predictably reliable.
-http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+Slashdot TV.  Videos for Nerds.  Stuff that Matters.
+http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
