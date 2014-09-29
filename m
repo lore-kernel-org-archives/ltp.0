@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XUDlm-0003vq-SB
-	for ltp-list@lists.sourceforge.net; Wed, 17 Sep 2014 11:51:34 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XUDll-0006mo-Fs
-	for ltp-list@lists.sourceforge.net; Wed, 17 Sep 2014 11:51:34 +0000
-Date: Wed, 17 Sep 2014 07:51:23 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <717375298.24303522.1410954683925.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1410503722.8011.2.camel@G08JYZSD130126>
-References: <1405145148.3386.3.camel@G08JYZSD130126>
-	<20140904122455.GA9603@rei.suse.cz>
-	<1409895039.17311.20.camel@G08JYZSD130126>
-	<20140909101813.GA32553@rei>
-	<1410503722.8011.2.camel@G08JYZSD130126>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XYcfN-0004EV-I7
+	for ltp-list@lists.sourceforge.net; Mon, 29 Sep 2014 15:15:09 +0000
+Date: Mon, 29 Sep 2014 17:14:46 +0200
+From: chrubis@suse.cz
+Message-ID: <20140929151446.GA11687@rei>
+References: <1412002661-14537-1-git-send-email-zlang@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] p9auth: remove this test
+Content-Disposition: inline
+In-Reply-To: <1412002661-14537-1-git-send-email-zlang@redhat.com>
+Subject: Re: [LTP] [PATCH] ext4-new-features: modify ext4-delalloc-mballoc
+ can not find ffsb-config file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,38 +25,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Zorro Lang <zlang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+> index 1ffba13..47d9174 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
+> @@ -40,7 +40,7 @@ ext4_test_remount()
+>  		return
+>  	fi
+>  
+> -	ffsb ffsb-config0 > /dev/null
+> +	ffsb $LTPROOT/testcases/bin/ffsb-config0 > /dev/null
+>  	if [ $? -ne 0 ]; then
+>  		tst_resm TFAIL "ffsb returned failure"
+>  		umount mnt_point
+> @@ -92,7 +92,7 @@ ext4_test_delalloc_mballoc()
+>  		return
+>  	fi
+>  
+> -	ffsb ffsb-config$2 > /dev/null
+> +	ffsb $LTPROOT/testcases/bin/ffsb-config$2 > /dev/null
 
+These should idealy be treated as a datafiles.
 
+So the ext4-ffsb-config/Makefile should have:
 
+INSTALL_DIR := testcases/data/ext4-ffsb/
 
------ Original Message -----
-> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> To: "ltp-list" <ltp-list@lists.sourceforge.net>
-> Sent: Friday, 12 September, 2014 8:35:22 AM
-> Subject: [LTP] [PATCH] p9auth: remove this test
-> 
-> p9auth module was just included in staging for a while.
-> It had been removed from kernel due to lack of interest.
-> Remove it from LTP.
-> 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
+then the files would be installed under this path and the
+path to the files in the shell script above should then be
+$LTPROOT/testcases/data/ext4-ffsb/ffsb-config0
 
-Pushed with modified commit message (added commit # that 
-removed p9auth from kernel)
+Can you please update the patch?
 
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Want excitement?
-Manually upgrade your production database.
-When you want reliability, choose Perforce
-Perforce version control. Predictably reliable.
-http://pubads.g.doubleclick.net/gampad/clk?id=157508191&iu=/4140/ostg.clktrk
+Slashdot TV.  Videos for Nerds.  Stuff that Matters.
+http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
