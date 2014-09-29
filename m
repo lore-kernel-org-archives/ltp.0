@@ -1,30 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XPXBc-0005FN-Ba
-	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 13:34:52 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XPXBb-0000YQ-1E
-	for ltp-list@lists.sourceforge.net; Thu, 04 Sep 2014 13:34:52 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s84DYgvR022854
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 09:34:43 -0400
-Received: from cc-vtoe10.lab.eng.brq.redhat.com
-	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s84DXlY7016485
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Sep 2014 09:34:41 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Thu,  4 Sep 2014 15:33:31 +0200
-Message-Id: <1409837612-27052-2-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1409837612-27052-1-git-send-email-mmarhefk@redhat.com>
-References: <1409837612-27052-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH 2/3] containers: added sysvipc/msg_comm.c
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XYc30-0000Ob-RX
+	for ltp-list@lists.sourceforge.net; Mon, 29 Sep 2014 14:35:30 +0000
+Date: Mon, 29 Sep 2014 16:35:04 +0200
+From: chrubis@suse.cz
+Message-ID: <20140929143504.GA11010@rei>
+References: <1411646861-19217-1-git-send-email-mmarhefk@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1411646861-19217-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH] lib/tst_checkpoint.c: added support for unlimited
+ number of named pipes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,279 +22,200 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-* Tests communication over message queues with identical
-  keys between two separate IPC namespaces
+Hi!
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
----
- runtest/containers                             |   1 +
- testcases/kernel/containers/sysvipc/.gitignore |   1 +
- testcases/kernel/containers/sysvipc/msg_comm.c | 221 +++++++++++++++++++++++++
- 3 files changed, 223 insertions(+)
- create mode 100644 testcases/kernel/containers/sysvipc/msg_comm.c
+What is the motivation for the patch?
 
-diff --git a/runtest/containers b/runtest/containers
-index 84ae736..7dbf049 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -43,6 +43,7 @@ shm_comm shm_comm
- mesgq_nstest_none mesgq_nstest none
- mesgq_nstest_clone mesgq_nstest clone
- mesgq_nstest_unshare mesgq_nstest unshare
-+msg_comm msg_comm
- sem_nstest_none sem_nstest none
- sem_nstest_clone sem_nstest clone
- sem_nstest_unshare sem_nstest unshare
-diff --git a/testcases/kernel/containers/sysvipc/.gitignore b/testcases/kernel/containers/sysvipc/.gitignore
-index b5a4cbd..68f18bf 100644
---- a/testcases/kernel/containers/sysvipc/.gitignore
-+++ b/testcases/kernel/containers/sysvipc/.gitignore
-@@ -4,3 +4,4 @@
- /shmem_2nstest
- /shmnstest
- /shm_comm
-+/msg_comm
-diff --git a/testcases/kernel/containers/sysvipc/msg_comm.c b/testcases/kernel/containers/sysvipc/msg_comm.c
-new file mode 100644
-index 0000000..3ecf2a8
---- /dev/null
-+++ b/testcases/kernel/containers/sysvipc/msg_comm.c
-@@ -0,0 +1,221 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ ***********************************************************************
-+ * File: msg_comm.c
-+ *
-+ * Description:
-+ * 1. Clones two child processes with CLONE_NEWIPC flag, each child
-+ *    gets System V message queue (msg) with the _identical_ key.
-+ * 2. Child1 appends a message with identifier #1 to the message queue.
-+ * 3. Child2 appends a message with identifier #2 to the message queue.
-+ * 4. Appends to the message queue with the identical key but from
-+ *    two different IPC namespaces should not interfere with each other
-+ *    and so child1 checks whether its message queue doesn't contain
-+ *    a message with identifier #2, if it doesn't test passes, otherwise
-+ *    test fails.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/ipc.h>
-+#include <sys/msg.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include "usctest.h"
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "libclone.h"
-+#include "ipcns_helper.h"
-+
-+
-+#define TESTKEY 124426L
-+#define MSGSIZE 50
-+char *TCID	= "msg_comm";
-+int TST_TOTAL	= 1;
-+int p1[2];
-+int p2[2];
-+struct sysv_msg {
-+	long mtype;
-+	char mtext[MSGSIZE];
-+};
-+
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+	check_newipc();
-+}
-+
-+int chld1_msg(void *arg)
-+{
-+	int id, n, rval = 0;
-+	char buf;
-+	struct sysv_msg m;
-+	struct sysv_msg rec;
-+
-+	close(p1[0]);
-+	close(p2[1]);
-+
-+	/* get a System V message queue identifier */
-+	id = msgget(TESTKEY, IPC_CREAT | 0600);
-+	if (id == -1) {
-+		perror("msgget");
-+		close(p1[1]);
-+		close(p2[0]);
-+		return 2;
-+	}
-+
-+	/* write to the message queue */
-+	m.mtype = 1;
-+	m.mtext[0] = 'A';
-+	if (msgsnd(id, &m, sizeof(struct sysv_msg) - sizeof(long), 0) == -1) {
-+		perror("msgsnd");
-+		close(p1[1]);
-+		close(p2[0]);
-+		msgctl(id, IPC_RMID, NULL);
-+		return 2;
-+	}
-+
-+	/* wait for child2 to write into the message queue */
-+	read(p2[0], &buf, 1);
-+
-+	/* if child1 message queue has changed (by child2) report fail */
-+	n = msgrcv(id, &rec, sizeof(struct sysv_msg) - sizeof(long),
-+		   2, IPC_NOWAIT);
-+	if (n == -1 && errno != ENOMSG) {
-+		perror("msgrcv");
-+		close(p1[1]);
-+		close(p2[0]);
-+		msgctl(id, IPC_RMID, NULL);
-+		return 2;
-+	}
-+	/* if mtype #2 was found in the message queue, it is fail */
-+	if (n > 0) {
-+		rval = 1;
-+	}
-+
-+	/* tell child2 to continue */
-+	write(p1[1], "1", 1);
-+
-+	close(p1[1]);
-+	close(p2[0]);
-+
-+	/* remove the message queue */
-+	msgctl(id, IPC_RMID, NULL);
-+
-+	return rval;
-+}
-+
-+int chld2_msg(void *arg)
-+{
-+	int id;
-+	char buf;
-+	struct sysv_msg m;
-+
-+	close(p1[1]);
-+	close(p2[0]);
-+
-+	/* get a System V message queue identifier */
-+	id = msgget(TESTKEY, IPC_CREAT | 0600);
-+	if (id == -1) {
-+		perror("msgget");
-+		close(p1[1]);
-+		close(p2[0]);
-+		return 2;
-+	}
-+
-+	/* write to the message queue */
-+	m.mtype = 2;
-+	m.mtext[0] = 'B';
-+	if (msgsnd(id, &m, sizeof(struct sysv_msg) - sizeof(long), 0) == -1) {
-+		perror("msgsnd");
-+		close(p1[1]);
-+		close(p2[0]);
-+		msgctl(id, IPC_RMID, NULL);
-+		return 2;
-+	}
-+
-+	/* tell child1 to continue */
-+	write(p2[1], "1", 1);
-+
-+	/* wait for child1 */
-+	read(p1[0], &buf, 1);
-+
-+	close(p1[0]);
-+	close(p2[1]);
-+
-+	/* remove the message queue */
-+	msgctl(id, IPC_RMID, NULL);
-+
-+	return 0;
-+}
-+
-+static void test(void)
-+{
-+	int status, ret = 0;
-+
-+	SAFE_PIPE(NULL, p1);
-+	SAFE_PIPE(NULL, p2);
-+
-+	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld1_msg, NULL);
-+	if (ret == -1)
-+		tst_brkm(TBROK | TERRNO, NULL, "clone failed");
-+
-+	ret = do_clone_unshare_test(T_CLONE, CLONE_NEWIPC, chld2_msg, NULL);
-+	if (ret == -1)
-+		tst_brkm(TBROK | TERRNO, NULL, "clone failed");
-+
-+	close(p1[0]);
-+	close(p1[1]);
-+	close(p2[0]);
-+	close(p2[1]);
-+
-+	/* wait for child processes */
-+	while (wait(&status) > 0) {
-+		if (WIFEXITED(status) && WEXITSTATUS(status) == 1)
-+			ret = 1;
-+		if (WIFEXITED(status) && WEXITSTATUS(status) == 2)
-+			tst_brkm(TBROK | TERRNO, NULL, "error in child");
-+		if (WIFSIGNALED(status)) {
-+			tst_resm(TFAIL, "child was killed with signal %s",
-+					tst_strsig(WTERMSIG(status)));
-+			return;
-+		}
-+	}
-+
-+	if (ret)
-+		tst_resm(TFAIL, "SysV msg: communication with identical keys"
-+				" between namespaces");
-+	else
-+		tst_resm(TPASS, "SysV msg: communication with identical keys"
-+				" between namespaces");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test();
-+
-+	tst_exit();
-+}
+I guess that you want to synchronize a parent process with two or more
+children, right? That case can be solved more elegantly by calling
+TST_CHECKPOINT_PARENT_WAIT() twice and doing
+TST_CHECKPOINT_CHILD_SIGNAL() in each child.
+
+> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+> ---
+>  include/tst_checkpoint.h |  5 ++++-
+>  lib/tst_checkpoint.c     | 36 ++++++++++++++++++++++--------------
+>  2 files changed, 26 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/tst_checkpoint.h b/include/tst_checkpoint.h
+> index f2d7efe..a396c04 100644
+> --- a/include/tst_checkpoint.h
+> +++ b/include/tst_checkpoint.h
+> @@ -1,5 +1,6 @@
+>  /*
+>   * Copyright (C) 2012 Cyril Hrubis chrubis@suse.cz
+> + * Copyright (C) 2014 Matus Marhefka mmarhefk@redhat.com
+>   *
+>   * This program is free software; you can redistribute it and/or modify it
+>   * under the terms of version 2 of the GNU General Public License as
+> @@ -36,9 +37,11 @@
+>  
+>  #include "test.h"
+>  
+> -#define TST_CHECKPOINT_FIFO "tst_checkpoint_fifo"
+> +#define TST_CHECKPOINT_FIFO "tst_checkpoint_fifo_"
+> +#define FIFO_LEN 30
+>  
+>  struct tst_checkpoint {
+> +	char file[FIFO_LEN];
+>  	/* child return value in case of failure */
+>  	int retval;
+>  	/* timeout in msecs */
+> diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
+> index 695cd3e..bc5d303 100644
+> --- a/lib/tst_checkpoint.c
+> +++ b/lib/tst_checkpoint.c
+> @@ -1,5 +1,6 @@
+>  /*
+>   * Copyright (C) 2012 Cyril Hrubis chrubis@suse.cz
+> + * Copyright (C) 2014 Matus Marhefka mmarhefk@redhat.com
+>   *
+>   * This program is free software; you can redistribute it and/or modify it
+>   * under the terms of version 2 of the GNU General Public License as
+> @@ -70,6 +71,8 @@ int open_wronly_timed(const char *path, unsigned int timeout)
+>  void tst_checkpoint_init(const char *file, const int lineno,
+>                           struct tst_checkpoint *self)
+>  {
+> +	char *fn;
+> +
+>  	if (!tst_tmpdir_created()) {
+>  		tst_brkm(TBROK, NULL, "Checkpoint could be used only in test "
+>  		                      "temporary directory at %s:%d",
+> @@ -77,15 +80,20 @@ void tst_checkpoint_init(const char *file, const int lineno,
+>  	}
+>  	
+>  	/* default values */
+> +	strcpy(self->file, TST_CHECKPOINT_FIFO"XXXXXX");
+> +	fn = mktemp(self->file);
+> +	if (*fn == '\0') {
+> +		tst_brkm(TBROK | TERRNO , NULL,
+> +			 "Failed to create a unique temp file at %s:%d",
+> +			 file, lineno);
+> +	}
+>  	self->retval = 1;
+>  	self->timeout = 5000;
+>  
+> -	unlink(TST_CHECKPOINT_FIFO);
+> -
+> -	if (mkfifo(TST_CHECKPOINT_FIFO, 0666)) {
+> +	if (mkfifo(self->file, 0666)) {
+>  		tst_brkm(TBROK | TERRNO, NULL,
+>  		         "Failed to create fifo '%s' at %s:%d",
+> -		         TST_CHECKPOINT_FIFO, file, lineno);
+> +		         self->file, file, lineno);
+>  	}
+
+There is no need for the whole mktemp() and unique names. It is ensured
+that the fifo is created in the test temporary directory, which is
+unique for each test instance. So if we need to create multiple fifos we
+can just number them or something.
+
+>  }
+>  
+> @@ -97,12 +105,12 @@ void tst_checkpoint_parent_wait(const char *file, const int lineno,
+>  	char ch;
+>  	struct pollfd fd;
+>  
+> -	fd.fd = open(TST_CHECKPOINT_FIFO, O_RDONLY | O_NONBLOCK);
+> +	fd.fd = open(self->file, O_RDONLY | O_NONBLOCK);
+>  
+>  	if (fd.fd < 0) {
+>  		tst_brkm(TBROK | TERRNO, cleanup_fn,
+>  		         "Failed to open fifo '%s' at %s:%d",
+> -		         TST_CHECKPOINT_FIFO, file, lineno);
+> +		         self->file, file, lineno);
+>  	}
+>  
+>  	fd.events = POLLIN;
+> @@ -121,7 +129,7 @@ void tst_checkpoint_parent_wait(const char *file, const int lineno,
+>  	default:
+>  		tst_brkm(TBROK | TERRNO, cleanup_fn,
+>  		         "Poll failed for fifo '%s' at %s:%d",
+> -			 TST_CHECKPOINT_FIFO, file, lineno);
+> +			 self->file, file, lineno);
+>  	}
+>  
+>  	ret = read(fd.fd, &ch, 1);
+> @@ -157,11 +165,11 @@ void tst_checkpoint_child_wait(const char *file, const int lineno,
+>  	int ret, fd;
+>  	char ch;
+>  
+> -	fd = open(TST_CHECKPOINT_FIFO, O_RDONLY);
+> +	fd = open(self->file, O_RDONLY);
+>  
+>  	if (fd < 0) {
+>  		fprintf(stderr, "CHILD: Failed to open fifo '%s': %s at "
+> -		        "%s:%d\n", TST_CHECKPOINT_FIFO, strerror(errno),
+> +		        "%s:%d\n", self->file, strerror(errno),
+>  		        file, lineno);
+>  		exit(self->retval);
+>  	}
+> @@ -170,7 +178,7 @@ void tst_checkpoint_child_wait(const char *file, const int lineno,
+>  
+>  	if (ret == -1) {
+>  		fprintf(stderr, "CHILD: Failed to read from fifo '%s': %s "
+> -		        "at %s:%d\n", TST_CHECKPOINT_FIFO, strerror(errno),
+> +		        "at %s:%d\n", self->file, strerror(errno),
+>  		        file, lineno);
+>  		goto err;
+>  	}
+> @@ -193,11 +201,11 @@ void tst_checkpoint_signal_parent(const char *file, const int lineno,
+>  {
+>  	int ret, fd;
+>  	
+> -	fd = open(TST_CHECKPOINT_FIFO, O_WRONLY);
+> +	fd = open(self->file, O_WRONLY);
+>  
+>  	if (fd < 0) {
+>  		fprintf(stderr, "CHILD: Failed to open fifo '%s': %s at %s:%d",
+> -		        TST_CHECKPOINT_FIFO, strerror(errno), file, lineno);
+> +		        self->file, strerror(errno), file, lineno);
+>  		exit(self->retval);
+>  	}
+>  
+> @@ -229,12 +237,12 @@ void tst_checkpoint_signal_child(const char *file, const int lineno,
+>  {
+>  	int ret, fd;
+>  	
+> -	fd = open_wronly_timed(TST_CHECKPOINT_FIFO, self->timeout);
+> +	fd = open_wronly_timed(self->file, self->timeout);
+>  
+>  	if (fd < 0) {
+>  		tst_brkm(TBROK | TERRNO, cleanup_fn,
+>  		         "Failed to open fifo '%s' at %s:%d",
+> -		         TST_CHECKPOINT_FIFO, file, lineno);
+> +		         self->file, file, lineno);
+>  	}
+>  
+>  	ret = write(fd, "p", 1);
+> -- 
+> 1.8.3.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+> Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+> Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+> Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+> http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Slashdot TV.  
-Video for Nerds.  Stuff that matters.
-http://tv.slashdot.org/
+Slashdot TV.  Videos for Nerds.  Stuff that Matters.
+http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
