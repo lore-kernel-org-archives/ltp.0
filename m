@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XYW72-0000yR-IZ
-	for ltp-list@lists.sourceforge.net; Mon, 29 Sep 2014 08:15:16 +0000
-Date: Mon, 29 Sep 2014 10:14:54 +0200
-From: chrubis@suse.cz
-Message-ID: <20140929081454.GA19492@rei.suse.cz>
-References: <1409047170-18251-1-git-send-email-mmarhefk@redhat.com>
-	<1409319967-12730-1-git-send-email-mmarhefk@redhat.com>
-	<20140924075604.GB10825@rei>
-	<273164774.30346037.1411649870605.JavaMail.zimbra@redhat.com>
-	<461070711.43439951.1411650253035.JavaMail.zimbra@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XYdvP-0005lN-2f
+	for ltp-list@lists.sourceforge.net; Mon, 29 Sep 2014 16:35:47 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XYdvO-0000im-8s
+	for ltp-list@lists.sourceforge.net; Mon, 29 Sep 2014 16:35:47 +0000
+Message-ID: <54298ACA.1050101@oracle.com>
+Date: Mon, 29 Sep 2014 20:37:30 +0400
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <461070711.43439951.1411650253035.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH 1/2 v2] containers: added mountns/mountns03.c
+References: <1411649975-17339-1-git-send-email-liuhangbin@gmail.com>
+In-Reply-To: <1411649975-17339-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCH v2] ltp-networking/tcp_cmds/finger: fix finger bad
+ user and host test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,17 +28,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Hangbin Liu <liuhangbin@gmail.com>, LTP List <ltp-list@lists.sourceforge.net>
+Cc: vasily.isaenko@oracle.com, Vincent Hsu <vincent.hsu@linaro.org>
 
 Hi!
-> I also prefer staying with defines.
 
-Ok.
+On 09/25/2014 04:59 PM, Hangbin Liu wrote:
+> Finger always return 0 with bad user and host test. And it also return
+> different error message on different distros. So let's only check stderr
+> message and decide whether the test pass or fail.
+>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>   testcases/network/tcp_cmds/finger/finger01 | 9 +++------
+>   1 file changed, 3 insertions(+), 6 deletions(-)
+>
+> diff --git a/testcases/network/tcp_cmds/finger/finger01 b/testcases/network/tcp_cmds/finger/finger01
+> index 203d746..89693ff 100755
+> --- a/testcases/network/tcp_cmds/finger/finger01
+> +++ b/testcases/network/tcp_cmds/finger/finger01
+> @@ -115,13 +115,10 @@ do_test2()
+>       finger -x 2>&1 1>/dev/null && end_testcase "finger -x should fail"
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I would change redirection here to  > /dev/null 2>&1 as we don't need to 
+print stderr.
+
+>   
+>       tst_resm TINFO "finger -bad user "
+> -    finger $BADUSER 2>&1 1>/dev/null || end_testcase "finger $BADUSER"
+> -    finger @$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host" \
+> -        || end_testcase "finger @$BADHOST"
+> -    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null \
+> -        | grep "finger: unknown host"; then
+> +    [ "finger $BADUSER 2>&1 1>/dev/null" ] || end_testcase "finger $BADUSER"
+> +    [ "finger @$BADHOST 2>&1 1>/dev/null" ] || end_testcase "finger @$BADHOST"
+> +    [ "finger $BADUSER@$BADHOST 2>&1 1>/dev/null" ] || \
+
+Checking string constants... not command output, forgot to add '$()'?
+
+Besides, it'd be great to get rid of obsolete 'net_cmdlib.sh' in the test.
+
+Thanks
+Alexey
+
 
 ------------------------------------------------------------------------------
 Slashdot TV.  Videos for Nerds.  Stuff that Matters.
