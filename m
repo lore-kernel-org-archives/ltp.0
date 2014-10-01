@@ -2,32 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1XguGb-0005DE-JG
-	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:49 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
+	(envelope-from <zlang@redhat.com>) id 1XZKxF-0004j4-LW
+	for ltp-list@lists.sourceforge.net; Wed, 01 Oct 2014 14:32:33 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XguGZ-0007mf-NH
-	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:49 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s9MBdfAw006598
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:42 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	s9MBdeGj012129
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:41 GMT
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s9MBdeDF009233
-	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:40 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 22 Oct 2014 15:41:32 +0400
-Message-Id: <1413978094-10616-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v3 2/3] network/test_net: add tst_ipaddr
+	(Exim 4.76) id 1XZKxE-0005Vo-1u
+	for ltp-list@lists.sourceforge.net; Wed, 01 Oct 2014 14:32:33 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s91EWO74013080
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 1 Oct 2014 10:32:25 -0400
+From: Zorro Lang <zlang@redhat.com>
+Date: Wed,  1 Oct 2014 22:32:18 +0800
+Message-Id: <1412173938-11024-1-git-send-email-zlang@redhat.com>
+Subject: [LTP] [PATCH] ext4-new-features: modify ext4_get_inode_version.sh
+	not know $EXT4_DEV definition
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,57 +33,54 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Some tests require IP addresses, either IPv4 or IPv6.
+ext4_get_inode_version.sh use $EXT4_DEV, but it really doesn't know what is $EXT4_DEV.
+That cause other cases which use ext4_get_inode_version.sh to fail.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Zorro Lang <zlang@redhat.com>
 ---
-v3: replace TST_EXEC_SUFFIX with TST_IPV6
 
- testcases/lib/test_net.sh |   22 ++++++++++++++++++++++
- 1 files changed, 22 insertions(+), 0 deletions(-)
+Hi,
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 24460f3..b6d4e7d 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -152,3 +152,25 @@ tst_read_opts()
- 	done
- 	OPTIND=0
- }
-+
-+# Get IP address
-+# tst_ipaddr [TYPE]
-+# TYPE: { lhost | rhost }; Default value is 'lhost'.
-+tst_ipaddr()
-+{
-+	local type=${1:-"lhost"}
-+	local ipv=${TST_IPV6:-"4"}
-+	local tst_host=
-+
-+	if [ "$type" = "lhost" ]; then
-+		eval "tst_host=\$LHOST_IPV${ipv}_HOST"
-+	else
-+		eval "tst_host=\$RHOST_IPV${ipv}_HOST"
-+	fi
-+
-+	if [ "$TST_IPV6" ]; then
-+		echo "${IPV6_NETWORK}:${tst_host}"
-+	else
-+		echo "${IPV4_NETWORK}.${tst_host}"
-+	fi
-+}
+When I ran ext4-inode-version, I always hit TFAIL. But I can't reproduce the failure manually.
+Then I found ext4_inode_version_test.sh use ext4_get_inode_version.sh ->  
+ext4_get_inode_version.sh use $EXT4_DEV ->
+but ext4_get_inode_version.sh doesn't know what is $EXT4_DEV.
+
+About this patch, I export $EXT4_DEV in ext4_inode_version_test.sh, before it call ext4_get_inode_version.sh.
+But I think add the "export" in front of "EXT4_DEV=$LTP_BIG_DEV" in ext4_funcs.sh will be another method.
+
+Please review, and tell me which one do you think is better for LTP? Or you have a better one;)
+
+Thank you,
+Zorro Lang
+
+ .../fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh  | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+index ac8f021..2549088 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
+@@ -138,6 +138,8 @@ test_inode_version()
+ 
+ # main
+ ext4_setup
++# export EXT4_DEV for ext4_get_inode_version.sh can know it
++export EXT4_DEV=$EXT4_DEV
+ 
+ ext4_test_128_inode_version
+ 
 -- 
-1.7.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
