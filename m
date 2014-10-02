@@ -1,29 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <eguan@redhat.com>) id 1Xdwtg-0002ut-J0
-	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 07:51:56 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xdwtf-00007U-BH
-	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 07:51:56 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s9E7pmkm025496
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 14 Oct 2014 03:51:48 -0400
-Date: Tue, 14 Oct 2014 15:51:46 +0800
-From: Eryu Guan <eguan@redhat.com>
-Message-ID: <20141014075145.GL13912@dhcp-13-216.nay.redhat.com>
-References: <1514362509.42340352.1412928396918.JavaMail.zimbra@redhat.com>
-	<449596914.42340372.1412928408912.JavaMail.zimbra@redhat.com>
+	(envelope-from <metan@suse.de>) id 1XZgjW-0006NU-TL
+	for ltp-list@lists.sourceforge.net; Thu, 02 Oct 2014 13:47:50 +0000
+Date: Thu, 2 Oct 2014 15:47:09 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141002134709.GB4544@rei.suse.cz>
+References: <1409047170-18251-2-git-send-email-mmarhefk@redhat.com>
+	<1409320025-12778-1-git-send-email-mmarhefk@redhat.com>
+	<2033057817.18477225.1409840498036.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <449596914.42340372.1412928408912.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] fs: Fix the check bug in
- testcases/kernel/fs/acl/tacl_xattr.sh
+In-Reply-To: <2033057817.18477225.1409840498036.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2 v2] containers: added mountns/mountns04.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,70 +23,30 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xu Wang <xuw@redhat.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-T24gRnJpLCBPY3QgMTAsIDIwMTQgYXQgMDQ6MDY6NDhBTSAtMDQwMCwgWHUgV2FuZyB3cm90ZToK
-PiBGcm9tIGZiYzM4MTgxZjA1MDRkNWU5MmRlZjkyMjk3N2RhMmRkMGFlMGVlOGIgTW9uIFNlcCAx
-NyAwMDowMDowMCAyMDAxCj4gRnJvbTogR2VvcmdlIFdhbmcgPHh1d0ByZWRoYXQuY29tPgo+IERh
-dGU6IEZyaSwgMTAgT2N0IDIwMTQgMTU6NTk6MTYgKzA4MDAKPiBTdWJqZWN0OiBbUEFUQ0hdICBm
-czogRml4IHRoZSBjaGVjayBidWcgaW4KPiAgdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvdGFjbF94
-YXR0ci5zaAoKQ2FuIHlvdSBwbGVhc2UgZGVzY3JpYmUgd2hhdCBidWcgeW91J3JlIHRyeWluZyB0
-byBmaXggaW4gY29tbWl0IGxvZz8KCkFuZCB5b3UgY2FuIHVzZSBnaXQgc2VuZC1lbWFpbCB0byBz
-ZW5kIHBhdGNoLCBhcyB5b3UgZGlkIHRvIHRoZSBvdGhlcgpwYXRjaCA6KQoKVGhhbmtzLApFcnl1
-Cj4gCj4gU2lnbmVkLW9mZi1ieTogR2VvcmdlIFdhbmcgPHh1d0ByZWRoYXQuY29tPgo+IC0tLQo+
-ICB0ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC90YWNsX3hhdHRyLnNoIHwgMTYgKysrKysrKystLS0t
-LS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQo+
-IAo+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC90YWNsX3hhdHRyLnNoIGIv
-dGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvdGFjbF94YXR0ci5zaAo+IGluZGV4IDk5ZjZhOTUuLjVh
-NjBhMDQgMTAwNzU1Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvdGFjbF94YXR0ci5z
-aAo+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNsL3RhY2xfeGF0dHIuc2gKPiBAQCAtMjQ3
-LDI0ICsyNDcsMjQgQEAgc3UgLSB0YWNsdXNlcjEgPDwgVEFDTF9VU0VSMQo+ICAgICBpZiBbIC1l
-ICRDVVJfUEFUSC90YWNsL21vdW50LWV4dDIvc2hhcmVkL3RlYW0xL25ld2ZpbGUxIF0KPiAgICAg
-dGhlbgo+ICAgICAgICAgZWNobyAiIgo+IC0gICAgICAgZWNobyAiRkFJTEVEOiAgWyB0b3VjaCBd
-IEFDTF9VU0VSX09CSiAgZW50cnkgYWxyZWFkeSBjb250YWlucyB0aGUgb3duZXIgd3JpdGUgIgo+
-IC0gICAgICAgZWNobyAtZSAiXHQgcGVybWlzc2lvbnMsIGJ1dCBvcGVyYXRpb24gZmFpbGVkIFsg
-UGh5c2ljYWwgRGlyZWN0b3J5IF0iCj4gLSAgIGVsc2UKPiAtICAgICAgIGVjaG8gIiIKPiAgICAg
-ICAgIGVjaG8gIlNVQ0NFU1M6IEFDTF9VU0VSX09CSiAgZW50cnkgY29udGFpbnMgdGhlIG93bmVy
-IHdyaXRlIHBlcm1pc3Npb25zLCIKPiAgICAgICAgIGVjaG8gLWUgIlx0IG9wZXJhdGlvbiBzdWNj
-ZXNzIFsgUGh5c2ljYWwgRGlyZWN0b3J5IF0iCj4gKyAgIGVsc2UKPiArICAgICAgIGVjaG8gIiIK
-PiArICAgICAgIGVjaG8gIkZBSUxFRDogIFsgdG91Y2ggXSBBQ0xfVVNFUl9PQkogIGVudHJ5IGFs
-cmVhZHkgY29udGFpbnMgdGhlIG93bmVyIHdyaXRlICIKPiArICAgICAgIGVjaG8gLWUgIlx0IHBl
-cm1pc3Npb25zLCBidXQgb3BlcmF0aW9uIGZhaWxlZCBbIFBoeXNpY2FsIERpcmVjdG9yeSBdIgo+
-ICAgICBmaQo+IAo+ICAgICB0b3VjaCAkQ1VSX1BBVEgvdGFjbC9tb3VudC1leHQyL3NoYXJlZC9z
-eW1saW5rZGlyMS9uZXdmaWwyIDI+IC9kZXYvbnVsbAo+ICAgICBpZiBbIC1lICRDVVJfUEFUSC90
-YWNsL21vdW50LWV4dDIvc2hhcmVkL3RlYW0xL25ld2ZpbGUyIF0KPiAgICAgdGhlbgo+ICAgICAg
-ICAgZWNobyAiIgo+IC0gICAgICAgZWNobyAiRkFJTEVEOiAgWyB0b3VjaCBdIEFDTF9VU0VSX09C
-SiAgZW50cnkgYWxyZWFkeSBjb250YWlucyB0aGUgb3duZXIgd3JpdGUgIgo+IC0gICAgICAgZWNo
-byAtZSAiXHQgcGVybWlzc2lvbnMsIGJ1dCBvcGVyYXRpb24gZmFpbGVkIFsgU3ltbGluayBEaXJl
-Y3RvcnkgXSIKPiAtICAgZWxzZQo+IC0gICAgICAgZWNobyAiIgo+ICAgICAgICAgZWNobyAiU1VD
-Q0VTUzogQUNMX1VTRVJfT0JKICBlbnRyeSBjb250YWlucyB0aGUgb3duZXIgd3JpdGUgcGVybWlz
-c2lvbnMsIgo+ICAgICAgICAgZWNobyAtZSAiXHQgb3BlcmF0aW9uIHN1Y2Nlc3MgWyBTeW1saW5r
-IERpcmVjdG9yeSBdIgo+ICsgICBlbHNlCj4gKyAgICAgICBlY2hvICIiCj4gKyAgICAgICBlY2hv
-ICJGQUlMRUQ6ICBbIHRvdWNoIF0gQUNMX1VTRVJfT0JKICBlbnRyeSBhbHJlYWR5IGNvbnRhaW5z
-IHRoZSBvd25lciB3cml0ZSAiCj4gKyAgICAgICBlY2hvIC1lICJcdCBwZXJtaXNzaW9ucywgYnV0
-IG9wZXJhdGlvbiBmYWlsZWQgWyBTeW1saW5rIERpcmVjdG9yeSBdIgo+ICAgICBmaQo+IAo+ICBU
-QUNMX1VTRVIxCj4gLS0gCj4gMS45LjMKPiAKPiAtLSAKPiBHZW9yZ2UgV2FuZyDnjovml60KPiAK
-PiBLZXJuZWwgUXVhbnRpdHkgRW5naW5lZXIKPiBSZWQgSGF0IFNvZnR3YXJlIChCZWlqaW5nKSBD
-by4sTHRkCj4gSVJDOnh1dwo+IFRlbDorODYtMDEwLTYyNjA4MDQxCj4gUGhvbmU6MTU5MDEyMzE1
-NzkKPiA5L0YsIFRvd2VyIEMsIFJheWNvbQo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+
-IENvbXByZWhlbnNpdmUgU2VydmVyIE1vbml0b3Jpbmcgd2l0aCBTaXRlMjR4Ny4KPiBNb25pdG9y
-IDEwIHNlcnZlcnMgZm9yICQ5L01vbnRoLgo+IEdldCBhbGVydGVkIHRocm91Z2ggZW1haWwsIFNN
-Uywgdm9pY2UgY2FsbHMgb3IgbW9iaWxlIHB1c2ggbm90aWZpY2F0aW9ucy4KPiBUYWtlIGNvcnJl
-Y3RpdmUgYWN0aW9ucyBmcm9tIHlvdXIgbW9iaWxlIGRldmljZS4KPiBodHRwOi8vcC5zZi5uZXQv
-c2Z1L1pvaG8KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-Xwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tcHJlaGVuc2l2ZSBTZXJ2ZXIgTW9uaXRvcmluZyB3
-aXRoIFNpdGUyNHg3LgpNb25pdG9yIDEwIHNlcnZlcnMgZm9yICQ5L01vbnRoLgpHZXQgYWxlcnRl
-ZCB0aHJvdWdoIGVtYWlsLCBTTVMsIHZvaWNlIGNhbGxzIG9yIG1vYmlsZSBwdXNoIG5vdGlmaWNh
-dGlvbnMuClRha2UgY29ycmVjdGl2ZSBhY3Rpb25zIGZyb20geW91ciBtb2JpbGUgZGV2aWNlLgpo
-dHRwOi8vcC5zZi5uZXQvc2Z1L1pvaG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
-dHAtbGlzdAo=
+Hi!
+> Same question as for mountns03, is it necessary for B to be bind mounted
+> to itself and shared?
+
+I see that this part was removed from mountns03 but not from the latest
+version of mountns04. Has this been resolved for mountns04?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
