@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gary.robertson@linaro.org>) id 1Xhfpo-0001Pt-LI
-	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 14:27:20 +0000
-Received: from mail-wi0-f175.google.com ([209.85.212.175])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Xhfpm-0007Lz-VE
-	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 14:27:20 +0000
-Received: by mail-wi0-f175.google.com with SMTP id d1so1369039wiv.2
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 24 Oct 2014 07:27:12 -0700 (PDT)
+	(envelope-from <metan@suse.de>) id 1XZfvh-0003jx-NZ
+	for ltp-list@lists.sourceforge.net; Thu, 02 Oct 2014 12:56:21 +0000
+Date: Thu, 2 Oct 2014 14:55:40 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141002125540.GA3291@rei.suse.cz>
+References: <1408099965-15748-1-git-send-email-mmarhefk@redhat.com>
+	<1409314931-11656-1-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <90019386.14686839.1414156011036.JavaMail.zimbra@redhat.com>
-References: <1412111852-22329-1-git-send-email-gary.robertson@linaro.org>
-	<141884284.14647510.1414151888080.JavaMail.zimbra@redhat.com>
-	<CAF7YWnxTsX4XUe1VwNZWdykPNzETQ-4wEbP1B7dgj0m=uQN38g@mail.gmail.com>
-	<90019386.14686839.1414156011036.JavaMail.zimbra@redhat.com>
-Date: Fri, 24 Oct 2014 09:27:12 -0500
-Message-ID: <CAF7YWnxbUzN526ENp3ry8VCy0fS98OXTP6Tc7uMH20ZvKyOVPQ@mail.gmail.com>
-From: Gary Robertson <gary.robertson@linaro.org>
-Subject: Re: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals
+Content-Disposition: inline
+In-Reply-To: <1409314931-11656-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH 1/3 v3] lib: Added SAFE_MOUNT() and SAFE_UMOUNT()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,394 +22,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7314354331785849888=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, mike holmes <mike.holmes@linaro.org>
-
---===============7314354331785849888==
-Content-Type: multipart/alternative; boundary=f46d04138cbb166fed05062bfa21
-
---f46d04138cbb166fed05062bfa21
-Content-Type: text/plain; charset=UTF-8
-
-Jan,
-
-Ahh!  Yes I believe you are right about that one.  I'll fix that and
-re-submit.
-I guess at this point it will need a third patch since it should have been
-in the 'PI' conditionals patch instead of the 'ROBUST' patch.
-
-
-Thanks
-
-Gary
-
-On Fri, Oct 24, 2014 at 8:06 AM, Jan Stancek <jstancek@redhat.com> wrote:
-
->
->
->
->
-> ----- Original Message -----
-> > From: "Gary Robertson" <gary.robertson@linaro.org>
-> > To: "Jan Stancek" <jstancek@redhat.com>
-> > Cc: "ltp-list" <ltp-list@lists.sourceforge.net>, "mike holmes" <
-> mike.holmes@linaro.org>
-> > Sent: Friday, 24 October, 2014 2:51:21 PM
-> > Subject: Re: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals
-> >
-> > Jan,
-> >
-> > In testpi-6.c at line 77, the do_test() function attempts to set the
-> > following mutex protocol:
->
-> Gary,
->
-> My question was for testpi-5.c:
->
-> -#if HAS_PTHREAD_MUTEXATTR_PROTOCOL_FUNCTIONS
-> +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
->
-> Regards,
-> Jan
->
-> >
-> >     if (pthread_mutexattr_setrobust_np(&mutexattr,
-> >                        PTHREAD_MUTEX_ROBUST_NP) != 0)
-> >         printf("Can't set robust mutex\n");
-> >
-> > The test in general appears to check how cleanly the robust mutex
-> > implementation handles attempts to acquire the mutex recursively.
-> > Since the mutex is NOT initialized as a recursive type, the recursive
-> > locking attempt is expected to fail in order for the test to pass.
-> > I agree that I don't see how the ROBUST attribute comes into play here,
-> but
-> > this is the way the test was written and my patch just allows it to
-> compile
-> > cleanly.
-> >
-> > Gary
-> >
-> > On Fri, Oct 24, 2014 at 6:58 AM, Jan Stancek <jstancek@redhat.com>
-> wrote:
-> >
-> > >
-> > >
-> > >
-> > >
-> > > ----- Original Message -----
-> > > > From: "Gary S. Robertson" <gary.robertson@linaro.org>
-> > > > To: ltp-list@lists.sourceforge.net
-> > > > Cc: "mike holmes" <mike.holmes@linaro.org>
-> > > > Sent: Tuesday, 30 September, 2014 11:17:32 PM
-> > > > Subject: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals
-> > > >
-> > > > From: "Gary S. Robertson" <gary.robertson@linaro.org>
-> > > >
-> > > > sbrk_mutex, testpi-5, and testpi-6 realtime tests in subdir
-> > > > testcases/realtime/func/pi-tests used compile time config variables
-> > > > which were not generated by autoconf in order to configure tests
-> > > > for robust mutexes.  Changed these conditionals to use the config
-> > > > variables actually generated in the autoconf process.
-> > > >
-> > > > Signed-off-by: Gary S. Robertson <gary.robertson@linaro.org>
-> > > > ---
-> > > >  testcases/realtime/func/pi-tests/sbrk_mutex.c |    2 +-
-> > > >  testcases/realtime/func/pi-tests/testpi-5.c   |    2 +-
-> > > >  testcases/realtime/func/pi-tests/testpi-6.c   |    2 +-
-> > > >  3 files changed, 3 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/testcases/realtime/func/pi-tests/sbrk_mutex.c
-> > > > b/testcases/realtime/func/pi-tests/sbrk_mutex.c
-> > > > index 684021f..5c325b4 100644
-> > > > --- a/testcases/realtime/func/pi-tests/sbrk_mutex.c
-> > > > +++ b/testcases/realtime/func/pi-tests/sbrk_mutex.c
-> > > > @@ -45,7 +45,7 @@
-> > > >  #include <unistd.h>
-> > > >  #include "librttest.h"
-> > > >
-> > > > -#if defined(HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS) &&
-> > > > defined(PTHREAD_MUTEX_ROBUST_NP)
-> > > > +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
-> > > >
-> > > >  #define NUM_MUTEXES 5000
-> > > >  #define NUM_THREADS 50
-> > > > diff --git a/testcases/realtime/func/pi-tests/testpi-5.c
-> > > > b/testcases/realtime/func/pi-tests/testpi-5.c
-> > > > index a1d93cc..70f02fd 100644
-> > > > --- a/testcases/realtime/func/pi-tests/testpi-5.c
-> > > > +++ b/testcases/realtime/func/pi-tests/testpi-5.c
-> > > > @@ -69,7 +69,7 @@ int do_test(int argc, char **argv)
-> > > >       pthread_mutexattr_t mutexattr;
-> > > >       int retc, protocol;
-> > > >
-> > > > -#if HAS_PTHREAD_MUTEXATTR_PROTOCOL_FUNCTIONS
-> > > > +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
-> > >
-> > > Shouldn't this one be "HAS_PRIORITY_INHERIT"? I'm looking at the
-> > > testcase, but I can't see any robust API being used.
-> > >
-> > > Regards,
-> > > Jan
-> > >
-> > > >
-> > > >       if (pthread_mutexattr_init(&mutexattr) != 0)
-> > > >               printf("Failed to init mutexattr\n");
-> > > > diff --git a/testcases/realtime/func/pi-tests/testpi-6.c
-> > > > b/testcases/realtime/func/pi-tests/testpi-6.c
-> > > > index b3c3e4a..f715eee 100644
-> > > > --- a/testcases/realtime/func/pi-tests/testpi-6.c
-> > > > +++ b/testcases/realtime/func/pi-tests/testpi-6.c
-> > > > @@ -41,7 +41,7 @@
-> > > >  #include <unistd.h>
-> > > >  #include <librttest.h>
-> > > >
-> > > > -#if defined(PTHREAD_MUTEX_ROBUST_NP)
-> > > > +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
-> > > >  pthread_mutex_t child_mutex;
-> > > >
-> > > >  void *child_thread(void *arg)
-> > > > --
-> > > > 1.7.9.5
-> > > >
-> > > >
-> > > >
-> > >
-> ------------------------------------------------------------------------------
-> > > > Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-> > > > Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS
-> Reports
-> > > > Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-> > > > Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-> > > >
-> > >
-> http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
-> > > > _______________________________________________
-> > > > Ltp-list mailing list
-> > > > Ltp-list@lists.sourceforge.net
-> > > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > > >
-> > >
-> >
->
-
---f46d04138cbb166fed05062bfa21
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div><div><div>Jan,<br><br></div>Ahh!=C2=A0 Yes I believe =
-you are right about that one.=C2=A0 I&#39;ll fix that and re-submit.<br>I g=
-uess at this point it will need a third patch since it should have been<br>=
-in the &#39;PI&#39; conditionals patch instead of the &#39;ROBUST&#39; patc=
-h.<br><br><br></div>Thanks<br><br></div>Gary<br></div><div class=3D"gmail_e=
-xtra"><br><div class=3D"gmail_quote">On Fri, Oct 24, 2014 at 8:06 AM, Jan S=
-tancek <span dir=3D"ltr">&lt;<a href=3D"mailto:jstancek@redhat.com" target=
-=3D"_blank">jstancek@redhat.com</a>&gt;</span> wrote:<br><blockquote class=
-=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padd=
-ing-left:1ex"><span class=3D""><br>
-<br>
-<br>
-<br>
------ Original Message -----<br>
-&gt; From: &quot;Gary Robertson&quot; &lt;<a href=3D"mailto:gary.robertson@=
-linaro.org">gary.robertson@linaro.org</a>&gt;<br>
-&gt; To: &quot;Jan Stancek&quot; &lt;<a href=3D"mailto:jstancek@redhat.com"=
->jstancek@redhat.com</a>&gt;<br>
-&gt; Cc: &quot;ltp-list&quot; &lt;<a href=3D"mailto:ltp-list@lists.sourcefo=
-rge.net">ltp-list@lists.sourceforge.net</a>&gt;, &quot;mike holmes&quot; &l=
-t;<a href=3D"mailto:mike.holmes@linaro.org">mike.holmes@linaro.org</a>&gt;<=
-br>
-&gt; Sent: Friday, 24 October, 2014 2:51:21 PM<br>
-&gt; Subject: Re: [LTP] [PATCH] Realtime tests: Fix robust mutex conditiona=
-ls<br>
-&gt;<br>
-&gt; Jan,<br>
-&gt;<br>
-&gt; In testpi-6.c at line 77, the do_test() function attempts to set the<b=
-r>
-&gt; following mutex protocol:<br>
-<br>
-</span>Gary,<br>
-<br>
-My question was for testpi-5.c:<br>
-<br>
--#if HAS_PTHREAD_MUTEXATTR_PROTOCOL_FUNCTIONS<br>
-+#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS<br>
-<br>
-Regards,<br>
-Jan<br>
-<div class=3D"HOEnZb"><div class=3D"h5"><br>
-&gt;<br>
-&gt;=C2=A0 =C2=A0 =C2=A0if (pthread_mutexattr_setrobust_np(&amp;mutexattr,<=
-br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 PTHREAD_MUTEX_ROBUST_NP) !=3D 0)<br>
-&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0printf(&quot;Can&#39;t set robust mut=
-ex\n&quot;);<br>
-&gt;<br>
-&gt; The test in general appears to check how cleanly the robust mutex<br>
-&gt; implementation handles attempts to acquire the mutex recursively.<br>
-&gt; Since the mutex is NOT initialized as a recursive type, the recursive<=
-br>
-&gt; locking attempt is expected to fail in order for the test to pass.<br>
-&gt; I agree that I don&#39;t see how the ROBUST attribute comes into play =
-here, but<br>
-&gt; this is the way the test was written and my patch just allows it to co=
-mpile<br>
-&gt; cleanly.<br>
-&gt;<br>
-&gt; Gary<br>
-&gt;<br>
-&gt; On Fri, Oct 24, 2014 at 6:58 AM, Jan Stancek &lt;<a href=3D"mailto:jst=
-ancek@redhat.com">jstancek@redhat.com</a>&gt; wrote:<br>
-&gt;<br>
-&gt; &gt;<br>
-&gt; &gt;<br>
-&gt; &gt;<br>
-&gt; &gt;<br>
-&gt; &gt; ----- Original Message -----<br>
-&gt; &gt; &gt; From: &quot;Gary S. Robertson&quot; &lt;<a href=3D"mailto:ga=
-ry.robertson@linaro.org">gary.robertson@linaro.org</a>&gt;<br>
-&gt; &gt; &gt; To: <a href=3D"mailto:ltp-list@lists.sourceforge.net">ltp-li=
-st@lists.sourceforge.net</a><br>
-&gt; &gt; &gt; Cc: &quot;mike holmes&quot; &lt;<a href=3D"mailto:mike.holme=
-s@linaro.org">mike.holmes@linaro.org</a>&gt;<br>
-&gt; &gt; &gt; Sent: Tuesday, 30 September, 2014 11:17:32 PM<br>
-&gt; &gt; &gt; Subject: [LTP] [PATCH] Realtime tests: Fix robust mutex cond=
-itionals<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt; From: &quot;Gary S. Robertson&quot; &lt;<a href=3D"mailto:ga=
-ry.robertson@linaro.org">gary.robertson@linaro.org</a>&gt;<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt; sbrk_mutex, testpi-5, and testpi-6 realtime tests in subdir<=
-br>
-&gt; &gt; &gt; testcases/realtime/func/pi-tests used compile time config va=
-riables<br>
-&gt; &gt; &gt; which were not generated by autoconf in order to configure t=
-ests<br>
-&gt; &gt; &gt; for robust mutexes.=C2=A0 Changed these conditionals to use =
-the config<br>
-&gt; &gt; &gt; variables actually generated in the autoconf process.<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt; Signed-off-by: Gary S. Robertson &lt;<a href=3D"mailto:gary.=
-robertson@linaro.org">gary.robertson@linaro.org</a>&gt;<br>
-&gt; &gt; &gt; ---<br>
-&gt; &gt; &gt;=C2=A0 testcases/realtime/func/pi-tests/sbrk_mutex.c |=C2=A0 =
-=C2=A0 2 +-<br>
-&gt; &gt; &gt;=C2=A0 testcases/realtime/func/pi-tests/testpi-5.c=C2=A0 =C2=
-=A0|=C2=A0 =C2=A0 2 +-<br>
-&gt; &gt; &gt;=C2=A0 testcases/realtime/func/pi-tests/testpi-6.c=C2=A0 =C2=
-=A0|=C2=A0 =C2=A0 2 +-<br>
-&gt; &gt; &gt;=C2=A0 3 files changed, 3 insertions(+), 3 deletions(-)<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt; diff --git a/testcases/realtime/func/pi-tests/sbrk_mutex.c<b=
-r>
-&gt; &gt; &gt; b/testcases/realtime/func/pi-tests/sbrk_mutex.c<br>
-&gt; &gt; &gt; index 684021f..5c325b4 100644<br>
-&gt; &gt; &gt; --- a/testcases/realtime/func/pi-tests/sbrk_mutex.c<br>
-&gt; &gt; &gt; +++ b/testcases/realtime/func/pi-tests/sbrk_mutex.c<br>
-&gt; &gt; &gt; @@ -45,7 +45,7 @@<br>
-&gt; &gt; &gt;=C2=A0 #include &lt;unistd.h&gt;<br>
-&gt; &gt; &gt;=C2=A0 #include &quot;librttest.h&quot;<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt; -#if defined(HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS) &amp;&amp;<=
-br>
-&gt; &gt; &gt; defined(PTHREAD_MUTEX_ROBUST_NP)<br>
-&gt; &gt; &gt; +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt;=C2=A0 #define NUM_MUTEXES 5000<br>
-&gt; &gt; &gt;=C2=A0 #define NUM_THREADS 50<br>
-&gt; &gt; &gt; diff --git a/testcases/realtime/func/pi-tests/testpi-5.c<br>
-&gt; &gt; &gt; b/testcases/realtime/func/pi-tests/testpi-5.c<br>
-&gt; &gt; &gt; index a1d93cc..70f02fd 100644<br>
-&gt; &gt; &gt; --- a/testcases/realtime/func/pi-tests/testpi-5.c<br>
-&gt; &gt; &gt; +++ b/testcases/realtime/func/pi-tests/testpi-5.c<br>
-&gt; &gt; &gt; @@ -69,7 +69,7 @@ int do_test(int argc, char **argv)<br>
-&gt; &gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0pthread_mutexattr_t mutexattr;<br>
-&gt; &gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0int retc, protocol;<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt; -#if HAS_PTHREAD_MUTEXATTR_PROTOCOL_FUNCTIONS<br>
-&gt; &gt; &gt; +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS<br>
-&gt; &gt;<br>
-&gt; &gt; Shouldn&#39;t this one be &quot;HAS_PRIORITY_INHERIT&quot;? I&#39=
-;m looking at the<br>
-&gt; &gt; testcase, but I can&#39;t see any robust API being used.<br>
-&gt; &gt;<br>
-&gt; &gt; Regards,<br>
-&gt; &gt; Jan<br>
-&gt; &gt;<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0if (pthread_mutexattr_init(&amp;mu=
-texattr) !=3D 0)<br>
-&gt; &gt; &gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0printf=
-(&quot;Failed to init mutexattr\n&quot;);<br>
-&gt; &gt; &gt; diff --git a/testcases/realtime/func/pi-tests/testpi-6.c<br>
-&gt; &gt; &gt; b/testcases/realtime/func/pi-tests/testpi-6.c<br>
-&gt; &gt; &gt; index b3c3e4a..f715eee 100644<br>
-&gt; &gt; &gt; --- a/testcases/realtime/func/pi-tests/testpi-6.c<br>
-&gt; &gt; &gt; +++ b/testcases/realtime/func/pi-tests/testpi-6.c<br>
-&gt; &gt; &gt; @@ -41,7 +41,7 @@<br>
-&gt; &gt; &gt;=C2=A0 #include &lt;unistd.h&gt;<br>
-&gt; &gt; &gt;=C2=A0 #include &lt;librttest.h&gt;<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt; -#if defined(PTHREAD_MUTEX_ROBUST_NP)<br>
-&gt; &gt; &gt; +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS<br>
-&gt; &gt; &gt;=C2=A0 pthread_mutex_t child_mutex;<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt;=C2=A0 void *child_thread(void *arg)<br>
-&gt; &gt; &gt; --<br>
-&gt; &gt; &gt; 1.7.9.5<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; -----------------------------------------------------------------=
--------------<br>
-&gt; &gt; &gt; Meet PCI DSS 3.0 Compliance Requirements with EventLog Analy=
-zer<br>
-&gt; &gt; &gt; Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI=
- DSS Reports<br>
-&gt; &gt; &gt; Are you Audit-Ready for PCI DSS 3.0 Compliance? Download Whi=
-te paper<br>
-&gt; &gt; &gt; Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog =
-Analyzer<br>
-&gt; &gt; &gt;<br>
-&gt; &gt; <a href=3D"http://pubads.g.doubleclick.net/gampad/clk?id=3D154622=
-311&amp;iu=3D/4140/ostg.clktrk" target=3D"_blank">http://pubads.g.doublecli=
-ck.net/gampad/clk?id=3D154622311&amp;iu=3D/4140/ostg.clktrk</a><br>
-&gt; &gt; &gt; _______________________________________________<br>
-&gt; &gt; &gt; Ltp-list mailing list<br>
-&gt; &gt; &gt; <a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@l=
-ists.sourceforge.net</a><br>
-&gt; &gt; &gt; <a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-=
-list" target=3D"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-li=
-st</a><br>
-&gt; &gt; &gt;<br>
-&gt; &gt;<br>
-&gt;<br>
-</div></div></blockquote></div><br></div>
-
---f46d04138cbb166fed05062bfa21--
-
-
---===============7314354331785849888==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+> ---
+>  include/safe_macros.h | 15 ++++++++++++++-
+>  lib/safe_macros.c     | 36 ++++++++++++++++++++++++++++++++++++
+>  2 files changed, 50 insertions(+), 1 deletion(-)
+
+Pushed, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-
---===============7314354331785849888==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7314354331785849888==--
-
