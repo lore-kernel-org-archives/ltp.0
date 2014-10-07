@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XikoF-0005VD-Gk
-	for ltp-list@lists.sourceforge.net; Mon, 27 Oct 2014 13:58:11 +0000
-Date: Mon, 27 Oct 2014 14:57:41 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XbTIA-0007PZ-PI
+	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 11:50:58 +0000
+Date: Tue, 7 Oct 2014 13:50:43 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141027135740.GA11481@rei.suse.de>
-References: <1413872345.17741.7.camel@G08JYZSD130126.localdomain>
-	<1413872520.17741.10.camel@G08JYZSD130126.localdomain>
+Message-ID: <20141007115042.GA5454@rei.suse.cz>
+References: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
+	<6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1413872520.17741.10.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH v3 4/4] multicast/mc_opts: Some cleanup
+In-Reply-To: <6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2 v2] checkpoints: fix usage in children started
+ via exec
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,25 +26,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> * Rename 'opts.c' to 'mc_verify_opts.c' and some cleanup.
-> * Rename 'opts_e.c' to 'mc_verify_opts_error.c' and some cleanup.
+> creat07 and setpgid03 are currently failing in following way:
+>   CHILD: Failed to open fifo '': No such file or directory at creat07_child.c:31
+>   creat07     1  TBROK  :  tst_checkpoint.c:126: Checkpoint timeouted after 5000 msecs at creat07.c:78
+>   creat07     2  TBROK  :  tst_checkpoint.c:126: Remaining cases broken
+> 
+> These testcases start children via exec, so only initialize
+> checkpoint struct, FIFO has been already created by parent.
 
-Patchset pushed, thanks.
+Both looks good, acked.
 
-PS: Please split patches into part that renames files and into
-    part that changes the code next time. I had to diff the
-    old version and new one manually to see what has been changed
-    in them.
+What about test writing guidelines, will you update it, or should I do
+that?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
