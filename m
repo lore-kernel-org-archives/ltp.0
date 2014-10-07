@@ -2,21 +2,20 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XbIvW-0007vn-Pu
-	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 00:46:54 +0000
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XbItW-0007qr-53
+	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 00:44:50 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XbIvV-0007Q3-IT
-	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 00:46:54 +0000
-Message-ID: <543337C0.90906@cn.fujitsu.com>
-Date: Tue, 7 Oct 2014 08:45:52 +0800
+	id 1XbItT-0007Mg-Fs
+	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 00:44:49 +0000
+Message-ID: <5433374A.3040406@cn.fujitsu.com>
+Date: Tue, 7 Oct 2014 08:43:54 +0800
 From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
 References: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
-	<6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
-In-Reply-To: <6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2 v2] checkpoints: fix usage in children started
- via exec
+In-Reply-To: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 1/2 v2] checkpoints: introduce
+	TST_CHECKPOINT_CREATE
 Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -33,66 +32,224 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
 On 10/06/2014 10:55 PM, Jan Stancek wrote:
-> creat07 and setpgid03 are currently failing in following way:
->   CHILD: Failed to open fifo '': No such file or directory at creat07_child.c:31
->   creat07     1  TBROK  :  tst_checkpoint.c:126: Checkpoint timeouted after 5000 msecs at creat07.c:78
->   creat07     2  TBROK  :  tst_checkpoint.c:126: Remaining cases broken
-> 
-> These testcases start children via exec, so only initialize
-> checkpoint struct, FIFO has been already created by parent.
+> Rename tst_checkpoint_init to tst_checkpoint_create.
+> Add tst_checkpoint_init, which only initializes checkpoint struct.
+> Update existing testcases to use TST_CHECKPOINT_CREATE.
 > 
 > Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Tested-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+
+Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+
 
 > ---
->  testcases/kernel/syscalls/creat/creat07_child.c    |    8 ++++++--
->  .../kernel/syscalls/setpgid/setpgid03_child.c      |    8 +++++++-
->  2 files changed, 13 insertions(+), 3 deletions(-)
+>  include/tst_checkpoint.h                           |   10 ++++++++--
+>  lib/tests/tst_checkpoint_child.c                   |    2 +-
+>  lib/tests/tst_checkpoint_child_exits.c             |    2 +-
+>  lib/tests/tst_checkpoint_no_child.c                |    2 +-
+>  lib/tests/tst_checkpoint_parent.c                  |    2 +-
+>  lib/tests/tst_checkpoint_parent_exits.c            |    2 +-
+>  lib/tst_checkpoint.c                               |   20 ++++++++++++++------
+>  .../kernel/containers/mountns/mountns_helper.h     |    4 ++--
+>  testcases/kernel/syscalls/creat/creat07.c          |    2 +-
+>  testcases/kernel/syscalls/flock/flock03.c          |    2 +-
+>  testcases/kernel/syscalls/setpgid/setpgid03.c      |    2 +-
+>  testcases/kernel/syscalls/waitid/waitid02.c        |    2 +-
+>  12 files changed, 33 insertions(+), 19 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/creat/creat07_child.c b/testcases/kernel/syscalls/creat/creat07_child.c
-> index f3e6aa0..1641601 100644
-> --- a/testcases/kernel/syscalls/creat/creat07_child.c
-> +++ b/testcases/kernel/syscalls/creat/creat07_child.c
-> @@ -24,10 +24,14 @@
+> diff --git a/include/tst_checkpoint.h b/include/tst_checkpoint.h
+> index 4d04c0e..6ea3366 100644
+> --- a/include/tst_checkpoint.h
+> +++ b/include/tst_checkpoint.h
+> @@ -51,10 +51,16 @@ struct tst_checkpoint {
+>   * Checkpoint initializaton, must be done first.
+>   */
+>  #define TST_CHECKPOINT_INIT(self) \
+> -        tst_checkpoint_init(__FILE__, __LINE__, self)
+> +	tst_checkpoint_init(__FILE__, __LINE__, self)
 >  
->  char *TCID = "creat07_child";
+>  void tst_checkpoint_init(const char *file, const int lineno,
+> -                         struct tst_checkpoint *self);
+> +			 struct tst_checkpoint *self);
+> +
+> +#define TST_CHECKPOINT_CREATE(self) \
+> +	tst_checkpoint_create(__FILE__, __LINE__, self)
+> +
+> +void tst_checkpoint_create(const char *file, const int lineno,
+> +			   struct tst_checkpoint *self);
 >  
-> -static struct tst_checkpoint checkpoint = {.timeout = 5, .retval = 1};
-> -
->  int main(void)
+>  /*
+>   * Wait called from parent. In case parent waits for child.
+> diff --git a/lib/tests/tst_checkpoint_child.c b/lib/tests/tst_checkpoint_child.c
+> index 9ce93f5..a13a9a2 100644
+> --- a/lib/tests/tst_checkpoint_child.c
+> +++ b/lib/tests/tst_checkpoint_child.c
+> @@ -35,7 +35,7 @@ int main(void)
+>  
+>  	tst_tmpdir();
+>  
+> -	TST_CHECKPOINT_INIT(&checkpoint);
+> +	TST_CHECKPOINT_CREATE(&checkpoint);
+>  
+>  	pid = fork();
+>  
+> diff --git a/lib/tests/tst_checkpoint_child_exits.c b/lib/tests/tst_checkpoint_child_exits.c
+> index 3488ba2..d2e3f74 100644
+> --- a/lib/tests/tst_checkpoint_child_exits.c
+> +++ b/lib/tests/tst_checkpoint_child_exits.c
+> @@ -35,7 +35,7 @@ int main(void)
+>  
+>  	tst_tmpdir();
+>  
+> -	TST_CHECKPOINT_INIT(&checkpoint);
+> +	TST_CHECKPOINT_CREATE(&checkpoint);
+>  
+>  	pid = fork();
+>  
+> diff --git a/lib/tests/tst_checkpoint_no_child.c b/lib/tests/tst_checkpoint_no_child.c
+> index fcf2745..2e72198 100644
+> --- a/lib/tests/tst_checkpoint_no_child.c
+> +++ b/lib/tests/tst_checkpoint_no_child.c
+> @@ -39,7 +39,7 @@ int main(void)
+>  
+>  	tst_tmpdir();
+>  
+> -	TST_CHECKPOINT_INIT(&checkpoint);
+> +	TST_CHECKPOINT_CREATE(&checkpoint);
+>  	TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
+>  	fprintf(stderr, "Parent: checkpoint reached\n");
+>  
+> diff --git a/lib/tests/tst_checkpoint_parent.c b/lib/tests/tst_checkpoint_parent.c
+> index a2ae621..a42b37a 100644
+> --- a/lib/tests/tst_checkpoint_parent.c
+> +++ b/lib/tests/tst_checkpoint_parent.c
+> @@ -35,7 +35,7 @@ int main(void)
+>  
+>  	tst_tmpdir();
+>  
+> -	TST_CHECKPOINT_INIT(&checkpoint);
+> +	TST_CHECKPOINT_CREATE(&checkpoint);
+>  
+>  	pid = fork();
+>  
+> diff --git a/lib/tests/tst_checkpoint_parent_exits.c b/lib/tests/tst_checkpoint_parent_exits.c
+> index 59c5356..3056c2c 100644
+> --- a/lib/tests/tst_checkpoint_parent_exits.c
+> +++ b/lib/tests/tst_checkpoint_parent_exits.c
+> @@ -35,7 +35,7 @@ int main(void)
+>  
+>  	tst_tmpdir();
+>  
+> -	TST_CHECKPOINT_INIT(&checkpoint);
+> +	TST_CHECKPOINT_CREATE(&checkpoint);
+>  
+>  	pid = fork();
+>  
+> diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
+> index 7391a28..ebc379e 100644
+> --- a/lib/tst_checkpoint.c
+> +++ b/lib/tst_checkpoint.c
+> @@ -74,12 +74,6 @@ void tst_checkpoint_init(const char *file, const int lineno,
+>  	static unsigned int fifo_counter = 0;
+>  	int rval;
+>  
+> -	if (!tst_tmpdir_created()) {
+> -		tst_brkm(TBROK, NULL, "Checkpoint could be used only in test "
+> -		                      "temporary directory at %s:%d",
+> -				      file, lineno);
+> -	}
+> -	
+>  	/* default values */
+>  	rval = snprintf(self->file, TST_FIFO_LEN, "tst_checkopoint_fifo_%u",
+>  			fifo_counter++);
+> @@ -90,6 +84,20 @@ void tst_checkpoint_init(const char *file, const int lineno,
+>  	}
+>  	self->retval = 1;
+>  	self->timeout = 5000;
+> +}
+> +
+> +void tst_checkpoint_create(const char *file, const int lineno,
+> +			   struct tst_checkpoint *self)
+> +
+> +{
+> +
+> +	if (!tst_tmpdir_created()) {
+> +		tst_brkm(TBROK, NULL, "Checkpoint could be used only in test "
+> +				      "temporary directory at %s:%d",
+> +				      file, lineno);
+> +	}
+> +
+> +	tst_checkpoint_init(file, lineno, self);
+>  
+>  	if (mkfifo(self->file, 0666)) {
+>  		tst_brkm(TBROK | TERRNO, NULL,
+> diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
+> index cb9c16d..d4a6a91 100644
+> --- a/testcases/kernel/containers/mountns/mountns_helper.h
+> +++ b/testcases/kernel/containers/mountns/mountns_helper.h
+> @@ -57,8 +57,8 @@ static void setup(void)
+>  	tst_require_root(NULL);
+>  	check_newns();
+>  	tst_tmpdir();
+> -	TST_CHECKPOINT_INIT(&checkpoint1);
+> -	TST_CHECKPOINT_INIT(&checkpoint2);
+> +	TST_CHECKPOINT_CREATE(&checkpoint1);
+> +	TST_CHECKPOINT_CREATE(&checkpoint2);
+>  	SAFE_MKDIR(cleanup, DIRA, 0777);
+>  	SAFE_MKDIR(cleanup, DIRB, 0777);
+>  	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
+> diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
+> index a9f5253..4b8958f 100644
+> --- a/testcases/kernel/syscalls/creat/creat07.c
+> +++ b/testcases/kernel/syscalls/creat/creat07.c
+> @@ -108,7 +108,7 @@ static void setup(char *app)
+>  
+>  	TST_RESOURCE_COPY(cleanup, TEST_APP, NULL);
+>  	
+> -	TST_CHECKPOINT_INIT(&checkpoint);
+> +	TST_CHECKPOINT_CREATE(&checkpoint);
+>  
+>  	TEST_PAUSE;
+>  }
+> diff --git a/testcases/kernel/syscalls/flock/flock03.c b/testcases/kernel/syscalls/flock/flock03.c
+> index b2734b5..446dc84 100644
+> --- a/testcases/kernel/syscalls/flock/flock03.c
+> +++ b/testcases/kernel/syscalls/flock/flock03.c
+> @@ -186,7 +186,7 @@ static void setup(void)
+>  
+>  	tst_tmpdir();
+>  
+> -	TST_CHECKPOINT_INIT(&checkpoint);
+> +	TST_CHECKPOINT_CREATE(&checkpoint);
+>  
+>  	fd = creat(FILE_NAME, 0666);
+>  	if (fd < 0) {
+> diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c b/testcases/kernel/syscalls/setpgid/setpgid03.c
+> index a107c50..c1b9951 100644
+> --- a/testcases/kernel/syscalls/setpgid/setpgid03.c
+> +++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
+> @@ -155,7 +155,7 @@ static void setup(void)
+>  
+>  	tst_tmpdir();
+>  
+> -	TST_CHECKPOINT_INIT(&checkpoint);
+> +	TST_CHECKPOINT_CREATE(&checkpoint);
+>  	checkpoint.timeout = 10000;
+>  
+>  	umask(0);
+> diff --git a/testcases/kernel/syscalls/waitid/waitid02.c b/testcases/kernel/syscalls/waitid/waitid02.c
+> index 6259fa3..d497b6b 100644
+> --- a/testcases/kernel/syscalls/waitid/waitid02.c
+> +++ b/testcases/kernel/syscalls/waitid/waitid02.c
+> @@ -240,7 +240,7 @@ static void setup(void)
 >  {
-> +	struct tst_checkpoint checkpoint;
-> +
-> +	/* we are already in tmpdir, so only initialize checkpoint,
-> +	 * fifo has been created by parent already. */
-> +	TST_CHECKPOINT_INIT(&checkpoint);
-> +
->  	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
+>  	TEST_PAUSE;
+>  	tst_tmpdir();
+> -	TST_CHECKPOINT_INIT(&checkpoint);
+> +	TST_CHECKPOINT_CREATE(&checkpoint);
+>  }
 >  
->  	for (;;) {
-> diff --git a/testcases/kernel/syscalls/setpgid/setpgid03_child.c b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-> index c4cf892..c9ea87f 100644
-> --- a/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-> +++ b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-> @@ -20,10 +20,16 @@
->  
->  char *TCID = "setpgid03_child";
->  
-> -static struct tst_checkpoint checkpoint = { .timeout = 10000, .retval = 1};
->  
->  int main(void)
->  {
-> +	struct tst_checkpoint checkpoint;
-> +
-> +	/* we are already in tmpdir, so only initialize checkpoint,
-> +	 * fifo has been created by parent already. */
-> +	TST_CHECKPOINT_INIT(&checkpoint);
-> +	checkpoint.timeout = 10000;
-> +
->  	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
->  	TST_CHECKPOINT_CHILD_WAIT(&checkpoint);
->  
+>  static void cleanup(void)
 > 
 
 
