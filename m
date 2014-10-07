@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1Xc3wa-0005a0-Bn
-	for ltp-list@lists.sourceforge.net; Thu, 09 Oct 2014 02:59:08 +0000
-Received: from mail-ig0-f179.google.com ([209.85.213.179])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Xc3wZ-0004bG-JC
-	for ltp-list@lists.sourceforge.net; Thu, 09 Oct 2014 02:59:08 +0000
-Received: by mail-ig0-f179.google.com with SMTP id h18so1630924igc.6
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 08 Oct 2014 19:59:02 -0700 (PDT)
-Date: Thu, 9 Oct 2014 10:58:08 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-Message-ID: <20141009025808.GC24933@Leo.nay.redhat.com>
-References: <1411649975-17339-1-git-send-email-liuhangbin@gmail.com>
-	<54298ACA.1050101@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XbIvW-0007vn-Pu
+	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 00:46:54 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XbIvV-0007Q3-IT
+	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 00:46:54 +0000
+Message-ID: <543337C0.90906@cn.fujitsu.com>
+Date: Tue, 7 Oct 2014 08:45:52 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <54298ACA.1050101@oracle.com>
-Subject: Re: [LTP] [PATCH v2] ltp-networking/tcp_cmds/finger: fix finger bad
- user and host test
+References: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
+	<6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
+In-Reply-To: <6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2 v2] checkpoints: fix usage in children started
+ via exec
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,58 +30,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, LTP List <ltp-list@lists.sourceforge.net>, Vincent Hsu <vincent.hsu@linaro.org>
+To: ltp-list@lists.sourceforge.net
 
-On Mon, Sep 29, 2014 at 08:37:30PM +0400, Alexey Kodanev wrote:
-> Hi!
+On 10/06/2014 10:55 PM, Jan Stancek wrote:
+> creat07 and setpgid03 are currently failing in following way:
+>   CHILD: Failed to open fifo '': No such file or directory at creat07_child.c:31
+>   creat07     1  TBROK  :  tst_checkpoint.c:126: Checkpoint timeouted after 5000 msecs at creat07.c:78
+>   creat07     2  TBROK  :  tst_checkpoint.c:126: Remaining cases broken
 > 
-> On 09/25/2014 04:59 PM, Hangbin Liu wrote:
-> >Finger always return 0 with bad user and host test. And it also return
-> >different error message on different distros. So let's only check stderr
-> >message and decide whether the test pass or fail.
-> >
-> >Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> >---
-> >  testcases/network/tcp_cmds/finger/finger01 | 9 +++------
-> >  1 file changed, 3 insertions(+), 6 deletions(-)
-> >
-> >diff --git a/testcases/network/tcp_cmds/finger/finger01 b/testcases/network/tcp_cmds/finger/finger01
-> >index 203d746..89693ff 100755
-> >--- a/testcases/network/tcp_cmds/finger/finger01
-> >+++ b/testcases/network/tcp_cmds/finger/finger01
-> >@@ -115,13 +115,10 @@ do_test2()
-> >      finger -x 2>&1 1>/dev/null && end_testcase "finger -x should fail"
+> These testcases start children via exec, so only initialize
+> checkpoint struct, FIFO has been already created by parent.
 > 
-> I would change redirection here to  > /dev/null 2>&1 as we don't need to
-> print stderr.
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Yes, will correct it.
+Tested-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+
+> ---
+>  testcases/kernel/syscalls/creat/creat07_child.c    |    8 ++++++--
+>  .../kernel/syscalls/setpgid/setpgid03_child.c      |    8 +++++++-
+>  2 files changed, 13 insertions(+), 3 deletions(-)
 > 
-> >      tst_resm TINFO "finger -bad user "
-> >-    finger $BADUSER 2>&1 1>/dev/null || end_testcase "finger $BADUSER"
-> >-    finger @$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host" \
-> >-        || end_testcase "finger @$BADHOST"
-> >-    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null \
-> >-        | grep "finger: unknown host"; then
-> >+    [ "finger $BADUSER 2>&1 1>/dev/null" ] || end_testcase "finger $BADUSER"
-> >+    [ "finger @$BADHOST 2>&1 1>/dev/null" ] || end_testcase "finger @$BADHOST"
-> >+    [ "finger $BADUSER@$BADHOST 2>&1 1>/dev/null" ] || \
+> diff --git a/testcases/kernel/syscalls/creat/creat07_child.c b/testcases/kernel/syscalls/creat/creat07_child.c
+> index f3e6aa0..1641601 100644
+> --- a/testcases/kernel/syscalls/creat/creat07_child.c
+> +++ b/testcases/kernel/syscalls/creat/creat07_child.c
+> @@ -24,10 +24,14 @@
+>  
+>  char *TCID = "creat07_child";
+>  
+> -static struct tst_checkpoint checkpoint = {.timeout = 5, .retval = 1};
+> -
+>  int main(void)
+>  {
+> +	struct tst_checkpoint checkpoint;
+> +
+> +	/* we are already in tmpdir, so only initialize checkpoint,
+> +	 * fifo has been created by parent already. */
+> +	TST_CHECKPOINT_INIT(&checkpoint);
+> +
+>  	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
+>  
+>  	for (;;) {
+> diff --git a/testcases/kernel/syscalls/setpgid/setpgid03_child.c b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
+> index c4cf892..c9ea87f 100644
+> --- a/testcases/kernel/syscalls/setpgid/setpgid03_child.c
+> +++ b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
+> @@ -20,10 +20,16 @@
+>  
+>  char *TCID = "setpgid03_child";
+>  
+> -static struct tst_checkpoint checkpoint = { .timeout = 10000, .retval = 1};
+>  
+>  int main(void)
+>  {
+> +	struct tst_checkpoint checkpoint;
+> +
+> +	/* we are already in tmpdir, so only initialize checkpoint,
+> +	 * fifo has been created by parent already. */
+> +	TST_CHECKPOINT_INIT(&checkpoint);
+> +	checkpoint.timeout = 10000;
+> +
+>  	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
+>  	TST_CHECKPOINT_CHILD_WAIT(&checkpoint);
+>  
 > 
-> Checking string constants... not command output, forgot to add '$()'?
 
-Opps, sorry for the stupid mistake.
-
-> 
-> Besides, it'd be great to get rid of obsolete 'net_cmdlib.sh' in the test.
-
-OK, I will send another patch to clean up net_cmdlib.sh and mv read_opts() to
-test_net.sh
-
--- 
-
-Thanks & Best Regards
-Hangbin Liu <liuhangbin@gmail.com>
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
