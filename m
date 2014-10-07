@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1XcDVi-0004kY-AJ
-	for ltp-list@lists.sourceforge.net; Thu, 09 Oct 2014 13:12:02 +0000
-Received: from mail-ig0-f172.google.com ([209.85.213.172])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XcDVh-0000Wy-Hz
-	for ltp-list@lists.sourceforge.net; Thu, 09 Oct 2014 13:12:02 +0000
-Received: by mail-ig0-f172.google.com with SMTP id r2so12651279igi.5
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 09 Oct 2014 06:11:55 -0700 (PDT)
-Date: Thu, 9 Oct 2014 21:11:44 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-Message-ID: <20141009131144.GH24933@Leo.nay.redhat.com>
-References: <1412837187-5523-1-git-send-email-liuhangbin@gmail.com>
-	<54365ED3.9020805@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XbTay-00067w-G0
+	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 12:10:24 +0000
+Date: Tue, 7 Oct 2014 14:10:08 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141007121008.GA5715@rei.suse.cz>
+References: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
+	<6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
+	<20141007115042.GA5454@rei.suse.cz>
+	<588690077.5122647.1412683247596.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <54365ED3.9020805@oracle.com>
-Subject: Re: [LTP] [PATCH] network/test_net: delete obsolete net_cmdlib.sh
- and move read_opts() to test_net
+In-Reply-To: <588690077.5122647.1412683247596.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2 v2] checkpoints: fix usage in children started
+ via exec
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,26 +28,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Oct 09, 2014 at 02:09:23PM +0400, Alexey Kodanev wrote:
-> Hi!
-> 
-> Please find almost the same patch that I've re-sent to ML yesterday.
-> 
-> Moreover, net_cmdlib.sh source cmdlib.sh, so the patch should replace all
-> other outdated functions. And it's better to do it in the separate patches.
-> Also note that I've already sent patches that fix ping, sendfile and tcpdump
-> tests (pending review).
-> 
-Sorry, only saw your reply for my last mail. Since you have send the same
-path, please ignore this one. I will find and review you patch then.
+Hi!
+> Maybe I overlooked something, but I didn't see any checkpoint docs,
+> that needed update. Current text references .h and .c sources.
 
-Thanks for the remaind.
+Right, I thought that the API was self-explanatory enough.
 
-Best regards,
-Hangbin Liu
+But it got more complicated and we need at least document that the
+checkopoint needs to be created in the main process and initialized
+in execed subprocesses.
+
+We should also note that if you want parent for child and then right
+away child for the parent you need two checkopoints.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
