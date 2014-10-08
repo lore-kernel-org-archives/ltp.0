@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XeP1P-0006Vj-Gd
-	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 13:53:47 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XeP1M-0006NP-SV
-	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 13:53:47 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s9FDramI013350
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 15 Oct 2014 09:53:36 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s9FDrZjB024530
-	for <ltp-list@lists.sourceforge.net>; Wed, 15 Oct 2014 09:53:35 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 15 Oct 2014 15:53:33 +0200
-Message-Id: <992ad8725f3114b5a853d27cb1b392cbb80d2300.1413381032.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] cpuset_syscall_testset.sh: check TCONF for test 15, 16
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Xbm0L-0004uz-RY
+	for ltp-list@lists.sourceforge.net; Wed, 08 Oct 2014 07:49:49 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Xbm0K-0002yB-2j
+	for ltp-list@lists.sourceforge.net; Wed, 08 Oct 2014 07:49:49 +0000
+Message-ID: <1412754540.28284.11.camel@G08JYZSD130126.localdomain>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Wed, 8 Oct 2014 15:49:00 +0800
+In-Reply-To: <237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
+References: <1407402404.1347.29.camel@G08JYZSD130126>
+	<179118855.6420138.1407923193096.JavaMail.zimbra@redhat.com>
+	<1411718817.9511.9.camel@G08JYZSD130126>
+	<237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v3] securebits: some cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,109 +27,237 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-If HAVE_DECL_MPOL_F_MEMS_ALLOWED is not defined, test 15 and 16,
-returns -1, which is evaluted as failure.
+* Remove .sh and divide into three seperate tests.
 
-Treat it as TCONF, but don't break the execution, cpuset_syscall_testset.sh
-script is expecting to handle stopping/waiting for children by itself.
+* Check the header <linux/securebits.h>.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+* Use tst_brkm instead of tst_exit() that follows tst_resm.
+
+* Some cleanup
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- .../cpuset_syscall_test/cpuset_syscall_test.c      |    6 ++--
- .../cpuset_syscall_test/cpuset_syscall_testset.sh  |   26 ++++++++++++++++++-
- 2 files changed, 27 insertions(+), 5 deletions(-)
+ runtest/securebits                                 |  4 +-
+ testcases/kernel/security/securebits/Makefile      |  9 ++--
+ .../kernel/security/securebits/check_keepcaps.c    | 57 +++++++++-------------
+ .../kernel/security/securebits/run_securebits.sh   | 20 --------
+ 4 files changed, 30 insertions(+), 60 deletions(-)
+ delete mode 100644 testcases/kernel/security/securebits/run_securebits.sh
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-index e202295..407b8c9 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-@@ -128,7 +128,7 @@ void sigint_handler(int __attribute__ ((unused)) signo)
- void test_setaffinity(void)
- {
- 	cpu_set_t tmask;
--	int i;
-+	unsigned int i;
- 	CPU_ZERO(&tmask);
- 	for (i = 0; i < 8 * sizeof(mask); i++) {
- 		if ((1 << i) & mask)
-@@ -140,7 +140,7 @@ void test_setaffinity(void)
- void test_getaffinity(void)
- {
- 	cpu_set_t tmask;
--	int i;
-+	unsigned int i;
- 	CPU_ZERO(&tmask);
- 	ret = sched_getaffinity(0, sizeof(tmask), &tmask);
- 	for (i = 0; i < 8 * sizeof(mask); i++) {
-@@ -190,7 +190,7 @@ void test_get_mempolicy(void)
- 	ret = get_mempolicy(NULL, bitmask_mask(nmask), bitmask_nbits(nmask), 0,
- 			    MPOL_F_MEMS_ALLOWED);
- #else
--	ret = -1;
-+	tst_resm(TCONF, "don't have MPOL_F_MEMS_ALLOWED");
+diff --git a/runtest/securebits b/runtest/securebits
+index d78a66f..64e6e0a 100644
+--- a/runtest/securebits
++++ b/runtest/securebits
+@@ -1,2 +1,4 @@
+ #DESCRIPTION:securebits tests
+-Securebits	run_securebits.sh
++check_keepcaps01 check_keepcaps 1
++check_keepcaps02 check_keepcaps 2
++check_keepcaps03 check_keepcaps 3
+diff --git a/testcases/kernel/security/securebits/Makefile b/testcases/kernel/security/securebits/Makefile
+index 51018d9..e379b7c 100644
+--- a/testcases/kernel/security/securebits/Makefile
++++ b/testcases/kernel/security/securebits/Makefile
+@@ -4,7 +4,8 @@
+ ##                                                                            ##
+ ## This program is free software;  you can redistribute it and#or modify      ##
+ ## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ## ## (at your option) any later version.                                        ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
+ ##                                                                            ##
+ ## This program is distributed in the hope that it will be useful, but        ##
+ ## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+@@ -12,8 +13,8 @@
+ ## for more details.                                                          ##
+ ##                                                                            ##
+ ## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+ ##                                                                            ##
+ ################################################################################
+ 
+@@ -23,6 +24,4 @@ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ LDLIBS			+= $(CAP_LIBS)
+ 
+-INSTALL_TARGETS		:= *.sh
+-
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/security/securebits/check_keepcaps.c b/testcases/kernel/security/securebits/check_keepcaps.c
+index 6e195c6..ce74715 100644
+--- a/testcases/kernel/security/securebits/check_keepcaps.c
++++ b/testcases/kernel/security/securebits/check_keepcaps.c
+@@ -5,7 +5,6 @@
+ #include <sys/capability.h>
  #endif
+ #include <sys/prctl.h>
+-#include <linux/securebits.h>
+ #include "usctest.h"
+ #include "test.h"
  
- 	bitmask_displaylist(str, 256, nmask);
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-index 561c3b9..a32a9b0 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-@@ -299,7 +299,18 @@ test14()
+@@ -30,7 +29,9 @@
+ char *TCID = "keepcaps";
+ int TST_TOTAL = 1;
  
- test15()
+-#ifdef HAVE_LIBCAP
++#if (HAVE_LINUX_SECUREBITS_H && HAVE_LIBCAP)
++#include <linux/securebits.h>
++
+ static int eff_caps_empty(cap_t c)
  {
--	do_syscall_test 0 0 --get_mempolicy 0 || return 1
-+	do_syscall_test 0 0 --get_mempolicy 0
-+	ret=$?
-+
-+	grep "TCONF" "$TEST_OUTPUT"
-+	if [ $? -eq 0 ]; then
-+		return 0
-+	fi
-+
-+	if [ $ret -ne 0 ]; then
-+		return 1
-+	fi
-+
- 	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$(cat "$TEST_OUTPUT")" = "0"
- 	if [ $? -ne 0 ]; then
-@@ -316,7 +327,18 @@ test15()
+ 	int i, ret, empty = 1;
+@@ -75,10 +76,8 @@ static void do_setuid(int expect_privs)
+ 	int have_privs;
  
- test16()
+ 	ret = setuid(1000);
+-	if (ret) {
+-		tst_resm(TERRNO | TFAIL, "setuid failed");
+-		tst_exit();
+-	}
++	if (ret)
++		tst_brkm(TERRNO | TFAIL, NULL, "setuid failed");
+ 
+ 	have_privs = am_privileged();
+ 	if (have_privs && expect_privs == EXPECT_PRIVS) {
+@@ -95,8 +94,7 @@ static void do_setuid(int expect_privs)
+ 	}
+ 
+ 	/* have_privs && EXPECT_NOPRIVS */
+-	tst_resm(TFAIL, "expected to drop privs but did not");
+-	tst_exit();
++	tst_brkm(TFAIL, NULL, "expected to drop privs but did not");
+ }
+ 
+ int main(int argc, char *argv[])
+@@ -106,64 +104,55 @@ int main(int argc, char *argv[])
+ 	tst_require_root(NULL);
+ 
+ 	ret = prctl(PR_GET_KEEPCAPS);
+-	if (ret) {
+-		tst_resm(TBROK, "keepcaps was already set?\n");
+-		tst_exit();
+-	}
++	if (ret)
++		tst_brkm(TBROK, NULL, "keepcaps was already set?\n");
++
++	if (argc < 2)
++		tst_brkm(TBROK, NULL, "Usage: %s <tescase_num>", argv[0]);
+ 
+-	if (argc < 2) {
+-		tst_resm(TBROK, "Usage: %s <tescase_num>", argv[0]);
+-		tst_exit();
+-	}
+ 	whichtest = atoi(argv[1]);
+-	if (whichtest < 1 || whichtest > 3) {
+-		tst_resm(TFAIL, "Valid tests are 1-3\n");
+-		tst_exit();
+-	}
++	if (whichtest < 1 || whichtest > 3)
++		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
++
+ 	switch (whichtest) {
+ 	case 1:
+ 		do_setuid(EXPECT_NOPRIVS);	/* does not return */
+ 	case 2:
+ 		ret = prctl(PR_SET_KEEPCAPS, 1);
+ 		if (ret == -1) {
+-			tst_resm(TFAIL | TERRNO, "PR_SET_KEEPCAPS failed\n");
+-			tst_exit();
++			tst_brkm(TFAIL | TERRNO, NULL,
++				 "PR_SET_KEEPCAPS failed\n");
+ 		}
+ 		ret = prctl(PR_GET_KEEPCAPS);
+ 		if (!ret) {
+-			tst_resm(TFAIL | TERRNO,
++			tst_brkm(TFAIL | TERRNO, NULL,
+ 				 "PR_SET_KEEPCAPS did not set keepcaps\n");
+-			tst_exit();
+ 		}
+ 		do_setuid(EXPECT_PRIVS);	/* does not return */
+ 	case 3:
+ 		ret = prctl(PR_GET_SECUREBITS);
+ 		ret = prctl(PR_SET_SECUREBITS, ret | SECBIT_KEEP_CAPS);
+ 		if (ret == -1) {
+-			tst_resm(TFAIL | TERRNO, "PR_SET_SECUREBITS failed\n");
+-			tst_exit();
++			tst_brkm(TFAIL | TERRNO, NULL,
++				 "PR_SET_SECUREBITS failed\n");
+ 		}
+ 		ret = prctl(PR_GET_KEEPCAPS);
+ 		if (!ret) {
+-			tst_resm(TFAIL | TERRNO,
++			tst_brkm(TFAIL | TERRNO, NULL,
+ 				 "PR_SET_SECUREBITS did not set keepcaps\n");
+-			tst_exit();
+ 		}
+ 		do_setuid(EXPECT_PRIVS);	/* does not return */
+ 	default:
+-		tst_resm(TFAIL, "should not reach here\n");
+-		tst_exit();
++		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
+ 	}
+-	tst_resm(TFAIL, "should not reach here\n");
+-	tst_exit();
++	tst_brkm(TFAIL, NULL, "should not reach here\n");
+ }
+ 
+ #else
+ 
+ int main(void)
  {
--	do_syscall_test 0 0-1 --get_mempolicy 0 || return 1
-+	do_syscall_test 0 0-1 --get_mempolicy 0
-+	ret=$?
-+
-+	grep "TCONF" "$TEST_OUTPUT"
-+	if [ $? -eq 0 ]; then
-+		return 0
-+	fi
-+
-+	if [ $ret -ne 0 ]; then
-+		return 1
-+	fi
-+
- 	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$(cat "$TEST_OUTPUT")" = "0-1"
- 	if [ $? -ne 0 ]; then
+-	tst_resm(TCONF, "Test was compiled without libcap.");
+-	tst_exit();
++	tst_brkm(TCONF, NULL, "linux/securebits.h or libcap is not existence.");
+ }
+ 
+ #endif /* HAVE_LIBCAP */
+diff --git a/testcases/kernel/security/securebits/run_securebits.sh b/testcases/kernel/security/securebits/run_securebits.sh
+deleted file mode 100644
+index 4d9e272..0000000
+--- a/testcases/kernel/security/securebits/run_securebits.sh
++++ /dev/null
+@@ -1,20 +0,0 @@
+-#!/bin/sh
+-
+-echo "testing keepcaps"
+-check_keepcaps 1
+-tmp=$?
+-if [ $tmp -ne 0 ]; then
+-	exit_code=$tmp
+-fi
+-check_keepcaps 2
+-tmp=$?
+-if [ $tmp -ne 0 ]; then
+-	exit_code=$tmp
+-fi
+-check_keepcaps 3
+-tmp=$?
+-if [ $tmp -ne 0 ]; then
+-	exit_code=$tmp
+-fi
+-
+-exit $exit_code
 -- 
-1.7.1
+1.9.3
+
+
 
 
 ------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
