@@ -1,227 +1,156 @@
-Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1XehMk-0001RX-Kr
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 09:29:02 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XehMj-0008Vn-GM
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 09:29:02 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s9G9StCP029236
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 16 Oct 2014 09:28:55 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s9G9Ssk0015799
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 16 Oct 2014 09:28:55 GMT
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s9G9SsRi023996
-	for <ltp-list@lists.sourceforge.net>; Thu, 16 Oct 2014 09:28:54 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 16 Oct 2014 13:30:47 +0400
-Message-Id: <1413451847-10433-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2] device-drivers/ltp_acpi_cpufreq: use simple
-	counter instead of cur_freq
+Return-Path: <sitelist-bounces@lists.sourceforge.net>
+Subject: Uncaught bounce notification
+From: sitelist-bounces@lists.sourceforge.net
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============1291644588780268966=="
+Message-ID: <mailman.15687.1412884899.2205.ltp-list@lists.sourceforge.net>
+Date: Thu, 09 Oct 2014 20:01:39 +0000
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
-List-Post: <mailto:ltp-list@lists.sourceforge.net>
-List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
+Errors-To: sitelist-bounces@lists.sourceforge.net
+To: ltp-list-owner@lists.sourceforge.net
+
+--===============1291644588780268966==
 Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Right now the test gives false results on kernels since v3.9. That's because
-of the following commit:
-acpi-cpufreq: set current frequency based on target P-State
-8673b83bf2f013379453b4779047bf3c6ae387e4
+The attached message was received as a bounce, but either the bounce
+format was not recognized, or no member addresses could be extracted
+from it.  This mailing list has been configured to send all
+unrecognized bounce messages to the list administrator(s).
 
-So the sysfs 'cpuinfo_cur_freq' gives target frequency which is set by
-acpi-cpufreq driver itself.
-
-One possible way to find out that boost is actually off is to calculate
-average integer counter frequency on the tested CPU (this is how is done in
-the patch). Results show that the calculated counter frequency is close to
-actual CPU frequency if no other threads with the highest priority are
-running on the test CPU. The above condition is true for most cases.
-
-Another way is to utilize MSR APERF/MPERF registers and TSC in Intel
-processors. That can be done by reading MSR from /dev/cpu/0/msr. But
-this will require additional checks in configure of asm/msr-index.h file
-and built-in non-portable __get_cpuid() function, also reading TSC register
-using asm instructions. And who knows what else for AMD silicons.
-
-Let's not complicate things too much and use the first method.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
-v2: set 'SCHED_FIFO' scheduler as it will always be scheduled ahead of
-    any 'SCHED_OTHER' thread.
-
- .../kernel/device-drivers/acpi/ltp_acpi_cpufreq.c  |   69 ++++++++++++--------
- 1 files changed, 42 insertions(+), 27 deletions(-)
-
-diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-index 73fb430..8214291 100644
---- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-+++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
-@@ -20,9 +20,12 @@
-  * Check support for disabling dynamic overclocking in acpi_cpufreq driver.
-  * Required Linux 3.7+.
-  *
-- * The test loads CPU0 in a thread. When the loading approaches to the end
-- * (2/3 elapsed), the test will check processor frequency. if boost is enabled
-- * we can get a slightly higher speed under load.
-+ * The test loads CPU0 in a thread. It will calc counter frequency on each
-+ * load-run with and without boost-disable bit. If boost is enabled we can
-+ * get a slightly higher counter frequency. Use simple counter and don't rely
-+ * on sysfs cpuinfo_cur_freq value, because after the upstream commit
-+ * 8673b83bf2f013379453b4779047bf3c6ae387e4, current cpu frequency becomes
-+ * target cpu frequency.
-  */
- 
- #define _GNU_SOURCE
-@@ -30,9 +33,11 @@
- #include <stdlib.h>
- #include <sched.h>
- #include <sys/time.h>
-+#include <sys/resource.h>
- #include <pthread.h>
- #include <sys/types.h>
- #include <sys/stat.h>
-+#include <unistd.h>
- #include <fcntl.h>
- 
- #include "test.h"
-@@ -54,6 +59,8 @@ const char setspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_setspeed";
- const char curspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/cpuinfo_cur_freq";
- const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
- 
-+const int units = 1000000; /* Mhz */
-+
- static void cleanup(void)
- {
- 	SAFE_FILE_PRINTF(NULL, boost, "%d", boost_value);
-@@ -110,26 +117,34 @@ void *thread_fn(void *val)
- {
- 	struct timeval tv_start;
- 	struct timeval tv_end;
--	int i, res = 0;
--	intptr_t timeout = (intptr_t) val;
-+	int i;
-+	unsigned long long res = 0;
-+	intptr_t timeout = (intptr_t) val, ret;
-+
-+	struct sched_param params;
-+	params.sched_priority = sched_get_priority_max(SCHED_FIFO);
-+	if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &params)) {
-+		tst_resm(TWARN | TERRNO,
-+			"failed to set FIFO sched with max priority");
-+	}
- 
- 	gettimeofday(&tv_start, NULL);
- 	tst_resm(TINFO, "load CPU0 for %ld sec...", timeout);
- 
- 	do {
--		for (i = 1; i < 10000; ++i)
--			res += i * i;
-+		for (i = 0; i < units; ++i)
-+			++res;
- 		gettimeofday(&tv_end, NULL);
--		sched_yield();
- 	} while ((tv_end.tv_sec - tv_start.tv_sec) < timeout);
- 
--	tst_resm(TINFO, "CPU0 load done: insignificant value '%d'", res);
-+	ret = res / units / timeout;
- 
--	return NULL;
-+	return ((void *)ret);
- }
- 
- static int load_cpu(intptr_t timeout)
- {
-+	void *ret;
- 	pthread_t thread_id;
- 
- 	if (pthread_create(&thread_id, 0, thread_fn,
-@@ -139,37 +154,37 @@ static int load_cpu(intptr_t timeout)
- 			__FILE__, __LINE__);
- 	}
- 
--	sleep(2 * timeout / 3);
--
--	int cur_freq;
--	SAFE_FILE_SCANF(cleanup, curspeed, "%d", &cur_freq);
--	tst_resm(TINFO, "got cpu freq under load: %d", cur_freq);
--
--	pthread_join(thread_id, NULL);
-+	pthread_join(thread_id, &ret);
- 
--	return cur_freq;
-+	return (intptr_t)ret;
- }
- 
- static void test_run(void)
- {
--	int cur_freq, max_freq;
-+	int boost_freq, boost_off_freq, max_freq;
- 	SAFE_FILE_SCANF(cleanup, maxspeed, "%d", &max_freq);
- 	set_speed(max_freq);
- 
-+	/* make sure the process gets to run with the highest priority */
-+	load_cpu(5);
-+
- 	/* Enable boost */
- 	if (boost_value == 0)
- 		SAFE_FILE_PRINTF(cleanup, boost, "1");
--	cur_freq = load_cpu(30);
--	tst_resm((cur_freq >= max_freq) ? TPASS : TFAIL,
--		"compare current speed %d and max speed %d",
--		cur_freq, max_freq);
-+	boost_freq = load_cpu(12);
-+	tst_resm(TINFO, "avg counter freq with boost enabled: %d MHz", boost_freq);
- 
- 	/* Disable boost */
- 	SAFE_FILE_PRINTF(cleanup, boost, "0");
--	cur_freq = load_cpu(30);
--	tst_resm((cur_freq < max_freq) ? TPASS : TFAIL,
--		"compare current speed %d and max speed %d",
--		cur_freq, max_freq);
-+	boost_off_freq = load_cpu(12);
-+
-+	tst_resm(TINFO, "avg counter freq with boost disabled: %d MHz", boost_off_freq);
-+
-+	boost_off_freq *= 1.01;
-+
-+	tst_resm((boost_freq > boost_off_freq) ? TPASS : TFAIL,
-+		"compare boost speed %d and speed without boost + 1%% %d",
-+		boost_freq, boost_off_freq);
- }
- 
- int main(int argc, char *argv[])
--- 
-1.7.1
+For more information see:
+https://lists.sourceforge.net/lists/admin/ltp-list/bounce
 
 
-------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+--===============1291644588780268966==
+Content-Type: message/rfc822
+MIME-Version: 1.0
+
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shirlyheatwole@kommverlag.com>) id 1XcJu6-00059z-LN
+	for ltp-list-admin@lists.sourceforge.net;
+	Thu, 09 Oct 2014 20:01:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=sourceforge.net; s=x; 
+	h=Subject:Date:List-Unsubscribe:Content-Type:MIME-Version:Message-ID:To:Reply-To:Sender:From;
+	bh=bFRN4BCcZNkxusLI8nOZB1y+uWSyhgauHD/EYZMK2xo=; 
+	b=hewgtPIMUeRlfJM/biA72uBfVLR++hPNC0srzDH/C84qziRmX/IkP8jdJ7vGjQZl2MGtI+R9VNQF+z3hz/aAJZXTZsuvQCUbI8zl1t5A6kfPa6ZGM8XMzjACB/B6By6vJtLE5SsGoJenhFyYEpZ14+pzU1Lo938SDYesnkdKNW0=;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sf.net; s=x;
+	h=Subject:Date:List-Unsubscribe:Content-Type:MIME-Version:Message-ID:To:Reply-To:Sender:From;
+	bh=bFRN4BCcZNkxusLI8nOZB1y+uWSyhgauHD/EYZMK2xo=; 
+	b=YCfRL9Fhurr/6fIX/0w0EK6jRatBueRxRQb5rPds/PWk8kohT7ATOBrhV1jSJt27J1Bvi2PlUzDcH5AJ+Zt9xy/Vo5xJGB7HczzzlvbbKmpzv/wQVoMedS5AVFqGGaf+n+ZpevOCaga9yZ22CHMmTVZ5eNHeKhCWI4b84ddAez0=;
+Received-SPF: pass (sog-mx-2.v43.ch3.sourceforge.com: domain of kommverlag.com
+	designates 113.229.58.32 as permitted sender)
+	client-ip=113.229.58.32;
+	envelope-from=shirlyheatwole@kommverlag.com; helo=kommverlag.com;
+Received: from [113.229.58.32] (helo=kommverlag.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XcJtq-0007C7-Qh for ltp-list-admin@lists.sourceforge.net;
+	Thu, 09 Oct 2014 20:01:38 +0000
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=key; d=kommverlag.com;
+	h=From:Sender:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type:List-Unsubscribe:Date;
+	i=shirlyheatwole@kommverlag.com; 
+	bh=N82/a3OdxRdy0VDpUc2gb498IbM=;
+	b=tdg8AvdOaN7sENmU0zvNGfmlMI82fwvYqqt4/bJfCkqB61oeGjY+s3RpKk0Pz0Zuc4d6WbjDHH2r
+	QNPpnIoZGTZYlN7vyAGNs1U9vJl0OXVhO8zUSCTT8Rl1Bstmuuet8GUdshsAXHjDz54erbace1et
+	nB1ZtjQODyBrCZUvieI=
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=key; d=kommverlag.com;
+	b=cvJRzoTJXa+jpqVMXvgkDPXjPurzsONpRRu+IJjP16MHp5KW2o9ERimp6v4Pm9bmfI7UQ4Hl7PXh
+	UBWhwlGIOUbyQg79Hrg5RUJIR/+t6VoiG6HzKVr9XWoCZzyuPgZvEVguAEFpdApr1ryYJX705Uhi
+	GOh0TDF3maJ9SteRZW0=;
+From: Shirly Heatwole <shirlyheatwole@kommverlag.com>
+Sender: shirlyheatwole@kommverlag.com
+Reply-To: noreply@kommverlag.com
+To: ltp-list-admin@lists.sourceforge.net
+Message-ID: <ad91eec189af6300043e8392f3a080a8@kommverlag.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_3360_1943992128.1412884941219"
+List-Unsubscribe: unsubscribe@kommverlag.com
+Date: Fri, 10 Oct 2014 04:00:38 +0800
+X-Spam-Score: 12.9 (++++++++++++)
+X-Spam-Report: Spam Filtering performed by mx.sourceforge.net.
+	See http://spamassassin.org/tag/ for more details.
+	1.3 RCVD_IN_RP_RNBL        RBL: Relay in RNBL,
+	https://senderscore.org/blacklistlookup/
+	[113.229.58.32 listed in bl.score.senderscore.com]
+	3.6 RCVD_IN_PBL            RBL: Received via a relay in Spamhaus PBL
+	[113.229.58.32 listed in zen.spamhaus.org]
+	1.6 RCVD_IN_BRBL_LASTEXT   RBL: RCVD_IN_BRBL_LASTEXT
+	[113.229.58.32 listed in bb.barracudacentral.org]
+	4.5 URIBL_AB_SURBL Contains an URL listed in the AB SURBL blocklist
+	[URIs: kommverlag.com]
+	1.9 URIBL_JP_SURBL Contains an URL listed in the JP SURBL blocklist
+	[URIs: kommverlag.com]
+	-1.5 SPF_CHECK_PASS SPF reports sender host as permitted sender for
+	sender-domain
+	1.5 RCVD_IN_PSBL           RBL: Received via a relay in PSBL
+	[113.229.58.32 listed in psbl.surriel.com]
+	-0.0 SPF_PASS               SPF: sender matches SPF record
+	0.0 TIME_LIMIT_EXCEEDED    Exceeded time limit / deadline
+X-VA-Spam-Flag: YES
+X-Spam-Flag: YES
+X-Headers-End: 1XcJtq-0007C7-Qh
+Subject: [SPAM] Coach - Extra 50% Off + Free Delivery
+
+------=_Part_3360_1943992128.1412884941219
+Content-Type: text/html;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<table width=3D"557" cellpadding=3D"2" class=3D"Turach-12958" cellspacing=
+=3D"10" align=3D"center"><div style=3D"font-size: 1px; display: none !impor=
+tant;">Many designers are doing this color right now. You=E2=80=99ll have a=
+ peace of mind that it would last for a couple of years. I ABSOLUTELY LOVE =
+IT!!!!! Exactly as described and came faster than I expected. Very happy.</=
+div><tr><td><a href=3D"http://www.kommverlag.com/d1f907735711d8553071c8265e=
+626fb83bbf9e7acedd050a1ddbf71e0d04c1fe2482709b072b63fac87bad930d4de0f4bfefa=
+f2b184add35e9569661748fb89d"><img src=3D"http://www.kommverlag.com/7503c17a=
+34393a017631888618c890e7983f4177ae8b11312e5289a50feae90b78d2a1bf6a16838ca0d=
+9fbb7bba1d3a704c7f45cd3e54b96156b509d0510f0906eef26287dd2c8e98fc014cbf1dbe4=
+68fb5a217a4a3b5d99e7c3c7eb8ab6d3e7" style=3D"width:557px;"></a></td></tr><t=
+r><td><a href=3D"http://www.kommverlag.com/d1f907735711d8553071c8265e626fb8=
+3bbf9e7acedd050a1ddbf71e0d04c1fe2482709b072b63fac87bad930d4de0f4bfefaf2b184=
+add35e9569661748fb89d"><img src=3D"http://www.kommverlag.com/7503c17a34393a=
+017631888618c890e7983f4177ae8b11312e5289a50feae90b78d2a1bf6a16838ca0d9fbb7b=
+ba1d3a7c6ca7dc6c28ef57927924f5cc9473cca3092c4b1eb1b78ccf8346bce23801344ecba=
+fd9fdc94c36a794099764a1be0c3" style=3D"width:557px;"></a></td></tr><tr><td>=
+<a href=3D"http://www.kommverlag.com/d1f907735711d8553071c8265e626fb83bbf9e=
+7acedd050a1ddbf71e0d04c1fe2482709b072b63fac87bad930d4de0f4bfefaf2b184add35e=
+9569661748fb89d"><img src=3D"http://www.kommverlag.com/7503c17a34393a017631=
+888618c890e7983f4177ae8b11312e5289a50feae90b78d2a1bf6a16838ca0d9fbb7bba1d3a=
+7fce0839f5e315373a99377224d992872dcade69f67b7676158fb88f4098e3354ac82fef8da=
+4c96ba8c79371a1ec1441e" style=3D"width:557px;"></a></td></tr><tr><td><a hre=
+f=3D"http://www.kommverlag.com/d1f907735711d8553071c8265e626fb83bbf9e7acedd=
+050a1ddbf71e0d04c1fe2482709b072b63fac87bad930d4de0f4bfefaf2b184add35e956966=
+1748fb89d"><img style=3D"width:557px;" src=3D"http://www.kommverlag.com/750=
+3c17a34393a017631888618c890e7983f4177ae8b11312e5289a50feae90b78d2a1bf6a1683=
+8ca0d9fbb7bba1d3a7613eb91144938c95d7f4bf86bd92b5e5d0724b1728b3d758c220a3783=
+c83ead2f59df85722ec55b18838cb15a3f49c6c"></a></td></tr><div style=3D"font-s=
+ize: 1px; display: none !important;">But, the bag size is little bit small =
+for me than I expected.Love this purse, it's the perfect size! I have many =
+Coach purses and this one is very unique.I can't tell if its a fake or not =
+so I guess that's a good thing ;-)</div><tr><td><a href=3D"http://www.kommv=
+erlag.com/d1f907735711d8553071c8265e626fb83bbf9e7acedd050a1ddbf71e0d04c1fe2=
+482709b072b63fac87bad930d4de0f4bfefaf2b184add35e9569661748fb89d"><img src=
+=3D"http://www.kommverlag.com/7503c17a34393a017631888618c890e7983f4177ae8b1=
+1312e5289a50feae90b78d2a1bf6a16838ca0d9fbb7bba1d3a7400da7371879c1b3f20c56aa=
+d4cf8a4857a687422486ca72b925fcc8183e3329112be8ac36859464941041ade94a27fd" s=
+tyle=3D"width:557px;"></a></td></tr></table>
+------=_Part_3360_1943992128.1412884941219
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Many designers are doing this color right now. You=E2=80=99ll have a peace =
+of mind that it would last for a couple of years. I ABSOLUTELY LOVE IT!!!!!=
+ Exactly as described and came faster than I expected. Very happy.But, the =
+bag size is little bit small for me than I expected.Love this purse, it's t=
+he perfect size! I have many Coach purses and this one is very unique.I can=
+'t tell if its a fake or not so I guess that's a good thing ;-)
+------=_Part_3360_1943992128.1412884941219--
+
+
+--===============1291644588780268966==--
