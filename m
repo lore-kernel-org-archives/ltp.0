@@ -1,19 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XbTIA-0007PZ-PI
-	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 11:50:58 +0000
-Date: Tue, 7 Oct 2014 13:50:43 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141007115042.GA5454@rei.suse.cz>
-References: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
-	<6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1Xc3wa-0005a0-Bn
+	for ltp-list@lists.sourceforge.net; Thu, 09 Oct 2014 02:59:08 +0000
+Received: from mail-ig0-f179.google.com ([209.85.213.179])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Xc3wZ-0004bG-JC
+	for ltp-list@lists.sourceforge.net; Thu, 09 Oct 2014 02:59:08 +0000
+Received: by mail-ig0-f179.google.com with SMTP id h18so1630924igc.6
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 08 Oct 2014 19:59:02 -0700 (PDT)
+Date: Thu, 9 Oct 2014 10:58:08 +0800
+From: Hangbin Liu <liuhangbin@gmail.com>
+Message-ID: <20141009025808.GC24933@Leo.nay.redhat.com>
+References: <1411649975-17339-1-git-send-email-liuhangbin@gmail.com>
+	<54298ACA.1050101@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2 v2] checkpoints: fix usage in children started
- via exec
+In-Reply-To: <54298ACA.1050101@oracle.com>
+Subject: Re: [LTP] [PATCH v2] ltp-networking/tcp_cmds/finger: fix finger bad
+ user and host test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +33,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, LTP List <ltp-list@lists.sourceforge.net>, Vincent Hsu <vincent.hsu@linaro.org>
 
-Hi!
-> creat07 and setpgid03 are currently failing in following way:
->   CHILD: Failed to open fifo '': No such file or directory at creat07_child.c:31
->   creat07     1  TBROK  :  tst_checkpoint.c:126: Checkpoint timeouted after 5000 msecs at creat07.c:78
->   creat07     2  TBROK  :  tst_checkpoint.c:126: Remaining cases broken
+On Mon, Sep 29, 2014 at 08:37:30PM +0400, Alexey Kodanev wrote:
+> Hi!
 > 
-> These testcases start children via exec, so only initialize
-> checkpoint struct, FIFO has been already created by parent.
+> On 09/25/2014 04:59 PM, Hangbin Liu wrote:
+> >Finger always return 0 with bad user and host test. And it also return
+> >different error message on different distros. So let's only check stderr
+> >message and decide whether the test pass or fail.
+> >
+> >Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> >---
+> >  testcases/network/tcp_cmds/finger/finger01 | 9 +++------
+> >  1 file changed, 3 insertions(+), 6 deletions(-)
+> >
+> >diff --git a/testcases/network/tcp_cmds/finger/finger01 b/testcases/network/tcp_cmds/finger/finger01
+> >index 203d746..89693ff 100755
+> >--- a/testcases/network/tcp_cmds/finger/finger01
+> >+++ b/testcases/network/tcp_cmds/finger/finger01
+> >@@ -115,13 +115,10 @@ do_test2()
+> >      finger -x 2>&1 1>/dev/null && end_testcase "finger -x should fail"
+> 
+> I would change redirection here to  > /dev/null 2>&1 as we don't need to
+> print stderr.
 
-Both looks good, acked.
+Yes, will correct it.
+> 
+> >      tst_resm TINFO "finger -bad user "
+> >-    finger $BADUSER 2>&1 1>/dev/null || end_testcase "finger $BADUSER"
+> >-    finger @$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host" \
+> >-        || end_testcase "finger @$BADHOST"
+> >-    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null \
+> >-        | grep "finger: unknown host"; then
+> >+    [ "finger $BADUSER 2>&1 1>/dev/null" ] || end_testcase "finger $BADUSER"
+> >+    [ "finger @$BADHOST 2>&1 1>/dev/null" ] || end_testcase "finger @$BADHOST"
+> >+    [ "finger $BADUSER@$BADHOST 2>&1 1>/dev/null" ] || \
+> 
+> Checking string constants... not command output, forgot to add '$()'?
 
-What about test writing guidelines, will you update it, or should I do
-that?
+Opps, sorry for the stupid mistake.
+
+> 
+> Besides, it'd be great to get rid of obsolete 'net_cmdlib.sh' in the test.
+
+OK, I will send another patch to clean up net_cmdlib.sh and mv read_opts() to
+test_net.sh
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+
+Thanks & Best Regards
+Hangbin Liu <liuhangbin@gmail.com>
 
 ------------------------------------------------------------------------------
 Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
