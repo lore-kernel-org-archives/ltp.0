@@ -1,33 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Xbpqh-0004Fv-BD
-	for ltp-list@lists.sourceforge.net; Wed, 08 Oct 2014 11:56:07 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xbpqg-00010C-9p
-	for ltp-list@lists.sourceforge.net; Wed, 08 Oct 2014 11:56:07 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s98Bu0Dd000737
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Oct 2014 11:56:00 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s98BtxRN028039
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Oct 2014 11:56:00 GMT
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s98BtxL6028025
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Oct 2014 11:55:59 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed,  8 Oct 2014 15:57:44 +0400
-Message-Id: <1412769465-16030-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1412769465-16030-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1412769465-16030-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2 2/3] network/test_net: add tst_ipaddr
+	(envelope-from <xuw@redhat.com>) id 1XcVE1-0001wf-QK
+	for ltp-list@lists.sourceforge.net; Fri, 10 Oct 2014 08:06:57 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XcVDz-0005l3-EB
+	for ltp-list@lists.sourceforge.net; Fri, 10 Oct 2014 08:06:57 +0000
+Received: from zmail24.collab.prod.int.phx2.redhat.com
+	(zmail24.collab.prod.int.phx2.redhat.com [10.5.83.30])
+	by mx6-phx2.redhat.com (8.14.4/8.14.4) with ESMTP id s9A86nDp019045
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Oct 2014 04:06:49 -0400
+Date: Fri, 10 Oct 2014 04:06:48 -0400 (EDT)
+From: Xu Wang <xuw@redhat.com>
+Message-ID: <449596914.42340372.1412928408912.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1514362509.42340352.1412928396918.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] fs: Fix the check bug in
+ testcases/kernel/fs/acl/tacl_xattr.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,61 +28,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Some tests require IP addresses, either IPv4 or IPv6.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/lib/test_net.sh |   22 ++++++++++++++++++++++
- 1 files changed, 22 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 2436264..8d0b6ad 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -155,3 +155,25 @@ tst_read_opts()
- 	done
- 	OPTIND=0
- }
-+
-+# Get IP address
-+# tst_ipaddr [TYPE]
-+# TYPE: { lhost | rhost }; Default value is 'lhost'.
-+tst_ipaddr()
-+{
-+	local type=${1:-"lhost"}
-+	local ipv=${TST_EXEC_SUFFIX:-"4"}
-+	local tst_host=
-+
-+	if [ "$type" = "lhost" ]; then
-+		eval "tst_host=\$LHOST_IPV${ipv}_HOST"
-+	else
-+		eval "tst_host=\$RHOST_IPV${ipv}_HOST"
-+	fi
-+
-+	if [ "$TST_EXEC_SUFFIX" = "6" ]; then
-+		echo "${IPV6_NETWORK}:${tst_host}"
-+	else
-+		echo "${IPV4_NETWORK}.${tst_host}"
-+	fi
-+}
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+RnJvbSBmYmMzODE4MWYwNTA0ZDVlOTJkZWY5MjI5NzdkYTJkZDBhZTBlZThiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBHZW9yZ2UgV2FuZyA8eHV3QHJlZGhhdC5jb20+CkRhdGU6IEZy
+aSwgMTAgT2N0IDIwMTQgMTU6NTk6MTYgKzA4MDAKU3ViamVjdDogW1BBVENIXSAgZnM6IEZpeCB0
+aGUgY2hlY2sgYnVnIGluCiB0ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC90YWNsX3hhdHRyLnNoCgpT
+aWduZWQtb2ZmLWJ5OiBHZW9yZ2UgV2FuZyA8eHV3QHJlZGhhdC5jb20+Ci0tLQogdGVzdGNhc2Vz
+L2tlcm5lbC9mcy9hY2wvdGFjbF94YXR0ci5zaCB8IDE2ICsrKysrKysrLS0tLS0tLS0KIDEgZmls
+ZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEv
+dGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvdGFjbF94YXR0ci5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwv
+ZnMvYWNsL3RhY2xfeGF0dHIuc2gKaW5kZXggOTlmNmE5NS4uNWE2MGEwNCAxMDA3NTUKLS0tIGEv
+dGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvdGFjbF94YXR0ci5zaAorKysgYi90ZXN0Y2FzZXMva2Vy
+bmVsL2ZzL2FjbC90YWNsX3hhdHRyLnNoCkBAIC0yNDcsMjQgKzI0NywyNCBAQCBzdSAtIHRhY2x1
+c2VyMSA8PCBUQUNMX1VTRVIxCiAgICBpZiBbIC1lICRDVVJfUEFUSC90YWNsL21vdW50LWV4dDIv
+c2hhcmVkL3RlYW0xL25ld2ZpbGUxIF0KICAgIHRoZW4KICAgICAgICBlY2hvICIiCi0gICAgICAg
+ZWNobyAiRkFJTEVEOiAgWyB0b3VjaCBdIEFDTF9VU0VSX09CSiAgZW50cnkgYWxyZWFkeSBjb250
+YWlucyB0aGUgb3duZXIgd3JpdGUgIgotICAgICAgIGVjaG8gLWUgIlx0IHBlcm1pc3Npb25zLCBi
+dXQgb3BlcmF0aW9uIGZhaWxlZCBbIFBoeXNpY2FsIERpcmVjdG9yeSBdIgotICAgZWxzZQotICAg
+ICAgIGVjaG8gIiIKICAgICAgICBlY2hvICJTVUNDRVNTOiBBQ0xfVVNFUl9PQkogIGVudHJ5IGNv
+bnRhaW5zIHRoZSBvd25lciB3cml0ZSBwZXJtaXNzaW9ucywiCiAgICAgICAgZWNobyAtZSAiXHQg
+b3BlcmF0aW9uIHN1Y2Nlc3MgWyBQaHlzaWNhbCBEaXJlY3RvcnkgXSIKKyAgIGVsc2UKKyAgICAg
+ICBlY2hvICIiCisgICAgICAgZWNobyAiRkFJTEVEOiAgWyB0b3VjaCBdIEFDTF9VU0VSX09CSiAg
+ZW50cnkgYWxyZWFkeSBjb250YWlucyB0aGUgb3duZXIgd3JpdGUgIgorICAgICAgIGVjaG8gLWUg
+Ilx0IHBlcm1pc3Npb25zLCBidXQgb3BlcmF0aW9uIGZhaWxlZCBbIFBoeXNpY2FsIERpcmVjdG9y
+eSBdIgogICAgZmkKCiAgICB0b3VjaCAkQ1VSX1BBVEgvdGFjbC9tb3VudC1leHQyL3NoYXJlZC9z
+eW1saW5rZGlyMS9uZXdmaWwyIDI+IC9kZXYvbnVsbAogICAgaWYgWyAtZSAkQ1VSX1BBVEgvdGFj
+bC9tb3VudC1leHQyL3NoYXJlZC90ZWFtMS9uZXdmaWxlMiBdCiAgICB0aGVuCiAgICAgICAgZWNo
+byAiIgotICAgICAgIGVjaG8gIkZBSUxFRDogIFsgdG91Y2ggXSBBQ0xfVVNFUl9PQkogIGVudHJ5
+IGFscmVhZHkgY29udGFpbnMgdGhlIG93bmVyIHdyaXRlICIKLSAgICAgICBlY2hvIC1lICJcdCBw
+ZXJtaXNzaW9ucywgYnV0IG9wZXJhdGlvbiBmYWlsZWQgWyBTeW1saW5rIERpcmVjdG9yeSBdIgot
+ICAgZWxzZQotICAgICAgIGVjaG8gIiIKICAgICAgICBlY2hvICJTVUNDRVNTOiBBQ0xfVVNFUl9P
+QkogIGVudHJ5IGNvbnRhaW5zIHRoZSBvd25lciB3cml0ZSBwZXJtaXNzaW9ucywiCiAgICAgICAg
+ZWNobyAtZSAiXHQgb3BlcmF0aW9uIHN1Y2Nlc3MgWyBTeW1saW5rIERpcmVjdG9yeSBdIgorICAg
+ZWxzZQorICAgICAgIGVjaG8gIiIKKyAgICAgICBlY2hvICJGQUlMRUQ6ICBbIHRvdWNoIF0gQUNM
+X1VTRVJfT0JKICBlbnRyeSBhbHJlYWR5IGNvbnRhaW5zIHRoZSBvd25lciB3cml0ZSAiCisgICAg
+ICAgZWNobyAtZSAiXHQgcGVybWlzc2lvbnMsIGJ1dCBvcGVyYXRpb24gZmFpbGVkIFsgU3ltbGlu
+ayBEaXJlY3RvcnkgXSIKICAgIGZpCgogVEFDTF9VU0VSMQotLSAKMS45LjMKCi0tIApHZW9yZ2Ug
+V2FuZyDnjovml60KCktlcm5lbCBRdWFudGl0eSBFbmdpbmVlcgpSZWQgSGF0IFNvZnR3YXJlIChC
+ZWlqaW5nKSBDby4sTHRkCklSQzp4dXcKVGVsOis4Ni0wMTAtNjI2MDgwNDEKUGhvbmU6MTU5MDEy
+MzE1NzkKOS9GLCBUb3dlciBDLCBSYXljb20KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tcHJl
+aGVuc2l2ZSBTZXJ2ZXIgTW9uaXRvcmluZyB3aXRoIFNpdGUyNHg3LgpNb25pdG9yIDEwIHNlcnZl
+cnMgZm9yICQ5L01vbnRoLgpHZXQgYWxlcnRlZCB0aHJvdWdoIGVtYWlsLCBTTVMsIHZvaWNlIGNh
+bGxzIG9yIG1vYmlsZSBwdXNoIG5vdGlmaWNhdGlvbnMuClRha2UgY29ycmVjdGl2ZSBhY3Rpb25z
+IGZyb20geW91ciBtb2JpbGUgZGV2aWNlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L1pvaG8KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGlu
+ZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
+ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
