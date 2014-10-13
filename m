@@ -1,23 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Xbm0L-0004uz-RY
-	for ltp-list@lists.sourceforge.net; Wed, 08 Oct 2014 07:49:49 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Xbm0K-0002yB-2j
-	for ltp-list@lists.sourceforge.net; Wed, 08 Oct 2014 07:49:49 +0000
-Message-ID: <1412754540.28284.11.camel@G08JYZSD130126.localdomain>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 8 Oct 2014 15:49:00 +0800
-In-Reply-To: <237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
-References: <1407402404.1347.29.camel@G08JYZSD130126>
-	<179118855.6420138.1407923193096.JavaMail.zimbra@redhat.com>
-	<1411718817.9511.9.camel@G08JYZSD130126>
-	<237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v3] securebits: some cleanup
+	(envelope-from <jstancek@redhat.com>) id 1XdeSx-0003xD-RC
+	for ltp-list@lists.sourceforge.net; Mon, 13 Oct 2014 12:11:07 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XdeSw-0007QP-8y
+	for ltp-list@lists.sourceforge.net; Mon, 13 Oct 2014 12:11:07 +0000
+Received: from int-mx13.intmail.prod.int.phx2.redhat.com
+	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s9DCAx3N021676
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Oct 2014 08:10:59 -0400
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id s9DCAuL0002796
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Oct 2014 08:10:59 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 13 Oct 2014 14:10:53 +0200
+Message-Id: <cafe318d06a7aff94308013a6122b17ae452bf45.1413201833.git.jstancek@redhat.com>
+In-Reply-To: <091fa8ce5be96478cf31477561e2e90e9d5f7faa.1413201833.git.jstancek@redhat.com>
+References: <091fa8ce5be96478cf31477561e2e90e9d5f7faa.1413201833.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 2/2 v3] ldd01: remove all -m32/-m64 logic
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,229 +33,360 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-* Remove .sh and divide into three seperate tests.
+and build all binaries with same CFLAGS as rest of LTP build.
+Also treat lddfile*.so and lddfile.out as data files.
 
-* Check the header <linux/securebits.h>.
-
-* Use tst_brkm instead of tst_exit() that follows tst_resm.
-
-* Some cleanup
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- runtest/securebits                                 |  4 +-
- testcases/kernel/security/securebits/Makefile      |  9 ++--
- .../kernel/security/securebits/check_keepcaps.c    | 57 +++++++++-------------
- .../kernel/security/securebits/run_securebits.sh   | 20 --------
- 4 files changed, 30 insertions(+), 60 deletions(-)
- delete mode 100644 testcases/kernel/security/securebits/run_securebits.sh
+ testcases/commands/ade/ldd/Makefile             |   13 +------
+ testcases/commands/ade/ldd/datafiles/Makefile   |   37 ++++++++++++++++++
+ testcases/commands/ade/ldd/datafiles/lddfile1.c |    5 ++
+ testcases/commands/ade/ldd/datafiles/lddfile2.c |    5 ++
+ testcases/commands/ade/ldd/datafiles/lddfile3.c |    5 ++
+ testcases/commands/ade/ldd/datafiles/lddfile4.c |    5 ++
+ testcases/commands/ade/ldd/datafiles/lddfile5.c |    5 ++
+ testcases/commands/ade/ldd/datafiles/main.c     |   18 +++++++++
+ testcases/commands/ade/ldd/ldd01                |   46 ++++-------------------
+ testcases/commands/ade/ldd/lddfile1.c           |    5 --
+ testcases/commands/ade/ldd/lddfile2.c           |    5 --
+ testcases/commands/ade/ldd/lddfile3.c           |    5 --
+ testcases/commands/ade/ldd/lddfile4.c           |    5 --
+ testcases/commands/ade/ldd/lddfile5.c           |    5 --
+ testcases/commands/ade/ldd/main.c               |   18 ---------
+ 15 files changed, 89 insertions(+), 93 deletions(-)
+ create mode 100644 testcases/commands/ade/ldd/datafiles/Makefile
+ create mode 100644 testcases/commands/ade/ldd/datafiles/lddfile1.c
+ create mode 100644 testcases/commands/ade/ldd/datafiles/lddfile2.c
+ create mode 100644 testcases/commands/ade/ldd/datafiles/lddfile3.c
+ create mode 100644 testcases/commands/ade/ldd/datafiles/lddfile4.c
+ create mode 100644 testcases/commands/ade/ldd/datafiles/lddfile5.c
+ create mode 100644 testcases/commands/ade/ldd/datafiles/main.c
+ delete mode 100644 testcases/commands/ade/ldd/lddfile1.c
+ delete mode 100644 testcases/commands/ade/ldd/lddfile2.c
+ delete mode 100644 testcases/commands/ade/ldd/lddfile3.c
+ delete mode 100644 testcases/commands/ade/ldd/lddfile4.c
+ delete mode 100644 testcases/commands/ade/ldd/lddfile5.c
+ delete mode 100644 testcases/commands/ade/ldd/main.c
 
-diff --git a/runtest/securebits b/runtest/securebits
-index d78a66f..64e6e0a 100644
---- a/runtest/securebits
-+++ b/runtest/securebits
-@@ -1,2 +1,4 @@
- #DESCRIPTION:securebits tests
--Securebits	run_securebits.sh
-+check_keepcaps01 check_keepcaps 1
-+check_keepcaps02 check_keepcaps 2
-+check_keepcaps03 check_keepcaps 3
-diff --git a/testcases/kernel/security/securebits/Makefile b/testcases/kernel/security/securebits/Makefile
-index 51018d9..e379b7c 100644
---- a/testcases/kernel/security/securebits/Makefile
-+++ b/testcases/kernel/security/securebits/Makefile
-@@ -4,7 +4,8 @@
- ##                                                                            ##
- ## This program is free software;  you can redistribute it and#or modify      ##
- ## it under the terms of the GNU General Public License as published by       ##
--## the Free Software Foundation; either version 2 of the License, or          ## ## (at your option) any later version.                                        ##
-+## the Free Software Foundation; either version 2 of the License, or          ##
-+## (at your option) any later version.                                        ##
- ##                                                                            ##
- ## This program is distributed in the hope that it will be useful, but        ##
- ## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-@@ -12,8 +13,8 @@
- ## for more details.                                                          ##
- ##                                                                            ##
- ## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
-+## along with this program;  if not, write to the Free Software Foundation,   ##
-+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
- ##                                                                            ##
- ################################################################################
+diff --git a/testcases/commands/ade/ldd/Makefile b/testcases/commands/ade/ldd/Makefile
+index eae06cd..f37f21b 100644
+--- a/testcases/commands/ade/ldd/Makefile
++++ b/testcases/commands/ade/ldd/Makefile
+@@ -13,10 +13,6 @@
+ #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ #    GNU General Public License for more details.
+ #
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+ # Garrett Cooper, July 2009
+ #
  
-@@ -23,6 +24,4 @@ include $(top_srcdir)/include/mk/testcases.mk
+@@ -24,13 +20,6 @@ top_srcdir		?= ../../../..
  
- LDLIBS			+= $(CAP_LIBS)
+ include $(top_srcdir)/include/mk/env_pre.mk
  
--INSTALL_TARGETS		:= *.sh
+-CPPFLAGS		+= -fpic
 -
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/security/securebits/check_keepcaps.c b/testcases/kernel/security/securebits/check_keepcaps.c
-index 6e195c6..ce74715 100644
---- a/testcases/kernel/security/securebits/check_keepcaps.c
-+++ b/testcases/kernel/security/securebits/check_keepcaps.c
-@@ -5,7 +5,6 @@
- #include <sys/capability.h>
- #endif
- #include <sys/prctl.h>
--#include <linux/securebits.h>
- #include "usctest.h"
- #include "test.h"
+ INSTALL_TARGETS		:= ldd01
  
-@@ -30,7 +29,9 @@
- char *TCID = "keepcaps";
- int TST_TOTAL = 1;
- 
--#ifdef HAVE_LIBCAP
-+#if (HAVE_LINUX_SECUREBITS_H && HAVE_LIBCAP)
-+#include <linux/securebits.h>
+-MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%.obj,$(wildcard $(abs_srcdir)/*.c))
+-
+-$(MAKE_TARGETS): %.obj: %.o
+-	mv $^ $@
+-
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/commands/ade/ldd/datafiles/Makefile b/testcases/commands/ade/ldd/datafiles/Makefile
+new file mode 100644
+index 0000000..3d91d28
+--- /dev/null
++++ b/testcases/commands/ade/ldd/datafiles/Makefile
+@@ -0,0 +1,37 @@
++#
++#    commands/ade/ldd/datafiles testcases Makefile.
++#
++#    Copyright (C) 2014, Linux Test Project.
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
 +
- static int eff_caps_empty(cap_t c)
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++CPPFLAGS		+= -fpic
++
++INSTALL_TARGETS		:= ldd*.so lddfile.out
++
++LDD_C_FILES		:= $(wildcard $(abs_srcdir)/lddfile*.c)
++LDD_SO_FILES		:= $(patsubst $(abs_srcdir)/%.c,%.obj.so,$(LDD_C_FILES))
++MAKE_TARGETS		:= lddfile.out
++CLEAN_TARGETS		+= *.obj $(LDD_SO_FILES)
++
++%.obj.so: %.o
++	$(CC) $(CFLAGS) -shared -o $@ $^
++
++lddfile.out: main.o $(LDD_SO_FILES)
++	$(CC) $(CFLAGS) -O -o $@ $?
++
++INSTALL_DIR		:= testcases/data/ldd01
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/ade/ldd/datafiles/lddfile1.c b/testcases/commands/ade/ldd/datafiles/lddfile1.c
+new file mode 100644
+index 0000000..ccb5786
+--- /dev/null
++++ b/testcases/commands/ade/ldd/datafiles/lddfile1.c
+@@ -0,0 +1,5 @@
++#include <stdio.h>
++void file1(void)
++{
++	printf("Control in function %s\n", __func__);
++}
+diff --git a/testcases/commands/ade/ldd/datafiles/lddfile2.c b/testcases/commands/ade/ldd/datafiles/lddfile2.c
+new file mode 100644
+index 0000000..20aede3
+--- /dev/null
++++ b/testcases/commands/ade/ldd/datafiles/lddfile2.c
+@@ -0,0 +1,5 @@
++#include <stdio.h>
++void file2(void)
++{
++	printf("Control in function %s\n", __func__);
++}
+diff --git a/testcases/commands/ade/ldd/datafiles/lddfile3.c b/testcases/commands/ade/ldd/datafiles/lddfile3.c
+new file mode 100644
+index 0000000..a4529f7
+--- /dev/null
++++ b/testcases/commands/ade/ldd/datafiles/lddfile3.c
+@@ -0,0 +1,5 @@
++#include <stdio.h>
++void file3(void)
++{
++	printf("Control in function %s\n", __func__);
++}
+diff --git a/testcases/commands/ade/ldd/datafiles/lddfile4.c b/testcases/commands/ade/ldd/datafiles/lddfile4.c
+new file mode 100644
+index 0000000..9dc339d
+--- /dev/null
++++ b/testcases/commands/ade/ldd/datafiles/lddfile4.c
+@@ -0,0 +1,5 @@
++#include <stdio.h>
++void file4(void)
++{
++	printf("Control in function %s\n", __func__);
++}
+diff --git a/testcases/commands/ade/ldd/datafiles/lddfile5.c b/testcases/commands/ade/ldd/datafiles/lddfile5.c
+new file mode 100644
+index 0000000..3fbb7f6
+--- /dev/null
++++ b/testcases/commands/ade/ldd/datafiles/lddfile5.c
+@@ -0,0 +1,5 @@
++#include <stdio.h>
++void file5(void)
++{
++	printf("Control in function %s\n", __func__);
++}
+diff --git a/testcases/commands/ade/ldd/datafiles/main.c b/testcases/commands/ade/ldd/datafiles/main.c
+new file mode 100644
+index 0000000..69e278e
+--- /dev/null
++++ b/testcases/commands/ade/ldd/datafiles/main.c
+@@ -0,0 +1,18 @@
++#include <stdio.h>
++
++void file1(void);
++void file2(void);
++void file3(void);
++void file4(void);
++void file5(void);
++
++int main(void)
++{
++	file1();
++	file2();
++	file3();
++	file4();
++	file5();
++	printf("All Functions Executed\n");
++	return 0;
++}
+diff --git a/testcases/commands/ade/ldd/ldd01 b/testcases/commands/ade/ldd/ldd01
+index c60d3ac..c0e4d07 100755
+--- a/testcases/commands/ade/ldd/ldd01
++++ b/testcases/commands/ade/ldd/ldd01
+@@ -32,67 +32,37 @@
+ #trace_logic=${trace_logic:-"set -x"}
+ $trace_logic
+ 
+-CC=${CC:=gcc}
+ LDD=${LDD:=ldd}
+-TCdat=${TCdat:-`pwd`}
+-TCtmp=${TCtmp:-/tmp/ldd01-$$}
++TCID=ldd01
++TST_TOTAL=1
+ 
+-do_cleanup()
+-{
+-	rm -rf $TCtmp
+-}
++. test.sh
+ 
+-do_setup()
++do_test()
  {
- 	int i, ret, empty = 1;
-@@ -75,10 +76,8 @@ static void do_setuid(int expect_privs)
- 	int have_privs;
+-	mkdir $TCtmp
  
- 	ret = setuid(1000);
--	if (ret) {
--		tst_resm(TERRNO | TFAIL, "setuid failed");
--		tst_exit();
--	}
-+	if (ret)
-+		tst_brkm(TERRNO | TFAIL, NULL, "setuid failed");
+-	# Check for ppc64 architecture or x86_64 architecture
+-	if uname -a | grep -iq powerpc; then
+-		file lddfile1.obj | grep 64-bit >/dev/null 2>&1
+-		if [ $? -eq 0 ]; then
+-			CFLAGS="-m64"
+-		fi
+-	elif uname -a | grep -iq x86_64; then
+-		file lddfile1.obj | grep 32-bit >/dev/null 2>&1
+-		if [ $? -eq 0 ]; then
+-			CFLAGS="-m32"
+-		fi
+-	fi
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile1.obj.so $TCdat/lddfile1.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile2.obj.so $TCdat/lddfile2.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile3.obj.so $TCdat/lddfile3.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile4.obj.so $TCdat/lddfile4.obj
+-	$CC $CFLAGS -shared -o $TCtmp/lddfile5.obj.so $TCdat/lddfile5.obj
+-	$CC $CFLAGS -O -o $TCtmp/a.out $TCtmp/lddfile*.obj.so $TCdat/main.obj
+-}
++	export LD_LIBRARY_PATH="$LTP_DATAROOT:$LD_LIBRARY_PATH"
++	LDDTESTFILE="$LTP_DATAROOT/lddfile.out"
  
- 	have_privs = am_privileged();
- 	if (have_privs && expect_privs == EXPECT_PRIVS) {
-@@ -95,8 +94,7 @@ static void do_setuid(int expect_privs)
- 	}
+-do_test()
+-{
+ 	echo "  ASSERTION 1  "
+-
+-	$LDD $TCtmp/a.out | grep -E "lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
++	$LDD $LDDTESTFILE | grep -E "lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
+ 	if [ $? -eq 0 ]; then
+ 		echo "ASSERTION #1 PASS"
+ 	else
+ 		echo "ASSERTION #1 FAIL"
+-		do_cleanup
+ 		return 1
+ 	fi
  
- 	/* have_privs && EXPECT_NOPRIVS */
--	tst_resm(TFAIL, "expected to drop privs but did not");
--	tst_exit();
-+	tst_brkm(TFAIL, NULL, "expected to drop privs but did not");
+ 	echo " ASSERTION 2  "
+-
+-	$LDD -v $TCtmp/a.out | grep -E "GLIBC|lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
++	$LDD -v $LDDTESTFILE | grep -E "GLIBC|lddfile1.obj.so|lddfile2.obj.so|lddfile3.obj.so|lddfile4.obj.so|lddfile5.obj.so"
+ 	if [ $? -eq 0 ]; then
+ 		echo "ASSERTION #2 PASS"
+ 	else
+ 		echo "ASSERTION #2 FAIL"
+-		do_cleanup
+ 		return 1
+ 	fi
+ 
+ 	echo "TEST PASSES"
+-	do_cleanup
+ 	return 0
  }
- 
- int main(int argc, char *argv[])
-@@ -106,64 +104,55 @@ int main(int argc, char *argv[])
- 	tst_require_root(NULL);
- 
- 	ret = prctl(PR_GET_KEEPCAPS);
--	if (ret) {
--		tst_resm(TBROK, "keepcaps was already set?\n");
--		tst_exit();
--	}
-+	if (ret)
-+		tst_brkm(TBROK, NULL, "keepcaps was already set?\n");
-+
-+	if (argc < 2)
-+		tst_brkm(TBROK, NULL, "Usage: %s <tescase_num>", argv[0]);
- 
--	if (argc < 2) {
--		tst_resm(TBROK, "Usage: %s <tescase_num>", argv[0]);
--		tst_exit();
--	}
- 	whichtest = atoi(argv[1]);
--	if (whichtest < 1 || whichtest > 3) {
--		tst_resm(TFAIL, "Valid tests are 1-3\n");
--		tst_exit();
--	}
-+	if (whichtest < 1 || whichtest > 3)
-+		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
-+
- 	switch (whichtest) {
- 	case 1:
- 		do_setuid(EXPECT_NOPRIVS);	/* does not return */
- 	case 2:
- 		ret = prctl(PR_SET_KEEPCAPS, 1);
- 		if (ret == -1) {
--			tst_resm(TFAIL | TERRNO, "PR_SET_KEEPCAPS failed\n");
--			tst_exit();
-+			tst_brkm(TFAIL | TERRNO, NULL,
-+				 "PR_SET_KEEPCAPS failed\n");
- 		}
- 		ret = prctl(PR_GET_KEEPCAPS);
- 		if (!ret) {
--			tst_resm(TFAIL | TERRNO,
-+			tst_brkm(TFAIL | TERRNO, NULL,
- 				 "PR_SET_KEEPCAPS did not set keepcaps\n");
--			tst_exit();
- 		}
- 		do_setuid(EXPECT_PRIVS);	/* does not return */
- 	case 3:
- 		ret = prctl(PR_GET_SECUREBITS);
- 		ret = prctl(PR_SET_SECUREBITS, ret | SECBIT_KEEP_CAPS);
- 		if (ret == -1) {
--			tst_resm(TFAIL | TERRNO, "PR_SET_SECUREBITS failed\n");
--			tst_exit();
-+			tst_brkm(TFAIL | TERRNO, NULL,
-+				 "PR_SET_SECUREBITS failed\n");
- 		}
- 		ret = prctl(PR_GET_KEEPCAPS);
- 		if (!ret) {
--			tst_resm(TFAIL | TERRNO,
-+			tst_brkm(TFAIL | TERRNO, NULL,
- 				 "PR_SET_SECUREBITS did not set keepcaps\n");
--			tst_exit();
- 		}
- 		do_setuid(EXPECT_PRIVS);	/* does not return */
- 	default:
--		tst_resm(TFAIL, "should not reach here\n");
--		tst_exit();
-+		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
- 	}
--	tst_resm(TFAIL, "should not reach here\n");
--	tst_exit();
-+	tst_brkm(TFAIL, NULL, "should not reach here\n");
- }
- 
- #else
- 
- int main(void)
- {
--	tst_resm(TCONF, "Test was compiled without libcap.");
--	tst_exit();
-+	tst_brkm(TCONF, NULL, "linux/securebits.h or libcap is not existence.");
- }
- 
- #endif /* HAVE_LIBCAP */
-diff --git a/testcases/kernel/security/securebits/run_securebits.sh b/testcases/kernel/security/securebits/run_securebits.sh
+-do_setup
+ do_test
+diff --git a/testcases/commands/ade/ldd/lddfile1.c b/testcases/commands/ade/ldd/lddfile1.c
 deleted file mode 100644
-index 4d9e272..0000000
---- a/testcases/kernel/security/securebits/run_securebits.sh
+index 377f7a3..0000000
+--- a/testcases/commands/ade/ldd/lddfile1.c
 +++ /dev/null
-@@ -1,20 +0,0 @@
--#!/bin/sh
+@@ -1,5 +0,0 @@
+-#include <stdio.h>
+-void file1()
+-{
+-	printf("Control in function %s\n", __func__);
+-}
+diff --git a/testcases/commands/ade/ldd/lddfile2.c b/testcases/commands/ade/ldd/lddfile2.c
+deleted file mode 100644
+index 5fd2b4b..0000000
+--- a/testcases/commands/ade/ldd/lddfile2.c
++++ /dev/null
+@@ -1,5 +0,0 @@
+-#include <stdio.h>
+-void file2()
+-{
+-	printf("Control in function %s\n", __func__);
+-}
+diff --git a/testcases/commands/ade/ldd/lddfile3.c b/testcases/commands/ade/ldd/lddfile3.c
+deleted file mode 100644
+index d6b4cc9..0000000
+--- a/testcases/commands/ade/ldd/lddfile3.c
++++ /dev/null
+@@ -1,5 +0,0 @@
+-#include <stdio.h>
+-void file3()
+-{
+-	printf("Control in function %s\n", __func__);
+-}
+diff --git a/testcases/commands/ade/ldd/lddfile4.c b/testcases/commands/ade/ldd/lddfile4.c
+deleted file mode 100644
+index 1db89bb..0000000
+--- a/testcases/commands/ade/ldd/lddfile4.c
++++ /dev/null
+@@ -1,5 +0,0 @@
+-#include <stdio.h>
+-void file4()
+-{
+-	printf("Control in function %s\n", __func__);
+-}
+diff --git a/testcases/commands/ade/ldd/lddfile5.c b/testcases/commands/ade/ldd/lddfile5.c
+deleted file mode 100644
+index 2f46cdb..0000000
+--- a/testcases/commands/ade/ldd/lddfile5.c
++++ /dev/null
+@@ -1,5 +0,0 @@
+-#include <stdio.h>
+-void file5()
+-{
+-	printf("Control in function %s\n", __func__);
+-}
+diff --git a/testcases/commands/ade/ldd/main.c b/testcases/commands/ade/ldd/main.c
+deleted file mode 100644
+index 0f23b8b..0000000
+--- a/testcases/commands/ade/ldd/main.c
++++ /dev/null
+@@ -1,18 +0,0 @@
+-#include <stdio.h>
 -
--echo "testing keepcaps"
--check_keepcaps 1
--tmp=$?
--if [ $tmp -ne 0 ]; then
--	exit_code=$tmp
--fi
--check_keepcaps 2
--tmp=$?
--if [ $tmp -ne 0 ]; then
--	exit_code=$tmp
--fi
--check_keepcaps 3
--tmp=$?
--if [ $tmp -ne 0 ]; then
--	exit_code=$tmp
--fi
+-void file1();
+-void file2();
+-void file3();
+-void file4();
+-void file5();
 -
--exit $exit_code
+-int main()
+-{
+-	file1();
+-	file2();
+-	file3();
+-	file4();
+-	file5();
+-	printf("All Functions Executed\n");
+-	return 0;
+-}
 -- 
-1.9.3
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
@@ -257,7 +394,7 @@ Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
 Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
 Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
 Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+http://p.sf.net/sfu/Zoho
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
