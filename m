@@ -1,30 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XZfW8-0006W8-Eu
-	for ltp-list@lists.sourceforge.net; Thu, 02 Oct 2014 12:29:56 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Xe1fC-0007Bn-1g
+	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 12:57:18 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XZfW7-0004Ip-6P
-	for ltp-list@lists.sourceforge.net; Thu, 02 Oct 2014 12:29:56 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s92CTm48018388
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Oct 2014 08:29:49 -0400
-Received: from cc-vtoe10.lab.eng.brq.redhat.com
-	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s92CTlRv024438
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Oct 2014 08:29:47 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Thu,  2 Oct 2014 14:29:35 +0200
-Message-Id: <1412252975-22104-1-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1409047170-18251-2-git-send-email-mmarhefk@redhat.com>
-References: <1409047170-18251-2-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH 2/2 v3] containers: added mountns/mountns04.c
+	(Exim 4.76) id 1Xe1f8-0004ZA-Hq
+	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 12:57:17 +0000
+Date: Tue, 14 Oct 2014 08:57:06 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <250612477.8653658.1413291425999.JavaMail.zimbra@redhat.com>
+In-Reply-To: <449596914.42340372.1412928408912.JavaMail.zimbra@redhat.com>
+References: <449596914.42340372.1412928408912.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] fs: Fix the check bug in
+ testcases/kernel/fs/acl/tacl_xattr.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,161 +25,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xu Wang <xuw@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-* Tests an unbindable mount: unbindable mount is an unbindable
-  private mount
-
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
----
- runtest/containers                              |   1 +
- testcases/kernel/containers/.gitignore          |   1 +
- testcases/kernel/containers/mountns/mountns04.c | 103 ++++++++++++++++++++++++
- 3 files changed, 105 insertions(+)
- create mode 100644 testcases/kernel/containers/mountns/mountns04.c
-
-diff --git a/runtest/containers b/runtest/containers
-index 3653c9c..8e8e067 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -59,3 +59,4 @@ utstest_clone_5 utstest clone 5
- mountns01 mountns01
- mountns02 mountns02
- mountns03 mountns03
-+mountns04 mountns04
-diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index 5b96cb9..4a98373 100644
---- a/testcases/kernel/containers/.gitignore
-+++ b/testcases/kernel/containers/.gitignore
-@@ -2,3 +2,4 @@
- mountns/mountns01
- mountns/mountns02
- mountns/mountns03
-+mountns/mountns04
-diff --git a/testcases/kernel/containers/mountns/mountns04.c b/testcases/kernel/containers/mountns/mountns04.c
-new file mode 100644
-index 0000000..fe80e95
---- /dev/null
-+++ b/testcases/kernel/containers/mountns/mountns04.c
-@@ -0,0 +1,103 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ ***********************************************************************
-+ * File: mountns04.c
-+ *
-+ * Tests an unbindable mount: unbindable mount is an unbindable
-+ * private mount.
-+ * Description:
-+ * 1. Creates directories "A", "B" and files "A/A", "B/B"
-+ * 2. Unshares mount namespace and makes it private (so mounts/umounts
-+ *    have no effect on a real system)
-+ * 3. Bind mounts directory "A" to "A" and "B" to "B"
-+ * 4. Makes directory "B" shared and directory "A" unbindable
-+ * 5. Tries to bind mount unbindable "A" to "B":
-+ *    - if it fails, test passes
-+ *    - if it passes, test fails
-+ ***********************************************************************/
-+
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <sys/mount.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include "test.h"
-+#include "usctest.h"
-+#include "libclone.h"
-+#include "safe_macros.h"
-+#include "safe_file_ops.h"
-+#include "mountns_helper.h"
-+
-+
-+char *TCID	= "mountns04";
-+int TST_TOTAL	= 1;
-+
-+
-+#if defined(MS_SHARED) && defined(MS_PRIVATE) \
-+    && defined(MS_REC) && defined(MS_UNBINDABLE)
-+
-+static void test(void)
-+{
-+	/* unshares the mount ns */
-+	if (unshare(CLONE_NEWNS) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-+	/* makes sure mounts/umounts have no effect on a real system */
-+	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
-+
-+	/* bind mounts DIRA to itself */
-+	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
-+	/* bind mounts DIRB to itself */
-+	SAFE_MOUNT(cleanup, DIRB, DIRB, "none", MS_BIND, NULL);
-+
-+	/* makes mount DIRA unbindable */
-+	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_UNBINDABLE, NULL);
-+	/* makes mount DIRB shared */
-+	SAFE_MOUNT(cleanup, "none", DIRB, "none", MS_SHARED, NULL);
-+
-+	/* tries to bind mount unbindable DIRA to DIRB which should fail */
-+	if (mount(DIRA, DIRB, "none", MS_BIND, NULL) == -1) {
-+		tst_resm(TPASS, "unbindable mount passed");
-+	} else {
-+		SAFE_UMOUNT(cleanup, DIRB);
-+		tst_resm(TFAIL, "unbindable mount faled");
-+	}
-+
-+	SAFE_UMOUNT(cleanup, DIRA);
-+	SAFE_UMOUNT(cleanup, DIRB);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test();
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+#else
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "needed mountflags are not defined");
-+}
-+#endif
--- 
-1.8.3.1
-
-
-------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiWHUgV2FuZyIgPHh1d0By
+ZWRoYXQuY29tPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBTZW50OiBG
+cmlkYXksIDEwIE9jdG9iZXIsIDIwMTQgMTA6MDY6NDggQU0KPiBTdWJqZWN0OiBbTFRQXSBbUEFU
+Q0hdIGZzOiBGaXggdGhlIGNoZWNrIGJ1ZyBpbiB0ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC90YWNs
+X3hhdHRyLnNoCj4gCj4gRnJvbSBmYmMzODE4MWYwNTA0ZDVlOTJkZWY5MjI5NzdkYTJkZDBhZTBl
+ZThiIE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQo+IEZyb206IEdlb3JnZSBXYW5nIDx4dXdAcmVk
+aGF0LmNvbT4KPiBEYXRlOiBGcmksIDEwIE9jdCAyMDE0IDE1OjU5OjE2ICswODAwCj4gU3ViamVj
+dDogW1BBVENIXSAgZnM6IEZpeCB0aGUgY2hlY2sgYnVnIGluCj4gIHRlc3RjYXNlcy9rZXJuZWwv
+ZnMvYWNsL3RhY2xfeGF0dHIuc2gKPiAKPiBTaWduZWQtb2ZmLWJ5OiBHZW9yZ2UgV2FuZyA8eHV3
+QHJlZGhhdC5jb20+Cj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvZnMvYWNsL3RhY2xfeGF0dHIu
+c2ggfCAxNiArKysrKysrKy0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMo
+KyksIDggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMv
+YWNsL3RhY2xfeGF0dHIuc2gKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNsL3RhY2xfeGF0dHIu
+c2gKPiBpbmRleCA5OWY2YTk1Li41YTYwYTA0IDEwMDc1NQo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJu
+ZWwvZnMvYWNsL3RhY2xfeGF0dHIuc2gKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC90
+YWNsX3hhdHRyLnNoCj4gQEAgLTI0NywyNCArMjQ3LDI0IEBAIHN1IC0gdGFjbHVzZXIxIDw8IFRB
+Q0xfVVNFUjEKCkFsc28gSSBzdXNwZWN0IHRoYXQgdGhpcyBsaW5lIGlzIGEgdHlwbzoKICAgICAg
+ICB0b3VjaCAkQ1VSX1BBVEgvdGFjbC9tb3VudC1leHQyL3NoYXJlZC90ZWFtMS9uZXdmaWwxIDI+
+IC9kZXYvbnVsbAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIF5eIHRlc3QgdHJpZXMgdG8gdG91Y2ggIm5ld2ZpbDEiCiAgICAgICAgaWYgWyAtZSAk
+Q1VSX1BBVEgvdGFjbC9tb3VudC1leHQyL3NoYXJlZC90ZWFtMS9uZXdmaWxlMSBdCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeXiBhbmQgdGhl
+biBjaGVjayBmb3IgIm5ld2ZpbGUxIgoKUmVnYXJkcywKSmFuCgo+ICAgICBpZiBbIC1lICRDVVJf
+UEFUSC90YWNsL21vdW50LWV4dDIvc2hhcmVkL3RlYW0xL25ld2ZpbGUxIF0KPiAgICAgdGhlbgo+
+ICAgICAgICAgZWNobyAiIgo+IC0gICAgICAgZWNobyAiRkFJTEVEOiAgWyB0b3VjaCBdIEFDTF9V
+U0VSX09CSiAgZW50cnkgYWxyZWFkeSBjb250YWlucyB0aGUKPiBvd25lciB3cml0ZSAiCj4gLSAg
+ICAgICBlY2hvIC1lICJcdCBwZXJtaXNzaW9ucywgYnV0IG9wZXJhdGlvbiBmYWlsZWQgWyBQaHlz
+aWNhbCBEaXJlY3RvcnkgXSIKPiAtICAgZWxzZQo+IC0gICAgICAgZWNobyAiIgo+ICAgICAgICAg
+ZWNobyAiU1VDQ0VTUzogQUNMX1VTRVJfT0JKICBlbnRyeSBjb250YWlucyB0aGUgb3duZXIgd3Jp
+dGUKPiAgICAgICAgIHBlcm1pc3Npb25zLCIKPiAgICAgICAgIGVjaG8gLWUgIlx0IG9wZXJhdGlv
+biBzdWNjZXNzIFsgUGh5c2ljYWwgRGlyZWN0b3J5IF0iCj4gKyAgIGVsc2UKPiArICAgICAgIGVj
+aG8gIiIKPiArICAgICAgIGVjaG8gIkZBSUxFRDogIFsgdG91Y2ggXSBBQ0xfVVNFUl9PQkogIGVu
+dHJ5IGFscmVhZHkgY29udGFpbnMgdGhlCj4gb3duZXIgd3JpdGUgIgo+ICsgICAgICAgZWNobyAt
+ZSAiXHQgcGVybWlzc2lvbnMsIGJ1dCBvcGVyYXRpb24gZmFpbGVkIFsgUGh5c2ljYWwgRGlyZWN0
+b3J5IF0iCj4gICAgIGZpCj4gCj4gICAgIHRvdWNoICRDVVJfUEFUSC90YWNsL21vdW50LWV4dDIv
+c2hhcmVkL3N5bWxpbmtkaXIxL25ld2ZpbDIgMj4gL2Rldi9udWxsCj4gICAgIGlmIFsgLWUgJENV
+Ul9QQVRIL3RhY2wvbW91bnQtZXh0Mi9zaGFyZWQvdGVhbTEvbmV3ZmlsZTIgXQo+ICAgICB0aGVu
+Cj4gICAgICAgICBlY2hvICIiCj4gLSAgICAgICBlY2hvICJGQUlMRUQ6ICBbIHRvdWNoIF0gQUNM
+X1VTRVJfT0JKICBlbnRyeSBhbHJlYWR5IGNvbnRhaW5zIHRoZQo+IG93bmVyIHdyaXRlICIKPiAt
+ICAgICAgIGVjaG8gLWUgIlx0IHBlcm1pc3Npb25zLCBidXQgb3BlcmF0aW9uIGZhaWxlZCBbIFN5
+bWxpbmsgRGlyZWN0b3J5IF0iCj4gLSAgIGVsc2UKPiAtICAgICAgIGVjaG8gIiIKPiAgICAgICAg
+IGVjaG8gIlNVQ0NFU1M6IEFDTF9VU0VSX09CSiAgZW50cnkgY29udGFpbnMgdGhlIG93bmVyIHdy
+aXRlCj4gICAgICAgICBwZXJtaXNzaW9ucywiCj4gICAgICAgICBlY2hvIC1lICJcdCBvcGVyYXRp
+b24gc3VjY2VzcyBbIFN5bWxpbmsgRGlyZWN0b3J5IF0iCj4gKyAgIGVsc2UKPiArICAgICAgIGVj
+aG8gIiIKPiArICAgICAgIGVjaG8gIkZBSUxFRDogIFsgdG91Y2ggXSBBQ0xfVVNFUl9PQkogIGVu
+dHJ5IGFscmVhZHkgY29udGFpbnMgdGhlCj4gb3duZXIgd3JpdGUgIgo+ICsgICAgICAgZWNobyAt
+ZSAiXHQgcGVybWlzc2lvbnMsIGJ1dCBvcGVyYXRpb24gZmFpbGVkIFsgU3ltbGluayBEaXJlY3Rv
+cnkgXSIKPiAgICAgZmkKPiAKPiAgVEFDTF9VU0VSMQo+IC0tCj4gMS45LjMKPiAKPiAtLQo+IEdl
+b3JnZSBXYW5nIOeOi+aXrQo+IAo+IEtlcm5lbCBRdWFudGl0eSBFbmdpbmVlcgo+IFJlZCBIYXQg
+U29mdHdhcmUgKEJlaWppbmcpIENvLixMdGQKPiBJUkM6eHV3Cj4gVGVsOis4Ni0wMTAtNjI2MDgw
+NDEKPiBQaG9uZToxNTkwMTIzMTU3OQo+IDkvRiwgVG93ZXIgQywgUmF5Y29tCj4gCj4gCj4gLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tCj4gQ29tcHJlaGVuc2l2ZSBTZXJ2ZXIgTW9uaXRvcmluZyB3aXRo
+IFNpdGUyNHg3Lgo+IE1vbml0b3IgMTAgc2VydmVycyBmb3IgJDkvTW9udGguCj4gR2V0IGFsZXJ0
+ZWQgdGhyb3VnaCBlbWFpbCwgU01TLCB2b2ljZSBjYWxscyBvciBtb2JpbGUgcHVzaCBub3RpZmlj
+YXRpb25zLgo+IFRha2UgY29ycmVjdGl2ZSBhY3Rpb25zIGZyb20geW91ciBtb2JpbGUgZGV2aWNl
+Lgo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvWm9obwo+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RA
+bGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlz
+dHMvbGlzdGluZm8vbHRwLWxpc3QKPiAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDb21wcmVoZW5z
+aXZlIFNlcnZlciBNb25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCk1vbml0b3IgMTAgc2VydmVycyBm
+b3IgJDkvTW9udGguCkdldCBhbGVydGVkIHRocm91Z2ggZW1haWwsIFNNUywgdm9pY2UgY2FsbHMg
+b3IgbW9iaWxlIHB1c2ggbm90aWZpY2F0aW9ucy4KVGFrZSBjb3JyZWN0aXZlIGFjdGlvbnMgZnJv
+bSB5b3VyIG1vYmlsZSBkZXZpY2UuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvWm9obwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxp
+c3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
+Z2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
