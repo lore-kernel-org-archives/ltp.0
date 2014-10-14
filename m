@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xb4Qo-0001e5-6j
-	for ltp-list@lists.sourceforge.net; Mon, 06 Oct 2014 09:18:14 +0000
-Date: Mon, 6 Oct 2014 11:18:01 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141006091801.GA8551@rei.suse.cz>
-References: <7e6611cd7abcfc04cb31b87314394481711e4c7a.1412258926.git.jstancek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zlang@redhat.com>) id 1Xe0Ji-0002G3-Ag
+	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 11:31:02 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Xe0Jd-0000Gx-Em
+	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 11:31:01 +0000
+Message-ID: <543D0964.5040607@redhat.com>
+Date: Tue, 14 Oct 2014 19:30:44 +0800
+From: Zorro Lang <zlang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <7e6611cd7abcfc04cb31b87314394481711e4c7a.1412258926.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH/RFC] checkpoints: fix usage in children started
- via exec
+References: <1413212682-13117-1-git-send-email-zlang@redhat.com>
+	<543C9084.6070501@cn.fujitsu.com>
+In-Reply-To: <543C9084.6070501@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] ext4-new-features: modify
+ ext4_get_inode_version.sh not know $EXT4_DEV definition
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,69 +26,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> creat07 and setpgid03 are currently failing in following way:
->   CHILD: Failed to open fifo '': No such file or directory at creat07_child.c:31
->   creat07     1  TBROK  :  tst_checkpoint.c:126: Checkpoint timeouted after 5000 msecs at creat07.c:78
->   creat07     2  TBROK  :  tst_checkpoint.c:126: Remaining cases broken
-> 
-> These testcases start children via exec, so allow them to initialize
-> checkpoint in way which is using FIFO already created by parent.
-> 
-> This patch adds "TST_CHECKPOINT_MAKE_NAME", which allows child to
-> generate same FIFO names as parent did and configure checkpoint
-> structure to use same FIFO created in parent.
-> 
-> One possible issue is that if multiple checkpoints are used,
-> child needs to initialise these in same order as parent created them,
-> but given we mostly use only fork, this should be rather
-> exceptional use.
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  include/tst_checkpoint.h                           |    5 ++++
->  lib/tst_checkpoint.c                               |   23 ++++++++++++-------
->  testcases/kernel/syscalls/creat/creat07_child.c    |    3 ++
->  .../kernel/syscalls/setpgid/setpgid03_child.c      |    3 ++
->  4 files changed, 25 insertions(+), 9 deletions(-)
-> 
-> diff --git a/include/tst_checkpoint.h b/include/tst_checkpoint.h
-> index 4d04c0e..f9c242f 100644
-> --- a/include/tst_checkpoint.h
-> +++ b/include/tst_checkpoint.h
-> @@ -56,6 +56,11 @@ struct tst_checkpoint {
->  void tst_checkpoint_init(const char *file, const int lineno,
->                           struct tst_checkpoint *self);
->  
-> +#define TST_CHECKPOINT_MAKE_NAME(buf, len) \
-> +	tst_checkpoint_make_name(__FILE__, __LINE__, buf, len)
-> +void tst_checkpoint_make_name(const char *file, const int lineno,
-> +				   char *buf, int len);
-
-IMHO it would be more clear to rename the checkpoint_init() to
-checkpoint_create() and use checkpoint_init() for initializing the
-structure only. The renaming should be as easy as doing in-place sed
-script.
-
-Otherwise I think that it would be cleaner to just pass the checkpoint
-pointer to the function that initializes the checkpoint because the
-string lenght is static and known at the compile time and passing it
-to the function explicitly may only introduce errors.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Slashdot TV.  Videos for Nerds.  Stuff that Matters.
-http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+5ZyoIDIwMTTlubQxMOaciDE05pelIDEwOjU1LCBYaWFvZ3VhbmcgV2FuZyDlhpnpgZM6Cj4gSGks
+Cj4KPiBPbiAxMC8xMy8yMDE0IDExOjA0IFBNLCBab3JybyBMYW5nIHdyb3RlOgo+PiBleHQ0X2dl
+dF9pbm9kZV92ZXJzaW9uLnNoIHVzZSAkRVhUNF9ERVYsIGJ1dCBpdCByZWFsbHkgZG9lc24ndCBr
+bm93IHdoYXQgaXMgJEVYVDRfREVWLgo+PiBUaGF0IGNhdXNlIG90aGVyIGNhc2VzIHdoaWNoIHVz
+ZSBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIHRvIGZhaWwuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
+IFpvcnJvIExhbmcgPHpsYW5nQHJlZGhhdC5jb20+Cj4+IC0tLQo+Pgo+PiBIaSwKPj4KPj4gV2hl
+biBJIHJhbiBleHQ0LWlub2RlLXZlcnNpb24sIEkgYWx3YXlzIGhpdCBURkFJTC4gQnV0IEkgY2Fu
+J3QgcmVwcm9kdWNlIHRoZSBmYWlsdXJlIG1hbnVhbGx5Lgo+PiBUaGVuIEkgZm91bmQgZXh0NF9p
+bm9kZV92ZXJzaW9uX3Rlc3Quc2ggdXNlIGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggLT4KPj4g
+ZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCB1c2UgJEVYVDRfREVWIC0+Cj4+IGJ1dCBleHQ0X2dl
+dF9pbm9kZV92ZXJzaW9uLnNoIGRvZXNuJ3Qga25vdyB3aGF0IGlzICRFWFQ0X0RFVi4KPiBZZWFo
+LCB0aGlzIGlzIGEgYnVnIDopCj4+IEFib3V0IHRoaXMgcGF0Y2gsIEkgZXhwb3J0ICRFWFQ0X0RF
+ViBpbiBleHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCwgYmVmb3JlIGl0IGNhbGwgZXh0NF9nZXRf
+aW5vZGVfdmVyc2lvbi5zaC4KPj4gQnV0IEkgdGhpbmsgYWRkIHRoZSAiZXhwb3J0IiBpbiBmcm9u
+dCBvZiAiRVhUNF9ERVY9JExUUF9CSUdfREVWIiBpbiBleHQ0X2Z1bmNzLnNoIHdpbGwgYmUgYW5v
+dGhlciBtZXRob2QuCj4gSSB0aGluayBhZGRpbmcgImV4cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19E
+RVYiIGluIGV4dDRfZnVuY3Muc2ggd291bGQgYmUgYmV0dGVyLgpIaSB4aWFvZ3VhbmcsCgpEbyB5
+b3UgbWVhbiBwYXRjaCBsaWtlcyBiZWxvdyBpcyBiZXR0ZXI/CgpkaWZmIC0tZ2l0IGEvdGVzdGNh
+c2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1bmNzLnNoIApiL3Rlc3RjYXNl
+cy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaAppbmRleCAwYWU1MzRh
+Li5iNTFlOTQyIDEwMDc1NQotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1
+cmVzL2V4dDRfZnVuY3Muc2gKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0
+dXJlcy9leHQ0X2Z1bmNzLnNoCkBAIC00NSw3ICs0NSw3IEBAIGV4dDRfc2V0dXAoKQogICAgICAg
+ICBpZiBbIC16ICIkTFRQX0JJR19ERVYiIF07dGhlbgogICAgICAgICAgICAgICAgIHRzdF9icmtt
+IFRDT05GICJ0ZXN0cyBuZWVkIGEgYmlnIGJsb2NrIGRldmljZSg1Ry0xMEcpIgogICAgICAgICBl
+bHNlCi0gICAgICAgICAgICAgICBFWFQ0X0RFVj0kTFRQX0JJR19ERVYKKyAgICAgICAgICAgICAg
+IGV4cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19ERVYKICAgICAgICAgZmkKCiAgICAgICAgIHRzdF90
+bXBkaXIKCgpJZiB5b3Ugd2FudCB0byBtZXJnZSB0aGlzIHBhdGNoLCBJIHdpbGwgcmVzZW5kIGl0
+IGFzIHRoZSBiZXR0ZXIgd2F5LgoKVGhhbmsgeW91LApab3JybyBMYW5nCj4KPiBSZWdhcmRzLAo+
+IFhpYW9ndWFuZyBXYW5nCj4KPj4gUGxlYXNlIHJldmlldywgYW5kIHRlbGwgbWUgd2hpY2ggb25l
+IGRvIHlvdSB0aGluayBpcyBiZXR0ZXIgZm9yIExUUD8gT3IgeW91IGhhdmUgYSBiZXR0ZXIgb25l
+OykKPj4KPj4gVGhhbmsgeW91LAo+PiBab3JybyBMYW5nCj4+Cj4+ICAgLi4uL2ZzL2V4dDQtbmV3
+LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCAg
+fCAyICsrCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0t
+Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LWlub2RlLXZl
+cnNpb24vZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2ggYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4
+dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVz
+dC5zaAo+PiBpbmRleCBhYzhmMDIxLi4yNTQ5MDg4IDEwMDc1NQo+PiAtLS0gYS90ZXN0Y2FzZXMv
+a2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2Rl
+X3ZlcnNpb25fdGVzdC5zaAo+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZl
+YXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaAo+PiBA
+QCAtMTM4LDYgKzEzOCw4IEBAIHRlc3RfaW5vZGVfdmVyc2lvbigpCj4+ICAgCj4+ICAgIyBtYWlu
+Cj4+ICAgZXh0NF9zZXR1cAo+PiArIyBleHBvcnQgRVhUNF9ERVYgZm9yIGV4dDRfZ2V0X2lub2Rl
+X3ZlcnNpb24uc2ggY2FuIGtub3cgaXQKPj4gK2V4cG9ydCBFWFQ0X0RFVj0kRVhUNF9ERVYKPj4g
+ICAKPj4gICBleHQ0X3Rlc3RfMTI4X2lub2RlX3ZlcnNpb24KPj4gICAKPj4KCgotLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KQ29tcHJlaGVuc2l2ZSBTZXJ2ZXIgTW9uaXRvcmluZyB3aXRoIFNpdGUyNHg3
+LgpNb25pdG9yIDEwIHNlcnZlcnMgZm9yICQ5L01vbnRoLgpHZXQgYWxlcnRlZCB0aHJvdWdoIGVt
+YWlsLCBTTVMsIHZvaWNlIGNhbGxzIG9yIG1vYmlsZSBwdXNoIG5vdGlmaWNhdGlvbnMuClRha2Ug
+Y29ycmVjdGl2ZSBhY3Rpb25zIGZyb20geW91ciBtb2JpbGUgZGV2aWNlLgpodHRwOi8vcC5zZi5u
+ZXQvc2Z1L1pvaG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApo
+dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
