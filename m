@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Xf3rX-0002F9-Fn
-	for ltp-list@lists.sourceforge.net; Fri, 17 Oct 2014 09:30:19 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XeLVO-0003WB-0Y
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 10:08:30 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xf3rU-0006KU-PN
-	for ltp-list@lists.sourceforge.net; Fri, 17 Oct 2014 09:30:19 +0000
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 17 Oct 2014 11:29:47 +0200
-Message-Id: <3b5ef63b19fe7ac52dc6d3454760f2de344d62e8.1413538123.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2] cpuset_syscall_testset.sh: check TCONF for test 15,
-	16
+	(Exim 4.76) id 1XeLVN-0007Nb-69
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 10:08:29 +0000
+Message-ID: <543E4809.4000709@oracle.com>
+Date: Wed, 15 Oct 2014 14:10:17 +0400
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+MIME-Version: 1.0
+References: <1412769465-16030-1-git-send-email-alexey.kodanev@oracle.com>
+	<20141009132453.GI24933@Leo.nay.redhat.com>
+In-Reply-To: <20141009132453.GI24933@Leo.nay.redhat.com>
+Subject: Re: [LTP] [PATCH 1/3] network/test_net: add support for -6 option
+ (IPv6 tests)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,90 +26,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: jbeckenbach@lancope.com
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-If HAVE_DECL_MPOL_F_MEMS_ALLOWED is not defined, test 15 and 16,
-returns -1, which is evaluted as failure.
+Hi,
+On 10/09/2014 05:24 PM, Hangbin Liu wrote:
+> Ah, find your patch here :)
+>
+> Just as you said, net_cmdlib.sh source cmdlib.sh, so how about do it like
+> test.sh, add a global variable $CMD_LIB_LOADED in cmdlib.sh and add
+>
+> [ -z "$CMD_LIB_LOADED" ] && . cmdlib.sh
+>
+> in test_net.sh ?
 
-Treat it as TCONF, but don't break the execution, cpuset_syscall_testset.sh
-script is expecting to handle stopping/waiting for children by itself.
+No, we shouldn't use obsolete 'cmdlib.sh' and new 'test.sh' together.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../cpuset_syscall_test/cpuset_syscall_test.c      |    6 +++---
- .../cpuset_syscall_test/cpuset_syscall_testset.sh  |   14 ++++++++++++--
- 2 files changed, 15 insertions(+), 5 deletions(-)
+> For function read_opts(), I greped ltp and only found tests under tcp_cmds use
+> it. So I think it's OK to change all net_cmdlib.sh directly. But as your wish,
+> you can send it separately, not a big deal.
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-index e202295..407b8c9 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-@@ -128,7 +128,7 @@ void sigint_handler(int __attribute__ ((unused)) signo)
- void test_setaffinity(void)
- {
- 	cpu_set_t tmask;
--	int i;
-+	unsigned int i;
- 	CPU_ZERO(&tmask);
- 	for (i = 0; i < 8 * sizeof(mask); i++) {
- 		if ((1 << i) & mask)
-@@ -140,7 +140,7 @@ void test_setaffinity(void)
- void test_getaffinity(void)
- {
- 	cpu_set_t tmask;
--	int i;
-+	unsigned int i;
- 	CPU_ZERO(&tmask);
- 	ret = sched_getaffinity(0, sizeof(tmask), &tmask);
- 	for (i = 0; i < 8 * sizeof(mask); i++) {
-@@ -190,7 +190,7 @@ void test_get_mempolicy(void)
- 	ret = get_mempolicy(NULL, bitmask_mask(nmask), bitmask_nbits(nmask), 0,
- 			    MPOL_F_MEMS_ALLOWED);
- #else
--	ret = -1;
-+	tst_resm(TCONF, "don't have MPOL_F_MEMS_ALLOWED");
- #endif
- 
- 	bitmask_displaylist(str, 256, nmask);
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-index 561c3b9..bf1ec6c 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-@@ -299,7 +299,12 @@ test14()
- 
- test15()
- {
--	do_syscall_test 0 0 --get_mempolicy 0 || return 1
-+	do_syscall_test 0 0 --get_mempolicy 0
-+	ret=$?
-+
-+	grep "TCONF" "$TEST_OUTPUT" && return 0
-+	[ $ret -ne 0 ] && return 1
-+
- 	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$(cat "$TEST_OUTPUT")" = "0"
- 	if [ $? -ne 0 ]; then
-@@ -316,7 +321,12 @@ test15()
- 
- test16()
- {
--	do_syscall_test 0 0-1 --get_mempolicy 0 || return 1
-+	do_syscall_test 0 0-1 --get_mempolicy 0
-+	ret=$?
-+
-+	grep "TCONF" "$TEST_OUTPUT" && return 0
-+	[ $ret -ne 0 ] && return 1
-+
- 	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$(cat "$TEST_OUTPUT")" = "0-1"
- 	if [ $? -ne 0 ]; then
--- 
-1.7.1
+It's preferably to additionally replace outdated interface with the new 
+one when tests need some fixes. Inevitably, the tests become fixed and 
+easy to support in the future, confirm with the latest suite standards 
+(e.g. test output, return exit codes).
+That's why when I said that patches should be sent separately I also 
+meant the replacement of cmdlib.sh as well. Otherwise I don't see any 
+reason to replace just read_opts with identical one from another file.
+
+Thanks,
+Alexey
 
 
 ------------------------------------------------------------------------------
