@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xek68-0007la-Kf
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 12:24:04 +0000
-Date: Thu, 16 Oct 2014 14:23:44 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141016122343.GE20676@rei.suse.de>
-References: <1409153560-10176-1-git-send-email-mmarhefk@redhat.com>
-	<20141015125601.GG5006@rei.suse.cz>
-	<1887162987.52427068.1413453459206.JavaMail.zimbra@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XeJht-0000Ic-8x
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 08:13:17 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XeJhr-0002oZ-9r
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 08:13:17 +0000
+Message-ID: <543E2C5B.3080904@cn.fujitsu.com>
+Date: Wed, 15 Oct 2014 16:12:11 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1887162987.52427068.1413453459206.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] containers: added netns/netns_interfaces.c
+References: <1413212682-13117-1-git-send-email-zlang@redhat.com>	<543C9084.6070501@cn.fujitsu.com>
+	<543D0964.5040607@redhat.com>
+In-Reply-To: <543D0964.5040607@redhat.com>
+Subject: Re: [LTP] [PATCH] ext4-new-features: modify
+ ext4_get_inode_version.sh not know $EXT4_DEV definition
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,32 +27,74 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
+To: Zorro Lang <zlang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> consider this patch discarded as it  was replaced with newer version:
-> [PATCH v4] containers: added netns/netns_devices.sh and netns/netns_devices2.sh
-> 
-> the main reason was use of many system() calls in code what looks rather
-> ugly, so I decided to rewrite it into shell script and also extend the test.
-
-Ack.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMTAvMTQvMjAxNCAwNzozMCBQTSwgWm9ycm8gTGFuZyB3cm90ZToKPiDlnKggMjAxNOW5tDEw
+5pyIMTTml6UgMTA6NTUsIFhpYW9ndWFuZyBXYW5nIOWGmemBkzoKPj4gSGksCj4+Cj4+IE9uIDEw
+LzEzLzIwMTQgMTE6MDQgUE0sIFpvcnJvIExhbmcgd3JvdGU6Cj4+PiBleHQ0X2dldF9pbm9kZV92
+ZXJzaW9uLnNoIHVzZSAkRVhUNF9ERVYsIGJ1dCBpdCByZWFsbHkgZG9lc24ndCBrbm93IHdoYXQg
+aXMgJEVYVDRfREVWLgo+Pj4gVGhhdCBjYXVzZSBvdGhlciBjYXNlcyB3aGljaCB1c2UgZXh0NF9n
+ZXRfaW5vZGVfdmVyc2lvbi5zaCB0byBmYWlsLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFpvcnJv
+IExhbmcgPHpsYW5nQHJlZGhhdC5jb20+Cj4+PiAtLS0KPj4+Cj4+PiBIaSwKPj4+Cj4+PiBXaGVu
+IEkgcmFuIGV4dDQtaW5vZGUtdmVyc2lvbiwgSSBhbHdheXMgaGl0IFRGQUlMLiBCdXQgSSBjYW4n
+dCByZXByb2R1Y2UgdGhlIGZhaWx1cmUgbWFudWFsbHkuCj4+PiBUaGVuIEkgZm91bmQgZXh0NF9p
+bm9kZV92ZXJzaW9uX3Rlc3Quc2ggdXNlIGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggLT4KPj4+
+IGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggdXNlICRFWFQ0X0RFViAtPgo+Pj4gYnV0IGV4dDRf
+Z2V0X2lub2RlX3ZlcnNpb24uc2ggZG9lc24ndCBrbm93IHdoYXQgaXMgJEVYVDRfREVWLgo+PiBZ
+ZWFoLCB0aGlzIGlzIGEgYnVnIDopCj4+PiBBYm91dCB0aGlzIHBhdGNoLCBJIGV4cG9ydCAkRVhU
+NF9ERVYgaW4gZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gsIGJlZm9yZSBpdCBjYWxsIGV4dDRf
+Z2V0X2lub2RlX3ZlcnNpb24uc2guCj4+PiBCdXQgSSB0aGluayBhZGQgdGhlICJleHBvcnQiIGlu
+IGZyb250IG9mICJFWFQ0X0RFVj0kTFRQX0JJR19ERVYiIGluIGV4dDRfZnVuY3Muc2ggd2lsbCBi
+ZSBhbm90aGVyIG1ldGhvZC4KPj4gSSB0aGluayBhZGRpbmcgImV4cG9ydCBFWFQ0X0RFVj0kTFRQ
+X0JJR19ERVYiIGluIGV4dDRfZnVuY3Muc2ggd291bGQgYmUgYmV0dGVyLgo+IEhpIHhpYW9ndWFu
+ZywKPiAKPiBEbyB5b3UgbWVhbiBwYXRjaCBsaWtlcyBiZWxvdyBpcyBiZXR0ZXI/Cj4gCj4gZGlm
+ZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5j
+cy5zaCAKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5j
+cy5zaAo+IGluZGV4IDBhZTUzNGEuLmI1MWU5NDIgMTAwNzU1Cj4gLS0tIGEvdGVzdGNhc2VzL2tl
+cm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1bmNzLnNoCj4gKysrIGIvdGVzdGNhc2Vz
+L2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1bmNzLnNoCj4gQEAgLTQ1LDcgKzQ1
+LDcgQEAgZXh0NF9zZXR1cCgpCj4gICAgICAgICAgaWYgWyAteiAiJExUUF9CSUdfREVWIiBdO3Ro
+ZW4KPiAgICAgICAgICAgICAgICAgIHRzdF9icmttIFRDT05GICJ0ZXN0cyBuZWVkIGEgYmlnIGJs
+b2NrIGRldmljZSg1Ry0xMEcpIgo+ICAgICAgICAgIGVsc2UKPiAtICAgICAgICAgICAgICAgRVhU
+NF9ERVY9JExUUF9CSUdfREVWCj4gKyAgICAgICAgICAgICAgIGV4cG9ydCBFWFQ0X0RFVj0kTFRQ
+X0JJR19ERVYKCkFja2VkLWJ5OiBXYW5sb25nIEdhbyA8Z2Fvd2FubG9uZ0Bjbi5mdWppdHN1LmNv
+bT4KCj4gICAgICAgICAgZmkKPiAKPiAgICAgICAgICB0c3RfdG1wZGlyCj4gCj4gCj4gSWYgeW91
+IHdhbnQgdG8gbWVyZ2UgdGhpcyBwYXRjaCwgSSB3aWxsIHJlc2VuZCBpdCBhcyB0aGUgYmV0dGVy
+IHdheS4KPiAKPiBUaGFuayB5b3UsCj4gWm9ycm8gTGFuZwo+Pgo+PiBSZWdhcmRzLAo+PiBYaWFv
+Z3VhbmcgV2FuZwo+Pgo+Pj4gUGxlYXNlIHJldmlldywgYW5kIHRlbGwgbWUgd2hpY2ggb25lIGRv
+IHlvdSB0aGluayBpcyBiZXR0ZXIgZm9yIExUUD8gT3IgeW91IGhhdmUgYSBiZXR0ZXIgb25lOykK
+Pj4+Cj4+PiBUaGFuayB5b3UsCj4+PiBab3JybyBMYW5nCj4+Pgo+Pj4gICAuLi4vZnMvZXh0NC1u
+ZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNo
+ICB8IDIgKysKPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQo+Pj4KPj4+IGRp
+ZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5v
+ZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwv
+ZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4dDRfaW5vZGVfdmVyc2lv
+bl90ZXN0LnNoCj4+PiBpbmRleCBhYzhmMDIxLi4yNTQ5MDg4IDEwMDc1NQo+Pj4gLS0tIGEvdGVz
+dGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LWlub2RlLXZlcnNpb24vZXh0
+NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gKPj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0
+NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4dDRfaW5vZGVfdmVyc2lvbl90ZXN0
+LnNoCj4+PiBAQCAtMTM4LDYgKzEzOCw4IEBAIHRlc3RfaW5vZGVfdmVyc2lvbigpCj4+PiAgIAo+
+Pj4gICAjIG1haW4KPj4+ICAgZXh0NF9zZXR1cAo+Pj4gKyMgZXhwb3J0IEVYVDRfREVWIGZvciBl
+eHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIGNhbiBrbm93IGl0Cj4+PiArZXhwb3J0IEVYVDRfREVW
+PSRFWFQ0X0RFVgo+Pj4gICAKPj4+ICAgZXh0NF90ZXN0XzEyOF9pbm9kZV92ZXJzaW9uCj4+PiAg
+IAo+Pj4KPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBDb21wcmVoZW5zaXZlIFNlcnZl
+ciBNb25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCj4gTW9uaXRvciAxMCBzZXJ2ZXJzIGZvciAkOS9N
+b250aC4KPiBHZXQgYWxlcnRlZCB0aHJvdWdoIGVtYWlsLCBTTVMsIHZvaWNlIGNhbGxzIG9yIG1v
+YmlsZSBwdXNoIG5vdGlmaWNhdGlvbnMuCj4gVGFrZSBjb3JyZWN0aXZlIGFjdGlvbnMgZnJvbSB5
+b3VyIG1vYmlsZSBkZXZpY2UuCj4gaHR0cDovL3Auc2YubmV0L3NmdS9ab2hvCj4gX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5n
+IGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNv
+dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+IAoKCi0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLQpDb21wcmVoZW5zaXZlIFNlcnZlciBNb25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCk1v
+bml0b3IgMTAgc2VydmVycyBmb3IgJDkvTW9udGguCkdldCBhbGVydGVkIHRocm91Z2ggZW1haWws
+IFNNUywgdm9pY2UgY2FsbHMgb3IgbW9iaWxlIHB1c2ggbm90aWZpY2F0aW9ucy4KVGFrZSBjb3Jy
+ZWN0aXZlIGFjdGlvbnMgZnJvbSB5b3VyIG1vYmlsZSBkZXZpY2UuCmh0dHA6Ly9wLnNmLm5ldC9z
+ZnUvWm9obwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
+dHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBz
+Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
