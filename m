@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xjq4y-00019t-BT
-	for ltp-list@lists.sourceforge.net; Thu, 30 Oct 2014 13:47:56 +0000
-Date: Thu, 30 Oct 2014 14:47:25 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XeMp2-0008Rh-CC
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 11:32:52 +0000
+Date: Wed, 15 Oct 2014 13:32:30 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141030134723.GD14847@rei.suse.de>
-References: <1413965532-19371-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20141015113230.GB5006@rei.suse.cz>
+References: <1407402404.1347.29.camel@G08JYZSD130126>
+	<179118855.6420138.1407923193096.JavaMail.zimbra@redhat.com>
+	<1411718817.9511.9.camel@G08JYZSD130126>
+	<237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1413965532-19371-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH] acl_test01: sync after removal of the loop device
+In-Reply-To: <237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH v2] securebits: some cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,46 +27,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-> If the test is executed on NFS, it may fail with:
+Hi!
+> # ./check_keepcaps 1
+> keepcaps    0  TWARN  :  tst_brk_: Invalid Type: 0. Using TBROK
+> keepcaps    1  TBROK  :  check_keepcaps.c:88: dropped privs as expected
 > 
-> /dev/loop0 on /tmpdir/tacl/mount-ext3 type ext3 (rw,acl,user_xattr)
-> loop: can't delete device /dev/loop0: No such device or address
-> rm: cannot remove `/tmpdir/tacl': Directory not empty
-> loop: can't delete device /dev/loop0: No such device or address
-> rm: cannot remove `/tmpdir/tacl/.nfs00000000000262fd00000115': Device or resource busy
-> 
-> I suppose that this happens because of kernel commit:
-> 
-> commit a1ecac3b0656a68259927c234e505804d33a7b83
-> Author: Dave Chinner <dchinner@redhat.com>
-> Date:   Fri Sep 28 10:42:23 2012 +0200
-> 
->     loop: Make explicit loop device destruction lazy
-> 
-> To cope with this test case failure I introduced a 'sync'.
-> And 'losetup -d' seems to be unnecessary, because of 'umount -d' before it
+> from lib/tst_res.c:
+>         /*
+>          * Only FAIL, BROK, CONF, and RETR are supported by tst_brk().
+>          */
 
-Hmm, so we umount and detach a filesystem but fail to delete it on NFS
-because somebody else (presumbly udev) keeps the refcount there?
+When I was looking at the tst interface this looked to me like an
+artificial limitation. I guess that we can introduce an function that
+would report success and exit the test as well, the only complicated
+part would be figuring out good name.
 
-If that was the the problem the detach would have failed with EBUSSY
-previously and the test would fail to delete the file anyway.
-
-I do not fully understand why we need to do the sync there. The kernel
-has changed not to report error on detach when somebody else keeps
-working with the loop device and sets AUTOCLEAR flag that detaches the
-loop device on last closed filedescriptor that references it. Does NFS
-keep special file descriptor that prevents the loop device from being
-detached?
+And more progressive view may be that we need two functions for
+reporting results. One that just reports the result and one that also
+exit the test execution (and calls an optional cleanup callback). But
+that would require more changes in the test library and in testscases.
+And I do not want to add an unfamiliar interface as well.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
