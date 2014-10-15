@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XeMp2-0008Rh-CC
-	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 11:32:52 +0000
-Date: Wed, 15 Oct 2014 13:32:30 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141015113230.GB5006@rei.suse.cz>
-References: <1407402404.1347.29.camel@G08JYZSD130126>
-	<179118855.6420138.1407923193096.JavaMail.zimbra@redhat.com>
-	<1411718817.9511.9.camel@G08JYZSD130126>
-	<237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zlang@redhat.com>) id 1XeHqN-0005EY-0y
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 06:13:55 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XeHqI-000130-Jc
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 06:13:55 +0000
+Message-ID: <543E1091.6010105@redhat.com>
+Date: Wed, 15 Oct 2014 14:13:37 +0800
+From: Zorro Lang <zlang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH v2] securebits: some cleanup
+References: <1413212682-13117-1-git-send-email-zlang@redhat.com>
+	<543C9084.6070501@cn.fujitsu.com> <543D0964.5040607@redhat.com>
+	<543DEB72.8070309@cn.fujitsu.com>
+In-Reply-To: <543DEB72.8070309@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] ext4-new-features: modify
+ ext4_get_inode_version.sh not know $EXT4_DEV definition
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,44 +27,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> # ./check_keepcaps 1
-> keepcaps    0  TWARN  :  tst_brk_: Invalid Type: 0. Using TBROK
-> keepcaps    1  TBROK  :  check_keepcaps.c:88: dropped privs as expected
-> 
-> from lib/tst_res.c:
->         /*
->          * Only FAIL, BROK, CONF, and RETR are supported by tst_brk().
->          */
-
-When I was looking at the tst interface this looked to me like an
-artificial limitation. I guess that we can introduce an function that
-would report success and exit the test as well, the only complicated
-part would be figuring out good name.
-
-And more progressive view may be that we need two functions for
-reporting results. One that just reports the result and one that also
-exit the test execution (and calls an optional cleanup callback). But
-that would require more changes in the test library and in testscases.
-And I do not want to add an unfamiliar interface as well.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+5ZyoIDIwMTTlubQxMOaciDE15pelIDExOjM1LCBYaWFvZ3VhbmcgV2FuZyDlhpnpgZM6Cj4gSGks
+Cj4KPiBPbiAxMC8xNC8yMDE0IDA3OjMwIFBNLCBab3JybyBMYW5nIHdyb3RlOgo+PiDlnKggMjAx
+NOW5tDEw5pyIMTTml6UgMTA6NTUsIFhpYW9ndWFuZyBXYW5nIOWGmemBkzoKPj4+IEhpLAo+Pj4K
+Pj4+IE9uIDEwLzEzLzIwMTQgMTE6MDQgUE0sIFpvcnJvIExhbmcgd3JvdGU6Cj4+Pj4gZXh0NF9n
+ZXRfaW5vZGVfdmVyc2lvbi5zaCB1c2UgJEVYVDRfREVWLCBidXQgaXQgcmVhbGx5IGRvZXNuJ3Qg
+a25vdyB3aGF0IGlzICRFWFQ0X0RFVi4KPj4+PiBUaGF0IGNhdXNlIG90aGVyIGNhc2VzIHdoaWNo
+IHVzZSBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIHRvIGZhaWwuCj4+Pj4KPj4+PiBTaWduZWQt
+b2ZmLWJ5OiBab3JybyBMYW5nIDx6bGFuZ0ByZWRoYXQuY29tPgo+Pj4+IC0tLQo+Pj4+Cj4+Pj4g
+SGksCj4+Pj4KPj4+PiBXaGVuIEkgcmFuIGV4dDQtaW5vZGUtdmVyc2lvbiwgSSBhbHdheXMgaGl0
+IFRGQUlMLiBCdXQgSSBjYW4ndCByZXByb2R1Y2UgdGhlIGZhaWx1cmUgbWFudWFsbHkuCj4+Pj4g
+VGhlbiBJIGZvdW5kIGV4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoIHVzZSBleHQ0X2dldF9pbm9k
+ZV92ZXJzaW9uLnNoIC0+Cj4+Pj4gZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCB1c2UgJEVYVDRf
+REVWIC0+Cj4+Pj4gYnV0IGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggZG9lc24ndCBrbm93IHdo
+YXQgaXMgJEVYVDRfREVWLgo+Pj4gWWVhaCwgdGhpcyBpcyBhIGJ1ZyA6KQo+Pj4+IEFib3V0IHRo
+aXMgcGF0Y2gsIEkgZXhwb3J0ICRFWFQ0X0RFViBpbiBleHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5z
+aCwgYmVmb3JlIGl0IGNhbGwgZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaC4KPj4+PiBCdXQgSSB0
+aGluayBhZGQgdGhlICJleHBvcnQiIGluIGZyb250IG9mICJFWFQ0X0RFVj0kTFRQX0JJR19ERVYi
+IGluIGV4dDRfZnVuY3Muc2ggd2lsbCBiZSBhbm90aGVyIG1ldGhvZC4KPj4+IEkgdGhpbmsgYWRk
+aW5nICJleHBvcnQgRVhUNF9ERVY9JExUUF9CSUdfREVWIiBpbiBleHQ0X2Z1bmNzLnNoIHdvdWxk
+IGJlIGJldHRlci4KPj4gSGkgeGlhb2d1YW5nLAo+Pgo+PiBEbyB5b3UgbWVhbiBwYXRjaCBsaWtl
+cyBiZWxvdyBpcyBiZXR0ZXI/Cj4gWWVhaCwgaXQgbG9va3MgZ29vZCB0byBtZS4KPiBJJ20gbm90
+IGEgbWFpbnRhaW5lciA6KQo+Cj4gUmVnYXJkcywKPiBYaWFvZ3VhbmcgV2FuZwpPaCwgc3RpbGwg
+dGhhbmtzIGZvciB5b3U7KQoKQnV0IEkgc3RpbGwgbmVlZCB0aGUgcmV2aWV3IGZyb20gbWFpbnRh
+aW5lci4gQW55b25lIGNhbiBoZWxwPwoKVGhhbmsgeW91LApab3JybyBMYW5nCj4+IGRpZmYgLS1n
+aXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDRfZnVuY3Muc2gg
+Yi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDRfZnVuY3Muc2gKPj4g
+aW5kZXggMGFlNTM0YS4uYjUxZTk0MiAxMDA3NTUKPj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9m
+cy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1bmNzLnNoCj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJu
+ZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaAo+PiBAQCAtNDUsNyArNDUsNyBA
+QCBleHQ0X3NldHVwKCkKPj4gICAgICAgICAgaWYgWyAteiAiJExUUF9CSUdfREVWIiBdO3RoZW4K
+Pj4gICAgICAgICAgICAgICAgICB0c3RfYnJrbSBUQ09ORiAidGVzdHMgbmVlZCBhIGJpZyBibG9j
+ayBkZXZpY2UoNUctMTBHKSIKPj4gICAgICAgICAgZWxzZQo+PiAtICAgICAgICAgICAgICAgRVhU
+NF9ERVY9JExUUF9CSUdfREVWCj4+ICsgICAgICAgICAgICAgICBleHBvcnQgRVhUNF9ERVY9JExU
+UF9CSUdfREVWCj4+ICAgICAgICAgIGZpCj4+Cj4+ICAgICAgICAgIHRzdF90bXBkaXIKPj4KPj4K
+Pj4gSWYgeW91IHdhbnQgdG8gbWVyZ2UgdGhpcyBwYXRjaCwgSSB3aWxsIHJlc2VuZCBpdCBhcyB0
+aGUgYmV0dGVyIHdheS4KPj4KPj4gVGhhbmsgeW91LAo+PiBab3JybyBMYW5nCj4+PiBSZWdhcmRz
+LAo+Pj4gWGlhb2d1YW5nIFdhbmcKPj4+Cj4+Pj4gUGxlYXNlIHJldmlldywgYW5kIHRlbGwgbWUg
+d2hpY2ggb25lIGRvIHlvdSB0aGluayBpcyBiZXR0ZXIgZm9yIExUUD8gT3IgeW91IGhhdmUgYSBi
+ZXR0ZXIgb25lOykKPj4+Pgo+Pj4+IFRoYW5rIHlvdSwKPj4+PiBab3JybyBMYW5nCj4+Pj4KPj4+
+PiAgICAuLi4vZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4dDRfaW5v
+ZGVfdmVyc2lvbl90ZXN0LnNoICB8IDIgKysKPj4+PiAgICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNl
+cnRpb25zKCspCj4+Pj4KPj4+PiBkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0
+LW5ldy1mZWF0dXJlcy9leHQ0LWlub2RlLXZlcnNpb24vZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Qu
+c2ggYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVy
+c2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaAo+Pj4+IGluZGV4IGFjOGYwMjEuLjI1NDkw
+ODggMTAwNzU1Cj4+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJl
+cy9leHQ0LWlub2RlLXZlcnNpb24vZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gKPj4+PiArKysg
+Yi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lv
+bi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaAo+Pj4+IEBAIC0xMzgsNiArMTM4LDggQEAgdGVz
+dF9pbm9kZV92ZXJzaW9uKCkKPj4+PiAgICAgICMgbWFpbgo+Pj4+ICAgIGV4dDRfc2V0dXAKPj4+
+PiArIyBleHBvcnQgRVhUNF9ERVYgZm9yIGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggY2FuIGtu
+b3cgaXQKPj4+PiArZXhwb3J0IEVYVDRfREVWPSRFWFQ0X0RFVgo+Pj4+ICAgICAgZXh0NF90ZXN0
+XzEyOF9pbm9kZV92ZXJzaW9uCj4+Pj4gICAKPj4gLgo+PgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQpDb21wcmVoZW5zaXZlIFNlcnZlciBNb25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCk1vbml0b3Ig
+MTAgc2VydmVycyBmb3IgJDkvTW9udGguCkdldCBhbGVydGVkIHRocm91Z2ggZW1haWwsIFNNUywg
+dm9pY2UgY2FsbHMgb3IgbW9iaWxlIHB1c2ggbm90aWZpY2F0aW9ucy4KVGFrZSBjb3JyZWN0aXZl
+IGFjdGlvbnMgZnJvbSB5b3VyIG1vYmlsZSBkZXZpY2UuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvWm9o
+bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlz
+dCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlz
+dHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
