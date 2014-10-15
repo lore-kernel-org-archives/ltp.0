@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xuw@redhat.com>) id 1XcVE1-0001wf-QK
-	for ltp-list@lists.sourceforge.net; Fri, 10 Oct 2014 08:06:57 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XcVDz-0005l3-EB
-	for ltp-list@lists.sourceforge.net; Fri, 10 Oct 2014 08:06:57 +0000
-Received: from zmail24.collab.prod.int.phx2.redhat.com
-	(zmail24.collab.prod.int.phx2.redhat.com [10.5.83.30])
-	by mx6-phx2.redhat.com (8.14.4/8.14.4) with ESMTP id s9A86nDp019045
-	for <ltp-list@lists.sourceforge.net>; Fri, 10 Oct 2014 04:06:49 -0400
-Date: Fri, 10 Oct 2014 04:06:48 -0400 (EDT)
-From: Xu Wang <xuw@redhat.com>
-Message-ID: <449596914.42340372.1412928408912.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1514362509.42340352.1412928396918.JavaMail.zimbra@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XeO7p-0004ci-Mw
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 12:56:21 +0000
+Date: Wed, 15 Oct 2014 14:56:01 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141015125601.GG5006@rei.suse.cz>
+References: <1409153560-10176-1-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] fs: Fix the check bug in
- testcases/kernel/fs/acl/tacl_xattr.sh
+Content-Disposition: inline
+In-Reply-To: <1409153560-10176-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH] containers: added netns/netns_interfaces.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,54 +21,142 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-RnJvbSBmYmMzODE4MWYwNTA0ZDVlOTJkZWY5MjI5NzdkYTJkZDBhZTBlZThiIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBHZW9yZ2UgV2FuZyA8eHV3QHJlZGhhdC5jb20+CkRhdGU6IEZy
-aSwgMTAgT2N0IDIwMTQgMTU6NTk6MTYgKzA4MDAKU3ViamVjdDogW1BBVENIXSAgZnM6IEZpeCB0
-aGUgY2hlY2sgYnVnIGluCiB0ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC90YWNsX3hhdHRyLnNoCgpT
-aWduZWQtb2ZmLWJ5OiBHZW9yZ2UgV2FuZyA8eHV3QHJlZGhhdC5jb20+Ci0tLQogdGVzdGNhc2Vz
-L2tlcm5lbC9mcy9hY2wvdGFjbF94YXR0ci5zaCB8IDE2ICsrKysrKysrLS0tLS0tLS0KIDEgZmls
-ZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMoKyksIDggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEv
-dGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvdGFjbF94YXR0ci5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwv
-ZnMvYWNsL3RhY2xfeGF0dHIuc2gKaW5kZXggOTlmNmE5NS4uNWE2MGEwNCAxMDA3NTUKLS0tIGEv
-dGVzdGNhc2VzL2tlcm5lbC9mcy9hY2wvdGFjbF94YXR0ci5zaAorKysgYi90ZXN0Y2FzZXMva2Vy
-bmVsL2ZzL2FjbC90YWNsX3hhdHRyLnNoCkBAIC0yNDcsMjQgKzI0NywyNCBAQCBzdSAtIHRhY2x1
-c2VyMSA8PCBUQUNMX1VTRVIxCiAgICBpZiBbIC1lICRDVVJfUEFUSC90YWNsL21vdW50LWV4dDIv
-c2hhcmVkL3RlYW0xL25ld2ZpbGUxIF0KICAgIHRoZW4KICAgICAgICBlY2hvICIiCi0gICAgICAg
-ZWNobyAiRkFJTEVEOiAgWyB0b3VjaCBdIEFDTF9VU0VSX09CSiAgZW50cnkgYWxyZWFkeSBjb250
-YWlucyB0aGUgb3duZXIgd3JpdGUgIgotICAgICAgIGVjaG8gLWUgIlx0IHBlcm1pc3Npb25zLCBi
-dXQgb3BlcmF0aW9uIGZhaWxlZCBbIFBoeXNpY2FsIERpcmVjdG9yeSBdIgotICAgZWxzZQotICAg
-ICAgIGVjaG8gIiIKICAgICAgICBlY2hvICJTVUNDRVNTOiBBQ0xfVVNFUl9PQkogIGVudHJ5IGNv
-bnRhaW5zIHRoZSBvd25lciB3cml0ZSBwZXJtaXNzaW9ucywiCiAgICAgICAgZWNobyAtZSAiXHQg
-b3BlcmF0aW9uIHN1Y2Nlc3MgWyBQaHlzaWNhbCBEaXJlY3RvcnkgXSIKKyAgIGVsc2UKKyAgICAg
-ICBlY2hvICIiCisgICAgICAgZWNobyAiRkFJTEVEOiAgWyB0b3VjaCBdIEFDTF9VU0VSX09CSiAg
-ZW50cnkgYWxyZWFkeSBjb250YWlucyB0aGUgb3duZXIgd3JpdGUgIgorICAgICAgIGVjaG8gLWUg
-Ilx0IHBlcm1pc3Npb25zLCBidXQgb3BlcmF0aW9uIGZhaWxlZCBbIFBoeXNpY2FsIERpcmVjdG9y
-eSBdIgogICAgZmkKCiAgICB0b3VjaCAkQ1VSX1BBVEgvdGFjbC9tb3VudC1leHQyL3NoYXJlZC9z
-eW1saW5rZGlyMS9uZXdmaWwyIDI+IC9kZXYvbnVsbAogICAgaWYgWyAtZSAkQ1VSX1BBVEgvdGFj
-bC9tb3VudC1leHQyL3NoYXJlZC90ZWFtMS9uZXdmaWxlMiBdCiAgICB0aGVuCiAgICAgICAgZWNo
-byAiIgotICAgICAgIGVjaG8gIkZBSUxFRDogIFsgdG91Y2ggXSBBQ0xfVVNFUl9PQkogIGVudHJ5
-IGFscmVhZHkgY29udGFpbnMgdGhlIG93bmVyIHdyaXRlICIKLSAgICAgICBlY2hvIC1lICJcdCBw
-ZXJtaXNzaW9ucywgYnV0IG9wZXJhdGlvbiBmYWlsZWQgWyBTeW1saW5rIERpcmVjdG9yeSBdIgot
-ICAgZWxzZQotICAgICAgIGVjaG8gIiIKICAgICAgICBlY2hvICJTVUNDRVNTOiBBQ0xfVVNFUl9P
-QkogIGVudHJ5IGNvbnRhaW5zIHRoZSBvd25lciB3cml0ZSBwZXJtaXNzaW9ucywiCiAgICAgICAg
-ZWNobyAtZSAiXHQgb3BlcmF0aW9uIHN1Y2Nlc3MgWyBTeW1saW5rIERpcmVjdG9yeSBdIgorICAg
-ZWxzZQorICAgICAgIGVjaG8gIiIKKyAgICAgICBlY2hvICJGQUlMRUQ6ICBbIHRvdWNoIF0gQUNM
-X1VTRVJfT0JKICBlbnRyeSBhbHJlYWR5IGNvbnRhaW5zIHRoZSBvd25lciB3cml0ZSAiCisgICAg
-ICAgZWNobyAtZSAiXHQgcGVybWlzc2lvbnMsIGJ1dCBvcGVyYXRpb24gZmFpbGVkIFsgU3ltbGlu
-ayBEaXJlY3RvcnkgXSIKICAgIGZpCgogVEFDTF9VU0VSMQotLSAKMS45LjMKCi0tIApHZW9yZ2Ug
-V2FuZyDnjovml60KCktlcm5lbCBRdWFudGl0eSBFbmdpbmVlcgpSZWQgSGF0IFNvZnR3YXJlIChC
-ZWlqaW5nKSBDby4sTHRkCklSQzp4dXcKVGVsOis4Ni0wMTAtNjI2MDgwNDEKUGhvbmU6MTU5MDEy
-MzE1NzkKOS9GLCBUb3dlciBDLCBSYXljb20KCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tcHJl
-aGVuc2l2ZSBTZXJ2ZXIgTW9uaXRvcmluZyB3aXRoIFNpdGUyNHg3LgpNb25pdG9yIDEwIHNlcnZl
-cnMgZm9yICQ5L01vbnRoLgpHZXQgYWxlcnRlZCB0aHJvdWdoIGVtYWlsLCBTTVMsIHZvaWNlIGNh
-bGxzIG9yIG1vYmlsZSBwdXNoIG5vdGlmaWNhdGlvbnMuClRha2UgY29ycmVjdGl2ZSBhY3Rpb25z
-IGZyb20geW91ciBtb2JpbGUgZGV2aWNlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L1pvaG8KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGlu
-ZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJj
-ZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+Hi!
+> +#define _GNU_SOURCE
+> +#include <sys/wait.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <errno.h>
+> +#include "usctest.h"
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "netns_helper.h"
+> +
+> +
+> +/* by convention a named network namespace is an object
+> + * at /var/run/netns/NAME that can be opened. (man 8 ip-netns) */
+> +#define NETNS     "/var/run/netns"
+> +char *TCID	= "netns_sendintf";
+> +int TST_TOTAL	= 3;
+> +int pipefd[2];
+> +
+> +
+> +static void cleanup(void)
+> +{
+> +	close(pipefd[0]);
+> +	close(pipefd[1]);
+
+This should be ported to the checkpoint interface.
+
+> +	/* removes veth0 device (which also removes paired veth1 device) */
+> +	if (WEXITSTATUS(system("ip link delete veth0")))
+> +		perror("system");
+> +	/* removes the network namespace myns */
+> +	if (WEXITSTATUS(system("ip netns del myns")))
+> +		perror("system");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_require_root(NULL);
+> +	check_netns();
+> +}
+> +
+> +int child_func(void)
+> +{
+> +	int status, fd;
+> +	char c;
+> +
+> +	fd = open(NETNS"/myns", O_RDONLY);
+> +	if (fd == -1) {
+> +		perror("open");
+> +		return 1;
+> +	}
+> +
+> +	/* associates child with the namespace referred by fd (myns) */
+> +	if (setns(fd, 0) == -1) {
+> +		perror("setns");
+> +		return 1;
+> +	}
+> +
+> +	/* setup for veth1 device */
+> +	if (WEXITSTATUS(system("ip address add 192.168.0.2/24 dev veth1"))) {
+> +		perror("system");
+> +		return 1;
+> +	}
+> +	if (WEXITSTATUS(system("ip link set dev veth1 up"))) {
+> +		perror("system");
+> +		return 1;
+> +	}
+> +
+> +	/* waits for parent to confirm that veth0 device setup is done */
+> +	if (read(pipefd[0], &c, 1) == -1) {
+> +		perror("read");
+> +		return 1;
+> +	}
+> +
+> +	/* ping veth0 address through veth1 device */
+> +	if (WEXITSTATUS(
+> +	    system("ping -q -c 2 -I veth1 192.168.0.1 &>/dev/null")))
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static void test(void)
+> +{
+> +	pid_t pid;
+> +	int status, ret = 0;
+> +
+> +	/* creates a pipe for synchronization between parent and child */
+> +	SAFE_PIPE(cleanup, pipefd);
+> +
+> +	/* unshares a network and a mount namespace */
+> +	if (unshare(CLONE_NEWNET|CLONE_NEWNS) == -1)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
+> +
+> +
+> +	/* TEST CASE #1 */
+> +	/* creates a pair of virtual ethernet devices */
+> +	if (WEXITSTATUS(system("ip link add veth0 type veth peer name veth1")))
+> +		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
+> +	/* creates a new network namespace "myns" (man 8 ip-netns) */
+> +	if (WEXITSTATUS(system("ip netns add myns")))
+> +		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
+> +	/* adds device veth1 to myns namespace */
+> +	if (WEXITSTATUS(system("ip link set veth1 netns myns")))
+> +		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
+> +
+> +
+> +	pid = fork();
+> +	if (pid < 0) {  /* error */
+> +		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
+> +	}
+> +	if (pid == 0) { /* child */
+> +		_exit(child_func());
+> +	}
+> +
+> +	/* parent */
+
+And also freed from trivial comments like these.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
