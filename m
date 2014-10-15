@@ -1,28 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XjrKv-0007P0-0l
-	for ltp-list@lists.sourceforge.net; Thu, 30 Oct 2014 15:08:29 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XjrKn-0000PM-Uz
-	for ltp-list@lists.sourceforge.net; Thu, 30 Oct 2014 15:08:28 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s9UF8FgV028613
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Oct 2014 11:08:15 -0400
-Received: from cc-vtoe10.lab.eng.brq.redhat.com
-	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s9UF8DJd011176
-	for <ltp-list@lists.sourceforge.net>; Thu, 30 Oct 2014 11:08:14 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Thu, 30 Oct 2014 16:07:58 +0100
-Message-Id: <1414681678-28439-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH] containers: added mountns/mountns05.c
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1XeFO9-0000AU-AG
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 03:36:37 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XeFO8-0005TM-00
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 03:36:37 +0000
+Message-ID: <543DEB72.8070309@cn.fujitsu.com>
+Date: Wed, 15 Oct 2014 11:35:14 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1413212682-13117-1-git-send-email-zlang@redhat.com>
+	<543C9084.6070501@cn.fujitsu.com> <543D0964.5040607@redhat.com>
+In-Reply-To: <543D0964.5040607@redhat.com>
+Subject: Re: [LTP] [PATCH] ext4-new-features: modify
+ ext4_get_inode_version.sh not know $EXT4_DEV definition
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,444 +26,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zorro Lang <zlang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Tests a slave-shared mount: slave-shared mount makes
-a mountpoint both, shared and slave at the same time.
-
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
----
- runtest/containers                                 |   1 +
- testcases/kernel/containers/.gitignore             |   1 +
- testcases/kernel/containers/mountns/mountns05.c    | 375 +++++++++++++++++++++
- .../kernel/containers/mountns/mountns_helper.h     |   4 +
- 4 files changed, 381 insertions(+)
- create mode 100644 testcases/kernel/containers/mountns/mountns05.c
-
-diff --git a/runtest/containers b/runtest/containers
-index 6535628..54b9fd2 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -67,3 +67,4 @@ mountns01 mountns01
- mountns02 mountns02
- mountns03 mountns03
- mountns04 mountns04
-+mountns05 mountns05
-diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index 4a98373..386e211 100644
---- a/testcases/kernel/containers/.gitignore
-+++ b/testcases/kernel/containers/.gitignore
-@@ -3,3 +3,4 @@ mountns/mountns01
- mountns/mountns02
- mountns/mountns03
- mountns/mountns04
-+mountns/mountns05
-diff --git a/testcases/kernel/containers/mountns/mountns05.c b/testcases/kernel/containers/mountns/mountns05.c
-new file mode 100644
-index 0000000..d1e61aa
---- /dev/null
-+++ b/testcases/kernel/containers/mountns/mountns05.c
-@@ -0,0 +1,375 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ ***********************************************************************
-+ * File: mountns05.c
-+ *
-+ * Tests a slave-shared mount: slave-shared mount makes a mountpoint both,
-+ * shared and slave at the same time.
-+ * Description (X is parent namespace, Y and Z are child namespaces):
-+ * 1. Creates directories "A", "B" and files "A/A", "B/B"
-+ * 2. Unshares mount namespace and makes it private (so mounts/umounts
-+ *    have no effect on a real system)
-+ * 3. Bind mounts directory "A" to "A"
-+ * 4. Makes directory "A" shared
-+ * 5. Clones a new child process with CLONE_NEWNS flag (creates namespace Y)
-+ * 6. The new child (namespace Y) makes "A" a slave mount (of mount in parent
-+ *    namespace X) and also makes "A" shared inside its (Y) namespace
-+ * 7. The new child process (namespace Y) clones a new child with CLONE_NEWNS
-+ *    flag (creates namespace Z)
-+ * 6. There are two test cases:
-+ *    1)
-+ *	X: bind mounts "B" to "A"
-+ *	Y: must see "A/B"
-+ *	Z: must see "A/B"
-+ *	X: umounts "A"
-+ *    2)
-+ *	Y: bind mounts "B" to "A"
-+ *	X: must see only "A/A" - slave cannot propagate up
-+ *	Z: must see "A/B"      - NS Z shares "A" with NS Y
-+ *	Y: umounts "A"
-+ *    3)
-+ *      Z: bind mounts "B" to "A"
-+ *      X: must see only "A/A" - slave cannot propagate up
-+ *	Y: must see "A/B"      - NS Y shares "A" with NS Z
-+ *	Z: umounts "A"
-+ ***********************************************************************/
-+
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <sys/mount.h>
-+#include <stdio.h>
-+#include <errno.h>
-+#include <sys/msg.h>
-+#include "test.h"
-+#include "usctest.h"
-+#include "libclone.h"
-+#include "safe_macros.h"
-+#include "safe_file_ops.h"
-+#include "mountns_helper.h"
-+
-+
-+#define TC1_MSG "parent: shared mount propagation to slave mount shared between two children"
-+#define TC2_MSG "child1: slave-shared mount inability to prapagate up to " \
-+		"master and ability to propagate to shared mount with child2"
-+#define TC3_MSG "child2: slave-shared mount inability to prapagate up to " \
-+		"master and ability to propagate to shared mount with child1"
-+
-+#define TESTKEY 124426L
-+#define TC1_OK 0x01
-+#define TC2_OK 0x02
-+#define TC3_OK 0x04
-+#define ERRC 0x10
-+
-+#define REPORT_PARENT_ERROR(errmsg) \
-+{ \
-+	msgctl(id, IPC_RMID, NULL); \
-+	tst_brkm(TBROK | TERRNO, cleanup, errmsg); \
-+}
-+
-+#define REPORT_CHLD_ERROR(errmsg) \
-+{ \
-+	perror(errmsg); umount(DIRA); \
-+	msgctl(id, IPC_RMID, NULL); \
-+	wait(&status); return ERRC; \
-+}
-+
-+char *TCID	= "mountns05";
-+int TST_TOTAL	= 3;
-+
-+
-+#if defined(MS_SHARED) && defined(MS_PRIVATE) \
-+    && defined(MS_REC) && defined(MS_SLAVE)
-+
-+int child_func2(void *arg)
-+{
-+	int status;
-+	int id, result = TC3_OK;
-+	struct msgbuf m, r;
-+	m.mtype = 3;
-+
-+	id = msgget(TESTKEY, 0644);
-+	if (id == -1)
-+		REPORT_CHLD_ERROR("msgget");
-+
-+	/* TC#1 */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 1, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	if (access(DIRA"/B", F_OK) == 0)
-+		result |= TC1_OK;
-+
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_CHLD_ERROR("msgsnd");
-+	/* END OF TC#1 */
-+
-+	/* sync with parent */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 4, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	/* TC#2 */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 2, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	if (access(DIRA"/B", F_OK) == 0)
-+		result |= TC2_OK;
-+
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_CHLD_ERROR("msgsnd");
-+	/* END OF TC#2 */
-+
-+	/* sync with parent */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 4, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	/* TC#3 */
-+	/* bind mounts DIRB to DIRA */
-+	if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1)
-+		REPORT_CHLD_ERROR("mount");
-+
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_CHLD_ERROR("msgsnd");
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_CHLD_ERROR("msgsnd");
-+
-+	if (msgrcv(id, &r, sizeof(r.mtext), 1, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+	if (msgrcv(id, &r, sizeof(r.mtext), 2, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	umount(DIRA);
-+	/* END OF TC#3 */
-+
-+	return result;
-+}
-+
-+int child_func1(void *arg)
-+{
-+	int status, id, result = TC2_OK;
-+	struct msgbuf m, r;
-+	m.mtype = 2;
-+
-+	id = msgget(TESTKEY, 0644);
-+	if (id == -1)
-+		REPORT_CHLD_ERROR("msgget");
-+
-+	/* makes mount DIRA a slave mount (of DIRA in parent NS) */
-+	if (mount("none", DIRA, "none", MS_SLAVE, NULL) == -1)
-+		REPORT_CHLD_ERROR("mount");
-+
-+	/* makes mount DIRA a shared mount inside child NS */
-+	if (mount("none", DIRA, "none", MS_SHARED, NULL) == -1)
-+		REPORT_CHLD_ERROR("mount");
-+
-+	if (do_clone_tests(CLONE_NEWNS, child_func2, NULL, NULL, NULL) == -1)
-+		REPORT_CHLD_ERROR("clone");
-+
-+	/* sync with parent*/
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_CHLD_ERROR("msgsnd");
-+
-+	/* TC#1 */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 1, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	if (access(DIRA"/B", F_OK) == 0)
-+		result |= TC1_OK;
-+
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_CHLD_ERROR("msgsnd");
-+	/* END OF TC#1 */
-+
-+	/* sync with parent */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 4, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	/* TC#2 */
-+	/* bind mounts DIRB to DIRA */
-+	if (mount(DIRB, DIRA, "none", MS_BIND, NULL) == -1)
-+		REPORT_CHLD_ERROR("mount");
-+
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_CHLD_ERROR("msgsnd");
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_CHLD_ERROR("msgsnd");
-+
-+	if (msgrcv(id, &r, sizeof(r.mtext), 1, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+	if (msgrcv(id, &r, sizeof(r.mtext), 3, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	umount(DIRA);
-+	/* END OF TC#2 */
-+
-+	/* sync with parent */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 4, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	/* TC#3 */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 3, 0) == -1)
-+		REPORT_CHLD_ERROR("msgrcv");
-+
-+	if (access(DIRA"/B", F_OK) == 0)
-+		result |= TC3_OK;
-+
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_CHLD_ERROR("msgsnd");
-+	/* END OF TC#3 */
-+
-+	wait(&status);
-+	if (WIFEXITED(status)) {
-+		if (WEXITSTATUS(status) & ERRC)
-+			return ERRC;
-+		return (result & WEXITSTATUS(status));
-+	} else {
-+		return ERRC;
-+	}
-+}
-+
-+static void test(void)
-+{
-+	int status, id, result = TC1_OK;
-+	struct msgbuf m, r, sync;
-+	m.mtype = 1;
-+	sync.mtype = 4;
-+
-+	/* unshares the mount ns */
-+	if (unshare(CLONE_NEWNS) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-+	/* makes sure parent mounts/umounts have no effect on a real system */
-+	SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
-+
-+	/* bind mounts DIRA to itself */
-+	SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
-+
-+	/* makes mount DIRA shared */
-+	SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_SHARED, NULL);
-+
-+	id = msgget(TESTKEY, IPC_CREAT | 0644);
-+	if (id == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "msgget");
-+
-+	if (do_clone_tests(CLONE_NEWNS, child_func1, NULL, NULL, NULL) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "clone");
-+
-+	/* sync with child1 */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 2, 0) == -1)
-+		REPORT_PARENT_ERROR("msgrcv");
-+
-+	/* TC#1 */
-+	/* bind mounts DIRB to DIRA */
-+	SAFE_MOUNT(cleanup, DIRB, DIRA, "none", MS_BIND, NULL);
-+
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_PARENT_ERROR("msgsnd");
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_PARENT_ERROR("msgsnd");
-+
-+	if (msgrcv(id, &r, sizeof(r.mtext), 2, 0) == -1)
-+		REPORT_PARENT_ERROR("msgrcv");
-+	if (msgrcv(id, &r, sizeof(r.mtext), 3, 0) == -1)
-+		REPORT_PARENT_ERROR("msgrcv");
-+
-+	SAFE_UMOUNT(cleanup, DIRA);
-+	/* END OF TC#1 */
-+
-+	/* sync with children */
-+	if (msgsnd(id, &sync, sizeof(sync.mtext), 0) == -1)
-+		REPORT_PARENT_ERROR("msgsnd");
-+	if (msgsnd(id, &sync, sizeof(sync.mtext), 0) == -1)
-+		REPORT_PARENT_ERROR("msgsnd");
-+
-+	/* TC#2 */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 2, 0) == -1)
-+		REPORT_PARENT_ERROR("msgrcv");
-+
-+	if ((access(DIRA"/A", F_OK) == 0) && (access(DIRA"/B", F_OK) == -1))
-+		result |= TC2_OK;
-+
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_PARENT_ERROR("msgsnd");
-+	/* END OF TC#2 */
-+
-+	/* sync with children */
-+	if (msgsnd(id, &sync, sizeof(sync.mtext), 0) == -1)
-+		REPORT_PARENT_ERROR("msgsnd");
-+	if (msgsnd(id, &sync, sizeof(sync.mtext), 0) == -1)
-+		REPORT_PARENT_ERROR("msgsnd");
-+
-+	/* TC#3 */
-+	if (msgrcv(id, &r, sizeof(r.mtext), 3, 0) == -1)
-+		REPORT_PARENT_ERROR("msgrcv");
-+
-+	if ((access(DIRA"/A", F_OK) == 0) && (access(DIRA"/B", F_OK) == -1))
-+		result |= TC3_OK;
-+
-+	if (msgsnd(id, &m, sizeof(m.mtext), 0) == -1)
-+		REPORT_PARENT_ERROR("msgsnd");
-+	/* END OF TC#3 */
-+
-+
-+	SAFE_WAIT(cleanup, &status);
-+	if (WIFEXITED(status)) {
-+		result &= WEXITSTATUS(status);
-+		if (result & ERRC)
-+			tst_brkm(TBROK, cleanup, "error in child");
-+	}
-+	if (WIFSIGNALED(status)) {
-+		tst_resm(TBROK, "child was killed with signal %s",
-+			 tst_strsig(WTERMSIG(status)));
-+		return;
-+	}
-+
-+	msgctl(id, IPC_RMID, NULL);
-+	SAFE_UMOUNT(cleanup, DIRA);
-+
-+	if ((result & TC1_OK) == TC1_OK)
-+		tst_resm(TPASS, TC1_MSG);
-+	else
-+		tst_resm(TFAIL, TC1_MSG);
-+
-+	if ((result & TC2_OK) == TC2_OK)
-+		tst_resm(TPASS, TC2_MSG);
-+	else
-+		tst_resm(TFAIL, TC2_MSG);
-+
-+	if ((result & TC3_OK) == TC3_OK)
-+		tst_resm(TPASS, TC3_MSG);
-+	else
-+		tst_resm(TFAIL, TC3_MSG);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test();
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+#else
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "needed mountflags are not defined");
-+}
-+#endif
-diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
-index d4a6a91..d82c837 100644
---- a/testcases/kernel/containers/mountns/mountns_helper.h
-+++ b/testcases/kernel/containers/mountns/mountns_helper.h
-@@ -47,6 +47,10 @@ static int check_newns(void)
- 
- static void cleanup(void)
- {
-+	int status;
-+
-+	wait(&status);
-+	umount(DIRA);
- 	umount(DIRA);
- 	umount(DIRB);
- 	tst_rmdir();
--- 
-1.8.3.1
-
-
-------------------------------------------------------------------------------
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGksCgpPbiAxMC8xNC8yMDE0IDA3OjMwIFBNLCBab3JybyBMYW5nIHdyb3RlOgo+IOWcqCAyMDE0
+5bm0MTDmnIgxNOaXpSAxMDo1NSwgWGlhb2d1YW5nIFdhbmcg5YaZ6YGTOgo+PiBIaSwKPj4KPj4g
+T24gMTAvMTMvMjAxNCAxMTowNCBQTSwgWm9ycm8gTGFuZyB3cm90ZToKPj4+IGV4dDRfZ2V0X2lu
+b2RlX3ZlcnNpb24uc2ggdXNlICRFWFQ0X0RFViwgYnV0IGl0IHJlYWxseSBkb2Vzbid0IGtub3cg
+d2hhdCBpcyAkRVhUNF9ERVYuCj4+PiBUaGF0IGNhdXNlIG90aGVyIGNhc2VzIHdoaWNoIHVzZSBl
+eHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIHRvIGZhaWwuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTog
+Wm9ycm8gTGFuZyA8emxhbmdAcmVkaGF0LmNvbT4KPj4+IC0tLQo+Pj4KPj4+IEhpLAo+Pj4KPj4+
+IFdoZW4gSSByYW4gZXh0NC1pbm9kZS12ZXJzaW9uLCBJIGFsd2F5cyBoaXQgVEZBSUwuIEJ1dCBJ
+IGNhbid0IHJlcHJvZHVjZSB0aGUgZmFpbHVyZSBtYW51YWxseS4KPj4+IFRoZW4gSSBmb3VuZCBl
+eHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCB1c2UgZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCAt
+Pgo+Pj4gZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCB1c2UgJEVYVDRfREVWIC0+Cj4+PiBidXQg
+ZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCBkb2Vzbid0IGtub3cgd2hhdCBpcyAkRVhUNF9ERVYu
+Cj4+IFllYWgsIHRoaXMgaXMgYSBidWcgOikKPj4+IEFib3V0IHRoaXMgcGF0Y2gsIEkgZXhwb3J0
+ICRFWFQ0X0RFViBpbiBleHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCwgYmVmb3JlIGl0IGNhbGwg
+ZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaC4KPj4+IEJ1dCBJIHRoaW5rIGFkZCB0aGUgImV4cG9y
+dCIgaW4gZnJvbnQgb2YgIkVYVDRfREVWPSRMVFBfQklHX0RFViIgaW4gZXh0NF9mdW5jcy5zaCB3
+aWxsIGJlIGFub3RoZXIgbWV0aG9kLgo+PiBJIHRoaW5rIGFkZGluZyAiZXhwb3J0IEVYVDRfREVW
+PSRMVFBfQklHX0RFViIgaW4gZXh0NF9mdW5jcy5zaCB3b3VsZCBiZSBiZXR0ZXIuCj4gSGkgeGlh
+b2d1YW5nLAo+IAo+IERvIHlvdSBtZWFuIHBhdGNoIGxpa2VzIGJlbG93IGlzIGJldHRlcj8KWWVh
+aCwgaXQgbG9va3MgZ29vZCB0byBtZS4KSSdtIG5vdCBhIG1haW50YWluZXIgOikKClJlZ2FyZHMs
+ClhpYW9ndWFuZyBXYW5nCj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0
+NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1u
+ZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaAo+IGluZGV4IDBhZTUzNGEuLmI1MWU5NDIgMTAwNzU1
+Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1bmNz
+LnNoCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1
+bmNzLnNoCj4gQEAgLTQ1LDcgKzQ1LDcgQEAgZXh0NF9zZXR1cCgpCj4gICAgICAgICBpZiBbIC16
+ICIkTFRQX0JJR19ERVYiIF07dGhlbgo+ICAgICAgICAgICAgICAgICB0c3RfYnJrbSBUQ09ORiAi
+dGVzdHMgbmVlZCBhIGJpZyBibG9jayBkZXZpY2UoNUctMTBHKSIKPiAgICAgICAgIGVsc2UKPiAt
+ICAgICAgICAgICAgICAgRVhUNF9ERVY9JExUUF9CSUdfREVWCj4gKyAgICAgICAgICAgICAgIGV4
+cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19ERVYKPiAgICAgICAgIGZpCj4gCj4gICAgICAgICB0c3Rf
+dG1wZGlyCj4gCj4gCj4gSWYgeW91IHdhbnQgdG8gbWVyZ2UgdGhpcyBwYXRjaCwgSSB3aWxsIHJl
+c2VuZCBpdCBhcyB0aGUgYmV0dGVyIHdheS4KPiAKPiBUaGFuayB5b3UsCj4gWm9ycm8gTGFuZwo+
+Pgo+PiBSZWdhcmRzLAo+PiBYaWFvZ3VhbmcgV2FuZwo+Pgo+Pj4gUGxlYXNlIHJldmlldywgYW5k
+IHRlbGwgbWUgd2hpY2ggb25lIGRvIHlvdSB0aGluayBpcyBiZXR0ZXIgZm9yIExUUD8gT3IgeW91
+IGhhdmUgYSBiZXR0ZXIgb25lOykKPj4+Cj4+PiBUaGFuayB5b3UsCj4+PiBab3JybyBMYW5nCj4+
+Pgo+Pj4gICAuLi4vZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4dDRf
+aW5vZGVfdmVyc2lvbl90ZXN0LnNoICB8IDIgKysKPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5z
+ZXJ0aW9ucygrKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQt
+bmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5z
+aCBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJz
+aW9uL2V4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoCj4+PiBpbmRleCBhYzhmMDIxLi4yNTQ5MDg4
+IDEwMDc1NQo+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9l
+eHQ0LWlub2RlLXZlcnNpb24vZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gKPj4+ICsrKyBiL3Rl
+c3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4
+dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoCj4+PiBAQCAtMTM4LDYgKzEzOCw4IEBAIHRlc3RfaW5v
+ZGVfdmVyc2lvbigpCj4+PiAgICAgIyBtYWluCj4+PiAgIGV4dDRfc2V0dXAKPj4+ICsjIGV4cG9y
+dCBFWFQ0X0RFViBmb3IgZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCBjYW4ga25vdyBpdAo+Pj4g
+K2V4cG9ydCBFWFQ0X0RFVj0kRVhUNF9ERVYKPj4+ICAgICBleHQ0X3Rlc3RfMTI4X2lub2RlX3Zl
+cnNpb24KPj4+ICAKPiAKPiAuCj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkNvbXByZWhlbnNp
+dmUgU2VydmVyIE1vbml0b3Jpbmcgd2l0aCBTaXRlMjR4Ny4KTW9uaXRvciAxMCBzZXJ2ZXJzIGZv
+ciAkOS9Nb250aC4KR2V0IGFsZXJ0ZWQgdGhyb3VnaCBlbWFpbCwgU01TLCB2b2ljZSBjYWxscyBv
+ciBtb2JpbGUgcHVzaCBub3RpZmljYXRpb25zLgpUYWtlIGNvcnJlY3RpdmUgYWN0aW9ucyBmcm9t
+IHlvdXIgbW9iaWxlIGRldmljZS4KaHR0cDovL3Auc2YubmV0L3NmdS9ab2hvCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
+dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
+ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
