@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xek5k-0007jF-Uv
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 12:23:40 +0000
-Date: Thu, 16 Oct 2014 14:23:19 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XeNrX-0003hG-GY
+	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 12:39:31 +0000
+Date: Wed, 15 Oct 2014 14:39:11 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141016122318.GD20676@rei.suse.de>
-References: <1409480940.6575.1.camel@G08JYZSD130126>
-	<1411638835.24531.2.camel@G08JYZSD130126>
-	<20140930122027.GB9190@rei.suse.cz>
-	<1412659252.2433.19.camel@G08JYZSD130126.localdomain>
+Message-ID: <20141015123911.GA7271@rei.suse.cz>
+References: <1409047170-18251-2-git-send-email-mmarhefk@redhat.com>
+	<1409320025-12778-1-git-send-email-mmarhefk@redhat.com>
+	<2033057817.18477225.1409840498036.JavaMail.zimbra@redhat.com>
+	<20141002134709.GB4544@rei.suse.cz>
+	<1080778288.46330076.1412258911538.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1412659252.2433.19.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH v2 4/4] multicast/mc_opts: Some cleanup
+In-Reply-To: <1080778288.46330076.1412258911538.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2 v2] containers: added mountns/mountns04.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,43 +28,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> * Delete trace_logic that is used to debug.
-> * Use test.sh script and use tst_* instead of end_testcase.
-> * Delete some unuseful comments.
+> Yes, mounting B is unnecessary and it does not affect the test result.
+> The test() function can be simplified to:
 > 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  testcases/network/multicast/mc_opts/mc_opts  | 164 ++++++---------------------
->  testcases/network/multicast/mc_opts/opts.c   |   7 +-
->  testcases/network/multicast/mc_opts/opts_e.c |   6 +-
->  3 files changed, 37 insertions(+), 140 deletions(-)
+> static void test(void)
+> {
+>         /* unshares the mount ns */
+>         if (unshare(CLONE_NEWNS) == -1)
+>                 tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
+>         /* makes sure mounts/umounts have no effect on a real system */
+>         SAFE_MOUNT(cleanup, "none", "/", "none", MS_REC|MS_PRIVATE, NULL);
 > 
-> diff --git a/testcases/network/multicast/mc_opts/mc_opts b/testcases/network/multicast/mc_opts/mc_opts
-> index f40112c..7e99733 100755
-> --- a/testcases/network/multicast/mc_opts/mc_opts
-> +++ b/testcases/network/multicast/mc_opts/mc_opts
-> @@ -35,142 +35,46 @@ unset LIBPATH
->  #      -Ported
->  #
->  #******************************************************************************
-> -#Uncomment the line below for debug output.
-> -#trace_logic=${trace_logic:-"set -x"}
-> -$trace_logic
->  
-> -if [ -z $LTPBIN ]; then
-> -  PATH=../../../bin/:./:$PATH
-> -fi
->  TC=mc_opts
-> -TCtmp=${TCtmp:-$LTPROOT/bin/$TC$$}
-> -CLEANUP=${CLEANUP:-ON}
->  EXECUTABLES=${EXECUTABLES:-"opts opts_e"}
+>         /* bind mounts DIRA to itself */
+>         SAFE_MOUNT(cleanup, DIRA, DIRA, "none", MS_BIND, NULL);
+>         /* makes mount DIRA unbindable */
+>         SAFE_MOUNT(cleanup, "none", DIRA, "none", MS_UNBINDABLE, NULL);
+> 
+>         /* tries to bind mount unbindable DIRA to DIRB which should fail */
+>         if (mount(DIRA, DIRB, "none", MS_BIND, NULL) == -1) {
+>                 tst_resm(TPASS, "unbindable mount passed");
+>         } else {
+>                 SAFE_UMOUNT(cleanup, DIRB);
+>                 tst_resm(TFAIL, "unbindable mount faled");
+>         }
+> 
+>         SAFE_UMOUNT(cleanup, DIRA);
+> }
 
-The same applies here, it should for example be: mc_opts_helper and
-mc_opts_e_helper.
+I've simplified the test function and updated the test description (in
+the comment at the start of the file) and pushed, thanks.
 
 -- 
 Cyril Hrubis
