@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Xe1fC-0007Bn-1g
-	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 12:57:18 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xe1f8-0004ZA-Hq
-	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 12:57:17 +0000
-Date: Tue, 14 Oct 2014 08:57:06 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <250612477.8653658.1413291425999.JavaMail.zimbra@redhat.com>
-In-Reply-To: <449596914.42340372.1412928408912.JavaMail.zimbra@redhat.com>
-References: <449596914.42340372.1412928408912.JavaMail.zimbra@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xekgf-0001Bp-Ey
+	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 13:01:49 +0000
+Date: Thu, 16 Oct 2014 15:01:28 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141016130128.GF20676@rei.suse.de>
+References: <b8054b8185431bf461ab892b87fd647c03b323b8.1413463764.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] fs: Fix the check bug in
- testcases/kernel/fs/acl/tacl_xattr.sh
+Content-Disposition: inline
+In-Reply-To: <b8054b8185431bf461ab892b87fd647c03b323b8.1413463764.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] doc: document tst_checkpoint_create and
+ tst_checkpoint_init
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,77 +22,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xu Wang <xuw@redhat.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiWHUgV2FuZyIgPHh1d0By
-ZWRoYXQuY29tPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBTZW50OiBG
-cmlkYXksIDEwIE9jdG9iZXIsIDIwMTQgMTA6MDY6NDggQU0KPiBTdWJqZWN0OiBbTFRQXSBbUEFU
-Q0hdIGZzOiBGaXggdGhlIGNoZWNrIGJ1ZyBpbiB0ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC90YWNs
-X3hhdHRyLnNoCj4gCj4gRnJvbSBmYmMzODE4MWYwNTA0ZDVlOTJkZWY5MjI5NzdkYTJkZDBhZTBl
-ZThiIE1vbiBTZXAgMTcgMDA6MDA6MDAgMjAwMQo+IEZyb206IEdlb3JnZSBXYW5nIDx4dXdAcmVk
-aGF0LmNvbT4KPiBEYXRlOiBGcmksIDEwIE9jdCAyMDE0IDE1OjU5OjE2ICswODAwCj4gU3ViamVj
-dDogW1BBVENIXSAgZnM6IEZpeCB0aGUgY2hlY2sgYnVnIGluCj4gIHRlc3RjYXNlcy9rZXJuZWwv
-ZnMvYWNsL3RhY2xfeGF0dHIuc2gKPiAKPiBTaWduZWQtb2ZmLWJ5OiBHZW9yZ2UgV2FuZyA8eHV3
-QHJlZGhhdC5jb20+Cj4gLS0tCj4gIHRlc3RjYXNlcy9rZXJuZWwvZnMvYWNsL3RhY2xfeGF0dHIu
-c2ggfCAxNiArKysrKysrKy0tLS0tLS0tCj4gIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2VydGlvbnMo
-KyksIDggZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMv
-YWNsL3RhY2xfeGF0dHIuc2gKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNsL3RhY2xfeGF0dHIu
-c2gKPiBpbmRleCA5OWY2YTk1Li41YTYwYTA0IDEwMDc1NQo+IC0tLSBhL3Rlc3RjYXNlcy9rZXJu
-ZWwvZnMvYWNsL3RhY2xfeGF0dHIuc2gKPiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbC90
-YWNsX3hhdHRyLnNoCj4gQEAgLTI0NywyNCArMjQ3LDI0IEBAIHN1IC0gdGFjbHVzZXIxIDw8IFRB
-Q0xfVVNFUjEKCkFsc28gSSBzdXNwZWN0IHRoYXQgdGhpcyBsaW5lIGlzIGEgdHlwbzoKICAgICAg
-ICB0b3VjaCAkQ1VSX1BBVEgvdGFjbC9tb3VudC1leHQyL3NoYXJlZC90ZWFtMS9uZXdmaWwxIDI+
-IC9kZXYvbnVsbAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIF5eIHRlc3QgdHJpZXMgdG8gdG91Y2ggIm5ld2ZpbDEiCiAgICAgICAgaWYgWyAtZSAk
-Q1VSX1BBVEgvdGFjbC9tb3VudC1leHQyL3NoYXJlZC90ZWFtMS9uZXdmaWxlMSBdCiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeXiBhbmQgdGhl
-biBjaGVjayBmb3IgIm5ld2ZpbGUxIgoKUmVnYXJkcywKSmFuCgo+ICAgICBpZiBbIC1lICRDVVJf
-UEFUSC90YWNsL21vdW50LWV4dDIvc2hhcmVkL3RlYW0xL25ld2ZpbGUxIF0KPiAgICAgdGhlbgo+
-ICAgICAgICAgZWNobyAiIgo+IC0gICAgICAgZWNobyAiRkFJTEVEOiAgWyB0b3VjaCBdIEFDTF9V
-U0VSX09CSiAgZW50cnkgYWxyZWFkeSBjb250YWlucyB0aGUKPiBvd25lciB3cml0ZSAiCj4gLSAg
-ICAgICBlY2hvIC1lICJcdCBwZXJtaXNzaW9ucywgYnV0IG9wZXJhdGlvbiBmYWlsZWQgWyBQaHlz
-aWNhbCBEaXJlY3RvcnkgXSIKPiAtICAgZWxzZQo+IC0gICAgICAgZWNobyAiIgo+ICAgICAgICAg
-ZWNobyAiU1VDQ0VTUzogQUNMX1VTRVJfT0JKICBlbnRyeSBjb250YWlucyB0aGUgb3duZXIgd3Jp
-dGUKPiAgICAgICAgIHBlcm1pc3Npb25zLCIKPiAgICAgICAgIGVjaG8gLWUgIlx0IG9wZXJhdGlv
-biBzdWNjZXNzIFsgUGh5c2ljYWwgRGlyZWN0b3J5IF0iCj4gKyAgIGVsc2UKPiArICAgICAgIGVj
-aG8gIiIKPiArICAgICAgIGVjaG8gIkZBSUxFRDogIFsgdG91Y2ggXSBBQ0xfVVNFUl9PQkogIGVu
-dHJ5IGFscmVhZHkgY29udGFpbnMgdGhlCj4gb3duZXIgd3JpdGUgIgo+ICsgICAgICAgZWNobyAt
-ZSAiXHQgcGVybWlzc2lvbnMsIGJ1dCBvcGVyYXRpb24gZmFpbGVkIFsgUGh5c2ljYWwgRGlyZWN0
-b3J5IF0iCj4gICAgIGZpCj4gCj4gICAgIHRvdWNoICRDVVJfUEFUSC90YWNsL21vdW50LWV4dDIv
-c2hhcmVkL3N5bWxpbmtkaXIxL25ld2ZpbDIgMj4gL2Rldi9udWxsCj4gICAgIGlmIFsgLWUgJENV
-Ul9QQVRIL3RhY2wvbW91bnQtZXh0Mi9zaGFyZWQvdGVhbTEvbmV3ZmlsZTIgXQo+ICAgICB0aGVu
-Cj4gICAgICAgICBlY2hvICIiCj4gLSAgICAgICBlY2hvICJGQUlMRUQ6ICBbIHRvdWNoIF0gQUNM
-X1VTRVJfT0JKICBlbnRyeSBhbHJlYWR5IGNvbnRhaW5zIHRoZQo+IG93bmVyIHdyaXRlICIKPiAt
-ICAgICAgIGVjaG8gLWUgIlx0IHBlcm1pc3Npb25zLCBidXQgb3BlcmF0aW9uIGZhaWxlZCBbIFN5
-bWxpbmsgRGlyZWN0b3J5IF0iCj4gLSAgIGVsc2UKPiAtICAgICAgIGVjaG8gIiIKPiAgICAgICAg
-IGVjaG8gIlNVQ0NFU1M6IEFDTF9VU0VSX09CSiAgZW50cnkgY29udGFpbnMgdGhlIG93bmVyIHdy
-aXRlCj4gICAgICAgICBwZXJtaXNzaW9ucywiCj4gICAgICAgICBlY2hvIC1lICJcdCBvcGVyYXRp
-b24gc3VjY2VzcyBbIFN5bWxpbmsgRGlyZWN0b3J5IF0iCj4gKyAgIGVsc2UKPiArICAgICAgIGVj
-aG8gIiIKPiArICAgICAgIGVjaG8gIkZBSUxFRDogIFsgdG91Y2ggXSBBQ0xfVVNFUl9PQkogIGVu
-dHJ5IGFscmVhZHkgY29udGFpbnMgdGhlCj4gb3duZXIgd3JpdGUgIgo+ICsgICAgICAgZWNobyAt
-ZSAiXHQgcGVybWlzc2lvbnMsIGJ1dCBvcGVyYXRpb24gZmFpbGVkIFsgU3ltbGluayBEaXJlY3Rv
-cnkgXSIKPiAgICAgZmkKPiAKPiAgVEFDTF9VU0VSMQo+IC0tCj4gMS45LjMKPiAKPiAtLQo+IEdl
-b3JnZSBXYW5nIOeOi+aXrQo+IAo+IEtlcm5lbCBRdWFudGl0eSBFbmdpbmVlcgo+IFJlZCBIYXQg
-U29mdHdhcmUgKEJlaWppbmcpIENvLixMdGQKPiBJUkM6eHV3Cj4gVGVsOis4Ni0wMTAtNjI2MDgw
-NDEKPiBQaG9uZToxNTkwMTIzMTU3OQo+IDkvRiwgVG93ZXIgQywgUmF5Y29tCj4gCj4gCj4gLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tCj4gQ29tcHJlaGVuc2l2ZSBTZXJ2ZXIgTW9uaXRvcmluZyB3aXRo
-IFNpdGUyNHg3Lgo+IE1vbml0b3IgMTAgc2VydmVycyBmb3IgJDkvTW9udGguCj4gR2V0IGFsZXJ0
-ZWQgdGhyb3VnaCBlbWFpbCwgU01TLCB2b2ljZSBjYWxscyBvciBtb2JpbGUgcHVzaCBub3RpZmlj
-YXRpb25zLgo+IFRha2UgY29ycmVjdGl2ZSBhY3Rpb25zIGZyb20geW91ciBtb2JpbGUgZGV2aWNl
-Lgo+IGh0dHA6Ly9wLnNmLm5ldC9zZnUvWm9obwo+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RA
-bGlzdHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlz
-dHMvbGlzdGluZm8vbHRwLWxpc3QKPiAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDb21wcmVoZW5z
-aXZlIFNlcnZlciBNb25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCk1vbml0b3IgMTAgc2VydmVycyBm
-b3IgJDkvTW9udGguCkdldCBhbGVydGVkIHRocm91Z2ggZW1haWwsIFNNUywgdm9pY2UgY2FsbHMg
-b3IgbW9iaWxlIHB1c2ggbm90aWZpY2F0aW9ucy4KVGFrZSBjb3JyZWN0aXZlIGFjdGlvbnMgZnJv
-bSB5b3VyIG1vYmlsZSBkZXZpY2UuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvWm9obwpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxp
-c3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9y
-Z2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi!
+> @@ -642,6 +642,22 @@ the same working directory (they use FIFO for synchronization). The checkpoint
+>  interface provides two pairs of signal and wait functions. One pair to be used
+>  to signal child from parent and second to signal parent from child.
+>  
+> +Checkpoint is represented by 'struct tst_checkpoint', which has to be
+> +initialized before first usage and FIFO has to be created. This is
+> +usually done in parent process in single step by calling
+> +'tst_checkpoint_create()'.
+> +
+> +Child processes created via fork() are ready to use tst_checkpoint_*
+> +synchronization functions, as they inherited already initialized
+> +'struct tst_checkpoint'.
+> +
+> +Child processes started via exec*, or any other process can use already
+> +created FIFO, provided they initialize 'struct tst_checkpoint' first by
+> +call to 'tst_checkpoint_init()'. This function does not create any FIFO,
+> +it relies on fact, that it was already created by some other process.
+> +Note, that if you use multiple FIFOs in this scenario, these should be
+> +initialized in same order as in process you are sychronizing against.
+> +
+>  For the details of the interface, look into the 'include/tst_checkpoint.h' and
+>  'lib/tests/tst_checkpoint_*'.
+
+Nicely done.
+
+We should also add:
+
+IMPORTANT: Be wary that using single checkpoint to signal child/parent followed
+           immediately by wait for parent/child creates an race condtion
+	   between opening the pipe and reading from it (the process
+	   writing to the fifo may may be the wery same process that
+	   reads from it and the checkpoint code will exit the test
+	   with error). You are advised to use two checkpoints in this
+	   case.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
