@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zlang@redhat.com>) id 1XgtCL-0006pA-5R
-	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 10:31:21 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XgtCI-0007rd-2h
-	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 10:31:21 +0000
-Date: Wed, 22 Oct 2014 06:31:06 -0400 (EDT)
-From: Zirong Lang <zlang@redhat.com>
-Message-ID: <1961894713.55219938.1413973866894.JavaMail.zimbra@redhat.com>
-In-Reply-To: <543E2C5B.3080904@cn.fujitsu.com>
-References: <1413212682-13117-1-git-send-email-zlang@redhat.com>
-	<543C9084.6070501@cn.fujitsu.com> <543D0964.5040607@redhat.com>
-	<543E2C5B.3080904@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XeoxN-0004Mk-Dp
+	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 17:35:21 +0000
+Date: Thu, 16 Oct 2014 19:34:59 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141016173458.GA5149@rei.suse.de>
+References: <b8054b8185431bf461ab892b87fd647c03b323b8.1413463764.git.jstancek@redhat.com>
+	<20141016130128.GF20676@rei.suse.de>
+	<270995651.10143129.1413467048364.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] ext4-new-features: modify
- ext4_get_inode_version.sh not know $EXT4_DEV definition
+Content-Disposition: inline
+In-Reply-To: <270995651.10143129.1413467048364.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] doc: document tst_checkpoint_create and
+ tst_checkpoint_init
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,84 +24,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-SGkgV2FubG9uZyBHYW8sCgpUaGFua3MgZm9yIHlvdXIgQUNLLiBCdXQgSSBjYW4ndCBmaW5kIHRo
-aXMgcGF0Y2ggb24gdXBzdHJlYW0gbHRwIHJlcG8gdW50aWwgbm93LgpTaG91bGQgSSByZS1zZW5k
-IHRoZSBhY2tlZCBwYXRjaCB0byB5b3U/CgpUaGFuayB5b3UsClpvcnJvIExhbmcKCi0tLS0tIOWO
-n+Wni+mCruS7tiAtLS0tLQrlj5Hku7bkuro6ICJXYW5sb25nIEdhbyIgPGdhb3dhbmxvbmdAY24u
-ZnVqaXRzdS5jb20+CuaUtuS7tuS6ujogIlpvcnJvIExhbmciIDx6bGFuZ0ByZWRoYXQuY29tPgrm
-ioTpgIE6ICJYaWFvZ3VhbmcgV2FuZyIgPHdhbmd4Zy5mbnN0QGNuLmZ1aml0c3UuY29tPiwgbHRw
-LWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0CuWPkemAgeaXtumXtDog5pif5pyf5LiJLCAyMDE0
-5bm0IDEwIOaciCAxNeaXpSDkuIvljYggNDoxMjoxMQrkuLvpopg6IFJlOiBbTFRQXSBbUEFUQ0hd
-IGV4dDQtbmV3LWZlYXR1cmVzOiBtb2RpZnkgZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCBub3Qg
-a25vdyAkRVhUNF9ERVYgZGVmaW5pdGlvbgoKT24gMTAvMTQvMjAxNCAwNzozMCBQTSwgWm9ycm8g
-TGFuZyB3cm90ZToKPiDlnKggMjAxNOW5tDEw5pyIMTTml6UgMTA6NTUsIFhpYW9ndWFuZyBXYW5n
-IOWGmemBkzoKPj4gSGksCj4+Cj4+IE9uIDEwLzEzLzIwMTQgMTE6MDQgUE0sIFpvcnJvIExhbmcg
-d3JvdGU6Cj4+PiBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIHVzZSAkRVhUNF9ERVYsIGJ1dCBp
-dCByZWFsbHkgZG9lc24ndCBrbm93IHdoYXQgaXMgJEVYVDRfREVWLgo+Pj4gVGhhdCBjYXVzZSBv
-dGhlciBjYXNlcyB3aGljaCB1c2UgZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCB0byBmYWlsLgo+
-Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFpvcnJvIExhbmcgPHpsYW5nQHJlZGhhdC5jb20+Cj4+PiAt
-LS0KPj4+Cj4+PiBIaSwKPj4+Cj4+PiBXaGVuIEkgcmFuIGV4dDQtaW5vZGUtdmVyc2lvbiwgSSBh
-bHdheXMgaGl0IFRGQUlMLiBCdXQgSSBjYW4ndCByZXByb2R1Y2UgdGhlIGZhaWx1cmUgbWFudWFs
-bHkuCj4+PiBUaGVuIEkgZm91bmQgZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2ggdXNlIGV4dDRf
-Z2V0X2lub2RlX3ZlcnNpb24uc2ggLT4KPj4+IGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggdXNl
-ICRFWFQ0X0RFViAtPgo+Pj4gYnV0IGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggZG9lc24ndCBr
-bm93IHdoYXQgaXMgJEVYVDRfREVWLgo+PiBZZWFoLCB0aGlzIGlzIGEgYnVnIDopCj4+PiBBYm91
-dCB0aGlzIHBhdGNoLCBJIGV4cG9ydCAkRVhUNF9ERVYgaW4gZXh0NF9pbm9kZV92ZXJzaW9uX3Rl
-c3Quc2gsIGJlZm9yZSBpdCBjYWxsIGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2guCj4+PiBCdXQg
-SSB0aGluayBhZGQgdGhlICJleHBvcnQiIGluIGZyb250IG9mICJFWFQ0X0RFVj0kTFRQX0JJR19E
-RVYiIGluIGV4dDRfZnVuY3Muc2ggd2lsbCBiZSBhbm90aGVyIG1ldGhvZC4KPj4gSSB0aGluayBh
-ZGRpbmcgImV4cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19ERVYiIGluIGV4dDRfZnVuY3Muc2ggd291
-bGQgYmUgYmV0dGVyLgo+IEhpIHhpYW9ndWFuZywKPiAKPiBEbyB5b3UgbWVhbiBwYXRjaCBsaWtl
-cyBiZWxvdyBpcyBiZXR0ZXI/Cj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMv
-ZXh0NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaCAKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMv
-ZXh0NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaAo+IGluZGV4IDBhZTUzNGEuLmI1MWU5NDIg
-MTAwNzU1Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0
-X2Z1bmNzLnNoCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9l
-eHQ0X2Z1bmNzLnNoCj4gQEAgLTQ1LDcgKzQ1LDcgQEAgZXh0NF9zZXR1cCgpCj4gICAgICAgICAg
-aWYgWyAteiAiJExUUF9CSUdfREVWIiBdO3RoZW4KPiAgICAgICAgICAgICAgICAgIHRzdF9icmtt
-IFRDT05GICJ0ZXN0cyBuZWVkIGEgYmlnIGJsb2NrIGRldmljZSg1Ry0xMEcpIgo+ICAgICAgICAg
-IGVsc2UKPiAtICAgICAgICAgICAgICAgRVhUNF9ERVY9JExUUF9CSUdfREVWCj4gKyAgICAgICAg
-ICAgICAgIGV4cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19ERVYKCkFja2VkLWJ5OiBXYW5sb25nIEdh
-byA8Z2Fvd2FubG9uZ0Bjbi5mdWppdHN1LmNvbT4KCj4gICAgICAgICAgZmkKPiAKPiAgICAgICAg
-ICB0c3RfdG1wZGlyCj4gCj4gCj4gSWYgeW91IHdhbnQgdG8gbWVyZ2UgdGhpcyBwYXRjaCwgSSB3
-aWxsIHJlc2VuZCBpdCBhcyB0aGUgYmV0dGVyIHdheS4KPiAKPiBUaGFuayB5b3UsCj4gWm9ycm8g
-TGFuZwo+Pgo+PiBSZWdhcmRzLAo+PiBYaWFvZ3VhbmcgV2FuZwo+Pgo+Pj4gUGxlYXNlIHJldmll
-dywgYW5kIHRlbGwgbWUgd2hpY2ggb25lIGRvIHlvdSB0aGluayBpcyBiZXR0ZXIgZm9yIExUUD8g
-T3IgeW91IGhhdmUgYSBiZXR0ZXIgb25lOykKPj4+Cj4+PiBUaGFuayB5b3UsCj4+PiBab3JybyBM
-YW5nCj4+Pgo+Pj4gICAuLi4vZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9u
-L2V4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoICB8IDIgKysKPj4+ICAgMSBmaWxlIGNoYW5nZWQs
-IDIgaW5zZXJ0aW9ucygrKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2Zz
-L2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25f
-dGVzdC5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9k
-ZS12ZXJzaW9uL2V4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoCj4+PiBpbmRleCBhYzhmMDIxLi4y
-NTQ5MDg4IDEwMDc1NQo+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0
-dXJlcy9leHQ0LWlub2RlLXZlcnNpb24vZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gKPj4+ICsr
-KyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJz
-aW9uL2V4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoCj4+PiBAQCAtMTM4LDYgKzEzOCw4IEBAIHRl
-c3RfaW5vZGVfdmVyc2lvbigpCj4+PiAgIAo+Pj4gICAjIG1haW4KPj4+ICAgZXh0NF9zZXR1cAo+
-Pj4gKyMgZXhwb3J0IEVYVDRfREVWIGZvciBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIGNhbiBr
-bm93IGl0Cj4+PiArZXhwb3J0IEVYVDRfREVWPSRFWFQ0X0RFVgo+Pj4gICAKPj4+ICAgZXh0NF90
-ZXN0XzEyOF9pbm9kZV92ZXJzaW9uCj4+PiAgIAo+Pj4KPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KPiBDb21wcmVoZW5zaXZlIFNlcnZlciBNb25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCj4g
-TW9uaXRvciAxMCBzZXJ2ZXJzIGZvciAkOS9Nb250aC4KPiBHZXQgYWxlcnRlZCB0aHJvdWdoIGVt
-YWlsLCBTTVMsIHZvaWNlIGNhbGxzIG9yIG1vYmlsZSBwdXNoIG5vdGlmaWNhdGlvbnMuCj4gVGFr
-ZSBjb3JyZWN0aXZlIGFjdGlvbnMgZnJvbSB5b3VyIG1vYmlsZSBkZXZpY2UuCj4gaHR0cDovL3Au
-c2YubmV0L3NmdS9ab2hvCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5nIGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
-dHAtbGlzdAo+IAoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpDb21wcmVoZW5zaXZlIFNlcnZlciBN
-b25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCk1vbml0b3IgMTAgc2VydmVycyBmb3IgJDkvTW9udGgu
-CkdldCBhbGVydGVkIHRocm91Z2ggZW1haWwsIFNNUywgdm9pY2UgY2FsbHMgb3IgbW9iaWxlIHB1
-c2ggbm90aWZpY2F0aW9ucy4KVGFrZSBjb3JyZWN0aXZlIGFjdGlvbnMgZnJvbSB5b3VyIG1vYmls
-ZSBkZXZpY2UuCmh0dHA6Ly9wLnNmLm5ldC9zZnUvWm9obwpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RA
-bGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3Rz
-L2xpc3RpbmZvL2x0cC1saXN0Cg==
+Hi!
+> I thought we had this issue only in parent:
+> 
+> ---------------------------------------------------------------------------------------------------
+>                 parent                        |          child
+>                                               | tst_checkpoint_child_wait
+>                                               |    - has to wait until parent opens pipe for write
+> tst_checkpoint_signal_child (NONBLOCK write)  | 
+> tst_checkpoint_parent_wait (NONBLOCK read)    |
+>   - parent now races on read with child       |
+> ---------------------------------------------------------------------------------------------------
+> 
+> because child is opening always in blocking mode, it will always wait until other
+> side is opened as well:
+> ---------------------------------------------------------------------------------------------------
+>                 parent                        |          child
+>                                               | tst_checkpoint_signal_parent
+>                                               |    - has to wait until parent opens pipe for read
+> tst_checkpoint_parent_wait (NONBLOCK read)    |
+>   - reads from FIFO                           |
+>                                               | tst_checkpoint_child_wait
+>                                               |    - has to wait until parent opens pipe for write
+> tst_checkpoint_signal_child (NONBLOCK write)  |   
+>   - at this point first byte was already read |
+>     from FIFO, parent writes second byte      |
+>                                               |    - and only now will child succeed opening pipe
+> ---------------------------------------------------------------------------------------------------
+> 
+> Am I missing something?
+
+You are right. The problem here is that the fifo can be opened for
+NONBLOCK reading even if there are no writers and therefore there are
+two readers that fight for the data in the fifo.
+
+The second ordering should be fine as far as I can tell.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
