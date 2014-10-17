@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1XeFO9-0000AU-AG
-	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 03:36:37 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XeFO8-0005TM-00
-	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 03:36:37 +0000
-Message-ID: <543DEB72.8070309@cn.fujitsu.com>
-Date: Wed, 15 Oct 2014 11:35:14 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1413212682-13117-1-git-send-email-zlang@redhat.com>
-	<543C9084.6070501@cn.fujitsu.com> <543D0964.5040607@redhat.com>
-In-Reply-To: <543D0964.5040607@redhat.com>
-Subject: Re: [LTP] [PATCH] ext4-new-features: modify
- ext4_get_inode_version.sh not know $EXT4_DEV definition
+	(envelope-from <jstancek@redhat.com>) id 1Xf3rX-0002F9-Fn
+	for ltp-list@lists.sourceforge.net; Fri, 17 Oct 2014 09:30:19 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Xf3rU-0006KU-PN
+	for ltp-list@lists.sourceforge.net; Fri, 17 Oct 2014 09:30:19 +0000
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 17 Oct 2014 11:29:47 +0200
+Message-Id: <3b5ef63b19fe7ac52dc6d3454760f2de344d62e8.1413538123.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v2] cpuset_syscall_testset.sh: check TCONF for test 15,
+	16
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,66 +22,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zorro Lang <zlang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: jbeckenbach@lancope.com
 
-SGksCgpPbiAxMC8xNC8yMDE0IDA3OjMwIFBNLCBab3JybyBMYW5nIHdyb3RlOgo+IOWcqCAyMDE0
-5bm0MTDmnIgxNOaXpSAxMDo1NSwgWGlhb2d1YW5nIFdhbmcg5YaZ6YGTOgo+PiBIaSwKPj4KPj4g
-T24gMTAvMTMvMjAxNCAxMTowNCBQTSwgWm9ycm8gTGFuZyB3cm90ZToKPj4+IGV4dDRfZ2V0X2lu
-b2RlX3ZlcnNpb24uc2ggdXNlICRFWFQ0X0RFViwgYnV0IGl0IHJlYWxseSBkb2Vzbid0IGtub3cg
-d2hhdCBpcyAkRVhUNF9ERVYuCj4+PiBUaGF0IGNhdXNlIG90aGVyIGNhc2VzIHdoaWNoIHVzZSBl
-eHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIHRvIGZhaWwuCj4+Pgo+Pj4gU2lnbmVkLW9mZi1ieTog
-Wm9ycm8gTGFuZyA8emxhbmdAcmVkaGF0LmNvbT4KPj4+IC0tLQo+Pj4KPj4+IEhpLAo+Pj4KPj4+
-IFdoZW4gSSByYW4gZXh0NC1pbm9kZS12ZXJzaW9uLCBJIGFsd2F5cyBoaXQgVEZBSUwuIEJ1dCBJ
-IGNhbid0IHJlcHJvZHVjZSB0aGUgZmFpbHVyZSBtYW51YWxseS4KPj4+IFRoZW4gSSBmb3VuZCBl
-eHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCB1c2UgZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCAt
-Pgo+Pj4gZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCB1c2UgJEVYVDRfREVWIC0+Cj4+PiBidXQg
-ZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCBkb2Vzbid0IGtub3cgd2hhdCBpcyAkRVhUNF9ERVYu
-Cj4+IFllYWgsIHRoaXMgaXMgYSBidWcgOikKPj4+IEFib3V0IHRoaXMgcGF0Y2gsIEkgZXhwb3J0
-ICRFWFQ0X0RFViBpbiBleHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCwgYmVmb3JlIGl0IGNhbGwg
-ZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaC4KPj4+IEJ1dCBJIHRoaW5rIGFkZCB0aGUgImV4cG9y
-dCIgaW4gZnJvbnQgb2YgIkVYVDRfREVWPSRMVFBfQklHX0RFViIgaW4gZXh0NF9mdW5jcy5zaCB3
-aWxsIGJlIGFub3RoZXIgbWV0aG9kLgo+PiBJIHRoaW5rIGFkZGluZyAiZXhwb3J0IEVYVDRfREVW
-PSRMVFBfQklHX0RFViIgaW4gZXh0NF9mdW5jcy5zaCB3b3VsZCBiZSBiZXR0ZXIuCj4gSGkgeGlh
-b2d1YW5nLAo+IAo+IERvIHlvdSBtZWFuIHBhdGNoIGxpa2VzIGJlbG93IGlzIGJldHRlcj8KWWVh
-aCwgaXQgbG9va3MgZ29vZCB0byBtZS4KSSdtIG5vdCBhIG1haW50YWluZXIgOikKClJlZ2FyZHMs
-ClhpYW9ndWFuZyBXYW5nCj4gCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0
-NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1u
-ZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaAo+IGluZGV4IDBhZTUzNGEuLmI1MWU5NDIgMTAwNzU1
-Cj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1bmNz
-LnNoCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1
-bmNzLnNoCj4gQEAgLTQ1LDcgKzQ1LDcgQEAgZXh0NF9zZXR1cCgpCj4gICAgICAgICBpZiBbIC16
-ICIkTFRQX0JJR19ERVYiIF07dGhlbgo+ICAgICAgICAgICAgICAgICB0c3RfYnJrbSBUQ09ORiAi
-dGVzdHMgbmVlZCBhIGJpZyBibG9jayBkZXZpY2UoNUctMTBHKSIKPiAgICAgICAgIGVsc2UKPiAt
-ICAgICAgICAgICAgICAgRVhUNF9ERVY9JExUUF9CSUdfREVWCj4gKyAgICAgICAgICAgICAgIGV4
-cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19ERVYKPiAgICAgICAgIGZpCj4gCj4gICAgICAgICB0c3Rf
-dG1wZGlyCj4gCj4gCj4gSWYgeW91IHdhbnQgdG8gbWVyZ2UgdGhpcyBwYXRjaCwgSSB3aWxsIHJl
-c2VuZCBpdCBhcyB0aGUgYmV0dGVyIHdheS4KPiAKPiBUaGFuayB5b3UsCj4gWm9ycm8gTGFuZwo+
-Pgo+PiBSZWdhcmRzLAo+PiBYaWFvZ3VhbmcgV2FuZwo+Pgo+Pj4gUGxlYXNlIHJldmlldywgYW5k
-IHRlbGwgbWUgd2hpY2ggb25lIGRvIHlvdSB0aGluayBpcyBiZXR0ZXIgZm9yIExUUD8gT3IgeW91
-IGhhdmUgYSBiZXR0ZXIgb25lOykKPj4+Cj4+PiBUaGFuayB5b3UsCj4+PiBab3JybyBMYW5nCj4+
-Pgo+Pj4gICAuLi4vZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4dDRf
-aW5vZGVfdmVyc2lvbl90ZXN0LnNoICB8IDIgKysKPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5z
-ZXJ0aW9ucygrKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQt
-bmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5z
-aCBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJz
-aW9uL2V4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoCj4+PiBpbmRleCBhYzhmMDIxLi4yNTQ5MDg4
-IDEwMDc1NQo+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9l
-eHQ0LWlub2RlLXZlcnNpb24vZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gKPj4+ICsrKyBiL3Rl
-c3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4
-dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoCj4+PiBAQCAtMTM4LDYgKzEzOCw4IEBAIHRlc3RfaW5v
-ZGVfdmVyc2lvbigpCj4+PiAgICAgIyBtYWluCj4+PiAgIGV4dDRfc2V0dXAKPj4+ICsjIGV4cG9y
-dCBFWFQ0X0RFViBmb3IgZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCBjYW4ga25vdyBpdAo+Pj4g
-K2V4cG9ydCBFWFQ0X0RFVj0kRVhUNF9ERVYKPj4+ICAgICBleHQ0X3Rlc3RfMTI4X2lub2RlX3Zl
-cnNpb24KPj4+ICAKPiAKPiAuCj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCkNvbXByZWhlbnNp
-dmUgU2VydmVyIE1vbml0b3Jpbmcgd2l0aCBTaXRlMjR4Ny4KTW9uaXRvciAxMCBzZXJ2ZXJzIGZv
-ciAkOS9Nb250aC4KR2V0IGFsZXJ0ZWQgdGhyb3VnaCBlbWFpbCwgU01TLCB2b2ljZSBjYWxscyBv
-ciBtb2JpbGUgcHVzaCBub3RpZmljYXRpb25zLgpUYWtlIGNvcnJlY3RpdmUgYWN0aW9ucyBmcm9t
-IHlvdXIgbW9iaWxlIGRldmljZS4KaHR0cDovL3Auc2YubmV0L3NmdS9ab2hvCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlz
-dApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3Jn
-ZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+If HAVE_DECL_MPOL_F_MEMS_ALLOWED is not defined, test 15 and 16,
+returns -1, which is evaluted as failure.
+
+Treat it as TCONF, but don't break the execution, cpuset_syscall_testset.sh
+script is expecting to handle stopping/waiting for children by itself.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../cpuset_syscall_test/cpuset_syscall_test.c      |    6 +++---
+ .../cpuset_syscall_test/cpuset_syscall_testset.sh  |   14 ++++++++++++--
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+index e202295..407b8c9 100644
+--- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
++++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+@@ -128,7 +128,7 @@ void sigint_handler(int __attribute__ ((unused)) signo)
+ void test_setaffinity(void)
+ {
+ 	cpu_set_t tmask;
+-	int i;
++	unsigned int i;
+ 	CPU_ZERO(&tmask);
+ 	for (i = 0; i < 8 * sizeof(mask); i++) {
+ 		if ((1 << i) & mask)
+@@ -140,7 +140,7 @@ void test_setaffinity(void)
+ void test_getaffinity(void)
+ {
+ 	cpu_set_t tmask;
+-	int i;
++	unsigned int i;
+ 	CPU_ZERO(&tmask);
+ 	ret = sched_getaffinity(0, sizeof(tmask), &tmask);
+ 	for (i = 0; i < 8 * sizeof(mask); i++) {
+@@ -190,7 +190,7 @@ void test_get_mempolicy(void)
+ 	ret = get_mempolicy(NULL, bitmask_mask(nmask), bitmask_nbits(nmask), 0,
+ 			    MPOL_F_MEMS_ALLOWED);
+ #else
+-	ret = -1;
++	tst_resm(TCONF, "don't have MPOL_F_MEMS_ALLOWED");
+ #endif
+ 
+ 	bitmask_displaylist(str, 256, nmask);
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
+index 561c3b9..bf1ec6c 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
+@@ -299,7 +299,12 @@ test14()
+ 
+ test15()
+ {
+-	do_syscall_test 0 0 --get_mempolicy 0 || return 1
++	do_syscall_test 0 0 --get_mempolicy 0
++	ret=$?
++
++	grep "TCONF" "$TEST_OUTPUT" && return 0
++	[ $ret -ne 0 ] && return 1
++
+ 	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
+ 	test "$(cat "$TEST_OUTPUT")" = "0"
+ 	if [ $? -ne 0 ]; then
+@@ -316,7 +321,12 @@ test15()
+ 
+ test16()
+ {
+-	do_syscall_test 0 0-1 --get_mempolicy 0 || return 1
++	do_syscall_test 0 0-1 --get_mempolicy 0
++	ret=$?
++
++	grep "TCONF" "$TEST_OUTPUT" && return 0
++	[ $ret -ne 0 ] && return 1
++
+ 	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
+ 	test "$(cat "$TEST_OUTPUT")" = "0-1"
+ 	if [ $? -ne 0 ]; then
+-- 
+1.7.1
+
+
+------------------------------------------------------------------------------
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
