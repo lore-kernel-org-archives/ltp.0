@@ -1,30 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1XZhC2-0007zF-0Z
-	for ltp-list@lists.sourceforge.net; Thu, 02 Oct 2014 14:17:18 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XZhC0-0001Bh-9s
-	for ltp-list@lists.sourceforge.net; Thu, 02 Oct 2014 14:17:17 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s92EH86d009449
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Oct 2014 10:17:09 -0400
-Received: from cc-vtoe10.lab.eng.brq.redhat.com
-	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.74.245])
-	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id s92EH7Jh031208
-	for <ltp-list@lists.sourceforge.net>; Thu, 2 Oct 2014 10:17:08 -0400
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Thu,  2 Oct 2014 16:17:02 +0200
-Message-Id: <1412259422-25179-1-git-send-email-mmarhefk@redhat.com>
-In-Reply-To: <1409057073-2988-1-git-send-email-mmarhefk@redhat.com>
-References: <1409057073-2988-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH v3] containers: added netns/netns_netlink.c
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gary.robertson@linaro.org>) id 1Xgf6L-0005VS-Tg
+	for ltp-list@lists.sourceforge.net; Tue, 21 Oct 2014 19:28:13 +0000
+Received: from mail-wg0-f47.google.com ([74.125.82.47])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Xgf6K-0004zT-Lq
+	for ltp-list@lists.sourceforge.net; Tue, 21 Oct 2014 19:28:13 +0000
+Received: by mail-wg0-f47.google.com with SMTP id x13so2090175wgg.30
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 21 Oct 2014 12:28:06 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1412111759-22198-1-git-send-email-gary.robertson@linaro.org>
+References: <1412111759-22198-1-git-send-email-gary.robertson@linaro.org>
+Date: Tue, 21 Oct 2014 14:28:06 -0500
+Message-ID: <CAF7YWnwbb1ZGpMSt2VKLsJXOG+MVg-s8P60POTUoPdaUUGhB3g@mail.gmail.com>
+From: Gary Robertson <gary.robertson@linaro.org>
+Subject: Re: [LTP] [PATCH] Realtime tests: Fix bad priority inheritance
+	conditionals
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,258 +28,178 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0337972603252736775=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-* Tests a netlink interface inside a new network namespace
+--===============0337972603252736775==
+Content-Type: multipart/alternative; boundary=089e0149342ca230f70505f3d44b
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
----
- runtest/containers                                |   1 +
- testcases/kernel/containers/netns/.gitignore      |   1 +
- testcases/kernel/containers/netns/Makefile        |   2 +-
- testcases/kernel/containers/netns/netns_netlink.c | 184 ++++++++++++++++++++++
- 4 files changed, 187 insertions(+), 1 deletion(-)
- create mode 100644 testcases/kernel/containers/netns/netns_netlink.c
+--089e0149342ca230f70505f3d44b
+Content-Type: text/plain; charset=UTF-8
 
-diff --git a/runtest/containers b/runtest/containers
-index 8e8e067..7d01a44 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -28,6 +28,7 @@ netns_two_children_ns netns_two_children_ns
- netns_crtchild_delchild netns_crtchild_delchild
- netns_par_chld_ipv6 netns_par_chld_ipv6
- netns_par_chld_ftp netns_par_chld_ftp.sh
-+netns_netlink netns_netlink
- 
- shmnstest_none shmnstest none
- shmnstest_clone shmnstest clone
-diff --git a/testcases/kernel/containers/netns/.gitignore b/testcases/kernel/containers/netns/.gitignore
-index e096adc..65f96be 100644
---- a/testcases/kernel/containers/netns/.gitignore
-+++ b/testcases/kernel/containers/netns/.gitignore
-@@ -5,3 +5,4 @@
- /netns_par_chld_ipv6
- /netns_sysfsview
- /netns_two_children_ns
-+/netns_netlink
-diff --git a/testcases/kernel/containers/netns/Makefile b/testcases/kernel/containers/netns/Makefile
-index cdda23b..eea0d88 100644
---- a/testcases/kernel/containers/netns/Makefile
-+++ b/testcases/kernel/containers/netns/Makefile
-@@ -31,7 +31,7 @@ LDLIBS			+= -lclone
- MAKE_TARGETS		:= netns_create_container netns_crtchild \
- 			   netns_crtchild_delchild netns_par_chld_ftp \
- 			   netns_par_chld_ipv6 netns_sysfsview \
--			   netns_two_children_ns
-+			   netns_two_children_ns netns_netlink
- 
- $(MAKE_TARGETS): %: common.o %.o
- 
-diff --git a/testcases/kernel/containers/netns/netns_netlink.c b/testcases/kernel/containers/netns/netns_netlink.c
-new file mode 100644
-index 0000000..b365a9a
---- /dev/null
-+++ b/testcases/kernel/containers/netns/netns_netlink.c
-@@ -0,0 +1,184 @@
-+/* Copyright (c) 2014 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ ***********************************************************************
-+ * File: netns_netlink.c
-+ *
-+ * Tests a netlink interface inside a new network namespace.
-+ * Description:
-+ * 1. Unshares a network namespace (so network related actions
-+ *    have no effect on a real system)
-+ * 2. Forks a child which creates a NETLINK_ROUTE netlink socket
-+ *    and listens to RTMGRP_LINK (network interface create/delete/up/down)
-+ *    multicast group.
-+ * 4. Child then waits for parent approval to receive data from socket
-+ * 3. Parent creates a new TAP interface (dummy0) and immediately
-+ *    removes it (which should generate some data in child's netlink socket).
-+ *    Then it allows child to continue.
-+ * 4. As the child was listening to RTMGRP_LINK multicast group, it should
-+ *    detect the new interface creation/deletion (by reading data from netlink
-+ *    socket), if so, the test passes, otherwise it fails.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <asm/types.h>
-+#include <sys/socket.h>
-+#include <linux/netlink.h>
-+#include <linux/rtnetlink.h>
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include "usctest.h"
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "netns_helper.h"
-+
-+
-+#define MAX_TRIES 1000
-+char *TCID	= "netns_netlink";
-+int TST_TOTAL	= 1;
-+struct tst_checkpoint checkpoint;
-+
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+	check_netns();
-+	tst_tmpdir();
-+	TST_CHECKPOINT_INIT(&checkpoint);
-+}
-+
-+int child_func(void)
-+{
-+	int fd, len, event_found, tries;
-+	struct sockaddr_nl sa;
-+	char buffer[4096];
-+	struct nlmsghdr *nlh;
-+
-+	/* child will listen to a network interface create/delete/up/down
-+	 * events */
-+	memset(&sa, 0, sizeof(sa));
-+	sa.nl_family = AF_NETLINK;
-+	sa.nl_groups = RTMGRP_LINK;
-+	
-+	fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE);
-+	if (fd == -1) {
-+		perror("socket");
-+		return 1;
-+	}
-+	if (bind(fd, (struct sockaddr *) &sa, sizeof(sa)) == -1) {
-+		perror("bind");
-+		close(fd);
-+		return 1;
-+	}
-+
-+	/* waits for parent to create an interface */
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint);
-+
-+	/* To get rid of "resource temporarily unavailable" errors
-+	 * when testing with -i option */
-+	tries = 0;
-+	event_found = 0;
-+	nlh = (struct nlmsghdr *) buffer;
-+	while (tries < MAX_TRIES) {
-+		len = recv(fd, nlh, sizeof(buffer), MSG_DONTWAIT);
-+		if (len > 0) {
-+			/* stop receiving only on interface create/delete
-+			 * event */
-+			if (nlh->nlmsg_type == RTM_NEWLINK ||
-+			    nlh->nlmsg_type == RTM_DELLINK) {
-+				event_found++;
-+				break;
-+			}
-+		}
-+		usleep(10000);
-+		tries++;
-+	}
-+
-+	close(fd);
-+
-+	if (!event_found) {
-+		perror("recv");
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static void test(void)
-+{
-+	pid_t pid;
-+	int status;
-+
-+	/* unshares the network namespace */
-+	if (unshare(CLONE_NEWNET) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "unshare failed");
-+
-+	pid = tst_fork();
-+	if (pid < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
-+	}
-+	if (pid == 0) {
-+		_exit(child_func());
-+	}
-+
-+	/* creates TAP network interface dummy0 */
-+	if (WEXITSTATUS(system("ip tuntap add dev dummy0 mode tap")) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
-+
-+	/* removes previously created dummy0 device */
-+	if (WEXITSTATUS(system("ip tuntap del mode tap dummy0")) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "system failed");
-+
-+	/* allow child to continue */
-+	TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
-+
-+
-+	SAFE_WAITPID(cleanup, pid, &status, 0);
-+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-+		tst_resm(TFAIL, "netlink interface fail");
-+		return;
-+	}
-+	if (WIFSIGNALED(status)) {
-+		tst_resm(TFAIL, "child was killed with signal %s",
-+			 tst_strsig(WTERMSIG(status)));
-+		return;
-+	}
-+
-+	tst_resm(TPASS, "netlink interface pass");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	const char *msg;
-+	int lc;
-+
-+	msg = parse_opts(argc, argv, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test();
-+
-+	cleanup();
-+	tst_exit();
-+}
--- 
-1.8.3.1
+LTP developers,
 
+Just wondered if this patch slipped through the cracks as I have heard no
+comments for almost a month.
+After floundering about for a long while trying to decipher the
+macros-within-macros mysteries of autoconf in an OpenEmbedded build
+environment I finally arrived at a proper solution for successfully
+building the mutex tests for priority inheritance and robust mutexes.
+This patch and its counterpart for robust mutex conditionals are the LTP
+part of that solution, and address build-time issues which are not confined
+to the OE build environment.
+
+Apologies for all the previous noise and thanks for your forbearance while
+I groped for understanding.
+
+Gary Robertson
+
+On Tue, Sep 30, 2014 at 4:15 PM, Gary S. Robertson <
+gary.robertson@linaro.org> wrote:
+
+> From: "Gary S. Robertson" <gary.robertson@linaro.org>
+>
+> testcases/realtime/lib/librttest.c and
+> testcases/realtime/stress/pi-tests/testpi-3.c
+> both referenced a non-existent autoconf configuration setting variable.
+> Replaced the invalid variable name with the variable actually created
+> by autoconf.
+>
+> Signed-off-by: Gary S. Robertson <gary.robertson@linaro.org>
+> ---
+>  testcases/realtime/lib/librttest.c            |    2 +-
+>  testcases/realtime/stress/pi-tests/testpi-3.c |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/realtime/lib/librttest.c
+> b/testcases/realtime/lib/librttest.c
+> index c175148..3679058 100644
+> --- a/testcases/realtime/lib/librttest.c
+> +++ b/testcases/realtime/lib/librttest.c
+> @@ -586,7 +586,7 @@ void *busy_work_us(int us)
+>
+>  void init_pi_mutex(pthread_mutex_t * m)
+>  {
+> -#if HAVE_DECL_PTHREAD_PRIO_INHERIT
+> +#if HAS_PRIORITY_INHERIT
+>         pthread_mutexattr_t attr;
+>         int ret;
+>         int protocol;
+> diff --git a/testcases/realtime/stress/pi-tests/testpi-3.c
+> b/testcases/realtime/stress/pi-tests/testpi-3.c
+> index 30f38f6..e483945 100644
+> --- a/testcases/realtime/stress/pi-tests/testpi-3.c
+> +++ b/testcases/realtime/stress/pi-tests/testpi-3.c
+> @@ -365,7 +365,7 @@ int main(int argc, char *argv[])
+>
+>         printf("Start %s\n", argv[0]);
+>
+> -#if HAVE_DECL_PTHREAD_PRIO_INHERIT
+> +#if HAS_PRIORITY_INHERIT
+>         if (!nopi) {
+>                 pthread_mutexattr_t mutexattr;
+>                 int protocol;
+> --
+> 1.7.9.5
+>
+>
+
+--089e0149342ca230f70505f3d44b
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div><div><div><div>LTP developers,<br><br></div>Just=
+ wondered if this patch slipped through the cracks as I have heard no comme=
+nts for almost a month.<br></div>After floundering about for a long while t=
+rying to decipher the macros-within-macros mysteries of autoconf in an Open=
+Embedded build environment I finally arrived at a proper solution for succe=
+ssfully building the mutex tests for priority inheritance and robust mutexe=
+s.<br></div>This patch and its counterpart for robust mutex conditionals ar=
+e the LTP part of that solution, and address build-time issues which are no=
+t confined to the OE build environment.<br><br></div>Apologies for all the =
+previous noise and thanks for your forbearance while I groped for understan=
+ding.<br><br></div>Gary Robertson<br></div><div class=3D"gmail_extra"><br><=
+div class=3D"gmail_quote">On Tue, Sep 30, 2014 at 4:15 PM, Gary S. Robertso=
+n <span dir=3D"ltr">&lt;<a href=3D"mailto:gary.robertson@linaro.org" target=
+=3D"_blank">gary.robertson@linaro.org</a>&gt;</span> wrote:<br><blockquote =
+class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid=
+;padding-left:1ex">From: &quot;Gary S. Robertson&quot; &lt;<a href=3D"mailt=
+o:gary.robertson@linaro.org">gary.robertson@linaro.org</a>&gt;<br>
+<br>
+testcases/realtime/lib/librttest.c and<br>
+testcases/realtime/stress/pi-tests/testpi-3.c<br>
+both referenced a non-existent autoconf configuration setting variable.<br>
+Replaced the invalid variable name with the variable actually created<br>
+by autoconf.<br>
+<br>
+Signed-off-by: Gary S. Robertson &lt;<a href=3D"mailto:gary.robertson@linar=
+o.org">gary.robertson@linaro.org</a>&gt;<br>
+---<br>
+=C2=A0testcases/realtime/lib/librttest.c=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 |=C2=A0 =C2=A0 2 +-<br>
+=C2=A0testcases/realtime/stress/pi-tests/testpi-3.c |=C2=A0 =C2=A0 2 +-<br>
+=C2=A02 files changed, 2 insertions(+), 2 deletions(-)<br>
+<br>
+diff --git a/testcases/realtime/lib/librttest.c b/testcases/realtime/lib/li=
+brttest.c<br>
+index c175148..3679058 100644<br>
+--- a/testcases/realtime/lib/librttest.c<br>
++++ b/testcases/realtime/lib/librttest.c<br>
+@@ -586,7 +586,7 @@ void *busy_work_us(int us)<br>
+<br>
+=C2=A0void init_pi_mutex(pthread_mutex_t * m)<br>
+=C2=A0{<br>
+-#if HAVE_DECL_PTHREAD_PRIO_INHERIT<br>
++#if HAS_PRIORITY_INHERIT<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 pthread_mutexattr_t attr;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 int ret;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 int protocol;<br>
+diff --git a/testcases/realtime/stress/pi-tests/testpi-3.c b/testcases/real=
+time/stress/pi-tests/testpi-3.c<br>
+index 30f38f6..e483945 100644<br>
+--- a/testcases/realtime/stress/pi-tests/testpi-3.c<br>
++++ b/testcases/realtime/stress/pi-tests/testpi-3.c<br>
+@@ -365,7 +365,7 @@ int main(int argc, char *argv[])<br>
+<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 printf(&quot;Start %s\n&quot;, argv[0]);<br>
+<br>
+-#if HAVE_DECL_PTHREAD_PRIO_INHERIT<br>
++#if HAS_PRIORITY_INHERIT<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 if (!nopi) {<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 pthread_mutexattr_t=
+ mutexattr;<br>
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 int protocol;<br>
+<span class=3D"HOEnZb"><font color=3D"#888888">--<br>
+1.7.9.5<br>
+<br>
+</font></span></blockquote></div><br></div>
+
+--089e0149342ca230f70505f3d44b--
+
+
+--===============0337972603252736775==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
+--===============0337972603252736775==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0337972603252736775==--
+
