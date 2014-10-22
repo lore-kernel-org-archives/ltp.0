@@ -1,23 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gary.robertson@linaro.org>) id 1Xhi9o-0001oB-3J
-	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 16:56:08 +0000
-Received: from mail-oi0-f50.google.com ([209.85.218.50])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Xhi9m-0003ks-Bo
-	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 16:56:08 +0000
-Received: by mail-oi0-f50.google.com with SMTP id i138so622943oig.37
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 24 Oct 2014 09:56:00 -0700 (PDT)
-From: "Gary S. Robertson" <gary.robertson@linaro.org>
-Date: Fri, 24 Oct 2014 11:47:32 -0500
-Message-Id: <1414169252-19374-3-git-send-email-gary.robertson@linaro.org>
-In-Reply-To: <1414169252-19374-1-git-send-email-gary.robertson@linaro.org>
-References: <90019386.14686839.1414156011036.JavaMail.zimbra@redhat.com>
-	<1414169252-19374-1-git-send-email-gary.robertson@linaro.org>
-Subject: [LTP] [PATCH] Realtime tests: Use correct PI conditional in testpi-5
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XguGY-0005D1-Vt
+	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:47 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XguGY-0002hH-0o
+	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:46 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s9MBddbl006568
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:39 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s9MBdcKA009141
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:38 GMT
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s9MBdcfn013724
+	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:38 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 22 Oct 2014 15:41:31 +0400
+Message-Id: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v2 1/3] network/test_net: add support for -6 option
+	(IPv6 tests)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,39 +40,51 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
-Cc: ltp-list@lists.sourceforge.net, mike.holmes@linaro.org
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-From: "Gary S. Robertson" <gary.robertson@linaro.org>
+* copy read_opts() from net_cmdlib.sh library;
+* replace TST_EXEC_SUFFIX with more informative name TST_IPV6;
+* skip other options;
 
-testcases/realtime/func/pi-tests/testpi-5.c
-referenced a non-existent autoconf configuration setting variable.
-Replaced the invalid variable name with the variable actually created
-by autoconf.
-
-Signed-off-by: Gary S. Robertson <gary.robertson@linaro.org>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/realtime/func/pi-tests/testpi-5.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/lib/test_net.sh |   15 +++++++++++++++
+ 1 files changed, 15 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/realtime/func/pi-tests/testpi-5.c b/testcases/realtime/func/pi-tests/testpi-5.c
-index a1d93cc..a524864 100644
---- a/testcases/realtime/func/pi-tests/testpi-5.c
-+++ b/testcases/realtime/func/pi-tests/testpi-5.c
-@@ -69,7 +69,7 @@ int do_test(int argc, char **argv)
- 	pthread_mutexattr_t mutexattr;
- 	int retc, protocol;
- 
--#if HAS_PTHREAD_MUTEXATTR_PROTOCOL_FUNCTIONS
-+#if HAS_PRIORITY_INHERIT
- 
- 	if (pthread_mutexattr_init(&mutexattr) != 0)
- 		printf("Failed to init mutexattr\n");
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 8cbcb70..24460f3 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -137,3 +137,18 @@ tst_iface()
+ 	link_num=$(( $link_num + 1 ))
+ 	echo "$(tst_get_ifaces $type)" | awk '{ print $'"$link_num"' }'
+ }
++
++# Blank for an IPV4 test; 6 for an IPV6 test.
++TST_IPV6=
++
++tst_read_opts()
++{
++	OPTIND=0
++	while getopts ":6" opt; do
++		case "$opt" in
++		6)
++			TST_IPV6=6;;
++		esac
++	done
++	OPTIND=0
++}
 -- 
-1.7.9.5
+1.7.1
 
 
 ------------------------------------------------------------------------------
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
