@@ -2,20 +2,32 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XeMhq-0000R1-RU
-	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 11:25:26 +0000
-Date: Wed, 15 Oct 2014 13:25:04 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141015112504.GA5006@rei.suse.cz>
-References: <1407402404.1347.29.camel@G08JYZSD130126>
-	<179118855.6420138.1407923193096.JavaMail.zimbra@redhat.com>
-	<1411718817.9511.9.camel@G08JYZSD130126>
-	<237697509.31082624.1411735385050.JavaMail.zimbra@redhat.com>
-	<1412754540.28284.11.camel@G08JYZSD130126.localdomain>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1412754540.28284.11.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH v3] securebits: some cleanup
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XguGb-0005DE-JG
+	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:49 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XguGZ-0007mf-NH
+	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:49 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s9MBdfAw006598
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:42 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	s9MBdeGj012129
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:41 GMT
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s9MBdeDF009233
+	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:40 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 22 Oct 2014 15:41:32 +0400
+Message-Id: <1413978094-10616-2-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v3 2/3] network/test_net: add tst_ipaddr
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,179 +37,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> diff --git a/runtest/securebits b/runtest/securebits
-> index d78a66f..64e6e0a 100644
-> --- a/runtest/securebits
-> +++ b/runtest/securebits
-> @@ -1,2 +1,4 @@
->  #DESCRIPTION:securebits tests
-> -Securebits	run_securebits.sh
-> +check_keepcaps01 check_keepcaps 1
-> +check_keepcaps02 check_keepcaps 2
-> +check_keepcaps03 check_keepcaps 3
-> diff --git a/testcases/kernel/security/securebits/Makefile b/testcases/kernel/security/securebits/Makefile
-> index 51018d9..e379b7c 100644
-> --- a/testcases/kernel/security/securebits/Makefile
-> +++ b/testcases/kernel/security/securebits/Makefile
-> @@ -4,7 +4,8 @@
->  ##                                                                            ##
->  ## This program is free software;  you can redistribute it and#or modify      ##
->  ## it under the terms of the GNU General Public License as published by       ##
-> -## the Free Software Foundation; either version 2 of the License, or          ## ## (at your option) any later version.                                        ##
-> +## the Free Software Foundation; either version 2 of the License, or          ##
-> +## (at your option) any later version.                                        ##
->  ##                                                                            ##
->  ## This program is distributed in the hope that it will be useful, but        ##
->  ## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-> @@ -12,8 +13,8 @@
->  ## for more details.                                                          ##
->  ##                                                                            ##
->  ## You should have received a copy of the GNU General Public License          ##
-> -## along with this program;  if not, write to the Free Software               ##
-> -## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
-> +## along with this program;  if not, write to the Free Software Foundation,   ##
-> +## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
->  ##                                                                            ##
->  ################################################################################
->  
-> @@ -23,6 +24,4 @@ include $(top_srcdir)/include/mk/testcases.mk
->  
->  LDLIBS			+= $(CAP_LIBS)
->  
-> -INSTALL_TARGETS		:= *.sh
-> -
->  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/security/securebits/check_keepcaps.c b/testcases/kernel/security/securebits/check_keepcaps.c
-> index 6e195c6..ce74715 100644
-> --- a/testcases/kernel/security/securebits/check_keepcaps.c
-> +++ b/testcases/kernel/security/securebits/check_keepcaps.c
-> @@ -5,7 +5,6 @@
->  #include <sys/capability.h>
->  #endif
->  #include <sys/prctl.h>
-> -#include <linux/securebits.h>
->  #include "usctest.h"
->  #include "test.h"
->  
-> @@ -30,7 +29,9 @@
->  char *TCID = "keepcaps";
->  int TST_TOTAL = 1;
->  
-> -#ifdef HAVE_LIBCAP
-> +#if (HAVE_LINUX_SECUREBITS_H && HAVE_LIBCAP)
-> +#include <linux/securebits.h>
-> +
->  static int eff_caps_empty(cap_t c)
->  {
->  	int i, ret, empty = 1;
-> @@ -75,10 +76,8 @@ static void do_setuid(int expect_privs)
->  	int have_privs;
->  
->  	ret = setuid(1000);
-> -	if (ret) {
-> -		tst_resm(TERRNO | TFAIL, "setuid failed");
-> -		tst_exit();
-> -	}
-> +	if (ret)
-> +		tst_brkm(TERRNO | TFAIL, NULL, "setuid failed");
->  
->  	have_privs = am_privileged();
->  	if (have_privs && expect_privs == EXPECT_PRIVS) {
-> @@ -95,8 +94,7 @@ static void do_setuid(int expect_privs)
->  	}
->  
->  	/* have_privs && EXPECT_NOPRIVS */
-> -	tst_resm(TFAIL, "expected to drop privs but did not");
-> -	tst_exit();
-> +	tst_brkm(TFAIL, NULL, "expected to drop privs but did not");
->  }
->  
->  int main(int argc, char *argv[])
-> @@ -106,64 +104,55 @@ int main(int argc, char *argv[])
->  	tst_require_root(NULL);
->  
->  	ret = prctl(PR_GET_KEEPCAPS);
-> -	if (ret) {
-> -		tst_resm(TBROK, "keepcaps was already set?\n");
-> -		tst_exit();
-> -	}
-> +	if (ret)
-> +		tst_brkm(TBROK, NULL, "keepcaps was already set?\n");
-> +
-> +	if (argc < 2)
-> +		tst_brkm(TBROK, NULL, "Usage: %s <tescase_num>", argv[0]);
->  
-> -	if (argc < 2) {
-> -		tst_resm(TBROK, "Usage: %s <tescase_num>", argv[0]);
-> -		tst_exit();
-> -	}
->  	whichtest = atoi(argv[1]);
-> -	if (whichtest < 1 || whichtest > 3) {
-> -		tst_resm(TFAIL, "Valid tests are 1-3\n");
-> -		tst_exit();
-> -	}
-> +	if (whichtest < 1 || whichtest > 3)
-> +		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
-> +
->  	switch (whichtest) {
->  	case 1:
->  		do_setuid(EXPECT_NOPRIVS);	/* does not return */
->  	case 2:
->  		ret = prctl(PR_SET_KEEPCAPS, 1);
->  		if (ret == -1) {
-> -			tst_resm(TFAIL | TERRNO, "PR_SET_KEEPCAPS failed\n");
-> -			tst_exit();
-> +			tst_brkm(TFAIL | TERRNO, NULL,
-> +				 "PR_SET_KEEPCAPS failed\n");
->  		}
->  		ret = prctl(PR_GET_KEEPCAPS);
->  		if (!ret) {
-> -			tst_resm(TFAIL | TERRNO,
-> +			tst_brkm(TFAIL | TERRNO, NULL,
->  				 "PR_SET_KEEPCAPS did not set keepcaps\n");
-> -			tst_exit();
->  		}
->  		do_setuid(EXPECT_PRIVS);	/* does not return */
->  	case 3:
->  		ret = prctl(PR_GET_SECUREBITS);
->  		ret = prctl(PR_SET_SECUREBITS, ret | SECBIT_KEEP_CAPS);
->  		if (ret == -1) {
-> -			tst_resm(TFAIL | TERRNO, "PR_SET_SECUREBITS failed\n");
-> -			tst_exit();
-> +			tst_brkm(TFAIL | TERRNO, NULL,
-> +				 "PR_SET_SECUREBITS failed\n");
->  		}
->  		ret = prctl(PR_GET_KEEPCAPS);
->  		if (!ret) {
-> -			tst_resm(TFAIL | TERRNO,
-> +			tst_brkm(TFAIL | TERRNO, NULL,
->  				 "PR_SET_SECUREBITS did not set keepcaps\n");
-> -			tst_exit();
->  		}
->  		do_setuid(EXPECT_PRIVS);	/* does not return */
->  	default:
-> -		tst_resm(TFAIL, "should not reach here\n");
-> -		tst_exit();
-> +		tst_brkm(TFAIL, NULL, "Valid tests are 1-3\n");
->  	}
-> -	tst_resm(TFAIL, "should not reach here\n");
-> -	tst_exit();
-> +	tst_brkm(TFAIL, NULL, "should not reach here\n");
+Some tests require IP addresses, either IPv4 or IPv6.
 
-I've removed this tst_brkm(TFAIL, NULL, "should not reach here\n")
-entirely as well as the newlines from the strings passed to the tst_foo()
-interfaces and pushed, thanks.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+v3: replace TST_EXEC_SUFFIX with TST_IPV6
 
+ testcases/lib/test_net.sh |   22 ++++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 24460f3..b6d4e7d 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -152,3 +152,25 @@ tst_read_opts()
+ 	done
+ 	OPTIND=0
+ }
++
++# Get IP address
++# tst_ipaddr [TYPE]
++# TYPE: { lhost | rhost }; Default value is 'lhost'.
++tst_ipaddr()
++{
++	local type=${1:-"lhost"}
++	local ipv=${TST_IPV6:-"4"}
++	local tst_host=
++
++	if [ "$type" = "lhost" ]; then
++		eval "tst_host=\$LHOST_IPV${ipv}_HOST"
++	else
++		eval "tst_host=\$RHOST_IPV${ipv}_HOST"
++	fi
++
++	if [ "$TST_IPV6" ]; then
++		echo "${IPV6_NETWORK}:${tst_host}"
++	else
++		echo "${IPV4_NETWORK}.${tst_host}"
++	fi
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Comprehensive Server Monitoring with Site24x7.
