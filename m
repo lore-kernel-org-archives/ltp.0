@@ -1,23 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XeJht-0000Ic-8x
-	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 08:13:17 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XeJhr-0002oZ-9r
-	for ltp-list@lists.sourceforge.net; Wed, 15 Oct 2014 08:13:17 +0000
-Message-ID: <543E2C5B.3080904@cn.fujitsu.com>
-Date: Wed, 15 Oct 2014 16:12:11 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1413212682-13117-1-git-send-email-zlang@redhat.com>	<543C9084.6070501@cn.fujitsu.com>
-	<543D0964.5040607@redhat.com>
-In-Reply-To: <543D0964.5040607@redhat.com>
-Subject: Re: [LTP] [PATCH] ext4-new-features: modify
- ext4_get_inode_version.sh not know $EXT4_DEV definition
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XguGh-0001Gf-P8
+	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:55 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XguGf-0007mm-R1
+	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:55 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id s9MBdl4Z006755
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:48 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s9MBdkAm014002
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:47 GMT
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	s9MBdkKl009466
+	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:46 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 22 Oct 2014 15:41:34 +0400
+Message-Id: <1413978094-10616-4-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] network/tcp_fastopen: add support for IPv6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,74 +37,255 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zorro Lang <zlang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-T24gMTAvMTQvMjAxNCAwNzozMCBQTSwgWm9ycm8gTGFuZyB3cm90ZToKPiDlnKggMjAxNOW5tDEw
-5pyIMTTml6UgMTA6NTUsIFhpYW9ndWFuZyBXYW5nIOWGmemBkzoKPj4gSGksCj4+Cj4+IE9uIDEw
-LzEzLzIwMTQgMTE6MDQgUE0sIFpvcnJvIExhbmcgd3JvdGU6Cj4+PiBleHQ0X2dldF9pbm9kZV92
-ZXJzaW9uLnNoIHVzZSAkRVhUNF9ERVYsIGJ1dCBpdCByZWFsbHkgZG9lc24ndCBrbm93IHdoYXQg
-aXMgJEVYVDRfREVWLgo+Pj4gVGhhdCBjYXVzZSBvdGhlciBjYXNlcyB3aGljaCB1c2UgZXh0NF9n
-ZXRfaW5vZGVfdmVyc2lvbi5zaCB0byBmYWlsLgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFpvcnJv
-IExhbmcgPHpsYW5nQHJlZGhhdC5jb20+Cj4+PiAtLS0KPj4+Cj4+PiBIaSwKPj4+Cj4+PiBXaGVu
-IEkgcmFuIGV4dDQtaW5vZGUtdmVyc2lvbiwgSSBhbHdheXMgaGl0IFRGQUlMLiBCdXQgSSBjYW4n
-dCByZXByb2R1Y2UgdGhlIGZhaWx1cmUgbWFudWFsbHkuCj4+PiBUaGVuIEkgZm91bmQgZXh0NF9p
-bm9kZV92ZXJzaW9uX3Rlc3Quc2ggdXNlIGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggLT4KPj4+
-IGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggdXNlICRFWFQ0X0RFViAtPgo+Pj4gYnV0IGV4dDRf
-Z2V0X2lub2RlX3ZlcnNpb24uc2ggZG9lc24ndCBrbm93IHdoYXQgaXMgJEVYVDRfREVWLgo+PiBZ
-ZWFoLCB0aGlzIGlzIGEgYnVnIDopCj4+PiBBYm91dCB0aGlzIHBhdGNoLCBJIGV4cG9ydCAkRVhU
-NF9ERVYgaW4gZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gsIGJlZm9yZSBpdCBjYWxsIGV4dDRf
-Z2V0X2lub2RlX3ZlcnNpb24uc2guCj4+PiBCdXQgSSB0aGluayBhZGQgdGhlICJleHBvcnQiIGlu
-IGZyb250IG9mICJFWFQ0X0RFVj0kTFRQX0JJR19ERVYiIGluIGV4dDRfZnVuY3Muc2ggd2lsbCBi
-ZSBhbm90aGVyIG1ldGhvZC4KPj4gSSB0aGluayBhZGRpbmcgImV4cG9ydCBFWFQ0X0RFVj0kTFRQ
-X0JJR19ERVYiIGluIGV4dDRfZnVuY3Muc2ggd291bGQgYmUgYmV0dGVyLgo+IEhpIHhpYW9ndWFu
-ZywKPiAKPiBEbyB5b3UgbWVhbiBwYXRjaCBsaWtlcyBiZWxvdyBpcyBiZXR0ZXI/Cj4gCj4gZGlm
-ZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5j
-cy5zaCAKPiBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5j
-cy5zaAo+IGluZGV4IDBhZTUzNGEuLmI1MWU5NDIgMTAwNzU1Cj4gLS0tIGEvdGVzdGNhc2VzL2tl
-cm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1bmNzLnNoCj4gKysrIGIvdGVzdGNhc2Vz
-L2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1bmNzLnNoCj4gQEAgLTQ1LDcgKzQ1
-LDcgQEAgZXh0NF9zZXR1cCgpCj4gICAgICAgICAgaWYgWyAteiAiJExUUF9CSUdfREVWIiBdO3Ro
-ZW4KPiAgICAgICAgICAgICAgICAgIHRzdF9icmttIFRDT05GICJ0ZXN0cyBuZWVkIGEgYmlnIGJs
-b2NrIGRldmljZSg1Ry0xMEcpIgo+ICAgICAgICAgIGVsc2UKPiAtICAgICAgICAgICAgICAgRVhU
-NF9ERVY9JExUUF9CSUdfREVWCj4gKyAgICAgICAgICAgICAgIGV4cG9ydCBFWFQ0X0RFVj0kTFRQ
-X0JJR19ERVYKCkFja2VkLWJ5OiBXYW5sb25nIEdhbyA8Z2Fvd2FubG9uZ0Bjbi5mdWppdHN1LmNv
-bT4KCj4gICAgICAgICAgZmkKPiAKPiAgICAgICAgICB0c3RfdG1wZGlyCj4gCj4gCj4gSWYgeW91
-IHdhbnQgdG8gbWVyZ2UgdGhpcyBwYXRjaCwgSSB3aWxsIHJlc2VuZCBpdCBhcyB0aGUgYmV0dGVy
-IHdheS4KPiAKPiBUaGFuayB5b3UsCj4gWm9ycm8gTGFuZwo+Pgo+PiBSZWdhcmRzLAo+PiBYaWFv
-Z3VhbmcgV2FuZwo+Pgo+Pj4gUGxlYXNlIHJldmlldywgYW5kIHRlbGwgbWUgd2hpY2ggb25lIGRv
-IHlvdSB0aGluayBpcyBiZXR0ZXIgZm9yIExUUD8gT3IgeW91IGhhdmUgYSBiZXR0ZXIgb25lOykK
-Pj4+Cj4+PiBUaGFuayB5b3UsCj4+PiBab3JybyBMYW5nCj4+Pgo+Pj4gICAuLi4vZnMvZXh0NC1u
-ZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNo
-ICB8IDIgKysKPj4+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQo+Pj4KPj4+IGRp
-ZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5v
-ZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCBiL3Rlc3RjYXNlcy9rZXJuZWwv
-ZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4dDRfaW5vZGVfdmVyc2lv
-bl90ZXN0LnNoCj4+PiBpbmRleCBhYzhmMDIxLi4yNTQ5MDg4IDEwMDc1NQo+Pj4gLS0tIGEvdGVz
-dGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LWlub2RlLXZlcnNpb24vZXh0
-NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gKPj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0
-NC1uZXctZmVhdHVyZXMvZXh0NC1pbm9kZS12ZXJzaW9uL2V4dDRfaW5vZGVfdmVyc2lvbl90ZXN0
-LnNoCj4+PiBAQCAtMTM4LDYgKzEzOCw4IEBAIHRlc3RfaW5vZGVfdmVyc2lvbigpCj4+PiAgIAo+
-Pj4gICAjIG1haW4KPj4+ICAgZXh0NF9zZXR1cAo+Pj4gKyMgZXhwb3J0IEVYVDRfREVWIGZvciBl
-eHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIGNhbiBrbm93IGl0Cj4+PiArZXhwb3J0IEVYVDRfREVW
-PSRFWFQ0X0RFVgo+Pj4gICAKPj4+ICAgZXh0NF90ZXN0XzEyOF9pbm9kZV92ZXJzaW9uCj4+PiAg
-IAo+Pj4KPiAKPiAKPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBDb21wcmVoZW5zaXZlIFNlcnZl
-ciBNb25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCj4gTW9uaXRvciAxMCBzZXJ2ZXJzIGZvciAkOS9N
-b250aC4KPiBHZXQgYWxlcnRlZCB0aHJvdWdoIGVtYWlsLCBTTVMsIHZvaWNlIGNhbGxzIG9yIG1v
-YmlsZSBwdXNoIG5vdGlmaWNhdGlvbnMuCj4gVGFrZSBjb3JyZWN0aXZlIGFjdGlvbnMgZnJvbSB5
-b3VyIG1vYmlsZSBkZXZpY2UuCj4gaHR0cDovL3Auc2YubmV0L3NmdS9ab2hvCj4gX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBMdHAtbGlzdCBtYWlsaW5n
-IGxpc3QKPiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiBodHRwczovL2xpc3RzLnNv
-dXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo+IAoKCi0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQpDb21wcmVoZW5zaXZlIFNlcnZlciBNb25pdG9yaW5nIHdpdGggU2l0ZTI0eDcuCk1v
-bml0b3IgMTAgc2VydmVycyBmb3IgJDkvTW9udGguCkdldCBhbGVydGVkIHRocm91Z2ggZW1haWws
-IFNNUywgdm9pY2UgY2FsbHMgb3IgbW9iaWxlIHB1c2ggbm90aWZpY2F0aW9ucy4KVGFrZSBjb3Jy
-ZWN0aXZlIGFjdGlvbnMgZnJvbSB5b3VyIG1vYmlsZSBkZXZpY2UuCmh0dHA6Ly9wLnNmLm5ldC9z
-ZnUvWm9obwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpM
-dHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBz
-Oi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
+Support for TCP Fast Open over IPv6 has been added to Linux 3.16
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ runtest/network_stress.features                    |    1 +
+ testcases/network/tcp_fastopen/tcp_fastopen.c      |   51 +++++++++++++------
+ testcases/network/tcp_fastopen/tcp_fastopen_run.sh |   24 ++++++----
+ 3 files changed, 51 insertions(+), 25 deletions(-)
+
+diff --git a/runtest/network_stress.features b/runtest/network_stress.features
+index 14fa2d9..4cce78d 100644
+--- a/runtest/network_stress.features
++++ b/runtest/network_stress.features
+@@ -3,6 +3,7 @@
+ #
+ 
+ tcp_fastopen tcp_fastopen_run.sh
++tcp_fastopen tcp_fastopen_run.sh -6
+ 
+ vxlan01 vxlan01.sh
+ vxlan02 vxlan02.sh
+diff --git a/testcases/network/tcp_fastopen/tcp_fastopen.c b/testcases/network/tcp_fastopen/tcp_fastopen.c
+index 77d7437..acf9c61 100644
+--- a/testcases/network/tcp_fastopen/tcp_fastopen.c
++++ b/testcases/network/tcp_fastopen/tcp_fastopen.c
+@@ -101,6 +101,8 @@ static char *rpath		= "./tfo_result";
+ 
+ static int force_run;
+ static int verbose;
++static int ipv6;
++static int af_inet;
+ 
+ static char *narg, *Narg, *qarg, *rarg, *Rarg, *aarg, *Targ;
+ 
+@@ -119,6 +121,7 @@ static const option_t options[] = {
+ 	{"d:", NULL, &rpath},
+ 
+ 	/* common */
++	{"6", &ipv6, NULL},
+ 	{"g:", NULL, &tcp_port},
+ 	{"F", &force_run, NULL},
+ 	{"l", &tcp_mode, NULL},
+@@ -136,6 +139,7 @@ static void help(void)
+ 	printf("  -O      TFO support is off, default is on\n");
+ 	printf("  -l      Become TCP Client, default is TCP server\n");
+ 	printf("  -g x    x - server port, default is %s\n", tcp_port);
++	printf("  -6      Run over IPv6");
+ 
+ 	printf("\n          Client:\n");
+ 	printf("  -H x    x - server name or ip address, default is '%s'\n",
+@@ -269,7 +273,7 @@ static int client_recv(int *fd, char *buf)
+ 
+ static int client_connect_send(const char *msg, int size)
+ {
+-	int cfd = socket(AF_INET, SOCK_STREAM, 0);
++	int cfd = socket(af_inet, SOCK_STREAM, 0);
+ 	const int flag = 1;
+ 	setsockopt(cfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+ 
+@@ -422,10 +426,13 @@ static void client_init(void)
+ 
+ 	struct addrinfo hints;
+ 	memset(&hints, 0, sizeof(struct addrinfo));
+-	hints.ai_family = AF_INET;
++	hints.ai_family = af_inet;
+ 	hints.ai_socktype = SOCK_STREAM;
+-	if (getaddrinfo(server_addr, tcp_port, &hints, &remote_addrinfo) != 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "getaddrinfo failed");
++	int err = getaddrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
++	if (err) {
++		tst_brkm(TBROK, cleanup, "getaddrinfo of '%s' failed, %s",
++			server_addr, gai_strerror(err));
++	}
+ 
+ 	clock_gettime(CLOCK_MONOTONIC_RAW, &tv_client_start);
+ 	int i;
+@@ -586,13 +593,13 @@ static void server_init(void)
+ {
+ 	struct addrinfo hints;
+ 	memset(&hints, 0, sizeof(struct addrinfo));
+-	hints.ai_family = AF_INET;
++	hints.ai_family = af_inet;
+ 	hints.ai_socktype = SOCK_STREAM;
+ 	hints.ai_flags = AI_PASSIVE;
+ 	if (getaddrinfo(NULL, tcp_port, &hints, &local_addrinfo) != 0)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getaddrinfo failed");
+ 
+-	sfd = socket(AF_INET, SOCK_STREAM, 0);
++	sfd = socket(af_inet, SOCK_STREAM, 0);
+ 	if (sfd == -1)
+ 		tst_brkm(TBROK, cleanup, "Failed to create a socket");
+ 
+@@ -628,8 +635,11 @@ static void server_cleanup(void)
+ 
+ static void server_run(void)
+ {
+-	struct sockaddr_in client_addr;
+-	socklen_t addr_size = sizeof(client_addr);
++	struct sockaddr_in addr;
++	struct sockaddr_in6 addr6;
++	struct sockaddr *sock_addr = (ipv6) ? (void *)&addr6 : (void *)&addr;
++	socklen_t addr_size = (ipv6) ? sizeof(addr6) : sizeof(addr);
++
+ 	pthread_attr_init(&attr);
+ 
+ 	/*
+@@ -640,17 +650,18 @@ static void server_run(void)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "setdetachstate failed");
+ 
+ 	while (1) {
+-		int client_fd = accept(sfd, (struct sockaddr *) &client_addr,
+-			&addr_size);
++		int client_fd = accept(sfd, sock_addr, &addr_size);
++
+ 		if (client_fd == -1)
+ 			tst_brkm(TBROK, cleanup, "Can't create client socket");
+ 
+-		if (client_addr.sin_family == AF_INET) {
+-			if (verbose) {
+-				tst_resm(TINFO, "conn: port '%d', addr '%s'",
+-					client_addr.sin_port,
+-					inet_ntoa(client_addr.sin_addr));
+-			}
++		if (verbose) {
++			char addr_buf[INET6_ADDRSTRLEN];
++			tst_resm(TINFO, "conn: port '%d', addr '%s'",
++				(ipv6) ? addr6.sin6_port : addr.sin_port,
++				inet_ntop(af_inet, (ipv6) ?
++				(void *)&addr6.sin6_addr : (void *)&addr.sin_addr,
++				addr_buf, INET6_ADDRSTRLEN));
+ 		}
+ 		server_thread_add(client_fd);
+ 	}
+@@ -706,6 +717,14 @@ static void setup(int argc, char *argv[])
+ 			"Test must be run with kernel 3.7 or newer");
+ 	}
+ 
++	if (ipv6 && tst_kvercmp(3, 16, 0) < 0) {
++		tst_brkm(TCONF, NULL,
++			"Test must be run with kernel 3.16 or newer");
++	}
++
++	af_inet = (ipv6) ? AF_INET6 : AF_INET;
++	tst_resm(TINFO, "TCP Fast Open over IPv%s", (ipv6) ? "6" : "4");
++
+ 	/* check tcp fast open knob */
+ 	if (!force_run && access(tfo_cfg, F_OK) == -1)
+ 		tst_brkm(TCONF, NULL, "Failed to find '%s'", tfo_cfg);
+diff --git a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+index eab8cfd..8e57f71 100755
+--- a/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
++++ b/testcases/network/tcp_fastopen/tcp_fastopen_run.sh
+@@ -21,7 +21,6 @@
+ 
+ # default command-line options
+ user_name="root"
+-remote_addr=$RHOST
+ use_ssh=0
+ clients_num=2
+ client_requests=2000000
+@@ -31,29 +30,31 @@ TST_TOTAL=1
+ TCID="tcp_fastopen"
+ 
+ . test_net.sh
++tst_read_opts $*
+ 
+ bind_timeout=5
+ tfo_result="${TMPDIR}/tfo_result"
++tfo_ipv=${TST_IPV6:-4}
+ 
+-while getopts :hu:H:sr:p:n:R: opt; do
++while getopts :hu:sr:p:n:R:6 opt; do
+ 	case "$opt" in
+ 	h)
+ 		echo "Usage:"
+ 		echo "h        help"
+ 		echo "u x      server user name"
+-		echo "H x      server hostname or IP address"
+ 		echo "s        use ssh to run remote cmds"
+ 		echo "n x      num of clients running in parallel"
+ 		echo "r x      the number of client requests"
+ 		echo "R x      num of requests, after which conn. closed"
++		echo "6        run over IPv6"
+ 		exit 0
+ 	;;
+ 	u) user_name=$OPTARG ;;
+-	H) remote_addr=$OPTARG ;;
+ 	s) export TST_USE_SSH=1 ;;
+ 	n) clients_num=$OPTARG ;;
+ 	r) client_requests=$OPTARG ;;
+ 	R) max_requests=$OPTARG ;;
++	6) ;;
+ 	*)
+ 		tst_brkm TBROK "unknown option: $opt"
+ 	;;
+@@ -87,17 +88,20 @@ run_client_server()
+ {
+ 	# kill tcp server on remote machine
+ 	tst_rhost_run -c "pkill -9 tcp_fastopen\$"
++	local tfo_ipv_opt=
++	[ "$TST_IPV6" ] && tfo_ipv_opt="-6"
+ 
+-	port=$(tst_rhost_run -c "tst_get_unused_port ipv4 stream")
++	port=$(tst_rhost_run -c "tst_get_unused_port ipv${tfo_ipv} stream")
+ 	[ $? -ne 0 ] && tst_brkm TBROK "failed to get unused port"
+ 
+ 	# run tcp server on remote machine
+-	tst_rhost_run -s -b -c "tcp_fastopen -R $max_requests $1 -g $port"
++	tst_rhost_run -s -b -c "tcp_fastopen $tfo_ipv_opt \
++		-R $max_requests $1 -g $port"
+ 	sleep $bind_timeout
+ 
+ 	# run local tcp client
+-	tcp_fastopen -a $clients_num -r $client_requests -l \
+--H $remote_addr $1 -g $port -d $tfo_result
++	tcp_fastopen $tfo_ipv_opt -a $clients_num -r $client_requests -l \
++		-H $(tst_ipaddr rhost) $1 -g $port -d $tfo_result
+ 	[ "$?" -ne 0 ] && tst_brkm TBROK "Last test has failed"
+ 
+ 	run_time=$(read_result_file)
+@@ -111,7 +115,9 @@ tst_require_root
+ tst_kvercmp 3 7 0
+ [ $? -eq 0 ] && tst_brkm TCONF "test must be run with kernel 3.7 or newer"
+ 
+-[ -z $remote_addr ] && tst_brkm TBROK "you must specify server address"
++tst_kvercmp 3 16 0
++[ $? -eq 0 -a "$TST_IPV6" ] && \
++	tst_brkm TCONF "test must be run with kernel 3.16 or newer"
+ 
+ run_client_server "-o -O"
+ time_tfo_off=$run_time
+-- 
+1.7.1
+
+
+------------------------------------------------------------------------------
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://p.sf.net/sfu/Zoho
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
