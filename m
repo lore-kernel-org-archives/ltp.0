@@ -1,30 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Xb9h9-0006kN-Ck
-	for ltp-list@lists.sourceforge.net; Mon, 06 Oct 2014 14:55:27 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xb9h8-0000ZQ-6s
-	for ltp-list@lists.sourceforge.net; Mon, 06 Oct 2014 14:55:27 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s96EtKNU010589
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Oct 2014 10:55:20 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s96EtHaJ008066
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Oct 2014 10:55:19 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  6 Oct 2014 16:55:10 +0200
-Message-Id: <6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
-In-Reply-To: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
-References: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 2/2 v2] checkpoints: fix usage in children started via
-	exec
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Xgv6a-0003p9-TN
+	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 12:33:32 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Xgv6Z-00020e-4y
+	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 12:33:32 +0000
+Message-ID: <5447A432.1000903@cn.fujitsu.com>
+Date: Wed, 22 Oct 2014 20:33:54 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1413212682-13117-1-git-send-email-zlang@redhat.com>
+	<543C9084.6070501@cn.fujitsu.com> <543D0964.5040607@redhat.com>
+	<543E2C5B.3080904@cn.fujitsu.com>
+	<1961894713.55219938.1413973866894.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1961894713.55219938.1413973866894.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] ext4-new-features: modify
+ ext4_get_inode_version.sh not know $EXT4_DEV definition
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,77 +29,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zirong Lang <zlang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-creat07 and setpgid03 are currently failing in following way:
-  CHILD: Failed to open fifo '': No such file or directory at creat07_child.c:31
-  creat07     1  TBROK  :  tst_checkpoint.c:126: Checkpoint timeouted after 5000 msecs at creat07.c:78
-  creat07     2  TBROK  :  tst_checkpoint.c:126: Remaining cases broken
-
-These testcases start children via exec, so only initialize
-checkpoint struct, FIFO has been already created by parent.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/creat/creat07_child.c    |    8 ++++++--
- .../kernel/syscalls/setpgid/setpgid03_child.c      |    8 +++++++-
- 2 files changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/creat/creat07_child.c b/testcases/kernel/syscalls/creat/creat07_child.c
-index f3e6aa0..1641601 100644
---- a/testcases/kernel/syscalls/creat/creat07_child.c
-+++ b/testcases/kernel/syscalls/creat/creat07_child.c
-@@ -24,10 +24,14 @@
- 
- char *TCID = "creat07_child";
- 
--static struct tst_checkpoint checkpoint = {.timeout = 5, .retval = 1};
--
- int main(void)
- {
-+	struct tst_checkpoint checkpoint;
-+
-+	/* we are already in tmpdir, so only initialize checkpoint,
-+	 * fifo has been created by parent already. */
-+	TST_CHECKPOINT_INIT(&checkpoint);
-+
- 	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
- 
- 	for (;;) {
-diff --git a/testcases/kernel/syscalls/setpgid/setpgid03_child.c b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-index c4cf892..c9ea87f 100644
---- a/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-+++ b/testcases/kernel/syscalls/setpgid/setpgid03_child.c
-@@ -20,10 +20,16 @@
- 
- char *TCID = "setpgid03_child";
- 
--static struct tst_checkpoint checkpoint = { .timeout = 10000, .retval = 1};
- 
- int main(void)
- {
-+	struct tst_checkpoint checkpoint;
-+
-+	/* we are already in tmpdir, so only initialize checkpoint,
-+	 * fifo has been created by parent already. */
-+	TST_CHECKPOINT_INIT(&checkpoint);
-+	checkpoint.timeout = 10000;
-+
- 	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint);
- 	TST_CHECKPOINT_CHILD_WAIT(&checkpoint);
- 
--- 
-1.7.1
-
-
-------------------------------------------------------------------------------
-Slashdot TV.  Videos for Nerds.  Stuff that Matters.
-http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMTAvMjIvMjAxNCAwNjozMSBQTSwgWmlyb25nIExhbmcgd3JvdGU6Cj4gSGkgV2FubG9uZyBH
+YW8sCj4gCj4gVGhhbmtzIGZvciB5b3VyIEFDSy4gQnV0IEkgY2FuJ3QgZmluZCB0aGlzIHBhdGNo
+IG9uIHVwc3RyZWFtIGx0cCByZXBvIHVudGlsIG5vdy4KPiBTaG91bGQgSSByZS1zZW5kIHRoZSBh
+Y2tlZCBwYXRjaCB0byB5b3U/CgpZZWFoLCBpdCdzIGJldHRlciB0byByZXNlbmQgdGhlIHBhdGNo
+IHRvIE1MIHNvIHRoYXQgd2UgY2FuIGFwcGx5IGl0IGVhc2llciwKdGhhbmsgeW91IGZvciB5b3Vy
+IHdvcmsuCgpUaGFua3MsCldhbmxvbmcgR2FvCgo+IAo+IFRoYW5rIHlvdSwKPiBab3JybyBMYW5n
+Cj4gCj4gLS0tLS0g5Y6f5aeL6YKu5Lu2IC0tLS0tCj4g5Y+R5Lu25Lq6OiAiV2FubG9uZyBHYW8i
+IDxnYW93YW5sb25nQGNuLmZ1aml0c3UuY29tPgo+IOaUtuS7tuS6ujogIlpvcnJvIExhbmciIDx6
+bGFuZ0ByZWRoYXQuY29tPgo+IOaKhOmAgTogIlhpYW9ndWFuZyBXYW5nIiA8d2FuZ3hnLmZuc3RA
+Y24uZnVqaXRzdS5jb20+LCBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiDlj5HpgIHm
+l7bpl7Q6IOaYn+acn+S4iSwgMjAxNOW5tCAxMCDmnIggMTXml6Ug5LiL5Y2IIDQ6MTI6MTEKPiDk
+uLvpopg6IFJlOiBbTFRQXSBbUEFUQ0hdIGV4dDQtbmV3LWZlYXR1cmVzOiBtb2RpZnkgZXh0NF9n
+ZXRfaW5vZGVfdmVyc2lvbi5zaCBub3Qga25vdyAkRVhUNF9ERVYgZGVmaW5pdGlvbgo+IAo+IE9u
+IDEwLzE0LzIwMTQgMDc6MzAgUE0sIFpvcnJvIExhbmcgd3JvdGU6Cj4+IOWcqCAyMDE05bm0MTDm
+nIgxNOaXpSAxMDo1NSwgWGlhb2d1YW5nIFdhbmcg5YaZ6YGTOgo+Pj4gSGksCj4+Pgo+Pj4gT24g
+MTAvMTMvMjAxNCAxMTowNCBQTSwgWm9ycm8gTGFuZyB3cm90ZToKPj4+PiBleHQ0X2dldF9pbm9k
+ZV92ZXJzaW9uLnNoIHVzZSAkRVhUNF9ERVYsIGJ1dCBpdCByZWFsbHkgZG9lc24ndCBrbm93IHdo
+YXQgaXMgJEVYVDRfREVWLgo+Pj4+IFRoYXQgY2F1c2Ugb3RoZXIgY2FzZXMgd2hpY2ggdXNlIGV4
+dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggdG8gZmFpbC4KPj4+Pgo+Pj4+IFNpZ25lZC1vZmYtYnk6
+IFpvcnJvIExhbmcgPHpsYW5nQHJlZGhhdC5jb20+Cj4+Pj4gLS0tCj4+Pj4KPj4+PiBIaSwKPj4+
+Pgo+Pj4+IFdoZW4gSSByYW4gZXh0NC1pbm9kZS12ZXJzaW9uLCBJIGFsd2F5cyBoaXQgVEZBSUwu
+IEJ1dCBJIGNhbid0IHJlcHJvZHVjZSB0aGUgZmFpbHVyZSBtYW51YWxseS4KPj4+PiBUaGVuIEkg
+Zm91bmQgZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2ggdXNlIGV4dDRfZ2V0X2lub2RlX3ZlcnNp
+b24uc2ggLT4KPj4+PiBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIHVzZSAkRVhUNF9ERVYgLT4K
+Pj4+PiBidXQgZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCBkb2Vzbid0IGtub3cgd2hhdCBpcyAk
+RVhUNF9ERVYuCj4+PiBZZWFoLCB0aGlzIGlzIGEgYnVnIDopCj4+Pj4gQWJvdXQgdGhpcyBwYXRj
+aCwgSSBleHBvcnQgJEVYVDRfREVWIGluIGV4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoLCBiZWZv
+cmUgaXQgY2FsbCBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoLgo+Pj4+IEJ1dCBJIHRoaW5rIGFk
+ZCB0aGUgImV4cG9ydCIgaW4gZnJvbnQgb2YgIkVYVDRfREVWPSRMVFBfQklHX0RFViIgaW4gZXh0
+NF9mdW5jcy5zaCB3aWxsIGJlIGFub3RoZXIgbWV0aG9kLgo+Pj4gSSB0aGluayBhZGRpbmcgImV4
+cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19ERVYiIGluIGV4dDRfZnVuY3Muc2ggd291bGQgYmUgYmV0
+dGVyLgo+PiBIaSB4aWFvZ3VhbmcsCj4+Cj4+IERvIHlvdSBtZWFuIHBhdGNoIGxpa2VzIGJlbG93
+IGlzIGJldHRlcj8KPj4KPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1u
+ZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaCAKPj4gYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQt
+bmV3LWZlYXR1cmVzL2V4dDRfZnVuY3Muc2gKPj4gaW5kZXggMGFlNTM0YS4uYjUxZTk0MiAxMDA3
+NTUKPj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1
+bmNzLnNoCj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0
+NF9mdW5jcy5zaAo+PiBAQCAtNDUsNyArNDUsNyBAQCBleHQ0X3NldHVwKCkKPj4gICAgICAgICAg
+aWYgWyAteiAiJExUUF9CSUdfREVWIiBdO3RoZW4KPj4gICAgICAgICAgICAgICAgICB0c3RfYnJr
+bSBUQ09ORiAidGVzdHMgbmVlZCBhIGJpZyBibG9jayBkZXZpY2UoNUctMTBHKSIKPj4gICAgICAg
+ICAgZWxzZQo+PiAtICAgICAgICAgICAgICAgRVhUNF9ERVY9JExUUF9CSUdfREVWCj4+ICsgICAg
+ICAgICAgICAgICBleHBvcnQgRVhUNF9ERVY9JExUUF9CSUdfREVWCj4gCj4gQWNrZWQtYnk6IFdh
+bmxvbmcgR2FvIDxnYW93YW5sb25nQGNuLmZ1aml0c3UuY29tPgo+IAo+PiAgICAgICAgICBmaQo+
+Pgo+PiAgICAgICAgICB0c3RfdG1wZGlyCj4+Cj4+Cj4+IElmIHlvdSB3YW50IHRvIG1lcmdlIHRo
+aXMgcGF0Y2gsIEkgd2lsbCByZXNlbmQgaXQgYXMgdGhlIGJldHRlciB3YXkuCj4+Cj4+IFRoYW5r
+IHlvdSwKPj4gWm9ycm8gTGFuZwo+Pj4KPj4+IFJlZ2FyZHMsCj4+PiBYaWFvZ3VhbmcgV2FuZwo+
+Pj4KPj4+PiBQbGVhc2UgcmV2aWV3LCBhbmQgdGVsbCBtZSB3aGljaCBvbmUgZG8geW91IHRoaW5r
+IGlzIGJldHRlciBmb3IgTFRQPyBPciB5b3UgaGF2ZSBhIGJldHRlciBvbmU7KQo+Pj4+Cj4+Pj4g
+VGhhbmsgeW91LAo+Pj4+IFpvcnJvIExhbmcKPj4+Pgo+Pj4+ICAgLi4uL2ZzL2V4dDQtbmV3LWZl
+YXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCAgfCAy
+ICsrCj4+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCj4+Pj4KPj4+PiBkaWZm
+IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LWlub2Rl
+LXZlcnNpb24vZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2ggYi90ZXN0Y2FzZXMva2VybmVsL2Zz
+L2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25f
+dGVzdC5zaAo+Pj4+IGluZGV4IGFjOGYwMjEuLjI1NDkwODggMTAwNzU1Cj4+Pj4gLS0tIGEvdGVz
+dGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LWlub2RlLXZlcnNpb24vZXh0
+NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gKPj4+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4
+dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVz
+dC5zaAo+Pj4+IEBAIC0xMzgsNiArMTM4LDggQEAgdGVzdF9pbm9kZV92ZXJzaW9uKCkKPj4+PiAg
+IAo+Pj4+ICAgIyBtYWluCj4+Pj4gICBleHQ0X3NldHVwCj4+Pj4gKyMgZXhwb3J0IEVYVDRfREVW
+IGZvciBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIGNhbiBrbm93IGl0Cj4+Pj4gK2V4cG9ydCBF
+WFQ0X0RFVj0kRVhUNF9ERVYKPj4+PiAgIAo+Pj4+ICAgZXh0NF90ZXN0XzEyOF9pbm9kZV92ZXJz
+aW9uCj4+Pj4gICAKPj4+Pgo+Pgo+Pgo+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gQ29tcHJl
+aGVuc2l2ZSBTZXJ2ZXIgTW9uaXRvcmluZyB3aXRoIFNpdGUyNHg3Lgo+PiBNb25pdG9yIDEwIHNl
+cnZlcnMgZm9yICQ5L01vbnRoLgo+PiBHZXQgYWxlcnRlZCB0aHJvdWdoIGVtYWlsLCBTTVMsIHZv
+aWNlIGNhbGxzIG9yIG1vYmlsZSBwdXNoIG5vdGlmaWNhdGlvbnMuCj4+IFRha2UgY29ycmVjdGl2
+ZSBhY3Rpb25zIGZyb20geW91ciBtb2JpbGUgZGV2aWNlLgo+PiBodHRwOi8vcC5zZi5uZXQvc2Z1
+L1pvaG8KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+Pj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
+dAo+PiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
+dAo+Pgo+IAo+IC4KPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tcHJlaGVuc2l2ZSBTZXJ2
+ZXIgTW9uaXRvcmluZyB3aXRoIFNpdGUyNHg3LgpNb25pdG9yIDEwIHNlcnZlcnMgZm9yICQ5L01v
+bnRoLgpHZXQgYWxlcnRlZCB0aHJvdWdoIGVtYWlsLCBTTVMsIHZvaWNlIGNhbGxzIG9yIG1vYmls
+ZSBwdXNoIG5vdGlmaWNhdGlvbnMuClRha2UgY29ycmVjdGl2ZSBhY3Rpb25zIGZyb20geW91ciBt
+b2JpbGUgZGV2aWNlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L1pvaG8KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1s
+aXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
+aXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
