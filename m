@@ -1,34 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1XguGd-0001G7-Ni
-	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:51 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XguGc-0002hP-Qt
-	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 11:39:51 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id s9MBdijE001701
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:45 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s9MBdhK1009361
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:44 GMT
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	s9MBdhA1004622
-	for <ltp-list@lists.sourceforge.net>; Wed, 22 Oct 2014 11:39:43 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 22 Oct 2014 15:41:33 +0400
-Message-Id: <1413978094-10616-3-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2 3/3] network/test_net: add tst_init_iface() and
-	tst_set_ipaddr()
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwan@redhat.com>) id 1XhClV-0008EI-JY
+	for ltp-list@lists.sourceforge.net; Thu, 23 Oct 2014 07:24:57 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XhClU-0004cB-7T
+	for ltp-list@lists.sourceforge.net; Thu, 23 Oct 2014 07:24:57 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s9N7OnTs007250
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 23 Oct 2014 03:24:49 -0400
+Received: from dhcp-13-206.nay.redhat.com (dhcp-12-104.nay.redhat.com
+	[10.66.12.104])
+	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id s9N7Okhb031643
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 23 Oct 2014 03:24:48 -0400
+From: Li Wang <liwan@redhat.com>
+Date: Thu, 23 Oct 2014 15:24:45 +0800
+Message-Id: <1414049085-29422-1-git-send-email-liwan@redhat.com>
+Subject: [LTP] [PATCH] mem/thp04: rebuild the cleanup without using safe
+	macros
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,80 +40,125 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+mem/lib: recall write_file & read_file functions
+
+mem/thp04: rebuild the cleanup() by those two functions to avoid safe macros
+being abused.
+
+Signed-off-by: Li Wang <liwan@redhat.com>
 ---
-v2: replace TST_EXEC_SUFFIX with TST_IPV6
+ testcases/kernel/mem/include/mem.h |  2 ++
+ testcases/kernel/mem/lib/mem.c     | 25 +++++++++++++++++++++++++
+ testcases/kernel/mem/thp/thp04.c   | 27 +++++++++++++++++----------
+ 3 files changed, 44 insertions(+), 10 deletions(-)
 
- testcases/lib/test_net.sh |   47 +++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 47 insertions(+), 0 deletions(-)
-
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index b6d4e7d..f8f3f61 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -174,3 +174,50 @@ tst_ipaddr()
- 		echo "${IPV4_NETWORK}.${tst_host}"
- 	fi
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 8fa2094..3cb3580 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -96,6 +96,8 @@ int  path_exist(const char *path, ...);
+ long read_meminfo(char *item);
+ void set_sys_tune(char *sys_file, long tune, int check);
+ long get_sys_tune(char *sys_file);
++void write_file(char *filename, char *buf);
++void read_file(char *filename, char *retbuf);
+ void cleanup(void);
+ void setup(void);
+ 
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index d3fc19d..3bd9f65 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -1065,6 +1065,31 @@ long get_sys_tune(char *sys_file)
+ 	return tune;
  }
-+
-+# tst_init_iface [TYPE] [LINK]
-+# TYPE: { lhost | rhost }; Default value is 'lhost'.
-+# LINK: link number starting from 0. Default value is '0'.
-+tst_init_iface()
+ 
++void write_file(char *filename, char *buf)
 +{
-+	local type=${1:-"lhost"}
-+	local link_num=${2:-"0"}
++	int fd;
 +
-+	local iface=$(tst_iface $type $link_num)
-+	tst_resm TINFO "initialize '$type' '$iface' interface"
-+
-+	if [ "$type" = "lhost" ]; then
-+		ip link set $iface down || tst_brkm TBROK "interface down failed"
-+		ip route flush dev $iface || tst_brkm TBROK "route flush failed"
-+		ip addr flush dev $iface || tst_brkm TBROK "addr flush failed"
-+		ip link set $iface up || tst_brkm TBROK "interface up failed"
-+	else
-+		tst_rhost_run -s -c "ip link set $iface down"
-+		tst_rhost_run -s -c "ip route flush dev $iface"
-+		tst_rhost_run -s -c "ip addr flush dev $iface"
-+		tst_rhost_run -s -c "ip link set $iface up"
-+	fi
++	fd = open(filename, O_WRONLY);
++	if (fd == -1)
++		tst_resm(TWARN | TERRNO, "open");
++	tst_resm(TINFO, "set %s value to %s", filename, buf);
++	if (write(fd, buf, strlen(buf)) != strlen(buf))
++		tst_resm(TWARN | TERRNO, "write");
++	close(fd);
 +}
 +
-+# tst_set_ipaddr [LINK]
-+# LINK: link number starting from 0. Default value is '0'.
-+tst_set_ipaddr()
++void read_file(char *filename, char *retbuf)
 +{
-+	local link_num=${1:-"0"}
-+	local ipv=${TST_IPV6:-"4"}
++	int fd;
 +
-+	tst_init_iface lhost $link_num
-+	tst_init_iface rhost $link_num
-+
-+	local iface=$(tst_iface $type $link_num)
-+
-+	local mask=24
-+	[ "$TST_IPV6" ] && mask=64
-+
-+	tst_resm TINFO "set local ipv${ipv} addr $(tst_ipaddr)/$mask"
-+	ip addr add $(tst_ipaddr)/$mask dev $iface || \
-+		tst_brkm TBROK "failed to add IP address"
-+
-+	tst_resm TINFO "set remote ipv${ipv} addr $(tst_ipaddr rhost)/$mask"
-+	tst_rhost_run -s -c "ip addr add $(tst_ipaddr rhost)/$mask dev $iface"
++	fd = open(filename, O_RDONLY);
++	if (fd == -1)
++		tst_resm(TWARN | TERRNO, "open");
++	if (read(fd, retbuf, BUFSIZ) < 0)
++		tst_resm(TWARN | TERRNO, "read");
++	close(fd);
 +}
++
+ void update_shm_size(size_t * shm_size)
+ {
+ 	size_t shmmax;
+diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
+index 0b6baeb..4e9aa87 100644
+--- a/testcases/kernel/mem/thp/thp04.c
++++ b/testcases/kernel/mem/thp/thp04.c
+@@ -61,6 +61,7 @@ option_t thp_options[] = {
+ 
+ static int pre_thp_scan_sleep_millisecs;
+ static int pre_thp_alloc_sleep_millisecs;
++static char buf[BUFSIZ], path[BUFSIZ];
+ static char pre_thp_enabled[BUFSIZ];
+ 
+ int main(int argc, char *argv[])
+@@ -120,23 +121,29 @@ void setup(void)
+ 
+ void cleanup(void)
+ {
+-	SAFE_FILE_PRINTF(NULL, PATH_KHPD "scan_sleep_millisecs",
+-			 "%d", pre_thp_scan_sleep_millisecs);
++	snprintf(buf, BUFSIZ, "%d", pre_thp_scan_sleep_millisecs);
++	write_file(PATH_KHPD "scan_sleep_millisecs", buf);
+ 
+-	SAFE_FILE_PRINTF(NULL, PATH_KHPD "alloc_sleep_millisecs",
+-			 "%d", pre_thp_alloc_sleep_millisecs);
++	snprintf(buf, BUFSIZ, "%d", pre_thp_alloc_sleep_millisecs);
++	write_file(PATH_KHPD "alloc_sleep_millisecs", buf);
+ 
+ 	/*
+ 	 * The value of transparent_hugepage/enabled is speical,
+ 	 * we need to recover the previous value one by one for
+ 	 * the three mode: always, madvise, never.
+ 	 */
+-	if (strcmp(pre_thp_enabled, "[always] madvise never") == 0)
+-		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "always");
+-	else if (strcmp(pre_thp_enabled, "always [madvise] never") == 0)
+-		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "madvise");
+-	else
+-		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "never");
++	if (strcmp(pre_thp_enabled, "[always] madvise never") == 0){
++		snprintf(path, BUFSIZ, "always");
++		write_file(PATH_THP "enabled", path);
++	}
++	else if (strcmp(pre_thp_enabled, "always [madvise] never") == 0){
++		snprintf(path, BUFSIZ, "madvise");
++		write_file(PATH_THP "enabled", path);
++	}
++	else{
++		snprintf(path, BUFSIZ, "never");
++		write_file(PATH_THP "enabled", path);
++	}
+ 
+ 	TEST_CLEANUP;
+ }
 -- 
-1.7.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
