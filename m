@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zlang@redhat.com>) id 1Xe0Ji-0002G3-Ag
-	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 11:31:02 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1XhdVZ-0005BX-6U
+	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 11:58:17 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xe0Jd-0000Gx-Em
-	for ltp-list@lists.sourceforge.net; Tue, 14 Oct 2014 11:31:01 +0000
-Message-ID: <543D0964.5040607@redhat.com>
-Date: Tue, 14 Oct 2014 19:30:44 +0800
-From: Zorro Lang <zlang@redhat.com>
+	(Exim 4.76) id 1XhdVX-0004kc-N1
+	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 11:58:17 +0000
+Date: Fri, 24 Oct 2014 07:58:08 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <141884284.14647510.1414151888080.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1412111852-22329-1-git-send-email-gary.robertson@linaro.org>
+References: <1412111852-22329-1-git-send-email-gary.robertson@linaro.org>
 MIME-Version: 1.0
-References: <1413212682-13117-1-git-send-email-zlang@redhat.com>
-	<543C9084.6070501@cn.fujitsu.com>
-In-Reply-To: <543C9084.6070501@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] ext4-new-features: modify
- ext4_get_inode_version.sh not know $EXT4_DEV definition
+Subject: Re: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,62 +24,106 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Gary S. Robertson" <gary.robertson@linaro.org>
+Cc: ltp-list@lists.sourceforge.net, mike holmes <mike.holmes@linaro.org>
 
-5ZyoIDIwMTTlubQxMOaciDE05pelIDEwOjU1LCBYaWFvZ3VhbmcgV2FuZyDlhpnpgZM6Cj4gSGks
-Cj4KPiBPbiAxMC8xMy8yMDE0IDExOjA0IFBNLCBab3JybyBMYW5nIHdyb3RlOgo+PiBleHQ0X2dl
-dF9pbm9kZV92ZXJzaW9uLnNoIHVzZSAkRVhUNF9ERVYsIGJ1dCBpdCByZWFsbHkgZG9lc24ndCBr
-bm93IHdoYXQgaXMgJEVYVDRfREVWLgo+PiBUaGF0IGNhdXNlIG90aGVyIGNhc2VzIHdoaWNoIHVz
-ZSBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIHRvIGZhaWwuCj4+Cj4+IFNpZ25lZC1vZmYtYnk6
-IFpvcnJvIExhbmcgPHpsYW5nQHJlZGhhdC5jb20+Cj4+IC0tLQo+Pgo+PiBIaSwKPj4KPj4gV2hl
-biBJIHJhbiBleHQ0LWlub2RlLXZlcnNpb24sIEkgYWx3YXlzIGhpdCBURkFJTC4gQnV0IEkgY2Fu
-J3QgcmVwcm9kdWNlIHRoZSBmYWlsdXJlIG1hbnVhbGx5Lgo+PiBUaGVuIEkgZm91bmQgZXh0NF9p
-bm9kZV92ZXJzaW9uX3Rlc3Quc2ggdXNlIGV4dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggLT4KPj4g
-ZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCB1c2UgJEVYVDRfREVWIC0+Cj4+IGJ1dCBleHQ0X2dl
-dF9pbm9kZV92ZXJzaW9uLnNoIGRvZXNuJ3Qga25vdyB3aGF0IGlzICRFWFQ0X0RFVi4KPiBZZWFo
-LCB0aGlzIGlzIGEgYnVnIDopCj4+IEFib3V0IHRoaXMgcGF0Y2gsIEkgZXhwb3J0ICRFWFQ0X0RF
-ViBpbiBleHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCwgYmVmb3JlIGl0IGNhbGwgZXh0NF9nZXRf
-aW5vZGVfdmVyc2lvbi5zaC4KPj4gQnV0IEkgdGhpbmsgYWRkIHRoZSAiZXhwb3J0IiBpbiBmcm9u
-dCBvZiAiRVhUNF9ERVY9JExUUF9CSUdfREVWIiBpbiBleHQ0X2Z1bmNzLnNoIHdpbGwgYmUgYW5v
-dGhlciBtZXRob2QuCj4gSSB0aGluayBhZGRpbmcgImV4cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19E
-RVYiIGluIGV4dDRfZnVuY3Muc2ggd291bGQgYmUgYmV0dGVyLgpIaSB4aWFvZ3VhbmcsCgpEbyB5
-b3UgbWVhbiBwYXRjaCBsaWtlcyBiZWxvdyBpcyBiZXR0ZXI/CgpkaWZmIC0tZ2l0IGEvdGVzdGNh
-c2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1bmNzLnNoIApiL3Rlc3RjYXNl
-cy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaAppbmRleCAwYWU1MzRh
-Li5iNTFlOTQyIDEwMDc1NQotLS0gYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1
-cmVzL2V4dDRfZnVuY3Muc2gKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0
-dXJlcy9leHQ0X2Z1bmNzLnNoCkBAIC00NSw3ICs0NSw3IEBAIGV4dDRfc2V0dXAoKQogICAgICAg
-ICBpZiBbIC16ICIkTFRQX0JJR19ERVYiIF07dGhlbgogICAgICAgICAgICAgICAgIHRzdF9icmtt
-IFRDT05GICJ0ZXN0cyBuZWVkIGEgYmlnIGJsb2NrIGRldmljZSg1Ry0xMEcpIgogICAgICAgICBl
-bHNlCi0gICAgICAgICAgICAgICBFWFQ0X0RFVj0kTFRQX0JJR19ERVYKKyAgICAgICAgICAgICAg
-IGV4cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19ERVYKICAgICAgICAgZmkKCiAgICAgICAgIHRzdF90
-bXBkaXIKCgpJZiB5b3Ugd2FudCB0byBtZXJnZSB0aGlzIHBhdGNoLCBJIHdpbGwgcmVzZW5kIGl0
-IGFzIHRoZSBiZXR0ZXIgd2F5LgoKVGhhbmsgeW91LApab3JybyBMYW5nCj4KPiBSZWdhcmRzLAo+
-IFhpYW9ndWFuZyBXYW5nCj4KPj4gUGxlYXNlIHJldmlldywgYW5kIHRlbGwgbWUgd2hpY2ggb25l
-IGRvIHlvdSB0aGluayBpcyBiZXR0ZXIgZm9yIExUUD8gT3IgeW91IGhhdmUgYSBiZXR0ZXIgb25l
-OykKPj4KPj4gVGhhbmsgeW91LAo+PiBab3JybyBMYW5nCj4+Cj4+ICAgLi4uL2ZzL2V4dDQtbmV3
-LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCAg
-fCAyICsrCj4+ICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQo+Pgo+PiBkaWZmIC0t
-Z2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LWlub2RlLXZl
-cnNpb24vZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2ggYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4
-dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVz
-dC5zaAo+PiBpbmRleCBhYzhmMDIxLi4yNTQ5MDg4IDEwMDc1NQo+PiAtLS0gYS90ZXN0Y2FzZXMv
-a2VybmVsL2ZzL2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2Rl
-X3ZlcnNpb25fdGVzdC5zaAo+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQtbmV3LWZl
-YXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaAo+PiBA
-QCAtMTM4LDYgKzEzOCw4IEBAIHRlc3RfaW5vZGVfdmVyc2lvbigpCj4+ICAgCj4+ICAgIyBtYWlu
-Cj4+ICAgZXh0NF9zZXR1cAo+PiArIyBleHBvcnQgRVhUNF9ERVYgZm9yIGV4dDRfZ2V0X2lub2Rl
-X3ZlcnNpb24uc2ggY2FuIGtub3cgaXQKPj4gK2V4cG9ydCBFWFQ0X0RFVj0kRVhUNF9ERVYKPj4g
-ICAKPj4gICBleHQ0X3Rlc3RfMTI4X2lub2RlX3ZlcnNpb24KPj4gICAKPj4KCgotLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0KQ29tcHJlaGVuc2l2ZSBTZXJ2ZXIgTW9uaXRvcmluZyB3aXRoIFNpdGUyNHg3
-LgpNb25pdG9yIDEwIHNlcnZlcnMgZm9yICQ5L01vbnRoLgpHZXQgYWxlcnRlZCB0aHJvdWdoIGVt
-YWlsLCBTTVMsIHZvaWNlIGNhbGxzIG9yIG1vYmlsZSBwdXNoIG5vdGlmaWNhdGlvbnMuClRha2Ug
-Y29ycmVjdGl2ZSBhY3Rpb25zIGZyb20geW91ciBtb2JpbGUgZGV2aWNlLgpodHRwOi8vcC5zZi5u
-ZXQvc2Z1L1pvaG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApo
-dHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+
+
+
+
+----- Original Message -----
+> From: "Gary S. Robertson" <gary.robertson@linaro.org>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "mike holmes" <mike.holmes@linaro.org>
+> Sent: Tuesday, 30 September, 2014 11:17:32 PM
+> Subject: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals
+> 
+> From: "Gary S. Robertson" <gary.robertson@linaro.org>
+> 
+> sbrk_mutex, testpi-5, and testpi-6 realtime tests in subdir
+> testcases/realtime/func/pi-tests used compile time config variables
+> which were not generated by autoconf in order to configure tests
+> for robust mutexes.  Changed these conditionals to use the config
+> variables actually generated in the autoconf process.
+> 
+> Signed-off-by: Gary S. Robertson <gary.robertson@linaro.org>
+> ---
+>  testcases/realtime/func/pi-tests/sbrk_mutex.c |    2 +-
+>  testcases/realtime/func/pi-tests/testpi-5.c   |    2 +-
+>  testcases/realtime/func/pi-tests/testpi-6.c   |    2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/realtime/func/pi-tests/sbrk_mutex.c
+> b/testcases/realtime/func/pi-tests/sbrk_mutex.c
+> index 684021f..5c325b4 100644
+> --- a/testcases/realtime/func/pi-tests/sbrk_mutex.c
+> +++ b/testcases/realtime/func/pi-tests/sbrk_mutex.c
+> @@ -45,7 +45,7 @@
+>  #include <unistd.h>
+>  #include "librttest.h"
+>  
+> -#if defined(HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS) &&
+> defined(PTHREAD_MUTEX_ROBUST_NP)
+> +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
+>  
+>  #define NUM_MUTEXES 5000
+>  #define NUM_THREADS 50
+> diff --git a/testcases/realtime/func/pi-tests/testpi-5.c
+> b/testcases/realtime/func/pi-tests/testpi-5.c
+> index a1d93cc..70f02fd 100644
+> --- a/testcases/realtime/func/pi-tests/testpi-5.c
+> +++ b/testcases/realtime/func/pi-tests/testpi-5.c
+> @@ -69,7 +69,7 @@ int do_test(int argc, char **argv)
+>  	pthread_mutexattr_t mutexattr;
+>  	int retc, protocol;
+>  
+> -#if HAS_PTHREAD_MUTEXATTR_PROTOCOL_FUNCTIONS
+> +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
+
+Shouldn't this one be "HAS_PRIORITY_INHERIT"? I'm looking at the
+testcase, but I can't see any robust API being used.
+
+Regards,
+Jan
+
+>  
+>  	if (pthread_mutexattr_init(&mutexattr) != 0)
+>  		printf("Failed to init mutexattr\n");
+> diff --git a/testcases/realtime/func/pi-tests/testpi-6.c
+> b/testcases/realtime/func/pi-tests/testpi-6.c
+> index b3c3e4a..f715eee 100644
+> --- a/testcases/realtime/func/pi-tests/testpi-6.c
+> +++ b/testcases/realtime/func/pi-tests/testpi-6.c
+> @@ -41,7 +41,7 @@
+>  #include <unistd.h>
+>  #include <librttest.h>
+>  
+> -#if defined(PTHREAD_MUTEX_ROBUST_NP)
+> +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
+>  pthread_mutex_t child_mutex;
+>  
+>  void *child_thread(void *arg)
+> --
+> 1.7.9.5
+> 
+> 
+> ------------------------------------------------------------------------------
+> Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+> Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+> Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+> Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+> http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
