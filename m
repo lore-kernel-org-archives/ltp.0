@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Xgv6a-0003p9-TN
-	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 12:33:32 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Xgv6Z-00020e-4y
-	for ltp-list@lists.sourceforge.net; Wed, 22 Oct 2014 12:33:32 +0000
-Message-ID: <5447A432.1000903@cn.fujitsu.com>
-Date: Wed, 22 Oct 2014 20:33:54 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <gary.robertson@linaro.org>) id 1XheL3-0005GI-FU
+	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 12:51:29 +0000
+Received: from mail-wg0-f44.google.com ([74.125.82.44])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XheL1-0006FM-P3
+	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 12:51:29 +0000
+Received: by mail-wg0-f44.google.com with SMTP id y10so993053wgg.27
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 24 Oct 2014 05:51:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <1413212682-13117-1-git-send-email-zlang@redhat.com>
-	<543C9084.6070501@cn.fujitsu.com> <543D0964.5040607@redhat.com>
-	<543E2C5B.3080904@cn.fujitsu.com>
-	<1961894713.55219938.1413973866894.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1961894713.55219938.1413973866894.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] ext4-new-features: modify
- ext4_get_inode_version.sh not know $EXT4_DEV definition
-Reply-To: gaowanlong@cn.fujitsu.com
+In-Reply-To: <141884284.14647510.1414151888080.JavaMail.zimbra@redhat.com>
+References: <1412111852-22329-1-git-send-email-gary.robertson@linaro.org>
+	<141884284.14647510.1414151888080.JavaMail.zimbra@redhat.com>
+Date: Fri, 24 Oct 2014 07:51:21 -0500
+Message-ID: <CAF7YWnxTsX4XUe1VwNZWdykPNzETQ-4wEbP1B7dgj0m=uQN38g@mail.gmail.com>
+From: Gary Robertson <gary.robertson@linaro.org>
+Subject: Re: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,89 +28,290 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============0522366346773748704=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zirong Lang <zlang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>, mike holmes <mike.holmes@linaro.org>
 
-T24gMTAvMjIvMjAxNCAwNjozMSBQTSwgWmlyb25nIExhbmcgd3JvdGU6Cj4gSGkgV2FubG9uZyBH
-YW8sCj4gCj4gVGhhbmtzIGZvciB5b3VyIEFDSy4gQnV0IEkgY2FuJ3QgZmluZCB0aGlzIHBhdGNo
-IG9uIHVwc3RyZWFtIGx0cCByZXBvIHVudGlsIG5vdy4KPiBTaG91bGQgSSByZS1zZW5kIHRoZSBh
-Y2tlZCBwYXRjaCB0byB5b3U/CgpZZWFoLCBpdCdzIGJldHRlciB0byByZXNlbmQgdGhlIHBhdGNo
-IHRvIE1MIHNvIHRoYXQgd2UgY2FuIGFwcGx5IGl0IGVhc2llciwKdGhhbmsgeW91IGZvciB5b3Vy
-IHdvcmsuCgpUaGFua3MsCldhbmxvbmcgR2FvCgo+IAo+IFRoYW5rIHlvdSwKPiBab3JybyBMYW5n
-Cj4gCj4gLS0tLS0g5Y6f5aeL6YKu5Lu2IC0tLS0tCj4g5Y+R5Lu25Lq6OiAiV2FubG9uZyBHYW8i
-IDxnYW93YW5sb25nQGNuLmZ1aml0c3UuY29tPgo+IOaUtuS7tuS6ujogIlpvcnJvIExhbmciIDx6
-bGFuZ0ByZWRoYXQuY29tPgo+IOaKhOmAgTogIlhpYW9ndWFuZyBXYW5nIiA8d2FuZ3hnLmZuc3RA
-Y24uZnVqaXRzdS5jb20+LCBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPiDlj5HpgIHm
-l7bpl7Q6IOaYn+acn+S4iSwgMjAxNOW5tCAxMCDmnIggMTXml6Ug5LiL5Y2IIDQ6MTI6MTEKPiDk
-uLvpopg6IFJlOiBbTFRQXSBbUEFUQ0hdIGV4dDQtbmV3LWZlYXR1cmVzOiBtb2RpZnkgZXh0NF9n
-ZXRfaW5vZGVfdmVyc2lvbi5zaCBub3Qga25vdyAkRVhUNF9ERVYgZGVmaW5pdGlvbgo+IAo+IE9u
-IDEwLzE0LzIwMTQgMDc6MzAgUE0sIFpvcnJvIExhbmcgd3JvdGU6Cj4+IOWcqCAyMDE05bm0MTDm
-nIgxNOaXpSAxMDo1NSwgWGlhb2d1YW5nIFdhbmcg5YaZ6YGTOgo+Pj4gSGksCj4+Pgo+Pj4gT24g
-MTAvMTMvMjAxNCAxMTowNCBQTSwgWm9ycm8gTGFuZyB3cm90ZToKPj4+PiBleHQ0X2dldF9pbm9k
-ZV92ZXJzaW9uLnNoIHVzZSAkRVhUNF9ERVYsIGJ1dCBpdCByZWFsbHkgZG9lc24ndCBrbm93IHdo
-YXQgaXMgJEVYVDRfREVWLgo+Pj4+IFRoYXQgY2F1c2Ugb3RoZXIgY2FzZXMgd2hpY2ggdXNlIGV4
-dDRfZ2V0X2lub2RlX3ZlcnNpb24uc2ggdG8gZmFpbC4KPj4+Pgo+Pj4+IFNpZ25lZC1vZmYtYnk6
-IFpvcnJvIExhbmcgPHpsYW5nQHJlZGhhdC5jb20+Cj4+Pj4gLS0tCj4+Pj4KPj4+PiBIaSwKPj4+
-Pgo+Pj4+IFdoZW4gSSByYW4gZXh0NC1pbm9kZS12ZXJzaW9uLCBJIGFsd2F5cyBoaXQgVEZBSUwu
-IEJ1dCBJIGNhbid0IHJlcHJvZHVjZSB0aGUgZmFpbHVyZSBtYW51YWxseS4KPj4+PiBUaGVuIEkg
-Zm91bmQgZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2ggdXNlIGV4dDRfZ2V0X2lub2RlX3ZlcnNp
-b24uc2ggLT4KPj4+PiBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIHVzZSAkRVhUNF9ERVYgLT4K
-Pj4+PiBidXQgZXh0NF9nZXRfaW5vZGVfdmVyc2lvbi5zaCBkb2Vzbid0IGtub3cgd2hhdCBpcyAk
-RVhUNF9ERVYuCj4+PiBZZWFoLCB0aGlzIGlzIGEgYnVnIDopCj4+Pj4gQWJvdXQgdGhpcyBwYXRj
-aCwgSSBleHBvcnQgJEVYVDRfREVWIGluIGV4dDRfaW5vZGVfdmVyc2lvbl90ZXN0LnNoLCBiZWZv
-cmUgaXQgY2FsbCBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoLgo+Pj4+IEJ1dCBJIHRoaW5rIGFk
-ZCB0aGUgImV4cG9ydCIgaW4gZnJvbnQgb2YgIkVYVDRfREVWPSRMVFBfQklHX0RFViIgaW4gZXh0
-NF9mdW5jcy5zaCB3aWxsIGJlIGFub3RoZXIgbWV0aG9kLgo+Pj4gSSB0aGluayBhZGRpbmcgImV4
-cG9ydCBFWFQ0X0RFVj0kTFRQX0JJR19ERVYiIGluIGV4dDRfZnVuY3Muc2ggd291bGQgYmUgYmV0
-dGVyLgo+PiBIaSB4aWFvZ3VhbmcsCj4+Cj4+IERvIHlvdSBtZWFuIHBhdGNoIGxpa2VzIGJlbG93
-IGlzIGJldHRlcj8KPj4KPj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1u
-ZXctZmVhdHVyZXMvZXh0NF9mdW5jcy5zaCAKPj4gYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4dDQt
-bmV3LWZlYXR1cmVzL2V4dDRfZnVuY3Muc2gKPj4gaW5kZXggMGFlNTM0YS4uYjUxZTk0MiAxMDA3
-NTUKPj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0X2Z1
-bmNzLnNoCj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvZXh0NC1uZXctZmVhdHVyZXMvZXh0
-NF9mdW5jcy5zaAo+PiBAQCAtNDUsNyArNDUsNyBAQCBleHQ0X3NldHVwKCkKPj4gICAgICAgICAg
-aWYgWyAteiAiJExUUF9CSUdfREVWIiBdO3RoZW4KPj4gICAgICAgICAgICAgICAgICB0c3RfYnJr
-bSBUQ09ORiAidGVzdHMgbmVlZCBhIGJpZyBibG9jayBkZXZpY2UoNUctMTBHKSIKPj4gICAgICAg
-ICAgZWxzZQo+PiAtICAgICAgICAgICAgICAgRVhUNF9ERVY9JExUUF9CSUdfREVWCj4+ICsgICAg
-ICAgICAgICAgICBleHBvcnQgRVhUNF9ERVY9JExUUF9CSUdfREVWCj4gCj4gQWNrZWQtYnk6IFdh
-bmxvbmcgR2FvIDxnYW93YW5sb25nQGNuLmZ1aml0c3UuY29tPgo+IAo+PiAgICAgICAgICBmaQo+
-Pgo+PiAgICAgICAgICB0c3RfdG1wZGlyCj4+Cj4+Cj4+IElmIHlvdSB3YW50IHRvIG1lcmdlIHRo
-aXMgcGF0Y2gsIEkgd2lsbCByZXNlbmQgaXQgYXMgdGhlIGJldHRlciB3YXkuCj4+Cj4+IFRoYW5r
-IHlvdSwKPj4gWm9ycm8gTGFuZwo+Pj4KPj4+IFJlZ2FyZHMsCj4+PiBYaWFvZ3VhbmcgV2FuZwo+
-Pj4KPj4+PiBQbGVhc2UgcmV2aWV3LCBhbmQgdGVsbCBtZSB3aGljaCBvbmUgZG8geW91IHRoaW5r
-IGlzIGJldHRlciBmb3IgTFRQPyBPciB5b3UgaGF2ZSBhIGJldHRlciBvbmU7KQo+Pj4+Cj4+Pj4g
-VGhhbmsgeW91LAo+Pj4+IFpvcnJvIExhbmcKPj4+Pgo+Pj4+ICAgLi4uL2ZzL2V4dDQtbmV3LWZl
-YXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVzdC5zaCAgfCAy
-ICsrCj4+Pj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspCj4+Pj4KPj4+PiBkaWZm
-IC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LWlub2Rl
-LXZlcnNpb24vZXh0NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2ggYi90ZXN0Y2FzZXMva2VybmVsL2Zz
-L2V4dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25f
-dGVzdC5zaAo+Pj4+IGluZGV4IGFjOGYwMjEuLjI1NDkwODggMTAwNzU1Cj4+Pj4gLS0tIGEvdGVz
-dGNhc2VzL2tlcm5lbC9mcy9leHQ0LW5ldy1mZWF0dXJlcy9leHQ0LWlub2RlLXZlcnNpb24vZXh0
-NF9pbm9kZV92ZXJzaW9uX3Rlc3Quc2gKPj4+PiArKysgYi90ZXN0Y2FzZXMva2VybmVsL2ZzL2V4
-dDQtbmV3LWZlYXR1cmVzL2V4dDQtaW5vZGUtdmVyc2lvbi9leHQ0X2lub2RlX3ZlcnNpb25fdGVz
-dC5zaAo+Pj4+IEBAIC0xMzgsNiArMTM4LDggQEAgdGVzdF9pbm9kZV92ZXJzaW9uKCkKPj4+PiAg
-IAo+Pj4+ICAgIyBtYWluCj4+Pj4gICBleHQ0X3NldHVwCj4+Pj4gKyMgZXhwb3J0IEVYVDRfREVW
-IGZvciBleHQ0X2dldF9pbm9kZV92ZXJzaW9uLnNoIGNhbiBrbm93IGl0Cj4+Pj4gK2V4cG9ydCBF
-WFQ0X0RFVj0kRVhUNF9ERVYKPj4+PiAgIAo+Pj4+ICAgZXh0NF90ZXN0XzEyOF9pbm9kZV92ZXJz
-aW9uCj4+Pj4gICAKPj4+Pgo+Pgo+Pgo+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gQ29tcHJl
-aGVuc2l2ZSBTZXJ2ZXIgTW9uaXRvcmluZyB3aXRoIFNpdGUyNHg3Lgo+PiBNb25pdG9yIDEwIHNl
-cnZlcnMgZm9yICQ5L01vbnRoLgo+PiBHZXQgYWxlcnRlZCB0aHJvdWdoIGVtYWlsLCBTTVMsIHZv
-aWNlIGNhbGxzIG9yIG1vYmlsZSBwdXNoIG5vdGlmaWNhdGlvbnMuCj4+IFRha2UgY29ycmVjdGl2
-ZSBhY3Rpb25zIGZyb20geW91ciBtb2JpbGUgZGV2aWNlLgo+PiBodHRwOi8vcC5zZi5uZXQvc2Z1
-L1pvaG8KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-Pj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5l
-dAo+PiBodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9sdHAtbGlz
-dAo+Pgo+IAo+IC4KPiAKCgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KQ29tcHJlaGVuc2l2ZSBTZXJ2
-ZXIgTW9uaXRvcmluZyB3aXRoIFNpdGUyNHg3LgpNb25pdG9yIDEwIHNlcnZlcnMgZm9yICQ5L01v
-bnRoLgpHZXQgYWxlcnRlZCB0aHJvdWdoIGVtYWlsLCBTTVMsIHZvaWNlIGNhbGxzIG9yIG1vYmls
-ZSBwdXNoIG5vdGlmaWNhdGlvbnMuClRha2UgY29ycmVjdGl2ZSBhY3Rpb25zIGZyb20geW91ciBt
-b2JpbGUgZGV2aWNlLgpodHRwOi8vcC5zZi5uZXQvc2Z1L1pvaG8KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1s
-aXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9s
-aXN0cy9saXN0aW5mby9sdHAtbGlzdAo=
+--===============0522366346773748704==
+Content-Type: multipart/alternative; boundary=089e0149342c4a34aa05062aa3c1
+
+--089e0149342c4a34aa05062aa3c1
+Content-Type: text/plain; charset=UTF-8
+
+Jan,
+
+In testpi-6.c at line 77, the do_test() function attempts to set the
+following mutex protocol:
+
+    if (pthread_mutexattr_setrobust_np(&mutexattr,
+                       PTHREAD_MUTEX_ROBUST_NP) != 0)
+        printf("Can't set robust mutex\n");
+
+The test in general appears to check how cleanly the robust mutex
+implementation handles attempts to acquire the mutex recursively.
+Since the mutex is NOT initialized as a recursive type, the recursive
+locking attempt is expected to fail in order for the test to pass.
+I agree that I don't see how the ROBUST attribute comes into play here, but
+this is the way the test was written and my patch just allows it to compile
+cleanly.
+
+Gary
+
+On Fri, Oct 24, 2014 at 6:58 AM, Jan Stancek <jstancek@redhat.com> wrote:
+
+>
+>
+>
+>
+> ----- Original Message -----
+> > From: "Gary S. Robertson" <gary.robertson@linaro.org>
+> > To: ltp-list@lists.sourceforge.net
+> > Cc: "mike holmes" <mike.holmes@linaro.org>
+> > Sent: Tuesday, 30 September, 2014 11:17:32 PM
+> > Subject: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals
+> >
+> > From: "Gary S. Robertson" <gary.robertson@linaro.org>
+> >
+> > sbrk_mutex, testpi-5, and testpi-6 realtime tests in subdir
+> > testcases/realtime/func/pi-tests used compile time config variables
+> > which were not generated by autoconf in order to configure tests
+> > for robust mutexes.  Changed these conditionals to use the config
+> > variables actually generated in the autoconf process.
+> >
+> > Signed-off-by: Gary S. Robertson <gary.robertson@linaro.org>
+> > ---
+> >  testcases/realtime/func/pi-tests/sbrk_mutex.c |    2 +-
+> >  testcases/realtime/func/pi-tests/testpi-5.c   |    2 +-
+> >  testcases/realtime/func/pi-tests/testpi-6.c   |    2 +-
+> >  3 files changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/testcases/realtime/func/pi-tests/sbrk_mutex.c
+> > b/testcases/realtime/func/pi-tests/sbrk_mutex.c
+> > index 684021f..5c325b4 100644
+> > --- a/testcases/realtime/func/pi-tests/sbrk_mutex.c
+> > +++ b/testcases/realtime/func/pi-tests/sbrk_mutex.c
+> > @@ -45,7 +45,7 @@
+> >  #include <unistd.h>
+> >  #include "librttest.h"
+> >
+> > -#if defined(HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS) &&
+> > defined(PTHREAD_MUTEX_ROBUST_NP)
+> > +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
+> >
+> >  #define NUM_MUTEXES 5000
+> >  #define NUM_THREADS 50
+> > diff --git a/testcases/realtime/func/pi-tests/testpi-5.c
+> > b/testcases/realtime/func/pi-tests/testpi-5.c
+> > index a1d93cc..70f02fd 100644
+> > --- a/testcases/realtime/func/pi-tests/testpi-5.c
+> > +++ b/testcases/realtime/func/pi-tests/testpi-5.c
+> > @@ -69,7 +69,7 @@ int do_test(int argc, char **argv)
+> >       pthread_mutexattr_t mutexattr;
+> >       int retc, protocol;
+> >
+> > -#if HAS_PTHREAD_MUTEXATTR_PROTOCOL_FUNCTIONS
+> > +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
+>
+> Shouldn't this one be "HAS_PRIORITY_INHERIT"? I'm looking at the
+> testcase, but I can't see any robust API being used.
+>
+> Regards,
+> Jan
+>
+> >
+> >       if (pthread_mutexattr_init(&mutexattr) != 0)
+> >               printf("Failed to init mutexattr\n");
+> > diff --git a/testcases/realtime/func/pi-tests/testpi-6.c
+> > b/testcases/realtime/func/pi-tests/testpi-6.c
+> > index b3c3e4a..f715eee 100644
+> > --- a/testcases/realtime/func/pi-tests/testpi-6.c
+> > +++ b/testcases/realtime/func/pi-tests/testpi-6.c
+> > @@ -41,7 +41,7 @@
+> >  #include <unistd.h>
+> >  #include <librttest.h>
+> >
+> > -#if defined(PTHREAD_MUTEX_ROBUST_NP)
+> > +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
+> >  pthread_mutex_t child_mutex;
+> >
+> >  void *child_thread(void *arg)
+> > --
+> > 1.7.9.5
+> >
+> >
+> >
+> ------------------------------------------------------------------------------
+> > Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+> > Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+> > Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+> > Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+> >
+> http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >
+>
+
+--089e0149342c4a34aa05062aa3c1
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div>Jan,<br><br></div>In testpi-6.c at line 77, the =
+do_test() function attempts to set the following mutex protocol:<br><br>=C2=
+=A0=C2=A0=C2=A0 if (pthread_mutexattr_setrobust_np(&amp;mutexattr,<br>=C2=
+=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =
+=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 PTHREAD_MUTEX_ROBUST_NP) !=3D 0)<br>=C2=A0=
+=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 printf(&quot;Can&#39;t set robust mutex\n&q=
+uot;);<br><br></div>The test in general appears to check how cleanly the ro=
+bust mutex implementation handles attempts to acquire the mutex recursively=
+.<br><div>Since the mutex is NOT initialized as a recursive type, the recur=
+sive locking attempt is expected to fail in order for the test to pass.<br>=
+</div><div>I agree that I don&#39;t see how the ROBUST attribute comes into=
+ play here, but this is the way the test was written and my patch just allo=
+ws it to compile cleanly.<br><br></div><div>Gary<br></div></div><div class=
+=3D"gmail_extra"><br><div class=3D"gmail_quote">On Fri, Oct 24, 2014 at 6:5=
+8 AM, Jan Stancek <span dir=3D"ltr">&lt;<a href=3D"mailto:jstancek@redhat.c=
+om" target=3D"_blank">jstancek@redhat.com</a>&gt;</span> wrote:<br><blockqu=
+ote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc s=
+olid;padding-left:1ex"><span class=3D""><br>
+<br>
+<br>
+<br>
+----- Original Message -----<br>
+&gt; From: &quot;Gary S. Robertson&quot; &lt;<a href=3D"mailto:gary.roberts=
+on@linaro.org">gary.robertson@linaro.org</a>&gt;<br>
+</span><div><div class=3D"h5">&gt; To: <a href=3D"mailto:ltp-list@lists.sou=
+rceforge.net">ltp-list@lists.sourceforge.net</a><br>
+&gt; Cc: &quot;mike holmes&quot; &lt;<a href=3D"mailto:mike.holmes@linaro.o=
+rg">mike.holmes@linaro.org</a>&gt;<br>
+&gt; Sent: Tuesday, 30 September, 2014 11:17:32 PM<br>
+&gt; Subject: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals<b=
+r>
+&gt;<br>
+&gt; From: &quot;Gary S. Robertson&quot; &lt;<a href=3D"mailto:gary.roberts=
+on@linaro.org">gary.robertson@linaro.org</a>&gt;<br>
+&gt;<br>
+&gt; sbrk_mutex, testpi-5, and testpi-6 realtime tests in subdir<br>
+&gt; testcases/realtime/func/pi-tests used compile time config variables<br=
+>
+&gt; which were not generated by autoconf in order to configure tests<br>
+&gt; for robust mutexes.=C2=A0 Changed these conditionals to use the config=
+<br>
+&gt; variables actually generated in the autoconf process.<br>
+&gt;<br>
+&gt; Signed-off-by: Gary S. Robertson &lt;<a href=3D"mailto:gary.robertson@=
+linaro.org">gary.robertson@linaro.org</a>&gt;<br>
+&gt; ---<br>
+&gt;=C2=A0 testcases/realtime/func/pi-tests/sbrk_mutex.c |=C2=A0 =C2=A0 2 +=
+-<br>
+&gt;=C2=A0 testcases/realtime/func/pi-tests/testpi-5.c=C2=A0 =C2=A0|=C2=A0 =
+=C2=A0 2 +-<br>
+&gt;=C2=A0 testcases/realtime/func/pi-tests/testpi-6.c=C2=A0 =C2=A0|=C2=A0 =
+=C2=A0 2 +-<br>
+&gt;=C2=A0 3 files changed, 3 insertions(+), 3 deletions(-)<br>
+&gt;<br>
+&gt; diff --git a/testcases/realtime/func/pi-tests/sbrk_mutex.c<br>
+&gt; b/testcases/realtime/func/pi-tests/sbrk_mutex.c<br>
+&gt; index 684021f..5c325b4 100644<br>
+&gt; --- a/testcases/realtime/func/pi-tests/sbrk_mutex.c<br>
+&gt; +++ b/testcases/realtime/func/pi-tests/sbrk_mutex.c<br>
+&gt; @@ -45,7 +45,7 @@<br>
+&gt;=C2=A0 #include &lt;unistd.h&gt;<br>
+&gt;=C2=A0 #include &quot;librttest.h&quot;<br>
+&gt;<br>
+&gt; -#if defined(HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS) &amp;&amp;<br>
+&gt; defined(PTHREAD_MUTEX_ROBUST_NP)<br>
+&gt; +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS<br>
+&gt;<br>
+&gt;=C2=A0 #define NUM_MUTEXES 5000<br>
+&gt;=C2=A0 #define NUM_THREADS 50<br>
+&gt; diff --git a/testcases/realtime/func/pi-tests/testpi-5.c<br>
+&gt; b/testcases/realtime/func/pi-tests/testpi-5.c<br>
+&gt; index a1d93cc..70f02fd 100644<br>
+&gt; --- a/testcases/realtime/func/pi-tests/testpi-5.c<br>
+&gt; +++ b/testcases/realtime/func/pi-tests/testpi-5.c<br>
+&gt; @@ -69,7 +69,7 @@ int do_test(int argc, char **argv)<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0pthread_mutexattr_t mutexattr;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0int retc, protocol;<br>
+&gt;<br>
+&gt; -#if HAS_PTHREAD_MUTEXATTR_PROTOCOL_FUNCTIONS<br>
+&gt; +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS<br>
+<br>
+</div></div>Shouldn&#39;t this one be &quot;HAS_PRIORITY_INHERIT&quot;? I&#=
+39;m looking at the<br>
+testcase, but I can&#39;t see any robust API being used.<br>
+<br>
+Regards,<br>
+Jan<br>
+<span class=3D""><br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0if (pthread_mutexattr_init(&amp;mutexattr) !=
+=3D 0)<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0printf(&quot;Fai=
+led to init mutexattr\n&quot;);<br>
+&gt; diff --git a/testcases/realtime/func/pi-tests/testpi-6.c<br>
+&gt; b/testcases/realtime/func/pi-tests/testpi-6.c<br>
+&gt; index b3c3e4a..f715eee 100644<br>
+&gt; --- a/testcases/realtime/func/pi-tests/testpi-6.c<br>
+&gt; +++ b/testcases/realtime/func/pi-tests/testpi-6.c<br>
+&gt; @@ -41,7 +41,7 @@<br>
+&gt;=C2=A0 #include &lt;unistd.h&gt;<br>
+&gt;=C2=A0 #include &lt;librttest.h&gt;<br>
+&gt;<br>
+&gt; -#if defined(PTHREAD_MUTEX_ROBUST_NP)<br>
+&gt; +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS<br>
+&gt;=C2=A0 pthread_mutex_t child_mutex;<br>
+&gt;<br>
+&gt;=C2=A0 void *child_thread(void *arg)<br>
+&gt; --<br>
+&gt; 1.7.9.5<br>
+&gt;<br>
+&gt;<br>
+</span>&gt; ---------------------------------------------------------------=
+---------------<br>
+&gt; Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer<br>
+&gt; Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Repor=
+ts<br>
+&gt; Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper<b=
+r>
+&gt; Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer<b=
+r>
+&gt; <a href=3D"http://pubads.g.doubleclick.net/gampad/clk?id=3D154622311&a=
+mp;iu=3D/4140/ostg.clktrk" target=3D"_blank">http://pubads.g.doubleclick.ne=
+t/gampad/clk?id=3D154622311&amp;iu=3D/4140/ostg.clktrk</a><br>
+&gt; _______________________________________________<br>
+&gt; Ltp-list mailing list<br>
+&gt; <a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourc=
+eforge.net</a><br>
+&gt; <a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" targ=
+et=3D"_blank">https://lists.sourceforge.net/lists/listinfo/ltp-list</a><br>
+&gt;<br>
+</blockquote></div><br></div>
+
+--089e0149342c4a34aa05062aa3c1--
+
+
+--===============0522366346773748704==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+------------------------------------------------------------------------------
+
+--===============0522366346773748704==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============0522366346773748704==--
+
