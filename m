@@ -2,20 +2,16 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1Xek9F-00085E-3i
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 12:27:17 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	(envelope-from <liwang@redhat.com>) id 1XhbhT-0005Bm-GI
+	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 10:02:27 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xek9A-0004hh-JW
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 12:27:16 +0000
-Date: Thu, 16 Oct 2014 08:27:03 -0400 (EDT)
-From: Matus Marhefka <mmarhefk@redhat.com>
-Message-ID: <1320265853.52472905.1413462423955.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1672541685.8551030.1413281022003.JavaMail.zimbra@redhat.com>
-References: <2053896520.50998554.1413221667648.JavaMail.zimbra@redhat.com>
-	<1672541685.8551030.1413281022003.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] Test case "netns_2children" fails under SELinux MLS
+	(Exim 4.76) id 1XhbhR-0006P6-Ka
+	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 10:02:27 +0000
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 24 Oct 2014 18:02:12 +0800
+Message-Id: <1414144932-14710-1-git-send-email-liwang@redhat.com>
+Subject: [LTP] [PATCH] /kenel/syscalls/prctl: add prctl03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,126 +21,216 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: wangli.ahau@gmail.com
 
-Hi,
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ runtest/syscalls                          |   1 +
+ testcases/kernel/syscalls/.gitignore      |   1 +
+ testcases/kernel/syscalls/prctl/prctl03.c | 160 ++++++++++++++++++++++++++++++
+ 3 files changed, 162 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/prctl/prctl03.c
 
-it was really just a bad label, after relabelling or on clean installation
-of RHEL7 it passes.
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 6b8de24..daa72ea 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -752,6 +752,7 @@ ppoll01 ppoll01
+ 
+ prctl01 prctl01
+ prctl02 prctl02
++prctl03 prctl03
+ 
+ pread01 pread01
+ pread01_64 pread01_64
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 41fec07..442cacc 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -630,6 +630,7 @@
+ /ppoll/ppoll01
+ /prctl/prctl01
+ /prctl/prctl02
++/prctl/prctl03
+ /pread/pread01
+ /pread/pread01_64
+ /pread/pread02
+diff --git a/testcases/kernel/syscalls/prctl/prctl03.c b/testcases/kernel/syscalls/prctl/prctl03.c
+new file mode 100644
+index 0000000..c91f1d7
+--- /dev/null
++++ b/testcases/kernel/syscalls/prctl/prctl03.c
+@@ -0,0 +1,160 @@
++/*
++ * Copyright (C) 2014 Linux Test Project
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++/*
++ * Dummy test program to do basic validation for RH BZ #1056347
++ *  -> https://bugzilla.redhat.com/show_bug.cgi?id=1056347
++ *
++ * 1. The CAPBSET test drops CAP_DAC_OVERRIDE; the output should show 
++ * it missing from the bounding set.
++ * 2. The SECUREBITS test sets the NOROOT bit; the output should show 
++ * the "secure-noroot" bit set.
++ * 3. The KEEPCAPS test sets/checks the KEEPCAPS bit; the output should 
++ * show the value changing from zero to one.
++ *
++ */
++
++#include <errno.h>
++#include <stdlib.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <linux/capability.h>
++#include <linux/securebits.h>
++#include <sys/prctl.h>
++
++#include "test.h"
++#include "usctest.h"
++
++static void setup(void);
++static void cleanup(void);
++
++static void test_capbset(void);
++static void test_securebits(void);
++static void test_keepcaps(void);
++
++char *TCID = "prctl03";
++int TST_TOTAL = 1;
++
++int main(int ac, char **av)
++{
++	int lc, i;
++	const char *msg;
++	pid_t pid;
++
++	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++){
++
++		tst_count = 0;
++
++		tst_resm(TINFO, "Testing CAPBSET");
++		pid = fork();
++		if (pid == 0) {
++			test_capbset();
++		} else if (pid < 0)
++			tst_brkm(TBROK | TERRNO, cleanup, "the pid[%d] is invalid", pid);
++		if (waitpid(pid, NULL, 0) != pid)
++			tst_brkm(TBROK | TERRNO, cleanup, "waitpid[%d]", pid);
++		tst_resm(TPASS, "Test Passed.\n");
++
++		tst_resm(TINFO, "Testing SECUREBITS");
++		pid = fork();
++		if (pid == 0) {
++			test_securebits();
++		} else if (pid < 0)
++			tst_brkm(TBROK | TERRNO, cleanup, "the pid[%d] is invalid", pid);
++		if (waitpid(pid, NULL, 0) != pid)
++			tst_brkm(TBROK | TERRNO, cleanup, "waitpid[%d]", pid);
++		tst_resm(TPASS, "Test Passed.\n");
++
++		tst_resm(TINFO, "Testing KEEPCAPS");
++		pid = fork();
++		if (pid == 0) {
++			test_keepcaps();
++		} else if (pid < 0)
++			tst_brkm(TBROK | TERRNO, cleanup, "the pid[%d] is invalid", pid);
++		if (waitpid(pid, NULL, 0) != pid)
++			tst_brkm(TBROK | TERRNO, cleanup, "waitpid[%d]", pid);
++		tst_resm(TPASS, "Test Passed.\n");
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void test_capbset(void)
++{
++	int rc;
++
++	rc = prctl(PR_CAPBSET_DROP, CAP_DAC_OVERRIDE, 0, 0, 0);
++	if (rc)
++		tst_brkm(TBROK | TERRNO, NULL, "test failue rc = %d", rc);
++	if (prctl(PR_CAPBSET_READ, CAP_DAC_OVERRIDE, 0, 0, 0) != 0)
++		tst_brkm(TBROK | TERRNO, NULL, "unknow test failure");
++	execl("/usr/sbin/capsh", "capsh", "--print", NULL);
++	exit(0);
++}
++
++static void test_securebits(void)
++{
++	int rc;
++
++	rc = prctl(PR_SET_SECUREBITS, SECBIT_NOROOT, 0, 0, 0);
++	if (rc)
++		tst_brkm(TBROK | TERRNO, NULL, "test failue rc = %d", rc);
++	rc = prctl(PR_GET_SECUREBITS, 0, 0, 0, 0);
++	if (!(rc & SECBIT_NOROOT))
++		tst_brkm(TBROK | TERRNO, NULL, "unknow test failure");
++	execl("/usr/sbin/capsh", "capsh", "--print", NULL);
++	exit(0);
++}
++
++static void test_keepcaps(void)
++{
++	int rc;
++
++	rc = prctl(PR_GET_KEEPCAPS, 0, 0, 0, 0);
++	tst_resm(TINFO, "pr_get_keepcaps(orig) = %d", rc);
++	rc = prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0);
++	if (rc)
++		tst_brkm(TBROK | TERRNO, NULL, "test failue rc = %d", rc);
++	rc = prctl(PR_GET_KEEPCAPS, 0, 0, 0, 0);
++	tst_resm(TINFO, "pr_get_keepcaps(test) = %d", rc);
++	exit(0);
++}
++
++
++static void setup(void)
++{
++	tst_sig(FORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
++}
++
++static void cleanup(void)
++{
++	TEST_CLEANUP;
++}
+-- 
+1.9.3
 
-Thanks,
-Matus Marhefka
-
-
------ Original Message -----
-From: "Jan Stancek" <jstancek@redhat.com>
-To: "Matus Marhefka" <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
-Sent: Tuesday, October 14, 2014 12:03:42 PM
-Subject: Re: Test case "netns_2children" fails under SELinux MLS
-
-
-
-
-
------ Original Message -----
-> From: "Matus Marhefka" <mmarhefk@redhat.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "Jan Stancek" <jstancek@redhat.com>
-> Sent: Monday, 13 October, 2014 7:34:27 PM
-> Subject: Test case "netns_2children" fails under SELinux MLS
-> 
-> Hi,
-> 
-> I got fail for TC netns_2children (under kernel/containers/netns) when using
-> SELinux policy MLS in enforcing mode:
-> 
-> netns_child_2.sh 1 TFAIL : FAIL: Unable to ping Child1NS from Child2NS !
-> netns_child_1.sh 1 TFAIL : CHILD2 is unable to reach CHILD1
-> netns_2children    1  TFAIL  :  netns_two_children_ns.c:125: waitpid()
-> returns 22672, errno 255
-> 
-> ..but it passes for permissive mode (setenforce 0), so I can either report
-> bug on SELinux policy
-> or we must test this TC in permissive mode. I think reporting bug on SELinux
-> policy is better solution,
-> what do you think ?
-
-I'm not sure, when I saw that "unlabeled_t" in your AVC, I was thinking maybe
-you are missing some label.
-
-How are you running it? I tried to run it by hand, and although it fails
-to start sshd, pings seems to work:
-
-1. install RHEL7 GA
-2. yum install selinux-policy-mls
-3. relabel all
-
-and then:
-
-# sestatus 
-SELinux status:                 enabled
-SELinuxfs mount:                /sys/fs/selinux
-SELinux root directory:         /etc/selinux
-Loaded policy name:             mls
-Current mode:                   enforcing
-Mode from config file:          enforcing
-Policy MLS status:              enabled
-Policy deny_unknown status:     denied
-Max kernel policy version:      28
-
-# cd /root/ltp/testcases/kernel/containers/netns
-# env PATH=/root/ltp/testcases/lib:.:$PATH ./netns_two_children_ns
-netns_child_1.sh: line 47: /usr/sbin/sshd: Permission denied
-netns_child_2.sh: line 46: /usr/sbin/sshd: Permission denied
-netns_child_2.sh 1 TINFO : PASS: CHILD1 is pinging from CHILD2 ! 
-netns_child_1.sh 1 TINFO : PASS: Child2 is pinging from CHILD1 !
-netns_2children    1  TPASS  :  two children ns
-
-# cat /etc/redhat-release 
-Red Hat Enterprise Linux Server release 7.0 (Maipo)
-
-# rpm -qa selinux-policy*
-selinux-policy-3.12.1-153.el7.noarch
-selinux-policy-targeted-3.12.1-153.el7.noarch
-selinux-policy-mls-3.12.1-153.el7.noarch
-
-Regards,
-Jan
-
-> 
-> More details (after test fail):
-> # ausearch -m avc -ts recent | grep ping
-> type=SYSCALL msg=audit(1413219951.925:1481): arch=c000003e syscall=46
-> success=yes exit=64 a0=5 a1=7fc90a490160 a2=0 a3=0 items=0 ppid=21088
-> pid=21167 auid=995 uid=0 gid=0 euid=0 suid=0 fsuid=0 egid=0 sgid=0 fsgid=0
-> tty=pts1 ses=17 comm="ping" exe="/usr/bin/pin "
-> subj=staff_u:lspp_test_r:lspp_harness_t:s0-s15:c0.c1023 key=(null)
-> type=AVC msg=audit(1413219951.925:1481): avc:  denied  { egress } for
-> pid=21167 comm= ping" saddr=192.168.0.184 daddr=192.168.0.182 netif=veth0
-> scontext=system_u:object_r:unlabeled_t:s0
-> tcontext=system_u:object_r:netif_t:s0-s15:c0.c1023 tclass=netif
-> 
-> # ausearch -m avc -ts recent | grep ping | audit2allow
-> 
-> #============= unlabeled_t ==============
-> allow unlabeled_t netif_t:netif egress;
-> 
-> 
-> Thanks,
-> Matus Marhefka
-> 
 
 ------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
