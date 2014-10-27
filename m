@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Xb9hC-00031T-Gp
-	for ltp-list@lists.sourceforge.net; Mon, 06 Oct 2014 14:55:30 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xb9h8-0000ZO-3D
-	for ltp-list@lists.sourceforge.net; Mon, 06 Oct 2014 14:55:30 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s96EtJcW028246
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Oct 2014 10:55:19 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id s96EtHaI008066
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Oct 2014 10:55:18 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  6 Oct 2014 16:55:09 +0200
-Message-Id: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 1/2 v2] checkpoints: introduce TST_CHECKPOINT_CREATE
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangli5665@gmail.com>) id 1XifDa-0007hr-Ig
+	for ltp-list@lists.sourceforge.net; Mon, 27 Oct 2014 07:59:58 +0000
+Received: from mail-oi0-f52.google.com ([209.85.218.52])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1XifDZ-0008IA-Bj
+	for ltp-list@lists.sourceforge.net; Mon, 27 Oct 2014 07:59:58 +0000
+Received: by mail-oi0-f52.google.com with SMTP id a3so2884996oib.25
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 27 Oct 2014 00:59:51 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <1414144932-14710-1-git-send-email-liwang@redhat.com>
+References: <1414144932-14710-1-git-send-email-liwang@redhat.com>
+Date: Mon, 27 Oct 2014 15:59:51 +0800
+Message-ID: <CAE1O6mjbcba91hvNJAodZB4iGW5m7OEtUakmiWVqhOxgVgw8Xg@mail.gmail.com>
+From: Li Wang <wangli.ahau@gmail.com>
+Subject: Re: [LTP] [PATCH] /kenel/syscalls/prctl: add prctl03
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,232 +27,231 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Rename tst_checkpoint_init to tst_checkpoint_create.
-Add tst_checkpoint_init, which only initializes checkpoint struct.
-Update existing testcases to use TST_CHECKPOINT_CREATE.
+On 24 October 2014 18:02, Li Wang <liwang@redhat.com> wrote:
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  runtest/syscalls                          |   1 +
+>  testcases/kernel/syscalls/.gitignore      |   1 +
+>  testcases/kernel/syscalls/prctl/prctl03.c | 160 ++++++++++++++++++++++++++++++
+>  3 files changed, 162 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/prctl/prctl03.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 6b8de24..daa72ea 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -752,6 +752,7 @@ ppoll01 ppoll01
+>
+>  prctl01 prctl01
+>  prctl02 prctl02
+> +prctl03 prctl03
+>
+>  pread01 pread01
+>  pread01_64 pread01_64
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index 41fec07..442cacc 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -630,6 +630,7 @@
+>  /ppoll/ppoll01
+>  /prctl/prctl01
+>  /prctl/prctl02
+> +/prctl/prctl03
+>  /pread/pread01
+>  /pread/pread01_64
+>  /pread/pread02
+> diff --git a/testcases/kernel/syscalls/prctl/prctl03.c b/testcases/kernel/syscalls/prctl/prctl03.c
+> new file mode 100644
+> index 0000000..c91f1d7
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/prctl/prctl03.c
+> @@ -0,0 +1,160 @@
+> +/*
+> + * Copyright (C) 2014 Linux Test Project
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it
+> + * is free of the rightful claim of any third person regarding
+> + * infringement or the like.  Any license provided herein, whether
+> + * implied or otherwise, applies only to this software file.  Patent
+> + * licenses, if any, provided herein do not apply to combinations of
+> + * this program with other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software
+> + * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> + * 02110-1301, USA.
+> + */
+> +
+> +/*
+> + * Dummy test program to do basic validation for RH BZ #1056347
+> + *  -> https://bugzilla.redhat.com/show_bug.cgi?id=1056347
+> + *
+> + * 1. The CAPBSET test drops CAP_DAC_OVERRIDE; the output should show
+> + * it missing from the bounding set.
+> + * 2. The SECUREBITS test sets the NOROOT bit; the output should show
+> + * the "secure-noroot" bit set.
+> + * 3. The KEEPCAPS test sets/checks the KEEPCAPS bit; the output should
+> + * show the value changing from zero to one.
+> + *
+> + */
+> +
+> +#include <errno.h>
+> +#include <stdlib.h>
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <linux/capability.h>
+> +#include <linux/securebits.h>
+> +#include <sys/prctl.h>
+> +
+> +#include "test.h"
+> +#include "usctest.h"
+> +
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +static void test_capbset(void);
+> +static void test_securebits(void);
+> +static void test_keepcaps(void);
+> +
+> +char *TCID = "prctl03";
+> +int TST_TOTAL = 1;
+> +
+> +int main(int ac, char **av)
+> +{
+> +       int lc, i;
+My apologies for the useless  variable "i" here.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- include/tst_checkpoint.h                           |   10 ++++++++--
- lib/tests/tst_checkpoint_child.c                   |    2 +-
- lib/tests/tst_checkpoint_child_exits.c             |    2 +-
- lib/tests/tst_checkpoint_no_child.c                |    2 +-
- lib/tests/tst_checkpoint_parent.c                  |    2 +-
- lib/tests/tst_checkpoint_parent_exits.c            |    2 +-
- lib/tst_checkpoint.c                               |   20 ++++++++++++++------
- .../kernel/containers/mountns/mountns_helper.h     |    4 ++--
- testcases/kernel/syscalls/creat/creat07.c          |    2 +-
- testcases/kernel/syscalls/flock/flock03.c          |    2 +-
- testcases/kernel/syscalls/setpgid/setpgid03.c      |    2 +-
- testcases/kernel/syscalls/waitid/waitid02.c        |    2 +-
- 12 files changed, 33 insertions(+), 19 deletions(-)
+> +       const char *msg;
+> +       pid_t pid;
+> +
+> +       if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
+> +               tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+> +
+> +       setup();
+> +
+> +       for (lc = 0; TEST_LOOPING(lc); lc++){
+> +
+> +               tst_count = 0;
+> +
+> +               tst_resm(TINFO, "Testing CAPBSET");
+> +               pid = fork();
+> +               if (pid == 0) {
+> +                       test_capbset();
+> +               } else if (pid < 0)
+> +                       tst_brkm(TBROK | TERRNO, cleanup, "the pid[%d] is invalid", pid);
+> +               if (waitpid(pid, NULL, 0) != pid)
+> +                       tst_brkm(TBROK | TERRNO, cleanup, "waitpid[%d]", pid);
+> +               tst_resm(TPASS, "Test Passed.\n");
+From my re-test, these codes print TPASS even if  the failure occur
+above, so we should reconsider the process structure again.
 
-diff --git a/include/tst_checkpoint.h b/include/tst_checkpoint.h
-index 4d04c0e..6ea3366 100644
---- a/include/tst_checkpoint.h
-+++ b/include/tst_checkpoint.h
-@@ -51,10 +51,16 @@ struct tst_checkpoint {
-  * Checkpoint initializaton, must be done first.
-  */
- #define TST_CHECKPOINT_INIT(self) \
--        tst_checkpoint_init(__FILE__, __LINE__, self)
-+	tst_checkpoint_init(__FILE__, __LINE__, self)
- 
- void tst_checkpoint_init(const char *file, const int lineno,
--                         struct tst_checkpoint *self);
-+			 struct tst_checkpoint *self);
-+
-+#define TST_CHECKPOINT_CREATE(self) \
-+	tst_checkpoint_create(__FILE__, __LINE__, self)
-+
-+void tst_checkpoint_create(const char *file, const int lineno,
-+			   struct tst_checkpoint *self);
- 
- /*
-  * Wait called from parent. In case parent waits for child.
-diff --git a/lib/tests/tst_checkpoint_child.c b/lib/tests/tst_checkpoint_child.c
-index 9ce93f5..a13a9a2 100644
---- a/lib/tests/tst_checkpoint_child.c
-+++ b/lib/tests/tst_checkpoint_child.c
-@@ -35,7 +35,7 @@ int main(void)
- 
- 	tst_tmpdir();
- 
--	TST_CHECKPOINT_INIT(&checkpoint);
-+	TST_CHECKPOINT_CREATE(&checkpoint);
- 
- 	pid = fork();
- 
-diff --git a/lib/tests/tst_checkpoint_child_exits.c b/lib/tests/tst_checkpoint_child_exits.c
-index 3488ba2..d2e3f74 100644
---- a/lib/tests/tst_checkpoint_child_exits.c
-+++ b/lib/tests/tst_checkpoint_child_exits.c
-@@ -35,7 +35,7 @@ int main(void)
- 
- 	tst_tmpdir();
- 
--	TST_CHECKPOINT_INIT(&checkpoint);
-+	TST_CHECKPOINT_CREATE(&checkpoint);
- 
- 	pid = fork();
- 
-diff --git a/lib/tests/tst_checkpoint_no_child.c b/lib/tests/tst_checkpoint_no_child.c
-index fcf2745..2e72198 100644
---- a/lib/tests/tst_checkpoint_no_child.c
-+++ b/lib/tests/tst_checkpoint_no_child.c
-@@ -39,7 +39,7 @@ int main(void)
- 
- 	tst_tmpdir();
- 
--	TST_CHECKPOINT_INIT(&checkpoint);
-+	TST_CHECKPOINT_CREATE(&checkpoint);
- 	TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint);
- 	fprintf(stderr, "Parent: checkpoint reached\n");
- 
-diff --git a/lib/tests/tst_checkpoint_parent.c b/lib/tests/tst_checkpoint_parent.c
-index a2ae621..a42b37a 100644
---- a/lib/tests/tst_checkpoint_parent.c
-+++ b/lib/tests/tst_checkpoint_parent.c
-@@ -35,7 +35,7 @@ int main(void)
- 
- 	tst_tmpdir();
- 
--	TST_CHECKPOINT_INIT(&checkpoint);
-+	TST_CHECKPOINT_CREATE(&checkpoint);
- 
- 	pid = fork();
- 
-diff --git a/lib/tests/tst_checkpoint_parent_exits.c b/lib/tests/tst_checkpoint_parent_exits.c
-index 59c5356..3056c2c 100644
---- a/lib/tests/tst_checkpoint_parent_exits.c
-+++ b/lib/tests/tst_checkpoint_parent_exits.c
-@@ -35,7 +35,7 @@ int main(void)
- 
- 	tst_tmpdir();
- 
--	TST_CHECKPOINT_INIT(&checkpoint);
-+	TST_CHECKPOINT_CREATE(&checkpoint);
- 
- 	pid = fork();
- 
-diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-index 7391a28..ebc379e 100644
---- a/lib/tst_checkpoint.c
-+++ b/lib/tst_checkpoint.c
-@@ -74,12 +74,6 @@ void tst_checkpoint_init(const char *file, const int lineno,
- 	static unsigned int fifo_counter = 0;
- 	int rval;
- 
--	if (!tst_tmpdir_created()) {
--		tst_brkm(TBROK, NULL, "Checkpoint could be used only in test "
--		                      "temporary directory at %s:%d",
--				      file, lineno);
--	}
--	
- 	/* default values */
- 	rval = snprintf(self->file, TST_FIFO_LEN, "tst_checkopoint_fifo_%u",
- 			fifo_counter++);
-@@ -90,6 +84,20 @@ void tst_checkpoint_init(const char *file, const int lineno,
- 	}
- 	self->retval = 1;
- 	self->timeout = 5000;
-+}
-+
-+void tst_checkpoint_create(const char *file, const int lineno,
-+			   struct tst_checkpoint *self)
-+
-+{
-+
-+	if (!tst_tmpdir_created()) {
-+		tst_brkm(TBROK, NULL, "Checkpoint could be used only in test "
-+				      "temporary directory at %s:%d",
-+				      file, lineno);
-+	}
-+
-+	tst_checkpoint_init(file, lineno, self);
- 
- 	if (mkfifo(self->file, 0666)) {
- 		tst_brkm(TBROK | TERRNO, NULL,
-diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
-index cb9c16d..d4a6a91 100644
---- a/testcases/kernel/containers/mountns/mountns_helper.h
-+++ b/testcases/kernel/containers/mountns/mountns_helper.h
-@@ -57,8 +57,8 @@ static void setup(void)
- 	tst_require_root(NULL);
- 	check_newns();
- 	tst_tmpdir();
--	TST_CHECKPOINT_INIT(&checkpoint1);
--	TST_CHECKPOINT_INIT(&checkpoint2);
-+	TST_CHECKPOINT_CREATE(&checkpoint1);
-+	TST_CHECKPOINT_CREATE(&checkpoint2);
- 	SAFE_MKDIR(cleanup, DIRA, 0777);
- 	SAFE_MKDIR(cleanup, DIRB, 0777);
- 	SAFE_TOUCH(cleanup, DIRA"/A", 0, NULL);
-diff --git a/testcases/kernel/syscalls/creat/creat07.c b/testcases/kernel/syscalls/creat/creat07.c
-index a9f5253..4b8958f 100644
---- a/testcases/kernel/syscalls/creat/creat07.c
-+++ b/testcases/kernel/syscalls/creat/creat07.c
-@@ -108,7 +108,7 @@ static void setup(char *app)
- 
- 	TST_RESOURCE_COPY(cleanup, TEST_APP, NULL);
- 	
--	TST_CHECKPOINT_INIT(&checkpoint);
-+	TST_CHECKPOINT_CREATE(&checkpoint);
- 
- 	TEST_PAUSE;
- }
-diff --git a/testcases/kernel/syscalls/flock/flock03.c b/testcases/kernel/syscalls/flock/flock03.c
-index b2734b5..446dc84 100644
---- a/testcases/kernel/syscalls/flock/flock03.c
-+++ b/testcases/kernel/syscalls/flock/flock03.c
-@@ -186,7 +186,7 @@ static void setup(void)
- 
- 	tst_tmpdir();
- 
--	TST_CHECKPOINT_INIT(&checkpoint);
-+	TST_CHECKPOINT_CREATE(&checkpoint);
- 
- 	fd = creat(FILE_NAME, 0666);
- 	if (fd < 0) {
-diff --git a/testcases/kernel/syscalls/setpgid/setpgid03.c b/testcases/kernel/syscalls/setpgid/setpgid03.c
-index a107c50..c1b9951 100644
---- a/testcases/kernel/syscalls/setpgid/setpgid03.c
-+++ b/testcases/kernel/syscalls/setpgid/setpgid03.c
-@@ -155,7 +155,7 @@ static void setup(void)
- 
- 	tst_tmpdir();
- 
--	TST_CHECKPOINT_INIT(&checkpoint);
-+	TST_CHECKPOINT_CREATE(&checkpoint);
- 	checkpoint.timeout = 10000;
- 
- 	umask(0);
-diff --git a/testcases/kernel/syscalls/waitid/waitid02.c b/testcases/kernel/syscalls/waitid/waitid02.c
-index 6259fa3..d497b6b 100644
---- a/testcases/kernel/syscalls/waitid/waitid02.c
-+++ b/testcases/kernel/syscalls/waitid/waitid02.c
-@@ -240,7 +240,7 @@ static void setup(void)
- {
- 	TEST_PAUSE;
- 	tst_tmpdir();
--	TST_CHECKPOINT_INIT(&checkpoint);
-+	TST_CHECKPOINT_CREATE(&checkpoint);
- }
- 
- static void cleanup(void)
+> +
+> +               tst_resm(TINFO, "Testing SECUREBITS");
+> +               pid = fork();
+> +               if (pid == 0) {
+> +                       test_securebits();
+> +               } else if (pid < 0)
+> +                       tst_brkm(TBROK | TERRNO, cleanup, "the pid[%d] is invalid", pid);
+> +               if (waitpid(pid, NULL, 0) != pid)
+> +                       tst_brkm(TBROK | TERRNO, cleanup, "waitpid[%d]", pid);
+> +               tst_resm(TPASS, "Test Passed.\n");
+> +
+> +               tst_resm(TINFO, "Testing KEEPCAPS");
+> +               pid = fork();
+> +               if (pid == 0) {
+> +                       test_keepcaps();
+> +               } else if (pid < 0)
+> +                       tst_brkm(TBROK | TERRNO, cleanup, "the pid[%d] is invalid", pid);
+> +               if (waitpid(pid, NULL, 0) != pid)
+> +                       tst_brkm(TBROK | TERRNO, cleanup, "waitpid[%d]", pid);
+> +               tst_resm(TPASS, "Test Passed.\n");
+> +       }
+> +
+> +       cleanup();
+> +       tst_exit();
+> +}
+> +
+> +static void test_capbset(void)
+> +{
+> +       int rc;
+> +
+> +       rc = prctl(PR_CAPBSET_DROP, CAP_DAC_OVERRIDE, 0, 0, 0);
+> +       if (rc)
+> +               tst_brkm(TBROK | TERRNO, NULL, "test failue rc = %d", rc);
+> +       if (prctl(PR_CAPBSET_READ, CAP_DAC_OVERRIDE, 0, 0, 0) != 0)
+> +               tst_brkm(TBROK | TERRNO, NULL, "unknow test failure");
+> +       execl("/usr/sbin/capsh", "capsh", "--print", NULL);
+> +       exit(0);
+> +}
+> +
+> +static void test_securebits(void)
+> +{
+> +       int rc;
+> +
+> +       rc = prctl(PR_SET_SECUREBITS, SECBIT_NOROOT, 0, 0, 0);
+> +       if (rc)
+> +               tst_brkm(TBROK | TERRNO, NULL, "test failue rc = %d", rc);
+> +       rc = prctl(PR_GET_SECUREBITS, 0, 0, 0, 0);
+> +       if (!(rc & SECBIT_NOROOT))
+> +               tst_brkm(TBROK | TERRNO, NULL, "unknow test failure");
+> +       execl("/usr/sbin/capsh", "capsh", "--print", NULL);
+> +       exit(0);
+> +}
+> +
+> +static void test_keepcaps(void)
+> +{
+> +       int rc;
+> +
+> +       rc = prctl(PR_GET_KEEPCAPS, 0, 0, 0, 0);
+> +       tst_resm(TINFO, "pr_get_keepcaps(orig) = %d", rc);
+> +       rc = prctl(PR_SET_KEEPCAPS, 1, 0, 0, 0);
+> +       if (rc)
+> +               tst_brkm(TBROK | TERRNO, NULL, "test failue rc = %d", rc);
+> +       rc = prctl(PR_GET_KEEPCAPS, 0, 0, 0, 0);
+> +       tst_resm(TINFO, "pr_get_keepcaps(test) = %d", rc);
+> +       exit(0);
+> +}
+> +
+> +
+> +static void setup(void)
+> +{
+Seems the case require_root permission.
+
+Okay, please ignore this testcase directly, i will push new one for LTP.
+
+> +       tst_sig(FORK, DEF_HANDLER, cleanup);
+> +       TEST_PAUSE;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +       TEST_CLEANUP;
+> +}
+> --
+> 1.9.3
+>
+
+
+
 -- 
-1.7.1
-
+Regards,
+Li Wang
+Email: wangli.ahau@gmail.com
 
 ------------------------------------------------------------------------------
-Slashdot TV.  Videos for Nerds.  Stuff that Matters.
-http://pubads.g.doubleclick.net/gampad/clk?id=160591471&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
