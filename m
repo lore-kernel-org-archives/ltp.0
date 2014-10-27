@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XbTay-00067w-G0
-	for ltp-list@lists.sourceforge.net; Tue, 07 Oct 2014 12:10:24 +0000
-Date: Tue, 7 Oct 2014 14:10:08 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xifo6-00005d-IQ
+	for ltp-list@lists.sourceforge.net; Mon, 27 Oct 2014 08:37:42 +0000
+Date: Mon, 27 Oct 2014 09:37:15 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141007121008.GA5715@rei.suse.cz>
-References: <a710c99deb86fdad787e0530013b20913de57dbe.1412604688.git.jstancek@redhat.com>
-	<6cf14ee28f2a6fc0a131eeecd0f500214ed1f512.1412604688.git.jstancek@redhat.com>
-	<20141007115042.GA5454@rei.suse.cz>
-	<588690077.5122647.1412683247596.JavaMail.zimbra@redhat.com>
+Message-ID: <20141027083715.GB6325@rei.suse.de>
+References: <811831435ca9c8a8941033fc8a9cfe00f69b5e6b.1413531372.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <588690077.5122647.1412683247596.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2 v2] checkpoints: fix usage in children started
- via exec
+In-Reply-To: <811831435ca9c8a8941033fc8a9cfe00f69b5e6b.1413531372.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2] doc: document tst_checkpoint_create and
+ tst_checkpoint_init
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,28 +29,31 @@ To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Maybe I overlooked something, but I didn't see any checkpoint docs,
-> that needed update. Current text references .h and .c sources.
+> +* tst_checkpoint_signal_child() followed by tst_checkpoint_parent_wait()
+> +
+> +                parent                |                child
+> +--------------------------------------+----------------------------------------
+> +                                      | tst_checkpoint_child_wait()
+> +                                      |   blocking read,
+> +                                      |   waits until parent opens write side
+> + tst_checkpoint_signal_child()        |
+> +   NONBLOCK write                     |
+> +                                      |   child is now able to read from FIFO
+> + tst_checkpoint_parent_wait()         |
+> +   NONBLOCK read                      |
+> +   parent able to read from FIFO and  |
+> +   can race with read in child        |
+> +                                      | tst_checkpoint_signal_parent()
+> +--------------------------------------+----------------------------------------
 
-Right, I thought that the API was self-explanatory enough.
-
-But it got more complicated and we need at least document that the
-checkopoint needs to be created in the main process and initialized
-in execed subprocesses.
-
-We should also note that if you want parent for child and then right
-away child for the parent you need two checkopoints.
+I've reformatted this table to fit better to the thin column on the
+GitHub wiki and pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
