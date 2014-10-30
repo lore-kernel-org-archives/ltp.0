@@ -1,30 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from
-	<jbeckenbach=ltp-list=lists.sourceforge.net=jmtqtyzj@lancope.com>)
-	id 1XemPc-0002Gy-Sw
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 14:52:20 +0000
-Received: from smtp-out3.electric.net ([72.35.12.185])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XemPb-0002gC-U8
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 14:52:20 +0000
-Received: from 1XelX6-0001Hz-Uj by out3a.electric.net with emc1-ok (Exim
-	4.80.1) (envelope-from <jbeckenbach@lancope.com>) id 1XelX6-0001Lw-W6
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 06:56:00 -0700
-Received: from [209.182.184.2] (helo=LCHQEX03.lancope.local)
-	by out3a.electric.net with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.80.1) (envelope-from <jbeckenbach@lancope.com>)
-	id 1XelX6-0001Hz-Uj
-	for ltp-list@lists.sourceforge.net; Thu, 16 Oct 2014 06:56:00 -0700
-From: Joseph Beckenbach <jbeckenbach@lancope.com>
-Date: Thu, 16 Oct 2014 13:55:58 +0000
-Message-ID: <4506ACC2AE90484D87F9A883BA36C21C2AE70C85@LCHQEX03.lancope.local>
-Content-Language: en-US
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xjpau-00069n-Ms
+	for ltp-list@lists.sourceforge.net; Thu, 30 Oct 2014 13:16:52 +0000
+Date: Thu, 30 Oct 2014 14:16:21 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141030131621.GC14847@rei.suse.de>
+References: <3b5ef63b19fe7ac52dc6d3454760f2de344d62e8.1413538123.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] cpuset_syscall_testset.sh: check TCONF for test
-	15, 16
+Content-Disposition: inline
+In-Reply-To: <3b5ef63b19fe7ac52dc6d3454760f2de344d62e8.1413538123.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2] cpuset_syscall_testset.sh: check TCONF for
+ test 15, 16
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,48 +25,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, jbeckenbach@lancope.com
 
-Hi, Jan, all!
+Hi!
+> If HAVE_DECL_MPOL_F_MEMS_ALLOWED is not defined, test 15 and 16,
+> returns -1, which is evaluted as failure.
+> 
+> Treat it as TCONF, but don't break the execution, cpuset_syscall_testset.sh
+> script is expecting to handle stopping/waiting for children by itself.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  .../cpuset_syscall_test/cpuset_syscall_test.c      |    6 +++---
+>  .../cpuset_syscall_test/cpuset_syscall_testset.sh  |   14 ++++++++++++--
+>  2 files changed, 15 insertions(+), 5 deletions(-)
+> 
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+> index e202295..407b8c9 100644
+> --- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
+> @@ -128,7 +128,7 @@ void sigint_handler(int __attribute__ ((unused)) signo)
+>  void test_setaffinity(void)
+>  {
+>  	cpu_set_t tmask;
+> -	int i;
+> +	unsigned int i;
+>  	CPU_ZERO(&tmask);
+>  	for (i = 0; i < 8 * sizeof(mask); i++) {
+>  		if ((1 << i) & mask)
+> @@ -140,7 +140,7 @@ void test_setaffinity(void)
+>  void test_getaffinity(void)
+>  {
+>  	cpu_set_t tmask;
+> -	int i;
+> +	unsigned int i;
+>  	CPU_ZERO(&tmask);
+>  	ret = sched_getaffinity(0, sizeof(tmask), &tmask);
+>  	for (i = 0; i < 8 * sizeof(mask); i++) {
+> @@ -190,7 +190,7 @@ void test_get_mempolicy(void)
+>  	ret = get_mempolicy(NULL, bitmask_mask(nmask), bitmask_nbits(nmask), 0,
+>  			    MPOL_F_MEMS_ALLOWED);
+>  #else
+> -	ret = -1;
+> +	tst_resm(TCONF, "don't have MPOL_F_MEMS_ALLOWED");
+>  #endif
+>  
+>  	bitmask_displaylist(str, 256, nmask);
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
+> index 561c3b9..bf1ec6c 100755
+> --- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
+> @@ -299,7 +299,12 @@ test14()
+>  
+>  test15()
+>  {
+> -	do_syscall_test 0 0 --get_mempolicy 0 || return 1
+> +	do_syscall_test 0 0 --get_mempolicy 0
+> +	ret=$?
+> +
+> +	grep "TCONF" "$TEST_OUTPUT" && return 0
+> +	[ $ret -ne 0 ] && return 1
+> +
+>  	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
+>  	test "$(cat "$TEST_OUTPUT")" = "0"
+>  	if [ $? -ne 0 ]; then
+> @@ -316,7 +321,12 @@ test15()
+>  
+>  test16()
+>  {
+> -	do_syscall_test 0 0-1 --get_mempolicy 0 || return 1
+> +	do_syscall_test 0 0-1 --get_mempolicy 0
+> +	ret=$?
+> +
+> +	grep "TCONF" "$TEST_OUTPUT" && return 0
 
-Apologies for non-standard reply format:  I'm forced to use a brain-dead WYSIWYG GUI for text processing
-fronting a brain-dead email processor which often fails to honor newlines in original text. :-b
+I do not like much that we grep the test output for TCONF when we can
+simply set ret to TCONF in the test and check the return value here...
 
-In b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-in @@ -299,7 +299,18 @@ and @@ -316,7 +327,18 @@ you use
-====
-+	grep "TCONF" "$TEST_OUTPUT"
-+	if [ $? -eq 0 ]; then
-+		return 0
-+	fi
-+
-+	if [ $ret -ne 0 ]; then
-+		return 1
-+	fi
-====
+Otherwise it's fine.
 
-perhaps express this more idiomatically:
-====
-+	grep "TCONF" "$TEST_OUTPUT" && return 0
-+	[ $ret -ne 0 ] && return 1
-====
+> +	[ $ret -ne 0 ] && return 1
+> +
+>  	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
+>  	test "$(cat "$TEST_OUTPUT")" = "0-1"
+>  	if [ $? -ne 0 ]; then
 
-This appears to be elsewhere in test15() and test16(), so I presume it's throughout the file,
-and thus worthy of a separate refactoring patch if anyone chooses to perform this.
-
-Thanks!
-
-Joseph
-Joseph Beckenbach, senior QA engineer : Automation  -- +1-470-299-7166
-Lancope, Inc. -- makers of StealthWatch
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://p.sf.net/sfu/Zoho
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
