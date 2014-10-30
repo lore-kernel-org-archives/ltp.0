@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Xh66B-0005xL-AT
-	for ltp-list@lists.sourceforge.net; Thu, 23 Oct 2014 00:17:51 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Xh66A-0007IK-61
-	for ltp-list@lists.sourceforge.net; Thu, 23 Oct 2014 00:17:51 +0000
-Message-ID: <54484943.30601@cn.fujitsu.com>
-Date: Thu, 23 Oct 2014 08:18:11 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XjsAV-0002mI-Ls
+	for ltp-list@lists.sourceforge.net; Thu, 30 Oct 2014 16:01:47 +0000
+Date: Thu, 30 Oct 2014 17:01:14 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141030160114.GA18064@rei.suse.de>
+References: <1414681678-28439-1-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
-References: <1413983374-8784-1-git-send-email-zlang@redhat.com>
-In-Reply-To: <1413983374-8784-1-git-send-email-zlang@redhat.com>
-Subject: Re: [LTP] [Patch V2] ext4-new-features: modify
- ext4_get_inode_version.sh not know $EXT4_DEV definition
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <1414681678-28439-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH] containers: added mountns/mountns05.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,39 +24,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zorro Lang <zlang@redhat.com>
+To: Matus Marhefka <mmarhefk@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 10/22/2014 09:09 PM, Zorro Lang wrote:
-> ext4_get_inode_version.sh use $EXT4_DEV, but it really doesn't know what is $EXT4_DEV.
-> That cause other cases which use ext4_get_inode_version.sh to fail.
+Hi!
+I do not like these macros.
+
+> +#define REPORT_PARENT_ERROR(errmsg) \
+> +{ \
+> +	msgctl(id, IPC_RMID, NULL); \
+
+	^
+	This should be removed from the test cleanup.
+
+	If you want to call the default cleanup defined in the header
+	you can define second cleanup function that does specific
+	cleanup and then calls the generic cleanup pass the right
+	function pointers to tst_brmk()
+
+> +	tst_brkm(TBROK | TERRNO, cleanup, errmsg); \
+> +}
+> +
+> +#define REPORT_CHLD_ERROR(errmsg) \
+> +{ \
+> +	perror(errmsg); umount(DIRA); \
+> +	msgctl(id, IPC_RMID, NULL); \
+> +	wait(&status); return ERRC; \
+> +}
+
+Can't we do the cleanup the kenel style?
+
+i.e.
+
+	if (something_failed()) {
+		errmsg = "message";
+		goto err;
+	}
+
+	...
+
+	return result;
+err:
+	perror(errmsg);
+	umout(DIRA);
+	msgclt(id, IPC_RMID, NULL);
+	wait(&status);
+	return ERRC;
 
 
-Applied, thank you.
+...
 
-Wanlong Gao
-
-> 
-> Signed-off-by: Zorro Lang <zlang@redhat.com>
-> ---
->  testcases/kernel/fs/ext4-new-features/ext4_funcs.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-> index 0ae534a..b51e942 100755
-> --- a/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-> +++ b/testcases/kernel/fs/ext4-new-features/ext4_funcs.sh
-> @@ -45,7 +45,7 @@ ext4_setup()
->  	if [ -z "$LTP_BIG_DEV" ];then
->  		tst_brkm TCONF "tests need a big block device(5G-10G)"
->  	else
-> -		EXT4_DEV=$LTP_BIG_DEV
-> +		export EXT4_DEV=$LTP_BIG_DEV
->  	fi
+> diff --git a/testcases/kernel/containers/mountns/mountns_helper.h b/testcases/kernel/containers/mountns/mountns_helper.h
+> index d4a6a91..d82c837 100644
+> --- a/testcases/kernel/containers/mountns/mountns_helper.h
+> +++ b/testcases/kernel/containers/mountns/mountns_helper.h
+> @@ -47,6 +47,10 @@ static int check_newns(void)
 >  
->  	tst_tmpdir
-> 
+>  static void cleanup(void)
+>  {
+> +	int status;
+> +
+> +	wait(&status);
+> +	umount(DIRA);
+>  	umount(DIRA);
+>  	umount(DIRB);
+>  	tst_rmdir();
 
+This changes function called from several testcases, I guess that this
+is missing cleanup being added there. Maybe it should deserve to be
+pushed as a separate patch with description in commit message.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
