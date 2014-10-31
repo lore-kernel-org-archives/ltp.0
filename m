@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XhdVZ-0005BX-6U
-	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 11:58:17 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XhdVX-0004kc-N1
-	for ltp-list@lists.sourceforge.net; Fri, 24 Oct 2014 11:58:17 +0000
-Date: Fri, 24 Oct 2014 07:58:08 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <141884284.14647510.1414151888080.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1412111852-22329-1-git-send-email-gary.robertson@linaro.org>
-References: <1412111852-22329-1-git-send-email-gary.robertson@linaro.org>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XkAbK-000599-AR
+	for ltp-list@lists.sourceforge.net; Fri, 31 Oct 2014 11:42:42 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XkAbI-0004PJ-AD
+	for ltp-list@lists.sourceforge.net; Fri, 31 Oct 2014 11:42:42 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id s9VBgPKE026452
+	for <ltp-list@lists.sourceforge.net>; Fri, 31 Oct 2014 19:42:25 +0800
+Message-ID: <1414755673.17402.8.camel@G08JYZSD130126.localdomain>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 31 Oct 2014 19:41:13 +0800
+In-Reply-To: <1414755631.17402.7.camel@G08JYZSD130126.localdomain>
+References: <1414755631.17402.7.camel@G08JYZSD130126.localdomain>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals
+Subject: [LTP] [PATCH 2/3] smack_set_socket_labels.c: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,100 +31,111 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Gary S. Robertson" <gary.robertson@linaro.org>
-Cc: ltp-list@lists.sourceforge.net, mike holmes <mike.holmes@linaro.org>
+To: ltp-list <ltp-list@lists.sourceforge.net>
+
+From 1733e06a8dca828cdd578db589387b83606df7fd Mon Sep 17 00:00:00 2001
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 31 Oct 2014 19:05:19 +0800
+Subject: [PATCH] smack_set_socket_labels.c: Cleanup
+
+* Check whether smackfs is set.
+
+* Use 'tst_*'.
+
+* Modify Makefile.
+
+* Some cleanup.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/security/smack/Makefile           |  1 +
+ .../security/smack/smack_set_socket_labels.c       | 29 +++++++++++++++-------
+ 2 files changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/testcases/kernel/security/smack/Makefile b/testcases/kernel/security/smack/Makefile
+index e114998..02f3ec4 100644
+--- a/testcases/kernel/security/smack/Makefile
++++ b/testcases/kernel/security/smack/Makefile
+@@ -9,6 +9,7 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/testcases.mk
+ 
+ INSTALL_TARGETS		:= *.sh
+ 
+diff --git a/testcases/kernel/security/smack/smack_set_socket_labels.c b/testcases/kernel/security/smack/smack_set_socket_labels.c
+index 086e4c8..172ceb2 100644
+--- a/testcases/kernel/security/smack/smack_set_socket_labels.c
++++ b/testcases/kernel/security/smack/smack_set_socket_labels.c
+@@ -28,6 +28,13 @@
+ #endif
+ 
+ #include <sys/xattr.h>
++#include <sys/vfs.h>
++
++#include "test.h"
++#include "usctest.h"
++
++char *TCID = "smack_set_socket_labels";
++int TST_TOTAL = 1;
+ 
+ int main(int argc, char *argv[])
+ {
+@@ -40,35 +47,39 @@ int main(int argc, char *argv[])
+ 	char *avnot = "TheBadValue";
+ 	int sock;
+ 	int rc;
++	char buf[256];
+ 
+ 	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
+ 		sprintf(message, "%s Socket creation failure", argv[0]);
+-		perror(message);
+-		exit(1);
++		tst_brkm(TFAIL, NULL, "%s", message);
+ 	}
+ 
++	flistxattr(sock, buf, 256);
++	if (strstr(buf, "security.SMACK64") == NULL)
++		tst_brkm(TCONF, NULL, "smackfs not set.");
++
+ 	rc = fsetxattr(sock, anin, avin, strlen(avin) + 1, 0);
+ 	if (rc < 0) {
+ 		sprintf(message, "%s fsetxattr of %s to %s failure",
+ 			argv[0], anin, avin);
+-		perror(message);
+-		exit(1);
++		tst_brkm(TFAIL, NULL, "%s", message);
+ 	}
+ 
+ 	rc = fsetxattr(sock, anout, avout, strlen(avout) + 1, 0);
+ 	if (rc < 0) {
+ 		sprintf(message, "%s fsetxattr of %s to %s failure",
+ 			argv[0], anout, avout);
+-		perror(message);
+-		exit(1);
++		tst_brkm(TFAIL, NULL, "%s", message);
+ 	}
+ 
+ 	rc = fsetxattr(sock, annot, avnot, strlen(avnot) + 1, 0);
+ 	if (rc >= 0) {
+ 		sprintf(message, "%s fsetxattr of %s to %s succeeded in error",
+ 			argv[0], anout, avout);
+-		perror(message);
+-		exit(1);
++		tst_brkm(TFAIL, NULL, "%s", message);
+ 	}
+-	exit(0);
++
++	tst_resm(TPASS, "Test %s success.", TCID);
++
++	tst_exit();
+ }
+-- 
+1.8.3.1
 
 
 
-
-
------ Original Message -----
-> From: "Gary S. Robertson" <gary.robertson@linaro.org>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "mike holmes" <mike.holmes@linaro.org>
-> Sent: Tuesday, 30 September, 2014 11:17:32 PM
-> Subject: [LTP] [PATCH] Realtime tests: Fix robust mutex conditionals
-> 
-> From: "Gary S. Robertson" <gary.robertson@linaro.org>
-> 
-> sbrk_mutex, testpi-5, and testpi-6 realtime tests in subdir
-> testcases/realtime/func/pi-tests used compile time config variables
-> which were not generated by autoconf in order to configure tests
-> for robust mutexes.  Changed these conditionals to use the config
-> variables actually generated in the autoconf process.
-> 
-> Signed-off-by: Gary S. Robertson <gary.robertson@linaro.org>
-> ---
->  testcases/realtime/func/pi-tests/sbrk_mutex.c |    2 +-
->  testcases/realtime/func/pi-tests/testpi-5.c   |    2 +-
->  testcases/realtime/func/pi-tests/testpi-6.c   |    2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/realtime/func/pi-tests/sbrk_mutex.c
-> b/testcases/realtime/func/pi-tests/sbrk_mutex.c
-> index 684021f..5c325b4 100644
-> --- a/testcases/realtime/func/pi-tests/sbrk_mutex.c
-> +++ b/testcases/realtime/func/pi-tests/sbrk_mutex.c
-> @@ -45,7 +45,7 @@
->  #include <unistd.h>
->  #include "librttest.h"
->  
-> -#if defined(HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS) &&
-> defined(PTHREAD_MUTEX_ROBUST_NP)
-> +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
->  
->  #define NUM_MUTEXES 5000
->  #define NUM_THREADS 50
-> diff --git a/testcases/realtime/func/pi-tests/testpi-5.c
-> b/testcases/realtime/func/pi-tests/testpi-5.c
-> index a1d93cc..70f02fd 100644
-> --- a/testcases/realtime/func/pi-tests/testpi-5.c
-> +++ b/testcases/realtime/func/pi-tests/testpi-5.c
-> @@ -69,7 +69,7 @@ int do_test(int argc, char **argv)
->  	pthread_mutexattr_t mutexattr;
->  	int retc, protocol;
->  
-> -#if HAS_PTHREAD_MUTEXATTR_PROTOCOL_FUNCTIONS
-> +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
-
-Shouldn't this one be "HAS_PRIORITY_INHERIT"? I'm looking at the
-testcase, but I can't see any robust API being used.
-
-Regards,
-Jan
-
->  
->  	if (pthread_mutexattr_init(&mutexattr) != 0)
->  		printf("Failed to init mutexattr\n");
-> diff --git a/testcases/realtime/func/pi-tests/testpi-6.c
-> b/testcases/realtime/func/pi-tests/testpi-6.c
-> index b3c3e4a..f715eee 100644
-> --- a/testcases/realtime/func/pi-tests/testpi-6.c
-> +++ b/testcases/realtime/func/pi-tests/testpi-6.c
-> @@ -41,7 +41,7 @@
->  #include <unistd.h>
->  #include <librttest.h>
->  
-> -#if defined(PTHREAD_MUTEX_ROBUST_NP)
-> +#if HAS_PTHREAD_MUTEXTATTR_ROBUST_APIS
->  pthread_mutex_t child_mutex;
->  
->  void *child_thread(void *arg)
-> --
-> 1.7.9.5
-> 
-> 
-> ------------------------------------------------------------------------------
-> Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
-> Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
-> Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
-> Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
-> http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
 _______________________________________________
