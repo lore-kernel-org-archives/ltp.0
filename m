@@ -1,18 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XoB6D-0002v3-55
-	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 13:03:09 +0000
-Date: Tue, 11 Nov 2014 14:02:28 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141111130228.GC29189@rei>
-References: <1415251889-10596-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1415687896-19753-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	(envelope-from <jbastian@redhat.com>) id 1Xm5SK-0006ng-Lm
+	for ltp-list@lists.sourceforge.net; Wed, 05 Nov 2014 18:37:20 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Xm5SF-0005uV-3V
+	for ltp-list@lists.sourceforge.net; Wed, 05 Nov 2014 18:37:20 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id sA5Ib8EJ016154
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 5 Nov 2014 13:37:08 -0500
+Received: from tarantula.localdomain (dhcp-176-121.dfw.redhat.com
+	[10.15.176.121])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id sA5Ib6ZV002707
+	(version=TLSv1/SSLv3 cipher=AES128-GCM-SHA256 bits=128 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 5 Nov 2014 13:37:08 -0500
+Date: Wed, 5 Nov 2014 12:37:06 -0600
+From: Jeffrey Bastian <jbastian@redhat.com>
+Message-ID: <20141105183706.GA4361@tarantula.localdomain>
+References: <20141103201517.GA9814@tarantula.localdomain>
+	<20141103214510.GI5402@vapier.wh0rd.info>
+	<20141103221828.GD9814@tarantula.localdomain>
+	<20141103225247.GJ5402@vapier.wh0rd.info>
+	<20141104210118.GE12659@tarantula.localdomain>
+	<20141105021415.GM5402@vapier.wh0rd.info>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1415687896-19753-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] containers: fix three cases' exit status
+In-Reply-To: <20141105021415.GM5402@vapier.wh0rd.info>
+Subject: Re: [LTP] [PATCH] file_test: fix testcase for ppc64le
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,185 +41,186 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6418883413836665333=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
-> ---
->  testcases/kernel/containers/netns/netns_devices.sh |  5 +++
->  .../kernel/containers/netns/netns_devices2.sh      |  5 +++
->  testcases/kernel/containers/netns/netns_helper.sh  | 45 ++++++++++++++++++++++
->  .../kernel/containers/netns/netns_isolation.sh     |  5 +++
->  4 files changed, 60 insertions(+)
->  create mode 100755 testcases/kernel/containers/netns/netns_helper.sh
-> 
-> diff --git a/testcases/kernel/containers/netns/netns_devices.sh b/testcases/kernel/containers/netns/netns_devices.sh
-> index 7126267..01f7056 100755
-> --- a/testcases/kernel/containers/netns/netns_devices.sh
-> +++ b/testcases/kernel/containers/netns/netns_devices.sh
-> @@ -29,6 +29,7 @@
->  TCID=netns_devices
->  TST_TOTAL=3
->  . test.sh
-> +. netns_helper.sh
->  IP0=192.168.0.1
->  IP1=192.168.0.2
->  
-> @@ -46,6 +47,10 @@ cleanup()
->  # SETUP
->  tst_require_root
->  tst_check_cmds ip
-> +tst_check_iproute 111010
-> +if [ $? -eq 0 ]; then
-> +	tst_brkm TCONF "ip command does not support netns object"
-> +fi
->  TST_CLEANUP=cleanup
->  
->  # creates a new network namespace "myns0" (man 8 ip-netns)
-> diff --git a/testcases/kernel/containers/netns/netns_devices2.sh b/testcases/kernel/containers/netns/netns_devices2.sh
-> index f0d0651..3fc38b5 100755
-> --- a/testcases/kernel/containers/netns/netns_devices2.sh
-> +++ b/testcases/kernel/containers/netns/netns_devices2.sh
-> @@ -29,6 +29,7 @@
->  TCID=netns_devices2
->  TST_TOTAL=3
->  . test.sh
-> +. netns_helper.sh
->  IP0=192.168.0.1
->  IP1=192.168.0.2
->  
-> @@ -46,6 +47,10 @@ cleanup()
->  # SETUP
->  tst_require_root
->  tst_check_cmds ip ifconfig
-> +tst_check_iproute 111010
-> +if [ $? -eq 0 ]; then
-> +	tst_brkm TCONF "ip command does not support netns object"
-> +fi
->  TST_CLEANUP=cleanup
->  
->  # creates a new network namespace "myns0" (man 8 ip-netns)
-> diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
-> new file mode 100755
-> index 0000000..401b795
-> --- /dev/null
-> +++ b/testcases/kernel/containers/netns/netns_helper.sh
-> @@ -0,0 +1,45 @@
-> +#!/bin/sh
-> +#
-> +# Copyright (c) Linux Test Project, 2014
-> +#
-> +# This program is free software; you can redistribute it and/or modify
-> +# it under the terms of the GNU General Public License as published by
-> +# the Free Software Foundation; either version 2 of the License, or
-> +# (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it will be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License along
-> +# with this program; if not, write to the Free Software Foundation, Inc.,
-> +# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +# This is a LTP shell test library for iproute.
-> +#
-> +
-> +. test.sh
-> +
-> +# Check whether the current iproute version matches specified
-> +# iproute. It returns 0, 1, or 2 if cur_ipver is found, to be
-> +# less than, to match, or be greater than spe_ipver.
-> +tst_check_iproute()
-> +{
 
-Hmm, we may also want to move the tst_check_cmds ip here
-so we don't have to do that in all of the testcases.
+--===============6418883413836665333==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+Content-Disposition: inline
 
-> +	local cur_ipver=`ip -V`
-> +	local spe_ipver=$1
-> +
-> +	cur_ipver=${cur_ipver##*s}
-> +
-> +	if [ -z $cur_ipver ] || [ -z $spe_ipver ]; then
-> +		tst_brkm TBROK "don't obtain valid iproute version"
-> +	fi
-> +
-> +	if [ $cur_ipver -lt $spe_ipver ]; then
 
-Why don't we just do:
+--yrj/dFKFPuw6o+aM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	tst_brkm TCONF "ip command does not support netns object"
+On Tue, Nov 04, 2014 at 09:14:15PM -0500, Mike Frysinger wrote:
+> interesting idea.  there's a few issues with this code, but rather
+> than get into that, why don't ew just rely on readelf and be done ?  i
+> don't think we want to maintain two code paths here.
 
-here instead of returning some exit value?
+I was just trying to give the test the best chance of finding the
+endianness (just-in-case there's a rare system that does not have
+readelf installed).  I suppose it would be simpler, though, to start
+with just the readelf test and then add the backup check later if there
+are any bug reports about a missing readelf command.
 
-Then we could just do:
+If a missing readelf command becomes a problem, there are a number of
+other ways to check:
+  1. echo -n I | od -to2
+  2. lscpu | grep "Byte Order"
+  3. python -c "import sys;print sys.byteorder;"
+  4. perl -MConfig -e 'print $Config{byteorder};'
+  5. a small C helper program since we know at least the compiler
+     is installed
 
-	tst_check_iproute 111010
+The patch below uses just the readelf command, and it uses your
+simplified code path, and it also updates the comments at the top of the
+test (I forgot that in my earlier patches).
 
-in the testcases.
+           =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
 
-> +		return 0;
-> +	elif [ $cur_ipver -eq $spe_ipver ]; then
-> +		return 1;
-> +	else
-> +		return 2;
-> +	fi
-> +}
-> diff --git a/testcases/kernel/containers/netns/netns_isolation.sh b/testcases/kernel/containers/netns/netns_isolation.sh
-> index f1ddf2c..06e91db 100755
-> --- a/testcases/kernel/containers/netns/netns_isolation.sh
-> +++ b/testcases/kernel/containers/netns/netns_isolation.sh
-> @@ -24,6 +24,7 @@
->  TCID=netns_isolation
->  TST_TOTAL=3
->  . test.sh
-> +. netns_helper.sh
->  IP=192.168.0.2
->  
->  
-> @@ -40,6 +41,10 @@ cleanup()
->  # SETUP
->  tst_require_root
->  tst_check_cmds ip
-> +tst_check_iproute 111010
-> +if [ $? -eq 0 ]; then
-> +	tst_brkm TCONF "ip command does not support netns object"
-> +fi
->  TST_CLEANUP=cleanup
->  
->  
-> -- 
-> 1.9.3
-> 
-> 
-> ------------------------------------------------------------------------------
-> Comprehensive Server Monitoring with Site24x7.
-> Monitor 10 servers for $9/Month.
-> Get alerted through email, SMS, voice calls or mobile push notifications.
-> Take corrective actions from your mobile device.
-> http://pubads.g.doubleclick.net/gampad/clk?id=154624111&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+file_test: fix testcase for ppc64le
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+The file_test.sh test assumes all PPC systems are big-endian (MSB), but
+this assumption is incorrect on the new ppc64le little-endian (LSB)
+systems and file06 and file10 report false failures:
+
+file06      0  TINFO  :  TEST #6: file command recognizes ELF executables
+file06      6  TFAIL  :  ltpapicmd.c:156: file: Failed to Recognize ELF bin=
+ary executable. Reason:
+/tmp//cprog: ELF 64-bit LSB executable, version 1 (SYSV), dynamically linke=
+d (uses shared libs), ...
+=2E..
+file10      0  TINFO  :  TEST #10: file command recognizes vmlinu file
+file10     10  TFAIL  :  ltpapicmd.c:156: file: Failed to Recognize vmlinu =
+correctly. Reason:
+/boot/vmlinuz: ELF 64-bit LSB shared object, version 1 (SYSV), statically l=
+inked, ...
+
+This patch adds more robust testing for the endianness of a CPU.
+
+Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
+---
+ testcases/commands/ade/file/file_test.sh | 44 +++++++++++++++++-----------=
+----
+ 1 file changed, 23 insertions(+), 21 deletions(-)
+
+diff --git a/testcases/commands/ade/file/file_test.sh b/testcases/commands/=
+ade/file/file_test.sh
+index 101a8cca8bc9..59ec85e45b31 100755
+--- a/testcases/commands/ade/file/file_test.sh
++++ b/testcases/commands/ade/file/file_test.sh
+@@ -75,20 +75,17 @@
+ # -------
+ #   Similar test(as Test02) is performed with C program text
+ #
+-# Test06: Test if file command can recognize ELF binay executables
++# Test06: Test if file command can recognize ELF binary executables
+ # -------
+-# 1) Grep for 'm68k' or 'sparc' or 'mips' or 'mipseb' or 'sh.eb'
+-#    or 'powerpc' or 'ppc' or 's390' from the output of the command
+-#    'uname -m'
+-# 2) If the above step is successful, assign string 'MSB' to variable
+-#    TARGET_ARCH else assign string 'LSB'
+-# 3) Write small C program to a known '.c' file
+-# 4) Compile it using "cc"
++# 1) Use readelf to determine if the host is big- or little-endian
++#    and assign TEST_ARCH the string "MSB" or "LSB" respectively
++# 2) Write small C program to a known '.c' file
++# 3) Compile it using "cc"
+ #    Ex: cc xyz xyz.c
+-# 5) Use file command to get the type of the object file
+-# 6) Grep for the string "ELF .*-bit $TEST_ARCH executable, .*"
++# 4) Use file command to get the type of the object file
++# 5) Grep for the string "ELF .*-bit $TEST_ARCH executable, .*"
+ #    in the output of the 'file' command
+-# 7) If the above command is successful, declare test as PASS
++# 6) If the above command is successful, declare test as PASS
+ #    else declare test as FAIL
+ #
+ # Test07: Test if file command can recognize tar files
+@@ -332,16 +329,7 @@ fi
+=20
+=20
+ # TEST #6
+-# Test if file command can recognize ELF binay executables
+-
+-# Check ppc architecture
+-  TEST_ARCH=3DLSB   # Assume the architecture is Intel
+-
+-  if uname -m |
+-    grep -qe '\(m68k\)\|\(sparc\)\|\(mips\b\)\|\(mipseb\)\|\(sh.eb\)' \
+-         -e '\(powerpc\)\|\(ppc\)\|\(s390\)\|\(parisc\)'; then
+-     TEST_ARCH=3DMSB
+-  fi
++# Test if file command can recognize ELF binary executables
+=20
+ export TCID=3Dfile06
+ export TST_COUNT=3D6
+@@ -349,6 +337,20 @@ export TST_COUNT=3D6
+ $LTPBIN/tst_resm TINFO \
+         "TEST #6: file command recognizes ELF executables"
+=20
++# check for CPU endianness
++READELF=3D$(which readelf 2>/dev/null)
++case $(${READELF} -h ${READELF}) in
++    *Data:*"big endian"*)
++        TEST_ARCH=3DMSB
++        ;;
++    *Data:*"little endian"*)
++        TEST_ARCH=3DLSB
++        ;;
++    *)
++        TEST_ARCH=3DNULL
++        $LTPBIN/tst_resm TFAIL "file: Could not determine CPU endianness"
++        ;;
++esac
+=20
+ cat > $LTPTMP/cprog.c <<EOF
+ #include <stdio.h>
+
+--yrj/dFKFPuw6o+aM
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQEcBAEBAgAGBQJUWm5SAAoJEHUSMhRJf0WVhowH/0/MSytW1n5uF0/zaiHjfWzy
+MvbfsP2t4sbICMDEATb/qgYkpB+jjK2z5ZX9pHZSUlAOcXGXC63D8G9WGeXxhhKk
+8xC055q/tdo2GUzNxFvOfsYOEp7q8JwLjZHdbC9cQVtzwtvmrZ957OUl+pj8uIfe
+xr0qmFRvHe1eL56xjr6okTNWzSAtgDP8ZaCaKgnlXXgSxNV+HWefwmtt5cQ4zmYB
+WVJ77zLoiq+OK/9Hh9bXSFg0l5KNPpL+zz9Z4NwpG7R0JN+ue2aEY1PsUe+9ZHYz
+UUpZU6jkiHdScEksCz7+t/AbPN1T8YHRdQIK2X1P26KV4nPsmP9MmwZHjtfMZIE=
+=ieor
+-----END PGP SIGNATURE-----
+
+--yrj/dFKFPuw6o+aM--
+
+
+--===============6418883413836665333==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://pubads.g.doubleclick.net/gampad/clk?id=154624111&iu=/4140/ostg.clktrk
+
+--===============6418883413836665333==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6418883413836665333==--
+
