@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xtdvh-0005rz-AF
-	for ltp-list@lists.sourceforge.net; Wed, 26 Nov 2014 14:50:53 +0000
-Date: Wed, 26 Nov 2014 15:50:04 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141126145004.GA3306@rei>
-References: <1414035112-28248-1-git-send-email-liwan@redhat.com>
-	<20141106102218.GA2179@rei.nue.novell.com>
-	<857789373.5490769.1415284744752.JavaMail.zimbra@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XmG7H-0004q2-V3
+	for ltp-list@lists.sourceforge.net; Thu, 06 Nov 2014 06:00:19 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XmG7G-0007EI-QB
+	for ltp-list@lists.sourceforge.net; Thu, 06 Nov 2014 06:00:19 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sA65YECE019098
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Nov 2014 13:34:16 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Thu, 6 Nov 2014 13:31:29 +0800
+Message-ID: <1415251889-10596-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <857789373.5490769.1415284744752.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] /vm/hugepage/thp/thp05: cleanup should not use
- safe macros
+Subject: [LTP] [PATCH] containers: fix three cases' exit status
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,72 +29,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > What should be done in this case is to create an equivalent to the
-> > SAFE_FILE_PRINTF() function that is not calling the tst_brkm() and
-> 
-> 
-> well, if create a new safe function/macro to replace use the SAFE_FILE_PRINTF
-> but not calling tst_brkm(), that's will be break the safe rule.  
-> if create a unsafe function/macro, I dont know where is to place the 
-> new function and how to rename. 
-> 
-> Additional, i found so much testcases use safe macro in there cleanup(), that's 
-> really a hard work if maintain all.
+In iproute2 whose version is earlier than v2.6.39, ip
+command doesn't support netns object. In this condition,
+running three cases (netns_devices.sh, netns_devices2.sh
+and netns_isolation.sh) will exit with TFAIL. It is not
+suitable, so fix these cases' exit status with TCONF.
 
-The ideal solution would be to create a base functions file_scanf() and
-file_printf() that would look like safe_file_scanf() and
-safe_file_printf() but without the file, lineno and cleanup parameters.
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/containers/netns/netns_devices.sh   | 4 ++++
+ testcases/kernel/containers/netns/netns_devices2.sh  | 4 ++++
+ testcases/kernel/containers/netns/netns_isolation.sh | 4 ++++
+ 3 files changed, 12 insertions(+)
 
-These would return non-zero return value on failure and then we can base the
-safe_file_scanf() on the top of these functions.
-
-I.e. safe_file_scanf() would call file_scanf() and call tst_brkm() if
-file_scanf() has reported a failure. Then we can use file_scanf() in test
-cleanup. But as these functions use variable number of arguments this needs one
-more indirection with functions that takes va_list.
-
-int file_vscanf(const char *file, const char *fmt, va_list va)
-{
-	// do here what safe_file_scanf() does but return with error
-        // instead of tst_brkm()
-}
-
-int file_scanf(const char *file, const char *fmt, ...)
-{
-	va_list va;
-
-	va_start(va, fmt);
-	ret = file_vscanf(file, fmt, va);
-	va_end(va);
-
-	return ret;
-}
-
-void safe_file_scanf(const char *file, const int lineno,
-                     void (*cleanup_fn) (void),
-                     const char *path, const char *fmt, ...)
-{
-	// call file_vscanf() here and switch on it's exit value
-        // i.e. one for failed to open file
-        //      one for EOF
-        //      one for unexpected number of conversion
-        //      and exit cleanly on zero
-}
-
+diff --git a/testcases/kernel/containers/netns/netns_devices.sh b/testcases/kernel/containers/netns/netns_devices.sh
+index 7126267..990a74c 100755
+--- a/testcases/kernel/containers/netns/netns_devices.sh
++++ b/testcases/kernel/containers/netns/netns_devices.sh
+@@ -46,6 +46,10 @@ cleanup()
+ # SETUP
+ tst_require_root
+ tst_check_cmds ip
++# check if ip command supports netns object
++ip help 2>&1 | grep -w netns &>/dev/null || \
++	tst_brkm TCONF "ip command does not support netns object"
++
+ TST_CLEANUP=cleanup
+ 
+ # creates a new network namespace "myns0" (man 8 ip-netns)
+diff --git a/testcases/kernel/containers/netns/netns_devices2.sh b/testcases/kernel/containers/netns/netns_devices2.sh
+index f0d0651..7e68eea 100755
+--- a/testcases/kernel/containers/netns/netns_devices2.sh
++++ b/testcases/kernel/containers/netns/netns_devices2.sh
+@@ -46,6 +46,10 @@ cleanup()
+ # SETUP
+ tst_require_root
+ tst_check_cmds ip ifconfig
++# check if ip command supports netns object
++ip help 2>&1 | grep -w netns &>/dev/null || \
++	tst_brkm TCONF "ip command does not support netns object"
++
+ TST_CLEANUP=cleanup
+ 
+ # creates a new network namespace "myns0" (man 8 ip-netns)
+diff --git a/testcases/kernel/containers/netns/netns_isolation.sh b/testcases/kernel/containers/netns/netns_isolation.sh
+index f1ddf2c..127b07f 100755
+--- a/testcases/kernel/containers/netns/netns_isolation.sh
++++ b/testcases/kernel/containers/netns/netns_isolation.sh
+@@ -40,6 +40,10 @@ cleanup()
+ # SETUP
+ tst_require_root
+ tst_check_cmds ip
++# check if ip command supports netns object
++ip help 2>&1 | grep -w netns &>/dev/null || \
++	tst_brkm TCONF "ip command does not support netns object"
++
+ TST_CLEANUP=cleanup
+ 
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
