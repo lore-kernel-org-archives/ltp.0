@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XrRQm-0000qu-VN
-	for ltp-list@lists.sourceforge.net; Thu, 20 Nov 2014 13:05:53 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XrRQk-0006nZ-TB
-	for ltp-list@lists.sourceforge.net; Thu, 20 Nov 2014 13:05:52 +0000
-Date: Thu, 20 Nov 2014 08:05:44 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1229834385.6651238.1416488744443.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1416240373-7693-1-git-send-email-xuw@redhat.com>
-References: <1416240373-7693-1-git-send-email-xuw@redhat.com>
+	(envelope-from <metan@suse.de>) id 1XmKDM-0006N5-Ry
+	for ltp-list@lists.sourceforge.net; Thu, 06 Nov 2014 10:22:52 +0000
+Date: Thu, 6 Nov 2014 11:22:18 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141106102218.GA2179@rei.nue.novell.com>
+References: <1414035112-28248-1-git-send-email-liwan@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2] fs/openfile: refactor code based on ltp rules
+Content-Disposition: inline
+In-Reply-To: <1414035112-28248-1-git-send-email-liwan@redhat.com>
+Subject: Re: [LTP] [PATCH] /vm/hugepage/thp/thp05: cleanup should not use
+ safe macros
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,357 +25,121 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: xuw@redhat.com
-Cc: ltp-list@lists.sourceforge.net
+To: Li Wang <liwan@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, wangli.ahau@gmail.com
 
-
-
-
-
------ Original Message -----
-> From: xuw@redhat.com
-> To: ltp-list@lists.sourceforge.net
-> Sent: Monday, 17 November, 2014 5:06:13 PM
-> Subject: [LTP] [PATCH V2] fs/openfile: refactor code based on ltp rules
+Hi!
+> NOTE: It's wise NOT to use safe macros in test cleanup(). This is because
+>       all safe macros call tst_brkm(), which exits the test immediately, making
+>       the cleanup() exit prematurely. (Actually, this is hacked around in
+>       the test library at the moment so that the cleanup() will finish, but
+>       the hack will be removed in the future).
 > 
-> From: George Wang <xuw@redhat.com>
-> 
-> Signed-off-by: George Wang <xuw@redhat.com>
-
-Hi,
-
-few comments inline - mostly cosmetic stuff.
-
-I noticed that main is not waiting for threads to finish,
-do you know if this is on purpose? Looking at messages in main(),
-it doesn't seem so.
-
-Regards,
-Jan
-
+> Signed-off-by: Li Wang <liwan@redhat.com>
 > ---
->  testcases/kernel/fs/openfile/openfile.c | 149
->  +++++++++++---------------------
->  1 file changed, 49 insertions(+), 100 deletions(-)
+>  testcases/kernel/mem/thp/thp05.c | 69 ++++++++++++++++++++++++++++++++--------
+>  1 file changed, 56 insertions(+), 13 deletions(-)
 > 
-> diff --git a/testcases/kernel/fs/openfile/openfile.c
-> b/testcases/kernel/fs/openfile/openfile.c
-> index 8657064..82ff1f7 100644
-> --- a/testcases/kernel/fs/openfile/openfile.c
-> +++ b/testcases/kernel/fs/openfile/openfile.c
-> @@ -38,7 +38,7 @@
->  #include "test.h"
->  #include "usctest.h"
->  
-> -char *TCID = "openfile01";	/* Test program identifier.    */
-> +char *TCID = "openfile01";
->  int TST_TOTAL = 1;
->  
->  #define MAXFILES        32768
-> @@ -52,33 +52,38 @@ struct cb {
->  	int thr_sleeping;
->  } c;
->  
-> -/* Global Variables */
->  int numthreads = 10, numfiles = 10;
->  int debug = 0;
->  char *filename = "FILETOOPEN";
-> +FILE *fd = NULL;
->  
-> -void setup(void)
-> +void cleanup(void)
->  {
-> -	tst_tmpdir();
-> +	if (fd)
-> +		fclose(fd);
-> +	tst_rmdir();
-> +
->  }
->  
-> -void cleanup(void)
-> +void setup(void)
->  {
-> -	tst_rmdir();
-> +	tst_tmpdir();
-> +
-> +	if ((fd = fopen(filename, "w")) == NULL)
-> +		tst_brkm(TBROK, NULL, "Could not create file");
->  
-> +	pthread_mutex_init(&c.m, NULL);
-> +	pthread_cond_init(&c.init_cv, NULL);
-> +	pthread_cond_init(&c.thr_cv, NULL);
-> +	c.thr_sleeping = 0;
->  }
->  
-> -/* Procedures */
-> -void *threads(void *thread_id);
->  
-> -/*
-> **************************************************************************
-> - *                              MAIN PROCEDURE                            *
-> - **************************************************************************
-> */
-> +void *threads(void *thread_id);
+> diff --git a/testcases/kernel/mem/thp/thp05.c b/testcases/kernel/mem/thp/thp05.c
+> index 8b595ca..92d9610 100644
+> --- a/testcases/kernel/mem/thp/thp05.c
+> +++ b/testcases/kernel/mem/thp/thp05.c
+> @@ -66,6 +66,7 @@ option_t thp_options[] = {
+>  static int pre_thp_scan_sleep_millisecs;
+>  static int pre_thp_alloc_sleep_millisecs;
+>  static char pre_thp_enabled[BUFSIZ];
+> +static char buf[BUFSIZ], path[BUFSIZ];
 >  
 >  int main(int argc, char *argv[])
 >  {
->  	int i, opt, badopts = 0;
-> -	FILE *fd;
->  	pthread_t th_id;
->  	char msg[80] = "";
->  	extern char *optarg;
-> @@ -101,100 +106,57 @@ int main(int argc, char *argv[])
->  		case 'h':
->  		default:
->  			printf("Usage: openfile [-d] -f FILES -t THREADS\n");
-> -			_exit(1);
-> +			tst_brkm(TBROK, NULL, "PARSE OPTION");
-
-This now gives TBROK messages for "-h" parameter.
-
->  		}
->  	}
-> -	if (badopts) {
-> -		printf("Usage: openfile [-d] -f FILES -t THREADS\n");
-
-This line is too long.
-
-> -		_exit(1);
-> -	}
-> -
-> -	setup();
-> +	if (badopts)
-> +		tst_brkm(TBROK, NULL, "Usage: openfile [-d] -f FILES -t THREADS");
+> @@ -129,19 +130,61 @@ void setup(void)
 >  
-> -	/* Check if numthreads is less than MAXFILES */
->  	if (numfiles > MAXFILES) {
->  		sprintf(msg, "%s\nCannot use %d files", msg, numfiles);
->  		sprintf(msg, "%s, used %d files instead\n", msg, MAXFILES);
->  		numfiles = MAXFILES;
->  	}
->  
-> -	/* Check if numthreads is less than MAXTHREADS */
->  	if (numthreads > MAXTHREADS) {
->  		sprintf(msg, "%s\nCannot use %d threads", msg, numthreads);
->  		sprintf(msg, "%s, used %d threads instead\n", msg, MAXTHREADS);
->  		numthreads = MAXTHREADS;
->  	}
->  
-> -	/* Create files */
-> -	if ((fd = fopen(filename, "w")) == NULL) {
-> -		tst_resm(TFAIL, "Could not create file");
-> -		cleanup();
-> -	}
-> -
-> -	/* Initialize thread control variables, lock & condition */
-> -	pthread_mutex_init(&c.m, NULL);
-> -	pthread_cond_init(&c.init_cv, NULL);
-> -	pthread_cond_init(&c.thr_cv, NULL);
-> -	c.thr_sleeping = 0;
-> +	setup();
->  
-> -	/* Grab mutex lock */
-> -	if (pthread_mutex_lock(&c.m)) {
-> -		tst_resm(TFAIL, "failed to grab mutex lock");
-> -		fclose(fd);
-> -		unlink(filename);
-> -		cleanup();
-> -	}
-> +	if (pthread_mutex_lock(&c.m))
-> +		tst_brkm(TBROK, cleanup, "failed to grab mutex lock");
-
-If you wanted to print also reason for failure, we have TRERRNO, which
-will treat TEST_RESULT as errno:
-  TEST(pthread_function);
-  tst_brkm(TBROK|TRERRNO, ...);
-
->  
->  	printf("Creating Reading Threads\n");
->  
->  	/* Create threads */
-> -	for (i = 0; i < numthreads; i++)
-> -		if (pthread_create(&th_id, NULL, threads,
-> -				   (void *)(uintptr_t) i)) {
-> -			tst_resm(TFAIL,
-> -				 "failed creating a pthread; increase limits");
-> -			fclose(fd);
-> -			unlink(filename);
-> -			cleanup();
-> -		}
-> +	for (i = 0; i < numthreads; i++) {
-> +		if (pthread_create(&th_id, NULL, threads, (void *)(uintptr_t) i))
-> +			tst_brkm(TFAIL, cleanup, "failed creating a pthread; increase limits");
-
-I think TBROK would fit more here, and also in other places where pthread_ functions fail.
-Both lines above are too long.
-
-> +	}
->  
->  	/* Sleep until all threads are created */
-> -	while (c.thr_sleeping != numthreads)
-> -		if (pthread_cond_wait(&c.init_cv, &c.m)) {
-> -			tst_resm(TFAIL,
-> -				 "error while waiting for reading threads");
-> -			fclose(fd);
-> -			unlink(filename);
-> -			cleanup();
-> -		}
-> +	while (c.thr_sleeping != numthreads) {
-> +		if (pthread_cond_wait(&c.init_cv, &c.m))
-> +			tst_brkm(TFAIL, cleanup, "error while waiting for reading threads");
-
-Line too long.
-
-> +	}
->  
->  	/* Wake up all threads */
-> -	if (pthread_cond_broadcast(&c.thr_cv)) {
-> -		tst_resm(TFAIL, "failed trying to wake up reading threads");
-> -		fclose(fd);
-> -		unlink(filename);
-> -		cleanup();
-> -	}
-> +	if (pthread_cond_broadcast(&c.thr_cv))
-> +		tst_brkm(TFAIL, cleanup, "failed trying to wake up reading threads");
-
-Line too long.
-
-> +
->  	/* Release mutex lock */
-> -	if (pthread_mutex_unlock(&c.m)) {
-> -		tst_resm(TFAIL, "failed to release mutex lock");
-> -		fclose(fd);
-> -		unlink(filename);
-> -		cleanup();
-> -	}
-> +	if (pthread_mutex_unlock(&c.m))
-> +		tst_brkm(TFAIL, cleanup, "failed to release mutex lock");
->  
->  	tst_resm(TPASS, "Threads are done reading");
-
-Shouldn't main join the reading threads? It doesn't seem to wait until they
-are finished.
-
->  
-> -	fclose(fd);
-> -	unlink(filename);
->  	cleanup();
-> -	_exit(0);
-> +	tst_exit();
->  }
->  
-> -/*
-> **************************************************************************
-> - *				OTHER PROCEDURES			    *
-> - **************************************************************************
-> */
-> -
->  void close_files(FILE * fd_list[], int len)
+>  void cleanup(void)
 >  {
->  	int i;
-> @@ -210,8 +172,8 @@ void *threads(void *thread_id_)
->  	char errmsg[80];
->  	FILE *fd_list[MAXFILES];
->  	int i;
-> +	int rs = 1;
->  
-> -	/* Open files */
->  	for (i = 0; i < numfiles; i++) {
->  		if (debug)
->  			printf("Thread  %d : Opening file number %d \n",
-> @@ -219,49 +181,36 @@ void *threads(void *thread_id_)
->  		if ((fd_list[i] = fopen(filename, "rw")) == NULL) {
->  			sprintf(errmsg, "FAIL - Couldn't open file #%d", i);
->  			perror(errmsg);
-
-We have TFAIL|TERRNO
-
-> -			if (i > 0) {
-> -				close_files(fd_list, i - 1);
-> -			}
-> -			unlink(filename);
-> -			pthread_exit((void *)1);
-> +			goto ret;
->  		}
->  	}
->  
-> -	/* Grab mutex lock */
->  	if (pthread_mutex_lock(&c.m)) {
->  		perror("FAIL - failed to grab mutex lock");
-
-perror() uses errno, and pthread_mutex returns failure directly.
-As mentioned above, you can do:
-  if (TEST(pthread_mutex_lock(&c.m))) {
-    tst_brkm(TBROK|TRERRNO, cleanup, "failed to grab mutex lock");
-  }
-
-> -		close_files(fd_list, numfiles);
-> -		unlink(filename);
-> -		pthread_exit((void *)1);
-> +		goto ret;
->  	}
->  
->  	/* Check if you should wake up main thread */
->  	if (++c.thr_sleeping == numthreads)
->  		if (pthread_cond_signal(&c.init_cv)) {
->  			perror("FAIL - failed to signal main thread");
-> -			close_files(fd_list, numfiles);
-> -			unlink(filename);
-> -			pthread_exit((void *)1);
-> +			goto ret;
->  		}
->  
-> -	/* Sleep until woken up */
->  	if (pthread_cond_wait(&c.thr_cv, &c.m)) {
->  		perror("FAIL - failed to wake up correctly");
-> -		close_files(fd_list, numfiles);
-> -		unlink(filename);
-> -		pthread_exit((void *)1);
-> +		goto ret;
->  	}
->  
-> -	/* Release mutex lock */
->  	if (pthread_mutex_unlock(&c.m)) {
->  		perror("FAIL - failed to release mutex lock");
-> -		close_files(fd_list, numfiles);
-> -		unlink(filename);
-> -		pthread_exit((void *)1);
-> +		goto ret;
->  	}
+> -	SAFE_FILE_PRINTF(NULL, PATH_KHPD "scan_sleep_millisecs",
+> -			 "%d", pre_thp_scan_sleep_millisecs);
+> -
+> -	SAFE_FILE_PRINTF(NULL, PATH_KHPD "alloc_sleep_millisecs",
+> -			 "%d", pre_thp_alloc_sleep_millisecs);
+> -
+> -	if (strcmp(pre_thp_enabled, "[always] madvise never") == 0)
+> -		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "always");
+> -	else if (strcmp(pre_thp_enabled, "always [madvise] never") == 0)
+> -		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "madvise");
+> -	else
+> -		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "never");
+> -
+> +	int fd;
 > +
-> +	rs = 0;
+> +	/* restore the scan_sleep_millisecs to original value */
+> +	snprintf(buf, BUFSIZ, "%d", pre_thp_scan_sleep_millisecs);
+> +	fd = open(PATH_KHPD "scan_sleep_millisecs", O_WRONLY);
+> +	if (fd == -1)
+> +		tst_resm(TWARN | TERRNO, "open");
+> +	tst_resm(TINFO, "restore scan_sleep_millisecs to %d",
+> +			pre_thp_scan_sleep_millisecs);
+> +	if (write(fd, buf, strlen(buf)) != strlen(buf))
+> +		tst_resm(TWARN | TERRNO, "write");
+> +	close(fd);
 > +
-> +ret:
->  
-> -	/* Close file handles and exit */
-> -	close_files(fd_list, numfiles);
-> -	unlink(filename);
-> -	pthread_exit(NULL);
-> +	close_files(fd_list, i);
-> +	pthread_exit((void *)rs);
->  }
-> --
-> 1.8.4.2
-> 
-> 
-> ------------------------------------------------------------------------------
-> Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-> from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-> with Interactivity, Sharing, Native Excel Exports, App Integration & more
-> Get technology previously reserved for billion-dollar corporations, FREE
-> http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+> +	/* restore the alloc_sleep_millisecs to original value */
+> +	snprintf(buf, BUFSIZ, "%d", pre_thp_alloc_sleep_millisecs);
+> +	fd = open(PATH_KHPD "alloc_sleep_millisecs", O_WRONLY);
+> +	if (fd == -1)
+> +		tst_resm(TWARN | TERRNO, "open");
+> +	tst_resm(TINFO, "restore alloc_sleep_millisecs to %d",
+> +			pre_thp_alloc_sleep_millisecs);
+> +	if (write(fd, buf, strlen(buf)) != strlen(buf))
+> +		tst_resm(TWARN | TERRNO, "write");
+> +	close(fd);
+> +
+> +	/* restore the transparent_hugepage options to original state */
+> +	if (strcmp(pre_thp_enabled, "[always] madvise never") == 0){
+> +		snprintf(path, BUFSIZ, "always");
+> +		fd = open(PATH_THP "enabled", O_WRONLY);
+> +		if (fd == -1)
+> +			tst_resm(TWARN | TERRNO, "open");
+> +		tst_resm(TINFO, "restore transparent_hugepage to %s", path);
+> +		if (write(fd, path, strlen(path)) != strlen(path))
+> +			tst_resm(TWARN | TERRNO, "write");
+> +		close(fd);
+> +	}
+> +	else if (strcmp(pre_thp_enabled, "always [madvise] never") == 0){
+> +		snprintf(path, BUFSIZ, "madvise");
+> +		fd = open(PATH_THP "enabled", O_WRONLY);
+> +		if (fd == -1)
+> +			tst_resm(TWARN | TERRNO, "open");
+> +		tst_resm(TINFO, "restore transparent_hugepage to %s", path);
+> +		if (write(fd, path, strlen(path)) != strlen(path))
+> +			tst_resm(TWARN | TERRNO, "write");
+> +		close(fd);
+> +	}
+> +	else{
+> +		snprintf(path, BUFSIZ, "never");
+> +		fd = open(PATH_THP "enabled", O_WRONLY);
+> +		if (fd == -1)
+> +			tst_resm(TWARN | TERRNO, "open");
+> +		tst_resm(TINFO, "restore transparent_hugepage to %s", path);
+> +		if (write(fd, path, strlen(path)) != strlen(path))
+> +			tst_resm(TWARN | TERRNO, "write");
+> +		close(fd);
+> +	}
+
+While generally avoiding the safe macros in cleanup is fine, in this
+case you have replaced about ten lines of code with about hundred lines
+of copy & pasted code and even the coding style is wrong.
+
+What should be done in this case is to create an equivalent to the
+SAFE_FILE_PRINTF() function that is not calling the tst_brkm() and
+issues only a warning. Or modify SAFE_FILE_PRINTF() to have additional
+parameter that selects if on failure tst_brkm() or tst_resm(TWARN, ...)
+is called.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
