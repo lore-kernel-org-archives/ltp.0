@@ -1,42 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1XrkC2-000823-VU
-	for ltp-list@lists.sourceforge.net; Fri, 21 Nov 2014 09:07:54 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XrkC0-0001iA-5r
-	for ltp-list@lists.sourceforge.net; Fri, 21 Nov 2014 09:07:54 +0000
-Received: from /spool/local
-	by e8.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
-	Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
-	Fri, 21 Nov 2014 04:07:46 -0500
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com
-	[9.57.198.27])
-	by d01dlp02.pok.ibm.com (Postfix) with ESMTP id 9C4766E803C
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 21 Nov 2014 03:59:38 -0500 (EST)
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
-	sAL97hNe20316172
-	for <ltp-list@lists.sourceforge.net>; Fri, 21 Nov 2014 09:07:43 GMT
-Received: from d01av02.pok.ibm.com (localhost [127.0.0.1])
-	by d01av02.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	sAL97g3E031457
-	for <ltp-list@lists.sourceforge.net>; Fri, 21 Nov 2014 04:07:42 -0500
-Date: Fri, 21 Nov 2014 15:59:23 +0800
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Message-ID: <20141121075923.GA2804@localhost.localdomain>
-References: <20141031133917.GA3195@localhost.localdomain>
-	<54608048.4000201@oracle.com>
-	<20141113075747.GA19392@localhost.localdomain>
-	<546C51BA.5060304@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <546C51BA.5060304@oracle.com>
-Subject: [LTP] [PATCH] fix some syscall tests for 16-bit compat testing
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XmKtf-00041P-BY
+	for ltp-list@lists.sourceforge.net; Thu, 06 Nov 2014 11:06:35 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XmKte-000460-3s
+	for ltp-list@lists.sourceforge.net; Thu, 06 Nov 2014 11:06:35 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id sA6B6R65012645
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Nov 2014 11:06:28 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	sA6B6QSR021695
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Nov 2014 11:06:27 GMT
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	sA6B6QdY004985
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Nov 2014 11:06:26 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu,  6 Nov 2014 14:08:17 +0400
+Message-Id: <1415268497-8921-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v3] device-drivers/ltp_acpi_cpufreq: use simple
+	counter instead of cur_freq
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,525 +36,228 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On Wed, Nov 19, 2014 at 11:15:54AM +0300, Stanislav Kholmanskikh wrote:
-> >Looks like those cases need to be fixed for the 16-bit compat, right?
-> >
-> >chown0[1-5] fchown0[1-5] lchown03 setresgid0[1-4] setresuid0[1-3,5]
-> 
-> Looks so.
-> 
-> Sorry for the late response.
-> 
+Right now the test gives false results on kernels since v3.9. That's because
+of the following commit:
+acpi-cpufreq: set current frequency based on target P-State
+8673b83bf2f013379453b4779047bf3c6ae387e4
 
-I have composed a patch, please take a look. Thanks
+So the sysfs 'cpuinfo_cur_freq' gives target frequency which is set by
+acpi-cpufreq driver itself.
 
-From 71f5463f414e55d609603905e3f20b1f0eac2226 Mon Sep 17 00:00:00 2001
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Fri, 21 Nov 2014 15:50:23 +0800
-Subject: [PATCH] fix some syscall tests for 16-bit compat testing
+One possible way to find out that boost is actually off is to calculate
+average integer counter frequency on the tested CPU (this is how is done in
+the patch).
 
-Some syscall test cases have been compiled for 16-bit compat testing,
-but doesn't change the code yet. This fix try to add proper code to let
-them support this testing.
+Another way is to utilize MSR APERF/MPERF registers and TSC in Intel
+processors. That can be done by reading MSR from /dev/cpu/0/msr. But
+this will require additional checks in configure of asm/msr-index.h file
+and built-in non-portable __get_cpuid() function, also reading TSC register
+using asm instructions. And who knows what else for AMD silicons.
 
-Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Let's not complicate things too much and use the first method.
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/kernel/syscalls/chown/chown01.c         |  3 ++-
- testcases/kernel/syscalls/chown/chown02.c         |  3 ++-
- testcases/kernel/syscalls/chown/chown03.c         |  3 ++-
- testcases/kernel/syscalls/chown/chown04.c         |  3 ++-
- testcases/kernel/syscalls/chown/chown05.c         |  3 ++-
- testcases/kernel/syscalls/fchown/fchown01.c       |  3 ++-
- testcases/kernel/syscalls/fchown/fchown02.c       |  3 ++-
- testcases/kernel/syscalls/fchown/fchown03.c       |  3 ++-
- testcases/kernel/syscalls/fchown/fchown04.c       |  3 ++-
- testcases/kernel/syscalls/fchown/fchown05.c       |  3 ++-
- testcases/kernel/syscalls/lchown/lchown03.c       |  3 ++-
- testcases/kernel/syscalls/setresgid/setresgid01.c |  3 ++-
- testcases/kernel/syscalls/setresgid/setresgid02.c |  3 ++-
- testcases/kernel/syscalls/setresgid/setresgid03.c |  3 ++-
- testcases/kernel/syscalls/setresgid/setresgid04.c |  3 ++-
- testcases/kernel/syscalls/setresuid/setresuid01.c |  3 ++-
- testcases/kernel/syscalls/setresuid/setresuid02.c |  3 ++-
- testcases/kernel/syscalls/setresuid/setresuid03.c |  2 +-
- testcases/kernel/syscalls/setresuid/setresuid04.c |  9 +++++----
- testcases/kernel/syscalls/setresuid/setresuid05.c |  3 ++-
- testcases/kernel/syscalls/utils/compat_16.h       | 20 ++++++++++++++++++++
- 21 files changed, 62 insertions(+), 23 deletions(-)
+v3: I've changed load_cpu() and it now directly depends on maximum CPU
+    frequency. Therefore, ideally, each sum calculation will be no longer
+    than 1 sec. Also, don't use volatile variables because it significantly
+    slows things down. Instead, use asm instruction with 'memory' clobber.
 
-diff --git a/testcases/kernel/syscalls/chown/chown01.c b/testcases/kernel/syscalls/chown/chown01.c
-index ef728e1..5cf33dc 100644
---- a/testcases/kernel/syscalls/chown/chown01.c
-+++ b/testcases/kernel/syscalls/chown/chown01.c
-@@ -117,6 +117,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
+ testcases/kernel/device-drivers/acpi/Makefile      |    2 +-
+ .../kernel/device-drivers/acpi/ltp_acpi_cpufreq.c  |   99 ++++++++++----------
+ 2 files changed, 49 insertions(+), 52 deletions(-)
+
+diff --git a/testcases/kernel/device-drivers/acpi/Makefile b/testcases/kernel/device-drivers/acpi/Makefile
+index ce1ab34..526604d 100644
+--- a/testcases/kernel/device-drivers/acpi/Makefile
++++ b/testcases/kernel/device-drivers/acpi/Makefile
+@@ -27,7 +27,7 @@ REQ_VERSION_MAJOR	:= 2
+ REQ_VERSION_PATCH	:= 6
+ MAKE_TARGETS		:= ltp_acpi_cpufreq ltp_acpi ltp_acpi_cmds.ko
  
- char *TCID = "chown01";
- int TST_TOTAL = 1;
-@@ -145,7 +146,7 @@ int main(int ac, char **av)
+-ltp_acpi_cpufreq: LDLIBS += -lpthread
++ltp_acpi_cpufreq: LDLIBS += -lrt
  
- 		tst_count = 0;
+ include $(top_srcdir)/include/mk/module.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+index 73fb430..eea723e 100644
+--- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
++++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+@@ -20,19 +20,23 @@
+  * Check support for disabling dynamic overclocking in acpi_cpufreq driver.
+  * Required Linux 3.7+.
+  *
+- * The test loads CPU0 in a thread. When the loading approaches to the end
+- * (2/3 elapsed), the test will check processor frequency. if boost is enabled
+- * we can get a slightly higher speed under load.
++ * The test calculates counter frequency with and without boost-disable bit.
++ * If boost is enabled we can get a slightly higher counter frequency.
++ * Use simple counter instead of sysfs cpuinfo_cur_freq value, because after
++ * the upstream commit 8673b83bf2f013379453b4779047bf3c6ae387e4, current
++ * cpu frequency became target cpu frequency.
+  */
  
--		TEST(chown(fname, uid, gid));
-+		TEST(CHOWN(cleanup, fname, uid, gid));
- 
- 		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL | TTERRNO, "chown(%s, %d,%d) failed",
-diff --git a/testcases/kernel/syscalls/chown/chown02.c b/testcases/kernel/syscalls/chown/chown02.c
-index 339b2e8..30394ec 100644
---- a/testcases/kernel/syscalls/chown/chown02.c
-+++ b/testcases/kernel/syscalls/chown/chown02.c
-@@ -79,6 +79,7 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
- #define NEW_PERMS1	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
-@@ -142,7 +143,7 @@ int main(int ac, char **av)
- 			 * Call chown(2) with different user id and
- 			 * group id (numeric values) to set it on testfile.
- 			 */
--			TEST(chown(file_name, user_id, group_id));
-+			TEST(CHOWN(cleanup, file_name, user_id, group_id));
- 
- 			if (TEST_RETURN == -1) {
- 				tst_resm(TFAIL | TTERRNO,
-diff --git a/testcases/kernel/syscalls/chown/chown03.c b/testcases/kernel/syscalls/chown/chown03.c
-index 9780c2f..0ed4c91 100644
---- a/testcases/kernel/syscalls/chown/chown03.c
-+++ b/testcases/kernel/syscalls/chown/chown03.c
-@@ -82,6 +82,7 @@
- 
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
- #define NEW_PERMS	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
-@@ -115,7 +116,7 @@ int main(int ac, char **av)
- 		user_id = geteuid();
- 		group_id = getegid();
- 
--		TEST(chown(TESTFILE, -1, group_id));
-+		TEST(CHOWN(cleanup, TESTFILE, -1, group_id));
- 
- 		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL | TTERRNO, "chown(%s, ..) failed",
-diff --git a/testcases/kernel/syscalls/chown/chown04.c b/testcases/kernel/syscalls/chown/chown04.c
-index 1459227..b07dfa8 100644
---- a/testcases/kernel/syscalls/chown/chown04.c
-+++ b/testcases/kernel/syscalls/chown/chown04.c
-@@ -55,6 +55,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
- 
- #define MODE_RWX		 (S_IRWXU|S_IRWXG|S_IRWXO)
- #define FILE_MODE		 (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
-@@ -118,7 +119,7 @@ int main(int ac, char **av)
- 		tst_count = 0;
- 
- 		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(chown(tc[i].pathname, user_id, group_id));
-+			TEST(CHOWN(cleanup, tc[i].pathname, user_id, group_id));
- 
- 			if (TEST_RETURN == 0) {
- 				tst_resm(TFAIL, "chown succeeded unexpectedly");
-diff --git a/testcases/kernel/syscalls/chown/chown05.c b/testcases/kernel/syscalls/chown/chown05.c
-index 92e1811..3ec4f13 100644
---- a/testcases/kernel/syscalls/chown/chown05.c
-+++ b/testcases/kernel/syscalls/chown/chown05.c
-@@ -77,6 +77,7 @@
+ #define _GNU_SOURCE
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <sched.h>
++#include <time.h>
+ #include <sys/time.h>
+-#include <pthread.h>
++#include <sys/resource.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include <unistd.h>
+ #include <fcntl.h>
  
  #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
+@@ -51,7 +55,6 @@ const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
+ static char governor_name[16];
  
- #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
- #define TESTFILE	"testfile"
-@@ -121,7 +122,7 @@ int main(int ac, char **av)
- 			user_id = test_cases[i].user_id;
- 			group_id = test_cases[i].group_id;
+ const char setspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_setspeed";
+-const char curspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/cpuinfo_cur_freq";
+ const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
  
--			TEST(chown(TESTFILE, user_id, group_id));
-+			TEST(CHOWN(cleanup, TESTFILE, user_id, group_id));
- 
- 			if (TEST_RETURN == -1) {
- 				tst_resm(TFAIL | TTERRNO, "chown failed");
-diff --git a/testcases/kernel/syscalls/fchown/fchown01.c b/testcases/kernel/syscalls/fchown/fchown01.c
-index be620d7..841e02b 100644
---- a/testcases/kernel/syscalls/fchown/fchown01.c
-+++ b/testcases/kernel/syscalls/fchown/fchown01.c
-@@ -42,6 +42,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
- 
- static void setup(void);
- static void cleanup(void);
-@@ -65,7 +66,7 @@ int main(int ac, char **av)
- 
- 		tst_count = 0;
- 
--		TEST(fchown(fd, geteuid(), getegid()));
-+		TEST(FCHOWN(cleanup, fd, geteuid(), getegid()));
- 
- 		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL | TTERRNO, "fchown failed");
-diff --git a/testcases/kernel/syscalls/fchown/fchown02.c b/testcases/kernel/syscalls/fchown/fchown02.c
-index fd14ba1..0c1782d 100644
---- a/testcases/kernel/syscalls/fchown/fchown02.c
-+++ b/testcases/kernel/syscalls/fchown/fchown02.c
-@@ -38,6 +38,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
- 
- #define FILE_MODE	S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
- #define NEW_PERMS1	S_IFREG | S_IRWXU | S_IRWXG | S_ISUID | S_ISGID
-@@ -71,7 +72,7 @@ static void verify_fchown(struct test_case *t)
- {
- 	struct stat stat_buf;
- 
--	TEST(fchown(*t->fd, t->user_id, t->group_id));
-+	TEST(FCHOWN(cleanup, *t->fd, t->user_id, t->group_id));
- 
- 	if (TEST_RETURN == -1) {
- 		tst_resm(TFAIL | TTERRNO, "fchown() Fails on %s", t->pathname);
-diff --git a/testcases/kernel/syscalls/fchown/fchown03.c b/testcases/kernel/syscalls/fchown/fchown03.c
-index 3a75093..d0218b2 100644
---- a/testcases/kernel/syscalls/fchown/fchown03.c
-+++ b/testcases/kernel/syscalls/fchown/fchown03.c
-@@ -41,6 +41,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
- 
- #define FILE_MODE (mode_t)(S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
- #define NEW_PERMS (mode_t)(S_IFREG | S_IRWXU | S_IRWXG | S_ISUID | S_ISGID)
-@@ -77,7 +78,7 @@ int main(int ac, char **av)
- 		user_id = geteuid();
- 		group_id = getegid();
- 
--		TEST(fchown(fildes, -1, group_id));
-+		TEST(FCHOWN(cleanup, fildes, -1, group_id));
- 
- 		if (TEST_RETURN == -1) {
- 			tst_resm(TFAIL, "fchown() on %s Fails, errno=%d",
-diff --git a/testcases/kernel/syscalls/fchown/fchown04.c b/testcases/kernel/syscalls/fchown/fchown04.c
-index 0829944..6dec6cb 100644
---- a/testcases/kernel/syscalls/fchown/fchown04.c
-+++ b/testcases/kernel/syscalls/fchown/fchown04.c
-@@ -45,6 +45,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
- 
- #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
- 			 S_IXGRP|S_IROTH|S_IXOTH)
-@@ -140,7 +141,7 @@ static void setup(void)
- 
- static void fchown_verify(int i)
- {
--	TEST(fchown(*test_cases[i].fd, geteuid(), getegid()));
-+	TEST(FCHOWN(cleanup, *test_cases[i].fd, geteuid(), getegid()));
- 
- 	if (TEST_RETURN == -1) {
- 		if (TEST_ERRNO == test_cases[i].exp_errno) {
-diff --git a/testcases/kernel/syscalls/fchown/fchown05.c b/testcases/kernel/syscalls/fchown/fchown05.c
-index 67a745a..47d5b00 100644
---- a/testcases/kernel/syscalls/fchown/fchown05.c
-+++ b/testcases/kernel/syscalls/fchown/fchown05.c
-@@ -34,6 +34,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
- 
- #define FILE_MODE	S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
- #define TESTFILE	"testfile"
-@@ -80,7 +81,7 @@ int main(int ac, char **av)
- 			user_id = tc[i].user_id;
- 			group_id = tc[i].group_id;
- 
--			TEST(fchown(fildes, user_id, group_id));
-+			TEST(FCHOWN(cleanup, fildes, user_id, group_id));
- 
- 			if (TEST_RETURN == -1) {
- 				tst_resm(TFAIL | TTERRNO,
-diff --git a/testcases/kernel/syscalls/lchown/lchown03.c b/testcases/kernel/syscalls/lchown/lchown03.c
-index 9e4d6f9..8624728 100644
---- a/testcases/kernel/syscalls/lchown/lchown03.c
-+++ b/testcases/kernel/syscalls/lchown/lchown03.c
-@@ -40,6 +40,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
- 
- #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
- 			 S_IXGRP|S_IROTH|S_IXOTH)
-@@ -124,7 +125,7 @@ static void setup(void)
- 
- static void lchown_verify(const struct test_case_t *test)
- {
--	TEST(lchown(test->pathname, geteuid(), getegid()));
-+	TEST(LCHOWN(cleanup, test->pathname, geteuid(), getegid()));
- 
- 	if (TEST_RETURN != -1) {
- 		tst_resm(TFAIL, "lchown() returned %ld, expected -1, errno=%d",
-diff --git a/testcases/kernel/syscalls/setresgid/setresgid01.c b/testcases/kernel/syscalls/setresgid/setresgid01.c
-index f9c62a0..db3b9dc 100644
---- a/testcases/kernel/syscalls/setresgid/setresgid01.c
-+++ b/testcases/kernel/syscalls/setresgid/setresgid01.c
-@@ -76,6 +76,7 @@
- #include <unistd.h>
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- #define EXP_RET_VAL	0
- 
-@@ -131,7 +132,7 @@ int main(int argc, char **argv)
- 
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
- 
--			TEST(setresgid(*tdat[testno].rgid, *tdat[testno].egid,
-+			TEST(SETRESGID(cleanup, *tdat[testno].rgid, *tdat[testno].egid,
- 				       *tdat[testno].sgid));
- 
- 			if (TEST_RETURN == EXP_RET_VAL) {
-diff --git a/testcases/kernel/syscalls/setresgid/setresgid02.c b/testcases/kernel/syscalls/setresgid/setresgid02.c
-index 754fca1..e0c935d 100644
---- a/testcases/kernel/syscalls/setresgid/setresgid02.c
-+++ b/testcases/kernel/syscalls/setresgid/setresgid02.c
-@@ -81,6 +81,7 @@
- #include <unistd.h>
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- #define EXP_RET_VAL	0
- 
-@@ -138,7 +139,7 @@ int main(int argc, char **argv)
- 
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
- 
--			TEST(setresgid(*tdat[testno].rgid, *tdat[testno].egid,
-+			TEST(SETRESGID(cleanup, *tdat[testno].rgid, *tdat[testno].egid,
- 				       *tdat[testno].sgid));
- 
- 			if (TEST_RETURN == EXP_RET_VAL) {
-diff --git a/testcases/kernel/syscalls/setresgid/setresgid03.c b/testcases/kernel/syscalls/setresgid/setresgid03.c
-index 32d7995..0e9801e 100644
---- a/testcases/kernel/syscalls/setresgid/setresgid03.c
-+++ b/testcases/kernel/syscalls/setresgid/setresgid03.c
-@@ -81,6 +81,7 @@
- #include <unistd.h>
- #include "test.h"
- #include "usctest.h"
-+#include "compat_16.h"
- 
- #define EXP_RET_VAL	-1
- #define EXP_ERRNO	EPERM
-@@ -131,7 +132,7 @@ int main(int argc, char **argv)
- 
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
- 
--			TEST(setresgid(*tdat[testno].rgid, *tdat[testno].egid,
-+			TEST(SETRESGID(cleanup, *tdat[testno].rgid, *tdat[testno].egid,
- 				       *tdat[testno].sgid));
- 
- 			TEST_ERROR_LOG(TEST_ERRNO);
-diff --git a/testcases/kernel/syscalls/setresgid/setresgid04.c b/testcases/kernel/syscalls/setresgid/setresgid04.c
-index 4e71910..cc481ce 100644
---- a/testcases/kernel/syscalls/setresgid/setresgid04.c
-+++ b/testcases/kernel/syscalls/setresgid/setresgid04.c
-@@ -30,6 +30,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
- 
- char *TCID = "setresgid04";
- int TST_TOTAL = 1;
-@@ -76,7 +77,7 @@ static void setresgid_verify(void)
- {
- 	struct stat buf;
- 
--	TEST(setresgid(-1, ltpuser->pw_gid, -1));
-+	TEST(SETRESGID(cleanup, -1, ltpuser->pw_gid, -1));
- 
- 	if (TEST_RETURN != 0) {
- 		tst_resm(TFAIL | TTERRNO, "setresgid failed unexpectedly");
-diff --git a/testcases/kernel/syscalls/setresuid/setresuid01.c b/testcases/kernel/syscalls/setresuid/setresuid01.c
-index 39e1ac3..49211c1 100644
---- a/testcases/kernel/syscalls/setresuid/setresuid01.c
-+++ b/testcases/kernel/syscalls/setresuid/setresuid01.c
-@@ -69,6 +69,7 @@
- #include "test.h"
- #include "usctest.h"
- #include <errno.h>
-+#include "compat_16.h"
- 
- char *TCID = "setresuid01";
- 
-@@ -140,7 +141,7 @@ int main(int ac, char **av)
- 
- 		for (i = 0; i < TST_TOTAL; i++) {
- 			/* Set the real, effective or user id */
--			TEST(setresuid(*test_data[i].real_uid,
-+			TEST(SETRESUID(cleanup, *test_data[i].real_uid,
- 				       *test_data[i].eff_uid,
- 				       *test_data[i].sav_uid));
- 
-diff --git a/testcases/kernel/syscalls/setresuid/setresuid02.c b/testcases/kernel/syscalls/setresuid/setresuid02.c
-index 0837c9e..5e1b7fd 100644
---- a/testcases/kernel/syscalls/setresuid/setresuid02.c
-+++ b/testcases/kernel/syscalls/setresuid/setresuid02.c
-@@ -65,6 +65,7 @@
- #include "usctest.h"
- #include <errno.h>
- #include <sys/wait.h>
-+#include "compat_16.h"
- 
- char *TCID = "setresuid02";
- 
-@@ -140,7 +141,7 @@ int main(int ac, char **av)
- 			for (i = 0; i < TST_TOTAL; i++) {
- 
- 				/* Set the real, effective or saved user id */
--				TEST(setresuid(*test_data[i].real_uid,
-+				TEST(SETRESUID(cleanup, *test_data[i].real_uid,
- 					       *test_data[i].eff_uid,
- 					       *test_data[i].sav_uid));
- 
-diff --git a/testcases/kernel/syscalls/setresuid/setresuid03.c b/testcases/kernel/syscalls/setresuid/setresuid03.c
-index f624253..592c764 100644
---- a/testcases/kernel/syscalls/setresuid/setresuid03.c
-+++ b/testcases/kernel/syscalls/setresuid/setresuid03.c
-@@ -150,7 +150,7 @@ int main(int ac, char **av)
- 			for (i = 0; i < TST_TOTAL; i++) {
- 
- 				/* Set the real, effective or saved user id */
--				TEST(setresuid(*test_data[i].real_uid,
-+				TEST(SETRESUID(cleanup, *test_data[i].real_uid,
- 					       *test_data[i].eff_uid,
- 					       *test_data[i].sav_uid));
- 
-diff --git a/testcases/kernel/syscalls/setresuid/setresuid04.c b/testcases/kernel/syscalls/setresuid/setresuid04.c
-index 140d5f3..dfc9058 100644
---- a/testcases/kernel/syscalls/setresuid/setresuid04.c
-+++ b/testcases/kernel/syscalls/setresuid/setresuid04.c
-@@ -53,6 +53,7 @@
- #include "test.h"
- #include "usctest.h"
- #include <pwd.h>
-+#include "compat_16.h"
- 
- char *TCID = "setresuid04";
- int TST_TOTAL = 1;
-@@ -111,8 +112,8 @@ void do_master_child(void)
- 		/* Reset tst_count in case we are looping */
- 		tst_count = 0;
- 
--		if (setresuid(0, ltpuser->pw_uid, 0) == -1) {
--			perror("setfsuid failed");
-+		if (SETRESUID(cleanup, 0, ltpuser->pw_uid, 0) == -1) {
-+			perror("setresuid failed");
- 			exit(1);
- 		}
- 
-@@ -176,8 +177,8 @@ void do_master_child(void)
- 		 *         the file with RDWR permissions.
- 		 */
- 		tst_count++;
--		if (setresuid(0, 0, 0) == -1) {
--			perror("setfsuid failed");
-+		if (SETRESUID(cleanup, 0, 0, 0) == -1) {
-+			perror("setresuid failed");
- 			exit(1);
- 		}
- 
-diff --git a/testcases/kernel/syscalls/setresuid/setresuid05.c b/testcases/kernel/syscalls/setresuid/setresuid05.c
-index 8880aeb..44d1565 100644
---- a/testcases/kernel/syscalls/setresuid/setresuid05.c
-+++ b/testcases/kernel/syscalls/setresuid/setresuid05.c
-@@ -30,6 +30,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "compat_16.h"
- 
- char *TCID = "setresuid05";
- int TST_TOTAL = 1;
-@@ -76,7 +77,7 @@ static void setresuid_verify(void)
- {
- 	struct stat buf;
- 
--	TEST(setresuid(-1, ltpuser->pw_uid, -1));
-+	TEST(SETRESUID(cleanup, -1, ltpuser->pw_uid, -1));
- 
- 	if (TEST_RETURN != 0) {
- 		tst_resm(TFAIL | TTERRNO, "setresuid failed unexpectedly");
-diff --git a/testcases/kernel/syscalls/utils/compat_16.h b/testcases/kernel/syscalls/utils/compat_16.h
-index 40bef59..b6a702d 100644
---- a/testcases/kernel/syscalls/utils/compat_16.h
-+++ b/testcases/kernel/syscalls/utils/compat_16.h
-@@ -127,8 +127,28 @@ int SETREGID(void (cleanup)(void), GID_T rgid, GID_T egid)
- 	LTP_CREATE_SYSCALL(setregid, cleanup, rgid, egid);
+ static void cleanup(void)
+@@ -90,6 +93,13 @@ static void setup(void)
+ 	CPU_SET(0, &set);
+ 	if (sched_setaffinity(0, sizeof(cpu_set_t), &set) < 0)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "failed to set CPU0");
++
++	struct sched_param params;
++	params.sched_priority = sched_get_priority_max(SCHED_FIFO);
++	if (sched_setscheduler(getpid(), SCHED_FIFO, &params)) {
++		tst_resm(TWARN | TERRNO,
++			"failed to set FIFO sched with max priority");
++	}
  }
  
-+int SETRESUID(void (cleanup)(void), UID_T ruid, UID_T euid, UID_T suid)
-+{
-+	LTP_CREATE_SYSCALL(setresuid, cleanup, ruid, euid, suid);
-+}
-+
-+int SETRESGID(void (cleanup)(void), GID_T rgid, GID_T egid, GID_T sgid)
-+{
-+	LTP_CREATE_SYSCALL(setresgid, cleanup, rgid, egid, sgid);
-+}
-+
-+int FCHOWN(void (cleanup)(void), unsigned int fd, UID_T owner, GID_T group)
-+{
-+	LTP_CREATE_SYSCALL(fchown, cleanup, fd, owner, group);
-+}
-+
- int LCHOWN(void (cleanup)(void), const char *path, UID_T owner, GID_T group)
- {
- 	LTP_CREATE_SYSCALL(lchown, cleanup, path, owner, group);
+ static void set_speed(int freq)
+@@ -98,78 +108,65 @@ static void set_speed(int freq)
+ 	SAFE_FILE_SCANF(cleanup, setspeed, "%d", &set_freq);
+ 
+ 	if (set_freq != freq) {
+-		tst_resm(TINFO, "change speed from %d to %d...",
++		tst_resm(TINFO, "change target speed from %d KHz to %d KHz",
+ 			set_freq, freq);
+ 		SAFE_FILE_PRINTF(cleanup, setspeed, "%d", freq);
+ 	} else {
+-		tst_resm(TINFO, "set speed is %d", set_freq);
++		tst_resm(TINFO, "target speed is %d KHz", set_freq);
+ 	}
  }
+ 
+-void *thread_fn(void *val)
++static int load_cpu(int max_freq_khz)
+ {
+-	struct timeval tv_start;
+-	struct timeval tv_end;
+-	int i, res = 0;
+-	intptr_t timeout = (intptr_t) val;
+-
+-	gettimeofday(&tv_start, NULL);
+-	tst_resm(TINFO, "load CPU0 for %ld sec...", timeout);
++	int sum = 0, i = 0, total_time_ms;
++	struct timespec tv_start, tv_end;
+ 
+-	do {
+-		for (i = 1; i < 10000; ++i)
+-			res += i * i;
+-		gettimeofday(&tv_end, NULL);
+-		sched_yield();
+-	} while ((tv_end.tv_sec - tv_start.tv_sec) < timeout);
+-
+-	tst_resm(TINFO, "CPU0 load done: insignificant value '%d'", res);
++	const int max_sum = max_freq_khz / 1000;
++	const int units = 1000000; /* Mhz */
+ 
+-	return NULL;
+-}
++	clock_gettime(CLOCK_MONOTONIC_RAW, &tv_start);
+ 
+-static int load_cpu(intptr_t timeout)
+-{
+-	pthread_t thread_id;
++	do {
++		for (i = 0; i < units; ++i)
++			asm ("" : : : "memory");
++	} while (++sum < max_sum);
+ 
+-	if (pthread_create(&thread_id, 0, thread_fn,
+-		(void *) timeout) != 0) {
+-		tst_brkm(TBROK | TERRNO, cleanup,
+-			"pthread_create failed at %s:%d",
+-			__FILE__, __LINE__);
+-	}
++	clock_gettime(CLOCK_MONOTONIC_RAW, &tv_end);
+ 
+-	sleep(2 * timeout / 3);
++	total_time_ms = (tv_end.tv_sec - tv_start.tv_sec) * 1000 +
++		(tv_end.tv_nsec - tv_start.tv_nsec) / 1000000;
+ 
+-	int cur_freq;
+-	SAFE_FILE_SCANF(cleanup, curspeed, "%d", &cur_freq);
+-	tst_resm(TINFO, "got cpu freq under load: %d", cur_freq);
++	if (!total_time_ms)
++		tst_brkm(TBROK, cleanup, "can't calc freq, time period is 0");
+ 
+-	pthread_join(thread_id, NULL);
++	tst_resm(TINFO, "elapsed time is %d ms", total_time_ms);
+ 
+-	return cur_freq;
++	return sum * 1000 / total_time_ms;
+ }
+ 
+ static void test_run(void)
+ {
+-	int cur_freq, max_freq;
+-	SAFE_FILE_SCANF(cleanup, maxspeed, "%d", &max_freq);
+-	set_speed(max_freq);
++	int boost_freq, boost_off_freq, max_freq_khz;
++	SAFE_FILE_SCANF(cleanup, maxspeed, "%d", &max_freq_khz);
++	set_speed(max_freq_khz);
+ 
+ 	/* Enable boost */
+ 	if (boost_value == 0)
+ 		SAFE_FILE_PRINTF(cleanup, boost, "1");
+-	cur_freq = load_cpu(30);
+-	tst_resm((cur_freq >= max_freq) ? TPASS : TFAIL,
+-		"compare current speed %d and max speed %d",
+-		cur_freq, max_freq);
++	boost_freq = load_cpu(max_freq_khz);
++	tst_resm(TINFO, "counter freq with boost enabled: %d MHz", boost_freq);
+ 
+ 	/* Disable boost */
+ 	SAFE_FILE_PRINTF(cleanup, boost, "0");
+-	cur_freq = load_cpu(30);
+-	tst_resm((cur_freq < max_freq) ? TPASS : TFAIL,
+-		"compare current speed %d and max speed %d",
+-		cur_freq, max_freq);
++	boost_off_freq = load_cpu(max_freq_khz);
 +
-+int CHOWN(void (cleanup)(void), const char *path, UID_T owner, GID_T group)
-+{
-+	LTP_CREATE_SYSCALL(chown, cleanup, path, owner, group);
-+}
- #endif /* __LTP_COMPAT_16_H__ */
++	tst_resm(TINFO, "counter freq with boost disabled: %d MHz",
++		boost_off_freq);
++
++	boost_off_freq *= 1.01;
++
++	tst_resm((boost_freq > boost_off_freq) ? TPASS : TFAIL,
++		"compare counter frequencies (with and without boost + 1%%)");
+ }
+ 
+ int main(int argc, char *argv[])
 -- 
-1.9.3
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
