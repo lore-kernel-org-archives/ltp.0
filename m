@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xuw@redhat.com>) id 1XqOor-0002hJ-AT
-	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 16:06:25 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XqOoq-0005C9-29
-	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 16:06:25 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id sAHG6HmT026406
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Nov 2014 11:06:18 -0500
-From: xuw@redhat.com
-Date: Tue, 18 Nov 2014 00:06:13 +0800
-Message-Id: <1416240373-7693-1-git-send-email-xuw@redhat.com>
-Subject: [LTP] [PATCH V2] fs/openfile: refactor code based on ltp rules
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1Xnkew-00032i-1C
+	for ltp-list@lists.sourceforge.net; Mon, 10 Nov 2014 08:49:14 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Xnkeu-0004es-BP
+	for ltp-list@lists.sourceforge.net; Mon, 10 Nov 2014 08:49:14 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sAA8mrNF014928
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Nov 2014 16:48:53 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Mon, 10 Nov 2014 16:46:03 +0800
+Message-ID: <1415609164-10297-1-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1415258674-17261-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1415258674-17261-1-git-send-email-gux.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v2 1/2] containers: change check_iproute() behavior in
+	netns/netns_helper.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,284 +29,201 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-From: George Wang <xuw@redhat.com>
+Change check_iproute() behavior in order to improve
+its expansibility.
 
-Signed-off-by: George Wang <xuw@redhat.com>
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/fs/openfile/openfile.c | 149 +++++++++++---------------------
- 1 file changed, 49 insertions(+), 100 deletions(-)
+ testcases/kernel/containers/netns/netns_crtchild.c |  7 ++++-
+ .../containers/netns/netns_crtchild_delchild.c     |  7 ++++-
+ testcases/kernel/containers/netns/netns_helper.h   | 31 +++++++++++++++++-----
+ .../kernel/containers/netns/netns_par_chld_ftp.c   |  7 ++++-
+ .../kernel/containers/netns/netns_par_chld_ipv6.c  |  7 ++++-
+ .../containers/netns/netns_two_children_ns.c       |  7 ++++-
+ 6 files changed, 54 insertions(+), 12 deletions(-)
 
-diff --git a/testcases/kernel/fs/openfile/openfile.c b/testcases/kernel/fs/openfile/openfile.c
-index 8657064..82ff1f7 100644
---- a/testcases/kernel/fs/openfile/openfile.c
-+++ b/testcases/kernel/fs/openfile/openfile.c
-@@ -38,7 +38,7 @@
- #include "test.h"
- #include "usctest.h"
+diff --git a/testcases/kernel/containers/netns/netns_crtchild.c b/testcases/kernel/containers/netns/netns_crtchild.c
+index 3b5a696..a6da669 100644
+--- a/testcases/kernel/containers/netns/netns_crtchild.c
++++ b/testcases/kernel/containers/netns/netns_crtchild.c
+@@ -29,12 +29,17 @@
+ #include "common.h"
+ #include "netns_helper.h"
  
--char *TCID = "openfile01";	/* Test program identifier.    */
-+char *TCID = "openfile01";
++#define IPROUTE_MIN_VER 80725
++
+ const char *TCID = "netns_crtchild";
+ 
+ static void setup(void)
+ {
+ 	tst_require_root(NULL);
+-	check_iproute();
++	if (check_iproute(IPROUTE_MIN_VER) == -1) {
++		tst_brkm(TCONF, NULL,
++			"iproute tools do not support setting network namespaces");
++	}
+ 	check_netns();
+ }
+ 
+diff --git a/testcases/kernel/containers/netns/netns_crtchild_delchild.c b/testcases/kernel/containers/netns/netns_crtchild_delchild.c
+index 3235990..b2aa7cc 100644
+--- a/testcases/kernel/containers/netns/netns_crtchild_delchild.c
++++ b/testcases/kernel/containers/netns/netns_crtchild_delchild.c
+@@ -33,12 +33,17 @@
+ #include "common.h"
+ #include "netns_helper.h"
+ 
++#define IPROUTE_MIN_VER 80725
++
+ const char *TCID = "netns_crtchild_delchild";
+ 
+ static void setup(void)
+ {
+ 	tst_require_root(NULL);
+-	check_iproute();
++	if (check_iproute(IPROUTE_MIN_VER) == -1) {
++		tst_brkm(TCONF, NULL,
++			"iproute tools do not support setting network namespaces");
++	}
+ 	check_netns();
+ }
+ 
+diff --git a/testcases/kernel/containers/netns/netns_helper.h b/testcases/kernel/containers/netns/netns_helper.h
+index 7f301ce..bd0a88d 100644
+--- a/testcases/kernel/containers/netns/netns_helper.h
++++ b/testcases/kernel/containers/netns/netns_helper.h
+@@ -33,25 +33,42 @@
+ #define CLONE_NEWNS -1
+ #endif
+ 
+-#define IPROUTE_MIN_VER 80725
+-
+-static void check_iproute(void)
++/*
++ * Check whether the current iproute version matches specified iproute.
++ *
++ * Returns:
++ *   -1 - cur_ipver is less than spe_ipver
++ *   0 - cur_ipver is equal to spe_ipver
++ *   1 - cur_ipver is greater than spe_ipver
++ */
++static int check_iproute(int spe_ipver)
+ {
+ 	FILE *ipf;
+ 	int n;
+-	unsigned int ipver = 0;
++	unsigned int cur_ipver = 0;
++	int ret;
+ 
+ 	ipf = popen("ip -V", "r");
+ 	if (ipf == NULL)
+ 		tst_brkm(TCONF, NULL,
+ 				"Failed while opening pipe for iproute check");
+ 
+-	n = fscanf(ipf, "ip utility, iproute2-ss%u", &ipver);
+-	if (n < 1 || ipver < IPROUTE_MIN_VER)
++	n = fscanf(ipf, "ip utility, iproute2-ss%u", &cur_ipver);
++	if (n < 1) {
++		pclose(ipf);
+ 		tst_brkm(TCONF, NULL,
+-			"iproute tools do not support setting network namespaces");
++			"Failed while obtaining version for iproute check");
++	} else {
++		if (cur_ipver < spe_ipver)
++			ret = -1;
++		else if (cur_ipver == spe_ipver)
++			ret = 0;
++		else
++			ret = 1;
++	}
+ 
+ 	pclose(ipf);
++	return ret;
+ }
+ 
+ static void check_netns(void)
+diff --git a/testcases/kernel/containers/netns/netns_par_chld_ftp.c b/testcases/kernel/containers/netns/netns_par_chld_ftp.c
+index 97411f7..20ab179 100644
+--- a/testcases/kernel/containers/netns/netns_par_chld_ftp.c
++++ b/testcases/kernel/containers/netns/netns_par_chld_ftp.c
+@@ -30,12 +30,17 @@
+ #include "common.h"
+ #include "netns_helper.h"
+ 
++#define IPROUTE_MIN_VER 80725
++
+ const char *TCID = "netns_par_chld_ftp";
+ 
+ static void setup(void)
+ {
+ 	tst_require_root(NULL);
+-	check_iproute();
++	if (check_iproute(IPROUTE_MIN_VER) == -1) {
++		tst_brkm(TCONF, NULL,
++			"iproute tools do not support setting network namespaces");
++	}
+ 	check_netns();
+ }
+ 
+diff --git a/testcases/kernel/containers/netns/netns_par_chld_ipv6.c b/testcases/kernel/containers/netns/netns_par_chld_ipv6.c
+index 1e50f24..c68e7ab 100644
+--- a/testcases/kernel/containers/netns/netns_par_chld_ipv6.c
++++ b/testcases/kernel/containers/netns/netns_par_chld_ipv6.c
+@@ -47,6 +47,8 @@
+ #include "common.h"
+ #include "netns_helper.h"
+ 
++#define IPROUTE_MIN_VER 80725
++
+ char *TCID = "netns_ipv6";
  int TST_TOTAL = 1;
  
- #define MAXFILES        32768
-@@ -52,33 +52,38 @@ struct cb {
- 	int thr_sleeping;
- } c;
- 
--/* Global Variables */
- int numthreads = 10, numfiles = 10;
- int debug = 0;
- char *filename = "FILETOOPEN";
-+FILE *fd = NULL;
- 
--void setup(void)
-+void cleanup(void)
+@@ -56,7 +58,10 @@ int TST_TOTAL = 1;
+ static void setup(void)
  {
--	tst_tmpdir();
-+	if (fd)
-+		fclose(fd);
-+	tst_rmdir();
-+
- }
- 
--void cleanup(void)
-+void setup(void)
- {
--	tst_rmdir();
-+	tst_tmpdir();
-+
-+	if ((fd = fopen(filename, "w")) == NULL)
-+		tst_brkm(TBROK, NULL, "Could not create file");
- 
-+	pthread_mutex_init(&c.m, NULL);
-+	pthread_cond_init(&c.init_cv, NULL);
-+	pthread_cond_init(&c.thr_cv, NULL);
-+	c.thr_sleeping = 0;
- }
- 
--/* Procedures */
--void *threads(void *thread_id);
- 
--/* **************************************************************************
-- *                              MAIN PROCEDURE                            *
-- ************************************************************************** */
-+void *threads(void *thread_id);
- 
- int main(int argc, char *argv[])
- {
- 	int i, opt, badopts = 0;
--	FILE *fd;
- 	pthread_t th_id;
- 	char msg[80] = "";
- 	extern char *optarg;
-@@ -101,100 +106,57 @@ int main(int argc, char *argv[])
- 		case 'h':
- 		default:
- 			printf("Usage: openfile [-d] -f FILES -t THREADS\n");
--			_exit(1);
-+			tst_brkm(TBROK, NULL, "PARSE OPTION");
- 		}
- 	}
--	if (badopts) {
--		printf("Usage: openfile [-d] -f FILES -t THREADS\n");
--		_exit(1);
--	}
--
--	setup();
-+	if (badopts)
-+		tst_brkm(TBROK, NULL, "Usage: openfile [-d] -f FILES -t THREADS");
- 
--	/* Check if numthreads is less than MAXFILES */
- 	if (numfiles > MAXFILES) {
- 		sprintf(msg, "%s\nCannot use %d files", msg, numfiles);
- 		sprintf(msg, "%s, used %d files instead\n", msg, MAXFILES);
- 		numfiles = MAXFILES;
- 	}
- 
--	/* Check if numthreads is less than MAXTHREADS */
- 	if (numthreads > MAXTHREADS) {
- 		sprintf(msg, "%s\nCannot use %d threads", msg, numthreads);
- 		sprintf(msg, "%s, used %d threads instead\n", msg, MAXTHREADS);
- 		numthreads = MAXTHREADS;
- 	}
- 
--	/* Create files */
--	if ((fd = fopen(filename, "w")) == NULL) {
--		tst_resm(TFAIL, "Could not create file");
--		cleanup();
--	}
--
--	/* Initialize thread control variables, lock & condition */
--	pthread_mutex_init(&c.m, NULL);
--	pthread_cond_init(&c.init_cv, NULL);
--	pthread_cond_init(&c.thr_cv, NULL);
--	c.thr_sleeping = 0;
-+	setup();
- 
--	/* Grab mutex lock */
--	if (pthread_mutex_lock(&c.m)) {
--		tst_resm(TFAIL, "failed to grab mutex lock");
--		fclose(fd);
--		unlink(filename);
--		cleanup();
--	}
-+	if (pthread_mutex_lock(&c.m))
-+		tst_brkm(TBROK, cleanup, "failed to grab mutex lock");
- 
- 	printf("Creating Reading Threads\n");
- 
- 	/* Create threads */
--	for (i = 0; i < numthreads; i++)
--		if (pthread_create(&th_id, NULL, threads,
--				   (void *)(uintptr_t) i)) {
--			tst_resm(TFAIL,
--				 "failed creating a pthread; increase limits");
--			fclose(fd);
--			unlink(filename);
--			cleanup();
--		}
-+	for (i = 0; i < numthreads; i++) {
-+		if (pthread_create(&th_id, NULL, threads, (void *)(uintptr_t) i))
-+			tst_brkm(TFAIL, cleanup, "failed creating a pthread; increase limits");
+ 	tst_require_root(NULL);
+-	check_iproute();
++	if (check_iproute(IPROUTE_MIN_VER) == -1) {
++		tst_brkm(TCONF, NULL,
++			"iproute tools do not support setting network namespaces");
 +	}
- 
- 	/* Sleep until all threads are created */
--	while (c.thr_sleeping != numthreads)
--		if (pthread_cond_wait(&c.init_cv, &c.m)) {
--			tst_resm(TFAIL,
--				 "error while waiting for reading threads");
--			fclose(fd);
--			unlink(filename);
--			cleanup();
--		}
-+	while (c.thr_sleeping != numthreads) {
-+		if (pthread_cond_wait(&c.init_cv, &c.m))
-+			tst_brkm(TFAIL, cleanup, "error while waiting for reading threads");
-+	}
- 
- 	/* Wake up all threads */
--	if (pthread_cond_broadcast(&c.thr_cv)) {
--		tst_resm(TFAIL, "failed trying to wake up reading threads");
--		fclose(fd);
--		unlink(filename);
--		cleanup();
--	}
-+	if (pthread_cond_broadcast(&c.thr_cv))
-+		tst_brkm(TFAIL, cleanup, "failed trying to wake up reading threads");
-+
- 	/* Release mutex lock */
--	if (pthread_mutex_unlock(&c.m)) {
--		tst_resm(TFAIL, "failed to release mutex lock");
--		fclose(fd);
--		unlink(filename);
--		cleanup();
--	}
-+	if (pthread_mutex_unlock(&c.m))
-+		tst_brkm(TFAIL, cleanup, "failed to release mutex lock");
- 
- 	tst_resm(TPASS, "Threads are done reading");
- 
--	fclose(fd);
--	unlink(filename);
- 	cleanup();
--	_exit(0);
-+	tst_exit();
+ 	check_netns();
  }
  
--/* **************************************************************************
-- *				OTHER PROCEDURES			    *
-- ************************************************************************** */
--
- void close_files(FILE * fd_list[], int len)
+diff --git a/testcases/kernel/containers/netns/netns_two_children_ns.c b/testcases/kernel/containers/netns/netns_two_children_ns.c
+index 0a032d0..2446200 100644
+--- a/testcases/kernel/containers/netns/netns_two_children_ns.c
++++ b/testcases/kernel/containers/netns/netns_two_children_ns.c
+@@ -49,13 +49,18 @@
+ #include "common.h"
+ #include "netns_helper.h"
+ 
++#define IPROUTE_MIN_VER 80725
++
+ char *TCID = "netns_2children";
+ int TST_TOTAL = 1;
+ 
+ static void setup(void)
  {
- 	int i;
-@@ -210,8 +172,8 @@ void *threads(void *thread_id_)
- 	char errmsg[80];
- 	FILE *fd_list[MAXFILES];
- 	int i;
-+	int rs = 1;
- 
--	/* Open files */
- 	for (i = 0; i < numfiles; i++) {
- 		if (debug)
- 			printf("Thread  %d : Opening file number %d \n",
-@@ -219,49 +181,36 @@ void *threads(void *thread_id_)
- 		if ((fd_list[i] = fopen(filename, "rw")) == NULL) {
- 			sprintf(errmsg, "FAIL - Couldn't open file #%d", i);
- 			perror(errmsg);
--			if (i > 0) {
--				close_files(fd_list, i - 1);
--			}
--			unlink(filename);
--			pthread_exit((void *)1);
-+			goto ret;
- 		}
- 	}
- 
--	/* Grab mutex lock */
- 	if (pthread_mutex_lock(&c.m)) {
- 		perror("FAIL - failed to grab mutex lock");
--		close_files(fd_list, numfiles);
--		unlink(filename);
--		pthread_exit((void *)1);
-+		goto ret;
- 	}
- 
- 	/* Check if you should wake up main thread */
- 	if (++c.thr_sleeping == numthreads)
- 		if (pthread_cond_signal(&c.init_cv)) {
- 			perror("FAIL - failed to signal main thread");
--			close_files(fd_list, numfiles);
--			unlink(filename);
--			pthread_exit((void *)1);
-+			goto ret;
- 		}
- 
--	/* Sleep until woken up */
- 	if (pthread_cond_wait(&c.thr_cv, &c.m)) {
- 		perror("FAIL - failed to wake up correctly");
--		close_files(fd_list, numfiles);
--		unlink(filename);
--		pthread_exit((void *)1);
-+		goto ret;
- 	}
- 
--	/* Release mutex lock */
- 	if (pthread_mutex_unlock(&c.m)) {
- 		perror("FAIL - failed to release mutex lock");
--		close_files(fd_list, numfiles);
--		unlink(filename);
--		pthread_exit((void *)1);
-+		goto ret;
- 	}
-+	
-+	rs = 0;
-+
-+ret:
- 
--	/* Close file handles and exit */
--	close_files(fd_list, numfiles);
--	unlink(filename);
--	pthread_exit(NULL);
-+	close_files(fd_list, i);
-+	pthread_exit((void *)rs);
+ 	tst_require_root(NULL);
+-	check_iproute();
++	if (check_iproute(IPROUTE_MIN_VER) == -1) {
++		tst_brkm(TCONF, NULL,
++			"iproute tools do not support setting network namespaces");
++	}
+ 	check_netns();
  }
+ 
 -- 
-1.8.4.2
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
