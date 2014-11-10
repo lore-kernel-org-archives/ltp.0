@@ -2,23 +2,26 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XqLdv-0006KY-2p
-	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 12:42:55 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XqLdt-0004Ug-IG
-	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 12:42:55 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sAHCgWhu022926
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Nov 2014 20:42:32 +0800
-Message-ID: <1416228049.10929.5.camel@G08JYZSD130126.localdomain>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 17 Nov 2014 20:40:49 +0800
-In-Reply-To: <1416227892.10929.1.camel@G08JYZSD130126.localdomain>
-References: <1416227892.10929.1.camel@G08JYZSD130126.localdomain>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH 4/5] ima_tpm.sh: Some cleanup
+	(envelope-from <jstancek@redhat.com>) id 1Xnrcu-0000Ey-Jn
+	for ltp-list@lists.sourceforge.net; Mon, 10 Nov 2014 16:15:36 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Xnrcr-0004Ik-2m
+	for ltp-list@lists.sourceforge.net; Mon, 10 Nov 2014 16:15:36 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id sAAGFQSk024740
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Nov 2014 11:15:26 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id sAAGFPbe028332
+	for <ltp-list@lists.sourceforge.net>; Mon, 10 Nov 2014 11:15:26 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 10 Nov 2014 17:15:23 +0100
+Message-Id: <a7fbbc77524700a50177e2baadc3c03dbf1fe67b.1415635901.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 1/2 v5] controllers/cpuset: update to use test.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,219 +31,213 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-* Use 'tst_check_cmds' instead of 'exists'.
+Remove useless returns and ret code checking.
 
-* Use 'test_resm' instead of 'tst_res'.
+cpuset_memory_spread_testset.sh:
+ - treat node with not enough memory as TCONF, not failure
 
-* Use '$()' instead of '``'.
-
-* Delete some unuseful comments.
-
-* Some cleanup.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .../kernel/security/integrity/ima/tests/ima_tpm.sh | 114 +++++++--------------
- 1 file changed, 39 insertions(+), 75 deletions(-)
+ .../kernel/controllers/cpuset/cpuset_funcs.sh      |   51 +++++---------------
+ .../cpuset_hotplug_test/cpuset_hotplug_test.sh     |    2 +-
+ .../cpuset_memory_spread_testset.sh                |    9 +--
+ 3 files changed, 17 insertions(+), 45 deletions(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-index 3e125cb..77e7f2f 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_tpm.sh
-@@ -29,60 +29,45 @@
- # Return        - zero on success
- #               - non zero on failure. return value from commands ($RC)
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+index 79ecdad..cd7000e 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+@@ -24,6 +24,8 @@
+ ##                                                                            ##
  ################################################################################
-+export TST_TOTAL=3
-+export TCID="ima_tpm"
-+export TST_COUNT=0
+ 
++. test.sh
 +
- init()
+ NR_CPUS=`tst_ncpus`
+ if [ -f "/sys/devices/system/node/has_high_memory" ]; then
+ 	N_NODES="`cat /sys/devices/system/node/has_high_memory`"
+@@ -58,32 +60,28 @@ version_check()
  {
--	export TST_TOTAL=3
--	export TCID="init"
--	export TST_COUNT=0
--	RC=0
--
--	# verify ima_boot_aggregate is available
--	exists ima_boot_aggregate ima_measure
--
-+	tst_check_cmds ima_boot_aggregate ima_measure
+ 	tst_kvercmp 2 6 28
+ 	if [ $? -eq 0 ]; then
+-		tst_brkm TCONF ignored "kernel is below 2.6.28"
+-		return 1
++		tst_brkm TCONF "kernel is below 2.6.28"
+ 	fi
  }
  
- # Function:     test01
- # Description   - Verify boot aggregate value is correct
- test01()
+ ncpus_check()
  {
--	TCID="test01"
--	TST_COUNT=1
--	RC=0
- 	zero="0000000000000000000000000000000000000000"
+ 	if [ $NR_CPUS -lt $1 ]; then
+-		tst_brkm TCONF ignored "The total of CPUs is less than $1"
+-		return 1
++		tst_brkm TCONF "The total of CPUs is less than $1"
+ 	fi
+ }
  
- 	# IMA boot aggregate
- 	ima_measurements=$SECURITYFS/ima/ascii_runtime_measurements
- 	read line < $ima_measurements
--	ima_aggr=`expr substr "${line}" 49 40`
-+	ima_aggr=$(expr substr "${line}" 49 40)
+ nnodes_check()
+ {
+ 	if [ $N_NODES -lt $1 ]; then
+-		tst_brkm TCONF ignored "The total of nodes is less than $1"
+-		return 1
++		tst_brkm TCONF "The total of nodes is less than $1"
+ 	fi
+ }
  
- 	# verify TPM is available and enabled.
- 	tpm_bios=$SECURITYFS/tpm0/binary_bios_measurements
- 	if [ ! -f "$tpm_bios" ]; then
--		tst_res TINFO $LTPTMP/imalog.$$ \
--		 "$TCID: no TPM, TPM not builtin kernel, or TPM not enabled"
-+		tst_brkm TCONF "TPM not builtin kernel, or TPM not enabled"
+ user_check()
+ {
+ 	if [ $(id -u) != 0 ]; then
+-		tst_brkm TCONF ignored "Test must be run as root"
+-		return 1
++		tst_brkm TCONF "Test must be run as root"
+ 	fi
+ }
  
--		[ "${ima_aggr}" = "${zero}" ] || RC=$?
--		if [ $RC -eq 0 ]; then
--			tst_res TPASS $LTPTMP/imalog.$$ \
--			 "$TCID: bios boot aggregate is 0."
-+		if [ "${ima_aggr}" = "${zero}" ]; then
-+			tst_resm TPASS "bios boot aggregate is 0."
- 		else
--			tst_res TFAIL $LTPTMP/imalog.$$ \
--			 "$TCID: bios boot aggregate is not 0."
-+			tst_resm TFAIL "bios boot aggregate is not 0."
- 		fi
- 	else
--		boot_aggregate=`ima_boot_aggregate $tpm_bios`
--		boot_aggr=`expr substr $boot_aggregate 16 40`
--		[ "x${ima_aggr}" = "x${boot_aggr}" ] || RC=$?
--		if [ $RC -eq 0 ]; then
--			tst_res TPASS $LTPTMP/imalog.$$ \
--			 "$TCID: bios aggregate matches IMA boot aggregate."
-+		boot_aggregate=$(ima_boot_aggregate $tpm_bios)
-+		boot_aggr=$(expr substr $boot_aggregate 16 40)
-+		if [ "x${ima_aggr}" = "x${boot_aggr}" ]; then
-+			tst_resm TPASS "bios aggregate matches IMA boot aggregate."
- 		else
--			tst_res TFAIL $LTPTMP/imalog.$$ \
--			 "$TCID: bios aggregate does not match IMA boot " \
--				"aggregate."
-+			tst_resm TFAIL "bios aggregate does not match IMA boot aggregate."
+@@ -99,8 +97,7 @@ cpuset_check()
  		fi
  	fi
--	return $RC
+ 
+-	tst_brkm TCONF ignored "Cpuset is not supported"
+-	return 1
++	tst_brkm TCONF "Cpuset is not supported"
  }
  
- # Probably cleaner to programmatically read the PCR values directly
-@@ -96,11 +81,12 @@ validate_pcr()
- 	RC=0
- 
- 	while read line ; do
--		pcr=`expr substr "${line}" 1 6`
-+		pcr=$(expr substr "${line}" 1 6)
- 		if [ "${pcr}" = "PCR-10" ]; then
--			aggr=`expr substr "${aggregate_pcr}" 26 59`
--			pcr=`expr substr "${line}" 9 59`
-+			aggr=$(expr substr "${aggregate_pcr}" 26 59)
-+			pcr=$(expr substr "${line}" 9 59)
- 			[ "${pcr}" = "${aggr}" ] || RC=$?
-+			[ "${pcr}" = "${aggr}" ]
- 		fi
- 	done < $dev_pcrs
- 	return $RC
-@@ -111,64 +97,42 @@ validate_pcr()
- #		  actual PCR value.
- test02()
+ # optional parameters (pass both or none of them):
+@@ -109,29 +106,14 @@ cpuset_check()
+ check()
  {
--	TCID="test02"
--	TST_COUNT=2
--	RC=0
+ 	user_check
+-	if [ $? -ne 0 ]; then
+-		exit 0
+-	fi
  
- 	# Would be nice to know where the PCRs are located.  Is this safe?
--	PCRS_PATH=`find /$SYSFS/devices/ | grep pcrs` || RC=$?
--	if [ $RC -eq 0 ]; then
--		validate_pcr $PCRS_PATH || RC=$?
--		if [ $RC -eq 0 ]; then
--			tst_res TPASS $LTPTMP/imalog.$$ \
--			 "$TCID: aggregate PCR value matches real PCR value."
-+	PCRS_PATH=$(find /$SYSFS/devices/ | grep pcrs)
-+	if [ $? -eq 0 ]; then
-+		validate_pcr $PCRS_PATH
-+		if [ $? -eq 0 ]; then
-+			tst_resm TPASS "aggregate PCR value matches real PCR value."
- 		else
--			tst_res TFAIL $LTPTMP/imalog.$$ \
--			 "$TCID: aggregate PCR value does not match" \
--			 " real PCR value."
-+			tst_resm TFAIL "aggregate PCR value does not match real PCR value."
+ 	cpuset_check
+-	if [ $? -ne 0 ]; then
+-		exit 0
+-	fi
+ 
+ 	version_check
+-	if [ $? -ne 0 ]; then
+-		exit 0
+-	fi
+ 
+ 	ncpus_check ${1:-2}
+-	if [ $? -ne 0 ]; then
+-		exit 0
+-	fi
+ 
+ 	nnodes_check ${2:-2}
+-	if [ $? -ne 0 ]; then
+-		exit 0
+-	fi
+ 
+ }
+ 
+@@ -142,20 +124,16 @@ setup()
+ 	if [ -e "$CPUSET" ]
+ 	then
+ 		tst_resm TWARN "$CPUSET already exist.. overwriting"
+-		cleanup || {
+-			tst_brkm TFAIL ignored "Can't cleanup... Exiting"
+-			return 1
+-		}
++		cleanup || tst_brkm TFAIL "Can't cleanup... Exiting"
+ 	fi
+ 
+ 	mkdir -p "$CPUSET_TMP"
+ 	mkdir "$CPUSET"
+ 	mount -t cpuset cpuset "$CPUSET" 2> /dev/null
+ 	if [ $? -ne 0 ]; then
+-		tst_brkm TFAIL ignored "Could not mount cgroup filesystem with"\
+-					" cpuset on $CPUSET..Exiting test"
+ 		cleanup
+-		return 1
++		tst_brkm TFAIL "Could not mount cgroup filesystem with"\
++					" cpuset on $CPUSET..Exiting test"
+ 	fi
+ }
+ 
+@@ -173,24 +151,21 @@ cleanup()
+ 		do
+ 			/bin/kill -9 $pid > /dev/null 2>&1
+ 			if [ $? -ne 0 ]; then
+-				tst_brkm TFAIL ignored "Couldn't kill task - "\
++				tst_brkm TFAIL "Couldn't kill task - "\
+ 							"$pid in the cpuset"
+-				return 1
+ 			fi
+ 		done < "$subdir/tasks"
+ 		rmdir "$subdir"
+ 		if [ $? -ne 0 ]; then
+-			tst_brkm TFAIL ignored "Couldn't remove subdir - "
++			tst_brkm TFAIL "Couldn't remove subdir - "
+ 						"$subdir in the cpuset"
+-			return 1
  		fi
- 	else
--		tst_res TFAIL $LTPTMP/imalog.$$ \
--		 "$TCID: TPM not enabled, no PCR value to validate"
-+		tst_resm TFAIL "TPM not enabled, no PCR value to validate"
+ 	done
+ 
+ 	umount "$CPUSET"
+ 	if [ $? -ne 0 ]; then
+-		tst_brkm TFAIL ignored "Couldn't umount cgroup filesystem with"\
++		tst_brkm TFAIL "Couldn't umount cgroup filesystem with"\
+ 					" cpuset on $CPUSET..Exiting test"
+-		return 1
  	fi
--	return $RC
- }
- 
- # Function:     test03
- # Description 	- Verify template hash value for IMA entry is correct.
- test03()
- {
--	TCID="test03"
--	TST_COUNT=3
--	RC=0
- 
- 	ima_measurements=$SECURITYFS/ima/binary_runtime_measurements
--	aggregate_pcr=`ima_measure $ima_measurements --verify --validate` > /dev/null
--	RC=$?
--	if [ $RC -eq 0 ]; then
--		tst_res TPASS $LTPTMP/imalog.$$ \
--		 "$TCID: verified IMA template hash values."
-+	aggregate_pcr=$(ima_measure $ima_measurements --verify --validate) > /dev/null
-+	if [ $? -eq 0 ]; then
-+		tst_resm TPASS "verified IMA template hash values."
- 	else
--		tst_res TFAIL $LTPTMP/imalog.$$ \
--		 "$TCID: error verifing IMA template hash values."
-+		tst_resm TFAIL "error verifing IMA template hash values."
+ 	rmdir "$CPUSET" > /dev/null 2>&1
+ 	rm -rf "$CPUSET_TMP" > /dev/null 2>&1
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+index 611ea62..05a9ea6 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_hotplug_test/cpuset_hotplug_test.sh
+@@ -150,7 +150,7 @@ general_cpu_hotplug_test()
+ 	cpu_hotplug $HOTPLUG_CPU $cpuhotplug 2> $CPUSET_TMP/stderr
+ 	if [ $? -ne 0 ]; then
+ 		cpuset_log_error $CPUSET_TMP/stderr
+-		tst_resm TFAIL ignored "$cpuoffline CPU#$HOTPLUG_CPU failed."
++		tst_resm TFAIL "$cpuoffline CPU#$HOTPLUG_CPU failed."
+ 		/bin/kill -s SIGKILL $tst_pid
+ 		return 1
  	fi
--	return $RC
- }
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+index ad989f3..f7d4d63 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_memory_spread_test/cpuset_memory_spread_testset.sh
+@@ -331,21 +331,18 @@ test_spread_page2()
+ init_memsinfo_array
+ freemem_check
+ if [ $? -ne 0 ]; then
+-	tst_brkm TFAIL ignored "Some node doesn't has enough free memory(100MB) to do test(MemFree_For_Nodes(KB): ${memsinfo[*]})."
+-	exit 1
++	tst_brkm TCONF "Some node doesn't has enough free memory(100MB) to do test(MemFree_For_Nodes(KB): ${memsinfo[*]})."
+ fi
  
--# Function:     main
--#
--# Description:  - Execute all tests, exit with test status.
--#
--# Exit:         - zero on success
--#               - non-zero on failure.
--#
--RC=0    # Return value from setup, and test functions.
--EXIT_VAL=0
-+. ima_setup.sh
-+TST_CLEANUP=cleanup
-+
-+setup
-+init
-+test01
-+test02
-+test03
+ dd if=/dev/zero of=./DATAFILE bs=1M count=100
+ if [ $? -ne 0 ]; then
+-	tst_brkm TFAIL ignored "Creating DATAFILE failed."
+-	exit 1
++	tst_brkm TFAIL "Creating DATAFILE failed."
+ fi
  
--. $(dirname "$0")/ima_setup.sh
--setup || exit $?
--init || exit $?
--test01 || EXIT_VAL=$RC
--test02 || EXIT_VAL=$RC
--test03 || EXIT_VAL=$RC
--exit $EXIT_VAL
-+tst_exit
+ mkfifo $FIFO
+ if [ $? -ne 0 ]; then
+ 	rm -f DATAFILE
+-	tst_brkm TFAIL ignored "failed to mkfifo $FIFO"
+-	exit 1
++	tst_brkm TFAIL "failed to mkfifo $FIFO"
+ fi
+ 
+ test_spread_page1
 -- 
-1.8.3.1
-
-
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
