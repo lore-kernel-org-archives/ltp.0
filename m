@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XoBJb-0006K3-5Q
-	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 13:16:59 +0000
-Date: Tue, 11 Nov 2014 14:16:18 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xo7py-0003eR-5I
+	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 09:34:10 +0000
+Date: Tue, 11 Nov 2014 10:33:31 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141111131618.GD29189@rei>
-References: <1415258674-17261-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1415609164-10297-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Message-ID: <20141111093331.GA28225@rei>
+References: <1415639518-4906-1-git-send-email-jack@suse.cz>
+	<1415673144.3244.11.camel@G08JYZSD130126.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1415609164-10297-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 1/2] containers: change check_iproute()
- behavior in netns/netns_helper.h
+In-Reply-To: <1415673144.3244.11.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [PATCH v2] syscalls/fanotify: Verify that inode ignore
+ masks are properly reflected
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,42 +26,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, Jan Kara <jack@suse.cz>
 
 Hi!
-> +static int check_iproute(int spe_ipver)
->  {
->  	FILE *ipf;
->  	int n;
-> -	unsigned int ipver = 0;
-> +	unsigned int cur_ipver = 0;
-> +	int ret;
->  
->  	ipf = popen("ip -V", "r");
->  	if (ipf == NULL)
->  		tst_brkm(TCONF, NULL,
->  				"Failed while opening pipe for iproute check");
->  
-> -	n = fscanf(ipf, "ip utility, iproute2-ss%u", &ipver);
-> -	if (n < 1 || ipver < IPROUTE_MIN_VER)
-> +	n = fscanf(ipf, "ip utility, iproute2-ss%u", &cur_ipver);
-> +	if (n < 1) {
-> +		pclose(ipf);
->  		tst_brkm(TCONF, NULL,
-> -			"iproute tools do not support setting network namespaces");
-> +			"Failed while obtaining version for iproute check");
-> +	} else {
-> +		if (cur_ipver < spe_ipver)
-> +			ret = -1;
-> +		else if (cur_ipver == spe_ipver)
-> +			ret = 0;
-> +		else
-> +			ret = 1;
-> +	}
+> > Verify that when inode has an ignore mask set, it is properly reflected
+> > when notifying a mountpoint. The test verifies fix "fanotify: Fix notification
+> > of groups with inode & mount marks" in the Linux kernel.
 
-Again why bother with return value when all the testcases just needs to
-know if ip is newer than some version?
+This tests looks like a regression test for a bug that hasn't been
+fixed in the mainline kernel yet, have a look at:
+
+http://permalink.gmane.org/gmane.linux.file-systems/89872
+https://bugzilla.kernel.org/show_bug.cgi?id=87721
+
+So I would expect testcase failures until the patch is backported to
+stable and you get distribution kernel update.
 
 -- 
 Cyril Hrubis
