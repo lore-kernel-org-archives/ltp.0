@@ -1,31 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Xtcck-00028h-HS
-	for ltp-list@lists.sourceforge.net; Wed, 26 Nov 2014 13:27:14 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xtccj-0002FA-D2
-	for ltp-list@lists.sourceforge.net; Wed, 26 Nov 2014 13:27:14 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id sAQDR707004228
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Nov 2014 13:27:07 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	sAQDR6RA014522
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Nov 2014 13:27:06 GMT
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	sAQDR5XR003211
-	for <ltp-list@lists.sourceforge.net>; Wed, 26 Nov 2014 13:27:05 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 26 Nov 2014 16:28:44 +0300
-Message-Id: <1417008524-32105-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] network/dhcpd: improve testcase, use dummy module
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XoD4G-0006Ea-E1
+	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 15:09:16 +0000
+Date: Tue, 11 Nov 2014 16:08:36 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141111150836.GC32196@rei>
+References: <1413554791.5750.27.camel@G08JYZSD130126.localdomain>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1413554791.5750.27.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [PATCH] stress_cd: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,241 +21,391 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Run dhcp client and check that the interface configured as expected.
+Hi!
+> diff --git a/testcases/kernel/io/stress_cd/stress_cd.c b/testcases/kernel/io/stress_cd/stress_cd.c
+> index 0209a1f..6e13afa 100644
+> --- a/testcases/kernel/io/stress_cd/stress_cd.c
+> +++ b/testcases/kernel/io/stress_cd/stress_cd.c
+> @@ -1,6 +1,7 @@
+>  /*
+> - *
+>   *   Copyright (c) International Business Machines  Corp., 2001
+> + *    06/20/2001 Robbie Williamson (robbiew@us.ibm.com)
+> + *    11/08/2001 Manoj Iyer (manjo@austin.ibm.com)
+>   *
+>   *   This program is free software;  you can redistribute it and/or modify
+>   *   it under the terms of the GNU General Public License as published by
+> @@ -13,37 +14,19 @@
+>   *   the GNU General Public License for more details.
+>   *
+>   *   You should have received a copy of the GNU General Public License
+> - *   along with this program;  if not, write to the Free Software
+> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> + *   along with this program;  if not, write to the Free Software Foundation,
+> + *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   */
+>  
+>  /*
+> - *  FILE        : stress_cd.c
+> - *  DESCRIPTION : creates multiple read threads on the cdrom device.
+> - *  HISTORY:
+> - *    06/20/2001 Robbie Williamson (robbiew@us.ibm.com)
+> - *      -Ported
+> - *    11/08/2001 Manoj Iyer (manjo@austin.ibm.com)
+> - *      - Modified.
+> - *	- removed compiler warnings.
+> - *	- Added #include <sys/types.h>, #include <unistd.h> and
+> - *	  #include <string.h>
+> - *	- print unsigned long correctly in printf() use "lx" instead of "x"
+> - *	- added missing parameter in usage message.
+> - *
+> -+--------------------------------------------------------------------+
+> -|                                                                    |
+> -| Usage:        cdtest [-n n] [-f file] [-m xx] [-d]                 |
+> -|                                                                    |
+> -|               where:                                               |
+> -|                 -n n     Number of threads to create               |
+> -|                 -f file  File or device to read from               |
+> -|                 -m xx    Number of MB to read from file            |
+> -|                 -b xx    Number of bytes to read from file         |
+> -|                 -d       Enable debugging messages                 |
+> -|                                                                    |
+> -|                                                                    |
+> -+-------------------------------------------------------------------*/
+> + * Usage:	stress_cd [-n n] [-f file] [-m xx] [-d]
+> + *		where:
+> + *		  -n n     Number of threads to create
+> + *		  -f file  File or device to read from
+> + *		  -m xx    Number of MB to read from file
+> + *		  -b xx    Number of bytes to read from file
+> + *		  -d       Enable debugging messages
+> + */
+>  
+>  #include <pthread.h>
+>  #include <fcntl.h>
+> @@ -55,46 +38,21 @@
+>  #include <unistd.h>
+>  #include <string.h>
+>  
+> -/* Defines
+> - *
+> - * DEFAULT_NUM_THREADS: Default number of threads to create,
+> - * user can specifiy with [-n] command line option.
+> - *
+> - * USAGE: usage statement
+> - */
+> -#define DEFAULT_NUM_THREADS 	10
+> -#define DEFAULT_NUM_BYTES   	1024*1024*100	/* 100Mb */
+> -#define DEFAULT_FILE        	"/dev/cdrom"
+> +#define DEFAULT_NUM_THREADS	10
+> +#define DEFAULT_NUM_BYTES	(1024*1024*100)	/* 100Mb */
+> +#define DEFAULT_FILE		"/dev/cdrom"
+>  
+> -/*
+> - * Function prototypes
+> - *
+> - * sys_error (): System error message function
+> - * error (): Error message function
+> - * parse_args (): Parses command line arguments
+> - */
+>  static void sys_error(const char *, int);
+> -static void error(const char *, int);
+>  static void parse_args(int, char **);
+> -void *thread(int *);
+> -int read_data(int, unsigned long);
+> +static void *thread(int *);
+> +static int read_data(int, unsigned long *);
+> +
+> +static int num_threads = DEFAULT_NUM_THREADS;
+> +static int num_bytes = DEFAULT_NUM_BYTES;
+> +static char *file = DEFAULT_FILE;
+> +static unsigned long checksum;
+> +static int debug;
+>  
+> -/*
+> - * Global Variables
+> - */
+> -int num_threads = DEFAULT_NUM_THREADS;
+> -int num_bytes = DEFAULT_NUM_BYTES;
+> -char *file = DEFAULT_FILE;
+> -unsigned long checksum = 0;
+> -int debug = 0;
+> -
+> -/*-------------------------------------------------------------------+
+> -|                               main ()                              |
+> -| ================================================================== |
+> -|                                                                    |
+> -| Function:  Main program  (see prolog for more details)             |
+> -|                                                                    |
+> -+-------------------------------------------------------------------*/
+>  int main(int argc, char **argv)
+>  {
+>  	pthread_attr_t attr;
+> @@ -106,17 +64,16 @@ int main(int argc, char **argv)
+>  	parse_args(argc, argv);
+>  
+>  	/* Read data from CDROM & compute checksum */
+> -	read_data(0, checksum);
+> +	read_data(0, &checksum);
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/dhcpd/dhcpd_tests.sh |  148 +++++++++++++++++++++-----------
- 1 files changed, 98 insertions(+), 50 deletions(-)
+Nice catch :)
 
-diff --git a/testcases/network/dhcpd/dhcpd_tests.sh b/testcases/network/dhcpd/dhcpd_tests.sh
-index ad95875..c4c2c21 100755
---- a/testcases/network/dhcpd/dhcpd_tests.sh
-+++ b/testcases/network/dhcpd/dhcpd_tests.sh
-@@ -17,6 +17,7 @@
- # Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- #
- # Author:       Manoj Iyer, manjo@mail.utexas.edu
-+# Author:       Alexey Kodanev alexey.kodanev@oracle.com
- 
- TST_CLEANUP=cleanup
- TST_TOTAL=1
-@@ -28,42 +29,62 @@ stop_dhcp()
- {
- 	if [ "$(pgrep -x dhcpd)" ]; then
- 		tst_resm TINFO "stopping DHCP server"
--		pkill -x dhcpd || tst_brkm "failed to stop DHCP server"
-+		pkill -x dhcpd
-+		sleep 1
- 	fi
- }
- 
--# alias ethX to ethX:1 with IP 10.1.1.12
--init()
-+setup_conf()
- {
--	tst_require_root
--	tst_tmpdir
--	tst_check_cmds cat dhcpd awk ip pgrep pkill diff
--
--	stop_dhcp
--
- 	cat > tst_dhcpd.conf <<-EOF
-+	ddns-update-style none;
-+	update-static-leases off;
- 	subnet 10.1.1.0 netmask 255.255.255.0 {
--        # default gateway
--		range 10.1.1.12 10.1.1.12;
--		default-lease-time 600;
--		max-lease-time 1200;
--		option routers 10.1.1.1;
--		option subnet-mask
--		255.255.255.0;
--		option
--		domain-name-servers
--		10.1.1.1;
--		option
--		domain-name
--		"dhcptest.net";
-+		range 10.1.1.100 10.1.1.100;
-+		default-lease-time 60;
-+		max-lease-time 60;
- 	}
--	ddns-update-style interim;
- 	EOF
-+}
- 
--	if [ $? -ne 0 ]; then
--		tst_brkm TBROK "unable to create temp file: tst_dhcpd.conf"
-+setup_conf6()
-+{
-+	cat > tst_dhcpd.conf <<-EOF
-+	ddns-update-style none;
-+	update-static-leases off;
-+	subnet6 fd00:1:1:2::/64 {
-+		range6 fd00:1:1:2::100 fd00:1:1:2::100;
-+		default-lease-time 60;
-+		max-lease-time 60;
-+	}
-+	EOF
-+}
-+
-+init()
-+{
-+	tst_require_root
-+	tst_check_cmds cat dhcpd awk ip pgrep pkill dhclient
-+
-+	dummy_loaded=
-+	lsmod | grep -q '^dummy '
-+	if [ $? -eq 0 ]; then
-+		dummy_loaded=1
-+	else
-+		modprobe dummy || tst_brkm TCONF "failed to find dummy module"
- 	fi
- 
-+	tst_resm TINFO "create dummy interface"
-+	ip li add $iface type dummy || \
-+		tst_brkm TBROK "failed to add dummy $iface"
-+
-+	ip li set up $iface || tst_brkm TBROK "failed to bring $iface up"
-+
-+	tst_tmpdir
-+
-+	stop_dhcp
-+
-+	setup_conf$TST_IPV6
-+
- 	if [ -f /etc/dhcpd.conf ]; then
- 		DHCPD_CONF="/etc/dhcpd.conf"
- 	elif [ -f /etc/dhcp/dhcpd.conf ]; then
-@@ -78,58 +99,85 @@ init()
- 	mv tst_dhcpd.conf $DHCPD_CONF
- 	[ $? -ne 0 ] && tst_brkm TBROK "failed to create dhcpd.conf"
- 
--	tst_resm TINFO "add $iface:1 10.1.1.12/24 to create private network"
--	ip addr add 10.1.1.12/24 dev $iface label $iface:1
--	if [ $? -ne 0 ]; then
--		tst_brkm TBROK "failed to add alias"
-+	dhclient_lease="/var/lib/dhclient/dhclient${TST_IPV6}.leases"
-+	if [ -f $dhclient_lease ]; then
-+		tst_resm TINFO "backup dhclient${TST_IPV6}.leases"
-+		mv $dhclient_lease .
- 	fi
-+
-+	tst_resm TINFO "add $ip_addr to $iface to create private network"
-+	ip addr add $ip_addr dev $iface || \
-+		tst_brkm TBROK "failed to add ip address"
- }
- 
- cleanup()
- {
- 	stop_dhcp
-+
-+	pkill -f "dhclient -$ipv $iface"
-+
- 	[ -f dhcpd.conf ] && mv dhcpd.conf $DHCPD_CONF
- 
--	ip addr show $iface | grep "$iface:1" > /dev/null &&
--		ip addr del 10.1.1.12/24 dev $iface label $iface:1
-+	# restore dhclient leases
-+	rm -f $dhclient_lease
-+	[ -f "dhclient${TST_IPV6}.leases" ] && \
-+		mv dhclient${TST_IPV6}.leases $dhclient_lease
-+
-+	if [ "$dummy_loaded" ]; then
-+		ip li del $iface
-+	else
-+		rmmod dummy
-+	fi
- 
- 	tst_rmdir
- }
- 
- test01()
- {
--	tst_resm TINFO "start/stop DHCP server"
-+	tst_resm TINFO "starting DHCPv${ipv} server on $iface"
-+	dhcpd -$ipv $iface > tst_dhcpd.err 2>&1
-+	if [ $? -ne 0 ]; then
-+		cat tst_dhcpd.err
-+		tst_brkm TBROK "Failed to start dhcpd"
-+	fi
- 
--	cat > tst_dhcpd.exp <<-EOF
--	Sending on   Socket/fallback/fallback-net
--	EOF
--	[ $? -ne 0 ] && tst_brkm TBROK "unable to create expected results"
-+	sleep 1
- 
--	tst_resm TINFO "starting DHCP server"
--	dhcpd > tst_dhcpd.err 2>&1
--	if [ $? -ne 0 ]; then
-+	if [ "$(pgrep 'dhcpd -$ipv $iface')" ]; then
- 		cat tst_dhcpd.err
- 		tst_brkm TBROK "Failed to start dhcpd"
- 	fi
- 
--	cat tst_dhcpd.err | tail -n 1 > tst_dhcpd.out
--	[ $? -ne 0 ] && tst_brkm TBROK "unable to create output file"
-+	tst_resm TINFO "starting dhclient -${ipv} $iface"
-+	dhclient -$ipv $iface || \
-+		tst_brkm TBROK "dhclient failed"
- 
--	diff -iwB tst_dhcpd.out tst_dhcpd.exp
--	if [ $? -ne 0 ]; then
--		tst_resm TFAIL "failed to start dhcpd"
--		return
-+	# check that we get configured ip address
-+	ip addr show $iface | grep $ip_addr_check > /dev/null
-+	if [ $? -eq 0 ]; then
-+		tst_resm TPASS "'$ip_addr_check' configured by DHCPv$ipv"
-+	else
-+		tst_resm TFAIL "'$ip_addr_check' not configured by DHCPv$ipv"
- 	fi
- 
- 	stop_dhcp
--
--	tst_resm TPASS "dhcpd started and stopped successfully"
- }
- 
--iface=$(tst_iface)
-+tst_read_opts $*
- 
--init
-+iface="ltp_dummy"
-+ipv=${TST_IPV6:-"4"}
- 
--test01
-+if [ $TST_IPV6 ]; then
-+	ip_addr="fd00:1:1:2::12/64"
-+	ip_addr_check="fd00:1:1:2::100/64"
-+else
-+	ip_addr="10.1.1.12/24"
-+	ip_addr_check="10.1.1.100/24"
-+fi
-+
-+trap "tst_brkm TBROK 'test interrupted'" INT
- 
-+init
-+test01
- tst_exit
+So the testcases wasn't checking the checksums at all...
+
+>  	if (debug)
+> -		printf("Thread [main] checksum: %-#12lx \n", checksum);
+> +		printf("\tThread [main] checksum: %-#12lx\n", checksum);
+
+What is the use for the '\t' here? As far as I can see the printed
+strings in the testcase ends up with '\n' anyway and so the printed
+statement starts at first column anyway.
+
+>  	if (pthread_attr_init(&attr))
+>  		sys_error("pthread_attr_init failed", __LINE__);
+>  	if (pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE))
+>  		sys_error("pthread_attr_setdetachstate failed", __LINE__);
+>  
+> -	/* Create num_thread threads... */
+> -	printf("\tThread [main] Creating %d threads\n", num_threads);
+> +	printf("Thread [main] Creating %d threads\n", num_threads);
+>  
+>  	array = malloc(sizeof(pthread_t) * num_threads);
+>  	arg = malloc(sizeof(int) * num_threads);
+
+Can we also get rid of allocations and decleare the arrays as:
+
+pthread_t array[num_threads];
+
+instead?
+
+> @@ -126,15 +83,15 @@ int main(int argc, char **argv)
+>  		if (debug)
+>  			printf("\tThread [main]: creating thread %d\n", i + 1);
+>  		arg[i] = i + 1;
+> -		if (pthread_create
+> -		    ((pthread_t *) & array[i], &attr, (void *)thread,
+> -		     (void *)&arg[i])) {
+> -			if (errno == EAGAIN)
+> +		if (pthread_create((pthread_t *)&array[i], &attr,
+> +				   (void *)thread, (void *)&arg[i])) {
+> +			if (errno == EAGAIN) {
+>  				fprintf(stderr,
+> -					"\tThread [main]: unable to create thread %d\n",
+> -					i);
+> -			else
+> +					"\tThread [main]: unable to create "
+> +					"thread %d\n", i);
+> +			} else {
+>  				sys_error("pthread_create failed", __LINE__);
+> +			}
+>  		}
+>  		if (debug)
+>  			printf("\tThread [main]: created thread %d\n", i + 1);
+> @@ -144,8 +101,7 @@ int main(int argc, char **argv)
+>  
+>  	for (i = 0; i < num_threads; i++) {
+>  		void *exit_value;
+> -		printf("\tThread [main]: waiting for thread: %d\n", i + 1);
+> -		/*if (pthread_join ((pthread_t*) array [i], (void **) &exit_value)) */
+> +		printf("Thread [main]: waiting for thread: %d\n", i + 1);
+>  		if (pthread_join(array[i], &exit_value))
+>  			sys_error("pthread_join failed", __LINE__);
+>  
+> @@ -157,25 +113,16 @@ int main(int argc, char **argv)
+>  	free(array);
+>  	free(arg);
+
+...
+
+> -	/* One or more of the threads did not complete sucessfully! */
+>  	if (rc != 0) {
+>  		printf("test failed!\n");
+>  		exit(-1);
+> +	} else {
+> +		printf("Thread [main] All threads completed successfully...\n");
+> +		exit(0);
+>  	}
+> -
+> -	/* Program completed successfully... */
+> -	printf("\tThread [main] All threads completed successfully...\n");
+> -	exit(0);
+
+There is no need for this particular change.
+
+If we enter the if block we will exit at exit(-1) otherwise we continue
+to the end of the function.
+
+>  }
+>  
+> -/*-------------------------------------------------------------------+
+> -|                               thread ()                            |
+> -| ================================================================== |
+> -|                                                                    |
+> -| Function:  ...                                                     |
+> -|                                                                    |
+> -+-------------------------------------------------------------------*/
+> -void *thread(int *parm)
+> +static void *thread(int *parm)
+>  {
+>  	int num = *parm;
+>  	unsigned long cksum = 0;
+> @@ -183,7 +130,7 @@ void *thread(int *parm)
+>  	if (debug)
+>  		printf("\tThread [%d]: begin\n", num);
+>  
+> -	read_data(num, cksum);
+> +	read_data(num, &cksum);
+>  	if (checksum != cksum) {
+>  		fprintf(stderr, "\tThread [%d]: checksum mismatch!\n", num);
+>  		pthread_exit((void *)-1);
+> @@ -193,17 +140,9 @@ void *thread(int *parm)
+>  		printf("\tThread [%d]: done\n", num);
+>  
+>  	pthread_exit(NULL);
+> -	return (NULL);
+>  }
+>  
+> -/*-------------------------------------------------------------------+
+> -|                           read_data ()                             |
+> -| ================================================================== |
+> -|                                                                    |
+> -| Function:  Reads data from the CDROM                               |
+> -|                                                                    |
+> -+-------------------------------------------------------------------*/
+> -int read_data(int num, unsigned long cksum)
+> +static int read_data(int num, unsigned long *cksum)
+>  {
+>  	int fd;
+>  	const int bufSize = 1024;
+> @@ -223,23 +162,25 @@ int read_data(int num, unsigned long cksum)
+>  
+>  	lseek(fd, 1024 * 36, SEEK_SET);
+>  	while (bytes_read < num_bytes) {
+> -		if ((n = read(fd, buffer, bufSize)) < 0)
+> +		n = read(fd, buffer, bufSize);
+> +		if (n < 0)
+>  			sys_error("read failed", __LINE__);
+> +		else if (n == 0)
+> +			sys_error("End of file", __LINE__);
+>  		bytes_read += n;
+>  
+>  		for (p = buffer; p < buffer + n; p++)
+> -			cksum += *p;
+> +			*cksum += *p;
+>  
+>  		if (debug)
+> -			printf
+> -			    ("\tThread [%d] bytes read: %5d checksum: %-#12lx\n",
+> -			     num, bytes_read, cksum);
+> +			printf("\tThread [%d] bytes read: %5d checksum: "
+> +			       "%-#12lx\n", num, bytes_read, *cksum);
+>  	}
+>  	free(buffer);
+>  
+>  	if (debug)
+>  		printf("\tThread [%d] bytes read: %5d checksum: %-#12lx\n",
+> -		       num, bytes_read, cksum);
+> +		       num, bytes_read, *cksum);
+>  
+>  	if (close(fd) < 0)
+>  		sys_error("close failed", __LINE__);
+> @@ -250,20 +191,6 @@ int read_data(int num, unsigned long cksum)
+>  	return (0);
+>  }
+>  
+> -/*-------------------------------------------------------------------+
+> -|                             parse_args ()                          |
+> -| ================================================================== |
+> -|                                                                    |
+> -| Function:  Parse the command line arguments & initialize global    |
+> -|            variables.                                              |
+> -|                                                                    |
+> -| Updates:   (command line options)                                  |
+> -|                                                                    |
+> -|            [-n] num   number of threads to create                  |
+> -|                                                                    |
+> -|            [-d]       enable debugging messages                    |
+> -|                                                                    |
+> -+-------------------------------------------------------------------*/
+>  static void parse_args(int argc, char **argv)
+>  {
+>  	int i;
+> @@ -297,6 +224,10 @@ static void parse_args(int argc, char **argv)
+>  		errflag++;
+>  		fprintf(stderr, "ERROR: num_bytes must be greater than 0");
+>  	}
+> +	if (num_threads < 0) {
+> +		errflag++;
+> +		fprintf(stderr, "ERROR: num_threads must be greater than 0");
+> +	}
+>  
+>  	if (errflag) {
+>  		fprintf(stderr, "\nUsage: %s"
+> @@ -311,30 +242,8 @@ static void parse_args(int argc, char **argv)
+>  	}
+>  }
+>  
+> -/*-------------------------------------------------------------------+
+> -|                             sys_error ()                           |
+> -| ================================================================== |
+> -|                                                                    |
+> -| Function:  Creates system error message and calls error ()         |
+> -|                                                                    |
+> -+-------------------------------------------------------------------*/
+>  static void sys_error(const char *msg, int line)
+>  {
+> -	char syserr_msg[256];
+> -
+> -	sprintf(syserr_msg, "%s: %s\n", msg, strerror(errno));
+> -	error(syserr_msg, line);
+> -}
+> -
+> -/*-------------------------------------------------------------------+
+> -|                               error ()                             |
+> -| ================================================================== |
+> -|                                                                    |
+> -| Function:  Prints out message and exits...                         |
+> -|                                                                    |
+> -+-------------------------------------------------------------------*/
+> -static void error(const char *msg, int line)
+> -{
+> -	fprintf(stderr, "ERROR [line: %s] \n", msg);
+> +	fprintf(stderr, "ERROR [%d: %s: %s]\n", line, msg, strerror(errno));
+>  	exit(-1);
+>  }
+> -- 
+> 1.9.3
+> 
+> 
+> 
+> 
+> ------------------------------------------------------------------------------
+> Comprehensive Server Monitoring with Site24x7.
+> Monitor 10 servers for $9/Month.
+> Get alerted through email, SMS, voice calls or mobile push notifications.
+> Take corrective actions from your mobile device.
+> http://p.sf.net/sfu/Zoho
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://pubads.g.doubleclick.net/gampad/clk?id=154624111&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
