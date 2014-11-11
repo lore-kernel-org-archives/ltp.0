@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xuw@redhat.com>) id 1Xo34w-0006s2-DQ
-	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 04:29:18 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xo34v-00020m-4M
-	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 04:29:18 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id sAB4TAGE018703
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Nov 2014 23:29:10 -0500
-From: xuw@redhat.com
-Date: Tue, 11 Nov 2014 12:29:06 +0800
-Message-Id: <1415680146-9562-1-git-send-email-xuw@redhat.com>
-Subject: [LTP] [PATCH] tst_mkfs: ignorce SIGCHLD for calling system function
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XoAQJ-00016e-Ds
+	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 12:19:51 +0000
+Date: Tue, 11 Nov 2014 13:19:13 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141111121913.GB29189@rei>
+References: <a7fbbc77524700a50177e2baadc3c03dbf1fe67b.1415635901.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <a7fbbc77524700a50177e2baadc3c03dbf1fe67b.1415635901.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 1/2 v5] controllers/cpuset: update to use test.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,45 +21,23 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: fs-qe-dev@redhat.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: George Wang <xuw@redhat.com>
+Hi!
+> Remove useless returns and ret code checking.
+> 
+> cpuset_memory_spread_testset.sh:
+>  - treat node with not enough memory as TCONF, not failure
 
-function(3) system will raise the SIGCHILD signal to parent process,
-which should cause the test case failed(especially to btrfs). ignorce
-it before calling the system function and restore it after the calling.
+Looks good to me, acked.
 
-Signed-off-by: George Wang <xuw@redhat.com>
----
- lib/tst_mkfs.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index 5eb3392..9a63863 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -45,11 +45,13 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
- 		/*
- 		 * The -f option was added to btrfs-progs v3.12
- 		 */
-+		void *old_handler = signal(SIGCHLD, SIG_DFL);	
- 		if (system("mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null") == 0) {
- 			tst_resm(TINFO, "Appending '-f' flag to mkfs.%s",
- 				fs_type);
- 			argv[pos++] = "-f";
- 		}
-+		signal(SIGCHLD, old_handler);
- 	}
- 
- 	if (fs_opts) {
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Comprehensive Server Monitoring with Site24x7.
