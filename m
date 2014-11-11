@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XtuBO-0003sV-FT
-	for ltp-list@lists.sourceforge.net; Thu, 27 Nov 2014 08:12:10 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XtuBN-00015D-4f
-	for ltp-list@lists.sourceforge.net; Thu, 27 Nov 2014 08:12:10 +0000
-Message-ID: <5476DCA3.5000701@cn.fujitsu.com>
-Date: Thu, 27 Nov 2014 16:11:15 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XoC8q-0005Qs-1D
+	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 14:09:56 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 1D537AB07
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 11 Nov 2014 14:09:48 +0000 (UTC)
+Date: Tue, 11 Nov 2014 15:09:18 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141111140917.GB32196@rei>
+References: <1415639518-4906-1-git-send-email-jack@suse.cz>
+	<20141111121345.GA29189@rei> <20141111135224.GE10456@quack.suse.cz>
 MIME-Version: 1.0
-References: <20141113071324.GA2809@localhost.localdomain>	<20141126125336.GA1062@rei>	<20141127024241.GA16235@localhost.localdomain>	<54769527.4020603@cn.fujitsu.com>
-	<20141127074529.GB16235@localhost.localdomain>
-In-Reply-To: <20141127074529.GB16235@localhost.localdomain>
-Subject: Re: [LTP] NUMA system and get_a_numa_node()
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <20141111135224.GE10456@quack.suse.cz>
+Subject: Re: [LTP] [PATCH v2] syscalls/fanotify: Verify that inode ignore
+ masks are properly reflected
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,88 +30,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Han Pingtian <hanpt@linux.vnet.ibm.com>
+To: Jan Kara <jack@suse.cz>
 Cc: ltp-list@lists.sourceforge.net
 
-On 11/27/2014 03:45 PM, Han Pingtian wrote:
-> On Thu, Nov 27, 2014 at 11:06:15AM +0800, Wanlong Gao wrote:
->> On 11/27/2014 10:42 AM, Han Pingtian wrote:
->>> On Wed, Nov 26, 2014 at 01:53:36PM +0100, Cyril Hrubis wrote:
->>>> Hi!
->>>>> We have a system which only has one NUMA node. When trying to run ksm02
->>>>> on it, becase the code calling get_allowed_nodes() with a count 2 as
->>>>> below:
->>>>>
->>>>>  972 /* Warning: *DO NOT* use this function in child */
->>>>>  973 unsigned int get_a_numa_node(void (*cleanup_fn) (void))
->>>>>  974 {              
->>>>>  975         unsigned int nd1, nd2;
->>>>>  976         int ret; 
->>>>>  977                        
->>>>>  978         ret = get_allowed_nodes(0, 2, &nd1, &nd2);
->>>>>  979         switch (ret) { 
->>>>>  980         case 0:
->>>>>  981                 break;
->>>>>  982         case -3:
->>>>>  983                 tst_brkm(TCONF, cleanup_fn, "requires a NUMA system.");
->>>>>
->>>>> it always failed with "requires a NUMA system.".
->>>>>
->>>>> I think a NUMA system may have only one node, right? If so, could we
->>>>> change the count to 1?
->>>>
->>>> Hmm, are you sure that the testcases are actually applicable to a system
->>>> with only one node?
->>>>
->>>> Because what the testcases do in the setup is to write 1 to
->>>> /sys/kernel/mm/ksm/merge_across_nodes so I would expect that the test
->>>> needs at least two nodes...
->>>>
->>> I think if there is only one NUMA node, then this is a special case for
->>> this testcase, it'll test if set "merge_across_nodes" to 1, any problem
->>> will be triggered.
->>>
->>> I have tried to change the node count to 1 in get_allowed_nodes() and
->>> recompiled ksm02. It works successfully.
->>>
->>
->>
->> Do you think ONLY ONE NODE can be called NUMA?
->>
->> http://en.wikipedia.org/wiki/Non-uniform_memory_access
->>
-> 
-> I think it's not a problem to run the testcase on a non-NUMA system, if
-> we take it as a special case?
+Hi!
+> > > Verify that when inode has an ignore mask set, it is properly reflected
+> > > when notifying a mountpoint. The test verifies fix "fanotify: Fix notification
+> > > of groups with inode & mount marks" in the Linux kernel.
+> > > 
+> > > Signed-off-by: Jan Kara <jack@suse.cz>
+> > 
+> > Pushed with small change to get rid of another signed vs unsigned
+> > comparsion warning.
+>   Yeah. BTW those warnings are pretty annoying and the number of false
+> positives is IHMO too large for the warning to be useful...
 
-It's meaningless, the "special case" you said is already there, it's ksm01.
+Well they come with the gcc -W flag (nowadays called -Wextra). We may be
+able to disable these with -Wno-sign-compare but don't want to play
+whack a mole trying to figure out which warnings are useful. I doubt
+that this is worth the effort and since we do not use -Werror these are
+just mildly annoying. Or do you have a better idea?
 
-Thanks,
-Wanlong Gao
-
-> 
-> Thanks.
-> 
-> 
-> ------------------------------------------------------------------------------
-> Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-> from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-> with Interactivity, Sharing, Native Excel Exports, App Integration & more
-> Get technology previously reserved for billion-dollar corporations, FREE
-> http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
+Comprehensive Server Monitoring with Site24x7.
+Monitor 10 servers for $9/Month.
+Get alerted through email, SMS, voice calls or mobile push notifications.
+Take corrective actions from your mobile device.
+http://pubads.g.doubleclick.net/gampad/clk?id=154624111&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
