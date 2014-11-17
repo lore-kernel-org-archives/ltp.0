@@ -1,17 +1,37 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XoD4G-0006Ea-E1
-	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 15:09:16 +0000
-Date: Tue, 11 Nov 2014 16:08:36 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141111150836.GC32196@rei>
-References: <1413554791.5750.27.camel@G08JYZSD130126.localdomain>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <poornima.nayak@in.ibm.com>) id 1XqPIr-0006He-1v
+	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 16:37:25 +0000
+Received: from e28smtp09.in.ibm.com ([122.248.162.9])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XqPIo-0000M6-Eq
+	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 16:37:25 +0000
+Received: from /spool/local
+	by e28smtp09.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <poornima.nayak@in.ibm.com>; 
+	Mon, 17 Nov 2014 22:07:14 +0530
+Received: from d28relay04.in.ibm.com (d28relay04.in.ibm.com [9.184.220.61])
+	by d28dlp03.in.ibm.com (Postfix) with ESMTP id 0A9A11258044
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 17 Nov 2014 22:07:18 +0530 (IST)
+Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
+	by d28relay04.in.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	sAHGbirE54919188
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Nov 2014 22:07:44 +0530
+Received: from d28av04.in.ibm.com (localhost [127.0.0.1])
+	by d28av04.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	sAHGbAPv026549
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Nov 2014 22:07:10 +0530
+In-Reply-To: <1416227892.10929.1.camel@G08JYZSD130126.localdomain>
+References: <1416227892.10929.1.camel@G08JYZSD130126.localdomain>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1413554791.5750.27.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH] stress_cd: Cleanup
+Message-ID: <OF0609F637.69F59023-ON65257D93.005AC8D2-65257D93.005B4A77@in.ibm.com>
+From: Poornima Nayak <Poornima.Nayak@in.ibm.com>
+Date: Mon, 17 Nov 2014 22:03:11 +0530
+Subject: Re: [LTP] [PATCH 1/5] ima_setup.sh: Some cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,392 +41,506 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3563270405159243711=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hi!
-> diff --git a/testcases/kernel/io/stress_cd/stress_cd.c b/testcases/kernel/io/stress_cd/stress_cd.c
-> index 0209a1f..6e13afa 100644
-> --- a/testcases/kernel/io/stress_cd/stress_cd.c
-> +++ b/testcases/kernel/io/stress_cd/stress_cd.c
-> @@ -1,6 +1,7 @@
->  /*
-> - *
->   *   Copyright (c) International Business Machines  Corp., 2001
-> + *    06/20/2001 Robbie Williamson (robbiew@us.ibm.com)
-> + *    11/08/2001 Manoj Iyer (manjo@austin.ibm.com)
->   *
->   *   This program is free software;  you can redistribute it and/or modify
->   *   it under the terms of the GNU General Public License as published by
-> @@ -13,37 +14,19 @@
->   *   the GNU General Public License for more details.
->   *
->   *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + *   along with this program;  if not, write to the Free Software Foundation,
-> + *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
->   */
->  
->  /*
-> - *  FILE        : stress_cd.c
-> - *  DESCRIPTION : creates multiple read threads on the cdrom device.
-> - *  HISTORY:
-> - *    06/20/2001 Robbie Williamson (robbiew@us.ibm.com)
-> - *      -Ported
-> - *    11/08/2001 Manoj Iyer (manjo@austin.ibm.com)
-> - *      - Modified.
-> - *	- removed compiler warnings.
-> - *	- Added #include <sys/types.h>, #include <unistd.h> and
-> - *	  #include <string.h>
-> - *	- print unsigned long correctly in printf() use "lx" instead of "x"
-> - *	- added missing parameter in usage message.
-> - *
-> -+--------------------------------------------------------------------+
-> -|                                                                    |
-> -| Usage:        cdtest [-n n] [-f file] [-m xx] [-d]                 |
-> -|                                                                    |
-> -|               where:                                               |
-> -|                 -n n     Number of threads to create               |
-> -|                 -f file  File or device to read from               |
-> -|                 -m xx    Number of MB to read from file            |
-> -|                 -b xx    Number of bytes to read from file         |
-> -|                 -d       Enable debugging messages                 |
-> -|                                                                    |
-> -|                                                                    |
-> -+-------------------------------------------------------------------*/
-> + * Usage:	stress_cd [-n n] [-f file] [-m xx] [-d]
-> + *		where:
-> + *		  -n n     Number of threads to create
-> + *		  -f file  File or device to read from
-> + *		  -m xx    Number of MB to read from file
-> + *		  -b xx    Number of bytes to read from file
-> + *		  -d       Enable debugging messages
-> + */
->  
->  #include <pthread.h>
->  #include <fcntl.h>
-> @@ -55,46 +38,21 @@
->  #include <unistd.h>
->  #include <string.h>
->  
-> -/* Defines
-> - *
-> - * DEFAULT_NUM_THREADS: Default number of threads to create,
-> - * user can specifiy with [-n] command line option.
-> - *
-> - * USAGE: usage statement
-> - */
-> -#define DEFAULT_NUM_THREADS 	10
-> -#define DEFAULT_NUM_BYTES   	1024*1024*100	/* 100Mb */
-> -#define DEFAULT_FILE        	"/dev/cdrom"
-> +#define DEFAULT_NUM_THREADS	10
-> +#define DEFAULT_NUM_BYTES	(1024*1024*100)	/* 100Mb */
-> +#define DEFAULT_FILE		"/dev/cdrom"
->  
-> -/*
-> - * Function prototypes
-> - *
-> - * sys_error (): System error message function
-> - * error (): Error message function
-> - * parse_args (): Parses command line arguments
-> - */
->  static void sys_error(const char *, int);
-> -static void error(const char *, int);
->  static void parse_args(int, char **);
-> -void *thread(int *);
-> -int read_data(int, unsigned long);
-> +static void *thread(int *);
-> +static int read_data(int, unsigned long *);
-> +
-> +static int num_threads = DEFAULT_NUM_THREADS;
-> +static int num_bytes = DEFAULT_NUM_BYTES;
-> +static char *file = DEFAULT_FILE;
-> +static unsigned long checksum;
-> +static int debug;
->  
-> -/*
-> - * Global Variables
-> - */
-> -int num_threads = DEFAULT_NUM_THREADS;
-> -int num_bytes = DEFAULT_NUM_BYTES;
-> -char *file = DEFAULT_FILE;
-> -unsigned long checksum = 0;
-> -int debug = 0;
+This is a multipart message in MIME format.
+--===============3563270405159243711==
+Content-Type: multipart/alternative;
+	boundary="=_alternative 005B4A7365257D93_="
+
+This is a multipart message in MIME format.
+--=_alternative 005B4A7365257D93_=
+Content-Type: text/plain; charset="US-ASCII"
+
+Zeng Linggang <zenglg.jy@cn.fujitsu.com> wrote on 11/17/2014 06:08:12 PM:
+
+> Zeng Linggang <zenglg.jy@cn.fujitsu.com> 
+> 11/17/2014 06:08 PM
+> 
+> To
+> 
+> ltp-list <ltp-list@lists.sourceforge.net>
+> 
+> cc
+> 
+> Subject
+> 
+> [LTP] [PATCH 1/5] ima_setup.sh: Some cleanup
+> 
+> * Use 'test.sh'.
+> 
+> * Use 'test_brkm' instead of 'tst_resm TBROK'.
+> 
+> * Use 'tst_tmpdir' and 'tst_rmdir'.
+> 
+> * Delete some unuseful comments.
+> 
+> * Some cleanup.
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>  .../security/integrity/ima/tests/ima_setup.sh      | 85 ++
+> +-------------------
+>  1 file changed, 12 insertions(+), 73 deletions(-)
+> 
+> diff --git a/testcases/kernel/security/integrity/ima/tests/
+> ima_setup.sh 
+b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> index 4013e1f..0ff38d2 100755
+> --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+> @@ -14,8 +14,8 @@
+>  ## for more details.   ##
+>  ##   ##
+>  ## You should have received a copy of the GNU General Public 
+> License          ##
+> -## along with this program;  if not, write to the Free Software   ##
+> -## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 
+> 02110-1301 USA    ##
+> +## along with this program;  if not, write to the Free Software 
+> Foundation,   ##
+> +## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  ##
+>  ##   ##
+> 
+> 
+################################################################################
+>  #
+> @@ -24,13 +24,10 @@
+>  # Description:  setup/cleanup routines for the integrity tests.
+>  #
+>  # Author:       Mimi Zohar, zohar@ibm.vnet.ibm.com
+> -#
+> -# Return        - zero on success
+> -#               - non zero on failure. return value from commands ($RC)
+> 
+> 
+################################################################################
+> +. test.sh
+>  mount_sysfs()
+>  {
 > -
-> -/*-------------------------------------------------------------------+
-> -|                               main ()                              |
-> -| ================================================================== |
-> -|                                                                    |
-> -| Function:  Main program  (see prolog for more details)             |
-> -|                                                                    |
-> -+-------------------------------------------------------------------*/
->  int main(int argc, char **argv)
->  {
->  	pthread_attr_t attr;
-> @@ -106,17 +64,16 @@ int main(int argc, char **argv)
->  	parse_args(argc, argv);
->  
->  	/* Read data from CDROM & compute checksum */
-> -	read_data(0, checksum);
-> +	read_data(0, &checksum);
-
-Nice catch :)
-
-So the testcases wasn't checking the checksums at all...
-
->  	if (debug)
-> -		printf("Thread [main] checksum: %-#12lx \n", checksum);
-> +		printf("\tThread [main] checksum: %-#12lx\n", checksum);
-
-What is the use for the '\t' here? As far as I can see the printed
-strings in the testcase ends up with '\n' anyway and so the printed
-statement starts at first column anyway.
-
->  	if (pthread_attr_init(&attr))
->  		sys_error("pthread_attr_init failed", __LINE__);
->  	if (pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE))
->  		sys_error("pthread_attr_setdetachstate failed", __LINE__);
->  
-> -	/* Create num_thread threads... */
-> -	printf("\tThread [main] Creating %d threads\n", num_threads);
-> +	printf("Thread [main] Creating %d threads\n", num_threads);
->  
->  	array = malloc(sizeof(pthread_t) * num_threads);
->  	arg = malloc(sizeof(int) * num_threads);
-
-Can we also get rid of allocations and decleare the arrays as:
-
-pthread_t array[num_threads];
-
-instead?
-
-> @@ -126,15 +83,15 @@ int main(int argc, char **argv)
->  		if (debug)
->  			printf("\tThread [main]: creating thread %d\n", i + 1);
->  		arg[i] = i + 1;
-> -		if (pthread_create
-> -		    ((pthread_t *) & array[i], &attr, (void *)thread,
-> -		     (void *)&arg[i])) {
-> -			if (errno == EAGAIN)
-> +		if (pthread_create((pthread_t *)&array[i], &attr,
-> +				   (void *)thread, (void *)&arg[i])) {
-> +			if (errno == EAGAIN) {
->  				fprintf(stderr,
-> -					"\tThread [main]: unable to create thread %d\n",
-> -					i);
-> -			else
-> +					"\tThread [main]: unable to create "
-> +					"thread %d\n", i);
-> +			} else {
->  				sys_error("pthread_create failed", __LINE__);
-> +			}
->  		}
->  		if (debug)
->  			printf("\tThread [main]: created thread %d\n", i + 1);
-> @@ -144,8 +101,7 @@ int main(int argc, char **argv)
->  
->  	for (i = 0; i < num_threads; i++) {
->  		void *exit_value;
-> -		printf("\tThread [main]: waiting for thread: %d\n", i + 1);
-> -		/*if (pthread_join ((pthread_t*) array [i], (void **) &exit_value)) */
-> +		printf("Thread [main]: waiting for thread: %d\n", i + 1);
->  		if (pthread_join(array[i], &exit_value))
->  			sys_error("pthread_join failed", __LINE__);
->  
-> @@ -157,25 +113,16 @@ int main(int argc, char **argv)
->  	free(array);
->  	free(arg);
-
-...
-
-> -	/* One or more of the threads did not complete sucessfully! */
->  	if (rc != 0) {
->  		printf("test failed!\n");
->  		exit(-1);
-> +	} else {
-> +		printf("Thread [main] All threads completed successfully...\n");
-> +		exit(0);
->  	}
+>     SYSFS=$(mount 2>/dev/null | awk '$5 == "sysfs" { print $3 }')
+>     if [ "x$SYSFS" = x ] ; then
+> 
+> @@ -38,22 +35,17 @@ mount_sysfs()
+> 
+>        test -d $SYSFS || mkdir -p $SYSFS 2>/dev/null
+>        if [ $? -ne 0 ] ; then
+> -         tst_resm TBROK "Failed to mkdir $SYSFS"
+> -         return 1
+> +         tst_brkm TBROK "Failed to mkdir $SYSFS"
+>        fi
+>        if ! mount -t sysfs sysfs $SYSFS 2>/dev/null ; then
+> -         tst_resm TBROK "Failed to mount $SYSFS"
+> -         return 1
+> +         tst_brkm TBROK "Failed to mount $SYSFS"
+>        fi
+> 
+>     fi
 > -
-> -	/* Program completed successfully... */
-> -	printf("\tThread [main] All threads completed successfully...\n");
-> -	exit(0);
-
-There is no need for this particular change.
-
-If we enter the if block we will exit at exit(-1) otherwise we continue
-to the end of the function.
-
+> -   return 0
 >  }
->  
-> -/*-------------------------------------------------------------------+
-> -|                               thread ()                            |
-> -| ================================================================== |
-> -|                                                                    |
-> -| Function:  ...                                                     |
-> -|                                                                    |
-> -+-------------------------------------------------------------------*/
-> -void *thread(int *parm)
-> +static void *thread(int *parm)
+> 
+>  mount_securityfs()
 >  {
->  	int num = *parm;
->  	unsigned long cksum = 0;
-> @@ -183,7 +130,7 @@ void *thread(int *parm)
->  	if (debug)
->  		printf("\tThread [%d]: begin\n", num);
->  
-> -	read_data(num, cksum);
-> +	read_data(num, &cksum);
->  	if (checksum != cksum) {
->  		fprintf(stderr, "\tThread [%d]: checksum mismatch!\n", num);
->  		pthread_exit((void *)-1);
-> @@ -193,17 +140,9 @@ void *thread(int *parm)
->  		printf("\tThread [%d]: done\n", num);
->  
->  	pthread_exit(NULL);
-> -	return (NULL);
->  }
->  
-> -/*-------------------------------------------------------------------+
-> -|                           read_data ()                             |
-> -| ================================================================== |
-> -|                                                                    |
-> -| Function:  Reads data from the CDROM                               |
-> -|                                                                    |
-> -+-------------------------------------------------------------------*/
-> -int read_data(int num, unsigned long cksum)
-> +static int read_data(int num, unsigned long *cksum)
->  {
->  	int fd;
->  	const int bufSize = 1024;
-> @@ -223,23 +162,25 @@ int read_data(int num, unsigned long cksum)
->  
->  	lseek(fd, 1024 * 36, SEEK_SET);
->  	while (bytes_read < num_bytes) {
-> -		if ((n = read(fd, buffer, bufSize)) < 0)
-> +		n = read(fd, buffer, bufSize);
-> +		if (n < 0)
->  			sys_error("read failed", __LINE__);
-> +		else if (n == 0)
-> +			sys_error("End of file", __LINE__);
->  		bytes_read += n;
->  
->  		for (p = buffer; p < buffer + n; p++)
-> -			cksum += *p;
-> +			*cksum += *p;
->  
->  		if (debug)
-> -			printf
-> -			    ("\tThread [%d] bytes read: %5d checksum: %-#12lx\n",
-> -			     num, bytes_read, cksum);
-> +			printf("\tThread [%d] bytes read: %5d checksum: "
-> +			       "%-#12lx\n", num, bytes_read, *cksum);
->  	}
->  	free(buffer);
->  
->  	if (debug)
->  		printf("\tThread [%d] bytes read: %5d checksum: %-#12lx\n",
-> -		       num, bytes_read, cksum);
-> +		       num, bytes_read, *cksum);
->  
->  	if (close(fd) < 0)
->  		sys_error("close failed", __LINE__);
-> @@ -250,20 +191,6 @@ int read_data(int num, unsigned long cksum)
->  	return (0);
->  }
->  
-> -/*-------------------------------------------------------------------+
-> -|                             parse_args ()                          |
-> -| ================================================================== |
-> -|                                                                    |
-> -| Function:  Parse the command line arguments & initialize global    |
-> -|            variables.                                              |
-> -|                                                                    |
-> -| Updates:   (command line options)                                  |
-> -|                                                                    |
-> -|            [-n] num   number of threads to create                  |
-> -|                                                                    |
-> -|            [-d]       enable debugging messages                    |
-> -|                                                                    |
-> -+-------------------------------------------------------------------*/
->  static void parse_args(int argc, char **argv)
->  {
->  	int i;
-> @@ -297,6 +224,10 @@ static void parse_args(int argc, char **argv)
->  		errflag++;
->  		fprintf(stderr, "ERROR: num_bytes must be greater than 0");
->  	}
-> +	if (num_threads < 0) {
-> +		errflag++;
-> +		fprintf(stderr, "ERROR: num_threads must be greater than 0");
-> +	}
->  
->  	if (errflag) {
->  		fprintf(stderr, "\nUsage: %s"
-> @@ -311,30 +242,8 @@ static void parse_args(int argc, char **argv)
->  	}
->  }
->  
-> -/*-------------------------------------------------------------------+
-> -|                             sys_error ()                           |
-> -| ================================================================== |
-> -|                                                                    |
-> -| Function:  Creates system error message and calls error ()         |
-> -|                                                                    |
-> -+-------------------------------------------------------------------*/
->  static void sys_error(const char *msg, int line)
->  {
-> -	char syserr_msg[256];
 > -
-> -	sprintf(syserr_msg, "%s: %s\n", msg, strerror(errno));
-> -	error(syserr_msg, line);
-> -}
+>     SECURITYFS=$(mount 2>/dev/null | awk '$5 == "securityfs" { print $3 
+}')
+>     if [ "x$SECURITYFS" = x ] ; then
+> 
+> @@ -61,87 +53,34 @@ mount_securityfs()
+> 
+>        test -d $SECURITYFS || mkdir -p $SECURITYFS 2>/dev/null
+>        if [ $? -ne 0 ] ; then
+> -         tst_resm TBROK "Failed to mkdir $SECURITYFS"
+> -         return 1
+> +         tst_brkm TBROK "Failed to mkdir $SECURITYFS"
+>        fi
+>        if ! mount -t securityfs securityfs $SECURITYFS 2>/dev/null ; 
+then
+> -         tst_resm TBROK "Failed to mount $SECURITYFS"
+> -         return 1
+> +         tst_brkm TBROK "Failed to mount $SECURITYFS"
+>        fi
+> 
+>     fi
 > -
-> -/*-------------------------------------------------------------------+
-> -|                               error ()                             |
-> -| ================================================================== |
-> -|                                                                    |
-> -| Function:  Prints out message and exits...                         |
-> -|                                                                    |
-> -+-------------------------------------------------------------------*/
-> -static void error(const char *msg, int line)
-> -{
-> -	fprintf(stderr, "ERROR [line: %s] \n", msg);
-> +	fprintf(stderr, "ERROR [%d: %s: %s]\n", line, msg, strerror(errno));
->  	exit(-1);
+> -   return 0
+> -
 >  }
+> 
+>  setup()
+>  {
+> -   export TST_TOTAL=1
+> -   export TCID="setup"
+> -        export TST_COUNT=0
+> -
+> -   LTPBIN=
+> -   LTPIMA=
+> -
+> -   trap "cleanup" 0
+> -   if [ -z "$TMPDIR" ]; then
+> -      LTPTMP=/tmp
+> -   else
+> -      LTPTMP=${TMPDIR}
+> -   fi
+> -   if [ -z "$LTPBIN" ]; then
+> -      LTPBIN=../../../../../bin
+> -      PATH=$PATH:$LTPBIN
+> -   fi
+> -
+>     tst_require_root
+> 
+> -   # create the temporary directory used by this testcase
+> -   LTPIMA=$LTPTMP/ima
+> -   umask 077
+> -   mkdir $LTPIMA > /dev/null 2>&1 || RC=$?
+> -   if [ $RC -ne 0 ]; then
+> -      tst_resm TBROK "Unable to create temporary directory"
+> -      return $RC
+> -   fi
+> +   tst_tmpdir
+> 
+> -   # mount sysfs if it is not already mounted
+> -   mount_sysfs || RC=$?
+> -   if [ $RC -ne 0 ]; then
+> -      tst_resm TBROK "Cannot mount sysfs"
+> -      return $RC
+> -   fi
+> +   mount_sysfs
+> 
+>     # mount securityfs if it is not already mounted
+> -   mount_securityfs || RC=$?
+> -   if [ $RC -ne 0 ]; then
+> -      tst_resm TBROK "Cannot mount securityfs"
+> -      return $RC
+> -   fi
+> -
+> -   mount
+> +   mount_securityfs
+> 
+>     # IMA must be configured in the kernel
+>     IMA_DIR=$SECURITYFS/ima
+>     if [ ! -d "$IMA_DIR" ]; then
+> -      tst_resm TCONF "IMA not enabled in kernel"
+> -      RC=1
+> +      tst_brkm TCONF "IMA not enabled in kernel"
+>     fi
+> -   return $RC
+>  }
+> 
+> -# Function:     cleanup
+> -#
+> -# Description   - remove temporary files and directories.
+> -#
+> -# Return        - zero on success
+> -#               - non zero on failure. return value from commands ($RC)
+>  cleanup()
+>  {
+> -   tst_resm TINFO "CLEAN: removing $LTPIMA"
+> -   rm -rf "$LTPIMA" || RC=$?
+> -   return $RC
+> +   tst_rmdir
+>  }
+> -
+> -. cmdlib.sh
 > -- 
-> 1.9.3
+> 1.8.3.1
 > 
 > 
 > 
+This patch looks fine
 > 
-> ------------------------------------------------------------------------------
-> Comprehensive Server Monitoring with Site24x7.
-> Monitor 10 servers for $9/Month.
-> Get alerted through email, SMS, voice calls or mobile push notifications.
-> Take corrective actions from your mobile device.
-> http://p.sf.net/sfu/Zoho
+> 
+------------------------------------------------------------------------------
+> Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+> from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+> with Interactivity, Sharing, Native Excel Exports, App Integration & 
+more
+> Get technology previously reserved for billion-dollar corporations, FREE
+> 
+http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
+
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--=_alternative 005B4A7365257D93_=
+Content-Type: text/html; charset="US-ASCII"
+
+
+<br><tt><font size=2>Zeng Linggang &lt;zenglg.jy@cn.fujitsu.com&gt; wrote
+on 11/17/2014 06:08:12 PM:<br>
+<br>
+&gt; Zeng Linggang &lt;zenglg.jy@cn.fujitsu.com&gt; </font></tt>
+<br><tt><font size=2>&gt; 11/17/2014 06:08 PM</font></tt>
+<br><tt><font size=2>&gt; <br>
+&gt; To</font></tt>
+<br><tt><font size=2>&gt; <br>
+&gt; ltp-list &lt;ltp-list@lists.sourceforge.net&gt;</font></tt>
+<br><tt><font size=2>&gt; <br>
+&gt; cc</font></tt>
+<br><tt><font size=2>&gt; <br>
+&gt; Subject</font></tt>
+<br><tt><font size=2>&gt; <br>
+&gt; [LTP] [PATCH 1/5] ima_setup.sh: Some cleanup</font></tt>
+<br><tt><font size=2>&gt; <br>
+&gt; * Use 'test.sh'.<br>
+&gt; <br>
+&gt; * Use 'test_brkm' instead of 'tst_resm TBROK'.<br>
+&gt; <br>
+&gt; * Use 'tst_tmpdir' and 'tst_rmdir'.<br>
+&gt; <br>
+&gt; * Delete some unuseful comments.<br>
+&gt; <br>
+&gt; * Some cleanup.<br>
+&gt; <br>
+&gt; Signed-off-by: Zeng Linggang &lt;zenglg.jy@cn.fujitsu.com&gt;<br>
+&gt; ---<br>
+&gt; &nbsp;.../security/integrity/ima/tests/ima_setup.sh &nbsp; &nbsp;
+&nbsp;| 85 ++<br>
+&gt; +-------------------<br>
+&gt; &nbsp;1 file changed, 12 insertions(+), 73 deletions(-)<br>
+&gt; <br>
+&gt; diff --git a/testcases/kernel/security/integrity/ima/tests/<br>
+&gt; ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh<br>
+&gt; index 4013e1f..0ff38d2 100755<br>
+&gt; --- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh<br>
+&gt; +++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh<br>
+&gt; @@ -14,8 +14,8 @@<br>
+&gt; &nbsp;## for more details. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;##<br>
+&gt; &nbsp;## &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;##<br>
+&gt; &nbsp;## You should have received a copy of the GNU General Public
+<br>
+&gt; License &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;##<br>
+&gt; -## along with this program; &nbsp;if not, write to the Free Software
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ##<br>
+&gt; -## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+<br>
+&gt; 02110-1301 USA &nbsp; &nbsp;##<br>
+&gt; +## along with this program; &nbsp;if not, write to the Free Software
+<br>
+&gt; Foundation, &nbsp; ##<br>
+&gt; +## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+&nbsp; &nbsp; &nbsp; ##<br>
+&gt; &nbsp;## &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;##<br>
+&gt; &nbsp;<br>
+&gt; ################################################################################<br>
+&gt; &nbsp;#<br>
+&gt; @@ -24,13 +24,10 @@<br>
+&gt; &nbsp;# Description: &nbsp;setup/cleanup routines for the integrity
+tests.<br>
+&gt; &nbsp;#<br>
+&gt; &nbsp;# Author: &nbsp; &nbsp; &nbsp; Mimi Zohar, zohar@ibm.vnet.ibm.com<br>
+&gt; -#<br>
+&gt; -# Return &nbsp; &nbsp; &nbsp; &nbsp;- zero on success<br>
+&gt; -# &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; - non zero on
+failure. return value from commands ($RC)<br>
+&gt; &nbsp;<br>
+&gt; ################################################################################<br>
+&gt; +. test.sh<br>
+&gt; &nbsp;mount_sysfs()<br>
+&gt; &nbsp;{<br>
+&gt; -<br>
+&gt; &nbsp; &nbsp; SYSFS=$(mount 2&gt;/dev/null | awk '$5 == &quot;sysfs&quot;
+{ print $3 }')<br>
+&gt; &nbsp; &nbsp; if [ &quot;x$SYSFS&quot; = x ] ; then<br>
+&gt; &nbsp;<br>
+&gt; @@ -38,22 +35,17 @@ mount_sysfs()<br>
+&gt; &nbsp;<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;test -d $SYSFS || mkdir -p $SYSFS 2&gt;/dev/null<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;if [ $? -ne 0 ] ; then<br>
+&gt; - &nbsp; &nbsp; &nbsp; &nbsp; tst_resm TBROK &quot;Failed to mkdir
+$SYSFS&quot;<br>
+&gt; - &nbsp; &nbsp; &nbsp; &nbsp; return 1<br>
+&gt; + &nbsp; &nbsp; &nbsp; &nbsp; tst_brkm TBROK &quot;Failed to mkdir
+$SYSFS&quot;<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;fi<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;if ! mount -t sysfs sysfs $SYSFS 2&gt;/dev/null
+; then<br>
+&gt; - &nbsp; &nbsp; &nbsp; &nbsp; tst_resm TBROK &quot;Failed to mount
+$SYSFS&quot;<br>
+&gt; - &nbsp; &nbsp; &nbsp; &nbsp; return 1<br>
+&gt; + &nbsp; &nbsp; &nbsp; &nbsp; tst_brkm TBROK &quot;Failed to mount
+$SYSFS&quot;<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;fi<br>
+&gt; &nbsp;<br>
+&gt; &nbsp; &nbsp; fi<br>
+&gt; -<br>
+&gt; - &nbsp; return 0<br>
+&gt; &nbsp;}<br>
+&gt; &nbsp;<br>
+&gt; &nbsp;mount_securityfs()<br>
+&gt; &nbsp;{<br>
+&gt; -<br>
+&gt; &nbsp; &nbsp; SECURITYFS=$(mount 2&gt;/dev/null | awk '$5 == &quot;securityfs&quot;
+{ print $3 }')<br>
+&gt; &nbsp; &nbsp; if [ &quot;x$SECURITYFS&quot; = x ] ; then<br>
+&gt; &nbsp;<br>
+&gt; @@ -61,87 +53,34 @@ mount_securityfs()<br>
+&gt; &nbsp;<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;test -d $SECURITYFS || mkdir -p $SECURITYFS
+2&gt;/dev/null<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;if [ $? -ne 0 ] ; then<br>
+&gt; - &nbsp; &nbsp; &nbsp; &nbsp; tst_resm TBROK &quot;Failed to mkdir
+$SECURITYFS&quot;<br>
+&gt; - &nbsp; &nbsp; &nbsp; &nbsp; return 1<br>
+&gt; + &nbsp; &nbsp; &nbsp; &nbsp; tst_brkm TBROK &quot;Failed to mkdir
+$SECURITYFS&quot;<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;fi<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;if ! mount -t securityfs securityfs $SECURITYFS
+2&gt;/dev/null ; then<br>
+&gt; - &nbsp; &nbsp; &nbsp; &nbsp; tst_resm TBROK &quot;Failed to mount
+$SECURITYFS&quot;<br>
+&gt; - &nbsp; &nbsp; &nbsp; &nbsp; return 1<br>
+&gt; + &nbsp; &nbsp; &nbsp; &nbsp; tst_brkm TBROK &quot;Failed to mount
+$SECURITYFS&quot;<br>
+&gt; &nbsp; &nbsp; &nbsp; &nbsp;fi<br>
+&gt; &nbsp;<br>
+&gt; &nbsp; &nbsp; fi<br>
+&gt; -<br>
+&gt; - &nbsp; return 0<br>
+&gt; -<br>
+&gt; &nbsp;}<br>
+&gt; &nbsp;<br>
+&gt; &nbsp;setup()<br>
+&gt; &nbsp;{<br>
+&gt; - &nbsp; export TST_TOTAL=1<br>
+&gt; - &nbsp; export TCID=&quot;setup&quot;<br>
+&gt; - &nbsp; &nbsp; &nbsp; &nbsp;export TST_COUNT=0<br>
+&gt; -<br>
+&gt; - &nbsp; LTPBIN=<br>
+&gt; - &nbsp; LTPIMA=<br>
+&gt; -<br>
+&gt; - &nbsp; trap &quot;cleanup&quot; 0<br>
+&gt; - &nbsp; if [ -z &quot;$TMPDIR&quot; ]; then<br>
+&gt; - &nbsp; &nbsp; &nbsp;LTPTMP=/tmp<br>
+&gt; - &nbsp; else<br>
+&gt; - &nbsp; &nbsp; &nbsp;LTPTMP=${TMPDIR}<br>
+&gt; - &nbsp; fi<br>
+&gt; - &nbsp; if [ -z &quot;$LTPBIN&quot; ]; then<br>
+&gt; - &nbsp; &nbsp; &nbsp;LTPBIN=../../../../../bin<br>
+&gt; - &nbsp; &nbsp; &nbsp;PATH=$PATH:$LTPBIN<br>
+&gt; - &nbsp; fi<br>
+&gt; -<br>
+&gt; &nbsp; &nbsp; tst_require_root<br>
+&gt; &nbsp;<br>
+&gt; - &nbsp; # create the temporary directory used by this testcase<br>
+&gt; - &nbsp; LTPIMA=$LTPTMP/ima<br>
+&gt; - &nbsp; umask 077<br>
+&gt; - &nbsp; mkdir $LTPIMA &gt; /dev/null 2&gt;&amp;1 || RC=$?<br>
+&gt; - &nbsp; if [ $RC -ne 0 ]; then<br>
+&gt; - &nbsp; &nbsp; &nbsp;tst_resm TBROK &quot;Unable to create temporary
+directory&quot;<br>
+&gt; - &nbsp; &nbsp; &nbsp;return $RC<br>
+&gt; - &nbsp; fi<br>
+&gt; + &nbsp; tst_tmpdir<br>
+&gt; &nbsp;<br>
+&gt; - &nbsp; # mount sysfs if it is not already mounted<br>
+&gt; - &nbsp; mount_sysfs || RC=$?<br>
+&gt; - &nbsp; if [ $RC -ne 0 ]; then<br>
+&gt; - &nbsp; &nbsp; &nbsp;tst_resm TBROK &quot;Cannot mount sysfs&quot;<br>
+&gt; - &nbsp; &nbsp; &nbsp;return $RC<br>
+&gt; - &nbsp; fi<br>
+&gt; + &nbsp; mount_sysfs<br>
+&gt; &nbsp;<br>
+&gt; &nbsp; &nbsp; # mount securityfs if it is not already mounted<br>
+&gt; - &nbsp; mount_securityfs || RC=$?<br>
+&gt; - &nbsp; if [ $RC -ne 0 ]; then<br>
+&gt; - &nbsp; &nbsp; &nbsp;tst_resm TBROK &quot;Cannot mount securityfs&quot;<br>
+&gt; - &nbsp; &nbsp; &nbsp;return $RC<br>
+&gt; - &nbsp; fi<br>
+&gt; -<br>
+&gt; - &nbsp; mount<br>
+&gt; + &nbsp; mount_securityfs<br>
+&gt; &nbsp;<br>
+&gt; &nbsp; &nbsp; # IMA must be configured in the kernel<br>
+&gt; &nbsp; &nbsp; IMA_DIR=$SECURITYFS/ima<br>
+&gt; &nbsp; &nbsp; if [ ! -d &quot;$IMA_DIR&quot; ]; then<br>
+&gt; - &nbsp; &nbsp; &nbsp;tst_resm TCONF &quot;IMA not enabled in kernel&quot;<br>
+&gt; - &nbsp; &nbsp; &nbsp;RC=1<br>
+&gt; + &nbsp; &nbsp; &nbsp;tst_brkm TCONF &quot;IMA not enabled in kernel&quot;<br>
+&gt; &nbsp; &nbsp; fi<br>
+&gt; - &nbsp; return $RC<br>
+&gt; &nbsp;}<br>
+&gt; &nbsp;<br>
+&gt; -# Function: &nbsp; &nbsp; cleanup<br>
+&gt; -#<br>
+&gt; -# Description &nbsp; - remove temporary files and directories.<br>
+&gt; -#<br>
+&gt; -# Return &nbsp; &nbsp; &nbsp; &nbsp;- zero on success<br>
+&gt; -# &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; - non zero on
+failure. return value from commands ($RC)<br>
+&gt; &nbsp;cleanup()<br>
+&gt; &nbsp;{<br>
+&gt; - &nbsp; tst_resm TINFO &quot;CLEAN: removing $LTPIMA&quot;<br>
+&gt; - &nbsp; rm -rf &quot;$LTPIMA&quot; || RC=$?<br>
+&gt; - &nbsp; return $RC<br>
+&gt; + &nbsp; tst_rmdir<br>
+&gt; &nbsp;}<br>
+&gt; -<br>
+&gt; -. cmdlib.sh<br>
+&gt; -- <br>
+&gt; 1.8.3.1<br>
+&gt; <br>
+&gt; <br>
+&gt; </font></tt>
+<br><tt><font size=2>This patch looks fine<br>
+&gt; <br>
+&gt; ------------------------------------------------------------------------------<br>
+&gt; Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server<br>
+&gt; from Actuate! Instantly Supercharge Your Business Reports and Dashboards<br>
+&gt; with Interactivity, Sharing, Native Excel Exports, App Integration
+&amp; more<br>
+&gt; Get technology previously reserved for billion-dollar corporations,
+FREE<br>
+&gt; </font></tt><a href="http://pubads.g.doubleclick.net/gampad/clk?id=157005751&amp;iu=/4140/ostg.clktrk"><tt><font size=2>http://pubads.g.doubleclick.net/gampad/clk?id=157005751&amp;iu=/4140/ostg.clktrk</font></tt></a><tt><font size=2><br>
+&gt; _______________________________________________<br>
+&gt; Ltp-list mailing list<br>
+&gt; Ltp-list@lists.sourceforge.net<br>
+&gt; </font></tt><a href="https://lists.sourceforge.net/lists/listinfo/ltp-list"><tt><font size=2>https://lists.sourceforge.net/lists/listinfo/ltp-list</font></tt></a><tt><font size=2><br>
+&gt; <br>
+</font></tt>
+--=_alternative 005B4A7365257D93_=--
+
+
+
+--===============3563270405159243711==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://pubads.g.doubleclick.net/gampad/clk?id=154624111&iu=/4140/ostg.clktrk
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
+--===============3563270405159243711==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3563270405159243711==--
+
+
