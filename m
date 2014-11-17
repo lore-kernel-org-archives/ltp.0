@@ -2,20 +2,19 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xtc6y-0000gn-2d
-	for ltp-list@lists.sourceforge.net; Wed, 26 Nov 2014 12:54:24 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 4FB18AB43
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 26 Nov 2014 12:54:16 +0000 (UTC)
-Date: Wed, 26 Nov 2014 13:53:36 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141126125336.GA1062@rei>
-References: <20141113071324.GA2809@localhost.localdomain>
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XqOsR-0001q4-20
+	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 16:10:07 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XqOsP-0005OR-Br
+	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 16:10:07 +0000
+Message-ID: <546A103C.3050509@oracle.com>
+Date: Mon, 17 Nov 2014 19:11:56 +0400
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20141113071324.GA2809@localhost.localdomain>
-Subject: Re: [LTP] NUMA system and get_a_numa_node()
+References: <1416189838.26092.1.camel@G08JYZSD130126.localdomain>
+In-Reply-To: <1416189838.26092.1.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [PATCH] ltp_acpi_cpufreq.c: Fix compilation.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,41 +27,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>, ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> We have a system which only has one NUMA node. When trying to run ksm02
-> on it, becase the code calling get_allowed_nodes() with a count 2 as
-> below:
-> 
->  972 /* Warning: *DO NOT* use this function in child */
->  973 unsigned int get_a_numa_node(void (*cleanup_fn) (void))
->  974 {              
->  975         unsigned int nd1, nd2;
->  976         int ret; 
->  977                        
->  978         ret = get_allowed_nodes(0, 2, &nd1, &nd2);
->  979         switch (ret) { 
->  980         case 0:
->  981                 break;
->  982         case -3:
->  983                 tst_brkm(TCONF, cleanup_fn, "requires a NUMA system.");
-> 
-> it always failed with "requires a NUMA system.".
-> 
-> I think a NUMA system may have only one node, right? If so, could we
-> change the count to 1?
+On 11/17/2014 06:03 AM, Zeng Linggang wrote:
+> Fix compilation on missing 'CLOCK_MONOTONIC_RAW'.
+>
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>   testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c | 1 +
+>   1 file changed, 1 insertion(+)
+>
+> diff --git a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+> index 5b9c2a9..423188e 100644
+> --- a/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+> +++ b/testcases/kernel/device-drivers/acpi/ltp_acpi_cpufreq.c
+> @@ -33,6 +33,7 @@
+>   
+>   #include "test.h"
+>   #include "usctest.h"
+> +#include "lapi/posix_clocks.h"
+>   #include "safe_macros.h"
+>   #include "safe_stdio.h"
+>   
 
-Hmm, are you sure that the testcases are actually applicable to a system
-with only one node?
+Patch pushed, thank you!
 
-Because what the testcases do in the setup is to write 1 to
-/sys/kernel/mm/ksm/merge_across_nodes so I would expect that the test
-needs at least two nodes...
+Best regards,
+Alexey
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
