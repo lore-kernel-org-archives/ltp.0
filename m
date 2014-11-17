@@ -1,30 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XnqKv-0005p1-TI
-	for ltp-list@lists.sourceforge.net; Mon, 10 Nov 2014 14:52:57 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XnqKt-0001Vb-9T
-	for ltp-list@lists.sourceforge.net; Mon, 10 Nov 2014 14:52:57 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id sAAEqmEe022321
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Nov 2014 09:52:48 -0500
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id sAAEqfv4008892
-	for <ltp-list@lists.sourceforge.net>; Mon, 10 Nov 2014 09:52:48 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 10 Nov 2014 15:52:28 +0100
-Message-Id: <70e7f4426aa311eb3314a5939bcca02fac28386c.1415630966.git.jstancek@redhat.com>
-In-Reply-To: <83f98a9de7c4e97c958bd7f9c33610898b998e29.1415630966.git.jstancek@redhat.com>
-References: <83f98a9de7c4e97c958bd7f9c33610898b998e29.1415630966.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 2/2 v4] cpuset_syscall_testset.sh: check TCONF for
-	do_syscall_test
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XqLbS-0005T5-VV
+	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 12:40:23 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XqLbR-0003mR-Jm
+	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 12:40:22 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sAHCdtdL022830
+	for <ltp-list@lists.sourceforge.net>; Mon, 17 Nov 2014 20:39:55 +0800
+Message-ID: <1416227892.10929.1.camel@G08JYZSD130126.localdomain>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Mon, 17 Nov 2014 20:38:12 +0800
+MIME-Version: 1.0
+Subject: [LTP] [PATCH 1/5] ima_setup.sh: Some cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,281 +26,188 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list <ltp-list@lists.sourceforge.net>
 
-If HAVE_DECL_MPOL_F_MEMS_ALLOWED is not defined, test returns -1,
-which is evaluted as failure.
+* Use 'test.sh'.
 
-Treat it as TCONF, but don't break the execution, cpuset_syscall_testset.sh
-script is expecting to handle stopping/waiting for children by itself.
+* Use 'test_brkm' instead of 'tst_resm TBROK'.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+* Use 'tst_tmpdir' and 'tst_rmdir'.
+
+* Delete some unuseful comments.
+
+* Some cleanup.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- .../cpuset_syscall_test/cpuset_syscall_test.c      |   10 ++--
- .../cpuset_syscall_test/cpuset_syscall_testset.sh  |   68 ++++++++++++--------
- 2 files changed, 45 insertions(+), 33 deletions(-)
+ .../security/integrity/ima/tests/ima_setup.sh      | 85 +++-------------------
+ 1 file changed, 12 insertions(+), 73 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-index e202295..0a36763 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_test.c
-@@ -128,7 +128,7 @@ void sigint_handler(int __attribute__ ((unused)) signo)
- void test_setaffinity(void)
+diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+index 4013e1f..0ff38d2 100755
+--- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
++++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
+@@ -14,8 +14,8 @@
+ ## for more details.                                                          ##
+ ##                                                                            ##
+ ## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+ ##                                                                            ##
+ ################################################################################
+ #
+@@ -24,13 +24,10 @@
+ # Description:  setup/cleanup routines for the integrity tests.
+ #
+ # Author:       Mimi Zohar, zohar@ibm.vnet.ibm.com
+-#
+-# Return        - zero on success
+-#               - non zero on failure. return value from commands ($RC)
+ ################################################################################
++. test.sh
+ mount_sysfs()
  {
- 	cpu_set_t tmask;
--	int i;
-+	unsigned int i;
- 	CPU_ZERO(&tmask);
- 	for (i = 0; i < 8 * sizeof(mask); i++) {
- 		if ((1 << i) & mask)
-@@ -140,7 +140,7 @@ void test_setaffinity(void)
- void test_getaffinity(void)
- {
- 	cpu_set_t tmask;
--	int i;
-+	unsigned int i;
- 	CPU_ZERO(&tmask);
- 	ret = sched_getaffinity(0, sizeof(tmask), &tmask);
- 	for (i = 0; i < 8 * sizeof(mask); i++) {
-@@ -190,7 +190,8 @@ void test_get_mempolicy(void)
- 	ret = get_mempolicy(NULL, bitmask_mask(nmask), bitmask_nbits(nmask), 0,
- 			    MPOL_F_MEMS_ALLOWED);
- #else
--	ret = -1;
-+	tst_resm(TCONF, "don't have MPOL_F_MEMS_ALLOWED");
-+	ret = TCONF;
- #endif
+-
+ 	SYSFS=$(mount 2>/dev/null | awk '$5 == "sysfs" { print $3 }')
+ 	if [ "x$SYSFS" = x ] ; then
  
- 	bitmask_displaylist(str, 256, nmask);
-@@ -243,7 +244,6 @@ int main(int argc, char *argv[])
- #else
- int main(void)
- {
--	printf("System doesn't have required mempolicy support\n");
--	tst_exit();
-+	tst_brkm(TCONF, NULL, "System doesn't have required mempolicy support");
- }
- #endif
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-index 561c3b9..771b642 100755
---- a/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-+++ b/testcases/kernel/controllers/cpuset/cpuset_syscall_test/cpuset_syscall_testset.sh
-@@ -30,6 +30,8 @@ export TST_COUNT=1
+@@ -38,22 +35,17 @@ mount_sysfs()
  
- check
+ 		test -d $SYSFS || mkdir -p $SYSFS 2>/dev/null
+ 		if [ $? -ne 0 ] ; then
+-			tst_resm TBROK "Failed to mkdir $SYSFS"
+-			return 1
++			tst_brkm TBROK "Failed to mkdir $SYSFS"
+ 		fi
+ 		if ! mount -t sysfs sysfs $SYSFS 2>/dev/null ; then
+-			tst_resm TBROK "Failed to mount $SYSFS"
+-			return 1
++			tst_brkm TBROK "Failed to mount $SYSFS"
+ 		fi
  
-+tst_flag2mask TCONF
-+TCONF=$?
- exit_status=0
- 
- nr_mems=$N_NODES
-@@ -80,6 +82,11 @@ do_syscall_test()
- 	/bin/kill -s SIGINT $testpid
- 	wait $testpid
- 	ret=$?
-+
-+	if [ "$ret" -eq "$TCONF" ]; then
-+		return $TCONF
-+	fi
-+
- 	if [ $4 -eq 0 ]; then
- 		if [ $ret -ne 0 ]; then
- 			tst_resm TFAIL "Test task exited abnormally.(expect return value is 0)"
-@@ -96,7 +103,7 @@ do_syscall_test()
- 
- test1()
- {
--	do_syscall_test 0 0 --setaffinity=1 0 || return 1
-+	do_syscall_test 0 0 --setaffinity=1 0 || return $?
- 	allowed_list="$(awk '/Cpus_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$allowed_list" = "0"
- 	if [ $? -ne 0 ]; then
-@@ -108,7 +115,7 @@ test1()
- 
- test2()
- {
--	do_syscall_test 0-1 0 --setaffinity=1 0 || return 1
-+	do_syscall_test 0-1 0 --setaffinity=1 0 || return $?
- 	allowed_list="$(awk '/Cpus_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$allowed_list" = "0"
- 	if [ $? -ne 0 ]; then
-@@ -120,7 +127,7 @@ test2()
- 
- test3()
- {
--	do_syscall_test 0-1 0 --setaffinity=6 0 || return 1
-+	do_syscall_test 0-1 0 --setaffinity=6 0 || return $?
- 	allowed_list="$(awk '/Cpus_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$allowed_list" = "1"
- 	if [ $? -ne 0 ]; then
-@@ -132,7 +139,7 @@ test3()
- 
- test4()
- {
--	do_syscall_test 0-1 0 --setaffinity=12 1 || return 1
-+	do_syscall_test 0-1 0 --setaffinity=12 1 || return $?
- 	allowed_list="$(awk '/Cpus_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$allowed_list" = "0-1" || return 1
- 	if [ $? -ne 0 ]; then
-@@ -144,7 +151,7 @@ test4()
- 
- test5()
- {
--	do_syscall_test 0 0 --getaffinity 0 || return 1
-+	do_syscall_test 0 0 --getaffinity 0 || return $?
- 	allowed_list="$(awk '/Cpus_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$(cat "$TEST_OUTPUT")" = "0,"
- 	if [ $? -ne 0 ]; then
-@@ -161,7 +168,7 @@ test5()
- 
- test6()
- {
--	do_syscall_test 0-1 0 --getaffinity 0 || return 1
-+	do_syscall_test 0-1 0 --getaffinity 0 || return $?
- 	allowed_list="$(awk '/Cpus_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$(cat "$TEST_OUTPUT")" = "0,1,"
- 	if [ $? -ne 0 ]; then
-@@ -178,7 +185,7 @@ test6()
- 
- test7()
- {
--	do_syscall_test 0 0 --mbind=1 0 || return 1
-+	do_syscall_test 0 0 --mbind=1 0 || return $?
- 	memory_addr="$(cat $TEST_OUTPUT)"
- 	memory_addr=${memory_addr##*0x}
- 	allowed_list=$(cat $TEST_PROCNUMA | grep "$memory_addr" | \
-@@ -194,7 +201,7 @@ test7()
- 
- test8()
- {
--	do_syscall_test 0 0-1 --mbind=1 0 || return 1
-+	do_syscall_test 0 0-1 --mbind=1 0 || return $?
- 	memory_addr="$(cat $TEST_OUTPUT)"
- 	memory_addr=${memory_addr##*0x}
- 	allowed_list=$(cat $TEST_PROCNUMA | grep "$memory_addr" | \
-@@ -210,7 +217,7 @@ test8()
- 
- test9()
- {
--	do_syscall_test 0 0-1 --mbind=6 0 || return 1
-+	do_syscall_test 0 0-1 --mbind=6 0 || return $?
- 	memory_addr="$(cat $TEST_OUTPUT)"
- 	memory_addr=${memory_addr##*0x}
- 	allowed_list=$(cat $TEST_PROCNUMA | grep "$memory_addr" | \
-@@ -226,7 +233,7 @@ test9()
- 
- test10()
- {
--	do_syscall_test 0 0 --mbind=6 1 || return 1
-+	do_syscall_test 0 0 --mbind=6 1 || return $?
- 	memory_addr="$(cat $TEST_OUTPUT)"
- 	memory_addr=${memory_addr##*0x}
- 	allowed_list=$(cat $TEST_PROCNUMA | grep "$memory_addr" | \
-@@ -264,14 +271,14 @@ check_result()
- 
- test11()
- {
--	do_syscall_test 0 0 --set_mempolicy=1 0 || return 1
-+	do_syscall_test 0 0 --set_mempolicy=1 0 || return $?
- 	check_result "0"
- 	return $?
- }
- 
- test12()
- {
--	do_syscall_test 0 0-1 --set_mempolicy=1 0 || return 1
-+	do_syscall_test 0 0-1 --set_mempolicy=1 0 || return $?
- 	check_result "0"
- 	return $?
- }
-@@ -279,9 +286,9 @@ test12()
- test13()
- {
- 	if [ $nr_mems -ge 3 ]; then
--		do_syscall_test 0 0-1 --set_mempolicy=6 0 || return 1
-+		do_syscall_test 0 0-1 --set_mempolicy=6 0 || return $?
- 	else
--		do_syscall_test 0 0-1 --set_mempolicy=2 0 || return 1
-+		do_syscall_test 0 0-1 --set_mempolicy=2 0 || return $?
  	fi
- 	check_result "1"
- 	return $?
-@@ -290,16 +297,16 @@ test13()
- test14()
- {
- 	if [ $nr_mems -ge 3 ]; then
--		do_syscall_test 0 0 --set_mempolicy=6 1 || return 1
-+		do_syscall_test 0 0 --set_mempolicy=6 1 || return $?
- 	else
--		do_syscall_test 0 0 --set_mempolicy=2 1 || return 1
-+		do_syscall_test 0 0 --set_mempolicy=2 1 || return $?
- 	fi
- 	return 0
+-
+-	return 0
  }
  
- test15()
+ mount_securityfs()
  {
--	do_syscall_test 0 0 --get_mempolicy 0 || return 1
-+	do_syscall_test 0 0 --get_mempolicy 0 || return $?
- 	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$(cat "$TEST_OUTPUT")" = "0"
- 	if [ $? -ne 0 ]; then
-@@ -316,7 +323,7 @@ test15()
+-
+ 	SECURITYFS=$(mount 2>/dev/null | awk '$5 == "securityfs" { print $3 }')
+ 	if [ "x$SECURITYFS" = x ] ; then
  
- test16()
- {
--	do_syscall_test 0 0-1 --get_mempolicy 0 || return 1
-+	do_syscall_test 0 0-1 --get_mempolicy 0 || return $?
- 	allowed_list="$(awk '/Mems_allowed_list:/{print $2}' $TEST_PROCSTATUS )"
- 	test "$(cat "$TEST_OUTPUT")" = "0-1"
- 	if [ $? -ne 0 ]; then
-@@ -333,22 +340,27 @@ test16()
+@@ -61,87 +53,34 @@ mount_securityfs()
  
- for c in $(seq 1 $TST_TOTAL)
- do
-+	tst_resm TINFO "Starting test no. $c"
- 	setup
- 	if [ $? -ne 0 ]; then
- 		exit_status=1
- 	else
- 		test$c
--		if [ $? -ne 0 ]; then
-+		ret=$?
-+		cleanup
-+		ret=$((ret | $?))
-+
-+		case $ret in
-+		0)
-+			tst_resm TPASS "Cpuset vs systemcall test succeeded."
-+			;;
-+		"$TCONF")
-+			tst_resm TCONF "Test exited with TCONF"
-+			;;
-+		*)
- 			exit_status=1
--			cleanup
--		else
--			cleanup
--			if [ $? -ne 0 ]; then
--				exit_status=1
--			else
--				tst_resm TPASS "Cpuset vs systemcall test succeeded."
--			fi
--		fi
-+			;;
-+		esac
+ 		test -d $SECURITYFS || mkdir -p $SECURITYFS 2>/dev/null
+ 		if [ $? -ne 0 ] ; then
+-			tst_resm TBROK "Failed to mkdir $SECURITYFS"
+-			return 1
++			tst_brkm TBROK "Failed to mkdir $SECURITYFS"
+ 		fi
+ 		if ! mount -t securityfs securityfs $SECURITYFS 2>/dev/null ; then
+-			tst_resm TBROK "Failed to mount $SECURITYFS"
+-			return 1
++			tst_brkm TBROK "Failed to mount $SECURITYFS"
+ 		fi
+ 
  	fi
- 	TST_COUNT=$(($TST_COUNT + 1))
- done
+-
+-	return 0
+-
+ }
+ 
+ setup()
+ {
+-	export TST_TOTAL=1
+-	export TCID="setup"
+-        export TST_COUNT=0
+-
+-	LTPBIN=
+-	LTPIMA=
+-
+-	trap "cleanup" 0
+-	if [ -z "$TMPDIR" ]; then
+-		LTPTMP=/tmp
+-	else
+-		LTPTMP=${TMPDIR}
+-	fi
+-	if [ -z "$LTPBIN" ]; then
+-		LTPBIN=../../../../../bin
+-		PATH=$PATH:$LTPBIN
+-	fi
+-
+ 	tst_require_root
+ 
+-	# create the temporary directory used by this testcase
+-	LTPIMA=$LTPTMP/ima
+-	umask 077
+-	mkdir $LTPIMA > /dev/null 2>&1 || RC=$?
+-	if [ $RC -ne 0 ]; then
+-		tst_resm TBROK "Unable to create temporary directory"
+-		return $RC
+-	fi
++	tst_tmpdir
+ 
+-	# mount sysfs if it is not already mounted
+-	mount_sysfs || RC=$?
+-	if [ $RC -ne 0 ]; then
+-		tst_resm TBROK "Cannot mount sysfs"
+-		return $RC
+-	fi
++	mount_sysfs
+ 
+ 	# mount securityfs if it is not already mounted
+-	mount_securityfs || RC=$?
+-	if [ $RC -ne 0 ]; then
+-		tst_resm TBROK "Cannot mount securityfs"
+-		return $RC
+-	fi
+-
+-	mount
++	mount_securityfs
+ 
+ 	# IMA must be configured in the kernel
+ 	IMA_DIR=$SECURITYFS/ima
+ 	if [ ! -d "$IMA_DIR" ]; then
+-		tst_resm TCONF "IMA not enabled in kernel"
+-		RC=1
++		tst_brkm TCONF "IMA not enabled in kernel"
+ 	fi
+-	return $RC
+ }
+ 
+-# Function:     cleanup
+-#
+-# Description   - remove temporary files and directories.
+-#
+-# Return        - zero on success
+-#               - non zero on failure. return value from commands ($RC)
+ cleanup()
+ {
+-	tst_resm TINFO "CLEAN: removing $LTPIMA"
+-	rm -rf "$LTPIMA" || RC=$?
+-	return $RC
++	tst_rmdir
+ }
+-
+-. cmdlib.sh
 -- 
-1.7.1
+1.8.3.1
+
+
 
 
 ------------------------------------------------------------------------------
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
