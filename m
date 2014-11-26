@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XoAL1-0004S7-HZ
-	for ltp-list@lists.sourceforge.net; Tue, 11 Nov 2014 12:14:23 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 8F07FABE7
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 11 Nov 2014 12:14:15 +0000 (UTC)
-Date: Tue, 11 Nov 2014 13:13:45 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XtcOH-0001Rv-FJ
+	for ltp-list@lists.sourceforge.net; Wed, 26 Nov 2014 13:12:17 +0000
+Date: Wed, 26 Nov 2014 14:11:24 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141111121345.GA29189@rei>
-References: <1415639518-4906-1-git-send-email-jack@suse.cz>
+Message-ID: <20141126131124.GB1062@rei>
+References: <tencent_1BCE64F11ADCCF7F5AB40A14@qq.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1415639518-4906-1-git-send-email-jack@suse.cz>
-Subject: Re: [LTP] [PATCH v2] syscalls/fanotify: Verify that inode ignore
- masks are properly reflected
+In-Reply-To: <tencent_1BCE64F11ADCCF7F5AB40A14@qq.com>
+Subject: Re: [LTP] How can I analyse the LTP result
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,42 +24,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Kara <jack@suse.cz>
-Cc: ltp-list@lists.sourceforge.net
+To: Troy-lee <798528972@qq.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> Verify that when inode has an ignore mask set, it is properly reflected
-> when notifying a mountpoint. The test verifies fix "fanotify: Fix notification
-> of groups with inode & mount marks" in the Linux kernel.
-> 
-> Signed-off-by: Jan Kara <jack@suse.cz>
+> Dear all:
+> I just run the runalltests.sh,and now there is some error. but I don't know how to analyse the log file. Is any primer? Could you help me????
 
-Pushed with small change to get rid of another signed vs unsigned
-comparsion warning.
+For such vague question I can only say, have look at the script output
+and figure out what went wrong.
 
-@@ -201,7 +201,7 @@ int main(int ac, char **av)
-                                         (int)EVENT_BUF_LEN);
-                        }
-                        event = (struct fanotify_event_metadata *)event_buf;
--                       if (ret > event->event_len) {
-+                       if (ret > (int)event->event_len) {
-                                tst_resm(TFAIL, "group %d got more than one "
-                                         "event (%d > %d)", i, ret,
-                                         event->event_len);
-
-
-Thanks.
+If you don't share more details especially exact steps and output from
+the scripts we can hardly figure out what went wrong.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Comprehensive Server Monitoring with Site24x7.
-Monitor 10 servers for $9/Month.
-Get alerted through email, SMS, voice calls or mobile push notifications.
-Take corrective actions from your mobile device.
-http://pubads.g.doubleclick.net/gampad/clk?id=154624111&iu=/4140/ostg.clktrk
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
