@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XqLbS-0005T5-VV
-	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 12:40:23 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XqLbR-0003mR-Jm
-	for ltp-list@lists.sourceforge.net; Mon, 17 Nov 2014 12:40:22 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sAHCdtdL022830
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Nov 2014 20:39:55 +0800
-Message-ID: <1416227892.10929.1.camel@G08JYZSD130126.localdomain>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 17 Nov 2014 20:38:12 +0800
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1Xu0oH-0007va-JR
+	for ltp-list@lists.sourceforge.net; Thu, 27 Nov 2014 15:16:45 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Xu0oG-0005CG-1I
+	for ltp-list@lists.sourceforge.net; Thu, 27 Nov 2014 15:16:45 +0000
+Received: from zmail21.collab.prod.int.phx2.redhat.com
+	(zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+	by mx6-phx2.redhat.com (8.14.4/8.14.4) with ESMTP id sARFGbTU018386
+	for <ltp-list@lists.sourceforge.net>; Thu, 27 Nov 2014 10:16:37 -0500
+Date: Thu, 27 Nov 2014 10:16:37 -0500 (EST)
+From: Matus Marhefka <mmarhefk@redhat.com>
+Message-ID: <942107198.5544680.1417101397640.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1412949674-9702-1-git-send-email-mmarhefk@redhat.com>
+References: <1412949674-9702-1-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/5] ima_setup.sh: Some cleanup
+Subject: Re: [LTP] [PATCH] containers: fixed deadlock in
+ netns/netns_childns.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,178 +32,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-* Use 'test.sh'.
+Please consider this patch as irrelevant.
+I will post a better solution for possible deadlocks
+in network namespaces tests by using timeouts on read/write
+FIFO operations.
 
-* Use 'test_brkm' instead of 'tst_resm TBROK'.
+Thanks,
+Matus Marhefka
 
-* Use 'tst_tmpdir' and 'tst_rmdir'.
+----- Original Message -----
+From: "Matus Marhefka" <mmarhefk@redhat.com>
+To: ltp-list@lists.sourceforge.net
+Sent: Friday, October 10, 2014 4:01:14 PM
+Subject: [LTP] [PATCH] containers: fixed deadlock in netns/netns_childns.sh
 
-* Delete some unuseful comments.
+In certain situations there was a possibility of deadlock
+in a communication over named pipes (FIFO3, FIFO4) between
+netns_delchild.sh (executed from netns_parentns.sh)
+and netns_rename_net.sh (executed from netns_childns.sh).
 
-* Some cleanup.
+The deadlock was caused by failing to start sshd or pinging parent
+namespace in netns_childns.sh. In case one of these situations
+occured, netns_childns.sh terminated without executing
+the netns_rename_net.sh and causing the netns_delchild.sh to wait
+endlessly for data from pipes (FIFO3 and FIFO4).
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
 ---
- .../security/integrity/ima/tests/ima_setup.sh      | 85 +++-------------------
- 1 file changed, 12 insertions(+), 73 deletions(-)
+ testcases/kernel/containers/netns/netns_childns.sh | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-index 4013e1f..0ff38d2 100755
---- a/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-+++ b/testcases/kernel/security/integrity/ima/tests/ima_setup.sh
-@@ -14,8 +14,8 @@
- ## for more details.                                                          ##
- ##                                                                            ##
- ## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
-+## along with this program;  if not, write to the Free Software Foundation,   ##
-+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
- ##                                                                            ##
- ################################################################################
- #
-@@ -24,13 +24,10 @@
- # Description:  setup/cleanup routines for the integrity tests.
- #
- # Author:       Mimi Zohar, zohar@ibm.vnet.ibm.com
--#
--# Return        - zero on success
--#               - non zero on failure. return value from commands ($RC)
- ################################################################################
-+. test.sh
- mount_sysfs()
- {
+diff --git a/testcases/kernel/containers/netns/netns_childns.sh b/testcases/kernel/containers/netns/netns_childns.sh
+index 9ad9190..f691f48 100755
+--- a/testcases/kernel/containers/netns/netns_childns.sh
++++ b/testcases/kernel/containers/netns/netns_childns.sh
+@@ -71,6 +71,10 @@ else
+     status=1
+ fi
+ 
++if [ -f "$childscrpt" ]; then
++    . "$childscrpt"
++fi
++
+ if [ $status -eq 0 ] ; then
+ 
+     # checking if parent ns responding
+@@ -81,13 +85,8 @@ if [ $status -eq 0 ] ; then
+         exit $status
+     fi
+ 
+-    if [ -f "$childscrpt" ]; then
+-        . "$childscrpt"
+-    fi
 -
- 	SYSFS=$(mount 2>/dev/null | awk '$5 == "sysfs" { print $3 }')
- 	if [ "x$SYSFS" = x ] ; then
- 
-@@ -38,22 +35,17 @@ mount_sysfs()
- 
- 		test -d $SYSFS || mkdir -p $SYSFS 2>/dev/null
- 		if [ $? -ne 0 ] ; then
--			tst_resm TBROK "Failed to mkdir $SYSFS"
--			return 1
-+			tst_brkm TBROK "Failed to mkdir $SYSFS"
- 		fi
- 		if ! mount -t sysfs sysfs $SYSFS 2>/dev/null ; then
--			tst_resm TBROK "Failed to mount $SYSFS"
--			return 1
-+			tst_brkm TBROK "Failed to mount $SYSFS"
- 		fi
- 
- 	fi
+     cleanup $sshpid $vnet1
+     debug "INFO: Done with executing child script $0, status is $status"
 -
--	return 0
- }
+ fi
  
- mount_securityfs()
- {
--
- 	SECURITYFS=$(mount 2>/dev/null | awk '$5 == "securityfs" { print $3 }')
- 	if [ "x$SECURITYFS" = x ] ; then
- 
-@@ -61,87 +53,34 @@ mount_securityfs()
- 
- 		test -d $SECURITYFS || mkdir -p $SECURITYFS 2>/dev/null
- 		if [ $? -ne 0 ] ; then
--			tst_resm TBROK "Failed to mkdir $SECURITYFS"
--			return 1
-+			tst_brkm TBROK "Failed to mkdir $SECURITYFS"
- 		fi
- 		if ! mount -t securityfs securityfs $SECURITYFS 2>/dev/null ; then
--			tst_resm TBROK "Failed to mount $SECURITYFS"
--			return 1
-+			tst_brkm TBROK "Failed to mount $SECURITYFS"
- 		fi
- 
- 	fi
--
--	return 0
--
- }
- 
- setup()
- {
--	export TST_TOTAL=1
--	export TCID="setup"
--        export TST_COUNT=0
--
--	LTPBIN=
--	LTPIMA=
--
--	trap "cleanup" 0
--	if [ -z "$TMPDIR" ]; then
--		LTPTMP=/tmp
--	else
--		LTPTMP=${TMPDIR}
--	fi
--	if [ -z "$LTPBIN" ]; then
--		LTPBIN=../../../../../bin
--		PATH=$PATH:$LTPBIN
--	fi
--
- 	tst_require_root
- 
--	# create the temporary directory used by this testcase
--	LTPIMA=$LTPTMP/ima
--	umask 077
--	mkdir $LTPIMA > /dev/null 2>&1 || RC=$?
--	if [ $RC -ne 0 ]; then
--		tst_resm TBROK "Unable to create temporary directory"
--		return $RC
--	fi
-+	tst_tmpdir
- 
--	# mount sysfs if it is not already mounted
--	mount_sysfs || RC=$?
--	if [ $RC -ne 0 ]; then
--		tst_resm TBROK "Cannot mount sysfs"
--		return $RC
--	fi
-+	mount_sysfs
- 
- 	# mount securityfs if it is not already mounted
--	mount_securityfs || RC=$?
--	if [ $RC -ne 0 ]; then
--		tst_resm TBROK "Cannot mount securityfs"
--		return $RC
--	fi
--
--	mount
-+	mount_securityfs
- 
- 	# IMA must be configured in the kernel
- 	IMA_DIR=$SECURITYFS/ima
- 	if [ ! -d "$IMA_DIR" ]; then
--		tst_resm TCONF "IMA not enabled in kernel"
--		RC=1
-+		tst_brkm TCONF "IMA not enabled in kernel"
- 	fi
--	return $RC
- }
- 
--# Function:     cleanup
--#
--# Description   - remove temporary files and directories.
--#
--# Return        - zero on success
--#               - non zero on failure. return value from commands ($RC)
- cleanup()
- {
--	tst_resm TINFO "CLEAN: removing $LTPIMA"
--	rm -rf "$LTPIMA" || RC=$?
--	return $RC
-+	tst_rmdir
- }
--
--. cmdlib.sh
+ exit $status
 -- 
 1.8.3.1
 
 
-
+------------------------------------------------------------------------------
+Meet PCI DSS 3.0 Compliance Requirements with EventLog Analyzer
+Achieve PCI DSS 3.0 Compliant Status with Out-of-the-box PCI DSS Reports
+Are you Audit-Ready for PCI DSS 3.0 Compliance? Download White paper
+Comply to PCI DSS 3.0 Requirement 10 and 11.5 with EventLog Analyzer
+http://pubads.g.doubleclick.net/gampad/clk?id=154622311&iu=/4140/ostg.clktrk
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 ------------------------------------------------------------------------------
 Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
