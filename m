@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XmKE2-0001b6-Ou
-	for ltp-list@lists.sourceforge.net; Thu, 06 Nov 2014 10:23:34 +0000
-Date: Thu, 6 Nov 2014 11:23:01 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141106102301.GB2179@rei.nue.novell.com>
-References: <1414049085-29422-1-git-send-email-liwan@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1XtuBO-0003sV-FT
+	for ltp-list@lists.sourceforge.net; Thu, 27 Nov 2014 08:12:10 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XtuBN-00015D-4f
+	for ltp-list@lists.sourceforge.net; Thu, 27 Nov 2014 08:12:10 +0000
+Message-ID: <5476DCA3.5000701@cn.fujitsu.com>
+Date: Thu, 27 Nov 2014 16:11:15 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1414049085-29422-1-git-send-email-liwan@redhat.com>
-Subject: Re: [LTP] [PATCH] mem/thp04: rebuild the cleanup without using safe
- macros
+References: <20141113071324.GA2809@localhost.localdomain>	<20141126125336.GA1062@rei>	<20141127024241.GA16235@localhost.localdomain>	<54769527.4020603@cn.fujitsu.com>
+	<20141127074529.GB16235@localhost.localdomain>
+In-Reply-To: <20141127074529.GB16235@localhost.localdomain>
+Subject: Re: [LTP] NUMA system and get_a_numa_node()
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,132 +29,88 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwan@redhat.com>
+To: Han Pingtian <hanpt@linux.vnet.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> mem/lib: recall write_file & read_file functions
+On 11/27/2014 03:45 PM, Han Pingtian wrote:
+> On Thu, Nov 27, 2014 at 11:06:15AM +0800, Wanlong Gao wrote:
+>> On 11/27/2014 10:42 AM, Han Pingtian wrote:
+>>> On Wed, Nov 26, 2014 at 01:53:36PM +0100, Cyril Hrubis wrote:
+>>>> Hi!
+>>>>> We have a system which only has one NUMA node. When trying to run ksm02
+>>>>> on it, becase the code calling get_allowed_nodes() with a count 2 as
+>>>>> below:
+>>>>>
+>>>>>  972 /* Warning: *DO NOT* use this function in child */
+>>>>>  973 unsigned int get_a_numa_node(void (*cleanup_fn) (void))
+>>>>>  974 {              
+>>>>>  975         unsigned int nd1, nd2;
+>>>>>  976         int ret; 
+>>>>>  977                        
+>>>>>  978         ret = get_allowed_nodes(0, 2, &nd1, &nd2);
+>>>>>  979         switch (ret) { 
+>>>>>  980         case 0:
+>>>>>  981                 break;
+>>>>>  982         case -3:
+>>>>>  983                 tst_brkm(TCONF, cleanup_fn, "requires a NUMA system.");
+>>>>>
+>>>>> it always failed with "requires a NUMA system.".
+>>>>>
+>>>>> I think a NUMA system may have only one node, right? If so, could we
+>>>>> change the count to 1?
+>>>>
+>>>> Hmm, are you sure that the testcases are actually applicable to a system
+>>>> with only one node?
+>>>>
+>>>> Because what the testcases do in the setup is to write 1 to
+>>>> /sys/kernel/mm/ksm/merge_across_nodes so I would expect that the test
+>>>> needs at least two nodes...
+>>>>
+>>> I think if there is only one NUMA node, then this is a special case for
+>>> this testcase, it'll test if set "merge_across_nodes" to 1, any problem
+>>> will be triggered.
+>>>
+>>> I have tried to change the node count to 1 in get_allowed_nodes() and
+>>> recompiled ksm02. It works successfully.
+>>>
+>>
+>>
+>> Do you think ONLY ONE NODE can be called NUMA?
+>>
+>> http://en.wikipedia.org/wiki/Non-uniform_memory_access
+>>
 > 
-> mem/thp04: rebuild the cleanup() by those two functions to avoid safe macros
-> being abused.
-> 
-> Signed-off-by: Li Wang <liwan@redhat.com>
-> ---
->  testcases/kernel/mem/include/mem.h |  2 ++
->  testcases/kernel/mem/lib/mem.c     | 25 +++++++++++++++++++++++++
->  testcases/kernel/mem/thp/thp04.c   | 27 +++++++++++++++++----------
->  3 files changed, 44 insertions(+), 10 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-> index 8fa2094..3cb3580 100644
-> --- a/testcases/kernel/mem/include/mem.h
-> +++ b/testcases/kernel/mem/include/mem.h
-> @@ -96,6 +96,8 @@ int  path_exist(const char *path, ...);
->  long read_meminfo(char *item);
->  void set_sys_tune(char *sys_file, long tune, int check);
->  long get_sys_tune(char *sys_file);
-> +void write_file(char *filename, char *buf);
-> +void read_file(char *filename, char *retbuf);
->  void cleanup(void);
->  void setup(void);
->  
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index d3fc19d..3bd9f65 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -1065,6 +1065,31 @@ long get_sys_tune(char *sys_file)
->  	return tune;
->  }
->  
-> +void write_file(char *filename, char *buf)
-> +{
-> +	int fd;
-> +
-> +	fd = open(filename, O_WRONLY);
-> +	if (fd == -1)
-> +		tst_resm(TWARN | TERRNO, "open");
-> +	tst_resm(TINFO, "set %s value to %s", filename, buf);
-> +	if (write(fd, buf, strlen(buf)) != strlen(buf))
-> +		tst_resm(TWARN | TERRNO, "write");
-> +	close(fd);
-> +}
-> +
-> +void read_file(char *filename, char *retbuf)
-> +{
-> +	int fd;
-> +
-> +	fd = open(filename, O_RDONLY);
-> +	if (fd == -1)
-> +		tst_resm(TWARN | TERRNO, "open");
-> +	if (read(fd, retbuf, BUFSIZ) < 0)
-> +		tst_resm(TWARN | TERRNO, "read");
-> +	close(fd);
-> +}
-> +
->  void update_shm_size(size_t * shm_size)
->  {
->  	size_t shmmax;
-> diff --git a/testcases/kernel/mem/thp/thp04.c b/testcases/kernel/mem/thp/thp04.c
-> index 0b6baeb..4e9aa87 100644
-> --- a/testcases/kernel/mem/thp/thp04.c
-> +++ b/testcases/kernel/mem/thp/thp04.c
-> @@ -61,6 +61,7 @@ option_t thp_options[] = {
->  
->  static int pre_thp_scan_sleep_millisecs;
->  static int pre_thp_alloc_sleep_millisecs;
-> +static char buf[BUFSIZ], path[BUFSIZ];
->  static char pre_thp_enabled[BUFSIZ];
->  
->  int main(int argc, char *argv[])
-> @@ -120,23 +121,29 @@ void setup(void)
->  
->  void cleanup(void)
->  {
-> -	SAFE_FILE_PRINTF(NULL, PATH_KHPD "scan_sleep_millisecs",
-> -			 "%d", pre_thp_scan_sleep_millisecs);
-> +	snprintf(buf, BUFSIZ, "%d", pre_thp_scan_sleep_millisecs);
-> +	write_file(PATH_KHPD "scan_sleep_millisecs", buf);
->  
-> -	SAFE_FILE_PRINTF(NULL, PATH_KHPD "alloc_sleep_millisecs",
-> -			 "%d", pre_thp_alloc_sleep_millisecs);
-> +	snprintf(buf, BUFSIZ, "%d", pre_thp_alloc_sleep_millisecs);
-> +	write_file(PATH_KHPD "alloc_sleep_millisecs", buf);
->  
->  	/*
->  	 * The value of transparent_hugepage/enabled is speical,
->  	 * we need to recover the previous value one by one for
->  	 * the three mode: always, madvise, never.
->  	 */
-> -	if (strcmp(pre_thp_enabled, "[always] madvise never") == 0)
-> -		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "always");
-> -	else if (strcmp(pre_thp_enabled, "always [madvise] never") == 0)
-> -		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "madvise");
-> -	else
-> -		SAFE_FILE_PRINTF(NULL, PATH_THP "enabled", "never");
-> +	if (strcmp(pre_thp_enabled, "[always] madvise never") == 0){
-> +		snprintf(path, BUFSIZ, "always");
-> +		write_file(PATH_THP "enabled", path);
-> +	}
-> +	else if (strcmp(pre_thp_enabled, "always [madvise] never") == 0){
-> +		snprintf(path, BUFSIZ, "madvise");
-> +		write_file(PATH_THP "enabled", path);
-> +	}
-> +	else{
-> +		snprintf(path, BUFSIZ, "never");
-> +		write_file(PATH_THP "enabled", path);
-> +	}
->  
->  	TEST_CLEANUP;
->  }
+> I think it's not a problem to run the testcase on a non-NUMA system, if
+> we take it as a special case?
 
-This is a bit better but suffers from the same issues as the previous
-one.
+It's meaningless, the "special case" you said is already there, it's ksm01.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Wanlong Gao
+
+> 
+> Thanks.
+> 
+> 
+> ------------------------------------------------------------------------------
+> Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+> from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+> with Interactivity, Sharing, Native Excel Exports, App Integration & more
+> Get technology previously reserved for billion-dollar corporations, FREE
+> http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
+
 
 ------------------------------------------------------------------------------
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
