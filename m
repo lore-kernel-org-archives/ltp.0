@@ -1,40 +1,49 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <msripal@linux.vnet.ibm.com>) id 1XswLX-0007gc-EG
-	for ltp-list@lists.sourceforge.net; Mon, 24 Nov 2014 16:18:39 +0000
-Received: from e8.ny.us.ibm.com ([32.97.182.138])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XswLV-0005GM-R4
-	for ltp-list@lists.sourceforge.net; Mon, 24 Nov 2014 16:18:39 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1XuHml-0005Nm-Lj
+	for ltp-list@lists.sourceforge.net; Fri, 28 Nov 2014 09:24:19 +0000
+Received: from e39.co.us.ibm.com ([32.97.110.160])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XuHmj-0004FC-GO
+	for ltp-list@lists.sourceforge.net; Fri, 28 Nov 2014 09:24:19 +0000
 Received: from /spool/local
-	by e8.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+	by e39.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
 	Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <msripal@linux.vnet.ibm.com>; 
-	Mon, 24 Nov 2014 11:18:32 -0500
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com
-	[9.57.198.28])
-	by d01dlp03.pok.ibm.com (Postfix) with ESMTP id AACC9C90048
+	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
+	Fri, 28 Nov 2014 02:24:11 -0700
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com
+	[9.57.198.24])
+	by d01dlp03.pok.ibm.com (Postfix) with ESMTP id 180F8C9003C
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 24 Nov 2014 11:10:32 -0500 (EST)
+	Fri, 28 Nov 2014 04:16:12 -0500 (EST)
 Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
-	sAOGISTB24379492
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Nov 2014 16:18:28 GMT
+	by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	sAS9O8Aw22478852
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Nov 2014 09:24:08 GMT
 Received: from d01av04.pok.ibm.com (localhost [127.0.0.1])
 	by d01av04.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	sAOGISqx006302
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Nov 2014 11:18:28 -0500
-Received: from oc3602201088.ibm.com (sig-9-65-68-77.mts.ibm.com [9.65.68.77])
+	sAS9O8fj003822
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Nov 2014 04:24:08 -0500
+Received: from localhost.localdomain ([9.125.6.116])
 	by d01av04.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	sAOGIRDf006126
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Nov 2014 11:18:27 -0500
-Message-ID: <54735A52.8020909@linux.vnet.ibm.com>
-Date: Mon, 24 Nov 2014 10:18:26 -0600
-From: Meenakshi Sripal <msripal@linux.vnet.ibm.com>
+	sAS9O6Aw003724
+	for <ltp-list@lists.sourceforge.net>; Fri, 28 Nov 2014 04:24:07 -0500
+Date: Fri, 28 Nov 2014 16:33:41 +0800
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Message-ID: <20141128083341.GD16235@localhost.localdomain>
+References: <20141031133917.GA3195@localhost.localdomain>
+	<54608048.4000201@oracle.com>
+	<20141113075747.GA19392@localhost.localdomain>
+	<546C51BA.5060304@oracle.com>
+	<20141121075923.GA2804@localhost.localdomain>
+	<5473466C.2070409@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] proposed patch to fix ltp max_map_count test failure on ppc
+Content-Disposition: inline
+In-Reply-To: <5473466C.2070409@oracle.com>
+Subject: Re: [LTP] [PATCH v2] fix some syscall tests for 16-bit compat
+	testing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -44,460 +53,697 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3737634961956696956=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-This is a multi-part message in MIME format.
---===============3737634961956696956==
-Content-Type: multipart/alternative;
-	boundary="------------070701000909030404070906"
+On Mon, Nov 24, 2014 at 05:53:32PM +0300, Stanislav Kholmanskikh wrote:
+> Hi.
+> 
+> In general, it looks good.
+> 
+> I have only one comment, that it's possible that the uid/gid values we pass
+> to the syscall may not fit into UID_T/GID_T. For example, when we get uid of
+> nobody user in runtime and pass it to chown() or etc.
+> 
+> Yes, it's more like an artificial case, but it's.
+> 
+> We have UID16_CHECK and GID16_CHECK macros to check if the uid/gid fits the
+> compat mode.
+> 
+> What do you think about using it in test cases chown01, chown03, chown04,
+> fchown01, fchown03, fchown04, setresgid*, setresuid* ?
+> 
+> Thank you.
 
-This is a multi-part message in MIME format.
---------------070701000909030404070906
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Please review new patch which included UID16_CHECK and GID16_CHECK.
 
-Ltp-list:
+Thanks.
 
-*Description: *Base ltp testcase max_map_count is failing on ppc arch
+From f65d580f11791c4b2728018a2f8e52398c25d97a Mon Sep 17 00:00:00 2001
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Fri, 21 Nov 2014 15:50:23 +0800
+Subject: [PATCH] fix some syscall tests for 16-bit compat testing
 
-kernel: 3.10.0-123.9.3
+Some syscall testcases have been compiled for 16-bit compat testing,
+but doesn't change the code yet. This fix try to add proper code to let
+them support this testing.
 
-Here is the proposed patch to be submitted upstream:
-Patch:
---- ltp-full-20140828.orig/testcases/kernel/mem/tunable/max_map_count.c 
-    2014-11-11 11:13:39.811776626 -0600
-+++ ltp-full-20140828/testcases/kernel/mem/tunable/max_map_count.c   
-  2014-11-11 11:14:05.650945873 -0600
-@@ -231,7 +231,7 @@ static void max_map_count_test(void)
-          * is the mm failure point at the time of
-          * writing this COMMENT!
-         */
--        if (map_count == (max_maps + 1))
-+        if (map_count <= (max_maps + 1))
-             tst_resm(TPASS, "%ld map entries in total "
-                  "as expected.", max_maps);
-         else
+Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+---
+ testcases/kernel/syscalls/chown/chown01.c         |  7 ++++---
+ testcases/kernel/syscalls/chown/chown02.c         |  3 ++-
+ testcases/kernel/syscalls/chown/chown03.c         |  7 ++++---
+ testcases/kernel/syscalls/chown/chown04.c         |  7 ++++---
+ testcases/kernel/syscalls/chown/chown05.c         |  3 ++-
+ testcases/kernel/syscalls/fchown/fchown01.c       |  6 +++++-
+ testcases/kernel/syscalls/fchown/fchown02.c       |  3 ++-
+ testcases/kernel/syscalls/fchown/fchown03.c       |  5 +++--
+ testcases/kernel/syscalls/fchown/fchown04.c       |  6 +++++-
+ testcases/kernel/syscalls/fchown/fchown05.c       |  3 ++-
+ testcases/kernel/syscalls/lchown/lchown03.c       |  6 +++++-
+ testcases/kernel/syscalls/setresgid/setresgid01.c |  7 ++++---
+ testcases/kernel/syscalls/setresgid/setresgid02.c |  9 +++++----
+ testcases/kernel/syscalls/setresgid/setresgid03.c |  7 ++++---
+ testcases/kernel/syscalls/setresgid/setresgid04.c |  5 ++++-
+ testcases/kernel/syscalls/setresuid/setresuid01.c |  9 +++++----
+ testcases/kernel/syscalls/setresuid/setresuid02.c |  7 ++++---
+ testcases/kernel/syscalls/setresuid/setresuid03.c |  8 ++++----
+ testcases/kernel/syscalls/setresuid/setresuid04.c | 11 +++++++----
+ testcases/kernel/syscalls/setresuid/setresuid05.c |  5 ++++-
+ testcases/kernel/syscalls/utils/compat_16.h       | 20 ++++++++++++++++++++
+ 21 files changed, 99 insertions(+), 45 deletions(-)
 
-*
-*Although according to the description of the test case "map_count <= 
-max_map_count" is valid, it is implemented as "map_count == 
-(max_map_count + 1)" in the code.
+diff --git a/testcases/kernel/syscalls/chown/chown01.c b/testcases/kernel/syscalls/chown/chown01.c
+index ef728e1..5a77a98 100644
+--- a/testcases/kernel/syscalls/chown/chown01.c
++++ b/testcases/kernel/syscalls/chown/chown01.c
+@@ -117,6 +117,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ char *TCID = "chown01";
+ int TST_TOTAL = 1;
+@@ -145,7 +146,7 @@ int main(int ac, char **av)
+ 
+ 		tst_count = 0;
+ 
+-		TEST(chown(fname, uid, gid));
++		TEST(CHOWN(cleanup, fname, uid, gid));
+ 
+ 		if (TEST_RETURN == -1) {
+ 			tst_resm(TFAIL | TTERRNO, "chown(%s, %d,%d) failed",
+@@ -170,8 +171,8 @@ static void setup(void)
+ 
+ 	tst_tmpdir();
+ 
+-	uid = geteuid();
+-	gid = getegid();
++	UID16_CHECK((uid = geteuid()), "chown", cleanup)
++	GID16_CHECK((gid = getegid()), "chown", cleanup)
+ 
+ 	sprintf(fname, "t_%d", getpid());
+ 
+diff --git a/testcases/kernel/syscalls/chown/chown02.c b/testcases/kernel/syscalls/chown/chown02.c
+index 339b2e8..30394ec 100644
+--- a/testcases/kernel/syscalls/chown/chown02.c
++++ b/testcases/kernel/syscalls/chown/chown02.c
+@@ -79,6 +79,7 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "compat_16.h"
+ 
+ #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+ #define NEW_PERMS1	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
+@@ -142,7 +143,7 @@ int main(int ac, char **av)
+ 			 * Call chown(2) with different user id and
+ 			 * group id (numeric values) to set it on testfile.
+ 			 */
+-			TEST(chown(file_name, user_id, group_id));
++			TEST(CHOWN(cleanup, file_name, user_id, group_id));
+ 
+ 			if (TEST_RETURN == -1) {
+ 				tst_resm(TFAIL | TTERRNO,
+diff --git a/testcases/kernel/syscalls/chown/chown03.c b/testcases/kernel/syscalls/chown/chown03.c
+index 9780c2f..59b1d62 100644
+--- a/testcases/kernel/syscalls/chown/chown03.c
++++ b/testcases/kernel/syscalls/chown/chown03.c
+@@ -82,6 +82,7 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "compat_16.h"
+ 
+ #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+ #define NEW_PERMS	(S_IFREG|S_IRWXU|S_IRWXG|S_ISUID|S_ISGID)
+@@ -112,10 +113,10 @@ int main(int ac, char **av)
+ 
+ 		tst_count = 0;
+ 
+-		user_id = geteuid();
+-		group_id = getegid();
++		UID16_CHECK((user_id = geteuid()), "chown", cleanup)
++		GID16_CHECK((group_id = getegid()), "chown", cleanup)
+ 
+-		TEST(chown(TESTFILE, -1, group_id));
++		TEST(CHOWN(cleanup, TESTFILE, -1, group_id));
+ 
+ 		if (TEST_RETURN == -1) {
+ 			tst_resm(TFAIL | TTERRNO, "chown(%s, ..) failed",
+diff --git a/testcases/kernel/syscalls/chown/chown04.c b/testcases/kernel/syscalls/chown/chown04.c
+index 1459227..b6d7f3d 100644
+--- a/testcases/kernel/syscalls/chown/chown04.c
++++ b/testcases/kernel/syscalls/chown/chown04.c
+@@ -55,6 +55,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ #define MODE_RWX		 (S_IRWXU|S_IRWXG|S_IRWXO)
+ #define FILE_MODE		 (S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+@@ -111,14 +112,14 @@ int main(int ac, char **av)
+ 
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+-	user_id = geteuid();
+-	group_id = getegid();
++	UID16_CHECK((user_id = geteuid()), "chown", cleanup)
++	GID16_CHECK((group_id = getegid()), "chown", cleanup)
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+ 		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(chown(tc[i].pathname, user_id, group_id));
++			TEST(CHOWN(cleanup, tc[i].pathname, user_id, group_id));
+ 
+ 			if (TEST_RETURN == 0) {
+ 				tst_resm(TFAIL, "chown succeeded unexpectedly");
+diff --git a/testcases/kernel/syscalls/chown/chown05.c b/testcases/kernel/syscalls/chown/chown05.c
+index 92e1811..3ec4f13 100644
+--- a/testcases/kernel/syscalls/chown/chown05.c
++++ b/testcases/kernel/syscalls/chown/chown05.c
+@@ -77,6 +77,7 @@
+ 
+ #include "test.h"
+ #include "usctest.h"
++#include "compat_16.h"
+ 
+ #define FILE_MODE	(S_IFREG|S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)
+ #define TESTFILE	"testfile"
+@@ -121,7 +122,7 @@ int main(int ac, char **av)
+ 			user_id = test_cases[i].user_id;
+ 			group_id = test_cases[i].group_id;
+ 
+-			TEST(chown(TESTFILE, user_id, group_id));
++			TEST(CHOWN(cleanup, TESTFILE, user_id, group_id));
+ 
+ 			if (TEST_RETURN == -1) {
+ 				tst_resm(TFAIL | TTERRNO, "chown failed");
+diff --git a/testcases/kernel/syscalls/fchown/fchown01.c b/testcases/kernel/syscalls/fchown/fchown01.c
+index be620d7..df74635 100644
+--- a/testcases/kernel/syscalls/fchown/fchown01.c
++++ b/testcases/kernel/syscalls/fchown/fchown01.c
+@@ -42,6 +42,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ static void setup(void);
+ static void cleanup(void);
+@@ -65,7 +66,10 @@ int main(int ac, char **av)
+ 
+ 		tst_count = 0;
+ 
+-		TEST(fchown(fd, geteuid(), getegid()));
++		UID16_CHECK(geteuid(), "fchown", cleanup)
++		GID16_CHECK(getegid(), "fchown", cleanup)
++
++		TEST(FCHOWN(cleanup, fd, geteuid(), getegid()));
+ 
+ 		if (TEST_RETURN == -1) {
+ 			tst_resm(TFAIL | TTERRNO, "fchown failed");
+diff --git a/testcases/kernel/syscalls/fchown/fchown02.c b/testcases/kernel/syscalls/fchown/fchown02.c
+index fd14ba1..0c1782d 100644
+--- a/testcases/kernel/syscalls/fchown/fchown02.c
++++ b/testcases/kernel/syscalls/fchown/fchown02.c
+@@ -38,6 +38,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ #define FILE_MODE	S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+ #define NEW_PERMS1	S_IFREG | S_IRWXU | S_IRWXG | S_ISUID | S_ISGID
+@@ -71,7 +72,7 @@ static void verify_fchown(struct test_case *t)
+ {
+ 	struct stat stat_buf;
+ 
+-	TEST(fchown(*t->fd, t->user_id, t->group_id));
++	TEST(FCHOWN(cleanup, *t->fd, t->user_id, t->group_id));
+ 
+ 	if (TEST_RETURN == -1) {
+ 		tst_resm(TFAIL | TTERRNO, "fchown() Fails on %s", t->pathname);
+diff --git a/testcases/kernel/syscalls/fchown/fchown03.c b/testcases/kernel/syscalls/fchown/fchown03.c
+index 3a75093..8c68f12 100644
+--- a/testcases/kernel/syscalls/fchown/fchown03.c
++++ b/testcases/kernel/syscalls/fchown/fchown03.c
+@@ -41,6 +41,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ #define FILE_MODE (mode_t)(S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+ #define NEW_PERMS (mode_t)(S_IFREG | S_IRWXU | S_IRWXG | S_ISUID | S_ISGID)
+@@ -75,9 +76,9 @@ int main(int ac, char **av)
+ 		tst_count = 0;
+ 
+ 		user_id = geteuid();
+-		group_id = getegid();
++		GID16_CHECK((group_id = getegid()), "fchown", cleanup)
+ 
+-		TEST(fchown(fildes, -1, group_id));
++		TEST(FCHOWN(cleanup, fildes, -1, group_id));
+ 
+ 		if (TEST_RETURN == -1) {
+ 			tst_resm(TFAIL, "fchown() on %s Fails, errno=%d",
+diff --git a/testcases/kernel/syscalls/fchown/fchown04.c b/testcases/kernel/syscalls/fchown/fchown04.c
+index 0829944..4fe7fdd 100644
+--- a/testcases/kernel/syscalls/fchown/fchown04.c
++++ b/testcases/kernel/syscalls/fchown/fchown04.c
+@@ -45,6 +45,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
+ 			 S_IXGRP|S_IROTH|S_IXOTH)
+@@ -140,7 +141,10 @@ static void setup(void)
+ 
+ static void fchown_verify(int i)
+ {
+-	TEST(fchown(*test_cases[i].fd, geteuid(), getegid()));
++	UID16_CHECK(geteuid(), "fchown", cleanup)
++	GID16_CHECK(getegid(), "fchown", cleanup)
++
++	TEST(FCHOWN(cleanup, *test_cases[i].fd, geteuid(), getegid()));
+ 
+ 	if (TEST_RETURN == -1) {
+ 		if (TEST_ERRNO == test_cases[i].exp_errno) {
+diff --git a/testcases/kernel/syscalls/fchown/fchown05.c b/testcases/kernel/syscalls/fchown/fchown05.c
+index 67a745a..47d5b00 100644
+--- a/testcases/kernel/syscalls/fchown/fchown05.c
++++ b/testcases/kernel/syscalls/fchown/fchown05.c
+@@ -34,6 +34,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ #define FILE_MODE	S_IFREG | S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+ #define TESTFILE	"testfile"
+@@ -80,7 +81,7 @@ int main(int ac, char **av)
+ 			user_id = tc[i].user_id;
+ 			group_id = tc[i].group_id;
+ 
+-			TEST(fchown(fildes, user_id, group_id));
++			TEST(FCHOWN(cleanup, fildes, user_id, group_id));
+ 
+ 			if (TEST_RETURN == -1) {
+ 				tst_resm(TFAIL | TTERRNO,
+diff --git a/testcases/kernel/syscalls/lchown/lchown03.c b/testcases/kernel/syscalls/lchown/lchown03.c
+index 9e4d6f9..d70847b 100644
+--- a/testcases/kernel/syscalls/lchown/lchown03.c
++++ b/testcases/kernel/syscalls/lchown/lchown03.c
+@@ -40,6 +40,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
+ 			 S_IXGRP|S_IROTH|S_IXOTH)
+@@ -124,7 +125,10 @@ static void setup(void)
+ 
+ static void lchown_verify(const struct test_case_t *test)
+ {
+-	TEST(lchown(test->pathname, geteuid(), getegid()));
++	UID16_CHECK(geteuid(), "lchown", cleanup)
++	GID16_CHECK(getegid(), "lchown", cleanup)
++
++	TEST(LCHOWN(cleanup, test->pathname, geteuid(), getegid()));
+ 
+ 	if (TEST_RETURN != -1) {
+ 		tst_resm(TFAIL, "lchown() returned %ld, expected -1, errno=%d",
+diff --git a/testcases/kernel/syscalls/setresgid/setresgid01.c b/testcases/kernel/syscalls/setresgid/setresgid01.c
+index f9c62a0..440dd43 100644
+--- a/testcases/kernel/syscalls/setresgid/setresgid01.c
++++ b/testcases/kernel/syscalls/setresgid/setresgid01.c
+@@ -76,6 +76,7 @@
+ #include <unistd.h>
+ #include "test.h"
+ #include "usctest.h"
++#include "compat_16.h"
+ 
+ #define EXP_RET_VAL	0
+ 
+@@ -131,7 +132,7 @@ int main(int argc, char **argv)
+ 
+ 		for (testno = 0; testno < TST_TOTAL; ++testno) {
+ 
+-			TEST(setresgid(*tdat[testno].rgid, *tdat[testno].egid,
++			TEST(SETRESGID(cleanup, *tdat[testno].rgid, *tdat[testno].egid,
+ 				       *tdat[testno].sgid));
+ 
+ 			if (TEST_RETURN == EXP_RET_VAL) {
+@@ -195,14 +196,14 @@ void setup(void)
+ 
+ 	}
+ 	root = *passwd_p;
+-	root_gid = root.pw_gid;
++	GID16_CHECK((root_gid = root.pw_gid), "setresgid", cleanup)
+ 
+ 	if ((passwd_p = getpwnam("nobody")) == NULL) {
+ 		tst_brkm(TBROK, NULL, "nobody user id doesn't exist");
+ 
+ 	}
+ 	nobody = *passwd_p;
+-	nobody_gid = nobody.pw_gid;
++	GID16_CHECK((nobody_gid = nobody.pw_gid), "setresgid", cleanup)
+ 
+ 	/* Pause if that option was specified
+ 	 * TEST_PAUSE contains the code to fork the test with the -c option.
+diff --git a/testcases/kernel/syscalls/setresgid/setresgid02.c b/testcases/kernel/syscalls/setresgid/setresgid02.c
+index 754fca1..113544e 100644
+--- a/testcases/kernel/syscalls/setresgid/setresgid02.c
++++ b/testcases/kernel/syscalls/setresgid/setresgid02.c
+@@ -81,6 +81,7 @@
+ #include <unistd.h>
+ #include "test.h"
+ #include "usctest.h"
++#include "compat_16.h"
+ 
+ #define EXP_RET_VAL	0
+ 
+@@ -138,7 +139,7 @@ int main(int argc, char **argv)
+ 
+ 		for (testno = 0; testno < TST_TOTAL; ++testno) {
+ 
+-			TEST(setresgid(*tdat[testno].rgid, *tdat[testno].egid,
++			TEST(SETRESGID(cleanup, *tdat[testno].rgid, *tdat[testno].egid,
+ 				       *tdat[testno].sgid));
+ 
+ 			if (TEST_RETURN == EXP_RET_VAL) {
+@@ -202,21 +203,21 @@ void setup(void)
+ 
+ 	}
+ 	root = *passwd_p;
+-	root_gid = root.pw_gid;
++	GID16_CHECK((root_gid = root.pw_gid), "setresgid", cleanup)
+ 
+ 	if ((passwd_p = getpwnam("bin")) == NULL) {
+ 		tst_brkm(TBROK, NULL, "bin user id doesn't exist");
+ 
+ 	}
+ 	bin = *passwd_p;
+-	bin_gid = bin.pw_gid;
++	GID16_CHECK((bin_gid = bin.pw_gid), "setresgid", cleanup)
+ 
+ 	if ((passwd_p = getpwnam("nobody")) == NULL) {
+ 		tst_brkm(TBROK, NULL, "nobody user id doesn't exist");
+ 
+ 	}
+ 	nobody = *passwd_p;
+-	nobody_gid = nobody.pw_gid;
++	GID16_CHECK((nobody_gid = nobody.pw_gid), "setresgid", cleanup)
+ 
+ 	/* Set effective/saved gid to nobody */
+ 	if (setresgid(-1, nobody_gid, nobody_gid) == -1) {
+diff --git a/testcases/kernel/syscalls/setresgid/setresgid03.c b/testcases/kernel/syscalls/setresgid/setresgid03.c
+index 32d7995..aa67081 100644
+--- a/testcases/kernel/syscalls/setresgid/setresgid03.c
++++ b/testcases/kernel/syscalls/setresgid/setresgid03.c
+@@ -81,6 +81,7 @@
+ #include <unistd.h>
+ #include "test.h"
+ #include "usctest.h"
++#include "compat_16.h"
+ 
+ #define EXP_RET_VAL	-1
+ #define EXP_ERRNO	EPERM
+@@ -131,7 +132,7 @@ int main(int argc, char **argv)
+ 
+ 		for (testno = 0; testno < TST_TOTAL; ++testno) {
+ 
+-			TEST(setresgid(*tdat[testno].rgid, *tdat[testno].egid,
++			TEST(SETRESGID(cleanup, *tdat[testno].rgid, *tdat[testno].egid,
+ 				       *tdat[testno].sgid));
+ 
+ 			TEST_ERROR_LOG(TEST_ERRNO);
+@@ -207,14 +208,14 @@ void setup(void)
+ 
+ 	}
+ 	bin = *passwd_p;
+-	bin_gid = bin.pw_gid;
++	GID16_CHECK((bin_gid = bin.pw_gid), "setresgid", cleanup)
+ 
+ 	if ((passwd_p = getpwnam("nobody")) == NULL) {
+ 		tst_brkm(TBROK, NULL, "nobody user id doesn't exist");
+ 
+ 	}
+ 	nobody = *passwd_p;
+-	nobody_gid = nobody.pw_gid;
++	GID16_CHECK((nobody_gid = nobody.pw_gid), "setresgid", cleanup)
+ 
+ 	/* set the expected errnos... */
+ 	TEST_EXP_ENOS(exp_enos);
+diff --git a/testcases/kernel/syscalls/setresgid/setresgid04.c b/testcases/kernel/syscalls/setresgid/setresgid04.c
+index 4e71910..019aaeb 100644
+--- a/testcases/kernel/syscalls/setresgid/setresgid04.c
++++ b/testcases/kernel/syscalls/setresgid/setresgid04.c
+@@ -30,6 +30,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ char *TCID = "setresgid04";
+ int TST_TOTAL = 1;
+@@ -70,13 +71,15 @@ static void setup(void)
+ 	tst_tmpdir();
+ 
+ 	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
++
++	GID16_CHECK(ltpuser->pw_gid, "setresgid", cleanup)
+ }
+ 
+ static void setresgid_verify(void)
+ {
+ 	struct stat buf;
+ 
+-	TEST(setresgid(-1, ltpuser->pw_gid, -1));
++	TEST(SETRESGID(cleanup, -1, ltpuser->pw_gid, -1));
+ 
+ 	if (TEST_RETURN != 0) {
+ 		tst_resm(TFAIL | TTERRNO, "setresgid failed unexpectedly");
+diff --git a/testcases/kernel/syscalls/setresuid/setresuid01.c b/testcases/kernel/syscalls/setresuid/setresuid01.c
+index 39e1ac3..027aee3 100644
+--- a/testcases/kernel/syscalls/setresuid/setresuid01.c
++++ b/testcases/kernel/syscalls/setresuid/setresuid01.c
+@@ -69,6 +69,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include <errno.h>
++#include "compat_16.h"
+ 
+ char *TCID = "setresuid01";
+ 
+@@ -140,7 +141,7 @@ int main(int ac, char **av)
+ 
+ 		for (i = 0; i < TST_TOTAL; i++) {
+ 			/* Set the real, effective or user id */
+-			TEST(setresuid(*test_data[i].real_uid,
++			TEST(SETRESUID(cleanup, *test_data[i].real_uid,
+ 				       *test_data[i].eff_uid,
+ 				       *test_data[i].sav_uid));
+ 
+@@ -185,13 +186,13 @@ void setup(void)
+ 	TEST_EXP_ENOS(exp_enos);
+ 
+ 	root = *(getpwnam("root"));
+-	root_pw_uid = root.pw_uid;
++	UID16_CHECK((root_pw_uid = root.pw_uid), "setresuid", cleanup)
+ 
+ 	nobody = *(getpwnam("nobody"));
+-	nobody_pw_uid = nobody.pw_uid;
++	UID16_CHECK((nobody_pw_uid = nobody.pw_uid), "setresuid", cleanup)
+ 
+ 	bin = *(getpwnam("bin"));
+-	bin_pw_uid = bin.pw_uid;
++	UID16_CHECK((bin_pw_uid = bin.pw_uid), "setresuid", cleanup)
+ 
+ 	/* Pause if that option was specified
+ 	 * TEST_PAUSE contains the code to fork the test with the -c option.
+diff --git a/testcases/kernel/syscalls/setresuid/setresuid02.c b/testcases/kernel/syscalls/setresuid/setresuid02.c
+index 0837c9e..bb50633 100644
+--- a/testcases/kernel/syscalls/setresuid/setresuid02.c
++++ b/testcases/kernel/syscalls/setresuid/setresuid02.c
+@@ -65,6 +65,7 @@
+ #include "usctest.h"
+ #include <errno.h>
+ #include <sys/wait.h>
++#include "compat_16.h"
+ 
+ char *TCID = "setresuid02";
+ 
+@@ -140,7 +141,7 @@ int main(int ac, char **av)
+ 			for (i = 0; i < TST_TOTAL; i++) {
+ 
+ 				/* Set the real, effective or saved user id */
+-				TEST(setresuid(*test_data[i].real_uid,
++				TEST(SETRESUID(cleanup, *test_data[i].real_uid,
+ 					       *test_data[i].eff_uid,
+ 					       *test_data[i].sav_uid));
+ 
+@@ -196,10 +197,10 @@ void setup(void)
+ 	}
+ 
+ 	nobody = *(getpwnam("nobody"));
+-	nobody_pw_uid = nobody.pw_uid;
++	UID16_CHECK((nobody_pw_uid = nobody.pw_uid), "setresuid", cleanup)
+ 
+ 	bin = *(getpwnam("bin"));
+-	bin_pw_uid = bin.pw_uid;
++	UID16_CHECK((bin_pw_uid = bin.pw_uid), "setresuid", cleanup)
+ 
+ 	/* Pause if that option was specified
+ 	 * TEST_PAUSE contains the code to fork the test with the -i option.
+diff --git a/testcases/kernel/syscalls/setresuid/setresuid03.c b/testcases/kernel/syscalls/setresuid/setresuid03.c
+index f624253..c679b82 100644
+--- a/testcases/kernel/syscalls/setresuid/setresuid03.c
++++ b/testcases/kernel/syscalls/setresuid/setresuid03.c
+@@ -150,7 +150,7 @@ int main(int ac, char **av)
+ 			for (i = 0; i < TST_TOTAL; i++) {
+ 
+ 				/* Set the real, effective or saved user id */
+-				TEST(setresuid(*test_data[i].real_uid,
++				TEST(SETRESUID(cleanup, *test_data[i].real_uid,
+ 					       *test_data[i].eff_uid,
+ 					       *test_data[i].sav_uid));
+ 
+@@ -207,13 +207,13 @@ void setup(void)
+ 	}
+ 
+ 	root = *(getpwnam("root"));
+-	root_pw_uid = root.pw_uid;
++	UID16_CHECK((root_pw_uid = root.pw_uid), "setresuid", cleanup)
+ 
+ 	nobody = *(getpwnam("nobody"));
+-	nobody_pw_uid = nobody.pw_uid;
++	UID16_CHECK((nobody_pw_uid = nobody.pw_uid), "setresuid", cleanup)
+ 
+ 	bin = *(getpwnam("bin"));
+-	bin_pw_uid = bin.pw_uid;
++	UID16_CHECK((bin_pw_uid = bin.pw_uid), "setresuid", cleanup)
+ 
+ 	/* Pause if that option was specified
+ 	 * TEST_PAUSE contains the code to fork the test with the -i option.
+diff --git a/testcases/kernel/syscalls/setresuid/setresuid04.c b/testcases/kernel/syscalls/setresuid/setresuid04.c
+index 140d5f3..49b2616 100644
+--- a/testcases/kernel/syscalls/setresuid/setresuid04.c
++++ b/testcases/kernel/syscalls/setresuid/setresuid04.c
+@@ -53,6 +53,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include <pwd.h>
++#include "compat_16.h"
+ 
+ char *TCID = "setresuid04";
+ int TST_TOTAL = 1;
+@@ -111,8 +112,8 @@ void do_master_child(void)
+ 		/* Reset tst_count in case we are looping */
+ 		tst_count = 0;
+ 
+-		if (setresuid(0, ltpuser->pw_uid, 0) == -1) {
+-			perror("setfsuid failed");
++		if (SETRESUID(cleanup, 0, ltpuser->pw_uid, 0) == -1) {
++			perror("setresuid failed");
+ 			exit(1);
+ 		}
+ 
+@@ -176,8 +177,8 @@ void do_master_child(void)
+ 		 *         the file with RDWR permissions.
+ 		 */
+ 		tst_count++;
+-		if (setresuid(0, 0, 0) == -1) {
+-			perror("setfsuid failed");
++		if (SETRESUID(cleanup, 0, 0, 0) == -1) {
++			perror("setresuid failed");
+ 			exit(1);
+ 		}
+ 
+@@ -203,6 +204,8 @@ void setup(void)
+ 
+ 	ltpuser = getpwnam(nobody_uid);
+ 
++	UID16_CHECK(ltpuser->pw_uid, "setresuid", cleanup)
++
+ 	tst_tmpdir();
+ 
+ 	sprintf(testfile, "setresuid04file%d.tst", getpid());
+diff --git a/testcases/kernel/syscalls/setresuid/setresuid05.c b/testcases/kernel/syscalls/setresuid/setresuid05.c
+index 8880aeb..81175eb 100644
+--- a/testcases/kernel/syscalls/setresuid/setresuid05.c
++++ b/testcases/kernel/syscalls/setresuid/setresuid05.c
+@@ -30,6 +30,7 @@
+ #include "test.h"
+ #include "usctest.h"
+ #include "safe_macros.h"
++#include "compat_16.h"
+ 
+ char *TCID = "setresuid05";
+ int TST_TOTAL = 1;
+@@ -70,13 +71,15 @@ static void setup(void)
+ 	tst_tmpdir();
+ 
+ 	ltpuser = SAFE_GETPWNAM(cleanup, "nobody");
++
++	UID16_CHECK(ltpuser->pw_uid, "setresuid", cleanup)
+ }
+ 
+ static void setresuid_verify(void)
+ {
+ 	struct stat buf;
+ 
+-	TEST(setresuid(-1, ltpuser->pw_uid, -1));
++	TEST(SETRESUID(cleanup, -1, ltpuser->pw_uid, -1));
+ 
+ 	if (TEST_RETURN != 0) {
+ 		tst_resm(TFAIL | TTERRNO, "setresuid failed unexpectedly");
+diff --git a/testcases/kernel/syscalls/utils/compat_16.h b/testcases/kernel/syscalls/utils/compat_16.h
+index 40bef59..b6a702d 100644
+--- a/testcases/kernel/syscalls/utils/compat_16.h
++++ b/testcases/kernel/syscalls/utils/compat_16.h
+@@ -127,8 +127,28 @@ int SETREGID(void (cleanup)(void), GID_T rgid, GID_T egid)
+ 	LTP_CREATE_SYSCALL(setregid, cleanup, rgid, egid);
+ }
+ 
++int SETRESUID(void (cleanup)(void), UID_T ruid, UID_T euid, UID_T suid)
++{
++	LTP_CREATE_SYSCALL(setresuid, cleanup, ruid, euid, suid);
++}
++
++int SETRESGID(void (cleanup)(void), GID_T rgid, GID_T egid, GID_T sgid)
++{
++	LTP_CREATE_SYSCALL(setresgid, cleanup, rgid, egid, sgid);
++}
++
++int FCHOWN(void (cleanup)(void), unsigned int fd, UID_T owner, GID_T group)
++{
++	LTP_CREATE_SYSCALL(fchown, cleanup, fd, owner, group);
++}
++
+ int LCHOWN(void (cleanup)(void), const char *path, UID_T owner, GID_T group)
+ {
+ 	LTP_CREATE_SYSCALL(lchown, cleanup, path, owner, group);
+ }
++
++int CHOWN(void (cleanup)(void), const char *path, UID_T owner, GID_T group)
++{
++	LTP_CREATE_SYSCALL(chown, cleanup, path, owner, group);
++}
+ #endif /* __LTP_COMPAT_16_H__ */
+-- 
+1.9.3
 
-We can say that the test case can be passed for "map_count <= 
-(max_map_count + 1)"  because, MAP_FAILED can be triggered NOT ONLY when 
-max_map_count is reached, but also when the kernel is running out of 
-memory. IN THIS TESTCASE KERNEL RUNS OUT OF MEMORY BECAUSE THE PAGE SIZE 
-IS HUGE.
-Kernel allocates mapped area for each process, as entered in the file 
-/proc/[pid]/maps, as multiples of pagesize.
-Hence when the page size is huge, the kernel runs out of memory (aligned 
-addresses in this case) even before max_map_count is reached.
-
-Please find below test results suggesting that it is because of the big 
-page size that MAP_FAILED is triggered.
-Note that the amount of free memory is almost the same on both the systems.
-
-IA32:
-
-kernel: 3.10.0-123.9.3
-
-# getconf PAGESIZE
-4096
-# free -g
-              total       used       free     shared    buffers     cached
-Mem:            23          1         22          0          0          0
--/+ buffers/cache:          0         22
-Swap:            0          0          0
-# cat /proc/sys/vm/max_map_count
-65530
-
-# ./max_map_count
-max_map_count    0  TINFO  :  set overcommit_memory to 2
-max_map_count    0  TINFO  :  set max_map_count to 64
-max_map_count    1  TPASS  :  64 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 256
-max_map_count    2  TPASS  :  256 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 1024
-max_map_count    3  TPASS  :  1024 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 4096
-max_map_count    4  TPASS  :  4096 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 16384
-max_map_count    5  TPASS  :  16384 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 65536
-max_map_count    6  TPASS  :  65536 map entries in total as expected.
-max_map_count    0  TINFO  :  set overcommit_memory to 0
-max_map_count    0  TINFO  :  set max_map_count to 65530
-
-PPC:
-
-kernel: 3.10.0-123.9.3
-
--bash-4.2# getconf PAGESIZE
-65536
--bash-4.2# free -g
-              total       used       free     shared    buffers     cached
-Mem:            19          0         18          0          0          0
--/+ buffers/cache:          0         19
-Swap:            7          0          7
--bash-4.2# cat /proc/sys/vm/max_map_count
-65530
-
--bash-4.2# cd /opt/fiv/ltp/testcases/bin/
--bash-4.2# ./max_map_count
-max_map_count    0  TINFO  :  set overcommit_memory to 2
-max_map_count    0  TINFO  :  set max_map_count to 64
-max_map_count    1  TPASS  :  64 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 256
-max_map_count    2  TPASS  :  256 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 1024
-max_map_count    3  TPASS  :  1024 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 4096
-max_map_count    4  TPASS  :  4096 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 16384
-max_map_count    5  TPASS  :  16384 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 65536
-max_map_count    6  TFAIL  :  max_map_count.c:239: 65489 map entries in 
-total, but expected 65536 entries
-max_map_count    0  TINFO  :  set overcommit_memory to 0
-max_map_count    0  TINFO  :  set max_map_count to 65530
-
-After the patch is applied, the test passes:
--bash-4.2# ./max_map_count
-max_map_count    0  TINFO  :  set overcommit_memory to 2
-max_map_count    0  TINFO  :  set max_map_count to 64
-max_map_count    1  TPASS  :  64 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 256
-max_map_count    2  TPASS  :  256 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 1024
-max_map_count    3  TPASS  :  1024 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 4096
-max_map_count    4  TPASS  :  4096 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 16384
-max_map_count    5  TPASS  :  16384 map entries in total as expected.
-max_map_count    0  TINFO  :  set max_map_count to 65536
-max_map_count    6  TPASS  :  65536 map entries in total as expected.
-max_map_count    0  TINFO  :  set overcommit_memory to 0
-max_map_count    0  TINFO  :  set max_map_count to 65530
-
-***************************
-Meenakshi Sripal
-Linux Technology Center - Embedded Linux
-
-
-
-
---------------070701000909030404070906
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-  <head>
-
-    <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
-  </head>
-  <body text="#000000" bgcolor="#ffffff">
-    <font face="sans-serif" size="2"></font><font face="sans-serif"
-      size="2">Ltp-list:</font>
-    <br>
-    <br>
-    <font face="sans-serif" size="2"><b>Description: </b>Base ltp
-      testcase
-      max_map_count is failing on ppc arch</font>
-    <br>
-    <br>
-    <font face="sans-serif" size="2">kernel: 3.10.0-123.9.3</font>
-    <br>
-    <br>
-    <font face="sans-serif" size="2">Here is the proposed patch to be
-      submitted
-      upstream:</font>
-    <br>
-    <font face="sans-serif" size="2">Patch:<br>
-      ---
-      ltp-full-20140828.orig/testcases/kernel/mem/tunable/max_map_count.c
-      &nbsp; &nbsp;2014-11-11 11:13:39.811776626 -0600<br>
-      +++ ltp-full-20140828/testcases/kernel/mem/tunable/max_map_count.c
-      &nbsp;
-      &nbsp;2014-11-11 11:14:05.650945873 -0600<br>
-      @@ -231,7 +231,7 @@ static void max_map_count_test(void)<br>
-      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* is the mm failure point at the time
-      of<br>
-      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;* writing this COMMENT!<br>
-      &nbsp; &nbsp; &nbsp; &nbsp; */<br>
-      - &nbsp; &nbsp; &nbsp; &nbsp;if (map_count == (max_maps + 1))<br>
-      + &nbsp; &nbsp; &nbsp; &nbsp;if (map_count &lt;= (max_maps + 1))<br>
-      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; tst_resm(TPASS, "%ld map
-      entries in total "<br>
-      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;"as
-      expected.", max_maps);<br>
-      &nbsp; &nbsp; &nbsp; &nbsp; else</font>
-    <br>
-    <font face="sans-serif" size="2"><br>
-      <b><br>
-      </b>Although according to the description of the test case
-      "map_count
-      &lt;= max_map_count" is valid, it is implemented as "map_count
-      == (max_map_count + 1)" in the code.<br>
-      <br>
-      We can say that the test case can be passed for "map_count &lt;=
-      (max_map_count
-      + 1)" &nbsp;because, MAP_FAILED can be triggered NOT ONLY when
-      max_map_count
-      is reached, but also when the kernel is running out of memory. IN
-      THIS
-      TESTCASE KERNEL RUNS OUT OF MEMORY BECAUSE THE PAGE SIZE IS HUGE.<br>
-      Kernel allocates mapped area for each process, as entered in the
-      file /proc/[pid]/maps,
-      as multiples of pagesize.<br>
-      Hence when the page size is huge, the kernel runs out of memory
-      (aligned
-      addresses in this case) even before max_map_count is reached. <br>
-      <br>
-      Please find below test results suggesting that it is because of
-      the big
-      page size that MAP_FAILED is triggered.<br>
-      Note that the amount of free memory is almost the same on both the
-      systems.</font>
-    <br>
-    <br>
-    <font face="sans-serif" size="2">IA32:</font>
-    <br>
-    <br>
-    <font face="sans-serif" size="2">kernel: 3.10.0-123.9.3</font>
-    <br>
-    <font face="sans-serif" size="2"><br>
-      # getconf PAGESIZE<br>
-      4096<br>
-      # free -g</font>
-    <br>
-    <font face="sans-serif" size="2">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-      &nbsp;total &nbsp; &nbsp; &nbsp; used &nbsp; &nbsp; &nbsp; free &nbsp;
-      &nbsp; shared &nbsp; &nbsp;buffers &nbsp; &nbsp; cached</font>
-    <br>
-    <font face="sans-serif" size="2">Mem: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-      &nbsp;23 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;1 &nbsp; &nbsp; &nbsp; &nbsp;
-      22 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0
-      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0</font>
-    <br>
-    <font face="sans-serif" size="2">-/+ buffers/cache: &nbsp; &nbsp; &nbsp;
-      &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; 22</font>
-    <br>
-    <font face="sans-serif" size="2">Swap: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-      &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp;
-      &nbsp;0</font>
-    <br>
-    <font face="sans-serif" size="2"># cat /proc/sys/vm/max_map_count</font>
-    <br>
-    <font face="sans-serif" size="2">65530</font>
-    <br>
-    <font face="sans-serif" size="2"><br>
-      # ./max_map_count </font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set overcommit_memory to 2</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 64</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;1 &nbsp;TPASS
-      &nbsp;: &nbsp;64 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 256</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;2 &nbsp;TPASS
-      &nbsp;: &nbsp;256 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 1024</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;3 &nbsp;TPASS
-      &nbsp;: &nbsp;1024 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 4096</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;4 &nbsp;TPASS
-      &nbsp;: &nbsp;4096 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 16384</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;5 &nbsp;TPASS
-      &nbsp;: &nbsp;16384 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 65536</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;6 &nbsp;TPASS
-      &nbsp;: &nbsp;65536 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set overcommit_memory to 0</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 65530<br>
-    </font>
-    <br>
-    <font face="sans-serif" size="2">PPC:</font>
-    <br>
-    <br>
-    <font face="sans-serif" size="2">kernel: 3.10.0-123.9.3</font>
-    <br>
-    <font face="sans-serif" size="2"><br>
-      -bash-4.2# getconf PAGESIZE</font>
-    <br>
-    <font face="sans-serif" size="2">65536</font>
-    <br>
-    <font face="sans-serif" size="2">-bash-4.2# free -g</font>
-    <br>
-    <font face="sans-serif" size="2">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-      &nbsp;total &nbsp; &nbsp; &nbsp; used &nbsp; &nbsp; &nbsp; free &nbsp;
-      &nbsp; shared &nbsp; &nbsp;buffers &nbsp; &nbsp; cached</font>
-    <br>
-    <font face="sans-serif" size="2">Mem: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-      &nbsp;19 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp;
-      18 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0
-      &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0</font>
-    <br>
-    <font face="sans-serif" size="2">-/+ buffers/cache: &nbsp; &nbsp; &nbsp;
-      &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp; 19</font>
-    <br>
-    <font face="sans-serif" size="2">Swap: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-      &nbsp;7 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;0 &nbsp; &nbsp; &nbsp; &nbsp;
-      &nbsp;7</font>
-    <br>
-    <font face="sans-serif" size="2">-bash-4.2# cat
-      /proc/sys/vm/max_map_count</font>
-    <br>
-    <font face="sans-serif" size="2">65530</font>
-    <br>
-    <br>
-    <font face="sans-serif" size="2">-bash-4.2# cd
-      /opt/fiv/ltp/testcases/bin/</font>
-    <br>
-    <font face="sans-serif" size="2">-bash-4.2# ./max_map_count </font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set overcommit_memory to 2</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 64</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;1 &nbsp;TPASS
-      &nbsp;: &nbsp;64 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 256</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;2 &nbsp;TPASS
-      &nbsp;: &nbsp;256 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 1024</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;3 &nbsp;TPASS
-      &nbsp;: &nbsp;1024 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 4096</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;4 &nbsp;TPASS
-      &nbsp;: &nbsp;4096 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 16384</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;5 &nbsp;TPASS
-      &nbsp;: &nbsp;16384 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 65536</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;6 &nbsp;TFAIL
-      &nbsp;: &nbsp;max_map_count.c:239: 65489 map entries in total, but expected
-      65536 entries</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set overcommit_memory to 0</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 65530</font>
-    <br>
-    <br>
-    <font face="sans-serif" size="2">After the patch is applied, the
-      test
-      passes:<br>
-      -bash-4.2# ./max_map_count</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set overcommit_memory to 2</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 64</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;1 &nbsp;TPASS
-      &nbsp;: &nbsp;64 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 256</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;2 &nbsp;TPASS
-      &nbsp;: &nbsp;256 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 1024</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;3 &nbsp;TPASS
-      &nbsp;: &nbsp;1024 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 4096</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;4 &nbsp;TPASS
-      &nbsp;: &nbsp;4096 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 16384</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;5 &nbsp;TPASS
-      &nbsp;: &nbsp;16384 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 65536</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;6 &nbsp;TPASS
-      &nbsp;: &nbsp;65536 map entries in total as expected.</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set overcommit_memory to 0</font>
-    <br>
-    <font face="sans-serif" size="2">max_map_count &nbsp; &nbsp;0 &nbsp;TINFO
-      &nbsp;: &nbsp;set max_map_count to 65530</font>
-    <br>
-    <br>
-    <font face="sans-serif" size="2">***************************<br>
-      Meenakshi Sripal<br>
-      Linux Technology Center - Embedded Linux<br>
-      <br>
-    </font>
-    <br>
-    <br>
-  </body>
-</html>
-
---------------070701000909030404070906--
-
-
-
---===============3737634961956696956==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
@@ -505,17 +751,7 @@ from Actuate! Instantly Supercharge Your Business Reports and Dashboards
 with Interactivity, Sharing, Native Excel Exports, App Integration & more
 Get technology previously reserved for billion-dollar corporations, FREE
 http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
---===============3737634961956696956==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3737634961956696956==--
-
-
