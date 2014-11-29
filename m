@@ -1,19 +1,51 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lijinyue@huawei.com>) id 1Y1aZj-0000VQ-Kl
-	for ltp-list@lists.sourceforge.net; Thu, 18 Dec 2014 12:53:03 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Y1aZe-0000lY-0z
-	for ltp-list@lists.sourceforge.net; Thu, 18 Dec 2014 12:53:03 +0000
-From: lijinyue <lijinyue@huawei.com>
-Date: Thu, 18 Dec 2014 12:00:24 +0000
-Message-ID: <1418904024-29740-1-git-send-email-lijinyue@huawei.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1XwhqD-0004mF-L0
+	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 01:37:53 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XwhqC-0005cj-FD
+	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 01:37:53 +0000
+Received: from /spool/local
+	by e8.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+	Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
+	Thu, 4 Dec 2014 20:37:46 -0500
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com
+	[9.57.198.23])
+	by d01dlp02.pok.ibm.com (Postfix) with ESMTP id B9CB46E8040
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  4 Dec 2014 20:29:37 -0500 (EST)
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	sB51bhTu28442750
+	for <ltp-list@lists.sourceforge.net>; Fri, 5 Dec 2014 01:37:43 GMT
+Received: from d01av01.pok.ibm.com (localhost [127.0.0.1])
+	by d01av01.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	sB51bfSY003314
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Dec 2014 20:37:42 -0500
+Received: from localhost.localdomain ([9.115.120.213])
+	by d01av01.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	sB51beao003209
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Dec 2014 20:37:41 -0500
+Date: Sat, 29 Nov 2014 21:29:40 +0800
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Message-ID: <20141129132940.GA2715@localhost.localdomain>
+References: <20141031133917.GA3195@localhost.localdomain>
+	<54608048.4000201@oracle.com>
+	<20141113075747.GA19392@localhost.localdomain>
+	<546C51BA.5060304@oracle.com>
+	<20141121075923.GA2804@localhost.localdomain>
+	<5473466C.2070409@oracle.com>
+	<20141128083341.GD16235@localhost.localdomain>
+	<5478972F.5030503@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] controllers/cgroup_fj:fix mount error for mount tools
-	above v2.21
+Content-Disposition: inline
+In-Reply-To: <5478972F.5030503@oracle.com>
+Subject: Re: [LTP] [PATCH v2] fix some syscall tests for 16-bit
+	compat	testing
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,46 +59,49 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: dingguofu@huawei.com, zhanyongming@huawei.com
 
-For util-linux version above v2.21(eg, Red Hat Enterprise Linux 7.0, util-linux v2.23.2),
-some tests in run_cgroup_test_fj.sh will test failed.
-eg:
-        cgroup_test_fj    1  TFAIL  :  case13(function  2 1 1 2 1 2 3 2 1)    FAIL
-
-The reason is that mount version above v2.21 will cause mount error in the following scenes:
-        (mount from util-linux 2.23.2)
-        mkdir /dev/cgroup
-        mount -t cgroup -o cpuset,release_agent=  cgroup /dev/cgroup
-
-        error output:
-        mount: special device cgroup does not exist
-While, for mount version v2.19.1(eg, SLES 11 sp2, mount from util-linux 2.19.1 )
-        mount will success like this:
-        cgroup on /dev/cgroup type cgroup (rw,cpuset,release_agent=)
-
-So we kindly make run_cgroup_test_fj.sh test more smoothly with different util-linux.
-
-Signed-off-by: Realeam <lijinyue@huawei.com>
----
- testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
-index 9b49725..6d3915f 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
-@@ -583,7 +583,7 @@ mount_cgroup ()
- 			PARAMETER_O="$noprefix_use_str"
- 		fi
- 	fi
--	if [ "$release_agent_para_str" != "" ]; then
-+	if [ "$release_agent_para_str" != "" -a "$release_agent_para_str" != " " ]; then
- 		if [ "$PARAMETER_O" != "" ]; then
- 			PARAMETER_O="$PARAMETER_O"",release_agent=""$release_agent_para_str"
- 		else
--- 
-1.8.2.2
+On Fri, Nov 28, 2014 at 06:39:27PM +0300, Stanislav Kholmanskikh wrote:
+> 
+> 
+> On 11/28/2014 11:33 AM, Han Pingtian wrote:
+> > On Mon, Nov 24, 2014 at 05:53:32PM +0300, Stanislav Kholmanskikh wrote:
+> >> Hi.
+> >>
+> >> In general, it looks good.
+> >>
+> >> I have only one comment, that it's possible that the uid/gid values we pass
+> >> to the syscall may not fit into UID_T/GID_T. For example, when we get uid of
+> >> nobody user in runtime and pass it to chown() or etc.
+> >>
+> >> Yes, it's more like an artificial case, but it's.
+> >>
+> >> We have UID16_CHECK and GID16_CHECK macros to check if the uid/gid fits the
+> >> compat mode.
+> >>
+> >> What do you think about using it in test cases chown01, chown03, chown04,
+> >> fchown01, fchown03, fchown04, setresgid*, setresuid* ?
+> >>
+> >> Thank you.
+> >
+> > Please review new patch which included UID16_CHECK and GID16_CHECK.
+> >
+> > Thanks.
+> 
+> Hi!
+> 
+> I pushed your patch with TCID_DEFINE added (overlooked it at that time), 
+> and also pushed a follow-up patch which:
+>   * fixes setresuid02_16, setresuid03_16, setresuid04_16 - they do 
+> testing inside their children.
+>   * explicitly declares setresuid(), setresgid() in compat_16.h. This is 
+> to manage compilation warnings.
+> 
+> Tested in OL6 with 2.6.39-400.215.11.el6uek.x86_64 and 
+> 2.6.39-400.214.5.el6uek.i686 kernels.
+> 
+> Thank you.
+> 
+Thanks!
 
 
 ------------------------------------------------------------------------------
