@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XwRsA-00052u-C7
-	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 08:34:54 +0000
-Date: Thu, 4 Dec 2014 09:34:36 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xvq1z-00025E-T4
+	for ltp-list@lists.sourceforge.net; Tue, 02 Dec 2014 16:10:27 +0000
+Date: Tue, 2 Dec 2014 17:10:10 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141204083436.GA4391@rei.suse.de>
-References: <000d01d00f87$a9f6a6a0$fde3f3e0$@samsung.com>
+Message-ID: <20141202161010.GB20512@rei.suse.de>
+References: <1413554791.5750.27.camel@G08JYZSD130126.localdomain>
+	<20141111150836.GC32196@rei>
+	<1415773510.3552.12.camel@G08JYZSD130126.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <000d01d00f87$a9f6a6a0$fde3f3e0$@samsung.com>
-Subject: Re: [LTP] Need help to compile LTP
+In-Reply-To: <1415773510.3552.12.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [PATCH v2] stress_cd: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,15 +26,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Raju <raju.biswas@samsung.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> I am working on LTP and want to compile selected package and not the whole
-> LTP. How can I compile selected PACKAGE.
-
-You have to run configure in the root directory first, then just doing
-make in the corresponding directory should work just fine.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
@@ -43,7 +41,7 @@ Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
 from Actuate! Instantly Supercharge Your Business Reports and Dashboards
 with Interactivity, Sharing, Native Excel Exports, App Integration & more
 Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
