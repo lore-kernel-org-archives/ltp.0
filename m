@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xw947-0003r3-R7
-	for ltp-list@lists.sourceforge.net; Wed, 03 Dec 2014 12:29:55 +0000
-Date: Wed, 3 Dec 2014 13:29:28 +0100
+	(envelope-from <metan@suse.de>) id 1Xvqd9-0002kr-0w
+	for ltp-list@lists.sourceforge.net; Tue, 02 Dec 2014 16:48:51 +0000
+Date: Tue, 2 Dec 2014 17:48:38 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141203122928.GA13935@rei.suse.de>
-References: <1416227892.10929.1.camel@G08JYZSD130126.localdomain>
+Message-ID: <20141202164837.GB22135@rei.suse.de>
+References: <1414403972-9624-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1416227892.10929.1.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH 1/5] ima_setup.sh: Some cleanup
+In-Reply-To: <1414403972-9624-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH v3] network/tcp_fastopen: add support for IPv6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,14 +24,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> -	trap "cleanup" 0
+> Support for TCP Fast Open over IPv6 has been added to Linux 3.16.
+> Determine IP protocol from defined IP address. Also, make use of IPv6
+> server socket because it is backward compatible with IPv4 connections.
 
-The cleanup will not be called after you remove this. You should have
-changed it to TST_CLEANUP=cleanup so that it's called at exit.
+Looks good to me.
 
 -- 
 Cyril Hrubis
