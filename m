@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xvnih-0005tt-14
-	for ltp-list@lists.sourceforge.net; Tue, 02 Dec 2014 13:42:23 +0000
-Date: Tue, 2 Dec 2014 14:42:07 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xvqky-0003Br-Mc
+	for ltp-list@lists.sourceforge.net; Tue, 02 Dec 2014 16:56:56 +0000
+Date: Tue, 2 Dec 2014 17:56:45 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141202134207.GA17838@rei.suse.de>
-References: <1416227892.10929.1.camel@G08JYZSD130126.localdomain>
-	<1416227940.10929.2.camel@G08JYZSD130126.localdomain>
-	<OFBF4427CD.765E36E1-ON65257D93.005B53D8-65257D93.005BDCA8@in.ibm.com>
+Message-ID: <20141202165645.GD22135@rei.suse.de>
+References: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
+	<5448D65C.90308@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <OFBF4427CD.765E36E1-ON65257D93.005B53D8-65257D93.005BDCA8@in.ibm.com>
-Subject: Re: [LTP] [PATCH 2/5] ima_measurements.sh: Some cleanup
+In-Reply-To: <5448D65C.90308@oracle.com>
+Subject: Re: [LTP] [PATCH v2 1/3] network/test_net: add support for -6
+ option (IPv6 tests)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,19 +26,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Poornima Nayak <Poornima.Nayak@in.ibm.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> If you delete this TST_COUNT how will the PAN engine keep track of test 
-> count ? I feel its required. Wait for comments from others in mailing 
-> list.
+> > +# Blank for an IPV4 test; 6 for an IPV6 test.
+> > +TST_IPV6=
+> > +
+> > +tst_read_opts()
+> > +{
+> > +	OPTIND=0
+> > +	while getopts ":6" opt; do
+> > +		case "$opt" in
+> > +		6)
+> > +			TST_IPV6=6;;
+> > +		esac
+> > +	done
+> > +	OPTIND=0
+> > +}
+> 
+> Maybe we can run the function inside test_net.sh as well. Any suggestions?
 
-As a matter of the fact the TST_COUNT should be deleted from the test
-code as it's initialized in the test.sh library nowadays.
-
-Moreover I doubt that ltp-pan is able to keep track of the test
-subtests, all it cares about is the overall exit status.
+It makes sense in case that all the testcases that include the file will
+run it anyway.
 
 -- 
 Cyril Hrubis
@@ -49,7 +59,7 @@ Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
 from Actuate! Instantly Supercharge Your Business Reports and Dashboards
 with Interactivity, Sharing, Native Excel Exports, App Integration & more
 Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
