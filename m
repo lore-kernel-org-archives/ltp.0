@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Y1DcF-0004IT-QI
-	for ltp-list@lists.sourceforge.net; Wed, 17 Dec 2014 12:22:07 +0000
-Date: Wed, 17 Dec 2014 13:21:45 +0100
+	(envelope-from <metan@suse.de>) id 1XwShG-0004WX-3T
+	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 09:27:38 +0000
+Date: Thu, 4 Dec 2014 10:27:23 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141217122145.GB29078@rei>
-References: <ALsA3gAIAA4ZCtJwh2RbQao2.1.1418806958246.Hmail.qulei@ubuntukylin.com>
+Message-ID: <20141204092723.GA15044@rei.suse.de>
+References: <000d01d00f87$a9f6a6a0$fde3f3e0$@samsung.com>
+	<20141204083436.GA4391@rei.suse.de>
+	<002f01d00fa3$8d225df0$a76719d0$@samsung.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <ALsA3gAIAA4ZCtJwh2RbQao2.1.1418806958246.Hmail.qulei@ubuntukylin.com>
-Subject: Re: [LTP] Realtime test error of LTP
+In-Reply-To: <002f01d00fa3$8d225df0$a76719d0$@samsung.com>
+Subject: Re: [LTP] Need help to compile LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,28 +26,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ?????? <qulei@ubuntukylin.com>
+To: Raju <raju.biswas@samsung.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> #./test_realtime.sh -t all -l 1
-> Real-time tests run
-> /home/eason/??????/ltp-full-20140828/testcases/realtime/lib /home/eason/??????/ltp-full-20140828/testcases/realtime /home/eason/??????/ltp-full-20140828
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 -Wold-style-definition -D_GNU_SOURCE -I../include/  -I../../../include -I../../../include  -c -o libstats.o libstats.c
-> In file included from libstats.c:47:0:
-> ../include/librttest.h:59:29: fatal error: realtime_config.h: No such file or directory
->  #include "realtime_config.h"
->                              ^
-> compilation terminated.
-> <builtin>: recipe for target 'libstats.o' failed
-> make: *** [libstats.o] Error 1
+> Thanks for your suggestion and help.
 > 
->  make Failed
+> But , Inside the command folder under LTP we have lot of sub-folders such as
+> 
+> 
+> ade,at,cpio,cron,eject etc.
+> 
+> Now I do not want to compile all the sub folders inside the command folder.
 
-You have to run configure and with enabled realtime testsuite first.
-
-I.e. do ./configure --with-realtime-testsuite in the top level LTP
-directory.
+The build process is recursive, you can type make in any of the folders
+in the tree and it will rebuild code in all the subtrees.
 
 -- 
 Cyril Hrubis
