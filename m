@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XyKY5-0001s9-NE
-	for ltp-list@lists.sourceforge.net; Tue, 09 Dec 2014 13:09:53 +0000
-Date: Tue, 9 Dec 2014 14:09:37 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XwX0f-0003Y0-Gi
+	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 14:03:57 +0000
+Date: Thu, 4 Dec 2014 15:03:44 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141209130937.GC1576@rei.suse.de>
-References: <tencent_18E2F5FD3ACC10A855AF6945@qq.com>
-	<20141209130429.GB1576@rei.suse.de>
+Message-ID: <20141204140344.GA32277@rei.suse.de>
+References: <548063A8.4060104@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20141209130429.GB1576@rei.suse.de>
-Subject: Re: [LTP] Could you help me to analyse the LTP output
+In-Reply-To: <548063A8.4060104@gmail.com>
+Subject: Re: [LTP] min_free_kbytes incorrect results
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,30 +24,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Troy-lee <798528972@qq.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Viorel-C??t??lin R??pi??eanu <rapiteanu.catalin@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > access06		2
-> > <<<test_start>>>
-> > tag=access06 stime=946685015
-> > cmdline="access06"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > access06    0  TINFO  :  Using test device LTP_DEV=''
-> > access06    1  TBROK  :  ../include/safe_macros.h:297: tst_device.c:180: stat(,0xbedc0640) failed: errno=ENOENT(2): No such file or directory
-> > access06    2  TBROK  :  ../include/safe_macros.h:297: Remaining cases broken
+> I've been running 'min_free_kbytes' from 'runtest/mm', but everytime I'm 
+> getting an incorrect value on read. I've tried this test on different 
+> machines (different architectures) and with different versions of ltp, 
+> but I'm getting the same error on read. I've looked at the test, but the 
+> code seems fine. If anybody has any ideea why this isn't working please 
+> let me know.
 > 
-> This looks like runltp failure. The LTP_DEV was not prepared correctly.
+> The following log was generated using an up-to-date Arch Linux x64 using 
+> kernel: 3.17.4-1
+> -------------------------------------------------------------------------------------------------
+> min_free_kbytes    0  TINFO  :  set overcommit_memory to 2
+> min_free_kbytes    0  TINFO  :  set min_free_kbytes to 67584
+> min_free_kbytes    1  TBROK  :  min_free_kbytes = 6, but expect 67584
 
-This looks similar to https://github.com/linux-test-project/ltp/pull/23
+This failure comes from function set_sys_tune() from
+testcases/kernel/mem/lib/mem.c
 
-I guess that you do not have loopback device support in kernel.
-
-If it's possible you should add it to the kernel config because
-otherwise quite a lot of testcases that need a block device would be
-disabled.
+What the code does is to write to the specified file in /sys and then
+reads it back to verify its content. And it looks like the number read
+back is truncated so something seems to be broken.
 
 -- 
 Cyril Hrubis
