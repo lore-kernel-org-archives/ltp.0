@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mats.liljegren@enea.com>) id 1Y0tDh-0005r4-1s
-	for ltp-list@lists.sourceforge.net; Tue, 16 Dec 2014 14:35:25 +0000
-Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1Y0tDd-0005ZL-Vr
-	for ltp-list@lists.sourceforge.net; Tue, 16 Dec 2014 14:35:25 +0000
-From: Mats Liljegren <mats.liljegren@enea.com>
-Date: Tue, 16 Dec 2014 15:34:56 +0100
-Message-ID: <1418740497-24661-1-git-send-email-mats.liljegren@enea.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XwUVI-0004Cr-PM
+	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 11:23:24 +0000
+Date: Thu, 4 Dec 2014 12:23:11 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141204112311.GC15326@rei.suse.de>
+References: <1417101031-5272-1-git-send-email-mmarhefk@redhat.com>
+	<20141202123840.GA16824@rei.suse.de> <54803C62.30803@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] ltp: Fix cross-compile issue
+Content-Disposition: inline
+In-Reply-To: <54803C62.30803@redhat.com>
+Subject: Re: [LTP] [PATCH] testcases/lib/test.sh: added tst_timeout()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,22 +25,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jiri Jaburek <jjaburek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-I had problems compiling LTP using Yocto (https://www.yoctoproject.org/).
-The provided patch here fixed my problem. I haven't tried a "normal", i.e.
-non-cross compile.
+Hi!
+> > This is bashism. The portable way to do this seems to be do
+> > tr -d [:digit:] on the string and checking if result is empty or use
+> > grep.
+> 
+> Indeed, 'tr' may be used in this case, but an (AFAIK) portable
+> replacement for =~ is expr(1):
 
-Mats Liljegren (1):
-  ltp: Fix cross-compile issue
+I do not care much about the way it's implemented. All we need is that
+the code runs fine at least with bash, dash and bussybox.
 
- include/mk/config.mk.default | 2 +-
- m4/ltp-tirpc.m4              | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+>   if ! expr "$timeout" : '.*[0-9]\+$' >/dev/null; then
+> 
+> although, as you can see, there are several limitations:
+> 
+>   - IIRC the busybox version doesn't support '+ TOKEN' syntax, so we
+>     rely on ie. $timeout != "match"
+>   - different implementations may have different syntax, although the
+>     `:' notation is AFAIK the oldest
+>   - regexp matching is always done from the beginning, so there's `^'
+>     implied
+>   - path to /dev/null may be different on some systems (_PATH_DEVNULL),
+>     not sure if "/dev/null" is a POSIX requirement
+
+We rely on /dev/null heavily in all parts of LTP. The goal is to be
+portable across various Linux distributions, even embedded ones. We do
+not care about rest of the UNIX world much (the exception is the Open
+Posix Testsuite which should be written to the POSIX standard).
+
+Ahd the whole problem reminds me an old saying:
+
+"I'ts easier to implement portable shell than a porable shell code."
 
 -- 
-1.9.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
