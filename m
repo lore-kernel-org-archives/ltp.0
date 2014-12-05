@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XxuPq-0005Vp-AG
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 09:15:38 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XxuPo-0005y7-OU
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 09:15:38 +0000
-Date: Mon, 8 Dec 2014 04:15:28 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1917282961.14573534.1418030128901.JavaMail.zimbra@redhat.com>
-In-Reply-To: <001701d012c2$e2ae8d30$a80ba790$@samsung.com>
-References: <001701d012c2$e2ae8d30$a80ba790$@samsung.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XwmwB-0006zR-UN
+	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 07:04:23 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XwmwA-0006Cp-Jg
+	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 07:04:23 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sB573sPO026300
+	for <ltp-list@lists.sourceforge.net>; Fri, 5 Dec 2014 15:03:54 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 5 Dec 2014 15:00:57 +0800
+Message-ID: <1417762858-18686-1-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1415258674-17261-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1415258674-17261-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] How to compile indiviual packages/modules in LTP
+Subject: [LTP] [PATCH v3 1/2] containers: change check_iproute() behavior in
+	netns/netns_helper.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,59 +32,157 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Raju <raju.biswas@samsung.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
------ Original Message ----- 
-> From: "Raju" <raju.biswas@samsung.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Monday, 8 December, 2014 9:42:20 AM
-> Subject: [LTP] How to compile indiviual packages/modules in LTP
-> Hello Sir,
-> There are lot of test suit modules / packages currently under LTP.
-> Examples :
-> /ltp-full-20140828/testcases/commands/
-> ade at cpio cron eject fileutils gzip logrotate mail Makefile sssd su tar
-> tpm-tools unzip
-> /ltp-full-20140828/testcases/kernel
-> connectors controllers firmware hotplug io lib Makefile mem numa pty security
-> timers
-> containers device-drivers fs include ipc logging mce-test module
-> power_management sched syscalls tracing
-> etc.
-> Currently we have option to compile the whole LTP package. But suppose I do
-> not want some modules to get compiled Ex. Ade , gzip , security , timers etc
-> , but compile the rest of the LTP test suit. How can I do it ?
+Change check_iproute() behavior in order to improve
+its expansibility.
 
-If none of configure options works for you, as outline by Cyril here:
-  http://thread.gmane.org/gmane.linux.ltp/21992
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/containers/netns/netns_crtchild.c          |  4 +++-
+ testcases/kernel/containers/netns/netns_crtchild_delchild.c |  4 +++-
+ testcases/kernel/containers/netns/netns_helper.h            | 13 ++++++++-----
+ testcases/kernel/containers/netns/netns_par_chld_ftp.c      |  4 +++-
+ testcases/kernel/containers/netns/netns_par_chld_ipv6.c     |  3 ++-
+ testcases/kernel/containers/netns/netns_two_children_ns.c   |  4 +++-
+ 6 files changed, 22 insertions(+), 10 deletions(-)
 
-you need to make changes yourself. If specific Makefile doesn't name
-sub-directories by name, then delete the ones you don't want to compile from tree.
-If Makefile does list sub-directories by name, then you need to patch that Makefile
-and remove those you wish to skip.
+diff --git a/testcases/kernel/containers/netns/netns_crtchild.c b/testcases/kernel/containers/netns/netns_crtchild.c
+index 3b5a696..8d9b68f 100644
+--- a/testcases/kernel/containers/netns/netns_crtchild.c
++++ b/testcases/kernel/containers/netns/netns_crtchild.c
+@@ -29,12 +29,14 @@
+ #include "common.h"
+ #include "netns_helper.h"
+ 
++#define IPROUTE_MIN_VER 80725
++
+ const char *TCID = "netns_crtchild";
+ 
+ static void setup(void)
+ {
+ 	tst_require_root(NULL);
+-	check_iproute();
++	check_iproute(IPROUTE_MIN_VER);
+ 	check_netns();
+ }
+ 
+diff --git a/testcases/kernel/containers/netns/netns_crtchild_delchild.c b/testcases/kernel/containers/netns/netns_crtchild_delchild.c
+index 3235990..f46f2b3 100644
+--- a/testcases/kernel/containers/netns/netns_crtchild_delchild.c
++++ b/testcases/kernel/containers/netns/netns_crtchild_delchild.c
+@@ -33,12 +33,14 @@
+ #include "common.h"
+ #include "netns_helper.h"
+ 
++#define IPROUTE_MIN_VER 80725
++
+ const char *TCID = "netns_crtchild_delchild";
+ 
+ static void setup(void)
+ {
+ 	tst_require_root(NULL);
+-	check_iproute();
++	check_iproute(IPROUTE_MIN_VER);
+ 	check_netns();
+ }
+ 
+diff --git a/testcases/kernel/containers/netns/netns_helper.h b/testcases/kernel/containers/netns/netns_helper.h
+index 7f301ce..3399a2f 100644
+--- a/testcases/kernel/containers/netns/netns_helper.h
++++ b/testcases/kernel/containers/netns/netns_helper.h
+@@ -33,9 +33,7 @@
+ #define CLONE_NEWNS -1
+ #endif
+ 
+-#define IPROUTE_MIN_VER 80725
+-
+-static void check_iproute(void)
++static void check_iproute(int spe_ipver)
+ {
+ 	FILE *ipf;
+ 	int n;
+@@ -47,9 +45,14 @@ static void check_iproute(void)
+ 				"Failed while opening pipe for iproute check");
+ 
+ 	n = fscanf(ipf, "ip utility, iproute2-ss%u", &ipver);
+-	if (n < 1 || ipver < IPROUTE_MIN_VER)
++	if (n < 1) {
+ 		tst_brkm(TCONF, NULL,
+-			"iproute tools do not support setting network namespaces");
++			"Failed while obtaining version for iproute check");
++	}
++	if (ipver < spe_ipver) {
++		tst_brkm(TCONF, NULL, "The commands in iproute tools do "
++			"not support required objects");
++	}
+ 
+ 	pclose(ipf);
+ }
+diff --git a/testcases/kernel/containers/netns/netns_par_chld_ftp.c b/testcases/kernel/containers/netns/netns_par_chld_ftp.c
+index 97411f7..d88780c 100644
+--- a/testcases/kernel/containers/netns/netns_par_chld_ftp.c
++++ b/testcases/kernel/containers/netns/netns_par_chld_ftp.c
+@@ -30,12 +30,14 @@
+ #include "common.h"
+ #include "netns_helper.h"
+ 
++#define IPROUTE_MIN_VER 80725
++
+ const char *TCID = "netns_par_chld_ftp";
+ 
+ static void setup(void)
+ {
+ 	tst_require_root(NULL);
+-	check_iproute();
++	check_iproute(IPROUTE_MIN_VER);
+ 	check_netns();
+ }
+ 
+diff --git a/testcases/kernel/containers/netns/netns_par_chld_ipv6.c b/testcases/kernel/containers/netns/netns_par_chld_ipv6.c
+index 1e50f24..96d00c5 100644
+--- a/testcases/kernel/containers/netns/netns_par_chld_ipv6.c
++++ b/testcases/kernel/containers/netns/netns_par_chld_ipv6.c
+@@ -50,13 +50,14 @@
+ char *TCID = "netns_ipv6";
+ int TST_TOTAL = 1;
+ 
++#define IPROUTE_MIN_VER 80725
+ #define PARENT_SCRIPT "netns_paripv6.sh"
+ #define CHILD_SCRIPT "netns_childipv6.sh"
+ 
+ static void setup(void)
+ {
+ 	tst_require_root(NULL);
+-	check_iproute();
++	check_iproute(IPROUTE_MIN_VER);
+ 	check_netns();
+ }
+ 
+diff --git a/testcases/kernel/containers/netns/netns_two_children_ns.c b/testcases/kernel/containers/netns/netns_two_children_ns.c
+index 0a032d0..a8a36d2 100644
+--- a/testcases/kernel/containers/netns/netns_two_children_ns.c
++++ b/testcases/kernel/containers/netns/netns_two_children_ns.c
+@@ -49,13 +49,15 @@
+ #include "common.h"
+ #include "netns_helper.h"
+ 
++#define IPROUTE_MIN_VER 80725
++
+ char *TCID = "netns_2children";
+ int TST_TOTAL = 1;
+ 
+ static void setup(void)
+ {
+ 	tst_require_root(NULL);
+-	check_iproute();
++	check_iproute(IPROUTE_MIN_VER);
+ 	check_netns();
+ }
+ 
+-- 
+1.9.3
 
-Regards,
-Jan
-
-> I do not want to whole LTP to get compiled but compile only the selected test
-> package. How can I select the packages to compile. It is just like we do not
-> compile the complete kernel but compile what is required for our need.
-> Similar to that how can we compile what we need and not the complete
-> package.
-> Request help to compile selected package in LTP.
-> Regards,
-> Raju Biswas
-> ------------------------------------------------------------------------------
-> Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-> from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-> with Interactivity, Sharing, Native Excel Exports, App Integration & more
-> Get technology previously reserved for billion-dollar corporations, FREE
-> http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 ------------------------------------------------------------------------------
 Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
