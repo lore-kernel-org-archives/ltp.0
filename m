@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3Ls7-0005JU-FE
-	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:35:19 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Y3Lrf-00014j-KO
-	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:35:19 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XWHo027048
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:32 +0800
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 23 Dec 2014 17:33:39 +0800
-Message-ID: <1419327221-28508-10-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 10/12] smack_set_onlycap.sh: Cleanup
+	(envelope-from <zlang@redhat.com>) id 1XwqQc-0005ND-LG
+	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 10:48:02 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XwqQb-0008WG-84
+	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 10:48:02 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id sB5Alsku015221
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 5 Dec 2014 05:47:54 -0500
+From: Zorro Lang <zlang@redhat.com>
+Date: Fri,  5 Dec 2014 18:47:50 +0800
+Message-Id: <1417776470-12961-1-git-send-email-zlang@redhat.com>
+Subject: [LTP] [PATCH] diotest: set errno with zero before test with zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,91 +27,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-* Use 'test.sh' script and use 'tst_*'.
+some code logic in diotest4.c likes below:
+----
+    ret = lseek(fd, offset, SEEK_SET);
+    if ((ret >= 0) || (errno != EINVAL)) {
+        tst_resm(TFAIL, "lseek allows negative offset. returns %d:%s", ret, strerror(errno));
+        failed = TRUE;
+        fail_count++;
+    } else
+        tst_resm(TPASS, "Negative Offset");
 
-* Add 'TCID' and 'TST_TOTAL' global variables.
+    ....
+    ....
 
-* Use '.' instead of 'source'.
+    ret = read(fd, buf, count);
+    if (ret >= 0 || errno != errnum) {
+        tst_resm(TFAIL, "read allows %s. returns %d: %s", msg, ret, strerror(errno));
+        l_fail = TRUE;
+    }
+----
 
-* Use '$()' instead of '``'.
+If lseek() EINVAL and read() return >= 0, the errno will not be setted to 0. The
+errno will still be EINVAL.
 
-* Some cleanup.
+I hit this problem when test on nfs. In NFS, lseek() return EINVAL as excepted,
+but the read() will return 1, when count = 1. But the errno is still EINVAL.
+That's incorrect.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+So I set errno = 0, before read() and all other functions which like this.
+
+Signed-off-by: Zorro Lang <zlang@redhat.com>
 ---
- .../kernel/security/smack/smack_set_onlycap.sh     | 40 ++++++++++++----------
- 1 file changed, 21 insertions(+), 19 deletions(-)
 
-diff --git a/testcases/kernel/security/smack/smack_set_onlycap.sh b/testcases/kernel/security/smack/smack_set_onlycap.sh
-index 4b7b53a..5753d18 100755
---- a/testcases/kernel/security/smack/smack_set_onlycap.sh
-+++ b/testcases/kernel/security/smack/smack_set_onlycap.sh
-@@ -10,29 +10,31 @@
- #	CAP_MAC_ADMIN
- #
- 
--source smack_common.sh
-+export TCID=smack_set_onlycap
-+export TST_TOTAL=1
- 
--MyLabel=`cat /proc/self/attr/current 2>/dev/null`
--StartLabel=`cat "$smackfsdir/onlycap" 2>/dev/null`
-+. test.sh
- 
--echo "$MyLabel" 2>/dev/null > "$smackfsdir/onlycap"
-+. smack_common.sh
- 
--label=`cat "$smackfsdir/onlycap" 2>/dev/null`
--if [ "$label" != "$MyLabel" ]; then
--	cat <<EOM
--The smack label reported for $smackfsdir/onlycap is "$label",
--not the expected "$MyLabel".
--EOM
--	exit 1
-+my_label=$(cat /proc/self/attr/current 2>/dev/null)
-+start_label=$(cat "$smackfsdir/onlycap" 2>/dev/null)
-+
-+echo "$my_label" 2>/dev/null > "$smackfsdir/onlycap"
-+
-+label=$(cat "$smackfsdir/onlycap" 2>/dev/null)
-+if [ "$label" != "$my_label" ]; then
-+	tst_brkm TFAIL "The smack label reported for \"$smackfsdir/onlycap\" "
-+		       "is \"$label\", not the expected \"$my_label\"."
- fi
- 
--echo "$StartLabel" 2>/dev/null > "$smackfsdir/onlycap"
-+echo "$start_label" 2>/dev/null > "$smackfsdir/onlycap"
- 
--label=`cat "$smackfsdir/onlycap" 2>/dev/null`
--if [ "$label" != "$StartLabel" ]; then
--	cat <<EOM
--The smack label reported for the current process is "$label",
--not the expected "$StartLabel".
--EOM
--	exit 1
-+label=$(cat "$smackfsdir/onlycap" 2>/dev/null)
-+if [ "$label" != "$start_label" ]; then
-+	tst_brkm TFAIL "The smack label reported for the current process is "
-+		       "\"$label\", not the expected \"$start_label\"."
- fi
-+
-+tst_resm TPASS "Test \"$TCID\" success."
-+tst_exit
+Hi,
+
+The problem likes above commit messge. Please review.
+
+Thank you,
+Zorro Lang
+
+ testcases/kernel/io/direct_io/diotest4.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
+index fa90a1e..82c5b33 100644
+--- a/testcases/kernel/io/direct_io/diotest4.c
++++ b/testcases/kernel/io/direct_io/diotest4.c
+@@ -107,6 +107,7 @@ runtest_f(int fd, char *buf, int offset, int count, int errnum, int testnum,
+ 			l_fail = TRUE;
+ 		}
+ 	} else {
++		errno = 0;
+ 		ret = read(fd, buf, count);
+ 		if (ret >= 0 || errno != errnum) {
+ 			tst_resm(TFAIL, "read allows %s. returns %d: %s",
+@@ -121,6 +122,7 @@ runtest_f(int fd, char *buf, int offset, int count, int errnum, int testnum,
+ 			l_fail = TRUE;
+ 		}
+ 	} else {
++		errno = 0;
+ 		ret = write(fd, buf, count);
+ 		if (ret >= 0 || errno != errnum) {
+ 			tst_resm(TFAIL, "write allows %s.returns %d: %s",
+@@ -247,6 +249,7 @@ int main(int argc, char *argv[])
+ 	/* Test-1: Negative Offset */
+ 	offset = -1;
+ 	count = bufsize;
++	errno = 0;
+ 	ret = lseek(fd, offset, SEEK_SET);
+ 	if ((ret >= 0) || (errno != EINVAL)) {
+ 		tst_resm(TFAIL, "lseek allows negative offset. returns %d:%s",
+@@ -284,6 +287,7 @@ int main(int argc, char *argv[])
+ 		fail_count++;
+ 		tst_resm(TFAIL, "Read beyond the file size");
+ 	} else {
++		errno = 0;
+ 		ret = read(fd, buf2, count);
+ 		if (ret > 0 || (ret < 0 && errno != EINVAL)) {
+ 			tst_resm(TFAIL,
+@@ -392,6 +396,7 @@ int main(int argc, char *argv[])
+ 		failed = TRUE;
+ 		fail_count++;
+ 	} else {
++		errno = 0;
+ 		ret = read(fd, buf2, count);
+ 		if (ret >= 0 || errno != EBADF) {
+ 			tst_resm(TFAIL,
+@@ -417,6 +422,7 @@ int main(int argc, char *argv[])
+ 		failed = TRUE;
+ 		fail_count++;
+ 	} else {
++		errno = 0;
+ 		ret = write(fd, buf2, count);
+ 		if (ret >= 0 || errno != EBADF) {
+ 			tst_resm(TFAIL,
+@@ -460,6 +466,7 @@ int main(int argc, char *argv[])
+ 			 strerror(errno));
+ 		l_fail = TRUE;
+ 	} else {
++		errno = 0;
+ 		ret = read(fd, (char *)((ulong) ADDRESS_OF_MAIN & pagemask),
+ 			 count);
+ 		if (ret >= 0 || errno != EFAULT) {
 -- 
 1.9.3
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming! The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
