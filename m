@@ -1,33 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1XyLqX-0008Ty-BZ
-	for ltp-list@lists.sourceforge.net; Tue, 09 Dec 2014 14:33:01 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XyLqR-0002FL-Sv
-	for ltp-list@lists.sourceforge.net; Tue, 09 Dec 2014 14:33:01 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id sB9EWn9k001690
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Dec 2014 14:32:50 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	sB9EWmPW023638
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Dec 2014 14:32:49 GMT
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	sB9EWluA010612
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Dec 2014 14:32:47 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue,  9 Dec 2014 17:34:33 +0300
-Message-Id: <1418135673-31915-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1418135673-31915-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1418135673-31915-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 2/2] network/runtest: add VxLAN IPv6 tests
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XwoGV-0005Fh-OL
+	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 08:29:27 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1XwoGU-0003Ov-4E
+	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 08:29:27 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sB58SwZH032110
+	for <ltp-list@lists.sourceforge.net>; Fri, 5 Dec 2014 16:28:58 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 5 Dec 2014 16:26:02 +0800
+Message-ID: <1417767962-21248-1-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1415251889-10596-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1415251889-10596-1-git-send-email-gux.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v3] containers: fix three cases' exit status
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,37 +28,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Test two VxLAN configurations: unicast and multicast.
+In iproute2 whose version is earlier than v3.0.0, ip
+command doesn't support netns object. In this condition,
+running three cases (netns_devices.sh, netns_devices2.sh
+and netns_isolation.sh) will exit with TFAIL. It is not
+suitable, so fix these cases' exit status with TCONF.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
 ---
- runtest/network_stress.features |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
+ testcases/kernel/containers/netns/netns_devices.sh |  2 ++
+ .../kernel/containers/netns/netns_devices2.sh      |  2 ++
+ testcases/kernel/containers/netns/netns_helper.sh  | 39 ++++++++++++++++++++++
+ .../kernel/containers/netns/netns_isolation.sh     |  2 ++
+ 4 files changed, 45 insertions(+)
+ create mode 100755 testcases/kernel/containers/netns/netns_helper.sh
 
-diff --git a/runtest/network_stress.features b/runtest/network_stress.features
-index 6638b65..dd8e1a4 100644
---- a/runtest/network_stress.features
-+++ b/runtest/network_stress.features
-@@ -7,4 +7,9 @@ tcp_fastopen6 tcp_fastopen_run.sh -6
+diff --git a/testcases/kernel/containers/netns/netns_devices.sh b/testcases/kernel/containers/netns/netns_devices.sh
+index 7126267..750ffcc 100755
+--- a/testcases/kernel/containers/netns/netns_devices.sh
++++ b/testcases/kernel/containers/netns/netns_devices.sh
+@@ -29,6 +29,7 @@
+ TCID=netns_devices
+ TST_TOTAL=3
+ . test.sh
++. netns_helper.sh
+ IP0=192.168.0.1
+ IP1=192.168.0.2
  
- vxlan01 vxlan01.sh
- vxlan02 vxlan02.sh
--vxlan03 vxlan03.sh
+@@ -46,6 +47,7 @@ cleanup()
+ # SETUP
+ tst_require_root
+ tst_check_cmds ip
++tst_check_iproute 111010
+ TST_CLEANUP=cleanup
+ 
+ # creates a new network namespace "myns0" (man 8 ip-netns)
+diff --git a/testcases/kernel/containers/netns/netns_devices2.sh b/testcases/kernel/containers/netns/netns_devices2.sh
+index f0d0651..8dfc6c6 100755
+--- a/testcases/kernel/containers/netns/netns_devices2.sh
++++ b/testcases/kernel/containers/netns/netns_devices2.sh
+@@ -29,6 +29,7 @@
+ TCID=netns_devices2
+ TST_TOTAL=3
+ . test.sh
++. netns_helper.sh
+ IP0=192.168.0.1
+ IP1=192.168.0.2
+ 
+@@ -46,6 +47,7 @@ cleanup()
+ # SETUP
+ tst_require_root
+ tst_check_cmds ip ifconfig
++tst_check_iproute 111010
+ TST_CLEANUP=cleanup
+ 
+ # creates a new network namespace "myns0" (man 8 ip-netns)
+diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+new file mode 100755
+index 0000000..70415d2
+--- /dev/null
++++ b/testcases/kernel/containers/netns/netns_helper.sh
+@@ -0,0 +1,39 @@
++#!/bin/sh
++#
++# Copyright (c) Linux Test Project, 2014
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License along
++# with this program; if not, write to the Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# This is a LTP shell test library for iproute.
++#
 +
-+vxlan_multi_03 vxlan03.sh -d multi
-+vxlan_uni_03 vxlan03.sh -d uni
++. test.sh
 +
-+vxlan_ipv6_multi_03 vxlan03.sh -6 -d multi
-+vxlan_ipv6_uni_03 vxlan03.sh -6 -d uni
++tst_check_iproute()
++{
++	local cur_ipver=`ip -V`
++	local spe_ipver=$1
++
++	cur_ipver=${cur_ipver##*s}
++
++	if [ -z $cur_ipver ] || [ -z $spe_ipver ]; then
++		tst_brkm TBROK "don't obtain valid iproute version"
++	fi
++
++	if [ $cur_ipver -lt $spe_ipver ]; then
++		tst_brkm TCONF \
++			"The commands in iproute tools do not support required objects"
++	fi
++}
+diff --git a/testcases/kernel/containers/netns/netns_isolation.sh b/testcases/kernel/containers/netns/netns_isolation.sh
+index f1ddf2c..78dc081 100755
+--- a/testcases/kernel/containers/netns/netns_isolation.sh
++++ b/testcases/kernel/containers/netns/netns_isolation.sh
+@@ -24,6 +24,7 @@
+ TCID=netns_isolation
+ TST_TOTAL=3
+ . test.sh
++. netns_helper.sh
+ IP=192.168.0.2
+ 
+ 
+@@ -40,6 +41,7 @@ cleanup()
+ # SETUP
+ tst_require_root
+ tst_check_cmds ip
++tst_check_iproute 111010
+ TST_CLEANUP=cleanup
+ 
+ 
 -- 
-1.7.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
