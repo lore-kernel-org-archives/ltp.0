@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xw7W1-0008Sq-N2
-	for ltp-list@lists.sourceforge.net; Wed, 03 Dec 2014 10:50:37 +0000
-Date: Wed, 3 Dec 2014 11:50:24 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xxwhk-0006xO-DV
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 11:42:16 +0000
+Date: Mon, 8 Dec 2014 12:42:00 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141203105024.GA11624@rei.suse.de>
-References: <1417596291-8540-1-git-send-email-liwang@redhat.com>
-	<373996084.5962831.1417596425167.JavaMail.zimbra@redhat.com>
+Message-ID: <20141208114200.GB11071@rei.suse.de>
+References: <1417713657-2556-1-git-send-email-alexey.kodanev@oracle.com>
+	<1417713657-2556-2-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <373996084.5962831.1417596425167.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] /vm/hugepage/thp/thp05: cleanup should not use
- safe macros
+In-Reply-To: <1417713657-2556-2-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH 2/2] device-drivers/cpufreq: add intel_pstate
+ driver to boost test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,169 +26,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Hi!
-> Hi, after thinking over, I feel there is no need to create a static function 
-> file_vscanf() and file_vprintf().
-> 
-> I'd love to create FILE_PRINTF() macro that is not calling the tst_brkm() 
-> and issues only a warning. Then we can use FILE_PRINTF() to replace all 
-> the safe macros in cleanup().
-> 
-> So, new patch like this:
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
+On Thu, Dec 04, 2014 at 08:20:57PM +0300, Alexey Kodanev wrote:
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 > ---
->  include/safe_file_ops.h                            | 10 ++++
->  lib/safe_file_ops.c                                | 59 ++++++++++++++++++++++
->  .../kernel/device-drivers/acpi/ltp_acpi_cpufreq.c  |  4 +-
->  .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |  2 +-
->  testcases/kernel/mem/ksm/ksm01.c                   |  2 +-
->  testcases/kernel/mem/ksm/ksm02.c                   |  2 +-
->  testcases/kernel/mem/ksm/ksm03.c                   |  2 +-
->  testcases/kernel/mem/ksm/ksm04.c                   |  2 +-
->  testcases/kernel/mem/ksm/ksm06.c                   |  6 +--
->  testcases/kernel/mem/thp/thp04.c                   | 10 ++--
->  testcases/kernel/mem/thp/thp05.c                   | 10 ++--
->  testcases/kernel/syscalls/fork/fork13.c            |  2 +-
->  12 files changed, 90 insertions(+), 21 deletions(-)
+>  .../kernel/device-drivers/cpufreq/cpufreq_boost.c  |   67 +++++++++++---------
+>  1 files changed, 37 insertions(+), 30 deletions(-)
 > 
-> diff --git a/include/safe_file_ops.h b/include/safe_file_ops.h
-> index 1815984..865575a 100644
-> --- a/include/safe_file_ops.h
-> +++ b/include/safe_file_ops.h
-> @@ -42,6 +42,11 @@
+> diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> index 423188e..941e4db 100644
+> --- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> +++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
+> @@ -1,5 +1,5 @@
 >  /*
->   * All-in-one function to scanf value(s) from a file.
->   */
-> +void file_scanf(const char *file, const char *fmt, ...);
-> +
+> - * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
+> + * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
 
-In this case we should return some exit value. Simple 0 == ok, 1 ==
-failed, would suffice. Otherwise we cannot say if the values were read or
-not.
+This should rather be "Copyright (c) 2013-2014 ..."
 
-> +#define FILE_SCANF(file, fmt, ...) \
-> +	file_scanf((file), (fmt), ## __VA_ARGS__)
-
-The whole point of the macro indirection is to include the file and
-lineno parameter in the tst_ messages. Please do that.
-
->  void safe_file_scanf(const char *file, const int lineno,
->                       void (*cleanup_fn)(void),
->  		     const char *path, const char *fmt, ...)
-> @@ -54,6 +59,11 @@ void safe_file_scanf(const char *file, const int lineno,
->  /*
->   * All-in-one function that lets you printf directly into a file.
->   */
-> +void file_printf(const char *file, const char *fmt, ...);
-> +
-> +#define FILE_PRINTF(file, fmt, ...) \
-> +	file_printf((file), (fmt), ## __VA_ARGS__)
-
-It would be better to return exit value here as well.
-
->  void safe_file_printf(const char *file, const int lineno,
->                        void (*cleanup_fn)(void),
->                        const char *path, const char *fmt, ...)
-> diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
-> index 0325ce2..6c25ea5 100644
-> --- a/lib/safe_file_ops.c
-> +++ b/lib/safe_file_ops.c
-> @@ -73,6 +73,37 @@ static int count_scanf_conversions(const char *fmt)
->  	return cnt;
->  }
+>   * This program is free software; you can redistribute it and/or
+>   * modify it under the terms of the GNU General Public License as
+> @@ -37,22 +37,33 @@
+>  #include "safe_macros.h"
+>  #include "safe_stdio.h"
 >  
-> +void file_scanf(const char *file, const char *fmt, ...)
-> +{
-> +	va_list va;
-> +	FILE *f;
-> +	int exp_convs, ret;
-> +
-> +	f = fopen(file, "r");
-> +
-> +	if (f == NULL) {
-> +		tst_resm(TWARN,
-> +			"Failed to open FILE '%s' for reading", file);
-
-You have to do a return here otherwise we will continue the execution
-till the vfscanf() below and segfault.
-
-> +	}
-> +
-> +	exp_convs = count_scanf_conversions(fmt);
-> +
-> +	va_start(va, fmt);
-> +	ret = vfscanf(f, fmt, va);
-> +	va_end(va);
-> +
-> +	if (ret == EOF)
-> +		tst_resm(TWARN, "The FILE '%s' ended prematurely", file);
-> +
-> +	if (ret != exp_convs) {
-> +		tst_resm(TWARN, "Expected %i conversions got %i FILE '%s'",
-> +			 exp_convs, ret, file);
-> +	}
-> +
-> +	if (fclose(f))
-> +		tst_resm(TWARN, "Failed to close FILE '%s'", file);
-
-Missing returns here as well, but do not forget to close the file. I.e. do
-
-	if (ret == EOF) {
-		tst_resm(TWARN, ...);
-		goto err;
-	}
-
-	...
-
-	return 0;
-err:
-	fclose(f)
-	return 1;
-
-> +}
-> +
->  void safe_file_scanf(const char *file, const int lineno,
->  		     void (*cleanup_fn) (void),
->  		     const char *path, const char *fmt, ...)
-> @@ -107,6 +138,34 @@ void safe_file_scanf(const char *file, const int lineno,
->  			 exp_convs, ret, path, file, lineno);
->  	}
+> -char *TCID = "ltp_acpi_cpufreq";
+> +char *TCID = "cpufreq_boost";
 >  
-> +	if (fclose(f)) {
-> +		tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +			 "Failed to close FILE '%s' at %s:%d",
-> +			 path, file, lineno);
-> +	}
-> +}
+>  #define SYSFS_CPU_DIR "/sys/devices/system/cpu/"
+>  
+> -const char boost[]	= SYSFS_CPU_DIR "cpufreq/boost";
+> +struct cpufreq_driver_info {
+> +	char *name;
+> +	int off;
+> +	char *on_str;
+> +	char *off_str;
+> +	char *file;
+> +};
+> +static const struct cpufreq_driver_info cdrv[] = {
+> +	{ "acpi_cpufreq", 0, "1", "0", SYSFS_CPU_DIR "cpufreq/boost" },
+> +	{ "intel_pstate", 1, "0", "1", SYSFS_CPU_DIR "intel_pstate/no_turbo" },
+> +};
+> +static int id = -1;
 > +
-> +void file_printf(const char *file, const char *fmt, ...)
-> +{
-> +	va_list va;
-> +	FILE *f;
+>  static int boost_value;
+>  
+>  const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
+>  static char governor_name[16];
+>  
+> -const char setspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_setspeed";
+>  const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
+>  
+>  static void cleanup(void)
+>  {
+> -	SAFE_FILE_PRINTF(NULL, boost, "%d", boost_value);
+> +	SAFE_FILE_PRINTF(NULL, cdrv[id].file, "%d", boost_value);
+>  
+>  	if (governor[0] != '\0')
+>  		SAFE_FILE_PRINTF(NULL, governor, "%s", governor_name);
+> @@ -63,22 +74,32 @@ static void cleanup(void)
+>  static void setup(void)
+>  {
+>  	int fd;
+> +	unsigned int i;
+>  	tst_require_root(NULL);
+>  
+> -	fd = open(boost, O_RDWR);
+> -	if (fd == -1) {
+> -		tst_brkm(TCONF, NULL,
+> -			"acpi-cpufreq not loaded or overclock not supported");
+> +	for (i = 0; i < ARRAY_SIZE(cdrv); ++i) {
+> +		fd = open(cdrv[i].file, O_RDWR);
+> +		if (fd == -1)
+> +			continue;
 > +
-> +	f = fopen(file, "w");
-> +
-> +	if (f == NULL) {
-> +		tst_resm(TWARN,
-> +			"Failed to open FILE '%s' for writing", file);
-> +	}
-> +
-> +	va_start(va, fmt);
-> +
-> +	if (vfprintf(f, fmt, va) < 0)
-> +		tst_resm(TWARN, "Failed to print to FILE '%s'", file);
-> +
-> +	va_end(va);
-> +
-> +	if (fclose(f))
-> +		tst_resm(TWARN, "Failed to close FILE '%s'", file);
->  }
+> +		id = i;
+> +		close(fd);
 
-Missing return statements here as well.
+Will simple access() suffice here or do we have to actually open the
+file?
+
+
+Otherwise it looks Ok.
 
 -- 
 Cyril Hrubis
