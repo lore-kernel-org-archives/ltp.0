@@ -1,34 +1,46 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Xwa3k-0000Ps-LV
-	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 17:19:20 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xwa3j-0003dq-Jt
-	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 17:19:20 +0000
-Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id sB4HJChv016800
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Dec 2014 17:19:13 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	sB4HJCa9018150
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Dec 2014 17:19:12 GMT
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	sB4HJBgt018143
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Dec 2014 17:19:12 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  4 Dec 2014 20:20:57 +0300
-Message-Id: <1417713657-2556-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1417713657-2556-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1417713657-2556-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 2/2] device-drivers/cpufreq: add intel_pstate driver
-	to boost test
+	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1XxzV9-0002X1-IL
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 14:41:27 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XxzV8-00083U-Hr
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 14:41:27 +0000
+Received: from /spool/local
+	by e8.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+	Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
+	Mon, 8 Dec 2014 09:41:21 -0500
+Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com
+	[9.57.198.24])
+	by d01dlp03.pok.ibm.com (Postfix) with ESMTP id 6D279C90052
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  8 Dec 2014 09:32:51 -0500 (EST)
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	sB8EemXC15990788
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Dec 2014 14:40:48 GMT
+Received: from d01av03.pok.ibm.com (localhost [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	sB8EelSC031798
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Dec 2014 09:40:47 -0500
+Received: from localhost.localdomain ([9.125.24.218])
+	by d01av03.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	sB8EekO2031730
+	for <ltp-list@lists.sourceforge.net>; Mon, 8 Dec 2014 09:40:47 -0500
+Date: Mon, 8 Dec 2014 21:52:50 +0800
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Message-ID: <20141208135250.GC3352@localhost.localdomain>
+References: <20141206012422.GA3352@localhost.localdomain>
+	<20141208120922.GD11071@rei.suse.de>
+	<20141208130301.GB3352@localhost.localdomain>
+	<20141208131931.GB13319@rei.suse.de>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20141208131931.GB13319@rei.suse.de>
+Subject: Re: [LTP] questions about getrusage04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,151 +50,62 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- .../kernel/device-drivers/cpufreq/cpufreq_boost.c  |   67 +++++++++++---------
- 1 files changed, 37 insertions(+), 30 deletions(-)
+On Mon, Dec 08, 2014 at 02:19:31PM +0100, Cyril Hrubis wrote:
+> Hi!
+> > > It tests timer precision for getrusage timers. If the timers are
+> > > incremting by larger values than expected, something is wrong in kernel.
+> > > The precision depends on CONFIG_HZ settings which is represented by the
+> > > BIAS_MAX.
+> > Where does the 1000 come from? If on a slow system, we need to increase
+> > the "factor_nr", right?
+> 
+> The factor is set to 1 and it shouldn't needed to change that.
+> 
+> > > > And looks like with this patch applied, it works well on powerpc:
+> > > 
+> > > Can you please share the output of the testcase on ppc and ppc64? What
+> > > is the expected timer granularity there?
+> > > 
+> > Looks like the granularity is 10000us:
+> > 
+> > getrusage04    0  TINFO  :  Expected timers granularity is 10000 us
+> > getrusage04    0  TINFO  :  Using 1 as multiply factor for max [us]time increment (1000+10000us)!
+> > getrusage04    0  TINFO  :  utime:          56us; stime:        1192us
+> > getrusage04    0  TINFO  :  utime:          56us; stime:        2009us
+> > getrusage04    0  TINFO  :  utime:          56us; stime:        4233us
+> > getrusage04    0  TINFO  :  utime:        1227us; stime:        5243us
+> > getrusage04    0  TINFO  :  utime:        1227us; stime:        8541us
+> > getrusage04    0  TINFO  :  utime:        2072us; stime:        8741us
+> > getrusage04    0  TINFO  :  utime:        2602us; stime:       11169us
+> > getrusage04    0  TINFO  :  utime:        2743us; stime:       11747us
+> > getrusage04    0  TINFO  :  utime:        2948us; stime:       12790us
+> > getrusage04    0  TINFO  :  utime:        2948us; stime:       18118us
+> > getrusage04    0  TINFO  :  utime:        2948us; stime:       18596us
+> > getrusage04    0  TINFO  :  utime:        4458us; stime:       20030us
+> > getrusage04    0  TINFO  :  utime:        4458us; stime:       20244us
+> > getrusage04    0  TINFO  :  utime:        4458us; stime:       23432us
+> > getrusage04    0  TINFO  :  utime:        5412us; stime:       24650us
+> > getrusage04    0  TINFO  :  utime:        5412us; stime:       27273us
+> > getrusage04    0  TINFO  :  utime:        6125us; stime:       27909us
+> > getrusage04    0  TINFO  :  utime:        6125us; stime:       27911us
+> > getrusage04    0  TINFO  :  utime:        6125us; stime:       28111us
+> > getrusage04    0  TINFO  :  utime:        6235us; stime:       28513us
+> > getrusage04    0  TINFO  :  utime:        6235us; stime:       28750us
+> > getrusage04    1  TPASS  :  Test Passed
+> 
+> Hmm, this looks like the granularity of the timer is much smaller than
+> 10000us and it varies greatly between measurements. Is this CONFIG_NO_HZ
+> system?
 
-diff --git a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-index 423188e..941e4db 100644
---- a/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-+++ b/testcases/kernel/device-drivers/cpufreq/cpufreq_boost.c
-@@ -1,5 +1,5 @@
- /*
-- * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License as
-@@ -37,22 +37,33 @@
- #include "safe_macros.h"
- #include "safe_stdio.h"
- 
--char *TCID = "ltp_acpi_cpufreq";
-+char *TCID = "cpufreq_boost";
- 
- #define SYSFS_CPU_DIR "/sys/devices/system/cpu/"
- 
--const char boost[]	= SYSFS_CPU_DIR "cpufreq/boost";
-+struct cpufreq_driver_info {
-+	char *name;
-+	int off;
-+	char *on_str;
-+	char *off_str;
-+	char *file;
-+};
-+static const struct cpufreq_driver_info cdrv[] = {
-+	{ "acpi_cpufreq", 0, "1", "0", SYSFS_CPU_DIR "cpufreq/boost" },
-+	{ "intel_pstate", 1, "0", "1", SYSFS_CPU_DIR "intel_pstate/no_turbo" },
-+};
-+static int id = -1;
-+
- static int boost_value;
- 
- const char governor[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_governor";
- static char governor_name[16];
- 
--const char setspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_setspeed";
- const char maxspeed[]	= SYSFS_CPU_DIR "cpu0/cpufreq/scaling_max_freq";
- 
- static void cleanup(void)
- {
--	SAFE_FILE_PRINTF(NULL, boost, "%d", boost_value);
-+	SAFE_FILE_PRINTF(NULL, cdrv[id].file, "%d", boost_value);
- 
- 	if (governor[0] != '\0')
- 		SAFE_FILE_PRINTF(NULL, governor, "%s", governor_name);
-@@ -63,22 +74,32 @@ static void cleanup(void)
- static void setup(void)
- {
- 	int fd;
-+	unsigned int i;
- 	tst_require_root(NULL);
- 
--	fd = open(boost, O_RDWR);
--	if (fd == -1) {
--		tst_brkm(TCONF, NULL,
--			"acpi-cpufreq not loaded or overclock not supported");
-+	for (i = 0; i < ARRAY_SIZE(cdrv); ++i) {
-+		fd = open(cdrv[i].file, O_RDWR);
-+		if (fd == -1)
-+			continue;
-+
-+		id = i;
-+		close(fd);
-+		break;
- 	}
--	close(fd);
-+
-+	if (id == -1)
-+		tst_brkm(TCONF, NULL, "overclock not supported");
-+
-+	tst_resm(TINFO, "found '%s' driver, sysfs knob '%s'",
-+		cdrv[id].name, cdrv[id].file);
- 
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
--	SAFE_FILE_SCANF(NULL, boost, "%d", &boost_value);
-+	SAFE_FILE_SCANF(NULL, cdrv[i].file, "%d", &boost_value);
- 
- 	/* change cpu0 scaling governor */
- 	SAFE_FILE_SCANF(NULL, governor, "%s", governor_name);
--	SAFE_FILE_PRINTF(cleanup, governor, "%s", "userspace");
-+	SAFE_FILE_PRINTF(cleanup, governor, "%s", "performance");
- 
- 	/* use only cpu0 */
- 	cpu_set_t set;
-@@ -95,20 +116,6 @@ static void setup(void)
- 	}
- }
- 
--static void set_speed(int freq)
--{
--	int set_freq;
--	SAFE_FILE_SCANF(cleanup, setspeed, "%d", &set_freq);
--
--	if (set_freq != freq) {
--		tst_resm(TINFO, "change target speed from %d KHz to %d KHz",
--			set_freq, freq);
--		SAFE_FILE_PRINTF(cleanup, setspeed, "%d", freq);
--	} else {
--		tst_resm(TINFO, "target speed is %d KHz", set_freq);
--	}
--}
--
- static int load_cpu(int max_freq_khz)
- {
- 	int sum = 0, i = 0, total_time_ms;
-@@ -141,16 +148,16 @@ static void test_run(void)
- {
- 	int boost_time, boost_off_time, max_freq_khz;
- 	SAFE_FILE_SCANF(cleanup, maxspeed, "%d", &max_freq_khz);
--	set_speed(max_freq_khz);
-+	tst_resm(TINFO, "maximum speed is %d KHz", max_freq_khz);
- 
- 	/* Enable boost */
--	if (boost_value == 0)
--		SAFE_FILE_PRINTF(cleanup, boost, "1");
-+	if (boost_value == cdrv[id].off)
-+		SAFE_FILE_PRINTF(cleanup, cdrv[id].file, cdrv[id].on_str);
- 	tst_resm(TINFO, "load CPU0 with boost enabled");
- 	boost_time = load_cpu(max_freq_khz);
- 
- 	/* Disable boost */
--	SAFE_FILE_PRINTF(cleanup, boost, "0");
-+	SAFE_FILE_PRINTF(cleanup, cdrv[id].file, cdrv[id].off_str);
- 	tst_resm(TINFO, "load CPU0 with boost disabled");
- 	boost_off_time = load_cpu(max_freq_khz);
- 
--- 
-1.7.1
+Yes, looks like it is:
+
+% grep CONFIG_NO_HZ /boot/config-2.6.32-504.el6.ppc64
+CONFIG_NO_HZ=y
 
 
 ------------------------------------------------------------------------------
