@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xy1lx-0001IX-GT
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 17:06:57 +0000
-Date: Mon, 8 Dec 2014 18:06:40 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XxvxP-0005D2-UQ
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 10:54:23 +0000
+Date: Mon, 8 Dec 2014 11:54:07 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141208170640.GA16442@rei.suse.de>
-References: <20141208164328.41386591@mats-desktop>
+Message-ID: <20141208105407.GA9223@rei.suse.de>
+References: <001701d012c2$e2ae8d30$a80ba790$@samsung.com>
+	<1917282961.14573534.1418030128901.JavaMail.zimbra@redhat.com>
+	<20141208091810.GA6401@rei.suse.de>
+	<002601d012d3$7daa5a20$78ff0e60$@samsung.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20141208164328.41386591@mats-desktop>
-Subject: Re: [LTP] Full nohz test
+In-Reply-To: <002601d012d3$7daa5a20$78ff0e60$@samsung.com>
+Subject: Re: [LTP] How to compile indiviual packages/modules in LTP
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,34 +27,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mats Liljegren <mats.liljegren@enea.com>
+To: Raju <raju.biswas@samsung.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I'm (still...) working on a new test case for testing the NO_HZ_FULL
-> kernel feature available from Linux 3.10. This test code depends on a
-> tool that performs CPU isolation, which is a requirement for the
-> NO_HZ_FULL to work.
-> 
-> It was previously proposed that this tool, rt-tools, would be a git
-> submodule to ltp. That sounded good in the beginning, until I started
-> to think about cross-compile, altering install location, etc. Since
-> rt-tools uses cmake, and ltp uses autotools, there is no automatic
-> inheritance of configuration. It would therefore be easy to miss copying
-> some configuration from configure to the cmake invocation, causing
-> surprises.
-> 
-> Since the test case is not intended to be part of default, I suggest
-> the simple solution: Just document in the README file that this test
-> case requires that the rt-tools are built and installed before the test
-> case is run on target, and instructions how to get started with that.
+> When we compile the complete LTP and INSTALL in our target its more than 1
+> GB of the compiled output.
 
-Sounds ok to me. If the tool installs binaries somewhere to the $PATH
-you just have to assert that these are installed. For bash code there is
-tst_check_cmds function. For C code you can probably use tst_get_path().
+That is a bit strange. For me the result is less than two hundred
+megabytes, your result is nearly ten times greater. This looks like a
+bug in your compiler/binutils.
 
-In short make sure that the test exits louldy if these are not installed
-and point the user to a README in the message.
+> We do not have enough memory to copy all the LTP INSTALLED files and
+> hence we want to compile only the selected test cases which we want to
+> execute. That is why when I tried to explore options I was not able to
+> find any which will do that.  Hence need help on how can we do that ?
+
+If your target has network interface you can use nfs to share the
+LTP binary directory over the network.
+
+> Suppose we have "ade  at  cpio  cron  eject  fileutils  gzip  logrotate
+> mail  Makefile  sssd  su  tar  tpm-tools  unzip" commands in the
+> /ltp-full-20140828/testcases/commands/ dir. We need to compile only ade ,
+> gzip , tar , unzip for our purpose and not compile the complete command
+> folder. Hence we need help on how to compile the selected package. 
+
+I've allready explained how to do that by hand. There is no other way to
+do that.
 
 -- 
 Cyril Hrubis
