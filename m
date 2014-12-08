@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3LrR-0007Mo-Ny
-	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:37 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Y3LrQ-00013x-IC
-	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:37 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XSsw027032
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:28 +0800
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 23 Dec 2014 17:33:34 +0800
-Message-ID: <1419327221-28508-5-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1XxxBo-0003SD-Ap
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 12:13:20 +0000
+Date: Mon, 8 Dec 2014 13:13:04 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141208121304.GE11071@rei.suse.de>
+References: <1417776470-12961-1-git-send-email-zlang@redhat.com>
+	<20141208115349.GC11071@rei.suse.de>
+	<648997700.14823290.1418040193631.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 05/12] smack_set_current.sh: Cleanup
+Content-Disposition: inline
+In-Reply-To: <648997700.14823290.1418040193631.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] diotest: set errno with zero before test with zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,88 +26,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-* Use 'test.sh' script and use 'tst_*'.
+Hi!
+> > >     ret = read(fd, buf, count);
+> > >     if (ret >= 0 || errno != errnum) {
+> > >         tst_resm(TFAIL, "read allows %s. returns %d: %s", msg, ret,
+> > >         strerror(errno));
+> > >         l_fail = TRUE;
+> > 
+> > As far as I can see this code tests that read() has returned negative
+> > value and in this case errno must be set.
+> > 
+> > I.e.
+> > 
+> > if ret >= 0 -> read hasn't failed -> FAILURE
+> > 
+> > The errno != errnum is not evaluated unless the first condition has
+> > failed (that means ret < 0) and in this case errno must be set.
+> > 
+> > The condition is equivalent to !(ret < 0 && errno == errnum)
+> > 
+> > Or am I missing something?
+> 
+> I think he refers to output of tst_resm being possibly misleading
+> in case ret >= 0, that call is using strerror(errno).
 
-* Add 'TCID' and 'TST_TOTAL' global variables.
+Ah, now that makes sense.
 
-* Use '.' instead of 'source'.
+Looks like a reasonable solution. Any other solution that I can think of
+would add one more if statement...
 
-* Use '$()' instead of '``'.
-
-* Some cleanup.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- .../kernel/security/smack/smack_set_current.sh     | 40 ++++++++++++----------
- 1 file changed, 21 insertions(+), 19 deletions(-)
-
-diff --git a/testcases/kernel/security/smack/smack_set_current.sh b/testcases/kernel/security/smack/smack_set_current.sh
-index 28a1b1b..4e52c89 100755
---- a/testcases/kernel/security/smack/smack_set_current.sh
-+++ b/testcases/kernel/security/smack/smack_set_current.sh
-@@ -11,29 +11,31 @@
- #	/smack/onlycap unset
- #
- 
--source smack_common.sh
-+export TCID=smack_set_current
-+export TST_TOTAL=1
- 
--NotTheFloorLabel="XYZZY"
--StartLabel=`cat /proc/self/attr/current 2>/dev/null`
-+. test.sh
- 
--echo "$NotTheFloorLabel" 2>/dev/null > /proc/self/attr/current
-+. smack_common.sh
- 
--label=`cat /proc/self/attr/current 2>/dev/null`
--if [ "$label" != "$NotTheFloorLabel" ]; then
--	cat <<EOM
--The smack label reported for the current process is "$label",
--not the expected "$NotTheFloorLabel".
--EOM
--	exit 1
-+not_floor_label="XYZZY"
-+start_label=$(cat /proc/self/attr/current 2>/dev/null)
-+
-+echo "$not_floor_label" 2>/dev/null > /proc/self/attr/current
-+
-+label=$(cat /proc/self/attr/current 2>/dev/null)
-+if [ "$label" != "$not_floor_label" ]; then
-+	tst_brkm TFAIL "The smack label reported for the current process is" \
-+		       "\"$label\", not the expected \"$not_floor_label\"."
- fi
- 
--echo "$StartLabel" 2>/dev/null > /proc/self/attr/current
-+echo "$start_label" 2>/dev/null > /proc/self/attr/current
- 
--label=`cat /proc/self/attr/current > /dev/null`
--if [ "$label" != "$StartLabel" ]; then
--	cat <<EOM
--The smack label reported for the current process is "$label",
--not the expected "$StartLabel".
--EOM
--	exit 1
-+label=$(cat /proc/self/attr/current 2> /dev/null)
-+if [ "$label" != "$start_label" ]; then
-+	tst_brkm TFAIL "The smack label reported for the current process is" \
-+		       "\"$label\", not the expected \"$start_label\"."
- fi
-+
-+tst_resm TPASS "Test \"$TCID\" success."
-+tst_exit
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming! The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
