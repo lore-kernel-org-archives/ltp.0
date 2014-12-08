@@ -1,41 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1Xx7b6-0008Tr-El
-	for ltp-list@lists.sourceforge.net; Sat, 06 Dec 2014 05:08:00 +0000
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xx7b5-00050G-G9
-	for ltp-list@lists.sourceforge.net; Sat, 06 Dec 2014 05:08:00 +0000
-Received: from /spool/local
-	by e36.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
-	Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
-	Fri, 5 Dec 2014 22:07:53 -0700
-Received: from b03cxnp08027.gho.boulder.ibm.com
-	(b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-	by d03dlp02.boulder.ibm.com (Postfix) with ESMTP id B5E5C3E4003D
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  5 Dec 2014 22:07:51 -0700 (MST)
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with
-	ESMTP id sB657piw21954632
-	for <ltp-list@lists.sourceforge.net>; Fri, 5 Dec 2014 22:07:51 -0700
-Received: from d03av02.boulder.ibm.com (localhost [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP
-	id sB657ptS023404
-	for <ltp-list@lists.sourceforge.net>; Fri, 5 Dec 2014 22:07:51 -0700
-Received: from localhost.localdomain ([9.125.6.247])
-	by d03av02.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	sB657oEU023314
-	for <ltp-list@lists.sourceforge.net>; Fri, 5 Dec 2014 22:07:50 -0700
-Date: Sat, 6 Dec 2014 09:24:22 +0800
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Message-ID: <20141206012422.GA3352@localhost.localdomain>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xxxvw-0007zb-TV
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 13:01:00 +0000
+Date: Mon, 8 Dec 2014 14:00:45 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20141208130045.GA13319@rei.suse.de>
+References: <1417856007.2526.12.camel@G08JYZSD130126.localdomain>
+	<20141208113557.GA11071@rei.suse.de>
+	<1418042315.13292.4.camel@G08JYZSD130126.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] questions about getrusage04
+In-Reply-To: <1418042315.13292.4.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [PATCH] test.sh: tst_resm and tst_brkm enhance
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -48,34 +26,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Hey,
+Hi!
+> In <LTP>/testcases/network/multicast/mc_cmds
+> --------------------------------------------------------------------------------
+>             ...
+> 113         ping -c2 -I $INTERFACE 224.0.0.1 > $PING_OUT
+> 114         if [ $? -ne 0 ]; then
+> 115                 tst_resm TINFO "Trying to ping with $INTERFACE_DEVICE"\
+> 116                                "with the -I option instead of IP address"
+>                     ...
+> 122         fi
+>             ...
+> --------------------------------------------------------------------------------
+> 
+> If "ping -c2 -I $INTERFACE 224.0.0.1 > $PING_OUT" failed,
+> it just output "Trying to ping with $INTERFACE_DEVICE",
+> "with the -I option instead of IP address" would be discard.
+> 
+> After this patch, if "ping ..." failed the second string also output.
 
-I cannot understand why udelta/sdelta > "1000+(BIAS_MAX*factor_nr)" is a
-problem. Could any expert give me a explain, please?
+Good catch. Can you please send a patch that includes this information
+in the description as well?
 
-And looks like with this patch applied, it works well on powerpc:
-
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
-index 3640295..f118288 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage04.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
-        if (msg != NULL)
-                tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-
--#if (__powerpc__) || (__powerpc64__) || (__s390__) || (__s390x__)
-+#if (__s390__) || (__s390x__)
-        tst_brkm(TCONF, NULL, "This test is not designed for current system");
- #endif
-
-although the initial git comment said that "accuracy on powerpc 
-and s390x systems is always 10ms".
-
-
-Thanks in advance!
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
