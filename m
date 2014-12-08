@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Y1bRN-0005PI-Tf
-	for ltp-list@lists.sourceforge.net; Thu, 18 Dec 2014 13:48:29 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id F404AAC6A
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 18 Dec 2014 13:48:21 +0000 (UTC)
-Date: Thu, 18 Dec 2014 14:48:07 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XxwtC-0007W9-IC
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 11:54:06 +0000
+Date: Mon, 8 Dec 2014 12:53:50 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141218134807.GA23943@rei>
+Message-ID: <20141208115349.GC11071@rei.suse.de>
+References: <1417776470-12961-1-git-send-email-zlang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] LTP release
+In-Reply-To: <1417776470-12961-1-git-send-email-zlang@redhat.com>
+Subject: Re: [LTP] [PATCH] diotest: set errno with zero before test with zero
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,21 +24,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Zorro Lang <zlang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hello everyone,
-it's about the time we do another release, but as most of the people
-(including me) will have time off around Christmas and New Year the best
-course of action will be to start the release procedure once we are back
-at work. I should be back at 5. 1. 2015.
+Hi!
+>     ret = read(fd, buf, count);
+>     if (ret >= 0 || errno != errnum) {
+>         tst_resm(TFAIL, "read allows %s. returns %d: %s", msg, ret, strerror(errno));
+>         l_fail = TRUE;
 
-Also the LWN.net article, for which I've started the survey, has been
-released today. Many thanks for all the responses. (It's in the
-subscriber section, so unless you have a subscription you have to wait
-till it's available to public).
+As far as I can see this code tests that read() has returned negative
+value and in this case errno must be set.
 
-Lastly but not least Merry Christmas and Happy New Year to all who
-celebrate them.
+I.e.
+
+if ret >= 0 -> read hasn't failed -> FAILURE
+
+The errno != errnum is not evaluated unless the first condition has
+failed (that means ret < 0) and in this case errno must be set.
+
+The condition is equivalent to !(ret < 0 && errno == errnum)
+
+Or am I missing something?
 
 -- 
 Cyril Hrubis
