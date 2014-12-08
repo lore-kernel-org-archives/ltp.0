@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xvqix-0005br-VQ
-	for ltp-list@lists.sourceforge.net; Tue, 02 Dec 2014 16:54:52 +0000
-Date: Tue, 2 Dec 2014 17:54:40 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xy1lx-0001IX-GT
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 17:06:57 +0000
+Date: Mon, 8 Dec 2014 18:06:40 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141202165440.GC22135@rei.suse.de>
-References: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20141208170640.GA16442@rei.suse.de>
+References: <20141208164328.41386591@mats-desktop>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1413978094-10616-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v2 1/3] network/test_net: add support for -6
- option (IPv6 tests)
+In-Reply-To: <20141208164328.41386591@mats-desktop>
+Subject: Re: [LTP] Full nohz test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,15 +24,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> * copy read_opts() from net_cmdlib.sh library;
-> * replace TST_EXEC_SUFFIX with more informative name TST_IPV6;
-> * skip other options;
+> I'm (still...) working on a new test case for testing the NO_HZ_FULL
+> kernel feature available from Linux 3.10. This test code depends on a
+> tool that performs CPU isolation, which is a requirement for the
+> NO_HZ_FULL to work.
+> 
+> It was previously proposed that this tool, rt-tools, would be a git
+> submodule to ltp. That sounded good in the beginning, until I started
+> to think about cross-compile, altering install location, etc. Since
+> rt-tools uses cmake, and ltp uses autotools, there is no automatic
+> inheritance of configuration. It would therefore be easy to miss copying
+> some configuration from configure to the cmake invocation, causing
+> surprises.
+> 
+> Since the test case is not intended to be part of default, I suggest
+> the simple solution: Just document in the README file that this test
+> case requires that the rt-tools are built and installed before the test
+> case is run on target, and instructions how to get started with that.
 
-I've looked at the changes in this patchset and all looks good to me.
+Sounds ok to me. If the tool installs binaries somewhere to the $PATH
+you just have to assert that these are installed. For bash code there is
+tst_check_cmds function. For C code you can probably use tst_get_path().
+
+In short make sure that the test exits louldy if these are not installed
+and point the user to a README in the message.
 
 -- 
 Cyril Hrubis
