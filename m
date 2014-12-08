@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xxyb4-0003h2-6A
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 13:43:30 +0000
-Date: Mon, 8 Dec 2014 14:43:10 +0100
+	(envelope-from <metan@suse.de>) id 1Xxx8D-00087e-MW
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 12:09:37 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 0732BAE12
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  8 Dec 2014 12:09:30 +0000 (UTC)
+Date: Mon, 8 Dec 2014 13:09:22 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141208134309.GC13319@rei.suse.de>
-References: <1417776470-12961-1-git-send-email-zlang@redhat.com>
+Message-ID: <20141208120922.GD11071@rei.suse.de>
+References: <20141206012422.GA3352@localhost.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1417776470-12961-1-git-send-email-zlang@redhat.com>
-Subject: Re: [LTP] [PATCH] diotest: set errno with zero before test with zero
+In-Reply-To: <20141206012422.GA3352@localhost.localdomain>
+Subject: Re: [LTP] questions about getrusage04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,44 +28,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zorro Lang <zlang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
 Hi!
-> some code logic in diotest4.c likes below:
-> ----
->     ret = lseek(fd, offset, SEEK_SET);
->     if ((ret >= 0) || (errno != EINVAL)) {
->         tst_resm(TFAIL, "lseek allows negative offset. returns %d:%s", ret, strerror(errno));
->         failed = TRUE;
->         fail_count++;
->     } else
->         tst_resm(TPASS, "Negative Offset");
-> 
->     ....
->     ....
-> 
->     ret = read(fd, buf, count);
->     if (ret >= 0 || errno != errnum) {
->         tst_resm(TFAIL, "read allows %s. returns %d: %s", msg, ret, strerror(errno));
->         l_fail = TRUE;
->     }
-> ----
-> 
-> If lseek() EINVAL and read() return >= 0, the errno will not be setted to 0. The
-> errno will still be EINVAL.
-> 
-> I hit this problem when test on nfs. In NFS, lseek() return EINVAL as excepted,
-> but the read() will return 1, when count = 1. But the errno is still EINVAL.
-> That's incorrect.
-> 
-> So I set errno = 0, before read() and all other functions which like this.
+> I cannot understand why udelta/sdelta > "1000+(BIAS_MAX*factor_nr)" is a
+> problem. Could any expert give me a explain, please?
 
-Can you please clarify the commit message a bit so that it's clear that
-it's the test failure message that is confusing in case that read()
-haven't failed as expected and the errno is still set?
+It tests timer precision for getrusage timers. If the timers are
+incremting by larger values than expected, something is wrong in kernel.
+The precision depends on CONFIG_HZ settings which is represented by the
+BIAS_MAX.
 
-Otherwise it looks fine.
+> And looks like with this patch applied, it works well on powerpc:
+
+Can you please share the output of the testcase on ppc and ppc64? What
+is the expected timer granularity there?
 
 -- 
 Cyril Hrubis
