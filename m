@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xy2dp-0004zN-EP
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 18:02:37 +0000
-Date: Mon, 8 Dec 2014 19:02:21 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Xxxqc-000781-Qy
+	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 12:55:30 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 08E5AAD25
+	for <ltp-list@lists.sourceforge.net>;
+	Mon,  8 Dec 2014 12:55:23 +0000 (UTC)
+Date: Mon, 8 Dec 2014 13:55:15 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141208180221.GA18182@rei>
-References: <1417713657-2556-1-git-send-email-alexey.kodanev@oracle.com>
-	<1417713657-2556-2-git-send-email-alexey.kodanev@oracle.com>
-	<20141208114200.GB11071@rei.suse.de> <5485D893.4030403@oracle.com>
+Message-ID: <20141208125514.GA12537@rei.suse.de>
+References: <20141204083400.GA2704@localhost.localdomain>
+	<20141204101741.GB15326@rei.suse.de>
+	<20141205014513.GB2923@localhost.localdomain>
+	<20141205053705.GC2923@localhost.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <5485D893.4030403@oracle.com>
-Subject: Re: [LTP] [PATCH 2/2] device-drivers/cpufreq: add intel_pstate
- driver to boost test
+In-Reply-To: <20141205053705.GC2923@localhost.localdomain>
+Subject: Re: [LTP] [PATCH v3] syscalls/getgroups/getgroups01: set
+ supplementary groups to prevent TCONF
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,34 +32,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
 Hi!
-> > Will simple access() suffice here or do we have to actually open the
-> > file?
-> 
-> We have to open it, it was changed from access to open in this commit:
-> 
-> commit 0a91955ab91bf518ff56a44bb2969b0cb549a979
-> Date:   Wed May 7 17:03:33 2014 +0400
-> 
->      device-drivers/acpi/ltp_acpi_cpufreq: fix checking for write permission
-> 
->      If access(some_file, W_OK) is executed by root it will return 
-> success even
->      if file has read-only permission. Use 'open' to test sysfs file for 
-> write
->      permission.
-> 
-> Doc updated as well:
-> 
-> commit fb3da0a1f3a4f1b836e50033cb8acf7c6d0c5a05
-> Date:   Tue May 13 15:34:32 2014 +0400
-> 
->      docs: add a paragraph about access() to Common Problems section
-
-Ah, right, deja vu.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
