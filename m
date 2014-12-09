@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Y1bxL-0002qr-Ms
-	for ltp-list@lists.sourceforge.net; Thu, 18 Dec 2014 14:21:31 +0000
-Date: Thu, 18 Dec 2014 15:21:08 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XyJiP-0008Ct-Bc
+	for ltp-list@lists.sourceforge.net; Tue, 09 Dec 2014 12:16:29 +0000
+Date: Tue, 9 Dec 2014 13:16:12 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141218142108.GA24771@rei>
-References: <1418911334-12835-1-git-send-email-xuw@redhat.com>
+Message-ID: <20141209121612.GA1576@rei.suse.de>
+References: <1418099168-17783-1-git-send-email-zlang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1418911334-12835-1-git-send-email-xuw@redhat.com>
-Subject: Re: [LTP] [PATCH v4] library: add tst_system for wrapper system(3)
- without SIGCHLD
+In-Reply-To: <1418099168-17783-1-git-send-email-zlang@redhat.com>
+Subject: Re: [LTP] [PATCH V2] diotest: modify the confusing that function
+ not failed but the errno is still negative
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,18 +25,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: xuw@redhat.com
+To: Zorro Lang <zlang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> system(3) will raise SIGCHLD signal to parent process, and most
-> test cases will call tst_sig to poison all signals including the
-> SIGCHLD. So add system(3) wrapper function to temporarily disable
-> the poisoned handler for SIGCHLD, which will make the test cases
-> happy.
-> Replace system(3) with tst_system() to ignore SIGCHLG signal handler
-> poisoned earlier.
-
 Pushed, thanks.
 
 -- 
