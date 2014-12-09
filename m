@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XxxBo-0003SD-Ap
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 12:13:20 +0000
-Date: Mon, 8 Dec 2014 13:13:04 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1XyL74-0003B3-20
+	for ltp-list@lists.sourceforge.net; Tue, 09 Dec 2014 13:46:02 +0000
+Date: Tue, 9 Dec 2014 14:45:45 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141208121304.GE11071@rei.suse.de>
-References: <1417776470-12961-1-git-send-email-zlang@redhat.com>
-	<20141208115349.GC11071@rei.suse.de>
-	<648997700.14823290.1418040193631.JavaMail.zimbra@redhat.com>
+Message-ID: <20141209134545.GD1576@rei.suse.de>
+References: <tencent_18E2F5FD3ACC10A855AF6945@qq.com>
+	<20141209130429.GB1576@rei.suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <648997700.14823290.1418040193631.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] diotest: set errno with zero before test with zero
+In-Reply-To: <20141209130429.GB1576@rei.suse.de>
+Subject: Re: [LTP] Could you help me to analyse the LTP output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,37 +25,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Troy-lee <798528972@qq.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > >     ret = read(fd, buf, count);
-> > >     if (ret >= 0 || errno != errnum) {
-> > >         tst_resm(TFAIL, "read allows %s. returns %d: %s", msg, ret,
-> > >         strerror(errno));
-> > >         l_fail = TRUE;
-> > 
-> > As far as I can see this code tests that read() has returned negative
-> > value and in this case errno must be set.
-> > 
-> > I.e.
-> > 
-> > if ret >= 0 -> read hasn't failed -> FAILURE
-> > 
-> > The errno != errnum is not evaluated unless the first condition has
-> > failed (that means ret < 0) and in this case errno must be set.
-> > 
-> > The condition is equivalent to !(ret < 0 && errno == errnum)
-> > 
-> > Or am I missing something?
+> > inotify01		36
+> > <<<test_start>>>
+> > tag=inotify01 stime=946688085
+> > cmdline="inotify01"
+> > contacts=""
+> > analysis=exit
+> > <<<test_output>>>
+> > inotify01    1  TCONF  :  inotify01.c:224: inotify is not configured in this kernel.
+> > inotify01    2  TCONF  :  inotify01.c:224: Remaining cases not appropriate for configuration
+> > inotify01    0  TWARN  :  inotify01.c:243: inotify_rm_watch (-1, 0) failed: errno=ENOSYS(38): Function not implemented
+> > inotify01    0  TWARN  :  inotify01.c:248: close(-1) failed
 > 
-> I think he refers to output of tst_resm being possibly misleading
-> in case ret >= 0, that call is using strerror(errno).
+> This is a bug in the test when inotify is not compiled in kernel. The
+> test tries to do a cleanup but fails to do so because the initialization
+> wasn't done.
+> 
+> I will fix that.
 
-Ah, now that makes sense.
+Should be fixed in
+https://github.com/linux-test-project/ltp/commit/04f2177b65a3c10df5964180d1caf807ec531b72
 
-Looks like a reasonable solution. Any other solution that I can think of
-would add one more if statement...
+Please test that it works fine now.
 
 -- 
 Cyril Hrubis
