@@ -1,20 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Y1FJT-0001Ow-9J
-	for ltp-list@lists.sourceforge.net; Wed, 17 Dec 2014 14:10:51 +0000
-Date: Wed, 17 Dec 2014 15:10:28 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141217141028.GA17634@rei>
-References: <1414681678-28439-1-git-send-email-mmarhefk@redhat.com>
-	<1415206150-12848-1-git-send-email-mmarhefk@redhat.com>
-	<20141202164235.GA22135@rei.suse.de>
-	<1962544618.7994595.1417604885928.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1962544618.7994595.1417604885928.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH v2] containers: added mountns/mountns05.c
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1XyLqX-0008Ty-BZ
+	for ltp-list@lists.sourceforge.net; Tue, 09 Dec 2014 14:33:01 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1XyLqR-0002FL-Sv
+	for ltp-list@lists.sourceforge.net; Tue, 09 Dec 2014 14:33:01 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id sB9EWn9k001690
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Dec 2014 14:32:50 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	sB9EWmPW023638
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Dec 2014 14:32:49 GMT
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	sB9EWluA010612
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Dec 2014 14:32:47 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue,  9 Dec 2014 17:34:33 +0300
+Message-Id: <1418135673-31915-2-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1418135673-31915-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1418135673-31915-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 2/2] network/runtest: add VxLAN IPv6 tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,54 +37,38 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> I used msg IPC because this test needs to synchronize 3 processes (parent
-> and 2 children) and in this case at least 6 named pipes would be needed.
-> So instead 6 named pipes I used only one message queue where each process
-> has its own message type.
+Test two VxLAN configurations: unicast and multicast.
 
-There are a few things I do not like about this solution:
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ runtest/network_stress.features |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
 
-* There is a static IPC key compiled in the source
-  - we cannot run two instances of the test at once
-  - it may interfere with the rest of the system
-
-* There are no timeouts, if something fails the parent may end up
-  waiting forever
-
-* The code could be shorter, it takes more than three lines to just
-  send the notification.
-
-I guess that one of the problems is that the child processes need to
-signal each other, which is something that the checkpoint code wasn't
-written for. I think that it would be better to adapth the library so
-that it fits the needs that has emerged. Or write better one that fits
-all needs.
-
-Looking at the checkpoint code, we would need a two more functions
-that could be used synchronize between child processes. What about:
-
-tst_checkpoint_signal_sibling(const char *file, const int lineno,
-                              struct tst_checkpoint *checkpoint);
-
-tst_checkopint_sibling_wait(const char *file, const int lineno,
-                            struct tst_checkpoint *checkpoint);
-
-Internally we can just reuse the tst_checkpoint_child_wait() and
-tst_checkpoint_signal_parent() code (move it to separate static
-functions and add a parameter with the character to be send/received).
-
-Would that solve the problem here or are there any other obstacles?
-
+diff --git a/runtest/network_stress.features b/runtest/network_stress.features
+index 6638b65..dd8e1a4 100644
+--- a/runtest/network_stress.features
++++ b/runtest/network_stress.features
+@@ -7,4 +7,9 @@ tcp_fastopen6 tcp_fastopen_run.sh -6
+ 
+ vxlan01 vxlan01.sh
+ vxlan02 vxlan02.sh
+-vxlan03 vxlan03.sh
++
++vxlan_multi_03 vxlan03.sh -d multi
++vxlan_uni_03 vxlan03.sh -d uni
++
++vxlan_ipv6_multi_03 vxlan03.sh -6 -d multi
++vxlan_ipv6_uni_03 vxlan03.sh -6 -d uni
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
