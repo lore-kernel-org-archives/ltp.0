@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XxuSZ-0008Jm-QQ
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 09:18:27 +0000
-Date: Mon, 8 Dec 2014 10:18:10 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Y0TDV-0008Mm-VK
+	for ltp-list@lists.sourceforge.net; Mon, 15 Dec 2014 10:49:30 +0000
+Date: Mon, 15 Dec 2014 11:49:09 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141208091810.GA6401@rei.suse.de>
-References: <001701d012c2$e2ae8d30$a80ba790$@samsung.com>
-	<1917282961.14573534.1418030128901.JavaMail.zimbra@redhat.com>
+Message-ID: <20141215104908.GA19679@rei.suse.de>
+References: <tencent_18E2F5FD3ACC10A855AF6945@qq.com>
+	<20141209130429.GB1576@rei.suse.de>
+	<20141209134545.GD1576@rei.suse.de>
+	<tencent_35471B31762F345622E4EC71@qq.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1917282961.14573534.1418030128901.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] How to compile indiviual packages/modules in LTP
+In-Reply-To: <tencent_35471B31762F345622E4EC71@qq.com>
+Subject: Re: [LTP] Could you help me to analyse the LTP output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,24 +27,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Troy-lee <798528972@qq.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> If none of configure options works for you, as outline by Cyril here:
->   http://thread.gmane.org/gmane.linux.ltp/21992
-> 
-> you need to make changes yourself. If specific Makefile doesn't name
-> sub-directories by name, then delete the ones you don't want to compile from tree.
-> If Makefile does list sub-directories by name, then you need to patch that Makefile
-> and remove those you wish to skip.
+> The kernel version is 3.1.0, and the LTP version is 201408128.There
+> are some info from screen output, maybe can help us to analyse us to
+> analyse what error is going on.And I am learning the ltp test, could
+> you provide some primer.
 
-And I have a feeling that you are trying to solve wrong problem. What
-exactly do you want to do?
+The log shows that the kernel is out of memory and that oom killer
+terminates all processes in order to get some free RAM.
 
-If you want to run a subset of testcases you should compile and install
-all of them and then tell test driver to executed only these you are
-interested in.
+How much memory has this system? The readahead02 testcase maps, by
+default, 64MB file into memory. If there is not enough, the test should
+either be disabled changed to use less (the -s parameter).
 
 -- 
 Cyril Hrubis
