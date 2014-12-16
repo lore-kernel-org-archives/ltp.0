@@ -2,18 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xxxvw-0007zb-TV
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 13:01:00 +0000
-Date: Mon, 8 Dec 2014 14:00:45 +0100
+	(envelope-from <metan@suse.de>) id 1Y0tQA-0002EP-4G
+	for ltp-list@lists.sourceforge.net; Tue, 16 Dec 2014 14:48:18 +0000
+Date: Tue, 16 Dec 2014 15:47:55 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141208130045.GA13319@rei.suse.de>
-References: <1417856007.2526.12.camel@G08JYZSD130126.localdomain>
-	<20141208113557.GA11071@rei.suse.de>
-	<1418042315.13292.4.camel@G08JYZSD130126.localdomain>
+Message-ID: <20141216144754.GA4322@rei>
+References: <1417612136-10890-1-git-send-email-liwang@redhat.com>
+	<152932834.6076324.1417612296820.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1418042315.13292.4.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH] test.sh: tst_resm and tst_brkm enhance
+In-Reply-To: <152932834.6076324.1417612296820.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] /vm/hugepage/thp/thp05: cleanup should not use
+ safe macros
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,30 +26,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Li Wang <liwang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> In <LTP>/testcases/network/multicast/mc_cmds
-> --------------------------------------------------------------------------------
->             ...
-> 113         ping -c2 -I $INTERFACE 224.0.0.1 > $PING_OUT
-> 114         if [ $? -ne 0 ]; then
-> 115                 tst_resm TINFO "Trying to ping with $INTERFACE_DEVICE"\
-> 116                                "with the -I option instead of IP address"
->                     ...
-> 122         fi
->             ...
-> --------------------------------------------------------------------------------
-> 
-> If "ping -c2 -I $INTERFACE 224.0.0.1 > $PING_OUT" failed,
-> it just output "Trying to ping with $INTERFACE_DEVICE",
-> "with the -I option instead of IP address" would be discard.
-> 
-> After this patch, if "ping ..." failed the second string also output.
+Rebased and pushed with a few cosmetic changes (see below), thanks.
 
-Good catch. Can you please send a patch that includes this information
-in the description as well?
+> +int file_scanf(const char *file, const int lineno,
+> +		     const char *path, const char *fmt, ...)
+> +{
+> +	va_list va;
+> +	FILE *f;
+> +	int exp_convs, ret;
+> +
+> +	f = fopen(path, "r");
+> +
+> +	if (f == NULL) {
+> +		tst_resm(TWARN,
+> +			"Failed to close FILE '%s' at %s:%d",
+                                   ^
+				   open
+> +			 path, file, lineno);
+> +		return 1;
+> +	}
+> +
+
+...
+
+> +	if (fclose(f)) {
+> +		tst_resm(TWARN,
+> +			 "Failed to close FILE '%s' at %s:%d",
+> +			 path, file, lineno);
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +
+> +err:
+> +	if (fclose(f)) {
+> +		tst_resm(TWARN,
+> +			 "Failed to close FILE '%s' at %s:%d",
+> +			 path, file, lineno);
+> +		return 1;
+                 ^
+		 This is not needed because of the return 1 right below.
+> +	}
+> +	return 1;
+> +}
 
 -- 
 Cyril Hrubis
