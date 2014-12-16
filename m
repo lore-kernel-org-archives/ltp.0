@@ -1,24 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1XwoGV-0005Fh-OL
-	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 08:29:27 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XwoGU-0003Ov-4E
-	for ltp-list@lists.sourceforge.net; Fri, 05 Dec 2014 08:29:27 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sB58SwZH032110
-	for <ltp-list@lists.sourceforge.net>; Fri, 5 Dec 2014 16:28:58 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 5 Dec 2014 16:26:02 +0800
-Message-ID: <1417767962-21248-1-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1415251889-10596-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1415251889-10596-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	(envelope-from <xuw@redhat.com>) id 1Y0t89-0003VP-WF
+	for ltp-list@lists.sourceforge.net; Tue, 16 Dec 2014 14:29:42 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Y0t88-0005GI-2e
+	for ltp-list@lists.sourceforge.net; Tue, 16 Dec 2014 14:29:41 +0000
+Date: Tue, 16 Dec 2014 09:29:33 -0500 (EST)
+From: Xu Wang <xuw@redhat.com>
+Message-ID: <1154161640.15676973.1418740173628.JavaMail.zimbra@redhat.com>
+In-Reply-To: <54901027.4040406@oracle.com>
+References: <1416240279-7595-1-git-send-email-xuw@redhat.com>
+	<645117657.6599944.1416481042396.JavaMail.zimbra@redhat.com>
+	<54901027.4040406@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v3] containers: fix three cases' exit status
+Subject: Re: [LTP] [PATCH V2] library: add tst_system for wrapper system(3)
+ without SIGCHLD
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,142 +27,125 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>, Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-In iproute2 whose version is earlier than v3.0.0, ip
-command doesn't support netns object. In this condition,
-running three cases (netns_devices.sh, netns_devices2.sh
-and netns_isolation.sh) will exit with TFAIL. It is not
-suitable, so fix these cases' exit status with TCONF.
-
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- testcases/kernel/containers/netns/netns_devices.sh |  2 ++
- .../kernel/containers/netns/netns_devices2.sh      |  2 ++
- testcases/kernel/containers/netns/netns_helper.sh  | 39 ++++++++++++++++++++++
- .../kernel/containers/netns/netns_isolation.sh     |  2 ++
- 4 files changed, 45 insertions(+)
- create mode 100755 testcases/kernel/containers/netns/netns_helper.sh
-
-diff --git a/testcases/kernel/containers/netns/netns_devices.sh b/testcases/kernel/containers/netns/netns_devices.sh
-index 7126267..750ffcc 100755
---- a/testcases/kernel/containers/netns/netns_devices.sh
-+++ b/testcases/kernel/containers/netns/netns_devices.sh
-@@ -29,6 +29,7 @@
- TCID=netns_devices
- TST_TOTAL=3
- . test.sh
-+. netns_helper.sh
- IP0=192.168.0.1
- IP1=192.168.0.2
- 
-@@ -46,6 +47,7 @@ cleanup()
- # SETUP
- tst_require_root
- tst_check_cmds ip
-+tst_check_iproute 111010
- TST_CLEANUP=cleanup
- 
- # creates a new network namespace "myns0" (man 8 ip-netns)
-diff --git a/testcases/kernel/containers/netns/netns_devices2.sh b/testcases/kernel/containers/netns/netns_devices2.sh
-index f0d0651..8dfc6c6 100755
---- a/testcases/kernel/containers/netns/netns_devices2.sh
-+++ b/testcases/kernel/containers/netns/netns_devices2.sh
-@@ -29,6 +29,7 @@
- TCID=netns_devices2
- TST_TOTAL=3
- . test.sh
-+. netns_helper.sh
- IP0=192.168.0.1
- IP1=192.168.0.2
- 
-@@ -46,6 +47,7 @@ cleanup()
- # SETUP
- tst_require_root
- tst_check_cmds ip ifconfig
-+tst_check_iproute 111010
- TST_CLEANUP=cleanup
- 
- # creates a new network namespace "myns0" (man 8 ip-netns)
-diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
-new file mode 100755
-index 0000000..70415d2
---- /dev/null
-+++ b/testcases/kernel/containers/netns/netns_helper.sh
-@@ -0,0 +1,39 @@
-+#!/bin/sh
-+#
-+# Copyright (c) Linux Test Project, 2014
-+#
-+# This program is free software; you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License along
-+# with this program; if not, write to the Free Software Foundation, Inc.,
-+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# This is a LTP shell test library for iproute.
-+#
-+
-+. test.sh
-+
-+tst_check_iproute()
-+{
-+	local cur_ipver=`ip -V`
-+	local spe_ipver=$1
-+
-+	cur_ipver=${cur_ipver##*s}
-+
-+	if [ -z $cur_ipver ] || [ -z $spe_ipver ]; then
-+		tst_brkm TBROK "don't obtain valid iproute version"
-+	fi
-+
-+	if [ $cur_ipver -lt $spe_ipver ]; then
-+		tst_brkm TCONF \
-+			"The commands in iproute tools do not support required objects"
-+	fi
-+}
-diff --git a/testcases/kernel/containers/netns/netns_isolation.sh b/testcases/kernel/containers/netns/netns_isolation.sh
-index f1ddf2c..78dc081 100755
---- a/testcases/kernel/containers/netns/netns_isolation.sh
-+++ b/testcases/kernel/containers/netns/netns_isolation.sh
-@@ -24,6 +24,7 @@
- TCID=netns_isolation
- TST_TOTAL=3
- . test.sh
-+. netns_helper.sh
- IP=192.168.0.2
- 
- 
-@@ -40,6 +41,7 @@ cleanup()
- # SETUP
- tst_require_root
- tst_check_cmds ip
-+tst_check_iproute 111010
- TST_CLEANUP=cleanup
- 
- 
--- 
-1.9.3
-
-
-------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+U29ycnkgZm9yIG1pc3NpbmcgdG8gcmVhZCB0aGUgcmV2aWV3IGVtYWlsIGZyb20gSmFuLgpJJ3Zl
+IGFscmVhZHkgcG9zdCBQQVRDSHYzIGFib3V0IHRoaXMgaXNzdWUgdG8gbHRwLWxpc3QuCgpUaGFu
+a3MgZm9yIEphbidzIHJldmlldywgYW5kIEkgYXBwcmVjaWF0ZSBpdCB2ZXJ5IG11Y2guCgpCZXN0
+IHJlZ2FyZHMsCgotLSAKR2VvcmdlIFdhbmcg546L5petCgpLZXJuZWwgUXVhbnRpdHkgRW5naW5l
+ZXIKUmVkIEhhdCBTb2Z0d2FyZSAoQmVpamluZykgQ28uLEx0ZApJUkM6eHV3ClRlbDorODYtMDEw
+LTYyNjA4MDQxClBob25lOjE1OTAxMjMxNTc5CjkvRiwgVG93ZXIgQywgUmF5Y29tCgotLS0tLSBP
+cmlnaW5hbCBNZXNzYWdlIC0tLS0tCkZyb206ICJTdGFuaXNsYXYgS2hvbG1hbnNraWtoIiA8c3Rh
+bmlzbGF2Lmtob2xtYW5za2lraEBvcmFjbGUuY29tPgpUbzogeHV3QHJlZGhhdC5jb20KQ2M6ICJK
+YW4gU3RhbmNlayIgPGpzdGFuY2VrQHJlZGhhdC5jb20+LCBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
+b3JnZS5uZXQKU2VudDogVHVlc2RheSwgRGVjZW1iZXIgMTYsIDIwMTQgNjo1Nzo0MyBQTQpTdWJq
+ZWN0OiBSZTogW0xUUF0gW1BBVENIIFYyXSBsaWJyYXJ5OiBhZGQgdHN0X3N5c3RlbSBmb3Igd3Jh
+cHBlciBzeXN0ZW0oMykgd2l0aG91dCBTSUdDSExECgpIaSwgR2VvcmdlLgoKSSd2ZSBqdXN0IGZv
+dW5kIHRoYXQgSSdtIGFsc28gbW90aXZhdGVkIHRvIGhhdmUgdGhpcyBidWcgZml4ZWQgOikKCkFy
+ZSB5b3UgcGxhbm5pbmcgdG8gc2VuZCBhbiB1cGRhdGVkIHZlcnNpb24gaW5jbHVkaW5nIEphbidz
+IGNvbW1lbnRzPwoKVGhhbmtzLgoKUFM6IEkgYWxzbyB0ZXN0ZWQgaXQgd2l0aCBhY2Nlc3MwNiB0
+ZXN0IGNhc2U6Cgp3aXRob3V0IHRoZSBwYXRjaDoKCltyb290QGtob2xtYW5za2lraCBhY2Nlc3Nd
+IyBMVFBfREVWX0ZTX1RZUEU9YnRyZnMgLi9hY2Nlc3MwNgphY2Nlc3MwNiAgICAwICBUSU5GTyAg
+OiAgRm91bmQgZnJlZSBkZXZpY2UgJy9kZXYvbG9vcDAnCmFjY2VzczA2ICAgIDEgIFRCUk9LICA6
+ICB0c3Rfc2lnLmM6MjMzOiB1bmV4cGVjdGVkIHNpZ25hbCAKU0lHQ0hMRC9TSUdDTEQoMTcpIHJl
+Y2VpdmVkIChwaWQgPSAxMDY3MSkuCmFjY2VzczA2ICAgIDIgIFRCUk9LICA6ICB0c3Rfc2lnLmM6
+MjMzOiBSZW1haW5pbmcgY2FzZXMgYnJva2VuCgp3aXRoOgpbcm9vdEBraG9sbWFuc2tpa2ggYWNj
+ZXNzXSMgTFRQX0RFVl9GU19UWVBFPWJ0cmZzIC4vYWNjZXNzMDYKYWNjZXNzMDYgICAgMCAgVElO
+Rk8gIDogIEZvdW5kIGZyZWUgZGV2aWNlICcvZGV2L2xvb3AwJwphY2Nlc3MwNiAgICAwICBUSU5G
+TyAgOiAgQXBwZW5kaW5nICctZicgZmxhZyB0byBta2ZzLmJ0cmZzCmFjY2VzczA2ICAgIDAgIFRJ
+TkZPICA6ICBGb3JtYXR0aW5nIC9kZXYvbG9vcDAgd2l0aCBidHJmcyBleHRyYSBvcHRzPScnCmFj
+Y2VzczA2ICAgIDEgIFRQQVNTICA6ICBhY2Nlc3MgZmFpbGVkIGFzIGV4cGVjdGVkOiAKVEVTVF9F
+UlJOTz1FUk9GUygzMCk6IFJlYWQtb25seSBmaWxlIHN5c3RlbQoKCgpPbiAxMS8yMC8yMDE0IDAx
+OjU3IFBNLCBKYW4gU3RhbmNlayB3cm90ZToKPgo+Cj4gLS0tLS0gT3JpZ2luYWwgTWVzc2FnZSAt
+LS0tLQo+PiBGcm9tOiB4dXdAcmVkaGF0LmNvbQo+PiBUbzogbHRwLWxpc3RAbGlzdHMuc291cmNl
+Zm9yZ2UubmV0Cj4+IFNlbnQ6IE1vbmRheSwgMTcgTm92ZW1iZXIsIDIwMTQgNTowNDozOSBQTQo+
+PiBTdWJqZWN0OiBbTFRQXSBbUEFUQ0ggVjJdIGxpYnJhcnk6IGFkZCB0c3Rfc3lzdGVtIGZvciB3
+cmFwcGVyIHN5c3RlbSgzKQl3aXRob3V0IFNJR0NITEQKPj4KPj4gRnJvbTogR2VvcmdlIFdhbmcg
+PHh1d0ByZWRoYXQuY29tPgo+Cj4gSGksCj4KPiBMb29rcyBnb29kIHRvIG1lLCBJIHRlc3RlZCBv
+bmx5IG9uIHNpbmdsZSB0ZXN0Y2FzZSwgaXQgd29yawo+IGFzIGFkdmVydGlzZWQuIENvdXBsZSBu
+aXRzIHRvIGNvbW1lbnRzL2NvbW1pdCBtZXNzYWdlOgo+Cj4+Cj4+IHN5c3RlbSgzKSB3aWxsIHJh
+aXNlIFNJR0NITEQgc2lnbmFsIHRvIHBhcmVudCBwcm9jZXNzLCBhbmQgbW9zdAo+PiB0ZXN0IGNh
+c2VzIHdpbGwgY2FsbCB0c3Rfc2lnIHRvIHBvaXNvbiBhbGwgc2lnbmFscyBpbmNsdWRpbmcgdGhl
+Cj4+IFNJR0NITEQuIFNvIGFkZCBzeXN0ZW0oMykgd3JhcHBlciBmdW5jdGlvbiB0byB0ZW1wb3Jh
+cmlseSBkaXNhYmxlCj4+IHRoZSBwb2lzb25lZCBoYW5kbGVyIGZvciBTSUdDSExELCB3aGljaCB3
+aWxsIG1ha2UgdGhlIHRlc3QgY2FzZXMKPj4gaGFwcHkuCj4+IFJlcGxhY2UgZGlyZWN0bHkgY2Fs
+bGluZyBzeXN0ZW0oMykgd2l0aCB0c3Rfc3lzdG0gb24gYmVoYWxmIG9mCj4gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5eIHRzdF9zeXN0ZW0KPj4gaWdub3JjaW5n
+IFNJR0NITEcgc2lnbmFsIHBvc2lvbmVkIGhhbmRsZXIuCj4gICAgXl4gaWdub3JpbmcgICAgICAg
+ICAgICAgIF5eIHBvaXNvbmVkCj4gSSBkb24ndCBnZXQgdGhlICJvbiBiZWhhbGYgb2YiIHBhcnQg
+b2YgdGhhdCBzZW50ZW5jZS4gTWF5YmU6Cj4gIlJlcGxhY2Ugc3lzdGVtKDMpIHdpdGggdHN0X3N5
+c3RlbSgpIHRvIGlnbm9yZSBTSUdDSExHCj4gc2lnbmFsIGhhbmRsZXIgcG9pc29uZWQgZWFybGll
+ci4iCj4KPj4KPj4gU2lnbmVkLW9mZi1ieTogR2VvcmdlIFdhbmcgPHh1d0ByZWRoYXQuY29tPgo+
+PiAtLS0KPj4gICBpbmNsdWRlL3Rlc3QuaCAgICB8ICA1ICsrKysrCj4+ICAgbGliL3RzdF9ta2Zz
+LmMgICAgfCAgMiArLQo+PiAgIGxpYi90c3RfcnVuX2NtZC5jIHwgMTcgKysrKysrKysrKysrKysr
+KysKPj4gICAzIGZpbGVzIGNoYW5nZWQsIDIzIGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkK
+Pj4KPj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvdGVzdC5oIGIvaW5jbHVkZS90ZXN0LmgKPj4gaW5k
+ZXggNzc1YmEzOS4uMzI2YjY4NiAxMDA2NDQKPj4gLS0tIGEvaW5jbHVkZS90ZXN0LmgKPj4gKysr
+IGIvaW5jbHVkZS90ZXN0LmgKPj4gQEAgLTMwMCw2ICszMDAsMTEgQEAgdm9pZCB0c3RfcnVuX2Nt
+ZCh2b2lkIChjbGVhbnVwX2ZuKSh2b2lkKSwKPj4gICAJCWNvbnN0IGNoYXIgKnN0ZG91dF9wYXRo
+LAo+PiAgIAkJY29uc3QgY2hhciAqc3RkZXJyX3BhdGgpOwo+Pgo+PiArLyogV3JhcHBlciBmdW5j
+dGlvbiBmb3Igc3lzdGVtKDMpLCBpZ25vcmNpbmcgU0lHQ0xEIHNpZ25hbC4KPiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBeXiBpZ25vcmluZwo+Cj4+ICsgKiBAY29tbWFu
+ZDogdGhlIGNvbW1hbmQgdG8gYmUgcnVuLgo+PiArICovCj4+ICtpbnQgdHN0X3N5c3RlbShjb25z
+dCBjaGFyICpjb21tYW5kKTsKPj4gKwo+PiAgIC8qIGxpYi90c3RfbWtmcy5jCj4+ICAgICoKPj4g
+ICAgKiBAZGV2OiBwYXRoIHRvIGEgZGV2aWNlCj4+IGRpZmYgLS1naXQgYS9saWIvdHN0X21rZnMu
+YyBiL2xpYi90c3RfbWtmcy5jCj4+IGluZGV4IDVlYjMzOTIuLjE3MzM0N2EgMTAwNjQ0Cj4+IC0t
+LSBhL2xpYi90c3RfbWtmcy5jCj4+ICsrKyBiL2xpYi90c3RfbWtmcy5jCj4+IEBAIC00NSw3ICs0
+NSw3IEBAIHZvaWQgdHN0X21rZnModm9pZCAoY2xlYW51cF9mbikodm9pZCksIGNvbnN0IGNoYXIg
+KmRldiwKPj4gICAJCS8qCj4+ICAgCQkgKiBUaGUgLWYgb3B0aW9uIHdhcyBhZGRlZCB0byBidHJm
+cy1wcm9ncyB2My4xMgo+PiAgIAkJICovCj4+IC0JCWlmIChzeXN0ZW0oIm1rZnMuYnRyZnMgMj4m
+MSB8IGdyZXAgJ1xcLWYgJyA+L2Rldi9udWxsIikgPT0gMCkgewo+PiArCQlpZiAodHN0X3N5c3Rl
+bSgibWtmcy5idHJmcyAyPiYxIHwgZ3JlcCAnXFwtZiAnID4vZGV2L251bGwiKSA9PSAwKSB7Cj4K
+PiBUaGlzIGxpbmUgaXMgbm93IHRvbyBsb25nLgo+Cj4gUmVnYXJkcywKPiBKYW4KPgo+PiAgIAkJ
+CXRzdF9yZXNtKFRJTkZPLCAiQXBwZW5kaW5nICctZicgZmxhZyB0byBta2ZzLiVzIiwKPj4gICAJ
+CQkJZnNfdHlwZSk7Cj4+ICAgCQkJYXJndltwb3MrK10gPSAiLWYiOwo+PiBkaWZmIC0tZ2l0IGEv
+bGliL3RzdF9ydW5fY21kLmMgYi9saWIvdHN0X3J1bl9jbWQuYwo+PiBpbmRleCA0ZWIzMmU2Li41
+YTAyZGIwIDEwMDY0NAo+PiAtLS0gYS9saWIvdHN0X3J1bl9jbWQuYwo+PiArKysgYi9saWIvdHN0
+X3J1bl9jbWQuYwo+PiBAQCAtMTI1LDMgKzEyNSwyMCBAQCB2b2lkIHRzdF9ydW5fY21kKHZvaWQg
+KGNsZWFudXBfZm4pKHZvaWQpLAo+PiAgIAkJCSJjbG9zZSgpIG9uICVzIGZhaWxlZCBhdCAlczol
+ZCIsCj4+ICAgCQkJc3RkZXJyX3BhdGgsIF9fRklMRV9fLCBfX0xJTkVfXyk7Cj4+ICAgfQo+PiAr
+Cj4+ICtpbnQgdHN0X3N5c3RlbShjb25zdCBjaGFyICpjb21tYW5kKQo+PiArewo+PiArCWludCBy
+ZXQgPSAwOwo+PiArCj4+ICsJLyoKPj4gKwkgKlRlbXBvcmFyaWx5IGRpc2FibGUgU0lHQ0hMRCBv
+ZiB1c2VyIGRlZmluZWQgaGFuZGxlciwgc28gdGhlCj4+ICsJICpzeXN0ZW0oMykgZnVuY3Rpb24g
+d2lsbCBub3QgY2F1c2UgdW5leHBlY3RlZCBTSUdDSExEIHNpZ25hbAo+PiArCSAqY2FsbGJhY2sg
+ZnVuY3Rpb24gZm9yIHRlc3QgY2FzZXMuCj4+ICsJICovCj4+ICsJdm9pZCAqb2xkX2hhbmRsZXIg
+PSBzaWduYWwoU0lHQ0hMRCwgU0lHX0RGTCk7Cj4+ICsKPj4gKwlyZXQgPSBzeXN0ZW0oY29tbWFu
+ZCk7Cj4+ICsKPj4gKwlzaWduYWwoU0lHQ0hMRCwgb2xkX2hhbmRsZXIpOwo+PiArCXJldHVybiBy
+ZXQ7Cj4+ICt9Cj4+IC0tCj4+IDEuOC40LjIKPj4KPj4KPj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+Cj4+IERvd25sb2FkIEJJUlQgaUh1YiBGLVR5cGUgLSBUaGUgRnJlZSBFbnRlcnByaXNlLUdyYWRl
+IEJJUlQgU2VydmVyCj4+IGZyb20gQWN0dWF0ZSEgSW5zdGFudGx5IFN1cGVyY2hhcmdlIFlvdXIg
+QnVzaW5lc3MgUmVwb3J0cyBhbmQgRGFzaGJvYXJkcwo+PiB3aXRoIEludGVyYWN0aXZpdHksIFNo
+YXJpbmcsIE5hdGl2ZSBFeGNlbCBFeHBvcnRzLCBBcHAgSW50ZWdyYXRpb24gJiBtb3JlCj4+IEdl
+dCB0ZWNobm9sb2d5IHByZXZpb3VzbHkgcmVzZXJ2ZWQgZm9yIGJpbGxpb24tZG9sbGFyIGNvcnBv
+cmF0aW9ucywgRlJFRQo+PiBodHRwOi8vcHViYWRzLmcuZG91YmxlY2xpY2submV0L2dhbXBhZC9j
+bGs/aWQ9MTU3MDA1NzUxJml1PS80MTQwL29zdGcuY2xrdHJrCj4+IF9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+
+PiBMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKPj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
+b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QKPj4KPgo+IC0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQo+IERvd25sb2FkIEJJUlQgaUh1YiBGLVR5cGUgLSBUaGUgRnJlZSBFbnRlcnByaXNlLUdy
+YWRlIEJJUlQgU2VydmVyCj4gZnJvbSBBY3R1YXRlISBJbnN0YW50bHkgU3VwZXJjaGFyZ2UgWW91
+ciBCdXNpbmVzcyBSZXBvcnRzIGFuZCBEYXNoYm9hcmRzCj4gd2l0aCBJbnRlcmFjdGl2aXR5LCBT
+aGFyaW5nLCBOYXRpdmUgRXhjZWwgRXhwb3J0cywgQXBwIEludGVncmF0aW9uICYgbW9yZQo+IEdl
+dCB0ZWNobm9sb2d5IHByZXZpb3VzbHkgcmVzZXJ2ZWQgZm9yIGJpbGxpb24tZG9sbGFyIGNvcnBv
+cmF0aW9ucywgRlJFRQo+IGh0dHA6Ly9wdWJhZHMuZy5kb3VibGVjbGljay5uZXQvZ2FtcGFkL2Ns
+az9pZD0xNTcwMDU3NTEmaXU9LzQxNDAvb3N0Zy5jbGt0cmsKPiBfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlzdAo+IEx0
+cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4KCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb3du
+bG9hZCBCSVJUIGlIdWIgRi1UeXBlIC0gVGhlIEZyZWUgRW50ZXJwcmlzZS1HcmFkZSBCSVJUIFNl
+cnZlcgpmcm9tIEFjdHVhdGUhIEluc3RhbnRseSBTdXBlcmNoYXJnZSBZb3VyIEJ1c2luZXNzIFJl
+cG9ydHMgYW5kIERhc2hib2FyZHMKd2l0aCBJbnRlcmFjdGl2aXR5LCBTaGFyaW5nLCBOYXRpdmUg
+RXhjZWwgRXhwb3J0cywgQXBwIEludGVncmF0aW9uICYgbW9yZQpHZXQgdGVjaG5vbG9neSBwcmV2
+aW91c2x5IHJlc2VydmVkIGZvciBiaWxsaW9uLWRvbGxhciBjb3Jwb3JhdGlvbnMsIEZSRUUKaHR0
+cDovL3B1YmFkcy5nLmRvdWJsZWNsaWNrLm5ldC9nYW1wYWQvY2xrP2lkPTE2NDcwMzE1MSZpdT0v
+NDE0MC9vc3RnLmNsa3RyawpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+Cg==
