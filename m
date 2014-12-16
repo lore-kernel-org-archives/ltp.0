@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3Ls3-0004Rp-1a
-	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:35:15 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Y3Lrg-00018H-5W
-	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:35:15 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XWxR027051
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:32 +0800
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 23 Dec 2014 17:33:40 +0800
-Message-ID: <1419327221-28508-11-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 11/12] smack: Rename 'notroot.c' to
-	'smack_notroot.c'
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xuw@redhat.com>) id 1Y0t4a-0005Pu-0Z
+	for ltp-list@lists.sourceforge.net; Tue, 16 Dec 2014 14:26:00 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Y0t4Y-00058B-K9
+	for ltp-list@lists.sourceforge.net; Tue, 16 Dec 2014 14:25:59 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id sBGEPp30027619
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 16 Dec 2014 09:25:51 -0500
+From: xuw@redhat.com
+Date: Tue, 16 Dec 2014 22:25:38 +0800
+Message-Id: <1418739938-2123-1-git-send-email-xuw@redhat.com>
+Subject: [LTP] [PATCHv3] library: add tst_system for wrapper system(3)
+	without SIGCHLD
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,122 +28,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/security/smack/.gitignore         |  2 +-
- testcases/kernel/security/smack/notroot.c          | 29 ----------------------
- .../kernel/security/smack/smack_file_access.sh     |  2 +-
- testcases/kernel/security/smack/smack_notroot.c    | 29 ++++++++++++++++++++++
- 4 files changed, 31 insertions(+), 31 deletions(-)
- delete mode 100644 testcases/kernel/security/smack/notroot.c
- create mode 100644 testcases/kernel/security/smack/smack_notroot.c
+From: George Wang <xuw@redhat.com>
 
-diff --git a/testcases/kernel/security/smack/.gitignore b/testcases/kernel/security/smack/.gitignore
-index 5e9e819..16d5663 100644
---- a/testcases/kernel/security/smack/.gitignore
-+++ b/testcases/kernel/security/smack/.gitignore
-@@ -1,2 +1,2 @@
--/notroot
-+/smack_notroot
- /smack_set_socket_labels
-diff --git a/testcases/kernel/security/smack/notroot.c b/testcases/kernel/security/smack/notroot.c
-deleted file mode 100644
-index 05858d3..0000000
---- a/testcases/kernel/security/smack/notroot.c
-+++ /dev/null
-@@ -1,29 +0,0 @@
--/*
-- * Copyright (C) 2007 Casey Schaufler <casey@schaufler-ca.com>
-- *
-- *	This program is free software; you can redistribute it and/or modify
-- *	it under the terms of the GNU General Public License as published by
-- *	the Free Software Foundation, version 2.
-- *
-- * Author:
-- *	Casey Schaufler <casey@schaufler-ca.com>
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <unistd.h>
--
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <fcntl.h>
--
--int main(int argc, char *argv[])
--{
--	setuid(1);
--
--	execv(argv[1], &argv[1]);
--
--	perror(argv[0]);
--	exit(1);
--}
-diff --git a/testcases/kernel/security/smack/smack_file_access.sh b/testcases/kernel/security/smack/smack_file_access.sh
-index a2d09c0..8642715 100755
---- a/testcases/kernel/security/smack/smack_file_access.sh
-+++ b/testcases/kernel/security/smack/smack_file_access.sh
-@@ -37,7 +37,7 @@ TST_CLEANUP=cleanup
+system(3) will raise SIGCHLD signal to parent process, and most
+test cases will call tst_sig to poison all signals including the
+SIGCHLD. So add system(3) wrapper function to temporarily disable
+the poisoned handler for SIGCHLD, which will make the test cases
+happy.
+Replace system(3) with tst_system() to ignore SIGCHLG signal handler
+poisoned earlier.
+
+Signed-off-by: George Wang <xuw@redhat.com>
+---
+ include/test.h    |  5 +++++
+ lib/tst_mkfs.c    |  4 +++-
+ lib/tst_run_cmd.c | 17 +++++++++++++++++
+ 3 files changed, 25 insertions(+), 1 deletion(-)
+
+diff --git a/include/test.h b/include/test.h
+index 775ba39..326b686 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -300,6 +300,11 @@ void tst_run_cmd(void (cleanup_fn)(void),
+ 		const char *stdout_path,
+ 		const char *stderr_path);
  
- chmod 777 $(pwd)
- 
--notroot /bin/sh -c "echo InitialData 2>/tmp/smack_fail.log > $testfile"
-+smack_notroot /bin/sh -c "echo InitialData 2>/tmp/smack_fail.log > $testfile"
- if [ ! -f "$testfile" ]; then
- 	tst_brkm TFAIL "Test file \"$testfile\" can not be created."
- fi
-diff --git a/testcases/kernel/security/smack/smack_notroot.c b/testcases/kernel/security/smack/smack_notroot.c
-new file mode 100644
-index 0000000..05858d3
---- /dev/null
-+++ b/testcases/kernel/security/smack/smack_notroot.c
-@@ -0,0 +1,29 @@
-+/*
-+ * Copyright (C) 2007 Casey Schaufler <casey@schaufler-ca.com>
-+ *
-+ *	This program is free software; you can redistribute it and/or modify
-+ *	it under the terms of the GNU General Public License as published by
-+ *	the Free Software Foundation, version 2.
-+ *
-+ * Author:
-+ *	Casey Schaufler <casey@schaufler-ca.com>
++/* Wrapper function for system(3), ignorcing SIGCLD signal.
++ * @command: the command to be run.
 + */
++int tst_system(const char *command);
 +
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
+ /* lib/tst_mkfs.c
+  *
+  * @dev: path to a device
+diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+index 5eb3392..39b0c4a 100644
+--- a/lib/tst_mkfs.c
++++ b/lib/tst_mkfs.c
+@@ -45,7 +45,9 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+ 		/*
+ 		 * The -f option was added to btrfs-progs v3.12
+ 		 */
+-		if (system("mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null") == 0) {
++		if (0 == tst_system(
++					"mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null")
++			) {
+ 			tst_resm(TINFO, "Appending '-f' flag to mkfs.%s",
+ 				fs_type);
+ 			argv[pos++] = "-f";
+diff --git a/lib/tst_run_cmd.c b/lib/tst_run_cmd.c
+index 4eb32e6..5a02db0 100644
+--- a/lib/tst_run_cmd.c
++++ b/lib/tst_run_cmd.c
+@@ -125,3 +125,20 @@ void tst_run_cmd(void (cleanup_fn)(void),
+ 			"close() on %s failed at %s:%d",
+ 			stderr_path, __FILE__, __LINE__);
+ }
 +
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+
-+int main(int argc, char *argv[])
++int tst_system(const char *command)
 +{
-+	setuid(1);
++	int ret = 0;
 +
-+	execv(argv[1], &argv[1]);
++	/*
++	 *Temporarily disable SIGCHLD of user defined handler, so the
++	 *system(3) function will not cause unexpected SIGCHLD signal
++	 *callback function for test cases.
++	 */
++	void *old_handler = signal(SIGCHLD, SIG_DFL);
 +
-+	perror(argv[0]);
-+	exit(1);
++	ret = system(command);
++
++	signal(SIGCHLD, old_handler);
++	return ret;
 +}
 -- 
-1.9.3
+1.8.4.2
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming! The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
