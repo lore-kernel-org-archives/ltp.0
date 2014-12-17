@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1XvmjF-0007xV-Qy
-	for ltp-list@lists.sourceforge.net; Tue, 02 Dec 2014 12:38:53 +0000
-Date: Tue, 2 Dec 2014 13:38:40 +0100
+	(envelope-from <metan@suse.de>) id 1Y1Dnz-0006ec-Pz
+	for ltp-list@lists.sourceforge.net; Wed, 17 Dec 2014 12:34:15 +0000
+Date: Wed, 17 Dec 2014 13:33:54 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141202123840.GA16824@rei.suse.de>
-References: <1417101031-5272-1-git-send-email-mmarhefk@redhat.com>
+Message-ID: <20141217123354.GC29078@rei>
+References: <1418739938-2123-1-git-send-email-xuw@redhat.com>
+	<20141216145448.GA19489@rei>
+	<489454473.16387266.1418795067082.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1417101031-5272-1-git-send-email-mmarhefk@redhat.com>
-Subject: Re: [LTP] [PATCH] testcases/lib/test.sh: added tst_timeout()
+In-Reply-To: <489454473.16387266.1418795067082.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCHv3] library: add tst_system for wrapper system(3)
+ without SIGCHLD
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,140 +27,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
+To: Xu Wang <xuw@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Function tst_timeout() added into LTP test interface:
+> -       if (system("mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null") == 0) {
+> here is the original author's check, use "== 0", so I'am not sure the "!tst_system" will be good for ltp's coding style.
 > 
-> 	tst_timeout "command arg1 arg2 ..." timeout
-> 
-> Function enables waiting for specified command for timeout
-> seconds. Example usage:
-> 
-> 	cmd_output=$(tst_timeout "ping -c 3 localhost" 5)
-> 	if [ $? -ne 0 ]; then
-> 		tst_brkm TBROK "timeout reached!"
-> 	fi
-> 
-> where $cmd_output contains stdout and stderr of ping command.
+> and if I make codes like this, the next line's style will not be consistent to it:
+> +       if (!tst_system("mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null")) {
+>             tst_resm(TINFO, "Appending '-f' flag to mkfs.%s", 
+>                 fs_type);
 
-Nice idea, comments below.
-
-> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
-> ---
->  testcases/lib/test.sh | 54 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 54 insertions(+)
-> 
-> diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-> index eecbfba..1c5bdf2 100644
-> --- a/testcases/lib/test.sh
-> +++ b/testcases/lib/test.sh
-> @@ -129,6 +129,60 @@ tst_check_cmds()
->  	done
->  }
->  
-> +# tst_timeout "command arg1 arg2 ..." timeout
-> +# Runs command for specified timeout (in seconds).
-> +# Function returns retcode of command or 1 if arguments are invalid.
-> +tst_timeout()
-> +{
-> +	local command=$1
-> +	local timeout=$2
-> +	local usleep_time=100000
-> +
-> +	# command must be non-empty string with command to run
-> +	if [ -z "$command" ]; then
-> +		echo "first argument must be non-empty string"
-> +		return 1
-> +	fi
-> +
-> +	# accept only numbers as timeout
-> +	re='^[0-9]+$'
-> +	if ! [[ $timeout =~ $re ]]; then
-
-This is bashism. The portable way to do this seems to be do
-tr -d [:digit:] on the string and checking if result is empty or use
-grep.
-
-> +		echo "only numbers as second argument"
-> +		return 1
-> +	fi
-> +
-> +	if [ -z "$TMPDIR" ]; then
-> +		TMPDIR="/tmp"
-> +	fi
-
-I guess that better solution would be to move this check from the
-tst_tmpdir() after the LTPROOT check in the test.sh so that we have only
-one copy of it.
-
-> +	local output=$(mktemp --tmpdir=$TMPDIR)
-> +	sh -c "eval $command" >$output 2>&1 &
-
-Do we really need to redirect the output to the file here? Shouldn't
-just redirecting stderr to stdout work?
-
-> +	local pid=$!
-> +	timeout=$((timeout*1000000))
-> +	while [ $timeout -gt 0 ]; do
-> +		kill -s 0 $pid 2>/dev/null
-> +		if [ $? -ne 0 ]; then
-> +			break
-> +		fi
-> +		timeout=$((timeout - usleep_time))
-> +		usleep $usleep_time
-
-The usleep is bashism as well. What is not POSIX but tend to work is
-sleep with a real number, i.e. sleep 0.1 but it does not seems to be
-supported under BussyBox.
-
-So we can either do the polling once a second or create our own
-tst_usleep C source that calls usleep().
-
-Ah and I've found that coreutils even includes timeout command that
-can be used to fairly simplify the code.
-
-Try:
-
-timeout $timeout sh -c "eval $command"
-echo $?
-
-> +	done
-> +
-> +	local ret=0
-> +	if [ $timeout -le 0 ]; then
-> +		ret=128
-> +		kill -9 $pid
-> +
-> +	fi
-> +
-> +	wait $pid
-> +	ret=$((ret | $?))
-> +
-> +	cat $output
-> +	rm -f $output
-> +
-> +	return $ret
-> +}
-> +
->  # Check that test name is set
->  if [ -z "$TCID" ]; then
->  	tst_brkm TBROK "TCID is not defined"
-> -- 
-> 1.8.3.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-> from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-> with Interactivity, Sharing, Native Excel Exports, App Integration & more
-> Get technology previously reserved for billion-dollar corporations, FREE
-> http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+I do not get what is inconsistent here. The line for the if condition is
+79 chars long that way, the next line with tst_resm would be more than
+80 therefore it should continue on the next line. It's that simple.
 
 -- 
 Cyril Hrubis
@@ -168,7 +52,7 @@ Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
 from Actuate! Instantly Supercharge Your Business Reports and Dashboards
 with Interactivity, Sharing, Native Excel Exports, App Integration & more
 Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=157005751&iu=/4140/ostg.clktrk
+http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
