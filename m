@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3LrD-0000Pv-Ol
-	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:23 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Y3LrB-00014j-7R
-	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:23 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XQ5o027024
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:26 +0800
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 23 Dec 2014 17:33:32 +0800
-Message-ID: <1419327221-28508-3-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	(envelope-from <Maxin.John@enea.com>) id 1Y1dvc-0002kB-JV
+	for ltp-list@lists.sourceforge.net; Thu, 18 Dec 2014 16:27:52 +0000
+Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1Y1dvb-0001us-BO
+	for ltp-list@lists.sourceforge.net; Thu, 18 Dec 2014 16:27:52 +0000
+From: <maxin.john@gmail.com>
+Date: Thu, 18 Dec 2014 17:27:37 +0100
+Message-ID: <1418920057-53786-1-git-send-email-maxin.john@gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 03/12] smack_set_ambient.sh: Cleanup
+Subject: [LTP] [PATCH] run-posix-option-group-test: remove set -x debug
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,86 +26,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: "Maxin B. John" <maxin.john@enea.com>
 
-* Use 'test.sh' script and use 'tst_*'.
+From: "Maxin B. John" <maxin.john@enea.com>
 
-* Add 'TCID' and 'TST_TOTAL' global variables.
+remove "set -x" in the shell script
 
-* Use '.' instead of 'source'.
-
-* Use '$()' instead of '``'.
-
-* Some cleanup.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Maxin B. John <maxin.john@enea.com>
 ---
- .../kernel/security/smack/smack_set_ambient.sh     | 39 ++++++++++++----------
- 1 file changed, 21 insertions(+), 18 deletions(-)
+ testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/testcases/kernel/security/smack/smack_set_ambient.sh b/testcases/kernel/security/smack/smack_set_ambient.sh
-index fcfdbc5..c100b44 100755
---- a/testcases/kernel/security/smack/smack_set_ambient.sh
-+++ b/testcases/kernel/security/smack/smack_set_ambient.sh
-@@ -10,28 +10,31 @@
- #	CAP_MAC_ADMIN
- #
+diff --git a/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh b/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
+index 17f6e49..0477bd7 100755
+--- a/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
++++ b/testcases/open_posix_testsuite/bin/run-posix-option-group-test.sh
+@@ -22,7 +22,6 @@ EOF
  
--source smack_common.sh
-+export TCID=smack_set_ambient
-+export TST_TOTAL=1
- 
--NotTheFloorLabel="XYZZY"
--StartLabel=`cat "$smackfsdir/ambient" 2>/dev/null`
-+. test.sh
- 
--echo "$NotTheFloorLabel" 2>/dev/null > "$smackfsdir/ambient"
-+. smack_common.sh
- 
--label=`cat "$smackfsdir/ambient" 2>/dev/null`
--if [ "$label" != "$NotTheFloorLabel" ]; then
--	cat <<EOM
--The smack label reported for the current process is "$label", not the expected
--"$NotTheFloorLabel".
--EOM
--	exit 1
-+not_floor_label="XYZZY"
-+start_label=$(cat "$smackfsdir/ambient" 2>/dev/null)
-+
-+echo "$not_floor_label" 2>/dev/null > "$smackfsdir/ambient"
-+
-+label=$(cat "$smackfsdir/ambient" 2>/dev/null)
-+if [ "$label" != "$not_floor_label" ]; then
-+	tst_brkm TFAIL "The smack label reported for the current process is" \
-+		       "\"$label\", not the expected \"$not_floor_label\"."
- fi
- 
--echo "$StartLabel" 2>/dev/null > "$smackfsdir/ambient"
-+echo "$start_label" 2>/dev/null > "$smackfsdir/ambient"
- 
--label=`cat "$smackfsdir/ambient" 2>/dev/null`
--if [ "$label" != "$StartLabel" ]; then
--	cat <<EOM
--The smack label reported for the current process is "$label",  not the expected "$StartLabel".
--EOM
--	exit 1
-+label=$(cat "$smackfsdir/ambient" 2>/dev/null)
-+if [ "$label" != "$start_label" ]; then
-+	tst_brkm TFAIL "The smack label reported for the current process is" \
-+		       "\"$label\",  not the expected \"$start_label\"."
- fi
-+
-+tst_resm TPASS "Test \"$TCID\" success."
-+tst_exit
+ run_option_group_tests()
+ {
+-	set -x
+ 	for test_script in $(find $1 -name run.sh); do
+ 		(cd "$(dirname "$test_script")" && ./$(basename "$test_script"))
+ 	done
 -- 
-1.9.3
+1.9.1
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming! The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
