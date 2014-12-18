@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Y0TDV-0008Mm-VK
-	for ltp-list@lists.sourceforge.net; Mon, 15 Dec 2014 10:49:30 +0000
-Date: Mon, 15 Dec 2014 11:49:09 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Y1bRN-0005PI-Tf
+	for ltp-list@lists.sourceforge.net; Thu, 18 Dec 2014 13:48:29 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id F404AAC6A
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 18 Dec 2014 13:48:21 +0000 (UTC)
+Date: Thu, 18 Dec 2014 14:48:07 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141215104908.GA19679@rei.suse.de>
-References: <tencent_18E2F5FD3ACC10A855AF6945@qq.com>
-	<20141209130429.GB1576@rei.suse.de>
-	<20141209134545.GD1576@rei.suse.de>
-	<tencent_35471B31762F345622E4EC71@qq.com>
+Message-ID: <20141218134807.GA23943@rei>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <tencent_35471B31762F345622E4EC71@qq.com>
-Subject: Re: [LTP] Could you help me to analyse the LTP output
+Subject: [LTP] LTP release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,21 +26,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Troy-lee <798528972@qq.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> The kernel version is 3.1.0, and the LTP version is 201408128.There
-> are some info from screen output, maybe can help us to analyse us to
-> analyse what error is going on.And I am learning the ltp test, could
-> you provide some primer.
+Hello everyone,
+it's about the time we do another release, but as most of the people
+(including me) will have time off around Christmas and New Year the best
+course of action will be to start the release procedure once we are back
+at work. I should be back at 5. 1. 2015.
 
-The log shows that the kernel is out of memory and that oom killer
-terminates all processes in order to get some free RAM.
+Also the LWN.net article, for which I've started the survey, has been
+released today. Many thanks for all the responses. (It's in the
+subscriber section, so unless you have a subscription you have to wait
+till it's available to public).
 
-How much memory has this system? The readahead02 testcase maps, by
-default, 64MB file into memory. If there is not enough, the test should
-either be disabled changed to use less (the -s parameter).
+Lastly but not least Merry Christmas and Happy New Year to all who
+celebrate them.
 
 -- 
 Cyril Hrubis
