@@ -1,27 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rapiteanu.catalin@gmail.com>) id 1XwWa5-0001cW-ID
-	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 13:36:29 +0000
-Received: from mail-wi0-f178.google.com ([209.85.212.178])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1XwWa4-0003vI-NG
-	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 13:36:29 +0000
-Received: by mail-wi0-f178.google.com with SMTP id em10so8409200wid.11
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 04 Dec 2014 05:36:22 -0800 (PST)
-Received: from [128.224.168.147] ([89.121.200.106])
-	by mx.google.com with ESMTPSA id bj3sm18234459wib.3.2014.12.04.05.36.21
-	for <ltp-list@lists.sourceforge.net>
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-	Thu, 04 Dec 2014 05:36:21 -0800 (PST)
-Message-ID: <548063A8.4060104@gmail.com>
-Date: Thu, 04 Dec 2014 15:37:44 +0200
-From: =?UTF-8?B?VmlvcmVsLUPEg3TEg2xpbiBSxINwacibZWFudQ==?=
-	<rapiteanu.catalin@gmail.com>
-MIME-Version: 1.0
-Subject: [LTP]  min_free_kbytes incorrect results
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xuw@redhat.com>) id 1Y1bfG-0001e0-MM
+	for ltp-list@lists.sourceforge.net; Thu, 18 Dec 2014 14:02:50 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Y1bfF-00010l-2v
+	for ltp-list@lists.sourceforge.net; Thu, 18 Dec 2014 14:02:50 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id sBIE2gh1002098
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 18 Dec 2014 09:02:42 -0500
+From: xuw@redhat.com
+Date: Thu, 18 Dec 2014 22:02:14 +0800
+Message-Id: <1418911334-12835-1-git-send-email-xuw@redhat.com>
+Subject: [LTP] [PATCH v4] library: add tst_system for wrapper system(3)
+	without SIGCHLD
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,35 +28,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi all,
+From: George Wang <xuw@redhat.com>
 
-I've been running 'min_free_kbytes' from 'runtest/mm', but everytime I'm 
-getting an incorrect value on read. I've tried this test on different 
-machines (different architectures) and with different versions of ltp, 
-but I'm getting the same error on read. I've looked at the test, but the 
-code seems fine. If anybody has any ideea why this isn't working please 
-let me know.
+system(3) will raise SIGCHLD signal to parent process, and most
+test cases will call tst_sig to poison all signals including the
+SIGCHLD. So add system(3) wrapper function to temporarily disable
+the poisoned handler for SIGCHLD, which will make the test cases
+happy.
+Replace system(3) with tst_system() to ignore SIGCHLG signal handler
+poisoned earlier.
 
-The following log was generated using an up-to-date Arch Linux x64 using 
-kernel: 3.17.4-1
--------------------------------------------------------------------------------------------------
-min_free_kbytes    0  TINFO  :  set overcommit_memory to 2
-min_free_kbytes    0  TINFO  :  set min_free_kbytes to 67584
-min_free_kbytes    1  TBROK  :  min_free_kbytes = 6, but expect 67584
-min_free_kbytes    2  TBROK  :  Remaining cases broken
-min_free_kbytes    0  TINFO  :  set min_free_kbytes to 67584
-min_free_kbytes    0  TINFO  :  set overcommit_memory to 0
-incrementing stop
---------------------------------------------------------------------------------------------------
-Please let me know if I can be of any assistance.
+Signed-off-by: George Wang <xuw@redhat.com>
+---
+ include/test.h    |  5 +++++
+ lib/tst_mkfs.c    |  2 +-
+ lib/tst_run_cmd.c | 17 +++++++++++++++++
+ 3 files changed, 23 insertions(+), 1 deletion(-)
 
-Kind regards,
-Catalin
+diff --git a/include/test.h b/include/test.h
+index 775ba39..326b686 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -300,6 +300,11 @@ void tst_run_cmd(void (cleanup_fn)(void),
+ 		const char *stdout_path,
+ 		const char *stderr_path);
+ 
++/* Wrapper function for system(3), ignorcing SIGCLD signal.
++ * @command: the command to be run.
++ */
++int tst_system(const char *command);
++
+ /* lib/tst_mkfs.c
+  *
+  * @dev: path to a device
+diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+index 5eb3392..46e924c 100644
+--- a/lib/tst_mkfs.c
++++ b/lib/tst_mkfs.c
+@@ -45,7 +45,7 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+ 		/*
+ 		 * The -f option was added to btrfs-progs v3.12
+ 		 */
+-		if (system("mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null") == 0) {
++		if (!tst_system("mkfs.btrfs 2>&1 | grep '\\-f ' >/dev/null")) {
+ 			tst_resm(TINFO, "Appending '-f' flag to mkfs.%s",
+ 				fs_type);
+ 			argv[pos++] = "-f";
+diff --git a/lib/tst_run_cmd.c b/lib/tst_run_cmd.c
+index 4eb32e6..5a02db0 100644
+--- a/lib/tst_run_cmd.c
++++ b/lib/tst_run_cmd.c
+@@ -125,3 +125,20 @@ void tst_run_cmd(void (cleanup_fn)(void),
+ 			"close() on %s failed at %s:%d",
+ 			stderr_path, __FILE__, __LINE__);
+ }
++
++int tst_system(const char *command)
++{
++	int ret = 0;
++
++	/*
++	 *Temporarily disable SIGCHLD of user defined handler, so the
++	 *system(3) function will not cause unexpected SIGCHLD signal
++	 *callback function for test cases.
++	 */
++	void *old_handler = signal(SIGCHLD, SIG_DFL);
++
++	ret = system(command);
++
++	signal(SIGCHLD, old_handler);
++	return ret;
++}
+-- 
+1.8.4.2
+
 
 ------------------------------------------------------------------------------
 Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
