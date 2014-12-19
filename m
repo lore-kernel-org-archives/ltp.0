@@ -1,22 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1XxB9k-0000W9-11
-	for ltp-list@lists.sourceforge.net; Sat, 06 Dec 2014 08:56:00 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1XxB9i-00088x-T2
-	for ltp-list@lists.sourceforge.net; Sat, 06 Dec 2014 08:56:00 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sB68tUkj009761
-	for <ltp-list@lists.sourceforge.net>; Sat, 6 Dec 2014 16:55:30 +0800
-Message-ID: <1417856007.2526.12.camel@G08JYZSD130126.localdomain>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Sat, 6 Dec 2014 16:53:27 +0800
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] test.sh: tst_resm and tst_brkm enhance
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Y1wzf-0000JJ-8T
+	for ltp-list@lists.sourceforge.net; Fri, 19 Dec 2014 12:49:19 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Y1wze-0006dJ-8I
+	for ltp-list@lists.sourceforge.net; Fri, 19 Dec 2014 12:49:19 +0000
+Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id sBJCnBeX023033
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Dec 2014 12:49:12 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	sBJCnASb019759
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Dec 2014 12:49:11 GMT
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	sBJCnAVU019730
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Dec 2014 12:49:10 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Fri, 19 Dec 2014 15:48:58 +0300
+Message-Id: <1418993341-16482-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] tbio fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,53 +36,23 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-If the output information is too long, we need a newline.
-But tst_resm and tst_brkm only print $1 and $2.
-This patch will make them print all parameters.
+In some of our environments (x86, x86_64, sparc64) tbio fails,
+and this series fixes the failures.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/lib/test.sh | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+I tried to introduce minimal changes, because, to be honest, I'm not
+100% sure that I understand the block layer very well. So I would be
+more than happy, if anybody will have a chance to review/test these changes. :)
 
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index eecbfba..9606b21 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -45,9 +45,11 @@ tst_resm()
- 	local mask=$?
- 	LTP_RET_VAL=$((LTP_RET_VAL|mask))
- 
--	echo "$TCID $TST_COUNT $1 : $2"
-+	local ret=$1
-+	shift
-+	echo "$TCID $TST_COUNT $ret : $@"
- 
--	case "$1" in
-+	case "$ret" in
- 	TPASS|TFAIL)
- 	TST_COUNT=$((TST_COUNT+1));;
- 	esac
-@@ -62,7 +64,9 @@ tst_brkm()
- 	*) tst_brkm TBROK "Invalid tst_brkm type '$1'";;
- 	esac
- 
--	tst_resm "$1" "$2"
-+	local ret=$1
-+	shift
-+	tst_resm "$ret" "$@"
- 	tst_exit
- }
- 
--- 
-1.9.3
+Tested by Shuang Qiu (shuang.qiu@oracle.com) and me.
 
-
+Thanks.
 
 
 ------------------------------------------------------------------------------
