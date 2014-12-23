@@ -1,34 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Y1wzg-0000JV-Jy
-	for ltp-list@lists.sourceforge.net; Fri, 19 Dec 2014 12:49:20 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Y1wzf-0006dN-RQ
-	for ltp-list@lists.sourceforge.net; Fri, 19 Dec 2014 12:49:20 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id sBJCnDI7023064
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Dec 2014 12:49:14 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	sBJCnCfQ006459
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Dec 2014 12:49:13 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	sBJCnCl3020009
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Dec 2014 12:49:12 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri, 19 Dec 2014 15:49:00 +0300
-Message-Id: <1418993341-16482-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1418993341-16482-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1418993341-16482-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 2/3] tbio: fixes
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3LrR-0007Mo-Ny
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:37 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Y3LrQ-00013x-IC
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:37 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XSsw027032
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:28 +0800
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 23 Dec 2014 17:33:34 +0800
+Message-ID: <1419327221-28508-5-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v2 05/12] smack_set_current.sh: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,95 +28,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-* Introduce a sleep() to wait until udev creates /dev/tbio
-* Fix typos
-* Clean /dev/tbio after test execution, if /dev/tbio was created
-  manually.
+* Use 'test.sh' script and use 'tst_*'.
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+* Add 'TCID' and 'TST_TOTAL' global variables.
+
+* Use '.' instead of 'source'.
+
+* Use '$()' instead of '``'.
+
+* Some cleanup.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- .../kernel/device-drivers/tbio/tbio_user/tbio.c    |   20 +++++++++++++++-----
- 1 files changed, 15 insertions(+), 5 deletions(-)
+ .../kernel/security/smack/smack_set_current.sh     | 40 ++++++++++++----------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
 
-diff --git a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
-index 81085a3..8249054 100644
---- a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
-+++ b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
-@@ -75,6 +75,9 @@ void cleanup(void)
- 	if (module_loaded)
- 		tst_module_unload(NULL, module_name);
+diff --git a/testcases/kernel/security/smack/smack_set_current.sh b/testcases/kernel/security/smack/smack_set_current.sh
+index 28a1b1b..4e52c89 100755
+--- a/testcases/kernel/security/smack/smack_set_current.sh
++++ b/testcases/kernel/security/smack/smack_set_current.sh
+@@ -11,29 +11,31 @@
+ #	/smack/onlycap unset
+ #
  
-+	if ((!unlink(DEVICE_NAME)) && (errno != ENOENT))
-+		tst_brkm(TBROK | TERRNO, NULL, "unlink failed");
+-source smack_common.sh
++export TCID=smack_set_current
++export TST_TOTAL=1
+ 
+-NotTheFloorLabel="XYZZY"
+-StartLabel=`cat /proc/self/attr/current 2>/dev/null`
++. test.sh
+ 
+-echo "$NotTheFloorLabel" 2>/dev/null > /proc/self/attr/current
++. smack_common.sh
+ 
+-label=`cat /proc/self/attr/current 2>/dev/null`
+-if [ "$label" != "$NotTheFloorLabel" ]; then
+-	cat <<EOM
+-The smack label reported for the current process is "$label",
+-not the expected "$NotTheFloorLabel".
+-EOM
+-	exit 1
++not_floor_label="XYZZY"
++start_label=$(cat /proc/self/attr/current 2>/dev/null)
 +
- 	TEST_CLEANUP;
- }
- 
-@@ -91,6 +94,13 @@ void setup(void)
- 	tst_module_load(cleanup, module_name, NULL);
- 	module_loaded = 1;
- 
-+	/*
-+	 * Wait until udev creates the device node.
-+	 * If the node is not created, we will create it manually,
-+	 * see below.
-+	 */
-+	sleep(5);
++echo "$not_floor_label" 2>/dev/null > /proc/self/attr/current
 +
- 	dev_t devt;
- 	struct stat st;
++label=$(cat /proc/self/attr/current 2>/dev/null)
++if [ "$label" != "$not_floor_label" ]; then
++	tst_brkm TFAIL "The smack label reported for the current process is" \
++		       "\"$label\", not the expected \"$not_floor_label\"."
+ fi
  
-@@ -99,14 +109,14 @@ void setup(void)
+-echo "$StartLabel" 2>/dev/null > /proc/self/attr/current
++echo "$start_label" 2>/dev/null > /proc/self/attr/current
  
- 	devt = makedev(TBIO_MAJOR, 0);
- 	/*
--	 * Check for the /dev/tbase node, and create if it does not
-+	 * Check for the /dev/tbio node, and create if it does not
- 	 * exist.
- 	 */
- 	errno = 0;
- 	if (stat(DEVICE_NAME, &st)) {
- 		if (errno == ENOENT) {
- 			/* dev node does not exist */
--			if (mknod(DEVICE_NAME, S_IFCHR | S_IRUSR | S_IWUSR |
-+			if (mknod(DEVICE_NAME, S_IFBLK | S_IRUSR | S_IWUSR |
- 				S_IRGRP | S_IWGRP, devt)) {
- 				tst_brkm(TBROK | TERRNO, cleanup,
- 					"mknod failed at %s:%d",
-@@ -118,13 +128,13 @@ void setup(void)
- 		}
- 	} else {
- 		/*
--		 * /dev/tbio CHR device exists.  Check to make sure it is for a
-+		 * /dev/tbio device exists.  Check to make sure it is for a
- 		 * block device and that it has the right major and minor.
- 		 */
--		if ((!(st.st_mode & S_IFCHR)) || (st.st_rdev != devt)) {
-+		if ((!(st.st_mode & S_IFBLK)) || (st.st_rdev != devt)) {
- 			/* Recreate the dev node */
- 			if (!unlink(DEVICE_NAME)) {
--				if (mknod(DEVICE_NAME, S_IFCHR | S_IRUSR |
-+				if (mknod(DEVICE_NAME, S_IFBLK | S_IRUSR |
- 					S_IWUSR | S_IRGRP | S_IWGRP, devt)) {
- 					tst_brkm(TBROK | TERRNO, cleanup,
- 						"mknod failed at %s:%d",
+-label=`cat /proc/self/attr/current > /dev/null`
+-if [ "$label" != "$StartLabel" ]; then
+-	cat <<EOM
+-The smack label reported for the current process is "$label",
+-not the expected "$StartLabel".
+-EOM
+-	exit 1
++label=$(cat /proc/self/attr/current 2> /dev/null)
++if [ "$label" != "$start_label" ]; then
++	tst_brkm TFAIL "The smack label reported for the current process is" \
++		       "\"$label\", not the expected \"$start_label\"."
+ fi
++
++tst_resm TPASS "Test \"$TCID\" success."
++tst_exit
 -- 
-1.7.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
