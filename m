@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mats.liljegren@enea.com>) id 1Y0tDn-0004Nt-Er
-	for ltp-list@lists.sourceforge.net; Tue, 16 Dec 2014 14:35:31 +0000
-Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1Y0tDm-0000CK-CV
-	for ltp-list@lists.sourceforge.net; Tue, 16 Dec 2014 14:35:31 +0000
-From: Mats Liljegren <mats.liljegren@enea.com>
-Date: Tue, 16 Dec 2014 15:34:57 +0100
-Message-ID: <1418740497-24661-2-git-send-email-mats.liljegren@enea.com>
-In-Reply-To: <1418740497-24661-1-git-send-email-mats.liljegren@enea.com>
-References: <1418740497-24661-1-git-send-email-mats.liljegren@enea.com>
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3Lrc-0000RG-QL
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:48 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Y3LrZ-00018H-Ax
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:48 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XUtR027042
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:30 +0800
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 23 Dec 2014 17:33:37 +0800
+Message-ID: <1419327221-28508-8-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] ltp: Fix cross-compile issue
+Subject: [LTP] [PATCH v2 08/12] smack_set_load.sh: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,60 +33,105 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Compilation included the flag "-I/usr/include/tirpc" which ignores sysroot.
-This makes a cross-compile to suddenly use host files rather than the files
-installed in the compiler sysroot.
+* Use 'test.sh' script and use 'tst_*'.
 
-By prepending path with "=", the "=" will be replaced with the sysroot path.
+* Add 'TCID' and 'TST_TOTAL' global variables.
 
-Example of error in a Yocto build of ltp:
+* Use '.' instead of 'source'.
 
-arm-enea-linux-gnueabi-gcc  -march=armv7-a -mthumb-interwork -mfloat-abi=softfp -mfpu=neon -Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed --sysroot=/media/data/fb/mlil/yocto-builds/build-keystone-evm-nohzfull/tmp/sysroots/keystone-evm -O2 -pipe -g -feliminate-unused-debug-types -g -O2 -fno-strict-aliasing -pipe -Wall -W  -O2 -pipe -g -feliminate-unused-debug-types -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/usr/include/tirpc -I/media/data/fb/mlil/yocto-builds/build-keystone-evm-nohzfull/tmp/work/armv7a-vfp-neon-enea-linux-gnueabi/ltp/20140508-r32/git/testcases/network/rpc/rpc-tirpc/tests_pack/lib -pthread -I../../../../../../../../include -I../../../../../../../../include -Wl,-O1 -Wl,--hash-style=gnu -Wl,--as-needed  -L/media/data/fb/mlil/yocto-builds/build-keystone-evm-nohzfull/tmp/work/armv7a-vfp-neon-enea-linux-gnueabi/ltp/20140508-r32/git/testcases/network/rpc/rpc-tirpc/tests_pack/lib -L../../../../../../../../lib  rpc_get_myaddress.c   -ltirpc -lrpc-tirpc -o rpc_get_myaddress
-cc1: warning: include location "/usr/include/tirpc" is unsafe for cross-compilation [-Wpoison-system-directories]
-make
+* Use '$()' instead of '``'.
 
-Signed-off-by: Mats Liljegren <mats.liljegren@enea.com>
+* Some cleanup.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- include/mk/config.mk.default | 2 +-
- m4/ltp-tirpc.m4              | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/security/smack/smack_set_load.sh | 55 ++++++++++++-----------
+ 1 file changed, 29 insertions(+), 26 deletions(-)
 
-diff --git a/include/mk/config.mk.default b/include/mk/config.mk.default
-index c20f901..462ddcf 100644
---- a/include/mk/config.mk.default
-+++ b/include/mk/config.mk.default
-@@ -42,7 +42,7 @@ YACC			:= bison -y
- #NUMA_CPPFLAGS		:= -DNUMA_VERSION1_COMPATIBILITY
- #NUMA_LIBS		:= -lnuma
- #SELINUX_LIBS		:= -lselinux
--#TIRPC_CPPFLAGS		:= -I/usr/include/tirpc
-+#TIRPC_CPPFLAGS		:= -I=/usr/include/tirpc
- #TIRPC_LIBS		:= -ltirpc
+diff --git a/testcases/kernel/security/smack/smack_set_load.sh b/testcases/kernel/security/smack/smack_set_load.sh
+index 2dd4fbb..57c04c0 100755
+--- a/testcases/kernel/security/smack/smack_set_load.sh
++++ b/testcases/kernel/security/smack/smack_set_load.sh
+@@ -14,40 +14,43 @@
+ #               1         2         3         4         5         6
+ #      123456789012345678901234567890123456789012345678901234567890123456789
  
- prefix			:= /opt/ltp
-diff --git a/m4/ltp-tirpc.m4 b/m4/ltp-tirpc.m4
-index 73fde51..f4df239 100644
---- a/m4/ltp-tirpc.m4
-+++ b/m4/ltp-tirpc.m4
-@@ -25,7 +25,7 @@ AC_DEFUN([LTP_CHECK_TIRPC],[
- 	TIRPC_LIBS=""
+-source smack_common.sh
++export TCID=smack_set_load
++export TST_TOTAL=1
  
- 	AC_CHECK_HEADER(tirpc/netconfig.h,[
--		TIRPC_CPPFLAGS="-I/usr/include/tirpc"
-+		TIRPC_CPPFLAGS="-I=/usr/include/tirpc"
- 		AC_DEFINE(HAVE_LIBTIRPC, 1, [Define to 1 if you have libtirpc headers installed])
- 		AC_CHECK_LIB(tirpc, rpcb_set, [TIRPC_LIBS="-ltirpc"])])
+-RuleA="TheOne                  TheOther                rwxa"
+-RuleB="TheOne                  TheOther                r---"
++. test.sh
  
+-OldRule=`grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther '`
++. smack_common.sh
+ 
+-echo -n "$RuleA" 2>/dev/null > "$smackfsdir/load"
+-NewRule=`grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther '`
+-if [ "$NewRule" = "" ]; then
+-	echo "Rule did not get set."
+-	exit 1
++rule_a="TheOne                  TheOther                rwxa"
++rule_b="TheOne                  TheOther                r---"
++
++old_rule=$(grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther ')
++
++echo -n "$rule_a" 2>/dev/null > "$smackfsdir/load"
++new_rule=$(grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther ')
++if [ "$new_rule" = "" ]; then
++	tst_brkm TFAIL "Rule did not get set."
+ fi
+-Mode=`echo "$NewRule" | sed -e 's/.* //'`
+-if [ "$Mode" != "rwxa" ]; then
+-	echo "Rule \"$NewRule\" is not set correctly."
++mode=$(echo "$new_rule" | sed -e 's/.* //')
++if [ "$mode" != "rwxa" ]; then
++	tst_brkm TFAIL "Rule \"$new_rule\" is not set correctly."
+ 	exit 1
+ fi
+ 
+-echo -n "$RuleB" 2>/dev/null > "$smackfsdir/load"
+-NewRule=`grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther '`
+-if [ "$NewRule" = "" ]; then
+-	echo "Rule did not get set."
+-	exit 1
++echo -n "$rule_b" 2>/dev/null > "$smackfsdir/load"
++new_rule=$(grep "^TheOne" "$smackfsdir/load" 2>/dev/null | grep ' TheOther ')
++if [ "$new_rule" = "" ]; then
++	tst_brkm TFAIL "Rule did not get set."
+ fi
+-Mode=`echo "$NewRule" | sed -e 's/.* //'`
+-if [ "$Mode" != "r" ]; then
+-	echo "Rule \"$NewRule\" is not set correctly."
+-	exit 1
++mode=$(echo "$new_rule" | sed -e 's/.* //')
++if [ "$mode" != "r" ]; then
++	tst_brkm TFAIL "Rule \"$new_rule\" is not set correctly."
+ fi
+ 
+-if [ "$OldRule" != "$NewRule" ]; then
+-	cat <<EOM
+-Notice: Test access rule changed from
+-"$OldRule" to "$NewRule".
+-EOM
++if [ "$old_rule" != "$new_rule" ]; then
++	tst_resm TINFO "Notice: Test access rule changed from \"$old_rule\"" \
++		       "to \"$new_rule\"."
+ fi
++
++tst_resm TPASS "Test \"$TCID\" success."
++tst_exit
 -- 
-1.9.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
