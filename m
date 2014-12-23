@@ -1,34 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Y1wzg-0000JO-1o
-	for ltp-list@lists.sourceforge.net; Fri, 19 Dec 2014 12:49:20 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Y1wzf-0006dL-7c
-	for ltp-list@lists.sourceforge.net; Fri, 19 Dec 2014 12:49:20 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id sBJCnCsY023060
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Dec 2014 12:49:13 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	sBJCnBEG006430
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Dec 2014 12:49:12 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	sBJCnBUi019810
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Dec 2014 12:49:11 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri, 19 Dec 2014 15:48:59 +0300
-Message-Id: <1418993341-16482-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1418993341-16482-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1418993341-16482-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 1/3] ltp_tbio.c: fix a possible kernel panic
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3Ls3-0004Rp-1a
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:35:15 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Y3Lrg-00018H-5W
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:35:15 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XWxR027051
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:32 +0800
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 23 Dec 2014 17:33:40 +0800
+Message-ID: <1419327221-28508-11-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v2 11/12] smack: Rename 'notroot.c' to
+	'smack_notroot.c'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,89 +29,122 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-In some environments an attempt to load ltp_tbio.ko module will
-result in a kernel panic.
-
-It happens, because after the module is loaded (add_disk(tbio_dev.gd) in
-tbio_init() is executed), one or more ioctl() calls are issued to the newly
-created block device. However, when ioctl() is called, there is no (yet) file
-/dev/tbio created. Therefore, in tbio_ioctl():
-
-  tbio_dev.bdev = blkdev_get_by_path(
-              DEVICE_NAME, FMODE_READ | FMODE_WRITE, NULL);
-
-returns -ENODEV, i.e. tbio_dev.bdev == -ENODEV, and it produces a kernel panic at:
-
-  blkdev_put(tbio_dev.bdev, FMODE_READ | FMODE_WRITE);
-
-We could introduce error checking here like this:
-
-  if (IS_ERR(tbio_dev.bdev))
-      return PTR_ERR(tbio_dev.bdev);
-
-but I assume it would be better to return the previous logic, before commit
-69d3b32681 "device-drivers: tbio: fixes", i.e. where tbio_dev.bdev is assigned
-in tbio_open().
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- .../device-drivers/tbio/tbio_kernel/ltp_tbio.c     |    8 +++-----
- 1 files changed, 3 insertions(+), 5 deletions(-)
+ testcases/kernel/security/smack/.gitignore         |  2 +-
+ testcases/kernel/security/smack/notroot.c          | 29 ----------------------
+ .../kernel/security/smack/smack_file_access.sh     |  2 +-
+ testcases/kernel/security/smack/smack_notroot.c    | 29 ++++++++++++++++++++++
+ 4 files changed, 31 insertions(+), 31 deletions(-)
+ delete mode 100644 testcases/kernel/security/smack/notroot.c
+ create mode 100644 testcases/kernel/security/smack/smack_notroot.c
 
-diff --git a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-index 5198b82..4e38fe7 100644
---- a/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-+++ b/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c
-@@ -376,14 +376,11 @@ static int tbio_ioctl(struct block_device *blk, fmode_t mode,
- {
- 	int err = 0;
- 
--	tbio_dev.bdev = blkdev_get_by_path(
--		DEVICE_NAME, FMODE_READ | FMODE_WRITE, NULL);
+diff --git a/testcases/kernel/security/smack/.gitignore b/testcases/kernel/security/smack/.gitignore
+index 5e9e819..16d5663 100644
+--- a/testcases/kernel/security/smack/.gitignore
++++ b/testcases/kernel/security/smack/.gitignore
+@@ -1,2 +1,2 @@
+-/notroot
++/smack_notroot
+ /smack_set_socket_labels
+diff --git a/testcases/kernel/security/smack/notroot.c b/testcases/kernel/security/smack/notroot.c
+deleted file mode 100644
+index 05858d3..0000000
+--- a/testcases/kernel/security/smack/notroot.c
++++ /dev/null
+@@ -1,29 +0,0 @@
+-/*
+- * Copyright (C) 2007 Casey Schaufler <casey@schaufler-ca.com>
+- *
+- *	This program is free software; you can redistribute it and/or modify
+- *	it under the terms of the GNU General Public License as published by
+- *	the Free Software Foundation, version 2.
+- *
+- * Author:
+- *	Casey Schaufler <casey@schaufler-ca.com>
+- */
 -
- 	switch (cmd) {
- 	case LTP_TBIO_DO_IO:
- 		prk_info("TEST-CASE: LTP_TBIO_DO_IO:");
- 		err = tbio_io(tbio_dev.bdev, (struct tbio_interface *)arg);
--	break;
-+		break;
- 	case LTP_TBIO_CLONE:
- 		prk_info("TEST-CASE: LTP_TBIO_CLONE:");
- 		err = test_bio_clone();
-@@ -412,7 +409,6 @@ static int tbio_ioctl(struct block_device *blk, fmode_t mode,
- 	}
+-#include <stdio.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <unistd.h>
+-
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
+-
+-int main(int argc, char *argv[])
+-{
+-	setuid(1);
+-
+-	execv(argv[1], &argv[1]);
+-
+-	perror(argv[0]);
+-	exit(1);
+-}
+diff --git a/testcases/kernel/security/smack/smack_file_access.sh b/testcases/kernel/security/smack/smack_file_access.sh
+index a2d09c0..8642715 100755
+--- a/testcases/kernel/security/smack/smack_file_access.sh
++++ b/testcases/kernel/security/smack/smack_file_access.sh
+@@ -37,7 +37,7 @@ TST_CLEANUP=cleanup
  
- 	prk_info("TEST-CASE DONE");
--	blkdev_put(tbio_dev.bdev, FMODE_READ | FMODE_WRITE);
- 	return err;
- }
+ chmod 777 $(pwd)
  
-@@ -475,6 +471,8 @@ static void tbio_request(struct request_queue *q)
- 
- static int tbio_open(struct block_device *blk, fmode_t mode)
- {
-+	tbio_dev.bdev = blk;
+-notroot /bin/sh -c "echo InitialData 2>/tmp/smack_fail.log > $testfile"
++smack_notroot /bin/sh -c "echo InitialData 2>/tmp/smack_fail.log > $testfile"
+ if [ ! -f "$testfile" ]; then
+ 	tst_brkm TFAIL "Test file \"$testfile\" can not be created."
+ fi
+diff --git a/testcases/kernel/security/smack/smack_notroot.c b/testcases/kernel/security/smack/smack_notroot.c
+new file mode 100644
+index 0000000..05858d3
+--- /dev/null
++++ b/testcases/kernel/security/smack/smack_notroot.c
+@@ -0,0 +1,29 @@
++/*
++ * Copyright (C) 2007 Casey Schaufler <casey@schaufler-ca.com>
++ *
++ *	This program is free software; you can redistribute it and/or modify
++ *	it under the terms of the GNU General Public License as published by
++ *	the Free Software Foundation, version 2.
++ *
++ * Author:
++ *	Casey Schaufler <casey@schaufler-ca.com>
++ */
 +
- 	return 0;
- }
- 
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++
++int main(int argc, char *argv[])
++{
++	setuid(1);
++
++	execv(argv[1], &argv[1]);
++
++	perror(argv[0]);
++	exit(1);
++}
 -- 
-1.7.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
