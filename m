@@ -1,26 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1XwTtW-0001XT-Kd
-	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 10:44:22 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1XwTtV-00015E-2H
-	for ltp-list@lists.sourceforge.net; Thu, 04 Dec 2014 10:44:22 +0000
-Received: from zmail17.collab.prod.int.phx2.redhat.com
-	(zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
-	by mx6-phx2.redhat.com (8.14.4/8.14.4) with ESMTP id sB4AiEFk026954
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Dec 2014 05:44:14 -0500
-Date: Thu, 4 Dec 2014 05:44:14 -0500 (EST)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <390870174.13092868.1417689854590.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20141204101741.GB15326@rei.suse.de>
-References: <20141204083400.GA2704@localhost.localdomain>
-	<20141204101741.GB15326@rei.suse.de>
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3Ls9-0007QB-ET
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:35:21 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Y3Lrt-00013x-53
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:35:21 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XYJC027054
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:34 +0800
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 23 Dec 2014 17:33:41 +0800
+Message-ID: <1419327221-28508-12-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] syscalls/getgroups/getgroups01: set supplementary
- groups to prevent TCONF
+Subject: [LTP] [PATCH v2 12/12] smack_set_socket_labels.c: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,81 +33,122 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
+* Check whether smackfs is set.
 
+* Use 'test.h' and 'tst_*'.
 
+* Modify Makefile.
 
+* Delete 'message'.
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Thursday, 4 December, 2014 11:17:41 AM
-> Subject: Re: [LTP] [PATCH] syscalls/getgroups/getgroups01: set supplementary groups to prevent TCONF
-> 
-> Hi!
-> > Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
-> > ---
-> >  testcases/kernel/syscalls/getgroups/getgroups01.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/getgroups/getgroups01.c
-> > b/testcases/kernel/syscalls/getgroups/getgroups01.c
-> > index 9fb4c98..28559d3 100644
-> > --- a/testcases/kernel/syscalls/getgroups/getgroups01.c
-> > +++ b/testcases/kernel/syscalls/getgroups/getgroups01.c
-> > @@ -74,8 +74,6 @@ int main(int ac, char **av)
-> >  	int i;
-> >  	int entries;
-> >  
-> > -	initgroups("root", 0);
-> > -
-> >  	if ((msg = parse_opts(ac, av, NULL, NULL)) != NULL)
-> >  		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> >  
-> > @@ -183,6 +181,9 @@ static void setup(void)
+* Some cleanup.
 
-I'd add tst_require_root() to setup, since setgroups() requires CAP_SETGID.
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/security/smack/Makefile           |  2 +-
+ .../security/smack/smack_set_socket_labels.c       | 45 +++++++++++++---------
+ 2 files changed, 27 insertions(+), 20 deletions(-)
 
-> >  	tst_sig(FORK, DEF_HANDLER, cleanup);
-> >  
-> >  	TEST_PAUSE;
-> > +
-> > +	GID_T init_gidset[3] = {0, 1, 2};
-> 
-> This should be gid_t instead of GID_T. The uppercase prototypes are for
-> raw syscalls only. The setgroups() you call is glibc wrapper instead.
-> 
-> > +	setgroups(3, init_gidset);
-> 
-> Otherwise it looks good to me.
+diff --git a/testcases/kernel/security/smack/Makefile b/testcases/kernel/security/smack/Makefile
+index e114998..6d9abfd 100644
+--- a/testcases/kernel/security/smack/Makefile
++++ b/testcases/kernel/security/smack/Makefile
+@@ -8,7 +8,7 @@
+ 
+ top_srcdir		?= ../../../..
+ 
+-include $(top_srcdir)/include/mk/env_pre.mk
++include $(top_srcdir)/include/mk/testcases.mk
+ 
+ INSTALL_TARGETS		:= *.sh
+ 
+diff --git a/testcases/kernel/security/smack/smack_set_socket_labels.c b/testcases/kernel/security/smack/smack_set_socket_labels.c
+index 086e4c8..df8c637 100644
+--- a/testcases/kernel/security/smack/smack_set_socket_labels.c
++++ b/testcases/kernel/security/smack/smack_set_socket_labels.c
+@@ -28,10 +28,16 @@
+ #endif
+ 
+ #include <sys/xattr.h>
++#include <sys/vfs.h>
++
++#include "test.h"
++#include "usctest.h"
++
++char *TCID = "smack_set_socket_labels";
++int TST_TOTAL = 1;
+ 
+ int main(int argc, char *argv[])
+ {
+-	char message[256];
+ 	char *anin = "security.SMACK64IPIN";
+ 	char *anout = "security.SMACK64IPOUT";
+ 	char *annot = "security.SMACK64IPNOT";
+@@ -40,35 +46,36 @@ int main(int argc, char *argv[])
+ 	char *avnot = "TheBadValue";
+ 	int sock;
+ 	int rc;
++	char buf[256];
+ 
+-	if ((sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
+-		sprintf(message, "%s Socket creation failure", argv[0]);
+-		perror(message);
+-		exit(1);
+-	}
++	sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
++	if (sock = < 0)
++		tst_brkm(TFAIL, NULL, "%s Socket creation failure", argv[0]);
++
++	flistxattr(sock, buf, 256);
++	if (strstr(buf, "security.SMACK64") == NULL)
++		tst_brkm(TCONF, NULL, "smackfs not set.");
+ 
+ 	rc = fsetxattr(sock, anin, avin, strlen(avin) + 1, 0);
+ 	if (rc < 0) {
+-		sprintf(message, "%s fsetxattr of %s to %s failure",
+-			argv[0], anin, avin);
+-		perror(message);
+-		exit(1);
++		tst_brkm(TFAIL, NULL, "%s fsetxattr of %s to %s failure",
++			 argv[0], anin, avin);
+ 	}
+ 
+ 	rc = fsetxattr(sock, anout, avout, strlen(avout) + 1, 0);
+ 	if (rc < 0) {
+-		sprintf(message, "%s fsetxattr of %s to %s failure",
+-			argv[0], anout, avout);
+-		perror(message);
+-		exit(1);
++		tst_brkm(TFAIL, NULL, "%s fsetxattr of %s to %s failure",
++			 argv[0], anout, avout);
+ 	}
+ 
+ 	rc = fsetxattr(sock, annot, avnot, strlen(avnot) + 1, 0);
+ 	if (rc >= 0) {
+-		sprintf(message, "%s fsetxattr of %s to %s succeeded in error",
+-			argv[0], anout, avout);
+-		perror(message);
+-		exit(1);
++		tst_brkm(TFAIL, NULL,
++			 "%s fsetxattr of %s to %s succeeded in error",
++			 argv[0], anout, avout);
+ 	}
+-	exit(0);
++
++	tst_resm(TPASS, "Test %s success.", TCID);
++
++	tst_exit();
+ }
+-- 
+1.9.3
 
-To me as well.
-
-Regards,
-Jan
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> ------------------------------------------------------------------------------
-> Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-> from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-> with Interactivity, Sharing, Native Excel Exports, App Integration & more
-> Get technology previously reserved for billion-dollar corporations, FREE
-> http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
