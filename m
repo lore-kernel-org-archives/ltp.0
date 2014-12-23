@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xxx8D-00087e-MW
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 12:09:37 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 0732BAE12
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Dec 2014 12:09:30 +0000 (UTC)
-Date: Mon, 8 Dec 2014 13:09:22 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141208120922.GD11071@rei.suse.de>
-References: <20141206012422.GA3352@localhost.localdomain>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3Lre-0004QA-HF
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:50 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Y3LrE-00014j-HY
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:50 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XRfY027029
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:27 +0800
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 23 Dec 2014 17:33:33 +0800
+Message-ID: <1419327221-28508-4-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20141206012422.GA3352@localhost.localdomain>
-Subject: Re: [LTP] questions about getrusage04
+Subject: [LTP] [PATCH v2 04/12] smack_set_cipso.sh: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,30 +33,125 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi!
-> I cannot understand why udelta/sdelta > "1000+(BIAS_MAX*factor_nr)" is a
-> problem. Could any expert give me a explain, please?
+* Use 'test.sh' script and use 'tst_*'.
 
-It tests timer precision for getrusage timers. If the timers are
-incremting by larger values than expected, something is wrong in kernel.
-The precision depends on CONFIG_HZ settings which is represented by the
-BIAS_MAX.
+* Add 'TCID' and 'TST_TOTAL' global variables.
 
-> And looks like with this patch applied, it works well on powerpc:
+* Use '.' instead of 'source'.
 
-Can you please share the output of the testcase on ppc and ppc64? What
-is the expected timer granularity there?
+* Use '$()' instead of '``'.
 
+* Some cleanup.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/security/smack/smack_set_cipso.sh | 73 +++++++++++-----------
+ 1 file changed, 37 insertions(+), 36 deletions(-)
+
+diff --git a/testcases/kernel/security/smack/smack_set_cipso.sh b/testcases/kernel/security/smack/smack_set_cipso.sh
+index 1c7321f..c0a8a79 100755
+--- a/testcases/kernel/security/smack/smack_set_cipso.sh
++++ b/testcases/kernel/security/smack/smack_set_cipso.sh
+@@ -14,52 +14,53 @@
+ #               1         2    llllCCCCccccCCCCcccc     5         6
+ #      123456789012345678901234567890123456789012345678901234567890123456789
+ 
+-source smack_common.sh
++export TCID=smack_set_cipso
++export TST_TOTAL=1
+ 
+-RuleA="TheOne                  2   0   "
+-RuleB="TheOne                  3   1   55  "
+-RuleC="TheOne                  4   2   17  33  "
++. test.sh
+ 
+-OldRule=`grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null`
++. smack_common.sh
+ 
+-echo -n "$RuleA" 2>/dev/null > "$smackfsdir/cipso"
+-NewRule=`grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null`
+-if [ "$NewRule" = "" ]; then
+-	echo "Rule did not get set."
+-	exit 1
++rule_a="TheOne                  2   0   "
++rule_b="TheOne                  3   1   55  "
++rule_c="TheOne                  4   2   17  33  "
++
++old_rule=$(grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null)
++
++echo -n "$rule_a" 2>/dev/null > "$smackfsdir/cipso"
++new_rule=$(grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null)
++if [ "$new_rule" = "" ]; then
++	tst_brkm TFAIL "Rule did not get set."
+ fi
+-Right=`echo "$NewRule" | grep ' 2'`
+-if [ "$Right" = "" ]; then
+-	echo "Rule \"$NewRule\" is not set correctly."
+-	exit 1
++right=$(echo "$new_rule" | grep ' 2')
++if [ "$right" = "" ]; then
++	tst_brkm TFAIL "Rule \"$new_rule\" is not set correctly."
+ fi
+ 
+-echo -n "$RuleB" 2>/dev/null > "$smackfsdir/cipso"
+-NewRule=`grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null`
+-if [ "$NewRule" = "" ]; then
+-	echo "Rule did not get set."
+-	exit 1
++echo -n "$rule_b" 2>/dev/null > "$smackfsdir/cipso"
++new_rule=$(grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null)
++if [ "$new_rule" = "" ]; then
++	tst_brkm TFAIL "Rule did not get set."
+ fi
+-Right=`echo $NewRule | grep '/55'`
+-if [ "$Right" = "" ]; then
+-	echo "Rule \"$NewRule\" is not set correctly."
+-	exit 1
++right=$(echo $new_rule | grep '/55')
++if [ "$right" = "" ]; then
++	tst_brkm TFAIL "Rule \"$new_rule\" is not set correctly."
+ fi
+ 
+-echo -n "$RuleC" 2>/dev/null > "$smackfsdir/cipso"
+-NewRule=`grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null`
+-if [ "$NewRule" = "" ]; then
+-	echo "Rule did not get set."
+-	exit 1
++echo -n "$rule_c" 2>/dev/null > "$smackfsdir/cipso"
++new_rule=$(grep "^TheOne" "$smackfsdir/cipso" 2>/dev/null)
++if [ "$new_rule" = "" ]; then
++	tst_brkm TFAIL "Rule did not get set."
+ fi
+-Right=`echo "$NewRule" | grep '/17,33'`
+-if [ "$Right" = "" ]; then
+-	echo "Rule \"$NewRule\" is not set correctly."
+-	exit 1
++right=$(echo "$new_rule" | grep '/17,33')
++if [ "$right" = "" ]; then
++	tst_brkm TFAIL "Rule \"$new_rule\" is not set correctly."
+ fi
+ 
+-if [ "$OldRule" != "$NewRule" ]; then
+-	cat <<EOM
+-Notice: Test access rule changed from "$OldRule" to "$NewRule".
+-EOM
++if [ "$old_rule" != "$new_rule" ]; then
++	tst_resm TINFO "Notice: Test access rule changed from \"$old_rule\"" \
++		       "to \"$new_rule\"."
+ fi
++
++tst_resm TPASS "Test \"$TCID\" success."
++tst_exit
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
