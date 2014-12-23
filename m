@@ -1,44 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1Xxy4M-0002QF-5Z
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 13:09:42 +0000
-Received: from e9.ny.us.ibm.com ([32.97.182.139])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Xxy4K-0004uM-9O
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 13:09:42 +0000
-Received: from /spool/local
-	by e9.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
-	Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
-	Mon, 8 Dec 2014 08:09:34 -0500
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com
-	[9.57.198.25])
-	by d01dlp02.pok.ibm.com (Postfix) with ESMTP id 679906E803C
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Dec 2014 08:01:25 -0500 (EST)
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
-	sB8D9UsZ22675498
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Dec 2014 13:09:30 GMT
-Received: from d01av04.pok.ibm.com (localhost [127.0.0.1])
-	by d01av04.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	sB8D9UNH018649
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Dec 2014 08:09:30 -0500
-Received: from localhost.localdomain ([9.125.24.218])
-	by d01av04.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	sB8D9T4b018579
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Dec 2014 08:09:30 -0500
-Date: Mon, 8 Dec 2014 21:03:01 +0800
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Message-ID: <20141208130301.GB3352@localhost.localdomain>
-References: <20141206012422.GA3352@localhost.localdomain>
-	<20141208120922.GD11071@rei.suse.de>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Y3LrT-0000Qd-JA
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:39 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Y3LrS-00013x-FY
+	for ltp-list@lists.sourceforge.net; Tue, 23 Dec 2014 09:34:39 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id sBN9XSDX027035
+	for <ltp-list@lists.sourceforge.net>; Tue, 23 Dec 2014 17:33:28 +0800
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 23 Dec 2014 17:33:35 +0800
+Message-ID: <1419327221-28508-6-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20141208120922.GD11071@rei.suse.de>
-Subject: Re: [LTP] questions about getrusage04
+Subject: [LTP] [PATCH v2 06/12] smack_set_direct.sh: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -53,57 +33,86 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-On Mon, Dec 08, 2014 at 01:09:22PM +0100, Cyril Hrubis wrote:
-> Hi!
-> > I cannot understand why udelta/sdelta > "1000+(BIAS_MAX*factor_nr)" is a
-> > problem. Could any expert give me a explain, please?
-> 
-> It tests timer precision for getrusage timers. If the timers are
-> incremting by larger values than expected, something is wrong in kernel.
-> The precision depends on CONFIG_HZ settings which is represented by the
-> BIAS_MAX.
-Where does the 1000 come from? If on a slow system, we need to increase
-the "factor_nr", right? 
-> 
-> > And looks like with this patch applied, it works well on powerpc:
-> 
-> Can you please share the output of the testcase on ppc and ppc64? What
-> is the expected timer granularity there?
-> 
-Looks like the granularity is 10000us:
+* Use 'test.sh' script and use 'tst_*'.
 
-getrusage04    0  TINFO  :  Expected timers granularity is 10000 us
-getrusage04    0  TINFO  :  Using 1 as multiply factor for max [us]time increment (1000+10000us)!
-getrusage04    0  TINFO  :  utime:          56us; stime:        1192us
-getrusage04    0  TINFO  :  utime:          56us; stime:        2009us
-getrusage04    0  TINFO  :  utime:          56us; stime:        4233us
-getrusage04    0  TINFO  :  utime:        1227us; stime:        5243us
-getrusage04    0  TINFO  :  utime:        1227us; stime:        8541us
-getrusage04    0  TINFO  :  utime:        2072us; stime:        8741us
-getrusage04    0  TINFO  :  utime:        2602us; stime:       11169us
-getrusage04    0  TINFO  :  utime:        2743us; stime:       11747us
-getrusage04    0  TINFO  :  utime:        2948us; stime:       12790us
-getrusage04    0  TINFO  :  utime:        2948us; stime:       18118us
-getrusage04    0  TINFO  :  utime:        2948us; stime:       18596us
-getrusage04    0  TINFO  :  utime:        4458us; stime:       20030us
-getrusage04    0  TINFO  :  utime:        4458us; stime:       20244us
-getrusage04    0  TINFO  :  utime:        4458us; stime:       23432us
-getrusage04    0  TINFO  :  utime:        5412us; stime:       24650us
-getrusage04    0  TINFO  :  utime:        5412us; stime:       27273us
-getrusage04    0  TINFO  :  utime:        6125us; stime:       27909us
-getrusage04    0  TINFO  :  utime:        6125us; stime:       27911us
-getrusage04    0  TINFO  :  utime:        6125us; stime:       28111us
-getrusage04    0  TINFO  :  utime:        6235us; stime:       28513us
-getrusage04    0  TINFO  :  utime:        6235us; stime:       28750us
-getrusage04    1  TPASS  :  Test Passed
+* Add 'TCID' and 'TST_TOTAL' global variables.
+
+* Use '.' instead of 'source'.
+
+* Use '$()' instead of '``'.
+
+* Some cleanup.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ .../kernel/security/smack/smack_set_direct.sh      | 40 ++++++++++++----------
+ 1 file changed, 21 insertions(+), 19 deletions(-)
+
+diff --git a/testcases/kernel/security/smack/smack_set_direct.sh b/testcases/kernel/security/smack/smack_set_direct.sh
+index 84135f5..9d27653 100755
+--- a/testcases/kernel/security/smack/smack_set_direct.sh
++++ b/testcases/kernel/security/smack/smack_set_direct.sh
+@@ -10,29 +10,31 @@
+ #	CAP_MAC_ADMIN
+ #
+ 
+-source smack_common.sh
++export TCID=smack_set_direct
++export TST_TOTAL=1
+ 
+-NotTheStartValue="17"
+-StartValue=`cat "$smackfsdir/direct" 2>/dev/null`
++. test.sh
+ 
+-echo "$NotTheStartValue" 2>/dev/null > "$smackfsdir/direct"
++. smack_common.sh
+ 
+-DirectValue=`cat "$smackfsdir/direct" 2>/dev/null`
+-if [ "$DirectValue" != "$NotTheStartValue" ]; then
+-	cat <<EOM
+-The CIPSO direct level reported is "$DirectValue",
+-not the expected "$NotTheStartValue".
+-EOM
+-	exit 1
++not_start_value="17"
++start_value=$(cat "$smackfsdir/direct" 2>/dev/null)
++
++echo "$not_start_value" 2>/dev/null > "$smackfsdir/direct"
++
++direct_value=$(cat "$smackfsdir/direct" 2>/dev/null)
++if [ "$direct_value" != "$not_start_value" ]; then
++	tst_brkm TFAIL "The CIPSO direct level reported is \"$direct_value\"," \
++		       "not the expected \"$not_start_value\"."
+ fi
+ 
+-echo "$StartValue" 2>/dev/null> "$smackfsdir/direct"
++echo "$start_value" 2>/dev/null> "$smackfsdir/direct"
+ 
+-DirectValue=`cat "$smackfsdir/direct" 2>/dev/null`
+-if [ "$DirectValue" != "$StartValue" ]; then
+-	cat <<EOM
+-The CIPSO direct level reported is "$DirectValue",
+-not the expected "$StartValue".
+-EOM
+-	exit 1
++direct_value=$(cat "$smackfsdir/direct" 2>/dev/null)
++if [ "$direct_value" != "$start_value" ]; then
++	tst_brkm TFAIL "The CIPSO direct level reported is \"$direct_value\"," \
++		       "not the expected \"$start_value\"."
+ fi
++
++tst_resm TPASS "Test \"$TCID\" success."
++tst_exit
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
