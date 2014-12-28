@@ -1,17 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Xxwbs-0006d4-VN
-	for ltp-list@lists.sourceforge.net; Mon, 08 Dec 2014 11:36:14 +0000
-Date: Mon, 8 Dec 2014 12:35:57 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20141208113557.GA11071@rei.suse.de>
-References: <1417856007.2526.12.camel@G08JYZSD130126.localdomain>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangli5665@gmail.com>) id 1Y5KPu-0004XI-3l
+	for ltp-list@lists.sourceforge.net; Sun, 28 Dec 2014 20:26:22 +0000
+Received: from mail-ob0-f182.google.com ([209.85.214.182])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Y5KPW-0000gM-0U
+	for ltp-list@lists.sourceforge.net; Sun, 28 Dec 2014 20:26:22 +0000
+Received: by mail-ob0-f182.google.com with SMTP id wo20so39125116obc.13
+	for <ltp-list@lists.sourceforge.net>;
+	Sun, 28 Dec 2014 12:25:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1417856007.2526.12.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH] test.sh: tst_resm and tst_brkm enhance
+In-Reply-To: <197257986.1477814.1419759005661.JavaMail.zimbra@redhat.com>
+References: <1419737900-6117-1-git-send-email-liwang@redhat.com>
+	<1915647923.1462940.1419739614431.JavaMail.zimbra@redhat.com>
+	<197257986.1477814.1419759005661.JavaMail.zimbra@redhat.com>
+Date: Sun, 28 Dec 2014 17:31:28 +0800
+Message-ID: <CAE1O6mjDP5TJi6XaqaX18VQXTpZFU04ReB250GZWRimjJBkhWA@mail.gmail.com>
+From: Li Wang <wangli.ahau@gmail.com>
+Subject: [LTP] Fwd: [PATCH] mem/hugeshmat: new case for hugepage leak
+	inspection
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,26 +33,254 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> If the output information is too long, we need a newline.
-> But tst_resm and tst_brkm only print $1 and $2.
-> This patch will make them print all parameters.
+Description of Problem:
+    When over 1GB shared memory was alocated in hugepage, the hugepage
+    is not released though process finished.
 
-Can you include examples usage after the change?
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ runtest/hugetlb                                    |   1 +
+ testcases/kernel/mem/.gitignore                    |   1 +
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat04.c     | 185 +++++++++++++++++++++
+ 3 files changed, 187 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 3eaf14c..805141d 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -10,6 +10,7 @@ hugemmap05_3 hugemmap05 -s -m
+ hugeshmat01 hugeshmat01 -i 5
+ hugeshmat02 hugeshmat02 -i 5
+ hugeshmat03 hugeshmat03 -i 5
++hugeshmat04 hugeshamt04 -i 5
+
+ hugeshmctl01 hugeshmctl01 -i 5
+ hugeshmctl02 hugeshmctl02 -i 5
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index f96964c..c531563 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -6,6 +6,7 @@
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
++/hugetlb/hugeshmat/hugeshmat04
+ /hugetlb/hugeshmctl/hugeshmctl01
+ /hugetlb/hugeshmctl/hugeshmctl02
+ /hugetlb/hugeshmctl/hugeshmctl03
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+new file mode 100644
+index 0000000..efa8a73
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+@@ -0,0 +1,185 @@
++/*
++ *   Copyright (c) Linux Test Project, 2014
++ *
++ *   This program is free software;  you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ *   the GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program;  if not, write to the Free Software
++ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+02110-1301 USA
++ */
++
++/*
++ * NAME
++ *     hugeshmat04.c
++ *
++ * DESCRIPTION
++ *     hugeshmat04 - test for hugepage leak inspection.
++ *
++ *      Description of Problem:
++ *          When over 1GB shered memory was alocated in hugepage, the hugepage
++ *          is not released though process finished.
++ *
++ *          You need more than 2GB memory in test job
++ *
++ *     Return value:
++ *       0:     Test successed.  No regression found.
++ *       1:     Test failed.  Maybe memory shortage.  Please retry testing.
++ *       2:     Test failed.  Regression detected.
++ *       other: Test failed.  Other problem detected.
++ *
++ * HISTORY
++ *     05/2014 - Written by Fujistu Corp.
++ *     12/2014 - Port to LTP by Li Wang.
++ *
++ * RESTRICTIONS
++ *     test must be run at root
++ */
++
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <string.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/shm.h>
++#include <sys/wait.h>
++
++#include "test.h"
++#include "mem.h"
++
++#define SIZE   (1024 * 1024 * 1024)
++#define BOUNDARY (1024 * 1024 * 1024)
++
++char *TCID = "hugeshmat04";
++int TST_TOTAL = 3;
++
++static int huge_total;
++static int huge_free;
++static int huge_free2;
++static long hugepages;
++static long orig_hugepages;
++
++static int shared_hugepage(void);
++
++
++int main(int ac, char **av)
++{
++       int lc, i, ret;
++       const char *msg;
++
++       msg = parse_opts(ac,av, NULL, NULL);
++       if (msg != NULL)
++               tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++       setup();
++
++       for (lc = 0; TEST_LOOPING(lc); lc++) {
++               tst_count = 0;
++
++               for (i = 0; i < TST_TOTAL; i++) {
++                       huge_total = read_meminfo("HugePages_Total:");
++                       huge_free = read_meminfo("HugePages_Free:");
++
++                       if (huge_total == hugepages && huge_free == hugepages) {
++                               ret = shared_hugepage();
++
++                               huge_free2 = read_meminfo("HugePages_Free:");
++                               if (huge_free2 != huge_free)
++                                       ret = 2;
++                       } else {
++                               ret = 1;
++                       }
++
++                       switch (ret) {
++                       case 0:
++                               tst_resm(TPASS,
++                                       "No regression found.");
++                               break;
++                       case 1:
++                               tst_brkm(TFAIL, cleanup,
++                                       "Test failed. Maybe memory shortage.");
++                               break;
++                       case 2:
++                               tst_brkm(TFAIL, cleanup,
++                                       "Test failed. Hugepage leak
+inspection.");
++                               break;
++                       default:
++                               tst_brkm(TFAIL, cleanup,
++                                       "Test failed. Other problem detected.");
++                               break;
++                       }
++
++               }
++       }
++       cleanup();
++       tst_exit();
++}
++
++int shared_hugepage(void)
++{
++       pid_t pid;
++       int status, shmid;
++       size_t size = (size_t)SIZE;
++       void *buf;
++
++       shmid = shmget(IPC_PRIVATE, size, SHM_HUGETLB | IPC_CREAT | 0777);
++       if (shmid < 0)
++               tst_brkm(TBROK | TERRNO, cleanup, "shmget");
++
++       buf = shmat(shmid, (void *)BOUNDARY, SHM_RND | 0777);
++       if ( buf == (void *)-1 ) {
++               shmctl(shmid, IPC_RMID, NULL);
++               tst_brkm(TBROK | TERRNO, cleanup, "shmat");
++       }
++
++       memset(buf, 2, size);
++       sleep(3);
++       pid = fork();
++
++       if (pid == 0)
++               exit(1);
++       else if (pid < 0)
++               tst_brkm(TBROK | TERRNO, cleanup, "fork");
++
++       wait(&status);
++       shmdt(buf);
++       shmctl(shmid, IPC_RMID, NULL);
++
++       return 0;
++}
++
++void setup(void)
++{
++       long mem_total, hpage_size;
++
++       tst_require_root(NULL);
++
++       mem_total = read_meminfo("MemTotal:");
++       if (mem_total < 2097152) {
++               tst_resm(TINFO, "Total memory should greater than 2G.");
++               tst_exit();
++       }
++
++       orig_hugepages = get_sys_tune("nr_hugepages");
++       hpage_size = read_meminfo("Hugepagesize:");
++
++       hugepages = (orig_hugepages * hpage_size + 1048576) / hpage_size;
++       set_sys_tune("nr_hugepages", hugepages, 1);
++
++       TEST_PAUSE;
++}
++
++void cleanup(void)
++{
++       TEST_CLEANUP;
++       set_sys_tune("nr_hugepages", orig_hugepages, 0);
++}
+--
+1.8.3.1
+
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+Email: wangli.ahau@gmail.com
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=164703151&iu=/4140/ostg.clktrk
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
