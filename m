@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YBlcz-0000MF-1y
-	for ltp-list@lists.sourceforge.net; Thu, 15 Jan 2015 14:42:29 +0000
-Date: Thu, 15 Jan 2015 15:41:35 +0100
+	(envelope-from <metan@suse.de>) id 1Y88Gk-0006Vm-FN
+	for ltp-list@lists.sourceforge.net; Mon, 05 Jan 2015 14:04:30 +0000
+Date: Mon, 5 Jan 2015 15:03:35 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150115144135.GB9499@rei>
-References: <1421331671-231350-1-git-send-email-shengyong1@huawei.com>
-	<1421331671-231350-3-git-send-email-shengyong1@huawei.com>
+Message-ID: <20150105140334.GA31857@rei.suse.de>
+References: <1417101031-5272-1-git-send-email-mmarhefk@redhat.com>
+	<1418987492-17553-1-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1421331671-231350-3-git-send-email-shengyong1@huawei.com>
-Subject: Re: [LTP] [PATCH V2 2/3] syscall/renameat01: do not test EMLINK if
- subdir limit not availiable
+In-Reply-To: <1418987492-17553-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH v3] testcases/lib/test.sh: added tst_timeout()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,41 +25,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sheng Yong <shengyong1@huawei.com>
-Cc: yanegomi@gmail.com, ltp-list@lists.sourceforge.net
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Do not test EMLINK, if the filesystem has no subdir limit.
+> Function tst_timeout() added into LTP test interface:
 > 
-> Signed-off-by: Sheng Yong <shengyong1@huawei.com>
-> ---
->  testcases/kernel/syscalls/renameat/renameat01.c | 5 +++++
->  1 file changed, 5 insertions(+)
+> 	tst_timeout "command arg1 arg2 ..." timeout
 > 
-> diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
-> index bb5e6df..b92f96d 100644
-> --- a/testcases/kernel/syscalls/renameat/renameat01.c
-> +++ b/testcases/kernel/syscalls/renameat/renameat01.c
-> @@ -211,6 +211,11 @@ static void setup(void)
->  
->  static void renameat_verify(const struct test_case_t *tc)
->  {
-> +	if (tc->exp_errno == EMLINK && max_subdirs == -1) {
-> +		tst_resm(TPASS, "EMLINK test is not tested");
+> Function enables waiting for specified command for timeout
+> seconds. Example usage:
+> 
+> 	cmd_output=$(tst_timeout "ping -c 3 localhost" 5)
+> 	if [ $? -ne 0 ]; then
+> 		tst_brkm TBROK "timeout reached!"
+> 	fi
+> 
+> where $cmd_output contains stdout and stderr of ping command.
 
-This is TCONF not PASS.
+Pushed, thanks.
 
+It would be a nice to have a paragraph about the usage in the test
+writing guidelines. Can you send a patch for that too?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
