@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YAyfL-0004MV-DA
-	for ltp-list@lists.sourceforge.net; Tue, 13 Jan 2015 10:25:39 +0000
-Date: Tue, 13 Jan 2015 11:24:47 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Y8Urn-0005aF-PM
+	for ltp-list@lists.sourceforge.net; Tue, 06 Jan 2015 14:12:15 +0000
+Date: Tue, 6 Jan 2015 15:11:38 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150113102446.GA8612@rei.suse.de>
-References: <1412835916-5039-1-git-send-email-liuhangbin@gmail.com>
+Message-ID: <20150106141138.GA17948@rei>
+References: <1418920057-53786-1-git-send-email-maxin.john@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1412835916-5039-1-git-send-email-liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH v4] ltp-networking/tcp_cmds/finger: fix finger bad
- user and host test
+In-Reply-To: <1418920057-53786-1-git-send-email-maxin.john@gmail.com>
+Subject: Re: [LTP] [PATCH] run-posix-option-group-test: remove set -x debug
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,64 +24,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: maxin.john@gmail.com
+Cc: ltp-list@lists.sourceforge.net, "Maxin B. John" <maxin.john@enea.com>
 
 Hi!
-> Finger always return 0 with bad user and host test. And it also return
-> different error message on different distros. So let's only check stderr
-> message and decide whether the test pass or fail.
+> remove "set -x" in the shell script
 
-Okay, so the test passes if anything was written into stderr. Sounds
-good to me.
+While I agree that the script is too verbose as it is this is not right
+solution. After this change it only prints summary of succeeded/failed
+testcases without even telling what call has been tested.
 
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  testcases/network/tcp_cmds/finger/finger01 | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/testcases/network/tcp_cmds/finger/finger01 b/testcases/network/tcp_cmds/finger/finger01
-> index 203d746..e01c1ad 100755
-> --- a/testcases/network/tcp_cmds/finger/finger01
-> +++ b/testcases/network/tcp_cmds/finger/finger01
-> @@ -112,14 +112,13 @@ do_test2()
->      BADHOST="xxxx"
->  
->      tst_resm TINFO "finger -badflag default "
-> -    finger -x 2>&1 1>/dev/null && end_testcase "finger -x should fail"
-> +    finger -x &>/dev/null && end_testcase "finger -x should fail"
->  
->      tst_resm TINFO "finger -bad user "
-> -    finger $BADUSER 2>&1 1>/dev/null || end_testcase "finger $BADUSER"
-> -    finger @$BADHOST 2>&1 1>/dev/null | grep "finger: unknown host" \
-> -        || end_testcase "finger @$BADHOST"
-> -    if ! finger $BADUSER@$BADHOST 2>&1 1>/dev/null \
-> -        | grep "finger: unknown host"; then
-> +    [ "$(finger $BADUSER 2>&1 1>/dev/null)" ] || end_testcase "finger $BADUSER"
-> +    [ "$(finger @$BADHOST 2>&1 1>/dev/null)" ] || \
-> +        end_testcase "finger @$BADHOST"
-> +    [ "finger $BADUSER@$BADHOST 2>&1 1>/dev/null" ] || \
+The output should rather look something like:
 
-Missing $(), otherwise this will be always true because we just pass a
-string to the [].
-
->          end_testcase "finger $BADUSER@$BADHOST"
->      fi
-
-And this fi does belong to the deleted if.
-
-Alexey can you please fix the minor issues and push the patch?
+***********************
+Testing pthread_kill
+***********************
+PASS                 14
+FAIL                  0
+***********************
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
