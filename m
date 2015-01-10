@@ -1,34 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1YAz7a-0004tm-96
-	for ltp-list@lists.sourceforge.net; Tue, 13 Jan 2015 10:54:50 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YAz7Z-0005Uw-7j
-	for ltp-list@lists.sourceforge.net; Tue, 13 Jan 2015 10:54:50 +0000
-Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t0DAsg85013145
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Jan 2015 10:54:43 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t0DAsfgo003015
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Jan 2015 10:54:41 GMT
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t0DAseIl021006
-	for <ltp-list@lists.sourceforge.net>; Tue, 13 Jan 2015 10:54:40 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 13 Jan 2015 13:54:35 +0300
-Message-Id: <1421146475-8597-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <54B4E154.2070801@oracle.com>
-References: <54B4E154.2070801@oracle.com>
-Subject: [LTP] [PATCH V2 2/2] tbio: fixes
+	(envelope-from <jstancek@redhat.com>) id 1Y9t9u-0001Rm-J9
+	for ltp-list@lists.sourceforge.net; Sat, 10 Jan 2015 10:20:42 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Y9t9s-0007v9-QO
+	for ltp-list@lists.sourceforge.net; Sat, 10 Jan 2015 10:20:42 +0000
+Received: from int-mx13.intmail.prod.int.phx2.redhat.com
+	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t0AAKYDb030686
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Sat, 10 Jan 2015 05:20:34 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id t0AAKXD0031138
+	for <ltp-list@lists.sourceforge.net>; Sat, 10 Jan 2015 05:20:33 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Sat, 10 Jan 2015 11:20:28 +0100
+Message-Id: <1420885229-25636-1-git-send-email-jstancek@redhat.com>
+Subject: [LTP] [PATCH] skip MSG_ERRQUEUE+tcp test on kernels < 3.17
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,130 +36,96 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-* Wait until udev creates /dev/tbio. If udev can not create
-  the node file in a defined timeout, create it manually.
-* Clean /dev/tbio after test execution, if /dev/tbio was created
-  manually.
+MSG_ERRQUEUE support for tcp has been added in 3.17. [1][2][3]
+Skip testing this combination on prior kernels.
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+[1] https://lkml.org/lkml/2006/9/18/182
+[2] f4713a3dfad045d46afcb9c2a7d0bba288920ed4
+[3] 4ed2d765dfaccff5ebdac68e2064b59125033a3b
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
+ testcases/kernel/syscalls/recv/recv01.c         |    9 ++++++++-
+ testcases/kernel/syscalls/recvfrom/recvfrom01.c |    9 ++++++++-
+ testcases/kernel/syscalls/recvmsg/recvmsg01.c   |    9 ++++++++-
+ 3 files changed, 24 insertions(+), 3 deletions(-)
 
-Changes since V1:
- * implemented a more active waiting
- * fixed the wrong logical condition next to unlink() in cleanup()
-
-
- .../kernel/device-drivers/tbio/tbio_user/tbio.c    |   62 +++++++++-----------
- 1 files changed, 28 insertions(+), 34 deletions(-)
-
-diff --git a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
-index 81085a3..fdb55b5 100644
---- a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
-+++ b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
-@@ -75,12 +75,19 @@ void cleanup(void)
- 	if (module_loaded)
- 		tst_module_unload(NULL, module_name);
+diff --git a/testcases/kernel/syscalls/recv/recv01.c b/testcases/kernel/syscalls/recv/recv01.c
+index 3dc7a91..ad5f9f8 100644
+--- a/testcases/kernel/syscalls/recv/recv01.c
++++ b/testcases/kernel/syscalls/recv/recv01.c
+@@ -130,8 +130,15 @@ int main(int argc, char *argv[])
+ 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+ 		tst_count = 0;
+ 		for (testno = 0; testno < TST_TOTAL; ++testno) {
+-			tdat[testno].setup();
++			if ((tst_kvercmp(3, 17, 0) < 0)
++			    && (tdat[testno].flags & MSG_ERRQUEUE)
++			    && (tdat[testno].type & SOCK_STREAM)) {
++				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
++						"it's supported from 3.17");
++				continue;
++			}
  
-+	if (unlink(DEVICE_NAME) && (errno != ENOENT))
-+		tst_brkm(TBROK | TERRNO, NULL, "unlink failed");
++			tdat[testno].setup();
+ 			TEST(recv(s, tdat[testno].buf, tdat[testno].buflen,
+ 				  tdat[testno].flags));
+ 			if (TEST_RETURN > 0)
+diff --git a/testcases/kernel/syscalls/recvfrom/recvfrom01.c b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+index 8d0a2ee..843dfb1 100644
+--- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
++++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+@@ -152,8 +152,15 @@ int main(int argc, char *argv[])
+ 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+ 		tst_count = 0;
+ 		for (testno = 0; testno < TST_TOTAL; ++testno) {
+-			tdat[testno].setup();
++			if ((tst_kvercmp(3, 17, 0) < 0)
++			    && (tdat[testno].flags & MSG_ERRQUEUE)
++			    && (tdat[testno].type & SOCK_STREAM)) {
++				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
++						"it's supported from 3.17");
++				continue;
++			}
+ 
++			tdat[testno].setup();
+ 			TEST(recvfrom(s, tdat[testno].buf, tdat[testno].buflen,
+ 				      tdat[testno].flags, tdat[testno].from,
+ 				      tdat[testno].salen));
+diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg01.c b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+index 42d4968..1216935 100644
+--- a/testcases/kernel/syscalls/recvmsg/recvmsg01.c
++++ b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+@@ -208,10 +208,17 @@ int main(int argc, char *argv[])
+ 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+ 		tst_count = 0;
+ 		for (testno = 0; testno < TST_TOTAL; ++testno) {
++			if ((tst_kvercmp(3, 17, 0) < 0)
++			    && (tdat[testno].flags & MSG_ERRQUEUE)
++			    && (tdat[testno].type & SOCK_STREAM)) {
++				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
++						"it's supported from 3.17");
++				continue;
++			}
 +
- 	TEST_CLEANUP;
- }
+ 			tdat[testno].setup();
  
- 
- void setup(void)
- {
-+	dev_t devt;
-+	struct stat st;
-+	unsigned int i, valid_node_created;
-+
- 	tst_require_root(NULL);
- 
- 	if (tst_kvercmp(2, 6, 0) < 0) {
-@@ -91,50 +98,37 @@ void setup(void)
- 	tst_module_load(cleanup, module_name, NULL);
- 	module_loaded = 1;
- 
--	dev_t devt;
--	struct stat st;
+ 			/* setup common to all tests */
 -
- 	SAFE_FILE_SCANF(cleanup, "/sys/class/block/tbio/dev",
- 		"%d:0", &TBIO_MAJOR);
- 
- 	devt = makedev(TBIO_MAJOR, 0);
-+
- 	/*
--	 * Check for the /dev/tbase node, and create if it does not
--	 * exist.
-+	 * Wait until udev creates the device node.
-+	 * If the node is not created or invalid, create it manually.
- 	 */
--	errno = 0;
--	if (stat(DEVICE_NAME, &st)) {
--		if (errno == ENOENT) {
--			/* dev node does not exist */
--			if (mknod(DEVICE_NAME, S_IFCHR | S_IRUSR | S_IWUSR |
--				S_IRGRP | S_IWGRP, devt)) {
-+	valid_node_created = 0;
-+	for (i = 0; i < 5; i++) {
-+		if (stat(DEVICE_NAME, &st)) {
-+			if (errno != ENOENT)
- 				tst_brkm(TBROK | TERRNO, cleanup,
--					"mknod failed at %s:%d",
--					__FILE__, __LINE__);
--			}
-+					 "stat() failed");
- 		} else {
--			tst_brkm(TBROK | TERRNO, cleanup,
--				"problem with tbase device node directory");
--		}
--	} else {
--		/*
--		 * /dev/tbio CHR device exists.  Check to make sure it is for a
--		 * block device and that it has the right major and minor.
--		 */
--		if ((!(st.st_mode & S_IFCHR)) || (st.st_rdev != devt)) {
--			/* Recreate the dev node */
--			if (!unlink(DEVICE_NAME)) {
--				if (mknod(DEVICE_NAME, S_IFCHR | S_IRUSR |
--					S_IWUSR | S_IRGRP | S_IWGRP, devt)) {
--					tst_brkm(TBROK | TERRNO, cleanup,
--						"mknod failed at %s:%d",
--						__FILE__, __LINE__);
--				}
--			} else {
--				tst_brkm(TBROK | TERRNO, cleanup,
--					"unlink failed");
-+			if ((st.st_mode & S_IFBLK) && (st.st_rdev == devt)) {
-+				valid_node_created = 1;
-+				break;
- 			}
- 		}
-+
-+		sleep(1);
-+	}
-+
-+	if (!valid_node_created) {
-+		if (unlink(DEVICE_NAME) && (errno != ENOENT))
-+			tst_brkm(TBROK | TERRNO, cleanup, "unlink() failed");
-+		if (mknod(DEVICE_NAME, S_IFBLK | S_IRUSR | S_IWUSR |
-+			  S_IRGRP | S_IWGRP, devt))
-+			tst_brkm(TBROK | TERRNO, cleanup, "mknod() failed");
- 	}
- 
- 	tbio_fd = open(DEVICE_NAME, O_RDWR);
+ 			iov[0].iov_base = tdat[testno].buf;
+ 			iov[0].iov_len = tdat[testno].buflen;
+ 			msgdat.msg_name = tdat[testno].from;
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming! The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
