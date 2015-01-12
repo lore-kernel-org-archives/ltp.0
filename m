@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YGPbw-0002z5-3f
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 10:12:36 +0000
-Date: Wed, 28 Jan 2015 11:12:21 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150128101221.GA22007@rei.suse.de>
-References: <1422323457-184525-1-git-send-email-shengyong1@huawei.com>
-	<1422323457-184525-5-git-send-email-shengyong1@huawei.com>
-	<20150127144652.GC16759@rei.suse.de> <54C83795.20809@huawei.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YAVDs-0006UN-PJ
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jan 2015 02:59:20 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YAVDr-0007YS-70
+	for ltp-list@lists.sourceforge.net; Mon, 12 Jan 2015 02:59:20 +0000
+Message-ID: <1421031479.13049.15.camel@G08JYZSD130126.localdomain>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Mon, 12 Jan 2015 10:57:59 +0800
+In-Reply-To: <1420885229-25636-1-git-send-email-jstancek@redhat.com>
+References: <1420885229-25636-1-git-send-email-jstancek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <54C83795.20809@huawei.com>
-Subject: Re: [LTP] [RESEND PATCH v3 4/4] syscall/{rename11,
- renameat01}: do not test EMLINK if subdir limit not availiable
+Subject: Re: [LTP] [PATCH] skip MSG_ERRQUEUE+tcp test on kernels < 3.17
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,37 +27,107 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: shengyong <shengyong1@huawei.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> > Or is there really reason why we need to differentiate between these two
-> > conditions?
-> This is also what I'm a little confused. Use different return values, I just
-> think we should distinguish different situations. If it returns -1 (or some
-> other appropriate values), then we can just skip the test, and this is why
-> I passed TPASS to tst_resm() in v2. If it returns 0, which means the fs has
-> the limit, but we cannot reach it, something may go wrong (or be changed).
+Hi,
 
-The TCONF flag means "test is not appropriate for current configuration"
-which is the case in both cases.
+On Sat, 2015-01-10 at 11:20 +0100, Jan Stancek wrote:
+> MSG_ERRQUEUE support for tcp has been added in 3.17. [1][2][3]
+> Skip testing this combination on prior kernels.
+> 
+> [1] https://lkml.org/lkml/2006/9/18/182
+> [2] f4713a3dfad045d46afcb9c2a7d0bba288920ed4
+> [3] 4ed2d765dfaccff5ebdac68e2064b59125033a3b
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  testcases/kernel/syscalls/recv/recv01.c         |    9 ++++++++-
+>  testcases/kernel/syscalls/recvfrom/recvfrom01.c |    9 ++++++++-
+>  testcases/kernel/syscalls/recvmsg/recvmsg01.c   |    9 ++++++++-
+>  3 files changed, 24 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/recv/recv01.c b/testcases/kernel/syscalls/recv/recv01.c
+> index 3dc7a91..ad5f9f8 100644
+> --- a/testcases/kernel/syscalls/recv/recv01.c
+> +++ b/testcases/kernel/syscalls/recv/recv01.c
+> @@ -130,8 +130,15 @@ int main(int argc, char *argv[])
+>  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+>  		tst_count = 0;
+>  		for (testno = 0; testno < TST_TOTAL; ++testno) {
+> -			tdat[testno].setup();
+> +			if ((tst_kvercmp(3, 17, 0) < 0)
+> +			    && (tdat[testno].flags & MSG_ERRQUEUE)
+> +			    && (tdat[testno].type & SOCK_STREAM)) {
+> +				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
 
-I simply do not see a difference between the case where we know that the
-filesystem has no limit and skip the test and the case where we try and
-find out that the filesystem has no limit. So I just argue that the
-return value for both cases should be 0 because it does not much sense
-to distinguish these two in the actuall test.
+I think TCONF should be more suitable.
+Others looks good to me.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Zeng
+
+> +						"it's supported from 3.17");
+> +				continue;
+> +			}
+>  
+> +			tdat[testno].setup();
+>  			TEST(recv(s, tdat[testno].buf, tdat[testno].buflen,
+>  				  tdat[testno].flags));
+>  			if (TEST_RETURN > 0)
+> diff --git a/testcases/kernel/syscalls/recvfrom/recvfrom01.c b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+> index 8d0a2ee..843dfb1 100644
+> --- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+> +++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
+> @@ -152,8 +152,15 @@ int main(int argc, char *argv[])
+>  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+>  		tst_count = 0;
+>  		for (testno = 0; testno < TST_TOTAL; ++testno) {
+> -			tdat[testno].setup();
+> +			if ((tst_kvercmp(3, 17, 0) < 0)
+> +			    && (tdat[testno].flags & MSG_ERRQUEUE)
+> +			    && (tdat[testno].type & SOCK_STREAM)) {
+> +				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
+> +						"it's supported from 3.17");
+> +				continue;
+> +			}
+>  
+> +			tdat[testno].setup();
+>  			TEST(recvfrom(s, tdat[testno].buf, tdat[testno].buflen,
+>  				      tdat[testno].flags, tdat[testno].from,
+>  				      tdat[testno].salen));
+> diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg01.c b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+> index 42d4968..1216935 100644
+> --- a/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+> +++ b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
+> @@ -208,10 +208,17 @@ int main(int argc, char *argv[])
+>  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+>  		tst_count = 0;
+>  		for (testno = 0; testno < TST_TOTAL; ++testno) {
+> +			if ((tst_kvercmp(3, 17, 0) < 0)
+> +			    && (tdat[testno].flags & MSG_ERRQUEUE)
+> +			    && (tdat[testno].type & SOCK_STREAM)) {
+> +				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
+> +						"it's supported from 3.17");
+> +				continue;
+> +			}
+> +
+>  			tdat[testno].setup();
+>  
+>  			/* setup common to all tests */
+> -
+>  			iov[0].iov_base = tdat[testno].buf;
+>  			iov[0].iov_len = tdat[testno].buflen;
+>  			msgdat.msg_name = tdat[testno].from;
+
+
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+vanity: www.gigenet.com
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
