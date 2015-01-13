@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YDac3-0004Rd-2U
-	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 15:21:03 +0000
-Date: Tue, 20 Jan 2015 16:20:05 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YAxmV-00026z-66
+	for ltp-list@lists.sourceforge.net; Tue, 13 Jan 2015 09:28:59 +0000
+Date: Tue, 13 Jan 2015 10:28:02 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150120152005.GA15976@rei>
-References: <8593d893c637eadbac85711428be570e2636ef38.1421761305.git.jstancek@redhat.com>
-	<20150120144403.GC15452@rei>
-	<1705158126.11277852.1421766771922.JavaMail.zimbra@redhat.com>
+Message-ID: <20150113092802.GA7733@rei.suse.de>
+References: <1420885229-25636-2-git-send-email-jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1705158126.11277852.1421766771922.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] runltp: export initialized LTP_DEV
+In-Reply-To: <1420885229-25636-2-git-send-email-jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] recvmsg01: fix select() nfds for UNIX socket
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,24 +25,15 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, liwan@redhat.com
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> ---
-> commit 5c7c3fb219957484db92111d423e4e2553fb580b removed initialization
-> of empty LTP_DEV from setup(), but it also caused that LTP_DEV
-> is no longer exported when it's initialized in set_block_device().
-> 
-> This causes every test to attempt to get loop device on its own,
-> which is not necessary and may presumably sporadically cause issues
-> on older buggy kernels during cleanup of loop device.
-> 
-> This patch makes LTP_DEV exported (when it's not empty) and
-> tst_acquire_device() will use that instead of trying to acquire/release
-> loop device on its own for each test.
-> ---
+> commit 7855d094bbeb9b8ce43dd698ec82e400eb91e709 did this
+> for accept() on INET socket, but missed UNIX one.
 
-Looks good.
+Good catch, acked.
+
+Please push this ASAP.
 
 -- 
 Cyril Hrubis
