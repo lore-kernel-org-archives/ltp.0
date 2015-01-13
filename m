@@ -1,34 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YDDcF-0003I7-1f
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 14:47:43 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1YAz7a-0004tm-96
+	for ltp-list@lists.sourceforge.net; Tue, 13 Jan 2015 10:54:50 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YDDcE-0004Jn-3U
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 14:47:43 +0000
-Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YAz7Z-0005Uw-7j
+	for ltp-list@lists.sourceforge.net; Tue, 13 Jan 2015 10:54:50 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
 	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t0JElZBK029048
+	ESMTP id t0DAsg85013145
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:36 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
-	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
-	t0JElYSO027030
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Jan 2015 10:54:43 GMT
+Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t0DAsfgo003015
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:35 GMT
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t0JElYj2010145
-	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:34 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 19 Jan 2015 17:49:48 +0300
-Message-Id: <1421678989-28577-3-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1421678989-28577-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1421678989-28577-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 3/4] network/stress/ssh: make use of tcp_fastopen
-	client/server
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Jan 2015 10:54:41 GMT
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t0DAseIl021006
+	for <ltp-list@lists.sourceforge.net>; Tue, 13 Jan 2015 10:54:40 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 13 Jan 2015 13:54:35 +0300
+Message-Id: <1421146475-8597-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <54B4E154.2070801@oracle.com>
+References: <54B4E154.2070801@oracle.com>
+Subject: [LTP] [PATCH V2 2/2] tbio: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,87 +45,118 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/stress/ssh/ssh-stress       |   13 ++++++-------
- testcases/network/stress/ssh/ssh-stress03-rmt |    8 ++++----
- 2 files changed, 10 insertions(+), 11 deletions(-)
+* Wait until udev creates /dev/tbio. If udev can not create
+  the node file in a defined timeout, create it manually.
+* Clean /dev/tbio after test execution, if /dev/tbio was created
+  manually.
 
-diff --git a/testcases/network/stress/ssh/ssh-stress b/testcases/network/stress/ssh/ssh-stress
-index 72bef25..d1e37bf 100644
---- a/testcases/network/stress/ssh/ssh-stress
-+++ b/testcases/network/stress/ssh/ssh-stress
-@@ -34,7 +34,7 @@ cleanup()
- {
- 	# Stop the ssh daemon
- 	test -s sshd.pid && kill $(cat sshd.pid)
--	test "$server_pid" && kill -9 $server_pid > /dev/null 2>&1
-+	pkill 'tcp_fastopen$'
- 	tst_rmdir
- 	TMPDIR=
- }
-@@ -44,7 +44,7 @@ setup()
- 	trap "tst_brkm TBROK 'test interrupted'" INT
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+
+Changes since V1:
+ * implemented a more active waiting
+ * fixed the wrong logical condition next to unlink() in cleanup()
+
+
+ .../kernel/device-drivers/tbio/tbio_user/tbio.c    |   62 +++++++++-----------
+ 1 files changed, 28 insertions(+), 34 deletions(-)
+
+diff --git a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
+index 81085a3..fdb55b5 100644
+--- a/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
++++ b/testcases/kernel/device-drivers/tbio/tbio_user/tbio.c
+@@ -75,12 +75,19 @@ void cleanup(void)
+ 	if (module_loaded)
+ 		tst_module_unload(NULL, module_name);
  
- 	tst_require_root
--	tst_check_cmds sshd ssh od
-+	tst_check_cmds pkill sshd ssh od
- 
- 	ipver=${TST_IPV6:-"4"}
- 
-@@ -125,16 +125,15 @@ test02()
- 
- test03()
- {
--	tst_resm TINFO "Forwarding TCP traffic in $NS_DURATION sec"
-+	tst_resm TINFO "Forwarding TCP traffic with $NS_TIMES requests"
- 
- 	# Run a TCP traffic server
- 	port=$(tst_get_unused_port ipv${ipver} stream)
- 
--	ns-tcpserver -b -f $ipver -p $port -o info_file || \
--		tst_brkm TBROK "Failed to run a tcp traffic server"
--	server_pid=$(grep 'PID:' info_file | cut -f 2 -d ' ')
-+	tcp_fastopen -R 3 -g $port > tcp_server.log 2>&1 &
++	if (unlink(DEVICE_NAME) && (errno != ENOENT))
++		tst_brkm(TBROK | TERRNO, NULL, "unlink failed");
 +
- 	tst_rhost_run -s -c "ssh-stress03-rmt $ipver $(tst_ipaddr) \
--		$rconfig $port $NS_DURATION"
-+		$rconfig $port $NS_TIMES"
- 
- 	tst_resm TPASS "Test is finished successfully"
+ 	TEST_CLEANUP;
  }
-diff --git a/testcases/network/stress/ssh/ssh-stress03-rmt b/testcases/network/stress/ssh/ssh-stress03-rmt
-index 9dcebe7..a5b7af0 100644
---- a/testcases/network/stress/ssh/ssh-stress03-rmt
-+++ b/testcases/network/stress/ssh/ssh-stress03-rmt
-@@ -27,14 +27,14 @@ TST_TOTAL=1
  
- # Check the arguments
- if [ $# -ne 5 ]; then
--	tst_brkm TBROK "Usage: $0 ipver rhost config port duration"
-+	tst_brkm TBROK "Usage: $0 ipver rhost config port requests"
- fi
  
- ip_ver="$1"
- server_ipaddr="$2"
- ssh_config="$3"
- rport="$4"
--duration="$5"
-+requests="$5"
+ void setup(void)
+ {
++	dev_t devt;
++	struct stat st;
++	unsigned int i, valid_node_created;
++
+ 	tst_require_root(NULL);
  
- ssh -$ip_ver -F $ssh_config $server_ipaddr \
- 	"true < /dev/null > /dev/null 2>&1" > /dev/null
-@@ -56,8 +56,8 @@ case $ip_ver in
- ;;
- esac
+ 	if (tst_kvercmp(2, 6, 0) < 0) {
+@@ -91,50 +98,37 @@ void setup(void)
+ 	tst_module_load(cleanup, module_name, NULL);
+ 	module_loaded = 1;
  
--# Start the TCP traffic client
--ns-tcpclient -S $localhost -p $lport -f $ip_ver -t $duration
-+# Start the TCP traffic clients
-+tcp_fastopen -r $requests -l -H $localhost -g $lport > /dev/null
- ret=$?
+-	dev_t devt;
+-	struct stat st;
+-
+ 	SAFE_FILE_SCANF(cleanup, "/sys/class/block/tbio/dev",
+ 		"%d:0", &TBIO_MAJOR);
  
- # Stop the ssh port forwarding
+ 	devt = makedev(TBIO_MAJOR, 0);
++
+ 	/*
+-	 * Check for the /dev/tbase node, and create if it does not
+-	 * exist.
++	 * Wait until udev creates the device node.
++	 * If the node is not created or invalid, create it manually.
+ 	 */
+-	errno = 0;
+-	if (stat(DEVICE_NAME, &st)) {
+-		if (errno == ENOENT) {
+-			/* dev node does not exist */
+-			if (mknod(DEVICE_NAME, S_IFCHR | S_IRUSR | S_IWUSR |
+-				S_IRGRP | S_IWGRP, devt)) {
++	valid_node_created = 0;
++	for (i = 0; i < 5; i++) {
++		if (stat(DEVICE_NAME, &st)) {
++			if (errno != ENOENT)
+ 				tst_brkm(TBROK | TERRNO, cleanup,
+-					"mknod failed at %s:%d",
+-					__FILE__, __LINE__);
+-			}
++					 "stat() failed");
+ 		} else {
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				"problem with tbase device node directory");
+-		}
+-	} else {
+-		/*
+-		 * /dev/tbio CHR device exists.  Check to make sure it is for a
+-		 * block device and that it has the right major and minor.
+-		 */
+-		if ((!(st.st_mode & S_IFCHR)) || (st.st_rdev != devt)) {
+-			/* Recreate the dev node */
+-			if (!unlink(DEVICE_NAME)) {
+-				if (mknod(DEVICE_NAME, S_IFCHR | S_IRUSR |
+-					S_IWUSR | S_IRGRP | S_IWGRP, devt)) {
+-					tst_brkm(TBROK | TERRNO, cleanup,
+-						"mknod failed at %s:%d",
+-						__FILE__, __LINE__);
+-				}
+-			} else {
+-				tst_brkm(TBROK | TERRNO, cleanup,
+-					"unlink failed");
++			if ((st.st_mode & S_IFBLK) && (st.st_rdev == devt)) {
++				valid_node_created = 1;
++				break;
+ 			}
+ 		}
++
++		sleep(1);
++	}
++
++	if (!valid_node_created) {
++		if (unlink(DEVICE_NAME) && (errno != ENOENT))
++			tst_brkm(TBROK | TERRNO, cleanup, "unlink() failed");
++		if (mknod(DEVICE_NAME, S_IFBLK | S_IRUSR | S_IWUSR |
++			  S_IRGRP | S_IWGRP, devt))
++			tst_brkm(TBROK | TERRNO, cleanup, "mknod() failed");
+ 	}
+ 
+ 	tbio_fd = open(DEVICE_NAME, O_RDWR);
 -- 
 1.7.1
 
