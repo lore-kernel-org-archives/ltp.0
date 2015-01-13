@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YG7Jh-00014o-Bt
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 14:40:33 +0000
-Date: Tue, 27 Jan 2015 15:40:24 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YAyAz-0000IG-UH
+	for ltp-list@lists.sourceforge.net; Tue, 13 Jan 2015 09:54:17 +0000
+Date: Tue, 13 Jan 2015 10:53:25 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150127144024.GB16759@rei.suse.de>
-References: <1422323457-184525-1-git-send-email-shengyong1@huawei.com>
-	<1422323457-184525-2-git-send-email-shengyong1@huawei.com>
+Message-ID: <20150113095325.GA7720@rei.suse.de>
+References: <20150105144247.GA1082@rei.suse.de> <54B3FD5E.5040209@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1422323457-184525-2-git-send-email-shengyong1@huawei.com>
-Subject: Re: [LTP] [RESEND PATCH v3 1/4] lib: tst_fs_type: add new
-	filesystem types
+In-Reply-To: <54B3FD5E.5040209@oracle.com>
+Subject: Re: [LTP] LTP release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,30 +24,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sheng Yong <shengyong1@huawei.com>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
 Cc: ltp-list@lists.sourceforge.net
 
-> +#define TST_EXT2_MAGIC     0xEF53
-> +#define TST_EXT3_MAGIC     0xEF53
-> +#define TST_EXT4_MAGIC     0xEF53
+Hi!
+> > I'm back at work as promised and so we should start with the release
+> > preparations. Let's start with the list of patches that should go in
+> > before we start pre-release testing. I've looked around and good
+> > candidates for what should be merged are:
+> >
+> > 1. timeouts for nets tests
+> > 2. tbio fixes
+> >
+> > Anything else?
+> 
+> What about network/tcp_cmds/finger fixes? Though the patch v4 has minor 
+> issues, but they can be fixed before push.
 
-Maybe it would be less confusing to define these as one constant,
-something like:
-
-#define TST_EXT234_MAGIC 0xEF53
-
-Otherwise it looks fine.
+I'm fine with getting it in before the release. I will look at the patch
+ASAP.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+http://p.sf.net/sfu/gigenet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
