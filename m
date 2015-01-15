@@ -1,21 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YDYrz-0000I2-Vx
-	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 13:29:23 +0000
-Date: Tue, 20 Jan 2015 14:28:26 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150120132826.GA11824@rei>
-References: <20150119122310.GA27065@rei>
-	<CA+icZUV53AWik-bS4a3DwgExD26nhCWxJWb-kGN_nAOWsikuLA@mail.gmail.com>
-	<CA+icZUVSnYv3-rh6sBr8vgDsc80Qnr3yK_OZ6AezVHPrDcKXbg@mail.gmail.com>
-	<20150120115625.GB11013@rei>
-	<CA+icZUW3=TkMvEzs3DXZYt0BC5JjUtXiCsVSt3ikHwxPyzu3=A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+icZUW3=TkMvEzs3DXZYt0BC5JjUtXiCsVSt3ikHwxPyzu3=A@mail.gmail.com>
-Subject: Re: [LTP] The Linux Test Project has been released for JANUARY 2015
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YBjPf-0002MX-4u
+	for ltp-list@lists.sourceforge.net; Thu, 15 Jan 2015 12:20:35 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YBjPd-0005KR-2s
+	for ltp-list@lists.sourceforge.net; Thu, 15 Jan 2015 12:20:35 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t0FCKQRN010609
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Jan 2015 12:20:27 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	t0FCKPKH013274
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Jan 2015 12:20:26 GMT
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t0FCKPOj007964
+	for <ltp-list@lists.sourceforge.net>; Thu, 15 Jan 2015 12:20:25 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 15 Jan 2015 15:22:37 +0300
+Message-Id: <1421324561-6680-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] lib/test_net.sh: fix 'tst_rhost_run -s' when errors
+	occur
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,32 +36,59 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, libc-alpha@sourceware.org, LKML <linux-kernel@vger.kernel.org>, lwn@lwn.net, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> > Most of the failures comes from EBUSY while trying to umount
-> > filesystems. Do you have gvfsd-trash running? That thing is known to
-> > probe newly mounted filesystems preventing them from being unmounted for
-> > a certain amount of time.
-> >
-> 
-> Yupp, that popped up.
-> How can I disable that gvfsd (here: Ubuntu/precise?
+Don't redirect stderr to /dev/null, print it in TBROK message.
 
-Just kill the process, or run the testcases via ssh session.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/lib/test_net.sh |   15 +++++++++------
+ 1 files changed, 9 insertions(+), 6 deletions(-)
 
-> And can this issue be documented?
-
-Hmm, maybe we can change the test cases to complain loudly if the
-process is found running.
-
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index ec3366b..310d3d1 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -45,7 +45,10 @@ tst_rhost_run()
+ 			post_cmd=" > /dev/null 2>&1 &"
+ 			out="1> /dev/null"
+ 		;;
+-		s) safe=1 ;;
++		s)
++			safe=1
++			post_cmd=' || echo TERR'
++		;;
+ 		c) cmd=$OPTARG ;;
+ 		u) user=$OPTARG ;;
+ 		*)
+@@ -62,14 +65,14 @@ tst_rhost_run()
+ 	local ret=
+ 	if [ -n "$TST_USE_SSH" ]; then
+ 		output=`ssh -n -q $user@$RHOST "sh -c \
+-			'$pre_cmd $cmd $post_cmd'" $out 2> /dev/null`
++			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'TERR'`
+ 	else
+ 		output=`rsh -n -l $user $RHOST "sh -c \
+-			'$pre_cmd $cmd $post_cmd'" $out 2> /dev/null`
++			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'TERR'`
+ 	fi
+-	ret=$?
+-	[ "$ret" -ne 0 -a "$safe" -eq 1 ] && \
+-		tst_brkm TBROK "failed to run '$cmd' on '$RHOST'"
++	echo "$output" | grep -q 'TERR$'
++	[ $? -eq 0 -a "$safe" -eq 1 ] && \
++		tst_brkm TBROK "failed to run '$cmd' on '$RHOST': '$output'"
+ 
+ 	[ -z "$out" -a -n "$output" ] && echo "$output"
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
