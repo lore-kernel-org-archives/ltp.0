@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YDtuT-0000jd-Te
-	for ltp-list@lists.sourceforge.net; Wed, 21 Jan 2015 11:57:21 +0000
-Date: Wed, 21 Jan 2015 12:56:23 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YBh7k-00018s-BY
+	for ltp-list@lists.sourceforge.net; Thu, 15 Jan 2015 09:53:56 +0000
+Date: Thu, 15 Jan 2015 10:53:02 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150121115623.GA24834@rei>
-References: <20150119155156.GA30735@rei>
-	<1421742761-10192-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<1421742761-10192-8-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<1421810019.19850.1.camel@G08JYZSD130126.localdomain>
+Message-ID: <20150115095301.GA12643@rei>
+References: <54B4E154.2070801@oracle.com>
+	<1421146475-8597-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1421810019.19850.1.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH v3 08/12] smack_set_doi.sh: Cleanup
+In-Reply-To: <1421146475-8597-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V2 2/2] tbio: fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,15 +25,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Hi!
-> 
-> Did you forget this patch? ;)
+> +			if ((st.st_mode & S_IFBLK) && (st.st_rdev == devt)) {
+> +				valid_node_created = 1;
+> +				break;
+>  			}
+>  		}
+> +
+> +		sleep(1);
 
-Sorry, I've must have missed it when I was saving them. Pushed now.
+I would be inclined to check at least ten times in second. I.e.
+usleep(100000); here and do the for loop 50 times instead.
+
+Each second we spend doing nothing is second not spend doing actual
+testing.
+
+> +	}
+> +
+> +	if (!valid_node_created) {
+
+Maybe we should issue TINFO message here that device wasn't created by
+udev and we have fallen back to manual creation.
+
+> +		if (unlink(DEVICE_NAME) && (errno != ENOENT))
+> +			tst_brkm(TBROK | TERRNO, cleanup, "unlink() failed");
+> +		if (mknod(DEVICE_NAME, S_IFBLK | S_IRUSR | S_IWUSR |
+> +			  S_IRGRP | S_IWGRP, devt))
+> +			tst_brkm(TBROK | TERRNO, cleanup, "mknod() failed");
+>  	}
+
+Otherwise this looks good.
 
 -- 
 Cyril Hrubis
