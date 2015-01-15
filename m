@@ -1,41 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1YFhCn-0002m2-EU
-	for ltp-list@lists.sourceforge.net; Mon, 26 Jan 2015 10:47:41 +0000
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YFhCj-0004c3-BW
-	for ltp-list@lists.sourceforge.net; Mon, 26 Jan 2015 10:47:39 +0000
-Received: from /spool/local
-	by e34.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
-	Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
-	Mon, 26 Jan 2015 03:47:34 -0700
-Received: from b03cxnp07029.gho.boulder.ibm.com
-	(b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-	by d03dlp03.boulder.ibm.com (Postfix) with ESMTP id 682FB19D801C
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 26 Jan 2015 03:38:42 -0700 (MST)
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with
-	ESMTP id t0QAlNuv53608534
-	for <ltp-list@lists.sourceforge.net>; Mon, 26 Jan 2015 03:47:31 -0700
-Received: from d03av03.boulder.ibm.com (localhost [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP
-	id t0QAkwcf032202
-	for <ltp-list@lists.sourceforge.net>; Mon, 26 Jan 2015 03:46:58 -0700
-Received: from localhost.localdomain ([9.125.28.228])
-	by d03av03.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	t0QAkw9O031663
-	for <ltp-list@lists.sourceforge.net>; Mon, 26 Jan 2015 03:46:58 -0700
-Date: Mon, 26 Jan 2015 17:46:13 +0800
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Message-ID: <20150126094613.GA2055@localhost.localdomain>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YBlcQ-0007DE-8X
+	for ltp-list@lists.sourceforge.net; Thu, 15 Jan 2015 14:41:54 +0000
+Date: Thu, 15 Jan 2015 15:41:00 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150115144100.GA9499@rei>
+References: <1421331671-231350-1-git-send-email-shengyong1@huawei.com>
+	<1421331671-231350-2-git-send-email-shengyong1@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] [PATCH] increasing buffer size for correct alignment
+In-Reply-To: <1421331671-231350-2-git-send-email-shengyong1@huawei.com>
+Subject: Re: [LTP] [PATCH V2 1/3] lib/tst_fs_link_count.c: check fs type and
+ do not fill subdir if no limit
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -48,60 +26,106 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Sheng Yong <shengyong1@huawei.com>
+Cc: yanegomi@gmail.com, ltp-list@lists.sourceforge.net
 
-Hey there,
+Hi!
+> +/* filesystems whose subdir limit is less than MAX_SANE_HARD_LINKS */
+> +const long fs_type_filter[] = {
+> +	0xEF51,		/* EXT2_OLD_SUPER_MAGIC */
+> +	0xEF53,		/* EXT2/3/4_SUPER_MAGIC, cannot filter ext4 out */
+> +	0x137F,	0x138F,	/* MINIX_SUPER_MAGIC, MINIX_SUPER_MAGIC2 */
+> +	0x2468,	0x2478,	/* MINIX2_SUPER_MAGIC, MINIX2_SUPER_MAGIC2 */
+> +	0x4d5a,		/* MINIX3_SUPER_MAGIC */
+> +	0x15013346,	/* UDF_SUPER_MAGIC */
+> +	0x012FF7B6, 0x012FF7B5,	/* SYSV2_SUPER_MAGIC, SYSV4_SUPER_MAGIC */
+> +	0x00011954, 0x19540119,	/* UFS_MAGIC, UFS2_MAGIC */
+> +	0xF2F52010,	/* F2FS_SUPER_MAGIC */
+> +	0x3434,		/* NILFS_SUPER_MAGIC */
+> +	0x5DF5		/* EXOFS_SUPER_MAGIC */
+> +};
 
-I have a patch for aio-stress to align buffer address correctly. Please
-have a look. Thanks in advance.
+We have most of these defined in include/tst_fs_type.h, make use of
+them. And if there are any missing, add them (in a separate patch).
 
-For align buffer address to the number specified by -a option in
-aio-stress, it needs to add page_size_mask extra length to total_ram
-before call allocation functions. Or it wouldn't be correct in this line
-after the allocation:
+Also it may be better to add a blacklist rather than whitelist. I.e.
+skip tmpfs, ramfs, etc.
 
-         p = (char *)((intptr_t) (p + page_size_mask) & ~page_size_mask);
+>  int tst_fs_fill_hardlinks(void (*cleanup) (void), const char *dir)
+>  {
+>  	unsigned int i, j;
+> @@ -88,9 +104,10 @@ max_hardlinks_cleanup:
+>  
+>  int tst_fs_fill_subdirs(void (*cleanup) (void), const char *dir)
+>  {
+> -	unsigned int i, j;
+> +	unsigned int i, j, filter_size;
+>  	char dirname[PATH_MAX];
+>  	struct stat s;
+> +	struct statfs fs;
+>  
+>  	if (stat(dir, &s) == -1 && errno == ENOENT)
+>  		SAFE_MKDIR(cleanup, dir, 0744);
+> @@ -99,6 +116,27 @@ int tst_fs_fill_subdirs(void (*cleanup) (void), const char *dir)
+>  	if (!S_ISDIR(s.st_mode))
+>  		tst_brkm(TBROK, cleanup, "%s is not directory", dir);
+>  
+> +	/*
+> +	 * for current kernel, hardlink limit is not availiable for all
+> +	 * filesystem. Only test if on ext2 and ext3.
+> +	 */
+> +	if (statfs(dir, &fs) < 0) {
+> +		tst_resm(TINFO | TERRNO, "cannot detect filesystem type "
+> +			 "for %s", dir);
+> +		return 0;
+> +	}
+> +
+> +	filter_size = (int) (sizeof(fs_type_filter) / sizeof(long));
 
-Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
----
- testcases/kernel/io/ltp-aiodio/aio-stress.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Use ARRAY_SIZE();
 
-diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-index 0b7148c..24675ec 100644
---- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
-+++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-@@ -1022,7 +1022,7 @@ int setup_shared_mem(int num_threads, int num_files, int depth,
- 	if (use_shm == USE_MALLOC) {
- 		p = malloc(total_ram + page_size_mask);
- 	} else if (use_shm == USE_SHM) {
--		shm_id = shmget(IPC_PRIVATE, total_ram, IPC_CREAT | 0700);
-+		shm_id = shmget(IPC_PRIVATE, total_ram + page_size_mask, IPC_CREAT | 0700);
- 		if (shm_id < 0) {
- 			perror("shmget");
- 			drop_shm();
-@@ -1046,9 +1046,9 @@ int setup_shared_mem(int num_threads, int num_files, int depth,
- 			goto free_buffers;
- 		}
- 		unlink(mmap_name);
--		ftruncate(fd, total_ram);
-+		ftruncate(fd, total_ram + page_size_mask);
- 		shm_id = fd;
--		p = mmap((char *)0x50000000, total_ram,
-+		p = mmap((char *)0x50000000, total_ram + page_size_mask,
- 			 PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
- 
- 		if (p == MAP_FAILED) {
+> +	for (i = 0; i < filter_size; i++) {
+> +		if (fs.f_type == fs_type_filter[i])
+> +			break;
+> +	}
+> +	if (i == filter_size) {
+> +		tst_resm(TINFO, "subdir limit is not availiable for "
+> +			 "filesystem 0x%lx", (unsigned long) fs.f_type);
+> +		return -1;
+> +	}
+
+Why overcomplicate the code, just return -1 from the if () inside the
+loop. Also we have tst_fs_type_name().
+
+>  	for (i = 0; i < MAX_SANE_HARD_LINKS; i++) {
+>  		sprintf(dirname, "%s/testdir%d", dir, i);
+>  
+> @@ -134,7 +172,8 @@ int tst_fs_fill_subdirs(void (*cleanup) (void), const char *dir)
+>  
+>  	}
+>  
+> -	tst_resm(TINFO, "Failed reach the subdirs limit");
+> +	tst_resm(TINFO, "Failed reach the subdirs limit on filesystem 0x%lx",
+> +		 fs.f_type);
+
+Again tst_fs_type_name();
+
+>  max_subdirs_cleanup:
+>  	for (j = 0; j < i; j++) {
+> -- 
+> 1.8.3.4
+> 
+
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+http://p.sf.net/sfu/gigenet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
