@@ -2,21 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwan@redhat.com>) id 1YDVgt-0005js-Ut
-	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 10:05:43 +0000
+	(envelope-from <jstancek@redhat.com>) id 1YC3fm-0006uT-Dv
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jan 2015 09:58:34 +0000
 Received: from mx5-phx2.redhat.com ([209.132.183.37])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YDVgo-0001RX-5Z
-	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 10:05:43 +0000
-Date: Tue, 20 Jan 2015 05:05:31 -0500 (EST)
-From: Li Wang <liwang@redhat.com>
-Message-ID: <1856182276.9193294.1421748331851.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20150120092925.GA15756@quack.suse.cz>
-References: <671699407.9161653.1421743558663.JavaMail.zimbra@redhat.com>
-	<1679086070.9165707.1421744249957.JavaMail.zimbra@redhat.com>
-	<20150120092925.GA15756@quack.suse.cz>
+	(Exim 4.76) id 1YC3Ax-0003cZ-5p
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jan 2015 09:26:44 +0000
+Date: Fri, 16 Jan 2015 04:26:36 -0500 (EST)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <375314429.8927502.1421400396319.JavaMail.zimbra@redhat.com>
+In-Reply-To: <54B633A8.7030101@oracle.com>
+References: <e20fc51f1c2cd8c19583050135c50b807677ee40.1408527528.git.jstancek@redhat.com>
+	<54B633A8.7030101@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] fanotify06 always failed on RHEL7
+Subject: Re: [LTP] [PATCH] truncate03: impose max file size limit for EFBIG
+ test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,41 +29,108 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Kara <jack@suse.cz>
+To: Shuang Qiu <shuang.qiu@oracle.com>
 Cc: ltp-list@lists.sourceforge.net
 
 
 
+
 ----- Original Message -----
-> On Tue 20-01-15 03:57:29, Li Wang wrote:
-> > Hi Jack & all,
-> > 
-> > fanotify06 always failed on RHEL7-GA as below. When I make some change of
-> > the codes flow, Test Pass All.
-> > Could you take a look at my unsure patch?
-> > 
-> > <<<test_start>>>
-> > tag=fanotify06 stime=1421726003
-> > cmdline="fanotify06"
-> > contacts=""
-> > analysis=exit
-> > <<<test_output>>>
-> > fanotify06    1  TPASS  :  group 0 get event: mask 2 pid=14922 fd=15
-> > fanotify06    2  TPASS  :  group 1 get event: mask 2 pid=14922 fd=15
-> > fanotify06    3  TPASS  :  group 2 get event: mask 2 pid=14922 fd=15
-> > fanotify06    4  TFAIL  :  fanotify06.c:217: group 3 got event
-> > fanotify06    5  TFAIL  :  fanotify06.c:217: group 4 got event
-> > fanotify06    6  TFAIL  :  fanotify06.c:217: group 5 got event
-> > fanotify06    7  TPASS  :  group 6 got no event
-> > fanotify06    8  TPASS  :  group 7 got no event
-> > fanotify06    9  TPASS  :  group 8 got no event
->   Well, likely the reason is that you don't have commit
-> 8edc6e1688fc8f02c8c1f53a2ec4928cb1055f4d in your kernel. The test is
-> correct as is.
+> From: "Shuang Qiu" <shuang.qiu@oracle.com>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "Jan Stancek" <jstancek@redhat.com>
+> Sent: Wednesday, 14 January, 2015 10:15:20 AM
+> Subject: Re: [LTP] [PATCH] truncate03: impose max file size limit for EFBIG test
+> 
+> Hello,
+> I find that EFBIG test will fail over nfs filesystem because
+> unexpectedly succeed too.
+> It can catch SIGXFSZ signal but will not fail with EFBIG after blocked
+> SIGXFSZ.
+> I'm not sure if it is expected behavior for truncate against nfs filesystem.
+> Could anyone help to check?
 
-Great! Thank you for your response promptly.
+I'm guessing a bug. write(2) on nfs respects RLIMIT_FSIZE, but truncate(2) does not.
+I think best would be to check with some nfs people: linux-nfs@vger.kernel.org
 
-Li Wang
+Regards,
+Jan
+
+> 
+> Thanks
+> Shuang
+> On 08/20/2014 05:42 PM, Jan Stancek wrote:
+> > Using LLONG_MAX as maximum can fail on XFS, because here the maximum
+> > file size is 2^63-1, so this test may unexpectedly succeed.
+> >
+> > Impose limit via setrlimit(RLIMIT_FSIZE,..) and set value used
+> > in EFBIG test to be twice that much.
+> >
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > ---
+> >   testcases/kernel/syscalls/truncate/truncate03.c |   18 +++++++++++++++++-
+> >   1 files changed, 17 insertions(+), 1 deletions(-)
+> >
+> > diff --git a/testcases/kernel/syscalls/truncate/truncate03.c
+> > b/testcases/kernel/syscalls/truncate/truncate03.c
+> > index ed5073d..54b7d3c 100644
+> > --- a/testcases/kernel/syscalls/truncate/truncate03.c
+> > +++ b/testcases/kernel/syscalls/truncate/truncate03.c
+> > @@ -50,6 +50,7 @@
+> >   #include <string.h>
+> >   #include <signal.h>
+> >   #include <pwd.h>
+> > +#include <sys/resource.h>
+> >   
+> >   #include "test.h"
+> >   #include "usctest.h"
+> > @@ -65,6 +66,7 @@
+> >   #define NEW_MODE	S_IRUSR | S_IRGRP | S_IROTH
+> >   #define DIR_MODE	S_IRWXU
+> >   #define TRUNC_LEN	256
+> > +#define MAX_FSIZE	(16*1024*1024)
+> >   
+> >   static char long_pathname[PATH_MAX + 2];
+> >   
+> > @@ -82,7 +84,7 @@ static struct test_case_t {
+> >   	{ long_pathname, TRUNC_LEN, ENAMETOOLONG },
+> >   	{ "", TRUNC_LEN, ENOENT },
+> >   	{ TEST_DIR1, TRUNC_LEN, EISDIR },
+> > -	{ TEST_FILE3, LLONG_MAX, EFBIG },
+> > +	{ TEST_FILE3, MAX_FSIZE*2, EFBIG },
+> >   	{ TEST_SYM1, TRUNC_LEN, ELOOP }
+> >   };
+> >   
+> > @@ -124,6 +126,8 @@ void setup(void)
+> >   {
+> >   	struct passwd *ltpuser;
+> >   	char *bad_addr;
+> > +	struct rlimit rlim;
+> > +	sigset_t sigset;
+> >   
+> >   	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> >   
+> > @@ -156,6 +160,18 @@ void setup(void)
+> >   
+> >   	SAFE_SYMLINK(cleanup, TEST_SYM1, TEST_SYM2);
+> >   	SAFE_SYMLINK(cleanup, TEST_SYM2, TEST_SYM1);
+> > +
+> > +	rlim.rlim_cur = MAX_FSIZE;
+> > +	rlim.rlim_max = MAX_FSIZE;
+> > +	TEST(setrlimit(RLIMIT_FSIZE, &rlim));
+> > +	if (TEST_RETURN != 0)
+> > +		tst_brkm(TBROK | TTERRNO, cleanup, "setrlimit");
+> > +
+> > +	sigemptyset(&sigset);
+> > +	sigaddset(&sigset, SIGXFSZ);
+> > +	TEST(sigprocmask(SIG_BLOCK, &sigset, NULL));
+> > +	if (TEST_RETURN != 0)
+> > +		tst_brkm(TBROK | TTERRNO, cleanup, "sigprocmask");
+> >   }
+> >   
+> >   void truncate_verify(struct test_case_t *tc)
+> 
+> 
 
 ------------------------------------------------------------------------------
 New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
