@@ -1,17 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Y8Urn-0005aF-PM
-	for ltp-list@lists.sourceforge.net; Tue, 06 Jan 2015 14:12:15 +0000
-Date: Tue, 6 Jan 2015 15:11:38 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150106141138.GA17948@rei>
-References: <1418920057-53786-1-git-send-email-maxin.john@gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <shuang.qiu@oracle.com>) id 1YC4ZC-0006EO-La
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jan 2015 10:55:50 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YC3I9-0003yR-Mq
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jan 2015 09:34:12 +0000
+Message-ID: <54B8DAFB.7020105@oracle.com>
+Date: Fri, 16 Jan 2015 17:33:47 +0800
+From: Shuang Qiu <shuang.qiu@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1418920057-53786-1-git-send-email-maxin.john@gmail.com>
-Subject: Re: [LTP] [PATCH] run-posix-option-group-test: remove set -x debug
+References: <e20fc51f1c2cd8c19583050135c50b807677ee40.1408527528.git.jstancek@redhat.com>
+	<54B633A8.7030101@oracle.com>
+	<375314429.8927502.1421400396319.JavaMail.zimbra@redhat.com>
+In-Reply-To: <375314429.8927502.1421400396319.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] truncate03: impose max file size limit for EFBIG
+ test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,35 +30,118 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: maxin.john@gmail.com
-Cc: ltp-list@lists.sourceforge.net, "Maxin B. John" <maxin.john@enea.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> remove "set -x" in the shell script
+On 01/16/2015 05:26 PM, Jan Stancek wrote:
+>
+>
+> ----- Original Message -----
+>> From: "Shuang Qiu" <shuang.qiu@oracle.com>
+>> To: ltp-list@lists.sourceforge.net
+>> Cc: "Jan Stancek" <jstancek@redhat.com>
+>> Sent: Wednesday, 14 January, 2015 10:15:20 AM
+>> Subject: Re: [LTP] [PATCH] truncate03: impose max file size limit for EFBIG test
+>>
+>> Hello,
+>> I find that EFBIG test will fail over nfs filesystem because
+>> unexpectedly succeed too.
+>> It can catch SIGXFSZ signal but will not fail with EFBIG after blocked
+>> SIGXFSZ.
+>> I'm not sure if it is expected behavior for truncate against nfs filesystem.
+>> Could anyone help to check?
+> I'm guessing a bug. write(2) on nfs respects RLIMIT_FSIZE, but truncate(2) does not.
+> I think best would be to check with some nfs people: linux-nfs@vger.kernel.org
+Thanks Jan.
+I will check with the nfs guys.
 
-While I agree that the script is too verbose as it is this is not right
-solution. After this change it only prints summary of succeeded/failed
-testcases without even telling what call has been tested.
+Thanks
+Shuang
+>
+> Regards,
+> Jan
+>
+>> Thanks
+>> Shuang
+>> On 08/20/2014 05:42 PM, Jan Stancek wrote:
+>>> Using LLONG_MAX as maximum can fail on XFS, because here the maximum
+>>> file size is 2^63-1, so this test may unexpectedly succeed.
+>>>
+>>> Impose limit via setrlimit(RLIMIT_FSIZE,..) and set value used
+>>> in EFBIG test to be twice that much.
+>>>
+>>> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+>>> ---
+>>>    testcases/kernel/syscalls/truncate/truncate03.c |   18 +++++++++++++++++-
+>>>    1 files changed, 17 insertions(+), 1 deletions(-)
+>>>
+>>> diff --git a/testcases/kernel/syscalls/truncate/truncate03.c
+>>> b/testcases/kernel/syscalls/truncate/truncate03.c
+>>> index ed5073d..54b7d3c 100644
+>>> --- a/testcases/kernel/syscalls/truncate/truncate03.c
+>>> +++ b/testcases/kernel/syscalls/truncate/truncate03.c
+>>> @@ -50,6 +50,7 @@
+>>>    #include <string.h>
+>>>    #include <signal.h>
+>>>    #include <pwd.h>
+>>> +#include <sys/resource.h>
+>>>    
+>>>    #include "test.h"
+>>>    #include "usctest.h"
+>>> @@ -65,6 +66,7 @@
+>>>    #define NEW_MODE	S_IRUSR | S_IRGRP | S_IROTH
+>>>    #define DIR_MODE	S_IRWXU
+>>>    #define TRUNC_LEN	256
+>>> +#define MAX_FSIZE	(16*1024*1024)
+>>>    
+>>>    static char long_pathname[PATH_MAX + 2];
+>>>    
+>>> @@ -82,7 +84,7 @@ static struct test_case_t {
+>>>    	{ long_pathname, TRUNC_LEN, ENAMETOOLONG },
+>>>    	{ "", TRUNC_LEN, ENOENT },
+>>>    	{ TEST_DIR1, TRUNC_LEN, EISDIR },
+>>> -	{ TEST_FILE3, LLONG_MAX, EFBIG },
+>>> +	{ TEST_FILE3, MAX_FSIZE*2, EFBIG },
+>>>    	{ TEST_SYM1, TRUNC_LEN, ELOOP }
+>>>    };
+>>>    
+>>> @@ -124,6 +126,8 @@ void setup(void)
+>>>    {
+>>>    	struct passwd *ltpuser;
+>>>    	char *bad_addr;
+>>> +	struct rlimit rlim;
+>>> +	sigset_t sigset;
+>>>    
+>>>    	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>>>    
+>>> @@ -156,6 +160,18 @@ void setup(void)
+>>>    
+>>>    	SAFE_SYMLINK(cleanup, TEST_SYM1, TEST_SYM2);
+>>>    	SAFE_SYMLINK(cleanup, TEST_SYM2, TEST_SYM1);
+>>> +
+>>> +	rlim.rlim_cur = MAX_FSIZE;
+>>> +	rlim.rlim_max = MAX_FSIZE;
+>>> +	TEST(setrlimit(RLIMIT_FSIZE, &rlim));
+>>> +	if (TEST_RETURN != 0)
+>>> +		tst_brkm(TBROK | TTERRNO, cleanup, "setrlimit");
+>>> +
+>>> +	sigemptyset(&sigset);
+>>> +	sigaddset(&sigset, SIGXFSZ);
+>>> +	TEST(sigprocmask(SIG_BLOCK, &sigset, NULL));
+>>> +	if (TEST_RETURN != 0)
+>>> +		tst_brkm(TBROK | TTERRNO, cleanup, "sigprocmask");
+>>>    }
+>>>    
+>>>    void truncate_verify(struct test_case_t *tc)
+>>
 
-The output should rather look something like:
-
-***********************
-Testing pthread_kill
-***********************
-PASS                 14
-FAIL                  0
-***********************
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming! The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+http://p.sf.net/sfu/gigenet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
