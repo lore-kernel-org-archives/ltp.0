@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwan@redhat.com>) id 1YDUd0-000161-GP
-	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 08:57:38 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YDUcy-0001OM-SK
-	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 08:57:38 +0000
-Date: Tue, 20 Jan 2015 03:57:29 -0500 (EST)
-From: Li Wang <liwang@redhat.com>
-Message-ID: <1679086070.9165707.1421744249957.JavaMail.zimbra@redhat.com>
-In-Reply-To: <671699407.9161653.1421743558663.JavaMail.zimbra@redhat.com>
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YC1VW-0007lR-SF
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jan 2015 07:39:50 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YC1VV-0007Bo-AV
+	for ltp-list@lists.sourceforge.net; Fri, 16 Jan 2015 07:39:50 +0000
+Message-ID: <1421393931.3467.7.camel@G08JYZSD130126.localdomain>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 16 Jan 2015 15:38:51 +0800
+In-Reply-To: <54B7D920.7050402@oracle.com>
+References: <1419591532-15612-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<54B7D920.7050402@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] fanotify06 always failed on RHEL7
+Subject: Re: [LTP] [PATCH 1/3] rlogin: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,63 +28,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jack@suse.cz
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Jack & all,
+Hi!
 
-fanotify06 always failed on RHEL7-GA as below. When I make some change of the codes flow, Test Pass All. 
-Could you take a look at my unsure patch?
+On Thu, 2015-01-15 at 18:13 +0300, Alexey Kodanev wrote:
+> Hi!
 
-<<<test_start>>>
-tag=fanotify06 stime=1421726003
-cmdline="fanotify06"
-contacts=""
-analysis=exit
-<<<test_output>>>
-fanotify06    1  TPASS  :  group 0 get event: mask 2 pid=14922 fd=15
-fanotify06    2  TPASS  :  group 1 get event: mask 2 pid=14922 fd=15
-fanotify06    3  TPASS  :  group 2 get event: mask 2 pid=14922 fd=15
-fanotify06    4  TFAIL  :  fanotify06.c:217: group 3 got event
-fanotify06    5  TFAIL  :  fanotify06.c:217: group 4 got event
-fanotify06    6  TFAIL  :  fanotify06.c:217: group 5 got event
-fanotify06    7  TPASS  :  group 6 got no event
-fanotify06    8  TPASS  :  group 7 got no event
-fanotify06    9  TPASS  :  group 8 got no event
+> > -if [info exists env(LOOPCOUNT)] {
+> > -   set LOOPCOUNT $env(LOOPCOUNT)
+> > -} else {
+> > -   set LOOPCOUNT 25
+> > +	for ((count=0;count<${LOOPCOUNT};count++)) {
+> > +		rlogin_test
+> > +	}
+> >   }
+> >   
+> 
+> Why the return status of rlogin_test() not checked here, but only the 
+> last one after do_test()? May be, we could write something like this: 
+> 'rlogin_test || return 1'.
+> 
 
----------
-diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanot
-index 8dcd68a..63519f6 100644
---- a/testcases/kernel/syscalls/fanotify/fanotify06.c
-+++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
-@@ -93,7 +93,8 @@ static void create_fanotify_groups(void)
-                                                 "fanotify_init failed");
-                                }
-                        }
--                       /* Add mount mark for each group */
-+                       /* Add mount mark for group with lower priority */
-+                       if (p == 0) {
-                        ret = fanotify_mark(fd_notify[p][i],
-                                            FAN_MARK_ADD | FAN_MARK_MOUNT,
-                                            FAN_MODIFY,
-@@ -104,9 +105,9 @@ static void create_fanotify_groups(void)
-                                         "FAN_MARK_MOUNT, FAN_MODIFY, AT_FDCWD,"
-                                         " '.') failed", fd_notify[p][i]);
-                        }
-+                       continue;
-+                       }
-                        /* Add ignore mark for groups with higher priority */
--                       if (p == 0)
--                               continue;
-                        ret = fanotify_mark(fd_notify[p][i],
-                                            FAN_MARK_ADD |
-                                            FAN_MARK_IGNORED_MASK |
+'rlogin_test || return 1' looks better.
 
+> 'for (())'  is a bash extension, you can do the same with for i in $(seq 
+> 0 $LOOPCOUNT); do ... done.
+> 
 
--- 
-Regards, 
-Li Wang 
-Email: liwang@redhat.com 
+Oh, I got it.
+
+And thank you very much. :)
+
+Best regards,
+Zeng
 
 
 ------------------------------------------------------------------------------
