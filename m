@@ -1,23 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YG0n2-00072I-Uf
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 07:42:24 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YG0n1-0003Ud-Hs
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 07:42:24 +0000
-Message-ID: <1422344483.1619.52.camel@G08JYZSD130126.localdomain>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 27 Jan 2015 15:41:23 +0800
-In-Reply-To: <54C22A1A.2050906@oracle.com>
-References: <54B7D920.7050402@oracle.com>
-	<1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<1421818093-24202-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<54C22A1A.2050906@oracle.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2 2/3] telnet: Cleanup
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YDDcG-0007Oo-BV
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 14:47:44 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YDDcF-0004K0-EW
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 14:47:44 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t0JElaqB029069
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:37 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t0JElabC010199
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:36 GMT
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t0JElaDj012980
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:36 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 19 Jan 2015 17:49:49 +0300
+Message-Id: <1421678989-28577-4-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1421678989-28577-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1421678989-28577-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 4/4] runtest/network-stress.appl: fix ssh test names
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,178 +37,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-On Fri, 2015-01-23 at 14:01 +0300, Alexey Kodanev wrote:
-> Hi!
-> On 21.01.2015 8:28, Zeng Linggang wrote:
-> > * Add 'TCID' and 'TST_TOTAL'.
-> > * Use 'test.sh'.
-> > * Delete some useless comment.
-> > * Some cleanup.
-> >
-> > Signed-off-by: Zeng Linggang<zenglg.jy@cn.fujitsu.com>
-> > ---
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ runtest/network_stress.appl |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-> > -} else {
-> > -   set LOOPCOUNT 25
-> > +	if [ -z $LOOPCOUNT ]; then
-> > +		LOOTCOUNT=25
->                                             ^
->                                             should be 'P' here
-> 
-
-What is the 'P' mean?
-
-> > +	fi
-> >   }
-> >   
-> > -# stty echo
-> > -send_user " Starting\n"
-> > -
-> > -# Do foreach host on command line
-> > -set count 0
-> > -while {$count < $LOOPCOUNT} {
-> > -   set count [expr $count+1]
-> > -   foreach HOST $RHOST {
-> > -      send_user "Host: $HOST\n"
-> > -
-> > -      # telnet to the host
-> > -      spawn telnet $HOST
-> > -      expect -re "login:"
-> > -
-> > -      send "$RUSER\r"
-> > -      expect -re "Password:"
-> > +do_test()
-> > +{
-> > +	tst_resm TINFO "Starting"
-> >   
-> > -      send "$PASSWD\r"
-> > -
-> > -      send "PS1=\"$PROMPT\"\r"
-> > -      # Wait for shell prompt
-> > -      expect "$PROMPT"
-> > +	for i in $(seq 1 ${LOOPCOUNT})
-> > +	do
-> > +		telnet_test || return 1
-> > +	done
-> > +}
-> >   
-> > -      # Run passwd command - and respond to its prompts
-> > -      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$HOST \r"
-> > -      # When shell prompt comes back, logout
-> > +telnet_test()
-> > +{
-> > +	expect -c "
-> > +		spawn telnet $RHOST
-> > +		expect -re \"login:\"
-> > +		send \"$RUSER\r\"
-> > +		expect -re \"Password:\"
-> > +		send \"$PASSWD\r\"
-> > +
-> > +		send \"LC_ALL=C ls -l /etc/hosts | wc -w > $RUSER.$RHOST \r\"
-> > +		expect \"$RUSER@\"
-> 
-> This part needs some extra checking for failed login, e.g. 'incorrect' 
-> password or connection timeout:
-> 
-> expect -re "incorrect" {
->      exit 1
-> } -re "$USERS@"
-> 
-> 
-
-Good idea. Thanks.
-
-> > +		exp_send \"logout\r\"
-> > +
-> 
-> The below part can be changed to:
->          tst_resm TINFO "checking telnet status"
->          tst_rhost_run -s -c "grep -q 9 $RUSER.$RHOST"
->          tst_rhost_run -c "rm -f $RUSER.$RHOST"
-> 
-> Note, 'tst_rhost_run' with '-s' option should exit with TBROK if remote 
-> command returns non-zero exit status, please find the following patch 
-> with the fix:
-> 
-> [PATCH v2] lib/test_net.sh: fix 'tst_rhost_run -s' when errors occur.
-> 
-
-Thank you. I have found the patch.
-
-> > +		send_user \"CHECKING TELNET STATUS\n\"
-> > +
-> > +		set nummatch [exec rsh -n -l $RUSER $RHOST \\
-> > +			      \"grep -c 9 $RUSER.$RHOST\"]
-> > +		if {\$nummatch==1} {
-> > +			exec rsh -n -l $RUSER $RHOST \"rm -f $RUSER.$RHOST\"
-> > +		} else {
-> > +			exit 1
-> > +		}
-> > +	"
-> > +}
-> >   
-> > -      expect "$PROMPT"
-> > -      exp_send "logout\r"
-> > +setup
-> >   
-> > -      send_user "CHECKING TELNET STATUS\n"
-> > -      set nummatch [exec rsh -n -l $RUSER $HOST "cat $TESTLOG/$RUSER.$HOST|grep -c 9"]
-> > -      if {$nummatch==1} {
-> > -         send_user "$TC interactive Test Successful in LOOP $count\r"
-> > -         exec rsh -n -l $RUSER $HOST "rm -f $TESTLOG/$RUSER.$HOST"
-> > -      } else {
-> > -         send_user "$TC interactive session failed\n"
-> > -         exit 1
-> > -      }
-> > -   }
-> > -}
-> > +do_test
-> > +if [ $? -ne 0 ]; then
-> > +	tst_resm TFAIL "Test $TCID failed."
-> > +else
-> > +	tst_resm TPASS "Test $TCID successed."
-> 
-> "'succeeded"
-> 
-
-Yep.
-
-> > +fi
-> >   
-> > -send_user "\nTest PASSES\n\n"
-> > -exit 0
-> > +tst_exit
-> 
-> Also, there is too much non-standard LTP output, especially if LOOPCOUNT 
-> is big. Could we send it to a file and only if there are some errors, 
-> print it. Any thoughts?
-> 
-
-It is not bad, but we could not sure whether the test is being run when
-we wait.
-
-Best regards,
-Zeng
-
-> Thanks,
-> Alexey
-> 
-
+diff --git a/runtest/network_stress.appl b/runtest/network_stress.appl
+index 9aee474..91dbdd3 100644
+--- a/runtest/network_stress.appl
++++ b/runtest/network_stress.appl
+@@ -2,8 +2,8 @@
+ # Stress test for major application protocol (ssh, dns, http, ftp)
+ #
+ 
+-ssh4-stress ssh4-stress
+-ssh6-stress ssh6-stress
++ssh4-stress ssh-stress
++ssh6-stress ssh-stress -6
+ 
+ dns4-stress dns-stress
+ dns6-stress dns-stress -6
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+http://p.sf.net/sfu/gigenet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
