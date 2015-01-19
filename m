@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YEaiu-00009r-MD
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jan 2015 09:40:16 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YEais-0004ve-Uk
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jan 2015 09:40:17 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t0N9dSmv006586
-	for <ltp-list@lists.sourceforge.net>; Fri, 23 Jan 2015 17:39:28 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 23 Jan 2015 17:36:08 +0800
-Message-ID: <1422005772-19099-3-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1422005772-19099-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1422005772-19099-1-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH 3/7] lib6/asapi_03.c: cleanup
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YDDcE-0008Mm-Dw
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 14:47:42 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YDDcB-0004Jj-Vi
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 14:47:42 +0000
+Received: from acsinet21.oracle.com (acsinet21.oracle.com [141.146.126.237])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t0JElXKt007375
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:34 GMT
+Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
+	by acsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t0JElWj3010069
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:33 GMT
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
+	t0JElWtO026933
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:32 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 19 Jan 2015 17:49:46 +0300
+Message-Id: <1421678989-28577-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 1/4] network/stress/ssh: rename ssh4-stress
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,478 +35,1012 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-* Remove useless comments.
-
-* Modify the format of ftab[].
-
-* Move the test body from main() to do_test().
-
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/network/lib6/asapi_03.c | 397 +++++++++++++++++---------------------
- 1 file changed, 172 insertions(+), 225 deletions(-)
+ testcases/network/stress/ssh/ssh-stress  |  461 ++++++++++++++++++++++++++++++
+ testcases/network/stress/ssh/ssh4-stress |  461 ------------------------------
+ testcases/network/stress/ssh/ssh6-stress |   47 ---
+ 3 files changed, 461 insertions(+), 508 deletions(-)
+ create mode 100644 testcases/network/stress/ssh/ssh-stress
+ delete mode 100644 testcases/network/stress/ssh/ssh4-stress
+ delete mode 100644 testcases/network/stress/ssh/ssh6-stress
 
-diff --git a/testcases/network/lib6/asapi_03.c b/testcases/network/lib6/asapi_03.c
-index 5753d19..738a3f4 100644
---- a/testcases/network/lib6/asapi_03.c
-+++ b/testcases/network/lib6/asapi_03.c
-@@ -1,6 +1,7 @@
- /*
-  *
-  *   Copyright (c) International Business Machines  Corp., 2001
-+ *   Author: David L Stevens
-  *
-  *   This program is free software;  you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -13,26 +14,13 @@
-  *   the GNU General Public License for more details.
-  *
-  *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *   along with this program;  if not, write to the Free Software Foundation,
-+ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
--
- /*
-- * Test Name: asapi_03
-- *
-- * Test Description:
-- *  These tests are for the "Advanced Sockets API" (RFC 3542)
-- *  Verify that in6 and sockaddr fields are present.
-- *
-- * Usage:  <for command-line>
-- *  asapi_03
-- *
-- * HISTORY
-- *	03/2005 written by David L Stevens
-- *
-- * RESTRICTIONS:
-- *  None.
-- *
-+ *   Description:
-+ *     These tests are for the "Advanced Sockets API" (RFC 3542)
-+ *     Verify that in6 and sockaddr fields are present.
-  */
- 
- #include <stdio.h>
-@@ -47,10 +35,6 @@
- #include "usctest.h"
- #include "runcc.h"
- 
--char *TCID = "asapi_03";	/* Test program identifier.    */
--
--void setup(void), cleanup(void);
--
- enum ttype { EXISTS, ALIAS, VALUE };
- 
- struct ftent {
-@@ -67,232 +51,195 @@ struct ftent {
- #define ft_value	ftun.fu_value
- #define ft_dname	ftun.fu_dname
- } ftab[] = {
--/* section 2.2.3, MLDv1 */
--	{
--		"MLD_LISTENER_QUERY", VALUE, ICMP6_H, "MLD_LISTENER_QUERY",
--		    NULL, NULL, {
--	"130"}}, {
--		"MLD_LISTENER_REPORT", VALUE, ICMP6_H, "MLD_LISTENER_REPORT",
--		    NULL, NULL, {
--	"131"}}, {
--		"MLD_LISTENER_REDUCTION", VALUE, ICMP6_H,
--		    "MLD_LISTENER_REDUCTION", NULL, NULL, {
--	"132"}}, {
--		"mld_hdr mld_icmp6_hdr", EXISTS, ICMP6_H, "mld_hdr",
--		    "mld_icmp6_hdr", "0", {
--	"sizeof(struct icmp6_hdr)"}}, {
--		"mld_hdr mld_addr", EXISTS, ICMP6_H, "mld_hdr", "mld_addr",
--		    "sizeof(struct icmp6_hdr)", {
--	"sizeof(struct in6_addr)"}}, {
--		"mld_hdr mld_type define", ALIAS, ICMP6_H, "mld_hdr",
--		    "mld_icmp6_hdr.icmp6_type", NULL, {
--	"mld_type"}}, {
--		"mld_hdr mld_code define", ALIAS, ICMP6_H, "mld_hdr",
--		    "mld_icmp6_hdr.icmp6_code", NULL, {
--	"mld_code"}}, {
--		"mld_hdr mld_cksum define", ALIAS, ICMP6_H, "mld_hdr",
--		    "mld_icmp6_hdr.icmp6_cksum", NULL, {
--	"mld_cksum"}}, {
--		"mld_hdr mld_maxdelay define", ALIAS, ICMP6_H, "mld_hdr",
--		    "mld_icmp6_hdr.icmp6_data16[0]", NULL, {
--	"mld_maxdelay"}}, {
--		"mld_hdr mld_reserved define", ALIAS, ICMP6_H, "mld_hdr",
--		    "mld_icmp6_hdr.icmp6_data16[1]", NULL, {
--	"mld_reserved"}},
--/* section 2.2.4, Router renumbering */
--	{
--		"ICMP6_ROUTER_RENUMBERING", VALUE, ICMP6_H,
--		    "ICMP6_ROUTER_RENUMBERING", NULL, NULL, {
--	"138"}}, {
--		"icmp6_router_renum rr_hdr", EXISTS, ICMP6_H,
--		    "icmp6_router_renum", "rr_hdr", "0", {
--	"sizeof(struct icmp6_hdr)"}}, {
--		"icmp6_router_renum rr_segnum", EXISTS, ICMP6_H,
--		    "icmp6_router_renum", "rr_segnum",
--		    "sizeof(struct icmp6_hdr)", {
--	"1"}}, {
--		"icmp6_router_renum rr_flags", EXISTS, ICMP6_H,
--		    "icmp6_router_renum", "rr_flags",
--		    "sizeof(struct icmp6_hdr)+1", {
--	"1"}}, {
--		"icmp6_router_renum rr_maxdelay", EXISTS, ICMP6_H,
--		    "icmp6_router_renum", "rr_maxdelay",
--		    "sizeof(struct icmp6_hdr)+2", {
--	"2"}}, {
--		"icmp6_router_renum rr_reserved", EXISTS, ICMP6_H,
--		    "icmp6_router_renum", "rr_reserved",
--		    "sizeof(struct icmp6_hdr)+4", {
--	"4"}}, {
--		"icmp6_router_renum rr_type define", ALIAS, ICMP6_H,
--		    "icmp6_router_renum", "rr_hdr.icmp6_type", NULL, {
--	"rr_type"}}, {
--		"icmp6_router_renum rr_code define", ALIAS, ICMP6_H,
--		    "icmp6_router_renum", "rr_hdr.icmp6_code", NULL, {
--	"rr_code"}}, {
--		"icmp6_router_renum rr_cksum define", ALIAS, ICMP6_H,
--		    "icmp6_router_renum", "rr_hdr.icmp6_cksum", NULL, {
--	"rr_cksum"}}, {
--		"icmp6_router_renum rr_seqnum define", ALIAS, ICMP6_H,
--		    "icmp6_router_renum", "rr_hdr.icmp6_data32[0]", NULL, {
--	"rr_seqnum"}}, {
--		"ICMP6_RR_FLAGS_TEST", VALUE, ICMP6_H, "ICMP6_RR_FLAGS_TEST",
--		    NULL, NULL, {
--	"0x80"}}, {
--		"ICMP6_RR_FLAGS_REQRESULT", VALUE, ICMP6_H,
--		    "ICMP6_RR_FLAGS_REQRESULT", NULL, NULL, {
--	"0x40"}}, {
--		"ICMP6_RR_FLAGS_FORCEAPPLY", VALUE, ICMP6_H,
--		    "ICMP6_RR_FLAGS_FORCEAPPLY", NULL, NULL, {
--	"0x20"}}, {
--		"ICMP6_RR_FLAGS_SPECSITE", VALUE, ICMP6_H,
--		    "ICMP6_RR_FLAGS_SPECSITE", NULL, NULL, {
--	"0x10"}}, {
--		"ICMP6_RR_FLAGS_PREVDONE", VALUE, ICMP6_H,
--		    "ICMP6_RR_FLAGS_PREVDONE", NULL, NULL, {
--	"0x08"}}, {
--		"rr_pco_match rpm_code", EXISTS, ICMP6_H, "rr_pco_match",
--		    "rpm_code", "0", {
--	"1"}}, {
--		"rr_pco_match rpm_len", EXISTS, ICMP6_H, "rr_pco_match",
--		    "rpm_len", "1", {
--	"1"}}, {
--		"rr_pco_match rpm_ordinal", EXISTS, ICMP6_H, "rr_pco_match",
--		    "rpm_ordinal", "2", {
--	"1"}}, {
--		"rr_pco_match rpm_matchlen", EXISTS, ICMP6_H, "rr_pco_match",
--		    "rpm_matchlen", "3", {
--	"1"}}, {
--		"rr_pco_match rpm_minlen", EXISTS, ICMP6_H, "rr_pco_match",
--		    "rpm_minlen", "4", {
--	"1"}}, {
--		"rr_pco_match rpm_maxlen", EXISTS, ICMP6_H, "rr_pco_match",
--		    "rpm_maxlen", "5", {
--	"1"}}, {
--		"rr_pco_match rpm_reserved", EXISTS, ICMP6_H, "rr_pco_match",
--		    "rpm_reserved", "6", {
--	"2"}}, {
--		"rr_pco_match rpm_prefix", EXISTS, ICMP6_H, "rr_pco_match",
--		    "rpm_prefix", "8", {
--	"sizeof(struct in6_addr)"}}, {
--		"RPM_PCO_ADD", VALUE, ICMP6_H, "RPM_PCO_ADD", NULL, NULL, {
--	"1"}}, {
--		"RPM_PCO_CHANGE", VALUE, ICMP6_H, "RPM_PCO_CHANGE", NULL, NULL, {
--	"2"}}, {
--		"RPM_PCO_SETGLOBAL", VALUE, ICMP6_H, "RPM_PCO_SETGLOBAL", NULL,
--		    NULL, {
--	"3"}}, {
--		"rr_pco_use rpu_uselen", EXISTS, ICMP6_H, "rr_pco_use",
--		    "rpu_uselen", "0", {
--	"1"}}, {
--		"rr_pco_use rpu_keeplen", EXISTS, ICMP6_H, "rr_pco_use",
--		    "rpu_keeplen", "1", {
--	"1"}}, {
--		"rr_pco_use rpu_ramask", EXISTS, ICMP6_H, "rr_pco_use",
--		    "rpu_ramask", "2", {
--	"1"}}, {
--		"rr_pco_use rpu_raflags", EXISTS, ICMP6_H, "rr_pco_use",
--		    "rpu_raflags", "3", {
--	"1"}}, {
--		"rr_pco_use rpu_vltime", EXISTS, ICMP6_H, "rr_pco_use",
--		    "rpu_vltime", "4", {
--	"4"}}, {
--		"rr_pco_use rpu_pltime", EXISTS, ICMP6_H, "rr_pco_use",
--		    "rpu_pltime", "8", {
--	"4"}}, {
--		"rr_pco_use rpu_flags", EXISTS, ICMP6_H, "rr_pco_use",
--		    "rpu_flags", "12", {
--	"4"}}, {
--		"rr_pco_use rpu_prefix", EXISTS, ICMP6_H, "rr_pco_use",
--		    "rpu_prefix", "16", {
--	"sizeof(struct in6_addr)"}}, {
--		"ICMP6_RR_PCOUSE_RAFLAGS_ONLINK", VALUE, ICMP6_H,
--		    "ICMP6_RR_PCOUSE_RAFLAGS_ONLINK", NULL, NULL, {
--	"0x20"}}, {
--		"ICMP6_RR_PCOUSE_RAFLAGS_AUTO", VALUE, ICMP6_H,
--		    "ICMP6_RR_PCOUSE_RAFLAGS_AUTO", NULL, NULL, {
--	"0x10"}}, {
--		"ICMP6_RR_PCOUSE_FLAGS_DECRVLTIME", VALUE, ICMP6_H,
--		    "ICMP6_RR_PCOUSE_FLAGS_DECRVLTIME", NULL, NULL, {
--	"htonl(0x80000000)"}}, {
--		"ICMP6_RR_PCOUSE_FLAGS_DECRPLTIME", VALUE, ICMP6_H,
--		    "ICMP6_RR_PCOUSE_FLAGS_DECRPLTIME", NULL, NULL, {
--	"htonl(0x40000000)"}}, {
--		"rr_result rrr_flags", EXISTS, ICMP6_H, "rr_result",
--		    "rrr_flags", "0", {
--	"2"}}, {
--		"rr_result rrr_ordinal", EXISTS, ICMP6_H, "rr_result",
--		    "rrr_ordinal", "2", {
--	"1"}}, {
--		"rr_result rrr_matchedlen", EXISTS, ICMP6_H, "rr_result",
--		    "rrr_matchedlen", "3", {
--	"1"}}, {
--		"rr_result rrr_ifid", EXISTS, ICMP6_H, "rr_result",
--		    "rrr_ifid", "4", {
--	"4"}}, {
--		"rr_result rrr_prefix", EXISTS, ICMP6_H, "rr_result",
--		    "rrr_prefix", "8", {
--	"sizeof(struct in6_addr)"}}, {
--		"ICMP6_RR_RESULT_FLAGS_OOB", VALUE, ICMP6_H,
--		    "ICMP6_RR_RESULT_FLAGS_OOB", NULL, NULL, {
--	"htons(0x0002)"}}, {
--		"ICMP6_RR_RESULT_FLAGS_FORBIDDEN", VALUE, ICMP6_H,
--		    "ICMP6_RR_RESULT_FLAGS_FORBIDDEN", NULL, NULL, {
--"htons(0x0001)"}},};
--
--#define FTCOUNT	(sizeof(ftab)/sizeof(ftab[0]))
--
--int TST_TOTAL = FTCOUNT;
-+	/* section 2.2.3, MLDv1 */
-+	{ "MLD_LISTENER_QUERY", VALUE, ICMP6_H,
-+		"MLD_LISTENER_QUERY", NULL, NULL, {"130"} },
-+	{ "MLD_LISTENER_REPORT", VALUE, ICMP6_H,
-+		"MLD_LISTENER_REPORT", NULL, NULL, {"131"} },
-+	{ "MLD_LISTENER_REDUCTION", VALUE, ICMP6_H,
-+		"MLD_LISTENER_REDUCTION", NULL, NULL, {"132"} },
-+	{ "mld_hdr mld_icmp6_hdr", EXISTS, ICMP6_H,
-+		"mld_hdr", "mld_icmp6_hdr", "0",
-+		{"sizeof(struct icmp6_hdr)"} },
-+	{ "mld_hdr mld_addr", EXISTS, ICMP6_H, "mld_hdr",
-+		"mld_addr", "sizeof(struct icmp6_hdr)",
-+		{"sizeof(struct in6_addr)"} },
-+	{ "mld_hdr mld_type define", ALIAS, ICMP6_H, "mld_hdr",
-+		"mld_icmp6_hdr.icmp6_type", NULL, {"mld_type"} },
-+	{ "mld_hdr mld_code define", ALIAS, ICMP6_H, "mld_hdr",
-+		"mld_icmp6_hdr.icmp6_code", NULL, {"mld_code"} },
-+	{ "mld_hdr mld_cksum define", ALIAS, ICMP6_H, "mld_hdr",
-+		"mld_icmp6_hdr.icmp6_cksum", NULL, {"mld_cksum"} },
-+	{ "mld_hdr mld_maxdelay define", ALIAS, ICMP6_H, "mld_hdr",
-+		"mld_icmp6_hdr.icmp6_data16[0]", NULL, {"mld_maxdelay"} },
-+	{ "mld_hdr mld_reserved define", ALIAS, ICMP6_H, "mld_hdr",
-+		"mld_icmp6_hdr.icmp6_data16[1]", NULL, {"mld_reserved"} },
-+	/* section 2.2.4, Router renumbering */
-+	{ "ICMP6_ROUTER_RENUMBERING", VALUE, ICMP6_H,
-+		"ICMP6_ROUTER_RENUMBERING", NULL, NULL, {"138"} },
-+	{ "icmp6_router_renum rr_hdr", EXISTS, ICMP6_H,
-+		"icmp6_router_renum", "rr_hdr", "0",
-+		{"sizeof(struct icmp6_hdr)"} },
-+	{ "icmp6_router_renum rr_segnum", EXISTS, ICMP6_H,
-+		"icmp6_router_renum", "rr_segnum",
-+		"sizeof(struct icmp6_hdr)", {"1"} },
-+	{ "icmp6_router_renum rr_flags", EXISTS, ICMP6_H,
-+		"icmp6_router_renum", "rr_flags",
-+		"sizeof(struct icmp6_hdr)+1", {"1"} },
-+	{ "icmp6_router_renum rr_maxdelay", EXISTS, ICMP6_H,
-+		"icmp6_router_renum", "rr_maxdelay",
-+		"sizeof(struct icmp6_hdr)+2", {"2"} },
-+	{ "icmp6_router_renum rr_reserved", EXISTS, ICMP6_H,
-+		"icmp6_router_renum", "rr_reserved",
-+		"sizeof(struct icmp6_hdr)+4", {"4"} },
-+	{ "icmp6_router_renum rr_type define", ALIAS, ICMP6_H,
-+		"icmp6_router_renum", "rr_hdr.icmp6_type",
-+		NULL, {"rr_type"} },
-+	{ "icmp6_router_renum rr_code define", ALIAS, ICMP6_H,
-+		"icmp6_router_renum", "rr_hdr.icmp6_code",
-+		NULL, {"rr_code"} },
-+	{ "icmp6_router_renum rr_cksum define", ALIAS, ICMP6_H,
-+		"icmp6_router_renum", "rr_hdr.icmp6_cksum",
-+		NULL, {"rr_cksum"} },
-+	{ "icmp6_router_renum rr_seqnum define", ALIAS, ICMP6_H,
-+		"icmp6_router_renum", "rr_hdr.icmp6_data32[0]",
-+		NULL, {"rr_seqnum"} },
-+	{ "ICMP6_RR_FLAGS_TEST", VALUE, ICMP6_H,
-+		"ICMP6_RR_FLAGS_TEST", NULL, NULL, {"0x80"} },
-+	{ "ICMP6_RR_FLAGS_REQRESULT", VALUE, ICMP6_H,
-+		"ICMP6_RR_FLAGS_REQRESULT", NULL, NULL, {"0x40"} },
-+	{ "ICMP6_RR_FLAGS_FORCEAPPLY", VALUE, ICMP6_H,
-+		"ICMP6_RR_FLAGS_FORCEAPPLY", NULL, NULL, {"0x20"} },
-+	{ "ICMP6_RR_FLAGS_SPECSITE", VALUE, ICMP6_H,
-+		"ICMP6_RR_FLAGS_SPECSITE", NULL, NULL, {"0x10"} },
-+	{ "ICMP6_RR_FLAGS_PREVDONE", VALUE, ICMP6_H,
-+		"ICMP6_RR_FLAGS_PREVDONE", NULL, NULL, {"0x08"} },
-+	{ "rr_pco_match rpm_code", EXISTS, ICMP6_H,
-+		"rr_pco_match", "rpm_code", "0", {"1"} },
-+	{ "rr_pco_match rpm_len", EXISTS, ICMP6_H,
-+		"rr_pco_match", "rpm_len", "1", {"1"} },
-+	{ "rr_pco_match rpm_ordinal", EXISTS, ICMP6_H,
-+		"rr_pco_match", "rpm_ordinal", "2", {"1"} },
-+	{ "rr_pco_match rpm_matchlen", EXISTS, ICMP6_H,
-+		"rr_pco_match", "rpm_matchlen", "3", {"1"} },
-+	{ "rr_pco_match rpm_minlen", EXISTS, ICMP6_H,
-+		"rr_pco_match", "rpm_minlen", "4", {"1"} },
-+	{ "rr_pco_match rpm_maxlen", EXISTS, ICMP6_H,
-+		"rr_pco_match", "rpm_maxlen", "5", {"1"} },
-+	{ "rr_pco_match rpm_reserved", EXISTS, ICMP6_H,
-+		"rr_pco_match", "rpm_reserved", "6", {"2"} },
-+	{ "rr_pco_match rpm_prefix", EXISTS, ICMP6_H,
-+		"rr_pco_match", "rpm_prefix", "8",
-+		{"sizeof(struct in6_addr)"} },
-+	{ "RPM_PCO_ADD", VALUE, ICMP6_H, "RPM_PCO_ADD",
-+		NULL, NULL, {"1"} },
-+	{ "RPM_PCO_CHANGE", VALUE, ICMP6_H, "RPM_PCO_CHANGE",
-+		NULL, NULL, {"2"} },
-+	{ "RPM_PCO_SETGLOBAL", VALUE, ICMP6_H, "RPM_PCO_SETGLOBAL",
-+		NULL, NULL, {"3"} },
-+	{ "rr_pco_use rpu_uselen", EXISTS, ICMP6_H, "rr_pco_use",
-+		"rpu_uselen", "0", {"1"} },
-+	{ "rr_pco_use rpu_keeplen", EXISTS, ICMP6_H, "rr_pco_use",
-+		"rpu_keeplen", "1", {"1"} },
-+	{ "rr_pco_use rpu_ramask", EXISTS, ICMP6_H, "rr_pco_use",
-+		"rpu_ramask", "2", {"1"} },
-+	{ "rr_pco_use rpu_raflags", EXISTS, ICMP6_H, "rr_pco_use",
-+		"rpu_raflags", "3", {"1"} },
-+	{ "rr_pco_use rpu_vltime", EXISTS, ICMP6_H, "rr_pco_use",
-+		"rpu_vltime", "4", {"4"} },
-+	{ "rr_pco_use rpu_pltime", EXISTS, ICMP6_H, "rr_pco_use",
-+		"rpu_pltime", "8", {"4"} },
-+	{ "rr_pco_use rpu_flags", EXISTS, ICMP6_H, "rr_pco_use",
-+		"rpu_flags", "12", {"4"} },
-+	{ "rr_pco_use rpu_prefix", EXISTS, ICMP6_H, "rr_pco_use",
-+		"rpu_prefix", "16", {"sizeof(struct in6_addr)"} },
-+	{ "ICMP6_RR_PCOUSE_RAFLAGS_ONLINK", VALUE, ICMP6_H,
-+		"ICMP6_RR_PCOUSE_RAFLAGS_ONLINK", NULL, NULL, {"0x20"} },
-+	{ "ICMP6_RR_PCOUSE_RAFLAGS_AUTO", VALUE, ICMP6_H,
-+		"ICMP6_RR_PCOUSE_RAFLAGS_AUTO", NULL, NULL, {"0x10"} },
-+	{ "ICMP6_RR_PCOUSE_FLAGS_DECRVLTIME", VALUE, ICMP6_H,
-+		"ICMP6_RR_PCOUSE_FLAGS_DECRVLTIME", NULL, NULL,
-+		{"htonl(0x80000000)"} },
-+	{ "ICMP6_RR_PCOUSE_FLAGS_DECRPLTIME", VALUE, ICMP6_H,
-+		"ICMP6_RR_PCOUSE_FLAGS_DECRPLTIME", NULL, NULL,
-+		{"htonl(0x40000000)"} },
-+	{ "rr_result rrr_flags", EXISTS, ICMP6_H, "rr_result",
-+		"rrr_flags", "0", {"2"} },
-+	{ "rr_result rrr_ordinal", EXISTS, ICMP6_H, "rr_result",
-+		"rrr_ordinal", "2", {"1"} },
-+	{ "rr_result rrr_matchedlen", EXISTS, ICMP6_H, "rr_result",
-+		"rrr_matchedlen", "3", {"1"} },
-+	{ "rr_result rrr_ifid", EXISTS, ICMP6_H, "rr_result",
-+		"rrr_ifid", "4", {"4"} },
-+	{ "rr_result rrr_prefix", EXISTS, ICMP6_H, "rr_result",
-+		"rrr_prefix", "8", {"sizeof(struct in6_addr)"} },
-+	{ "ICMP6_RR_RESULT_FLAGS_OOB", VALUE, ICMP6_H,
-+		"ICMP6_RR_RESULT_FLAGS_OOB", NULL, NULL,
-+		{"htons(0x0002)"} },
-+	{ "ICMP6_RR_RESULT_FLAGS_FORBIDDEN", VALUE, ICMP6_H,
-+		"ICMP6_RR_RESULT_FLAGS_FORBIDDEN", NULL, NULL,
-+		{"htons(0x0001)"} },
-+};
+diff --git a/testcases/network/stress/ssh/ssh-stress b/testcases/network/stress/ssh/ssh-stress
+new file mode 100644
+index 0000000..8521b75
+--- /dev/null
++++ b/testcases/network/stress/ssh/ssh-stress
+@@ -0,0 +1,461 @@
++#!/bin/sh
 +
-+static void setup(void);
-+static void cleanup(void);
-+static void do_test(const struct ftent *);
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2005                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++##                                                                            ##
++##                                                                            ##
++################################################################################
++#
++# File:
++#   ssh4-stress
++#
++# Description:
++#   Stress test for SSH over IPv4
++#   test01 - Verify the ssh server or the kernel is not down after a large
++#            number of ssh sessions are created.
++#   test02 - Verify the ssh server or the kernel is not down after a large
++#            number of clients log in/out asynchronously for a long time.
++#   test03 - Verify the ssh server or the kernek is not down after a TCP
++#            traffic is forwarded via ssh port-forwarding for a long time
++#
++# Author:
++#   Mitsuru Chinen <mitch@jp.ibm.com>
++#
++# History:
++#	Oct 19 2005 - Created (Mitsuru Chinen)
++#
++#-----------------------------------------------------------------------
++# Uncomment line below for debug output.
++#trace_logic=${trace_logic:-"set -x"}
++$trace_logic
 +
-+char *TCID = "asapi_03";
-+int TST_TOTAL = ARRAY_SIZE(ftab);
- 
- int main(int argc, char *argv[])
- {
- 	int i, lc;
- 	const char *msg;
- 
--	/* Parse standard options given to run the test. */
- 	msg = parse_opts(argc, argv, NULL, NULL);
--	if (msg != NULL) {
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		for (i = 0; i < FTCOUNT; ++i) {
--			switch (ftab[i].ft_type) {
--			case EXISTS:
--				structcheck(ftab[i].ft_tname, ftab[i].ft_incl,
--					    ftab[i].ft_struct, ftab[i].ft_field,
--					    ftab[i].ft_offset,
--					    ftab[i].ft_value);
--				break;
--			case ALIAS:
--				aliascheck(ftab[i].ft_tname, ftab[i].ft_incl,
--					   ftab[i].ft_struct, ftab[i].ft_field,
--					   ftab[i].ft_dname);
--				break;
--			case VALUE:
--				valuecheck(ftab[i].ft_tname, ftab[i].ft_incl,
--					   ftab[i].ft_struct, ftab[i].ft_dname);
--				break;
--			default:
--				tst_resm(TBROK, "invalid type %d",
--					 ftab[i].ft_type);
--				break;
--			}
--		}
-+		tst_count = 0;
++# Make sure the value of LTPROOT
++LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
++export LTPROOT
 +
-+		for (i = 0; i < TST_TOTAL; i++)
-+			do_test(&ftab[i]);
- 	}
- 
- 	cleanup();
--
- 	tst_exit();
- }
- 
- void setup(void)
- {
--	TEST_PAUSE;		/* if -P option specified */
-+	TEST_PAUSE;
- }
- 
- void cleanup(void)
- {
- 	TEST_CLEANUP;
- }
++# Total number of the test case
++TST_TOTAL=3
++export TST_TOTAL
 +
-+void do_test(const struct ftent *ftptr)
++# The version of IP
++IP_VER=${IP_VER:-4}
++
++# Default of the test case ID and the test case count
++TCID=ssh${IP_VER}-stress
++TST_COUNT=0
++export TCID
++export TST_COUNT
++
++# Check the environmanet variable
++. check_envval || exit $TST_TOTAL
++
++# Dulation of the test [sec]
++NS_DURATION=${NS_DURATION:-3600}      # 1 hour
++
++# Quantity of the connection for multi connection test
++CONNECTION_TOTAL=${CONNECTION_TOTAL:-4000}
++
++# Temporary direcotry to store sshd setting or ssh key
++# Note: ssh doesn't work when those directory are under /tmp.
++SSH_TMPDIR_PARENT="/root"
++
++# The number of the test link where tests run
++LINK_NUM=${LINK_NUM:-0}
++
++# Network portion of the IPv4 address
++IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
++
++# Host portion of the IPv4 address on the local host
++LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
++
++# Host portion of the IPv4 address on the remote host
++RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
++
++# Network portion of the IPv6 address
++IPV6_NETWORK="fd00:1:1:1"
++
++# Host portion of the IPv6 address of the local host
++LHOST_IPV6_HOST=":2"
++
++# Host portion of the IPv6 address of the remote host
++RHOST_IPV6_HOST=":1"
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   do_cleanup
++#
++# Description:
++#   Clean up after running ssh stress test
++#
++#-----------------------------------------------------------------------
++do_cleanup()
 +{
-+	switch (ftptr->ft_type) {
-+	case EXISTS:
-+		structcheck(ftptr->ft_tname, ftptr->ft_incl,
-+			ftptr->ft_struct, ftptr->ft_field,
-+			ftptr->ft_offset, ftptr->ft_value);
-+		break;
-+	case ALIAS:
-+		aliascheck(ftptr->ft_tname, ftptr->ft_incl,
-+			ftptr->ft_struct, ftptr->ft_field,
-+			ftptr->ft_dname);
-+		break;
-+	case VALUE:
-+		valuecheck(ftptr->ft_tname, ftptr->ft_incl,
-+			ftptr->ft_struct, ftptr->ft_dname);
-+		break;
-+	default:
-+		tst_resm(TBROK, "invalid type %d",
-+			ftptr->ft_type);
-+		break;
-+	}
++    # Stop the ssh daemon
++    kill `cat ${sshd_dir}/sshd.pid`
++
++    # Delete the dictory that stores configuration files
++    rm -rf $sshd_dir
++    $LTP_RSH $RHOST "rm -rf $rhost_ssh_dir"
++
++    # Delete the temporary files
++    rm -f $message_file
++
++    # Initialize the interface
++    initialize_if lhost ${LINK_NUM}
++    initialize_if rhost ${LINK_NUM}
++
++    # Kill the tcp traffic server
++    killall_tcp_traffic
 +}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   do_setup
++#
++# Description:
++#   Setup for the ssh stress tests
++#   - Assign IP address to the interfaces belong to the specified Link
++#   - Run a sshd daemon for testing
++#   - Create keys for password-less login
++#
++# Set Values:
++#   lhost_addr:   IP address of the local host
++#   rhost_addr:   IP address of the remote host
++#   rhost_config: ssh_config at the remote host
++#
++#-----------------------------------------------------------------------
++do_setup()
++{
++    trap do_cleanup 0
++
++    # Get the sshd command with absolute path
++    SSHD=`which sshd`
++    if [ x"${SSHD}" = x ]; then
++	tst_resm TBROK "sshd daemon is not found"
++	exit $TST_TOTAL
++    fi
++
++    # Kill the tcp traffic server
++    killall_tcp_traffic
++
++    # Initialize the interface
++    initialize_if lhost ${LINK_NUM}
++    initialize_if rhost ${LINK_NUM}
++
++    # Get the Interface name
++    lhost_ifname=`get_ifname lhost ${LINK_NUM}`
++    if [ $? -ne 0 ]; then
++	tst_resm TBROK "Failed to get the interface name at the local host"
++	exit $TST_TOTAL
++    fi
++
++    case $IP_VER in
++	4)
++	# Set IPv4 address to the interfaces
++	set_ipv4addr lhost $LINK_NUM ${IPV4_NETWORK} ${LHOST_IPV4_HOST}
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to add any IP address at the local host"
++	    exit 1
++	fi
++	set_ipv4addr rhost $LINK_NUM ${IPV4_NETWORK} ${RHOST_IPV4_HOST}
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to add any IP address at the remote host"
++	    exit 1
++	fi
++
++	lhost_addr="${IPV4_NETWORK}.${LHOST_IPV4_HOST}"
++	rhost_addr="${IPV4_NETWORK}.${RHOST_IPV4_HOST}"
++	check_icmpv4_connectivity $lhost_ifname $rhost_addr
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to ping to $rhost_addr"
++	    exit 1
++	fi
++	;;
++
++	6)
++	# Set IPv6 address to the interfaces
++	add_ipv6addr lhost $LINK_NUM ${IPV6_NETWORK} ${LHOST_IPV6_HOST}
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to add any IP address at the local host"
++	    exit 1
++	fi
++	add_ipv6addr rhost $LINK_NUM ${IPV6_NETWORK} ${RHOST_IPV6_HOST}
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to add any IP address at the remote host"
++	    exit 1
++	fi
++
++	lhost_addr="${IPV6_NETWORK}:${LHOST_IPV6_HOST}"
++	rhost_addr="${IPV6_NETWORK}:${RHOST_IPV6_HOST}"
++	check_icmpv6_connectivity $lhost_ifname $rhost_addr
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to ping to $rhost_addr"
++	    exit 1
++	fi
++	;;
++
++	*)
++	tst_resm TBROK "Unknown IP version: $IP_VER"
++	exit 1
++	;;
++    esac
++
++    #
++    # Start sshd for testing
++    #
++    port=`find_portbundle tcp 1025 1`
++    if [ $? -ne 0 ]; then
++	tst_resm TFAIL "No port is available."
++	exit 1
++    fi
++    sshd_dir=`TMPDIR="$SSH_TMPDIR_PARENT" mktemp -d`
++    cat << EOD > ${sshd_dir}/sshd_config
++Port $port
++ListenAddress $lhost_addr
++PermitRootLogin yes
++AuthorizedKeysFile ${sshd_dir}/authorized_keys
++PasswordAuthentication no
++AllowTcpForwarding yes
++TCPKeepAlive yes
++UseDNS no
++PidFile ${sshd_dir}/sshd.pid
++EOD
++
++
++    $SSHD -f ${sshd_dir}/sshd_config
++    if [ $? -ne 0 ]; then
++	tst_resm TBROK "Failed to run sshd daemon."
++	exit 1
++    fi
++
++    #
++    # Generate configuration file and key at the remote host
++    #
++    rhost_ssh_dir=`$LTP_RSH $RHOST "mktemp -d -p $SSH_TMPDIR_PARENT"`
++    ret=`$LTP_RSH $RHOST '( cd '$rhost_ssh_dir' && ssh-keygen -t rsa -N "" -f id_rsa ) >/dev/null 2>&1 ; echo $?'`
++    if [ $ret -ne 0 ]; then
++	tst_resm TBROK "Failed to generate key."
++	exit 1
++    fi
++
++    rhost_config=${rhost_ssh_dir}/ssh_config
++    rmtshell="$LTP_RSH"
++    echo $LTP_RSH | grep "rsh.*-n" >/dev/null 2>&1
++    if [ $? -eq 0 ]; then
++	rmtshell="`echo $LTP_RSH | sed "s/-n//"`"
++    fi
++
++    cat << EOD | $rmtshell $RHOST "cat > $rhost_config"
++Port $port
++StrictHostKeyChecking no
++PasswordAuthentication no
++UserKnownHostsFile $rhost_ssh_dir/known_hosts
++IdentityFile $rhost_ssh_dir/id_rsa
++EOD
++    $LTP_RSH $RHOST "cd $rhost_ssh_dir && cat id_rsa.pub" > ${sshd_dir}/authorized_keys
++    $LTP_RSH $RHOST "chmod 700 $rhost_ssh_dir ; chmod 600 $rhost_ssh_dir/*"
++
++    chmod 700 $sshd_dir
++    chmod 600 $sshd_dir/*
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   test01
++#
++# Description:
++#   Verify the ssh connectivity is not broken after creating a large
++#   number of ssh sessions
++#
++#-----------------------------------------------------------------------
++test01()
++{
++    TCID=ssh${IP_VER}-stress01
++    TST_COUNT=1
++    tst_resm TINFO "Verify the ssh connectivity over IPv${IP_VER} is not broken after creating ${CONNECTION_TOTAL} ssh sessions"
++
++    # Script name at the remote host
++    rmtscript="ssh-stress01-rmt"
++
++    # Run the script at the remote host
++    message_file=`mktemp -p $TMPDIR`
++    not_run_rmtscript=true
++    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
++	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
++	if [ $ret -eq 0 ]; then
++	    not_run_rmtscript=false
++	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $IP_VER $lhost_addr $rhost_config $CONNECTION_TOTAL" > $message_file
++	    break
++	fi
++    done
++    if $not_run_rmtscript ; then
++	tst_resm TBROK "Failed to run the test script at the remote host"
++	rm -f $message_file
++	exit 1
++    fi
++
++    if [ -s $message_file ]; then
++	tst_resm TFAIL "`cat $message_file`"
++	rm -f $message_file
++	return 1
++    else
++	tst_resm TPASS "Test is finished successfully."
++	rm -f $message_file
++	return 0
++    fi
++
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   test02
++#
++# Description:
++#   Verify the ssh connectivity is not broken after logged in/out
++#   by many clients asynchronously for a long time
++#
++#-----------------------------------------------------------------------
++test02()
++{
++    TCID=ssh${IP_VER}-stress02
++    TST_COUNT=2
++    tst_resm TINFO "Verify the ssh connectivity over IPv${IP_VER} is not broken after logged in/out by many clients asynchronously in ${NS_DURATION}[sec]"
++    tst_resm TINFO "The number of client is not over $CONNECTION_TOTAL"
++
++    # Script name at the remote host
++    rmtscript="ssh-stress02-rmt"
++
++    # Run the script at the remote host
++    message_file=`mktemp -p $TMPDIR`
++    not_run_rmtscript=true
++    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
++	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
++	if [ $ret -eq 0 ]; then
++	    not_run_rmtscript=false
++	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $IP_VER $lhost_addr $rhost_config $CONNECTION_TOTAL $NS_DURATION" > $message_file
++	    break
++	fi
++    done
++    if $not_run_rmtscript ; then
++	tst_resm TBROK "Failed to run the test script at the remote host"
++	rm -f $message_file
++	exit 1
++    fi
++
++    if [ -s $message_file ]; then
++	tst_resm TFAIL "`cat $message_file`"
++	rm -f $message_file
++	return 1
++    else
++	tst_resm TPASS "Test is finished successfully."
++	rm -f $message_file
++	return 0
++    fi
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   test03
++#
++# Description:
++#   Verify the ssh connectivity is not broken after forwarding TCP traffic
++#   for a long time
++#
++#-----------------------------------------------------------------------
++test03()
++{
++    TCID=ssh${IP_VER}-stress03
++    TST_COUNT=3
++    tst_resm TINFO "Verify the ssh connectivity over IPv${IP_VER} is not broken after forwarding TCP traffic in ${NS_DURATION}[sec]"
++
++    # Script name at the remote host
++    rmtscript="ssh-stress03-rmt"
++
++    # Run a TCP traffic server
++    traffic_port=`find_portbundle tcp 1025 1` || exit 1
++    info_file=`mktemp -p $TMPDIR`
++    ns-tcpserver -b -f $IP_VER -p $traffic_port -o $info_file
++    if [ $? -ne 0 ]; then
++	tst_resm TFAIL "Failed to run a tcp traffic server."
++	rm -f $info_file
++	exit 1
++    fi
++
++    while true ; do
++	if [ -s $info_file ]; then
++	    break
++	fi
++    done
++
++    server_pid=`grep PID: $info_file | cut -f 2 -d ' '`
++    rm -f $info_file
++
++    # Run the script at the remote host
++    message_file=`mktemp -p $TMPDIR`
++    not_run_rmtscript=true
++    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
++	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
++	if [ $ret -eq 0 ]; then
++	    not_run_rmtscript=false
++	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $LTPROOT $IP_VER $lhost_addr $rhost_config $traffic_port $NS_DURATION" > $message_file
++	    break
++	fi
++    done
++    if $not_run_rmtscript ; then
++	tst_resm TBROK "Failed to run the test script at the remote host"
++	rm -f $message_file
++	exit 1
++    fi
++
++    if [ -s $message_file ]; then
++	tst_resm TFAIL "`cat $message_file`"
++	rm -f $message_file
++	return 1
++    else
++	tst_resm TPASS "Test is finished successfully."
++	rm -f $message_file
++	return 0
++    fi
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Main
++#
++# Exit Value:
++#   The number of the failure
++#
++#-----------------------------------------------------------------------
++
++RC=0
++do_setup
++test01 || RC=`expr $RC + 1`
++test02 || RC=`expr $RC + 1`
++test03 || RC=`expr $RC + 1`
++
++exit $RC
+diff --git a/testcases/network/stress/ssh/ssh4-stress b/testcases/network/stress/ssh/ssh4-stress
+deleted file mode 100644
+index 8521b75..0000000
+--- a/testcases/network/stress/ssh/ssh4-stress
++++ /dev/null
+@@ -1,461 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   ssh4-stress
+-#
+-# Description:
+-#   Stress test for SSH over IPv4
+-#   test01 - Verify the ssh server or the kernel is not down after a large
+-#            number of ssh sessions are created.
+-#   test02 - Verify the ssh server or the kernel is not down after a large
+-#            number of clients log in/out asynchronously for a long time.
+-#   test03 - Verify the ssh server or the kernek is not down after a TCP
+-#            traffic is forwarded via ssh port-forwarding for a long time
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Total number of the test case
+-TST_TOTAL=3
+-export TST_TOTAL
+-
+-# The version of IP
+-IP_VER=${IP_VER:-4}
+-
+-# Default of the test case ID and the test case count
+-TCID=ssh${IP_VER}-stress
+-TST_COUNT=0
+-export TCID
+-export TST_COUNT
+-
+-# Check the environmanet variable
+-. check_envval || exit $TST_TOTAL
+-
+-# Dulation of the test [sec]
+-NS_DURATION=${NS_DURATION:-3600}      # 1 hour
+-
+-# Quantity of the connection for multi connection test
+-CONNECTION_TOTAL=${CONNECTION_TOTAL:-4000}
+-
+-# Temporary direcotry to store sshd setting or ssh key
+-# Note: ssh doesn't work when those directory are under /tmp.
+-SSH_TMPDIR_PARENT="/root"
+-
+-# The number of the test link where tests run
+-LINK_NUM=${LINK_NUM:-0}
+-
+-# Network portion of the IPv4 address
+-IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
+-
+-# Host portion of the IPv4 address on the local host
+-LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
+-
+-# Host portion of the IPv4 address on the remote host
+-RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
+-
+-# Network portion of the IPv6 address
+-IPV6_NETWORK="fd00:1:1:1"
+-
+-# Host portion of the IPv6 address of the local host
+-LHOST_IPV6_HOST=":2"
+-
+-# Host portion of the IPv6 address of the remote host
+-RHOST_IPV6_HOST=":1"
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   do_cleanup
+-#
+-# Description:
+-#   Clean up after running ssh stress test
+-#
+-#-----------------------------------------------------------------------
+-do_cleanup()
+-{
+-    # Stop the ssh daemon
+-    kill `cat ${sshd_dir}/sshd.pid`
+-
+-    # Delete the dictory that stores configuration files
+-    rm -rf $sshd_dir
+-    $LTP_RSH $RHOST "rm -rf $rhost_ssh_dir"
+-
+-    # Delete the temporary files
+-    rm -f $message_file
+-
+-    # Initialize the interface
+-    initialize_if lhost ${LINK_NUM}
+-    initialize_if rhost ${LINK_NUM}
+-
+-    # Kill the tcp traffic server
+-    killall_tcp_traffic
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   do_setup
+-#
+-# Description:
+-#   Setup for the ssh stress tests
+-#   - Assign IP address to the interfaces belong to the specified Link
+-#   - Run a sshd daemon for testing
+-#   - Create keys for password-less login
+-#
+-# Set Values:
+-#   lhost_addr:   IP address of the local host
+-#   rhost_addr:   IP address of the remote host
+-#   rhost_config: ssh_config at the remote host
+-#
+-#-----------------------------------------------------------------------
+-do_setup()
+-{
+-    trap do_cleanup 0
+-
+-    # Get the sshd command with absolute path
+-    SSHD=`which sshd`
+-    if [ x"${SSHD}" = x ]; then
+-	tst_resm TBROK "sshd daemon is not found"
+-	exit $TST_TOTAL
+-    fi
+-
+-    # Kill the tcp traffic server
+-    killall_tcp_traffic
+-
+-    # Initialize the interface
+-    initialize_if lhost ${LINK_NUM}
+-    initialize_if rhost ${LINK_NUM}
+-
+-    # Get the Interface name
+-    lhost_ifname=`get_ifname lhost ${LINK_NUM}`
+-    if [ $? -ne 0 ]; then
+-	tst_resm TBROK "Failed to get the interface name at the local host"
+-	exit $TST_TOTAL
+-    fi
+-
+-    case $IP_VER in
+-	4)
+-	# Set IPv4 address to the interfaces
+-	set_ipv4addr lhost $LINK_NUM ${IPV4_NETWORK} ${LHOST_IPV4_HOST}
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to add any IP address at the local host"
+-	    exit 1
+-	fi
+-	set_ipv4addr rhost $LINK_NUM ${IPV4_NETWORK} ${RHOST_IPV4_HOST}
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to add any IP address at the remote host"
+-	    exit 1
+-	fi
+-
+-	lhost_addr="${IPV4_NETWORK}.${LHOST_IPV4_HOST}"
+-	rhost_addr="${IPV4_NETWORK}.${RHOST_IPV4_HOST}"
+-	check_icmpv4_connectivity $lhost_ifname $rhost_addr
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to ping to $rhost_addr"
+-	    exit 1
+-	fi
+-	;;
+-
+-	6)
+-	# Set IPv6 address to the interfaces
+-	add_ipv6addr lhost $LINK_NUM ${IPV6_NETWORK} ${LHOST_IPV6_HOST}
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to add any IP address at the local host"
+-	    exit 1
+-	fi
+-	add_ipv6addr rhost $LINK_NUM ${IPV6_NETWORK} ${RHOST_IPV6_HOST}
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to add any IP address at the remote host"
+-	    exit 1
+-	fi
+-
+-	lhost_addr="${IPV6_NETWORK}:${LHOST_IPV6_HOST}"
+-	rhost_addr="${IPV6_NETWORK}:${RHOST_IPV6_HOST}"
+-	check_icmpv6_connectivity $lhost_ifname $rhost_addr
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to ping to $rhost_addr"
+-	    exit 1
+-	fi
+-	;;
+-
+-	*)
+-	tst_resm TBROK "Unknown IP version: $IP_VER"
+-	exit 1
+-	;;
+-    esac
+-
+-    #
+-    # Start sshd for testing
+-    #
+-    port=`find_portbundle tcp 1025 1`
+-    if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "No port is available."
+-	exit 1
+-    fi
+-    sshd_dir=`TMPDIR="$SSH_TMPDIR_PARENT" mktemp -d`
+-    cat << EOD > ${sshd_dir}/sshd_config
+-Port $port
+-ListenAddress $lhost_addr
+-PermitRootLogin yes
+-AuthorizedKeysFile ${sshd_dir}/authorized_keys
+-PasswordAuthentication no
+-AllowTcpForwarding yes
+-TCPKeepAlive yes
+-UseDNS no
+-PidFile ${sshd_dir}/sshd.pid
+-EOD
+-
+-
+-    $SSHD -f ${sshd_dir}/sshd_config
+-    if [ $? -ne 0 ]; then
+-	tst_resm TBROK "Failed to run sshd daemon."
+-	exit 1
+-    fi
+-
+-    #
+-    # Generate configuration file and key at the remote host
+-    #
+-    rhost_ssh_dir=`$LTP_RSH $RHOST "mktemp -d -p $SSH_TMPDIR_PARENT"`
+-    ret=`$LTP_RSH $RHOST '( cd '$rhost_ssh_dir' && ssh-keygen -t rsa -N "" -f id_rsa ) >/dev/null 2>&1 ; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	tst_resm TBROK "Failed to generate key."
+-	exit 1
+-    fi
+-
+-    rhost_config=${rhost_ssh_dir}/ssh_config
+-    rmtshell="$LTP_RSH"
+-    echo $LTP_RSH | grep "rsh.*-n" >/dev/null 2>&1
+-    if [ $? -eq 0 ]; then
+-	rmtshell="`echo $LTP_RSH | sed "s/-n//"`"
+-    fi
+-
+-    cat << EOD | $rmtshell $RHOST "cat > $rhost_config"
+-Port $port
+-StrictHostKeyChecking no
+-PasswordAuthentication no
+-UserKnownHostsFile $rhost_ssh_dir/known_hosts
+-IdentityFile $rhost_ssh_dir/id_rsa
+-EOD
+-    $LTP_RSH $RHOST "cd $rhost_ssh_dir && cat id_rsa.pub" > ${sshd_dir}/authorized_keys
+-    $LTP_RSH $RHOST "chmod 700 $rhost_ssh_dir ; chmod 600 $rhost_ssh_dir/*"
+-
+-    chmod 700 $sshd_dir
+-    chmod 600 $sshd_dir/*
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   test01
+-#
+-# Description:
+-#   Verify the ssh connectivity is not broken after creating a large
+-#   number of ssh sessions
+-#
+-#-----------------------------------------------------------------------
+-test01()
+-{
+-    TCID=ssh${IP_VER}-stress01
+-    TST_COUNT=1
+-    tst_resm TINFO "Verify the ssh connectivity over IPv${IP_VER} is not broken after creating ${CONNECTION_TOTAL} ssh sessions"
+-
+-    # Script name at the remote host
+-    rmtscript="ssh-stress01-rmt"
+-
+-    # Run the script at the remote host
+-    message_file=`mktemp -p $TMPDIR`
+-    not_run_rmtscript=true
+-    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
+-	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
+-	if [ $ret -eq 0 ]; then
+-	    not_run_rmtscript=false
+-	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $IP_VER $lhost_addr $rhost_config $CONNECTION_TOTAL" > $message_file
+-	    break
+-	fi
+-    done
+-    if $not_run_rmtscript ; then
+-	tst_resm TBROK "Failed to run the test script at the remote host"
+-	rm -f $message_file
+-	exit 1
+-    fi
+-
+-    if [ -s $message_file ]; then
+-	tst_resm TFAIL "`cat $message_file`"
+-	rm -f $message_file
+-	return 1
+-    else
+-	tst_resm TPASS "Test is finished successfully."
+-	rm -f $message_file
+-	return 0
+-    fi
+-
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   test02
+-#
+-# Description:
+-#   Verify the ssh connectivity is not broken after logged in/out
+-#   by many clients asynchronously for a long time
+-#
+-#-----------------------------------------------------------------------
+-test02()
+-{
+-    TCID=ssh${IP_VER}-stress02
+-    TST_COUNT=2
+-    tst_resm TINFO "Verify the ssh connectivity over IPv${IP_VER} is not broken after logged in/out by many clients asynchronously in ${NS_DURATION}[sec]"
+-    tst_resm TINFO "The number of client is not over $CONNECTION_TOTAL"
+-
+-    # Script name at the remote host
+-    rmtscript="ssh-stress02-rmt"
+-
+-    # Run the script at the remote host
+-    message_file=`mktemp -p $TMPDIR`
+-    not_run_rmtscript=true
+-    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
+-	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
+-	if [ $ret -eq 0 ]; then
+-	    not_run_rmtscript=false
+-	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $IP_VER $lhost_addr $rhost_config $CONNECTION_TOTAL $NS_DURATION" > $message_file
+-	    break
+-	fi
+-    done
+-    if $not_run_rmtscript ; then
+-	tst_resm TBROK "Failed to run the test script at the remote host"
+-	rm -f $message_file
+-	exit 1
+-    fi
+-
+-    if [ -s $message_file ]; then
+-	tst_resm TFAIL "`cat $message_file`"
+-	rm -f $message_file
+-	return 1
+-    else
+-	tst_resm TPASS "Test is finished successfully."
+-	rm -f $message_file
+-	return 0
+-    fi
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   test03
+-#
+-# Description:
+-#   Verify the ssh connectivity is not broken after forwarding TCP traffic
+-#   for a long time
+-#
+-#-----------------------------------------------------------------------
+-test03()
+-{
+-    TCID=ssh${IP_VER}-stress03
+-    TST_COUNT=3
+-    tst_resm TINFO "Verify the ssh connectivity over IPv${IP_VER} is not broken after forwarding TCP traffic in ${NS_DURATION}[sec]"
+-
+-    # Script name at the remote host
+-    rmtscript="ssh-stress03-rmt"
+-
+-    # Run a TCP traffic server
+-    traffic_port=`find_portbundle tcp 1025 1` || exit 1
+-    info_file=`mktemp -p $TMPDIR`
+-    ns-tcpserver -b -f $IP_VER -p $traffic_port -o $info_file
+-    if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "Failed to run a tcp traffic server."
+-	rm -f $info_file
+-	exit 1
+-    fi
+-
+-    while true ; do
+-	if [ -s $info_file ]; then
+-	    break
+-	fi
+-    done
+-
+-    server_pid=`grep PID: $info_file | cut -f 2 -d ' '`
+-    rm -f $info_file
+-
+-    # Run the script at the remote host
+-    message_file=`mktemp -p $TMPDIR`
+-    not_run_rmtscript=true
+-    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
+-	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
+-	if [ $ret -eq 0 ]; then
+-	    not_run_rmtscript=false
+-	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $LTPROOT $IP_VER $lhost_addr $rhost_config $traffic_port $NS_DURATION" > $message_file
+-	    break
+-	fi
+-    done
+-    if $not_run_rmtscript ; then
+-	tst_resm TBROK "Failed to run the test script at the remote host"
+-	rm -f $message_file
+-	exit 1
+-    fi
+-
+-    if [ -s $message_file ]; then
+-	tst_resm TFAIL "`cat $message_file`"
+-	rm -f $message_file
+-	return 1
+-    else
+-	tst_resm TPASS "Test is finished successfully."
+-	rm -f $message_file
+-	return 0
+-    fi
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Main
+-#
+-# Exit Value:
+-#   The number of the failure
+-#
+-#-----------------------------------------------------------------------
+-
+-RC=0
+-do_setup
+-test01 || RC=`expr $RC + 1`
+-test02 || RC=`expr $RC + 1`
+-test03 || RC=`expr $RC + 1`
+-
+-exit $RC
+diff --git a/testcases/network/stress/ssh/ssh6-stress b/testcases/network/stress/ssh/ssh6-stress
+deleted file mode 100644
+index 3096c3e..0000000
+--- a/testcases/network/stress/ssh/ssh6-stress
++++ /dev/null
+@@ -1,47 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   ssh6-stress
+-#
+-# Description:
+-#   This script is the stress test for ssh over IPv6
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# The version of IP
+-IP_VER=6
+-
+-. ssh4-stress
 -- 
-1.9.3
+1.7.1
 
 
 ------------------------------------------------------------------------------
