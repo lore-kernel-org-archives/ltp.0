@@ -1,23 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <lijinyue@huawei.com>) id 1YGOw9-0005R6-IH
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 09:29:25 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YGOw6-0000p7-DV
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 09:29:25 +0000
-Message-ID: <54C8ABA8.9070401@huawei.com>
-Date: Wed, 28 Jan 2015 17:28:08 +0800
-From: Lijinyue <lijinyue@huawei.com>
-MIME-Version: 1.0
-References: <1421656612-15165-1-git-send-email-lijinyue@huawei.com>
-	<54C89C83.7000002@cn.fujitsu.com> <54C8A2A5.1070609@huawei.com>
-	<54C8A6EC.3020006@cn.fujitsu.com>
-In-Reply-To: <54C8A6EC.3020006@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] controllers: disallow attaching kthreadd or
- PF_THREAD_BOUND threads to cgroups on kernel > 3.4.0
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YDDcF-0003I7-1f
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 14:47:43 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YDDcE-0004Jn-3U
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 14:47:43 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t0JElZBK029048
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:36 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	t0JElYSO027030
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:35 GMT
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t0JElYj2010145
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 14:47:34 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 19 Jan 2015 17:49:48 +0300
+Message-Id: <1421678989-28577-3-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1421678989-28577-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1421678989-28577-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 3/4] network/stress/ssh: make use of tcp_fastopen
+	client/server
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,150 +38,104 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
-Cc: ltp-list@lists.sourceforge.net, dingguofu@huawei.com, zhanyongming@huawei.com
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On 2015/1/28 17:07, Wanlong Gao wrote:
-> On 01/28/2015 04:49 PM, Lijinyue wrote:
->> On 2015/1/28 16:23, Wanlong Gao wrote:
->>> On 01/19/2015 04:36 PM, Li Jinyue wrote:
->>>> For kernel commit c4c27fbdda4e8ba87806c415b6d15266b07bce4b,
->>>> disallow attaching kthreadd or PF_THREAD_BOUND threads to cgroups.
->>>>
->>>> So, we kindly avoid to attach these threads in cgroup tests.
->>>>
->>>> Signed-off-by: Li Jinyue <lijinyue@huawei.com>
->>>> ---
->>>>  testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh | 10 ++++++++++
->>>>  1 file changed, 10 insertions(+)
->>>>
->>>> diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
->>>> index 30476bd..30fffb6 100755
->>>> --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
->>>> +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
->>>> @@ -186,6 +186,16 @@ case $attach_operation in
->>>>  	do
->>>>  		cur_pid=`sed -n "$i""p" $TMPFILE`
->>>>  		if [ -e /proc/$cur_pid/ ];then
->>>> +			#For kernel 3.4.0 and higher,kernel disallow attaching kthreadd or
->>>> +			#PF_THREAD_BOUND threads to cgroups.
->>>
->>> I check the current kernel and find that this flag already removed now, please check the following
->>> commit:
->>>
->>> commit 14a40ffccd6163bbcd1d6f32b28a88ffe6149fc6
->>> Author: Tejun Heo <tj@kernel.org>
->>> Date:   Tue Mar 19 13:45:20 2013 -0700
->>>
->>>     sched: replace PF_THREAD_BOUND with PF_NO_SETAFFINITY
->>>     
->>>     PF_THREAD_BOUND was originally used to mark kernel threads which were
->>>     bound to a specific CPU using kthread_bind() and a task with the flag
->>>     set allows cpus_allowed modifications only to itself.  Workqueue is
->>>     currently abusing it to prevent userland from meddling with
->>>     cpus_allowed of workqueue workers.
->>>
->>>
->> Yes,I had also checked this patch. Actually,the PF_THREAD_BOUND had been replaced with PF_NO_SETAFFINITY.
->> However, Kernel still disallow attaching kthreadd or threads with flag 0x04000000 to cgroups.
-> 
-> 
-> I know, I mean you should comment this change at least, because future users may
-> ask, "what's PF_THREAD_BOUND ? I never see this flag".
-> 
-> And as I said, you should also comment that the 0x04000000 is just PF_THREAD_BOUND or PF_NO_SETAFFINITY,
-> because you used it in the following code but others don't know where this magic number come from.
-> 
-> Thanks,
-> Wanlong Gao
-> 
-> 
-Yes, I misunderstand it. Thanks for the advice.^V^
-I'll comment this in the code.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/stress/ssh/ssh-stress       |   13 ++++++-------
+ testcases/network/stress/ssh/ssh-stress03-rmt |    8 ++++----
+ 2 files changed, 10 insertions(+), 11 deletions(-)
 
-Thanks,
-Li Jinyue
->> -#define PF_THREAD_BOUND	0x04000000	/* Thread bound to specific cpu */
->> +#define PF_NO_SETAFFINITY 0x04000000	/* Userland is not allowed to meddle with cpus_allowed */
->>
->> diff --git a/kernel/cgroup.c b/kernel/cgroup.c
->> index a32f943..3852d92 100644
->> --- a/kernel/cgroup.c
->> +++ b/kernel/cgroup.c
->>  <at>  <at>  -2224,11 +2224,11  <at>  <at>  retry_find_task:
->>  		tsk = tsk->group_leader;
->>
->>  	/*
->> -	 * Workqueue threads may acquire PF_THREAD_BOUND and become
->> +	 * Workqueue threads may acquire PF_NO_SETAFFINITY and become
->>  	 * trapped in a cpuset, or RT worker may be born in a cgroup
->>  	 * with no rt_runtime allocated.  Just say no.
->>  	 */
->> -	if (tsk == kthreadd_task || (tsk->flags & PF_THREAD_BOUND)) {
->> +	if (tsk == kthreadd_task || (tsk->flags & PF_NO_SETAFFINITY)) {
->>  		ret = -EINVAL;
->>  		rcu_read_unlock();
->>  		goto out_unlock_cgroup;
->>>> +			#kernel commit: c4c27fbdda4e8ba87806c415b6d15266b07bce4b
->>>> +			tst_kvercmp 3 4 0
->>>> +			if [ $? -ne 0 ]; then
->>>
->>> And where to go if tst_kvercmp failed and return -1?
->> For kernel <3.4, we just attach all tasks to the cgroup as before.
->> "do_echo 1 1 "$cur_pid" /dev/cgroup/subgroup_1/tasks"
->>
->> I had test passed with the v2 patch on kernel 3.10.
->> cgroup_test_fj    1  TPASS  :  case98(function	1 1 1 1 1 3 1 1 1)    PASS
->> /tmp/ltp/ltp/testcases/bin/cgroup_fj_utility.sh: line 497: 31010 Killed                  $TESTROOT/cgroup_fj_proc
->> /tmp/ltp/ltp/testcases/bin/cgroup_fj_utility.sh: line 497: 31012 Killed                  $TESTROOT/cgroup_fj_proc
->> cgroup_test_fj    1  TPASS  :  case99(function	1 1 1 1 1 3 2 1 1)    PASS
->> /tmp/ltp/ltp/testcases/bin/cgroup_fj_function.sh: line 273: 31511 Killed                  $TESTROOT/cgroup_fj_proc
->> /tmp/ltp/ltp/testcases/bin/cgroup_fj_utility.sh: line 497: 31513 Killed                  $TESTROOT/cgroup_fj_proc
->> cgroup_test_fj    1  TPASS  :  case100(function	1 1 1 1 1 3 4 1 1)    PASS
->> /tmp/ltp/ltp/testcases/bin/cgroup_fj_utility.sh: line 497: 32010 Killed
->>
->> Regards,
->> Li Jinyue
->>>
->>>> +				thread_flag=`cat /proc/$cur_pid/stat | awk '{print $9}'`
->>>> +				if [ $cur_pid -eq 2 -o $((${thread_flag}&0x04000000)) -eq 67108864 ];then
->>>
->>> These magic numbers must at least be commented to be understand easily.
->>>
->>> Thanks,
->>> Wanlong Gao
->>>
->>>> +					continue
->>>> +				fi
->>>> +			fi
->>>>  			do_echo 1 1 "$cur_pid" /dev/cgroup/subgroup_1/tasks
->>>>  		fi
->>>>  	done
->>>>
->>>
->>>
->>> .
->>>
->>
->>
->> .
->>
-> 
-> 
-> .
-> 
-
+diff --git a/testcases/network/stress/ssh/ssh-stress b/testcases/network/stress/ssh/ssh-stress
+index 72bef25..d1e37bf 100644
+--- a/testcases/network/stress/ssh/ssh-stress
++++ b/testcases/network/stress/ssh/ssh-stress
+@@ -34,7 +34,7 @@ cleanup()
+ {
+ 	# Stop the ssh daemon
+ 	test -s sshd.pid && kill $(cat sshd.pid)
+-	test "$server_pid" && kill -9 $server_pid > /dev/null 2>&1
++	pkill 'tcp_fastopen$'
+ 	tst_rmdir
+ 	TMPDIR=
+ }
+@@ -44,7 +44,7 @@ setup()
+ 	trap "tst_brkm TBROK 'test interrupted'" INT
+ 
+ 	tst_require_root
+-	tst_check_cmds sshd ssh od
++	tst_check_cmds pkill sshd ssh od
+ 
+ 	ipver=${TST_IPV6:-"4"}
+ 
+@@ -125,16 +125,15 @@ test02()
+ 
+ test03()
+ {
+-	tst_resm TINFO "Forwarding TCP traffic in $NS_DURATION sec"
++	tst_resm TINFO "Forwarding TCP traffic with $NS_TIMES requests"
+ 
+ 	# Run a TCP traffic server
+ 	port=$(tst_get_unused_port ipv${ipver} stream)
+ 
+-	ns-tcpserver -b -f $ipver -p $port -o info_file || \
+-		tst_brkm TBROK "Failed to run a tcp traffic server"
+-	server_pid=$(grep 'PID:' info_file | cut -f 2 -d ' ')
++	tcp_fastopen -R 3 -g $port > tcp_server.log 2>&1 &
++
+ 	tst_rhost_run -s -c "ssh-stress03-rmt $ipver $(tst_ipaddr) \
+-		$rconfig $port $NS_DURATION"
++		$rconfig $port $NS_TIMES"
+ 
+ 	tst_resm TPASS "Test is finished successfully"
+ }
+diff --git a/testcases/network/stress/ssh/ssh-stress03-rmt b/testcases/network/stress/ssh/ssh-stress03-rmt
+index 9dcebe7..a5b7af0 100644
+--- a/testcases/network/stress/ssh/ssh-stress03-rmt
++++ b/testcases/network/stress/ssh/ssh-stress03-rmt
+@@ -27,14 +27,14 @@ TST_TOTAL=1
+ 
+ # Check the arguments
+ if [ $# -ne 5 ]; then
+-	tst_brkm TBROK "Usage: $0 ipver rhost config port duration"
++	tst_brkm TBROK "Usage: $0 ipver rhost config port requests"
+ fi
+ 
+ ip_ver="$1"
+ server_ipaddr="$2"
+ ssh_config="$3"
+ rport="$4"
+-duration="$5"
++requests="$5"
+ 
+ ssh -$ip_ver -F $ssh_config $server_ipaddr \
+ 	"true < /dev/null > /dev/null 2>&1" > /dev/null
+@@ -56,8 +56,8 @@ case $ip_ver in
+ ;;
+ esac
+ 
+-# Start the TCP traffic client
+-ns-tcpclient -S $localhost -p $lport -f $ip_ver -t $duration
++# Start the TCP traffic clients
++tcp_fastopen -r $requests -l -H $localhost -g $lport > /dev/null
+ ret=$?
+ 
+ # Stop the ssh port forwarding
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+http://p.sf.net/sfu/gigenet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
