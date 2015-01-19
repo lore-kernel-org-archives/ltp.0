@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YDnqr-00073t-88
-	for ltp-list@lists.sourceforge.net; Wed, 21 Jan 2015 05:29:13 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YD1vS-0006ka-II
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 02:18:46 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YDnqp-000319-Nj
-	for ltp-list@lists.sourceforge.net; Wed, 21 Jan 2015 05:29:13 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YD1vR-0004GX-32
+	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 02:18:46 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t0J2I0h3020943
+	for <ltp-list@lists.sourceforge.net>; Mon, 19 Jan 2015 10:18:00 +0800
 From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 21 Jan 2015 13:28:11 +0800
-Message-ID: <1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <54B7D920.7050402@oracle.com>
-References: <54B7D920.7050402@oracle.com>
+Date: Mon, 19 Jan 2015 10:17:46 +0800
+Message-ID: <1421633868-14030-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
 Subject: [LTP] [PATCH v2 1/3] rlogin: Cleanup
 List-Id: Linux Test Project General Discussions
@@ -27,8 +29,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
 * Add 'TCID' and 'TST_TOTAL'.
 * Use 'test.sh'.
