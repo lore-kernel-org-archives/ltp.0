@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YG87H-0003MD-Lx
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 15:31:47 +0000
-Date: Tue, 27 Jan 2015 16:31:40 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YDXR4-0000ck-2B
+	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 11:57:30 +0000
+Date: Tue, 20 Jan 2015 12:56:25 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150127153140.GG16759@rei.suse.de>
-References: <1422336738-617-1-git-send-email-liwang@redhat.com>
+Message-ID: <20150120115625.GB11013@rei>
+References: <20150119122310.GA27065@rei>
+	<CA+icZUV53AWik-bS4a3DwgExD26nhCWxJWb-kGN_nAOWsikuLA@mail.gmail.com>
+	<CA+icZUVSnYv3-rh6sBr8vgDsc80Qnr3yK_OZ6AezVHPrDcKXbg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1422336738-617-1-git-send-email-liwang@redhat.com>
-Subject: Re: [LTP] [PATCH] mem/hugeshmat: new case for hugepage leak
-	inspection
+In-Reply-To: <CA+icZUVSnYv3-rh6sBr8vgDsc80Qnr3yK_OZ6AezVHPrDcKXbg@mail.gmail.com>
+Subject: Re: [LTP] The Linux Test Project has been released for JANUARY 2015
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,39 +26,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Sedat Dilek <sedat.dilek@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, libc-alpha@sourceware.org, LKML <linux-kernel@vger.kernel.org>, lwn@lwn.net, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
 
 Hi!
-> +void setup(void)
-> +{
-> +	long mem_total, hpage_size;
-> +
-> +	tst_require_root(NULL);
-> +
-> +	mem_total = read_meminfo("MemTotal:");
-> +	if (mem_total < 2L*1024*1024) {
-> +		tst_resm(TINFO, "Test requires more than 2GB of RAM");
-> +		tst_exit();
+> > I will check my "iniza" setup of Linux v3.19-rc5 the "(runltp-)lite" way.
+> >
+> 
+> Attached are the runltp-lite result and my kernel-config.
+> 
+> I see a lot of "unexpected" failures, can you comment on them?
 
-This should be:
-
-                tst_brmk(TCONF, "Test requires more than 2GB of RAM");
-
-As I said in the last mail.
-
-Otherwise it looks fine.
+Most of the failures comes from EBUSY while trying to umount
+filesystems. Do you have gvfsd-trash running? That thing is known to
+probe newly mounted filesystems preventing them from being unmounted for
+a certain amount of time.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+http://p.sf.net/sfu/gigenet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
