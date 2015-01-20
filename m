@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YAVDs-0006UN-PJ
-	for ltp-list@lists.sourceforge.net; Mon, 12 Jan 2015 02:59:20 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YAVDr-0007YS-70
-	for ltp-list@lists.sourceforge.net; Mon, 12 Jan 2015 02:59:20 +0000
-Message-ID: <1421031479.13049.15.camel@G08JYZSD130126.localdomain>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Mon, 12 Jan 2015 10:57:59 +0800
-In-Reply-To: <1420885229-25636-1-git-send-email-jstancek@redhat.com>
-References: <1420885229-25636-1-git-send-email-jstancek@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwan@redhat.com>) id 1YDUd0-000161-GP
+	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 08:57:38 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YDUcy-0001OM-SK
+	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 08:57:38 +0000
+Date: Tue, 20 Jan 2015 03:57:29 -0500 (EST)
+From: Li Wang <liwang@redhat.com>
+Message-ID: <1679086070.9165707.1421744249957.JavaMail.zimbra@redhat.com>
+In-Reply-To: <671699407.9161653.1421743558663.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] skip MSG_ERRQUEUE+tcp test on kernels < 3.17
+Subject: [LTP] fanotify06 always failed on RHEL7
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,99 +26,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: jack@suse.cz
 Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi Jack & all,
 
-On Sat, 2015-01-10 at 11:20 +0100, Jan Stancek wrote:
-> MSG_ERRQUEUE support for tcp has been added in 3.17. [1][2][3]
-> Skip testing this combination on prior kernels.
-> 
-> [1] https://lkml.org/lkml/2006/9/18/182
-> [2] f4713a3dfad045d46afcb9c2a7d0bba288920ed4
-> [3] 4ed2d765dfaccff5ebdac68e2064b59125033a3b
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/recv/recv01.c         |    9 ++++++++-
->  testcases/kernel/syscalls/recvfrom/recvfrom01.c |    9 ++++++++-
->  testcases/kernel/syscalls/recvmsg/recvmsg01.c   |    9 ++++++++-
->  3 files changed, 24 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/recv/recv01.c b/testcases/kernel/syscalls/recv/recv01.c
-> index 3dc7a91..ad5f9f8 100644
-> --- a/testcases/kernel/syscalls/recv/recv01.c
-> +++ b/testcases/kernel/syscalls/recv/recv01.c
-> @@ -130,8 +130,15 @@ int main(int argc, char *argv[])
->  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
->  		tst_count = 0;
->  		for (testno = 0; testno < TST_TOTAL; ++testno) {
-> -			tdat[testno].setup();
-> +			if ((tst_kvercmp(3, 17, 0) < 0)
-> +			    && (tdat[testno].flags & MSG_ERRQUEUE)
-> +			    && (tdat[testno].type & SOCK_STREAM)) {
-> +				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
+fanotify06 always failed on RHEL7-GA as below. When I make some change of the codes flow, Test Pass All. 
+Could you take a look at my unsure patch?
 
-I think TCONF should be more suitable.
-Others looks good to me.
+<<<test_start>>>
+tag=fanotify06 stime=1421726003
+cmdline="fanotify06"
+contacts=""
+analysis=exit
+<<<test_output>>>
+fanotify06    1  TPASS  :  group 0 get event: mask 2 pid=14922 fd=15
+fanotify06    2  TPASS  :  group 1 get event: mask 2 pid=14922 fd=15
+fanotify06    3  TPASS  :  group 2 get event: mask 2 pid=14922 fd=15
+fanotify06    4  TFAIL  :  fanotify06.c:217: group 3 got event
+fanotify06    5  TFAIL  :  fanotify06.c:217: group 4 got event
+fanotify06    6  TFAIL  :  fanotify06.c:217: group 5 got event
+fanotify06    7  TPASS  :  group 6 got no event
+fanotify06    8  TPASS  :  group 7 got no event
+fanotify06    9  TPASS  :  group 8 got no event
 
-Thanks,
-Zeng
+---------
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanot
+index 8dcd68a..63519f6 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify06.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
+@@ -93,7 +93,8 @@ static void create_fanotify_groups(void)
+                                                 "fanotify_init failed");
+                                }
+                        }
+-                       /* Add mount mark for each group */
++                       /* Add mount mark for group with lower priority */
++                       if (p == 0) {
+                        ret = fanotify_mark(fd_notify[p][i],
+                                            FAN_MARK_ADD | FAN_MARK_MOUNT,
+                                            FAN_MODIFY,
+@@ -104,9 +105,9 @@ static void create_fanotify_groups(void)
+                                         "FAN_MARK_MOUNT, FAN_MODIFY, AT_FDCWD,"
+                                         " '.') failed", fd_notify[p][i]);
+                        }
++                       continue;
++                       }
+                        /* Add ignore mark for groups with higher priority */
+-                       if (p == 0)
+-                               continue;
+                        ret = fanotify_mark(fd_notify[p][i],
+                                            FAN_MARK_ADD |
+                                            FAN_MARK_IGNORED_MASK |
 
-> +						"it's supported from 3.17");
-> +				continue;
-> +			}
->  
-> +			tdat[testno].setup();
->  			TEST(recv(s, tdat[testno].buf, tdat[testno].buflen,
->  				  tdat[testno].flags));
->  			if (TEST_RETURN > 0)
-> diff --git a/testcases/kernel/syscalls/recvfrom/recvfrom01.c b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-> index 8d0a2ee..843dfb1 100644
-> --- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-> +++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-> @@ -152,8 +152,15 @@ int main(int argc, char *argv[])
->  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
->  		tst_count = 0;
->  		for (testno = 0; testno < TST_TOTAL; ++testno) {
-> -			tdat[testno].setup();
-> +			if ((tst_kvercmp(3, 17, 0) < 0)
-> +			    && (tdat[testno].flags & MSG_ERRQUEUE)
-> +			    && (tdat[testno].type & SOCK_STREAM)) {
-> +				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
-> +						"it's supported from 3.17");
-> +				continue;
-> +			}
->  
-> +			tdat[testno].setup();
->  			TEST(recvfrom(s, tdat[testno].buf, tdat[testno].buflen,
->  				      tdat[testno].flags, tdat[testno].from,
->  				      tdat[testno].salen));
-> diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg01.c b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-> index 42d4968..1216935 100644
-> --- a/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-> +++ b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-> @@ -208,10 +208,17 @@ int main(int argc, char *argv[])
->  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
->  		tst_count = 0;
->  		for (testno = 0; testno < TST_TOTAL; ++testno) {
-> +			if ((tst_kvercmp(3, 17, 0) < 0)
-> +			    && (tdat[testno].flags & MSG_ERRQUEUE)
-> +			    && (tdat[testno].type & SOCK_STREAM)) {
-> +				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
-> +						"it's supported from 3.17");
-> +				continue;
-> +			}
-> +
->  			tdat[testno].setup();
->  
->  			/* setup common to all tests */
-> -
->  			iov[0].iov_base = tdat[testno].buf;
->  			iov[0].iov_len = tdat[testno].buflen;
->  			msgdat.msg_name = tdat[testno].from;
 
+-- 
+Regards, 
+Li Wang 
+Email: liwang@redhat.com 
 
 
 ------------------------------------------------------------------------------
@@ -127,7 +90,7 @@ New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
 GigeNET is offering a free month of service with a new server in Ashburn.
 Choose from 2 high performing configs, both with 100TB of bandwidth.
 Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-vanity: www.gigenet.com
+http://p.sf.net/sfu/gigenet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
