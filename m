@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YGRdl-00019a-H9
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 12:22:37 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YGRdh-0002Gc-83
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 12:22:37 +0000
-Message-ID: <54C8D513.1060202@oracle.com>
-Date: Wed, 28 Jan 2015 15:24:51 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YDZ4K-00064P-Ia
+	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 13:42:08 +0000
+Date: Tue, 20 Jan 2015 14:41:10 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150120134110.GA15178@rei>
+References: <20150119155156.GA30735@rei>
+	<1421742761-10192-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<1421742761-10192-12-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1422016502-24943-1-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1422016502-24943-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH v2] lib/test_net.sh: fix 'tst_rhost_run -s' when
- errors occur
+Content-Disposition: inline
+In-Reply-To: <1421742761-10192-12-git-send-email-zenglg.jy@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 12/12] smack_set_socket_labels.c: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,30 +26,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-On 01/23/2015 03:35 PM, Alexey Kodanev wrote:
-> Don't redirect stderr to /dev/null, print it in TBROK message.
->
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->   testcases/lib/test_net.sh |   15 +++++++++------
->   1 files changed, 9 insertions(+), 6 deletions(-)
+>  int main(int argc, char *argv[])
+>  {
+> -	char message[256];
+>  	char *anin = "security.SMACK64IPIN";
+>  	char *anout = "security.SMACK64IPOUT";
+>  	char *annot = "security.SMACK64IPNOT";
+> @@ -40,35 +46,36 @@ int main(int argc, char *argv[])
+>  	char *avnot = "TheBadValue";
+>  	int sock;
+>  	int rc;
+> +	char buf[256];
 
-Patch pushed.
+We may also put the parse_opts() here and do the TEST_LOOPING(), feel
+free to send follow up patch.
 
-Best regards,
-Alexey
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
+GigeNET is offering a free month of service with a new server in Ashburn.
+Choose from 2 high performing configs, both with 100TB of bandwidth.
+Higher redundancy.Lower latency.Increased capacity.Completely compliant.
+http://p.sf.net/sfu/gigenet
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
