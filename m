@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YEais-0002y6-5H
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jan 2015 09:40:14 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YEaip-0004ve-BJ
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jan 2015 09:40:14 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t0N9dNGS006574
-	for <ltp-list@lists.sourceforge.net>; Fri, 23 Jan 2015 17:39:24 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 23 Jan 2015 17:36:06 +0800
-Message-ID: <1422005772-19099-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YDsfJ-0005A4-TQ
+	for ltp-list@lists.sourceforge.net; Wed, 21 Jan 2015 10:37:37 +0000
+Date: Wed, 21 Jan 2015 11:36:40 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150121103640.GA23155@rei>
+References: <8593d893c637eadbac85711428be570e2636ef38.1421761305.git.jstancek@redhat.com>
+	<20150120144403.GC15452@rei>
+	<1705158126.11277852.1421766771922.JavaMail.zimbra@redhat.com>
+	<54BF77F1.4050007@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/7] lib6/asapi_01.c: cleanup
+Content-Disposition: inline
+In-Reply-To: <54BF77F1.4050007@redhat.com>
+Subject: Re: [LTP] [PATCH] runltp: export initialized LTP_DEV
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,521 +27,92 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, liwan@redhat.com
 
-* Remove useless comments.
+Hi!
+> So, it looks like this is not bug after all, but udev rule that keeps
+> firing "blkid":
+> 
+> /lib/udev/rules.d/60-persistent-storage.rules:84
+>   KERNEL!="xvd*|sr*", IMPORT{program}="/sbin/blkid -o udev -p $tempnode"
+>     /sbin/blkid -o udev -p /dev/loop0
+> 
+> If attach/detach happens too quickly, blkid might still hold reference
+> and loop_clr_fd() then complains with EBUSY:
+>         if (lo->lo_refcnt > 1)  /* we needed one fd for the ioctl */
+>                 return -EBUSY;
+>
+> The only idea I have is to sleep/retry for a short period - see attached patch.
 
-* Modify the format of ftab[].
+Sounds reasonable to me.
 
-* Move the test body from main() to do_test().
+I'm thinking of fixing the umount problem with the gvfsd-trash the same
+way.
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- testcases/network/lib6/asapi_01.c | 438 ++++++++++++++++----------------------
- 1 file changed, 188 insertions(+), 250 deletions(-)
+> From 0ae0f16500cc48795287076edb2b725025466a0f Mon Sep 17 00:00:00 2001
+> Message-Id: <0ae0f16500cc48795287076edb2b725025466a0f.1421834144.git.jstancek@redhat.com>
+> From: Jan Stancek <jstancek@redhat.com>
+> Date: Tue, 20 Jan 2015 14:35:49 +0100
+> Subject: [PATCH] tst_device: sleep/retry if LOOP_CLR_FD fails with EBUSY
+> 
+> Rapid succession of device attach/detach may lead to EBUSY
+> from ioctl(LOOP_CLR_FD), because udev rules might still be
+> running.
+> 
+> Sleep/retry for a short period if LOOP_CLR_FD fails with EBUSY.
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  lib/tst_device.c |   25 ++++++++++++++++++-------
+>  1 files changed, 18 insertions(+), 7 deletions(-)
+> 
+> diff --git a/lib/tst_device.c b/lib/tst_device.c
+> index 6dff1ba..edf0bb4 100644
+> --- a/lib/tst_device.c
+> +++ b/lib/tst_device.c
+> @@ -144,19 +144,30 @@ static void attach_device(void (*cleanup_fn)(void),
+>  
+>  static void detach_device(void (*cleanup_fn)(void), const char *dev)
+>  {
+> -	int dev_fd, err;
+> +	int dev_fd, err, i;
+>  
+>  	dev_fd = SAFE_OPEN(cleanup_fn, dev, O_RDONLY);
+>  
+> -	if (ioctl(dev_fd, LOOP_CLR_FD, 0) < 0) {
+> -		err = errno;
+> -		close(dev_fd);
+> -		tst_brkm(TBROK, cleanup_fn,
+> -		         "ioctl(%s, LOOP_CLR_FD, 0) failed: %s",
+> -			 dev, tst_strerrno(err));
+> +	/* keep trying to clear LOOPDEV fd if EBUSY, a quick succession
+> +	 * of attach/detach might not give udev enough time to complete */
+> +	for (i = 0; i < 40; i++) {
+> +		if (ioctl(dev_fd, LOOP_CLR_FD, 0) == 0) {
+> +			close(dev_fd);
+> +			return;
+> +		}
+> +		if (errno != EBUSY) {
+> +			err = errno;
+> +			close(dev_fd);
+> +			tst_brkm(TBROK, cleanup_fn,
+> +				"ioctl(%s, LOOP_CLR_FD, 0) failed: %s",
+> +				dev, tst_strerrno(err));
+> +		}
+> +		usleep(50000);
+>  	}
+>  
+>  	close(dev_fd);
+> +	tst_brkm(TBROK, cleanup_fn,
+> +		"ioctl(%s, LOOP_CLR_FD, 0) EBUSY for too long",	dev);
+>  }
 
-diff --git a/testcases/network/lib6/asapi_01.c b/testcases/network/lib6/asapi_01.c
-index 8d1fed8..1de4c78 100644
---- a/testcases/network/lib6/asapi_01.c
-+++ b/testcases/network/lib6/asapi_01.c
-@@ -1,6 +1,7 @@
- /*
-  *
-  *   Copyright (c) International Business Machines  Corp., 2001
-+ *   Author: David L Stevens
-  *
-  *   This program is free software;  you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -13,26 +14,13 @@
-  *   the GNU General Public License for more details.
-  *
-  *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *   along with this program;  if not, write to the Free Software Foundation,
-+ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
--
- /*
-- * Test Name: asapi_01
-- *
-- * Test Description:
-- *  These tests are for the "Advanced Sockets API" (RFC 3542)
-- *  Verify that in6 and sockaddr fields are present.
-- *
-- * Usage:  <for command-line>
-- *  asapi_01
-- *
-- * HISTORY
-- *	01/2005 written by David L Stevens
-- *
-- * RESTRICTIONS:
-- *  None.
-- *
-+ *   Description:
-+ *     These tests are for the "Advanced Sockets API" (RFC 3542)
-+ *     Verify that in6 and sockaddr fields are present.
-  */
- 
- #include <stdio.h>
-@@ -47,13 +35,9 @@
- #include "usctest.h"
- #include "runcc.h"
- 
--char *TCID = "asapi_01";	/* Test program identifier.    */
--
--void setup(void), cleanup(void);
--
- enum ttype { EXISTS, ALIAS, VALUE };
- 
--struct ftent {
-+static struct ftent {
- 	char *ft_tname;		/* test name */
- 	int ft_type;		/* test type */
- 	char *ft_incl;		/* include file list */
-@@ -67,258 +51,212 @@ struct ftent {
- #define ft_value	ftun.fu_value
- #define ft_dname	ftun.fu_dname
- } ftab[] = {
--/* section 2.1 structure & field definitions */
--	{
--		"ip6_hdr un1_flow", EXISTS, IP6_H, "ip6_hdr",
--		    "ip6_ctlun.ip6_un1.ip6_un1_flow", "0", {
--	"4"}}, {
--		"ip6_hdr ip6_flow", ALIAS, IP6_H, "ip6_hdr",
--		    "ip6_ctlun.ip6_un1.ip6_un1_flow", NULL, {
--	"ip6_flow"}}, {
--		"ip6_hdr un1_plen", EXISTS, IP6_H, "ip6_hdr",
--		    "ip6_ctlun.ip6_un1.ip6_un1_plen", "4", {
--	"2"}}, {
--		"ip6_hdr ip6_plen", ALIAS, IP6_H, "ip6_hdr",
--		    "ip6_ctlun.ip6_un1.ip6_un1_plen", "4", {
--	"ip6_plen"}}, {
--		"ip6_hdr un1_nxt", EXISTS, IP6_H, "ip6_hdr",
--		    "ip6_ctlun.ip6_un1.ip6_un1_nxt", "6", {
--	"1"}}, {
--		"ip6_hdr ip6_nxt", ALIAS, IP6_H, "ip6_hdr",
--		    "ip6_ctlun.ip6_un1.ip6_un1_nxt", NULL, {
--	"ip6_nxt"}}, {
--		"ip6_hdr un1_hlim", EXISTS, IP6_H, "ip6_hdr",
--		    "ip6_ctlun.ip6_un1.ip6_un1_hlim", "7", {
--	"1"}}, {
--		"ip6_hdr ip6_hlim", ALIAS, IP6_H, "ip6_hdr",
--		    "ip6_ctlun.ip6_un1.ip6_un1_hlim", NULL, {
--	"ip6_hlim"}}, {
--		"ip6_hdr un1_vfc", EXISTS, IP6_H, "ip6_hdr",
--		    "ip6_ctlun.ip6_un2_vfc", "0", {
--	"1"}}, {
--		"ip6_hdr ip6_src", EXISTS, IP6_H, "ip6_hdr", "ip6_src",
--		    "sizeof(struct ip6_hdrctl)", {
--	"sizeof(struct in6_addr)"}}, {
--		"ip6_hdr ip6_dst", EXISTS, IP6_H, "ip6_hdr", "ip6_dst",
--		    "(sizeof(struct ip6_hdrctl)+sizeof(struct in6_addr))", {
--	"sizeof(struct in6_addr)"}},
--/* section 2.2 structure and field definitions */
--	{
--		"IPPROTO_HOPOPTS", VALUE, IN_H, "IPPROTO_HOPOPTS", NULL, NULL, {
--	"0"}}, {
--		"IPPROTO_IPV6", VALUE, IN_H, "IPPROTO_IPV6", NULL, NULL, {
--	"41"}}, {
--		"IPPROTO_ROUTING", VALUE, IN_H, "IPPROTO_ROUTING", NULL, NULL, {
--	"43"}}, {
--		"IPPROTO_FRAGMENT", VALUE, IN_H, "IPPROTO_FRAGMENT", NULL, NULL, {
--	"44"}}, {
--		"IPPROTO_ESP", VALUE, IN_H, "IPPROTO_ESP", NULL, NULL, {
--	"50"}}, {
--		"IPPROTO_AH", VALUE, IN_H, "IPPROTO_AH", NULL, NULL, {
--	"51"}}, {
--		"IPPROTO_ICMPV6", VALUE, IN_H, "IPPROTO_ICMPV6", NULL, NULL, {
--	"58"}}, {
--		"IPPROTO_NONE", VALUE, IN_H, "IPPROTO_NONE", NULL, NULL, {
--	"59"}}, {
--		"IPPROTO_DSTOPTS", VALUE, IN_H, "IPPROTO_DSTOPTS", NULL, NULL, {
--	"60"}},
--/* ip6_hbh */
--	{
--		"ip6_hbh ip6h_nxt", EXISTS, IP6_H, "ip6_hbh", "ip6h_nxt", "0", {
--	"1"}}, {
--		"ip6_hbh ip6h_nxt", EXISTS, IP6_H, "ip6_hbh", "ip6h_len", "1", {
--	"1"}},
--/* ip6_dest */
--	{
--		"ip6_dest ip6d_nxt", EXISTS, IP6_H, "ip6_dest", "ip6d_nxt", "0", {
--	"1"}}, {
--		"ip6_dest ip6d_nxt", EXISTS, IP6_H, "ip6_dest", "ip6d_len", "1", {
--	"1"}},
--/* ip6_rthdr0 */
--	{
--		"ip6_rthdr0 ip6r0_nxt", EXISTS, IP6_H, "ip6_rthdr0",
--		    "ip6r0_nxt", "0", {
--	"1"}}, {
--		"ip6_rthdr0 ip6r0_len", EXISTS, IP6_H, "ip6_rthdr0",
--		    "ip6r0_len", "1", {
--	"1"}}, {
--		"ip6_rthdr0 ip6r0_type", EXISTS, IP6_H, "ip6_rthdr0",
--		    "ip6r0_type", "2", {
--	"1"}}, {
--		"ip6_rthdr0 ip6r0_segleft", EXISTS, IP6_H, "ip6_rthdr0",
--		    "ip6r0_segleft", "3", {
--	"1"}}, {
--		"ip6_rthdr0 ip6r0_reserved", EXISTS, IP6_H, "ip6_rthdr0",
--		    "ip6r0_reserved", "4", {
--	"1"}},
--/* ip6_frag */
--	{
--		"ip6_frag ip6f_nxt", EXISTS, IP6_H, "ip6_frag", "ip6f_nxt", "0", {
--	"1"}}, {
--		"ip6_frag ip6f_reserved", EXISTS, IP6_H, "ip6_frag",
--		    "ip6f_reserved", "1", {
--	"1"}}, {
--		"ip6_frag ip6f_offlg", EXISTS, IP6_H, "ip6_frag",
--		    "ip6f_offlg", "2", {
--	"2"}}, {
--		"ip6_frag ip6f_ident", EXISTS, IP6_H, "ip6_frag",
--		    "ip6f_ident", "4", {
--	"4"}}, {
--		"IP6F_OFF_MASK", VALUE, IP6_H, "IP6F_OFF_MASK", NULL, NULL, {
--	"htons(0xfff8)"}}, {
--		"IP6F_RESERVED_MASK", VALUE, IP6_H, "IP6F_RESERVED_MASK",
--		    NULL, NULL, {
--	"htons(0x0006)"}}, {
--		"IP6F_MORE_FRAG", VALUE, IP6_H, "IP6F_MORE_FRAG", NULL, NULL, {
--	"htons(0x0001)"}}, {
--		"IP6OPT_TYPE", VALUE, IP6_H, "IP6OPT_TYPE(0xff)", NULL, NULL, {
--	"0xc0"}}, {
--		"IP6OPT_TYPE_SKIP", VALUE, IP6_H, "IP6OPT_TYPE_SKIP",
--		    NULL, NULL, {
--	"0x00"}}, {
--		"IP6OPT_TYPE_DISCARD", VALUE, IP6_H, "IP6OPT_TYPE_DISCARD",
--		    NULL, NULL, {
--	"0x40"}}, {
--		"IP6OPT_TYPE_FORCEICMP", VALUE, IP6_H, "IP6OPT_TYPE_FORCEICMP",
--		    NULL, NULL, {
--	"0x80"}}, {
--		"IP6OPT_TYPE_ICMP", VALUE, IP6_H, "IP6OPT_TYPE_ICMP",
--		    NULL, NULL, {
--	"0xc0"}}, {
--		"IP6OPT_TYPE_MUTABLE", VALUE, IP6_H, "IP6OPT_TYPE_MUTABLE",
--		    NULL, NULL, {
--	"0x20"}}, {
--		"IP6OPT_PAD1", VALUE, IP6_H, "IP6OPT_PAD1", NULL, NULL, {
--	"0x00"}}, {
--		"IP6OPT_PADN", VALUE, IP6_H, "IP6OPT_PADN", NULL, NULL, {
--	"0x01"}}, {
--		"IP6OPT_JUMBO", VALUE, IP6_H, "IP6OPT_JUMBO", NULL, NULL, {
--	"0xc2"}}, {
--		"IP6OPT_NSAP_ADDR", VALUE, IP6_H, "IP6OPT_NSAP_ADDR",
--		    NULL, NULL, {
--	"0xc3"}}, {
--		"IP6OPT_TUNNEL_LIMIT", VALUE, IP6_H, "IP6OPT_TUNNEL_LIMIT",
--		    NULL, NULL, {
--	"0x04"}}, {
--		"IP6OPT_ROUTER_ALERT", VALUE, IP6_H, "IP6OPT_ROUTER_ALERT",
--		    NULL, NULL, {
--	"0x05"}},
--/* ip6_opt_jumbo */
--	{
--		"ip6_opt_jumbo ip6oj_type", EXISTS, IP6_H, "ip6_opt_jumbo",
--		    "ip6oj_type", "0", {
--	"1"}}, {
--		"ip6_opt_jumbo ip6oj_len", EXISTS, IP6_H, "ip6_opt_jumbo",
--		    "ip6oj_len", "1", {
--	"1"}}, {
--		"ip6_opt_jumbo ip6oj_jumbo_len element", EXISTS, IP6_H,
--		    "ip6_opt_jumbo", "ip6oj_jumbo_len[0]", "2", {
--	"1"}}, {
--		"ip6_opt_jumbo ip6oj_jumbo_len array", EXISTS, IP6_H,
--		    "ip6_opt_jumbo", "ip6oj_jumbo_len", "2", {
--	"4"}},
--/* ip6_opt_nsap */
--	{
--		"ip6_opt_nsap ip6on_type", EXISTS, IP6_H, "ip6_opt_nsap",
--		    "ip6on_type", "0", {
--	"1"}}, {
--		"ip6_opt_nsap ip6on_len", EXISTS, IP6_H, "ip6_opt_nsap",
--		    "ip6on_len", "1", {
--	"1"}}, {
--		"ip6_opt_nsap ip6on_src_nsap_len", EXISTS, IP6_H,
--		    "ip6_opt_nsap", "ip6on_src_nsap_len", "2", {
--	"1"}}, {
--		"ip6_opt_nsap ip6on_dst_nsap_len", EXISTS, IP6_H,
--		    "ip6_opt_nsap", "ip6on_dst_nsap_len", "3", {
--	"1"}},
--/* ip6_opt_tunnel */
--	{
--		"ip6_opt_tunnel ip6ot_type", EXISTS, IP6_H, "ip6_opt_tunnel",
--		    "ip6ot_type", "0", {
--	"1"}}, {
--		"ip6_opt_tunnel ip6ot_len", EXISTS, IP6_H, "ip6_opt_tunnel",
--		    "ip6ot_len", "1", {
--	"1"}}, {
--		"ip6_opt_tunnel ip6ot_encap_limit", EXISTS, IP6_H,
--		    "ip6_opt_tunnel", "ip6ot_encap_limit", "2", {
--	"1"}},
--/* ip6_opt_router */
--	{
--		"ip6_opt_router ip6or_type", EXISTS, IP6_H, "ip6_opt_router",
--		    "ip6or_type", "0", {
--	"1"}}, {
--		"ip6_opt_router ip6or_len", EXISTS, IP6_H, "ip6_opt_router",
--		    "ip6or_len", "1", {
--	"1"}}, {
--		"ip6_opt_router ip6or_value element", EXISTS, IP6_H,
--		    "ip6_opt_router", "ip6or_value[0]", "2", {
--	"1"}}, {
--		"ip6_opt_router ip6or_value array", EXISTS, IP6_H,
--		    "ip6_opt_router", "ip6or_value", "2", {
--	"2"}},
--/* IP6_ALERT_* definitions */
--	{
--		"IP6_ALERT_MLD", VALUE, IP6_H, "IP6_ALERT_MLD", NULL, NULL, {
--	"0"}}, {
--		"IP6_ALERT_RSVP", VALUE, IP6_H, "IP6_ALERT_RSVP", NULL, NULL, {
--	"htons(1)"}}, {
--		"IP6_ALERT_AN", VALUE, IP6_H, "IP6_ALERT_AN", NULL, NULL, {
--"htons(2)"}},};
-+	/* section 2.1 structure & field definitions */
-+	{ "ip6_hdr un1_flow", EXISTS, IP6_H, "ip6_hdr",
-+		"ip6_ctlun.ip6_un1.ip6_un1_flow", "0", {"4"} },
-+	{ "ip6_hdr ip6_flow", ALIAS, IP6_H, "ip6_hdr",
-+		"ip6_ctlun.ip6_un1.ip6_un1_flow", NULL, {"ip6_flow"} },
-+	{ "ip6_hdr un1_plen", EXISTS, IP6_H, "ip6_hdr",
-+		"ip6_ctlun.ip6_un1.ip6_un1_plen", "4", {"2"} },
-+	{ "ip6_hdr ip6_plen", ALIAS, IP6_H, "ip6_hdr",
-+		"ip6_ctlun.ip6_un1.ip6_un1_plen", "4", {"ip6_plen"} },
-+	{ "ip6_hdr un1_nxt", EXISTS, IP6_H, "ip6_hdr",
-+		"ip6_ctlun.ip6_un1.ip6_un1_nxt", "6", {"1"} },
-+	{ "ip6_hdr ip6_nxt", ALIAS, IP6_H, "ip6_hdr",
-+		"ip6_ctlun.ip6_un1.ip6_un1_nxt", NULL, {"ip6_nxt"} },
-+	{ "ip6_hdr un1_hlim", EXISTS, IP6_H, "ip6_hdr",
-+		"ip6_ctlun.ip6_un1.ip6_un1_hlim", "7", {"1"} },
-+	{ "ip6_hdr ip6_hlim", ALIAS, IP6_H, "ip6_hdr",
-+		"ip6_ctlun.ip6_un1.ip6_un1_hlim", NULL, {"ip6_hlim"} },
-+	{ "ip6_hdr un1_vfc", EXISTS, IP6_H, "ip6_hdr",
-+		"ip6_ctlun.ip6_un2_vfc", "0", {"1"} },
-+	{ "ip6_hdr ip6_src", EXISTS, IP6_H, "ip6_hdr",
-+		"ip6_src", "sizeof(struct ip6_hdrctl)",
-+		{"sizeof(struct in6_addr)"} },
-+	{ "ip6_hdr ip6_dst", EXISTS, IP6_H, "ip6_hdr", "ip6_dst",
-+		"(sizeof(struct ip6_hdrctl)+sizeof(struct in6_addr))",
-+		{"sizeof(struct in6_addr)"} },
-+	/* section 2.2 structure and field definitions */
-+	{ "IPPROTO_HOPOPTS", VALUE, IN_H, "IPPROTO_HOPOPTS",
-+		NULL, NULL, {"0"} },
-+	{ "IPPROTO_IPV6", VALUE, IN_H, "IPPROTO_IPV6",
-+		NULL, NULL, {"41"} },
-+	{ "IPPROTO_ROUTING", VALUE, IN_H, "IPPROTO_ROUTING",
-+		NULL, NULL, {"43"} },
-+	{ "IPPROTO_FRAGMENT", VALUE, IN_H, "IPPROTO_FRAGMENT",
-+		NULL, NULL, {"44"} },
-+	{ "IPPROTO_ESP", VALUE, IN_H, "IPPROTO_ESP",
-+		NULL, NULL, {"50"} },
-+	{ "IPPROTO_AH", VALUE, IN_H, "IPPROTO_AH",
-+		NULL, NULL, {"51"} },
-+	{ "IPPROTO_ICMPV6", VALUE, IN_H, "IPPROTO_ICMPV6",
-+		NULL, NULL, {"58"} },
-+	{ "IPPROTO_NONE", VALUE, IN_H, "IPPROTO_NONE",
-+		NULL, NULL, {"59"} },
-+	{ "IPPROTO_DSTOPTS", VALUE, IN_H, "IPPROTO_DSTOPTS",
-+		NULL, NULL, {"60"} },
-+	/* ip6_hbh */
-+	{ "ip6_hbh ip6h_nxt", EXISTS, IP6_H, "ip6_hbh",
-+		"ip6h_nxt", "0", {"1"} },
-+	{ "ip6_hbh ip6h_nxt", EXISTS, IP6_H, "ip6_hbh",
-+		"ip6h_len", "1", {"1"} },
-+	/* ip6_dest */
-+	{ "ip6_dest ip6d_nxt", EXISTS, IP6_H, "ip6_dest",
-+		"ip6d_nxt", "0", {"1"} },
-+	{ "ip6_dest ip6d_nxt", EXISTS, IP6_H, "ip6_dest",
-+		"ip6d_len", "1", {"1"} },
-+	/* ip6_rthdr0 */
-+	{ "ip6_rthdr0 ip6r0_nxt", EXISTS, IP6_H, "ip6_rthdr0",
-+		"ip6r0_nxt", "0", {"1"} },
-+	{ "ip6_rthdr0 ip6r0_len", EXISTS, IP6_H, "ip6_rthdr0",
-+		"ip6r0_len", "1", {"1"} },
-+	{ "ip6_rthdr0 ip6r0_type", EXISTS, IP6_H, "ip6_rthdr0",
-+		"ip6r0_type", "2", {"1"} },
-+	{ "ip6_rthdr0 ip6r0_segleft", EXISTS, IP6_H, "ip6_rthdr0",
-+		"ip6r0_segleft", "3", {"1"} },
-+	{ "ip6_rthdr0 ip6r0_reserved", EXISTS, IP6_H, "ip6_rthdr0",
-+		"ip6r0_reserved", "4", {"1"} },
-+	/* ip6_frag */
-+	{ "ip6_frag ip6f_nxt", EXISTS, IP6_H, "ip6_frag",
-+		"ip6f_nxt", "0", {"1"} },
-+	{ "ip6_frag ip6f_reserved", EXISTS, IP6_H, "ip6_frag",
-+		"ip6f_reserved", "1", {"1"} },
-+	{ "ip6_frag ip6f_offlg", EXISTS, IP6_H, "ip6_frag",
-+		"ip6f_offlg", "2", {"2"} },
-+	{ "ip6_frag ip6f_ident", EXISTS, IP6_H, "ip6_frag",
-+		"ip6f_ident", "4", {"4"} },
-+	{ "IP6F_OFF_MASK", VALUE, IP6_H, "IP6F_OFF_MASK",
-+		NULL, NULL, {"htons(0xfff8)"} },
-+	{ "IP6F_RESERVED_MASK", VALUE, IP6_H, "IP6F_RESERVED_MASK",
-+		NULL, NULL, {"htons(0x0006)"} },
-+	{ "IP6F_MORE_FRAG", VALUE, IP6_H, "IP6F_MORE_FRAG",
-+		NULL, NULL, {"htons(0x0001)"} },
-+	{ "IP6OPT_TYPE", VALUE, IP6_H, "IP6OPT_TYPE(0xff)",
-+		NULL, NULL, {"0xc0"} },
-+	{ "IP6OPT_TYPE_SKIP", VALUE, IP6_H, "IP6OPT_TYPE_SKIP",
-+		NULL, NULL, {"0x00"} },
-+	{ "IP6OPT_TYPE_DISCARD", VALUE, IP6_H, "IP6OPT_TYPE_DISCARD",
-+		NULL, NULL, {"0x40"} },
-+	{ "IP6OPT_TYPE_FORCEICMP", VALUE, IP6_H, "IP6OPT_TYPE_FORCEICMP",
-+		NULL, NULL, {"0x80"} },
-+	{ "IP6OPT_TYPE_ICMP", VALUE, IP6_H, "IP6OPT_TYPE_ICMP",
-+		NULL, NULL, {"0xc0"} },
-+	{ "IP6OPT_TYPE_MUTABLE", VALUE, IP6_H, "IP6OPT_TYPE_MUTABLE",
-+		NULL, NULL, {"0x20"} },
-+	{ "IP6OPT_PAD1", VALUE, IP6_H, "IP6OPT_PAD1",
-+		NULL, NULL, {"0x00"} },
-+	{ "IP6OPT_PADN", VALUE, IP6_H, "IP6OPT_PADN",
-+		NULL, NULL, {"0x01"} },
-+	{ "IP6OPT_JUMBO", VALUE, IP6_H, "IP6OPT_JUMBO",
-+		NULL, NULL, {"0xc2"} },
-+	{ "IP6OPT_NSAP_ADDR", VALUE, IP6_H, "IP6OPT_NSAP_ADDR",
-+		NULL, NULL, {"0xc3"} },
-+	{ "IP6OPT_TUNNEL_LIMIT", VALUE, IP6_H, "IP6OPT_TUNNEL_LIMIT",
-+		NULL, NULL, {"0x04"} },
-+	{ "IP6OPT_ROUTER_ALERT", VALUE, IP6_H, "IP6OPT_ROUTER_ALERT",
-+		NULL, NULL, {"0x05"} },
-+	/* ip6_opt_jumbo */
-+	{ "ip6_opt_jumbo ip6oj_type", EXISTS, IP6_H, "ip6_opt_jumbo",
-+		"ip6oj_type", "0", {"1"} },
-+	{ "ip6_opt_jumbo ip6oj_len", EXISTS, IP6_H, "ip6_opt_jumbo",
-+		"ip6oj_len", "1", {"1"} },
-+	{ "ip6_opt_jumbo ip6oj_jumbo_len element", EXISTS, IP6_H,
-+		"ip6_opt_jumbo", "ip6oj_jumbo_len[0]", "2", {"1"} },
-+	{ "ip6_opt_jumbo ip6oj_jumbo_len array", EXISTS, IP6_H,
-+		"ip6_opt_jumbo", "ip6oj_jumbo_len", "2", {"4"} },
-+	/* ip6_opt_nsap */
-+	{ "ip6_opt_nsap ip6on_type", EXISTS, IP6_H, "ip6_opt_nsap",
-+		"ip6on_type", "0", {"1"} },
-+	{ "ip6_opt_nsap ip6on_len", EXISTS, IP6_H, "ip6_opt_nsap",
-+		"ip6on_len", "1", {"1"} },
-+	{ "ip6_opt_nsap ip6on_src_nsap_len", EXISTS, IP6_H,
-+		"ip6_opt_nsap", "ip6on_src_nsap_len", "2", {"1"} },
-+	{ "ip6_opt_nsap ip6on_dst_nsap_len", EXISTS, IP6_H,
-+		"ip6_opt_nsap", "ip6on_dst_nsap_len", "3", {"1"} },
-+	/* ip6_opt_tunnel */
-+	{ "ip6_opt_tunnel ip6ot_type", EXISTS, IP6_H,
-+		"ip6_opt_tunnel", "ip6ot_type", "0", {"1"} },
-+	{ "ip6_opt_tunnel ip6ot_len", EXISTS, IP6_H,
-+		"ip6_opt_tunnel", "ip6ot_len", "1", {"1"} },
-+	{ "ip6_opt_tunnel ip6ot_encap_limit", EXISTS, IP6_H,
-+		"ip6_opt_tunnel", "ip6ot_encap_limit", "2", {"1"} },
-+	/* ip6_opt_router */
-+	{ "ip6_opt_router ip6or_type", EXISTS, IP6_H,
-+		"ip6_opt_router", "ip6or_type", "0", {"1"} },
-+	{ "ip6_opt_router ip6or_len", EXISTS, IP6_H,
-+		"ip6_opt_router", "ip6or_len", "1", {"1"} },
-+	{ "ip6_opt_router ip6or_value element", EXISTS, IP6_H,
-+		"ip6_opt_router", "ip6or_value[0]", "2", {"1"} },
-+	{ "ip6_opt_router ip6or_value array", EXISTS, IP6_H,
-+		"ip6_opt_router", "ip6or_value", "2", {"2"} },
-+	/* IP6_ALERT_* definitions */
-+	{ "IP6_ALERT_MLD", VALUE, IP6_H, "IP6_ALERT_MLD",
-+		NULL, NULL, {"0"} },
-+	{ "IP6_ALERT_RSVP", VALUE, IP6_H, "IP6_ALERT_RSVP",
-+		NULL, NULL, {"htons(1)"} },
-+	{ "IP6_ALERT_AN", VALUE, IP6_H, "IP6_ALERT_AN",
-+		NULL, NULL, {"htons(2)"} },
-+};
- 
--#define FTCOUNT	(sizeof(ftab)/sizeof(ftab[0]))
-+static void setup(void);
-+static void cleanup(void);
-+static void do_test(const struct ftent *);
- 
--int TST_TOTAL = FTCOUNT;
-+char *TCID = "asapi_01";
-+int TST_TOTAL = ARRAY_SIZE(ftab);
- 
- int main(int argc, char *argv[])
- {
- 	int i, lc;
- 	const char *msg;
- 
--	/* Parse standard options given to run the test. */
- 	msg = parse_opts(argc, argv, NULL, NULL);
--	if (msg != NULL) {
-+	if (msg != NULL)
- 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
--	}
- 
- 	setup();
- 
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		for (i = 0; i < FTCOUNT; ++i) {
--			switch (ftab[i].ft_type) {
--			case EXISTS:
--				structcheck(ftab[i].ft_tname, ftab[i].ft_incl,
--					    ftab[i].ft_struct, ftab[i].ft_field,
--					    ftab[i].ft_offset,
--					    ftab[i].ft_value);
--				break;
--			case ALIAS:
--				aliascheck(ftab[i].ft_tname, ftab[i].ft_incl,
--					   ftab[i].ft_struct, ftab[i].ft_field,
--					   ftab[i].ft_dname);
--				break;
--			case VALUE:
--				valuecheck(ftab[i].ft_tname, ftab[i].ft_incl,
--					   ftab[i].ft_struct, ftab[i].ft_dname);
--				break;
--			default:
--				tst_resm(TBROK, "invalid type %d",
--					 ftab[i].ft_type);
--				break;
--			}
--		}
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++)
-+			do_test(&ftab[i]);
- 	}
- 
- 	cleanup();
--
- 	tst_exit();
- }
- 
- void setup(void)
- {
--	TEST_PAUSE;		/* if -P option specified */
-+	TEST_PAUSE;
- }
- 
- void cleanup(void)
- {
- 	TEST_CLEANUP;
- }
-+
-+void do_test(const struct ftent *ftptr)
-+{
-+	switch (ftptr->ft_type) {
-+	case EXISTS:
-+		structcheck(ftptr->ft_tname, ftptr->ft_incl,
-+			ftptr->ft_struct, ftptr->ft_field,
-+			ftptr->ft_offset, ftptr->ft_value);
-+		break;
-+	case ALIAS:
-+		aliascheck(ftptr->ft_tname, ftptr->ft_incl,
-+			ftptr->ft_struct, ftptr->ft_field,
-+			ftptr->ft_dname);
-+		break;
-+	case VALUE:
-+		valuecheck(ftptr->ft_tname, ftptr->ft_incl,
-+			ftptr->ft_struct, ftptr->ft_dname);
-+		break;
-+	default:
-+		tst_resm(TBROK, "invalid type %d",
-+			ftptr->ft_type);
-+		break;
-+	}
-+}
+Looks good to me.
+
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
