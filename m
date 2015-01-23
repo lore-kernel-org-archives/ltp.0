@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YDXR4-0000ck-2B
-	for ltp-list@lists.sourceforge.net; Tue, 20 Jan 2015 11:57:30 +0000
-Date: Tue, 20 Jan 2015 12:56:25 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150120115625.GB11013@rei>
-References: <20150119122310.GA27065@rei>
-	<CA+icZUV53AWik-bS4a3DwgExD26nhCWxJWb-kGN_nAOWsikuLA@mail.gmail.com>
-	<CA+icZUVSnYv3-rh6sBr8vgDsc80Qnr3yK_OZ6AezVHPrDcKXbg@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YEbxY-0003bR-Vw
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jan 2015 10:59:29 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YEbxX-0001UJ-Lh
+	for ltp-list@lists.sourceforge.net; Fri, 23 Jan 2015 10:59:29 +0000
+Message-ID: <54C22A1A.2050906@oracle.com>
+Date: Fri, 23 Jan 2015 14:01:46 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CA+icZUVSnYv3-rh6sBr8vgDsc80Qnr3yK_OZ6AezVHPrDcKXbg@mail.gmail.com>
-Subject: Re: [LTP] The Linux Test Project has been released for JANUARY 2015
+References: <54B7D920.7050402@oracle.com>
+	<1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<1421818093-24202-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1421818093-24202-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 2/3] telnet: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,25 +29,227 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sedat Dilek <sedat.dilek@gmail.com>
-Cc: ltp-list@lists.sourceforge.net, libc-alpha@sourceware.org, LKML <linux-kernel@vger.kernel.org>, lwn@lwn.net, Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > I will check my "iniza" setup of Linux v3.19-rc5 the "(runltp-)lite" way.
-> >
-> 
-> Attached are the runltp-lite result and my kernel-config.
-> 
-> I see a lot of "unexpected" failures, can you comment on them?
+On 21.01.2015 8:28, Zeng Linggang wrote:
+> * Add 'TCID' and 'TST_TOTAL'.
+> * Use 'test.sh'.
+> * Delete some useless comment.
+> * Some cleanup.
+>
+> Signed-off-by: Zeng Linggang<zenglg.jy@cn.fujitsu.com>
+> ---
+>   testcases/network/tcp_cmds/telnet/telnet01 | 143 ++++++++++++-----------------
+>   1 file changed, 58 insertions(+), 85 deletions(-)
+>
+> diff --git a/testcases/network/tcp_cmds/telnet/telnet01 b/testcases/network/tcp_cmds/telnet/telnet01
+> index 36ebf12..b006fe9 100755
+> --- a/testcases/network/tcp_cmds/telnet/telnet01
+> +++ b/testcases/network/tcp_cmds/telnet/telnet01
+> @@ -1,5 +1,4 @@
+> -#! /usr/bin/expect -f
+> -#*********************************************************************
+> +#!/bin/bash
+>   #   Copyright (c) International Business Machines  Corp., 2000
+>   #
+>   #   This program is free software;  you can redistribute it and/or modify
+> @@ -16,102 +15,76 @@
+>   #   along with this program;  if not, write to the Free Software
+>   #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>   #
+> -#
+> -#
+> -#  FILE   : telnet
+> -#
+> -#  PURPOSE: Tests the basic functionality of `telnet`.
+> -#
+>   #  SETUP: The program `/usr/bin/expect' MUST be installed.
+>   #	  The PASSWD and RHOST variables MUST be set prior to execution.
+>   #
+> -#  HISTORY:
+>   #    03/01 Robbie Williamson (robbiew@us.ibm.com)
+> -#      -Ported
+> -#
+> -#*********************************************************************
+> -#
+> -# telnet perform a telnet session to each host in HOST_LIST with user
+> -#    RUSER for a count of LOOPCOUNT and does an ls -l /etc/hosts to
+> -#    verify that the telnet was established.
+> -#
+> -#*********************************************************************
+>   
+> -set TC telnet
+> -set TCtmp "/tmp"
+> -set SLEEPTIME 3
+> -set TESTLOG "$TCtmp"
+> -set PROMPT "Alpha Bravo"
+> -
+> -if [info exists env(RUSER)] {
+> -   set RUSER $env(RUSER)
+> -} else {
+> -   set RUSER root
+> -}
+> +TCID="telnet01"
+> +TST_TOTAL=1
+> +. test.sh
+>   
+> -if [info exists env(PASSWD)] {
+> -   set PASSWD $env(PASSWD)
+> -} else {
+> -   set PASSWD .pasroot
+> -   send_user "PASSWD NOT SET:Using .pasroot as the PASSWD variable for $RUSER. \n"
+> -}
+> +setup()
+> +{
+> +	if [ -z $RUSER ]; then
+> +		RUSER=root
+> +	fi
+>   
+> -if [info exists env(RHOST)] {
+> -   set RHOST $env(RHOST)
+> -} else {
+> -   send_user "Please set/export the RHOST variable. \n"
+> -   exit 1
+> -}
+> +	if [ -z $PASSWD ]; then
+> +		tst_brkm TCONF "Please set PASSWD for $RUSER."
+> +	fi
+>   
+> -set timeout 90
+> +	if [ -z $RHOST ]; then
+> +		tst_brkm TCONF "Please set RHOST."
+> +	fi
+>   
+> -if [info exists env(LOOPCOUNT)] {
+> -   set LOOPCOUNT $env(LOOPCOUNT)
+> -} else {
+> -   set LOOPCOUNT 25
+> +	if [ -z $LOOPCOUNT ]; then
+> +		LOOTCOUNT=25
+                                            ^
+                                            should be 'P' here
 
-Most of the failures comes from EBUSY while trying to umount
-filesystems. Do you have gvfsd-trash running? That thing is known to
-probe newly mounted filesystems preventing them from being unmounted for
-a certain amount of time.
+> +	fi
+>   }
+>   
+> -# stty echo
+> -send_user " Starting\n"
+> -
+> -# Do foreach host on command line
+> -set count 0
+> -while {$count < $LOOPCOUNT} {
+> -   set count [expr $count+1]
+> -   foreach HOST $RHOST {
+> -      send_user "Host: $HOST\n"
+> -
+> -      # telnet to the host
+> -      spawn telnet $HOST
+> -      expect -re "login:"
+> -
+> -      send "$RUSER\r"
+> -      expect -re "Password:"
+> +do_test()
+> +{
+> +	tst_resm TINFO "Starting"
+>   
+> -      send "$PASSWD\r"
+> -
+> -      send "PS1=\"$PROMPT\"\r"
+> -      # Wait for shell prompt
+> -      expect "$PROMPT"
+> +	for i in $(seq 1 ${LOOPCOUNT})
+> +	do
+> +		telnet_test || return 1
+> +	done
+> +}
+>   
+> -      # Run passwd command - and respond to its prompts
+> -      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$HOST \r"
+> -      # When shell prompt comes back, logout
+> +telnet_test()
+> +{
+> +	expect -c "
+> +		spawn telnet $RHOST
+> +		expect -re \"login:\"
+> +		send \"$RUSER\r\"
+> +		expect -re \"Password:\"
+> +		send \"$PASSWD\r\"
+> +
+> +		send \"LC_ALL=C ls -l /etc/hosts | wc -w > $RUSER.$RHOST \r\"
+> +		expect \"$RUSER@\"
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+This part needs some extra checking for failed login, e.g. 'incorrect' 
+password or connection timeout:
+
+expect -re "incorrect" {
+     exit 1
+} -re "$USERS@"
+
+
+> +		exp_send \"logout\r\"
+> +
+
+The below part can be changed to:
+         tst_resm TINFO "checking telnet status"
+         tst_rhost_run -s -c "grep -q 9 $RUSER.$RHOST"
+         tst_rhost_run -c "rm -f $RUSER.$RHOST"
+
+Note, 'tst_rhost_run' with '-s' option should exit with TBROK if remote 
+command returns non-zero exit status, please find the following patch 
+with the fix:
+
+[PATCH v2] lib/test_net.sh: fix 'tst_rhost_run -s' when errors occur.
+
+> +		send_user \"CHECKING TELNET STATUS\n\"
+> +
+> +		set nummatch [exec rsh -n -l $RUSER $RHOST \\
+> +			      \"grep -c 9 $RUSER.$RHOST\"]
+> +		if {\$nummatch==1} {
+> +			exec rsh -n -l $RUSER $RHOST \"rm -f $RUSER.$RHOST\"
+> +		} else {
+> +			exit 1
+> +		}
+> +	"
+> +}
+>   
+> -      expect "$PROMPT"
+> -      exp_send "logout\r"
+> +setup
+>   
+> -      send_user "CHECKING TELNET STATUS\n"
+> -      set nummatch [exec rsh -n -l $RUSER $HOST "cat $TESTLOG/$RUSER.$HOST|grep -c 9"]
+> -      if {$nummatch==1} {
+> -         send_user "$TC interactive Test Successful in LOOP $count\r"
+> -         exec rsh -n -l $RUSER $HOST "rm -f $TESTLOG/$RUSER.$HOST"
+> -      } else {
+> -         send_user "$TC interactive session failed\n"
+> -         exit 1
+> -      }
+> -   }
+> -}
+> +do_test
+> +if [ $? -ne 0 ]; then
+> +	tst_resm TFAIL "Test $TCID failed."
+> +else
+> +	tst_resm TPASS "Test $TCID successed."
+
+"'succeeded"
+
+> +fi
+>   
+> -send_user "\nTest PASSES\n\n"
+> -exit 0
+> +tst_exit
+
+Also, there is too much non-standard LTP output, especially if LOOPCOUNT 
+is big. Could we send it to a file and only if there are some errors, 
+print it. Any thoughts?
+
+Thanks,
+Alexey
+
 
 ------------------------------------------------------------------------------
 New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
