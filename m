@@ -1,28 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwan@redhat.com>) id 1Y8s5R-0007VI-CQ
-	for ltp-list@lists.sourceforge.net; Wed, 07 Jan 2015 14:59:53 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Y8s5P-0001BQ-Qs
-	for ltp-list@lists.sourceforge.net; Wed, 07 Jan 2015 14:59:53 +0000
-Date: Wed, 7 Jan 2015 09:59:45 -0500 (EST)
-From: Li Wang <liwang@redhat.com>
-Message-ID: <1240855022.4434958.1420642785249.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1910508304.3829751.1420633954389.JavaMail.zimbra@redhat.com>
-References: <1419664386-14888-1-git-send-email-liwang@redhat.com>
-	<511980342.1455678.1419931434983.JavaMail.zimbra@redhat.com>
-	<1667897429.3183348.1420341038221.JavaMail.zimbra@redhat.com>
-	<124148100.2234995.1420452985543.JavaMail.zimbra@redhat.com>
-	<1759699028.3904548.1420537912980.JavaMail.zimbra@redhat.com>
-	<27844855.3137974.1420540536445.JavaMail.zimbra@redhat.com>
-	<169945440.3971026.1420553236395.JavaMail.zimbra@redhat.com>
-	<1910508304.3829751.1420633954389.JavaMail.zimbra@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YFlyo-0004sm-Kg
+	for ltp-list@lists.sourceforge.net; Mon, 26 Jan 2015 15:53:34 +0000
+Date: Mon, 26 Jan 2015 16:52:36 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150126155236.GB27890@rei.suse.de>
+References: <1418904024-29740-1-git-send-email-lijinyue@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] mem/hugeshmat: new case for hugepage leak
- inspection
+Content-Disposition: inline
+In-Reply-To: <1418904024-29740-1-git-send-email-lijinyue@huawei.com>
+Subject: Re: [LTP] [PATCH] controllers/cgroup_fj:fix mount error for mount
+ tools above v2.21
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,257 +25,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: lijinyue <lijinyue@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, dingguofu@huawei.com, zhanyongming@huawei.com
 
-
-> ----- Original Message -----
-> > From: "Li Wang" <liwang@redhat.com>
-> > To: "Jan Stancek" <jstancek@redhat.com>
-> > Cc: ltp-list@lists.sourceforge.net
-> > Sent: Tuesday, 6 January, 2015 3:07:16 PM
-> > Subject: Re: [LTP] [PATCH] mem/hugeshmat: new case for hugepage leak
-> > inspection
-> > 
-> > > I'm assuming that both absolute address and sleep is not necessary.
-> > > I think I'll take some recent kernel, revert that patch and try to
-> > > reproduce
-> > > the failure.
-> > 
-> > Hi Jan,
-> > 
-> > I just tried kernel-3.10.0+ without the fixed patch, and I hit a CPU stuck
-> > issue
-> > with absolute address and sleep(3).
+Hi!
+> For util-linux version above v2.21(eg, Red Hat Enterprise Linux 7.0, util-linux v2.23.2),
+> some tests in run_cgroup_test_fj.sh will test failed.
+> eg:
+>         cgroup_test_fj    1  TFAIL  :  case13(function  2 1 1 2 1 2 3 2 1)    FAIL
 > 
-> I tried the same with 2.6.18-92.el5. When I revert the patch I can reproduce
-> the leak.
-> sleep(3) doesn't seem to have any effect, I think we can safely remove it.
-> Attaching at BOUNDARY however seems necessary. As soon as I change shmat to
-> use "NULL",
-> the leak no longer happens, I'm not sure why that is.
+> The reason is that mount version above v2.21 will cause mount error in the following scenes:
+>         (mount from util-linux 2.23.2)
+>         mkdir /dev/cgroup
+>         mount -t cgroup -o cpuset,release_agent=  cgroup /dev/cgroup
 > 
-> +        if (huge_total != hugepages || huge_free != hugepages)
-> This condition in setup() seems to strict. I think we don't need all
-> hugepages
-> to be free when test starts.
-> 
+>         error output:
+>         mount: special device cgroup does not exist
+> While, for mount version v2.19.1(eg, SLES 11 sp2, mount from util-linux 2.19.1 )
+>         mount will success like this:
+>         cgroup on /dev/cgroup type cgroup (rw,cpuset,release_agent=)
 
-Agreed! Seems the case should be like this:
+The empty release agent seems to be specially crafted testcase. The
+function get_release_agent_para() has special case to set it to " ".
 
+So if this test fails, either util-linux is broken or the test assertion
+is wrong (it worked by accident) and should be removed. Either way this
+needs more investigation.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- runtest/hugetlb                                    |   1 +
- testcases/kernel/mem/.gitignore                    |   1 +
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat04.c     | 164 +++++++++++++++++++++
- 3 files changed, 166 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 3eaf14c..805141d 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -10,6 +10,7 @@ hugemmap05_3 hugemmap05 -s -m
- hugeshmat01 hugeshmat01 -i 5
- hugeshmat02 hugeshmat02 -i 5
- hugeshmat03 hugeshmat03 -i 5
-+hugeshmat04 hugeshamt04 -i 5
- 
- hugeshmctl01 hugeshmctl01 -i 5
- hugeshmctl02 hugeshmctl02 -i 5
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index f96964c..c531563 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -6,6 +6,7 @@
- /hugetlb/hugeshmat/hugeshmat01
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
-+/hugetlb/hugeshmat/hugeshmat04
- /hugetlb/hugeshmctl/hugeshmctl01
- /hugetlb/hugeshmctl/hugeshmctl02
- /hugetlb/hugeshmctl/hugeshmctl03
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-new file mode 100644
-index 0000000..d6d2d4c
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-@@ -0,0 +1,164 @@
-+/*
-+ *   Copyright (c) Linux Test Project, 2014
-+ *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program;  if not, write to the Free Software
-+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-+ *   02110-1301 USA
-+ */
-+
-+/*
-+ * NAME
-+ * 	hugeshmat04.c
-+ *
-+ * DESCRIPTION
-+ *	hugeshmat04 - test for hugepage leak inspection.
-+ *
-+ *      Description of Problem:
-+ *         When over 1GB shered memory was alocated in hugepage, the hugepage
-+ *         is not released though process finished.
-+ *
-+ *         You need more than 2GB memory in test job
-+ *
-+ *	Test results:
-+ *	   Successed: No regression found.
-+ *	   Failed:    Regression detected.
-+ *
-+ * HISTORY
-+ * 	05/2014 - Written by Fujistu Corp.
-+ *	12/2014 - Port to LTP by Li Wang.
-+ *
-+ * RESTRICTIONS
-+ * 	test must be run at root
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/shm.h>
-+#include <sys/wait.h>
-+
-+#include "test.h"
-+#include "mem.h"
-+
-+#define SIZE	(1024 * 1024 * 1024)
-+#define BOUNDARY (1024 * 1024 * 1024)
-+
-+char *TCID = "hugeshmat04";
-+int TST_TOTAL = 3;
-+
-+static long huge_total;
-+static long huge_free;
-+static long huge_free2;
-+static long hugepages;
-+static long orig_hugepages;
-+
-+static void shared_hugepage(void);
-+
-+int main(int ac, char **av)
-+{
-+	int lc, i;
-+	const char *msg;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < TST_TOTAL; i++) {
-+
-+			huge_free = read_meminfo("HugePages_Free:");
-+			shared_hugepage();
-+			huge_free2 = read_meminfo("HugePages_Free:");
-+
-+			if (huge_free2 != huge_free)
-+				tst_brkm(TFAIL, cleanup,
-+					"Test failed. Hugepage leak inspection.");
-+			else
-+				tst_resm(TPASS, "No regression found.");
-+		}
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+void shared_hugepage(void)
-+{
-+	pid_t pid;
-+	int status, shmid;
-+	size_t size = (size_t)SIZE;
-+	void *buf;
-+
-+	shmid = shmget(IPC_PRIVATE, size, SHM_HUGETLB | IPC_CREAT | 0777);
-+	if (shmid < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "shmget");
-+
-+	buf = shmat(shmid, (void *)BOUNDARY, SHM_RND | 0777);
-+	if (buf == (void *)-1) {
-+		shmctl(shmid, IPC_RMID, NULL);
-+		tst_brkm(TBROK | TERRNO, cleanup, "shmat");
-+	}
-+
-+	memset(buf, 2, size);
-+	pid = fork();
-+
-+	if (pid == 0)
-+		exit(1);
-+	else if (pid < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+
-+	wait(&status);
-+	shmdt(buf);
-+	shmctl(shmid, IPC_RMID, NULL);
-+}
-+
-+void setup(void)
-+{
-+	long mem_total, hpage_size;
-+
-+	tst_require_root(NULL);
-+
-+	mem_total = read_meminfo("MemTotal:") * 1024;
-+	if (mem_total < 2L*SIZE) {
-+		tst_resm(TINFO, "Total memory should greater than 2G.");
-+		tst_exit();
-+	}
-+
-+	orig_hugepages = get_sys_tune("nr_hugepages");
-+	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+
-+	hugepages = (orig_hugepages * hpage_size + SIZE) / hpage_size;
-+	set_sys_tune("nr_hugepages", hugepages, 1);
-+
-+	huge_total = read_meminfo("HugePages_Total:");
-+	if (huge_total != hugepages)
-+		tst_brkm(TCONF, cleanup,
-+			"Maybe huge pages not enough for test.");
-+
-+	TEST_PAUSE;
-+}
-+
-+void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+	set_sys_tune("nr_hugepages", orig_hugepages, 0);
-+}
 -- 
-1.8.3.1
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming! The Go Parallel Website,
+Dive into the World of Parallel Programming. The Go Parallel Website,
 sponsored by Intel and developed in partnership with Slashdot Media, is your
 hub for all things parallel software development, from weekly thought
 leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
