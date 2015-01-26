@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Y88Gk-0006Vm-FN
-	for ltp-list@lists.sourceforge.net; Mon, 05 Jan 2015 14:04:30 +0000
-Date: Mon, 5 Jan 2015 15:03:35 +0100
+	(envelope-from <metan@suse.de>) id 1YFjMS-00053V-43
+	for ltp-list@lists.sourceforge.net; Mon, 26 Jan 2015 13:05:48 +0000
+Date: Mon, 26 Jan 2015 14:04:48 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150105140334.GA31857@rei.suse.de>
-References: <1417101031-5272-1-git-send-email-mmarhefk@redhat.com>
-	<1418987492-17553-1-git-send-email-mmarhefk@redhat.com>
+Message-ID: <20150126130448.GA25601@rei.suse.de>
+References: <20150120114329.GA11013@rei>
+	<1422267333-22808-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1418987492-17553-1-git-send-email-mmarhefk@redhat.com>
-Subject: Re: [LTP] [PATCH v3] testcases/lib/test.sh: added tst_timeout()
+In-Reply-To: <1422267333-22808-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 1/2] tst_run_cmd: add an option to pass the
+ program exit code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,39 +26,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Function tst_timeout() added into LTP test interface:
-> 
-> 	tst_timeout "command arg1 arg2 ..." timeout
-> 
-> Function enables waiting for specified command for timeout
-> seconds. Example usage:
-> 
-> 	cmd_output=$(tst_timeout "ping -c 3 localhost" 5)
-> 	if [ $? -ne 0 ]; then
-> 		tst_brkm TBROK "timeout reached!"
-> 	fi
-> 
-> where $cmd_output contains stdout and stderr of ping command.
+> Added an option to pass the program exit code to the caller.
+> This may be needed if we want to run a program with tst_run_cmd(),
+> but handle failures manually (i.e. not call cleanup).
 
-Pushed, thanks.
+Looks good, acked.
 
-It would be a nice to have a paragraph about the usage in the test
-writing guidelines. Can you send a patch for that too?
+BTW: There does not seems to be any documentation for the tst_run_cmd()
+     function in the Test Writing Guidelines, can we add that please?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming! The Go Parallel Website,
+Dive into the World of Parallel Programming. The Go Parallel Website,
 sponsored by Intel and developed in partnership with Slashdot Media, is your
 hub for all things parallel software development, from weekly thought
 leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
