@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YC1VW-0007lR-SF
-	for ltp-list@lists.sourceforge.net; Fri, 16 Jan 2015 07:39:50 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YC1VV-0007Bo-AV
-	for ltp-list@lists.sourceforge.net; Fri, 16 Jan 2015 07:39:50 +0000
-Message-ID: <1421393931.3467.7.camel@G08JYZSD130126.localdomain>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 16 Jan 2015 15:38:51 +0800
-In-Reply-To: <54B7D920.7050402@oracle.com>
-References: <1419591532-15612-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<54B7D920.7050402@oracle.com>
+	(envelope-from <metan@suse.de>) id 1YFkwJ-0000nB-IZ
+	for ltp-list@lists.sourceforge.net; Mon, 26 Jan 2015 14:46:55 +0000
+Date: Mon, 26 Jan 2015 15:45:56 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150126144556.GA27259@rei.suse.de>
+References: <OF94742AD0.BF94A514-ON85257DD7.0024E1A8-85257DD7.00251AB6@us.ibm.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/3] rlogin: Cleanup
+Content-Disposition: inline
+In-Reply-To: <OF94742AD0.BF94A514-ON85257DD7.0024E1A8-85257DD7.00251AB6@us.ibm.com>
+Subject: Re: [LTP] LTP: configure on LoZ node have these problems
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,49 +24,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
+To: Randy Brewster <randyab@us.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
+> configure: WARNING: linux/netlink.h: present but cannot be compiled
+> configure: WARNING: linux/netlink.h:     check for missing prerequisite
+> headers?
+> configure: WARNING: linux/netlink.h: see the Autoconf documentation
+> configure: WARNING: linux/netlink.h:     section "Present But Cannot Be
+> Compiled"
+> configure: WARNING: linux/netlink.h: proceeding with the compiler's result
+> configure: WARNING:     ## --------------------------------------------- ##
+> configure: WARNING:     ## Report this to ltp-list@lists.sourceforge.net ##
+> configure: WARNING:     ## --------------------------------------------- ##
 
-On Thu, 2015-01-15 at 18:13 +0300, Alexey Kodanev wrote:
-> Hi!
+These are because the linux/socket.h lacks a sa_family_t definition.
+Newer kernel-headers packages fixes that. The linux/socket.h defines
+__kernel_sa_family_t which is used in netlink and can headers.
 
-> > -if [info exists env(LOOPCOUNT)] {
-> > -   set LOOPCOUNT $env(LOOPCOUNT)
-> > -} else {
-> > -   set LOOPCOUNT 25
-> > +	for ((count=0;count<${LOOPCOUNT};count++)) {
-> > +		rlogin_test
-> > +	}
-> >   }
-> >   
-> 
-> Why the return status of rlogin_test() not checked here, but only the 
-> last one after do_test()? May be, we could write something like this: 
-> 'rlogin_test || return 1'.
-> 
-
-'rlogin_test || return 1' looks better.
-
-> 'for (())'  is a bash extension, you can do the same with for i in $(seq 
-> 0 $LOOPCOUNT); do ... done.
-> 
-
-Oh, I got it.
-
-And thank you very much. :)
-
-Best regards,
-Zeng
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
