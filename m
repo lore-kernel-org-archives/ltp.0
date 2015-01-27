@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YDEdJ-0005yw-JW
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 15:52:53 +0000
-Date: Mon, 19 Jan 2015 16:51:56 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YG87H-0003MD-Lx
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 15:31:47 +0000
+Date: Tue, 27 Jan 2015 16:31:40 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150119155156.GA30735@rei>
-References: <1419327221-28508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<1419327221-28508-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+Message-ID: <20150127153140.GG16759@rei.suse.de>
+References: <1422336738-617-1-git-send-email-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1419327221-28508-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 02/12] smack_file_access.sh: Cleanup
+In-Reply-To: <1422336738-617-1-git-send-email-liwang@redhat.com>
+Subject: Re: [LTP] [PATCH] mem/hugeshmat: new case for hugepage leak
+	inspection
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,41 +25,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+To: Li Wang <liwang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> -if [ ! -d "$Where" ]; then
-> -	if [ -e "$Where" ]; then
-> -		echo "Test directory \"$Where\" exists but is not a directory."
-> -		exit 1
-> -	fi
-> -	mkdir -m 777 "$Where"
-> -	if [ ! -d "$Where" ]; then
-> -		echo "Test directory \"$Where\" can not be created."
-> -		exit 1
-> -	fi
-> -fi
-> +tst_tmpdir
-> +TST_CLEANUP=cleanup
+> +void setup(void)
+> +{
+> +	long mem_total, hpage_size;
 > +
-> +chmod 777 $(pwd)
+> +	tst_require_root(NULL);
+> +
+> +	mem_total = read_meminfo("MemTotal:");
+> +	if (mem_total < 2L*1024*1024) {
+> +		tst_resm(TINFO, "Test requires more than 2GB of RAM");
+> +		tst_exit();
 
-Hmm, we do chmod 777 for the TMPDIR in the C test library. I guess that
-it will be better to move the chmod to test.sh and omit it here.
+This should be:
 
-The rest of the patchset looks good to me.
+                tst_brmk(TCONF, "Test requires more than 2GB of RAM");
+
+As I said in the last mail.
+
+Otherwise it looks fine.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
