@@ -2,18 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YBjPn-0003pE-8N
-	for ltp-list@lists.sourceforge.net; Thu, 15 Jan 2015 12:20:43 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YBjPk-0003q9-DT
-	for ltp-list@lists.sourceforge.net; Thu, 15 Jan 2015 12:20:43 +0000
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 15 Jan 2015 15:22:39 +0300
-Message-Id: <1421324561-6680-3-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1421324561-6680-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1421324561-6680-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 2/4] testscripts/network.sh: add reverse IPv6 addresses
+	(envelope-from <metan@suse.de>) id 1YG7Jh-00014o-Bt
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 14:40:33 +0000
+Date: Tue, 27 Jan 2015 15:40:24 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150127144024.GB16759@rei.suse.de>
+References: <1422323457-184525-1-git-send-email-shengyong1@huawei.com>
+	<1422323457-184525-2-git-send-email-shengyong1@huawei.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1422323457-184525-2-git-send-email-shengyong1@huawei.com>
+Subject: Re: [LTP] [RESEND PATCH v3 1/4] lib: tst_fs_type: add new
+	filesystem types
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,55 +23,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com, akodanev <akodanev@gmail.com>
+To: Sheng Yong <shengyong1@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: akodanev <akodanev@gmail.com>
+> +#define TST_EXT2_MAGIC     0xEF53
+> +#define TST_EXT3_MAGIC     0xEF53
+> +#define TST_EXT4_MAGIC     0xEF53
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testscripts/network.sh |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+Maybe it would be less confusing to define these as one constant,
+something like:
 
-diff --git a/testscripts/network.sh b/testscripts/network.sh
-index 6bde6ed..b9e1847 100755
---- a/testscripts/network.sh
-+++ b/testscripts/network.sh
-@@ -35,13 +35,19 @@ export LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
- # Set remote host last octet, default is '1'
- export RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
- # Set the reverse of IPV4_NETWORK
--export IPV4_NETWORK_REVERSE=${IPV4_NETWORK_REVERSE:-"0.0.10"}
-+export IPV4_NET_REV=${IPV4_NET_REV:-"0.0.10"}
- # Set first three octets of the network address, default is 'fd00:1:1:1'
- export IPV6_NETWORK=${IPV6_NETWORK:-"fd00:1:1:1"}
- # Set local host last octet, default is '2'
- export LHOST_IPV6_HOST=${LHOST_IPV6_HOST:-":2"}
- # Set remote host last octet, default is '1'
- export RHOST_IPV6_HOST=${RHOST_IPV6_HOST:-":1"}
-+# Reverse network portion of the IPv6 address
-+export IPV6_NET_REV=${IPV6_NET_REV:-"1.0.0.0.1.0.0.0.1.0.0.0.0.0.d.f"}
-+# Reverse host portion of the IPv6 address of the local host
-+export LHOST_IPV6_REV=${LHOST_IPV6_REV:-"2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0"}
-+# Reverse host portion of the IPv6 address of the remote host
-+export RHOST_IPV6_REV=${RHOST_IPV6_REV:-"1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0"}
- 
- export HTTP_DOWNLOAD_DIR=${HTTP_DOWNLOAD_DIR:-""}
- export FTP_DOWNLOAD_DIR=${FTP_DOWNLOAD_DIR:-""}
+#define TST_EXT234_MAGIC 0xEF53
+
+Otherwise it looks fine.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
