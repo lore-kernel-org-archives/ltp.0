@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YBm51-0001FD-Pf
-	for ltp-list@lists.sourceforge.net; Thu, 15 Jan 2015 15:11:27 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YBm4y-0004TM-Qs
-	for ltp-list@lists.sourceforge.net; Thu, 15 Jan 2015 15:11:27 +0000
-Message-ID: <54B7D920.7050402@oracle.com>
-Date: Thu, 15 Jan 2015 18:13:36 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YG7Pz-0000ms-FX
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 14:47:03 +0000
+Date: Tue, 27 Jan 2015 15:46:52 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150127144652.GC16759@rei.suse.de>
+References: <1422323457-184525-1-git-send-email-shengyong1@huawei.com>
+	<1422323457-184525-5-git-send-email-shengyong1@huawei.com>
 MIME-Version: 1.0
-References: <1419591532-15612-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1419591532-15612-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/3] rlogin: Cleanup
+Content-Disposition: inline
+In-Reply-To: <1422323457-184525-5-git-send-email-shengyong1@huawei.com>
+Subject: Re: [LTP] [RESEND PATCH v3 4/4] syscall/{rename11,
+ renameat01}: do not test EMLINK if subdir limit not availiable
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,210 +26,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
+To: Sheng Yong <shengyong1@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-On 12/26/2014 01:58 PM, Zeng Linggang wrote:
-> * Add 'TCID' and 'TST_TOTAL'.
->
-> * Use 'test.sh'.
->
-> * Delete some useless comment.
->
-> * Some cleanup.
->
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->   testcases/network/tcp_cmds/rlogin/rlogin01 | 140 +++++++++++++++--------------
->   1 file changed, 71 insertions(+), 69 deletions(-)
->
-> diff --git a/testcases/network/tcp_cmds/rlogin/rlogin01 b/testcases/network/tcp_cmds/rlogin/rlogin01
-> index ae670c9..f09f252 100755
-> --- a/testcases/network/tcp_cmds/rlogin/rlogin01
-> +++ b/testcases/network/tcp_cmds/rlogin/rlogin01
-> @@ -1,5 +1,4 @@
-> -#! /usr/bin/expect -f
-> -#*********************************************************************
-> +#!/bin/sh
->   #   Copyright (c) International Business Machines  Corp., 2000
->   #
->   #   This program is free software;  you can redistribute it and/or modify
-> @@ -16,87 +15,90 @@
->   #   along with this program;  if not, write to the Free Software
->   #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
->   #
-> -#
-> -#
-> -#  FILE   : rlogin
-> -#
-> -#  PURPOSE: Tests the basic functionality of `rlogin`.
-> -#
->   #  SETUP: The program `/usr/bin/expect' MUST be installed.
->   #         The home directory of root on the machine exported as "RHOST"
->   #         should have a ".rhosts" file with the hostname of the machine
->   #         where the test is executed, OR the "PASSWD" section below MUST
->   #	  be uncommented and set.
->   #
-> -#  HISTORY:
->   #    03/01 Robbie Williamson (robbiew@us.ibm.com)
-> -#      -Ported
->   #
-> -#
-> -# rlogin perform a rlogin session to each host in HOST_LIST with user
-> -#    RUSER for a count of LOOPCOUNT and does an ls -l /etc/hosts to
-> -#    verify that the rlogin was established.
-> -#
-> -#*********************************************************************
->   
-> -set TC rlogin
-> -set TCtmp "/tmp"
-> -set SLEEPTIME 3
-> -set TESTLOG "$TCtmp"
-> +TCID="rlogin01"
-> +TST_TOTAL=1
-> +. test.sh
-> +
-> +setup()
-> +{
-> +	if [ -z $RUSER ]; then
-> +		RUSER=root
-> +	fi
-> +
-> +	if [ -z $PASSWD ]; then
-> +		tst_brkm TCONF "Please set PASSWD for $RUSER."
-> +	fi
->   
-> -if [info exists env(RUSER)] {
-> -   set RUSER $env(RUSER)
-> -} else {
-> -   set RUSER root
-> +	if [ -z $RHOST ]; then
-> +		tst_brkm TCONF "Please set RHOST."
-> +	fi
-> +
-> +	if [ -z $LOOPCOUNT ]; then
-> +		LOOPCOUNT=25
-> +	fi
->   }
->   
-> -set RHOST $env(RHOST)
-> -set timeout 10
-> +do_test()
-> +{
-> +	tst_resm TINFO "Starting"
->   
-> -if [info exists env(LOOPCOUNT)] {
-> -   set LOOPCOUNT $env(LOOPCOUNT)
-> -} else {
-> -   set LOOPCOUNT 25
-> +	for ((count=0;count<${LOOPCOUNT};count++)) {
-> +		rlogin_test
-> +	}
->   }
->   
+>  static void test_emlink(void)
+>  {
+> -	if (max_subdirs == 0) {
+> +	if (max_subdirs == 0 || max_subdirs == -1) {
 
-Why the return status of rlogin_test() not checked here, but only the 
-last one after do_test()? May be, we could write something like this: 
-'rlogin_test || return 1'.
+Hmm, can't we just return 0 as well when the code that tries to figure
+out max_subdirs was skipped?
 
-'for (())'  is a bash extension, you can do the same with for i in $(seq 
-0 $LOOPCOUNT); do ... done.
+Or is there really reason why we need to differentiate between these two
+conditions?
 
-> -# stty echo
-> -send_user " Starting\n"
-> -
-> -set count 0
-> -while {$count < $LOOPCOUNT} {
-> -   set count [expr $count+1]
-> -      send_user "Host: $RHOST\n"
-> -
-> -      # rlogin to the host
-> -      spawn rlogin $RHOST -l $RUSER
-> -
-> -      # Uncomment code below and add root's passwd if .rhosts file is not
-> -      # present on remote host.
-> -      #---------------------------------
-> -      #set PASSWD "<ROOT PASSWORD HERE>"
-> -      #expect -re "Password:"
-> -      #send "$PASSWD\r"
-> -
-> -      # Wait for shell prompt
-> -      expect -re "$RUSER@"
-> -
-> -      # Run passwd command - and respond to its prompts
-> -      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$RHOST \r"
-> -      # When shell prompt comes back, logout
-> -
-> -      expect -re "$RUSER@"
-> -      exp_send "logout\r"
-> -
-> -      send_user "CHECKING RLOGIN STATUS\n"
-> -      set nummatch [exec rsh -n -l $RUSER $RHOST "cat $TESTLOG/$RUSER.$RHOST|grep -c 9"]
-> -      if {$nummatch==1} {
-> -         send_user "$TC interactive Test Successful in LOOP $count\r"
-> -         exec rsh -n -l $RUSER $RHOST "rm -f $TESTLOG/$RUSER.$RHOST"
-> -      } else {
-> -         send_user "$TC interactive session FAILED\r"
-> -         exit 1
-> -      }
-> +rlogin_test()
-> +{
-> +	expect -c "
-> +		spawn rlogin $RHOST -l $RUSER
-> +
-> +                expect {
-> +                        \"Password:\" {
-> +                                send \"$PASSWD\r\"
-> +                                expect -re \"$RUSER@\"
-> +                                send \"LC_ALL=C ls -l /etc/hosts | \\
-> +				       wc -w > $RUSER.$RHOST\r\"
-> +                        }
-> +                        \"$RUSER@\" {
-> +                                send \"LC_ALL=C ls -l /etc/hosts | \\
-> +				       wc -w > $RUSER.$RHOST\r\"
-> +                        }
-> +                }
-> +
-> +		expect -re \"$RUSER@\"
-> +		send \"LC_ALL=C ls -l /etc/hosts | wc -w > $RUSER.$RHOST\r\"
-> +
-> +		expect -re \"$RUSER@\"
-> +		exp_send \"logout\r\"
-> +
-> +		send_user \"CHECKING RLOGIN STATUS\n\";
-> +
-> +		set nummatch [exec rsh -n -l $RUSER $RHOST \\
-> +			      \"grep -c 9 $RUSER.$RHOST\"]
-> +		if {\$nummatch==1} {
-> +			exec rsh -n -l $RUSER $RHOST \"rm -f $RUSER.$RHOST\"
-> +		} else {
-> +			exit 1
-> +		}
-> +	"
->   }
->   
-> -send_user "\nTest PASSES\n\n"
-> -exit 0
-> +setup
-> +
-> +do_test
-> +if [ $? -ne 0 ]; then
-> +	tst_resm TFAIL "Test $TCID failed."
-> +else
-> +	tst_resm TPASS "Test $TCID successed."
-> +fi
-> +
-> +tst_exit
+>  		tst_resm(TCONF, "EMLINK test is not appropriate");
+>  		return;
+>  	}
+> diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
+> index bb5e6df..11b82f1 100644
+> --- a/testcases/kernel/syscalls/renameat/renameat01.c
+> +++ b/testcases/kernel/syscalls/renameat/renameat01.c
+> @@ -211,7 +211,8 @@ static void setup(void)
+>  
+>  static void renameat_verify(const struct test_case_t *tc)
+>  {
+> -	if (tc->exp_errno == EMLINK && max_subdirs == 0) {
+> +	if (tc->exp_errno == EMLINK &&
+> +	    (max_subdirs == 0 || max_subdirs == -1)) {
+>  		tst_resm(TCONF, "EMLINK test is not appropriate");
+>  		return;
+>  	}
+> -- 
+> 1.8.3.4
+> 
 
-Thanks,
-Alexey
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
