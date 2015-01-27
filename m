@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YDDhI-0000Vg-69
-	for ltp-list@lists.sourceforge.net; Mon, 19 Jan 2015 14:52:56 +0000
-Date: Mon, 19 Jan 2015 15:52:00 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YG84I-0003Bl-N0
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 15:28:42 +0000
+Date: Tue, 27 Jan 2015 16:28:33 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150119145200.GA30242@rei>
-References: <1421426599-17413-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20150127152833.GF16759@rei.suse.de>
+References: <20150120134110.GA15178@rei>
+	<1421809918-21785-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1421426599-17413-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [RFC PATCH] Asynchronous module unloading and tst_run_cmd
+In-Reply-To: <1421809918-21785-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] smack_set_socket_labels.c: Add `parse_opts' and
+	so on.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,65 +26,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> There is one more issue with tbio. :(
-> 
-> Sometimes it may fail with:
-> 
-> ltp_tbio    0  TINFO  :  Device opened successfully
-> ltp_tbio    1  TPASS  :  success on LTP_TBIO_ALLOC test
-> ltp_tbio    2  TPASS  :  success on LTP_TBIO_CLONE test
-> ltp_tbio    3  TPASS  :  success on LTP_TBIO_GET_NR_VECS test
-> ltp_tbio    4  TPASS  :  success on LTP_TBIO_ADD_PAGE test
-> ltp_tbio    5  TPASS  :  success on LTP_TBIO_SPLIT:write to dev
-> ltp_tbio    6  TPASS  :  success on LTP_TBIO_DO_IO:write to dev
-> ltp_tbio    7  TPASS  :  success on LTP_TBIO_DO_IO:read from dev
-> ltp_tbio    8  TPASS  :  success on LTP_TBIO_PUT test
-> ERROR: Module ltp_tbio is in use
-> ltp_tbio    9  TBROK  :  tst_run_cmd.c:84: failed to exec cmd 'rmmod' at tst_run_cmd.c:84
-> ltp_tbio   10  TBROK  :  tst_run_cmd.c:84: Remaining cases broken
+> Add `setup' and `cleanup'.
+> Add `parse_opts' and `TEST_LOOPING'.
 
-Hmm, would switch to modprobe -r fix that?
-
-I've been told several times that rrmod should not be used anymore
-because modprobe handles things better...
-
-Or will modprobe -r fail the same way?
-
-> This is a rfc patch which fixes this problem.
-> 
-> The main idea is to execute rmmod up to a timeout, and check if the module
-> has been unloaded after each execution of rmmod.
->
-> Summary of changes:
->  * introduce tst_module_is_loaded() - checks if the module is in /proc/modules
->  * change a bit interfaces of tst_run_cmd and cmd_run_cmd_fds (to conditionally
->    check the program exit code to be able to continue the test if the program failed)
->  * introducing a loop into tst_module_unload
->
-
-That sounds reasonably.
-
-> I would like somebody to review the general idea. If it's ok, I'll split this patch
-> into several logically coupled ones and resend them.
-> 
-> I'm really unsure if the changes to tst_run_cmd and cmd_run_cmd_fds are acceptable.
-
-I'm OK with adding the flag, it would need a better name though.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
