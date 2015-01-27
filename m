@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YGHHc-0008Mh-2r
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 01:19:04 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YGHHZ-0007NI-Hs
-	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 01:19:04 +0000
-Message-ID: <1422407877.13104.12.camel@G08JYZSD130126.localdomain>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 28 Jan 2015 09:17:57 +0800
-In-Reply-To: <54C7BA88.6060103@oracle.com>
-References: <54B7D920.7050402@oracle.com>
-	<1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<1421818093-24202-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<54C22A1A.2050906@oracle.com>
-	<1422344483.1619.52.camel@G08JYZSD130126.localdomain>
-	<54C7BA88.6060103@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YG8zh-0005Q3-SL
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 16:28:01 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YG8zg-0007R4-Qy
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 16:28:01 +0000
+Message-ID: <54C7BD1C.8020104@oracle.com>
+Date: Tue, 27 Jan 2015 19:30:20 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2 2/3] telnet: Cleanup
+References: <54B7D920.7050402@oracle.com>	
+	<1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>	
+	<1421818093-24202-3-git-send-email-zenglg.jy@cn.fujitsu.com>	
+	<54C68975.8000709@oracle.com>
+	<1422350191.1619.77.camel@G08JYZSD130126.localdomain>
+In-Reply-To: <1422350191.1619.77.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [PATCH v2 3/3] iptables_tests.sh: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,179 +31,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-On Tue, 2015-01-27 at 19:19 +0300, Alexey Kodanev wrote:
+On 01/27/2015 12:16 PM, Zeng Linggang wrote:
 > Hi!
-> On 01/27/2015 10:41 AM, Zeng Linggang wrote:
-> > Hi!
-> > On Fri, 2015-01-23 at 14:01 +0300, Alexey Kodanev wrote:
-> >> Hi!
-> >> On 21.01.2015 8:28, Zeng Linggang wrote:
-> >>> * Add 'TCID' and 'TST_TOTAL'.
-> >>> * Use 'test.sh'.
-> >>> * Delete some useless comment.
-> >>> * Some cleanup.
-> >>>
-> >>> Signed-off-by: Zeng Linggang<zenglg.jy@cn.fujitsu.com>
-> >>> ---
-> >>> -} else {
-> >>> -   set LOOPCOUNT 25
-> >>> +	if [ -z $LOOPCOUNT ]; then
-> >>> +		LOOTCOUNT=25
-> >>                                              ^
-> >>                                              should be 'P' here
-> >>
-> > What is the 'P' mean?
-> 
-> sorry, pointed to the wrong (empty) place... "LOOPCOUNT=25", not 
-> "LOOTCOUNT=25"
-> 
-
-Yep. Thank you very much.
-
-> >>> +	fi
-> >>>    }
-> >>>    
-> >>> -# stty echo
-> >>> -send_user " Starting\n"
-> >>> -
-> >>> -# Do foreach host on command line
-> >>> -set count 0
-> >>> -while {$count < $LOOPCOUNT} {
-> >>> -   set count [expr $count+1]
-> >>> -   foreach HOST $RHOST {
-> >>> -      send_user "Host: $HOST\n"
-> >>> -
-> >>> -      # telnet to the host
-> >>> -      spawn telnet $HOST
-> >>> -      expect -re "login:"
-> >>> -
-> >>> -      send "$RUSER\r"
-> >>> -      expect -re "Password:"
-> >>> +do_test()
-> >>> +{
-> >>> +	tst_resm TINFO "Starting"
-> >>>    
-> >>> -      send "$PASSWD\r"
-> >>> -
-> >>> -      send "PS1=\"$PROMPT\"\r"
-> >>> -      # Wait for shell prompt
-> >>> -      expect "$PROMPT"
-> >>> +	for i in $(seq 1 ${LOOPCOUNT})
-> >>> +	do
-> >>> +		telnet_test || return 1
-> >>> +	done
-> >>> +}
-> >>>    
-> >>> -      # Run passwd command - and respond to its prompts
-> >>> -      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$HOST \r"
-> >>> -      # When shell prompt comes back, logout
-> >>> +telnet_test()
-> >>> +{
-> >>> +	expect -c "
-> >>> +		spawn telnet $RHOST
-> >>> +		expect -re \"login:\"
-> >>> +		send \"$RUSER\r\"
-> >>> +		expect -re \"Password:\"
-> >>> +		send \"$PASSWD\r\"
-> >>> +
-> >>> +		send \"LC_ALL=C ls -l /etc/hosts | wc -w > $RUSER.$RHOST \r\"
-> >>> +		expect \"$RUSER@\"
-> >> This part needs some extra checking for failed login, e.g. 'incorrect'
-> >> password or connection timeout:
-> >>
-> >> expect -re "incorrect" {
-> >>       exit 1
-> >> } -re "$USERS@"
-> >>
-> >>
-> > Good idea. Thanks.
-> >
-> >>> +		exp_send \"logout\r\"
-> >>> +
-> >> The below part can be changed to:
-> >>           tst_resm TINFO "checking telnet status"
-> >>           tst_rhost_run -s -c "grep -q 9 $RUSER.$RHOST"
-> >>           tst_rhost_run -c "rm -f $RUSER.$RHOST"
-> >>
-> >> Note, 'tst_rhost_run' with '-s' option should exit with TBROK if remote
-> >> command returns non-zero exit status, please find the following patch
-> >> with the fix:
-> >>
-> >> [PATCH v2] lib/test_net.sh: fix 'tst_rhost_run -s' when errors occur.
-> >>
-> > Thank you. I have found the patch.
-> >
-> >>> +		send_user \"CHECKING TELNET STATUS\n\"
-> >>> +
-> >>> +		set nummatch [exec rsh -n -l $RUSER $RHOST \\
-> >>> +			      \"grep -c 9 $RUSER.$RHOST\"]
-> >>> +		if {\$nummatch==1} {
-> >>> +			exec rsh -n -l $RUSER $RHOST \"rm -f $RUSER.$RHOST\"
-> >>> +		} else {
-> >>> +			exit 1
-> >>> +		}
-> >>> +	"
-> >>> +}
-> >>>    
-> >>> -      expect "$PROMPT"
-> >>> -      exp_send "logout\r"
-> >>> +setup
-> >>>    
-> >>> -      send_user "CHECKING TELNET STATUS\n"
-> >>> -      set nummatch [exec rsh -n -l $RUSER $HOST "cat $TESTLOG/$RUSER.$HOST|grep -c 9"]
-> >>> -      if {$nummatch==1} {
-> >>> -         send_user "$TC interactive Test Successful in LOOP $count\r"
-> >>> -         exec rsh -n -l $RUSER $HOST "rm -f $TESTLOG/$RUSER.$HOST"
-> >>> -      } else {
-> >>> -         send_user "$TC interactive session failed\n"
-> >>> -         exit 1
-> >>> -      }
-> >>> -   }
-> >>> -}
-> >>> +do_test
-> >>> +if [ $? -ne 0 ]; then
-> >>> +	tst_resm TFAIL "Test $TCID failed."
-> >>> +else
-> >>> +	tst_resm TPASS "Test $TCID successed."
-> >> "'succeeded"
-> >>
-> > Yep.
-> >
-> >>> +fi
-> >>>    
-> >>> -send_user "\nTest PASSES\n\n"
-> >>> -exit 0
-> >>> +tst_exit
-> >> Also, there is too much non-standard LTP output, especially if LOOPCOUNT
-> >> is big. Could we send it to a file and only if there are some errors,
-> >> print it. Any thoughts?
-> >>
-> > It is not bad, but we could not sure whether the test is being run when
-> > we wait.
-> 
-> For example, it could be the below messages on each step or something 
-> more informative.
-> 
-> tst_resm TINFO "login with telnet, step $i"
-> 
-> expect ...
-> 
-> tst_resm TINFO "checking telnet status"
+> On Mon, 2015-01-26 at 21:37 +0300, Alexey Kodanev wrote:
+>> Hi!
+>> On 01/21/2015 08:28 AM, Zeng Linggang wrote:
+>>> * Use 'test.sh'.
+>>> * Use 'tst_*' which defined in 'test.sh'.
+>>> * Delete some useless comment.
+>>> * Delete 'RC' and 'TFAILCNT'.
+>>> * Some cleanup.
+>>>
+>>> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+>>> +	modprobe ip_tables > tst_iptables.out 2>&1
+>>> +	if [ $? -ne 0 ]; then
+>>> +		iptables -L > tst_iptables.out 2>&1
+>>> +		if [ $? -ne 0 ]; then
+>>> +			tst_brkm TBROK "no iptables support in kenrel."
+>>>    		fi
+>>>    	fi
+>> May be I missed something, but why we need to send output to the file,
+>> then, in case of errors, rewrite it with "iptables -L" command?
+>>
+> The output file is really not necessary here. Maybe it just make our
+> screen clearer. I think we need more discussion.
+>
+>>> +	lsmod | grep "ip_tables" > tst_iptables.out 2>&1
+>>> +	if [ $? -eq 0 ]; then
+>>> +		iptables -F -t filter > tst_iptables.out 2>&1
+>>> +		iptables -F -t nat > tst_iptables.out 2>&1
+>>> +		iptables -F -t mangle > tst_iptables.out 2>&1
+>>> +		rmmod -v ipt_limit ipt_multiport ipt_LOG ipt_REJECT \
+>>> +			 iptable_mangle iptable_nat ip_conntrack \
+>>> +			 iptable_filter ip_tables > tst_iptables.out 2>&1
+>>>    	fi
+>>> -	rm -fr $LTPTMP/tst_iptables.*
+>>> -	return $RC
+>>> +	tst_rmdir
+>> And here, writing output to the file, then removing tmp dir.
+>>
 > ...
-> 
+>
+>>> +	iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP > tst_iptables.out 2>&1
+>>> +	if [ $? -ne 0 ]; then
+>>> +		tst_resm TFAIL "iptables command failed to append new rule."
+>>> +		return
+>>>    	fi
+>> At least, we could print 'tst_iptables.out' if the command failed.
+>>
+> OK. I will do that.
+>
+>>> +	ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
+>>> +	if [ $? -ne 0 ]; then
+>>> +		grep "100% packet loss" tst_iptables.out > tst_iptables.err 2>&1
+>> The same with tst_iptables.err file.
+>>
+> OK.
+>
+>>> +	iptables -F > tst_iptables.out 2>&1
+>>> +	if [ $? -ne 0 ]; then
+>>> +		tst_resm TFAIL "iptables did not flush all rules."
+>>> +		return
+>>>    	else
+>>> -		tst_resm TINFO "$TCID: iptables logging succsess"
+>>> -		tst_resm TPASS "$TCID: iptables can log packets to multiple ports."
+>>> +		tst_resm TINFO "iptables logging succsess"
+>>> +		tst_resm TPASS "iptables can log packets to multiple ports."
+>>>    	fi
+>> You don't need "else .. fi" block because you return in the first one.
+>>
+> I think "else ... fi" is necessary when "$? -eq 0".
+> I should remove the 'return' here.
 
-That's OK.
+What I mean here is that you could write TINFO/TPASS messages without 
+"else":
 
-Best regards,
-Zeng
+if [ $? -ne 0 ]; then
+     tst_resm TFAIL "error"
+     return
+fi
 
-> Best regards,
-> Alexey
+tst_resm TPASS "success"
+...
 
+
+Thanks,
+Alexey
 
 
 ------------------------------------------------------------------------------
