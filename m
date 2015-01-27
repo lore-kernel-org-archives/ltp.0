@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YGp8w-0003en-5u
-	for ltp-list@lists.sourceforge.net; Thu, 29 Jan 2015 13:28:22 +0000
-Date: Thu, 29 Jan 2015 14:28:12 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150129132812.GA15143@rei.suse.de>
-References: <1422519368-202938-1-git-send-email-shengyong1@huawei.com>
-	<1422519368-202938-2-git-send-email-shengyong1@huawei.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YG8p5-0004qF-Lv
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 16:17:03 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YG8p4-00027o-J6
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 16:17:03 +0000
+Message-ID: <54C7BA88.6060103@oracle.com>
+Date: Tue, 27 Jan 2015 19:19:20 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1422519368-202938-2-git-send-email-shengyong1@huawei.com>
-Subject: Re: [LTP] [PATCH v4 1/2] lib: tst_fs_type: add new filesystem types
+References: <54B7D920.7050402@oracle.com>	
+	<1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>	
+	<1421818093-24202-2-git-send-email-zenglg.jy@cn.fujitsu.com>	
+	<54C22A1A.2050906@oracle.com>
+	<1422344483.1619.52.camel@G08JYZSD130126.localdomain>
+In-Reply-To: <1422344483.1619.52.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [PATCH v2 2/3] telnet: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,44 +31,167 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Sheng Yong <shengyong1@huawei.com>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> diff --git a/include/tst_fs_type.h b/include/tst_fs_type.h
-> index fef0818..ec230c7 100644
-> --- a/include/tst_fs_type.h
-> +++ b/include/tst_fs_type.h
-> @@ -33,6 +33,22 @@
->  #define TST_TMPFS_MAGIC    0x01021994
->  #define TST_V9FS_MAGIC     0x01021997
->  #define TST_XFS_MAGIC      0x58465342
-> +#define TST_EXT2_OLD_MAGIC 0xEF51
-> +/* ext2, ext3, ext4 have the same magic number */
-> +#define TST_EXT234_MAGIC   0xEF53
-> +#define TST_MINIX_MAGIC    0x137F
-> +#define TST_MINIX_MAGIC2   0x138F
-> +#define TST_MINIX2_MAGIC   0x2468
-> +#define TST_MINIX2_MAGIC2  0x2478
-> +#define TST_MINIX3_MAGIC   0x4D5A
-> +#define TST_UDF_MAGIC      0x15013346
-> +#define TST_SYSV2_MAGIC    0x012FF7B6
-> +#define TST_SYSV4_MAGIC    0x012FF7B5
-> +#define TST_UFS_MAGIC      0x00011954
-> +#define TST_UFS2_MAGIC     0x19540119
-> +#define TST_F2FS_MAGIC     0xF2F52010
-> +#define TST_NILFS_MAGIC    0x3434
-> +#define TST_EXOFS_MAGIC    0x5DF5
+On 01/27/2015 10:41 AM, Zeng Linggang wrote:
+> Hi!
+> On Fri, 2015-01-23 at 14:01 +0300, Alexey Kodanev wrote:
+>> Hi!
+>> On 21.01.2015 8:28, Zeng Linggang wrote:
+>>> * Add 'TCID' and 'TST_TOTAL'.
+>>> * Use 'test.sh'.
+>>> * Delete some useless comment.
+>>> * Some cleanup.
+>>>
+>>> Signed-off-by: Zeng Linggang<zenglg.jy@cn.fujitsu.com>
+>>> ---
+>>> -} else {
+>>> -   set LOOPCOUNT 25
+>>> +	if [ -z $LOOPCOUNT ]; then
+>>> +		LOOTCOUNT=25
+>>                                              ^
+>>                                              should be 'P' here
+>>
+> What is the 'P' mean?
 
-This hunk fails to apply to latest LTP git.
+sorry, pointed to the wrong (empty) place... "LOOPCOUNT=25", not 
+"LOOTCOUNT=25"
 
-Looking at the differencies the TST_TMPFS_MAGIC,
-TST_V9FS_MAGIC, TST_XFS_MAGIC have more spaces
-before the hex number.
+>>> +	fi
+>>>    }
+>>>    
+>>> -# stty echo
+>>> -send_user " Starting\n"
+>>> -
+>>> -# Do foreach host on command line
+>>> -set count 0
+>>> -while {$count < $LOOPCOUNT} {
+>>> -   set count [expr $count+1]
+>>> -   foreach HOST $RHOST {
+>>> -      send_user "Host: $HOST\n"
+>>> -
+>>> -      # telnet to the host
+>>> -      spawn telnet $HOST
+>>> -      expect -re "login:"
+>>> -
+>>> -      send "$RUSER\r"
+>>> -      expect -re "Password:"
+>>> +do_test()
+>>> +{
+>>> +	tst_resm TINFO "Starting"
+>>>    
+>>> -      send "$PASSWD\r"
+>>> -
+>>> -      send "PS1=\"$PROMPT\"\r"
+>>> -      # Wait for shell prompt
+>>> -      expect "$PROMPT"
+>>> +	for i in $(seq 1 ${LOOPCOUNT})
+>>> +	do
+>>> +		telnet_test || return 1
+>>> +	done
+>>> +}
+>>>    
+>>> -      # Run passwd command - and respond to its prompts
+>>> -      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$HOST \r"
+>>> -      # When shell prompt comes back, logout
+>>> +telnet_test()
+>>> +{
+>>> +	expect -c "
+>>> +		spawn telnet $RHOST
+>>> +		expect -re \"login:\"
+>>> +		send \"$RUSER\r\"
+>>> +		expect -re \"Password:\"
+>>> +		send \"$PASSWD\r\"
+>>> +
+>>> +		send \"LC_ALL=C ls -l /etc/hosts | wc -w > $RUSER.$RHOST \r\"
+>>> +		expect \"$RUSER@\"
+>> This part needs some extra checking for failed login, e.g. 'incorrect'
+>> password or connection timeout:
+>>
+>> expect -re "incorrect" {
+>>       exit 1
+>> } -re "$USERS@"
+>>
+>>
+> Good idea. Thanks.
+>
+>>> +		exp_send \"logout\r\"
+>>> +
+>> The below part can be changed to:
+>>           tst_resm TINFO "checking telnet status"
+>>           tst_rhost_run -s -c "grep -q 9 $RUSER.$RHOST"
+>>           tst_rhost_run -c "rm -f $RUSER.$RHOST"
+>>
+>> Note, 'tst_rhost_run' with '-s' option should exit with TBROK if remote
+>> command returns non-zero exit status, please find the following patch
+>> with the fix:
+>>
+>> [PATCH v2] lib/test_net.sh: fix 'tst_rhost_run -s' when errors occur.
+>>
+> Thank you. I have found the patch.
+>
+>>> +		send_user \"CHECKING TELNET STATUS\n\"
+>>> +
+>>> +		set nummatch [exec rsh -n -l $RUSER $RHOST \\
+>>> +			      \"grep -c 9 $RUSER.$RHOST\"]
+>>> +		if {\$nummatch==1} {
+>>> +			exec rsh -n -l $RUSER $RHOST \"rm -f $RUSER.$RHOST\"
+>>> +		} else {
+>>> +			exit 1
+>>> +		}
+>>> +	"
+>>> +}
+>>>    
+>>> -      expect "$PROMPT"
+>>> -      exp_send "logout\r"
+>>> +setup
+>>>    
+>>> -      send_user "CHECKING TELNET STATUS\n"
+>>> -      set nummatch [exec rsh -n -l $RUSER $HOST "cat $TESTLOG/$RUSER.$HOST|grep -c 9"]
+>>> -      if {$nummatch==1} {
+>>> -         send_user "$TC interactive Test Successful in LOOP $count\r"
+>>> -         exec rsh -n -l $RUSER $HOST "rm -f $TESTLOG/$RUSER.$HOST"
+>>> -      } else {
+>>> -         send_user "$TC interactive session failed\n"
+>>> -         exit 1
+>>> -      }
+>>> -   }
+>>> -}
+>>> +do_test
+>>> +if [ $? -ne 0 ]; then
+>>> +	tst_resm TFAIL "Test $TCID failed."
+>>> +else
+>>> +	tst_resm TPASS "Test $TCID successed."
+>> "'succeeded"
+>>
+> Yep.
+>
+>>> +fi
+>>>    
+>>> -send_user "\nTest PASSES\n\n"
+>>> -exit 0
+>>> +tst_exit
+>> Also, there is too much non-standard LTP output, especially if LOOPCOUNT
+>> is big. Could we send it to a file and only if there are some errors,
+>> print it. Any thoughts?
+>>
+> It is not bad, but we could not sure whether the test is being run when
+> we wait.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+For example, it could be the below messages on each step or something 
+more informative.
+
+tst_resm TINFO "login with telnet, step $i"
+
+expect ...
+
+tst_resm TINFO "checking telnet status"
+...
+
+Best regards,
+Alexey
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
