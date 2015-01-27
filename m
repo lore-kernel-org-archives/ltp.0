@@ -1,27 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Y9t9u-0001Rm-J9
-	for ltp-list@lists.sourceforge.net; Sat, 10 Jan 2015 10:20:42 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Y9t9s-0007v9-QO
-	for ltp-list@lists.sourceforge.net; Sat, 10 Jan 2015 10:20:42 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t0AAKYDb030686
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Sat, 10 Jan 2015 05:20:34 -0500
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id t0AAKXD0031138
-	for <ltp-list@lists.sourceforge.net>; Sat, 10 Jan 2015 05:20:33 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Sat, 10 Jan 2015 11:20:28 +0100
-Message-Id: <1420885229-25636-1-git-send-email-jstancek@redhat.com>
-Subject: [LTP] [PATCH] skip MSG_ERRQUEUE+tcp test on kernels < 3.17
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YG0n2-00072I-Uf
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 07:42:24 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YG0n1-0003Ud-Hs
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 07:42:24 +0000
+Message-ID: <1422344483.1619.52.camel@G08JYZSD130126.localdomain>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 27 Jan 2015 15:41:23 +0800
+In-Reply-To: <54C22A1A.2050906@oracle.com>
+References: <54B7D920.7050402@oracle.com>
+	<1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<1421818093-24202-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<54C22A1A.2050906@oracle.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v2 2/3] telnet: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,101 +27,178 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-MSG_ERRQUEUE support for tcp has been added in 3.17. [1][2][3]
-Skip testing this combination on prior kernels.
+Hi!
+On Fri, 2015-01-23 at 14:01 +0300, Alexey Kodanev wrote:
+> Hi!
+> On 21.01.2015 8:28, Zeng Linggang wrote:
+> > * Add 'TCID' and 'TST_TOTAL'.
+> > * Use 'test.sh'.
+> > * Delete some useless comment.
+> > * Some cleanup.
+> >
+> > Signed-off-by: Zeng Linggang<zenglg.jy@cn.fujitsu.com>
+> > ---
 
-[1] https://lkml.org/lkml/2006/9/18/182
-[2] f4713a3dfad045d46afcb9c2a7d0bba288920ed4
-[3] 4ed2d765dfaccff5ebdac68e2064b59125033a3b
+> > -} else {
+> > -   set LOOPCOUNT 25
+> > +	if [ -z $LOOPCOUNT ]; then
+> > +		LOOTCOUNT=25
+>                                             ^
+>                                             should be 'P' here
+> 
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/recv/recv01.c         |    9 ++++++++-
- testcases/kernel/syscalls/recvfrom/recvfrom01.c |    9 ++++++++-
- testcases/kernel/syscalls/recvmsg/recvmsg01.c   |    9 ++++++++-
- 3 files changed, 24 insertions(+), 3 deletions(-)
+What is the 'P' mean?
 
-diff --git a/testcases/kernel/syscalls/recv/recv01.c b/testcases/kernel/syscalls/recv/recv01.c
-index 3dc7a91..ad5f9f8 100644
---- a/testcases/kernel/syscalls/recv/recv01.c
-+++ b/testcases/kernel/syscalls/recv/recv01.c
-@@ -130,8 +130,15 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
- 		tst_count = 0;
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
--			tdat[testno].setup();
-+			if ((tst_kvercmp(3, 17, 0) < 0)
-+			    && (tdat[testno].flags & MSG_ERRQUEUE)
-+			    && (tdat[testno].type & SOCK_STREAM)) {
-+				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
-+						"it's supported from 3.17");
-+				continue;
-+			}
- 
-+			tdat[testno].setup();
- 			TEST(recv(s, tdat[testno].buf, tdat[testno].buflen,
- 				  tdat[testno].flags));
- 			if (TEST_RETURN > 0)
-diff --git a/testcases/kernel/syscalls/recvfrom/recvfrom01.c b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-index 8d0a2ee..843dfb1 100644
---- a/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-+++ b/testcases/kernel/syscalls/recvfrom/recvfrom01.c
-@@ -152,8 +152,15 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
- 		tst_count = 0;
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
--			tdat[testno].setup();
-+			if ((tst_kvercmp(3, 17, 0) < 0)
-+			    && (tdat[testno].flags & MSG_ERRQUEUE)
-+			    && (tdat[testno].type & SOCK_STREAM)) {
-+				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
-+						"it's supported from 3.17");
-+				continue;
-+			}
- 
-+			tdat[testno].setup();
- 			TEST(recvfrom(s, tdat[testno].buf, tdat[testno].buflen,
- 				      tdat[testno].flags, tdat[testno].from,
- 				      tdat[testno].salen));
-diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg01.c b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-index 42d4968..1216935 100644
---- a/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-+++ b/testcases/kernel/syscalls/recvmsg/recvmsg01.c
-@@ -208,10 +208,17 @@ int main(int argc, char *argv[])
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
- 		tst_count = 0;
- 		for (testno = 0; testno < TST_TOTAL; ++testno) {
-+			if ((tst_kvercmp(3, 17, 0) < 0)
-+			    && (tdat[testno].flags & MSG_ERRQUEUE)
-+			    && (tdat[testno].type & SOCK_STREAM)) {
-+				tst_resm(TINFO, "skip MSG_ERRQUEUE test, "
-+						"it's supported from 3.17");
-+				continue;
-+			}
-+
- 			tdat[testno].setup();
- 
- 			/* setup common to all tests */
--
- 			iov[0].iov_base = tdat[testno].buf;
- 			iov[0].iov_len = tdat[testno].buflen;
- 			msgdat.msg_name = tdat[testno].from;
--- 
-1.7.1
+> > +	fi
+> >   }
+> >   
+> > -# stty echo
+> > -send_user " Starting\n"
+> > -
+> > -# Do foreach host on command line
+> > -set count 0
+> > -while {$count < $LOOPCOUNT} {
+> > -   set count [expr $count+1]
+> > -   foreach HOST $RHOST {
+> > -      send_user "Host: $HOST\n"
+> > -
+> > -      # telnet to the host
+> > -      spawn telnet $HOST
+> > -      expect -re "login:"
+> > -
+> > -      send "$RUSER\r"
+> > -      expect -re "Password:"
+> > +do_test()
+> > +{
+> > +	tst_resm TINFO "Starting"
+> >   
+> > -      send "$PASSWD\r"
+> > -
+> > -      send "PS1=\"$PROMPT\"\r"
+> > -      # Wait for shell prompt
+> > -      expect "$PROMPT"
+> > +	for i in $(seq 1 ${LOOPCOUNT})
+> > +	do
+> > +		telnet_test || return 1
+> > +	done
+> > +}
+> >   
+> > -      # Run passwd command - and respond to its prompts
+> > -      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$HOST \r"
+> > -      # When shell prompt comes back, logout
+> > +telnet_test()
+> > +{
+> > +	expect -c "
+> > +		spawn telnet $RHOST
+> > +		expect -re \"login:\"
+> > +		send \"$RUSER\r\"
+> > +		expect -re \"Password:\"
+> > +		send \"$PASSWD\r\"
+> > +
+> > +		send \"LC_ALL=C ls -l /etc/hosts | wc -w > $RUSER.$RHOST \r\"
+> > +		expect \"$RUSER@\"
+> 
+> This part needs some extra checking for failed login, e.g. 'incorrect' 
+> password or connection timeout:
+> 
+> expect -re "incorrect" {
+>      exit 1
+> } -re "$USERS@"
+> 
+> 
+
+Good idea. Thanks.
+
+> > +		exp_send \"logout\r\"
+> > +
+> 
+> The below part can be changed to:
+>          tst_resm TINFO "checking telnet status"
+>          tst_rhost_run -s -c "grep -q 9 $RUSER.$RHOST"
+>          tst_rhost_run -c "rm -f $RUSER.$RHOST"
+> 
+> Note, 'tst_rhost_run' with '-s' option should exit with TBROK if remote 
+> command returns non-zero exit status, please find the following patch 
+> with the fix:
+> 
+> [PATCH v2] lib/test_net.sh: fix 'tst_rhost_run -s' when errors occur.
+> 
+
+Thank you. I have found the patch.
+
+> > +		send_user \"CHECKING TELNET STATUS\n\"
+> > +
+> > +		set nummatch [exec rsh -n -l $RUSER $RHOST \\
+> > +			      \"grep -c 9 $RUSER.$RHOST\"]
+> > +		if {\$nummatch==1} {
+> > +			exec rsh -n -l $RUSER $RHOST \"rm -f $RUSER.$RHOST\"
+> > +		} else {
+> > +			exit 1
+> > +		}
+> > +	"
+> > +}
+> >   
+> > -      expect "$PROMPT"
+> > -      exp_send "logout\r"
+> > +setup
+> >   
+> > -      send_user "CHECKING TELNET STATUS\n"
+> > -      set nummatch [exec rsh -n -l $RUSER $HOST "cat $TESTLOG/$RUSER.$HOST|grep -c 9"]
+> > -      if {$nummatch==1} {
+> > -         send_user "$TC interactive Test Successful in LOOP $count\r"
+> > -         exec rsh -n -l $RUSER $HOST "rm -f $TESTLOG/$RUSER.$HOST"
+> > -      } else {
+> > -         send_user "$TC interactive session failed\n"
+> > -         exit 1
+> > -      }
+> > -   }
+> > -}
+> > +do_test
+> > +if [ $? -ne 0 ]; then
+> > +	tst_resm TFAIL "Test $TCID failed."
+> > +else
+> > +	tst_resm TPASS "Test $TCID successed."
+> 
+> "'succeeded"
+> 
+
+Yep.
+
+> > +fi
+> >   
+> > -send_user "\nTest PASSES\n\n"
+> > -exit 0
+> > +tst_exit
+> 
+> Also, there is too much non-standard LTP output, especially if LOOPCOUNT 
+> is big. Could we send it to a file and only if there are some errors, 
+> print it. Any thoughts?
+> 
+
+It is not bad, but we could not sure whether the test is being run when
+we wait.
+
+Best regards,
+Zeng
+
+> Thanks,
+> Alexey
+> 
+
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming! The Go Parallel Website,
+Dive into the World of Parallel Programming. The Go Parallel Website,
 sponsored by Intel and developed in partnership with Slashdot Media, is your
 hub for all things parallel software development, from weekly thought
 leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
