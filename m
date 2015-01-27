@@ -1,24 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YEaj0-0006iF-Sr
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jan 2015 09:40:22 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YEaiw-0004vr-Kj
-	for ltp-list@lists.sourceforge.net; Fri, 23 Jan 2015 09:40:20 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t0N9dYr2006601
-	for <ltp-list@lists.sourceforge.net>; Fri, 23 Jan 2015 17:39:34 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 23 Jan 2015 17:36:12 +0800
-Message-ID: <1422005772-19099-7-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1422005772-19099-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1422005772-19099-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YG7cl-0001P3-NN
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 15:00:15 +0000
+Date: Tue, 27 Jan 2015 16:00:06 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150127150006.GE16759@rei.suse.de>
+References: <1422323457-184525-1-git-send-email-shengyong1@huawei.com>
+	<1422323457-184525-3-git-send-email-shengyong1@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 7/7] ipv6_lib: add it into default
+Content-Disposition: inline
+In-Reply-To: <1422323457-184525-3-git-send-email-shengyong1@huawei.com>
+Subject: Re: [LTP] [RESEND PATCH v3 2/4] lib/tst_fs_link_count.c: check fs
+ type and do not fill subdir if no limit
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,59 +26,126 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Sheng Yong <shengyong1@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-* Add ipv6_lib tests to scenario_groups/default.
+> Signed-off-by: Sheng Yong <shengyong1@huawei.com>
+> ---
+>  doc/test-writing-guidelines.txt |  5 ++++-
+>  lib/tst_fs_link_count.c         | 35 +++++++++++++++++++++++++++++++++--
+>  2 files changed, 37 insertions(+), 3 deletions(-)
+> 
+> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+> index a59fdd9..8f690f7 100644
+> --- a/doc/test-writing-guidelines.txt
+> +++ b/doc/test-writing-guidelines.txt
+> @@ -892,7 +892,10 @@ int tst_fs_fill_subdirs(void (*cleanup)(void), const char *dir);
+>  
+>  Try to get maximum number of subdirectories in directory.
+>  
+> -NOTE: This number depends on the filesystem 'dir' is on.
+> +NOTE: This number depends on the filesystem 'dir' is on. For current kernel,
+> +subdir limit is not availiable for all filesystems (availiable for ext2, ext3,
+> +minix, sysv and more). If the test runs on some other filesystems, like ramfs,
+> +tmpfs, it will always fail.
 
-* Currently I'm not very clear about some test
-  cases eg. asapi_04.c, so disable them. Later
-  I will add it subsequently.
+This sounds a bit confusing. Maybe it will be better to say:
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- runtest/ipv6_lib        | 8 ++++----
- scenario_groups/default | 1 +
- 2 files changed, 5 insertions(+), 4 deletions(-)
+it will not even try to reach the limit and return 0 (or -1 if that ends
+up the case).
 
-diff --git a/runtest/ipv6_lib b/runtest/ipv6_lib
-index 75614fb..4b49cb5 100644
---- a/runtest/ipv6_lib
-+++ b/runtest/ipv6_lib
-@@ -1,11 +1,11 @@
- #DESCRIPTION:IPV6 related tests
- in6_01 in6_01
- in6_02 in6_02
--getaddrinfo_01 getaddrinfo_01
-+#getaddrinfo_01 getaddrinfo_01
- asapi_01 asapi_01
- asapi_02 asapi_02
- asapi_03 asapi_03
--asapi_04 asapi_04
--asapi_05 asapi_05
--asapi_06 asapi_06
-+#asapi_04 asapi_04
-+#asapi_05 asapi_05
-+#asapi_06 asapi_06
- asapi_07 asapi_07
-diff --git a/scenario_groups/default b/scenario_groups/default
-index 3a55702..60b1b27 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -32,3 +32,4 @@ dma_thread_diotest
- cpuacct
- can
- cpuhotplug
-+ipv6_lib
+>  This function uses 'mkdir(2)' to create directories in 'dir' until it gets
+>  'EMLINK' or creates 65535 directories. If the limit is hit, the maximum number
+> diff --git a/lib/tst_fs_link_count.c b/lib/tst_fs_link_count.c
+> index 1b45f79..4a691bb 100644
+> --- a/lib/tst_fs_link_count.c
+> +++ b/lib/tst_fs_link_count.c
+> @@ -24,9 +24,24 @@
+>  #include "test.h"
+>  #include "usctest.h"
+>  #include "safe_macros.h"
+> +#include "tst_fs_type.h"
+>  
+>  #define MAX_SANE_HARD_LINKS	65535
+>  
+> +/*
+> + * filesystems whose subdir limit is less than MAX_SANE_HARD_LINKS
+> + * XXX: we cannot filter ext4 out, because ext2/ext3/ext4 have the
+> + * same magic number
+> + */
+> +const long subdir_limit_whitelist[] = {
+> +	TST_EXT2_OLD_MAGIC, TST_EXT2_MAGIC,    TST_EXT3_MAGIC,
+> +	TST_MINIX_MAGIC,    TST_MINIX_MAGIC2, TST_MINIX2_MAGIC,
+> +	TST_MINIX2_MAGIC2,  TST_MINIX3_MAGIC,  TST_UDF_MAGIC,
+> +	TST_SYSV2_MAGIC,    TST_SYSV4_MAGIC,   TST_UFS_MAGIC,
+> +	TST_UFS2_MAGIC,     TST_F2FS_MAGIC,    TST_NILFS_MAGIC,
+> +	TST_EXOFS_MAGIC
+> +};
+> +
+>  int tst_fs_fill_hardlinks(void (*cleanup) (void), const char *dir)
+>  {
+>  	unsigned int i, j;
+> @@ -88,9 +103,10 @@ max_hardlinks_cleanup:
+>  
+>  int tst_fs_fill_subdirs(void (*cleanup) (void), const char *dir)
+>  {
+> -	unsigned int i, j;
+> +	unsigned int i, j, whitelist_size;
+>  	char dirname[PATH_MAX];
+>  	struct stat s;
+> +	long fs_type;
+>  
+>  	if (stat(dir, &s) == -1 && errno == ENOENT)
+>  		SAFE_MKDIR(cleanup, dir, 0744);
+> @@ -99,6 +115,20 @@ int tst_fs_fill_subdirs(void (*cleanup) (void), const char *dir)
+>  	if (!S_ISDIR(s.st_mode))
+>  		tst_brkm(TBROK, cleanup, "%s is not directory", dir);
+>  
+> +	/* for current kernel, subdir limit is not availiable for all fs */
+> +	fs_type = tst_fs_type(cleanup, dir);
+> +
+> +	whitelist_size = ARRAY_SIZE(subdir_limit_whitelist);
+
+So you still use whitelist, I would have liked blacklist more because
+if, by any change, new filesystem with this limit will be added to
+kernel the test will be working as well, but either one needs to be
+update under certain conditions, so in the end either one is fine.
+
+> +	for (i = 0; i < whitelist_size; i++) {
+> +		if (fs_type == subdir_limit_whitelist[i])
+> +			break;
+> +	}
+> +	if (i == whitelist_size) {
+> +		tst_resm(TINFO, "subdir limit is not availiable for "
+> +			 "filesystem %s", tst_fs_type_name(fs_type));
+                         ^
+                         %s filesystem.
+> +		return -1;
+> +	}
+> +
+>  	for (i = 0; i < MAX_SANE_HARD_LINKS; i++) {
+>  		sprintf(dirname, "%s/testdir%d", dir, i);
+>  
+> @@ -134,7 +164,8 @@ int tst_fs_fill_subdirs(void (*cleanup) (void), const char *dir)
+>  
+>  	}
+>  
+> -	tst_resm(TINFO, "Failed reach the subdirs limit");
+> +	tst_resm(TINFO, "Failed reach the subdirs limit on filesystem %s",
+                                                           ^
+							on %s filesystem.
+> +		 tst_fs_type_name(fs_type));
+
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
