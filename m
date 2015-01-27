@@ -2,23 +2,43 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YG8p5-0004qF-Lv
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 16:17:03 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
+	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1YFuzs-0005Kt-Kw
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 01:31:16 +0000
+Received: from e8.ny.us.ibm.com ([32.97.182.138])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YG8p4-00027o-J6
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 16:17:03 +0000
-Message-ID: <54C7BA88.6060103@oracle.com>
-Date: Tue, 27 Jan 2015 19:19:20 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	(Exim 4.76) id 1YFuzq-0001sf-Ou
+	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 01:31:16 +0000
+Received: from /spool/local
+	by e8.ny.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+	Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
+	Mon, 26 Jan 2015 20:31:10 -0500
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com
+	[9.57.198.25])
+	by d01dlp01.pok.ibm.com (Postfix) with ESMTP id 53C3638C8026
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 26 Jan 2015 20:31:07 -0500 (EST)
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	t0R1V7Mm26673238
+	for <ltp-list@lists.sourceforge.net>; Tue, 27 Jan 2015 01:31:07 GMT
+Received: from d01av03.pok.ibm.com (localhost [127.0.0.1])
+	by d01av03.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	t0R1V7a4003277
+	for <ltp-list@lists.sourceforge.net>; Mon, 26 Jan 2015 20:31:07 -0500
+Received: from localhost.localdomain ([9.115.120.14])
+	by d01av03.pok.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	t0R1V6H9003232
+	for <ltp-list@lists.sourceforge.net>; Mon, 26 Jan 2015 20:31:06 -0500
+Date: Tue, 27 Jan 2015 09:31:04 +0800
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Message-ID: <20150127013104.GA3260@localhost.localdomain>
+References: <20150126094613.GA2055@localhost.localdomain>
+	<20150126134555.GC25601@rei.suse.de>
 MIME-Version: 1.0
-References: <54B7D920.7050402@oracle.com>	
-	<1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>	
-	<1421818093-24202-2-git-send-email-zenglg.jy@cn.fujitsu.com>	
-	<54C22A1A.2050906@oracle.com>
-	<1422344483.1619.52.camel@G08JYZSD130126.localdomain>
-In-Reply-To: <1422344483.1619.52.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH v2 2/3] telnet: Cleanup
+Content-Disposition: inline
+In-Reply-To: <20150126134555.GC25601@rei.suse.de>
+Subject: Re: [LTP] [PATCH] increasing buffer size for correct alignment
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,167 +51,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-On 01/27/2015 10:41 AM, Zeng Linggang wrote:
-> Hi!
-> On Fri, 2015-01-23 at 14:01 +0300, Alexey Kodanev wrote:
->> Hi!
->> On 21.01.2015 8:28, Zeng Linggang wrote:
->>> * Add 'TCID' and 'TST_TOTAL'.
->>> * Use 'test.sh'.
->>> * Delete some useless comment.
->>> * Some cleanup.
->>>
->>> Signed-off-by: Zeng Linggang<zenglg.jy@cn.fujitsu.com>
->>> ---
->>> -} else {
->>> -   set LOOPCOUNT 25
->>> +	if [ -z $LOOPCOUNT ]; then
->>> +		LOOTCOUNT=25
->>                                              ^
->>                                              should be 'P' here
->>
-> What is the 'P' mean?
+On Mon, Jan 26, 2015 at 02:45:56PM +0100, Cyril Hrubis wrote:
+> You are adding the page_size_mask to all uses of total_ram, wouldn't it
+> be easier to add it to the total_ram at the start of the function (and
+> remove the page_size_mask from the malloc() call that has it allready)?
+> 
+Yes, you're right. This is the new patch. Please review. Thanks.
 
-sorry, pointed to the wrong (empty) place... "LOOPCOUNT=25", not 
-"LOOTCOUNT=25"
 
->>> +	fi
->>>    }
->>>    
->>> -# stty echo
->>> -send_user " Starting\n"
->>> -
->>> -# Do foreach host on command line
->>> -set count 0
->>> -while {$count < $LOOPCOUNT} {
->>> -   set count [expr $count+1]
->>> -   foreach HOST $RHOST {
->>> -      send_user "Host: $HOST\n"
->>> -
->>> -      # telnet to the host
->>> -      spawn telnet $HOST
->>> -      expect -re "login:"
->>> -
->>> -      send "$RUSER\r"
->>> -      expect -re "Password:"
->>> +do_test()
->>> +{
->>> +	tst_resm TINFO "Starting"
->>>    
->>> -      send "$PASSWD\r"
->>> -
->>> -      send "PS1=\"$PROMPT\"\r"
->>> -      # Wait for shell prompt
->>> -      expect "$PROMPT"
->>> +	for i in $(seq 1 ${LOOPCOUNT})
->>> +	do
->>> +		telnet_test || return 1
->>> +	done
->>> +}
->>>    
->>> -      # Run passwd command - and respond to its prompts
->>> -      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$HOST \r"
->>> -      # When shell prompt comes back, logout
->>> +telnet_test()
->>> +{
->>> +	expect -c "
->>> +		spawn telnet $RHOST
->>> +		expect -re \"login:\"
->>> +		send \"$RUSER\r\"
->>> +		expect -re \"Password:\"
->>> +		send \"$PASSWD\r\"
->>> +
->>> +		send \"LC_ALL=C ls -l /etc/hosts | wc -w > $RUSER.$RHOST \r\"
->>> +		expect \"$RUSER@\"
->> This part needs some extra checking for failed login, e.g. 'incorrect'
->> password or connection timeout:
->>
->> expect -re "incorrect" {
->>       exit 1
->> } -re "$USERS@"
->>
->>
-> Good idea. Thanks.
->
->>> +		exp_send \"logout\r\"
->>> +
->> The below part can be changed to:
->>           tst_resm TINFO "checking telnet status"
->>           tst_rhost_run -s -c "grep -q 9 $RUSER.$RHOST"
->>           tst_rhost_run -c "rm -f $RUSER.$RHOST"
->>
->> Note, 'tst_rhost_run' with '-s' option should exit with TBROK if remote
->> command returns non-zero exit status, please find the following patch
->> with the fix:
->>
->> [PATCH v2] lib/test_net.sh: fix 'tst_rhost_run -s' when errors occur.
->>
-> Thank you. I have found the patch.
->
->>> +		send_user \"CHECKING TELNET STATUS\n\"
->>> +
->>> +		set nummatch [exec rsh -n -l $RUSER $RHOST \\
->>> +			      \"grep -c 9 $RUSER.$RHOST\"]
->>> +		if {\$nummatch==1} {
->>> +			exec rsh -n -l $RUSER $RHOST \"rm -f $RUSER.$RHOST\"
->>> +		} else {
->>> +			exit 1
->>> +		}
->>> +	"
->>> +}
->>>    
->>> -      expect "$PROMPT"
->>> -      exp_send "logout\r"
->>> +setup
->>>    
->>> -      send_user "CHECKING TELNET STATUS\n"
->>> -      set nummatch [exec rsh -n -l $RUSER $HOST "cat $TESTLOG/$RUSER.$HOST|grep -c 9"]
->>> -      if {$nummatch==1} {
->>> -         send_user "$TC interactive Test Successful in LOOP $count\r"
->>> -         exec rsh -n -l $RUSER $HOST "rm -f $TESTLOG/$RUSER.$HOST"
->>> -      } else {
->>> -         send_user "$TC interactive session failed\n"
->>> -         exit 1
->>> -      }
->>> -   }
->>> -}
->>> +do_test
->>> +if [ $? -ne 0 ]; then
->>> +	tst_resm TFAIL "Test $TCID failed."
->>> +else
->>> +	tst_resm TPASS "Test $TCID successed."
->> "'succeeded"
->>
-> Yep.
->
->>> +fi
->>>    
->>> -send_user "\nTest PASSES\n\n"
->>> -exit 0
->>> +tst_exit
->> Also, there is too much non-standard LTP output, especially if LOOPCOUNT
->> is big. Could we send it to a file and only if there are some errors,
->> print it. Any thoughts?
->>
-> It is not bad, but we could not sure whether the test is being run when
-> we wait.
+From 8d0521c7fbee1b46f27d8268fee28e9721c79cc2 Mon Sep 17 00:00:00 2001
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Mon, 26 Jan 2015 17:29:41 +0800
+Subject: [PATCH] increasing buffer size for correct alignment
 
-For example, it could be the below messages on each step or something 
-more informative.
+For align buffer address to the number specified by -a option in
+aio-stress, it needs to add page_size_mask extra length to total_ram
+before call allocation functions. Or it wouldn't be correct in this line
+after the allocation:
 
-tst_resm TINFO "login with telnet, step $i"
+         p = (char *)((intptr_t) (p + page_size_mask) & ~page_size_mask);
 
-expect ...
+Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+---
+ testcases/kernel/io/ltp-aiodio/aio-stress.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-tst_resm TINFO "checking telnet status"
-...
+diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+index 0b7148c..06a4953 100644
+--- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
++++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
+@@ -1019,8 +1019,11 @@ int setup_shared_mem(int num_threads, int num_files, int depth,
+ 	if (verify)
+ 		total_ram += padded_reclen;
+ 
++	/* for aligning buffer after the allocation */
++	total_ram += page_size_mask;
++
+ 	if (use_shm == USE_MALLOC) {
+-		p = malloc(total_ram + page_size_mask);
++		p = malloc(total_ram);
+ 	} else if (use_shm == USE_SHM) {
+ 		shm_id = shmget(IPC_PRIVATE, total_ram, IPC_CREAT | 0700);
+ 		if (shm_id < 0) {
+-- 
+1.9.3
 
-Best regards,
-Alexey
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
