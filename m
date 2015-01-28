@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YGmDK-0002Pb-47
-	for ltp-list@lists.sourceforge.net; Thu, 29 Jan 2015 10:20:42 +0000
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1YGNuv-00028D-6l
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 08:24:05 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YGmDH-0000GE-Uj
-	for ltp-list@lists.sourceforge.net; Thu, 29 Jan 2015 10:20:42 +0000
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 29 Jan 2015 18:19:31 +0800
-Message-ID: <1422526772-27693-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1422526772-27693-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <1422407961.13104.13.camel@G08JYZSD130126.localdomain>
-	<1422526772-27693-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YGNut-0004mq-6V
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 08:24:05 +0000
+Message-ID: <54C89C83.7000002@cn.fujitsu.com>
+Date: Wed, 28 Jan 2015 16:23:31 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v3 2/3] telnet: Cleanup
+References: <1421656612-15165-1-git-send-email-lijinyue@huawei.com>
+In-Reply-To: <1421656612-15165-1-git-send-email-lijinyue@huawei.com>
+Subject: Re: [LTP] [PATCH] controllers: disallow attaching kthreadd or
+ PF_THREAD_BOUND threads to cgroups on kernel > 3.4.0
+Reply-To: gaowanlong@cn.fujitsu.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,207 +29,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: Li Jinyue <lijinyue@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, dingguofu@huawei.com, zhanyongming@huawei.com
 
-* Add 'TCID' and 'TST_TOTAL'.
-* Use 'test.sh' and 'tst_check_cmds'.
-* Use 'test_net.sh'.
-* Delete some useless comment.
-* Some cleanup.
+On 01/19/2015 04:36 PM, Li Jinyue wrote:
+> For kernel commit c4c27fbdda4e8ba87806c415b6d15266b07bce4b,
+> disallow attaching kthreadd or PF_THREAD_BOUND threads to cgroups.
+> 
+> So, we kindly avoid to attach these threads in cgroup tests.
+> 
+> Signed-off-by: Li Jinyue <lijinyue@huawei.com>
+> ---
+>  testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+> index 30476bd..30fffb6 100755
+> --- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+> +++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+> @@ -186,6 +186,16 @@ case $attach_operation in
+>  	do
+>  		cur_pid=`sed -n "$i""p" $TMPFILE`
+>  		if [ -e /proc/$cur_pid/ ];then
+> +			#For kernel 3.4.0 and higher,kernel disallow attaching kthreadd or
+> +			#PF_THREAD_BOUND threads to cgroups.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/network/tcp_cmds/telnet/telnet01 | 160 +++++++++++++----------------
- 1 file changed, 72 insertions(+), 88 deletions(-)
+I check the current kernel and find that this flag already removed now, please check the following
+commit:
 
-diff --git a/testcases/network/tcp_cmds/telnet/telnet01 b/testcases/network/tcp_cmds/telnet/telnet01
-index 36ebf12..3648ee2 100755
---- a/testcases/network/tcp_cmds/telnet/telnet01
-+++ b/testcases/network/tcp_cmds/telnet/telnet01
-@@ -1,5 +1,4 @@
--#! /usr/bin/expect -f
--#*********************************************************************
-+#!/bin/sh
- #   Copyright (c) International Business Machines  Corp., 2000
- #
- #   This program is free software;  you can redistribute it and/or modify
-@@ -16,102 +15,87 @@
- #   along with this program;  if not, write to the Free Software
- #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- #
--#
--#
--#  FILE   : telnet
--#
--#  PURPOSE: Tests the basic functionality of `telnet`.
--#
- #  SETUP: The program `/usr/bin/expect' MUST be installed.
- #	  The PASSWD and RHOST variables MUST be set prior to execution.
- #
--#  HISTORY:
- #    03/01 Robbie Williamson (robbiew@us.ibm.com)
--#      -Ported
--#
--#*********************************************************************
--#
--# telnet perform a telnet session to each host in HOST_LIST with user
--#    RUSER for a count of LOOPCOUNT and does an ls -l /etc/hosts to
--#    verify that the telnet was established.
--#
--#*********************************************************************
--
--set TC telnet
--set TCtmp "/tmp"
--set SLEEPTIME 3
--set TESTLOG "$TCtmp"
--set PROMPT "Alpha Bravo"
--
--if [info exists env(RUSER)] {
--   set RUSER $env(RUSER)
--} else {
--   set RUSER root
--}
- 
--if [info exists env(PASSWD)] {
--   set PASSWD $env(PASSWD)
--} else {
--   set PASSWD .pasroot
--   send_user "PASSWD NOT SET:Using .pasroot as the PASSWD variable for $RUSER. \n"
--}
-+TCID="telnet01"
-+TST_TOTAL=1
-+. test.sh
-+. test_net.sh
-+
-+setup()
-+{
-+	tst_check_cmds telnet expect rsh
-+
-+	if [ -z $RUSER ]; then
-+		RUSER=root
-+	fi
-+
-+	if [ -z $PASSWD ]; then
-+		tst_brkm TCONF "Please set PASSWD for $RUSER."
-+	fi
- 
--if [info exists env(RHOST)] {
--   set RHOST $env(RHOST)
--} else {
--   send_user "Please set/export the RHOST variable. \n"
--   exit 1
-+	if [ -z $RHOST ]; then
-+		tst_brkm TCONF "Please set RHOST."
-+	fi
-+
-+	if [ -z $LOOPCOUNT ]; then
-+		LOOPCOUNT=25
-+	fi
- }
- 
--set timeout 90
-+do_test()
-+{
-+	tst_resm TINFO "Starting"
- 
--if [info exists env(LOOPCOUNT)] {
--   set LOOPCOUNT $env(LOOPCOUNT)
--} else {
--   set LOOPCOUNT 25
-+	for i in $(seq 1 ${LOOPCOUNT})
-+	do
-+		telnet_test || return 1
-+	done
- }
- 
--# stty echo
--send_user " Starting\n"
--
--# Do foreach host on command line
--set count 0
--while {$count < $LOOPCOUNT} {
--   set count [expr $count+1]
--   foreach HOST $RHOST {
--      send_user "Host: $HOST\n"
--
--      # telnet to the host
--      spawn telnet $HOST
--      expect -re "login:"
--
--      send "$RUSER\r"
--      expect -re "Password:"
--
--      send "$PASSWD\r"
--
--      send "PS1=\"$PROMPT\"\r"
--      # Wait for shell prompt
--      expect "$PROMPT"
--
--      # Run passwd command - and respond to its prompts
--      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$HOST \r"
--      # When shell prompt comes back, logout
--
--      expect "$PROMPT"
--      exp_send "logout\r"
--
--      send_user "CHECKING TELNET STATUS\n"
--      set nummatch [exec rsh -n -l $RUSER $HOST "cat $TESTLOG/$RUSER.$HOST|grep -c 9"]
--      if {$nummatch==1} {
--         send_user "$TC interactive Test Successful in LOOP $count\r"
--         exec rsh -n -l $RUSER $HOST "rm -f $TESTLOG/$RUSER.$HOST"
--      } else {
--         send_user "$TC interactive session failed\n"
--         exit 1
--      }
--   }
-+telnet_test()
-+{
-+	tst_resm TINFO "login with telnet($i/$LOOPCOUNT)"
-+
-+	expect -c "
-+		spawn telnet $RHOST
-+
-+		expect -re \"login:\"
-+		send \"$RUSER\r\"
-+
-+		expect -re \"Password:\"
-+		send \"$PASSWD\r\"
-+
-+		expect {
-+			\"incorrect\" {
-+				exit 1
-+			} \"$RUSER@\" {
-+				send \"LC_ALL=C ls -l /etc/hosts | \\
-+				       wc -w > $RUSER.$RHOST\rexit\r\";
-+				exp_continue}
-+		}
-+
-+	" > /dev/null
-+	if [ $? -ne 0 ]; then
-+		return 1
-+	fi
-+
-+	tst_resm TINFO "checking telnet status($i/$LOOPCOUNT)"
-+	[ $(tst_rhost_run -s -u $RUSER -c "grep -c 9 $RUSER.$RHOST") -ne 1 ] &&\
-+		return 1
-+	tst_rhost_run -u $RUSER -c "rm -f $RUSER.$RHOST"
- }
- 
--send_user "\nTest PASSES\n\n"
--exit 0
-+setup
-+
-+do_test
-+if [ $? -ne 0 ]; then
-+	tst_resm TFAIL "Test $TCID failed."
-+else
-+	tst_resm TPASS "Test $TCID succeeded."
-+fi
-+
-+tst_exit
--- 
-1.9.3
+commit 14a40ffccd6163bbcd1d6f32b28a88ffe6149fc6
+Author: Tejun Heo <tj@kernel.org>
+Date:   Tue Mar 19 13:45:20 2013 -0700
+
+    sched: replace PF_THREAD_BOUND with PF_NO_SETAFFINITY
+    
+    PF_THREAD_BOUND was originally used to mark kernel threads which were
+    bound to a specific CPU using kthread_bind() and a task with the flag
+    set allows cpus_allowed modifications only to itself.  Workqueue is
+    currently abusing it to prevent userland from meddling with
+    cpus_allowed of workqueue workers.
+
+
+> +			#kernel commit: c4c27fbdda4e8ba87806c415b6d15266b07bce4b
+> +			tst_kvercmp 3 4 0
+> +			if [ $? -ne 0 ]; then
+
+And where to go if tst_kvercmp failed and return -1?
+
+> +				thread_flag=`cat /proc/$cur_pid/stat | awk '{print $9}'`
+> +				if [ $cur_pid -eq 2 -o $((${thread_flag}&0x04000000)) -eq 67108864 ];then
+
+These magic numbers must at least be commented to be understand easily.
+
+Thanks,
+Wanlong Gao
+
+> +					continue
+> +				fi
+> +			fi
+>  			do_echo 1 1 "$cur_pid" /dev/cgroup/subgroup_1/tasks
+>  		fi
+>  	done
+> 
 
 
 ------------------------------------------------------------------------------
