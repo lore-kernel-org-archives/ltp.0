@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YG8zh-0005Q3-SL
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 16:28:01 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YGRQS-0001O2-PI
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 12:08:52 +0000
 Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YG8zg-0007R4-Qy
-	for ltp-list@lists.sourceforge.net; Tue, 27 Jan 2015 16:28:01 +0000
-Message-ID: <54C7BD1C.8020104@oracle.com>
-Date: Tue, 27 Jan 2015 19:30:20 +0300
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YGRQF-0003va-W8
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 12:08:52 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t0SC8YoX005017
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Jan 2015 12:08:35 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	t0SC8Xmf010443
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Jan 2015 12:08:34 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t0SC8XfF016933
+	for <ltp-list@lists.sourceforge.net>; Wed, 28 Jan 2015 12:08:33 GMT
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-MIME-Version: 1.0
-References: <54B7D920.7050402@oracle.com>	
-	<1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>	
-	<1421818093-24202-3-git-send-email-zenglg.jy@cn.fujitsu.com>	
-	<54C68975.8000709@oracle.com>
-	<1422350191.1619.77.camel@G08JYZSD130126.localdomain>
-In-Reply-To: <1422350191.1619.77.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH v2 3/3] iptables_tests.sh: Cleanup
+Date: Wed, 28 Jan 2015 15:10:51 +0300
+Message-Id: <1422447054-9775-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 1/4] network/stress/ftp: rename ftp4-* scripts
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,98 +35,1511 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On 01/27/2015 12:16 PM, Zeng Linggang wrote:
-> Hi!
-> On Mon, 2015-01-26 at 21:37 +0300, Alexey Kodanev wrote:
->> Hi!
->> On 01/21/2015 08:28 AM, Zeng Linggang wrote:
->>> * Use 'test.sh'.
->>> * Use 'tst_*' which defined in 'test.sh'.
->>> * Delete some useless comment.
->>> * Delete 'RC' and 'TFAILCNT'.
->>> * Some cleanup.
->>>
->>> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
->>> +	modprobe ip_tables > tst_iptables.out 2>&1
->>> +	if [ $? -ne 0 ]; then
->>> +		iptables -L > tst_iptables.out 2>&1
->>> +		if [ $? -ne 0 ]; then
->>> +			tst_brkm TBROK "no iptables support in kenrel."
->>>    		fi
->>>    	fi
->> May be I missed something, but why we need to send output to the file,
->> then, in case of errors, rewrite it with "iptables -L" command?
->>
-> The output file is really not necessary here. Maybe it just make our
-> screen clearer. I think we need more discussion.
->
->>> +	lsmod | grep "ip_tables" > tst_iptables.out 2>&1
->>> +	if [ $? -eq 0 ]; then
->>> +		iptables -F -t filter > tst_iptables.out 2>&1
->>> +		iptables -F -t nat > tst_iptables.out 2>&1
->>> +		iptables -F -t mangle > tst_iptables.out 2>&1
->>> +		rmmod -v ipt_limit ipt_multiport ipt_LOG ipt_REJECT \
->>> +			 iptable_mangle iptable_nat ip_conntrack \
->>> +			 iptable_filter ip_tables > tst_iptables.out 2>&1
->>>    	fi
->>> -	rm -fr $LTPTMP/tst_iptables.*
->>> -	return $RC
->>> +	tst_rmdir
->> And here, writing output to the file, then removing tmp dir.
->>
-> ...
->
->>> +	iptables -A INPUT -s 127.0.0.1 -p icmp -j DROP > tst_iptables.out 2>&1
->>> +	if [ $? -ne 0 ]; then
->>> +		tst_resm TFAIL "iptables command failed to append new rule."
->>> +		return
->>>    	fi
->> At least, we could print 'tst_iptables.out' if the command failed.
->>
-> OK. I will do that.
->
->>> +	ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
->>> +	if [ $? -ne 0 ]; then
->>> +		grep "100% packet loss" tst_iptables.out > tst_iptables.err 2>&1
->> The same with tst_iptables.err file.
->>
-> OK.
->
->>> +	iptables -F > tst_iptables.out 2>&1
->>> +	if [ $? -ne 0 ]; then
->>> +		tst_resm TFAIL "iptables did not flush all rules."
->>> +		return
->>>    	else
->>> -		tst_resm TINFO "$TCID: iptables logging succsess"
->>> -		tst_resm TPASS "$TCID: iptables can log packets to multiple ports."
->>> +		tst_resm TINFO "iptables logging succsess"
->>> +		tst_resm TPASS "iptables can log packets to multiple ports."
->>>    	fi
->> You don't need "else .. fi" block because you return in the first one.
->>
-> I think "else ... fi" is necessary when "$? -eq 0".
-> I should remove the 'return' here.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/stress/ftp/ftp-download-stress  |  349 +++++++++++++++++++++
+ testcases/network/stress/ftp/ftp-upload-stress    |  326 +++++++++++++++++++
+ testcases/network/stress/ftp/ftp4-download-stress |  349 ---------------------
+ testcases/network/stress/ftp/ftp4-upload-stress   |  326 -------------------
+ testcases/network/stress/ftp/ftp6-download-stress |   47 ---
+ testcases/network/stress/ftp/ftp6-upload-stress   |   47 ---
+ 6 files changed, 675 insertions(+), 769 deletions(-)
+ create mode 100644 testcases/network/stress/ftp/ftp-download-stress
+ create mode 100644 testcases/network/stress/ftp/ftp-upload-stress
+ delete mode 100644 testcases/network/stress/ftp/ftp4-download-stress
+ delete mode 100644 testcases/network/stress/ftp/ftp4-upload-stress
+ delete mode 100644 testcases/network/stress/ftp/ftp6-download-stress
+ delete mode 100644 testcases/network/stress/ftp/ftp6-upload-stress
 
-What I mean here is that you could write TINFO/TPASS messages without 
-"else":
-
-if [ $? -ne 0 ]; then
-     tst_resm TFAIL "error"
-     return
-fi
-
-tst_resm TPASS "success"
-...
-
-
-Thanks,
-Alexey
+diff --git a/testcases/network/stress/ftp/ftp-download-stress b/testcases/network/stress/ftp/ftp-download-stress
+new file mode 100644
+index 0000000..0e4812c
+--- /dev/null
++++ b/testcases/network/stress/ftp/ftp-download-stress
+@@ -0,0 +1,349 @@
++#!/bin/sh
++
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2005                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++##                                                                            ##
++##                                                                            ##
++################################################################################
++#
++# File:
++#   ftp4-download-stress
++#
++# Description:
++#   Stress test for ftp over IPv4
++#
++#   test01 - Verify the ftp server or the kernel is not down after
++#            a ftp client requests large data
++#   test02 - Verify the ftp server or the kernel is not down after
++#            many ftp clients request data asynchronously for a long time
++#
++# Author:
++#   Mitsuru Chinen <mitch@jp.ibm.com>
++#
++# History:
++#	Oct 19 2005 - Created (Mitsuru Chinen)
++#
++#-----------------------------------------------------------------------
++# Uncomment line below for debug output.
++#trace_logic=${trace_logic:-"set -x"}
++$trace_logic
++
++# Make sure the value of LTPROOT
++LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
++export LTPROOT
++
++# Total number of the test case
++TST_TOTAL=2
++export TST_TOTAL
++
++# The version of IP
++IP_VER=${IP_VER:-4}
++
++# Default of the test case ID and the test case count
++TCID=ftp${IP_VER}-download-stress
++TST_COUNT=0
++export TCID
++export TST_COUNT
++
++# Check the environmanet variable
++. check_envval || exit $TST_TOTAL
++
++# Dulation of the test [sec]
++NS_DURATION=${NS_DURATION:-3600}      # 1 hour
++
++# Quantity of the connection for multi connection test
++CONNECTION_TOTAL=${CONNECTION_TOTAL:-4000}
++
++# Big file size to upload/download in ftp tests (byte)
++DOWNLOAD_BIGFILESIZE=${DOWNLOAD_BIGFILESIZE:-2147483647}        # 2GB - 1byte
++
++# Regular file size to upload/download in ftp tests (byte)
++DOWNLOAD_REGFILESIZE=${DOWNLOAD_REGFILESIZE:-1048576}        # 1MB
++
++# The number of the test link where tests run
++LINK_NUM=${LINK_NUM:-0}
++
++# Network portion of the IPv4 address
++IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
++
++# Host portion of the IPv4 address on the local host
++LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
++
++# Host portion of the IPv4 address on the remote host
++RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
++
++# Network portion of the IPv6 address
++IPV6_NETWORK="fd00:1:1:1"
++
++# Host portion of the IPv6 address of the local host
++LHOST_IPV6_HOST=":2"
++
++# Host portion of the IPv6 address of the remote host
++RHOST_IPV6_HOST=":1"
++
++# The test file name for downloading
++TESTFILE="ftp-download-stress.txt"
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   do_cleanup
++#
++# Description:
++#   Clean up after running ftp stress test
++#
++#-----------------------------------------------------------------------
++do_cleanup()
++{
++    # Delete the test file
++    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
++
++    # Make sure to delete the temporary files
++    rm -f $message_file
++
++    # Initialize the interface
++    initialize_if lhost ${LINK_NUM}
++    initialize_if rhost ${LINK_NUM}
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   do_setup
++#
++# Description:
++#   Setup for the ftp stress tests
++#   - Assign IP address to the interfaces belong to the specified Link
++#   - Run a ftpd daemon for testing
++#   - Create keys for password-less login
++#
++# Set Values:
++#   lhost_addr:   IP address of the local host
++#   rhost_addr:   IP address of the remote host
++#   rhost_config: ftp_config at the remote host
++#
++#-----------------------------------------------------------------------
++do_setup()
++{
++    trap do_cleanup 0
++
++    # Check the environment variable FTP_DOWNLOAD_DIR is set
++    if [ x$FTP_DOWNLOAD_DIR = x ]; then
++	tst_resm TINFO "*) At this ftp stress test, the ftp server program does not run automatically. Please start the server manually and set the document root directory in the environment variable, FTP_DOWNLOAD_DIR."
++	tst_resm TBROK "The environment variable FTP_DOWNLOAD_DIR is not set"
++	exit 1
++    fi
++
++    # Initialize the interface
++    initialize_if lhost ${LINK_NUM}
++    initialize_if rhost ${LINK_NUM}
++
++    # Get the Interface name
++    lhost_ifname=`get_ifname lhost ${LINK_NUM}`
++    if [ $? -ne 0 ]; then
++	tst_resm TBROK "Failed to get the interface name at the local host"
++	exit $TST_TOTAL
++    fi
++
++    case $IP_VER in
++	4)
++	# Set IPv4 address to the interfaces
++	set_ipv4addr lhost $LINK_NUM ${IPV4_NETWORK} ${LHOST_IPV4_HOST}
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to add any IP address at the local host"
++	    exit 1
++	fi
++	set_ipv4addr rhost $LINK_NUM ${IPV4_NETWORK} ${RHOST_IPV4_HOST}
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to add any IP address at the remote host"
++	    exit 1
++	fi
++
++	lhost_addr="${IPV4_NETWORK}.${LHOST_IPV4_HOST}"
++	rhost_addr="${IPV4_NETWORK}.${RHOST_IPV4_HOST}"
++	check_icmpv4_connectivity $lhost_ifname $rhost_addr
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to ping to $rhost_addr"
++	    exit 1
++	fi
++	;;
++
++	6)
++	# Set IPv6 address to the interfaces
++	add_ipv6addr lhost $LINK_NUM ${IPV6_NETWORK} ${LHOST_IPV6_HOST}
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to add any IP address at the local host"
++	    exit 1
++	fi
++	add_ipv6addr rhost $LINK_NUM ${IPV6_NETWORK} ${RHOST_IPV6_HOST}
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to add any IP address at the remote host"
++	    exit 1
++	fi
++
++	lhost_addr="${IPV6_NETWORK}:${LHOST_IPV6_HOST}"
++	rhost_addr="${IPV6_NETWORK}:${RHOST_IPV6_HOST}"
++	check_icmpv6_connectivity $lhost_ifname $rhost_addr
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to ping to $rhost_addr"
++	    exit 1
++	fi
++	;;
++
++	*)
++	tst_resm TBROK "Unknown IP version: $IP_VER"
++	exit 1
++	;;
++    esac
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   test01
++#
++# Description:
++#   Verify the ftp server or the kernel is not down after a ftp
++#   client requests large data
++#
++#-----------------------------------------------------------------------
++test01()
++{
++    TCID=ftp${IP_VER}-download-stress01
++    TST_COUNT=1
++    tst_resm TINFO "Verify the ftp server or the kernel is not down after a ftp client requests data whose size is $DOWNLOAD_BIGFILESIZE byte via IPv${IP_VER}"
++
++    # Create a test file for download
++    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
++    create_file $FTP_DOWNLOAD_DIR/$TESTFILE $DOWNLOAD_BIGFILESIZE
++    if [ $? -ne 0 ]; then
++      tst_resm TBROK "Failed to create $FTP_DOWNLOAD_DIR/$TESTFILE"
++    fi
++
++    # Script name at the remote host
++    rmtscript="ftp-download-stress01-rmt"
++
++    # Run the script at the remote host
++    message_file=`mktemp -p $TMPDIR`
++    not_run_rmtscript=true
++    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
++	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
++	if [ $ret -eq 0 ]; then
++	    not_run_rmtscript=false
++	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $lhost_addr $TESTFILE" > $message_file
++	    break
++	fi
++    done
++
++    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
++
++    if $not_run_rmtscript ; then
++	tst_resm TBROK "Failed to run the test script at the remote host"
++	rm -f $message_file
++	exit 1
++    fi
++
++    if [ -s $message_file ]; then
++	tst_resm TFAIL "`cat $message_file`"
++	rm -f $message_file
++	return 1
++    else
++	tst_resm TPASS "Test is finished successfully."
++	rm -f $message_file
++	return 0
++    fi
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   test02
++#
++# Description:
++#   Verify the ftp server or the kernel is not down after many ftp
++#   clients request data asynchronously for a long time
++#
++#-----------------------------------------------------------------------
++test02()
++{
++    TCID=ftp${IP_VER}-download-stress02
++    TST_COUNT=2
++    tst_resm TINFO "Verify the ftp server or the kernel is not down after many ftp clients request data over IPv${IP_VER} asynchronously in ${NS_DURATION}[sec]"
++    tst_resm TINFO "The number of client is not over $CONNECTION_TOTAL"
++
++    # Create a test file for download
++    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
++    create_file $FTP_DOWNLOAD_DIR/$TESTFILE $DOWNLOAD_REGFILESIZE
++    if [ $? -ne 0 ]; then
++      tst_resm TBROK "Failed to create $FTP_DOWNLOAD_DIR/$TESTFILE"
++    fi
++
++    # Script name at the remote host
++    rmtscript="ftp-download-stress02-rmt"
++
++    # Run the script at the remote host
++    message_file=`mktemp -p $TMPDIR`
++    not_run_rmtscript=true
++    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
++	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
++	if [ $ret -eq 0 ]; then
++	    not_run_rmtscript=false
++	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $lhost_addr $TESTFILE $NS_DURATION $CONNECTION_TOTAL" > $message_file 2>/dev/null
++	    retval=$?
++	    break
++	fi
++    done
++
++    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
++
++    if $not_run_rmtscript ; then
++	tst_resm TBROK "Failed to run the test script at the remote host"
++	rm -f $message_file
++	exit 1
++    fi
++
++    if [ -s $message_file ]; then
++	tst_resm TFAIL "`cat $message_file`"
++	rm -f $message_file
++	return 1
++    else
++	tst_resm TPASS "Test is finished successfully."
++	rm -f $message_file
++	return 0
++    fi
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Main
++#
++# Exit Value:
++#   The number of the failure
++#
++#-----------------------------------------------------------------------
++
++RC=0
++do_setup
++test01 || RC=`expr $RC + 1`
++test02 || RC=`expr $RC + 1`
++
++exit $RC
+diff --git a/testcases/network/stress/ftp/ftp-upload-stress b/testcases/network/stress/ftp/ftp-upload-stress
+new file mode 100644
+index 0000000..9e3c8c7
+--- /dev/null
++++ b/testcases/network/stress/ftp/ftp-upload-stress
+@@ -0,0 +1,326 @@
++#!/bin/sh
++
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2005                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++##                                                                            ##
++##                                                                            ##
++################################################################################
++#
++# File:
++#   ftp-upload-stress-ipv4
++#
++# Description:
++#   Stress test for ftp over IPv4
++#
++#   test01 - Verify the ftp server or the kernel is not down after
++#            a ftp client puts large data
++#   test02 - Verify the ftp server or the kernel is not down after
++#            many ftp clients puts data asynchronously for a long time
++#
++# Author:
++#   Mitsuru Chinen <mitch@jp.ibm.com>
++#
++# History:
++#	Oct 19 2005 - Created (Mitsuru Chinen)
++#
++#-----------------------------------------------------------------------
++# Uncomment line below for debug output.
++#trace_logic=${trace_logic:-"set -x"}
++$trace_logic
++
++# Make sure the value of LTPROOT
++LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
++export LTPROOT
++
++# Total number of the test case
++TST_TOTAL=2
++export TST_TOTAL
++
++# The version of IP
++IP_VER=${IP_VER:-4}
++
++# Default of the test case ID and the test case count
++TCID=ftp${IP_VER}-upload-stress
++TST_COUNT=0
++export TCID
++export TST_COUNT
++
++# Check the environmanet variable
++. check_envval || exit $TST_TOTAL
++
++# Dulation of the test [sec]
++NS_DURATION=${NS_DURATION:-3600}      # 1 hour
++
++# Quantity of the connection for multi connection test
++CONNECTION_TOTAL=${CONNECTION_TOTAL:-4000}
++
++# The number of the test link where tests run
++LINK_NUM=0
++
++# Network portion of the IPv4 address
++IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
++
++# Host portion of the IPv4 address on the local host
++LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
++
++# Host portion of the IPv4 address on the remote host
++RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
++
++# Network portion of the IPv6 address
++IPV6_NETWORK="fd00:1:1:1"
++
++# Host portion of the IPv6 address of the local host
++LHOST_IPV6_HOST=":2"
++
++# Host portion of the IPv6 address of the remote host
++RHOST_IPV6_HOST=":1"
++
++# The test file name for uploading
++TESTFILE="ftp-upload-stress.txt"
++
++# Big file size to upload (byte)
++UPLOAD_BIGFILESIZE=${UPLOAD_BIGFILESIZE:-2147483647}  # 2GB - 1
++
++# Regular file size to upload(byte)
++UPLOAD_REGFILESIZE=${UPLOAD_REGFILESIZE:-1024}     # 1K byte
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   do_cleanup
++#
++# Description:
++#   Clean up after running ftp stress test
++#
++#-----------------------------------------------------------------------
++do_cleanup()
++{
++    # Delete the test file
++    rm -f $FTP_UPLOAD_DIR/${TESTFILE}*
++
++    # Make sure to delete the temporary files
++    rm -f $message_file
++
++    # Initialize the interface
++    initialize_if lhost ${LINK_NUM}
++    initialize_if rhost ${LINK_NUM}
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   do_setup
++#
++# Description:
++#   Setup for the ftp stress tests
++#   - Assign IP address to the interfaces belong to the specified Link
++#   - Run a ftpd daemon for testing
++#   - Create keys for password-less login
++#
++# Set Values:
++#   lhost_addr:   IP address of the local host
++#   rhost_addr:   IP address of the remote host
++#   rhost_config: ftp_config at the remote host
++#
++#-----------------------------------------------------------------------
++do_setup()
++{
++    trap do_cleanup 0
++
++    # Check the environment variable FTP_UPLOAD_DIR is set
++    if [ x$FTP_UPLOAD_DIR = x ]; then
++	tst_resm TINFO "*) At this ftp stress test, the ftp server program does not run automatically. Please start the server manually and set the document root directory in the environment variable, FTP_UPLOAD_DIR."
++	tst_resm TBROK "The environment variable FTP_UPLOAD_DIR is not set"
++	exit 1
++    fi
++
++    # Check the environment variable FTP_UPLOAD_URLDIR is set
++    if [ x$FTP_UPLOAD_URLDIR = x ]; then
++	tst_resm TINFO "*) At this ftp stress test, the ftp server program does not run automatically. Please start the server manually and set the directory part of the url in the environment variable, FTP_UPLOAD_URLDIR."
++	tst_resm TBROK "The environment variable FTP_UPLOAD_URLDIR is not set"
++	exit 1
++    fi
++
++    # Initialize the interface
++    initialize_if lhost ${LINK_NUM} || exit 1
++    initialize_if rhost ${LINK_NUM} || exit 1
++
++    # Get the Interface name
++    lhost_ifname=`get_ifname lhost ${LINK_NUM}` || exit 1
++
++    case $IP_VER in
++	4)
++	# Set IPv4 address to the interfaces
++	set_ipv4addr lhost ${LINK_NUM} ${IPV4_NETWORK} ${LHOST_IPV4_HOST} \
++	    || exit 1
++	set_ipv4addr rhost ${LINK_NUM} ${IPV4_NETWORK} ${RHOST_IPV4_HOST} \
++	    || exit 1
++
++	lhost_addr="${IPV4_NETWORK}.${LHOST_IPV4_HOST}"
++	rhost_addr="${IPV4_NETWORK}.${RHOST_IPV4_HOST}"
++	check_icmpv4_connectivity $lhost_ifname $rhost_addr
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to ping to $rhost_addr"
++	    exit 1
++	fi
++	;;
++
++	6)
++	# Set IPv6 address to the interfaces
++	add_ipv6addr lhost ${LINK_NUM} ${IPV6_NETWORK} ${LHOST_IPV6_HOST} \
++	    || exit 1
++	add_ipv6addr rhost ${LINK_NUM} ${IPV6_NETWORK} ${RHOST_IPV6_HOST} \
++	    || exit 1
++
++	lhost_addr="${IPV6_NETWORK}:${LHOST_IPV6_HOST}"
++	rhost_addr="${IPV6_NETWORK}:${RHOST_IPV6_HOST}"
++	check_icmpv6_connectivity $lhost_ifname $rhost_addr
++	if [ $? -ne 0 ]; then
++	    tst_resm TBROK "Failed to ping to $rhost_addr"
++	    exit 1
++	fi
++	;;
++
++	*)
++	tst_resm TBROK "Unknown IP version: $IP_VER"
++	exit 1
++	;;
++    esac
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   test01
++#
++# Description:
++#   Verify the ftp server or the kernel is not down after a ftp
++#   client uploads large data
++#
++#-----------------------------------------------------------------------
++test01()
++{
++    TCID=ftp${IP_VER}-upload-stress01
++    TST_COUNT=1
++    tst_resm TINFO "Verify the ftp server or the kernel is not down after a ftp client uploads data whose size is $UPLOAD_BIGFILESIZE byte via IPv${IP_VER}"
++
++    # Script name at the remote host
++    rmtscript="ftp-upload-stress01-rmt"
++
++    # Run the script at the remote host
++    message_file=`mktemp -p $TMPDIR`
++    not_run_rmtscript=true
++    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
++	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
++	if [ $ret -eq 0 ]; then
++	    not_run_rmtscript=false
++	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $lhost_addr $FTP_UPLOAD_URLDIR $TESTFILE $UPLOAD_BIGFILESIZE" > $message_file
++	    break
++	fi
++    done
++
++    rm -f $FTP_UPLOAD_DIR/$TESTFILE
++
++    if $not_run_rmtscript ; then
++	tst_resm TBROK "Failed to run the test script at the remote host"
++	rm -f $message_file
++	exit 1
++    fi
++
++    if [ -s $message_file ]; then
++	tst_resm TFAIL "`cat $message_file`"
++	rm -f $message_file
++	return 1
++    else
++	tst_resm TPASS "Test is finished successfully."
++	rm -f $message_file
++	return 0
++    fi
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Function:
++#   test02
++#
++# Description:
++#   Verify the ftp server or the kernel is not down after many ftp
++#   clients uploads data asynchronously for a long time
++#
++#-----------------------------------------------------------------------
++test02()
++{
++    TCID=ftp${IP_VER}-upload-stress02
++    TST_COUNT=2
++    tst_resm TINFO "Verify the ftp server or the kernel is not down after many ftp clients uploads data over IPv${IP_VER} asynchronously in ${NS_DURATION}[sec]"
++    tst_resm TINFO "The number of client is not over $CONNECTION_TOTAL"
++
++    # Script name at the remote host
++    rmtscript="ftp-upload-stress02-rmt"
++
++    # Run the script at the remote host
++    message_file=`mktemp -p $TMPDIR`
++    not_run_rmtscript=true
++    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
++	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
++	if [ $ret -eq 0 ]; then
++	    not_run_rmtscript=false
++	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $lhost_addr $FTP_UPLOAD_URLDIR $TESTFILE $UPLOAD_REGFILESIZE $NS_DURATION $CONNECTION_TOTAL" > $message_file 2>/dev/null
++	    break
++	fi
++    done
++
++    rm -f $FTP_UPLOAD_DIR/${TESTFILE}*
++
++    if $not_run_rmtscript ; then
++	tst_resm TBROK "Failed to run the test script at the remote host"
++	rm -f $message_file
++	exit 1
++    fi
++
++    if [ -s $message_file ]; then
++	tst_resm TFAIL "`cat $message_file`"
++	rm -f $message_file
++	return 1
++    else
++	tst_resm TPASS "Test is finished successfully."
++	rm -f $message_file
++	return 0
++    fi
++}
++
++
++#-----------------------------------------------------------------------
++#
++# Main
++#
++# Exit Value:
++#   The number of the failure
++#
++#-----------------------------------------------------------------------
++
++RC=0
++do_setup
++test01 || RC=`expr $RC + 1`
++test02 || RC=`expr $RC + 1`
++
++exit $RC
+diff --git a/testcases/network/stress/ftp/ftp4-download-stress b/testcases/network/stress/ftp/ftp4-download-stress
+deleted file mode 100644
+index 0e4812c..0000000
+--- a/testcases/network/stress/ftp/ftp4-download-stress
++++ /dev/null
+@@ -1,349 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   ftp4-download-stress
+-#
+-# Description:
+-#   Stress test for ftp over IPv4
+-#
+-#   test01 - Verify the ftp server or the kernel is not down after
+-#            a ftp client requests large data
+-#   test02 - Verify the ftp server or the kernel is not down after
+-#            many ftp clients request data asynchronously for a long time
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Total number of the test case
+-TST_TOTAL=2
+-export TST_TOTAL
+-
+-# The version of IP
+-IP_VER=${IP_VER:-4}
+-
+-# Default of the test case ID and the test case count
+-TCID=ftp${IP_VER}-download-stress
+-TST_COUNT=0
+-export TCID
+-export TST_COUNT
+-
+-# Check the environmanet variable
+-. check_envval || exit $TST_TOTAL
+-
+-# Dulation of the test [sec]
+-NS_DURATION=${NS_DURATION:-3600}      # 1 hour
+-
+-# Quantity of the connection for multi connection test
+-CONNECTION_TOTAL=${CONNECTION_TOTAL:-4000}
+-
+-# Big file size to upload/download in ftp tests (byte)
+-DOWNLOAD_BIGFILESIZE=${DOWNLOAD_BIGFILESIZE:-2147483647}        # 2GB - 1byte
+-
+-# Regular file size to upload/download in ftp tests (byte)
+-DOWNLOAD_REGFILESIZE=${DOWNLOAD_REGFILESIZE:-1048576}        # 1MB
+-
+-# The number of the test link where tests run
+-LINK_NUM=${LINK_NUM:-0}
+-
+-# Network portion of the IPv4 address
+-IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
+-
+-# Host portion of the IPv4 address on the local host
+-LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
+-
+-# Host portion of the IPv4 address on the remote host
+-RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
+-
+-# Network portion of the IPv6 address
+-IPV6_NETWORK="fd00:1:1:1"
+-
+-# Host portion of the IPv6 address of the local host
+-LHOST_IPV6_HOST=":2"
+-
+-# Host portion of the IPv6 address of the remote host
+-RHOST_IPV6_HOST=":1"
+-
+-# The test file name for downloading
+-TESTFILE="ftp-download-stress.txt"
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   do_cleanup
+-#
+-# Description:
+-#   Clean up after running ftp stress test
+-#
+-#-----------------------------------------------------------------------
+-do_cleanup()
+-{
+-    # Delete the test file
+-    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
+-
+-    # Make sure to delete the temporary files
+-    rm -f $message_file
+-
+-    # Initialize the interface
+-    initialize_if lhost ${LINK_NUM}
+-    initialize_if rhost ${LINK_NUM}
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   do_setup
+-#
+-# Description:
+-#   Setup for the ftp stress tests
+-#   - Assign IP address to the interfaces belong to the specified Link
+-#   - Run a ftpd daemon for testing
+-#   - Create keys for password-less login
+-#
+-# Set Values:
+-#   lhost_addr:   IP address of the local host
+-#   rhost_addr:   IP address of the remote host
+-#   rhost_config: ftp_config at the remote host
+-#
+-#-----------------------------------------------------------------------
+-do_setup()
+-{
+-    trap do_cleanup 0
+-
+-    # Check the environment variable FTP_DOWNLOAD_DIR is set
+-    if [ x$FTP_DOWNLOAD_DIR = x ]; then
+-	tst_resm TINFO "*) At this ftp stress test, the ftp server program does not run automatically. Please start the server manually and set the document root directory in the environment variable, FTP_DOWNLOAD_DIR."
+-	tst_resm TBROK "The environment variable FTP_DOWNLOAD_DIR is not set"
+-	exit 1
+-    fi
+-
+-    # Initialize the interface
+-    initialize_if lhost ${LINK_NUM}
+-    initialize_if rhost ${LINK_NUM}
+-
+-    # Get the Interface name
+-    lhost_ifname=`get_ifname lhost ${LINK_NUM}`
+-    if [ $? -ne 0 ]; then
+-	tst_resm TBROK "Failed to get the interface name at the local host"
+-	exit $TST_TOTAL
+-    fi
+-
+-    case $IP_VER in
+-	4)
+-	# Set IPv4 address to the interfaces
+-	set_ipv4addr lhost $LINK_NUM ${IPV4_NETWORK} ${LHOST_IPV4_HOST}
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to add any IP address at the local host"
+-	    exit 1
+-	fi
+-	set_ipv4addr rhost $LINK_NUM ${IPV4_NETWORK} ${RHOST_IPV4_HOST}
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to add any IP address at the remote host"
+-	    exit 1
+-	fi
+-
+-	lhost_addr="${IPV4_NETWORK}.${LHOST_IPV4_HOST}"
+-	rhost_addr="${IPV4_NETWORK}.${RHOST_IPV4_HOST}"
+-	check_icmpv4_connectivity $lhost_ifname $rhost_addr
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to ping to $rhost_addr"
+-	    exit 1
+-	fi
+-	;;
+-
+-	6)
+-	# Set IPv6 address to the interfaces
+-	add_ipv6addr lhost $LINK_NUM ${IPV6_NETWORK} ${LHOST_IPV6_HOST}
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to add any IP address at the local host"
+-	    exit 1
+-	fi
+-	add_ipv6addr rhost $LINK_NUM ${IPV6_NETWORK} ${RHOST_IPV6_HOST}
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to add any IP address at the remote host"
+-	    exit 1
+-	fi
+-
+-	lhost_addr="${IPV6_NETWORK}:${LHOST_IPV6_HOST}"
+-	rhost_addr="${IPV6_NETWORK}:${RHOST_IPV6_HOST}"
+-	check_icmpv6_connectivity $lhost_ifname $rhost_addr
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to ping to $rhost_addr"
+-	    exit 1
+-	fi
+-	;;
+-
+-	*)
+-	tst_resm TBROK "Unknown IP version: $IP_VER"
+-	exit 1
+-	;;
+-    esac
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   test01
+-#
+-# Description:
+-#   Verify the ftp server or the kernel is not down after a ftp
+-#   client requests large data
+-#
+-#-----------------------------------------------------------------------
+-test01()
+-{
+-    TCID=ftp${IP_VER}-download-stress01
+-    TST_COUNT=1
+-    tst_resm TINFO "Verify the ftp server or the kernel is not down after a ftp client requests data whose size is $DOWNLOAD_BIGFILESIZE byte via IPv${IP_VER}"
+-
+-    # Create a test file for download
+-    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
+-    create_file $FTP_DOWNLOAD_DIR/$TESTFILE $DOWNLOAD_BIGFILESIZE
+-    if [ $? -ne 0 ]; then
+-      tst_resm TBROK "Failed to create $FTP_DOWNLOAD_DIR/$TESTFILE"
+-    fi
+-
+-    # Script name at the remote host
+-    rmtscript="ftp-download-stress01-rmt"
+-
+-    # Run the script at the remote host
+-    message_file=`mktemp -p $TMPDIR`
+-    not_run_rmtscript=true
+-    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
+-	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
+-	if [ $ret -eq 0 ]; then
+-	    not_run_rmtscript=false
+-	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $lhost_addr $TESTFILE" > $message_file
+-	    break
+-	fi
+-    done
+-
+-    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
+-
+-    if $not_run_rmtscript ; then
+-	tst_resm TBROK "Failed to run the test script at the remote host"
+-	rm -f $message_file
+-	exit 1
+-    fi
+-
+-    if [ -s $message_file ]; then
+-	tst_resm TFAIL "`cat $message_file`"
+-	rm -f $message_file
+-	return 1
+-    else
+-	tst_resm TPASS "Test is finished successfully."
+-	rm -f $message_file
+-	return 0
+-    fi
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   test02
+-#
+-# Description:
+-#   Verify the ftp server or the kernel is not down after many ftp
+-#   clients request data asynchronously for a long time
+-#
+-#-----------------------------------------------------------------------
+-test02()
+-{
+-    TCID=ftp${IP_VER}-download-stress02
+-    TST_COUNT=2
+-    tst_resm TINFO "Verify the ftp server or the kernel is not down after many ftp clients request data over IPv${IP_VER} asynchronously in ${NS_DURATION}[sec]"
+-    tst_resm TINFO "The number of client is not over $CONNECTION_TOTAL"
+-
+-    # Create a test file for download
+-    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
+-    create_file $FTP_DOWNLOAD_DIR/$TESTFILE $DOWNLOAD_REGFILESIZE
+-    if [ $? -ne 0 ]; then
+-      tst_resm TBROK "Failed to create $FTP_DOWNLOAD_DIR/$TESTFILE"
+-    fi
+-
+-    # Script name at the remote host
+-    rmtscript="ftp-download-stress02-rmt"
+-
+-    # Run the script at the remote host
+-    message_file=`mktemp -p $TMPDIR`
+-    not_run_rmtscript=true
+-    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
+-	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
+-	if [ $ret -eq 0 ]; then
+-	    not_run_rmtscript=false
+-	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $lhost_addr $TESTFILE $NS_DURATION $CONNECTION_TOTAL" > $message_file 2>/dev/null
+-	    retval=$?
+-	    break
+-	fi
+-    done
+-
+-    rm -f $FTP_DOWNLOAD_DIR/$TESTFILE
+-
+-    if $not_run_rmtscript ; then
+-	tst_resm TBROK "Failed to run the test script at the remote host"
+-	rm -f $message_file
+-	exit 1
+-    fi
+-
+-    if [ -s $message_file ]; then
+-	tst_resm TFAIL "`cat $message_file`"
+-	rm -f $message_file
+-	return 1
+-    else
+-	tst_resm TPASS "Test is finished successfully."
+-	rm -f $message_file
+-	return 0
+-    fi
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Main
+-#
+-# Exit Value:
+-#   The number of the failure
+-#
+-#-----------------------------------------------------------------------
+-
+-RC=0
+-do_setup
+-test01 || RC=`expr $RC + 1`
+-test02 || RC=`expr $RC + 1`
+-
+-exit $RC
+diff --git a/testcases/network/stress/ftp/ftp4-upload-stress b/testcases/network/stress/ftp/ftp4-upload-stress
+deleted file mode 100644
+index 9e3c8c7..0000000
+--- a/testcases/network/stress/ftp/ftp4-upload-stress
++++ /dev/null
+@@ -1,326 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   ftp-upload-stress-ipv4
+-#
+-# Description:
+-#   Stress test for ftp over IPv4
+-#
+-#   test01 - Verify the ftp server or the kernel is not down after
+-#            a ftp client puts large data
+-#   test02 - Verify the ftp server or the kernel is not down after
+-#            many ftp clients puts data asynchronously for a long time
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+-export LTPROOT
+-
+-# Total number of the test case
+-TST_TOTAL=2
+-export TST_TOTAL
+-
+-# The version of IP
+-IP_VER=${IP_VER:-4}
+-
+-# Default of the test case ID and the test case count
+-TCID=ftp${IP_VER}-upload-stress
+-TST_COUNT=0
+-export TCID
+-export TST_COUNT
+-
+-# Check the environmanet variable
+-. check_envval || exit $TST_TOTAL
+-
+-# Dulation of the test [sec]
+-NS_DURATION=${NS_DURATION:-3600}      # 1 hour
+-
+-# Quantity of the connection for multi connection test
+-CONNECTION_TOTAL=${CONNECTION_TOTAL:-4000}
+-
+-# The number of the test link where tests run
+-LINK_NUM=0
+-
+-# Network portion of the IPv4 address
+-IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
+-
+-# Host portion of the IPv4 address on the local host
+-LHOST_IPV4_HOST=${LHOST_IPV4_HOST:-"2"}
+-
+-# Host portion of the IPv4 address on the remote host
+-RHOST_IPV4_HOST=${RHOST_IPV4_HOST:-"1"}
+-
+-# Network portion of the IPv6 address
+-IPV6_NETWORK="fd00:1:1:1"
+-
+-# Host portion of the IPv6 address of the local host
+-LHOST_IPV6_HOST=":2"
+-
+-# Host portion of the IPv6 address of the remote host
+-RHOST_IPV6_HOST=":1"
+-
+-# The test file name for uploading
+-TESTFILE="ftp-upload-stress.txt"
+-
+-# Big file size to upload (byte)
+-UPLOAD_BIGFILESIZE=${UPLOAD_BIGFILESIZE:-2147483647}  # 2GB - 1
+-
+-# Regular file size to upload(byte)
+-UPLOAD_REGFILESIZE=${UPLOAD_REGFILESIZE:-1024}     # 1K byte
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   do_cleanup
+-#
+-# Description:
+-#   Clean up after running ftp stress test
+-#
+-#-----------------------------------------------------------------------
+-do_cleanup()
+-{
+-    # Delete the test file
+-    rm -f $FTP_UPLOAD_DIR/${TESTFILE}*
+-
+-    # Make sure to delete the temporary files
+-    rm -f $message_file
+-
+-    # Initialize the interface
+-    initialize_if lhost ${LINK_NUM}
+-    initialize_if rhost ${LINK_NUM}
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   do_setup
+-#
+-# Description:
+-#   Setup for the ftp stress tests
+-#   - Assign IP address to the interfaces belong to the specified Link
+-#   - Run a ftpd daemon for testing
+-#   - Create keys for password-less login
+-#
+-# Set Values:
+-#   lhost_addr:   IP address of the local host
+-#   rhost_addr:   IP address of the remote host
+-#   rhost_config: ftp_config at the remote host
+-#
+-#-----------------------------------------------------------------------
+-do_setup()
+-{
+-    trap do_cleanup 0
+-
+-    # Check the environment variable FTP_UPLOAD_DIR is set
+-    if [ x$FTP_UPLOAD_DIR = x ]; then
+-	tst_resm TINFO "*) At this ftp stress test, the ftp server program does not run automatically. Please start the server manually and set the document root directory in the environment variable, FTP_UPLOAD_DIR."
+-	tst_resm TBROK "The environment variable FTP_UPLOAD_DIR is not set"
+-	exit 1
+-    fi
+-
+-    # Check the environment variable FTP_UPLOAD_URLDIR is set
+-    if [ x$FTP_UPLOAD_URLDIR = x ]; then
+-	tst_resm TINFO "*) At this ftp stress test, the ftp server program does not run automatically. Please start the server manually and set the directory part of the url in the environment variable, FTP_UPLOAD_URLDIR."
+-	tst_resm TBROK "The environment variable FTP_UPLOAD_URLDIR is not set"
+-	exit 1
+-    fi
+-
+-    # Initialize the interface
+-    initialize_if lhost ${LINK_NUM} || exit 1
+-    initialize_if rhost ${LINK_NUM} || exit 1
+-
+-    # Get the Interface name
+-    lhost_ifname=`get_ifname lhost ${LINK_NUM}` || exit 1
+-
+-    case $IP_VER in
+-	4)
+-	# Set IPv4 address to the interfaces
+-	set_ipv4addr lhost ${LINK_NUM} ${IPV4_NETWORK} ${LHOST_IPV4_HOST} \
+-	    || exit 1
+-	set_ipv4addr rhost ${LINK_NUM} ${IPV4_NETWORK} ${RHOST_IPV4_HOST} \
+-	    || exit 1
+-
+-	lhost_addr="${IPV4_NETWORK}.${LHOST_IPV4_HOST}"
+-	rhost_addr="${IPV4_NETWORK}.${RHOST_IPV4_HOST}"
+-	check_icmpv4_connectivity $lhost_ifname $rhost_addr
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to ping to $rhost_addr"
+-	    exit 1
+-	fi
+-	;;
+-
+-	6)
+-	# Set IPv6 address to the interfaces
+-	add_ipv6addr lhost ${LINK_NUM} ${IPV6_NETWORK} ${LHOST_IPV6_HOST} \
+-	    || exit 1
+-	add_ipv6addr rhost ${LINK_NUM} ${IPV6_NETWORK} ${RHOST_IPV6_HOST} \
+-	    || exit 1
+-
+-	lhost_addr="${IPV6_NETWORK}:${LHOST_IPV6_HOST}"
+-	rhost_addr="${IPV6_NETWORK}:${RHOST_IPV6_HOST}"
+-	check_icmpv6_connectivity $lhost_ifname $rhost_addr
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to ping to $rhost_addr"
+-	    exit 1
+-	fi
+-	;;
+-
+-	*)
+-	tst_resm TBROK "Unknown IP version: $IP_VER"
+-	exit 1
+-	;;
+-    esac
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   test01
+-#
+-# Description:
+-#   Verify the ftp server or the kernel is not down after a ftp
+-#   client uploads large data
+-#
+-#-----------------------------------------------------------------------
+-test01()
+-{
+-    TCID=ftp${IP_VER}-upload-stress01
+-    TST_COUNT=1
+-    tst_resm TINFO "Verify the ftp server or the kernel is not down after a ftp client uploads data whose size is $UPLOAD_BIGFILESIZE byte via IPv${IP_VER}"
+-
+-    # Script name at the remote host
+-    rmtscript="ftp-upload-stress01-rmt"
+-
+-    # Run the script at the remote host
+-    message_file=`mktemp -p $TMPDIR`
+-    not_run_rmtscript=true
+-    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
+-	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
+-	if [ $ret -eq 0 ]; then
+-	    not_run_rmtscript=false
+-	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $lhost_addr $FTP_UPLOAD_URLDIR $TESTFILE $UPLOAD_BIGFILESIZE" > $message_file
+-	    break
+-	fi
+-    done
+-
+-    rm -f $FTP_UPLOAD_DIR/$TESTFILE
+-
+-    if $not_run_rmtscript ; then
+-	tst_resm TBROK "Failed to run the test script at the remote host"
+-	rm -f $message_file
+-	exit 1
+-    fi
+-
+-    if [ -s $message_file ]; then
+-	tst_resm TFAIL "`cat $message_file`"
+-	rm -f $message_file
+-	return 1
+-    else
+-	tst_resm TPASS "Test is finished successfully."
+-	rm -f $message_file
+-	return 0
+-    fi
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function:
+-#   test02
+-#
+-# Description:
+-#   Verify the ftp server or the kernel is not down after many ftp
+-#   clients uploads data asynchronously for a long time
+-#
+-#-----------------------------------------------------------------------
+-test02()
+-{
+-    TCID=ftp${IP_VER}-upload-stress02
+-    TST_COUNT=2
+-    tst_resm TINFO "Verify the ftp server or the kernel is not down after many ftp clients uploads data over IPv${IP_VER} asynchronously in ${NS_DURATION}[sec]"
+-    tst_resm TINFO "The number of client is not over $CONNECTION_TOTAL"
+-
+-    # Script name at the remote host
+-    rmtscript="ftp-upload-stress02-rmt"
+-
+-    # Run the script at the remote host
+-    message_file=`mktemp -p $TMPDIR`
+-    not_run_rmtscript=true
+-    for rmtdir in ${LTPROOT}/testcases/bin ${PWD} ; do
+-	ret=`$LTP_RSH $RHOST 'test -x '${rmtdir}/${rmtscript}' ; echo $?'`
+-	if [ $ret -eq 0 ]; then
+-	    not_run_rmtscript=false
+-	    $LTP_RSH $RHOST "${rmtdir}/${rmtscript} $lhost_addr $FTP_UPLOAD_URLDIR $TESTFILE $UPLOAD_REGFILESIZE $NS_DURATION $CONNECTION_TOTAL" > $message_file 2>/dev/null
+-	    break
+-	fi
+-    done
+-
+-    rm -f $FTP_UPLOAD_DIR/${TESTFILE}*
+-
+-    if $not_run_rmtscript ; then
+-	tst_resm TBROK "Failed to run the test script at the remote host"
+-	rm -f $message_file
+-	exit 1
+-    fi
+-
+-    if [ -s $message_file ]; then
+-	tst_resm TFAIL "`cat $message_file`"
+-	rm -f $message_file
+-	return 1
+-    else
+-	tst_resm TPASS "Test is finished successfully."
+-	rm -f $message_file
+-	return 0
+-    fi
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Main
+-#
+-# Exit Value:
+-#   The number of the failure
+-#
+-#-----------------------------------------------------------------------
+-
+-RC=0
+-do_setup
+-test01 || RC=`expr $RC + 1`
+-test02 || RC=`expr $RC + 1`
+-
+-exit $RC
+diff --git a/testcases/network/stress/ftp/ftp6-download-stress b/testcases/network/stress/ftp/ftp6-download-stress
+deleted file mode 100644
+index 51f938c..0000000
+--- a/testcases/network/stress/ftp/ftp6-download-stress
++++ /dev/null
+@@ -1,47 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   ftp6-download-stress
+-#
+-# Description:
+-#   This script is the stress test for ftp over IPv6
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# The version of IP
+-IP_VER=6
+-
+-. ftp4-download-stress
+diff --git a/testcases/network/stress/ftp/ftp6-upload-stress b/testcases/network/stress/ftp/ftp6-upload-stress
+deleted file mode 100644
+index dff0f8f..0000000
+--- a/testcases/network/stress/ftp/ftp6-upload-stress
++++ /dev/null
+@@ -1,47 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   ftp6-upload-stress
+-#
+-# Description:
+-#   This script is the stress test for ftp over IPv6
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# The version of IP
+-IP_VER=6
+-
+-. ftp4-upload-stress
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
