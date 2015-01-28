@@ -1,28 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jjaburek@redhat.com>) id 1YHCPG-0006lQ-He
-	for ltp-list@lists.sourceforge.net; Fri, 30 Jan 2015 14:18:46 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YHCPE-0002ds-Ie
-	for ltp-list@lists.sourceforge.net; Fri, 30 Jan 2015 14:18:46 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t0UEIbmQ032290
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Fri, 30 Jan 2015 09:18:37 -0500
-Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t0UEIasD023428
-	for <ltp-list@lists.sourceforge.net>; Fri, 30 Jan 2015 09:18:37 -0500
-Message-ID: <54CB92BC.8020605@redhat.com>
-Date: Fri, 30 Jan 2015 15:18:36 +0100
-From: Jiri Jaburek <jjaburek@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YGW76-0003gR-43
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 17:09:12 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id B1C22ADE5
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 28 Jan 2015 17:09:01 +0000 (UTC)
+Date: Wed, 28 Jan 2015 18:09:00 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150128170859.GA27612@rei.suse.de>
 MIME-Version: 1.0
-Subject: [LTP] the mandatory (?) nature of testscripts
+Content-Disposition: inline
+Subject: [LTP] [RFC] usctest cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,31 +28,33 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hello all,
-I normally execute the ltp suite using runltp with -f, specifying just
-the runtest files I want to execute, possibly even writing my own ones
-and using the fact that runltp detects absolute paths in the comma-
-separated list and looks for them outside /opt/ltp.
+Hi!
+I'm investigating usefullnes of the few macros that are in the usctest.h
+header.
 
-From this viewpoint, and also looking at things like
-testscripts/syscalls.sh, this approach seems perfectly valid (there's
-at least nothing against it in the documentation, as far as I can tell).
-My impression was therefore that testscripts are just convenient
-(or legacy?) ways to run big chunks of the suite.
+The TEST_CLEANUP does nothing unless the test gets -e parameter, which
+does not happen by default anyway.
 
-However then I found testscripts/network.sh and all the "mandatory"
-variables it exports - not using it resulted in the ping01 test failing
-due to recent rewrite in cbab2eed06. And, as it turns out, network.sh
-is not alone.
+And even if the the option is passed it does not work unless the test
+sets expected errnos with TEST_EXP_ENOS() and logs errnos from the calls
+with TEST_ERROR_LOG(), which seems to be the case only for about 250 out
+of the thousands testcases we have.
 
-Therefore I would like to ask (since I didn't find this documented);
-is running individual tests via runltp -f something "officially"
-supported and the network tests should be altered to get their defaults
-in another way, or is runltp -f wild west and I'm on my own, with the
-only supported way to run the suite being the testscripts?
+And even if the code would have been working the usefulness is
+questionable. The errno values are checked troughly in the testcases and
+there is no need to print a summary at the test exit.
 
-Thanks,
-Jiri
+So unless anybody objects I would like to remove these three macros.
+
+Then there is a TEST_PAUSE macro that expands to usc_global_setup_hook()
+and which is used in nearly all setup functions. What it does it stop
+the test in the setup in pause() waiting for SIGUSR1 if option -p has
+been passed to the test and can change the program break with the
+sbrk(). Has anyone ever used that or we can remove that as well?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
