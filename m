@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YFlyo-0004sm-Kg
-	for ltp-list@lists.sourceforge.net; Mon, 26 Jan 2015 15:53:34 +0000
-Date: Mon, 26 Jan 2015 16:52:36 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YGUc2-00067p-Kv
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 15:33:02 +0000
+Date: Wed, 28 Jan 2015 16:32:53 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150126155236.GB27890@rei.suse.de>
-References: <1418904024-29740-1-git-send-email-lijinyue@huawei.com>
+Message-ID: <20150128153253.GA26681@rei.suse.de>
+References: <1418377899-10697-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1418904024-29740-1-git-send-email-lijinyue@huawei.com>
-Subject: Re: [LTP] [PATCH] controllers/cgroup_fj:fix mount error for mount
- tools above v2.21
+In-Reply-To: <1418377899-10697-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] power_management: add it into default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,32 +24,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: lijinyue <lijinyue@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, dingguofu@huawei.com, zhanyongming@huawei.com
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> For util-linux version above v2.21(eg, Red Hat Enterprise Linux 7.0, util-linux v2.23.2),
-> some tests in run_cgroup_test_fj.sh will test failed.
-> eg:
->         cgroup_test_fj    1  TFAIL  :  case13(function  2 1 1 2 1 2 3 2 1)    FAIL
+> * Modify Makefile.
 > 
-> The reason is that mount version above v2.21 will cause mount error in the following scenes:
->         (mount from util-linux 2.23.2)
->         mkdir /dev/cgroup
->         mount -t cgroup -o cpuset,release_agent=  cgroup /dev/cgroup
+> * Split runpwtests.sh into separate testcases,
+>   eg. runpwtests01.sh.
 > 
->         error output:
->         mount: special device cgroup does not exist
-> While, for mount version v2.19.1(eg, SLES 11 sp2, mount from util-linux 2.19.1 )
->         mount will success like this:
->         cgroup on /dev/cgroup type cgroup (rw,cpuset,release_agent=)
+> * Use functions in test.sh, eg. tst_brkm.
+> 
+> * Fix error of change_govr.sh, change_freq.sh, etc.
+> 
+> * Since I don't have suitable machines and can't test
+>   some testcases' correctness, currently these cases
+>   are disabled.
 
-The empty release agent seems to be specially crafted testcase. The
-function get_release_agent_para() has special case to set it to " ".
+This patch does much more than just add these to default.
 
-So if this test fails, either util-linux is broken or the test assertion
-is wrong (it worked by accident) and should be removed. Either way this
-needs more investigation.
+Can you please split it into several smaller changes? One would be the
+change in the build system. One change to split the tests into several
+testcases. And split the functional changes to the testcases to
+separate patches with a clear description of the change.
+
+> diff --git a/testcases/kernel/power_management/runpwtests01.sh b/testcases/kernel/power_management/runpwtests01.sh
+> new file mode 100755
+> index 0000000..0e5dd1c
+> --- /dev/null
+> +++ b/testcases/kernel/power_management/runpwtests01.sh
+> @@ -0,0 +1,60 @@
+> +#! /bin/sh
+> +#
+> +# Copyright (c) International Business Machines  Corp., 2001
+> +# Author: Nageswara R Sastry <nasastry@in.ibm.com>
+> +#
+> +# This program is free software;  you can redistribute it and#or modify
+> +# it under the terms of the GNU General Public License as published by
+> +# the Free Software Foundation; either version 2 of the License, or
+> +# (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it will be useful, but
+> +# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+> +# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+> +# for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program;  if not, write to the Free Software Foundation,
+> +# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> +#
+> +
+> +export TCID="Power_Management01"
+> +export TST_TOTAL=1
+> +
+> +. test.sh
+> +. pm_include.sh
+> +
+> +# Checking required kernel version and architecture
+> +tst_kvercmp 2 6 21; rc=$?
+> +if [ $rc -ne 1 -a $rc -ne 2 ] ; then
+> +	tst_brkm TCONF "Kernel version not supported; not running testcases"
+> +else
+> +	case "$(uname -m)" in
+> +	i[4-6]86|x86_64)
+> +		;;
+> +	*)
+> +		tst_brkm TCONF "Arch not supported; not running testcases"
+> +		;;
+> +	esac
+> +fi
+
+This piece of code is copypasted into all the of the scripts, it should
+be in a common library instead.
 
 -- 
 Cyril Hrubis
