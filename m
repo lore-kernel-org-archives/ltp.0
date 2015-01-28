@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YGsyg-0006CE-He
-	for ltp-list@lists.sourceforge.net; Thu, 29 Jan 2015 17:34:02 +0000
-Date: Thu, 29 Jan 2015 18:33:52 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150129173352.GA19723@rei.suse.de>
-References: <1420798668.13049.6.camel@G08JYZSD130126.localdomain>
-	<1420798863.13049.9.camel@G08JYZSD130126.localdomain>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YGRdl-00019a-H9
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 12:22:37 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YGRdh-0002Gc-83
+	for ltp-list@lists.sourceforge.net; Wed, 28 Jan 2015 12:22:37 +0000
+Message-ID: <54C8D513.1060202@oracle.com>
+Date: Wed, 28 Jan 2015 15:24:51 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1420798863.13049.9.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH 2/2] stress_floppy: Add 'datafiles'
+References: <1422016502-24943-1-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1422016502-24943-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH v2] lib/test_net.sh: fix 'tst_rhost_run -s' when
+ errors occur
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,25 +28,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
 Hi!
-> 	This patch is somewhat big, send it as an attachment.
+On 01/23/2015 03:35 PM, Alexey Kodanev wrote:
+> Don't redirect stderr to /dev/null, print it in TBROK message.
+>
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>   testcases/lib/test_net.sh |   15 +++++++++------
+>   1 files changed, 9 insertions(+), 6 deletions(-)
 
-Both patches pushed, thanks.
+Patch pushed.
 
-I've done a small changes to this one.
+Best regards,
+Alexey
 
-* The stress_floppy uses $LTP_DATAROOT instead of
-  $LTPROOT/testcases/data/... path
-
-* The Makefile in the dumpdir generates the files on
-  make all and not on make install
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
