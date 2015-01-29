@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YDnqt-00022B-K9
-	for ltp-list@lists.sourceforge.net; Wed, 21 Jan 2015 05:29:15 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YGmDK-0002Pb-47
+	for ltp-list@lists.sourceforge.net; Thu, 29 Jan 2015 10:20:42 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YDnqs-000319-AM
-	for ltp-list@lists.sourceforge.net; Wed, 21 Jan 2015 05:29:15 +0000
+	id 1YGmDH-0000GE-Uj
+	for ltp-list@lists.sourceforge.net; Thu, 29 Jan 2015 10:20:42 +0000
 From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 21 Jan 2015 13:28:12 +0800
-Message-ID: <1421818093-24202-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <54B7D920.7050402@oracle.com>
-	<1421818093-24202-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+Date: Thu, 29 Jan 2015 18:19:31 +0800
+Message-ID: <1422526772-27693-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1422526772-27693-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <1422407961.13104.13.camel@G08JYZSD130126.localdomain>
+	<1422526772-27693-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 2/3] telnet: Cleanup
+Subject: [LTP] [PATCH v3 2/3] telnet: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,27 +32,28 @@ To: alexey.kodanev@oracle.com
 Cc: ltp-list@lists.sourceforge.net
 
 * Add 'TCID' and 'TST_TOTAL'.
-* Use 'test.sh'.
+* Use 'test.sh' and 'tst_check_cmds'.
+* Use 'test_net.sh'.
 * Delete some useless comment.
 * Some cleanup.
 
 Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/network/tcp_cmds/telnet/telnet01 | 143 ++++++++++++-----------------
- 1 file changed, 58 insertions(+), 85 deletions(-)
+ testcases/network/tcp_cmds/telnet/telnet01 | 160 +++++++++++++----------------
+ 1 file changed, 72 insertions(+), 88 deletions(-)
 
 diff --git a/testcases/network/tcp_cmds/telnet/telnet01 b/testcases/network/tcp_cmds/telnet/telnet01
-index 36ebf12..b006fe9 100755
+index 36ebf12..3648ee2 100755
 --- a/testcases/network/tcp_cmds/telnet/telnet01
 +++ b/testcases/network/tcp_cmds/telnet/telnet01
 @@ -1,5 +1,4 @@
 -#! /usr/bin/expect -f
 -#*********************************************************************
-+#!/bin/bash
++#!/bin/sh
  #   Copyright (c) International Business Machines  Corp., 2000
  #
  #   This program is free software;  you can redistribute it and/or modify
-@@ -16,102 +15,76 @@
+@@ -16,102 +15,87 @@
  #   along with this program;  if not, write to the Free Software
  #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  #
@@ -76,7 +77,7 @@ index 36ebf12..b006fe9 100755
 -#    verify that the telnet was established.
 -#
 -#*********************************************************************
- 
+-
 -set TC telnet
 -set TCtmp "/tmp"
 -set SLEEPTIME 3
@@ -88,9 +89,6 @@ index 36ebf12..b006fe9 100755
 -} else {
 -   set RUSER root
 -}
-+TCID="telnet01"
-+TST_TOTAL=1
-+. test.sh
  
 -if [info exists env(PASSWD)] {
 -   set PASSWD $env(PASSWD)
@@ -98,10 +96,21 @@ index 36ebf12..b006fe9 100755
 -   set PASSWD .pasroot
 -   send_user "PASSWD NOT SET:Using .pasroot as the PASSWD variable for $RUSER. \n"
 -}
++TCID="telnet01"
++TST_TOTAL=1
++. test.sh
++. test_net.sh
++
 +setup()
 +{
++	tst_check_cmds telnet expect rsh
++
 +	if [ -z $RUSER ]; then
 +		RUSER=root
++	fi
++
++	if [ -z $PASSWD ]; then
++		tst_brkm TCONF "Please set PASSWD for $RUSER."
 +	fi
  
 -if [info exists env(RHOST)] {
@@ -109,23 +118,28 @@ index 36ebf12..b006fe9 100755
 -} else {
 -   send_user "Please set/export the RHOST variable. \n"
 -   exit 1
--}
-+	if [ -z $PASSWD ]; then
-+		tst_brkm TCONF "Please set PASSWD for $RUSER."
-+	fi
- 
--set timeout 90
 +	if [ -z $RHOST ]; then
 +		tst_brkm TCONF "Please set RHOST."
 +	fi
++
++	if [ -z $LOOPCOUNT ]; then
++		LOOPCOUNT=25
++	fi
+ }
+ 
+-set timeout 90
++do_test()
++{
++	tst_resm TINFO "Starting"
  
 -if [info exists env(LOOPCOUNT)] {
 -   set LOOPCOUNT $env(LOOPCOUNT)
 -} else {
 -   set LOOPCOUNT 25
-+	if [ -z $LOOPCOUNT ]; then
-+		LOOTCOUNT=25
-+	fi
++	for i in $(seq 1 ${LOOPCOUNT})
++	do
++		telnet_test || return 1
++	done
  }
  
 -# stty echo
@@ -144,53 +158,20 @@ index 36ebf12..b006fe9 100755
 -
 -      send "$RUSER\r"
 -      expect -re "Password:"
-+do_test()
-+{
-+	tst_resm TINFO "Starting"
- 
+-
 -      send "$PASSWD\r"
 -
 -      send "PS1=\"$PROMPT\"\r"
 -      # Wait for shell prompt
 -      expect "$PROMPT"
-+	for i in $(seq 1 ${LOOPCOUNT})
-+	do
-+		telnet_test || return 1
-+	done
-+}
- 
+-
 -      # Run passwd command - and respond to its prompts
 -      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$HOST \r"
 -      # When shell prompt comes back, logout
-+telnet_test()
-+{
-+	expect -c "
-+		spawn telnet $RHOST
-+		expect -re \"login:\"
-+		send \"$RUSER\r\"
-+		expect -re \"Password:\"
-+		send \"$PASSWD\r\"
-+
-+		send \"LC_ALL=C ls -l /etc/hosts | wc -w > $RUSER.$RHOST \r\"
-+		expect \"$RUSER@\"
-+		exp_send \"logout\r\"
-+
-+		send_user \"CHECKING TELNET STATUS\n\"
-+
-+		set nummatch [exec rsh -n -l $RUSER $RHOST \\
-+			      \"grep -c 9 $RUSER.$RHOST\"]
-+		if {\$nummatch==1} {
-+			exec rsh -n -l $RUSER $RHOST \"rm -f $RUSER.$RHOST\"
-+		} else {
-+			exit 1
-+		}
-+	"
-+}
- 
+-
 -      expect "$PROMPT"
 -      exp_send "logout\r"
-+setup
- 
+-
 -      send_user "CHECKING TELNET STATUS\n"
 -      set nummatch [exec rsh -n -l $RUSER $HOST "cat $TESTLOG/$RUSER.$HOST|grep -c 9"]
 -      if {$nummatch==1} {
@@ -201,27 +182,61 @@ index 36ebf12..b006fe9 100755
 -         exit 1
 -      }
 -   }
--}
++telnet_test()
++{
++	tst_resm TINFO "login with telnet($i/$LOOPCOUNT)"
++
++	expect -c "
++		spawn telnet $RHOST
++
++		expect -re \"login:\"
++		send \"$RUSER\r\"
++
++		expect -re \"Password:\"
++		send \"$PASSWD\r\"
++
++		expect {
++			\"incorrect\" {
++				exit 1
++			} \"$RUSER@\" {
++				send \"LC_ALL=C ls -l /etc/hosts | \\
++				       wc -w > $RUSER.$RHOST\rexit\r\";
++				exp_continue}
++		}
++
++	" > /dev/null
++	if [ $? -ne 0 ]; then
++		return 1
++	fi
++
++	tst_resm TINFO "checking telnet status($i/$LOOPCOUNT)"
++	[ $(tst_rhost_run -s -u $RUSER -c "grep -c 9 $RUSER.$RHOST") -ne 1 ] &&\
++		return 1
++	tst_rhost_run -u $RUSER -c "rm -f $RUSER.$RHOST"
+ }
+ 
+-send_user "\nTest PASSES\n\n"
+-exit 0
++setup
++
 +do_test
 +if [ $? -ne 0 ]; then
 +	tst_resm TFAIL "Test $TCID failed."
 +else
-+	tst_resm TPASS "Test $TCID successed."
++	tst_resm TPASS "Test $TCID succeeded."
 +fi
- 
--send_user "\nTest PASSES\n\n"
--exit 0
++
 +tst_exit
 -- 
 1.9.3
 
 
 ------------------------------------------------------------------------------
-New Year. New Location. New Benefits. New Data Center in Ashburn, VA.
-GigeNET is offering a free month of service with a new server in Ashburn.
-Choose from 2 high performing configs, both with 100TB of bandwidth.
-Higher redundancy.Lower latency.Increased capacity.Completely compliant.
-http://p.sf.net/sfu/gigenet
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
