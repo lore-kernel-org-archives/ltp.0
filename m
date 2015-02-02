@@ -1,17 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YIdSI-0003N7-4K
-	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 13:23:50 +0000
-Date: Tue, 3 Feb 2015 14:23:36 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150203132336.GB15523@rei.scz.novell.com>
-References: <71cb5b390704d5eeca9db095d599830577acbdff.1422967561.git.jstancek@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <71cb5b390704d5eeca9db095d599830577acbdff.1422967561.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] sendmsg01: remove ".flags = ~MSG_CMSG_COMPAT" case
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YIL35-0002tw-T4
+	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 17:44:35 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YIL34-0007CP-T0
+	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 17:44:35 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t12HiSOx015286
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 17:44:29 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t12HiRo2024652
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 17:44:28 GMT
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t12HiR5M024642
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 17:44:27 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon,  2 Feb 2015 20:46:48 +0300
+Message-Id: <1422899209-23015-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 1/2] lib/test_net.sh: restore TST_IPV6 after temporary
+	assignments
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,43 +36,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
->  char *TCID = "sendmsg01";
->  int testno;
-> @@ -305,23 +304,6 @@ struct test_case_t tdat[] = {
->  	 .cleanup = cleanup4,
->  	 .desc = "rights passing"}
->  	,
-> -	{.domain = PF_UNIX,
-> -	 .type = SOCK_DGRAM,
-> -	 .proto = 0,
-> -	 .iov = iov,
-> -	 .iovcnt = 1,
-> -	 .buf = buf,
-> -	 .buflen = sizeof(buf),
-> -	 .msg = &msgdat,
-> -	 .flags = ~MSG_CMSG_COMPAT,
-> -	 .to = (struct sockaddr *)&sun1,
-> -	 .tolen = sizeof(sun1),
-> -	 .retval = -1,
-> -	 .experrno = EOPNOTSUPP,
-> -	 .setup = setup4,
-> -	 .cleanup = cleanup4,
-> -	 .desc = "invalid flags set w/ control"}
-> -	,
+Also move iface variable to the function which is using it
 
-I'm more inclined to changing this case to MSG_OOB, but apart from that
-it's acked.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/lib/test_net.sh |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index d72e84e..acaed84 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -216,6 +216,8 @@ tst_add_ipaddr()
+ 	local mask=24
+ 	[ "$TST_IPV6" ] && mask=64
+ 
++	local iface=$(tst_iface $type $link_num)
++
+ 	if [ $type = "lhost" ]; then
+ 		tst_resm TINFO "set local addr $(tst_ipaddr)/$mask"
+ 		ip addr add $(tst_ipaddr)/$mask dev $iface || \
+@@ -238,8 +240,10 @@ tst_restore_ipaddr()
+ 
+ 	tst_init_iface $type $link_num
+ 
+-	local iface=$(tst_iface $type $link_num)
++	local backup_tst_ipv6=$TST_IPV6
+ 
+ 	TST_IPV6= tst_add_ipaddr $type $link_num
+ 	TST_IPV6=6 tst_add_ipaddr $type $link_num
++
++	TST_IPV6=$backup_tst_ipv6
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
