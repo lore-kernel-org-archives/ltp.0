@@ -1,19 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YQAr5-0000ez-1D
-	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 08:28:35 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YQAr3-0007eF-Dx
-	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 08:28:35 +0000
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Tue, 24 Feb 2015 16:27:38 +0800
-Message-ID: <1424766459-22439-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] lib: provide a way to detect if we are running on
-	KVM or Xen
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1YIIf2-0004MZ-4K
+	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 15:11:36 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YIIf1-0002Z5-0z
+	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 15:11:36 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t12FBS6X021859
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 15:11:29 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t12FBRDt000624
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 15:11:28 GMT
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t12FBRif008423
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 15:11:27 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon,  2 Feb 2015 18:11:21 +0300
+Message-Id: <1422889881-9432-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <54CF8D41.6090709@oracle.com>
+References: <54CF8D41.6090709@oracle.com>
+Subject: [LTP] [PATCH V2 2/2] tst_module: introduce a timeout to unload
+	modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,121 +39,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: jjaburek@redhat.com
+Cc: vasily.isaenko@oracle.com
 
-The command virt-what can be used to detect if the program is
-running in a virtual machine, and prints out a list of "facts"
-about the virtual machine. such as hyperv, lxc, qemu, kvm, xen
-and so on.
+It may happen, that the first execution of 'rmmod module_name'
+may fail for some reason (like the module is in use for some short time).
 
-Refer to the following for more details,
-<http://people.redhat.com/~rjones/virt-what/>
+Changed tst_module_unload() to execute 'rmmod module_name' multiple
+times with the total number limited by a timeout.
 
-This patch references the method that has already proposed
-and implemented in the code of virt-what.
-
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- lib/tst_virt.c | 69 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
+Changes since V1:
+ * rely on the exit code of rmmod
+ * removed tst_module_unload
+ * added missing usleep()
 
-diff --git a/lib/tst_virt.c b/lib/tst_virt.c
-index 87f73dc..eb3b487 100644
---- a/lib/tst_virt.c
-+++ b/lib/tst_virt.c
-@@ -23,9 +23,78 @@
-  */
+
+ lib/tst_module.c |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
+
+diff --git a/lib/tst_module.c b/lib/tst_module.c
+index 8104582..0be6ced 100644
+--- a/lib/tst_module.c
++++ b/lib/tst_module.c
+@@ -100,6 +100,21 @@ void tst_module_load(void (cleanup_fn)(void),
  
- #include <unistd.h>
-+#include <string.h>
- #include "test.h"
- #include "safe_macros.h"
- 
-+#define SIG_MAX_LEN 13  // Limit the length of the CPU sign array
-+
-+#if defined(__i386__) || defined(__x86_64__)
-+
-+static unsigned int
-+cpuid (unsigned int eax, char *sigp)
-+{
-+    unsigned int *sig32 = (unsigned int *) sigp;
-+
-+    asm volatile (
-+        "xor %%ebx, %%ebx; cpuid"
-+        : "=a" (eax), "=b" (sig32[0]), "=c" (sig32[1]), "=d" (sig32[2])
-+        : "0" (eax));
-+    sigp[SIG_MAX_LEN - 1] = 0;
-+
-+    return eax;
-+}
-+
-+/*
-+ * confirm that we are running inside KVM or Xen HVM by CPU sign
-+ *
-+ * Inputs:
-+ *   char* sigp - the pointer of CPU sign array, sig[].
-+ *                Possible Values of sig[]:
-+ *                  String        - Virtual Type
-+ *                  KVMKVMKVM     - KVM guest
-+ *                  XenVMMXenVMM  - Xen HVM guest
-+ *
-+ * Returns:
-+ *   0  - success
-+ *   -1 - an error has occurred (unsupported architecture)
-+ */
-+static int
-+cpu_sign (char* sigp)
-+{
-+    unsigned int base = 0x40000000, leaf = base;
-+    unsigned int max_entries;
-+
-+    memset (sigp, 0, SIG_MAX_LEN);
-+    max_entries = cpuid (leaf, sigp);
-+
-+    /* Most hypervisors only have information in leaf 0x40000000, but
-+     * upstream Xen contains further leaf entries (in particular when
-+     * used with Viridian [HyperV] extensions).  CPUID is supposed to
-+     * return the maximum leaf offset in %eax, so that's what we use,
-+     * but only if it looks sensible.
-+     */
-+    if (max_entries > 3 && max_entries < 0x10000) {
-+        for (leaf = base + 0x100; leaf <= base + max_entries; leaf += 0x100) {
-+            memset (sigp, 0, SIG_MAX_LEN);
-+            cpuid (leaf, sigp);
-+        }
-+    }
-+
-+    return 0;
-+}
-+
-+#else /* !i386, !x86_64 */
-+
-+static int
-+cpu_sign (char* sigp)
-+{
-+    /* nothing for other architectures */
-+    return -1;
-+}
-+
-+#endif
-+
- static int is_kvm(void)
+ void tst_module_unload(void (cleanup_fn)(void), const char *mod_name)
  {
- 	FILE *cpuinfo;
++	int i, rc;
++
+ 	const char *const argv[] = { "rmmod", mod_name, NULL };
+-	tst_run_cmd(cleanup_fn, argv, NULL, NULL, 0);
++
++	rc = 1;
++	for (i = 0; i < 50; i++) {
++		rc = tst_run_cmd(NULL, argv, "/dev/null", "/dev/null", 1);
++		if (!rc)
++			break;
++
++		usleep(20000);
++	}
++
++	if (rc) {
++		tst_brkm(TBROK, cleanup_fn,
++			 "could not unload %s module", mod_name);
++	}
+ }
 -- 
-1.9.3
+1.7.1
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
