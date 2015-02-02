@@ -1,18 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YKpfD-0006z7-Mt
-	for ltp-list@lists.sourceforge.net; Mon, 09 Feb 2015 14:50:15 +0000
-Date: Mon, 9 Feb 2015 15:49:56 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150209144956.GF7605@rei.suse.de>
-References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 1/6] lib/sched_mc.py: fix path for
- ebizzy/kernbench benchmark
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YIL36-0003YM-TV
+	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 17:44:36 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YIL36-0004ue-0G
+	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 17:44:36 +0000
+Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t12HiTol015312
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 17:44:30 GMT
+Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t12HiTbk024719
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 17:44:29 GMT
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t12HiTGM008779
+	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 17:44:29 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon,  2 Feb 2015 20:46:49 +0300
+Message-Id: <1422899209-23015-2-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1422899209-23015-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1422899209-23015-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 2/2] lib/test_net.sh: don't use 'tst_brkm TBROK' in
+	tst_add_ipaddr()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,28 +38,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> The ebizzy/kernbench benchmark are located in testcase/bin
-> rather than utils/benchmark directory after installing LTP,
-> fix this.
+The function can be called in cleanup, so if it somehow failed,
+there could be an infinite recursion. Fix it by removing 'tst_brkm'
+and returning appropriate exit code.
 
-This patch does more than this. It also changes formatting.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/lib/test_net.sh |   17 +++++++++--------
+ 1 files changed, 9 insertions(+), 8 deletions(-)
 
-Again please do functional changes separately from cleanups and
-describe all changes done properly in the commit log message.
-
-Unfortunately I do not have crystal ball or sixth sense to figure out
-everything without having the right context for the changes.
-
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index acaed84..75ccd76 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -220,13 +220,13 @@ tst_add_ipaddr()
+ 
+ 	if [ $type = "lhost" ]; then
+ 		tst_resm TINFO "set local addr $(tst_ipaddr)/$mask"
+-		ip addr add $(tst_ipaddr)/$mask dev $iface || \
+-			tst_brkm TBROK "failed to add IP address"
+-		return
++		ip addr add $(tst_ipaddr)/$mask dev $iface
++		return $?
+ 	fi
+ 
+ 	tst_resm TINFO "set remote addr $(tst_ipaddr rhost)/$mask"
+-	tst_rhost_run -s -c "ip addr add $(tst_ipaddr rhost)/$mask dev $iface"
++	tst_rhost_run -c "ip addr add $(tst_ipaddr rhost)/$mask dev $iface"
++	return $?
+ }
+ 
+ # tst_restore_ipaddr [TYPE] [LINK]
+@@ -237,13 +237,14 @@ tst_restore_ipaddr()
+ {
+ 	local type=${1:-"lhost"}
+ 	local link_num=${2:-"0"}
++	local ret=0
+ 
+ 	tst_init_iface $type $link_num
+ 
+ 	local backup_tst_ipv6=$TST_IPV6
+-
+-	TST_IPV6= tst_add_ipaddr $type $link_num
+-	TST_IPV6=6 tst_add_ipaddr $type $link_num
+-
++	TST_IPV6= tst_add_ipaddr $type $link_num || ret=$?
++	TST_IPV6=6 tst_add_ipaddr $type $link_num || ret=$?
+ 	TST_IPV6=$backup_tst_ipv6
++
++	return $ret
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
