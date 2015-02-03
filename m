@@ -1,23 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YJeY7-000667-6x
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 08:46:03 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YJeY4-0003a8-Q0
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 08:46:03 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t168ikwX028859
-	for <ltp-list@lists.sourceforge.net>; Fri, 6 Feb 2015 16:44:46 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 6 Feb 2015 16:41:25 +0800
-Message-ID: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 1/6] lib/sched_mc.py: fix path for ebizzy/kernbench
-	benchmark
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YIeYq-0003d5-Sw
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 14:34:40 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YIeYo-0007oD-Tg
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 14:34:40 +0000
+Received: from ucsinet22.oracle.com (ucsinet22.oracle.com [156.151.31.94])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t13EYWUj028728
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:34:33 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by ucsinet22.oracle.com (8.14.5+Sun/8.14.5) with ESMTP id
+	t13EYVQA003973
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:34:32 GMT
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t13EYVGI023397
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:34:31 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue,  3 Feb 2015 17:36:52 +0300
+Message-Id: <1422974214-12517-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 1/3] network/multicast/mc_commo: use test interface
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,194 +35,227 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-The ebizzy/kernbench benchmark are located in testcase/bin
-rather than utils/benchmark directory after installing LTP,
-fix this.
+* make use of test_net.sh
+* replace 'ps auxw | grep -v grep | ...' with 'pgrep -x ...'
+* 'RHOST' doesn't support defining multiple hosts, so remove the 'for' loop
+* get available port from tst_get_unused_port()
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/kernel/power_management/lib/sched_mc.py | 138 +++++++++++++---------
- 1 file changed, 85 insertions(+), 53 deletions(-)
+ testcases/network/multicast/mc_commo/mc_commo |  166 +++++++++----------------
+ 1 files changed, 57 insertions(+), 109 deletions(-)
 
-diff --git a/testcases/kernel/power_management/lib/sched_mc.py b/testcases/kernel/power_management/lib/sched_mc.py
-index cb78b55..24285eb 100755
---- a/testcases/kernel/power_management/lib/sched_mc.py
-+++ b/testcases/kernel/power_management/lib/sched_mc.py
-@@ -318,51 +318,67 @@ def trigger_ebizzy (sched_smt, stress, duration, background, pinned):
-     '''
-     try:
-         threads = get_job_count(stress, "ebizzy", sched_smt)
--        olddir = os.getcwd()
--        path = '%s/utils/benchmark' % os.environ['LTPROOT']
--        os.chdir(path)
--        wklds_avlbl = list()
-         workload = "ebizzy"
--        workload_dir = ""
-+        olddir = os.getcwd()
-+        installdir = '%s/utils/benchmark' % os.environ['LTPROOT']
-+        if os.path.exists(installdir):
-+            path = '%s/utils/benchmark' % os.environ['LTPROOT']
-+            os.chdir(path)
-+            wklds_avlbl = list()
-+            workload_dir = ""
-+
-+            # Use the latest version of similar workload available
-+            for file_name in os.listdir('.'):
-+                if file_name.find(workload) != -1:
-+                    wklds_avlbl.append(file_name)
+diff --git a/testcases/network/multicast/mc_commo/mc_commo b/testcases/network/multicast/mc_commo/mc_commo
+index 3e8e412..0de22df 100755
+--- a/testcases/network/multicast/mc_commo/mc_commo
++++ b/testcases/network/multicast/mc_commo/mc_commo
+@@ -1,135 +1,79 @@
+ #!/bin/sh
+-unset LIBPATH
++# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) International Business Machines  Corp., 2000
+ #
+-#   Copyright (c) International Business Machines  Corp., 2000
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
+ #
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
+ #
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write the Free Software Foundation,
++# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ #
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++# TEST DESCRIPTION:
++#     To verify that IP Multicast can be used to send UDP datagrams
++#     between two or more nodes on the same subnetwork using
++#     a specific IP Multicast group and a specific port address.
+ #
+-#
+-#
+-#  FILE             : mc_commo
+-#
+-#  TEST DESCRIPTION : To verify that IP Multicast can be used to send UDP datagrams
+-#                     between two or more nodes on the same subnetwork using
+-#                     a specific IP Multicast group and a specific port address.
+-#
+-#  HISTORY:
+-#    03/26/01 Robbie Williamson (robbiew@us.ibm.com)
+-#      -Ported
+-#    08/01/06 Michael Reed mreedltp@vnet.ibm.com
+-#      - The pinging of a specific IP Multicast group has been bypassed
+-#        for SLES
+-#
+-#******************************************************************************
++# Authors:
++#     Robbie Williamson (robbiew@us.ibm.com)
++#     Michael Reed mreedltp@vnet.ibm.com
  
--        # Use the latest version of similar workload available
--        for file_name in os.listdir('.'):
--            if file_name.find(workload) != -1:
--                wklds_avlbl.append(file_name)
+-TC=mc_commo
+ TTL=10
+-PORT=3333
+-RHOST=${RHOST:-`hostname`}
+ OUTFILE=mc_commo_out
+-INTERFACE=${INTERFACE:-$(mc_gethost `hostname` | grep addresses: | \
+-			 awk '{print $2}')}
+ 
+-export TCID=$TC
+-export TST_TOTAL=1
+-export TST_COUNT=1
++TCID=mc_commo
++TST_TOTAL=2
+ 
+-. test.sh
++. test_net.sh
+ 
+ do_setup()
+ {
+-	tst_check_cmds rsh netstat
+-	if [ -z $INTERFACE ]; then
+-		tst_brkm TCONF "$(hostname) is not found in /etc/hosts"
+-	fi
 -
--        wklds_avlbl.sort()
--        workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
--        if workload_dir != "":
--            new_path = os.path.join(path,"%s" % workload_dir)
--            get_proc_data(stats_start)
--            get_proc_loc_count(intr_start)
--            try:
-+            wklds_avlbl.sort()
-+            workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
-+            if workload_dir != "":
-+                new_path = os.path.join(path,"%s" % workload_dir)
-                 os.chdir(new_path)
--                if background == "yes":
--                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &'
--                        % (threads, duration))
-+            else:
-+                print "INFO: ebizzy benchmark not found"
-+                sys.exit(1)
-+        else:
-+            path = '%s/testcases/bin' % os.environ['LTPROOT']
-+            os.chdir(path)
-+            workload_file = ""
-+            for file_name in os.listdir('.'):
-+                if file_name == workload:
-+                    workload_file = file_name
-+                    break
-+            if workload_file == "":
-+                print "INFO: ebizzy benchmark not found"
-+                sys.exit(1)
-+        get_proc_data(stats_start)
-+        get_proc_loc_count(intr_start)
-+        try:
-+            if background == "yes":
-+                succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &'
-+                    % (threads, duration))
-+            else:
-+                if pinned == "yes":
-+                    succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null'
-+                        % (cpu_count -1, threads, duration))
-                 else:
--                    if pinned == "yes":
--                        succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null'
--                            % (cpu_count -1, threads, duration))
--                    else:
--                        succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null'
--                            % (threads, duration))
+-	rsh -n -l root $RHOST "pwd > /dev/null"
+-	if [ $? -ne 0 ]; then
+-		tst_brkm TBROK "rsh $RHOST failed."
+-	fi
++	tst_check_cmds netstat pgrep
+ 
+-	OCTET=`ps -ewf | grep [m]c_commo | wc -l | awk '{print $1}'`
++	OCTET=$(ps -ewf | grep [m]c_commo | wc -l | awk '{print $1}')
+ 	GROUP_ADDR=224.0.0.$OCTET
 -
--                if succ == 0:
--                    print "INFO: ebizzy workload triggerd"
--                    os.chdir(olddir)
--                    #Commented bcoz it doesnt make sense to capture it when workload triggered
--                    #in background
--                    #get_proc_loc_count(intr_stop)
--                    #get_proc_data(stats_stop)
--		else:
--                    print "INFO: ebizzy workload triggerd failed"
--                    os.chdir(olddir)
--                    sys.exit(1)
--            except Exception, details:
--                print "Ebizzy workload trigger failed ", details
-+                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null'
-+                        % (threads, duration))
++	PORT=$(tst_get_unused_port ipv4 dgram)
+ 	tst_tmpdir
+ }
+ 
+-do_test ()
++do_test()
+ {
+-	tst_resm TINFO "doing test."
+-
+-	COUNT=1
+-	while [ $COUNT -le 2 ]
+-	do
+-
+-		# Run setsockopt/getsockopt test
+-		# Start up the recv on local host
+-		tst_resm TINFO "Starting mc_recv on $GROUP_ADDR $INTERFACE "\
+-			       "$PORT"
+-
+-		mc_recv $GROUP_ADDR $INTERFACE $PORT >> $OUTFILE &
+-		SERVER_PID=$!
+-		sleep 5
+-		ps -ewf | grep mc_recv | grep -v grep
+-		if [ $? -ne 0 ]; then
+-			tst_brkm TFAIL "Could NOT start mc_recv on `hostname`"
+-		fi
+-
+-		grep -q "cannot join group" $OUTFILE
+-		if [ $? -eq 0 ]; then
+-			tst_brkm TFAIL "Membership NOT set"
+-		fi
+-
+-		netstat -ng | grep -q $GROUP_ADDR
+-		if [ $? -ne 0 ]; then
+-			tst_brkm TFAIL "membership not set for $GROUP_ADDR"
+-		fi
+-
+-		for HOST in $RHOST
+-		do
+-			tst_resm TINFO "Running on $HOST mc_send $GROUP_ADDR "\
+-				       "$HOST $PORT $TTL"
+-
+-			rsh -n -l root $HOST PATH=$LTPROOT/testcases/bin:$PATH;\
+-					     "mc_send" $GROUP_ADDR $HOST $PORT \
+-					     $TTL >/dev/null &
+-			sleep 10
+-			rsh -n -l root $HOST "ps -ewf | grep mc_send | "\
+-					     "grep -v grep"
+-			if [ $? -ne 0 ]; then
+-				tst_brkm TFAIL "Could NOT start mc_send on "\
+-					 "$HOST"
+-			fi
+-		done
+-
+-		tst_resm TINFO "Waiting for 100 sec.! Do not interrupt."
+-		sleep 100  #wait until datagrams are received in $STATUS
+-		COUNT=$(( $COUNT + 1 ))
+-	done
++	# Run setsockopt/getsockopt test
++	# Start up the recv on local host
++	tst_resm TINFO "Start mc_recv $GROUP_ADDR $(tst_ipaddr) $PORT"
++	mc_recv $GROUP_ADDR $(tst_ipaddr) $PORT >> $OUTFILE &
++	SERVER_PID=$!
++	sleep 5
++	pgrep -x mc_recv > /dev/null || \
++		tst_brkm TFAIL "Could NOT start mc_recv on $(tst_ipaddr)"
 +
-+            if succ == 0:
-+                print "INFO: ebizzy workload triggerd"
-+                os.chdir(olddir)
-+                #Commented bcoz it doesnt make sense to capture it when workload triggered
-+                #in background
-+                #get_proc_loc_count(intr_stop)
-+                #get_proc_data(stats_stop)
-+            else:
-+                print "INFO: ebizzy workload triggerd failed"
-+                os.chdir(olddir)
-                 sys.exit(1)
-+        except Exception, details:
-+            print "Ebizzy workload trigger failed ", details
-+            sys.exit(1)
-     except Exception, details:
-         print "Ebizzy workload trigger failed ", details
-         sys.exit(1)
-@@ -377,22 +393,38 @@ def trigger_kernbench (sched_smt, stress, background, pinned, perf_test):
-         threads = get_job_count(stress, "kernbench", sched_smt)
++	grep -q "cannot join group" $OUTFILE && \
++		tst_brkm TFAIL "Membership NOT set"
++
++	netstat -ng | grep -q $GROUP_ADDR || \
++		tst_brkm TFAIL "membership not set for $GROUP_ADDR"
++
++	tst_resm TINFO "Start on $RHOST mc_send $GROUP_ADDR $(tst_ipaddr rhost) $PORT $TTL"
++
++	tst_rhost_run -b -c "mc_send $GROUP_ADDR $(tst_ipaddr rhost) $PORT $TTL"
++	sleep 10
++	tst_rhost_run -s -c "pgrep -x mc_send > /dev/null"
++
++	tst_resm TINFO "Waiting for 100 sec.! Do not interrupt."
++	sleep 100  #wait until datagrams are received in $STATUS
  
-         dst_path = "/root"
-+        workload = "kernbench"
-         olddir = os.getcwd()
--        path = '%s/utils/benchmark' % os.environ['LTPROOT']
--        os.chdir(path)
--        wklds_avlbl = list()
--        for file_name in os.listdir('.'):
--            if file_name.find("kernbench") != -1:
--                wklds_avlbl.append(file_name)
--        if len(wklds_avlbl):
--            wklds_avlbl.sort()
--            workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
--            if workload_dir != "":
--                benchmark_path = os.path.join(path,"%s" % workload_dir)
-+        installdir = '%s/utils/benchmark' % os.environ['LTPROOT']
-+        if os.path.exists(installdir):
-+            path = '%s/utils/benchmark' % os.environ['LTPROOT']
-+            os.chdir(path)
-+            wklds_avlbl = list()
-+            workload_dir = ""
-+            for file_name in os.listdir('.'):
-+                if file_name.find(workload) != -1:
-+                    wklds_avlbl.append(file_name)
-+            if len(wklds_avlbl):
-+                wklds_avlbl.sort()
-+                workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
-+                if workload_dir != "":
-+                    benchmark_path = os.path.join(path,"%s" % workload_dir)
-+                else:
-+                    print "INFO: kernbench benchmark not found"
-+                    sys.exit(1)
-+        else:
-+            path = '%s/testcases/bin' % os.environ['LTPROOT']
-+            os.chdir(path)
-+            workload_file = ""
-+            for file_name in os.listdir('.'):
-+                if file_name == workload:
-+                    workload_file = file_name
-+                    break
-+            if workload_file != "":
-+                benchmark_path = path
-             else:
-                 print "INFO: kernbench benchmark not found"
-                 sys.exit(1)
--        os.chdir(olddir)
+ 	#test if datagrams has been sent
+-	for HOST in $RHOST
+-	do
+-		grep -q "$HOST [0-9] [0-9]" $OUTFILE
+-		if [ $? -ne 0 ]; then
+-			tst_brkm TFAIL "NO Datagrams received from $HOST"
+-		fi
+-	done
++	grep -q "$(tst_ipaddr rhost) [0-9] [0-9]" $OUTFILE || \
++		tst_brkm TFAIL "NO Datagrams received from $RHOST"
  
-         os.chdir(dst_path)
-         linux_source_dir=""
-@@ -405,7 +437,7 @@ def trigger_kernbench (sched_smt, stress, background, pinned, perf_test):
-         else:
-             print "INFO: Linux kernel source not found in /root. Workload\
-                Kernbench cannot be executed"
--	    sys.exit(1)
-+            sys.exit(1)
+ 	tst_resm TPASS "Test Successful"
+-	tst_exit
+ }
  
-         get_proc_data(stats_start)
-         get_proc_loc_count(intr_start)
+ do_cleanup()
+@@ -145,4 +89,8 @@ do_cleanup()
+ do_setup
+ TST_CLEANUP=do_cleanup
+ 
+-do_test
++for i in $(seq 1 $TST_TOTAL); do
++	do_test
++done
++
++tst_exit
 -- 
-1.9.3
+1.7.1
 
 
 ------------------------------------------------------------------------------
