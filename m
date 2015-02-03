@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YQvOV-0004u8-Pa
-	for ltp-list@lists.sourceforge.net; Thu, 26 Feb 2015 10:10:11 +0000
-Date: Thu, 26 Feb 2015 11:09:28 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YIfxi-00086L-Ls
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 16:04:26 +0000
+Date: Tue, 3 Feb 2015 17:04:12 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150226100927.GA13639@rei.suse.de>
-References: <1424855586-9818-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20150203160412.GA19511@rei.scz.novell.com>
+References: <1422958307.24335.1.camel@G08JYZSD130126.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1424855586-9818-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH 1/3] device-drivers/locking: add wrapper for
- locktorture kernel module
+In-Reply-To: <1422958307.24335.1.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [PATCH] Add io_cd and io_floppy to scenario_groups/default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,58 +24,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> +TCID="lock_torture"
-> +TST_TOTAL=5
-> +TST_CLEANUP=cleanup
-> +. test.sh
-> +
-> +# default options
-> +test_time=60
-> +
-> +while getopts :ht: opt; do
-> +	case "$opt" in
-> +	h)
-> +		echo "Usage:"
-> +		echo "h        help"
-> +		echo "t x      time in seconds for each test-case"
-> +		exit 0
-> +	;;
-> +	t) test_time=$OPTARG ;;
-> +	*)
-> +		tst_brkm TBROK "unknown option: $opt"
-> +	;;
-> +	esac
-> +done
-> +
-> +cleanup()
-> +{
-> +	tst_resm TINFO "cleanup"
-> +	rmmod locktorture > /dev/null 2>&1
-> +}
-> +
-> +tst_kvercmp 3 18 0 && \
-> +	tst_brkm TCONF "test must be run with kernel 3.18 or newer"
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>  scenario_groups/default | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/scenario_groups/default b/scenario_groups/default
+> index 3a55702..89037aa 100644
+> --- a/scenario_groups/default
+> +++ b/scenario_groups/default
+> @@ -32,3 +32,5 @@ dma_thread_diotest
+>  cpuacct
+>  can
+>  cpuhotplug
+> +io_cd
+> +io_floppy
 
-We check if the module is present, do we have to check for the kernel
-version too?
+The stress_floppy testcase can't handle the case when there is a floppy
+drive on a computer but there is no disk inside. It should exit with
+TCONF and hint the user that he needs to put a disk into the drive to
+run the test.
 
+Similarily the stress_cd does not handle this case. But even more it
+fails on a machine without a cdrom drive (such as my notebook).
 
-Otherwise it look OK.
+Until this gets fixed, these cannot be added to default run.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
