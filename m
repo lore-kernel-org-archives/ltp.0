@@ -1,33 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YQXzU-0008S2-7J
-	for ltp-list@lists.sourceforge.net; Wed, 25 Feb 2015 09:10:48 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YQXzT-0003Mb-Ad
-	for ltp-list@lists.sourceforge.net; Wed, 25 Feb 2015 09:10:48 +0000
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YIeDT-00021n-MK
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 14:12:35 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YIeDS-0005Je-53
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 14:12:35 +0000
 Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t1P9Aecj028323
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t13ECSmp031013
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 25 Feb 2015 09:10:41 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:12:28 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
 	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t1P9AdjA028022
+	t13ECRlA002338
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 25 Feb 2015 09:10:40 GMT
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:12:28 GMT
 Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t1P9AdvO021915
-	for <ltp-list@lists.sourceforge.net>; Wed, 25 Feb 2015 09:10:39 GMT
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t13ECRar002332
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:12:27 GMT
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 25 Feb 2015 12:13:05 +0300
-Message-Id: <1424855586-9818-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1424855586-9818-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1424855586-9818-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 2/3] runtest/kernel_misc: add lock_torture.sh
+Date: Tue,  3 Feb 2015 17:14:42 +0300
+Message-Id: <1422972883-12173-5-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1422972883-12173-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1422972883-12173-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 5/6] runtest/network-stress.appl: fix http test names
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,28 +46,34 @@ Cc: vasily.isaenko@oracle.com
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/kernel_misc |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ runtest/network_stress.appl |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-index c12c31e..6a29de6 100644
---- a/runtest/kernel_misc
-+++ b/runtest/kernel_misc
-@@ -8,3 +8,4 @@ ltp_acpi ltp_acpi
- cpufreq_boost cpufreq_boost
- uaccess uaccess
- rcu_torture rcu_torture.sh
-+lock_torture lock_torture.sh
+diff --git a/runtest/network_stress.appl b/runtest/network_stress.appl
+index 91dbdd3..308751c 100644
+--- a/runtest/network_stress.appl
++++ b/runtest/network_stress.appl
+@@ -8,8 +8,8 @@ ssh6-stress ssh-stress -6
+ dns4-stress dns-stress
+ dns6-stress dns-stress -6
+ 
+-http4-stress http4-stress
+-http6-stress http6-stress
++http4-stress http-stress
++http6-stress http-stress -6
+ 
+ ftp4-download-stress ftp4-download-stress
+ ftp6-download-stress ftp6-download-stress
 -- 
 1.7.1
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
