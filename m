@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mats.liljegren@enea.com>) id 1YNH22-0003pz-Ch
-	for ltp-list@lists.sourceforge.net; Mon, 16 Feb 2015 08:27:54 +0000
-Received: from sestofw01.enea.se ([192.36.1.252] helo=mx-3.enea.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.76)
-	id 1YNH20-0007bL-Lf
-	for ltp-list@lists.sourceforge.net; Mon, 16 Feb 2015 08:27:54 +0000
-From: Mats Liljegren <mats.liljegren@enea.com>
-Date: Mon, 16 Feb 2015 08:15:22 +0000
-Message-ID: <0247700D01F14443B9209F90AD938CC524E65CBB@SESTOEX04.enea.se>
-References: <1418740497-24661-1-git-send-email-mats.liljegren@enea.com>
-	<1418740497-24661-2-git-send-email-mats.liljegren@enea.com>,
-	<20150216051704.GB4075@vapier>
-In-Reply-To: <20150216051704.GB4075@vapier>
-Content-Language: en-US
+	(envelope-from <metan@suse.de>) id 1YIa2u-0007yq-Ph
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 09:45:24 +0000
+Date: Tue, 3 Feb 2015 10:45:06 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150203094506.GA15330@rei.scz.novell.com>
+References: <1422954897-11966-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<1422954897-11966-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<54D09440.7070701@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] ltp: Fix cross-compile issue
+Content-Disposition: inline
+In-Reply-To: <54D09440.7070701@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 2/2] syscalls/mmap16: regression test for data
+ corruption when blocksize < pagesize for mmaped data
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,44 +27,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Mike Frysinger <vapier@gentoo.org>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-
-My change never made it into the repository. Instead, Cyril prepended the path with ${SYSROOT}, where your cross-compile environment needs to setup SYSROOT path in order to make a proper cross-compile of LTP. See commit d4ab5d27d5ad666547d7b4d8e269e00921960c58. Cludgy, but it is simple and it works. This "=" thing I proposed apparently didn't work for everyone.
-
-As for using pkg-config, I have no idea how that will work out in a cross-compile environment. But I guess it should be possible to go down that route as well...
-
-/Mats
-________________________________________
-From: Mike Frysinger [vapier@gentoo.org]
-Sent: Monday, February 16, 2015 6:17 AM
-To: Mats Liljegren
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
-Subject: Re: [LTP] [PATCH] ltp: Fix cross-compile issue
 
-On 16 Dec 2014 15:34, Mats Liljegren wrote:
-> --- a/m4/ltp-tirpc.m4
-> +++ b/m4/ltp-tirpc.m4
-> @@ -25,7 +25,7 @@ AC_DEFUN([LTP_CHECK_TIRPC],[
->       TIRPC_LIBS=""
->
->       AC_CHECK_HEADER(tirpc/netconfig.h,[
-> -             TIRPC_CPPFLAGS="-I/usr/include/tirpc"
-> +             TIRPC_CPPFLAGS="-I=/usr/include/tirpc"
->               AC_DEFINE(HAVE_LIBTIRPC, 1, [Define to 1 if you have libtirpc headers installed])
->               AC_CHECK_LIB(tirpc, rpcb_set, [TIRPC_LIBS="-ltirpc"])])
+Hi!
+> As you have pointed that we can use '-i num' in runtest file to make this test run
+> multiple times, but if a user just chdir to testcases/kernel/syscalls/mmap/ and executes
+> './mmap16' directly, and if also virtual memory subsystem happens to write dirty pages,
+> test result will be not accurate. So here I still make this test run 10 times at lease ;)
 
-this m4 is fatally flawed and tweaking the flags won't help.  we should switch
-to use pkg-config here.  a cursory glance suggests acl/cap should also be
-updated.
--mike
+You can then do two loops. One for the test itself and for the test
+looping.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=190641631&iu=/4140/ostg.clktrk
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
