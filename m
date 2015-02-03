@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YKp2e-0002KA-VZ
-	for ltp-list@lists.sourceforge.net; Mon, 09 Feb 2015 14:10:24 +0000
-Date: Mon, 9 Feb 2015 15:10:06 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YIeJJ-0002Py-Rz
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 14:18:37 +0000
+Date: Tue, 3 Feb 2015 15:18:24 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150209141006.GA7605@rei.suse.de>
-References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1423212090-24164-2-git-send-email-gux.fnst@cn.fujitsu.com>
+Message-ID: <20150203141824.GA18474@rei.scz.novell.com>
+References: <54CF8D41.6090709@oracle.com>
+	<1422889881-9432-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1423212090-24164-2-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 2/6] power_management: compile and install
- testcases/kernel/power_management by default
+In-Reply-To: <1422889881-9432-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V2 2/2] tst_module: introduce a timeout to unload
+ modules
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,52 +26,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> -# testcases/kernel/power_management requires python.
-> -if test "x$with_python" = xyes; then
-> -    AC_ARG_WITH([power-management-testsuite],
-> -      [AC_HELP_STRING([--with-power-management-testsuite],
-> -        [compile and install the x86 power management testsuite (default=no)])],
-> -      [with_power_management_testsuite=yes],
-> -    )
-> -fi
-> -if test "x$with_power_management_testsuite" = xyes; then
-> -    AC_SUBST([WITH_POWER_MANAGEMENT_TESTSUITE],["yes"])
-> -else
-> -    AC_SUBST([WITH_POWER_MANAGEMENT_TESTSUITE],["no"])
-> -fi
+> It may happen, that the first execution of 'rmmod module_name'
+> may fail for some reason (like the module is in use for some short time).
+> 
+> Changed tst_module_unload() to execute 'rmmod module_name' multiple
+> times with the total number limited by a timeout.
+> 
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Well, it's true that the testsuite needs python, so technically this is
-correct but I agree that this is not the best way to do that.
-
-The question is, does the testsuite need python in compile or install
-phase? If not we can safely remove this and change it to runtime check.
-
->  AC_ARG_WITH([open-posix-testsuite],
->    [AC_HELP_STRING([--with-open-posix-testsuite],
->      [compile and install the open posix testsuite (default=no)])],
-> diff --git a/include/mk/features.mk.default b/include/mk/features.mk.default
-> index c9edc1c..69425ca 100644
-> --- a/include/mk/features.mk.default
-> +++ b/include/mk/features.mk.default
-> @@ -34,13 +34,6 @@ HAVE_SECUREBITS			:= no
->  
->  # Test suite knobs
->  
-> -# Enable testcases/kernel/power_management's compile and install?
-> -ifeq ($(UCLINUX),1)
-> -WITH_POWER_MANAGEMENT_TESTSUITE	:= no
-> -else
-> -WITH_POWER_MANAGEMENT_TESTSUITE	:=
-> -endif
-
-What is wrong with these configure knobs?
-
-I think that this is far better than the runtime test you introduced in
-later patches.
+Acked.
 
 -- 
 Cyril Hrubis
