@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1YIvuI-00055G-DE
-	for ltp-list@lists.sourceforge.net; Wed, 04 Feb 2015 09:05:58 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YIvuG-00055f-8b
-	for ltp-list@lists.sourceforge.net; Wed, 04 Feb 2015 09:05:58 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1495AU6027543
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Feb 2015 17:05:10 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Wed, 4 Feb 2015 16:59:47 +0800
-Message-ID: <1423040387-2029-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1423040387-2029-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <20150203095709.GB15330@rei.scz.novell.com>
-	<1423040387-2029-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1YIcwq-0001z5-4B
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 12:51:20 +0000
+Date: Tue, 3 Feb 2015 13:51:05 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150203125105.GA15523@rei.scz.novell.com>
+References: <54D08FAC.5010601@linux.vnet.ibm.com>
+	<20150203093752.GA4264@rei.scz.novell.com>
+	<1501572527.5689680.1422957604905.JavaMail.zimbra@redhat.com>
+	<2062151122.5724081.1422960324625.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 2/2] syscalls/mmap16: regression test for data
-	corruption when blocksize < pagesize for mmaped data
+Content-Disposition: inline
+In-Reply-To: <2062151122.5724081.1422960324625.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] proposed patch to fix sendmsg01 invalid flags set w/
+ control ; returned -1 (expected -1), errno 22 (expected 95)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,335 +28,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, Chuck Ebbert <cebbert.lkml@gmail.com>
 
-This data corruption fixed by:
-    commit 90a8020278c1598fafd071736a0846b38510309c
-    Author: Jan Kara <jack@suse.cz>
-    Date:   Wed Oct 1 21:49:18 2014 -0400
-        vfs: fix data corruption when blocksize < pagesize for mmaped data
+Hi!
+> > >     recvfrom01: fix test for invalid message flags
+> > 
+> > Agreed. We have seen in past, that this (.flags = ~MSG_CMSG_COMPAT)
+> > leads to undefined behavior.
+> 
+> It appears the difference comes from LTP:
+>   https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/utils/msg_common.h
+> 
+> The flags has 0 value when compiled with -m32, so we never make it pass
+> this check:
+>   if (flags & MSG_CMSG_COMPAT)
+>       return -EINVAL;
+> 
+> but the kernel definition is rather based on config option:
+>   #if defined(CONFIG_COMPAT)
+>   #define MSG_CMSG_COMPAT 0x80000000      /* This message needs 32 bit fixups */
+>   #else
+>   #define MSG_CMSG_COMPAT 0               /* We never have 32 bit fixups */
+>   #endif
 
-and this test is written to run in ext4 filesystem(with mount option 'nodelalloc'),
-so there is another fixing patch needed:
-    commit d6320cbfc92910a3e5f10c42d98c231c98db4f60
-    Author: Jan Kara <jack@suse.cz>
-    Date:   Wed Oct 1 21:49:46 2014 -0400
-        ext4: fix mmap data corruption when blocksize < pagesize
+Tricky.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- runtest/ltplite                         |   1 +
- runtest/stress.part3                    |   1 +
- runtest/syscalls                        |   1 +
- testcases/kernel/syscalls/.gitignore    |   1 +
- testcases/kernel/syscalls/mmap/mmap16.c | 247 ++++++++++++++++++++++++++++++++
- 5 files changed, 251 insertions(+)
- create mode 100644 testcases/kernel/syscalls/mmap/mmap16.c
+But looking into the unix_dgram_sendmsg() which should be the one that
+gets called in the particular case, the code realy just checks for the
+MSG_OOB, just like the the recvmsg() case.
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 1457908..5d6c815 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -449,6 +449,7 @@ mmap06 mmap06
- mmap07 mmap07
- mmap08 mmap08
- mmap09 mmap09
-+mmap16 mmap16
- 
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 368c640..48fcc5f 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -382,6 +382,7 @@ mmap06 mmap06
- mmap07 mmap07
- mmap08 mmap08
- mmap09 mmap09
-+mmap16 mmap16 -i 5
- 
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 44969f3..4e780d7 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -587,6 +587,7 @@ mmap14 mmap14
- # test is broken, mask it for now.
- #mmap11 mmap11 -i 30000
- mmap15 mmap15
-+mmap16 mmap16
- 
- modify_ldt01 modify_ldt01
- modify_ldt02 modify_ldt02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 92c0bf5..b443fd8 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -533,6 +533,7 @@
- /mmap/mmap13
- /mmap/mmap14
- /mmap/mmap15
-+/mmap/mmap16
- /modify_ldt/modify_ldt01
- /modify_ldt/modify_ldt02
- /modify_ldt/modify_ldt03
-diff --git a/testcases/kernel/syscalls/mmap/mmap16.c b/testcases/kernel/syscalls/mmap/mmap16.c
-new file mode 100644
-index 0000000..7ce1544
---- /dev/null
-+++ b/testcases/kernel/syscalls/mmap/mmap16.c
-@@ -0,0 +1,247 @@
-+/*
-+ *   Copyright (c) 2015 Fujitsu Ltd.
-+ *   Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-+ *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
-+ */
-+
-+/*
-+ * This is a regression test for commit:
-+ * http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/
-+ * commit/?id=90a8020
-+ * http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/
-+ * commit/?id=d6320cb
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+#include <sys/mount.h>
-+#include <sys/mman.h>
-+
-+#include "usctest.h"
-+#include "test.h"
-+#include "safe_macros.h"
-+
-+#define MNTPOINT	"mntpoint"
-+#define FS_BLOCKSIZE	1024
-+#define SUB_LOOPCOUNT	10
-+
-+static void setup(void);
-+static void cleanup(void);
-+static void do_child(void);
-+static void do_test(void);
-+
-+static const char *device;
-+static const char *fs_type = "ext4";
-+static int mount_flag;
-+
-+static int page_size;
-+static struct tst_checkpoint checkpoint1, checkpoint2;
-+static int bug_reproduced;
-+
-+char *TCID = "mmap16";
-+int TST_TOTAL = 1;
-+
-+int main(int ac, char **av)
-+{
-+	int i, lc;
-+	const char *msg;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	/*
-+	 * If child process was killed by SIGBUS, indeed that can not guarantee
-+	 * this bug must have been fixed, If we're luckily enough, virtual
-+	 * memory subsystem happen to decide that it is time to write dirty
-+	 * pages, it will make mapped pages write-protect, so ->page_mkwrite()
-+	 * still will be called, child process will be killed by SIGBUS, but
-+	 * it's not because of above fixing patches. So here we run this test
-+	 * 10 times, if once, child process exits normally, we can sure that
-+	 * this bug is not fixed.
-+	 */
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (i = 0; i < SUB_LOOPCOUNT; i++)
-+			do_test();
-+	}
-+
-+	if (bug_reproduced)
-+		tst_resm(TFAIL, "Bug is reproduced!");
-+	else
-+		tst_resm(TPASS, "Bug is not reproduced!");
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void do_test(void)
-+{
-+	int fd, ret, status;
-+	pid_t child;
-+	char buf[FS_BLOCKSIZE];
-+
-+	SAFE_TOUCH(cleanup, "testfilep", 0644, NULL);
-+	SAFE_TOUCH(cleanup, "testfilec", 0644, NULL);
-+
-+	child = tst_fork();
-+	switch (child) {
-+	case -1:
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
-+	case 0:
-+		do_child();
-+	default:
-+		fd = SAFE_OPEN(cleanup, "testfilep", O_RDWR);
-+		memset(buf, 'a', FS_BLOCKSIZE);
-+
-+		TST_CHECKPOINT_PARENT_WAIT(cleanup, &checkpoint1);
-+		while (1) {
-+			ret = write(fd, buf, FS_BLOCKSIZE);
-+			if (ret < 0) {
-+				if (errno == ENOSPC) {
-+					break;
-+				} else {
-+					tst_brkm(TBROK | TERRNO, cleanup,
-+						 "write failed unexpectedly");
-+				}
-+			}
-+		}
-+		SAFE_CLOSE(cleanup, fd);
-+		TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint2);
-+	}
-+
-+	wait(&status);
-+	if (WIFEXITED(status) && WEXITSTATUS(status) == 1) {
-+		bug_reproduced = 1;
-+	} else {
-+		/*
-+		 * If child process was killed by SIGBUS, bug is not reproduced.
-+		 */
-+		if (!WIFSIGNALED(status) || WTERMSIG(status) != SIGBUS) {
-+			tst_brkm(TBROK | TERRNO, cleanup,
-+				 "child process terminate unexpectedly");
-+		}
-+	}
-+
-+	SAFE_UNLINK(cleanup, "testfilep");
-+	SAFE_UNLINK(cleanup, "testfilec");
-+}
-+
-+static void setup(void)
-+{
-+	const char *fs_opts[3] = {"-b", "1024", NULL};
-+
-+	tst_sig(FORK, DEF_HANDLER, NULL);
-+	tst_require_root(NULL);
-+
-+	TEST_PAUSE;
-+	tst_tmpdir();
-+
-+	page_size = getpagesize();
-+	if (page_size == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "Unable to get page size");
-+
-+	device = tst_acquire_device(cleanup);
-+	if (!device)
-+		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
-+	tst_mkfs(cleanup, device, fs_type, fs_opts);
-+
-+	SAFE_MKDIR(cleanup, MNTPOINT, 0755);
-+	/*
-+	 * Disable ext4 delalloc feature, so block will be allocated
-+	 * as soon as possible
-+	 */
-+	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, "nodelalloc");
-+	mount_flag = 1;
-+
-+	SAFE_CHDIR(cleanup, MNTPOINT);
-+	TST_CHECKPOINT_CREATE(&checkpoint1);
-+	TST_CHECKPOINT_CREATE(&checkpoint2);
-+}
-+
-+static void do_child(void)
-+{
-+	int fd, offset;
-+	char buf[FS_BLOCKSIZE];
-+	char *addr = NULL;
-+
-+	/*
-+	 * We have changed SIGBUS' handler in parent process by calling
-+	 * tst_sig(FORK, DEF_HANDLER, NULL), so here just restore it.
-+	 */
-+	if (signal(SIGBUS, SIG_DFL) == SIG_ERR)
-+		tst_brkm(TBROK | TERRNO, NULL, "signal(SIGBUS) failed");
-+
-+	memset(buf, 'a', FS_BLOCKSIZE);
-+	fd = SAFE_OPEN(NULL, "testfilec", O_RDWR);
-+	SAFE_PWRITE(NULL, 1, fd, buf, FS_BLOCKSIZE, 0);
-+
-+	/*
-+	 * In case mremap() may fail because that memory area can not be
-+	 * expanded at current virtual address(MREMAP_MAYMOVE is not set),
-+	 * we first do a mmap(page_size * 2) operation to reserve some
-+	 * free address space.
-+	 */
-+	addr = SAFE_MMAP(NULL, NULL, page_size * 2, PROT_WRITE | PROT_READ,
-+			 MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, -1, 0);
-+	SAFE_MUNMAP(NULL, addr, page_size * 2);
-+
-+	addr = SAFE_MMAP(NULL, addr, FS_BLOCKSIZE, PROT_WRITE | PROT_READ,
-+			 MAP_SHARED, fd, 0);
-+
-+	addr[0] = 'a';
-+
-+	SAFE_FTRUNCATE(NULL, fd, page_size * 2);
-+	addr = mremap(addr, FS_BLOCKSIZE, 2 * page_size, 0);
-+	if (addr == MAP_FAILED)
-+		tst_brkm(TBROK | TERRNO, NULL, "mremap failed unexpectedly");
-+
-+	/*
-+	 * Let parent process consume FS free blocks as many as possible, then
-+	 * there'll be no free blocks allocated for this new file mmaping for
-+	 * offset starting at 1024, 2048, or 3072. If this above kernel bug
-+	 * has been fixed, usually child process will killed by SIGBUS signal,
-+	 * if not, the data 'A', 'B', 'C' will be silently discarded later when
-+	 * kernel writepage is called, that means data corruption.
-+	 */
-+	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint1);
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint2);
-+
-+	for (offset = FS_BLOCKSIZE; offset < page_size; offset += FS_BLOCKSIZE)
-+		addr[offset] = 'a';
-+
-+	SAFE_MUNMAP(NULL, addr, 2 * page_size);
-+	SAFE_CLOSE(NULL, fd);
-+	exit(TFAIL);
-+}
-+
-+static void cleanup(void)
-+{
-+	TEST_CLEANUP;
-+
-+	if (chdir(".."))
-+		tst_resm(TWARN | TERRNO, "chdir('..') failed");
-+	if (mount_flag && tst_umount(MNTPOINT) < 0)
-+		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
-+	if (device)
-+		tst_release_device(NULL, device);
-+	tst_rmdir();
-+}
+......
+
+        err = -EOPNOTSUPP;
+        if (msg->msg_flags&MSG_OOB)
+                goto out;
+......
+
+So I guess that we should be safe with changing the test the same way as we did
+with recvmsg().
+
+> sendmsg01 seems to be the only place where this flag is used.
+
+That is because it has been removed from the recvmsg01.c by the fix
+mentioned in this thread. However the header in question stayed included
+there...
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
