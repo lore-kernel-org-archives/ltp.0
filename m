@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jjaburek@redhat.com>) id 1YQDmr-0006nG-Kl
-	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 11:36:25 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YQDmq-0001EJ-Bg
-	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 11:36:25 +0000
-Message-ID: <54EC622A.7040106@redhat.com>
-Date: Tue, 24 Feb 2015 12:36:10 +0100
-From: Jiri Jaburek <jjaburek@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YIZvq-0001uN-Ax
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 09:38:06 +0000
+Date: Tue, 3 Feb 2015 10:37:52 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150203093752.GA4264@rei.scz.novell.com>
+References: <54D08FAC.5010601@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <1424766459-22439-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<1424766459-22439-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1424766459-22439-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] lib/tst_virt.c: distinguish between KVM and
- QEMU
+Content-Disposition: inline
+In-Reply-To: <54D08FAC.5010601@linux.vnet.ibm.com>
+Subject: Re: [LTP] proposed patch to fix sendmsg01 invalid flags set w/
+ control ; returned -1 (expected -1), errno 22 (expected 95)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,90 +25,115 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: snehalphule <snehal@linux.vnet.ibm.com>
+Cc: ltp-list@lists.sourceforge.net, Chuck Ebbert <cebbert.lkml@gmail.com>
 
-Hello and thanks for the patch. Aside from indent issues (please use
-tabs, Linux kernel style), I have some comments/questions:
-
-On 02/24/2015 09:27 AM, Wei,Jiangang wrote:
-> KVM guest is on top of QEMU, It's necessary that figure out
-> the difference between the two.
+Hi!
+> *Description:*
+> For bug: https://bugs.launchpad.net/linaro-qa/+bug/1327251
+> Purpose of Change: Because of code changes in socket.c file for 
+> 32bit-userspace, return value changed to EINVAL in case of 
+> 32bit-userspace/64-bit-kernelspace.
+> Test changed to check if 32user/64kernel , then return value should be 
+> checked to EINVAL ,
+> for other systems return value should be EOPNOTSUPP
 > 
-> Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
-> ---
->  lib/tst_virt.c | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/lib/tst_virt.c b/lib/tst_virt.c
-> index eb3b487..1d9960e 100644
-> --- a/lib/tst_virt.c
-> +++ b/lib/tst_virt.c
-> @@ -100,14 +100,24 @@ static int is_kvm(void)
->  	FILE *cpuinfo;
->  	char line[64];
->  	int found;
-> +    char sig[SIG_MAX_LEN];
->  
-> -	/* this doesn't work with custom -cpu values, since there's
-> -	 * no easy, reasonable or reliable way to work around those */
+> Kernel : 3.10.0-123.13.2
+> Signed-off-by: snehalphule <snehal@linux.vnet.ibm.com>
 
-When writing this, I was well aware of virt-what, which is exactly
-why I wrote that comment the way I did - the code used by virt-what
-is not easy, reliable or (IMO) reasonable to copy/paste into LTP.
-Specifically with kvm, the KVMKVMKVM detection used to fail (IIRC)
-with some specific hosts and qemu versions. It can also be easily
-bypassed with -cpu host,kvm=off (which doesn't disable kvm accel).
+I can see this exact failure when I compile the testsuite with -m32 on
+64bit hardware as well. But the patch below is wrong on several levels.
 
->  	cpuinfo = SAFE_FOPEN(NULL, "/proc/cpuinfo", "r");
->  	found = 0;
->  	while (fgets(line, sizeof(line), cpuinfo) != NULL) {
->  		if (strstr(line, "QEMU Virtual CPU")) {
-> -			found = 1;
-> +            /*
-> +             * Is it an KVM(on top of QEMU) or Only a QEMU?
-> +             */
+My guess is that the root of the problem is similar to the problem fixed in:
 
-Well, yes, I'm aware that "KVM" is really just QEMU + accel, which
-is why my original series actually had VIRT_QEMU instead of VIRT_KVM,
-but then it was pointed out to me that VIRT_KVM would make sense to
-most people not knowledgeable enough in this area.
+commit 1153a8438fe45530eb480d902271476c2e330663
+Author: Chuck Ebbert <cebbert.lkml@gmail.com>
+Date:   Wed Oct 1 17:10:32 2014 -0500
 
-I'm not against renaming it, but I'm a bit baffled by the separation.
+    recvfrom01: fix test for invalid message flags
 
-> +            if (cpu_sign(&sig[0]) == 0) {
-> +                if (strcmp(sig, "KVMKVMKVM") == 0) {
-> +                    found = 1;
-> +                } else {
-> +                    // QEMU Guest
 
-This leads me to ask why did you create the patches - why should the
-default QEMU with TCG be any different w.r.t. the only test that
-currently uses the tst_is_virt() function?
+The test passes ~MSG_CMSG_COMPAT as flags and expect to hit particular safety
+check. The difference may be that the order of checks is different for compat
+syscalls, but that is just a guess. This would need more investigation to
+figure out what is wrong.
 
-Again, I'm not against renaming VIRT_KVM to VIRT_QEMU as it would be
-technically more correct, but why separate accel=kvm from accel=tcg?
-What about accel=xen?
-
-> +                }
-> +            } else {
-> +                found = 1;
+> --- ltp-full-20140828/testcases/kernel/syscalls/sendmsg/sendmsg01.c.orig 
+> 2015-01-23 00:54:22.804582530 -0600
+> +++ ltp-full-20140828/testcases/kernel/syscalls/sendmsg/sendmsg01.c 
+> 2015-01-23 00:57:26.149032808 -0600
+> @@ -677,6 +677,38 @@ static void setup4(void)
+>       control->cmsg_type = SCM_RIGHTS;
+>       *(int *)CMSG_DATA(control) = tfd;
+>       controllen = control->cmsg_len;
+> +
+> +        // In case of Compact (32bit) user space and 64bit kernel 
+> space, return value is EINVAL
+> +        if (tdat[testno].flags == (unsigned)~MSG_CMSG_COMPAT)
+> +        {
+> +            char user_space_bit[BUFSIZ];
+> +            char kernel_arch[BUFSIZ];
+> +            int kernel_space_bit;
+> +
+> +            FILE *pipe = popen("getconf LONG_BIT", "r");
+> +            if (fgets(user_space_bit, BUFSIZ, pipe) != NULL)
+> +            {
+> +               pipe = popen("arch", "r");
+> +               if (fgets(kernel_arch, BUFSIZ, pipe) != NULL)
+> +               {
+> +                   // Remove carriage return from the buffer
+> +                   size_t len = strlen(user_space_bit);
+> +                   if (len > 0 && user_space_bit[len-1] == '\n') { 
+> user_space_bit[--len] = '\0';}
+> +                   len = strlen(kernel_arch);
+> +                   if (len > 0 && kernel_arch[len-1] == '\n') { 
+> kernel_arch[--len] = '\0';}
+> +
+> +                   // Check if Kernel used is 64 bit or 32 bit
+> +                   if (!strcmp(kernel_arch, "ppc64") || 
+> !strcmp(kernel_arch, "s390x") || !strcmp(kernel_arch, "x86_64"))
+> +                      kernel_space_bit = 64;
+> +                   else
+> +                      kernel_space_bit = 32;
+> +
+> +                   // Only if it is Compact user space (32bit), then 
+> return value is EINVAL
+> +                   if (atoi(user_space_bit) == 32  && kernel_space_bit 
+> == 64)
+> +                   tdat[testno].experrno = EINVAL;
+> +               }
 > +            }
->  			break;
->  		}
->  	}
+> +         }
+>   }
+> 
+>   static void cleanup4(void)
+> 
+> 
 > 
 
-Thanks,
-Jiri
+> ------------------------------------------------------------------------------
+> Dive into the World of Parallel Programming. The Go Parallel Website,
+> sponsored by Intel and developed in partnership with Slashdot Media, is your
+> hub for all things parallel software development, from weekly thought
+> leadership blogs to news, videos, case studies, tutorials and more. Take a
+> look and join the conversation now. http://goparallel.sourceforge.net/
 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
