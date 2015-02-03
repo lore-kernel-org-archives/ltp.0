@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1YL1WV-0006SJ-5s
-	for ltp-list@lists.sourceforge.net; Tue, 10 Feb 2015 03:30:03 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YL1WL-0004WA-BT
-	for ltp-list@lists.sourceforge.net; Tue, 10 Feb 2015 03:30:03 +0000
-Message-ID: <54D97AF3.1060505@cn.fujitsu.com>
-Date: Tue, 10 Feb 2015 11:28:51 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jjaburek@redhat.com>) id 1YIbDv-0006pb-VX
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 11:00:51 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YIbDs-0007py-WA
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 11:00:51 +0000
+Message-ID: <54D0AA57.20608@redhat.com>
+Date: Tue, 03 Feb 2015 12:00:39 +0100
+From: Jiri Jaburek <jjaburek@redhat.com>
 MIME-Version: 1.0
-References: <1422336738-617-1-git-send-email-liwang@redhat.com>	
-	<20150127153140.GG16759@rei.suse.de>	
-	<2114349772.1193590.1422414177762.JavaMail.zimbra@redhat.com>	
-	<54C893E8.7020609@cn.fujitsu.com>
-	<1423538564.27932.4.camel@G08JYZSD130126.localdomain>
-In-Reply-To: <1423538564.27932.4.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH] hugeshmat04: fix typo
-Reply-To: gaowanlong@cn.fujitsu.com
+References: <54CB92BC.8020605@redhat.com> <54D0A873.6080503@oracle.com>
+In-Reply-To: <54D0A873.6080503@oracle.com>
+Subject: Re: [LTP] the mandatory (?) nature of testscripts
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,38 +27,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>, ltp-list@lists.sourceforge.net
 
-Oops, applied, thank you.
+On 02/03/2015 11:52 AM, Alexey Kodanev wrote:
+> Hi Jiri!
+> On 30.01.2015 17:18, Jiri Jaburek wrote:
+>> Hello all,
+>> I normally execute the ltp suite using runltp with -f, specifying just
+>> the runtest files I want to execute, possibly even writing my own ones
+>> and using the fact that runltp detects absolute paths in the comma-
+>> separated list and looks for them outside /opt/ltp.
+>>
+>> >From this viewpoint, and also looking at things like
+>> testscripts/syscalls.sh, this approach seems perfectly valid (there's
+>> at least nothing against it in the documentation, as far as I can tell).
+>> My impression was therefore that testscripts are just convenient
+>> (or legacy?) ways to run big chunks of the suite.
+>>
+>> However then I found testscripts/network.sh and all the "mandatory"
+>> variables it exports - not using it resulted in the ping01 test failing
+>> due to recent rewrite in cbab2eed06. And, as it turns out, network.sh
+>> is not alone.
+> 
+> network.sh lists network variables which are needed to run all network 
+> tests (stress group includes additional parameters, not yet moved them 
+> to network.sh from networkstress.sh). In general, it is essential to 
+> define remote host name, test interface names, IP addresses before 
+> running network tests. Not all of them run with localhost, e.g. ping01 
+> was modified to support various network configuration, you can now run 
+> it on several interfaces (probably testing various NIC drivers, make 
+> test traffic run over particular net-link, etc.) or running with 
+> localhost, for example:
 
-On 02/10/2015 11:22 AM, Zeng Linggang wrote:
->>From ecec5dda24d573f48862e1d05e15d14bfef5a463 Mon Sep 17 00:00:00 2001
-> From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> Date: Tue, 10 Feb 2015 11:20:32 +0800
-> Subject: [PATCH] hugeshmat04: fix typo
+Thanks, but I can read that from git commits and the code - I understand
+what has changed and can guess why it happened and it makes perfect
+sense, just asking about the "design" of it.
+
 > 
-> hugeshamt04 --> hugeshmat04
->       ^^              ^^
+> $ echo 'ping601 ping01 -6' > runtest/ping_ipv6
+> $ RHOST_IPV6_HOST=':1' ./runltp -f ping_ipv6
+
+Unfortunately, from what I see, I need to export the "network" and
+"host" part separately, by network classes (therefore networks not
+using full class boundaries apparently can't be used) - see tst_ipaddr.
+
+Meaning I can make the ping01 test work like it used to via
+
+ping export LTPROOT; export IPV4_NETWORK=127.0.0; export
+RHOST_IPV4_HOST=1; ping01
+
+in my runtest file.
+
+Still, my question was rather about the concept (for the future),
+ie. whether it's okay to introduce something in network.sh which makes
+it impossible to run tests separately (without patches) or whether
+the tests *need* to remain executable separately.
+
+Thanks.
+
 > 
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->  runtest/hugetlb | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>> Therefore I would like to ask (since I didn't find this documented);
+>> is running individual tests via runltp -f something "officially"
+>> supported and the network tests should be altered to get their defaults
+>> in another way, or is runltp -f wild west and I'm on my own, with the
+>> only supported way to run the suite being the testscripts?
 > 
-> diff --git a/runtest/hugetlb b/runtest/hugetlb
-> index 805141d..7fcaa01 100644
-> --- a/runtest/hugetlb
-> +++ b/runtest/hugetlb
-> @@ -10,7 +10,7 @@ hugemmap05_3 hugemmap05 -s -m
->  hugeshmat01 hugeshmat01 -i 5
->  hugeshmat02 hugeshmat02 -i 5
->  hugeshmat03 hugeshmat03 -i 5
-> -hugeshmat04 hugeshamt04 -i 5
-> +hugeshmat04 hugeshmat04 -i 5
->  
->  hugeshmctl01 hugeshmctl01 -i 5
->  hugeshmctl02 hugeshmctl02 -i 5
+> Test network configuration should be explicitly defined beforehand. You 
+> could set required parameters in your test environment, then use 
+> "runltp" as usual. I'm not sure right now if it is ok to add these 
+> parameters with default values to runltp, then export those variables 
+> inside it.
+> 
+> Best regards,
+> Alexey
+> 
+> 
+> ------------------------------------------------------------------------------
+> Dive into the World of Parallel Programming. The Go Parallel Website,
+> sponsored by Intel and developed in partnership with Slashdot Media, is your
+> hub for all things parallel software development, from weekly thought
+> leadership blogs to news, videos, case studies, tutorials and more. Take a
+> look and join the conversation now. http://goparallel.sourceforge.net/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 > 
 
 
