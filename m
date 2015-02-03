@@ -1,33 +1,40 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YIeDT-0002rb-3k
-	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 14:12:35 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <snehal@linux.vnet.ibm.com>) id 1YIZRq-0005dk-L3
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 09:07:06 +0000
+Received: from e28smtp08.in.ibm.com ([122.248.162.8])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YIeDQ-00075b-2S
-	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 14:12:35 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t13ECP6D014935
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:12:26 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t13ECPgj022399
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:12:25 GMT
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	t13ECO6o013176
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:12:24 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue,  3 Feb 2015 17:14:40 +0300
-Message-Id: <1422972883-12173-3-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1422972883-12173-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1422972883-12173-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 3/6] network/stress/http: check downloaded file size
+	(Exim 4.76) id 1YIZRo-0004j0-Cu
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 09:07:06 +0000
+Received: from /spool/local
+	by e28smtp08.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <snehal@linux.vnet.ibm.com>; 
+	Tue, 3 Feb 2015 14:36:56 +0530
+Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
+	by d28dlp03.in.ibm.com (Postfix) with ESMTP id C81801258053
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  3 Feb 2015 14:37:55 +0530 (IST)
+Received: from d28av03.in.ibm.com (d28av03.in.ibm.com [9.184.220.65])
+	by d28relay03.in.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	t1396rOp47120480
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:36:53 +0530
+Received: from d28av03.in.ibm.com (localhost [127.0.0.1])
+	by d28av03.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	t1396r9m024387
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:36:53 +0530
+Received: from oc3708147017.ibm.com ([9.184.191.36])
+	by d28av03.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	t1396rri024351
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 14:36:53 +0530
+Message-ID: <54D08FAC.5010601@linux.vnet.ibm.com>
+Date: Tue, 03 Feb 2015 14:36:52 +0530
+From: snehalphule <snehal@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Subject: [LTP] proposed patch to fix sendmsg01 invalid flags set w/ control ;
+ returned -1 (expected -1), errno 22 (expected 95)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,135 +44,187 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2339057793223564214=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/stress/http/http-stress       |    5 ++-
- testcases/network/stress/http/http-stress01-rmt |   15 +++++++++++--
- testcases/network/stress/http/http-stress02-rmt |   25 +++++++++++++++-------
- 3 files changed, 32 insertions(+), 13 deletions(-)
+This is a multi-part message in MIME format.
+--===============2339057793223564214==
+Content-Type: multipart/alternative;
+	boundary="------------030604070305020100000809"
 
-diff --git a/testcases/network/stress/http/http-stress b/testcases/network/stress/http/http-stress
-index 1dd2f4b..db18237 100644
---- a/testcases/network/stress/http/http-stress
-+++ b/testcases/network/stress/http/http-stress
-@@ -58,7 +58,8 @@ test01()
- {
- 	tst_resm TINFO "http client download test file"
- 
--	tst_rhost_run -s -c "http-stress01-rmt $(tst_ipaddr) http_file"
-+	tst_rhost_run -s -c "http-stress01-rmt $(tst_ipaddr) \
-+		http_file $DOWNLOAD_BIGFILESIZE"
- 
- 	tst_resm TPASS "Test is finished successfully"
- }
-@@ -68,7 +69,7 @@ test02()
- 	tst_resm TINFO "clients request data asynchronously $NS_DURATION sec"
- 
- 	tst_rhost_run -s -c "http-stress02-rmt $(tst_ipaddr) http_file \
--		$NS_DURATION $CONNECTION_TOTAL"
-+		$DOWNLOAD_BIGFILESIZE $NS_DURATION $CONNECTION_TOTAL"
- 
- 	tst_resm TPASS "Test is finished successfully"
- }
-diff --git a/testcases/network/stress/http/http-stress01-rmt b/testcases/network/stress/http/http-stress01-rmt
-index 2567889..9799007 100644
---- a/testcases/network/stress/http/http-stress01-rmt
-+++ b/testcases/network/stress/http/http-stress01-rmt
-@@ -24,20 +24,29 @@ TST_TOTAL=1
- 
- . test_net.sh
- 
--tst_check_cmds curl
-+tst_check_cmds awk curl
- 
- # Check the arguments
--[ $# -ne 2 ] && tst_brkm TBROK "Usage: $0 server_ipaddr filename"
-+[ $# -ne 3 ] && tst_brkm TBROK "Usage: $0 server_ipaddr filename filesize"
- 
- server_ipaddr="$1"
- filename="$2"
-+filesize="$3"
- 
- echo $server_ipaddr | grep -F ':' > /dev/null
- if [ $? -eq 0 ]; then
- 	server_ipaddr='['$server_ipaddr']'
- fi
- 
--curl -g "http://$server_ipaddr/$filename" -o /dev/null || \
-+out=$(curl --noproxy '*' -sS -g "http://$server_ipaddr/$filename" -o /dev/null \
-+	-w "time=%{time_total} size=%{size_download} speed=%{speed_download}")
-+
-+tst_resm TINFO "stat: $out"
-+recv_filesize=$(echo "$out" | awk '{print $2}')
-+
-+if [ $recv_filesize != "size=$filesize" ]; then
-+	tst_resm TINFO "expected file size '$filesize'"
- 	tst_brkm TBROK "Failed to get http://${server_ipaddr}/${filename}"
-+fi
- 
- tst_exit
-diff --git a/testcases/network/stress/http/http-stress02-rmt b/testcases/network/stress/http/http-stress02-rmt
-index b59a75e..db21be4 100644
---- a/testcases/network/stress/http/http-stress02-rmt
-+++ b/testcases/network/stress/http/http-stress02-rmt
-@@ -24,16 +24,17 @@ TST_TOTAL=1
- 
- . test_net.sh
- 
--tst_check_cmds curl
-+tst_check_cmds awk curl
- 
--if [ $# -ne 4 ]; then
--	tst_brkm TBROK "Usage: $0 server_addr filename duration connections"
-+if [ $# -ne 5 ]; then
-+	tst_brkm TBROK "Usage: $0 server_addr fname fsize duration connections"
- fi
- 
- server_ipaddr="$1"
- filename="$2"
--duration="$3"
--connections="$4"
-+filesize="$3"
-+duration="$4"
-+connections="$5"
- 
- echo $server_ipaddr | grep -F ':' > /dev/null
- if [ $? -eq 0 ]; then
-@@ -55,13 +56,21 @@ while true ; do
- 		continue;
- 	fi
- 
--	# Login to the server
--	curl -s -g "http://$server_ipaddr/$filename" > /dev/null 2>&1 &
-+	curl --noproxy '*' -s -g "http://$server_ipaddr/$filename" \
-+		-o /dev/null &
- done
- 
- killall -qw -s SIGPIPE curl
- 
--curl -g "http://$server_ipaddr/$filename" -o /dev/null || \
-+out=$(curl --noproxy '*' -sS -g "http://$server_ipaddr/$filename" -o /dev/null \
-+	-w "time=%{time_total} size=%{size_download} speed=%{speed_download}")
-+
-+tst_resm TINFO "stat: $out"
-+recv_filesize=$(echo "$out" | awk '{print $2}')
-+
-+if [ $recv_filesize != "size=$filesize" ]; then
-+	tst_resm TINFO "expected file size '$filesize'"
- 	tst_brkm TBROK "Failed to get http://$server_ipaddr/$filename"
-+fi
- 
- tst_exit
--- 
-1.7.1
+This is a multi-part message in MIME format.
+--------------030604070305020100000809
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+
+
+*Description:*
+For bug: https://bugs.launchpad.net/linaro-qa/+bug/1327251
+Purpose of Change: Because of code changes in socket.c file for 
+32bit-userspace, return value changed to EINVAL in case of 
+32bit-userspace/64-bit-kernelspace.
+Test changed to check if 32user/64kernel , then return value should be 
+checked to EINVAL ,
+for other systems return value should be EOPNOTSUPP
+
+
+Kernel : 3.10.0-123.13.2
+Signed-off-by: snehalphule <snehal@linux.vnet.ibm.com>
+
+--- ltp-full-20140828/testcases/kernel/syscalls/sendmsg/sendmsg01.c.orig 
+2015-01-23 00:54:22.804582530 -0600
++++ ltp-full-20140828/testcases/kernel/syscalls/sendmsg/sendmsg01.c 
+2015-01-23 00:57:26.149032808 -0600
+@@ -677,6 +677,38 @@ static void setup4(void)
+      control->cmsg_type = SCM_RIGHTS;
+      *(int *)CMSG_DATA(control) = tfd;
+      controllen = control->cmsg_len;
++
++        // In case of Compact (32bit) user space and 64bit kernel 
+space, return value is EINVAL
++        if (tdat[testno].flags == (unsigned)~MSG_CMSG_COMPAT)
++        {
++            char user_space_bit[BUFSIZ];
++            char kernel_arch[BUFSIZ];
++            int kernel_space_bit;
++
++            FILE *pipe = popen("getconf LONG_BIT", "r");
++            if (fgets(user_space_bit, BUFSIZ, pipe) != NULL)
++            {
++               pipe = popen("arch", "r");
++               if (fgets(kernel_arch, BUFSIZ, pipe) != NULL)
++               {
++                   // Remove carriage return from the buffer
++                   size_t len = strlen(user_space_bit);
++                   if (len > 0 && user_space_bit[len-1] == '\n') { 
+user_space_bit[--len] = '\0';}
++                   len = strlen(kernel_arch);
++                   if (len > 0 && kernel_arch[len-1] == '\n') { 
+kernel_arch[--len] = '\0';}
++
++                   // Check if Kernel used is 64 bit or 32 bit
++                   if (!strcmp(kernel_arch, "ppc64") || 
+!strcmp(kernel_arch, "s390x") || !strcmp(kernel_arch, "x86_64"))
++                      kernel_space_bit = 64;
++                   else
++                      kernel_space_bit = 32;
++
++                   // Only if it is Compact user space (32bit), then 
+return value is EINVAL
++                   if (atoi(user_space_bit) == 32  && kernel_space_bit 
+== 64)
++                   tdat[testno].experrno = EINVAL;
++               }
++            }
++         }
+  }
+
+  static void cleanup4(void)
+
+
+
+
+--------------030604070305020100000809
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  </head>
+  <body text="#000000" bgcolor="#FFFFFF">
+    <div class="moz-text-html" lang="x-unicode"> <br>
+      <div class="moz-forward-container"><br>
+        <font face="sans-serif" size="2"><b>Description:</b></font><br>
+        For bug: <a class="moz-txt-link-freetext"
+          href="https://bugs.launchpad.net/linaro-qa/+bug/1327251">https://bugs.launchpad.net/linaro-qa/+bug/1327251</a>
+        <br>
+        Purpose of Change: Because of code changes in socket.c file for
+        32bit-userspace, return value changed to EINVAL in case of
+        32bit-userspace/64-bit-kernelspace.<br>
+        Test changed to check if 32user/64kernel , then return value
+        should be checked to EINVAL ,<br>
+        for other systems return value should be EOPNOTSUPP<br>
+        <br>
+        <br>
+        Kernel : 3.10.0-123.13.2<br>
+        Signed-off-by: snehalphule <a moz-do-not-send="true"
+          class="moz-txt-link-rfc2396E"
+          href="mailto:snehal@linux.vnet.ibm.com">&lt;snehal@linux.vnet.ibm.com&gt;</a>
+        <br>
+        <br>
+        ---
+        ltp-full-20140828/testcases/kernel/syscalls/sendmsg/sendmsg01.c.orig   
+        2015-01-23 00:54:22.804582530 -0600<br>
+        +++
+        ltp-full-20140828/testcases/kernel/syscalls/sendmsg/sendmsg01.c   
+        2015-01-23 00:57:26.149032808 -0600<br>
+        @@ -677,6 +677,38 @@ static void setup4(void)<br>
+             control-&gt;cmsg_type = SCM_RIGHTS;<br>
+             *(int *)CMSG_DATA(control) = tfd;<br>
+             controllen = control-&gt;cmsg_len;<br>
+        +        <br>
+        +        // In case of Compact (32bit) user space and 64bit
+        kernel space, return value is EINVAL<br>
+        +        if (tdat[testno].flags == (unsigned)~MSG_CMSG_COMPAT)<br>
+        +        {<br>
+        +            char user_space_bit[BUFSIZ];<br>
+        +            char kernel_arch[BUFSIZ];<br>
+        +            int kernel_space_bit;<br>
+        +<br>
+        +            FILE *pipe = popen("getconf LONG_BIT", "r");<br>
+        +            if (fgets(user_space_bit, BUFSIZ, pipe) != NULL) <br>
+        +            {<br>
+        +               pipe = popen("arch", "r");<br>
+        +               if (fgets(kernel_arch, BUFSIZ, pipe) != NULL)<br>
+        +               {<br>
+        +                   // Remove carriage return from the buffer<br>
+        +                   size_t len = strlen(user_space_bit);<br>
+        +                   if (len &gt; 0 &amp;&amp;
+        user_space_bit[len-1] == '\n') { user_space_bit[--len] = '\0';}<br>
+        +                   len = strlen(kernel_arch);<br>
+        +                   if (len &gt; 0 &amp;&amp; kernel_arch[len-1]
+        == '\n') { kernel_arch[--len] = '\0';}<br>
+        +<br>
+        +                   // Check if Kernel used is 64 bit or 32 bit
+        <br>
+        +                   if (!strcmp(kernel_arch, "ppc64") ||
+        !strcmp(kernel_arch, "s390x") || !strcmp(kernel_arch, "x86_64"))<br>
+        +                      kernel_space_bit = 64; <br>
+        +                   else <br>
+        +                      kernel_space_bit = 32;<br>
+        +<br>
+        +                   // Only if it is Compact user space (32bit),
+        then return value is EINVAL<br>
+        +                   if (atoi(user_space_bit) == 32  &amp;&amp; 
+        kernel_space_bit == 64)<br>
+        +                   tdat[testno].experrno = EINVAL;<br>
+        +               }<br>
+        +            }  <br>
+        +         }<br>
+         }<br>
+         <br>
+         static void cleanup4(void)<br>
+        <br>
+        <br>
+      </div>
+      <br>
+    </div>
+  </body>
+</html>
+
+--------------030604070305020100000809--
+
+
+
+--===============2339057793223564214==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
@@ -173,7 +232,17 @@ sponsored by Intel and developed in partnership with Slashdot Media, is your
 hub for all things parallel software development, from weekly thought
 leadership blogs to news, videos, case studies, tutorials and more. Take a
 look and join the conversation now. http://goparallel.sourceforge.net/
+--===============2339057793223564214==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2339057793223564214==--
+
+
