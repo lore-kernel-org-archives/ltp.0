@@ -1,34 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YIL36-0003YM-TV
-	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 17:44:36 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YIL36-0004ue-0G
-	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 17:44:36 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1YIfuK-0001r5-7l
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 16:00:56 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YIfuJ-0002lm-5z
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 16:00:56 +0000
 Received: from acsinet22.oracle.com (acsinet22.oracle.com [141.146.126.238])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t12HiTol015312
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t13G0m59015188
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 17:44:30 GMT
-Received: from aserz7021.oracle.com (aserz7021.oracle.com [141.146.126.230])
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 16:00:49 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
 	by acsinet22.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t12HiTbk024719
+	t13G0l6u016170
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 17:44:29 GMT
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-	by aserz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t12HiTGM008779
-	for <ltp-list@lists.sourceforge.net>; Mon, 2 Feb 2015 17:44:29 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon,  2 Feb 2015 20:46:49 +0300
-Message-Id: <1422899209-23015-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1422899209-23015-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1422899209-23015-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 2/2] lib/test_net.sh: don't use 'tst_brkm TBROK' in
-	tst_add_ipaddr()
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 16:00:48 GMT
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t13G0lKn016148
+	for <ltp-list@lists.sourceforge.net>; Tue, 3 Feb 2015 16:00:47 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue,  3 Feb 2015 19:00:40 +0300
+Message-Id: <1422979240-17376-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <54D0E4C2.6030004@oracle.com>
+References: <54D0E4C2.6030004@oracle.com>
+Subject: [LTP] [PATCH V2] doc: document tst_run_cmd
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -45,56 +45,67 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: vasily.isaenko@oracle.com
 
-The function can be called in cleanup, so if it somehow failed,
-there could be an infinite recursion. Fix it by removing 'tst_brkm'
-and returning appropriate exit code.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/lib/test_net.sh |   17 +++++++++--------
- 1 files changed, 9 insertions(+), 8 deletions(-)
+Changes since V1:
+ * Applied all comments from V1
+ * Added one more const to cmd[] in Example
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index acaed84..75ccd76 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -220,13 +220,13 @@ tst_add_ipaddr()
+
+ doc/test-writing-guidelines.txt |   40 +++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 40 insertions(+), 0 deletions(-)
+
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index 4d70a1b..22eb318 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -994,6 +994,46 @@ exactly as 'umount(2)' but retries several times on a failure.
+ IMPORTANT: All testcases should use 'tst_umount()' instead of 'umount(2)' to
+            umount filesystems.
  
- 	if [ $type = "lhost" ]; then
- 		tst_resm TINFO "set local addr $(tst_ipaddr)/$mask"
--		ip addr add $(tst_ipaddr)/$mask dev $iface || \
--			tst_brkm TBROK "failed to add IP address"
--		return
-+		ip addr add $(tst_ipaddr)/$mask dev $iface
-+		return $?
- 	fi
- 
- 	tst_resm TINFO "set remote addr $(tst_ipaddr rhost)/$mask"
--	tst_rhost_run -s -c "ip addr add $(tst_ipaddr rhost)/$mask dev $iface"
-+	tst_rhost_run -c "ip addr add $(tst_ipaddr rhost)/$mask dev $iface"
-+	return $?
- }
- 
- # tst_restore_ipaddr [TYPE] [LINK]
-@@ -237,13 +237,14 @@ tst_restore_ipaddr()
- {
- 	local type=${1:-"lhost"}
- 	local link_num=${2:-"0"}
-+	local ret=0
- 
- 	tst_init_iface $type $link_num
- 
- 	local backup_tst_ipv6=$TST_IPV6
--
--	TST_IPV6= tst_add_ipaddr $type $link_num
--	TST_IPV6=6 tst_add_ipaddr $type $link_num
--
-+	TST_IPV6= tst_add_ipaddr $type $link_num || ret=$?
-+	TST_IPV6=6 tst_add_ipaddr $type $link_num || ret=$?
- 	TST_IPV6=$backup_tst_ipv6
++2.2.20 Running executables
++^^^^^^^^^^^^^^^^^^^^^^^^^^
 +
-+	return $ret
- }
++[source,c]
++-------------------------------------------------------------------------------
++#include "test.h"
++
++int tst_run_cmd(void (cleanup_fn)(void),
++               const char *const argv[],
++	       const char *stdout_path,
++	       const char *stderr_path,
++	       int pass_exit_val);
++-------------------------------------------------------------------------------
++
++'tst_run_cmd' is a wrapper for 'vfork() + execvp()' which provides a way
++to execute an external program.
++
++'argv[]' is a NULL-terminated array of strings starting with the program name
++which is followed by optional arguments.
++
++A non-zero 'pass_exit_val' makes 'tst_run_cmd' return the program exit code to
++the caller. A zero for 'pass_exit_val' makes 'tst_run_cmd' exit the tests
++on failure and call 'cleanup_fn' (if not NULL) beforehand.
++
++'stdout_path' and 'stderr_path' determine where to redirect the program
++stdout and stderr I/O streams.
++
++.Example
++[source,c]
++-------------------------------------------------------------------------------
++#include "test.h"
++
++const char *const cmd[] = { "ls", "-l", NULL };
++
++...
++	/* Store output of 'ls -l' into log.txt */
++	tst_run_cmd(cleanup, cmd, "log.txt", NULL, 0);
++...
++-------------------------------------------------------------------------------
++
+ 2.3 Writing a testcase in shell
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
 -- 
 1.7.1
 
