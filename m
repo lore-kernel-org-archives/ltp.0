@@ -1,32 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YMEzR-0005Np-Om
-	for ltp-list@lists.sourceforge.net; Fri, 13 Feb 2015 12:04:57 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YMEzQ-0005hV-Sx
-	for ltp-list@lists.sourceforge.net; Fri, 13 Feb 2015 12:04:57 +0000
-Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t1DC4pni030758
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 13 Feb 2015 12:04:51 GMT
-Received: from userz7021.oracle.com (userz7021.oracle.com [156.151.31.85])
-	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t1DC4oFI024798
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Fri, 13 Feb 2015 12:04:51 GMT
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-	by userz7021.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t1DC4oda009617
-	for <ltp-list@lists.sourceforge.net>; Fri, 13 Feb 2015 12:04:50 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 13 Feb 2015 15:07:03 +0300
-Message-Id: <1423829229-28963-5-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1423829229-28963-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1423829229-28963-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 5/11] network/stress/interface: add local library
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YIf7I-0005J6-RJ
+	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 15:10:16 +0000
+Date: Tue, 3 Feb 2015 16:10:02 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150203151002.GA18977@rei.scz.novell.com>
+References: <54CB92BC.8020605@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <54CB92BC.8020605@redhat.com>
+Subject: Re: [LTP] the mandatory (?) nature of testscripts
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,102 +21,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Jiri Jaburek <jjaburek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-It provides the following functions:
-* basic setup and cleanup
-* making TCP background traffic
-* checking connectivity between test hosts
+Hi!
+> Hello all,
+> I normally execute the ltp suite using runltp with -f, specifying just
+> the runtest files I want to execute, possibly even writing my own ones
+> and using the fact that runltp detects absolute paths in the comma-
+> separated list and looks for them outside /opt/ltp.
+> 
+> >From this viewpoint, and also looking at things like
+> testscripts/syscalls.sh, this approach seems perfectly valid (there's
+> at least nothing against it in the documentation, as far as I can tell).
+> My impression was therefore that testscripts are just convenient
+> (or legacy?) ways to run big chunks of the suite.
 
-Moreover it defines new IPV4_NET16_UNUSED and IPV6_NET32_UNUSED
-variables. They are needed because some of the interface tests
-add more then 254 new addresses to interface which could overlap
-with existed ones on test network.
+They are there from a times before current maintainers took over the
+project. At that time the CVS repository was a dumping ground for
+anything that the previous developers found at least a little bit
+useful.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/stress/interface/if-lib.sh |   64 ++++++++++++++++++++++++++
- 1 files changed, 64 insertions(+), 0 deletions(-)
- create mode 100644 testcases/network/stress/interface/if-lib.sh
+As far as I know, there was no architecture decision behind it, no
+documentation either.
 
-diff --git a/testcases/network/stress/interface/if-lib.sh b/testcases/network/stress/interface/if-lib.sh
-new file mode 100644
-index 0000000..fde6310
---- /dev/null
-+++ b/testcases/network/stress/interface/if-lib.sh
-@@ -0,0 +1,64 @@
-+#!/bin/sh
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+
-+TST_CLEANUP="cleanup"
-+
-+. test_net.sh
-+
-+ipver=${TST_IPV6:-4}
-+
-+IPV4_NET16_UNUSED=${IPV4_NET16_UNUSED:-"10.23"}
-+IPV6_NET32_UNUSED=${IPV6_NET32_UNUSED:-"fd00:23"}
-+
-+setup()
-+{
-+	tst_require_root
-+	tst_check_cmds ip pgrep pkill
-+	trap "tst_brkm TBROK 'test interrupted'" INT
-+}
-+
-+cleanup()
-+{
-+	# Stop the background TCP traffic
-+	pkill -13 -x tcp_fastopen
-+	tst_rhost_run -c "pkill -13 -x tcp_fastopen"
-+	tst_restore_ipaddr
-+}
-+
-+make_background_tcp_traffic()
-+{
-+	port=$(tst_get_unused_port ipv${ipver} stream)
-+	tcp_fastopen -R 3 -g $port > /dev/null 2>&1 &
-+	tst_rhost_run -b -c "tcp_fastopen -l -H $(tst_ipaddr) -g $port"
-+}
-+
-+check_connectivity()
-+{
-+	local cnt=$1
-+	[ $CHECK_INTERVAL -eq 0 ] && return
-+	[ $(($cnt % $CHECK_INTERVAL)) -ne 0 ] && return
-+
-+	tst_resm TINFO "check connectivity through $(tst_iface) on step $cnt"
-+	check_icmpv${ipver}_connectivity $(tst_iface) $(tst_ipaddr rhost)
-+	if [ $? -ne 0 ]; then
-+		tst_resm TFAIL "$(tst_iface) is broken"
-+		return 1
-+	fi
-+	return 0
-+}
+I simply didn't touched these because I had enough work fixing the
+testcases.
+
+I'm all for removing scripts that have no added value, the math.sh and
+syscalls.sh looks like an obvious examples. There are likely more of
+these, some may be even broken.
+
+> However then I found testscripts/network.sh and all the "mandatory"
+> variables it exports - not using it resulted in the ping01 test failing
+> due to recent rewrite in cbab2eed06. And, as it turns out, network.sh
+> is not alone.
+>
+> Therefore I would like to ask (since I didn't find this documented);
+> is running individual tests via runltp -f something "officially"
+> supported and the network tests should be altered to get their defaults
+> in another way, or is runltp -f wild west and I'm on my own, with the
+> only supported way to run the suite being the testscripts?
+
+Well at the time the runltp is the supported way to run the testcases.
+(Although I'm still dreaming of writing a better test driver instead of
+the runltp and ltp-pan combination.) Or a more straight answer is that
+this is the script I care about. Ideally the network parameters would be
+handled somehow in the script, the same way the loop devices are, but
+that haven't been done.
+
+Also the mantra I'm repeating here over and over is to make the
+testcases as self contained as possible. For the network testcases we
+have to pass the the remove host and a few more parameters somehow, but
+apart from that, it should just work fine.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
