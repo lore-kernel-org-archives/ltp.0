@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YRIMd-0004xo-Ff
-	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 10:41:47 +0000
+	(envelope-from <jjaburek@redhat.com>) id 1YIz8b-0006oL-JM
+	for ltp-list@lists.sourceforge.net; Wed, 04 Feb 2015 12:32:57 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YRIMc-0004jB-36
-	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 10:41:47 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t1RAfdxp021679
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YIz8a-0004kn-CU
+	for ltp-list@lists.sourceforge.net; Wed, 04 Feb 2015 12:32:57 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t14CWnGE026320
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
 	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Fri, 27 Feb 2015 05:41:39 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 27 Feb 2015 11:41:32 +0100
-Message-Id: <2370af01ebeb2c4014c6d0c4252818a6138d8e19.1425033440.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 1/2] sched_setparam/9-1: fix hang on -rt kernel
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Feb 2015 07:32:50 -0500
+Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t14CWmwT023652
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Feb 2015 07:32:49 -0500
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Wed,  4 Feb 2015 13:32:42 +0100
+Message-Id: <1423053163-13483-1-git-send-email-jjaburek@redhat.com>
+Subject: [LTP] [PATCH 1/2] lib: support VIRT_KVM for tst_is_virt()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,142 +36,77 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: jkastner@redhat.com
 
-As mentioned in [1], the testcase hangs on -rt kernel,
-because alarm(2) will never fire. The testcase runs with
-FIFO scheduling of higher priority than ksoftirqd.
-
-This patch changes testcase in following way:
-1. In good case, where child process preempts parent,
-   child is able to detect this condition and terminate.
-2. In bad case, where preemption fails, testcase doesn't
-   rely on softirq (alarm), but hrtimer (time).
-3. removes unnecessary sleep
-
-[1] https://lkml.org/lkml/2006/1/10/481
-
-Reported-by: Jiri Kastner <jkastner@redhat.com>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
 ---
- .../conformance/interfaces/sched_setparam/9-1.c    | 48 ++++++++++++++--------
- 1 file changed, 32 insertions(+), 16 deletions(-)
+ include/test.h |  1 +
+ lib/tst_virt.c | 24 ++++++++++++++++++++++++
+ 2 files changed, 25 insertions(+)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
-index ed90cee..354e03e 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
-@@ -31,14 +31,15 @@
-  *      not, the test fail.
-  */
- #define _GNU_SOURCE
-+#include <errno.h>
- #include <sched.h>
- #include <stdio.h>
- #include <signal.h>
-+#include <stdlib.h>
- #include <sys/ipc.h>
- #include <sys/shm.h>
-+#include <time.h>
+diff --git a/include/test.h b/include/test.h
+index 137e6f4..53d6254 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -51,6 +51,7 @@
+ 
+ /* virt types for tst_is_virt() */
+ #define VIRT_XEN	1	/* xen dom0/domU */
++#define VIRT_KVM	2	/* only default virtual CPU */
+ 
+ /*
+  * Ensure that NUMSIGS is defined.
+diff --git a/lib/tst_virt.c b/lib/tst_virt.c
+index d1f1e74..87f73dc 100644
+--- a/lib/tst_virt.c
++++ b/lib/tst_virt.c
+@@ -24,6 +24,28 @@
+ 
  #include <unistd.h>
--#include <stdlib.h>
--#include <errno.h>
- #include "posixtest.h"
- #include "affinity.h"
- 
-@@ -55,6 +56,7 @@
- 
- static int nb_cpu;
- static int *shmptr;
-+static int mean_prio;
- 
- static int get_ncpu(void)
- {
-@@ -85,6 +87,7 @@ static int get_ncpu(void)
- static void child_process(void)
- {
- 	struct sched_param param;
-+	time_t t1, t2;
- 
- 	param.sched_priority = sched_get_priority_max(SCHED_FIFO);
- 	if (sched_setparam(getpid(), &param) != 0) {
-@@ -92,20 +95,33 @@ static void child_process(void)
- 		return;
- 	}
- 
--	/* to avoid blocking */
--	alarm(2);
--	while (1) ;
-+	t1 = time(NULL);
-+	do {
-+		t2 = time(NULL);
-+	} while (difftime(t2, t1) <= 2);
- }
- 
- static void test_process(void)
- {
--	/* to avoid blocking */
--	alarm(2);
--
--	while (1) {
--		(*shmptr)++;
-+	struct sched_param param;
-+	time_t t1, t2;
+ #include "test.h"
++#include "safe_macros.h"
 +
-+	t1 = time(NULL);
-+	do {
-+		sched_getparam(getpid(), &param);
-+		(*shmptr) = param.sched_priority;
-+		/* if we can see that our priority has changed
-+		 * that means we preempted parent, so we are done */
-+		if ((*shmptr) == mean_prio)
++static int is_kvm(void)
++{
++	FILE *cpuinfo;
++	char line[64];
++	int found;
++
++	/* this doesn't work with custom -cpu values, since there's
++	 * no easy, reasonable or reliable way to work around those */
++	cpuinfo = SAFE_FOPEN(NULL, "/proc/cpuinfo", "r");
++	found = 0;
++	while (fgets(line, sizeof(line), cpuinfo) != NULL) {
++		if (strstr(line, "QEMU Virtual CPU")) {
++			found = 1;
 +			break;
++		}
++	}
 +
-+		t2 = time(NULL);
-+		/* immediately after parent forks us, we has same
-+		 * priority and compete with parent for same CPU,
-+		 * give parent chance to run and boost our priority */
- 		sched_yield();
--	}
-+	} while (difftime(t2, t1) <= 2);
-+	exit(0);
++	SAFE_FCLOSE(NULL, cpuinfo);
++	return found;
++}
+ 
+ static int is_xen(void)
+ {
+@@ -47,6 +69,8 @@ int tst_is_virt(int virt_type)
+ 	switch (virt_type) {
+ 	case VIRT_XEN:
+ 		return is_xen();
++	case VIRT_KVM:
++		return is_kvm();
+ 	}
+ 	tst_brkm(TBROK, NULL, "invalid virt_type flag: %d", virt_type);
  }
- 
- static void kill_children(int *child_pid)
-@@ -133,6 +149,8 @@ int main(void)
- 		nb_cpu = 1;
- 	}
- 
-+	mean_prio = (sched_get_priority_min(SCHED_FIFO) +
-+		sched_get_priority_max(SCHED_FIFO)) / 2;
- 	child_pid = malloc(nb_cpu * sizeof(int));
- 
- 	key = ftok("conformance/interfaces/sched_setparam/9-1.c", 1234);
-@@ -194,11 +212,9 @@ int main(void)
- 		return PTS_UNRESOLVED;
- 	}
- 
--	sleep(1);
--
--	param.sched_priority = (sched_get_priority_min(SCHED_FIFO) +
--				sched_get_priority_max(SCHED_FIFO)) / 2;
--
-+	/* parent runs, which means test_process() gave up cpu,
-+	 * boost its priority and check it preempted parent */
-+	param.sched_priority = mean_prio;
- 	oldcount = *shmptr;
- 	if (sched_setparam(child_pid[i], &param) != 0) {
- 		perror("An error occurs when calling sched_setparam()");
 -- 
-1.8.3.1
+2.1.0
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
