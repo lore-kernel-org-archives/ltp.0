@@ -1,18 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YLqmq-0000uo-B4
-	for ltp-list@lists.sourceforge.net; Thu, 12 Feb 2015 10:14:20 +0000
-Date: Thu, 12 Feb 2015 11:14:00 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YJ0bA-0002JL-Ku
+	for ltp-list@lists.sourceforge.net; Wed, 04 Feb 2015 14:06:32 +0000
+Date: Wed, 4 Feb 2015 15:06:11 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150212101400.GB10816@rei.suse.de>
-References: <1423707635-1147-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Message-ID: <20150204140611.GC25483@rei.scz.novell.com>
+References: <1423053163-13483-1-git-send-email-jjaburek@redhat.com>
+	<1423053163-13483-2-git-send-email-jjaburek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1423707635-1147-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] doc/test-writing-guidelines.txt: fix spelling
- mistake
+In-Reply-To: <1423053163-13483-2-git-send-email-jjaburek@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] getrusage04: skip on QEMU/kvm in addition to
+ Xen
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,14 +26,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+To: Jiri Jaburek <jjaburek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> wrote the brackets '}' instead of the braces ')' mistakenly
-> during the example program.
-
-Pushed, thanks.
+Both pushed, thanks.
 
 -- 
 Cyril Hrubis
