@@ -1,24 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YRG6B-0001sD-My
-	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:39 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YRG6A-0006tl-B6
-	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:39 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1R8Figo019180
-	for <ltp-list@lists.sourceforge.net>; Fri, 27 Feb 2015 16:15:44 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 27 Feb 2015 16:12:08 +0800
-Message-ID: <1425024732-30751-5-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v3 5/9] power_management: delete unused files
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jjaburek@redhat.com>) id 1YIz8k-00059j-DH
+	for ltp-list@lists.sourceforge.net; Wed, 04 Feb 2015 12:33:06 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YIz8b-0004kq-4A
+	for ltp-list@lists.sourceforge.net; Wed, 04 Feb 2015 12:33:06 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t14CWpe6015890
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Feb 2015 07:32:51 -0500
+Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t14CWmwU023652
+	for <ltp-list@lists.sourceforge.net>; Wed, 4 Feb 2015 07:32:50 -0500
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Wed,  4 Feb 2015 13:32:43 +0100
+Message-Id: <1423053163-13483-2-git-send-email-jjaburek@redhat.com>
+In-Reply-To: <1423053163-13483-1-git-send-email-jjaburek@redhat.com>
+References: <1423053163-13483-1-git-send-email-jjaburek@redhat.com>
+Subject: [LTP] [PATCH 2/2] getrusage04: skip on QEMU/kvm in addition to Xen
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,103 +33,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-There are some files that are not used by this
-testsuit. Delete them.
+This test is unstable under QEMU as well, given the extra scheduling
+on top of the virtual CPUs.
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+getrusage04    0  TINFO  :  utime:           0us; stime:         622us
+getrusage04    0  TINFO  :  utime:           0us; stime:        1548us
+getrusage04    0  TINFO  :  utime:           0us; stime:        2547us
+getrusage04    0  TINFO  :  utime:           0us; stime:        3543us
+getrusage04    0  TINFO  :  utime:           0us; stime:        4541us
+getrusage04    0  TINFO  :  utime:        2770us; stime:        4541us
+getrusage04    1  TFAIL  :  getrusage04.c:130: utime increased > 2000us:
+
+Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
 ---
- testcases/kernel/power_management/check_config.sh | 32 -----------------------
- testcases/kernel/power_management/config_cpu_freq |  7 -----
- testcases/kernel/power_management/config_cpu_idle |  3 ---
- testcases/kernel/power_management/config_sched_mc |  1 -
- 4 files changed, 43 deletions(-)
- delete mode 100755 testcases/kernel/power_management/check_config.sh
- delete mode 100644 testcases/kernel/power_management/config_cpu_freq
- delete mode 100644 testcases/kernel/power_management/config_cpu_idle
- delete mode 100644 testcases/kernel/power_management/config_sched_mc
+ testcases/kernel/syscalls/getrusage/getrusage04.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/power_management/check_config.sh b/testcases/kernel/power_management/check_config.sh
-deleted file mode 100755
-index 4eeac4e..0000000
---- a/testcases/kernel/power_management/check_config.sh
-+++ /dev/null
-@@ -1,32 +0,0 @@
--#!/bin/bash
--
--. pm_include.sh
--
--if [ $# -lt 1 ] ; then
--	echo "Usage: ${0} <filename>"
--	RC=1
--	return ${RC}
--fi
--filename=${1}
--
--RC=0
--grep_command=grep
--config_file=/boot/config-$(uname -r)
--if [ ! -f ${config_file} ]; then
--	echo "MISSING_FILE: can't find the required config file at /boot/config-$(uname -r)"
--	echo "Trying for alternate file at /proc/config.gz"
--	config_file=/proc/config.gz
--fi
--if [ ! -f ${config_file} ]; then
--	echo "MISSING_FILE: can't find the required config file at /proc/config.gz"
--	RC=1
--fi
--if [ "${config_file}" = "/proc/config.gz" ] ; then
--	grep_command=zgrep
--fi
--
--while read config_option
--do
--	check_config_options "${config_option}=*" ${config_file} ${grep_command}
--done < ${filename}
--exit $RC
-diff --git a/testcases/kernel/power_management/config_cpu_freq b/testcases/kernel/power_management/config_cpu_freq
-deleted file mode 100644
-index 76401e6..0000000
---- a/testcases/kernel/power_management/config_cpu_freq
-+++ /dev/null
-@@ -1,7 +0,0 @@
--CONFIG_CPU_FREQ
--CONFIG_CPU_FREQ_TABLE
--CONFIG_CPU_FREQ_DEBUG
--CONFIG_CPU_FREQ_STAT
--CONFIG_CPU_FREQ_STAT_DETAILS
--CONFIG_CPU_FREQ_DEFAULT_GOV_*
--CONFIG_CPU_FREQ_GOV_*
-diff --git a/testcases/kernel/power_management/config_cpu_idle b/testcases/kernel/power_management/config_cpu_idle
-deleted file mode 100644
-index f899fae..0000000
---- a/testcases/kernel/power_management/config_cpu_idle
-+++ /dev/null
-@@ -1,3 +0,0 @@
--CONFIG_CPU_IDLE
--CONFIG_CPU_IDLE_GOV_LADDER
--CONFIG_CPU_IDLE_GOV_MENU
-diff --git a/testcases/kernel/power_management/config_sched_mc b/testcases/kernel/power_management/config_sched_mc
-deleted file mode 100644
-index 30d0f97..0000000
---- a/testcases/kernel/power_management/config_sched_mc
-+++ /dev/null
-@@ -1 +0,0 @@
--CONFIG_SCHED_MC
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
+index 3640295..9d4cccd 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage04.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
+@@ -201,8 +201,9 @@ static void setup(void)
+ {
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+-	if (tst_is_virt(VIRT_XEN))
+-		tst_brkm(TCONF, NULL, "This testcase is not supported on Xen.");
++	if (tst_is_virt(VIRT_XEN) || tst_is_virt(VIRT_KVM))
++		tst_brkm(TCONF, NULL, "This testcase is not supported on this"
++		        " virtual machine.");
+ 
+ 	BIAS_MAX = guess_timer_resolution();
+ 
 -- 
-1.9.3
+2.1.0
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
