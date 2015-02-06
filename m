@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1YJdBf-0005rn-RA
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 07:18:47 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YJeY9-00029I-Ba
+	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 08:46:05 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YJdBe-00064Y-MP
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 07:18:47 +0000
-Message-ID: <54D46997.6050704@cn.fujitsu.com>
-Date: Fri, 6 Feb 2015 15:13:27 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YJeY7-0007eM-Cc
+	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 08:46:05 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t168ipmb028865
+	for <ltp-list@lists.sourceforge.net>; Fri, 6 Feb 2015 16:44:51 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 6 Feb 2015 16:41:27 +0800
+Message-ID: <1423212090-24164-3-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <20150203095709.GB15330@rei.scz.novell.com>
-	<1423040387-2029-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1423040387-2029-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1423206548.27888.29.camel@dhcp-13-206.nay.redhat.com>
-In-Reply-To: <1423206548.27888.29.camel@dhcp-13-206.nay.redhat.com>
-Subject: Re: [LTP] [PATCH v2 2/2] syscalls/mmap16: regression test for data
- corruption when blocksize < pagesize for mmaped data
+Subject: [LTP] [PATCH v2 3/6] power_management: install lib/sched_mc.py into
+	testcases/bin directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,73 +32,118 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi,
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/power_management/Makefile         | 10 ++++-----
+ .../kernel/power_management/cpu_consolidation.py   |  2 --
+ testcases/kernel/power_management/ilb_test.py      |  2 --
+ testcases/kernel/power_management/lib/Makefile     | 25 ++++++++++++++++++++++
+ testcases/kernel/power_management/sched_domain.py  |  2 --
+ 5 files changed, 29 insertions(+), 12 deletions(-)
+ create mode 100644 testcases/kernel/power_management/lib/Makefile
 
-On 02/06/2015 03:09 PM, Li Wang wrote:
-> Hi,
-> 
-> I found there are two new LTP changes have been applied, which would be
-> probably impact to your case:
-> commit aabb8340f63ed31afe995fd97795e542dc68b93c
->     Include usctest.h in test.h
-> commit 605fa3362fd7cef0baa2131be32cf44661783d3e
->     Get rid of TEST_CLEANUP
-> 
-> Seems we should remove two lines of the testcase as below otherwise it 
-> can't be compile.
-
-OK, thanks!
-I'll send V3 next Monday, in case somebody has other comments ;)
-> 
-> BTW, I tested it on patched kernel it can works well and Bug reproduced
-> with unpatched kernel.
-Thanks!
-
-Regards,
-Xiaoguang Wang
-> 
-> Thanks,
-> Li Wang
-> 
-> On Wed, 2015-02-04 at 16:59 +0800, Xiaoguang Wang wrote:
->> This data corruption fixed by:
-> ...
->> +
->> +#include <stdio.h>
->> +#include <errno.h>
->> +#include <fcntl.h>
->> +#include <sys/types.h>
->> +#include <sys/wait.h>
->> +#include <unistd.h>
->> +#include <sys/mount.h>
->> +#include <sys/mman.h>
->> +
->> +#include "usctest.h"    <=========== remove 
->> +#include "test.h"
->> +#include "safe_macros.h"
->> +
->> +#define MNTPOINT	"mntpoint"
->> +#define FS_BLOCKSIZE	1024
-> ...
->> +
->> +static void cleanup(void)
->> +{
->> +	TEST_CLEANUP;   <============ remove
->> +
->> +	if (chdir(".."))
->> +		tst_resm(TWARN | TERRNO, "chdir('..') failed");
->> +	if (mount_flag && tst_umount(MNTPOINT) < 0)
->> +		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
->> +	if (device)
->> +		tst_release_device(NULL, device);
->> +	tst_rmdir();
->> +}
-> 
-> .
-> 
+diff --git a/testcases/kernel/power_management/Makefile b/testcases/kernel/power_management/Makefile
+index 24f75f8..bc189b9 100644
+--- a/testcases/kernel/power_management/Makefile
++++ b/testcases/kernel/power_management/Makefile
+@@ -13,8 +13,8 @@
+ ## for more details.                                                          ##
+ ##                                                                            ##
+ ## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+ ##                                                                            ##
+ ################################################################################
+ 
+@@ -22,10 +22,8 @@ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-vpath %.c $(srcdir):$(top_srcdir)/lib
+-
+-INSTALL_TARGETS		:= lib/*.py *.py *.sh
++INSTALL_TARGETS		:= *.py *.sh
+ 
+ MAKE_DEPS		+= $(APICMDS_DIR)/tst_kvercmp
+ 
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/power_management/cpu_consolidation.py b/testcases/kernel/power_management/cpu_consolidation.py
+index 992a745..3b68d6a 100755
+--- a/testcases/kernel/power_management/cpu_consolidation.py
++++ b/testcases/kernel/power_management/cpu_consolidation.py
+@@ -6,8 +6,6 @@
+ import os
+ import sys
+ import time
+-LIB_DIR = "%s/lib" % os.path.dirname(__file__)
+-sys.path.append(LIB_DIR)
+ from optparse import OptionParser
+ from sched_mc import *
+ 
+diff --git a/testcases/kernel/power_management/ilb_test.py b/testcases/kernel/power_management/ilb_test.py
+index cec0b29..ec990bc 100755
+--- a/testcases/kernel/power_management/ilb_test.py
++++ b/testcases/kernel/power_management/ilb_test.py
+@@ -5,8 +5,6 @@
+ 
+ import os
+ import sys
+-LIB_DIR = "%s/lib" % os.path.dirname(__file__)
+-sys.path.append(LIB_DIR)
+ from optparse import OptionParser
+ from sched_mc import *
+ 
+diff --git a/testcases/kernel/power_management/lib/Makefile b/testcases/kernel/power_management/lib/Makefile
+new file mode 100644
+index 0000000..3054fb3
+--- /dev/null
++++ b/testcases/kernel/power_management/lib/Makefile
+@@ -0,0 +1,25 @@
++#
++# Copyright (c) 2015 Fujitsu Ltd.
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License along
++# with this program; if not, write to the Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++
++top_srcdir                      ?= ../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS		:= *.py
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/power_management/sched_domain.py b/testcases/kernel/power_management/sched_domain.py
+index 3d19ac0..1ff38b1 100755
+--- a/testcases/kernel/power_management/sched_domain.py
++++ b/testcases/kernel/power_management/sched_domain.py
+@@ -5,8 +5,6 @@
+ 
+ import os
+ import sys
+-LIB_DIR = "%s/lib" % os.path.dirname(__file__)
+-sys.path.append(LIB_DIR)
+ from sched_mc import *
+ from optparse import OptionParser
+ 
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
