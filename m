@@ -1,29 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <mmarhefk@redhat.com>) id 1YQJex-0004HV-G1
-	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 17:52:39 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwang@redhat.com>) id 1YJd2c-0007zx-7J
+	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 07:09:26 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YQJev-0004Fn-KM
-	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 17:52:39 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t1OHqT9C015143
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Feb 2015 12:52:30 -0500
-Received: from cc-vtoe10.lab.eng.brq.redhat.com
-	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.89.68])
-	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t1OHqSQ9016271
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Feb 2015 12:52:28 -0500
-From: Matus Marhefka <mmarhefk@redhat.com>
-Date: Tue, 24 Feb 2015 18:52:20 +0100
-Message-Id: <1424800340-10357-1-git-send-email-mmarhefk@redhat.com>
-Subject: [LTP] [PATCH] containers: semctl replaced with semop in
-	sysvipc/sem_comm.c
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YJd2a-0005bX-M9
+	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 07:09:26 +0000
+Message-ID: <1423206548.27888.29.camel@dhcp-13-206.nay.redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 06 Feb 2015 15:09:08 +0800
+In-Reply-To: <1423040387-2029-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+References: <20150203095709.GB15330@rei.scz.novell.com>
+	<1423040387-2029-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	<1423040387-2029-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH v2 2/2] syscalls/mmap16: regression test for data
+ corruption when blocksize < pagesize for mmaped data
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,163 +27,71 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-semctl call replaced with semop call for setting up semaphores initial
-values because semctl needs non-standard type (not in sys/sem.h).
+Hi,
 
-Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
----
- testcases/kernel/containers/sysvipc/sem_comm.c | 57 +++++++++++++++++---------
- 1 file changed, 38 insertions(+), 19 deletions(-)
+I found there are two new LTP changes have been applied, which would be
+probably impact to your case:
+commit aabb8340f63ed31afe995fd97795e542dc68b93c
+    Include usctest.h in test.h
+commit 605fa3362fd7cef0baa2131be32cf44661783d3e
+    Get rid of TEST_CLEANUP
 
-diff --git a/testcases/kernel/containers/sysvipc/sem_comm.c b/testcases/kernel/containers/sysvipc/sem_comm.c
-index b44be6d..1ac5394 100644
---- a/testcases/kernel/containers/sysvipc/sem_comm.c
-+++ b/testcases/kernel/containers/sysvipc/sem_comm.c
-@@ -32,14 +32,19 @@
- #include <sys/wait.h>
- #include <stdio.h>
- #include <errno.h>
-+#include "usctest.h"
- #include "test.h"
- #include "safe_macros.h"
- #include "libclone.h"
- #include "ipcns_helper.h"
- 
-+
- #define TESTKEY 124426L
- char *TCID	= "sem_comm";
- int TST_TOTAL	= 1;
-+struct tst_checkpoint checkpoint1;
-+struct tst_checkpoint checkpoint2;
-+
- 
- static void cleanup(void)
- {
-@@ -51,7 +56,8 @@ static void setup(void)
- 	tst_require_root(NULL);
- 	check_newipc();
- 	tst_tmpdir();
--	TST_CHECKPOINT_INIT(tst_rmdir);
-+	TST_CHECKPOINT_CREATE(&checkpoint1);
-+	TST_CHECKPOINT_CREATE(&checkpoint2);
- }
- 
- int chld1_sem(void *arg)
-@@ -59,32 +65,39 @@ int chld1_sem(void *arg)
- 	int id;
- 	struct sembuf sm;
- 
--	id = semget(TESTKEY, 1, IPC_CREAT);
-+	id = semget(TESTKEY, 1, IPC_CREAT|S_IRUSR|S_IWUSR|IPC_EXCL);
- 	if (id == -1) {
- 		perror("semget");
- 		return 2;
- 	}
- 
--	if (semctl(id, 0, SETVAL, 1) == -1) {
--		perror("semctl");
-+	sm.sem_num = 0;
-+	sm.sem_op = 1;
-+	sm.sem_flg = IPC_NOWAIT;
-+	if (semop(id, &sm, 1) == -1) {
-+		perror("semop");
- 		semctl(id, 0, IPC_RMID);
- 		return 2;
- 	}
- 
--	/* tell child2 to continue and wait for it to create the semaphore */
--	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
-+	/* tell child2 to continue */
-+	TST_CHECKPOINT_SIGNAL_CHILD(NULL, &checkpoint1);
-+
-+	/* wait for child2 to create the semaphore */
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint2);
- 
--	sm.sem_num = 0;
- 	sm.sem_op = -1;
--	sm.sem_flg = IPC_NOWAIT;
- 	if (semop(id, &sm, 1) == -1) {
- 		perror("semop");
- 		semctl(id, 0, IPC_RMID);
- 		return 2;
- 	}
- 
--	/* tell child2 to continue and wait for it to lock the semaphore */
--	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
-+	/* tell child2 to continue */
-+	TST_CHECKPOINT_SIGNAL_CHILD(NULL, &checkpoint1);
-+
-+	/* wait for child2 to lock the semaphore */
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint2);
- 
- 	sm.sem_op = 1;
- 	semop(id, &sm, 1);
-@@ -99,26 +112,32 @@ int chld2_sem(void *arg)
- 	struct sembuf sm;
- 
- 	/* wait for child1 to create the semaphore */
--	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint1);
- 
--	id = semget(TESTKEY, 1, IPC_CREAT);
-+	/* IPC_EXCL is excluded because we do not want semget call to fail
-+	 * if namespaces logic doesn't work correctly */
-+	id = semget(TESTKEY, 1, IPC_CREAT|S_IRUSR|S_IWUSR);
- 	if (id == -1) {
- 		perror("semget");
- 		return 2;
- 	}
- 
--	if (semctl(id, 0, SETVAL, 1) == -1) {
--		perror("semctl");
-+	sm.sem_num = 0;
-+	sm.sem_op = 1;
-+	sm.sem_flg = IPC_NOWAIT;
-+	if (semop(id, &sm, 1) == -1) {
-+		perror("semop");
- 		semctl(id, 0, IPC_RMID);
- 		return 2;
- 	}
- 
--	/* tell child1 to continue and wait for it to lock the semaphore */
--	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
-+	/* tell child1 to continue */
-+	TST_CHECKPOINT_SIGNAL_CHILD(NULL, &checkpoint2);
-+
-+	/* wait for child1 to lock the semaphore */
-+	TST_CHECKPOINT_CHILD_WAIT(&checkpoint1);
- 
--	sm.sem_num = 0;
- 	sm.sem_op = -1;
--	sm.sem_flg = IPC_NOWAIT;
- 	if (semop(id, &sm, 1) == -1) {
- 		if (errno == EAGAIN) {
- 			rval = 1;
-@@ -130,7 +149,7 @@ int chld2_sem(void *arg)
- 	}
- 
- 	/* tell child1 to continue */
--	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
-+	TST_CHECKPOINT_SIGNAL_CHILD(NULL, &checkpoint2);
- 
- 	sm.sem_op = 1;
- 	semop(id, &sm, 1);
--- 
-1.8.3.1
+Seems we should remove two lines of the testcase as below otherwise it 
+can't be compile.
+
+BTW, I tested it on patched kernel it can works well and Bug reproduced
+with unpatched kernel.
+
+Thanks,
+Li Wang
+
+On Wed, 2015-02-04 at 16:59 +0800, Xiaoguang Wang wrote:
+> This data corruption fixed by:
+...
+> +
+> +#include <stdio.h>
+> +#include <errno.h>
+> +#include <fcntl.h>
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+> +#include <unistd.h>
+> +#include <sys/mount.h>
+> +#include <sys/mman.h>
+> +
+> +#include "usctest.h"    <=========== remove 
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +
+> +#define MNTPOINT	"mntpoint"
+> +#define FS_BLOCKSIZE	1024
+...
+> +
+> +static void cleanup(void)
+> +{
+> +	TEST_CLEANUP;   <============ remove
+> +
+> +	if (chdir(".."))
+> +		tst_resm(TWARN | TERRNO, "chdir('..') failed");
+> +	if (mount_flag && tst_umount(MNTPOINT) < 0)
+> +		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
+> +	if (device)
+> +		tst_release_device(NULL, device);
+> +	tst_rmdir();
+> +}
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
