@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YLqju-0006zM-6R
-	for ltp-list@lists.sourceforge.net; Thu, 12 Feb 2015 10:11:18 +0000
-Date: Thu, 12 Feb 2015 11:10:57 +0100
+	(envelope-from <metan@suse.de>) id 1YKp9T-0007tT-IY
+	for ltp-list@lists.sourceforge.net; Mon, 09 Feb 2015 14:17:27 +0000
+Date: Mon, 9 Feb 2015 15:17:05 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150212101057.GA10816@rei.suse.de>
-References: <fa5f4e375e5c464d94ee43b94193054f@SGPMBX1009.APAC.bosch.com>
+Message-ID: <20150209141705.GB7605@rei.suse.de>
+References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1423212090-24164-3-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <fa5f4e375e5c464d94ee43b94193054f@SGPMBX1009.APAC.bosch.com>
-Subject: Re: [LTP] fs tests causing extensive SD card r/w?
+In-Reply-To: <1423212090-24164-3-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 3/6] power_management: install lib/sched_mc.py
+ into testcases/bin directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,36 +26,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Diwakar Sharma (RBEI/ECF3)" <Diwakar.Sharma@in.bosch.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I would like some clarity on which of the file system tests are doing
-> most extensive r/w operations. I run these LTP fs tests on an SD card.
-> For past sometime I face issue where the card gets disconnected with
-> below errors at times and doesn't get detected again. This mostly
-> happens on ftest* where sync/fsync is happening:
+>  testcases/kernel/power_management/Makefile         | 10 ++++-----
+>  .../kernel/power_management/cpu_consolidation.py   |  2 --
+>  testcases/kernel/power_management/ilb_test.py      |  2 --
+>  testcases/kernel/power_management/lib/Makefile     | 25 ++++++++++++++++++++++
+>  testcases/kernel/power_management/sched_domain.py  |  2 --
+>  5 files changed, 29 insertions(+), 12 deletions(-)
+>  create mode 100644 testcases/kernel/power_management/lib/Makefile
 
-Most of the filesystem testcases are stress tests. There are a few
-testcases for file permissions, extended attributes, procfs and so, but
-the rest just hammers filesystem with various types of load. Especially
-the aio testcases are all stressing the system with excesive I/O.
-
-> 
-> I/O error , DID_NO_CONNECT
-> 
-> [ 3277.237974] EXT4-fs error (device sdc1): ext4_put_super:861: Couldn't clean up the journal
->
-> I am suspecting that these tests over a period of time have caused the
-> card's flash memory life to near end, because when I used a newer card
-> yesterday the results improved and these errors didn't come.
-
-My guess is that the area used for the ext4 journal has died, which is
-inevitable because the journal gets written over and over (it's a
-circular log of fs operations). It's better to turn the journal off for
-SD cards (and even better aling the filesystem to the card erase block
-size). Have a look at:
-https://blogofterje.wordpress.com/2012/01/14/optimizing-fs-on-sd-card/
+Before we install all files into the common bin directory we have to
+prefix all of them with reasonable prefix. What about prefixing these
+with 'pm_'?
 
 -- 
 Cyril Hrubis
