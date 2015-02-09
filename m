@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YL84t-0006G3-KL
-	for ltp-list@lists.sourceforge.net; Tue, 10 Feb 2015 10:29:59 +0000
-Date: Tue, 10 Feb 2015 11:29:38 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YKpfD-0006z7-Mt
+	for ltp-list@lists.sourceforge.net; Mon, 09 Feb 2015 14:50:15 +0000
+Date: Mon, 9 Feb 2015 15:49:56 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150210102938.GA19800@rei.suse.de>
-References: <20150203095709.GB15330@rei.scz.novell.com>
-	<1423040387-2029-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1423040387-2029-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1423206548.27888.29.camel@dhcp-13-206.nay.redhat.com>
-	<54D46997.6050704@cn.fujitsu.com>
+Message-ID: <20150209144956.GF7605@rei.suse.de>
+References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <54D46997.6050704@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 2/2] syscalls/mmap16: regression test for data
- corruption when blocksize < pagesize for mmaped data
+In-Reply-To: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 1/6] lib/sched_mc.py: fix path for
+ ebizzy/kernbench benchmark
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,33 +25,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > I found there are two new LTP changes have been applied, which would be
-> > probably impact to your case:
-> > commit aabb8340f63ed31afe995fd97795e542dc68b93c
-> >     Include usctest.h in test.h
-> > commit 605fa3362fd7cef0baa2131be32cf44661783d3e
-> >     Get rid of TEST_CLEANUP
-> > 
-> > Seems we should remove two lines of the testcase as below otherwise it 
-> > can't be compile.
-> 
-> OK, thanks!
-> I'll send V3 next Monday, in case somebody has other comments ;)
+> The ebizzy/kernbench benchmark are located in testcase/bin
+> rather than utils/benchmark directory after installing LTP,
+> fix this.
 
-I've fixed that along with two smaller fixes and pushed the patches.
+This patch does more than this. It also changes formatting.
 
-Thanks.
+Again please do functional changes separately from cleanups and
+describe all changes done properly in the commit log message.
 
-* The getpagesize() cannot fail so I've deleted the check for negative
-  return value
-
-* I've changed the cleanup to do the chdir("..") only if the chdir to
-  MNTPOINT was successful. Otherwise it may have fail if the cleanup
-  was called from the setup before the chdir() was done.
+Unfortunately I do not have crystal ball or sixth sense to figure out
+everything without having the right context for the changes.
 
 -- 
 Cyril Hrubis
