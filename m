@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YIZvq-0001uN-Ax
-	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 09:38:06 +0000
-Date: Tue, 3 Feb 2015 10:37:52 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150203093752.GA4264@rei.scz.novell.com>
-References: <54D08FAC.5010601@linux.vnet.ibm.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YL1Qc-0004ls-Gb
+	for ltp-list@lists.sourceforge.net; Tue, 10 Feb 2015 03:23:58 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YL1Qb-0006a1-BK
+	for ltp-list@lists.sourceforge.net; Tue, 10 Feb 2015 03:23:58 +0000
+Message-ID: <1423538564.27932.4.camel@G08JYZSD130126.localdomain>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 10 Feb 2015 11:22:44 +0800
+In-Reply-To: <54C893E8.7020609@cn.fujitsu.com>
+References: <1422336738-617-1-git-send-email-liwang@redhat.com>
+	<20150127153140.GG16759@rei.suse.de>
+	<2114349772.1193590.1422414177762.JavaMail.zimbra@redhat.com>
+	<54C893E8.7020609@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <54D08FAC.5010601@linux.vnet.ibm.com>
-Subject: Re: [LTP] proposed patch to fix sendmsg01 invalid flags set w/
- control ; returned -1 (expected -1), errno 22 (expected 95)
+Subject: [LTP] [PATCH] hugeshmat04: fix typo
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,108 +30,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: snehalphule <snehal@linux.vnet.ibm.com>
-Cc: ltp-list@lists.sourceforge.net, Chuck Ebbert <cebbert.lkml@gmail.com>
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> *Description:*
-> For bug: https://bugs.launchpad.net/linaro-qa/+bug/1327251
-> Purpose of Change: Because of code changes in socket.c file for 
-> 32bit-userspace, return value changed to EINVAL in case of 
-> 32bit-userspace/64-bit-kernelspace.
-> Test changed to check if 32user/64kernel , then return value should be 
-> checked to EINVAL ,
-> for other systems return value should be EOPNOTSUPP
-> 
-> Kernel : 3.10.0-123.13.2
-> Signed-off-by: snehalphule <snehal@linux.vnet.ibm.com>
+From ecec5dda24d573f48862e1d05e15d14bfef5a463 Mon Sep 17 00:00:00 2001
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 10 Feb 2015 11:20:32 +0800
+Subject: [PATCH] hugeshmat04: fix typo
 
-I can see this exact failure when I compile the testsuite with -m32 on
-64bit hardware as well. But the patch below is wrong on several levels.
+hugeshamt04 --> hugeshmat04
+      ^^              ^^
 
-My guess is that the root of the problem is similar to the problem fixed in:
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ runtest/hugetlb | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 1153a8438fe45530eb480d902271476c2e330663
-Author: Chuck Ebbert <cebbert.lkml@gmail.com>
-Date:   Wed Oct 1 17:10:32 2014 -0500
-
-    recvfrom01: fix test for invalid message flags
-
-
-The test passes ~MSG_CMSG_COMPAT as flags and expect to hit particular safety
-check. The difference may be that the order of checks is different for compat
-syscalls, but that is just a guess. This would need more investigation to
-figure out what is wrong.
-
-> --- ltp-full-20140828/testcases/kernel/syscalls/sendmsg/sendmsg01.c.orig 
-> 2015-01-23 00:54:22.804582530 -0600
-> +++ ltp-full-20140828/testcases/kernel/syscalls/sendmsg/sendmsg01.c 
-> 2015-01-23 00:57:26.149032808 -0600
-> @@ -677,6 +677,38 @@ static void setup4(void)
->       control->cmsg_type = SCM_RIGHTS;
->       *(int *)CMSG_DATA(control) = tfd;
->       controllen = control->cmsg_len;
-> +
-> +        // In case of Compact (32bit) user space and 64bit kernel 
-> space, return value is EINVAL
-> +        if (tdat[testno].flags == (unsigned)~MSG_CMSG_COMPAT)
-> +        {
-> +            char user_space_bit[BUFSIZ];
-> +            char kernel_arch[BUFSIZ];
-> +            int kernel_space_bit;
-> +
-> +            FILE *pipe = popen("getconf LONG_BIT", "r");
-> +            if (fgets(user_space_bit, BUFSIZ, pipe) != NULL)
-> +            {
-> +               pipe = popen("arch", "r");
-> +               if (fgets(kernel_arch, BUFSIZ, pipe) != NULL)
-> +               {
-> +                   // Remove carriage return from the buffer
-> +                   size_t len = strlen(user_space_bit);
-> +                   if (len > 0 && user_space_bit[len-1] == '\n') { 
-> user_space_bit[--len] = '\0';}
-> +                   len = strlen(kernel_arch);
-> +                   if (len > 0 && kernel_arch[len-1] == '\n') { 
-> kernel_arch[--len] = '\0';}
-> +
-> +                   // Check if Kernel used is 64 bit or 32 bit
-> +                   if (!strcmp(kernel_arch, "ppc64") || 
-> !strcmp(kernel_arch, "s390x") || !strcmp(kernel_arch, "x86_64"))
-> +                      kernel_space_bit = 64;
-> +                   else
-> +                      kernel_space_bit = 32;
-> +
-> +                   // Only if it is Compact user space (32bit), then 
-> return value is EINVAL
-> +                   if (atoi(user_space_bit) == 32  && kernel_space_bit 
-> == 64)
-> +                   tdat[testno].experrno = EINVAL;
-> +               }
-> +            }
-> +         }
->   }
-> 
->   static void cleanup4(void)
-> 
-> 
-> 
-
-> ------------------------------------------------------------------------------
-> Dive into the World of Parallel Programming. The Go Parallel Website,
-> sponsored by Intel and developed in partnership with Slashdot Media, is your
-> hub for all things parallel software development, from weekly thought
-> leadership blogs to news, videos, case studies, tutorials and more. Take a
-> look and join the conversation now. http://goparallel.sourceforge.net/
-
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 805141d..7fcaa01 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -10,7 +10,7 @@ hugemmap05_3 hugemmap05 -s -m
+ hugeshmat01 hugeshmat01 -i 5
+ hugeshmat02 hugeshmat02 -i 5
+ hugeshmat03 hugeshmat03 -i 5
+-hugeshmat04 hugeshamt04 -i 5
++hugeshmat04 hugeshmat04 -i 5
+ 
+ hugeshmctl01 hugeshmctl01 -i 5
+ hugeshmctl02 hugeshmctl02 -i 5
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
+
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming. The Go Parallel Website,
