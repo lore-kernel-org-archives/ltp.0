@@ -1,27 +1,16 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YPuOY-0005R1-EE
-	for ltp-list@lists.sourceforge.net; Mon, 23 Feb 2015 14:54:02 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YPuOT-0000fp-SV
-	for ltp-list@lists.sourceforge.net; Mon, 23 Feb 2015 14:54:02 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t1NErpmA018375
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 23 Feb 2015 09:53:51 -0500
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id t1NEro7e009900
-	for <ltp-list@lists.sourceforge.net>; Mon, 23 Feb 2015 09:53:50 -0500
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 23 Feb 2015 15:53:47 +0100
-Message-Id: <b59b91bc1b79d666e65e03beb7bbdf6b9fb96be0.1424703130.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2] difftime/1-1: eliminate sleep
+	(envelope-from <metan@suse.de>) id 1YLx77-0006mG-P2
+	for ltp-list@lists.sourceforge.net; Thu, 12 Feb 2015 16:59:41 +0000
+Date: Thu, 12 Feb 2015 17:59:22 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150212165921.GA27008@rei>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="HcAYCG3uE/tztfnV"
+Content-Disposition: inline
+Subject: [LTP] prototyping new library synchronization
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,59 +20,147 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: Jiri Jaburek <jjaburek@redhat.com>
 
-No need to sleep for 1 sec, we can compute second time
-immediately and pass it to difftime.
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../open_posix_testsuite/conformance/interfaces/difftime/1-1.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c
-index 97bf443..1d2e19f 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c
-@@ -15,18 +15,16 @@
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
-+#include <sys/time.h>
- #include "posixtest.h"
- 
- int main(void)
- {
--	time_t time1, time0;
--
-+	time_t time0;
- 	double time_diff;
--	time_diff = 0;
-+
- 	time0 = time(NULL);
--	sleep(WAIT_DURATION);
--	time1 = time(NULL);
--	time_diff = difftime(time1, time0);
-+	time_diff = difftime(time0 + 1, time0);
- 
- 	if (time_diff != WAIT_DURATION) {
- 		perror
+Hi!
+Code prototype follows. It uses mutexes and can be used with up to
+page_size/sizeof(uint32) pairs. I've checked that it compiles fine and
+works back to kernel 2.6.11 compiled in year 2005, which should be more
+than enough.
+
+It uses a regular file as a backing for the shared pages which makes it
+even easier to replace the fifo based solution we have. All that is
+needed is to map the same file created in the test temporary directory
+just like the fifo does.
+
+Please anone that uses LTP, check that the code compiles and works for
+fine on all distributions you care for. Once that is checked, I will
+write the new library functions based on this code and convert all the
+test to the new interface.
+
 -- 
-1.8.3.1
+Cyril Hrubis
+chrubis@suse.cz
 
+--HcAYCG3uE/tztfnV
+Content-Type: text/x-c; charset=us-ascii
+Content-Disposition: inline; filename="tfutex.c"
+
+#include <fcntl.h>
+#include <stdint.h>
+#include <unistd.h>
+#include <limits.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+#include <sys/syscall.h>
+#include <linux/futex.h>
+
+#include <stdio.h>
+#include <string.h>
+#include <errno.h>
+#include <stdlib.h>
+
+typedef volatile uint32_t futex_t;
+
+static futex_t *futexes;
+
+static void finit(void)
+{
+	int fd;
+
+	fd = open("/tmp/syncronization_futex_base_file", O_RDWR | O_CREAT, 0666);
+
+	if (fd < 0) {
+		fprintf(stderr, "open(): %s\n", strerror(errno));
+		exit(1);
+	}
+
+	if (ftruncate(fd, getpagesize())) {
+		fprintf(stderr, "ftruncate(): %s\n", strerror(errno));
+		exit(1);
+	}
+
+	futexes = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+
+	if (futexes == MAP_FAILED) {
+		fprintf(stderr, "mmap(): %s\n", strerror(errno));
+		exit(1);
+	}
+}
+
+static void fwait(unsigned int id, struct timespec *timeout)
+{
+	syscall(SYS_futex, &futexes[id], FUTEX_WAIT, futexes[id], timeout);
+}
+
+static void fwake(unsigned int id)
+{
+	int ret;
+
+	do {
+		ret = syscall(SYS_futex, &futexes[id], FUTEX_WAKE, INT_MAX, NULL);
+		usleep(100);
+	} while (ret == 0);
+}
+
+int main(void)
+{
+	int pid;
+
+	finit();
+
+	pid = fork();
+
+	switch (pid) {
+	case 0:
+		fprintf(stderr, "Child calls wait\n");
+		fwait(0, NULL);
+		fprintf(stderr, "Child woken up\n");
+	break;
+	case -1:
+		fprintf(stderr, "fork(): %s\n", strerror(errno));
+	break;
+	default:
+		/* uncomment to change ordering */
+		//usleep(100);
+		fprintf(stderr, "Parent calls wake\n");
+		fwake(0);
+		fprintf(stderr, "Parent finishes\n");
+	}
+
+	return 0;
+}
+
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
-from Actuate! Instantly Supercharge Your Business Reports and Dashboards
-with Interactivity, Sharing, Native Excel Exports, App Integration & more
-Get technology previously reserved for billion-dollar corporations, FREE
-http://pubads.g.doubleclick.net/gampad/clk?id=190641631&iu=/4140/ostg.clktrk
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--HcAYCG3uE/tztfnV--
+
