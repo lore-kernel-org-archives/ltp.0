@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YRG69-0001pE-3E
-	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:37 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YLjPH-0007pA-MB
+	for ltp-list@lists.sourceforge.net; Thu, 12 Feb 2015 02:21:31 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YRG67-0007u3-Ax
-	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:37 +0000
+	id 1YLjPE-000781-69
+	for ltp-list@lists.sourceforge.net; Thu, 12 Feb 2015 02:21:31 +0000
 Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1R8FbX4019154
-	for <ltp-list@lists.sourceforge.net>; Fri, 27 Feb 2015 16:15:37 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 27 Feb 2015 16:12:05 +0800
-Message-ID: <1425024732-30751-2-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1C2KWDr026472
+	for <ltp-list@lists.sourceforge.net>; Thu, 12 Feb 2015 10:20:32 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Thu, 12 Feb 2015 10:20:35 +0800
+Message-ID: <1423707635-1147-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v3 2/9] lib/sched_mc.py: add testcase/bin path for
-	searching ebizzy/kernbench
+Subject: [LTP] [PATCH] doc/test-writing-guidelines.txt: fix spelling mistake
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,201 +31,37 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-* After installing LTP, the ebizzy/kernbench benchmark are located in
-  testcase/bin. Here using utils/benchmark path for searching ebizzy/kernbench
-  outputs "INFO: ebizzy/kernbench benchmark not found" error message. So add
-  the testcase/bin path for benchmark in trigger_ebizzy/trigger_kernbench
-  function.
+wrote the brackets '}' instead of the braces ')' mistakenly
+during the example program.
 
-* Change formatting in trigger_ebizzy/trigger_kernbench function.
-
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/power_management/lib/sched_mc.py | 138 +++++++++++++---------
- 1 file changed, 85 insertions(+), 53 deletions(-)
+ doc/test-writing-guidelines.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/power_management/lib/sched_mc.py b/testcases/kernel/power_management/lib/sched_mc.py
-index cb78b55..24285eb 100755
---- a/testcases/kernel/power_management/lib/sched_mc.py
-+++ b/testcases/kernel/power_management/lib/sched_mc.py
-@@ -318,51 +318,67 @@ def trigger_ebizzy (sched_smt, stress, duration, background, pinned):
-     '''
-     try:
-         threads = get_job_count(stress, "ebizzy", sched_smt)
--        olddir = os.getcwd()
--        path = '%s/utils/benchmark' % os.environ['LTPROOT']
--        os.chdir(path)
--        wklds_avlbl = list()
-         workload = "ebizzy"
--        workload_dir = ""
-+        olddir = os.getcwd()
-+        installdir = '%s/utils/benchmark' % os.environ['LTPROOT']
-+        if os.path.exists(installdir):
-+            path = '%s/utils/benchmark' % os.environ['LTPROOT']
-+            os.chdir(path)
-+            wklds_avlbl = list()
-+            workload_dir = ""
-+
-+            # Use the latest version of similar workload available
-+            for file_name in os.listdir('.'):
-+                if file_name.find(workload) != -1:
-+                    wklds_avlbl.append(file_name)
- 
--        # Use the latest version of similar workload available
--        for file_name in os.listdir('.'):
--            if file_name.find(workload) != -1:
--                wklds_avlbl.append(file_name)
--
--        wklds_avlbl.sort()
--        workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
--        if workload_dir != "":
--            new_path = os.path.join(path,"%s" % workload_dir)
--            get_proc_data(stats_start)
--            get_proc_loc_count(intr_start)
--            try:
-+            wklds_avlbl.sort()
-+            workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
-+            if workload_dir != "":
-+                new_path = os.path.join(path,"%s" % workload_dir)
-                 os.chdir(new_path)
--                if background == "yes":
--                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &'
--                        % (threads, duration))
-+            else:
-+                print "INFO: ebizzy benchmark not found"
-+                sys.exit(1)
-+        else:
-+            path = '%s/testcases/bin' % os.environ['LTPROOT']
-+            os.chdir(path)
-+            workload_file = ""
-+            for file_name in os.listdir('.'):
-+                if file_name == workload:
-+                    workload_file = file_name
-+                    break
-+            if workload_file == "":
-+                print "INFO: ebizzy benchmark not found"
-+                sys.exit(1)
-+        get_proc_data(stats_start)
-+        get_proc_loc_count(intr_start)
-+        try:
-+            if background == "yes":
-+                succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &'
-+                    % (threads, duration))
-+            else:
-+                if pinned == "yes":
-+                    succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null'
-+                        % (cpu_count -1, threads, duration))
-                 else:
--                    if pinned == "yes":
--                        succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null'
--                            % (cpu_count -1, threads, duration))
--                    else:
--                        succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null'
--                            % (threads, duration))
--
--                if succ == 0:
--                    print "INFO: ebizzy workload triggerd"
--                    os.chdir(olddir)
--                    #Commented bcoz it doesnt make sense to capture it when workload triggered
--                    #in background
--                    #get_proc_loc_count(intr_stop)
--                    #get_proc_data(stats_stop)
--		else:
--                    print "INFO: ebizzy workload triggerd failed"
--                    os.chdir(olddir)
--                    sys.exit(1)
--            except Exception, details:
--                print "Ebizzy workload trigger failed ", details
-+                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null'
-+                        % (threads, duration))
-+
-+            if succ == 0:
-+                print "INFO: ebizzy workload triggerd"
-+                os.chdir(olddir)
-+                #Commented bcoz it doesnt make sense to capture it when workload triggered
-+                #in background
-+                #get_proc_loc_count(intr_stop)
-+                #get_proc_data(stats_stop)
-+            else:
-+                print "INFO: ebizzy workload triggerd failed"
-+                os.chdir(olddir)
-                 sys.exit(1)
-+        except Exception, details:
-+            print "Ebizzy workload trigger failed ", details
-+            sys.exit(1)
-     except Exception, details:
-         print "Ebizzy workload trigger failed ", details
-         sys.exit(1)
-@@ -377,22 +393,38 @@ def trigger_kernbench (sched_smt, stress, background, pinned, perf_test):
-         threads = get_job_count(stress, "kernbench", sched_smt)
- 
-         dst_path = "/root"
-+        workload = "kernbench"
-         olddir = os.getcwd()
--        path = '%s/utils/benchmark' % os.environ['LTPROOT']
--        os.chdir(path)
--        wklds_avlbl = list()
--        for file_name in os.listdir('.'):
--            if file_name.find("kernbench") != -1:
--                wklds_avlbl.append(file_name)
--        if len(wklds_avlbl):
--            wklds_avlbl.sort()
--            workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
--            if workload_dir != "":
--                benchmark_path = os.path.join(path,"%s" % workload_dir)
-+        installdir = '%s/utils/benchmark' % os.environ['LTPROOT']
-+        if os.path.exists(installdir):
-+            path = '%s/utils/benchmark' % os.environ['LTPROOT']
-+            os.chdir(path)
-+            wklds_avlbl = list()
-+            workload_dir = ""
-+            for file_name in os.listdir('.'):
-+                if file_name.find(workload) != -1:
-+                    wklds_avlbl.append(file_name)
-+            if len(wklds_avlbl):
-+                wklds_avlbl.sort()
-+                workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
-+                if workload_dir != "":
-+                    benchmark_path = os.path.join(path,"%s" % workload_dir)
-+                else:
-+                    print "INFO: kernbench benchmark not found"
-+                    sys.exit(1)
-+        else:
-+            path = '%s/testcases/bin' % os.environ['LTPROOT']
-+            os.chdir(path)
-+            workload_file = ""
-+            for file_name in os.listdir('.'):
-+                if file_name == workload:
-+                    workload_file = file_name
-+                    break
-+            if workload_file != "":
-+                benchmark_path = path
-             else:
-                 print "INFO: kernbench benchmark not found"
-                 sys.exit(1)
--        os.chdir(olddir)
- 
-         os.chdir(dst_path)
-         linux_source_dir=""
-@@ -405,7 +437,7 @@ def trigger_kernbench (sched_smt, stress, background, pinned, perf_test):
-         else:
-             print "INFO: Linux kernel source not found in /root. Workload\
-                Kernbench cannot be executed"
--	    sys.exit(1)
-+            sys.exit(1)
- 
-         get_proc_data(stats_start)
-         get_proc_loc_count(intr_start)
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index b220e43..6660b28 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -264,7 +264,7 @@ static void test(void)
+ 			tst_resm(TPASS, "getenv(" TEST_ENV ") = '"
+ 			         TEST_ENV_VAL "'");
+ 		else
+-			tst_resm(TFAIL, "getenv(" TEST_ENV "} = '%s', "
++			tst_resm(TFAIL, "getenv(" TEST_ENV ") = '%s', "
+ 			         "expected '" TEST_ENV_VAL "'", ret);
+ 	} else {
+ 		tst_resm(TFAIL, "getenv(" TEST_ENV ") = NULL");
 -- 
 1.9.3
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming. The Go Parallel Website,
+sponsored by Intel and developed in partnership with Slashdot Media, is your
+hub for all things parallel software development, from weekly thought
+leadership blogs to news, videos, case studies, tutorials and more. Take a
+look and join the conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
