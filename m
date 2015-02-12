@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YKpC9-0008Dg-49
-	for ltp-list@lists.sourceforge.net; Mon, 09 Feb 2015 14:20:13 +0000
-Date: Mon, 9 Feb 2015 15:19:52 +0100
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YLvJZ-0007aa-0u
+	for ltp-list@lists.sourceforge.net; Thu, 12 Feb 2015 15:04:25 +0000
+Date: Thu, 12 Feb 2015 16:04:03 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150209141952.GC7605@rei.suse.de>
-References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1423212090-24164-4-git-send-email-gux.fnst@cn.fujitsu.com>
+Message-ID: <20150212150401.GA27909@rei>
+References: <1414681678-28439-1-git-send-email-mmarhefk@redhat.com>
+	<1415206150-12848-1-git-send-email-mmarhefk@redhat.com>
+	<20141202164235.GA22135@rei.suse.de>
+	<1962544618.7994595.1417604885928.JavaMail.zimbra@redhat.com>
+	<20141217141028.GA17634@rei>
+	<939621071.8375320.1423670135099.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1423212090-24164-4-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 4/6] power_management: add uclinux check and
- move some check
+In-Reply-To: <939621071.8375320.1423670135099.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH v2] containers: added mountns/mountns05.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,109 +29,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
+To: Matus Marhefka <mmarhefk@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> diff --git a/testcases/kernel/power_management/pm_check_env.sh b/testcases/kernel/power_management/pm_check_env.sh
-> new file mode 100755
-> index 0000000..ebfaf08
-> --- /dev/null
-> +++ b/testcases/kernel/power_management/pm_check_env.sh
-> @@ -0,0 +1,41 @@
-> +#
-> +# Copyright (c) 2015 Fujitsu Ltd.
-> +#
-> +# This program is free software; you can redistribute it and/or modify
-> +# it under the terms of the GNU General Public License as published by
-> +# the Free Software Foundation; either version 2 of the License, or
-> +# (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it will be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License along
-> +# with this program; if not, write to the Free Software Foundation, Inc.,
-> +# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +
-> +check_env() {
-> +	# Checking the system type
-> +	./pm_check_uclinux; rc=$?
-> +	if [ $rc -eq 1 ]; then
-> +		tst_brkm TCONF "UCLINUX not supported; not running testcases"
-> +	fi
-> +
-> +	# Checking required kernel version and architecture
-> +	tst_kvercmp 2 6 21; rc=$?
-> +	if [ $rc -ne 1 -a $rc -ne 2 ] ; then
-> +		tst_brkm TCONF "Kernel version not supported; not running \
-> +			testcases"
-> +	else
-> +		case "$(uname -m)" in
-> +		i[4-6]86|x86_64)
-> +			;;
-> +		*)
-> +			tst_brkm TCONF "Arch not supported; not running \
-> +				testcases"
-> +			;;
-> +		esac
-> +	fi
-> +}
-> diff --git a/testcases/kernel/power_management/pm_check_uclinux.c b/testcases/kernel/power_management/pm_check_uclinux.c
-> new file mode 100644
-> index 0000000..e3823b1
-> --- /dev/null
-> +++ b/testcases/kernel/power_management/pm_check_uclinux.c
-> @@ -0,0 +1,29 @@
-> +/*
-> + * Copyright (c) 2015 Fujitsu Ltd.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program; if not, write to the Free Software Foundation, Inc.,
-> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> + */
-> +
-> +/* Check wether the current system is uclinux. */
-> +int main(int argc, char **argv)
-> +{
-> +	int chkcmp;
-> +#ifdef UCLINUX
-> +	chkcmp = 1;
-> +#else
-> +	chkcmp = 0;
-> +#endif
-> +	return chkcmp;
-> +}
+> >There are a few things I do not like about this solution:
+> >
+> >* There is a static IPC key compiled in the source
+> >  - we cannot run two instances of the test at once
+> >  - it may interfere with the rest of the system
+> 
+> Agree on that, I should rewrite it to use ftok() to get a key.
 
-I do not like this. It's compile time check executed in runtime. The
-configure check is far better.
+ftok() on a a path under tst_tmpdir() should be reasonably random, but
+still it's a global resource...
 
-> diff --git a/testcases/kernel/power_management/runpwtests.sh b/testcases/kernel/power_management/runpwtests.sh
-> index 9055964..0a66dc4 100755
-> --- a/testcases/kernel/power_management/runpwtests.sh
-> +++ b/testcases/kernel/power_management/runpwtests.sh
-> @@ -42,6 +42,7 @@ YES=0
->  NO=1
->  #List of reusable functions defined in pm_include.sh
->  . pm_include.sh
-> +. pm_check_env.sh
+> >
+> >* There are no timeouts, if something fails the parent may end up
+> >  waiting forever
+> >
+> 
+> This shouldn't happen as whole code contains error checking. If something
+> fails it also removes the message queue and according to the man page removing
+> the message queue also does "awakening all waiting reader and writer processes
+> (with an error return and errno set to EIDRM)".
 
-Is the same check needed in more than one file?
+Missed that. This should work fine in this case.
 
-Because if it's not there is no need to move it into separate file...
+> >Internally we can just reuse the tst_checkpoint_child_wait() and
+> >tst_checkpoint_signal_parent() code (move it to separate static
+> >functions and add a parameter with the character to be send/received).
+> >
+> >Would that solve the problem here or are there any other obstacles?
+> >
+> 
+> In this case 3 pipes would have to be used anyway. The solution
+> with only one sysv message queue seems just better at least for me
+> plus it's just for this one specific test case.
+
+I've sumarized my points in:
+https://sourceforge.net/p/ltp/mailman/message/33204261/
+
+The major point is to avoid sysv ipc in testcases that does not test
+sysv ipc.
+
+But we may be able to build something better than fifos with POSIX
+shared memory (shm_open()) and futexes. I've looked into this recently.
+The code would be quite easy to write as all we need is a page of shared
+memory that would provide space for 128 futexes and implementing
+timeouts is as easy as passing struct timespec to the FUTEX_WAIT
+function.
+
+So we will have one init function to create shared memory page and then
+a pair of wait and wake functions with an offset to the page (selects
+which futex to wait for).
+
+The only scenario that would be a bit more complicated is the case where
+code that waits is needed after exec(). For this case we need to open
+and map the same shared memory segment, i.e. need to know the name to
+pass to the shm_open() but we can pass it to the child as a parameter.
+
+I will try to prototype the code and test it on older distributions
+hopefully soon enough.
 
 -- 
 Cyril Hrubis
