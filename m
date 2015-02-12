@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YMJ7Y-0006FY-8H
-	for ltp-list@lists.sourceforge.net; Fri, 13 Feb 2015 16:29:36 +0000
-Date: Fri, 13 Feb 2015 17:29:15 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YLrYQ-0001a6-33
+	for ltp-list@lists.sourceforge.net; Thu, 12 Feb 2015 11:03:30 +0000
+Date: Thu, 12 Feb 2015 12:03:10 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150213162915.GA8996@rei.suse.de>
-References: <20150212165921.GA27008@rei>
- <54DDD96D.3020304@redhat.com>
+Message-ID: <20150212110310.GA14329@rei>
+References: <789026778.7588485.1423581396876.JavaMail.zimbra@redhat.com>
+	<1688764619.7589818.1423581433749.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <54DDD96D.3020304@redhat.com>
-Subject: Re: [LTP] prototyping new library synchronization
+In-Reply-To: <1688764619.7589818.1423581433749.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] network namespaces tests cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,33 +25,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Jaburek <jjaburek@redhat.com>
+To: Matus Marhefka <mmarhefk@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Some notes;
-> 
-> I assume you used syscall(SYS_futex, ..) instead of pthread_mutex (which
-> uses it internally) because of the linking simplicity, right?
-> Fair tradeoff.
+> As network namespaces tests (ltp/testcases/kernel/containers/netns) code is
+> a bit messy and it's hard to figure out how return values are passed in the code
+> I propose to remove all test cases and leave only the ones specified below.
 
-Not only. As far as I know pthread_mutexes use private futexes and as
-far as I understand these these will not work with forked processes. Or
-at least are not expected to be used that way I haven't actually tried
-it.
+Sounds good to me.
 
-> No idea what you're going to use for the final code, but I'd default to
-> 
->   perror("open()");
-> 
-> instead of
-> 
->   fprintf(stderr, "open(): %s\n", strerror(errno));
-> 
-> (you also don't need errno.h for the former one).
+> Implementation:
+> ===============
+> As ip command cannot be used (because of older systems), we can use this generic
+> functions to create/delete namespace handle:
 
-The code is just quick test. I will desing proper library functions
-later.
+Maybe we can do even better, make the testcases work both with unshare
+and ip and run them twice (and get TCONF with ip on older systems) so
+that we cover ip on newer systems as well.
 
 -- 
 Cyril Hrubis
