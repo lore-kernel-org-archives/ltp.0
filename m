@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YJeY6-00023r-L9
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 08:46:02 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YJeY4-0007eM-9f
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 08:46:02 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t168imxb028862
-	for <ltp-list@lists.sourceforge.net>; Fri, 6 Feb 2015 16:44:48 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 6 Feb 2015 16:41:26 +0800
-Message-ID: <1423212090-24164-2-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vapier@gentoo.org>) id 1YNE14-0006Ly-Km
+	for ltp-list@lists.sourceforge.net; Mon, 16 Feb 2015 05:14:42 +0000
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YNE13-0001u8-MN
+	for ltp-list@lists.sourceforge.net; Mon, 16 Feb 2015 05:14:42 +0000
+Date: Mon, 16 Feb 2015 00:17:04 -0500
+From: Mike Frysinger <vapier@gentoo.org>
+Message-ID: <20150216051704.GB4075@vapier>
+References: <1418740497-24661-1-git-send-email-mats.liljegren@enea.com>
+	<1418740497-24661-2-git-send-email-mats.liljegren@enea.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 2/6] power_management: compile and install
-	testcases/kernel/power_management by default
+In-Reply-To: <1418740497-24661-2-git-send-email-mats.liljegren@enea.com>
+Subject: Re: [LTP] [PATCH] ltp: Fix cross-compile issue
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,137 +25,90 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1522879095490357784=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Mats Liljegren <mats.liljegren@enea.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- configure.ac                   | 14 --------------
- include/mk/features.mk.default |  7 -------
- include/mk/features.mk.in      |  7 -------
- runtest/Makefile               |  4 ----
- scenario_groups/default        |  1 -
- testcases/kernel/Makefile      |  6 +-----
- 6 files changed, 1 insertion(+), 38 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 794059c..0ca21a6 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -102,20 +102,6 @@ fi
- 
- # Testsuites knobs
- 
--# testcases/kernel/power_management requires python.
--if test "x$with_python" = xyes; then
--    AC_ARG_WITH([power-management-testsuite],
--      [AC_HELP_STRING([--with-power-management-testsuite],
--        [compile and install the x86 power management testsuite (default=no)])],
--      [with_power_management_testsuite=yes],
--    )
--fi
--if test "x$with_power_management_testsuite" = xyes; then
--    AC_SUBST([WITH_POWER_MANAGEMENT_TESTSUITE],["yes"])
--else
--    AC_SUBST([WITH_POWER_MANAGEMENT_TESTSUITE],["no"])
--fi
--
- AC_ARG_WITH([open-posix-testsuite],
-   [AC_HELP_STRING([--with-open-posix-testsuite],
-     [compile and install the open posix testsuite (default=no)])],
-diff --git a/include/mk/features.mk.default b/include/mk/features.mk.default
-index c9edc1c..69425ca 100644
---- a/include/mk/features.mk.default
-+++ b/include/mk/features.mk.default
-@@ -34,13 +34,6 @@ HAVE_SECUREBITS			:= no
- 
- # Test suite knobs
- 
--# Enable testcases/kernel/power_management's compile and install?
--ifeq ($(UCLINUX),1)
--WITH_POWER_MANAGEMENT_TESTSUITE	:= no
--else
--WITH_POWER_MANAGEMENT_TESTSUITE	:=
--endif
--
- # Enable testcases/open_posix_testsuite's compile and install?
- WITH_OPEN_POSIX_TESTSUITE	:= no
- 
-diff --git a/include/mk/features.mk.in b/include/mk/features.mk.in
-index 1fd28f8..49471fd 100644
---- a/include/mk/features.mk.in
-+++ b/include/mk/features.mk.in
-@@ -34,13 +34,6 @@ HAVE_SECUREBITS			:= @HAVE_SECUREBITS@
- 
- # Test suite knobs
- 
--# Enable testcases/kernel/power_management's compile and install?
--ifeq ($(UCLINUX),1)
--WITH_POWER_MANAGEMENT_TESTSUITE	:= no
--else
--WITH_POWER_MANAGEMENT_TESTSUITE	:= @WITH_POWER_MANAGEMENT_TESTSUITE@
--endif
--
- # Enable testcases/open_posix_testsuite's compile and install?
- WITH_OPEN_POSIX_TESTSUITE	:= @WITH_OPEN_POSIX_TESTSUITE@
- 
-diff --git a/runtest/Makefile b/runtest/Makefile
-index 8702559..0907ef6 100644
---- a/runtest/Makefile
-+++ b/runtest/Makefile
-@@ -32,10 +32,6 @@ UNWANTED_FILES		:= Makefile CVS STAX
- 
- INSTALL_MODE		:= 00644
- 
--ifneq ($(WITH_POWER_MANAGEMENT_TESTSUITE),yes)
--UNWANTED_FILES		+= power_management_tests
--endif
--
- INSTALL_TARGETS		:= $(filter-out $(UNWANTED_FILES),$(notdir $(patsubst $(abs_srcdir)/%,%,$(wildcard $(abs_srcdir)/*))))
- 
- MAKE_TARGETS		:=
-diff --git a/scenario_groups/default b/scenario_groups/default
-index 3a55702..0b82e5b 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -19,7 +19,6 @@ fcntl-locktests
- connectors
- admin_tools
- timers
--power_management_tests
- numa
- hugetlb
- commands
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 50a12fa..689350b 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -53,11 +53,7 @@ SUBDIRS			+= connectors \
- 			   timers \
- 			   tracing \
- 			   module \
--
--ifeq ($(WITH_POWER_MANAGEMENT_TESTSUITE),yes)
--SUBDIRS			+= power_management
--endif
--
-+			   power_management
- endif
- 
- MAKE_DEPS		:= include/linux_syscall_numbers.h
--- 
-1.9.3
+--===============1522879095490357784==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wq9mPyueHGvFACwf"
+Content-Disposition: inline
 
+
+--wq9mPyueHGvFACwf
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On 16 Dec 2014 15:34, Mats Liljegren wrote:
+> --- a/m4/ltp-tirpc.m4
+> +++ b/m4/ltp-tirpc.m4
+> @@ -25,7 +25,7 @@ AC_DEFUN([LTP_CHECK_TIRPC],[
+>  	TIRPC_LIBS=3D""
+> =20
+>  	AC_CHECK_HEADER(tirpc/netconfig.h,[
+> -		TIRPC_CPPFLAGS=3D"-I/usr/include/tirpc"
+> +		TIRPC_CPPFLAGS=3D"-I=3D/usr/include/tirpc"
+>  		AC_DEFINE(HAVE_LIBTIRPC, 1, [Define to 1 if you have libtirpc headers =
+installed])
+>  		AC_CHECK_LIB(tirpc, rpcb_set, [TIRPC_LIBS=3D"-ltirpc"])])
+
+this m4 is fatally flawed and tweaking the flags won't help.  we should swi=
+tch=20
+to use pkg-config here.  a cursory glance suggests acl/cap should also be=
+=20
+updated.
+-mike
+
+--wq9mPyueHGvFACwf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBAgAGBQJU4X1QAAoJEEFjO5/oN/WBSjwQAKmh/FSveHhRsQ4U7Nb/V4Sf
+4Xixp7KBn4WlRWDM4GAQ+klC+zLTt67BpYqgbWRIe4dBTSjB9qIWkF2O1x58Sikg
+OkQWCEuU07q/AVS9RLy2h/vA+7c9sKihlQRnk/fPp88effvy+oXemvzzfnoZSBEz
++DFOQqMh8g1w7bhdVq5IkjxwfqoaRbpskTGtjMVcFpiukPKufz/N9+bqgb781YHM
+2OoGUQXJ97mq7I3AmGpmmlLLd4WmaPHr7oKmK8lx7Jh2mnUEEwDT7B+TrtAO495j
+ZY+6b9vyoAdW0YQtSIUPLAIezyRrSRMxP0fB4C3UITQ66dRnagHyqbccRI8Rwv5I
+EgHzcjJSkKSjPy5/PfF+beu69YSdTmGDKu1pay9kxdjwqyHU/NKs4uW5cJ+nuPPr
+90ShxPntgx0C6cVWCnqPP24LKYtWkCkA3qqdIKMLceApZysFHoXrG7tP7341lPde
+f7ZjX6HeTrcfNb13jWOWT9FfxeBpZdAtckOKE0mqFwBzDFOfz716GDeQ3H/Fn26R
+51hDyeh+0rcfSyOVOoUHKUnWdTTX5L9KYWKjdYass2I07zFD7SJq2hpOxPyGzwZY
+1LfTWbddo+Iw70cz3Y8CKQMdmueYSu3tSzC48M7Xq90F2axuSbucuXoOM31Nr+Pq
+HhsQemiOdQw/RUgfVUGH
+=kVRT
+-----END PGP SIGNATURE-----
+
+--wq9mPyueHGvFACwf--
+
+
+--===============1522879095490357784==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=190641631&iu=/4140/ostg.clktrk
+--===============1522879095490357784==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1522879095490357784==--
+
