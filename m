@@ -1,31 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jjaburek@redhat.com>) id 1YO8XZ-0004op-6R
-	for ltp-list@lists.sourceforge.net; Wed, 18 Feb 2015 17:36:01 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YO8XX-0005Ki-La
-	for ltp-list@lists.sourceforge.net; Wed, 18 Feb 2015 17:36:01 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t1IHZqbe018472
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 18 Feb 2015 12:35:52 -0500
-Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t1IHZpgE004867
-	for <ltp-list@lists.sourceforge.net>; Wed, 18 Feb 2015 12:35:52 -0500
-Message-ID: <54E4CD76.5010407@redhat.com>
-Date: Wed, 18 Feb 2015 18:35:50 +0100
-From: Jiri Jaburek <jjaburek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1YNc1m-0008K2-DG
+	for ltp-list@lists.sourceforge.net; Tue, 17 Feb 2015 06:53:02 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YNc1l-0002D1-Bk
+	for ltp-list@lists.sourceforge.net; Tue, 17 Feb 2015 06:53:02 +0000
+Message-ID: <54E2E540.6050100@oracle.com>
+Date: Tue, 17 Feb 2015 09:52:48 +0300
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-References: <1688764619.7589818.1423581433749.JavaMail.zimbra@redhat.com>
-	<54E4C3C3.6080407@redhat.com>
-In-Reply-To: <54E4C3C3.6080407@redhat.com>
-Subject: Re: [LTP] network namespaces tests cleanup
+References: <1424078549-26772-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1424078549-26772-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] doc: fix spelling mistakes in manuals
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,30 +28,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
 
-On 02/18/2015 05:54 PM, Jiri Jaburek wrote:
-> 
-> # iproute pid support (possible bashisms follow)
-> ip link add dummy123 type dummy
-> nsenter --net=netnstest sleep 10 &
-> ip link set dummy123 netns $!
-> wait
-> nsenter --net=netnstest ip link show
+Hi!
 
-Should be rather:
+On 02/16/2015 12:22 PM, Wei,Jiangang wrote:
+> These mistakes cann't lead to trouble for reading,
+> but the correct spelling is more better for beginners
+> to understand it.
+>
+> Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
 
-# iproute pid support (possible bashisms follow)
-ip link add dummy123 type dummy
-nsenter --net=netnstest sleep 10 &
-sleep 1
-ip link set dummy123 netns $!
-wait
-nsenter --net=netnstest ip link show
 
-(or so, I forgot about the race between nsenter calling setns(2) and
- ip-link reading the namespace of the child)
-
+Thank you, pushed.
 
 ------------------------------------------------------------------------------
 Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
