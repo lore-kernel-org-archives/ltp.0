@@ -1,28 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jjaburek@redhat.com>) id 1YR3wE-0001Pz-VN
-	for ltp-list@lists.sourceforge.net; Thu, 26 Feb 2015 19:17:34 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YR3wD-0003nB-3c
-	for ltp-list@lists.sourceforge.net; Thu, 26 Feb 2015 19:17:34 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t1QJHQDJ025277
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 26 Feb 2015 14:17:26 -0500
-Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
-	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t1QJHPIT012343
-	for <ltp-list@lists.sourceforge.net>; Thu, 26 Feb 2015 14:17:25 -0500
-From: Jiri Jaburek <jjaburek@redhat.com>
-Date: Thu, 26 Feb 2015 20:17:14 +0100
-Message-Id: <1424978234-21530-1-git-send-email-jjaburek@redhat.com>
-Subject: [LTP] [PATCH] syscalls/fadvise03: add alternative expected
-	s390-only values
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YNilv-0000cG-CX
+	for ltp-list@lists.sourceforge.net; Tue, 17 Feb 2015 14:05:07 +0000
+Date: Tue, 17 Feb 2015 15:04:58 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150217140458.GA25756@rei>
+References: <789026778.7588485.1423581396876.JavaMail.zimbra@redhat.com>
+	<1688764619.7589818.1423581433749.JavaMail.zimbra@redhat.com>
+	<20150212110310.GA14329@rei>
+	<980241572.9316983.1423749665613.JavaMail.zimbra@redhat.com>
+	<54E33EE9.9000302@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <54E33EE9.9000302@redhat.com>
+Subject: Re: [LTP] network namespaces tests cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,62 +25,51 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jiri Jaburek <jjaburek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Since this test tries 0-32 values as 'advice', it needs to expect the
-little-known ABI hack used for fadvise64 on s390 in the kernel,
-see Linux kernel commit 068e1b94bbd268f375349f68531829c8b7c210bc.
+Hi!
+> Alternatively, you could approach it a bit differently - test the
+> actual kernel namespacing functionality using unshare/setns in
+> *kernel*/containers/ and verify that iproute2 uses it in
+> network/iproute/ (or perhaps commands/ip/ ?).
 
-Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
----
- testcases/kernel/syscalls/fadvise/posix_fadvise03.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+Right what needs to be tested is the kernel functionality and that the
+tools call correct syscall with correct paramters, these are two
+different things. But still as far as I can see the easiest way is to
+run the whole test and switch between the tool it uses which is just a
+few lines of code.
 
-diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise03.c b/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
-index db88765..1e77740 100644
---- a/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
-+++ b/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
-@@ -65,9 +65,25 @@ int defined_advise[] = {
- 	POSIX_FADV_NORMAL,
- 	POSIX_FADV_SEQUENTIAL,
- 	POSIX_FADV_RANDOM,
--	POSIX_FADV_NOREUSE,
- 	POSIX_FADV_WILLNEED,
-+#if defined(__s390__) && __WORDSIZE == 32
-+	/* POSIX_FADV_DONTNEED and POSIX_FADV_NOREUSE are 6,7 on 31bit s390,
-+	 * but the kernel accepts 4,5 as well and rewrites them internally,
-+	 * see Linux kernel commit 068e1b94bbd268f375349f68531829c8b7c210bc
-+	 *
-+	 * since header definitions are incomplete - posix fcntl.h doesn't care
-+	 * and defines them as 4,5 while linux/fadvise.h (which uses 6,7)
-+	 * matches only 64bit - we need to hardcode the values here for
-+	 * all 4 cases, unfortunately
-+	 */
-+	4, /* POSIX_FADV_DONTNEED */
-+	5, /* POSIX_FADV_NOREUSE */
-+	6, /* POSIX_FADV_DONTNEED */
-+	7, /* POSIX_FADV_NOREUSE */
-+#else
- 	POSIX_FADV_DONTNEED,
-+	POSIX_FADV_NOREUSE,
-+#endif
- };
- 
- #define defined_advise_total (sizeof(defined_advise) / sizeof(defined_advise[0]))
+How do you plan to test that ip does what it should? Run it under strace
+and grep for the syscall and check the parameters? That sound fragile to
+me. Or is there a better way?
+
+> The idea being that you don't exactly need to "brute force" test
+> everything everytime - the kernel functionality doesn't change
+> based on what utility uses the unshare() syscall.
+> I (in ltp-unrelated activities) found out that this approach gives
+> the best coverage / time / maintenance ratio.
+
+Agree that the kernel functionality is the same. But how does having two
+different testcases one for kernel functionality and one for ip decrease
+maintenance ratio? This soulution would IMHO be more complicated. The
+coverate should be same. The only aspect in which this solution is
+likely better is test runtime, but that shouldn't be a problem because
+these testcases does not take long time. Or am I mistaken?
+
 -- 
-2.1.0
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=190641631&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
