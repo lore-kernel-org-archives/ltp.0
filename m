@@ -1,18 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YQuJd-0000aj-U4
-	for ltp-list@lists.sourceforge.net; Thu, 26 Feb 2015 09:01:05 +0000
-Date: Thu, 26 Feb 2015 10:00:27 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150226090012.GA12353@rei.suse.de>
-References: <1424764001.2546.15.camel@G08JYZSD130126.localdomain>
+	(envelope-from <jjaburek@redhat.com>) id 1YO8XZ-0004op-6R
+	for ltp-list@lists.sourceforge.net; Wed, 18 Feb 2015 17:36:01 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YO8XX-0005Ki-La
+	for ltp-list@lists.sourceforge.net; Wed, 18 Feb 2015 17:36:01 +0000
+Received: from int-mx13.intmail.prod.int.phx2.redhat.com
+	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t1IHZqbe018472
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 18 Feb 2015 12:35:52 -0500
+Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
+	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t1IHZpgE004867
+	for <ltp-list@lists.sourceforge.net>; Wed, 18 Feb 2015 12:35:52 -0500
+Message-ID: <54E4CD76.5010407@redhat.com>
+Date: Wed, 18 Feb 2015 18:35:50 +0100
+From: Jiri Jaburek <jjaburek@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1424764001.2546.15.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH] gethostbyname_r01: check whether a system is
- vulnerable or not.
+References: <1688764619.7589818.1423581433749.JavaMail.zimbra@redhat.com>
+	<54E4C3C3.6080407@redhat.com>
+In-Reply-To: <54E4C3C3.6080407@redhat.com>
+Subject: Re: [LTP] network namespaces tests cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,134 +38,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-> +/*
-> + *   Copyright (c) 2015 Fujitsu Ltd.
-> + *   Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> + *
-> + *   This program is free software;  you can redistribute it and/or modify
-> + *   it under the terms of the GNU General Public License as published by
-> + *   the Free Software Foundation; either version 2 of the License, or
-> + *   (at your option) any later version.
-> + *
-> + *   This program is distributed in the hope that it will be useful,
-> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + *   the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * This is a test for glibc bug:
-> + * https://www.qualys.com/research/security-advisories/GHOST-CVE-2015-0235.txt
-> + */
-> +
-> +#include <netdb.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +
-> +#define CANARY "in_the_coal_mine"
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +static void check_vulnerable(void);
-> +
-> +static struct {
-> +	char buffer[1024];
-> +	char canary[sizeof(CANARY)];
-> +} temp = {
-> +	"buffer",
-> +	CANARY,
-> +};
-> +
-> +char *TCID = "gethostbyname_r01";
-> +int TST_TOTAL = 1;
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	const char *msg;
-> +
-> +	msg = parse_opts(ac, av, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +		check_vulnerable();
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_sig(NOFORK, DEF_HANDLER, NULL);
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +}
+On 02/18/2015 05:54 PM, Jiri Jaburek wrote:
+> 
+> # iproute pid support (possible bashisms follow)
+> ip link add dummy123 type dummy
+> nsenter --net=netnstest sleep 10 &
+> ip link set dummy123 netns $!
+> wait
+> nsenter --net=netnstest ip link show
 
-What is the point of empty cleanup()? If cleanup is not needed we do not
-have to define an empty function and call it at the end of the test.
+Should be rather:
 
-> +static void check_vulnerable(void)
-> +{
-> +	struct hostent resbuf;
-> +	struct hostent *result;
-> +	int herrno;
-> +	int retval;
-> +	char name[sizeof(temp.buffer)];
-> +	size_t len;
-> +
-> +	len = sizeof(temp.buffer) - 16 - 2 * sizeof(char *) - 1;
+# iproute pid support (possible bashisms follow)
+ip link add dummy123 type dummy
+nsenter --net=netnstest sleep 10 &
+sleep 1
+ip link set dummy123 netns $!
+wait
+nsenter --net=netnstest ip link show
 
-What is the point of this complicated arithemtic?
+(or so, I forgot about the race between nsenter calling setns(2) and
+ ip-link reading the namespace of the child)
 
-> +	memset(name, '0', len);
-> +	name[len] = '\0';
-> +
-> +	retval = gethostbyname_r(name, &resbuf, temp.buffer,
-> +				 sizeof(temp.buffer), &result, &herrno);
-> +
-> +	if (strcmp(temp.canary, CANARY) != 0) {
-> +		tst_resm(TFAIL, "vulnerable");
-> +		return;
-> +	}
-> +
-> +	if (retval == ERANGE) {
-> +		tst_resm(TPASS, "not vulnerable");
-> +		return;
-> +	}
-> +
-> +	tst_resm(TFAIL, "should not happen");
-
-Better failure message here please. I guess from the code that
-gethostbyname_r returns errno then something like:
-
-tst_resm(TFAIL,
-         "gethostbyname_r() returned %s, expected ERANGE",
-         tst_strerrno(retval));
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=190641631&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
