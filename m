@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YLrYQ-0001a6-33
-	for ltp-list@lists.sourceforge.net; Thu, 12 Feb 2015 11:03:30 +0000
-Date: Thu, 12 Feb 2015 12:03:10 +0100
+	(envelope-from <metan@suse.de>) id 1YOT8P-0004Z1-UY
+	for ltp-list@lists.sourceforge.net; Thu, 19 Feb 2015 15:35:25 +0000
+Date: Thu, 19 Feb 2015 16:35:15 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150212110310.GA14329@rei>
-References: <789026778.7588485.1423581396876.JavaMail.zimbra@redhat.com>
-	<1688764619.7589818.1423581433749.JavaMail.zimbra@redhat.com>
+Message-ID: <20150219153514.GA25126@rei>
+References: <20150212165921.GA27008@rei> <20150218111446.GA15861@rei.suse.de>
+	<1801010187.15219396.1424359733914.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1688764619.7589818.1423581433749.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] network namespaces tests cleanup
+In-Reply-To: <1801010187.15219396.1424359733914.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] prototyping new library synchronization
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,35 +25,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> As network namespaces tests (ltp/testcases/kernel/containers/netns) code is
-> a bit messy and it's hard to figure out how return values are passed in the code
-> I propose to remove all test cases and leave only the ones specified below.
+> > https://github.com/linux-test-project/ltp/commit/9f136a48c6205362cd8d35c726491ca93cb16514
+> > 
+> > Everybody please test that it compiles and works fine.
+> 
+> - one small compilation problem
+>    https://github.com/linux-test-project/ltp/commit/1261dd6817bb320081fa0237361bbb491a028c65
 
-Sounds good to me.
+Thanks for fixing it.
 
-> Implementation:
-> ===============
-> As ip command cannot be used (because of older systems), we can use this generic
-> functions to create/delete namespace handle:
+> - gitignore could be expanded for:
+>     lib/tests/tst_checkpoint
+>     lib/tests/tst_checkpoint_wait_timeout
+>     lib/tests/tst_checkpoint_wake_timeout
 
-Maybe we can do even better, make the testcases work both with unshare
-and ip and run them twice (and get TCONF with ip on older systems) so
-that we cover ip on newer systems as well.
+Ah, sorry I've forgotten to update the top level .gitignore file. The
+old test names should have been removed, new added. I've pushed fix for
+that now.
+
+> I compiled and ran subset of tests (syscalls mostly) on RHEL5.6/6.0/7.1. There were some failures,
+> but those all appear to be actual bugs present in older kernels.
+
+Sounds good, thanks for the testing.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=190641631&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
