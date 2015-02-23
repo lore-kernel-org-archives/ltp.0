@@ -1,17 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YIf7I-0005J6-RJ
-	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 15:10:16 +0000
-Date: Tue, 3 Feb 2015 16:10:02 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150203151002.GA18977@rei.scz.novell.com>
-References: <54CB92BC.8020605@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <54CB92BC.8020605@redhat.com>
-Subject: Re: [LTP] the mandatory (?) nature of testscripts
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YPqIL-0002qM-0G
+	for ltp-list@lists.sourceforge.net; Mon, 23 Feb 2015 10:31:21 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YPqIJ-0008R1-5a
+	for ltp-list@lists.sourceforge.net; Mon, 23 Feb 2015 10:31:20 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t1NAVC97003923
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 23 Feb 2015 05:31:12 -0500
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id t1NAVBcX021218
+	for <ltp-list@lists.sourceforge.net>; Mon, 23 Feb 2015 05:31:11 -0500
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 23 Feb 2015 11:31:05 +0100
+Message-Id: <f0b16dcce340d36b9d60df2155371bfeb623982e.1424687402.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] difftime/1-1: avoid running on second boundary
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,73 +31,75 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Jaburek <jjaburek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Hello all,
-> I normally execute the ltp suite using runltp with -f, specifying just
-> the runtest files I want to execute, possibly even writing my own ones
-> and using the fact that runltp detects absolute paths in the comma-
-> separated list and looks for them outside /opt/ltp.
-> 
-> >From this viewpoint, and also looking at things like
-> testscripts/syscalls.sh, this approach seems perfectly valid (there's
-> at least nothing against it in the documentation, as far as I can tell).
-> My impression was therefore that testscripts are just convenient
-> (or legacy?) ways to run big chunks of the suite.
+Quoting https://lkml.org/lkml/2015/2/19/384
+  "The idea that time() would be ok as being HZ granular, and its
+  been this way since 2.6.23.  Thus you have a < HZ sized window
+  where gettimeofday() will return the next second before time()
+  gets updated by the tick."
 
-They are there from a times before current maintainers took over the
-project. At that time the CVS repository was a dumping ground for
-anything that the previous developers found at least a little bit
-useful.
+Avoid running this test on second boundary as there is small
+window, where this test can fail on Linux, reporting that 2
+seconds has passed.
 
-As far as I know, there was no architecture decision behind it, no
-documentation either.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../conformance/interfaces/difftime/1-1.c           | 21 +++++++++++++++++++--
+ 1 file changed, 19 insertions(+), 2 deletions(-)
 
-I simply didn't touched these because I had enough work fixing the
-testcases.
-
-I'm all for removing scripts that have no added value, the math.sh and
-syscalls.sh looks like an obvious examples. There are likely more of
-these, some may be even broken.
-
-> However then I found testscripts/network.sh and all the "mandatory"
-> variables it exports - not using it resulted in the ping01 test failing
-> due to recent rewrite in cbab2eed06. And, as it turns out, network.sh
-> is not alone.
->
-> Therefore I would like to ask (since I didn't find this documented);
-> is running individual tests via runltp -f something "officially"
-> supported and the network tests should be altered to get their defaults
-> in another way, or is runltp -f wild west and I'm on my own, with the
-> only supported way to run the suite being the testscripts?
-
-Well at the time the runltp is the supported way to run the testcases.
-(Although I'm still dreaming of writing a better test driver instead of
-the runltp and ltp-pan combination.) Or a more straight answer is that
-this is the script I care about. Ideally the network parameters would be
-handled somehow in the script, the same way the loop devices are, but
-that haven't been done.
-
-Also the mantra I'm repeating here over and over is to make the
-testcases as self contained as possible. For the network testcases we
-have to pass the the remove host and a few more parameters somehow, but
-apart from that, it should just work fine.
-
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c
+index 97bf443..2872e08 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c
+@@ -15,14 +15,31 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
++#include <sys/time.h>
+ #include "posixtest.h"
+ 
+ int main(void)
+ {
+ 	time_t time1, time0;
+-
+ 	double time_diff;
+-	time_diff = 0;
++	struct timeval t1;
++
++	/*
++	 * Quoting https://lkml.org/lkml/2015/2/19/384
++	 *  "The idea that time() would be ok as being HZ granular, and its
++	 *  been this way since 2.6.23.  Thus you have a < HZ sized window
++	 *  where gettimeofday() will return the next second before time()
++	 *  gets updated by the tick."
++	 *
++	 * Avoid running this test on second boundary as there is small
++	 * window, where this test can fail on Linux, reporting that 2
++	 * seconds has passed.
++	 */
++	do {
++		usleep(10000);
++		gettimeofday(&t1, NULL);
++	} while (t1.tv_usec > 700*1000 || t1.tv_usec < 300*1000);
++
+ 	time0 = time(NULL);
+ 	sleep(WAIT_DURATION);
+ 	time1 = time(NULL);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+Download BIRT iHub F-Type - The Free Enterprise-Grade BIRT Server
+from Actuate! Instantly Supercharge Your Business Reports and Dashboards
+with Interactivity, Sharing, Native Excel Exports, App Integration & more
+Get technology previously reserved for billion-dollar corporations, FREE
+http://pubads.g.doubleclick.net/gampad/clk?id=190641631&iu=/4140/ostg.clktrk
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
