@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YOT8P-0004Z1-UY
-	for ltp-list@lists.sourceforge.net; Thu, 19 Feb 2015 15:35:25 +0000
-Date: Thu, 19 Feb 2015 16:35:15 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YPu54-000727-Ej
+	for ltp-list@lists.sourceforge.net; Mon, 23 Feb 2015 14:33:54 +0000
+Date: Mon, 23 Feb 2015 15:33:16 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150219153514.GA25126@rei>
-References: <20150212165921.GA27008@rei> <20150218111446.GA15861@rei.suse.de>
-	<1801010187.15219396.1424359733914.JavaMail.zimbra@redhat.com>
+Message-ID: <20150223143316.GB24365@rei>
+References: <f0b16dcce340d36b9d60df2155371bfeb623982e.1424687402.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1801010187.15219396.1424359733914.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] prototyping new library synchronization
+In-Reply-To: <f0b16dcce340d36b9d60df2155371bfeb623982e.1424687402.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] difftime/1-1: avoid running on second boundary
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,28 +28,51 @@ To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > https://github.com/linux-test-project/ltp/commit/9f136a48c6205362cd8d35c726491ca93cb16514
-> > 
-> > Everybody please test that it compiles and works fine.
-> 
-> - one small compilation problem
->    https://github.com/linux-test-project/ltp/commit/1261dd6817bb320081fa0237361bbb491a028c65
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c
+> index 97bf443..2872e08 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/difftime/1-1.c
+> @@ -15,14 +15,31 @@
+>  #include <stdio.h>
+>  #include <stdlib.h>
+>  #include <unistd.h>
+> +#include <sys/time.h>
+>  #include "posixtest.h"
+>  
+>  int main(void)
+>  {
+>  	time_t time1, time0;
+> -
+>  	double time_diff;
+> -	time_diff = 0;
+> +	struct timeval t1;
+> +
+> +	/*
+> +	 * Quoting https://lkml.org/lkml/2015/2/19/384
+> +	 *  "The idea that time() would be ok as being HZ granular, and its
+> +	 *  been this way since 2.6.23.  Thus you have a < HZ sized window
+> +	 *  where gettimeofday() will return the next second before time()
+> +	 *  gets updated by the tick."
+> +	 *
+> +	 * Avoid running this test on second boundary as there is small
+> +	 * window, where this test can fail on Linux, reporting that 2
+> +	 * seconds has passed.
+> +	 */
+> +	do {
+> +		usleep(10000);
+> +		gettimeofday(&t1, NULL);
+> +	} while (t1.tv_usec > 700*1000 || t1.tv_usec < 300*1000);
+> +
+>  	time0 = time(NULL);
+>  	sleep(WAIT_DURATION);
+>  	time1 = time(NULL);
 
-Thanks for fixing it.
-
-> - gitignore could be expanded for:
->     lib/tests/tst_checkpoint
->     lib/tests/tst_checkpoint_wait_timeout
->     lib/tests/tst_checkpoint_wake_timeout
-
-Ah, sorry I've forgotten to update the top level .gitignore file. The
-old test names should have been removed, new added. I've pushed fix for
-that now.
-
-> I compiled and ran subset of tests (syscalls mostly) on RHEL5.6/6.0/7.1. There were some failures,
-> but those all appear to be actual bugs present in older kernels.
-
-Sounds good, thanks for the testing.
+Looking at the test I wonder why we even have to call sleep() and then
+time() to get the second timestamp. POSIX specifies that time_t is
+integer of floating point type so assigning a number to it and
+arithmetic should work just fine. So we can just do time1 = time0 + 1
+instead. Or go even further and pass statically defined values to
+difftime() and compare it with precomputed value.
 
 -- 
 Cyril Hrubis
