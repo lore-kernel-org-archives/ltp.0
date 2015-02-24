@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YQbeo-0002A3-0j
-	for ltp-list@lists.sourceforge.net; Wed, 25 Feb 2015 13:05:42 +0000
-Date: Wed, 25 Feb 2015 14:05:02 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YQBvm-0001z2-2A
+	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 09:37:30 +0000
+Date: Tue, 24 Feb 2015 10:36:46 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150225130502.GB20275@rei.suse.de>
-References: <1688764619.7589818.1423581433749.JavaMail.zimbra@redhat.com>
-	<54E4C3C3.6080407@redhat.com> <20150219150413.GA23831@rei>
-	<54EC5053.4060005@redhat.com> <20150225123508.GA20275@rei.suse.de>
-	<54EDC5B4.9050806@redhat.com>
+Message-ID: <20150224093646.GA32083@rei>
+References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1423212090-24164-3-git-send-email-gux.fnst@cn.fujitsu.com>
+	<20150209141705.GB7605@rei.suse.de>
+	<54DC3837.8050300@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <54EDC5B4.9050806@redhat.com>
-Subject: Re: [LTP] network namespaces tests cleanup
+In-Reply-To: <54DC3837.8050300@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 3/6] power_management: install lib/sched_mc.py
+ into testcases/bin directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,22 +28,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Jaburek <jjaburek@redhat.com>
+To: "gux.fnst" <gux.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > What I got:
-> > 
-> > mount("/proc/15413/ns/net", "netnstest", 0x410848, MS_MGC_VAL|MS_BIND, NULL) = -1 ENOTDIR (Not a directory)
+> >>   testcases/kernel/power_management/Makefile         | 10 ++++-----
+> >>   .../kernel/power_management/cpu_consolidation.py   |  2 --
+> >>   testcases/kernel/power_management/ilb_test.py      |  2 --
+> >>   testcases/kernel/power_management/lib/Makefile     | 25 ++++++++++++++++++++++
+> >>   testcases/kernel/power_management/sched_domain.py  |  2 --
+> >>   5 files changed, 29 insertions(+), 12 deletions(-)
+> >>   create mode 100644 testcases/kernel/power_management/lib/Makefile
+> >
+> > Before we install all files into the common bin directory we have to
+> > prefix all of them with reasonable prefix. What about prefixing these
+> > with 'pm_'?
+> >
 > 
-> Right, "netnstest" already needs to exist as a *file*, not a directory
-> and the second argument needs to be without a trailing '/' (which it
-> is). Then it works for me. The posted C snippets are meant to fit in
-> the example setup I posted earlier (just acting in place of unshare or
-> nsenter).
+> The files in testcases/kernel/power_management are installed into the
+> common bin directory originally, only one file "sched_domain.py" in
+> testcases/kernel/power_management/lib/ is installed into a separate
+> bin/lib directory. Does we prefix all files in testcases/kernel/power_management
+> with "pm_"? or only sched_domain.py?
 
-My bad I wasn't reading the instruction carefully enough and did mkdir
-instead of touch. Now it works fine for me.
+The most important part is to prefix the files that go to the common bin
+directory in order to avoid conflicts. But I would like to have a common
+prefix for all the binaries and scripts that get installed.
 
 -- 
 Cyril Hrubis
