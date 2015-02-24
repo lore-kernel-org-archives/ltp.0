@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YIdv5-0007Oj-JX
-	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 13:53:35 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YIdv4-0006J6-4O
-	for ltp-list@lists.sourceforge.net; Tue, 03 Feb 2015 13:53:35 +0000
-Message-ID: <54D0D36C.6090409@oracle.com>
-Date: Tue, 03 Feb 2015 16:55:56 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YQAr8-0001XJ-83
+	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 08:28:38 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YQAr5-0007eF-Ph
+	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 08:28:38 +0000
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Tue, 24 Feb 2015 16:27:39 +0800
+Message-ID: <1424766459-22439-2-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1424766459-22439-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1424766459-22439-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <54CB92BC.8020605@redhat.com> <54D0A873.6080503@oracle.com>
-	<54D0AA57.20608@redhat.com>
-In-Reply-To: <54D0AA57.20608@redhat.com>
-Subject: Re: [LTP] the mandatory (?) nature of testscripts
+Subject: [LTP] [PATCH 2/2] lib/tst_virt.c: distinguish between KVM and QEMU
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,115 +27,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Jaburek <jjaburek@redhat.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: jjaburek@redhat.com
 
-On 02/03/2015 02:00 PM, Jiri Jaburek wrote:
-> On 02/03/2015 11:52 AM, Alexey Kodanev wrote:
->> Hi Jiri!
->> On 30.01.2015 17:18, Jiri Jaburek wrote:
->>> Hello all,
->>> I normally execute the ltp suite using runltp with -f, specifying just
->>> the runtest files I want to execute, possibly even writing my own ones
->>> and using the fact that runltp detects absolute paths in the comma-
->>> separated list and looks for them outside /opt/ltp.
->>>
->>> >From this viewpoint, and also looking at things like
->>> testscripts/syscalls.sh, this approach seems perfectly valid (there's
->>> at least nothing against it in the documentation, as far as I can tell).
->>> My impression was therefore that testscripts are just convenient
->>> (or legacy?) ways to run big chunks of the suite.
->>>
->>> However then I found testscripts/network.sh and all the "mandatory"
->>> variables it exports - not using it resulted in the ping01 test failing
->>> due to recent rewrite in cbab2eed06. And, as it turns out, network.sh
->>> is not alone.
->> network.sh lists network variables which are needed to run all network
->> tests (stress group includes additional parameters, not yet moved them
->> to network.sh from networkstress.sh). In general, it is essential to
->> define remote host name, test interface names, IP addresses before
->> running network tests. Not all of them run with localhost, e.g. ping01
->> was modified to support various network configuration, you can now run
->> it on several interfaces (probably testing various NIC drivers, make
->> test traffic run over particular net-link, etc.) or running with
->> localhost, for example:
-> Thanks, but I can read that from git commits and the code - I understand
-> what has changed and can guess why it happened and it makes perfect
-> sense, just asking about the "design" of it.
->
->> $ echo 'ping601 ping01 -6' > runtest/ping_ipv6
->> $ RHOST_IPV6_HOST=':1' ./runltp -f ping_ipv6
-> Unfortunately, from what I see, I need to export the "network" and
-> "host" part separately, by network classes (therefore networks not
-> using full class boundaries apparently can't be used) - see tst_ipaddr.
+KVM guest is on top of QEMU, It's necessary that figure out
+the difference between the two.
 
-Hmm, the only tests which failed in that case are the tests from the 
-stress group, they are using predefined masks for IPv4 and IPv6. Other 
-tests shouldn't fail. What about defining variables like this:
-IPV4_NETWORK='192.168' RHOST_IPV4_HOST='1.1' LHOST_IPV4_HOST='2.1'
-Will it work for you?
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ lib/tst_virt.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-By the way, there are certain limitation in the configuration, it only 
-supports common use-case. If you want to add support for specific 
-configuration (like different sub-nets), please provide a patch with the 
-fixes.
-
-IMHO, I wouldn't advise to run network tests together with other hosts, 
-at least on a logical level.
-
-> Meaning I can make the ping01 test work like it used to via
->
-> ping export LTPROOT; export IPV4_NETWORK=127.0.0; export
-> RHOST_IPV4_HOST=1; ping01
->
-> in my runtest file.
->
-> Still, my question was rather about the concept (for the future),
-> ie. whether it's okay to introduce something in network.sh which makes
-> it impossible to run tests separately (without patches) or whether
-> the tests *need* to remain executable separately.
-
-It's possible to run network tests separately without patches by setting 
-the environment variables, you don't need to modify anything in LTP.
-
-Thanks,
-Alexey
-
-> Thanks.
->
->>> Therefore I would like to ask (since I didn't find this documented);
->>> is running individual tests via runltp -f something "officially"
->>> supported and the network tests should be altered to get their defaults
->>> in another way, or is runltp -f wild west and I'm on my own, with the
->>> only supported way to run the suite being the testscripts?
->> Test network configuration should be explicitly defined beforehand. You
->> could set required parameters in your test environment, then use
->> "runltp" as usual. I'm not sure right now if it is ok to add these
->> parameters with default values to runltp, then export those variables
->> inside it.
->>
->> Best regards,
->> Alexey
->>
->>
->> ------------------------------------------------------------------------------
->> Dive into the World of Parallel Programming. The Go Parallel Website,
->> sponsored by Intel and developed in partnership with Slashdot Media, is your
->> hub for all things parallel software development, from weekly thought
->> leadership blogs to news, videos, case studies, tutorials and more. Take a
->> look and join the conversation now. http://goparallel.sourceforge.net/
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
+diff --git a/lib/tst_virt.c b/lib/tst_virt.c
+index eb3b487..1d9960e 100644
+--- a/lib/tst_virt.c
++++ b/lib/tst_virt.c
+@@ -100,14 +100,24 @@ static int is_kvm(void)
+ 	FILE *cpuinfo;
+ 	char line[64];
+ 	int found;
++    char sig[SIG_MAX_LEN];
+ 
+-	/* this doesn't work with custom -cpu values, since there's
+-	 * no easy, reasonable or reliable way to work around those */
+ 	cpuinfo = SAFE_FOPEN(NULL, "/proc/cpuinfo", "r");
+ 	found = 0;
+ 	while (fgets(line, sizeof(line), cpuinfo) != NULL) {
+ 		if (strstr(line, "QEMU Virtual CPU")) {
+-			found = 1;
++            /*
++             * Is it an KVM(on top of QEMU) or Only a QEMU?
++             */
++            if (cpu_sign(&sig[0]) == 0) {
++                if (strcmp(sig, "KVMKVMKVM") == 0) {
++                    found = 1;
++                } else {
++                    // QEMU Guest
++                }
++            } else {
++                found = 1;
++            }
+ 			break;
+ 		}
+ 	}
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
