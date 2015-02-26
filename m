@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YKpEa-0006ig-2S
-	for ltp-list@lists.sourceforge.net; Mon, 09 Feb 2015 14:22:44 +0000
-Date: Mon, 9 Feb 2015 15:22:25 +0100
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YQyfh-0006EZ-IK
+	for ltp-list@lists.sourceforge.net; Thu, 26 Feb 2015 13:40:09 +0000
+Date: Thu, 26 Feb 2015 14:39:25 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150209142225.GD7605@rei.suse.de>
-References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1423212090-24164-4-git-send-email-gux.fnst@cn.fujitsu.com>
-	<20150209141952.GC7605@rei.suse.de>
+Message-ID: <20150226133925.GA16136@rei.suse.de>
+References: <1424764001.2546.15.camel@G08JYZSD130126.localdomain>
+	<20150226090012.GA12353@rei.suse.de>
+	<1449902344.19156887.1424942209488.JavaMail.zimbra@redhat.com>
+	<20150226092313.GA13122@rei.suse.de>
+	<20150226092622.GB13122@rei.suse.de>
+	<1152905776.19309335.1424957443988.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20150209141952.GC7605@rei.suse.de>
-Subject: Re: [LTP] [PATCH v2 4/6] power_management: add uclinux check and
- move some check
+In-Reply-To: <1152905776.19309335.1424957443988.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] gethostbyname_r01: check whether a system is
+ vulnerable or not.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,39 +30,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > diff --git a/testcases/kernel/power_management/runpwtests.sh b/testcases/kernel/power_management/runpwtests.sh
-> > index 9055964..0a66dc4 100755
-> > --- a/testcases/kernel/power_management/runpwtests.sh
-> > +++ b/testcases/kernel/power_management/runpwtests.sh
-> > @@ -42,6 +42,7 @@ YES=0
-> >  NO=1
-> >  #List of reusable functions defined in pm_include.sh
-> >  . pm_include.sh
-> > +. pm_check_env.sh
+> > > If you want to go ahead and start runtest/libc, testcases/libc and move
+> > > all the libc tests there I'm all for it.
+> > 
+> > On the other hand, I'm not sure where to draw the line.
 > 
-> Is the same check needed in more than one file?
-> 
-> Because if it's not there is no need to move it into separate file...
+> For this particular regression test it seemed clear cut, but in general
+> for functional and stress tests I don't a have good answer.
 
-Ah, you split the file into separate testcases later. This change should
-rather be part of that patch, or the reason why you move the check out
-of the file should be part of the commit message for this patch.
-Otherwise it does not make sense.
+The most reasonable definition to me seems to call things that have very
+thin wrapper in glibc or are called by syscall() to be syscall testcases
+and the rest, even when they end up calling particular syscall to be
+libc tests. But that is still wrong as any other simple definition.
+
+The other simple and wrong option is to move everything that is
+implemented purely in userspace to testcases/libc/.
+
+Or we can stop pretending that there is a clear line between kernel and
+libc and rename the syscalls to something else. The question is what
+should be the new name, I do not have a good idea for that.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
