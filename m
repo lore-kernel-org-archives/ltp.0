@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YQAEV-0003oH-2s
-	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 07:48:43 +0000
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YRG6C-00089L-Gu
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:40 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YQAES-0001p9-NI
-	for ltp-list@lists.sourceforge.net; Tue, 24 Feb 2015 07:48:43 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YRG69-0007u3-S2
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:40 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1O7le9W026854
-	for <ltp-list@lists.sourceforge.net>; Tue, 24 Feb 2015 15:47:41 +0800
-Message-ID: <1424764001.2546.15.camel@G08JYZSD130126.localdomain>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 24 Feb 2015 15:46:41 +0800
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1R8Ff4x019169
+	for <ltp-list@lists.sourceforge.net>; Fri, 27 Feb 2015 16:15:41 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 27 Feb 2015 16:12:07 +0800
+Message-ID: <1425024732-30751-4-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] gethostbyname_r01: check whether a system is
- vulnerable or not.
+Subject: [LTP] [PATCH v3 4/9] power_management: call the function eg.
+	test_sched_mc instead of script test_sched_mc.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,192 +32,617 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-From c75e5278e03608b96466428b597e3fed14bd9f11 Mon Sep 17 00:00:00 2001
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 24 Feb 2015 15:27:25 +0800
-Subject: [PATCH] gethostbyname_r01: check whether a system is vulnerable or
- not.
+Many scripts eg. test_sched_mc.sh is called only from
+one test eg. runpwtests01.sh. Remove the script code
+into the corresponding test case.
 
-Qualys security researchers discovered a serious weakness in the Linux glibc
-library:
-https://www.qualys.com/research/security-advisories/GHOST-CVE-2015-0235.txt
-
-We write this test to check wherher a system is vulnerable or not.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
 ---
- runtest/syscalls                                   |   2 +
- testcases/kernel/syscalls/.gitignore               |   1 +
- testcases/kernel/syscalls/gethostbyname_r/Makefile |  19 ++++
- .../syscalls/gethostbyname_r/gethostbyname_r01.c   | 102 +++++++++++++++++++++
- 4 files changed, 124 insertions(+)
- create mode 100644 testcases/kernel/syscalls/gethostbyname_r/Makefile
- create mode 100644 testcases/kernel/syscalls/gethostbyname_r/gethostbyname_r01.c
+ testcases/kernel/power_management/change_freq.sh   |  36 ------
+ testcases/kernel/power_management/change_govr.sh   |  24 ----
+ .../power_management/check_cpufreq_sysfs_files.sh  |  24 ----
+ .../power_management/check_cpuidle_sysfs_files.sh  |  19 ---
+ .../kernel/power_management/pwkm_load_unload.sh    |  30 -----
+ testcases/kernel/power_management/runpwtests01.sh  |  24 +++-
+ testcases/kernel/power_management/runpwtests02.sh  |  23 +++-
+ testcases/kernel/power_management/runpwtests03.sh  | 131 ++++++++++++++++++++-
+ testcases/kernel/power_management/runpwtests04.sh  |  23 +++-
+ testcases/kernel/power_management/runpwtests06.sh  |  22 +++-
+ testcases/kernel/power_management/test_sched_mc.sh |  24 ----
+ .../kernel/power_management/test_sched_smt.sh      |  23 ----
+ .../power_management/test_timer_migration.sh       |  22 ----
+ 13 files changed, 215 insertions(+), 210 deletions(-)
+ delete mode 100755 testcases/kernel/power_management/change_freq.sh
+ delete mode 100755 testcases/kernel/power_management/change_govr.sh
+ delete mode 100755 testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
+ delete mode 100755 testcases/kernel/power_management/check_cpuidle_sysfs_files.sh
+ delete mode 100755 testcases/kernel/power_management/pwkm_load_unload.sh
+ delete mode 100755 testcases/kernel/power_management/test_sched_mc.sh
+ delete mode 100755 testcases/kernel/power_management/test_sched_smt.sh
+ delete mode 100755 testcases/kernel/power_management/test_timer_migration.sh
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2d65338..ca32937 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -361,6 +361,8 @@ getgroups01_16 getgroups01_16
- getgroups03 getgroups03
- getgroups03_16 getgroups03_16
+diff --git a/testcases/kernel/power_management/change_freq.sh b/testcases/kernel/power_management/change_freq.sh
+deleted file mode 100755
+index 3a971d2..0000000
+--- a/testcases/kernel/power_management/change_freq.sh
++++ /dev/null
+@@ -1,36 +0,0 @@
+-#!/bin/bash
+-
+-. pm_include.sh
+-available_freq=$(get_supporting_freq)
+-available_govr=$(get_supporting_govr)
+-RC=0
+-
+-total_cpus=$(tst_ncpus)
+-(( total_cpus-=1 ))
+-
+-if ( echo ${available_govr} | grep -i "userspace" 2>&1 >/dev/null ) ; then
+-	for cpu in $(seq 0 "${total_cpus}" )
+-	do
+-		echo userspace > /sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_governor
+-		if [ $? -ne 0 ] ; then
+-			RC=1
+-		fi
+-	done
+-	if [ ${RC} -ne 1 ] ; then
+-		for cpu in $(seq 0 "${total_cpus}" )
+-		do
+-			for freq in ${available_freq}
+-			do
+-				echo ${freq} > /sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_setspeed
+-				if [ "$?" -ne "0" ] ; then
+-					echo "${0}: FAIL: Unable to set frequency -- ${freq} for cpu${cpu}"
+-					RC=1
+-				fi
+-			done
+-		done
+-	fi
+-fi
+-if [ ${RC} -eq 0 ] ; then
+-	echo "${0}: PASS: Changing cpu frequencies"
+-fi
+-exit $RC
+diff --git a/testcases/kernel/power_management/change_govr.sh b/testcases/kernel/power_management/change_govr.sh
+deleted file mode 100755
+index bfe6c5b..0000000
+--- a/testcases/kernel/power_management/change_govr.sh
++++ /dev/null
+@@ -1,24 +0,0 @@
+-#!/bin/bash
+-
+-. pm_include.sh
+-available_govr=$(get_supporting_govr)
+-
+-total_cpus=$(tst_ncpus)
+-(( total_cpus-=1 ))
+-RC=0
+-
+-for cpu in $(seq 0 "${total_cpus}" )
+-do
+-	for govr in ${available_govr}
+-	do
+-		echo ${govr} > /sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_governor
+-		if [ "$?" -ne "0" ] ; then
+-			echo "${0}: FAIL: Unable to set governor -- ${govr} for cpu${cpu}"
+-			RC=1
+-		fi
+-	done
+-done
+-if [ ${RC} -eq 0 ] ; then
+-	echo "${0}: PASS: Changing cpu governors"
+-fi
+-exit $RC
+diff --git a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh b/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
+deleted file mode 100755
+index dcf8a1d..0000000
+--- a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
++++ /dev/null
+@@ -1,24 +0,0 @@
+-#!/bin/bash
+-
+-. pm_include.sh
+-
+-total_cpus=$(tst_ncpus)
+-(( total_cpus-=1 ))
+-RC=0
+-
+-for cpu in $(seq 0 "${total_cpus}" )
+-do
+-	cpufiles=$(find /sys/devices/system/cpu/cpu"${cpu}"/cpufreq/ -name "*" -type f)
+-	for files in ${cpufiles}
+-	do
+-		cat ${files} 2>&1 >/dev/null
+-		if [ $? -ne 0 ] ; then
+-			echo "${0}: FAIL: cat ${files}"
+-			RC=1
+-		fi
+-	done
+-done
+-if [ ${RC} -eq 0 ] ; then
+-	echo "${0}: PASS: Checking cpu freq sysfs files"
+-fi
+-exit $RC
+diff --git a/testcases/kernel/power_management/check_cpuidle_sysfs_files.sh b/testcases/kernel/power_management/check_cpuidle_sysfs_files.sh
+deleted file mode 100755
+index 4ed4d5b..0000000
+--- a/testcases/kernel/power_management/check_cpuidle_sysfs_files.sh
++++ /dev/null
+@@ -1,19 +0,0 @@
+-#!/bin/bash
+-
+-RC=0
+-if [ -d /sys/devices/system/cpu/cpuidle ] ; then
+-	for files in current_governor_ro current_driver
+-	do
+-		cat /sys/devices/system/cpu/cpuidle/${files} >/dev/null 2>&1
+-		if [ $? -ne 0 ] ; then
+-			echo "${0}: FAIL: cat ${files}"
+-			RC=1
+-		fi
+-	done
+-fi
+-if [ ${RC} -eq 0 ] ; then
+-	echo "${0}: PASS: Checking cpu idle sysfs files"
+-else
+-	echo "${0}: FAIL: Checking cpu idle sysfs files"
+-fi
+-exit $RC
+diff --git a/testcases/kernel/power_management/pwkm_load_unload.sh b/testcases/kernel/power_management/pwkm_load_unload.sh
+deleted file mode 100755
+index 9bcbd56..0000000
+--- a/testcases/kernel/power_management/pwkm_load_unload.sh
++++ /dev/null
+@@ -1,30 +0,0 @@
+-#!/bin/bash
+-
+-#Loading modules
+-RC=0
+-loaded_governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+-for module in `modprobe -l | grep cpufreq_ | cut -f8 -d"/" | cut -f1 -d"."`
+-do
+-	#echo -n "Loading $module ... "
+-    if [ $module != "cpufreq_$loaded_governor" ];
+-    then
+-		modprobe $module >/dev/null
+-		if [ $? -ne 0 ] ; then
+-			echo "${0}: FAIL: Loading of module $module or check whether you compiled as module or not"
+-			RC=1
+-		fi
+-	fi
+-done
+-for module in `modprobe -l | grep cpufreq_ | cut -f8 -d"/" | cut -f1 -d"."`
+-do
+-	#echo -n "Unloading $module ... "
+-    if [ $module != "cpufreq_$loaded_governor" ];
+-    then
+-		modprobe -r $module >/dev/null
+-		if [ $? -ne 0 ] ; then
+-			echo "${0}: FAIL: Loading of module $module or check whether you compiled as module or not"
+-			RC=1
+-		fi
+-	fi
+-done
+-exit $RC
+diff --git a/testcases/kernel/power_management/runpwtests01.sh b/testcases/kernel/power_management/runpwtests01.sh
+index 7dc164c..d470d11 100755
+--- a/testcases/kernel/power_management/runpwtests01.sh
++++ b/testcases/kernel/power_management/runpwtests01.sh
+@@ -24,6 +24,28 @@ export TST_TOTAL=1
+ . test.sh
+ . pm_include.sh
  
-+gethostbyname_r01 gethostbyname_r01
++test_sched_mc() {
++	get_kernel_version
++	get_valid_input $kernel_version
 +
- gethostid01 gethostid01
++	invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
++	2000000000000000000000000000000000000000000000000000000000000000000
++	ox324 -0xfffffffffffffffffffff"
++	test_file="/sys/devices/system/cpu/sched_mc_power_savings"
++	if [ ! -f ${test_file} ] ; then
++		tst_brkm TBROK "MISSING_FILE: missing file ${test_file}"
++	fi
++
++	RC=0
++	echo "${0}: ---Valid test cases---"
++	check_input "${valid_input}" valid $test_file
++	RC=$?
++	echo "${0}: ---Invalid test cases---"
++	check_input "${invalid_input}" invalid $test_file
++	RC=$(( RC | $? ))
++	return $RC
++}
++
+ # Checking test environment
+ check_kervel_arch
  
- gethostname01 gethostname01
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 98884be..5780e45 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -304,6 +304,7 @@
- /getgroups/getgroups03_16
- /getgroups/getgroups04
- /getgroups/getgroups04_16
-+/gethostbyname_r/gethostbyname_r01
- /gethostid/gethostid01
- /gethostname/gethostname01
- /getitimer/getitimer01
-diff --git a/testcases/kernel/syscalls/gethostbyname_r/Makefile b/testcases/kernel/syscalls/gethostbyname_r/Makefile
-new file mode 100644
-index 0000000..2a423d1
---- /dev/null
-+++ b/testcases/kernel/syscalls/gethostbyname_r/Makefile
-@@ -0,0 +1,19 @@
-+#
-+#  Copyright (c) 2015 Fujitsu Ltd.
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
+@@ -40,7 +62,7 @@ else
+ 	fi
+ fi
+ 
+-if test_sched_mc.sh ; then
++if test_sched_mc ; then
+ 	tst_resm TPASS "SCHED_MC sysfs tests"
+ else
+ 	tst_resm TFAIL "SCHED_MC sysfs tests"
+diff --git a/testcases/kernel/power_management/runpwtests02.sh b/testcases/kernel/power_management/runpwtests02.sh
+index 067569e..8c7936f 100755
+--- a/testcases/kernel/power_management/runpwtests02.sh
++++ b/testcases/kernel/power_management/runpwtests02.sh
+@@ -24,6 +24,27 @@ export TST_TOTAL=1
+ . test.sh
+ . pm_include.sh
+ 
++test_sched_smt() {
++	get_kernel_version
++	get_valid_input $kernel_version
 +
-+top_srcdir		?= ../../../..
++	invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
++	2000000000000000000000000000000000000000000000000000000000000000000000
++	ox324 -0xfffffffffffffffffffff"
++	test_file="/sys/devices/system/cpu/sched_smt_power_savings"
++	if [ ! -f ${test_file} ] ; then
++		tst_brkm TBROK "MISSING_FILE: missing file ${test_file}"
++	fi
 +
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/gethostbyname_r/gethostbyname_r01.c b/testcases/kernel/syscalls/gethostbyname_r/gethostbyname_r01.c
-new file mode 100644
-index 0000000..cb638fb
---- /dev/null
-+++ b/testcases/kernel/syscalls/gethostbyname_r/gethostbyname_r01.c
-@@ -0,0 +1,102 @@
-+/*
-+ *   Copyright (c) 2015 Fujitsu Ltd.
-+ *   Author: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-+ *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
-+ */
-+
-+/*
-+ * This is a test for glibc bug:
-+ * https://www.qualys.com/research/security-advisories/GHOST-CVE-2015-0235.txt
-+ */
-+
-+#include <netdb.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <errno.h>
-+#include "test.h"
-+
-+#define CANARY "in_the_coal_mine"
-+
-+static void setup(void);
-+static void cleanup(void);
-+static void check_vulnerable(void);
-+
-+static struct {
-+	char buffer[1024];
-+	char canary[sizeof(CANARY)];
-+} temp = {
-+	"buffer",
-+	CANARY,
-+};
-+
-+char *TCID = "gethostbyname_r01";
-+int TST_TOTAL = 1;
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	const char *msg;
-+
-+	msg = parse_opts(ac, av, NULL, NULL);
-+	if (msg != NULL)
-+		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		check_vulnerable();
-+	}
-+
-+	cleanup();
-+	tst_exit();
++	echo "${0}: ---Valid test cases---"
++	check_input "${valid_input}" valid $test_file
++	RC=$?
++	echo "${0}: ---Invalid test cases---"
++	check_input "${invalid_input}" invalid $test_file
++	RC=$(( RC | $? ))
++	return $RC
 +}
 +
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, DEF_HANDLER, NULL);
-+	TEST_PAUSE;
+ # Checking test environment
+ check_kervel_arch
+ 
+@@ -38,7 +59,7 @@ else
+ 	fi
+ fi
+ 
+-if test_sched_smt.sh ; then
++if test_sched_smt ; then
+ 	tst_resm TPASS "SCHED_SMT sysfs test"
+ else
+ 	tst_resm TFAIL "SCHED_SMT sysfs test"
+diff --git a/testcases/kernel/power_management/runpwtests03.sh b/testcases/kernel/power_management/runpwtests03.sh
+index 34fb1a4..7e9ac4b 100755
+--- a/testcases/kernel/power_management/runpwtests03.sh
++++ b/testcases/kernel/power_management/runpwtests03.sh
+@@ -24,6 +24,129 @@ export TST_TOTAL=4
+ . test.sh
+ . pm_include.sh
+ 
++check_cpufreq_sysfs_files() {
++	total_cpus=$(tst_ncpus)
++	(( total_cpus-=1 ))
++	RC=0
++
++	for cpu in $(seq 0 "${total_cpus}" )
++	do
++		cpufiles=$(find /sys/devices/system/cpu/cpu"${cpu}"/cpufreq/ \
++			-name "*" -type f)
++		for files in ${cpufiles}
++		do
++			cat ${files} 2>&1 >/dev/null
++			if [ $? -ne 0 ] ; then
++				echo "${0}: FAIL: cat ${files}"
++				RC=1
++			fi
++		done
++	done
++	if [ ${RC} -eq 0 ] ; then
++		echo "${0}: PASS: Checking cpu freq sysfs files"
++	fi
++	return $RC
 +}
 +
-+static void cleanup(void)
-+{
++change_govr() {
++	available_govr=$(get_supporting_govr)
++
++	total_cpus=$(tst_ncpus)
++	(( total_cpus-=1 ))
++	RC=0
++
++	for cpu in $(seq 0 "${total_cpus}" )
++	do
++		for govr in ${available_govr}
++		do
++			echo ${govr} > \
++	/sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_governor
++			if [ "$?" -ne "0" ] ; then
++				echo "${0}: FAIL: Unable to set" \
++					"governor -- ${govr} for cpu${cpu}"
++				RC=1
++			fi
++		done
++	done
++	if [ ${RC} -eq 0 ] ; then
++		echo "${0}: PASS: Changing cpu governors"
++	fi
++	return $RC
 +}
 +
-+static void check_vulnerable(void)
-+{
-+	struct hostent resbuf;
-+	struct hostent *result;
-+	int herrno;
-+	int retval;
-+	char name[sizeof(temp.buffer)];
-+	size_t len;
++change_freq() {
++	available_freq=$(get_supporting_freq)
++	available_govr=$(get_supporting_govr)
++	RC=0
 +
-+	len = sizeof(temp.buffer) - 16 - 2 * sizeof(char *) - 1;
-+	memset(name, '0', len);
-+	name[len] = '\0';
++	total_cpus=$(tst_ncpus)
++	(( total_cpus-=1 ))
 +
-+	retval = gethostbyname_r(name, &resbuf, temp.buffer,
-+				 sizeof(temp.buffer), &result, &herrno);
-+
-+	if (strcmp(temp.canary, CANARY) != 0) {
-+		tst_resm(TFAIL, "vulnerable");
-+		return;
-+	}
-+
-+	if (retval == ERANGE) {
-+		tst_resm(TPASS, "not vulnerable");
-+		return;
-+	}
-+
-+	tst_resm(TFAIL, "should not happen");
++	if ( echo ${available_govr} | grep -i "userspace" \
++		2>&1 >/dev/null ); then
++		for cpu in $(seq 0 "${total_cpus}" )
++		do
++			echo userspace > \
++	/sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_governor
++			if [ $? -ne 0 ] ; then
++				RC=1
++			fi
++		done
++		if [ ${RC} -ne 1 ] ; then
++			for cpu in $(seq 0 "${total_cpus}" )
++			do
++				for freq in ${available_freq}
++				do
++					echo ${freq} > \
++	/sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_setspeed
++					if [ "$?" -ne "0" ] ; then
++						echo "${0}: FAIL: Unable" \
++							"to set frequency -- ${freq} for cpu${cpu}"
++						RC=1
++					fi
++				done
++			done
++		fi
++	fi
++	if [ ${RC} -eq 0 ] ; then
++		echo "${0}: PASS: Changing cpu frequencies"
++	fi
++	return $RC
 +}
++
++pwkm_load_unload() {
++	RC=0
++	loaded_governor=`cat \
++		/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
++	for module in `modprobe -l | grep cpufreq_ | \
++		cut -f8 -d"/" | cut -f1 -d"."`
++	do
++		#echo -n "Loading $module ... "
++		if [ $module != "cpufreq_$loaded_governor" ]; then
++			modprobe $module >/dev/null
++			if [ $? -ne 0 ] ; then
++				echo "${0}: FAIL: Loading of module $module" \
++					"or check whether you compiled as module or not"
++				RC=1
++			fi
++		fi
++	done
++	for module in `modprobe -l | grep cpufreq_ | \
++		cut -f8 -d"/" | cut -f1 -d"."`
++		do
++		#echo -n "Unloading $module ... "
++		if [ $module != "cpufreq_$loaded_governor" ]; then
++			modprobe -r $module >/dev/null
++			if [ $? -ne 0 ] ; then
++				echo "${0}: FAIL: Loading of module $module" \
++					"or check whether you compiled as module or not"
++				RC=1
++			fi
++		fi
++	done
++	return $RC
++}
++
+ # Checking test environment
+ check_kervel_arch
+ 
+@@ -32,28 +155,28 @@ if [ ! -d /sys/devices/system/cpu/cpu0/cpufreq ] ; then
+ 	tst_brkm TCONF "Required kernel configuration for CPU_FREQ NOT set"
+ fi
+ 
+-if check_cpufreq_sysfs_files.sh ; then
++if check_cpufreq_sysfs_files ; then
+ 	tst_resm TPASS "CPUFREQ sysfs tests"
+ else
+ 	tst_resm TFAIL "CPUFREQ sysfs tests"
+ fi
+ 
+ # Changing governors
+-if change_govr.sh ; then
++if change_govr ; then
+ 	tst_resm TPASS "Changing governors"
+ else
+ 	tst_resm TFAIL "Changing governors"
+ fi
+ 
+ # Changing frequencies
+-if change_freq.sh ; then
++if change_freq ; then
+ 	tst_resm TPASS "Changing frequncies"
+ else
+     tst_resm TFAIL "Changing frequncies"
+ fi
+ 
+ # Loading and Unloading governor related kernel modules
+-if pwkm_load_unload.sh ; then
++if pwkm_load_unload ; then
+ 	tst_resm TPASS "Loading and Unloading of governor kernel" \
+ 		"modules"
+ else
+diff --git a/testcases/kernel/power_management/runpwtests04.sh b/testcases/kernel/power_management/runpwtests04.sh
+index eeb4b22..4b727a5 100755
+--- a/testcases/kernel/power_management/runpwtests04.sh
++++ b/testcases/kernel/power_management/runpwtests04.sh
+@@ -24,11 +24,32 @@ export TST_TOTAL=1
+ . test.sh
+ . pm_include.sh
+ 
++check_cpuidle_sysfs_files() {
++	RC=0
++	if [ -d /sys/devices/system/cpu/cpuidle ] ; then
++		for files in current_governor_ro current_driver
++		do
++			cat /sys/devices/system/cpu/cpuidle/${files} \
++				>/dev/null 2>&1
++			if [ $? -ne 0 ] ; then
++				echo "${0}: FAIL: cat ${files}"
++				RC=1
++			fi
++		done
++	fi
++	if [ ${RC} -eq 0 ] ; then
++		echo "${0}: PASS: Checking cpu idle sysfs files"
++	else
++		echo "${0}: FAIL: Checking cpu idle sysfs files"
++	fi
++	return $RC
++}
++
+ # Checking test environment
+ check_kervel_arch
+ 
+ # Checking cpuidle sysfs interface files
+-if check_cpuidle_sysfs_files.sh ; then
++if check_cpuidle_sysfs_files ; then
+ 	tst_resm TPASS "CPUIDLE sysfs tests passed"
+ else
+     tst_resm TFAIL "CPUIDLE sysfs tests failed"
+diff --git a/testcases/kernel/power_management/runpwtests06.sh b/testcases/kernel/power_management/runpwtests06.sh
+index ab5d7de..7888a39 100755
+--- a/testcases/kernel/power_management/runpwtests06.sh
++++ b/testcases/kernel/power_management/runpwtests06.sh
+@@ -24,6 +24,26 @@ export TST_TOTAL=1
+ . test.sh
+ . pm_include.sh
+ 
++test_timer_migration() {
++	valid_input="0 1"
++	invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
++	2000000000000000000000000000000000000000000000000000000000000000000000
++	ox324 -0xfffffffffffffffffffff"
++	test_file="/proc/sys/kernel/timer_migration"
++	if [ ! -f ${test_file} ] ; then
++		tst_brkm TBROK "MISSING_FILE: missing file ${test_file}"
++	fi
++
++	RC=0
++	echo "${0}: ---Valid test cases---"
++	check_input "${valid_input}" valid $test_file
++	RC=$?
++	echo "${0}: ---Invalid test cases---"
++	check_input "${invalid_input}" invalid $test_file
++	RC=$(( RC | $? ))
++	return $RC
++}
++
+ # Checking test environment
+ check_kervel_arch
+ 
+@@ -42,7 +62,7 @@ else
+ 	fi
+ fi
+ 
+-if test_timer_migration.sh; then
++if test_timer_migration ; then
+ 	tst_resm TPASS "Timer Migration interface test"
+ else
+ 	tst_resm TFAIL "Timer migration interface test"
+diff --git a/testcases/kernel/power_management/test_sched_mc.sh b/testcases/kernel/power_management/test_sched_mc.sh
+deleted file mode 100755
+index c695798..0000000
+--- a/testcases/kernel/power_management/test_sched_mc.sh
++++ /dev/null
+@@ -1,24 +0,0 @@
+-#!/bin/bash
+-
+-. pm_include.sh
+-
+-get_kernel_version
+-get_valid_input $kernel_version
+-
+-invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
+-200000000000000000000000000000000000000000000000000000000000000000000000000000
+-ox324 -0xfffffffffffffffffffff"
+-test_file="/sys/devices/system/cpu/sched_mc_power_savings"
+-if [ ! -f ${test_file} ] ; then
+-	echo "MISSING_FILE: missing file ${test_file}"
+-	exit $MISSING_FILE
+-fi
+-
+-RC=0
+-echo "${0}: ---Valid test cases---"
+-check_input "${valid_input}" valid $test_file
+-RC=$?
+-echo "${0}: ---Invalid test cases---"
+-check_input "${invalid_input}" invalid $test_file
+-RC=$(( RC | $? ))
+-exit $RC
+diff --git a/testcases/kernel/power_management/test_sched_smt.sh b/testcases/kernel/power_management/test_sched_smt.sh
+deleted file mode 100755
+index 6cde834..0000000
+--- a/testcases/kernel/power_management/test_sched_smt.sh
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#!/bin/bash
+-
+-. pm_include.sh
+-
+-get_kernel_version
+-get_valid_input $kernel_version
+-
+-invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
+-200000000000000000000000000000000000000000000000000000000000000000000000000000
+-ox324 -0xfffffffffffffffffffff"
+-test_file="/sys/devices/system/cpu/sched_smt_power_savings"
+-if [ ! -f ${test_file} ] ; then
+-       echo "MISSING_FILE: missing file ${test_file}"
+-       exit $MISSING_FILE
+-fi
+-
+-echo "${0}: ---Valid test cases---"
+-check_input "${valid_input}" valid $test_file
+-RC=$?
+-echo "${0}: ---Invalid test cases---"
+-check_input "${invalid_input}" invalid $test_file
+-RC=$(( RC | $? ))
+-exit $RC
+diff --git a/testcases/kernel/power_management/test_timer_migration.sh b/testcases/kernel/power_management/test_timer_migration.sh
+deleted file mode 100755
+index e2d3296..0000000
+--- a/testcases/kernel/power_management/test_timer_migration.sh
++++ /dev/null
+@@ -1,22 +0,0 @@
+-#!/bin/bash
+-
+-. pm_include.sh
+-
+-valid_input="0 1"
+-invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
+-200000000000000000000000000000000000000000000000000000000000000000000000000000
+-ox324 -0xfffffffffffffffffffff"
+-test_file="/proc/sys/kernel/timer_migration"
+-if [ ! -f ${test_file} ] ; then
+-	echo "MISSING_FILE: missing file ${test_file}"
+-	exit $MISSING_FILE
+-fi
+-
+-RC=0
+-echo "${0}: ---Valid test cases---"
+-check_input "${valid_input}" valid $test_file
+-RC=$?
+-echo "${0}: ---Invalid test cases---"
+-check_input "${invalid_input}" invalid $test_file
+-RC=$(( RC | $? ))
+-exit $RC
 -- 
 1.9.3
-
-
 
 
 ------------------------------------------------------------------------------
