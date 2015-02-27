@@ -1,25 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YJeY9-00029I-Ba
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 08:46:05 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YRG68-00088z-4T
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:36 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YJeY7-0007eM-Cc
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 08:46:05 +0000
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YRG67-0007tq-0v
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:36 +0000
 Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t168ipmb028865
-	for <ltp-list@lists.sourceforge.net>; Fri, 6 Feb 2015 16:44:51 +0800
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1R8FXUg019148
+	for <ltp-list@lists.sourceforge.net>; Fri, 27 Feb 2015 16:15:33 +0800
 From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 6 Feb 2015 16:41:27 +0800
-Message-ID: <1423212090-24164-3-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1423212090-24164-1-git-send-email-gux.fnst@cn.fujitsu.com>
+Date: Fri, 27 Feb 2015 16:12:04 +0800
+Message-ID: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 3/6] power_management: install lib/sched_mc.py into
-	testcases/bin directory
+Subject: [LTP] [PATCH v3 1/9] kernel/power_management: fix no_of_cpus error
+	of change_govr.sh etc.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,124 +32,66 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
+The function "no_of_cpus" doesn't exist, which is used in change_freq.sh,
+change_govr.sh and check_cpufreq_sysfs_files.sh. Use "tst_ncpus" instead
+of "no_of_cpus".
+
 Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/power_management/Makefile         | 10 ++++-----
- .../kernel/power_management/cpu_consolidation.py   |  2 --
- testcases/kernel/power_management/ilb_test.py      |  2 --
- testcases/kernel/power_management/lib/Makefile     | 25 ++++++++++++++++++++++
- testcases/kernel/power_management/sched_domain.py  |  2 --
- 5 files changed, 29 insertions(+), 12 deletions(-)
- create mode 100644 testcases/kernel/power_management/lib/Makefile
+ testcases/kernel/power_management/change_freq.sh               | 2 +-
+ testcases/kernel/power_management/change_govr.sh               | 2 +-
+ testcases/kernel/power_management/check_cpufreq_sysfs_files.sh | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/power_management/Makefile b/testcases/kernel/power_management/Makefile
-index 24f75f8..bc189b9 100644
---- a/testcases/kernel/power_management/Makefile
-+++ b/testcases/kernel/power_management/Makefile
-@@ -13,8 +13,8 @@
- ## for more details.                                                          ##
- ##                                                                            ##
- ## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
-+## along with this program;  if not, write to the Free Software Foundation,   ##
-+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
- ##                                                                            ##
- ################################################################################
+diff --git a/testcases/kernel/power_management/change_freq.sh b/testcases/kernel/power_management/change_freq.sh
+index 204e21f..3a971d2 100755
+--- a/testcases/kernel/power_management/change_freq.sh
++++ b/testcases/kernel/power_management/change_freq.sh
+@@ -5,7 +5,7 @@ available_freq=$(get_supporting_freq)
+ available_govr=$(get_supporting_govr)
+ RC=0
  
-@@ -22,10 +22,8 @@ top_srcdir		?= ../../..
+-total_cpus=$(no_of_cpus)
++total_cpus=$(tst_ncpus)
+ (( total_cpus-=1 ))
  
- include $(top_srcdir)/include/mk/testcases.mk
+ if ( echo ${available_govr} | grep -i "userspace" 2>&1 >/dev/null ) ; then
+diff --git a/testcases/kernel/power_management/change_govr.sh b/testcases/kernel/power_management/change_govr.sh
+index 4c2546e..bfe6c5b 100755
+--- a/testcases/kernel/power_management/change_govr.sh
++++ b/testcases/kernel/power_management/change_govr.sh
+@@ -3,7 +3,7 @@
+ . pm_include.sh
+ available_govr=$(get_supporting_govr)
  
--vpath %.c $(srcdir):$(top_srcdir)/lib
--
--INSTALL_TARGETS		:= lib/*.py *.py *.sh
-+INSTALL_TARGETS		:= *.py *.sh
+-total_cpus=$(no_of_cpus)
++total_cpus=$(tst_ncpus)
+ (( total_cpus-=1 ))
+ RC=0
  
- MAKE_DEPS		+= $(APICMDS_DIR)/tst_kvercmp
+diff --git a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh b/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
+index cb51aa0..dcf8a1d 100755
+--- a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
++++ b/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
+@@ -2,7 +2,7 @@
  
--include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/power_management/cpu_consolidation.py b/testcases/kernel/power_management/cpu_consolidation.py
-index 992a745..3b68d6a 100755
---- a/testcases/kernel/power_management/cpu_consolidation.py
-+++ b/testcases/kernel/power_management/cpu_consolidation.py
-@@ -6,8 +6,6 @@
- import os
- import sys
- import time
--LIB_DIR = "%s/lib" % os.path.dirname(__file__)
--sys.path.append(LIB_DIR)
- from optparse import OptionParser
- from sched_mc import *
+ . pm_include.sh
  
-diff --git a/testcases/kernel/power_management/ilb_test.py b/testcases/kernel/power_management/ilb_test.py
-index cec0b29..ec990bc 100755
---- a/testcases/kernel/power_management/ilb_test.py
-+++ b/testcases/kernel/power_management/ilb_test.py
-@@ -5,8 +5,6 @@
- 
- import os
- import sys
--LIB_DIR = "%s/lib" % os.path.dirname(__file__)
--sys.path.append(LIB_DIR)
- from optparse import OptionParser
- from sched_mc import *
- 
-diff --git a/testcases/kernel/power_management/lib/Makefile b/testcases/kernel/power_management/lib/Makefile
-new file mode 100644
-index 0000000..3054fb3
---- /dev/null
-+++ b/testcases/kernel/power_management/lib/Makefile
-@@ -0,0 +1,25 @@
-+#
-+# Copyright (c) 2015 Fujitsu Ltd.
-+#
-+# This program is free software; you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License along
-+# with this program; if not, write to the Free Software Foundation, Inc.,
-+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+
-+top_srcdir                      ?= ../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= *.py
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/power_management/sched_domain.py b/testcases/kernel/power_management/sched_domain.py
-index 3d19ac0..1ff38b1 100755
---- a/testcases/kernel/power_management/sched_domain.py
-+++ b/testcases/kernel/power_management/sched_domain.py
-@@ -5,8 +5,6 @@
- 
- import os
- import sys
--LIB_DIR = "%s/lib" % os.path.dirname(__file__)
--sys.path.append(LIB_DIR)
- from sched_mc import *
- from optparse import OptionParser
+-total_cpus=$(no_of_cpus)
++total_cpus=$(tst_ncpus)
+ (( total_cpus-=1 ))
+ RC=0
  
 -- 
 1.9.3
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
