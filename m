@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YIJXT-0008Bb-Vr
-	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 16:07:51 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YIJXP-0001g3-Rh
-	for ltp-list@lists.sourceforge.net; Mon, 02 Feb 2015 16:07:51 +0000
-Date: Mon, 2 Feb 2015 11:07:37 -0500 (EST)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YRIMd-0004xo-Ff
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 10:41:47 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YRIMc-0004jB-36
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 10:41:47 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t1RAfdxp021679
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 27 Feb 2015 05:41:39 -0500
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1680288160.5291838.1422893257327.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1422876702-3152-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1422876702-3152-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1422876702-3152-2-git-send-email-wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 2/2] syscalls/mmap16: regression test for
-	data	corruption when blocksize < pagesize for mmaped data
+Date: Fri, 27 Feb 2015 11:41:32 +0100
+Message-Id: <2370af01ebeb2c4014c6d0c4252818a6138d8e19.1425033440.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 1/2] sched_setparam/9-1: fix hang on -rt kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,386 +27,147 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: jkastner@redhat.com
 
+As mentioned in [1], the testcase hangs on -rt kernel,
+because alarm(2) will never fire. The testcase runs with
+FIFO scheduling of higher priority than ksoftirqd.
 
+This patch changes testcase in following way:
+1. In good case, where child process preempts parent,
+   child is able to detect this condition and terminate.
+2. In bad case, where preemption fails, testcase doesn't
+   rely on softirq (alarm), but hrtimer (time).
+3. removes unnecessary sleep
 
+[1] https://lkml.org/lkml/2006/1/10/481
 
+Reported-by: Jiri Kastner <jkastner@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../conformance/interfaces/sched_setparam/9-1.c    | 48 ++++++++++++++--------
+ 1 file changed, 32 insertions(+), 16 deletions(-)
 
------ Original Message -----
-> From: "Xiaoguang Wang" <wangxg.fnst@cn.fujitsu.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Monday, 2 February, 2015 12:31:42 PM
-> Subject: [LTP] [PATCH 2/2] syscalls/mmap16: regression test for data	corruption when blocksize < pagesize for mmaped
-> data
-> 
-> This data corruption fixed by:
->     commit 90a8020278c1598fafd071736a0846b38510309c
->     Author: Jan Kara <jack@suse.cz>
->     Date:   Wed Oct 1 21:49:18 2014 -0400
->         vfs: fix data corruption when blocksize < pagesize for mmaped data
-> 
-> and this test is written to run in ext4 filesystem(with mount option
-> 'nodelalloc'),
-> so there is another fixing patch needed:
->     commit d6320cbfc92910a3e5f10c42d98c231c98db4f60
->     Author: Jan Kara <jack@suse.cz>
->     Date:   Wed Oct 1 21:49:46 2014 -0400
->         ext4: fix mmap data corruption when blocksize < pagesize
-> 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
+index ed90cee..354e03e 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
+@@ -31,14 +31,15 @@
+  *      not, the test fail.
+  */
+ #define _GNU_SOURCE
++#include <errno.h>
+ #include <sched.h>
+ #include <stdio.h>
+ #include <signal.h>
++#include <stdlib.h>
+ #include <sys/ipc.h>
+ #include <sys/shm.h>
++#include <time.h>
+ #include <unistd.h>
+-#include <stdlib.h>
+-#include <errno.h>
+ #include "posixtest.h"
+ #include "affinity.h"
+ 
+@@ -55,6 +56,7 @@
+ 
+ static int nb_cpu;
+ static int *shmptr;
++static int mean_prio;
+ 
+ static int get_ncpu(void)
+ {
+@@ -85,6 +87,7 @@ static int get_ncpu(void)
+ static void child_process(void)
+ {
+ 	struct sched_param param;
++	time_t t1, t2;
+ 
+ 	param.sched_priority = sched_get_priority_max(SCHED_FIFO);
+ 	if (sched_setparam(getpid(), &param) != 0) {
+@@ -92,20 +95,33 @@ static void child_process(void)
+ 		return;
+ 	}
+ 
+-	/* to avoid blocking */
+-	alarm(2);
+-	while (1) ;
++	t1 = time(NULL);
++	do {
++		t2 = time(NULL);
++	} while (difftime(t2, t1) <= 2);
+ }
+ 
+ static void test_process(void)
+ {
+-	/* to avoid blocking */
+-	alarm(2);
+-
+-	while (1) {
+-		(*shmptr)++;
++	struct sched_param param;
++	time_t t1, t2;
++
++	t1 = time(NULL);
++	do {
++		sched_getparam(getpid(), &param);
++		(*shmptr) = param.sched_priority;
++		/* if we can see that our priority has changed
++		 * that means we preempted parent, so we are done */
++		if ((*shmptr) == mean_prio)
++			break;
++
++		t2 = time(NULL);
++		/* immediately after parent forks us, we has same
++		 * priority and compete with parent for same CPU,
++		 * give parent chance to run and boost our priority */
+ 		sched_yield();
+-	}
++	} while (difftime(t2, t1) <= 2);
++	exit(0);
+ }
+ 
+ static void kill_children(int *child_pid)
+@@ -133,6 +149,8 @@ int main(void)
+ 		nb_cpu = 1;
+ 	}
+ 
++	mean_prio = (sched_get_priority_min(SCHED_FIFO) +
++		sched_get_priority_max(SCHED_FIFO)) / 2;
+ 	child_pid = malloc(nb_cpu * sizeof(int));
+ 
+ 	key = ftok("conformance/interfaces/sched_setparam/9-1.c", 1234);
+@@ -194,11 +212,9 @@ int main(void)
+ 		return PTS_UNRESOLVED;
+ 	}
+ 
+-	sleep(1);
+-
+-	param.sched_priority = (sched_get_priority_min(SCHED_FIFO) +
+-				sched_get_priority_max(SCHED_FIFO)) / 2;
+-
++	/* parent runs, which means test_process() gave up cpu,
++	 * boost its priority and check it preempted parent */
++	param.sched_priority = mean_prio;
+ 	oldcount = *shmptr;
+ 	if (sched_setparam(child_pid[i], &param) != 0) {
+ 		perror("An error occurs when calling sched_setparam()");
+-- 
+1.8.3.1
 
-Hi,
-
-looks good, I ran it on patched/unpatched kernel and it recognized buggy one.
-Couple small suggestions inline:
-
-> ---
->  runtest/ltplite                         |   1 +
->  runtest/stress.part3                    |   1 +
->  runtest/syscalls                        |   1 +
->  testcases/kernel/syscalls/.gitignore    |   1 +
->  testcases/kernel/syscalls/mmap/mmap16.c | 238
->  ++++++++++++++++++++++++++++++++
->  5 files changed, 242 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/mmap/mmap16.c
-> 
-> diff --git a/runtest/ltplite b/runtest/ltplite
-> index 1457908..5d6c815 100644
-> --- a/runtest/ltplite
-> +++ b/runtest/ltplite
-> @@ -449,6 +449,7 @@ mmap06 mmap06
->  mmap07 mmap07
->  mmap08 mmap08
->  mmap09 mmap09
-> +mmap16 mmap16
->  
->  modify_ldt01 modify_ldt01
->  modify_ldt02 modify_ldt02
-> diff --git a/runtest/stress.part3 b/runtest/stress.part3
-> index 368c640..9736a3f 100644
-> --- a/runtest/stress.part3
-> +++ b/runtest/stress.part3
-> @@ -382,6 +382,7 @@ mmap06 mmap06
->  mmap07 mmap07
->  mmap08 mmap08
->  mmap09 mmap09
-> +mmap16 mmap16
->  
->  modify_ldt01 modify_ldt01
->  modify_ldt02 modify_ldt02
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 44969f3..4e780d7 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -587,6 +587,7 @@ mmap14 mmap14
->  # test is broken, mask it for now.
->  #mmap11 mmap11 -i 30000
->  mmap15 mmap15
-> +mmap16 mmap16
->  
->  modify_ldt01 modify_ldt01
->  modify_ldt02 modify_ldt02
-> diff --git a/testcases/kernel/syscalls/.gitignore
-> b/testcases/kernel/syscalls/.gitignore
-> index 92c0bf5..b443fd8 100644
-> --- a/testcases/kernel/syscalls/.gitignore
-> +++ b/testcases/kernel/syscalls/.gitignore
-> @@ -533,6 +533,7 @@
->  /mmap/mmap13
->  /mmap/mmap14
->  /mmap/mmap15
-> +/mmap/mmap16
->  /modify_ldt/modify_ldt01
->  /modify_ldt/modify_ldt02
->  /modify_ldt/modify_ldt03
-> diff --git a/testcases/kernel/syscalls/mmap/mmap16.c
-> b/testcases/kernel/syscalls/mmap/mmap16.c
-> new file mode 100644
-> index 0000000..9054503
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/mmap/mmap16.c
-> @@ -0,0 +1,238 @@
-> +/*
-> + *   Copyright (c) 2015 Fujitsu Ltd.
-> + *   Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> + *
-> + *   This program is free software;  you can redistribute it and/or modify
-> + *   it under the terms of the GNU General Public License as published by
-> + *   the Free Software Foundation; either version 2 of the License, or
-> + *   (at your option) any later version.
-> + *
-> + *   This program is distributed in the hope that it will be useful,
-> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + *   the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * This is a regression test for commit:
-> + * http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/
-> + * commit/?id=90a8020
-> + * http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/
-> + * commit/?id=d6320cb
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include <stdio.h>
-> +#include <errno.h>
-> +#include <fcntl.h>
-> +#include <sys/types.h>
-> +#include <sys/wait.h>
-> +#include <unistd.h>
-> +#include <sys/mount.h>
-> +#include <sys/mman.h>
-> +
-> +#include "usctest.h"
-> +#include "test.h"
-> +#include "safe_macros.h"
-> +
-> +#define MNTPOINT	"mntpoint"
-> +#define FS_BLOCKSIZE	1024
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +static void do_child(void);
-> +static void do_test(void);
-> +
-> +static const char *device;
-> +static const char *fs_type = "ext4";
-> +static int mount_flag;
-> +
-> +static int page_size;
-> +static struct tst_checkpoint checkpoint1, checkpoint2;
-> +static int bug_reproduced;
-> +
-> +char *TCID = "mmap16";
-> +int TST_TOTAL = 1;
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int i;
-> +	const char *msg;
-> +
-> +	msg = parse_opts(ac, av, NULL, NULL);
-> +	if (msg != NULL)
-> +		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
-> +
-> +	setup();
-> +
-> +	/*
-> +	 * If child process was killed by SIGBUS, indeed that can not guarantee
-> +	 * this bug must have been fixed, If luckily virtual memory subsystem
-> +	 * decides that it is time to write dirty pages, it will make maped
-> +	 * pages write-protect, so ->page_mkwrite() still will be called, child
-> +	 * process will be killed by SIGBUS, it's not fixed because of above
-> +	 * fixing patches. So here we run this test 10 times, if once, child
-> +	 * process exits normally, we can sure that this bug is not fixed.
-> +	 */
-> +	for (i = 0; i < 10; i++)
-> +		do_test();
-
-Would it be worth it to convert this loop to TEST_LOOPING?
-Then you can add "mmap16 -i 10" to lite runtest files and for example "-i 50"
-to stress one. From my runs, it reproduced quite quickly, so 50 may be overkill.
-
-
-> +
-> +	if (bug_reproduced)
-> +		tst_resm(TFAIL, "Bug is reproduced!");
-> +	else
-> +		tst_resm(TPASS, "Bug is not reproduced!");
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void do_test(void)
-> +{
-> +	int fd, ret, status;
-> +	pid_t child;
-> +	char buf[FS_BLOCKSIZE];
-> +
-> +	SAFE_TOUCH(cleanup, "testfilep", 0644, NULL);
-> +	SAFE_TOUCH(cleanup, "testfilec", 0644, NULL);
-> +
-> +	child = tst_fork();
-> +	if (child < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
-> +	} else if (child == 0) {
-> +		do_child();
-> +	} else {
-> +		fd = SAFE_OPEN(cleanup, "testfilep", O_RDWR);
-> +		memset(buf, 'a', FS_BLOCKSIZE);
-> +
-> +		TST_CHECKPOINT_PARENT_WAIT(cleanup, &checkpoint1);
-> +		while (1) {
-> +			ret = write(fd, buf, FS_BLOCKSIZE);
-> +			if (ret < 0) {
-> +				if (errno == ENOSPC) {
-> +					break;
-> +				} else {
-> +					tst_brkm(TBROK | TERRNO, cleanup,
-> +						 "write failed unexpectedly");
-> +				}
-> +			}
-> +		}
-> +		SAFE_CLOSE(cleanup, fd);
-> +		TST_CHECKPOINT_SIGNAL_CHILD(cleanup, &checkpoint2);
-> +	}
-> +
-> +	wait(&status);
-> +	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGBUS) {
-> +		;
-> +	} else if (WIFEXITED(status) && WEXITSTATUS(status) == 1) {
-> +		bug_reproduced = 1;
-> +	} else {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "child process terminate unexpectedly");
-> +	}
-> +
-> +	SAFE_UNLINK(cleanup, "testfilep");
-> +	SAFE_UNLINK(cleanup, "testfilec");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	const char *fs_opts[3] = {"-b", "1024", NULL};
-> +
-
-Missing tst_require_root().
-
-> +	tst_sig(FORK, DEF_HANDLER, NULL);
-> +
-> +	TEST_PAUSE;
-> +	tst_tmpdir();
-> +
-> +	page_size = getpagesize();
-> +	if (page_size == -1)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Unable to get page size");
-> +
-> +	device = tst_acquire_device(cleanup);
-> +	if (!device)
-> +		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
-> +	tst_mkfs(cleanup, device, fs_type, fs_opts);
-> +
-> +	SAFE_MKDIR(cleanup, MNTPOINT, 0755);
-> +	/*
-> +	 * Disable ext4 delalloc feature, so block will be allocated
-> +	 * as soon as possible
-> +	 */
-> +	if (mount(device, MNTPOINT, fs_type, 0, "nodelalloc") < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "mount device:%s failed", device);
-> +	}
-> +	mount_flag = 1;
-> +
-> +	SAFE_CHDIR(cleanup, MNTPOINT);
-> +	TST_CHECKPOINT_CREATE(&checkpoint1);
-> +	TST_CHECKPOINT_CREATE(&checkpoint2);
-> +}
-> +
-> +static void do_child(void)
-> +{
-> +	int fd, offset;
-> +	char buf[FS_BLOCKSIZE];
-> +	char *addr = NULL;
-> +
-> +	/*
-> +	 * We have changed SIGBUS' handler in parent process,
-> +	 * so here just restore it
-> +	 */
-
-It took me a while to realize that this happens as part of LTP library and
-not in parent code.
-
-Regards,
-Jan
-
-> +	if (signal(SIGBUS, SIG_DFL) == SIG_ERR)
-> +		tst_brkm(TBROK | TERRNO, NULL, "signal(SIGBUS) failed");
-> +
-> +	memset(buf, 'a', FS_BLOCKSIZE);
-> +	fd = SAFE_OPEN(NULL, "testfilec", O_RDWR);
-> +	SAFE_PWRITE(NULL, 1, fd, buf, FS_BLOCKSIZE, 0);
-> +
-> +	/*
-> +	 * In case mremap() may fail because that memory area can not be
-> +	 * expanded at current virtual address(MREMAP_MAYMOVE is not set),
-> +	 * we first do a mmap(page_size * 2) operation to reserve some
-> +	 * free address space.
-> +	 */
-> +	addr = (char *)SAFE_MMAP(NULL, NULL, page_size * 2, PROT_WRITE |
-> +				 PROT_READ, MAP_PRIVATE_EXCEPT_UCLINUX|
-> +				 MAP_ANONYMOUS, -1, 0);
-> +	SAFE_MUNMAP(NULL, addr,  page_size * 2);
-> +
-> +	addr = (char *)SAFE_MMAP(NULL, addr, FS_BLOCKSIZE, PROT_WRITE |
-> +				 PROT_READ, MAP_SHARED, fd, 0);
-> +
-> +	addr[0] = 'a';
-> +
-> +	SAFE_FTRUNCATE(NULL, fd, page_size * 2);
-> +	addr = mremap(addr, FS_BLOCKSIZE, 2 * page_size, 0);
-> +	if (addr == MAP_FAILED)
-> +		tst_brkm(TBROK | TERRNO, NULL, "mremap failed unexpectedly");
-> +
-> +	/*
-> +	 * Let parent process consume FS free blocks as many as possible, then
-> +	 * there'll be no free blocks allocated for this new file mmaping for
-> +	 * offset starting at 1024, 2048, or 3072. If this above kernel bug
-> +	 * has been fixed, usually child process will killed by SIGBUS signal,
-> +	 * if not, the data 'A', 'B', 'C' will be silently discarded later when
-> +	 * kernel writepage is called, that means data corruption.
-> +	 */
-> +	TST_CHECKPOINT_SIGNAL_PARENT(&checkpoint1);
-> +	TST_CHECKPOINT_CHILD_WAIT(&checkpoint2);
-> +
-> +	for (offset = FS_BLOCKSIZE; offset < page_size; offset += FS_BLOCKSIZE)
-> +		addr[offset] = 'a';
-> +	exit(TFAIL);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	TEST_CLEANUP;
-> +
-> +	SAFE_CHDIR(NULL, "..");
-> +	if (mount_flag && tst_umount(MNTPOINT) < 0)
-> +		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
-> +
-> +	if (device)
-> +		tst_release_device(NULL, device);
-> +
-> +	tst_rmdir();
-> +}
-> --
-> 1.8.3.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> Dive into the World of Parallel Programming. The Go Parallel Website,
-> sponsored by Intel and developed in partnership with Slashdot Media, is your
-> hub for all things parallel software development, from weekly thought
-> leadership blogs to news, videos, case studies, tutorials and more. Take a
-> look and join the conversation now. http://goparallel.sourceforge.net/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
