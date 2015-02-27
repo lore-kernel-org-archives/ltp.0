@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YQvQz-00050V-Nn
-	for ltp-list@lists.sourceforge.net; Thu, 26 Feb 2015 10:12:45 +0000
-Date: Thu, 26 Feb 2015 11:12:07 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150226101207.GC13639@rei.suse.de>
-References: <1424855586-9818-1-git-send-email-alexey.kodanev@oracle.com>
-	<1424855586-9818-3-git-send-email-alexey.kodanev@oracle.com>
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YRG6B-0001sD-My
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:39 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YRG6A-0006tl-B6
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:39 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1R8Figo019180
+	for <ltp-list@lists.sourceforge.net>; Fri, 27 Feb 2015 16:15:44 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 27 Feb 2015 16:12:08 +0800
+Message-ID: <1425024732-30751-5-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1424855586-9818-3-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH 3/3] device-drivers/rcu/rcu_torture.sh: use
- default value for nreaders, fix types
+Subject: [LTP] [PATCH v3 5/9] power_management: delete unused files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,22 +31,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> * rcutorture module sets nreaders to twice the number of CPUs
-> * fix rcutorture types, some of them were removed,
->   some merged together in commits 99f8891 (v3.11), 2ec1f2d (v3.12)
+There are some files that are not used by this
+testsuit. Delete them.
 
-I guess that this change is not backward compatible, is it?
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/power_management/check_config.sh | 32 -----------------------
+ testcases/kernel/power_management/config_cpu_freq |  7 -----
+ testcases/kernel/power_management/config_cpu_idle |  3 ---
+ testcases/kernel/power_management/config_sched_mc |  1 -
+ 4 files changed, 43 deletions(-)
+ delete mode 100755 testcases/kernel/power_management/check_config.sh
+ delete mode 100644 testcases/kernel/power_management/config_cpu_freq
+ delete mode 100644 testcases/kernel/power_management/config_cpu_idle
+ delete mode 100644 testcases/kernel/power_management/config_sched_mc
 
-I guess that we should at least add a check to disable it on older
-kernels.
-
+diff --git a/testcases/kernel/power_management/check_config.sh b/testcases/kernel/power_management/check_config.sh
+deleted file mode 100755
+index 4eeac4e..0000000
+--- a/testcases/kernel/power_management/check_config.sh
++++ /dev/null
+@@ -1,32 +0,0 @@
+-#!/bin/bash
+-
+-. pm_include.sh
+-
+-if [ $# -lt 1 ] ; then
+-	echo "Usage: ${0} <filename>"
+-	RC=1
+-	return ${RC}
+-fi
+-filename=${1}
+-
+-RC=0
+-grep_command=grep
+-config_file=/boot/config-$(uname -r)
+-if [ ! -f ${config_file} ]; then
+-	echo "MISSING_FILE: can't find the required config file at /boot/config-$(uname -r)"
+-	echo "Trying for alternate file at /proc/config.gz"
+-	config_file=/proc/config.gz
+-fi
+-if [ ! -f ${config_file} ]; then
+-	echo "MISSING_FILE: can't find the required config file at /proc/config.gz"
+-	RC=1
+-fi
+-if [ "${config_file}" = "/proc/config.gz" ] ; then
+-	grep_command=zgrep
+-fi
+-
+-while read config_option
+-do
+-	check_config_options "${config_option}=*" ${config_file} ${grep_command}
+-done < ${filename}
+-exit $RC
+diff --git a/testcases/kernel/power_management/config_cpu_freq b/testcases/kernel/power_management/config_cpu_freq
+deleted file mode 100644
+index 76401e6..0000000
+--- a/testcases/kernel/power_management/config_cpu_freq
++++ /dev/null
+@@ -1,7 +0,0 @@
+-CONFIG_CPU_FREQ
+-CONFIG_CPU_FREQ_TABLE
+-CONFIG_CPU_FREQ_DEBUG
+-CONFIG_CPU_FREQ_STAT
+-CONFIG_CPU_FREQ_STAT_DETAILS
+-CONFIG_CPU_FREQ_DEFAULT_GOV_*
+-CONFIG_CPU_FREQ_GOV_*
+diff --git a/testcases/kernel/power_management/config_cpu_idle b/testcases/kernel/power_management/config_cpu_idle
+deleted file mode 100644
+index f899fae..0000000
+--- a/testcases/kernel/power_management/config_cpu_idle
++++ /dev/null
+@@ -1,3 +0,0 @@
+-CONFIG_CPU_IDLE
+-CONFIG_CPU_IDLE_GOV_LADDER
+-CONFIG_CPU_IDLE_GOV_MENU
+diff --git a/testcases/kernel/power_management/config_sched_mc b/testcases/kernel/power_management/config_sched_mc
+deleted file mode 100644
+index 30d0f97..0000000
+--- a/testcases/kernel/power_management/config_sched_mc
++++ /dev/null
+@@ -1 +0,0 @@
+-CONFIG_SCHED_MC
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
