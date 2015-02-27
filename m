@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YQufg-0002cO-Lk
-	for ltp-list@lists.sourceforge.net; Thu, 26 Feb 2015 09:23:52 +0000
-Date: Thu, 26 Feb 2015 10:23:14 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150226092313.GA13122@rei.suse.de>
-References: <1424764001.2546.15.camel@G08JYZSD130126.localdomain>
-	<20150226090012.GA12353@rei.suse.de>
-	<1449902344.19156887.1424942209488.JavaMail.zimbra@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YRG6H-0008AP-2m
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:45 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YRG6F-0007u3-RP
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:45 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1R8FpWi019190
+	for <ltp-list@lists.sourceforge.net>; Fri, 27 Feb 2015 16:15:51 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 27 Feb 2015 16:12:11 +0800
+Message-ID: <1425024732-30751-8-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1449902344.19156887.1424942209488.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] gethostbyname_r01: check whether a system is
- vulnerable or not.
+Subject: [LTP] [PATCH v3 8/9] power_management: compile
+	testcases/kernel/power_management by default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,24 +32,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > > +/*
-> > > + * This is a test for glibc bug:
->                            ^^
-> Isn't it a bit misleading to have this test under kernel/syscalls?
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ configure.ac                   | 14 --------------
+ include/mk/features.mk.default |  2 +-
+ include/mk/features.mk.in      |  2 +-
+ 3 files changed, 2 insertions(+), 16 deletions(-)
 
-Well, it kind of is. On the other hand we have glibc testcases under
-kernel/syscalls allready, see string/string01.c, memset/memset01.c ...
-
-If you want to go ahead and start runtest/libc, testcases/libc and move
-all the libc tests there I'm all for it.
-
+diff --git a/configure.ac b/configure.ac
+index 794059c..0ca21a6 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -102,20 +102,6 @@ fi
+ 
+ # Testsuites knobs
+ 
+-# testcases/kernel/power_management requires python.
+-if test "x$with_python" = xyes; then
+-    AC_ARG_WITH([power-management-testsuite],
+-      [AC_HELP_STRING([--with-power-management-testsuite],
+-        [compile and install the x86 power management testsuite (default=no)])],
+-      [with_power_management_testsuite=yes],
+-    )
+-fi
+-if test "x$with_power_management_testsuite" = xyes; then
+-    AC_SUBST([WITH_POWER_MANAGEMENT_TESTSUITE],["yes"])
+-else
+-    AC_SUBST([WITH_POWER_MANAGEMENT_TESTSUITE],["no"])
+-fi
+-
+ AC_ARG_WITH([open-posix-testsuite],
+   [AC_HELP_STRING([--with-open-posix-testsuite],
+     [compile and install the open posix testsuite (default=no)])],
+diff --git a/include/mk/features.mk.default b/include/mk/features.mk.default
+index c9edc1c..22a0f0e 100644
+--- a/include/mk/features.mk.default
++++ b/include/mk/features.mk.default
+@@ -38,7 +38,7 @@ HAVE_SECUREBITS			:= no
+ ifeq ($(UCLINUX),1)
+ WITH_POWER_MANAGEMENT_TESTSUITE	:= no
+ else
+-WITH_POWER_MANAGEMENT_TESTSUITE	:=
++WITH_POWER_MANAGEMENT_TESTSUITE	:= yes
+ endif
+ 
+ # Enable testcases/open_posix_testsuite's compile and install?
+diff --git a/include/mk/features.mk.in b/include/mk/features.mk.in
+index 1fd28f8..8030be7 100644
+--- a/include/mk/features.mk.in
++++ b/include/mk/features.mk.in
+@@ -38,7 +38,7 @@ HAVE_SECUREBITS			:= @HAVE_SECUREBITS@
+ ifeq ($(UCLINUX),1)
+ WITH_POWER_MANAGEMENT_TESTSUITE	:= no
+ else
+-WITH_POWER_MANAGEMENT_TESTSUITE	:= @WITH_POWER_MANAGEMENT_TESTSUITE@
++WITH_POWER_MANAGEMENT_TESTSUITE	:= yes
+ endif
+ 
+ # Enable testcases/open_posix_testsuite's compile and install?
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
