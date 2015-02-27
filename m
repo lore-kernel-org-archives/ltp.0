@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YJiQK-0007dd-Lp
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 12:54:16 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YJiQJ-0003ve-98
-	for ltp-list@lists.sourceforge.net; Fri, 06 Feb 2015 12:54:16 +0000
-Message-ID: <54D4B9FA.8080505@oracle.com>
-Date: Fri, 06 Feb 2015 15:56:26 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YRG69-0001pE-3E
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:37 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YRG67-0007u3-Ax
+	for ltp-list@lists.sourceforge.net; Fri, 27 Feb 2015 08:16:37 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t1R8FbX4019154
+	for <ltp-list@lists.sourceforge.net>; Fri, 27 Feb 2015 16:15:37 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 27 Feb 2015 16:12:05 +0800
+Message-ID: <1425024732-30751-2-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1422407961.13104.13.camel@G08JYZSD130126.localdomain>
-	<1422526772-27693-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1422526772-27693-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3 1/3] rlogin: Cleanup
+Subject: [LTP] [PATCH v3 2/9] lib/sched_mc.py: add testcase/bin path for
+	searching ebizzy/kernbench
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,207 +32,203 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-On 01/29/2015 01:19 PM, Zeng Linggang wrote:
-> * Add 'TCID' and 'TST_TOTAL'.
-> * Use 'test.sh' and 'tst_check_cmds'.
-> * Use 'test_net.sh'.
-> * Delete some useless comment.
-> * Some cleanup.
->
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> ---
->   testcases/network/tcp_cmds/rlogin/rlogin01 | 127 ++++++++++++++---------------
->   1 file changed, 63 insertions(+), 64 deletions(-)
->
-> diff --git a/testcases/network/tcp_cmds/rlogin/rlogin01 b/testcases/network/tcp_cmds/rlogin/rlogin01
-> index ae670c9..b564da1 100755
-> --- a/testcases/network/tcp_cmds/rlogin/rlogin01
-> +++ b/testcases/network/tcp_cmds/rlogin/rlogin01
+* After installing LTP, the ebizzy/kernbench benchmark are located in
+  testcase/bin. Here using utils/benchmark path for searching ebizzy/kernbench
+  outputs "INFO: ebizzy/kernbench benchmark not found" error message. So add
+  the testcase/bin path for benchmark in trigger_ebizzy/trigger_kernbench
+  function.
 
-Patch-set pushed. I also did minor changes as follows:
+* Change formatting in trigger_ebizzy/trigger_kernbench function.
 
-* removed setup comments because they repeated what is written in 
-network/LTP_network_README.pdf
-* removed test.sh from rlogin and telnet as test_net.sh already includes it
-* fixed tst_rhost_run() so it can set error code on return without '-s' 
-option:
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/power_management/lib/sched_mc.py | 138 +++++++++++++---------
+ 1 file changed, 85 insertions(+), 53 deletions(-)
 
-     tst_rhost_run -c "..." || return 1
-
-and updated the tests.
-
-Thanks,
-Alexey
-
-> @@ -1,5 +1,4 @@
-> -#! /usr/bin/expect -f
-> -#*********************************************************************
-> +#!/bin/sh
->   #   Copyright (c) International Business Machines  Corp., 2000
->   #
->   #   This program is free software;  you can redistribute it and/or modify
-> @@ -16,87 +15,87 @@
->   #   along with this program;  if not, write to the Free Software
->   #   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
->   #
-> -#
-> -#
-> -#  FILE   : rlogin
-> -#
-> -#  PURPOSE: Tests the basic functionality of `rlogin`.
-> -#
->   #  SETUP: The program `/usr/bin/expect' MUST be installed.
->   #         The home directory of root on the machine exported as "RHOST"
->   #         should have a ".rhosts" file with the hostname of the machine
->   #         where the test is executed, OR the "PASSWD" section below MUST
->   #	  be uncommented and set.
->   #
-> -#  HISTORY:
->   #    03/01 Robbie Williamson (robbiew@us.ibm.com)
-> -#      -Ported
-> -#
-> -#
-> -# rlogin perform a rlogin session to each host in HOST_LIST with user
-> -#    RUSER for a count of LOOPCOUNT and does an ls -l /etc/hosts to
-> -#    verify that the rlogin was established.
->   #
-> -#*********************************************************************
->   
-> -set TC rlogin
-> -set TCtmp "/tmp"
-> -set SLEEPTIME 3
-> -set TESTLOG "$TCtmp"
-> +TCID="rlogin01"
-> +TST_TOTAL=1
-> +. test.sh
-> +. test_net.sh
->   
-> -if [info exists env(RUSER)] {
-> -   set RUSER $env(RUSER)
-> -} else {
-> -   set RUSER root
-> -}
-> +setup()
-> +{
-> +	tst_check_cmds rlogin expect rsh
->   
-> -set RHOST $env(RHOST)
-> -set timeout 10
-> +	if [ -z $RUSER ]; then
-> +		RUSER=root
-> +	fi
->   
-> -if [info exists env(LOOPCOUNT)] {
-> -   set LOOPCOUNT $env(LOOPCOUNT)
-> -} else {
-> -   set LOOPCOUNT 25
-> -}
-> +	if [ -z $PASSWD ]; then
-> +		tst_brkm TCONF "Please set PASSWD for $RUSER."
-> +	fi
->   
-> -# stty echo
-> -send_user " Starting\n"
-> +	if [ -z $RHOST ]; then
-> +		tst_brkm TCONF "Please set RHOST."
-> +	fi
->   
-> -set count 0
-> -while {$count < $LOOPCOUNT} {
-> -   set count [expr $count+1]
-> -      send_user "Host: $RHOST\n"
-> +	if [ -z $LOOPCOUNT ]; then
-> +		LOOPCOUNT=25
-> +	fi
-> +}
->   
-> -      # rlogin to the host
-> -      spawn rlogin $RHOST -l $RUSER
-> +do_test()
-> +{
-> +	tst_resm TINFO "Starting"
->   
-> -      # Uncomment code below and add root's passwd if .rhosts file is not
-> -      # present on remote host.
-> -      #---------------------------------
-> -      #set PASSWD "<ROOT PASSWORD HERE>"
-> -      #expect -re "Password:"
-> -      #send "$PASSWD\r"
-> +	for i in $(seq 1 ${LOOPCOUNT})
-> +	do
-> +		rlogin_test || return 1
-> +	done
-> +}
->   
-> -      # Wait for shell prompt
-> -      expect -re "$RUSER@"
-> +rlogin_test()
-> +{
-> +	tst_resm TINFO "login with rlogin($i/$LOOPCOUNT)"
->   
-> -      # Run passwd command - and respond to its prompts
-> -      send "LC_ALL=C ls -l /etc/hosts | wc -w > $TESTLOG/$RUSER.$RHOST \r"
-> -      # When shell prompt comes back, logout
-> +	expect -c "
-> +		spawn rlogin $RHOST -l $RUSER
->   
-> -      expect -re "$RUSER@"
-> -      exp_send "logout\r"
-> +		expect {
-> +			\"Password:\" {
-> +				send \"$PASSWD\r\"; exp_continue
-> +			} \"incorrect\" {
-> +				exit 1
-> +			} \"$RUSER@\" {
-> +				send \"LC_ALL=C; ls -l /etc/hosts | \\
-> +				       wc -w > $RUSER.$RHOST\rexit\r\";
-> +				exp_continue
-> +			}
-> +		}
-> +	" > /dev/null
-> +	if [ $? -ne 0 ]; then
-> +		return 1
-> +	fi
->   
-> -      send_user "CHECKING RLOGIN STATUS\n"
-> -      set nummatch [exec rsh -n -l $RUSER $RHOST "cat $TESTLOG/$RUSER.$RHOST|grep -c 9"]
-> -      if {$nummatch==1} {
-> -         send_user "$TC interactive Test Successful in LOOP $count\r"
-> -         exec rsh -n -l $RUSER $RHOST "rm -f $TESTLOG/$RUSER.$RHOST"
-> -      } else {
-> -         send_user "$TC interactive session FAILED\r"
-> -         exit 1
-> -      }
-> +	tst_resm TINFO "checking telnet status($i/$LOOPCOUNT)"
-> +	[ $(tst_rhost_run -s -u $RUSER -c "grep -c 9 $RUSER.$RHOST") -ne 1 ] &&\
-> +		return 1
-> +	tst_rhost_run -u $RUSER -c "rm -f $RUSER.$RHOST"
->   }
->   
-> -send_user "\nTest PASSES\n\n"
-> -exit 0
-> +setup
-> +
-> +do_test
-> +if [ $? -ne 0 ]; then
-> +	tst_resm TFAIL "Test $TCID failed."
-> +else
-> +	tst_resm TPASS "Test $TCID succeeded."
-> +fi
-> +
-> +tst_exit
+diff --git a/testcases/kernel/power_management/lib/sched_mc.py b/testcases/kernel/power_management/lib/sched_mc.py
+index cb78b55..24285eb 100755
+--- a/testcases/kernel/power_management/lib/sched_mc.py
++++ b/testcases/kernel/power_management/lib/sched_mc.py
+@@ -318,51 +318,67 @@ def trigger_ebizzy (sched_smt, stress, duration, background, pinned):
+     '''
+     try:
+         threads = get_job_count(stress, "ebizzy", sched_smt)
+-        olddir = os.getcwd()
+-        path = '%s/utils/benchmark' % os.environ['LTPROOT']
+-        os.chdir(path)
+-        wklds_avlbl = list()
+         workload = "ebizzy"
+-        workload_dir = ""
++        olddir = os.getcwd()
++        installdir = '%s/utils/benchmark' % os.environ['LTPROOT']
++        if os.path.exists(installdir):
++            path = '%s/utils/benchmark' % os.environ['LTPROOT']
++            os.chdir(path)
++            wklds_avlbl = list()
++            workload_dir = ""
++
++            # Use the latest version of similar workload available
++            for file_name in os.listdir('.'):
++                if file_name.find(workload) != -1:
++                    wklds_avlbl.append(file_name)
+ 
+-        # Use the latest version of similar workload available
+-        for file_name in os.listdir('.'):
+-            if file_name.find(workload) != -1:
+-                wklds_avlbl.append(file_name)
+-
+-        wklds_avlbl.sort()
+-        workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
+-        if workload_dir != "":
+-            new_path = os.path.join(path,"%s" % workload_dir)
+-            get_proc_data(stats_start)
+-            get_proc_loc_count(intr_start)
+-            try:
++            wklds_avlbl.sort()
++            workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
++            if workload_dir != "":
++                new_path = os.path.join(path,"%s" % workload_dir)
+                 os.chdir(new_path)
+-                if background == "yes":
+-                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &'
+-                        % (threads, duration))
++            else:
++                print "INFO: ebizzy benchmark not found"
++                sys.exit(1)
++        else:
++            path = '%s/testcases/bin' % os.environ['LTPROOT']
++            os.chdir(path)
++            workload_file = ""
++            for file_name in os.listdir('.'):
++                if file_name == workload:
++                    workload_file = file_name
++                    break
++            if workload_file == "":
++                print "INFO: ebizzy benchmark not found"
++                sys.exit(1)
++        get_proc_data(stats_start)
++        get_proc_loc_count(intr_start)
++        try:
++            if background == "yes":
++                succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null &'
++                    % (threads, duration))
++            else:
++                if pinned == "yes":
++                    succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null'
++                        % (cpu_count -1, threads, duration))
+                 else:
+-                    if pinned == "yes":
+-                        succ = os.system('taskset -c %s ./ebizzy -t%s -s4096 -S %s >/dev/null'
+-                            % (cpu_count -1, threads, duration))
+-                    else:
+-                        succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null'
+-                            % (threads, duration))
+-
+-                if succ == 0:
+-                    print "INFO: ebizzy workload triggerd"
+-                    os.chdir(olddir)
+-                    #Commented bcoz it doesnt make sense to capture it when workload triggered
+-                    #in background
+-                    #get_proc_loc_count(intr_stop)
+-                    #get_proc_data(stats_stop)
+-		else:
+-                    print "INFO: ebizzy workload triggerd failed"
+-                    os.chdir(olddir)
+-                    sys.exit(1)
+-            except Exception, details:
+-                print "Ebizzy workload trigger failed ", details
++                    succ = os.system('./ebizzy -t%s -s4096 -S %s >/dev/null'
++                        % (threads, duration))
++
++            if succ == 0:
++                print "INFO: ebizzy workload triggerd"
++                os.chdir(olddir)
++                #Commented bcoz it doesnt make sense to capture it when workload triggered
++                #in background
++                #get_proc_loc_count(intr_stop)
++                #get_proc_data(stats_stop)
++            else:
++                print "INFO: ebizzy workload triggerd failed"
++                os.chdir(olddir)
+                 sys.exit(1)
++        except Exception, details:
++            print "Ebizzy workload trigger failed ", details
++            sys.exit(1)
+     except Exception, details:
+         print "Ebizzy workload trigger failed ", details
+         sys.exit(1)
+@@ -377,22 +393,38 @@ def trigger_kernbench (sched_smt, stress, background, pinned, perf_test):
+         threads = get_job_count(stress, "kernbench", sched_smt)
+ 
+         dst_path = "/root"
++        workload = "kernbench"
+         olddir = os.getcwd()
+-        path = '%s/utils/benchmark' % os.environ['LTPROOT']
+-        os.chdir(path)
+-        wklds_avlbl = list()
+-        for file_name in os.listdir('.'):
+-            if file_name.find("kernbench") != -1:
+-                wklds_avlbl.append(file_name)
+-        if len(wklds_avlbl):
+-            wklds_avlbl.sort()
+-            workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
+-            if workload_dir != "":
+-                benchmark_path = os.path.join(path,"%s" % workload_dir)
++        installdir = '%s/utils/benchmark' % os.environ['LTPROOT']
++        if os.path.exists(installdir):
++            path = '%s/utils/benchmark' % os.environ['LTPROOT']
++            os.chdir(path)
++            wklds_avlbl = list()
++            workload_dir = ""
++            for file_name in os.listdir('.'):
++                if file_name.find(workload) != -1:
++                    wklds_avlbl.append(file_name)
++            if len(wklds_avlbl):
++                wklds_avlbl.sort()
++                workload_dir = wklds_avlbl[len(wklds_avlbl)-1]
++                if workload_dir != "":
++                    benchmark_path = os.path.join(path,"%s" % workload_dir)
++                else:
++                    print "INFO: kernbench benchmark not found"
++                    sys.exit(1)
++        else:
++            path = '%s/testcases/bin' % os.environ['LTPROOT']
++            os.chdir(path)
++            workload_file = ""
++            for file_name in os.listdir('.'):
++                if file_name == workload:
++                    workload_file = file_name
++                    break
++            if workload_file != "":
++                benchmark_path = path
+             else:
+                 print "INFO: kernbench benchmark not found"
+                 sys.exit(1)
+-        os.chdir(olddir)
+ 
+         os.chdir(dst_path)
+         linux_source_dir=""
+@@ -405,7 +437,7 @@ def trigger_kernbench (sched_smt, stress, background, pinned, perf_test):
+         else:
+             print "INFO: Linux kernel source not found in /root. Workload\
+                Kernbench cannot be executed"
+-	    sys.exit(1)
++            sys.exit(1)
+ 
+         get_proc_data(stats_start)
+         get_proc_loc_count(intr_start)
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming. The Go Parallel Website,
-sponsored by Intel and developed in partnership with Slashdot Media, is your
-hub for all things parallel software development, from weekly thought
-leadership blogs to news, videos, case studies, tutorials and more. Take a
-look and join the conversation now. http://goparallel.sourceforge.net/
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
