@@ -1,30 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jjaburek@redhat.com>) id 1YTv08-0004ak-Ku
-	for ltp-list@lists.sourceforge.net; Fri, 06 Mar 2015 16:21:24 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YTv07-0001a1-4k
-	for ltp-list@lists.sourceforge.net; Fri, 06 Mar 2015 16:21:24 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t26GLG28021801
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Fri, 6 Mar 2015 11:21:16 -0500
-Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
-	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t26GLFTi002847
-	for <ltp-list@lists.sourceforge.net>; Fri, 6 Mar 2015 11:21:15 -0500
-Message-ID: <54F9D3FA.6040503@redhat.com>
-Date: Fri, 06 Mar 2015 17:21:14 +0100
-From: Jiri Jaburek <jjaburek@redhat.com>
+	(envelope-from <metan@suse.de>) id 1YSQhT-0001dc-8n
+	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 13:47:59 +0000
+Date: Mon, 2 Mar 2015 14:47:17 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150302134716.GA11619@rei>
+References: <2370af01ebeb2c4014c6d0c4252818a6138d8e19.1425033440.git.jstancek@redhat.com>
+	<20150302130439.GA16543@rei>
+	<1750098575.20916844.1425303360282.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-References: <1425569098-19519-1-git-send-email-jjaburek@redhat.com>
-In-Reply-To: <1425569098-19519-1-git-send-email-jjaburek@redhat.com>
-Subject: Re: [LTP] [PATCH] syscalls/sync_file_range01: support 31-bit s390
+Content-Disposition: inline
+In-Reply-To: <1750098575.20916844.1425303360282.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH 1/2] sched_setparam/9-1: fix hang on -rt kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,54 +26,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: jkastner@redhat.com, ltp-list@lists.sourceforge.net
 
-On 03/05/2015 04:24 PM, Jiri Jaburek wrote:
-> The ifdef'd part is identical to how arm/ppc handles big endianness,
-> however the syscall number and argument order are different.
+Hi!
+> > >  static void test_process(void)
+> > >  {
+> > > -	/* to avoid blocking */
+> > > -	alarm(2);
+> > > -
+> > > -	while (1) {
+> > > -		(*shmptr)++;
+> > > +	struct sched_param param;
+> > > +	time_t t1, t2;
+> > > +
+> > > +	t1 = time(NULL);
+> > > +	do {
+> > > +		sched_getparam(getpid(), &param);
+> > > +		(*shmptr) = param.sched_priority;
+> > > +		/* if we can see that our priority has changed
+> > > +		 * that means we preempted parent, so we are done */
+> > > +		if ((*shmptr) == mean_prio)
+> > > +			break;
+> > > +
+> > > +		t2 = time(NULL);
+> > > +		/* immediately after parent forks us, we has same
+> > > +		 * priority and compete with parent for same CPU,
+> > > +		 * give parent chance to run and boost our priority */
+> > >  		sched_yield();
+> > 
+> > Hmm, is this the case? Because the main thread should continue to run
+> > until blocked and without the sleep(1) in the main() there is nothing
+> > that could block the parent process between the fork and the priority
+> > boost. Or am I mistaken?
 > 
-> Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
-> ---
->  testcases/kernel/syscalls/sync_file_range/sync_file_range01.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
+> I think you're right in scenario with single CPU.
+> In theory, is it possible that set_affinity() would be dummy, and one of
+> ncpu-1 children running with max FIFO priority would preempt parent
+> allowing test_process() to run before its priority is changed?
+
+Aren't the child proceesses forked with the same priority as the parent?
+In this case they shouldn't get executed for the same reason unless they
+are migrated other CPUs. But yes then it's a kind of unpredictable which
+is the reason we have the affinity call there.
+
+> I'd prefer to keep sched_yield() in test_process() as it poses
+> no harm even in case parent can't be blocked/preempted.
+
+Ok.
+
+> > Shouldn't we rather initialize the shmptr to some known value (!=
+> > mean_prio) now?
 > 
-> diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
-> index 3d26f8f..3eac52d 100644
-> --- a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
-> +++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
-> @@ -196,7 +196,7 @@ void setup(void)
->  static inline long syncfilerange(int fd, off64_t offset, off64_t nbytes,
->  				 unsigned int flags)
->  {
-> -
-> +/* arm and powerpc */
->  #if (defined(__arm__) || defined(__powerpc__) || defined(__powerpc64__))
->  #if (__WORDSIZE == 32)
->  #if __BYTE_ORDER == __BIG_ENDIAN
-> @@ -210,10 +210,16 @@ static inline long syncfilerange(int fd, off64_t offset, off64_t nbytes,
->  #else
->  	return ltp_syscall(__NR_sync_file_range2, fd, flags, offset, nbytes);
->  #endif
-> +
-> +/* s390 */
-> +#elif (defined(__s390__) || defined(__s390x__)) && __WORDSIZE == 32
-> +       return ltp_syscall(__NR_sync_file_range, fd, (int)(offset >> 32),
-> +               (int)offset, (int)(nbytes >> 32), (int)nbytes, flags);
-> +
+> It's initialized to 0, after call to shmat.
 
-Ugh, I somehow managed to leave spaces instead of tabs here, will post
-v2 with correct formatting, sorry.
+Missed that, you are right.
 
-> +/* other */
->  #else
->  	return ltp_syscall(__NR_sync_file_range, fd, offset, nbytes, flags);
->  #endif
-> -
->  }
->  
->  /******************************************************************************/
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
