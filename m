@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YTSeP-0000bl-EU
-	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 10:05:05 +0000
-Date: Thu, 5 Mar 2015 11:04:23 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YSS34-0005MA-Vy
+	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 15:14:23 +0000
+Date: Mon, 2 Mar 2015 16:13:37 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150305100423.GA23183@rei.suse.de>
-References: <1425453265-13240-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20150302151337.GB22136@rei>
+References: <1424764001.2546.15.camel@G08JYZSD130126.localdomain>
+	<20150226090012.GA12353@rei.suse.de>
+	<1425016398.11179.22.camel@G08JYZSD130126.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1425453265-13240-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH 1/2 v2] device-drivers/locking: add wrapper for
- locktorture kernel module
+In-Reply-To: <1425016398.11179.22.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [PATCH v2] gethostbyname_r01: check whether a system is
+ vulnerable or not.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,17 +27,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> This is a wrapper for locktorture kernel module (added in Linux 3.18).
-> The test requires that kernel configured with CONFIG_LOCK_TORTURE_TEST.
-> It runs locktorture module using particular options and then inspects dmesg
-> output for module's test results. For more information, please read Linux
-> Documentation: locking/locktorture.txt
+> Qualys security researchers discovered a serious weakness in the Linux glibc
+> library:
+> https://www.qualys.com/research/security-advisories/GHOST-CVE-2015-0235.txt
+> 
+> We write this test to check wherher a system is vulnerable or not.
 
-Acked.
+Looks good to me.
+
+Jan: What do we do about the syscalls/libcalls issue? Do we keep the
+     status quo and apply this one as it is? Anybody has a better idea?
 
 -- 
 Cyril Hrubis
