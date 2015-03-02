@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YSbkV-0001YH-HJ
-	for ltp-list@lists.sourceforge.net; Tue, 03 Mar 2015 01:35:51 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YSbkT-0002rU-Jx
-	for ltp-list@lists.sourceforge.net; Tue, 03 Mar 2015 01:35:51 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t231YiHn011381
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Mar 2015 09:34:44 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Tue, 3 Mar 2015 09:35:06 +0800
-Message-ID: <1425346506-2271-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YSOJ4-0007oQ-JZ
+	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 11:14:38 +0000
+Date: Mon, 2 Mar 2015 12:13:55 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150302111355.GA10113@rei>
+References: <1424855586-9818-1-git-send-email-alexey.kodanev@oracle.com>
+	<1424855586-9818-3-git-send-email-alexey.kodanev@oracle.com>
+	<20150226101207.GC13639@rei.suse.de> <54F030D6.5020500@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] lib/tst_virt: rename is_kvm to is_qemu
+Content-Disposition: inline
+In-Reply-To: <54F030D6.5020500@oracle.com>
+Subject: Re: [LTP] [PATCH 3/3] device-drivers/rcu/rcu_torture.sh: use
+ default value for nreaders, fix types
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,79 +27,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-KVM guest is on top of QEMU, and KVM is used by QEMU to
-provide hardware-accelerated virtualization.
-Although there is an association between them,
-difference is very obvious.
+Hi!
+> >> * rcutorture module sets nreaders to twice the number of CPUs
+> >> * fix rcutorture types, some of them were removed,
+> >>    some merged together in commits 99f8891 (v3.11), 2ec1f2d (v3.12)
+> > I guess that this change is not backward compatible, is it?
+> >
+> > I guess that we should at least add a check to disable it on older
+> > kernels.
+> 
+> There're no new rcutorture types here, so the test will run fine on 
+> older kernels. The main disadvantage here is that If we run it on older 
+> kernels, there will be less tested types. Is it OK or should I add a 
+> check to run all previous types on older kernels?
 
-The function named is_kvm() is only can be applied to
-determine QEMU, which couldn't distinguish QEMU and QEMU-KVM.
-In other words,
-Its' name doesn't match its' content and function.
-so is_qemu() more reasonable.
+It would be a bit better to change the module parameters depending on
+kernel version.
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
----
- include/test.h                                    | 2 +-
- lib/tst_virt.c                                    | 6 +++---
- testcases/kernel/syscalls/getrusage/getrusage04.c | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/include/test.h b/include/test.h
-index f45bb36..12f913b 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -54,7 +54,7 @@
- 
- /* virt types for tst_is_virt() */
- #define VIRT_XEN	1	/* xen dom0/domU */
--#define VIRT_KVM	2	/* only default virtual CPU */
-+#define VIRT_QEMU	2	/* only default virtual CPU */
- 
- /*
-  * Ensure that NUMSIGS is defined.
-diff --git a/lib/tst_virt.c b/lib/tst_virt.c
-index 87f73dc..d0d701e 100644
---- a/lib/tst_virt.c
-+++ b/lib/tst_virt.c
-@@ -26,7 +26,7 @@
- #include "test.h"
- #include "safe_macros.h"
- 
--static int is_kvm(void)
-+static int is_qemu(void)
- {
- 	FILE *cpuinfo;
- 	char line[64];
-@@ -69,8 +69,8 @@ int tst_is_virt(int virt_type)
- 	switch (virt_type) {
- 	case VIRT_XEN:
- 		return is_xen();
--	case VIRT_KVM:
--		return is_kvm();
-+	case VIRT_QEMU:
-+		return is_qemu();
- 	}
- 	tst_brkm(TBROK, NULL, "invalid virt_type flag: %d", virt_type);
- }
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
-index c2f34f4..f34f0c1 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage04.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-@@ -200,7 +200,7 @@ static void setup(void)
- {
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
--	if (tst_is_virt(VIRT_XEN) || tst_is_virt(VIRT_KVM))
-+	if (tst_is_virt(VIRT_XEN) || tst_is_virt(VIRT_QEMU))
- 		tst_brkm(TCONF, NULL, "This testcase is not supported on this"
- 		        " virtual machine.");
- 
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
