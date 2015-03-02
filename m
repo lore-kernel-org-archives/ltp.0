@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1YVD9F-0005Xy-Bs
-	for ltp-list@lists.sourceforge.net; Tue, 10 Mar 2015 05:56:09 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YVD9D-0006b8-E2
-	for ltp-list@lists.sourceforge.net; Tue, 10 Mar 2015 05:56:09 +0000
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 10 Mar 2015 13:55:54 +0800
-Message-Id: <1425966954-887-1-git-send-email-liwang@redhat.com>
-Subject: [LTP] [PATCH v2] fs/acls: fix some permission issue in the testcase
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YSQ2F-0002cn-Dy
+	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 13:05:23 +0000
+Date: Mon, 2 Mar 2015 14:04:40 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150302130439.GA16543@rei>
+References: <2370af01ebeb2c4014c6d0c4252818a6138d8e19.1425033440.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <2370af01ebeb2c4014c6d0c4252818a6138d8e19.1425033440.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 1/2] sched_setparam/9-1: fix hang on -rt kernel
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,193 +21,168 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: jkastner@redhat.com, ltp-list@lists.sourceforge.net
 
-* Use 'test.sh'.
+Hi!
+> As mentioned in [1], the testcase hangs on -rt kernel,
+> because alarm(2) will never fire. The testcase runs with
+> FIFO scheduling of higher priority than ksoftirqd.
+> 
+> This patch changes testcase in following way:
+> 1. In good case, where child process preempts parent,
+>    child is able to detect this condition and terminate.
+> 2. In bad case, where preemption fails, testcase doesn't
+>    rely on softirq (alarm), but hrtimer (time).
+> 3. removes unnecessary sleep
+> 
+> [1] https://lkml.org/lkml/2006/1/10/481
+> 
+> Reported-by: Jiri Kastner <jkastner@redhat.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>  .../conformance/interfaces/sched_setparam/9-1.c    | 48 ++++++++++++++--------
+>  1 file changed, 32 insertions(+), 16 deletions(-)
+> 
+> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
+> index ed90cee..354e03e 100644
+> --- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
+> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
+> @@ -31,14 +31,15 @@
+>   *      not, the test fail.
+>   */
+>  #define _GNU_SOURCE
+> +#include <errno.h>
+>  #include <sched.h>
+>  #include <stdio.h>
+>  #include <signal.h>
+> +#include <stdlib.h>
+>  #include <sys/ipc.h>
+>  #include <sys/shm.h>
+> +#include <time.h>
+>  #include <unistd.h>
+> -#include <stdlib.h>
+> -#include <errno.h>
+>  #include "posixtest.h"
+>  #include "affinity.h"
+>  
+> @@ -55,6 +56,7 @@
+>  
+>  static int nb_cpu;
+>  static int *shmptr;
+> +static int mean_prio;
+>  
+>  static int get_ncpu(void)
+>  {
+> @@ -85,6 +87,7 @@ static int get_ncpu(void)
+>  static void child_process(void)
+>  {
+>  	struct sched_param param;
+> +	time_t t1, t2;
+>  
+>  	param.sched_priority = sched_get_priority_max(SCHED_FIFO);
+>  	if (sched_setparam(getpid(), &param) != 0) {
+> @@ -92,20 +95,33 @@ static void child_process(void)
+>  		return;
+>  	}
+>  
+> -	/* to avoid blocking */
+> -	alarm(2);
+> -	while (1) ;
+> +	t1 = time(NULL);
+> +	do {
+> +		t2 = time(NULL);
+> +	} while (difftime(t2, t1) <= 2);
+>  }
 
-* Do some cleanup.
+Have you tested this code with dummy set_affinity()? Because on Linux
+this doesn't get called at all.
 
-* Remove useless changes.
+>  static void test_process(void)
+>  {
+> -	/* to avoid blocking */
+> -	alarm(2);
+> -
+> -	while (1) {
+> -		(*shmptr)++;
+> +	struct sched_param param;
+> +	time_t t1, t2;
+> +
+> +	t1 = time(NULL);
+> +	do {
+> +		sched_getparam(getpid(), &param);
+> +		(*shmptr) = param.sched_priority;
+> +		/* if we can see that our priority has changed
+> +		 * that means we preempted parent, so we are done */
+> +		if ((*shmptr) == mean_prio)
+> +			break;
+> +
+> +		t2 = time(NULL);
+> +		/* immediately after parent forks us, we has same
+> +		 * priority and compete with parent for same CPU,
+> +		 * give parent chance to run and boost our priority */
+>  		sched_yield();
 
-* Waive the consideration of SElinux Disabled and Permitive situation.
+Hmm, is this the case? Because the main thread should continue to run
+until blocked and without the sleep(1) in the main() there is nothing
+that could block the parent process between the fork and the priority
+boost. Or am I mistaken?
 
-Signed-off-by: Li Wang <liwang@redhat.com>
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/fs/acls/acl_test01 | 62 +++++++++++++++++++++----------------
- 1 file changed, 35 insertions(+), 27 deletions(-)
+> -	}
+> +	} while (difftime(t2, t1) <= 2);
+> +	exit(0);
+>  }
+>  
+>  static void kill_children(int *child_pid)
+> @@ -133,6 +149,8 @@ int main(void)
+>  		nb_cpu = 1;
+>  	}
+>  
+> +	mean_prio = (sched_get_priority_min(SCHED_FIFO) +
+> +		sched_get_priority_max(SCHED_FIFO)) / 2;
+>  	child_pid = malloc(nb_cpu * sizeof(int));
+>  
+>  	key = ftok("conformance/interfaces/sched_setparam/9-1.c", 1234);
+> @@ -194,11 +212,9 @@ int main(void)
+>  		return PTS_UNRESOLVED;
+>  	}
+>  
+> -	sleep(1);
+> -
+> -	param.sched_priority = (sched_get_priority_min(SCHED_FIFO) +
+> -				sched_get_priority_max(SCHED_FIFO)) / 2;
+> -
+> +	/* parent runs, which means test_process() gave up cpu,
+> +	 * boost its priority and check it preempted parent */
+> +	param.sched_priority = mean_prio;
+>  	oldcount = *shmptr;
 
-diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
-index af65213..93f6d80 100755
---- a/testcases/kernel/fs/acls/acl_test01
-+++ b/testcases/kernel/fs/acls/acl_test01
-@@ -41,6 +41,8 @@ export TCID=acltest01
- export TST_TOTAL=5
- export TST_COUNT=1
- 
-+. test.sh
-+
- TMP=${TMP:=/tmp}
- 
- TEST_USER1="acltest1"
-@@ -52,18 +54,28 @@ FILE_ACL="$TMP/tacl/mount-ext3/test_file"
- FILE_ACL_LINK="$TMP/tacl/mount-ext3/test_file_link"
- TCbin=`pwd`
- 
-+SELINUX=$(getenforce)
-+
- #-----------------------------------------------------------------------
- # FUNCTION:  do_setup
- #-----------------------------------------------------------------------
- 
- do_setup(){
- 
-+	tst_require_root
-+
- 	rm -f $FILE_ACL
- 	rm -f $FILE_ACL_LINK
- 
-+	# We couldn't consider whether the SElinux is Disable or Permissive.
-+	# We only set it to Permissive when it it Enforcing.
-+	if [ "$SELINUX" = "Enforcing" ]; then
-+		echo "set the SElinux to Permissive."
-+		setenforce 0
-+	fi
-+
- 	if [ "x$TEST_USER1_HOMEDIR" = "x" ]; then
--		echo "Could not find user $TEST_USER1's home directory."
--		exit 1
-+		tst_brkm TCONF "Could not find user $TEST_USER1's home directory."
- 	fi
- 
- 	# XXX (garrcoop): why is cleanup junk being done in setup??? Bad test!!!
-@@ -73,8 +85,7 @@ do_setup(){
- 	useradd -d $TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s /bin/sh
- 
- 	if [ $? -ne 0 ]; then
--		echo "Could not add test user $TEST_USER1."
--		exit 1
-+		tst_brkm TCONF "Could not add test user $TEST_USER1."
- 	fi
- 
- }
-@@ -91,6 +102,12 @@ do_cleanup() {
- 	mount | grep "$TMP/tacl/mount-ext3" && umount -d $TMP/tacl/mount-ext3
- 	[ "x$LOOP_DEV" != x ] && losetup -d $LOOP_DEV
- 	rm -rf $TMP/tacl
-+
-+	# We set it back to Enforcing.
-+	if [ "$SELINUX" = "Enforcing" ]; then
-+		echo "set the SElinux back to Enforcing."
-+		setenforce 1
-+	fi
- }
- 
- #-----------------------------------------------------------------------
-@@ -103,13 +120,11 @@ then
- 	echo ""
- else
- 	if [ $(id -ru) != 0 ]; then
--		tst_resm TCONF "must be root to execute this script"
--		exit 0
-+		tst_brkm TCONF "Must be root to execute this script"
- 	fi
- 
- 	if ! ( test -d $TMP/tacl || mkdir -m 777 $TMP/tacl) ; then
--		tst_resm TCONF "failed to create $TMP/tacl directory."
--		exit 1
-+		tst_brkm TCONF "Failed to create $TMP/tacl directory."
- 	fi
- 
- 	trap do_cleanup EXIT
-@@ -119,21 +134,18 @@ else
- 
- 	dd if=/dev/zero of=$TMP/tacl/blkext3 bs=1k count=10240 && chmod 777 $TMP/tacl/blkext3
- 	if [ $? -ne 0 ] ; then
--		tst_resm TCONF "Failed to create $TMP/tacl/blkext3"
--		exit 0
-+		tst_brkm TCONF "Failed to create $TMP/tacl/blkext3"
- 	fi
- 
- 	# Avoid hardcoded loopback device values (-f tries to find the first
- 	# available loopback device name)!
- 	if ! LOOP_DEV=$(losetup -f) || [ "x$LOOP_DEV" = x ]; then
--		tst_resm TCONF "[ losetup.1 ] Failed to find an available loopback device -- is the required support compiled in your kernel?"
--		exit 0
-+		tst_brkm TCONF "[ losetup.1 ] Failed to find an available loopback device -- is the required support compiled in your kernel?"
- 	fi
- 
- 	if ! losetup $LOOP_DEV $TMP/tacl/blkext3 2>&1 > /dev/null; then
- 		echo ""
--		tst_resm TCONF "[ losetup.2 ] Failed to setup the device."
--		exit 0
-+		tst_brkm TCONF "[ losetup.2 ] Failed to setup the device."
- 	fi
- 
- 	mount | grep ext2
-@@ -180,20 +192,18 @@ then
- 	${TCbin}/acl_file_test $FILE_ACL
- 	if [ $? -ne 0 ]
- 	then
--		EXIT_CODE=1
--		echo "Extended acls for files (FAILED)"
-+		tst_brkm TFAIL "Extended acls for files."
- 	else
--		echo "Extended acls for files (PASSED)"
-+		tst_resm TPASS "Extended acls for files."
- 	fi
- 
- 	echo "Trying extended acls for file links"
- 	${TCbin}/acl_link_test $FILE_ACL_LINK
- 	if [ $? -ne 0 ]
- 	then
--		EXIT_CODE=1
--		echo "Extended acls for links (FAILED)"
-+		tst_brkm TFAIL "Extended acls for links."
- 	else
--		echo "Extended acls for links (PASSED)"
-+		tst_resm TPASS "Extended acls for links."
- 	fi
- else
- 	do_setup
-@@ -211,20 +221,18 @@ else
- 	${TCbin}/acl_file_test $FILE_ACL
- 	if [ $? -ne 0 ]
- 	then
--		EXIT_CODE=1
--		echo "Extended acls for files (FAILED)"
-+		tst_brkm TFAIL "Extended acls for files."
- 	else
--		echo "Extended acls for files (PASSED)"
-+		tst_resm TPASS "Extended acls for files."
- 	fi
- 
- 	echo "Trying extended acls for file links"
- 	${TCbin}/acl_link_test $FILE_ACL_LINK
- 	if [ $? -ne 0 ]
- 	then
--		EXIT_CODE=1
--		echo "Extended acls for links (FAILED)"
-+		tst_brkm TFAIL "Extended acls for links."
- 	else
--		echo "Extended acls for links (PASSED)"
-+		tst_resm TPASS "Extended acls for links."
- 	fi
- 
- 	chown $TEST_USER1 $FILE_ACL
-@@ -235,4 +243,4 @@ else
- 	do_cleanup
- fi
- 
--exit $EXIT_CODE
-+tst_exit
+Shouldn't we rather initialize the shmptr to some known value (!=
+mean_prio) now?
+
+>  	if (sched_setparam(child_pid[i], &param) != 0) {
+>  		perror("An error occurs when calling sched_setparam()");
+> -- 
+> 1.8.3.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+> by Intel and developed in partnership with Slashdot Media, is your hub for all
+> things parallel software development, from weekly thought leadership blogs to
+> news, videos, case studies, tutorials and more. Take a look and join the 
+> conversation now. http://goparallel.sourceforge.net/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
