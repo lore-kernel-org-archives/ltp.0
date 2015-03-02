@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YSRfK-0008Ta-VJ
-	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 14:49:50 +0000
-Date: Mon, 2 Mar 2015 15:49:08 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YSOpN-0007EE-RE
+	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 11:48:01 +0000
+Date: Mon, 2 Mar 2015 12:47:20 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150302144908.GA27832@rei>
-References: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1425024732-30751-3-git-send-email-gux.fnst@cn.fujitsu.com>
+Message-ID: <20150302114720.GA10726@rei>
+References: <1424978234-21530-1-git-send-email-jjaburek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1425024732-30751-3-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3 3/9] power_management: split runpwtests.sh into
- separate testcases
+In-Reply-To: <1424978234-21530-1-git-send-email-jjaburek@redhat.com>
+Subject: Re: [LTP] [PATCH] syscalls/fadvise03: add alternative expected
+ s390-only values
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,61 +25,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
+To: Jiri Jaburek <jjaburek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> --- /dev/null
-> +++ b/testcases/kernel/power_management/runpwtests01.sh
-> @@ -0,0 +1,49 @@
-> +#! /bin/sh
-> +#
-> +# Copyright (c) International Business Machines  Corp., 2001
-> +# Author: Nageswara R Sastry <nasastry@in.ibm.com>
-> +#
-> +# This program is free software;  you can redistribute it and#or modify
-> +# it under the terms of the GNU General Public License as published by
-> +# the Free Software Foundation; either version 2 of the License, or
-> +# (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it will be useful, but
-> +# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-> +# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-> +# for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program;  if not, write to the Free Software Foundation,
-> +# Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> +#
-> +
-> +export TCID="Power_Management01"
-> +export TST_TOTAL=1
-> +
-> +. test.sh
-> +. pm_include.sh
-> +
-> +# Checking test environment
-> +check_kervel_arch
-> +
-> +# Checking sched_mc sysfs interface
-> +multi_socket=$(is_multi_socket)
-> +multi_core=$(is_multi_core)
-> +if [ ! -f /sys/devices/system/cpu/sched_mc_power_savings ] ; then
-> +	tst_brkm TCONF "Required kernel configuration for SCHED_MC" \
-> +		"NOT set"
-> +else
-> +	if [ $multi_socket -ne 0 -a $multi_core -ne 0 ] ; then
-> +		tst_brkm TCONF "sched_mc_power_savings interface in system" \
-> +			"which is not a multi socket &(/) multi core"
-> +	fi
-> +fi
-> +
-> +if test_sched_mc.sh ; then
+> Since this test tries 0-32 values as 'advice', it needs to expect the
+> little-known ABI hack used for fadvise64 on s390 in the kernel,
+> see Linux kernel commit 068e1b94bbd268f375349f68531829c8b7c210bc.
+> 
+> Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
 
-This script seems to be called only from this script. What is the point
-of having it in a separate file?
-
-And the same for the rest of the testcses.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
