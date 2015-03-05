@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1YTQ9K-000235-JS
-	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 07:24:50 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YTQ9J-0001xt-2K
-	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 07:24:50 +0000
-Message-ID: <54F80480.5030702@cn.fujitsu.com>
-Date: Thu, 5 Mar 2015 15:23:44 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <1425531691-19211-1-git-send-email-liwang@redhat.com>	<1425535095.18011.24.camel@G08JYZSD130126.localdomain>
-	<249535550.12516554.1425536777165.JavaMail.zimbra@redhat.com>
-In-Reply-To: <249535550.12516554.1425536777165.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] commands/ade/ar01: the touched timestatp of
- file01.in should be newer than now
-Reply-To: gaowanlong@cn.fujitsu.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jjaburek@redhat.com>) id 1YTXeD-0003l0-Az
+	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 15:25:13 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YTXeB-0002SP-Na
+	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 15:25:13 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t25FP4M1031129
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Mar 2015 10:25:05 -0500
+Received: from robin.brq.redhat.com (robin.brq.redhat.com [10.34.24.36])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t25FP3IQ013876
+	for <ltp-list@lists.sourceforge.net>; Thu, 5 Mar 2015 10:25:04 -0500
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Thu,  5 Mar 2015 16:24:58 +0100
+Message-Id: <1425569098-19519-1-git-send-email-jjaburek@redhat.com>
+Subject: [LTP] [PATCH] syscalls/sync_file_range01: support 31-bit s390
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,55 +31,53 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On 03/05/2015 02:26 PM, Li Wang wrote:
-> Hi,
-> ----- Original Message -----
->> Hi,
->>
->> On Thu, 2015-03-05 at 13:01 +0800, Li Wang wrote:
->>> Since the timestatp is older than now it cause this testcase
->>> failed like this:
->>> + touch -c -t 201503030303.55 file0.in
->>> + ar -ru /tmp/ar01-28953/lib.a file0.in file2.in
->>> ...
->>> FAIL - ar with -u flag failed
->>>
->>> >From the AR(1) Manual pager, ar -u:
->>> If you would like to insert only those of the files you list
->>> that are newer than existing members of the same names, use
->>> this modifier.
->>>
->>> Signed-off-by: Li Wang <liwang@redhat.com>
->>> ---
->>>  testcases/commands/ade/ar/ar01 | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/testcases/commands/ade/ar/ar01
->>> b/testcases/commands/ade/ar/ar01
->>> index 32fef11..c5181a3 100755
->>> --- a/testcases/commands/ade/ar/ar01
->>> +++ b/testcases/commands/ade/ar/ar01
->>> @@ -483,7 +483,7 @@ do
->>>  	File2time=`ar -tv $TCtmp/lib.a | grep file2.in`
->>>  
->>>  	#sleep 5
->>> -	touch -c -t 201503030303.55 file0.in
->>> +	touch -c -t 208503030303.55 file0.in
->>
->> How about
->> touch -c -t $(date --date='next day' +"%Y%m%d%H%M") file0.in
-> Agree! 
-> Absolutely it's better than the stable timestatp.
+The ifdef'd part is identical to how arm/ppc handles big endianness,
+however the syscall number and argument order are different.
 
-s/timestatp/timestamp/ in comment ?
+Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
+---
+ testcases/kernel/syscalls/sync_file_range/sync_file_range01.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-
+diff --git a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
+index 3d26f8f..3eac52d 100644
+--- a/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
++++ b/testcases/kernel/syscalls/sync_file_range/sync_file_range01.c
+@@ -196,7 +196,7 @@ void setup(void)
+ static inline long syncfilerange(int fd, off64_t offset, off64_t nbytes,
+ 				 unsigned int flags)
+ {
+-
++/* arm and powerpc */
+ #if (defined(__arm__) || defined(__powerpc__) || defined(__powerpc64__))
+ #if (__WORDSIZE == 32)
+ #if __BYTE_ORDER == __BIG_ENDIAN
+@@ -210,10 +210,16 @@ static inline long syncfilerange(int fd, off64_t offset, off64_t nbytes,
+ #else
+ 	return ltp_syscall(__NR_sync_file_range2, fd, flags, offset, nbytes);
+ #endif
++
++/* s390 */
++#elif (defined(__s390__) || defined(__s390x__)) && __WORDSIZE == 32
++       return ltp_syscall(__NR_sync_file_range, fd, (int)(offset >> 32),
++               (int)offset, (int)(nbytes >> 32), (int)nbytes, flags);
++
++/* other */
+ #else
+ 	return ltp_syscall(__NR_sync_file_range, fd, offset, nbytes, flags);
+ #endif
+-
+ }
+ 
+ /******************************************************************************/
+-- 
+2.1.0
 
 
 ------------------------------------------------------------------------------
