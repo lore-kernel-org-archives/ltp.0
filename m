@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YXR1z-0000E0-U2
-	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:51 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YXR1y-0001ZW-UD
-	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:51 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t2G98ogY000937
-	for <ltp-list@lists.sourceforge.net>; Mon, 16 Mar 2015 17:08:50 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Mon, 16 Mar 2015 17:05:10 +0800
-Message-ID: <1426496710-11712-9-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v4 9/9] power_management: add it into default
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwang@redhat.com>) id 1YTQJd-0005S4-LL
+	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 07:35:29 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YTQJa-0000WW-Ff
+	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 07:35:29 +0000
+Message-ID: <1425540911.3196.2.camel@dhcp-13-206.nay.redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 05 Mar 2015 15:35:11 +0800
+In-Reply-To: <54F80480.5030702@cn.fujitsu.com>
+References: <1425531691-19211-1-git-send-email-liwang@redhat.com>
+	<1425535095.18011.24.camel@G08JYZSD130126.localdomain>
+	<249535550.12516554.1425536777165.JavaMail.zimbra@redhat.com>
+	<54F80480.5030702@cn.fujitsu.com>
+Mime-Version: 1.0
+Subject: Re: [LTP] [PATCH] commands/ade/ar01: the touched timestatp of
+ file01.in should be newer than now
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,33 +31,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: gaowanlong@cn.fujitsu.com
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
----
- scenario_groups/default | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hi,
 
-diff --git a/scenario_groups/default b/scenario_groups/default
-index 3a55702..1e9de48 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -19,7 +19,6 @@ fcntl-locktests
- connectors
- admin_tools
- timers
--power_management_tests
- numa
- hugetlb
- commands
-@@ -32,3 +31,5 @@ dma_thread_diotest
- cpuacct
- can
- cpuhotplug
-+power_management_tests
-+power_management_tests_exclusive
--- 
-1.9.3
+On Thu, 2015-03-05 at 15:23 +0800, Wanlong Gao wrote:
+> On 03/05/2015 02:26 PM, Li Wang wrote:
+> > Hi,
+> > ----- Original Message -----
+> >> Hi,
+> >>
+> >> On Thu, 2015-03-05 at 13:01 +0800, Li Wang wrote:
+> >>> Since the timestatp is older than now it cause this testcase
+> >>> failed like this:
+> >>> + touch -c -t 201503030303.55 file0.in
+> >>> + ar -ru /tmp/ar01-28953/lib.a file0.in file2.in
+> >>> ...
+> >>> FAIL - ar with -u flag failed
+> >>>
+> >>> >From the AR(1) Manual pager, ar -u:
+> >>> If you would like to insert only those of the files you list
+> >>> that are newer than existing members of the same names, use
+> >>> this modifier.
+> >>>
+> >>> Signed-off-by: Li Wang <liwang@redhat.com>
+> >>> ---
+> >>>  testcases/commands/ade/ar/ar01 | 2 +-
+> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/testcases/commands/ade/ar/ar01
+> >>> b/testcases/commands/ade/ar/ar01
+> >>> index 32fef11..c5181a3 100755
+> >>> --- a/testcases/commands/ade/ar/ar01
+> >>> +++ b/testcases/commands/ade/ar/ar01
+> >>> @@ -483,7 +483,7 @@ do
+> >>>  	File2time=`ar -tv $TCtmp/lib.a | grep file2.in`
+> >>>  
+> >>>  	#sleep 5
+> >>> -	touch -c -t 201503030303.55 file0.in
+> >>> +	touch -c -t 208503030303.55 file0.in
+> >>
+> >> How about
+> >> touch -c -t $(date --date='next day' +"%Y%m%d%H%M") file0.in
+> > Agree! 
+> > Absolutely it's better than the stable timestatp.
+> 
+> s/timestatp/timestamp/ in comment ?
+Yeah, timestamp! sorry for the typo.
+
+Li Wang.
+> 
+> 
+> 
 
 
 ------------------------------------------------------------------------------
