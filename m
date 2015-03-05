@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1YTQJd-0005S4-LL
-	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 07:35:29 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YTQJa-0000WW-Ff
-	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 07:35:29 +0000
-Message-ID: <1425540911.3196.2.camel@dhcp-13-206.nay.redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwan@redhat.com>) id 1YTPEw-0000O8-0c
+	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 06:26:34 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YTPEu-0006Mf-83
+	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 06:26:33 +0000
+Date: Thu, 5 Mar 2015 01:26:17 -0500 (EST)
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 05 Mar 2015 15:35:11 +0800
-In-Reply-To: <54F80480.5030702@cn.fujitsu.com>
+Message-ID: <249535550.12516554.1425536777165.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1425535095.18011.24.camel@G08JYZSD130126.localdomain>
 References: <1425531691-19211-1-git-send-email-liwang@redhat.com>
 	<1425535095.18011.24.camel@G08JYZSD130126.localdomain>
-	<249535550.12516554.1425536777165.JavaMail.zimbra@redhat.com>
-	<54F80480.5030702@cn.fujitsu.com>
-Mime-Version: 1.0
+MIME-Version: 1.0
 Subject: Re: [LTP] [PATCH] commands/ade/ar01: the touched timestatp of
  file01.in should be newer than now
 List-Id: Linux Test Project General Discussions
@@ -31,60 +29,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: gaowanlong@cn.fujitsu.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi,
+----- Original Message -----
+> Hi,
+> 
+> On Thu, 2015-03-05 at 13:01 +0800, Li Wang wrote:
+> > Since the timestatp is older than now it cause this testcase
+> > failed like this:
+> > + touch -c -t 201503030303.55 file0.in
+> > + ar -ru /tmp/ar01-28953/lib.a file0.in file2.in
+> > ...
+> > FAIL - ar with -u flag failed
+> > 
+> > >From the AR(1) Manual pager, ar -u:
+> > If you would like to insert only those of the files you list
+> > that are newer than existing members of the same names, use
+> > this modifier.
+> > 
+> > Signed-off-by: Li Wang <liwang@redhat.com>
+> > ---
+> >  testcases/commands/ade/ar/ar01 | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/testcases/commands/ade/ar/ar01
+> > b/testcases/commands/ade/ar/ar01
+> > index 32fef11..c5181a3 100755
+> > --- a/testcases/commands/ade/ar/ar01
+> > +++ b/testcases/commands/ade/ar/ar01
+> > @@ -483,7 +483,7 @@ do
+> >  	File2time=`ar -tv $TCtmp/lib.a | grep file2.in`
+> >  
+> >  	#sleep 5
+> > -	touch -c -t 201503030303.55 file0.in
+> > +	touch -c -t 208503030303.55 file0.in
+> 
+> How about
+> touch -c -t $(date --date='next day' +"%Y%m%d%H%M") file0.in
+Agree! 
+Absolutely it's better than the stable timestatp.
 
-On Thu, 2015-03-05 at 15:23 +0800, Wanlong Gao wrote:
-> On 03/05/2015 02:26 PM, Li Wang wrote:
-> > Hi,
-> > ----- Original Message -----
-> >> Hi,
-> >>
-> >> On Thu, 2015-03-05 at 13:01 +0800, Li Wang wrote:
-> >>> Since the timestatp is older than now it cause this testcase
-> >>> failed like this:
-> >>> + touch -c -t 201503030303.55 file0.in
-> >>> + ar -ru /tmp/ar01-28953/lib.a file0.in file2.in
-> >>> ...
-> >>> FAIL - ar with -u flag failed
-> >>>
-> >>> >From the AR(1) Manual pager, ar -u:
-> >>> If you would like to insert only those of the files you list
-> >>> that are newer than existing members of the same names, use
-> >>> this modifier.
-> >>>
-> >>> Signed-off-by: Li Wang <liwang@redhat.com>
-> >>> ---
-> >>>  testcases/commands/ade/ar/ar01 | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/testcases/commands/ade/ar/ar01
-> >>> b/testcases/commands/ade/ar/ar01
-> >>> index 32fef11..c5181a3 100755
-> >>> --- a/testcases/commands/ade/ar/ar01
-> >>> +++ b/testcases/commands/ade/ar/ar01
-> >>> @@ -483,7 +483,7 @@ do
-> >>>  	File2time=`ar -tv $TCtmp/lib.a | grep file2.in`
-> >>>  
-> >>>  	#sleep 5
-> >>> -	touch -c -t 201503030303.55 file0.in
-> >>> +	touch -c -t 208503030303.55 file0.in
-> >>
-> >> How about
-> >> touch -c -t $(date --date='next day' +"%Y%m%d%H%M") file0.in
-> > Agree! 
-> > Absolutely it's better than the stable timestatp.
-> 
-> s/timestatp/timestamp/ in comment ?
-Yeah, timestamp! sorry for the typo.
+Li Wang
 
-Li Wang.
+> 
+> Thanks,
+> Zeng
+> 
+> >  
+> >  	ar -ru $TCtmp/lib.a file0.in file2.in 2>&1 1>/dev/null
+> >  	File1time1=`ar -tv $TCtmp/lib.a | grep file0.in`
 > 
 > 
 > 
-
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
