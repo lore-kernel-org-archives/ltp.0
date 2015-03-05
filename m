@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YVf8X-0007L5-R3
-	for ltp-list@lists.sourceforge.net; Wed, 11 Mar 2015 11:49:17 +0000
-Date: Wed, 11 Mar 2015 12:48:32 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150311114831.GB3713@rei>
-References: <1425986309-12966-1-git-send-email-alexey.kodanev@oracle.com>
-	<20150311103011.GA3713@rei> <55002A64.6040108@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YTOpY-0007fD-O1
+	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 06:00:20 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YTOpW-0006Sh-LF
+	for ltp-list@lists.sourceforge.net; Thu, 05 Mar 2015 06:00:20 +0000
+Message-ID: <1425535095.18011.24.camel@G08JYZSD130126.localdomain>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 5 Mar 2015 13:58:15 +0800
+In-Reply-To: <1425531691-19211-1-git-send-email-liwang@redhat.com>
+References: <1425531691-19211-1-git-send-email-liwang@redhat.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <55002A64.6040108@oracle.com>
-Subject: Re: [LTP] [PATCH] sctp/test_1_to_1_sockopt.c: set SO_SNDBUF above
- the defined minimum
+Subject: Re: [LTP] [PATCH] commands/ade/ar01: the touched timestatp of
+ file01.in should be newer than now
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,42 +28,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Li Wang <liwang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> This is what is written in kernel source (net/core/sock.c):
-> 
-> sk->sk_sndbuf = max_t(u32, val * 2, SOCK_MIN_SNDBUF);
+Hi,
+
+On Thu, 2015-03-05 at 13:01 +0800, Li Wang wrote:
+> Since the timestatp is older than now it cause this testcase
+> failed like this:
+> + touch -c -t 201503030303.55 file0.in
+> + ar -ru /tmp/ar01-28953/lib.a file0.in file2.in
 > ...
-> /*
->   * We double it on the way in to account for
->   * "struct sk_buff" etc. overhead.   Applications
->   * assume that the SO_RCVBUF setting they make will
->   * allow that much actual data to be received on that
->   * socket.
->   *
->   * Applications are unaware that "struct sk_buff" and
->   * other overheads allocate from the receive buffer
->   * during socket buffer allocation.
->   *
->   * And after considering the possible alternatives,
->   * returning the value we actually used in getsockopt
->   * is the most desirable behavior.
->   */
+> FAIL - ar with -u flag failed
 > 
-> sk->sk_rcvbuf = max_t(u32, val * 2, SOCK_MIN_RCVBUF);
+> >From the AR(1) Manual pager, ar -u:
+> If you would like to insert only those of the files you list
+> that are newer than existing members of the same names, use
+> this modifier.
 > 
-> I'm not sure why it is not just 'val', because it chooses the maximum 
-> value in any case and we have defined minimum.
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/commands/ade/ar/ar01 | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/commands/ade/ar/ar01 b/testcases/commands/ade/ar/ar01
+> index 32fef11..c5181a3 100755
+> --- a/testcases/commands/ade/ar/ar01
+> +++ b/testcases/commands/ade/ar/ar01
+> @@ -483,7 +483,7 @@ do
+>  	File2time=`ar -tv $TCtmp/lib.a | grep file2.in`
+>  
+>  	#sleep 5
+> -	touch -c -t 201503030303.55 file0.in
+> +	touch -c -t 208503030303.55 file0.in
 
-Ok.
+How about
+touch -c -t $(date --date='next day' +"%Y%m%d%H%M") file0.in
 
-The patch is fine then.
+Thanks,
+Zeng
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>  
+>  	ar -ru $TCtmp/lib.a file0.in file2.in 2>&1 1>/dev/null
+>  	File1time1=`ar -tv $TCtmp/lib.a | grep file0.in`
+
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
