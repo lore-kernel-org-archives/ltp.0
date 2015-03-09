@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YYYxW-0006AO-7P
-	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 11:49:54 +0000
-Date: Thu, 19 Mar 2015 12:49:03 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150319114902.GA3724@rei>
-References: <1426742198-17967-1-git-send-email-bamvor.zhangjian@huawei.com>
-	<1426742198-17967-3-git-send-email-bamvor.zhangjian@huawei.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YUtB7-0006r7-0K
+	for ltp-list@lists.sourceforge.net; Mon, 09 Mar 2015 08:36:45 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YUtB0-0002zR-6t
+	for ltp-list@lists.sourceforge.net; Mon, 09 Mar 2015 08:36:39 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t298Zdmq028283
+	for <ltp-list@lists.sourceforge.net>; Mon, 9 Mar 2015 16:35:39 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Mon, 9 Mar 2015 16:32:02 +0800
+Message-ID: <1425889922-13650-7-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1425889922-13650-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1425889922-13650-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1426742198-17967-3-git-send-email-bamvor.zhangjian@huawei.com>
-Subject: Re: [LTP] [RFC PATCH 2/3] ARM64: ILP32: cast for negtive off_t
+Subject: [LTP] [PATCH v2 7/7] ipv6_lib: add it into default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,47 +31,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Zhang Jian(Bamvor)" <bamvor.zhangjian@huawei.com>
-Cc: dingtianhong@huawei.com, ltp-list@lists.sourceforge.net, bintian.wang@huawei.com, apinski@cavium.com, yangyingliang@huawei.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> off_t in 64bit in ILP32 ABI while the compiler will default 32bit
-> for constant. It lead to pass the negative 32bit integer to kernel,
-> and kernel will treat it as 64bit positive integer.
-> 
-> It could also fix in glibc while we think that there are lots of
-> advantage if leave off_t remains 64bit.
-> 
-> Signed-off-by: Zhang Jian(Bamvor) <bamvor.zhangjian@huawei.com>
-> ---
->  testcases/kernel/fs/ftest/ftest02.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/fs/ftest/ftest02.c b/testcases/kernel/fs/ftest/ftest02.c
-> index ec70d9b..153bd09 100644
-> --- a/testcases/kernel/fs/ftest/ftest02.c
-> +++ b/testcases/kernel/fs/ftest/ftest02.c
-> @@ -268,7 +268,7 @@ static void crfile(int me, int count)
->  	val = write(fd, crmsg, sizeof(crmsg) - 1);
->  	warn(val, "write", 0);
->  
-> -	val = lseek(fd, -(sizeof(crmsg) - 1), 1);
-> +	val = lseek(fd, -(off_t)(sizeof(crmsg) - 1), 1);
+* Add ipv6_lib tests to scenario_groups/default.
 
-Hmm, this is doing lseek(fd, -size_of_message, SEEK_CUR), wouldn't it be
-easier to use the offset we passed to the first lseek() with SEEK_SET
-instead?
+* Currently I'm not very clear about some test
+  cases eg. asapi_04.c, so disable them. Later
+  I will add it subsequently.
 
-And I do not really understand why this does not work. All I can see
-that the expression is evaluated as: sizeof() returns size of the
-message as size_t, which is 32 bit, we decrement it by one and then
-negate it. We have negative 32 bit number. Then the compiler should pick
-up the lseek() prototype from glibc header and figure out that it should
-convert the second parameter to off_t. What I'm missing here?
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ runtest/ipv6_lib        | 8 ++++----
+ scenario_groups/default | 1 +
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
+diff --git a/runtest/ipv6_lib b/runtest/ipv6_lib
+index 75614fb..4b49cb5 100644
+--- a/runtest/ipv6_lib
++++ b/runtest/ipv6_lib
+@@ -1,11 +1,11 @@
+ #DESCRIPTION:IPV6 related tests
+ in6_01 in6_01
+ in6_02 in6_02
+-getaddrinfo_01 getaddrinfo_01
++#getaddrinfo_01 getaddrinfo_01
+ asapi_01 asapi_01
+ asapi_02 asapi_02
+ asapi_03 asapi_03
+-asapi_04 asapi_04
+-asapi_05 asapi_05
+-asapi_06 asapi_06
++#asapi_04 asapi_04
++#asapi_05 asapi_05
++#asapi_06 asapi_06
+ asapi_07 asapi_07
+diff --git a/scenario_groups/default b/scenario_groups/default
+index 3a55702..60b1b27 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -32,3 +32,4 @@ dma_thread_diotest
+ cpuacct
+ can
+ cpuhotplug
++ipv6_lib
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
