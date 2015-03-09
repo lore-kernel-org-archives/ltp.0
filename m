@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YSQhT-0001dc-8n
-	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 13:47:59 +0000
-Date: Mon, 2 Mar 2015 14:47:17 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150302134716.GA11619@rei>
-References: <2370af01ebeb2c4014c6d0c4252818a6138d8e19.1425033440.git.jstancek@redhat.com>
-	<20150302130439.GA16543@rei>
-	<1750098575.20916844.1425303360282.JavaMail.zimbra@redhat.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YUtB6-0007gf-W4
+	for ltp-list@lists.sourceforge.net; Mon, 09 Mar 2015 08:36:45 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YUtAx-0002zR-IN
+	for ltp-list@lists.sourceforge.net; Mon, 09 Mar 2015 08:36:37 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t298ZXBt028270
+	for <ltp-list@lists.sourceforge.net>; Mon, 9 Mar 2015 16:35:33 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Mon, 9 Mar 2015 16:31:59 +0800
+Message-ID: <1425889922-13650-4-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1425889922-13650-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1425889922-13650-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1750098575.20916844.1425303360282.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH 1/2] sched_setparam/9-1: fix hang on -rt kernel
+Subject: [LTP] [PATCH v2 4/7] lib6/asapi_07.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,65 +31,276 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: jkastner@redhat.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > >  static void test_process(void)
-> > >  {
-> > > -	/* to avoid blocking */
-> > > -	alarm(2);
-> > > -
-> > > -	while (1) {
-> > > -		(*shmptr)++;
-> > > +	struct sched_param param;
-> > > +	time_t t1, t2;
-> > > +
-> > > +	t1 = time(NULL);
-> > > +	do {
-> > > +		sched_getparam(getpid(), &param);
-> > > +		(*shmptr) = param.sched_priority;
-> > > +		/* if we can see that our priority has changed
-> > > +		 * that means we preempted parent, so we are done */
-> > > +		if ((*shmptr) == mean_prio)
-> > > +			break;
-> > > +
-> > > +		t2 = time(NULL);
-> > > +		/* immediately after parent forks us, we has same
-> > > +		 * priority and compete with parent for same CPU,
-> > > +		 * give parent chance to run and boost our priority */
-> > >  		sched_yield();
-> > 
-> > Hmm, is this the case? Because the main thread should continue to run
-> > until blocked and without the sleep(1) in the main() there is nothing
-> > that could block the parent process between the fork and the priority
-> > boost. Or am I mistaken?
-> 
-> I think you're right in scenario with single CPU.
-> In theory, is it possible that set_affinity() would be dummy, and one of
-> ncpu-1 children running with max FIFO priority would preempt parent
-> allowing test_process() to run before its priority is changed?
+* Remove useless comments.
 
-Aren't the child proceesses forked with the same priority as the parent?
-In this case they shouldn't get executed for the same reason unless they
-are migrated other CPUs. But yes then it's a kind of unpredictable which
-is the reason we have the affinity call there.
+* Modify the format of etab[].
 
-> I'd prefer to keep sched_yield() in test_process() as it poses
-> no harm even in case parent can't be blocked/preempted.
+* Modify adatet() as the test body.
 
-Ok.
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/network/lib6/asapi_07.c | 210 ++++++++++++++++----------------------
+ 1 file changed, 89 insertions(+), 121 deletions(-)
 
-> > Shouldn't we rather initialize the shmptr to some known value (!=
-> > mean_prio) now?
-> 
-> It's initialized to 0, after call to shmat.
-
-Missed that, you are right.
-
+diff --git a/testcases/network/lib6/asapi_07.c b/testcases/network/lib6/asapi_07.c
+index c75032e..758c707 100644
+--- a/testcases/network/lib6/asapi_07.c
++++ b/testcases/network/lib6/asapi_07.c
+@@ -1,6 +1,7 @@
+ /*
+  *
+  *   Copyright (c) International Business Machines  Corp., 2001
++ *   Author: David L Stevens
+  *
+  *   This program is free software;  you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -13,26 +14,13 @@
+  *   the GNU General Public License for more details.
+  *
+  *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   along with this program;  if not, write to the Free Software Foundation,
++ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+-
+ /*
+- * Test Name: asapi_07
+- *
+- * Test Description:
+- *  These tests are for the "Advanced Sockets API" (RFC 3542)
+- *  Section 20, ancillary data macros and structure definitions
+- *
+- * Usage:  <for command-line>
+- *  asapi_07
+- *
+- * HISTORY
+- *	04/2005 written by David L Stevens
+- *
+- * RESTRICTIONS:
+- *  None.
+- *
++ *   Description:
++ *     These tests are for the "Advanced Sockets API" (RFC 3542)
++ *     Section 20, ancillary data macros and structure definitions
+  */
+ 
+ #include <stdio.h>
+@@ -48,37 +36,9 @@
+ #include "test.h"
+ #include "runcc.h"
+ 
+-char *TCID = "asapi_07";	/* Test program identifier.    */
+-
+-void setup(void);
+-void cleanup(void);
+-
+-void adatet(void);
+-void adatft(void);
+-
+-int main(int argc, char *argv[])
+-{
+-	int lc;
+-	const char *msg;
+-
+-	/* Parse standard options given to run the test. */
+-	if ((msg = parse_opts(argc, argv, NULL, NULL)) != NULL)
+-		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+-		adatet();
+-	}
+-
+-	cleanup();
+-
+-	tst_exit();
+-}
+-
+ enum ttype { EXISTS, ALIAS, VALUE, DEFINED };
+ 
+-struct etent {
++static struct etent {
+ 	char *et_tname;		/* test name */
+ 	int et_type;		/* test type */
+ 	char *et_incl;		/* include file list */
+@@ -92,88 +52,96 @@ struct etent {
+ #define et_value	ftun.fu_value
+ #define et_dname	ftun.fu_dname
+ } etab[] = {
+-/* existence checks, RFC 3542 sections 5, 20 */
+-	{
+-		"msghdr msg_name", EXISTS, SOCKET_H, "msghdr", "msg_name", NULL, {
+-	"sizeof(void *)"}}, {
+-		"msghdr msg_namelen", EXISTS, SOCKET_H, "msghdr",
+-		    "msg_namelen", NULL, {
+-	"sizeof(socklen_t)"}}, {
+-		"msghdr msg_iov", EXISTS, SOCKET_H, "msghdr", "msg_iov", NULL, {
+-	"sizeof(struct iovec *)"}}, {
+-		"msghdr msg_iovlen", EXISTS, SOCKET_H, "msghdr",
+-		    "msg_iovlen", NULL, {
+-	"sizeof(size_t)"}}, {
+-		"msghdr msg_control", EXISTS, SOCKET_H, "msghdr",
+-		    "msg_control", NULL, {
+-	"sizeof(void *)"}}, {
+-		"msghdr msg_controllen", EXISTS, SOCKET_H, "msghdr",
+-		    "msg_controllen", NULL, {
+-	"sizeof(size_t)"}}, {
+-		"msghdr msg_flags", EXISTS, SOCKET_H, "msghdr",
+-		    "msg_flags", NULL, {
+-	"sizeof(int)"}}, {
+-		"cmsghdr cmsg_len", EXISTS, SOCKET_H, "cmsghdr",
+-		    "cmsg_len", NULL, {
+-	"sizeof(size_t)"}}, {
+-		"cmsghdr cmsg_level", EXISTS, SOCKET_H, "cmsghdr",
+-		    "cmsg_level", NULL, {
+-	"sizeof(int)"}}, {
+-		"cmsghdr cmsg_type", EXISTS, SOCKET_H, "cmsghdr",
+-		    "cmsg_type", NULL, {
+-	"sizeof(int)"}}, {
+-		"CMSG_DATA", DEFINED, SOCKET_H, "CMSG_DATA", NULL, NULL, {
+-	0}}, {
+-		"CMSG_NXTHDR", DEFINED, SOCKET_H, "CMSG_NXTHDR", NULL, NULL, {
+-	0}}, {
+-		"CMSG_FIRSTHDR", DEFINED, SOCKET_H, "CMSG_FIRSTHDR", NULL, NULL, {
+-	0}}, {
+-		"CMSG_SPACE", DEFINED, SOCKET_H, "CMSG_SPACE", NULL, NULL, {
+-	0}}, {
+-		"CMSG_LEN", DEFINED, SOCKET_H, "CMSG_LEN", NULL, NULL, {
+-0}},};
+-
+-#define ETCOUNT	(sizeof(etab)/sizeof(etab[0]))
++	/* existence checks, RFC 3542 sections 5, 20 */
++	{ "msghdr msg_name", EXISTS, SOCKET_H, "msghdr",
++		"msg_name", NULL, {"sizeof(void *)"} },
++	{ "msghdr msg_namelen", EXISTS, SOCKET_H, "msghdr",
++		"msg_namelen", NULL, {"sizeof(socklen_t)"} },
++	{ "msghdr msg_iov", EXISTS, SOCKET_H, "msghdr",
++		"msg_iov", NULL, {"sizeof(struct iovec *)"} },
++	{ "msghdr msg_iovlen", EXISTS, SOCKET_H, "msghdr",
++		"msg_iovlen", NULL, {"sizeof(size_t)"} },
++	{ "msghdr msg_control", EXISTS, SOCKET_H, "msghdr",
++		"msg_control", NULL, {"sizeof(void *)"} },
++	{ "msghdr msg_controllen", EXISTS, SOCKET_H, "msghdr",
++		"msg_controllen", NULL, {"sizeof(size_t)"} },
++	{ "msghdr msg_flags", EXISTS, SOCKET_H, "msghdr",
++		"msg_flags", NULL, {"sizeof(int)"} },
++	{ "cmsghdr cmsg_len", EXISTS, SOCKET_H, "cmsghdr",
++		"cmsg_len", NULL, {"sizeof(size_t)"} },
++	{ "cmsghdr cmsg_level", EXISTS, SOCKET_H, "cmsghdr",
++		"cmsg_level", NULL, {"sizeof(int)"} },
++	{ "cmsghdr cmsg_type", EXISTS, SOCKET_H, "cmsghdr",
++		"cmsg_type", NULL, {"sizeof(int)"} },
++	{ "CMSG_DATA", DEFINED, SOCKET_H, "CMSG_DATA",
++		NULL, NULL, {0} },
++	{ "CMSG_NXTHDR", DEFINED, SOCKET_H, "CMSG_NXTHDR",
++		NULL, NULL, {0} },
++	{ "CMSG_FIRSTHDR", DEFINED, SOCKET_H, "CMSG_FIRSTHDR",
++		NULL, NULL, {0} },
++	{ "CMSG_SPACE", DEFINED, SOCKET_H, "CMSG_SPACE",
++		NULL, NULL, {0} },
++	{ "CMSG_LEN", DEFINED, SOCKET_H, "CMSG_LEN",
++		NULL, NULL, {0} },
++};
++
++static void setup(void);
++static void adatet(const struct etent *etptr);
++
++char *TCID = "asapi_07";
++int TST_TOTAL = ARRAY_SIZE(etab);
+ 
+-/*  existence tests */
+-void adatet(void)
++int main(int argc, char *argv[])
+ {
+-	int i;
+-
+-	for (i = 0; i < ETCOUNT; ++i) {
+-		switch (etab[i].et_type) {
+-		case EXISTS:
+-			structcheck(etab[i].et_tname, etab[i].et_incl,
+-				    etab[i].et_struct, etab[i].et_field,
+-				    etab[i].et_offset, etab[i].et_value);
+-			break;
+-		case ALIAS:
+-			aliascheck(etab[i].et_tname, etab[i].et_incl,
+-				   etab[i].et_struct, etab[i].et_field,
+-				   etab[i].et_dname);
+-			break;
+-		case VALUE:
+-			valuecheck(etab[i].et_tname, etab[i].et_incl,
+-				   etab[i].et_struct, etab[i].et_dname);
+-			break;
+-		case DEFINED:
+-			funccheck(etab[i].et_tname, etab[i].et_incl,
+-				  etab[i].et_struct);
+-			break;
+-		default:
+-			tst_resm(TBROK, "invalid type %d", etab[i].et_type);
+-			break;
+-		}
++	int i, lc;
++	const char *msg;
++
++	msg = parse_opts(argc, argv, NULL, NULL);
++	if (msg != NULL)
++		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); ++lc) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			adatet(&etab[i]);
+ 	}
++
++	tst_exit();
+ }
+ 
+ void setup(void)
+ {
+-	TEST_PAUSE;		/* if -P option specified */
++	TEST_PAUSE;
+ }
+ 
+-void cleanup(void)
++/*  existence tests */
++void adatet(const struct etent *etptr)
+ {
++	switch (etptr->et_type) {
++	case EXISTS:
++		structcheck(etptr->et_tname, etptr->et_incl,
++			etptr->et_struct, etptr->et_field,
++			etptr->et_offset, etptr->et_value);
++		break;
++	case ALIAS:
++		aliascheck(etptr->et_tname, etptr->et_incl,
++			etptr->et_struct, etptr->et_field,
++			etptr->et_dname);
++		break;
++	case VALUE:
++		valuecheck(etptr->et_tname, etptr->et_incl,
++			etptr->et_struct, etptr->et_dname);
++		break;
++	case DEFINED:
++		funccheck(etptr->et_tname, etptr->et_incl,
++			etptr->et_struct);
++		break;
++	default:
++		tst_resm(TBROK, "invalid type %d",
++			etptr->et_type);
++		break;
++	}
+ }
+-
+-int TST_TOTAL = ETCOUNT;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
