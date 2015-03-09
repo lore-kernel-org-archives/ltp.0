@@ -1,32 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YT3TT-0006Zs-9e
-	for ltp-list@lists.sourceforge.net; Wed, 04 Mar 2015 07:12:07 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YT3TR-0006s2-6f
-	for ltp-list@lists.sourceforge.net; Wed, 04 Mar 2015 07:12:07 +0000
-Received: from ucsinet21.oracle.com (ucsinet21.oracle.com [156.151.31.93])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t247BwJl009081
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Mar 2015 07:11:59 GMT
-Received: from userz7022.oracle.com (userz7022.oracle.com [156.151.31.86])
-	by ucsinet21.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t247BwtG004638
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Mar 2015 07:11:58 GMT
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-	by userz7022.oracle.com (8.14.5+Sun/8.14.4) with ESMTP id
-	t247Bvuj006413
-	for <ltp-list@lists.sourceforge.net>; Wed, 4 Mar 2015 07:11:58 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed,  4 Mar 2015 10:14:24 +0300
-Message-Id: <1425453265-13240-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 1/2 v2] device-drivers/locking: add wrapper for
-	locktorture kernel module
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YUtB7-0003W1-0A
+	for ltp-list@lists.sourceforge.net; Mon, 09 Mar 2015 08:36:45 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YUtAz-0002zF-8x
+	for ltp-list@lists.sourceforge.net; Mon, 09 Mar 2015 08:36:38 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t298ZbdU028280
+	for <ltp-list@lists.sourceforge.net>; Mon, 9 Mar 2015 16:35:37 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Mon, 9 Mar 2015 16:32:01 +0800
+Message-ID: <1425889922-13650-6-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1425889922-13650-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1425889922-13650-1-git-send-email-gux.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v2 6/7] lib6/in6_02.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,181 +28,363 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-This is a wrapper for locktorture kernel module (added in Linux 3.18).
-The test requires that kernel configured with CONFIG_LOCK_TORTURE_TEST.
-It runs locktorture module using particular options and then inspects dmesg
-output for module's test results. For more information, please read Linux
-Documentation: locking/locktorture.txt
+* Remove useless comments.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+* Move the test body from main() to (*testfunc[])().
+
+* In every test function, using TINFO instead of TPASS
+  marks the success of each inner test.
+
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
 ---
-v2: merge 'runtest/kernel_misc: add lock_torture.sh' patch
+ testcases/network/lib6/in6_02.c | 181 ++++++++++++++++++----------------------
+ 1 file changed, 79 insertions(+), 102 deletions(-)
 
- runtest/kernel_misc                                |    1 +
- testcases/kernel/device-drivers/Makefile           |    1 +
- testcases/kernel/device-drivers/locking/Makefile   |   22 +++++
- .../kernel/device-drivers/locking/lock_torture.sh  |   93 ++++++++++++++++++++
- 4 files changed, 117 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/device-drivers/locking/Makefile
- create mode 100755 testcases/kernel/device-drivers/locking/lock_torture.sh
-
-diff --git a/runtest/kernel_misc b/runtest/kernel_misc
-index c12c31e..6a29de6 100644
---- a/runtest/kernel_misc
-+++ b/runtest/kernel_misc
-@@ -8,3 +8,4 @@ ltp_acpi ltp_acpi
- cpufreq_boost cpufreq_boost
- uaccess uaccess
- rcu_torture rcu_torture.sh
-+lock_torture lock_torture.sh
-diff --git a/testcases/kernel/device-drivers/Makefile b/testcases/kernel/device-drivers/Makefile
-index a5a1745..551d137 100644
---- a/testcases/kernel/device-drivers/Makefile
-+++ b/testcases/kernel/device-drivers/Makefile
-@@ -21,6 +21,7 @@ include $(top_srcdir)/include/mk/env_pre.mk
- SUBDIRS		:= acpi \
- 		   block \
- 		   cpufreq \
-+		   locking \
- 		   pci \
- 		   rcu \
- 		   rtc \
-diff --git a/testcases/kernel/device-drivers/locking/Makefile b/testcases/kernel/device-drivers/locking/Makefile
-new file mode 100644
-index 0000000..9aabff3
---- /dev/null
-+++ b/testcases/kernel/device-drivers/locking/Makefile
-@@ -0,0 +1,22 @@
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+diff --git a/testcases/network/lib6/in6_02.c b/testcases/network/lib6/in6_02.c
+index bddddf5..3059023 100644
+--- a/testcases/network/lib6/in6_02.c
++++ b/testcases/network/lib6/in6_02.c
+@@ -1,6 +1,7 @@
+ /*
+  *
+  *   Copyright (c) International Business Machines  Corp., 2001
++ *   Author: David L Stevens
+  *
+  *   This program is free software;  you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -13,72 +14,52 @@
+  *   the GNU General Public License for more details.
+  *
+  *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   along with this program;  if not, write to the Free Software Foundation,
++ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+-
+ /*
+- * Test Name: in6_02
+- *
+- * Test Description:
+- *  Tests for name to index and index to name functions in IPv6
+- *
+- * Usage:  <for command-line>
+- *  in6_02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	05/2004 written by David L Stevens
+- *
+- * RESTRICTIONS:
+- *  None.
+- *
++ *   Description:
++ *     Tests for name to index and index to name functions in IPv6
+  */
+ 
+ #include <unistd.h>
+ #include <errno.h>
+-
+ #include <sys/socket.h>
+-
+ #include <net/if.h>
+ 
+ #include "test.h"
+ 
+-char *TCID = "in6_02";		/* Test program identifier.    */
+-int testno;
+-
+-void setup(void), cleanup(void);
+-
+-struct {
++static struct {
+ 	char *name;
+ 	int nonzero;
+ } n2i[] = {
+-	{
+-	"lo", 1}, {
+-	"eth0", 1}, {
+-	"hoser75", 0}, {
+-"6", 0},};
++	{ "lo", 1 },
++	{ "eth0", 1 },
++	{ "hoser75", 0 },
++	{ "6", 0 },
++};
+ 
+ #define N2I_COUNT (sizeof(n2i)/sizeof(n2i[0]))
+-
+ #define I2N_RNDCOUNT	10	/* random ints */
+ #define I2N_LOWCOUNT	10	/* sequential from 0 */
+ 
+-int TST_TOTAL = N2I_COUNT;
++static void setup(void);
++static void n2itest(void);
++static void i2ntest(void);
++static void initest(void);
 +
-+top_srcdir	?= ../../../..
-+include $(top_srcdir)/include/mk/testcases.mk
++static void (*testfunc[])(void) = { n2itest,
++	i2ntest, initest };
+ 
+-void n2itest(void), i2ntest(void), initest(void);
++char *TCID = "in6_02";
++int TST_TOTAL = ARRAY_SIZE(testfunc);
+ 
+ int main(int argc, char *argv[])
+ {
+ 	int lc;
++	int i;
+ 	const char *msg;
+ 
+-	/* Parse standard options given to run the test. */
+ 	msg = parse_opts(argc, argv, NULL, NULL);
+ 	if (msg != NULL) {
+ 		tst_brkm(TBROK, NULL, "OPTION PARSING ERROR - %s", msg);
+@@ -87,53 +68,47 @@ int main(int argc, char *argv[])
+ 	setup();
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+-		n2itest();
+-		i2ntest();
+-		initest();
++		tst_count = 0;
 +
-+INSTALL_TARGETS		:= lock_torture.sh
++		for (i = 0; i < TST_TOTAL; i++)
++			(*testfunc[i])();
+ 	}
+-	cleanup();
+ 
+-	return (0);
++	tst_exit();
+ }
+ 
+ /* if_nametoindex tests */
+-
+-void n2itest()
++void n2itest(void)
+ {
+-	int i;
++	unsigned int i;
++	char ifname[IF_NAMESIZE], *pifn;
+ 
+ 	for (i = 0; i < N2I_COUNT; ++i) {
+-		char ifname[IF_NAMESIZE], *pifn;
+-		int fail;
+-
+ 		TEST(if_nametoindex(n2i[i].name));
+-		fail = !TEST_RETURN != !n2i[i].nonzero;
+-		if (fail) {
++		if (!TEST_RETURN != !n2i[i].nonzero) {
+ 			tst_resm(TFAIL, "if_nametoindex(\"%s\") %ld "
+-				 "[should be %szero]", n2i[i].name,
+-				 TEST_RETURN, n2i[i].nonzero ? "non" : "");
+-			continue;
++				"[should be %szero]", n2i[i].name, TEST_RETURN,
++				n2i[i].nonzero ? "non" : "");
++			return;
+ 		}
+-		if (!TEST_RETURN) {
+-			tst_resm(TPASS, "if_nametoindex(\"%s\") %ld",
+-				 n2i[i].name, TEST_RETURN);
+-			continue;
++		if (TEST_RETURN) {
++			pifn = if_indextoname(TEST_RETURN, ifname);
++			if (!pifn || strcmp(n2i[i].name, pifn)) {
++				tst_resm(TFAIL, "if_nametoindex(\"%s\") %ld "
++					"doesn't match if_indextoname(%ld) "
++					"\"%s\"", n2i[i].name, TEST_RETURN,
++					TEST_RETURN, pifn ? pifn : "");
++				return;
++			}
+ 		}
+-
+-		pifn = if_indextoname(TEST_RETURN, ifname);
+-		if (!pifn || strcmp(n2i[i].name, pifn)) {
+-			tst_resm(TFAIL, "if_nametoindex(\"%s\") %ld doesn't "
+-				 "match if_indextoname(%ld) \"%s\"",
+-				 n2i[i].name, TEST_RETURN, TEST_RETURN,
+-				 pifn ? pifn : "");
+-			continue;
+-		}
+-		tst_resm(TPASS, "if_nametoindex(\"%s\") %ld", n2i[i].name,
+-			 TEST_RETURN);
++		tst_resm(TINFO, "if_nametoindex(\"%s\") %ld",
++			n2i[i].name, TEST_RETURN);
+ 	}
 +
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/device-drivers/locking/lock_torture.sh b/testcases/kernel/device-drivers/locking/lock_torture.sh
-new file mode 100755
-index 0000000..e2722dd
---- /dev/null
-+++ b/testcases/kernel/device-drivers/locking/lock_torture.sh
-@@ -0,0 +1,93 @@
-+#!/bin/sh
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+#
-+# This is a wrapper for locktorture kernel module. The test requiers
-+# that kernel configured with CONFIG_LOCK_TORTURE_TEST. It runs locktorture
-+# module using particular options and then inspects dmesg output for module's
-+# test results. For more information, please read Linux Documentation:
-+# locking/locktorture.txt
++	tst_resm(TPASS, "if_nametoindex() tests succeed");
+ }
+ 
+-int i2ntest1(unsigned int if_index)
++int sub_i2ntest(unsigned int if_index)
+ {
+ 	char ifname[IF_NAMESIZE];
+ 	unsigned int idx;
+@@ -146,7 +121,7 @@ int i2ntest1(unsigned int if_index)
+ 				 TEST_ERRNO);
+ 			return 0;
+ 		}
+-		tst_resm(TPASS, "if_indextoname(%d) returns NULL", if_index);
++		tst_resm(TINFO, "if_indextoname(%d) returns NULL", if_index);
+ 		return 1;
+ 	}
+ 	/* else, a valid interface-- double check name */
+@@ -157,29 +132,32 @@ int i2ntest1(unsigned int if_index)
+ 			 if_index, ifname, ifname, idx);
+ 		return 0;
+ 	}
+-	tst_resm(TPASS, "if_indextoname(%d) returns \"%s\"", if_index, ifname);
++	tst_resm(TINFO, "if_indextoname(%d) returns \"%s\"", if_index, ifname);
+ 	return 1;
+ }
+ 
++/* if_indextoname tests */
+ void i2ntest(void)
+ {
+ 	unsigned int i;
+ 
+ 	/* some low-numbered indexes-- likely to get valid interfaces here */
+ 	for (i = 0; i < I2N_LOWCOUNT; ++i)
+-		if (!i2ntest1(i))
++		if (!sub_i2ntest(i))
+ 			return;	/* skip the rest, if broken */
+ 	/* some random ints; should mostly fail */
+ 	for (i = 0; i < I2N_RNDCOUNT; ++i)
+-		if (!i2ntest1(rand()))
++		if (!sub_i2ntest(rand()))
+ 			return;	/* skip the rest, if broken */
 +
-+TCID="lock_torture"
-+TST_TOTAL=5
-+TST_CLEANUP=cleanup
-+. test.sh
-+
-+# default options
-+test_time=60
-+
-+while getopts :ht: opt; do
-+	case "$opt" in
-+	h)
-+		echo "Usage:"
-+		echo "h        help"
-+		echo "t x      time in seconds for each test-case"
-+		exit 0
-+	;;
-+	t) test_time=$OPTARG ;;
-+	*)
-+		tst_brkm TBROK "unknown option: $opt"
-+	;;
-+	esac
-+done
-+
-+cleanup()
-+{
-+	tst_resm TINFO "cleanup"
-+	rmmod locktorture > /dev/null 2>&1
-+}
-+
-+tst_kvercmp 3 18 0 && \
-+	tst_brkm TCONF "test must be run with kernel 3.18 or newer"
-+
-+tst_require_root
-+
-+# check if module is present
-+modprobe locktorture > /dev/null 2>&1 || \
-+	tst_brkm TCONF "Test requires locktorture module"
-+rmmod locktorture > /dev/null 2>&1
-+
-+trap cleanup INT
-+
-+lock_type="spin_lock spin_lock_irq rw_lock mutex_lock rwsem_lock"
-+
-+est_time=$(echo "scale=2; $test_time * $TST_TOTAL / 60 " | bc)
-+tst_resm TINFO "estimate time $est_time min"
-+
-+for type in $lock_type; do
-+
-+	tst_resm TINFO "$type: running $test_time sec..."
-+
-+	modprobe locktorture torture_type=$type \
-+	         > /dev/null 2>&1 || tst_brkm TBROK "failed to load module"
-+
-+	sleep $test_time
-+
-+	rmmod locktorture > /dev/null 2>&1 || \
-+		tst_brkm TBROK "failed to unload module"
-+
-+	# check module status in dmesg
-+	result_str=`dmesg | sed -nE '$s/.*End of test: ([A-Z]+):.*/\1/p'`
-+	if [ "$result_str" = "SUCCESS" ]; then
-+		tst_resm TPASS "$type: completed"
-+	else
-+		tst_resm TFAIL "$type: $result_str, see dmesg"
-+	fi
-+done
-+
-+tst_exit
++	tst_resm(TPASS, "if_indextoname() tests succeed");
+ }
+ 
+ /*
+  * This is an ugly, linux-only solution. getrusage() doesn't support the
+  * current data segment size, so we get it out of /proc
+  */
+-static int getdatasize(void)
++int getdatasize(void)
+ {
+ 	char line[128], *p;
+ 	int dsize = -1;
+@@ -202,29 +180,30 @@ static int getdatasize(void)
+ 	return dsize;
+ }
+ 
++/* if_nameindex tests */
+ void initest(void)
+ {
+-	int freenicount;
+ 	struct if_nameindex *pini;
+-	int i, dsize_before, dsize_after;
++	int i;
++	char buf[IF_NAMESIZE], *p;
++	unsigned int idx;
++	int freenicount;
++	int dsize_before, dsize_after;
+ 
+ 	pini = if_nameindex();
+-	if (pini == 0) {
++	if (pini == NULL) {
+ 		tst_resm(TFAIL, "if_nameindex() returns NULL, errno %d (%s)",
+ 			 TEST_ERRNO, strerror(TEST_ERRNO));
+ 		return;
+ 	}
+ 	for (i = 0; pini[i].if_index; ++i) {
+-		char buf[IF_NAMESIZE], *p;
+-		int idx;
+-
+ 		p = if_indextoname(pini[i].if_index, buf);
+ 		if (!p || strcmp(p, pini[i].if_name)) {
+ 			tst_resm(TFAIL, "if_nameindex idx %d name \"%s\" but "
+ 				 "if_indextoname(%d) is \"%s\"",
+ 				 pini[i].if_index, pini[i].if_name,
+ 				 pini[i].if_index, p ? p : "");
+-			continue;
++			return;
+ 		}
+ 		idx = if_nametoindex(pini[i].if_name);
+ 		if (idx != pini[i].if_index) {
+@@ -232,9 +211,9 @@ void initest(void)
+ 				 "if_indextoname(\"%s\") is %d",
+ 				 pini[i].if_index, pini[i].if_name,
+ 				 pini[i].if_name, idx);
+-			continue;
++			return;
+ 		}
+-		tst_resm(TPASS, "if_nameindex idx %d name \"%s\"",
++		tst_resm(TINFO, "if_nameindex idx %d name \"%s\"",
+ 			 pini[i].if_index, pini[i].if_name);
+ 	}
+ 	if_freenameindex(pini);
+@@ -244,9 +223,8 @@ void initest(void)
+ 	 */
+ 	dsize_before = getdatasize();
+ 	if (dsize_before < 0) {
+-		tst_resm(TBROK, "getdatasize failed: errno %d (%s)", errno,
+-			 strerror(errno));
+-		return;
++		tst_brkm(TBROK, NULL, "getdatasize failed: errno %d (%s)",
++			errno, strerror(errno));
+ 	}
+ 	/* we need to leak at least a page to detect a leak; 1 byte per call
+ 	 * will be detected with getpagesize() calls.
+@@ -254,8 +232,8 @@ void initest(void)
+ 	freenicount = getpagesize();
+ 	for (i = 0; i < freenicount; ++i) {
+ 		pini = if_nameindex();
+-		if (!pini) {
+-			tst_resm(TFAIL, "if_freenameindex test failed "
++		if (pini == NULL) {
++			tst_resm(TINFO, "if_freenameindex test failed "
+ 				 "if_nameindex() iteration %d", i);
+ 			break;
+ 		}
+@@ -263,23 +241,22 @@ void initest(void)
+ 	}
+ 	dsize_after = getdatasize();
+ 	if (dsize_after < 0) {
+-		tst_resm(TBROK, "getdatasize failed: errno %d (%s)", errno,
+-			 strerror(errno));
+-		return;
++		tst_brkm(TBROK, NULL, "getdatasize failed: errno %d (%s)",
++			errno, strerror(errno));
+ 	}
+-	if (dsize_after > dsize_before + getpagesize())
++	if (dsize_after > dsize_before + getpagesize()) {
+ 		tst_resm(TFAIL, "if_freenameindex leaking memory "
+ 			 "(%d iterations) dsize before %d dsize after %d", i,
+ 			 dsize_before, dsize_after);
+-	else
+-		tst_resm(TPASS, "if_freenameindex passed %d iterations", i);
+-}
++		return;
++	} else {
++		tst_resm(TINFO, "if_freenameindex passed %d iterations", i);
++	}
+ 
+-void setup(void)
+-{
+-	TEST_PAUSE;		/* if -P option specified */
++	tst_resm(TPASS, "if_nameindex() tests succeed");
+ }
+ 
+-void cleanup(void)
++void setup(void)
+ {
++	TEST_PAUSE;
+ }
 -- 
-1.7.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
