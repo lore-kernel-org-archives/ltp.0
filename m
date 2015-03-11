@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YSOpN-0007EE-RE
-	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 11:48:01 +0000
-Date: Mon, 2 Mar 2015 12:47:20 +0100
+	(envelope-from <metan@suse.de>) id 1YVduj-0000h6-VM
+	for ltp-list@lists.sourceforge.net; Wed, 11 Mar 2015 10:30:57 +0000
+Date: Wed, 11 Mar 2015 11:30:11 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150302114720.GA10726@rei>
-References: <1424978234-21530-1-git-send-email-jjaburek@redhat.com>
+Message-ID: <20150311103011.GA3713@rei>
+References: <1425986309-12966-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1424978234-21530-1-git-send-email-jjaburek@redhat.com>
-Subject: Re: [LTP] [PATCH] syscalls/fadvise03: add alternative expected
- s390-only values
+In-Reply-To: <1425986309-12966-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH] sctp/test_1_to_1_sockopt.c: set SO_SNDBUF above
+ the defined minimum
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,17 +25,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jiri Jaburek <jjaburek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Since this test tries 0-32 values as 'advice', it needs to expect the
-> little-known ABI hack used for fadvise64 on s390 in the kernel,
-> see Linux kernel commit 068e1b94bbd268f375349f68531829c8b7c210bc.
+> SO_SNDBUF have the following minimum value:
+> TCP_SKB_MIN_TRUESIZE (2048 + sizeof(struct sk_buff))
+> SOCK_MIN_SNDBUF (TCP_SKB_MIN_TRUESIZE * 2)
 > 
-> Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
+> The test set 'SO_SNDBUF' to 2048, then it gets the value back
+> with getsockopt(). But the value was defaulted in the kernel
+> to the SOCK_MIN_SNDBUF.
 
-Pushed, thanks.
+I guess that the setsockopt() does that without failing and then
+the comparsion of the value you get with getsockopt() fails, right?
+
+I still do not get why the code does:
+
+if ((2 * sndbuf_val_set) != sndbuf_val_get)
+
+Shouldn't the sndbuf_val_set == sndbuf_val_get once the value is changed
+to 5000?
 
 -- 
 Cyril Hrubis
