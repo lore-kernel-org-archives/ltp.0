@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YcxUX-0006N1-QA
-	for ltp-list@lists.sourceforge.net; Tue, 31 Mar 2015 14:50:09 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YcxUW-0007Yl-VV
-	for ltp-list@lists.sourceforge.net; Tue, 31 Mar 2015 14:50:09 +0000
-Message-ID: <551AB4B5.4020902@oracle.com>
-Date: Tue, 31 Mar 2015 17:52:37 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YVzgS-0008Ep-N6
+	for ltp-list@lists.sourceforge.net; Thu, 12 Mar 2015 09:45:40 +0000
+Date: Thu, 12 Mar 2015 10:44:54 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150312094453.GB29425@rei>
+References: <1425966954-887-1-git-send-email-liwang@redhat.com>
+	<20150311123018.GC3713@rei>
+	<1426151599.1400.32.camel@dhcp-13-206.nay.redhat.com>
 MIME-Version: 1.0
-References: <1427787975-10668-1-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1427787975-10668-1-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/6] lib6/runcc.c: use TCONF instead of TBROK when
- no C compiler is present
+Content-Disposition: inline
+In-Reply-To: <1426151599.1400.32.camel@dhcp-13-206.nay.redhat.com>
+Subject: Re: [LTP] [PATCH v2] fs/acls: fix some permission issue in the
+ testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,34 +27,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
+To: Li Wang <liwang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-On 03/31/2015 10:46 AM, Xing Gu wrote:
-> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
-> ---
->   testcases/network/lib6/runcc.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/testcases/network/lib6/runcc.c b/testcases/network/lib6/runcc.c
-> index 91a0b16..3a89598 100644
-> --- a/testcases/network/lib6/runcc.c
-> +++ b/testcases/network/lib6/runcc.c
-> @@ -93,7 +93,7 @@ int runcc(char *tname, char *filename0, char *program)
->   		 cflags, filename0, filename);
->   	es = system(cmd);
->   	if (WEXITSTATUS(es) == 127) {
-> -		tst_resm(TBROK, "can't run C compiler: \"%s\"", cmd);
-> +		tst_resm(TCONF, "can't run C compiler: \"%s\"", cmd);
->   		if (unlink(filename) < 0)
->   			tst_resm(TWARN, "%s; unlink \"%s\" failed: %s", tname,
->   				 filename, strerror(errno));
+> > This looks more like TBROK as well. And even better the test should use
+> > tst_tmpdir() and tst_rmdir() to create temporary directories.
+> sorry, I don't know how to replace the $TMP/tacl by tst_rmdir() function
+> in this test.
+> any detail instruction here?
 
-Why not 'tst_brkm(TCONF, ...)', do we need to proceed further?
+The tst_tmpdir() creates an unique test temporary directory and changes
+the working directory to it.
 
-Thanks,
-Alexey
+The testcases usually call tst_tmpdir() in the setup and then proceed
+with creating temporary files with local paths so that they end up
+creating files in the working directory.
+
+The temporary directory is then deleted recursively with tst_rmdir() in
+test cleanup.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
