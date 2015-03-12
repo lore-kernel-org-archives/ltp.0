@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YSS34-0005MA-Vy
-	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 15:14:23 +0000
-Date: Mon, 2 Mar 2015 16:13:37 +0100
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YVzcd-00053I-CL
+	for ltp-list@lists.sourceforge.net; Thu, 12 Mar 2015 09:41:43 +0000
+Date: Thu, 12 Mar 2015 10:40:57 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150302151337.GB22136@rei>
-References: <1424764001.2546.15.camel@G08JYZSD130126.localdomain>
-	<20150226090012.GA12353@rei.suse.de>
-	<1425016398.11179.22.camel@G08JYZSD130126.localdomain>
+Message-ID: <20150312094057.GA29425@rei>
+References: <1425966954-887-1-git-send-email-liwang@redhat.com>
+	<20150311123018.GC3713@rei>
+	<1426151599.1400.32.camel@dhcp-13-206.nay.redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1425016398.11179.22.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH v2] gethostbyname_r01: check whether a system is
- vulnerable or not.
+In-Reply-To: <1426151599.1400.32.camel@dhcp-13-206.nay.redhat.com>
+Subject: Re: [LTP] [PATCH v2] fs/acls: fix some permission issue in the
+ testcase
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,20 +27,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Li Wang <liwang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Qualys security researchers discovered a serious weakness in the Linux glibc
-> library:
-> https://www.qualys.com/research/security-advisories/GHOST-CVE-2015-0235.txt
+> > There are systems without selinux support that does not have this
+> > command available. You should check if setenforce and getenforce is
+> > present on the system first, then you can try to set the selinux to
+> > permissive.
+> Hmm, how about these two ways, which one is better?
+> 1.
+> if [ -x "/usr/sbin/getenforce" -a -x "/usr/sbin/setenforce" ]; then
+>        SELINUX=`getenforce`
+> else
+>        SELINUX=""
+> fi
 > 
-> We write this test to check wherher a system is vulnerable or not.
+> 2.
+> COMMAND=$(command -v "getenforce" "setenforce" |wc -l)
+> if [ $COMMAND -eq 2 ]; then
+> 	SELINUX=$(getenforce)
+> else
+> 	SELINUX=""
+> fi
 
-Looks good to me.
-
-Jan: What do we do about the syscalls/libcalls issue? Do we keep the
-     status quo and apply this one as it is? Anybody has a better idea?
+Both looks reasonably fine. The second may be a slightly better because
+it does not expect the commands to live under /usr/sbin/, which may not
+change, but it's more robust this way.
 
 -- 
 Cyril Hrubis
