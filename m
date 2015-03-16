@@ -1,19 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YSRgM-0007Sr-0Y
-	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 14:50:54 +0000
-Date: Mon, 2 Mar 2015 15:50:07 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150302145007.GB27832@rei>
-References: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1425024732-30751-4-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YXR1z-0000E0-U2
+	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:51 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXR1y-0001ZW-UD
+	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:51 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t2G98ogY000937
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Mar 2015 17:08:50 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Mon, 16 Mar 2015 17:05:10 +0800
+Message-ID: <1426496710-11712-9-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1425024732-30751-4-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3 4/9] power_management: call the function eg.
- test_sched_mc instead of script test_sched_mc.sh
+Subject: [LTP] [PATCH v4 9/9] power_management: add it into default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,19 +31,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Many scripts eg. test_sched_mc.sh is called only from
-> one test eg. runpwtests01.sh. Remove the script code
-> into the corresponding test case.
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ scenario_groups/default | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Ah, right here is the change I've been looking for ;).
-
+diff --git a/scenario_groups/default b/scenario_groups/default
+index 3a55702..1e9de48 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -19,7 +19,6 @@ fcntl-locktests
+ connectors
+ admin_tools
+ timers
+-power_management_tests
+ numa
+ hugetlb
+ commands
+@@ -32,3 +31,5 @@ dma_thread_diotest
+ cpuacct
+ can
+ cpuhotplug
++power_management_tests
++power_management_tests_exclusive
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
