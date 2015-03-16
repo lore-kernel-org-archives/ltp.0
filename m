@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <bamvor.zhangjian@huawei.com>) id 1YYSvt-0002Go-Ie
-	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 05:23:49 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YYSvq-0001mj-KR
-	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 05:23:49 +0000
-Message-ID: <550A5D4B.5090009@huawei.com>
-Date: Thu, 19 Mar 2015 13:23:23 +0800
-From: Bamvor Jian Zhang <bamvor.zhangjian@huawei.com>
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YXR1y-0004ht-6g
+	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:50 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXR1w-0001ZW-Pd
+	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:50 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t2G98jte000927
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Mar 2015 17:08:46 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Mon, 16 Mar 2015 17:05:08 +0800
+Message-ID: <1426496710-11712-7-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1426675580-28835-1-git-send-email-bamvor.zhangjian@huawei.com>
-In-Reply-To: <1426675580-28835-1-git-send-email-bamvor.zhangjian@huawei.com>
-Subject: Re: [LTP] [RFC PATCH 0/3] bugfix for aarch64 ILP32
+Subject: [LTP] [PATCH v4 7/9] power_management: install lib/pm_sched_mc.py
+	into testcases/bin directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,51 +33,121 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: Bintian <bintian.wang@huawei.com>, apinski@cavium.com
 
-On 2015/3/18 18:46, Zhang Jian(Bamvor) wrote:
-> Hi,
-Hi, guys
+Install lib/pm_sched_mc.py into testcases/bin instead of
+testcases/bin/lib directory, and modify the corresponding
+call files, eg. pm_cpu_consolidation.py.
 
-These series patches should go libc-alpha[1], sorry for confuse.
-Here is the right series my want to post[2].
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/power_management/Makefile         | 10 ++++-----
+ testcases/kernel/power_management/lib/Makefile     | 25 ++++++++++++++++++++++
+ .../power_management/pm_cpu_consolidation.py       |  2 --
+ testcases/kernel/power_management/pm_ilb_test.py   |  2 --
+ .../kernel/power_management/pm_sched_domain.py     |  2 --
+ 5 files changed, 29 insertions(+), 12 deletions(-)
+ create mode 100644 testcases/kernel/power_management/lib/Makefile
 
-regards
-
-bamvor
-
-[1] https://sourceware.org/ml/libc-alpha/2015-03/msg00586.html
-[2] http://sourceforge.net/p/ltp/mailman/ltp-list/thread/1426742198-17967-1-git-send-email-bamvor.zhangjian%40huawei.com/#msg33613777
-
-> This is bamvor from Huawei OS team. We test ILP32 support through
-> LTP testcases for both little endian and big endian. There are some
-> failures we thought they should be fixed in glibc level, so, here they are.
-> 
-> Hope these series of patch could help other people who is interested
-> in ILP32 in aarch64. We will send another series in LTP mailing list about
-> LTP relative patches.
-> 
-> These work is base on Andrew's ilp32 patch [ilp32 v3 patch]
-> [ilp32_glibc_patch].
-> 
-> The test of build is based on the toolchain built by linaro ABE environment
-> [linaro_abe].
-> 
-> [ilp32 v3 patch] (https://lkml.org/lkml/2014/9/3/704)
-> [ilp32_glibc_patch] (https://sourceware.org/ml/libc-alpha/2014-10/msg00596.html)
-> [linaro_abe] (https://wiki.linaro.org/ABE)
-> 
-> Yang Yingliang (3):
->   ARM64: ILP32: change register x1 to PTR_REG
->   ARM64: ILP32: use __fsword_t in generic/bits/statfs.h
->   ARM64: ILP32: change register x##R to PTR_REG (R)
-> 
->  sysdeps/aarch64/sysdep.h                      |  2 +-
->  sysdeps/unix/sysv/linux/aarch64/sysdep.h      |  2 +-
->  sysdeps/unix/sysv/linux/generic/bits/statfs.h | 24 ++++++++++++------------
->  3 files changed, 14 insertions(+), 14 deletions(-)
-> 
-
+diff --git a/testcases/kernel/power_management/Makefile b/testcases/kernel/power_management/Makefile
+index 24f75f8..935f47e 100644
+--- a/testcases/kernel/power_management/Makefile
++++ b/testcases/kernel/power_management/Makefile
+@@ -13,8 +13,8 @@
+ ## for more details.                                                          ##
+ ##                                                                            ##
+ ## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+ ##                                                                            ##
+ ################################################################################
+ 
+@@ -22,10 +22,8 @@ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-vpath %.c $(srcdir):$(top_srcdir)/lib
+-
+-INSTALL_TARGETS		:= lib/*.py *.py *.sh
++INSTALL_TARGETS 	:= *.py *.sh
+ 
+ MAKE_DEPS		+= $(APICMDS_DIR)/tst_kvercmp
+ 
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/power_management/lib/Makefile b/testcases/kernel/power_management/lib/Makefile
+new file mode 100644
+index 0000000..2aadac0
+--- /dev/null
++++ b/testcases/kernel/power_management/lib/Makefile
+@@ -0,0 +1,25 @@
++#
++# Copyright (c) 2015 Fujitsu Ltd.
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License along
++# with this program; if not, write to the Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++
++top_srcdir 		?= ../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS 	:= *.py
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/power_management/pm_cpu_consolidation.py b/testcases/kernel/power_management/pm_cpu_consolidation.py
+index 5aa3948..734db27 100755
+--- a/testcases/kernel/power_management/pm_cpu_consolidation.py
++++ b/testcases/kernel/power_management/pm_cpu_consolidation.py
+@@ -6,8 +6,6 @@
+ import os
+ import sys
+ import time
+-LIB_DIR = "%s/lib" % os.path.dirname(__file__)
+-sys.path.append(LIB_DIR)
+ from optparse import OptionParser
+ from pm_sched_mc import *
+ 
+diff --git a/testcases/kernel/power_management/pm_ilb_test.py b/testcases/kernel/power_management/pm_ilb_test.py
+index 3f6ad46..0b447d8 100755
+--- a/testcases/kernel/power_management/pm_ilb_test.py
++++ b/testcases/kernel/power_management/pm_ilb_test.py
+@@ -5,8 +5,6 @@
+ 
+ import os
+ import sys
+-LIB_DIR = "%s/lib" % os.path.dirname(__file__)
+-sys.path.append(LIB_DIR)
+ from optparse import OptionParser
+ from pm_sched_mc import *
+ 
+diff --git a/testcases/kernel/power_management/pm_sched_domain.py b/testcases/kernel/power_management/pm_sched_domain.py
+index a636c48..a54b0e9 100755
+--- a/testcases/kernel/power_management/pm_sched_domain.py
++++ b/testcases/kernel/power_management/pm_sched_domain.py
+@@ -5,8 +5,6 @@
+ 
+ import os
+ import sys
+-LIB_DIR = "%s/lib" % os.path.dirname(__file__)
+-sys.path.append(LIB_DIR)
+ from pm_sched_mc import *
+ from optparse import OptionParser
+ 
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
