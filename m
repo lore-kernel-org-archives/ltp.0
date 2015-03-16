@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1YcWyP-0002NO-KM
-	for ltp-list@lists.sourceforge.net; Mon, 30 Mar 2015 10:31:13 +0000
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YXR1z-0004i5-9i
+	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:51 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YcWyO-0007nB-Hn
-	for ltp-list@lists.sourceforge.net; Mon, 30 Mar 2015 10:31:13 +0000
-Message-ID: <55192449.6080303@cn.fujitsu.com>
-Date: Mon, 30 Mar 2015 18:24:09 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXR1w-0008Mi-U1
+	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:51 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t2G98m16000930
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Mar 2015 17:08:48 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Mon, 16 Mar 2015 17:05:09 +0800
+Message-ID: <1426496710-11712-8-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1427709713-19481-1-git-send-email-liwang@redhat.com>
-In-Reply-To: <1427709713-19481-1-git-send-email-liwang@redhat.com>
-Subject: Re: [LTP] [PATCH] perfcounters: do cleanup for runtest/perfcounters
+Subject: [LTP] [PATCH v4 8/9] power_management: compile
+	testcases/kernel/power_management by default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,40 +32,68 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi,
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ configure.ac                   | 14 --------------
+ include/mk/features.mk.default |  2 +-
+ include/mk/features.mk.in      |  2 +-
+ 3 files changed, 2 insertions(+), 16 deletions(-)
 
-On 03/30/2015 06:01 PM, Li Wang wrote:
-> These two cases(kernel/performance_counters) had been moved to
-> syscalls/perf_enven_open, seems like we should delete the void
-> case calling.
-
-Right, thanks!
-
-Regards,
-Xiaoguang Wang
-> 
-> kernel/performance_counters: move tests to syscalls/perf_event_open directory.
-> commit ff5bdf7ccc8e133b4cd0a0794509edb6102ca525
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  runtest/perfcounters | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/runtest/perfcounters b/runtest/perfcounters
-> index 73cd1d2..daa9851 100644
-> --- a/runtest/perfcounters
-> +++ b/runtest/perfcounters
-> @@ -1,5 +1,3 @@
->  # Test some Basic Performance Counters
->  
-> -performance_counter01 performance_counter01
-> -performance_counter02 performance_counter02
->  
-> 
+diff --git a/configure.ac b/configure.ac
+index 794059c..0ca21a6 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -102,20 +102,6 @@ fi
+ 
+ # Testsuites knobs
+ 
+-# testcases/kernel/power_management requires python.
+-if test "x$with_python" = xyes; then
+-    AC_ARG_WITH([power-management-testsuite],
+-      [AC_HELP_STRING([--with-power-management-testsuite],
+-        [compile and install the x86 power management testsuite (default=no)])],
+-      [with_power_management_testsuite=yes],
+-    )
+-fi
+-if test "x$with_power_management_testsuite" = xyes; then
+-    AC_SUBST([WITH_POWER_MANAGEMENT_TESTSUITE],["yes"])
+-else
+-    AC_SUBST([WITH_POWER_MANAGEMENT_TESTSUITE],["no"])
+-fi
+-
+ AC_ARG_WITH([open-posix-testsuite],
+   [AC_HELP_STRING([--with-open-posix-testsuite],
+     [compile and install the open posix testsuite (default=no)])],
+diff --git a/include/mk/features.mk.default b/include/mk/features.mk.default
+index c9edc1c..22a0f0e 100644
+--- a/include/mk/features.mk.default
++++ b/include/mk/features.mk.default
+@@ -38,7 +38,7 @@ HAVE_SECUREBITS			:= no
+ ifeq ($(UCLINUX),1)
+ WITH_POWER_MANAGEMENT_TESTSUITE	:= no
+ else
+-WITH_POWER_MANAGEMENT_TESTSUITE	:=
++WITH_POWER_MANAGEMENT_TESTSUITE	:= yes
+ endif
+ 
+ # Enable testcases/open_posix_testsuite's compile and install?
+diff --git a/include/mk/features.mk.in b/include/mk/features.mk.in
+index 1fd28f8..8030be7 100644
+--- a/include/mk/features.mk.in
++++ b/include/mk/features.mk.in
+@@ -38,7 +38,7 @@ HAVE_SECUREBITS			:= @HAVE_SECUREBITS@
+ ifeq ($(UCLINUX),1)
+ WITH_POWER_MANAGEMENT_TESTSUITE	:= no
+ else
+-WITH_POWER_MANAGEMENT_TESTSUITE	:= @WITH_POWER_MANAGEMENT_TESTSUITE@
++WITH_POWER_MANAGEMENT_TESTSUITE	:= yes
+ endif
+ 
+ # Enable testcases/open_posix_testsuite's compile and install?
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
