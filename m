@@ -1,17 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YSQ2F-0002cn-Dy
-	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 13:05:23 +0000
-Date: Mon, 2 Mar 2015 14:04:40 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150302130439.GA16543@rei>
-References: <2370af01ebeb2c4014c6d0c4252818a6138d8e19.1425033440.git.jstancek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YXR1w-0005iA-53
+	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:48 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXR1u-0008Mi-6v
+	for ltp-list@lists.sourceforge.net; Mon, 16 Mar 2015 09:09:48 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t2G98gXm000917
+	for <ltp-list@lists.sourceforge.net>; Mon, 16 Mar 2015 17:08:42 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Mon, 16 Mar 2015 17:05:06 +0800
+Message-ID: <1426496710-11712-5-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2370af01ebeb2c4014c6d0c4252818a6138d8e19.1425033440.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 1/2] sched_setparam/9-1: fix hang on -rt kernel
+Subject: [LTP] [PATCH v4 5/9] power_management: delete unused files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,165 +31,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: jkastner@redhat.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> As mentioned in [1], the testcase hangs on -rt kernel,
-> because alarm(2) will never fire. The testcase runs with
-> FIFO scheduling of higher priority than ksoftirqd.
-> 
-> This patch changes testcase in following way:
-> 1. In good case, where child process preempts parent,
->    child is able to detect this condition and terminate.
-> 2. In bad case, where preemption fails, testcase doesn't
->    rely on softirq (alarm), but hrtimer (time).
-> 3. removes unnecessary sleep
-> 
-> [1] https://lkml.org/lkml/2006/1/10/481
-> 
-> Reported-by: Jiri Kastner <jkastner@redhat.com>
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  .../conformance/interfaces/sched_setparam/9-1.c    | 48 ++++++++++++++--------
->  1 file changed, 32 insertions(+), 16 deletions(-)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
-> index ed90cee..354e03e 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/sched_setparam/9-1.c
-> @@ -31,14 +31,15 @@
->   *      not, the test fail.
->   */
->  #define _GNU_SOURCE
-> +#include <errno.h>
->  #include <sched.h>
->  #include <stdio.h>
->  #include <signal.h>
-> +#include <stdlib.h>
->  #include <sys/ipc.h>
->  #include <sys/shm.h>
-> +#include <time.h>
->  #include <unistd.h>
-> -#include <stdlib.h>
-> -#include <errno.h>
->  #include "posixtest.h"
->  #include "affinity.h"
->  
-> @@ -55,6 +56,7 @@
->  
->  static int nb_cpu;
->  static int *shmptr;
-> +static int mean_prio;
->  
->  static int get_ncpu(void)
->  {
-> @@ -85,6 +87,7 @@ static int get_ncpu(void)
->  static void child_process(void)
->  {
->  	struct sched_param param;
-> +	time_t t1, t2;
->  
->  	param.sched_priority = sched_get_priority_max(SCHED_FIFO);
->  	if (sched_setparam(getpid(), &param) != 0) {
-> @@ -92,20 +95,33 @@ static void child_process(void)
->  		return;
->  	}
->  
-> -	/* to avoid blocking */
-> -	alarm(2);
-> -	while (1) ;
-> +	t1 = time(NULL);
-> +	do {
-> +		t2 = time(NULL);
-> +	} while (difftime(t2, t1) <= 2);
->  }
+There are some files that are not used by this
+testsuit. Delete them.
 
-Have you tested this code with dummy set_affinity()? Because on Linux
-this doesn't get called at all.
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/power_management/check_config.sh | 32 -----------------------
+ testcases/kernel/power_management/config_cpu_freq |  7 -----
+ testcases/kernel/power_management/config_cpu_idle |  3 ---
+ testcases/kernel/power_management/config_sched_mc |  1 -
+ 4 files changed, 43 deletions(-)
+ delete mode 100755 testcases/kernel/power_management/check_config.sh
+ delete mode 100644 testcases/kernel/power_management/config_cpu_freq
+ delete mode 100644 testcases/kernel/power_management/config_cpu_idle
+ delete mode 100644 testcases/kernel/power_management/config_sched_mc
 
->  static void test_process(void)
->  {
-> -	/* to avoid blocking */
-> -	alarm(2);
-> -
-> -	while (1) {
-> -		(*shmptr)++;
-> +	struct sched_param param;
-> +	time_t t1, t2;
-> +
-> +	t1 = time(NULL);
-> +	do {
-> +		sched_getparam(getpid(), &param);
-> +		(*shmptr) = param.sched_priority;
-> +		/* if we can see that our priority has changed
-> +		 * that means we preempted parent, so we are done */
-> +		if ((*shmptr) == mean_prio)
-> +			break;
-> +
-> +		t2 = time(NULL);
-> +		/* immediately after parent forks us, we has same
-> +		 * priority and compete with parent for same CPU,
-> +		 * give parent chance to run and boost our priority */
->  		sched_yield();
-
-Hmm, is this the case? Because the main thread should continue to run
-until blocked and without the sleep(1) in the main() there is nothing
-that could block the parent process between the fork and the priority
-boost. Or am I mistaken?
-
-> -	}
-> +	} while (difftime(t2, t1) <= 2);
-> +	exit(0);
->  }
->  
->  static void kill_children(int *child_pid)
-> @@ -133,6 +149,8 @@ int main(void)
->  		nb_cpu = 1;
->  	}
->  
-> +	mean_prio = (sched_get_priority_min(SCHED_FIFO) +
-> +		sched_get_priority_max(SCHED_FIFO)) / 2;
->  	child_pid = malloc(nb_cpu * sizeof(int));
->  
->  	key = ftok("conformance/interfaces/sched_setparam/9-1.c", 1234);
-> @@ -194,11 +212,9 @@ int main(void)
->  		return PTS_UNRESOLVED;
->  	}
->  
-> -	sleep(1);
-> -
-> -	param.sched_priority = (sched_get_priority_min(SCHED_FIFO) +
-> -				sched_get_priority_max(SCHED_FIFO)) / 2;
-> -
-> +	/* parent runs, which means test_process() gave up cpu,
-> +	 * boost its priority and check it preempted parent */
-> +	param.sched_priority = mean_prio;
->  	oldcount = *shmptr;
-
-Shouldn't we rather initialize the shmptr to some known value (!=
-mean_prio) now?
-
->  	if (sched_setparam(child_pid[i], &param) != 0) {
->  		perror("An error occurs when calling sched_setparam()");
-> -- 
-> 1.8.3.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-> by Intel and developed in partnership with Slashdot Media, is your hub for all
-> things parallel software development, from weekly thought leadership blogs to
-> news, videos, case studies, tutorials and more. Take a look and join the 
-> conversation now. http://goparallel.sourceforge.net/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+diff --git a/testcases/kernel/power_management/check_config.sh b/testcases/kernel/power_management/check_config.sh
+deleted file mode 100755
+index 4eeac4e..0000000
+--- a/testcases/kernel/power_management/check_config.sh
++++ /dev/null
+@@ -1,32 +0,0 @@
+-#!/bin/bash
+-
+-. pm_include.sh
+-
+-if [ $# -lt 1 ] ; then
+-	echo "Usage: ${0} <filename>"
+-	RC=1
+-	return ${RC}
+-fi
+-filename=${1}
+-
+-RC=0
+-grep_command=grep
+-config_file=/boot/config-$(uname -r)
+-if [ ! -f ${config_file} ]; then
+-	echo "MISSING_FILE: can't find the required config file at /boot/config-$(uname -r)"
+-	echo "Trying for alternate file at /proc/config.gz"
+-	config_file=/proc/config.gz
+-fi
+-if [ ! -f ${config_file} ]; then
+-	echo "MISSING_FILE: can't find the required config file at /proc/config.gz"
+-	RC=1
+-fi
+-if [ "${config_file}" = "/proc/config.gz" ] ; then
+-	grep_command=zgrep
+-fi
+-
+-while read config_option
+-do
+-	check_config_options "${config_option}=*" ${config_file} ${grep_command}
+-done < ${filename}
+-exit $RC
+diff --git a/testcases/kernel/power_management/config_cpu_freq b/testcases/kernel/power_management/config_cpu_freq
+deleted file mode 100644
+index 76401e6..0000000
+--- a/testcases/kernel/power_management/config_cpu_freq
++++ /dev/null
+@@ -1,7 +0,0 @@
+-CONFIG_CPU_FREQ
+-CONFIG_CPU_FREQ_TABLE
+-CONFIG_CPU_FREQ_DEBUG
+-CONFIG_CPU_FREQ_STAT
+-CONFIG_CPU_FREQ_STAT_DETAILS
+-CONFIG_CPU_FREQ_DEFAULT_GOV_*
+-CONFIG_CPU_FREQ_GOV_*
+diff --git a/testcases/kernel/power_management/config_cpu_idle b/testcases/kernel/power_management/config_cpu_idle
+deleted file mode 100644
+index f899fae..0000000
+--- a/testcases/kernel/power_management/config_cpu_idle
++++ /dev/null
+@@ -1,3 +0,0 @@
+-CONFIG_CPU_IDLE
+-CONFIG_CPU_IDLE_GOV_LADDER
+-CONFIG_CPU_IDLE_GOV_MENU
+diff --git a/testcases/kernel/power_management/config_sched_mc b/testcases/kernel/power_management/config_sched_mc
+deleted file mode 100644
+index 30d0f97..0000000
+--- a/testcases/kernel/power_management/config_sched_mc
++++ /dev/null
+@@ -1 +0,0 @@
+-CONFIG_SCHED_MC
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
