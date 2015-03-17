@@ -1,34 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YYWSy-0000Fm-7Z
-	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 09:10:12 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YYWSx-0005Ca-BT
-	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 09:10:12 +0000
-Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t2J9A5s5021783
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:10:05 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t2J9A5hs013404
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:10:05 GMT
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t2J9A5XH031336
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:10:05 GMT
-Message-ID: <550A930F.2060505@oracle.com>
-Date: Thu, 19 Mar 2015 12:12:47 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YXr0T-0004ed-Oo
+	for ltp-list@lists.sourceforge.net; Tue, 17 Mar 2015 12:54:01 +0000
+Date: Tue, 17 Mar 2015 13:53:12 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150317125312.GA27371@rei.suse.de>
+References: <1426563196-10935-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1421324561-6680-1-git-send-email-alexey.kodanev@oracle.com>
-	<1421324561-6680-5-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1421324561-6680-5-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH 4/4] runtest/network-stress.appl: fix dns test
-	names
+Content-Disposition: inline
+In-Reply-To: <1426563196-10935-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] futex: return TCONF if FUTEX_WAIT_BITSET
+ operation is not supported
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,40 +25,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-On 01/15/2015 03:22 PM, Alexey Kodanev wrote:
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 > ---
->   runtest/network_stress.appl |    8 ++------
->   1 files changed, 2 insertions(+), 6 deletions(-)
->
-> diff --git a/runtest/network_stress.appl b/runtest/network_stress.appl
-> index cd2a5d9..9aee474 100644
-> --- a/runtest/network_stress.appl
-> +++ b/runtest/network_stress.appl
-> @@ -2,19 +2,15 @@
->   # Stress test for major application protocol (ssh, dns, http, ftp)
->   #
->   
-> -# ssh
->   ssh4-stress ssh4-stress
->   ssh6-stress ssh6-stress
->   
-> -# dns
-> -dns4-stress dns4-stress
-> -dns6-stress dns6-stress
-> +dns4-stress dns-stress
-> +dns6-stress dns-stress -6
->   
+>  testcases/kernel/syscalls/futex/futex_wait_bitset.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset.h b/testcases/kernel/syscalls/futex/futex_wait_bitset.h
+> index 2f8ddb8..73d87da 100644
+> --- a/testcases/kernel/syscalls/futex/futex_wait_bitset.h
+> +++ b/testcases/kernel/syscalls/futex/futex_wait_bitset.h
+> @@ -42,6 +42,12 @@ static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
+>  		return;
+>  	}
+>  
+> +	if (TEST_ERRNO == EOPNOTSUPP || TEST_ERRNO == ENOSYS) {
+> +		tst_resm(TCONF, "In this kernel, futex() does not support "
+> +			 "FUTEX_WAIT_BITSET operation");
+> +		return;
+> +	}
 
-net/dns-stress patch-set applied.
+On which system did you get EOPNOTSUPP? The (incomplete) futex man page
+only defines ENOSYS if futex op is not defined. Or was that only for
+FUTEX_CLOCK_REALTIME?
 
-Thanks,
-Alexey
+A bit more background info in the commit message would not harm,
+otherwise the patch looks OK.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
