@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YUzN4-0007Cl-FS
-	for ltp-list@lists.sourceforge.net; Mon, 09 Mar 2015 15:13:30 +0000
-Date: Mon, 9 Mar 2015 16:12:42 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150309151242.GA28617@rei.suse.de>
-References: <1425889922-13650-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1425889922-13650-7-git-send-email-gux.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1YXiMq-0001sZ-PS
+	for ltp-list@lists.sourceforge.net; Tue, 17 Mar 2015 03:40:32 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YXiMp-0007J1-Fq
+	for ltp-list@lists.sourceforge.net; Tue, 17 Mar 2015 03:40:32 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t2H3dQEP019063
+	for <ltp-list@lists.sourceforge.net>; Tue, 17 Mar 2015 11:39:26 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Tue, 17 Mar 2015 11:33:16 +0800
+Message-ID: <1426563196-10935-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1425889922-13650-7-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 7/7] ipv6_lib: add it into default
+Subject: [LTP] [PATCH] futex: return TCONF if FUTEX_WAIT_BITSET operation is
+	not supported
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,29 +30,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> * Add ipv6_lib tests to scenario_groups/default.
-> 
-> * Currently I'm not very clear about some test
->   cases eg. asapi_04.c, so disable them. Later
->   I will add it subsequently.
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/futex/futex_wait_bitset.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-I've pushed the cleanups, thanks.
-
-But before we enable these testcases runcc.c must be at least fixed to
-report TCONF instead of TBROK if no C compiler is present (the 127 from
-system()). I'm also thinking if we can avoid creating the temp file if
-we feed the compiler input to the cc stdin with popen() and 'cc -x c -'.
-
-We may also enable all of them once the rest of the tests if
-fixed/reviewed so that we don't have to shuffle the # back and forth.
-
+diff --git a/testcases/kernel/syscalls/futex/futex_wait_bitset.h b/testcases/kernel/syscalls/futex/futex_wait_bitset.h
+index 2f8ddb8..73d87da 100644
+--- a/testcases/kernel/syscalls/futex/futex_wait_bitset.h
++++ b/testcases/kernel/syscalls/futex/futex_wait_bitset.h
+@@ -42,6 +42,12 @@ static void verify_futex_wait_bitset(long long wait_us, clock_t clk_id)
+ 		return;
+ 	}
+ 
++	if (TEST_ERRNO == EOPNOTSUPP || TEST_ERRNO == ENOSYS) {
++		tst_resm(TCONF, "In this kernel, futex() does not support "
++			 "FUTEX_WAIT_BITSET operation");
++		return;
++	}
++
+ 	if (TEST_ERRNO != ETIMEDOUT) {
+ 		tst_resm(TFAIL | TTERRNO, "expected %s",
+ 		         tst_strerrno(ETIMEDOUT));
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
