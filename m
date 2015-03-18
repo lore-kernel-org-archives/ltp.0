@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YZwG6-0001Pw-M5
-	for ltp-list@lists.sourceforge.net; Mon, 23 Mar 2015 06:54:46 +0000
-Date: Mon, 23 Mar 2015 07:53:53 +0100
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YYBcy-000854-5w
+	for ltp-list@lists.sourceforge.net; Wed, 18 Mar 2015 10:55:08 +0000
+Date: Wed, 18 Mar 2015 11:54:17 +0100
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150323065353.GC3618@rei>
-References: <756183AD4F83414184BA6A0635785E70A55C4B3C@LGEVEXMBAPSVC1.LGE.NET>
-	<1848532869.446726.1426839071051.JavaMail.zimbra@redhat.com>
-	<756183AD4F83414184BA6A0635785E70A55C4BDC@LGEVEXMBAPSVC1.LGE.NET>
-	<1985883687.604987.1426857226768.JavaMail.zimbra@redhat.com>
-	<550C296E.3080109@st.com> <20150322064333.GM4504@vapier>
+Message-ID: <20150318105416.GB6162@rei>
+References: <20150317070840.GA2801@issan.sis.pasteur.fr>
+	<20150317133216.GA28649@rei.suse.de>
+	<20150317144635.GA15545@issan.sis.pasteur.fr>
+	<20150318103219.GA29704@issan.sis.pasteur.fr>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20150322064333.GM4504@vapier>
-Subject: Re: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
+In-Reply-To: <20150318103219.GA29704@issan.sis.pasteur.fr>
+Subject: Re: [LTP] [PATCH v2] Fix unprivileged llseek01 behaviour
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,20 +27,13 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Carmelo Amoroso <carmelo.amoroso@st.com>, ltp-list@lists.sourceforge.net
+To: Nicolas Joly <njoly@pasteur.fr>
+Cc: LTP list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> > So, should the LTP be updated accordingly ?
-> 
-> if the kernel has changed behavior, LTP needs to adapt to it (assuming the 
-> kernel people changed the behavior on purpose)
+> Please find a new version that adress Cyril concerns.
 
-The kernel contradicts the manual page here and the change was
-unintentional, it's side effect from fixes for deadlock.
-
-Michal Hocko was looking into the issue, he said that they will likely
-discuss it on LSMM. I will ask him if they agreed on what should be done
-about it.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
