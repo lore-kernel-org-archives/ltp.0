@@ -1,19 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YSRv1-0005b4-My
-	for ltp-list@lists.sourceforge.net; Mon, 02 Mar 2015 15:06:03 +0000
-Date: Mon, 2 Mar 2015 16:05:14 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150302150514.GD27832@rei>
-References: <1425024732-30751-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1425024732-30751-7-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1425024732-30751-7-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3 7/9] power_management: install
- lib/pm_sched_mc.py into testcases/bin directory
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YYWKl-0008Sv-CL
+	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 09:01:43 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YYWKj-0004yw-Sx
+	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 09:01:43 +0000
+Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t2J91Zug012642
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:01:35 GMT
+Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
+	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t2J91YGA031450
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:01:35 GMT
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
+	t2J91Yt9003477
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:01:34 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 19 Mar 2015 12:03:56 +0300
+Message-Id: <1426755836-24324-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] network/vxlan: fill mulicast address with random
+	numbers
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,76 +35,47 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
->  include $(top_srcdir)/include/mk/testcases.mk
->  
-> -vpath %.c $(srcdir):$(top_srcdir)/lib
-> -
-> -INSTALL_TARGETS		:= lib/*.py *.py *.sh
-> +INSTALL_TARGETS 	:= *.py *.sh
->  
->  MAKE_DEPS		+= $(APICMDS_DIR)/tst_kvercmp
->  
-> -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> +include $(top_srcdir)/include/mk/generic_trunk_target.mk
-> diff --git a/testcases/kernel/power_management/lib/Makefile b/testcases/kernel/power_management/lib/Makefile
-> new file mode 100644
-> index 0000000..2aadac0
-> --- /dev/null
-> +++ b/testcases/kernel/power_management/lib/Makefile
-> @@ -0,0 +1,25 @@
-> +#
-> +# Copyright (c) 2015 Fujitsu Ltd.
-> +#
-> +# This program is free software; you can redistribute it and/or modify
-> +# it under the terms of the GNU General Public License as published by
-> +# the Free Software Foundation; either version 2 of the License, or
-> +# (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it will be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License along
-> +# with this program; if not, write to the Free Software Foundation, Inc.,
-> +# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-> +#
-> +
-> +top_srcdir 		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/env_pre.mk
-> +
-> +INSTALL_TARGETS 	:= *.py
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/power_management/pm_cpu_consolidation.py b/testcases/kernel/power_management/pm_cpu_consolidation.py
-> index 5aa3948..72822b7 100755
-> --- a/testcases/kernel/power_management/pm_cpu_consolidation.py
-> +++ b/testcases/kernel/power_management/pm_cpu_consolidation.py
-> @@ -7,7 +7,8 @@ import os
->  import sys
->  import time
->  LIB_DIR = "%s/lib" % os.path.dirname(__file__)
-> -sys.path.append(LIB_DIR)
-> +if os.path.exists(LIB_DIR):
-> +    sys.path.append(LIB_DIR)
->  from optparse import OptionParser
->  from pm_sched_mc import *
+VxLAN test networks with the same multicast group might overlap with
+each other because the test has static VxLAN IP addresses and VNI.
 
-So nothing gets installed into lib/ anymore, right?
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/vxlan/vxlan_lib.sh |   11 ++++++++++-
+ 1 files changed, 10 insertions(+), 1 deletions(-)
 
-Why not just delete the line? Or am I missing something?
-
+diff --git a/testcases/network/vxlan/vxlan_lib.sh b/testcases/network/vxlan/vxlan_lib.sh
+index e8970a9..c374b43 100644
+--- a/testcases/network/vxlan/vxlan_lib.sh
++++ b/testcases/network/vxlan/vxlan_lib.sh
+@@ -142,8 +142,17 @@ vxlan_setup_subnet_uni()
+ 
+ vxlan_setup_subnet_multi()
+ {
++	tst_check_cmds "od"
++	local b1=$(($(od -An -d -N1 /dev/urandom) % 254 + 1))
++	local b2=$(($(od -An -d -N1 /dev/urandom) % 254 + 1))
++	local b3=$(($(od -An -d -N1 /dev/urandom) % 254 + 1))
++
+ 	local opt=
+-	[ "$TST_IPV6" ] && opt="group ff05::111" || opt="group 239.1.1.1"
++	if [ "$TST_IPV6" ]; then
++		opt="group ff05::$(printf '%x:%x%x' $b1 $b2 $b3)"
++	else
++		opt="group 239.$b1.$b2.$b3"
++	fi
+ 
+ 	tst_resm TINFO "setup VxLANv$ipver with multicast address: '$opt'"
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
