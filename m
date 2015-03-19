@@ -1,20 +1,34 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YVzgS-0008Ep-N6
-	for ltp-list@lists.sourceforge.net; Thu, 12 Mar 2015 09:45:40 +0000
-Date: Thu, 12 Mar 2015 10:44:54 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150312094453.GB29425@rei>
-References: <1425966954-887-1-git-send-email-liwang@redhat.com>
-	<20150311123018.GC3713@rei>
-	<1426151599.1400.32.camel@dhcp-13-206.nay.redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YYWSy-0000Fm-7Z
+	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 09:10:12 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YYWSx-0005Ca-BT
+	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 09:10:12 +0000
+Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t2J9A5s5021783
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:10:05 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t2J9A5hs013404
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:10:05 GMT
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t2J9A5XH031336
+	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:10:05 GMT
+Message-ID: <550A930F.2060505@oracle.com>
+Date: Thu, 19 Mar 2015 12:12:47 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1426151599.1400.32.camel@dhcp-13-206.nay.redhat.com>
-Subject: Re: [LTP] [PATCH v2] fs/acls: fix some permission issue in the
- testcase
+References: <1421324561-6680-1-git-send-email-alexey.kodanev@oracle.com>
+	<1421324561-6680-5-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1421324561-6680-5-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH 4/4] runtest/network-stress.appl: fix dns test
+	names
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,29 +41,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
 Hi!
-> > This looks more like TBROK as well. And even better the test should use
-> > tst_tmpdir() and tst_rmdir() to create temporary directories.
-> sorry, I don't know how to replace the $TMP/tacl by tst_rmdir() function
-> in this test.
-> any detail instruction here?
+On 01/15/2015 03:22 PM, Alexey Kodanev wrote:
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>   runtest/network_stress.appl |    8 ++------
+>   1 files changed, 2 insertions(+), 6 deletions(-)
+>
+> diff --git a/runtest/network_stress.appl b/runtest/network_stress.appl
+> index cd2a5d9..9aee474 100644
+> --- a/runtest/network_stress.appl
+> +++ b/runtest/network_stress.appl
+> @@ -2,19 +2,15 @@
+>   # Stress test for major application protocol (ssh, dns, http, ftp)
+>   #
+>   
+> -# ssh
+>   ssh4-stress ssh4-stress
+>   ssh6-stress ssh6-stress
+>   
+> -# dns
+> -dns4-stress dns4-stress
+> -dns6-stress dns6-stress
+> +dns4-stress dns-stress
+> +dns6-stress dns-stress -6
+>   
 
-The tst_tmpdir() creates an unique test temporary directory and changes
-the working directory to it.
+net/dns-stress patch-set applied.
 
-The testcases usually call tst_tmpdir() in the setup and then proceed
-with creating temporary files with local paths so that they end up
-creating files in the working directory.
+Thanks,
+Alexey
 
-The temporary directory is then deleted recursively with tst_rmdir() in
-test cleanup.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
