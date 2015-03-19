@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1YSc6M-0002Ez-BW
-	for ltp-list@lists.sourceforge.net; Tue, 03 Mar 2015 01:58:26 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YSc6K-0003Sp-W8
-	for ltp-list@lists.sourceforge.net; Tue, 03 Mar 2015 01:58:26 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t231vP7d013069
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Mar 2015 09:57:25 +0800
-Message-ID: <54F51500.7030004@cn.fujitsu.com>
-Date: Tue, 3 Mar 2015 09:57:20 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YYYi5-0005Ta-5f
+	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 11:33:57 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YYYi3-0004XG-DW
+	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 11:33:57 +0000
+Date: Thu, 19 Mar 2015 07:33:42 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1627971631.32976127.1426764822909.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1426742198-17967-2-git-send-email-bamvor.zhangjian@huawei.com>
+References: <1426742198-17967-1-git-send-email-bamvor.zhangjian@huawei.com>
+	<1426742198-17967-2-git-send-email-bamvor.zhangjian@huawei.com>
 MIME-Version: 1.0
-References: <1425346506-2271-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1425346506-2271-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] lib/tst_virt: rename is_kvm to is_qemu
-Reply-To: gaowanlong@cn.fujitsu.com
+Subject: Re: [LTP] [RFC PATCH 1/3] ARM64: ILP32: modify struct
+ kernel_sigaction
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,87 +29,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Zhang Jian(Bamvor)" <bamvor.zhangjian@huawei.com>
+Cc: dingtianhong@huawei.com, ltp-list@lists.sourceforge.net, bintian wang <bintian.wang@huawei.com>, apinski@cavium.com, yangyingliang@huawei.com
 
-On 03/03/2015 09:35 AM, Wei,Jiangang wrote:
-> KVM guest is on top of QEMU, and KVM is used by QEMU to
-> provide hardware-accelerated virtualization.
-> Although there is an association between them,
-> difference is very obvious.
+
+
+
+
+----- Original Message -----
+> From: "Zhang Jian(Bamvor)" <bamvor.zhangjian@huawei.com>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "bintian wang" <bintian.wang@huawei.com>, yangyingliang@huawei.com, apinski@cavium.com, dingtianhong@huawei.com
+> Sent: Thursday, 19 March, 2015 6:16:36 AM
+> Subject: [LTP] [RFC PATCH 1/3] ARM64: ILP32: modify struct kernel_sigaction
 > 
-> The function named is_kvm() is only can be applied to
-> determine QEMU, which couldn't distinguish QEMU and QEMU-KVM.
-> In other words,
-> Its' name doesn't match its' content and function.
-> so is_qemu() more reasonable.
-
-NACK, KVM is the name in the same stand of Xen, while qemu
-is just a client program. You are making wrong sense to others.
-
-Thanks,
-Wanlong Gao
-
+> From: Yang Yingliang <yangyingliang@huawei.com>
 > 
-> Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+> In ILP32, the sigaction struct is the same as AARCH64.
+> To allow for this to work, we use a long long fields and
+> then add extra casts when converting between the user
+> exposed struct and the kernel exposed struct.
+> The modify is came from a patch of glibc,
+> the commit is 9266f4b060f6("Add kernel_sigaction.h for AARCH64 ILP32").
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
->  include/test.h                                    | 2 +-
->  lib/tst_virt.c                                    | 6 +++---
->  testcases/kernel/syscalls/getrusage/getrusage04.c | 2 +-
->  3 files changed, 5 insertions(+), 5 deletions(-)
+>  include/lapi/rt_sigaction.h | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/include/test.h b/include/test.h
-> index f45bb36..12f913b 100644
-> --- a/include/test.h
-> +++ b/include/test.h
-> @@ -54,7 +54,7 @@
+> diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
+> index 46f6a50..2b1365a 100644
+> --- a/include/lapi/rt_sigaction.h
+> +++ b/include/lapi/rt_sigaction.h
+> @@ -34,9 +34,9 @@
+>  #define INVAL_SA_PTR ((void *)-1)
 >  
->  /* virt types for tst_is_virt() */
->  #define VIRT_XEN	1	/* xen dom0/domU */
-> -#define VIRT_KVM	2	/* only default virtual CPU */
-> +#define VIRT_QEMU	2	/* only default virtual CPU */
->  
->  /*
->   * Ensure that NUMSIGS is defined.
-> diff --git a/lib/tst_virt.c b/lib/tst_virt.c
-> index 87f73dc..d0d701e 100644
-> --- a/lib/tst_virt.c
-> +++ b/lib/tst_virt.c
-> @@ -26,7 +26,7 @@
->  #include "test.h"
->  #include "safe_macros.h"
->  
-> -static int is_kvm(void)
-> +static int is_qemu(void)
->  {
->  	FILE *cpuinfo;
->  	char line[64];
-> @@ -69,8 +69,8 @@ int tst_is_virt(int virt_type)
->  	switch (virt_type) {
->  	case VIRT_XEN:
->  		return is_xen();
-> -	case VIRT_KVM:
-> -		return is_kvm();
-> +	case VIRT_QEMU:
-> +		return is_qemu();
->  	}
->  	tst_brkm(TBROK, NULL, "invalid virt_type flag: %d", virt_type);
->  }
-> diff --git a/testcases/kernel/syscalls/getrusage/getrusage04.c b/testcases/kernel/syscalls/getrusage/getrusage04.c
-> index c2f34f4..f34f0c1 100644
-> --- a/testcases/kernel/syscalls/getrusage/getrusage04.c
-> +++ b/testcases/kernel/syscalls/getrusage/getrusage04.c
-> @@ -200,7 +200,7 @@ static void setup(void)
->  {
->  	tst_sig(NOFORK, DEF_HANDLER, cleanup);
->  
-> -	if (tst_is_virt(VIRT_XEN) || tst_is_virt(VIRT_KVM))
-> +	if (tst_is_virt(VIRT_XEN) || tst_is_virt(VIRT_QEMU))
->  		tst_brkm(TCONF, NULL, "This testcase is not supported on this"
->  		        " virtual machine.");
->  
-> 
+>  struct kernel_sigaction {
+> -	__sighandler_t k_sa_handler;
+> -	unsigned long sa_flags;
+> -	void (*sa_restorer) (void);
+> +	unsigned long long k_sa_handler;
+> +	unsigned long long sa_flags;
+> +	unsigned long long sa_restorer;
 
+Isn't this going to break i386? (long is 4, long long is 8).
+
+Regards,
+Jan
+
+>  	sigset_t sa_mask;
+>  };
+>  
+> @@ -159,7 +159,7 @@ static int ltp_rt_sigaction(int signum, const struct
+> sigaction *act,
+>  	if (act == INVAL_SA_PTR) {
+>  		kact_p = INVAL_SA_PTR;
+>  	} else if (act) {
+> -		kact.k_sa_handler = act->sa_handler;
+> +		kact.k_sa_handler = (unsigned long long)(uintptr_t)act->sa_handler;
+>  		memcpy(&kact.sa_mask, &act->sa_mask, sizeof(sigset_t));
+>  		kact.sa_flags = act->sa_flags;
+>  		kact.sa_restorer = NULL;
+> @@ -203,12 +203,12 @@ static int ltp_rt_sigaction(int signum, const struct
+> sigaction *act,
+>  
+>  	if (ret >= 0) {
+>  		if (oact && (oact != INVAL_SA_PTR)) {
+> -			oact->sa_handler = koact.k_sa_handler;
+> +			oact->sa_handler = (void*)(uintptr_t)koact.k_sa_handler;
+>  			memcpy(&oact->sa_mask, &koact.sa_mask,
+>  				sizeof(sigset_t));
+>  			oact->sa_flags = koact.sa_flags;
+>  #ifdef HAVE_SA_RESTORER
+> -			oact->sa_restorer = koact.sa_restorer;
+> +			oact->sa_restorer = (void*)(uintptr_t)koact.sa_restorer;
+>  #endif
+>  		}
+>  	}
+> --
+> 1.8.4.5
+> 
+> 
+> ------------------------------------------------------------------------------
+> Dive into the World of Parallel Programming The Go Parallel Website,
+> sponsored
+> by Intel and developed in partnership with Slashdot Media, is your hub for
+> all
+> things parallel software development, from weekly thought leadership blogs to
+> news, videos, case studies, tutorials and more. Take a look and join the
+> conversation now. http://goparallel.sourceforge.net/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
