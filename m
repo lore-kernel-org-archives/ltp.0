@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1YVAT9-0000kI-2E
-	for ltp-list@lists.sourceforge.net; Tue, 10 Mar 2015 03:04:31 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YVAT7-0002EC-EI
-	for ltp-list@lists.sourceforge.net; Tue, 10 Mar 2015 03:04:31 +0000
-Message-ID: <1425956655.30355.4.camel@dhcp-13-206.nay.redhat.com>
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 10 Mar 2015 11:04:15 +0800
-In-Reply-To: <1425954166.26995.19.camel@G08JYZSD130126.localdomain>
-References: <1425894193-17523-1-git-send-email-liwang@redhat.com>
-	<1425954166.26995.19.camel@G08JYZSD130126.localdomain>
-Mime-Version: 1.0
-Subject: Re: [LTP] [PATCH] fs/acls: fix some permission issue in the testcase
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YYwkQ-0004vl-Sg
+	for ltp-list@lists.sourceforge.net; Fri, 20 Mar 2015 13:13:58 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YYwkP-00038x-4T
+	for ltp-list@lists.sourceforge.net; Fri, 20 Mar 2015 13:13:58 +0000
+Date: Fri, 20 Mar 2015 09:13:46 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1985883687.604987.1426857226768.JavaMail.zimbra@redhat.com>
+In-Reply-To: <756183AD4F83414184BA6A0635785E70A55C4BDC@LGEVEXMBAPSVC1.LGE.NET>
+References: <756183AD4F83414184BA6A0635785E70A55C4B3C@LGEVEXMBAPSVC1.LGE.NET>
+	<1848532869.446726.1426839071051.JavaMail.zimbra@redhat.com>
+	<756183AD4F83414184BA6A0635785E70A55C4BDC@LGEVEXMBAPSVC1.LGE.NET>
+MIME-Version: 1.0
+Subject: Re: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,156 +29,174 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+To: Satish Gedela <satish.gedela@lge.com>
 Cc: ltp-list@lists.sourceforge.net
 
-hi,
 
-On Tue, 2015-03-10 at 10:22 +0800, Zeng Linggang wrote:
-> On Mon, 2015-03-09 at 17:43 +0800, Li Wang wrote:
-> > hi,
-> > 
-> > The acl_test01 failed with a series of permission issue when runing on RHEL:
-> > 	useradd: cannot set SELinux context for home directory
-> > 	/mnt/testarea/ltp-KIK01kZbbL/tacl/mount-ext3/acltest1
-> > 	Could not add test user acltest1.
-> > 	/dev/loop1 on /mnt/testarea/ltp-KIK01kZbbL/tacl/mount-ext3
-> > 	type ext3 (rw,relatime,seclabel,data=ordered)
-> > 	...
-> > 
-> > A proposal fixed patch and test results as below:
-> > 
-> > 	TESTING ACLS FOR USER root
-> > 	Trying extended acls for files
-> > 	Extended acls for files (PASSED)
-> > 	Trying extended acls for file links
-> > 	Extended acls for links (PASSED)
-> > 
-> > 	TESTING ACLS FOR 2ND USER acltest1
-> > 	Trying extended acls for files
-> > 	Extended acls for files (PASSED)
-> > 	Trying extended acls for file links
-> > 	Extended acls for links (PASSED)
-> > 	...
-> > 
-> > Thanks.
-> > 
-> > Signed-off-by: Li Wang <liwang@redhat.com>
-> > ---
-> >  testcases/kernel/fs/acls/acl_test01 | 25 +++++++++++++++++++++++--
-> >  1 file changed, 23 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
-> > index af65213..5aa5823 100755
-> > --- a/testcases/kernel/fs/acls/acl_test01
-> > +++ b/testcases/kernel/fs/acls/acl_test01
-> > @@ -52,15 +52,30 @@ FILE_ACL="$TMP/tacl/mount-ext3/test_file"
-> >  FILE_ACL_LINK="$TMP/tacl/mount-ext3/test_file_link"
-> >  TCbin=`pwd`
-> >  
-> > +SESTATUS=`/usr/sbin/sestatus |grep "SELinux status"|awk '{print $3}'`
-> > +if [ "$SESTATUS" = "enabled" ]; then
-> > +	export SELINUX=`getenforce`
-> > +else
-> > +	export SELINUX="disabled"
-> > +
-> > +fi
-> > +
-> >  #-----------------------------------------------------------------------
-> >  # FUNCTION:  do_setup
-> >  #-----------------------------------------------------------------------
-> >  
-> >  do_setup(){
-> >  
-> > +	tst_require_root
-> > +
-> >  	rm -f $FILE_ACL
-> >  	rm -f $FILE_ACL_LINK
-> >  
-> > +	if [ "$SELINUX" = "Enforcing" ]; then
-> > +		echo "set the SElinux to Permissive."
-> > +		setenforce 0
-> > +	fi
-> > +
-> >  	if [ "x$TEST_USER1_HOMEDIR" = "x" ]; then
-> >  		echo "Could not find user $TEST_USER1's home directory."
-> >  		exit 1
-> > @@ -91,6 +106,11 @@ do_cleanup() {
-> >  	mount | grep "$TMP/tacl/mount-ext3" && umount -d $TMP/tacl/mount-ext3
-> >  	[ "x$LOOP_DEV" != x ] && losetup -d $LOOP_DEV
-> >  	rm -rf $TMP/tacl
-> > +
-> > +	if [ "$SELNUX" = "Enforcing" ]; then
-> 
-> At the begin, SELINUX is Enforcing.
-> Then you set SELINUX to Permissive.
-> Here $SELINUX(`getenforce`) is also Permissive, not Enforcing.
-> Now you could not set it to Enforcing.
-> 
-> How about:
-> 1.
-> SELINUX=$(getenforce)
-Yeah, we needn't to consider the Disabled and Permissive situation.
-thanks for reviewing, I will post a V2.
 
-Li Wang
-> 
-> 2.
-> # We could not consider whether the SElinux is Disabled or Permissive.
-> # We only set it to Permissive when it is Enforcing.
-> if [ "${SELINUX} = "Enforcing" ]; then
-> 	echo "set the SElinux to Permissive."
-> 	setenforce 0
-> fi
-> 
-> ...
-> 
-> 3.
-> # We set it back to Enforcing.
-> if [ "${SELINUX} = "Enforcing" ]; then
-> 	setenforce 1
-> fi
-> 
-> ...
-> 
-> Thanks,
-> Zeng
-> 
-> > +		echo "set the SElinux to Enforcing."
-> > +		setenforce 1
-> > +	fi
-> >  }
-> >  
-> >  #-----------------------------------------------------------------------
-> > @@ -177,7 +197,7 @@ then
-> >  	setfacl -m u:$TEST_USER1:r $FILE_ACL
-> >  
-> >  	echo "Trying extended acls for files"
-> > -	${TCbin}/acl_file_test $FILE_ACL
-> > +	$TMP/tacl/mount-ext3/acl_file_test $FILE_ACL
-> >  	if [ $? -ne 0 ]
-> >  	then
-> >  		EXIT_CODE=1
-> > @@ -187,7 +207,7 @@ then
-> >  	fi
-> >  
-> >  	echo "Trying extended acls for file links"
-> > -	${TCbin}/acl_link_test $FILE_ACL_LINK
-> > +	$TMP/tacl/mount-ext3/acl_link_test $FILE_ACL_LINK
-> >  	if [ $? -ne 0 ]
-> >  	then
-> >  		EXIT_CODE=1
-> > @@ -227,6 +247,7 @@ else
-> >  		echo "Extended acls for links (PASSED)"
-> >  	fi
-> >  
-> > +	cp ${TCbin}/acl_link_test ${TCbin}/acl_file_test $TMP/tacl/mount-ext3/
-> >  	chown $TEST_USER1 $FILE_ACL
-> >  	chown $TEST_USER1 $FILE_ACL_LINK
-> >  
-> 
-> 
 
+
+----- Original Message -----
+> From: "Satish Gedela" <satish.gedela@lge.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Friday, 20 March, 2015 12:42:00 PM
+> Subject: RE: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
+> 
+> 
+> 
+> > -----Original Message-----
+> > From: Jan Stancek [mailto:jstancek@redhat.com]
+> > Sent: Friday, March 20, 2015 1:41 PM
+> > To: Satish Gedela/LGSIA CSP-2(satish.gedela@lge.com)
+> > Cc: ltp-list@lists.sourceforge.net
+> > Subject: Re: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
+> > 
+> > 
+> > 
+> > ----- Original Message -----
+> > > From: "Satish Gedela" <satish.gedela@lge.com>
+> > > To: ltp-list@lists.sourceforge.net
+> > > Sent: Friday, 20 March, 2015 6:28:34 AM
+> > > Subject: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
+> > >
+> > > Dear all,
+> > >
+> > > I am newbie to open source, forgive me with text format I am trying to
+> > > run  LTP with kernel 3.16 on target board having cortex A9 processor ,
+> > > Facing issue with below test case:
+> > > Test script  name: "memcg_function_test.sh"
+> > > Test case description:  "Test mmap(locked) + alloc_mem > limit_in_bytes"
+> > >
+> > > Analysis:  memcg_function_test.sh   -----> test_proc_kill
+> > > 						                  ------->memcg_lib.sh
+> > >
+> > -------->memcg_process
+> > >     memcg_process
+> > >
+> > > ------>ltp/testcases/kernel/controllers/memcg/functional/memcg_process
+> > > .c
+> > >
+> > > mmap_lock1 () function is calling in memcg_process.c and it calls mmap
+> > > function with flags MAP_PRIVATE | MAP_ANYNOMOUS | MAP_LOCKED
+> > > {noformat} p = mmap(NULL, memsize, PROT_WRITE | PROT_READ,
+> > >       MAP_PRIVATE | MAP_LOCKED, 0, 0); {noformat}
+> > >
+> > > but man page of mmap is mentioned as:
+> > > {noformat}
+> > > MAP_ANONYMOUS
+> > >         The  mapping  is  not  backed  by  any  file; its contents are
+> > >         initialized to zero.  The fd and offset arguments are
+> > >         ignored; however, some implementations require fd to be -1 if
+> > >         MAP_ANONYMOUS (or MAP_ANON) is specified, and portable
+> > >         applications should ensure this.  The use of MAP_ANONYMOUS in
+> > >         conjunction with MAP_SHARED is only supported on Linux
+> > >         since kernel 2.4.
+> > > {noformat}
+> > >
+> > > In my case, we are trying to lock the pages with flags  MAP_PRIVATE |
+> > > MAP_ANYNOMOUS |  MAP_LOCKED  and  it is failing.
+> > 
+> > Hi,
+> > 
+> > failing how? EINVAL or something else?
+> > Do you see mmap14 failing as well? If so, can you run it via strace?
+> > 
+> > Regards,
+> > Jan
+> > 
+> Hi Jan,
+> Failing  to kill process PID.
+
+It seems that MAP_LOCKED can now silently fail.
+
+https://lkml.org/lkml/2015/1/19/28
+http://marc.info/?l=linux-mm&m=142122902313315&w=2
+
+Those posts contain also kernel commit IDs that are likely responsible
+for same problem you see.
+
+Regards,
+Jan
+
+> Not getting EINVAL
+> I did not test mmap14 but I replaced 5th argument with  '-1' instead of '0'
+> (Based on mmap14 test case)
+> still getting test case failure.
+> 
+> Test procedure followed:
+> 
+> Test case description : "kill the process if memory limit exceeds ,
+> Process memory locked through MAP_LOCKED  in test_ case_ 14 and using mlock()
+> in test_case_ 15"
+> 
+> Running LTP on work station using
+> 	$make configure
+> 	$make
+> 	$make install
+> And copy ltp , kernel, sysinfo.sh, tools  into target directory " /opt "
+> and on target running below commnad
+> 
+> #./runltp -f controllers  > log.txt
+> 
+> From log report, identified mmap-lock1 (MAP_LOCKED)  is failing and
+> mmap-lock2 (mlock2)  is passing
+> So from the memcg_process.c file
+> 	mmap_lock1() is using mmap () with MAP_PRIVATE | MAP_ANYNOMOUS | MAP_LOCKED
+> 	mmap_lock2 is using mmap () with MAP_PRIVATE | MAP_ANYNOMOUS
+> 	and mlock() function call.
+> 
+>  In process of debugging, I replaced mmap_lock1 with mmap_lock2 , in test
+>  _case_ 14 and it is working successfully.
+> So I identified issue is in mmap() call and
+> replaced flag as "MAP_SHARED | MAP_LOCKED"  and  "MAP_PRIVATE  | MAP_LOCKED
+> "in mmap,
+> it is working successfully in both cases but not with MAP_ANYNOMOUS flag.
+> 
+> Regards
+> Satish.G
+> 
+> > > and with  MAP_SHARED | MAP_ANYNOMOUS |  MAP_LOCKED , it is failing
+> > but
+> > > with MAP_PRIVATE | MAP_LOCKED and with MAP_SHARED |
+> > MAP_LOCKED it is
+> > > working.
+> > >
+> > > Is there any changes made to kernel or test case has to update with
+> > > MAP_SHARED instead of MAP_PRIVATE flag.
+> > >
+> > > Thank you in advance.
+> > > Regards
+> > > Satish.G
+> > >
+> > >
+> > >
+> > >
+> > >
+> > >
+> > >
+> > >
+> > 
+> > 
+> > 
+> > >
+> > >
+> > >
+> > >
+> > >
+> > > ----------------------------------------------------------------------
+> > > -------- Dive into the World of Parallel Programming The Go Parallel
+> > > Website, sponsored by Intel and developed in partnership with Slashdot
+> > > Media, is your hub for all things parallel software development, from
+> > > weekly thought leadership blogs to news, videos, case studies,
+> > > tutorials and more. Take a look and join the conversation now.
+> > > http://goparallel.sourceforge.net/
+> > > _______________________________________________
+> > > Ltp-list mailing list
+> > > Ltp-list@lists.sourceforge.net
+> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> > >
+> 
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
