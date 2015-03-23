@@ -1,27 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1YShgi-0004nV-LL
-	for ltp-list@lists.sourceforge.net; Tue, 03 Mar 2015 07:56:20 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YShgh-0006cU-3T
-	for ltp-list@lists.sourceforge.net; Tue, 03 Mar 2015 07:56:20 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t237tJDh005706
-	for <ltp-list@lists.sourceforge.net>; Tue, 3 Mar 2015 15:55:19 +0800
-Message-ID: <54F568E5.6080408@cn.fujitsu.com>
-Date: Tue, 3 Mar 2015 15:55:17 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YZwG6-0001Pw-M5
+	for ltp-list@lists.sourceforge.net; Mon, 23 Mar 2015 06:54:46 +0000
+Date: Mon, 23 Mar 2015 07:53:53 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150323065353.GC3618@rei>
+References: <756183AD4F83414184BA6A0635785E70A55C4B3C@LGEVEXMBAPSVC1.LGE.NET>
+	<1848532869.446726.1426839071051.JavaMail.zimbra@redhat.com>
+	<756183AD4F83414184BA6A0635785E70A55C4BDC@LGEVEXMBAPSVC1.LGE.NET>
+	<1985883687.604987.1426857226768.JavaMail.zimbra@redhat.com>
+	<550C296E.3080109@st.com> <20150322064333.GM4504@vapier>
 MIME-Version: 1.0
-References: <1425346506-2271-1-git-send-email-weijg.fnst@cn.fujitsu.com>	
-	<54F51500.7030004@cn.fujitsu.com>
-	<1425360254.1986.8.camel@localhost>
-In-Reply-To: <1425360254.1986.8.camel@localhost>
-Subject: Re: [LTP] [PATCH] lib/tst_virt: rename is_kvm to is_qemu
-Reply-To: gaowanlong@cn.fujitsu.com
+Content-Disposition: inline
+In-Reply-To: <20150322064333.GM4504@vapier>
+Subject: Re: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,78 +25,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?UTF-8?B?IldlaSwgSmlhbmdhbmcv6a2PIOW7uuWImiI=?= <weijg.fnst@cn.fujitsu.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Carmelo Amoroso <carmelo.amoroso@st.com>, ltp-list@lists.sourceforge.net
 
-T24gMDMvMDMvMjAxNSAwMToyNCBQTSwgV2VpLCBKaWFuZ2FuZy/prY8g5bu65YiaIHdyb3RlOgo+
-IE9uIFR1ZSwgMjAxNS0wMy0wMyBhdCAwOTo1NyArMDgwMCwgV2FubG9uZyBHYW8gd3JvdGU6Cj4+
-IE9uIDAzLzAzLzIwMTUgMDk6MzUgQU0sIFdlaSxKaWFuZ2FuZyB3cm90ZToKPj4+IEtWTSBndWVz
-dCBpcyBvbiB0b3Agb2YgUUVNVSwgYW5kIEtWTSBpcyB1c2VkIGJ5IFFFTVUgdG8KPj4+IHByb3Zp
-ZGUgaGFyZHdhcmUtYWNjZWxlcmF0ZWQgdmlydHVhbGl6YXRpb24uCj4+PiBBbHRob3VnaCB0aGVy
-ZSBpcyBhbiBhc3NvY2lhdGlvbiBiZXR3ZWVuIHRoZW0sCj4+PiBkaWZmZXJlbmNlIGlzIHZlcnkg
-b2J2aW91cy4KPj4+Cj4+PiBUaGUgZnVuY3Rpb24gbmFtZWQgaXNfa3ZtKCkgaXMgb25seSBjYW4g
-YmUgYXBwbGllZCB0bwo+Pj4gZGV0ZXJtaW5lIFFFTVUsIHdoaWNoIGNvdWxkbid0IGRpc3Rpbmd1
-aXNoIFFFTVUgYW5kIFFFTVUtS1ZNLgo+Pj4gSW4gb3RoZXIgd29yZHMsCj4+PiBJdHMnIG5hbWUg
-ZG9lc24ndCBtYXRjaCBpdHMnIGNvbnRlbnQgYW5kIGZ1bmN0aW9uLgo+Pj4gc28gaXNfcWVtdSgp
-IG1vcmUgcmVhc29uYWJsZS4KPj4KPj4gTkFDSywgS1ZNIGlzIHRoZSBuYW1lIGluIHRoZSBzYW1l
-IHN0YW5kIG9mIFhlbiwgd2hpbGUgcWVtdQo+PiBpcyBqdXN0IGEgY2xpZW50IHByb2dyYW0uIFlv
-dSBhcmUgbWFraW5nIHdyb25nIHNlbnNlIHRvIG90aGVycy4KPiB3cm9uZyBzZW5zZT8KPiBJJ20g
-bm90IHN1cmUgb2Ygd2hhdCB5b3Ugd2FudCB0byBzYXkuCj4gZG8geW91IGV4cGxhaW4gaXQgbW9y
-ZSBjbGVhcmx5PyAKPiBUaGFua3MgaW4gYWR2YW5jZS4KPiAKPiBJbiBteSBvcGluaW9uLAo+IFFF
-TVUgc2hvdWxkIGJlIGluIHRoZSBzYW1lIGxldmVsIG9mIFhlbiwgbm90IEtWTS4KPiBYZW4tSFZN
-IGFuZCBLVk0gYXJlIGluIHRoZSBzYW1lIGxldmVsLgo+IAo+IEkgaGFkIHRhbGsgYWJvdXQgaXQg
-d2l0aCB0aGUgYXV0aG9yIG9mIHRoaXMgZnVuY3Rpb24gYnkgbWFpbGxpc3QuCj4gSGUgc2FpZCAi
-SSdtIG5vdCBhZ2FpbnN0IHJlbmFtaW5nIFZJUlRfS1ZNIHRvIFZJUlRfUUVNVSBhcyBpdCB3b3Vs
-ZCBiZQo+IHRlY2huaWNhbGx5IG1vcmUgY29ycmVjdCIuCgpPSywgc2luY2UgdGhpcyBwcm9ibGVt
-IGlzIG5vdyByYWlzZWQsIEknbGwgc2VuZCBhIHBhdGNoIHRvIHJlZmFjdG9yIHRoZQpjdXJyZW50
-IFZJUlQgZGV0ZWN0IGNvZGUsIHBsZWFzZSByZXZpZXcgbXkgcGF0Y2guCgpUaGFua3MsCldhbmxv
-bmcgR2FvCgo+IAo+IFRoYW5rcywKPiB3ZWkKPj4KPj4gVGhhbmtzLAo+PiBXYW5sb25nIEdhbwo+
-Pgo+Pj4KPj4+IFNpZ25lZC1vZmYtYnk6IFdlaSxKaWFuZ2FuZyA8d2VpamcuZm5zdEBjbi5mdWpp
-dHN1LmNvbT4KPj4+IC0tLQo+Pj4gIGluY2x1ZGUvdGVzdC5oICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAyICstCj4+PiAgbGliL3RzdF92aXJ0LmMgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICB8IDYgKysrLS0tCj4+PiAgdGVzdGNhc2VzL2tlcm5lbC9zeXNj
-YWxscy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYyB8IDIgKy0KPj4+ICAzIGZpbGVzIGNoYW5nZWQs
-IDUgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkKPj4+Cj4+PiBkaWZmIC0tZ2l0IGEvaW5j
-bHVkZS90ZXN0LmggYi9pbmNsdWRlL3Rlc3QuaAo+Pj4gaW5kZXggZjQ1YmIzNi4uMTJmOTEzYiAx
-MDA2NDQKPj4+IC0tLSBhL2luY2x1ZGUvdGVzdC5oCj4+PiArKysgYi9pbmNsdWRlL3Rlc3QuaAo+
-Pj4gQEAgLTU0LDcgKzU0LDcgQEAKPj4+ICAKPj4+ICAvKiB2aXJ0IHR5cGVzIGZvciB0c3RfaXNf
-dmlydCgpICovCj4+PiAgI2RlZmluZSBWSVJUX1hFTgkxCS8qIHhlbiBkb20wL2RvbVUgKi8KPj4+
-IC0jZGVmaW5lIFZJUlRfS1ZNCTIJLyogb25seSBkZWZhdWx0IHZpcnR1YWwgQ1BVICovCj4+PiAr
-I2RlZmluZSBWSVJUX1FFTVUJMgkvKiBvbmx5IGRlZmF1bHQgdmlydHVhbCBDUFUgKi8KPj4+ICAK
-Pj4+ICAvKgo+Pj4gICAqIEVuc3VyZSB0aGF0IE5VTVNJR1MgaXMgZGVmaW5lZC4KPj4+IGRpZmYg
-LS1naXQgYS9saWIvdHN0X3ZpcnQuYyBiL2xpYi90c3RfdmlydC5jCj4+PiBpbmRleCA4N2Y3M2Rj
-Li5kMGQ3MDFlIDEwMDY0NAo+Pj4gLS0tIGEvbGliL3RzdF92aXJ0LmMKPj4+ICsrKyBiL2xpYi90
-c3RfdmlydC5jCj4+PiBAQCAtMjYsNyArMjYsNyBAQAo+Pj4gICNpbmNsdWRlICJ0ZXN0LmgiCj4+
-PiAgI2luY2x1ZGUgInNhZmVfbWFjcm9zLmgiCj4+PiAgCj4+PiAtc3RhdGljIGludCBpc19rdm0o
-dm9pZCkKPj4+ICtzdGF0aWMgaW50IGlzX3FlbXUodm9pZCkKPj4+ICB7Cj4+PiAgCUZJTEUgKmNw
-dWluZm87Cj4+PiAgCWNoYXIgbGluZVs2NF07Cj4+PiBAQCAtNjksOCArNjksOCBAQCBpbnQgdHN0
-X2lzX3ZpcnQoaW50IHZpcnRfdHlwZSkKPj4+ICAJc3dpdGNoICh2aXJ0X3R5cGUpIHsKPj4+ICAJ
-Y2FzZSBWSVJUX1hFTjoKPj4+ICAJCXJldHVybiBpc194ZW4oKTsKPj4+IC0JY2FzZSBWSVJUX0tW
-TToKPj4+IC0JCXJldHVybiBpc19rdm0oKTsKPj4+ICsJY2FzZSBWSVJUX1FFTVU6Cj4+PiArCQly
-ZXR1cm4gaXNfcWVtdSgpOwo+Pj4gIAl9Cj4+PiAgCXRzdF9icmttKFRCUk9LLCBOVUxMLCAiaW52
-YWxpZCB2aXJ0X3R5cGUgZmxhZzogJWQiLCB2aXJ0X3R5cGUpOwo+Pj4gIH0KPj4+IGRpZmYgLS1n
-aXQgYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldHJ1c2FnZS9nZXRydXNhZ2UwNC5jIGIv
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRydXNhZ2UvZ2V0cnVzYWdlMDQuYwo+Pj4gaW5k
-ZXggYzJmMzRmNC4uZjM0ZjBjMSAxMDA2NDQKPj4+IC0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvZ2V0cnVzYWdlL2dldHJ1c2FnZTA0LmMKPj4+IEBAIC0yMDAsNyArMjAwLDcgQEAg
-c3RhdGljIHZvaWQgc2V0dXAodm9pZCkKPj4+ICB7Cj4+PiAgCXRzdF9zaWcoTk9GT1JLLCBERUZf
-SEFORExFUiwgY2xlYW51cCk7Cj4+PiAgCj4+PiAtCWlmICh0c3RfaXNfdmlydChWSVJUX1hFTikg
-fHwgdHN0X2lzX3ZpcnQoVklSVF9LVk0pKQo+Pj4gKwlpZiAodHN0X2lzX3ZpcnQoVklSVF9YRU4p
-IHx8IHRzdF9pc192aXJ0KFZJUlRfUUVNVSkpCj4+PiAgCQl0c3RfYnJrbShUQ09ORiwgTlVMTCwg
-IlRoaXMgdGVzdGNhc2UgaXMgbm90IHN1cHBvcnRlZCBvbiB0aGlzIgo+Pj4gIAkJICAgICAgICAi
-IHZpcnR1YWwgbWFjaGluZS4iKTsKPj4+ICAKPj4+Cj4+Cj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCkRpdmUgaW50byB0aGUgV29ybGQgb2YgUGFyYWxsZWwgUHJvZ3JhbW1pbmcgVGhlIEdvIFBh
-cmFsbGVsIFdlYnNpdGUsIHNwb25zb3JlZApieSBJbnRlbCBhbmQgZGV2ZWxvcGVkIGluIHBhcnRu
-ZXJzaGlwIHdpdGggU2xhc2hkb3QgTWVkaWEsIGlzIHlvdXIgaHViIGZvciBhbGwKdGhpbmdzIHBh
-cmFsbGVsIHNvZnR3YXJlIGRldmVsb3BtZW50LCBmcm9tIHdlZWtseSB0aG91Z2h0IGxlYWRlcnNo
-aXAgYmxvZ3MgdG8KbmV3cywgdmlkZW9zLCBjYXNlIHN0dWRpZXMsIHR1dG9yaWFscyBhbmQgbW9y
-ZS4gVGFrZSBhIGxvb2sgYW5kIGpvaW4gdGhlIApjb252ZXJzYXRpb24gbm93LiBodHRwOi8vZ29w
-YXJhbGxlbC5zb3VyY2Vmb3JnZS5uZXQvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3Vy
-Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
-bHRwLWxpc3QK
+Hi!
+> > So, should the LTP be updated accordingly ?
+> 
+> if the kernel has changed behavior, LTP needs to adapt to it (assuming the 
+> kernel people changed the behavior on purpose)
+
+The kernel contradicts the manual page here and the change was
+unintentional, it's side effect from fixes for deadlock.
+
+Michal Hocko was looking into the issue, he said that they will likely
+discuss it on LSMM. I will ask him if they agreed on what should be done
+about it.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
