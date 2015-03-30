@@ -1,22 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YYwkQ-0004vl-Sg
-	for ltp-list@lists.sourceforge.net; Fri, 20 Mar 2015 13:13:58 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YYwkP-00038x-4T
-	for ltp-list@lists.sourceforge.net; Fri, 20 Mar 2015 13:13:58 +0000
-Date: Fri, 20 Mar 2015 09:13:46 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1985883687.604987.1426857226768.JavaMail.zimbra@redhat.com>
-In-Reply-To: <756183AD4F83414184BA6A0635785E70A55C4BDC@LGEVEXMBAPSVC1.LGE.NET>
-References: <756183AD4F83414184BA6A0635785E70A55C4B3C@LGEVEXMBAPSVC1.LGE.NET>
-	<1848532869.446726.1426839071051.JavaMail.zimbra@redhat.com>
-	<756183AD4F83414184BA6A0635785E70A55C4BDC@LGEVEXMBAPSVC1.LGE.NET>
-MIME-Version: 1.0
-Subject: Re: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwang@redhat.com>) id 1YcWWQ-0003wl-K7
+	for ltp-list@lists.sourceforge.net; Mon, 30 Mar 2015 10:02:18 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YcWWP-0008Ts-0a
+	for ltp-list@lists.sourceforge.net; Mon, 30 Mar 2015 10:02:18 +0000
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 30 Mar 2015 18:01:53 +0800
+Message-Id: <1427709713-19481-1-git-send-email-liwang@redhat.com>
+Subject: [LTP] [PATCH] perfcounters: do cleanup for runtest/perfcounters
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,177 +21,37 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Satish Gedela <satish.gedela@lge.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+These two cases(kernel/performance_counters) had been moved to
+syscalls/perf_enven_open, seems like we should delete the void
+case calling.
 
+kernel/performance_counters: move tests to syscalls/perf_event_open directory.
+commit ff5bdf7ccc8e133b4cd0a0794509edb6102ca525
 
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ runtest/perfcounters | 2 --
+ 1 file changed, 2 deletions(-)
 
+diff --git a/runtest/perfcounters b/runtest/perfcounters
+index 73cd1d2..daa9851 100644
+--- a/runtest/perfcounters
++++ b/runtest/perfcounters
+@@ -1,5 +1,3 @@
+ # Test some Basic Performance Counters
+ 
+-performance_counter01 performance_counter01
+-performance_counter02 performance_counter02
+ 
+-- 
+1.8.3.1
 
------ Original Message -----
-> From: "Satish Gedela" <satish.gedela@lge.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Friday, 20 March, 2015 12:42:00 PM
-> Subject: RE: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
-> 
-> 
-> 
-> > -----Original Message-----
-> > From: Jan Stancek [mailto:jstancek@redhat.com]
-> > Sent: Friday, March 20, 2015 1:41 PM
-> > To: Satish Gedela/LGSIA CSP-2(satish.gedela@lge.com)
-> > Cc: ltp-list@lists.sourceforge.net
-> > Subject: Re: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
-> > 
-> > 
-> > 
-> > ----- Original Message -----
-> > > From: "Satish Gedela" <satish.gedela@lge.com>
-> > > To: ltp-list@lists.sourceforge.net
-> > > Sent: Friday, 20 March, 2015 6:28:34 AM
-> > > Subject: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
-> > >
-> > > Dear all,
-> > >
-> > > I am newbie to open source, forgive me with text format I am trying to
-> > > run  LTP with kernel 3.16 on target board having cortex A9 processor ,
-> > > Facing issue with below test case:
-> > > Test script  name: "memcg_function_test.sh"
-> > > Test case description:  "Test mmap(locked) + alloc_mem > limit_in_bytes"
-> > >
-> > > Analysis:  memcg_function_test.sh   -----> test_proc_kill
-> > > 						                  ------->memcg_lib.sh
-> > >
-> > -------->memcg_process
-> > >     memcg_process
-> > >
-> > > ------>ltp/testcases/kernel/controllers/memcg/functional/memcg_process
-> > > .c
-> > >
-> > > mmap_lock1 () function is calling in memcg_process.c and it calls mmap
-> > > function with flags MAP_PRIVATE | MAP_ANYNOMOUS | MAP_LOCKED
-> > > {noformat} p = mmap(NULL, memsize, PROT_WRITE | PROT_READ,
-> > >       MAP_PRIVATE | MAP_LOCKED, 0, 0); {noformat}
-> > >
-> > > but man page of mmap is mentioned as:
-> > > {noformat}
-> > > MAP_ANONYMOUS
-> > >         The  mapping  is  not  backed  by  any  file; its contents are
-> > >         initialized to zero.  The fd and offset arguments are
-> > >         ignored; however, some implementations require fd to be -1 if
-> > >         MAP_ANONYMOUS (or MAP_ANON) is specified, and portable
-> > >         applications should ensure this.  The use of MAP_ANONYMOUS in
-> > >         conjunction with MAP_SHARED is only supported on Linux
-> > >         since kernel 2.4.
-> > > {noformat}
-> > >
-> > > In my case, we are trying to lock the pages with flags  MAP_PRIVATE |
-> > > MAP_ANYNOMOUS |  MAP_LOCKED  and  it is failing.
-> > 
-> > Hi,
-> > 
-> > failing how? EINVAL or something else?
-> > Do you see mmap14 failing as well? If so, can you run it via strace?
-> > 
-> > Regards,
-> > Jan
-> > 
-> Hi Jan,
-> Failing  to kill process PID.
-
-It seems that MAP_LOCKED can now silently fail.
-
-https://lkml.org/lkml/2015/1/19/28
-http://marc.info/?l=linux-mm&m=142122902313315&w=2
-
-Those posts contain also kernel commit IDs that are likely responsible
-for same problem you see.
-
-Regards,
-Jan
-
-> Not getting EINVAL
-> I did not test mmap14 but I replaced 5th argument with  '-1' instead of '0'
-> (Based on mmap14 test case)
-> still getting test case failure.
-> 
-> Test procedure followed:
-> 
-> Test case description : "kill the process if memory limit exceeds ,
-> Process memory locked through MAP_LOCKED  in test_ case_ 14 and using mlock()
-> in test_case_ 15"
-> 
-> Running LTP on work station using
-> 	$make configure
-> 	$make
-> 	$make install
-> And copy ltp , kernel, sysinfo.sh, tools  into target directory " /opt "
-> and on target running below commnad
-> 
-> #./runltp -f controllers  > log.txt
-> 
-> From log report, identified mmap-lock1 (MAP_LOCKED)  is failing and
-> mmap-lock2 (mlock2)  is passing
-> So from the memcg_process.c file
-> 	mmap_lock1() is using mmap () with MAP_PRIVATE | MAP_ANYNOMOUS | MAP_LOCKED
-> 	mmap_lock2 is using mmap () with MAP_PRIVATE | MAP_ANYNOMOUS
-> 	and mlock() function call.
-> 
->  In process of debugging, I replaced mmap_lock1 with mmap_lock2 , in test
->  _case_ 14 and it is working successfully.
-> So I identified issue is in mmap() call and
-> replaced flag as "MAP_SHARED | MAP_LOCKED"  and  "MAP_PRIVATE  | MAP_LOCKED
-> "in mmap,
-> it is working successfully in both cases but not with MAP_ANYNOMOUS flag.
-> 
-> Regards
-> Satish.G
-> 
-> > > and with  MAP_SHARED | MAP_ANYNOMOUS |  MAP_LOCKED , it is failing
-> > but
-> > > with MAP_PRIVATE | MAP_LOCKED and with MAP_SHARED |
-> > MAP_LOCKED it is
-> > > working.
-> > >
-> > > Is there any changes made to kernel or test case has to update with
-> > > MAP_SHARED instead of MAP_PRIVATE flag.
-> > >
-> > > Thank you in advance.
-> > > Regards
-> > > Satish.G
-> > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> > >
-> > 
-> > 
-> > 
-> > >
-> > >
-> > >
-> > >
-> > >
-> > > ----------------------------------------------------------------------
-> > > -------- Dive into the World of Parallel Programming The Go Parallel
-> > > Website, sponsored by Intel and developed in partnership with Slashdot
-> > > Media, is your hub for all things parallel software development, from
-> > > weekly thought leadership blogs to news, videos, case studies,
-> > > tutorials and more. Take a look and join the conversation now.
-> > > http://goparallel.sourceforge.net/
-> > > _______________________________________________
-> > > Ltp-list mailing list
-> > > Ltp-list@lists.sourceforge.net
-> > > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > >
-> 
 
 ------------------------------------------------------------------------------
 Dive into the World of Parallel Programming The Go Parallel Website, sponsored
