@@ -2,30 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YYWKl-0008Sv-CL
-	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 09:01:43 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YYWKj-0004yw-Sx
-	for ltp-list@lists.sourceforge.net; Thu, 19 Mar 2015 09:01:43 +0000
-Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t2J91Zug012642
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:01:35 GMT
-Received: from aserz7022.oracle.com (aserz7022.oracle.com [141.146.126.231])
-	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t2J91YGA031450
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:01:35 GMT
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-	by aserz7022.oracle.com (8.14.4+Sun/8.14.4) with ESMTP id
-	t2J91Yt9003477
-	for <ltp-list@lists.sourceforge.net>; Thu, 19 Mar 2015 09:01:34 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 19 Mar 2015 12:03:56 +0300
-Message-Id: <1426755836-24324-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] network/vxlan: fill mulicast address with random
-	numbers
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1Ycqwu-0005MJ-Kl
+	for ltp-list@lists.sourceforge.net; Tue, 31 Mar 2015 07:51:00 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ycqws-0000uQ-Es
+	for ltp-list@lists.sourceforge.net; Tue, 31 Mar 2015 07:51:00 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t2V7nlj6000369
+	for <ltp-list@lists.sourceforge.net>; Tue, 31 Mar 2015 15:49:47 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Tue, 31 Mar 2015 15:46:10 +0800
+Message-ID: <1427787975-10668-1-git-send-email-gux.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH 1/6] lib6/runcc.c: use TCONF instead of TBROK when no
+	C compiler is present
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,46 +27,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-VxLAN test networks with the same multicast group might overlap with
-each other because the test has static VxLAN IP addresses and VNI.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
 ---
- testcases/network/vxlan/vxlan_lib.sh |   11 ++++++++++-
- 1 files changed, 10 insertions(+), 1 deletions(-)
+ testcases/network/lib6/runcc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/network/vxlan/vxlan_lib.sh b/testcases/network/vxlan/vxlan_lib.sh
-index e8970a9..c374b43 100644
---- a/testcases/network/vxlan/vxlan_lib.sh
-+++ b/testcases/network/vxlan/vxlan_lib.sh
-@@ -142,8 +142,17 @@ vxlan_setup_subnet_uni()
- 
- vxlan_setup_subnet_multi()
- {
-+	tst_check_cmds "od"
-+	local b1=$(($(od -An -d -N1 /dev/urandom) % 254 + 1))
-+	local b2=$(($(od -An -d -N1 /dev/urandom) % 254 + 1))
-+	local b3=$(($(od -An -d -N1 /dev/urandom) % 254 + 1))
-+
- 	local opt=
--	[ "$TST_IPV6" ] && opt="group ff05::111" || opt="group 239.1.1.1"
-+	if [ "$TST_IPV6" ]; then
-+		opt="group ff05::$(printf '%x:%x%x' $b1 $b2 $b3)"
-+	else
-+		opt="group 239.$b1.$b2.$b3"
-+	fi
- 
- 	tst_resm TINFO "setup VxLANv$ipver with multicast address: '$opt'"
- 
+diff --git a/testcases/network/lib6/runcc.c b/testcases/network/lib6/runcc.c
+index 91a0b16..3a89598 100644
+--- a/testcases/network/lib6/runcc.c
++++ b/testcases/network/lib6/runcc.c
+@@ -93,7 +93,7 @@ int runcc(char *tname, char *filename0, char *program)
+ 		 cflags, filename0, filename);
+ 	es = system(cmd);
+ 	if (WEXITSTATUS(es) == 127) {
+-		tst_resm(TBROK, "can't run C compiler: \"%s\"", cmd);
++		tst_resm(TCONF, "can't run C compiler: \"%s\"", cmd);
+ 		if (unlink(filename) < 0)
+ 			tst_resm(TWARN, "%s; unlink \"%s\" failed: %s", tname,
+ 				 filename, strerror(errno));
 -- 
-1.7.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
