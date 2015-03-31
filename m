@@ -1,37 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <carmelo.amoroso@st.com>) id 1YYxZa-0004Nv-MF
-	for ltp-list@lists.sourceforge.net; Fri, 20 Mar 2015 14:06:50 +0000
-Received: from mx07-00178001.pphosted.com ([62.209.51.94])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YYxZY-0004iI-6q
-	for ltp-list@lists.sourceforge.net; Fri, 20 Mar 2015 14:06:50 +0000
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-	by mx07-00178001.pphosted.com (8.14.5/8.14.5) with SMTP id
-	t2KE36BG014894
-	for <ltp-list@lists.sourceforge.net>; Fri, 20 Mar 2015 15:06:41 +0100
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by mx07-00178001.pphosted.com with ESMTP id 1t7u29qba4-1
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
-	for <ltp-list@lists.sourceforge.net>; Fri, 20 Mar 2015 15:06:41 +0100
-Received: from zeta.dmz-eu.st.com (zeta.dmz-eu.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 603E738
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 20 Mar 2015 14:05:38 +0000 (GMT)
-Received: from Webmail-eu.st.com (Safex1hubcas21.st.com [10.75.90.44])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 8FB8257D5
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 20 Mar 2015 14:06:39 +0000 (GMT)
-Message-ID: <550C296E.3080109@st.com>
-Date: Fri, 20 Mar 2015 15:06:38 +0100
-From: Carmelo Amoroso <carmelo.amoroso@st.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1Ycqx8-0007Bg-MV
+	for ltp-list@lists.sourceforge.net; Tue, 31 Mar 2015 07:51:14 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ycqx5-0000us-G2
+	for ltp-list@lists.sourceforge.net; Tue, 31 Mar 2015 07:51:14 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t2V7o5bb000410
+	for <ltp-list@lists.sourceforge.net>; Tue, 31 Mar 2015 15:50:05 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Tue, 31 Mar 2015 15:46:14 +0800
+Message-ID: <1427787975-10668-5-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1427787975-10668-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1427787975-10668-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <756183AD4F83414184BA6A0635785E70A55C4B3C@LGEVEXMBAPSVC1.LGE.NET>	<1848532869.446726.1426839071051.JavaMail.zimbra@redhat.com>	<756183AD4F83414184BA6A0635785E70A55C4BDC@LGEVEXMBAPSVC1.LGE.NET>
-	<1985883687.604987.1426857226768.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1985883687.604987.1426857226768.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
+Subject: [LTP] [PATCH 5/6] lib6/getaddrinfo_01.c: cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -46,198 +33,784 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hello,
+* Remove cleanup() function.
+* Remove useless comments.
+* Move the test body from main() to (*testfunc[])().
+* In every test function, using TINFO instead of TPASS
+  marks the success of each inner test.
+* Some cleanup.
 
-On 3/20/2015 2:13 PM, Jan Stancek wrote:
->
->
->
->
-> ----- Original Message -----
->> From: "Satish Gedela" <satish.gedela@lge.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Cc: ltp-list@lists.sourceforge.net
->> Sent: Friday, 20 March, 2015 12:42:00 PM
->> Subject: RE: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
->>
->>
->>
->>> -----Original Message-----
->>> From: Jan Stancek [mailto:jstancek@redhat.com]
->>> Sent: Friday, March 20, 2015 1:41 PM
->>> To: Satish Gedela/LGSIA CSP-2(satish.gedela@lge.com)
->>> Cc: ltp-list@lists.sourceforge.net
->>> Subject: Re: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
->>>
->>>
->>>
->>> ----- Original Message -----
->>>> From: "Satish Gedela" <satish.gedela@lge.com>
->>>> To: ltp-list@lists.sourceforge.net
->>>> Sent: Friday, 20 March, 2015 6:28:34 AM
->>>> Subject: [LTP] MAP_LOCKED issue in mmap with MAP_ANYNOMOUS
->>>>
->>>> Dear all,
->>>>
->>>> I am newbie to open source, forgive me with text format I am trying to
->>>> run  LTP with kernel 3.16 on target board having cortex A9 processor ,
->>>> Facing issue with below test case:
->>>> Test script  name: "memcg_function_test.sh"
->>>> Test case description:  "Test mmap(locked) + alloc_mem > limit_in_bytes"
->>>>
->>>> Analysis:  memcg_function_test.sh   -----> test_proc_kill
->>>> 						                  ------->memcg_lib.sh
->>>>
->>> -------->memcg_process
->>>>      memcg_process
->>>>
->>>> ------>ltp/testcases/kernel/controllers/memcg/functional/memcg_process
->>>> .c
->>>>
->>>> mmap_lock1 () function is calling in memcg_process.c and it calls mmap
->>>> function with flags MAP_PRIVATE | MAP_ANYNOMOUS | MAP_LOCKED
->>>> {noformat} p = mmap(NULL, memsize, PROT_WRITE | PROT_READ,
->>>>        MAP_PRIVATE | MAP_LOCKED, 0, 0); {noformat}
->>>>
->>>> but man page of mmap is mentioned as:
->>>> {noformat}
->>>> MAP_ANONYMOUS
->>>>          The  mapping  is  not  backed  by  any  file; its contents are
->>>>          initialized to zero.  The fd and offset arguments are
->>>>          ignored; however, some implementations require fd to be -1 if
->>>>          MAP_ANONYMOUS (or MAP_ANON) is specified, and portable
->>>>          applications should ensure this.  The use of MAP_ANONYMOUS in
->>>>          conjunction with MAP_SHARED is only supported on Linux
->>>>          since kernel 2.4.
->>>> {noformat}
->>>>
->>>> In my case, we are trying to lock the pages with flags  MAP_PRIVATE |
->>>> MAP_ANYNOMOUS |  MAP_LOCKED  and  it is failing.
->>>
->>> Hi,
->>>
->>> failing how? EINVAL or something else?
->>> Do you see mmap14 failing as well? If so, can you run it via strace?
->>>
->>> Regards,
->>> Jan
->>>
->> Hi Jan,
->> Failing  to kill process PID.
->
-> It seems that MAP_LOCKED can now silently fail.
->
-> https://lkml.org/lkml/2015/1/19/28
-> http://marc.info/?l=linux-mm&m=142122902313315&w=2
->
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/network/lib6/getaddrinfo_01.c | 484 ++++++++++++++++++--------------
+ 1 file changed, 275 insertions(+), 209 deletions(-)
 
-I hit exactly the same issue on CA9 based platform when moved from 
-kernel 3.10.53 to 3.10.65
-
-> Those posts contain also kernel commit IDs that are likely responsible
-> for same problem you see.
->
-
-So, should the LTP be updated accordingly ?
-
-> Regards,
-> Jan
->
-
-Thanks,
-Carmelo
-
->> Not getting EINVAL
->> I did not test mmap14 but I replaced 5th argument with  '-1' instead of '0'
->> (Based on mmap14 test case)
->> still getting test case failure.
->>
->> Test procedure followed:
->>
->> Test case description : "kill the process if memory limit exceeds ,
->> Process memory locked through MAP_LOCKED  in test_ case_ 14 and using mlock()
->> in test_case_ 15"
->>
->> Running LTP on work station using
->> 	$make configure
->> 	$make
->> 	$make install
->> And copy ltp , kernel, sysinfo.sh, tools  into target directory " /opt "
->> and on target running below commnad
->>
->> #./runltp -f controllers  > log.txt
->>
->>  From log report, identified mmap-lock1 (MAP_LOCKED)  is failing and
->> mmap-lock2 (mlock2)  is passing
->> So from the memcg_process.c file
->> 	mmap_lock1() is using mmap () with MAP_PRIVATE | MAP_ANYNOMOUS | MAP_LOCKED
->> 	mmap_lock2 is using mmap () with MAP_PRIVATE | MAP_ANYNOMOUS
->> 	and mlock() function call.
->>
->>   In process of debugging, I replaced mmap_lock1 with mmap_lock2 , in test
->>   _case_ 14 and it is working successfully.
->> So I identified issue is in mmap() call and
->> replaced flag as "MAP_SHARED | MAP_LOCKED"  and  "MAP_PRIVATE  | MAP_LOCKED
->> "in mmap,
->> it is working successfully in both cases but not with MAP_ANYNOMOUS flag.
->>
->> Regards
->> Satish.G
->>
->>>> and with  MAP_SHARED | MAP_ANYNOMOUS |  MAP_LOCKED , it is failing
->>> but
->>>> with MAP_PRIVATE | MAP_LOCKED and with MAP_SHARED |
->>> MAP_LOCKED it is
->>>> working.
->>>>
->>>> Is there any changes made to kernel or test case has to update with
->>>> MAP_SHARED instead of MAP_PRIVATE flag.
->>>>
->>>> Thank you in advance.
->>>> Regards
->>>> Satish.G
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>
->>>
->>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>> ----------------------------------------------------------------------
->>>> -------- Dive into the World of Parallel Programming The Go Parallel
->>>> Website, sponsored by Intel and developed in partnership with Slashdot
->>>> Media, is your hub for all things parallel software development, from
->>>> weekly thought leadership blogs to news, videos, case studies,
->>>> tutorials and more. Take a look and join the conversation now.
->>>> http://goparallel.sourceforge.net/
->>>> _______________________________________________
->>>> Ltp-list mailing list
->>>> Ltp-list@lists.sourceforge.net
->>>> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>>>
->>
->
-> ------------------------------------------------------------------------------
-> Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-> by Intel and developed in partnership with Slashdot Media, is your hub for all
-> things parallel software development, from weekly thought leadership blogs to
-> news, videos, case studies, tutorials and more. Take a look and join the
-> conversation now. http://goparallel.sourceforge.net/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
+diff --git a/testcases/network/lib6/getaddrinfo_01.c b/testcases/network/lib6/getaddrinfo_01.c
+index ec29b5d..b355eee 100644
+--- a/testcases/network/lib6/getaddrinfo_01.c
++++ b/testcases/network/lib6/getaddrinfo_01.c
+@@ -1,6 +1,7 @@
+ /*
+  *
+  *   Copyright (c) International Business Machines  Corp., 2001
++ *   Author: David L Stevens
+  *
+  *   This program is free software;  you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+@@ -13,31 +14,12 @@
+  *   the GNU General Public License for more details.
+  *
+  *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *   along with this program;  if not, write to the Free Software Foundation,
++ *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+-
+ /*
+- * Test Name: getaddrinfo_01
+- *
+- * Test Description:
+- *  Tests for getaddrinfo library function
+- *
+- * Usage:  <for command-line>
+- *  getaddrinfo_01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	07/2004 written by David L Stevens
+- *
+- * RESTRICTIONS:
+- *  None.
+- *
++ *   Description:
++ *     Tests for getaddrinfo library function.
+  */
+ 
+ #include <unistd.h>
+@@ -53,39 +35,40 @@
+ #define AI_V4MAPPED    0x0008	/* IPv4 mapped addresses are acceptable.  */
+ #endif
+ 
+-char *TCID = "getaddrinfo_01";	/* Test program identifier.    */
+-int testno;
+-
+-void setup(void), cleanup(void);
+-
+-int TST_TOTAL = 1;
++static void setup(void);
++static void gaiv4(void);
++static void gaiv6(void);
+ 
+-/* a host that isn't where LTP is running */
+-#define REMOTEHOSTNAME	"www.ibm.com"
++static void (*testfunc[])(void) = { gaiv4, gaiv6 };
+ 
+-void gaiv4(void), gaiv6(void);
+-void dumpres(struct addrinfo *);
++char *TCID = "getaddrinfo_01";
++int TST_TOTAL = ARRAY_SIZE(testfunc);
+ 
+ int main(int argc, char *argv[])
+ {
+ 	int lc;
++	int i;
+ 
+-	/* Parse standard options given to run the test. */
+ 	tst_parse_opts(argc, argv, NULL, NULL);
+ 
+ 	setup();
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+-		gaiv4();
+-		gaiv6();
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			(*testfunc[i])();
+ 	}
+-	cleanup();
+ 
+-	return (0);
++	tst_exit();
+ }
+ 
+-/* getaddrinfo tests (v4) */
++void setup(void)
++{
++	TEST_PAUSE;
++}
+ 
++/* getaddrinfo tests (v4) */
+ void gaiv4(void)
+ {
+ 	struct addrinfo *aires, hints, *pai;
+@@ -132,13 +115,18 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 basic lookup");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 basic "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 basic lookup");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 basic "
+ 			 "lookup (\"%s\") returns %ld (\"%s\")", hostname,
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 2, IPv4 canonical name */
+ 	memset(&hints, 0, sizeof(hints));
+@@ -152,20 +140,26 @@ void gaiv4(void)
+ 		if (!pai) {
+ 			tst_resm(TFAIL, "getaddrinfo IPv4 canonical name: no "
+ 				 "entries with canonical name set");
++			freeaddrinfo(aires);
++			return;
+ 		} else if (strcasecmp(hostname, pai->ai_canonname)) {
+ 			tst_resm(TFAIL, "getaddrinfo IPv4 canonical name "
+ 				 "(\"%s\") doesn't match hostname (\"%s\")",
+ 				 pai->ai_canonname, hostname);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 canonical name");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 canonical name");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 "
+ 			 "canonical name (\"%s\") returns %ld (\"%s\")",
+ 			 shortname, TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 3, IPv4 host+service name */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	/*
+ 	 * These are hard-coded for echo/7 to avoid using getservbyname(),
+@@ -200,13 +194,18 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 host+service");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 host+"
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 host+service");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 host+"
+ 			 "service returns %ld (\"%s\")", TEST_RETURN,
+ 			 gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 4, IPv4 hostname+service, AI_PASSIVE */
+ 	memset(&hints, 0, sizeof(hints));
+@@ -244,18 +243,22 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS,
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO,
+ 				 "getaddrinfo IPv4 host+service PASSIVE");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 host+"
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 host+"
+ 			 "service, PASSIVE (\"%s\", \"%s\") returns %ld (\"%s\")",
+ 			 hostname, service, TEST_RETURN,
+ 			 gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 5, IPv4 host+service w/ AI_NUMERICHOST */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	strcpy(service, "echo");
+ 	servnum = 7;
+@@ -266,8 +269,11 @@ void gaiv4(void)
+ 		tst_resm(TFAIL, "getaddrinfo IPv4 AI_NUMERICHOST w/ hostname: "
+ 			 "returns %ld expected %d (EAI_NONAME)",
+ 			 TEST_RETURN, EAI_NONAME);
++		if (!TEST_RETURN)
++			freeaddrinfo(aires);
++		return;
+ 	} else
+-		tst_resm(TPASS, "getaddrinfo IPv4 AI_NUMERICHOST w/ hostname");
++		tst_resm(TINFO, "getaddrinfo IPv4 AI_NUMERICHOST w/ hostname");
+ 	if (!TEST_RETURN)
+ 		freeaddrinfo(aires);
+ 
+@@ -306,17 +312,28 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 0+service, PASSIVE");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv4 0+service, PASSIVE (\"\", \"%s\") "
+-			 "returns %ld (\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 0+service, PASSIVE");
++			freeaddrinfo(aires);
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv4 0+service,"
++				" PASSIVE (\"\", \"%s\") returns %ld (\"%s\")",
++				service, TEST_RETURN,
++				gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv4 0+service,i"
++				" PASSIVE (\"\", \"%s\") returns %ld (\"%s\")",
++				service, TEST_RETURN,
++				gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 7, IPv4 0+service */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET;
+ 	hints.ai_socktype = SOCK_STREAM;
+@@ -350,19 +367,30 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 0+service");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv4 0+service (\"\", \"%s\") returns %ld "
+-			 "(\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 0+service");
++			freeaddrinfo(aires);
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv4 "
++				"0+service (\"\", \"%s\") returns %ld (\"%s\")",
++				service, TEST_RETURN,
++				gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv4 "
++				"0+service (\"\", \"%s\") returns %ld (\"%s\")",
++				service, TEST_RETURN,
++				gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 8, IPv4 host+service, AI_NUMERICSERV */
+-
+ #ifndef AI_NUMERICSERV
+-	tst_resm(TFAIL, "getaddrinfo IPv4 host+service, AI_NUMERICSERV: flag "
++	tst_resm(TCONF, "getaddrinfo IPv4 host+service, AI_NUMERICSERV: flag "
+ 		 "not implemented");
+ #else
+ 	memset(&hints, 0, sizeof(hints));
+@@ -376,15 +404,18 @@ void gaiv4(void)
+ 			 "getaddrinfo IPv4 host+service, AI_NUMERICSERV: "
+ 			 "returns %ld (\"%s\") expected %d (EAI_NONAME)",
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN), EAI_NONAME);
+-	} else
+-		tst_resm(TPASS,
++		if (!TEST_RETURN)
++			freeaddrinfo(aires);
++		return;
++	} else {
++		tst_resm(TINFO,
+ 			 "getaddrinfo IPv4 host+service, AI_NUMERICSERV");
++	}
+ 	if (!TEST_RETURN)
+ 		freeaddrinfo(aires);
+ #endif /* AI_NUMERICSERV */
+ 
+ 	/* test 9, IPv4 SOCK_STREAM/IPPROTO_UDP hints */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET;
+ 	hints.ai_socktype = SOCK_STREAM;
+@@ -396,12 +427,13 @@ void gaiv4(void)
+ 		tst_resm(TFAIL, "getaddrinfo IPv4 SOCK_STREAM/IPPROTO_UDP "
+ 			 "hints");
+ 		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TPASS, "getaddrinfo IPv4 SOCK_STREAM/IPPROTO_UDP "
++		return;
++	} else {
++		tst_resm(TINFO, "getaddrinfo IPv4 SOCK_STREAM/IPPROTO_UDP "
+ 			 "hints");
++	}
+ 
+ 	/* test 10, IPv4 socktype 0, 513 */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET;
+ 	hints.ai_socktype = 0;
+@@ -439,20 +471,31 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else if (got_tcp && got_udp)
+-			tst_resm(TPASS, "getaddrinfo IPv4 socktype 0,513");
+-		else
++			freeaddrinfo(aires);
++			return;
++		} else if (got_tcp && got_udp) {
++			tst_resm(TINFO, "getaddrinfo IPv4 socktype 0,513");
++			freeaddrinfo(aires);
++		} else {
+ 			tst_resm(TFAIL, "getaddrinfo IPv4 socktype 0,513 TCP %d"
+ 				 " UDP %d", got_tcp, got_udp);
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv4 socktype 0,513 (\"\", \"%s\") returns"
+-			 " %ld (\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv4 socktype 0,513"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv4 socktype 0,513"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 11, IPv4 AI_V4MAPPED */
+-
+ 	/* AI_V4MAPPED should be ignored because family != AF_INET6 */
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET;
+@@ -482,17 +525,24 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 AI_V4MAPPED");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 AI_V4MAPPED");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 "
+ 			 "AI_V4MAPPED (\"%s\") returns %ld (\"%s\")", hostname,
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
++
++
++	tst_resm(TPASS, "getaddrinfo tests (v4) succeed");
+ }
+ 
+ /* getaddrinfo tests (v6) */
+-
+ void gaiv6(void)
+ {
+ 	struct addrinfo *aires, hints, *pai;
+@@ -539,13 +589,18 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 basic lookup");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 basic "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 basic lookup");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 basic "
+ 			 "lookup (\"%s\") returns %ld (\"%s\")", hostname,
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 13, IPv6 canonical name */
+ 	memset(&hints, 0, sizeof(hints));
+@@ -559,20 +614,26 @@ void gaiv6(void)
+ 		if (!pai) {
+ 			tst_resm(TFAIL, "getaddrinfo IPv6 canonical name: no "
+ 				 "entries with canonical name set");
++			freeaddrinfo(aires);
++			return;
+ 		} else if (strcasecmp(hostname, pai->ai_canonname)) {
+ 			tst_resm(TFAIL, "getaddrinfo IPv6 canonical name "
+ 				 "(\"%s\") doesn't match hostname (\"%s\")",
+ 				 pai->ai_canonname, hostname);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 canonical name");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 canonical name");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 "
+ 			 "canonical name (\"%s\") returns %ld (\"%s\")",
+ 			 shortname, TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 14, IPv6 host+service name */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	/*
+ 	 * These are hard-coded for echo/7 to avoid using getservbyname(),
+@@ -607,13 +668,18 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 host+service");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 host+"
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 host+service");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 host+"
+ 			 "service returns %ld (\"%s\")", TEST_RETURN,
+ 			 gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 15, IPv6 hostname+service, AI_PASSIVE */
+ 	memset(&hints, 0, sizeof(hints));
+@@ -652,18 +718,22 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS,
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO,
+ 				 "getaddrinfo IPv6 host+service PASSIVE");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 host+"
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 host+"
+ 			 "service, PASSIVE (\"%s\", \"%s\") returns %ld (\"%s\")",
+ 			 hostname, service, TEST_RETURN,
+ 			 gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 16, IPv6 host+service w/ AI_NUMERICHOST */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	strcpy(service, "echo");
+ 	servnum = 7;
+@@ -674,8 +744,11 @@ void gaiv6(void)
+ 		tst_resm(TFAIL, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname: "
+ 			 "returns %ld expected %d (EAI_NONAME)",
+ 			 TEST_RETURN, EAI_NONAME);
++		if (!TEST_RETURN)
++			freeaddrinfo(aires);
++		return;
+ 	} else
+-		tst_resm(TPASS, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname");
++		tst_resm(TINFO, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname");
+ 	if (!TEST_RETURN)
+ 		freeaddrinfo(aires);
+ 
+@@ -715,17 +788,26 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 0+service, PASSIVE");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv6 0+service, PASSIVE (\"\", \"%s\") "
+-			 "returns %ld (\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 0+service, PASSIVE");
++			freeaddrinfo(aires);
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv6 0+service, PASSIVE"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv6 0+service, PASSIVE"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 18, IPv6 0+service */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET6;
+ 	hints.ai_socktype = SOCK_STREAM;
+@@ -760,19 +842,28 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 0+service");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv6 0+service (\"\", \"%s\") returns %ld "
+-			 "(\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 0+service");
++			freeaddrinfo(aires);
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv6 0+service"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv6 0+service"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 19, IPv6 host+service, AI_NUMERICSERV */
+-
+ #ifndef AI_NUMERICSERV
+-	tst_resm(TFAIL, "getaddrinfo IPv6 host+service, AI_NUMERICSERV: flag "
++	tst_resm(TCONF, "getaddrinfo IPv6 host+service, AI_NUMERICSERV: flag "
+ 		 "not implemented");
+ #else
+ 	memset(&hints, 0, sizeof(hints));
+@@ -786,15 +877,17 @@ void gaiv6(void)
+ 			 "getaddrinfo IPv6 host+service, AI_NUMERICSERV: "
+ 			 "returns %ld (\"%s\") expected %d (EAI_NONAME)",
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN), EAI_NONAME);
++		if (!TEST_RETURN)
++			freeaddrinfo(aires);
++		return;
+ 	} else
+-		tst_resm(TPASS,
++		tst_resm(TINFO,
+ 			 "getaddrinfo IPv6 host+service, AI_NUMERICSERV");
+ 	if (!TEST_RETURN)
+ 		freeaddrinfo(aires);
+ #endif /* AI_NUMERICSERV */
+ 
+ 	/* test 20, IPv6 SOCK_STREAM/IPPROTO_UDP hints */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET6;
+ 	hints.ai_socktype = SOCK_STREAM;
+@@ -806,12 +899,13 @@ void gaiv6(void)
+ 		tst_resm(TFAIL, "getaddrinfo IPv6 SOCK_STREAM/IPPROTO_UDP "
+ 			 "hints");
+ 		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TPASS, "getaddrinfo IPv6 SOCK_STREAM/IPPROTO_UDP "
++		return;
++	} else {
++		tst_resm(TINFO, "getaddrinfo IPv6 SOCK_STREAM/IPPROTO_UDP "
+ 			 "hints");
++	}
+ 
+ 	/* test 21, IPv6 socktype 0, 513 */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET6;
+ 	hints.ai_socktype = 0;
+@@ -850,20 +944,31 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else if (got_tcp && got_udp)
+-			tst_resm(TPASS, "getaddrinfo IPv6 socktype 0,513");
+-		else
++			freeaddrinfo(aires);
++			return;
++		} else if (got_tcp && got_udp) {
++			tst_resm(TINFO, "getaddrinfo IPv6 socktype 0,513");
++			freeaddrinfo(aires);
++		} else {
+ 			tst_resm(TFAIL, "getaddrinfo IPv6 socktype 0,513 TCP %d"
+ 				 " UDP %d", got_tcp, got_udp);
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv6 socktype 0,513 (\"\", \"%s\") returns"
+-			 " %ld (\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv6 socktype 0,513"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv6 socktype 0,513"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 22, IPv6 AI_V4MAPPED */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET6;
+ 	hints.ai_flags = AI_V4MAPPED;
+@@ -892,57 +997,18 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 AI_V4MAPPED");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 AI_V4MAPPED");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 "
+ 			 "AI_V4MAPPED (\"%s\") returns %ld (\"%s\")", hostname,
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN));
+-}
+-
+-/* this prints an addrinfo list; useful for debugging */
+-void dumpres(struct addrinfo *pai)
+-{
+-	int count = 1;
+-	for (; pai; pai = pai->ai_next, count++) {
+-		printf("result %d [0x%p]\n", count, pai);
+-		printf("\tai_flags %x\n", pai->ai_flags);
+-		printf("\tai_family %d\n", pai->ai_family);
+-		printf("\tai_socktype %d\n", pai->ai_socktype);
+-		printf("\tai_protocol %d\n", pai->ai_protocol);
+-		printf("\tai_addrlen %d\n", pai->ai_addrlen);
+-		printf("\tai_canonname \"%s\"\n", pai->ai_canonname);
+-		printf("\tai_addr.sa_family %x\n", pai->ai_addr->sa_family);
+-		if (pai->ai_addr->sa_family == AF_INET) {
+-			char buf[1024];
+-			struct sockaddr_in *psin =
+-			    (struct sockaddr_in *)pai->ai_addr;
+-
+-			if (!inet_ntop(AF_INET, &psin->sin_addr, buf,
+-				       sizeof(buf)))
+-				buf[0] = '\0';
+-			printf("\tai_addr.sin_addr \"%s\"\n", buf);
+-		} else if (pai->ai_addr->sa_family == AF_INET6) {
+-			char buf[1024];
+-
+-			struct sockaddr_in6 *psin6 =
+-			    (struct sockaddr_in6 *)pai->ai_addr;
+-			if (!inet_ntop(AF_INET6, &psin6->sin6_addr, buf,
+-				       sizeof(buf)))
+-				buf[0] = '\0';
+-			printf("\tai_addr.sin6_addr \"%s\"\n", buf);
+-
+-		}
+-		printf("\tai_next %p\n", pai->ai_next);
++		return;
+ 	}
+-}
+ 
+-void setup(void)
+-{
+-	TEST_PAUSE;		/* if -P option specified */
+-}
+-
+-void cleanup(void)
+-{
++	tst_resm(TPASS, "getaddrinfo tests (v6) succeed");
+ }
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
