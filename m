@@ -1,29 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Yf9V0-0006Zw-TZ
-	for ltp-list@lists.sourceforge.net; Mon, 06 Apr 2015 16:03:42 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Yf9Uz-0002LH-0y
-	for ltp-list@lists.sourceforge.net; Mon, 06 Apr 2015 16:03:42 +0000
-Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t36G3YO0003283
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Apr 2015 16:03:35 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t36G3XVf022810
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Apr 2015 16:03:33 GMT
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-	by aserv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t36G3X8A026049
-	for <ltp-list@lists.sourceforge.net>; Mon, 6 Apr 2015 16:03:33 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon,  6 Apr 2015 19:06:13 +0300
-Message-Id: <1428336373-21749-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] network/xinetd: TCONF if telnet managed by systemd
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YdJhu-0003ad-Jy
+	for ltp-list@lists.sourceforge.net; Wed, 01 Apr 2015 14:33:26 +0000
+Date: Wed, 1 Apr 2015 16:33:14 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150401143314.GA23093@rei>
+References: <1427771764-22918-1-git-send-email-cuibixuan@huawei.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1427771764-22918-1-git-send-email-cuibixuan@huawei.com>
+Subject: Re: [LTP] [PATCH] syscalls/utimensat01: "chattr" command error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,44 +21,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: cuibixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/xinetd/xinetd_tests.sh |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
+Hi!
+> Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+> ---
+>  .../testcases/kernel/syscalls/utimensat/utimensat_tests.sh       | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/ltp-master/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/ltp-master/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+> index b8eba51..972c81f 100755
+> --- a/ltp-master/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+> +++ b/ltp-master/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+> @@ -300,6 +300,15 @@ nuke_sudoers()
+>  }
+>  
+>  sudo $s_arg -u $test_user mkdir -p $TEST_DIR
+> +
+> +# Make sure chattr command is supported in test dir
+> +touch $TEST_DIR/tmp_file
+> +chattr +a $TEST_DIR/tmp_file
+> +if [ $? -ne 0 ] ; then
+> +        tst_resm TBROK "the chattr command is not supported in test dir"
+> +        exit 1
 
-diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
-index 813a3f3..ff1219a 100755
---- a/testcases/network/xinetd/xinetd_tests.sh
-+++ b/testcases/network/xinetd/xinetd_tests.sh
-@@ -65,6 +65,11 @@ init()
-     export TST_COUNT=0
-     . daemonlib.sh
- 
-+    if [ -f "/usr/lib/systemd/system/telnet.socket" ]; then
-+        tst_brkm TCONF NULL "xinetd doesn't manage telnet"
-+        exit $?
-+    fi
-+
-     # Inititalize cleanup function.
-     trap "cleanup" 0
- 
+This should rather be:
+	tst_resm TCONF "..."
+	exit 32
+
+Or even better the test should be fixed to use the test.sh library then
+this could be changed to:
+
+tst_brkm TCONF "..."
+
+> +fi
+> +
+>  cd $TEST_DIR
+>  chown root $LTPROOT/testcases/bin/$TEST_PROG
+>  chmod ugo+x,u+s $LTPROOT/testcases/bin/$TEST_PROG
+> -- 
+> 1.8.2.2
+> 
+> 
+> ------------------------------------------------------------------------------
+> Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+> by Intel and developed in partnership with Slashdot Media, is your hub for all
+> things parallel software development, from weekly thought leadership blogs to
+> news, videos, case studies, tutorials and more. Take a look and join the 
+> conversation now. http://goparallel.sourceforge.net/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-Develop your own process in accordance with the BPMN 2 standard
-Learn Process modeling best practices with Bonita BPM through live exercises
-http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
