@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YkuEo-00012u-F9
-	for ltp-list@lists.sourceforge.net; Wed, 22 Apr 2015 12:58:46 +0000
-Date: Wed, 22 Apr 2015 14:58:19 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150422125819.GB32110@rei>
-References: <1427970931.19106.8.camel@G08JYZSD130126.localdomain>
-	<20150402115922.GA30680@rei>
-	<1429010747.7190.25.camel@G08JYZSD130126.localdomain>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YdCsN-0006RR-3H
+	for ltp-list@lists.sourceforge.net; Wed, 01 Apr 2015 07:15:47 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YdCsM-0001Hz-71
+	for ltp-list@lists.sourceforge.net; Wed, 01 Apr 2015 07:15:47 +0000
+Message-ID: <551B9B15.10302@oracle.com>
+Date: Wed, 01 Apr 2015 10:15:33 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1429010747.7190.25.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [RFC PATCH v2 2/2] commands/du: Added new testcase to
- test du(1) command.
+References: <1427787975-10668-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<551AB4B5.4020902@oracle.com> <551B4C2F.3040108@cn.fujitsu.com>
+In-Reply-To: <551B4C2F.3040108@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/6] lib6/runcc.c: use TCONF instead of TBROK when
+ no C compiler is present
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,244 +29,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: "gux.fnst" <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> +setup()
-> +{
-> +	tst_require_root
-> +
-> +	tst_check_cmds dd du stat
-> +
-> +	tst_tmpdir
-> +
-> +	testfile=testfile
-> +	SAFE_CALL dd if=/dev/zero of=${testfile} bs=1M count=10
-> +
-> +	testdir=testdir
-> +	SAFE_CALL mkdir -p ${testdir}
-> +
-> +	SAFE_CALL ln -s ../${testfile} ${testdir}/${testfile}
+On 04/01/2015 04:38 AM, gux.fnst wrote:
+>>>       if (WEXITSTATUS(es) == 127) {
+>>> -        tst_resm(TBROK, "can't run C compiler: \"%s\"", cmd);
+>>> +        tst_resm(TCONF, "can't run C compiler: \"%s\"", cmd);
+>>>           if (unlink(filename) < 0)
+>>>               tst_resm(TWARN, "%s; unlink \"%s\" failed: %s", tname,
+>>>                    filename, strerror(errno));
+>>
+>> Why not 'tst_brkm(TCONF, ...)', do we need to proceed further?
+>>
+>
+> The function "runcc" has created a file named "filename" before
+> executing "cmd" command, so I think we should delete this file
+> after tst_resm(TCONF,...).
+>
 
-Passing the testdir and testfile as variables looks like unnecessary
-indirection to me.
+So, there is temp test directory... you could pass some cleanup function 
+to tst_brkm().
 
-> +	export DU_BLOCK_SIZE=1024
+Thanks,
+Alexey
 
-Maybe it deserves comment here, because at first glance this variable
-looks unused, but it's in fact used by the du itself.
-
-> +}
-> +
-> +cleanup()
-> +{
-> +	tst_rmdir
-> +}
-> +
-> +export test_return
-> +du_test()
-> +{
-> +	$@ > ${TCID}.temp 2>&1
-> +	test_return=$?
-> +}
-> +
-> +du_check()
-> +{
-> +	if [ ${test_return} -ne 0 ]; then
-> +		grep -q -E "unrecognized option|invalid option" ${TCID}.temp
-> +		if [ $? -eq 0 ]; then
-> +			tst_resm TCONF $2 "not supported."
-> +			return
-> +		else
-> +			tst_resm TFAIL $2 "failed."
-> +			return
-> +		fi
-> +	fi
-> +
-> +	grep -q $1 ${TCID}.temp
-> +	if [ $? -eq 0 ]; then
-> +		tst_resm TPASS $2 "passed."
-> +	else
-> +		tst_resm TFAIL $2 "failed."
-> +	fi
-> +}
-
-Why is the du_test() and do_check() done as two functions?
-
-In the test below they are always called together, wouldn't it be easier
-if this was just one function?
-
-> +test1()
-> +{
-> +	du_test du
-> +	du_check ${check1} "du(option: none)"
-> +}
-> +
-> +test2()
-> +{
-> +	du_test du ${testfile}
-> +	du_check ${check2} "du(option: <FILE>)"
-> +}
-> +
-> +test3()
-> +{
-> +	du_test du -a
-> +	du_check ${check3} "du(option: -a)"
-> +}
-> +
-> +test4()
-> +{
-> +	du_test du --all
-> +	du_check ${check3} "du(option: --all)"
-> +}
-> +
-> +test5()
-> +{
-> +	du_test du -B ${block_size}
-> +	du_check ${check5} "du(option: -B ${block_size})"
-> +}
-> +
-> +test6()
-> +{
-> +	du_test du --block-size=${block_size}
-> +	du_check ${check5} "du(option: --block-size=${block_size})"
-> +}
-> +
-> +test7()
-> +{
-> +	du_test du -b
-> +	du_check ${check7} "du(option: -b)"
-> +}
-> +
-> +test8()
-> +{
-> +	du_test du --bytes
-> +	du_check ${check7} "du(option: --bytes)"
-> +}
-> +
-> +test9()
-> +{
-> +	du_test du -c
-> +	du_check ${check9} "du(option: -c)"
-> +}
-> +
-> +test10()
-> +{
-> +	du_test du --total
-> +	du_check ${check9} "du(option: --total)"
-> +}
-> +
-> +test11()
-> +{
-> +	du_test du -D ${testdir}/${testfile}
-> +	du_check ${check11} "du(option: -D)"
-> +}
-> +
-> +test12()
-> +{
-> +	du_test du --dereference-args ${testdir}/${testfile}
-> +	du_check ${check11} "du(option: --dereference-args)"
-> +}
-> +
-> +test13()
-> +{
-> +	du_test du --max-depth=1
-> +	du_check ${check1} "du(option: --max-depth=N)"
-> +}
-> +
-> +test14()
-> +{
-> +	du_test du --human-readable
-> +	du_check ${check14} "du(option: --human-readable)"
-> +}
-> +
-> +test15()
-> +{
-> +	du_test du -k
-> +	du_check ${check1} "du(option: -k)"
-> +}
-> +
-> +test16()
-> +{
-> +	du_test du -L ${testdir}/
-> +	du_check ${check16} "du(option: -L)"
-> +}
-> +
-> +test17()
-> +{
-> +	du_test du --dereference ${testdir}/
-> +	du_check ${check16} "du(option: --dereference)"
-> +}
-> +
-> +test18()
-> +{
-> +	du_test du -P
-> +	du_check ${check1} "du(option: -P)"
-> +}
-> +
-> +test19()
-> +{
-> +	du_test du --no-dereference
-> +	du_check ${check1} "du(option: --no-dereference)"
-> +}
-> +
-> +test20()
-> +{
-> +	du_test du --si
-> +	du_check ${check20} "du(option: --si)"
-> +}
-> +
-> +test21()
-> +{
-> +	du_test du -s
-> +	du_check ${check1} "du(option: -s)"
-> +}
-> +
-> +test22()
-> +{
-> +	du_test du --summarize
-> +	du_check ${check1} "du(option: --summarize)"
-> +}
-> +
-> +test23()
-> +{
-> +	du_test du --exclude=${testfile}
-> +	du_check ${check23} "du(option: --exclude=PATTERN)"
-> +}
-> +
-> +setup
-> +TST_CLEANUP=cleanup
-> +
-> +block_size=512
-> +
-> +# The output could be different in some systems, if we use du to
-> +# estimate file space usage with the same filesystem and the same size.
-> +# So we use the approximate value to check.
-> +check1="10[2-3][0-9][0-9][[:space:]]\."
-> +check2="10[2-3][0-9][0-9][[:space:]]${testfile}"
-> +check3="0[[:space:]]\.\/${testdir}\/${testfile}"
-> +check5="20[4-5][0-9][0-9][[:space:]]\."
-> +check7="10[4-5][0-9][0-9]\{4\}[[:space:]]\."
-> +check9="10[2-3][0-9][0-9][[:space:]]total"
-> +check11="10[2-3][0-9][0-9][[:space:]]${testdir}\/${testfile}"
-> +check14="1[0,1]M[[:space:]]\."
-> +check16="10[2-3][0-9][0-9][[:space:]]${testdir}\/"
-> +check20="11M[[:space:]]\."
-> +check23="[0-9]\{1,2\}[[:space:]]\."
-
-The rest looks good to me.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-Develop your own process in accordance with the BPMN 2 standard
-Learn Process modeling best practices with Bonita BPM through live exercises
-http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
