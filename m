@@ -1,33 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1YftrL-0006jc-Gz
-	for ltp-list@lists.sourceforge.net; Wed, 08 Apr 2015 17:33:51 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YftrK-0001xs-JB
-	for ltp-list@lists.sourceforge.net; Wed, 08 Apr 2015 17:33:51 +0000
-Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t38HXiSR028334
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Apr 2015 17:33:44 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t38HXgt1028738
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Apr 2015 17:33:43 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t38HXg5n025299
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Apr 2015 17:33:42 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed,  8 Apr 2015 20:33:27 +0300
-Message-Id: <1428514408-8763-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1428514408-8763-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1428514408-8763-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 2/3] cpu_hotplug: added get_hotplug_cpus,
-	get_hotplug_cpus_num
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1Yd7gq-0006jx-9C
+	for ltp-list@lists.sourceforge.net; Wed, 01 Apr 2015 01:43:32 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Yd7gp-0001QY-48
+	for ltp-list@lists.sourceforge.net; Wed, 01 Apr 2015 01:43:32 +0000
+Message-ID: <551B4C2F.3040108@cn.fujitsu.com>
+Date: Wed, 1 Apr 2015 09:38:55 +0800
+From: "gux.fnst" <gux.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <1427787975-10668-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<551AB4B5.4020902@oracle.com>
+In-Reply-To: <551AB4B5.4020902@oracle.com>
+Subject: Re: [LTP] [PATCH 1/6] lib6/runcc.c: use TCONF instead of TBROK when
+ no C compiler is present
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,61 +26,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- .../cpu_hotplug/include/cpuhotplug_hotplug.sh      |   22 ++++++++++++++++++++
- 1 files changed, 22 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-index f553d0c..558ef12 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-@@ -131,6 +131,28 @@ get_all_cpus()
-         sed "s/\/sys\/devices\/system\/cpu\///g" || return 2
- }
- 
-+# get_hotplug_cpus()
-+#
-+#  Prints a list of all hotpluggable CPUs
-+#
-+get_hotplug_cpus()
-+{
-+    ls /sys/devices/system/cpu/cpu[0-9]*/online 2> /dev/null | \
-+        sed "s/\/sys\/devices\/system\/cpu\/\(cpu[0-9]*\)\/online/\1/g" || return 2
-+}
-+
-+# get_hotplug_cpus_num()
-+#
-+#  Prints the number of hotpluggable CPUs
-+#
-+get_hotplug_cpus_num()
-+{
-+    hotplug_cpus=$(get_hotplug_cpus)
-+    ret=$?
-+    [ $ret -ne 0 ] && return 0
-+
-+    return $(echo "$hotplug_cpus" | grep -c 'cpu')
-+}
- 
- # get_all_cpu_states()
- #
--- 
-1.7.1
 
+On 03/31/2015 10:52 PM, Alexey Kodanev wrote:
+> Hi!
+> On 03/31/2015 10:46 AM, Xing Gu wrote:
+>> Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+>> ---
+>>   testcases/network/lib6/runcc.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/testcases/network/lib6/runcc.c b/testcases/network/lib6/runcc.c
+>> index 91a0b16..3a89598 100644
+>> --- a/testcases/network/lib6/runcc.c
+>> +++ b/testcases/network/lib6/runcc.c
+>> @@ -93,7 +93,7 @@ int runcc(char *tname, char *filename0, char *program)
+>>            cflags, filename0, filename);
+>>       es = system(cmd);
+>>       if (WEXITSTATUS(es) == 127) {
+>> -        tst_resm(TBROK, "can't run C compiler: \"%s\"", cmd);
+>> +        tst_resm(TCONF, "can't run C compiler: \"%s\"", cmd);
+>>           if (unlink(filename) < 0)
+>>               tst_resm(TWARN, "%s; unlink \"%s\" failed: %s", tname,
+>>                    filename, strerror(errno));
+>
+> Why not 'tst_brkm(TCONF, ...)', do we need to proceed further?
+>
+
+The function "runcc" has created a file named "filename" before
+executing "cmd" command, so I think we should delete this file
+after tst_resm(TCONF,...).
+
+Regards,
+Xing Gu
+
+> Thanks,
+> Alexey
+>
 
 ------------------------------------------------------------------------------
-BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-Develop your own process in accordance with the BPMN 2 standard
-Learn Process modeling best practices with Bonita BPM through live exercises
-http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+Dive into the World of Parallel Programming The Go Parallel Website, sponsored
+by Intel and developed in partnership with Slashdot Media, is your hub for all
+things parallel software development, from weekly thought leadership blogs to
+news, videos, case studies, tutorials and more. Take a look and join the 
+conversation now. http://goparallel.sourceforge.net/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
