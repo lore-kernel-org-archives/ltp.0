@@ -1,18 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YnnNz-0004T1-0v
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 12:16:11 +0000
-Date: Thu, 30 Apr 2015 14:15:41 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150430121539.GB24720@rei.suse.de>
-References: <1427787975-10668-1-git-send-email-gux.fnst@cn.fujitsu.com>
-	<1427787975-10668-3-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1427787975-10668-3-git-send-email-gux.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 3/6] lib6/asapi_05.c: cleanup
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Yf9V0-0006Zw-TZ
+	for ltp-list@lists.sourceforge.net; Mon, 06 Apr 2015 16:03:42 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Yf9Uz-0002LH-0y
+	for ltp-list@lists.sourceforge.net; Mon, 06 Apr 2015 16:03:42 +0000
+Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t36G3YO0003283
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Apr 2015 16:03:35 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t36G3XVf022810
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Apr 2015 16:03:33 GMT
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+	by aserv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t36G3X8A026049
+	for <ltp-list@lists.sourceforge.net>; Mon, 6 Apr 2015 16:03:33 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon,  6 Apr 2015 19:06:13 +0300
+Message-Id: <1428336373-21749-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] network/xinetd: TCONF if telnet managed by systemd
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,66 +33,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xing Gu <gux.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> +#define ETCOUNT	(sizeof(etab)/sizeof(etab[0]))
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/xinetd/xinetd_tests.sh |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-ARRAY_SIZE()
-
-> +/*
-> + * This is for old, broken glibc-header icmp6_filter structure definitions.
-> + * If icmp6.h has struct icmp6_filter with field named "data" instead
-> + * of the standard "icmp_filt", uncomment this line.
-> + */
-> +/*#define icmp_filt	data */
-
-I guess that we can remove this completly. It was workaround for broken
-glibc-2.3.3 and older which is about 11 years old now.
-(glibc commit c2280dc039c69a690dd006c1f145c7ba9aa2eaad)
-
-> +enum tt { T_WILLPASS, T_WILLBLOCK, T_SETPASS, T_SETBLOCK, T_SETPASSALL,
-> +	T_SETBLOCKALL
-> +};
-> +struct ftent {
-> +	char *ft_tname;		/* test name, for logging */
-> +	unsigned char ft_sndtype;	/* send type field */
-> +	unsigned char ft_flttype;	/* filter type field */
-> +	enum tt ft_test;	/* what macro to test */
-> +	int ft_expected;	/* packet should pass? */
-> +} ftab[] = {
-> +	{ "ICMP6_FILTER_SETPASS s 20 f 20", 20, 20, T_SETPASS, 1 },
-> +	{ "ICMP6_FILTER_SETPASS s 20 f 21", 20, 21, T_SETPASS, 0 },
-> +	{ "ICMP6_FILTER_SETBLOCK s 20 f 20", 20, 20, T_SETBLOCK, 0 },
-> +	{ "ICMP6_FILTER_SETBLOCK s 20 f 21", 20, 21, T_SETBLOCK, 1 },
-> +	{ "ICMP6_FILTER_PASSALL s 20", 20, 0, T_SETPASSALL, 1 },
-> +	{ "ICMP6_FILTER_PASSALL s 20", 21, 0, T_SETPASSALL, 1 },
-> +	{ "ICMP6_FILTER_BLOCKALL s 20", 20, 0, T_SETBLOCKALL, 0 },
-> +	{ "ICMP6_FILTER_BLOCKALL s 20", 21, 0, T_SETBLOCKALL, 0 },
-> +	{ "ICMP6_FILTER_WILLBLOCK s 20 f 21", 20, 21, T_WILLBLOCK, 0 },
-> +	{ "ICMP6_FILTER_WILLBLOCK s 20 f 20", 20, 20, T_WILLBLOCK, 1 },
-> +	{ "ICMP6_FILTER_WILLPASS s 20 f 21", 20, 21, T_WILLPASS, 0 },
-> +	{ "ICMP6_FILTER_WILLPASS s 22 f 22", 22, 22, T_WILLPASS, 1 },
-> +};
-> +
-> +#define FTCOUNT	(sizeof(ftab)/sizeof(ftab[0]))
-
-ARRAY_SIZE()
-
+diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+index 813a3f3..ff1219a 100755
+--- a/testcases/network/xinetd/xinetd_tests.sh
++++ b/testcases/network/xinetd/xinetd_tests.sh
+@@ -65,6 +65,11 @@ init()
+     export TST_COUNT=0
+     . daemonlib.sh
+ 
++    if [ -f "/usr/lib/systemd/system/telnet.socket" ]; then
++        tst_brkm TCONF NULL "xinetd doesn't manage telnet"
++        exit $?
++    fi
++
+     # Inititalize cleanup function.
+     trap "cleanup" 0
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
