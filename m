@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YlSiB-0001dL-Nz
-	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 01:47:23 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YlSiA-0007kf-LB
-	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 01:47:23 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t3O1k5cK025620
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Apr 2015 09:46:05 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Fri, 24 Apr 2015 09:46:39 +0800
-Message-ID: <1429840001-4970-3-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1429840001-4970-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1429840001-4970-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1YfTNW-0002cy-Pm
+	for ltp-list@lists.sourceforge.net; Tue, 07 Apr 2015 13:17:18 +0000
+Date: Tue, 7 Apr 2015 15:16:59 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150407131658.GB9535@rei>
+References: <fcfdc0e76da63f0dac43e44738a6d5f85e638ada.1428407537.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 3/5] hugemmap/hugemmap05: fix resource leak
+Content-Disposition: inline
+In-Reply-To: <fcfdc0e76da63f0dac43e44738a6d5f85e638ada.1428407537.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] mtest06: pick a distant address to mmap at
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,45 +24,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-ensure close FILE pointer before return
+Hi!
+> Test expects, that either file is mmaped and read will
+> result in expected pattern or file is not mapped and
+> read will trigger SIGSEGV.
+> 
+> However there is also possibility that unrelated mmap,
+> (e.g. from pthread_exit or printf call chain) will pick the
+> same area between munmap/mmap calls for map_address, which
+> creates a race where data read from map_address are unexpected.
+> 
+> This patch makes a dummy mmap/munmap of large block to find
+> some distant location, where futher mmap calls are unlikely
+> to occur. Middle of this area is then used to mmap map_address.
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
----
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c | 2 ++
- 1 file changed, 2 insertions(+)
+Acked and I suppose that this should be pushed to the git before the
+release.
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-index 97d7689..8b9a05f 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-@@ -439,6 +439,7 @@ static int checksys(char *path, char *string, int value)
- 	if (atoi(buf) != value) {
- 		tst_resm(TFAIL, "%s is not %d but %d.", string, value,
- 			 atoi(buf));
-+		fclose(fp);
- 		return 1;
- 	}
- 	fclose(fp);
-@@ -474,6 +475,7 @@ static void init_hugepagesize(void)
- 		if (lookup(line, "Hugepagesize")) {
- 			tst_resm(TINFO, "Hugepagesize is %s kB", buf);
- 			hugepagesize = atoi(buf) * 1024;
-+			fclose(fp);
- 			return;
- 		}
- 	}
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
