@@ -1,21 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1YiLdZ-00050r-ME
-	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 11:37:45 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YiLdT-0004Rj-0O
-	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 11:37:45 +0000
-Message-ID: <552E4D6A.3020309@huawei.com>
-Date: Wed, 15 Apr 2015 19:37:14 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
-MIME-Version: 1.0
-References: <1428581481-192136-1-git-send-email-cuibixuan@huawei.com>
-	<5527D7D6.4030108@oracle.com>
-In-Reply-To: <5527D7D6.4030108@oracle.com>
-Subject: [LTP]  [PATCH v2] mv/mv_tests.sh: Add test02 to test 'mv -b'
+	(envelope-from <jstancek@redhat.com>) id 1YfS8S-0004QX-P6
+	for ltp-list@lists.sourceforge.net; Tue, 07 Apr 2015 11:57:40 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YfS8R-0005MX-AB
+	for ltp-list@lists.sourceforge.net; Tue, 07 Apr 2015 11:57:40 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (Postfix) with ESMTPS id AEC3F2D154E
+	for <ltp-list@lists.sourceforge.net>;
+	Tue,  7 Apr 2015 11:57:32 +0000 (UTC)
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id t37BvVWx021700
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Apr 2015 07:57:32 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue,  7 Apr 2015 13:57:28 +0200
+Message-Id: <fcfdc0e76da63f0dac43e44738a6d5f85e638ada.1428407537.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] mtest06: pick a distant address to mmap at
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,145 +30,85 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
+To: ltp-list@lists.sourceforge.net
 
-Add a new case to test 'mv -b':
-* Create file1 and file2
-* Mv -b file1 to file2
-* Check backup file of file2
+Test expects, that either file is mmaped and read will
+result in expected pattern or file is not mapped and
+read will trigger SIGSEGV.
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+However there is also possibility that unrelated mmap,
+(e.g. from pthread_exit or printf call chain) will pick the
+same area between munmap/mmap calls for map_address, which
+creates a race where data read from map_address are unexpected.
 
+This patch makes a dummy mmap/munmap of large block to find
+some distant location, where futher mmap calls are unlikely
+to occur. Middle of this area is then used to mmap map_address.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .../commands/fileutils/mv/00_Descriptions.txt      |    3 +-
- testcases/commands/fileutils/mv/mv_tests.sh        |   84 ++++++++++++++++++++
- 2 files changed, 86 insertions(+), 1 deletions(-)
+ testcases/kernel/mem/mtest06/mmap1.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/commands/fileutils/mv/00_Descriptions.txt b/testcases/commands/fileutils/mv/00_Descriptions.txt
-index 6d52868..57199bf 100644
---- a/testcases/commands/fileutils/mv/00_Descriptions.txt
-+++ b/testcases/commands/fileutils/mv/00_Descriptions.txt
-@@ -1,3 +1,4 @@
- test01
- 	mv <dir1> <dir2> will move dir1 to dir2 and all its contents.
+diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
+index 5f13d48..f3eae99 100644
+--- a/testcases/kernel/mem/mtest06/mmap1.c
++++ b/testcases/kernel/mem/mtest06/mmap1.c
+@@ -54,6 +54,7 @@
+ #include <string.h>
+ #include "test.h"
+ 
++#define DISTANT_MMAP_SIZE (64*1024*1024)
+ #define OPT_MISSING(prog, opt) do { \
+ 	fprintf(stderr, "%s: option -%c ", prog, opt); \
+         fprintf(stderr, "requires an argument\n"); \
+@@ -64,6 +65,7 @@ static int verbose_print = 0;
+ static char *volatile map_address;
+ static jmp_buf jmpbuf;
+ static volatile char read_lock = 0;
++static void *distant_area;
+ 
+ char *TCID = "mmap1";
+ int TST_TOTAL = 1;
+@@ -145,9 +147,8 @@ void *map_write_unmap(void *ptr)
+ 			 args[0], args[1], args[2]);
+ 
+ 	for (i = 0; i < args[2]; i++) {
 -
-+test02
-+	mv -b <file1> <file2> will move file1 to file2 and backup the file2.
-diff --git a/testcases/commands/fileutils/mv/mv_tests.sh b/testcases/commands/fileutils/mv/mv_tests.sh
-index 207e945..cda9901 100755
---- a/testcases/commands/fileutils/mv/mv_tests.sh
-+++ b/testcases/commands/fileutils/mv/mv_tests.sh
-@@ -24,6 +24,8 @@
- # Description:  Test basic functionality of mv command
- #				- Test #1:  mv <dir1> <dir2> will move dir1 to dir2 and all its
- #				            contents.
-+#				- Test #2:  mv -b <file1> <file2> will move file1 to file2 and
-+#					    backup the file2.
- #
- # Author:       Manoj Iyer, manjo@mail.utexas.edu
- #
-@@ -238,6 +240,79 @@ test01()
- 	return $RC
- }
-
-+# Function:             test02
-+#
-+# Description   - Test #2: Test that mv -b <file1> <file2> will move
-+#                 file1 to file2 and backup the file2.
-+#               - create file1 and file2.
-+#               - get the MD5 message of file2.
-+#               - mv -b file1 to file2
-+#               - get the MD5 message of backup file2.
-+#               - compare  with MD5 messages.
-+#
-+# Return                - zero on success
-+#               - non zero on failure. return value from commands ($RC)
+-		map_address = mmap(0, (size_t) args[1], PROT_WRITE | PROT_READ,
+-				   MAP_SHARED, (int)args[0], 0);
++		map_address = mmap(distant_area, (size_t) args[1],
++			PROT_WRITE | PROT_READ, MAP_SHARED, (int)args[0], 0);
+ 
+ 		if (map_address == (void *)-1) {
+ 			perror("map_write_unmap(): mmap()");
+@@ -337,6 +338,19 @@ int main(int argc, char **argv)
+ 		}
+ 	}
+ 
++	/* We don't want other mmap calls to map into same area as is
++	 * used for test (mmap_address). The test expects read to return
++	 * test pattern or read must fail with SIGSEGV. Find an area
++	 * that we can use, which is unlikely to be chosen for other
++	 * mmap calls. */
++	distant_area = mmap(0, DISTANT_MMAP_SIZE, PROT_WRITE | PROT_READ,
++		MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
++	if (distant_area == (void *)-1)
++		tst_brkm(TBROK | TERRNO, NULL, "distant_area: mmap()");
++	if (munmap(distant_area, (size_t) DISTANT_MMAP_SIZE) == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "distant_area: munmap()");
++	distant_area += DISTANT_MMAP_SIZE / 2;
 +
-+test02()
-+{
-+	RC=0                    # Return value from commands.
-+	export TCID=mv02        # Name of the test case.
-+	export TST_COUNT=1      # Test number.
-+
-+	tmpfile1=$LTPTMP/tst_mv.tmp/tmpfile1
-+	tmpfile2=$LTPTMP/tst_mv.tmp/tmpfile2
-+	backup_tmpfile2=$LTPTMP/tst_mv.tmp/tmpfile2~
-+
-+	$LTPBIN/tst_resm TINFO \
-+		"Test #2: mv -b <file1> <file2> will move dir1 to dir2"
-+
-+	touch $tmpfile1 $tmpfile2 > $LTPTMP/tst_mv.err 2>&1 || RC=$?
-+	if [ $RC -ne 0 ]
-+	then
-+		$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
-+			"Test #2: can not touch file1 and file2. Reason:"
-+		return $RC
-+	fi
-+
-+	MD5_old=`md5sum $tmpfile2 |awk '{print $1}'` > $LTPTMP/tst_mv.err \
-+		2>&1 || RC=$?
-+	if [ $RC -ne 0 ]
-+	then
-+		$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
-+			"Test #2: can't get the MD5 message of file2. Reason:"
-+		return $RC
-+	fi
-+
-+	mv -b $tmpfile1 $tmpfile2  > $LTPTMP/tst_mv.err 2>&1 || RC=$?
-+	if [ $RC -ne 0 ]
-+	then
-+		$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
-+			"Test #2: mv -b file1 file2 failed. Reason:"
-+		return $RC
-+	fi
-+
-+	# if mv  -b file1 file2 succeed,there will be "file2~" file
-+
-+	MD5_backup=`md5sum $tmpfile2 |awk '{print $1}'` > $LTPTMP/tst_mv.err \
-+		2>&1 || RC=$?
-+	if [ $RC -ne 0 ]
-+	then
-+		$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
-+		"Test #2: can not get the MD5 message of backup file2. Reason:"
-+		return $RC
-+	fi
-+
-+	if [ "$MD5_old" != "$MD5_backup" ]
-+	then
-+		$LTPBIN/tst_resm TFAIL \
-+			"Test #2: mv -b failed"
-+		return $(($RC+1))
-+	else
-+		$LTPBIN/tst_resm TPASS "Test #2: mv -b success"
-+	fi
-+
-+	return $RC
-+}
-
- # Function:		main
- #
-@@ -258,6 +333,15 @@ then
- 	TFAILCNT=$(($TFAILCNT+1))
- fi
-
-+rm -fr $LTPTMP/tst_mv.*
-+
-+init || return $RC      # Exit if initializing testcases fails.
-+
-+test02 || RC=$?
-+if [ $RC -ne 0 ]
-+then
-+	TFAILCNT=$(($TFAILCNT+1))
-+fi
-
- rm -fr $LTPTMP/tst_mv.*
-
+ 	if (verbose_print)
+ 		tst_resm(TINFO, "Input parameters are: File size:  %d; "
+ 			 "Scheduled to run:  %lf hours; "
 -- 
-1.6.0.2
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
 BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
