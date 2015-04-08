@@ -1,20 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YlBo7-0006Sz-Oj
-	for ltp-list@lists.sourceforge.net; Thu, 23 Apr 2015 07:44:23 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YlBo6-0006sh-9x
-	for ltp-list@lists.sourceforge.net; Thu, 23 Apr 2015 07:44:23 +0000
-Date: Thu, 23 Apr 2015 03:44:14 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <589021019.4782174.1429775054199.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v4] syscalls/fallocate04: add new fallocate() test
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1YftrL-0006jc-Gz
+	for ltp-list@lists.sourceforge.net; Wed, 08 Apr 2015 17:33:51 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YftrK-0001xs-JB
+	for ltp-list@lists.sourceforge.net; Wed, 08 Apr 2015 17:33:51 +0000
+Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t38HXiSR028334
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 8 Apr 2015 17:33:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t38HXgt1028738
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 8 Apr 2015 17:33:43 GMT
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t38HXg5n025299
+	for <ltp-list@lists.sourceforge.net>; Wed, 8 Apr 2015 17:33:42 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed,  8 Apr 2015 20:33:27 +0300
+Message-Id: <1428514408-8763-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1428514408-8763-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1428514408-8763-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 2/3] cpu_hotplug: added get_hotplug_cpus,
+	get_hotplug_cpus_num
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,58 +37,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../cpu_hotplug/include/cpuhotplug_hotplug.sh      |   22 ++++++++++++++++++++
+ 1 files changed, 22 insertions(+), 0 deletions(-)
 
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+index f553d0c..558ef12 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+@@ -131,6 +131,28 @@ get_all_cpus()
+         sed "s/\/sys\/devices\/system\/cpu\///g" || return 2
+ }
+ 
++# get_hotplug_cpus()
++#
++#  Prints a list of all hotpluggable CPUs
++#
++get_hotplug_cpus()
++{
++    ls /sys/devices/system/cpu/cpu[0-9]*/online 2> /dev/null | \
++        sed "s/\/sys\/devices\/system\/cpu\/\(cpu[0-9]*\)\/online/\1/g" || return 2
++}
++
++# get_hotplug_cpus_num()
++#
++#  Prints the number of hotpluggable CPUs
++#
++get_hotplug_cpus_num()
++{
++    hotplug_cpus=$(get_hotplug_cpus)
++    ret=$?
++    [ $ret -ne 0 ] && return 0
++
++    return $(echo "$hotplug_cpus" | grep -c 'cpu')
++}
+ 
+ # get_all_cpu_states()
+ #
+-- 
+1.7.1
 
-
-
------ Original Message -----
-> From: "Alexey Kodanev" <alexey.kodanev@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
-> Sent: Tuesday, 21 April, 2015 3:05:07 PM
-> Subject: [LTP] [PATCH v4] syscalls/fallocate04: add new fallocate() test
-> 
-> This is a new functional test of fallocate() syscall with the focus on
-> FALLOC_FL_ZERO_RANGE (since Linux 3.15) and FALLOC_FL_COLLAPSE_RANGE
-> (since Linux 3.15) modes.
-> 
-> Steps of test-cases:
->   * allocate a file with specified size;
->   * make a hole in the middle of the file with FALLOC_FL_PUNCH_HOLE;
->   * fill the hole and adjacent space with FALLOC_FL_ZERO_RANGE;
->   * remove a block from a file with FALLOC_FL_COLLAPSE_RANGE
-> 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
-> v4: corrected Linux version for FALLOC_FL_ZERO_RANGE
->     removed second Linux version check in test04()
->     added 'EOPNOTSUPP' check for initial fallocate()
-> v3: correctly indented second line in if blocks and tst_resm
-> v2: replaced lseek, read, write, etc. with LTP safe macros
->     moved FALLOC_FL_* macros to fallocate.h
->     removed FALLOC_FL_KEEP_SIZE from fallocate03 (it is now in fallocate.h)
->     made one more test-case (split setup())
-> 
->  runtest/syscalls                                  |    1 +
->  testcases/kernel/syscalls/.gitignore              |    1 +
->  testcases/kernel/syscalls/fallocate/fallocate.h   |   20 ++
->  testcases/kernel/syscalls/fallocate/fallocate03.c |    1 -
->  testcases/kernel/syscalls/fallocate/fallocate04.c |  273
->  +++++++++++++++++++++
->  5 files changed, 295 insertions(+), 1 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/fallocate/fallocate04.c
-> 
-
-v4 looks good, older kernels now end with TCONF. ACK
-
-Regards,
-Jan
 
 ------------------------------------------------------------------------------
 BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
