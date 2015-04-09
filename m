@@ -1,29 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YiIhf-0007MC-R0
-	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 08:29:47 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YiIhd-0008Rq-QF
-	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 08:29:47 +0000
-Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t3F8Tdsi010542
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 15 Apr 2015 08:29:40 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t3F8TdrN024316
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 15 Apr 2015 08:29:39 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t3F8TdXT014471
-	for <ltp-list@lists.sourceforge.net>; Wed, 15 Apr 2015 08:29:39 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 15 Apr 2015 11:32:21 +0300
-Message-Id: <1429086742-30655-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2] syscalls/fallocate04: add new fallocate() test
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1YgBJN-00015r-Sn
+	for ltp-list@lists.sourceforge.net; Thu, 09 Apr 2015 12:11:57 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YgBJJ-0004Cf-3Y
+	for ltp-list@lists.sourceforge.net; Thu, 09 Apr 2015 12:11:57 +0000
+From: Cui Bixuan <cuibixuan@huawei.com>
+Date: Thu, 9 Apr 2015 12:11:21 +0000
+Message-ID: <1428581481-192136-1-git-send-email-cuibixuan@huawei.com>
+MIME-Version: 1.0
+Subject: [LTP]  [PATCH] mv/mv_tests.sh: Add test02 to test "mv -b"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,391 +22,163 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+Cc: , huawei.com.zhuyanpeng@huawei.com, zhanyongming@huawei.com.lijinyue
 
-This is a new functional test of fallocate() syscall with the focus on
-FALLOC_FL_ZERO_RANGE (since Linux 3.14) and FALLOC_FL_COLLAPSE_RANGE
-(since Linux 3.15) modes.
+Add test02 to test "mv -b".
+Run it in ubuntu 12.02:
 
-Steps of test-cases:
-  * allocate a file with specified size;
-  * make a hole in the middle of the file with FALLOC_FL_PUNCH_HOLE;
-  * fill the hole and adjacent space with FALLOC_FL_ZERO_RANGE;
-  * remove a block from a file with FALLOC_FL_COLLAPSE_RANGE
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+<<<test_start>>>
+tag=mv_tests01 stime=1428322533
+cmdline="mv_tests.sh"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+mv          0  TINFO  :  INIT: Inititalizing tests.
+mv01        0  TINFO  :  Test #1: mv <dir1> <dir2> will move dir1 to dir2 and all its contents
+mv01        0  TINFO  :  Test #1: Creating 10 directories.
+mv01        0  TINFO  :  Test #1: filling each dir with 10 files.
+mv01        0  TINFO  :  Test #1: creating output file
+mv01        0  TINFO  :  Test #1: creating expected output file
+mv01        0  TINFO  :  Test #1: comparing expected out and actual output file
+mv01        0  TINFO  :  Test #1: expected same as actual
+mv01        1  TPASS  :  Test #1: mv success
+mv          0  TINFO  :  INIT: Inititalizing tests.
+mv02        0  TINFO  :  Test #2: mv -b <file1> <file2> will move dir1 to dir2 and backup the file2
+mv02        1  TPASS  :  Test #2: mv -b success
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=0 corefile=no
+cutime=1 cstime=8
+<<<test_end>>>
 ---
-v2: replaced lseek, read, write, etc. with LTP safe macros
-    moved FALLOC_FL_* macros to fallocate.h
-    removed FALLOC_FL_KEEP_SIZE from fallocate03 (it is now in fallocate.h)
-    made one more test-case (split setup())
+ .../commands/fileutils/mv/00_Descriptions.txt      |    3 +-
+ testcases/commands/fileutils/mv/mv_tests.sh        |   82 +++++++++++++++++++-
+ 2 files changed, 83 insertions(+), 2 deletions(-)
 
- runtest/syscalls                                  |    1 +
- testcases/kernel/syscalls/.gitignore              |    1 +
- testcases/kernel/syscalls/fallocate/fallocate.h   |   20 ++
- testcases/kernel/syscalls/fallocate/fallocate03.c |    1 -
- testcases/kernel/syscalls/fallocate/fallocate04.c |  278 +++++++++++++++++++++
- 5 files changed, 300 insertions(+), 1 deletions(-)
- create mode 100644 testcases/kernel/syscalls/fallocate/fallocate04.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7703825..126f46f 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -154,6 +154,7 @@ faccessat01 faccessat01
- fallocate01 fallocate01
- fallocate02 fallocate02
- fallocate03 fallocate03
-+fallocate04 fallocate04
+diff --git a/testcases/commands/fileutils/mv/00_Descriptions.txt b/testcases/commands/fileutils/mv/00_Descriptions.txt
+index 6d52868..57199bf 100644
+--- a/testcases/commands/fileutils/mv/00_Descriptions.txt
++++ b/testcases/commands/fileutils/mv/00_Descriptions.txt
+@@ -1,3 +1,4 @@
+ test01
+ 	mv <dir1> <dir2> will move dir1 to dir2 and all its contents.
+-
++test02
++	mv -b <file1> <file2> will move file1 to file2 and backup the file2.
+diff --git a/testcases/commands/fileutils/mv/mv_tests.sh b/testcases/commands/fileutils/mv/mv_tests.sh
+index 207e945..80f7507 100755
+--- a/testcases/commands/fileutils/mv/mv_tests.sh
++++ b/testcases/commands/fileutils/mv/mv_tests.sh
+@@ -24,7 +24,8 @@
+ # Description:  Test basic functionality of mv command
+ #				- Test #1:  mv <dir1> <dir2> will move dir1 to dir2 and all its
+ #				            contents.
+-#
++#				- Test #2:  mv -b <file1> <file2> will move file1 to file2 and
++#					    backup the file2.
+ # Author:       Manoj Iyer, manjo@mail.utexas.edu
+ #
+ # History:      Feb 03 2003 - Created - Manoj Iyer.
+@@ -238,6 +239,76 @@ test01()
+ 	return $RC
+ }
  
- #posix_fadvise test cases
- posix_fadvise01                      posix_fadvise01
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index f10e85e..afe7f3b 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -135,6 +135,7 @@
- /fallocate/fallocate01
- /fallocate/fallocate02
- /fallocate/fallocate03
-+/fallocate/fallocate04
- /fchdir/fchdir01
- /fchdir/fchdir02
- /fchdir/fchdir03
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate.h b/testcases/kernel/syscalls/fallocate/fallocate.h
-index b6c2203..1900aa0 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate.h
-+++ b/testcases/kernel/syscalls/fallocate/fallocate.h
-@@ -27,6 +27,26 @@
- #include "lapi/abisize.h"
- #include "linux_syscall_numbers.h"
++# Function:             test02
++#
++# Description   - Test #2: Test that mv -b <file1> <file2> will move
++#                 file1 to file2 and backup the file2.
++#               - create file1 and file2.
++#               - get the MD5 message of file2.
++#               - mv -b dir1 to dir2
++#               - get the MD5 message of backup file2.
++#               - compare  with MD5 messages.
++#
++# Return                - zero on success
++#               - non zero on failure. return value from commands ($RC)
++
++test02()
++{
++	RC=0                    # Return value from commands.
++        export TCID=mv02        # Name of the test case.
++        export TST_COUNT=1      # Test number.
++       
++	tmpfile1=$LTPTMP/tst_mv.tmp/tmpfile1
++	tmpfile2=$LTPTMP/tst_mv.tmp/tmpfile2
++	backup_tmpfile2=$LTPTMP/tst_mv.tmp/tmpfile2~
++       
++	$LTPBIN/tst_resm TINFO \
++		"Test #2: mv -b <file1> <file2> will move dir1 to dir2 and backup the file2"
++
++	touch $tmpfile1 $tmpfile2 > $LTPTMP/tst_mv.err 2>&1 || RC=$?
++	if [ $RC -ne 0 ]
++	then
++        	$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
++        	"Test #2: can not touch file1 and file2. Reason:"
++        	return $RC
++	fi
++
++	MD5_old=`md5sum $tmpfile2 |awk '{print $1}'` > $LTPTMP/tst_mv.err 2>&1 || RC=$?
++	if [ $RC -ne 0 ]
++	then
++        	$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
++        	"Test #2: can not get the MD5 message of file2. Reason:"
++        	return $RC
++	fi
++
++	mv -b $tmpfile1 $tmpfile2  > $LTPTMP/tst_mv.err 2>&1 || RC=$?
++	if [ $RC -ne 0 ]
++	then
++        	$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
++        	"Test #2: mv -b file1 file2 failed. Reason:"
++        	return $RC
++	fi
++
++	# if mv  -b file1 file2 succeed,there will be "file2~" file
++
++	MD5_backup=`md5sum $tmpfile2 |awk '{print $1}'` > $LTPTMP/tst_mv.err 2>&1 || RC=$?
++	if [ $RC -ne 0 ]
++	then
++        	$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
++        	"Test #2: can not get the MD5 message of backup file2. Reason:"
++        	return $RC
++	fi
++
++	if [ "$MD5_old" != "$MD5_backup" ]
++	then
++        	$LTPBIN/tst_resm TFAIL "Test #2: the MD5 number of file2 is not equal to MD5 number of backup file2"
++        	return $(($RC+1))
++	else
++        	$LTPBIN/tst_resm TPASS "Test #2: mv -b success"
++	fi
++
++	return $RC
++}
  
-+#ifndef SEEK_HOLE
-+#define SEEK_HOLE 4
-+#endif
-+
-+#ifndef FALLOC_FL_KEEP_SIZE
-+#define FALLOC_FL_KEEP_SIZE 0x01
-+#endif
-+
-+#ifndef FALLOC_FL_PUNCH_HOLE
-+#define FALLOC_FL_PUNCH_HOLE 0x02
-+#endif
-+
-+#ifndef FALLOC_FL_COLLAPSE_RANGE
-+#define FALLOC_FL_COLLAPSE_RANGE 0x08
-+#endif
-+
-+#ifndef FALLOC_FL_ZERO_RANGE
-+#define FALLOC_FL_ZERO_RANGE 0x10
-+#endif
-+
- #if !defined(HAVE_FALLOCATE)
- static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
- {
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate03.c b/testcases/kernel/syscalls/fallocate/fallocate03.c
-index ae2476a..092d2bb 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate03.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate03.c
-@@ -101,7 +101,6 @@
- #define BLOCKS_WRITTEN 12
- #define HOLE_SIZE_IN_BLOCKS 12
- #define DEFAULT_MODE 0
--#define FALLOC_FL_KEEP_SIZE 1	//Need to be removed once the glibce support is provided
- #define TRUE 0
+ # Function:		main
+ #
+@@ -258,6 +329,15 @@ then
+ 	TFAILCNT=$(($TFAILCNT+1))
+ fi
  
- void get_blocksize(int);
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-new file mode 100644
-index 0000000..426271e
---- /dev/null
-+++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-@@ -0,0 +1,278 @@
-+/*
-+ * Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ *
-+ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "fallocate.h"
-+
-+char *TCID = "fallocate04";
-+int TST_TOTAL = 4;
-+
-+static int fd;
-+static const char fname[] = "fallocate04.txt";
-+static size_t block_size;
-+static size_t buf_size;
-+
-+#define NUM_OF_BLOCKS	3
-+
-+static int verbose;
-+static const option_t options[] = {
-+	{"v", &verbose, NULL},
-+	{NULL, NULL, NULL}
-+};
-+
-+static void help(void)
-+{
-+	printf("  -v      Verbose\n");
-+}
-+
-+static void cleanup(void)
-+{
-+	close(fd);
-+	tst_rmdir();
-+}
-+
-+static void get_blocksize(void)
-+{
-+	struct stat file_stat;
-+
-+	SAFE_FSTAT(cleanup, fd, &file_stat);
-+
-+	block_size = file_stat.st_blksize;
-+	buf_size = NUM_OF_BLOCKS * block_size;
-+}
-+
-+static size_t get_allocsize(void)
-+{
-+	struct stat file_stat;
-+
-+	SAFE_FSTAT(cleanup, fd, &file_stat);
-+
-+	return file_stat.st_blocks * 512;
-+}
-+
-+static void fill_tst_buf(char buf[])
-+{
-+	/* fill the buffer with a, b, c, ... letters on each block */
-+	int i;
-+
-+	for (i = 0; i < NUM_OF_BLOCKS; ++i)
-+		memset(buf + i * block_size, 'a' + i, block_size);
-+}
-+
-+static void setup(void)
-+{
-+	tst_tmpdir();
-+
-+	fd = SAFE_OPEN(cleanup, fname, O_RDWR | O_CREAT, 0700);
-+
-+	get_blocksize();
-+}
-+
-+static void check_file_data(const char exp_buf[])
-+{
-+	size_t size = sizeof(exp_buf);
-+	char rbuf[size];
-+
-+	tst_resm(TINFO, "reading the file, compare with expected buffer");
-+
-+	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
-+	SAFE_READ(cleanup, 1, fd, rbuf, size);
-+
-+	if (memcmp(exp_buf, rbuf, size)) {
-+		if (verbose) {
-+			tst_resm_hexd(TINFO, exp_buf, size, "expected:");
-+			tst_resm_hexd(TINFO, rbuf, size, "but read:");
-+		}
-+		tst_brkm(TFAIL, cleanup, "not expected file data");
-+	}
-+}
-+
-+static void test01(void)
-+{
-+	tst_resm(TINFO, "allocate '%zu' bytes", buf_size);
-+
-+	if (fallocate(fd, 0, 0, buf_size) == -1) {
-+		if (errno == ENOSYS)
-+			tst_brkm(TCONF, cleanup, "fallocate() not supported");
-+		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate() failed");
-+	}
-+
-+	char buf[buf_size];
-+
-+	fill_tst_buf(buf);
-+
-+	SAFE_WRITE(cleanup, 1, fd, buf, buf_size);
-+
-+	tst_resm(TPASS, "test-case succeeded");
-+}
-+
-+static void test02(void)
-+{
-+	size_t alloc_size0 = get_allocsize();
-+
-+	tst_resm(TINFO, "read allocated file size '%zu'", alloc_size0);
-+	tst_resm(TINFO, "make a hole with FALLOC_FL_PUNCH_HOLE");
-+
-+	if (fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
-+	    block_size, block_size) == -1) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brkm(TCONF, cleanup, "operation not supported");
-+		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate() failed");
-+	}
-+
-+	tst_resm(TINFO, "check that file has a hole with lseek(,,SEEK_HOLE)");
-+	off_t ret = lseek(fd, 0, SEEK_HOLE);
-+
-+	if (ret != (ssize_t)block_size) {
-+		/* exclude error when kernel doesn't have SEEK_HOLE support */
-+		if (errno != EINVAL) {
-+			tst_brkm(TFAIL | TERRNO, cleanup,
-+				 "fallocate() or lseek() failed");
-+		}
-+		tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
-+	}
-+	tst_resm(TINFO, "found a hole at '%ld' offset", ret);
-+
-+	size_t alloc_size1 = get_allocsize();
-+
-+	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
-+		alloc_size0, alloc_size1);
-+	if ((alloc_size0 - block_size) != alloc_size1)
-+		tst_brkm(TFAIL, cleanup, "not expected allocated size");
-+
-+	char exp_buf[buf_size];
-+
-+	fill_tst_buf(exp_buf);
-+	memset(exp_buf + block_size, 0, block_size);
-+
-+	check_file_data(exp_buf);
-+
-+	tst_resm(TPASS, "test-case succeeded");
-+}
-+
-+static void test03(void)
-+{
-+	tst_resm(TINFO, "zeroing file space with FALLOC_FL_ZERO_RANGE");
-+
-+	if (tst_kvercmp(3, 14, 0) < 0) {
-+		tst_brkm(TCONF, cleanup,
-+			 "Test must be run with kernel 3.14 or newer");
-+	}
-+
-+	size_t alloc_size0 = get_allocsize();
-+
-+	tst_resm(TINFO, "read current allocated file size '%zu'", alloc_size0);
-+
-+	if (fallocate(fd, FALLOC_FL_ZERO_RANGE, block_size - 1,
-+		block_size + 2) == -1) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brkm(TCONF, cleanup, "operation not supported");
-+		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
-+	}
-+
-+	/* The file hole in the specified range must be allocated and
-+	 * filled with zeros. Check it.
-+	 */
-+	size_t alloc_size1 = get_allocsize();
-+
-+	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
-+		alloc_size0, alloc_size1);
-+	if ((alloc_size0 + block_size) != alloc_size1)
-+		tst_brkm(TFAIL, cleanup, "not expected allocated size");
-+
-+	char exp_buf[buf_size];
-+
-+	fill_tst_buf(exp_buf);
-+	memset(exp_buf + block_size - 1, 0, block_size + 2);
-+
-+	check_file_data(exp_buf);
-+
-+	tst_resm(TPASS, "test-case succeeded");
-+}
-+
-+static void test04(void)
-+{
-+	tst_resm(TINFO, "collapsing file space with FALLOC_FL_COLLAPSE_RANGE");
-+
-+	if (tst_kvercmp(3, 15, 0) < 0) {
-+		tst_brkm(TCONF, cleanup,
-+			 "Test must be run with kernel 3.15 or newer");
-+	}
-+
-+	size_t alloc_size0 = get_allocsize();
-+
-+	tst_resm(TINFO, "read current allocated file size '%zu'", alloc_size0);
-+
-+	if (fallocate(fd, FALLOC_FL_COLLAPSE_RANGE, block_size,
-+		block_size) == -1) {
-+		if (errno == EOPNOTSUPP)
-+			tst_brkm(TCONF, cleanup, "operation not supported");
-+		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
-+	}
-+
-+	size_t alloc_size1 = get_allocsize();
-+
-+	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
-+		alloc_size0, alloc_size1);
-+	if ((alloc_size0 - block_size) != alloc_size1)
-+		tst_brkm(TFAIL, cleanup, "not expected allocated size");
-+
-+	size_t size = buf_size - block_size;
-+	char tmp_buf[buf_size];
-+	char exp_buf[size];
-+
-+	fill_tst_buf(tmp_buf);
-+
-+	memcpy(exp_buf, tmp_buf, block_size);
-+	memcpy(exp_buf + block_size, tmp_buf + size, block_size);
-+
-+	check_file_data(exp_buf);
-+
-+	tst_resm(TPASS, "test-case succeeded");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+
-+	tst_parse_opts(argc, argv, options, help);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+		test01();
-+		test02();
-+		test03();
-+		test04();
-+	}
-+
-+	cleanup();
-+
-+	tst_exit();
-+}
++rm -fr $LTPTMP/tst_mv.*
++
++init || return $RC      # Exit if initializing testcases fails.
++
++test02 || RC=$?
++if [ $RC -ne 0 ]
++then
++	TFAILCNT=$(($TFAILCNT+1))
++fi
+ 
+ rm -fr $LTPTMP/tst_mv.*
+ 
 -- 
-1.7.1
+1.6.0.2
 
 
 ------------------------------------------------------------------------------
