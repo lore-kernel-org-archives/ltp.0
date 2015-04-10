@@ -1,25 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YlU1G-00017g-Ht
-	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 03:11:10 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YlU1D-0004ar-Af
-	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 03:11:10 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t3O39nwK031049
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Apr 2015 11:09:50 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 24 Apr 2015 11:06:05 +0800
-Message-ID: <1429844769-7113-4-git-send-email-gux.fnst@cn.fujitsu.com>
-In-Reply-To: <1429844769-7113-1-git-send-email-gux.fnst@cn.fujitsu.com>
-References: <1429844769-7113-1-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v5 4/8] power_management: call the function eg.
-	test_sched_mc instead of script test_sched_mc.sh
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YgZ0A-00005a-Pl
+	for ltp-list@lists.sourceforge.net; Fri, 10 Apr 2015 13:29:42 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YgZ04-0006kS-9R
+	for ltp-list@lists.sourceforge.net; Fri, 10 Apr 2015 13:29:42 +0000
+Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t3ADTU9P013708
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Apr 2015 13:29:30 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t3ADTTWd002030
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Apr 2015 13:29:30 GMT
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t3ADTTdr002576
+	for <ltp-list@lists.sourceforge.net>; Fri, 10 Apr 2015 13:29:29 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 10 Apr 2015 16:32:05 +0300
+Message-Id: <1428672725-13538-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] syscalls/fallocate04: add new fallocate() test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,628 +33,352 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Many scripts eg. test_sched_mc.sh is called only from
-one test eg. runpwtests01.sh. Remove the script code
-into the corresponding test case.
+This is a new functional test of fallocate() syscall with the focus on
+FALLOC_FL_ZERO_RANGE (since Linux 3.14) and FALLOC_FL_COLLAPSE_RANGE
+(since Linux 3.15) modes.
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+Steps of test-cases:
+  * make a hole in the middle of the file with FALLOC_FL_PUNCH_HOLE;
+  * fill the hole and adjacent space with FALLOC_FL_ZERO_RANGE;
+  * remove a block from a file with FALLOC_FL_COLLAPSE_RANGE
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/kernel/power_management/change_freq.sh   |  36 ------
- testcases/kernel/power_management/change_govr.sh   |  24 ----
- .../power_management/check_cpufreq_sysfs_files.sh  |  24 ----
- .../power_management/check_cpuidle_sysfs_files.sh  |  19 ---
- .../kernel/power_management/pwkm_load_unload.sh    |  30 -----
- testcases/kernel/power_management/runpwtests01.sh  |  24 +++-
- testcases/kernel/power_management/runpwtests02.sh  |  23 +++-
- testcases/kernel/power_management/runpwtests03.sh  | 131 ++++++++++++++++++++-
- testcases/kernel/power_management/runpwtests04.sh  |  23 +++-
- testcases/kernel/power_management/runpwtests06.sh  |  22 +++-
- testcases/kernel/power_management/test_sched_mc.sh |  24 ----
- .../kernel/power_management/test_sched_smt.sh      |  23 ----
- .../power_management/test_timer_migration.sh       |  22 ----
- 13 files changed, 215 insertions(+), 210 deletions(-)
- delete mode 100755 testcases/kernel/power_management/change_freq.sh
- delete mode 100755 testcases/kernel/power_management/change_govr.sh
- delete mode 100755 testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
- delete mode 100755 testcases/kernel/power_management/check_cpuidle_sysfs_files.sh
- delete mode 100755 testcases/kernel/power_management/pwkm_load_unload.sh
- delete mode 100755 testcases/kernel/power_management/test_sched_mc.sh
- delete mode 100755 testcases/kernel/power_management/test_sched_smt.sh
- delete mode 100755 testcases/kernel/power_management/test_timer_migration.sh
+ runtest/syscalls                                  |    1 +
+ testcases/kernel/syscalls/.gitignore              |    1 +
+ testcases/kernel/syscalls/fallocate/fallocate04.c |  282 +++++++++++++++++++++
+ 3 files changed, 284 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/fallocate/fallocate04.c
 
-diff --git a/testcases/kernel/power_management/change_freq.sh b/testcases/kernel/power_management/change_freq.sh
-deleted file mode 100755
-index 3a971d2..0000000
---- a/testcases/kernel/power_management/change_freq.sh
-+++ /dev/null
-@@ -1,36 +0,0 @@
--#!/bin/bash
--
--. pm_include.sh
--available_freq=$(get_supporting_freq)
--available_govr=$(get_supporting_govr)
--RC=0
--
--total_cpus=$(tst_ncpus)
--(( total_cpus-=1 ))
--
--if ( echo ${available_govr} | grep -i "userspace" 2>&1 >/dev/null ) ; then
--	for cpu in $(seq 0 "${total_cpus}" )
--	do
--		echo userspace > /sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_governor
--		if [ $? -ne 0 ] ; then
--			RC=1
--		fi
--	done
--	if [ ${RC} -ne 1 ] ; then
--		for cpu in $(seq 0 "${total_cpus}" )
--		do
--			for freq in ${available_freq}
--			do
--				echo ${freq} > /sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_setspeed
--				if [ "$?" -ne "0" ] ; then
--					echo "${0}: FAIL: Unable to set frequency -- ${freq} for cpu${cpu}"
--					RC=1
--				fi
--			done
--		done
--	fi
--fi
--if [ ${RC} -eq 0 ] ; then
--	echo "${0}: PASS: Changing cpu frequencies"
--fi
--exit $RC
-diff --git a/testcases/kernel/power_management/change_govr.sh b/testcases/kernel/power_management/change_govr.sh
-deleted file mode 100755
-index bfe6c5b..0000000
---- a/testcases/kernel/power_management/change_govr.sh
-+++ /dev/null
-@@ -1,24 +0,0 @@
--#!/bin/bash
--
--. pm_include.sh
--available_govr=$(get_supporting_govr)
--
--total_cpus=$(tst_ncpus)
--(( total_cpus-=1 ))
--RC=0
--
--for cpu in $(seq 0 "${total_cpus}" )
--do
--	for govr in ${available_govr}
--	do
--		echo ${govr} > /sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_governor
--		if [ "$?" -ne "0" ] ; then
--			echo "${0}: FAIL: Unable to set governor -- ${govr} for cpu${cpu}"
--			RC=1
--		fi
--	done
--done
--if [ ${RC} -eq 0 ] ; then
--	echo "${0}: PASS: Changing cpu governors"
--fi
--exit $RC
-diff --git a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh b/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
-deleted file mode 100755
-index dcf8a1d..0000000
---- a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
-+++ /dev/null
-@@ -1,24 +0,0 @@
--#!/bin/bash
--
--. pm_include.sh
--
--total_cpus=$(tst_ncpus)
--(( total_cpus-=1 ))
--RC=0
--
--for cpu in $(seq 0 "${total_cpus}" )
--do
--	cpufiles=$(find /sys/devices/system/cpu/cpu"${cpu}"/cpufreq/ -name "*" -type f)
--	for files in ${cpufiles}
--	do
--		cat ${files} 2>&1 >/dev/null
--		if [ $? -ne 0 ] ; then
--			echo "${0}: FAIL: cat ${files}"
--			RC=1
--		fi
--	done
--done
--if [ ${RC} -eq 0 ] ; then
--	echo "${0}: PASS: Checking cpu freq sysfs files"
--fi
--exit $RC
-diff --git a/testcases/kernel/power_management/check_cpuidle_sysfs_files.sh b/testcases/kernel/power_management/check_cpuidle_sysfs_files.sh
-deleted file mode 100755
-index 4ed4d5b..0000000
---- a/testcases/kernel/power_management/check_cpuidle_sysfs_files.sh
-+++ /dev/null
-@@ -1,19 +0,0 @@
--#!/bin/bash
--
--RC=0
--if [ -d /sys/devices/system/cpu/cpuidle ] ; then
--	for files in current_governor_ro current_driver
--	do
--		cat /sys/devices/system/cpu/cpuidle/${files} >/dev/null 2>&1
--		if [ $? -ne 0 ] ; then
--			echo "${0}: FAIL: cat ${files}"
--			RC=1
--		fi
--	done
--fi
--if [ ${RC} -eq 0 ] ; then
--	echo "${0}: PASS: Checking cpu idle sysfs files"
--else
--	echo "${0}: FAIL: Checking cpu idle sysfs files"
--fi
--exit $RC
-diff --git a/testcases/kernel/power_management/pwkm_load_unload.sh b/testcases/kernel/power_management/pwkm_load_unload.sh
-deleted file mode 100755
-index 9bcbd56..0000000
---- a/testcases/kernel/power_management/pwkm_load_unload.sh
-+++ /dev/null
-@@ -1,30 +0,0 @@
--#!/bin/bash
--
--#Loading modules
--RC=0
--loaded_governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
--for module in `modprobe -l | grep cpufreq_ | cut -f8 -d"/" | cut -f1 -d"."`
--do
--	#echo -n "Loading $module ... "
--    if [ $module != "cpufreq_$loaded_governor" ];
--    then
--		modprobe $module >/dev/null
--		if [ $? -ne 0 ] ; then
--			echo "${0}: FAIL: Loading of module $module or check whether you compiled as module or not"
--			RC=1
--		fi
--	fi
--done
--for module in `modprobe -l | grep cpufreq_ | cut -f8 -d"/" | cut -f1 -d"."`
--do
--	#echo -n "Unloading $module ... "
--    if [ $module != "cpufreq_$loaded_governor" ];
--    then
--		modprobe -r $module >/dev/null
--		if [ $? -ne 0 ] ; then
--			echo "${0}: FAIL: Loading of module $module or check whether you compiled as module or not"
--			RC=1
--		fi
--	fi
--done
--exit $RC
-diff --git a/testcases/kernel/power_management/runpwtests01.sh b/testcases/kernel/power_management/runpwtests01.sh
-index 7dc164c..d470d11 100755
---- a/testcases/kernel/power_management/runpwtests01.sh
-+++ b/testcases/kernel/power_management/runpwtests01.sh
-@@ -24,6 +24,28 @@ export TST_TOTAL=1
- . test.sh
- . pm_include.sh
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 7703825..126f46f 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -154,6 +154,7 @@ faccessat01 faccessat01
+ fallocate01 fallocate01
+ fallocate02 fallocate02
+ fallocate03 fallocate03
++fallocate04 fallocate04
  
-+test_sched_mc() {
-+	get_kernel_version
-+	get_valid_input $kernel_version
+ #posix_fadvise test cases
+ posix_fadvise01                      posix_fadvise01
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index f10e85e..afe7f3b 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -135,6 +135,7 @@
+ /fallocate/fallocate01
+ /fallocate/fallocate02
+ /fallocate/fallocate03
++/fallocate/fallocate04
+ /fchdir/fchdir01
+ /fchdir/fchdir02
+ /fchdir/fchdir03
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
+new file mode 100644
+index 0000000..ccad3f2
+--- /dev/null
++++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
+@@ -0,0 +1,282 @@
++/*
++ * Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.
++ *
++ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++ */
 +
-+	invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
-+	2000000000000000000000000000000000000000000000000000000000000000000
-+	ox324 -0xfffffffffffffffffffff"
-+	test_file="/sys/devices/system/cpu/sched_mc_power_savings"
-+	if [ ! -f ${test_file} ] ; then
-+		tst_brkm TBROK "MISSING_FILE: missing file ${test_file}"
-+	fi
++#define _GNU_SOURCE
 +
-+	RC=0
-+	echo "${0}: ---Valid test cases---"
-+	check_input "${valid_input}" valid $test_file
-+	RC=$?
-+	echo "${0}: ---Invalid test cases---"
-+	check_input "${invalid_input}" invalid $test_file
-+	RC=$(( RC | $? ))
-+	return $RC
++#include <stdio.h>
++#include <stdlib.h>
++#include <errno.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++
++#include "test.h"
++#include "safe_macros.h"
++
++#define SEEK_HOLE			4
++#define FALLOC_FL_KEEP_SIZE		0x01
++#define FALLOC_FL_PUNCH_HOLE		0x02
++#define FALLOC_FL_COLLAPSE_RANGE	0x08
++#define FALLOC_FL_ZERO_RANGE		0x10
++
++char *TCID = "fallocate04";
++int TST_TOTAL = 3;
++
++static int fd;
++static const char fname[] = "fallocate04.txt";
++static size_t block_size;
++static size_t buf_size;
++enum { NUM_OF_BLOCKS = 3 };
++static int verbose;
++static const option_t options[] = {
++	{"v", &verbose, NULL},
++	{NULL, NULL, NULL}
++};
++
++static void help(void)
++{
++	printf("  -v      Verbose\n");
 +}
 +
- # Checking test environment
- check_kervel_arch
- 
-@@ -40,7 +62,7 @@ else
- 	fi
- fi
- 
--if test_sched_mc.sh ; then
-+if test_sched_mc ; then
- 	tst_resm TPASS "SCHED_MC sysfs tests"
- else
- 	tst_resm TFAIL "SCHED_MC sysfs tests"
-diff --git a/testcases/kernel/power_management/runpwtests02.sh b/testcases/kernel/power_management/runpwtests02.sh
-index 067569e..8c7936f 100755
---- a/testcases/kernel/power_management/runpwtests02.sh
-+++ b/testcases/kernel/power_management/runpwtests02.sh
-@@ -24,6 +24,27 @@ export TST_TOTAL=1
- . test.sh
- . pm_include.sh
- 
-+test_sched_smt() {
-+	get_kernel_version
-+	get_valid_input $kernel_version
-+
-+	invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
-+	2000000000000000000000000000000000000000000000000000000000000000000000
-+	ox324 -0xfffffffffffffffffffff"
-+	test_file="/sys/devices/system/cpu/sched_smt_power_savings"
-+	if [ ! -f ${test_file} ] ; then
-+		tst_brkm TBROK "MISSING_FILE: missing file ${test_file}"
-+	fi
-+
-+	echo "${0}: ---Valid test cases---"
-+	check_input "${valid_input}" valid $test_file
-+	RC=$?
-+	echo "${0}: ---Invalid test cases---"
-+	check_input "${invalid_input}" invalid $test_file
-+	RC=$(( RC | $? ))
-+	return $RC
++static void cleanup(void)
++{
++	close(fd);
++	tst_rmdir();
 +}
 +
- # Checking test environment
- check_kervel_arch
- 
-@@ -38,7 +59,7 @@ else
- 	fi
- fi
- 
--if test_sched_smt.sh ; then
-+if test_sched_smt ; then
- 	tst_resm TPASS "SCHED_SMT sysfs test"
- else
- 	tst_resm TFAIL "SCHED_SMT sysfs test"
-diff --git a/testcases/kernel/power_management/runpwtests03.sh b/testcases/kernel/power_management/runpwtests03.sh
-index 34fb1a4..7e9ac4b 100755
---- a/testcases/kernel/power_management/runpwtests03.sh
-+++ b/testcases/kernel/power_management/runpwtests03.sh
-@@ -24,6 +24,129 @@ export TST_TOTAL=4
- . test.sh
- . pm_include.sh
- 
-+check_cpufreq_sysfs_files() {
-+	total_cpus=$(tst_ncpus)
-+	(( total_cpus-=1 ))
-+	RC=0
++static void get_blocksize(void)
++{
++	struct stat file_stat;
 +
-+	for cpu in $(seq 0 "${total_cpus}" )
-+	do
-+		cpufiles=$(find /sys/devices/system/cpu/cpu"${cpu}"/cpufreq/ \
-+			-name "*" -type f)
-+		for files in ${cpufiles}
-+		do
-+			cat ${files} 2>&1 >/dev/null
-+			if [ $? -ne 0 ] ; then
-+				echo "${0}: FAIL: cat ${files}"
-+				RC=1
-+			fi
-+		done
-+	done
-+	if [ ${RC} -eq 0 ] ; then
-+		echo "${0}: PASS: Checking cpu freq sysfs files"
-+	fi
-+	return $RC
++	if (fstat(fd, &file_stat) == -1)
++		tst_brkm(TFAIL | TERRNO, cleanup, "fstat() failed");
++
++	block_size = file_stat.st_blksize;
++	buf_size = NUM_OF_BLOCKS * block_size;
 +}
 +
-+change_govr() {
-+	available_govr=$(get_supporting_govr)
++static size_t get_allocsize(void)
++{
++	struct stat file_stat;
 +
-+	total_cpus=$(tst_ncpus)
-+	(( total_cpus-=1 ))
-+	RC=0
++	if (fstat(fd, &file_stat) == -1)
++		tst_brkm(TFAIL | TERRNO, cleanup, "fstat() failed");
 +
-+	for cpu in $(seq 0 "${total_cpus}" )
-+	do
-+		for govr in ${available_govr}
-+		do
-+			echo ${govr} > \
-+	/sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_governor
-+			if [ "$?" -ne "0" ] ; then
-+				echo "${0}: FAIL: Unable to set" \
-+					"governor -- ${govr} for cpu${cpu}"
-+				RC=1
-+			fi
-+		done
-+	done
-+	if [ ${RC} -eq 0 ] ; then
-+		echo "${0}: PASS: Changing cpu governors"
-+	fi
-+	return $RC
++	return file_stat.st_blocks * 512;
 +}
 +
-+change_freq() {
-+	available_freq=$(get_supporting_freq)
-+	available_govr=$(get_supporting_govr)
-+	RC=0
++static void fill_tst_buf(char buf[])
++{
++	/* fill the buffer with a, b, c, ... letters on each block */
++	int i;
 +
-+	total_cpus=$(tst_ncpus)
-+	(( total_cpus-=1 ))
-+
-+	if ( echo ${available_govr} | grep -i "userspace" \
-+		2>&1 >/dev/null ); then
-+		for cpu in $(seq 0 "${total_cpus}" )
-+		do
-+			echo userspace > \
-+	/sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_governor
-+			if [ $? -ne 0 ] ; then
-+				RC=1
-+			fi
-+		done
-+		if [ ${RC} -ne 1 ] ; then
-+			for cpu in $(seq 0 "${total_cpus}" )
-+			do
-+				for freq in ${available_freq}
-+				do
-+					echo ${freq} > \
-+	/sys/devices/system/cpu/cpu${cpu}/cpufreq/scaling_setspeed
-+					if [ "$?" -ne "0" ] ; then
-+						echo "${0}: FAIL: Unable" \
-+							"to set frequency -- ${freq} for cpu${cpu}"
-+						RC=1
-+					fi
-+				done
-+			done
-+		fi
-+	fi
-+	if [ ${RC} -eq 0 ] ; then
-+		echo "${0}: PASS: Changing cpu frequencies"
-+	fi
-+	return $RC
++	for (i = 0; i < NUM_OF_BLOCKS; ++i)
++		memset(buf + i * block_size, 'a' + i, block_size);
 +}
 +
-+pwkm_load_unload() {
-+	RC=0
-+	loaded_governor=`cat \
-+		/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-+	for module in `modprobe -l | grep cpufreq_ | \
-+		cut -f8 -d"/" | cut -f1 -d"."`
-+	do
-+		#echo -n "Loading $module ... "
-+		if [ $module != "cpufreq_$loaded_governor" ]; then
-+			modprobe $module >/dev/null
-+			if [ $? -ne 0 ] ; then
-+				echo "${0}: FAIL: Loading of module $module" \
-+					"or check whether you compiled as module or not"
-+				RC=1
-+			fi
-+		fi
-+	done
-+	for module in `modprobe -l | grep cpufreq_ | \
-+		cut -f8 -d"/" | cut -f1 -d"."`
-+		do
-+		#echo -n "Unloading $module ... "
-+		if [ $module != "cpufreq_$loaded_governor" ]; then
-+			modprobe -r $module >/dev/null
-+			if [ $? -ne 0 ] ; then
-+				echo "${0}: FAIL: Loading of module $module" \
-+					"or check whether you compiled as module or not"
-+				RC=1
-+			fi
-+		fi
-+	done
-+	return $RC
++static void setup(void)
++{
++	tst_tmpdir();
++
++	fd = open(fname, O_RDWR | O_CREAT, 0700);
++	if (fd == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "open(%s) failed", fname);
++
++	get_blocksize();
++
++	if (fallocate(fd, 0, 0, buf_size) == -1) {
++		if (errno == ENOSYS)
++			tst_brkm(TCONF, cleanup, "fallocate() not supported");
++		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate() failed");
++	}
++
++	char buf[buf_size];
++
++	fill_tst_buf(buf);
++
++	if (write(fd, buf, buf_size) != (ssize_t)buf_size)
++		tst_brkm(TFAIL | TERRNO, cleanup, "can't fill the file");
 +}
 +
- # Checking test environment
- check_kervel_arch
- 
-@@ -32,28 +155,28 @@ if [ ! -d /sys/devices/system/cpu/cpu0/cpufreq ] ; then
- 	tst_brkm TCONF "Required kernel configuration for CPU_FREQ NOT set"
- fi
- 
--if check_cpufreq_sysfs_files.sh ; then
-+if check_cpufreq_sysfs_files ; then
- 	tst_resm TPASS "CPUFREQ sysfs tests"
- else
- 	tst_resm TFAIL "CPUFREQ sysfs tests"
- fi
- 
- # Changing governors
--if change_govr.sh ; then
-+if change_govr ; then
- 	tst_resm TPASS "Changing governors"
- else
- 	tst_resm TFAIL "Changing governors"
- fi
- 
- # Changing frequencies
--if change_freq.sh ; then
-+if change_freq ; then
- 	tst_resm TPASS "Changing frequncies"
- else
-     tst_resm TFAIL "Changing frequncies"
- fi
- 
- # Loading and Unloading governor related kernel modules
--if pwkm_load_unload.sh ; then
-+if pwkm_load_unload ; then
- 	tst_resm TPASS "Loading and Unloading of governor kernel" \
- 		"modules"
- else
-diff --git a/testcases/kernel/power_management/runpwtests04.sh b/testcases/kernel/power_management/runpwtests04.sh
-index eeb4b22..4b727a5 100755
---- a/testcases/kernel/power_management/runpwtests04.sh
-+++ b/testcases/kernel/power_management/runpwtests04.sh
-@@ -24,11 +24,32 @@ export TST_TOTAL=1
- . test.sh
- . pm_include.sh
- 
-+check_cpuidle_sysfs_files() {
-+	RC=0
-+	if [ -d /sys/devices/system/cpu/cpuidle ] ; then
-+		for files in current_governor_ro current_driver
-+		do
-+			cat /sys/devices/system/cpu/cpuidle/${files} \
-+				>/dev/null 2>&1
-+			if [ $? -ne 0 ] ; then
-+				echo "${0}: FAIL: cat ${files}"
-+				RC=1
-+			fi
-+		done
-+	fi
-+	if [ ${RC} -eq 0 ] ; then
-+		echo "${0}: PASS: Checking cpu idle sysfs files"
-+	else
-+		echo "${0}: FAIL: Checking cpu idle sysfs files"
-+	fi
-+	return $RC
++static void check_file_data(const char exp_buf[])
++{
++	size_t size = sizeof(exp_buf);
++	char rbuf[size];
++
++	tst_resm(TINFO, "reading the file, compare with expected buffer");
++
++	if (lseek(fd, 0, SEEK_SET) != 0)
++		tst_brkm(TFAIL | TERRNO, cleanup, "lseek() failed");
++	if (read(fd, rbuf, size) != (ssize_t)size)
++		tst_brkm(TFAIL | TERRNO, cleanup, "can't read file");
++
++	if (memcmp(exp_buf, rbuf, size)) {
++		if (verbose) {
++			tst_resm_hexd(TINFO, exp_buf, size, "expected:");
++			tst_resm_hexd(TINFO, rbuf, size, "but read:");
++		}
++		tst_brkm(TFAIL, cleanup, "not expected file data");
++	}
 +}
 +
- # Checking test environment
- check_kervel_arch
- 
- # Checking cpuidle sysfs interface files
--if check_cpuidle_sysfs_files.sh ; then
-+if check_cpuidle_sysfs_files ; then
- 	tst_resm TPASS "CPUIDLE sysfs tests passed"
- else
-     tst_resm TFAIL "CPUIDLE sysfs tests failed"
-diff --git a/testcases/kernel/power_management/runpwtests06.sh b/testcases/kernel/power_management/runpwtests06.sh
-index ab5d7de..7888a39 100755
---- a/testcases/kernel/power_management/runpwtests06.sh
-+++ b/testcases/kernel/power_management/runpwtests06.sh
-@@ -24,6 +24,26 @@ export TST_TOTAL=1
- . test.sh
- . pm_include.sh
- 
-+test_timer_migration() {
-+	valid_input="0 1"
-+	invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
-+	2000000000000000000000000000000000000000000000000000000000000000000000
-+	ox324 -0xfffffffffffffffffffff"
-+	test_file="/proc/sys/kernel/timer_migration"
-+	if [ ! -f ${test_file} ] ; then
-+		tst_brkm TBROK "MISSING_FILE: missing file ${test_file}"
-+	fi
++static void test01(void)
++{
++	size_t alloc_size0 = get_allocsize();
 +
-+	RC=0
-+	echo "${0}: ---Valid test cases---"
-+	check_input "${valid_input}" valid $test_file
-+	RC=$?
-+	echo "${0}: ---Invalid test cases---"
-+	check_input "${invalid_input}" invalid $test_file
-+	RC=$(( RC | $? ))
-+	return $RC
++	tst_resm(TINFO, "read allocated file size '%zu'", alloc_size0);
++	tst_resm(TINFO, "make a hole with FALLOC_FL_PUNCH_HOLE");
++
++	if (fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
++	    block_size, block_size) == -1) {
++		if (errno == EOPNOTSUPP)
++			tst_brkm(TCONF, cleanup, "operation not supported");
++		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate() failed");
++	}
++
++	tst_resm(TINFO, "check that file has a hole with lseek(,,SEEK_HOLE)");
++	ssize_t ret = lseek(fd, 0, SEEK_HOLE);
++
++	if (ret != (ssize_t)block_size) {
++		/* exclude error when kernel doesn't have SEEK_HOLE support */
++		if (errno != EINVAL) {
++			tst_brkm(TFAIL | TERRNO, cleanup,
++				 "fallocate() or lseek() failed");
++		} else {
++			tst_resm(TWARN | TERRNO, "lseek() failed");
++		}
++	}
++	tst_resm(TINFO, "found a hole at '%d' offset", ret);
++
++	size_t alloc_size1 = get_allocsize();
++
++	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
++		alloc_size0, alloc_size1);
++	if ((alloc_size0 - block_size) != alloc_size1)
++		tst_brkm(TFAIL, cleanup, "not expected allocated size");
++
++	char exp_buf[buf_size];
++
++	fill_tst_buf(exp_buf);
++	memset(exp_buf + block_size, 0, block_size);
++
++	check_file_data(exp_buf);
++
++	tst_resm(TPASS, "test succeeded");
 +}
 +
- # Checking test environment
- check_kervel_arch
- 
-@@ -42,7 +62,7 @@ else
- 	fi
- fi
- 
--if test_timer_migration.sh; then
-+if test_timer_migration ; then
- 	tst_resm TPASS "Timer Migration interface test"
- else
- 	tst_resm TFAIL "Timer migration interface test"
-diff --git a/testcases/kernel/power_management/test_sched_mc.sh b/testcases/kernel/power_management/test_sched_mc.sh
-deleted file mode 100755
-index c695798..0000000
---- a/testcases/kernel/power_management/test_sched_mc.sh
-+++ /dev/null
-@@ -1,24 +0,0 @@
--#!/bin/bash
--
--. pm_include.sh
--
--get_kernel_version
--get_valid_input $kernel_version
--
--invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
--200000000000000000000000000000000000000000000000000000000000000000000000000000
--ox324 -0xfffffffffffffffffffff"
--test_file="/sys/devices/system/cpu/sched_mc_power_savings"
--if [ ! -f ${test_file} ] ; then
--	echo "MISSING_FILE: missing file ${test_file}"
--	exit $MISSING_FILE
--fi
--
--RC=0
--echo "${0}: ---Valid test cases---"
--check_input "${valid_input}" valid $test_file
--RC=$?
--echo "${0}: ---Invalid test cases---"
--check_input "${invalid_input}" invalid $test_file
--RC=$(( RC | $? ))
--exit $RC
-diff --git a/testcases/kernel/power_management/test_sched_smt.sh b/testcases/kernel/power_management/test_sched_smt.sh
-deleted file mode 100755
-index 6cde834..0000000
---- a/testcases/kernel/power_management/test_sched_smt.sh
-+++ /dev/null
-@@ -1,23 +0,0 @@
--#!/bin/bash
--
--. pm_include.sh
--
--get_kernel_version
--get_valid_input $kernel_version
--
--invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
--200000000000000000000000000000000000000000000000000000000000000000000000000000
--ox324 -0xfffffffffffffffffffff"
--test_file="/sys/devices/system/cpu/sched_smt_power_savings"
--if [ ! -f ${test_file} ] ; then
--       echo "MISSING_FILE: missing file ${test_file}"
--       exit $MISSING_FILE
--fi
--
--echo "${0}: ---Valid test cases---"
--check_input "${valid_input}" valid $test_file
--RC=$?
--echo "${0}: ---Invalid test cases---"
--check_input "${invalid_input}" invalid $test_file
--RC=$(( RC | $? ))
--exit $RC
-diff --git a/testcases/kernel/power_management/test_timer_migration.sh b/testcases/kernel/power_management/test_timer_migration.sh
-deleted file mode 100755
-index e2d3296..0000000
---- a/testcases/kernel/power_management/test_timer_migration.sh
-+++ /dev/null
-@@ -1,22 +0,0 @@
--#!/bin/bash
--
--. pm_include.sh
--
--valid_input="0 1"
--invalid_input="3 4 5 6 7 8 a abcefg x1999 xffff -1 -00000
--200000000000000000000000000000000000000000000000000000000000000000000000000000
--ox324 -0xfffffffffffffffffffff"
--test_file="/proc/sys/kernel/timer_migration"
--if [ ! -f ${test_file} ] ; then
--	echo "MISSING_FILE: missing file ${test_file}"
--	exit $MISSING_FILE
--fi
--
--RC=0
--echo "${0}: ---Valid test cases---"
--check_input "${valid_input}" valid $test_file
--RC=$?
--echo "${0}: ---Invalid test cases---"
--check_input "${invalid_input}" invalid $test_file
--RC=$(( RC | $? ))
--exit $RC
++static void test02(void)
++{
++	tst_resm(TINFO, "zeroing file space with FALLOC_FL_ZERO_RANGE");
++
++	if (tst_kvercmp(3, 14, 0) < 0) {
++		tst_brkm(TCONF, NULL,
++			 "Test must be run with kernel 3.14 or newer");
++	}
++
++	size_t alloc_size0 = get_allocsize();
++
++	tst_resm(TINFO, "read current allocated file size '%zu'", alloc_size0);
++
++	if (fallocate(fd, FALLOC_FL_ZERO_RANGE, block_size - 1,
++		block_size + 2) == -1) {
++		if (errno == EOPNOTSUPP)
++			tst_brkm(TCONF, cleanup, "operation not supported");
++		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
++	}
++
++	/* The file hole in the specified range must be allocated and
++	 * filled with zeros. Check it.
++	 */
++	size_t alloc_size1 = get_allocsize();
++
++	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
++		alloc_size0, alloc_size1);
++	if ((alloc_size0 + block_size) != alloc_size1)
++		tst_brkm(TFAIL, cleanup, "not expected allocated size");
++
++	char exp_buf[buf_size];
++
++	fill_tst_buf(exp_buf);
++	memset(exp_buf + block_size - 1, 0, block_size + 2);
++
++	check_file_data(exp_buf);
++
++	tst_resm(TPASS, "test succeeded");
++}
++
++static void test03(void)
++{
++	tst_resm(TINFO, "collapsing file space with FALLOC_FL_COLLAPSE_RANGE");
++
++	if (tst_kvercmp(3, 15, 0) < 0) {
++		tst_brkm(TCONF, NULL,
++			 "Test must be run with kernel 3.15 or newer");
++	}
++
++	size_t alloc_size0 = get_allocsize();
++
++	tst_resm(TINFO, "read current allocated file size '%zu'", alloc_size0);
++
++	if (fallocate(fd, FALLOC_FL_COLLAPSE_RANGE, block_size,
++		block_size) == -1) {
++		if (errno == EOPNOTSUPP)
++			tst_brkm(TCONF, cleanup, "operation not supported");
++		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
++	}
++
++	size_t alloc_size1 = get_allocsize();
++
++	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
++		alloc_size0, alloc_size1);
++	if ((alloc_size0 - block_size) != alloc_size1)
++		tst_brkm(TFAIL, cleanup, "not expected allocated size");
++
++	size_t size = buf_size - block_size;
++	char tmp_buf[buf_size];
++	char exp_buf[size];
++
++	fill_tst_buf(tmp_buf);
++
++	memcpy(exp_buf, tmp_buf, block_size);
++	memcpy(exp_buf + block_size, tmp_buf + size, block_size);
++
++	check_file_data(exp_buf);
++
++	tst_resm(TPASS, "test succeeded");
++}
++
++int main(int argc, char *argv[])
++{
++	int lc;
++
++	tst_parse_opts(argc, argv, options, help);
++
++	for (lc = 0; TEST_LOOPING(lc); ++lc) {
++
++		setup();
++
++		test01();
++		test02();
++		test03();
++
++		cleanup();
++	}
++
++	tst_exit();
++}
 -- 
-1.9.3
+1.7.1
 
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
