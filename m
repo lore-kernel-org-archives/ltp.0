@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1YnpX7-0001kB-BB
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 14:33:45 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YnpX5-00032x-9b
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 14:33:45 +0000
-Message-ID: <55423D3E.9000108@oracle.com>
-Date: Thu, 30 Apr 2015 17:33:34 +0300
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1Yhx97-00018n-BU
+	for ltp-list@lists.sourceforge.net; Tue, 14 Apr 2015 09:28:41 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Yhx96-0002jb-A7
+	for ltp-list@lists.sourceforge.net; Tue, 14 Apr 2015 09:28:41 +0000
+Message-ID: <552CDCB0.90904@cn.fujitsu.com>
+Date: Tue, 14 Apr 2015 17:24:00 +0800
+From: "gux.fnst" <gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <cover.1430380932.git.jstancek@redhat.com>
-In-Reply-To: <cover.1430380932.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 0/4 v3] (merged) cpuhotplug fixes
+References: <1427787975-10668-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<551AB4B5.4020902@oracle.com> <551B4C2F.3040108@cn.fujitsu.com>
+	<551B9B15.10302@oracle.com>
+In-Reply-To: <551B9B15.10302@oracle.com>
+Subject: Re: [LTP] [PATCH 1/6] lib6/runcc.c: use TCONF instead of TBROK when
+ no C compiler is present
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,51 +30,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
 
-On 04/30/2015 11:13 AM, Jan Stancek wrote:
-> Hi,
+On 04/01/2015 03:15 PM, Alexey Kodanev wrote:
+> Hi!
+> On 04/01/2015 04:38 AM, gux.fnst wrote:
+>>>>       if (WEXITSTATUS(es) == 127) {
+>>>> -        tst_resm(TBROK, "can't run C compiler: \"%s\"", cmd);
+>>>> +        tst_resm(TCONF, "can't run C compiler: \"%s\"", cmd);
+>>>>           if (unlink(filename) < 0)
+>>>>               tst_resm(TWARN, "%s; unlink \"%s\" failed: %s", tname,
+>>>>                    filename, strerror(errno));
+>>>
+>>> Why not 'tst_brkm(TCONF, ...)', do we need to proceed further?
+>>>
+>>
+>> The function "runcc" has created a file named "filename" before
+>> executing "cmd" command, so I think we should delete this file
+>> after tst_resm(TCONF,...).
+>>
 >
-> This patchset is result of merge of following series:
->    http://article.gmane.org/gmane.linux.ltp/22762
->    http://article.gmane.org/gmane.linux.ltp/22678
+> So, there is temp test directory... you could pass some cleanup function to tst_brkm().
+
+Here we only remove the "filename" file, so I think it is not necessary to
+create a cleanup function for this operation.`
+
+Regards,
+Xing Gu
+
 >
-> It is based on patchset from Stanislav, with changes
-> noted below:
-> 1. cpuhotplug: use cpu states in cleanup
->     no changes to Stanislav's version
-> 2. cpu_hotplug: added get_hotplug_cpus, get_hotplug_cpus_num
->     This patch has been merged with my 'get_present_cpus' patch,
->     get_hotplug_cpus has been modified to operate on present cpus
->     only.
-> 3. cpu_hotplug: use hotplug/present cpus functions
->     This comes from my series, there is no counterpart or conflict
->     with Stanislav's patchset.
-> 4. cpuhotplug04.sh: operate only with hotpluggable CPUs
->     minor change here to use number of present CPUs, rather than all
+> Thanks,
+> Alexey
 >
-> Changes in v3:
-> + use present_mask variable in get_present_cpus
-> + no special treatment for cpu0 in cpuhotplug03
-> + fix cpuhotplug03 to spawn (number of present cpus)*2 processes
-> + this time whole series has correct version in subject
-
-Reviewed-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-
-Plus tested the series in a 4 vCPU VirtualBox VM both with and without 
-the 'cpu0_hotplug' kernel cmdline.
-
-Thanks.
-
+>
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
