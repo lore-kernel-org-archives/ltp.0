@@ -1,20 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YnjjV-0004HF-NY
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:22:09 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YnjjU-00073N-1Z
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:22:09 +0000
-Date: Thu, 30 Apr 2015 04:22:01 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <162165083.8714320.1430382121729.JavaMail.zimbra@redhat.com>
-In-Reply-To: <782230467.5857849.1429883677704.JavaMail.zimbra@redhat.com>
-References: <782230467.5857849.1429883677704.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] Coverity report for ltp-20150420
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YiIhk-0004tf-8U
+	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 08:29:52 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YiIhj-0001cB-DA
+	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 08:29:52 +0000
+Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t3F8TjQS010601
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Apr 2015 08:29:45 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t3F8Tjcc015240
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Apr 2015 08:29:45 GMT
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+	by aserv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t3F8TjLp032221
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Apr 2015 08:29:45 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 15 Apr 2015 11:32:22 +0300
+Message-Id: <1429086742-30655-2-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1429086742-30655-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1429086742-30655-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] lib/safe_creat: add const qualifier to path name
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,103 +35,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ include/safe_macros.h |    2 +-
+ lib/safe_macros.c     |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/include/safe_macros.h b/include/safe_macros.h
+index 7d4f1f9..0e7651d 100644
+--- a/include/safe_macros.h
++++ b/include/safe_macros.h
+@@ -45,7 +45,7 @@ int	safe_close(const char *file, const int lineno,
+ 	safe_close(__FILE__, __LINE__, (cleanup_fn), (fildes))
+ 
+ int	safe_creat(const char *file, const int lineno,
+-	    void (*cleanup_fn)(void), char *pathname, mode_t mode);
++	    void (*cleanup_fn)(void), const char *pathname, mode_t mode);
+ #define SAFE_CREAT(cleanup_fn, pathname, mode)	\
+ 	safe_creat(__FILE__, __LINE__, cleanup_fn, (pathname), (mode))
+ 
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index 9c0ba8d..a3d997c 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -66,7 +66,7 @@ safe_close(const char *file, const int lineno, void (*cleanup_fn) (void),
+ 
+ int
+ safe_creat(const char *file, const int lineno, void (*cleanup_fn) (void),
+-	   char *pathname, mode_t mode)
++	   const char *pathname, mode_t mode)
+ {
+ 	int rval;
+ 
+-- 
+1.7.1
 
-
-
------ Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
-> To: "ltp-list" <ltp-list@lists.sf.net>
-> Sent: Friday, 24 April, 2015 3:54:37 PM
-> Subject: [LTP] Coverity report for ltp-20150420
-> 
-> Hi,
-> 
-> What is Coverity?
->   Coverity Prevent is commercial enterprise level tool for static analysis
->   (analysis based only on compiling of sources, not based on running of
->   binary)
->   of the C/C++ and Java code.
-> analyzer-version-coverity = 7.6.1
-> 
-> This run includes latest LTP release 20150420 (including
-> open_posix_testsuite):
->   http://jan.stancek.eu/coverity/ltp-20150420.err.xz
-> 
->       1 ARRAY_VS_SINGLETON
->       4 BAD_COMPARE
->      17 BAD_FREE
-
-I went through most of BAD_FREE reports yesterday and in many cases it was
-mmap + munmap with some offset, which coverity doesn't like.
-
-From what I have read, it should be possible to annotate code to make coverity
-stop complaining. For example by adding following:
-  /* coverity[EVENT_TAG_NAME] */
-
-I'm not exactly clear where to get "event tag names" yet, as these seem to be
-different from error names that appear in *.err logs.
-
-Before I dig deeper into this, would anyone be opposed if we start adding
-such annotation to LTP source?
-
-Regards,
-Jan
-
-
->       1 CHAR_IO
->     319 CHECKED_RETURN
->       6 CONSTANT_EXPRESSION_RESULT
->       3 COPY_PASTE_ERROR
->      29 DEADCODE
->       1 EVALUATION_ORDER
->      43 FORWARD_NULL
->       3 IDENTICAL_BRANCHES
->      21 MISSING_BREAK
->     497 NEGATIVE_RETURNS
->       7 NO_EFFECT
->       6 NULL_RETURNS
->       1 OVERFLOW_BEFORE_WIDEN
->      27 OVERRUN
->       1 PASS_BY_VALUE
->     343 RESOURCE_LEAK
->       1 RETURN_LOCAL
->       1 REVERSE_INULL
->       2 REVERSE_NEGATIVE
->      19 SIZEOF_MISMATCH
->       1 STRAY_SEMICOLON
->      91 UNINIT
->      14 UNREACHABLE
->       6 UNUSED_VALUE
->      48 USE_AFTER_FREE
->       1 VARARGS
-> 
-> Regards,
-> Jan
-> 
-> ------------------------------------------------------------------------------
-> One dashboard for servers and applications across Physical-Virtual-Cloud
-> Widest out-of-the-box monitoring support with 50+ applications
-> Performance metrics, stats and reports that give you Actionable Insights
-> Deep dive visibility with transaction tracing using APM Insight.
-> http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
