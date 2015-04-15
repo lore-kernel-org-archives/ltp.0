@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YnQ0S-00017I-UC
-	for ltp-list@lists.sourceforge.net; Wed, 29 Apr 2015 11:18:20 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YnQ0P-00069w-JG
-	for ltp-list@lists.sourceforge.net; Wed, 29 Apr 2015 11:18:20 +0000
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 29 Apr 2015 13:17:57 +0200
-Message-Id: <cover.1430305546.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 0/4 v2] (merged) cpuhotplug fixes
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1YiLdZ-00050r-ME
+	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 11:37:45 +0000
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YiLdT-0004Rj-0O
+	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 11:37:45 +0000
+Message-ID: <552E4D6A.3020309@huawei.com>
+Date: Wed, 15 Apr 2015 19:37:14 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
+MIME-Version: 1.0
+References: <1428581481-192136-1-git-send-email-cuibixuan@huawei.com>
+	<5527D7D6.4030108@oracle.com>
+In-Reply-To: <5527D7D6.4030108@oracle.com>
+Subject: [LTP]  [PATCH v2] mv/mv_tests.sh: Add test02 to test 'mv -b'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,67 +25,152 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-Hi,
+Add a new case to test 'mv -b':
+* Create file1 and file2
+* Mv -b file1 to file2
+* Check backup file of file2
 
-This patchset is result of merge of following series:
-  http://article.gmane.org/gmane.linux.ltp/22762
-  http://article.gmane.org/gmane.linux.ltp/22678
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
 
-It is based on patchset from Stanislav, with changes
-noted below:
-1. cpuhotplug: use cpu states in cleanup
-   no changes to Stanislav's version
-2. cpu_hotplug: added get_hotplug_cpus, get_hotplug_cpus_num
-   This patch has been merged with my 'get_present_cpus' patch,
-   get_hotplug_cpus has been modified to operate on present cpus
-   only.
-3. cpu_hotplug: use hotplug/present cpus functions
-   This comes from my series, there is no counterpart or conflict
-   with Stanislav's patchset.
-4. cpuhotplug04.sh: operate only with hotpluggable CPUs
-   minor change here to use number of present CPUs, rather than all
+---
+ .../commands/fileutils/mv/00_Descriptions.txt      |    3 +-
+ testcases/commands/fileutils/mv/mv_tests.sh        |   84 ++++++++++++++++++++
+ 2 files changed, 86 insertions(+), 1 deletions(-)
 
-@Stanislav: Can you please review this series and check, whether
-            it still fixes issue you met on sparc64 kernel?
+diff --git a/testcases/commands/fileutils/mv/00_Descriptions.txt b/testcases/commands/fileutils/mv/00_Descriptions.txt
+index 6d52868..57199bf 100644
+--- a/testcases/commands/fileutils/mv/00_Descriptions.txt
++++ b/testcases/commands/fileutils/mv/00_Descriptions.txt
+@@ -1,3 +1,4 @@
+ test01
+ 	mv <dir1> <dir2> will move dir1 to dir2 and all its contents.
+-
++test02
++	mv -b <file1> <file2> will move file1 to file2 and backup the file2.
+diff --git a/testcases/commands/fileutils/mv/mv_tests.sh b/testcases/commands/fileutils/mv/mv_tests.sh
+index 207e945..cda9901 100755
+--- a/testcases/commands/fileutils/mv/mv_tests.sh
++++ b/testcases/commands/fileutils/mv/mv_tests.sh
+@@ -24,6 +24,8 @@
+ # Description:  Test basic functionality of mv command
+ #				- Test #1:  mv <dir1> <dir2> will move dir1 to dir2 and all its
+ #				            contents.
++#				- Test #2:  mv -b <file1> <file2> will move file1 to file2 and
++#					    backup the file2.
+ #
+ # Author:       Manoj Iyer, manjo@mail.utexas.edu
+ #
+@@ -238,6 +240,79 @@ test01()
+ 	return $RC
+ }
 
-Regards,
-Jan
++# Function:             test02
++#
++# Description   - Test #2: Test that mv -b <file1> <file2> will move
++#                 file1 to file2 and backup the file2.
++#               - create file1 and file2.
++#               - get the MD5 message of file2.
++#               - mv -b file1 to file2
++#               - get the MD5 message of backup file2.
++#               - compare  with MD5 messages.
++#
++# Return                - zero on success
++#               - non zero on failure. return value from commands ($RC)
++
++test02()
++{
++	RC=0                    # Return value from commands.
++	export TCID=mv02        # Name of the test case.
++	export TST_COUNT=1      # Test number.
++
++	tmpfile1=$LTPTMP/tst_mv.tmp/tmpfile1
++	tmpfile2=$LTPTMP/tst_mv.tmp/tmpfile2
++	backup_tmpfile2=$LTPTMP/tst_mv.tmp/tmpfile2~
++
++	$LTPBIN/tst_resm TINFO \
++		"Test #2: mv -b <file1> <file2> will move dir1 to dir2"
++
++	touch $tmpfile1 $tmpfile2 > $LTPTMP/tst_mv.err 2>&1 || RC=$?
++	if [ $RC -ne 0 ]
++	then
++		$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
++			"Test #2: can not touch file1 and file2. Reason:"
++		return $RC
++	fi
++
++	MD5_old=`md5sum $tmpfile2 |awk '{print $1}'` > $LTPTMP/tst_mv.err \
++		2>&1 || RC=$?
++	if [ $RC -ne 0 ]
++	then
++		$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
++			"Test #2: can't get the MD5 message of file2. Reason:"
++		return $RC
++	fi
++
++	mv -b $tmpfile1 $tmpfile2  > $LTPTMP/tst_mv.err 2>&1 || RC=$?
++	if [ $RC -ne 0 ]
++	then
++		$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
++			"Test #2: mv -b file1 file2 failed. Reason:"
++		return $RC
++	fi
++
++	# if mv  -b file1 file2 succeed,there will be "file2~" file
++
++	MD5_backup=`md5sum $tmpfile2 |awk '{print $1}'` > $LTPTMP/tst_mv.err \
++		2>&1 || RC=$?
++	if [ $RC -ne 0 ]
++	then
++		$LTPBIN/tst_brk TBROK $LTPTMP/tst_mv.err NULL \
++		"Test #2: can not get the MD5 message of backup file2. Reason:"
++		return $RC
++	fi
++
++	if [ "$MD5_old" != "$MD5_backup" ]
++	then
++		$LTPBIN/tst_resm TFAIL \
++			"Test #2: mv -b failed"
++		return $(($RC+1))
++	else
++		$LTPBIN/tst_resm TPASS "Test #2: mv -b success"
++	fi
++
++	return $RC
++}
 
+ # Function:		main
+ #
+@@ -258,6 +333,15 @@ then
+ 	TFAILCNT=$(($TFAILCNT+1))
+ fi
 
-Jan Stancek (1):
-  cpu_hotplug: use hotplug/present cpus functions
++rm -fr $LTPTMP/tst_mv.*
++
++init || return $RC      # Exit if initializing testcases fails.
++
++test02 || RC=$?
++if [ $RC -ne 0 ]
++then
++	TFAILCNT=$(($TFAILCNT+1))
++fi
 
-Stanislav Kholmanskikh (3):
-  cpuhotplug: use cpu states in cleanup
-  cpu_hotplug: add get_hotplug_cpus, get_present_cpus
-  cpuhotplug04.sh: operate only with hotpluggable CPUs
-
- .../hotplug/cpu_hotplug/functional/cpuhotplug01.sh | 17 ++---
- .../hotplug/cpu_hotplug/functional/cpuhotplug02.sh |  2 +-
- .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh | 16 ++--
- .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh | 74 +++++++++---------
- .../hotplug/cpu_hotplug/functional/cpuhotplug05.sh |  2 +-
- .../hotplug/cpu_hotplug/functional/cpuhotplug06.sh |  2 +-
- .../hotplug/cpu_hotplug/functional/cpuhotplug07.sh |  2 +-
- .../cpu_hotplug/include/cpuhotplug_hotplug.sh      | 89 +++++++++++++++++++---
- 8 files changed, 135 insertions(+), 69 deletions(-)
+ rm -fr $LTPTMP/tst_mv.*
 
 -- 
-1.8.3.1
-
+1.6.0.2
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
