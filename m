@@ -1,20 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YnjbF-0005jx-8e
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:37 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YnjbC-0006Yb-Nq
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:37 +0000
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 30 Apr 2015 10:13:20 +0200
-Message-Id: <516719578ecd9dd8d68932ab2d6f6b7b00bd9bec.1430380932.git.jstancek@redhat.com>
-In-Reply-To: <cover.1430380932.git.jstancek@redhat.com>
-References: <cover.1430380932.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 4/4 v3] cpuhotplug04.sh: operate only with
-	hotpluggable CPUs
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1YiJbO-0002gC-35
+	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 09:27:22 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YiJbN-0003Xr-5i
+	for ltp-list@lists.sourceforge.net; Wed, 15 Apr 2015 09:27:22 +0000
+Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t3F9RFjt024370
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Apr 2015 09:27:15 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t3F9REuF019617
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Apr 2015 09:27:15 GMT
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t3F9REc2006740
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Apr 2015 09:27:14 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 15 Apr 2015 12:27:09 +0300
+Message-Id: <1429090029-25456-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH] max_map_count: tst_fork() instead of fork()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,123 +39,39 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-
-If cpu0 is hotpluggable, then the last CPU may not be cpu0, and
-there is no reason to treat cpu0 as a special case.
-
-To make the test be more generic I'm proposing these changes:
- * Operate (offline/online) only with hotpluggable CPUs, because
-   how can we enable/disable a CPU if there is no 'online' file?
-
- * If all CPUs in the system are hotpluggable, then we expect that
-   the kernel will only refuse to offline the last CPU. And this
-   last CPU may not be cpu0.
-
- * If only a part of CPUs in the system is hotpluggable, then we
-   should be able to offline all of them
+In order to put output messages in order and remove "duplicates",
+we need a fflush() before forking and tst_fork() does it.
 
 Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh | 52 +++++++++++++---------
- 1 file changed, 30 insertions(+), 22 deletions(-)
+ testcases/kernel/mem/tunable/max_map_count.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-index 3e025da..58a822e 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-@@ -48,42 +48,50 @@ done
+diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
+index 96ec2b8..2c0599e 100644
+--- a/testcases/kernel/mem/tunable/max_map_count.c
++++ b/testcases/kernel/mem/tunable/max_map_count.c
+@@ -200,7 +200,7 @@ static void max_map_count_test(void)
+ 	while (max_maps <= max_iters) {
+ 		set_sys_tune("max_map_count", max_maps, 1);
  
- LOOP_COUNT=1
- 
--get_cpus_num
--if [ $? -lt 2 ]; then
-+get_present_cpus_num
-+cpus_num=$?
-+if [ $cpus_num -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
- 
-+get_hotplug_cpus_num
-+if [ $? -lt 1 ]; then
-+	tst_brkm TCONF "system doesn't have at least one hotpluggable CPU"
-+fi
-+
- TST_CLEANUP=do_clean
- 
- cpu_states=$(get_all_cpu_states)
- 
- until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
--	cpu=0
--	cpustate=1
- 
--	# Online all the CPUs
-+	# Online all the hotpluggable CPUs
- 	for i in $(get_hotplug_cpus); do
--		if [ "$i" != "cpu0" ]; then
--			if ! cpu_is_online $i; then
--				if ! online_cpu $i; then
--					tst_brkm TBROK "$i cannot be onlined"
--				fi
--			fi
--			cpu=$((cpu+1))
--			echo $i
--		else
--			if online_cpu $i; then
--				cpustate=0
-+		if ! cpu_is_online $i; then
-+			if ! online_cpu $i; then
-+				tst_brkm TBROK "$i can not be onlined"
- 			fi
- 		fi
- 	done
- 
--	# Now offline all the CPUs
-+	# Now offline them
-+	cpu=0
- 	for i in $(get_hotplug_cpus); do
--		if ! offline_cpu $i; then
--			if [ "x$i" != "xcpu0" ]; then
--				tst_resm TFAIL "Did not offline first CPU (offlined $i instead)"
--				tst_exit
-+		cpu=$((cpu + 1))
-+
-+		# If all the CPUs are hotpluggable, we expect
-+		# that the kernel will refuse to offline the last CPU.
-+		# If only some of the CPUs are hotpluggable,
-+		# they all can be offlined.
-+		if [ $cpu -eq $cpus_num ]; then
-+			if offline_cpu $i 2> /dev/null; then
-+				tst_brkm TFAIL "Have we just offlined the last CPU?"
-+			else
-+				tst_resm TPASS "System prevented us from offlining the last CPU - $i"
-+			fi
-+		else
-+			if ! offline_cpu $i; then
-+				tst_brkm TFAIL "Could not offline $i"
- 			fi
- 		fi
- 	done
-@@ -92,6 +100,6 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
- 
- done
- 
--tst_resm TPASS "Successfully offlined first CPU, $i"
-+tst_resm TPASS "Success"
- 
- tst_exit
+-		switch (pid = fork()) {
++		switch (pid = tst_fork()) {
+ 		case -1:
+ 			tst_brkm(TBROK | TERRNO, cleanup, "fork");
+ 		case 0:
 -- 
-1.8.3.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
