@@ -1,32 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Yhavn-0004rG-6w
-	for ltp-list@lists.sourceforge.net; Mon, 13 Apr 2015 09:45:27 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Yhavm-00066N-7t
-	for ltp-list@lists.sourceforge.net; Mon, 13 Apr 2015 09:45:27 +0000
-Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t3D9jJun005767
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Apr 2015 09:45:20 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t3D9jJH0024156
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Apr 2015 09:45:19 GMT
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t3D9jIAA027345
-	for <ltp-list@lists.sourceforge.net>; Mon, 13 Apr 2015 09:45:19 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 13 Apr 2015 12:45:10 +0300
-Message-Id: <1428918310-5180-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1428918310-5180-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1428918310-5180-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 2/2] sem_comm: pass a semun union to semctl()
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1YigtF-0004Ru-5j
+	for ltp-list@lists.sourceforge.net; Thu, 16 Apr 2015 10:19:21 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YigtB-0005gF-2M
+	for ltp-list@lists.sourceforge.net; Thu, 16 Apr 2015 10:19:21 +0000
+Message-ID: <552F8C1D.9040806@huawei.com>
+Date: Thu, 16 Apr 2015 18:17:01 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
+MIME-Version: 1.0
+References: <1428375071-99253-1-git-send-email-cuibixuan@huawei.com>
+In-Reply-To: <1428375071-99253-1-git-send-email-cuibixuan@huawei.com>
+Subject: [LTP]  [PATH v2] gzip/gzip_tests.sh: Delete the tmp_dir of test02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,72 +24,33 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
 
-It's required by the semctl() API plus without that the test
-case may fail on 64-bit Big Endian systems (like sparc64).
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Do clean up when test02 finished of gzip_tests.sh
+
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
 ---
- testcases/kernel/containers/sysvipc/sem_comm.c |    9 +++++++--
- 1 files changed, 7 insertions(+), 2 deletions(-)
+ testcases/commands/gzip/gzip_tests.sh |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/containers/sysvipc/sem_comm.c b/testcases/kernel/containers/sysvipc/sem_comm.c
-index 157ba0c..3d7e7bb 100644
---- a/testcases/kernel/containers/sysvipc/sem_comm.c
-+++ b/testcases/kernel/containers/sysvipc/sem_comm.c
-@@ -36,6 +36,7 @@
- #include "safe_macros.h"
- #include "libclone.h"
- #include "ipcns_helper.h"
-+#include "lapi/semun.h"
- 
- #define TESTKEY 124426L
- char *TCID	= "sem_comm";
-@@ -57,6 +58,7 @@ static void setup(void)
- int chld1_sem(void *arg)
- {
- 	int id;
-+	union semun su;
- 	struct sembuf sm;
- 
- 	id = semget(TESTKEY, 1, IPC_CREAT);
-@@ -65,7 +67,8 @@ int chld1_sem(void *arg)
- 		return 2;
- 	}
- 
--	if (semctl(id, 0, SETVAL, 1) == -1) {
-+	su.val = 1;
-+	if (semctl(id, 0, SETVAL, su) == -1) {
- 		perror("semctl");
- 		semctl(id, 0, IPC_RMID);
- 		return 2;
-@@ -97,6 +100,7 @@ int chld2_sem(void *arg)
- {
- 	int id, rval = 0;
- 	struct sembuf sm;
-+	union semun su;
- 
- 	/* wait for child1 to create the semaphore */
- 	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-@@ -107,7 +111,8 @@ int chld2_sem(void *arg)
- 		return 2;
- 	}
- 
--	if (semctl(id, 0, SETVAL, 1) == -1) {
-+	su.val = 1;
-+	if (semctl(id, 0, SETVAL, su) == -1) {
- 		perror("semctl");
- 		semctl(id, 0, IPC_RMID);
- 		return 2;
+diff --git a/testcases/commands/gzip/gzip_tests.sh b/testcases/commands/gzip/gzip_tests.sh
+index 5f0725c..432f992 100755
+--- a/testcases/commands/gzip/gzip_tests.sh
++++ b/testcases/commands/gzip/gzip_tests.sh
+@@ -326,4 +326,6 @@ then
+ 	TFAILCNT=$(($TFAILCNT+1))
+ fi
+
++rm -fr $LTPTMP/tst_gzip.*
++
+ exit $TFAILCNT
 -- 
-1.7.1
-
+1.6.0.2
 
 ------------------------------------------------------------------------------
 BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
