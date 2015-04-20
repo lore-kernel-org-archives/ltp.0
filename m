@@ -1,33 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1YftrL-00071Q-22
-	for ltp-list@lists.sourceforge.net; Wed, 08 Apr 2015 17:33:51 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YftrK-0006SC-2X
-	for ltp-list@lists.sourceforge.net; Wed, 08 Apr 2015 17:33:51 +0000
-Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t38HXiP2032199
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Apr 2015 17:33:44 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t38HXhuu020480
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Apr 2015 17:33:43 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t38HXhBW025318
-	for <ltp-list@lists.sourceforge.net>; Wed, 8 Apr 2015 17:33:43 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed,  8 Apr 2015 20:33:28 +0300
-Message-Id: <1428514408-8763-4-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1428514408-8763-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1428514408-8763-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 3/3] cpuhotplug04.sh: operate only with hotpluggable
-	CPUs
+	(envelope-from <mmarhefk@redhat.com>) id 1Yk8wn-0000ig-WA
+	for ltp-list@lists.sourceforge.net; Mon, 20 Apr 2015 10:29:02 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Yk8wm-0000Gx-2a
+	for ltp-list@lists.sourceforge.net; Mon, 20 Apr 2015 10:29:01 +0000
+Date: Mon, 20 Apr 2015 06:28:52 -0400 (EDT)
+From: Matus Marhefka <mmarhefk@redhat.com>
+Message-ID: <725550533.1886644.1429525732892.JavaMail.zimbra@redhat.com>
+In-Reply-To: <909321360.19304114.1424956944232.JavaMail.zimbra@redhat.com>
+References: <1424800340-10357-1-git-send-email-mmarhefk@redhat.com>
+	<1424955461-21111-1-git-send-email-mmarhefk@redhat.com>
+	<909321360.19304114.1424956944232.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH v2] containers: semctl replaced with semop
+	in	sysvipc/sem_comm.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,120 +27,124 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-If cpu0 is hotpluggable, then the last CPU may not be cpu0, and
-there is no reason to treat cpu0 as a special case.
+Hi,
 
-To make the test be more generic I'm proposing these changes:
- * Operate (offline/online) only with hotpluggable CPUs, because
-   how can we enable/disable a CPU if there is no 'online' file?
+please consider pushing this reviewed patch.
 
- * If all CPUs in the system are hotpluggable, then we expect that
-   the kernel will only refuse to offline the last CPU. And this
-   last CPU may not be cpu0.
+Thanks,
+Matus Marhefka
 
- * If only a part of CPUs in the system is hotpluggable, then we
-   should be able to offline all of them
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh |   56 +++++++++++--------
- 1 files changed, 32 insertions(+), 24 deletions(-)
+----- Original Message -----
+From: "Jan Stancek" <jstancek@redhat.com>
+To: "Matus Marhefka" <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+Sent: Thursday, February 26, 2015 2:22:24 PM
+Subject: Re: [LTP] [PATCH v2] containers: semctl replaced with semop in	sysvipc/sem_comm.c
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-index ea2723b..7dcb91b 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-@@ -49,41 +49,49 @@ done
- LOOP_COUNT=1
- 
- get_cpus_num
--if [ $? -lt 2 ]; then
-+cpus_num=$?
-+if [ $cpus_num -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
- 
-+get_hotplug_cpus_num
-+if [ $? -lt 1 ]; then
-+	tst_brkm TCONF "system doesn't have at least one hotpluggable CPU"
-+fi
-+
- TST_CLEANUP=do_clean
- 
- cpu_states=$(get_all_cpu_states)
- 
- until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
--	cpu=0
--	cpustate=1
--
--	# Online all the CPUs
--	for i in $(get_all_cpus); do
--		if [ "$i" != "cpu0" ]; then
--			if ! cpu_is_online $i; then
--				if ! online_cpu $i; then
--					tst_brkm TBROK "$i cannot be onlined"
--				fi
--			fi
--			cpu=$((cpu+1))
--			echo $i
--		else
--			if online_cpu $i; then
--				cpustate=0
-+
-+	# Online all the hotpluggable CPUs
-+	for i in $(get_hotplug_cpus); do
-+		if ! cpu_is_online $i; then
-+			if ! online_cpu $i; then
-+				tst_brkm TBROK "$i can not be onlined"
- 			fi
- 		fi
- 	done
- 
--	# Now offline all the CPUs
--	for i in $(get_all_cpus); do
--		if ! offline_cpu $i; then
--			if [ "x$i" != "xcpu0" ]; then
--				tst_resm TFAIL "Did not offline first CPU (offlined $i instead)"
--				tst_exit
-+	# Now offline them
-+	cpu=0
-+	for i in $(get_hotplug_cpus); do
-+		cpu=$((cpu + 1))
-+
-+		# If all the CPUs are hotpluggable, we expect
-+		# that the kernel will refuse to offline the last CPU.
-+		# If only some of the CPUs are hotpluggable,
-+		# they all can be offlined.
-+		if [ $cpu -eq $cpus_num ]; then
-+			if offline_cpu $i 2> /dev/null; then
-+				tst_brkm TFAIL "Have we just offlined the last CPU?"
-+			else
-+				tst_resm TPASS "System prevented us from offlining the last CPU - $i"
-+			fi
-+		else
-+			if ! offline_cpu $i; then
-+				tst_brkm TFAIL "Could not offline $i"
- 			fi
- 		fi
- 	done
-@@ -92,6 +100,6 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
- 
- done
- 
--tst_resm TPASS "Successfully offlined first CPU, $i"
-+tst_resm TPASS "Success"
- 
- tst_exit
--- 
-1.7.1
 
+
+
+
+----- Original Message -----
+> From: "Matus Marhefka" <mmarhefk@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 26 February, 2015 1:57:41 PM
+> Subject: [LTP] [PATCH v2] containers: semctl replaced with semop in	sysvipc/sem_comm.c
+> 
+> semctl call replaced with semop call for setting up semaphores initial
+> values because semctl needs non-standard type (not in sys/sem.h).
+> 
+> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+
+Looks good to me.
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
+
+Regards,
+Jan
+
+> ---
+>  testcases/kernel/containers/sysvipc/sem_comm.c | 24 ++++++++++++++----------
+>  1 file changed, 14 insertions(+), 10 deletions(-)
+> 
+> diff --git a/testcases/kernel/containers/sysvipc/sem_comm.c
+> b/testcases/kernel/containers/sysvipc/sem_comm.c
+> index b44be6d..fba6767 100644
+> --- a/testcases/kernel/containers/sysvipc/sem_comm.c
+> +++ b/testcases/kernel/containers/sysvipc/sem_comm.c
+> @@ -59,14 +59,17 @@ int chld1_sem(void *arg)
+>  	int id;
+>  	struct sembuf sm;
+>  
+> -	id = semget(TESTKEY, 1, IPC_CREAT);
+> +	id = semget(TESTKEY, 1, IPC_CREAT|S_IRUSR|S_IWUSR|IPC_EXCL);
+>  	if (id == -1) {
+>  		perror("semget");
+>  		return 2;
+>  	}
+>  
+> -	if (semctl(id, 0, SETVAL, 1) == -1) {
+> -		perror("semctl");
+> +	sm.sem_num = 0;
+> +	sm.sem_op = 1;
+> +	sm.sem_flg = IPC_NOWAIT;
+> +	if (semop(id, &sm, 1) == -1) {
+> +		perror("semop");
+>  		semctl(id, 0, IPC_RMID);
+>  		return 2;
+>  	}
+> @@ -74,9 +77,7 @@ int chld1_sem(void *arg)
+>  	/* tell child2 to continue and wait for it to create the semaphore */
+>  	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
+>  
+> -	sm.sem_num = 0;
+>  	sm.sem_op = -1;
+> -	sm.sem_flg = IPC_NOWAIT;
+>  	if (semop(id, &sm, 1) == -1) {
+>  		perror("semop");
+>  		semctl(id, 0, IPC_RMID);
+> @@ -101,14 +102,19 @@ int chld2_sem(void *arg)
+>  	/* wait for child1 to create the semaphore */
+>  	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
+>  
+> -	id = semget(TESTKEY, 1, IPC_CREAT);
+> +	/* IPC_EXCL is excluded because we do not want semget call to fail
+> +	 * if namespaces logic doesn't work correctly */
+> +	id = semget(TESTKEY, 1, IPC_CREAT|S_IRUSR|S_IWUSR);
+>  	if (id == -1) {
+>  		perror("semget");
+>  		return 2;
+>  	}
+>  
+> -	if (semctl(id, 0, SETVAL, 1) == -1) {
+> -		perror("semctl");
+> +	sm.sem_num = 0;
+> +	sm.sem_op = 1;
+> +	sm.sem_flg = IPC_NOWAIT;
+> +	if (semop(id, &sm, 1) == -1) {
+> +		perror("semop");
+>  		semctl(id, 0, IPC_RMID);
+>  		return 2;
+>  	}
+> @@ -116,9 +122,7 @@ int chld2_sem(void *arg)
+>  	/* tell child1 to continue and wait for it to lock the semaphore */
+>  	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
+>  
+> -	sm.sem_num = 0;
+>  	sm.sem_op = -1;
+> -	sm.sem_flg = IPC_NOWAIT;
+>  	if (semop(id, &sm, 1) == -1) {
+>  		if (errno == EAGAIN) {
+>  			rval = 1;
+> --
+> 1.8.3.1
+> 
 
 ------------------------------------------------------------------------------
 BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
