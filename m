@@ -1,20 +1,16 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YkvGT-0003nQ-7H
-	for ltp-list@lists.sourceforge.net; Wed, 22 Apr 2015 14:04:33 +0000
-Date: Wed, 22 Apr 2015 16:04:05 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YkBD5-00018I-Ct
+	for ltp-list@lists.sourceforge.net; Mon, 20 Apr 2015 12:53:59 +0000
+Date: Mon, 20 Apr 2015 14:53:31 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150422140404.GA32660@rei>
-References: <1427771764-22918-1-git-send-email-cuibixuan@huawei.com>
-	<20150401143314.GA23093@rei> <551CB5CD.5030903@huawei.com>
-	<20150402083344.GA27984@rei> <552D1041.9010103@huawei.com>
+Message-ID: <20150420125331.GA24869@rei.suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <552D1041.9010103@huawei.com>
-Subject: Re: [LTP] [PATCH v4 1/2] syscalls/utimensat01: Use test.sh library
- for test case
+Subject: [LTP] LTP] [ANNOUNCE] The Linux Test Project has been released for
+ APRIL 2015
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,29 +23,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
+To: ltp-list@lists.sourceforge.net, linux-kernel@vger.kernel.org, libc-alpha@sourceware.org
+Cc: lwn@lwn.net, akpm@linux-foundation.org, torvalds@linux-foundation.org
 
->  echo "Total tests: $test_num; passed: $passed_cnt; failed: $failed_cnt"
->  if test $failed_cnt -gt 0; then
->      echo "Failed tests: $failed_list"
-> -    exit -1
-> +    tst_resm TFAIL "test failed"
->  fi
-> 
-> -exit
-> +tst_resm TPASS "test pass"
+Good news everyone,
 
-The tst_resm TPASS should be in the else part of the if above, otherwise
-the test will print both failure and success in case that failed_cnt is
-greater than zero.
+the Linux Test Project test suite stable release for *April 2015* has
+been released.
 
-And changing the check_result() to call tst_resm TFAIL/TPASS directly
-would be even better. In that case this part will call only tst_exit as
-the pass/fail status will be saved by the test library.
+Since the last release 183 patches by 23 authors were merged.
 
-> +tst_exit
-> -- 1.6.0.2
+Notable changes are:
+
+* Continued effort to cleanup up old testcases and test library
+  (Special thanks to Coccinelle and spatch for making this easier)
+
+* More sleep() calls were changed into proper synchronization
+  which saves a few minutes on test run time
+
+* Cleanups, fixes and new tests in network testcases
+
+* New testcases for futex() syscall
+
+* New testcases for select() and poll() timeouts
+
+* New mmap() regression testcase
+
+* New regression test for hugepage leak
+
+* Fixes all over the codebase
+
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+http://sourceforge.net/projects/ltp/files/LTP%20Source/ltp-20150420/
+
+The project pages as well as GIT repository are hosted on GitHub for
+quite some time now:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to run LTP or write a testcase, don't miss our
+developer documentation and LWN.net articles at:
+
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+https://github.com/linux-test-project/ltp/wiki/BuildSystem
+
+https://lwn.net/Articles/625969/
+https://lwn.net/Articles/630542/
+
+Patches, new tests, bugs, comments or questions should go to
+to our mailing list at ltp-list@ltp-list@lists.sourceforge.net.
 
 -- 
 Cyril Hrubis
