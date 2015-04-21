@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1YnRm5-00072C-JS
-	for ltp-list@lists.sourceforge.net; Wed, 29 Apr 2015 13:11:37 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YnRm3-0004s7-IF
-	for ltp-list@lists.sourceforge.net; Wed, 29 Apr 2015 13:11:37 +0000
-Message-ID: <5540D87E.5080904@oracle.com>
-Date: Wed, 29 Apr 2015 16:11:26 +0300
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1YkVAs-0008Ot-7Q
+	for ltp-list@lists.sourceforge.net; Tue, 21 Apr 2015 10:13:02 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YkVAm-0005Z3-Ur
+	for ltp-list@lists.sourceforge.net; Tue, 21 Apr 2015 10:13:02 +0000
+Date: Tue, 21 Apr 2015 06:12:50 -0400 (EDT)
+From: Matus Marhefka <mmarhefk@redhat.com>
+Message-ID: <2141999078.2469339.1429611170193.JavaMail.zimbra@redhat.com>
+In-Reply-To: <5536168E.8000604@oracle.com>
+References: <1424800340-10357-1-git-send-email-mmarhefk@redhat.com>
+	<1424955461-21111-1-git-send-email-mmarhefk@redhat.com>
+	<909321360.19304114.1424956944232.JavaMail.zimbra@redhat.com>
+	<725550533.1886644.1429525732892.JavaMail.zimbra@redhat.com>
+	<5536168E.8000604@oracle.com>
 MIME-Version: 1.0
-References: <cover.1430305546.git.jstancek@redhat.com>
-In-Reply-To: <cover.1430305546.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH 0/4 v2] (merged) cpuhotplug fixes
+Subject: Re: [LTP] [PATCH v2] containers: semctl replaced with semop in
+ sysvipc/sem_comm.c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,71 +32,180 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi,
+
+no problem and yes, the patches
+
+b681672752634a70ba1bd6b1c6b5ae2967ac13e5 ("Keep the definition of union 
+semun in one place")
+586b51bf334b189d3e48760676ffeb39ce2a4371 ("sem_comm: pass a semun union 
+to semctl()")
+
+fixes the issue and so my old patch became redundant, thanks for pointing it out.
 
 
+----- Original Message -----
+From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+To: "Matus Marhefka" <mmarhefk@redhat.com>, "Jan Stancek" <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
+Sent: Tuesday, April 21, 2015 11:21:18 AM
+Subject: Re: [LTP] [PATCH v2] containers: semctl replaced with semop in sysvipc/sem_comm.c
 
-On 04/29/2015 02:17 PM, Jan Stancek wrote:
+Hi.
+
+On 04/20/2015 01:28 PM, Matus Marhefka wrote:
 > Hi,
 >
-> This patchset is result of merge of following series:
->    http://article.gmane.org/gmane.linux.ltp/22762
->    http://article.gmane.org/gmane.linux.ltp/22678
+> please consider pushing this reviewed patch.
 >
-> It is based on patchset from Stanislav, with changes
-> noted below:
-> 1. cpuhotplug: use cpu states in cleanup
->     no changes to Stanislav's version
-> 2. cpu_hotplug: added get_hotplug_cpus, get_hotplug_cpus_num
->     This patch has been merged with my 'get_present_cpus' patch,
->     get_hotplug_cpus has been modified to operate on present cpus
->     only.
-> 3. cpu_hotplug: use hotplug/present cpus functions
->     This comes from my series, there is no counterpart or conflict
->     with Stanislav's patchset.
-> 4. cpuhotplug04.sh: operate only with hotpluggable CPUs
->     minor change here to use number of present CPUs, rather than all
+> Thanks,
+> Matus Marhefka
 >
-> @Stanislav: Can you please review this series and check, whether
->              it still fixes issue you met on sparc64 kernel?
+>
+> ----- Original Message -----
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: "Matus Marhefka" <mmarhefk@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Thursday, February 26, 2015 2:22:24 PM
+> Subject: Re: [LTP] [PATCH v2] containers: semctl replaced with semop in	sysvipc/sem_comm.c
+>
+>
+>
+>
+>
+> ----- Original Message -----
+>> From: "Matus Marhefka" <mmarhefk@redhat.com>
+>> To: ltp-list@lists.sourceforge.net
+>> Sent: Thursday, 26 February, 2015 1:57:41 PM
+>> Subject: [LTP] [PATCH v2] containers: semctl replaced with semop in	sysvipc/sem_comm.c
+>>
+>> semctl call replaced with semop call for setting up semaphores initial
+>> values because semctl needs non-standard type (not in sys/sem.h).
 
-Big thanks for this work. I have few comments for patches 2 and 3.
+Emm, when I was preparing patches:
 
-Yes, this series fixes the issue I met on our sparc64 kernel. To be 
-honest, there is no cpu hotplug (yet), so all this test cases return 
-TCONF ;)
+b681672752634a70ba1bd6b1c6b5ae2967ac13e5 ("Keep the definition of union 
+semun in one place")
+586b51bf334b189d3e48760676ffeb39ce2a4371 ("sem_comm: pass a semun union 
+to semctl()")
+
+I overlooked your patch. Sorry.
+
+It seems the above patches fixes what you were trying to fix with your 
+patch, and so it became redundant.
+
+Do you agree?
+
+Sorry again.
 
 
+>>
+>> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+>
+> Looks good to me.
+> Reviewed-by: Jan Stancek <jstancek@redhat.com>
 >
 > Regards,
 > Jan
 >
+>> ---
+>>   testcases/kernel/containers/sysvipc/sem_comm.c | 24 ++++++++++++++----------
+>>   1 file changed, 14 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/testcases/kernel/containers/sysvipc/sem_comm.c
+>> b/testcases/kernel/containers/sysvipc/sem_comm.c
+>> index b44be6d..fba6767 100644
+>> --- a/testcases/kernel/containers/sysvipc/sem_comm.c
+>> +++ b/testcases/kernel/containers/sysvipc/sem_comm.c
+>> @@ -59,14 +59,17 @@ int chld1_sem(void *arg)
+>>   	int id;
+>>   	struct sembuf sm;
+>>
+>> -	id = semget(TESTKEY, 1, IPC_CREAT);
+>> +	id = semget(TESTKEY, 1, IPC_CREAT|S_IRUSR|S_IWUSR|IPC_EXCL);
+>>   	if (id == -1) {
+>>   		perror("semget");
+>>   		return 2;
+>>   	}
+>>
+>> -	if (semctl(id, 0, SETVAL, 1) == -1) {
+>> -		perror("semctl");
+>> +	sm.sem_num = 0;
+>> +	sm.sem_op = 1;
+>> +	sm.sem_flg = IPC_NOWAIT;
+>> +	if (semop(id, &sm, 1) == -1) {
+>> +		perror("semop");
+>>   		semctl(id, 0, IPC_RMID);
+>>   		return 2;
+>>   	}
+>> @@ -74,9 +77,7 @@ int chld1_sem(void *arg)
+>>   	/* tell child2 to continue and wait for it to create the semaphore */
+>>   	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
+>>
+>> -	sm.sem_num = 0;
+>>   	sm.sem_op = -1;
+>> -	sm.sem_flg = IPC_NOWAIT;
+>>   	if (semop(id, &sm, 1) == -1) {
+>>   		perror("semop");
+>>   		semctl(id, 0, IPC_RMID);
+>> @@ -101,14 +102,19 @@ int chld2_sem(void *arg)
+>>   	/* wait for child1 to create the semaphore */
+>>   	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
+>>
+>> -	id = semget(TESTKEY, 1, IPC_CREAT);
+>> +	/* IPC_EXCL is excluded because we do not want semget call to fail
+>> +	 * if namespaces logic doesn't work correctly */
+>> +	id = semget(TESTKEY, 1, IPC_CREAT|S_IRUSR|S_IWUSR);
+>>   	if (id == -1) {
+>>   		perror("semget");
+>>   		return 2;
+>>   	}
+>>
+>> -	if (semctl(id, 0, SETVAL, 1) == -1) {
+>> -		perror("semctl");
+>> +	sm.sem_num = 0;
+>> +	sm.sem_op = 1;
+>> +	sm.sem_flg = IPC_NOWAIT;
+>> +	if (semop(id, &sm, 1) == -1) {
+>> +		perror("semop");
+>>   		semctl(id, 0, IPC_RMID);
+>>   		return 2;
+>>   	}
+>> @@ -116,9 +122,7 @@ int chld2_sem(void *arg)
+>>   	/* tell child1 to continue and wait for it to lock the semaphore */
+>>   	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
+>>
+>> -	sm.sem_num = 0;
+>>   	sm.sem_op = -1;
+>> -	sm.sem_flg = IPC_NOWAIT;
+>>   	if (semop(id, &sm, 1) == -1) {
+>>   		if (errno == EAGAIN) {
+>>   			rval = 1;
+>> --
+>> 1.8.3.1
+>>
 >
-> Jan Stancek (1):
->    cpu_hotplug: use hotplug/present cpus functions
->
-> Stanislav Kholmanskikh (3):
->    cpuhotplug: use cpu states in cleanup
->    cpu_hotplug: add get_hotplug_cpus, get_present_cpus
->    cpuhotplug04.sh: operate only with hotpluggable CPUs
->
->   .../hotplug/cpu_hotplug/functional/cpuhotplug01.sh | 17 ++---
->   .../hotplug/cpu_hotplug/functional/cpuhotplug02.sh |  2 +-
->   .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh | 16 ++--
->   .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh | 74 +++++++++---------
->   .../hotplug/cpu_hotplug/functional/cpuhotplug05.sh |  2 +-
->   .../hotplug/cpu_hotplug/functional/cpuhotplug06.sh |  2 +-
->   .../hotplug/cpu_hotplug/functional/cpuhotplug07.sh |  2 +-
->   .../cpu_hotplug/include/cpuhotplug_hotplug.sh      | 89 +++++++++++++++++++---
->   8 files changed, 135 insertions(+), 69 deletions(-)
+> ------------------------------------------------------------------------------
+> BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+> Develop your own process in accordance with the BPMN 2 standard
+> Learn Process modeling best practices with Bonita BPM through live exercises
+> http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+> source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 >
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
