@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YlSiD-0005Tv-Fg
-	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 01:47:25 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YlSiC-0007kf-Fh
-	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 01:47:25 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t3O1k9HE025626
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Apr 2015 09:46:09 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Fri, 24 Apr 2015 09:46:41 +0800
-Message-ID: <1429840001-4970-5-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1429840001-4970-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1429840001-4970-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YkvGT-0003nQ-7H
+	for ltp-list@lists.sourceforge.net; Wed, 22 Apr 2015 14:04:33 +0000
+Date: Wed, 22 Apr 2015 16:04:05 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150422140404.GA32660@rei>
+References: <1427771764-22918-1-git-send-email-cuibixuan@huawei.com>
+	<20150401143314.GA23093@rei> <551CB5CD.5030903@huawei.com>
+	<20150402083344.GA27984@rei> <552D1041.9010103@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 5/5] network/sockets/ltpClient: close fd to avoid leak
+Content-Disposition: inline
+In-Reply-To: <552D1041.9010103@huawei.com>
+Subject: Re: [LTP] [PATCH v4 1/2] syscalls/utimensat01: Use test.sh library
+ for test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,44 +27,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
----
- testcases/network/sockets/ltpClient.c | 3 +++
- 1 file changed, 3 insertions(+)
+>  echo "Total tests: $test_num; passed: $passed_cnt; failed: $failed_cnt"
+>  if test $failed_cnt -gt 0; then
+>      echo "Failed tests: $failed_list"
+> -    exit -1
+> +    tst_resm TFAIL "test failed"
+>  fi
+> 
+> -exit
+> +tst_resm TPASS "test pass"
 
-diff --git a/testcases/network/sockets/ltpClient.c b/testcases/network/sockets/ltpClient.c
-index b4754a3..2981737 100644
---- a/testcases/network/sockets/ltpClient.c
-+++ b/testcases/network/sockets/ltpClient.c
-@@ -401,6 +401,7 @@ int network_listener(char *hostName, int pid)
- 		}
- 	}
- 
-+	close(rawSocket);
- 	return (0);
- }
- 
-@@ -547,6 +548,8 @@ void ping_network(struct sockaddr_in *rawAddr, int pid)
- 			break;
- 		}
- 	}
-+
-+	close(rawSocket);
- }
- 
- /**********************************************************************
+The tst_resm TPASS should be in the else part of the if above, otherwise
+the test will print both failure and success in case that failed_cnt is
+greater than zero.
+
+And changing the check_result() to call tst_resm TFAIL/TPASS directly
+would be even better. In that case this part will call only tst_exit as
+the pass/fail status will be saved by the test library.
+
+> +tst_exit
+> -- 1.6.0.2
+
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
