@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YfTMS-00009c-H2
-	for ltp-list@lists.sourceforge.net; Tue, 07 Apr 2015 13:16:12 +0000
-Date: Tue, 7 Apr 2015 15:15:57 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YlEMJ-0005oZ-FL
+	for ltp-list@lists.sourceforge.net; Thu, 23 Apr 2015 10:27:51 +0000
+Date: Thu, 23 Apr 2015 12:27:25 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150407131556.GA9535@rei>
-References: <214042481.9356038.1428054865150.JavaMail.zimbra@redhat.com>
-	<1301134399.9357345.1428055489965.JavaMail.zimbra@redhat.com>
+Message-ID: <20150423102725.GA18237@rei.suse.de>
+References: <1427970931.19106.8.camel@G08JYZSD130126.localdomain>
+	<20150402115922.GA30680@rei>
+	<1429010688.7190.24.camel@G08JYZSD130126.localdomain>
+	<20150422124738.GA32110@rei>
+	<1429755598.2416.14.camel@G08JYZSD130126.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1301134399.9357345.1428055489965.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] mtest06 failures
+In-Reply-To: <1429755598.2416.14.camel@G08JYZSD130126.localdomain>
+Subject: Re: [LTP] [RFC PATCH v2 1/2] testcases/lib/test.sh: added
+	SAFE_CALL*()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,46 +29,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
 Hi!
-> <<<test_start>>>
-> tag=mtest06 stime=1427900338
-> cmdline="  mmap1 -x 0.05"
-> contacts=""
-> analysis=exit
-> <<<test_output>>>
-> mmap1       0  TINFO  :  created writing thread[70366651085264]
-> mmap1       0  TINFO  :  [70366651085264] - map, change contents, unmap files 1000 times
-> mmap1       0  TINFO  :  created reading thread[70366642696656]
-> mmap1       0  TINFO  :  [70366642696656] - read contents of memory (nil) 1000 times
-> mmap1       1  TFAIL  :  mmap1.c:400: thread [70366642696656] - process exited with -1
-> <<<execution_status>>>
-> initiation_status="ok"
-> duration=1 termination_type=exited termination_id=1 corefile=no
-> cutime=23 cstime=46
-> <<<test_end>>>
+> > Looks good but the names are a bit confusing. The SAFE_CALL does
+> > redirect the output while SAFWE_CALL_REDIRECT does not.
+> > 
 > 
-> ret code -1 indicates, that it hit:
->     if (map_address[j] != 'a')
->         pthread_exit((void *)-1);
-> 
-> I think what happens is that map_write_unmap() unmaps the memory,
-> and something else mmaps into the same location. gdb breakpoints on
-> mmap found couple places which could be responsible, pthread_exit()
-> was one of them.
-> 
-> 2 ideas came to mind:
-> 1. clear map_address after munmap
->    This however seems to go against what the testcase is trying to do
-> 2. make sure mmap for map_address happens in place which is less likely
->    to be used in future mmaps
+> If *users* want to redirect the output they need use SAFE_REDIRECT. :-/
 
-I do not recall mtest06 failing this way, but it's quite possible that
-something from libc will trigger mmap() to allocate memory.
-
-The patch looks good to me.
+I know how the name was choosen, but that does not change the fact that
+it was unintuitive :).
 
 -- 
 Cyril Hrubis
