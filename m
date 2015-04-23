@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwan@redhat.com>) id 1YhxqV-0003kZ-8C
-	for ltp-list@lists.sourceforge.net; Tue, 14 Apr 2015 10:13:31 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YhxqS-0004bZ-Ds
-	for ltp-list@lists.sourceforge.net; Tue, 14 Apr 2015 10:13:31 +0000
-Received: from zmail22.collab.prod.int.phx2.redhat.com
-	(zmail22.collab.prod.int.phx2.redhat.com [10.5.83.26])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id t3EADLsH001666
-	for <ltp-list@lists.sourceforge.net>; Tue, 14 Apr 2015 06:13:21 -0400
-Date: Tue, 14 Apr 2015 06:13:21 -0400 (EDT)
-From: Li Wang <liwang@redhat.com>
-Message-ID: <107371458.10728144.1429006401201.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1426158755-20918-1-git-send-email-liwang@redhat.com>
-References: <1426158755-20918-1-git-send-email-liwang@redhat.com>
+	(envelope-from <metan@suse.de>) id 1YlFuq-0007zV-Lz
+	for ltp-list@lists.sourceforge.net; Thu, 23 Apr 2015 12:07:36 +0000
+Date: Thu, 23 Apr 2015 14:07:10 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150423120710.GB20520@rei.suse.de>
+References: <1426496710-11712-1-git-send-email-gux.fnst@cn.fujitsu.com>
+	<1426496710-11712-3-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v3] fs/acls: fix some permission issue in the
- testcase
+Content-Disposition: inline
+In-Reply-To: <1426496710-11712-3-git-send-email-gux.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v4 3/9] power_management: split runpwtests.sh into
+ separate testcases
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,229 +26,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Xing Gu <gux.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi, 
+Hi!
+> --- a/runtest/power_management_tests_exclusive
+> +++ b/runtest/power_management_tests_exclusive
+> @@ -1 +1,12 @@
+> -POWER_MANAGEMENT runpwtests.sh -exclusive
+> +#POWER_MANAGEMENT exclusive
+> +runpwtests01 runpwtests01.sh
+> +runpwtests02 runpwtests02.sh
+> +runpwtests03 runpwtests03.sh
+> +runpwtests04 runpwtests04.sh
+> +#runpwtests05 runpwtests05.sh
+> +runpwtests06 runpwtests06.sh
+> +#runpwtests_exclusive01 runpwtests_exclusive01.sh
+> +#runpwtests_exclusive02 runpwtests_exclusive02.sh
+> +#runpwtests_exclusive03 runpwtests_exclusive03.sh
+> +#runpwtests_exclusive04 runpwtests_exclusive04.sh
+> +#runpwtests_exclusive05 runpwtests_exclusive05.sh
 
-Ping~
+Why does the runpwtests0{1-6} repeat in the exclusive runtest file?
+
+What about leaving only exclusive tests here (uncommented) and adding
+only power_management_tests to the default scenario?
+
+The rest is OK.
 
 -- 
-Regards, 
-Li Wang 
-Email: liwang@redhat.com 
-
-
------ Original Message -----
-> * Use 'test.sh'.
-> 
-> * Do some cleanup.
-> 
-> * Remove useless changes.
-> 
-> * Check the getenforce/setenforce command exist or not.
-> 
-> * Waive the consideration of SElinux Disabled or Permitive situation.
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  testcases/kernel/fs/acls/acl_test01 | 69
->  +++++++++++++++++++++----------------
->  1 file changed, 40 insertions(+), 29 deletions(-)
-> 
-> diff --git a/testcases/kernel/fs/acls/acl_test01
-> b/testcases/kernel/fs/acls/acl_test01
-> index af65213..fb08ce3 100755
-> --- a/testcases/kernel/fs/acls/acl_test01
-> +++ b/testcases/kernel/fs/acls/acl_test01
-> @@ -41,6 +41,8 @@ export TCID=acltest01
->  export TST_TOTAL=5
->  export TST_COUNT=1
->  
-> +. test.sh
-> +
->  TMP=${TMP:=/tmp}
->  
->  TEST_USER1="acltest1"
-> @@ -52,18 +54,33 @@ FILE_ACL="$TMP/tacl/mount-ext3/test_file"
->  FILE_ACL_LINK="$TMP/tacl/mount-ext3/test_file_link"
->  TCbin=`pwd`
->  
-> +COMMAND=$(command -v "getenforce" "setenforce" |wc -l)
-> +if [ $COMMAND -eq 2 ]; then
-> +	SELINUX=$(getenforce)
-> +else
-> +	SELINUX=""
-> +fi
-> +
->  #-----------------------------------------------------------------------
->  # FUNCTION:  do_setup
->  #-----------------------------------------------------------------------
->  
->  do_setup(){
->  
-> +	tst_require_root
-> +
->  	rm -f $FILE_ACL
->  	rm -f $FILE_ACL_LINK
->  
-> +	# We couldn't consider whether the SElinux is Disable or Permissive.
-> +	# We only set it to Permissive when it it Enforcing.
-> +	if [ "$SELINUX" = "Enforcing" ]; then
-> +		echo "set the SElinux to Permissive."
-> +		setenforce 0
-> +	fi
-> +
->  	if [ "x$TEST_USER1_HOMEDIR" = "x" ]; then
-> -		echo "Could not find user $TEST_USER1's home directory."
-> -		exit 1
-> +		tst_brkm TBROK "Could not find user $TEST_USER1's home directory."
->  	fi
->  
->  	# XXX (garrcoop): why is cleanup junk being done in setup??? Bad test!!!
-> @@ -73,8 +90,7 @@ do_setup(){
->  	useradd -d $TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s
->  	/bin/sh
->  
->  	if [ $? -ne 0 ]; then
-> -		echo "Could not add test user $TEST_USER1."
-> -		exit 1
-> +		tst_brkm TBROK "Could not add test user $TEST_USER1."
->  	fi
->  
->  }
-> @@ -91,6 +107,12 @@ do_cleanup() {
->  	mount | grep "$TMP/tacl/mount-ext3" && umount -d $TMP/tacl/mount-ext3
->  	[ "x$LOOP_DEV" != x ] && losetup -d $LOOP_DEV
->  	rm -rf $TMP/tacl
-> +
-> +	# We set it back to Enforcing.
-> +	if [ "$SELINUX" = "Enforcing" ]; then
-> +		echo "set the SElinux back to Enforcing."
-> +		setenforce 1
-> +	fi
->  }
->  
->  #-----------------------------------------------------------------------
-> @@ -102,14 +124,10 @@ if [ "z$iam" = "z$TEST_USER1" ]
->  then
->  	echo ""
->  else
-> -	if [ $(id -ru) != 0 ]; then
-> -		tst_resm TCONF "must be root to execute this script"
-> -		exit 0
-> -	fi
-> +	tst_require_root
->  
->  	if ! ( test -d $TMP/tacl || mkdir -m 777 $TMP/tacl) ; then
-> -		tst_resm TCONF "failed to create $TMP/tacl directory."
-> -		exit 1
-> +		tst_brkm TBROK "Failed to create $TMP/tacl directory."
->  	fi
->  
->  	trap do_cleanup EXIT
-> @@ -119,21 +137,18 @@ else
->  
->  	dd if=/dev/zero of=$TMP/tacl/blkext3 bs=1k count=10240 && chmod 777
->  	$TMP/tacl/blkext3
->  	if [ $? -ne 0 ] ; then
-> -		tst_resm TCONF "Failed to create $TMP/tacl/blkext3"
-> -		exit 0
-> +		tst_brkm TBROK "Failed to create $TMP/tacl/blkext3"
->  	fi
->  
->  	# Avoid hardcoded loopback device values (-f tries to find the first
->  	# available loopback device name)!
->  	if ! LOOP_DEV=$(losetup -f) || [ "x$LOOP_DEV" = x ]; then
-> -		tst_resm TCONF "[ losetup.1 ] Failed to find an available loopback device
-> -- is the required support compiled in your kernel?"
-> -		exit 0
-> +		tst_brkm TCONF "[ losetup.1 ] Failed to find an available loopback device
-> -- is the required support compiled in your kernel?"
->  	fi
->  
->  	if ! losetup $LOOP_DEV $TMP/tacl/blkext3 2>&1 > /dev/null; then
->  		echo ""
-> -		tst_resm TCONF "[ losetup.2 ] Failed to setup the device."
-> -		exit 0
-> +		tst_brkm TCONF "[ losetup.2 ] Failed to setup the device."
->  	fi
->  
->  	mount | grep ext2
-> @@ -180,20 +195,18 @@ then
->  	${TCbin}/acl_file_test $FILE_ACL
->  	if [ $? -ne 0 ]
->  	then
-> -		EXIT_CODE=1
-> -		echo "Extended acls for files (FAILED)"
-> +		tst_resm TFAIL "Extended acls for files."
->  	else
-> -		echo "Extended acls for files (PASSED)"
-> +		tst_resm TPASS "Extended acls for files."
->  	fi
->  
->  	echo "Trying extended acls for file links"
->  	${TCbin}/acl_link_test $FILE_ACL_LINK
->  	if [ $? -ne 0 ]
->  	then
-> -		EXIT_CODE=1
-> -		echo "Extended acls for links (FAILED)"
-> +		tst_resm TFAIL "Extended acls for links."
->  	else
-> -		echo "Extended acls for links (PASSED)"
-> +		tst_resm TPASS "Extended acls for links."
->  	fi
->  else
->  	do_setup
-> @@ -211,20 +224,18 @@ else
->  	${TCbin}/acl_file_test $FILE_ACL
->  	if [ $? -ne 0 ]
->  	then
-> -		EXIT_CODE=1
-> -		echo "Extended acls for files (FAILED)"
-> +		tst_resm TFAIL "Extended acls for files."
->  	else
-> -		echo "Extended acls for files (PASSED)"
-> +		tst_resm TPASS "Extended acls for files."
->  	fi
->  
->  	echo "Trying extended acls for file links"
->  	${TCbin}/acl_link_test $FILE_ACL_LINK
->  	if [ $? -ne 0 ]
->  	then
-> -		EXIT_CODE=1
-> -		echo "Extended acls for links (FAILED)"
-> +		tst_resm TFAIL "Extended acls for links."
->  	else
-> -		echo "Extended acls for links (PASSED)"
-> +		tst_resm TPASS "Extended acls for links."
->  	fi
->  
->  	chown $TEST_USER1 $FILE_ACL
-> @@ -235,4 +246,4 @@ else
->  	do_cleanup
->  fi
->  
-> -exit $EXIT_CODE
-> +tst_exit
-> --
-> 1.8.3.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> Dive into the World of Parallel Programming The Go Parallel Website,
-> sponsored
-> by Intel and developed in partnership with Slashdot Media, is your hub for
-> all
-> things parallel software development, from weekly thought leadership blogs to
-> news, videos, case studies, tutorials and more. Take a look and join the
-> conversation now. http://goparallel.sourceforge.net/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
