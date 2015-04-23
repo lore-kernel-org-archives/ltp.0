@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YdyTC-0002JS-Ff
-	for ltp-list@lists.sourceforge.net; Fri, 03 Apr 2015 10:04:58 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YdyTA-0007Eu-RI
-	for ltp-list@lists.sourceforge.net; Fri, 03 Apr 2015 10:04:58 +0000
-Received: from zmail17.collab.prod.int.phx2.redhat.com
-	(zmail17.collab.prod.int.phx2.redhat.com [10.5.83.19])
-	by mx5-phx2.redhat.com (8.14.4/8.14.4) with ESMTP id t33A4ob5029088
-	for <ltp-list@lists.sourceforge.net>; Fri, 3 Apr 2015 06:04:50 -0400
-Date: Fri, 3 Apr 2015 06:04:49 -0400 (EDT)
+	(envelope-from <jstancek@redhat.com>) id 1YlBo7-0006Sz-Oj
+	for ltp-list@lists.sourceforge.net; Thu, 23 Apr 2015 07:44:23 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YlBo6-0006sh-9x
+	for ltp-list@lists.sourceforge.net; Thu, 23 Apr 2015 07:44:23 +0000
+Date: Thu, 23 Apr 2015 03:44:14 -0400 (EDT)
 From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1301134399.9357345.1428055489965.JavaMail.zimbra@redhat.com>
-In-Reply-To: <214042481.9356038.1428054865150.JavaMail.zimbra@redhat.com>
+Message-ID: <589021019.4782174.1429775054199.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] mtest06 failures
+Subject: Re: [LTP] [PATCH v4] syscalls/fallocate04: add new fallocate() test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,92 +27,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list <ltp-list@lists.sourceforge.net>
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-Hi,
 
-I'm seeing mtest06 occasionally failing:
 
-<<<test_start>>>
-tag=mtest06 stime=1427900338
-cmdline="  mmap1 -x 0.05"
-contacts=""
-analysis=exit
-<<<test_output>>>
-mmap1       0  TINFO  :  created writing thread[70366651085264]
-mmap1       0  TINFO  :  [70366651085264] - map, change contents, unmap files 1000 times
-mmap1       0  TINFO  :  created reading thread[70366642696656]
-mmap1       0  TINFO  :  [70366642696656] - read contents of memory (nil) 1000 times
-mmap1       1  TFAIL  :  mmap1.c:400: thread [70366642696656] - process exited with -1
-<<<execution_status>>>
-initiation_status="ok"
-duration=1 termination_type=exited termination_id=1 corefile=no
-cutime=23 cstime=46
-<<<test_end>>>
 
-ret code -1 indicates, that it hit:
-    if (map_address[j] != 'a')
-        pthread_exit((void *)-1);
 
-I think what happens is that map_write_unmap() unmaps the memory,
-and something else mmaps into the same location. gdb breakpoints on
-mmap found couple places which could be responsible, pthread_exit()
-was one of them.
+----- Original Message -----
+> From: "Alexey Kodanev" <alexey.kodanev@oracle.com>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
+> Sent: Tuesday, 21 April, 2015 3:05:07 PM
+> Subject: [LTP] [PATCH v4] syscalls/fallocate04: add new fallocate() test
+> 
+> This is a new functional test of fallocate() syscall with the focus on
+> FALLOC_FL_ZERO_RANGE (since Linux 3.15) and FALLOC_FL_COLLAPSE_RANGE
+> (since Linux 3.15) modes.
+> 
+> Steps of test-cases:
+>   * allocate a file with specified size;
+>   * make a hole in the middle of the file with FALLOC_FL_PUNCH_HOLE;
+>   * fill the hole and adjacent space with FALLOC_FL_ZERO_RANGE;
+>   * remove a block from a file with FALLOC_FL_COLLAPSE_RANGE
+> 
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+> v4: corrected Linux version for FALLOC_FL_ZERO_RANGE
+>     removed second Linux version check in test04()
+>     added 'EOPNOTSUPP' check for initial fallocate()
+> v3: correctly indented second line in if blocks and tst_resm
+> v2: replaced lseek, read, write, etc. with LTP safe macros
+>     moved FALLOC_FL_* macros to fallocate.h
+>     removed FALLOC_FL_KEEP_SIZE from fallocate03 (it is now in fallocate.h)
+>     made one more test-case (split setup())
+> 
+>  runtest/syscalls                                  |    1 +
+>  testcases/kernel/syscalls/.gitignore              |    1 +
+>  testcases/kernel/syscalls/fallocate/fallocate.h   |   20 ++
+>  testcases/kernel/syscalls/fallocate/fallocate03.c |    1 -
+>  testcases/kernel/syscalls/fallocate/fallocate04.c |  273
+>  +++++++++++++++++++++
+>  5 files changed, 295 insertions(+), 1 deletions(-)
+>  create mode 100644 testcases/kernel/syscalls/fallocate/fallocate04.c
+> 
 
-2 ideas came to mind:
-1. clear map_address after munmap
-   This however seems to go against what the testcase is trying to do
-2. make sure mmap for map_address happens in place which is less likely
-   to be used in future mmaps
-
-diff --git a/testcases/kernel/mem/mtest06/mmap1.c b/testcases/kernel/mem/mtest06/mmap1.c
-index 5f13d48..2e9883c 100644
---- a/testcases/kernel/mem/mtest06/mmap1.c
-+++ b/testcases/kernel/mem/mtest06/mmap1.c
-@@ -64,6 +64,7 @@ static int verbose_print = 0;
- static char *volatile map_address;
- static jmp_buf jmpbuf;
- static volatile char read_lock = 0;
-+static void *mmap_area;
- 
- char *TCID = "mmap1";
- int TST_TOTAL = 1;
-@@ -146,7 +147,7 @@ void *map_write_unmap(void *ptr)
- 
-        for (i = 0; i < args[2]; i++) {
- 
--               map_address = mmap(0, (size_t) args[1], PROT_WRITE | PROT_READ,
-+               map_address = mmap(mmap_area, (size_t) args[1], PROT_WRITE | PROT_READ,
-                                   MAP_SHARED, (int)args[0], 0);
- 
-                if (map_address == (void *)-1) {
-@@ -337,6 +338,13 @@ int main(int argc, char **argv)
-                }
-        }
- 
-+       mmap_area = mmap(0, 64*1024*1024, PROT_WRITE | PROT_READ, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-+       if (mmap_area == (void *)-1)
-+               perror("mmap_area: mmap()");
-+       if (munmap(mmap_area, (size_t) 64*1024*1024) == -1)
-+               perror("mmap_area: munmap()");
-+       mmap_area += 32*1024*1024;
-+
-        if (verbose_print)
-                tst_resm(TINFO, "Input parameters are: File size:  %d; "
-                         "Scheduled to run:  %lf hours; "
-
-I tested option 2 and it seems to have fixed the failure for me.
-Any thoughts or comments? Is anyone else seeing failures from mtest06?
+v4 looks good, older kernels now end with TCONF. ACK
 
 Regards,
 Jan
 
 ------------------------------------------------------------------------------
-Dive into the World of Parallel Programming The Go Parallel Website, sponsored
-by Intel and developed in partnership with Slashdot Media, is your hub for all
-things parallel software development, from weekly thought leadership blogs to
-news, videos, case studies, tutorials and more. Take a look and join the 
-conversation now. http://goparallel.sourceforge.net/
+BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
+Develop your own process in accordance with the BPMN 2 standard
+Learn Process modeling best practices with Bonita BPM through live exercises
+http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
+source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
