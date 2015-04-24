@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YmlR8-0006G8-AL
-	for ltp-list@lists.sourceforge.net; Mon, 27 Apr 2015 15:59:10 +0000
-Date: Mon, 27 Apr 2015 17:58:40 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150427155840.GF10567@rei.suse.de>
-References: <1555406842.5673672.1429863249724.JavaMail.zimbra@redhat.com>
-	<782230467.5857849.1429883677704.JavaMail.zimbra@redhat.com>
-	<20150427132404.GA10567@rei.suse.de>
-	<699964060.6783089.1430144771050.JavaMail.zimbra@redhat.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YlU1I-0000ZU-GT
+	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 03:11:12 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YlU1H-0004ar-99
+	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 03:11:12 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t3O39v0W031062
+	for <ltp-list@lists.sourceforge.net>; Fri, 24 Apr 2015 11:09:57 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 24 Apr 2015 11:06:08 +0800
+Message-ID: <1429844769-7113-7-git-send-email-gux.fnst@cn.fujitsu.com>
+In-Reply-To: <1429844769-7113-1-git-send-email-gux.fnst@cn.fujitsu.com>
+References: <1429844769-7113-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="vtzGhvizbBRQ85DL"
-Content-Disposition: inline
-In-Reply-To: <699964060.6783089.1430144771050.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] Coverity report for ltp-20150420
+Subject: [LTP] [PATCH v5 7/8] power_management: install lib/pm_sched_mc.py
+	into testcases/bin directory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,230 +29,126 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
-
-
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-And result of quick perl hackery is attached. Overall it's better, but
-we keep adding warnings as well.
-
-BTW: I can feed it easily with more data or share the script if you are
-     interested.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
---vtzGhvizbBRQ85DL
-Content-Type: text/html; charset=us-ascii
-Content-Disposition: attachment; filename="report.html"
-
-<html>
- <head>
- <title>LTP Coverity in time</title>
- </head>
- <body>
-  <table bgcolor="#eee">
-   <tr>
-    <td></td>
-    <td colspan="2">20140115</td>
-    <td>20150422</td>
-   </tr>
-   <tr>
-    <td>ARRAY_VS_SINGLETON</td>
-    <td align="right" bgcolor="#ff5555">0</td>
-    <td align="right" bgcolor="#ff5555">(+1)</td>
-    <td align="right">1</td>
-   </tr>
-   <tr>
-    <td>BAD_COMPARE</td>
-    <td align="right" bgcolor="#999999">4</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">4</td>
-   </tr>
-   <tr>
-    <td>BAD_FREE</td>
-    <td align="right" bgcolor="#ff5555">15</td>
-    <td align="right" bgcolor="#ff5555">(+2)</td>
-    <td align="right">17</td>
-   </tr>
-   <tr>
-    <td>CHAR_IO</td>
-    <td align="right" bgcolor="#999999">1</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">1</td>
-   </tr>
-   <tr>
-    <td>CHECKED_RETURN</td>
-    <td align="right" bgcolor="#55ff55">349</td>
-    <td align="right" bgcolor="#55ff55">(-30)</td>
-    <td align="right">319</td>
-   </tr>
-   <tr>
-    <td>CONSTANT_EXPRESSION_RESULT</td>
-    <td align="right" bgcolor="#ff5555">5</td>
-    <td align="right" bgcolor="#ff5555">(+1)</td>
-    <td align="right">6</td>
-   </tr>
-   <tr>
-    <td>COPY_PASTE_ERROR</td>
-    <td align="right" bgcolor="#999999">3</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">3</td>
-   </tr>
-   <tr>
-    <td>DEADCODE</td>
-    <td align="right" bgcolor="#999999">29</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">29</td>
-   </tr>
-   <tr>
-    <td>EVALUATION_ORDER</td>
-    <td align="right" bgcolor="#999999">1</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">1</td>
-   </tr>
-   <tr>
-    <td>FORWARD_NULL</td>
-    <td align="right" bgcolor="#55ff55">45</td>
-    <td align="right" bgcolor="#55ff55">(-2)</td>
-    <td align="right">43</td>
-   </tr>
-   <tr>
-    <td>IDENTICAL_BRANCHES</td>
-    <td align="right" bgcolor="#999999">3</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">3</td>
-   </tr>
-   <tr>
-    <td>MISSING_BREAK</td>
-    <td align="right" bgcolor="#ff5555">19</td>
-    <td align="right" bgcolor="#ff5555">(+2)</td>
-    <td align="right">21</td>
-   </tr>
-   <tr>
-    <td>NEGATIVE_RETURNS</td>
-    <td align="right" bgcolor="#55ff55">500</td>
-    <td align="right" bgcolor="#55ff55">(-3)</td>
-    <td align="right">497</td>
-   </tr>
-   <tr>
-    <td>NO_EFFECT</td>
-    <td align="right" bgcolor="#55ff55">16</td>
-    <td align="right" bgcolor="#55ff55">(-9)</td>
-    <td align="right">7</td>
-   </tr>
-   <tr>
-    <td>NULL_RETURNS</td>
-    <td align="right" bgcolor="#999999">6</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">6</td>
-   </tr>
-   <tr>
-    <td>OVERFLOW_BEFORE_WIDEN</td>
-    <td align="right" bgcolor="#999999">1</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">1</td>
-   </tr>
-   <tr>
-    <td>OVERRUN</td>
-    <td align="right" bgcolor="#ff5555">26</td>
-    <td align="right" bgcolor="#ff5555">(+1)</td>
-    <td align="right">27</td>
-   </tr>
-   <tr>
-    <td>PASS_BY_VALUE</td>
-    <td align="right" bgcolor="#999999">1</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">1</td>
-   </tr>
-   <tr>
-    <td>RESOURCE_LEAK</td>
-    <td align="right" bgcolor="#55ff55">355</td>
-    <td align="right" bgcolor="#55ff55">(-12)</td>
-    <td align="right">343</td>
-   </tr>
-   <tr>
-    <td>RETURN_LOCAL</td>
-    <td align="right" bgcolor="#999999">1</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">1</td>
-   </tr>
-   <tr>
-    <td>REVERSE_INULL</td>
-    <td align="right" bgcolor="#999999">1</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">1</td>
-   </tr>
-   <tr>
-    <td>REVERSE_NEGATIVE</td>
-    <td align="right" bgcolor="#ff5555">1</td>
-    <td align="right" bgcolor="#ff5555">(+1)</td>
-    <td align="right">2</td>
-   </tr>
-   <tr>
-    <td>SIZEOF_MISMATCH</td>
-    <td align="right" bgcolor="#ff5555">18</td>
-    <td align="right" bgcolor="#ff5555">(+1)</td>
-    <td align="right">19</td>
-   </tr>
-   <tr>
-    <td>STRAY_SEMICOLON</td>
-    <td align="right" bgcolor="#999999">1</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">1</td>
-   </tr>
-   <tr>
-    <td>UNINIT</td>
-    <td align="right" bgcolor="#55ff55">97</td>
-    <td align="right" bgcolor="#55ff55">(-6)</td>
-    <td align="right">91</td>
-   </tr>
-   <tr>
-    <td>UNREACHABLE</td>
-    <td align="right" bgcolor="#999999">14</td>
-    <td align="right" bgcolor="#999999">(0)</td>
-    <td align="right">14</td>
-   </tr>
-   <tr>
-    <td>UNUSED_VALUE</td>
-    <td align="right" bgcolor="#55ff55">8</td>
-    <td align="right" bgcolor="#55ff55">(-2)</td>
-    <td align="right">6</td>
-   </tr>
-   <tr>
-    <td>USE_AFTER_FREE</td>
-    <td align="right" bgcolor="#ff5555">46</td>
-    <td align="right" bgcolor="#ff5555">(+2)</td>
-    <td align="right">48</td>
-   </tr>
-   <tr>
-    <td>VARARGS</td>
-    <td align="right" bgcolor="#ff5555">0</td>
-    <td align="right" bgcolor="#ff5555">(+1)</td>
-    <td align="right">1</td>
-   </tr>
-   <tr>
-    <td>TOTAL</td>
-    <td align="right" bgcolor="#55ff55">1566</td>
-    <td align="right" bgcolor="#55ff55">(-52)</td>
-    <td align="right">1514</td>
-   </tr>
-  </table>
- </body>
-</html>
-
---vtzGhvizbBRQ85DL
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+Install lib/pm_sched_mc.py into testcases/bin instead of
+testcases/bin/lib directory, and modify the corresponding
+call files, eg. pm_cpu_consolidation.py.
+
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/power_management/Makefile         | 10 ++++-----
+ testcases/kernel/power_management/lib/Makefile     | 25 ++++++++++++++++++++++
+ .../power_management/pm_cpu_consolidation.py       |  2 --
+ testcases/kernel/power_management/pm_ilb_test.py   |  2 --
+ .../kernel/power_management/pm_sched_domain.py     |  2 --
+ 5 files changed, 29 insertions(+), 12 deletions(-)
+ create mode 100644 testcases/kernel/power_management/lib/Makefile
+
+diff --git a/testcases/kernel/power_management/Makefile b/testcases/kernel/power_management/Makefile
+index 24f75f8..935f47e 100644
+--- a/testcases/kernel/power_management/Makefile
++++ b/testcases/kernel/power_management/Makefile
+@@ -13,8 +13,8 @@
+ ## for more details.                                                          ##
+ ##                                                                            ##
+ ## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
+ ##                                                                            ##
+ ################################################################################
+ 
+@@ -22,10 +22,8 @@ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+-vpath %.c $(srcdir):$(top_srcdir)/lib
+-
+-INSTALL_TARGETS		:= lib/*.py *.py *.sh
++INSTALL_TARGETS 	:= *.py *.sh
+ 
+ MAKE_DEPS		+= $(APICMDS_DIR)/tst_kvercmp
+ 
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
++include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/power_management/lib/Makefile b/testcases/kernel/power_management/lib/Makefile
+new file mode 100644
+index 0000000..2aadac0
+--- /dev/null
++++ b/testcases/kernel/power_management/lib/Makefile
+@@ -0,0 +1,25 @@
++#
++# Copyright (c) 2015 Fujitsu Ltd.
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License along
++# with this program; if not, write to the Free Software Foundation, Inc.,
++# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++
++top_srcdir 		?= ../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS 	:= *.py
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/power_management/pm_cpu_consolidation.py b/testcases/kernel/power_management/pm_cpu_consolidation.py
+index 5aa3948..734db27 100755
+--- a/testcases/kernel/power_management/pm_cpu_consolidation.py
++++ b/testcases/kernel/power_management/pm_cpu_consolidation.py
+@@ -6,8 +6,6 @@
+ import os
+ import sys
+ import time
+-LIB_DIR = "%s/lib" % os.path.dirname(__file__)
+-sys.path.append(LIB_DIR)
+ from optparse import OptionParser
+ from pm_sched_mc import *
+ 
+diff --git a/testcases/kernel/power_management/pm_ilb_test.py b/testcases/kernel/power_management/pm_ilb_test.py
+index 3f6ad46..0b447d8 100755
+--- a/testcases/kernel/power_management/pm_ilb_test.py
++++ b/testcases/kernel/power_management/pm_ilb_test.py
+@@ -5,8 +5,6 @@
+ 
+ import os
+ import sys
+-LIB_DIR = "%s/lib" % os.path.dirname(__file__)
+-sys.path.append(LIB_DIR)
+ from optparse import OptionParser
+ from pm_sched_mc import *
+ 
+diff --git a/testcases/kernel/power_management/pm_sched_domain.py b/testcases/kernel/power_management/pm_sched_domain.py
+index a636c48..a54b0e9 100755
+--- a/testcases/kernel/power_management/pm_sched_domain.py
++++ b/testcases/kernel/power_management/pm_sched_domain.py
+@@ -5,8 +5,6 @@
+ 
+ import os
+ import sys
+-LIB_DIR = "%s/lib" % os.path.dirname(__file__)
+-sys.path.append(LIB_DIR)
+ from pm_sched_mc import *
+ from optparse import OptionParser
+ 
+-- 
+1.9.3
+
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
@@ -256,16 +156,7 @@ Widest out-of-the-box monitoring support with 50+ applications
 Performance metrics, stats and reports that give you Actionable Insights
 Deep dive visibility with transaction tracing using APM Insight.
 http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
---vtzGhvizbBRQ85DL
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---vtzGhvizbBRQ85DL--
-
