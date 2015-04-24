@@ -1,18 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ymj1V-0004Di-3F
-	for ltp-list@lists.sourceforge.net; Mon, 27 Apr 2015 13:24:33 +0000
-Date: Mon, 27 Apr 2015 15:24:04 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150427132404.GA10567@rei.suse.de>
-References: <1555406842.5673672.1429863249724.JavaMail.zimbra@redhat.com>
-	<782230467.5857849.1429883677704.JavaMail.zimbra@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YlU19-00016k-Td
+	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 03:11:03 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YlU18-0004ar-Ph
+	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 03:11:03 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t3O39f1d031033
+	for <ltp-list@lists.sourceforge.net>; Fri, 24 Apr 2015 11:09:42 +0800
+From: Xing Gu <gux.fnst@cn.fujitsu.com>
+Date: Fri, 24 Apr 2015 11:06:02 +0800
+Message-ID: <1429844769-7113-1-git-send-email-gux.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <782230467.5857849.1429883677704.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] Coverity report for ltp-20150420
+Subject: [LTP] [PATCH v5 1/8] kernel/power_management: fix no_of_cpus error
+	of change_govr.sh etc.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,49 +30,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list <ltp-list@lists.sf.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
->       1 ARRAY_VS_SINGLETON
->       4 BAD_COMPARE
->      17 BAD_FREE
->       1 CHAR_IO
->     319 CHECKED_RETURN
->       6 CONSTANT_EXPRESSION_RESULT
->       3 COPY_PASTE_ERROR
->      29 DEADCODE
->       1 EVALUATION_ORDER
->      43 FORWARD_NULL
->       3 IDENTICAL_BRANCHES
->      21 MISSING_BREAK
->     497 NEGATIVE_RETURNS
->       7 NO_EFFECT
->       6 NULL_RETURNS
->       1 OVERFLOW_BEFORE_WIDEN
->      27 OVERRUN
->       1 PASS_BY_VALUE
->     343 RESOURCE_LEAK
->       1 RETURN_LOCAL
->       1 REVERSE_INULL
->       2 REVERSE_NEGATIVE
->      19 SIZEOF_MISMATCH
->       1 STRAY_SEMICOLON
->      91 UNINIT
->      14 UNREACHABLE
->       6 UNUSED_VALUE
->      48 USE_AFTER_FREE
->       1 VARARGS
+The function "no_of_cpus" doesn't exist, which is used in change_freq.sh,
+change_govr.sh and check_cpufreq_sysfs_files.sh. Use "tst_ncpus" instead
+of "no_of_cpus".
 
-Thanks for doing this again. :)
+Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/power_management/change_freq.sh               | 2 +-
+ testcases/kernel/power_management/change_govr.sh               | 2 +-
+ testcases/kernel/power_management/check_cpufreq_sysfs_files.sh | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-BTW do you have a this table for previous releases? I looked at the
-previous emails and these stats weren't there. It would be interesting
-to compare how these numbers changed in time.
-
+diff --git a/testcases/kernel/power_management/change_freq.sh b/testcases/kernel/power_management/change_freq.sh
+index 204e21f..3a971d2 100755
+--- a/testcases/kernel/power_management/change_freq.sh
++++ b/testcases/kernel/power_management/change_freq.sh
+@@ -5,7 +5,7 @@ available_freq=$(get_supporting_freq)
+ available_govr=$(get_supporting_govr)
+ RC=0
+ 
+-total_cpus=$(no_of_cpus)
++total_cpus=$(tst_ncpus)
+ (( total_cpus-=1 ))
+ 
+ if ( echo ${available_govr} | grep -i "userspace" 2>&1 >/dev/null ) ; then
+diff --git a/testcases/kernel/power_management/change_govr.sh b/testcases/kernel/power_management/change_govr.sh
+index 4c2546e..bfe6c5b 100755
+--- a/testcases/kernel/power_management/change_govr.sh
++++ b/testcases/kernel/power_management/change_govr.sh
+@@ -3,7 +3,7 @@
+ . pm_include.sh
+ available_govr=$(get_supporting_govr)
+ 
+-total_cpus=$(no_of_cpus)
++total_cpus=$(tst_ncpus)
+ (( total_cpus-=1 ))
+ RC=0
+ 
+diff --git a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh b/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
+index cb51aa0..dcf8a1d 100755
+--- a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
++++ b/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
+@@ -2,7 +2,7 @@
+ 
+ . pm_include.sh
+ 
+-total_cpus=$(no_of_cpus)
++total_cpus=$(tst_ncpus)
+ (( total_cpus-=1 ))
+ RC=0
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
