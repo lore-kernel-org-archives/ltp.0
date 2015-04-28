@@ -1,18 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Yn8S8-0008PV-Q1
-	for ltp-list@lists.sourceforge.net; Tue, 28 Apr 2015 16:33:44 +0000
-Date: Tue, 28 Apr 2015 18:33:14 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150428163313.GA24127@rei>
-References: <1430219455.7745.4.camel@G08JYZSD130126.localdomain>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1430219455.7745.4.camel@G08JYZSD130126.localdomain>
-Subject: Re: [LTP] [PATCH] commands/df: Added new testcase to test df(1)
- command.
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Yn4EP-0000Ju-5H
+	for ltp-list@lists.sourceforge.net; Tue, 28 Apr 2015 12:03:17 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Yn4EL-0000DP-2j
+	for ltp-list@lists.sourceforge.net; Tue, 28 Apr 2015 12:03:17 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (Postfix) with ESMTPS id CC03D41
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 28 Apr 2015 12:03:06 +0000 (UTC)
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id t3SC35MZ005739
+	for <ltp-list@lists.sourceforge.net>; Tue, 28 Apr 2015 08:03:06 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 28 Apr 2015 14:02:56 +0200
+Message-Id: <ae191066422a60089392e92dc3bbf79b7051005c.1430222251.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 1/2] cpu_hotplug: use present rather than all CPUs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,207 +30,170 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +setup()
-> +{
-> +	tst_require_root
-> +
-> +	tst_check_cmds df
-> +
-> +	tst_tmpdir
-> +
-> +	dd if=/dev/zero of=test.img bs=1M count=20 >/dev/null 2>&1
-> +	if [ $? -ne 0 ];then
+Testcases trying to offline/online not present CPUs
+currently fail on powerpc with IBM PowerVM hypervisor.
 
-Unless we set cleanup we need to do tst_rmdir here and below.
+In this setup, Linux guest usually sees all CPUs host has,
+but most of them are not present (usable by guest). Attempt
+to bring them online fails (presumably because lpar config
+does not allow to do so).
 
-> +		tst_brkm TBROK "dd failed."
-> +	fi
-> +
-> +	device_name=$(/sbin/losetup -f)
-> +	if [ $? -ne 0 ];then
-> +		tst_brkm TBROK "device_name failed."
-> +	fi
-> +
-> +	losetup ${device_name} test.img
-> +	if [ $? -ne 0 ];then
-> +		tst_brkm TBROK "losetup failed."
-> +	fi
+Add get_present_cpus function and try to online/offline only
+CPUs linux guest sees as 'present'. Very old kernels which
+do not provide present cpu mask will try to use all CPUs.
 
-Hmm, we may need tst_acquire_device and tst_release_device for shell as
-well. Because as this is we cannot make use of the device passed to the
-runltp script.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../hotplug/cpu_hotplug/functional/cpuhotplug01.sh |  4 +-
+ .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh |  2 +-
+ .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh |  4 +-
+ .../cpu_hotplug/include/cpuhotplug_hotplug.sh      | 50 ++++++++++++++++++----
+ 4 files changed, 46 insertions(+), 14 deletions(-)
 
-> +	mkfs.ext2 ${device_name} >/dev/null 2>&1
-> +	if [ $? -ne 0 ];then
-
-If we end up here because, for example, mkfs.ext2 is not installed, the
-device will still be attached. We need either create a cleanup that is
-able to handle to cleanup interrupted setup or just detach the device
-and tst_rmdir() here and in the steps below.
-
-> +		tst_brkm TBROK "mkfs.ext2 failed."
-> +	fi
-> +
-> +	mkdir mntpoint
-> +	if [ $? -ne 0 ];then
-> +		tst_brkm TBROK "mkdir testdir failed."
-> +	fi
-
-This can be moved before the losetup when the only cleanup we need to do
-is tst_rmdir()
-
-> +	mount ${device_name} mntpoint
-> +	if [ $? -ne 0 ];then
-> +		tst_brkm TBROK "mount failed."
-> +	fi
-
-Can we use the ROD and ROD_SILENT here instead? :)
-
-> +}
-> +
-> +cleanup()
-> +{
-> +	umount -d mntpoint
-> +	if [ $? -ne 0 ];then
-> +		tst_resm TINFO "umount error."
-> +	fi
-
-You need to detach the loop device here with losetup -d
-
-> +	tst_rmdir
-> +}
-> +
-> +df_test()
-> +{
-> +	$1 >${TCID}.temp 2>&1
-> +	if [ $? -ne 0 ]; then
-> +		grep -q -E "unrecognized option | invalid option" ${TCID}.temp
-> +		if [ $? -eq 0 ]; then
-> +			tst_resm TCONF "'$1' not supported."
-> +			return
-> +		else
-> +			tst_resm TFAIL "'$1' failed."
-> +			return
-> +		fi
-> +	fi
-> +
-> +	grep ${device_name} ${TCID}.temp | grep mntpoint | grep -q $2
-> +	if [ $? -eq 0 ]; then
-> +		tst_resm TPASS "'$1' passed."
-> +	else
-> +		tst_resm TFAIL "'$1' failed."
-> +	fi
-> +}
-> +
-> +test1()
-> +{
-> +	df_test "df" "19827"
-> +}
-> +
-> +test2()
-> +{
-> +	df_test "df -a" "19827"
-> +}
-> +
-> +test3()
-> +{
-> +	df_test "df -h" "20M"
-> +}
-> +
-> +test4()
-> +{
-> +	df_test "df -H" "21M"
-> +}
-> +
-> +test5()
-> +{
-> +	df_test "df -i" "5136"
-> +}
-> +
-> +test6()
-> +{
-> +	df_test "df -k" "19827"
-> +}
-> +
-> +test7()
-> +{
-> +	df_test "df -m" "20"
-> +}
-> +
-> +test8()
-> +{
-> +	df_test "df -t ext2" "19827"
-> +}
-> +
-> +test9()
-> +{
-> +	df_test "df -T" "19827"
-> +}
-> +
-> +test10()
-> +{
-> +	df_test "df -v mntpoint" "19827"
-> +}
-> +
-> +test11()
-> +{
-> +	df -x ext2 >${TCID}.temp 2>&1
-> +	if [ $? -ne 0 ]; then
-> +		grep -q -E "unrecognized option | invalid option" ${TCID}.temp
-> +		if [ $? -eq 0 ]; then
-> +			tst_resm TCONF "'df -x ext2' not supported."
-> +			return
-> +		else
-> +			tst_resm TFAIL "'df -x ext2' failed."
-> +			return
-> +		fi
-> +	fi
-> +
-> +	grep ${device_name} ${TCID}.temp | grep -q mntpoint
-> +	if [ $? -ne 0 ]; then
-> +		tst_resm TPASS "'df -x ext2' passed."
-> +	else
-> +		tst_resm TFAIL "'df -x ext2' failed."
-> +	fi
-> +}
-> +
-> +test12()
-> +{
-> +	df --version >${TCID}.temp 2>&1
-> +	if [ $? -ne 0 ]; then
-> +		grep -q -E "unrecognized option | invalid option" ${TCID}.temp
-> +		if [ $? -eq 0 ]; then
-> +			tst_resm TCONF "'df --version' not supported."
-> +			return
-> +		else
-> +			tst_resm TFAIL "'df --version' failed."
-> +			return
-> +		fi
-> +	else
-> +		tst_resm TPASS "'df --version' passed."
-> +	fi
-> +}
-> +
-> +setup
-> +TST_CLEANUP="cleanup"
-> +
-> +for i in $(seq 1 ${TST_TOTAL})
-> +do
-> +	test$i
-> +done
-> +
-> +tst_exit
-
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+index f91cf88..2cff3ba 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+@@ -151,7 +151,7 @@ do
+ 	IRQ_START=$(cat /proc/interrupts)
+ 
+ 	# Attempt to offline all CPUs
+-	for cpu in $( get_all_cpus ); do
++	for cpu in $( get_present_cpus ); do
+ 		if [ "$cpu" = "cpu0" ]; then
+ 			continue
+ 		fi
+@@ -166,7 +166,7 @@ do
+ 	done
+ 
+ 	# Attempt to online all CPUs
+-	for cpu in $( get_all_cpus ); do
++	for cpu in $( get_present_cpus ); do
+ 		if [ "$cpu" = "cpu0" ]; then
+ 			continue
+ 		fi
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+index 8176fb3..7830f35 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+@@ -87,7 +87,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
+ 	number_of_cpus=0
+ 
+ 	# Turns on all CPUs and saves their states
+-	for i in $( get_all_cpus ); do
++	for i in $( get_present_cpus ); do
+             if [ "$i" = "cpu0" ]; then
+                 continue
+             fi
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+index 72fbc6e..6c9bb30 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+@@ -69,7 +69,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+ 	cpustate=1
+ 
+ 	# Online all the CPUs' keep track of which were already on
+-	for i in $(get_all_cpus); do
++	for i in $(get_present_cpus); do
+ 		if [ "$i" != "cpu0" ]; then
+ 			if ! cpu_is_online $i; then
+ 				if ! online_cpu $i; then
+@@ -87,7 +87,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+ 	done
+ 
+ 	# Now offline all the CPUs
+-	for i in $(get_all_cpus); do
++	for i in $(get_present_cpus); do
+ 		if ! offline_cpu $i; then
+ 			if [ "x$i" != "xcpu0" ]; then
+ 				tst_resm TFAIL "Did not offline first CPU (offlined $i instead)"
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+index dd8472f..297724a 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+@@ -99,32 +99,64 @@ offline_cpu()
+ 
+ # get_cpus_num()
+ #
+-#  Prints the number of all available CPUs, regardless of whether they're
++#  Prints the number of all present CPUs, regardless of whether they're
+ #  currently online or offline.
+ #
+ get_cpus_num()
+ {
+-	[ -d /sys/devices/system/cpu/cpu0 ] || return -1
+-	NUM=`ls /sys/devices/system/cpu/ \
+-			| grep -c "cpu[0-9][0-9]*"`
+-	return $NUM
++    local num=$(get_present_cpus | wc -w)
++    return $num
+ }
+ 
+ # get_all_cpus()
+ #
+ #  Prints a list of all available CPUs, regardless of whether they're
+-#  currently online or offline.
++#  present.
+ #
+ #  This routine will work even if the CPUs are not hotpluggable, however
+ #  it requires you have sysfs enabled in the kernel.
+ #
+ get_all_cpus()
+ {
+-    [ -d /sys/devices/system/cpu/cpu0 ] || return 1
+-    ls -dr /sys/devices/system/cpu/cpu[0-9]* | \
+-        sed "s/\/sys\/devices\/system\/cpu\///g" || return 2
++    [ -d /sys/devices/system/cpu ] || return 1
++    (cd /sys/devices/system/cpu; ls -d cpu[0-9]*)
+ }
+ 
++# get_present_cpus()
++#
++#  Prints a list of present CPUs, regardless of whether they're
++#  currently online or offline.
++#
++#  This routine will work even if the CPUs are not hotpluggable, however
++#  it requires you have sysfs enabled in the kernel.
++#
++get_present_cpus()
++{
++    # if sysfs present mask is missing, assume all cpu are present
++    if [ ! -e /sys/devices/system/cpu/present ]; then
++        get_all_cpus
++        return
++    fi
++
++    local present_mask="/sys/devices/system/cpu/present"
++    local present_cpus=""
++
++    for part in $(cat $present_mask | tr "," " "); do
++        if echo $part | grep -q "-"; then
++            range_low=$(echo $part | cut -d - -f 1)
++            range_high=$(echo $part | cut -d - -f 2)
++        else
++            range_low=$(part)
++            range_high=$(part)
++        fi
++        for cpu in $(seq $range_low $range_high); do
++            if [ -e /sys/devices/system/cpu/cpu$cpu ]; then
++                present_cpus="$present_cpus cpu$cpu"
++            fi
++        done
++    done
++    echo $present_cpus
++}
+ 
+ # get_all_cpu_states()
+ #
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
