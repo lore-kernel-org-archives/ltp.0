@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YnjbC-0007ZJ-HE
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:34 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YnQ0T-0007QH-UV
+	for ltp-list@lists.sourceforge.net; Wed, 29 Apr 2015 11:18:21 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YnjbA-0007h5-Sa
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:34 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YnQ0S-00011i-4W
+	for ltp-list@lists.sourceforge.net; Wed, 29 Apr 2015 11:18:21 +0000
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 30 Apr 2015 10:13:17 +0200
-Message-Id: <23de225e48f8f9817e6f2821dc5e207d76f06b1e.1430380932.git.jstancek@redhat.com>
-In-Reply-To: <cover.1430380932.git.jstancek@redhat.com>
-References: <cover.1430380932.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 1/4 v3] cpuhotplug: use cpu states in cleanup
+Date: Wed, 29 Apr 2015 13:18:01 +0200
+Message-Id: <c572d17a0a61f532993ea65f898b8cb880d98935.1430305546.git.jstancek@redhat.com>
+In-Reply-To: <cover.1430305546.git.jstancek@redhat.com>
+References: <cover.1430305546.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 4/4] cpuhotplug04.sh: operate only with hotpluggable
+	CPUs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,191 +32,110 @@ To: ltp-list@lists.sourceforge.net
 
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-There is a couple of good functions:
- * get_all_cpu_states
- * set_all_cpu_states
-which can help to avoid unnecessary cleanup logic in test cases.
+If cpu0 is hotpluggable, then the last CPU may not be cpu0, and
+there is no reason to treat cpu0 as a special case.
 
-So let's use them.
+To make the test be more generic I'm proposing these changes:
+ * Operate (offline/online) only with hotpluggable CPUs, because
+   how can we enable/disable a CPU if there is no 'online' file?
 
-Also modified offline_cpu and online_cpu, so now they do nothing if
-the cpu is already in the desired state.
+ * If all CPUs in the system are hotpluggable, then we expect that
+   the kernel will only refuse to offline the last CPU. And this
+   last CPU may not be cpu0.
+
+ * If only a part of CPUs in the system is hotpluggable, then we
+   should be able to offline all of them
 
 Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .../hotplug/cpu_hotplug/functional/cpuhotplug01.sh     | 11 ++++-------
- .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh     | 12 +++++-------
- .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh     | 18 +++++-------------
- .../hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh  | 16 ++++++++++------
- 4 files changed, 24 insertions(+), 33 deletions(-)
+ .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh | 52 +++++++++++++---------
+ 1 file changed, 30 insertions(+), 22 deletions(-)
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
-index f91cf88..52598a9 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
-@@ -45,13 +45,8 @@ do_clean()
- {
- 	kill_pid ${WRL_ID}
- 
--	# Turns off the cpus that were off before the test start
--	until [ $CPU_COUNT -eq 0 ]; do
--		offline_cpu=$(eval "echo \$OFFLINE_CPU_${CPU_COUNT}")
--		tst_resm TINFO "CPU = $CPU_COUNT @on = $offline_cpu"
--		offline_cpu $offline_cpu
--		CPU_COUNT=$((CPU_COUNT-1))
--	done
-+	# Restore CPU states
-+	set_all_cpu_states "$cpu_states"
- }
- 
- 
-@@ -138,6 +133,8 @@ fi
- 
- TST_CLEANUP=do_clean
- 
-+cpu_states=$(get_all_cpu_states)
-+
- CPU_COUNT=0
- 
- # Start up a process that writes to disk; keep track of its PID
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-index 8176fb3..817f066 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-@@ -46,11 +46,8 @@ do_clean()
- 		rm /var/run/hotplug4_$$.pid
- 	fi
- 
--	# Turn off the CPUs that were off before the test start
--	until [ $cpu -eq 0 ];do
--		offline_cpu $(eval "echo \$on_${cpu}")
--		cpu=$((cpu-1))
--	done
-+	# Restore CPU states
-+	set_all_cpu_states "$cpu_states"
- }
- 
- while getopts c:l: OPTION; do
-@@ -82,11 +79,13 @@ fi
- 
- TST_CLEANUP=do_clean
- 
-+cpu_states=$(get_all_cpu_states)
-+
- until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
- 	cpu=0
- 	number_of_cpus=0
- 
--	# Turns on all CPUs and saves their states
-+	# Turns on all CPUs
- 	for i in $( get_all_cpus ); do
-             if [ "$i" = "cpu0" ]; then
-                 continue
-@@ -96,7 +95,6 @@ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
-                     tst_brkm TBROK "Could not online cpu $i"
-                 fi
- 				cpu=$((cpu+1))
--                eval "on_${cpu}=$i"
-             fi
- 		number_of_cpus=$((number_of_cpus+1))
- 	done
 diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-index 72fbc6e..ea2723b 100755
+index 3e025da..58a822e 100755
 --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
 +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-@@ -33,17 +33,8 @@ EOF
- do_clean()
- {
- 	# Online the ones that were on initially
--	until [ $cpu -eq 0 ]; do
--		online_cpu $(eval "echo \$on_${cpu}")
--		cpu=$((cpu-1))
--	done
--
--	# Return CPU 0 to its initial state
--	if [ $cpustate = 1 ]; then
--		online_cpu 0
--	else
--		offline_cpu 0
--	fi
-+	# Restore CPU states
-+	set_all_cpu_states "$cpu_states"
- }
+@@ -48,42 +48,50 @@ done
  
- while getopts l: OPTION; do
-@@ -64,11 +55,13 @@ fi
+ LOOP_COUNT=1
  
+-get_cpus_num
+-if [ $? -lt 2 ]; then
++get_present_cpus_num
++cpus_num=$?
++if [ $cpus_num -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
++get_hotplug_cpus_num
++if [ $? -lt 1 ]; then
++	tst_brkm TCONF "system doesn't have at least one hotpluggable CPU"
++fi
++
  TST_CLEANUP=do_clean
  
-+cpu_states=$(get_all_cpu_states)
-+
+ cpu_states=$(get_all_cpu_states)
+ 
  until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
- 	cpu=0
- 	cpustate=1
+-	cpu=0
+-	cpustate=1
  
--	# Online all the CPUs' keep track of which were already on
-+	# Online all the CPUs
- 	for i in $(get_all_cpus); do
- 		if [ "$i" != "cpu0" ]; then
- 			if ! cpu_is_online $i; then
-@@ -77,7 +70,6 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
- 				fi
+-	# Online all the CPUs
++	# Online all the hotpluggable CPUs
+ 	for i in $(get_hotplug_cpus); do
+-		if [ "$i" != "cpu0" ]; then
+-			if ! cpu_is_online $i; then
+-				if ! online_cpu $i; then
+-					tst_brkm TBROK "$i cannot be onlined"
+-				fi
+-			fi
+-			cpu=$((cpu+1))
+-			echo $i
+-		else
+-			if online_cpu $i; then
+-				cpustate=0
++		if ! cpu_is_online $i; then
++			if ! online_cpu $i; then
++				tst_brkm TBROK "$i can not be onlined"
  			fi
- 			cpu=$((cpu+1))
--			eval "on_${cpu}=$i"
- 			echo $i
- 		else
- 			if online_cpu $i; then
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-index dd8472f..f553d0c 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-@@ -73,6 +73,9 @@ online_cpu()
-     if [ ! -w /sys/devices/system/cpu/cpu${CPU}/online ]; then
-         return 1
-     fi
-+
-+    cpu_is_online ${CPU} && return 0
-+
-     $TIME echo 1 > /sys/devices/system/cpu/cpu${CPU}/online
-     RC=$?
-     report_timing "Online cpu ${CPU}"
-@@ -91,6 +94,9 @@ offline_cpu()
-     if [ ! -w /sys/devices/system/cpu/cpu${CPU}/online ]; then
-         return 1
-     fi
-+
-+    ! cpu_is_online ${CPU} && return 0
-+
-     $TIME echo 0 > /sys/devices/system/cpu/cpu${CPU}/online
-     RC=$?
-     report_timing "Offline cpu ${CPU}"
-@@ -141,20 +147,18 @@ get_all_cpu_states()
+ 		fi
+ 	done
  
- # set_all_cpu_states(STATES)
- #
--#  Sets all of the CPU states according to $STATE, which must be
-+#  Sets all of the CPU states according to STATES, which must be
- #  of the form "cpuX:Y", where X is the CPU number and Y its state.
- #  Each must be on a separate line.
- #
- set_all_cpu_states()
- {
--    for cpu_state in $STATE; do
--        cpu=`echo $c | cut -d: -f 1`
--        state=`echo $c | cut -d: -f 1`
-+    for cpu_state in $1; do
-+        cpu=`echo $cpu_state | cut -d: -f 1`
-+        state=`echo $cpu_state | cut -d: -f 2`
-         if [ $state = 1 ]; then
--            echo "# Re-onlining $cpu"
-             online_cpu $cpu
-         else
--            echo "# Re-offlining $cpu"
-             offline_cpu $cpu
-         fi
-     done
+-	# Now offline all the CPUs
++	# Now offline them
++	cpu=0
+ 	for i in $(get_hotplug_cpus); do
+-		if ! offline_cpu $i; then
+-			if [ "x$i" != "xcpu0" ]; then
+-				tst_resm TFAIL "Did not offline first CPU (offlined $i instead)"
+-				tst_exit
++		cpu=$((cpu + 1))
++
++		# If all the CPUs are hotpluggable, we expect
++		# that the kernel will refuse to offline the last CPU.
++		# If only some of the CPUs are hotpluggable,
++		# they all can be offlined.
++		if [ $cpu -eq $cpus_num ]; then
++			if offline_cpu $i 2> /dev/null; then
++				tst_brkm TFAIL "Have we just offlined the last CPU?"
++			else
++				tst_resm TPASS "System prevented us from offlining the last CPU - $i"
++			fi
++		else
++			if ! offline_cpu $i; then
++				tst_brkm TFAIL "Could not offline $i"
+ 			fi
+ 		fi
+ 	done
+@@ -92,6 +100,6 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+ 
+ done
+ 
+-tst_resm TPASS "Successfully offlined first CPU, $i"
++tst_resm TPASS "Success"
+ 
+ tst_exit
 -- 
 1.8.3.1
 
