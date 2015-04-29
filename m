@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Yheaf-00075a-3f
-	for ltp-list@lists.sourceforge.net; Mon, 13 Apr 2015 13:39:53 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Yheac-0001kM-VD
-	for ltp-list@lists.sourceforge.net; Mon, 13 Apr 2015 13:39:53 +0000
-Message-ID: <552BC7C7.1010105@oracle.com>
-Date: Mon, 13 Apr 2015 16:42:31 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YnTB9-0003Jj-D8
+	for ltp-list@lists.sourceforge.net; Wed, 29 Apr 2015 14:41:35 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YnTB6-0007kv-A9
+	for ltp-list@lists.sourceforge.net; Wed, 29 Apr 2015 14:41:35 +0000
+Date: Wed, 29 Apr 2015 10:41:25 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1664154270.8253204.1430318485223.JavaMail.zimbra@redhat.com>
+In-Reply-To: <5540D7F2.5050601@oracle.com>
+References: <cover.1430305546.git.jstancek@redhat.com>
+	<c0241646d11b747c1fd00d583f350cc9d048ad5e.1430305546.git.jstancek@redhat.com>
+	<5540D7F2.5050601@oracle.com>
 MIME-Version: 1.0
-References: <1428672725-13538-1-git-send-email-alexey.kodanev@oracle.com>
-	<552B2AFF.20107@cn.fujitsu.com>
-In-Reply-To: <552B2AFF.20107@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] syscalls/fallocate04: add new fallocate() test
+Subject: Re: [LTP] [PATCH 3/4] cpu_hotplug: use hotplug/present cpus
+	functions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,85 +30,230 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-On 04/13/2015 05:33 AM, Xiaoguang Wang wrote:
->> +
->> +#define SEEK_HOLE			4
->> +#define FALLOC_FL_KEEP_SIZE		0x01
->> +#define FALLOC_FL_PUNCH_HOLE		0x02
->> +#define FALLOC_FL_COLLAPSE_RANGE	0x08
->> +#define FALLOC_FL_ZERO_RANGE		0x10
-> What about something like this:
-> #ifndef	FALLOC_FL_KEEP_SIZE	4
-> #define	 FALLOC_FL_KEEP_SIZE	4
-> #endif
-> In case, glibc have already defines these macro now or in future.
 
-Redefinition with the same values doesn't produce any warnings, but on 
-the other hand what if we want to know when they are different?
 
-> We could put these definitions in testcases/kernel/syscalls/fallocate/fallocate.h.
 
-Right, we can put them there.
 
-> And what about we test this case in a specific file system, such
-> as ext4 or xfs. Many fs do not support these operations.
+----- Original Message -----
+> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
+> To: "Jan Stancek" <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
+> Sent: Wednesday, 29 April, 2015 3:09:06 PM
+> Subject: Re: [PATCH 3/4] cpu_hotplug: use hotplug/present cpus functions
+> 
+> On 04/29/2015 02:18 PM, Jan Stancek wrote:
+> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> > ---
+> >   testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh | 6
+> >   +++---
+> >   testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh | 2 +-
+> >   testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh | 4 ++--
+> >   testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh | 4 ++--
+> >   testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh | 2 +-
+> >   testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh | 2 +-
+> >   testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh | 2 +-
+> >   7 files changed, 11 insertions(+), 11 deletions(-)
+> >
+> > diff --git
+> > a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+> > b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+> > index 52598a9..8ae1379 100755
+> > --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+> > +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+> > @@ -111,7 +111,7 @@ LOOP_COUNT=1
+> >
+> >   tst_check_cmds perl
+> >
+> > -get_cpus_num
+> > +get_present_cpus_num
+> >   if [ $? -lt 2 ]; then
+> >   	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+> >   fi
+> > @@ -148,7 +148,7 @@ do
+> >   	IRQ_START=$(cat /proc/interrupts)
+> >
+> >   	# Attempt to offline all CPUs
+> > -	for cpu in $( get_all_cpus ); do
+> > +	for cpu in $( get_hotplug_cpus ); do
+> >   		if [ "$cpu" = "cpu0" ]; then
+> >   			continue
+> >   		fi
+> > @@ -163,7 +163,7 @@ do
+> >   	done
+> >
+> >   	# Attempt to online all CPUs
+> > -	for cpu in $( get_all_cpus ); do
+> > +	for cpu in $( get_hotplug_cpus ); do
+> >   		if [ "$cpu" = "cpu0" ]; then
+> >   			continue
+> >   		fi
+> 
+> Given that now this loop runs over hotpluggable cpus, it seems there is
+> no reason to treat cpu0 specially in cpuhotplug0{1, 3, 4}.sh.
 
-If i'm not mistaken we should get 'ENOSUPPORT' errno on filesystems that 
-don't support such modes. The test already checks that and exit with TCONF.
+I'm not sure we can remove it in 01, because then it would try to bring
+all offline and if all are hotpluggable it's going to fail.
+I'd ignore 01 for now, it's broken anyway and disabled in runtest file.
 
-> 	
->> +
->> +char *TCID = "fallocate04";
->> +int TST_TOTAL = 3;
->> +
->> +static int fd;
->> +static const char fname[] = "fallocate04.txt";
->> +static size_t block_size;
->> +static size_t buf_size;
->> +enum { NUM_OF_BLOCKS = 3 };
-> Why type is enum? I'm not sure, a simple '#define NUM_OF_BLOCKS 3' would be OK.
+03 looks like it can be removed, 04 is fixed by your patch.
 
-There is no specific reason why I set enum, I guess either way is fine 
-here, it could be 'const int' as well... though they are all different.
+Also, I'd prefer if those testcases would find suitable cpu to test
+as part of test, instead of relying on passed parameters - but
+I don't want to inflate this patchset even more now.
 
->> +
->> +static void get_blocksize(void)
->> +{
->> +	struct stat file_stat;
->> +
->> +	if (fstat(fd, &file_stat) == -1)
->> +		tst_brkm(TFAIL | TERRNO, cleanup, "fstat() failed");
-> We have SAFE_FSTAT().
+> 
+> Patch 4 in this series has a fix for cpuhotplug04.sh, but other
+> occurrences are unfixed.
+> 
+> 
+> 
+> > diff --git
+> > a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+> > b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+> > index 3b33720..c42cc1b 100755
+> > --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+> > +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+> > @@ -54,7 +54,7 @@ done
+> >
+> >   LOOP_COUNT=1
+> >
+> > -get_cpus_num
+> > +get_present_cpus_num
+> >   if [ $? -lt 2 ]; then
+> >   	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+> >   fi
+> > diff --git
+> > a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+> > b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+> > index 817f066..5da4854 100755
+> > --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+> > +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+> > @@ -63,7 +63,7 @@ done
+> >
+> >   LOOP_COUNT=1
+> >
+> > -get_cpus_num
+> > +get_present_cpus_num
+> >   if [ $? -lt 2 ]; then
+> >   	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+> >   fi
+> > @@ -86,7 +86,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
+> >   	number_of_cpus=0
+> >
+> >   	# Turns on all CPUs
+> > -	for i in $( get_all_cpus ); do
+> > +	for i in $( get_hotplug_cpus ); do
+> >               if [ "$i" = "cpu0" ]; then
+> >                   continue
+> >               fi
+> 
+> In general, get_hotplug_cpus should produce only a subset from
+> get_all_cpus, so number_of_cpus below may be less that the total number
+> of CPUs in the system.
+> 
+> But below in the code we have:
+> 
+>          # Start up a number of processes equal to twice the number of
+>          # CPUs we have.  This is to help ensure we've got enough processes
+>          # that at least one will migrate to the new CPU.  Store the PIDs
+>          # so we can kill them later.
+>          number_of_cpus=$((number_of_cpus*2))
+>          until [ $number_of_cpus -eq 0 ]; do
+>                  cpuhotplug_do_spin_loop > /dev/null 2>&1 &
+>                  echo $! >> /var/run/hotplug4_$$.pid
+>                  number_of_cpus=$((number_of_cpus-1))
+>          done
+> 
+> It seems that now we need to fork $(( $(get_present_cpus_num) * 2 ))
+> processes.
 
-Thanks for noticing, I forgot to check the library.
+Good catch, I'll fix that.
 
-> +
-> +static void test02(void)
-> +{
-> +	tst_resm(TINFO, "zeroing file space with FALLOC_FL_ZERO_RANGE");
-> +
-> +	if (tst_kvercmp(3, 14, 0) < 0) {
-> +		tst_brkm(TCONF, NULL,
-> +			 "Test must be run with kernel 3.14 or newer");
-> Here a cleanup is needed, otherwise you will fail to call tst_rmdir()
-> to remove the created temporary directory created by tst_tmpdir().
+Regards,
+Jan
 
-Oh, of course, you are right!
-
-Thanks,
-Alexey
-
+> 
+> 
+> > diff --git
+> > a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+> > b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+> > index ea2723b..3e025da 100755
+> > --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+> > +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+> > @@ -62,7 +62,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+> >   	cpustate=1
+> >
+> >   	# Online all the CPUs
+> > -	for i in $(get_all_cpus); do
+> > +	for i in $(get_hotplug_cpus); do
+> >   		if [ "$i" != "cpu0" ]; then
+> >   			if ! cpu_is_online $i; then
+> >   				if ! online_cpu $i; then
+> > @@ -79,7 +79,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+> >   	done
+> >
+> >   	# Now offline all the CPUs
+> > -	for i in $(get_all_cpus); do
+> > +	for i in $(get_hotplug_cpus); do
+> >   		if ! offline_cpu $i; then
+> >   			if [ "x$i" != "xcpu0" ]; then
+> >   				tst_resm TFAIL "Did not offline first CPU (offlined $i instead)"
+> > diff --git
+> > a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> > b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> > index bb0e896..79f7e90 100755
+> > --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> > +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+> > @@ -54,7 +54,7 @@ LOOP_COUNT=1
+> >
+> >   tst_check_cmds sar
+> >
+> > -get_cpus_num
+> > +get_present_cpus_num
+> >   if [ $? -lt 2 ]; then
+> >   	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+> >   fi
+> > diff --git
+> > a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+> > b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+> > index 2e48242..6710fad 100755
+> > --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+> > +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+> > @@ -49,7 +49,7 @@ done
+> >
+> >   LOOP_COUNT=1
+> >
+> > -get_cpus_num
+> > +get_present_cpus_num
+> >   if [ $? -lt 2 ]; then
+> >   	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+> >   fi
+> > diff --git
+> > a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+> > b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+> > index 723f3de..7edb3a9 100755
+> > --- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+> > +++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+> > @@ -55,7 +55,7 @@ done
+> >
+> >   LOOP_COUNT=1
+> >
+> > -get_cpus_num
+> > +get_present_cpus_num
+> >   if [ $? -lt 2 ]; then
+> >   	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+> >   fi
+> >
+> 
 
 ------------------------------------------------------------------------------
-BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-Develop your own process in accordance with the BPMN 2 standard
-Learn Process modeling best practices with Bonita BPM through live exercises
-http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
