@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YfTNW-0002cy-Pm
-	for ltp-list@lists.sourceforge.net; Tue, 07 Apr 2015 13:17:18 +0000
-Date: Tue, 7 Apr 2015 15:16:59 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YnjFy-0002I5-IY
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 07:51:38 +0000
+Date: Thu, 30 Apr 2015 09:51:08 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150407131658.GB9535@rei>
-References: <fcfdc0e76da63f0dac43e44738a6d5f85e638ada.1428407537.git.jstancek@redhat.com>
+Message-ID: <20150430075108.GC479@rei.suse.de>
+References: <20150422125819.GB32110@rei>
+	<1429784431-14017-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<20150428141018.GA22688@rei>
+	<1430270054.7745.11.camel@G08JYZSD130126.localdomain>
+	<55417DFD.1040207@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <fcfdc0e76da63f0dac43e44738a6d5f85e638ada.1428407537.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] mtest06: pick a distant address to mmap at
+In-Reply-To: <55417DFD.1040207@huawei.com>
+Subject: Re: [LTP] [PATCH v3 1/2] testcases/lib/test.sh: Added ROD_SILENT()
+ and ROD()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,36 +29,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Cui Bixuan <cuibixuan@huawei.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Test expects, that either file is mmaped and read will
-> result in expected pattern or file is not mapped and
-> read will trigger SIGSEGV.
-> 
-> However there is also possibility that unrelated mmap,
-> (e.g. from pthread_exit or printf call chain) will pick the
-> same area between munmap/mmap calls for map_address, which
-> creates a race where data read from map_address are unexpected.
-> 
-> This patch makes a dummy mmap/munmap of large block to find
-> some distant location, where futher mmap calls are unlikely
-> to occur. Middle of this area is then used to mmap map_address.
+> > I update the repository and got the documentation. It looks good, and
+> > thank you very much.
+> > 
+> Maybe you can write the descriptive file such as tar/00_Descriptions.txt,
+> but I don't know if it's necessary.
 
-Acked and I suppose that this should be pushed to the git before the
-release.
+My opinion is that the less documentation is needed the better. Which
+means that one should write clean code and if possible avoid cryptic
+constructs and comment only parts that needs to be.
+
+In LTP we usually add a short description of the testcase in a comment
+at the start of the test source. Looking at the tar testcase, I would be
+better to move the description to the comment at the start of the
+tar_tests.sh. Having it in separate file is not good idea.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-Develop your own process in accordance with the BPMN 2 standard
-Learn Process modeling best practices with Bonita BPM through live exercises
-http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
