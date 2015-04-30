@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YnkJa-0002pd-2g
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:59:26 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YnkJY-0008Rx-Od
-	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:59:26 +0000
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 30 Apr 2015 16:58:06 +0800
-Message-ID: <1430384287-16073-3-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1430384287-16073-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <55418B02.3080104@huawei.com>
-	<1430384287-16073-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/3] commands/fileutils/mv: Remove 00_Descriptions.txt
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YnjbF-0005jx-8e
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:37 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YnjbC-0006Yb-Nq
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:37 +0000
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 30 Apr 2015 10:13:20 +0200
+Message-Id: <516719578ecd9dd8d68932ab2d6f6b7b00bd9bec.1430380932.git.jstancek@redhat.com>
+In-Reply-To: <cover.1430380932.git.jstancek@redhat.com>
+References: <cover.1430380932.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 4/4 v3] cpuhotplug04.sh: operate only with
+	hotpluggable CPUs
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,30 +24,118 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: cuibixuan@huawei.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-I do *not* think this file is necessary, So remove it.
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+If cpu0 is hotpluggable, then the last CPU may not be cpu0, and
+there is no reason to treat cpu0 as a special case.
+
+To make the test be more generic I'm proposing these changes:
+ * Operate (offline/online) only with hotpluggable CPUs, because
+   how can we enable/disable a CPU if there is no 'online' file?
+
+ * If all CPUs in the system are hotpluggable, then we expect that
+   the kernel will only refuse to offline the last CPU. And this
+   last CPU may not be cpu0.
+
+ * If only a part of CPUs in the system is hotpluggable, then we
+   should be able to offline all of them
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/commands/fileutils/mv/00_Descriptions.txt | 3 ---
- 1 file changed, 3 deletions(-)
- delete mode 100644 testcases/commands/fileutils/mv/00_Descriptions.txt
+ .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh | 52 +++++++++++++---------
+ 1 file changed, 30 insertions(+), 22 deletions(-)
 
-diff --git a/testcases/commands/fileutils/mv/00_Descriptions.txt b/testcases/commands/fileutils/mv/00_Descriptions.txt
-deleted file mode 100644
-index 6d52868..0000000
---- a/testcases/commands/fileutils/mv/00_Descriptions.txt
-+++ /dev/null
-@@ -1,3 +0,0 @@
--test01
--	mv <dir1> <dir2> will move dir1 to dir2 and all its contents.
--
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+index 3e025da..58a822e 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+@@ -48,42 +48,50 @@ done
+ 
+ LOOP_COUNT=1
+ 
+-get_cpus_num
+-if [ $? -lt 2 ]; then
++get_present_cpus_num
++cpus_num=$?
++if [ $cpus_num -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
++get_hotplug_cpus_num
++if [ $? -lt 1 ]; then
++	tst_brkm TCONF "system doesn't have at least one hotpluggable CPU"
++fi
++
+ TST_CLEANUP=do_clean
+ 
+ cpu_states=$(get_all_cpu_states)
+ 
+ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+-	cpu=0
+-	cpustate=1
+ 
+-	# Online all the CPUs
++	# Online all the hotpluggable CPUs
+ 	for i in $(get_hotplug_cpus); do
+-		if [ "$i" != "cpu0" ]; then
+-			if ! cpu_is_online $i; then
+-				if ! online_cpu $i; then
+-					tst_brkm TBROK "$i cannot be onlined"
+-				fi
+-			fi
+-			cpu=$((cpu+1))
+-			echo $i
+-		else
+-			if online_cpu $i; then
+-				cpustate=0
++		if ! cpu_is_online $i; then
++			if ! online_cpu $i; then
++				tst_brkm TBROK "$i can not be onlined"
+ 			fi
+ 		fi
+ 	done
+ 
+-	# Now offline all the CPUs
++	# Now offline them
++	cpu=0
+ 	for i in $(get_hotplug_cpus); do
+-		if ! offline_cpu $i; then
+-			if [ "x$i" != "xcpu0" ]; then
+-				tst_resm TFAIL "Did not offline first CPU (offlined $i instead)"
+-				tst_exit
++		cpu=$((cpu + 1))
++
++		# If all the CPUs are hotpluggable, we expect
++		# that the kernel will refuse to offline the last CPU.
++		# If only some of the CPUs are hotpluggable,
++		# they all can be offlined.
++		if [ $cpu -eq $cpus_num ]; then
++			if offline_cpu $i 2> /dev/null; then
++				tst_brkm TFAIL "Have we just offlined the last CPU?"
++			else
++				tst_resm TPASS "System prevented us from offlining the last CPU - $i"
++			fi
++		else
++			if ! offline_cpu $i; then
++				tst_brkm TFAIL "Could not offline $i"
+ 			fi
+ 		fi
+ 	done
+@@ -92,6 +100,6 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+ 
+ done
+ 
+-tst_resm TPASS "Successfully offlined first CPU, $i"
++tst_resm TPASS "Success"
+ 
+ tst_exit
 -- 
 1.8.3.1
 
