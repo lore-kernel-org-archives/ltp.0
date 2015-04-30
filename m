@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1YfJdt-00052l-OE
-	for ltp-list@lists.sourceforge.net; Tue, 07 Apr 2015 02:53:33 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YfJdp-0002VO-44
-	for ltp-list@lists.sourceforge.net; Tue, 07 Apr 2015 02:53:33 +0000
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Tue, 7 Apr 2015 02:51:11 +0000
-Message-ID: <1428375071-99253-1-git-send-email-cuibixuan@huawei.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YnkOW-0003Ex-Dk
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 09:04:32 +0000
+Date: Thu, 30 Apr 2015 11:03:57 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150430090357.GA23406@rei.suse.de>
+References: <782230467.5857849.1429883677704.JavaMail.zimbra@redhat.com>
+	<162165083.8714320.1430382121729.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATH] gzip/gzip_tests.sh: remove the tmp dir of test02
+Content-Disposition: inline
+In-Reply-To: <162165083.8714320.1430382121729.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] Coverity report for ltp-20150420
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,35 +25,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: , huawei.com.zhuyanpeng@huawei.com, zhanyongming@huawei.com.lijinyue
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list <ltp-list@lists.sf.net>
 
-To clean up when test02 finished of gzip_tests.sh.
----
- testcases/commands/gzip/gzip_tests.sh |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Hi!
+> >From what I have read, it should be possible to annotate code to make coverity
+> stop complaining. For example by adding following:
+>   /* coverity[EVENT_TAG_NAME] */
+> 
+> I'm not exactly clear where to get "event tag names" yet, as these seem to be
+> different from error names that appear in *.err logs.
+> 
+> Before I dig deeper into this, would anyone be opposed if we start adding
+> such annotation to LTP source?
 
-diff --git a/testcases/commands/gzip/gzip_tests.sh b/testcases/commands/gzip/gzip_tests.sh
-index 5f0725c..432f992 100755
---- a/testcases/commands/gzip/gzip_tests.sh
-+++ b/testcases/commands/gzip/gzip_tests.sh
-@@ -326,4 +326,6 @@ then
- 	TFAILCNT=$(($TFAILCNT+1))
- fi
- 
-+rm -fr $LTPTMP/tst_gzip.*
-+
- exit $TFAILCNT
+I'm OK with adding a few annotations to places where LTP does something
+that needs to be done and what is normally a bug. As far as I remember
+we have a few places that dereference NULL to cause segfault that
+produce false-possitive warnings as well.
+
+Looking at the BAD_FREE the munmap03.c is nice example of that. However
+most of the BAD_FREE, if I understant it correctly, are result of
+unmaping only part of the mmaped memory. That is not really bug, but I
+guess that I can live with annotations for these as well if you want
+them.
+
 -- 
-1.6.0.2
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-Develop your own process in accordance with the BPMN 2 standard
-Learn Process modeling best practices with Bonita BPM through live exercises
-http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
