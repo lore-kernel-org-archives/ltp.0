@@ -2,19 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1YigtF-0004Ru-5j
-	for ltp-list@lists.sourceforge.net; Thu, 16 Apr 2015 10:19:21 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YigtB-0005gF-2M
-	for ltp-list@lists.sourceforge.net; Thu, 16 Apr 2015 10:19:21 +0000
-Message-ID: <552F8C1D.9040806@huawei.com>
-Date: Thu, 16 Apr 2015 18:17:01 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
+	(envelope-from <metan@suse.de>) id 1YniPa-0002jg-3O
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 06:57:30 +0000
+Date: Thu, 30 Apr 2015 08:56:58 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150430065658.GA479@rei.suse.de>
+References: <1430295293-13106-1-git-send-email-zlang@redhat.com>
+	<20150429140938.GA19358@rei>
+	<1822683538.7446641.1430373748322.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-References: <1428375071-99253-1-git-send-email-cuibixuan@huawei.com>
-In-Reply-To: <1428375071-99253-1-git-send-email-cuibixuan@huawei.com>
-Subject: [LTP]  [PATH v2] gzip/gzip_tests.sh: Delete the tmp_dir of test02
+Content-Disposition: inline
+In-Reply-To: <1822683538.7446641.1430373748322.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] aiocp: modify segfault in dev_block_size_by_path
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,37 +26,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
+To: Zirong Lang <zlang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> Thanks. And I have another little question about debug ltp. When I hit this
+> segfault I got a core file, but that core without debug information.
+> So I tried to add "-g" for gcc and remove "-O2" option. I did that
+> job manually(deleted -O2 from every files contain it).
+> 
+> Is there some good configure or make options can be used to build a
+>  debug version ltp? Can you give me some steps to do that?
 
-Do clean up when test02 finished of gzip_tests.sh
+Hm, passing CFLAGS to configure should work as:
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
----
- testcases/commands/gzip/gzip_tests.sh |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+CFLAGS="-W -Wextra -O0 -ggdb" ./configure
 
-diff --git a/testcases/commands/gzip/gzip_tests.sh b/testcases/commands/gzip/gzip_tests.sh
-index 5f0725c..432f992 100755
---- a/testcases/commands/gzip/gzip_tests.sh
-+++ b/testcases/commands/gzip/gzip_tests.sh
-@@ -326,4 +326,6 @@ then
- 	TFAILCNT=$(($TFAILCNT+1))
- fi
+But looking at what we have in LTP there are OPT_CFLAGS and WCFLAGS
+which adds the -O2 and more. So at the moment you have to modify CFLAGS
+manually in the include/mk/config.mk.
 
-+rm -fr $LTPTMP/tst_gzip.*
-+
- exit $TFAILCNT
+Does anybody have an idea why the CFLAGS are split among three variables
+to optimizations and warnings? It does no make much sense to me. There
+is only one place in the source tree where these are redefined, I will
+check if that is really needed and possibly get rid of this mess. Is
+anybody opposed?
+
 -- 
-1.6.0.2
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-Develop your own process in accordance with the BPMN 2 standard
-Learn Process modeling best practices with Bonita BPM through live exercises
-http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
