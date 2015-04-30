@@ -2,22 +2,18 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gux.fnst@cn.fujitsu.com>) id 1YlU19-00016k-Td
-	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 03:11:03 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YlU18-0004ar-Ph
-	for ltp-list@lists.sourceforge.net; Fri, 24 Apr 2015 03:11:03 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t3O39f1d031033
-	for <ltp-list@lists.sourceforge.net>; Fri, 24 Apr 2015 11:09:42 +0800
-From: Xing Gu <gux.fnst@cn.fujitsu.com>
-Date: Fri, 24 Apr 2015 11:06:02 +0800
-Message-ID: <1429844769-7113-1-git-send-email-gux.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v5 1/8] kernel/power_management: fix no_of_cpus error
-	of change_govr.sh etc.
+	(envelope-from <jstancek@redhat.com>) id 1YnjbE-0005jp-8O
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:36 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YnjbC-0007hF-8h
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:36 +0000
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 30 Apr 2015 10:13:19 +0200
+Message-Id: <d54e39bf8ab3b7c337629bda279a3a5b1446bcdd.1430380932.git.jstancek@redhat.com>
+In-Reply-To: <cover.1430380932.git.jstancek@redhat.com>
+References: <cover.1430380932.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 3/4 v3] cpu_hotplug: use hotplug/present cpus functions
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,63 +23,186 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-The function "no_of_cpus" doesn't exist, which is used in change_freq.sh,
-change_govr.sh and check_cpufreq_sysfs_files.sh. Use "tst_ncpus" instead
-of "no_of_cpus".
+Also, make no special treatment for cpu0.
 
-Signed-off-by: Xing Gu <gux.fnst@cn.fujitsu.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/power_management/change_freq.sh               | 2 +-
- testcases/kernel/power_management/change_govr.sh               | 2 +-
- testcases/kernel/power_management/check_cpufreq_sysfs_files.sh | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ .../hotplug/cpu_hotplug/functional/cpuhotplug01.sh   |  6 +++---
+ .../hotplug/cpu_hotplug/functional/cpuhotplug02.sh   |  2 +-
+ .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh   | 20 +++++++-------------
+ .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh   |  4 ++--
+ .../hotplug/cpu_hotplug/functional/cpuhotplug05.sh   |  2 +-
+ .../hotplug/cpu_hotplug/functional/cpuhotplug06.sh   |  2 +-
+ .../hotplug/cpu_hotplug/functional/cpuhotplug07.sh   |  2 +-
+ 7 files changed, 16 insertions(+), 22 deletions(-)
 
-diff --git a/testcases/kernel/power_management/change_freq.sh b/testcases/kernel/power_management/change_freq.sh
-index 204e21f..3a971d2 100755
---- a/testcases/kernel/power_management/change_freq.sh
-+++ b/testcases/kernel/power_management/change_freq.sh
-@@ -5,7 +5,7 @@ available_freq=$(get_supporting_freq)
- available_govr=$(get_supporting_govr)
- RC=0
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+index 52598a9..8ae1379 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+@@ -111,7 +111,7 @@ LOOP_COUNT=1
  
--total_cpus=$(no_of_cpus)
-+total_cpus=$(tst_ncpus)
- (( total_cpus-=1 ))
+ tst_check_cmds perl
  
- if ( echo ${available_govr} | grep -i "userspace" 2>&1 >/dev/null ) ; then
-diff --git a/testcases/kernel/power_management/change_govr.sh b/testcases/kernel/power_management/change_govr.sh
-index 4c2546e..bfe6c5b 100755
---- a/testcases/kernel/power_management/change_govr.sh
-+++ b/testcases/kernel/power_management/change_govr.sh
-@@ -3,7 +3,7 @@
- . pm_include.sh
- available_govr=$(get_supporting_govr)
+-get_cpus_num
++get_present_cpus_num
+ if [ $? -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+@@ -148,7 +148,7 @@ do
+ 	IRQ_START=$(cat /proc/interrupts)
  
--total_cpus=$(no_of_cpus)
-+total_cpus=$(tst_ncpus)
- (( total_cpus-=1 ))
- RC=0
+ 	# Attempt to offline all CPUs
+-	for cpu in $( get_all_cpus ); do
++	for cpu in $( get_hotplug_cpus ); do
+ 		if [ "$cpu" = "cpu0" ]; then
+ 			continue
+ 		fi
+@@ -163,7 +163,7 @@ do
+ 	done
  
-diff --git a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh b/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
-index cb51aa0..dcf8a1d 100755
---- a/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
-+++ b/testcases/kernel/power_management/check_cpufreq_sysfs_files.sh
-@@ -2,7 +2,7 @@
+ 	# Attempt to online all CPUs
+-	for cpu in $( get_all_cpus ); do
++	for cpu in $( get_hotplug_cpus ); do
+ 		if [ "$cpu" = "cpu0" ]; then
+ 			continue
+ 		fi
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+index 3b33720..c42cc1b 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+@@ -54,7 +54,7 @@ done
  
- . pm_include.sh
+ LOOP_COUNT=1
  
--total_cpus=$(no_of_cpus)
-+total_cpus=$(tst_ncpus)
- (( total_cpus-=1 ))
- RC=0
+-get_cpus_num
++get_present_cpus_num
+ if [ $? -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+index 817f066..3469b10 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+@@ -63,8 +63,9 @@ done
  
+ LOOP_COUNT=1
+ 
+-get_cpus_num
+-if [ $? -lt 2 ]; then
++get_present_cpus_num
++cpus_num=$?
++if [ $cpus_num -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
+@@ -82,21 +83,14 @@ TST_CLEANUP=do_clean
+ cpu_states=$(get_all_cpu_states)
+ 
+ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
+-	cpu=0
+-	number_of_cpus=0
+ 
+ 	# Turns on all CPUs
+-	for i in $( get_all_cpus ); do
+-            if [ "$i" = "cpu0" ]; then
+-                continue
+-            fi
++	for i in $( get_hotplug_cpus ); do
+             if ! cpu_is_online $i; then
+ 				if ! online_cpu $i; then
+                     tst_brkm TBROK "Could not online cpu $i"
+                 fi
+-				cpu=$((cpu+1))
+             fi
+-		number_of_cpus=$((number_of_cpus+1))
+ 	done
+ 
+ 	if ! offline_cpu ${CPU_TO_TEST} ; then
+@@ -107,11 +101,11 @@ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
+ 	# CPUs we have.  This is to help ensure we've got enough processes
+ 	# that at least one will migrate to the new CPU.  Store the PIDs
+ 	# so we can kill them later.
+-	number_of_cpus=$((number_of_cpus*2))
+-	until [ $number_of_cpus -eq 0 ]; do
++	number_of_procs=$((cpus_num*2))
++	until [ $number_of_procs -eq 0 ]; do
+ 		cpuhotplug_do_spin_loop > /dev/null 2>&1 &
+ 		echo $! >> /var/run/hotplug4_$$.pid
+-		number_of_cpus=$((number_of_cpus-1))
++		number_of_procs=$((number_of_procs-1))
+ 	done
+ 
+ 	ps aux | head -n 1
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+index ea2723b..3e025da 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+@@ -62,7 +62,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+ 	cpustate=1
+ 
+ 	# Online all the CPUs
+-	for i in $(get_all_cpus); do
++	for i in $(get_hotplug_cpus); do
+ 		if [ "$i" != "cpu0" ]; then
+ 			if ! cpu_is_online $i; then
+ 				if ! online_cpu $i; then
+@@ -79,7 +79,7 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+ 	done
+ 
+ 	# Now offline all the CPUs
+-	for i in $(get_all_cpus); do
++	for i in $(get_hotplug_cpus); do
+ 		if ! offline_cpu $i; then
+ 			if [ "x$i" != "xcpu0" ]; then
+ 				tst_resm TFAIL "Did not offline first CPU (offlined $i instead)"
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+index bb0e896..79f7e90 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+@@ -54,7 +54,7 @@ LOOP_COUNT=1
+ 
+ tst_check_cmds sar
+ 
+-get_cpus_num
++get_present_cpus_num
+ if [ $? -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+index 2e48242..6710fad 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+@@ -49,7 +49,7 @@ done
+ 
+ LOOP_COUNT=1
+ 
+-get_cpus_num
++get_present_cpus_num
+ if [ $? -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+index 723f3de..7edb3a9 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+@@ -55,7 +55,7 @@ done
+ 
+ LOOP_COUNT=1
+ 
+-get_cpus_num
++get_present_cpus_num
+ if [ $? -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
 -- 
-1.9.3
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
