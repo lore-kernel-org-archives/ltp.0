@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1YkUN4-0003FD-Bb
-	for ltp-list@lists.sourceforge.net; Tue, 21 Apr 2015 09:21:34 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YkUMz-0006t6-0W
-	for ltp-list@lists.sourceforge.net; Tue, 21 Apr 2015 09:21:34 +0000
-Message-ID: <5536168E.8000604@oracle.com>
-Date: Tue, 21 Apr 2015 12:21:18 +0300
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-References: <1424800340-10357-1-git-send-email-mmarhefk@redhat.com>	<1424955461-21111-1-git-send-email-mmarhefk@redhat.com>	<909321360.19304114.1424956944232.JavaMail.zimbra@redhat.com>
-	<725550533.1886644.1429525732892.JavaMail.zimbra@redhat.com>
-In-Reply-To: <725550533.1886644.1429525732892.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH v2] containers: semctl replaced with semop in
-	sysvipc/sem_comm.c
+	(envelope-from <jstancek@redhat.com>) id 1YnjbC-0007ZJ-HE
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:34 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YnjbA-0007h5-Sa
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:34 +0000
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 30 Apr 2015 10:13:17 +0200
+Message-Id: <23de225e48f8f9817e6f2821dc5e207d76f06b1e.1430380932.git.jstancek@redhat.com>
+In-Reply-To: <cover.1430380932.git.jstancek@redhat.com>
+References: <cover.1430380932.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 1/4 v3] cpuhotplug: use cpu states in cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,164 +23,209 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>, Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi.
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-On 04/20/2015 01:28 PM, Matus Marhefka wrote:
-> Hi,
->
-> please consider pushing this reviewed patch.
->
-> Thanks,
-> Matus Marhefka
->
->
-> ----- Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
-> To: "Matus Marhefka" <mmarhefk@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Thursday, February 26, 2015 2:22:24 PM
-> Subject: Re: [LTP] [PATCH v2] containers: semctl replaced with semop in	sysvipc/sem_comm.c
->
->
->
->
->
-> ----- Original Message -----
->> From: "Matus Marhefka" <mmarhefk@redhat.com>
->> To: ltp-list@lists.sourceforge.net
->> Sent: Thursday, 26 February, 2015 1:57:41 PM
->> Subject: [LTP] [PATCH v2] containers: semctl replaced with semop in	sysvipc/sem_comm.c
->>
->> semctl call replaced with semop call for setting up semaphores initial
->> values because semctl needs non-standard type (not in sys/sem.h).
+There is a couple of good functions:
+ * get_all_cpu_states
+ * set_all_cpu_states
+which can help to avoid unnecessary cleanup logic in test cases.
 
-Emm, when I was preparing patches:
+So let's use them.
 
-b681672752634a70ba1bd6b1c6b5ae2967ac13e5 ("Keep the definition of union 
-semun in one place")
-586b51bf334b189d3e48760676ffeb39ce2a4371 ("sem_comm: pass a semun union 
-to semctl()")
+Also modified offline_cpu and online_cpu, so now they do nothing if
+the cpu is already in the desired state.
 
-I overlooked your patch. Sorry.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
+---
+ .../hotplug/cpu_hotplug/functional/cpuhotplug01.sh     | 11 ++++-------
+ .../hotplug/cpu_hotplug/functional/cpuhotplug03.sh     | 12 +++++-------
+ .../hotplug/cpu_hotplug/functional/cpuhotplug04.sh     | 18 +++++-------------
+ .../hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh  | 16 ++++++++++------
+ 4 files changed, 24 insertions(+), 33 deletions(-)
 
-It seems the above patches fixes what you were trying to fix with your 
-patch, and so it became redundant.
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+index f91cf88..52598a9 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+@@ -45,13 +45,8 @@ do_clean()
+ {
+ 	kill_pid ${WRL_ID}
+ 
+-	# Turns off the cpus that were off before the test start
+-	until [ $CPU_COUNT -eq 0 ]; do
+-		offline_cpu=$(eval "echo \$OFFLINE_CPU_${CPU_COUNT}")
+-		tst_resm TINFO "CPU = $CPU_COUNT @on = $offline_cpu"
+-		offline_cpu $offline_cpu
+-		CPU_COUNT=$((CPU_COUNT-1))
+-	done
++	# Restore CPU states
++	set_all_cpu_states "$cpu_states"
+ }
+ 
+ 
+@@ -138,6 +133,8 @@ fi
+ 
+ TST_CLEANUP=do_clean
+ 
++cpu_states=$(get_all_cpu_states)
++
+ CPU_COUNT=0
+ 
+ # Start up a process that writes to disk; keep track of its PID
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+index 8176fb3..817f066 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+@@ -46,11 +46,8 @@ do_clean()
+ 		rm /var/run/hotplug4_$$.pid
+ 	fi
+ 
+-	# Turn off the CPUs that were off before the test start
+-	until [ $cpu -eq 0 ];do
+-		offline_cpu $(eval "echo \$on_${cpu}")
+-		cpu=$((cpu-1))
+-	done
++	# Restore CPU states
++	set_all_cpu_states "$cpu_states"
+ }
+ 
+ while getopts c:l: OPTION; do
+@@ -82,11 +79,13 @@ fi
+ 
+ TST_CLEANUP=do_clean
+ 
++cpu_states=$(get_all_cpu_states)
++
+ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
+ 	cpu=0
+ 	number_of_cpus=0
+ 
+-	# Turns on all CPUs and saves their states
++	# Turns on all CPUs
+ 	for i in $( get_all_cpus ); do
+             if [ "$i" = "cpu0" ]; then
+                 continue
+@@ -96,7 +95,6 @@ until [ $LOOP_COUNT -gt $HOTPLUG03_LOOPS ]; do
+                     tst_brkm TBROK "Could not online cpu $i"
+                 fi
+ 				cpu=$((cpu+1))
+-                eval "on_${cpu}=$i"
+             fi
+ 		number_of_cpus=$((number_of_cpus+1))
+ 	done
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+index 72fbc6e..ea2723b 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+@@ -33,17 +33,8 @@ EOF
+ do_clean()
+ {
+ 	# Online the ones that were on initially
+-	until [ $cpu -eq 0 ]; do
+-		online_cpu $(eval "echo \$on_${cpu}")
+-		cpu=$((cpu-1))
+-	done
+-
+-	# Return CPU 0 to its initial state
+-	if [ $cpustate = 1 ]; then
+-		online_cpu 0
+-	else
+-		offline_cpu 0
+-	fi
++	# Restore CPU states
++	set_all_cpu_states "$cpu_states"
+ }
+ 
+ while getopts l: OPTION; do
+@@ -64,11 +55,13 @@ fi
+ 
+ TST_CLEANUP=do_clean
+ 
++cpu_states=$(get_all_cpu_states)
++
+ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+ 	cpu=0
+ 	cpustate=1
+ 
+-	# Online all the CPUs' keep track of which were already on
++	# Online all the CPUs
+ 	for i in $(get_all_cpus); do
+ 		if [ "$i" != "cpu0" ]; then
+ 			if ! cpu_is_online $i; then
+@@ -77,7 +70,6 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
+ 				fi
+ 			fi
+ 			cpu=$((cpu+1))
+-			eval "on_${cpu}=$i"
+ 			echo $i
+ 		else
+ 			if online_cpu $i; then
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+index dd8472f..f553d0c 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+@@ -73,6 +73,9 @@ online_cpu()
+     if [ ! -w /sys/devices/system/cpu/cpu${CPU}/online ]; then
+         return 1
+     fi
++
++    cpu_is_online ${CPU} && return 0
++
+     $TIME echo 1 > /sys/devices/system/cpu/cpu${CPU}/online
+     RC=$?
+     report_timing "Online cpu ${CPU}"
+@@ -91,6 +94,9 @@ offline_cpu()
+     if [ ! -w /sys/devices/system/cpu/cpu${CPU}/online ]; then
+         return 1
+     fi
++
++    ! cpu_is_online ${CPU} && return 0
++
+     $TIME echo 0 > /sys/devices/system/cpu/cpu${CPU}/online
+     RC=$?
+     report_timing "Offline cpu ${CPU}"
+@@ -141,20 +147,18 @@ get_all_cpu_states()
+ 
+ # set_all_cpu_states(STATES)
+ #
+-#  Sets all of the CPU states according to $STATE, which must be
++#  Sets all of the CPU states according to STATES, which must be
+ #  of the form "cpuX:Y", where X is the CPU number and Y its state.
+ #  Each must be on a separate line.
+ #
+ set_all_cpu_states()
+ {
+-    for cpu_state in $STATE; do
+-        cpu=`echo $c | cut -d: -f 1`
+-        state=`echo $c | cut -d: -f 1`
++    for cpu_state in $1; do
++        cpu=`echo $cpu_state | cut -d: -f 1`
++        state=`echo $cpu_state | cut -d: -f 2`
+         if [ $state = 1 ]; then
+-            echo "# Re-onlining $cpu"
+             online_cpu $cpu
+         else
+-            echo "# Re-offlining $cpu"
+             offline_cpu $cpu
+         fi
+     done
+-- 
+1.8.3.1
 
-Do you agree?
-
-Sorry again.
-
-
->>
->> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
->
-> Looks good to me.
-> Reviewed-by: Jan Stancek <jstancek@redhat.com>
->
-> Regards,
-> Jan
->
->> ---
->>   testcases/kernel/containers/sysvipc/sem_comm.c | 24 ++++++++++++++----------
->>   1 file changed, 14 insertions(+), 10 deletions(-)
->>
->> diff --git a/testcases/kernel/containers/sysvipc/sem_comm.c
->> b/testcases/kernel/containers/sysvipc/sem_comm.c
->> index b44be6d..fba6767 100644
->> --- a/testcases/kernel/containers/sysvipc/sem_comm.c
->> +++ b/testcases/kernel/containers/sysvipc/sem_comm.c
->> @@ -59,14 +59,17 @@ int chld1_sem(void *arg)
->>   	int id;
->>   	struct sembuf sm;
->>
->> -	id = semget(TESTKEY, 1, IPC_CREAT);
->> +	id = semget(TESTKEY, 1, IPC_CREAT|S_IRUSR|S_IWUSR|IPC_EXCL);
->>   	if (id == -1) {
->>   		perror("semget");
->>   		return 2;
->>   	}
->>
->> -	if (semctl(id, 0, SETVAL, 1) == -1) {
->> -		perror("semctl");
->> +	sm.sem_num = 0;
->> +	sm.sem_op = 1;
->> +	sm.sem_flg = IPC_NOWAIT;
->> +	if (semop(id, &sm, 1) == -1) {
->> +		perror("semop");
->>   		semctl(id, 0, IPC_RMID);
->>   		return 2;
->>   	}
->> @@ -74,9 +77,7 @@ int chld1_sem(void *arg)
->>   	/* tell child2 to continue and wait for it to create the semaphore */
->>   	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
->>
->> -	sm.sem_num = 0;
->>   	sm.sem_op = -1;
->> -	sm.sem_flg = IPC_NOWAIT;
->>   	if (semop(id, &sm, 1) == -1) {
->>   		perror("semop");
->>   		semctl(id, 0, IPC_RMID);
->> @@ -101,14 +102,19 @@ int chld2_sem(void *arg)
->>   	/* wait for child1 to create the semaphore */
->>   	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
->>
->> -	id = semget(TESTKEY, 1, IPC_CREAT);
->> +	/* IPC_EXCL is excluded because we do not want semget call to fail
->> +	 * if namespaces logic doesn't work correctly */
->> +	id = semget(TESTKEY, 1, IPC_CREAT|S_IRUSR|S_IWUSR);
->>   	if (id == -1) {
->>   		perror("semget");
->>   		return 2;
->>   	}
->>
->> -	if (semctl(id, 0, SETVAL, 1) == -1) {
->> -		perror("semctl");
->> +	sm.sem_num = 0;
->> +	sm.sem_op = 1;
->> +	sm.sem_flg = IPC_NOWAIT;
->> +	if (semop(id, &sm, 1) == -1) {
->> +		perror("semop");
->>   		semctl(id, 0, IPC_RMID);
->>   		return 2;
->>   	}
->> @@ -116,9 +122,7 @@ int chld2_sem(void *arg)
->>   	/* tell child1 to continue and wait for it to lock the semaphore */
->>   	TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(NULL, 0);
->>
->> -	sm.sem_num = 0;
->>   	sm.sem_op = -1;
->> -	sm.sem_flg = IPC_NOWAIT;
->>   	if (semop(id, &sm, 1) == -1) {
->>   		if (errno == EAGAIN) {
->>   			rval = 1;
->> --
->> 1.8.3.1
->>
->
-> ------------------------------------------------------------------------------
-> BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-> Develop your own process in accordance with the BPMN 2 standard
-> Learn Process modeling best practices with Bonita BPM through live exercises
-> http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-> source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
 
 ------------------------------------------------------------------------------
-BPM Camp - Free Virtual Workshop May 6th at 10am PDT/1PM EDT
-Develop your own process in accordance with the BPMN 2 standard
-Learn Process modeling best practices with Bonita BPM through live exercises
-http://www.bonitasoft.com/be-part-of-it/events/bpm-camp-virtual- event?utm_
-source=Sourceforge_BPM_Camp_5_6_15&utm_medium=email&utm_campaign=VA_SF
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
