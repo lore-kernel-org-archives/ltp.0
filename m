@@ -1,30 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Yn4ER-0003n7-7o
-	for ltp-list@lists.sourceforge.net; Tue, 28 Apr 2015 12:03:19 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YnjbC-0005jc-Ad
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:34 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Yn4EM-0001ca-K6
-	for ltp-list@lists.sourceforge.net; Tue, 28 Apr 2015 12:03:19 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id t3SC37ZC012662
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 Apr 2015 08:03:07 -0400
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id t3SC35Ma005739
-	for <ltp-list@lists.sourceforge.net>; Tue, 28 Apr 2015 08:03:07 -0400
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YnjbB-0001Qc-HF
+	for ltp-list@lists.sourceforge.net; Thu, 30 Apr 2015 08:13:34 +0000
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 28 Apr 2015 14:02:57 +0200
-Message-Id: <6ba415ae6a98d8c0753cff24aac94dccc7ae0e61.1430222251.git.jstancek@redhat.com>
-In-Reply-To: <ae191066422a60089392e92dc3bbf79b7051005c.1430222251.git.jstancek@redhat.com>
-References: <ae191066422a60089392e92dc3bbf79b7051005c.1430222251.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH 2/2] cpuhotplug04: check that all but last CPU can be
-	offlined
+Date: Thu, 30 Apr 2015 10:13:18 +0200
+Message-Id: <62582378d072a7154607bdb97ee95319e30f2fb0.1430380932.git.jstancek@redhat.com>
+In-Reply-To: <cover.1430380932.git.jstancek@redhat.com>
+References: <cover.1430380932.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH 2/4 v3] cpu_hotplug: add get_hotplug_cpus,
+	get_present_cpus
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -40,49 +30,100 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-This testcase check looks wrong. Failing to offline CPU X
-does not mean that it failed to offline CPU 0.
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 
-Change the condition to check, that all but last CPU can
-be offlined.
-
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh   | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ .../cpu_hotplug/include/cpuhotplug_hotplug.sh      | 73 +++++++++++++++++++++-
+ 1 file changed, 70 insertions(+), 3 deletions(-)
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-index 6c9bb30..4fc6399 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-@@ -87,19 +87,22 @@ until [ $LOOP_COUNT -gt $HOTPLUG04_LOOPS ]; do
- 	done
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+index f553d0c..6920393 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+@@ -126,11 +126,78 @@ get_cpus_num()
+ #
+ get_all_cpus()
+ {
+-    [ -d /sys/devices/system/cpu/cpu0 ] || return 1
+-    ls -dr /sys/devices/system/cpu/cpu[0-9]* | \
+-        sed "s/\/sys\/devices\/system\/cpu\///g" || return 2
++    [ -d /sys/devices/system/cpu ] || return 1
++    (cd /sys/devices/system/cpu; ls -d cpu[0-9]*)
+ }
  
- 	# Now offline all the CPUs
-+	failed_to_offline=0
- 	for i in $(get_present_cpus); do
- 		if ! offline_cpu $i; then
--			if [ "x$i" != "xcpu0" ]; then
--				tst_resm TFAIL "Did not offline first CPU (offlined $i instead)"
--				tst_exit
--			fi
-+			tst_resm TINFO "Failed to offline $i"
-+			failed_to_offline=$((failed_to_offline + 1))
- 		fi
- 	done
-+	if [ "$failed_to_offline" -gt 1 ]; then
-+		tst_resm TFAIL "$failed_to_offline CPUs failed to offline"
-+		tst_exit
++# get_present_cpus()
++#
++#  Prints a list of present CPUs, regardless of whether they're
++#  currently online or offline.
++#
++get_present_cpus()
++{
++    local present_mask="/sys/devices/system/cpu/present"
++    local present_cpus=""
++
++    # if sysfs present mask is missing, assume all cpu are present
++    if [ ! -e "$present_mask" ]; then
++        get_all_cpus
++        return
++    fi
++
++    for part in $(cat $present_mask | tr "," " "); do
++        if echo $part | grep -q "-"; then
++            range_low=$(echo $part | cut -d - -f 1)
++            range_high=$(echo $part | cut -d - -f 2)
++        else
++            range_low=$(part)
++            range_high=$(part)
++        fi
++        for cpu in $(seq $range_low $range_high); do
++            if [ -e /sys/devices/system/cpu/cpu$cpu ]; then
++                present_cpus="$present_cpus cpu$cpu"
++            fi
++        done
++    done
++    echo $present_cpus
++}
++
++# get_present_cpus_num()
++#
++#  Prints the number of present CPUs
++#
++get_present_cpus_num()
++{
++    return $(get_present_cpus | wc -w)
++}
++
++# get_hotplug_cpus()
++#
++#  Prints a list of present hotpluggable CPUs, regardless of whether they're
++#  currently online or offline.
++#
++get_hotplug_cpus()
++{
++    local present_cpus=$(get_present_cpus)
++    local hotplug_cpus=""
++
++    for cpu in $present_cpus; do
++        if [ -e /sys/devices/system/cpu/$cpu/online ]; then
++            hotplug_cpus="$hotplug_cpus $cpu"
 +	fi
++    done
++    echo $hotplug_cpus
++}
++
++# get_hotplug_cpus_num()
++#
++#  Prints the number of hotpluggable CPUs
++#
++get_hotplug_cpus_num()
++{
++    return $(get_hotplug_cpus | wc -w)
++}
  
- 	LOOP_COUNT=$((LOOP_COUNT+1))
- 
- done
- 
--tst_resm TPASS "Successfully offlined first CPU, $i"
-+tst_resm TPASS "Successfully offlined all but last CPU"
- 
- tst_exit
+ # get_all_cpu_states()
+ #
 -- 
 1.8.3.1
 
