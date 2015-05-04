@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1YqC69-00010z-33
-	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 03:03:41 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YqC67-0003Ne-6E
-	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 03:03:41 +0000
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Thu, 7 May 2015 10:54:45 +0800
-Message-ID: <1430967285-15095-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YpEfh-0006Dc-Tb
+	for ltp-list@lists.sourceforge.net; Mon, 04 May 2015 11:36:25 +0000
+Date: Mon, 4 May 2015 13:35:48 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150504113545.GA7674@rei.suse.de>
+References: <1427771764-22918-1-git-send-email-cuibixuan@huawei.com>
+	<20150401143314.GA23093@rei> <551CB5CD.5030903@huawei.com>
+	<20150402083344.GA27984@rei> <552D112E.4040104@huawei.com>
+	<20150422140630.GB32660@rei> <55399C8E.40608@huawei.com>
+	<20150428123928.GA22189@rei> <55402B94.9010407@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] device-drivers/zram: add kernel version check
+Content-Disposition: inline
+In-Reply-To: <55402B94.9010407@huawei.com>
+Subject: Re: [LTP] [PATCH v6 2/2] syscalls/utimensat01: "chattr" command
+	error
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,77 +29,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-zram device attributes max_comp_streams and comp_algorithm are introduced
-since kernel v3.15, and mem_limit is introduced since kernel v3.18, we
-need to add these check.
+Hi!
+Pushed, thanks.
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- testcases/kernel/device-drivers/zram/zram_lib.sh | 32 +++++++++++++++++++++---
- 1 file changed, 29 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-index e41d8c7..d3e62e0 100755
---- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-+++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-@@ -62,7 +62,15 @@ zram_load()
- 
- zram_max_streams()
- {
--	tst_resm TINFO "set max_comp_streams to zram device(s)"
-+	tst_kvercmp 3 15 0
-+	if [ $? -eq 0 ]; then
-+		tst_resm TCONF "device attribute max_comp_streams is"\
-+			"introduced since kernel v3.15, the running kernel"\
-+			"does not support it"
-+		return
-+	else
-+		tst_resm TINFO "set max_comp_streams to zram device(s)"
-+	fi
- 
- 	local i=0
- 	for max_s in $zram_max_streams; do
-@@ -83,7 +91,16 @@ zram_max_streams()
- 
- zram_compress_alg()
- {
--	tst_resm TINFO "test that we can set compression algorithm"
-+	tst_kvercmp 3 15 0
-+	if [ $? -eq 0 ]; then
-+		tst_resm TCONF "device attribute comp_algorithm is"\
-+			"introduced since kernel v3.15, the running kernel"\
-+			"does not support it"
-+		return
-+	else
-+		tst_resm TINFO "test that we can set compression algorithm"
-+	fi
-+
- 	local algs=$(cat /sys/block/zram0/comp_algorithm)
- 	tst_resm TINFO "supported algs: $algs"
- 	local i=0
-@@ -116,7 +133,16 @@ zram_set_disksizes()
- 
- zram_set_memlimit()
- {
--	tst_resm TINFO "set memory limit to zram device(s)"
-+	tst_kvercmp 3 18 0
-+	if [ $? -eq 0 ]; then
-+		tst_resm TCONF "device attribute mem_limit is"\
-+			"introduced since kernel v3.18, the running kernel"\
-+			"does not support it"
-+		return
-+	else
-+		tst_resm TINFO "set memory limit to zram device(s)"
-+	fi
-+
- 	local i=0
- 	for ds in $zram_mem_limits; do
- 		local sys_path="/sys/block/zram${i}/mem_limit"
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
