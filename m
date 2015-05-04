@@ -1,17 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YpGWC-0002T6-32
-	for ltp-list@lists.sourceforge.net; Mon, 04 May 2015 13:34:44 +0000
-Date: Mon, 4 May 2015 15:34:11 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YpHgo-0000Q1-33
+	for ltp-list@lists.sourceforge.net; Mon, 04 May 2015 14:49:46 +0000
+Date: Mon, 4 May 2015 16:49:11 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150504133335.GA11354@rei.suse.de>
-References: <1428375071-99253-1-git-send-email-cuibixuan@huawei.com>
+Message-ID: <20150504144911.GC12401@rei.suse.de>
+References: <1429840001-4970-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	<1429840001-4970-5-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1428375071-99253-1-git-send-email-cuibixuan@huawei.com>
-Subject: Re: [LTP] [PATH] gzip/gzip_tests.sh: remove the tmp dir of test02
+In-Reply-To: <1429840001-4970-5-git-send-email-weijg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 5/5] network/sockets/ltpClient: close fd to avoid
+ leak
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,15 +26,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, huawei.com.zhuyanpeng@huawei.com
+To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Pushed, thanks.
-
-Side note, the test should be fixed to use tst_tmpdir() and tst_resm()
-to return correct exit status at the end. As it is if both tests fail it
-will return 2 (TBROK) instead of 1 (TFAIL).
+And the rest is applied as well, thanks.
 
 -- 
 Cyril Hrubis
