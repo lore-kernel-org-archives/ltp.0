@@ -1,29 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YvFFF-0001aS-P2
-	for ltp-list@lists.sourceforge.net; Thu, 21 May 2015 01:25:57 +0000
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Yptje-0002p3-9n
+	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 07:27:14 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YvFFE-0004KW-MK
-	for ltp-list@lists.sourceforge.net; Thu, 21 May 2015 01:25:57 +0000
-Message-ID: <1432171597.16347.53.camel@G08FNSTD140232>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 21 May 2015 09:26:37 +0800
-In-Reply-To: <1089771258.2559286.1432121544985.JavaMail.zimbra@redhat.com>
-References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
-	<1431944048.27486.14.camel@G08FNSTD140232>
-	<5559F134.7040705@oracle.com>
-	<1432025422.16347.6.camel@G08FNSTD140232>
-	<1273450911.1653813.1432034294768.JavaMail.zimbra@redhat.com>
-	<1432086442.16347.24.camel@G08FNSTD140232>
-	<1312891014.2427183.1432104744478.JavaMail.zimbra@redhat.com>
-	<1432115881.16347.41.camel@G08FNSTD140232>
-	<1089771258.2559286.1432121544985.JavaMail.zimbra@redhat.com>
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Yptjb-0006uT-Nh
+	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 07:27:14 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t467Pnnj004589
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 15:25:49 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 6 May 2015 15:26:14 +0800
+Message-ID: <1430897176-16486-3-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not
- supported
+Subject: [LTP] [PATCH 3/5] kernel/mem/hugetlb/lib: Don't allocate memory for
+	getpwnam()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,73 +32,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-On Wed, 2015-05-20 at 07:32 -0400, Jan Stancek wrote:
+It requests to declare a pointer to for getpwnam() returns,
+not to allocate memory for it.
+This patch does the same as 2c0c4b3.
 
-[...]
-> > > > How about put them before lseek(SEEK_HOLE) ?
-> > > 
-> > > I think we should do the check on all kernels. lseek() can only check that
-> > > the
-> > > hole exists, but current check also verifies that hole has correct size and
-> > > content.
-> > > 
-> > 
-> > Right. It is the strict way we need to do. But it would make the test
-> > complex.
-> 
-> I think we already check it strictly, see line 172-177. This covers blocks 1,2,3.
-> The patch you proposed _adds_ one more check only for zero-ed block 2.
-> My objection was that this seems redundant, because we already have
-> a check (line 172-177), which covers all 3 blocks. Am I missing something?
-> 
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/mem/hugetlb/lib/libipc.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-Oh, I see. I misunderstand your reply previous. Right, the patch is
-redundant.
-Thank you.
-
-> > Now, "turn that warning into TINFO" looks simple but effective.
-> > If nobody reject, I will send new patch like:
-> 
-> Looks OK to me, though maybe it should TBROK on kernels > 3.1 even when
-> errno is EINVAL.
-
-OK. I will fix it at the same time.
-
-Thanks.
-
-Best regards,
-Zeng
-
-> 
-> Regards,
-> Jan
-> 
-> > 
-> > -               tst_resm(TWARN | TERRNO, "lseek() doesn't support
-> > SEEK_HOLE");
-> > +               if (tst_kvercmp(3, 1, 0) < 0)
-> > +                       tst_resm(TINFO, "lseek() doesn't support SEEK_HOLE, "
-> > +                               "this is expected for < 3.1 kernels");
-> > +       } else {
-> > +               tst_resm(TINFO, "found a hole at '%ld' offset", ret);
-> >         }
-> > -       tst_resm(TINFO, "found a hole at '%ld' offset", ret);
-> > 
-> > Thank you.
-> > 
-> > Best regards,
-> > Zeng
-> > 
-> > 
-> > > Regards,
-> > > Jan
-> > [...]
-> > 
-> > 
-
+diff --git a/testcases/kernel/mem/hugetlb/lib/libipc.c b/testcases/kernel/mem/hugetlb/lib/libipc.c
+index 21fd8da..cfcde6b 100644
+--- a/testcases/kernel/mem/hugetlb/lib/libipc.c
++++ b/testcases/kernel/mem/hugetlb/lib/libipc.c
+@@ -83,11 +83,7 @@ int getipckey(void)
+  */
+ int getuserid(char *user)
+ {
+-	struct passwd *ent;
+-
+-	ent = malloc(sizeof(struct passwd));
+-	if (ent == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup, "malloc ent");
++	struct passwd *ent = NULL;
+ 
+ 	ent = getpwnam(user);
+ 	if (ent == NULL)
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
