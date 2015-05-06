@@ -1,22 +1,40 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Yq6A1-0001b9-WD
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 20:43:18 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Yq6A1-0001I4-0M
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 20:43:17 +0000
-Message-ID: <554A7CCB.5030601@oracle.com>
-Date: Wed, 06 May 2015 23:42:51 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <ramya@linux.vnet.ibm.com>) id 1YpxGj-0005Rx-Mm
+	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 11:13:37 +0000
+Received: from e28smtp06.in.ibm.com ([122.248.162.6])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YpxGi-0007pA-6c
+	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 11:13:37 +0000
+Received: from /spool/local
+	by e28smtp06.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <ramya@linux.vnet.ibm.com>;
+	Wed, 6 May 2015 16:43:27 +0530
+Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
+	by d28dlp02.in.ibm.com (Postfix) with ESMTP id 357B63940048
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  6 May 2015 16:43:25 +0530 (IST)
+Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
+	by d28relay01.in.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	t46BDLJx35782726
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 16:43:21 +0530
+Received: from d28av05.in.ibm.com (localhost [127.0.0.1])
+	by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	t46BDLH1002800
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 16:43:21 +0530
+Received: from [9.124.158.31] (ramya.in.ibm.com [9.124.158.31])
+	by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	t46BDLXe002792
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 16:43:21 +0530
+Message-ID: <5549F751.3070503@linux.vnet.ibm.com>
+Date: Wed, 06 May 2015 16:43:21 +0530
+From: Ramya <ramya@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <1430907502-30493-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<1430907502-30493-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1430907502-30493-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/3] kernel/syscalls/fallocate: specify size needs
- check
+Subject: [LTP] test_fs_bind.sh testcase fails to clean up files which it had
+ created during the first run .
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,82 +47,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi,
-On 05/06/2015 01:18 PM, Wei,Jiangang wrote:
-> Compare size_t size elements with file data and check
-> if it's excpeted.
-> This patch depends on bff5968.
->
-> Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
-> ---
->   testcases/kernel/syscalls/fallocate/fallocate04.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-> index a6d1159..2da0bcd 100644
-> --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-> +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-> @@ -174,7 +174,7 @@ static void test02(void)
->   	fill_tst_buf(exp_buf);
->   	memset(exp_buf + block_size, 0, block_size);
->   
-> -	check_file_data(exp_buf);
-> +	check_file_data(exp_buf, sizeof(exp_buf)/sizeof(exp_buf[0]));
+Description:
+when we run the script for the first time, all the test will run 
+successfully and PASS .
+but on the same machine if we run the same script for the 2nd time we 
+see TBROK .
 
-Thank you for fixing it.
+TBROK was seen because the script was not cleaning the files it created 
+during the first run.
+so added TWARN "did not properly clean up files" and then removing the 
+files and continuing with the test .
 
-We could you use size variables already defined for 'exp_buf[buf_size]'.
+Signed-off-by: ramya BS <ramya@linux.vnet.ibm.com>
 
->   
->   	tst_resm(TPASS, "test-case succeeded");
->   }
-> @@ -214,7 +214,7 @@ static void test03(void)
->   	fill_tst_buf(exp_buf);
->   	memset(exp_buf + block_size - 1, 0, block_size + 2);
->   
-> -	check_file_data(exp_buf);
-> +	check_file_data(exp_buf, sizeof(exp_buf)/sizeof(exp_buf[0]));
->   
-
-Also buf_size variable here.
-
->   	tst_resm(TPASS, "test-case succeeded");
->   }
-> @@ -250,7 +250,7 @@ static void test04(void)
->   	memcpy(exp_buf, tmp_buf, block_size);
->   	memcpy(exp_buf + block_size, tmp_buf + size, block_size);
->   
-> -	check_file_data(exp_buf);
-> +	check_file_data(exp_buf, sizeof(exp_buf)/sizeof(exp_buf[0]));
->   
-
-'size' variable here.
->   	tst_resm(TPASS, "test-case succeeded");
->   }
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
 
-Now test04 fails because I forgot to set adjacent two bytes in 'exp_buf' 
-to zero in test04(), it could be fixed as follows:
+patch1
 
-@@ -250,8 +249,8 @@ static void test04(void)
+  testscripts/test_fs_bind.sh |    4 ++--
+  1 files changed, 2 insertions(+), 2 deletions(-)
 
-         memcpy(exp_buf, tmp_buf, block_size);
-         memcpy(exp_buf + block_size, tmp_buf + size, block_size);
--
--       check_file_data(exp_buf);
-+       exp_buf[block_size - 1] = exp_buf[block_size] = '\0';
-+       check_file_data(exp_buf, size);
+diff --git a/testscripts/test_fs_bind.sh b/testscripts/test_fs_bind.sh
+index 792fff2..348f320 100755
+--- a/testscripts/test_fs_bind.sh
++++ b/testscripts/test_fs_bind.sh
+@@ -343,8 +343,8 @@ save_sandbox()
 
-         tst_resm(TPASS, "test-case succeeded");
-  }
+      if [ -e "$2/files.before" ]; then
+          if [ -e "$2/files.after" ]; then
+-            tst_brkm TBROK true "${tname}: stale catalog of 
+\"${sandbox}\""
+-            return 1
++            tst_resm TWARN true "${tname}: did not properly clean up 
+files"
++                        rm -f "$2/files.after"
+          fi
+          when="after"
+      fi
+-- 
+1.7.1
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
 
 
-I think it would be better to merge fallocate04 fixes in a single patch.
+Thanks&Regards,
+RamyaBS
 
-Thanks,
-Alexey
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
