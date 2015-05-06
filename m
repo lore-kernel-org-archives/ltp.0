@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Yptje-0002p3-9n
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 07:27:14 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YpwQI-0002TN-FN
+	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 10:19:26 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Yptjb-0006uT-Nh
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 07:27:14 +0000
+	id 1YpwQH-0004wJ-EF
+	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 10:19:26 +0000
 Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t467Pnnj004589
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 15:25:49 +0800
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t46AI0pJ016856
+	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 18:18:00 +0800
 From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Wed, 6 May 2015 15:26:14 +0800
-Message-ID: <1430897176-16486-3-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Date: Wed, 6 May 2015 18:18:22 +0800
+Message-ID: <1430907502-30493-3-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1430907502-30493-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1430907502-30493-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 3/5] kernel/mem/hugetlb/lib: Don't allocate memory for
-	getpwnam()
+Subject: [LTP] [PATCH 3/3] kernel/mem/mmapstress: fix resource leak
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,32 +33,49 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-It requests to declare a pointer to for getpwnam() returns,
-not to allocate memory for it.
-This patch does the same as 2c0c4b3.
+Including memory and fd leak.
 
 Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/mem/hugetlb/lib/libipc.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ testcases/kernel/mem/mmapstress/mmapstress01.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/testcases/kernel/mem/hugetlb/lib/libipc.c b/testcases/kernel/mem/hugetlb/lib/libipc.c
-index 21fd8da..cfcde6b 100644
---- a/testcases/kernel/mem/hugetlb/lib/libipc.c
-+++ b/testcases/kernel/mem/hugetlb/lib/libipc.c
-@@ -83,11 +83,7 @@ int getipckey(void)
-  */
- int getuserid(char *user)
- {
--	struct passwd *ent;
--
--	ent = malloc(sizeof(struct passwd));
--	if (ent == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup, "malloc ent");
-+	struct passwd *ent = NULL;
+diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
+index 0baf0e2..1db8147 100644
+--- a/testcases/kernel/mem/mmapstress/mmapstress01.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
+@@ -657,6 +657,8 @@ int fileokay(char *file, uchar_t * expbuf)
+ 			perror("read error");
+ 			/***** LTP Port *****/
+ 			local_flag = FAILED;
++			free(readbuf);
++			close(fd);
+ 			anyfail();
+ 			/*****	**	*****/
+ 			return 0;
+@@ -668,6 +670,8 @@ int fileokay(char *file, uchar_t * expbuf)
+ 				(void)fprintf(stderr, "read %d of %ld bytes\n",
+ 					      (i * pagesize) + cnt,
+ 					      (long)mapsize);
++				free(readbuf);
++				close(fd);
+ 				return 0;
+ 			}
+ 		}
+@@ -688,10 +692,13 @@ int fileokay(char *file, uchar_t * expbuf)
+ 					      "(fsize %ld)\n", i, j,
+ 					      statbuf.st_size);
+ #endif /* LARGE_FILE */
++				free(readbuf);
++				close(fd);
+ 				return 0;
+ 			}
+ 		}
+ 	}
++	free(readbuf);
+ 	close(fd);
  
- 	ent = getpwnam(user);
- 	if (ent == NULL)
+ 	return 1;
 -- 
 1.9.3
 
