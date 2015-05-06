@@ -1,21 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1YwgFa-0006Qk-Va
-	for ltp-list@lists.sourceforge.net; Mon, 25 May 2015 00:28:14 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1Ypybf-0008AK-2B
+	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 12:39:19 +0000
 Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YwgFT-0001rY-5W
-	for ltp-list@lists.sourceforge.net; Mon, 25 May 2015 00:28:14 +0000
-Message-ID: <55626C7D.8030202@huawei.com>
-Date: Mon, 25 May 2015 08:27:41 +0800
-From: s00318865 <sunyuan3@huawei.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YpybZ-0002X1-8K
+	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 12:39:19 +0000
+Message-ID: <554A0B45.1070609@huawei.com>
+Date: Wed, 6 May 2015 20:38:29 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
 MIME-Version: 1.0
-References: <1432204318-18309-1-git-send-email-sunyuan3@huawei.com>
-	<2017045962.3832879.1432304176940.JavaMail.zimbra@redhat.com>
-In-Reply-To: <2017045962.3832879.1432304176940.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH V2] Add userns01 testcase to verify user namespace.
+References: <1430915809-168531-1-git-send-email-cuibixuan@huawei.com>
+In-Reply-To: <1430915809-168531-1-git-send-email-cuibixuan@huawei.com>
+Subject: [LTP]  [PATCH 2/2] gzip/gzip01: Remove 00_Descriptions.txt
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,240 +27,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
 
-Hi Jan,
-     Got. Thanks for your help.You are very professional.
-     Best regards.
-         Yuan
+Remove 00_Descriptions.txt file.
 
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+---
+ testcases/commands/gzip/00_Descriptions.txt |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+ delete mode 100644 testcases/commands/gzip/00_Descriptions.txt
 
-On 2015/5/22 22:16, Jan Stancek wrote:
->
->
->
-> ----- Original Message -----
->> From: "Yuan Sun" <sunyuan3@huawei.com>
->> To: jstancek@redhat.com
->> Cc: ltp-list@lists.sourceforge.net
->> Sent: Thursday, 21 May, 2015 12:31:58 PM
->> Subject: [PATCH V2] Add userns01 testcase to verify user namespace.
->>
->> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
->> ---
->>   testcases/kernel/containers/userns01/Makefile      | 26 +++++++
->>   testcases/kernel/containers/userns01/userns01.c    | 90
->>   ++++++++++++++++++++++
->>   .../kernel/containers/userns01/userns_helper.h     | 37 +++++++++
->>   3 files changed, 153 insertions(+)
->>   create mode 100644 testcases/kernel/containers/userns01/Makefile
->>   create mode 100644 testcases/kernel/containers/userns01/userns01.c
->>   create mode 100644 testcases/kernel/containers/userns01/userns_helper.h
-> I added it to .gitignore and container runtest file, slightly fixed
-> commit message, made GPL license look the same in both files and pushed.
->
-> Thank you,
-> Jan
->
->> diff --git a/testcases/kernel/containers/userns01/Makefile
->> b/testcases/kernel/containers/userns01/Makefile
->> new file mode 100644
->> index 0000000..9f67216
->> --- /dev/null
->> +++ b/testcases/kernel/containers/userns01/Makefile
->> @@ -0,0 +1,26 @@
->> +###############################################################################
->> +#
->> ##
->> +# Copyright (c) Huawei Technologies Co., Ltd., 2015
->> ##
->> +#
->> ##
->> +# This program is free software;  you can redistribute it and#or modify
->> ##
->> +# it under the terms of the GNU General Public License as published by
->> ##
->> +# the Free Software Foundation; either version 2 of the License, or
->> ##
->> +# (at your option) any later version.
->> ##
->> +#
->> ##
->> +# This program is distributed in the hope that it will be useful, but
->> ##
->> +# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
->> ##
->> +# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
->> ##
->> +# for more details.
->> ##
->> +#
->> ##
->> +# You should have received a copy of the GNU General Public License
->> ##
->> +# along with this program.
->> ##
->> +###############################################################################
->> +
->> +top_srcdir		?= ../../../..
->> +
->> +include $(top_srcdir)/include/mk/testcases.mk
->> +include $(abs_srcdir)/../Makefile.inc
->> +
->> +LDLIBS			:= -lclone -lltp
->> +
->> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
->> diff --git a/testcases/kernel/containers/userns01/userns01.c
->> b/testcases/kernel/containers/userns01/userns01.c
->> new file mode 100644
->> index 0000000..c6022b5
->> --- /dev/null
->> +++ b/testcases/kernel/containers/userns01/userns01.c
->> @@ -0,0 +1,90 @@
->> +/*
->> +* Copyright (c) Huawei Technologies Co., Ltd., 2015
->> +* This program is free software; you can redistribute it and/or modify it
->> +* under the terms of the GNU General Public License as published by the Free
->> +* Software Foundation; either version 2 of the License, or (at your option)
->> +* any later version. This program is distributed in the hope that it will be
->> +* useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
->> +* Public License for more details. You should have received a copy of the
->> GNU
->> +* General Public License along with this program.
->> +*
->> +*
->> +* Verify that:
->> +*  If a user ID has no mapping inside the namespace, user ID and group
->> +* ID will be the value defined in the file /proc/sys/kernel/overflowuid,
->> 65534.
->> +*/
->> +
->> +#define _GNU_SOURCE
->> +#include <sys/wait.h>
->> +#include <assert.h>
->> +#include <stdio.h>
->> +#include <stdlib.h>
->> +#include <unistd.h>
->> +#include <string.h>
->> +#include <errno.h>
->> +#include "test.h"
->> +#include "libclone.h"
->> +#include "userns_helper.h"
->> +#define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
->> +
->> +char *TCID = "user_namespace1";
->> +int TST_TOTAL = 1;
->> +
->> +char fullpath[BUFSIZ];
->> +long overflowuid;
->> +
->> +/*
->> + * child_fn1() - Inside a new user namespace
->> + */
->> +static int child_fn1(void *arg)
->> +{
->> +	int exit_val;
->> +	int uid, gid;
->> +
->> +	uid = geteuid();
->> +	gid = getegid();
->> +
->> +	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
->> +	if (uid == overflowuid && gid == overflowuid) {
->> +		printf("Got expected uid and gid\n");
->> +		exit_val = 0;
->> +	} else {
->> +		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
->> +		exit_val = 1;
->> +	}
->> +
->> +	return exit_val;
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	check_newuser();
->> +	SAFE_FILE_SCANF(NULL, OVERFLOWUIDPATH, "%ld", &overflowuid);
->> +}
->> +
->> +int main(int argc, char *argv[])
->> +{
->> +	int status;
->> +
->> +	tst_parse_opts(argc, argv, NULL, NULL);
->> +	setup();
->> +
->> +	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWUSER, child_fn1, NULL));
->> +
->> +	if (TEST_RETURN == -1)
->> +		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
->> +	else if ((wait(&status)) == -1)
->> +		tst_brkm(TWARN | TERRNO, NULL, "wait failed");
->> +
->> +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
->> +		tst_resm(TFAIL, "child exited abnormally");
->> +	else if (WIFSIGNALED(status)) {
->> +		tst_resm(TFAIL, "child was killed with signal = %d",
->> +			 WTERMSIG(status));
->> +	}
->> +
->> +	tst_resm(TPASS, "the uid and the gid are right inside the container");
->> +	tst_exit();
->> +}
->> +
->> diff --git a/testcases/kernel/containers/userns01/userns_helper.h
->> b/testcases/kernel/containers/userns01/userns_helper.h
->> new file mode 100644
->> index 0000000..3fb7288
->> --- /dev/null
->> +++ b/testcases/kernel/containers/userns01/userns_helper.h
->> @@ -0,0 +1,37 @@
->> +/*
->> +* Copyright (c) Huawei Technologies Co., Ltd., 2015
->> +* This program is free software; you can redistribute it and/or modify
->> +* it under the terms of the GNU General Public License as published by
->> +* the Free Software Foundation; either version 2 of the License, or
->> +* (at your option) any later version.
->> +*
->> +* This program is distributed in the hope that it will be useful,
->> +* but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
->> +* the GNU General Public License for more details.
->> +*/
->> +
->> +#include "../libclone/libclone.h"
->> +#include "test.h"
->> +#include "safe_macros.h"
->> +
->> +static int dummy_child(void *v)
->> +{
->> +	(void) v;
->> +	return 0;
->> +}
->> +
->> +static int check_newuser(void)
->> +{
->> +	int pid, status;
->> +
->> +	if (tst_kvercmp(3, 8, 0) < 0)
->> +		tst_brkm(TCONF, NULL, "CLONE_NEWUSER not supported");
->> +
->> +	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWUSER, dummy_child, NULL);
->> +	if (pid == -1)
->> +		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWUSER not supported");
->> +	SAFE_WAIT(NULL, &status);
->> +
->> +	return 0;
->> +}
->> --
->> 1.9.1
->>
->>
-> .
->
-
+diff --git a/testcases/commands/gzip/00_Descriptions.txt b/testcases/commands/gzip/00_Descriptions.txt
+deleted file mode 100644
+index 2a14182..0000000
+--- a/testcases/commands/gzip/00_Descriptions.txt
++++ /dev/null
+@@ -1,6 +0,0 @@
+-gzip01
+-	Test that gzip -r will travel directories and compress all the files available.
+-
+-gunzip01
+-	Test that gunzip -r will travel directories and uncompress all the files available.
+-
+-- 
+1.6.0.2
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
