@@ -1,25 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YqZ92-0002I9-RI
-	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 03:40:12 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YqZ91-0008QS-1X
-	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 03:40:12 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t483cjFg025055
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 May 2015 11:38:45 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Fri, 8 May 2015 11:39:33 +0800
-Message-ID: <1431056373-11834-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <20150507133240.GG28637@rei.suse.de>
-References: <20150507133240.GG28637@rei.suse.de>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YqLlw-0007dU-Qt
+	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 13:23:28 +0000
+Date: Thu, 7 May 2015 15:22:49 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150507132249.GE28637@rei.suse.de>
+References: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 5/5] kernel/syscalls/fallocate: adjust fclose's
-	position
+Content-Disposition: inline
+In-Reply-To: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/5] kernel/syscalls/mmap: remove unused cleanup()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,39 +24,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-It will encounter resource leak for fp,
-while fopen succeeds and the pointer para is NULL.
-so need to move fclose out of if-block.
+Hi!
+Pushed, thanks.
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
----
- testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.c b/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.c
-index 1c33d0c..bd2d373 100644
---- a/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.c
-+++ b/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.c
-@@ -30,8 +30,13 @@ int is_cmdline_para(const char *para)
- 				return 1;
- 			}
- 		}
--		fclose(fp);
- 	}
-+	/* If fopen succeeds and the pointer para is NULL,
-+	 * It won't enter the above if-block.
-+	 * so need to close fp here.
-+	 */
-+	if (fp != NULL)
-+		fclose(fp);
- 
- 	return 0;
- }
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
