@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YvnkS-0000Tb-US
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2015 14:16:28 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YvnkR-0001mV-EP
-	for ltp-list@lists.sourceforge.net; Fri, 22 May 2015 14:16:28 +0000
-Date: Fri, 22 May 2015 10:16:16 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2017045962.3832879.1432304176940.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1432204318-18309-1-git-send-email-sunyuan3@huawei.com>
-References: <1432204318-18309-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1YqC69-00010z-33
+	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 03:03:41 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YqC67-0003Ne-6E
+	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 03:03:41 +0000
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Thu, 7 May 2015 10:54:45 +0800
+Message-ID: <1430967285-15095-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2] Add userns01 testcase to verify user namespace.
+Subject: [LTP] [PATCH] device-drivers/zram: add kernel version check
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,233 +25,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+zram device attributes max_comp_streams and comp_algorithm are introduced
+since kernel v3.15, and mem_limit is introduced since kernel v3.18, we
+need to add these check.
 
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/device-drivers/zram/zram_lib.sh | 32 +++++++++++++++++++++---
+ 1 file changed, 29 insertions(+), 3 deletions(-)
 
+diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
+index e41d8c7..d3e62e0 100755
+--- a/testcases/kernel/device-drivers/zram/zram_lib.sh
++++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
+@@ -62,7 +62,15 @@ zram_load()
+ 
+ zram_max_streams()
+ {
+-	tst_resm TINFO "set max_comp_streams to zram device(s)"
++	tst_kvercmp 3 15 0
++	if [ $? -eq 0 ]; then
++		tst_resm TCONF "device attribute max_comp_streams is"\
++			"introduced since kernel v3.15, the running kernel"\
++			"does not support it"
++		return
++	else
++		tst_resm TINFO "set max_comp_streams to zram device(s)"
++	fi
+ 
+ 	local i=0
+ 	for max_s in $zram_max_streams; do
+@@ -83,7 +91,16 @@ zram_max_streams()
+ 
+ zram_compress_alg()
+ {
+-	tst_resm TINFO "test that we can set compression algorithm"
++	tst_kvercmp 3 15 0
++	if [ $? -eq 0 ]; then
++		tst_resm TCONF "device attribute comp_algorithm is"\
++			"introduced since kernel v3.15, the running kernel"\
++			"does not support it"
++		return
++	else
++		tst_resm TINFO "test that we can set compression algorithm"
++	fi
++
+ 	local algs=$(cat /sys/block/zram0/comp_algorithm)
+ 	tst_resm TINFO "supported algs: $algs"
+ 	local i=0
+@@ -116,7 +133,16 @@ zram_set_disksizes()
+ 
+ zram_set_memlimit()
+ {
+-	tst_resm TINFO "set memory limit to zram device(s)"
++	tst_kvercmp 3 18 0
++	if [ $? -eq 0 ]; then
++		tst_resm TCONF "device attribute mem_limit is"\
++			"introduced since kernel v3.18, the running kernel"\
++			"does not support it"
++		return
++	else
++		tst_resm TINFO "set memory limit to zram device(s)"
++	fi
++
+ 	local i=0
+ 	for ds in $zram_mem_limits; do
+ 		local sys_path="/sys/block/zram${i}/mem_limit"
+-- 
+1.8.3.1
 
-
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Thursday, 21 May, 2015 12:31:58 PM
-> Subject: [PATCH V2] Add userns01 testcase to verify user namespace.
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->  testcases/kernel/containers/userns01/Makefile      | 26 +++++++
->  testcases/kernel/containers/userns01/userns01.c    | 90
->  ++++++++++++++++++++++
->  .../kernel/containers/userns01/userns_helper.h     | 37 +++++++++
->  3 files changed, 153 insertions(+)
->  create mode 100644 testcases/kernel/containers/userns01/Makefile
->  create mode 100644 testcases/kernel/containers/userns01/userns01.c
->  create mode 100644 testcases/kernel/containers/userns01/userns_helper.h
-
-I added it to .gitignore and container runtest file, slightly fixed
-commit message, made GPL license look the same in both files and pushed.
-
-Thank you,
-Jan
-
-> 
-> diff --git a/testcases/kernel/containers/userns01/Makefile
-> b/testcases/kernel/containers/userns01/Makefile
-> new file mode 100644
-> index 0000000..9f67216
-> --- /dev/null
-> +++ b/testcases/kernel/containers/userns01/Makefile
-> @@ -0,0 +1,26 @@
-> +###############################################################################
-> +#
-> ##
-> +# Copyright (c) Huawei Technologies Co., Ltd., 2015
-> ##
-> +#
-> ##
-> +# This program is free software;  you can redistribute it and#or modify
-> ##
-> +# it under the terms of the GNU General Public License as published by
-> ##
-> +# the Free Software Foundation; either version 2 of the License, or
-> ##
-> +# (at your option) any later version.
-> ##
-> +#
-> ##
-> +# This program is distributed in the hope that it will be useful, but
-> ##
-> +# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-> ##
-> +# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
-> ##
-> +# for more details.
-> ##
-> +#
-> ##
-> +# You should have received a copy of the GNU General Public License
-> ##
-> +# along with this program.
-> ##
-> +###############################################################################
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +include $(abs_srcdir)/../Makefile.inc
-> +
-> +LDLIBS			:= -lclone -lltp
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/containers/userns01/userns01.c
-> b/testcases/kernel/containers/userns01/userns01.c
-> new file mode 100644
-> index 0000000..c6022b5
-> --- /dev/null
-> +++ b/testcases/kernel/containers/userns01/userns01.c
-> @@ -0,0 +1,90 @@
-> +/*
-> +* Copyright (c) Huawei Technologies Co., Ltd., 2015
-> +* This program is free software; you can redistribute it and/or modify it
-> +* under the terms of the GNU General Public License as published by the Free
-> +* Software Foundation; either version 2 of the License, or (at your option)
-> +* any later version. This program is distributed in the hope that it will be
-> +* useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-> +* Public License for more details. You should have received a copy of the
-> GNU
-> +* General Public License along with this program.
-> +*
-> +*
-> +* Verify that:
-> +*  If a user ID has no mapping inside the namespace, user ID and group
-> +* ID will be the value defined in the file /proc/sys/kernel/overflowuid,
-> 65534.
-> +*/
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <assert.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "libclone.h"
-> +#include "userns_helper.h"
-> +#define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
-> +
-> +char *TCID = "user_namespace1";
-> +int TST_TOTAL = 1;
-> +
-> +char fullpath[BUFSIZ];
-> +long overflowuid;
-> +
-> +/*
-> + * child_fn1() - Inside a new user namespace
-> + */
-> +static int child_fn1(void *arg)
-> +{
-> +	int exit_val;
-> +	int uid, gid;
-> +
-> +	uid = geteuid();
-> +	gid = getegid();
-> +
-> +	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
-> +	if (uid == overflowuid && gid == overflowuid) {
-> +		printf("Got expected uid and gid\n");
-> +		exit_val = 0;
-> +	} else {
-> +		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
-> +		exit_val = 1;
-> +	}
-> +
-> +	return exit_val;
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	check_newuser();
-> +	SAFE_FILE_SCANF(NULL, OVERFLOWUIDPATH, "%ld", &overflowuid);
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int status;
-> +
-> +	tst_parse_opts(argc, argv, NULL, NULL);
-> +	setup();
-> +
-> +	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWUSER, child_fn1, NULL));
-> +
-> +	if (TEST_RETURN == -1)
-> +		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
-> +	else if ((wait(&status)) == -1)
-> +		tst_brkm(TWARN | TERRNO, NULL, "wait failed");
-> +
-> +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-> +		tst_resm(TFAIL, "child exited abnormally");
-> +	else if (WIFSIGNALED(status)) {
-> +		tst_resm(TFAIL, "child was killed with signal = %d",
-> +			 WTERMSIG(status));
-> +	}
-> +
-> +	tst_resm(TPASS, "the uid and the gid are right inside the container");
-> +	tst_exit();
-> +}
-> +
-> diff --git a/testcases/kernel/containers/userns01/userns_helper.h
-> b/testcases/kernel/containers/userns01/userns_helper.h
-> new file mode 100644
-> index 0000000..3fb7288
-> --- /dev/null
-> +++ b/testcases/kernel/containers/userns01/userns_helper.h
-> @@ -0,0 +1,37 @@
-> +/*
-> +* Copyright (c) Huawei Technologies Co., Ltd., 2015
-> +* This program is free software; you can redistribute it and/or modify
-> +* it under the terms of the GNU General Public License as published by
-> +* the Free Software Foundation; either version 2 of the License, or
-> +* (at your option) any later version.
-> +*
-> +* This program is distributed in the hope that it will be useful,
-> +* but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> +* the GNU General Public License for more details.
-> +*/
-> +
-> +#include "../libclone/libclone.h"
-> +#include "test.h"
-> +#include "safe_macros.h"
-> +
-> +static int dummy_child(void *v)
-> +{
-> +	(void) v;
-> +	return 0;
-> +}
-> +
-> +static int check_newuser(void)
-> +{
-> +	int pid, status;
-> +
-> +	if (tst_kvercmp(3, 8, 0) < 0)
-> +		tst_brkm(TCONF, NULL, "CLONE_NEWUSER not supported");
-> +
-> +	pid = do_clone_unshare_test(T_CLONE, CLONE_NEWUSER, dummy_child, NULL);
-> +	if (pid == -1)
-> +		tst_brkm(TCONF | TERRNO, NULL, "CLONE_NEWUSER not supported");
-> +	SAFE_WAIT(NULL, &status);
-> +
-> +	return 0;
-> +}
-> --
-> 1.9.1
-> 
-> 
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
