@@ -1,20 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1YuEBy-0005zR-LA
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2015 06:06:22 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YuEBw-0002AS-9B
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2015 06:06:22 +0000
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Mon, 18 May 2015 13:57:00 +0800
-Message-ID: <1431928620-25592-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1430967285-15095-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1430967285-15095-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YqIFv-0002Vz-Sw
+	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 09:38:11 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YqIFu-0007SB-Oy
+	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 09:38:11 +0000
+Message-ID: <554B326F.8050808@oracle.com>
+Date: Thu, 07 May 2015 12:37:51 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] device-drivers/zram: add kernel version check
+References: <554A7CCB.5030601@oracle.com>
+	<1430979479-29407-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1430979479-29407-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] kernel/syscalls/fallocate: fix array parameter
+ degradation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,128 +29,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
 
-zram device attributes max_comp_streams and comp_algorithm are introduced
-since kernel v3.15, and mem_limit is introduced since kernel v3.18, we
-need to add these checks.
+Hi,
+On 05/07/2015 09:17 AM, Wei,Jiangang wrote:
+> Using 'sizeof' on array given as function argument
+> returns size of a pointer, instead of the array's.
+> So,
+> It needs to pass an additional parameter size_t size
+> indicating the number of elements in the array.
+>
+> Besides above,
+> Set adjacent two bytes in 'exp_buf' to zero in test04().
+>
+> Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+> ---
+>   testcases/kernel/syscalls/fallocate/fallocate04.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> index 723c886..911bbe8 100644
+> --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
+> +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> @@ -98,9 +98,8 @@ static void setup(void)
+>   	get_blocksize();
+>   }
+>   
+> -static void check_file_data(const char exp_buf[])
+> +static void check_file_data(const char exp_buf[], size_t size)
+>   {
+> -	size_t size = sizeof(exp_buf);
+>   	char rbuf[size];
+>   
+>   	tst_resm(TINFO, "reading the file, compare with expected buffer");
+> @@ -175,7 +174,7 @@ static void test02(void)
+>   	fill_tst_buf(exp_buf);
+>   	memset(exp_buf + block_size, 0, block_size);
+>   
+> -	check_file_data(exp_buf);
+> +	check_file_data(exp_buf, buf_size);
+>   
+>   	tst_resm(TPASS, "test-case succeeded");
+>   }
+> @@ -215,7 +214,7 @@ static void test03(void)
+>   	fill_tst_buf(exp_buf);
+>   	memset(exp_buf + block_size - 1, 0, block_size + 2);
+>   
+> -	check_file_data(exp_buf);
+> +	check_file_data(exp_buf, buf_size);
+>   
+>   	tst_resm(TPASS, "test-case succeeded");
+>   }
+> @@ -251,7 +250,8 @@ static void test04(void)
+>   	memcpy(exp_buf, tmp_buf, block_size);
+>   	memcpy(exp_buf + block_size, tmp_buf + size, block_size);
+>   
+> -	check_file_data(exp_buf);
+> +	exp_buf[block_size - 1] = exp_buf[block_size] = '\0';
+> +	check_file_data(exp_buf, size);
+>   
+>   	tst_resm(TPASS, "test-case succeeded");
+>   }
 
-Also according to kernel-source-tree/Documentation/blockdev/zram.txt, zram
-device attribute disksize value can be either in bytes, or you can use mem
-suffixes. But in some old kernels, mem suffixes are not supported, for
-example, in RHEL6.6GA's kernel layer, it uses strict_strtoull() to parse
-disksize, which does not support mem suffixes, in some newer kernels, they
-use memparse() which supports mem suffixes. So here we just use bytes to make
-sure everything works correctly.
+Patch applied, thank you!
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- testcases/kernel/device-drivers/zram/zram01.sh   | 10 +++++++-
- testcases/kernel/device-drivers/zram/zram02.sh   | 10 +++++++-
- testcases/kernel/device-drivers/zram/zram_lib.sh | 32 +++++++++++++++++++++---
- 3 files changed, 47 insertions(+), 5 deletions(-)
+Best regards,
+Alexey
 
-diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-index 49cbbe9..26dae90 100755
---- a/testcases/kernel/device-drivers/zram/zram01.sh
-+++ b/testcases/kernel/device-drivers/zram/zram01.sh
-@@ -31,7 +31,15 @@ dev_num=4
- # This is a list of parameters for zram devices.
- # Number of items must be equal to 'dev_num' parameter.
- zram_max_streams="2 3 5 8"
--zram_sizes="25M 25M 25M 25M"
-+
-+# The zram sysfs node 'disksize' value can be either in bytes,
-+# or you can use mem suffixes. But in some old kernels, mem
-+# suffixes are not supported, for example, in RHEL6.6GA's kernel
-+# layer, it uses strict_strtoull() to parse disksize which does
-+# not support mem suffixes, in some newer kernels, they use
-+# memparse() which supports mem suffixes. So here we just use
-+# bytes to make sure everything works correctly.
-+zram_sizes="26214400 26214400 26214400 26214400" # 25MB
- zram_mem_limits="25M 25M 25M 25M"
- zram_filesystems="ext3 ext4 xfs btrfs"
- zram_algs="lzo lzo lzo lzo"
-diff --git a/testcases/kernel/device-drivers/zram/zram02.sh b/testcases/kernel/device-drivers/zram/zram02.sh
-index 53f69bb..59b3f9f 100755
---- a/testcases/kernel/device-drivers/zram/zram02.sh
-+++ b/testcases/kernel/device-drivers/zram/zram02.sh
-@@ -30,7 +30,15 @@ dev_num=1
- # This is a list of parameters for zram devices.
- # Number of items must be equal to 'dev_num' parameter.
- zram_max_streams="2"
--zram_sizes="100G"
-+
-+# The zram sysfs node 'disksize' value can be either in bytes,
-+# or you can use mem suffixes. But in some old kernels, mem
-+# suffixes are not supported, for example, in RHEL6.6GA's kernel
-+# layer, it uses strict_strtoull() to parse disksize which does
-+# not support mem suffixes, in some newer kernels, they use
-+# memparse() which supports mem suffixes. So here we just use
-+# bytes to make sure everything works correctly.
-+zram_sizes="107374182400" # 100GB
- zram_mem_limits="1M"
- 
- TST_CLEANUP="zram_cleanup"
-diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-index e41d8c7..d3e62e0 100755
---- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-+++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-@@ -62,7 +62,15 @@ zram_load()
- 
- zram_max_streams()
- {
--	tst_resm TINFO "set max_comp_streams to zram device(s)"
-+	tst_kvercmp 3 15 0
-+	if [ $? -eq 0 ]; then
-+		tst_resm TCONF "device attribute max_comp_streams is"\
-+			"introduced since kernel v3.15, the running kernel"\
-+			"does not support it"
-+		return
-+	else
-+		tst_resm TINFO "set max_comp_streams to zram device(s)"
-+	fi
- 
- 	local i=0
- 	for max_s in $zram_max_streams; do
-@@ -83,7 +91,16 @@ zram_max_streams()
- 
- zram_compress_alg()
- {
--	tst_resm TINFO "test that we can set compression algorithm"
-+	tst_kvercmp 3 15 0
-+	if [ $? -eq 0 ]; then
-+		tst_resm TCONF "device attribute comp_algorithm is"\
-+			"introduced since kernel v3.15, the running kernel"\
-+			"does not support it"
-+		return
-+	else
-+		tst_resm TINFO "test that we can set compression algorithm"
-+	fi
-+
- 	local algs=$(cat /sys/block/zram0/comp_algorithm)
- 	tst_resm TINFO "supported algs: $algs"
- 	local i=0
-@@ -116,7 +133,16 @@ zram_set_disksizes()
- 
- zram_set_memlimit()
- {
--	tst_resm TINFO "set memory limit to zram device(s)"
-+	tst_kvercmp 3 18 0
-+	if [ $? -eq 0 ]; then
-+		tst_resm TCONF "device attribute mem_limit is"\
-+			"introduced since kernel v3.18, the running kernel"\
-+			"does not support it"
-+		return
-+	else
-+		tst_resm TINFO "set memory limit to zram device(s)"
-+	fi
-+
- 	local i=0
- 	for ds in $zram_mem_limits; do
- 		local sys_path="/sys/block/zram${i}/mem_limit"
--- 
-1.8.2.1
 
 
 ------------------------------------------------------------------------------
