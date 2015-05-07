@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1YwiUr-0001Z3-T9
-	for ltp-list@lists.sourceforge.net; Mon, 25 May 2015 02:52:09 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YwiUn-00008s-LC
-	for ltp-list@lists.sourceforge.net; Mon, 25 May 2015 02:52:09 +0000
-Message-ID: <55628E3B.5050804@huawei.com>
-Date: Mon, 25 May 2015 10:51:39 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YqM5c-0003OR-M7
+	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 13:43:48 +0000
+Date: Thu, 7 May 2015 15:43:13 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150507134313.GH28637@rei.suse.de>
+References: <5549F751.3070503@linux.vnet.ibm.com>
 MIME-Version: 1.0
-References: <1432404112-12132-1-git-send-email-liaoqingwei@huawei.com>
-	<55605E3A.3040000@huawei.com>
-In-Reply-To: <55605E3A.3040000@huawei.com>
-Subject: Re: [LTP] [PATCH v2] controllers/cpuacct: tst_brkm() instead of
- echo failed message
+Content-Disposition: inline
+In-Reply-To: <5549F751.3070503@linux.vnet.ibm.com>
+Subject: Re: [LTP] test_fs_bind.sh testcase fails to clean up files which it
+ had created during the first run .
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,52 +25,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LiaoQingwei <liaoqingwei@huawei.com>
+To: Ramya <ramya@linux.vnet.ibm.com>
 Cc: ltp-list@lists.sourceforge.net
 
-On 2015/5/23 19:02, LiaoQingwei wrote:
-> Please forgive my careless,I send a wrong patch,please ignored.The patch v2 maybe right.
-> Thanks.
+Hi!
+>   testscripts/test_fs_bind.sh |    4 ++--
+>   1 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> Most of the time,the reason of mount cgroup failed is the configuration
-> is not enabled,for example,CONFIG_CGROUP_CPUACCT=no.
-> I think use TCONF message is more helpful,and use basic test interface
-> tst_brkm instead of echo failed message.
+> diff --git a/testscripts/test_fs_bind.sh b/testscripts/test_fs_bind.sh
+> index 792fff2..348f320 100755
+> --- a/testscripts/test_fs_bind.sh
+> +++ b/testscripts/test_fs_bind.sh
+> @@ -343,8 +343,8 @@ save_sandbox()
 > 
-> Signed-off-by: Liao Qingwei <liaoqingwei@huawei.com>
-> ---
->  testcases/kernel/controllers/cpuacct/cpuacct_setup.sh | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh b/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
-> index 6eab1b4..f9c4fb8 100755
-> --- a/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
-> +++ b/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
-> @@ -97,10 +97,8 @@ setup()
->         mount -t cgroup -ocpuacct none /dev/cpuacct 2> /dev/null
->         if [ $? -ne 0 ]
->         then
-> -               echo "TFAIL: Could not mount cgroup filesystem"
-> -               echo "Exiting test"
-> -               cleanup
-> -               exit 1
-> +                tst_brkm TCONF cleanup "Could not mount cgroup filesystem,Maybe the configuration is not enabled"
+>       if [ -e "$2/files.before" ]; then
+>           if [ -e "$2/files.after" ]; then
+> -            tst_brkm TBROK true "${tname}: stale catalog of 
+> \"${sandbox}\""
+> -            return 1
+> +            tst_resm TWARN true "${tname}: did not properly clean up 
+> files"
+> +                        rm -f "$2/files.after"
+>           fi
+>           when="after"
+>       fi
 
-If want to call tst_brkm(), you should add the test.sh library in the case.
-Or even better the test should do some clean up if use the test.sh library,
-change "echo" to tst_resm INFO and "echo TFAIL" to tst_brkm TFAIL(remove the exit 1).
+Your patch was mangled, possibly line wrapped by your mail client.
 
-In addition, I don't think that call tst_brkm TCONF is suitable if mount failed.
-Maybe we can add the message such as "Could not mount cgroup filesystem, and Maybe
-the configuration is not enabled ..."
+Configure your mail client correctly or use git send-email and resend.
 
-Also, check the patch with 'checkpatch.pl' script, fix warnings and errors.
-> +               exit 0
->         fi
-> 
->         # Group created earlier may again be visible if not cleaned properly.
-> 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
