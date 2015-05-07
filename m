@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1YxPkF-00081e-LI
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 01:02:55 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YxPkE-0004ng-79
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 01:02:55 +0000
-Message-ID: <556517AC.7060406@huawei.com>
-Date: Wed, 27 May 2015 09:02:36 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YqLEg-00075K-EH
+	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 12:49:06 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id ED70DACC2
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  7 May 2015 12:48:57 +0000 (UTC)
+Date: Thu, 7 May 2015 14:48:31 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150507124831.GA28637@rei.suse.de>
+References: <20150504063425.GA9995@localhost.localdomain>
+	<20150504115324.GB7674@rei.suse.de>
+	<20150506135504.GC2752@localhost.localdomain>
 MIME-Version: 1.0
-References: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
-In-Reply-To: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
-Subject: [LTP] [PATCH 3/5] iptables/iptables_tests.sh: Add new testcases for
- iptables -o
+Content-Disposition: inline
+In-Reply-To: <20150506135504.GC2752@localhost.localdomain>
+Subject: Re: [LTP] [PATCH] performing test on loop device if noatime or
+ relatime specified
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,99 +31,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
+To: ltp-list@lists.sourceforge.net
 
-Add new testcase for testing 'iptables -o'
+Hi!
+> Thanks. I have revised the patch according to your suggestions.
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
----
- testcases/network/iptables/iptables_tests.sh |   54 +++++++++++++++++++++++++-
- 1 files changed, 53 insertions(+), 1 deletions(-)
+Pushed with following modifications, thanks.
 
-diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
-index 387cdfa..a464240 100755
---- a/testcases/network/iptables/iptables_tests.sh
-+++ b/testcases/network/iptables/iptables_tests.sh
-@@ -22,7 +22,7 @@
- #				       <hubertNOSPAAAM@symbio.com.tw>
+* The device preparation must be done only once in setup()
+  otherwise the testcase fails with -i 2
 
- export TCID="iptables"
--export TST_TOTAL=7
-+export TST_TOTAL=8
+* The testcase was previously working fine when executed as
+  non-root user, I've made some changes so that this continues
+  to work as well
 
- . test.sh
-
-@@ -450,6 +450,57 @@ test07()
- 	tst_resm TPASS "iptables -c test succeed."
- }
-
-+test08()
-+{
-+	tst_resm TINFO "Use iptables to DROP packets from particular" \
-+		"network card"
-+	tst_resm TINFO "Rule to block icmp from 127.0.0.1"
-+
-+	iptables -A OUTPUT -o lo -p icmp -j DROP > tst_iptables.out 2>&1
-+        if [ $? -ne 0 ]; then
-+                tst_resm TFAIL "iptables command failed to append new rule."
-+                cat tst_iptables.out
-+                return
-+        fi
-+
-+        tst_resm TINFO "Pinging 127.0.0.1"
-+        ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
-+        if [ $? -ne 0 ]; then
-+                grep "100% packet loss" tst_iptables.out > tst_iptables.err 2>&1
-+                if [ $? -ne 0 ]; then
-+                        tst_resm TFAIL \
-+                                 "iptables did not block packets from loopback"
-+                        cat tst_iptables.err
-+                        return
-+                else
-+                        tst_resm TINFO "Ping 127.0.0.1 not successful."
-+                fi
-+        else
-+                tst_resm TFAIL "iptables did not block icmp from 127.0.0.1"
-+                cat tst_iptables.out
-+                return
-+        fi
-+
-+        tst_resm TINFO "Deleting icmp DROP from lo rule."
-+        iptables -D OUTPUT 1 > tst_iptables.out 2>&1
-+        if [ $? -ne 0 ]; then
-+                tst_resm TFAIL "iptables did not remove the rule."
-+                cat tst_iptables.out
-+                return
-+        fi
-+        tst_resm TINFO "Pinging 127.0.0.1 again"
-+        ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
-+        if [ $? -ne 0 ]; then
-+                tst_resm TFAIL "iptables blocking loopback. This is expected" \
-+                               "behaviour on certain distributions where" \
-+                               "enabling firewall drops all packets by default."
-+                cat tst_iptables.out
-+                return
-+        fi
-+        tst_resm TINFO "Ping succsess"
-+        tst_resm TPASS "iptables can DROP packets from particular network card."
-+}
-+
- init
- TST_CLEANUP=cleanup
-
-@@ -460,5 +511,6 @@ test04
- test05
- test06
- test07
-+test08
-
- tst_exit
 -- 
-1.6.0.2 .
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
