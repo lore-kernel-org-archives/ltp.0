@@ -2,18 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Ys6nT-0002gd-Id
-	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 09:48:19 +0000
-Date: Tue, 12 May 2015 11:47:41 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150512094741.GB3735@rei.suse.de>
-References: <1429865144-3141-1-git-send-email-cuibixuan@huawei.com>
-	<20150505103538.GA10502@rei.suse.de> <5548AC8B.6080702@huawei.com>
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Yqc57-0001Jc-NZ
+	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 06:48:21 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Yqc56-0004PK-JS
+	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 06:48:21 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t486ksBJ004752
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 May 2015 14:46:54 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Fri, 8 May 2015 14:47:42 +0800
+Message-ID: <1431067662-22519-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <554B7127.7000606@oracle.com>
+References: <554B7127.7000606@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5548AC8B.6080702@huawei.com>
-Subject: Re: [LTP] [PATCH v2] ftp/ftp02: case failed when vsftpd is not
- running
+Subject: [LTP] [PATCH v2] kernel/mem/mmapstress: fix resource leak
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,19 +31,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Before the test, checking if vsftpd is running will be better.
-> Otherwise some cases will passed even vsftpd stop and others
-> will failed.
+* Avoid memory leak by allocate readbuf on the stack,
+  not by malloc.
 
-Pushed, thanks.
+* close file descriptor explicitly before return.
 
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/mem/mmapstress/mmapstress01.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
+index 0baf0e2..ed1466a 100644
+--- a/testcases/kernel/mem/mmapstress/mmapstress01.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
+@@ -602,9 +602,9 @@ int fileokay(char *file, uchar_t * expbuf)
+ 	struct stat statbuf;
+ #endif /* LARGE_FILE */
+ 	size_t mapsize;
+-	uchar_t *readbuf;
+ 	unsigned mappages;
+ 	unsigned pagesize = sysconf(_SC_PAGE_SIZE);
++	char readbuf[pagesize];
+ 	int fd;
+ 	int cnt;
+ 	unsigned i, j;
+@@ -641,7 +641,6 @@ int fileokay(char *file, uchar_t * expbuf)
+ 		perror("lseek");
+ 		anyfail();
+ 	}
+-	readbuf = malloc(pagesize);
+ 
+ 	if (statbuf.st_size - sparseoffset > SIZE_MAX) {
+ 		fprintf(stderr, "size_t overflow when setting up map\n");
+@@ -668,6 +667,7 @@ int fileokay(char *file, uchar_t * expbuf)
+ 				(void)fprintf(stderr, "read %d of %ld bytes\n",
+ 					      (i * pagesize) + cnt,
+ 					      (long)mapsize);
++				close(fd);
+ 				return 0;
+ 			}
+ 		}
+@@ -688,6 +688,7 @@ int fileokay(char *file, uchar_t * expbuf)
+ 					      "(fsize %ld)\n", i, j,
+ 					      statbuf.st_size);
+ #endif /* LARGE_FILE */
++				close(fd);
+ 				return 0;
+ 			}
+ 		}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
