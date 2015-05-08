@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YxaQk-0004qU-Cz
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 12:27:30 +0000
-Date: Wed, 27 May 2015 14:26:39 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150527122639.GB11778@rei>
-References: <20150520133631.GA9052@rei.suse.de>
-	<1432174482-23967-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<1432174482-23967-2-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YqZ34-0001qZ-Lt
+	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 03:34:02 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YqZ32-0008My-Sq
+	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 03:34:02 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t483WZRI024718
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 May 2015 11:32:35 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Fri, 8 May 2015 11:33:23 +0800
+Message-ID: <1431056003-11503-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <20150507132611.GF28637@rei.suse.de>
+References: <20150507132611.GF28637@rei.suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1432174482-23967-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 2/2] kernel/controllers/cpuctl: cleanup
+Subject: [LTP] [PATCH v2 4/5] kernel/syscalls/dup2: optimize allocation and
+	free
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,20 +32,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> * Remove redundant include(s) for unistd.h
-> * Add void where needed
+Move the allocation and free to the cleanup and setup
+respectively and ensure free fildes safely.
 
-Both pushed, thanks.
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/dup2/dup205.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
+index 14218dd..0b32453 100644
+--- a/testcases/kernel/syscalls/dup2/dup205.c
++++ b/testcases/kernel/syscalls/dup2/dup205.c
+@@ -40,6 +40,8 @@
+ 
+ char *TCID = "dup205";
+ int TST_TOTAL = 1;
++int *fildes;
++int min;
+ int local_flag;
+ 
+ #define PASSED 1
+@@ -50,10 +52,8 @@ static void cleanup(void);
+ 
+ int main(int ac, char *av[])
+ {
+-	int *fildes;
+ 	int ifile;
+ 	char pfilname[40];
+-	int min;
+ 	int serrno;
+ 
+ 	int lc;
+@@ -68,12 +68,6 @@ int main(int ac, char *av[])
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 
+-		min = getdtablesize();	/* get number of files allowed open */
+-
+-		fildes = malloc((min + 10) * sizeof(int));
+-		if (fildes == NULL)
+-			tst_brkm(TBROK | TERRNO, cleanup, "malloc error");
+-
+ 		sprintf(pfilname, "./dup205.%d\n", getpid());
+ 		unlink(pfilname);
+ 		serrno = 0;
+@@ -125,9 +119,16 @@ int main(int ac, char *av[])
+ static void setup(void)
+ {
+ 	tst_tmpdir();
++
++	min = getdtablesize();	/* get number of files allowed open */
++	fildes = malloc((min + 10) * sizeof(int));
++	if (fildes == NULL)
++		tst_brkm(TBROK | TERRNO, cleanup, "malloc error");
+ }
+ 
+ static void cleanup(void)
+ {
++	if (fildes != NULL)
++		free(fildes);
+ 	tst_rmdir();
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
