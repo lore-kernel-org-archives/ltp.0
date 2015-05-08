@@ -1,19 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YxcWV-0003vf-Tl
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 14:41:35 +0000
-Date: Wed, 27 May 2015 16:40:41 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150527144041.GB13878@rei.suse.de>
-References: <20150518131209.GH4104@rei>
-	<1432264251-27223-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YqZ1K-0007em-PM
+	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 03:32:14 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YqZ1I-0008L1-Tk
+	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 03:32:14 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t483UlHY024570
+	for <ltp-list@lists.sourceforge.net>; Fri, 8 May 2015 11:30:47 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Fri, 8 May 2015 11:31:35 +0800
+Message-ID: <1431055895-11411-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <20150507132127.GD28637@rei.suse.de>
+References: <20150507132127.GD28637@rei.suse.de>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1432264251-27223-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3 1/2] test.sh: Add tst_acquire_device() and
- tst_release_device()
+Subject: [LTP] [PATCH v2 3/5] kernel/mem/hugetlb/lib: Don't allocate memory
+	for getpwnam()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,71 +32,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, jy_zhangjin@cn.fujitsu.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +tst_acquire_device()
-> +{
+No need to allocate memory for a pointer,
+which just used to store getpwnam()'s return.
 
-We should check that tst_tmpdir() has been called here, i.e. that
-TST_TMPDIR is non-empty string.
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/mem/hugetlb/lib/libipc.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-> +	if [ -n "${LTP_DEV}" ]; then
-> +		tst_resm TINFO "Using test device LTP_DEV='${LTP_DEV}'"
-> +		stat ${LTP_DEV} | grep -q "block special file"
-
-                [ -b "$LTP_DEV" ] ?
-
-> +		if [ $? -ne 0 ]; then
-> +			tst_brkm TBROK "${LTP_DEV} is not a block device"
-> +		fi
-> +		TST_DEVICE=${LTP_DEV}
-> +		return
-> +	fi
-> +
-> +	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=20480
-> +
-> +	TST_DEVICE=$(losetup -f)
-> +	if [ $? -ne 0 ]; then
-> +		tst_brkm TBROK "Couldn't find free loop device"
-> +	fi
-> +
-> +	tst_resm TINFO "Found free device '${TST_DEVICE}'"
-> +
-> +	ROD_SILENT losetup ${TST_DEVICE} test_dev.img
-> +}
-> +
-> +tst_release_device()
-> +{
-> +	losetup -a | grep -q ${TST_DEVICE}
-> +	if [ $? -eq 0 ]; then
-> +		losetup -d ${TST_DEVICE}
-> +		if [ $? -ne 0 ];then
-> +			tst_resm TWARN "'losetup -d ${TST_DEVICE}' failed"
-> +		fi
-> +	fi
-> +
-> +	if [ -f "test_dev.img" ]; then
-> +		rm test_dev.img
-> +	fi
-
-We don't have to delete the file here, the tst_rmdir() will do that for
-us.
-
-> +}
-> +
->  # Check that test name is set
->  if [ -z "$TCID" ]; then
->  	tst_brkm TBROK "TCID is not defined"
-
-Otherwise it looks fine.
-
+diff --git a/testcases/kernel/mem/hugetlb/lib/libipc.c b/testcases/kernel/mem/hugetlb/lib/libipc.c
+index 21fd8da..1f16f22 100644
+--- a/testcases/kernel/mem/hugetlb/lib/libipc.c
++++ b/testcases/kernel/mem/hugetlb/lib/libipc.c
+@@ -85,10 +85,6 @@ int getuserid(char *user)
+ {
+ 	struct passwd *ent;
+ 
+-	ent = malloc(sizeof(struct passwd));
+-	if (ent == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup, "malloc ent");
+-
+ 	ent = getpwnam(user);
+ 	if (ent == NULL)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getpwnam");
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
