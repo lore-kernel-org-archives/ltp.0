@@ -1,40 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ramya@linux.vnet.ibm.com>) id 1YpxGj-0005Rx-Mm
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 11:13:37 +0000
-Received: from e28smtp06.in.ibm.com ([122.248.162.6])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YpxGi-0007pA-6c
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 11:13:37 +0000
-Received: from /spool/local
-	by e28smtp06.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <ramya@linux.vnet.ibm.com>;
-	Wed, 6 May 2015 16:43:27 +0530
-Received: from d28relay01.in.ibm.com (d28relay01.in.ibm.com [9.184.220.58])
-	by d28dlp02.in.ibm.com (Postfix) with ESMTP id 357B63940048
-	for <ltp-list@lists.sourceforge.net>;
-	Wed,  6 May 2015 16:43:25 +0530 (IST)
-Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
-	by d28relay01.in.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
-	t46BDLJx35782726
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 16:43:21 +0530
-Received: from d28av05.in.ibm.com (localhost [127.0.0.1])
-	by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	t46BDLH1002800
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 16:43:21 +0530
-Received: from [9.124.158.31] (ramya.in.ibm.com [9.124.158.31])
-	by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	t46BDLXe002792
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 16:43:21 +0530
-Message-ID: <5549F751.3070503@linux.vnet.ibm.com>
-Date: Wed, 06 May 2015 16:43:21 +0530
-From: Ramya <ramya@linux.vnet.ibm.com>
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Ys304-0001ke-Hs
+	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 05:45:04 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ys303-0006zz-1X
+	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 05:45:04 +0000
+Message-ID: <55519334.8060608@cn.fujitsu.com>
+Date: Tue, 12 May 2015 13:44:20 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] test_fs_bind.sh testcase fails to clean up files which it had
- created during the first run .
+References: <554A7CCB.5030601@oracle.com>	<1430979479-29407-1-git-send-email-weijg.fnst@cn.fujitsu.com>	<554B326F.8050808@oracle.com>
+	<1430992443.2653.6.camel@localhost>
+	<555192E8.4060307@cn.fujitsu.com>
+In-Reply-To: <555192E8.4060307@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] kernel/syscalls/fallocate: fix array parameter
+ degradation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,54 +30,116 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>, "alexey.kodanev@oracle.com" <alexey.kodanev@oracle.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Description:
-when we run the script for the first time, all the test will run 
-successfully and PASS .
-but on the same machine if we run the same script for the 2nd time we 
-see TBROK .
+On 05/12/2015 01:43 PM, Wanlong Gao wrote:
+> On 05/07/2015 05:54 PM, Wei, Jiangang wrote:
+>> On Thu, 2015-05-07 at 12:37 +0300, Alexey Kodanev wrote:
+>>> Hi,
+>>> On 05/07/2015 09:17 AM, Wei,Jiangang wrote:
+>>>> Using 'sizeof' on array given as function argument
+>>>> returns size of a pointer, instead of the array's.
+>>>> So,
+>>>> It needs to pass an additional parameter size_t size
+>>>> indicating the number of elements in the array.
+>>>>
+>>>> Besides above,
+>>>> Set adjacent two bytes in 'exp_buf' to zero in test04().
+>>>>
+>>>> Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+>>>> ---
+>>>>   testcases/kernel/syscalls/fallocate/fallocate04.c | 10 +++++-----
+>>>>   1 file changed, 5 insertions(+), 5 deletions(-)
+>>>>
+>>>> diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
+>>>> index 723c886..911bbe8 100644
+>>>> --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
+>>>> +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
+>>>> @@ -98,9 +98,8 @@ static void setup(void)
+>>>>   	get_blocksize();
+>>>>   }
+>>>>   
+>>>> -static void check_file_data(const char exp_buf[])
+>>>> +static void check_file_data(const char exp_buf[], size_t size)
+>>>>   {
+>>>> -	size_t size = sizeof(exp_buf);
+>>>>   	char rbuf[size];
+>>>>   
+>>>>   	tst_resm(TINFO, "reading the file, compare with expected buffer");
+>>>> @@ -175,7 +174,7 @@ static void test02(void)
+>>>>   	fill_tst_buf(exp_buf);
+>>>>   	memset(exp_buf + block_size, 0, block_size);
+>>>>   
+>>>> -	check_file_data(exp_buf);
+>>>> +	check_file_data(exp_buf, buf_size);
+>>>>   
+>>>>   	tst_resm(TPASS, "test-case succeeded");
+>>>>   }
+>>>> @@ -215,7 +214,7 @@ static void test03(void)
+>>>>   	fill_tst_buf(exp_buf);
+>>>>   	memset(exp_buf + block_size - 1, 0, block_size + 2);
+>>>>   
+>>>> -	check_file_data(exp_buf);
+>>>> +	check_file_data(exp_buf, buf_size);
+>>>>   
+>>>>   	tst_resm(TPASS, "test-case succeeded");
+>>>>   }
+>>>> @@ -251,7 +250,8 @@ static void test04(void)
+>>>>   	memcpy(exp_buf, tmp_buf, block_size);
+>>>>   	memcpy(exp_buf + block_size, tmp_buf + size, block_size);
+>>>>   
+>>>> -	check_file_data(exp_buf);
+>>>> +	exp_buf[block_size - 1] = exp_buf[block_size] = '\0';
+>>>> +	check_file_data(exp_buf, size);
+>>>>   
+>>>>   	tst_resm(TPASS, "test-case succeeded");
+>>>>   }
+>>>
+>>> Patch applied, thank you!
+>>
+>> Thank you for your feedback so quickly.
+>> Do you have noticed the other commit?
+>>  ->[PATCH 3/3] kernel/mem/mmapstress: fix resource leak
+>>
+>> I guess it might have been ignored...
+> 
+> It's a bit messy, would you repost your patches which were
+> not applied to make things more clearly?
 
-TBROK was seen because the script was not cleaning the files it created 
-during the first run.
-so added TWARN "did not properly clean up files" and then removing the 
-files and continuing with the test .
+And start a new mail thread.
 
-Signed-off-by: ramya BS <ramya@linux.vnet.ibm.com>
+Thanks,
+Wanlong Gao
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-
-
-patch1
-
-  testscripts/test_fs_bind.sh |    4 ++--
-  1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testscripts/test_fs_bind.sh b/testscripts/test_fs_bind.sh
-index 792fff2..348f320 100755
---- a/testscripts/test_fs_bind.sh
-+++ b/testscripts/test_fs_bind.sh
-@@ -343,8 +343,8 @@ save_sandbox()
-
-      if [ -e "$2/files.before" ]; then
-          if [ -e "$2/files.after" ]; then
--            tst_brkm TBROK true "${tname}: stale catalog of 
-\"${sandbox}\""
--            return 1
-+            tst_resm TWARN true "${tname}: did not properly clean up 
-files"
-+                        rm -f "$2/files.after"
-          fi
-          when="after"
-      fi
--- 
-1.7.1
-
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-
-
-Thanks&Regards,
-RamyaBS
+> 
+> Thanks,
+> Wanlong Gao
+> 
+>>
+>> Thanks again,
+>> Wei
+>>>
+>>> Best regards,
+>>> Alexey
+>>>
+>>>
+>>
+>> ------------------------------------------------------------------------------
+>> One dashboard for servers and applications across Physical-Virtual-Cloud 
+>> Widest out-of-the-box monitoring support with 50+ applications
+>> Performance metrics, stats and reports that give you Actionable Insights
+>> Deep dive visibility with transaction tracing using APM Insight.
+>> http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>> .
+>>
+> 
+> .
+> 
 
 
 ------------------------------------------------------------------------------
