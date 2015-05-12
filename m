@@ -1,25 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Ys3fs-0003Vf-7k
-	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 06:28:16 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Ys3fo-00062Y-LU
-	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 06:28:16 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4C6Qlmb022473
-	for <ltp-list@lists.sourceforge.net>; Tue, 12 May 2015 14:26:47 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Tue, 12 May 2015 14:27:26 +0800
-Message-ID: <1431412049-24348-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1431412049-24348-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1431412049-24348-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ys5Ud-0007Oc-PX
+	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 08:24:47 +0000
+Date: Tue, 12 May 2015 10:24:09 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150512082408.GA3012@rei.suse.de>
+References: <cover.1430380932.git.jstancek@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2 2/5] kernel/mem/hugetlb/lib: remove unused codes
-	for getpwnam()
+Content-Disposition: inline
+In-Reply-To: <cover.1430380932.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH 0/4 v3] (merged) cpuhotplug fixes
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,34 +24,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-No need to allocate memory for getpwnam()'s return.
-so remove these unuseful codes.
+Hi!
+Looks good to me as well.
+(you should have pushed it already)
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
----
- testcases/kernel/mem/hugetlb/lib/libipc.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/testcases/kernel/mem/hugetlb/lib/libipc.c b/testcases/kernel/mem/hugetlb/lib/libipc.c
-index 21fd8da..1f16f22 100644
---- a/testcases/kernel/mem/hugetlb/lib/libipc.c
-+++ b/testcases/kernel/mem/hugetlb/lib/libipc.c
-@@ -85,10 +85,6 @@ int getuserid(char *user)
- {
- 	struct passwd *ent;
- 
--	ent = malloc(sizeof(struct passwd));
--	if (ent == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup, "malloc ent");
--
- 	ent = getpwnam(user);
- 	if (ent == NULL)
- 		tst_brkm(TBROK | TERRNO, cleanup, "getpwnam");
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
