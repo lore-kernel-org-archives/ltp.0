@@ -1,22 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YpEwk-0002CH-PR
-	for ltp-list@lists.sourceforge.net; Mon, 04 May 2015 11:54:02 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id E7D1CAD08
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  4 May 2015 11:53:54 +0000 (UTC)
-Date: Mon, 4 May 2015 13:53:26 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150504115324.GB7674@rei.suse.de>
-References: <20150504063425.GA9995@localhost.localdomain>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Ys3g6-0002co-Dw
+	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 06:28:30 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ys3g5-00081I-HX
+	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 06:28:30 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4C6R2DX022488
+	for <ltp-list@lists.sourceforge.net>; Tue, 12 May 2015 14:27:02 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Tue, 12 May 2015 14:27:27 +0800
+Message-ID: <1431412049-24348-3-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1431412049-24348-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1431412049-24348-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20150504063425.GA9995@localhost.localdomain>
-Subject: Re: [LTP] [PATCH] performing test on loop device if noatime or
- relatime specified
+Subject: [LTP] [PATCH v2 3/5] kernel/syscalls/dup2: optimize allocation and
+	free
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,94 +34,71 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/open/open12.c b/testcases/kernel/syscalls/open/open12.c
-> index 54ddfe0..f9be35b 100644
-> --- a/testcases/kernel/syscalls/open/open12.c
-> +++ b/testcases/kernel/syscalls/open/open12.c
-> @@ -24,6 +24,7 @@
->  #include <stdio.h>
->  #include <sys/types.h>
->  #include <sys/wait.h>
-> +#include <sys/mount.h>
->  #include <unistd.h>
->  #include <mntent.h>
->  #include <errno.h>
-> @@ -34,8 +35,16 @@
->  #define TEST_FILE	"test_file"
->  #define LARGE_FILE	"large_file"
->  
-> +#define DIR_MODE 0755
-> +#define MNTPOINT "mntpoint"
-> +
->  char *TCID = "open12";
->  
-> +static const char *device;
-> +static const char *fs_type;
-> +static unsigned int mount_flag = 0;
-> +static unsigned int cd_flag = 0;
-> +
->  static void setup(void);
->  static void cleanup(void);
->  static void test_append(void);
-> @@ -114,10 +123,21 @@ static void test_noatime(void)
->  	}
->  
->  	if (tst_path_has_mnt_flags(cleanup, NULL, flags)) {
-> -		tst_resm(TCONF,
-> -			 "test O_NOATIME flag for open needs filesystems which "
-> -			 "is mounted without noatime and relatime");
-> -		return;
-> +
-> +		fs_type = tst_dev_fs_type();
-> +		device = tst_acquire_device(cleanup);
-> +
-> +		if (!device)
-> +			tst_brkm(TCONF, cleanup, "Failed to obtain block device");
-> +
-> +		tst_mkfs(cleanup, device, fs_type, NULL);
-> +
-> +		SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
+Move the allocation and free to the cleanup and setup
+respectively and ensure free fildes safely.
 
-What about creating a test directory in test temporary directory
-unconditionally and change the TEST_FILE to point to a file in it? That
-way we can just mount the loop device over the directory if needed and
-avoid the ugly chdir here and in the cleanup.
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/dup2/dup205.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-> +		SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, MS_STRICTATIME, NULL);
-> +		mount_flag = 1;
-> +		SAFE_FILE_PRINTF(cleanup, MNTPOINT"/"TEST_FILE, TEST_FILE);
-> +		SAFE_CHDIR(cleanup, MNTPOINT);
-> +		cd_flag = 1;
->  	}
->  
->  	SAFE_STAT(cleanup, TEST_FILE, &old_stat);
-> @@ -221,5 +241,18 @@ static void test_largefile(void)
->  
->  static void cleanup(void)
->  {
-> +	if (cd_flag) {
-> +		char *tmp_dir = tst_get_tmpdir();
-> +		SAFE_CHDIR(NULL, tmp_dir);
-> +		free(tmp_dir);
-> +	}
-> +
-> +	if (mount_flag && tst_umount(MNTPOINT) == -1) {
-> +		tst_brkm(TBROK | TERRNO, NULL, "umount(2) failed");
-
-This should rather be tst_resm(TWARN | TERRNO, ...) so that we at least
-attempt to continue the cleanup.
-
-> +	}
-> +
-> +	if (device)
-> +		tst_release_device(NULL, device);
-> +
->  	tst_rmdir();
-
+diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
+index 14218dd..0b32453 100644
+--- a/testcases/kernel/syscalls/dup2/dup205.c
++++ b/testcases/kernel/syscalls/dup2/dup205.c
+@@ -40,6 +40,8 @@
+ 
+ char *TCID = "dup205";
+ int TST_TOTAL = 1;
++int *fildes;
++int min;
+ int local_flag;
+ 
+ #define PASSED 1
+@@ -50,10 +52,8 @@ static void cleanup(void);
+ 
+ int main(int ac, char *av[])
+ {
+-	int *fildes;
+ 	int ifile;
+ 	char pfilname[40];
+-	int min;
+ 	int serrno;
+ 
+ 	int lc;
+@@ -68,12 +68,6 @@ int main(int ac, char *av[])
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 
+-		min = getdtablesize();	/* get number of files allowed open */
+-
+-		fildes = malloc((min + 10) * sizeof(int));
+-		if (fildes == NULL)
+-			tst_brkm(TBROK | TERRNO, cleanup, "malloc error");
+-
+ 		sprintf(pfilname, "./dup205.%d\n", getpid());
+ 		unlink(pfilname);
+ 		serrno = 0;
+@@ -125,9 +119,16 @@ int main(int ac, char *av[])
+ static void setup(void)
+ {
+ 	tst_tmpdir();
++
++	min = getdtablesize();	/* get number of files allowed open */
++	fildes = malloc((min + 10) * sizeof(int));
++	if (fildes == NULL)
++		tst_brkm(TBROK | TERRNO, cleanup, "malloc error");
+ }
+ 
+ static void cleanup(void)
+ {
++	if (fildes != NULL)
++		free(fildes);
+ 	tst_rmdir();
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
