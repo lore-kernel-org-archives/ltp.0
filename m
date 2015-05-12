@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1YxPlj-000869-1a
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 01:04:27 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YxPle-0008JQ-Lu
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 01:04:27 +0000
-Message-ID: <55651804.9050008@huawei.com>
-Date: Wed, 27 May 2015 09:04:04 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Ys3fn-0002bm-Tj
+	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 06:28:11 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Ys3fm-00062Y-Sn
+	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 06:28:11 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4C6QhSV022465
+	for <ltp-list@lists.sourceforge.net>; Tue, 12 May 2015 14:26:43 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Tue, 12 May 2015 14:27:25 +0800
+Message-ID: <1431412049-24348-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
-In-Reply-To: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
-Subject: [LTP] [PATCH 5/5] iptables/iptables_tests.sh: Add new testcases for
- iptables -R
+Subject: [LTP] [PATCH v2 1/5] kernel/syscalls/ipc/lib: Don't allocate memory
+	for getpwnam()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,85 +30,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
+To: ltp-list@lists.sourceforge.net
 
-Add new testcase for testing 'iptables -R'
+The getpwnam() function returns a pointer for a passwd
+structure. So,
+It's enough to declare a pointer to this structure,
+not to allocate memory for it.
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
 ---
- testcases/network/iptables/iptables_tests.sh |   40 +++++++++++++++++++++++++-
- 1 files changed, 39 insertions(+), 1 deletions(-)
+ testcases/kernel/syscalls/ipc/lib/libipc.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
-index a2128c2..1f1d72c 100755
---- a/testcases/network/iptables/iptables_tests.sh
-+++ b/testcases/network/iptables/iptables_tests.sh
-@@ -22,7 +22,7 @@
- #				       <hubertNOSPAAAM@symbio.com.tw>
-
- export TCID="iptables"
--export TST_TOTAL=9
-+export TST_TOTAL=10
-
- . test.sh
-
-@@ -544,6 +544,43 @@ test09()
-         tst_resm TPASS "iptables -N/E test succeed."
- }
-
-+test10()
-+{
-+	tst_resm TINFO "iptables -R test."
-+        iptables -A INPUT -s 127.0.0.1 -j DROP > tst_iptables.out 2>&1
-+        if [ $? -ne 0 ]; then
-+                tst_resm TFAIL "iptables command failed to append new rule."
-+                cat tst_iptables.out
-+                return
-+        fi
-+
-+        tst_resm TINFO "Pinging 127.0.0.1"
-+        ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
-+        if [ $? -eq 0 ]; then
-+		tst_resm TFAIL "Ping 127.0.0.1 succeed,test failed"
-+		cat tst_iptables.out
-+                return
-+        fi
-+
-+        tst_resm TINFO "Use iptable -R to reset the rule."
-+        iptables -R INPUT 1 -s 127.0.0.1 -j ACCEPT > tst_iptables.out 2>&1
-+        if [ $? -ne 0 ]; then
-+                tst_resm TFAIL "iptables -R can't reset the rule."
-+                cat tst_iptables.out
-+                return
-+        fi
-+
-+        tst_resm TINFO "Pinging 127.0.0.1 again"
-+        ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
-+        if [ $? -ne 0 ]; then
-+                tst_resm TFAIL "Ping 127.0.0.1 failed"
-+		cat tst_iptables.out
-+                return
-+        fi
-+
-+	tst_resm TPASS "iptables -R test succeed."
-+}
-+
- init
- TST_CLEANUP=cleanup
-
-@@ -556,5 +593,6 @@ test06
- test07
- test08
- test09
-+test10
-
- tst_exit
+diff --git a/testcases/kernel/syscalls/ipc/lib/libipc.c b/testcases/kernel/syscalls/ipc/lib/libipc.c
+index f10e257..4de7faa 100644
+--- a/testcases/kernel/syscalls/ipc/lib/libipc.c
++++ b/testcases/kernel/syscalls/ipc/lib/libipc.c
+@@ -143,12 +143,6 @@ int getuserid(char *user)
+ {
+ 	struct passwd *ent;
+ 
+-	/* allocate some space for the passwd struct */
+-	if ((ent = malloc(sizeof(struct passwd))) == NULL) {
+-		tst_brkm(TBROK, cleanup, "couldn't allocate space for passwd"
+-			 " structure");
+-	}
+-
+ 	/* get the uid value for the user */
+ 	if ((ent = getpwnam(user)) == NULL) {
+ 		tst_brkm(TBROK, cleanup, "Couldn't get password entry for %s",
 -- 
-1.6.0.2 .
+1.9.3
 
 
 ------------------------------------------------------------------------------
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
