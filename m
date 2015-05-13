@@ -1,35 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ramya@linux.vnet.ibm.com>) id 1YqbYb-0006Ju-3o
-	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 06:14:45 +0000
-Received: from e23smtp06.au.ibm.com ([202.81.31.148])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YqbYZ-0007qM-TN
-	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 06:14:45 +0000
-Received: from /spool/local
-	by e23smtp06.au.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <ramya@linux.vnet.ibm.com>;
-	Fri, 8 May 2015 16:14:35 +1000
-Received: from d23relay06.au.ibm.com (d23relay06.au.ibm.com [9.185.63.219])
-	by d23dlp03.au.ibm.com (Postfix) with ESMTP id 35C913578048
-	for <ltp-list@lists.sourceforge.net>;
-	Fri,  8 May 2015 16:14:33 +1000 (EST)
-Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
-	by d23relay06.au.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
-	t486EOHM29949966
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 May 2015 16:14:33 +1000
-Received: from d23av01.au.ibm.com (localhost [127.0.0.1])
-	by d23av01.au.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	t486E0P4005178
-	for <ltp-list@lists.sourceforge.net>; Fri, 8 May 2015 16:14:00 +1000
-From: ramya@linux.vnet.ibm.com
-Date: Fri,  8 May 2015 01:13:15 -0500
-Message-Id: <1431065595-23843-1-git-send-email-ramya@linux.vnet.ibm.com>
-Subject: [LTP] test_fs_bind.sh testcase fails to clean up files which it had
-	created during the first run
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YsUiG-0005Qx-VU
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 11:20:32 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YsUiG-0002ox-2a
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 11:20:32 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4DBJ71K004335
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 May 2015 19:19:07 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 13 May 2015 19:19:46 +0800
+Message-ID: <1431515986-22287-5-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1431515986-22287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1431515986-22287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH 5/5] network/nfs/nfsstress: fix printf format
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,43 +28,34 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-From: ramya BS <ramya@linux.vnet.ibm.com>
+format string requires 2 parameters but only 1 is given
 
-Description:
-when we run the script for the first time, all the test will run successfully and PASS .
-but on the same machine if we run the same script for the 2nd time we see TBROK .
-
-TBROK was seen because the script was not cleaning the files it created during the first run.
-so added TWARN "did not properly clean up files" and then removing the files and continuing with the test .
-
-Signed-off-by: ramya BS <ramya@linux.vnet.ibm.com>
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
 ---
- testscripts/test_fs_bind.sh |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/network/nfs/nfsstress/make_tree.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/testscripts/test_fs_bind.sh b/testscripts/test_fs_bind.sh
-index 792fff2..348f320 100755
---- a/testscripts/test_fs_bind.sh
-+++ b/testscripts/test_fs_bind.sh
-@@ -343,8 +343,8 @@ save_sandbox()
+diff --git a/testcases/network/nfs/nfsstress/make_tree.c b/testcases/network/nfs/nfsstress/make_tree.c
+index 7b18da3..4163988 100644
+--- a/testcases/network/nfs/nfsstress/make_tree.c
++++ b/testcases/network/nfs/nfsstress/make_tree.c
+@@ -319,7 +319,8 @@ static int init_compile(int what_todo,	/* do a compile or clean             */
+ 				return 1;
+ 			}
  
- 	if [ -e "$2/files.before" ]; then
- 		if [ -e "$2/files.after" ]; then
--			tst_brkm TBROK true "${tname}: stale catalog of \"${sandbox}\""
--			return 1
-+			tst_resm TWARN true "${tname}: did not properly clean up files"
-+                        rm -f "$2/files.after" 
- 		fi
- 		when="after"
- 	fi
+-			dprt("pid[%d]: init_compile(): status = %d\n", status);
++			dprt("pid[%d]: init_compile(): status = %d\n",
++			     gettid(), status);
+ 			dprt("we are here %d\n", __LINE__);
+ 			return status;
+ 		}
 -- 
-1.7.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
