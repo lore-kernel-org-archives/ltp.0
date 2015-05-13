@@ -1,21 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YsAYz-0000yO-3G
-	for ltp-list@lists.sourceforge.net; Tue, 12 May 2015 13:49:37 +0000
-Date: Tue, 12 May 2015 15:48:59 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150512134858.GA11906@rei.suse.de>
-References: <20150504063425.GA9995@localhost.localdomain>
-	<20150504115324.GB7674@rei.suse.de>
-	<20150506135504.GC2752@localhost.localdomain>
-	<5551F71E.7090400@huawei.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YsUiF-0007bQ-6N
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 11:20:31 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YsUiE-0002oq-3w
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 11:20:31 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4DBJ4em004328
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 May 2015 19:19:04 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 13 May 2015 19:19:44 +0800
+Message-ID: <1431515986-22287-3-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1431515986-22287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1431515986-22287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5551F71E.7090400@huawei.com>
-Subject: Re: [LTP] [PATCH] performing test on loop device if noatime or
- relatime specified
+Subject: [LTP] [PATCH 3/5] testcases/kernel: replace umount() with
+	tst_umount()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,42 +32,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> then compile error:
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/home/cuibixuan/home/git/ltp/ltp/testcases/kernel/include -I../../../../include -I../../../../include   -L../../../../lib  open12.c   -lltp -o open12
-> open12.c: In function ?setup?:
-> open12.c:103: error: ?MS_STRICTATIME? undeclared (first use in this function)
-> open12.c:103: error: (Each undeclared identifier is reported only once
-> open12.c:103: error: for each function it appears in.)
-> make[4]: *** [open12] Error 1
-> make[4]: Leaving directory `/home/cuibixuan/home/git/ltp/ltp/testcases/kernel/syscalls/open'
-> 
-> Do 'man mount' and can not find 'MS_STRICTATIME'.
-> 
-> I get from man-pages of linux:
-> MS_STRICTATIME (since Linux 2.6.30)
->               Always update the last access time (atime) when files on this
->               filesystem are accessed.  (This was the default behavior
->               before Linux 2.6.30.)  Specifying this flag overrides the
->               effect of setting the MS_NOATIME and MS_RELATIME flags.
-> 
-> If not support 'MS_STRICTATIME'?
-> My system is SUSE11-SP2, linux 3.0.13, and gcc version 4.3.4.
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/io/direct_io/dma_thread_diotest.c | 2 +-
+ testcases/kernel/syscalls/ftruncate/ftruncate04.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Solution to compilation failures is to add fallback definition into
-ltp/include/lapi/mount.h (have a look at ltp/include/lapi/fcntl.h) and
-include it in the testcase source. That would make the testcase compile,
-but it may still fail when executed. To fix the execution we would need
-to do a runtime check if the kernel supports this flag, I guess that we
-would need to pass it only on newer kernels (we use tst_kvercmp() for
-that).
-
+diff --git a/testcases/kernel/io/direct_io/dma_thread_diotest.c b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+index 877b707..6ac1dec 100644
+--- a/testcases/kernel/io/direct_io/dma_thread_diotest.c
++++ b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+@@ -429,7 +429,7 @@ static void cleanup(void)
+ {
+ 	free(buffer);
+ 
+-	if (mount_flag && umount(MNT_POINT) < 0)
++	if (mount_flag && tst_umount(MNT_POINT) < 0)
+ 		tst_resm(TWARN | TERRNO, "umount device:%s failed", device);
+ 
+ 	free(worker);
+diff --git a/testcases/kernel/syscalls/ftruncate/ftruncate04.c b/testcases/kernel/syscalls/ftruncate/ftruncate04.c
+index 99aebfe..2136227 100644
+--- a/testcases/kernel/syscalls/ftruncate/ftruncate04.c
++++ b/testcases/kernel/syscalls/ftruncate/ftruncate04.c
+@@ -248,7 +248,7 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	if (mount_flag && umount(MOUNT_DIR))
++	if (mount_flag && tst_umount(MOUNT_DIR))
+ 		tst_resm(TWARN | TERRNO, "umount(%s) failed", device);
+ 
+ 	if (device)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
