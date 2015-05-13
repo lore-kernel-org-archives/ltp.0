@@ -1,33 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1YxAyO-0000el-GE
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2015 09:16:32 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YxAyN-00050S-Nh
-	for ltp-list@lists.sourceforge.net; Tue, 26 May 2015 09:16:32 +0000
-Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t4Q9GPMw007646
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 May 2015 09:16:26 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t4Q9GPmH018090
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 May 2015 09:16:25 GMT
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t4Q9GPRH018712
-	for <ltp-list@lists.sourceforge.net>; Tue, 26 May 2015 09:16:25 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 26 May 2015 12:16:17 +0300
-Message-Id: <1432631777-22549-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1432631777-22549-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <20150526084019.GA2940@rei.suse.de>
-	<1432631777-22549-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 2/2] Unmap the futexes backend file in tst_rmdir
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YsUiG-0005Qr-Rk
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 11:20:32 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YsUiF-0002oq-UY
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 11:20:32 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4DBJ6ud004331
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 May 2015 19:19:06 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 13 May 2015 19:19:45 +0800
+Message-ID: <1431515986-22287-4-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1431515986-22287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1431515986-22287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH 4/5] testcases/kernel/fs/doio: free memory
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -37,86 +28,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-As of now, test cases utilizing tst_checkpoint framework fail on NFS
-with similar errors:
+free the memory that allocated by malloc and strdup.
 
-creat07     0  TWARN  :  tst_tmpdir.c:206: tst_rmdir: rmobj(/tmpdir/ltp-0IVQPP0NK6/creigi0kV) failed: remove(/tmpdir/ltp-0IVQPP0NK6/creigi0kV) failed; errno=66: Directory not empty
-
-This happens because we keep the futex page mapped while tst_rmdir() is running.
-
-Let's unmap it before the actual delete procedure.
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
 ---
- lib/tst_checkpoint.c |    2 +-
- lib/tst_tmpdir.c     |   11 +++++++++++
- 2 files changed, 12 insertions(+), 1 deletions(-)
+ testcases/kernel/fs/doio/doio.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-index 0e2c402..36eeff2 100644
---- a/lib/tst_checkpoint.c
-+++ b/lib/tst_checkpoint.c
-@@ -33,7 +33,7 @@
+diff --git a/testcases/kernel/fs/doio/doio.c b/testcases/kernel/fs/doio/doio.c
+index 4b0dec5..f5b9d66 100644
+--- a/testcases/kernel/fs/doio/doio.c
++++ b/testcases/kernel/fs/doio/doio.c
+@@ -1360,6 +1360,7 @@ char *format_rw(struct io_req *ioreq, int fd, void *buffer, int signo,
+ 		break;
  
- #define DEFAULT_MSEC_TIMEOUT 10000
- 
--static futex_t *futexes;
-+futex_t *futexes;
- static int page_size;
- 
- void tst_checkpoint_init(const char *file, const int lineno,
-diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-index dd82f35..6a6c0c0 100644
---- a/lib/tst_tmpdir.c
-+++ b/lib/tst_tmpdir.c
-@@ -57,6 +57,7 @@
-  *
-  *********************************************************/
- 
-+#include <sys/mman.h>
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <assert.h>
-@@ -70,6 +71,7 @@
- #include "test.h"
- #include "rmobj.h"
- #include "ltp_priv.h"
-+#include "lapi/futex.h"
- 
- /*
-  * Define some useful macros.
-@@ -97,6 +99,8 @@ static char *TESTDIR = NULL;	/* the directory created */
- 
- static char test_start_work_dir[PATH_MAX];
- 
-+/* lib/tst_checkpoint.c */
-+extern futex_t *futexes;
- 
- int tst_tmpdir_created(void)
- {
-@@ -199,6 +203,13 @@ void tst_rmdir(void)
  	}
++	free(aio_strat);
  
- 	/*
-+	 * Unmap the backend file.
-+	 * This is needed to overcome the NFS "silly rename" feature.
-+	 */
-+	if (futexes)
-+		munmap((void *)futexes, getpagesize());
+ 	return errbuf;
+ }
+@@ -2071,6 +2072,8 @@ char *format_listio(struct io_req *ioreq, int lcmd, struct listreq *list,
+ 		    sprintf(cp, "          io completion strategy is %s\n",
+ 			    aio_strat);
+ 	}
++	free(aio_strat);
 +
-+	/*
- 	 * Attempt to remove the "TESTDIR" directory, using rmobj().
- 	 */
- 	if (rmobj(TESTDIR, &errmsg) == -1) {
+ 	return errbuf;
+ }
+ #endif /* CRAY */
+@@ -2558,6 +2561,7 @@ struct status *sy_listio(struct io_req *req, struct syscall_info *sysc, int fd,
+ 	}
+ 	status->aioid = malloc((nents + 1) * sizeof(int));
+ 	if (status->aioid == NULL) {
++		free(status);
+ 		doio_fprintf(stderr, "malloc failed, %s/%d\n",
+ 			     __FILE__, __LINE__);
+ 		return NULL;
+@@ -2567,6 +2571,8 @@ struct status *sy_listio(struct io_req *req, struct syscall_info *sysc, int fd,
+ 
+ 	lio_req = malloc(nents * sizeof(struct listreq));
+ 	if (lio_req == NULL) {
++		free(status->aioid);
++		free(status);
+ 		doio_fprintf(stderr, "malloc failed, %s/%d\n",
+ 			     __FILE__, __LINE__);
+ 		return NULL;
 -- 
-1.7.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
