@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YqLlw-0007dU-Qt
-	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 13:23:28 +0000
-Date: Thu, 7 May 2015 15:22:49 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YsRpK-0000Nq-2c
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 08:15:38 +0000
+Date: Wed, 13 May 2015 10:14:58 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150507132249.GE28637@rei.suse.de>
-References: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Message-ID: <20150513081458.GA3409@rei.suse.de>
+References: <20150504063425.GA9995@localhost.localdomain>
+	<20150504115324.GB7674@rei.suse.de>
+	<20150506135504.GC2752@localhost.localdomain>
+	<5551F71E.7090400@huawei.com> <20150512134858.GA11906@rei.suse.de>
+	<55530639.2070806@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/5] kernel/syscalls/mmap: remove unused cleanup()
+In-Reply-To: <55530639.2070806@huawei.com>
+Subject: Re: [LTP] [PATCH] performing test on loop device if noatime or
+ relatime specified
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,11 +29,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, zhuyanpeng@huawei.com, zhanyongming@huawei.com
 
 Hi!
-Pushed, thanks.
+> >> then compile error:
+> >> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/home/cuibixuan/home/git/ltp/ltp/testcases/kernel/include -I../../../../include -I../../../../include   -L../../../../lib  open12.c   -lltp -o open12
+> >> open12.c: In function ?setup?:
+> >> open12.c:103: error: ?MS_STRICTATIME? undeclared (first use in this function)
+> >> open12.c:103: error: (Each undeclared identifier is reported only once
+> >> open12.c:103: error: for each function it appears in.)
+> >> make[4]: *** [open12] Error 1
+> 
+> Compile error 'MS_STRICTATIME undeclared' because my glibc version(2.11) is
+> too old. I upgrade it then compile succeed.
+
+That is not a solution. The solution is to create a fallback declaration
+in LTP as I said.
 
 -- 
 Cyril Hrubis
