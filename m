@@ -1,27 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Yv0kc-0001TM-PN
-	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 09:57:22 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Yv0ka-0003vm-UP
-	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 09:57:22 +0000
-Message-ID: <1432115881.16347.41.camel@G08FNSTD140232>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 20 May 2015 17:58:01 +0800
-In-Reply-To: <1312891014.2427183.1432104744478.JavaMail.zimbra@redhat.com>
-References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
-	<1431944048.27486.14.camel@G08FNSTD140232>
-	<5559F134.7040705@oracle.com>
-	<1432025422.16347.6.camel@G08FNSTD140232>
-	<1273450911.1653813.1432034294768.JavaMail.zimbra@redhat.com>
-	<1432086442.16347.24.camel@G08FNSTD140232>
-	<1312891014.2427183.1432104744478.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not
- supported
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1YsVCr-00007R-QZ
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 11:52:09 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YsVCq-0007CS-4s
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 11:52:09 +0000
+Received: from userv0021.oracle.com (userv0021.oracle.com [156.151.31.71])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t4DBq1pk007078
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 May 2015 11:52:02 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+	by userv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t4DBq1Z7000795
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 May 2015 11:52:01 GMT
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t4DBq12T008033
+	for <ltp-list@lists.sourceforge.net>; Wed, 13 May 2015 11:52:01 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 13 May 2015 14:54:45 +0300
+Message-Id: <1431518085-8950-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] lib6/in6_2: don't assume that machine has 'eth0'
+	interface name
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,165 +34,64 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi,
+systemd can rename network interfaces. We should look at LHOST_IFACES
+variable for predefined test interface names.
 
-On Wed, 2015-05-20 at 02:52 -0400, Jan Stancek wrote:
-> 
-> 
-> 
-> ----- Original Message -----
-> > From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> > To: "Jan Stancek" <jstancek@redhat.com>
-> > Cc: "Alexey Kodanev" <alexey.kodanev@oracle.com>, "vasily isaenko" <vasily.isaenko@oracle.com>,
-> > ltp-list@lists.sourceforge.net
-> > Sent: Wednesday, 20 May, 2015 3:47:22 AM
-> > Subject: Re: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not supported
-> > 
-> > Hi!
-> > 
-> > On Tue, 2015-05-19 at 07:18 -0400, Jan Stancek wrote:
-> > > 
-> > > 
-> > > 
-> > > ----- Original Message -----
-> > > > From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> > > > To: "Alexey Kodanev" <alexey.kodanev@oracle.com>
-> > > > Cc: "vasily isaenko" <vasily.isaenko@oracle.com>,
-> > > > ltp-list@lists.sourceforge.net
-> > > > Sent: Tuesday, 19 May, 2015 10:50:22 AM
-> > > > Subject: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not
-> > > > 	supported
-> > > > 
-> > > > SEEK_HOLE is only supported since version 3.1. Check the specified
-> > > > range blocks are zeroed while the kernel does not supported SEEK_HOLE.
-> > > > 
-> > > > Signed-off-by: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
-> > > > ---
-> > > >  testcases/kernel/syscalls/fallocate/fallocate04.c | 13 ++++++++++---
-> > > >  1 file changed, 10 insertions(+), 3 deletions(-)
-> > > > 
-> > > > diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c
-> > > > b/testcases/kernel/syscalls/fallocate/fallocate04.c
-> > > > index 911bbe8..e94c572 100644
-> > > > --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-> > > > +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-> > > > @@ -98,13 +98,13 @@ static void setup(void)
-> > > >  	get_blocksize();
-> > > >  }
-> > > >  
-> > > > -static void check_file_data(const char exp_buf[], size_t size)
-> > > > +static void check_file_data_(const char exp_buf[], size_t size, off_t
-> > > > offset)
-> > > >  {
-> > > >  	char rbuf[size];
-> > > >  
-> > > >  	tst_resm(TINFO, "reading the file, compare with expected buffer");
-> > > >  
-> > > > -	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
-> > > > +	SAFE_LSEEK(cleanup, fd, offset, SEEK_SET);
-> > > >  	SAFE_READ(cleanup, 1, fd, rbuf, size);
-> > > >  
-> > > >  	if (memcmp(exp_buf, rbuf, size)) {
-> > > > @@ -116,6 +116,11 @@ static void check_file_data(const char exp_buf[],
-> > > > size_t
-> > > > size)
-> > > >  	}
-> > > >  }
-> > > >  
-> > > > +static inline void check_file_data(const char exp_buf[], size_t size)
-> > > > +{
-> > > > +	check_file_data_(exp_buf, size, 0);
-> > > > +}
-> > > > +
-> > > >  static void test01(void)
-> > > >  {
-> > > >  	tst_resm(TINFO, "allocate '%zu' bytes", buf_size);
-> > > > @@ -158,7 +163,9 @@ static void test02(void)
-> > > >  			tst_brkm(TFAIL | TERRNO, cleanup,
-> > > >  				 "fallocate() or lseek() failed");
-> > > >  		}
-> > > > -		tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
-> > > > +		char zeros[block_size];
-> > > > +		memset(zeros, 0, block_size);
-> > > > +		check_file_data_(zeros, block_size, block_size);
-> > > 
-> > > Hi,
-> > > 
-> > > Isn't this redundant?
-> > 
-> > To be honest, I do not think it is redundant.
-> 
-> Can you explain why?
-> 
-> > 
-> > > 
-> > > Couple lines below is this check, which also checks that range
-> > > <block_size, block_size*2> is zeroed.
-> > 
-> > Yep, this looks simple.
-> > This maybe cost more runtime because of 'fill_tst_buf'.
-> > But I do not reject it.
-> 
-> That code is already there, your patch is not removing it.
-> 
-> > 
-> > > 
-> > >         char exp_buf[buf_size];
-> > > 
-> > >         fill_tst_buf(exp_buf);
-> > >         memset(exp_buf + block_size, 0, block_size);
-> > >         check_file_data(exp_buf, buf_size);
-> > > 
-> > > Wouldn't it be enough to turn that warning into TINFO, for kernels < 3.1?
-> > > 
-> > > diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c
-> > > b/testcases/kernel/syscalls/fallocate/fallocate04.c
-> > > index 911bbe8..45d9827 100644
-> > > --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-> > > +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-> > > @@ -158,9 +158,12 @@ static void test02(void)
-> > >                         tst_brkm(TFAIL | TERRNO, cleanup,
-> > >                                  "fallocate() or lseek() failed");
-> > >                 }
-> > > -               tst_resm(TWARN | TERRNO, "lseek() doesn't support
-> > > SEEK_HOLE");
-> > > +               if (tst_kvercmp(3, 1, 0) < 0)
-> > 
-> > How about put them before lseek(SEEK_HOLE) ?
-> 
-> I think we should do the check on all kernels. lseek() can only check that the
-> hole exists, but current check also verifies that hole has correct size and
-> content.
-> 
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/lib6/in6_02.c |   32 ++++++++++++++++++++++++++++++++
+ 1 files changed, 32 insertions(+), 0 deletions(-)
 
-Right. It is the strict way we need to do. But it would make the test complex.
-Now, "turn that warning into TINFO" looks simple but effective.
-If nobody reject, I will send new patch like:
-
--               tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
-+               if (tst_kvercmp(3, 1, 0) < 0)
-+                       tst_resm(TINFO, "lseek() doesn't support SEEK_HOLE, "
-+                               "this is expected for < 3.1 kernels");
-+       } else {
-+               tst_resm(TINFO, "found a hole at '%ld' offset", ret);
-        }
--       tst_resm(TINFO, "found a hole at '%ld' offset", ret);
-
-Thank you.
-
-Best regards,
-Zeng
-
-
-> Regards,
-> Jan
-[...]
+diff --git a/testcases/network/lib6/in6_02.c b/testcases/network/lib6/in6_02.c
+index fea1827..dadb2a5 100644
+--- a/testcases/network/lib6/in6_02.c
++++ b/testcases/network/lib6/in6_02.c
+@@ -255,4 +255,36 @@ void initest(void)
+ void setup(void)
+ {
+ 	TEST_PAUSE;
++
++	tst_resm(TINFO, "get interface name from LHOST_IFACES var");
++
++	char *ifnames = getenv("LHOST_IFACES");
++
++	if (!ifnames) {
++		tst_resm(TWARN, "LHOST_IFACES not defined, default to eth0");
++		return;
++	}
++
++	char *end = strchr(ifnames, ' ');
++
++	if (!end)
++		end = strchr(ifnames, '\0');
++
++	if (!end || end <= ifnames)
++		return;
++
++	size_t size = end - ifnames + 1;
++
++	char *name = malloc(size);
++
++	strncpy(name, ifnames, size - 1);
++	name[size] = '\0';
++
++	if (!strcmp(name, n2i[1].name)) {
++		free(name);
++		return;
++	}
++
++	tst_resm(TINFO, "change default 'eth0' name to '%s'", name);
++	n2i[1].name = name;
+ }
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
