@@ -2,24 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Yptjd-0004n6-Ij
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 07:27:13 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Yptjc-0002S6-Ng
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 07:27:13 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t467Po6r004593
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 15:25:50 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Wed, 6 May 2015 15:26:15 +0800
-Message-ID: <1430897176-16486-4-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1YsSak-0000c5-Mw
+	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 09:04:38 +0000
+Date: Wed, 13 May 2015 11:03:59 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150513090359.GB3409@rei.suse.de>
+References: <20150504063425.GA9995@localhost.localdomain>
+	<20150504115324.GB7674@rei.suse.de>
+	<20150506135504.GC2752@localhost.localdomain>
+	<5551F71E.7090400@huawei.com> <20150512134858.GA11906@rei.suse.de>
+	<55530742.3030707@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 4/5] kernel/syscalls/dup2: free fildes to avoid memory
-	leak
+Content-Disposition: inline
+In-Reply-To: <55530742.3030707@huawei.com>
+Subject: Re: [LTP] [PATCH] open/open12: Check the kernel version for
+ 'MS_STRICTATIME'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,28 +29,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, zhuyanpeng@huawei.com, zhanyongming@huawei.com
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
----
- testcases/kernel/syscalls/dup2/dup205.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi!
+> Call tst_kvercmp() to check the kernel version(newer than 2.6.30) before
+> calling SAFE_MOUNT( MS_STRICTATIME ).
+> 
+> Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+> ---
+>  testcases/kernel/syscalls/open/open12.c |    7 +++++++
+>  1 files changed, 7 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/open/open12.c b/testcases/kernel/syscalls/open/open12.c
+> index e665368..9d315fb 100644
+> --- a/testcases/kernel/syscalls/open/open12.c
+> +++ b/testcases/kernel/syscalls/open/open12.c
+> @@ -80,6 +80,13 @@ static void setup(void)
+> 
+>  	TEST_PAUSE;
+> 
+> +	if ((tst_kvercmp(2, 6, 30)) < 0) {
+> +                tst_resm(TCONF,
+> +                         "MS_STRICTATIME flags for mount(2) needs kernel 2.6.30 "
+> +                         "or higher");
+> +                return;
+> +        }
 
-diff --git a/testcases/kernel/syscalls/dup2/dup205.c b/testcases/kernel/syscalls/dup2/dup205.c
-index 14218dd..a77ae0d 100644
---- a/testcases/kernel/syscalls/dup2/dup205.c
-+++ b/testcases/kernel/syscalls/dup2/dup205.c
-@@ -111,6 +111,7 @@ int main(int ac, char *av[])
- 		unlink(pfilname);
- 		for (ifile = fildes[0]; ifile < min + 10; ifile++)
- 			close(fildes[ifile]);
-+		free(fildes);
- 		if (local_flag == PASSED) {
- 			tst_resm(TPASS, "Test passed.");
- 		} else {
+This is not right place to do it. The flag is used only when we need to
+mount the loop device so the check should be done only if we are about
+to acquire the device. And we should set the skip_noatime flag there as
+well.
+
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
