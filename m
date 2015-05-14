@@ -1,23 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1Yyamh-0004JG-Bc
-	for ltp-list@lists.sourceforge.net; Sat, 30 May 2015 07:02:19 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Yyamb-0001mp-Tm
-	for ltp-list@lists.sourceforge.net; Sat, 30 May 2015 07:02:19 +0000
-Message-ID: <55696062.5010705@huawei.com>
-Date: Sat, 30 May 2015 15:01:54 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
+	(envelope-from <metan@suse.de>) id 1Yss68-0004fm-L2
+	for Ltp-list@lists.sourceforge.net; Thu, 14 May 2015 12:18:44 +0000
+Date: Thu, 14 May 2015 14:18:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150514121803.GA6993@rei>
+References: <CAGMUi-CsR0S4BxSs3Nq+6Gi8fFi_czp-0T7=VQiz9rHpQ5siBw@mail.gmail.com>
 MIME-Version: 1.0
-References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
-	<555D8E94.20605@huawei.com> <555DA53C.10008@huawei.com>
-	<5567BFF1.7000503@huawei.com>
-In-Reply-To: <5567BFF1.7000503@huawei.com>
-Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
- failed
+Content-Disposition: inline
+In-Reply-To: <CAGMUi-CsR0S4BxSs3Nq+6Gi8fFi_czp-0T7=VQiz9rHpQ5siBw@mail.gmail.com>
+Subject: Re: [LTP] LTP cross copilation
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,41 +24,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, peifeiyue@huawei.com
+To: Narendra Kumar <narendrakumar.chepuri@gmail.com>
+Cc: Ltp-list@lists.sourceforge.net
 
+Hi!
+>             I am working on LTP-DDT, I want to know how to build it and run
+> on DM365 board. I am unable to build for linux PC itself by following the
+> INSTALL file located in ltp-ddt-master folder. So please help me in
+> building and running it for DM365.
 
-Hi Bixuan,
-If the current time is 23:59:59 May 30 23:59:59 2015, we start to run
-the case and /var/log/*20150530* file is created.
-It has a delay before the program runs the following command added by you.
-rm -f /var/log/*`date '+%Y%m%d'`* > /dev/null 2>&1
+Again, you are asking on wrong mailing list. This is LTP mailing list
+and LTP-DDT is _different_ project that is only based on LTP. They even
+have their mailing list listed at the first google result for LTP-DDT
+search.
 
-If it is 2 seconds delay, the command will be "rm -f /var/log/*20150531*".
-The issue leads to the fact the previous log file can't removed.
-Thanks.
-     Yuan
-
-On 2015/5/29 9:25, Cui Bixuan wrote:
-> On 2015/5/21 17:28, s00318865 wrote:
->
->> If the current time is 23:59:59, a problem would occur. It is good to use the following command.
->> rm [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]
->> Of course, it is better if you can find a way to use regular expressions to match it.
-> "If the current time is 23:59:59, a problem would occur." why?
-> The error occur when there are messages-20150406 file in /var/log/ and do "logrotate" in 20150406(same day).
->
-> Thanks,
-> Cui Bixuan
->
->
->
->
-> .
->
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
