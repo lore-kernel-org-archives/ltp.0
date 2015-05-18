@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1YqIFv-0002Vz-Sw
-	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 09:38:11 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YqIFu-0007SB-Oy
-	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 09:38:11 +0000
-Message-ID: <554B326F.8050808@oracle.com>
-Date: Thu, 07 May 2015 12:37:51 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YuI3D-00082w-2Q
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2015 10:13:35 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YuI3B-0008Ax-QV
+	for ltp-list@lists.sourceforge.net; Mon, 18 May 2015 10:13:35 +0000
+Message-ID: <1431944048.27486.14.camel@G08FNSTD140232>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Mon, 18 May 2015 18:14:08 +0800
+In-Reply-To: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-References: <554A7CCB.5030601@oracle.com>
-	<1430979479-29407-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1430979479-29407-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] kernel/syscalls/fallocate: fix array parameter
- degradation
+Subject: [LTP] [PATCH] fallocate04: another check if SEEK_HOLE is not
+	supported
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,72 +28,92 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Hi,
-On 05/07/2015 09:17 AM, Wei,Jiangang wrote:
-> Using 'sizeof' on array given as function argument
-> returns size of a pointer, instead of the array's.
-> So,
-> It needs to pass an additional parameter size_t size
-> indicating the number of elements in the array.
->
-> Besides above,
-> Set adjacent two bytes in 'exp_buf' to zero in test04().
->
-> Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
-> ---
->   testcases/kernel/syscalls/fallocate/fallocate04.c | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-> index 723c886..911bbe8 100644
-> --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-> +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-> @@ -98,9 +98,8 @@ static void setup(void)
->   	get_blocksize();
->   }
->   
-> -static void check_file_data(const char exp_buf[])
-> +static void check_file_data(const char exp_buf[], size_t size)
->   {
-> -	size_t size = sizeof(exp_buf);
->   	char rbuf[size];
->   
->   	tst_resm(TINFO, "reading the file, compare with expected buffer");
-> @@ -175,7 +174,7 @@ static void test02(void)
->   	fill_tst_buf(exp_buf);
->   	memset(exp_buf + block_size, 0, block_size);
->   
-> -	check_file_data(exp_buf);
-> +	check_file_data(exp_buf, buf_size);
->   
->   	tst_resm(TPASS, "test-case succeeded");
->   }
-> @@ -215,7 +214,7 @@ static void test03(void)
->   	fill_tst_buf(exp_buf);
->   	memset(exp_buf + block_size - 1, 0, block_size + 2);
->   
-> -	check_file_data(exp_buf);
-> +	check_file_data(exp_buf, buf_size);
->   
->   	tst_resm(TPASS, "test-case succeeded");
->   }
-> @@ -251,7 +250,8 @@ static void test04(void)
->   	memcpy(exp_buf, tmp_buf, block_size);
->   	memcpy(exp_buf + block_size, tmp_buf + size, block_size);
->   
-> -	check_file_data(exp_buf);
-> +	exp_buf[block_size - 1] = exp_buf[block_size] = '\0';
-> +	check_file_data(exp_buf, size);
->   
->   	tst_resm(TPASS, "test-case succeeded");
->   }
+SEEK_HOLE is only supported since version 3.1. Check the specified
+range blocks are zeroed while the kernel does not supported SEEK_HOLE.
 
-Patch applied, thank you!
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/fallocate/fallocate04.c | 49 ++++++++++++++++++-----
+ 1 file changed, 39 insertions(+), 10 deletions(-)
 
-Best regards,
-Alexey
+diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
+index 911bbe8..9d9587b 100644
+--- a/testcases/kernel/syscalls/fallocate/fallocate04.c
++++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
+@@ -50,6 +50,8 @@ static const option_t options[] = {
+ 	{NULL, NULL, NULL}
+ };
+ 
++static off_t check_file_hole(int, off_t, off_t);
++
+ static void help(void)
+ {
+ 	printf("  -v      Verbose\n");
+@@ -150,17 +152,12 @@ static void test02(void)
+ 	}
+ 
+ 	tst_resm(TINFO, "check that file has a hole with lseek(,,SEEK_HOLE)");
+-	off_t ret = lseek(fd, 0, SEEK_HOLE);
+ 
+-	if (ret != (ssize_t)block_size) {
+-		/* exclude error when kernel doesn't have SEEK_HOLE support */
+-		if (errno != EINVAL) {
+-			tst_brkm(TFAIL | TERRNO, cleanup,
+-				 "fallocate() or lseek() failed");
+-		}
+-		tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
+-	}
+-	tst_resm(TINFO, "found a hole at '%ld' offset", ret);
++	off_t ret = check_file_hole(fd, block_size, block_size);
++	if (ret != (ssize_t)block_size)
++		tst_resm(TWARN | TERRNO, "No file hole found");
++	else
++		tst_resm(TINFO, "found a hole at '%ld' offset", ret);
+ 
+ 	size_t alloc_size1 = get_allocsize();
+ 
+@@ -275,3 +272,35 @@ int main(int argc, char *argv[])
+ 
+ 	tst_exit();
+ }
++
++static off_t check_file_hole(int fd, off_t offset, off_t len)
++{
++	off_t ret;
++
++	ret = lseek(fd, 0, SEEK_HOLE);
++	if (ret < 0) {
++		/* exclude error when kernel doesn't have SEEK_HOLE support */
++		if (errno != EINVAL)
++			tst_brkm(TFAIL | TERRNO, cleanup, "lseek() failed");
++
++		int i;
++		char *buf;
++
++		SAFE_LSEEK(cleanup, fd, offset, SEEK_SET);
++
++		buf = SAFE_MALLOC(cleanup, len);
++
++		SAFE_READ(cleanup, 1, fd, buf, len);
++
++		for (i = 0; i < len; i++) {
++			if (buf[i] != '\0')
++				break;
++		}
++
++		free(buf);
++
++		return i;
++	}
++
++	return ret;
++}
+-- 
+1.9.3
+
 
 
 
