@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liaoqingwei@huawei.com>) id 1Yw7CX-0001KP-9J
-	for ltp-list@lists.sourceforge.net; Sat, 23 May 2015 11:02:45 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Yw7CR-0003go-5C
-	for ltp-list@lists.sourceforge.net; Sat, 23 May 2015 11:02:45 +0000
-Message-ID: <55605E3A.3040000@huawei.com>
-Date: Sat, 23 May 2015 19:02:18 +0800
-From: LiaoQingwei <liaoqingwei@huawei.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YudkK-0000UD-2l
+	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 09:23:32 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YudkI-0003cu-4f
+	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 09:23:32 +0000
+Date: Tue, 19 May 2015 05:23:17 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1672705239.1608287.1432027397871.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1432006441.27486.26.camel@G08FNSTD140232>
+References: <1430907502-30493-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	<1430907502-30493-3-git-send-email-weijg.fnst@cn.fujitsu.com>
+	<1432006441.27486.26.camel@G08FNSTD140232>
 MIME-Version: 1.0
-References: <1432404112-12132-1-git-send-email-liaoqingwei@huawei.com>
-In-Reply-To: <1432404112-12132-1-git-send-email-liaoqingwei@huawei.com>
-Subject: Re: [LTP] [PATCH v2] controllers/cpuacct: tst_brkm() instead of
- echo failed message
+Subject: Re: [LTP] [PATCH] mmapstress01: Modify readbuf's type and define it
+ to	uchar_t
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,42 +30,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: liaoqingwei <liaoqingwei@huawei.com>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Please forgive my careless,I send a wrong patch,please ignored.The patch v2 maybe right.
-Thanks.
 
-Most of the time,the reason of mount cgroup failed is the configuration
-is not enabled,for example,CONFIG_CGROUP_CPUACCT=no.
-I think use TCONF message is more helpful,and use basic test interface
-tst_brkm instead of echo failed message.
 
-Signed-off-by: Liao Qingwei <liaoqingwei@huawei.com>
----
- testcases/kernel/controllers/cpuacct/cpuacct_setup.sh | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+----- Original Message -----
+> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+> To: "Jiangang Wei" <weijg.fnst@cn.fujitsu.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 19 May, 2015 5:34:01 AM
+> Subject: [LTP] [PATCH] mmapstress01: Modify readbuf's type and define it to	uchar_t
+> 
+> readbuf is defined to char. That is different with the previous
+> defined. If readbuf's value is more than 127, that would be regarded
+> as negative number. And expbuf is uchar_t, the value is always
+> nonegative. That will make the test fail because the different data
+> type.
+> 
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 
-diff --git a/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh b/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
-index 6eab1b4..f9c4fb8 100755
---- a/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
-+++ b/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
-@@ -97,10 +97,8 @@ setup()
-        mount -t cgroup -ocpuacct none /dev/cpuacct 2> /dev/null
-        if [ $? -ne 0 ]
-        then
--               echo "TFAIL: Could not mount cgroup filesystem"
--               echo "Exiting test"
--               cleanup
--               exit 1
-+                tst_brkm TCONF cleanup "Could not mount cgroup filesystem,Maybe the configuration is not enabled"
-+               exit 0
-        fi
+Applied.
 
-        # Group created earlier may again be visible if not cleaned properly.
--- 
-1.9.1
-
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
