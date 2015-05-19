@@ -1,25 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YpwQI-00020q-8R
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 10:19:26 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YuYHX-0002S0-57
+	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 03:33:27 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YpwQH-0004T5-26
-	for ltp-list@lists.sourceforge.net; Wed, 06 May 2015 10:19:26 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	id 1YuYHV-0003tP-Ki
+	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 03:33:27 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t46AHvbt016853
-	for <ltp-list@lists.sourceforge.net>; Wed, 6 May 2015 18:17:57 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Wed, 6 May 2015 18:18:21 +0800
-Message-ID: <1430907502-30493-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1430907502-30493-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4J3Vt0C001039
+	for <ltp-list@lists.sourceforge.net>; Tue, 19 May 2015 11:31:56 +0800
+Message-ID: <1432006441.27486.26.camel@G08FNSTD140232>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Tue, 19 May 2015 11:34:01 +0800
+In-Reply-To: <1430907502-30493-3-git-send-email-weijg.fnst@cn.fujitsu.com>
 References: <1430907502-30493-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	<1430907502-30493-3-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/3] kernel/syscalls/fallocate: specify size needs
-	check
+Subject: [LTP] [PATCH] mmapstress01: Modify readbuf's type and define it to
+	uchar_t
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,50 +33,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Compare size_t size elements with file data and check
-if it's excpeted.
-This patch depends on bff5968.
+readbuf is defined to char. That is different with the previous
+defined. If readbuf's value is more than 127, that would be regarded
+as negative number. And expbuf is uchar_t, the value is always
+nonegative. That will make the test fail because the different data
+type.
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/fallocate/fallocate04.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ testcases/kernel/mem/mmapstress/mmapstress01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-index a6d1159..2da0bcd 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-@@ -174,7 +174,7 @@ static void test02(void)
- 	fill_tst_buf(exp_buf);
- 	memset(exp_buf + block_size, 0, block_size);
- 
--	check_file_data(exp_buf);
-+	check_file_data(exp_buf, sizeof(exp_buf)/sizeof(exp_buf[0]));
- 
- 	tst_resm(TPASS, "test-case succeeded");
- }
-@@ -214,7 +214,7 @@ static void test03(void)
- 	fill_tst_buf(exp_buf);
- 	memset(exp_buf + block_size - 1, 0, block_size + 2);
- 
--	check_file_data(exp_buf);
-+	check_file_data(exp_buf, sizeof(exp_buf)/sizeof(exp_buf[0]));
- 
- 	tst_resm(TPASS, "test-case succeeded");
- }
-@@ -250,7 +250,7 @@ static void test04(void)
- 	memcpy(exp_buf, tmp_buf, block_size);
- 	memcpy(exp_buf + block_size, tmp_buf + size, block_size);
- 
--	check_file_data(exp_buf);
-+	check_file_data(exp_buf, sizeof(exp_buf)/sizeof(exp_buf[0]));
- 
- 	tst_resm(TPASS, "test-case succeeded");
- }
+diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
+index ed1466a..81566f2 100644
+--- a/testcases/kernel/mem/mmapstress/mmapstress01.c
++++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
+@@ -604,7 +604,7 @@ int fileokay(char *file, uchar_t * expbuf)
+ 	size_t mapsize;
+ 	unsigned mappages;
+ 	unsigned pagesize = sysconf(_SC_PAGE_SIZE);
+-	char readbuf[pagesize];
++	uchar_t readbuf[pagesize];
+ 	int fd;
+ 	int cnt;
+ 	unsigned i, j;
 -- 
 1.9.3
+
+
 
 
 ------------------------------------------------------------------------------
