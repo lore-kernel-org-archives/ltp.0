@@ -1,26 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YuYHX-0002S0-57
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 03:33:27 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YuYHV-0003tP-Ki
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 03:33:27 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4J3Vt0C001039
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 May 2015 11:31:56 +0800
-Message-ID: <1432006441.27486.26.camel@G08FNSTD140232>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 19 May 2015 11:34:01 +0800
-In-Reply-To: <1430907502-30493-3-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1430907502-30493-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<1430907502-30493-3-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Yuzcg-0004qr-WA
+	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 08:45:07 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Yuzcg-0003X2-3R
+	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 08:45:06 +0000
+Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t4K8j076028990
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 20 May 2015 08:45:00 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t4K8ixWv026651
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 20 May 2015 08:44:59 GMT
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t4K8ixqO006553
+	for <ltp-list@lists.sourceforge.net>; Wed, 20 May 2015 08:44:59 GMT
+Message-ID: <555C4A3E.9020406@oracle.com>
+Date: Wed, 20 May 2015 11:47:58 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] mmapstress01: Modify readbuf's type and define it to
-	uchar_t
+References: <1422972883-12173-1-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1422972883-12173-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH 1/6] network/stress/http: rename http4-stress
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,38 +39,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-readbuf is defined to char. That is different with the previous
-defined. If readbuf's value is more than 127, that would be regarded
-as negative number. And expbuf is uchar_t, the value is always
-nonegative. That will make the test fail because the different data
-type.
+Hi,
+On 02/03/2015 05:14 PM, Alexey Kodanev wrote:
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>   testcases/network/stress/http/http-stress  |  357 ++++++++++++++++++++++++++++
+>   testcases/network/stress/http/http4-stress |  357 ----------------------------
+>   2 files changed, 357 insertions(+), 357 deletions(-)
+>   create mode 100644 testcases/network/stress/http/http-stress
+>   delete mode 100644 testcases/network/stress/http/http4-stress
+>
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/kernel/mem/mmapstress/mmapstress01.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Patch-set applied.
 
-diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
-index ed1466a..81566f2 100644
---- a/testcases/kernel/mem/mmapstress/mmapstress01.c
-+++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
-@@ -604,7 +604,7 @@ int fileokay(char *file, uchar_t * expbuf)
- 	size_t mapsize;
- 	unsigned mappages;
- 	unsigned pagesize = sysconf(_SC_PAGE_SIZE);
--	char readbuf[pagesize];
-+	uchar_t readbuf[pagesize];
- 	int fd;
- 	int cnt;
- 	unsigned i, j;
--- 
-1.9.3
-
-
-
+Thanks,
+Alexey
 
 ------------------------------------------------------------------------------
 One dashboard for servers and applications across Physical-Virtual-Cloud 
