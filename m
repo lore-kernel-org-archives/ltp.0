@@ -2,17 +2,26 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1Yxasp-000506-Kh
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 12:56:31 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Yxasm-000442-4a
-	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 12:56:31 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Wed, 27 May 2015 15:00:21 -0600
-Message-ID: <1432760421-14844-1-git-send-email-sunyuan3@huawei.com>
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Yv0kc-0001TM-PN
+	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 09:57:22 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Yv0ka-0003vm-UP
+	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 09:57:22 +0000
+Message-ID: <1432115881.16347.41.camel@G08FNSTD140232>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Wed, 20 May 2015 17:58:01 +0800
+In-Reply-To: <1312891014.2427183.1432104744478.JavaMail.zimbra@redhat.com>
+References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
+	<1431944048.27486.14.camel@G08FNSTD140232>
+	<5559F134.7040705@oracle.com>
+	<1432025422.16347.6.camel@G08FNSTD140232>
+	<1273450911.1653813.1432034294768.JavaMail.zimbra@redhat.com>
+	<1432086442.16347.24.camel@G08FNSTD140232>
+	<1312891014.2427183.1432104744478.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH V2] containers: new testcase userns02
+Subject: Re: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not
+ supported
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,162 +34,170 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
-Cc: ltp-list@lists.sourceforge.net, pleasuresun@sina.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-The user ID and group ID, which are inside a container, can
-be modified by its parent process.
+Hi,
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
----
- runtest/containers                            |   1 +
- testcases/kernel/containers/.gitignore        |   1 +
- testcases/kernel/containers/userns/userns02.c | 113 ++++++++++++++++++++++++++
- 3 files changed, 115 insertions(+)
- create mode 100644 testcases/kernel/containers/userns/userns02.c
+On Wed, 2015-05-20 at 02:52 -0400, Jan Stancek wrote:
+> 
+> 
+> 
+> ----- Original Message -----
+> > From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+> > To: "Jan Stancek" <jstancek@redhat.com>
+> > Cc: "Alexey Kodanev" <alexey.kodanev@oracle.com>, "vasily isaenko" <vasily.isaenko@oracle.com>,
+> > ltp-list@lists.sourceforge.net
+> > Sent: Wednesday, 20 May, 2015 3:47:22 AM
+> > Subject: Re: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not supported
+> > 
+> > Hi!
+> > 
+> > On Tue, 2015-05-19 at 07:18 -0400, Jan Stancek wrote:
+> > > 
+> > > 
+> > > 
+> > > ----- Original Message -----
+> > > > From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+> > > > To: "Alexey Kodanev" <alexey.kodanev@oracle.com>
+> > > > Cc: "vasily isaenko" <vasily.isaenko@oracle.com>,
+> > > > ltp-list@lists.sourceforge.net
+> > > > Sent: Tuesday, 19 May, 2015 10:50:22 AM
+> > > > Subject: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not
+> > > > 	supported
+> > > > 
+> > > > SEEK_HOLE is only supported since version 3.1. Check the specified
+> > > > range blocks are zeroed while the kernel does not supported SEEK_HOLE.
+> > > > 
+> > > > Signed-off-by: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
+> > > > ---
+> > > >  testcases/kernel/syscalls/fallocate/fallocate04.c | 13 ++++++++++---
+> > > >  1 file changed, 10 insertions(+), 3 deletions(-)
+> > > > 
+> > > > diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > > > b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > > > index 911bbe8..e94c572 100644
+> > > > --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > > > +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > > > @@ -98,13 +98,13 @@ static void setup(void)
+> > > >  	get_blocksize();
+> > > >  }
+> > > >  
+> > > > -static void check_file_data(const char exp_buf[], size_t size)
+> > > > +static void check_file_data_(const char exp_buf[], size_t size, off_t
+> > > > offset)
+> > > >  {
+> > > >  	char rbuf[size];
+> > > >  
+> > > >  	tst_resm(TINFO, "reading the file, compare with expected buffer");
+> > > >  
+> > > > -	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
+> > > > +	SAFE_LSEEK(cleanup, fd, offset, SEEK_SET);
+> > > >  	SAFE_READ(cleanup, 1, fd, rbuf, size);
+> > > >  
+> > > >  	if (memcmp(exp_buf, rbuf, size)) {
+> > > > @@ -116,6 +116,11 @@ static void check_file_data(const char exp_buf[],
+> > > > size_t
+> > > > size)
+> > > >  	}
+> > > >  }
+> > > >  
+> > > > +static inline void check_file_data(const char exp_buf[], size_t size)
+> > > > +{
+> > > > +	check_file_data_(exp_buf, size, 0);
+> > > > +}
+> > > > +
+> > > >  static void test01(void)
+> > > >  {
+> > > >  	tst_resm(TINFO, "allocate '%zu' bytes", buf_size);
+> > > > @@ -158,7 +163,9 @@ static void test02(void)
+> > > >  			tst_brkm(TFAIL | TERRNO, cleanup,
+> > > >  				 "fallocate() or lseek() failed");
+> > > >  		}
+> > > > -		tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
+> > > > +		char zeros[block_size];
+> > > > +		memset(zeros, 0, block_size);
+> > > > +		check_file_data_(zeros, block_size, block_size);
+> > > 
+> > > Hi,
+> > > 
+> > > Isn't this redundant?
+> > 
+> > To be honest, I do not think it is redundant.
+> 
+> Can you explain why?
+> 
+> > 
+> > > 
+> > > Couple lines below is this check, which also checks that range
+> > > <block_size, block_size*2> is zeroed.
+> > 
+> > Yep, this looks simple.
+> > This maybe cost more runtime because of 'fill_tst_buf'.
+> > But I do not reject it.
+> 
+> That code is already there, your patch is not removing it.
+> 
+> > 
+> > > 
+> > >         char exp_buf[buf_size];
+> > > 
+> > >         fill_tst_buf(exp_buf);
+> > >         memset(exp_buf + block_size, 0, block_size);
+> > >         check_file_data(exp_buf, buf_size);
+> > > 
+> > > Wouldn't it be enough to turn that warning into TINFO, for kernels < 3.1?
+> > > 
+> > > diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > > b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > > index 911bbe8..45d9827 100644
+> > > --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > > +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > > @@ -158,9 +158,12 @@ static void test02(void)
+> > >                         tst_brkm(TFAIL | TERRNO, cleanup,
+> > >                                  "fallocate() or lseek() failed");
+> > >                 }
+> > > -               tst_resm(TWARN | TERRNO, "lseek() doesn't support
+> > > SEEK_HOLE");
+> > > +               if (tst_kvercmp(3, 1, 0) < 0)
+> > 
+> > How about put them before lseek(SEEK_HOLE) ?
+> 
+> I think we should do the check on all kernels. lseek() can only check that the
+> hole exists, but current check also verifies that hole has correct size and
+> content.
+> 
 
-diff --git a/runtest/containers b/runtest/containers
-index ca10372..bb1beb6 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -69,3 +69,4 @@ mountns03 mountns03
- mountns04 mountns04
- 
- userns01 userns01
-+userns02 userns02
-diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index 4478b53..e3c92c9 100644
---- a/testcases/kernel/containers/.gitignore
-+++ b/testcases/kernel/containers/.gitignore
-@@ -4,3 +4,4 @@ mountns/mountns02
- mountns/mountns03
- mountns/mountns04
- userns/userns01
-+userns/userns02
-diff --git a/testcases/kernel/containers/userns/userns02.c b/testcases/kernel/containers/userns/userns02.c
-new file mode 100644
-index 0000000..6a4b36d
---- /dev/null
-+++ b/testcases/kernel/containers/userns/userns02.c
-@@ -0,0 +1,113 @@
-+/*
-+ * Copyright (c) Huawei Technologies Co., Ltd., 2015
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ */
-+
-+/*
-+ * Verify that:
-+ *  The user ID and group ID, which are inside a container, can be modified
-+ * by its parent process.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <assert.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <errno.h>
-+#include "test.h"
-+#include "userns_helper.h"
-+
-+char *TCID = "user_namespace2";
-+int TST_TOTAL = 1;
-+
-+int childpid;
-+int parentuid;
-+int parentgid;
-+char path[BUFSIZ];
-+char content[BUFSIZ];
-+static int fd;
-+/*
-+ * child_fn1() - Inside a new user namespace
-+ */
-+static int child_fn1(void)
-+{
-+	int exit_val;
-+	int uid, gid;
-+
-+	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	uid = geteuid();
-+	gid = getegid();
-+
-+	printf("USERNS test is running in a new user namespace.\n");
-+	if (uid == 100 && gid == 100) {
-+		printf("Got expected uid and gid.\n");
-+		exit_val = 0;
-+	} else {
-+		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
-+		exit_val = 1;
-+	}
-+
-+	return exit_val;
-+}
-+
-+static void setup(void)
-+{
-+	TST_CHECKPOINT_INIT(NULL);
-+	check_newuser();
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int status;
-+	int lc;
-+
-+	tst_parse_opts(argc, argv, NULL, NULL);
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		childpid = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-+			(void *)child_fn1, NULL);
-+
-+		if (childpid < 0)
-+			tst_brkm(TFAIL | TERRNO, NULL, "clone failed");
-+
-+		parentuid = geteuid();
-+		parentgid = getegid();
-+		sprintf(path, "/proc/%d/uid_map", childpid);
-+		sprintf(content, "100 %d 1", parentuid);
-+		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
-+		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
-+		sprintf(path, "/proc/%d/gid_map", childpid);
-+		sprintf(content, "100 %d 1", parentgid);
-+		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
-+		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
-+
-+		TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
-+
-+		if (waitpid(childpid, &status, 0) < 0)
-+			tst_resm(TBROK | TERRNO, "parent: waitpid failed.");
-+
-+		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-+			tst_resm(TFAIL, "child exited abnormally");
-+		else if (WIFSIGNALED(status)) {
-+			tst_resm(TFAIL, "child was killed with signal = %d",
-+				WTERMSIG(status));
-+		}
-+
-+	}
-+	tst_resm(TPASS, "the uid and the gid are right inside the container");
-+	tst_exit();
-+}
-+
--- 
-1.9.1
+Right. It is the strict way we need to do. But it would make the test complex.
+Now, "turn that warning into TINFO" looks simple but effective.
+If nobody reject, I will send new patch like:
+
+-               tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
++               if (tst_kvercmp(3, 1, 0) < 0)
++                       tst_resm(TINFO, "lseek() doesn't support SEEK_HOLE, "
++                               "this is expected for < 3.1 kernels");
++       } else {
++               tst_resm(TINFO, "found a hole at '%ld' offset", ret);
+        }
+-       tst_resm(TINFO, "found a hole at '%ld' offset", ret);
+
+Thank you.
+
+Best regards,
+Zeng
+
+
+> Regards,
+> Jan
+[...]
 
 
 ------------------------------------------------------------------------------
+One dashboard for servers and applications across Physical-Virtual-Cloud 
+Widest out-of-the-box monitoring support with 50+ applications
+Performance metrics, stats and reports that give you Actionable Insights
+Deep dive visibility with transaction tracing using APM Insight.
+http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
