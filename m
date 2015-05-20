@@ -1,25 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1YuEVD-0000VW-02
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2015 06:26:15 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Yut5q-0000wO-UA
+	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 01:46:46 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YuEVB-0004Ug-0O
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2015 06:26:14 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4I6OhfZ011536
-	for <ltp-list@lists.sourceforge.net>; Mon, 18 May 2015 14:24:43 +0800
-Message-ID: <555985D3.7070203@cn.fujitsu.com>
-Date: Mon, 18 May 2015 14:25:23 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Yut5o-0006Jq-HB
+	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 01:46:46 +0000
+Message-ID: <1432086442.16347.24.camel@G08FNSTD140232>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Wed, 20 May 2015 09:47:22 +0800
+In-Reply-To: <1273450911.1653813.1432034294768.JavaMail.zimbra@redhat.com>
+References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
+	<1431944048.27486.14.camel@G08FNSTD140232>
+	<5559F134.7040705@oracle.com>
+	<1432025422.16347.6.camel@G08FNSTD140232>
+	<1273450911.1653813.1432034294768.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-References: <1430967285-15095-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1431928620-25592-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-In-Reply-To: <1431928620-25592-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] device-drivers/zram: add kernel version check
+Subject: Re: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not
+ supported
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,141 +32,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
 
-On 05/18/2015 01:57 PM, Xiaoguang Wang wrote:
-> zram device attributes max_comp_streams and comp_algorithm are introduced
-> since kernel v3.15, and mem_limit is introduced since kernel v3.18, we
-> need to add these checks.
+Hi!
+
+On Tue, 2015-05-19 at 07:18 -0400, Jan Stancek wrote:
 > 
-> Also according to kernel-source-tree/Documentation/blockdev/zram.txt, zram
-> device attribute disksize value can be either in bytes, or you can use mem
-> suffixes. But in some old kernels, mem suffixes are not supported, for
-> example, in RHEL6.6GA's kernel layer, it uses strict_strtoull() to parse
-> disksize, which does not support mem suffixes, in some newer kernels, they
-> use memparse() which supports mem suffixes. So here we just use bytes to make
-> sure everything works correctly.
+> 
+> 
+> ----- Original Message -----
+> > From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
+> > To: "Alexey Kodanev" <alexey.kodanev@oracle.com>
+> > Cc: "vasily isaenko" <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+> > Sent: Tuesday, 19 May, 2015 10:50:22 AM
+> > Subject: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not	supported
+> > 
+> > SEEK_HOLE is only supported since version 3.1. Check the specified
+> > range blocks are zeroed while the kernel does not supported SEEK_HOLE.
+> > 
+> > Signed-off-by: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
+> > ---
+> >  testcases/kernel/syscalls/fallocate/fallocate04.c | 13 ++++++++++---
+> >  1 file changed, 10 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > index 911bbe8..e94c572 100644
+> > --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> > @@ -98,13 +98,13 @@ static void setup(void)
+> >  	get_blocksize();
+> >  }
+> >  
+> > -static void check_file_data(const char exp_buf[], size_t size)
+> > +static void check_file_data_(const char exp_buf[], size_t size, off_t
+> > offset)
+> >  {
+> >  	char rbuf[size];
+> >  
+> >  	tst_resm(TINFO, "reading the file, compare with expected buffer");
+> >  
+> > -	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
+> > +	SAFE_LSEEK(cleanup, fd, offset, SEEK_SET);
+> >  	SAFE_READ(cleanup, 1, fd, rbuf, size);
+> >  
+> >  	if (memcmp(exp_buf, rbuf, size)) {
+> > @@ -116,6 +116,11 @@ static void check_file_data(const char exp_buf[], size_t
+> > size)
+> >  	}
+> >  }
+> >  
+> > +static inline void check_file_data(const char exp_buf[], size_t size)
+> > +{
+> > +	check_file_data_(exp_buf, size, 0);
+> > +}
+> > +
+> >  static void test01(void)
+> >  {
+> >  	tst_resm(TINFO, "allocate '%zu' bytes", buf_size);
+> > @@ -158,7 +163,9 @@ static void test02(void)
+> >  			tst_brkm(TFAIL | TERRNO, cleanup,
+> >  				 "fallocate() or lseek() failed");
+> >  		}
+> > -		tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
+> > +		char zeros[block_size];
+> > +		memset(zeros, 0, block_size);
+> > +		check_file_data_(zeros, block_size, block_size);
+> 
+> Hi,
+> 
+> Isn't this redundant?
 
-It'd be more straightforward to split to two patches, one for kernel version checking
-and the other for unit change?
-
-But anyway, looks good to me.
-
-Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-
-
-Thanks,
-Wanlong Gao
+To be honest, I do not think it is redundant.
 
 > 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  testcases/kernel/device-drivers/zram/zram01.sh   | 10 +++++++-
->  testcases/kernel/device-drivers/zram/zram02.sh   | 10 +++++++-
->  testcases/kernel/device-drivers/zram/zram_lib.sh | 32 +++++++++++++++++++++---
->  3 files changed, 47 insertions(+), 5 deletions(-)
+> Couple lines below is this check, which also checks that range
+> <block_size, block_size*2> is zeroed.
+
+Yep, this looks simple.
+This maybe cost more runtime because of 'fill_tst_buf'.
+But I do not reject it.
+
 > 
-> diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-> index 49cbbe9..26dae90 100755
-> --- a/testcases/kernel/device-drivers/zram/zram01.sh
-> +++ b/testcases/kernel/device-drivers/zram/zram01.sh
-> @@ -31,7 +31,15 @@ dev_num=4
->  # This is a list of parameters for zram devices.
->  # Number of items must be equal to 'dev_num' parameter.
->  zram_max_streams="2 3 5 8"
-> -zram_sizes="25M 25M 25M 25M"
-> +
-> +# The zram sysfs node 'disksize' value can be either in bytes,
-> +# or you can use mem suffixes. But in some old kernels, mem
-> +# suffixes are not supported, for example, in RHEL6.6GA's kernel
-> +# layer, it uses strict_strtoull() to parse disksize which does
-> +# not support mem suffixes, in some newer kernels, they use
-> +# memparse() which supports mem suffixes. So here we just use
-> +# bytes to make sure everything works correctly.
-> +zram_sizes="26214400 26214400 26214400 26214400" # 25MB
->  zram_mem_limits="25M 25M 25M 25M"
->  zram_filesystems="ext3 ext4 xfs btrfs"
->  zram_algs="lzo lzo lzo lzo"
-> diff --git a/testcases/kernel/device-drivers/zram/zram02.sh b/testcases/kernel/device-drivers/zram/zram02.sh
-> index 53f69bb..59b3f9f 100755
-> --- a/testcases/kernel/device-drivers/zram/zram02.sh
-> +++ b/testcases/kernel/device-drivers/zram/zram02.sh
-> @@ -30,7 +30,15 @@ dev_num=1
->  # This is a list of parameters for zram devices.
->  # Number of items must be equal to 'dev_num' parameter.
->  zram_max_streams="2"
-> -zram_sizes="100G"
-> +
-> +# The zram sysfs node 'disksize' value can be either in bytes,
-> +# or you can use mem suffixes. But in some old kernels, mem
-> +# suffixes are not supported, for example, in RHEL6.6GA's kernel
-> +# layer, it uses strict_strtoull() to parse disksize which does
-> +# not support mem suffixes, in some newer kernels, they use
-> +# memparse() which supports mem suffixes. So here we just use
-> +# bytes to make sure everything works correctly.
-> +zram_sizes="107374182400" # 100GB
->  zram_mem_limits="1M"
->  
->  TST_CLEANUP="zram_cleanup"
-> diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
-> index e41d8c7..d3e62e0 100755
-> --- a/testcases/kernel/device-drivers/zram/zram_lib.sh
-> +++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
-> @@ -62,7 +62,15 @@ zram_load()
->  
->  zram_max_streams()
->  {
-> -	tst_resm TINFO "set max_comp_streams to zram device(s)"
-> +	tst_kvercmp 3 15 0
-> +	if [ $? -eq 0 ]; then
-> +		tst_resm TCONF "device attribute max_comp_streams is"\
-> +			"introduced since kernel v3.15, the running kernel"\
-> +			"does not support it"
-> +		return
-> +	else
-> +		tst_resm TINFO "set max_comp_streams to zram device(s)"
-> +	fi
->  
->  	local i=0
->  	for max_s in $zram_max_streams; do
-> @@ -83,7 +91,16 @@ zram_max_streams()
->  
->  zram_compress_alg()
->  {
-> -	tst_resm TINFO "test that we can set compression algorithm"
-> +	tst_kvercmp 3 15 0
-> +	if [ $? -eq 0 ]; then
-> +		tst_resm TCONF "device attribute comp_algorithm is"\
-> +			"introduced since kernel v3.15, the running kernel"\
-> +			"does not support it"
-> +		return
-> +	else
-> +		tst_resm TINFO "test that we can set compression algorithm"
-> +	fi
-> +
->  	local algs=$(cat /sys/block/zram0/comp_algorithm)
->  	tst_resm TINFO "supported algs: $algs"
->  	local i=0
-> @@ -116,7 +133,16 @@ zram_set_disksizes()
->  
->  zram_set_memlimit()
->  {
-> -	tst_resm TINFO "set memory limit to zram device(s)"
-> +	tst_kvercmp 3 18 0
-> +	if [ $? -eq 0 ]; then
-> +		tst_resm TCONF "device attribute mem_limit is"\
-> +			"introduced since kernel v3.18, the running kernel"\
-> +			"does not support it"
-> +		return
-> +	else
-> +		tst_resm TINFO "set memory limit to zram device(s)"
-> +	fi
-> +
->  	local i=0
->  	for ds in $zram_mem_limits; do
->  		local sys_path="/sys/block/zram${i}/mem_limit"
+>         char exp_buf[buf_size];
 > 
+>         fill_tst_buf(exp_buf);
+>         memset(exp_buf + block_size, 0, block_size);
+>         check_file_data(exp_buf, buf_size);
+> 
+> Wouldn't it be enough to turn that warning into TINFO, for kernels < 3.1?
+> 
+> diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> index 911bbe8..45d9827 100644
+> --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
+> +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
+> @@ -158,9 +158,12 @@ static void test02(void)
+>                         tst_brkm(TFAIL | TERRNO, cleanup,
+>                                  "fallocate() or lseek() failed");
+>                 }
+> -               tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
+> +               if (tst_kvercmp(3, 1, 0) < 0)
+
+How about put them before lseek(SEEK_HOLE) ?
+
+if (tst_kvercmp(3, 1, 0) < 0) {
+	fill_tst_buf();
+	memset();
+	check_file_data();
+} else {
+	lseek(SEEK_HOLE);
+	...
+}
+	
+
+Thank you very much.
+
+Best regards,
+Zeng
+
+> +                       tst_resm(TINFO, "lseek() doesn't support SEEK_HOLE, "
+> +                               "this is expected for < 3.1 kernels");
+> +       } else {
+> +               tst_resm(TINFO, "found a hole at '%ld' offset", ret);
+>         }
+> -       tst_resm(TINFO, "found a hole at '%ld' offset", ret);
+>  
+>         size_t alloc_size1 = get_allocsize();
+>  
+> Regards,
+> Jan
+
 
 
 ------------------------------------------------------------------------------
