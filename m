@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Yucxv-0003hX-N4
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 08:33:31 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Yucxt-0004FY-6E
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 08:33:31 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4J8VxHN020056
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 May 2015 16:31:59 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Tue, 19 May 2015 16:32:47 +0800
-Message-ID: <1432024368-23287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liaoqingwei@huawei.com>) id 1Yw7CX-0001KP-9J
+	for ltp-list@lists.sourceforge.net; Sat, 23 May 2015 11:02:45 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Yw7CR-0003go-5C
+	for ltp-list@lists.sourceforge.net; Sat, 23 May 2015 11:02:45 +0000
+Message-ID: <55605E3A.3040000@huawei.com>
+Date: Sat, 23 May 2015 19:02:18 +0800
+From: LiaoQingwei <liaoqingwei@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] testcases/kernel/syscalls: make use of ARRAY_SIZE
+References: <1432404112-12132-1-git-send-email-liaoqingwei@huawei.com>
+In-Reply-To: <1432404112-12132-1-git-send-email-liaoqingwei@huawei.com>
+Subject: Re: [LTP] [PATCH v2] controllers/cpuacct: tst_brkm() instead of
+ echo failed message
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,184 +28,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: liaoqingwei <liaoqingwei@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Using ARRAY_SIZE replace sizeof()/sizeof()
+Please forgive my careless,I send a wrong patch,please ignored.The patch v2 maybe right.
+Thanks.
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+Most of the time,the reason of mount cgroup failed is the configuration
+is not enabled,for example,CONFIG_CGROUP_CPUACCT=no.
+I think use TCONF message is more helpful,and use basic test interface
+tst_brkm instead of echo failed message.
+
+Signed-off-by: Liao Qingwei <liaoqingwei@huawei.com>
 ---
- testcases/kernel/syscalls/setreuid/setreuid02.c | 2 +-
- testcases/kernel/syscalls/setreuid/setreuid03.c | 2 +-
- testcases/kernel/syscalls/setreuid/setreuid04.c | 3 +--
- testcases/kernel/syscalls/setreuid/setreuid05.c | 2 +-
- testcases/kernel/syscalls/sysctl/sysctl01.c     | 4 +---
- testcases/kernel/syscalls/sysctl/sysctl03.c     | 9 ++++-----
- testcases/kernel/syscalls/sysctl/sysctl04.c     | 3 +--
- testcases/kernel/syscalls/sysctl/sysctl05.c     | 4 +---
- 8 files changed, 11 insertions(+), 18 deletions(-)
+ testcases/kernel/controllers/cpuacct/cpuacct_setup.sh | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid02.c b/testcases/kernel/syscalls/setreuid/setreuid02.c
-index 9cc0333..1257046 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid02.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid02.c
-@@ -58,7 +58,7 @@ static struct test_data_t {
- 	&bin.pw_uid, &neg_one, &bin, &root, "After setreuid(bin, -1)"}, {
- &root.pw_uid, &neg_one, &root, &root, "After setreuid(-1, root)"},};
- 
--int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
-+int TST_TOTAL = ARRAY_SIZE(test_data);
- 
- static void setup(void);
- static void cleanup(void);
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid03.c b/testcases/kernel/syscalls/setreuid/setreuid03.c
-index 2533908..34fa606 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid03.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid03.c
-@@ -83,7 +83,7 @@ static struct test_data_t {
- 	&nobody.pw_uid, &bin.pw_uid, &fail, &nobody, &nobody,
- 		    "After setreuid(nobody, bin),"},};
- 
--int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
-+int TST_TOTAL = ARRAY_SIZE(test_data);
- 
- static void setup(void);
- static void cleanup(void);
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid04.c b/testcases/kernel/syscalls/setreuid/setreuid04.c
-index f05f61d..2080f47 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid04.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid04.c
-@@ -54,8 +54,7 @@ struct test_data_t {
- &nobody.pw_uid, &nobody.pw_uid, &nobody, &nobody,
- 		    "After setreuid(-1, -1),"},};
- 
--/*int TST_TOTAL = sizeof(test_data)/sizeof(test_data[0]);*/
--int TST_TOTAL = 2;
-+int TST_TOTAL = ARRAY_SIZE(test_data);
- 
- static void setup(void);
- static void cleanup(void);
-diff --git a/testcases/kernel/syscalls/setreuid/setreuid05.c b/testcases/kernel/syscalls/setreuid/setreuid05.c
-index d6c4c6f..98436d3 100644
---- a/testcases/kernel/syscalls/setreuid/setreuid05.c
-+++ b/testcases/kernel/syscalls/setreuid/setreuid05.c
-@@ -76,7 +76,7 @@ struct test_data_t {
- 	&neg_one, &bin.pw_uid, &fail, &daemonpw, &daemonpw,
- 		    "After setreuid(-1, bin),"},};
- 
--int TST_TOTAL = sizeof(test_data) / sizeof(test_data[0]);
-+int TST_TOTAL = ARRAY_SIZE(test_data);
- 
- static void setup(void);
- static void cleanup(void);
-diff --git a/testcases/kernel/syscalls/sysctl/sysctl01.c b/testcases/kernel/syscalls/sysctl/sysctl01.c
-index fe62905..de6c6aa 100644
---- a/testcases/kernel/syscalls/sysctl/sysctl01.c
-+++ b/testcases/kernel/syscalls/sysctl/sysctl01.c
-@@ -66,8 +66,6 @@ static int sysctl(int *name, int nlen, void *oldval, size_t * oldlenp,
- 	return syscall(__NR__sysctl, &args);
- }
- 
--#define SIZE(x) sizeof(x)/sizeof(x[0])
--
- struct utsname buf;
- char osname[BUFSIZ];
- size_t osnamelth;
-@@ -115,7 +113,7 @@ int main(int ac, char **av)
- 
- 		for (i = 0; i < TST_TOTAL; ++i) {
- 
--			osnamelth = SIZE(osname);
-+			osnamelth = ARRAY_SIZE(osname);
- 
- 			switch (i) {
- 			case 0:
-diff --git a/testcases/kernel/syscalls/sysctl/sysctl03.c b/testcases/kernel/syscalls/sysctl/sysctl03.c
-index 88890b6..52e8ce6 100644
---- a/testcases/kernel/syscalls/sysctl/sysctl03.c
-+++ b/testcases/kernel/syscalls/sysctl/sysctl03.c
-@@ -86,7 +86,6 @@ int sysctl(int *name, int nlen, void *oldval, size_t * oldlenp,
- 	return syscall(__NR__sysctl, &args);
- }
- 
--#define SIZE(x) sizeof(x)/sizeof(x[0])
- #define OSNAMESZ 100
- 
- void setup(void);
-@@ -123,9 +122,9 @@ int main(int ac, char **av)
- 		tst_count = 0;
- 
- 		strcpy(osname, "Linux");
--		osnamelth = SIZE(osname);
-+		osnamelth = ARRAY_SIZE(osname);
- 
--		TEST(sysctl(name, SIZE(name), 0, 0, osname, osnamelth));
-+		TEST(sysctl(name, ARRAY_SIZE(name), 0, 0, osname, osnamelth));
- 
- 		if (TEST_RETURN != -1) {
- 			tst_resm(TFAIL, "sysctl(2) succeeded unexpectedly");
-@@ -142,7 +141,7 @@ int main(int ac, char **av)
- 			}
- 		}
- 
--		osnamelth = SIZE(osname);
-+		osnamelth = ARRAY_SIZE(osname);
- 		if ((ltpuser = getpwnam("nobody")) == NULL) {
- 			tst_brkm(TBROK, cleanup, "getpwnam() failed");
- 		}
-@@ -158,7 +157,7 @@ int main(int ac, char **av)
- 		}
- 
- 		if (pid == 0) {
--			TEST(sysctl(name, SIZE(name), 0, 0, osname, osnamelth));
-+			TEST(sysctl(name, ARRAY_SIZE(name), 0, 0, osname, osnamelth));
- 
- 			if (TEST_RETURN != -1) {
- 				tst_resm(TFAIL, "call succeeded unexpectedly");
-diff --git a/testcases/kernel/syscalls/sysctl/sysctl04.c b/testcases/kernel/syscalls/sysctl/sysctl04.c
-index ff63364..cb2ca65 100644
---- a/testcases/kernel/syscalls/sysctl/sysctl04.c
-+++ b/testcases/kernel/syscalls/sysctl/sysctl04.c
-@@ -67,7 +67,6 @@ int sysctl(int *name, int nlen, void *oldval, size_t * oldlenp,
- 	return syscall(__NR__sysctl, &args);
- }
- 
--#define SIZE(x) sizeof(x)/sizeof(x[0])
- #define OSNAMESZ 100
- 
- void setup(void);
-@@ -98,7 +97,7 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--	osnamelth = SIZE(osname);
-+	osnamelth = ARRAY_SIZE(osname);
- 
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
-diff --git a/testcases/kernel/syscalls/sysctl/sysctl05.c b/testcases/kernel/syscalls/sysctl/sysctl05.c
-index e6f09b2..eb7fed9 100644
---- a/testcases/kernel/syscalls/sysctl/sysctl05.c
-+++ b/testcases/kernel/syscalls/sysctl/sysctl05.c
-@@ -69,8 +69,6 @@ int sysctl(int *name, int nlen, void *oldval, size_t * oldlenp,
- 	return syscall(__NR__sysctl, &args);
- }
- 
--#define SIZE(x) sizeof(x)/sizeof(x[0])
--
- char osname[BUFSIZ];
- size_t osnamelth;
- 
-@@ -117,7 +115,7 @@ int main(int ac, char **av)
- 
- 		for (i = 0; i < TST_TOTAL; ++i) {
- 
--			osnamelth = SIZE(osname);
-+			osnamelth = ARRAY_SIZE(osname);
- 
- 			TEST(sysctl(testcases[i].name, testcases[i].size,
- 				    testcases[i].oldval, testcases[i].oldlen,
+diff --git a/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh b/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
+index 6eab1b4..f9c4fb8 100755
+--- a/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
++++ b/testcases/kernel/controllers/cpuacct/cpuacct_setup.sh
+@@ -97,10 +97,8 @@ setup()
+        mount -t cgroup -ocpuacct none /dev/cpuacct 2> /dev/null
+        if [ $? -ne 0 ]
+        then
+-               echo "TFAIL: Could not mount cgroup filesystem"
+-               echo "Exiting test"
+-               cleanup
+-               exit 1
++                tst_brkm TCONF cleanup "Could not mount cgroup filesystem,Maybe the configuration is not enabled"
++               exit 0
+        fi
+
+        # Group created earlier may again be visible if not cleaned properly.
 -- 
-1.9.3
+1.9.1
 
 
 ------------------------------------------------------------------------------
