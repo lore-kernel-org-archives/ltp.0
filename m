@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YqLkE-00017g-21
-	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 13:21:42 +0000
-Date: Thu, 7 May 2015 15:21:07 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Ywo7Q-0003jO-9r
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2015 08:52:20 +0000
+Date: Mon, 25 May 2015 10:51:28 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150507132107.GC28637@rei.suse.de>
-References: <1430897176-16486-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<1430897176-16486-2-git-send-email-weijg.fnst@cn.fujitsu.com>
+Message-ID: <20150525085128.GA2586@rei.suse.de>
+References: <1432541376-15153-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1430897176-16486-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/5] kernel/syscalls/ipc/lib: Don't allocate
- memory for getpwnam()
+In-Reply-To: <1432541376-15153-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [RFC PATCH] tst_checkpoint_destroy
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,25 +24,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
->  int getuserid(char *user)
->  {
-> -	struct passwd *ent;
-> -
-> -	/* allocate some space for the passwd struct */
-> -	if ((ent = malloc(sizeof(struct passwd))) == NULL) {
-> -		tst_brkm(TBROK, cleanup, "couldn't allocate space for passwd"
-> -			 " structure");
-> -	}
-> +	struct passwd *ent = NULL;
+> As of now, if we run test cases which use the tst_checkpoint framework on NFS,
+> they will fail with errors like:
+> 
+> creat07     0  TWARN  :  tst_tmpdir.c:206: tst_rmdir: rmobj(/tmpdir/ltp-0IVQPP0NK6/creigi0kV) failed: remove(/tmpdir/ltp-0IVQPP0NK6/creigi0kV) failed; errno=66: Directory not empty
+> 
+> This happens because we keep the futex page mapped while tst_rmdir() is running.
+> 
+> So on we need to unmap the page before tst_rmdir().
+> 
+> What do you think about the proposed solution?
 
-Why do you initialize the pointer with NULL? If it's only used to store
-the return from getpwnam()...
+Why don't we hide this from user and unmap() the file in the tst_rmdir()
+if checkpoint was initialized?
 
-Otherwise, this is a good catch :)
+Otherwise I'm all for this fix.
 
 -- 
 Cyril Hrubis
