@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Yuz5D-0000wh-8g
-	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 08:10:31 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Yuz5C-0006DH-BX
-	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 08:10:31 +0000
-Message-ID: <555C4220.7010602@oracle.com>
-Date: Wed, 20 May 2015 11:13:20 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1YwixK-0007vW-Nu
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2015 03:21:34 +0000
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YwixG-0005eD-4r
+	for ltp-list@lists.sourceforge.net; Mon, 25 May 2015 03:21:34 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Mon, 25 May 2015 05:24:44 -0600
+Message-ID: <1432553084-9391-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>	
-	<1431944048.27486.14.camel@G08FNSTD140232>
-	<5559F134.7040705@oracle.com>	
-	<1432025422.16347.6.camel@G08FNSTD140232>	
-	<1273450911.1653813.1432034294768.JavaMail.zimbra@redhat.com>
-	<1432086442.16347.24.camel@G08FNSTD140232>
-In-Reply-To: <1432086442.16347.24.camel@G08FNSTD140232>
-Subject: Re: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not
- supported
+Subject: [LTP] [PATCH] containers: new testcase userns02 The user ID and
+	group ID, which are inside a container,
+	can be modified by its parent process.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,58 +27,137 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>, Jan Stancek <jstancek@redhat.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: jstancek@redhat.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
-On 05/20/2015 04:47 AM, Zeng Linggang wrote:
-> Hi!
->
-> On Tue, 2015-05-19 at 07:18 -0400, Jan Stancek wrote:
-[ ... ]
->> Wouldn't it be enough to turn that warning into TINFO, for kernels < 3.1?
->>
->> diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
->> index 911bbe8..45d9827 100644
->> --- a/testcases/kernel/syscalls/fallocate/fallocate04.c
->> +++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
->> @@ -158,9 +158,12 @@ static void test02(void)
->>                          tst_brkm(TFAIL | TERRNO, cleanup,
->>                                   "fallocate() or lseek() failed");
->>                  }
->> -               tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
->> +               if (tst_kvercmp(3, 1, 0) < 0)
-> How about put them before lseek(SEEK_HOLE) ?
->
-> if (tst_kvercmp(3, 1, 0) < 0) {
-> 	fill_tst_buf();
-> 	memset();
-> 	check_file_data();
-> } else {
-> 	lseek(SEEK_HOLE);
-> 	...
-> }
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+---
+ runtest/containers                            |  1 +
+ testcases/kernel/containers/.gitignore        |  1 +
+ testcases/kernel/containers/userns/userns02.c | 94 +++++++++++++++++++++++++++
+ 3 files changed, 96 insertions(+)
+ create mode 100644 testcases/kernel/containers/userns/userns02.c
 
-Please don't complicate the test-case with this, I agree with Jan, it is 
-enough to add the kernel version check. It can be as follows:
-
---- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-@@ -158,7 +158,8 @@ static void test02(void)
-                         tst_brkm(TFAIL | TERRNO, cleanup,
-                                  "fallocate() or lseek() failed");
-                 }
--               tst_resm(TWARN | TERRNO, "lseek() doesn't support 
-SEEK_HOLE");
-+               tst_resm((tst_kvercmp(3, 1, 0) < 0) ? TINFO : (TWARN | 
-TERRNO),
-+                        "lseek() doesn't support SEEK_HOLE");
-         }
-         tst_resm(TINFO, "found a hole at '%ld' offset", ret);
-
-
-Best regards,
-Alexey
+diff --git a/runtest/containers b/runtest/containers
+index ca10372..bb1beb6 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -69,3 +69,4 @@ mountns03 mountns03
+ mountns04 mountns04
+ 
+ userns01 userns01
++userns02 userns02
+diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+index 4478b53..e3c92c9 100644
+--- a/testcases/kernel/containers/.gitignore
++++ b/testcases/kernel/containers/.gitignore
+@@ -4,3 +4,4 @@ mountns/mountns02
+ mountns/mountns03
+ mountns/mountns04
+ userns/userns01
++userns/userns02
+diff --git a/testcases/kernel/containers/userns/userns02.c b/testcases/kernel/containers/userns/userns02.c
+new file mode 100644
+index 0000000..078439e
+--- /dev/null
++++ b/testcases/kernel/containers/userns/userns02.c
+@@ -0,0 +1,94 @@
++/*
++* Copyright (c) Huawei Technologies Co., Ltd., 2015
++* This program is free software; you can redistribute it and/or modify it
++* under the terms of the GNU General Public License as published by the Free
++* Software Foundation; either version 2 of the License, or (at your option)
++* any later version. This program is distributed in the hope that it will be
++* useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
++* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
++* Public License for more details. You should have received a copy of the GNU
++* General Public License along with this program.
++*
++*
++* Verify that:
++*  The user ID and group ID, which are inside a container, can be modified by
++* its parent process.
++*/
++
++#define _GNU_SOURCE
++#include <sys/wait.h>
++#include <assert.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <errno.h>
++#include "test.h"
++#include "libclone.h"
++#include "userns_helper.h"
++
++char *TCID = "user_namespace2";
++int TST_TOTAL = 1;
++
++char fullpath[BUFSIZ];
++pid_t childpid;
++int parentuid;
++int parentgid;
++char cmd[BUFSIZ];
++FILE *fp;
++/*
++ * child_fn1() - Inside a new user namespace
++ */
++static int child_fn1(void *arg)
++{
++	int exit_val;
++	int uid, gid;
++
++	sleep(1);
++	uid = geteuid();
++	gid = getegid();
++
++	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
++	if (uid == 100 && gid == 100) {
++		tst_resm(TINFO,  "Got expected uid and gid.");
++		exit_val = 0;
++	} else {
++		tst_brkm(TFAIL | TTERRNO, NULL, "Got unexpected result of uid=%d gid=%d\n",
++			uid, gid);
++		exit_val = 1;
++	}
++
++	return exit_val;
++}
++
++static void setup(void)
++{
++	check_newuser();
++}
++
++int main(int argc, char *argv[])
++{
++	int status;
++
++	tst_parse_opts(argc, argv, NULL, NULL);
++	setup();
++
++	childpid = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD, child_fn1, NULL);
++
++	if (childpid < 0)
++		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
++
++	parentuid = geteuid();
++	sprintf(cmd, "echo 100 %d 1 > /proc/%d/uid_map", parentuid, childpid);
++	system(cmd);
++	parentgid = getegid();
++	sprintf(cmd, "echo 100 %d 1 > /proc/%d/gid_map", parentgid, childpid);
++	system(cmd);
++
++	if (waitpid(childpid, &status, 0) < 0)
++		tst_resm(TWARN, "parent: waitpid failed.");
++
++	tst_resm(TPASS, "the uid and the gid are right inside the container");
++	tst_exit();
++}
++
+-- 
+1.9.1
 
 
 ------------------------------------------------------------------------------
