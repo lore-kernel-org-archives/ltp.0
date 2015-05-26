@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YsRpK-0000Nq-2c
-	for ltp-list@lists.sourceforge.net; Wed, 13 May 2015 08:15:38 +0000
-Date: Wed, 13 May 2015 10:14:58 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YxBdv-0007Ym-6e
+	for ltp-list@lists.sourceforge.net; Tue, 26 May 2015 09:59:27 +0000
+Date: Tue, 26 May 2015 11:58:37 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150513081458.GA3409@rei.suse.de>
-References: <20150504063425.GA9995@localhost.localdomain>
-	<20150504115324.GB7674@rei.suse.de>
-	<20150506135504.GC2752@localhost.localdomain>
-	<5551F71E.7090400@huawei.com> <20150512134858.GA11906@rei.suse.de>
-	<55530639.2070806@huawei.com>
+Message-ID: <20150526095837.GE2940@rei.suse.de>
+References: <20150526084019.GA2940@rei.suse.de>
+	<1432631777-22549-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1432631777-22549-2-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <55530639.2070806@huawei.com>
-Subject: Re: [LTP] [PATCH] performing test on loop device if noatime or
- relatime specified
+In-Reply-To: <1432631777-22549-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 2/2] Unmap the futexes backend file in tst_rmdir
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,23 +26,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, zhuyanpeng@huawei.com, zhanyongming@huawei.com
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> >> then compile error:
-> >> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/home/cuibixuan/home/git/ltp/ltp/testcases/kernel/include -I../../../../include -I../../../../include   -L../../../../lib  open12.c   -lltp -o open12
-> >> open12.c: In function ?setup?:
-> >> open12.c:103: error: ?MS_STRICTATIME? undeclared (first use in this function)
-> >> open12.c:103: error: (Each undeclared identifier is reported only once
-> >> open12.c:103: error: for each function it appears in.)
-> >> make[4]: *** [open12] Error 1
+> As of now, test cases utilizing tst_checkpoint framework fail on NFS
+> with similar errors:
 > 
-> Compile error 'MS_STRICTATIME undeclared' because my glibc version(2.11) is
-> too old. I upgrade it then compile succeed.
+> creat07     0  TWARN  :  tst_tmpdir.c:206: tst_rmdir: rmobj(/tmpdir/ltp-0IVQPP0NK6/creigi0kV) failed: remove(/tmpdir/ltp-0IVQPP0NK6/creigi0kV) failed; errno=66: Directory not empty
+> 
+> This happens because we keep the futex page mapped while tst_rmdir() is running.
+> 
+> Let's unmap it before the actual delete procedure.
+> 
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
+>  lib/tst_checkpoint.c |    2 +-
+>  lib/tst_tmpdir.c     |   11 +++++++++++
+>  2 files changed, 12 insertions(+), 1 deletions(-)
+> 
+> diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
+> index 0e2c402..36eeff2 100644
+> --- a/lib/tst_checkpoint.c
+> +++ b/lib/tst_checkpoint.c
+> @@ -33,7 +33,7 @@
+>  
+>  #define DEFAULT_MSEC_TIMEOUT 10000
+>  
+> -static futex_t *futexes;
+> +futex_t *futexes;
+>  static int page_size;
 
-That is not a solution. The solution is to create a fallback declaration
-in LTP as I said.
+Now that futexes is a global symbol we should prefix it with tst_ to
+avoid clashes with testcase defined symbols.
+
+Otherwise it looks good.
 
 -- 
 Cyril Hrubis
