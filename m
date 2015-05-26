@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YuJDv-0001sy-17
-	for ltp-list@lists.sourceforge.net; Mon, 18 May 2015 11:28:43 +0000
-Date: Mon, 18 May 2015 13:28:00 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YxAQ9-0007Wg-3f
+	for ltp-list@lists.sourceforge.net; Tue, 26 May 2015 08:41:09 +0000
+Date: Tue, 26 May 2015 10:40:19 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150518112800.GB4104@rei>
-References: <1431515986-22287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<1431515986-22287-4-git-send-email-weijg.fnst@cn.fujitsu.com>
+Message-ID: <20150526084019.GA2940@rei.suse.de>
+References: <1432541376-15153-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20150525085128.GA2586@rei.suse.de> <55642D9D.6050707@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1431515986-22287-4-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 4/5] testcases/kernel/fs/doio: free memory
+In-Reply-To: <55642D9D.6050707@oracle.com>
+Subject: Re: [LTP] [RFC PATCH] tst_checkpoint_destroy
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,15 +25,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> free the memory that allocated by malloc and strdup.
+> Ok, we can do it this way.
+> 
+> One question regarding the typedef of futex_t. As of now the futex_t 
+> type is defined in two places:
+>   * testcases/kernel/syscalls/futex/futextest.h
+>   * lib/tst_checkpoint.h
+> 
+> If I put unmap() in tst_rmdir(), I will add futex_t to tst_tmpdir.c 
+> either, so it will be the third occurrence.
+> 
+> It seems it would be good to move the typedef of futex_t into a common 
+> header.
+> 
+> I'm unsure which one to use :) Or just create include/lapi/futex.h?
 
-You keep fixing the code inside the CRAY #ifdefs. Cray systems are not
-supported for some time anyway. It would be far easier to just remove
-the unused code between the CRAY and sgi ifdefs.
+Header in lapi sounds good, I should have probably done so when I was
+rewriting the checkpoint interface.
 
 -- 
 Cyril Hrubis
