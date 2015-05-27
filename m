@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YqLVa-0002ry-11
-	for ltp-list@lists.sourceforge.net; Thu, 07 May 2015 13:06:34 +0000
-Date: Thu, 7 May 2015 15:05:58 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YxXYg-0006tT-Mf
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 09:23:30 +0000
+Date: Wed, 27 May 2015 11:22:38 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150507130558.GB28637@rei.suse.de>
-References: <CAGMUi-D7ziRtBGaFcqy1i1CBbgLzqwiVY5Fq5W8a7=m=3yYLbw@mail.gmail.com>
-	<CAGMUi-BhFdOmi0DNuXqOt__+WakP+bOiqHJbEHiarqtjMGF4Ww@mail.gmail.com>
+Message-ID: <20150527092237.GA9075@rei>
+References: <1815411283.124861432698468787.JavaMail.weblogic@epmlwas05a>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CAGMUi-BhFdOmi0DNuXqOt__+WakP+bOiqHJbEHiarqtjMGF4Ww@mail.gmail.com>
-Subject: Re: [LTP] LTP-DDT build error
+In-Reply-To: <1815411283.124861432698468787.JavaMail.weblogic@epmlwas05a>
+Subject: Re: [LTP] [PATCH]: Fix dprt() function call by adding gettid()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,30 +24,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Narendra Kumar <narendrakumar.chepuri@gmail.com>
-Cc: ltp-list@lists.sf.net
+To: Manjeet Pawar <manjeet.p@samsung.com>
+Cc: ltp-list@lists.sourceforge.net, Yogesh Narayan Gaur <yn.gaur@samsung.com>
 
 Hi!
->            May I know how to test the usb using testusb.c in of ltp my
-> devices are like /dev/bus/usb/001/001, I am tryng both ./testusb -a and
-> ./testusb -D  /dev/bus/usb/001/001 first one is giving "no test devices
-> recognized" and second command is returning "./testusb:
-> /dev/bus/usb/001/001 may see only control tests\n /dev/bus/usb/001/001 test
-> 0 --> 38 (Function not implemented)".
+> This patch adds missing gettid() function call in dprt
+> 
+> Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
+> Reviewed-by: Yogesh Gaur <yn.gaur@samsung.com>
 
-You are asking on wrong mailing list. LTP-DDT is based on LTP but
-developed by TI and the testusb testcases are developed by them.
+This has been fixed a few days ago by:
+
+commit 16ff436309f47503338ed07ef95523cd5d6092dc
+Author: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+Date:   Wed May 13 19:19:46 2015 +0800
+
+    network/nfs/nfsstress: fix printf format
+
+    format string requires 2 parameters but only 1 is given
+
+    Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+
+
+
+Thanks for the effort anyway. :)
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
