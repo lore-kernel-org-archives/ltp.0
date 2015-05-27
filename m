@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YqbzU-00019y-Lk
-	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 06:42:32 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YqbzS-0008WC-KT
-	for ltp-list@lists.sourceforge.net; Fri, 08 May 2015 06:42:32 +0000
-From: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Fri, 8 May 2015 06:42:26 +0000
-Message-ID: <1431067342.1760.10.camel@localhost>
-References: <1430907502-30493-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<1430907502-30493-3-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<554B7127.7000606@oracle.com>
-In-Reply-To: <554B7127.7000606@oracle.com>
-Content-Language: en-US
-Content-ID: <6771667695CB3F49B880A0FC7A8C8416@fujitsu.local>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1YxPjV-0006Ag-9Q
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 01:02:09 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YxPjS-0002FY-4Y
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 01:02:09 +0000
+Message-ID: <5565177B.7080308@huawei.com>
+Date: Wed, 27 May 2015 09:01:47 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 3/3] kernel/mem/mmapstress: fix resource leak
+References: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
+In-Reply-To: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
+Subject: [LTP] [PATCH 2/5] iptables/iptables_tests.sh: Add new testcases for
+ iptables -c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,90 +28,88 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "alexey.kodanev@oracle.com" <alexey.kodanev@oracle.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
 
-On Thu, 2015-05-07 at 17:05 +0300, Alexey Kodanev wrote:
-> On 05/06/2015 01:18 PM, Wei,Jiangang wrote:
-> > Including memory and fd leak.
-> >
-> > Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
-> > ---
-> >   testcases/kernel/mem/mmapstress/mmapstress01.c | 7 +++++++
-> >   1 file changed, 7 insertions(+)
-> >
-> > diff --git a/testcases/kernel/mem/mmapstress/mmapstress01.c b/testcases/kernel/mem/mmapstress/mmapstress01.c
-> > index 0baf0e2..1db8147 100644
-> > --- a/testcases/kernel/mem/mmapstress/mmapstress01.c
-> > +++ b/testcases/kernel/mem/mmapstress/mmapstress01.c
-> > @@ -657,6 +657,8 @@ int fileokay(char *file, uchar_t * expbuf)
-> >   			perror("read error");
-> >   			/***** LTP Port *****/
-> >   			local_flag = FAILED;
-> > +			free(readbuf);
-> 
-> We could allocate readbuf on the stack... readbuf[pagesize] so free() 
-> not needed.
-Thanks for your comments.
-Yes, That's right.
-I accept it.
-> 
-> > +			close(fd);
-> >   			anyfail();
-> 
-> anyfail() calls tst_brkm() - the program terminates and closes fd.
-> 
-> >   			/*****	**	*****/
-> >   			return 0;
-> > @@ -668,6 +670,8 @@ int fileokay(char *file, uchar_t * expbuf)
-> >   				(void)fprintf(stderr, "read %d of %ld bytes\n",
-> >   					      (i * pagesize) + cnt,
-> >   					      (long)mapsize);
-> > +				free(readbuf);
-> > +				close(fd);
-> >   				return 0;
-> >   			}
-> >   		}
-> > @@ -688,10 +692,13 @@ int fileokay(char *file, uchar_t * expbuf)
-> >   					      "(fsize %ld)\n", i, j,
-> >   					      statbuf.st_size);
-> >   #endif /* LARGE_FILE */
-> > +				free(readbuf);
-> > +				close(fd);
-> >   				return 0;
-> 
-> In both above cases it'll call anyfail() after checking fileokay()'s 
-> return value.
-> If it seems not obvious we can close 'fd' here and it'd be better to use 
-> SAFE_CLOSE() macro from safe_macros.h.
-There's no cleanup function for SAFE_CLOSE().
-so,
-close() is the same as SAFE_CLOSE(NULL, fd).
+Add new testcase for testing 'iptables -c'
 
-And close(fd) had been used at mmapstress01.c.
-if i adopt SAFE_CLOSE(NULL, fd),
-It looks a bit odd...
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+---
+ testcases/network/iptables/iptables_tests.sh |   43 +++++++++++++++++++++++++-
+ 1 files changed, 42 insertions(+), 1 deletions(-)
 
-Thanks,
-Wei
-> 
-> >   			}
-> >   		}
-> >   	}
-> > +	free(readbuf);
-> >   	close(fd);
-> >   
-> >   	return 1;
-> 
-> Thanks,
-> Alexey
+diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
+index f8a7981..387cdfa 100755
+--- a/testcases/network/iptables/iptables_tests.sh
++++ b/testcases/network/iptables/iptables_tests.sh
+@@ -22,7 +22,7 @@
+ #				       <hubertNOSPAAAM@symbio.com.tw>
+
+ export TCID="iptables"
+-export TST_TOTAL=6
++export TST_TOTAL=7
+
+ . test.sh
+
+@@ -410,6 +410,46 @@ test06()
+ 	tst_resm TPASS "iptables can log packets with limited rate."
+ }
+
++test07()
++{
++	local logcnt=0
++	tst_resm TINFO "iptables -c test."
++
++	iptables -A INPUT -s 127.0.0.1 -j DROP -c 10 500 \
++		> tst_iptables.out 2>&1
++	if [ $? -ne 0 ]; then
++		tst_resm TFAIL "iptables command failed to append new rule."
++		cat tst_iptables.out
++		return
++	fi
++
++	logcnt=`iptables -L -v |grep localhost |awk '{print $2}'` \
++		> tst_iptables.out 2>&1
++	if [ $logcnt -ne 500 ]; then
++		tst_resm TFAIL "iptables -c 10 500 failed."
++		cat tst_iptables.err
++		return
++	fi
++
++	logcnt=`iptables -L -v |grep localhost |awk '{print $1}'` \
++		> tst_iptables.out 2>&1
++		if [ $logcnt -ne 10 ]; then
++		tst_resm TFAIL "iptables -c 10 500 failed."
++		cat tst_iptables.err
++		return
++	fi
++
++	tst_resm TINFO "Deleting rule."
++	iptables -D INPUT 1 > tst_iptables.out 2>&1
++	if [ $? -ne 0 ]; then
++		tst_resm TFAIL "iptables did not remove the rule."
++		cat tst_iptables.out
++		return
++	fi
++
++	tst_resm TPASS "iptables -c test succeed."
++}
++
+ init
+ TST_CLEANUP=cleanup
+
+@@ -419,5 +459,6 @@ test03
+ test04
+ test05
+ test06
++test07
+
+ tst_exit
+-- 
+1.6.0.2 .
+
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
