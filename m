@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1YudDf-0004Ry-HV
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 08:49:47 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YudDe-0002Yx-DU
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 08:49:47 +0000
-Message-ID: <1432025422.16347.6.camel@G08FNSTD140232>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Tue, 19 May 2015 16:50:22 +0800
-In-Reply-To: <5559F134.7040705@oracle.com>
-References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
-	<1431944048.27486.14.camel@G08FNSTD140232>
-	<5559F134.7040705@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1YxPkF-00081e-LI
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 01:02:55 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YxPkE-0004ng-79
+	for ltp-list@lists.sourceforge.net; Wed, 27 May 2015 01:02:55 +0000
+Message-ID: <556517AC.7060406@huawei.com>
+Date: Wed, 27 May 2015 09:02:36 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] fallocate04: another check if SEEK_HOLE is not
-	supported
+References: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
+In-Reply-To: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
+Subject: [LTP] [PATCH 3/5] iptables/iptables_tests.sh: Add new testcases for
+ iptables -o
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,72 +28,99 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
 
-SEEK_HOLE is only supported since version 3.1. Check the specified
-range blocks are zeroed while the kernel does not supported SEEK_HOLE.
+Add new testcase for testing 'iptables -o'
 
-Signed-off-by: Zhang Jin <jy_zhangjin@cn.fujitsu.com>
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
 ---
- testcases/kernel/syscalls/fallocate/fallocate04.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ testcases/network/iptables/iptables_tests.sh |   54 +++++++++++++++++++++++++-
+ 1 files changed, 53 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-index 911bbe8..e94c572 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-@@ -98,13 +98,13 @@ static void setup(void)
- 	get_blocksize();
+diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
+index 387cdfa..a464240 100755
+--- a/testcases/network/iptables/iptables_tests.sh
++++ b/testcases/network/iptables/iptables_tests.sh
+@@ -22,7 +22,7 @@
+ #				       <hubertNOSPAAAM@symbio.com.tw>
+
+ export TCID="iptables"
+-export TST_TOTAL=7
++export TST_TOTAL=8
+
+ . test.sh
+
+@@ -450,6 +450,57 @@ test07()
+ 	tst_resm TPASS "iptables -c test succeed."
  }
- 
--static void check_file_data(const char exp_buf[], size_t size)
-+static void check_file_data_(const char exp_buf[], size_t size, off_t offset)
- {
- 	char rbuf[size];
- 
- 	tst_resm(TINFO, "reading the file, compare with expected buffer");
- 
--	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
-+	SAFE_LSEEK(cleanup, fd, offset, SEEK_SET);
- 	SAFE_READ(cleanup, 1, fd, rbuf, size);
- 
- 	if (memcmp(exp_buf, rbuf, size)) {
-@@ -116,6 +116,11 @@ static void check_file_data(const char exp_buf[], size_t size)
- 	}
- }
- 
-+static inline void check_file_data(const char exp_buf[], size_t size)
+
++test08()
 +{
-+	check_file_data_(exp_buf, size, 0);
++	tst_resm TINFO "Use iptables to DROP packets from particular" \
++		"network card"
++	tst_resm TINFO "Rule to block icmp from 127.0.0.1"
++
++	iptables -A OUTPUT -o lo -p icmp -j DROP > tst_iptables.out 2>&1
++        if [ $? -ne 0 ]; then
++                tst_resm TFAIL "iptables command failed to append new rule."
++                cat tst_iptables.out
++                return
++        fi
++
++        tst_resm TINFO "Pinging 127.0.0.1"
++        ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
++        if [ $? -ne 0 ]; then
++                grep "100% packet loss" tst_iptables.out > tst_iptables.err 2>&1
++                if [ $? -ne 0 ]; then
++                        tst_resm TFAIL \
++                                 "iptables did not block packets from loopback"
++                        cat tst_iptables.err
++                        return
++                else
++                        tst_resm TINFO "Ping 127.0.0.1 not successful."
++                fi
++        else
++                tst_resm TFAIL "iptables did not block icmp from 127.0.0.1"
++                cat tst_iptables.out
++                return
++        fi
++
++        tst_resm TINFO "Deleting icmp DROP from lo rule."
++        iptables -D OUTPUT 1 > tst_iptables.out 2>&1
++        if [ $? -ne 0 ]; then
++                tst_resm TFAIL "iptables did not remove the rule."
++                cat tst_iptables.out
++                return
++        fi
++        tst_resm TINFO "Pinging 127.0.0.1 again"
++        ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
++        if [ $? -ne 0 ]; then
++                tst_resm TFAIL "iptables blocking loopback. This is expected" \
++                               "behaviour on certain distributions where" \
++                               "enabling firewall drops all packets by default."
++                cat tst_iptables.out
++                return
++        fi
++        tst_resm TINFO "Ping succsess"
++        tst_resm TPASS "iptables can DROP packets from particular network card."
 +}
 +
- static void test01(void)
- {
- 	tst_resm(TINFO, "allocate '%zu' bytes", buf_size);
-@@ -158,7 +163,9 @@ static void test02(void)
- 			tst_brkm(TFAIL | TERRNO, cleanup,
- 				 "fallocate() or lseek() failed");
- 		}
--		tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
-+		char zeros[block_size];
-+		memset(zeros, 0, block_size);
-+		check_file_data_(zeros, block_size, block_size);
- 	}
- 	tst_resm(TINFO, "found a hole at '%ld' offset", ret);
- 
+ init
+ TST_CLEANUP=cleanup
+
+@@ -460,5 +511,6 @@ test04
+ test05
+ test06
+ test07
++test08
+
+ tst_exit
 -- 
-1.9.3
-
-
+1.6.0.2 .
 
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
