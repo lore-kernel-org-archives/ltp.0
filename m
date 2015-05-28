@@ -1,19 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2KIO-0002Mu-9R
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 14:14:28 +0000
-Date: Tue, 9 Jun 2015 16:13:19 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150609141319.GE27378@rei.suse.de>
-References: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
-	<556517AC.7060406@huawei.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <556517AC.7060406@huawei.com>
-Subject: Re: [LTP] [PATCH 3/5] iptables/iptables_tests.sh: Add new testcases
- for iptables -o
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <manjeet.p@samsung.com>) id 1Yxpfh-0000Xu-Ij
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:43:57 +0000
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Yxpff-0006Er-Rp
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:43:57 +0000
+Received: from epcpsbgr1.samsung.com
+	(u141.gpu120.samsung.co.kr [203.254.230.141])
+	by mailout1.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NP10339QMGVXVB0@mailout1.samsung.com> for
+	ltp-list@lists.sourceforge.net; Thu, 28 May 2015 13:43:43 +0900 (KST)
+Date: Thu, 28 May 2015 04:42:57 +0000 (GMT)
+From: Manjeet Pawar <manjeet.p@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <2119318669.190461432788177017.JavaMail.weblogic@epmlwas05c>
+Subject: [LTP]  [PATCH]: Fix possible NULL pointer derefrence
+Reply-To: manjeet.p@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,98 +33,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
 
-Hi!
-> +        tst_resm TINFO "Pinging 127.0.0.1"
-> +        ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
+From: Manjeet Pawar <manjeet.p@samsung.com>
+Subject: [PATCH] testcases/kernel/device-drivers/usb/tusb/tusb.c: Fix possible NULL pointer derefrence
 
-Why -c 2 ?
+pdev was accessed before its NULL check, this patch fixes this.
 
-> +        if [ $? -ne 0 ]; then
-> +                grep "100% packet loss" tst_iptables.out > tst_iptables.err 2>&1
+Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
+Signed-off-by: Yogesh Gaur <yn.gaur@samsung.com>
+---
+ testcases/kernel/device-drivers/usb/tusb/tusb.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-Eh, if ping failed, non-zero is returned, no need to grep the ping
-output as well.
-
-> +                if [ $? -ne 0 ]; then
-> +                        tst_resm TFAIL \
-> +                                 "iptables did not block packets from loopback"
-> +                        cat tst_iptables.err
-> +                        return
-> +                else
-> +                        tst_resm TINFO "Ping 127.0.0.1 not successful."
-> +                fi
-> +        else
-> +                tst_resm TFAIL "iptables did not block icmp from 127.0.0.1"
-> +                cat tst_iptables.out
-> +                return
-> +        fi
-> +
-> +        tst_resm TINFO "Deleting icmp DROP from lo rule."
-> +        iptables -D OUTPUT 1 > tst_iptables.out 2>&1
-> +        if [ $? -ne 0 ]; then
-> +                tst_resm TFAIL "iptables did not remove the rule."
-
-Again TBROK rather than TFAIL
-
-> +                cat tst_iptables.out
-> +                return
-> +        fi
-> +        tst_resm TINFO "Pinging 127.0.0.1 again"
-> +        ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
-> +        if [ $? -ne 0 ]; then
-> +                tst_resm TFAIL "iptables blocking loopback. This is expected" \
-> +                               "behaviour on certain distributions where" \
-> +                               "enabling firewall drops all packets by default."
-> +                cat tst_iptables.out
-> +                return
-> +        fi
-
-We should save and reset the iptables before the testcase and restore it
-after it. Otherwise we will not get consistent results. Also the test
-for working ping should be at the start of the testcase and we should
-skip it with TCONF if we cannot reach localhost.
-
-
-before testcase:
-
-iptables-save > saved_iptables
-iptables -F
-
-after testcase:
-
-iptables-restore < saved_iptables
-
-
-> +        tst_resm TINFO "Ping succsess"
-> +        tst_resm TPASS "iptables can DROP packets from particular network card."
-> +}
-> +
->  init
->  TST_CLEANUP=cleanup
-> 
-> @@ -460,5 +511,6 @@ test04
->  test05
->  test06
->  test07
-> +test08
-> 
->  tst_exit
-> -- 
-> 1.6.0.2 .
-> 
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+diff --git a/testcases/kernel/device-drivers/usb/tusb/tusb.c b/testcases/kernel/device-drivers/usb/tusb/tusb.c
+index 774600a..258070a 100644
+--- a/testcases/kernel/device-drivers/usb/tusb/tusb.c
++++ b/testcases/kernel/device-drivers/usb/tusb/tusb.c
+@@ -386,14 +386,15 @@ static int test_hcd_probe()
+ 	int rc;
+ 	struct usb_hcd *hcd = NULL;
+ 	struct pci_dev *pdev = ltp_usb.pdev;
+-	struct pci_device_id *id =
+-	    (struct pci_device_id *)pdev->driver->id_table;
++	struct pci_device_id *id = NULL;
+ 
+ 	if (!pdev) {
+ 		printk("tusb: pdev pointer not set\n");
+ 		return 1;
+ 	}
+ 
++	id = (struct pci_device_id *)pdev->driver->id_table;
++
+ 	if (!id || !id->driver_data) {
+ 		printk("tusb: id_table not set\n");
+ 		return 1;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
