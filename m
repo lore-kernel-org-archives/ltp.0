@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Z4rSm-0000tV-8f
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2015 14:03:40 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z4rSi-0005gV-35
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2015 14:03:40 +0000
-Date: Tue, 16 Jun 2015 10:03:25 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <105649905.2697646.1434463405501.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1434491631-28506-1-git-send-email-sunyuan3@huawei.com>
-References: <1434491631-28506-1-git-send-email-sunyuan3@huawei.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] userns02: add SAFE_CLOSE
+	(envelope-from <manjeet.p@samsung.com>) id 1Yxpdb-00041X-08
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:41:47 +0000
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1YxpdY-0005tJ-VX
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:41:46 +0000
+Received: from epcpsbgr1.samsung.com
+	(u141.gpu120.samsung.co.kr [203.254.230.141])
+	by mailout2.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NP1007IIMDCNA00@mailout2.samsung.com> for
+	ltp-list@lists.sourceforge.net; Thu, 28 May 2015 13:41:36 +0900 (KST)
+Date: Thu, 28 May 2015 04:41:36 +0000 (GMT)
+From: Manjeet Pawar <manjeet.p@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <1230732671.190411432788096392.JavaMail.weblogic@epmlwas05c>
+Subject: [LTP]  [PATCH]: Fix memory leaks and remove redundant code
+Reply-To: manjeet.p@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,95 +33,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
 
+From: Manjeet Pawar <manjeet.p@samsung.com>
+Subject: [PATCH] lib/self_exec.c: free args before returning from function to avoid memory leaks and remove redundant code in self_exec()
 
+This patch free args before returning from function to avoid memory leaks and remove redundant code in self_exec()
 
+Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
+Signed-off-by: Yogesh Gaur <yn.gaur@samsung.com>
+---
+ lib/self_exec.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 16 June, 2015 11:53:51 PM
-> Subject: [PATCH] userns02: add SAFE_CLOSE
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->  testcases/kernel/containers/userns/userns02.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/testcases/kernel/containers/userns/userns02.c
-> b/testcases/kernel/containers/userns/userns02.c
-> index ad5dda5..f5feceb 100644
-> --- a/testcases/kernel/containers/userns/userns02.c
-> +++ b/testcases/kernel/containers/userns/userns02.c
-> @@ -31,6 +31,11 @@
->  char *TCID = "user_namespace2";
->  int TST_TOTAL = 1;
->  
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
->  /*
->   * child_fn1() - Inside a new user namespace
->   */
-> @@ -39,7 +44,7 @@ static int child_fn1(void)
->  	int exit_val;
->  	int uid, gid;
->  
-> -	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-> +	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
-
-You shouldn't call cleanup from child. The rest looks OK.
-
-Regards,
-Jan
-
->  	uid = geteuid();
->  	gid = getegid();
->  
-> @@ -62,11 +67,6 @@ static void setup(void)
->  	TST_CHECKPOINT_INIT(NULL);
->  }
->  
-> -static void cleanup(void)
-> -{
-> -	tst_rmdir();
-> -}
-> -
->  int main(int argc, char *argv[])
->  {
->  	int status;
-> @@ -93,14 +93,16 @@ int main(int argc, char *argv[])
->  		parentgid = getegid();
->  		sprintf(path, "/proc/%d/uid_map", childpid);
->  		sprintf(content, "100 %d 1", parentuid);
-> -		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
-> -		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
-> +		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
-> +		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
-> +		SAFE_CLOSE(cleanup, fd);
->  		sprintf(path, "/proc/%d/gid_map", childpid);
->  		sprintf(content, "100 %d 1", parentgid);
-> -		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
-> -		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
-> +		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
-> +		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
-> +		SAFE_CLOSE(cleanup, fd);
->  
-> -		TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
-> +		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
->  
->  		if (waitpid(childpid, &status, 0) < 0)
->  			tst_brkm(TBROK | TERRNO, cleanup, "waitpid failed");
-> --
-> 1.9.1
-> 
-> 
+diff --git a/lib/self_exec.c b/lib/self_exec.c
+index 06af313..e8f1ee6 100644
+--- a/lib/self_exec.c
++++ b/lib/self_exec.c
+@@ -117,6 +117,7 @@ void maybe_run_child(void (*child) (), char *fmt, ...)
+ 				}
+ 				if (j != i) {
+ 					va_end(ap);
++					free(args);
+ 					return;
+ 				}
+ 				break;
+@@ -144,7 +145,7 @@ void maybe_run_child(void (*child) (), char *fmt, ...)
+ 		}
+ 
+ 		va_end(ap);
+-
++		free(args);
+ 		if (chdir(child_dir) < 0)
+ 			tst_brkm(TBROK, NULL,
+ 				 "Could not change to %s for child", child_dir);
+@@ -170,8 +171,7 @@ int self_exec(char *argv0, char *fmt, ...)
+ 	}
+ 
+ 	arg = strdup(tmp_cwd);
+-
+-	if ((arg = strdup(tmp_cwd)) == NULL) {
++	if (arg == NULL) {
+ 		tst_resm(TBROK, "Could not produce self_exec string");
+ 		return -1;
+ 	}
+-- 
+1.7.9.5
 
 ------------------------------------------------------------------------------
 _______________________________________________
