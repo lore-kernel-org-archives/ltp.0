@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1YuVhQ-0004JR-5j
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 00:48:00 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1YuVhO-00061I-DT
-	for ltp-list@lists.sourceforge.net; Tue, 19 May 2015 00:48:00 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t4J0kSi9018587
-	for <ltp-list@lists.sourceforge.net>; Tue, 19 May 2015 08:46:28 +0800
-Message-ID: <555A880C.3090605@cn.fujitsu.com>
-Date: Tue, 19 May 2015 08:47:08 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1YxvGj-0001gM-Tc
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 10:42:33 +0000
+Date: Thu, 28 May 2015 12:41:40 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150528104140.GB3192@rei.suse.de>
+References: <20150518131209.GH4104@rei>
+	<1432264251-27223-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<1432264251-27223-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<20150527145330.GC13878@rei.suse.de>
+	<1432809128.11403.53.camel@G08FNSTD140232>
 MIME-Version: 1.0
-References: <1430967285-15095-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<1431928620-25592-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-	<555985D3.7070203@cn.fujitsu.com>
-In-Reply-To: <555985D3.7070203@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] device-drivers/zram: add kernel version check
+Content-Disposition: inline
+In-Reply-To: <1432809128.11403.53.camel@G08FNSTD140232>
+Subject: Re: [LTP] [PATCH v3 2/2] commands/df: Added new testcase to test
+ df(1) command.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,155 +29,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, jy_zhangjin@cn.fujitsu.com
 
-Applied, thanks.
+Hi!
+> > Why can't we calculate the expected free space based on the size of
+> > the
+> > device?
+> 
+> Hmm, I do not think it is suitable to calculate the size. 'df' report
+> file system disk space usage, which means it just only report the count
+> of all the data block. super block, group descriptor and others will not
+> include.
+> 
+> ps:
+> ext2 file system:
+> +--------------+---------+---------+-----+---------+
+> | boot section | group 0 | group 1 | ... | group n |
+> +--------------+---------+---------+-----+---------+
+> group n:
+> +-------+------------+------------+--------+-------+-------+
+> | super |    group   | data block | inode  | inode | data  |
+> | block | descriptor |   bitmap   | bitmap | table | block |
+> +-------+------------+------------+--------+-------+-------+
+> 
+> 
+> >  Does the space taken by the ext2 internal data structures
+> > vary unpredictedly?
+> > 
+> 
+> If we specify the block size, inode size and super block, we could get
+> the size of data block. BTW, mkfs use sparse_super as default option,
+> that means not every group has superblock backup copies. That make it
+> hard to calculate the size of data block.
 
-On 05/18/2015 02:25 PM, Wanlong Gao wrote:
-> On 05/18/2015 01:57 PM, Xiaoguang Wang wrote:
->> zram device attributes max_comp_streams and comp_algorithm are introduced
->> since kernel v3.15, and mem_limit is introduced since kernel v3.18, we
->> need to add these checks.
->>
->> Also according to kernel-source-tree/Documentation/blockdev/zram.txt, zram
->> device attribute disksize value can be either in bytes, or you can use mem
->> suffixes. But in some old kernels, mem suffixes are not supported, for
->> example, in RHEL6.6GA's kernel layer, it uses strict_strtoull() to parse
->> disksize, which does not support mem suffixes, in some newer kernels, they
->> use memparse() which supports mem suffixes. So here we just use bytes to make
->> sure everything works correctly.
-> 
-> It'd be more straightforward to split to two patches, one for kernel version checking
-> and the other for unit change?
-> 
-> But anyway, looks good to me.
-> 
-> Acked-by: Wanlong Gao <gaowanlong@cn.fujitsu.com>
-> 
-> 
-> Thanks,
-> Wanlong Gao
-> 
->>
->> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
->> ---
->>  testcases/kernel/device-drivers/zram/zram01.sh   | 10 +++++++-
->>  testcases/kernel/device-drivers/zram/zram02.sh   | 10 +++++++-
->>  testcases/kernel/device-drivers/zram/zram_lib.sh | 32 +++++++++++++++++++++---
->>  3 files changed, 47 insertions(+), 5 deletions(-)
->>
->> diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
->> index 49cbbe9..26dae90 100755
->> --- a/testcases/kernel/device-drivers/zram/zram01.sh
->> +++ b/testcases/kernel/device-drivers/zram/zram01.sh
->> @@ -31,7 +31,15 @@ dev_num=4
->>  # This is a list of parameters for zram devices.
->>  # Number of items must be equal to 'dev_num' parameter.
->>  zram_max_streams="2 3 5 8"
->> -zram_sizes="25M 25M 25M 25M"
->> +
->> +# The zram sysfs node 'disksize' value can be either in bytes,
->> +# or you can use mem suffixes. But in some old kernels, mem
->> +# suffixes are not supported, for example, in RHEL6.6GA's kernel
->> +# layer, it uses strict_strtoull() to parse disksize which does
->> +# not support mem suffixes, in some newer kernels, they use
->> +# memparse() which supports mem suffixes. So here we just use
->> +# bytes to make sure everything works correctly.
->> +zram_sizes="26214400 26214400 26214400 26214400" # 25MB
->>  zram_mem_limits="25M 25M 25M 25M"
->>  zram_filesystems="ext3 ext4 xfs btrfs"
->>  zram_algs="lzo lzo lzo lzo"
->> diff --git a/testcases/kernel/device-drivers/zram/zram02.sh b/testcases/kernel/device-drivers/zram/zram02.sh
->> index 53f69bb..59b3f9f 100755
->> --- a/testcases/kernel/device-drivers/zram/zram02.sh
->> +++ b/testcases/kernel/device-drivers/zram/zram02.sh
->> @@ -30,7 +30,15 @@ dev_num=1
->>  # This is a list of parameters for zram devices.
->>  # Number of items must be equal to 'dev_num' parameter.
->>  zram_max_streams="2"
->> -zram_sizes="100G"
->> +
->> +# The zram sysfs node 'disksize' value can be either in bytes,
->> +# or you can use mem suffixes. But in some old kernels, mem
->> +# suffixes are not supported, for example, in RHEL6.6GA's kernel
->> +# layer, it uses strict_strtoull() to parse disksize which does
->> +# not support mem suffixes, in some newer kernels, they use
->> +# memparse() which supports mem suffixes. So here we just use
->> +# bytes to make sure everything works correctly.
->> +zram_sizes="107374182400" # 100GB
->>  zram_mem_limits="1M"
->>  
->>  TST_CLEANUP="zram_cleanup"
->> diff --git a/testcases/kernel/device-drivers/zram/zram_lib.sh b/testcases/kernel/device-drivers/zram/zram_lib.sh
->> index e41d8c7..d3e62e0 100755
->> --- a/testcases/kernel/device-drivers/zram/zram_lib.sh
->> +++ b/testcases/kernel/device-drivers/zram/zram_lib.sh
->> @@ -62,7 +62,15 @@ zram_load()
->>  
->>  zram_max_streams()
->>  {
->> -	tst_resm TINFO "set max_comp_streams to zram device(s)"
->> +	tst_kvercmp 3 15 0
->> +	if [ $? -eq 0 ]; then
->> +		tst_resm TCONF "device attribute max_comp_streams is"\
->> +			"introduced since kernel v3.15, the running kernel"\
->> +			"does not support it"
->> +		return
->> +	else
->> +		tst_resm TINFO "set max_comp_streams to zram device(s)"
->> +	fi
->>  
->>  	local i=0
->>  	for max_s in $zram_max_streams; do
->> @@ -83,7 +91,16 @@ zram_max_streams()
->>  
->>  zram_compress_alg()
->>  {
->> -	tst_resm TINFO "test that we can set compression algorithm"
->> +	tst_kvercmp 3 15 0
->> +	if [ $? -eq 0 ]; then
->> +		tst_resm TCONF "device attribute comp_algorithm is"\
->> +			"introduced since kernel v3.15, the running kernel"\
->> +			"does not support it"
->> +		return
->> +	else
->> +		tst_resm TINFO "test that we can set compression algorithm"
->> +	fi
->> +
->>  	local algs=$(cat /sys/block/zram0/comp_algorithm)
->>  	tst_resm TINFO "supported algs: $algs"
->>  	local i=0
->> @@ -116,7 +133,16 @@ zram_set_disksizes()
->>  
->>  zram_set_memlimit()
->>  {
->> -	tst_resm TINFO "set memory limit to zram device(s)"
->> +	tst_kvercmp 3 18 0
->> +	if [ $? -eq 0 ]; then
->> +		tst_resm TCONF "device attribute mem_limit is"\
->> +			"introduced since kernel v3.18, the running kernel"\
->> +			"does not support it"
->> +		return
->> +	else
->> +		tst_resm TINFO "set memory limit to zram device(s)"
->> +	fi
->> +
->>  	local i=0
->>  	for ds in $zram_mem_limits; do
->>  		local sys_path="/sys/block/zram${i}/mem_limit"
->>
-> 
-> .
-> 
+Quite complicated indeed.
 
+Another idea may be to measure the difference in free space before and
+after we create a file.
+
+1. create an empty file
+1. get free space
+2. fill the file with well defined amount of data
+3. get free space, check that the difference matches
+   the expectation
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
