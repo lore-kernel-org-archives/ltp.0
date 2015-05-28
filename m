@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1YzGeb-0005pZ-0z
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 03:44:45 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YzGeX-0001Lv-D8
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 03:44:45 +0000
-Message-ID: <556BD50E.9070705@huawei.com>
-Date: Mon, 1 Jun 2015 11:44:14 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
-MIME-Version: 1.0
-References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
-	<555D8E94.20605@huawei.com> <555DA53C.10008@huawei.com>
-	<5567BFF1.7000503@huawei.com> <55696062.5010705@huawei.com>
-	<912409436.7035606.1433126786886.JavaMail.zimbra@redhat.com>
-In-Reply-To: <912409436.7035606.1433126786886.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
- failed
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <manjeet.p@samsung.com>) id 1YxpSr-0004ph-IO
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:30:41 +0000
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1YxpSp-0005uB-Km
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:30:41 +0000
+Received: from epcpsbgr2.samsung.com
+	(u142.gpu120.samsung.co.kr [203.254.230.142])
+	by mailout2.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NP100EQKLUVDXC0@mailout2.samsung.com> for
+	ltp-list@lists.sourceforge.net; Thu, 28 May 2015 13:30:31 +0900 (KST)
+Date: Thu, 28 May 2015 04:30:31 +0000 (GMT)
+From: Manjeet Pawar <manjeet.p@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <947582411.189461432787431522.JavaMail.weblogic@epmlwas05c>
+Subject: [LTP]  [PATCH]: Add check for realloc failure case
+Reply-To: manjeet.p@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,76 +33,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, peifeiyue@huawei.com
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
 
-On 2015/6/1 10:46, Li Wang wrote:
-> Hi,
->
-> ----- Original Message -----
->> Hi Bixuan,
->> If the current time is 23:59:59 May 30 23:59:59 2015, we start to run
->> the case and /var/log/*20150530* file is created.
->> It has a delay before the program runs the following command added by you.
->> rm -f /var/log/*`date '+%Y%m%d'`* > /dev/null 2>&1
-> IMO, Bixuan's solution is pretty well. Even though the situation like that:
-> "If the current time is 23:59:59 May 30 23:59:59 2015" and then will be
-> "rm -f /var/log/*20150531*".
->
-> It's means,
->
-> The original file is: /var/log/messages-20150530.gz
-> The removed file is:  /var/log/messages-20150531.gz
->
->> If it is 2 seconds delay, the command will be "rm -f /var/log/*20150531*".
->> The issue leads to the fact the previous log file can't removed.
-> But that's okay, the case wouldn't fail like:
-> 'error: destination /var/log/messages-20150531.gz already exists,skipping
-> rotation'.
->
-> Because there will never be a name conflicts.
-Yes. I understand. It is a small probability event.
-Regards,
-     Yuan
->
-> Regards,
-> Li Wang
->
->
->> Thanks.
->>       Yuan
->>
->> On 2015/5/29 9:25, Cui Bixuan wrote:
->>> On 2015/5/21 17:28, s00318865 wrote:
->>>
->>>> If the current time is 23:59:59, a problem would occur. It is good to use
->>>> the following command.
->>>> rm [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]
->>>> Of course, it is better if you can find a way to use regular expressions
->>>> to match it.
->>> "If the current time is 23:59:59, a problem would occur." why?
->>> The error occur when there are messages-20150406 file in /var/log/ and do
->>> "logrotate" in 20150406(same day).
->>>
->>> Thanks,
->>> Cui Bixuan
->>>
->>>
->>>
->>>
->>> .
->>>
->>
->> ------------------------------------------------------------------------------
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->>
-> .
->
+From: Manjeet Pawar <manjeet.p@samsung.com>
+Subject: [PATCH] pan/splitstr.c: Add check for realloc failure case
 
+This patch adds check for realloc failure case and free arg_string before returning from splitstr() to avoid memory leaks
 
+Signed-off-by: Yogesh Gaur <yn.gaur@samsung.com>
+Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
+---
+ pan/splitstr.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/pan/splitstr.c b/pan/splitstr.c
+index 4706323..8804b15 100644
+--- a/pan/splitstr.c
++++ b/pan/splitstr.c
+@@ -93,6 +93,7 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
+ 	if (arg_array == NULL) {
+ 		if (argcount != NULL)
+ 			*argcount = 0;
++		free(arg_string);
+ 		return (NULL);
+ 	}
+ 
+@@ -110,9 +111,13 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
+ 		cur_tok = strtok(NULL, separator);
+ 		if (num_toks == max_toks) {
+ 			max_toks += 20;
+-			arg_array =
+-			    (char **)realloc((void *)arg_array,
+-					     sizeof(char *) * max_toks);
++			if((arg_array = realloc((void *)arg_array,sizeof(char *) * max_toks)) == NULL){
++				fprintf(stderr, "realloc: New memory allocation failed \n");
++				free(arg_array);
++				free(arg_string);
++				exit(1);
++			}
++
+ 		}
+ 	}
+ 	arg_array[num_toks] = NULL;
+-- 
+1.7.9.5
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
