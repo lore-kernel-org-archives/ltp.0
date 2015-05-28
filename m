@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Z5nx3-0002Xl-Ah
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 04:30:49 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Z5nx2-0004H3-9Z
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 04:30:49 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5J4T55R030137
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2015 12:29:05 +0800
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 19 Jun 2015 12:32:39 +0800
-Message-ID: <1434688359-29214-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] zram03: Update the value of 'TCID'
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <manjeet.p@samsung.com>) id 1Yxpgh-0004AM-Vu
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:44:59 +0000
+Received: from [203.254.224.25] (helo=mailout2.samsung.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Yxpgg-0006M5-EX
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:44:59 +0000
+Received: from epcpsbgr1.samsung.com
+	(u141.gpu120.samsung.co.kr [203.254.230.141])
+	by mailout2.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NP100F5WMI74QD0@mailout2.samsung.com> for
+	ltp-list@lists.sourceforge.net; Thu, 28 May 2015 13:44:31 +0900 (KST)
+Date: Thu, 28 May 2015 04:44:31 +0000 (GMT)
+From: Manjeet Pawar <manjeet.p@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <388214473.190591432788271460.JavaMail.weblogic@epmlwas05c>
+Subject: [LTP]  [PATCH]: Fix memory leak by freeing buf
+Reply-To: manjeet.p@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,30 +33,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
 
-zram01 --> zram03
+From: Manjeet Pawar <manjeet.p@samsung.com>
+Subject: [PATCH] pan/ltp-pan.c: free buf before function return to avoid memory leak
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+This patch avoid memory leak by freeing the buf before the slurp() function return
+
+Signed-off-by: Yogesh Gaur <yn.gaur@samsung.com>
+Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
 ---
- testcases/kernel/device-drivers/zram/zram03.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ pan/ltp-pan.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/device-drivers/zram/zram03.c b/testcases/kernel/device-drivers/zram/zram03.c
-index 9ee77dd..22233e2 100644
---- a/testcases/kernel/device-drivers/zram/zram03.c
-+++ b/testcases/kernel/device-drivers/zram/zram03.c
-@@ -36,7 +36,7 @@
- #include "test.h"
- #include "safe_macros.h"
- 
--char *TCID = "zram01";
-+char *TCID = "zram03";
- int TST_TOTAL = 1;
- 
- #define PATH_ZRAM	"/sys/block/zram0"
+diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
+index 4c1e9de..905ff89 100644
+--- a/pan/ltp-pan.c
++++ b/pan/ltp-pan.c
+@@ -1279,6 +1279,7 @@ static char *slurp(char *file)
+ 	if (read(fd, buf, sbuf.st_size) != sbuf.st_size) {
+ 		fprintf(stderr, "pan(%s): slurp failed.  errno:%d  %s\n",
+ 			panname, errno, strerror(errno));
++		free(buf);
+ 		return NULL;
+ 	}
+ 	buf[sbuf.st_size] = '\0';
 -- 
-1.9.3
+1.7.9.5
 
 
 ------------------------------------------------------------------------------
