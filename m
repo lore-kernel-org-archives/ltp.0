@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Yss68-0004fm-L2
-	for Ltp-list@lists.sourceforge.net; Thu, 14 May 2015 12:18:44 +0000
-Date: Thu, 14 May 2015 14:18:04 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150514121803.GA6993@rei>
-References: <CAGMUi-CsR0S4BxSs3Nq+6Gi8fFi_czp-0T7=VQiz9rHpQ5siBw@mail.gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YxvNg-0001v4-5l
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 10:49:44 +0000
+Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YxvNe-0002CF-6x
+	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 10:49:44 +0000
+Date: Thu, 28 May 2015 06:49:27 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <467492718.6762746.1432810167417.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1432805039-21401-1-git-send-email-lijinyue@huawei.com>
+References: <1432805039-21401-1-git-send-email-lijinyue@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAGMUi-CsR0S4BxSs3Nq+6Gi8fFi_czp-0T7=VQiz9rHpQ5siBw@mail.gmail.com>
-Subject: Re: [LTP] LTP cross copilation
+Subject: Re: [LTP] [PATCH] controllers/memcg: memory.limit_in_bytes is
+	round	down on kernel >= 3.19.0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,30 +28,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Narendra Kumar <narendrakumar.chepuri@gmail.com>
-Cc: Ltp-list@lists.sourceforge.net
+To: Li Jinyue <lijinyue@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-Hi!
->             I am working on LTP-DDT, I want to know how to build it and run
-> on DM365 board. I am unable to build for linux PC itself by following the
-> INSTALL file located in ltp-ddt-master folder. So please help me in
-> building and running it for DM365.
 
-Again, you are asking on wrong mailing list. This is LTP mailing list
-and LTP-DDT is _different_ project that is only based on LTP. They even
-have their mailing list listed at the first google result for LTP-DDT
-search.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+
+----- Original Message -----
+> From: "Li Jinyue" <lijinyue@huawei.com>
+> To: ltp-list@lists.sourceforge.net
+> Cc: zhanyongming@huawei.com
+> Sent: Thursday, 28 May, 2015 11:23:59 AM
+> Subject: [LTP] [PATCH] controllers/memcg: memory.limit_in_bytes is round	down on kernel >= 3.19.0
+> 
+> Since commit 3e32cb2e0a12b6915056ff04601cf1bb9b44f967, case 22-24 in
+> memcg_function_test.sh will fail for unaligned PAGESIZE input.
+> 
+> We need update the test more smoothly.
+> 
+> Signed-off-by: Li Jinyue <lijinyue@huawei.com>
+
+Looks good to me, thanks for providing the actual commit.
+
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
+
+Regards,
+Jan
+
+> ---
+>  .../memcg/functional/memcg_function_test.sh         | 21
+>  ++++++++++++++++++---
+>  1 file changed, 18 insertions(+), 3 deletions(-)
+> 
+> diff --git
+> a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> index f555939..24439f7 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+> @@ -158,17 +158,32 @@ testcase_21()
+>  # Case 22 - 24: Test limit_in_bytes will be aligned to PAGESIZE
+>  testcase_22()
+>  {
+> -	test_limit_in_bytes $((PAGESIZE-1)) $PAGESIZE 0
+> +	tst_kvercmp 3 19 0
+> +	if [ $? -eq 0 ]; then
+> +		test_limit_in_bytes $((PAGESIZE-1)) $PAGESIZE 0
+> +	else
+> +		test_limit_in_bytes $((PAGESIZE-1)) 0 0
+> +	fi
+>  }
+>  
+>  testcase_23()
+>  {
+> -	test_limit_in_bytes $((PAGESIZE+1)) $((PAGESIZE*2)) 0
+> +	tst_kvercmp 3 19 0
+> +	if [ $? -eq 0 ]; then
+> +		test_limit_in_bytes $((PAGESIZE+1)) $((PAGESIZE*2)) 0
+> +	else
+> +		test_limit_in_bytes $((PAGESIZE+1)) $((PAGESIZE)) 0
+> +	fi
+>  }
+>  
+>  testcase_24()
+>  {
+> -	test_limit_in_bytes 1 $PAGESIZE 0
+> +	tst_kvercmp 3 19 0
+> +	if [ $? -eq 0 ]; then
+> +		test_limit_in_bytes 1 $PAGESIZE 0
+> +	else
+> +		test_limit_in_bytes 1 0 0
+> +	fi
+>  }
+>  
+>  # Case 25 - 28: Test invaild memory.limit_in_bytes
+> --
+> 1.8.2.2
+> 
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
