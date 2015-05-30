@@ -1,19 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1YpHgo-0000Q1-33
-	for ltp-list@lists.sourceforge.net; Mon, 04 May 2015 14:49:46 +0000
-Date: Mon, 4 May 2015 16:49:11 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150504144911.GC12401@rei.suse.de>
-References: <1429840001-4970-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<1429840001-4970-5-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1Yyamh-0004JG-Bc
+	for ltp-list@lists.sourceforge.net; Sat, 30 May 2015 07:02:19 +0000
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Yyamb-0001mp-Tm
+	for ltp-list@lists.sourceforge.net; Sat, 30 May 2015 07:02:19 +0000
+Message-ID: <55696062.5010705@huawei.com>
+Date: Sat, 30 May 2015 15:01:54 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1429840001-4970-5-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 5/5] network/sockets/ltpClient: close fd to avoid
- leak
+References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
+	<555D8E94.20605@huawei.com> <555DA53C.10008@huawei.com>
+	<5567BFF1.7000503@huawei.com>
+In-Reply-To: <5567BFF1.7000503@huawei.com>
+Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
+ failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,22 +30,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, peifeiyue@huawei.com
 
-Hi!
-And the rest is applied as well, thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Hi Bixuan,
+If the current time is 23:59:59 May 30 23:59:59 2015, we start to run
+the case and /var/log/*20150530* file is created.
+It has a delay before the program runs the following command added by you.
+rm -f /var/log/*`date '+%Y%m%d'`* > /dev/null 2>&1
+
+If it is 2 seconds delay, the command will be "rm -f /var/log/*20150531*".
+The issue leads to the fact the previous log file can't removed.
+Thanks.
+     Yuan
+
+On 2015/5/29 9:25, Cui Bixuan wrote:
+> On 2015/5/21 17:28, s00318865 wrote:
+>
+>> If the current time is 23:59:59, a problem would occur. It is good to use the following command.
+>> rm [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]
+>> Of course, it is better if you can find a way to use regular expressions to match it.
+> "If the current time is 23:59:59, a problem would occur." why?
+> The error occur when there are messages-20150406 file in /var/log/ and do "logrotate" in 20150406(same day).
+>
+> Thanks,
+> Cui Bixuan
+>
+>
+>
+>
+> .
+>
+
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
