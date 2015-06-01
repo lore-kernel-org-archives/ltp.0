@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Z5nwf-0007mD-Tx
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 04:30:25 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1YzMZ7-0005bM-Pc
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 10:03:29 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Z5nwe-0003KK-On
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 04:30:25 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1YzMZ6-0004ut-Pi
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 10:03:29 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
 	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5J4Sg2P030126
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2015 12:28:42 +0800
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Fri, 19 Jun 2015 12:32:15 +0800
-Message-ID: <1434688335-29172-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t51A1fp1021394
+	for <ltp-list@lists.sourceforge.net>; Mon, 1 Jun 2015 18:01:41 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Mon, 1 Jun 2015 18:02:24 +0800
+Message-ID: <1433152944-759-2-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1433152944-759-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1433152944-759-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] df/df01.sh: Fix 'mkfs.xfs' error.
+Subject: [LTP] [PATCH 2/2] fork/7-1.c: close file descriptor before return
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,32 +33,22 @@ Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-'runltp' use a loop device. If we want to 'mkfs.xfs' the loop device,
-we need to specify '-f(force)' option, if not 'mkfs.xfs' would go
-wrong. The mean of '-f' option is different between 'xfs' and others.
-So we only add the option for 'xfs'.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
 ---
- testcases/commands/df/df01.sh | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-index fe573e5..2b7b804 100755
---- a/testcases/commands/df/df01.sh
-+++ b/testcases/commands/df/df01.sh
-@@ -32,7 +32,11 @@ setup()
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c b/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c
+index cc0ccc2..1bf7df0 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/fork/7-1.c
+@@ -94,6 +94,7 @@ static int create_catalog(void)
  
- 	tst_acquire_device
- 
--	ROD_SILENT mkfs.${FS_TYPE} ${TST_DEVICE}
-+	if [ ${FS_TYPE} = "xfs" ]; then
-+		ROD_SILENT mkfs.${FS_TYPE} -f ${TST_DEVICE}
-+	else
-+		ROD_SILENT mkfs.${FS_TYPE} ${TST_DEVICE}
-+	fi
- 
- 	ROD_SILENT mkdir -p mntpoint
+ 	if (fputs(messcat_in, f) == EOF) {
+ 		perror("fputs");
++		fclose(f);
+ 		return 1;
+ 	}
  
 -- 
 1.9.3
