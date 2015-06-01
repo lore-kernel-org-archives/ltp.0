@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Z0Thp-0005vV-3J
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 11:53:05 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z0Thn-00048Y-6Z
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 11:53:05 +0000
-Date: Thu, 4 Jun 2015 07:52:39 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <146491579.10633998.1433418759561.JavaMail.zimbra@redhat.com>
-In-Reply-To: <55703816.1040109@oracle.com>
-References: <1429621507-23503-1-git-send-email-alexey.kodanev@oracle.com>
-	<1432186777.16347.56.camel@G08FNSTD140232>
-	<1176648532.3847089.1432304474796.JavaMail.zimbra@redhat.com>
-	<55703816.1040109@oracle.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1YzGMt-00056c-G8
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 03:26:27 +0000
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YzGMn-0008QP-7U
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 03:26:27 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Mon, 1 Jun 2015 05:30:30 -0600
+Message-ID: <1433158230-3452-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] fallocate04: Use tst_kvercmp after
- lseek(SEEK_HOLE) return EINVAL
+Subject: [LTP] [PATCH] Fix the return value error of read_shares_file.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,59 +25,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>, Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+See the following in the read_file function.
+*value = read_shares_file(filepath);
+if (*value == -1)
+	return -1;
+Since the return value of read_shares_file and the variable value are
+unsigned int, it is impossible that *value == -1.
 
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+---
+ testcases/kernel/controllers/libcontrollers/libcontrollers.c | 6 ++++--
+ testcases/kernel/controllers/libcontrollers/libcontrollers.h | 2 +-
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
+diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+index b01e1b8..80a90b9 100644
+--- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
++++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+@@ -115,11 +115,14 @@ int read_file(char *filepath, int action, unsigned int *value)
+ {
+ 	int num_line = 0;
+ 	FILE *fp;
++	int tmp;
+ 	switch (action) {
+ 	case GET_SHARES:
+-		*value = read_shares_file(filepath);
++		tmp = read_shares_file(filepath);
+ 		if (*value == -1)
+ 			return -1;
++		else
++			*value = (unsigned int)tmp;
+ 		break;
+ 
+ 	case GET_TASKS:
+@@ -159,7 +162,6 @@ inline int error_function(char *msg1, char *msg2)
+  * the given pointer location. Returns 0 if success
+  */
+ 
+-unsigned
+ int read_shares_file(char *filepath)
+ {
+ 	FILE *fp;
+diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+index 4001555..78a7fed 100644
+--- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
++++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+@@ -72,7 +72,7 @@ enum{
+ 
+ inline int error_function(char *msg1, char *msg2);
+ 
+-unsigned int read_shares_file (char *filepath);
++int read_shares_file(char *filepath);
+ 
+ int read_file(char *filepath, int action, unsigned int *value);
+ 
+-- 
+1.9.1
 
-
------ Original Message -----
-> From: "Alexey Kodanev" <alexey.kodanev@oracle.com>
-> To: "Jan Stancek" <jstancek@redhat.com>, "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> Cc: ltp-list@lists.sourceforge.net, "vasily isaenko" <vasily.isaenko@oracle.com>
-> Sent: Thursday, 4 June, 2015 1:35:50 PM
-> Subject: Re: [LTP] [PATCH] fallocate04: Use tst_kvercmp after lseek(SEEK_HOLE) return EINVAL
-> 
-> Hi,
-> On 05/22/2015 05:21 PM, Jan Stancek wrote:
-> > ----- Original Message -----
-> >> From: "Zeng Linggang" <zenglg.jy@cn.fujitsu.com>
-> >> To: "Alexey Kodanev" <alexey.kodanev@oracle.com>
-> >> Cc: ltp-list@lists.sourceforge.net, "vasily isaenko"
-> >> <vasily.isaenko@oracle.com>
-> >> Sent: Thursday, 21 May, 2015 7:39:37 AM
-> >> Subject: [LTP] [PATCH] fallocate04: Use tst_kvercmp after lseek(SEEK_HOLE)
-> >> return EINVAL
-> >>
-> >> SEEK_HOLE is only supported since version 3.1. Just print some
-> >> information to remind users if kernel is before 3.1, if not print
-> >> 'TBROK' and quit, instead of 'TWARN'.
-> > Looks OK to me. Alexey, any objections from your side?
-> 
-> Sorry for the delay, looks good to me. There is stylistic comment below,
-> but it is minor:
-> 
-> >> -		tst_resm(TWARN | TERRNO, "lseek() doesn't support SEEK_HOLE");
-> >> +		if (tst_kvercmp(3, 1, 0) < 0)
-> >> +			tst_resm(TINFO, "lseek() doesn't support SEEK_HOLE, "
-> >> +				 "this is expected for < 3.1 kernels");
-> >> +		else
-> >> +			tst_brkm(TBROK | TERRNO, cleanup,
-> >> +
-> 
-> It would be better to add curly braces around multiline 'if else' block.
-
-Pushed with curly braces.
-
-Regards,
-Jan
-
-> 
-> Thanks,
-> Alexey
-> 
-> 
 
 ------------------------------------------------------------------------------
 _______________________________________________
