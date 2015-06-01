@@ -1,19 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z9ZTg-0006RR-Rc
-	for ltp-list@lists.sourceforge.net; Mon, 29 Jun 2015 13:52:04 +0000
-Date: Mon, 29 Jun 2015 15:50:45 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1YzR1p-00029B-UL
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 14:49:25 +0000
+Date: Mon, 1 Jun 2015 16:48:28 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150629135045.GA23756@rei.suse.de>
-References: <1434688335-29172-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<20150622091904.GA6128@rei.suse.de>
-	<1435204608.2550.20.camel@G08FNSTD140232.g08.fujitsu.local>
+Message-ID: <20150601144827.GB12369@rei.suse.de>
+References: <2119318669.190461432788177017.JavaMail.weblogic@epmlwas05c>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1435204608.2550.20.camel@G08FNSTD140232.g08.fujitsu.local>
-Subject: Re: [LTP] [PATCH v2 1/2] test.sh: Add tst_mkfs()
+In-Reply-To: <2119318669.190461432788177017.JavaMail.weblogic@epmlwas05c>
+Subject: Re: [LTP] [PATCH]: Fix possible NULL pointer derefrence
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,22 +24,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Manjeet Pawar <manjeet.p@samsung.com>
+Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
 
 Hi!
-Both pushed, thanks.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
