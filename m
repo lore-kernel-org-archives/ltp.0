@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z0Upz-0001j2-HO
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 13:05:35 +0000
-Date: Thu, 4 Jun 2015 15:04:35 +0200
+	(envelope-from <metan@suse.de>) id 1YzQhB-0003zQ-IT
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 14:28:05 +0000
+Date: Mon, 1 Jun 2015 16:27:10 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150604130435.GB7095@rei.suse.de>
-References: <0412ecc6e0cec73921a692ba87443a486bc53193.1433422701.git.jstancek@redhat.com>
+Message-ID: <20150601142710.GC10758@rei.suse.de>
+References: <1767962182.190171432787952596.JavaMail.weblogic@epmlwas05c>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <0412ecc6e0cec73921a692ba87443a486bc53193.1433422701.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v2] mem/oom: allocate memory using multiple threads
+In-Reply-To: <1767962182.190171432787952596.JavaMail.weblogic@epmlwas05c>
+Subject: Re: [LTP] [PATCH]: Fix Invalid number of character
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,24 +24,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Manjeet Pawar <manjeet.p@samsung.com>
+Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
 
 Hi!
-> diff --git a/testcases/kernel/mem/include/libmem.mk b/testcases/kernel/mem/include/libmem.mk
-> index 4503e78..dffa379 100644
-> --- a/testcases/kernel/mem/include/libmem.mk
-> +++ b/testcases/kernel/mem/include/libmem.mk
-> @@ -23,7 +23,7 @@ MEM_DIR			:= $(top_builddir)/testcases/kernel/mem
->  LIBMEM_DIR		:= $(MEM_DIR)/lib
->  LIBMEM			:= $(LIBMEM_DIR)/libmem.a
->  FILTER_OUT_DIRS		:= $(LIBMEM_DIR)
-> -CFLAGS			+= -I$(MEM_SRCDIR)/include
-> +CFLAGS			+= -I$(MEM_SRCDIR)/include -lpthread
+> This patch adds curly brace in if condition to check buffer
+> 
+> Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
+> Signed-off-by: Yogesh Gaur <yn.gaur@samsung.com>
+> ---
+>  lib/dataascii.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/lib/dataascii.c b/lib/dataascii.c
+> index 1214ba6..2a196bf 100644
+> --- a/lib/dataascii.c
+> +++ b/lib/dataascii.c
+> @@ -119,7 +119,7 @@ int main(int ac, char **ag)
+>  	char *errmsg;
+>  
+>  	buffer = malloc(size);
+> -	if (buffer == NULL)
+> +	if (buffer == NULL){
+>  		perror("malloc");
+>  		exit(2);
+>  	}
 
--pthread not -lpthread, see man pthread_create() for example
-
-Otherwise it looks fine.
+This is obvious fix, but there should be space before the opening curly
+brace. Please resend.
 
 -- 
 Cyril Hrubis
