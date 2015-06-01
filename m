@@ -1,17 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z0C0e-0005zZ-6M
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jun 2015 16:59:20 +0000
-Date: Wed, 3 Jun 2015 18:58:20 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150603165820.GC8444@rei.suse.de>
-References: <1433158230-3452-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YzQVz-0003bN-Js
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 14:16:31 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YzQVt-0004PE-Jf
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 14:16:31 +0000
+Date: Mon, 1 Jun 2015 10:16:17 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <480835441.8555246.1433168177005.JavaMail.zimbra@redhat.com>
+In-Reply-To: <CAAJEG239+Hb2NAzaLh_9Q15m9mCj=wSBxHC5D3VhYy=1Ery31g@mail.gmail.com>
+References: <CAAJEG239+Hb2NAzaLh_9Q15m9mCj=wSBxHC5D3VhYy=1Ery31g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1433158230-3452-1-git-send-email-sunyuan3@huawei.com>
-Subject: Re: [LTP] [PATCH] Fix the return value error of read_shares_file.
+Subject: Re: [LTP] Getting segmentation fault
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,94 +27,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
+To: Jatinder Kumar <rinkusaini32@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> See the following in the read_file function.
-> *value = read_shares_file(filepath);
-> if (*value == -1)
-> 	return -1;
-> Since the return value of read_shares_file and the variable value are
-> unsigned int, it is impossible that *value == -1.
+
+
+
+----- Original Message -----
+> From: "Jatinder Kumar" <rinkusaini32@gmail.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Monday, 1 June, 2015 3:07:53 PM
+> Subject: [LTP] Getting segmentation fault
 > 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->  testcases/kernel/controllers/libcontrollers/libcontrollers.c | 6 ++++--
->  testcases/kernel/controllers/libcontrollers/libcontrollers.h | 2 +-
->  2 files changed, 5 insertions(+), 3 deletions(-)
+> Hi All,
+> I am new to this mailing list.
 > 
-> diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-> index b01e1b8..80a90b9 100644
-> --- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-> +++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-> @@ -115,11 +115,14 @@ int read_file(char *filepath, int action, unsigned int *value)
->  {
->  	int num_line = 0;
->  	FILE *fp;
-> +	int tmp;
->  	switch (action) {
->  	case GET_SHARES:
-> -		*value = read_shares_file(filepath);
-> +		tmp = read_shares_file(filepath);
->  		if (*value == -1)
->  			return -1;
-> +		else
-> +			*value = (unsigned int)tmp;
->  		break;
->  
->  	case GET_TASKS:
-> @@ -159,7 +162,6 @@ inline int error_function(char *msg1, char *msg2)
->   * the given pointer location. Returns 0 if success
->   */
->  
-> -unsigned
->  int read_shares_file(char *filepath)
->  {
->  	FILE *fp;
-> diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-> index 4001555..78a7fed 100644
-> --- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-> +++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-> @@ -72,7 +72,7 @@ enum{
->  
->  inline int error_function(char *msg1, char *msg2);
->  
-> -unsigned int read_shares_file (char *filepath);
-> +int read_shares_file(char *filepath);
->  
->  int read_file(char *filepath, int action, unsigned int *value);
+> I am running ltp-test version is 20140422. ltp-test. The result is fine. But
+> when I run the open_posix test. I am getting Segmentation fault in
+> pthread_cond_signal_4-2.run-test.
+> 
+> Test environment.
+> Target Board: Panda version a4
+> Kernel version 3.10.67.
+> gcc version 4.8.2.
+> 
+> The same test case is passed for other target board on same kernel. Can you
+> please help me or give me some hint in this regards.
 
-Looking at the code, it's more broken than this.
+Some testcases are known to crash, but I haven't seen this one crashing before.
+Can you run it in gdb and attach backtrace from all threads when it crashes?
 
-The read_shares_file() function, as well as rest of the functions,
-cannot return -1 as they are now.
+Regards,
+Jan
 
-If you look at the code carefuly:
-
-inline int error_function(char *msg1, char *msg2)
-{
-        fprintf(stdout, "ERROR: %s ", msg1);
-        fprintf(stdout, "%s\n", msg2);
-        return -1;
-}
-
-unsigned
-int read_shares_file(char *filepath)
-{
-        FILE *fp;
-        unsigned int shares;
-        fp = fopen(filepath, "r");
-        if (fp == NULL)
-                error_function("Could not open file", filepath);
-	fscanf(fp, "%u", &shares);
-
-The return value from error_function() would be ingnored here and, if the file
-cannot be open, the code will crash while passing NULL to fscanf.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> am I missing any target specific kernel configuration.
+> 
+> 
+> Thanks & Regards,
+> Jatinder Kumar
+> E-mail : rinkusaini32@gmail.com
+> 
+> ------------------------------------------------------------------------------
+> 
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 _______________________________________________
