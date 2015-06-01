@@ -1,27 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z4UOV-00061L-38
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:25:43 +0000
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z4UOU-0006wd-2b
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:25:43 +0000
-Received: from epcpsbgr4.samsung.com
-	(u144.gpu120.samsung.co.kr [203.254.230.144])
-	by mailout1.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NPZ0049TMMADVD0@mailout1.samsung.com> for
-	ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 22:25:22 +0900 (KST)
-Date: Mon, 15 Jun 2015 13:25:34 +0000 (GMT)
-From: Maninder Singh <maninder1.s@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1983588051.1047771434374734551.JavaMail.weblogic@epmlwas03c>
-Subject: [LTP] [PATCH 7/7] lib/random_range.c: remove unnecessary malloc
-	type cast
-Reply-To: maninder1.s@samsung.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1YzGeb-0005pZ-0z
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 03:44:45 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YzGeX-0001Lv-D8
+	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 03:44:45 +0000
+Message-ID: <556BD50E.9070705@huawei.com>
+Date: Mon, 1 Jun 2015 11:44:14 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
+MIME-Version: 1.0
+References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
+	<555D8E94.20605@huawei.com> <555DA53C.10008@huawei.com>
+	<5567BFF1.7000503@huawei.com> <55696062.5010705@huawei.com>
+	<912409436.7035606.1433126786886.JavaMail.zimbra@redhat.com>
+In-Reply-To: <912409436.7035606.1433126786886.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
+ failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,29 +31,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Li Wang <liwang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, peifeiyue@huawei.com
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
----
- lib/random_range.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2015/6/1 10:46, Li Wang wrote:
+> Hi,
+>
+> ----- Original Message -----
+>> Hi Bixuan,
+>> If the current time is 23:59:59 May 30 23:59:59 2015, we start to run
+>> the case and /var/log/*20150530* file is created.
+>> It has a delay before the program runs the following command added by you.
+>> rm -f /var/log/*`date '+%Y%m%d'`* > /dev/null 2>&1
+> IMO, Bixuan's solution is pretty well. Even though the situation like that:
+> "If the current time is 23:59:59 May 30 23:59:59 2015" and then will be
+> "rm -f /var/log/*20150531*".
+>
+> It's means,
+>
+> The original file is: /var/log/messages-20150530.gz
+> The removed file is:  /var/log/messages-20150531.gz
+>
+>> If it is 2 seconds delay, the command will be "rm -f /var/log/*20150531*".
+>> The issue leads to the fact the previous log file can't removed.
+> But that's okay, the case wouldn't fail like:
+> 'error: destination /var/log/messages-20150531.gz already exists,skipping
+> rotation'.
+>
+> Because there will never be a name conflicts.
+Yes. I understand. It is a small probability event.
+Regards,
+     Yuan
+>
+> Regards,
+> Li Wang
+>
+>
+>> Thanks.
+>>       Yuan
+>>
+>> On 2015/5/29 9:25, Cui Bixuan wrote:
+>>> On 2015/5/21 17:28, s00318865 wrote:
+>>>
+>>>> If the current time is 23:59:59, a problem would occur. It is good to use
+>>>> the following command.
+>>>> rm [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]
+>>>> Of course, it is better if you can find a way to use regular expressions
+>>>> to match it.
+>>> "If the current time is 23:59:59, a problem would occur." why?
+>>> The error occur when there are messages-20150406 file in /var/log/ and do
+>>> "logrotate" in 20150406(same day).
+>>>
+>>> Thanks,
+>>> Cui Bixuan
+>>>
+>>>
+>>>
+>>>
+>>> .
+>>>
+>>
+>> ------------------------------------------------------------------------------
+>> _______________________________________________
+>> Ltp-list mailing list
+>> Ltp-list@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>>
+> .
+>
 
-diff --git a/lib/random_range.c b/lib/random_range.c
-index 1d88dd2..510a4a1 100644
---- a/lib/random_range.c
-+++ b/lib/random_range.c
-@@ -121,7 +121,7 @@ int parse_ranges(char *str, int defmin, int defmax, int defmult,
- 	}
- 
- 	tmpstr = strdup(str);
--	ranges = (struct range *)malloc((ncommas + 1) * sizeof(struct range));
-+	ranges = malloc((ncommas + 1) * sizeof(struct range));
- 	rp = ranges;
- 
- 	tok = strtok(tmpstr, ",");
--- 
-1.7.9.5
+
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
