@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1YzOd3-0001Ko-EZ
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 12:15:41 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YzOd0-0000gM-Uj
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 12:15:41 +0000
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Mon, 1 Jun 2015 12:07:38 +0000
-Message-ID: <1433160458-191547-1-git-send-email-cuibixuan@huawei.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1YzhGt-0007o5-Ec
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 08:10:03 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1YzhGr-0006AJ-Km
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 08:10:03 +0000
+Date: Tue, 2 Jun 2015 04:09:52 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <296939068.9006142.1433232592562.JavaMail.zimbra@redhat.com>
+In-Reply-To: <206480471.6823339.1432816433513.JavaMail.zimbra@redhat.com>
+References: <1432760421-14844-1-git-send-email-sunyuan3@huawei.com>
+	<206480471.6823339.1432816433513.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP]  [PATCH] ade/ld: fix compile warning
+Subject: Re: [LTP] [PATCH V2] containers: new testcase userns02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,72 +28,219 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: zhuyanpeng@huawei.com, zhanyongming@huawei.com
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, pleasuresun@sina.com
 
-Fix the warnings 'old-style function definition' when compile LTP
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
----
- testcases/commands/ade/ld/f1.c     |    2 +-
- testcases/commands/ade/ld/ldmain.c |    2 +-
- testcases/commands/ade/ld/rd1.c    |    2 +-
- testcases/commands/ade/ld/rf1.c    |    2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/commands/ade/ld/f1.c b/testcases/commands/ade/ld/f1.c
-index 610fb65..ebb5e10 100644
---- a/testcases/commands/ade/ld/f1.c
-+++ b/testcases/commands/ade/ld/f1.c
-@@ -1,5 +1,5 @@
- 
--void f1()
-+void f1(void)
- {
- 	int i = 69;
- 	i = i;
-diff --git a/testcases/commands/ade/ld/ldmain.c b/testcases/commands/ade/ld/ldmain.c
-index cac106e..6f9c47a 100644
---- a/testcases/commands/ade/ld/ldmain.c
-+++ b/testcases/commands/ade/ld/ldmain.c
-@@ -3,7 +3,7 @@
- 
- extern void use_s1();
- 
--int main()
-+int main(void)
- {
- 	use_s1();
- 	return (0);
-diff --git a/testcases/commands/ade/ld/rd1.c b/testcases/commands/ade/ld/rd1.c
-index 969132f..d9496bd 100644
---- a/testcases/commands/ade/ld/rd1.c
-+++ b/testcases/commands/ade/ld/rd1.c
-@@ -2,7 +2,7 @@
- 
- extern int d1;
- 
--void use_s1()
-+void use_s1(void)
- {
- 	d1 = d1 + d1;
- }
-diff --git a/testcases/commands/ade/ld/rf1.c b/testcases/commands/ade/ld/rf1.c
-index 35cb94a..57a23f1 100644
---- a/testcases/commands/ade/ld/rf1.c
-+++ b/testcases/commands/ade/ld/rf1.c
-@@ -3,7 +3,7 @@
- 
- extern void f1();
- 
--void use_s1()
-+void use_s1(void)
- {
- //      printf("calling function f1");
- 	f1();
--- 
-1.6.0.2
 
+----- Original Message -----
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: "Yuan Sun" <sunyuan3@huawei.com>
+> Cc: ltp-list@lists.sourceforge.net, pleasuresun@sina.com
+> Sent: Thursday, 28 May, 2015 2:33:53 PM
+> Subject: Re: [LTP] [PATCH V2] containers: new testcase userns02
+> 
+> 
+> 
+> 
+> 
+> ----- Original Message -----
+> > From: "Yuan Sun" <sunyuan3@huawei.com>
+> > To: jstancek@redhat.com
+> > Cc: ltp-list@lists.sourceforge.net, pleasuresun@sina.com,
+> > sunyuan3@huawei.com
+> > Sent: Wednesday, 27 May, 2015 11:00:21 PM
+> > Subject: [PATCH V2] containers: new testcase userns02
+> > 
+> > The user ID and group ID, which are inside a container, can
+> > be modified by its parent process.
+> > 
+> > Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+
+Pushed with these changes:
+  global variables moved to main()
+  added cleanup() and tmp dir so we don't leave futex base file behind
+  don't print TPASS unconditionally
+
+Regards,
+Jan
+
+> 
+> Hi,
+> 
+> couple comments inline, but overall it looks good to me.
+> Unless someone points out other issues, I can fix these before commit.
+> 
+> > ---
+> >  runtest/containers                            |   1 +
+> >  testcases/kernel/containers/.gitignore        |   1 +
+> >  testcases/kernel/containers/userns/userns02.c | 113
+> >  ++++++++++++++++++++++++++
+> >  3 files changed, 115 insertions(+)
+> >  create mode 100644 testcases/kernel/containers/userns/userns02.c
+> > 
+> > diff --git a/runtest/containers b/runtest/containers
+> > index ca10372..bb1beb6 100644
+> > --- a/runtest/containers
+> > +++ b/runtest/containers
+> > @@ -69,3 +69,4 @@ mountns03 mountns03
+> >  mountns04 mountns04
+> >  
+> >  userns01 userns01
+> > +userns02 userns02
+> > diff --git a/testcases/kernel/containers/.gitignore
+> > b/testcases/kernel/containers/.gitignore
+> > index 4478b53..e3c92c9 100644
+> > --- a/testcases/kernel/containers/.gitignore
+> > +++ b/testcases/kernel/containers/.gitignore
+> > @@ -4,3 +4,4 @@ mountns/mountns02
+> >  mountns/mountns03
+> >  mountns/mountns04
+> >  userns/userns01
+> > +userns/userns02
+> > diff --git a/testcases/kernel/containers/userns/userns02.c
+> > b/testcases/kernel/containers/userns/userns02.c
+> > new file mode 100644
+> > index 0000000..6a4b36d
+> > --- /dev/null
+> > +++ b/testcases/kernel/containers/userns/userns02.c
+> > @@ -0,0 +1,113 @@
+> > +/*
+> > + * Copyright (c) Huawei Technologies Co., Ltd., 2015
+> > + * This program is free software; you can redistribute it and/or modify
+> > + * it under the terms of the GNU General Public License as published by
+> > + * the Free Software Foundation; either version 2 of the License, or
+> > + *  (at your option) any later version.
+> > + *
+> > + * This program is distributed in the hope that it will be useful,
+> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> > + * the GNU General Public License for more details.
+> > + */
+> > +
+> > +/*
+> > + * Verify that:
+> > + *  The user ID and group ID, which are inside a container, can be
+> > modified
+> > + * by its parent process.
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +#include <sys/wait.h>
+> > +#include <assert.h>
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <unistd.h>
+> > +#include <string.h>
+> > +#include <errno.h>
+> > +#include "test.h"
+> > +#include "userns_helper.h"
+> > +
+> > +char *TCID = "user_namespace2";
+> > +int TST_TOTAL = 1;
+> > +
+> > +int childpid;
+> > +int parentuid;
+> > +int parentgid;
+> > +char path[BUFSIZ];
+> > +char content[BUFSIZ];
+> > +static int fd;
+> 
+> No need for these to be global, all can be in main.
+> 
+> > +/*
+> > + * child_fn1() - Inside a new user namespace
+> > + */
+> > +static int child_fn1(void)
+> > +{
+> > +	int exit_val;
+> > +	int uid, gid;
+> > +
+> > +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
+> > +	uid = geteuid();
+> > +	gid = getegid();
+> > +
+> > +	printf("USERNS test is running in a new user namespace.\n");
+> > +	if (uid == 100 && gid == 100) {
+> > +		printf("Got expected uid and gid.\n");
+> > +		exit_val = 0;
+> > +	} else {
+> > +		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
+> > +		exit_val = 1;
+> > +	}
+> > +
+> > +	return exit_val;
+> > +}
+> > +
+> > +static void setup(void)
+> > +{
+> > +	TST_CHECKPOINT_INIT(NULL);
+> > +	check_newuser();
+> > +}
+> > +
+> > +int main(int argc, char *argv[])
+> > +{
+> > +	int status;
+> > +	int lc;
+> > +
+> > +	tst_parse_opts(argc, argv, NULL, NULL);
+> > +	setup();
+> > +
+> > +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> > +		tst_count = 0;
+> > +		childpid = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
+> > +			(void *)child_fn1, NULL);
+> > +
+> > +		if (childpid < 0)
+> > +			tst_brkm(TFAIL | TERRNO, NULL, "clone failed");
+> > +
+> > +		parentuid = geteuid();
+> > +		parentgid = getegid();
+> > +		sprintf(path, "/proc/%d/uid_map", childpid);
+> > +		sprintf(content, "100 %d 1", parentuid);
+> > +		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
+> > +		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
+> > +		sprintf(path, "/proc/%d/gid_map", childpid);
+> > +		sprintf(content, "100 %d 1", parentgid);
+> > +		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
+> > +		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
+> > +
+> > +		TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
+> > +
+> > +		if (waitpid(childpid, &status, 0) < 0)
+> > +			tst_resm(TBROK | TERRNO, "parent: waitpid failed.");
+> > +
+> > +		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+> > +			tst_resm(TFAIL, "child exited abnormally");
+> > +		else if (WIFSIGNALED(status)) {
+> > +			tst_resm(TFAIL, "child was killed with signal = %d",
+> > +				WTERMSIG(status));
+> > +		}
+> > +
+> > +	}
+> > +	tst_resm(TPASS, "the uid and the gid are right inside the container");
+> 
+> It will print TPASS even when it fails - not a big issue since T_exitval
+> will carry any previous TFAIL.
+> 
+> Regards,
+> Jan
+> 
+> > +	tst_exit();
+> > +}
+> > +
+> > --
+> > 1.9.1
+> > 
+> > 
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 _______________________________________________
