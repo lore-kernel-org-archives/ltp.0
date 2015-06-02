@@ -1,25 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z8SSO-0006Ux-Cu
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:10:08 +0000
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z8SSN-00006e-8A
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:10:08 +0000
-Received: from epcpsbgr2.samsung.com
-	(u142.gpu120.samsung.co.kr [203.254.230.142])
-	by mailout2.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NQJ02HFWWGOXXB0@mailout2.samsung.com> for
-	ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 21:10:00 +0900 (KST)
-From: Maninder Singh <maninder1.s@samsung.com>
-Date: Fri, 26 Jun 2015 17:34:49 +0530
-Message-id: <1435320294-45783-9-git-send-email-maninder1.s@samsung.com>
-In-reply-to: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
-References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
-Subject: [LTP] [PATCH 08/13] kernel/mq_timedsend: use ARRAY_SIZE
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1YzbXz-0004jb-Sh
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 02:03:19 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1YzbXx-0005rO-4i
+	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 02:03:19 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Tue, 2 Jun 2015 04:03:33 -0600
+Message-ID: <1433239413-6032-1-git-send-email-sunyuan3@huawei.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] Use the value of /proc/sys/kernel/overflowgid as
+	overflowgid.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,43 +23,68 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: pankaj.m@samsung.com
+To: jstancek@redhat.com
+Cc: ltp-list@lists.sourceforge.net
 
-
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
 ---
- .../kernel/syscalls/mq_timedsend/mq_timedsend01.c  |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/kernel/containers/userns/userns01.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-index 5b1cd53..e637c34 100644
---- a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-+++ b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-@@ -452,7 +452,7 @@ int main(int ac, char **av)
- 			/*
- 			 * Execute test
- 			 */
--			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
-+			for (i = 0; i < (int)ARRAY_SIZE(tcase);
- 			     i++) {
- 				int ret;
- 				tst_resm(TINFO, "(case%02d) START", i);
+diff --git a/testcases/kernel/containers/userns/userns01.c b/testcases/kernel/containers/userns/userns01.c
+index 8c45774..15cde43 100644
+--- a/testcases/kernel/containers/userns/userns01.c
++++ b/testcases/kernel/containers/userns/userns01.c
+@@ -14,7 +14,8 @@
+ /*
+  * Verify that:
+  *  If a user ID has no mapping inside the namespace, user ID and group
+- * ID will be the value defined in the file /proc/sys/kernel/overflowuid, 65534.
++ * ID will be the value defined in the file /proc/sys/kernel/overflowuid(65534)
++ * and /proc/sys/kernel/overflowgid(65534).
+  */
+ 
+ #define _GNU_SOURCE
+@@ -29,12 +30,14 @@
+ #include "libclone.h"
+ #include "userns_helper.h"
+ #define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
++#define OVERFLOWGIDPATH "/proc/sys/kernel/overflowgid"
+ 
+ char *TCID = "user_namespace1";
+ int TST_TOTAL = 1;
+ 
+ char fullpath[BUFSIZ];
+ long overflowuid;
++long overflowgid;
+ 
+ /*
+  * child_fn1() - Inside a new user namespace
+@@ -48,7 +51,7 @@ static int child_fn1(void *arg)
+ 	gid = getegid();
+ 
+ 	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
+-	if (uid == overflowuid && gid == overflowuid) {
++	if (uid == overflowuid && gid == overflowgid) {
+ 		printf("Got expected uid and gid\n");
+ 		exit_val = 0;
+ 	} else {
+@@ -63,6 +66,7 @@ static void setup(void)
+ {
+ 	check_newuser();
+ 	SAFE_FILE_SCANF(NULL, OVERFLOWUIDPATH, "%ld", &overflowuid);
++	SAFE_FILE_SCANF(NULL, OVERFLOWGIDPATH, "%ld", &overflowgid);
+ }
+ 
+ int main(int argc, char *argv[])
 -- 
-1.7.9.5
+1.9.1
 
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
