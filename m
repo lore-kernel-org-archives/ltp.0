@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z4UM4-0002do-Ba
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:23:12 +0000
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z4UM2-0003OT-DU
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:23:12 +0000
-Received: from epcpsbgr1.samsung.com
-	(u141.gpu120.samsung.co.kr [203.254.230.141])
-	by mailout3.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NPZ029XPMIFDU30@mailout3.samsung.com> for
-	ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 22:23:03 +0900 (KST)
-Date: Mon, 15 Jun 2015 13:23:03 +0000 (GMT)
-From: Maninder Singh <maninder1.s@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1772976838.1047631434374583253.JavaMail.weblogic@epmlwas03c>
-Subject: [LTP] [PATCH 1/7] pan/zoolib.c: remove unnecessary type cast for
-	malloc
-Reply-To: maninder1.s@samsung.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z026n-0007UR-Hb
+	for Ltp-list@lists.sourceforge.net; Wed, 03 Jun 2015 06:25:01 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Z026m-0002T9-Ad
+	for Ltp-list@lists.sourceforge.net; Wed, 03 Jun 2015 06:25:01 +0000
+From: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 3 Jun 2015 06:25:02 +0000
+Message-ID: <1433312690.1911.3.camel@localhost>
+References: <556E9A9E.7080202@windriver.com>
+In-Reply-To: <556E9A9E.7080202@windriver.com>
+Content-Language: en-US
+Content-ID: <55A510F95CD5F84483827A807800F90F@fujitsu.local>
+MIME-Version: 1.0
+Subject: Re: [LTP] ltp: vma03 fix the alginment of page size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,29 +29,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: "chuang.dong@windriver.com" <chuang.dong@windriver.com>
+Cc: "Ltp-list@lists.sourceforge.net" <Ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
----
- pan/zoolib.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi,
+Maybe you had to fix your typo in commit message.
+You can using 'set spell' to check it before pushing it. 
 
-diff --git a/pan/zoolib.c b/pan/zoolib.c
-index afdc706..0ac7852 100644
---- a/pan/zoolib.c
-+++ b/pan/zoolib.c
-@@ -377,7 +377,7 @@ char *cat_args(int argc, char **argv)
- 		size++;
- 	}
- 
--	if ((cmd = (char *)malloc(size)) == NULL) {
-+	if ((cmd = malloc(size)) == NULL) {
- 		snprintf(zoo_error, ZELEN,
- 			 "Malloc Error, %s/%d", __FILE__, __LINE__);
- 		return NULL;
--- 
-1.7.9.5
+Regards,
+Wei
+On Wed, 2015-06-03 at 14:11 +0800, cdong wrote:
+> Hi,
+>         There is a patch to fix vma03 test case,the below information is 
+> detail it:
+> 
+>         the offset the parameter of mmap2() doesn't align the page 
+> size,but,this parameter
+>         allow must be a multiple of the page size as returned by 
+> sysconf(_SC_PAGE_SIZE).
+>         meanwhile offset * 4096 must be a multiple of the system page 
+> size,so modify
+>         the input param of offset pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
+> 
+>      Regards,
+>      Apollo
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
