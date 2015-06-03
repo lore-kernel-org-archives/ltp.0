@@ -1,26 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <manjeet.p@samsung.com>) id 1Yxpdb-00041X-08
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:41:47 +0000
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1YxpdY-0005tJ-VX
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:41:46 +0000
-Received: from epcpsbgr1.samsung.com
-	(u141.gpu120.samsung.co.kr [203.254.230.141])
-	by mailout2.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NP1007IIMDCNA00@mailout2.samsung.com> for
-	ltp-list@lists.sourceforge.net; Thu, 28 May 2015 13:41:36 +0900 (KST)
-Date: Thu, 28 May 2015 04:41:36 +0000 (GMT)
-From: Manjeet Pawar <manjeet.p@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1230732671.190411432788096392.JavaMail.weblogic@epmlwas05c>
-Subject: [LTP]  [PATCH]: Fix memory leaks and remove redundant code
-Reply-To: manjeet.p@samsung.com
+	(envelope-from <metan@suse.de>) id 1Z0C0e-0005zZ-6M
+	for ltp-list@lists.sourceforge.net; Wed, 03 Jun 2015 16:59:20 +0000
+Date: Wed, 3 Jun 2015 18:58:20 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150603165820.GC8444@rei.suse.de>
+References: <1433158230-3452-1-git-send-email-sunyuan3@huawei.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1433158230-3452-1-git-send-email-sunyuan3@huawei.com>
+Subject: Re: [LTP] [PATCH] Fix the return value error of read_shares_file.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,53 +24,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Manjeet Pawar <manjeet.p@samsung.com>
-Subject: [PATCH] lib/self_exec.c: free args before returning from function to avoid memory leaks and remove redundant code in self_exec()
+Hi!
+> See the following in the read_file function.
+> *value = read_shares_file(filepath);
+> if (*value == -1)
+> 	return -1;
+> Since the return value of read_shares_file and the variable value are
+> unsigned int, it is impossible that *value == -1.
+> 
+> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+> ---
+>  testcases/kernel/controllers/libcontrollers/libcontrollers.c | 6 ++++--
+>  testcases/kernel/controllers/libcontrollers/libcontrollers.h | 2 +-
+>  2 files changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+> index b01e1b8..80a90b9 100644
+> --- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+> +++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+> @@ -115,11 +115,14 @@ int read_file(char *filepath, int action, unsigned int *value)
+>  {
+>  	int num_line = 0;
+>  	FILE *fp;
+> +	int tmp;
+>  	switch (action) {
+>  	case GET_SHARES:
+> -		*value = read_shares_file(filepath);
+> +		tmp = read_shares_file(filepath);
+>  		if (*value == -1)
+>  			return -1;
+> +		else
+> +			*value = (unsigned int)tmp;
+>  		break;
+>  
+>  	case GET_TASKS:
+> @@ -159,7 +162,6 @@ inline int error_function(char *msg1, char *msg2)
+>   * the given pointer location. Returns 0 if success
+>   */
+>  
+> -unsigned
+>  int read_shares_file(char *filepath)
+>  {
+>  	FILE *fp;
+> diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+> index 4001555..78a7fed 100644
+> --- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+> +++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+> @@ -72,7 +72,7 @@ enum{
+>  
+>  inline int error_function(char *msg1, char *msg2);
+>  
+> -unsigned int read_shares_file (char *filepath);
+> +int read_shares_file(char *filepath);
+>  
+>  int read_file(char *filepath, int action, unsigned int *value);
 
-This patch free args before returning from function to avoid memory leaks and remove redundant code in self_exec()
+Looking at the code, it's more broken than this.
 
-Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
-Signed-off-by: Yogesh Gaur <yn.gaur@samsung.com>
----
- lib/self_exec.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The read_shares_file() function, as well as rest of the functions,
+cannot return -1 as they are now.
 
-diff --git a/lib/self_exec.c b/lib/self_exec.c
-index 06af313..e8f1ee6 100644
---- a/lib/self_exec.c
-+++ b/lib/self_exec.c
-@@ -117,6 +117,7 @@ void maybe_run_child(void (*child) (), char *fmt, ...)
- 				}
- 				if (j != i) {
- 					va_end(ap);
-+					free(args);
- 					return;
- 				}
- 				break;
-@@ -144,7 +145,7 @@ void maybe_run_child(void (*child) (), char *fmt, ...)
- 		}
- 
- 		va_end(ap);
--
-+		free(args);
- 		if (chdir(child_dir) < 0)
- 			tst_brkm(TBROK, NULL,
- 				 "Could not change to %s for child", child_dir);
-@@ -170,8 +171,7 @@ int self_exec(char *argv0, char *fmt, ...)
- 	}
- 
- 	arg = strdup(tmp_cwd);
--
--	if ((arg = strdup(tmp_cwd)) == NULL) {
-+	if (arg == NULL) {
- 		tst_resm(TBROK, "Could not produce self_exec string");
- 		return -1;
- 	}
+If you look at the code carefuly:
+
+inline int error_function(char *msg1, char *msg2)
+{
+        fprintf(stdout, "ERROR: %s ", msg1);
+        fprintf(stdout, "%s\n", msg2);
+        return -1;
+}
+
+unsigned
+int read_shares_file(char *filepath)
+{
+        FILE *fp;
+        unsigned int shares;
+        fp = fopen(filepath, "r");
+        if (fp == NULL)
+                error_function("Could not open file", filepath);
+	fscanf(fp, "%u", &shares);
+
+The return value from error_function() would be ingnored here and, if the file
+cannot be open, the code will crash while passing NULL to fscanf.
+
 -- 
-1.7.9.5
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
