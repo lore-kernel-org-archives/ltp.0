@@ -1,29 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Z5uDA-0003jC-8j
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 11:11:52 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z5uD9-0006vA-8D
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 11:11:52 +0000
-Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t5JBBiZN032634
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2015 11:11:45 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t5JBBiYT021263
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2015 11:11:44 GMT
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-	by aserv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t5JBBDvF029313
-	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2015 11:11:18 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 19 Jun 2015 14:14:19 +0300
-Message-Id: <1434712459-21878-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] cgroup_xattr: fix test on kernels >= 3.15
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Chuang.Dong@windriver.com>) id 1Z01uA-0007Ol-Bl
+	for Ltp-list@lists.sourceforge.net; Wed, 03 Jun 2015 06:11:58 +0000
+Received: from mail.windriver.com ([147.11.1.11])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z01u9-0000Rv-4x
+	for Ltp-list@lists.sourceforge.net; Wed, 03 Jun 2015 06:11:58 +0000
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com
+	[147.11.189.40])
+	by mail.windriver.com (8.15.1/8.15.1) with ESMTPS id t536Bo27012683
+	(version=TLSv1 cipher=AES128-SHA bits=128 verify=FAIL)
+	for <Ltp-list@lists.sourceforge.net>;
+	Tue, 2 Jun 2015 23:11:51 -0700 (PDT)
+Message-ID: <556E9A9E.7080202@windriver.com>
+Date: Wed, 3 Jun 2015 14:11:42 +0800
+From: cdong <chuang.dong@windriver.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------040207040104010202010203"
+Subject: [LTP] ltp: vma03 fix the alginment of page size
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,111 +29,88 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Ltp-list@lists.sourceforge.net
 
-* cgroup was converted to kernfs that supports xattr natively and
-  doesn't have simple 'security.' namespace handler. So using just
-  'security.' name in setxattr syscall returns EOPNOTSUPP.
+--------------040207040104010202010203
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Also,
+Hi,
+        There is a patch to fix vma03 test case,the below information is 
+detail it:
 
-* adding 'trusted.' name to the test - should be valid xattr name.
+        the offset the parameter of mmap2() doesn't align the page 
+size,but,this parameter
+        allow must be a multiple of the page size as returned by 
+sysconf(_SC_PAGE_SIZE).
+        meanwhile offset * 4096 must be a multiple of the system page 
+size,so modify
+        the input param of offset pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
 
-* silent warnings about comparison between signed and unsigned int.
+     Regards,
+     Apollo
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+--------------040207040104010202010203
+Content-Type: text/x-patch;
+	name="0001-ltp-vma03-fix-the-alginment-of-page-size.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="0001-ltp-vma03-fix-the-alginment-of-page-size.patch"
+
+From 6e60e9d4f27d36cdd369e7d7a046da49e3f17fd6 Mon Sep 17 00:00:00 2001
+From: Chuang Dong <Chuang.Dong@windriver.com>
+Date: Wed, 3 Jun 2015 13:27:53 +0800
+Subject: [PATCH] ltp: vma03 fix the alginment of page size
+
+the offset the param of mmap2() doesn't align the page size,but,
+this param allow must be a multiple of the page size as returned
+by sysconf(_SC_PAGE_SIZE).meanwhile offset * 4096 must be a
+multiple of the system page size,so modify the input param of offset
+pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
+
+Upstream-Status: Submitted
+
+Signed-off-by: Chuang Dong <Chuang.Dong@windriver.com>
 ---
- .../kernel/controllers/cgroup_xattr/cgroup_xattr.c |   24 +++++++++++++++-----
- 1 files changed, 18 insertions(+), 6 deletions(-)
+ testcases/kernel/mem/vma/vma03.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
-index d21656f..3170879 100644
---- a/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
-+++ b/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
-@@ -1,5 +1,5 @@
- /*
-- * Copyright (c) 2013 Oracle and/or its affiliates. All Rights Reserved.
-+ * Copyright (c) 2013-2015 Oracle and/or its affiliates. All Rights Reserved.
-  *
-  * This program is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU General Public License as
-@@ -63,8 +63,9 @@ struct tst_key {
- };
+diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
+index ad8a7b4..a539233 100644
+--- a/testcases/kernel/mem/vma/vma03.c
++++ b/testcases/kernel/mem/vma/vma03.c
+@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
+ 		if (fd == -1)
+ 			tst_brkm(TBROK | TERRNO, NULL, "open %s", TESTFILE);
  
- /* only security.* & trusted.* are valid key names */
--static const struct tst_key tkeys[] = {
-+static struct tst_key tkeys[] = {
- 	{ .name = "trusted.test",	.good = 1,	},
-+	{ .name = "trusted.",		.good = 1,	},
- 	{ .name = "security.",		.good = 1,	},
- 	{ .name = "user.",		.good = 0,	},
- 	{ .name = "system.",		.good = 0,	},
-@@ -152,6 +153,14 @@ void setup(int argc, char *argv[])
- 			"Test must be run with kernel 3.7 or newer");
- 	}
- 
-+	if (tst_kvercmp(3, 15, 0) >= 0) {
-+		/* In kernel v3.15 cgroup was converted to kernfs
-+		 * that doesn't provide simple security namespace handlers.
-+		 * Setting just 'security.' should return EOPNOTSUPP.
-+		 */
-+		tkeys[2].good = 0;
-+	}
-+
- 	int value_size = DEFAULT_VALUE_SIZE;
- 	if (nflag) {
- 		if (sscanf(narg, "%i", &value_size) != 1)
-@@ -270,8 +279,11 @@ int mount_cgroup(void)
- 		 * additional "xattr" option. In that case, mount will succeed,
- 		 * but xattr won't be supported in the new mount anyway.
- 		 * Should be removed as soon as a fix committed to upstream.
-+		 *
-+		 * But not applicable for kernels >= 3.15 where xattr supported
-+		 * natively.
- 		 */
--		if (hier != 0)
-+		if (hier != 0 && tst_kvercmp(3, 15, 0) < 0)
- 			continue;
- 
- 		int i, found = 0;
-@@ -321,7 +333,7 @@ int mount_cgroup(void)
- 
- static int set_xattrs(const char *file)
- {
--	int i, err, fail, res = 0;
-+	unsigned int i, err, fail, res = 0;
- 
- 	for (i = 0; i < ARRAY_SIZE(tkeys); ++i) {
- 		err = setxattr(file, tkeys[i].name,
-@@ -343,7 +355,7 @@ static int set_xattrs(const char *file)
- 
- static int get_xattrs(const char *file)
- {
--	int i, fail, res = 0;
-+	unsigned int i, fail, res = 0;
- 
- 	for (i = 0; i < ARRAY_SIZE(tkeys); ++i) {
- 		/* get value size */
-@@ -366,7 +378,7 @@ static int get_xattrs(const char *file)
- 				"Can't get buffer of key %s",
- 				tkeys[i].name);
- 		}
--		fail = val.size != size ||
-+		fail = val.size != (size_t)size ||
- 			strncmp(val.buf, xval, val.size) != 0;
- 		res |= fail;
- 
+-		pgoff = ULONG_MAX - 1;
++		pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
+ 		map = mmap2(NULL, pgsz, PROT_READ | PROT_WRITE, MAP_PRIVATE,
+ 			    fd, pgoff);
+ 		if (map == MAP_FAILED)
 -- 
-1.7.1
+1.8.5.2.233.g932f7e4
 
+
+--------------040207040104010202010203
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--------------040207040104010202010203
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------040207040104010202010203--
+
