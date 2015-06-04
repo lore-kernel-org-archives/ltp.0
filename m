@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z73FR-0002gI-NP
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 15:02:57 +0000
-Date: Mon, 22 Jun 2015 17:01:43 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z0Und-000655-3X
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 13:03:09 +0000
+Date: Thu, 4 Jun 2015 15:02:08 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150622150143.GC7982@rei.suse.de>
-References: <6ad648e0b674845a19073ebd7afcb8ec82f3f891.1434551926.git.jstancek@redhat.com>
-	<20150622122056.GA7476@rei.suse.de>
-	<676745151.5941810.1434981383477.JavaMail.zimbra@redhat.com>
-	<20150622135828.GA7982@rei.suse.de>
-	<1603834412.5959211.1434983075966.JavaMail.zimbra@redhat.com>
+Message-ID: <20150604130208.GA7095@rei.suse.de>
+References: <1433430027-11690-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1603834412.5959211.1434983075966.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] kmsg01: avoid infinite run in test_read_block()
+In-Reply-To: <1433430027-11690-1-git-send-email-sunyuan3@huawei.com>
+Subject: Re: [LTP] [PATCH] Fix the return value error of read_shares_file.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,28 +24,158 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Yuan Sun <sunyuan3@huawei.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> > Or we can pass down to the child what is expected result, make it print
-> > the PASS/FAIL and then just record the child status in the parent.
-> 
-> One of expected results is that read blocks, child can't do much else after that.
+Can you also change the error_function() to return void and remove the
+return -1 from it?
 
-Sorry, I got confused and though that child used timed_read() in this
-case. (I will get back to the previous email now)
+> diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+> index b01e1b8..ebf9870 100644
+> --- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+> +++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+> @@ -50,8 +50,10 @@ int scan_shares_files(unsigned int *shares_pointer)
+>  	/*
+>  	 * Check if we can get stat of the file
+>  	 */
+> -	if (lstat(fullpath, &statbuffer) < 0)
+> +	if (lstat(fullpath, &statbuffer) < 0) {
+>  		error_function("Can not read stat for file ", fullpath);
+> +		return -1;
+> +	}
+>  
+>  	if (S_ISDIR(statbuffer.st_mode) == 0) {	/* not a directory */
+>  		/*
+> @@ -75,8 +77,10 @@ int scan_shares_files(unsigned int *shares_pointer)
+>  	*path_pointer++ = '/';
+>  	*path_pointer = 0;
+>  
+> -	if ((dp = opendir(fullpath)) == NULL)	/* Error in opening directory */
+> +	if ((dp = opendir(fullpath)) == NULL) {	/* Error in opening directory */
+>  		error_function("Can't open ", fullpath);
+> +		return -1;
+> +	}
+>  	/*
+>  	 * search all groups recursively and get total shares
+>  	 */
+> @@ -99,8 +103,10 @@ int scan_shares_files(unsigned int *shares_pointer)
+>  
+>  	path_pointer[-1] = 0;
+>  
+> -	if (closedir(dp) < 0)
+> +	if (closedir(dp) < 0) {
+>  		error_function("Could not close dir ", fullpath);
+> +		return -1;
+> +	}
+>  	return 0;
+>  }
+>  
+> @@ -115,27 +121,35 @@ int read_file(char *filepath, int action, unsigned int *value)
+>  {
+>  	int num_line = 0;
+>  	FILE *fp;
+> +	int tmp;
+>  	switch (action) {
+>  	case GET_SHARES:
+> -		*value = read_shares_file(filepath);
+> -		if (*value == -1)
+> +		tmp = read_shares_file(filepath);
+> +		if (tmp == -1)
+>  			return -1;
+> +		else
+> +			*value = (unsigned int)tmp;
+
+There is no need for the else branch. If tmp is -1 the code below would
+not be reached anyway.
+
+>  		break;
+>  
+>  	case GET_TASKS:
+>  		fp = fopen(filepath, "r");
+> -		if (fp == NULL)
+> +		if (fp == NULL) {
+>  			error_function("Could not open file", filepath);
+> +			return -1;
+> +		}
+>  		while (fgets(target, LINE_MAX, fp) != NULL)
+>  			num_line++;
+>  		*value = (unsigned int)num_line;
+> -		if (fclose(fp))
+> +		if (fclose(fp)) {
+>  			error_function("Could not close file", filepath);
+> +			return -1;
+> +		}
+>  		break;
+>  
+>  	default:
+>  		error_function("Wrong action type passed to fun read_file for ",
+>  			       filepath);
+> +		return -1;
+>  		break;
+
+No need to keep the break after return.
+
+>  	}
+>  	return 0;
+> @@ -159,17 +173,20 @@ inline int error_function(char *msg1, char *msg2)
+>   * the given pointer location. Returns 0 if success
+>   */
+>  
+> -unsigned
+>  int read_shares_file(char *filepath)
+>  {
+>  	FILE *fp;
+>  	unsigned int shares;
+>  	fp = fopen(filepath, "r");
+> -	if (fp == NULL)
+> +	if (fp == NULL) {
+>  		error_function("Could not open file", filepath);
+> +		return -1;
+> +	}
+>  	fscanf(fp, "%u", &shares);
+> -	if (fclose(fp))
+> +	if (fclose(fp)) {
+>  		error_function("Could not close file", filepath);
+> +		return -1;
+> +	}
+>  	return shares;
+>  }
+>  
+> @@ -181,8 +198,10 @@ int write_to_file(char *file, const char *mode, unsigned int value)
+>  {
+>  	FILE *fp;
+>  	fp = fopen(file, mode);
+> -	if (fp == NULL)
+> +	if (fp == NULL) {
+>  		error_function("in opening file for writing:", file);
+> +		return -1;
+> +	}
+>  	fprintf(fp, "%u\n", value);
+>  	fclose(fp);
+>  	return 0;
+> diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+> index 4001555..78a7fed 100644
+> --- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+> +++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+> @@ -72,7 +72,7 @@ enum{
+>  
+>  inline int error_function(char *msg1, char *msg2);
+>  
+> -unsigned int read_shares_file (char *filepath);
+> +int read_shares_file(char *filepath);
+>  
+>  int read_file(char *filepath, int action, unsigned int *value);
+>  
+> -- 
+> 1.9.1
+> 
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
