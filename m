@@ -1,17 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Z7hch-0005kn-3o
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2015 10:09:39 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Z0U7e-0002D2-Ut
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 12:19:46 +0000
 Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z7hcf-0001eS-66
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2015 10:09:39 +0000
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z0U7d-0002MG-MH
+	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 12:19:46 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (Postfix) with ESMTPS id C5326370200
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  4 Jun 2015 12:19:39 +0000 (UTC)
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id t54CJclV002929
+	for <ltp-list@lists.sourceforge.net>; Thu, 4 Jun 2015 08:19:39 -0400
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 24 Jun 2015 12:09:23 +0200
-Message-Id: <cfc70376b0c3835b040bef9125f2917926a56ec9.1435139859.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v5] containers: new testcase userns04
+Date: Thu,  4 Jun 2015 14:19:35 +0200
+Message-Id: <6638881b90112812abf856192c16986eb73fb10a.1433420296.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] mem/oom: allocate memory using multiple threads
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,209 +34,140 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: sunyuan3@huawei.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-From: Yuan Sun <sunyuan3@huawei.com>
+This is to make testcase faster on big systems, for example,
+on Lenovo X3950 X6, 256GB RAM, 240 CPUs, 8 NUMA nodes
+oom01 testcase would previously take ~4 hours to complete.
+With this patch it takes ~16 minutes.
 
-If a namespace isn't another namespace's ancestor, the process in
-first namespace does not have the CAP_SYS_ADMIN capability in the
-second namespace and the setns() call fails.
+This change spawns CPU-1 (or at least 1) thread(s), which
+allocate / fault-in memory in same way as before.
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- runtest/containers                            |   1 +
- testcases/kernel/containers/.gitignore        |   1 +
- testcases/kernel/containers/userns/userns04.c | 151 ++++++++++++++++++++++++++
- 3 files changed, 153 insertions(+)
- create mode 100644 testcases/kernel/containers/userns/userns04.c
+ testcases/kernel/mem/include/libmem.mk |  2 +-
+ testcases/kernel/mem/lib/mem.c         | 59 +++++++++++++++++++++++++++-------
+ 2 files changed, 49 insertions(+), 12 deletions(-)
 
-diff --git a/runtest/containers b/runtest/containers
-index bb1beb6..fd9c06a 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -70,3 +70,4 @@ mountns04 mountns04
+diff --git a/testcases/kernel/mem/include/libmem.mk b/testcases/kernel/mem/include/libmem.mk
+index 4503e78..bb5a163 100644
+--- a/testcases/kernel/mem/include/libmem.mk
++++ b/testcases/kernel/mem/include/libmem.mk
+@@ -24,7 +24,7 @@ LIBMEM_DIR		:= $(MEM_DIR)/lib
+ LIBMEM			:= $(LIBMEM_DIR)/libmem.a
+ FILTER_OUT_DIRS		:= $(LIBMEM_DIR)
+ CFLAGS			+= -I$(MEM_SRCDIR)/include
+-LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
++LDLIBS			+= $(NUMA_LIBS) -lmem -lltp -lpthread
+ LDFLAGS			+= -L$(LIBMEM_DIR)
  
- userns01 userns01
- userns02 userns02
-+userns04 userns04
-diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index e3c92c9..6c5785f 100644
---- a/testcases/kernel/containers/.gitignore
-+++ b/testcases/kernel/containers/.gitignore
-@@ -5,3 +5,4 @@ mountns/mountns03
- mountns/mountns04
- userns/userns01
- userns/userns02
-+userns/userns04
-diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
-new file mode 100644
-index 0000000..206c9ed
---- /dev/null
-+++ b/testcases/kernel/containers/userns/userns04.c
-@@ -0,0 +1,151 @@
-+/*
-+ * Copyright (c) Huawei Technologies Co., Ltd., 2015
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ */
+ $(LIBMEM_DIR):
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 37cf18f..1862e26 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -12,6 +12,7 @@
+ #if HAVE_NUMAIF_H
+ #include <numaif.h>
+ #endif
++#include <pthread.h>
+ #include <stdarg.h>
+ #include <stdio.h>
+ #include <string.h>
+@@ -30,7 +31,8 @@ static int alloc_mem(long int length, int testcase)
+ 	char *s;
+ 	long i, pagesz = getpagesize();
+ 
+-	tst_resm(TINFO, "allocating %ld bytes.", length);
++	tst_resm(TINFO, "thread (%lx), allocating %ld bytes.",
++		(unsigned long) pthread_self(), length);
+ 
+ 	s = mmap(NULL, length, PROT_READ | PROT_WRITE,
+ 		 MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+@@ -49,18 +51,52 @@ static int alloc_mem(long int length, int testcase)
+ 	return 0;
+ }
+ 
+-static void test_alloc(int testcase, int lite)
++static void *child_alloc_thread(void *args)
+ {
+-	int ret;
++	int *testcase = args;
++	int ret = 0;
 +
-+/*
-+ * Verify that:
-+ *  If a namespace isn't another namespace's ancestor, the process in
-+ *  first namespace does not have the CAP_SYS_ADMIN capability in the
-+ *  second namespace and the setns() call fails.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <assert.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <errno.h>
-+#include "test.h"
-+#include "userns_helper.h"
-+
-+char *TCID = "user_namespace4";
-+int TST_TOTAL = 1;
-+
-+static void setup(void)
-+{
-+	check_newuser();
-+	tst_tmpdir();
-+	TST_CHECKPOINT_INIT(NULL);
++	/* keep allocating until there's an error */
++	while (!ret)
++		ret = alloc_mem(LENGTH, *testcase);
++	exit(ret);
 +}
 +
-+static void cleanup(void)
++static void child_alloc(int testcase, int lite, int threads)
 +{
-+	tst_rmdir();
-+}
++	int i;
++	pthread_t *th;
+ 
+ 	if (lite) {
+-		ret = alloc_mem(TESTMEM + MB, testcase);
+-	} else {
+-		ret = 0;
+-		while (!ret)
+-			ret = alloc_mem(LENGTH, testcase);
++		int ret = alloc_mem(TESTMEM + MB, testcase);
++		exit(ret);
+ 	}
+-	exit(ret);
 +
-+static int child_fn1(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	return 0;
-+}
-+
-+static int child_fn2(void *arg)
-+{
-+	int exit_val = 0;
-+	int ret;
-+
-+	ret = setns(((long)arg), CLONE_NEWUSER);
-+	if (ret != -1) {
-+		printf("child2 setns() unexpected success\n");
-+		exit_val = 1;
-+	} else if (errno != EPERM) {
-+		printf("child2 setns() unexpected error: (%d) %s\n",
-+			errno, strerror(errno));
-+		exit_val = 1;
++	th = malloc(sizeof(pthread_t) * threads);
++	if (!th) {
++		tst_resm(TINFO | TERRNO, "malloc");
++		goto out;
 +	}
 +
-+	TST_SAFE_CHECKPOINT_WAIT(NULL, 1);
-+	return exit_val;
-+}
-+
-+static int wait4child(pid_t pid, const char *msg)
-+{
-+	int status;
-+
-+	if (waitpid(pid, &status, 0) == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+	} else if (WIFSIGNALED(status)) {
-+		tst_resm(TFAIL, "%s: child was killed with signal = %d",
-+			msg, WTERMSIG(status));
-+		return WTERMSIG(status);
-+	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-+		tst_resm(TFAIL, "%s: child returns %d", msg, status);
-+		return WEXITSTATUS(status);
-+	}
-+
-+	return 0;
-+}
-+
-+static void test_cap_sys_admin(void)
-+{
-+	pid_t cpid1, cpid2, cpid3;
-+	char path[BUFSIZ];
-+	int fd, status;
-+
-+	/* child 1 */
-+	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-+		(void *)child_fn1, NULL);
-+	if (cpid1 < 0)
-+		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-+
-+	/* child 2 */
-+	sprintf(path, "/proc/%d/ns/user", cpid1);
-+	fd = SAFE_OPEN(cleanup, path, O_RDONLY, 0644);
-+	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-+		(void *)child_fn2, (void *)((long)fd));
-+	if (cpid2 < 0)
-+		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-+
-+	/* child 3 - throw-away process changing ns to child1 */
-+	switch (cpid3 = fork()) {
-+	case -1:
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+	case 0:
-+		if (setns(fd, CLONE_NEWUSER) == -1) {
-+			printf("parent pid setns failure: (%d) %s",
-+				errno, strerror(errno));
-+			exit(1);
++	for (i = 0; i < threads; i++) {
++		TEST(pthread_create(&th[i], NULL, child_alloc_thread,
++			&testcase));
++		if (TEST_RETURN) {
++			tst_resm(TINFO | TRERRNO, "pthread_create");
++			goto out;
 +		}
-+		exit(0);
 +	}
 +
-+	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-+	TST_SAFE_CHECKPOINT_WAKE(cleanup, 1);
-+
-+	status = 0;
-+	status |= wait4child(cpid1, "child1");
-+	status |= wait4child(cpid2, "child2");
-+	status |= wait4child(cpid3, "child3");
-+	if (status == 0)
-+		tst_resm(TPASS, "The setns function works well.");
-+
-+	SAFE_CLOSE(cleanup, fd);
-+
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+
-+	setup();
-+	tst_parse_opts(argc, argv, NULL, NULL);
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		test_cap_sys_admin();
++	/* wait for one of threads to exit whole process */
++	for (i = 0; i < threads; i++) {
++		TEST(pthread_join(th[i], NULL));
++		if (TEST_RETURN) {
++			tst_resm(TINFO | TRERRNO, "pthread_join");
++			goto out;
++		}
 +	}
-+
-+	cleanup();
-+	tst_exit();
-+}
++out:
++	exit(1);
+ }
+ 
+ /*
+@@ -81,13 +117,14 @@ static void test_alloc(int testcase, int lite)
+ void oom(int testcase, int lite, int retcode, int allow_sigkill)
+ {
+ 	pid_t pid;
+-	int status;
++	int status, threads;
+ 
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+ 	case 0:
+-		test_alloc(testcase, lite);
++		threads = MAX(1, tst_ncpus() - 1);
++		child_alloc(testcase, lite, threads);
+ 	default:
+ 		break;
+ 	}
 -- 
 1.8.3.1
 
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
