@@ -1,17 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z86aY-0006ks-IR
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 12:49:06 +0000
-Date: Thu, 25 Jun 2015 14:47:50 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150625124750.GB2866@rei.suse.de>
-References: <53635abf85856cffa2799ea43f942a619faec342.1435235333.git.jstancek@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Z1E3W-0000D8-8G
+	for ltp-list@lists.sourceforge.net; Sat, 06 Jun 2015 13:22:34 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z1E3V-0003ok-C1
+	for ltp-list@lists.sourceforge.net; Sat, 06 Jun 2015 13:22:34 +0000
+Message-ID: <5572F400.4050504@oracle.com>
+Date: Sat, 06 Jun 2015 16:22:08 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <53635abf85856cffa2799ea43f942a619faec342.1435235333.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH v2] getrandom: fix compilation with older kernels
+References: <20150428172442.GB25152@rei>	<1433247689-3984-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<1433247689-3984-3-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1433247689-3984-3-git-send-email-zenglg.jy@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 2/6] lib6/asapi_04.c: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,53 +28,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
 
-Hi!
-> +#ifndef __GETRANDOM_H__
-> +#define __GETRANDOM_H__
-> +
-> +/*
-> + * Flags for getrandom(2)
-> + *
-> + * GRND_NONBLOCK	Don't block and return EAGAIN instead
-> + * GRND_RANDOM		Use the /dev/random pool instead of /dev/urandom
-> + */
-> +
-> +#ifndef GRND_NONBLOCK
-> + #define GRND_NONBLOCK	0x0001
-> +#endif
-> +
-> +#ifndef GRND_RANDOM
-> + #define GRND_RANDOM	0x0002
-> +#endif
+On 02.06.2015 15:21, Zeng Linggang wrote:
+> -		for (word = 0; word < 4; ++word)
+> -			for (bit = 0; bit < 32; ++bit) {
+> -				uint32_t newbit = 1 << bit;
+> +	for (word = 0; word < 4; ++word)
+> +		for (bit = 0; bit < 32; ++bit) {
+> +			uint32_t newbit = 1 << bit;
 
-It's usuall to intend the identifier after the # such as:
+1 is int here, please change it to unsigned int as follows:
 
-#ifdef
-# define
-#endif
+uint32_t newbit = 1U << bit;
 
-Since there are some compilers that can't cope with spaces before #
-(at least that is what I've been told).
 
---
+>   
+> -void *ilistener(void *arg)
+> +static void *ilistener(void *arg __attribute__ ((unused)))
 
-The rest looks fine, acked.
+LTP has a macro for it, a sort of LTP_ATTR_UNUSED
 
-Thanks for doing this.
+> -#define MAX(a, b) ((a) >= (b) ? (a) : (b))
+> +# define MAX(a, b) ((a) >= (b) ? (a) : (b))
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+It seems it is not common for LTP coding style to use space there.
+
+> -
+>   int TST_TOTAL = PTCOUNT + CSCOUNT;
+
+May be move it closer to CSCOUNT?
+
+Best regards,
+Alexey
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
