@@ -1,24 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z2ZvS-00044t-S8
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:50 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Z2ZvR-0005NH-Uj
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:50 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5A6sBTu004886
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2015 14:54:11 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Wed, 10 Jun 2015 14:55:00 +0800
-Message-ID: <1433919301-24797-3-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z1ztE-0003G2-5J
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2015 16:27:08 +0000
+Date: Mon, 8 Jun 2015 18:26:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150608162604.GB16394@rei.suse.de>
+References: <1433160458-191547-1-git-send-email-cuibixuan@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 3/4] pan/symbol.c: fix memory leak for failure case
+Content-Disposition: inline
+In-Reply-To: <1433160458-191547-1-git-send-email-cuibixuan@huawei.com>
+Subject: Re: [LTP] [PATCH] ade/ld: fix compile warning
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,40 +24,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
----
- pan/symbol.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Hi!
+Pushed, thanks.
 
-diff --git a/pan/symbol.c b/pan/symbol.c
-index d7b90af..ca9964a 100644
---- a/pan/symbol.c
-+++ b/pan/symbol.c
-@@ -112,6 +112,7 @@ static struct sym *mknode(struct sym *next, char *key, void *data)
- 
- 	if (n->key == NULL) {
- 		sym_error = "sym node strdup(key) failed!";
-+		free(n);
- 		return (NULL);
- 	}
- 	return (n);
-@@ -204,8 +205,10 @@ int sym_put(SYM sym, char *key, void *data, int flags)
- 	nkey = strdup(key);
- 	keys = splitstr(key, ",", NULL);
- 
--	if (keys == NULL)
-+	if (keys == NULL) {
-+		free(nkey);
- 		return (EINVAL);
-+	}
- 
- 	for (kk = (char **)keys, csym = sym;
- 	     *kk != NULL && (nsym = find_key1(csym->sym, *kk)) != NULL;
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
