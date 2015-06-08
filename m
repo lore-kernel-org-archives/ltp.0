@@ -1,20 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Z7L3A-0000Vx-Sy
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2015 10:03:28 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z7L38-0005Xt-VG
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2015 10:03:28 +0000
-Message-ID: <55892FA3.80800@oracle.com>
-Date: Tue, 23 Jun 2015 13:06:27 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z1zpy-0002r3-4E
+	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2015 16:23:46 +0000
+Date: Mon, 8 Jun 2015 18:22:42 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150608162241.GA16394@rei.suse.de>
+References: <1433496634-21424-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-References: <1435021379-2945-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1435021379-2945-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] sem_conpro: fix memory leak
+Content-Disposition: inline
+In-Reply-To: <1433496634-21424-1-git-send-email-sunyuan3@huawei.com>
+Subject: Re: [LTP] [PATCH V2] Fix the return value error of read_shares_file.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,33 +24,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-On 06/23/2015 04:02 AM, Wei,Jiangang wrote:
-> * If _POSIX_SEMAPHORES is not defined,
->    It's no need to allocate buffer.
->    so, allocate buffer after checking it.
->
-> * free the memory at the end of main().
->
-> Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
-> ---
->   testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+> -inline int error_function(char *msg1, char *msg2)
+> +inline void error_function(char *msg1, char *msg2)
+>  {
+>  	fprintf(stdout, "ERROR: %s ", msg1);
+>  	fprintf(stdout, "%s\n", msg2);
+> -	return -1;
+> +	return;
 
-Please look at "[LTP] [PATCH]: Fix memory leak by freeing buf" thread.
+I've removed this useless return and pushed, thanks.
 
-Thanks,
-Alexey
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
