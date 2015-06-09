@@ -1,26 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <manjeet.p@samsung.com>) id 1YxpSr-0004ph-IO
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:30:41 +0000
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1YxpSp-0005uB-Km
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:30:41 +0000
-Received: from epcpsbgr2.samsung.com
-	(u142.gpu120.samsung.co.kr [203.254.230.142])
-	by mailout2.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NP100EQKLUVDXC0@mailout2.samsung.com> for
-	ltp-list@lists.sourceforge.net; Thu, 28 May 2015 13:30:31 +0900 (KST)
-Date: Thu, 28 May 2015 04:30:31 +0000 (GMT)
-From: Manjeet Pawar <manjeet.p@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <947582411.189461432787431522.JavaMail.weblogic@epmlwas05c>
-Subject: [LTP]  [PATCH]: Add check for realloc failure case
-Reply-To: manjeet.p@samsung.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z2HXl-00074C-PR
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 11:18:09 +0000
+Date: Tue, 9 Jun 2015 13:17:05 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150609111705.GA25408@rei.suse.de>
+References: <1433253418-44054-1-git-send-email-liaoqingwei@huawei.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1433253418-44054-1-git-send-email-liaoqingwei@huawei.com>
+Subject: Re: [LTP] [PATCH] rpc/basic_tests/rpc01:Fix the error parameters
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,51 +24,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
+To: Liao Qingwei <liaoqingwei@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, dingguofu@huawei.com, zhanyongming@huawei.com
 
-From: Manjeet Pawar <manjeet.p@samsung.com>
-Subject: [PATCH] pan/splitstr.c: Add check for realloc failure case
+Hi!
+>  	for (i = 0, p = buffer.data; i < buffer.data_length; i++, p++)
+>  		*p = getc(fp);
+>  	fclose(fp);
+>  
+> +	return_buffer = malloc(buffer.data_length);
+> +	if (!return_buffer) {
+> +		fprintf(stderr, "malloc failed for return_buffer\n");
+> +		free(buffer.data);
+> +		exit(1);
+> +	}
+> +
+>  	rc = callrpc(server, program, version, 1, (xdrproc_t)xdr_send_data,
+> -			(char *)&buffer, (xdrproc_t)xdr_receive_data,
+> -			(char *)&return_buffer);
+> -	do_compare(rc, "callrpc", &buffer, return_buffer->data);
+> +			buffer.data, (xdrproc_t)xdr_receive_data,
+> +			return_buffer);
+> +	do_compare(rc, "callrpc", &buffer, return_buffer);
 
-This patch adds check for realloc failure case and free arg_string before returning from splitstr() to avoid memory leaks
+As far as I can see the struct buffer is allocated in the
+xdr_receive_data function in lib/librpc01.c.
 
-Signed-off-by: Yogesh Gaur <yn.gaur@samsung.com>
-Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
----
- pan/splitstr.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+So passing a pointer to a pointer to the struct buffer is right thing to
+do here.
 
-diff --git a/pan/splitstr.c b/pan/splitstr.c
-index 4706323..8804b15 100644
---- a/pan/splitstr.c
-+++ b/pan/splitstr.c
-@@ -93,6 +93,7 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
- 	if (arg_array == NULL) {
- 		if (argcount != NULL)
- 			*argcount = 0;
-+		free(arg_string);
- 		return (NULL);
- 	}
- 
-@@ -110,9 +111,13 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
- 		cur_tok = strtok(NULL, separator);
- 		if (num_toks == max_toks) {
- 			max_toks += 20;
--			arg_array =
--			    (char **)realloc((void *)arg_array,
--					     sizeof(char *) * max_toks);
-+			if((arg_array = realloc((void *)arg_array,sizeof(char *) * max_toks)) == NULL){
-+				fprintf(stderr, "realloc: New memory allocation failed \n");
-+				free(arg_array);
-+				free(arg_string);
-+				exit(1);
-+			}
-+
- 		}
- 	}
- 	arg_array[num_toks] = NULL;
+Or am I mistaken?
+
 -- 
-1.7.9.5
+Cyril Hrubis
+chrubis@suse.cz
+
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
