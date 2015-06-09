@@ -1,27 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Z5ZOj-0003UL-Jh
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2015 12:58:25 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z5ZOi-0007Wj-A2
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2015 12:58:25 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (Postfix) with ESMTPS id 67B312CAB62
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 18 Jun 2015 12:58:18 +0000 (UTC)
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id t5ICwHxT028849
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2015 08:58:17 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 18 Jun 2015 14:58:15 +0200
-Message-Id: <3d206db71f1fb180c386ab1e796eaa39e088b399.1434632070.git.jstancek@redhat.com>
+	(envelope-from <metan@suse.de>) id 1Z2FPm-0000Ip-3V
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 09:01:46 +0000
+Date: Tue, 9 Jun 2015 11:00:41 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150609090041.GA24041@rei.suse.de>
+References: <481574461.737361433821252744.JavaMail.weblogic@epmlwas02a>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH/RFC] module.mk: don't run module builds multiple times
+Content-Disposition: inline
+In-Reply-To: <481574461.737361433821252744.JavaMail.weblogic@epmlwas02a>
+Subject: Re: [LTP] [PATCH]: Fix memory leak
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,59 +21,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Manjeet Pawar <manjeet.p@samsung.com>
+Cc: AJEET YADAV <ajeet.y@samsung.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, AKHILESH KUMAR <akhilesh.k@samsung.com>
 
-SWYgdGhlcmUgYXJlIG11bHRpcGxlIG1vZHVsZXMgKC5rbykgaW4gTUFLRV9UQVJHRVRTLCBtYWtl
-IGdldHMgZXhlY3V0ZWQKbXVsdGlwbGUgdGltZXMgaW4gc2FtZSBkaXJlY3RvcnksIHdoaWNoIGlz
-IHVubmVjZXNzYXJ5IGFuZCBpdCBhbHNvIGxlYWRzCnRvIGJ1aWxkIGJyZWFrYWdlcyBpbiBwYXJh
-bGxlbCBidWlsZHMuIEZvciBleGFtcGxlOgoKICBtYWtlIC1DIC9saWIvbW9kdWxlcy8zLjEwLjAt
-MjI5LmVsNy54ODZfNjQvYnVpbGQgTT0vdXNyL3NyYy9sdHAvdGVzdGNhc2VzL2tlcm5lbC9tb2R1
-bGUvZGVsZXRlX21vZHVsZQogIG1ha2UgLUMgL2xpYi9tb2R1bGVzLzMuMTAuMC0yMjkuZWw3Lng4
-Nl82NC9idWlsZCBNPS91c3Ivc3JjL2x0cC90ZXN0Y2FzZXMva2VybmVsL21vZHVsZS9kZWxldGVf
-bW9kdWxlCiAgbWFrZVsxXTogRW50ZXJpbmcgZGlyZWN0b3J5IGAvdXNyL3NyYy9rZXJuZWxzLzMu
-MTAuMC0yMjkuZWw3Lng4Nl82NCcKICAgIExEICAgICAgL3Vzci9zcmMvbHRwL3Rlc3RjYXNlcy9r
-ZXJuZWwvbW9kdWxlL2RlbGV0ZV9tb2R1bGUvYnVpbHQtaW4ubwogICAgQ0MgW01dICAvdXNyL3Ny
-Yy9sdHAvdGVzdGNhc2VzL2tlcm5lbC9tb2R1bGUvZGVsZXRlX21vZHVsZS9kdW1teV9kZWxfbW9k
-Lm8KICBtYWtlWzFdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC91c3Ivc3JjL2tlcm5lbHMvMy4xMC4w
-LTIyOS5lbDcueDg2XzY0JwogICAgQ0MgW01dICAvdXNyL3NyYy9sdHAvdGVzdGNhc2VzL2tlcm5l
-bC9tb2R1bGUvZGVsZXRlX21vZHVsZS9kdW1teV9kZWxfbW9kLm8KICBvYmpkdW1wOiAnL3Vzci9z
-cmMvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvbW9kdWxlL2RlbGV0ZV9tb2R1bGUvLnRtcF9kdW1teV9k
-ZWxfbW9kLm8nOiBObyBzdWNoIGZpbGUKICBtdjogY2Fubm90IHN0YXQg4oCYL3Vzci9zcmMvbHRw
-L3Rlc3RjYXNlcy9rZXJuZWwvbW9kdWxlL2RlbGV0ZV9tb2R1bGUvLnRtcF9kdW1teV9kZWxfbW9k
-Lm/igJk6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkKICBtYWtlWzJdOiAqKiogWy91c3Ivc3Jj
-L2x0cC90ZXN0Y2FzZXMva2VybmVsL21vZHVsZS9kZWxldGVfbW9kdWxlL2R1bW15X2RlbF9tb2Qu
-b10gRXJyb3IgMQogIG1ha2VbMV06ICoqKiBbX21vZHVsZV8vdXNyL3NyYy9sdHAvdGVzdGNhc2Vz
-L2tlcm5lbC9tb2R1bGUvZGVsZXRlX21vZHVsZV0gRXJyb3IgMgogIG1ha2VbMV06IExlYXZpbmcg
-ZGlyZWN0b3J5IGAvdXNyL3NyYy9rZXJuZWxzLzMuMTAuMC0yMjkuZWw3Lng4Nl82NCcKICBtYWtl
-OiBbZHVtbXlfZGVsX21vZF9kZXAua29dIEVycm9yIDIgKGlnbm9yZWQpCgpTaWduZWQtb2ZmLWJ5
-OiBKYW4gU3RhbmNlayA8anN0YW5jZWtAcmVkaGF0LmNvbT4KLS0tCiAuZ2l0aWdub3JlICAgICAg
-ICAgICB8ICAxICsKIGluY2x1ZGUvbWsvbW9kdWxlLm1rIHwgMTEgKysrKysrKysrKy0KIDIgZmls
-ZXMgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBh
-Ly5naXRpZ25vcmUgYi8uZ2l0aWdub3JlCmluZGV4IGJjM2IzNTQuLjA2YWNiMjAgMTAwNjQ0Ci0t
-LSBhLy5naXRpZ25vcmUKKysrIGIvLmdpdGlnbm9yZQpAQCAtMzksNiArMzksNyBAQCBhdXRvbTR0
-ZS5jYWNoZQogL3Bhbi9sdHAtcGFuCiAvcGFuL2x0cC1zY2FubmVyCiAKKy5kZXBfbW9kdWxlcwog
-LmdpdGF0dHJpYnV0ZXMKIC5wYy8KIHBhdGNoZXMvCmRpZmYgLS1naXQgYS9pbmNsdWRlL21rL21v
-ZHVsZS5tayBiL2luY2x1ZGUvbWsvbW9kdWxlLm1rCmluZGV4IDk1ODc5NmIuLjI4ZTAzYmQgMTAw
-NjQ0Ci0tLSBhL2luY2x1ZGUvbWsvbW9kdWxlLm1rCisrKyBiL2luY2x1ZGUvbWsvbW9kdWxlLm1r
-CkBAIC00NSwxMCArNDUsMTkgQEAgTUFLRV9UQVJHRVRTIDo9ICQoZmlsdGVyLW91dCAlLmtvLCAk
-KE1BS0VfVEFSR0VUUykpCiBNQUtFX1RBUkdFVFMgKz0gJChpZiAkKGZpbHRlciAyLCQoU0tJUCkp
-LCQod2lsZGNhcmQgKi5rbyksKQogZW5kaWYKIAorQ0xFQU5fVEFSR0VUUyArPSAuZGVwX21vZHVs
-ZXMKKworTU9EVUxFX1NPVVJDRVMgOj0gJChwYXRzdWJzdCAlLmtvLCUuYywkKGZpbHRlciAlLmtv
-LCAkKE1BS0VfVEFSR0VUUykpKQorCiAjIElnbm9yaW5nIHRoZSBleGl0IHN0YXR1cyBvZiBjb21t
-YW5kcyBpcyBkb25lIHRvIGJlIGZvcndhcmQgY29tcGF0aWJsZSB3aXRoCiAjIGtlcm5lbCBpbnRl
-cm5hbCBBUEkgY2hhbmdlcy4gVGhlIHVzZXItc3BhY2UgdGVzdCB3aWxsIHJldHVybiBUQ09ORiwg
-aWYgaXQKICMgZG9lc24ndCBmaW5kIHRoZSBtb2R1bGUgKGkuZS4gaXQgd2Fzbid0IGJ1aWx0IGVp
-dGhlciBkdWUgdG8ga2VybmVsLWRldmVsCiAjIG1pc3Npbmcgb3IgbW9kdWxlIGJ1aWxkIGZhaWx1
-cmUpLgotJS5rbzogJS5jCislLmtvOiAlLmMgLmRlcF9tb2R1bGVzIDsKKworLmRlcF9tb2R1bGVz
-OiAkKE1PRFVMRV9TT1VSQ0VTKQorCUBlY2hvICJCdWlsZGluZyBtb2R1bGVzOiAkKE1PRFVMRV9T
-T1VSQ0VTKSIKIAktJChNQUtFKSAtQyAkKExJTlVYX0RJUikgTT0kKGFic19zcmNkaXIpCiAJcm0g
-LXJmICoubW9kLmMgKi5vICoua28udW5zaWduZWQgbW9kdWxlcy5vcmRlciAudG1wKiAuKi5rbyAu
-Ki5jbWQgTW9kdWxlLnN5bXZlcnMKKwlAdG91Y2ggLmRlcF9tb2R1bGVzCisKLS0gCjEuOC4zLjEK
-CgotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KTHRwLWxpc3QgbWFpbGluZyBsaXN0Ckx0cC1saXN0QGxpc3RzLnNvdXJj
-ZWZvcmdlLm5ldApodHRwczovL2xpc3RzLnNvdXJjZWZvcmdlLm5ldC9saXN0cy9saXN0aW5mby9s
-dHAtbGlzdAo=
+Hi!
+> This patch make 'found' a static array to avoid memory leaks.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
+> ---
+>  utils/sctp/testlib/sctputil.c |    3 +--
+>  1 files changed, 1 insertions(+), 2 deletions(-)
+> 
+> diff --git a/utils/sctp/testlib/sctputil.c b/utils/sctp/testlib/sctputil.c
+> index c670af6..e7333e5 100644
+> --- a/utils/sctp/testlib/sctputil.c
+> +++ b/utils/sctp/testlib/sctputil.c
+> @@ -370,8 +370,7 @@ int test_peer_addr(int sk, sctp_assoc_t asoc, sockaddr_storage_t *peers, int cou
+>  	struct sockaddr *sa_addr;
+>  	socklen_t addrs_size = 0;
+>  	void *addrbuf;
+> -	char *found = (char *) malloc(count);
+> -	memset(found, 0, count);
+> +	char found[count];
+>  
+>  	error = sctp_getpaddrs(sk, asoc, &addrs);
+>  	if (-1 == error) {
+
+I've added initialization to 0 to the else branch down below, since we
+removed the memset and pushed, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
