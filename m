@@ -1,30 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Z2J70-0000Wx-Vh
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 12:58:38 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z2J6z-00082L-0Q
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 12:58:38 +0000
-Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t59CwUb6016225
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 12:58:31 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t59CwUgV014973
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 12:58:30 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t59CwUSV017936
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 12:58:30 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue,  9 Jun 2015 16:01:38 +0300
-Message-Id: <1433854898-11064-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH v2] lib6/in6_2: don't assume that machine has 'eth0'
-	interface name
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z2K6n-0001nK-Ke
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 14:02:29 +0000
+Date: Tue, 9 Jun 2015 16:01:22 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150609140121.GD27378@rei.suse.de>
+References: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
+	<5565177B.7080308@huawei.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <5565177B.7080308@huawei.com>
+Subject: Re: [LTP] [PATCH 2/5] iptables/iptables_tests.sh: Add new testcases
+ for iptables -c
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,55 +23,95 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-systemd can rename network interfaces. We should look at LHOST_IFACES
-variable for pre-defined test interface names.
+Hi!
+> +test07()
+> +{
+> +	local logcnt=0
+> +	tst_resm TINFO "iptables -c test."
+> +
+> +	iptables -A INPUT -s 127.0.0.1 -j DROP -c 10 500 \
+> +		> tst_iptables.out 2>&1
+> +	if [ $? -ne 0 ]; then
+> +		tst_resm TFAIL "iptables command failed to append new rule."
+> +		cat tst_iptables.out
+> +		return
+> +	fi
+> +
+> +	logcnt=`iptables -L -v |grep localhost |awk '{print $2}'` \
+> +		> tst_iptables.out 2>&1
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
-v2: use sscanf() instead of strchr()
-    allocate buffer on the stack
+                   grep can do regular expressions as well, why can't we
+		   match this with single grep command?
 
- testcases/network/lib6/in6_02.c |   19 +++++++++++++++++++
- 1 files changed, 19 insertions(+), 0 deletions(-)
+i.e.
+	if iptables -L -v |grep -q ".*10.*500.*localhost.*"; then
+		PASSED
+	else
+		FAILED
+	fi
 
-diff --git a/testcases/network/lib6/in6_02.c b/testcases/network/lib6/in6_02.c
-index fea1827..7cb3626 100644
---- a/testcases/network/lib6/in6_02.c
-+++ b/testcases/network/lib6/in6_02.c
-@@ -255,4 +255,23 @@ void initest(void)
- void setup(void)
- {
- 	TEST_PAUSE;
-+
-+	tst_resm(TINFO, "get interface name from LHOST_IFACES var");
-+
-+	char *ifnames = getenv("LHOST_IFACES");
-+
-+	if (!ifnames) {
-+		tst_resm(TWARN, "LHOST_IFACES not defined, default to eth0");
-+		return;
-+	}
-+
-+	static char name[256];
-+
-+	sscanf(ifnames, "%255s", name);
-+
-+	if (!strcmp(name, n2i[1].name))
-+		return;
-+
-+	tst_resm(TINFO, "change default 'eth0' name to '%s'", name);
-+	n2i[1].name = name;
- }
+
+> +	if [ $logcnt -ne 500 ]; then
+> +		tst_resm TFAIL "iptables -c 10 500 failed."
+> +		cat tst_iptables.err
+                    ^
+		    Where is this file created?
+
+> +		return
+> +	fi
+> +
+> +	logcnt=`iptables -L -v |grep localhost |awk '{print $1}'` \
+> +		> tst_iptables.out 2>&1
+> +		if [ $logcnt -ne 10 ]; then
+> +		tst_resm TFAIL "iptables -c 10 500 failed."
+> +		cat tst_iptables.err
+> +		return
+> +	fi
+> +
+> +	tst_resm TINFO "Deleting rule."
+> +	iptables -D INPUT 1 > tst_iptables.out 2>&1
+> +	if [ $? -ne 0 ]; then
+> +		tst_resm TFAIL "iptables did not remove the rule."
+
+
+This should rather be TBROK, but that is minor.
+
+> +		cat tst_iptables.out
+> +		return
+> +	fi
+> +
+> +	tst_resm TPASS "iptables -c test succeed."
+> +}
+> +
+>  init
+>  TST_CLEANUP=cleanup
+> 
+> @@ -419,5 +459,6 @@ test03
+>  test04
+>  test05
+>  test06
+> +test07
+> 
+>  tst_exit
+> -- 
+> 1.6.0.2 .
+> 
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
