@@ -1,22 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z7Cd0-0000TH-CL
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2015 01:03:54 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Z7Ccz-0002sB-By
-	for ltp-list@lists.sourceforge.net; Tue, 23 Jun 2015 01:03:54 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5N1288U021823
-	for <ltp-list@lists.sourceforge.net>; Tue, 23 Jun 2015 09:02:08 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Tue, 23 Jun 2015 09:02:59 +0800
-Message-ID: <1435021379-2945-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	(envelope-from <metan@suse.de>) id 1Z2HBw-0002vv-Pr
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 10:55:36 +0000
+Date: Tue, 9 Jun 2015 12:54:31 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150609105431.GB24843@rei.suse.de>
+References: <1433843386-31431-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] sem_conpro: fix memory leak
+Content-Disposition: inline
+In-Reply-To: <1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH 2/5] acl_test01: Verify the exit code of the
+ second test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,54 +26,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-* If _POSIX_SEMAPHORES is not defined,
-  It's no need to allocate buffer.
-  so, allocate buffer after checking it.
+Hi!
+> Now we verify the exit code of the second test case. We did not
+> do this previously, and it was a bug.
+> 
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
+>  testcases/kernel/fs/acls/acl_test01 |    3 ++-
+>  1 files changed, 2 insertions(+), 1 deletions(-)
+> 
+> diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
+> index be88aa8..0f050b9 100755
+> --- a/testcases/kernel/fs/acls/acl_test01
+> +++ b/testcases/kernel/fs/acls/acl_test01
+> @@ -228,7 +228,8 @@ else
+>  	chown $TEST_USER1 $FILE_ACL
+>  	chown $TEST_USER1 $FILE_ACL_LINK
+>  
+> -	su $TEST_USER1 -c "$0"
+> +	su $TEST_USER1 -c "$0" &
+> +	tst_record_childstatus $!
 
-* free the memory at the end of main().
+We should probably wrap the su into a script that makes sure that the
+return value is compatible with LTP. Because it may set bogus test
+return status if su reported anything else than 0 or 1.
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
----
- testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Or we may add just another function into test.sh that would work
+similariry to tst_record_childstatus but that will normalize the return
+value. I.e. 0 == TPASS, anything else TFAIL.
 
-diff --git a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
-index f5f1abf..58657f9 100644
---- a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
-+++ b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
-@@ -102,12 +102,12 @@ int main(int argc, char *argv[])
- 	int lock_value = 1;
- 	buf_t *buf;
- 	pthread_t con, pro;
--	buf = malloc(sizeof(buf_t));
- 
- #ifndef  _POSIX_SEMAPHORES
- 	printf("_POSIX_SEMAPHORES is not defined \n");
- 	return PTS_UNRESOLVED;
- #endif
-+	buf = malloc(sizeof(buf_t));
- 	if (-1 == sem_init(&(buf->occupied), shared, occupied_value)) {
- 		perror("sem_init didn't return success \n");
- 		printf("hello \n");
-@@ -129,5 +129,6 @@ int main(int argc, char *argv[])
- 	pthread_join(pro, NULL);
- 	sem_destroy(&buf->occupied);
- 	sem_destroy(&buf->empty);
-+	free(buf);
- 	return PTS_PASS;
- }
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
