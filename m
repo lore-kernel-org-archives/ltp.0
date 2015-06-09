@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z9bv2-0005pN-AZ
-	for ltp-list@lists.sourceforge.net; Mon, 29 Jun 2015 16:28:28 +0000
-Date: Mon, 29 Jun 2015 18:27:08 +0200
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z2Jkz-0004PZ-GD
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 13:39:57 +0000
+Date: Tue, 9 Jun 2015 15:38:53 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150629162708.GA30308@rei.suse.de>
-References: <1434610097-15874-1-git-send-email-liwang@redhat.com>
-	<1750983670.20645133.1435571726272.JavaMail.zimbra@redhat.com>
-	<20150629144159.GB24350@rei.suse.de>
+Message-ID: <20150609133853.GC27378@rei.suse.de>
+References: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20150629144159.GB24350@rei.suse.de>
-Subject: Re: [LTP] [PATCH v2] futex: regression test for take hugepages
-	into	account when generating futex_key
+In-Reply-To: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
+Subject: Re: [LTP] [PATCH 1/5] iptables/iptables_tests.sh: Add test cases
+ for iptables -L
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,35 +25,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-Hi!
-And I've pushed the test with following changes.
+> +	local cmd="iptables -L -t raw"
+> +	tst_resm TINFO "$cmd will list all rules in table raw."
+> +	$cmd > tst_iptables.out 2>&1
 
-* Use the wait_for_threads() function instead of semaphores
+Why do we do this indirectly via the cmd variable?
 
-* Wake the futex on first thread before the first thread is joined
-  (otherwise the test waits for 30 seconds doing nothing before it
-   reports success)
+> +	if [ $? -ne 0 ]; then
+> +		tst_resm TFAIL "$cmd failed to list rules."
+> +		cat tst_iptables.out
+> +		return
+> +	else
 
-* Do not fail the test if mmaping hugepage fails with ENOMEM
-  this may happen on machines that run for days without reboot
-  and memory gets fragmented too much
-  (this is no TCONF)
+You do return before the else so there is no need for the else branch.
 
-Thanks.
+> +		chaincnt=$(grep -c Chain tst_iptables.out)
+> +		if [ $chaincnt -lt 2 ]; then
+> +			tst_resm TFAIL "$cmd failed to list rules."
+> +			cat tst_iptables.out
+> +		else
+> +			tst_resm TINFO "$cmd lists rules."
+
+It would be better to print PASS here.
+
+> +		fi
+> +	fi
+> +
+> +	local cmd="iptables -L -t security"
+> +	tst_resm TINFO "$cmd will list all rules in table security."
+> +	$cmd > tst_iptables.out 2>&1
+> +	if [ $? -ne 0 ]; then
+> +		tst_resm TFAIL "$cmd failed to list rules."
+> +		cat tst_iptables.out
+> +		return
+> +	else
+> +		chaincnt=$(grep -c Chain tst_iptables.out)
+> +		if [ $chaincnt -lt 3 ]; then
+> +			tst_resm TFAIL "$cmd failed to list rules."
+> +			cat tst_iptables.out
+> +		else
+> +			tst_resm TINFO "$cmd lists rules."
+
+And to print PASS here.
+
+> +		fi
+> +	fi
+> +
+>  	tst_resm TPASS "iptables -L lists rules."
+
+And remove this line.
+
+>  }
+>  
+> -- 
+> 1.6.0.2
+> 
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
