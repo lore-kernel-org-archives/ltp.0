@@ -1,24 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z2ZvR-00085p-HG
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:49 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Z2ZvQ-0003X9-DP
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:49 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5A6s9ot004883
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2015 14:54:09 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Wed, 10 Jun 2015 14:54:59 +0800
-Message-ID: <1433919301-24797-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/4] cpuset/cpuset_lib/cpuinfo.c: fix FILE pointer leak
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Z2J70-0000Wx-Vh
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 12:58:38 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z2J6z-00082L-0Q
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 12:58:38 +0000
+Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t59CwUb6016225
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 12:58:31 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t59CwUgV014973
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 12:58:30 GMT
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t59CwUSV017936
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 12:58:30 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue,  9 Jun 2015 16:01:38 +0300
+Message-Id: <1433854898-11064-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH v2] lib6/in6_2: don't assume that machine has 'eth0'
+	interface name
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,40 +34,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+systemd can rename network interfaces. We should look at LHOST_IFACES
+variable for pre-defined test interface names.
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+v2: use sscanf() instead of strchr()
+    allocate buffer on the stack
 
-diff --git a/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c b/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c
-index 54fa1e5..c2a60b6 100644
---- a/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c
-+++ b/testcases/kernel/controllers/cpuset/cpuset_lib/cpuinfo.c
-@@ -231,11 +231,15 @@ static int get_sched_domains(void)
- 			if (!cpus[ci].sched_domain) {
- 				cpus[ci].sched_domain =
- 				    bitmask_alloc(cpus_nbits);
--				if (!cpus[ci].sched_domain)
-+				if (!cpus[ci].sched_domain) {
-+					fclose(fp);
- 					return -1;
-+				}
- 			}
--			if (bitmask_parsehex(str2, cpus[ci].sched_domain))
-+			if (bitmask_parsehex(str2, cpus[ci].sched_domain)) {
-+				fclose(fp);
- 				return -1;
-+			}
- 		}
- 	}
- 
+ testcases/network/lib6/in6_02.c |   19 +++++++++++++++++++
+ 1 files changed, 19 insertions(+), 0 deletions(-)
+
+diff --git a/testcases/network/lib6/in6_02.c b/testcases/network/lib6/in6_02.c
+index fea1827..7cb3626 100644
+--- a/testcases/network/lib6/in6_02.c
++++ b/testcases/network/lib6/in6_02.c
+@@ -255,4 +255,23 @@ void initest(void)
+ void setup(void)
+ {
+ 	TEST_PAUSE;
++
++	tst_resm(TINFO, "get interface name from LHOST_IFACES var");
++
++	char *ifnames = getenv("LHOST_IFACES");
++
++	if (!ifnames) {
++		tst_resm(TWARN, "LHOST_IFACES not defined, default to eth0");
++		return;
++	}
++
++	static char name[256];
++
++	sscanf(ifnames, "%255s", name);
++
++	if (!strcmp(name, n2i[1].name))
++		return;
++
++	tst_resm(TINFO, "change default 'eth0' name to '%s'", name);
++	n2i[1].name = name;
+ }
 -- 
-1.9.3
+1.7.1
 
 
 ------------------------------------------------------------------------------
