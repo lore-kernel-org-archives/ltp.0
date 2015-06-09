@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z2ZvS-00086B-P0
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:50 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Z2ZvO-0005ND-Ik
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:50 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5A6s7K0004873
-	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2015 14:54:08 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Wed, 10 Jun 2015 14:54:58 +0800
-Message-ID: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1Z28HA-0000qZ-Op
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 01:24:24 +0000
+Received: from [119.145.14.65] (helo=szxga02-in.huawei.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z28H5-0002n4-Ad
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 01:24:24 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Tue, 9 Jun 2015 03:28:39 -0600
+Message-ID: <1433842119-27558-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/4] syscalls/chroot&creat: fix undefined behavior
+Subject: [LTP] [PATCH] Add TEST_LOOPING in userns01.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,59 +25,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: jstancek@redhat.com
+Cc: ltp-list@lists.sourceforge.net
 
-The results are undefined if source and destination
-buffers overlap when calling s[n]printf().
-Such as,
-    sprintf(buf, "%s some further text", buf);
-The above will not produce the expected results.
-
-This patch enssures that produce output as expected.
-
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
 ---
- testcases/kernel/syscalls/chroot/chroot03.c | 4 +++-
- testcases/kernel/syscalls/creat/creat04.c   | 9 +++++----
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ testcases/kernel/containers/userns/userns01.c | 31 +++++++++++++++------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/chroot/chroot03.c b/testcases/kernel/syscalls/chroot/chroot03.c
-index 9376892..69fead4 100644
---- a/testcases/kernel/syscalls/chroot/chroot03.c
-+++ b/testcases/kernel/syscalls/chroot/chroot03.c
-@@ -151,7 +151,9 @@ static void setup(void)
- 	 * set up good_dir to test whether chroot() is setting ENOENT if the
- 	 * directory does not exist.
- 	 */
--	(void)sprintf(good_dir, "%s.%d", good_dir, getpid());
-+	good_dir_dup = strdup(good_dir);
-+	(void)sprintf(good_dir, "%s.%d", good_dir_dup, getpid());
-+	free(good_dir_dup);
+diff --git a/testcases/kernel/containers/userns/userns01.c b/testcases/kernel/containers/userns/userns01.c
+index 6e313c0..9cada5e 100644
+--- a/testcases/kernel/containers/userns/userns01.c
++++ b/testcases/kernel/containers/userns/userns01.c
+@@ -71,25 +71,28 @@ static void setup(void)
+ int main(int argc, char *argv[])
+ {
+ 	int status;
++	int lc;
  
- #if !defined(UCLINUX)
- 	bad_addr = mmap(0, 1, PROT_NONE,
-diff --git a/testcases/kernel/syscalls/creat/creat04.c b/testcases/kernel/syscalls/creat/creat04.c
-index 0268e77..44c249f 100644
---- a/testcases/kernel/syscalls/creat/creat04.c
-+++ b/testcases/kernel/syscalls/creat/creat04.c
-@@ -192,10 +192,11 @@ void setup(void)
+ 	tst_parse_opts(argc, argv, NULL, NULL);
+ 	setup();
  
- 	/* make a temporary directory and cd to it */
- 	tst_tmpdir();
+-	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWUSER, child_fn1, NULL));
 -
--	sprintf(good_dir, "%s.%d", good_dir, getpid());
--	sprintf(fname1, "%s/file1.%d", good_dir, getpid());
--	sprintf(fname, "%s/file.%d", good_dir, getpid());
-+	good_dir_dup = strdup(good_dir);
-+	sprintf(good_dir, "%s.%d", good_dir_dup, getpid());
-+	sprintf(fname1, "%s/file1.%d", good_dir_dup, getpid());
-+	sprintf(fname, "%s/file.%d", good_dir_dup, getpid());
-+	free(good_dir_dup);
+-	if (TEST_RETURN == -1)
+-		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
+-	else if ((wait(&status)) == -1)
+-		tst_brkm(TWARN | TERRNO, NULL, "wait failed");
+-
+-	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+-		tst_resm(TFAIL, "child exited abnormally");
+-	else if (WIFSIGNALED(status)) {
+-		tst_resm(TFAIL, "child was killed with signal = %d",
+-			 WTERMSIG(status));
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWUSER,
++			child_fn1, NULL));
++
++		if (TEST_RETURN == -1)
++			tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
++		else if ((wait(&status)) == -1)
++			tst_brkm(TWARN | TERRNO, NULL, "wait failed");
++
++		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
++			tst_resm(TFAIL, "child exited abnormally");
++		else if (WIFSIGNALED(status)) {
++			tst_resm(TFAIL, "child was killed with signal = %d",
++				 WTERMSIG(status));
++		} else
++			tst_resm(TPASS, "uid and gid are right");
+ 	}
+-
+-	tst_resm(TPASS, "the uid and the gid are right inside the container");
+ 	tst_exit();
  }
  
- /*
 -- 
-1.9.3
+1.9.1
 
 
 ------------------------------------------------------------------------------
