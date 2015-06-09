@@ -1,27 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z4UMS-00023b-9x
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:23:36 +0000
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z4UMR-0006bk-9M
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:23:36 +0000
-Received: from epcpsbgr1.samsung.com
-	(u141.gpu120.samsung.co.kr [203.254.230.141])
-	by mailout3.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NPZ02ASHMJ3CE30@mailout3.samsung.com> for
-	ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 22:23:27 +0900 (KST)
-Date: Mon, 15 Jun 2015 13:23:27 +0000 (GMT)
-From: Maninder Singh <maninder1.s@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1582945054.1047651434374607658.JavaMail.weblogic@epmlwas03c>
-Subject: [LTP] [PATCH 2/7] pan/splitstr.c: remove unnecessary malloc type
-	cast
-Reply-To: maninder1.s@samsung.com
+	(envelope-from <metan@suse.de>) id 1Z2IH0-0000Qx-Kf
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 12:04:54 +0000
+Date: Tue, 9 Jun 2015 14:03:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150609120350.GA26692@rei.suse.de>
+References: <1433843386-31431-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<20150609105431.GB24843@rei.suse.de> <5576D3E3.5020600@oracle.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <5576D3E3.5020600@oracle.com>
+Subject: Re: [LTP] [PATCH 2/5] acl_test01: Verify the exit code of the
+ second test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,29 +27,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
----
- pan/splitstr.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi!
+> > We should probably wrap the su into a script that makes sure that the
+> > return value is compatible with LTP. Because it may set bogus test
+> > return status if su reported anything else than 0 or 1.
+> 
+> Ehm, but -c "$0" will execute the same script which, in turn, will exit 
+> using tst_exit.
 
-diff --git a/pan/splitstr.c b/pan/splitstr.c
-index fbcd697..39b4698 100644
---- a/pan/splitstr.c
-+++ b/pan/splitstr.c
-@@ -88,7 +88,7 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
- 	/*
- 	 * set aside an initial char ** array for string array.
- 	 */
--	arg_array = (char **)malloc(sizeof(char *) * max_toks);
-+	arg_array = malloc(sizeof(char *) * max_toks);
- 
- 	if (arg_array == NULL) {
- 		if (argcount != NULL)
+Yep, but the su man page specifies return values:
+
+128 + signal_nr - command terminated by signal
+127 - command cannot be executed (this one is actually handled in test.sh)
+126 - command not found
+255 - su was asked to terminate and had to kill the program
+
+And if none of the abowe happens it retuns the return value from the
+script.
+
+So if the script gets killed by signal of failed to executed (or cannot
+be found in $PATH) the return value will be wrong.
+
 -- 
-1.7.9.5
+Cyril Hrubis
+chrubis@suse.cz
+
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
