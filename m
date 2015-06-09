@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1Z81Uv-0005QS-Cr
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 07:22:57 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z81Us-0002vW-MJ
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 07:22:57 +0000
-Message-ID: <558BAC25.2020205@huawei.com>
-Date: Thu, 25 Jun 2015 15:22:13 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Z2Frz-0001pO-9y
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 09:30:55 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z2Frx-0001dq-FD
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 09:30:55 +0000
+Date: Tue, 9 Jun 2015 05:30:43 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <19148692.12842296.1433842243807.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1433842119-27558-1-git-send-email-sunyuan3@huawei.com>
+References: <1433842119-27558-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-References: <558B6C8C.5000202@huawei.com> <558B9D33.1090305@cn.fujitsu.com>
-In-Reply-To: <558B9D33.1090305@cn.fujitsu.com>
-Subject: Re: [LTP] Cedric
+Subject: Re: [LTP] [PATCH] Add TEST_LOOPING in userns01.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,37 +27,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+To: Yuan Sun <sunyuan3@huawei.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi Wanlong,
-     It works well after install the lib.
-     Many thanks.
-     Yuan
 
-On 2015/6/25 14:18, Wanlong Gao wrote:
-> On 06/25/2015 10:50 AM, Yuan Sun wrote:
->> Hi Cedric,
->>       I encounter the following error in ubuntu14.04. Your patch
->> "syscall/getrandom: Add tests for getrandom" leads to the error.
->>       Do I need to install new libraries?
-> Try
->
-> apt-get install linux-libc-dev
->
-> Thanks,
-> Wanlong Gao
->
->
->
 
+
+
+----- Original Message -----
+> From: "Yuan Sun" <sunyuan3@huawei.com>
+> To: jstancek@redhat.com
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 9 June, 2015 11:28:39 AM
+> Subject: [PATCH] Add TEST_LOOPING in userns01.
+> 
+> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+
+Thanks for following-up on this, applied.
+
+Regards,
+Jan
+
+> ---
+>  testcases/kernel/containers/userns/userns01.c | 31
+>  +++++++++++++++------------
+>  1 file changed, 17 insertions(+), 14 deletions(-)
+> 
+> diff --git a/testcases/kernel/containers/userns/userns01.c
+> b/testcases/kernel/containers/userns/userns01.c
+> index 6e313c0..9cada5e 100644
+> --- a/testcases/kernel/containers/userns/userns01.c
+> +++ b/testcases/kernel/containers/userns/userns01.c
+> @@ -71,25 +71,28 @@ static void setup(void)
+>  int main(int argc, char *argv[])
+>  {
+>  	int status;
+> +	int lc;
+>  
+>  	tst_parse_opts(argc, argv, NULL, NULL);
+>  	setup();
+>  
+> -	TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWUSER, child_fn1, NULL));
+> -
+> -	if (TEST_RETURN == -1)
+> -		tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
+> -	else if ((wait(&status)) == -1)
+> -		tst_brkm(TWARN | TERRNO, NULL, "wait failed");
+> -
+> -	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+> -		tst_resm(TFAIL, "child exited abnormally");
+> -	else if (WIFSIGNALED(status)) {
+> -		tst_resm(TFAIL, "child was killed with signal = %d",
+> -			 WTERMSIG(status));
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		TEST(do_clone_unshare_test(T_CLONE, CLONE_NEWUSER,
+> +			child_fn1, NULL));
+> +
+> +		if (TEST_RETURN == -1)
+> +			tst_brkm(TFAIL | TTERRNO, NULL, "clone failed");
+> +		else if ((wait(&status)) == -1)
+> +			tst_brkm(TWARN | TERRNO, NULL, "wait failed");
+> +
+> +		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+> +			tst_resm(TFAIL, "child exited abnormally");
+> +		else if (WIFSIGNALED(status)) {
+> +			tst_resm(TFAIL, "child was killed with signal = %d",
+> +				 WTERMSIG(status));
+> +		} else
+> +			tst_resm(TPASS, "uid and gid are right");
+>  	}
+> -
+> -	tst_resm(TPASS, "the uid and the gid are right inside the container");
+>  	tst_exit();
+>  }
+>  
+> --
+> 1.9.1
+> 
+> 
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
