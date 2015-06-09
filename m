@@ -1,18 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2Hyd-0006jd-EB
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 11:45:55 +0000
-Date: Tue, 9 Jun 2015 13:44:51 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150609114450.GA26486@rei.suse.de>
-References: <1431518085-8950-1-git-send-email-alexey.kodanev@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1431518085-8950-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH] lib6/in6_2: don't assume that machine has 'eth0'
- interface name
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Z2GAV-0002Zl-OC
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 09:50:03 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z2GAV-0001vU-0U
+	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 09:50:03 +0000
+Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t599nuV9011283
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 09:49:57 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t599nufH004514
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 09:49:56 GMT
+Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
+	by aserv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t599nuGa018770
+	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 09:49:56 GMT
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue,  9 Jun 2015 12:49:44 +0300
+Message-Id: <1433843386-31431-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1433843386-31431-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	<1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: [LTP] [PATCH 3/5] acl_test01: Hide unnecessary output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,68 +37,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Hi!
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->  testcases/network/lib6/in6_02.c |   32 ++++++++++++++++++++++++++++++++
->  1 files changed, 32 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/network/lib6/in6_02.c b/testcases/network/lib6/in6_02.c
-> index fea1827..dadb2a5 100644
-> --- a/testcases/network/lib6/in6_02.c
-> +++ b/testcases/network/lib6/in6_02.c
-> @@ -255,4 +255,36 @@ void initest(void)
->  void setup(void)
->  {
->  	TEST_PAUSE;
-> +
-> +	tst_resm(TINFO, "get interface name from LHOST_IFACES var");
-> +
-> +	char *ifnames = getenv("LHOST_IFACES");
-> +
-> +	if (!ifnames) {
-> +		tst_resm(TWARN, "LHOST_IFACES not defined, default to eth0");
-> +		return;
-> +	}
+The output from 'grep' gives no value, so let's hide it.
 
-Hmm, why not to use sscanf() instead?
+'losetup -d' is also not needed, because the loop device is
+detached by 'umount -d'. Therefore, removed 'losetup -d' to hide
+warnings like:
 
-sscanf(ifnames, "%ms", &name);
+loop: can't delete device /dev/loop1: No such device or address
 
-And even when we want to be compatible before glibc 2.7 (2007) we can
-do:
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/kernel/fs/acls/acl_test01 |    3 +--
+ 1 files changed, 1 insertions(+), 2 deletions(-)
 
-static char *name[256];
-
-sscanf(ifnames, "%255s", &name);
-
-> +	tst_resm(TINFO, "change default 'eth0' name to '%s'", name);
-> +	n2i[1].name = name;
->  }
-> -- 
-> 1.7.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> One dashboard for servers and applications across Physical-Virtual-Cloud 
-> Widest out-of-the-box monitoring support with 50+ applications
-> Performance metrics, stats and reports that give you Actionable Insights
-> Deep dive visibility with transaction tracing using APM Insight.
-> http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
+index 0f050b9..4dc15ef 100755
+--- a/testcases/kernel/fs/acls/acl_test01
++++ b/testcases/kernel/fs/acls/acl_test01
+@@ -97,8 +97,7 @@ do_cleanup() {
+ 	userdel $TEST_USER1 > /dev/null 2>&1
+ 
+ 	MOUNT_POINT=$(readlink -f "mount-ext3")
+-	mount | grep $MOUNT_POINT && umount -d $MOUNT_POINT
+-	[ "x$LOOP_DEV" != x ] && losetup -d $LOOP_DEV
++	mount | grep -q $MOUNT_POINT && umount -d $MOUNT_POINT
+ 
+ 	tst_rmdir
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
