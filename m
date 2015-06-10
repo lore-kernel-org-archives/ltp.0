@@ -1,17 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2goi-00058D-B3
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 14:17:20 +0000
-Date: Wed, 10 Jun 2015 16:16:14 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150610141614.GE31980@rei.suse.de>
-References: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/4] syscalls/chroot&creat: fix undefined behavior
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1Z2a5s-0004Fr-Tj
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:06:36 +0000
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z2a5r-0005dM-Lb
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:06:36 +0000
+Received: from epcpsbgr3.samsung.com
+	(u143.gpu120.samsung.co.kr [203.254.230.143])
+	by mailout1.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NPP02QYXVQL3BB0@mailout1.samsung.com> for
+	ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 16:06:21 +0900 (KST)
+Date: Wed, 10 Jun 2015 07:03:20 +0000 (GMT)
+From: Maninder Singh <maninder1.s@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <1441805139.810381433919800264.JavaMail.weblogic@epmlwas05b>
+Subject: [LTP] [PATCH 1/8] tools:proc/ksym.c: remove explicit NULL check
+	before free
+Reply-To: maninder1.s@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,62 +34,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> diff --git a/testcases/kernel/syscalls/chroot/chroot03.c b/testcases/kernel/syscalls/chroot/chroot03.c
-> index 9376892..69fead4 100644
-> --- a/testcases/kernel/syscalls/chroot/chroot03.c
-> +++ b/testcases/kernel/syscalls/chroot/chroot03.c
-> @@ -151,7 +151,9 @@ static void setup(void)
->  	 * set up good_dir to test whether chroot() is setting ENOENT if the
->  	 * directory does not exist.
->  	 */
-> -	(void)sprintf(good_dir, "%s.%d", good_dir, getpid());
-> +	good_dir_dup = strdup(good_dir);
-> +	(void)sprintf(good_dir, "%s.%d", good_dir_dup, getpid());
-> +	free(good_dir_dup);
+No need of NULL check before free
 
-Rather than that we can simply use "nonexistent" as the directory name.
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ tools/top-LTP/proc/ksym.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Because the test creates unique test temporary directory at the start
-and changes working directory to it. Then any local path points to a
-nonexistent directory.
-
-Also naming the variable good_dir is a bad idea. It should be named
-nonexistent_dir or so.
-
->  #if !defined(UCLINUX)
->  	bad_addr = mmap(0, 1, PROT_NONE,
-> diff --git a/testcases/kernel/syscalls/creat/creat04.c b/testcases/kernel/syscalls/creat/creat04.c
-> index 0268e77..44c249f 100644
-> --- a/testcases/kernel/syscalls/creat/creat04.c
-> +++ b/testcases/kernel/syscalls/creat/creat04.c
-> @@ -192,10 +192,11 @@ void setup(void)
->  
->  	/* make a temporary directory and cd to it */
->  	tst_tmpdir();
-> -
-> -	sprintf(good_dir, "%s.%d", good_dir, getpid());
-> -	sprintf(fname1, "%s/file1.%d", good_dir, getpid());
-> -	sprintf(fname, "%s/file.%d", good_dir, getpid());
-> +	good_dir_dup = strdup(good_dir);
-> +	sprintf(good_dir, "%s.%d", good_dir_dup, getpid());
-> +	sprintf(fname1, "%s/file1.%d", good_dir_dup, getpid());
-> +	sprintf(fname, "%s/file.%d", good_dir_dup, getpid());
-> +	free(good_dir_dup);
-
-There is no need to append pid to the directory and file name, the test
-temporary directory create by tst_tmpdir() is unique allready.
-
-So rather than doing ugly workarounds like that, what about removing the
-sprintf() and usign static directory and file names?
-
+diff --git a/tools/top-LTP/proc/ksym.c b/tools/top-LTP/proc/ksym.c
+index 19c5f27..559edca 100644
+--- a/tools/top-LTP/proc/ksym.c
++++ b/tools/top-LTP/proc/ksym.c
+@@ -289,8 +289,7 @@ open_again:
+ 	close(fd);
+ 	return;
+ hell:
+-	if (buf)
+-		free(buf);
++	free(buf);
+ 	*bufp = NULL;
+ 	*roomp = 0;		/* this function will never work again */
+ 	total = 0;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
-
+1.7.9.5
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
