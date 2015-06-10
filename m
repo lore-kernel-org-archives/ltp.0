@@ -2,17 +2,34 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1Z30tL-0000BB-2e
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2015 11:43:27 +0000
-Received: from [119.145.14.66] (helo=szxga03-in.huawei.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z30tD-0006tO-AQ
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2015 11:43:27 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Thu, 11 Jun 2015 13:47:50 -0600
-Message-ID: <1434052070-10537-1-git-send-email-sunyuan3@huawei.com>
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Z2bBD-0006gH-Vb
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 08:16:11 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z2bBB-00066q-V9
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 08:16:11 +0000
+Received: from userv0021.oracle.com (userv0021.oracle.com [156.151.31.71])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t5A8G3oT023526
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2015 08:16:03 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+	by userv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t5A8G3c8020259
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2015 08:16:03 GMT
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t5A8G3QK026133
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2015 08:16:03 GMT
+Message-ID: <5577F240.8000101@oracle.com>
+Date: Wed, 10 Jun 2015 11:16:00 +0300
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] containers: new testcase userns04
+References: <1433923871-10933-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+In-Reply-To: <1433923871-10933-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Content-Type: multipart/mixed; boundary="------------060401070400040508020802"
+Subject: Re: [LTP] [PATCH] detach_device: Wait until the kernel frees the
+ loop device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,165 +39,111 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-  If a namespace isn't aother namespace's ancestor, the first namespace
-does not have the CAP_SYS_ADMIN capability in the second namespace
-and the setns() call fails.
+This is a multi-part message in MIME format.
+--------------060401070400040508020802
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
----
- testcases/kernel/containers/userns/userns04.c | 131 ++++++++++++++++++++++++++
- 1 file changed, 131 insertions(+)
- create mode 100644 testcases/kernel/containers/userns/userns04.c
 
-diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
-new file mode 100644
-index 0000000..3e7249b
---- /dev/null
-+++ b/testcases/kernel/containers/userns/userns04.c
-@@ -0,0 +1,131 @@
-+/*
-+ * Copyright (c) Huawei Technologies Co., Ltd., 2015
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ */
-+
-+/*
-+ * Verify that:
-+ *  If a namespace isn't aother namespace's ancestor, the first namespace
-+ *  does not have the CAP_SYS_ADMIN capability in the second namespace
-+ *  and the setns() call fails.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <assert.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <errno.h>
-+#include "test.h"
-+#include "userns_helper.h"
-+
-+char *TCID = "user_namespace4";
-+int TST_TOTAL = 1;
-+
-+/*
-+ * child_fn1() - Inside a new user namespace
-+ */
-+static int child_fn1(void)
-+{
-+	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	return 0;
-+}
-+
-+static int child_fn2(int *arg)
-+{
-+	int exit_val;
-+
-+	if (setns(*arg, CLONE_NEWUSER) == -1) {
-+		printf("child2 setns() failure is expected\n");
-+		exit_val = 0;
-+	} else {
-+		printf("chile2 setns() success isn't expected\n");
-+		exit_val = 1;
-+	}
-+
-+	TST_SAFE_CHECKPOINT_WAIT(NULL, 1);
-+	return exit_val;
-+}
-+
-+static void setup(void)
-+{
-+	check_newuser();
-+	tst_tmpdir();
-+	TST_CHECKPOINT_INIT(NULL);
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int cpid1status, cpid2status;
-+	int lc;
-+	int cpid1, cpid2;
-+	char path[BUFSIZ];
-+	int fd;
-+
-+	tst_parse_opts(argc, argv, NULL, NULL);
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-+			(void *)child_fn1, NULL);
-+
-+		if (cpid1 < 0)
-+			tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-+
-+		sprintf(path, "/proc/%d/ns/user", cpid1);
-+		fd = SAFE_OPEN(NULL, path, O_RDONLY, 0644);
-+
-+		cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-+			(void *)child_fn2, &fd);
-+
-+		if (cpid2 < 0)
-+			tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-+
-+		if (setns(fd, CLONE_NEWUSER) == -1)
-+			tst_brkm(TFAIL, cleanup, "parent pid setns failure");
-+		else
-+			tst_resm(TINFO, "parent pid setns success");
-+
-+		TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
-+		TST_SAFE_CHECKPOINT_WAKE(NULL, 1);
-+
-+		if ((waitpid(cpid1, &cpid1status, 0) < 0) ||
-+			(waitpid(cpid2, &cpid2status, 0) < 0))
-+				tst_resm(TBROK, "parent: waitpid failed.");
-+
-+		if (WIFSIGNALED(cpid1status)) {
-+			tst_resm(TBROK, "child1 was killed with signal = %d",
-+				WTERMSIG(cpid1status));
-+		} else if (WIFEXITED(cpid1status) &&
-+			WEXITSTATUS(cpid1status) != 0) {
-+			tst_resm(TBROK, "child1 exited abnormally");
-+		}
-+
-+		if (WIFSIGNALED(cpid2status)) {
-+			tst_resm(TBROK, "child2 was killed with signal = %d",
-+				WTERMSIG(cpid2status));
-+		} else if (WIFEXITED(cpid2status) &&
-+			WEXITSTATUS(cpid2status) != 0) {
-+			tst_resm(TBROK, "child2 exited abnormally");
-+		} else
-+			tst_resm(TPASS, "The setns function works well.");
-+	}
-+	tst_exit();
-+}
-+
--- 
-1.9.1
 
+On 06/10/2015 11:11 AM, Stanislav Kholmanskikh wrote:
+> On systems employing the "lazy loop device removal",
+> kernel commit commit a1ecac3b0656a68259927c234e505804d33a7b83
+> ("loop: Make explicit loop device destruction lazy"),
+> ioctl(LOOP_CLR_FD) may return 0 when the loop device is in use,
+> for example by udev.
+>
+> Therefore, there is a chance that a quick attach/detach may not
+> give udev enough time to complete, like this:
+>
+> open("file.img", O_RDWR)           = 4
+> ioctl(3, LOOP_SET_FD, 0x4)         = 0
+> close(3)                           = 0
+> close(4)                           = 0
+> open("/dev/loop0", O_RDONLY)       = 3
+> ioctl(3, LOOP_CLR_FD, 0)           = 0
+> close(3)                           = 0
+> open("/dev/loop0", O_RDWR)         = 3
+> open("file.img", O_RDWR)           = 4
+> ioctl(3, LOOP_SET_FD, 0x4)         = -1 EBUSY (Device or resource busy)
+>
+> So let's wait until the kernel frees the loop device, i.e.
+> when ioctl(LOOP_CLR_FD) starts failing with ENXIO.
+>
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+
+I tested it the attached test case (plus you need to remove 'static' 
+next to attach_device and detach_device).
+
+Without the patch it fails with:
+
+[root@kholmanskikh test]# ./loop_test
+loop_test    1  TBROK  :  tst_device.c:144: ioctl(/dev/loop0, 
+LOOP_SET_FD, file.img) failed: EBUSY
+loop_test    2  TBROK  :  tst_device.c:144: Remaining cases broken
+
+
+--------------060401070400040508020802
+Content-Type: text/x-csrc;
+ name="loop_test.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="loop_test.c"
+
+#include "test.h"
+#include "safe_macros.h"
+
+char *TCID = "loop_test";
+int TST_TOTAL = 1;
+
+void attach_device(void (*cleanup_fn)(void),
+		   const char *dev, const char *file);
+void detach_device(void (*cleanup_fn)(void), const char *dev);
+
+int main(void)
+{
+	int i, fd;
+
+	tst_tmpdir();
+
+	fd = SAFE_OPEN(NULL, "file.img", O_RDWR | O_CREAT, 0644);
+	SAFE_FTRUNCATE(NULL, fd, 1024 * 1024UL);
+
+	SAFE_CLOSE(NULL, fd);
+
+	for (i = 0; i < 1000; i++) {
+		attach_device(NULL, "/dev/loop0", "file.img");
+		detach_device(NULL, "/dev/loop0");
+	}
+
+	tst_rmdir();
+
+	tst_resm(TPASS, "Finished");
+	tst_exit();
+}
+
+--------------060401070400040508020802
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--------------060401070400040508020802
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--------------060401070400040508020802--
+
