@@ -1,31 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Z735b-0004kJ-2a
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 14:52:47 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z735Z-0001F6-8B
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 14:52:47 +0000
-Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t5MEqdLD026849
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 14:52:39 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t5MEqdnR018956
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 14:52:39 GMT
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t5MEqcrS003792
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 14:52:38 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 22 Jun 2015 17:55:39 +0300
-Message-Id: <1434984942-20691-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1434984942-20691-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1434984942-20691-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 2/5] network/mc_member: gitignore built binaries
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <pratik.prajapati12@gmail.com>) id 1Z2ZwV-0003wD-TH
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:56:55 +0000
+Received: from mail-ie0-f174.google.com ([209.85.223.174])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z2ZwV-0000DH-0N
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:56:55 +0000
+Received: by iesa3 with SMTP id a3so28504244ies.2
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 09 Jun 2015 23:56:49 -0700 (PDT)
+MIME-Version: 1.0
+Date: Wed, 10 Jun 2015 12:26:49 +0530
+Message-ID: <CAHNg1SruVvcH1TjAmACDW7+CTDOeaHP4j9zvZSQ61PHPgOJTEQ@mail.gmail.com>
+From: Pratik Prajapati <pratik.prajapati12@gmail.com>
+Subject: [LTP] How to add test case in LTP for my local use
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,44 +25,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3787825035869456099=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
 
-Renamed in cb49919064fe ("multicast/mc_member: Some cleanup")
+--===============3787825035869456099==
+Content-Type: multipart/alternative; boundary=20cf30426dbc0da9a30518246194
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/.gitignore |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+--20cf30426dbc0da9a30518246194
+Content-Type: text/plain; charset=UTF-8
 
-diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
-index ae3402c..aa6d4da 100644
---- a/testcases/network/.gitignore
-+++ b/testcases/network/.gitignore
-@@ -14,7 +14,7 @@
- /multicast/mc_gethost/mc_gethost
- /multicast/mc_commo/mc_recv
- /multicast/mc_commo/mc_send
--/multicast/mc_member/member
-+/multicast/mc_member/mc_member_test
- /multicast/mc_opts/mc_verify_opts
- /multicast/mc_opts/mc_verify_opts_error
- /nfs/nfs01/open_files
--- 
-1.7.1
+Hi,
 
+I want to add a test case for my local use. From
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines I
+get to know how to write a test case but didb't get how to add it. Please
+help.
+
+Regards,
+Pratik
+
+--20cf30426dbc0da9a30518246194
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div><div>Hi,<br><br></div>I want to add a test case =
+for my local use. From <a href=3D"https://github.com/linux-test-project/ltp=
+/wiki/Test-Writing-Guidelines">https://github.com/linux-test-project/ltp/wi=
+ki/Test-Writing-Guidelines</a> I get to know how to write a test case but d=
+idb&#39;t get how to add it. Please help.<br><br></div>Regards,<br></div>Pr=
+atik<br></div>
+
+--20cf30426dbc0da9a30518246194--
+
+
+--===============3787825035869456099==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
+
+--===============3787825035869456099==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3787825035869456099==--
+
