@@ -1,25 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z8SSl-0002hA-33
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:10:31 +0000
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z8SSj-0006xt-HS
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:10:31 +0000
-Received: from epcpsbgr1.samsung.com
-	(u141.gpu120.samsung.co.kr [203.254.230.141])
-	by mailout3.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NQJ00HI0WHAQB40@mailout3.samsung.com> for
-	ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 21:10:22 +0900 (KST)
-From: Maninder Singh <maninder1.s@samsung.com>
-Date: Fri, 26 Jun 2015 17:34:50 +0530
-Message-id: <1435320294-45783-10-git-send-email-maninder1.s@samsung.com>
-In-reply-to: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
-References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
-Subject: [LTP] [PATCH 09/13] kernel/fadvise: use ARRAY_SIZE
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z2ZvS-00044t-S8
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:50 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Z2ZvR-0005NH-Uj
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:50 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5A6sBTu004886
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2015 14:54:11 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 10 Jun 2015 14:55:00 +0800
+Message-ID: <1433919301-24797-3-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH 3/4] pan/symbol.c: fix memory leak for failure case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,57 +28,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: pankaj.m@samsung.com
 
-
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
 ---
- .../kernel/syscalls/fadvise/posix_fadvise01.c      |    2 +-
- .../kernel/syscalls/fadvise/posix_fadvise03.c      |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ pan/symbol.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise01.c b/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
-index fa966e6..835c3ca 100644
---- a/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
-+++ b/testcases/kernel/syscalls/fadvise/posix_fadvise01.c
-@@ -71,7 +71,7 @@ int defined_advise[] = {
- 	POSIX_FADV_DONTNEED,
- };
+diff --git a/pan/symbol.c b/pan/symbol.c
+index d7b90af..ca9964a 100644
+--- a/pan/symbol.c
++++ b/pan/symbol.c
+@@ -112,6 +112,7 @@ static struct sym *mknode(struct sym *next, char *key, void *data)
  
--#define defined_advise_total (sizeof(defined_advise) / sizeof(defined_advise[0]))
-+#define defined_advise_total ARRAY_SIZE(defined_advise)
+ 	if (n->key == NULL) {
+ 		sym_error = "sym node strdup(key) failed!";
++		free(n);
+ 		return (NULL);
+ 	}
+ 	return (n);
+@@ -204,8 +205,10 @@ int sym_put(SYM sym, char *key, void *data, int flags)
+ 	nkey = strdup(key);
+ 	keys = splitstr(key, ",", NULL);
  
- int TST_TOTAL = defined_advise_total;
+-	if (keys == NULL)
++	if (keys == NULL) {
++		free(nkey);
+ 		return (EINVAL);
++	}
  
-diff --git a/testcases/kernel/syscalls/fadvise/posix_fadvise03.c b/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
-index 9d8a08e..25c57be 100644
---- a/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
-+++ b/testcases/kernel/syscalls/fadvise/posix_fadvise03.c
-@@ -86,7 +86,7 @@ int defined_advise[] = {
- #endif
- };
- 
--#define defined_advise_total (sizeof(defined_advise) / sizeof(defined_advise[0]))
-+#define defined_advise_total ARRAY_SIZE(defined_advise)
- 
- #if 0
- /* Too many test cases. */
+ 	for (kk = (char **)keys, csym = sym;
+ 	     *kk != NULL && (nsym = find_key1(csym->sym, *kk)) != NULL;
 -- 
-1.7.9.5
+1.9.3
 
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
