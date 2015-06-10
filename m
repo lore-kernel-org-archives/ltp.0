@@ -1,21 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1Z80sW-0000an-Ci
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 06:43:16 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z80sQ-0001KO-Mw
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 06:43:16 +0000
-Message-ID: <558BA2B1.9030508@huawei.com>
-Date: Thu, 25 Jun 2015 14:41:53 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
-MIME-Version: 1.0
-References: <558B6C8C.5000202@huawei.com>	<558B9D33.1090305@cn.fujitsu.com>
-	<CALPnEb6td8AGRvRWSG1frhi=VZr67apQtqNd7UUvAgC8Wg4hDg@mail.gmail.com>
-In-Reply-To: <CALPnEb6td8AGRvRWSG1frhi=VZr67apQtqNd7UUvAgC8Wg4hDg@mail.gmail.com>
-Subject: Re: [LTP] Cedric
+	(envelope-from <maninder1.s@samsung.com>) id 1Z2a4y-0004CB-9M
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:05:40 +0000
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z2a4w-0005cM-Io
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:05:40 +0000
+Received: from epcpsbgr4.samsung.com
+	(u144.gpu120.samsung.co.kr [203.254.230.144])
+	by mailout3.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NPP027E7VP7E120@mailout3.samsung.com> for
+	ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 16:05:31 +0900 (KST)
+Date: Wed, 10 Jun 2015 07:05:31 +0000 (GMT)
+From: Maninder Singh <maninder1.s@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <1556567987.810641433919931262.JavaMail.weblogic@epmlwas05b>
+Subject: [LTP] [PATCH 5/8] network/ns-igmp_querier.c: remove explicit NULL
+ check before free
+Reply-To: maninder1.s@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,133 +31,40 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============6553179855559112345=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: =?UTF-8?B?Q8OpZHJpYyBIbnlkYQ==?= <ced.hnyda@gmail.com>, Wanlong Gao <gaowanlong@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
---===============6553179855559112345==
-Content-Type: multipart/alternative;
-	boundary="------------080302030600030600040605"
+No need of NULL check before free
 
---------------080302030600030600040605
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: 8bit
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ .../network/stress/ns-tools/ns-igmp_querier.c      |    6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Hi Cedric,
-     Thanks for your reminding. I understand.
-Maybe it is better to add the following in these cases.
-
-if (tst_kvercmp(3, 17, 0) < 0)
-         tst_brkm(TCONF, NULL, "getrandom is not supported");
-
-     Regards.
-         Yuan
-
-On 2015/6/25 14:32, Cédric Hnyda wrote:
-> Hi!
->
-> On 06/25/2015 04:50 AM, Yuan Sun wrote:
-> > Hi Cedric,
-> >      I encounter the following error in ubuntu14.04. Your patch
-> > "syscall/getrandom: Add tests for getrandom" leads to the error.
-> >      Do I need to install new libraries?
->
-> getrandom() was introduced in version 3.17 of the Linux kernel.
-> Ubuntu 14.04 gets shipped with kernel 3.13.
->
-> Try to upgrade your kernel to a more recent version to get the syscall.
->
-> Best,
-> Cédric Hnyda
-
-
---------------080302030600030600040605
-Content-Type: text/html; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-
-<html>
-  <head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-  </head>
-  <body bgcolor="#FFFFFF" text="#000000">
-    Hi Cedric,<br>
-        Thanks for your reminding. I understand.<br>
-    Maybe it is better to add the following in these cases.<br>
-    <br>
-    if (tst_kvercmp(3, 17, 0) &lt; 0)<br>
-            tst_brkm(TCONF, NULL, "getrandom is not supported");<br>
-    <br>
-        Regards.<br>
-            Yuan<br>
-    <br>
-    <div class="moz-cite-prefix">On 2015/6/25 14:32, Cédric Hnyda wrote:<br>
-    </div>
-    <blockquote
-cite="mid:CALPnEb6td8AGRvRWSG1frhi=VZr67apQtqNd7UUvAgC8Wg4hDg@mail.gmail.com"
-      type="cite">
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-      <div dir="ltr">
-        <div>
-          <div>
-            <div>Hi!<br>
-              <br>
-              <span class="im">On 06/25/2015 04:50 AM, Yuan Sun wrote:<br>
-                &gt; Hi Cedric,<br>
-                &gt;      I encounter the following error in
-                ubuntu14.04. Your patch<br>
-                &gt; "syscall/getrandom: Add tests for getrandom" leads
-                to the error.<br>
-                &gt;      Do I need to install new libraries?</span><br>
-              <br>
-            </div>
-            getrandom() was introduced in version 3.17 of the Linux
-            kernel.<br>
-          </div>
-          Ubuntu 14.04 gets shipped with kernel 3.13.<br>
-          <br>
-        </div>
-        Try to upgrade your kernel to a more recent version to get the
-        syscall.<br>
-        <div>
-          <div><br>
-          </div>
-          <div>Best,<br>
-          </div>
-          <div>Cédric Hnyda<br>
-          </div>
-        </div>
-      </div>
-    </blockquote>
-    <br>
-  </body>
-</html>
-
---------------080302030600030600040605--
-
-
---===============6553179855559112345==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+diff --git a/testcases/network/stress/ns-tools/ns-igmp_querier.c b/testcases/network/stress/ns-tools/ns-igmp_querier.c
+index 933c1da..fad84d8 100644
+--- a/testcases/network/stress/ns-tools/ns-igmp_querier.c
++++ b/testcases/network/stress/ns-tools/ns-igmp_querier.c
+@@ -334,10 +334,8 @@ void parse_options(int argc, char *argv[], struct igmp_info *info_p, int *bg_p)
+ 	if ((info_p->query = create_query(max_resp, maddr, saddrs)) == NULL)
+ 		usage(program_name, EXIT_FAILURE);
+ 
+-	if (maddr)
+-		free(maddr);
+-	if (saddrs)
+-		free(saddrs);
++	free(maddr);
++	free(saddrs);
+ }
+ 
+ /*
+-- 
+1.7.9.5
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
---===============6553179855559112345==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============6553179855559112345==--
-
