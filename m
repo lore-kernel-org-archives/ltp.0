@@ -1,23 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2J0P-0003Rc-WB
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 12:51:50 +0000
-Date: Tue, 9 Jun 2015 14:50:45 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150609125045.GB26692@rei.suse.de>
-References: <1433843386-31431-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-4-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-5-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20150609101009.GE24041@rei.suse.de> <5576D352.4040004@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5576D352.4040004@oracle.com>
-Subject: Re: [LTP] [RFC PATCH 5/5] acl_test01: Wait until the loop device is
- detached
+	(envelope-from <maninder1.s@samsung.com>) id 1Z2a7X-00057v-R1
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:08:19 +0000
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z2a7W-0005gW-JS
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:08:19 +0000
+Received: from epcpsbgr3.samsung.com
+	(u143.gpu120.samsung.co.kr [203.254.230.143])
+	by mailout2.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NPP01BBAVTA56A0@mailout2.samsung.com> for
+	ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 16:07:58 +0900 (KST)
+Date: Wed, 10 Jun 2015 07:04:55 +0000 (GMT)
+From: Maninder Singh <maninder1.s@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <872703134.810591433919895920.JavaMail.weblogic@epmlwas05b>
+Subject: [LTP] [PATCH 4/8] utils/ffsb_fc.c: remove explicit NULL check
+	before free
+Reply-To: maninder1.s@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,137 +34,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> I think it wouldn't. Please, see below.
-> 
-> ## Problem 1 ##
-> Rapid execution of 'losetup /dev/loop0' file + 'losetup -d /dev/loop0' 
-> may fail.
-> 
-> Reproducer:
-> for i in `seq 20`; do
->      echo "attach"
->      losetup /dev/loop0 file1.img
->      echo "detach"
->      losetup -d /dev/loop0
-> done
-> 
-> 1. Kernel versions without the above kernel patch should fail on the 
-> "detach" phase, i.e. on
->         if (lo->lo_refcnt > 1)  /* we needed one fd for the ioctl */
->                 return -EBUSY;
-> in loop_clr_fd().
-> 
-> However, I've not tested it by myself.
-> 
-> And Jan's commit:
-> 
-> commit 554b1793a1aa34f8918e8b1c04d8c6835f4a5710
-> Author: Jan Stancek <jstancek@redhat.com>
-> Date:   Tue Jan 20 14:35:49 2015 +0100
-> 
->      tst_device: sleep/retry if LOOP_CLR_FD fails with EBUSY
-> 
->      Rapid succession of device attach/detach may lead to EBUSY
->      from ioctl(LOOP_CLR_FD), because udev rules might still be
->      running.
-> 
->      Sleep/retry for a short period if LOOP_CLR_FD fails with EBUSY.
-> 
->      Signed-off-by: Jan Stancek <jstancek@redhat.com>
->      Acked-by: Cyril Hrubis <chrubis@suse.cz>
-> 
-> is to fix this scenario.
+No need of NULL check before free
 
-This has been added due to udev holding reference to the device and
-preventing the detach. Looks like they "fixed" this in kernel with lazy
-detach meanwhile...
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ utils/ffsb-6.0-rc2/ffsb_fc.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> 2. However, newer kernels (i.e. with the above kernel patch) will fail 
-> with EBUSY at the "attach" phase, because loop_clr_fd() will always 
-> return 0 and mark the loop device for auto clearing, but loop_set_fd() 
-> will go this path:
-> 
->         error = -EBUSY;
->         if (lo->lo_state != Lo_unbound)
->                 goto out_putf;
-> 
->         /* ... */
-> 
-> out_putf:
->         fput(file);
-> out:
->         /* This is safe: open() is still holding a reference. */
->         module_put(THIS_MODULE);
->         return error;
-
-Hmm, that shouldn't be needed, because the we do losetup -f to get free
-loop device before the attach operation. If that returns a device that
-hasn't been detached yet because of lazy detaching it's a kernel bug.
-
-> ## Problem 2 - NFS specific ##
-> 
-> If we have the above kernel patch, even if 'losetup -d' executed without 
-> problems, it doesn't mean that the backend file is not in use.
-> 
-> So we need to wait some undetermined time until udev finishes its 
-> playing with the loop device, and only after that we can safely remove 
-> the file without a risk to be affected by "NFS silly rename".
-> 
-> ##
-> 
-> I think that to nail down both the problems at once, we may need to do 
-> something like this:
-> 
-> attach_device(const char *dev)
-> {
->    /* a cycle to verify that dev is not in use.
->     * If it's in use after the cycle, call tst_brkm()
->     */
->    ioctl(dev_fd, LOOP_SET_FD);
->    /* handle ioctl errors */
-> }
-> 
-> detach_device(const char *dev)
-> {
->    ioctl(dev_fd, LOOP_CLR_FD);
->    /* ignore the return code */
-> 
->    /* a cycle to verify that dev is not in use.
->     * If it's still in use after the cycle, call tst_brkm()
->     */
-> }
-> 
-> ioctl(LOOP_GET_STATUS64) looks like a good way to check whether the loop 
-> device is in use.
-> 
-> What do you think?
-
-
-I think that we should do:
-
-detach_device(..)
-{
-	while EBUSY:
-		ioctl(fd, LOOP_CLR_FD);
-
-	while not error:
-		ioclt(LOOP_GET_STATUS);
-		usleep();
-}
-
-Because if we ignore the return value from LOOP_CLR_FD we will break on
-older kernels where we may get EBUSSY instead of lazy detach. And the
-LOOP_GET_STATUS* ioctls should return error when device is not attached,
-at least if I'm reading kernel code right.
-
-
+diff --git a/utils/ffsb-6.0-rc2/ffsb_fc.c b/utils/ffsb-6.0-rc2/ffsb_fc.c
+index 60b6313..c383a6a 100644
+--- a/utils/ffsb-6.0-rc2/ffsb_fc.c
++++ b/utils/ffsb-6.0-rc2/ffsb_fc.c
+@@ -99,8 +99,7 @@ void fc_set_num_totalthreads(ffsb_config_t * fc, int num)
+ 
+ void fc_set_callout(ffsb_config_t * fc, char *callout)
+ {
+-	if (fc->callout)
+-		free(fc->callout);
++	free(fc->callout);
+ 	fc->callout = ffsb_strdup(callout);
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
 
 ------------------------------------------------------------------------------
 _______________________________________________
