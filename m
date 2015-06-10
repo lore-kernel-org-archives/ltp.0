@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liaoqingwei@huawei.com>) id 1YzfCl-0003jc-3W
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 05:57:39 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <pratik.prajapati12@gmail.com>) id 1Z2do7-0008Ad-4B
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 11:04:31 +0000
+Received: from mail-ie0-f169.google.com ([209.85.223.169])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YzfCi-0008Vf-66
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 05:57:39 +0000
-From: Liao Qingwei <liaoqingwei@huawei.com>
-Date: Tue, 2 Jun 2015 13:56:58 +0000
-Message-ID: <1433253418-44054-1-git-send-email-liaoqingwei@huawei.com>
+	(Exim 4.76) id 1Z2do6-0005Rf-B6
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 11:04:31 +0000
+Received: by iebmu5 with SMTP id mu5so31755027ieb.1
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 10 Jun 2015 04:04:25 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] rpc/basic_tests/rpc01:Fix the error parameters
+Date: Wed, 10 Jun 2015 16:34:24 +0530
+Message-ID: <CAHNg1Sr60LoroQxr7mLw9jA-USA8bca7VNLed0=YPVM0NdLKfw@mail.gmail.com>
+From: Pratik Prajapati <pratik.prajapati12@gmail.com>
+Subject: [LTP] Advantages of LTP over Autotest
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,138 +25,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6348939158567154354=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: dingguofu@huawei.com, zhanyongming@huawei.com
 
-There are some bugs in the testcase:
-1.return_buffer be defined as a struct data * and is uninitialized,it
-is a random value,maybe NULL,in function do_compare(rc,
-"callrpc", &buffer, return_buffer->data) will cause a NULL pointer
-reference and  "Segmentation fault".
-2.in callrpc() the sixth and the eighth parameter is error,it should be
-buffer.data and a valid char *,and the clnt_call() has the same error.
-3.the malloc for buffer.data is not freed.
+--===============6348939158567154354==
+Content-Type: multipart/alternative; boundary=047d7b10c9f97e744f051827d6c6
 
-I change the definition of return_buffer to char *,malloc memory for
-it,and free when test exit.
+--047d7b10c9f97e744f051827d6c6
+Content-Type: text/plain; charset=UTF-8
 
-Please review it,thanks.
+Hi,
 
-Signed-off-by: Liao Qingwei <liaoqingwei@huawei.com>
----
- testcases/network/rpc/basic_tests/rpc01/rpc1.c | 41 +++++++++++++++++++-------
- 1 file changed, 31 insertions(+), 10 deletions(-)
+I have to select a test framework for kernel and peripheral testing. I
+found two frameworks LTP and Autotest.
+Autotest has provided advantage over LTP in its documentation.
 
-diff --git a/testcases/network/rpc/basic_tests/rpc01/rpc1.c b/testcases/network/rpc/basic_tests/rpc01/rpc1.c
-index bc9f35b..19835d5 100644
---- a/testcases/network/rpc/basic_tests/rpc01/rpc1.c
-+++ b/testcases/network/rpc/basic_tests/rpc01/rpc1.c
-@@ -24,7 +24,8 @@ void usage_error(char *program_name);
- int main(int argc, char *argv[])
- {
- 	struct hostent *hp;
--	struct data buffer, *return_buffer;
-+	struct data buffer;
-+	char *return_buffer;
- 	int i, n, rc;
- 	FILE *fp;
- 	struct stat stat_buffer;
-@@ -121,14 +122,26 @@ int main(int argc, char *argv[])
- 	}
- 
- 	buffer.data = malloc(buffer.data_length);
-+	if (!buffer.data) {
-+		fprintf(stderr, "malloc failed for buffer.data\n");
-+		exit(1);
-+	}
-+
- 	for (i = 0, p = buffer.data; i < buffer.data_length; i++, p++)
- 		*p = getc(fp);
- 	fclose(fp);
- 
-+	return_buffer = malloc(buffer.data_length);
-+	if (!return_buffer) {
-+		fprintf(stderr, "malloc failed for return_buffer\n");
-+		free(buffer.data);
-+		exit(1);
-+	}
-+
- 	rc = callrpc(server, program, version, 1, (xdrproc_t)xdr_send_data,
--			(char *)&buffer, (xdrproc_t)xdr_receive_data,
--			(char *)&return_buffer);
--	do_compare(rc, "callrpc", &buffer, return_buffer->data);
-+			buffer.data, (xdrproc_t)xdr_receive_data,
-+			return_buffer);
-+	do_compare(rc, "callrpc", &buffer, return_buffer);
- 
- 	server_sin.sin_port = 0;
- 	sock = RPC_ANYSOCK;
-@@ -137,30 +150,34 @@ int main(int argc, char *argv[])
- 	clnt = clntudp_create(&server_sin, program, version, timeout, &sock);
- 	if (clnt == NULL) {
- 		fprintf(stderr, "clntudp_create failed\n");
-+		free(buffer.data);
-+		free(return_buffer);
- 		exit(1);
- 	}
- 	timeout.tv_usec = 0;
- 	timeout.tv_sec = 30;
- 	rc = (int)clnt_call(clnt, 1, (xdrproc_t)xdr_send_data,
--				(char *)&buffer, (xdrproc_t)xdr_receive_data,
--				(char *)&return_buffer, timeout);
-+				buffer.data, (xdrproc_t)xdr_receive_data,
-+				return_buffer, timeout);
- 	clnt_destroy(clnt);
--	do_compare(rc, "udp transport", &buffer, return_buffer->data);
-+	do_compare(rc, "udp transport", &buffer, return_buffer);
- 
- 	server_sin.sin_port = 0;
- 	sock = RPC_ANYSOCK;
- 	clnt = clnttcp_create(&server_sin, program, version, &sock, 0, 0);
- 	if (clnt == NULL) {
- 		fprintf(stderr, "clntudp_create failed\n");
-+		free(buffer.data);
-+		free(return_buffer);
- 		exit(1);
- 	}
- 	timeout.tv_usec = 0;
- 	timeout.tv_sec = 30;
- 	rc = (int)clnt_call(clnt, 1, (xdrproc_t)xdr_send_data,
--				(char *)&buffer, (xdrproc_t)xdr_receive_data,
--				(char *)&return_buffer, timeout);
-+				buffer.data, (xdrproc_t)xdr_receive_data,
-+				return_buffer, timeout);
- 	clnt_destroy(clnt);
--	do_compare(rc, "tcp transport", &buffer, return_buffer->data);
-+	do_compare(rc, "tcp transport", &buffer, return_buffer);
- 
- 	exit(0);
- }
-@@ -173,11 +190,15 @@ void do_compare(int rpc_rc, char *msg, struct data *buffer, char *ret_data)
- 		printf("RPC call with %s returned %d: ", msg, rpc_rc);
- 		clnt_perrno(rpc_rc);
- 		printf("\n");
-+		free(buffer->data);
-+		free(ret_data);
- 		exit(1);
- 	}
- 	rc = memcmp(buffer->data, ret_data, buffer->data_length);
- 	if (rc) {
- 		printf("Data compare for %s returned %d\n", msg, rc);
-+		free(buffer->data);
-+		free(ret_data);
- 		exit(1);
- 	}
- }
--- 
-1.9.1
+"LTP (http://ltp.sourceforge.net/) The Linux Test Project is a functional /
+regression test suite. It contains approximately 2900 small regression
+tests which are applied to the system running LTP. There is no support for
+building kernels or booting them, performance testing or profiling. Whilst
+it contains a lot of useful tests, it is not a general heavy weight testing
+client."
 
+I haven't find any advantage of LTP over Autotest on your documentation or
+on google.
+
+So Is there any advantage of LTP over Autotest ?
+
+Regards,
+Pratik
+
+--047d7b10c9f97e744f051827d6c6
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div><div><div>Hi,<br><br>I have to select a test fra=
+mework for kernel and peripheral testing. I found two frameworks LTP and Au=
+totest.<br></div>Autotest has provided advantage over LTP in its documentat=
+ion.<br><br>&quot;LTP (<a class=3D"" href=3D"http://ltp.sourceforge.net/">h=
+ttp://ltp.sourceforge.net/</a>) The
+Linux Test Project is a functional / regression test suite. It contains
+approximately 2900 small regression tests which are applied to the
+system running LTP. There is no support for building kernels or booting
+them, performance testing or profiling. Whilst it contains a lot of
+useful tests, it is not a general heavy weight testing client.&quot;<br><br=
+></div><div>I haven&#39;t find any advantage of LTP over Autotest on your d=
+ocumentation or on google.<br><br></div>So Is there any advantage of LTP ov=
+er Autotest ?<br><br></div>Regards,<br></div>Pratik<br></div>
+
+--047d7b10c9f97e744f051827d6c6--
+
+
+--===============6348939158567154354==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--===============6348939158567154354==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6348939158567154354==--
+
