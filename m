@@ -1,17 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z0Y0o-0006Rh-8S
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 16:28:58 +0000
-Date: Thu, 4 Jun 2015 18:27:57 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150604162757.GA8495@rei.suse.de>
-References: <149090115.398111433218346536.JavaMail.weblogic@epmlwas08b>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z2ZvU-0004fQ-76
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:52 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Z2ZvS-0003X9-8X
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 06:55:52 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5A6sCSr004892
+	for <ltp-list@lists.sourceforge.net>; Wed, 10 Jun 2015 14:54:13 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 10 Jun 2015 14:55:01 +0800
+Message-ID: <1433919301-24797-4-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <149090115.398111433218346536.JavaMail.weblogic@epmlwas08b>
-Subject: Re: [LTP] [PATCH]: Add check for realloc failure case
+Subject: [LTP] [PATCH 4/4] pan/splitstr.c: free memory allocated by strdup()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,23 +31,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Manjeet Pawar <manjeet.p@samsung.com>
-Cc: AJEET YADAV <ajeet.y@samsung.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> @@ -113,6 +114,12 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
->  			arg_array =
->  			    (char **)realloc((void *)arg_array,
->  					     sizeof(char *) * max_toks);
-> +			if (arg_array == NULL) {
-> +				fprintf(stderr, "realloc: New memory allocation failed \n");
-> +				free(arg_array);
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ pan/splitstr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I've removed the free(arg_array) here, because it's noop (doing free(NULL)) and pushed both patches.
-
+diff --git a/pan/splitstr.c b/pan/splitstr.c
+index fbcd697..decfbf5 100644
+--- a/pan/splitstr.c
++++ b/pan/splitstr.c
+@@ -122,6 +122,7 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
+ 		}
+ 	}
+ 	arg_array[num_toks] = NULL;
++	free(arg_string);
+ 
+ 	/*
+ 	 * If there are any spaces left in our array, make them NULL
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
