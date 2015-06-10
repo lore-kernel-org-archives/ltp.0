@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z2a3y-0004wF-UM
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:04:38 +0000
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z2a3x-0003qV-4R
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:04:38 +0000
-Received: from epcpsbgr3.samsung.com
-	(u143.gpu120.samsung.co.kr [203.254.230.143])
-	by mailout1.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NPP02O1EVNAMMC0@mailout1.samsung.com> for
-	ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 16:04:22 +0900 (KST)
-Date: Wed, 10 Jun 2015 07:04:29 +0000 (GMT)
-From: Maninder Singh <maninder1.s@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1390423659.810531433919869667.JavaMail.weblogic@epmlwas05b>
-Subject: [LTP] [PATCH 3/8] tools:proc/readproc.c: remove explicit NULL check
- before free
-Reply-To: maninder1.s@samsung.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <stanislav.kholmanskikh@oracle.com>)
+	id 1Z2g0i-0004w9-P2
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 13:25:40 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z2g0g-0007ex-QO
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 13:25:40 +0000
+Message-ID: <55783AC9.1000601@oracle.com>
+Date: Wed, 10 Jun 2015 16:25:29 +0300
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+MIME-Version: 1.0
+References: <1464675384.830491433940044508.JavaMail.weblogic@epmlwas05b>
+In-Reply-To: <1464675384.830491433940044508.JavaMail.weblogic@epmlwas05b>
+Subject: Re: [LTP] [PATCH v2] kernel:flock: Change tst_resm() followed by
+ tst_exit() to tst_brkm()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,42 +29,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: maninder1.s@samsung.com, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-No need of NULL check before free
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
----
- tools/top-LTP/proc/readproc.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/tools/top-LTP/proc/readproc.c b/tools/top-LTP/proc/readproc.c
-index fd366e7..ead9623 100644
---- a/tools/top-LTP/proc/readproc.c
-+++ b/tools/top-LTP/proc/readproc.c
-@@ -275,8 +275,7 @@ static char **file2strvec(const char *directory, const char *what)
- 		if (n == 0 && rbuf == 0)
- 			return NULL;	/* process died between our open and read */
- 		if (n < 0) {
--			if (rbuf)
--				free(rbuf);
-+			free(rbuf);
- 			return NULL;	/* read error */
- 		}
- 		if (end_of_file && buf[n - 1])	/* last read char not null */
-@@ -289,8 +288,7 @@ static char **file2strvec(const char *directory, const char *what)
- 	}
- 	close(fd);
- 	if (n <= 0 && !end_of_file) {
--		if (rbuf)
--			free(rbuf);
-+		free(rbuf);
- 		return NULL;	/* read error */
- 	}
- 	endbuf = rbuf + tot;	/* count space for pointers */
--- 
-1.7.9.5
+On 06/10/2015 03:40 PM, Maninder Singh wrote:
+> As in commit 9fa8ad0 Change tst_resm() followed by tst_exit() to tst_brkm()
+>
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+> ---
+>   testcases/kernel/syscalls/flock/flock01.c |   12 ++----------
+>   testcases/kernel/syscalls/flock/flock06.c |   10 ++--------
+>   2 files changed, 4 insertions(+), 18 deletions(-)
+
++ I slightly modified the subject and changed TFAIL to TBROK and pushed.
+
+Thanks.
 
 ------------------------------------------------------------------------------
 _______________________________________________
