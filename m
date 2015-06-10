@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <rinkusaini32@gmail.com>) id 1YzPRg-0006DU-0J
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 13:08:00 +0000
-Received: from mail-ob0-f175.google.com ([209.85.214.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YzPRf-0002P4-7G
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 13:07:59 +0000
-Received: by obbnx5 with SMTP id nx5so102386225obb.0
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 01 Jun 2015 06:07:53 -0700 (PDT)
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z2goi-00058D-B3
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 14:17:20 +0000
+Date: Wed, 10 Jun 2015 16:16:14 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150610141614.GE31980@rei.suse.de>
+References: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Date: Mon, 1 Jun 2015 18:37:53 +0530
-Message-ID: <CAAJEG239+Hb2NAzaLh_9Q15m9mCj=wSBxHC5D3VhYy=1Ery31g@mail.gmail.com>
-From: Jatinder Kumar <rinkusaini32@gmail.com>
-Subject: [LTP] Getting segmentation fault
+Content-Disposition: inline
+In-Reply-To: <1433919301-24797-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/4] syscalls/chroot&creat: fix undefined behavior
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,82 +21,67 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7076462019471818613=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============7076462019471818613==
-Content-Type: multipart/alternative; boundary=001a1134fb448694ac05177483f8
-
---001a1134fb448694ac05177483f8
-Content-Type: text/plain; charset=UTF-8
-
-Hi All,
-I am new to this mailing list.
-
-I am running ltp-test version is 20140422. ltp-test. The result is fine.
-But when I run the open_posix test. I am getting Segmentation fault in
-pthread_cond_signal_4-2.run-test.
-
-Test environment.
-Target Board: Panda version a4
-Kernel version 3.10.67.
-gcc version 4.8.2.
-
-The same test case is passed for other target board on same kernel. Can you
-please help me or give me some hint in this regards.
-
-am I missing any target specific kernel configuration.
-
-
-Thanks & Regards,
-Jatinder Kumar
-E-mail : rinkusaini32@gmail.com
-
---001a1134fb448694ac05177483f8
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div><div><div><div><div><div>Hi All,<br></div>I am new to=
- this mailing list. <br></div><br>I am running ltp-test version is 20140422=
-. ltp-test. The result is fine. But when I run the open_posix test. I am ge=
-tting Segmentation fault in  pthread_cond_signal_4-2.run-test. <br></div><b=
-r>Test environment.<br></div>Target Board: Panda version a4<br></div>Kernel=
- version 3.10.67.<br></div>gcc version 4.8.2.=C2=A0 <br><div><div><div><div=
-><div><div><div><div><div><div class=3D"gmail_signature"><div dir=3D"ltr"><=
-div><div dir=3D"ltr"><div style=3D"text-align:left"><br>The same test case =
-is passed for other target board on same kernel. Can you please help me or =
-give me some hint in this regards.<br></div><div style=3D"text-align:left">=
-<br></div><div style=3D"text-align:left">am I missing any target specific k=
-ernel configuration.<br></div><div style=3D"text-align:left">=C2=A0<br></di=
-v><div style=3D"text-align:left"><br>Thanks &amp; Regards,<br>Jatinder Kuma=
-r<br>E-mail : <span style=3D"text-decoration:underline"></span><a href=3D"m=
-ailto:rinkusaini32@gmail.com" target=3D"_blank">rinkusaini32@gmail.com</a><=
-span><font color=3D"#888888"><br></font></span></div></div></div></div></di=
-v></div>
-</div></div></div></div></div></div></div></div></div>
-
---001a1134fb448694ac05177483f8--
-
-
---===============7076462019471818613==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+> diff --git a/testcases/kernel/syscalls/chroot/chroot03.c b/testcases/kernel/syscalls/chroot/chroot03.c
+> index 9376892..69fead4 100644
+> --- a/testcases/kernel/syscalls/chroot/chroot03.c
+> +++ b/testcases/kernel/syscalls/chroot/chroot03.c
+> @@ -151,7 +151,9 @@ static void setup(void)
+>  	 * set up good_dir to test whether chroot() is setting ENOENT if the
+>  	 * directory does not exist.
+>  	 */
+> -	(void)sprintf(good_dir, "%s.%d", good_dir, getpid());
+> +	good_dir_dup = strdup(good_dir);
+> +	(void)sprintf(good_dir, "%s.%d", good_dir_dup, getpid());
+> +	free(good_dir_dup);
+
+Rather than that we can simply use "nonexistent" as the directory name.
+
+Because the test creates unique test temporary directory at the start
+and changes working directory to it. Then any local path points to a
+nonexistent directory.
+
+Also naming the variable good_dir is a bad idea. It should be named
+nonexistent_dir or so.
+
+>  #if !defined(UCLINUX)
+>  	bad_addr = mmap(0, 1, PROT_NONE,
+> diff --git a/testcases/kernel/syscalls/creat/creat04.c b/testcases/kernel/syscalls/creat/creat04.c
+> index 0268e77..44c249f 100644
+> --- a/testcases/kernel/syscalls/creat/creat04.c
+> +++ b/testcases/kernel/syscalls/creat/creat04.c
+> @@ -192,10 +192,11 @@ void setup(void)
+>  
+>  	/* make a temporary directory and cd to it */
+>  	tst_tmpdir();
+> -
+> -	sprintf(good_dir, "%s.%d", good_dir, getpid());
+> -	sprintf(fname1, "%s/file1.%d", good_dir, getpid());
+> -	sprintf(fname, "%s/file.%d", good_dir, getpid());
+> +	good_dir_dup = strdup(good_dir);
+> +	sprintf(good_dir, "%s.%d", good_dir_dup, getpid());
+> +	sprintf(fname1, "%s/file1.%d", good_dir_dup, getpid());
+> +	sprintf(fname, "%s/file.%d", good_dir_dup, getpid());
+> +	free(good_dir_dup);
+
+There is no need to append pid to the directory and file name, the test
+temporary directory create by tst_tmpdir() is unique allready.
+
+So rather than doing ugly workarounds like that, what about removing the
+sprintf() and usign static directory and file names?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-
---===============7076462019471818613==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7076462019471818613==--
-
