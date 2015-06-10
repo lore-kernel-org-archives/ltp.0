@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z0Bjx-0006aj-SA
-	for ltp-list@lists.sourceforge.net; Wed, 03 Jun 2015 16:42:05 +0000
-Date: Wed, 3 Jun 2015 18:41:06 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z2dAk-00034X-46
+	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 10:23:50 +0000
+Date: Wed, 10 Jun 2015 12:22:45 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150603164105.GB8444@rei.suse.de>
-References: <1433152944-759-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Message-ID: <20150610102245.GB31366@rei.suse.de>
+References: <84B334423DC2E8478ACD67662A70D75E3D39295E@HIKAWSEXMB04.ad.harman.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1433152944-759-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2] sched_setparam/9-1: cleanup code and fix
- memory leak
+In-Reply-To: <84B334423DC2E8478ACD67662A70D75E3D39295E@HIKAWSEXMB04.ad.harman.com>
+Subject: Re: [LTP] facing problem installing LTP need help
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,42 +24,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "Behera, Avinandan (Wipro)" <Avinandan.Behera@harman.com>
+Cc: "ltp-list@lists.sf.net" <ltp-list@lists.sf.net>
 
 Hi!
-> -static void kill_children(int *child_pid)
-> +static void kill_children(int *child_pid, int count)
->  {
->  	int i;
->  
-> -	for (i = 0; i < nb_cpu; i++)
-> +	for (i = 0; i < count; i++)
->  		kill(child_pid[i], SIGTERM);
-> +	free(child_pid);
->  }
->  
->  int main(void)
-> @@ -191,9 +192,7 @@ int main(void)
+The LTP-DDT is based on LTP but the build failure is in the testcases
+added by the LTP-DDT project.
 
-The int 'j' is now unused.
-
->  		child_pid[i] = fork();
->  		if (child_pid[i] == -1) {
->  			perror("An error occurs when calling fork()");
-> -			for (j = 0; j < i; j++)
-> -				kill(child_pid[j], SIGTERM);
-> -
-> +			kill_children(child_pid, i)
-
-                                                   ^
-						   Missing ';'
-
->  			return PTS_UNRESOLVED;
->  		} else if (child_pid[i] == 0) {
-
-I've fixed these, tested that the testcase works and pushed both
-patches, thanks.
+This is the wrong mailing list to ask about the failure. You have to ask
+on LTP-DDT mailing list instead.
 
 -- 
 Cyril Hrubis
