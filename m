@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2GtA-0002Nb-Pm
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 10:36:12 +0000
-Date: Tue, 9 Jun 2015 12:35:08 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z318D-0001mj-30
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2015 11:58:49 +0000
+Date: Thu, 11 Jun 2015 13:57:43 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150609103508.GA24843@rei.suse.de>
-References: <BA.2A.27612.361B6755@epcpsbgx1.samsung.com>
+Message-ID: <20150611115743.GC19686@rei.suse.de>
+References: <1433933962-739-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <BA.2A.27612.361B6755@epcpsbgx1.samsung.com>
-Subject: Re: [LTP] [PATCH]: Fix memory leak
+In-Reply-To: <1433933962-739-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Subject: Re: [LTP] [PATCH V2] detach_device: Wait until the kernel frees the
+ loop device
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,11 +25,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Manjeet Pawar <manjeet.p@samsung.com>
-Cc: AJEET YADAV <ajeet.y@samsung.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, AKHILESH KUMAR <akhilesh.k@samsung.com>
+To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-No HTML emails please.
+Acked.
 
 -- 
 Cyril Hrubis
