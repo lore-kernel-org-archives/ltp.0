@@ -1,26 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z4ULY-0004DW-92
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:22:40 +0000
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z4ULW-0003Ng-GH
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:22:40 +0000
-Received: from epcpsbgr3.samsung.com
-	(u143.gpu120.samsung.co.kr [203.254.230.143])
-	by mailout1.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NPZ003BZMH7OFD0@mailout1.samsung.com> for
-	ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 22:22:19 +0900 (KST)
-Date: Mon, 15 Jun 2015 13:22:30 +0000 (GMT)
-From: Maninder Singh <maninder1.s@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <883467441.1047591434374550723.JavaMail.weblogic@epmlwas03c>
-Subject: [LTP] [PATCH 0/7] pan:lib: remove unnecessary type cast for malloc
-Reply-To: maninder1.s@samsung.com
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z30zZ-0004cF-Gs
+	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2015 11:49:53 +0000
+Date: Thu, 11 Jun 2015 13:48:46 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150611114846.GB19686@rei.suse.de>
+References: <2028116354.832411433946155629.JavaMail.weblogic@epmlwas05b>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <2028116354.832411433946155629.JavaMail.weblogic@epmlwas05b>
+Subject: Re: [LTP] [PATCH 1/1] syscall/rename06.c: remove redundant code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,23 +24,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Maninder Singh <maninder1.s@samsung.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi,
+Hi!
+> There is no use of function do_file_setup in code.
 
-This patch set (7 patches) removes redundant type cast for malloc,
-All patches Created  with following coccinelle patch:-
+Pushed, thanks.
 
-@@
-expression E1, E2;
-type T;
-@@
-- E1 = (T)malloc(E2)
-+ E1 = malloc(E2)
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
-
-Thanks,
-Maninder Singh
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
