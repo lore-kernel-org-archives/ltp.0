@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Z0UkD-0003gx-Cu
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 12:59:37 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z0UkC-0003hN-42
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 12:59:37 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (Postfix) with ESMTPS id 3ED0D2CAB24
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  4 Jun 2015 12:59:30 +0000 (UTC)
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id t54CxTvi023060
-	for <ltp-list@lists.sourceforge.net>; Thu, 4 Jun 2015 08:59:29 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu,  4 Jun 2015 14:59:26 +0200
-Message-Id: <0412ecc6e0cec73921a692ba87443a486bc53193.1433422701.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH v2] mem/oom: allocate memory using multiple threads
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z3Dz6-00017v-Mj
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2015 01:42:16 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Z3Dz4-0004rn-PG
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2015 01:42:16 +0000
+From: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Fri, 12 Jun 2015 01:42:06 +0000
+Message-ID: <1434073327.9061.4.camel@localhost>
+References: <1434052070-10537-1-git-send-email-sunyuan3@huawei.com>
+In-Reply-To: <1434052070-10537-1-git-send-email-sunyuan3@huawei.com>
+Content-Language: en-US
+Content-ID: <A12EE16F8A97954B88B8C2C31ECDFFCF@fujitsu.local>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] containers: new testcase userns04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,136 +26,165 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "sunyuan3@huawei.com" <sunyuan3@huawei.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-This is to make testcase faster on big systems, for example,
-on Lenovo X3950 X6, 256GB RAM, 240 CPUs, 8 NUMA nodes
-oom01 testcase would previously take ~4 hours to complete.
-With this patch it takes ~16 minutes.
+On Thu, 2015-06-11 at 13:47 -0600, Yuan Sun wrote:
+>   If a namespace isn't aother namespace's ancestor, the first namespace
+> does not have the CAP_SYS_ADMIN capability in the second namespace
+> and the setns() call fails.
+> 
+> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+> ---
+>  testcases/kernel/containers/userns/userns04.c | 131 ++++++++++++++++++++++++++
+>  1 file changed, 131 insertions(+)
+>  create mode 100644 testcases/kernel/containers/userns/userns04.c
+> 
+> diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
+> new file mode 100644
+> index 0000000..3e7249b
+> --- /dev/null
+> +++ b/testcases/kernel/containers/userns/userns04.c
+> @@ -0,0 +1,131 @@
+> +/*
+> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + *  (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> + * the GNU General Public License for more details.
+> + */
+> +
+> +/*
+> + * Verify that:
+> + *  If a namespace isn't aother namespace's ancestor, the first namespace
+> + *  does not have the CAP_SYS_ADMIN capability in the second namespace
+> + *  and the setns() call fails.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <sys/wait.h>
+> +#include <assert.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +#include "test.h"
+> +#include "userns_helper.h"
+> +
+> +char *TCID = "user_namespace4";
+> +int TST_TOTAL = 1;
+> +
+> +/*
+> + * child_fn1() - Inside a new user namespace
+> + */
+> +static int child_fn1(void)
+> +{
+> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
+> +	return 0;
+> +}
+> +
+> +static int child_fn2(int *arg)
+> +{
+> +	int exit_val;
+> +
+> +	if (setns(*arg, CLONE_NEWUSER) == -1) {
+> +		printf("child2 setns() failure is expected\n");
+> +		exit_val = 0;
+> +	} else {
+> +		printf("chile2 setns() success isn't expected\n");
+> +		exit_val = 1;
+> +	}
+> +
+> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 1);
+> +	return exit_val;
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	check_newuser();
+> +	tst_tmpdir();
+> +	TST_CHECKPOINT_INIT(NULL);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	tst_rmdir();
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int cpid1status, cpid2status;
+> +	int lc;
+> +	int cpid1, cpid2;
+> +	char path[BUFSIZ];
+> +	int fd;
+> +
+> +	tst_parse_opts(argc, argv, NULL, NULL);
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +		cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
+> +			(void *)child_fn1, NULL);
+> +
+> +		if (cpid1 < 0)
+> +			tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
+> +
+> +		sprintf(path, "/proc/%d/ns/user", cpid1);
+> +		fd = SAFE_OPEN(NULL, path, O_RDONLY, 0644);
+> +
+> +		cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
+> +			(void *)child_fn2, &fd);
+> +
+> +		if (cpid2 < 0)
+> +			tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
+> +
+> +		if (setns(fd, CLONE_NEWUSER) == -1)
+> +			tst_brkm(TFAIL, cleanup, "parent pid setns failure");
+> +		else
+> +			tst_resm(TINFO, "parent pid setns success");
+> +
+> +		TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
+> +		TST_SAFE_CHECKPOINT_WAKE(NULL, 1);
+> +
+> +		if ((waitpid(cpid1, &cpid1status, 0) < 0) ||
+> +			(waitpid(cpid2, &cpid2status, 0) < 0))
+> +				tst_resm(TBROK, "parent: waitpid failed.");
+> +
+> +		if (WIFSIGNALED(cpid1status)) {
+> +			tst_resm(TBROK, "child1 was killed with signal = %d",
+> +				WTERMSIG(cpid1status));
+> +		} else if (WIFEXITED(cpid1status) &&
+> +			WEXITSTATUS(cpid1status) != 0) {
+> +			tst_resm(TBROK, "child1 exited abnormally");
+> +		}
+> +
+> +		if (WIFSIGNALED(cpid2status)) {
+> +			tst_resm(TBROK, "child2 was killed with signal = %d",
+> +				WTERMSIG(cpid2status));
+> +		} else if (WIFEXITED(cpid2status) &&
+> +			WEXITSTATUS(cpid2status) != 0) {
+> +			tst_resm(TBROK, "child2 exited abnormally");
+> +		} else
+> +			tst_resm(TPASS, "The setns function works well.");
+> +	}
+Hi,
+It should call cleanup() here.
 
-This change spawns CPU-1 (or at least 1) thread(s), which
-allocate / fault-in memory in same way as before.
-
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/mem/include/libmem.mk |  2 +-
- testcases/kernel/mem/lib/mem.c         | 53 +++++++++++++++++++++++++++-------
- 2 files changed, 43 insertions(+), 12 deletions(-)
-
-diff --git a/testcases/kernel/mem/include/libmem.mk b/testcases/kernel/mem/include/libmem.mk
-index 4503e78..dffa379 100644
---- a/testcases/kernel/mem/include/libmem.mk
-+++ b/testcases/kernel/mem/include/libmem.mk
-@@ -23,7 +23,7 @@ MEM_DIR			:= $(top_builddir)/testcases/kernel/mem
- LIBMEM_DIR		:= $(MEM_DIR)/lib
- LIBMEM			:= $(LIBMEM_DIR)/libmem.a
- FILTER_OUT_DIRS		:= $(LIBMEM_DIR)
--CFLAGS			+= -I$(MEM_SRCDIR)/include
-+CFLAGS			+= -I$(MEM_SRCDIR)/include -lpthread
- LDLIBS			+= $(NUMA_LIBS) -lmem -lltp
- LDFLAGS			+= -L$(LIBMEM_DIR)
- 
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 37cf18f..f0cd728 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -12,6 +12,7 @@
- #if HAVE_NUMAIF_H
- #include <numaif.h>
- #endif
-+#include <pthread.h>
- #include <stdarg.h>
- #include <stdio.h>
- #include <string.h>
-@@ -30,7 +31,8 @@ static int alloc_mem(long int length, int testcase)
- 	char *s;
- 	long i, pagesz = getpagesize();
- 
--	tst_resm(TINFO, "allocating %ld bytes.", length);
-+	tst_resm(TINFO, "thread (%lx), allocating %ld bytes.",
-+		(unsigned long) pthread_self(), length);
- 
- 	s = mmap(NULL, length, PROT_READ | PROT_WRITE,
- 		 MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-@@ -49,18 +51,46 @@ static int alloc_mem(long int length, int testcase)
- 	return 0;
- }
- 
--static void test_alloc(int testcase, int lite)
-+static void *child_alloc_thread(void *args)
- {
--	int ret;
-+	int ret = 0;
-+
-+	/* keep allocating until there's an error */
-+	while (!ret)
-+		ret = alloc_mem(LENGTH, (long)args);
-+	exit(ret);
-+}
-+
-+static void child_alloc(int testcase, int lite, int threads)
-+{
-+	int i;
-+	pthread_t *th;
- 
- 	if (lite) {
--		ret = alloc_mem(TESTMEM + MB, testcase);
--	} else {
--		ret = 0;
--		while (!ret)
--			ret = alloc_mem(LENGTH, testcase);
-+		int ret = alloc_mem(TESTMEM + MB, testcase);
-+		exit(ret);
- 	}
--	exit(ret);
-+
-+	th = malloc(sizeof(pthread_t) * threads);
-+	if (!th) {
-+		tst_resm(TINFO | TERRNO, "malloc");
-+		goto out;
-+	}
-+
-+	for (i = 0; i < threads; i++) {
-+		TEST(pthread_create(&th[i], NULL, child_alloc_thread,
-+			(void*)((long)testcase)));
-+		if (TEST_RETURN) {
-+			tst_resm(TINFO | TRERRNO, "pthread_create");
-+			goto out;
-+		}
-+	}
-+
-+	/* wait for one of threads to exit whole process */
-+	while (1)
-+		sleep(1);
-+out:
-+	exit(1);
- }
- 
- /*
-@@ -81,13 +111,14 @@ static void test_alloc(int testcase, int lite)
- void oom(int testcase, int lite, int retcode, int allow_sigkill)
- {
- 	pid_t pid;
--	int status;
-+	int status, threads;
- 
- 	switch (pid = fork()) {
- 	case -1:
- 		tst_brkm(TBROK | TERRNO, cleanup, "fork");
- 	case 0:
--		test_alloc(testcase, lite);
-+		threads = MAX(1, tst_ncpus() - 1);
-+		child_alloc(testcase, lite, threads);
- 	default:
- 		break;
- 	}
--- 
-1.8.3.1
-
+Regards,
+Wei
+> +	tst_exit();
+> +}
+> +
 
 ------------------------------------------------------------------------------
 _______________________________________________
