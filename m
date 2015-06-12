@@ -1,17 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z7158-0003dS-G3
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 12:44:10 +0000
-Date: Mon, 22 Jun 2015 14:42:55 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150622124255.GB7476@rei.suse.de>
-References: <1434712459-21878-1-git-send-email-alexey.kodanev@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z3DZ5-0003JR-Tu
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2015 01:15:23 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Z3DZ3-00075K-Im
+	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2015 01:15:23 +0000
+From: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Fri, 12 Jun 2015 01:15:14 +0000
+Message-ID: <1434071714.9061.1.camel@localhost>
+References: <1434052070-10537-1-git-send-email-sunyuan3@huawei.com>
+In-Reply-To: <1434052070-10537-1-git-send-email-sunyuan3@huawei.com>
+Content-Language: en-US
+Content-ID: <9BF8CF2FCBAC8C46A23800184A8AA055@fujitsu.local>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1434712459-21878-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH] cgroup_xattr: fix test on kernels >= 3.15
+Subject: Re: [LTP] [PATCH] containers: new testcase userns04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,110 +26,92 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: "sunyuan3@huawei.com" <sunyuan3@huawei.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
->  /* only security.* & trusted.* are valid key names */
-> -static const struct tst_key tkeys[] = {
-> +static struct tst_key tkeys[] = {
->  	{ .name = "trusted.test",	.good = 1,	},
-> +	{ .name = "trusted.",		.good = 1,	},
->  	{ .name = "security.",		.good = 1,	},
->  	{ .name = "user.",		.good = 0,	},
->  	{ .name = "system.",		.good = 0,	},
-> @@ -152,6 +153,14 @@ void setup(int argc, char *argv[])
->  			"Test must be run with kernel 3.7 or newer");
->  	}
->  
-> +	if (tst_kvercmp(3, 15, 0) >= 0) {
-> +		/* In kernel v3.15 cgroup was converted to kernfs
-> +		 * that doesn't provide simple security namespace handlers.
-> +		 * Setting just 'security.' should return EOPNOTSUPP.
-> +		 */
-> +		tkeys[2].good = 0;
-> +	}
-
-I don't like indexing the testcases array with a hand computed values like
-this. One reason is that this is harder to figure out what exactly is
-changed and the second is that this way too fragile and will break if
-somebody changes the order of the array.
-
-Unfortunately I don't know ideal solution for this either. More explicit
-version may be to iterate over the array and doing strcmp() on the name.
-It's not particulary nice but it's the best I can come up with.
-
-Or you can define good == 2 value to be special value that means "needs
-to be figured out in the setup" that way we can avoid the string
-comparsion at least.
-
->  	int value_size = DEFAULT_VALUE_SIZE;
->  	if (nflag) {
->  		if (sscanf(narg, "%i", &value_size) != 1)
-> @@ -270,8 +279,11 @@ int mount_cgroup(void)
->  		 * additional "xattr" option. In that case, mount will succeed,
->  		 * but xattr won't be supported in the new mount anyway.
->  		 * Should be removed as soon as a fix committed to upstream.
-> +		 *
-> +		 * But not applicable for kernels >= 3.15 where xattr supported
-> +		 * natively.
->  		 */
-> -		if (hier != 0)
-> +		if (hier != 0 && tst_kvercmp(3, 15, 0) < 0)
->  			continue;
->  
->  		int i, found = 0;
-> @@ -321,7 +333,7 @@ int mount_cgroup(void)
->  
->  static int set_xattrs(const char *file)
->  {
-> -	int i, err, fail, res = 0;
-> +	unsigned int i, err, fail, res = 0;
->  
->  	for (i = 0; i < ARRAY_SIZE(tkeys); ++i) {
->  		err = setxattr(file, tkeys[i].name,
-> @@ -343,7 +355,7 @@ static int set_xattrs(const char *file)
->  
->  static int get_xattrs(const char *file)
->  {
-> -	int i, fail, res = 0;
-> +	unsigned int i, fail, res = 0;
->  
->  	for (i = 0; i < ARRAY_SIZE(tkeys); ++i) {
->  		/* get value size */
-> @@ -366,7 +378,7 @@ static int get_xattrs(const char *file)
->  				"Can't get buffer of key %s",
->  				tkeys[i].name);
->  		}
-> -		fail = val.size != size ||
-> +		fail = val.size != (size_t)size ||
->  			strncmp(val.buf, xval, val.size) != 0;
->  		res |= fail;
->  
-> -- 
-> 1.7.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gVGh1LCAyMDE1LTA2LTExIGF0IDEzOjQ3IC0wNjAwLCBZdWFuIFN1biB3cm90ZToNCj4gICBJ
+ZiBhIG5hbWVzcGFjZSBpc24ndCBhb3RoZXIgbmFtZXNwYWNlJ3MgYW5jZXN0b3IsIHRoZSBmaXJz
+dCBuYW1lc3BhY2UNCmtpbmRseSByZW1pbmTvvIzigJhhb3RoZXLigJkgaXMgdHlwbz8NCg0KPiBk
+b2VzIG5vdCBoYXZlIHRoZSBDQVBfU1lTX0FETUlOIGNhcGFiaWxpdHkgaW4gdGhlIHNlY29uZCBu
+YW1lc3BhY2UNCj4gYW5kIHRoZSBzZXRucygpIGNhbGwgZmFpbHMuDQo+IA0KPiBTaWduZWQtb2Zm
+LWJ5OiBZdWFuIFN1biA8c3VueXVhbjNAaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICB0ZXN0Y2FzZXMv
+a2VybmVsL2NvbnRhaW5lcnMvdXNlcm5zL3VzZXJuczA0LmMgfCAxMzEgKysrKysrKysrKysrKysr
+KysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCAxMzEgaW5zZXJ0aW9ucygrKQ0KPiAgY3Jl
+YXRlIG1vZGUgMTAwNjQ0IHRlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy91c2VybnMvdXNlcm5z
+MDQuYw0KPiANCj4gZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy91c2Vy
+bnMvdXNlcm5zMDQuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvY29udGFpbmVycy91c2VybnMvdXNlcm5z
+MDQuYw0KPiBuZXcgZmlsZSBtb2RlIDEwMDY0NA0KPiBpbmRleCAwMDAwMDAwLi4zZTcyNDliDQo+
+IC0tLSAvZGV2L251bGwNCj4gKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9jb250YWluZXJzL3VzZXJu
+cy91c2VybnMwNC5jDQo+IEBAIC0wLDAgKzEsMTMxIEBADQo+ICsvKg0KPiArICogQ29weXJpZ2h0
+IChjKSBIdWF3ZWkgVGVjaG5vbG9naWVzIENvLiwgTHRkLiwgMjAxNQ0KPiArICogVGhpcyBwcm9n
+cmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2Rp
+ZnkNCj4gKyAqIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExp
+Y2Vuc2UgYXMgcHVibGlzaGVkIGJ5DQo+ICsgKiB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9u
+OyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvcg0KPiArICogIChhdCB5b3VyIG9w
+dGlvbikgYW55IGxhdGVyIHZlcnNpb24uDQo+ICsgKg0KPiArICogVGhpcyBwcm9ncmFtIGlzIGRp
+c3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsDQo+ICsgKiBidXQg
+V0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhvdXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBv
+Zg0KPiArICogTUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQ
+T1NFLiBTZWUNCj4gKyAqIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBk
+ZXRhaWxzLg0KPiArICovDQo+ICsNCj4gKy8qDQo+ICsgKiBWZXJpZnkgdGhhdDoNCj4gKyAqICBJ
+ZiBhIG5hbWVzcGFjZSBpc24ndCBhb3RoZXIgbmFtZXNwYWNlJ3MgYW5jZXN0b3IsIHRoZSBmaXJz
+dCBuYW1lc3BhY2UNCj4gKyAqICBkb2VzIG5vdCBoYXZlIHRoZSBDQVBfU1lTX0FETUlOIGNhcGFi
+aWxpdHkgaW4gdGhlIHNlY29uZCBuYW1lc3BhY2UNCj4gKyAqICBhbmQgdGhlIHNldG5zKCkgY2Fs
+bCBmYWlscy4NCj4gKyAqLw0KPiArDQo+ICsjZGVmaW5lIF9HTlVfU09VUkNFDQo+ICsjaW5jbHVk
+ZSA8c3lzL3dhaXQuaD4NCj4gKyNpbmNsdWRlIDxhc3NlcnQuaD4NCj4gKyNpbmNsdWRlIDxzdGRp
+by5oPg0KPiArI2luY2x1ZGUgPHN0ZGxpYi5oPg0KPiArI2luY2x1ZGUgPHVuaXN0ZC5oPg0KPiAr
+I2luY2x1ZGUgPHN0cmluZy5oPg0KPiArI2luY2x1ZGUgPGVycm5vLmg+DQo+ICsjaW5jbHVkZSAi
+dGVzdC5oIg0KPiArI2luY2x1ZGUgInVzZXJuc19oZWxwZXIuaCINCj4gKw0KPiArY2hhciAqVENJ
+RCA9ICJ1c2VyX25hbWVzcGFjZTQiOw0KPiAraW50IFRTVF9UT1RBTCA9IDE7DQo+ICsNCj4gKy8q
+DQo+ICsgKiBjaGlsZF9mbjEoKSAtIEluc2lkZSBhIG5ldyB1c2VyIG5hbWVzcGFjZQ0KPiArICov
+DQo+ICtzdGF0aWMgaW50IGNoaWxkX2ZuMSh2b2lkKQ0KPiArew0KPiArCVRTVF9TQUZFX0NIRUNL
+UE9JTlRfV0FJVChOVUxMLCAwKTsNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGlj
+IGludCBjaGlsZF9mbjIoaW50ICphcmcpDQo+ICt7DQo+ICsJaW50IGV4aXRfdmFsOw0KPiArDQo+
+ICsJaWYgKHNldG5zKCphcmcsIENMT05FX05FV1VTRVIpID09IC0xKSB7DQo+ICsJCXByaW50Zigi
+Y2hpbGQyIHNldG5zKCkgZmFpbHVyZSBpcyBleHBlY3RlZFxuIik7DQo+ICsJCWV4aXRfdmFsID0g
+MDsNCj4gKwl9IGVsc2Ugew0KPiArCQlwcmludGYoImNoaWxlMiBzZXRucygpIHN1Y2Nlc3MgaXNu
+J3QgZXhwZWN0ZWRcbiIpOw0KPiArCQlleGl0X3ZhbCA9IDE7DQo+ICsJfQ0KPiArDQo+ICsJVFNU
+X1NBRkVfQ0hFQ0tQT0lOVF9XQUlUKE5VTEwsIDEpOw0KPiArCXJldHVybiBleGl0X3ZhbDsNCj4g
+K30NCj4gKw0KPiArc3RhdGljIHZvaWQgc2V0dXAodm9pZCkNCj4gK3sNCj4gKwljaGVja19uZXd1
+c2VyKCk7DQo+ICsJdHN0X3RtcGRpcigpOw0KPiArCVRTVF9DSEVDS1BPSU5UX0lOSVQoTlVMTCk7
+DQo+ICt9DQo+ICsNCj4gK3N0YXRpYyB2b2lkIGNsZWFudXAodm9pZCkNCj4gK3sNCj4gKwl0c3Rf
+cm1kaXIoKTsNCj4gK30NCj4gKw0KPiAraW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKmFyZ3ZbXSkN
+Cj4gK3sNCj4gKwlpbnQgY3BpZDFzdGF0dXMsIGNwaWQyc3RhdHVzOw0KPiArCWludCBsYzsNCj4g
+KwlpbnQgY3BpZDEsIGNwaWQyOw0KPiArCWNoYXIgcGF0aFtCVUZTSVpdOw0KPiArCWludCBmZDsN
+Cj4gKw0KPiArCXRzdF9wYXJzZV9vcHRzKGFyZ2MsIGFyZ3YsIE5VTEwsIE5VTEwpOw0KPiArCXNl
+dHVwKCk7DQo+ICsNCj4gKwlmb3IgKGxjID0gMDsgVEVTVF9MT09QSU5HKGxjKTsgbGMrKykgew0K
+PiArCQl0c3RfY291bnQgPSAwOw0KPiArCQljcGlkMSA9IGx0cF9jbG9uZV9xdWljayhDTE9ORV9O
+RVdVU0VSIHwgU0lHQ0hMRCwNCj4gKwkJCSh2b2lkICopY2hpbGRfZm4xLCBOVUxMKTsNCj4gKw0K
+PiArCQlpZiAoY3BpZDEgPCAwKQ0KPiArCQkJdHN0X2Jya20oVEZBSUwgfCBURVJSTk8sIGNsZWFu
+dXAsICJjbG9uZSBmYWlsZWQiKTsNCj4gKw0KPiArCQlzcHJpbnRmKHBhdGgsICIvcHJvYy8lZC9u
+cy91c2VyIiwgY3BpZDEpOw0KPiArCQlmZCA9IFNBRkVfT1BFTihOVUxMLCBwYXRoLCBPX1JET05M
+WSwgMDY0NCk7DQo+ICsNCj4gKwkJY3BpZDIgPSBsdHBfY2xvbmVfcXVpY2soQ0xPTkVfTkVXVVNF
+UiB8IFNJR0NITEQsDQo+ICsJCQkodm9pZCAqKWNoaWxkX2ZuMiwgJmZkKTsNCj4gKw0KPiArCQlp
+ZiAoY3BpZDIgPCAwKQ0KPiArCQkJdHN0X2Jya20oVEZBSUwgfCBURVJSTk8sIGNsZWFudXAsICJj
+bG9uZSBmYWlsZWQiKTsNCj4gKw0KPiArCQlpZiAoc2V0bnMoZmQsIENMT05FX05FV1VTRVIpID09
+IC0xKQ0KPiArCQkJdHN0X2Jya20oVEZBSUwsIGNsZWFudXAsICJwYXJlbnQgcGlkIHNldG5zIGZh
+aWx1cmUiKTsNCj4gKwkJZWxzZQ0KPiArCQkJdHN0X3Jlc20oVElORk8sICJwYXJlbnQgcGlkIHNl
+dG5zIHN1Y2Nlc3MiKTsNCj4gKw0KPiArCQlUU1RfU0FGRV9DSEVDS1BPSU5UX1dBS0UoTlVMTCwg
+MCk7DQo+ICsJCVRTVF9TQUZFX0NIRUNLUE9JTlRfV0FLRShOVUxMLCAxKTsNCj4gKw0KPiArCQlp
+ZiAoKHdhaXRwaWQoY3BpZDEsICZjcGlkMXN0YXR1cywgMCkgPCAwKSB8fA0KPiArCQkJKHdhaXRw
+aWQoY3BpZDIsICZjcGlkMnN0YXR1cywgMCkgPCAwKSkNCj4gKwkJCQl0c3RfcmVzbShUQlJPSywg
+InBhcmVudDogd2FpdHBpZCBmYWlsZWQuIik7DQo+ICsNCj4gKwkJaWYgKFdJRlNJR05BTEVEKGNw
+aWQxc3RhdHVzKSkgew0KPiArCQkJdHN0X3Jlc20oVEJST0ssICJjaGlsZDEgd2FzIGtpbGxlZCB3
+aXRoIHNpZ25hbCA9ICVkIiwNCj4gKwkJCQlXVEVSTVNJRyhjcGlkMXN0YXR1cykpOw0KPiArCQl9
+IGVsc2UgaWYgKFdJRkVYSVRFRChjcGlkMXN0YXR1cykgJiYNCj4gKwkJCVdFWElUU1RBVFVTKGNw
+aWQxc3RhdHVzKSAhPSAwKSB7DQo+ICsJCQl0c3RfcmVzbShUQlJPSywgImNoaWxkMSBleGl0ZWQg
+YWJub3JtYWxseSIpOw0KPiArCQl9DQo+ICsNCj4gKwkJaWYgKFdJRlNJR05BTEVEKGNwaWQyc3Rh
+dHVzKSkgew0KPiArCQkJdHN0X3Jlc20oVEJST0ssICJjaGlsZDIgd2FzIGtpbGxlZCB3aXRoIHNp
+Z25hbCA9ICVkIiwNCj4gKwkJCQlXVEVSTVNJRyhjcGlkMnN0YXR1cykpOw0KPiArCQl9IGVsc2Ug
+aWYgKFdJRkVYSVRFRChjcGlkMnN0YXR1cykgJiYNCj4gKwkJCVdFWElUU1RBVFVTKGNwaWQyc3Rh
+dHVzKSAhPSAwKSB7DQo+ICsJCQl0c3RfcmVzbShUQlJPSywgImNoaWxkMiBleGl0ZWQgYWJub3Jt
+YWxseSIpOw0KPiArCQl9IGVsc2UNCj4gKwkJCXRzdF9yZXNtKFRQQVNTLCAiVGhlIHNldG5zIGZ1
+bmN0aW9uIHdvcmtzIHdlbGwuIik7DQo+ICsJfQ0KPiArCXRzdF9leGl0KCk7DQo+ICt9DQo+ICsN
+Cg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3Vy
+Y2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8v
+bHRwLWxpc3QK
