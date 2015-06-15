@@ -1,20 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1Z7wlA-00017f-1k
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:19:24 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Z7wl8-0003Ic-Gt
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:19:24 +0000
-Message-ID: <558B62CB.8060401@cn.fujitsu.com>
-Date: Thu, 25 Jun 2015 10:09:15 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-References: <CANuOEEhmmS_E-O9umbGEHerBONT+bGAOFHH5O055ajH_V+Rgaw@mail.gmail.com>
-In-Reply-To: <CANuOEEhmmS_E-O9umbGEHerBONT+bGAOFHH5O055ajH_V+Rgaw@mail.gmail.com>
-Subject: Re: [LTP] How to specify testcases by running runltp
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1Z4UOV-00061L-38
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:25:43 +0000
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z4UOU-0006wd-2b
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:25:43 +0000
+Received: from epcpsbgr4.samsung.com
+	(u144.gpu120.samsung.co.kr [203.254.230.144])
+	by mailout1.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NPZ0049TMMADVD0@mailout1.samsung.com> for
+	ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 22:25:22 +0900 (KST)
+Date: Mon, 15 Jun 2015 13:25:34 +0000 (GMT)
+From: Maninder Singh <maninder1.s@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <1983588051.1047771434374734551.JavaMail.weblogic@epmlwas03c>
+Subject: [LTP] [PATCH 7/7] lib/random_range.c: remove unnecessary malloc
+	type cast
+Reply-To: maninder1.s@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,51 +34,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shuo Yang <yshuo@umich.edu>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi,
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ lib/random_range.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 06/25/2015 09:29 AM, Shuo Yang wrote:
-> Hi guys,
-> 
-> I just started using ltp, so this question is kind of dumb. I want to use it to run some file system tests but I don't know what the command should be. Currently I can run runtlp command but I don't know how to control the testcases. Assuming the file system I want to test is under /tmp/foo/. Could someone tell me how can I run the testcases specifically for testing file system. 
->
-Script runltp's '-b DEVICE' and '-B LTP_DEV_FS_TYPE' can control the file
-system you want to test. Assume /tmp/foo/ is a mount point, the corresponding
-device is /dev/sda1 and file system type is xfs, then you can try './runltp -b /dev/sda1 -B xfs'.
-Also if you want to test file system, xfstests is a good candidate.
-
-Regards,
-Xiaoguang Wang
+diff --git a/lib/random_range.c b/lib/random_range.c
+index 1d88dd2..510a4a1 100644
+--- a/lib/random_range.c
++++ b/lib/random_range.c
+@@ -121,7 +121,7 @@ int parse_ranges(char *str, int defmin, int defmax, int defmult,
+ 	}
  
-> Thanks,
-> Shuo
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> Monitor 25 network devices or servers for free with OpManager!
-> OpManager is web-based network management software that monitors 
-> network devices and physical & virtual servers, alerts via email & sms 
-> for fault. Monitor 25 devices for free with no restriction. Download now
-> http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
-> 
-> 
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
-
-
+ 	tmpstr = strdup(str);
+-	ranges = (struct range *)malloc((ncommas + 1) * sizeof(struct range));
++	ranges = malloc((ncommas + 1) * sizeof(struct range));
+ 	rp = ranges;
+ 
+ 	tok = strtok(tmpstr, ",");
+-- 
+1.7.9.5
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
