@@ -1,22 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z3Dz6-00017v-Mj
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2015 01:42:16 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Z3Dz4-0004rn-PG
-	for ltp-list@lists.sourceforge.net; Fri, 12 Jun 2015 01:42:16 +0000
-From: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Fri, 12 Jun 2015 01:42:06 +0000
-Message-ID: <1434073327.9061.4.camel@localhost>
-References: <1434052070-10537-1-git-send-email-sunyuan3@huawei.com>
-In-Reply-To: <1434052070-10537-1-git-send-email-sunyuan3@huawei.com>
-Content-Language: en-US
-Content-ID: <A12EE16F8A97954B88B8C2C31ECDFFCF@fujitsu.local>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] containers: new testcase userns04
+	(envelope-from <maninder1.s@samsung.com>) id 1Z4UP8-0002oJ-8C
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:26:22 +0000
+Received: from mailout4.samsung.com ([203.254.224.34])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z4UP7-0004F9-0T
+	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:26:22 +0000
+Received: from epcpsbgr2.samsung.com
+	(u142.gpu120.samsung.co.kr [203.254.230.142])
+	by mailout4.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NPZ00UG7MNQL4C0@mailout4.samsung.com> for
+	ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 22:26:14 +0900 (KST)
+Date: Mon, 15 Jun 2015 13:26:14 +0000 (GMT)
+From: Maninder Singh <maninder1.s@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <647249605.1047811434374774166.JavaMail.weblogic@epmlwas03c>
+Subject: [LTP] [PATCH 1/1] io: fix memory leak
+Reply-To: maninder1.s@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,163 +33,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "sunyuan3@huawei.com" <sunyuan3@huawei.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-On Thu, 2015-06-11 at 13:47 -0600, Yuan Sun wrote:
->   If a namespace isn't aother namespace's ancestor, the first namespace
-> does not have the CAP_SYS_ADMIN capability in the second namespace
-> and the setns() call fails.
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->  testcases/kernel/containers/userns/userns04.c | 131 ++++++++++++++++++++++++++
->  1 file changed, 131 insertions(+)
->  create mode 100644 testcases/kernel/containers/userns/userns04.c
-> 
-> diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
-> new file mode 100644
-> index 0000000..3e7249b
-> --- /dev/null
-> +++ b/testcases/kernel/containers/userns/userns04.c
-> @@ -0,0 +1,131 @@
-> +/*
-> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * Verify that:
-> + *  If a namespace isn't aother namespace's ancestor, the first namespace
-> + *  does not have the CAP_SYS_ADMIN capability in the second namespace
-> + *  and the setns() call fails.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <assert.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "userns_helper.h"
-> +
-> +char *TCID = "user_namespace4";
-> +int TST_TOTAL = 1;
-> +
-> +/*
-> + * child_fn1() - Inside a new user namespace
-> + */
-> +static int child_fn1(void)
-> +{
-> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-> +	return 0;
-> +}
-> +
-> +static int child_fn2(int *arg)
-> +{
-> +	int exit_val;
-> +
-> +	if (setns(*arg, CLONE_NEWUSER) == -1) {
-> +		printf("child2 setns() failure is expected\n");
-> +		exit_val = 0;
-> +	} else {
-> +		printf("chile2 setns() success isn't expected\n");
-> +		exit_val = 1;
-> +	}
-> +
-> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 1);
-> +	return exit_val;
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	check_newuser();
-> +	tst_tmpdir();
-> +	TST_CHECKPOINT_INIT(NULL);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int cpid1status, cpid2status;
-> +	int lc;
-> +	int cpid1, cpid2;
-> +	char path[BUFSIZ];
-> +	int fd;
-> +
-> +	tst_parse_opts(argc, argv, NULL, NULL);
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +		cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> +			(void *)child_fn1, NULL);
-> +
-> +		if (cpid1 < 0)
-> +			tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-> +
-> +		sprintf(path, "/proc/%d/ns/user", cpid1);
-> +		fd = SAFE_OPEN(NULL, path, O_RDONLY, 0644);
-> +
-> +		cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> +			(void *)child_fn2, &fd);
-> +
-> +		if (cpid2 < 0)
-> +			tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-> +
-> +		if (setns(fd, CLONE_NEWUSER) == -1)
-> +			tst_brkm(TFAIL, cleanup, "parent pid setns failure");
-> +		else
-> +			tst_resm(TINFO, "parent pid setns success");
-> +
-> +		TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
-> +		TST_SAFE_CHECKPOINT_WAKE(NULL, 1);
-> +
-> +		if ((waitpid(cpid1, &cpid1status, 0) < 0) ||
-> +			(waitpid(cpid2, &cpid2status, 0) < 0))
-> +				tst_resm(TBROK, "parent: waitpid failed.");
-> +
-> +		if (WIFSIGNALED(cpid1status)) {
-> +			tst_resm(TBROK, "child1 was killed with signal = %d",
-> +				WTERMSIG(cpid1status));
-> +		} else if (WIFEXITED(cpid1status) &&
-> +			WEXITSTATUS(cpid1status) != 0) {
-> +			tst_resm(TBROK, "child1 exited abnormally");
-> +		}
-> +
-> +		if (WIFSIGNALED(cpid2status)) {
-> +			tst_resm(TBROK, "child2 was killed with signal = %d",
-> +				WTERMSIG(cpid2status));
-> +		} else if (WIFEXITED(cpid2status) &&
-> +			WEXITSTATUS(cpid2status) != 0) {
-> +			tst_resm(TBROK, "child2 exited abnormally");
-> +		} else
-> +			tst_resm(TPASS, "The setns function works well.");
-> +	}
-Hi,
-It should call cleanup() here.
+This patch fixes memory leak for ibuff and obuff
+if default case of switch hit.
 
-Regards,
-Wei
-> +	tst_exit();
-> +}
-> +
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ testcases/kernel/io/disktest/dump.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/testcases/kernel/io/disktest/dump.c b/testcases/kernel/io/disktest/dump.c
+index ffb5ce1..615e8b4 100644
+--- a/testcases/kernel/io/disktest/dump.c
++++ b/testcases/kernel/io/disktest/dump.c
+@@ -163,6 +163,8 @@ int dump_data(FILE * stream, const char *buff, const size_t buff_siz,
+ 			fprintf(stream, "%s\n", obuff);
+ 			break;
+ 		default:
++			FREE(ibuff);
++			FREE(obuff);
+ 			return (-1);
+ 		}
+ 	}
+-- 
+1.7.9.5
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
