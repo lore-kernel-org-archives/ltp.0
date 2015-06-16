@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z1zzw-0004q5-OY
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2015 16:34:04 +0000
-Date: Mon, 8 Jun 2015 18:33:00 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150608163300.GC16394@rei.suse.de>
-References: <1433751383-32596-1-git-send-email-ramya@linux.vnet.ibm.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1Z4rkF-0002zx-PF
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2015 14:21:43 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z4rkD-0008NR-2e
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2015 14:21:43 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Tue, 16 Jun 2015 16:26:55 -0600
+Message-ID: <1434493615-31920-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1433751383-32596-1-git-send-email-ramya@linux.vnet.ibm.com>
-Subject: Re: [LTP] [PATCH] Clean up issue
+Subject: [LTP] [PATCH V2] userns02: add SAFE_CLOSE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,21 +25,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ramya@linux.vnet.ibm.com
+To: jstancek@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> Description:
-> when we run the script for the first time, all the test will run successfully and PASS .
-> but on the same machine if we run the same script for the 2nd time we see TBROK .
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+---
+ testcases/kernel/containers/userns/userns02.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-The testcase should clean up after it's exit, so rather than hacking
-around broken test cleanup we should fix the test to remove all temp
-files it has created.
-
+diff --git a/testcases/kernel/containers/userns/userns02.c b/testcases/kernel/containers/userns/userns02.c
+index ad5dda5..3bcb97d 100644
+--- a/testcases/kernel/containers/userns/userns02.c
++++ b/testcases/kernel/containers/userns/userns02.c
+@@ -31,6 +31,11 @@
+ char *TCID = "user_namespace2";
+ int TST_TOTAL = 1;
+ 
++static void cleanup(void)
++{
++	tst_rmdir();
++}
++
+ /*
+  * child_fn1() - Inside a new user namespace
+  */
+@@ -62,11 +67,6 @@ static void setup(void)
+ 	TST_CHECKPOINT_INIT(NULL);
+ }
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
+-
+ int main(int argc, char *argv[])
+ {
+ 	int status;
+@@ -93,14 +93,16 @@ int main(int argc, char *argv[])
+ 		parentgid = getegid();
+ 		sprintf(path, "/proc/%d/uid_map", childpid);
+ 		sprintf(content, "100 %d 1", parentuid);
+-		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
+-		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
++		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
++		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
++		SAFE_CLOSE(cleanup, fd);
+ 		sprintf(path, "/proc/%d/gid_map", childpid);
+ 		sprintf(content, "100 %d 1", parentgid);
+-		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
+-		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
++		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
++		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
++		SAFE_CLOSE(cleanup, fd);
+ 
+-		TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
++		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+ 
+ 		if (waitpid(childpid, &status, 0) < 0)
+ 			tst_brkm(TBROK | TERRNO, cleanup, "waitpid failed");
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.1
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
