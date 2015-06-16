@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1YzQVz-0003bN-Js
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 14:16:31 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1YzQVt-0004PE-Jf
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 14:16:31 +0000
-Date: Mon, 1 Jun 2015 10:16:17 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <480835441.8555246.1433168177005.JavaMail.zimbra@redhat.com>
-In-Reply-To: <CAAJEG239+Hb2NAzaLh_9Q15m9mCj=wSBxHC5D3VhYy=1Ery31g@mail.gmail.com>
-References: <CAAJEG239+Hb2NAzaLh_9Q15m9mCj=wSBxHC5D3VhYy=1Ery31g@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1Z4rEK-0001ak-DG
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2015 13:48:44 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z4rEF-0007Ds-KM
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2015 13:48:44 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Tue, 16 Jun 2015 15:53:51 -0600
+Message-ID: <1434491631-28506-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Getting segmentation fault
+Subject: [LTP] [PATCH] userns02: add SAFE_CLOSE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,54 +25,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jatinder Kumar <rinkusaini32@gmail.com>
+To: jstancek@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+---
+ testcases/kernel/containers/userns/userns02.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
+diff --git a/testcases/kernel/containers/userns/userns02.c b/testcases/kernel/containers/userns/userns02.c
+index ad5dda5..f5feceb 100644
+--- a/testcases/kernel/containers/userns/userns02.c
++++ b/testcases/kernel/containers/userns/userns02.c
+@@ -31,6 +31,11 @@
+ char *TCID = "user_namespace2";
+ int TST_TOTAL = 1;
+ 
++static void cleanup(void)
++{
++	tst_rmdir();
++}
++
+ /*
+  * child_fn1() - Inside a new user namespace
+  */
+@@ -39,7 +44,7 @@ static int child_fn1(void)
+ 	int exit_val;
+ 	int uid, gid;
+ 
+-	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
++	TST_SAFE_CHECKPOINT_WAIT(cleanup, 0);
+ 	uid = geteuid();
+ 	gid = getegid();
+ 
+@@ -62,11 +67,6 @@ static void setup(void)
+ 	TST_CHECKPOINT_INIT(NULL);
+ }
+ 
+-static void cleanup(void)
+-{
+-	tst_rmdir();
+-}
+-
+ int main(int argc, char *argv[])
+ {
+ 	int status;
+@@ -93,14 +93,16 @@ int main(int argc, char *argv[])
+ 		parentgid = getegid();
+ 		sprintf(path, "/proc/%d/uid_map", childpid);
+ 		sprintf(content, "100 %d 1", parentuid);
+-		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
+-		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
++		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
++		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
++		SAFE_CLOSE(cleanup, fd);
+ 		sprintf(path, "/proc/%d/gid_map", childpid);
+ 		sprintf(content, "100 %d 1", parentgid);
+-		fd = SAFE_OPEN(NULL, path, O_WRONLY, 0644);
+-		SAFE_WRITE(NULL, 1, fd, content, strlen(content));
++		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
++		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
++		SAFE_CLOSE(cleanup, fd);
+ 
+-		TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
++		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+ 
+ 		if (waitpid(childpid, &status, 0) < 0)
+ 			tst_brkm(TBROK | TERRNO, cleanup, "waitpid failed");
+-- 
+1.9.1
 
-
------ Original Message -----
-> From: "Jatinder Kumar" <rinkusaini32@gmail.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Monday, 1 June, 2015 3:07:53 PM
-> Subject: [LTP] Getting segmentation fault
-> 
-> Hi All,
-> I am new to this mailing list.
-> 
-> I am running ltp-test version is 20140422. ltp-test. The result is fine. But
-> when I run the open_posix test. I am getting Segmentation fault in
-> pthread_cond_signal_4-2.run-test.
-> 
-> Test environment.
-> Target Board: Panda version a4
-> Kernel version 3.10.67.
-> gcc version 4.8.2.
-> 
-> The same test case is passed for other target board on same kernel. Can you
-> please help me or give me some hint in this regards.
-
-Some testcases are known to crash, but I haven't seen this one crashing before.
-Can you run it in gdb and attach backtrace from all threads when it crashes?
-
-Regards,
-Jan
-
-> 
-> am I missing any target specific kernel configuration.
-> 
-> 
-> Thanks & Regards,
-> Jatinder Kumar
-> E-mail : rinkusaini32@gmail.com
-> 
-> ------------------------------------------------------------------------------
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
 _______________________________________________
