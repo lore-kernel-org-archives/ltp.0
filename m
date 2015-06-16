@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <pratik.prajapati12@gmail.com>) id 1Z72H5-0001JK-9x
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 14:00:35 +0000
-Received: from mail-ig0-f178.google.com ([209.85.213.178])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z72H4-0006SH-LS
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 14:00:35 +0000
-Received: by igin14 with SMTP id n14so16665674igi.1
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 22 Jun 2015 07:00:29 -0700 (PDT)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z4uMr-0001xk-IZ
+	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2015 17:09:45 +0000
+Date: Tue, 16 Jun 2015 19:08:35 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150616170835.GA25971@rei.suse.de>
+References: <1433854898-11064-1-git-send-email-alexey.kodanev@oracle.com>
+	<55805135.3040401@oracle.com>
 MIME-Version: 1.0
-Date: Mon, 22 Jun 2015 19:30:28 +0530
-Message-ID: <CAHNg1SqHWzfKM3f3b-OsSp7_WRdWPfzDbvzvgYBt6+0_-bgygA@mail.gmail.com>
-From: Pratik Prajapati <pratik.prajapati12@gmail.com>
-Subject: [LTP] Option to skip some tests from install
+Content-Disposition: inline
+In-Reply-To: <55805135.3040401@oracle.com>
+Subject: Re: [LTP] [PATCH v2] lib6/in6_2: don't assume that machine has
+ 'eth0' interface name
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,50 +23,23 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============7913942470646189500=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============7913942470646189500==
-Content-Type: multipart/alternative; boundary=90e6ba1efd283952dc05191bb2a6
-
---90e6ba1efd283952dc05191bb2a6
-Content-Type: text/plain; charset=UTF-8
-
-Hi,
-
-Can we configure ltp to skip some tests while installing on target ?
-
---90e6ba1efd283952dc05191bb2a6
-Content-Type: text/html; charset=UTF-8
-
-<div dir="ltr"><div><font size="4">Hi,<br><br></font></div><font size="4">Can we configure ltp to skip some tests while installing on target ?</font><br></div>
-
---90e6ba1efd283952dc05191bb2a6--
-
-
---===============7913942470646189500==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+
+Hi!
+> Any objection to this version?
+
+Looks good, acked.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
---===============7913942470646189500==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============7913942470646189500==--
-
