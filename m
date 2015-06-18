@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z85qB-0000RS-RC
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 12:01:11 +0000
-Date: Thu, 25 Jun 2015 13:59:51 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z5coG-0006oO-H9
+	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2015 16:37:00 +0000
+Date: Thu, 18 Jun 2015 18:35:50 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150625115951.GA2734@rei.suse.de>
-References: <94d1ed7d81ae24abe9ae8a8d4a8ef8b5e6e78f66.1435223906.git.jstancek@redhat.com>
+Message-ID: <20150618163550.GA5711@rei.suse.de>
+References: <3d206db71f1fb180c386ab1e796eaa39e088b399.1434632070.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <94d1ed7d81ae24abe9ae8a8d4a8ef8b5e6e78f66.1435223906.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] getrandom: fix compilation with older kernels
+In-Reply-To: <3d206db71f1fb180c386ab1e796eaa39e088b399.1434632070.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH/RFC] module.mk: don't run module builds multiple
+ times
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,26 +29,13 @@ To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Add configure check for GRND_* defines
-
-Can't we just add fallback definitions into include/lapi/getrandom.h
-just as we do with POSIX clock ids?
-
-> Add getrandom to syscalls number list for common architectures
-> Replace syscall with ltp_syscall
-
-The rest looks fine.
+Looks good to me.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
