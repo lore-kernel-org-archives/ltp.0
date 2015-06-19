@@ -1,18 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Yv4BQ-0005il-Mh
-	for ltp-list@lists.sourceforge.net; Wed, 20 May 2015 13:37:16 +0000
-Date: Wed, 20 May 2015 15:36:31 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150520133631.GA9052@rei.suse.de>
-References: <1432024368-23287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1432024368-23287-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2] testcases/kernel/syscalls: make use of
- ARRAY_SIZE
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <manjeet.p@samsung.com>) id 1Z5uQq-0007fZ-Tm
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 11:26:00 +0000
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z5uQo-0007w1-Qp
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 11:26:00 +0000
+Received: from epcpsbgr1.samsung.com
+	(u141.gpu120.samsung.co.kr [203.254.230.141])
+	by mailout2.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NQ6027BRVR3MN00@mailout2.samsung.com> for
+	ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 20:25:51 +0900 (KST)
+Date: Fri, 19 Jun 2015 11:25:51 +0000 (GMT)
+From: Manjeet Pawar <manjeet.p@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <144413988.54651434713150877.JavaMail.weblogic@ep2mlwas06b>
+Subject: [LTP]  [PATCH]: Fix memory leak by freeing buf
+Reply-To: manjeet.p@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,41 +33,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, AKHILESH KUMAR <akhilesh.k@samsung.com>
 
-Hi!
-> --- a/testcases/kernel/syscalls/sysctl/sysctl01.c
-> +++ b/testcases/kernel/syscalls/sysctl/sysctl01.c
-> @@ -66,8 +66,6 @@ static int sysctl(int *name, int nlen, void *oldval, size_t * oldlenp,
->  	return syscall(__NR__sysctl, &args);
->  }
->  
-> -#define SIZE(x) sizeof(x)/sizeof(x[0])
-> -
->  struct utsname buf;
->  char osname[BUFSIZ];
->  size_t osnamelth;
-> @@ -115,7 +113,7 @@ int main(int ac, char **av)
->  
->  		for (i = 0; i < TST_TOTAL; ++i) {
->  
-> -			osnamelth = SIZE(osname);
-> +			osnamelth = ARRAY_SIZE(osname);
+From: Manjeet Pawar <manjeet.p@samsung.com>
+Date: Fri, 19 Jun 2015 16:45:54 +0530
+Subject: [PATCH] testcases/open_posix_testsuite/functional/semaphores: Fix memory leak by freeing buf
 
-These could be turned into simple sizeof(osname) as sizeof(char) == 1 by
-definition.
+This patch fix memory leak by freeing memory leak before function return
 
+Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
+Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ .../functional/semaphores/sem_conpro.c             |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
+index f5f1abf..f3a4cfb 100644
+--- a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
++++ b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
+@@ -106,19 +106,23 @@ int main(int argc, char *argv[])
+ 
+ #ifndef  _POSIX_SEMAPHORES
+ 	printf("_POSIX_SEMAPHORES is not defined \n");
++	free(buf);
+ 	return PTS_UNRESOLVED;
+ #endif
+ 	if (-1 == sem_init(&(buf->occupied), shared, occupied_value)) {
+ 		perror("sem_init didn't return success \n");
+ 		printf("hello \n");
++		free(buf);
+ 		return PTS_UNRESOLVED;
+ 	}
+ 	if (-1 == sem_init(&buf->empty, shared, empty_value)) {
+ 		perror("sem_init didn't return success \n");
++		free(buf);
+ 		return PTS_UNRESOLVED;
+ 	}
+ 	if (-1 == sem_init(&buf->lock, shared, lock_value)) {
+ 		perror("sem_init didn't return success \n");
++		free(buf);
+ 		return PTS_UNRESOLVED;
+ 	}
+ 	in = out = 0;
+@@ -129,5 +133,6 @@ int main(int argc, char *argv[])
+ 	pthread_join(pro, NULL);
+ 	sem_destroy(&buf->occupied);
+ 	sem_destroy(&buf->empty);
++	free(buf);
+ 	return PTS_PASS;
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
 
 ------------------------------------------------------------------------------
-One dashboard for servers and applications across Physical-Virtual-Cloud 
-Widest out-of-the-box monitoring support with 50+ applications
-Performance metrics, stats and reports that give you Actionable Insights
-Deep dive visibility with transaction tracing using APM Insight.
-http://ad.doubleclick.net/ddm/clk/290420510;117567292;y
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
