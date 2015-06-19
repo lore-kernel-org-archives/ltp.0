@@ -2,21 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2GV0-0001T6-L0
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 10:11:14 +0000
-Date: Tue, 9 Jun 2015 12:10:09 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150609101009.GE24041@rei.suse.de>
-References: <1433843386-31431-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-4-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Z5xKW-0007gg-4O
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 14:31:40 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z5xKV-0005iH-6J
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 14:31:40 +0000
+Message-ID: <55842886.4090202@oracle.com>
+Date: Fri, 19 Jun 2015 17:34:46 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1433843386-31431-5-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [RFC PATCH 5/5] acl_test01: Wait until the loop device is
- detached
+References: <5572ED1E.1020203@oracle.com>
+	<1434457479-20493-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1434457479-20493-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 1/7] SAFE_MACROS: Add socket(), bind(), listen(),
+ connect() and getsockname()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,39 +29,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> If the test is executed on NFS, it may print:
-> 
-> rm: cannot remove `/mnt/ltp-xeJYpESVKz/acltest01.fCogoo4gn0': Directory not empty
-> 
-> It seems the following happen:
-> 
-> 1. After 'unmount -d' 'acltest01.fCogoo4gn0/blkext3' is still in use by udev.
->    See kernel commit a1ecac3b0656a68259927c234e505804d33a7b83
->    ("loop: Make explicit loop device destruction lazy")
-> 
-> 2. Due to the "NFS silly rename" feature, command 'rm -f acltest01.fCogoo4gn0/blkext3'
->    renames 'blkext3' to '.nfs*'
-> 
-> 3. The removal of 'acltest01.fCogoo4gn0' directory fails, because it
->    still contains this '.nfs*' file.
-> 
-> Intorucing a wait cycle should fix this problem.
+On 06/16/2015 03:24 PM, Zeng Linggang wrote:
+> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+> ---
+>   include/safe_macros.h | 29 ++++++++++++++++++
+>   lib/safe_macros.c     | 83 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>   2 files changed, 112 insertions(+)
 
-Hmm, we may want to add this into test.sh because otherwise we will need
-to carry this snippet of code in each testcase that works with loop
-devices.
+Good idea.
 
-Would calling umount without -d and detach_device() (from tst_device.c
-via apicmd) help here? (it seems to fix the very same problem, it this
-function does not work, it needs to be fixed anyway)
+Please use separate file for socket safe macros, look at how 
+safe_stdin.h made.
+The name could be safe_sock.h, safe_net.h, etc.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+> +
+> +int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
+> +	      int socket, const struct sockaddr *address,
+> +	      socklen_t address_len)
+> +{
+> +	int rval;
+> +
+> +	rval = bind(socket, address, address_len);
+> +
+> +	if (rval < 0) {
+> +		tst_brkm(TBROK | TERRNO, cleanup_fn,
+> +		         "%s:%d: bind(%d, %p, %d) failed", file, lineno, socket,
+> +			 address, address_len);
+> +	}
+> +
+> +	return rval;
+> +}
+
+bind() can return -1 if address is in use, e.g. it's in time_wait state.
+
+Usually, you should wait (~30 sec or more, it depends on rtt) on it 
+until socket address will be available. If timeout exceeded, only then I 
+would exit with TBROK. Please check for errno 'EADDRINUSE'.
+
+Thanks,
+Alexey
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
