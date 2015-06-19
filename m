@@ -1,19 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2K6n-0001nK-Ke
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 14:02:29 +0000
-Date: Tue, 9 Jun 2015 16:01:22 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150609140121.GD27378@rei.suse.de>
-References: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
-	<5565177B.7080308@huawei.com>
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1Z5nwf-0007mD-Tx
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 04:30:25 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Z5nwe-0003KK-On
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 04:30:25 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5J4Sg2P030126
+	for <ltp-list@lists.sourceforge.net>; Fri, 19 Jun 2015 12:28:42 +0800
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Fri, 19 Jun 2015 12:32:15 +0800
+Message-ID: <1434688335-29172-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5565177B.7080308@huawei.com>
-Subject: Re: [LTP] [PATCH 2/5] iptables/iptables_tests.sh: Add new testcases
- for iptables -c
+Subject: [LTP] [PATCH] df/df01.sh: Fix 'mkfs.xfs' error.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,92 +29,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +test07()
-> +{
-> +	local logcnt=0
-> +	tst_resm TINFO "iptables -c test."
-> +
-> +	iptables -A INPUT -s 127.0.0.1 -j DROP -c 10 500 \
-> +		> tst_iptables.out 2>&1
-> +	if [ $? -ne 0 ]; then
-> +		tst_resm TFAIL "iptables command failed to append new rule."
-> +		cat tst_iptables.out
-> +		return
-> +	fi
-> +
-> +	logcnt=`iptables -L -v |grep localhost |awk '{print $2}'` \
-> +		> tst_iptables.out 2>&1
+'runltp' use a loop device. If we want to 'mkfs.xfs' the loop device,
+we need to specify '-f(force)' option, if not 'mkfs.xfs' would go
+wrong. The mean of '-f' option is different between 'xfs' and others.
+So we only add the option for 'xfs'.
 
-                   grep can do regular expressions as well, why can't we
-		   match this with single grep command?
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/commands/df/df01.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-i.e.
-	if iptables -L -v |grep -q ".*10.*500.*localhost.*"; then
-		PASSED
-	else
-		FAILED
-	fi
-
-
-> +	if [ $logcnt -ne 500 ]; then
-> +		tst_resm TFAIL "iptables -c 10 500 failed."
-> +		cat tst_iptables.err
-                    ^
-		    Where is this file created?
-
-> +		return
-> +	fi
-> +
-> +	logcnt=`iptables -L -v |grep localhost |awk '{print $1}'` \
-> +		> tst_iptables.out 2>&1
-> +		if [ $logcnt -ne 10 ]; then
-> +		tst_resm TFAIL "iptables -c 10 500 failed."
-> +		cat tst_iptables.err
-> +		return
-> +	fi
-> +
-> +	tst_resm TINFO "Deleting rule."
-> +	iptables -D INPUT 1 > tst_iptables.out 2>&1
-> +	if [ $? -ne 0 ]; then
-> +		tst_resm TFAIL "iptables did not remove the rule."
-
-
-This should rather be TBROK, but that is minor.
-
-> +		cat tst_iptables.out
-> +		return
-> +	fi
-> +
-> +	tst_resm TPASS "iptables -c test succeed."
-> +}
-> +
->  init
->  TST_CLEANUP=cleanup
-> 
-> @@ -419,5 +459,6 @@ test03
->  test04
->  test05
->  test06
-> +test07
-> 
->  tst_exit
-> -- 
-> 1.6.0.2 .
-> 
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
+index fe573e5..2b7b804 100755
+--- a/testcases/commands/df/df01.sh
++++ b/testcases/commands/df/df01.sh
+@@ -32,7 +32,11 @@ setup()
+ 
+ 	tst_acquire_device
+ 
+-	ROD_SILENT mkfs.${FS_TYPE} ${TST_DEVICE}
++	if [ ${FS_TYPE} = "xfs" ]; then
++		ROD_SILENT mkfs.${FS_TYPE} -f ${TST_DEVICE}
++	else
++		ROD_SILENT mkfs.${FS_TYPE} ${TST_DEVICE}
++	fi
+ 
+ 	ROD_SILENT mkdir -p mntpoint
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
