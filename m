@@ -1,25 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z8SRO-0005Mf-Jn
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:09:06 +0000
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z8SRN-0004fu-D3
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:09:06 +0000
-Received: from epcpsbgr3.samsung.com
-	(u143.gpu120.samsung.co.kr [203.254.230.143])
-	by mailout1.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NQJ0250WWEYNTE0@mailout1.samsung.com> for
-	ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 21:08:58 +0900 (KST)
-From: Maninder Singh <maninder1.s@samsung.com>
-Date: Fri, 26 Jun 2015 17:34:46 +0530
-Message-id: <1435320294-45783-6-git-send-email-maninder1.s@samsung.com>
-In-reply-to: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
-References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
-Subject: [LTP] [PATCH 05/13] kernel/mq_open: use ARRAY_SIZE
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Z5ynY-0003eR-6y
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 16:05:44 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z5ynW-0006MU-0G
+	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 16:05:43 +0000
+Message-ID: <55843E93.3080003@oracle.com>
+Date: Fri, 19 Jun 2015 19:08:51 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+MIME-Version: 1.0
+References: <5572ED1E.1020203@oracle.com>
+	<1434457479-20493-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<1434457479-20493-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1434457479-20493-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v3 2/7] lib6/runcc.c: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,43 +26,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: pankaj.m@samsung.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
----
- testcases/kernel/syscalls/mq_open/mq_open01.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 06/16/2015 03:24 PM, Zeng Linggang wrote:
+>   
+> -char *filetmpl = "/tmp/%.*s_XXXXXX";
+> +static const char *filetmpl = "/tmp/%.*s_XXXXXX";
+>   
 
-diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
-index 3c2d1b1..febbbd3 100644
---- a/testcases/kernel/syscalls/mq_open/mq_open01.c
-+++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
-@@ -405,7 +405,7 @@ int main(int ac, char **av)
- 			/*
- 			 * Execute test
- 			 */
--			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
-+			for (i = 0; i < (int)ARRAY_SIZE(tcase);
- 			     i++) {
- 				int ret;
- 				tst_resm(TINFO, "(case%02d) START", i);
--- 
-1.7.9.5
+Sorry, I missed that one in the previous review, could you use 
+tst_tmpdir()? So here should be "%.*s_XXXXX".
+
+There is /tmp/test file that left after the test, it could be fixed if 
+we hadn't used absolute path in the patch. I would print it in case of 
+test-case failure.
+
+>   
+> -int runcc(char *tname, char *filename0, char *program)
+> +static int runcc(char *tname, char *filename0, char *program)
+
+If we don't use return value - why it is still "int runcc()"?
+
+Also please change perror() and exit(1) to LTP library functions.
+
+Thanks,
+Alexey
 
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
