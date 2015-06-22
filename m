@@ -1,18 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1YzGMt-00056c-G8
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 03:26:27 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YzGMn-0008QP-7U
-	for ltp-list@lists.sourceforge.net; Mon, 01 Jun 2015 03:26:27 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Mon, 1 Jun 2015 05:30:30 -0600
-Message-ID: <1433158230-3452-1-git-send-email-sunyuan3@huawei.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] Fix the return value error of read_shares_file.
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Z735h-000242-UY
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 14:52:53 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z735c-0003NQ-4j
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 14:52:53 +0000
+Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t5MEqggk007984
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 14:52:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t5MEqfxd019239
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 14:52:41 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by aserv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t5MEqfHC018144
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 14:52:41 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 22 Jun 2015 17:55:41 +0300
+Message-Id: <1434984942-20691-4-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1434984942-20691-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1434984942-20691-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 4/5] kernel/io/stress_floppy/datafiles: ignore
+	generated *K_file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,70 +36,36 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-See the following in the read_file function.
-*value = read_shares_file(filepath);
-if (*value == -1)
-	return -1;
-Since the return value of read_shares_file and the variable value are
-unsigned int, it is impossible that *value == -1.
-
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/kernel/controllers/libcontrollers/libcontrollers.c | 6 ++++--
- testcases/kernel/controllers/libcontrollers/libcontrollers.h | 2 +-
- 2 files changed, 5 insertions(+), 3 deletions(-)
+ .../io/stress_floppy/datafiles/dumpdir/.gitignore  |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/io/stress_floppy/datafiles/dumpdir/.gitignore
 
-diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-index b01e1b8..80a90b9 100644
---- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-+++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-@@ -115,11 +115,14 @@ int read_file(char *filepath, int action, unsigned int *value)
- {
- 	int num_line = 0;
- 	FILE *fp;
-+	int tmp;
- 	switch (action) {
- 	case GET_SHARES:
--		*value = read_shares_file(filepath);
-+		tmp = read_shares_file(filepath);
- 		if (*value == -1)
- 			return -1;
-+		else
-+			*value = (unsigned int)tmp;
- 		break;
- 
- 	case GET_TASKS:
-@@ -159,7 +162,6 @@ inline int error_function(char *msg1, char *msg2)
-  * the given pointer location. Returns 0 if success
-  */
- 
--unsigned
- int read_shares_file(char *filepath)
- {
- 	FILE *fp;
-diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-index 4001555..78a7fed 100644
---- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-+++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-@@ -72,7 +72,7 @@ enum{
- 
- inline int error_function(char *msg1, char *msg2);
- 
--unsigned int read_shares_file (char *filepath);
-+int read_shares_file(char *filepath);
- 
- int read_file(char *filepath, int action, unsigned int *value);
- 
+diff --git a/testcases/kernel/io/stress_floppy/datafiles/dumpdir/.gitignore b/testcases/kernel/io/stress_floppy/datafiles/dumpdir/.gitignore
+new file mode 100644
+index 0000000..79e5b99
+--- /dev/null
++++ b/testcases/kernel/io/stress_floppy/datafiles/dumpdir/.gitignore
+@@ -0,0 +1 @@
++*K_file
 -- 
-1.9.1
+1.7.1
 
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
