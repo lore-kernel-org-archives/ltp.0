@@ -1,27 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z2a4y-0004CB-9M
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:05:40 +0000
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z2a4w-0005cM-Io
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 07:05:40 +0000
-Received: from epcpsbgr4.samsung.com
-	(u144.gpu120.samsung.co.kr [203.254.230.144])
-	by mailout3.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NPP027E7VP7E120@mailout3.samsung.com> for
-	ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 16:05:31 +0900 (KST)
-Date: Wed, 10 Jun 2015 07:05:31 +0000 (GMT)
-From: Maninder Singh <maninder1.s@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1556567987.810641433919931262.JavaMail.weblogic@epmlwas05b>
-Subject: [LTP] [PATCH 5/8] network/ns-igmp_querier.c: remove explicit NULL
- check before free
-Reply-To: maninder1.s@samsung.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Z735b-0004kJ-2a
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 14:52:47 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z735Z-0001F6-8B
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 14:52:47 +0000
+Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t5MEqdLD026849
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 14:52:39 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t5MEqdnR018956
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 14:52:39 GMT
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t5MEqcrS003792
+	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 14:52:38 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 22 Jun 2015 17:55:39 +0300
+Message-Id: <1434984942-20691-2-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1434984942-20691-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1434984942-20691-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 2/5] network/mc_member: gitignore built binaries
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,39 +35,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-No need of NULL check before free
+Renamed in cb49919064fe ("multicast/mc_member: Some cleanup")
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- .../network/stress/ns-tools/ns-igmp_querier.c      |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ testcases/network/.gitignore |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/network/stress/ns-tools/ns-igmp_querier.c b/testcases/network/stress/ns-tools/ns-igmp_querier.c
-index 933c1da..fad84d8 100644
---- a/testcases/network/stress/ns-tools/ns-igmp_querier.c
-+++ b/testcases/network/stress/ns-tools/ns-igmp_querier.c
-@@ -334,10 +334,8 @@ void parse_options(int argc, char *argv[], struct igmp_info *info_p, int *bg_p)
- 	if ((info_p->query = create_query(max_resp, maddr, saddrs)) == NULL)
- 		usage(program_name, EXIT_FAILURE);
- 
--	if (maddr)
--		free(maddr);
--	if (saddrs)
--		free(saddrs);
-+	free(maddr);
-+	free(saddrs);
- }
- 
- /*
+diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
+index ae3402c..aa6d4da 100644
+--- a/testcases/network/.gitignore
++++ b/testcases/network/.gitignore
+@@ -14,7 +14,7 @@
+ /multicast/mc_gethost/mc_gethost
+ /multicast/mc_commo/mc_recv
+ /multicast/mc_commo/mc_send
+-/multicast/mc_member/member
++/multicast/mc_member/mc_member_test
+ /multicast/mc_opts/mc_verify_opts
+ /multicast/mc_opts/mc_verify_opts_error
+ /nfs/nfs01/open_files
 -- 
-1.7.9.5
+1.7.1
+
+
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
