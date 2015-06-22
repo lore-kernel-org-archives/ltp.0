@@ -1,35 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <ramya@linux.vnet.ibm.com>) id 1Z1sHR-0000Ux-5p
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2015 08:19:37 +0000
-Received: from e28smtp07.in.ibm.com ([122.248.162.7])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z1sHO-0007gA-PO
-	for ltp-list@lists.sourceforge.net; Mon, 08 Jun 2015 08:19:37 +0000
-Received: from /spool/local
-	by e28smtp07.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <ramya@linux.vnet.ibm.com>;
-	Mon, 8 Jun 2015 13:49:26 +0530
-Received: from d28relay03.in.ibm.com (d28relay03.in.ibm.com [9.184.220.60])
-	by d28dlp01.in.ibm.com (Postfix) with ESMTP id B3570E004C
-	for <ltp-list@lists.sourceforge.net>;
-	Mon,  8 Jun 2015 13:52:44 +0530 (IST)
-Received: from d28av05.in.ibm.com (d28av05.in.ibm.com [9.184.220.67])
-	by d28relay03.in.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
-	t588JMAb63504414
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Jun 2015 13:49:22 +0530
-Received: from d28av05.in.ibm.com (localhost [127.0.0.1])
-	by d28av05.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	t588JIZB016893
-	for <ltp-list@lists.sourceforge.net>; Mon, 8 Jun 2015 13:49:19 +0530
-From: ramya@linux.vnet.ibm.com
-Date: Mon,  8 Jun 2015 03:19:13 -0500
-Message-Id: <1433751553-32730-1-git-send-email-ramya@linux.vnet.ibm.com>
-Subject: [LTP] test_fs_bind.sh testcase fails to clean up files which it had
-	created during the first run
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z73Rb-0002cT-8Z
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 15:15:31 +0000
+Date: Mon, 22 Jun 2015 17:14:17 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150622151416.GA9223@rei.suse.de>
+References: <6ad648e0b674845a19073ebd7afcb8ec82f3f891.1434551926.git.jstancek@redhat.com>
+	<20150622122056.GA7476@rei.suse.de>
+	<676745151.5941810.1434981383477.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <676745151.5941810.1434981383477.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] kmsg01: avoid infinite run in test_read_block()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,52 +23,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Ramya BS <ramya@linux.vnet.ibm.com>
+Hi!
+> > Apart from that the logic looks fine. The test could be probably cleaned
+> > by using checkpoints instead of pipe and the function used to propagate
+> > exit value from child, but that is probably worth of separate patch.
+> 
+> Checkpoint alone doesn't seem to be enough to tell difference between:
+> - child has read one record and will continue reading
+> - child read has reached eof and will now exit
+> 
+> while parent does:
+> do {
+>   ret = tst_checkpoint_wait()
+> } while (ret == 0)
+> 
+> I could map some shared memory for such flag, but I'm thinking if I can't just
+> use tst_futexes to store such flag. In that case, it would likely be
+> needed to handle EWOULDBLOCK in tst_checkpoint_wait and restart wait.
 
-Description:
-when we run the script for the first time, all the test will run successfully and PASS .
-but on the same machine if we run the same script for the 2nd time we see TBROK .
+Hmm, we can change the tst_checkpoint library to allocate two uint32_t
+per id (even would be for futex and odd for the propagated value) and
+add parameters to propagate 32bit integer value from
+tst_checkpoint_wake() to tst_checkpoint_wait(). That way we would avoid
+the need for changing the futex related code at all (the only change
+would be id -> 2 * id). Given that we allocate whole page we can waste
+half of the checkpoint pairs without any problems.
 
-TBROK was seen because the script was not cleaning the files it created during the first run.
-so added TWARN "did not properly clean up files" and then removing the files and continuing with the test .
-
-Signed-off-by: Ramya BS <ramya@linux.vnet.ibm.com>
----
- testscripts/test_fs_bind.sh |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/testscripts/test_fs_bind.sh b/testscripts/test_fs_bind.sh
-index 792fff2..b6cb58f 100755
---- a/testscripts/test_fs_bind.sh
-+++ b/testscripts/test_fs_bind.sh
-@@ -343,8 +343,8 @@ save_sandbox()
- 
- 	if [ -e "$2/files.before" ]; then
- 		if [ -e "$2/files.after" ]; then
--			tst_brkm TBROK true "${tname}: stale catalog of \"${sandbox}\""
--			return 1
-+			tst_resm TWARN true "${tname}: did not properly clean up files"
-+			rm -f "$2/files.after" 
- 		fi
- 		when="after"
- 	fi
 -- 
-1.7.1
-
-
-
-
-Thanks&Regards,
-Ramya BS
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
