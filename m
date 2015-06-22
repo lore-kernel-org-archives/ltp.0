@@ -1,34 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1Z2GAY-0003mQ-CE
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 09:50:06 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z2GAW-0001qo-EU
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 09:50:06 +0000
-Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t599nwqm022899
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 09:49:58 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t599nwe7027976
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 09:49:58 GMT
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-	by aserv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t599nvJ0018777
-	for <ltp-list@lists.sourceforge.net>; Tue, 9 Jun 2015 09:49:57 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue,  9 Jun 2015 12:49:45 +0300
-Message-Id: <1433843386-31431-4-git-send-email-stanislav.kholmanskikh@oracle.com>
-In-Reply-To: <1433843386-31431-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1433843386-31431-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 4/5] tools/apicmd: Add tst_fs_type
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z70jq-0007ZJ-OC
+	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 12:22:10 +0000
+Date: Mon, 22 Jun 2015 14:20:56 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150622122056.GA7476@rei.suse.de>
+References: <6ad648e0b674845a19073ebd7afcb8ec82f3f891.1434551926.git.jstancek@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <6ad648e0b674845a19073ebd7afcb8ec82f3f891.1434551926.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] kmsg01: avoid infinite run in test_read_block()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -38,125 +21,112 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- doc/test-writing-guidelines.txt |   17 +++++++++++++++++
- tools/apicmds/.gitignore        |    1 +
- tools/apicmds/Makefile          |    2 +-
- tools/apicmds/ltpapicmd.c       |   17 +++++++++++++++++
- 4 files changed, 36 insertions(+), 1 deletions(-)
+Hi!
+> diff --git a/testcases/kernel/logging/kmsg/kmsg01.c b/testcases/kernel/logging/kmsg/kmsg01.c
+> index 4e24298..4307947 100644
+> --- a/testcases/kernel/logging/kmsg/kmsg01.c
+> +++ b/testcases/kernel/logging/kmsg/kmsg01.c
+> @@ -52,7 +52,8 @@
+>  #define NUM_READ_MSGS 3
+>  #define NUM_READ_RETRY 10
+>  #define NUM_OVERWRITE_MSGS 1024
+> -#define READ_TIMEOUT 5
+> +#define SINGLE_READ_TIMEOUT 2
+> +#define READ_TIMEOUT_MS (30*1000)
+>  
+>  char *TCID = "kmsg01";
+>  static void setup(void);
+> @@ -196,11 +197,12 @@ static int timed_read(int fd, int timeout_sec)
+>   *    -1 on read error, errno reflects read() errno
+>   *    -2 on timeout
+>   */
+> -static int timed_read_kmsg(int fd, int timeout_sec)
+> +static int timed_read_kmsg(int fd, int timeout_ms)
+>  {
+>  	int child, status, ret = 0;
+>  	int pipefd[2];
+>  	char msg[MAX_MSGSIZE];
+> +	long long elapsed_ms = 0;
+>  
+>  	if (pipe(pipefd) != 0)
+>  		tst_brkm(TBROK|TERRNO, cleanup, "pipe failed");
+> @@ -231,11 +233,22 @@ static int timed_read_kmsg(int fd, int timeout_sec)
+>  	SAFE_CLOSE(cleanup, pipefd[1]);
+>  
+>  	/* parent reads pipe until it reaches eof or until read times out */
+> +	tst_timer_start(CLOCK_MONOTONIC);
+>  	do {
+> -		TEST(timed_read(pipefd[0], timeout_sec));
+> -	} while (TEST_RETURN > 0);
+> +		TEST(timed_read(pipefd[0], SINGLE_READ_TIMEOUT));
+> +		tst_timer_stop();
+> +		elapsed_ms = tst_timer_elapsed_ms();
+> +	} while (TEST_RETURN > 0 && elapsed_ms < timeout_ms);
+>  	SAFE_CLOSE(cleanup, pipefd[0]);
+>  
+> +	if (elapsed_ms >= timeout_ms) {
+> +		/* this is not necessarily error, kernel or user-space
+> +		 * process may generate messages at higher rate than what
+> +		 * we would consider as 'blocked', see SINGLE_READ_TIMEOUT */
+> +		tst_resm(TWARN, "reads taking too long, giving up");
+> +		TEST_RETURN = -2;
+> +	}
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index 2c40e3d..e35ec34 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -1195,6 +1195,7 @@ Following functions similar to the LTP C interface are available.
- * tst_tmpdir()
- * tst_rmdir()
- * tst_fs_has_free()
-+* tst_fs_type()
- 
- There is one more function called 'tst_check_cmds()' that gets unspecified
- number of parameters and asserts that each parameter is a name of an
-@@ -1249,6 +1250,22 @@ satisfied, 1 if not, and 2 on error.
- 
- The second argument supports suffixes kB, MB and GB, the default unit is Byte.
- 
-+.tst_fs_type
-+[source,sh]
-+-------------------------------------------------------------------------------
-+#!/bin/sh
-+
-+...
-+
-+# whether the current directory is on NFS
-+if [ $(tst_fs_type .) = "NFS" ]; then
-+	tst_brkm TCONF "Not supported on NFS"
-+fi
-+
-+...
-+-------------------------------------------------------------------------------
-+
-+
- 2.3.3 Cleanup
- ^^^^^^^^^^^^^
- 
-diff --git a/tools/apicmds/.gitignore b/tools/apicmds/.gitignore
-index b4f7922..c77ba02 100644
---- a/tools/apicmds/.gitignore
-+++ b/tools/apicmds/.gitignore
-@@ -11,3 +11,4 @@ tst_ncpus_max
- tst_res
- tst_resm
- tst_fs_has_free
-+tst_fs_type
-diff --git a/tools/apicmds/Makefile b/tools/apicmds/Makefile
-index 9c9472d..e8ee78c 100644
---- a/tools/apicmds/Makefile
-+++ b/tools/apicmds/Makefile
-@@ -28,7 +28,7 @@ CPPFLAGS		+= -D_GNU_SOURCE
- 
- MAKE_TARGETS		:= $(addprefix tst_,brk brkm exit flush kvercmp \
- 			     kvercmp2 res resm ncpus ncpus_conf ncpus_max \
--			     get_unused_port fs_has_free)
-+			     get_unused_port fs_has_free fs_type)
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
- 
-diff --git a/tools/apicmds/ltpapicmd.c b/tools/apicmds/ltpapicmd.c
-index 5238328..ed59f6a 100644
---- a/tools/apicmds/ltpapicmd.c
-+++ b/tools/apicmds/ltpapicmd.c
-@@ -77,6 +77,7 @@
- #include "test.h"
- #include "usctest.h"
- #include "safe_macros.h"
-+#include "tst_fs_type.h"
- 
- char *TCID;			/* Name of the testcase */
- int TST_TOTAL;			/* Total number of testcases */
-@@ -359,6 +360,20 @@ fs_has_free_err:
- 	exit(2);
- }
- 
-+const char *apicmd_fs_type(int argc, char *argv[])
-+{
-+	long fs_type;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "Usage: tst_fs_type path\n");
-+		exit(2);
-+	}
-+
-+	fs_type = tst_fs_type(NULL, argv[0]);
-+
-+	return tst_fs_type_name(fs_type);
-+}
-+
- /*
-  * Function:    main - entry point of this program
-  *
-@@ -449,6 +464,8 @@ int main(int argc, char *argv[])
- 		printf("%u\n", apicmd_get_unused_port(argc, argv));
- 	} else if (strcmp(cmd_name, "tst_fs_has_free") == 0) {
- 		apicmd_fs_has_free(argc, argv);
-+	} else if (strcmp(cmd_name, "tst_fs_type") == 0) {
-+		printf("%s\n", apicmd_fs_type(argc, argv));
- 	}
- 
- 	exit(0);
+Maybe this is worth of new return value, since this means that we
+timeouted while waiting for timeout.
+
+Apart from that the logic looks fine. The test could be probably cleaned
+by using checkpoints instead of pipe and the function used to propagate
+exit value from child, but that is probably worth of separate patch.
+
+>  	/* child is blocked, kill it */
+>  	if (TEST_RETURN == -2)
+>  		kill(child, SIGTERM);
+> @@ -261,7 +274,12 @@ static void test_read_nonblock(void)
+>  	if (fd < 0)
+>  		tst_brkm(TBROK|TERRNO, cleanup, "failed to open /dev/kmsg");
+>  
+> -	TEST(timed_read_kmsg(fd, READ_TIMEOUT));
+> +	if (lseek(fd, 0, SEEK_END) == -1)
+> +		tst_resm(TFAIL|TERRNO, "SEEK_END 0 failed");
+> +
+> +	/* /dev/kmsg opened with O_NONBLOCK will return EAGAIN when
+> +	 * no more records are available */
+> +	TEST(timed_read_kmsg(fd, READ_TIMEOUT_MS));
+>  	if (TEST_RETURN == -1 && TEST_ERRNO == EAGAIN)
+>  		tst_resm(TPASS, "non-block read returned EAGAIN");
+>  	else
+> @@ -279,7 +297,12 @@ static void test_read_block(void)
+>  	if (fd < 0)
+>  		tst_brkm(TBROK|TERRNO, cleanup, "failed to open /dev/kmsg");
+>  
+> -	TEST(timed_read_kmsg(fd, READ_TIMEOUT));
+> +	if (lseek(fd, 0, SEEK_END) == -1)
+> +		tst_resm(TFAIL|TERRNO, "SEEK_END 0 failed");
+> +
+> +	/* /dev/kmsg opened without O_NONBLOCK will block on read when
+> +	 * no more records are available */
+> +	TEST(timed_read_kmsg(fd, READ_TIMEOUT_MS));
+
+As far as I can se the timed_read_kmsg() is used only from these two
+functions, why don't we add the lseek() there instead?
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
