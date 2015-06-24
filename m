@@ -1,32 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Z30Tu-0007mp-7q
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2015 11:17:10 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z30Tt-0006D9-4b
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2015 11:17:10 +0000
-Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t5BBH3qA020872
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Jun 2015 11:17:03 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t5BBH2o1016253
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Jun 2015 11:17:03 GMT
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t5BBH2CZ017407
-	for <ltp-list@lists.sourceforge.net>; Thu, 11 Jun 2015 11:17:02 GMT
-Message-ID: <55796EF2.4030202@oracle.com>
-Date: Thu, 11 Jun 2015 14:20:18 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-MIME-Version: 1.0
-References: <1423829229-28963-1-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1423829229-28963-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH 1/11] network/stress/interface: rename if4-* tests
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Z7hch-0005kn-3o
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2015 10:09:39 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z7hcf-0001eS-66
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2015 10:09:39 +0000
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 24 Jun 2015 12:09:23 +0200
+Message-Id: <cfc70376b0c3835b040bef9125f2917926a56ec9.1435139859.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH v5] containers: new testcase userns04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,49 +21,213 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: sunyuan3@huawei.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
-On 02/13/2015 03:06 PM, Alexey Kodanev wrote:
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->   testcases/network/stress/interface/if-addr-adddel  |  326 +++++++++++++
->   .../network/stress/interface/if-addr-addlarge      |  481 ++++++++++++++++++++
->   testcases/network/stress/interface/if-mtu-change   |  264 +++++++++++
->   testcases/network/stress/interface/if-route-adddel |  293 ++++++++++++
->   .../network/stress/interface/if-route-addlarge     |  292 ++++++++++++
->   testcases/network/stress/interface/if-updown       |  258 +++++++++++
->   .../network/stress/interface/if4-alias-adddel      |  326 -------------
->   .../network/stress/interface/if4-alias-addlarge    |  481 --------------------
->   testcases/network/stress/interface/if4-mtu-change  |  264 -----------
->   .../network/stress/interface/if4-route-adddel      |  293 ------------
->   .../network/stress/interface/if4-route-addlarge    |  292 ------------
->   testcases/network/stress/interface/if4-updown      |  258 -----------
->   12 files changed, 1914 insertions(+), 1914 deletions(-)
->   create mode 100644 testcases/network/stress/interface/if-addr-adddel
->   create mode 100644 testcases/network/stress/interface/if-addr-addlarge
->   create mode 100644 testcases/network/stress/interface/if-mtu-change
->   create mode 100644 testcases/network/stress/interface/if-route-adddel
->   create mode 100644 testcases/network/stress/interface/if-route-addlarge
->   create mode 100644 testcases/network/stress/interface/if-updown
->   delete mode 100644 testcases/network/stress/interface/if4-alias-adddel
->   delete mode 100644 testcases/network/stress/interface/if4-alias-addlarge
->   delete mode 100644 testcases/network/stress/interface/if4-mtu-change
->   delete mode 100644 testcases/network/stress/interface/if4-route-adddel
->   delete mode 100644 testcases/network/stress/interface/if4-route-addlarge
->   delete mode 100644 testcases/network/stress/interface/if4-updown
+From: Yuan Sun <sunyuan3@huawei.com>
 
-Patch-set applied.
+If a namespace isn't another namespace's ancestor, the process in
+first namespace does not have the CAP_SYS_ADMIN capability in the
+second namespace and the setns() call fails.
 
-Best regards,
-Alexey
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ runtest/containers                            |   1 +
+ testcases/kernel/containers/.gitignore        |   1 +
+ testcases/kernel/containers/userns/userns04.c | 151 ++++++++++++++++++++++++++
+ 3 files changed, 153 insertions(+)
+ create mode 100644 testcases/kernel/containers/userns/userns04.c
+
+diff --git a/runtest/containers b/runtest/containers
+index bb1beb6..fd9c06a 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -70,3 +70,4 @@ mountns04 mountns04
+ 
+ userns01 userns01
+ userns02 userns02
++userns04 userns04
+diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+index e3c92c9..6c5785f 100644
+--- a/testcases/kernel/containers/.gitignore
++++ b/testcases/kernel/containers/.gitignore
+@@ -5,3 +5,4 @@ mountns/mountns03
+ mountns/mountns04
+ userns/userns01
+ userns/userns02
++userns/userns04
+diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
+new file mode 100644
+index 0000000..206c9ed
+--- /dev/null
++++ b/testcases/kernel/containers/userns/userns04.c
+@@ -0,0 +1,151 @@
++/*
++ * Copyright (c) Huawei Technologies Co., Ltd., 2015
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ */
++
++/*
++ * Verify that:
++ *  If a namespace isn't another namespace's ancestor, the process in
++ *  first namespace does not have the CAP_SYS_ADMIN capability in the
++ *  second namespace and the setns() call fails.
++ */
++
++#define _GNU_SOURCE
++#include <sys/wait.h>
++#include <assert.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <errno.h>
++#include "test.h"
++#include "userns_helper.h"
++
++char *TCID = "user_namespace4";
++int TST_TOTAL = 1;
++
++static void setup(void)
++{
++	check_newuser();
++	tst_tmpdir();
++	TST_CHECKPOINT_INIT(NULL);
++}
++
++static void cleanup(void)
++{
++	tst_rmdir();
++}
++
++static int child_fn1(void *arg LTP_ATTRIBUTE_UNUSED)
++{
++	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
++	return 0;
++}
++
++static int child_fn2(void *arg)
++{
++	int exit_val = 0;
++	int ret;
++
++	ret = setns(((long)arg), CLONE_NEWUSER);
++	if (ret != -1) {
++		printf("child2 setns() unexpected success\n");
++		exit_val = 1;
++	} else if (errno != EPERM) {
++		printf("child2 setns() unexpected error: (%d) %s\n",
++			errno, strerror(errno));
++		exit_val = 1;
++	}
++
++	TST_SAFE_CHECKPOINT_WAIT(NULL, 1);
++	return exit_val;
++}
++
++static int wait4child(pid_t pid, const char *msg)
++{
++	int status;
++
++	if (waitpid(pid, &status, 0) == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
++	} else if (WIFSIGNALED(status)) {
++		tst_resm(TFAIL, "%s: child was killed with signal = %d",
++			msg, WTERMSIG(status));
++		return WTERMSIG(status);
++	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
++		tst_resm(TFAIL, "%s: child returns %d", msg, status);
++		return WEXITSTATUS(status);
++	}
++
++	return 0;
++}
++
++static void test_cap_sys_admin(void)
++{
++	pid_t cpid1, cpid2, cpid3;
++	char path[BUFSIZ];
++	int fd, status;
++
++	/* child 1 */
++	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
++		(void *)child_fn1, NULL);
++	if (cpid1 < 0)
++		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
++
++	/* child 2 */
++	sprintf(path, "/proc/%d/ns/user", cpid1);
++	fd = SAFE_OPEN(cleanup, path, O_RDONLY, 0644);
++	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
++		(void *)child_fn2, (void *)((long)fd));
++	if (cpid2 < 0)
++		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
++
++	/* child 3 - throw-away process changing ns to child1 */
++	switch (cpid3 = fork()) {
++	case -1:
++		tst_brkm(TBROK | TERRNO, cleanup, "fork");
++	case 0:
++		if (setns(fd, CLONE_NEWUSER) == -1) {
++			printf("parent pid setns failure: (%d) %s",
++				errno, strerror(errno));
++			exit(1);
++		}
++		exit(0);
++	}
++
++	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
++	TST_SAFE_CHECKPOINT_WAKE(cleanup, 1);
++
++	status = 0;
++	status |= wait4child(cpid1, "child1");
++	status |= wait4child(cpid2, "child2");
++	status |= wait4child(cpid3, "child3");
++	if (status == 0)
++		tst_resm(TPASS, "The setns function works well.");
++
++	SAFE_CLOSE(cleanup, fd);
++
++}
++
++int main(int argc, char *argv[])
++{
++	int lc;
++
++	setup();
++	tst_parse_opts(argc, argv, NULL, NULL);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		test_cap_sys_admin();
++	}
++
++	cleanup();
++	tst_exit();
++}
+-- 
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
