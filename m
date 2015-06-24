@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Z7hd1-0005n6-BQ
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2015 10:09:59 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z7hcz-0001hK-Sw
-	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2015 10:09:59 +0000
-Date: Wed, 24 Jun 2015 06:09:44 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <272406532.7018175.1435140584383.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1434547032-7000-1-git-send-email-sunyuan3@huawei.com>
-References: <1434547032-7000-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z7bZh-0003lp-Uk
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2015 03:42:09 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Z7bZg-0004ds-NN
+	for ltp-list@lists.sourceforge.net; Wed, 24 Jun 2015 03:42:09 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t5O3eOND031990
+	for <ltp-list@lists.sourceforge.net>; Wed, 24 Jun 2015 11:40:24 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 24 Jun 2015 11:41:33 +0800
+Message-ID: <1435117293-16126-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <55892FA3.80800@oracle.com>
+References: <55892FA3.80800@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V4] containers: new testcase userns04
+Subject: [LTP] [PATCH v2] sem_conpro: cleanup code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,205 +31,69 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+* It's reasonable to allocate memory after checking
+  _POSIX_SEMAPHORES.
+  Allocate 'buf' on the stack to avoid the problem.
 
+* remove meaningless printf()
 
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net, "weijg fnst" <weijg.fnst@cn.fujitsu.com>
-> Sent: Wednesday, 17 June, 2015 3:17:12 PM
-> Subject: [PATCH V4] containers: new testcase userns04
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ .../functional/semaphores/sem_conpro.c                 | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
 
-Hi,
+diff --git a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
+index f5f1abf..2fb9890 100644
+--- a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
++++ b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
+@@ -100,34 +100,32 @@ int main(int argc, char *argv[])
+ 	int occupied_value = BUF_SIZE;
+ 	int empty_value = 0;
+ 	int lock_value = 1;
+-	buf_t *buf;
++	buf_t buf;
+ 	pthread_t con, pro;
+-	buf = malloc(sizeof(buf_t));
+ 
+ #ifndef  _POSIX_SEMAPHORES
+ 	printf("_POSIX_SEMAPHORES is not defined \n");
+ 	return PTS_UNRESOLVED;
+ #endif
+-	if (-1 == sem_init(&(buf->occupied), shared, occupied_value)) {
++	if (-1 == sem_init(&buf.occupied, shared, occupied_value)) {
+ 		perror("sem_init didn't return success \n");
+-		printf("hello \n");
+ 		return PTS_UNRESOLVED;
+ 	}
+-	if (-1 == sem_init(&buf->empty, shared, empty_value)) {
++	if (-1 == sem_init(&buf.empty, shared, empty_value)) {
+ 		perror("sem_init didn't return success \n");
+ 		return PTS_UNRESOLVED;
+ 	}
+-	if (-1 == sem_init(&buf->lock, shared, lock_value)) {
++	if (-1 == sem_init(&buf.lock, shared, lock_value)) {
+ 		perror("sem_init didn't return success \n");
+ 		return PTS_UNRESOLVED;
+ 	}
+ 	in = out = 0;
+ 
+-	pthread_create(&con, NULL, (void *)consumer, (void *)buf);
+-	pthread_create(&pro, NULL, (void *)producer, (void *)buf);
++	pthread_create(&con, NULL, (void *)consumer, (void *)&buf);
++	pthread_create(&pro, NULL, (void *)producer, (void *)&buf);
+ 	pthread_join(con, NULL);
+ 	pthread_join(pro, NULL);
+-	sem_destroy(&buf->occupied);
+-	sem_destroy(&buf->empty);
++	sem_destroy(&buf.occupied);
++	sem_destroy(&buf.empty);
+ 	return PTS_PASS;
+ }
+-- 
+1.9.3
 
-I posted v5 with some small changes, please have a look.
-Changes are commented inline:
-
-> 
-> If a namespace isn't aother namespace's ancestor, the first namespace
-
-fixed typo, changed to "process in first namespace"
-
-> does not have the CAP_SYS_ADMIN capability in the second namespace
-> and the setns() call fails.
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->  testcases/kernel/containers/userns/userns04.c | 135
-
-added .gitignore and runtest file
-
->  ++++++++++++++++++++++++++
->  1 file changed, 135 insertions(+)
->  create mode 100644 testcases/kernel/containers/userns/userns04.c
-> 
-> diff --git a/testcases/kernel/containers/userns/userns04.c
-> b/testcases/kernel/containers/userns/userns04.c
-> new file mode 100644
-> index 0000000..286a46c
-> --- /dev/null
-> +++ b/testcases/kernel/containers/userns/userns04.c
-> @@ -0,0 +1,135 @@
-> +/*
-> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * Verify that:
-> + *  If a namespace isn't another namespace's ancestor, the first namespace
-> + *  does not have the CAP_SYS_ADMIN capability in the second namespace
-> + *  and the setns() call fails.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <assert.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "userns_helper.h"
-> +
-> +char *TCID = "user_namespace4";
-> +int TST_TOTAL = 1;
-> +
-> +static void setup(void)
-> +{
-> +	check_newuser();
-> +	tst_tmpdir();
-> +	TST_CHECKPOINT_INIT(NULL);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +/*
-> + * child_fn1() - Inside a new user namespace
-> + */
-> +static int child_fn1(void)
-
-ltp_clone_quick expects "int (*fn)(void *arg)"
-changed accordingly
-
-> +{
-> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-> +	return 0;
-> +}
-> +
-> +static int child_fn2(int *arg)
-> +{
-> +	int exit_val;
-> +
-> +	if (setns(*arg, CLONE_NEWUSER) == -1) {
-> +		printf("child2 setns() failure is expected\n");
-
-removed printf for good case, added check of EPERM and output
-of errno if it's different
-
-> +		exit_val = 0;
-> +	} else {
-> +		printf("chile2 setns() success isn't expected\n");
-> +		exit_val = 1;
-> +	}
-> +
-> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 1);
-> +	return exit_val;
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int cpid1status, cpid2status;
-> +	int cpid1, cpid2;
-> +	char path[BUFSIZ];
-> +	int fd;
-> +
-> +	tst_parse_opts(argc, argv, NULL, NULL);
-> +	setup();
-> +/*
-> +TEST_LOOPING isn't used because the parent pid can't reset to the
-> +previous namespace after it joins another namespace by setns.
-> +*/
-
-added test looping
-the parent forks throw-away process, which makes the same check
-
-> +	tst_count = 0;
-> +	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> +		(void *)child_fn1, NULL);
-> +
-> +	if (cpid1 < 0)
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-> +
-> +	sprintf(path, "/proc/%d/ns/user", cpid1);
-> +	fd = SAFE_OPEN(cleanup, path, O_RDONLY, 0644);
-> +
-> +	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> +		(void *)child_fn2, &fd);
-> +
-> +	if (cpid2 < 0)
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-> +
-> +	if (setns(fd, CLONE_NEWUSER) == -1)
-> +		tst_brkm(TFAIL, cleanup, "parent pid setns failure");
-> +	else
-> +		tst_resm(TINFO, "parent pid setns success");
-> +
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 1);
-> +
-> +	if ((waitpid(cpid1, &cpid1status, 0) < 0) ||
-> +		(waitpid(cpid2, &cpid2status, 0) < 0))
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			"parent: waitpid failed.");
-> +
-> +	if (WIFSIGNALED(cpid1status)) {
-> +		tst_resm(TFAIL, "child1 was killed with signal = %d",
-> +			WTERMSIG(cpid1status));
-> +	} else if (WIFEXITED(cpid1status) &&
-> +		WEXITSTATUS(cpid1status) != 0) {
-> +		tst_resm(TFAIL, "child1 exited abnormally");
-> +	}
-> +
-> +	if (WIFSIGNALED(cpid2status)) {
-> +		tst_resm(TFAIL, "child2 was killed with signal = %d",
-> +			WTERMSIG(cpid2status));
-> +	} else if (WIFEXITED(cpid2status) &&
-> +		WEXITSTATUS(cpid2status) != 0) {
-> +		tst_resm(TFAIL, "child2 exited abnormally");
-> +	} else
-> +		tst_resm(TPASS, "The setns function works well.");
-
-made a function for checking child ret code and used that for all 3 children
-
-Regards,
-Jan
-
-> +
-> +	SAFE_CLOSE(cleanup, fd);
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> --
-> 1.9.1
-> 
-> 
 
 ------------------------------------------------------------------------------
 Monitor 25 network devices or servers for free with OpManager!
