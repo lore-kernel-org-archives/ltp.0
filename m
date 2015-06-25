@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z0Und-000655-3X
-	for ltp-list@lists.sourceforge.net; Thu, 04 Jun 2015 13:03:09 +0000
-Date: Thu, 4 Jun 2015 15:02:08 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150604130208.GA7095@rei.suse.de>
-References: <1433430027-11690-1-git-send-email-sunyuan3@huawei.com>
+	(envelope-from <sunyuan3@huawei.com>) id 1Z7y9q-00062U-5I
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 03:48:58 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z7y9k-0003LC-Ji
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 03:48:58 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Thu, 25 Jun 2015 05:54:37 -0600
+Message-ID: <1435233277-19842-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1433430027-11690-1-git-send-email-sunyuan3@huawei.com>
-Subject: Re: [LTP] [PATCH] Fix the return value error of read_shares_file.
+Subject: [LTP] [PATCH] userns01: add capability verification
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,158 +25,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
+To: jstancek@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-Can you also change the error_function() to return void and remove the
-return -1 from it?
+A child process has a full set of permitted and effective capabilities,
+even though the program was run from an unprivileged account.
 
-> diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-> index b01e1b8..ebf9870 100644
-> --- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-> +++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
-> @@ -50,8 +50,10 @@ int scan_shares_files(unsigned int *shares_pointer)
->  	/*
->  	 * Check if we can get stat of the file
->  	 */
-> -	if (lstat(fullpath, &statbuffer) < 0)
-> +	if (lstat(fullpath, &statbuffer) < 0) {
->  		error_function("Can not read stat for file ", fullpath);
-> +		return -1;
-> +	}
->  
->  	if (S_ISDIR(statbuffer.st_mode) == 0) {	/* not a directory */
->  		/*
-> @@ -75,8 +77,10 @@ int scan_shares_files(unsigned int *shares_pointer)
->  	*path_pointer++ = '/';
->  	*path_pointer = 0;
->  
-> -	if ((dp = opendir(fullpath)) == NULL)	/* Error in opening directory */
-> +	if ((dp = opendir(fullpath)) == NULL) {	/* Error in opening directory */
->  		error_function("Can't open ", fullpath);
-> +		return -1;
-> +	}
->  	/*
->  	 * search all groups recursively and get total shares
->  	 */
-> @@ -99,8 +103,10 @@ int scan_shares_files(unsigned int *shares_pointer)
->  
->  	path_pointer[-1] = 0;
->  
-> -	if (closedir(dp) < 0)
-> +	if (closedir(dp) < 0) {
->  		error_function("Could not close dir ", fullpath);
-> +		return -1;
-> +	}
->  	return 0;
->  }
->  
-> @@ -115,27 +121,35 @@ int read_file(char *filepath, int action, unsigned int *value)
->  {
->  	int num_line = 0;
->  	FILE *fp;
-> +	int tmp;
->  	switch (action) {
->  	case GET_SHARES:
-> -		*value = read_shares_file(filepath);
-> -		if (*value == -1)
-> +		tmp = read_shares_file(filepath);
-> +		if (tmp == -1)
->  			return -1;
-> +		else
-> +			*value = (unsigned int)tmp;
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+---
+ testcases/kernel/containers/userns/Makefile   |  2 +-
+ testcases/kernel/containers/userns/userns01.c | 18 ++++++++++++------
+ 2 files changed, 13 insertions(+), 7 deletions(-)
 
-There is no need for the else branch. If tmp is -1 the code below would
-not be reached anyway.
-
->  		break;
->  
->  	case GET_TASKS:
->  		fp = fopen(filepath, "r");
-> -		if (fp == NULL)
-> +		if (fp == NULL) {
->  			error_function("Could not open file", filepath);
-> +			return -1;
-> +		}
->  		while (fgets(target, LINE_MAX, fp) != NULL)
->  			num_line++;
->  		*value = (unsigned int)num_line;
-> -		if (fclose(fp))
-> +		if (fclose(fp)) {
->  			error_function("Could not close file", filepath);
-> +			return -1;
-> +		}
->  		break;
->  
->  	default:
->  		error_function("Wrong action type passed to fun read_file for ",
->  			       filepath);
-> +		return -1;
->  		break;
-
-No need to keep the break after return.
-
->  	}
->  	return 0;
-> @@ -159,17 +173,20 @@ inline int error_function(char *msg1, char *msg2)
->   * the given pointer location. Returns 0 if success
->   */
->  
-> -unsigned
->  int read_shares_file(char *filepath)
->  {
->  	FILE *fp;
->  	unsigned int shares;
->  	fp = fopen(filepath, "r");
-> -	if (fp == NULL)
-> +	if (fp == NULL) {
->  		error_function("Could not open file", filepath);
-> +		return -1;
-> +	}
->  	fscanf(fp, "%u", &shares);
-> -	if (fclose(fp))
-> +	if (fclose(fp)) {
->  		error_function("Could not close file", filepath);
-> +		return -1;
-> +	}
->  	return shares;
->  }
->  
-> @@ -181,8 +198,10 @@ int write_to_file(char *file, const char *mode, unsigned int value)
->  {
->  	FILE *fp;
->  	fp = fopen(file, mode);
-> -	if (fp == NULL)
-> +	if (fp == NULL) {
->  		error_function("in opening file for writing:", file);
-> +		return -1;
-> +	}
->  	fprintf(fp, "%u\n", value);
->  	fclose(fp);
->  	return 0;
-> diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-> index 4001555..78a7fed 100644
-> --- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-> +++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
-> @@ -72,7 +72,7 @@ enum{
->  
->  inline int error_function(char *msg1, char *msg2);
->  
-> -unsigned int read_shares_file (char *filepath);
-> +int read_shares_file(char *filepath);
->  
->  int read_file(char *filepath, int action, unsigned int *value);
->  
-> -- 
-> 1.9.1
-> 
-
+diff --git a/testcases/kernel/containers/userns/Makefile b/testcases/kernel/containers/userns/Makefile
+index 9f67216..20a0677 100644
+--- a/testcases/kernel/containers/userns/Makefile
++++ b/testcases/kernel/containers/userns/Makefile
+@@ -21,6 +21,6 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../Makefile.inc
+ 
+-LDLIBS			:= -lclone -lltp
++LDLIBS			:= -lclone -lltp -lcap
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/containers/userns/userns01.c b/testcases/kernel/containers/userns/userns01.c
+index 9cada5e..ca4815a 100644
+--- a/testcases/kernel/containers/userns/userns01.c
++++ b/testcases/kernel/containers/userns/userns01.c
+@@ -15,7 +15,9 @@
+  * Verify that:
+  *  If a user ID has no mapping inside the namespace, user ID and group
+  * ID will be the value defined in the file /proc/sys/kernel/overflowuid(65534)
+- * and /proc/sys/kernel/overflowgid(65534).
++ * and /proc/sys/kernel/overflowgid(65534). A child process has a full set
++ * of permitted and effective capabilities, even though the program was
++ * run from an unprivileged account.
+  */
+ 
+ #define _GNU_SOURCE
+@@ -29,6 +31,7 @@
+ #include "test.h"
+ #include "libclone.h"
+ #include "userns_helper.h"
++#include <sys/capability.h>
+ #define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
+ #define OVERFLOWGIDPATH "/proc/sys/kernel/overflowgid"
+ 
+@@ -43,21 +46,24 @@ static long overflowgid;
+  */
+ static int child_fn1(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+-	int exit_val;
++	int exit_val = 0;
+ 	int uid, gid;
++	cap_t caps;
+ 
+ 	uid = geteuid();
+ 	gid = getegid();
+ 
+ 	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
+-	if (uid == overflowuid && gid == overflowgid) {
+-		printf("Got expected uid and gid\n");
+-		exit_val = 0;
+-	} else {
++
++	if (uid != overflowuid || gid != overflowgid) {
+ 		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
+ 		exit_val = 1;
+ 	}
+ 
++	caps = cap_get_proc();
++	if (strcmp(cap_to_text(caps, NULL), "=ep") != 0)
++		exit_val = 1;
++
+ 	return exit_val;
+ }
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.1
+
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
