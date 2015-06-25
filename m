@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z4x5d-0000nq-Tb
-	for ltp-list@lists.sourceforge.net; Tue, 16 Jun 2015 20:04:09 +0000
-Date: Tue, 16 Jun 2015 22:02:59 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z85qB-0000RS-RC
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 12:01:11 +0000
+Date: Thu, 25 Jun 2015 13:59:51 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150616200259.GA30140@rei.suse.de>
-References: <883467441.1047591434374550723.JavaMail.weblogic@epmlwas03c>
+Message-ID: <20150625115951.GA2734@rei.suse.de>
+References: <94d1ed7d81ae24abe9ae8a8d4a8ef8b5e6e78f66.1435223906.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <883467441.1047591434374550723.JavaMail.weblogic@epmlwas03c>
-Subject: Re: [LTP] [PATCH 0/7] pan:lib: remove unnecessary type cast for
- malloc
+In-Reply-To: <94d1ed7d81ae24abe9ae8a8d4a8ef8b5e6e78f66.1435223906.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] getrandom: fix compilation with older kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,17 +24,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Maninder Singh <maninder1.s@samsung.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Pushed, thanks.
+> Add configure check for GRND_* defines
+
+Can't we just add fallback definitions into include/lapi/getrandom.h
+just as we do with POSIX clock ids?
+
+> Add getrandom to syscalls number list for common architectures
+> Replace syscall with ltp_syscall
+
+The rest looks fine.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
