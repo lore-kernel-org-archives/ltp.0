@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Z5vEs-0000W4-0Q
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 12:17:42 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z5vEr-0007FD-1V
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 12:17:41 +0000
-Message-ID: <55840924.2090404@oracle.com>
-Date: Fri, 19 Jun 2015 15:20:52 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1Z7xG2-00045i-Qk
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:51:18 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z7xFy-00063f-TT
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:51:18 +0000
+Message-ID: <558B6C8C.5000202@huawei.com>
+Date: Thu, 25 Jun 2015 10:50:52 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
 MIME-Version: 1.0
-References: <144413988.54651434713150877.JavaMail.weblogic@ep2mlwas06b>
-	<55840688.1010202@oracle.com>
-In-Reply-To: <55840688.1010202@oracle.com>
-Subject: Re: [LTP] [PATCH]: Fix memory leak by freeing buf
+Subject: [LTP] Cedric
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,46 +25,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: manjeet.p@samsung.com, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, AKHILESH KUMAR <akhilesh.k@samsung.com>
+To: ced.hnyda@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
+Hi Cedric,
+     I encounter the following error in ubuntu14.04. Your patch
+"syscall/getrandom: Add tests for getrandom" leads to the error.
+     Do I need to install new libraries?
+     Could you please check with the issue?
+     Thanks.
+         Yuan
 
-On 06/19/2015 03:09 PM, Alexey Kodanev wrote:
-> Hi!
-> On 06/19/2015 02:25 PM, Manjeet Pawar wrote:
->> From: Manjeet Pawar <manjeet.p@samsung.com>
->> Date: Fri, 19 Jun 2015 16:45:54 +0530
->> Subject: [PATCH] testcases/open_posix_testsuite/functional/semaphores: Fix memory leak by freeing buf
->>
->> This patch fix memory leak by freeing memory leak before function return
->>
->> Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
->> Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
->> ---
->>    .../functional/semaphores/sem_conpro.c             |    5 +++++
->>    1 file changed, 5 insertions(+)
->>
->> diff --git a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
->> index f5f1abf..f3a4cfb 100644
->> --- a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
->> +++ b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
->> @@ -106,19 +106,23 @@ int main(int argc, char *argv[])
->>    
->>    #ifndef  _POSIX_SEMAPHORES
->>    	printf("_POSIX_SEMAPHORES is not defined \n");
->> +	free(buf);
->>    	return PTS_UNRESOLVED;
->>    #endif
->>    	if (-1 == sem_init(&(buf->occupied), shared, occupied_value)) {
->>    		perror("sem_init didn't return success \n");
->>    		printf("hello \n");
-
-Also, do you know why it prints "hello"? It should be removed I guess.
-
-Thanks,
-Alexey
+make[4]: Entering directory 
+`/home/s00318865/0625/ltp/testcases/kernel/syscalls/getrandom'
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 
+-Wold-style-definition 
+-I/home/s00318865/0625/ltp/testcases/kernel/include 
+-I../../../../include -I../../../../include   -L../../../../lib 
+getrandom01.c   -lltp -o getrandom01
+getrandom01.c:34:26: error: 'GRND_RANDOM' undeclared here (not in a 
+function)
+  static int modes[] = {0, GRND_RANDOM, GRND_NONBLOCK,
+                           ^
+getrandom01.c:34:39: error: 'GRND_NONBLOCK' undeclared here (not in a 
+function)
+  static int modes[] = {0, GRND_RANDOM, GRND_NONBLOCK,
+                                        ^
+In file included from ../../../../include/test.h:46:0,
+                  from getrandom01.c:32:
+getrandom01.c: In function 'main':
+getrandom01.c:51:17: error: 'SYS_getrandom' undeclared (first use in 
+this function)
+     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
+                  ^
+../../../../include/usctest.h:69:17: note: in definition of macro 'TEST'
+    TEST_RETURN = SCALL; \
+                  ^
+getrandom01.c:51:17: note: each undeclared identifier is reported only 
+once for each function it appears in
+     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
+                  ^
+../../../../include/usctest.h:69:17: note: in definition of macro 'TEST'
+    TEST_RETURN = SCALL; \
+                  ^
+getrandom01.c:51:4: warning: passing argument 1 of 'syscall' makes 
+integer from pointer without a cast [enabled by default]
+     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
+     ^
+In file included from ../../../../include/test.h:39:0,
+                  from getrandom01.c:32:
+/usr/include/unistd.h:1058:17: note: expected 'long int' but argument is 
+of type 'int *'
+  extern long int syscall (long int __sysno, ...) __THROW;
+                  ^
+make[4]: *** [getrandom01] Error 1
+make[4]: Leaving directory 
+`/home/s00318865/0625/ltp/testcases/kernel/syscalls/getrandom'
+make[3]: *** [all] Error 2
+make[3]: Leaving directory 
+`/home/s00318865/0625/ltp/testcases/kernel/syscalls'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/home/s00318865/0625/ltp/testcases/kernel'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/home/s00318865/0625/ltp/testcases'
+make: *** [testcases-all] Error 2
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
