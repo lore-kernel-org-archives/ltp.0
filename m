@@ -1,30 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1Z5Tcl-0006FK-N9
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2015 06:48:31 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z5Tcj-00012a-St
-	for ltp-list@lists.sourceforge.net; Thu, 18 Jun 2015 06:48:31 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (Postfix) with ESMTPS id B466D33E7D8
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 18 Jun 2015 06:48:23 +0000 (UTC)
-Received: from dhcp-13-206.nay.redhat.com (dhcp-12-104.nay.redhat.com
-	[10.66.12.104])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t5I6mJiw010100
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 18 Jun 2015 02:48:22 -0400
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 18 Jun 2015 14:48:17 +0800
-Message-Id: <1434610097-15874-1-git-send-email-liwang@redhat.com>
-Subject: [LTP] [PATCH v2] futex: regression test for take hugepages into
-	account when generating futex_key
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1Z80sW-0000an-Ci
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 06:43:16 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z80sQ-0001KO-Mw
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 06:43:16 +0000
+Message-ID: <558BA2B1.9030508@huawei.com>
+Date: Thu, 25 Jun 2015 14:41:53 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
+MIME-Version: 1.0
+References: <558B6C8C.5000202@huawei.com>	<558B9D33.1090305@cn.fujitsu.com>
+	<CALPnEb6td8AGRvRWSG1frhi=VZr67apQtqNd7UUvAgC8Wg4hDg@mail.gmail.com>
+In-Reply-To: <CALPnEb6td8AGRvRWSG1frhi=VZr67apQtqNd7UUvAgC8Wg4hDg@mail.gmail.com>
+Subject: Re: [LTP] Cedric
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,258 +25,133 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6553179855559112345=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: =?UTF-8?B?Q8OpZHJpYyBIbnlkYQ==?= <ced.hnyda@gmail.com>, Wanlong Gao <gaowanlong@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-v1 ---> v2:
+--===============6553179855559112345==
+Content-Type: multipart/alternative;
+	boundary="------------080302030600030600040605"
 
-	* Macro HUGE_SISE replaced by read_hugepagesise().
+--------------080302030600030600040605
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: 8bit
 
-	* futex_wait() get a timeout parameter
+Hi Cedric,
+     Thanks for your reminding. I understand.
+Maybe it is better to add the following in these cases.
 
-	* SAFE_MMAP SAFE_MUNMAP() and pthread_join() been used.
+if (tst_kvercmp(3, 17, 0) < 0)
+         tst_brkm(TCONF, NULL, "getrandom is not supported");
 
-	* Semaphore been added to do synchronization.
+     Regards.
+         Yuan
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- runtest/syscalls                               |   1 +
- testcases/kernel/syscalls/futex/Makefile       |   1 +
- testcases/kernel/syscalls/futex/futex_wake04.c | 193 +++++++++++++++++++++++++
- 3 files changed, 195 insertions(+)
- create mode 100644 testcases/kernel/syscalls/futex/futex_wake04.c
+On 2015/6/25 14:32, Cédric Hnyda wrote:
+> Hi!
+>
+> On 06/25/2015 04:50 AM, Yuan Sun wrote:
+> > Hi Cedric,
+> >      I encounter the following error in ubuntu14.04. Your patch
+> > "syscall/getrandom: Add tests for getrandom" leads to the error.
+> >      Do I need to install new libraries?
+>
+> getrandom() was introduced in version 3.17 of the Linux kernel.
+> Ubuntu 14.04 gets shipped with kernel 3.13.
+>
+> Try to upgrade your kernel to a more recent version to get the syscall.
+>
+> Best,
+> Cédric Hnyda
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 07bfc1e..1308536 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1382,5 +1382,6 @@ futex_wait05 futex_wait05
- futex_wake01 futex_wake01
- futex_wake02 futex_wake02
- futex_wake03 futex_wake03
-+futex_wake04 futex_wake04
- futex_wait_bitset01 futex_wait_bitset01
- futex_wait_bitset02 futex_wait_bitset02
-diff --git a/testcases/kernel/syscalls/futex/Makefile b/testcases/kernel/syscalls/futex/Makefile
-index d888734..6e72daf 100644
---- a/testcases/kernel/syscalls/futex/Makefile
-+++ b/testcases/kernel/syscalls/futex/Makefile
-@@ -22,6 +22,7 @@ futex_wait02: LDLIBS+=-lrt
- futex_wake03: LDLIBS+=-lrt
- futex_wait03: CFLAGS+=-pthread
- futex_wake02: CFLAGS+=-pthread
-+futex_wake04: CFLAGS+=-pthread
- futex_wait05: LDLIBS+=-lrt
- futex_wait_bitset01: LDLIBS+=-lrt
- futex_wait_bitset02: LDLIBS+=-lrt
-diff --git a/testcases/kernel/syscalls/futex/futex_wake04.c b/testcases/kernel/syscalls/futex/futex_wake04.c
-new file mode 100644
-index 0000000..78a52ff
---- /dev/null
-+++ b/testcases/kernel/syscalls/futex/futex_wake04.c
-@@ -0,0 +1,193 @@
-+/*
-+ * Copyright (C) 2015  Yi Zhang <wetpzy@gmail.com>
-+ *                     Li Wang <liwang@redhat.com>
-+ *
-+ * Licensed under the GNU GPLv2 or later.
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;  if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ */
-+ /* DESCRIPTION:
-+ *
-+ *   It is a regression test for commit:
-+ *   http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/
-+ *   commit/?id=13d60f4
-+ *
-+ *   The implementation of futex doesn't produce unique keys for futexes
-+ *   in shared huge pages, so threads waiting on different futexes may
-+ *   end up on the same wait list. This results in incorrect threads being
-+ *   woken by FUTEX_WAKE.
-+ *
-+ *   Needs to be run as root unless there are already enough huge pages available.
-+ *   In the fail case, which happens in the CentOS-6.6 kernel (2.6.32-504.8.1),
-+ *   the tests hangs until it times out after a 30-second wait.
-+ *
-+ */
-+
-+#include <stdio.h>
-+#include <sys/mman.h>
-+#include <fcntl.h>
-+#include <pthread.h>
-+#include <errno.h>
-+#include <sys/time.h>
-+#include <string.h>
-+#include <semaphore.h>
-+
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "futextest.h"
-+
-+#define PATH_MEMINFO "/proc/meminfo"
-+#define PATH_NR_HUGEPAGES "/proc/sys/vm/nr_hugepages"
-+
-+const char *TCID = "futex_wake04";
-+const int TST_TOTAL = 1;
-+
-+static futex_t *futex1, *futex2;
-+
-+static struct timespec to = {.tv_sec = 30, .tv_nsec = 0};
-+
-+static long orig_hugepages;
-+
-+static sem_t bin_sem;
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+	tst_tmpdir();
-+
-+	SAFE_FILE_SCANF(NULL, PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
-+	SAFE_FILE_PRINTF(NULL, PATH_NR_HUGEPAGES, "%d", 1);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_FILE_PRINTF(NULL, PATH_NR_HUGEPAGES, "%ld", orig_hugepages);
-+
-+	tst_rmdir();
-+}
-+
-+static int read_hugepagesize(void)
-+{
-+	FILE *fp;
-+	char line[BUFSIZ], buf[BUFSIZ];
-+	int val;
-+
-+	fp = SAFE_FOPEN(cleanup, PATH_MEMINFO, "r");
-+	while (fgets(line, BUFSIZ, fp) != NULL) {
-+		if (sscanf(line, "%64s %d", buf, &val) == 2)
-+			if (strcmp(buf, "Hugepagesize:") == 0) {
-+				SAFE_FCLOSE(cleanup, fp);
-+				return 1024 * val;
-+			}
-+	}
-+
-+	SAFE_FCLOSE(cleanup, fp);
-+	tst_brkm(TBROK, NULL, "can't find \"%s\" in %s",
-+			"Hugepagesize:", PATH_MEMINFO);
-+}
-+
-+static void *wait_thread1(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+	sem_post(&bin_sem);
-+
-+	futex_wait(futex1, *futex1, &to, 0);
-+
-+	return NULL;
-+}
-+
-+static void *wait_thread2(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+	int res;
-+
-+	sem_post(&bin_sem);
-+
-+	res = futex_wait(futex2, *futex2, &to, 0);
-+	if (!res)
-+		tst_resm(TPASS, "Hi hydra, thread2 awake!");
-+	else
-+		tst_resm(TFAIL, "Bug: wait_thread2 did not wake after 30 secs.");
-+
-+	return NULL;
-+}
-+
-+static void wakeup_thread2(void)
-+{
-+	void *addr;
-+	int hpsz, pgsz, res;
-+	pthread_t th1, th2;
-+
-+	res = sem_init(&bin_sem, 0, 0);
-+	if (res)
-+		tst_brkm(TBROK, NULL, "Semaphore initialization failed.");
-+
-+	hpsz = read_hugepagesize();
-+
-+	/*allocate some shared memory*/
-+	addr = SAFE_MMAP(NULL, NULL, hpsz, PROT_WRITE | PROT_READ,
-+			MAP_SHARED | MAP_ANONYMOUS | MAP_HUGETLB, -1, 0);
-+
-+	pgsz = getpagesize();
-+
-+	/*apply the first subpage to futex1*/
-+	futex1 = addr;
-+	*futex1 = 0;
-+	/*apply the second subpage to futex2*/
-+	futex2 = (futex_t *)((char *)addr + pgsz);
-+	*futex2 = 0;
-+
-+	/*thread1 block on futex1 first,then thread2 block on futex2*/
-+	res = pthread_create(&th1, NULL, wait_thread1, NULL);
-+	if (res) {
-+		tst_brkm(TBROK, NULL, "pthread_create(): %s",
-+				tst_strerrno(res));
-+	}
-+	sem_wait(&bin_sem);
-+
-+	res = pthread_create(&th2, NULL, wait_thread2, NULL);
-+	if (res) {
-+		tst_brkm(TBROK, NULL, "pthread_create(): %s",
-+				tst_strerrno(res));
-+	}
-+	sem_wait(&bin_sem);
-+
-+	futex_wake(futex2, 1, 0);
-+
-+	res = pthread_join(th2, NULL);
-+	if (res)
-+		tst_brkm(TBROK, NULL, "pthread_join(): %s", tst_strerrno(res));
-+
-+	res = pthread_join(th1, NULL);
-+	if (res)
-+		tst_brkm(TBROK, NULL, "pthread_join(): %s", tst_strerrno(res));
-+
-+	sem_destroy(&bin_sem);
-+	SAFE_MUNMAP(NULL, addr, hpsz);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+
-+	tst_parse_opts(argc, argv, NULL, NULL);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		wakeup_thread2();
-+
-+	cleanup();
-+	tst_exit();
-+}
--- 
-1.8.3.1
 
+--------------080302030600030600040605
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  </head>
+  <body bgcolor="#FFFFFF" text="#000000">
+    Hi Cedric,<br>
+        Thanks for your reminding. I understand.<br>
+    Maybe it is better to add the following in these cases.<br>
+    <br>
+    if (tst_kvercmp(3, 17, 0) &lt; 0)<br>
+            tst_brkm(TCONF, NULL, "getrandom is not supported");<br>
+    <br>
+        Regards.<br>
+            Yuan<br>
+    <br>
+    <div class="moz-cite-prefix">On 2015/6/25 14:32, Cédric Hnyda wrote:<br>
+    </div>
+    <blockquote
+cite="mid:CALPnEb6td8AGRvRWSG1frhi=VZr67apQtqNd7UUvAgC8Wg4hDg@mail.gmail.com"
+      type="cite">
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <div dir="ltr">
+        <div>
+          <div>
+            <div>Hi!<br>
+              <br>
+              <span class="im">On 06/25/2015 04:50 AM, Yuan Sun wrote:<br>
+                &gt; Hi Cedric,<br>
+                &gt;      I encounter the following error in
+                ubuntu14.04. Your patch<br>
+                &gt; "syscall/getrandom: Add tests for getrandom" leads
+                to the error.<br>
+                &gt;      Do I need to install new libraries?</span><br>
+              <br>
+            </div>
+            getrandom() was introduced in version 3.17 of the Linux
+            kernel.<br>
+          </div>
+          Ubuntu 14.04 gets shipped with kernel 3.13.<br>
+          <br>
+        </div>
+        Try to upgrade your kernel to a more recent version to get the
+        syscall.<br>
+        <div>
+          <div><br>
+          </div>
+          <div>Best,<br>
+          </div>
+          <div>Cédric Hnyda<br>
+          </div>
+        </div>
+      </div>
+    </blockquote>
+    <br>
+  </body>
+</html>
+
+--------------080302030600030600040605--
+
+
+--===============6553179855559112345==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
+--===============6553179855559112345==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============6553179855559112345==--
+
