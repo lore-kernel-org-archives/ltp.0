@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1Z026n-0007UR-Hb
-	for Ltp-list@lists.sourceforge.net; Wed, 03 Jun 2015 06:25:01 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1Z026m-0002T9-Ad
-	for Ltp-list@lists.sourceforge.net; Wed, 03 Jun 2015 06:25:01 +0000
-From: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Wed, 3 Jun 2015 06:25:02 +0000
-Message-ID: <1433312690.1911.3.camel@localhost>
-References: <556E9A9E.7080202@windriver.com>
-In-Reply-To: <556E9A9E.7080202@windriver.com>
-Content-Language: en-US
-Content-ID: <55A510F95CD5F84483827A807800F90F@fujitsu.local>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yshuo@umich.edu>) id 1Z7vyx-0001fN-5p
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 01:29:35 +0000
+Received: from mail-wi0-f174.google.com ([209.85.212.174])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z7vyw-0002EX-Ex
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 01:29:35 +0000
+Received: by wicnd19 with SMTP id nd19so3951392wic.1
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 24 Jun 2015 18:29:28 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [LTP] ltp: vma03 fix the alginment of page size
+Date: Wed, 24 Jun 2015 18:29:28 -0700
+Message-ID: <CANuOEEhmmS_E-O9umbGEHerBONT+bGAOFHH5O055ajH_V+Rgaw@mail.gmail.com>
+From: Shuo Yang <yshuo@umich.edu>
+Subject: [LTP] How to specify testcases by running runltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,41 +25,66 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8369175435225142328=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "chuang.dong@windriver.com" <chuang.dong@windriver.com>
-Cc: "Ltp-list@lists.sourceforge.net" <Ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi,
-Maybe you had to fix your typo in commit message.
-You can using 'set spell' to check it before pushing it. 
+--===============8369175435225142328==
+Content-Type: multipart/alternative; boundary=047d7bfd0192f5df1005194d8d32
 
-Regards,
-Wei
-On Wed, 2015-06-03 at 14:11 +0800, cdong wrote:
-> Hi,
->         There is a patch to fix vma03 test case,the below information is 
-> detail it:
-> 
->         the offset the parameter of mmap2() doesn't align the page 
-> size,but,this parameter
->         allow must be a multiple of the page size as returned by 
-> sysconf(_SC_PAGE_SIZE).
->         meanwhile offset * 4096 must be a multiple of the system page 
-> size,so modify
->         the input param of offset pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
-> 
->      Regards,
->      Apollo
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+--047d7bfd0192f5df1005194d8d32
+Content-Type: text/plain; charset=UTF-8
+
+Hi guys,
+
+I just started using ltp, so this question is kind of dumb. I want to use
+it to run some file system tests but I don't know what the command should
+be. Currently I can run runtlp command but I don't know how to control the
+testcases. Assuming the file system I want to test is under /tmp/foo/.
+Could someone tell me how can I run the testcases specifically for testing
+file system.
+
+Thanks,
+Shuo
+
+--047d7bfd0192f5df1005194d8d32
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div dir=3D"ltr">Hi guys,<div><br></div><div>I just starte=
+d using ltp, so this question is kind of dumb. I want to use it to run some=
+ file system tests but I don&#39;t know what the command should be. Current=
+ly I can run runtlp command but I don&#39;t know how to control the testcas=
+es. Assuming the file system I want to test is under /tmp/foo/. Could someo=
+ne tell me how can I run the testcases specifically for testing file system=
+.=C2=A0</div><div><br></div><div>Thanks,</div><div>Shuo</div><div><br></div=
+></div></div>
+
+--047d7bfd0192f5df1005194d8d32--
+
+
+--===============8369175435225142328==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
+--===============8369175435225142328==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8369175435225142328==--
+
