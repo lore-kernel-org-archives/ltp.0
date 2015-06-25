@@ -1,29 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Z73e9-0006LA-PV
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 15:28:29 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z73e7-0004Yu-S5
-	for ltp-list@lists.sourceforge.net; Mon, 22 Jun 2015 15:28:29 +0000
-Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t5MFSLOW016060
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 15:28:21 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t5MFSLuu003314
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 15:28:21 GMT
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-	by aserv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t5MFRp9M005763
-	for <ltp-list@lists.sourceforge.net>; Mon, 22 Jun 2015 15:28:19 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 22 Jun 2015 18:31:05 +0300
-Message-Id: <1434987065-23739-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH] sctp: sctputils.c: fix test_peer_addr()
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z85uC-0006SA-Oo
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 12:05:20 +0000
+Date: Thu, 25 Jun 2015 14:04:04 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150625120404.GB2734@rei.suse.de>
+References: <1435248845-29155-1-git-send-email-sunyuan3@huawei.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1435248845-29155-1-git-send-email-sunyuan3@huawei.com>
+Subject: Re: [LTP] [PATCH] Need to install linux-libc-dev for getrandom
+	cases.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,47 +22,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Test always fails with TBROK because inner loop will reset all the
-previous set values if we use else branch.
+Hi!
+> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+> ---
+>  doc/mini-howto-building-ltp-from-git.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/doc/mini-howto-building-ltp-from-git.txt b/doc/mini-howto-building-ltp-from-git.txt
+> index 28825c2..7a1062e 100644
+> --- a/doc/mini-howto-building-ltp-from-git.txt
+> +++ b/doc/mini-howto-building-ltp-from-git.txt
+> @@ -36,7 +36,7 @@ sudo apt-get install build-essential
+>  sudo apt-get install autoconf automake autotools-dev m4
+>  sudo apt-get install git
+>  sudo apt-get install linux-headers-$(uname -r)
+> -sudo apt-get install libaio-dev libattr1-dev libcap-dev
+> +sudo apt-get install libaio-dev libattr1-dev libcap-dev linux-libc-dev
 
-Fixes 7cfe1586b8ed ("sctp: sctputil.c: make 'found' a static array")
+The linux-libc-dev is dependency of libc-dev which is dependency of
+build-essential. So it should be installed in the first step here.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- utils/sctp/testlib/sctputil.c |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+Maybe the explicit apt-get updated the package in your case that caused
+more up to date headers (that include the getrandom flags) to be
+installed.
 
-diff --git a/utils/sctp/testlib/sctputil.c b/utils/sctp/testlib/sctputil.c
-index c678072..564925c 100644
---- a/utils/sctp/testlib/sctputil.c
-+++ b/utils/sctp/testlib/sctputil.c
-@@ -371,6 +371,7 @@ int test_peer_addr(int sk, sctp_assoc_t asoc, sockaddr_storage_t *peers, int cou
- 	socklen_t addrs_size = 0;
- 	void *addrbuf;
- 	char found[count];
-+	memset(found, 0, count);
- 
- 	error = sctp_getpaddrs(sk, asoc, &addrs);
- 	if (-1 == error) {
-@@ -404,8 +405,6 @@ int test_peer_addr(int sk, sctp_assoc_t asoc, sockaddr_storage_t *peers, int cou
- 			if (cmp_addr((sockaddr_storage_t *)sa_addr,
- 				     &peers[j]) == 0) {
- 				found[j] = 1;
--			} else {
--				found[j] = 0;
- 			}
- 		}
- 	}
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Monitor 25 network devices or servers for free with OpManager!
