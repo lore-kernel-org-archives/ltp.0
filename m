@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2KMl-0004Lm-MN
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 14:18:59 +0000
-Date: Tue, 9 Jun 2015 16:17:52 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150609141752.GF27378@rei.suse.de>
-References: <1432688360-179350-1-git-send-email-cuibixuan@huawei.com>
-	<556517AC.7060406@huawei.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1Z7xGS-00035y-6o
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:51:44 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z7xGQ-0003zq-I3
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:51:44 +0000
+Message-ID: <558B6CA8.30205@huawei.com>
+Date: Thu, 25 Jun 2015 10:51:20 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <556517AC.7060406@huawei.com>
-Subject: Re: [LTP] [PATCH 3/5] iptables/iptables_tests.sh: Add new testcases
- for iptables -o
+Subject: [LTP] error: 'GRND_RANDOM' undeclared here
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,26 +25,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
+To: ced.hnyda@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> +	iptables -A OUTPUT -o lo -p icmp -j DROP > tst_iptables.out 2>&1
-> +        if [ $? -ne 0 ]; then
-> +                tst_resm TFAIL "iptables command failed to append new rule."
-> +                cat tst_iptables.out
-> +                return
-> +        fi
+Hi Cedric,
+     I encounter the following error in ubuntu14.04. Your patch
+"syscall/getrandom: Add tests for getrandom" leads to the error.
+     Do I need to install new libraries?
+     Could you please check with the issue?
+     Thanks.
+         Yuan
 
-Also the indentation is inconsitent, it mixes tabs and spaces. Choose
-one and use them exclusively, if there were spaces in the original file
-use spaces if there were tabs use tabs.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+make[4]: Entering directory 
+`/home/s00318865/0625/ltp/testcases/kernel/syscalls/getrandom'
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 
+-Wold-style-definition 
+-I/home/s00318865/0625/ltp/testcases/kernel/include 
+-I../../../../include -I../../../../include   -L../../../../lib 
+getrandom01.c   -lltp -o getrandom01
+getrandom01.c:34:26: error: 'GRND_RANDOM' undeclared here (not in a 
+function)
+  static int modes[] = {0, GRND_RANDOM, GRND_NONBLOCK,
+                           ^
+getrandom01.c:34:39: error: 'GRND_NONBLOCK' undeclared here (not in a 
+function)
+  static int modes[] = {0, GRND_RANDOM, GRND_NONBLOCK,
+                                        ^
+In file included from ../../../../include/test.h:46:0,
+                  from getrandom01.c:32:
+getrandom01.c: In function 'main':
+getrandom01.c:51:17: error: 'SYS_getrandom' undeclared (first use in 
+this function)
+     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
+                  ^
+../../../../include/usctest.h:69:17: note: in definition of macro 'TEST'
+    TEST_RETURN = SCALL; \
+                  ^
+getrandom01.c:51:17: note: each undeclared identifier is reported only 
+once for each function it appears in
+     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
+                  ^
+../../../../include/usctest.h:69:17: note: in definition of macro 'TEST'
+    TEST_RETURN = SCALL; \
+                  ^
+getrandom01.c:51:4: warning: passing argument 1 of 'syscall' makes 
+integer from pointer without a cast [enabled by default]
+     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
+     ^
+In file included from ../../../../include/test.h:39:0,
+                  from getrandom01.c:32:
+/usr/include/unistd.h:1058:17: note: expected 'long int' but argument is 
+of type 'int *'
+  extern long int syscall (long int __sysno, ...) __THROW;
+                  ^
+make[4]: *** [getrandom01] Error 1
+make[4]: Leaving directory 
+`/home/s00318865/0625/ltp/testcases/kernel/syscalls/getrandom'
+make[3]: *** [all] Error 2
+make[3]: Leaving directory 
+`/home/s00318865/0625/ltp/testcases/kernel/syscalls'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/home/s00318865/0625/ltp/testcases/kernel'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/home/s00318865/0625/ltp/testcases'
+make: *** [testcases-all] Error 2
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
