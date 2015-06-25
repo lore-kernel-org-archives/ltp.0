@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maxin.john@gmail.com>) id 1Z2eOb-0000wG-Nc
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 11:42:13 +0000
-Received: from mail-wi0-f169.google.com ([209.85.212.169])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z2eOa-0004JP-ND
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 11:42:13 +0000
-Received: by wibut5 with SMTP id ut5so45488964wib.1
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 10 Jun 2015 04:42:06 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1Z7w9B-0000nR-6J
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 01:40:09 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z7w96-0008HP-8H
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 01:40:09 +0000
+Message-ID: <558B5BE1.5040602@huawei.com>
+Date: Thu, 25 Jun 2015 09:39:45 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHNg1Sr60LoroQxr7mLw9jA-USA8bca7VNLed0=YPVM0NdLKfw@mail.gmail.com>
-References: <CAHNg1Sr60LoroQxr7mLw9jA-USA8bca7VNLed0=YPVM0NdLKfw@mail.gmail.com>
-Date: Wed, 10 Jun 2015 13:42:06 +0200
-Message-ID: <CAMhs6YxXL3x3WuWFn9DfSiL0buveRx=ZTrSemUkVL6j4Qbzwug@mail.gmail.com>
-From: "Maxin B. John" <maxin.john@gmail.com>
-Subject: Re: [LTP] Advantages of LTP over Autotest
+References: <cfc70376b0c3835b040bef9125f2917926a56ec9.1435139859.git.jstancek@redhat.com>
+In-Reply-To: <cfc70376b0c3835b040bef9125f2917926a56ec9.1435139859.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v5] containers: new testcase userns04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,40 +27,216 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Pratik Prajapati <pratik.prajapati12@gmail.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi Pratik,
+Hi Jan,
+     Excellent. I didn't think that TEST_LOOPING can't be used in this 
+case. You are very
+professional. I agree with you. Could you please merge the patch v5?
+     Thank you very much for your help.
+     Yuan
 
-On Wed, Jun 10, 2015 at 1:04 PM, Pratik Prajapati
-<pratik.prajapati12@gmail.com> wrote:
-> Hi,
+
+On 2015/6/24 18:09, Jan Stancek wrote:
+> From: Yuan Sun <sunyuan3@huawei.com>
 >
-> I have to select a test framework for kernel and peripheral testing. I found
-> two frameworks LTP and Autotest.
-> Autotest has provided advantage over LTP in its documentation.
+> If a namespace isn't another namespace's ancestor, the process in
+> first namespace does not have the CAP_SYS_ADMIN capability in the
+> second namespace and the setns() call fails.
 >
-> "LTP (http://ltp.sourceforge.net/) The Linux Test Project is a functional /
-> regression test suite. It contains approximately 2900 small regression tests
-> which are applied to the system running LTP. There is no support for
-> building kernels or booting them, performance testing or profiling. Whilst
-> it contains a lot of useful tests, it is not a general heavy weight testing
-> client."
+> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> ---
+>   runtest/containers                            |   1 +
+>   testcases/kernel/containers/.gitignore        |   1 +
+>   testcases/kernel/containers/userns/userns04.c | 151 ++++++++++++++++++++++++++
+>   3 files changed, 153 insertions(+)
+>   create mode 100644 testcases/kernel/containers/userns/userns04.c
 >
-> I haven't find any advantage of LTP over Autotest on your documentation or
-> on google.
+> diff --git a/runtest/containers b/runtest/containers
+> index bb1beb6..fd9c06a 100644
+> --- a/runtest/containers
+> +++ b/runtest/containers
+> @@ -70,3 +70,4 @@ mountns04 mountns04
+>   
+>   userns01 userns01
+>   userns02 userns02
+> +userns04 userns04
+> diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+> index e3c92c9..6c5785f 100644
+> --- a/testcases/kernel/containers/.gitignore
+> +++ b/testcases/kernel/containers/.gitignore
+> @@ -5,3 +5,4 @@ mountns/mountns03
+>   mountns/mountns04
+>   userns/userns01
+>   userns/userns02
+> +userns/userns04
+> diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
+> new file mode 100644
+> index 0000000..206c9ed
+> --- /dev/null
+> +++ b/testcases/kernel/containers/userns/userns04.c
+> @@ -0,0 +1,151 @@
+> +/*
+> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + *  (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> + * the GNU General Public License for more details.
+> + */
+> +
+> +/*
+> + * Verify that:
+> + *  If a namespace isn't another namespace's ancestor, the process in
+> + *  first namespace does not have the CAP_SYS_ADMIN capability in the
+> + *  second namespace and the setns() call fails.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <sys/wait.h>
+> +#include <assert.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +#include "test.h"
+> +#include "userns_helper.h"
+> +
+> +char *TCID = "user_namespace4";
+> +int TST_TOTAL = 1;
+> +
+> +static void setup(void)
+> +{
+> +	check_newuser();
+> +	tst_tmpdir();
+> +	TST_CHECKPOINT_INIT(NULL);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	tst_rmdir();
+> +}
+> +
+> +static int child_fn1(void *arg LTP_ATTRIBUTE_UNUSED)
+> +{
+> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
+> +	return 0;
+> +}
+> +
+> +static int child_fn2(void *arg)
+> +{
+> +	int exit_val = 0;
+> +	int ret;
+> +
+> +	ret = setns(((long)arg), CLONE_NEWUSER);
+> +	if (ret != -1) {
+> +		printf("child2 setns() unexpected success\n");
+> +		exit_val = 1;
+> +	} else if (errno != EPERM) {
+> +		printf("child2 setns() unexpected error: (%d) %s\n",
+> +			errno, strerror(errno));
+> +		exit_val = 1;
+> +	}
+> +
+> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 1);
+> +	return exit_val;
+> +}
+> +
+> +static int wait4child(pid_t pid, const char *msg)
+> +{
+> +	int status;
+> +
+> +	if (waitpid(pid, &status, 0) == -1) {
+> +		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+> +	} else if (WIFSIGNALED(status)) {
+> +		tst_resm(TFAIL, "%s: child was killed with signal = %d",
+> +			msg, WTERMSIG(status));
+> +		return WTERMSIG(status);
+> +	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+> +		tst_resm(TFAIL, "%s: child returns %d", msg, status);
+> +		return WEXITSTATUS(status);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void test_cap_sys_admin(void)
+> +{
+> +	pid_t cpid1, cpid2, cpid3;
+> +	char path[BUFSIZ];
+> +	int fd, status;
+> +
+> +	/* child 1 */
+> +	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
+> +		(void *)child_fn1, NULL);
+> +	if (cpid1 < 0)
+> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
+> +
+> +	/* child 2 */
+> +	sprintf(path, "/proc/%d/ns/user", cpid1);
+> +	fd = SAFE_OPEN(cleanup, path, O_RDONLY, 0644);
+> +	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
+> +		(void *)child_fn2, (void *)((long)fd));
+> +	if (cpid2 < 0)
+> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
+> +
+> +	/* child 3 - throw-away process changing ns to child1 */
+> +	switch (cpid3 = fork()) {
+> +	case -1:
+> +		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+> +	case 0:
+> +		if (setns(fd, CLONE_NEWUSER) == -1) {
+> +			printf("parent pid setns failure: (%d) %s",
+> +				errno, strerror(errno));
+> +			exit(1);
+> +		}
+> +		exit(0);
+> +	}
+> +
+> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 1);
+> +
+> +	status = 0;
+> +	status |= wait4child(cpid1, "child1");
+> +	status |= wait4child(cpid2, "child2");
+> +	status |= wait4child(cpid3, "child3");
+> +	if (status == 0)
+> +		tst_resm(TPASS, "The setns function works well.");
+> +
+> +	SAFE_CLOSE(cleanup, fd);
+> +
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +
+> +	setup();
+> +	tst_parse_opts(argc, argv, NULL, NULL);
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +		test_cap_sys_admin();
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
 
-AFAIK, autotest just uses LTP as one of the client tests. So, a one to one
-comparison doesn't make much sense, IMHO.
-
-> So Is there any advantage of LTP over Autotest ?
-> Regards,
-> Pratik
-
-Best Regards,
-Maxin
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
