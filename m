@@ -1,18 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z318D-0001mj-30
-	for ltp-list@lists.sourceforge.net; Thu, 11 Jun 2015 11:58:49 +0000
-Date: Thu, 11 Jun 2015 13:57:43 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150611115743.GC19686@rei.suse.de>
-References: <1433933962-739-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1Z7wdA-0001bP-Px
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:11:08 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z7wd6-000353-Io
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:11:08 +0000
+Message-ID: <558B632A.4010500@huawei.com>
+Date: Thu, 25 Jun 2015 10:10:50 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1433933962-739-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH V2] detach_device: Wait until the kernel frees the
- loop device
+References: <CANuOEEhmmS_E-O9umbGEHerBONT+bGAOFHH5O055ajH_V+Rgaw@mail.gmail.com>
+In-Reply-To: <CANuOEEhmmS_E-O9umbGEHerBONT+bGAOFHH5O055ajH_V+Rgaw@mail.gmail.com>
+Subject: Re: [LTP] How to specify testcases by running runltp
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,21 +24,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Shuo Yang <yshuo@umich.edu>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-Acked.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
-------------------------------------------------------------------------------
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMjAxNS82LzI1IDk6MjksIFNodW8gWWFuZyB3cm90ZToKPiBIaSBndXlzLAo+IAo+IEkganVz
+dCBzdGFydGVkIHVzaW5nIGx0cCwgc28gdGhpcyBxdWVzdGlvbiBpcyBraW5kIG9mIGR1bWIuIEkg
+d2FudCB0byB1c2UgaXQgdG8gcnVuIHNvbWUgZmlsZSBzeXN0ZW0gdGVzdHMgYnV0IEkgZG9uJ3Qg
+a25vdyB3aGF0IHRoZSBjb21tYW5kIHNob3VsZCBiZS4gQ3VycmVudGx5IEkgY2FuIHJ1biBydW50
+bHAgY29tbWFuZCBidXQgSSBkb24ndCBrbm93IGhvdyB0byBjb250cm9sIHRoZSB0ZXN0Y2FzZXMu
+IEFzc3VtaW5nIHRoZSBmaWxlIHN5c3RlbSBJIHdhbnQgdG8gdGVzdCBpcyB1bmRlciAvdG1wL2Zv
+by8uIENvdWxkIHNvbWVvbmUgdGVsbCBtZSBob3cgY2FuIEkgcnVuIHRoZSB0ZXN0Y2FzZXMgc3Bl
+Y2lmaWNhbGx5IGZvciB0ZXN0aW5nIGZpbGUgc3lzdGVtLiAKPiAKSGksCiIuL3J1bmx0cCAtZiBm
+cyIgY2FuIHJ1biBmaWxlIHN5c3RlbSB0ZXN0Y2FzZXM6CjHjgIFDb21waWxlIHRoZSBMVFAKICAg
+IC4vY29uZmlndXJlIC0tcHJlZml4PVhYL2J1aWxkCiAgICBtYWtlCiAgICBtYWtlIGluc3RhbGwK
+MuOAgVJ1biB0aGUgY2FzZXMgKFlvdSBjYW4gZ2V0IHRoZSBjYXNlcyBhbmQgaG93IHRvIHJ1biB0
+aGVtIGZyb20gcnVudGVzdC8pCiAgICBjZCBYWC9idWlsZAogICAgLi9ydW5sdHAgLWYgZnMKVGhl
+biB0aGUgTFRQIHdpbGwgcnVuIGFsbCB0aGUgY2FzZXMgaW4gcnVudGVzdC9mcyBmaWxlLgoKWW91
+IGNhbiBmaW5kIHRoZSBjYXNlcyB3aGljaCB0byB0ZXN0ICIvdG1wL2Zvby8iIGZyb20gcnVudGVz
+dC94eCBhbmQgYWRkIHRoZW0gdG8gcnVudGVzdC9mc190ZXN0ICh0b3VjaCBpdCksIHRoZW4gLi9y
+dW5sdHAgLWYgZnNfdGVzdC4KCkdvb2QgbHVjaywKQ3VpIEJpeHVhbgoKPiBUaGFua3MsCj4gU2h1
+bwo+IAo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IE1vbml0b3IgMjUgbmV0d29yayBk
+ZXZpY2VzIG9yIHNlcnZlcnMgZm9yIGZyZWUgd2l0aCBPcE1hbmFnZXIhCj4gT3BNYW5hZ2VyIGlz
+IHdlYi1iYXNlZCBuZXR3b3JrIG1hbmFnZW1lbnQgc29mdHdhcmUgdGhhdCBtb25pdG9ycyAKPiBu
+ZXR3b3JrIGRldmljZXMgYW5kIHBoeXNpY2FsICYgdmlydHVhbCBzZXJ2ZXJzLCBhbGVydHMgdmlh
+IGVtYWlsICYgc21zIAo+IGZvciBmYXVsdC4gTW9uaXRvciAyNSBkZXZpY2VzIGZvciBmcmVlIHdp
+dGggbm8gcmVzdHJpY3Rpb24uIERvd25sb2FkIG5vdwo+IGh0dHA6Ly9hZC5kb3VibGVjbGljay5u
+ZXQvZGRtL2Nsay8yOTIxODEyNzQ7MTE5NDE3Mzk4O28KPiAKPiAKPiAKPiBfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlz
+dAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNl
+Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCk1vbml0b3IgMjUgbmV0d29yayBkZXZpY2VzIG9yIHNlcnZlcnMgZm9yIGZyZWUgd2l0aCBP
+cE1hbmFnZXIhCk9wTWFuYWdlciBpcyB3ZWItYmFzZWQgbmV0d29yayBtYW5hZ2VtZW50IHNvZnR3
+YXJlIHRoYXQgbW9uaXRvcnMgCm5ldHdvcmsgZGV2aWNlcyBhbmQgcGh5c2ljYWwgJiB2aXJ0dWFs
+IHNlcnZlcnMsIGFsZXJ0cyB2aWEgZW1haWwgJiBzbXMgCmZvciBmYXVsdC4gTW9uaXRvciAyNSBk
+ZXZpY2VzIGZvciBmcmVlIHdpdGggbm8gcmVzdHJpY3Rpb24uIERvd25sb2FkIG5vdwpodHRwOi8v
+YWQuZG91YmxlY2xpY2submV0L2RkbS9jbGsvMjkyMTgxMjc0OzExOTQxNzM5ODtvCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcg
+bGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
+b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
