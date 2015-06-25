@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1YzbXz-0004jb-Sh
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 02:03:19 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1YzbXx-0005rO-4i
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 02:03:19 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Tue, 2 Jun 2015 04:03:33 -0600
-Message-ID: <1433239413-6032-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1Z87RV-00065X-E9
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 13:43:49 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z87RT-0006sh-Kg
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 13:43:49 +0000
+Message-ID: <558C0652.8060309@oracle.com>
+Date: Thu, 25 Jun 2015 16:46:58 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] Use the value of /proc/sys/kernel/overflowgid as
-	overflowgid.
+References: <55892FA3.80800@oracle.com>
+	<1435117293-16126-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1435117293-16126-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] sem_conpro: cleanup code
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,65 +28,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
-Cc: ltp-list@lists.sourceforge.net
+To: "Wei, Jiangang" <weijg.fnst@cn.fujitsu.com>, ltp-list@lists.sourceforge.net
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
----
- testcases/kernel/containers/userns/userns01.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+Hi!
+On 06/24/2015 06:41 AM, Wei,Jiangang wrote:
+> * It's reasonable to allocate memory after checking
+>    _POSIX_SEMAPHORES.
+>    Allocate 'buf' on the stack to avoid the problem.
+>
+> * remove meaningless printf()
+>
 
-diff --git a/testcases/kernel/containers/userns/userns01.c b/testcases/kernel/containers/userns/userns01.c
-index 8c45774..15cde43 100644
---- a/testcases/kernel/containers/userns/userns01.c
-+++ b/testcases/kernel/containers/userns/userns01.c
-@@ -14,7 +14,8 @@
- /*
-  * Verify that:
-  *  If a user ID has no mapping inside the namespace, user ID and group
-- * ID will be the value defined in the file /proc/sys/kernel/overflowuid, 65534.
-+ * ID will be the value defined in the file /proc/sys/kernel/overflowuid(65534)
-+ * and /proc/sys/kernel/overflowgid(65534).
-  */
- 
- #define _GNU_SOURCE
-@@ -29,12 +30,14 @@
- #include "libclone.h"
- #include "userns_helper.h"
- #define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
-+#define OVERFLOWGIDPATH "/proc/sys/kernel/overflowgid"
- 
- char *TCID = "user_namespace1";
- int TST_TOTAL = 1;
- 
- char fullpath[BUFSIZ];
- long overflowuid;
-+long overflowgid;
- 
- /*
-  * child_fn1() - Inside a new user namespace
-@@ -48,7 +51,7 @@ static int child_fn1(void *arg)
- 	gid = getegid();
- 
- 	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
--	if (uid == overflowuid && gid == overflowuid) {
-+	if (uid == overflowuid && gid == overflowgid) {
- 		printf("Got expected uid and gid\n");
- 		exit_val = 0;
- 	} else {
-@@ -63,6 +66,7 @@ static void setup(void)
- {
- 	check_newuser();
- 	SAFE_FILE_SCANF(NULL, OVERFLOWUIDPATH, "%ld", &overflowuid);
-+	SAFE_FILE_SCANF(NULL, OVERFLOWGIDPATH, "%ld", &overflowgid);
- }
- 
- int main(int argc, char *argv[])
--- 
-1.9.1
+Patch applied. Also removed not needed void cast and fix commit message.
+
+Thanks,
+Alexey
 
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
