@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <manjeet.p@samsung.com>) id 1Yxpfh-0000Xu-Ij
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:43:57 +0000
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Yxpff-0006Er-Rp
-	for ltp-list@lists.sourceforge.net; Thu, 28 May 2015 04:43:57 +0000
-Received: from epcpsbgr1.samsung.com
-	(u141.gpu120.samsung.co.kr [203.254.230.141])
-	by mailout1.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NP10339QMGVXVB0@mailout1.samsung.com> for
-	ltp-list@lists.sourceforge.net; Thu, 28 May 2015 13:43:43 +0900 (KST)
-Date: Thu, 28 May 2015 04:42:57 +0000 (GMT)
-From: Manjeet Pawar <manjeet.p@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <2119318669.190461432788177017.JavaMail.weblogic@epmlwas05c>
-Subject: [LTP]  [PATCH]: Fix possible NULL pointer derefrence
-Reply-To: manjeet.p@samsung.com
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1Z80WP-0008Lf-Jb
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 06:20:25 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1Z80WO-0002mJ-HI
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 06:20:25 +0000
+Message-ID: <558B9D33.1090305@cn.fujitsu.com>
+Date: Thu, 25 Jun 2015 14:18:27 +0800
+From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+MIME-Version: 1.0
+References: <558B6C8C.5000202@huawei.com>
+In-Reply-To: <558B6C8C.5000202@huawei.com>
+Subject: Re: [LTP] Cedric
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,47 +27,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, Yogesh Narayan Gaur <yn.gaur@samsung.com>
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-From: Manjeet Pawar <manjeet.p@samsung.com>
-Subject: [PATCH] testcases/kernel/device-drivers/usb/tusb/tusb.c: Fix possible NULL pointer derefrence
+On 06/25/2015 10:50 AM, Yuan Sun wrote:
+> Hi Cedric,
+>      I encounter the following error in ubuntu14.04. Your patch
+> "syscall/getrandom: Add tests for getrandom" leads to the error.
+>      Do I need to install new libraries?
 
-pdev was accessed before its NULL check, this patch fixes this.
+Try
 
-Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
-Signed-off-by: Yogesh Gaur <yn.gaur@samsung.com>
----
- testcases/kernel/device-drivers/usb/tusb/tusb.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+apt-get install linux-libc-dev
 
-diff --git a/testcases/kernel/device-drivers/usb/tusb/tusb.c b/testcases/kernel/device-drivers/usb/tusb/tusb.c
-index 774600a..258070a 100644
---- a/testcases/kernel/device-drivers/usb/tusb/tusb.c
-+++ b/testcases/kernel/device-drivers/usb/tusb/tusb.c
-@@ -386,14 +386,15 @@ static int test_hcd_probe()
- 	int rc;
- 	struct usb_hcd *hcd = NULL;
- 	struct pci_dev *pdev = ltp_usb.pdev;
--	struct pci_device_id *id =
--	    (struct pci_device_id *)pdev->driver->id_table;
-+	struct pci_device_id *id = NULL;
- 
- 	if (!pdev) {
- 		printk("tusb: pdev pointer not set\n");
- 		return 1;
- 	}
- 
-+	id = (struct pci_device_id *)pdev->driver->id_table;
-+
- 	if (!id || !id->driver_data) {
- 		printk("tusb: id_table not set\n");
- 		return 1;
--- 
-1.7.9.5
+Thanks,
+Wanlong Gao
 
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
