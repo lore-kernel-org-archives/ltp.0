@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2fVM-0000b9-Hu
-	for ltp-list@lists.sourceforge.net; Wed, 10 Jun 2015 12:53:16 +0000
-Date: Wed, 10 Jun 2015 14:52:07 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z86aY-0006ks-IR
+	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 12:49:06 +0000
+Date: Thu, 25 Jun 2015 14:47:50 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150610125207.GC31980@rei.suse.de>
-References: <CAHNg1SruVvcH1TjAmACDW7+CTDOeaHP4j9zvZSQ61PHPgOJTEQ@mail.gmail.com>
-	<55780AF5.5050407@oracle.com>
+Message-ID: <20150625124750.GB2866@rei.suse.de>
+References: <53635abf85856cffa2799ea43f942a619faec342.1435235333.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <55780AF5.5050407@oracle.com>
-Subject: Re: [LTP] How to add test case in LTP for my local use
+In-Reply-To: <53635abf85856cffa2799ea43f942a619faec342.1435235333.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH v2] getrandom: fix compilation with older kernels
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,36 +24,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> For example, you could create a directory somewhere inside your LTP 
-> sources with Makefile including testcases.mk and generic_leaf_target.mk 
-> like this:
-> 
-> top_srcdir              ?= ../
-> 
-> include $(top_srcdir)/include/mk/testcases.mk
-> 
-> include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> 
-> And put your C files there. 'make' and 'make clean' will work inside 
-> this directory.
+> +#ifndef __GETRANDOM_H__
+> +#define __GETRANDOM_H__
+> +
+> +/*
+> + * Flags for getrandom(2)
+> + *
+> + * GRND_NONBLOCK	Don't block and return EAGAIN instead
+> + * GRND_RANDOM		Use the /dev/random pool instead of /dev/urandom
+> + */
+> +
+> +#ifndef GRND_NONBLOCK
+> + #define GRND_NONBLOCK	0x0001
+> +#endif
+> +
+> +#ifndef GRND_RANDOM
+> + #define GRND_RANDOM	0x0002
+> +#endif
 
-The buildsystem is explained in:
+It's usuall to intend the identifier after the # such as:
 
-https://github.com/linux-test-project/ltp/wiki/BuildSystem
+#ifdef
+# define
+#endif
 
-To include the testcase in a testrun you have to add a line into the
-correspoding runtest file (files in runtest/ dirctory).
-(which is explained in the Test Writing Guidelines)
+Since there are some compilers that can't cope with spaces before #
+(at least that is what I've been told).
+
+--
+
+The rest looks fine, acked.
+
+Thanks for doing this.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
