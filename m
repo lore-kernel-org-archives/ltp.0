@@ -1,23 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z8SPJ-000847-AG
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:06:57 +0000
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z8SPH-0006sj-8i
-	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:06:57 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1Z8SQN-0005Is-5Z
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:08:03 +0000
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z8SQL-0008TO-Kb
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:08:03 +0000
 Received: from epcpsbgr3.samsung.com
 	(u143.gpu120.samsung.co.kr [203.254.230.143])
-	by mailout1.samsung.com (Oracle Communications Messaging Server
+	by mailout3.samsung.com (Oracle Communications Messaging Server
 	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NQJ025ZIWBB2OD0@mailout1.samsung.com> for
-	ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 21:06:47 +0900 (KST)
+	with ESMTP id <0NQJ00J1YWD7J140@mailout3.samsung.com> for
+	ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 21:07:55 +0900 (KST)
 From: Maninder Singh <maninder1.s@samsung.com>
-Date: Fri, 26 Jun 2015 17:34:41 +0530
-Message-id: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
-Subject: [LTP] [PATCH 00/13] Use ARRAY_SIZE Macro where possible
+Date: Fri, 26 Jun 2015 17:34:44 +0530
+Message-id: <1435320294-45783-4-git-send-email-maninder1.s@samsung.com>
+In-reply-to: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+Subject: [LTP] [PATCH 03/13] kernel/fs: use ARRAY_SIZE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,57 +36,40 @@ Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 Cc: pankaj.m@samsung.com
 
-Following patchset provides use of ARRAY_SIZE macro
-instead of sizeof(type)/sizeof(type[0]).
 
-Created with following coccinelle patch:- 
-
-@@
-type T;
-T[] E;
-@@
-- (sizeof(E)/sizeof(E[0]))
-+ ARRAY_SIZE(E)
-
-
-Maninder Singh (13):
-  kernel/pidns: use ARRAY_SIZE
-  kernel/fs: use ARRAY_SIZE
-  kernel/fs: use ARRAY_SIZE
-  kernel/mq_timedreceive: use ARRAY_SIZE
-  kernel/mq_open: use ARRAY_SIZE
-  kernel/getxattr: use ARRAY_SIZE
-  kernel/socketpair: use ARRAY_SIZE
-  kernel/mq_timedsend: use ARRAY_SIZE
-  kernel/fadvise: use ARRAY_SIZE
-  kernel/dup2: use ARRAY_SIZE
-  kernel/mq_unlink: use of ARRAY_SIZE
-  kernel/rt_sigaction: use ARRAY_SIZE
-  kernel/nft: use ARRAY_SIZE
-  
 Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com> 
-  
- testcases/kernel/containers/pidns/pidns17.c        |    4 ++--
- testcases/kernel/fs/fsstress/fsstress.c            |    7 ++++---
- testcases/kernel/fs/ftest/ftest02.c                |    2 +-
- testcases/kernel/fs/ftest/ftest06.c                |    2 +-
- testcases/kernel/syscalls/dup2/dup204.c            |    2 +-
- .../kernel/syscalls/fadvise/posix_fadvise01.c      |    2 +-
- .../kernel/syscalls/fadvise/posix_fadvise03.c      |    2 +-
- testcases/kernel/syscalls/getxattr/getxattr01.c    |    4 ++--
- testcases/kernel/syscalls/mq_open/mq_open01.c      |    2 +-
- .../syscalls/mq_timedreceive/mq_timedreceive01.c   |    2 +-
- .../kernel/syscalls/mq_timedsend/mq_timedsend01.c  |    2 +-
- testcases/kernel/syscalls/mq_unlink/mq_unlink01.c  |    2 +-
- testcases/kernel/syscalls/nftw/nftw.c              |    8 ++++----
- testcases/kernel/syscalls/nftw/nftw64.c            |    8 ++++----
- .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |    3 +--
- .../kernel/syscalls/rt_sigaction/rt_sigaction02.c  |    2 +-
- .../kernel/syscalls/rt_sigaction/rt_sigaction03.c  |    2 +-
- .../kernel/syscalls/socketpair/socketpair02.c      |    4 ++--
- 18 files changed, 30 insertions(+), 30 deletions(-)
+Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ testcases/kernel/fs/ftest/ftest02.c |    2 +-
+ testcases/kernel/fs/ftest/ftest06.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/testcases/kernel/fs/ftest/ftest02.c b/testcases/kernel/fs/ftest/ftest02.c
+index ec70d9b..f205961 100644
+--- a/testcases/kernel/fs/ftest/ftest02.c
++++ b/testcases/kernel/fs/ftest/ftest02.c
+@@ -384,7 +384,7 @@ struct ino_thing {
+ } ino_thing[] = {
+ THING(crfile), THING(unlfile), THING(fussdir), THING(sync),};
+ 
+-#define	NTHING	(sizeof(ino_thing) / sizeof(ino_thing[0]))
++#define	NTHING	ARRAY_SIZE(ino_thing)
+ 
+ int thing_cnt[NTHING];
+ int thing_last[NTHING];
+diff --git a/testcases/kernel/fs/ftest/ftest06.c b/testcases/kernel/fs/ftest/ftest06.c
+index 780cdbc..2ca7c88 100644
+--- a/testcases/kernel/fs/ftest/ftest06.c
++++ b/testcases/kernel/fs/ftest/ftest06.c
+@@ -402,7 +402,7 @@ struct ino_thing {
+ } ino_thing[] = {
+ THING(crfile), THING(unlfile), THING(fussdir), THING(sync),};
+ 
+-#define	NTHING	(sizeof(ino_thing) / sizeof(ino_thing[0]))
++#define	NTHING	ARRAY_SIZE(ino_thing)
+ 
+ int thing_cnt[NTHING];
+ int thing_last[NTHING];
 -- 
 1.7.9.5
 
