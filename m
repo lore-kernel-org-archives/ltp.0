@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2IH0-0000Qx-Kf
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 12:04:54 +0000
-Date: Tue, 9 Jun 2015 14:03:50 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150609120350.GA26692@rei.suse.de>
-References: <1433843386-31431-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<20150609105431.GB24843@rei.suse.de> <5576D3E3.5020600@oracle.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <5576D3E3.5020600@oracle.com>
-Subject: Re: [LTP] [PATCH 2/5] acl_test01: Verify the exit code of the
- second test case
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1Z8SQh-0006RY-7S
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:08:23 +0000
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z8SQf-0004eg-85
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:08:23 +0000
+Received: from epcpsbgr3.samsung.com
+	(u143.gpu120.samsung.co.kr [203.254.230.143])
+	by mailout2.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NQJ02FWTWDQZ7B0@mailout2.samsung.com> for
+	ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 21:08:14 +0900 (KST)
+From: Maninder Singh <maninder1.s@samsung.com>
+Date: Fri, 26 Jun 2015 17:34:45 +0530
+Message-id: <1435320294-45783-5-git-send-email-maninder1.s@samsung.com>
+In-reply-to: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+Subject: [LTP] [PATCH 04/13] kernel/mq_timedreceive: use ARRAY_SIZE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,38 +29,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: pankaj.m@samsung.com
 
-Hi!
-> > We should probably wrap the su into a script that makes sure that the
-> > return value is compatible with LTP. Because it may set bogus test
-> > return status if su reported anything else than 0 or 1.
-> 
-> Ehm, but -c "$0" will execute the same script which, in turn, will exit 
-> using tst_exit.
 
-Yep, but the su man page specifies return values:
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ .../syscalls/mq_timedreceive/mq_timedreceive01.c   |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-128 + signal_nr - command terminated by signal
-127 - command cannot be executed (this one is actually handled in test.sh)
-126 - command not found
-255 - su was asked to terminate and had to kill the program
-
-And if none of the abowe happens it retuns the return value from the
-script.
-
-So if the script gets killed by signal of failed to executed (or cannot
-be found in $PATH) the return value will be wrong.
-
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index 945e2fa..7023e3d 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -449,7 +449,7 @@ int main(int ac, char **av)
+ 			/*
+ 			 * Execute test
+ 			 */
+-			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
++			for (i = 0; i < (int)ARRAY_SIZE(tcase);
+ 			     i++) {
+ 				int ret;
+ 				tst_resm(TINFO, "(case%02d) START", i);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.9.5
+
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
