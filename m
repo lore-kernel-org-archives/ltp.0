@@ -1,21 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1Yzgpw-00072j-21
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 07:42:12 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Yzgpq-0004Ht-9n
-	for ltp-list@lists.sourceforge.net; Tue, 02 Jun 2015 07:42:12 +0000
-Date: Tue, 2 Jun 2015 03:41:53 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1730844907.8987752.1433230913614.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1433239413-6032-1-git-send-email-sunyuan3@huawei.com>
-References: <1433239413-6032-1-git-send-email-sunyuan3@huawei.com>
+	(envelope-from <sunyuan3@huawei.com>) id 1Z8Q6p-0007P6-IA
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 09:39:43 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z8Q6n-0002Yj-4k
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 09:39:43 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Fri, 26 Jun 2015 11:45:37 -0600
+Message-ID: <1435340737-16403-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] Use the value of /proc/sys/kernel/overflowgid as
- overflowgid.
+Subject: [LTP] [PATCH] pidns: Update TCID from pid_namespace to pidns.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,86 +25,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
+To: jstancek@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+---
+ testcases/kernel/containers/pidns/pidns01.c | 2 +-
+ testcases/kernel/containers/pidns/pidns02.c | 2 +-
+ testcases/kernel/containers/pidns/pidns03.c | 2 +-
+ testcases/kernel/containers/pidns/pidns04.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/testcases/kernel/containers/pidns/pidns01.c b/testcases/kernel/containers/pidns/pidns01.c
+index 5af6149..234f2b8 100644
+--- a/testcases/kernel/containers/pidns/pidns01.c
++++ b/testcases/kernel/containers/pidns/pidns01.c
+@@ -58,7 +58,7 @@
+ #include "libclone.h"
+ #include "pidns_helper.h"
+ 
+-char *TCID = "pid_namespace1";
++char *TCID = "pidns01";
+ int TST_TOTAL = 1;
+ 
+ #define CHILD_PID       1
+diff --git a/testcases/kernel/containers/pidns/pidns02.c b/testcases/kernel/containers/pidns/pidns02.c
+index b10f4b9..53f487a 100644
+--- a/testcases/kernel/containers/pidns/pidns02.c
++++ b/testcases/kernel/containers/pidns/pidns02.c
+@@ -54,7 +54,7 @@
+ #include "libclone.h"
+ #include "pidns_helper.h"
+ 
+-char *TCID = "pid_namespace2";
++char *TCID = "pidns02";
+ int TST_TOTAL = 1;
+ 
+ #define PGID	1
+diff --git a/testcases/kernel/containers/pidns/pidns03.c b/testcases/kernel/containers/pidns/pidns03.c
+index ecd2627..2014bb8 100644
+--- a/testcases/kernel/containers/pidns/pidns03.c
++++ b/testcases/kernel/containers/pidns/pidns03.c
+@@ -37,7 +37,7 @@
+ #include "pidns_helper.h"
+ 
+ #define PROCDIR "proc"
+-char *TCID	= "pidns03";
++char *TCID = "pidns03";
+ int TST_TOTAL	= 1;
+ 
+ 
+diff --git a/testcases/kernel/containers/pidns/pidns04.c b/testcases/kernel/containers/pidns/pidns04.c
+index 6be8e1c..9f2547c 100644
+--- a/testcases/kernel/containers/pidns/pidns04.c
++++ b/testcases/kernel/containers/pidns/pidns04.c
+@@ -65,7 +65,7 @@
+ #define CHILD_PID       1
+ #define PARENT_PID      0
+ 
+-char *TCID = "pid_namespace4";
++char *TCID = "pidns04";
+ int TST_TOTAL = 1;
+ int fd[2];
+ 
+-- 
+1.9.1
 
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 2 June, 2015 12:03:33 PM
-> Subject: [PATCH] Use the value of /proc/sys/kernel/overflowgid as overflowgid.
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-
-Hi,
-
-pushed, I have also remove unused global variable and made the 2 remaining static.
-
-Regards,
-Jan
-
-> ---
->  testcases/kernel/containers/userns/userns01.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/containers/userns/userns01.c
-> b/testcases/kernel/containers/userns/userns01.c
-> index 8c45774..15cde43 100644
-> --- a/testcases/kernel/containers/userns/userns01.c
-> +++ b/testcases/kernel/containers/userns/userns01.c
-> @@ -14,7 +14,8 @@
->  /*
->   * Verify that:
->   *  If a user ID has no mapping inside the namespace, user ID and group
-> - * ID will be the value defined in the file /proc/sys/kernel/overflowuid,
-> 65534.
-> + * ID will be the value defined in the file
-> /proc/sys/kernel/overflowuid(65534)
-> + * and /proc/sys/kernel/overflowgid(65534).
->   */
->  
->  #define _GNU_SOURCE
-> @@ -29,12 +30,14 @@
->  #include "libclone.h"
->  #include "userns_helper.h"
->  #define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
-> +#define OVERFLOWGIDPATH "/proc/sys/kernel/overflowgid"
->  
->  char *TCID = "user_namespace1";
->  int TST_TOTAL = 1;
->  
->  char fullpath[BUFSIZ];
->  long overflowuid;
-> +long overflowgid;
->  
->  /*
->   * child_fn1() - Inside a new user namespace
-> @@ -48,7 +51,7 @@ static int child_fn1(void *arg)
->  	gid = getegid();
->  
->  	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
-> -	if (uid == overflowuid && gid == overflowuid) {
-> +	if (uid == overflowuid && gid == overflowgid) {
->  		printf("Got expected uid and gid\n");
->  		exit_val = 0;
->  	} else {
-> @@ -63,6 +66,7 @@ static void setup(void)
->  {
->  	check_newuser();
->  	SAFE_FILE_SCANF(NULL, OVERFLOWUIDPATH, "%ld", &overflowuid);
-> +	SAFE_FILE_SCANF(NULL, OVERFLOWGIDPATH, "%ld", &overflowgid);
->  }
->  
->  int main(int argc, char *argv[])
-> --
-> 1.9.1
-> 
-> 
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
