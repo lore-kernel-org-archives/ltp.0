@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z2GPB-0004V9-NP
-	for ltp-list@lists.sourceforge.net; Tue, 09 Jun 2015 10:05:13 +0000
-Date: Tue, 9 Jun 2015 12:04:09 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150609100408.GD24041@rei.suse.de>
-References: <1433843386-31431-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-	<1433843386-31431-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1Z8QYY-0006pv-BW
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 10:08:22 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Z8QYX-0003OH-7Z
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 10:08:22 +0000
+Date: Fri, 26 Jun 2015 06:08:11 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <728554750.8033702.1435313291160.JavaMail.zimbra@redhat.com>
+In-Reply-To: <558B5BE1.5040602@huawei.com>
+References: <cfc70376b0c3835b040bef9125f2917926a56ec9.1435139859.git.jstancek@redhat.com>
+	<558B5BE1.5040602@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1433843386-31431-3-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: Re: [LTP] [PATCH 3/5] acl_test01: Hide unnecessary output
+Subject: Re: [LTP] [PATCH v5] containers: new testcase userns04
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,17 +28,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-This one is fine, acked.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+----- Original Message -----
+> From: "Yuan Sun" <sunyuan3@huawei.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 25 June, 2015 3:39:45 AM
+> Subject: Re: [PATCH v5] containers: new testcase userns04
+> 
+<snip>
+> I agree with you. Could you please merge the patch v5?
+
+Pushed.
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
