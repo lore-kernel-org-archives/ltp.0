@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1Z5v45-00033g-Iz
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 12:06:33 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Z5v44-00009y-NX
-	for ltp-list@lists.sourceforge.net; Fri, 19 Jun 2015 12:06:33 +0000
-Message-ID: <55840688.1010202@oracle.com>
-Date: Fri, 19 Jun 2015 15:09:44 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-MIME-Version: 1.0
-References: <144413988.54651434713150877.JavaMail.weblogic@ep2mlwas06b>
-In-Reply-To: <144413988.54651434713150877.JavaMail.weblogic@ep2mlwas06b>
-Subject: Re: [LTP] [PATCH]: Fix memory leak by freeing buf
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1Z8SRj-0002cH-O2
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:09:27 +0000
+Received: from mailout4.samsung.com ([203.254.224.34])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z8SRi-0004gM-Iz
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:09:27 +0000
+Received: from epcpsbgr2.samsung.com
+	(u142.gpu120.samsung.co.kr [203.254.230.142])
+	by mailout4.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NQJ01J4SWFJTYD0@mailout4.samsung.com> for
+	ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 21:09:19 +0900 (KST)
+From: Maninder Singh <maninder1.s@samsung.com>
+Date: Fri, 26 Jun 2015 17:34:47 +0530
+Message-id: <1435320294-45783-7-git-send-email-maninder1.s@samsung.com>
+In-reply-to: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+Subject: [LTP] [PATCH 06/13] kernel/getxattr: use ARRAY_SIZE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,73 +29,52 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: manjeet.p@samsung.com, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, AKHILESH KUMAR <akhilesh.k@samsung.com>
+To: ltp-list@lists.sourceforge.net
+Cc: pankaj.m@samsung.com
 
-Hi!
-On 06/19/2015 02:25 PM, Manjeet Pawar wrote:
-> From: Manjeet Pawar <manjeet.p@samsung.com>
-> Date: Fri, 19 Jun 2015 16:45:54 +0530
-> Subject: [PATCH] testcases/open_posix_testsuite/functional/semaphores: Fix memory leak by freeing buf
->
-> This patch fix memory leak by freeing memory leak before function return
->
-> Signed-off-by: Manjeet Pawar <manjeet.p@samsung.com>
-> Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
-> ---
->   .../functional/semaphores/sem_conpro.c             |    5 +++++
->   1 file changed, 5 insertions(+)
->
-> diff --git a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
-> index f5f1abf..f3a4cfb 100644
-> --- a/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
-> +++ b/testcases/open_posix_testsuite/functional/semaphores/sem_conpro.c
-> @@ -106,19 +106,23 @@ int main(int argc, char *argv[])
->   
->   #ifndef  _POSIX_SEMAPHORES
->   	printf("_POSIX_SEMAPHORES is not defined \n");
-> +	free(buf);
->   	return PTS_UNRESOLVED;
->   #endif
->   	if (-1 == sem_init(&(buf->occupied), shared, occupied_value)) {
->   		perror("sem_init didn't return success \n");
->   		printf("hello \n");
-> +		free(buf);
->   		return PTS_UNRESOLVED;
->   	}
->   	if (-1 == sem_init(&buf->empty, shared, empty_value)) {
->   		perror("sem_init didn't return success \n");
-> +		free(buf);
->   		return PTS_UNRESOLVED;
->   	}
->   	if (-1 == sem_init(&buf->lock, shared, lock_value)) {
->   		perror("sem_init didn't return success \n");
-> +		free(buf);
->   		return PTS_UNRESOLVED;
->   	}
->   	in = out = 0;
-> @@ -129,5 +133,6 @@ int main(int argc, char *argv[])
->   	pthread_join(pro, NULL);
->   	sem_destroy(&buf->occupied);
->   	sem_destroy(&buf->empty);
-> +	free(buf);
->   	return PTS_PASS;
->   }
 
-The program terminating after free() so it will be freed in any case, I 
-don't see memory leak here.
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ testcases/kernel/syscalls/getxattr/getxattr01.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-I think the better change would be to check the return value from 
-malloc() (e.g. using SAFE_MALLOC) or allocate 'buf' on the stack.
-
-Thanks,
-Alexey
+diff --git a/testcases/kernel/syscalls/getxattr/getxattr01.c b/testcases/kernel/syscalls/getxattr/getxattr01.c
+index 91d14fa..480a26f 100644
+--- a/testcases/kernel/syscalls/getxattr/getxattr01.c
++++ b/testcases/kernel/syscalls/getxattr/getxattr01.c
+@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		for (i = 0; i < (sizeof(tc) / sizeof(tc[0])); i++) {
++		for (i = 0; i < ARRAY_SIZE(tc); i++) {
+ 			TEST(getxattr(tc[i].fname, tc[i].key, tc[i].value,
+ 				      tc[i].size));
+ 
+@@ -156,7 +156,7 @@ static void setup(void)
+ 	}
+ 
+ 	/* Prepare test cases */
+-	for (i = 0; i < (sizeof(tc) / sizeof(tc[0])); i++) {
++	for (i = 0; i <  ARRAY_SIZE(tc); i++) {
+ 		tc[i].value = malloc(BUFFSIZE);
+ 		if (tc[i].value == NULL) {
+ 			tst_brkm(TBROK | TERRNO, cleanup,
+-- 
+1.7.9.5
 
 
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
