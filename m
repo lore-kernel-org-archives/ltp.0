@@ -1,20 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1Z7wdA-0001bP-Px
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:11:08 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z7wd6-000353-Io
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:11:08 +0000
-Message-ID: <558B632A.4010500@huawei.com>
-Date: Thu, 25 Jun 2015 10:10:50 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
-MIME-Version: 1.0
-References: <CANuOEEhmmS_E-O9umbGEHerBONT+bGAOFHH5O055ajH_V+Rgaw@mail.gmail.com>
-In-Reply-To: <CANuOEEhmmS_E-O9umbGEHerBONT+bGAOFHH5O055ajH_V+Rgaw@mail.gmail.com>
-Subject: Re: [LTP] How to specify testcases by running runltp
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1Z8SRO-0005Mf-Jn
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:09:06 +0000
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z8SRN-0004fu-D3
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:09:06 +0000
+Received: from epcpsbgr3.samsung.com
+	(u143.gpu120.samsung.co.kr [203.254.230.143])
+	by mailout1.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NQJ0250WWEYNTE0@mailout1.samsung.com> for
+	ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 21:08:58 +0900 (KST)
+From: Maninder Singh <maninder1.s@samsung.com>
+Date: Fri, 26 Jun 2015 17:34:46 +0530
+Message-id: <1435320294-45783-6-git-send-email-maninder1.s@samsung.com>
+In-reply-to: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+Subject: [LTP] [PATCH 05/13] kernel/mq_open: use ARRAY_SIZE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,46 +29,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Shuo Yang <yshuo@umich.edu>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: pankaj.m@samsung.com
 
-T24gMjAxNS82LzI1IDk6MjksIFNodW8gWWFuZyB3cm90ZToKPiBIaSBndXlzLAo+IAo+IEkganVz
-dCBzdGFydGVkIHVzaW5nIGx0cCwgc28gdGhpcyBxdWVzdGlvbiBpcyBraW5kIG9mIGR1bWIuIEkg
-d2FudCB0byB1c2UgaXQgdG8gcnVuIHNvbWUgZmlsZSBzeXN0ZW0gdGVzdHMgYnV0IEkgZG9uJ3Qg
-a25vdyB3aGF0IHRoZSBjb21tYW5kIHNob3VsZCBiZS4gQ3VycmVudGx5IEkgY2FuIHJ1biBydW50
-bHAgY29tbWFuZCBidXQgSSBkb24ndCBrbm93IGhvdyB0byBjb250cm9sIHRoZSB0ZXN0Y2FzZXMu
-IEFzc3VtaW5nIHRoZSBmaWxlIHN5c3RlbSBJIHdhbnQgdG8gdGVzdCBpcyB1bmRlciAvdG1wL2Zv
-by8uIENvdWxkIHNvbWVvbmUgdGVsbCBtZSBob3cgY2FuIEkgcnVuIHRoZSB0ZXN0Y2FzZXMgc3Bl
-Y2lmaWNhbGx5IGZvciB0ZXN0aW5nIGZpbGUgc3lzdGVtLiAKPiAKSGksCiIuL3J1bmx0cCAtZiBm
-cyIgY2FuIHJ1biBmaWxlIHN5c3RlbSB0ZXN0Y2FzZXM6CjHjgIFDb21waWxlIHRoZSBMVFAKICAg
-IC4vY29uZmlndXJlIC0tcHJlZml4PVhYL2J1aWxkCiAgICBtYWtlCiAgICBtYWtlIGluc3RhbGwK
-MuOAgVJ1biB0aGUgY2FzZXMgKFlvdSBjYW4gZ2V0IHRoZSBjYXNlcyBhbmQgaG93IHRvIHJ1biB0
-aGVtIGZyb20gcnVudGVzdC8pCiAgICBjZCBYWC9idWlsZAogICAgLi9ydW5sdHAgLWYgZnMKVGhl
-biB0aGUgTFRQIHdpbGwgcnVuIGFsbCB0aGUgY2FzZXMgaW4gcnVudGVzdC9mcyBmaWxlLgoKWW91
-IGNhbiBmaW5kIHRoZSBjYXNlcyB3aGljaCB0byB0ZXN0ICIvdG1wL2Zvby8iIGZyb20gcnVudGVz
-dC94eCBhbmQgYWRkIHRoZW0gdG8gcnVudGVzdC9mc190ZXN0ICh0b3VjaCBpdCksIHRoZW4gLi9y
-dW5sdHAgLWYgZnNfdGVzdC4KCkdvb2QgbHVjaywKQ3VpIEJpeHVhbgoKPiBUaGFua3MsCj4gU2h1
-bwo+IAo+IAo+IAo+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IE1vbml0b3IgMjUgbmV0d29yayBk
-ZXZpY2VzIG9yIHNlcnZlcnMgZm9yIGZyZWUgd2l0aCBPcE1hbmFnZXIhCj4gT3BNYW5hZ2VyIGlz
-IHdlYi1iYXNlZCBuZXR3b3JrIG1hbmFnZW1lbnQgc29mdHdhcmUgdGhhdCBtb25pdG9ycyAKPiBu
-ZXR3b3JrIGRldmljZXMgYW5kIHBoeXNpY2FsICYgdmlydHVhbCBzZXJ2ZXJzLCBhbGVydHMgdmlh
-IGVtYWlsICYgc21zIAo+IGZvciBmYXVsdC4gTW9uaXRvciAyNSBkZXZpY2VzIGZvciBmcmVlIHdp
-dGggbm8gcmVzdHJpY3Rpb24uIERvd25sb2FkIG5vdwo+IGh0dHA6Ly9hZC5kb3VibGVjbGljay5u
-ZXQvZGRtL2Nsay8yOTIxODEyNzQ7MTE5NDE3Mzk4O28KPiAKPiAKPiAKPiBfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEx0cC1saXN0IG1haWxpbmcgbGlz
-dAo+IEx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldAo+IGh0dHBzOi8vbGlzdHMuc291cmNl
-Zm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cj4gCgoKLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCk1vbml0b3IgMjUgbmV0d29yayBkZXZpY2VzIG9yIHNlcnZlcnMgZm9yIGZyZWUgd2l0aCBP
-cE1hbmFnZXIhCk9wTWFuYWdlciBpcyB3ZWItYmFzZWQgbmV0d29yayBtYW5hZ2VtZW50IHNvZnR3
-YXJlIHRoYXQgbW9uaXRvcnMgCm5ldHdvcmsgZGV2aWNlcyBhbmQgcGh5c2ljYWwgJiB2aXJ0dWFs
-IHNlcnZlcnMsIGFsZXJ0cyB2aWEgZW1haWwgJiBzbXMgCmZvciBmYXVsdC4gTW9uaXRvciAyNSBk
-ZXZpY2VzIGZvciBmcmVlIHdpdGggbm8gcmVzdHJpY3Rpb24uIERvd25sb2FkIG5vdwpodHRwOi8v
-YWQuZG91YmxlY2xpY2submV0L2RkbS9jbGsvMjkyMTgxMjc0OzExOTQxNzM5ODtvCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkx0cC1saXN0IG1haWxpbmcg
-bGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQKaHR0cHM6Ly9saXN0cy5zb3VyY2Vm
-b3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ testcases/kernel/syscalls/mq_open/mq_open01.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
+index 3c2d1b1..febbbd3 100644
+--- a/testcases/kernel/syscalls/mq_open/mq_open01.c
++++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
+@@ -405,7 +405,7 @@ int main(int ac, char **av)
+ 			/*
+ 			 * Execute test
+ 			 */
+-			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
++			for (i = 0; i < (int)ARRAY_SIZE(tcase);
+ 			     i++) {
+ 				int ret;
+ 				tst_resm(TINFO, "(case%02d) START", i);
+-- 
+1.7.9.5
+
+
+------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
