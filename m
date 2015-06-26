@@ -1,18 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1Z7xGS-00035y-6o
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:51:44 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z7xGQ-0003zq-I3
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:51:44 +0000
-Message-ID: <558B6CA8.30205@huawei.com>
-Date: Thu, 25 Jun 2015 10:51:20 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
-MIME-Version: 1.0
-Subject: [LTP] error: 'GRND_RANDOM' undeclared here
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1Z8SPb-0005Fj-63
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:07:15 +0000
+Received: from mailout4.samsung.com ([203.254.224.34])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Z8SPZ-0006t8-P2
+	for ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 12:07:15 +0000
+Received: from epcpsbgr4.samsung.com
+	(u144.gpu120.samsung.co.kr [203.254.230.144])
+	by mailout4.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NQJ01J27WBUTYD0@mailout4.samsung.com> for
+	ltp-list@lists.sourceforge.net; Fri, 26 Jun 2015 21:07:06 +0900 (KST)
+From: Maninder Singh <maninder1.s@samsung.com>
+Date: Fri, 26 Jun 2015 17:34:42 +0530
+Message-id: <1435320294-45783-2-git-send-email-maninder1.s@samsung.com>
+In-reply-to: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+Subject: [LTP] [PATCH 01/13] kernel/pidns: use ARRAY_SIZE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,73 +29,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ced.hnyda@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: pankaj.m@samsung.com
 
-Hi Cedric,
-     I encounter the following error in ubuntu14.04. Your patch
-"syscall/getrandom: Add tests for getrandom" leads to the error.
-     Do I need to install new libraries?
-     Could you please check with the issue?
-     Thanks.
-         Yuan
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+---
+ testcases/kernel/containers/pidns/pidns17.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-make[4]: Entering directory 
-`/home/s00318865/0625/ltp/testcases/kernel/syscalls/getrandom'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 
--Wold-style-definition 
--I/home/s00318865/0625/ltp/testcases/kernel/include 
--I../../../../include -I../../../../include   -L../../../../lib 
-getrandom01.c   -lltp -o getrandom01
-getrandom01.c:34:26: error: 'GRND_RANDOM' undeclared here (not in a 
-function)
-  static int modes[] = {0, GRND_RANDOM, GRND_NONBLOCK,
-                           ^
-getrandom01.c:34:39: error: 'GRND_NONBLOCK' undeclared here (not in a 
-function)
-  static int modes[] = {0, GRND_RANDOM, GRND_NONBLOCK,
-                                        ^
-In file included from ../../../../include/test.h:46:0,
-                  from getrandom01.c:32:
-getrandom01.c: In function 'main':
-getrandom01.c:51:17: error: 'SYS_getrandom' undeclared (first use in 
-this function)
-     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
-                  ^
-../../../../include/usctest.h:69:17: note: in definition of macro 'TEST'
-    TEST_RETURN = SCALL; \
-                  ^
-getrandom01.c:51:17: note: each undeclared identifier is reported only 
-once for each function it appears in
-     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
-                  ^
-../../../../include/usctest.h:69:17: note: in definition of macro 'TEST'
-    TEST_RETURN = SCALL; \
-                  ^
-getrandom01.c:51:4: warning: passing argument 1 of 'syscall' makes 
-integer from pointer without a cast [enabled by default]
-     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
-     ^
-In file included from ../../../../include/test.h:39:0,
-                  from getrandom01.c:32:
-/usr/include/unistd.h:1058:17: note: expected 'long int' but argument is 
-of type 'int *'
-  extern long int syscall (long int __sysno, ...) __THROW;
-                  ^
-make[4]: *** [getrandom01] Error 1
-make[4]: Leaving directory 
-`/home/s00318865/0625/ltp/testcases/kernel/syscalls/getrandom'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory 
-`/home/s00318865/0625/ltp/testcases/kernel/syscalls'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/home/s00318865/0625/ltp/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/s00318865/0625/ltp/testcases'
-make: *** [testcases-all] Error 2
+diff --git a/testcases/kernel/containers/pidns/pidns17.c b/testcases/kernel/containers/pidns/pidns17.c
+index 354716a..16dbaea 100644
+--- a/testcases/kernel/containers/pidns/pidns17.c
++++ b/testcases/kernel/containers/pidns/pidns17.c
+@@ -74,7 +74,7 @@ int child_fn(void *arg)
+ 	exit_val = 0;
+ 
+ 	/* Spawn many children */
+-	for (i = 0; i < (sizeof(children) / sizeof(children[0])); i++) {
++	for (i = 0; i < ARRAY_SIZE(children); i++) {
+ 		switch ((children[i] = fork())) {
+ 		case -1:
+ 			perror("fork failed");
+@@ -98,7 +98,7 @@ int child_fn(void *arg)
+ 		exit_val = 1;
+ 	}
+ 
+-	for (i = 0; i < (sizeof(children) / sizeof(children[0])); i++) {
++	for (i = 0; i < ARRAY_SIZE(children); i++) {
+ 		if (waitpid(children[i], &status, 0) == -1) {
+ 			perror("cinit: waitpid failed");
+ 			kill(children[i], SIGTERM);
+-- 
+1.7.9.5
+
 
 ------------------------------------------------------------------------------
 Monitor 25 network devices or servers for free with OpManager!
