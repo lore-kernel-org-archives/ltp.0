@@ -1,26 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1Z4UOO-0002A0-2h
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:25:36 +0000
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Z4UOM-0006fA-Kr
-	for ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 13:25:36 +0000
-Received: from epcpsbgr5.samsung.com
-	(u145.gpu120.samsung.co.kr [203.254.230.145])
-	by mailout3.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NPZ02AW7MMG7D30@mailout3.samsung.com> for
-	ltp-list@lists.sourceforge.net; Mon, 15 Jun 2015 22:25:28 +0900 (KST)
-Date: Mon, 15 Jun 2015 13:25:07 +0000 (GMT)
-From: Maninder Singh <maninder1.s@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1820755031.1047751434374707901.JavaMail.weblogic@epmlwas03c>
-Subject: [LTP] [PATCH 6/7] pan/symbol.c: remove unnecessary malloc type cast
-Reply-To: maninder1.s@samsung.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Z9aHI-0000Rz-AU
+	for ltp-list@lists.sourceforge.net; Mon, 29 Jun 2015 14:43:20 +0000
+Date: Mon, 29 Jun 2015 16:41:59 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150629144159.GB24350@rei.suse.de>
+References: <1434610097-15874-1-git-send-email-liwang@redhat.com>
+	<1750983670.20645133.1435571726272.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1750983670.20645133.1435571726272.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH v2] futex: regression test for take hugepages
+	into	account when generating futex_key
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,39 +26,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Li Wang <liwang@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Signed-off-by: Akhilesh Kumar <akhilesh.k@samsung.com>
----
- pan/symbol.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi!
+> Ping~
+> Any comments?
 
-diff --git a/pan/symbol.c b/pan/symbol.c
-index ca9964a..3752114 100644
---- a/pan/symbol.c
-+++ b/pan/symbol.c
-@@ -86,7 +86,7 @@ SYM newsym(void)
- {
- 	SYM h;
- 
--	if ((h = (SYM) malloc(sizeof(struct symh))) == NULL) {
-+	if ((h = malloc(sizeof(struct symh))) == NULL) {
- 		sym_error = "sym header malloc failed!";
- 		return (NULL);
- 	}
-@@ -101,7 +101,7 @@ static struct sym *mknode(struct sym *next, char *key, void *data)
- {
- 	struct sym *n;
- 
--	if ((n = (struct sym *)malloc(sizeof(struct sym))) == NULL) {
-+	if ((n = malloc(sizeof(struct sym))) == NULL) {
- 		sym_error = "sym node malloc failed!";
- 		return (NULL);
- 	}
+Sorry for the delay. Looks good, but the race codintion with the
+semaphores is still possible, although unlikely.
+
+Because the semaphore is posted before the second thread is locked on
+the futex, there is slight possibility that the futex_wake() (from the
+main thread) is called before the second thread sleeps in the futex
+which will cause the testcase to fail.
+
+I will isolate the function to assert that threads are sleeping in
+kernel from the futex testcase and change this test to make use of it
+and commit it.
+
 -- 
-1.7.9.5
+Cyril Hrubis
+chrubis@suse.cz
+
 ------------------------------------------------------------------------------
+Monitor 25 network devices or servers for free with OpManager!
+OpManager is web-based network management software that monitors 
+network devices and physical & virtual servers, alerts via email & sms 
+for fault. Monitor 25 devices for free with no restriction. Download now
+http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
