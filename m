@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1Z7xG2-00045i-Qk
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:51:18 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Z7xFy-00063f-TT
-	for ltp-list@lists.sourceforge.net; Thu, 25 Jun 2015 02:51:18 +0000
-Message-ID: <558B6C8C.5000202@huawei.com>
-Date: Thu, 25 Jun 2015 10:50:52 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
-MIME-Version: 1.0
-Subject: [LTP] Cedric
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1Z9osp-0003bV-I5
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2015 06:19:03 +0000
+Received: from mail-pa0-f43.google.com ([209.85.220.43])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z9oso-00087K-QA
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2015 06:19:03 +0000
+Received: by pacws9 with SMTP id ws9so192971pac.0
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 29 Jun 2015 23:18:57 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Tue, 30 Jun 2015 14:18:45 +0800
+Message-Id: <1435645125-5434-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCH] containers: Use raw setns syscall for versions of
+	glibc that don't include it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,80 +25,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ced.hnyda@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi Cedric,
-     I encounter the following error in ubuntu14.04. Your patch
-"syscall/getrandom: Add tests for getrandom" leads to the error.
-     Do I need to install new libraries?
-     Could you please check with the issue?
-     Thanks.
-         Yuan
+On RHEL6.6, the kernel support setns syscall, but glibc(2.12) does not support
+this syscall. Thus ltp build failed with "userns04.c:58: undefined reference
+to `setns'". Use raw setns syscall to make ltp build pass.
 
-make[4]: Entering directory 
-`/home/s00318865/0625/ltp/testcases/kernel/syscalls/getrandom'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 
--Wold-style-definition 
--I/home/s00318865/0625/ltp/testcases/kernel/include 
--I../../../../include -I../../../../include   -L../../../../lib 
-getrandom01.c   -lltp -o getrandom01
-getrandom01.c:34:26: error: 'GRND_RANDOM' undeclared here (not in a 
-function)
-  static int modes[] = {0, GRND_RANDOM, GRND_NONBLOCK,
-                           ^
-getrandom01.c:34:39: error: 'GRND_NONBLOCK' undeclared here (not in a 
-function)
-  static int modes[] = {0, GRND_RANDOM, GRND_NONBLOCK,
-                                        ^
-In file included from ../../../../include/test.h:46:0,
-                  from getrandom01.c:32:
-getrandom01.c: In function 'main':
-getrandom01.c:51:17: error: 'SYS_getrandom' undeclared (first use in 
-this function)
-     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
-                  ^
-../../../../include/usctest.h:69:17: note: in definition of macro 'TEST'
-    TEST_RETURN = SCALL; \
-                  ^
-getrandom01.c:51:17: note: each undeclared identifier is reported only 
-once for each function it appears in
-     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
-                  ^
-../../../../include/usctest.h:69:17: note: in definition of macro 'TEST'
-    TEST_RETURN = SCALL; \
-                  ^
-getrandom01.c:51:4: warning: passing argument 1 of 'syscall' makes 
-integer from pointer without a cast [enabled by default]
-     TEST(syscall(SYS_getrandom, NULL, 100, modes[i]));
-     ^
-In file included from ../../../../include/test.h:39:0,
-                  from getrandom01.c:32:
-/usr/include/unistd.h:1058:17: note: expected 'long int' but argument is 
-of type 'int *'
-  extern long int syscall (long int __sysno, ...) __THROW;
-                  ^
-make[4]: *** [getrandom01] Error 1
-make[4]: Leaving directory 
-`/home/s00318865/0625/ltp/testcases/kernel/syscalls/getrandom'
-make[3]: *** [all] Error 2
-make[3]: Leaving directory 
-`/home/s00318865/0625/ltp/testcases/kernel/syscalls'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/home/s00318865/0625/ltp/testcases/kernel'
-make[1]: *** [all] Error 2
-make[1]: Leaving directory `/home/s00318865/0625/ltp/testcases'
-make: *** [testcases-all] Error 2
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ testcases/kernel/containers/userns/userns_helper.h | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/testcases/kernel/containers/userns/userns_helper.h b/testcases/kernel/containers/userns/userns_helper.h
+index da03bae..9107886 100644
+--- a/testcases/kernel/containers/userns/userns_helper.h
++++ b/testcases/kernel/containers/userns/userns_helper.h
+@@ -15,6 +15,19 @@
+ #include "test.h"
+ #include "safe_macros.h"
+ 
++/*
++ * Use raw setns syscall for versions of glibc that don't include it (namely
++ * glibc-2.12)
++ */
++#if __GLIBC__ == 2 && __GLIBC_MINOR__ < 14
++#ifdef SYS_setns
++int setns(int fd, int nstype)
++{
++	return syscall(SYS_setns, fd, nstype);
++}
++#endif
++#endif
++
+ static int dummy_child(void *v)
+ {
+ 	(void) v;
+-- 
+1.9.3
+
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
