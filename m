@@ -1,19 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Z9aHI-0000Rz-AU
-	for ltp-list@lists.sourceforge.net; Mon, 29 Jun 2015 14:43:20 +0000
-Date: Mon, 29 Jun 2015 16:41:59 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150629144159.GB24350@rei.suse.de>
-References: <1434610097-15874-1-git-send-email-liwang@redhat.com>
-	<1750983670.20645133.1435571726272.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1750983670.20645133.1435571726272.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH v2] futex: regression test for take hugepages
-	into	account when generating futex_key
+	(envelope-from <liuhangbin@gmail.com>) id 1Z9otL-0002f0-Nq
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2015 06:19:35 +0000
+Received: from mail-pd0-f177.google.com ([209.85.192.177])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Z9otL-0006yr-1m
+	for ltp-list@lists.sourceforge.net; Tue, 30 Jun 2015 06:19:35 +0000
+Received: by pdbci14 with SMTP id ci14so187460pdb.2
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 29 Jun 2015 23:19:29 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Tue, 30 Jun 2015 14:19:15 +0800
+Message-Id: <1435645155-5486-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCH] containers: remote duplicated header file
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,38 +24,41 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> Ping~
-> Any comments?
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ testcases/kernel/containers/libclone/libclone.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-Sorry for the delay. Looks good, but the race codintion with the
-semaphores is still possible, although unlikely.
-
-Because the semaphore is posted before the second thread is locked on
-the futex, there is slight possibility that the futex_wake() (from the
-main thread) is called before the second thread sleeps in the futex
-which will cause the testcase to fail.
-
-I will isolate the function to assert that threads are sleeping in
-kernel from the futex testcase and change this test to make use of it
-and commit it.
-
+diff --git a/testcases/kernel/containers/libclone/libclone.h b/testcases/kernel/containers/libclone/libclone.h
+index 6a2d66d..3a38bc9 100644
+--- a/testcases/kernel/containers/libclone/libclone.h
++++ b/testcases/kernel/containers/libclone/libclone.h
+@@ -24,9 +24,7 @@
+ #include <string.h>
+ #include <errno.h>
+ #include <libgen.h>
+-#include <sched.h>
+ #include <sys/syscall.h>
+-#include <unistd.h>
+ #include <signal.h>
+ #include "linux_syscall_numbers.h"
+ #include "test.h"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
-Monitor 25 network devices or servers for free with OpManager!
-OpManager is web-based network management software that monitors 
-network devices and physical & virtual servers, alerts via email & sms 
-for fault. Monitor 25 devices for free with no restriction. Download now
-http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
