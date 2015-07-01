@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZKSNK-0001I2-Kt
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 14:30:30 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZKSNJ-0005cH-DF
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 14:30:30 +0000
-Date: Wed, 29 Jul 2015 10:30:21 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <987570123.467332.1438180221782.JavaMail.zimbra@redhat.com>
-In-Reply-To: <CANKSX+HAqaZARVLcDWU3Uhv2CYDjSBrrq2H4OrkOSaY647saaA@mail.gmail.com>
-References: <CANKSX+HAqaZARVLcDWU3Uhv2CYDjSBrrq2H4OrkOSaY647saaA@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1ZAD5W-0005JD-CI
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 08:09:46 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZAD5V-0006RI-Gh
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 08:09:46 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t61880eP010401
+	for <ltp-list@lists.sourceforge.net>; Wed, 1 Jul 2015 16:08:00 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 1 Jul 2015 16:09:02 +0800
+Message-ID: <1435738142-19725-2-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1435738142-19725-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1435738142-19725-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] LTP make failed
+Subject: [LTP] [PATCH 2/2] sem_open/1-2.c: fix wrong comparison
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,111 +31,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: srikanth007m@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+The comparison will always evaluate as 'true' for the address
+of 'mysemp' will never be NULL.
 
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c
+index 23240b2..06965ae 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c
+@@ -34,7 +34,7 @@ int main(void)
+ 
+ 	/* Checking if mysemp has a value returned. From sem_open */
+ 
+-	if (&mysemp != NULL) {
++	if (mysemp != NULL) {
+ 		puts("TEST PASSED");
+ 		sem_close(mysemp);
+ 		sem_unlink(semname);
+-- 
+1.9.3
 
-
------ Original Message -----
-> From: "$rik@nth" <srikanth007m@gmail.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 29 July, 2015 3:32:32 PM
-> Subject: [LTP] LTP make failed
-> 
-> Hi,
-> 
-> I am trying to cross compile LTP and observing some issue. Any help or
-> suggestions to overcome from these errors. TIA
-
-Hi,
-
-please don't send html in emails to list.
-
-> 
-> 
-> make[1]: Entering directory
-> `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/hugetlb/hugemmap'
-> make -C "/local/mnt2/workspace2/LTP/ltp-full-20150420/lib" -f
-> "/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/Makefile" all
-> make[2]: Entering directory
-> `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib'
-> make[3]: Entering directory
-> `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests'
-> make[3]: Nothing to be done for `all'.
-> make[3]: Leaving directory
-> `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests'
-> make[2]: Leaving directory `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib'
-> make -C ../../../../../testcases/kernel/mem/lib -f
-> "/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib/Makefile"
-> all
-> make[2]: Entering directory
-> `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib'
-> make -C /local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib -f
-> "/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib/Makefile"
-> all
-> make[3]: Entering directory
-> `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib'
-> if [ -z "numa_helper.o" ] ; then \
-> echo "Cowardly refusing to create empty archive"; \
-> exit 1; \
-> fi
-> arm-linux-gnueabi-ar -rc "lib/libipc_hugetlb.a" numa_helper.o
-
-So, it goes into 'testcases/kernel/lib' and tries to build libipc_hugetlb.a?
-That doesn't look right.
-
-Try building it in smaller steps, if you're using parallel make,
-use just single job.
-
-1. cd $LTP/lib
-make
-
-2.
-cd $LTP/testcases/kernel/mem/hugetlb/lib
-make
-
-3.
-cd $LTP/testcases/kernel/lib
-make
-
-Is the above still failing for you? If so, please share the errors.
-
-Regards,
-Jan
-
-
-> arm-linux-gnueabi-ar: lib/libipc_hugetlb.a: No such file or directory
-> make[3]: *** [lib/libipc_hugetlb.a] Error 1
-> make[3]: Leaving directory
-> `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib'
-> make[2]: ***
-> [/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib/libkerntest.a]
-> Error 2
-> make[2]: Leaving directory
-> `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib'
-> make[1]: *** [../../../../../testcases/kernel/mem/lib/libmem.a] Error 2
-> make[1]: Leaving directory
-> `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/hugetlb/hugemmap'
-> make: *** [all] Error 2
-> 
-> Here the file is there "ib/libipc_hugetlb.a: No such file or directory" but
-> still it showing the error.
-> 
-> --
-> Thanks & Regards,
-> M.Srikanth Kumar.
-> 
-> ------------------------------------------------------------------------------
-> 
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
