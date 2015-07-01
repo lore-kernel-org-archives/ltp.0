@@ -1,25 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZAxDJ-0000JM-AZ
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 09:24:53 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1ZAHQx-0003ft-Gp
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 12:48:11 +0000
 Received: from szxga01-in.huawei.com ([58.251.152.64])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZAxDC-0003eK-5n
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 09:24:53 +0000
-Message-ID: <559654BB.5050300@huawei.com>
-Date: Fri, 3 Jul 2015 17:24:11 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
+	(Exim 4.76) id 1ZAHQt-0007Zd-Ls
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 12:48:11 +0000
+Message-ID: <5593E172.1050800@huawei.com>
+Date: Wed, 1 Jul 2015 20:47:46 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
 MIME-Version: 1.0
-References: <1435724565-19631-1-git-send-email-sunyuan3@huawei.com>
-	<1715707849.11822659.1435846199391.JavaMail.zimbra@redhat.com>
-	<5595FC03.10602@huawei.com>
-	<1526251635.12159899.1435909417100.JavaMail.zimbra@redhat.com>
-	<55965241.5020206@huawei.com>
-	<20150703091815.GA2855@dustball.brq.redhat.com>
-In-Reply-To: <20150703091815.GA2855@dustball.brq.redhat.com>
-Subject: Re: [LTP] [PATCH V2] userns01: add capability verification
+References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
+In-Reply-To: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
+Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
+ failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,34 +28,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
 
+ping ~~  :-)
 
-Interesting. Log is as follow. I will have a research.
-
-log:
-root@ubuntu:/tmp/tt# gcc test.c -lcap
-root@ubuntu:/tmp/tt# ls
-a.out  test.c
-root@ubuntu:/tmp/tt# ./a.out
-ffffffff ffffffff
-ffffffff ffffffff
-cap_compare: 0
-
-
-On 2015/7/3 17:18, Jan Stancek wrote:
-> On Fri, Jul 03, 2015 at 05:13:37PM +0800, Yuan Sun wrote:
->> Hi Jan,
->>      The following link is unaccessible because HuaWei's network
->> security strategy.
->>      Could you please attach the test.c file for me?
->> http://fpaste.org/239445/35909330/
-> Was afraid my web email client would mangle it. Attached.
->
-> Regards,
-> Jan
->
+On 2015/5/5 20:12, Cui Bixuan wrote:
+> For the first time,case do 'logrotate -fv tst_logrotate.conf' that will
+> create the 'half-rotated' file(messages-20150416.gz). When run case again,
+> the case will fail:
+> 'error: destination /var/log/messages-20150416.gz already exists,skipping
+> rotation'
+> 
+> 'Logrotate' does't expect to find an already existing "half-rotated" file
+> (http://centos.1050465.n5.nabble.com/CentOS-Logrotate-errors-td5725868.html).
+> Clean the "half-rotated" file,and the case will pass all the time.
+> 
+> Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+> ---
+>  testcases/commands/logrotate/logrotate_tests.sh |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
+> index 2a793cc..5b14ca0 100755
+> --- a/testcases/commands/logrotate/logrotate_tests.sh
+> +++ b/testcases/commands/logrotate/logrotate_tests.sh
+> @@ -191,6 +191,7 @@ test01()
+>  	do
+>  		rm -f $files > /dev/null 2>&1
+>  	done
+> +	rm -f /var/log/*`date '+%Y%m%d'`* > /dev/null 2>&1
+>  
+>  	chmod 644 $LTPTMP/tst_logrotate.conf
+>  	logrotate -fv $LTPTMP/tst_logrotate.conf > $LTPTMP/tst_logrotate.out 2>&1 \
+> 
 
 
 ------------------------------------------------------------------------------
