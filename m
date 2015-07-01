@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1ZAdHG-0001zu-OA
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 12:07:38 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZAAWU-0003rO-T1
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:25:26 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZAdHB-00035X-TH
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 12:07:38 +0000
-Message-ID: <55952961.30906@huawei.com>
-Date: Thu, 2 Jul 2015 20:06:57 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
+	(Exim 4.76) id 1ZAAWR-0001VR-MO
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:25:26 +0000
+Message-ID: <559379A6.5040408@huawei.com>
+Date: Wed, 1 Jul 2015 13:24:54 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
 MIME-Version: 1.0
-References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
-	<5593E172.1050800@huawei.com> <5593F4E2.1040804@oracle.com>
-In-Reply-To: <5593F4E2.1040804@oracle.com>
-Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
- failed
+References: <1435727815-9484-1-git-send-email-sunyuan3@huawei.com>
+In-Reply-To: <1435727815-9484-1-git-send-email-sunyuan3@huawei.com>
+Subject: Re: [LTP] [PATCH] filecaps: Remove unnecessary c.c file.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,64 +27,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
+To: jstancek@redhat.com
+Cc: ltp-list@lists.sourceforge.net
 
-On 2015/7/1 22:10, Alexey Kodanev wrote:
-> Hi,
-> On 07/01/2015 03:47 PM, Cui Bixuan wrote:
->> ping ~~  :-)
->>
->> On 2015/5/5 20:12, Cui Bixuan wrote:
->>> For the first time,case do 'logrotate -fv tst_logrotate.conf' that will
->>> create the 'half-rotated' file(messages-20150416.gz). When run case again,
->>> the case will fail:
->>> 'error: destination /var/log/messages-20150416.gz already exists,skipping
->>> rotation'
->>>
->>> 'Logrotate' does't expect to find an already existing "half-rotated" file
->>> (http://centos.1050465.n5.nabble.com/CentOS-Logrotate-errors-td5725868.html).
->>> Clean the "half-rotated" file,and the case will pass all the time.
->>>
->>> Signed-off-by: Cui Bixuan<cuibixuan@huawei.com>
->>> ---
->>>   testcases/commands/logrotate/logrotate_tests.sh |    1 +
->>>   1 files changed, 1 insertions(+), 0 deletions(-)
->>>
->>> diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
->>> index 2a793cc..5b14ca0 100755
->>> --- a/testcases/commands/logrotate/logrotate_tests.sh
->>> +++ b/testcases/commands/logrotate/logrotate_tests.sh
->>> @@ -191,6 +191,7 @@ test01()
->>>       do
->>>           rm -f $files > /dev/null 2>&1
->>>       done
->>> +    rm -f /var/log/*`date '+%Y%m%d'`* > /dev/null 2>&1
->>>   
-> 
-> The test creates only tst_logfile, why it should remove 'messages-*' and other system logs?
-> 
-> I see that its configuration file includes logrotate.d/, is it really needed by the test?
-> 
-
-The tst_logfile of test created is 'messages-*' and the 'messages-*' will cause the case failed,
-so we should delete it if we want to the case run succeed at the second time.
-
-And the test creates tst_logfile base on day time. For example, the system time is '2015 Jul 3',
-then the case will create 'messages-20150703.gz'. So 'rm -r /var/log/*`date '+%Y%m%d'`*' in patch
-only delete the message file of case created (after running it) and not other system logs.
-
-I think, if the logrotate testcase fail when run it the second time,it's a problem of
-testcase and we should fix it.
-
-Thanks,
-Cui Bixuan
-
-> Thanks,
-> Alexey
-> 
-> 
-> 
+I forgot to modify .gitignore file. Please see V2.
+On 2015/7/1 13:16, Yuan Sun wrote:
+> The c.c file is the same as check_simple_capset.c except config.h
+> is included in check_simple_capset.c. Moreover, it is not correct
+> to use HAVE_SYS_CAPABILITY_H without including config.h.
+>
+> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+> ---
+>   testcases/kernel/security/filecaps/c.c | 47 ----------------------------------
+>   1 file changed, 47 deletions(-)
+>   delete mode 100644 testcases/kernel/security/filecaps/c.c
+>
+> diff --git a/testcases/kernel/security/filecaps/c.c b/testcases/kernel/security/filecaps/c.c
+> deleted file mode 100644
+> index 511e673..0000000
+> --- a/testcases/kernel/security/filecaps/c.c
+> +++ /dev/null
+> @@ -1,47 +0,0 @@
+> -/******************************************************************************/
+> -/*                                                                            */
+> -/* Copyright (c) International Business Machines  Corp., 2008                 */
+> -/*                                                                            */
+> -/* This program is free software;  you can redistribute it and/or modify      */
+> -/* it under the terms of the GNU General Public License as published by       */
+> -/* the Free Software Foundation; either version 2 of the License, or          */
+> -/* (at your option) any later version.                                        */
+> -/*                                                                            */
+> -/* This program is distributed in the hope that it will be useful,            */
+> -/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+> -/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+> -/* the GNU General Public License for more details.                           */
+> -/*                                                                            */
+> -/* You should have received a copy of the GNU General Public License          */
+> -/* along with this program;  if not, write to the Free Software               */
+> -/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
+> -/*                                                                            */
+> -/******************************************************************************/
+> -
+> -#include <stdio.h>
+> -#if HAVE_SYS_CAPABILITY_H
+> -#include <linux/types.h>
+> -#include <sys/capability.h>
+> -#endif
+> -
+> -int main(void)
+> -{
+> -
+> -#ifdef HAVE_LIBCAP
+> -	cap_t caps, caps2;
+> -	int ret;
+> -
+> -	caps = cap_from_text("cap_setpcap+ep");
+> -	caps2 = cap_from_text("cap_setpcap+ep");
+> -	ret = cap_set_proc(caps);
+> -	ret = cap_compare(caps, caps2);
+> -	printf("Caps were %sthe same\n", ret ? "not " : "");
+> -
+> -	cap_free(caps);
+> -	cap_free(caps2);
+> -	return ret;
+> -#else
+> -	printf("System doesn't support full POSIX capabilities.\n");
+> -	return 1;
+> -#endif
+> -}
 
 
 ------------------------------------------------------------------------------
