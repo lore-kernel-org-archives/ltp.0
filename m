@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1ZAHQx-0003ft-Gp
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 12:48:11 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZAHQt-0007Zd-Ls
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 12:48:11 +0000
-Message-ID: <5593E172.1050800@huawei.com>
-Date: Wed, 1 Jul 2015 20:47:46 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
-MIME-Version: 1.0
-References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
-In-Reply-To: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
-Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
- failed
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1ZAAfj-0005D8-7r
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:34:59 +0000
+Received: from mail-pa0-f44.google.com ([209.85.220.44])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZAAfi-0004ej-Ig
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:34:59 +0000
+Received: by paceq1 with SMTP id eq1so17123205pac.3
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 30 Jun 2015 22:34:53 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Wed,  1 Jul 2015 13:34:42 +0800
+Message-Id: <1435728882-9272-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCHv2] containers: Use raw setns syscall for versions of
+	glibc that don't include it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,43 +25,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-ping ~~  :-)
+The setns() system call was added to glibc in version 2.14. On systems with
+lower version glic, like RHEL6.6 glibc 2.12, ltp will build failed with
+error "userns04.c:58: undefined reference to `setns'". Use ltp_syscall to make
+build pass.
 
-On 2015/5/5 20:12, Cui Bixuan wrote:
-> For the first time,case do 'logrotate -fv tst_logrotate.conf' that will
-> create the 'half-rotated' file(messages-20150416.gz). When run case again,
-> the case will fail:
-> 'error: destination /var/log/messages-20150416.gz already exists,skipping
-> rotation'
-> 
-> 'Logrotate' does't expect to find an already existing "half-rotated" file
-> (http://centos.1050465.n5.nabble.com/CentOS-Logrotate-errors-td5725868.html).
-> Clean the "half-rotated" file,and the case will pass all the time.
-> 
-> Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
-> ---
->  testcases/commands/logrotate/logrotate_tests.sh |    1 +
->  1 files changed, 1 insertions(+), 0 deletions(-)
-> 
-> diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
-> index 2a793cc..5b14ca0 100755
-> --- a/testcases/commands/logrotate/logrotate_tests.sh
-> +++ b/testcases/commands/logrotate/logrotate_tests.sh
-> @@ -191,6 +191,7 @@ test01()
->  	do
->  		rm -f $files > /dev/null 2>&1
->  	done
-> +	rm -f /var/log/*`date '+%Y%m%d'`* > /dev/null 2>&1
->  
->  	chmod 644 $LTPTMP/tst_logrotate.conf
->  	logrotate -fv $LTPTMP/tst_logrotate.conf > $LTPTMP/tst_logrotate.out 2>&1 \
-> 
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ testcases/kernel/containers/userns/userns_helper.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/testcases/kernel/containers/userns/userns_helper.h b/testcases/kernel/containers/userns/userns_helper.h
+index da03bae..21e5cb8 100644
+--- a/testcases/kernel/containers/userns/userns_helper.h
++++ b/testcases/kernel/containers/userns/userns_helper.h
+@@ -15,6 +15,16 @@
+ #include "test.h"
+ #include "safe_macros.h"
+ 
++/*
++ * Use raw setns syscall for versions of glibc that don't include it
++ */
++#if __GLIBC__ <= 2 && __GLIBC_MINOR__ < 14
++int setns(int fd, int nstype)
++{
++	return ltp_syscall(__NR_setns, fd, nstype);
++}
++#endif
++
+ static int dummy_child(void *v)
+ {
+ 	(void) v;
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
