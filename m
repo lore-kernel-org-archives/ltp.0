@@ -1,38 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jbastian@redhat.com>) id 1ZDCwq-0007vt-Sq
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 14:37:12 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZDCwn-0007mH-EE
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 14:37:12 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (Postfix) with ESMTPS id DBE2E2B9DCF
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1ZABft-0006yC-H6
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 06:39:13 +0000
+Received: from mail-oi0-f44.google.com ([209.85.218.44])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZABfs-0005Bc-PD
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 06:39:13 +0000
+Received: by oiyy130 with SMTP id y130so25156123oiy.0
 	for <ltp-list@lists.sourceforge.net>;
-	Thu,  9 Jul 2015 14:37:02 +0000 (UTC)
-Received: from tarantula.localdomain (ovpn-113-174.phx2.redhat.com
-	[10.3.113.174])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t69Eb0gR009926
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 10:37:02 -0400
-Date: Thu, 9 Jul 2015 09:37:00 -0500
-From: Jeffrey Bastian <jbastian@redhat.com>
-Message-ID: <20150709143700.GQ17625@tarantula.localdomain>
-References: <20150708194114.GA20060@tarantula.localdomain>
-	<904998018.14796051.1436425198776.JavaMail.zimbra@redhat.com>
-	<431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
-	<20150709124503.GM17625@tarantula.localdomain>
-	<1737674583.15006076.1436449194123.JavaMail.zimbra@redhat.com>
+	Tue, 30 Jun 2015 23:39:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="sHrvAb52M6C8blB9"
-Content-Disposition: inline
-In-Reply-To: <1737674583.15006076.1436449194123.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] syslog/syslog-lib.sh: support systemd journal
+In-Reply-To: <1435732532-10995-1-git-send-email-liuhangbin@gmail.com>
+References: <1435732532-10995-1-git-send-email-liuhangbin@gmail.com>
+Date: Wed, 1 Jul 2015 14:39:07 +0800
+Message-ID: <CAPwn2JTer_HFLWz-dO+NjP4BTGZ3-BxfUh24h41djA9W+nfG+w@mail.gmail.com>
+From: Hangbin Liu <liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCHv3] containers: Use ltp_syscall for setns incase
+ some libc library do not support it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -42,117 +28,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
-
---sHrvAb52M6C8blB9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Jul 09, 2015 at 09:39:54AM -0400, Jan Stancek wrote:
-> Do the testcases pass for you with this patch? They still fail for me with
-> rsyslog-7.4.7-7.el7_0 and systemd-219-5.el7.
-...
-> which fails for me unless I add "$WorkDirectory" option.
-
-Hmm, it worked in my tests last night, but it's failing today.  You're
-right, the $WorkDirectory option fixed it.  Fortunately that's just a
-minor tweak to the regex in the patch; see attached for a new version of
-the patch.
-
-::::::::::::
-:: Before ::
-::::::::::::
-[root@localhost bin]# grep -i journal syslog-lib.sh
-[root@localhost bin]# syslog01 ; echo $?
-syslog01    0  TINFO  :  Send messages to syslogd at some level
-syslog01    0  TINFO  :  and facility and grep for those messages.
-syslog01    0  TINFO  :  testing whether messages are logged into log file
-syslog01    0  TINFO  :  restarting syslog daemon
-syslog01    0  TINFO  :  restarting syslog daemon
-1
-
-:::::::::::
-:: After ::
-:::::::::::
-[root@localhost bin]# grep -i journal syslog-lib.sh
-                systemd_journal=$(grep -Ehoi "^[^#].*(imjournal|workdirectory).*" -r /etc/rsyslog.conf /etc/rsyslog.d/)
-$systemd_journal
-[root@localhost bin]# syslog01 ; echo $?
-syslog01    0  TINFO  :  Send messages to syslogd at some level 
-syslog01    0  TINFO  :  and facility and grep for those messages.
-syslog01    0  TINFO  :  testing whether messages are logged into log file
-syslog01    0  TINFO  :  restarting syslog daemon
-syslog01    0  TINFO  :  restarting syslog daemon
-0
-
-
-
-> > I think it's ok to leave both modules enabled, though.  The default
-> > rsyslog.conf in Fedora (up to F21) had both enabled:
-> 
-> It seems to duplicate messages for me in quite unpredictable way.
-> After running syslog02:
-
-With the updated patch, it looks ok for me:
-
-[root@localhost bin]# systemctl stop rsyslog
-[root@localhost bin]# cat /dev/null >/var/log/maillog
-[root@localhost bin]# systemctl start rsyslog
-[root@localhost bin]# syslog02
-...
-root@localhost bin]# cat /var/log/maillog
-2015-07-09T10:32:10.383470-04:00 localhost syslogtst: syslogtst: mail emerg test.
-2015-07-09T10:32:14.403420-04:00 localhost syslogtst: syslogtst: mail alert test.
-2015-07-09T10:32:18.422884-04:00 localhost syslogtst: syslogtst: mail crit test.
-2015-07-09T10:32:22.442509-04:00 localhost syslogtst: syslogtst: mail err test.
-2015-07-09T10:32:26.461447-04:00 localhost syslogtst: syslogtst: mail warning test.
-2015-07-09T10:32:30.480587-04:00 localhost syslogtst: syslogtst: mail notice test.
-2015-07-09T10:32:34.499815-04:00 localhost syslogtst: syslogtst: mail info test.
-2015-07-09T10:32:38.518913-04:00 localhost syslogtst: syslogtst: mail debug test.
-
--- 
-Jeff Bastian
-
---sHrvAb52M6C8blB9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="syslog-lib.sh-support-systemd-journal.patch"
-
-commit 4caed564ffbf2f1ac1d889d598e0fa8269562929 (HEAD, rsyslog-imjournal)
-Author: Jeffrey Bastian <jbastian@redhat.com>
-Date:   Wed Jul 8 14:06:48 2015 -0500
-
-    syslog/syslog-lib.sh: support systemd journal
-    
-    rsyslog needs to use the imjournal module to communicate with
-    systemd-journald. Copy the imjournal lines from the system's
-    /etc/rsyslog.conf if they exist.
-    
-    Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
-
-diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-index ef33517aa92b..d2a47112b493 100755
---- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
-+++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-@@ -72,8 +72,10 @@ setup()
- 	elif [ "$SYSLOG_DAEMON" = "rsyslog" ]; then
- 		CONFIG_FILE="/etc/rsyslog.conf"
- 		log_socket=$(grep -ho "^\$SystemLogSocketName .*" -r /etc/rsyslog.conf /etc/rsyslog.d/ | head -1)
-+		systemd_journal=$(grep -Ehoi "^[^#].*(imjournal|workdirectory).*" -r /etc/rsyslog.conf /etc/rsyslog.d/)
- 		RSYSLOG_CONFIG=$(cat <<EOF
- \$ModLoad imuxsock.so
-+$systemd_journal
- $log_socket
- EOF
- )
-
---sHrvAb52M6C8blB9
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
+
+Opps, there is something wrong with code format. I will correct it. Sorry
+
+2015-07-01 14:35 GMT+08:00 Hangbin Liu <liuhangbin@gmail.com>:
+> Use ltp_syscall for setns incase some libc library do not support it. Also
+> check whether we support setns in setup(). If it's support the syscall will
+> silently fails and test continues. If not, then tst_brkm call will end the
+> test with TCONF.
+>
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  testcases/kernel/containers/userns/userns04.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
+> index 7077679..9836fd9 100644
+> --- a/testcases/kernel/containers/userns/userns04.c
+> +++ b/testcases/kernel/containers/userns/userns04.c
+> @@ -35,6 +35,7 @@ int TST_TOTAL = 1;
+>  static void setup(void)
+>  {
+>         check_newuser();
+> +       ltp_syscall(__NR_setns, -1, 0);
+>         tst_tmpdir();
+>         TST_CHECKPOINT_INIT(NULL);
+>  }
+> @@ -55,7 +56,7 @@ static int child_fn2(void *arg)
+>         int exit_val = 0;
+>         int ret;
+>
+> -       ret = setns(((long)arg), CLONE_NEWUSER);
+> +       ret = ltp_syscall(__NR_setns, ((long)arg), CLONE_NEWUSER);
+>         if (ret != -1) {
+>                 printf("child2 setns() unexpected success\n");
+>                 exit_val = 1;
+> @@ -112,7 +113,7 @@ static void test_cap_sys_admin(void)
+>         case -1:
+>                 tst_brkm(TBROK | TERRNO, cleanup, "fork");
+>         case 0:
+> -               if (setns(fd, CLONE_NEWUSER) == -1) {
+> +               if (ltp_syscall(__NR_setns, fd, CLONE_NEWUSER) == -1) {
+>                         printf("parent pid setns failure: (%d) %s",
+>                                 errno, strerror(errno));
+>                         exit(1);
+> --
+> 1.9.3
+>
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
@@ -160,16 +86,7 @@ GigeNET's Cloud Solutions provide you with the tools and support that
 you need to offload your IT needs and focus on growing your business.
 Configured For All Businesses. Start Your Cloud Today.
 https://www.gigenetcloud.com/
---sHrvAb52M6C8blB9
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---sHrvAb52M6C8blB9--
-
