@@ -1,32 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZCTqb-00079p-AD
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 14:27:45 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZCTqa-0004OK-AV
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 14:27:45 +0000
-Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t67ERc1j011728
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2015 14:27:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t67ERbKk013099
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2015 14:27:38 GMT
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t67ERbfc025697
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2015 14:27:37 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue,  7 Jul 2015 17:30:43 +0300
-Message-Id: <1436279443-32379-2-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1436279443-32379-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1436279443-32379-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [Committed 2/2] network/vxlan_lib.sh: move netload() to
-	test_net.sh
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZAFjG-000705-2u
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 10:58:58 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZAFjA-0005fx-HJ
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 10:58:58 +0000
+Message-ID: <5593C7D9.5020908@huawei.com>
+Date: Wed, 1 Jul 2015 18:58:33 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
+MIME-Version: 1.0
+References: <1435732532-10995-1-git-send-email-liuhangbin@gmail.com>
+	<105343732.10909567.1435733733296.JavaMail.zimbra@redhat.com>
+In-Reply-To: <105343732.10909567.1435733733296.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCHv3] containers: Use ltp_syscall for setns incase
+ some libc library do not support it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,161 +26,91 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Jan Stancek <jstancek@redhat.com>, liuhangbin@gmail.com
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/lib/test_net.sh            |   49 ++++++++++++++++++++++++++++++++-
- testcases/network/vxlan/vxlan_lib.sh |   51 ++-------------------------------
- 2 files changed, 52 insertions(+), 48 deletions(-)
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 6201316..9df49d2 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -1,5 +1,5 @@
- #!/bin/sh
--# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-+# Copyright (c) 2014-2015 Oracle and/or its affiliates. All Rights Reserved.
- #
- # This program is free software; you can redistribute it and/or
- # modify it under the terms of the GNU General Public License as
-@@ -250,3 +250,50 @@ tst_restore_ipaddr()
- 
- 	return $ret
- }
-+
-+# tst_netload ADDR [FILE] [TYPE]
-+# Run network load test
-+# ADDR: IP address
-+# FILE: file with result time
-+# TYPE: PING or TFO (TCP traffic)
-+tst_netload()
-+{
-+	local ip_addr="$1"
-+	local rfile=${2:-"netload.res"}
-+	local type=${3:-"TFO"}
-+	local ret=0
-+
-+	case "$type" in
-+	PING)
-+		local ipv6=
-+		echo "$ip_addr" | grep ":" > /dev/null
-+		[ $? -eq 0 ] && ipv6=6
-+		tst_resm TINFO "run ping${ipv6} test with rhost '$ip_addr'..."
-+		local res=
-+		res=$(ping${ipv6} -f -c $client_requests $ip_addr -w 600 2>&1)
-+		[ $? -ne 0 ] && return 1
-+		echo $res | sed -nE 's/.*time ([0-9]+)ms.*/\1/p' > $rfile
-+	;;
-+	TFO)
-+		local port=
-+		port=$(tst_rhost_run -c 'tst_get_unused_port ipv6 stream')
-+		[ $? -ne 0 ] && tst_brkm TBROK "failed to get unused port"
-+
-+		tst_resm TINFO "run tcp_fastopen with '$ip_addr', port '$port'"
-+		tst_rhost_run -s -b -c "tcp_fastopen -R $max_requests -g $port"
-+
-+		# run local tcp client
-+		tcp_fastopen -a $clients_num -r $client_requests -l \
-+			-H $ip_addr -g $port -d $rfile > /dev/null || ret=1
-+
-+		if [ $ret -eq 0 -a ! -f $rfile ]; then
-+			tst_brkm TBROK "can't read $rfile"
-+		fi
-+
-+		tst_rhost_run -c "pkill -9 tcp_fastopen\$"
-+	;;
-+	*) tst_brkm TBROK "invalid net_load type '$type'" ;;
-+	esac
-+
-+	return $ret
-+}
-diff --git a/testcases/network/vxlan/vxlan_lib.sh b/testcases/network/vxlan/vxlan_lib.sh
-index d3091ac..f9cd49f 100644
---- a/testcases/network/vxlan/vxlan_lib.sh
-+++ b/testcases/network/vxlan/vxlan_lib.sh
-@@ -1,6 +1,6 @@
- #!/bin/sh
- 
--# Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
-+# Copyright (c) 2014-2015 Oracle and/or its affiliates. All Rights Reserved.
- #
- # This program is free software; you can redistribute it and/or
- # modify it under the terms of the GNU General Public License as
-@@ -160,54 +160,11 @@ vxlan_setup_subnet_multi()
- 	tst_rhost_run -s -c "ip li set up ltp_vxl0"
- }
- 
--netload_test()
--{
--	local ip_addr="$1"
--	local rfile="$2"
--	local ret=0
--
--	case "$net_load" in
--	PING)
--		local ipv6=
--		echo "$ip_addr" | grep ":" > /dev/null
--		[ $? -eq 0 ] && ipv6=6
--		tst_resm TINFO "run ping${ipv6} test with rhost '$ip_addr'..."
--		local res=
--		res=$(ping${ipv6} -f -c $client_requests $ip_addr -w 600 2>&1)
--		[ $? -ne 0 ] && return 1
--		echo $res | sed -nE 's/.*time ([0-9]+)ms.*/\1/p' > $rfile
--	;;
--	TFO)
--		local port=
--		port=$(tst_rhost_run -c 'tst_get_unused_port ipv6 stream')
--		[ $? -ne 0 ] && tst_brkm TBROK "failed to get unused port"
--
--		tst_resm TINFO "run tcp_fastopen with '$ip_addr', port '$port'"
--		tst_rhost_run -s -b -c "tcp_fastopen -R $max_requests -g $port"
--
--		sleep 5
--
--		# run local tcp client
--		tcp_fastopen -a $clients_num -r $client_requests -l \
--			-H $ip_addr -g $port -d $rfile > /dev/null || ret=1
--
--		if [ $ret -eq 0 -a ! -f $rfile ]; then
--			tst_brkm TBROK "can't read $rfile"
--		fi
--
--		tst_rhost_run -c "pkill -9 tcp_fastopen\$"
--	;;
--	*) tst_brkm TBROK "invalid net_load type '$net_load'" ;;
--	esac
--
--	return $ret
--}
--
- vxlan_compare_netperf()
- {
- 	local ret=0
--	netload_test $ip_vxlan_remote res_ipv4 || ret=1
--	netload_test ${ip6_vxlan_remote}%ltp_vxl0 res_ipv6 || ret=1
-+	tst_netload $ip_vxlan_remote res_ipv4 $net_load || ret=1
-+	tst_netload ${ip6_vxlan_remote}%ltp_vxl0 res_ipv6 $net_load || ret=1
- 
- 	ROD_SILENT "ip link delete ltp_vxl0"
- 	tst_rhost_run -s -c "ip link delete ltp_vxl0"
-@@ -215,7 +172,7 @@ vxlan_compare_netperf()
- 	local vt="$(cat res_ipv4)"
- 	local vt6="$(cat res_ipv6)"
- 
--	netload_test $ip_remote res_ipv4 || return 1
-+	tst_netload $ip_remote res_ipv4 $net_load || return 1
- 
- 	local lt="$(cat res_ipv4)"
- 	tst_resm TINFO "time lan($lt) vxlan IPv4($vt) and IPv6($vt6) ms"
--- 
-1.7.1
+I was not familiar with ltp_syscall and didn't have comment. Thanks you 
+for updating userns04 case.
+Regards.
+Yuan
+
+On 2015/7/1 14:55, Jan Stancek wrote:
+>
+>
+>
+> ----- Original Message -----
+>> From: "Hangbin Liu" <liuhangbin@gmail.com>
+>> To: "LTP List" <ltp-list@lists.sourceforge.net>
+>> Cc: "Jan Stancek" <jstancek@redhat.com>
+>> Sent: Wednesday, 1 July, 2015 8:35:32 AM
+>> Subject: [LTP][PATCHv3] containers: Use ltp_syscall for setns incase some libc library do not support it
+>>
+>> Use ltp_syscall for setns incase some libc library do not support it. Also
+>> check whether we support setns in setup(). If it's support the syscall will
+>> silently fails and test continues. If not, then tst_brkm call will end the
+>> test with TCONF.
+>>
+>> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> Pushed with cosmetic change to commit message.
+>
+> Thanks,
+> Jan
+>
+>> ---
+>>   testcases/kernel/containers/userns/userns04.c | 5 +++--
+>>   1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/testcases/kernel/containers/userns/userns04.c
+>> b/testcases/kernel/containers/userns/userns04.c
+>> index 7077679..9836fd9 100644
+>> --- a/testcases/kernel/containers/userns/userns04.c
+>> +++ b/testcases/kernel/containers/userns/userns04.c
+>> @@ -35,6 +35,7 @@ int TST_TOTAL = 1;
+>>   static void setup(void)
+>>   {
+>>   	check_newuser();
+>> +	ltp_syscall(__NR_setns, -1, 0);
+>>   	tst_tmpdir();
+>>   	TST_CHECKPOINT_INIT(NULL);
+>>   }
+>> @@ -55,7 +56,7 @@ static int child_fn2(void *arg)
+>>   	int exit_val = 0;
+>>   	int ret;
+>>   
+>> -	ret = setns(((long)arg), CLONE_NEWUSER);
+>> +	ret = ltp_syscall(__NR_setns, ((long)arg), CLONE_NEWUSER);
+>>   	if (ret != -1) {
+>>   		printf("child2 setns() unexpected success\n");
+>>   		exit_val = 1;
+>> @@ -112,7 +113,7 @@ static void test_cap_sys_admin(void)
+>>   	case -1:
+>>   		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+>>   	case 0:
+>> -		if (setns(fd, CLONE_NEWUSER) == -1) {
+>> +		if (ltp_syscall(__NR_setns, fd, CLONE_NEWUSER) == -1) {
+>>   			printf("parent pid setns failure: (%d) %s",
+>>   				errno, strerror(errno));
+>>   			exit(1);
+>> --
+>> 1.9.3
+>>
+>>
+> ------------------------------------------------------------------------------
+> Don't Limit Your Business. Reach for the Cloud.
+> GigeNET's Cloud Solutions provide you with the tools and support that
+> you need to offload your IT needs and focus on growing your business.
+> Configured For All Businesses. Start Your Cloud Today.
+> https://www.gigenetcloud.com/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+>
 
 
 ------------------------------------------------------------------------------
