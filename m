@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZAAtr-0003Wc-B6
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:49:35 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZAAtp-0003uf-V7
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:49:35 +0000
-Date: Wed, 1 Jul 2015 01:49:25 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2001395979.10893550.1435729765770.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1435728882-9272-1-git-send-email-liuhangbin@gmail.com>
-References: <1435728882-9272-1-git-send-email-liuhangbin@gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1ZAD5U-0001jw-QK
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 08:09:44 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZAD5T-0006RI-PW
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 08:09:44 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t6187uPD010398
+	for <ltp-list@lists.sourceforge.net>; Wed, 1 Jul 2015 16:07:56 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 1 Jul 2015 16:09:01 +0800
+Message-ID: <1435738142-19725-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCHv2] containers: Use raw setns syscall for versions
- of glibc that don't include it
+Subject: [LTP] [PATCH 1/2] interfaces/sem_open: remove unused define(s)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,72 +29,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c | 1 -
+ testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c | 1 -
+ testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c | 1 -
+ testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c | 1 -
+ testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c | 1 -
+ 5 files changed, 5 deletions(-)
 
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c
+index b77b23f..a083244 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c
+@@ -22,7 +22,6 @@
+ 
+ #define TEST "1-1"
+ #define FUNCTION "sem_open"
+-#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+ int main(void)
+ {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c
+index c8b9297..23240b2 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c
+@@ -22,7 +22,6 @@
+ 
+ #define TEST "1-2"
+ #define FUNCTION "sem_open"
+-#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+ int main(void)
+ {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c
+index a190efc..d10c295 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c
+@@ -23,7 +23,6 @@
+ 
+ #define TEST "4-1"
+ #define FUNCTION "sem_open"
+-#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+ int main(void)
+ {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c
+index e316056..56c8a93 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c
+@@ -22,7 +22,6 @@
+ 
+ #define TEST "5-1"
+ #define FUNCTION "sem_open"
+-#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+ int main(void)
+ {
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c
+index 25eab96..f057656 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c
+@@ -20,7 +20,6 @@
+ 
+ #define TEST "6-1"
+ #define FUNCTION "sem_open"
+-#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
+ 
+ int main(void)
+ {
+-- 
+1.9.3
 
-
-
------ Original Message -----
-> From: "Hangbin Liu" <liuhangbin@gmail.com>
-> To: "LTP List" <ltp-list@lists.sourceforge.net>
-> Cc: "Jan Stancek" <jstancek@redhat.com>
-> Sent: Wednesday, 1 July, 2015 7:34:42 AM
-> Subject: [LTP][PATCHv2] containers: Use raw setns syscall for versions of glibc that don't include it
-> 
-> The setns() system call was added to glibc in version 2.14. On systems with
-> lower version glic, like RHEL6.6 glibc 2.12, ltp will build failed with
-> error "userns04.c:58: undefined reference to `setns'". Use ltp_syscall to
-> make
-> build pass.
-> 
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  testcases/kernel/containers/userns/userns_helper.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/testcases/kernel/containers/userns/userns_helper.h
-> b/testcases/kernel/containers/userns/userns_helper.h
-> index da03bae..21e5cb8 100644
-> --- a/testcases/kernel/containers/userns/userns_helper.h
-> +++ b/testcases/kernel/containers/userns/userns_helper.h
-> @@ -15,6 +15,16 @@
->  #include "test.h"
->  #include "safe_macros.h"
->  
-> +/*
-> + * Use raw setns syscall for versions of glibc that don't include it
-> + */
-> +#if __GLIBC__ <= 2 && __GLIBC_MINOR__ < 14
-> +int setns(int fd, int nstype)
-> +{
-> +	return ltp_syscall(__NR_setns, fd, nstype);
-> +}
-> +#endif
-> +
-
-What I had in mind was to replace setns calls with ltp_syscall(__NR_setns),
-which would work with any libc library, not just glibc.
-
-You also need this in setup():
-  ltp_syscall(__NR_setns, -1, 0);
-because setns is used in child processes, so any tst_brkm call will end
-the child and then parent will see that as unexpected failure.
-Calling __NR_setns as first thing in setup() will immediately end
-the test with TCONF if it's not supported. If it's supported the
-syscall silently fails and test continues.
-
-Regards,
-Jan
-
->  static int dummy_child(void *v)
->  {
->  	(void) v;
-> --
-> 1.9.3
-> 
-> 
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
