@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZAeJP-0004JO-16
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 13:13:55 +0000
-Date: Thu, 2 Jul 2015 14:58:56 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150702125856.GA17802@rei.suse.de>
-References: <1432630734.31833.5.camel@G08FNSTD140232>
-	<20150603162630.GA8444@rei.suse.de>
-	<1433398217.2651.1.camel@G08FNSTD140232.g08.fujitsu.local>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1433398217.2651.1.camel@G08FNSTD140232.g08.fujitsu.local>
-Subject: Re: [LTP] [PATCH v2] cpuset: regression test for "system crash if
- cpuset_cpumask_can_shrink() is passed an empty cpumask"
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1ZA8mW-0001uf-QP
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 03:33:52 +0000
+Received: from mail-pa0-f49.google.com ([209.85.220.49])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZA8mW-0000ib-4w
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 03:33:52 +0000
+Received: by pacws9 with SMTP id ws9so15884599pac.0
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 30 Jun 2015 20:33:46 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Wed,  1 Jul 2015 11:33:29 +0800
+Message-Id: <1435721609-7938-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCH] containers: Use raw setns syscall for versions of
+	glibc that don't include it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,26 +25,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Hi!
-> This fixed by:
-> commit bb2bc55a694d45cdeda91b6f28ab2adec28125ef
-> Author: Mike Galbraith <umgwanakikbuti@gmail.com>
-> Date:   Wed Jan 28 04:53:55 2015 +0100
-> 
->     sched: Fix crash if cpuset_cpumask_can_shrink() is passed an empty cpumask
+The setns() system call was added to glibc in version 2.14. On systems with
+lower version glic, like RHEL6.6 glibc 2.12, ltp will build failed with
+error "userns04.c:58: undefined reference to `setns'". Use ltp_syscall to make
+build pass.
 
-This one looks good but we should add runtest entry too,
-runtest/controllers looks like the right one to me.
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+---
+ testcases/kernel/containers/userns/userns_helper.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
+diff --git a/testcases/kernel/containers/userns/userns_helper.h b/testcases/kernel/containers/userns/userns_helper.h
+index da03bae..21e5cb8 100644
+--- a/testcases/kernel/containers/userns/userns_helper.h
++++ b/testcases/kernel/containers/userns/userns_helper.h
+@@ -15,6 +15,16 @@
+ #include "test.h"
+ #include "safe_macros.h"
+ 
++/*
++ * Use raw setns syscall for versions of glibc that don't include it
++ */
++#if __GLIBC__ <= 2 && __GLIBC_MINOR__ < 14
++int setns(int fd, int nstype)
++{
++	return ltp_syscall(__NR_setns, fd, nstype);
++}
++#endif
++
+ static int dummy_child(void *v)
+ {
+ 	(void) v;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
