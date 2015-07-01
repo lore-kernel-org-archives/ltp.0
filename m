@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1ZCOxX-0004d7-Ea
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 09:14:35 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liuhangbin@gmail.com>) id 1ZABcb-0006rM-LJ
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 06:35:49 +0000
+Received: from mail-pd0-f175.google.com ([209.85.192.175])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZCOxU-0003aW-DJ
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 09:14:35 +0000
-Message-ID: <559B983A.3090003@huawei.com>
-Date: Tue, 7 Jul 2015 17:13:30 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
-MIME-Version: 1.0
-References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
-	<5593E172.1050800@huawei.com> <5593F4E2.1040804@oracle.com>
-	<55952961.30906@huawei.com> <5595490E.1010509@oracle.com>
-	<55974D10.5050808@huawei.com> <559A9148.8060200@oracle.com>
-In-Reply-To: <559A9148.8060200@oracle.com>
-Subject: [LTP] [PATCH v2] commands/logrotate:run the case once again will
- failed
+	(Exim 4.76) id 1ZABca-0004ox-Uk
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 06:35:49 +0000
+Received: by pdcu2 with SMTP id u2so20422279pdc.3
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 30 Jun 2015 23:35:43 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Wed,  1 Jul 2015 14:35:32 +0800
+Message-Id: <1435732532-10995-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCHv3] containers: Use ltp_syscall for setns incase some
+	libc library do not support it
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,45 +25,55 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Including the rules in /etc/logrotate.d/ will cause the case failed
-when run it at the second time.
+Use ltp_syscall for setns incase some libc library do not support it. Also
+check whether we support setns in setup(). If it's support the syscall will
+silently fails and test continues. If not, then tst_brkm call will end the
+test with TCONF.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
- testcases/commands/logrotate/logrotate_tests.sh |    4 ----
- 1 files changed, 0 insertions(+), 4 deletions(-)
+ testcases/kernel/containers/userns/userns04.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
-index 2a793cc..e845670 100755
---- a/testcases/commands/logrotate/logrotate_tests.sh
-+++ b/testcases/commands/logrotate/logrotate_tests.sh
-@@ -163,8 +163,6 @@ test01()
- 	compress
-
- 	# RPM packages drop log rotation information into this directory
--	include /etc/logrotate.d
--
- 	/var/log/tst_logfile {
- 		rotate 5
- 		weekly
-@@ -201,8 +199,6 @@ test01()
- 		# check if  /etc/logrotate.d is included/
- 		# check if 5 rotations are forced.
-         # check if compression is done.
--		grep "including /etc/logrotate.d" $LTPTMP/tst_logrotate.out \
--			> $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
- 		grep "reading config file $LTPTMP/tst_logrotate.conf" \
- 			$LTPTMP/tst_logrotate.out   > $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
- 		grep "forced from command line (5 rotations)" \
+diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
+index 7077679..9836fd9 100644
+--- a/testcases/kernel/containers/userns/userns04.c
++++ b/testcases/kernel/containers/userns/userns04.c
+@@ -35,6 +35,7 @@ int TST_TOTAL = 1;
+ static void setup(void)
+ {
+ 	check_newuser();
++	ltp_syscall(__NR_setns, -1, 0);
+ 	tst_tmpdir();
+ 	TST_CHECKPOINT_INIT(NULL);
+ }
+@@ -55,7 +56,7 @@ static int child_fn2(void *arg)
+ 	int exit_val = 0;
+ 	int ret;
+ 
+-	ret = setns(((long)arg), CLONE_NEWUSER);
++	ret = ltp_syscall(__NR_setns, ((long)arg), CLONE_NEWUSER);
+ 	if (ret != -1) {
+ 		printf("child2 setns() unexpected success\n");
+ 		exit_val = 1;
+@@ -112,7 +113,7 @@ static void test_cap_sys_admin(void)
+ 	case -1:
+ 		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+ 	case 0:
+-		if (setns(fd, CLONE_NEWUSER) == -1) {
++		if (ltp_syscall(__NR_setns, fd, CLONE_NEWUSER) == -1) {
+ 			printf("parent pid setns failure: (%d) %s",
+ 				errno, strerror(errno));
+ 			exit(1);
 -- 
-1.6.0.2
+1.9.3
+
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
