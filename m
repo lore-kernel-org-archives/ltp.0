@@ -1,31 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zq-000893-23
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:58 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZD5Zp-0004Zo-0j
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:58 +0000
-Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t696ip2a020423
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:51 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t696ioHh004998
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:50 GMT
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696iohn009413
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:50 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  9 Jul 2015 09:47:37 +0300
-Message-Id: <1436424468-11756-13-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 12/23] network/virt: add new macvlan01 test
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZAAP7-0003fW-58
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:17:49 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZAAP0-0002h4-DS
+	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:17:49 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Wed, 1 Jul 2015 13:16:55 +0800
+Message-ID: <1435727815-9484-1-git-send-email-sunyuan3@huawei.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH] filecaps: Remove unnecessary c.c file.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,107 +22,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: jstancek@redhat.com
+Cc: ltp-list@lists.sourceforge.net
 
-Based on vlan02 test. It creates then deletes macvlan interfaces
-multiple times with private, vepa, bridge and passthru modes.
+The c.c file is the same as check_simple_capset.c except config.h
+is included in check_simple_capset.c. Moreover, it is not correct
+to use HAVE_SYS_CAPABILITY_H without including config.h.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
 ---
- runtest/network_stress.features     |    2 +
- testcases/network/virt/Makefile     |    3 +-
- testcases/network/virt/macvlan01.sh |   51 +++++++++++++++++++++++++++++++++++
- 3 files changed, 55 insertions(+), 1 deletions(-)
- create mode 100755 testcases/network/virt/macvlan01.sh
+ testcases/kernel/security/filecaps/c.c | 47 ----------------------------------
+ 1 file changed, 47 deletions(-)
+ delete mode 100644 testcases/kernel/security/filecaps/c.c
 
-diff --git a/runtest/network_stress.features b/runtest/network_stress.features
-index 2071d94..bc62919 100644
---- a/runtest/network_stress.features
-+++ b/runtest/network_stress.features
-@@ -17,3 +17,5 @@ vxlan_ipv6_uni_03 vxlan03.sh -6 -d uni
- vlan01 vlan01.sh
- vlan02 vlan02.sh
- vlan03 vlan03.sh
-+
-+macvlan01 macvlan01.sh
-diff --git a/testcases/network/virt/Makefile b/testcases/network/virt/Makefile
-index af19f5b..4cc9de9 100644
---- a/testcases/network/virt/Makefile
-+++ b/testcases/network/virt/Makefile
-@@ -18,7 +18,8 @@ top_srcdir		?= ../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--INSTALL_TARGETS		:= virt_lib.sh \
-+INSTALL_TARGETS		:= macvlan01.sh \
-+			   virt_lib.sh \
- 			   vlan01.sh \
- 			   vlan02.sh \
- 			   vlan03.sh \
-diff --git a/testcases/network/virt/macvlan01.sh b/testcases/network/virt/macvlan01.sh
-new file mode 100755
-index 0000000..aac9d02
---- /dev/null
-+++ b/testcases/network/virt/macvlan01.sh
-@@ -0,0 +1,51 @@
-+#!/bin/sh
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+#
-+# Test-case 1: Local test, check if we can create and then delete macvlan
-+#              interface 500 times.
-+
-+TCID=macvlan01
-+TST_TOTAL=4
-+
-+virt_type="macvlan"
-+
-+. test_net.sh
-+. virt_lib.sh
-+
-+modes="private vepa bridge passthru"
-+
-+start_id=1
-+virt_count=500
-+
-+for m in $modes; do
-+	tst_resm TINFO "add $virt_type with mode '$m'"
-+
-+	virt_add ltp_v0 mode $m > /dev/null 2>&1
-+	if [ $? -ne 0 ]; then
-+		tst_resm TCONF "iproute or kernel doesn't support mode '$m'"
-+		m=""
-+	else
-+		ROD_SILENT "ip li delete ltp_v0"
-+	fi
-+
-+	virt_add_delete_test "mode $m"
-+
-+	start_id=$(($start_id + $virt_count))
-+done
-+
-+tst_exit
+diff --git a/testcases/kernel/security/filecaps/c.c b/testcases/kernel/security/filecaps/c.c
+deleted file mode 100644
+index 511e673..0000000
+--- a/testcases/kernel/security/filecaps/c.c
++++ /dev/null
+@@ -1,47 +0,0 @@
+-/******************************************************************************/
+-/*                                                                            */
+-/* Copyright (c) International Business Machines  Corp., 2008                 */
+-/*                                                                            */
+-/* This program is free software;  you can redistribute it and/or modify      */
+-/* it under the terms of the GNU General Public License as published by       */
+-/* the Free Software Foundation; either version 2 of the License, or          */
+-/* (at your option) any later version.                                        */
+-/*                                                                            */
+-/* This program is distributed in the hope that it will be useful,            */
+-/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+-/* the GNU General Public License for more details.                           */
+-/*                                                                            */
+-/* You should have received a copy of the GNU General Public License          */
+-/* along with this program;  if not, write to the Free Software               */
+-/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
+-/*                                                                            */
+-/******************************************************************************/
+-
+-#include <stdio.h>
+-#if HAVE_SYS_CAPABILITY_H
+-#include <linux/types.h>
+-#include <sys/capability.h>
+-#endif
+-
+-int main(void)
+-{
+-
+-#ifdef HAVE_LIBCAP
+-	cap_t caps, caps2;
+-	int ret;
+-
+-	caps = cap_from_text("cap_setpcap+ep");
+-	caps2 = cap_from_text("cap_setpcap+ep");
+-	ret = cap_set_proc(caps);
+-	ret = cap_compare(caps, caps2);
+-	printf("Caps were %sthe same\n", ret ? "not " : "");
+-
+-	cap_free(caps);
+-	cap_free(caps2);
+-	return ret;
+-#else
+-	printf("System doesn't support full POSIX capabilities.\n");
+-	return 1;
+-#endif
+-}
 -- 
-1.7.1
+1.9.1
 
 
 ------------------------------------------------------------------------------
