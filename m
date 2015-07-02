@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZFg5k-0006QF-Uv
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 10:08:36 +0000
-Date: Thu, 16 Jul 2015 12:07:04 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZAf52-0007sF-Os
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 14:03:08 +0000
+Date: Thu, 2 Jul 2015 16:01:43 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150716100703.GA23364@rei.suse.de>
-References: <1437037015-10320-1-git-send-email-liuhangbin@gmail.com>
+Message-ID: <20150702140143.GA20648@rei.suse.de>
+References: <1435728227-9753-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1437037015-10320-1-git-send-email-liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCHv3 1/2] testcases/lib/test.sh: add tst_retry() to
- ensure cmd exec succeed
+In-Reply-To: <1435728227-9753-1-git-send-email-sunyuan3@huawei.com>
+Subject: Re: [LTP] [PATCH V2] filecaps: Remove unnecessary c.c file.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,55 +24,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  testcases/lib/test.sh | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-> index 1c9b126..60a9984 100644
-> --- a/testcases/lib/test.sh
-> +++ b/testcases/lib/test.sh
-> @@ -134,6 +134,26 @@ tst_check_cmds()
->  	done
->  }
->  
-> +# tst_retry "command" [times]
-> +# try run command for specified times, default is 3.
-> +# Function returns 0 if succeed in RETRIES times or the last retcode the cmd
-> +# returned
-> +tst_retry()
-> +{
-> +	local cmd="$1"
-> +	local RETRIES=${2:-"3"}
-> +	while [ $RETRIES -gt 0 ]; do
-> +		eval "$cmd"
-> +		ret=$?
-> +		if [ $ret -eq 0 ]; then
-> +			break
-> +		fi
-> +		let RETRIES=$((RETRIES-1))
+> The c.c file is the same as check_simple_capset.c except config.h
+> is included in check_simple_capset.c. Moreover, it is not correct
+> to use HAVE_SYS_CAPABILITY_H without including config.h.
 
-The let keyword is known only by bash. So the whole line should just be
-the RETRIES=$((RETRIES-1)).
+Applied, thanks.
 
-Have a look at https://wiki.ubuntu.com/DashAsBinSh#let
-
-> +		sleep 1
-> +	done
-> +	return $ret
-> +}
-> +
->  # tst_timeout "command arg1 arg2 ..." timeout
->  # Runs command for specified timeout (in seconds).
->  # Function returns retcode of command or 1 if arguments are invalid.
-> -- 
-> 1.9.3
-> 
+BTW it looks like check_simple_capset is not called from anywhere
+either. At least 'git grep check_simple_capset' does not return
+anything but .gitignore file. So if that does not break the tests we
+should remove it as well.
 
 -- 
 Cyril Hrubis
