@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFbkU-0007sX-Nz
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:22 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZFbkT-0005nb-Rf
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:22 +0000
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 16 Jul 2015 13:30:40 +0800
-Message-ID: <1437024647-2066-4-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <55A680FC.2010807@oracle.com>
-	<1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH v5 04/11] asapi_02: Use 'tst_tmpdir' and more cleanup
+	(envelope-from <liuhangbin@gmail.com>) id 1ZAaCg-0004JO-Hw
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 08:50:42 +0000
+Received: from mail-pd0-f172.google.com ([209.85.192.172])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZAaCf-0001RF-Ln
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 08:50:42 +0000
+Received: by pdbep18 with SMTP id ep18so41625080pdb.1
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 02 Jul 2015 01:50:36 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Thu,  2 Jul 2015 16:50:19 +0800
+Message-Id: <1435827019-7831-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCH] network/stress/ssh: tcp_fastopen test must be run
+	with kernel 3.7 or newer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,58 +25,31 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-* Use 'tst_tmpdir' and 'tst_rmdir'.
-* Add 'static' for the cleanup.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
- testcases/network/lib6/asapi_02.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ testcases/network/stress/ssh/ssh-stress | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/testcases/network/lib6/asapi_02.c b/testcases/network/lib6/asapi_02.c
-index 01bee37..ac7dcda 100644
---- a/testcases/network/lib6/asapi_02.c
-+++ b/testcases/network/lib6/asapi_02.c
-@@ -285,6 +285,7 @@ static struct ftent {
- };
+diff --git a/testcases/network/stress/ssh/ssh-stress b/testcases/network/stress/ssh/ssh-stress
+index 7960627..3ff2367 100644
+--- a/testcases/network/stress/ssh/ssh-stress
++++ b/testcases/network/stress/ssh/ssh-stress
+@@ -126,6 +126,9 @@ test02()
  
- static void setup(void);
-+static void cleanup(void);
- static void do_test(const struct ftent *);
- 
- char *TCID = "asapi_02";
-@@ -305,15 +306,23 @@ int main(int argc, char *argv[])
- 			do_test(&ftab[i]);
- 	}
- 
-+	cleanup();
- 	tst_exit();
- }
- 
--void setup(void)
-+static void setup(void)
+ test03()
  {
- 	TEST_PAUSE;
++	tst_kvercmp 3 7 0 && \
++		tst_brkm TCONF "Test must be run with kernel 3.7 or newer"
 +
-+	tst_tmpdir();
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
- }
+ 	tst_resm TINFO "Forwarding TCP traffic with $NS_TIMES requests"
  
--void do_test(const struct ftent *ftptr)
-+static void do_test(const struct ftent *ftptr)
- {
- 	switch (ftptr->ft_type) {
- 	case EXISTS:
+ 	# Run a TCP traffic server
 -- 
 1.9.3
 
