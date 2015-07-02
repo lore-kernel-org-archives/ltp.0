@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1ZIXJ8-0005Po-Ht
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2015 07:22:14 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZIXJ6-0003a2-SS
-	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2015 07:22:14 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (Postfix) with ESMTPS id 86751AE5A1
-	for <ltp-list@lists.sourceforge.net>;
-	Fri, 24 Jul 2015 07:22:06 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 24 Jul 2015 15:22:00 +0800
-Message-Id: <1437722520-2794-1-git-send-email-liwang@redhat.com>
-Subject: [LTP] [PATCH] syscalls/sysfs: replace the TWARN to TCONF
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZAg1h-0005qm-Aw
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 15:03:45 +0000
+Date: Thu, 2 Jul 2015 17:02:22 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150702150222.GA21990@rei.suse.de>
+References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
+	<1435320294-45783-6-git-send-email-maninder1.s@samsung.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1435320294-45783-6-git-send-email-maninder1.s@samsung.com>
+Subject: Re: [LTP] [PATCH 05/13] kernel/mq_open: use ARRAY_SIZE
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,109 +22,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Maninder Singh <maninder1.s@samsung.com>
+Cc: ltp-list@lists.sourceforge.net, pankaj.m@samsung.com
 
-I run some of these cases on aarch64 today and get a series waring, that's because
-sysfs syscall is not implemented on aarch64. So, maybe TCONF is better than TWARN
-in the testcase.
+Hi!
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com>
+> ---
+>  testcases/kernel/syscalls/mq_open/mq_open01.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
+> index 3c2d1b1..febbbd3 100644
+> --- a/testcases/kernel/syscalls/mq_open/mq_open01.c
+> +++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
+> @@ -405,7 +405,7 @@ int main(int ac, char **av)
+>  			/*
+>  			 * Execute test
+>  			 */
+> -			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
+> +			for (i = 0; i < (int)ARRAY_SIZE(tcase);
+>  			     i++) {
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/syscalls/sysfs/sysfs01.c | 2 +-
- testcases/kernel/syscalls/sysfs/sysfs02.c | 2 +-
- testcases/kernel/syscalls/sysfs/sysfs03.c | 2 +-
- testcases/kernel/syscalls/sysfs/sysfs04.c | 2 +-
- testcases/kernel/syscalls/sysfs/sysfs05.c | 2 +-
- testcases/kernel/syscalls/sysfs/sysfs06.c | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+After the change the whole for statement fits on one line (has less than
+80 chars) can you fix that as well?
 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs01.c b/testcases/kernel/syscalls/sysfs/sysfs01.c
-index 11ebe43..c29f6c0 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs01.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs01.c
-@@ -103,7 +103,7 @@ int main(int ac, char **av)
- 		}
- 	}			/*End of TEST_LOOPING */
- #else
--	tst_resm(TWARN,
-+	tst_resm(TCONF,
- 		 "This test can only run on kernels that support the sysfs system call");
- #endif
- 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs02.c b/testcases/kernel/syscalls/sysfs/sysfs02.c
-index f7cb96a..54557cc 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs02.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs02.c
-@@ -103,7 +103,7 @@ int main(int ac, char **av)
- 		}
- 	}			/*End of TEST_LOOPING */
- #else
--	tst_resm(TWARN,
-+	tst_resm(TCONF,
- 		 "This test can only run on kernels that support the sysfs system call");
- #endif
- 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs03.c b/testcases/kernel/syscalls/sysfs/sysfs03.c
-index 59b997e..9048dfe 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs03.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs03.c
-@@ -101,7 +101,7 @@ int main(int ac, char **av)
- 		}
- 	}			/*End of TEST_LOOPING */
- #else
--	tst_resm(TWARN,
-+	tst_resm(TCONF,
- 		 "This test can only run on kernels that support the sysfs system call");
- #endif
- 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs04.c b/testcases/kernel/syscalls/sysfs/sysfs04.c
-index f4fda36..2b2530a 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs04.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs04.c
-@@ -105,7 +105,7 @@ int main(int ac, char **av)
- 		}
- 	}
- #else
--	tst_resm(TWARN,
-+	tst_resm(TCONF,
- 		 "This test can only run on kernels that support the sysfs system call");
- #endif
- 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs05.c b/testcases/kernel/syscalls/sysfs/sysfs05.c
-index e97f0c8..2ab6707 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs05.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs05.c
-@@ -129,7 +129,7 @@ int main(int ac, char **av)
- 		}		/*End of TEST LOOPS */
- 	}
- #else
--	tst_resm(TWARN,
-+	tst_resm(TCONF,
- 		 "This test can only run on kernels that support the sysfs system call");
- #endif
- 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs06.c b/testcases/kernel/syscalls/sysfs/sysfs06.c
-index 121e944..7ef5ee2 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs06.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs06.c
-@@ -132,7 +132,7 @@ int main(int ac, char **av)
- 		}		/*End of TEST LOOPS */
- 	}
- #else
--	tst_resm(TWARN,
-+	tst_resm(TCONF,
- 		 "This test can only run on kernels that support the sysfs system call");
- #endif
- 
+Otherwise these patches looks fine.
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
