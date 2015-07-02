@@ -1,29 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1ZHq8x-0007xg-BV
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 09:16:51 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZHq8w-0003Ak-6G
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 09:16:51 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (Postfix) with ESMTPS id E78E0347A53
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 22 Jul 2015 09:16:43 +0000 (UTC)
-Received: from dhcp-13-206.nay.redhat.com (dhcp-12-104.nay.redhat.com
-	[10.66.12.104])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t6M9GdWF007637
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Wed, 22 Jul 2015 05:16:42 -0400
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 22 Jul 2015 17:16:37 +0800
-Message-Id: <1437556597-21540-1-git-send-email-liwang@redhat.com>
-Subject: [LTP] [PATCH] mem/hugeshmat04: check if system 'shmmax' large enough
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1ZAVCX-0000pJ-42
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 03:30:13 +0000
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZAVCV-00080I-8d
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 03:30:13 +0000
+Received: from epcpsbgr5.samsung.com
+	(u145.gpu120.samsung.co.kr [203.254.230.145])
+	by mailout1.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NQU029TFCE3KU80@mailout1.samsung.com> for
+	ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 12:30:03 +0900 (KST)
+Date: Thu, 02 Jul 2015 03:30:03 +0000 (GMT)
+From: Maninder Singh <maninder1.s@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <1882611005.154971435807803449.JavaMail.weblogic@ep2mlwas01a>
+Subject: Re: [LTP] [PATCH 00/13] Use ARRAY_SIZE Macro where possible
+Reply-To: maninder1.s@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,60 +30,77 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: PANKAJ MISHRA <pankaj.m@samsung.com>
 
-Sometimes, the testcase fail like:
-	hugeshmat04    0  TINFO  :  set nr_hugepages to 512
-	hugeshmat04    1  TBROK  :  hugeshmat04.c:103: shmget: errno=EINVAL(22): Invalid argument
-	hugeshmat04    2  TBROK  :  hugeshmat04.c:103: Remaining cases broken
-	hugeshmat04    0  TINFO  :  set nr_hugepages to 0
+Hello,
 
-The testbed info:
-	# cat /proc/sys/kernel/shmmax
-	536870912
-	# uname -r
-	3.10.0-295.el7.x86_64
+Using generic functions is always better than open coded stuff.
+Also most of ltp code use ARRAY_SIZE , so make remaining code to
+use the same.
 
-The reason is that the 'shmmax' of a system is not enough for shmget() function to get 1G memory.
-On RHEL7 system, we have a BUG to enlarge this value, but I can't guarantee this programe could
-running well with other distribution. So, a proposed path as follow:
+Any Comments ?  :)
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+------- Original Message -------
+Sender : Maninder Singh<maninder1.s@samsung.com> 
+Date : Jun 26, 2015 21:04 (GMT+09:00)
+Title : [PATCH 00/13] Use ARRAY_SIZE Macro where possible
+Following patchset provides use of ARRAY_SIZE macro
+instead of sizeof(type)/sizeof(type[0]).
 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-index 7f0fbca..aeac3f7 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-@@ -123,13 +123,15 @@ void shared_hugepage(void)
- 
- void setup(void)
- {
--	long mem_total, hpage_size;
-+	long mem_total, hpage_size, shmmax;
- 
- 	tst_require_root(NULL);
- 
- 	mem_total = read_meminfo("MemTotal:");
--	if (mem_total < 2L*1024*1024) {
--		tst_resm(TCONF, "Test requires more than 2GB of RAM");
-+	SAFE_FILE_SCANF(NULL, PATH_SHMMAX, "%ld", &shmmax);
-+	if (mem_total < 2L*1024*1024 || shmmax < SIZE) {
-+		tst_resm(TCONF,
-+			"Test requires more than 2GB of RAM or need a lager 'shmmax' value for testing");
- 		tst_exit();
- 	}
- 
+Created with following coccinelle patch:- 
+
+@@
+type T;
+T[] E;
+@@
+- (sizeof(E)/sizeof(E[0]))
++ ARRAY_SIZE(E)
+
+
+Maninder Singh (13):
+  kernel/pidns: use ARRAY_SIZE
+  kernel/fs: use ARRAY_SIZE
+  kernel/fs: use ARRAY_SIZE
+  kernel/mq_timedreceive: use ARRAY_SIZE
+  kernel/mq_open: use ARRAY_SIZE
+  kernel/getxattr: use ARRAY_SIZE
+  kernel/socketpair: use ARRAY_SIZE
+  kernel/mq_timedsend: use ARRAY_SIZE
+  kernel/fadvise: use ARRAY_SIZE
+  kernel/dup2: use ARRAY_SIZE
+  kernel/mq_unlink: use of ARRAY_SIZE
+  kernel/rt_sigaction: use ARRAY_SIZE
+  kernel/nft: use ARRAY_SIZE
+  
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Reviewed-by: Akhilesh Kumar <akhilesh.k@samsung.com> 
+  
+ testcases/kernel/containers/pidns/pidns17.c        |    4 ++--
+ testcases/kernel/fs/fsstress/fsstress.c            |    7 ++++---
+ testcases/kernel/fs/ftest/ftest02.c                |    2 +-
+ testcases/kernel/fs/ftest/ftest06.c                |    2 +-
+ testcases/kernel/syscalls/dup2/dup204.c            |    2 +-
+ .../kernel/syscalls/fadvise/posix_fadvise01.c      |    2 +-
+ .../kernel/syscalls/fadvise/posix_fadvise03.c      |    2 +-
+ testcases/kernel/syscalls/getxattr/getxattr01.c    |    4 ++--
+ testcases/kernel/syscalls/mq_open/mq_open01.c      |    2 +-
+ .../syscalls/mq_timedreceive/mq_timedreceive01.c   |    2 +-
+ .../kernel/syscalls/mq_timedsend/mq_timedsend01.c  |    2 +-
+ testcases/kernel/syscalls/mq_unlink/mq_unlink01.c  |    2 +-
+ testcases/kernel/syscalls/nftw/nftw.c              |    8 ++++----
+ testcases/kernel/syscalls/nftw/nftw64.c            |    8 ++++----
+ .../kernel/syscalls/rt_sigaction/rt_sigaction01.c  |    3 +--
+ .../kernel/syscalls/rt_sigaction/rt_sigaction02.c  |    2 +-
+ .../kernel/syscalls/rt_sigaction/rt_sigaction03.c  |    2 +-
+ .../kernel/syscalls/socketpair/socketpair02.c      |    4 ++--
+ 18 files changed, 30 insertions(+), 30 deletions(-)
+
 -- 
-1.8.3.1
-
-
+1.7.9.5
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
 GigeNET's Cloud Solutions provide you with the tools and support that
