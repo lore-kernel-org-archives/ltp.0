@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1ZABcb-0006rM-LJ
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 06:35:49 +0000
-Received: from mail-pd0-f175.google.com ([209.85.192.175])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZABca-0004ox-Uk
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 06:35:49 +0000
-Received: by pdcu2 with SMTP id u2so20422279pdc.3
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 30 Jun 2015 23:35:43 -0700 (PDT)
-From: Hangbin Liu <liuhangbin@gmail.com>
-Date: Wed,  1 Jul 2015 14:35:32 +0800
-Message-Id: <1435732532-10995-1-git-send-email-liuhangbin@gmail.com>
-Subject: [LTP] [PATCHv3] containers: Use ltp_syscall for setns incase some
-	libc library do not support it
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZAfKK-0004QW-HG
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 14:18:56 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZAfKF-00083K-3B
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 14:18:56 +0000
+Message-ID: <5595490E.1010509@oracle.com>
+Date: Thu, 02 Jul 2015 17:22:06 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+MIME-Version: 1.0
+References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
+	<5593E172.1050800@huawei.com> <5593F4E2.1040804@oracle.com>
+	<55952961.30906@huawei.com>
+In-Reply-To: <55952961.30906@huawei.com>
+Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
+ failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,54 +27,44 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-Use ltp_syscall for setns incase some libc library do not support it. Also
-check whether we support setns in setup(). If it's support the syscall will
-silently fails and test continues. If not, then tst_brkm call will end the
-test with TCONF.
+Hi,
+On 07/02/2015 03:06 PM, Cui Bixuan wrote:
+> On 2015/7/1 22:10, Alexey Kodanev wrote:
+>> The test creates only tst_logfile, why it should remove 'messages-*' and other system logs?
+>>
+>> I see that its configuration file includes logrotate.d/, is it really needed by the test?
+>>
+> The tst_logfile of test created is 'messages-*' and the 'messages-*' will cause the case failed,
+> so we should delete it if we want to the case run succeed at the second time.
 
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
----
- testcases/kernel/containers/userns/userns04.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+OK, the test does the following basic steps:
 
-diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
-index 7077679..9836fd9 100644
---- a/testcases/kernel/containers/userns/userns04.c
-+++ b/testcases/kernel/containers/userns/userns04.c
-@@ -35,6 +35,7 @@ int TST_TOTAL = 1;
- static void setup(void)
- {
- 	check_newuser();
-+	ltp_syscall(__NR_setns, -1, 0);
- 	tst_tmpdir();
- 	TST_CHECKPOINT_INIT(NULL);
- }
-@@ -55,7 +56,7 @@ static int child_fn2(void *arg)
- 	int exit_val = 0;
- 	int ret;
- 
--	ret = setns(((long)arg), CLONE_NEWUSER);
-+	ret = ltp_syscall(__NR_setns, ((long)arg), CLONE_NEWUSER);
- 	if (ret != -1) {
- 		printf("child2 setns() unexpected success\n");
- 		exit_val = 1;
-@@ -112,7 +113,7 @@ static void test_cap_sys_admin(void)
- 	case -1:
- 		tst_brkm(TBROK | TERRNO, cleanup, "fork");
- 	case 0:
--		if (setns(fd, CLONE_NEWUSER) == -1) {
-+		if (ltp_syscall(__NR_setns, fd, CLONE_NEWUSER) == -1) {
- 			printf("parent pid setns failure: (%d) %s",
- 				errno, strerror(errno));
- 			exit(1);
--- 
-1.9.3
+a. create tst_logfile, fill it with messages;
+b. ./logrotate
+c. if [ -f tst_logfile.1.gz ] then test passed.
+
+Therefore, why bother about 'messages-*' and other logs, the test 
+doesn't check if they were rotated/compressed... so, may be, we should 
+remove "include /etc/logrotate.d/" from the test configuration file so 
+that logrotate rotated only "tst_logfile" and nothing else, what do you 
+think?
+
+Thanks,
+Alexey
+
+
+> And the test creates tst_logfile base on day time. For example, the system time is '2015 Jul 3',
+> then the case will create 'messages-20150703.gz'. So 'rm -r /var/log/*`date '+%Y%m%d'`*' in patch
+> only delete the message file of case created (after running it) and not other system logs.
+>
+> I think, if the logrotate testcase fail when run it the second time,it's a problem of
+> testcase and we should fix it.
 
 
 ------------------------------------------------------------------------------
