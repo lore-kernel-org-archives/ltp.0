@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZHt6X-0003EK-Hi
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 12:26:33 +0000
-Date: Wed, 22 Jul 2015 14:26:23 +0200
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZAeZ9-0000Du-9G
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 13:30:11 +0000
+Date: Thu, 2 Jul 2015 15:28:49 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150722122623.GA16661@rei.suse.de>
-References: <1437043403-11184-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-	<1437043403-11184-2-git-send-email-weijg.fnst@cn.fujitsu.com>
+Message-ID: <20150702132849.GB17833@rei.suse.de>
+References: <1435827019-7831-1-git-send-email-liuhangbin@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1437043403-11184-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 2/2] pan/splitstr.c: free arg_string before return
+In-Reply-To: <1435827019-7831-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCH] network/stress/ssh: tcp_fastopen test must be run
+ with kernel 3.7 or newer
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,21 +25,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> diff --git a/pan/splitstr.c b/pan/splitstr.c
-> index 39b4698..608c682 100644
-> --- a/pan/splitstr.c
-> +++ b/pan/splitstr.c
-> @@ -136,6 +136,7 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
->  	if (argcount != NULL)
->  		*argcount = num_toks;
+> diff --git a/testcases/network/stress/ssh/ssh-stress b/testcases/network/stress/ssh/ssh-stress
+> index 7960627..3ff2367 100644
+> --- a/testcases/network/stress/ssh/ssh-stress
+> +++ b/testcases/network/stress/ssh/ssh-stress
+> @@ -126,6 +126,9 @@ test02()
 >  
-> +	free(arg_string);
+>  test03()
+>  {
+> +	tst_kvercmp 3 7 0 && \
+> +		tst_brkm TCONF "Test must be run with kernel 3.7 or newer"
 
-I've explained why this is wrong before, didn't I?
+Hmm, do we need to exit whole test if test03() cannot be executed?
+
+Shouldn't this rather be tst_resm TCONF followed with return?
+
+Alexej, can you look at this please?
 
 -- 
 Cyril Hrubis
