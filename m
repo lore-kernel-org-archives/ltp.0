@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZIFCP-0006Tk-5X
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2015 12:02:05 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZIFCF-0001yG-Dr
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2015 12:02:04 +0000
-Date: Thu, 23 Jul 2015 08:01:48 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1729201233.3167520.1437652908861.JavaMail.zimbra@redhat.com>
-In-Reply-To: <DUB407-EAS81F92E7EF5284309697E5785820@phx.gbl>
-References: <DUB407-EAS338A9D3F666651011BAB67485820@phx.gbl>
-	<DUB407-EAS81F92E7EF5284309697E5785820@phx.gbl>
+	(envelope-from <cuibixuan@huawei.com>) id 1ZAdHG-0001zu-OA
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 12:07:38 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZAdHB-00035X-TH
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 12:07:38 +0000
+Message-ID: <55952961.30906@huawei.com>
+Date: Thu, 2 Jul 2015 20:06:57 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] OOM messages when running full ltp tests on a Hyper-V VM
+References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
+	<5593E172.1050800@huawei.com> <5593F4E2.1040804@oracle.com>
+In-Reply-To: <5593F4E2.1040804@oracle.com>
+Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
+ failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,37 +26,76 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cristian Valean <cristian.valean@live.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-CgoKCi0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0KPiBGcm9tOiAiQ3Jpc3RpYW4gVmFsZWFu
-IiA8Y3Jpc3RpYW4udmFsZWFuQGxpdmUuY29tPgo+IFRvOiBsdHAtbGlzdEBsaXN0cy5zb3VyY2Vm
-b3JnZS5uZXQKPiBTZW50OiBUaHVyc2RheSwgMjMgSnVseSwgMjAxNSAxOjQxOjU2IFBNCj4gU3Vi
-amVjdDogUmU6IFtMVFBdIE9PTSBtZXNzYWdlcyB3aGVuIHJ1bm5pbmcgZnVsbCBsdHAgdGVzdHMg
-b24gYSBIeXBlci1WIFZNCj4gCj4gTXkgYXBvbG9naWVzIGZvciB0aGUgaW5jb21wbGV0ZSByZXBs
-eSwgaXQgZ290IHNlbnQgb3V0IGJlZm9yZSBhbGwgZGV0YWlscwo+IHdlbnQgaXQuCj4gCj4gVG8g
-Y29udGludWUgdGhlIGluaXRpYWwgdGhyZWFkOgo+IAo+IEnigJltIHRyeWluZyB0byBydW4gYSBm
-dWxsIGx0cCB0ZXN0IHJ1biBvbiBVYnVudHUgMTQuMDQuMiBhcyBhIEh5cGVyLVYgVk0uCj4gCj4g
-VGhlIFZNIGlzIHNldCB3aXRoIDggb3IgMTJHQiBhbmQgNCB2Q1BVcywgaG93ZXZlciBkdXJpbmcg
-dGhlIHRlc3RzIGV4ZWN1dGlvbgo+IHRoZSBzeXNsb2cgcmVjb3JkcyBvdmVyIDMwIGNhbGwgdHJh
-Y2VzIHNpbWlsYXIgdG8gdGhlIG9uZSBiZWxvdy4KPiAKPiBIYXZlbuKAmXQgdHJpZWQgdm13YXJl
-IG9yIG90aGVyIHBsYXRmb3JtcywgYnV0IEnigJltIHdvbmRlcmluZyB3aHkgTFRQIHByb2Nlc3Nl
-cwo+IGdvIG92ZXIgdGhlIGxpbWl0LCBvciB3aGF0IHdvdWxkIGJlIGEgcmVmZXJlbmNlIHN5c3Rl
-bSByZXNvdXJjZXMgdGhhdCB3b3VsZAo+IGFjY29tbW9kYXRlIGEgZnVsbCBydW4uCj4gCj4gT3Ro
-ZXJ3aXNlLCBhcmUgdGhlcmUgYXJlIHBhcmFtcyB0aGF0IGNhbiBsaW1pdG9yIHNwZWNpZnkgdGhl
-IHJlc291cmNlcyB0aGF0Cj4gTFRQIGNhbiB1c2U/Cj4gCj4gU2FtcGxlIGNhbGwgdHJhY2U6Cj4g
-Cj4gSnVsIDIyIDAxOjE3OjUwIHVidW50dSBrZXJuZWw6IFsgNTc1Ny4wMTE3MTFdIE91dCBvZiBt
-ZW1vcnk6IEtpbGwgcHJvY2Vzcwo+IDU5MDIgKG9vbTAxKSBzY29yZSA5Mzcgb3Igc2FjcmlmaWNl
-IGNoaWxkCj4gCj4gSnVsIDIyIDAxOjE3OjUwIHVidW50dSBrZXJuZWw6IFsgNTc1Ny4wMTQwOTld
-IEtpbGxlZCBwcm9jZXNzIDU5MDIgKG9vbTAxKQo+IHRvdGFsLXZtOjE1NzU5Nzg0a0IsIGFub24t
-cnNzOjc3MjM2MjBrQiwgZmlsZS1yc3M6NDBrQgoKb29tMCogdGVzdGNhc2VzIGFyZSBkZXNpZ25l
-ZCB0byB0cmlnZ2VyIE9PTSBhbmQgdmVyaWZ5IHRoYXQgZXhwZWN0ZWQgcHJvY2VzcwpoYXMgYmVl
-biBraWxsZWQuIFRoZXNlIHRlc3RzIGdvIG92ZXIgbGltaXQgb24gcHVycG9zZS4KClJlZ2FyZHMs
-CkphbgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL2x0cC1saXN0Cg==
+On 2015/7/1 22:10, Alexey Kodanev wrote:
+> Hi,
+> On 07/01/2015 03:47 PM, Cui Bixuan wrote:
+>> ping ~~  :-)
+>>
+>> On 2015/5/5 20:12, Cui Bixuan wrote:
+>>> For the first time,case do 'logrotate -fv tst_logrotate.conf' that will
+>>> create the 'half-rotated' file(messages-20150416.gz). When run case again,
+>>> the case will fail:
+>>> 'error: destination /var/log/messages-20150416.gz already exists,skipping
+>>> rotation'
+>>>
+>>> 'Logrotate' does't expect to find an already existing "half-rotated" file
+>>> (http://centos.1050465.n5.nabble.com/CentOS-Logrotate-errors-td5725868.html).
+>>> Clean the "half-rotated" file,and the case will pass all the time.
+>>>
+>>> Signed-off-by: Cui Bixuan<cuibixuan@huawei.com>
+>>> ---
+>>>   testcases/commands/logrotate/logrotate_tests.sh |    1 +
+>>>   1 files changed, 1 insertions(+), 0 deletions(-)
+>>>
+>>> diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
+>>> index 2a793cc..5b14ca0 100755
+>>> --- a/testcases/commands/logrotate/logrotate_tests.sh
+>>> +++ b/testcases/commands/logrotate/logrotate_tests.sh
+>>> @@ -191,6 +191,7 @@ test01()
+>>>       do
+>>>           rm -f $files > /dev/null 2>&1
+>>>       done
+>>> +    rm -f /var/log/*`date '+%Y%m%d'`* > /dev/null 2>&1
+>>>   
+> 
+> The test creates only tst_logfile, why it should remove 'messages-*' and other system logs?
+> 
+> I see that its configuration file includes logrotate.d/, is it really needed by the test?
+> 
+
+The tst_logfile of test created is 'messages-*' and the 'messages-*' will cause the case failed,
+so we should delete it if we want to the case run succeed at the second time.
+
+And the test creates tst_logfile base on day time. For example, the system time is '2015 Jul 3',
+then the case will create 'messages-20150703.gz'. So 'rm -r /var/log/*`date '+%Y%m%d'`*' in patch
+only delete the message file of case created (after running it) and not other system logs.
+
+I think, if the logrotate testcase fail when run it the second time,it's a problem of
+testcase and we should fix it.
+
+Thanks,
+Cui Bixuan
+
+> Thanks,
+> Alexey
+> 
+> 
+> 
+
+
+------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
