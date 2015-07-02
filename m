@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1ZAD5U-0001jw-QK
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 08:09:44 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZAD5T-0006RI-PW
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 08:09:44 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t6187uPD010398
-	for <ltp-list@lists.sourceforge.net>; Wed, 1 Jul 2015 16:07:56 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Wed, 1 Jul 2015 16:09:01 +0800
-Message-ID: <1435738142-19725-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/2] interfaces/sem_open: remove unused define(s)
+	(envelope-from <liuhangbin@gmail.com>) id 1ZAX3w-0004Oj-PA
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 05:29:28 +0000
+Received: from mail-pa0-f52.google.com ([209.85.220.52])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZAX3w-0002XR-0W
+	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 05:29:28 +0000
+Received: by paceq1 with SMTP id eq1so34414547pac.3
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 01 Jul 2015 22:29:22 -0700 (PDT)
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Thu,  2 Jul 2015 13:29:09 +0800
+Message-Id: <1435814949-4420-1-git-send-email-liuhangbin@gmail.com>
+Subject: [LTP] [PATCH] network/xinetd: wait a while to make sure telnetd
+	restart
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,80 +25,57 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: LTP List <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+telnetd not restart immediately after xinetd restart, which make xinetd
+failed. e.g.
+\# service xinetd restart; echo "^D" | /usr/bin/telnet ::1
+Stopping xinetd: [  OK  ]
+Starting xinetd: [  OK  ]
+Trying ::1...
+telnet: connect to address ::1: Connection refused
+
+Wait a while after xinetd restart will make sure telnetd up and the test passed
+
+\# service xinetd restart; sleep 1; echo "^D" | /usr/bin/telnet ::1
+Stopping xinetd: [  OK  ]
+Starting xinetd: [  OK  ]
+Trying ::1...
+Connected to ::1.
+Escape character is '^]'.
+Connection closed by foreign host.
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
- testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c | 1 -
- testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c | 1 -
- testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c | 1 -
- testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c | 1 -
- testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c | 1 -
- 5 files changed, 5 deletions(-)
+ testcases/network/xinetd/xinetd_tests.sh | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c
-index b77b23f..a083244 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-1.c
-@@ -22,7 +22,6 @@
+diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+index ff1219a..a12f6b9 100755
+--- a/testcases/network/xinetd/xinetd_tests.sh
++++ b/testcases/network/xinetd/xinetd_tests.sh
+@@ -315,6 +315,8 @@ test01()
+         fi
+     fi
  
- #define TEST "1-1"
- #define FUNCTION "sem_open"
--#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
++    sleep 1s
++
+     # Not checking for exit code from telnet command because telnet is
+     # not terminated by the test gracefully.
+     if [ $IPV6_ENABLED -eq 1 ]
+@@ -381,6 +383,8 @@ test01()
+         fi
+     fi
  
- int main(void)
- {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c
-index c8b9297..23240b2 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/1-2.c
-@@ -22,7 +22,6 @@
- 
- #define TEST "1-2"
- #define FUNCTION "sem_open"
--#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
- 
- int main(void)
- {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c
-index a190efc..d10c295 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/4-1.c
-@@ -23,7 +23,6 @@
- 
- #define TEST "4-1"
- #define FUNCTION "sem_open"
--#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
- 
- int main(void)
- {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c
-index e316056..56c8a93 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/5-1.c
-@@ -22,7 +22,6 @@
- 
- #define TEST "5-1"
- #define FUNCTION "sem_open"
--#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
- 
- int main(void)
- {
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c
-index 25eab96..f057656 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/sem_open/6-1.c
-@@ -20,7 +20,6 @@
- 
- #define TEST "6-1"
- #define FUNCTION "sem_open"
--#define ERROR_PREFIX "unexpected error: " FUNCTION " " TEST ": "
- 
- int main(void)
- {
++    sleep 1s
++
+     # Not checking for exit code from telnet command because telnet is
+     # not terminated by the test gracefully.
+     if [ $IPV6_ENABLED -eq 1 ]
 -- 
 1.9.3
 
