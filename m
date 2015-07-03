@@ -1,20 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZF1oT-0006kD-Ei
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 15:08:05 +0000
-Date: Tue, 14 Jul 2015 17:06:34 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150714150634.GB8286@rei.suse.de>
-References: <1436856423-5444-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-	<20150714142401.GA8286@rei.suse.de>
-	<912685955.17420609.1436885866542.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <912685955.17420609.1436885866542.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] lib/safe_macros.c: fix safe_write() and
- safe_pwrite()
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1ZArxL-0001Y6-7A
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 03:48:03 +0000
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZArxJ-0001w6-Dg
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 03:48:03 +0000
+Received: from epcpsbgr2.samsung.com
+	(u142.gpu120.samsung.co.kr [203.254.230.142])
+	by mailout1.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NQW01S907VTX990@mailout1.samsung.com> for
+	ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 12:47:53 +0900 (KST)
+Date: Fri, 03 Jul 2015 03:47:53 +0000 (GMT)
+From: Maninder Singh <maninder1.s@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <1089678615.223411435895273665.JavaMail.weblogic@ep2mlwas02a>
+Subject: [LTP] [RESUBMIT PATCH 04/13] kernel/mq_timedreceive: use ARRAY_SIZE
+Reply-To: maninder1.s@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,35 +33,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: PANKAJ MISHRA <pankaj.m@samsung.com>
 
-Hi!
-> > Ok, this was wrong because with len_strict == 1 and rval == -1 we will
-> > cast -1 to (size_t) which will yield 2^64 - 1. In practice this was
-> > working fine since nobody would call write with such large buffer...
-> > 
-> > Newertless it's better as it is now, but commit message could have been
-> > better since as far as I can see the len_strict flag was working fine.
-> > 
-> > Because when len_strict == 1 the result was computed as:
-> > 
-> > if ((0 && whatever) || rval != nbyte) -> if (0 || rval != nbyte) -> if (rval
-> > != nbyte)
-> > 
-> > which worked fine for all practical purposes. Or am I missing something?
-> 
-> Also, when len_strict == 0 and less bytes were written than requested,
-> it would report TBROK. With len_strict == 0 it should TBROK only when
-> rval is -1.
+use ARRAY_SIZE instead of sizeof(a)/sizeof(a[0])
 
-Ah, that is what I missed. The commit message should said that the lengh
-was checked in all cases...
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+---
+ .../syscalls/mq_timedreceive/mq_timedreceive01.c   |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index 945e2fa..b524e45 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -449,8 +449,7 @@ int main(int ac, char **av)
+ 			/*
+ 			 * Execute test
+ 			 */
+-			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
+-			     i++) {
++			for (i = 0; i < (int)ARRAY_SIZE(tcase); i++) {
+ 				int ret;
+ 				tst_resm(TINFO, "(case%02d) START", i);
+ 				ret = do_test(&tcase[i]);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
-
+1.7.9.5
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
 GigeNET's Cloud Solutions provide you with the tools and support that
