@@ -1,17 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <xiaofeng_yan2006@126.com>) id 1ZD6Fs-0005wW-Sg
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 07:28:27 +0000
-Received: from m50-111.126.com ([123.125.50.111])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZD6Fm-0008Jj-3l
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 07:28:24 +0000
-From: Wentao Ma <mawentao@inspur.com>
-Date: Thu,  9 Jul 2015 15:27:37 +0800
-Message-Id: <1436426857-7322-1-git-send-email-mawentao@inspur.com>
-Subject: [LTP] [PATCH] acls: Solve a problem from acl_test01
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1ZAyCm-0002hu-Kl
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 10:28:24 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZAyCl-0004pF-Be
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 10:28:24 +0000
+Date: Fri, 3 Jul 2015 06:27:49 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1708470684.12227407.1435919269525.JavaMail.zimbra@redhat.com>
+In-Reply-To: <559657E9.4060103@huawei.com>
+References: <1435724565-19631-1-git-send-email-sunyuan3@huawei.com>
+	<5595FC03.10602@huawei.com>
+	<1526251635.12159899.1435909417100.JavaMail.zimbra@redhat.com>
+	<55965241.5020206@huawei.com>
+	<20150703091815.GA2855@dustball.brq.redhat.com>
+	<559654BB.5050300@huawei.com>
+	<40301374.12208438.1435915931114.JavaMail.zimbra@redhat.com>
+	<559657E9.4060103@huawei.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH V2] userns01: add capability verification
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -21,42 +31,45 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: wunan@inspur.com
-
-The failed infornamtion is as follow:
-useradd: cannot set SELinux context for
-home directory /tmp/tacl/mount-ext3/acltest1
-
-this is caused by comand "rm -rf $TEST_USER1_HOMEDIR".
-But this directory is needed by next step.
-So create this driectory again.
-
-Signed-off-by: Wentao Ma <mawentao@inspur.com>
----
- testcases/kernel/fs/acls/acl_test01 | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
-index 328ff74..d079abd 100755
---- a/testcases/kernel/fs/acls/acl_test01
-+++ b/testcases/kernel/fs/acls/acl_test01
-@@ -87,6 +87,7 @@ do_setup(){
- 	rm -rf $TEST_USER1_HOMEDIR
- 	userdel $TEST_USER1 > /dev/null 2>&1
- 	sleep 1
-+        mkdir -p $TEST_USER1_HOMEDIR
- 	useradd -d $TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s /bin/sh
- 
- 	if [ $? -ne 0 ]; then
--- 
-1.8.3.1
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
+
+
+
+----- Original Message -----
+> From: "Yuan Sun" <sunyuan3@huawei.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Friday, 3 July, 2015 11:37:45 AM
+> Subject: Re: [PATCH V2] userns01: add capability verification
+> 
+> 
+> Log is as follow. I am not clear if new feature is added.
+
+I have installed "ubuntu-15.04-server-amd64.iso" and I get
+the same failure:
+
+root@ubuntu:~# apt-cache show libcap2 | grep Vers
+Version: 1:2.24-6
+
+root@ubuntu:~# uname -r
+3.19.0-15-generic
+
+root@ubuntu:~# cat /proc/self/status | grep Eff
+CapEff: 0000003fffffffff
+
+root@ubuntu:~# ./a.out
+ffffffff 0000003f
+ffffffff ffffffff
+cap_compare: 3
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
