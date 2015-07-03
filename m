@@ -1,20 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwan@redhat.com>) id 1ZHodw-0005k4-Ky
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 07:40:44 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZHodu-00075K-NC
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 07:40:44 +0000
-Date: Wed, 22 Jul 2015 03:40:34 -0400 (EDT)
-From: Li Wang <liwang@redhat.com>
-Message-ID: <90381058.1330396.1437550834788.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1436253058-7639-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1436253058-7639-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZAxQO-0005fW-4Z
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 09:38:24 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZAxQI-00046N-Pe
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 09:38:24 +0000
+Message-ID: <559657E9.4060103@huawei.com>
+Date: Fri, 3 Jul 2015 17:37:45 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] futex/futex_wake04.c: add kernel version check
+References: <1435724565-19631-1-git-send-email-sunyuan3@huawei.com>
+	<1715707849.11822659.1435846199391.JavaMail.zimbra@redhat.com>
+	<5595FC03.10602@huawei.com>
+	<1526251635.12159899.1435909417100.JavaMail.zimbra@redhat.com>
+	<55965241.5020206@huawei.com>
+	<20150703091815.GA2855@dustball.brq.redhat.com>
+	<559654BB.5050300@huawei.com>
+	<40301374.12208438.1435915931114.JavaMail.zimbra@redhat.com>
+In-Reply-To: <40301374.12208438.1435915931114.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH V2] userns01: add capability verification
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,108 +34,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Hi,
 
-Thank you for the patch, it's works for me.
+Log is as follow. I am not clear if new feature is added.
 
-Test on kernel-2.6.18-398.el5 good!
-
--- 
-Regards, 
-Li Wang 
-Email: liwang@redhat.com 
+log:
+root@ubuntu:~# cat /proc/self/status | grep CapEff
+CapEff:    0000001fffffffff
 
 
------ Original Message -----
-> Compilation failed on RHEL5U11GA because the flag MAP_HUGETLB of
-> mmap(2) are only available on kernels that are 2.6.32 or higher,
-> therefore add kernel version check, as well as add mmap.h to
-> define the flag in order to avoid compilation error.
-> 
-> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> ---
->  include/lapi/mmap.h                            | 26
->  ++++++++++++++++++++++++++
->  testcases/kernel/syscalls/futex/futex_wake04.c |  7 +++++++
->  2 files changed, 33 insertions(+)
->  create mode 100644 include/lapi/mmap.h
-> 
-> diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
-> new file mode 100644
-> index 0000000..e8e5917
-> --- /dev/null
-> +++ b/include/lapi/mmap.h
-> @@ -0,0 +1,26 @@
-> +/*
-> + * Copyright (c) 2015 Fujitsu Ltd.
-> + * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.
-> + */
-> +
-> +#ifndef __LAPI_MMAP_H__
-> +#define __LAPI_MMAP_H__
-> +
-> +#ifndef MAP_HUGETLB
-> +#define MAP_HUGETLB 0x40000
-> +#endif
-> +
-> +#endif /* __LAPI_MMAP_H__ */
-> diff --git a/testcases/kernel/syscalls/futex/futex_wake04.c
-> b/testcases/kernel/syscalls/futex/futex_wake04.c
-> index 955b05e..fa98636 100644
-> --- a/testcases/kernel/syscalls/futex/futex_wake04.c
-> +++ b/testcases/kernel/syscalls/futex/futex_wake04.c
-> @@ -46,6 +46,7 @@
->  #include "safe_macros.h"
->  #include "futextest.h"
->  #include "futex_utils.h"
-> +#include "lapi/mmap.h"
->  
->  #define PATH_MEMINFO "/proc/meminfo"
->  #define PATH_NR_HUGEPAGES "/proc/sys/vm/nr_hugepages"
-> @@ -62,6 +63,12 @@ static long orig_hugepages;
->  static void setup(void)
->  {
->  	tst_require_root(NULL);
-> +
-> +	if ((tst_kvercmp(2, 6, 32)) < 0) {
-> +		tst_brkm(TCONF, NULL, "This test can only run on kernels "
-> +			"that are 2.6.32 or higher");
-> +	}
-> +
->  	tst_tmpdir();
->  
->  	SAFE_FILE_SCANF(NULL, PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
-> --
-> 1.8.4.2
-> 
-> 
-> ------------------------------------------------------------------------------
-> Don't Limit Your Business. Reach for the Cloud.
-> GigeNET's Cloud Solutions provide you with the tools and support that
-> you need to offload your IT needs and focus on growing your business.
-> Configured For All Businesses. Start Your Cloud Today.
-> https://www.gigenetcloud.com/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+On 2015/7/3 17:32, Jan Stancek wrote:
+>
+>
+>
+> ----- Original Message -----
+>> From: "Yuan Sun" <sunyuan3@huawei.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Cc: ltp-list@lists.sourceforge.net
+>> Sent: Friday, 3 July, 2015 11:24:11 AM
+>> Subject: Re: [PATCH V2] userns01: add capability verification
+>>
+>>
+>> Interesting. Log is as follow. I will have a research.
+>>
+>> log:
+>> root@ubuntu:/tmp/tt# gcc test.c -lcap
+>> root@ubuntu:/tmp/tt# ls
+>> a.out  test.c
+>> root@ubuntu:/tmp/tt# ./a.out
+>> ffffffff ffffffff
+>> ffffffff ffffffff
+>> cap_compare: 0
+> How about if you run this as root:
+>
+> # cat /proc/self/status | grep CapEff
+> CapEff: 0000003fffffffff
+>
+>
+>
+>>
+>> On 2015/7/3 17:18, Jan Stancek wrote:
+>>> On Fri, Jul 03, 2015 at 05:13:37PM +0800, Yuan Sun wrote:
+>>>> Hi Jan,
+>>>>       The following link is unaccessible because HuaWei's network
+>>>> security strategy.
+>>>>       Could you please attach the test.c file for me?
+>>>> http://fpaste.org/239445/35909330/
+>>> Was afraid my web email client would mangle it. Attached.
+>>>
+>>> Regards,
+>>> Jan
+>>>
+>>
+>
+
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
