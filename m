@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1ZFgeA-0007pA-7W
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 10:44:10 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZFge9-0000bA-8Y
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 10:44:10 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t6GAgFee027811
-	for <ltp-list@lists.sourceforge.net>; Thu, 16 Jul 2015 18:42:15 +0800
-From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
-Date: Thu, 16 Jul 2015 18:43:23 +0800
-Message-ID: <1437043403-11184-2-git-send-email-weijg.fnst@cn.fujitsu.com>
-In-Reply-To: <1437043403-11184-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1437043403-11184-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZAxDJ-0000JM-AZ
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 09:24:53 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZAxDC-0003eK-5n
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 09:24:53 +0000
+Message-ID: <559654BB.5050300@huawei.com>
+Date: Fri, 3 Jul 2015 17:24:11 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/2] pan/splitstr.c: free arg_string before return
+References: <1435724565-19631-1-git-send-email-sunyuan3@huawei.com>
+	<1715707849.11822659.1435846199391.JavaMail.zimbra@redhat.com>
+	<5595FC03.10602@huawei.com>
+	<1526251635.12159899.1435909417100.JavaMail.zimbra@redhat.com>
+	<55965241.5020206@huawei.com>
+	<20150703091815.GA2855@dustball.brq.redhat.com>
+In-Reply-To: <20150703091815.GA2855@dustball.brq.redhat.com>
+Subject: Re: [LTP] [PATCH V2] userns01: add capability verification
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,27 +32,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
----
- pan/splitstr.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/pan/splitstr.c b/pan/splitstr.c
-index 39b4698..608c682 100644
---- a/pan/splitstr.c
-+++ b/pan/splitstr.c
-@@ -136,6 +136,7 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
- 	if (argcount != NULL)
- 		*argcount = num_toks;
- 
-+	free(arg_string);
- 	/*
- 	 * Return the argument array.
- 	 */
--- 
-1.9.3
+Interesting. Log is as follow. I will have a research.
+
+log:
+root@ubuntu:/tmp/tt# gcc test.c -lcap
+root@ubuntu:/tmp/tt# ls
+a.out  test.c
+root@ubuntu:/tmp/tt# ./a.out
+ffffffff ffffffff
+ffffffff ffffffff
+cap_compare: 0
+
+
+On 2015/7/3 17:18, Jan Stancek wrote:
+> On Fri, Jul 03, 2015 at 05:13:37PM +0800, Yuan Sun wrote:
+>> Hi Jan,
+>>      The following link is unaccessible because HuaWei's network
+>> security strategy.
+>>      Could you please attach the test.c file for me?
+>> http://fpaste.org/239445/35909330/
+> Was afraid my web email client would mangle it. Attached.
+>
+> Regards,
+> Jan
+>
 
 
 ------------------------------------------------------------------------------
