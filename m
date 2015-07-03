@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZJdq6-0003gR-3P
-	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 08:32:50 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZJdq4-000660-97
-	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 08:32:50 +0000
-Date: Mon, 27 Jul 2015 04:32:41 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1982370381.394962.1437985961501.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1819982097.50101437984766322.JavaMail.weblogic@epmlwas01c>
-References: <1819982097.50101437984766322.JavaMail.weblogic@epmlwas01c>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZArIu-0000CI-F2
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 03:06:16 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZArIo-00023K-Lb
+	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 03:06:16 +0000
+Message-ID: <5595FC03.10602@huawei.com>
+Date: Fri, 3 Jul 2015 11:05:39 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Regarding memcg control  testcase (mem_process.c)
+References: <1435724565-19631-1-git-send-email-sunyuan3@huawei.com>
+	<1715707849.11822659.1435846199391.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1715707849.11822659.1435846199391.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH V2] userns01: add capability verification
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,146 +28,158 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: manjeet p <manjeet.p@samsung.com>
-Cc: AJEET YADAV <ajeet.y@samsung.com>, ltp-list@lists.sourceforge.net, PANKAJ MISHRA <pankaj.m@samsung.com>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
+Hi Jan,
+     Interesting. It works well in my environment.
+What's your environment?
 
+log:
+root@p1:/tmp/ltp/testcases/kernel/containers/userns# ./userns01
+user_namespace1    0  TINFO  :  USERNS test is running in a new user 
+namespace.
+user_namespace1    1  TPASS  :  uid and gid are right
+root@p1:/tmp/ltp/testcases/kernel/containers/userns#
+root@p1:/tmp/ltp/testcases/kernel/containers/userns# uname -a
+Linux p1 3.13.0-32-generic #57-Ubuntu SMP Tue Jul 15 03:51:08 UTC 2014 
+x86_64 x86_64 x86_64 GNU/Linux
+root@p1:/tmp/ltp/testcases/kernel/containers/userns# cat /etc/issue
+Ubuntu 14.04.1 LTS \n \l
 
+root@p1:/tmp/ltp/testcases/kernel/containers/userns# file /bin/ls
+/bin/ls: ELF 64-bit LSB  executable, x86-64, version 1 (SYSV), 
+dynamically linked (uses shared libs), for GNU/Linux 2.6.24, 
+BuildID[sha1]=64d095bc6589dd4bfbf1c6d62ae985385965461b, stripped
 
+Thanks.
+     Yuan
 
------ Original Message -----
-> From: "Manjeet Pawar" <manjeet.p@samsung.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net, "AJEET YADAV" <ajeet.y@samsung.com>, "PANKAJ MISHRA" <pankaj.m@samsung.com>
-> Sent: Monday, 27 July, 2015 10:12:46 AM
-> Subject: Re: Re: [LTP]  Regarding memcg control  testcase (mem_process.c)
-> 
-> Hello Mr Jan,
-> Thanks for your reply,
-> With actual testscript I checked my "$!" , it is printing correct pid.
-> Also changes which you suggest, I tried with those changes , it is showing me
-> either "mmap failed:ffffffff"
-
-When it fails, what is the errno?
-
-> sometimes or "a successful mmap call".
-
-Where is this message coming from? I can't find such string in my LTP.
-
-> In my case "memory.usage_in_bytes" is 4096.
-> Testcase is run as "./memcg_control_test.sh 4096 4096 8192".
-> I am not getting this "mem_process getting killed by OOM seems like expected
-> outcome:"
-> May i know which kernel verison you are using.? Now I am doubtful on my
-> kernel.
-
-I'm on 4.0.4.
-
-What is your kernel/arch and LTP version?
-
-Regards,
-Jan
-
-> 
-> Regards
-> Manjeet
-> 
-> ------- Original Message -------
-> Sender : Jan Stancek<jstancek@redhat.com>
-> Date : Jul 26, 2015 20:28 (GMT+09:00)
-> Title : Re: [LTP] Regarding memcg control testcase (mem_process.c)
-> 
-> 
+On 2015/7/2 22:09, Jan Stancek wrote:
+>
+>
+>
 > ----- Original Message -----
-> > From: "Manjeet Pawar"
-> > To: ltp-list@lists.sourceforge.net
-> > Cc: "ajeet y" , "pankaj m"
-> > Sent: Friday, 24 July, 2015 6:07:45 AM
-> > Subject: [LTP]  Regarding memcg control  testcase (mem_process.c)
-> > 
-> > Hi,
-> > 
-> > I am trying to run memcg control testcase using script
-> > memcg_control_test.sh.
-> > This script calls a memory hog process 'mem_process'.
-> > The condition for this testcase to pass is 'when the memory hog process is
-> > killed on crossing boundary'. please check the below function.
-> > 
-> > 
-> > -----------------------------
-> > # Check if the test process is killed on crossing boundary
-> > test_proc_kill()
-> > {
-> >     ( cd $TMP && mem_process -m $PROC_MEM & )
-> >     sleep 1
-> >     echo $! > tasks
-> 
-> mem_process is getting started via subshell, so I'd assume $! in parent is
-> bogus.
-> Can you try this instead:
-> 
->         pushd $TMP || return
->         mem_process -m $PROC_MEM &
->         local pid=$!
->         popd
-> 
->         sleep 1
->         echo $pid > tasks
-> 
-> 
-> > 
-> >     #Instruct the test process to start acquiring memory
-> >     echo m > $STATUS_PIPE
-> >     sleep 5
-> > 
-> >     #Check if killed
-> >     ps -p $! > /dev/null 2> /dev/null    ----> at this point the process
-> >     'mem_process' must have terminated so that last return value ($?) can
-> >     be
-> >     non-zero.
-> >     if [ $? -eq 0 ]; then
-> >         echo m > $STATUS_PIPE
-> >         echo x > $STATUS_PIPE
-> >     else
-> >         : $((KILLED_CNT += 1))
-> >     fi
-> > }
-> > -------------------------
-> > In my case: 'mem_process' does not terminate until we pass 'x' to it, but
-> > the
-> > expected behaviour according to testcase  that the memory hog process
-> > must be killed on crossing bounday.
-> > Inputs taken by testcase are : "./memcg_control_test.sh 4096 4096 8192"
-> > If I change the inputs from 8192 to other (1024,10MB,100MB etc) . In all
-> > situation memory hog process does not terminate.
-> > So what is the ideal condition for this process to terminate to make whole
-> > testcase pass. ?
-> 
-> mem_process getting killed by OOM seems like expected outcome:
-> 
-> memcg_control    0  TINFO  :  Test #1: Checking if the memory usage limit
-> imposed by the topmost group is enforced
-> ./memcg_control_test.sh: line 56:  2795 Killed                  mem_process
-> -m $PROC_MEM  (wd: /tmp)
-> memcg_control    1  TPASS  :  Test #1: passed
-> memcg_control    1  TPASS  :  memcg_control: passed
-> 
-> If it still doesn't get killed, I'd recommend checking
-> "memory.usage_in_bytes".
-> 
+>> From: "Yuan Sun" <sunyuan3@huawei.com>
+>> To: jstancek@redhat.com
+>> Cc: ltp-list@lists.sourceforge.net
+>> Sent: Wednesday, 1 July, 2015 6:22:45 AM
+>> Subject: [PATCH V2] userns01: add capability verification
+>>
+>> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+>> ---
+>>   testcases/kernel/containers/userns/Makefile   |  2 +-
+>>   testcases/kernel/containers/userns/userns01.c | 31
+>>   +++++++++++++++++++++------
+>>   2 files changed, 26 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/testcases/kernel/containers/userns/Makefile
+>> b/testcases/kernel/containers/userns/Makefile
+>> index 9f67216..8370bff 100644
+>> --- a/testcases/kernel/containers/userns/Makefile
+>> +++ b/testcases/kernel/containers/userns/Makefile
+>> @@ -21,6 +21,6 @@ top_srcdir		?= ../../../..
+>>   include $(top_srcdir)/include/mk/testcases.mk
+>>   include $(abs_srcdir)/../Makefile.inc
+>>   
+>> -LDLIBS			:= -lclone -lltp
+>> +LDLIBS			:= -lclone -lltp $(CAP_LIBS)
+>>   
+>>   include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>> diff --git a/testcases/kernel/containers/userns/userns01.c
+>> b/testcases/kernel/containers/userns/userns01.c
+>> index 9cada5e..a9012ac 100644
+>> --- a/testcases/kernel/containers/userns/userns01.c
+>> +++ b/testcases/kernel/containers/userns/userns01.c
+>> @@ -15,7 +15,9 @@
+>>    * Verify that:
+>>    *  If a user ID has no mapping inside the namespace, user ID and group
+>>    * ID will be the value defined in the file
+>>    /proc/sys/kernel/overflowuid(65534)
+>> - * and /proc/sys/kernel/overflowgid(65534).
+>> + * and /proc/sys/kernel/overflowgid(65534). A child process has a full set
+>> + * of permitted and effective capabilities, even though the program was
+>> + * run from an unprivileged account.
+>>    */
+>>   
+>>   #define _GNU_SOURCE
+>> @@ -29,6 +31,12 @@
+>>   #include "test.h"
+>>   #include "libclone.h"
+>>   #include "userns_helper.h"
+>> +#include "config.h"
+>> +#if HAVE_SYS_CAPABILITY_H
+>> +#include <linux/types.h>
+>> +#include <sys/capability.h>
+>> +#endif
+>> +
+>>   #define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
+>>   #define OVERFLOWGIDPATH "/proc/sys/kernel/overflowgid"
+>>   
+>> @@ -43,21 +51,30 @@ static long overflowgid;
+>>    */
+>>   static int child_fn1(void *arg LTP_ATTRIBUTE_UNUSED)
+>>   {
+>> -	int exit_val;
+>> +	int exit_val = 0;
+>>   	int uid, gid;
+>> +#ifdef HAVE_LIBCAP
+>> +	cap_t caps, expectedcaps;
+>> +#endif
+>>   
+>>   	uid = geteuid();
+>>   	gid = getegid();
+>>   
+>>   	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
+>> -	if (uid == overflowuid && gid == overflowgid) {
+>> -		printf("Got expected uid and gid\n");
+>> -		exit_val = 0;
+>> -	} else {
+>> +
+>> +	if (uid != overflowuid || gid != overflowgid) {
+>>   		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
+>>   		exit_val = 1;
+>>   	}
+>>   
+>> +#ifdef HAVE_LIBCAP
+>> +	caps = cap_get_proc();
+>> +	expectedcaps = cap_from_text("=ep");
+>> +	if (cap_compare(caps, expectedcaps) != 0)
+> Does this work for you? I'm getting failures.
+> It seems that cap_from_text sets all bits in the set,
+> not just those capabilities that are <= CAP_LAST_CAP
+> and the comparison compares all bits.
+>
 > Regards,
 > Jan
-> 
-> 
-> > 
-> > ------------------------------------------------------------------------------
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> >
+>
+>> +		exit_val = 1;
+>> +#else
+>> +	printf("System doesn't support capabilities.\n");
+>> +#endif
+>>   	return exit_val;
+>>   }
+>>   
+>> @@ -96,3 +113,5 @@ int main(int argc, char *argv[])
+>>   	tst_exit();
+>>   }
+>>   
+>> +
+>> +
+>> --
+>> 1.9.1
+>>
+>>
+> .
+>
+
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
