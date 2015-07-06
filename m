@@ -1,27 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwan@redhat.com>) id 1ZKicb-0005cA-8t
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 07:51:21 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZKicQ-0007Ig-6U
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 07:51:12 +0000
-Date: Thu, 30 Jul 2015 03:51:02 -0400 (EDT)
-From: Li Wang <liwang@redhat.com>
-Message-ID: <1851015047.604153.1438242662396.JavaMail.zimbra@redhat.com>
-In-Reply-To: <CANKSX+FRJcg3xmc2BbWiDzmSqT2NC+hQib-UsWA4yoWTq8fB3g@mail.gmail.com>
-References: <CANKSX+HAqaZARVLcDWU3Uhv2CYDjSBrrq2H4OrkOSaY647saaA@mail.gmail.com>
-	<CANKSX+ETp0jdXp+zSUtUPn8SWUQaCh1bETYzcpF_C8kZpPtGdQ@mail.gmail.com>
-	<20150729152949.GA6478@rei.suse.de>
-	<1186607709.563342.1438184803657.JavaMail.zimbra@redhat.com>
-	<20150729155005.GC3427@rei.suse.de>
-	<CANKSX+EukvUBmjMf7TMxTzcsMXmzfGb+FYqrdo7vKnEiLb6wyg@mail.gmail.com>
-	<20150729194515.GA7009@rei.suse.de>
-	<CANKSX+FRJcg3xmc2BbWiDzmSqT2NC+hQib-UsWA4yoWTq8fB3g@mail.gmail.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZC2tm-0007pn-Mq
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2015 09:41:14 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZC2tj-0004Rc-Hd
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2015 09:41:14 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Tue, 7 Jul 2015 01:42:50 +0800
+Message-ID: <1436204570-7473-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] LTP make failed
+Subject: [LTP] [PATCH V3] userns01: add capability verification
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,60 +25,106 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: srikanth007m@gmail.com
+To: jstancek@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
-
------ Original Message -----
-> Can you tell me what kind of steps you followed to cross compile LTP
-> for arm? Does it make any difference from the configure what i am
-> using and you.
-> 
-> memtest suite? can you point me to the location
-
-http://pyropus.ca/software/memtester/
-
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
 ---
-Li Wang
+ testcases/kernel/containers/userns/userns01.c | 43 ++++++++++++++++++++++-----
+ 1 file changed, 36 insertions(+), 7 deletions(-)
 
-> 
-> On Thu, Jul 30, 2015 at 1:15 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> > Hi!
-> >> FYI, Here is my host configuration.
-> >> Linux srikanth-linux 3.15.0-031500rc2-generic #201404201435 SMP Sun
-> >> Apr 20 18:36:18 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
-> >>
-> >> @Cyril - libkerntest.a got generated with your suggested changes. Does
-> >> that make any difference between INTERNAL_LIB to LIB? Should i need to
-> >> change any other files to unblock the compilation?
-> >
-> > The only difference between INTERNAL_LIB and LIB is one ifneq and
-> > variable assigment in the lib.mk. So if that does not work for you, you
-> > either hit bug in make, libc, kernel or hardware. Changing it from
-> > INTERNAL_LIB to LIB only works around that bug.
-> >
-> > I've just recompiled LTP for arm without a problem. In your case I would
-> > try to run memtest over night on your machine first. Otherwise you may
-> > spend hours trying to catch something that in reality is a hardware bug.
-> >
-> > --
-> > Cyril Hrubis
-> > chrubis@suse.cz
-> 
-> 
-> 
-> --
-> Thanks & Regards,
-> M.Srikanth Kumar.
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+diff --git a/testcases/kernel/containers/userns/userns01.c b/testcases/kernel/containers/userns/userns01.c
+index 9cada5e..750ba49 100644
+--- a/testcases/kernel/containers/userns/userns01.c
++++ b/testcases/kernel/containers/userns/userns01.c
+@@ -15,7 +15,9 @@
+  * Verify that:
+  *  If a user ID has no mapping inside the namespace, user ID and group
+  * ID will be the value defined in the file /proc/sys/kernel/overflowuid(65534)
+- * and /proc/sys/kernel/overflowgid(65534).
++ * and /proc/sys/kernel/overflowgid(65534). A child process has a full set
++ * of permitted and effective capabilities, even though the program was
++ * run from an unprivileged account.
+  */
+ 
+ #define _GNU_SOURCE
+@@ -29,6 +31,12 @@
+ #include "test.h"
+ #include "libclone.h"
+ #include "userns_helper.h"
++#include "config.h"
++#if HAVE_SYS_CAPABILITY_H
++#include <linux/types.h>
++#include <sys/capability.h>
++#endif
++
+ #define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
+ #define OVERFLOWGIDPATH "/proc/sys/kernel/overflowgid"
+ 
+@@ -43,21 +51,43 @@ static long overflowgid;
+  */
+ static int child_fn1(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+-	int exit_val;
++	int exit_val = 0;
+ 	int uid, gid;
++#ifdef HAVE_LIBCAP
++	cap_t caps;
++	int i, last_cap;
++	cap_flag_value_t flag_val;
++#endif
+ 
+ 	uid = geteuid();
+ 	gid = getegid();
+ 
+ 	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
+-	if (uid == overflowuid && gid == overflowgid) {
+-		printf("Got expected uid and gid\n");
+-		exit_val = 0;
+-	} else {
++
++	if (uid != overflowuid || gid != overflowgid) {
+ 		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
+ 		exit_val = 1;
+ 	}
+ 
++#ifdef HAVE_LIBCAP
++	caps = cap_get_proc();
++	SAFE_FILE_SCANF(NULL, "/proc/sys/kernel/cap_last_cap", "%d", &last_cap);
++	for (i = 0; i <= last_cap; i++) {
++		cap_get_flag(caps, i, CAP_EFFECTIVE, &flag_val);
++		if (flag_val == 0)
++			break;
++		cap_get_flag(caps, i, CAP_PERMITTED, &flag_val);
++		if (flag_val == 0)
++			break;
++	}
++
++	if (flag_val == 0) {
++		printf("unexpected effective/permitted caps\n");
++		exit_val = 1;
++	}
++#else
++	printf("System doesn't support capabilities.\n");
++#endif
+ 	return exit_val;
+ }
+ 
+@@ -95,4 +125,3 @@ int main(int argc, char *argv[])
+ 	}
+ 	tst_exit();
+ }
+-
+-- 
+1.9.1
+
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
