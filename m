@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZD29P-0005Ws-9g
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:27 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZD29N-0006La-O9
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:27 +0000
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 9 Jul 2015 11:05:25 +0800
-Message-ID: <1436411125-8012-11-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <55842886.4090202@oracle.com>
-	<1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZC7Ne-0005Tp-6N
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2015 14:28:22 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZC7Nd-0005Kb-Bv
+	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2015 14:28:22 +0000
+Message-ID: <559A9148.8060200@oracle.com>
+Date: Mon, 06 Jul 2015 17:31:36 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v4 11/11] ipv6_lib: Add it into default
+References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
+	<5593E172.1050800@huawei.com> <5593F4E2.1040804@oracle.com>
+	<55952961.30906@huawei.com> <5595490E.1010509@oracle.com>
+	<55974D10.5050808@huawei.com>
+In-Reply-To: <55974D10.5050808@huawei.com>
+Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
+ failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,26 +31,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- scenario_groups/default | 1 +
- 1 file changed, 1 insertion(+)
+Hi,
+On 07/04/2015 06:03 AM, Cui Bixuan wrote:
+> Hi,
+> Your method is better than mine (I learned that how to use logrotate command again yesterday and
+> found that remove messages-* is not a good idea).
+>
+> We can remove 'include /etc/logrotate.d' and delete 'grep including /etc/logrotate.d $LTPTMP/tst_logrotate.out'
+> in case to fix it, what do you think?  If ok, I will send a new patch.
 
-diff --git a/scenario_groups/default b/scenario_groups/default
-index 3a55702..60b1b27 100644
---- a/scenario_groups/default
-+++ b/scenario_groups/default
-@@ -32,3 +32,4 @@ dma_thread_diotest
- cpuacct
- can
- cpuhotplug
-+ipv6_lib
--- 
-1.9.3
+OK.
 
+> In addition, I have a question, Why including the rules in /etc/logrotate.d/ will cause the case failed
+> when run it at the second time?
+
+You have already written the explanation -  it failed because file with 
+the same name exists. Moreover, I can't reproduce it in my system. You 
+should check what kind of rules do you have for "/var/log/messages" in 
+/etc/logrotate.d/.
+
+Thanks,
+Alexey
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
