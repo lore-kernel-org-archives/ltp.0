@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZAeMf-00082f-M6
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 13:17:17 +0000
-Date: Thu, 2 Jul 2015 15:15:57 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150702131556.GA17833@rei.suse.de>
-References: <1435814949-4420-1-git-send-email-liuhangbin@gmail.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZCHG5-0004Rx-VM
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:13 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZCHG4-0005ow-Ez
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:13 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t670xNSE010536
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2015 08:59:24 +0800
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 7 Jul 2015 09:01:22 +0800
+Message-ID: <1436230882-3282-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
+In-Reply-To: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1435814949-4420-1-git-send-email-liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH] network/xinetd: wait a while to make sure telnetd
- restart
+Subject: [LTP] [PATCH 3/3] umount2/umount2_03.c: add new test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,66 +31,206 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> telnetd not restart immediately after xinetd restart, which make xinetd
-> failed. e.g.
-> \# service xinetd restart; echo "^D" | /usr/bin/telnet ::1
-> Stopping xinetd: [  OK  ]
-> Starting xinetd: [  OK  ]
-> Trying ::1...
-> telnet: connect to address ::1: Connection refused
-> 
-> Wait a while after xinetd restart will make sure telnetd up and the test passed
-> 
-> \# service xinetd restart; sleep 1; echo "^D" | /usr/bin/telnet ::1
-> Stopping xinetd: [  OK  ]
-> Starting xinetd: [  OK  ]
-> Trying ::1...
-> Connected to ::1.
-> Escape character is '^]'.
-> Connection closed by foreign host.
-> 
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  testcases/network/xinetd/xinetd_tests.sh | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
-> index ff1219a..a12f6b9 100755
-> --- a/testcases/network/xinetd/xinetd_tests.sh
-> +++ b/testcases/network/xinetd/xinetd_tests.sh
-> @@ -315,6 +315,8 @@ test01()
->          fi
->      fi
->  
-> +    sleep 1s
+Add new testcase to verify the flag UMOUNT_NOFOLLOW of umount2(2).
 
-No random sleeps in testcases please. Can you rather change the code to
-retry in case of failure?
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ runtest/ltplite                                |   1 +
+ runtest/syscalls                               |   1 +
+ testcases/kernel/syscalls/.gitignore           |   1 +
+ testcases/kernel/syscalls/umount2/umount2_03.c | 142 +++++++++++++++++++++++++
+ 4 files changed, 145 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/umount2/umount2_03.c
 
-Something as:
-
-$RETRIES=10
-while [ $RETRIES -gt 0 ]; do
-	echo "^D" | $TELNET_COMM 127.0.0.1 2>$LTPTMP/tst_xinetd.out 1>/dev/null
-	if [ $? -eq 0 ]; then
-		break;
-	fi
-	RETRIES=$((RETRIES-1))
-	sleep 1
-done
-
-
-Looking at the code, most of it could be moved into the test library
-in order to be reused by other testcases. Maybe we should add tst_retry
-function that would retry a command a few times...
-
+diff --git a/runtest/ltplite b/runtest/ltplite
+index f5a8a52..083e48e 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -967,6 +967,7 @@ unlink08 unlink08
+ 
+ umount2_01 umount2_01
+ umount2_02 umount2_02
++umount2_03 umount2_03
+ 
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 92716d2..2fbf4de 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1316,6 +1316,7 @@ umount03 umount03
+ 
+ umount2_01 umount2_01
+ umount2_02 umount2_02
++umount2_03 umount2_03
+ 
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 4ee0b0d..046c909 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -1004,6 +1004,7 @@
+ /umount/umount03
+ /umount2/umount2_01
+ /umount2/umount2_02
++/umount2/umount2_03
+ /uname/uname01
+ /uname/uname02
+ /uname/uname03
+diff --git a/testcases/kernel/syscalls/umount2/umount2_03.c b/testcases/kernel/syscalls/umount2/umount2_03.c
+new file mode 100644
+index 0000000..470fe1e
+--- /dev/null
++++ b/testcases/kernel/syscalls/umount2/umount2_03.c
+@@ -0,0 +1,142 @@
++/*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License
++ * alone with this program.
++ */
++
++/*
++ * DESCRIPTION
++ *  Test for feature UMOUNT_NOFOLLOW of umount2().
++ *  "Don't dereference target if it is a symbolic link,
++ *   and fails with the error EINVAL."
++ */
++
++#include <errno.h>
++#include <sys/mount.h>
++
++#include "test.h"
++#include "safe_macros.h"
++#include "lapi/umount.h"
++
++static void setup(void);
++static void umount2_verify(void);
++static void cleanup(void);
++
++char *TCID = "umount2_03";
++int TST_TOTAL = 1;
++
++#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
++#define MNTPOINT	"mntpoint"
++#define SYMLINK		"symlink"
++
++static int mount_flag;
++
++static const char *device;
++static const char *fs_type;
++
++int main(int ac, char **av)
++{
++	int lc;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		umount2_verify();
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	tst_require_root(NULL);
++
++	if ((tst_kvercmp(2, 6, 34)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels "
++			"that are 2.6.34 or higher");
++	}
++
++	tst_sig(NOFORK, DEF_HANDLER, NULL);
++
++	tst_tmpdir();
++
++	fs_type = tst_dev_fs_type();
++	device = tst_acquire_device(cleanup);
++
++	if (!device)
++		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
++
++	tst_mkfs(cleanup, device, fs_type, NULL);
++
++	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
++
++	SAFE_SYMLINK(cleanup, MNTPOINT, SYMLINK);
++
++	TEST_PAUSE;
++}
++
++static void umount2_verify(void)
++{
++	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
++	mount_flag = 1;
++
++	do {
++		TEST(umount2(SYMLINK, UMOUNT_NOFOLLOW));
++
++		if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
++			tst_resm(TFAIL | TTERRNO,
++				"umount2(2) UMOUNT_NOFOLLOW flag "
++				"performed abnormally "
++				"expected error = %d : %s",
++				EINVAL, strerror(EINVAL));
++			if (TEST_RETURN == 0)
++				mount_flag = 0;
++			break;
++		}
++
++		TEST(umount2(MNTPOINT, UMOUNT_NOFOLLOW));
++
++		if (TEST_RETURN != 0) {
++			tst_resm(TFAIL, "umount2(2) Failed while "
++				"unmounting %s errno = %d : %s",
++				MNTPOINT, TEST_ERRNO,
++				strerror(TEST_ERRNO));
++			break;
++		}
++
++		mount_flag = 0;
++
++		tst_resm(TPASS, "umount2(2) Passed");
++	} while (0);
++
++	if (mount_flag) {
++		SAFE_UMOUNT(cleanup, MNTPOINT);
++		mount_flag = 0;
++	}
++}
++
++static void cleanup(void)
++{
++	if (mount_flag && tst_umount(MNTPOINT))
++		tst_resm(TWARN | TERRNO, "Failed to unmount");
++
++	if (device)
++		tst_release_device(NULL, device);
++
++	tst_rmdir();
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
