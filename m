@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZHfyX-0002PZ-HJ
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2015 22:25:25 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZHfyW-0002xs-9P
-	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2015 22:25:25 +0000
-Date: Mon, 20 Jul 2015 08:17:29 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1723241423.662829.1437394649041.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1437394221-22320-1-git-send-email-sunyuan3@huawei.com>
-References: <1437394221-22320-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1ZCQz6-0008Ek-6N
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 11:24:20 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZCQz4-0004ZV-2e
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 11:24:20 +0000
+Message-ID: <559BB469.4040903@cn.fujitsu.com>
+Date: Tue, 7 Jul 2015 19:13:45 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] userns02: always set/check GID mapping
+References: <559BAD6F.3070206@cn.fujitsu.com>
+	<1426231157.13472632.1436267584673.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1426231157.13472632.1436267584673.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] getrandom compilation broken in RHEL5.11GA
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,77 +25,58 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-
-
-
-
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Monday, 20 July, 2015 2:10:21 PM
-> Subject: [PATCH] userns02: always set/check GID mapping
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-
-Pushed with following text added to commit message:
-    The test previously relied on fact that it can always set GID mapping.
-    To allow this for unprivileged users on kernels >= 3.19, we have to
-    disable setgroups first.
-
-Thanks,
-Jan
-
-> ---
->  testcases/kernel/containers/userns/userns02.c | 9 ++++++++-
->  1 file changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/containers/userns/userns02.c
-> b/testcases/kernel/containers/userns/userns02.c
-> index 3bcb97d..e1677b6 100644
-> --- a/testcases/kernel/containers/userns/userns02.c
-> +++ b/testcases/kernel/containers/userns/userns02.c
-> @@ -62,7 +62,6 @@ static int child_fn1(void)
->  static void setup(void)
->  {
->  	check_newuser();
-> -
->  	tst_tmpdir();
->  	TST_CHECKPOINT_INIT(NULL);
->  }
-> @@ -96,6 +95,14 @@ int main(int argc, char *argv[])
->  		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
->  		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
->  		SAFE_CLOSE(cleanup, fd);
-> +
-> +		if (access("/proc/self/setgroups", F_OK) == 0) {
-> +			sprintf(path, "/proc/%d/setgroups", childpid);
-> +			fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
-> +			SAFE_WRITE(cleanup, 1, fd, "deny", 4);
-> +			SAFE_CLOSE(cleanup, fd);
-> +		}
-> +
->  		sprintf(path, "/proc/%d/gid_map", childpid);
->  		sprintf(content, "100 %d 1", parentgid);
->  		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
-> --
-> 1.9.1
-> 
-> 
-
-------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+T24gMDcvMDcvMjAxNSAwNzoxMyBQTSwgSmFuIFN0YW5jZWsgd3JvdGU6Cj4gCj4gCj4gLS0tLS0g
+T3JpZ2luYWwgTWVzc2FnZSAtLS0tLQo+PiBGcm9tOiAiWGlhb2d1YW5nIFdhbmciIDx3YW5neGcu
+Zm5zdEBjbi5mdWppdHN1LmNvbT4KPj4gVG86ICJKYW4gU3RhbmNlayIgPGpzdGFuY2VrQHJlZGhh
+dC5jb20+LCAiY2VkIGhueWRhIiA8Y2VkLmhueWRhQGdtYWlsLmNvbT4KPj4gQ2M6ICJMVFAiIDxs
+dHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQ+Cj4+IFNlbnQ6IFR1ZXNkYXksIDcgSnVseSwg
+MjAxNSAxMjo0Mzo1OSBQTQo+PiBTdWJqZWN0OiBnZXRyYW5kb20gY29tcGlsYXRpb24gYnJva2Vu
+IGluIFJIRUw1LjExR0EKPj4KPj4gaGVsbG8gSmFuLCBDZWRyaWMsCj4+Cj4+IFdoZW4gSSBjb21w
+aWxlIGx0cCBpbiBSSEVMNS4xMUdBLCBJIHJ1biBpbnRvIHRoZXNlIGVycm9yczoKPj4gLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gW3Jvb3RAUkhF
+TDVVMTFnYV9JbnRlbDY0IGdldHJhbmRvbV0jIG1ha2UKPj4gbWFrZSAtQyAiL3Jvb3QvbHRwL3Rl
+c3RjYXNlcy9rZXJuZWwvaW5jbHVkZSIgLWYKPj4gIi9yb290L2x0cC90ZXN0Y2FzZXMva2VybmVs
+L2luY2x1ZGUvTWFrZWZpbGUiIGFsbAo+PiBtYWtlWzFdOiBFbnRlcmluZyBkaXJlY3RvcnkgYC9y
+b290L2x0cC90ZXN0Y2FzZXMva2VybmVsL2luY2x1ZGUnCj4+IG1ha2VbMV06IE5vdGhpbmcgdG8g
+YmUgZG9uZSBmb3IgYGFsbCcuCj4+IG1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC9s
+dHAvdGVzdGNhc2VzL2tlcm5lbC9pbmNsdWRlJwo+PiBnY2MgLWcgLU8yIC1nIC1PMiAtZm5vLXN0
+cmljdC1hbGlhc2luZyAtcGlwZSAtV2FsbCAtVyAtZyAtTzIKPj4gLVdvbGQtc3R5bGUtZGVmaW5p
+dGlvbiAtRF9GT1JUSUZZX1NPVVJDRT0yCj4+IC1JL3Jvb3QvbHRwL3Rlc3RjYXNlcy9rZXJuZWwv
+aW5jbHVkZSAtSS4uLy4uLy4uLy4uL2luY2x1ZGUKPj4gLUkuLi8uLi8uLi8uLi9pbmNsdWRlICAg
+LUwuLi8uLi8uLi8uLi9saWIgIGdldHJhbmRvbTAxLmMgICAtbGx0cCAtbwo+PiBnZXRyYW5kb20w
+MQo+PiBJbiBmaWxlIGluY2x1ZGVkIGZyb20gZ2V0cmFuZG9tMDEuYzoyOToKPj4gL3Vzci9pbmNs
+dWRlL2xpbnV4L3JhbmRvbS5oOjM4OiBlcnJvcjogZXhwZWN0ZWQgc3BlY2lmaWVyLXF1YWxpZmll
+ci1saXN0Cj4+IGJlZm9yZSDigJhfX3UzMuKAmQo+PiAvdXNyL2luY2x1ZGUvbGludXgvcmFuZG9t
+Lmg6NDI6IGVycm9yOiBleHBlY3RlZCBzcGVjaWZpZXItcXVhbGlmaWVyLWxpc3QKPj4gYmVmb3Jl
+IOKAmF9fdTMy4oCZCj4+IG1ha2U6ICoqKiBbZ2V0cmFuZG9tMDFdIEVycm9yIDEKPj4gLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4+IEkgdHJpZWQg
+dG8gYWRkICIjaW5jbHVkZSA8c3lzL3R5cGVzLmg+IiBvciAiI2luY2x1ZGUgPGxpbnV4L3R5cGVz
+Lmg+IiwKPj4gbmVpdGhlciB3b3Jrcy4gVGhlcmUgbWF5YmUgc29tZSBidWdzCj4+IGluIFJIRUw1
+LjExR0EncyBnbGliYy4gCj4gCj4gSXQncyBhIGtlcm5lbCBoZWFkZXIuCj4gCj4+IEdpdmVuIHRo
+YXQgd2UgdXNlIGx0cF9zeXNjYWxsKCkgYW5kIGhhdmUgIkdSTkRfUkFORE9NCj4+IEdSTkRfTk9O
+QkxPQ0siIGRlZmluZWQgaW4KPj4gbGFwaS9nZXRyYW5kb20uaCwgd2hhdCBhYm91dCB3ZSByZW1v
+dmUgIiNpbmNsdWRlIDxsaW51eC9yYW5kb20uaD4iIGZvcm0gdGhlc2UKPj4gdGhlc2UgNCB0ZXN0
+IGNhc2VzLCB0aGVuCj4+IHRoZXkgd2lsbCBjb21waWxlIGNvcnJlY3RseSBpbiBSSEVMNS4KPiAK
+PiBXZSBjYW4gZWl0aGVyIHJlbHkgb24gbGFwaS9nZXRyYW5kb20uaCBvciBnZXQgYmFjayBtNCBj
+aGVjay4gVGhlIGxhdHRlcgo+IHNlZW1zIGxpa2UgdG9vIG11Y2ggdHJvdWJsZSBmb3IgMiB0ZXN0
+Y2FzZXMgdGhhdCBuZWVkIGl0LCBzbyBJJ2QgZ28KPiB3aXRoIHJlbW92aW5nIGl0IGFuZCByZWx5
+IG9uIGxhcGkgaGVhZGVyLiBDYW4geW91IHNlbmQgYSBwYXRjaCB0byBsaXN0IHBsZWFzZT8KCk9L
+LCB0aGFua3MhCgpSZWdhcmRzLApYaWFvZ3VhbmcgV2FuZwo+IAo+IFJlZ2FyZHMsCj4gSmFuCj4g
+Cj4+Cj4+IFJlZ2FyZHMsCj4+IFhpYW9ndWFuZyBXYW5nCj4+Cj4gLgo+IAoKCi0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQpEb24ndCBMaW1pdCBZb3VyIEJ1c2luZXNzLiBSZWFjaCBmb3IgdGhlIENsb3Vk
+LgpHaWdlTkVUJ3MgQ2xvdWQgU29sdXRpb25zIHByb3ZpZGUgeW91IHdpdGggdGhlIHRvb2xzIGFu
+ZCBzdXBwb3J0IHRoYXQKeW91IG5lZWQgdG8gb2ZmbG9hZCB5b3VyIElUIG5lZWRzIGFuZCBmb2N1
+cyBvbiBncm93aW5nIHlvdXIgYnVzaW5lc3MuCkNvbmZpZ3VyZWQgRm9yIEFsbCBCdXNpbmVzc2Vz
+LiBTdGFydCBZb3VyIENsb3VkIFRvZGF5LgpodHRwczovL3d3dy5naWdlbmV0Y2xvdWQuY29tLwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBt
+YWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMu
+c291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
