@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZC7Ne-0005Tp-6N
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2015 14:28:22 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZC7Nd-0005Kb-Bv
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2015 14:28:22 +0000
-Message-ID: <559A9148.8060200@oracle.com>
-Date: Mon, 06 Jul 2015 17:31:36 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	(envelope-from <jstancek@redhat.com>) id 1ZCQoP-0006Om-Ql
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 11:13:17 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZCQoO-00072G-ML
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 11:13:17 +0000
+Date: Tue, 7 Jul 2015 07:13:04 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1426231157.13472632.1436267584673.JavaMail.zimbra@redhat.com>
+In-Reply-To: <559BAD6F.3070206@cn.fujitsu.com>
+References: <559BAD6F.3070206@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
-	<5593E172.1050800@huawei.com> <5593F4E2.1040804@oracle.com>
-	<55952961.30906@huawei.com> <5595490E.1010509@oracle.com>
-	<55974D10.5050808@huawei.com>
-In-Reply-To: <55974D10.5050808@huawei.com>
-Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
- failed
+Subject: Re: [LTP] getrandom compilation broken in RHEL5.11GA
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,41 +24,56 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Cc: LTP <ltp-list@lists.sourceforge.net>
 
-Hi,
-On 07/04/2015 06:03 AM, Cui Bixuan wrote:
-> Hi,
-> Your method is better than mine (I learned that how to use logrotate command again yesterday and
-> found that remove messages-* is not a good idea).
->
-> We can remove 'include /etc/logrotate.d' and delete 'grep including /etc/logrotate.d $LTPTMP/tst_logrotate.out'
-> in case to fix it, what do you think?  If ok, I will send a new patch.
-
-OK.
-
-> In addition, I have a question, Why including the rules in /etc/logrotate.d/ will cause the case failed
-> when run it at the second time?
-
-You have already written the explanation -  it failed because file with 
-the same name exists. Moreover, I can't reproduce it in my system. You 
-should check what kind of rules do you have for "/var/log/messages" in 
-/etc/logrotate.d/.
-
-Thanks,
-Alexey
-
-------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gRnJvbTogIlhpYW9ndWFuZyBXYW5nIiA8
+d2FuZ3hnLmZuc3RAY24uZnVqaXRzdS5jb20+Cj4gVG86ICJKYW4gU3RhbmNlayIgPGpzdGFuY2Vr
+QHJlZGhhdC5jb20+LCAiY2VkIGhueWRhIiA8Y2VkLmhueWRhQGdtYWlsLmNvbT4KPiBDYzogIkxU
+UCIgPGx0cC1saXN0QGxpc3RzLnNvdXJjZWZvcmdlLm5ldD4KPiBTZW50OiBUdWVzZGF5LCA3IEp1
+bHksIDIwMTUgMTI6NDM6NTkgUE0KPiBTdWJqZWN0OiBnZXRyYW5kb20gY29tcGlsYXRpb24gYnJv
+a2VuIGluIFJIRUw1LjExR0EKPiAKPiBoZWxsbyBKYW4sIENlZHJpYywKPiAKPiBXaGVuIEkgY29t
+cGlsZSBsdHAgaW4gUkhFTDUuMTFHQSwgSSBydW4gaW50byB0aGVzZSBlcnJvcnM6Cj4gLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiBbcm9vdEBSSEVM
+NVUxMWdhX0ludGVsNjQgZ2V0cmFuZG9tXSMgbWFrZQo+IG1ha2UgLUMgIi9yb290L2x0cC90ZXN0
+Y2FzZXMva2VybmVsL2luY2x1ZGUiIC1mCj4gIi9yb290L2x0cC90ZXN0Y2FzZXMva2VybmVsL2lu
+Y2x1ZGUvTWFrZWZpbGUiIGFsbAo+IG1ha2VbMV06IEVudGVyaW5nIGRpcmVjdG9yeSBgL3Jvb3Qv
+bHRwL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZScKPiBtYWtlWzFdOiBOb3RoaW5nIHRvIGJlIGRv
+bmUgZm9yIGBhbGwnLgo+IG1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5IGAvcm9vdC9sdHAvdGVz
+dGNhc2VzL2tlcm5lbC9pbmNsdWRlJwo+IGdjYyAtZyAtTzIgLWcgLU8yIC1mbm8tc3RyaWN0LWFs
+aWFzaW5nIC1waXBlIC1XYWxsIC1XIC1nIC1PMgo+IC1Xb2xkLXN0eWxlLWRlZmluaXRpb24gLURf
+Rk9SVElGWV9TT1VSQ0U9Mgo+IC1JL3Jvb3QvbHRwL3Rlc3RjYXNlcy9rZXJuZWwvaW5jbHVkZSAt
+SS4uLy4uLy4uLy4uL2luY2x1ZGUKPiAtSS4uLy4uLy4uLy4uL2luY2x1ZGUgICAtTC4uLy4uLy4u
+Ly4uL2xpYiAgZ2V0cmFuZG9tMDEuYyAgIC1sbHRwIC1vCj4gZ2V0cmFuZG9tMDEKPiBJbiBmaWxl
+IGluY2x1ZGVkIGZyb20gZ2V0cmFuZG9tMDEuYzoyOToKPiAvdXNyL2luY2x1ZGUvbGludXgvcmFu
+ZG9tLmg6Mzg6IGVycm9yOiBleHBlY3RlZCBzcGVjaWZpZXItcXVhbGlmaWVyLWxpc3QKPiBiZWZv
+cmUg4oCYX191MzLigJkKPiAvdXNyL2luY2x1ZGUvbGludXgvcmFuZG9tLmg6NDI6IGVycm9yOiBl
+eHBlY3RlZCBzcGVjaWZpZXItcXVhbGlmaWVyLWxpc3QKPiBiZWZvcmUg4oCYX191MzLigJkKPiBt
+YWtlOiAqKiogW2dldHJhbmRvbTAxXSBFcnJvciAxCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gSSB0cmllZCB0byBhZGQgIiNpbmNsdWRlIDxz
+eXMvdHlwZXMuaD4iIG9yICIjaW5jbHVkZSA8bGludXgvdHlwZXMuaD4iLAo+IG5laXRoZXIgd29y
+a3MuIFRoZXJlIG1heWJlIHNvbWUgYnVncwo+IGluIFJIRUw1LjExR0EncyBnbGliYy4gCgpJdCdz
+IGEga2VybmVsIGhlYWRlci4KCj4gR2l2ZW4gdGhhdCB3ZSB1c2UgbHRwX3N5c2NhbGwoKSBhbmQg
+aGF2ZSAiR1JORF9SQU5ET00KPiBHUk5EX05PTkJMT0NLIiBkZWZpbmVkIGluCj4gbGFwaS9nZXRy
+YW5kb20uaCwgd2hhdCBhYm91dCB3ZSByZW1vdmUgIiNpbmNsdWRlIDxsaW51eC9yYW5kb20uaD4i
+IGZvcm0gdGhlc2UKPiB0aGVzZSA0IHRlc3QgY2FzZXMsIHRoZW4KPiB0aGV5IHdpbGwgY29tcGls
+ZSBjb3JyZWN0bHkgaW4gUkhFTDUuCgpXZSBjYW4gZWl0aGVyIHJlbHkgb24gbGFwaS9nZXRyYW5k
+b20uaCBvciBnZXQgYmFjayBtNCBjaGVjay4gVGhlIGxhdHRlcgpzZWVtcyBsaWtlIHRvbyBtdWNo
+IHRyb3VibGUgZm9yIDIgdGVzdGNhc2VzIHRoYXQgbmVlZCBpdCwgc28gSSdkIGdvCndpdGggcmVt
+b3ZpbmcgaXQgYW5kIHJlbHkgb24gbGFwaSBoZWFkZXIuIENhbiB5b3Ugc2VuZCBhIHBhdGNoIHRv
+IGxpc3QgcGxlYXNlPwoKUmVnYXJkcywKSmFuCgo+IAo+IFJlZ2FyZHMsCj4gWGlhb2d1YW5nIFdh
+bmcKPiAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb24ndCBMaW1pdCBZb3VyIEJ1c2luZXNzLiBS
+ZWFjaCBmb3IgdGhlIENsb3VkLgpHaWdlTkVUJ3MgQ2xvdWQgU29sdXRpb25zIHByb3ZpZGUgeW91
+IHdpdGggdGhlIHRvb2xzIGFuZCBzdXBwb3J0IHRoYXQKeW91IG5lZWQgdG8gb2ZmbG9hZCB5b3Vy
+IElUIG5lZWRzIGFuZCBmb2N1cyBvbiBncm93aW5nIHlvdXIgYnVzaW5lc3MuCkNvbmZpZ3VyZWQg
+Rm9yIEFsbCBCdXNpbmVzc2VzLiBTdGFydCBZb3VyIENsb3VkIFRvZGF5LgpodHRwczovL3d3dy5n
+aWdlbmV0Y2xvdWQuY29tLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+Cg==
