@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFbkZ-0001Or-IT
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:27 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZFbkV-0005nb-Dt
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:27 +0000
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 16 Jul 2015 13:30:41 +0800
-Message-ID: <1437024647-2066-5-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <55A680FC.2010807@oracle.com>
-	<1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1ZCOxX-0004d7-Ea
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 09:14:35 +0000
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZCOxU-0003aW-DJ
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 09:14:35 +0000
+Message-ID: <559B983A.3090003@huawei.com>
+Date: Tue, 7 Jul 2015 17:13:30 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v5 05/11] asapi_03: Use 'tst_tmpdir' and more cleanup
+References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
+	<5593E172.1050800@huawei.com> <5593F4E2.1040804@oracle.com>
+	<55952961.30906@huawei.com> <5595490E.1010509@oracle.com>
+	<55974D10.5050808@huawei.com> <559A9148.8060200@oracle.com>
+In-Reply-To: <559A9148.8060200@oracle.com>
+Subject: [LTP] [PATCH v2] commands/logrotate:run the case once again will
+ failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,58 +31,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-* Use 'tst_tmpdir' and 'tst_rmdir'.
-* Add 'static' for the cleanup.
+Including the rules in /etc/logrotate.d/ will cause the case failed
+when run it at the second time.
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
 ---
- testcases/network/lib6/asapi_03.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ testcases/commands/logrotate/logrotate_tests.sh |    4 ----
+ 1 files changed, 0 insertions(+), 4 deletions(-)
 
-diff --git a/testcases/network/lib6/asapi_03.c b/testcases/network/lib6/asapi_03.c
-index f458d7d..61be294 100644
---- a/testcases/network/lib6/asapi_03.c
-+++ b/testcases/network/lib6/asapi_03.c
-@@ -181,6 +181,7 @@ static struct ftent {
- };
- 
- static void setup(void);
-+static void cleanup(void);
- static void do_test(const struct ftent *);
- 
- char *TCID = "asapi_03";
-@@ -201,15 +202,23 @@ int main(int argc, char *argv[])
- 			do_test(&ftab[i]);
- 	}
- 
-+	cleanup();
- 	tst_exit();
- }
- 
--void setup(void)
-+static void setup(void)
- {
- 	TEST_PAUSE;
-+
-+	tst_tmpdir();
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
- }
- 
--void do_test(const struct ftent *ftptr)
-+static void do_test(const struct ftent *ftptr)
- {
- 	switch (ftptr->ft_type) {
- 	case EXISTS:
+diff --git a/testcases/commands/logrotate/logrotate_tests.sh b/testcases/commands/logrotate/logrotate_tests.sh
+index 2a793cc..e845670 100755
+--- a/testcases/commands/logrotate/logrotate_tests.sh
++++ b/testcases/commands/logrotate/logrotate_tests.sh
+@@ -163,8 +163,6 @@ test01()
+ 	compress
+
+ 	# RPM packages drop log rotation information into this directory
+-	include /etc/logrotate.d
+-
+ 	/var/log/tst_logfile {
+ 		rotate 5
+ 		weekly
+@@ -201,8 +199,6 @@ test01()
+ 		# check if  /etc/logrotate.d is included/
+ 		# check if 5 rotations are forced.
+         # check if compression is done.
+-		grep "including /etc/logrotate.d" $LTPTMP/tst_logrotate.out \
+-			> $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+ 		grep "reading config file $LTPTMP/tst_logrotate.conf" \
+ 			$LTPTMP/tst_logrotate.out   > $LTPTMP/tst_logrotate.err 2>&1 || RC=$?
+ 		grep "forced from command line (5 rotations)" \
 -- 
-1.9.3
-
+1.6.0.2
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
