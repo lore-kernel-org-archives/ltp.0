@@ -2,20 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFbkU-0004oV-4I
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:22 +0000
+	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZCHG5-0005s2-BO
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:13 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZFbkR-0000of-Md
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:22 +0000
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 16 Jul 2015 13:30:37 +0800
-Message-ID: <1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <55A680FC.2010807@oracle.com>
-References: <55A680FC.2010807@oracle.com>
+	id 1ZCHG3-0006AD-Fz
+	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:13 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t670xMgx010533
+	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2015 08:59:22 +0800
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 7 Jul 2015 09:01:21 +0800
+Message-ID: <1436230882-3282-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
+In-Reply-To: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v5 01/11] SAFE_MACROS: Add socket(), bind(), listen(),
-	connect() and getsockname()
+Subject: [LTP] [PATCH 2/3] umount2/umount2_02.c: add new test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,217 +31,269 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Add new testcase to verify the flag MNT_EXPIRE of umount2(2).
+
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- include/safe_macros.h |   1 +
- include/safe_net.h    |  54 +++++++++++++++++++++++
- lib/safe_net.c        | 119 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 174 insertions(+)
- create mode 100644 include/safe_net.h
- create mode 100644 lib/safe_net.c
+ runtest/ltplite                                |   1 +
+ runtest/syscalls                               |   1 +
+ testcases/kernel/syscalls/.gitignore           |   1 +
+ testcases/kernel/syscalls/umount2/umount2_02.c | 206 +++++++++++++++++++++++++
+ 4 files changed, 209 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/umount2/umount2_02.c
 
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index 0e7651d..1a09af6 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -28,6 +28,7 @@
- #include <dirent.h>
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 5f8ef8c..f5a8a52 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -966,6 +966,7 @@ unlink08 unlink08
+ #umount03 umount03 -D /dev/...
  
- #include "safe_stdio.h"
-+#include "safe_net.h"
+ umount2_01 umount2_01
++umount2_02 umount2_02
  
- char*	safe_basename(const char *file, const int lineno,
- 	    void (*cleanup_fn)(void), char *path);
-diff --git a/include/safe_net.h b/include/safe_net.h
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 762730f..92716d2 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1315,6 +1315,7 @@ umount02 umount02
+ umount03 umount03
+ 
+ umount2_01 umount2_01
++umount2_02 umount2_02
+ 
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 542ec3b..4ee0b0d 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -1003,6 +1003,7 @@
+ /umount/umount02
+ /umount/umount03
+ /umount2/umount2_01
++/umount2/umount2_02
+ /uname/uname01
+ /uname/uname02
+ /uname/uname03
+diff --git a/testcases/kernel/syscalls/umount2/umount2_02.c b/testcases/kernel/syscalls/umount2/umount2_02.c
 new file mode 100644
-index 0000000..2c9ddb6
+index 0000000..30e5047
 --- /dev/null
-+++ b/include/safe_net.h
-@@ -0,0 +1,54 @@
++++ b/testcases/kernel/syscalls/umount2/umount2_02.c
+@@ -0,0 +1,206 @@
 +/*
 + * Copyright (c) 2015 Fujitsu Ltd.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 + *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 3 of the License, or
-+ * (at your option) any later version.
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
 + *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 + *
 + * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ *
++ * alone with this program.
 + */
 +
-+#ifndef __SAFE_NET_H__
-+#define __SAFE_NET_H__
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+
-+int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
-+		int domain, int type, int protocol);
-+#define SAFE_SOCKET(cleanup_fn, domain, type, protocol) \
-+	safe_socket(__FILE__, __LINE__, (cleanup_fn), domain, type, protocol)
-+
-+int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
-+	      int socket, const struct sockaddr *address,
-+	      socklen_t address_len);
-+#define SAFE_BIND(cleanup_fn, socket, address, address_len) \
-+	safe_bind(__FILE__, __LINE__, (cleanup_fn), socket, address, \
-+		  address_len)
-+
-+int safe_listen(const char *file, const int lineno, void (cleanup_fn)(void),
-+		int socket, int backlog);
-+#define SAFE_LISTEN(cleanup_fn, socket, backlog) \
-+	safe_listen(__FILE__, __LINE__, (cleanup_fn), socket, backlog)
-+
-+int safe_connect(const char *file, const int lineno, void (cleanup_fn)(void),
-+		 int sockfd, const struct sockaddr *addr, socklen_t addrlen);
-+#define SAFE_CONNECT(cleanup_fn, sockfd, addr, addrlen) \
-+	safe_connect(__FILE__, __LINE__, (cleanup_fn), sockfd, addr, addrlen)
-+
-+int safe_getsockname(const char *file, const int lineno,
-+		     void (cleanup_fn)(void), int sockfd, struct sockaddr *addr,
-+		     socklen_t *addrlen);
-+#define SAFE_GETSOCKNAME(cleanup_fn, sockfd, addr, addrlen) \
-+	safe_getsockname(__FILE__, __LINE__, (cleanup_fn), sockfd, addr, \
-+			 addrlen)
-+
-+#endif /* __SAFE_NET_H__ */
-diff --git a/lib/safe_net.c b/lib/safe_net.c
-new file mode 100644
-index 0000000..48c4056
---- /dev/null
-+++ b/lib/safe_net.c
-@@ -0,0 +1,119 @@
 +/*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 3 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ *
++ * DESCRIPTION
++ *  Test for feature MNT_EXPIRE of umount2().
++ *  "Mark the mount point as expired.If a mount point is not currently
++ *   in use, then an initial call to umount2() with this flag fails with
++ *   the error EAGAIN, but marks the mount point as expired. The mount
++ *   point remains expired as long as it isn't accessed by any process.
++ *   A second umount2() call specifying MNT_EXPIRE unmounts an expired
++ *   mount point. This flag cannot be specified with either MNT_FORCE or
++ *   MNT_DETACH. (fails with the error EINVAL)"
 + */
 +
 +#include <errno.h>
++#include <sys/mount.h>
++
 +#include "test.h"
-+#include "safe_net.h"
++#include "safe_macros.h"
++#include "lapi/umount.h"
 +
-+int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
-+		int domain, int type, int protocol)
++static void setup(void);
++static void umount2_verify(void);
++static int umount2_verify_1(void);
++static int umount2_verify_2(void);
++static int umount2_verify_3(void);
++static void cleanup(void);
++
++char *TCID = "umount2_02";
++int TST_TOTAL = 1;
++
++#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
++#define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
++#define MNTPOINT	"mntpoint"
++#define EXP_ERRNO	EAGAIN
++
++static int fd;
++static int mount_flag;
++
++static const char *device;
++static const char *fs_type;
++
++int main(int ac, char **av)
 +{
-+	int rval;
++	int lc;
 +
-+	rval = socket(domain, type, protocol);
++	tst_parse_opts(ac, av, NULL, NULL);
 +
-+	if (rval < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
-+			 domain, type, protocol);
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		umount2_verify();
 +	}
 +
-+	return rval;
++	cleanup();
++	tst_exit();
 +}
 +
-+int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
-+	      int socket, const struct sockaddr *address,
-+	      socklen_t address_len)
++static void setup(void)
 +{
-+	int err, ret, i;
++	tst_require_root(NULL);
 +
-+	for (i = 0; i < 30; i++) {
-+		ret = bind(socket, address, address_len);
-+		err = errno;
-+
-+		if (!ret)
-+			return 0;
-+
-+		if (err != EADDRINUSE) {
-+			tst_brkm(TBROK | TERRNO, cleanup_fn,
-+				 "%s:%d: bind(%d, %p, %d) failed", file, lineno,
-+				 socket, address, address_len);
-+		}
-+
-+		tst_resm(TINFO, "bind('%p') failed with %s, try %2i...",
-+			 address, tst_strerrno(err), i+1);
-+
-+		if (i == 0 && err == EADDRINUSE)
-+			tst_resm(TINFO, "The given address is already in use.");
-+
-+		usleep(1000000);
++	if ((tst_kvercmp(2, 6, 8)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels "
++			"that are 2.6.8 or higher");
 +	}
 +
-+	tst_brkm(TBROK | TERRNO, cleanup_fn,
-+		 "%s:%d: Failed to bind(%d, %p, %d) after 30 retries",
-+		 file, lineno, socket, address, address_len);
++	tst_sig(NOFORK, DEF_HANDLER, NULL);
++
++	tst_tmpdir();
++
++	fs_type = tst_dev_fs_type();
++	device = tst_acquire_device(cleanup);
++
++	if (!device)
++		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
++
++	tst_mkfs(cleanup, device, fs_type, NULL);
++
++	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
++
++	TEST_PAUSE;
 +}
 +
-+int safe_listen(const char *file, const int lineno, void (cleanup_fn)(void),
-+		int socket, int backlog)
++static void umount2_verify(void)
 +{
-+	int rval;
++	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
++	mount_flag = 1;
 +
-+	rval = listen(socket, backlog);
++	do {
++		if (umount2_verify_1())
++			break;
 +
-+	if (rval < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "%s:%d: listen(%d, %d) failed", file, lineno, socket,
-+			 backlog);
++		if (umount2_verify_2())
++			break;
++
++		/* a new accesse removes the expired mark of the mount point */
++		fd = SAFE_CREAT(cleanup, MNTPOINT "/file", FILE_MODE);
++
++		SAFE_CLOSE(cleanup, fd);
++		fd = 0;
++
++		if (umount2_verify_2())
++			break;
++
++		if (umount2_verify_3())
++			break;
++
++		mount_flag = 0;
++
++		tst_resm(TPASS, "umount2(2) Passed");
++	} while (0);
++
++	if (mount_flag) {
++		SAFE_UMOUNT(cleanup, MNTPOINT);
++		mount_flag = 0;
 +	}
-+
-+	return rval;
 +}
 +
-+int safe_connect(const char *file, const int lineno, void (cleanup_fn)(void),
-+		 int sockfd, const struct sockaddr *addr, socklen_t addrlen)
++/* MNT_EXPIRE cannot be specified with either MNT_FORCE or MNT_DETACH */
++static int umount2_verify_1(void)
 +{
-+	int rval;
++	TEST(umount2(MNTPOINT, MNT_EXPIRE | MNT_FORCE));
 +
-+	rval = connect(sockfd, addr, addrlen);
-+
-+	if (rval < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "%s:%d: connect(%d, %p, %d) failed", file, lineno,
-+			 sockfd, addr, addrlen);
++	if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
++		tst_resm(TFAIL | TTERRNO, "umount2(2) MNT_EXPIRE flag "
++			"performed abnormally "
++			"expected error = %d : %s",
++			EINVAL, strerror(EINVAL));
++		return 1;
 +	}
 +
-+	return rval;
++	TEST(umount2(MNTPOINT, MNT_EXPIRE | MNT_DETACH));
++
++	if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
++		tst_resm(TFAIL | TTERRNO, "umount2(2) MNT_EXPIRE flag "
++			"performed abnormally "
++			"expected error = %d : %s",
++			EINVAL, strerror(EINVAL));
++		return 1;
++	}
++
++	return 0;
 +}
 +
-+int safe_getsockname(const char *file, const int lineno,
-+		     void (cleanup_fn)(void), int sockfd, struct sockaddr *addr,
-+		     socklen_t *addrlen)
++/* the initial call to umount2() with MNT_EXPIRE flag */
++static int umount2_verify_2(void)
 +{
-+	int rval;
++	TEST(umount2(MNTPOINT, MNT_EXPIRE));
 +
-+	rval = getsockname(sockfd, addr, addrlen);
-+
-+	if (rval < 0) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "%s:%d: getsockname(%d, %p, %p) failed", file, lineno,
-+			 sockfd, addr, addrlen);
++	if (TEST_RETURN == 0 || TEST_ERRNO != EAGAIN) {
++		tst_resm(TFAIL | TTERRNO, "umount2(2) MNT_EXPIRE flag "
++			"performed abnormally "
++			"expected error = %d : %s",
++			EAGAIN, strerror(EAGAIN));
++		return 1;
 +	}
 +
-+	return rval;
++	return 0;
++}
++
++/* the second call to umount2() with MNT_EXPIRE flag */
++static int umount2_verify_3(void)
++{
++	TEST(umount2(MNTPOINT, MNT_EXPIRE));
++
++	if (TEST_RETURN != 0) {
++		tst_resm(TFAIL, "umount2(2) Failed while "
++			"unmounting %s errno = %d : %s",
++			MNTPOINT, TEST_ERRNO,
++			strerror(TEST_ERRNO));
++		return 1;
++	}
++
++	return 0;
++}
++
++static void cleanup(void)
++{
++	if (fd > 0 && close(fd))
++		tst_resm(TWARN | TERRNO, "Failed to close file");
++
++	if (mount_flag && tst_umount(MNTPOINT))
++		tst_resm(TWARN | TERRNO, "Failed to unmount");
++
++	if (device)
++		tst_release_device(NULL, device);
++
++	tst_rmdir();
 +}
 -- 
-1.9.3
+1.8.4.2
 
 
 ------------------------------------------------------------------------------
