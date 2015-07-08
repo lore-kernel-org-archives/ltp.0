@@ -1,18 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZEzze-0007yu-Pb
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 13:11:30 +0000
-Date: Tue, 14 Jul 2015 15:09:58 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150714130958.GB7040@rei.suse.de>
-References: <1436876572-28759-1-git-send-email-mmarhefk@redhat.com>
-	<1436876572-28759-2-git-send-email-mmarhefk@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jbastian@redhat.com>) id 1ZCw2i-0005hr-H0
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2015 20:34:08 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZCw2h-0000Iv-5F
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2015 20:34:08 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (Postfix) with ESMTPS id 41D423D0057
+	for <ltp-list@lists.sourceforge.net>;
+	Wed,  8 Jul 2015 20:34:01 +0000 (UTC)
+Received: from tarantula.localdomain (ovpn-113-174.phx2.redhat.com
+	[10.3.113.174])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t68KXw0x002021
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Wed, 8 Jul 2015 16:34:00 -0400
+Date: Wed, 8 Jul 2015 15:33:58 -0500
+From: Jeffrey Bastian <jbastian@redhat.com>
+Message-ID: <20150708203358.GA24428@tarantula.localdomain>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1436876572-28759-2-git-send-email-mmarhefk@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2] containers/netns tests rewritten
+Subject: [LTP] [PATCH] proc/proc01.c: ignore stable_secret files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,60 +38,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> --- a/runtest/containers
-> +++ b/runtest/containers
-> @@ -23,15 +23,24 @@ mqns_03_clone mqns_03 -clone
->  mqns_04 mqns_04
->  mqns_04_clone mqns_04 -clone
->  
-> -netns_crtchild netns_crtchild
-> -netns_two_children_ns netns_two_children_ns
-> -netns_crtchild_delchild netns_crtchild_delchild
-> -netns_par_chld_ipv6 netns_par_chld_ipv6
-> -netns_par_chld_ftp netns_par_chld_ftp.sh
->  netns_netlink netns_netlink
-> -netns_devices netns_devices.sh
-> -netns_devices2 netns_devices2.sh
-> -netns_isolation netns_isolation.sh
-> +netns_breakns netns_breakns.sh ns_exec ipv4 netlink
-> +netns_breakns netns_breakns.sh ns_exec ipv6 netlink
-> +netns_breakns netns_breakns.sh ns_exec ipv4 ioctl
-> +netns_breakns netns_breakns.sh ns_exec ipv6 ioctl
-> +netns_breakns netns_breakns.sh ip ipv4 netlink
-> +netns_breakns netns_breakns.sh ip ipv6 netlink
-> +netns_breakns netns_breakns.sh ip ipv4 ioctl
-> +netns_breakns netns_breakns.sh ip ipv6 ioctl
-> +netns_comm netns_comm.sh ns_exec ipv4 netlink
-> +netns_comm netns_comm.sh ns_exec ipv6 netlink
-> +netns_comm netns_comm.sh ns_exec ipv4 ioctl
-> +netns_comm netns_comm.sh ns_exec ipv6 ioctl
-> +netns_comm netns_comm.sh ip ipv4 netlink
-> +netns_comm netns_comm.sh ip ipv6 netlink
-> +netns_comm netns_comm.sh ip ipv4 ioctl
-> +netns_comm netns_comm.sh ip ipv6 ioctl
-> +netns_sysfs netns_sysfs.sh
+Linux 4.1.0 introduced a per-NIC IPv6 stable_secret file for RFC7217.
+The stable_secret file for each NIC cannot be read until it is set,
+thus LTP fails like this:
 
-This would create several testcases with exactly same name in LTP
-results, wouldn't it.
+proc01      1  TFAIL  :  proc01.c:392: read failed: /proc/sys/net/ipv6/conf/all/stable_secret: errno=EIO(5): Input/output error
+proc01      2  TFAIL  :  proc01.c:392: read failed: /proc/sys/net/ipv6/conf/default/stable_secret: errno=EIO(5): Input/output error
+proc01      3  TFAIL  :  proc01.c:392: read failed: /proc/sys/net/ipv6/conf/eno1/stable_secret: errno=EIO(5): Input/output error
+...
 
-Can we also somehow include what is utilized, i.e. something from the
-parameters passed to the test script in the testcase name?
+Ignore the stable_secret files in the proc01 test.
 
-Something as:
+TODO: A future test should verify stable_secret functionality.
+  ~]# cat /proc/sys/net/ipv6/conf/eno1/stable_secret
+  cat: /proc/sys/net/ipv6/conf/eno1/stable_secret: Input/output error
+  ~]# echo "ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255" > /proc/sys/net/ipv6/conf/eno1/stable_secret
+  ~]# cat /proc/sys/net/ipv6/conf/eno1/stable_secret
+  ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
 
-netns_comm_exec_v4_ioctl
-netns_comm_exec_v6_ioctl
+Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
+---
+ testcases/kernel/fs/proc/proc01.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-I know that the names gets too long, but it's far better than having to
-figure out which combination of pamaters is actually failing.
-
+diff --git a/testcases/kernel/fs/proc/proc01.c b/testcases/kernel/fs/proc/proc01.c
+index f513110eca0e..b9ff3ac42fe2 100644
+--- a/testcases/kernel/fs/proc/proc01.c
++++ b/testcases/kernel/fs/proc/proc01.c
+@@ -290,14 +290,15 @@ static long readproc(const char *obj)
+ 			     dir_ent != NULL;
+ 			     dir_ent = (struct dirent *)readdir(dir)) {
+ 
+-				/* Ignore ".", "..", "kcore", and
+-				 * "/proc/<pid>" (unless this is our
++				/* Ignore ".", "..", "kcore", "stable_secret",
++                                 * and "/proc/<pid>" (unless this is our
+ 				 * starting point as directed by the
+ 				 * user).
+ 				 */
+ 				if (strcmp(dir_ent->d_name, ".") &&
+ 				    strcmp(dir_ent->d_name, "..") &&
+ 				    strcmp(dir_ent->d_name, "kcore") &&
++				    strcmp(dir_ent->d_name, "stable_secret") &&
+ 				    (fnmatch("[0-9]*", dir_ent->d_name,
+ 					     FNM_PATHNAME) ||
+ 				     strcmp(obj, procpath))) {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.4
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
