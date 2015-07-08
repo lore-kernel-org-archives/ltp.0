@@ -1,21 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZD29K-0001xm-0O
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:22 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZD29H-0002ZQ-BK
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:21 +0000
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 9 Jul 2015 11:05:18 +0800
-Message-ID: <1436411125-8012-4-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <55842886.4090202@oracle.com>
-	<1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xiaofeng_yan2006@126.com>) id 1ZClXl-0005jk-5f
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2015 09:21:31 +0000
+Received: from m50-110.126.com ([123.125.50.110])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZClXg-0002Ro-SL
+	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2015 09:21:29 +0000
+From: Changsheng Liu <liuchangsheng@inspur.com>
+Date: Wed,  8 Jul 2015 17:20:59 +0800
+Message-Id: <1436347259-942-1-git-send-email-liuchangsheng@inspur.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v4 04/11] asapi_02: Use 'tst_tmpdir' and more cleanup
+Subject: [LTP] [PATCH] netns,
+	make a verfication to name of virtul network interface card
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,57 +26,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: wunan@inspur.com
 
-* Use 'tst_tmpdir' and 'tst_rmdir'.
-* Add 'static' for the cleanup.
+The current ltp version get name of virtul network interface card
+with "veth62@veth63" in the newest kernel version,
+But we need a file name with "veth62".
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Changsheng Liu <liuchangsheng@inspur.com>
 ---
- testcases/network/lib6/asapi_02.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ testcases/kernel/containers/netns/netns_paripv6.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/network/lib6/asapi_02.c b/testcases/network/lib6/asapi_02.c
-index 01bee37..ac7dcda 100644
---- a/testcases/network/lib6/asapi_02.c
-+++ b/testcases/network/lib6/asapi_02.c
-@@ -285,6 +285,7 @@ static struct ftent {
- };
- 
- static void setup(void);
-+static void cleanup(void);
- static void do_test(const struct ftent *);
- 
- char *TCID = "asapi_02";
-@@ -305,15 +306,23 @@ int main(int argc, char *argv[])
- 			do_test(&ftab[i]);
- 	}
- 
-+	cleanup();
- 	tst_exit();
- }
- 
--void setup(void)
-+static void setup(void)
- {
- 	TEST_PAUSE;
-+
-+	tst_tmpdir();
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
- }
- 
--void do_test(const struct ftent *ftptr)
-+static void do_test(const struct ftent *ftptr)
- {
- 	switch (ftptr->ft_type) {
- 	case EXISTS:
+diff --git a/testcases/kernel/containers/netns/netns_paripv6.sh b/testcases/kernel/containers/netns/netns_paripv6.sh
+index 9f2270a..6d2f48d 100755
+--- a/testcases/kernel/containers/netns/netns_paripv6.sh
++++ b/testcases/kernel/containers/netns/netns_paripv6.sh
+@@ -47,8 +47,8 @@ status=0
+     echo 1 > /proc/sys/net/ipv4/ip_forward
+     echo 1 > /proc/sys/net/ipv4/conf/$netdev/proxy_arp
+     create_veth
+-    vnet0=$dev0
+-    vnet1=$dev1
++    vnet0=$(echo $dev0 | awk -F'@' '{ print $1}')
++    vnet1=$(echo $dev1 | awk -F'@' '{ print $1}')
+     if [ -z "$vnet0" -o -z "$vnet1" ] ; then
+         tst_resm TFAIL "Error: unable to create veth pair"
+         exit 1
 -- 
-1.9.3
+1.9.1
+
 
 
 ------------------------------------------------------------------------------
