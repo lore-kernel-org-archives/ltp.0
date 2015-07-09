@@ -1,18 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZL6U6-00006f-3w
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 09:20:10 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZL6U0-0003gJ-UC
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 09:20:10 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Fri, 31 Jul 2015 17:20:07 +0800
-Message-ID: <1438334407-366-1-git-send-email-sunyuan3@huawei.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH V3] containers: new testcase userns05
+	(envelope-from <xiaofeng_yan2006@126.com>) id 1ZD6Fs-0005wW-Sg
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 07:28:27 +0000
+Received: from m50-111.126.com ([123.125.50.111])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZD6Fm-0008Jj-3l
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 07:28:24 +0000
+From: Wentao Ma <mawentao@inspur.com>
+Date: Thu,  9 Jul 2015 15:27:37 +0800
+Message-Id: <1436426857-7322-1-git-send-email-mawentao@inspur.com>
+Subject: [LTP] [PATCH] acls: Solve a problem from acl_test01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,197 +21,49 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: wunan@inspur.com
 
-  A process created via fork(2) or clone(2) without the CLONE_NEWUSER
-flag is a member of the same user namespace as its parent.
-  When unshare an user namespace, the calling process is moved into a
-new user namespace which is not shared with any previously existing
-process.
+The failed infornamtion is as follow:
+useradd: cannot set SELinux context for
+home directory /tmp/tacl/mount-ext3/acltest1
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+this is caused by comand "rm -rf $TEST_USER1_HOMEDIR".
+But this directory is needed by next step.
+So create this driectory again.
+
+Signed-off-by: Wentao Ma <mawentao@inspur.com>
 ---
- runtest/containers                            |   1 +
- testcases/kernel/containers/.gitignore        |   1 +
- testcases/kernel/containers/userns/userns05.c | 142 ++++++++++++++++++++++++++
- 3 files changed, 144 insertions(+)
- create mode 100644 testcases/kernel/containers/userns/userns05.c
+ testcases/kernel/fs/acls/acl_test01 | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/runtest/containers b/runtest/containers
-index de4197e..cece80b 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -72,3 +72,4 @@ userns01 userns01
- userns02 userns02
- userns03 userns03
- userns04 userns04
-+userns05 userns05
-diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index 85ced78..b433b03 100644
---- a/testcases/kernel/containers/.gitignore
-+++ b/testcases/kernel/containers/.gitignore
-@@ -7,3 +7,4 @@ userns/userns01
- userns/userns02
- userns/userns03
- userns/userns04
-+userns/userns05
-diff --git a/testcases/kernel/containers/userns/userns05.c b/testcases/kernel/containers/userns/userns05.c
-new file mode 100644
-index 0000000..18178d0
---- /dev/null
-+++ b/testcases/kernel/containers/userns/userns05.c
-@@ -0,0 +1,142 @@
-+/*
-+ * Copyright (c) Huawei Technologies Co., Ltd., 2015
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ */
-+
-+/*
-+ * Verify that:
-+ * A process created via fork(2) or clone(2) without the
-+ * CLONE_NEWUSER flag is a member of the same user namespace as its
-+ * parent.
-+ * When unshare an user namespace, the calling process is moved into
-+ * a new user namespace which is not shared with any previously
-+ * existing process.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <assert.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <errno.h>
-+#include "test.h"
-+#include "userns_helper.h"
-+
-+char *TCID = "user_namespace5";
-+int TST_TOTAL = 1;
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
-+}
-+
-+/*
-+ * child_fn1() - Inside a new user namespace
-+ */
-+static int child_fn1(void)
-+{
-+	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	return 0;
-+}
-+
-+static long getusernsidbypid(int pid)
-+{
-+	char path[BUFSIZ];
-+	char userid[BUFSIZ];
-+	long id = 0;
-+
-+	sprintf(path, "/proc/%d/ns/user", pid);
-+
-+	if (readlink(path, userid, BUFSIZ) == -1)
-+		tst_resm(TFAIL, "readlink failure.");
-+
-+	if (sscanf(userid, "user:[%ld]", &id) != 1)
-+		tst_resm(TFAIL | TERRNO, "sscanf failure.");
-+	return id;
-+}
-+
-+static void test_userns_id(void)
-+{
-+	int cpid1, cpid2, cpid3;
-+	long parentuserns, cpid1userns, cpid2userns, newparentuserns;
-+
-+	parentuserns = getusernsidbypid(getpid());
-+	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1,
-+		NULL);
-+	if (cpid1 < 0)
-+		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-+	cpid1userns = getusernsidbypid(cpid1);
-+	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-+
-+	/* A process created via fork(2) or clone(2) without the
-+	CLONE_NEWUSER flag is a member of the same user namespace as its
-+	parent.*/
-+	if (parentuserns != cpid1userns)
-+		tst_resm(TFAIL, "userns:parent should be equal to cpid1");
-+
-+	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-+		(void *)child_fn1, NULL);
-+	if (cpid2 < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-+	cpid2userns = getusernsidbypid(cpid2);
-+	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-+
-+	if (parentuserns == cpid2userns)
-+		tst_resm(TFAIL, "userns:parent should be not equal to cpid2");
-+
-+	switch (cpid3 = fork()) {
-+	case -1:
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+	case 0:
-+		if (unshare(CLONE_NEWUSER) == -1) {
-+			printf("parent pid unshare failure: (%d) %s",
-+				errno, strerror(errno));
-+			exit(1);
-+		}
-+		newparentuserns = getusernsidbypid(getpid());
-+
-+		/* When unshare an user namespace, the calling process
-+		is moved into a new user namespace which is not shared
-+		with any previously existing process.*/
-+		if (parentuserns == newparentuserns)
-+			exit(1);
-+		exit(0);
-+	}
-+
-+	tst_record_childstatus(cleanup, cpid1);
-+	tst_record_childstatus(cleanup, cpid2);
-+	tst_record_childstatus(cleanup, cpid3);
-+}
-+
-+static void setup(void)
-+{
-+	check_newuser();
-+
-+	tst_tmpdir();
-+	TST_CHECKPOINT_INIT(NULL);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+
-+	tst_parse_opts(argc, argv, NULL, NULL);
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		test_userns_id();
-+	}
-+	cleanup();
-+	tst_exit();
-+}
+diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
+index 328ff74..d079abd 100755
+--- a/testcases/kernel/fs/acls/acl_test01
++++ b/testcases/kernel/fs/acls/acl_test01
+@@ -87,6 +87,7 @@ do_setup(){
+ 	rm -rf $TEST_USER1_HOMEDIR
+ 	userdel $TEST_USER1 > /dev/null 2>&1
+ 	sleep 1
++        mkdir -p $TEST_USER1_HOMEDIR
+ 	useradd -d $TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s /bin/sh
+ 
+ 	if [ $? -ne 0 ]; then
 -- 
-1.9.1
+1.8.3.1
+
 
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
