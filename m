@@ -1,21 +1,38 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZKnxL-0003CR-9h
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 13:33:07 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZKnx8-0004SD-8c
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 13:32:58 +0000
-Date: Thu, 30 Jul 2015 15:32:36 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150730133236.GA21727@rei.suse.de>
-References: <1438239541-14080-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+	(envelope-from <jbastian@redhat.com>) id 1ZDCwq-0007vt-Sq
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 14:37:12 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZDCwn-0007mH-EE
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 14:37:12 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (Postfix) with ESMTPS id DBE2E2B9DCF
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  9 Jul 2015 14:37:02 +0000 (UTC)
+Received: from tarantula.localdomain (ovpn-113-174.phx2.redhat.com
+	[10.3.113.174])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t69Eb0gR009926
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 10:37:02 -0400
+Date: Thu, 9 Jul 2015 09:37:00 -0500
+From: Jeffrey Bastian <jbastian@redhat.com>
+Message-ID: <20150709143700.GQ17625@tarantula.localdomain>
+References: <20150708194114.GA20060@tarantula.localdomain>
+	<904998018.14796051.1436425198776.JavaMail.zimbra@redhat.com>
+	<431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
+	<20150709124503.GM17625@tarantula.localdomain>
+	<1737674583.15006076.1436449194123.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="sHrvAb52M6C8blB9"
 Content-Disposition: inline
-In-Reply-To: <1438239541-14080-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] open/open13.c: add O_PATH flag test
+In-Reply-To: <1737674583.15006076.1436449194123.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] syslog/syslog-lib.sh: support systemd journal
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,265 +42,134 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +/*
-> + * Copyright (c) 2015 Fujitsu Ltd.
-> + * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * You should have received a copy of the GNU General Public License along
-> + * with this program.
-> + */
-> +
-> +/*
-> + * DESCRIPTION
-> + *  Basic test for open(2) with the flag O_PATH.
-> + *  "Obtain a file descriptor that can be used to perform operations
-> + *   that act purely at the file descriptor level, the file itself is
-> + *   not opened, the operations read(2), write(2), fchmod(2), fchown(2)
-> + *   and fgetxattr(2) fail with the error EBADF."
-> + *
-> + *  The operations include but is not limited to the syscalls above.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +
-> +#include "config.h"
-> +
-> +#include <errno.h>
-> +#ifdef HAVE_ATTR_XATTR_H
-> +#include <sys/types.h>
-> +#include <attr/xattr.h>
-> +#endif
-> +
-> +#include "test.h"
-> +#include "safe_macros.h"
-> +#include "lapi/fcntl.h"
-> +
-> +#define TESTFILE	"testfile"
-> +#define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
-> +#define EXP_ERRNO	EBADF
 
-Defining the EXP_ERRNO as EBADF only hides what the expected error is
-and it's not like the expected errno for the testcases will ever change.
-So it's better to just hardcode the EBADFD there and keep the code nice
-and readable.
+--sHrvAb52M6C8blB9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +static void setup(void);
-> +static void verify_read(void);
-> +static void verify_write(void);
-> +static void verify_fchmod(void);
-> +static void verify_fchown(void);
-> +#ifdef HAVE_ATTR_XATTR_H
-> +static void verify_fgetxattr(void);
-> +#endif
-> +static void cleanup(void);
-> +
-> +static int fd;
-> +
-> +static void (*test_func[])(void) = {
-> +	verify_read,
-> +	verify_write,
-> +	verify_fchmod,
-> +	verify_fchown,
-> +#ifdef HAVE_ATTR_XATTR_H
-> +	verify_fgetxattr
-> +#endif
-> +};
-> +
-> +char *TCID = "open13";
-> +int TST_TOTAL = ARRAY_SIZE(test_func);
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	int tc;
-> +
-> +	tst_parse_opts(ac, av, NULL, NULL);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		TEST(open(TESTFILE, O_RDWR | O_PATH));
-> +		if (TEST_RETURN == -1) {
-> +			tst_resm(TFAIL | TTERRNO, "open(2) failed");
-> +			continue;
-> +		}
-> +
-> +		fd = TEST_RETURN;
+On Thu, Jul 09, 2015 at 09:39:54AM -0400, Jan Stancek wrote:
+> Do the testcases pass for you with this patch? They still fail for me with
+> rsyslog-7.4.7-7.el7_0 and systemd-219-5.el7.
+...
+> which fails for me unless I add "$WorkDirectory" option.
 
-Just do fd = SAFE_OPEN(TESTFILE, O_CREAT | O_RDWR | O_PATH); instead and
-drop the SAFE_TOUCH() from the setup as well.
+Hmm, it worked in my tests last night, but it's failing today.  You're
+right, the $WorkDirectory option fixed it.  Fortunately that's just a
+minor tweak to the regex in the patch; see attached for a new version of
+the patch.
 
-> +		for (tc = 0; tc < TST_TOTAL; tc++)
-> +			(*test_func[tc])();
+::::::::::::
+:: Before ::
+::::::::::::
+[root@localhost bin]# grep -i journal syslog-lib.sh
+[root@localhost bin]# syslog01 ; echo $?
+syslog01    0  TINFO  :  Send messages to syslogd at some level
+syslog01    0  TINFO  :  and facility and grep for those messages.
+syslog01    0  TINFO  :  testing whether messages are logged into log file
+syslog01    0  TINFO  :  restarting syslog daemon
+syslog01    0  TINFO  :  restarting syslog daemon
+1
 
-You have to close the fd here, otherwise the loop will leak fds with -i
-or -I test parameters.
+:::::::::::
+:: After ::
+:::::::::::
+[root@localhost bin]# grep -i journal syslog-lib.sh
+                systemd_journal=$(grep -Ehoi "^[^#].*(imjournal|workdirectory).*" -r /etc/rsyslog.conf /etc/rsyslog.d/)
+$systemd_journal
+[root@localhost bin]# syslog01 ; echo $?
+syslog01    0  TINFO  :  Send messages to syslogd at some level 
+syslog01    0  TINFO  :  and facility and grep for those messages.
+syslog01    0  TINFO  :  testing whether messages are logged into log file
+syslog01    0  TINFO  :  restarting syslog daemon
+syslog01    0  TINFO  :  restarting syslog daemon
+0
 
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	if ((tst_kvercmp(2, 6, 39)) < 0) {
-> +		tst_brkm(TCONF, NULL, "This test can only run on kernels "
-> +			"that are 2.6.39 or higher");
-> +	}
-> +
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-> +
-> +	tst_tmpdir();
-> +
-> +	SAFE_TOUCH(cleanup, TESTFILE, FILE_MODE, NULL);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void verify_read(void)
-> +{
-> +	char buf[255];
-> +
-> +	TEST(read(fd, buf, 255));
-                             ^
-			     sizeof(buf)
-> +
-> +	if (TEST_RETURN == -1 && TEST_ERRNO == EXP_ERRNO) {
-> +		tst_resm(TPASS, "read(2) failed as expected");
-> +	} else {
-> +		tst_resm(TFAIL, "open(2) O_PATH flag "
-> +			"performed abnormally "
-> +			"expected error = %d : %s",
-> +			EXP_ERRNO, strerror(EXP_ERRNO));
 
-                       This does not say what errno we actuall got or if
-		       the call has succeded. Given that these all are
-		       negative testcases we can define check result
-		       functions as:
 
-static void check_result(const char *call_name)
-{
-	if (TEST_RETURN == 0) {
-		tst_resm(TFAIL, "%s succeeded unexpectedly", call_name);
-		return;
-	}
-
-	if (TEST_ERRNO != EBADF) {
-		tst_resm(TFAIL | TTERRNO, "%s failed unexpectedly, "
-		         "expected EBADF", call_name);
-		return;
-	}
-
-	tst_resm(TPASS, "%s failed with EBADF", call_name);
-}
-
-And call it in all the test functions.
-
-> +	}
-> +}
-> +
-> +static void verify_write(void)
-> +{
-> +	TEST(write(fd, "w", 1));
-> +
-> +	if (TEST_RETURN == -1 && TEST_ERRNO == EXP_ERRNO) {
-> +		tst_resm(TPASS, "write(2) failed as expected");
-> +	} else {
-> +		tst_resm(TFAIL, "open(2) O_PATH flag "
-> +			"performed abnormally "
-> +			"expected error = %d : %s",
-> +			EXP_ERRNO, strerror(EXP_ERRNO));
-> +	}
-> +}
-> +
-> +static void verify_fchmod(void)
-> +{
-> +	TEST(fchmod(fd, 0666));
-> +
-> +	if (TEST_RETURN == -1 && TEST_ERRNO == EXP_ERRNO) {
-> +		tst_resm(TPASS, "fchmod(2) failed as expected");
-> +	} else {
-> +		tst_resm(TFAIL, "open(2) O_PATH flag "
-> +			"performed abnormally "
-> +			"expected error = %d : %s",
-> +			EXP_ERRNO, strerror(EXP_ERRNO));
-> +	}
-> +}
-> +
-> +static void verify_fchown(void)
-> +{
-> +	uid_t tuid = 1000;
-> +	gid_t tgid = 1000;
-> +
-> +	TEST(fchown(fd, tuid, tgid));
-> +
-> +	if (TEST_RETURN == -1 && TEST_ERRNO == EXP_ERRNO) {
-> +		tst_resm(TPASS, "fchown(2) failed as expected");
-> +	} else {
-> +		tst_resm(TFAIL, "open(2) O_PATH flag "
-> +			"performed abnormally "
-> +			"expected error = %d : %s",
-> +			EXP_ERRNO, strerror(EXP_ERRNO));
-> +	}
-> +}
-> +
-> +#ifdef HAVE_ATTR_XATTR_H
-> +static void verify_fgetxattr(void)
-> +{
-> +	TEST(fgetxattr(fd, "tkey", NULL, 1));
-> +
-> +	if (TEST_RETURN == -1 && TEST_ERRNO == EXP_ERRNO) {
-> +		tst_resm(TPASS, "fgetxattr(2) failed as expected");
-> +	} else {
-> +		tst_resm(TFAIL, "open(2) O_PATH flag "
-> +			"performed abnormally "
-> +			"expected error = %d : %s",
-> +			EXP_ERRNO, strerror(EXP_ERRNO));
-> +	}
-> +}
-> +#endif
-> +
-> +static void cleanup(void)
-> +{
-> +	if (fd > 0 && close(fd))
-> +		tst_resm(TWARN | TERRNO, "failed to close file");
-> +
-> +	tst_rmdir();
-> +}
-> -- 
-> 1.8.4.2
+> > I think it's ok to leave both modules enabled, though.  The default
+> > rsyslog.conf in Fedora (up to F21) had both enabled:
 > 
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> It seems to duplicate messages for me in quite unpredictable way.
+> After running syslog02:
+
+With the updated patch, it looks ok for me:
+
+[root@localhost bin]# systemctl stop rsyslog
+[root@localhost bin]# cat /dev/null >/var/log/maillog
+[root@localhost bin]# systemctl start rsyslog
+[root@localhost bin]# syslog02
+...
+root@localhost bin]# cat /var/log/maillog
+2015-07-09T10:32:10.383470-04:00 localhost syslogtst: syslogtst: mail emerg test.
+2015-07-09T10:32:14.403420-04:00 localhost syslogtst: syslogtst: mail alert test.
+2015-07-09T10:32:18.422884-04:00 localhost syslogtst: syslogtst: mail crit test.
+2015-07-09T10:32:22.442509-04:00 localhost syslogtst: syslogtst: mail err test.
+2015-07-09T10:32:26.461447-04:00 localhost syslogtst: syslogtst: mail warning test.
+2015-07-09T10:32:30.480587-04:00 localhost syslogtst: syslogtst: mail notice test.
+2015-07-09T10:32:34.499815-04:00 localhost syslogtst: syslogtst: mail info test.
+2015-07-09T10:32:38.518913-04:00 localhost syslogtst: syslogtst: mail debug test.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Jeff Bastian
+
+--sHrvAb52M6C8blB9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="syslog-lib.sh-support-systemd-journal.patch"
+
+commit 4caed564ffbf2f1ac1d889d598e0fa8269562929 (HEAD, rsyslog-imjournal)
+Author: Jeffrey Bastian <jbastian@redhat.com>
+Date:   Wed Jul 8 14:06:48 2015 -0500
+
+    syslog/syslog-lib.sh: support systemd journal
+    
+    rsyslog needs to use the imjournal module to communicate with
+    systemd-journald. Copy the imjournal lines from the system's
+    /etc/rsyslog.conf if they exist.
+    
+    Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
+
+diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+index ef33517aa92b..d2a47112b493 100755
+--- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
++++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+@@ -72,8 +72,10 @@ setup()
+ 	elif [ "$SYSLOG_DAEMON" = "rsyslog" ]; then
+ 		CONFIG_FILE="/etc/rsyslog.conf"
+ 		log_socket=$(grep -ho "^\$SystemLogSocketName .*" -r /etc/rsyslog.conf /etc/rsyslog.d/ | head -1)
++		systemd_journal=$(grep -Ehoi "^[^#].*(imjournal|workdirectory).*" -r /etc/rsyslog.conf /etc/rsyslog.d/)
+ 		RSYSLOG_CONFIG=$(cat <<EOF
+ \$ModLoad imuxsock.so
++$systemd_journal
+ $log_socket
+ EOF
+ )
+
+--sHrvAb52M6C8blB9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
+--sHrvAb52M6C8blB9
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--sHrvAb52M6C8blB9--
+
