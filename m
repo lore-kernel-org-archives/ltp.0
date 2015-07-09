@@ -1,18 +1,41 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZC2tm-0007pn-Mq
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2015 09:41:14 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZC2tj-0004Rc-Hd
-	for ltp-list@lists.sourceforge.net; Mon, 06 Jul 2015 09:41:14 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Tue, 7 Jul 2015 01:42:50 +0800
-Message-ID: <1436204570-7473-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jbastian@redhat.com>) id 1ZDK7C-0001w8-Fc
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 22:16:22 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZDK7A-00015k-Ml
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 22:16:22 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (Postfix) with ESMTPS id 8F6CC347DB0
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  9 Jul 2015 22:16:14 +0000 (UTC)
+Received: from tarantula.localdomain (ovpn-113-174.phx2.redhat.com
+	[10.3.113.174])
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t69MGCnN020759
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 18:16:14 -0400
+Date: Thu, 9 Jul 2015 17:16:12 -0500
+From: Jeffrey Bastian <jbastian@redhat.com>
+Message-ID: <20150709221612.GV17625@tarantula.localdomain>
+References: <20150708194114.GA20060@tarantula.localdomain>
+	<904998018.14796051.1436425198776.JavaMail.zimbra@redhat.com>
+	<431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
+	<20150709124503.GM17625@tarantula.localdomain>
+	<1737674583.15006076.1436449194123.JavaMail.zimbra@redhat.com>
+	<20150709143700.GQ17625@tarantula.localdomain>
+	<1448931194.15074761.1436453202001.JavaMail.zimbra@redhat.com>
+	<20150709163341.GU17625@tarantula.localdomain>
+	<438616599.15156602.1436460575320.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH V3] userns01: add capability verification
+Content-Disposition: inline
+In-Reply-To: <438616599.15156602.1436460575320.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH v3] syslog/syslog-lib.sh: support systemd journal
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,99 +48,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+rsyslog needs to use the imjournal module to communicate with
+systemd-journald instead of imuxsock.  Check the system's
+/etc/rsyslog.conf to see if LTP should use imjournal or imuxsock
+
+Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
 ---
- testcases/kernel/containers/userns/userns01.c | 43 ++++++++++++++++++++++-----
- 1 file changed, 36 insertions(+), 7 deletions(-)
+ testcases/kernel/syscalls/syslog/syslog-lib.sh | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/containers/userns/userns01.c b/testcases/kernel/containers/userns/userns01.c
-index 9cada5e..750ba49 100644
---- a/testcases/kernel/containers/userns/userns01.c
-+++ b/testcases/kernel/containers/userns/userns01.c
-@@ -15,7 +15,9 @@
-  * Verify that:
-  *  If a user ID has no mapping inside the namespace, user ID and group
-  * ID will be the value defined in the file /proc/sys/kernel/overflowuid(65534)
-- * and /proc/sys/kernel/overflowgid(65534).
-+ * and /proc/sys/kernel/overflowgid(65534). A child process has a full set
-+ * of permitted and effective capabilities, even though the program was
-+ * run from an unprivileged account.
-  */
- 
- #define _GNU_SOURCE
-@@ -29,6 +31,12 @@
- #include "test.h"
- #include "libclone.h"
- #include "userns_helper.h"
-+#include "config.h"
-+#if HAVE_SYS_CAPABILITY_H
-+#include <linux/types.h>
-+#include <sys/capability.h>
-+#endif
-+
- #define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
- #define OVERFLOWGIDPATH "/proc/sys/kernel/overflowgid"
- 
-@@ -43,21 +51,43 @@ static long overflowgid;
-  */
- static int child_fn1(void *arg LTP_ATTRIBUTE_UNUSED)
- {
--	int exit_val;
-+	int exit_val = 0;
- 	int uid, gid;
-+#ifdef HAVE_LIBCAP
-+	cap_t caps;
-+	int i, last_cap;
-+	cap_flag_value_t flag_val;
-+#endif
- 
- 	uid = geteuid();
- 	gid = getegid();
- 
- 	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
--	if (uid == overflowuid && gid == overflowgid) {
--		printf("Got expected uid and gid\n");
--		exit_val = 0;
--	} else {
-+
-+	if (uid != overflowuid || gid != overflowgid) {
- 		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
- 		exit_val = 1;
- 	}
- 
-+#ifdef HAVE_LIBCAP
-+	caps = cap_get_proc();
-+	SAFE_FILE_SCANF(NULL, "/proc/sys/kernel/cap_last_cap", "%d", &last_cap);
-+	for (i = 0; i <= last_cap; i++) {
-+		cap_get_flag(caps, i, CAP_EFFECTIVE, &flag_val);
-+		if (flag_val == 0)
-+			break;
-+		cap_get_flag(caps, i, CAP_PERMITTED, &flag_val);
-+		if (flag_val == 0)
-+			break;
-+	}
-+
-+	if (flag_val == 0) {
-+		printf("unexpected effective/permitted caps\n");
-+		exit_val = 1;
-+	}
-+#else
-+	printf("System doesn't support capabilities.\n");
-+#endif
- 	return exit_val;
- }
- 
-@@ -95,4 +125,3 @@ int main(int argc, char *argv[])
- 	}
- 	tst_exit();
- }
--
+diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+index ef33517aa92b..e166d3a45261 100755
+--- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
++++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+@@ -71,12 +71,20 @@ setup()
+ 		CONFIG_FILE="/etc/syslog-ng/syslog-ng.conf"
+ 	elif [ "$SYSLOG_DAEMON" = "rsyslog" ]; then
+ 		CONFIG_FILE="/etc/rsyslog.conf"
+-		log_socket=$(grep -ho "^\$SystemLogSocketName .*" -r /etc/rsyslog.conf /etc/rsyslog.d/ | head -1)
+-		RSYSLOG_CONFIG=$(cat <<EOF
++		if grep -q -r '^\$ModLoad[[:space:]]*imjournal' /etc/rsyslog.conf /etc/rsyslog.d/ ; then
++			systemd_journal=$(grep -Ehoi "^[^#].*(imjournal|workdirectory).*" -r /etc/rsyslog.conf /etc/rsyslog.d/)
++			RSYSLOG_CONFIG=$(cat <<EOF
++$systemd_journal
++EOF
++)
++		else
++			log_socket=$(grep -ho "^\$SystemLogSocketName .*" -r /etc/rsyslog.conf /etc/rsyslog.d/ | head -1)
++			RSYSLOG_CONFIG=$(cat <<EOF
+ \$ModLoad imuxsock.so
+ $log_socket
+ EOF
+ )
++		fi
+ 	else
+ 		tst_resm TBROK "Couldn't find syslogd, syslog-ng or rsyslogd"
+ 		cleanup 1
 -- 
-1.9.1
-
+1.9.4
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
