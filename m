@@ -2,22 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jack@suse.cz>) id 1ZK0ZU-0008Q9-VC
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 08:49:12 +0000
-Received: from mx2.suse.de ([195.135.220.15])
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5ZZ-00086k-Ab
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:41 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZK0ZT-0007id-75
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 08:49:12 +0000
-Date: Tue, 28 Jul 2015 10:49:00 +0200
-From: Jan Kara <jack@suse.cz>
-Message-ID: <20150728084900.GC24030@quack.suse.cz>
-References: <1438016307-28805-1-git-send-email-jack@suse.com>
-	<2134014586.1093682.1438066065045.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <2134014586.1093682.1438066065045.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] inotify: Add test for inotify mark destruction
-	race
+	(Exim 4.76) id 1ZD5ZX-0004Yx-5j
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:41 +0000
+Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t696iWaq019619
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:33 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t696iWOm022322
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:32 GMT
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696iV2f009293
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:32 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu,  9 Jul 2015 09:47:25 +0300
+Message-Id: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 00/23] Add vlan, ipvlan, gre, macvlan interfaces
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,207 +33,86 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jan Kara <jack@suse.com>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On Tue 28-07-15 02:47:45, Jan Stancek wrote:
-> ----- Original Message -----
-> > From: "Jan Kara" <jack@suse.com>
-> > To: ltp-list@lists.sourceforge.net
-> > Cc: "Jan Kara" <jack@suse.com>
-> > Sent: Monday, 27 July, 2015 6:58:27 PM
-> > Subject: [LTP] [PATCH] inotify: Add test for inotify mark destruction race
-> > 
-> > Kernels prior to 4.2 have a race when inode is being deleted while
-> 
-> Hi,
-> 
-> Do you also have the commit id(s) that fix the problem? That might be valuable
-> information for people who find their kernel crashing.
+Most interfaces share the same ip command syntax and the same test
+scenarious can be applied to them. So rename vxlan directory to more
+general 'virt' directory and add those interfaces to it.
 
-Currently the fix is in mm tree for a couple of days and I expect Andrew to
-send it to Linus this week (and it will also propagate to -stable kernels
-after that). So after that I can provide the commit ID.
+Alexey Kodanev (23):
+  network/vxlan: make names more abstract, use 'virt'
+  network/vxlan: rename vxlan dir and library to 'virt'
+  network/virt_lib.sh: add virt_add() and virt_add_rhost()
+  network/virt_lib.sh: use ROD_SILENT in cleanup
+  network/virt_lib.sh: fix regexpr in cleanup
+  network/virt/vlan01: add new test-case
+  network/virt/vlan02: add new test-case
+  network/virt: rename virt_max to virt_count
+  network/virt/vlan03: add new test-case
+  network/virt/vlan01.sh: add protocol, loose_binding and hdr options
+  network/virt/vlan03.sh: add protocol, loose_binding and hdr options
+  network/virt: add new macvlan01 test
+  network/virt: add new ipvlan01 test
+  network/virt/vxlan01.sh: add parameters
+  network/virt/vxlan03.sh: add VXLAN-GBP (group policy context) test
+  network/virt: add macvtap01 test
+  network/virt: add test-case 01 to virt_lib.sh
+  network/virt: move checking for command support to virt_lib.sh
+  network/virt: add test-case 02 to virt_lib.sh
+  network/virt/vxlan03.sh: fix vxlan_compare_netperf()
+  network/virt: add gre tunnel test
+  network/virt: adjust virt_threshold parameter
+  network/virt: don't skip when feature options not supported
 
-								Honza
-> 
-> Regards,
-> Jan
-> 
-> > inotify group watching that inode is being torn down. When the race is
-> > hit, the kernel crashes or loops. Test for that race.
-> > 
-> > Signed-off-by: Jan Kara <jack@suse.com>
-> > ---
-> >  runtest/syscalls                              |   1 +
-> >  testcases/kernel/syscalls/inotify/inotify06.c | 121
-> >  ++++++++++++++++++++++++++
-> >  2 files changed, 122 insertions(+)
-> >  create mode 100644 testcases/kernel/syscalls/inotify/inotify06.c
-> > 
-> > This tests for a kernel bug which causes a crash when triggered. I'm not sure
-> > how (whether) tests like this should be integrated with LTP. So here is my
-> > attempt at that.
-> > 
-> > diff --git a/runtest/syscalls b/runtest/syscalls
-> > index 70d4945706ea..c532fe307df9 100644
-> > --- a/runtest/syscalls
-> > +++ b/runtest/syscalls
-> > @@ -449,6 +449,7 @@ inotify02 inotify02
-> >  inotify03 inotify03
-> >  inotify04 inotify04
-> >  inotify05 inotify05
-> > +inotify06 inotify06
-> >  
-> >  fanotify01 fanotify01
-> >  fanotify02 fanotify02
-> > diff --git a/testcases/kernel/syscalls/inotify/inotify06.c
-> > b/testcases/kernel/syscalls/inotify/inotify06.c
-> > new file mode 100644
-> > index 000000000000..d5e14cb7e08d
-> > --- /dev/null
-> > +++ b/testcases/kernel/syscalls/inotify/inotify06.c
-> > @@ -0,0 +1,121 @@
-> > +#include "config.h"
-> > +
-> > +#include <stdio.h>
-> > +#include <unistd.h>
-> > +#include <stdlib.h>
-> > +#include <fcntl.h>
-> > +#include <time.h>
-> > +#include <signal.h>
-> > +#include <sys/inotify.h>
-> > +#include <sys/time.h>
-> > +#include <sys/wait.h>
-> > +#include <sys/syscall.h>
-> > +
-> > +#include "test.h"
-> > +#include "linux_syscall_numbers.h"
-> > +#include "inotify.h"
-> > +#include "safe_macros.h"
-> > +
-> > +char *TCID = "inotify06";
-> > +int TST_TOTAL = 1;
-> > +
-> > +#if defined(HAVE_SYS_INOTIFY_H)
-> > +#include <sys/inotify.h>
-> > +
-> > +/* Number of seconds to run the test for */
-> > +#define DURATION 10
-> > +/* Number of files to test (must be > 1) */
-> > +#define FILES 5
-> > +
-> > +char names[FILES][PATH_MAX];
-> > +
-> > +static void cleanup(void)
-> > +{
-> > +	tst_rmdir();
-> > +}
-> > +
-> > +static void setup(void)
-> > +{
-> > +	int i;
-> > +
-> > +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> > +
-> > +	TEST_PAUSE;
-> > +
-> > +	tst_tmpdir();
-> > +
-> > +	for (i = 0; i < FILES; i++)
-> > +		sprintf(names[i], "fname_%d", i);
-> > +}
-> > +
-> > +int main(int ac, char **av)
-> > +{
-> > +	int inotify_fd, fd;
-> > +	pid_t pid;
-> > +	time_t start;
-> > +	int i, lc;
-> > +
-> > +	tst_parse_opts(ac, av, NULL, NULL);
-> > +
-> > +	setup();
-> > +
-> > +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> > +		pid = fork();
-> > +		if (pid == 0) {
-> > +			while (1) {
-> > +				for (i = 0; i < FILES; i++) {
-> > +					fd = SAFE_OPEN(cleanup, names[i],
-> > +						       O_CREAT | O_RDWR, 0600);
-> > +					SAFE_CLOSE(cleanup, fd);
-> > +				}
-> > +				for (i = 0; i < FILES; i++)
-> > +					SAFE_UNLINK(cleanup, names[i]);
-> > +			}
-> > +		} else if (pid == -1)
-> > +			tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
-> > +
-> > +		start = time(NULL);
-> > +		while (time(NULL) - start < DURATION) {
-> > +			inotify_fd = syscall(__NR_inotify_init1, O_NONBLOCK);
-> > +			if (inotify_fd < 0) {
-> > +				if (errno == ENOSYS) {
-> > +					tst_brkm(TCONF, cleanup,
-> > +					 	 "inotify is not configured in this "
-> > +						 "kernel.");
-> > +				} else {
-> > +					tst_brkm(TBROK | TERRNO, cleanup,
-> > +						 "inotify_init failed");
-> > +				}
-> > +			}
-> > +			for (i = 0; i < FILES; i++) {
-> > +				/*
-> > +				 * Both failure and success are fine since
-> > +				 * files are being deleted in parallel - this
-> > +				 * is what provokes the race we want to test
-> > +				 * for...
-> > +				 */
-> > +				myinotify_add_watch(inotify_fd, names[i],
-> > +						    IN_MODIFY);
-> > +			}
-> > +			SAFE_CLOSE(cleanup, inotify_fd);
-> > +		}
-> > +		/* We survived for given time - test succeeded */
-> > +		tst_resm(TPASS, "kernel survived inotify beating");
-> > +
-> > +		/* Kill the child creating / deleting files and wait for it */
-> > +		kill(pid, SIGKILL);
-> > +		wait(NULL);
-> > +	}
-> > +
-> > +	cleanup();
-> > +	tst_exit();
-> > +}
-> > +
-> > +#else
-> > +
-> > +int main(void)
-> > +{
-> > +	tst_brkm(TCONF, NULL, "system doesn't have required inotify support");
-> > +}
-> > +
-> > +#endif
-> > --
-> > 2.1.4
-> > 
-> > 
-> > ------------------------------------------------------------------------------
-> > _______________________________________________
-> > Ltp-list mailing list
-> > Ltp-list@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> > 
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ runtest/network_stress.features      |   12 ++
+ testcases/network/virt/Makefile      |   33 +++
+ testcases/network/virt/gre01.sh      |   63 ++++++
+ testcases/network/virt/ipvlan01.sh   |   34 ++++
+ testcases/network/virt/macvlan01.sh  |   34 ++++
+ testcases/network/virt/macvtap01.sh  |   34 ++++
+ testcases/network/virt/virt_lib.sh   |  363 ++++++++++++++++++++++++++++++++++
+ testcases/network/virt/vlan01.sh     |   42 ++++
+ testcases/network/virt/vlan02.sh     |   34 ++++
+ testcases/network/virt/vlan03.sh     |   87 ++++++++
+ testcases/network/virt/vxlan01.sh    |   36 ++++
+ testcases/network/virt/vxlan02.sh    |   37 ++++
+ testcases/network/virt/vxlan03.sh    |   95 +++++++++
+ testcases/network/vxlan/Makefile     |   26 ---
+ testcases/network/vxlan/vxlan01.sh   |   47 -----
+ testcases/network/vxlan/vxlan02.sh   |   40 ----
+ testcases/network/vxlan/vxlan03.sh   |   72 -------
+ testcases/network/vxlan/vxlan_lib.sh |  210 --------------------
+ 18 files changed, 904 insertions(+), 395 deletions(-)
+ create mode 100644 testcases/network/virt/Makefile
+ create mode 100755 testcases/network/virt/gre01.sh
+ create mode 100755 testcases/network/virt/ipvlan01.sh
+ create mode 100755 testcases/network/virt/macvlan01.sh
+ create mode 100755 testcases/network/virt/macvtap01.sh
+ create mode 100644 testcases/network/virt/virt_lib.sh
+ create mode 100755 testcases/network/virt/vlan01.sh
+ create mode 100755 testcases/network/virt/vlan02.sh
+ create mode 100755 testcases/network/virt/vlan03.sh
+ create mode 100755 testcases/network/virt/vxlan01.sh
+ create mode 100755 testcases/network/virt/vxlan02.sh
+ create mode 100755 testcases/network/virt/vxlan03.sh
+ delete mode 100644 testcases/network/vxlan/Makefile
+ delete mode 100755 testcases/network/vxlan/vxlan01.sh
+ delete mode 100755 testcases/network/vxlan/vxlan02.sh
+ delete mode 100755 testcases/network/vxlan/vxlan03.sh
+ delete mode 100644 testcases/network/vxlan/vxlan_lib.sh
+
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
