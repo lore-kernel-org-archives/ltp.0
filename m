@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZK3Mw-0002zr-Bh
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 11:48:26 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZK3Mu-0008Gb-JM
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 11:48:26 +0000
-Date: Tue, 28 Jul 2015 07:48:12 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1067793714.1280389.1438084092950.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1436952165-23665-1-git-send-email-sunyuan3@huawei.com>
-References: <1436952165-23665-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZD29K-0003wk-MG
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:22 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZD29I-0001bT-9L
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:22 +0000
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 9 Jul 2015 11:05:20 +0800
+Message-ID: <1436411125-8012-6-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <55842886.4090202@oracle.com>
+	<1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] containers: new testcase userns05
+Subject: [LTP] [PATCH v4 06/11] lib6/asapi_04.c: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,267 +28,538 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
+To: alexey.kodanev@oracle.com
 Cc: ltp-list@lists.sourceforge.net
 
+* Add 'static' before some functions and global variables.
+* Remove useless comments.
+* Use SAFE_XXX().
+* Modify the format of ptab[] and cstab[].
+* Rewrite 'csum_test()' and 'isocketpair()'.
+* Use 'tst_tmpdir' and 'tst_rmdir'.
+* Some cleanup.
 
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/network/lib6/asapi_04.c | 287 ++++++++++++++++----------------------
+ 1 file changed, 122 insertions(+), 165 deletions(-)
 
+diff --git a/testcases/network/lib6/asapi_04.c b/testcases/network/lib6/asapi_04.c
+index 76de26b..76e8f8e 100644
+--- a/testcases/network/lib6/asapi_04.c
++++ b/testcases/network/lib6/asapi_04.c
+@@ -1,38 +1,21 @@
+ /*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * Test Name: asapi_04
+- *
+- * Test Description:
+- *  Verify that in6 and sockaddr fields are present. Most of these are
+- *  "PASS" if they just compile.
+- *
+- * Usage:  <for command-line>
+- *  asapi_04
+- *
+- * HISTORY
+- *	04/2005 written by David L Stevens
+- *
+- * RESTRICTIONS:
+- *  None.
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  *
++ * Author: David L Stevens
+  */
+ 
+ #include <stdio.h>
+@@ -48,33 +31,35 @@
+ #include <netinet/in.h>
+ 
+ #include "test.h"
++#include "safe_macros.h"
+ 
+-char *TCID = "asapi_04";	/* Test program identifier.    */
++char *TCID = "asapi_04";
+ 
+-pid_t pid;
++static pid_t pid;
+ 
+-struct {
++static struct {
+ 	char *prt_name;
+ 	int prt_value;
+ } ptab[] = {
+-	{
+-	"hopopt", 0}, {
+-	"ipv6", 41}, {
+-	"ipv6-route", 43}, {
+-	"ipv6-frag", 44}, {
+-	"esp", 50}, {
+-	"ah", 51}, {
+-	"ipv6-icmp", 58}, {
+-	"ipv6-nonxt", 59}, {
+-"ipv6-opts", 60},};
+-
+-#define PTCOUNT	(sizeof(ptab)/sizeof(ptab[0]))
++	{"hopopt", 0},
++	{"ipv6", 41},
++	{"ipv6-route", 43},
++	{"ipv6-frag", 44},
++	{"esp", 50},
++	{"ah", 51},
++	{"ipv6-icmp", 58},
++	{"ipv6-nonxt", 59},
++	{"ipv6-opts", 60},
++};
++
++#define PTCOUNT	ARRAY_SIZE(ptab)
+ 
+ #define READ_TIMEOUT	5	/* secs */
+ 
+-void do_tests(void);
+-void setup(void), cleanup(void);
+-int csum_test(char *rhost);
++static void do_tests(void);
++static void setup(void);
++static void cleanup(void);
++static int csum_test(void);
+ 
+ int main(int argc, char *argv[])
+ {
+@@ -90,44 +75,41 @@ int main(int argc, char *argv[])
+ 		do_tests();
+ 
+ 	cleanup();
+-
+ 	tst_exit();
+ }
+ 
+-void do_tests(void)
++static void do_tests(void)
+ {
+-	int i;
++	unsigned int i;
+ 
+ /* RFC 3542, Section 2.3 */
+ #ifndef IN6_ARE_ADDR_EQUAL
+-	tst_resm(TBROK, "IN6_ARE_ADDR_EQUAL not present");
++	tst_resm(TCONF, "IN6_ARE_ADDR_EQUAL not present");
+ #else /* IN6_ARE_ADDR_EQUAL */
+ 	/*
+ 	 * set each bit in an address and check for unequal; then set
+ 	 * in the second address and check for equal. Covers all bits, all
+ 	 * combinations.
+ 	 */
+-	{
+-		struct in6_addr a1, a2;
+-		int word, bit;
+-		int rv = 1;
++	struct in6_addr a1, a2;
++	int word, bit;
++	int rv = 1;
+ 
+-		memset(&a1, 0, sizeof(a1));
+-		memset(&a2, 0, sizeof(a2));
++	memset(&a1, 0, sizeof(a1));
++	memset(&a2, 0, sizeof(a2));
+ 
+-		rv = IN6_ARE_ADDR_EQUAL(&a1, &a2);
++	rv = IN6_ARE_ADDR_EQUAL(&a1, &a2);
+ 
+-		for (word = 0; word < 4; ++word)
+-			for (bit = 0; bit < 32; ++bit) {
+-				uint32_t newbit = 1 << bit;
++	for (word = 0; word < 4; ++word)
++		for (bit = 0; bit < 32; ++bit) {
++			uint32_t newbit = 1U << bit;
+ 
+-				a1.s6_addr32[word] |= newbit;	/* unequal */
+-				rv &= !IN6_ARE_ADDR_EQUAL(&a1, &a2);
+-				a2.s6_addr32[word] |= newbit;	/* equal */
+-				rv &= IN6_ARE_ADDR_EQUAL(&a1, &a2);
+-			}
+-		tst_resm(rv ? TPASS : TFAIL, "IN6_ARE_ADDR_EQUAL");
+-	}
++			a1.s6_addr32[word] |= newbit;	/* unequal */
++			rv &= !IN6_ARE_ADDR_EQUAL(&a1, &a2);
++			a2.s6_addr32[word] |= newbit;	/* equal */
++			rv &= IN6_ARE_ADDR_EQUAL(&a1, &a2);
++		}
++	tst_resm(rv ? TPASS : TFAIL, "IN6_ARE_ADDR_EQUAL");
+ #endif /* IN6_ARE_ADDR_EQUAL */
+ 
+ /* RFC 3542, Section 2.4 */
+@@ -141,7 +123,7 @@ void do_tests(void)
+ 			 ptab[i].prt_name);
+ 	}
+ /* RFC 3542, Section 3.1 */
+-	csum_test("::1");
++	csum_test();
+ }
+ 
+ /*
+@@ -162,10 +144,10 @@ struct tprot {
+ 	unsigned char tp_dat[0];	/* user data */
+ };
+ 
+-unsigned char tpbuf[sizeof(struct tprot) + 2048];
+-unsigned char rpbuf[sizeof(struct tprot) + 2048];
++static unsigned char tpbuf[sizeof(struct tprot) + 2048];
++static unsigned char rpbuf[sizeof(struct tprot) + 2048];
+ 
+-struct csent {
++static struct csent {
+ 	int cs_offset;
+ 	int cs_dlen;
+ 	int cs_setresult;	/* setsockopt expected result */
+@@ -173,25 +155,24 @@ struct csent {
+ 	int cs_sndresult;	/* send expected result */
+ 	int cs_snderrno;	/* send expected errno */
+ } cstab[] = {
+-	{
+-	0, 5, 0, 0, 0, 0}, {
+-	6, 30, 0, 0, 0, 0}, {
+-	3, 20, -1, EINVAL, -1, -1},	/* non-aligned offset */
+-	{
+-	4, 5, 0, 0, -1, EINVAL},	/* not enough space */
+-	{
+-	50, 5, 0, 0, -1, EINVAL},	/* outside of packet */
+-	{
+-	22, 30, 0, 0, 0, 0}, {
+-	2000, 2004, 0, 0, 0, 0},	/* in a fragment (over Ethernet) */
++	{0, 5, 0, 0, 0, 0},
++	{6, 30, 0, 0, 0, 0},
++	{3, 20, -1, EINVAL, -1, -1},	/* non-aligned offset */
++	{4, 5, 0, 0, -1, EINVAL},	/* not enough space */
++	{50, 5, 0, 0, -1, EINVAL},	/* outside of packet */
++	{22, 30, 0, 0, 0, 0},
++	{2000, 2004, 0, 0, 0, 0},	/* in a fragment (over Ethernet) */
+ };
+ 
+-#define CSCOUNT	(sizeof(cstab)/sizeof(cstab[0]))
++#define CSCOUNT	ARRAY_SIZE(cstab)
++
++int TST_TOTAL = PTCOUNT + CSCOUNT;
+ 
+-static int recvtprot(int sd, unsigned char *packet, int psize)
++static int recvtprot(int sd, unsigned char *packet)
+ {
+ 	struct tprot *tpt;
+-	int cc, total, expected;
++	int cc;
++	unsigned int total, expected;
+ 	int gothead;
+ 
+ 	tpt = (struct tprot *)packet;
+@@ -218,7 +199,8 @@ static int recvtprot(int sd, unsigned char *packet, int psize)
+ 	return total;
+ }
+ 
+-unsigned short csum(unsigned short partial, unsigned char *packet, int len)
++static unsigned short csum(unsigned short partial, unsigned char *packet,
++			   int len)
+ {
+ 	unsigned long sum = partial;
+ 	unsigned short *ps;
+@@ -234,7 +216,7 @@ unsigned short csum(unsigned short partial, unsigned char *packet, int len)
+ 	return ~sum;
+ }
+ 
+-struct ph {
++static struct ph {
+ 	struct in6_addr ph_sa;
+ 	struct in6_addr ph_da;
+ 	uint32_t ph_len;
+@@ -242,13 +224,14 @@ struct ph {
+ 	uint8_t ph_nh;
+ } ph;
+ 
+-static int client(int prot, int sfd)
++static int client(int sfd)
+ {
+ 	struct tprot *pttp = (struct tprot *)tpbuf;
+ 	struct tprot *prtp = (struct tprot *)rpbuf;
+ 	struct sockaddr_in6 rsin6;
+ 	static int seq;
+-	int i, sd, cc, cs;
++	unsigned int i;
++	int sd, cc, cs;
+ 
+ 	memset(&rsin6, 0, sizeof(rsin6));
+ 	rsin6.sin6_family = AF_INET6;
+@@ -259,11 +242,8 @@ static int client(int prot, int sfd)
+ 	ph.ph_da = rsin6.sin6_addr;
+ 	ph.ph_nh = NH_TEST;
+ 
+-	sd = socket(PF_INET6, SOCK_RAW, NH_TEST);
+-	if (sd < 0) {
+-		tst_resm(TBROK, "can't create raw socket: %s", strerror(errno));
+-		return -1;
+-	}
++	sd = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, NH_TEST);
++
+ 	for (i = 0; i < CSCOUNT; ++i) {
+ 		int offset, len, xlen;
+ 		int rv;
+@@ -289,17 +269,20 @@ static int client(int prot, int sfd)
+ 				 cstab[i].cs_setresult);
+ 			continue;
+ 		}
++
+ 		if (TEST_RETURN < 0) {
+ 			tst_resm(TPASS, "IPV6_CHECKSUM offset %d len %d",
+ 				 offset, len);
+ 			continue;
+ 		}
++
+ 		if (TEST_RETURN && TEST_ERRNO != cstab[i].cs_seterrno) {
+ 			tst_resm(TFAIL, "IPV6_CHECKSUM offset %d len %d "
+ 				 "- errno %d != %d", offset, len,
+ 				 TEST_ERRNO, cstab[i].cs_seterrno);
+ 			continue;
+ 		}
++
+ 		/* send packet */
+ 		TEST(sendto(sd, pttp, len, 0, (struct sockaddr *)&rsin6,
+ 			    sizeof(rsin6)));
+@@ -311,20 +294,23 @@ static int client(int prot, int sfd)
+ 				 TEST_RETURN, xlen);
+ 			continue;
+ 		}
++
+ 		if (TEST_RETURN < 0 && TEST_ERRNO != cstab[i].cs_snderrno) {
+ 			tst_resm(TFAIL, "IPV6_CHECKSUM offset %d len %d "
+ 				 "- snderrno %d != %d", offset, len,
+ 				 TEST_ERRNO, cstab[i].cs_snderrno);
+ 			continue;
+ 		}
++
+ 		if (TEST_RETURN < 0) {
+ 			tst_resm(TPASS, "IPV6_CHECKSUM offset %d len %d",
+ 				 offset, len);
+ 			continue;
+ 		}
+-		while ((cc = recvtprot(sfd, rpbuf, sizeof(rpbuf)))) {
+-			if (htonl(prtp->tp_pid) == pid &&
+-			    htonl(prtp->tp_seq) == seq)
++
++		while ((cc = recvtprot(sfd, rpbuf))) {
++			if (htonl(prtp->tp_pid) == (uint32_t)pid &&
++			    htonl(prtp->tp_seq) == (uint32_t)seq)
+ 				break;
+ 		}
+ 		rv = 1;
+@@ -334,7 +320,7 @@ static int client(int prot, int sfd)
+ 				continue;
+ 			if (*p != 0xa5) {
+ 				tst_resm(TFAIL, "IPV6_CHECKSUM corrupt data "
+-					 "0x%02x != 0xa5 at offset %d in packet",
++					 "0x%02x != 0xa5 at offset %zd in packet",
+ 					 *p, p - rpbuf);
+ 				rv = 0;
+ 				break;
+@@ -358,7 +344,7 @@ static int client(int prot, int sfd)
+ static int listen_fd, connect_fd;
+ sem_t ilsem;
+ 
+-void *ilistener(void *arg)
++static void *ilistener(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+ 	connect_fd = accept(listen_fd, 0, 0);
+ 	close(listen_fd);
+@@ -366,7 +352,7 @@ void *ilistener(void *arg)
+ 	return NULL;
+ }
+ 
+-int isocketpair(int pf, int type, int proto, int fd[2])
++static void isocketpair(int pf, int type, int proto, int fd[2])
+ {
+ 	pthread_t thid;
+ 	struct sockaddr_in sin4;
+@@ -375,80 +361,51 @@ int isocketpair(int pf, int type, int proto, int fd[2])
+ /* restrict to PF_INET for now */
+ 	if (pf != PF_INET) {
+ 		errno = EOPNOTSUPP;
+-		return -1;
++		return;
+ 	}
++
+ 	sem_init(&ilsem, 0, 0);
+-	listen_fd = socket(pf, type, proto);
+-	if (listen_fd < 0) {
+-		perror("socket");
+-		return -1;
+-	}
++
++	listen_fd = SAFE_SOCKET(NULL, pf, type, proto);
++
+ 	memset(&sin4, 0, sizeof(sin4));
+-	if (bind(listen_fd, (struct sockaddr *)&sin4, sizeof(sin4)) < 0) {
+-		perror("bind");
+-		return -1;
+-	}
+-	if (listen(listen_fd, 10) < 0) {
+-		perror("listen");
+-		return -1;
+-	}
++
++	SAFE_BIND(NULL, listen_fd, (struct sockaddr *)&sin4, sizeof(sin4));
++
++	SAFE_LISTEN(NULL, listen_fd, 10);
++
+ 	namelen = sizeof(sin4);
+-	if (getsockname(listen_fd, (struct sockaddr *)&sin4, &namelen) < 0) {
+-		perror("getsockname");
+-		return -1;
+-	}
+-	if (pthread_create(&thid, 0, ilistener, 0) < 0) {
+-		perror("pthread_create");
+-		return -1;
+-	}
++	SAFE_GETSOCKNAME(NULL, listen_fd, (struct sockaddr *)&sin4, &namelen);
++
++	if (pthread_create(&thid, 0, ilistener, 0) < 0)
++		tst_brkm(TBROK | TERRNO, NULL, "pthread_create error");
++
++	fd[0] = SAFE_SOCKET(NULL, pf, type, proto);
+ 
+-	fd[0] = socket(pf, type, proto);
+-	if (fd[0] < 0) {
+-		perror("socket");
+-		return -1;
+-	}
+ 	sin4.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+-	if (connect(fd[0], (struct sockaddr *)&sin4, sizeof(sin4)) < 0) {
+-		perror("connect");
+-		return -1;
+-	}
++
++	SAFE_CONNECT(NULL, fd[0], (struct sockaddr *)&sin4, sizeof(sin4));
++
+ 	sem_wait(&ilsem);
+ 	fd[1] = connect_fd;
+ 	sem_destroy(&ilsem);
+-	return 0;
+ }
+ 
+ #ifndef MAX
+ #define MAX(a, b) ((a) >= (b) ? (a) : (b))
+ #endif /* MAX */
+ 
+-int csum_test(char *rhost)
++static int csum_test(void)
+ {
+ 	fd_set rset, rset_save;
+ 	int csd[2];		/* control sockets */
+ 	int sd, nfds, maxfd, cc;
+ 	struct timeval tv;
+ 
+-/* rhost == loopback, for now */
+-	if (strcmp(rhost, "::1")) {
+-		tst_resm(TBROK, "invalid rhost \"%s\"", rhost);
+-		return -1;
+-	}
+-	if (isocketpair(PF_INET, SOCK_STREAM, 0, csd) < 0) {
+-		tst_resm(TBROK, "socketpair: %s", strerror(errno));
+-		return -1;
+-	}
+-	sd = socket(PF_INET6, SOCK_RAW, NH_TEST);
+-	if (sd < 0) {
+-		int saved_errno = errno;
+-
+-		if (errno == EPERM && geteuid())
+-			tst_resm(TBROK, "IPV6_CHECKSUM tests must run as root");
+-		else
+-			tst_resm(TBROK, "All IPv6_CHECKSUM tests broken: "
+-				 "socket: %s", strerror(saved_errno));
+-		return -1;
+-	}
++	isocketpair(PF_INET, SOCK_STREAM, 0, csd);
++
++	sd = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, NH_TEST);
++
+ 	FD_ZERO(&rset_save);
+ 	FD_SET(sd, &rset_save);
+ 	FD_SET(csd[1], &rset_save);
+@@ -457,16 +414,15 @@ int csum_test(char *rhost)
+ 
+ 	/* server socket set; now start the client */
+ 	switch (fork()) {
+-	case 0:		/* child */
++	case 0:
+ 		close(csd[0]);
+ 		break;
+ 	case -1:
+-		tst_resm(TBROK, "can't fork rserver");
+-		return -1;
+-	default:		/* parent */
++		tst_brkm(TBROK, NULL, "can't fork rserver");
++	default:
+ 		close(sd);
+ 		close(csd[1]);
+-		return client(pid, csd[0]);
++		return client(csd[0]);
+ 	}
+ 
+ 	tv.tv_sec = READ_TIMEOUT;
+@@ -515,13 +471,14 @@ int csum_test(char *rhost)
+ 	return 0;
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
+-	TEST_PAUSE;		/* if -P option specified */
++	TEST_PAUSE;
++
++	tst_tmpdir();
+ }
+ 
+-void cleanup(void)
++static void cleanup(void)
+ {
++	tst_rmdir();
+ }
+-
+-int TST_TOTAL = PTCOUNT + CSCOUNT;
+-- 
+1.9.3
 
-
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 15 July, 2015 11:22:45 AM
-> Subject: [PATCH] containers: new testcase userns05
-> 
-> A process created via fork(2) or clone(2) without the CLONE_NEWUSER
-> flag is a member of the same user namespace as its parent.
->   When unshare an user namespace, the calling process is moved into a
-> new user namespace which is not shared with any previously existing
-> process.
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-
-Hi,
-
-> ---
->  runtest/containers                            |   1 +
->  testcases/kernel/containers/.gitignore        |   1 +
->  testcases/kernel/containers/userns/userns05.c | 167
->  ++++++++++++++++++++++++++
->  3 files changed, 169 insertions(+)
->  create mode 100644 testcases/kernel/containers/userns/userns05.c
-> 
-> diff --git a/runtest/containers b/runtest/containers
-> index de4197e..cece80b 100644
-> --- a/runtest/containers
-> +++ b/runtest/containers
-> @@ -72,3 +72,4 @@ userns01 userns01
->  userns02 userns02
->  userns03 userns03
->  userns04 userns04
-> +userns05 userns05
-> diff --git a/testcases/kernel/containers/.gitignore
-> b/testcases/kernel/containers/.gitignore
-> index 85ced78..b433b03 100644
-> --- a/testcases/kernel/containers/.gitignore
-> +++ b/testcases/kernel/containers/.gitignore
-> @@ -7,3 +7,4 @@ userns/userns01
->  userns/userns02
->  userns/userns03
->  userns/userns04
-> +userns/userns05
-> diff --git a/testcases/kernel/containers/userns/userns05.c
-> b/testcases/kernel/containers/userns/userns05.c
-> new file mode 100644
-> index 0000000..8d25c56
-> --- /dev/null
-> +++ b/testcases/kernel/containers/userns/userns05.c
-> @@ -0,0 +1,167 @@
-> +/*
-> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * Verify that:
-> + * A process created via fork(2) or clone(2) without the
-> + * CLONE_NEWUSER flag is a member of the same user namespace as its
-> + * parent.
-> + * When unshare an user namespace, the calling process is moved into
-> + * a new user namespace which is not shared with any previously
-> + * existing process.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <assert.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "userns_helper.h"
-> +
-> +char *TCID = "user_namespace5";
-> +int TST_TOTAL = 1;
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +/*
-> + * child_fn1() - Inside a new user namespace
-> + */
-> +static int child_fn1(void)
-> +{
-> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-> +	return 0;
-> +}
-> +
-> +static int wait4child(pid_t pid, const char *msg)
-> +{
-> +	int status;
-> +
-> +	if (waitpid(pid, &status, 0) == -1) {
-> +		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-> +	} else if (WIFSIGNALED(status)) {
-> +		tst_resm(TFAIL, "%s: child was killed with signal = %d",
-> +			msg, WTERMSIG(status));
-> +		return WTERMSIG(status);
-> +	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-> +		tst_resm(TFAIL, "%s: child returns %d", msg, status);
-> +		return WEXITSTATUS(status);
-> +	}
-> +
-> +	return 0;
-> +}
-
-As already pointed out by Cyril, we have "tst_record_childstatus()" in lib,
-please use that.
-
-> +
-> +static long getusernsidbypid(int pid)
-> +{
-> +	char path[BUFSIZ];
-> +	char userid[BUFSIZ];
-> +	long id;
-
-I'd recommend to initialize 'id', in case readlink/sscanf fails
-to set the value.
-
-> +
-> +	sprintf(path, "/proc/%d/ns/user", pid);
-> +
-> +	if (readlink(path, userid, BUFSIZ) == -1)
-> +		tst_resm(TFAIL, "readlink failure.");
-> +
-> +	if (sscanf(userid, "user:[%ld]", &id) != 1)
-> +		tst_resm(TFAIL, "sscanf failure.");
-
-Please add "| TERRNO" above, in case it fails it would be
-good to know why.
-
-> +	return id;
-> +}
-> +
-> +static void test_userns_id(void)
-> +{
-> +	int status;
-
-status is no longer needed
-
-> +	int cpid1, cpid2, cpid3;
-> +	long parentuserns, cpid1userns, cpid2userns, newparentuserns;
-> +
-> +	parentuserns = getusernsidbypid(getpid());
-> +	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1,
-> +		NULL);
-> +	if (cpid1 < 0)
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-
-TBROK | TERRNO
-
-> +	cpid1userns = getusernsidbypid(cpid1);
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-> +
-> +	/* A process created via fork(2) or clone(2) without the
-> +	CLONE_NEWUSER flag is a member of the same user namespace as its
-> +	parent.*/
-> +	if (parentuserns != cpid1userns)
-> +		tst_resm(TFAIL, "userns:parent should be equal to cpid1");
-> +
-> +	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> +		(void *)child_fn1, NULL);
-> +	if (cpid2 < 0)
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-
-TBROK | TERRNO
-
-> +	cpid2userns = getusernsidbypid(cpid2);
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-> +
-> +	if (parentuserns == cpid2userns)
-> +		tst_resm(TFAIL, "userns:parent should be not equal to cpid2");
-> +
-> +	switch (cpid3 = fork()) {
-> +	case -1:
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-> +	case 0:
-> +		if (unshare(CLONE_NEWUSER) == -1) {
-> +			printf("parent pid unshare failure: (%d) %s",
-> +				errno, strerror(errno));
-> +			exit(1);
-> +		}
-> +		newparentuserns = getusernsidbypid(getpid());
-> +
-> +		/* When unshare an user namespace, the calling process
-> +		is moved into a new user namespace which is not shared
-> +		with any previously existing process.*/
-> +		if (parentuserns == newparentuserns)
-> +			exit(1);
-> +		exit(0);
-> +	}
-> +
-> +	status = 0;
-> +	status |= wait4child(cpid1, "child1");
-> +	status |= wait4child(cpid2, "child2");
-> +	status |= wait4child(cpid3, "child3");
-> +	if (status == 0)
-> +		tst_resm(TPASS, "The usernsid function works well.");
-> +	else
-> +		tst_resm(TFAIL, "Some children reported failure.");
-
-As mentioned above, please replace wait4child with tst_record_childstatus:
-      tst_record_childstatus(cleanup, cpid1);
-      tst_record_childstatus(cleanup, cpid2);
-      tst_record_childstatus(cleanup, cpid3);
-
-Regards,
-Jan
-
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	check_newuser();
-> +
-> +	tst_tmpdir();
-> +	TST_CHECKPOINT_INIT(NULL);
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +
-> +	tst_parse_opts(argc, argv, NULL, NULL);
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +		test_userns_id();
-> +	}
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> --
-> 1.9.1
-> 
-> 
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
