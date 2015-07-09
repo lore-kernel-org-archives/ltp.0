@@ -1,20 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZAAWU-0003rO-T1
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:25:26 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZAAWR-0001VR-MO
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:25:26 +0000
-Message-ID: <559379A6.5040408@huawei.com>
-Date: Wed, 1 Jul 2015 13:24:54 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
-MIME-Version: 1.0
-References: <1435727815-9484-1-git-send-email-sunyuan3@huawei.com>
-In-Reply-To: <1435727815-9484-1-git-send-email-sunyuan3@huawei.com>
-Subject: Re: [LTP] [PATCH] filecaps: Remove unnecessary c.c file.
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zd-0002PE-Q1
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:45 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZD5Zc-0006uA-Tu
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:45 +0000
+Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t696icYK020204
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:39 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t696icFN018618
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:38 GMT
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696icaU005002
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:38 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu,  9 Jul 2015 09:47:28 +0300
+Message-Id: <1436424468-11756-4-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 03/23] network/virt_lib.sh: add virt_add() and
+	virt_add_rhost()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,77 +36,87 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-I forgot to modify .gitignore file. Please see V2.
-On 2015/7/1 13:16, Yuan Sun wrote:
-> The c.c file is the same as check_simple_capset.c except config.h
-> is included in check_simple_capset.c. Moreover, it is not correct
-> to use HAVE_SYS_CAPABILITY_H without including config.h.
->
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->   testcases/kernel/security/filecaps/c.c | 47 ----------------------------------
->   1 file changed, 47 deletions(-)
->   delete mode 100644 testcases/kernel/security/filecaps/c.c
->
-> diff --git a/testcases/kernel/security/filecaps/c.c b/testcases/kernel/security/filecaps/c.c
-> deleted file mode 100644
-> index 511e673..0000000
-> --- a/testcases/kernel/security/filecaps/c.c
-> +++ /dev/null
-> @@ -1,47 +0,0 @@
-> -/******************************************************************************/
-> -/*                                                                            */
-> -/* Copyright (c) International Business Machines  Corp., 2008                 */
-> -/*                                                                            */
-> -/* This program is free software;  you can redistribute it and/or modify      */
-> -/* it under the terms of the GNU General Public License as published by       */
-> -/* the Free Software Foundation; either version 2 of the License, or          */
-> -/* (at your option) any later version.                                        */
-> -/*                                                                            */
-> -/* This program is distributed in the hope that it will be useful,            */
-> -/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
-> -/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
-> -/* the GNU General Public License for more details.                           */
-> -/*                                                                            */
-> -/* You should have received a copy of the GNU General Public License          */
-> -/* along with this program;  if not, write to the Free Software               */
-> -/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
-> -/*                                                                            */
-> -/******************************************************************************/
-> -
-> -#include <stdio.h>
-> -#if HAVE_SYS_CAPABILITY_H
-> -#include <linux/types.h>
-> -#include <sys/capability.h>
-> -#endif
-> -
-> -int main(void)
-> -{
-> -
-> -#ifdef HAVE_LIBCAP
-> -	cap_t caps, caps2;
-> -	int ret;
-> -
-> -	caps = cap_from_text("cap_setpcap+ep");
-> -	caps2 = cap_from_text("cap_setpcap+ep");
-> -	ret = cap_set_proc(caps);
-> -	ret = cap_compare(caps, caps2);
-> -	printf("Caps were %sthe same\n", ret ? "not " : "");
-> -
-> -	cap_free(caps);
-> -	cap_free(caps2);
-> -	return ret;
-> -#else
-> -	printf("System doesn't support full POSIX capabilities.\n");
-> -	return 1;
-> -#endif
-> -}
+Adding different types of virtual interfaces is almost similar
+with ip command, although vxlan has a little bit differ syntax.
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/virt/virt_lib.sh |   34 +++++++++++++++++++++++++++++-----
+ 1 files changed, 29 insertions(+), 5 deletions(-)
+
+diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
+index d6ae77c..e8eedca 100644
+--- a/testcases/network/virt/virt_lib.sh
++++ b/testcases/network/virt/virt_lib.sh
+@@ -97,6 +97,31 @@ cleanup_vifaces()
+ TST_CLEANUP="cleanup_vifaces"
+ trap "tst_brkm TBROK 'test interrupted'" INT
+ 
++virt_add()
++{
++	case $virt_type in
++	vxlan)
++		ip li add ltp_v0 type $virt_type $@
++	;;
++	*)
++		ip li add link $(tst_iface) ltp_v0 type $virt_type $@
++	;;
++	esac
++}
++
++virt_add_rhost()
++{
++	case $virt_type in
++	vxlan)
++		tst_rhost_run -s -c "ip li add ltp_v0 type $virt_type $@"
++	;;
++	*)
++		tst_rhost_run -s -c "ip li add link $(tst_iface rhost) ltp_v0 \
++				     type $virt_type $@"
++	;;
++	esac
++}
++
+ virt_setup()
+ {
+ 	local opt="$1"
+@@ -104,14 +129,14 @@ virt_setup()
+ 
+ 	tst_resm TINFO "setup local ${virt_type} with '$opt'"
+ 
+-	ROD_SILENT "ip li add ltp_v0 type $virt_type $opt"
++	ROD_SILENT "virt_add $opt"
+ 	ROD_SILENT "ip li set ltp_v0 address $mac_virt_local"
+ 	ROD_SILENT "ip addr add ${ip_virt_local}/24 dev ltp_v0"
+ 	ROD_SILENT "ip li set up ltp_v0"
+ 
+ 	tst_resm TINFO "setup rhost ${virt_type} with '$opt_r'"
+ 
+-	tst_rhost_run -s -c "ip li add ltp_v0 type $virt_type $opt_r"
++	virt_add_rhost "$opt_r"
+ 	tst_rhost_run -s -c "ip li set ltp_v0 address $mac_virt_remote"
+ 	tst_rhost_run -s -c "ip addr add ${ip_virt_remote}/24 dev ltp_v0"
+ 	tst_rhost_run -s -c "ip li set up ltp_v0"
+@@ -204,8 +229,7 @@ ipver=${TST_IPV6:-'4'}
+ 
+ tst_check_cmds "ip"
+ 
+-ip link add ltp_v0 type $virt_type > /dev/null 2>&1
+-if [ $? -ne 0 ]; then
++virt_add || \
+ 	tst_brkm TCONF "iproute2 or kernel doesn't support $virt_type"
+-fi
++
+ ROD_SILENT "ip link delete ltp_v0"
+-- 
+1.7.1
 
 
 ------------------------------------------------------------------------------
