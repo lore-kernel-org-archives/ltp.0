@@ -1,22 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZDE4f-0008HG-9z
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 15:49:21 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZDE4c-0001hd-Ep
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 15:49:21 +0000
-Date: Thu, 9 Jul 2015 11:49:11 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1003432786.15130300.1436456951899.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20150709151457.GT17625@tarantula.localdomain>
-References: <20150708203358.GA24428@tarantula.localdomain>
-	<1538874773.14815420.1436428293231.JavaMail.zimbra@redhat.com>
-	<20150709151457.GT17625@tarantula.localdomain>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH v2] proc/proc01.c: ignore stable_secret files
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zv-00089z-C7
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:45:03 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZD5Zu-0006uq-8d
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:45:03 +0000
+Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t696iuLo020007
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:56 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t696iusv005192
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:56 GMT
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696itA6005127
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:55 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu,  9 Jul 2015 09:47:41 +0300
+Message-Id: <1436424468-11756-17-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 16/23] network/virt: add macvtap01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,83 +35,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jeffrey Bastian <jbastian@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
+It is almost a copy of macvlan01 test as it has the similar
+'ip' command interface.
 
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ runtest/network_stress.features     |    1 +
+ testcases/network/virt/Makefile     |    1 +
+ testcases/network/virt/macvtap01.sh |   51 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 53 insertions(+), 0 deletions(-)
+ create mode 100755 testcases/network/virt/macvtap01.sh
 
+diff --git a/runtest/network_stress.features b/runtest/network_stress.features
+index d2451ba..833258f 100644
+--- a/runtest/network_stress.features
++++ b/runtest/network_stress.features
+@@ -19,5 +19,6 @@ vlan02 vlan02.sh
+ vlan03 vlan03.sh
+ 
+ macvlan01 macvlan01.sh
++macvtap01 macvtap01.sh
+ 
+ ipvlan01 ipvlan01.sh
+diff --git a/testcases/network/virt/Makefile b/testcases/network/virt/Makefile
+index 170852d..5b7b847 100644
+--- a/testcases/network/virt/Makefile
++++ b/testcases/network/virt/Makefile
+@@ -20,6 +20,7 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+ INSTALL_TARGETS		:= ipvlan01.sh \
+ 			   macvlan01.sh \
++			   macvtap01.sh \
+ 			   virt_lib.sh \
+ 			   vlan01.sh \
+ 			   vlan02.sh \
+diff --git a/testcases/network/virt/macvtap01.sh b/testcases/network/virt/macvtap01.sh
+new file mode 100755
+index 0000000..8623080
+--- /dev/null
++++ b/testcases/network/virt/macvtap01.sh
+@@ -0,0 +1,51 @@
++#!/bin/sh
++# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++#
++# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++#
++# Test-case 1: Local test, check if we can create and then delete macvtap
++#              interface 500 times.
++
++TCID=macvtap01
++TST_TOTAL=4
++
++virt_type="macvtap"
++
++. test_net.sh
++. virt_lib.sh
++
++modes="private vepa bridge passthru"
++
++start_id=1
++virt_count=500
++
++for m in $modes; do
++	tst_resm TINFO "add $virt_type with mode '$m'"
++
++	virt_add ltp_v0 mode $m > /dev/null 2>&1
++	if [ $? -ne 0 ]; then
++		tst_resm TCONF "iproute or kernel doesn't support mode '$m'"
++		m=""
++	else
++		ROD_SILENT "ip li delete ltp_v0"
++	fi
++
++	virt_add_delete_test "mode $m"
++
++	start_id=$(($start_id + $virt_count))
++done
++
++tst_exit
+-- 
+1.7.1
 
-
------ Original Message -----
-> From: "Jeffrey Bastian" <jbastian@redhat.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Thursday, 9 July, 2015 5:14:57 PM
-> Subject: Re: [LTP] [PATCH v2] proc/proc01.c: ignore stable_secret files
-> 
-> Linux 4.1.0 introduced a per-NIC IPv6 stable_secret file for RFC7217.
-> The stable_secret file for each NIC cannot be read until it is set,
-> thus LTP fails like this:
-> 
-> proc01      1  TFAIL  :  proc01.c:392: read failed:
-> /proc/sys/net/ipv6/conf/all/stable_secret: errno=EIO(5): Input/output error
-> proc01      2  TFAIL  :  proc01.c:392: read failed:
-> /proc/sys/net/ipv6/conf/default/stable_secret: errno=EIO(5): Input/output
-> error
-> proc01      3  TFAIL  :  proc01.c:392: read failed:
-> /proc/sys/net/ipv6/conf/eno1/stable_secret: errno=EIO(5): Input/output error
-> ...
-> 
-> Add the stable_secret files to the known_issues list in the proc01 test.
-> 
-> TODO: A future test should verify stable_secret functionality.
->   ~]# cat /proc/sys/net/ipv6/conf/eno1/stable_secret
->   cat: /proc/sys/net/ipv6/conf/eno1/stable_secret: Input/output error
->   ~]# echo "ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255" >
->   /proc/sys/net/ipv6/conf/eno1/stable_secret
->   ~]# cat /proc/sys/net/ipv6/conf/eno1/stable_secret
->   ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
-> 
-> Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
-
-Pushed.
-
-Thanks,
-Jan
-
-> ---
->  testcases/kernel/fs/proc/proc01.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/testcases/kernel/fs/proc/proc01.c
-> b/testcases/kernel/fs/proc/proc01.c
-> index f513110eca0e..2825b51dff95 100644
-> --- a/testcases/kernel/fs/proc/proc01.c
-> +++ b/testcases/kernel/fs/proc/proc01.c
-> @@ -107,6 +107,7 @@ static const struct mapping known_issues[] = {
->  	{"read", "/proc/fs/nfsd/.getfs", EINVAL},
->  	{"read", "/proc/fs/nfsd/.getfd", EINVAL},
->  	{"read", "/proc/self/net/rpc/use-gss-proxy", EAGAIN},
-> +	{"read", "/proc/sys/net/ipv6/conf/*/stable_secret", EIO},
->  	{"", "", 0}
->  };
->  
-> --
-> 1.9.4
-> 
-> ------------------------------------------------------------------------------
-> Don't Limit Your Business. Reach for the Cloud.
-> GigeNET's Cloud Solutions provide you with the tools and support that
-> you need to offload your IT needs and focus on growing your business.
-> Configured For All Businesses. Start Your Cloud Today.
-> https://www.gigenetcloud.com/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
