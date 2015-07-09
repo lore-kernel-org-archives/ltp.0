@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <yanxiaofeng@inspur.com>) id 1ZEZNc-0005wX-82
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 08:46:28 +0000
-Received: from unicom145.biz-email.net ([210.51.26.145])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZEZNU-0005Hg-5F
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 08:46:28 +0000
-Message-ID: <55A37AAC.9060900@inspur.com>
-Date: Mon, 13 Jul 2015 16:45:32 +0800
-From: yanxiaofeng <yanxiaofeng@inspur.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZD29G-0005Vc-5D
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:18 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZD29F-0002ZQ-5f
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:18 +0000
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 9 Jul 2015 11:05:17 +0800
+Message-ID: <1436411125-8012-3-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <55842886.4090202@oracle.com>
+	<1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1436426857-7322-1-git-send-email-mawentao@inspur.com>,
-	<55A3610F.5000703@cn.fujitsu.com>
-	<2015071316333140061425@inspur.com>
-	<55A378AE.8060202@cn.fujitsu.com>
-In-Reply-To: <55A378AE.8060202@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] acls: Solve a problem from acl_test01
+Subject: [LTP] [PATCH v4 03/11] asapi_01: Use 'tst_tmpdir' and more cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,96 +25,69 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wanlong Gao <gaowanlong@cn.fujitsu.com>, "mawentao@inspur.com" <mawentao@inspur.com>
-Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "wunan@inspur.com" <wunan@inspur.com>
+To: alexey.kodanev@oracle.com
+Cc: ltp-list@lists.sourceforge.net
 
-CgrlnKggMjAxNeW5tDA35pyIMTPml6UgMTY6MzcsIFdhbmxvbmcgR2FvIOWGmemBkzoKPiBPbiAw
-Ny8xMy8yMDE1IDA0OjMzIFBNLCBtYXdlbnRhb0BpbnNwdXIuY29tIHdyb3RlOgo+PiBUaGFua3Mg
-V2FubG9uZyBHYW8sIHdlIHNldCB0aGUgU0VMaW51eCBtb2RlIHRvIHBlcm1pc3NpdmUgYW5kIHRo
-ZSB0ZXN0IHBhc3Nlcy4KPj4gdGhlIGVycm9yIGlzIGNhdXNlZCBieSB0aGUgU0VMaW51eCwgZmlu
-YWxseSB3ZSBtb2RpZnkgdGhlIHBhdGNoLgo+IE5vcGUsIFNFTGludXggc2V0dXAgc2hvdWxkIGRv
-IGJlZm9yZSB5b3UgcnVubmluZyBMVFAuIFNpbmNlIFNFTGludXggaXMgbm90Cj4gc3VwcG9ydGVk
-IGJ5IGFsbCBvZiB0aGUgZGlzdHJpYnV0aW9ucywgd2UgYXNzdW1lIHRoYXQgaXQgaXMgZGlzYWJs
-ZWQgYnkgeW91cnNlbGYKPiBiZWZvcmUgcnVubmluZyBMVFAuCkhpICB3YW5sb25nLAoKQ2FuIHdl
-IGp1ZGdlIHdoZXRoZXIgU0VsaW5leCBpcyBlbmFibGVkIG9yIG5vdCA/IGFuZCBpZiBlbmFibGVk
-ICwgd2UgY2FuIApkaXNhYmxlIHNlbGludXggaW4gc2NyaXB0LgpXaGF0IGRvIHlvdXRoaW5rYWJv
-dXQgdGhpc29uZT8KClRoYW5rcwpZYW4KCgo+IFRoYW5rcywKPiBXYW5sb25nIEdhbwo+Cj4KPgo+
-Pgo+Pj4gVGhlIGZhaWxlZCBpbmZvcm5hbXRpb24gaXMgYXMgZm9sbG93Ogo+Pj4gdXNlcmFkZDog
-Y2Fubm90IHNldCBTRUxpbnV4IGNvbnRleHQgZm9yCj4+PiBob21lIGRpcmVjdG9yeSAvdG1wL3Rh
-Y2wvbW91bnQtZXh0My9hY2x0ZXN0MQo+Pj4KPj4+IHRoaXMgaXMgY2F1c2VkIGJ5IFNFTGludXgs
-IHRoZSBTRUxpbnV4IG1vZGUgaXMgZW5mb3JjaW5nCj4+PiBzZXQgdGhlIG1vZGUgdG8gcGVybWlz
-c2l2ZSBiZWZvcmUgYWRkaW5nIHVzZXIgYWNsX3Rlc3QxCj4+PiB0aGVuIHNldCBpdCB0byB0aGUg
-ZGVmYXVsdCBtb2RlIGVuZm9yY2luZy4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBXZW50YW8gTWEg
-PG1hd2VudGFvQGluc3B1ci5jb20+Cj4+PiAtLS0KPj4+ICAgIHRlc3RjYXNlcy9rZXJuZWwvZnMv
-YWNscy9hY2xfdGVzdDAxIHwgMiArKwo+Pj4gICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
-cygrKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbHMvYWNsX3Rl
-c3QwMSBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNscy9hY2xfdGVzdDAxCj4+PiBpbmRleCAzMjhm
-Zjc0Li5lMzhlMzliIDEwMDc1NQo+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2xzL2Fj
-bF90ZXN0MDEKPj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNscy9hY2xfdGVzdDAxCj4+
-PiBAQCAtODcsNyArODcsOSBAQCBkb19zZXR1cCgpewo+Pj4gICAgcm0gLXJmICRURVNUX1VTRVIx
-X0hPTUVESVIKPj4+ICAgIHVzZXJkZWwgJFRFU1RfVVNFUjEgPiAvZGV2L251bGwgMj4mMQo+Pj4g
-ICAgc2xlZXAgMQo+Pj4gKyBzZXRlbmZvcmNlIDAKPj4+ICAgIHVzZXJhZGQgLWQgJFRFU1RfVVNF
-UjFfSE9NRURJUiAtbSAtZyAkVEVTVF9VU0VSMV9HUk9VUCAkVEVTVF9VU0VSMSAtcyAvYmluL3No
-Cj4+PiArIHNldGVuZm9yY2UgMQo+Pj4gICAKPj4+ICAgIGlmIFsgJD8gLW5lIDAgXTsgdGhlbgo+
-Pj4gICAgdHN0X2Jya20gVEJST0sgIkNvdWxkIG5vdCBhZGQgdGVzdCB1c2VyICRURVNUX1VTRVIx
-LiIKPj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAgLS0KPj4gbWF3ZW50YW9AaW5zcHVyLmNvbQo+
-Pgo+PiAgICAgICAKPj4gICAgICAqRnJvbToqIFdhbmxvbmcgR2FvIDxtYWlsdG86Z2Fvd2FubG9u
-Z0Bjbi5mdWppdHN1LmNvbT4KPj4gICAgICAqRGF0ZToqIDIwMTUtMDctMTMgMTQ6NTYKPj4gICAg
-ICAqVG86KiBXZW50YW8gTWEgPG1haWx0bzptYXdlbnRhb0BpbnNwdXIuY29tPjsgbHRwLWxpc3RA
-bGlzdHMuc291cmNlZm9yZ2UubmV0IDxtYWlsdG86bHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0Pgo+PiAgICAgICpDQzoqIHd1bmFuQGluc3B1ci5jb20gPG1haWx0bzp3dW5hbkBpbnNwdXIu
-Y29tPgo+PiAgICAgICpTdWJqZWN0OiogUmU6IFtMVFBdIFtQQVRDSF0gYWNsczogU29sdmUgYSBw
-cm9ibGVtIGZyb20gYWNsX3Rlc3QwMQo+PiAgICAgIE9uIDA3LzA5LzIwMTUgMDM6MjcgUE0sIFdl
-bnRhbyBNYSB3cm90ZToKPj4gICAgICA+IFRoZSBmYWlsZWQgaW5mb3JuYW10aW9uIGlzIGFzIGZv
-bGxvdzoKPj4gICAgICA+IHVzZXJhZGQ6IGNhbm5vdCBzZXQgU0VMaW51eCBjb250ZXh0IGZvcgo+
-PiAgICAgID4gaG9tZSBkaXJlY3RvcnkgL3RtcC90YWNsL21vdW50LWV4dDMvYWNsdGVzdDEKPj4g
-ICAgICAgCj4+ICAgICAgSXQgc2VlbXMgdGhhdCB0aGUgZXJyb3IgaXMgY2F1c2VkIGJ5IFNFTGlu
-dXgsIHBsZWFzZSBkaXNhYmxlCj4+ICAgICAgeW91ciBTRUxpbnV4IG9yIHNldCBpdCB0byBwZXJt
-aXNzaXZlIGFuZCB0ZXN0IGFnYWluLgo+PiAgICAgICAKPj4gICAgICBUaGFua3MsCj4+ICAgICAg
-V2FubG9uZyBHYW8KPj4gICAgICAgCj4+ICAgICAgPgo+PiAgICAgID4gdGhpcyBpcyBjYXVzZWQg
-YnkgY29tYW5kICJybSAtcmYgJFRFU1RfVVNFUjFfSE9NRURJUiIuCj4+ICAgICAgPiBCdXQgdGhp
-cyBkaXJlY3RvcnkgaXMgbmVlZGVkIGJ5IG5leHQgc3RlcC4KPj4gICAgICA+IFNvIGNyZWF0ZSB0
-aGlzIGRyaWVjdG9yeSBhZ2Fpbi4KPj4gICAgICA+Cj4+ICAgICAgPiBTaWduZWQtb2ZmLWJ5OiBX
-ZW50YW8gTWEgPG1hd2VudGFvQGluc3B1ci5jb20+Cj4+ICAgICAgPiAtLS0KPj4gICAgICA+ICB0
-ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbHMvYWNsX3Rlc3QwMSB8IDEgKwo+PiAgICAgID4gIDEgZmls
-ZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQo+PiAgICAgID4KPj4gICAgICA+IGRpZmYgLS1naXQg
-YS90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbHMvYWNsX3Rlc3QwMSBiL3Rlc3RjYXNlcy9rZXJuZWwv
-ZnMvYWNscy9hY2xfdGVzdDAxCj4+ICAgICAgPiBpbmRleCAzMjhmZjc0Li5kMDc5YWJkIDEwMDc1
-NQo+PiAgICAgID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2xzL2FjbF90ZXN0MDEKPj4g
-ICAgICA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNscy9hY2xfdGVzdDAxCj4+ICAgICAg
-PiBAQCAtODcsNiArODcsNyBAQCBkb19zZXR1cCgpewo+PiAgICAgID4gIHJtIC1yZiAkVEVTVF9V
-U0VSMV9IT01FRElSCj4+ICAgICAgPiAgdXNlcmRlbCAkVEVTVF9VU0VSMSA+IC9kZXYvbnVsbCAy
-PiYxCj4+ICAgICAgPiAgc2xlZXAgMQo+PiAgICAgID4gKyAgICAgICAgbWtkaXIgLXAgJFRFU1Rf
-VVNFUjFfSE9NRURJUgo+PiAgICAgID4gIHVzZXJhZGQgLWQgJFRFU1RfVVNFUjFfSE9NRURJUiAt
-bSAtZyAkVEVTVF9VU0VSMV9HUk9VUCAkVEVTVF9VU0VSMSAtcyAvYmluL3NoCj4+ICAgICAgPgo+
-PiAgICAgID4gIGlmIFsgJD8gLW5lIDAgXTsgdGhlbgo+PiAgICAgID4KPj4gICAgICAgCj4+Cj4g
-Lgo+CgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb24ndCBMaW1pdCBZb3VyIEJ1c2luZXNzLiBS
-ZWFjaCBmb3IgdGhlIENsb3VkLgpHaWdlTkVUJ3MgQ2xvdWQgU29sdXRpb25zIHByb3ZpZGUgeW91
-IHdpdGggdGhlIHRvb2xzIGFuZCBzdXBwb3J0IHRoYXQKeW91IG5lZWQgdG8gb2ZmbG9hZCB5b3Vy
-IElUIG5lZWRzIGFuZCBmb2N1cyBvbiBncm93aW5nIHlvdXIgYnVzaW5lc3MuCkNvbmZpZ3VyZWQg
-Rm9yIEFsbCBCdXNpbmVzc2VzLiBTdGFydCBZb3VyIENsb3VkIFRvZGF5LgpodHRwczovL3d3dy5n
-aWdlbmV0Y2xvdWQuY29tLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
-bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
-Cg==
+* Use 'tst_tmpdir' and 'tst_rmdir'.
+* Add 'static' for the cleanup.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/network/lib6/asapi_01.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/network/lib6/asapi_01.c b/testcases/network/lib6/asapi_01.c
+index 5d8bdc7..a129569 100644
+--- a/testcases/network/lib6/asapi_01.c
++++ b/testcases/network/lib6/asapi_01.c
+@@ -198,6 +198,7 @@ static struct ftent {
+ };
+ 
+ static void setup(void);
++static void cleanup(void);
+ static void do_test(const struct ftent *);
+ 
+ char *TCID = "asapi_01";
+@@ -218,15 +219,23 @@ int main(int argc, char *argv[])
+ 			do_test(&ftab[i]);
+ 	}
+ 
++	cleanup();
+ 	tst_exit();
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
+ 	TEST_PAUSE;
++
++	tst_tmpdir();
++}
++
++static void cleanup(void)
++{
++	tst_rmdir();
+ }
+ 
+-void do_test(const struct ftent *ftptr)
++static void do_test(const struct ftent *ftptr)
+ {
+ 	switch (ftptr->ft_type) {
+ 	case EXISTS:
+-- 
+1.9.3
+
+
+------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
