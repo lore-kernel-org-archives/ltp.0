@@ -1,21 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1ZAAfj-0005D8-7r
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:34:59 +0000
-Received: from mail-pa0-f44.google.com ([209.85.220.44])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZAAfi-0004ej-Ig
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 05:34:59 +0000
-Received: by paceq1 with SMTP id eq1so17123205pac.3
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 30 Jun 2015 22:34:53 -0700 (PDT)
-From: Hangbin Liu <liuhangbin@gmail.com>
-Date: Wed,  1 Jul 2015 13:34:42 +0800
-Message-Id: <1435728882-9272-1-git-send-email-liuhangbin@gmail.com>
-Subject: [LTP] [PATCHv2] containers: Use raw setns syscall for versions of
-	glibc that don't include it
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zq-000893-23
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:58 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZD5Zp-0004Zo-0j
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:58 +0000
+Received: from userv0022.oracle.com (userv0022.oracle.com [156.151.31.74])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t696ip2a020423
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:51 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+	by userv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t696ioHh004998
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:50 GMT
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696iohn009413
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:50 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu,  9 Jul 2015 09:47:37 +0300
+Message-Id: <1436424468-11756-13-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 12/23] network/virt: add new macvlan01 test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,41 +39,103 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-The setns() system call was added to glibc in version 2.14. On systems with
-lower version glic, like RHEL6.6 glibc 2.12, ltp will build failed with
-error "userns04.c:58: undefined reference to `setns'". Use ltp_syscall to make
-build pass.
+Based on vlan02 test. It creates then deletes macvlan interfaces
+multiple times with private, vepa, bridge and passthru modes.
 
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/kernel/containers/userns/userns_helper.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ runtest/network_stress.features     |    2 +
+ testcases/network/virt/Makefile     |    3 +-
+ testcases/network/virt/macvlan01.sh |   51 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 55 insertions(+), 1 deletions(-)
+ create mode 100755 testcases/network/virt/macvlan01.sh
 
-diff --git a/testcases/kernel/containers/userns/userns_helper.h b/testcases/kernel/containers/userns/userns_helper.h
-index da03bae..21e5cb8 100644
---- a/testcases/kernel/containers/userns/userns_helper.h
-+++ b/testcases/kernel/containers/userns/userns_helper.h
-@@ -15,6 +15,16 @@
- #include "test.h"
- #include "safe_macros.h"
- 
-+/*
-+ * Use raw setns syscall for versions of glibc that don't include it
-+ */
-+#if __GLIBC__ <= 2 && __GLIBC_MINOR__ < 14
-+int setns(int fd, int nstype)
-+{
-+	return ltp_syscall(__NR_setns, fd, nstype);
-+}
-+#endif
+diff --git a/runtest/network_stress.features b/runtest/network_stress.features
+index 2071d94..bc62919 100644
+--- a/runtest/network_stress.features
++++ b/runtest/network_stress.features
+@@ -17,3 +17,5 @@ vxlan_ipv6_uni_03 vxlan03.sh -6 -d uni
+ vlan01 vlan01.sh
+ vlan02 vlan02.sh
+ vlan03 vlan03.sh
 +
- static int dummy_child(void *v)
- {
- 	(void) v;
++macvlan01 macvlan01.sh
+diff --git a/testcases/network/virt/Makefile b/testcases/network/virt/Makefile
+index af19f5b..4cc9de9 100644
+--- a/testcases/network/virt/Makefile
++++ b/testcases/network/virt/Makefile
+@@ -18,7 +18,8 @@ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-INSTALL_TARGETS		:= virt_lib.sh \
++INSTALL_TARGETS		:= macvlan01.sh \
++			   virt_lib.sh \
+ 			   vlan01.sh \
+ 			   vlan02.sh \
+ 			   vlan03.sh \
+diff --git a/testcases/network/virt/macvlan01.sh b/testcases/network/virt/macvlan01.sh
+new file mode 100755
+index 0000000..aac9d02
+--- /dev/null
++++ b/testcases/network/virt/macvlan01.sh
+@@ -0,0 +1,51 @@
++#!/bin/sh
++# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++#
++# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++#
++# Test-case 1: Local test, check if we can create and then delete macvlan
++#              interface 500 times.
++
++TCID=macvlan01
++TST_TOTAL=4
++
++virt_type="macvlan"
++
++. test_net.sh
++. virt_lib.sh
++
++modes="private vepa bridge passthru"
++
++start_id=1
++virt_count=500
++
++for m in $modes; do
++	tst_resm TINFO "add $virt_type with mode '$m'"
++
++	virt_add ltp_v0 mode $m > /dev/null 2>&1
++	if [ $? -ne 0 ]; then
++		tst_resm TCONF "iproute or kernel doesn't support mode '$m'"
++		m=""
++	else
++		ROD_SILENT "ip li delete ltp_v0"
++	fi
++
++	virt_add_delete_test "mode $m"
++
++	start_id=$(($start_id + $virt_count))
++done
++
++tst_exit
 -- 
-1.9.3
+1.7.1
 
 
 ------------------------------------------------------------------------------
