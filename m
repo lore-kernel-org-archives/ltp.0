@@ -2,38 +2,31 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jbastian@redhat.com>) id 1ZDElo-0000Hc-1j
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 16:33:56 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zu-0003hB-0M
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:45:02 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
 	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZDEli-0003A9-96
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 16:33:56 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (Postfix) with ESMTPS id 1BA1083F66
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  9 Jul 2015 16:33:44 +0000 (UTC)
-Received: from tarantula.localdomain (ovpn-113-174.phx2.redhat.com
-	[10.3.113.174])
-	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t69GXgZN022138
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 12:33:43 -0400
-Date: Thu, 9 Jul 2015 11:33:41 -0500
-From: Jeffrey Bastian <jbastian@redhat.com>
-Message-ID: <20150709163341.GU17625@tarantula.localdomain>
-References: <20150708194114.GA20060@tarantula.localdomain>
-	<904998018.14796051.1436425198776.JavaMail.zimbra@redhat.com>
-	<431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
-	<20150709124503.GM17625@tarantula.localdomain>
-	<1737674583.15006076.1436449194123.JavaMail.zimbra@redhat.com>
-	<20150709143700.GQ17625@tarantula.localdomain>
-	<1448931194.15074761.1436453202001.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1448931194.15074761.1436453202001.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] syslog/syslog-lib.sh: support systemd journal
+	(Exim 4.76) id 1ZD5Zt-000815-1o
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:45:01 +0000
+Received: from userv0021.oracle.com (userv0021.oracle.com [156.151.31.71])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t696itYk019978
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:55 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+	by userv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t696ishc020964
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:55 GMT
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696isXQ005117
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:54 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu,  9 Jul 2015 09:47:40 +0300
+Message-Id: <1436424468-11756-16-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 15/23] network/virt/vxlan03.sh: add VXLAN-GBP (group
+	policy context) test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -43,35 +36,80 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-On Thu, Jul 09, 2015 at 10:46:42AM -0400, Jan Stancek wrote:
-> Presumably because you are running new systemd. Can you try with
-> "ForwardToSyslog=yes" set in journald.conf (which is the case for old systemd)?
-> 
-> That still gives me duplicated messages with v2 of the patch.
+If supported by kernel and iproute, VxLAN header will include the mark
+with group policy context. The test performs with and without gbp option.
 
-Ok, I see it now: systemd-208 gets duplicates with v2 of the patch, and
-systemd-219 with ForwardToSyslog=yes also gets duplicates.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/virt/vxlan03.sh |   41 ++++++++++++++++++++++++------------
+ 1 files changed, 27 insertions(+), 14 deletions(-)
 
-This will complicate the patch a bit.  If I understand it correctly, LTP
-proc01 needs to do something like this:
+diff --git a/testcases/network/virt/vxlan03.sh b/testcases/network/virt/vxlan03.sh
+index 033d801..14524d4 100755
+--- a/testcases/network/virt/vxlan03.sh
++++ b/testcases/network/virt/vxlan03.sh
+@@ -60,24 +60,37 @@ if [ -z $ip_local -o -z $ip_remote ]; then
+ 	tst_brkm TBROK "you must specify IP address"
+ fi
+ 
+-tst_resm TINFO "networks with the same VNI must work"
+-# VNI is 24 bits long, so max value, which is not reserved, is 0xFFFFFE
+-res="TPASS"
++opts="dstport 0,dstport 0 gbp"
+ 
+-if [ "$vxlan_dst_addr" != 'uni' -a $vxlan_dst_addr != 'multi' ]; then
+-	tst_brkm TBROK "wrong destination address, can be 'uni' or 'multi'"
+-fi
++for n in $(seq 1 2); do
++	params="$(echo $opts | cut -d',' -f$n)"
++
++	virt_add ltp_v0 id 0 $params > /dev/null 2>&1
++	if [ $? -ne 0 ]; then
++		tst_resm TCONF "iproute or kernel doesn't support '$params'"
++		continue
++	fi
++	ROD_SILENT "ip li delete ltp_v0"
++
++	tst_resm TINFO "networks with the same VNI must work"
++	# VNI is 24 bits long, so max value, which is not reserved, is 0xFFFFFE
++	res="TPASS"
++
++	if [ "$vxlan_dst_addr" != 'uni' -a $vxlan_dst_addr != 'multi' ]; then
++		tst_brkm TBROK "wrong dst address, can be 'uni' or 'multi'"
++	fi
+ 
+-vxlan_setup_subnet_$vxlan_dst_addr "0xFFFFFE" "0xFFFFFE"
+-vxlan_compare_netperf || res="TFAIL"
++	vxlan_setup_subnet_$vxlan_dst_addr "0xFFFFFE" "0xFFFFFE"
++	vxlan_compare_netperf || res="TFAIL"
+ 
+-tst_resm $res "done"
++	tst_resm $res "done"
+ 
+-tst_resm TINFO "different VNI shall not work together"
+-res="TPASS"
+-vxlan_setup_subnet_$vxlan_dst_addr "0xFFFFFE" "0xFFFFFD"
+-vxlan_compare_netperf && res="TFAIL"
++	tst_resm TINFO "different VNI shall not work together"
++	res="TPASS"
++	vxlan_setup_subnet_$vxlan_dst_addr "0xFFFFFE" "0xFFFFFD"
++	vxlan_compare_netperf && res="TFAIL"
+ 
+-tst_resm $res "done"
++	tst_resm $res "done"
++done
+ 
+ tst_exit
+-- 
+1.7.1
 
-  if ForwardToSyslog is enabled OR
-     (systemd version < 216 AND using default journald.conf)
-  then
-      use imuxsock
-  else
-      use imjournal
-  endif
-
-I'll send a new patch soon.
-
-Thanks,
-Jeff
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
