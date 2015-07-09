@@ -1,26 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1ZArxL-0001Y6-7A
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 03:48:03 +0000
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1ZArxJ-0001w6-Dg
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 03:48:03 +0000
-Received: from epcpsbgr2.samsung.com
-	(u142.gpu120.samsung.co.kr [203.254.230.142])
-	by mailout1.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NQW01S907VTX990@mailout1.samsung.com> for
-	ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 12:47:53 +0900 (KST)
-Date: Fri, 03 Jul 2015 03:47:53 +0000 (GMT)
-From: Maninder Singh <maninder1.s@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1089678615.223411435895273665.JavaMail.weblogic@ep2mlwas02a>
-Subject: [LTP] [RESUBMIT PATCH 04/13] kernel/mq_timedreceive: use ARRAY_SIZE
-Reply-To: maninder1.s@samsung.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jbastian@redhat.com>) id 1ZDBCV-0005Mg-9u
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 12:45:15 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZDBCS-0005yu-Fp
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 12:45:15 +0000
+Received: from int-mx09.intmail.prod.int.phx2.redhat.com
+	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+	by mx1.redhat.com (Postfix) with ESMTPS id 7D9E040E680
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  9 Jul 2015 12:45:06 +0000 (UTC)
+Received: from tarantula.localdomain (ovpn-113-174.phx2.redhat.com
+	[10.3.113.174])
+	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t69Cj4L6021837
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 08:45:05 -0400
+Date: Thu, 9 Jul 2015 07:45:03 -0500
+From: Jeffrey Bastian <jbastian@redhat.com>
+Message-ID: <20150709124503.GM17625@tarantula.localdomain>
+References: <20150708194114.GA20060@tarantula.localdomain>
+	<904998018.14796051.1436425198776.JavaMail.zimbra@redhat.com>
+	<431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] syslog/syslog-lib.sh: support systemd journal
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,32 +42,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Cc: PANKAJ MISHRA <pankaj.m@samsung.com>
+To: ltp-list@lists.sourceforge.net
 
-use ARRAY_SIZE instead of sizeof(a)/sizeof(a[0])
+On Thu, Jul 09, 2015 at 04:19:09AM -0400, Jan Stancek wrote:
+> It still appears supported, but turned off by default in systemd 216:
+> 
+<snip>
+> 
+> So I think we should use imjournal if possible, otherwise fall back
+> to imuxsock. But I think it should be one or the other, using both
+> in same config seems wrong to me.
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
----
- .../syscalls/mq_timedreceive/mq_timedreceive01.c   |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-index 945e2fa..b524e45 100644
---- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-+++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
-@@ -449,8 +449,7 @@ int main(int ac, char **av)
- 			/*
- 			 * Execute test
- 			 */
--			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
--			     i++) {
-+			for (i = 0; i < (int)ARRAY_SIZE(tcase); i++) {
- 				int ret;
- 				tst_resm(TINFO, "(case%02d) START", i);
- 				ret = do_test(&tcase[i]);
+I was testing with systemd-219 when I ran into this problem, hence my
+patch submission.
+
+I think it's ok to leave both modules enabled, though.  The default
+rsyslog.conf in Fedora (up to F21) had both enabled:
+
+$ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
+$ModLoad imjournal # provides access to the systemd journal
+
+See http://pkgs.fedoraproject.org/cgit/rsyslog.git/tree/rsyslog.conf?h=f21#n9
+
+(Fedora 22 dropped imuxsock with the rebase to rsyslog-8.8.0.)
+
 -- 
-1.7.9.5
+Jeff Bastian
+
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
 GigeNET's Cloud Solutions provide you with the tools and support that
