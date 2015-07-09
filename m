@@ -1,18 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZA6VY-0002BW-EP
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 01:08:12 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZA6VS-0002rl-M8
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 01:08:12 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Wed, 1 Jul 2015 09:07:25 +0800
-Message-ID: <1435712845-11717-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1ZDE4f-0008HG-9z
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 15:49:21 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZDE4c-0001hd-Ep
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 15:49:21 +0000
+Date: Thu, 9 Jul 2015 11:49:11 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1003432786.15130300.1436456951899.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20150709151457.GT17625@tarantula.localdomain>
+References: <20150708203358.GA24428@tarantula.localdomain>
+	<1538874773.14815420.1436428293231.JavaMail.zimbra@redhat.com>
+	<20150709151457.GT17625@tarantula.localdomain>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] cpuctl: correct wrong TCID
+Subject: Re: [LTP] [PATCH v2] proc/proc01.c: ignore stable_secret files
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,170 +29,80 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Jeffrey Bastian <jbastian@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
----
- testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c         | 3 +--
- testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c         | 2 +-
- testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c         | 2 +-
- testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c         | 2 +-
- testcases/kernel/controllers/cpuctl/cpuctl_latency_check_task.c | 2 +-
- testcases/kernel/controllers/cpuctl/cpuctl_latency_test.c       | 2 +-
- testcases/kernel/controllers/cpuctl/cpuctl_test02.c             | 2 +-
- testcases/kernel/controllers/cpuctl/cpuctl_test03.c             | 2 +-
- testcases/kernel/controllers/cpuctl/cpuctl_test04.c             | 2 +-
- testcases/kernel/controllers/cpuctl/run_cpuctl_stress_test.sh   | 2 +-
- testcases/kernel/controllers/cpuctl/run_cpuctl_test.sh          | 2 +-
- 11 files changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-index ae6a374..0dabe23 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task01.c
-@@ -68,8 +68,7 @@
- #define NUM_INTERVALS	3	/* How many iterations of TIME_INTERVAL */
- #define NUM_SETS	4	/* How many share values (with same ratio) */
- #define MULTIPLIER   	10	/* Rate at which share value gets multiplied */
--
--char *TCID = "cpu_controller_tests";
-+char *TCID = "cpuctl_def_task01";
- int TST_TOTAL = 1;
- pid_t scriptpid;
- char path[FILENAME_MAX] = "/dev/cpuctl";
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-index 5fb3559..c2bb435 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task02.c
-@@ -64,7 +64,7 @@
- #define TIME_INTERVAL	30	/* Time interval in seconds */
- #define NUM_INTERVALS	3	/* How many iterations of TIME_INTERVAL */
- 
--char *TCID = "cpu_controller_test04";
-+char *TCID = "cpuctl_def_task02";
- int TST_TOTAL = 1;
- pid_t scriptpid;
- char path[] = "/dev/cpuctl";
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-index af4695f..0fe1c58 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task03.c
-@@ -65,7 +65,7 @@
- #define TIME_INTERVAL	30	/* Time interval in seconds */
- #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
- 
--char *TCID = "cpu_controller_test06";
-+char *TCID = "cpuctl_def_task03";
- int TST_TOTAL = 3;
- pid_t scriptpid;
- char path[] = "/dev/cpuctl";
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-index 9a7da9b..f1cf4f8 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_def_task04.c
-@@ -65,7 +65,7 @@
- #define TIME_INTERVAL	100	/* Time interval in seconds */
- #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
- 
--char *TCID = "cpu_controller_test06";
-+char *TCID = "cpuctl_def_task04";
- int TST_TOTAL = 2;
- pid_t scriptpid;
- char path[] = "/dev/cpuctl";
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_latency_check_task.c b/testcases/kernel/controllers/cpuctl/cpuctl_latency_check_task.c
-index 47a2be8..fd82362 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_latency_check_task.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_latency_check_task.c
-@@ -64,7 +64,7 @@
- #define info	printf("The results FAIL is just intuitive and not exact" \
- 		" failure. Please look at cpuctl_testplan.txt in the test directory.\n");
- 
--char *TCID = "cpuctl_latency_tests";
-+char *TCID = "cpuctl_latency_test01";
- int TST_COUNT = 1;
- int TST_TOTAL = 1;
- pid_t script_pid;
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_latency_test.c b/testcases/kernel/controllers/cpuctl/cpuctl_latency_test.c
-index 3b53f4d..79dd96f 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_latency_test.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_latency_test.c
-@@ -51,7 +51,7 @@
- 
- #include "../libcontrollers/libcontrollers.h"
- 
--char *TCID = "cpu_controller_latency_tests";
-+char *TCID = "cpuctl_latency_test02";
- int TST_TOTAL = 2;
- 
- void sighandler(int i)
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-index 3669a5d..e4c9672 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test02.c
-@@ -65,7 +65,7 @@
- #define TIME_INTERVAL	30	/* Time interval in seconds */
- #define NUM_INTERVALS	3	/* How many iterations of TIME_INTERVAL */
- 
--char *TCID = "cpu_controller_test04";
-+char *TCID = "cpu_controller_test02";
- int TST_TOTAL = 1;
- pid_t scriptpid;
- char path[] = "/dev/cpuctl";
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-index 20dbf86..925ee94 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test03.c
-@@ -65,7 +65,7 @@
- #define TIME_INTERVAL	30	/* Time interval in seconds */
- #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
- 
--char *TCID = "cpu_controller_test06";
-+char *TCID = "cpu_controller_test03";
- int TST_TOTAL = 3;
- pid_t scriptpid;
- char path[] = "/dev/cpuctl";
-diff --git a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-index c332f29..6c260a6 100644
---- a/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-+++ b/testcases/kernel/controllers/cpuctl/cpuctl_test04.c
-@@ -65,7 +65,7 @@
- #define TIME_INTERVAL	100	/* Time interval in seconds */
- #define NUM_INTERVALS	2	/* How many iterations of TIME_INTERVAL */
- 
--char *TCID = "cpu_controller_test06";
-+char *TCID = "cpu_controller_test04";
- int TST_TOTAL = 2;
- pid_t scriptpid;
- char path[] = "/dev/cpuctl";
-diff --git a/testcases/kernel/controllers/cpuctl/run_cpuctl_stress_test.sh b/testcases/kernel/controllers/cpuctl/run_cpuctl_stress_test.sh
-index 443ee14..dd5d731 100755
---- a/testcases/kernel/controllers/cpuctl/run_cpuctl_stress_test.sh
-+++ b/testcases/kernel/controllers/cpuctl/run_cpuctl_stress_test.sh
-@@ -48,7 +48,7 @@
- #################################################################################
- 
- 
--export TCID="cpuctl_test06";
-+export TCID="cpuctl_stress_test";
- export TST_TOTAL=4;
- export TST_COUNT=1;	# how to tell here ??
- 
-diff --git a/testcases/kernel/controllers/cpuctl/run_cpuctl_test.sh b/testcases/kernel/controllers/cpuctl/run_cpuctl_test.sh
-index 67834ab..c606f7d 100755
---- a/testcases/kernel/controllers/cpuctl/run_cpuctl_test.sh
-+++ b/testcases/kernel/controllers/cpuctl/run_cpuctl_test.sh
-@@ -44,7 +44,7 @@
- #################################################################################
- 
- 
--export TCID="cpuctl_test01";
-+export TCID="cpuctl_test";
- export TST_TOTAL=1;
- export TST_COUNT=1;
- 
--- 
-1.9.1
 
+
+
+----- Original Message -----
+> From: "Jeffrey Bastian" <jbastian@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Thursday, 9 July, 2015 5:14:57 PM
+> Subject: Re: [LTP] [PATCH v2] proc/proc01.c: ignore stable_secret files
+> 
+> Linux 4.1.0 introduced a per-NIC IPv6 stable_secret file for RFC7217.
+> The stable_secret file for each NIC cannot be read until it is set,
+> thus LTP fails like this:
+> 
+> proc01      1  TFAIL  :  proc01.c:392: read failed:
+> /proc/sys/net/ipv6/conf/all/stable_secret: errno=EIO(5): Input/output error
+> proc01      2  TFAIL  :  proc01.c:392: read failed:
+> /proc/sys/net/ipv6/conf/default/stable_secret: errno=EIO(5): Input/output
+> error
+> proc01      3  TFAIL  :  proc01.c:392: read failed:
+> /proc/sys/net/ipv6/conf/eno1/stable_secret: errno=EIO(5): Input/output error
+> ...
+> 
+> Add the stable_secret files to the known_issues list in the proc01 test.
+> 
+> TODO: A future test should verify stable_secret functionality.
+>   ~]# cat /proc/sys/net/ipv6/conf/eno1/stable_secret
+>   cat: /proc/sys/net/ipv6/conf/eno1/stable_secret: Input/output error
+>   ~]# echo "ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255" >
+>   /proc/sys/net/ipv6/conf/eno1/stable_secret
+>   ~]# cat /proc/sys/net/ipv6/conf/eno1/stable_secret
+>   ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
+> 
+> Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
+
+Pushed.
+
+Thanks,
+Jan
+
+> ---
+>  testcases/kernel/fs/proc/proc01.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/testcases/kernel/fs/proc/proc01.c
+> b/testcases/kernel/fs/proc/proc01.c
+> index f513110eca0e..2825b51dff95 100644
+> --- a/testcases/kernel/fs/proc/proc01.c
+> +++ b/testcases/kernel/fs/proc/proc01.c
+> @@ -107,6 +107,7 @@ static const struct mapping known_issues[] = {
+>  	{"read", "/proc/fs/nfsd/.getfs", EINVAL},
+>  	{"read", "/proc/fs/nfsd/.getfd", EINVAL},
+>  	{"read", "/proc/self/net/rpc/use-gss-proxy", EAGAIN},
+> +	{"read", "/proc/sys/net/ipv6/conf/*/stable_secret", EIO},
+>  	{"", "", 0}
+>  };
+>  
+> --
+> 1.9.4
+> 
+> ------------------------------------------------------------------------------
+> Don't Limit Your Business. Reach for the Cloud.
+> GigeNET's Cloud Solutions provide you with the tools and support that
+> you need to offload your IT needs and focus on growing your business.
+> Configured For All Businesses. Start Your Cloud Today.
+> https://www.gigenetcloud.com/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
