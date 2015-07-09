@@ -1,32 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zn-0004Qn-Nf
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:55 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZD5Zm-00080p-Tu
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:55 +0000
-Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t696imtm019908
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:49 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t696im54019051
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:48 GMT
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696imYH005059
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:48 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  9 Jul 2015 09:47:35 +0300
-Message-Id: <1436424468-11756-11-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 10/23] network/virt/vlan01.sh: add protocol,
-	loose_binding and hdr options
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <maninder1.s@samsung.com>) id 1ZD4Tr-0000qt-D3
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 05:34:43 +0000
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZD4Tp-00056w-FZ
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 05:34:43 +0000
+Received: from epcpsbgr4.samsung.com
+	(u144.gpu120.samsung.co.kr [203.254.230.144])
+	by mailout1.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NR7004OAGTMJB80@mailout1.samsung.com> for
+	ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 14:34:34 +0900 (KST)
+From: Maninder Singh <maninder1.s@samsung.com>
+Date: Thu, 09 Jul 2015 11:03:57 +0530
+Message-id: <1436420037-18441-1-git-send-email-maninder1.s@samsung.com>
+Subject: [LTP] [PATCH 2/2] open_posix/shm_unlink: sanity checking after
+ calling pathconf
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,65 +33,34 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+Cc: pankaj.m@samsung.com
 
-protocol {802.1Q | 802.1ad}, loose_binding {off | on} and
-reorder_hdr {off | on}.
+sanity checking after calling pathconf added
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+Reviewed-by: Yogesh Narayan Gaur <yn.gaur@samsung.com>
 ---
- testcases/network/virt/vlan01.sh |   33 ++++++++++++++++++++++++++++++---
- 1 files changed, 30 insertions(+), 3 deletions(-)
+ .../conformance/interfaces/shm_unlink/10-1.c       |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/testcases/network/virt/vlan01.sh b/testcases/network/virt/vlan01.sh
-index 0e86668..c4d56e8 100755
---- a/testcases/network/virt/vlan01.sh
-+++ b/testcases/network/virt/vlan01.sh
-@@ -23,12 +23,39 @@ TCID=vlan01
- TST_TOTAL=1
+diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c
+index 768863c..20e5bef 100644
+--- a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c
++++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c
+@@ -27,6 +27,11 @@ int main(void)
+ 	char *shm_name;
  
- virt_type="vlan"
--start_id=0
--virt_count=4095
+ 	name_max = pathconf("/", _PC_NAME_MAX);
++
++	if (name_max == -1) {
++		perror("An error occurs when calling pathconf()");
++		return PTS_UNRESOLVED;
++	}
+ 	shm_name = malloc(name_max + 3);
  
- . test_net.sh
- . virt_lib.sh
- 
--virt_multiple_add_test
-+p0="protocol 802.1Q"
-+p1="protocol 802.1ad"
-+lb0="loose_binding off"
-+lb1="loose_binding on"
-+rh0="reorder_hdr off"
-+rh1="reorder_hdr on"
-+
-+opts="$p0 $lb0 $rh0,$p0 $lb0 $rh1,$p0 $lb1 $rh0,$p0 $lb1 $rh1,\
-+$p1 $lb0 $rh0,$p1 $lb0 $rh1,$p1 $lb1 $rh0,$p1 $lb1 $rh1,"
-+
-+start_id=1
-+virt_count=500
-+
-+for n in $(seq 1 8); do
-+	params="$(echo $opts | cut -d',' -f$n)"
-+
-+	tst_resm TINFO "add $virt_type with '$params'"
-+
-+	virt_add ltp_v0 id 0 $params > /dev/null 2>&1
-+	if [ $? -ne 0 ]; then
-+		tst_resm TCONF "iproute or kernel doesn't support '$params'"
-+		params=""
-+	else
-+		ROD_SILENT "ip li delete ltp_v0"
-+	fi
-+
-+	virt_multiple_add_test "$params"
-+
-+	start_id=$(($start_id + $virt_count))
-+done
- 
- tst_exit
+ 	if (!shm_name) {
 -- 
-1.7.1
+1.7.9.5
 
 
 ------------------------------------------------------------------------------
