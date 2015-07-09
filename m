@@ -1,24 +1,31 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZCHG5-0005s2-BO
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:13 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZCHG3-0006AD-Fz
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:13 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t670xMgx010533
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2015 08:59:22 +0800
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 7 Jul 2015 09:01:21 +0800
-Message-ID: <1436230882-3282-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
-In-Reply-To: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH 2/3] umount2/umount2_02.c: add new test
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zg-0004Q6-DC
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:48 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZD5Zf-0006uH-M2
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:48 +0000
+Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
+	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t696ig91020261
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:42 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t696if4W022992
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:41 GMT
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696ifD6009345
+	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:41 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu,  9 Jul 2015 09:47:30 +0300
+Message-Id: <1436424468-11756-6-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH 05/23] network/virt_lib.sh: fix regexpr in cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,272 +35,35 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
-Add new testcase to verify the flag MNT_EXPIRE of umount2(2).
+So that 'ltp_v0@xxx' names are included too.
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/ltplite                                |   1 +
- runtest/syscalls                               |   1 +
- testcases/kernel/syscalls/.gitignore           |   1 +
- testcases/kernel/syscalls/umount2/umount2_02.c | 206 +++++++++++++++++++++++++
- 4 files changed, 209 insertions(+)
- create mode 100644 testcases/kernel/syscalls/umount2/umount2_02.c
+ testcases/network/virt/virt_lib.sh |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 5f8ef8c..f5a8a52 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -966,6 +966,7 @@ unlink08 unlink08
- #umount03 umount03 -D /dev/...
- 
- umount2_01 umount2_01
-+umount2_02 umount2_02
- 
- ustat01 ustat01
- ustat02 ustat02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 762730f..92716d2 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1315,6 +1315,7 @@ umount02 umount02
- umount03 umount03
- 
- umount2_01 umount2_01
-+umount2_02 umount2_02
- 
- ustat01 ustat01
- ustat02 ustat02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 542ec3b..4ee0b0d 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -1003,6 +1003,7 @@
- /umount/umount02
- /umount/umount03
- /umount2/umount2_01
-+/umount2/umount2_02
- /uname/uname01
- /uname/uname02
- /uname/uname03
-diff --git a/testcases/kernel/syscalls/umount2/umount2_02.c b/testcases/kernel/syscalls/umount2/umount2_02.c
-new file mode 100644
-index 0000000..30e5047
---- /dev/null
-+++ b/testcases/kernel/syscalls/umount2/umount2_02.c
-@@ -0,0 +1,206 @@
-+/*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * alone with this program.
-+ */
-+
-+/*
-+ * DESCRIPTION
-+ *  Test for feature MNT_EXPIRE of umount2().
-+ *  "Mark the mount point as expired.If a mount point is not currently
-+ *   in use, then an initial call to umount2() with this flag fails with
-+ *   the error EAGAIN, but marks the mount point as expired. The mount
-+ *   point remains expired as long as it isn't accessed by any process.
-+ *   A second umount2() call specifying MNT_EXPIRE unmounts an expired
-+ *   mount point. This flag cannot be specified with either MNT_FORCE or
-+ *   MNT_DETACH. (fails with the error EINVAL)"
-+ */
-+
-+#include <errno.h>
-+#include <sys/mount.h>
-+
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "lapi/umount.h"
-+
-+static void setup(void);
-+static void umount2_verify(void);
-+static int umount2_verify_1(void);
-+static int umount2_verify_2(void);
-+static int umount2_verify_3(void);
-+static void cleanup(void);
-+
-+char *TCID = "umount2_02";
-+int TST_TOTAL = 1;
-+
-+#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-+#define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
-+#define MNTPOINT	"mntpoint"
-+#define EXP_ERRNO	EAGAIN
-+
-+static int fd;
-+static int mount_flag;
-+
-+static const char *device;
-+static const char *fs_type;
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		umount2_verify();
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+
-+	if ((tst_kvercmp(2, 6, 8)) < 0) {
-+		tst_brkm(TCONF, NULL, "This test can only run on kernels "
-+			"that are 2.6.8 or higher");
-+	}
-+
-+	tst_sig(NOFORK, DEF_HANDLER, NULL);
-+
-+	tst_tmpdir();
-+
-+	fs_type = tst_dev_fs_type();
-+	device = tst_acquire_device(cleanup);
-+
-+	if (!device)
-+		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
-+
-+	tst_mkfs(cleanup, device, fs_type, NULL);
-+
-+	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void umount2_verify(void)
-+{
-+	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
-+	mount_flag = 1;
-+
-+	do {
-+		if (umount2_verify_1())
-+			break;
-+
-+		if (umount2_verify_2())
-+			break;
-+
-+		/* a new accesse removes the expired mark of the mount point */
-+		fd = SAFE_CREAT(cleanup, MNTPOINT "/file", FILE_MODE);
-+
-+		SAFE_CLOSE(cleanup, fd);
-+		fd = 0;
-+
-+		if (umount2_verify_2())
-+			break;
-+
-+		if (umount2_verify_3())
-+			break;
-+
-+		mount_flag = 0;
-+
-+		tst_resm(TPASS, "umount2(2) Passed");
-+	} while (0);
-+
-+	if (mount_flag) {
-+		SAFE_UMOUNT(cleanup, MNTPOINT);
-+		mount_flag = 0;
-+	}
-+}
-+
-+/* MNT_EXPIRE cannot be specified with either MNT_FORCE or MNT_DETACH */
-+static int umount2_verify_1(void)
-+{
-+	TEST(umount2(MNTPOINT, MNT_EXPIRE | MNT_FORCE));
-+
-+	if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
-+		tst_resm(TFAIL | TTERRNO, "umount2(2) MNT_EXPIRE flag "
-+			"performed abnormally "
-+			"expected error = %d : %s",
-+			EINVAL, strerror(EINVAL));
-+		return 1;
-+	}
-+
-+	TEST(umount2(MNTPOINT, MNT_EXPIRE | MNT_DETACH));
-+
-+	if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
-+		tst_resm(TFAIL | TTERRNO, "umount2(2) MNT_EXPIRE flag "
-+			"performed abnormally "
-+			"expected error = %d : %s",
-+			EINVAL, strerror(EINVAL));
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+/* the initial call to umount2() with MNT_EXPIRE flag */
-+static int umount2_verify_2(void)
-+{
-+	TEST(umount2(MNTPOINT, MNT_EXPIRE));
-+
-+	if (TEST_RETURN == 0 || TEST_ERRNO != EAGAIN) {
-+		tst_resm(TFAIL | TTERRNO, "umount2(2) MNT_EXPIRE flag "
-+			"performed abnormally "
-+			"expected error = %d : %s",
-+			EAGAIN, strerror(EAGAIN));
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+/* the second call to umount2() with MNT_EXPIRE flag */
-+static int umount2_verify_3(void)
-+{
-+	TEST(umount2(MNTPOINT, MNT_EXPIRE));
-+
-+	if (TEST_RETURN != 0) {
-+		tst_resm(TFAIL, "umount2(2) Failed while "
-+			"unmounting %s errno = %d : %s",
-+			MNTPOINT, TEST_ERRNO,
-+			strerror(TEST_ERRNO));
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd > 0 && close(fd))
-+		tst_resm(TWARN | TERRNO, "Failed to close file");
-+
-+	if (mount_flag && tst_umount(MNTPOINT))
-+		tst_resm(TWARN | TERRNO, "Failed to unmount");
-+
-+	if (device)
-+		tst_release_device(NULL, device);
-+
-+	tst_rmdir();
-+}
+diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
+index 9024a3e..22e4415 100644
+--- a/testcases/network/virt/virt_lib.sh
++++ b/testcases/network/virt/virt_lib.sh
+@@ -88,7 +88,7 @@ done
+ cleanup_vifaces()
+ {
+ 	tst_resm TINFO "cleanup virtual interfaces..."
+-	local viface=`ip link | sed -nE 's/^[0-9]+: (ltp_v[0-9]+):.+/\1/p'`
++	local viface=`ip li | sed -nE 's/^[0-9]+: (ltp_v[0-9]+)[@:].+/\1/p'`
+ 	for vx in $viface; do
+ 		ROD_SILENT "ip link set $vx down"
+ 		ROD_SILENT "ip link delete $vx"
 -- 
-1.8.4.2
+1.7.1
 
 
 ------------------------------------------------------------------------------
