@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZJjiA-0003h8-Dt
-	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 14:49:02 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZJji7-0002KY-WA
-	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 14:49:02 +0000
-Date: Mon, 27 Jul 2015 16:48:44 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150727144844.GB15383@rei.suse.de>
-References: <1436876572-28759-2-git-send-email-mmarhefk@redhat.com>
-	<1436958405-21403-1-git-send-email-mmarhefk@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZD29E-0003vo-Eq
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:16 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZD29C-0002ZQ-AK
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 03:05:16 +0000
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 9 Jul 2015 11:05:15 +0800
+Message-ID: <1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <55842886.4090202@oracle.com>
+References: <55842886.4090202@oracle.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1436958405-21403-1-git-send-email-mmarhefk@redhat.com>
-Subject: Re: [LTP] [PATCH 2/2 v2] containers/netns tests rewritten
+Subject: [LTP] [PATCH v4 01/11] SAFE_MACROS: Add socket(), bind(), listen(),
+	connect() and getsockname()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,157 +28,219 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
+To: alexey.kodanev@oracle.com
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-> All original test cases in ltp/testcases/kernel/containers/netns
-> were removed and replaced with the new ones. The new test cases
-> cover all of the tests in the original code and everything else
-> in the original code didn't exercise new code paths in the kernel.
-> Mapping of old test cases to the new ones:
-> 
-> netns_crtchild -> netns_comm
-> netns_two_children_ns -> netns_comm
-> netns_crtchild_delchild -> netns_sysfs
-> netns_par_chld_ipv6, netns_par_chld_ftp -> nets_comm (netns_comm
->     does not complicate it with sshd or ftp, it just tests
->     communication using ping/ping6)
-> netns_devices, netns_devices2 -> netns_comm
-> netns_isolation -> netns_breakns
-> 
-> New testcases also use the helper tools for creating and working
-> with namespaces from ltp/testcases/kernel/containers/share.
-> 
-> diff --git a/runtest/containers b/runtest/containers
-> index de4197e..2dee944 100644
-> --- a/runtest/containers
-> +++ b/runtest/containers
-> @@ -23,15 +23,24 @@ mqns_03_clone mqns_03 -clone
->  mqns_04 mqns_04
->  mqns_04_clone mqns_04 -clone
->  
-> -netns_crtchild netns_crtchild
-> -netns_two_children_ns netns_two_children_ns
-> -netns_crtchild_delchild netns_crtchild_delchild
-> -netns_par_chld_ipv6 netns_par_chld_ipv6
-> -netns_par_chld_ftp netns_par_chld_ftp.sh
->  netns_netlink netns_netlink
-> -netns_devices netns_devices.sh
-> -netns_devices2 netns_devices2.sh
-> -netns_isolation netns_isolation.sh
-> +netns_breakns netns_breakns.sh ns_exec ipv4 netlink
-> +netns_breakns netns_breakns.sh ns_exec ipv6 netlink
-> +netns_breakns netns_breakns.sh ns_exec ipv4 ioctl
-> +netns_breakns netns_breakns.sh ns_exec ipv6 ioctl
-> +netns_breakns netns_breakns.sh ip ipv4 netlink
-> +netns_breakns netns_breakns.sh ip ipv6 netlink
-> +netns_breakns netns_breakns.sh ip ipv4 ioctl
-> +netns_breakns netns_breakns.sh ip ipv6 ioctl
-> +netns_comm netns_comm.sh ns_exec ipv4 netlink
-> +netns_comm netns_comm.sh ns_exec ipv6 netlink
-> +netns_comm netns_comm.sh ns_exec ipv4 ioctl
-> +netns_comm netns_comm.sh ns_exec ipv6 ioctl
-> +netns_comm netns_comm.sh ip ipv4 netlink
-> +netns_comm netns_comm.sh ip ipv6 netlink
-> +netns_comm netns_comm.sh ip ipv4 ioctl
-> +netns_comm netns_comm.sh ip ipv6 ioctl
-> +netns_sysfs netns_sysfs.sh
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ include/safe_macros.h |   1 +
+ include/safe_net.h    |  54 ++++++++++++++++++++++++
+ lib/safe_net.c        | 113 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 168 insertions(+)
+ create mode 100644 include/safe_net.h
+ create mode 100644 lib/safe_net.c
 
-I'm really against having different testcases with the same name.
-
-> diff --git a/testcases/kernel/containers/netns/netns_breakns.sh b/testcases/kernel/containers/netns/netns_breakns.sh
-> new file mode 100755
-> index 0000000..46d8ca3
-> --- /dev/null
-> +++ b/testcases/kernel/containers/netns/netns_breakns.sh
-> @@ -0,0 +1,74 @@
-> +#!/bin/sh
-> +#==============================================================================
-> +# Copyright (c) 2015 Red Hat, Inc.
-> +#
-> +# This program is free software: you can redistribute it and/or modify
-> +# it under the terms of version 2 the GNU General Public License as
-> +# published by the Free Software Foundation.
-> +#
-> +# This program is distributed in the hope that it will be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-> +#
-> +# Written by Matus Marhefka <mmarhefk@redhat.com>
-> +#
-> +#==============================================================================
-> +#
-> +# SYNOPSIS:
-> +# netns_breakns.sh <NS_EXEC_PROGRAM> <IP_VERSION> <COMM_TYPE>
-> +#
-> +# OPTIONS:
-> +#	* NS_EXEC_PROGRAM (ns_exec|ip)
-> +#		Program which will be used to enter and run other commands
-> +#		inside a network namespace.
-> +#	* IP_VERSION (ipv4|ipv6)
-> +#		Version of IP. (ipv4|ipv6)
-> +#	* COMM_TYPE (netlink|ioctl)
-> +#		Communication type between kernel and user space
-> +#		for basic setup: enabling and assigning IP addresses
-> +#		to the virtual ethernet devices. (Uses 'ip' command for netlink
-> +#		and 'ifconfig' for ioctl.)
-> +#
-> +# Tests communication with ip (uses netlink) and ifconfig (uses ioctl)
-> +# over a device which is not visible from the current network namespace.
-> +#
-> +# There are two test cases which are trying to set an ip address on the veth1
-> +# device which is not inside the network namespace referred to by NS_HANDLE0:
-> +# 1. using netlink (ip command).
-> +# 2. using ioctl (ifconfig command).
-> +#==============================================================================
-> +
-> +TCID="netns_breakns"
-> +TST_TOTAL=2
-> +. netns_helper.sh
-> +
-> +# SETUP
-> +netns_setup $1 $2 $3 "192.168.0.2" "192.168.0.3" "fd00::2" "fd00::3"
-> +TCID="netns_breakns_$1_$2_$3"
-
-Hmm, why don't we define the TCID="netns_breakns_$1_$2_$3" from the
-start?
-
-> +tst_resm TINFO "NS interaction: $1 | devices setup: $3"
-> +
-> +
-> +# TEST CASE #1
-> +$NS_EXEC $NS_HANDLE0 ip address add $IP1/$NETMASK dev veth1 2>/dev/null
-> +if [ $? -ne 0 ]; then
-> +	tst_resm TPASS "controlling device over netlink"
-> +else
-> +	tst_resm TFAIL "controlling device over netlink"
-> +fi
-> +
-> +
-> +# TEST CASE #2
-> +tst_check_cmds ifconfig
-> +$NS_EXEC $NS_HANDLE0 ifconfig veth1 $IFCONF_IN6_ARG $IP1/$NETMASK 2>/dev/null
-> +if [ $? -ne 0 ]; then
-> +	tst_resm TPASS "controlling device over ioctl"
-> +else
-> +	tst_resm TFAIL "controlling device over ioctl"
-> +fi
-> +
-> +
-> +tst_exit
-
-Otherwise it looks good.
-
+diff --git a/include/safe_macros.h b/include/safe_macros.h
+index 0e7651d..1a09af6 100644
+--- a/include/safe_macros.h
++++ b/include/safe_macros.h
+@@ -28,6 +28,7 @@
+ #include <dirent.h>
+ 
+ #include "safe_stdio.h"
++#include "safe_net.h"
+ 
+ char*	safe_basename(const char *file, const int lineno,
+ 	    void (*cleanup_fn)(void), char *path);
+diff --git a/include/safe_net.h b/include/safe_net.h
+new file mode 100644
+index 0000000..2c9ddb6
+--- /dev/null
++++ b/include/safe_net.h
+@@ -0,0 +1,54 @@
++/*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#ifndef __SAFE_NET_H__
++#define __SAFE_NET_H__
++
++#include <sys/types.h>
++#include <sys/socket.h>
++
++int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
++		int domain, int type, int protocol);
++#define SAFE_SOCKET(cleanup_fn, domain, type, protocol) \
++	safe_socket(__FILE__, __LINE__, (cleanup_fn), domain, type, protocol)
++
++int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
++	      int socket, const struct sockaddr *address,
++	      socklen_t address_len);
++#define SAFE_BIND(cleanup_fn, socket, address, address_len) \
++	safe_bind(__FILE__, __LINE__, (cleanup_fn), socket, address, \
++		  address_len)
++
++int safe_listen(const char *file, const int lineno, void (cleanup_fn)(void),
++		int socket, int backlog);
++#define SAFE_LISTEN(cleanup_fn, socket, backlog) \
++	safe_listen(__FILE__, __LINE__, (cleanup_fn), socket, backlog)
++
++int safe_connect(const char *file, const int lineno, void (cleanup_fn)(void),
++		 int sockfd, const struct sockaddr *addr, socklen_t addrlen);
++#define SAFE_CONNECT(cleanup_fn, sockfd, addr, addrlen) \
++	safe_connect(__FILE__, __LINE__, (cleanup_fn), sockfd, addr, addrlen)
++
++int safe_getsockname(const char *file, const int lineno,
++		     void (cleanup_fn)(void), int sockfd, struct sockaddr *addr,
++		     socklen_t *addrlen);
++#define SAFE_GETSOCKNAME(cleanup_fn, sockfd, addr, addrlen) \
++	safe_getsockname(__FILE__, __LINE__, (cleanup_fn), sockfd, addr, \
++			 addrlen)
++
++#endif /* __SAFE_NET_H__ */
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+new file mode 100644
+index 0000000..85866ac
+--- /dev/null
++++ b/lib/safe_net.c
+@@ -0,0 +1,113 @@
++/*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#include <errno.h>
++#include "test.h"
++#include "safe_net.h"
++
++int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
++		int domain, int type, int protocol)
++{
++	int rval;
++
++	rval = socket(domain, type, protocol);
++
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
++			 domain, type, protocol);
++	}
++
++	return rval;
++}
++
++int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
++	      int socket, const struct sockaddr *address,
++	      socklen_t address_len)
++{
++	int err, ret, i;
++
++	for (i = 0; i < 30; i++) {
++		ret = bind(socket, address, address_len);
++		err = errno;
++
++		if (!ret)
++			return 0;
++
++		tst_resm(TINFO, "bind('%p') failed with %s, try %2i...",
++			 address, tst_strerrno(err), i+1);
++
++		if (i == 0 && err == EADDRINUSE)
++			tst_resm(TINFO, "The given address is already in use.");
++
++		usleep(100000);
++	}
++
++	tst_brkm(TBROK | TERRNO, cleanup_fn,
++		 "%s:%d: Failed to bind(%d, %p, %d) after 30 retries",
++		 file, lineno, socket, address, address_len);
++}
++
++int safe_listen(const char *file, const int lineno, void (cleanup_fn)(void),
++		int socket, int backlog)
++{
++	int rval;
++
++	rval = listen(socket, backlog);
++
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: listen(%d, %d) failed", file, lineno, socket,
++			 backlog);
++	}
++
++	return rval;
++}
++
++int safe_connect(const char *file, const int lineno, void (cleanup_fn)(void),
++		 int sockfd, const struct sockaddr *addr, socklen_t addrlen)
++{
++	int rval;
++
++	rval = connect(sockfd, addr, addrlen);
++
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: connect(%d, %p, %d) failed", file, lineno,
++			 sockfd, addr, addrlen);
++	}
++
++	return rval;
++}
++
++int safe_getsockname(const char *file, const int lineno,
++		     void (cleanup_fn)(void), int sockfd, struct sockaddr *addr,
++		     socklen_t *addrlen)
++{
++	int rval;
++
++	rval = getsockname(sockfd, addr, addrlen);
++
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: getsockname(%d, %p, %p) failed", file, lineno,
++			 sockfd, addr, addrlen);
++	}
++
++	return rval;
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
