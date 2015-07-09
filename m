@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <gaowanlong@cn.fujitsu.com>) id 1ZEXfh-0002A9-9C
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 06:57:01 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZEXff-0007q8-4G
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 06:57:01 +0000
-Message-ID: <55A3610F.5000703@cn.fujitsu.com>
-Date: Mon, 13 Jul 2015 14:56:15 +0800
-From: Wanlong Gao <gaowanlong@cn.fujitsu.com>
+	(envelope-from <jstancek@redhat.com>) id 1ZD5oY-0000O0-6G
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 07:00:10 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZD5oT-0007Op-6S
+	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 07:00:10 +0000
+Date: Thu, 9 Jul 2015 02:59:58 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <904998018.14796051.1436425198776.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20150708194114.GA20060@tarantula.localdomain>
+References: <20150708194114.GA20060@tarantula.localdomain>
 MIME-Version: 1.0
-References: <1436426857-7322-1-git-send-email-mawentao@inspur.com>
-In-Reply-To: <1436426857-7322-1-git-send-email-mawentao@inspur.com>
-Subject: Re: [LTP] [PATCH] acls: Solve a problem from acl_test01
+Subject: Re: [LTP] [PATCH] syslog/syslog-lib.sh: support systemd journal
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,44 +27,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Wentao Ma <mawentao@inspur.com>, ltp-list@lists.sourceforge.net
-Cc: wunan@inspur.com
+To: Jeffrey Bastian <jbastian@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 07/09/2015 03:27 PM, Wentao Ma wrote:
-> The failed infornamtion is as follow:
-> useradd: cannot set SELinux context for
-> home directory /tmp/tacl/mount-ext3/acltest1
 
-It seems that the error is caused by SELinux, please disable
-your SELinux or set it to permissive and test again.
 
-Thanks,
-Wanlong Gao
 
+
+----- Original Message -----
+> From: "Jeffrey Bastian" <jbastian@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Wednesday, 8 July, 2015 9:41:14 PM
+> Subject: [LTP] [PATCH] syslog/syslog-lib.sh: support systemd journal
 > 
-> this is caused by comand "rm -rf $TEST_USER1_HOMEDIR".
-> But this directory is needed by next step.
-> So create this driectory again.
+> rsyslog needs to use the imjournal module to communicate with
+> systemd-journald.
+
+According to:
+  https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/s1-interaction_of_rsyslog_and_journal.html
+
+there are 2 ways rsyslog can get messages:
+1) By default, rsyslogd uses the imjournal module as a default input mode for journal files.
+2) As an alternative, configure rsyslogd to read from the socket provided by journal as an output for syslog-based applications. The path to the socket is /run/systemd/journal/syslog. 
+   $SystemLogSocketName /run/systemd/journal/syslog
+
+Is 2) no longer supported?
+
+Regards,
+Jan
+
+> Copy the imjournal lines from the system's
+> /etc/rsyslog.conf if they exist.
 > 
-> Signed-off-by: Wentao Ma <mawentao@inspur.com>
+> Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
 > ---
->  testcases/kernel/fs/acls/acl_test01 | 1 +
->  1 file changed, 1 insertion(+)
+>  testcases/kernel/syscalls/syslog/syslog-lib.sh | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/testcases/kernel/fs/acls/acl_test01 b/testcases/kernel/fs/acls/acl_test01
-> index 328ff74..d079abd 100755
-> --- a/testcases/kernel/fs/acls/acl_test01
-> +++ b/testcases/kernel/fs/acls/acl_test01
-> @@ -87,6 +87,7 @@ do_setup(){
->  	rm -rf $TEST_USER1_HOMEDIR
->  	userdel $TEST_USER1 > /dev/null 2>&1
->  	sleep 1
-> +        mkdir -p $TEST_USER1_HOMEDIR
->  	useradd -d $TEST_USER1_HOMEDIR -m -g $TEST_USER1_GROUP $TEST_USER1 -s /bin/sh
->  
->  	if [ $? -ne 0 ]; then
+> diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> index ef33517aa92b..4a6514a3114e 100755
+> --- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> +++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
+> @@ -72,8 +72,10 @@ setup()
+>  	elif [ "$SYSLOG_DAEMON" = "rsyslog" ]; then
+>  		CONFIG_FILE="/etc/rsyslog.conf"
+>  		log_socket=$(grep -ho "^\$SystemLogSocketName .*" -r /etc/rsyslog.conf
+>  		/etc/rsyslog.d/ | head -1)
+> +		systemd_journal=$(grep -hoi "^[^#].*imjournal.*" -r /etc/rsyslog.conf
+> /etc/rsyslog.d/)
+>  		RSYSLOG_CONFIG=$(cat <<EOF
+>  \$ModLoad imuxsock.so
+> +$systemd_journal
+>  $log_socket
+>  EOF
+>  )
+> --
+> 1.9.4
 > 
-
+> ------------------------------------------------------------------------------
+> Don't Limit Your Business. Reach for the Cloud.
+> GigeNET's Cloud Solutions provide you with the tools and support that
+> you need to offload your IT needs and focus on growing your business.
+> Configured For All Businesses. Start Your Cloud Today.
+> https://www.gigenetcloud.com/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
