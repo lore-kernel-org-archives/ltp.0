@@ -1,17 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZEbE8-0001cu-3u
-	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 10:44:48 +0000
-Date: Mon, 13 Jul 2015 12:43:02 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150713104302.GB2900@rei.suse.de>
-References: <BLU436-SMTP2533A9350B9BD99FA2EE294CF9C0@phx.gbl>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1ZEZih-0007SO-Cl
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 09:08:15 +0000
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZEZid-0004Ec-9j
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 09:08:15 +0000
+Message-ID: <55A37E00.30200@huawei.com>
+Date: Mon, 13 Jul 2015 16:59:44 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <BLU436-SMTP2533A9350B9BD99FA2EE294CF9C0@phx.gbl>
-Subject: Re: [LTP] Purpose of fsync02
+References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
+	<5593E172.1050800@huawei.com> <5593F4E2.1040804@oracle.com>
+	<55952961.30906@huawei.com> <5595490E.1010509@oracle.com>
+	<55974D10.5050808@huawei.com> <559A9148.8060200@oracle.com>
+	<559B983A.3090003@huawei.com> <559E0DD1.4010903@oracle.com>
+In-Reply-To: <559E0DD1.4010903@oracle.com>
+Subject: Re: [LTP] [PATCH v2] commands/logrotate:run the case once again
+ will failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,27 +32,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Rock Lee <rocklee_104@outlook.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
-Hi!
-> 	I used ltp to test my linux OS.Sometimes, I get "fsync took too long" 
-> error.Then I read fsync02 description -- Create a sparse file, fsync it, 
-> and time the fsync, but I don't know what is the purpose to do this, Any 
-> ideas or pointers would be greatly appreciated.
-
-Looks like the testcase tries to assert that fsync() finishes in
-reasonable time. Which is 120 seconds and if I'm right the amout of data
-it writes to the file is about 8MB and that seems to be fairly
-reasonable unless you system is under heavy load.
-
-One of the problems may be that it uses BUFSIZ for the size of the
-buffer, which is defined in my glibc to 8192, if that constant is
-defined substantially larger on your system the test may easily fail.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On 2015/7/9 13:59, Alexey Kodanev wrote:
+> Applied with changed commit message and subject, also removed the comment above 'include'.
+thanks for your help.
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
