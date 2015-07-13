@@ -1,24 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwan@redhat.com>) id 1ZLAxt-00061N-Uk
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 14:07:13 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZLAxr-0006v0-1D
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 14:07:13 +0000
-Received: from zmail22.collab.prod.int.phx2.redhat.com
-	(zmail22.collab.prod.int.phx2.redhat.com [10.5.83.26])
-	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id t6VE75EY019992
-	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2015 10:07:05 -0400
-Date: Fri, 31 Jul 2015 10:07:04 -0400 (EDT)
-From: Li Wang <liwang@redhat.com>
-Message-ID: <481838215.1118179.1438351624934.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
-References: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] How to compie a ltp-case into 32-bit on the 64bit system
+	(envelope-from <jstancek@redhat.com>) id 1ZEcaB-00079h-M7
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 12:11:39 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZEca7-0002Xd-NZ
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 12:11:39 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (Postfix) with ESMTPS id 46658C0179
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 13 Jul 2015 12:11:29 +0000 (UTC)
+Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
+	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
+	ESMTP id t6DCBRBQ009410
+	for <ltp-list@lists.sourceforge.net>; Mon, 13 Jul 2015 08:11:28 -0400
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 13 Jul 2015 14:11:25 +0200
+Message-Id: <fd54e759e3f74f43ac1076107c6d2f83f368ae10.1436789330.git.jstancek@redhat.com>
+Subject: [LTP] [PATCH] syscalls/getrandom: add configure check for
+	linux/random.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,224 +31,142 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-The program is here.
+Old distros (such as RHEL5.6) break, when they try to include
+some kernel headers directly. Add configure check to make sure
+linux/random.h kernel header can be compiled without errors.
 
-msgrcv08.c
------------ 
-/*
- * Copyright (c) 2015   Author: Gabriellla Schmidt <gsc@bruker.de>
- *                      Modify: Li Wang <liwang@redhat.com>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of version 2 of the GNU General Public License as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it would be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * you should have received a copy of the GNU General Public License along
- * with this program; if not, write the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
- */
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ configure.ac                                      |  1 +
+ include/lapi/getrandom.h                          |  6 ++++++
+ m4/ltp-linuxrandom.m4                             | 21 +++++++++++++++++++++
+ testcases/kernel/syscalls/getrandom/getrandom01.c |  1 -
+ testcases/kernel/syscalls/getrandom/getrandom02.c |  1 -
+ testcases/kernel/syscalls/getrandom/getrandom03.c |  1 -
+ testcases/kernel/syscalls/getrandom/getrandom04.c |  1 -
+ 7 files changed, 28 insertions(+), 4 deletions(-)
+ create mode 100644 m4/ltp-linuxrandom.m4
 
-/*
- * Description:
- *
- * A regression test for:
- * 	commit e7ca2552369c1dfe0216c626baf82c3d83ec36bb
- * 	Author: Mateusz Guzik <mguzik@redhat.com>
- *	Date:   Mon Jan 27 17:07:11 2014 -0800
- *
- *     		ipc: fix compat msgrcv with negative msgtyp
- *
- * Reproduce:
- *
- *	32-bit application using the msgrcv() system call
- *	gives the error message:
- *
- *		msgrcv: No message of desired type
- *
- *	If this progarm is compiled as 64-bit application it doesn't works.
- */
-
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/msg.h>
-#include "test.h"
-
-const char *TCID = "msgrcv08";
-const int TST_TOTAL = 1;
-
-struct msgbuf
-{
-	long mtype;     /* message type, must be > 0 */
-	char mtext[16]; /* message data */
-};
-
-static void setup(void)
-{
-	tst_require_root(NULL);
-
-	TEST_PAUSE;
-}
-
-static void cleanup(void)
-{
-}
-
-static int msr(int msqid)
-{
-	struct msgbuf msbs;
-	struct msgbuf msbr;
-	ssize_t sret;
-	long   mtype = 121;
-
-	memset(&msbs, 0, sizeof(msbs));
-	msbs.mtype = mtype;
-
-	if (msgsnd(msqid, &msbs, sizeof(msbs.mtext), IPC_NOWAIT))
-		tst_brkm(TBROK, NULL, "msgsnd error");
-
-	sret = msgrcv(msqid, &msbr, sizeof(msbr.mtext), -mtype, IPC_NOWAIT | MSG_NOERROR);
-
-	if (sret < 0) {
-		tst_resm(TFAIL, "Bug: No message of desired type.");
-		return -1;
-	}
-
-	if (msbr.mtype != mtype)
-		tst_brkm(TBROK, NULL, "found mtype %ld, expected %ld\n", msbr.mtype, mtype);
-
-	if ((size_t)sret != sizeof(msbs.mtext))
-		tst_brkm(TBROK, NULL, "received %lu, expected %lu\n",
-				(unsigned long)sret, (unsigned long)sizeof(msbs.mtext));
-
-	return 0;
-}
-
-static void msgrcv_test(void)
-{
-	int ret;
-	int msqid = msgget(IPC_PRIVATE, IPC_CREAT | IPC_EXCL | 0666);
-
-	if (msqid < 0)
-		tst_brkm(TBROK, NULL, "msgget error");
-
-	ret = msr(msqid);
-
-	if (msgctl(msqid, IPC_RMID, 0))
-		tst_brkm(TBROK, NULL, "msgctl error");
-
-	if (!ret)
-		tst_resm(TPASS, "Hi, no regression found!");
-}
-
-int main(int argc, char *argv[])
-{
-	int lc;
-
-	tst_parse_opts(argc, argv, NULL, NULL);
-
-	setup();
-
-	for (lc = 0; TEST_LOOPING(lc); lc++)
-		msgrcv_test();
-
-	cleanup();
-	tst_exit();
-}
-
+diff --git a/configure.ac b/configure.ac
+index 0ca21a6..0198ac7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -176,5 +176,6 @@ LTP_CHECK_TIMERFD
+ LTP_CHECK_CAN_SUPPORT
+ LTP_CHECK_IOVEC
+ LTP_CHECK_KEYCTL
++LTP_CHECK_LINUXRANDOM
+ 
+ AC_OUTPUT
+diff --git a/include/lapi/getrandom.h b/include/lapi/getrandom.h
+index 6d24c5d..f5609fc 100644
+--- a/include/lapi/getrandom.h
++++ b/include/lapi/getrandom.h
+@@ -19,6 +19,12 @@
+ #ifndef __GETRANDOM_H__
+ #define __GETRANDOM_H__
+ 
++#include "config.h"
++
++#if HAVE_LINUX_RANDOM_H
++#include <linux/random.h>
++#endif
++
+ /*
+  * Flags for getrandom(2)
+  *
+diff --git a/m4/ltp-linuxrandom.m4 b/m4/ltp-linuxrandom.m4
+new file mode 100644
+index 0000000..30c099e
+--- /dev/null
++++ b/m4/ltp-linuxrandom.m4
+@@ -0,0 +1,21 @@
++dnl
++dnl Copyright (c) Linux Test Project, 2015
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++
++dnl
++dnl LTP_CHECK_LINUXRANDOM
++dnl ----------------------------
++dnl
++AC_DEFUN([LTP_CHECK_LINUXRANDOM],[
++AC_CHECK_HEADERS(linux/random.h, [], [], [])]
++)
+diff --git a/testcases/kernel/syscalls/getrandom/getrandom01.c b/testcases/kernel/syscalls/getrandom/getrandom01.c
+index 818372e..103748a 100644
+--- a/testcases/kernel/syscalls/getrandom/getrandom01.c
++++ b/testcases/kernel/syscalls/getrandom/getrandom01.c
+@@ -26,7 +26,6 @@
+  *
+  */
+ 
+-#include <linux/random.h>
+ #include "lapi/getrandom.h"
+ #include "linux_syscall_numbers.h"
+ #include "test.h"
+diff --git a/testcases/kernel/syscalls/getrandom/getrandom02.c b/testcases/kernel/syscalls/getrandom/getrandom02.c
+index 905917b..0ac8bd2 100644
+--- a/testcases/kernel/syscalls/getrandom/getrandom02.c
++++ b/testcases/kernel/syscalls/getrandom/getrandom02.c
+@@ -27,7 +27,6 @@
+  *
+  */
+ 
+-#include <linux/random.h>
+ #include "lapi/getrandom.h"
+ #include "linux_syscall_numbers.h"
+ #include "test.h"
+diff --git a/testcases/kernel/syscalls/getrandom/getrandom03.c b/testcases/kernel/syscalls/getrandom/getrandom03.c
+index 9c13d09..03950e0 100644
+--- a/testcases/kernel/syscalls/getrandom/getrandom03.c
++++ b/testcases/kernel/syscalls/getrandom/getrandom03.c
+@@ -30,7 +30,6 @@
+  *  number of bytes required and expects success.
+  */
+ 
+-#include <linux/random.h>
+ #include "lapi/getrandom.h"
+ #include "linux_syscall_numbers.h"
+ #include "test.h"
+diff --git a/testcases/kernel/syscalls/getrandom/getrandom04.c b/testcases/kernel/syscalls/getrandom/getrandom04.c
+index 4e099e1..10ab44b 100644
+--- a/testcases/kernel/syscalls/getrandom/getrandom04.c
++++ b/testcases/kernel/syscalls/getrandom/getrandom04.c
+@@ -30,7 +30,6 @@
+  *  descriptors to 3 and expects success.
+  */
+ 
+-#include <linux/random.h>
+ #include <sys/resource.h>
+ #include "lapi/getrandom.h"
+ #include "linux_syscall_numbers.h"
 -- 
-Regards, 
-Li Wang 
-Email: liwang@redhat.com 
+1.8.3.1
 
-
------ Original Message -----
-> Hi all,
-> 
-> I am going to add a new testcase:
-> ltp/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
-> for regression test.
-> 
-> But the key point is that this program 'msgrcv08.c' should be compiled into
-> 32-bit,
-> if it is compiled as 64-bit application it doesn't work.
-> 
-> 
-> So, I try to add one line in the .../ipc/msgrcv/Makefile:
-> 
->   msgrcv08: CFLAGS+=-m32
-> 
-> and I get some compile errors like:
-> -----
-> # make
-> make -C ../lib -f
-> "/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib/Makefile"
-> all
-> make[1]: Entering directory
-> `/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/lib'
-> make[1]: Nothing to be done for `all'.
-> make[1]: Leaving directory
-> `/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/lib'
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2
-> -Wold-style-definition -m32 -D_FORTIFY_SOURCE=2
-> -I/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/include
-> -I/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib
-> -I../../../../../include -I../../../../../include
-> -L/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib
-> -L../../../../../lib  msgrcv08.c   -lltp -lipc -o msgrcv08
-> /usr/bin/ld: skipping incompatible ../../../../../lib/libltp.a when searching
-> for -lltp
-> /usr/bin/ld: cannot find -lltp
-> /usr/bin/ld: skipping incompatible
-> /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib/libipc.a
-> when searching for -lipc
-> /usr/bin/ld: cannot find -lipc
-> collect2: error: ld returned 1 exit status
-> make: *** [msgrcv08] Error 1
-> -----
-> 
-> these because the libltp.a is 64-bit.
-> 
-> 
-> Then, I came up with a idea that I don't include the ltp-lib file in
-> 'msgrcv08.c',
-> and just add two lines in the .../ipc/msgrcv/Makefile:
-> 
->   msgrcv08:
-> 	gcc -g -O2 -Wall -m32 msgrcv08.c -o msgrcv08
-> 
-> It works for me, but I know it's not appropriate for LTP management.
-> 
-> What should I do? or, Is there any good way to solve this problem?
-> 
-> Thanks~
-> 
-> --
-> Regards,
-> Li Wang
-> Email: liwang@redhat.com
-> 
-> 
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
