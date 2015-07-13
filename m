@@ -1,23 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liuhangbin@gmail.com>) id 1ZA8Bc-000681-1P
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 02:55:44 +0000
-Received: from mail-ob0-f178.google.com ([209.85.214.178])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZA8Bb-0005ob-3g
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 02:55:44 +0000
-Received: by obbkm3 with SMTP id km3so19733063obb.1
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 30 Jun 2015 19:55:38 -0700 (PDT)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <yanxiaofeng@inspur.com>) id 1ZEZNc-0005wX-82
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 08:46:28 +0000
+Received: from unicom145.biz-email.net ([210.51.26.145])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZEZNU-0005Hg-5F
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 08:46:28 +0000
+Message-ID: <55A37AAC.9060900@inspur.com>
+Date: Mon, 13 Jul 2015 16:45:32 +0800
+From: yanxiaofeng <yanxiaofeng@inspur.com>
 MIME-Version: 1.0
-In-Reply-To: <1434987065-23739-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1434987065-23739-1-git-send-email-alexey.kodanev@oracle.com>
-Date: Wed, 1 Jul 2015 10:55:38 +0800
-Message-ID: <CAPwn2JTduVBP9hgynOwyaNHN427aKAWPq4eyePUSSNzL0beCow@mail.gmail.com>
-From: Hangbin Liu <liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH] sctp: sctputils.c: fix test_peer_addr()
+References: <1436426857-7322-1-git-send-email-mawentao@inspur.com>,
+	<55A3610F.5000703@cn.fujitsu.com>
+	<2015071316333140061425@inspur.com>
+	<55A378AE.8060202@cn.fujitsu.com>
+In-Reply-To: <55A378AE.8060202@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] acls: Solve a problem from acl_test01
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,72 +27,96 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, LTP list <ltp-list@lists.sourceforge.net>
+To: Wanlong Gao <gaowanlong@cn.fujitsu.com>, "mawentao@inspur.com" <mawentao@inspur.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "wunan@inspur.com" <wunan@inspur.com>
 
-I also got this issue while running sctp test and confirm this patch fixed the
-problem. Please push this patch to the repo.
-
-Thanks
-Hangbin
-
-2015-06-22 23:31 GMT+08:00 Alexey Kodanev <alexey.kodanev@oracle.com>:
-> Test always fails with TBROK because inner loop will reset all the
-> previous set values if we use else branch.
->
-> Fixes 7cfe1586b8ed ("sctp: sctputil.c: make 'found' a static array")
->
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->  utils/sctp/testlib/sctputil.c |    3 +--
->  1 files changed, 1 insertions(+), 2 deletions(-)
->
-> diff --git a/utils/sctp/testlib/sctputil.c b/utils/sctp/testlib/sctputil.c
-> index c678072..564925c 100644
-> --- a/utils/sctp/testlib/sctputil.c
-> +++ b/utils/sctp/testlib/sctputil.c
-> @@ -371,6 +371,7 @@ int test_peer_addr(int sk, sctp_assoc_t asoc, sockaddr_storage_t *peers, int cou
->         socklen_t addrs_size = 0;
->         void *addrbuf;
->         char found[count];
-> +       memset(found, 0, count);
->
->         error = sctp_getpaddrs(sk, asoc, &addrs);
->         if (-1 == error) {
-> @@ -404,8 +405,6 @@ int test_peer_addr(int sk, sctp_assoc_t asoc, sockaddr_storage_t *peers, int cou
->                         if (cmp_addr((sockaddr_storage_t *)sa_addr,
->                                      &peers[j]) == 0) {
->                                 found[j] = 1;
-> -                       } else {
-> -                               found[j] = 0;
->                         }
->                 }
->         }
-> --
-> 1.7.1
->
->
-> ------------------------------------------------------------------------------
-> Monitor 25 network devices or servers for free with OpManager!
-> OpManager is web-based network management software that monitors
-> network devices and physical & virtual servers, alerts via email & sms
-> for fault. Monitor 25 devices for free with no restriction. Download now
-> http://ad.doubleclick.net/ddm/clk/292181274;119417398;o
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+CgrlnKggMjAxNeW5tDA35pyIMTPml6UgMTY6MzcsIFdhbmxvbmcgR2FvIOWGmemBkzoKPiBPbiAw
+Ny8xMy8yMDE1IDA0OjMzIFBNLCBtYXdlbnRhb0BpbnNwdXIuY29tIHdyb3RlOgo+PiBUaGFua3Mg
+V2FubG9uZyBHYW8sIHdlIHNldCB0aGUgU0VMaW51eCBtb2RlIHRvIHBlcm1pc3NpdmUgYW5kIHRo
+ZSB0ZXN0IHBhc3Nlcy4KPj4gdGhlIGVycm9yIGlzIGNhdXNlZCBieSB0aGUgU0VMaW51eCwgZmlu
+YWxseSB3ZSBtb2RpZnkgdGhlIHBhdGNoLgo+IE5vcGUsIFNFTGludXggc2V0dXAgc2hvdWxkIGRv
+IGJlZm9yZSB5b3UgcnVubmluZyBMVFAuIFNpbmNlIFNFTGludXggaXMgbm90Cj4gc3VwcG9ydGVk
+IGJ5IGFsbCBvZiB0aGUgZGlzdHJpYnV0aW9ucywgd2UgYXNzdW1lIHRoYXQgaXQgaXMgZGlzYWJs
+ZWQgYnkgeW91cnNlbGYKPiBiZWZvcmUgcnVubmluZyBMVFAuCkhpICB3YW5sb25nLAoKQ2FuIHdl
+IGp1ZGdlIHdoZXRoZXIgU0VsaW5leCBpcyBlbmFibGVkIG9yIG5vdCA/IGFuZCBpZiBlbmFibGVk
+ICwgd2UgY2FuIApkaXNhYmxlIHNlbGludXggaW4gc2NyaXB0LgpXaGF0IGRvIHlvdXRoaW5rYWJv
+dXQgdGhpc29uZT8KClRoYW5rcwpZYW4KCgo+IFRoYW5rcywKPiBXYW5sb25nIEdhbwo+Cj4KPgo+
+Pgo+Pj4gVGhlIGZhaWxlZCBpbmZvcm5hbXRpb24gaXMgYXMgZm9sbG93Ogo+Pj4gdXNlcmFkZDog
+Y2Fubm90IHNldCBTRUxpbnV4IGNvbnRleHQgZm9yCj4+PiBob21lIGRpcmVjdG9yeSAvdG1wL3Rh
+Y2wvbW91bnQtZXh0My9hY2x0ZXN0MQo+Pj4KPj4+IHRoaXMgaXMgY2F1c2VkIGJ5IFNFTGludXgs
+IHRoZSBTRUxpbnV4IG1vZGUgaXMgZW5mb3JjaW5nCj4+PiBzZXQgdGhlIG1vZGUgdG8gcGVybWlz
+c2l2ZSBiZWZvcmUgYWRkaW5nIHVzZXIgYWNsX3Rlc3QxCj4+PiB0aGVuIHNldCBpdCB0byB0aGUg
+ZGVmYXVsdCBtb2RlIGVuZm9yY2luZy4KPj4+Cj4+PiBTaWduZWQtb2ZmLWJ5OiBXZW50YW8gTWEg
+PG1hd2VudGFvQGluc3B1ci5jb20+Cj4+PiAtLS0KPj4+ICAgIHRlc3RjYXNlcy9rZXJuZWwvZnMv
+YWNscy9hY2xfdGVzdDAxIHwgMiArKwo+Pj4gICAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9u
+cygrKQo+Pj4KPj4+IGRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbHMvYWNsX3Rl
+c3QwMSBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNscy9hY2xfdGVzdDAxCj4+PiBpbmRleCAzMjhm
+Zjc0Li5lMzhlMzliIDEwMDc1NQo+Pj4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2xzL2Fj
+bF90ZXN0MDEKPj4+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNscy9hY2xfdGVzdDAxCj4+
+PiBAQCAtODcsNyArODcsOSBAQCBkb19zZXR1cCgpewo+Pj4gICAgcm0gLXJmICRURVNUX1VTRVIx
+X0hPTUVESVIKPj4+ICAgIHVzZXJkZWwgJFRFU1RfVVNFUjEgPiAvZGV2L251bGwgMj4mMQo+Pj4g
+ICAgc2xlZXAgMQo+Pj4gKyBzZXRlbmZvcmNlIDAKPj4+ICAgIHVzZXJhZGQgLWQgJFRFU1RfVVNF
+UjFfSE9NRURJUiAtbSAtZyAkVEVTVF9VU0VSMV9HUk9VUCAkVEVTVF9VU0VSMSAtcyAvYmluL3No
+Cj4+PiArIHNldGVuZm9yY2UgMQo+Pj4gICAKPj4+ICAgIGlmIFsgJD8gLW5lIDAgXTsgdGhlbgo+
+Pj4gICAgdHN0X2Jya20gVEJST0sgIkNvdWxkIG5vdCBhZGQgdGVzdCB1c2VyICRURVNUX1VTRVIx
+LiIKPj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+ICAgLS0KPj4gbWF3ZW50YW9AaW5zcHVyLmNvbQo+
+Pgo+PiAgICAgICAKPj4gICAgICAqRnJvbToqIFdhbmxvbmcgR2FvIDxtYWlsdG86Z2Fvd2FubG9u
+Z0Bjbi5mdWppdHN1LmNvbT4KPj4gICAgICAqRGF0ZToqIDIwMTUtMDctMTMgMTQ6NTYKPj4gICAg
+ICAqVG86KiBXZW50YW8gTWEgPG1haWx0bzptYXdlbnRhb0BpbnNwdXIuY29tPjsgbHRwLWxpc3RA
+bGlzdHMuc291cmNlZm9yZ2UubmV0IDxtYWlsdG86bHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Pgo+PiAgICAgICpDQzoqIHd1bmFuQGluc3B1ci5jb20gPG1haWx0bzp3dW5hbkBpbnNwdXIu
+Y29tPgo+PiAgICAgICpTdWJqZWN0OiogUmU6IFtMVFBdIFtQQVRDSF0gYWNsczogU29sdmUgYSBw
+cm9ibGVtIGZyb20gYWNsX3Rlc3QwMQo+PiAgICAgIE9uIDA3LzA5LzIwMTUgMDM6MjcgUE0sIFdl
+bnRhbyBNYSB3cm90ZToKPj4gICAgICA+IFRoZSBmYWlsZWQgaW5mb3JuYW10aW9uIGlzIGFzIGZv
+bGxvdzoKPj4gICAgICA+IHVzZXJhZGQ6IGNhbm5vdCBzZXQgU0VMaW51eCBjb250ZXh0IGZvcgo+
+PiAgICAgID4gaG9tZSBkaXJlY3RvcnkgL3RtcC90YWNsL21vdW50LWV4dDMvYWNsdGVzdDEKPj4g
+ICAgICAgCj4+ICAgICAgSXQgc2VlbXMgdGhhdCB0aGUgZXJyb3IgaXMgY2F1c2VkIGJ5IFNFTGlu
+dXgsIHBsZWFzZSBkaXNhYmxlCj4+ICAgICAgeW91ciBTRUxpbnV4IG9yIHNldCBpdCB0byBwZXJt
+aXNzaXZlIGFuZCB0ZXN0IGFnYWluLgo+PiAgICAgICAKPj4gICAgICBUaGFua3MsCj4+ICAgICAg
+V2FubG9uZyBHYW8KPj4gICAgICAgCj4+ICAgICAgPgo+PiAgICAgID4gdGhpcyBpcyBjYXVzZWQg
+YnkgY29tYW5kICJybSAtcmYgJFRFU1RfVVNFUjFfSE9NRURJUiIuCj4+ICAgICAgPiBCdXQgdGhp
+cyBkaXJlY3RvcnkgaXMgbmVlZGVkIGJ5IG5leHQgc3RlcC4KPj4gICAgICA+IFNvIGNyZWF0ZSB0
+aGlzIGRyaWVjdG9yeSBhZ2Fpbi4KPj4gICAgICA+Cj4+ICAgICAgPiBTaWduZWQtb2ZmLWJ5OiBX
+ZW50YW8gTWEgPG1hd2VudGFvQGluc3B1ci5jb20+Cj4+ICAgICAgPiAtLS0KPj4gICAgICA+ICB0
+ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbHMvYWNsX3Rlc3QwMSB8IDEgKwo+PiAgICAgID4gIDEgZmls
+ZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQo+PiAgICAgID4KPj4gICAgICA+IGRpZmYgLS1naXQg
+YS90ZXN0Y2FzZXMva2VybmVsL2ZzL2FjbHMvYWNsX3Rlc3QwMSBiL3Rlc3RjYXNlcy9rZXJuZWwv
+ZnMvYWNscy9hY2xfdGVzdDAxCj4+ICAgICAgPiBpbmRleCAzMjhmZjc0Li5kMDc5YWJkIDEwMDc1
+NQo+PiAgICAgID4gLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9mcy9hY2xzL2FjbF90ZXN0MDEKPj4g
+ICAgICA+ICsrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvZnMvYWNscy9hY2xfdGVzdDAxCj4+ICAgICAg
+PiBAQCAtODcsNiArODcsNyBAQCBkb19zZXR1cCgpewo+PiAgICAgID4gIHJtIC1yZiAkVEVTVF9V
+U0VSMV9IT01FRElSCj4+ICAgICAgPiAgdXNlcmRlbCAkVEVTVF9VU0VSMSA+IC9kZXYvbnVsbCAy
+PiYxCj4+ICAgICAgPiAgc2xlZXAgMQo+PiAgICAgID4gKyAgICAgICAgbWtkaXIgLXAgJFRFU1Rf
+VVNFUjFfSE9NRURJUgo+PiAgICAgID4gIHVzZXJhZGQgLWQgJFRFU1RfVVNFUjFfSE9NRURJUiAt
+bSAtZyAkVEVTVF9VU0VSMV9HUk9VUCAkVEVTVF9VU0VSMSAtcyAvYmluL3NoCj4+ICAgICAgPgo+
+PiAgICAgID4gIGlmIFsgJD8gLW5lIDAgXTsgdGhlbgo+PiAgICAgID4KPj4gICAgICAgCj4+Cj4g
+Lgo+CgoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb24ndCBMaW1pdCBZb3VyIEJ1c2luZXNzLiBS
+ZWFjaCBmb3IgdGhlIENsb3VkLgpHaWdlTkVUJ3MgQ2xvdWQgU29sdXRpb25zIHByb3ZpZGUgeW91
+IHdpdGggdGhlIHRvb2xzIGFuZCBzdXBwb3J0IHRoYXQKeW91IG5lZWQgdG8gb2ZmbG9hZCB5b3Vy
+IElUIG5lZWRzIGFuZCBmb2N1cyBvbiBncm93aW5nIHlvdXIgYnVzaW5lc3MuCkNvbmZpZ3VyZWQg
+Rm9yIEFsbCBCdXNpbmVzc2VzLiBTdGFydCBZb3VyIENsb3VkIFRvZGF5LgpodHRwczovL3d3dy5n
+aWdlbmV0Y2xvdWQuY29tLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0
+Cg==
