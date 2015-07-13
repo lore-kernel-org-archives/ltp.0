@@ -1,20 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZK2Xy-0001ws-Ot
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 10:55:46 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <rocklee_104@outlook.com>) id 1ZEYgP-00041c-B0
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 08:01:49 +0000
+Received: from blu004-omc1s7.hotmail.com ([65.55.116.18])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZK2Xx-0005bS-G5
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 10:55:46 +0000
-Date: Tue, 28 Jul 2015 06:55:39 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <89938528.1257080.1438080939001.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1437403631-11091-1-git-send-email-vdavydov@parallels.com>
-References: <1437403631-11091-1-git-send-email-vdavydov@parallels.com>
+	(Exim 4.76) id 1ZEYgO-0001FF-Cb
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 08:01:49 +0000
+Message-ID: <BLU436-SMTP2533A9350B9BD99FA2EE294CF9C0@phx.gbl>
+Date: Mon, 13 Jul 2015 15:59:33 +0800
+From: Rock Lee <rocklee_104@outlook.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] memcg_control: fix mem_process not moved to cgroup
+Subject: [LTP] Purpose of fsync02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,34 +25,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Vladimir Davydov <vdavydov@parallels.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+Hi, all:
+	I used ltp to test my linux OS.Sometimes, I get "fsync took too long" 
+error.Then I read fsync02 description -- Create a sparse file, fsync it, 
+and time the fsync, but I don't know what is the purpose to do this, Any 
+ideas or pointers would be greatly appreciated.
 
-
------ Original Message -----
-> From: "Vladimir Davydov" <vdavydov@parallels.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Monday, 20 July, 2015 4:47:11 PM
-> Subject: [LTP] [PATCH] memcg_control: fix mem_process not moved to cgroup
-> 
-> $! is not set after ( cmd & )
-> 
-> This bug was introduced by commit 49010e502a74c ("Replace pushd // popd
-> with cd calls.").
-> 
-> Since we create a sub-shell in test_proc_kill only to preserve PWD,
-> let's change this to cd $OLDPWD. In contrast to pushd/popd this will
-> work in busybox.
-> 
-> Signed-off-by: Vladimir Davydov <vdavydov@parallels.com>
-
-Pushed.
-
-Thank you,
-Jan
+Thanks
+-- 
+Rock Lee
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
