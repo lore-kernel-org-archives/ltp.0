@@ -1,17 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZAeuJ-0003Kh-LN
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 13:52:03 +0000
-Date: Thu, 2 Jul 2015 15:50:42 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZEafU-0008U2-Mc
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 10:09:00 +0000
+Date: Mon, 13 Jul 2015 12:07:29 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150702135042.GA20249@rei.suse.de>
-References: <1435738142-19725-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+Message-ID: <20150713100728.GA2900@rei.suse.de>
+References: <1436407199-12492-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1435738142-19725-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH 1/2] interfaces/sem_open: remove unused define(s)
+In-Reply-To: <1436407199-12492-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH] syscalls/getrandom: remove reference to
+ '<linux/random.h>'
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,11 +25,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+To: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Both pushed, thanks.
+> Given that we use ltp_syscall() to call getrandom(2) and already
+> have "GRND_RANDOM, GRND_NONBLOCK" defined in lapi/getrandom.h, indeed
+> we don't need to include '<linux/random.h>'. Also including
+> '<linux/random.h>'' will result in some compilation errors in older
+> linux distribution, for example, in RHEL5.11GA, there will be such
+> errors:
+>   In file included from getrandom01.c:29:
+>   /usr/include/linux/random.h:38: error: expected specifier-qualifier-list before ???__u32???
+>   /usr/include/linux/random.h:42: error: expected specifier-qualifier-list before ???__u32???
+> This patch will also fix these compilation errors.
+
+This is not correct.
+
+The lapi/getrandom.h defines these as fallback definitions only if they
+are not defined allready. And we really want to use the defines from the
+system if they are available to ensure that they are correct.
+
+The system header on older distros likely misses to include
+linux/types.h to get the kernel types defined.
+
+What about moving the #include <linux/random.h> to start of
+lapi/getrandom.h and including <linux/types.h> there as well if needed
+(would require configure check).
 
 -- 
 Cyril Hrubis
