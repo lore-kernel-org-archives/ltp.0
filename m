@@ -1,17 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZIF5H-0006Kv-6b
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2015 11:54:43 +0000
-Date: Thu, 23 Jul 2015 13:40:01 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZEbE8-0001cu-3u
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 10:44:48 +0000
+Date: Mon, 13 Jul 2015 12:43:02 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150723114001.GB25886@rei.suse.de>
-References: <DUB407-EAS338A9D3F666651011BAB67485820@phx.gbl>
+Message-ID: <20150713104302.GB2900@rei.suse.de>
+References: <BLU436-SMTP2533A9350B9BD99FA2EE294CF9C0@phx.gbl>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <DUB407-EAS338A9D3F666651011BAB67485820@phx.gbl>
-Subject: Re: [LTP] OOM messages when running full ltp tests on a Hyper-V VM
+In-Reply-To: <BLU436-SMTP2533A9350B9BD99FA2EE294CF9C0@phx.gbl>
+Subject: Re: [LTP] Purpose of fsync02
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,24 +24,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cristian Valean <cristian.valean@live.com>
+To: Rock Lee <rocklee_104@outlook.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> I'm trying to run a full ltp test run on Ubuntu 14.04.2 as a Hyper-V VM.
-> 
->  
-> 
-> The VM is set with 8 or 12GB and 4 vCPUs, however during the tests execution
-> the syslog records over 30 call traces similar to the one below.
+> 	I used ltp to test my linux OS.Sometimes, I get "fsync took too long" 
+> error.Then I read fsync02 description -- Create a sparse file, fsync it, 
+> and time the fsync, but I don't know what is the purpose to do this, Any 
+> ideas or pointers would be greatly appreciated.
 
-Hmm, did you forget to attach something here?
+Looks like the testcase tries to assert that fsync() finishes in
+reasonable time. Which is 120 seconds and if I'm right the amout of data
+it writes to the file is about 8MB and that seems to be fairly
+reasonable unless you system is under heavy load.
+
+One of the problems may be that it uses BUFSIZ for the size of the
+buffer, which is defined in my glibc to 8192, if that constant is
+defined substantially larger on your system the test may easily fail.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
