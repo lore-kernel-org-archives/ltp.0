@@ -1,21 +1,17 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZJyg5-0005fU-Mp
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 06:47:53 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZJyg4-0002bT-2L
-	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 06:47:53 +0000
-Date: Tue, 28 Jul 2015 02:47:45 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2134014586.1093682.1438066065045.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1438016307-28805-1-git-send-email-jack@suse.com>
-References: <1438016307-28805-1-git-send-email-jack@suse.com>
+	(envelope-from <metan@suse.de>) id 1ZEbfH-00050v-7t
+	for ltp-list@lists.sourceforge.net; Mon, 13 Jul 2015 11:12:51 +0000
+Date: Mon, 13 Jul 2015 13:11:20 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150713111120.GC2900@rei.suse.de>
+References: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] inotify: Add test for inotify mark destruction
- race
+Content-Disposition: inline
+In-Reply-To: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH 1/3] umount2/umount2_01.c: add new test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,195 +24,204 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Kara <jack@suse.com>
+To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> +#ifndef MNT_DETACH
+> +#define MNT_DETACH 2
+> +#endif
+> +
+> +#ifndef MNT_EXPIRE
+> +#define MNT_EXPIRE 4
+> +#endif
+> +
+> +#ifndef UMOUNT_NOFOLLOW
+> +#define UMOUNT_NOFOLLOW 8
+> +#endif
 
+We may add these to allready exsting lapi/mount.h.
 
------ Original Message -----
-> From: "Jan Kara" <jack@suse.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "Jan Kara" <jack@suse.com>
-> Sent: Monday, 27 July, 2015 6:58:27 PM
-> Subject: [LTP] [PATCH] inotify: Add test for inotify mark destruction race
-> 
-> Kernels prior to 4.2 have a race when inode is being deleted while
+> +static int fd;
+> +static int fd_new;
+> +static int mount_flag;
+> +
+> +static char buf[256];
+> +
+> +static const char *device;
+> +static const char *fs_type;
+> +static const char *str = "abcdefghijklmnopqrstuvwxyz";
 
-Hi,
+The buf and str are used only in the verify function, why don't decleare
+them as local variables there?
 
-Do you also have the commit id(s) that fix the problem? That might be valuable
-information for people who find their kernel crashing.
-
-Regards,
-Jan
-
-> inotify group watching that inode is being torn down. When the race is
-> hit, the kernel crashes or loops. Test for that race.
-> 
-> Signed-off-by: Jan Kara <jack@suse.com>
-> ---
->  runtest/syscalls                              |   1 +
->  testcases/kernel/syscalls/inotify/inotify06.c | 121
->  ++++++++++++++++++++++++++
->  2 files changed, 122 insertions(+)
->  create mode 100644 testcases/kernel/syscalls/inotify/inotify06.c
-> 
-> This tests for a kernel bug which causes a crash when triggered. I'm not sure
-> how (whether) tests like this should be integrated with LTP. So here is my
-> attempt at that.
-> 
-> diff --git a/runtest/syscalls b/runtest/syscalls
-> index 70d4945706ea..c532fe307df9 100644
-> --- a/runtest/syscalls
-> +++ b/runtest/syscalls
-> @@ -449,6 +449,7 @@ inotify02 inotify02
->  inotify03 inotify03
->  inotify04 inotify04
->  inotify05 inotify05
-> +inotify06 inotify06
->  
->  fanotify01 fanotify01
->  fanotify02 fanotify02
-> diff --git a/testcases/kernel/syscalls/inotify/inotify06.c
-> b/testcases/kernel/syscalls/inotify/inotify06.c
-> new file mode 100644
-> index 000000000000..d5e14cb7e08d
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/inotify/inotify06.c
-> @@ -0,0 +1,121 @@
-> +#include "config.h"
-> +
-> +#include <stdio.h>
-> +#include <unistd.h>
-> +#include <stdlib.h>
-> +#include <fcntl.h>
-> +#include <time.h>
-> +#include <signal.h>
-> +#include <sys/inotify.h>
-> +#include <sys/time.h>
-> +#include <sys/wait.h>
-> +#include <sys/syscall.h>
-> +
-> +#include "test.h"
-> +#include "linux_syscall_numbers.h"
-> +#include "inotify.h"
-> +#include "safe_macros.h"
-> +
-> +char *TCID = "inotify06";
-> +int TST_TOTAL = 1;
-> +
-> +#if defined(HAVE_SYS_INOTIFY_H)
-> +#include <sys/inotify.h>
-> +
-> +/* Number of seconds to run the test for */
-> +#define DURATION 10
-> +/* Number of files to test (must be > 1) */
-> +#define FILES 5
-> +
-> +char names[FILES][PATH_MAX];
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int i;
-> +
-> +	tst_sig(FORK, DEF_HANDLER, cleanup);
-> +
-> +	TEST_PAUSE;
-> +
-> +	tst_tmpdir();
-> +
-> +	for (i = 0; i < FILES; i++)
-> +		sprintf(names[i], "fname_%d", i);
-> +}
-> +
 > +int main(int ac, char **av)
 > +{
-> +	int inotify_fd, fd;
-> +	pid_t pid;
-> +	time_t start;
-> +	int i, lc;
+> +	int lc;
 > +
 > +	tst_parse_opts(ac, av, NULL, NULL);
 > +
 > +	setup();
 > +
 > +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		pid = fork();
-> +		if (pid == 0) {
-> +			while (1) {
-> +				for (i = 0; i < FILES; i++) {
-> +					fd = SAFE_OPEN(cleanup, names[i],
-> +						       O_CREAT | O_RDWR, 0600);
-> +					SAFE_CLOSE(cleanup, fd);
-> +				}
-> +				for (i = 0; i < FILES; i++)
-> +					SAFE_UNLINK(cleanup, names[i]);
-> +			}
-> +		} else if (pid == -1)
-> +			tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
+> +		tst_count = 0;
 > +
-> +		start = time(NULL);
-> +		while (time(NULL) - start < DURATION) {
-> +			inotify_fd = syscall(__NR_inotify_init1, O_NONBLOCK);
-> +			if (inotify_fd < 0) {
-> +				if (errno == ENOSYS) {
-> +					tst_brkm(TCONF, cleanup,
-> +					 	 "inotify is not configured in this "
-> +						 "kernel.");
-> +				} else {
-> +					tst_brkm(TBROK | TERRNO, cleanup,
-> +						 "inotify_init failed");
-> +				}
-> +			}
-> +			for (i = 0; i < FILES; i++) {
-> +				/*
-> +				 * Both failure and success are fine since
-> +				 * files are being deleted in parallel - this
-> +				 * is what provokes the race we want to test
-> +				 * for...
-> +				 */
-> +				myinotify_add_watch(inotify_fd, names[i],
-> +						    IN_MODIFY);
-> +			}
-> +			SAFE_CLOSE(cleanup, inotify_fd);
-> +		}
-> +		/* We survived for given time - test succeeded */
-> +		tst_resm(TPASS, "kernel survived inotify beating");
-> +
-> +		/* Kill the child creating / deleting files and wait for it */
-> +		kill(pid, SIGKILL);
-> +		wait(NULL);
+> +		umount2_verify();
 > +	}
 > +
 > +	cleanup();
 > +	tst_exit();
 > +}
 > +
-> +#else
-> +
-> +int main(void)
+> +static void setup(void)
 > +{
-> +	tst_brkm(TCONF, NULL, "system doesn't have required inotify support");
+> +	tst_require_root(NULL);
+> +
+> +	tst_sig(NOFORK, DEF_HANDLER, NULL);
+> +
+> +	tst_tmpdir();
+> +
+> +	fs_type = tst_dev_fs_type();
+> +	device = tst_acquire_device(cleanup);
+> +
+> +	if (!device)
+> +		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
+> +
+> +	tst_mkfs(cleanup, device, fs_type, NULL);
+> +
+> +	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
+> +
+> +	TEST_PAUSE;
 > +}
 > +
-> +#endif
-> --
-> 2.1.4
+> +static void umount2_verify(void)
+> +{
+> +	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
+> +	mount_flag = 1;
+> +
+> +	fd = SAFE_CREAT(cleanup, MNTPOINT "/file", FILE_MODE);
+> +
+> +	do {
+> +		TEST(umount2(MNTPOINT, MNT_DETACH));
+> +
+> +		if (TEST_RETURN != 0) {
+> +			tst_resm(TFAIL, "umount2(2) Failed while "
+> +				"unmounting %s errno = %d : %s",
+> +				MNTPOINT, TEST_ERRNO,
+> +				strerror(TEST_ERRNO));
+
+                                Use TFAIL | TTERRNO instead of printing
+				the TEST_ERRNO yourself.
+
+> +			break;
+> +		}
+> +
+> +		mount_flag = 0;
+> +
+> +		/* check the unavailability for new access */
+> +		fd_new = open(MNTPOINT "/file", O_RDONLY);
+
+                What about access() with F_OK instead?
+
+> +		if (fd_new != -1) {
+> +			tst_resm(TFAIL, "umount2(2) MNT_DETACH flag "
+> +				"performed abnormally "
+> +				"expected error = %d : %s",
+> +				ENOENT, strerror(ENOENT));
+
+                                Eh, this is misleading, the errno may
+				NOT be ENOENT here.
+
+> +			break;
+> +		}
+> +
+> +		/*
+> +		 * check the old fd still points to the file
+> +		 * in previous mount point and is available
+> +		 */
+> +		SAFE_WRITE(cleanup, 0, fd, str, strlen(str));
+
+The second parameter should be set to 1 here as we want to assert that
+the whole buffer was written. And the same for the SAFE_READ() below.
+
+> +		SAFE_CLOSE(cleanup, fd);
+> +
+> +		SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
+> +		mount_flag = 1;
+> +
+> +		fd = SAFE_OPEN(cleanup, MNTPOINT "/file", O_RDONLY);
+> +
+> +		SAFE_READ(cleanup, 0, fd, buf, 255);
+> +
+> +		if (strcmp(str, buf)) {
+> +			tst_resm(TFAIL, "umount2(2) MNT_DETACH flag "
+> +				"performed abnormally");
+> +			break;
+> +		}
+> +
+> +		tst_resm(TPASS, "umount2(2) Passed");
+> +	} while (0);
+
+The do { } while (0); here is ugly as it adds unceccessary level of
+indentation. Either use tst_brkm() instead of tst_resm() or use the
+kernel style goto (have a look at Linux kernel CodingStyle if you are
+not familiar with that).
+
+> +	if (fd_new > 0) {
+> +		SAFE_CLOSE(cleanup, fd_new);
+> +		fd_new = 0;
+> +	}
+> +
+> +	SAFE_CLOSE(cleanup, fd);
+> +	fd = 0;
+> +
+> +	if (mount_flag) {
+> +		SAFE_UMOUNT(cleanup, MNTPOINT);
+> +		mount_flag = 0;
+> +	}
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd_new > 0 && close(fd_new))
+> +		tst_resm(TWARN | TERRNO, "Failed to close file");
+> +
+> +	if (fd > 0 && close(fd))
+> +		tst_resm(TWARN | TERRNO, "Failed to close file");
+> +
+> +	if (mount_flag && tst_umount(MNTPOINT))
+> +		tst_resm(TWARN | TERRNO, "Failed to unmount");
+> +
+> +	if (device)
+> +		tst_release_device(NULL, device);
+> +
+> +	tst_rmdir();
+> +}
+> -- 
+> 1.8.4.2
 > 
 > 
 > ------------------------------------------------------------------------------
+> Don't Limit Your Business. Reach for the Cloud.
+> GigeNET's Cloud Solutions provide you with the tools and support that
+> you need to offload your IT needs and focus on growing your business.
+> Configured For All Businesses. Start Your Cloud Today.
+> https://www.gigenetcloud.com/
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
