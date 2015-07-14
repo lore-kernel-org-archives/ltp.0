@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1ZBDkd-0007mW-TM
-	for ltp-list@lists.sourceforge.net; Sat, 04 Jul 2015 03:04:23 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZBDkb-0004Cz-3Z
-	for ltp-list@lists.sourceforge.net; Sat, 04 Jul 2015 03:04:23 +0000
-Message-ID: <55974D10.5050808@huawei.com>
-Date: Sat, 4 Jul 2015 11:03:44 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1ZEujj-0002mO-Ih
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 07:34:43 +0000
+Received: from mx6-phx2.redhat.com ([209.132.183.39])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZEujh-0008Ls-NF
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 07:34:43 +0000
+Date: Tue, 14 Jul 2015 03:34:30 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <893248042.16992409.1436859270663.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1436856423-5444-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1436856423-5444-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1430827933-219682-1-git-send-email-cuibixuan@huawei.com>
-	<5593E172.1050800@huawei.com> <5593F4E2.1040804@oracle.com>
-	<55952961.30906@huawei.com> <5595490E.1010509@oracle.com>
-In-Reply-To: <5595490E.1010509@oracle.com>
-Subject: Re: [LTP] [PATCH] commands/logrotate:run the case once again will
- failed
+Subject: Re: [LTP] [PATCH] lib/safe_macros.c: fix safe_write() and
+ safe_pwrite()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,56 +28,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
-
-On 2015/7/2 22:22, Alexey Kodanev wrote:
-> Hi,
-> On 07/02/2015 03:06 PM, Cui Bixuan wrote:
->> On 2015/7/1 22:10, Alexey Kodanev wrote:
->>> The test creates only tst_logfile, why it should remove 'messages-*' and other system logs?
->>>
->>> I see that its configuration file includes logrotate.d/, is it really needed by the test?
->>>
->> The tst_logfile of test created is 'messages-*' and the 'messages-*' will cause the case failed,
->> so we should delete it if we want to the case run succeed at the second time.
-> 
-> OK, the test does the following basic steps:
-> 
-> a. create tst_logfile, fill it with messages;
-> b. ./logrotate
-> c. if [ -f tst_logfile.1.gz ] then test passed.
-> 
-> Therefore, why bother about 'messages-*' and other logs, the test doesn't check if they were rotated/compressed... so, may be, we should remove "include /etc/logrotate.d/" from the test configuration file so that logrotate rotated only "tst_logfile" and nothing else, what do you think?
-> 
-Hi,
-Your method is better than mine (I learned that how to use logrotate command again yesterday and
-found that remove messages-* is not a good idea).
-
-We can remove 'include /etc/logrotate.d' and delete 'grep including /etc/logrotate.d $LTPTMP/tst_logrotate.out'
-in case to fix it, what do you think?  If ok, I will send a new patch.
+To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
 
-In addition, I have a question, Why including the rules in /etc/logrotate.d/ will cause the case failed
-when run it at the second time?
 
-Thanks,
-Cui Bixuan
 
-> Thanks,
-> Alexey
-> 
-> 
->> And the test creates tst_logfile base on day time. For example, the system time is '2015 Jul 3',
->> then the case will create 'messages-20150703.gz'. So 'rm -r /var/log/*`date '+%Y%m%d'`*' in patch
->> only delete the message file of case created (after running it) and not other system logs.
->>
->> I think, if the logrotate testcase fail when run it the second time,it's a problem of
->> testcase and we should fix it.
-> 
-> 
-> 
 
+----- Original Message -----
+> From: "Guangwen Feng" <fenggw-fnst@cn.fujitsu.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Tuesday, 14 July, 2015 8:47:03 AM
+> Subject: [LTP] [PATCH] lib/safe_macros.c: fix safe_write() and safe_pwrite()
+> 
+> The len_strict is ineffective in byte length verification
+> because of the improper if-condition.
+> 
+> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+
+Good catch, pushed.
+
+Regards,
+Jan
+
+> ---
+>  lib/safe_macros.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+> index a3d997c..173d72f 100644
+> --- a/lib/safe_macros.c
+> +++ b/lib/safe_macros.c
+> @@ -414,7 +414,7 @@ ssize_t safe_write(const char *file, const int lineno,
+> void (cleanup_fn) (void),
+>  	ssize_t rval;
+>  
+>  	rval = write(fildes, buf, nbyte);
+> -	if ((len_strict == 0 && rval == -1) || (size_t)rval != nbyte) {
+> +	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
+>  		tst_brkm(TBROK | TERRNO, cleanup_fn,
+>  			 "%s:%d: write(%d,%p,%zu) failed",
+>  		         file, lineno, fildes, buf, rval);
+> @@ -430,7 +430,7 @@ ssize_t safe_pwrite(const char *file, const int lineno,
+>  	ssize_t rval;
+>  
+>  	rval = pwrite(fildes, buf, nbyte, offset);
+> -	if ((len_strict == 0 && rval == -1) || (size_t)rval != nbyte) {
+> +	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
+>  		tst_brkm(TBROK | TERRNO, cleanup_fn,
+>  			 "%s:%d: pwrite(%d,%p,%zu,%ld) failed",
+>  			 file, lineno, fildes, buf, rval, offset);
+> --
+> 1.8.4.2
+> 
+> 
+> ------------------------------------------------------------------------------
+> Don't Limit Your Business. Reach for the Cloud.
+> GigeNET's Cloud Solutions provide you with the tools and support that
+> you need to offload your IT needs and focus on growing your business.
+> Configured For All Businesses. Start Your Cloud Today.
+> https://www.gigenetcloud.com/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
