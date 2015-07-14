@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <srikanth007m@gmail.com>) id 1ZHrSU-0007uo-Cd
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 10:41:06 +0000
-Received: from mail-qg0-f52.google.com ([209.85.192.52])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZHrSS-0003RW-H6
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 10:41:06 +0000
-Received: by qgy5 with SMTP id 5so100383670qgy.3
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 22 Jul 2015 03:40:56 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZEx9S-0001I9-JF
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 10:09:26 +0000
+Date: Tue, 14 Jul 2015 12:07:55 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150714100754.GD3729@rei.suse.de>
+References: <1436896005-21714-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CANKSX+HdUHTsLS2ON7ijqAoMnOvn1zmtFbVfemrVkfqGn-G1=Q@mail.gmail.com>
-References: <CANKSX+HdUHTsLS2ON7ijqAoMnOvn1zmtFbVfemrVkfqGn-G1=Q@mail.gmail.com>
-Date: Wed, 22 Jul 2015 16:10:56 +0530
-Message-ID: <CANKSX+E7teM+x_D7VZ4u-pAuxqjR2wjRzSAKUueJQSAUXoHF7Q@mail.gmail.com>
-From: "$rik@nth " <srikanth007m@gmail.com>
-Subject: Re: [LTP] Cross-compiling issues
-Reply-To: srikanth007m@gmail.com
+Content-Disposition: inline
+In-Reply-To: <1436896005-21714-1-git-send-email-sunyuan3@huawei.com>
+Subject: Re: [LTP] [PATCH] A process created via fork(2) or clone(2) without
+ the CLONE_NEWUSER flag is a member of the same user namespace as its
+ parent. When unshare an user namespace,
+ the calling process is moved into a new user namespace which is not shared
+ with any previously existing process.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,156 +25,245 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============9137344155222266316=="
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-
---===============9137344155222266316==
-Content-Type: multipart/alternative; boundary=001a11c13ccedffe08051b74670e
-
---001a11c13ccedffe08051b74670e
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-Able to figure out the issues with cross compiling for arm and now i am
-successfully cross compiled  LTP. But few specific packages only which are
-needed for me.
-
-On Mon, Jul 20, 2015 at 7:06 PM, $rik@nth <srikanth007m@gmail.com> wrote:
-
-> Hi,
->
-> Though i am not expert in compiling LTP, but i am trying to cross compile
-> current LTP for arm. Here is how i am configuring
->
-> Go to root folder of ltp and execute
-> ./configure AR=3Darm-linux-gnueabi-ar CC=3Darm-linux-gnueabi-gcc
-> RANLIB=3Darm-linux-gnueabi-gcc-ranlib-4.7 STRIP=3Darm-linux-gnueabi-strip
-> --host=3Darm-linux --target=3Darm-linux CFLAGS=3D"-static" LDFLAGS=3D"-st=
-atic
-> -pthread"
->
-> Failing at
-> configure: error: cannot run /bin/sh ./config.sub
-> configure: error: ./configure failed for utils/ffsb-6.0-rc2
->
-> But still i ignored these messages and tried building some specific tests=
-.
-> Ex: realtime tests
-> Go to testcases/realtime/func/sched_football and run make. Here make
-> failed due to `ld: cannot find -lrealtime`
->
-> arm-linux-gnueabi-gcc -static -g -O2 -fno-strict-aliasing -pipe -Wall -W
-> -static -Wold-style-definition -D_GNU_SOURCE
->  -I/local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/inc=
-lude
-> -I/local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/incl=
-ude
-> -I../../../../include -I../../../../include -static -pthread
->  -L/local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/lib
-> -L../../../../lib  sched_football.c   -lrealtime -lpthread -lrt -lm -o
-> sched_football
-> In file included from sched_football.c:69:0:
-> /local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/includ=
-e/librttest.h:
-> In function =C3=A2atomic_add=C3=A2:
-> /local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/includ=
-e/librttest.h:115:34:
-> warning: unused parameter =C3=A2i=C3=A2 [-Wunused-parameter]
-> /local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/includ=
-e/librttest.h:115:47:
-> warning: unused parameter =C3=A2v=C3=A2 [-Wunused-parameter]
-> sched_football.c: In function =C3=A2thread_defense=C3=A2:
-> sched_football.c:111:28: warning: unused parameter =C3=A2arg=C3=A2
-> [-Wunused-parameter]
-> sched_football.c: In function =C3=A2thread_offense=C3=A2:
-> sched_football.c:122:28: warning: unused parameter =C3=A2arg=C3=A2
-> [-Wunused-parameter]
-> /usr/lib/gcc-cross/arm-linux-gnueabi/4.7/../../../../arm-linux-gnueabi/bi=
-n/ld:
-> cannot find -lrealtime
-> collect2: error: ld returned 1 exit status
-> make: *** [sched_football] Error 1
->
->
-> Pointers from anyone who tried cross compiling ltp for arm would really
-> helpful.
->
-> TIA.
->
-> --
-> Thanks & Regards,
-> M.Srikanth Kumar.
->
-
-
-
---=20
-Thanks & Regards,
-M.Srikanth Kumar.
-
---001a11c13ccedffe08051b74670e
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">Able to figure out the issues with cross compiling for arm=
- and now i am successfully cross compiled =C2=A0LTP. But few specific packa=
-ges only which are needed for me.</div><div class=3D"gmail_extra"><br><div =
-class=3D"gmail_quote">On Mon, Jul 20, 2015 at 7:06 PM, $rik@nth <span dir=
-=3D"ltr">&lt;<a href=3D"mailto:srikanth007m@gmail.com" target=3D"_blank">sr=
-ikanth007m@gmail.com</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_qu=
-ote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex=
-"><div dir=3D"ltr">Hi,=C2=A0<div><br></div><div>Though i am not expert in c=
-ompiling LTP, but i am trying to cross compile current LTP for arm. Here is=
- how i am configuring=C2=A0</div><div><br></div><div>Go to root folder of l=
-tp and execute</div><div>./configure AR=3Darm-linux-gnueabi-ar CC=3Darm-lin=
-ux-gnueabi-gcc RANLIB=3Darm-linux-gnueabi-gcc-ranlib-4.7 STRIP=3Darm-linux-=
-gnueabi-strip --host=3Darm-linux --target=3Darm-linux CFLAGS=3D&quot;-stati=
-c&quot; LDFLAGS=3D&quot;-static -pthread&quot;</div><div><br clear=3D"all">=
-<div>Failing at=C2=A0</div><div><div>configure: error: cannot run /bin/sh .=
-/config.sub</div><div>configure: error: ./configure failed for utils/ffsb-6=
-.0-rc2</div></div><div><br></div><div>But still i ignored these messages an=
-d tried building some specific tests. Ex: realtime tests</div><div>Go to=C2=
-=A0testcases/realtime/func/sched_football and run make. Here make failed du=
-e to `ld: cannot find -lrealtime`</div><div><br></div><div>arm-linux-gnueab=
-i-gcc -static -g -O2 -fno-strict-aliasing -pipe -Wall -W -static -Wold-styl=
-e-definition -D_GNU_SOURCE =C2=A0-I/local/mnt/workspace/Srikanth/ltp-full-2=
-0140828/testcases/realtime/include -I/local/mnt/workspace/Srikanth/ltp-full=
--20140828/testcases/realtime/include -I../../../../include -I../../../../in=
-clude -static -pthread =C2=A0-L/local/mnt/workspace/Srikanth/ltp-full-20140=
-828/testcases/realtime/lib -L../../../../lib =C2=A0sched_football.c =C2=A0 =
--lrealtime -lpthread -lrt -lm -o sched_football<br></div><div><div>In file =
-included from sched_football.c:69:0:</div><div>/local/mnt/workspace/Srikant=
-h/ltp-full-20140828/testcases/realtime/include/librttest.h: In function =C3=
-=A2atomic_add=C3=A2:</div><div>/local/mnt/workspace/Srikanth/ltp-full-20140=
-828/testcases/realtime/include/librttest.h:115:34: warning: unused paramete=
-r =C3=A2i=C3=A2 [-Wunused-parameter]</div><div>/local/mnt/workspace/Srikant=
-h/ltp-full-20140828/testcases/realtime/include/librttest.h:115:47: warning:=
- unused parameter =C3=A2v=C3=A2 [-Wunused-parameter]</div><div>sched_footba=
-ll.c: In function =C3=A2thread_defense=C3=A2:</div><div>sched_football.c:11=
-1:28: warning: unused parameter =C3=A2arg=C3=A2 [-Wunused-parameter]</div><=
-div>sched_football.c: In function =C3=A2thread_offense=C3=A2:</div><div>sch=
-ed_football.c:122:28: warning: unused parameter =C3=A2arg=C3=A2 [-Wunused-p=
-arameter]</div><div>/usr/lib/gcc-cross/arm-linux-gnueabi/4.7/../../../../ar=
-m-linux-gnueabi/bin/ld: cannot find -lrealtime</div><div>collect2: error: l=
-d returned 1 exit status</div><div>make: *** [sched_football] Error 1</div>=
-</div><div><br></div><div><br></div><div>Pointers from anyone who tried cro=
-ss compiling ltp for arm would really helpful.=C2=A0</div><div><br></div><d=
-iv>TIA.</div><span class=3D"HOEnZb"><font color=3D"#888888"><div><br></div>=
--- <br><div>Thanks &amp; Regards,<br>M.Srikanth Kumar.</div>
-</font></span></div></div>
-</blockquote></div><br><br clear=3D"all"><div><br></div>-- <br><div class=
-=3D"gmail_signature">Thanks &amp; Regards,<br>M.Srikanth Kumar.</div>
-</div>
-
---001a11c13ccedffe08051b74670e--
-
-
---===============9137344155222266316==
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
+
+Hi!
+The commit message format is - first line is short description then
+empty line followed by detailed description. In this case it should have
+been something as:
+
+containers: Add userns05
+
+A process created via fork(2) or clone(2) without the CLONE_NEWUSER flag
+is a member of the same user namespace as its parent.
+...
+
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+
+> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+> ---
+>  runtest/containers                            |   1 +
+>  testcases/kernel/containers/.gitignore        |   1 +
+>  testcases/kernel/containers/userns/userns05.c | 167 ++++++++++++++++++++++++++
+>  3 files changed, 169 insertions(+)
+>  create mode 100644 testcases/kernel/containers/userns/userns05.c
+> 
+> diff --git a/runtest/containers b/runtest/containers
+> index de4197e..cece80b 100644
+> --- a/runtest/containers
+> +++ b/runtest/containers
+> @@ -72,3 +72,4 @@ userns01 userns01
+>  userns02 userns02
+>  userns03 userns03
+>  userns04 userns04
+> +userns05 userns05
+> diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+> index 85ced78..b433b03 100644
+> --- a/testcases/kernel/containers/.gitignore
+> +++ b/testcases/kernel/containers/.gitignore
+> @@ -7,3 +7,4 @@ userns/userns01
+>  userns/userns02
+>  userns/userns03
+>  userns/userns04
+> +userns/userns05
+> diff --git a/testcases/kernel/containers/userns/userns05.c b/testcases/kernel/containers/userns/userns05.c
+> new file mode 100644
+> index 0000000..8d25c56
+> --- /dev/null
+> +++ b/testcases/kernel/containers/userns/userns05.c
+> @@ -0,0 +1,167 @@
+> +/*
+> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + *  (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> + * the GNU General Public License for more details.
+> + */
+> +
+> +/*
+> + * Verify that:
+> + * A process created via fork(2) or clone(2) without the
+> + * CLONE_NEWUSER flag is a member of the same user namespace as its
+> + * parent.
+> + * When unshare an user namespace, the calling process is moved into
+> + * a new user namespace which is not shared with any previously
+> + * existing process.
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <sys/wait.h>
+> +#include <assert.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +#include "test.h"
+> +#include "userns_helper.h"
+> +
+> +char *TCID = "user_namespace5";
+> +int TST_TOTAL = 1;
+> +
+> +static void cleanup(void)
+> +{
+> +	tst_rmdir();
+> +}
+> +
+> +/*
+> + * child_fn1() - Inside a new user namespace
+> + */
+> +static int child_fn1(void)
+> +{
+> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
+> +	return 0;
+> +}
+> +
+> +static int wait4child(pid_t pid, const char *msg)
+> +{
+> +	int status;
+> +
+> +	if (waitpid(pid, &status, 0) == -1) {
+> +		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
+> +	} else if (WIFSIGNALED(status)) {
+> +		tst_resm(TFAIL, "%s: child was killed with signal = %d",
+> +			msg, WTERMSIG(status));
+> +		return WTERMSIG(status);
+> +	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
+> +		tst_resm(TFAIL, "%s: child returns %d", msg, status);
+> +		return WEXITSTATUS(status);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static long getusernsidbypid(int pid)
+> +{
+> +	char path[BUFSIZ];
+> +	char userid[BUFSIZ];
+> +	long id;
+> +
+> +	sprintf(path, "/proc/%d/ns/user", pid);
+> +
+> +	if (readlink(path, userid, BUFSIZ) == -1)
+> +		tst_resm(TFAIL, "readlink failure.");
+> +
+> +	if (sscanf(userid, "user:[%ld]", &id) != 1)
+> +		tst_resm(TFAIL, "sscanf failure.");
+> +	return id;
+> +}
+> +
+> +static void test_userns_id(void)
+> +{
+> +	int status;
+> +	int cpid1, cpid2, cpid3;
+> +	long parentuserns, cpid1userns, cpid2userns, newparentuserns;
+> +
+> +	parentuserns = getusernsidbypid(getpid());
+> +	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1,
+> +		NULL);
+> +	if (cpid1 < 0)
+> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
+> +	cpid1userns = getusernsidbypid(cpid1);
+> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+> +
+> +	/* A process created via fork(2) or clone(2) without the
+> +	CLONE_NEWUSER flag is a member of the same user namespace as its
+> +	parent.*/
+> +	if (parentuserns != cpid1userns)
+> +		tst_resm(TFAIL, "userns:parent should be equal to cpid1");
+> +
+> +	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
+> +		(void *)child_fn1, NULL);
+> +	if (cpid2 < 0)
+> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
+> +	cpid2userns = getusernsidbypid(cpid2);
+> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+> +
+> +	if (parentuserns == cpid2userns)
+> +		tst_resm(TFAIL, "userns:parent should be not equal to cpid2");
+> +
+> +	switch (cpid3 = fork()) {
+> +	case -1:
+> +		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+> +	case 0:
+> +		if (unshare(CLONE_NEWUSER) == -1) {
+> +			printf("parent pid unshare failure: (%d) %s",
+> +				errno, strerror(errno));
+> +			exit(1);
+> +		}
+> +		newparentuserns = getusernsidbypid(getpid());
+> +
+> +		/* When unshare an user namespace, the calling process
+> +		is moved into a new user namespace which is not shared
+> +		with any previously existing process.*/
+> +		if (parentuserns == newparentuserns)
+> +			exit(1);
+> +		exit(0);
+> +	}
+> +
+> +	status = 0;
+> +	status |= wait4child(cpid1, "child1");
+> +	status |= wait4child(cpid2, "child2");
+> +	status |= wait4child(cpid3, "child3");
+
+We have tst_record_childstatus() exactly for this purpose.
+
+> +	if (status == 0)
+> +		tst_resm(TPASS, "The usernsid function works well.");
+> +	else
+> +		tst_resm(TFAIL, "Some children reported failure.");
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	check_newuser();
+> +
+> +	tst_tmpdir();
+> +	TST_CHECKPOINT_INIT(NULL);
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +
+> +	tst_parse_opts(argc, argv, NULL, NULL);
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +		test_userns_id();
+> +	}
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> -- 
+> 1.9.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> Don't Limit Your Business. Reach for the Cloud.
+> GigeNET's Cloud Solutions provide you with the tools and support that
+> you need to offload your IT needs and focus on growing your business.
+> Configured For All Businesses. Start Your Cloud Today.
+> https://www.gigenetcloud.com/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
@@ -185,16 +271,7 @@ GigeNET's Cloud Solutions provide you with the tools and support that
 you need to offload your IT needs and focus on growing your business.
 Configured For All Businesses. Start Your Cloud Today.
 https://www.gigenetcloud.com/
---===============9137344155222266316==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============9137344155222266316==--
-
