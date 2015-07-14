@@ -1,41 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jbastian@redhat.com>) id 1ZDK7C-0001w8-Fc
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 22:16:22 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZDK7A-00015k-Ml
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 22:16:22 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (Postfix) with ESMTPS id 8F6CC347DB0
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  9 Jul 2015 22:16:14 +0000 (UTC)
-Received: from tarantula.localdomain (ovpn-113-174.phx2.redhat.com
-	[10.3.113.174])
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t69MGCnN020759
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 18:16:14 -0400
-Date: Thu, 9 Jul 2015 17:16:12 -0500
-From: Jeffrey Bastian <jbastian@redhat.com>
-Message-ID: <20150709221612.GV17625@tarantula.localdomain>
-References: <20150708194114.GA20060@tarantula.localdomain>
-	<904998018.14796051.1436425198776.JavaMail.zimbra@redhat.com>
-	<431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
-	<20150709124503.GM17625@tarantula.localdomain>
-	<1737674583.15006076.1436449194123.JavaMail.zimbra@redhat.com>
-	<20150709143700.GQ17625@tarantula.localdomain>
-	<1448931194.15074761.1436453202001.JavaMail.zimbra@redhat.com>
-	<20150709163341.GU17625@tarantula.localdomain>
-	<438616599.15156602.1436460575320.JavaMail.zimbra@redhat.com>
+	(envelope-from <metan@suse.de>) id 1ZEzze-0007yu-Pb
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 13:11:30 +0000
+Date: Tue, 14 Jul 2015 15:09:58 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150714130958.GB7040@rei.suse.de>
+References: <1436876572-28759-1-git-send-email-mmarhefk@redhat.com>
+	<1436876572-28759-2-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <438616599.15156602.1436460575320.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH v3] syslog/syslog-lib.sh: support systemd journal
+In-Reply-To: <1436876572-28759-2-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2] containers/netns tests rewritten
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -48,46 +25,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-rsyslog needs to use the imjournal module to communicate with
-systemd-journald instead of imuxsock.  Check the system's
-/etc/rsyslog.conf to see if LTP should use imjournal or imuxsock
+Hi!
+> --- a/runtest/containers
+> +++ b/runtest/containers
+> @@ -23,15 +23,24 @@ mqns_03_clone mqns_03 -clone
+>  mqns_04 mqns_04
+>  mqns_04_clone mqns_04 -clone
+>  
+> -netns_crtchild netns_crtchild
+> -netns_two_children_ns netns_two_children_ns
+> -netns_crtchild_delchild netns_crtchild_delchild
+> -netns_par_chld_ipv6 netns_par_chld_ipv6
+> -netns_par_chld_ftp netns_par_chld_ftp.sh
+>  netns_netlink netns_netlink
+> -netns_devices netns_devices.sh
+> -netns_devices2 netns_devices2.sh
+> -netns_isolation netns_isolation.sh
+> +netns_breakns netns_breakns.sh ns_exec ipv4 netlink
+> +netns_breakns netns_breakns.sh ns_exec ipv6 netlink
+> +netns_breakns netns_breakns.sh ns_exec ipv4 ioctl
+> +netns_breakns netns_breakns.sh ns_exec ipv6 ioctl
+> +netns_breakns netns_breakns.sh ip ipv4 netlink
+> +netns_breakns netns_breakns.sh ip ipv6 netlink
+> +netns_breakns netns_breakns.sh ip ipv4 ioctl
+> +netns_breakns netns_breakns.sh ip ipv6 ioctl
+> +netns_comm netns_comm.sh ns_exec ipv4 netlink
+> +netns_comm netns_comm.sh ns_exec ipv6 netlink
+> +netns_comm netns_comm.sh ns_exec ipv4 ioctl
+> +netns_comm netns_comm.sh ns_exec ipv6 ioctl
+> +netns_comm netns_comm.sh ip ipv4 netlink
+> +netns_comm netns_comm.sh ip ipv6 netlink
+> +netns_comm netns_comm.sh ip ipv4 ioctl
+> +netns_comm netns_comm.sh ip ipv6 ioctl
+> +netns_sysfs netns_sysfs.sh
 
-Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
----
- testcases/kernel/syscalls/syslog/syslog-lib.sh | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+This would create several testcases with exactly same name in LTP
+results, wouldn't it.
 
-diff --git a/testcases/kernel/syscalls/syslog/syslog-lib.sh b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-index ef33517aa92b..e166d3a45261 100755
---- a/testcases/kernel/syscalls/syslog/syslog-lib.sh
-+++ b/testcases/kernel/syscalls/syslog/syslog-lib.sh
-@@ -71,12 +71,20 @@ setup()
- 		CONFIG_FILE="/etc/syslog-ng/syslog-ng.conf"
- 	elif [ "$SYSLOG_DAEMON" = "rsyslog" ]; then
- 		CONFIG_FILE="/etc/rsyslog.conf"
--		log_socket=$(grep -ho "^\$SystemLogSocketName .*" -r /etc/rsyslog.conf /etc/rsyslog.d/ | head -1)
--		RSYSLOG_CONFIG=$(cat <<EOF
-+		if grep -q -r '^\$ModLoad[[:space:]]*imjournal' /etc/rsyslog.conf /etc/rsyslog.d/ ; then
-+			systemd_journal=$(grep -Ehoi "^[^#].*(imjournal|workdirectory).*" -r /etc/rsyslog.conf /etc/rsyslog.d/)
-+			RSYSLOG_CONFIG=$(cat <<EOF
-+$systemd_journal
-+EOF
-+)
-+		else
-+			log_socket=$(grep -ho "^\$SystemLogSocketName .*" -r /etc/rsyslog.conf /etc/rsyslog.d/ | head -1)
-+			RSYSLOG_CONFIG=$(cat <<EOF
- \$ModLoad imuxsock.so
- $log_socket
- EOF
- )
-+		fi
- 	else
- 		tst_resm TBROK "Couldn't find syslogd, syslog-ng or rsyslogd"
- 		cleanup 1
+Can we also somehow include what is utilized, i.e. something from the
+parameters passed to the test script in the testcase name?
+
+Something as:
+
+netns_comm_exec_v4_ioctl
+netns_comm_exec_v6_ioctl
+
+I know that the names gets too long, but it's far better than having to
+figure out which combination of pamaters is actually failing.
+
 -- 
-1.9.4
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
