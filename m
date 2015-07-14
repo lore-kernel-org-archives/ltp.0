@@ -1,16 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZExHq-0002sd-T1
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 10:18:06 +0000
-Date: Tue, 14 Jul 2015 12:16:35 +0200
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZEz6M-0004vd-3J
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 12:14:22 +0000
+Date: Tue, 14 Jul 2015 14:12:50 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150714101634.GF3729@rei.suse.de>
+Message-ID: <20150714121250.GA6475@rei.suse.de>
 References: <CANKSX+HUUC3aT+Pt-o=oqC1XismF-ErK8Ws79SAxKCOWE1g96w@mail.gmail.com>
+	<20150714101634.GF3729@rei.suse.de>
+	<CANKSX+GypbjxDozCzJFwDs0x3HmwZg6AbNEGCSDtyv2Cz1=FgQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CANKSX+HUUC3aT+Pt-o=oqC1XismF-ErK8Ws79SAxKCOWE1g96w@mail.gmail.com>
+In-Reply-To: <CANKSX+GypbjxDozCzJFwDs0x3HmwZg6AbNEGCSDtyv2Cz1=FgQ@mail.gmail.com>
 Subject: Re: [LTP] Reg IO sched tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -28,11 +30,21 @@ To: "$rik@nth " <srikanth007m@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Is there any testsuite available to test IO Schedulers extensively? Any
-> pointers would really helpful.
+> But those are not  specific to IO scheduler governors like cfq, deadline,
+> noop,vr and sio to find out.
+> 
+> I am looking for the tests which puts stress and calculate the average of
+> below things to find out read index and write index.
+> 
+> MBRS =MB/s sequential reads
+> MBWS =MB/s sequential writes
+> RRIOPS =random reads IO's/sec
+> RWIOPS=random writes IO's/sec
 
-There are some IO stress testcases testcases/io and testcases/fs these
-are mostly executed from runtest/ltp-aio* runtest files.
+These would be rather called benchmarks and LTP does not include any of
+these. Have a look at mmtests[1] instead.
+
+[1] https://github.com/gormanm/mmtests/
 
 -- 
 Cyril Hrubis
