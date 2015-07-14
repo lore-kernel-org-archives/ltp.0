@@ -1,21 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cristian.valean@live.com>) id 1ZIEtE-0003sy-C0
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2015 11:42:16 +0000
-Received: from dub004-omc1s27.hotmail.com ([157.55.0.226])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZIEt2-0005S0-JI
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2015 11:42:16 +0000
-Message-ID: <DUB407-EAS81F92E7EF5284309697E5785820@phx.gbl>
-From: Cristian Valean <cristian.valean@live.com>
-References: <DUB407-EAS338A9D3F666651011BAB67485820@phx.gbl>
-In-Reply-To: <DUB407-EAS338A9D3F666651011BAB67485820@phx.gbl>
-Date: Thu, 23 Jul 2015 14:41:56 +0300
-MIME-Version: 1.0
-Content-Language: en-us
-Subject: Re: [LTP] OOM messages when running full ltp tests on a Hyper-V VM
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1ZEzF7-00078q-3W
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 12:23:25 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZEzF0-0005fU-Dy
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 12:23:25 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (Postfix) with ESMTPS id 7B71D8E392
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 14 Jul 2015 12:23:12 +0000 (UTC)
+Received: from cc-vtoe10.lab.eng.brq.redhat.com
+	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.89.68])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t6ECNA6K003401
+	for <ltp-list@lists.sourceforge.net>; Tue, 14 Jul 2015 08:23:11 -0400
+From: Matus Marhefka <mmarhefk@redhat.com>
+Date: Tue, 14 Jul 2015 14:22:51 +0200
+Message-Id: <1436876572-28759-1-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH 1/2] added helper tools for creating and working with
+	namespaces
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,320 +32,564 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============5284852298344110242=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============5284852298344110242==
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0009_01D0C555.B9244B80"
-Content-Language: en-us
+This patch introduces helper tools for creating and working
+with namespaces (ltp/testcases/kernel/containers/share):
 
-------=_NextPart_000_0009_01D0C555.B9244B80
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+* ns_create:
+    Creates a child process in the new specified namespace(s),
+    child is then daemonized and is running in the background.
+    PID of the daemonized child process is printed on the stdout.
+    As the new namespace(s) is(are) maintained by the daemonized
+    child process it(they) can be removed by killing this process.
+* ns_exec:
+    Enters the namespace(s) of a process specified by a PID and
+    then executes the indicated program inside that namespace(s).
+* ns_ifmove:
+    Moves a network interface to the namespace of a process
+    specified by a PID.
 
-My apologies for the incomplete reply, it got sent out before all details
-went it.
+Example usage:
+==============
+$ myns=$(ns_create net,ipc)
 
- 
+$ ip link add veth0 type veth peer name veth1
+$ ns_exec $myns ip a
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 
-To continue the initial thread:
+$ ns_ifmove veth1 $myns
+$ ns_exec $myns ip a
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+6: veth1: <BROADCAST> mtu 1500 qdisc noop state DOWN qlen 1000
+    link/ether 6a:0a:45:ed:6e:d0 brd ff:ff:ff:ff:ff:ff
 
-I'm trying to run a full ltp test run on Ubuntu 14.04.2 as a Hyper-V VM.
+$ ip link del veth0
+$ kill -9 $myns
+==============
 
-The VM is set with 8 or 12GB and 4 vCPUs, however during the tests execution
-the syslog records over 30 call traces similar to the one below.
+The only requirement from kernel side is the support of "setns"
+syscall. There is no need to have util-linux (unshare, nsenter)
+installed. This way test cases utilizing namespaces can be
+executed even on older kernels which do not provide required
+tools for working with namespaces.
 
- 
+Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+---
+ testcases/kernel/containers/share/.gitignore  |   3 +
+ testcases/kernel/containers/share/Makefile    |  22 ++++
+ testcases/kernel/containers/share/ns_create.c | 100 ++++++++++++++++
+ testcases/kernel/containers/share/ns_exec.c   | 157 ++++++++++++++++++++++++++
+ testcases/kernel/containers/share/ns_ifmove.c | 123 ++++++++++++++++++++
+ testcases/kernel/containers/share/ns_utils.h  |  42 +++++++
+ 6 files changed, 447 insertions(+)
+ create mode 100644 testcases/kernel/containers/share/.gitignore
+ create mode 100644 testcases/kernel/containers/share/Makefile
+ create mode 100644 testcases/kernel/containers/share/ns_create.c
+ create mode 100644 testcases/kernel/containers/share/ns_exec.c
+ create mode 100644 testcases/kernel/containers/share/ns_ifmove.c
+ create mode 100644 testcases/kernel/containers/share/ns_utils.h
 
-Haven't tried vmware or other platforms, but I'm wondering why LTP processes
-go over the limit, or what would be a reference system resources that would
-accommodate a full run. 
+diff --git a/testcases/kernel/containers/share/.gitignore b/testcases/kernel/containers/share/.gitignore
+new file mode 100644
+index 0000000..0d5ecf0
+--- /dev/null
++++ b/testcases/kernel/containers/share/.gitignore
+@@ -0,0 +1,3 @@
++/ns_ifmove
++/ns_create
++/ns_exec
+diff --git a/testcases/kernel/containers/share/Makefile b/testcases/kernel/containers/share/Makefile
+new file mode 100644
+index 0000000..962d688
+--- /dev/null
++++ b/testcases/kernel/containers/share/Makefile
+@@ -0,0 +1,22 @@
++# Copyright (c) 2015 Red Hat, Inc.
++#
++# This program is free software: you can redistribute it and/or modify
++# it under the terms of version 2 the GNU General Public License as
++# published by the Free Software Foundation.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.  If not, see <http://www.gnu.org/licenses/>.
++##############################################################################
++top_srcdir              ?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(abs_srcdir)/../Makefile.inc
++
++LDLIBS                  := -lltp
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/containers/share/ns_create.c b/testcases/kernel/containers/share/ns_create.c
+new file mode 100644
+index 0000000..8e18fab
+--- /dev/null
++++ b/testcases/kernel/containers/share/ns_create.c
+@@ -0,0 +1,100 @@
++/* Copyright (c) 2015 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ * Written by Matus Marhefka <mmarhefk@redhat.com>
++ *
++ ***********************************************************************
++ * File: ns_create.c
++ *
++ * Creates a child process in the new specified namespace(s), child is then
++ * daemonized and is running in the background. PID of the daemonized child
++ * process is printed on the stdout. As the new namespace(s) is(are) maintained
++ * by the daemonized child process it(they) can be removed by killing this
++ * process.
++ *
++ */
++
++#define _GNU_SOURCE
++#include <sched.h>
++#include <sys/syscall.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <string.h>
++#include <errno.h>
++#include "test.h"
++#include "ns_utils.h"
++
++char *TCID = "ns_create";
++
++
++static int child_fn(void *arg)
++{
++	int i;
++
++	if (chdir("/") == -1) {
++		tst_resm(TINFO | TERRNO, "chdir");
++		exit(1);
++	}
++
++	/* close all inherrited file descriptors */
++	for (i = 0; i < sysconf(_SC_OPEN_MAX); i++)
++		close(i);
++
++	pause();
++	return 0;
++}
++
++/*
++ * ./ns_create <comma separated namespaces list>
++ * where full list is: ipc,mnt,net,pid,user,uts.
++ */
++int main(int argc, char *argv[])
++{
++	int pid, flags;
++
++	if (argc != 2) {
++		tst_resm(TINFO, "%s  <comma separated namespaces list> "
++				"(full list: ipc,mnt,net,pid,user,uts "
++				"-- do not use whitespaces in list)", argv[0]);
++		return 1;
++	}
++
++	flags = 0;
++	if (strstr(argv[1], "ipc") != NULL)
++		flags |= CLONE_NEWIPC;
++	if (strstr(argv[1], "mnt") != NULL)
++		flags |= CLONE_NEWNS;
++	if (strstr(argv[1], "net") != NULL)
++		flags |= CLONE_NEWNET;
++	if (strstr(argv[1], "pid") != NULL)
++		flags |= CLONE_NEWPID;
++	if (strstr(argv[1], "user") != NULL)
++		flags |= CLONE_NEWUSER;
++	if (strstr(argv[1], "uts") != NULL)
++		flags |= CLONE_NEWUTS;
++	if (flags == 0) {
++		tst_resm(TINFO, "unknown namespace: %s", argv[1]);
++		return 1;
++	}
++
++	pid = ltp_clone_quick(flags | SIGCHLD, (void *)child_fn, NULL);
++	if (pid == -1) {
++		tst_resm(TINFO | TERRNO, "ltp_clone_quick");
++		return 1;
++	}
++
++	printf("%d", pid);
++	return 0;
++}
+diff --git a/testcases/kernel/containers/share/ns_exec.c b/testcases/kernel/containers/share/ns_exec.c
+new file mode 100644
+index 0000000..8c350d3
+--- /dev/null
++++ b/testcases/kernel/containers/share/ns_exec.c
+@@ -0,0 +1,157 @@
++/* Copyright (c) 2015 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ * Written by Matus Marhefka <mmarhefk@redhat.com>
++ *
++ ***********************************************************************
++ * File: ns_exec.c
++ *
++ * Enters the namespace(s) of a process specified by a PID and then executes
++ * the indicated program inside that namespace(s).
++ *
++ */
++
++#define _GNU_SOURCE
++#include <sched.h>
++#include <sys/syscall.h>
++#include <sys/types.h>
++#include <sys/wait.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <string.h>
++#include <errno.h>
++#include "test.h"
++#include "linux_syscall_numbers.h"
++#include "ns_utils.h"
++
++#define PROC_PATH "/proc"
++#define NS_TOTAL 6
++
++char *TCID = "ns_exec";
++int ns_fd[NS_TOTAL];
++int ns_fd_index;
++
++struct argst {
++	char **argv;
++	int argc;
++};
++
++
++static int open_ns_fd(const char *pid, const char *ns)
++{
++	int fd;
++	char file_buf[30];
++
++	sprintf(file_buf, "%s/%s/ns/%s", PROC_PATH, pid, ns);
++
++	fd = open(file_buf, O_RDONLY);
++	if (fd > 0) {
++		ns_fd[ns_fd_index] = fd;
++		++ns_fd_index;
++	} else if (fd == -1 && errno != ENOENT) {
++		tst_resm(TINFO | TERRNO, "open");
++		return -1;
++	}
++
++	return 0;
++}
++
++static void close_ns_fd(void)
++{
++	int i;
++
++	for (i = 0; i < ns_fd_index; i++)
++		close(ns_fd[i]);
++}
++
++static int child_fn(void *arg)
++{
++	struct argst *args = arg;
++	int i;
++
++	for (i = 1; i < args->argc-1; i++)
++		args->argv[i] = args->argv[i+1];
++	args->argv[i] = NULL;
++
++	execvp(args->argv[1], args->argv+1);
++	tst_resm(TINFO | TERRNO, "execvp");
++	return 1;
++}
++
++/*
++ * ./ns_exec <NS_PID> <PROGRAM> [ARGS]
++ */
++int main(int argc, char *argv[])
++{
++	int i, rv, pid;
++	struct argst args;
++
++	rv = syscall(__NR_setns, -1, 0);
++	if (rv == -1 && errno == ENOSYS) {
++		tst_resm(TINFO, "setns is not supported in the kernel");
++		return 1;
++	}
++
++	if (argc < 3) {
++		tst_resm(TINFO, "%s <NS_PID> <PROGRAM> [ARGS]\n", argv[0]);
++		return 1;
++	}
++
++	rv = 0;
++	memset(ns_fd, 0, sizeof(ns_fd));
++	rv |= open_ns_fd(argv[1], "ipc");
++	rv |= open_ns_fd(argv[1], "mnt");
++	rv |= open_ns_fd(argv[1], "net");
++	rv |= open_ns_fd(argv[1], "pid");
++	rv |= open_ns_fd(argv[1], "user");
++	rv |= open_ns_fd(argv[1], "uts");
++	if (rv != 0)
++		return 1;
++
++	if (ns_fd_index == 0) {
++		tst_resm(TINFO, "no namespace entries in /proc/%s/ns/",
++			 argv[1]);
++		close_ns_fd();
++		return 1;
++	}
++
++	for (i = 0; i < ns_fd_index; i++) {
++		if (syscall(__NR_setns, ns_fd[i], 0) == -1) {
++			tst_resm(TINFO | TERRNO, "setns");
++			close_ns_fd();
++			return 1;
++		}
++	}
++
++	args.argv = argv;
++	args.argc = argc;
++	pid = ltp_clone_quick(SIGCHLD, (void *)child_fn, (void *)&args);
++	if (pid == -1) {
++		tst_resm(TINFO | TERRNO, "ltp_clone_quick");
++		close_ns_fd();
++		return 1;
++	}
++
++	if (waitpid(pid, &rv, 0) == -1) {
++		tst_resm(TINFO | TERRNO, "waitpid");
++		return 1;
++	}
++
++	close_ns_fd();
++
++	if (WIFEXITED(rv))
++		return WEXITSTATUS(rv);
++
++	return 0;
++}
+diff --git a/testcases/kernel/containers/share/ns_ifmove.c b/testcases/kernel/containers/share/ns_ifmove.c
+new file mode 100644
+index 0000000..728863b
+--- /dev/null
++++ b/testcases/kernel/containers/share/ns_ifmove.c
+@@ -0,0 +1,123 @@
++/* Copyright (c) 2015 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ * Written by Matus Marhefka <mmarhefk@redhat.com>
++ *
++ ***********************************************************************
++ * File: ns_ifmove.c
++ *
++ * Moves a network interface to the namespace of a process specified by a PID.
++ *
++ */
++
++#define _GNU_SOURCE
++#include <stdlib.h>
++#include <string.h>
++#include <errno.h>
++#include <unistd.h>
++#include <asm/types.h>
++#include <sys/socket.h>
++#include <linux/rtnetlink.h>
++#include <sys/ioctl.h>
++#include <linux/if.h>
++#include <net/ethernet.h>
++#include <arpa/inet.h>
++#include "test.h"
++
++char *TCID = "ns_linkset";
++
++struct {
++	struct nlmsghdr nh;
++	struct ifinfomsg ifi;
++	char attrbuf[512];
++} req;
++
++
++int get_intf_index_from_name(const char *intf_name)
++{
++	struct ifreq ifr;
++	int sock_fd;
++
++	memset(&ifr, 0, sizeof(ifr));
++	strncpy(ifr.ifr_name, intf_name, sizeof(ifr.ifr_name) - 1);
++	ifr.ifr_name[sizeof(ifr.ifr_name)-1] = '\0';
++
++	sock_fd = socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
++	if (sock_fd == -1) {
++		tst_resm(TINFO | TERRNO, "socket");
++		return -1;
++	}
++
++	/* gets interface index */
++	if (ioctl(sock_fd, SIOCGIFINDEX, &ifr) == -1) {
++		close(sock_fd);
++		tst_resm(TINFO | TERRNO, "ioctl");
++		return -1;
++	}
++
++	close(sock_fd);
++	return ifr.ifr_ifindex;
++}
++
++/*
++ * ./ns_ifmove <INTERFACE_NAME> <NAMESPACE_PID>
++ */
++int main(int argc, char **argv)
++{
++	struct rtattr *rta;
++	int intf_index, pid, rtnetlink_socket;
++
++	if (argc != 3) {
++		tst_resm(TINFO, "%s <INTERFACE_NAME> <NAMESPACE_PID>\n",
++			 argv[0]);
++		return 1;
++	}
++
++	intf_index = get_intf_index_from_name(argv[1]);
++	if (intf_index == -1) {
++		tst_resm(TINFO , "unable to get interface index");
++		return 1;
++	}
++
++	pid = atoi(argv[2]);
++
++	rtnetlink_socket = socket(AF_NETLINK, SOCK_DGRAM, NETLINK_ROUTE);
++	if (rtnetlink_socket == -1) {
++		tst_resm(TINFO | TERRNO, "socket");
++		return 1;
++	}
++
++	memset(&req, 0, sizeof(req));
++	req.nh.nlmsg_len = NLMSG_LENGTH(sizeof(struct ifinfomsg));
++	req.nh.nlmsg_flags = NLM_F_REQUEST;
++	req.nh.nlmsg_type = RTM_NEWLINK;
++	req.ifi.ifi_family = AF_UNSPEC;
++	req.ifi.ifi_index = intf_index;
++	req.ifi.ifi_change = 0xffffffff;
++	rta = (struct rtattr *)(((char *) &req) +
++		NLMSG_ALIGN(req.nh.nlmsg_len));
++	rta->rta_type = IFLA_NET_NS_PID;
++	rta->rta_len = RTA_LENGTH(sizeof(int));
++	req.nh.nlmsg_len = NLMSG_ALIGN(req.nh.nlmsg_len) +
++		RTA_LENGTH(sizeof(pid));
++	memcpy(RTA_DATA(rta), &pid, sizeof(pid));
++
++	if (send(rtnetlink_socket, &req, req.nh.nlmsg_len, 0) == -1) {
++		tst_resm(TINFO | TERRNO, "send");
++		return 1;
++	}
++
++	close(rtnetlink_socket);
++	return 0;
++}
+diff --git a/testcases/kernel/containers/share/ns_utils.h b/testcases/kernel/containers/share/ns_utils.h
+new file mode 100644
+index 0000000..fe11a6b
+--- /dev/null
++++ b/testcases/kernel/containers/share/ns_utils.h
+@@ -0,0 +1,42 @@
++/* Copyright (c) 2015 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ ***********************************************************************
++ * File: ns_utils.h
++ *
++ */
++
++#ifndef NS_UTILS_H
++#define NS_UTILS_H
++
++#ifndef CLONE_NEWIPC
++#  define CLONE_NEWIPC	0x08000000
++#endif
++#ifndef CLONE_NEWNS
++#  define CLONE_NEWNS	0x00020000
++#endif
++#ifndef CLONE_NEWNET
++#  define CLONE_NEWNET	0x40000000
++#endif
++#ifndef CLONE_NEWPID
++#  define CLONE_NEWPID	0x20000000
++#endif
++#ifndef CLONE_NEWUSER
++#  define CLONE_NEWUSER	0x10000000
++#endif
++#ifndef CLONE_NEWUTS
++#  define CLONE_NEWUTS	0x04000000
++#endif
++
++
++#endif
+-- 
+1.8.3.1
 
-Otherwise, are there are params that can limitor specify the resources that
-LTP can use?
-
- 
-
-Sample call trace:
-
-Jul 22 01:17:50 ubuntu kernel: [ 5757.011711] Out of memory: Kill process
-5902 (oom01) score 937 or sacrifice child
-
-Jul 22 01:17:50 ubuntu kernel: [ 5757.014099] Killed process 5902 (oom01)
-total-vm:15759784kB, anon-rss:7723620kB, file-rss:40kB
-
-Jul 22 01:25:26 ubuntu kernel: [ 6211.981585] min_free_kbytes invoked
-oom-killer: gfp_mask=0x280da, order=0, oom_score_adj=0
-
-Jul 22 01:25:26 ubuntu kernel: [ 6211.982662] min_free_kbytes cpuset=/
-mems_allowed=0
-
-Jul 22 01:25:26 ubuntu kernel: [ 6211.983723] CPU: 1 PID: 12532 Comm:
-min_free_kbytes Not tainted 3.16.0-43-generic #58~14.04.1-Ubuntu
-
- 
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.531764] Call Trace:
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.534570]  [<ffffffff81765a91>]
-dump_stack+0x45/0x56
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.537888]  [<ffffffff8175f645>]
-dump_header+0x7f/0x1f1
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.540655]  [<ffffffff811655c5>]
-oom_kill_process+0x205/0x360
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.543361]  [<ffffffff812ebbd5>] ?
-security_capable_noaudit+0x15/0x20
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.554536]  [<ffffffff81165d72>]
-out_of_memory+0x492/0x4d0
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.557160]  [<ffffffff8176019d>]
-__alloc_pages_slowpath+0x63e/0x775
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.559807]  [<ffffffff8116bb23>]
-__alloc_pages_nodemask+0x273/0x2a0
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.563601]  [<ffffffff811ae93a>]
-alloc_pages_vma+0x9a/0x150
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.569377]  [<ffffffff8118f49c>]
-handle_mm_fault+0xcfc/0x10c0
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.574630]  [<ffffffff81769c5f>] ?
-__schedule+0x35f/0x7a0
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.582479]  [<ffffffff8105af5e>]
-__do_page_fault+0x19e/0x560
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.590664]  [<ffffffff810a62e8>] ?
-__enqueue_entity+0x78/0x80
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.597382]  [<ffffffff810a8015>] ?
-set_next_entity+0x95/0xb0
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.608215]  [<ffffffff81011627>] ?
-__switch_to+0x167/0x580
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.614156]  [<ffffffff8105b351>]
-do_page_fault+0x31/0x70
-
-Jul 22 01:17:50 ubuntu kernel: [ 5756.616875]  [<ffffffff81770168>]
-page_fault+0x28/0x30
-
- 
-
-From: Cristian Valean [mailto:cristian.valean@live.com] 
-Sent: Thursday, July 23, 2015 2:34 PM
-To: ltp-list@lists.sourceforge.net
-Subject: [LTP] OOM messages when running full ltp tests on a Hyper-V VM
-
- 
-
-I'm trying to run a full ltp test run on Ubuntu 14.04.2 as a Hyper-V VM.
-
- 
-
-The VM is set with 8 or 12GB and 4 vCPUs, however during the tests execution
-the syslog records over 30 call traces similar to the one below.
-
- 
-
- 
-
-
-------=_NextPart_000_0009_01D0C555.B9244B80
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
-xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
-xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
-xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
-xmlns=3D"http://www.w3.org/TR/REC-html40"><head><META =
-HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii"><meta name=3DGenerator content=3D"Microsoft Word 15 =
-(filtered medium)"><style><!--
-/* Font Definitions */
-@font-face
-	{font-family:"Cambria Math";
-	panose-1:2 4 5 3 5 4 6 3 2 4;}
-@font-face
-	{font-family:Calibri;
-	panose-1:2 15 5 2 2 2 4 3 2 4;}
-/* Style Definitions */
-p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:11.0pt;
-	font-family:"Calibri",sans-serif;}
-a:link, span.MsoHyperlink
-	{mso-style-priority:99;
-	color:#0563C1;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{mso-style-priority:99;
-	color:#954F72;
-	text-decoration:underline;}
-p.msonormal0, li.msonormal0, div.msonormal0
-	{mso-style-name:msonormal;
-	mso-margin-top-alt:auto;
-	margin-right:0in;
-	mso-margin-bottom-alt:auto;
-	margin-left:0in;
-	font-size:12.0pt;
-	font-family:"Times New Roman",serif;}
-span.EmailStyle18
-	{mso-style-type:personal;
-	font-family:"Calibri",sans-serif;
-	color:windowtext;}
-span.EmailStyle19
-	{mso-style-type:personal-reply;
-	font-family:"Calibri",sans-serif;
-	color:#1F497D;}
-.MsoChpDefault
-	{mso-style-type:export-only;
-	font-size:10.0pt;}
-@page WordSection1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.WordSection1
-	{page:WordSection1;}
---></style><!--[if gte mso 9]><xml>
-<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
-</xml><![endif]--><!--[if gte mso 9]><xml>
-<o:shapelayout v:ext=3D"edit">
-<o:idmap v:ext=3D"edit" data=3D"1" />
-</o:shapelayout></xml><![endif]--></head><body lang=3DEN-US =
-link=3D"#0563C1" vlink=3D"#954F72"><div class=3DWordSection1><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>My apologies for the =
-incomplete reply, it got sent out before all details&nbsp; went =
-it.<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'><o:p>&nbsp;</o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>To continue the initial =
-thread:<o:p></o:p></span></p><p class=3DMsoNormal>I&#8217;m trying to =
-run a full ltp test run on Ubuntu 14.04.2 as a Hyper-V =
-VM.<o:p></o:p></p><p class=3DMsoNormal>The VM is set with 8 or 12GB and =
-4 vCPUs, however during the tests execution the syslog records over 30 =
-call traces similar to the one below.<o:p></o:p></p><p =
-class=3DMsoNormal><span =
-style=3D'color:#1F497D'><o:p>&nbsp;</o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Haven&#8217;t tried =
-vmware or other platforms, but I&#8217;m wondering why LTP processes go =
-over the limit, or what would be a reference system resources that would =
-accommodate a full run. <o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Otherwise, are there are params that can limitor =
-specify the resources that LTP can use?<o:p></o:p></span></p><p =
-class=3DMsoNormal><span =
-style=3D'color:#1F497D'><o:p>&nbsp;</o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Sample call =
-trace:<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu kernel: [ 5757.011711] =
-Out of memory: Kill process 5902 (oom01) score 937 or sacrifice =
-child<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu kernel: [ 5757.014099] =
-Killed process 5902 (oom01) total-vm:15759784kB, anon-rss:7723620kB, =
-file-rss:40kB<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Jul 22 01:25:26 ubuntu kernel: [ 6211.981585] =
-min_free_kbytes invoked oom-killer: gfp_mask=3D0x280da, order=3D0, =
-oom_score_adj=3D0<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Jul 22 01:25:26 ubuntu kernel: [ 6211.982662] =
-min_free_kbytes cpuset=3D/ mems_allowed=3D0<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:25:26 ubuntu =
-kernel: [ 6211.983723] CPU: 1 PID: 12532 Comm: min_free_kbytes Not =
-tainted 3.16.0-43-generic #58~14.04.1-Ubuntu<o:p></o:p></span></p><p =
-class=3DMsoNormal><span =
-style=3D'color:#1F497D'><o:p>&nbsp;</o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.531764] Call Trace:<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.534570]&nbsp; [&lt;ffffffff81765a91&gt;] =
-dump_stack+0x45/0x56<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu kernel: [ =
-5756.537888]&nbsp; [&lt;ffffffff8175f645&gt;] =
-dump_header+0x7f/0x1f1<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu kernel: [ =
-5756.540655]&nbsp; [&lt;ffffffff811655c5&gt;] =
-oom_kill_process+0x205/0x360<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.543361]&nbsp; [&lt;ffffffff812ebbd5&gt;] ? =
-security_capable_noaudit+0x15/0x20<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.554536]&nbsp; [&lt;ffffffff81165d72&gt;] =
-out_of_memory+0x492/0x4d0<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.557160]&nbsp; [&lt;ffffffff8176019d&gt;] =
-__alloc_pages_slowpath+0x63e/0x775<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.559807]&nbsp; [&lt;ffffffff8116bb23&gt;] =
-__alloc_pages_nodemask+0x273/0x2a0<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.563601]&nbsp; [&lt;ffffffff811ae93a&gt;] =
-alloc_pages_vma+0x9a/0x150<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.569377]&nbsp; [&lt;ffffffff8118f49c&gt;] =
-handle_mm_fault+0xcfc/0x10c0<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.574630]&nbsp; [&lt;ffffffff81769c5f&gt;] ? =
-__schedule+0x35f/0x7a0<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu kernel: [ =
-5756.582479]&nbsp; [&lt;ffffffff8105af5e&gt;] =
-__do_page_fault+0x19e/0x560<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.590664]&nbsp; [&lt;ffffffff810a62e8&gt;] ? =
-__enqueue_entity+0x78/0x80<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.597382]&nbsp; [&lt;ffffffff810a8015&gt;] ? =
-set_next_entity+0x95/0xb0<o:p></o:p></span></p><p =
-class=3DMsoNormal><span style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu =
-kernel: [ 5756.608215]&nbsp; [&lt;ffffffff81011627&gt;] ? =
-__switch_to+0x167/0x580<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu kernel: [ =
-5756.614156]&nbsp; [&lt;ffffffff8105b351&gt;] =
-do_page_fault+0x31/0x70<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'>Jul 22 01:17:50 ubuntu kernel: [ =
-5756.616875]&nbsp; [&lt;ffffffff81770168&gt;] =
-page_fault+0x28/0x30<o:p></o:p></span></p><p class=3DMsoNormal><span =
-style=3D'color:#1F497D'><o:p>&nbsp;</o:p></span></p><div><div =
-style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in =
-0in 0in'><p class=3DMsoNormal><b>From:</b> Cristian Valean =
-[mailto:cristian.valean@live.com] <br><b>Sent:</b> Thursday, July 23, =
-2015 2:34 PM<br><b>To:</b> =
-ltp-list@lists.sourceforge.net<br><b>Subject:</b> [LTP] OOM messages =
-when running full ltp tests on a Hyper-V VM<o:p></o:p></p></div></div><p =
-class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>I&#8217;m =
-trying to run a full ltp test run on Ubuntu 14.04.2 as a Hyper-V =
-VM.<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
-class=3DMsoNormal>The VM is set with 8 or 12GB and 4 vCPUs, however =
-during the tests execution the syslog records over 30 call traces =
-similar to the one below.<o:p></o:p></p><p =
-class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
-class=3DMsoNormal><o:p>&nbsp;</o:p></p></div></body></html>
-------=_NextPart_000_0009_01D0C555.B9244B80--
-
-
---===============5284852298344110242==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
---===============5284852298344110242==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============5284852298344110242==--
-
