@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZIFb6-0007JD-FW
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2015 12:27:36 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZIFb3-0007mB-Vs
-	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2015 12:27:36 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t6NCPce1032563
-	for <ltp-list@lists.sourceforge.net>; Thu, 23 Jul 2015 20:25:38 +0800
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 23 Jul 2015 20:27:15 +0800
-Message-ID: <1437654435-16682-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZEwjh-0000Lk-1I
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 09:42:49 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZEwjc-0000RJ-L1
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 09:42:49 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Wed, 15 Jul 2015 01:46:45 +0800
+Message-ID: <1436896005-21714-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v2] fcntl/fcntl32.c: add new test
+Subject: [LTP] [PATCH] A process created via fork(2) or clone(2) without the
+	CLONE_NEWUSER flag is a member of the same user namespace as
+	its parent. When unshare an user namespace,
+	the calling process is moved into a new user namespace which is not
+	shared with any previously existing process.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,199 +29,218 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: jstancek@redhat.com
+Cc: ltp-list@lists.sourceforge.net
 
-Add new testcase to verify that a write lease may be placed
-on a file only if there are no other open file descriptors
-for the file.
-
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
 ---
- runtest/ltplite                           |   1 +
- runtest/syscalls                          |   2 +
- testcases/kernel/syscalls/.gitignore      |   2 +
- testcases/kernel/syscalls/fcntl/fcntl32.c | 129 ++++++++++++++++++++++++++++++
- 4 files changed, 134 insertions(+)
- create mode 100644 testcases/kernel/syscalls/fcntl/fcntl32.c
+ runtest/containers                            |   1 +
+ testcases/kernel/containers/.gitignore        |   1 +
+ testcases/kernel/containers/userns/userns05.c | 167 ++++++++++++++++++++++++++
+ 3 files changed, 169 insertions(+)
+ create mode 100644 testcases/kernel/containers/userns/userns05.c
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 3bc681c..8ce0daa 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -225,6 +225,7 @@ fcntl26 fcntl26
- fcntl29 fcntl29
- fcntl30 fcntl30
- fcntl31 fcntl31
-+fcntl32 fcntl32
- 
- fdatasync01 fdatasync01
- fdatasync02 fdatasync02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 70d4945..0d14528 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -258,6 +258,8 @@ fcntl30 fcntl30
- fcntl30_64 fcntl30_64
- fcntl31 fcntl31
- fcntl31_64 fcntl31_64
-+fcntl32 fcntl32
-+fcntl32_64 fcntl32_64
- 
- fdatasync01 fdatasync01
- fdatasync02 fdatasync02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 172aeec..13c7a79 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -221,6 +221,8 @@
- /fcntl/fcntl30_64
- /fcntl/fcntl31
- /fcntl/fcntl31_64
-+/fcntl/fcntl32
-+/fcntl/fcntl32_64
- /fdatasync/fdatasync01
- /fdatasync/fdatasync02
- /flock/flock01
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl32.c b/testcases/kernel/syscalls/fcntl/fcntl32.c
+diff --git a/runtest/containers b/runtest/containers
+index de4197e..cece80b 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -72,3 +72,4 @@ userns01 userns01
+ userns02 userns02
+ userns03 userns03
+ userns04 userns04
++userns05 userns05
+diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+index 85ced78..b433b03 100644
+--- a/testcases/kernel/containers/.gitignore
++++ b/testcases/kernel/containers/.gitignore
+@@ -7,3 +7,4 @@ userns/userns01
+ userns/userns02
+ userns/userns03
+ userns/userns04
++userns/userns05
+diff --git a/testcases/kernel/containers/userns/userns05.c b/testcases/kernel/containers/userns/userns05.c
 new file mode 100644
-index 0000000..46e316f
+index 0000000..8d25c56
 --- /dev/null
-+++ b/testcases/kernel/syscalls/fcntl/fcntl32.c
-@@ -0,0 +1,129 @@
++++ b/testcases/kernel/containers/userns/userns05.c
+@@ -0,0 +1,167 @@
 +/*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ * Copyright (c) Huawei Technologies Co., Ltd., 2015
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
 + *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * alone with this program.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
 + */
 +
 +/*
-+ * DESCRIPTION
-+ *  Basic test for fcntl(2) using F_SETLEASE & F_WRLCK argument.
-+ *  "A write lease may be placed on a file only if there are
-+ *  no other open file descriptors for the file."
++ * Verify that:
++ * A process created via fork(2) or clone(2) without the
++ * CLONE_NEWUSER flag is a member of the same user namespace as its
++ * parent.
++ * When unshare an user namespace, the calling process is moved into
++ * a new user namespace which is not shared with any previously
++ * existing process.
 + */
 +
++#define _GNU_SOURCE
++#include <sys/wait.h>
++#include <assert.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
 +#include <errno.h>
-+
 +#include "test.h"
-+#include "safe_macros.h"
-+#include "tst_fs_type.h"
++#include "userns_helper.h"
 +
-+static void setup(void);
-+static void fcntl_verify(int);
-+static void cleanup(void);
++char *TCID = "user_namespace5";
++int TST_TOTAL = 1;
 +
-+#define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
-+
-+int fd1;
-+int fd2;
-+
-+static struct test_case_t {
-+	int fd1_flag;
-+	int fd2_flag;
-+} test_cases[] = {
-+	{O_RDONLY, O_RDONLY},
-+	{O_RDONLY, O_WRONLY},
-+	{O_RDONLY, O_RDWR},
-+	{O_WRONLY, O_RDONLY},
-+	{O_WRONLY, O_WRONLY},
-+	{O_WRONLY, O_RDWR},
-+	{O_RDWR, O_RDONLY},
-+	{O_RDWR, O_WRONLY},
-+	{O_RDWR, O_RDWR},
-+};
-+
-+char *TCID = "fcntl32";
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+
-+int main(int ac, char **av)
++static void cleanup(void)
 +{
-+	int lc;
-+	int tc;
-+	long type;
++	tst_rmdir();
++}
 +
-+	tst_parse_opts(ac, av, NULL, NULL);
++/*
++ * child_fn1() - Inside a new user namespace
++ */
++static int child_fn1(void)
++{
++	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
++	return 0;
++}
 +
-+	setup();
++static int wait4child(pid_t pid, const char *msg)
++{
++	int status;
 +
-+	switch ((type = tst_fs_type(cleanup, "."))) {
-+	case TST_NFS_MAGIC:
-+	case TST_RAMFS_MAGIC:
-+	case TST_TMPFS_MAGIC:
-+		tst_brkm(TCONF, cleanup,
-+			"Cannot do fcntl on a file on %s filesystem",
-+			tst_fs_type_name(type));
-+		break;
-+	default:
-+		break;
++	if (waitpid(pid, &status, 0) == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
++	} else if (WIFSIGNALED(status)) {
++		tst_resm(TFAIL, "%s: child was killed with signal = %d",
++			msg, WTERMSIG(status));
++		return WTERMSIG(status);
++	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
++		tst_resm(TFAIL, "%s: child returns %d", msg, status);
++		return WEXITSTATUS(status);
 +	}
 +
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
++	return 0;
++}
 +
-+		for (tc = 0; tc < TST_TOTAL; tc++)
-+			fcntl_verify(tc);
++static long getusernsidbypid(int pid)
++{
++	char path[BUFSIZ];
++	char userid[BUFSIZ];
++	long id;
++
++	sprintf(path, "/proc/%d/ns/user", pid);
++
++	if (readlink(path, userid, BUFSIZ) == -1)
++		tst_resm(TFAIL, "readlink failure.");
++
++	if (sscanf(userid, "user:[%ld]", &id) != 1)
++		tst_resm(TFAIL, "sscanf failure.");
++	return id;
++}
++
++static void test_userns_id(void)
++{
++	int status;
++	int cpid1, cpid2, cpid3;
++	long parentuserns, cpid1userns, cpid2userns, newparentuserns;
++
++	parentuserns = getusernsidbypid(getpid());
++	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1,
++		NULL);
++	if (cpid1 < 0)
++		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
++	cpid1userns = getusernsidbypid(cpid1);
++	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
++
++	/* A process created via fork(2) or clone(2) without the
++	CLONE_NEWUSER flag is a member of the same user namespace as its
++	parent.*/
++	if (parentuserns != cpid1userns)
++		tst_resm(TFAIL, "userns:parent should be equal to cpid1");
++
++	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
++		(void *)child_fn1, NULL);
++	if (cpid2 < 0)
++		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
++	cpid2userns = getusernsidbypid(cpid2);
++	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
++
++	if (parentuserns == cpid2userns)
++		tst_resm(TFAIL, "userns:parent should be not equal to cpid2");
++
++	switch (cpid3 = fork()) {
++	case -1:
++		tst_brkm(TBROK | TERRNO, cleanup, "fork");
++	case 0:
++		if (unshare(CLONE_NEWUSER) == -1) {
++			printf("parent pid unshare failure: (%d) %s",
++				errno, strerror(errno));
++			exit(1);
++		}
++		newparentuserns = getusernsidbypid(getpid());
++
++		/* When unshare an user namespace, the calling process
++		is moved into a new user namespace which is not shared
++		with any previously existing process.*/
++		if (parentuserns == newparentuserns)
++			exit(1);
++		exit(0);
 +	}
 +
-+	cleanup();
-+	tst_exit();
++	status = 0;
++	status |= wait4child(cpid1, "child1");
++	status |= wait4child(cpid2, "child2");
++	status |= wait4child(cpid3, "child3");
++	if (status == 0)
++		tst_resm(TPASS, "The usernsid function works well.");
++	else
++		tst_resm(TFAIL, "Some children reported failure.");
 +}
 +
 +static void setup(void)
 +{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	TEST_PAUSE;
++	check_newuser();
 +
 +	tst_tmpdir();
-+
-+	SAFE_TOUCH(cleanup, "file", FILE_MODE, NULL);
++	TST_CHECKPOINT_INIT(NULL);
 +}
 +
-+static void fcntl_verify(int i)
++int main(int argc, char *argv[])
 +{
-+	fd1 = SAFE_OPEN(cleanup, "file", test_cases[i].fd1_flag);
-+	fd2 = SAFE_OPEN(cleanup, "file", test_cases[i].fd2_flag);
++	int lc;
 +
-+	TEST(fcntl(fd1, F_SETLEASE, F_WRLCK));
++	tst_parse_opts(argc, argv, NULL, NULL);
++	setup();
 +
-+	SAFE_CLOSE(cleanup, fd1);
-+	fd1 = 0;
-+	SAFE_CLOSE(cleanup, fd2);
-+	fd2 = 0;
-+
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "fcntl(2) succeeded unexpectedly");
-+		return;
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		test_userns_id();
 +	}
-+
-+	tst_resm(TPASS | TTERRNO, "fcntl(2) failed as expected");
++	cleanup();
++	tst_exit();
 +}
 +
-+static void cleanup(void)
-+{
-+	if (fd1 > 0 && close(fd1))
-+		tst_resm(TWARN | TTERRNO, "Failed to close file");
-+
-+	if (fd2 > 0 && close(fd2))
-+		tst_resm(TWARN | TTERRNO, "Failed to close file");
-+
-+	tst_rmdir();
-+}
 -- 
-1.8.4.2
+1.9.1
 
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
