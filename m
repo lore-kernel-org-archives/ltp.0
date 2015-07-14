@@ -1,26 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1ZArxv-0001bZ-Gq
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 03:48:39 +0000
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1ZArxt-0003HN-Bj
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 03:48:39 +0000
-Received: from epcpsbgr3.samsung.com
-	(u143.gpu120.samsung.co.kr [203.254.230.143])
-	by mailout2.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NQW028WK7WTN860@mailout2.samsung.com> for
-	ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 12:48:29 +0900 (KST)
-Date: Fri, 03 Jul 2015 03:48:29 +0000 (GMT)
-From: Maninder Singh <maninder1.s@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1029923750.223441435895309720.JavaMail.weblogic@ep2mlwas02a>
-Subject: [LTP] [RESUBMIT PATCH 05/13] kernel/mq_open: use ARRAY_SIZE
-Reply-To: maninder1.s@samsung.com
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZEwQd-0008Fu-FJ
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 09:23:07 +0000
+Date: Tue, 14 Jul 2015 11:21:36 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150714092136.GB3137@rei.suse.de>
+References: <1435909571-27285-1-git-send-email-liuhangbin@gmail.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1435909571-27285-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCHv2 1/2] testcases/lib/test.sh: add tst_retry() to
+ ensure cmd exec succeed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,32 +25,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Cc: PANKAJ MISHRA <pankaj.m@samsung.com>
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
-use ARRAY_SIZE instead of sizeof(a)/sizeof(a[0])
+Hi!
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  testcases/lib/test.sh | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+> index 1c9b126..4183512 100644
+> --- a/testcases/lib/test.sh
+> +++ b/testcases/lib/test.sh
+> @@ -134,6 +134,26 @@ tst_check_cmds()
+>  	done
+>  }
+>  
+> +# tst_retry "command" [times]
+> +# try run command for specified times, default is 3.
+> +# Function returns 0 if succeed in RETRIES times or the last retcode the cmd
+> +# returned
+> +tst_retry()
+> +{
+> +	local cmd="$1"
+> +	local RETRIES=${2:-"3"}
+> +	while [ $RETRIES -gt 0 ]; do
+> +		eval "$cmd"
+> +		ret=$?
+> +		if [ $ret -eq 0 ]; then
+> +			break
+> +		fi
+> +		let RETRIES--
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
----
- testcases/kernel/syscalls/mq_open/mq_open01.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+The let construct is bash specific, we have to do RETRIES=$((RETRIES-1))
+to keep the code working in rest of the shells as well.
 
-diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
-index 3c2d1b1..529dd7a 100644
---- a/testcases/kernel/syscalls/mq_open/mq_open01.c
-+++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
-@@ -405,8 +405,7 @@ int main(int ac, char **av)
- 			/*
- 			 * Execute test
- 			 */
--			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
--			     i++) {
-+			for (i = 0; i < (int)ARRAY_SIZE(tcase); i++) {
- 				int ret;
- 				tst_resm(TINFO, "(case%02d) START", i);
- 				ret = do_test(&tcase[i]);
+> +		sleep 1
+> +	done
+> +	return $ret
+> +}
+
 -- 
-1.7.9.5
+Cyril Hrubis
+chrubis@suse.cz
+
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
 GigeNET's Cloud Solutions provide you with the tools and support that
