@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZKq52-0001ux-Cb
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 15:49:12 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZKq51-0001Tb-By
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 15:49:12 +0000
-Date: Thu, 30 Jul 2015 17:48:54 +0200
+	(envelope-from <metan@suse.de>) id 1ZEwcQ-0001DE-KN
+	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 09:35:18 +0000
+Date: Tue, 14 Jul 2015 11:33:47 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150730154853.GC9874@rei.suse.de>
-References: <1437058074-14800-1-git-send-email-liuhangbin@gmail.com>
-	<20150730154636.GA9874@rei.suse.de>
+Message-ID: <20150714093347.GB3729@rei.suse.de>
+References: <1435910527-27802-1-git-send-email-liuhangbin@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20150730154636.GA9874@rei.suse.de>
-Subject: Re: [LTP] [PATCHv4 1/2] testcases/lib/test.sh: add tst_retry() to
- ensure cmd exec succeed
+In-Reply-To: <1435910527-27802-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCH] network/stress/ns-tools: make PING_MAX times
+	adjustable
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,15 +29,41 @@ To: Hangbin Liu <liuhangbin@gmail.com>
 Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> I've added a TCONF message in case that we failed to run the command,
+> Some switches need a while to learn the new assigned address, which make the
+> connectivity check failed. Make PING_MAX adjustable to let user can pre-define
+> it based on their own environment.
+> 
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  testcases/network/stress/ns-tools/check_icmpv4_connectivity | 2 +-
+>  testcases/network/stress/ns-tools/check_icmpv6_connectivity | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/testcases/network/stress/ns-tools/check_icmpv4_connectivity b/testcases/network/stress/ns-tools/check_icmpv4_connectivity
+> index 7630aae..2daaea4 100644
+> --- a/testcases/network/stress/ns-tools/check_icmpv4_connectivity
+> +++ b/testcases/network/stress/ns-tools/check_icmpv4_connectivity
+> @@ -47,7 +47,7 @@
+>  $trace_logic
+>  
+>  # The max number of ICMP echo request
+> -PING_MAX=10
+> +PING_MAX=${PING_MAX:-"10"}
 
-I mean TINFO.
+I do not like exposing random shell variables as interface without any
+documentation. Can't we just increase the PING_MAX to make it work for
+everybody without any extra work?
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
