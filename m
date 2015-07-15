@@ -2,19 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZClrg-0006bM-Ie
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2015 09:42:04 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZFOsi-00009N-7h
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2015 15:46:00 +0000
+Received: from aserp1040.oracle.com ([141.146.126.69])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZClrf-0003zw-Ay
-	for ltp-list@lists.sourceforge.net; Wed, 08 Jul 2015 09:42:04 +0000
-Date: Wed, 8 Jul 2015 05:41:53 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1290384689.14193896.1436348513763.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1436204570-7473-1-git-send-email-sunyuan3@huawei.com>
-References: <1436204570-7473-1-git-send-email-sunyuan3@huawei.com>
+	(Exim 4.76) id 1ZFOsh-0004KW-AR
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2015 15:46:00 +0000
+Message-ID: <55A680FC.2010807@oracle.com>
+Date: Wed, 15 Jul 2015 18:49:16 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V3] userns01: add capability verification
+References: <55842886.4090202@oracle.com>
+	<1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v4 01/11] SAFE_MACROS: Add socket(), bind(),
+ listen(), connect() and getsockname()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,127 +29,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
-
-
-
-
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Monday, 6 July, 2015 7:42:50 PM
-> Subject: [PATCH V3] userns01: add capability verification
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-
-Pushed with some small changes:
-- missing CAP_LIBS in Makefile
-- removed linux/types.h include
-- modified message when libcap is missing
-
-Compile tested on RHEL5.3/RHEL6.0 and RHEL7.1.
-Runtime tested with kernel 4.0.4.
-
-Regards,
-Jan
-
-
-> ---
->  testcases/kernel/containers/userns/userns01.c | 43
->  ++++++++++++++++++++++-----
->  1 file changed, 36 insertions(+), 7 deletions(-)
-> 
-> diff --git a/testcases/kernel/containers/userns/userns01.c
-> b/testcases/kernel/containers/userns/userns01.c
-> index 9cada5e..750ba49 100644
-> --- a/testcases/kernel/containers/userns/userns01.c
-> +++ b/testcases/kernel/containers/userns/userns01.c
-> @@ -15,7 +15,9 @@
->   * Verify that:
->   *  If a user ID has no mapping inside the namespace, user ID and group
->   * ID will be the value defined in the file
->   /proc/sys/kernel/overflowuid(65534)
-> - * and /proc/sys/kernel/overflowgid(65534).
-> + * and /proc/sys/kernel/overflowgid(65534). A child process has a full set
-> + * of permitted and effective capabilities, even though the program was
-> + * run from an unprivileged account.
->   */
->  
->  #define _GNU_SOURCE
-> @@ -29,6 +31,12 @@
->  #include "test.h"
->  #include "libclone.h"
->  #include "userns_helper.h"
-> +#include "config.h"
-> +#if HAVE_SYS_CAPABILITY_H
-> +#include <linux/types.h>
-> +#include <sys/capability.h>
-> +#endif
+Hi,
+On 07/09/2015 06:05 AM, Zeng Linggang wrote:
+> +int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
+> +	      int socket, const struct sockaddr *address,
+> +	      socklen_t address_len)
+> +{
+> +	int err, ret, i;
 > +
->  #define OVERFLOWUIDPATH "/proc/sys/kernel/overflowuid"
->  #define OVERFLOWGIDPATH "/proc/sys/kernel/overflowgid"
->  
-> @@ -43,21 +51,43 @@ static long overflowgid;
->   */
->  static int child_fn1(void *arg LTP_ATTRIBUTE_UNUSED)
->  {
-> -	int exit_val;
-> +	int exit_val = 0;
->  	int uid, gid;
-> +#ifdef HAVE_LIBCAP
-> +	cap_t caps;
-> +	int i, last_cap;
-> +	cap_flag_value_t flag_val;
-> +#endif
->  
->  	uid = geteuid();
->  	gid = getegid();
->  
->  	tst_resm(TINFO, "USERNS test is running in a new user namespace.");
-> -	if (uid == overflowuid && gid == overflowgid) {
-> -		printf("Got expected uid and gid\n");
-> -		exit_val = 0;
-> -	} else {
+> +	for (i = 0; i < 30; i++) {
+> +		ret = bind(socket, address, address_len);
+> +		err = errno;
 > +
-> +	if (uid != overflowuid || gid != overflowgid) {
->  		printf("Got unexpected result of uid=%d gid=%d\n", uid, gid);
->  		exit_val = 1;
->  	}
->  
-> +#ifdef HAVE_LIBCAP
-> +	caps = cap_get_proc();
-> +	SAFE_FILE_SCANF(NULL, "/proc/sys/kernel/cap_last_cap", "%d", &last_cap);
-> +	for (i = 0; i <= last_cap; i++) {
-> +		cap_get_flag(caps, i, CAP_EFFECTIVE, &flag_val);
-> +		if (flag_val == 0)
-> +			break;
-> +		cap_get_flag(caps, i, CAP_PERMITTED, &flag_val);
-> +		if (flag_val == 0)
-> +			break;
-> +	}
+> +		if (!ret)
+> +			return 0;
 > +
-> +	if (flag_val == 0) {
-> +		printf("unexpected effective/permitted caps\n");
-> +		exit_val = 1;
-> +	}
-> +#else
-> +	printf("System doesn't support capabilities.\n");
-> +#endif
->  	return exit_val;
->  }
->  
-> @@ -95,4 +125,3 @@ int main(int argc, char *argv[])
->  	}
->  	tst_exit();
->  }
-> -
-> --
-> 1.9.1
-> 
-> 
+> +		tst_resm(TINFO, "bind('%p') failed with %s, try %2i...",
+> +			 address, tst_strerrno(err), i+1);
+> +
+
+I'd wait only if errno is EADDRINUSE; otherwise exit with TBROK 
+immediately. And waiting for 3 seconds in the loop is too small, please 
+increase the time.
+
+The rest looks good.
+
+Thanks,
+Alexey
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
