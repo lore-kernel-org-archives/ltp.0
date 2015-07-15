@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZAdZX-0003IE-BF
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 12:26:31 +0000
-Date: Thu, 2 Jul 2015 14:25:10 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150702122510.GA17203@rei.suse.de>
-References: <1431958682-15683-1-git-send-email-chase.qi@linaro.org>
-	<555A8744.5050300@cn.fujitsu.com>
-	<1435829214.19361.4.camel@G08FNSTD140232.g08.fujitsu.local>
-	<20150702114215.GA16269@rei.suse.de>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZFIAt-0006cO-4T
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2015 08:36:19 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZFIAr-0000jo-Hp
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2015 08:36:19 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t6F8YNpF027523
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Jul 2015 16:34:23 +0800
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 15 Jul 2015 16:36:03 +0800
+Message-ID: <1436949363-8356-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
+In-Reply-To: <1436949363-8356-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1436949363-8356-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20150702114215.GA16269@rei.suse.de>
-Subject: Re: [LTP] [PATCH] cpuhotplug05.sh: Make test to support some old
- version of 'sar'
+Subject: [LTP] [PATCH v2 3/3] umount2/umount2_03.c: add new test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,39 +31,202 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>, naresh.kamboju@linaro.org, milosz.wasilewski@linaro.org
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> > In commit 841c0eebc50068d6595b97b50ae0ee8e8f57c8ca:
-> > We changed "sar 1 0" to "sar 1", but it make the test not
-> > work well before 'sysstat-8.1.4(include sar)'.
-> 
-> The old syntax does not work with newer sar. So the correct fix here is
-> to do runtime check and change parameters accordingly.
+Add new testcase to verify the flag UMOUNT_NOFOLLOW of umount2(2).
 
-Ah, sorry for replying before I finished my coffee...
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ runtest/ltplite                                |   1 +
+ runtest/syscalls                               |   1 +
+ testcases/kernel/syscalls/.gitignore           |   1 +
+ testcases/kernel/syscalls/umount2/umount2_03.c | 138 +++++++++++++++++++++++++
+ 4 files changed, 141 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/umount2/umount2_03.c
 
-The code does exactly that but I would be happier if we had the fi only
-in one place, something like:
-
-sar 1 0 > /dev/null &
-pid=$!
-
-if kill -0 $pid 2> /dev/null; then
-	kill $pid
-	SAR_PARAMS="1 0"
-else
-	SAR_PARAMS="1"
-fi
-
-...
-
-sar $SAR_PARAMS ...
-
+diff --git a/runtest/ltplite b/runtest/ltplite
+index f5a8a52..083e48e 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -967,6 +967,7 @@ unlink08 unlink08
+ 
+ umount2_01 umount2_01
+ umount2_02 umount2_02
++umount2_03 umount2_03
+ 
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 92716d2..2fbf4de 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1316,6 +1316,7 @@ umount03 umount03
+ 
+ umount2_01 umount2_01
+ umount2_02 umount2_02
++umount2_03 umount2_03
+ 
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 4ee0b0d..046c909 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -1004,6 +1004,7 @@
+ /umount/umount03
+ /umount2/umount2_01
+ /umount2/umount2_02
++/umount2/umount2_03
+ /uname/uname01
+ /uname/uname02
+ /uname/uname03
+diff --git a/testcases/kernel/syscalls/umount2/umount2_03.c b/testcases/kernel/syscalls/umount2/umount2_03.c
+new file mode 100644
+index 0000000..ecfc775
+--- /dev/null
++++ b/testcases/kernel/syscalls/umount2/umount2_03.c
+@@ -0,0 +1,138 @@
++/*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License
++ * alone with this program.
++ */
++
++/*
++ * DESCRIPTION
++ *  Test for feature UMOUNT_NOFOLLOW of umount2().
++ *  "Don't dereference target if it is a symbolic link,
++ *   and fails with the error EINVAL."
++ */
++
++#include <errno.h>
++#include <sys/mount.h>
++
++#include "test.h"
++#include "safe_macros.h"
++#include "lapi/mount.h"
++
++static void setup(void);
++static void umount2_verify(void);
++static void cleanup(void);
++
++char *TCID = "umount2_03";
++int TST_TOTAL = 1;
++
++#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
++#define MNTPOINT	"mntpoint"
++#define SYMLINK	"symlink"
++
++static int mount_flag;
++
++static const char *device;
++static const char *fs_type;
++
++int main(int ac, char **av)
++{
++	int lc;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		umount2_verify();
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	tst_require_root(NULL);
++
++	if ((tst_kvercmp(2, 6, 34)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels "
++			"that are 2.6.34 or higher");
++	}
++
++	tst_sig(NOFORK, DEF_HANDLER, NULL);
++
++	tst_tmpdir();
++
++	fs_type = tst_dev_fs_type();
++	device = tst_acquire_device(cleanup);
++
++	if (!device)
++		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
++
++	tst_mkfs(cleanup, device, fs_type, NULL);
++
++	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
++
++	SAFE_SYMLINK(cleanup, MNTPOINT, SYMLINK);
++
++	TEST_PAUSE;
++}
++
++static void umount2_verify(void)
++{
++	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
++	mount_flag = 1;
++
++	TEST(umount2(SYMLINK, UMOUNT_NOFOLLOW));
++
++	if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
++		tst_resm(TFAIL | TTERRNO,
++			"umount2(2) UMOUNT_NOFOLLOW flag "
++			"performed abnormally "
++			"expected error = %d : %s",
++			EINVAL, strerror(EINVAL));
++		if (TEST_RETURN == 0)
++			mount_flag = 0;
++		goto EXIT;
++	}
++
++	TEST(umount2(MNTPOINT, UMOUNT_NOFOLLOW));
++
++	if (TEST_RETURN != 0) {
++		tst_resm(TFAIL | TTERRNO, "umount2(2) Failed");
++		goto EXIT;
++	}
++
++	mount_flag = 0;
++
++	tst_resm(TPASS, "umount2(2) Passed");
++
++EXIT:
++	if (mount_flag) {
++		SAFE_UMOUNT(cleanup, MNTPOINT);
++		mount_flag = 0;
++	}
++}
++
++static void cleanup(void)
++{
++	if (mount_flag && tst_umount(MNTPOINT))
++		tst_resm(TWARN | TERRNO, "Failed to unmount");
++
++	if (device)
++		tst_release_device(NULL, device);
++
++	tst_rmdir();
++}
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
