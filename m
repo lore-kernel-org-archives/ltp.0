@@ -1,21 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFbkV-0004oi-Ig
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:23 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZFIAr-0002bX-Kd
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2015 08:36:17 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZFbkS-0000oj-KZ
-	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:23 +0000
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 16 Jul 2015 13:30:38 +0800
-Message-ID: <1437024647-2066-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-In-Reply-To: <1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <55A680FC.2010807@oracle.com>
-	<1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZFIAp-0002IA-PL
+	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2015 08:36:17 +0000
+Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t6F8YMvU027519
+	for <ltp-list@lists.sourceforge.net>; Wed, 15 Jul 2015 16:34:22 +0800
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 15 Jul 2015 16:36:02 +0800
+Message-ID: <1436949363-8356-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
+In-Reply-To: <1436949363-8356-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1436949363-8356-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH v5 02/11] lib6/runcc.c: Cleanup
+Subject: [LTP] [PATCH v2 2/3] umount2/umount2_02.c: add new test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,376 +31,265 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: alexey.kodanev@oracle.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-* Add 'static' before some functions and global variables.
+Add new testcase to verify the flag MNT_EXPIRE of umount2(2).
 
-* Not use 'mkstemp', use 'tst_tmpdir and tst_rmdir' in actual test.
-
-* Use 'SAFE_FILE_PRINTF' instead of 'open-write-close'.
-
-* Change 'runcc', 'aliascheck', 'funccheck', 'structcheck' and
-  'valuecheck' to non-return because of the ignore return value.
-
-* Use 'MACRO' instead of 'const char *'.
-
-* Some cleanup.
-
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- testcases/network/lib6/runcc.c | 177 ++++++++++++++++-------------------------
- testcases/network/lib6/runcc.h |  52 +++++++-----
- 2 files changed, 100 insertions(+), 129 deletions(-)
+ runtest/ltplite                                |   1 +
+ runtest/syscalls                               |   1 +
+ testcases/kernel/syscalls/.gitignore           |   1 +
+ testcases/kernel/syscalls/umount2/umount2_02.c | 202 +++++++++++++++++++++++++
+ 4 files changed, 205 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/umount2/umount2_02.c
 
-diff --git a/testcases/network/lib6/runcc.c b/testcases/network/lib6/runcc.c
-index 91a0b16..cfc283c 100644
---- a/testcases/network/lib6/runcc.c
-+++ b/testcases/network/lib6/runcc.c
-@@ -1,31 +1,21 @@
- /*
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 5f8ef8c..f5a8a52 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -966,6 +966,7 @@ unlink08 unlink08
+ #umount03 umount03 -D /dev/...
+ 
+ umount2_01 umount2_01
++umount2_02 umount2_02
+ 
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 762730f..92716d2 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1315,6 +1315,7 @@ umount02 umount02
+ umount03 umount03
+ 
+ umount2_01 umount2_01
++umount2_02 umount2_02
+ 
+ ustat01 ustat01
+ ustat02 ustat02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 542ec3b..4ee0b0d 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -1003,6 +1003,7 @@
+ /umount/umount02
+ /umount/umount03
+ /umount2/umount2_01
++/umount2/umount2_02
+ /uname/uname01
+ /uname/uname02
+ /uname/uname03
+diff --git a/testcases/kernel/syscalls/umount2/umount2_02.c b/testcases/kernel/syscalls/umount2/umount2_02.c
+new file mode 100644
+index 0000000..7ec7758
+--- /dev/null
++++ b/testcases/kernel/syscalls/umount2/umount2_02.c
+@@ -0,0 +1,202 @@
++/*
 + * Copyright (c) 2015 Fujitsu Ltd.
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 3 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * runcc.a - common functions for lib6 testing
-- *
-- * HISTORY
-- *	05/2005 written by David L Stevens
-- *
-- * RESTRICTIONS:
-- *  None.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
 + * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-+ * Author: David L Stevens
-  */
- 
- #include <stdio.h>
-@@ -34,20 +24,23 @@
- #include <ctype.h>
- 
- #include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
- 
- #include "test.h"
- 
--char fieldref[1024];
--char program[8192];
-+static char fieldref[1024];
-+static char program[8192];
- 
--char *filetmpl = "/tmp/%.*s_XXXXXX";
-+#define FILETMPL	"./%.*s"
- 
--char cmd[1024];
-+static char cmd[1024];
- 
- /*
-  * like strspn, with ASCII, numbers and underscore only
-  */
--int strfpn(char *name)
-+static int strfpn(char *name)
- {
- 	int i;
- 
-@@ -57,31 +50,17 @@ int strfpn(char *name)
- 	return i;
- }
- 
--int runcc(char *tname, char *filename0, char *program)
-+static void runcc(char *tname, char *filename0, char *program)
- {
- 	static char filename[1024];
--	int fd, es, saved_errno;
-+	int es;
- 	char *cflags = "";
- 
--	fd = mkstemp(filename0);
--	if (fd < 0) {
--		perror("mkstemp");
--		return -1;
--	}
- 	strncpy(filename, filename0, sizeof(filename) - 1);
- 	filename[sizeof(filename) - 1] = '\0';
- 	strncat(filename, ".c", sizeof(filename) - strlen(filename) - 1);
--	if (rename(filename0, filename) < 0) {
--		perror("rename");
--		unlink(filename0);
--		return -1;
--	}
--	if (write(fd, program, strlen(program)) < 0) {
--		perror("write");
--		unlink(filename);
--		return -1;
--	}
--	(void)close(fd);
++ * alone with this program.
++ */
 +
-+	SAFE_FILE_PRINTF(NULL, filename, "%s", program);
- 
- 	cflags = getenv("CFLAGS");
- 	if (cflags == NULL) {
-@@ -89,19 +68,13 @@ int runcc(char *tname, char *filename0, char *program)
- 		cflags = "";
- 	}
- 
--	snprintf(cmd, sizeof(cmd), "%s %s -o %s %s > /tmp/test 2>&1", "cc",
-+	snprintf(cmd, sizeof(cmd), "%s %s -o %s %s > test 2>&1", "cc",
- 		 cflags, filename0, filename);
- 	es = system(cmd);
- 	if (WEXITSTATUS(es) == 127) {
--		tst_resm(TBROK, "can't run C compiler: \"%s\"", cmd);
--		if (unlink(filename) < 0)
--			tst_resm(TWARN, "%s; unlink \"%s\" failed: %s", tname,
--				 filename, strerror(errno));
--		return -1;
-+		tst_brkm(TBROK | TERRNO, NULL, "can't run C compiler: \"%s\"",
-+			 cmd);
- 	}
--	if (unlink(filename) < 0)
--		tst_resm(TWARN, "%s: unlink \"%s\" failed: %s", tname,
--			 filename, strerror(errno));
- 
- 	if (WIFSIGNALED(es) &&
- 	    (WTERMSIG(es) == SIGINT || WTERMSIG(es) == SIGQUIT))
-@@ -109,101 +82,91 @@ int runcc(char *tname, char *filename0, char *program)
- 
- 	if (WEXITSTATUS(es)) {
- 		tst_resm(TFAIL, "%s: not present", tname);
--		return -1;
-+		return;
- 	}
- 	/* run the test */
- 
- 	es = system(filename0);
--	saved_errno = errno;
--	if (unlink(filename0) < 0)
--		tst_resm(TWARN, "%s: unlink \"%s\" failed: %s", tname,
--			 filename0, strerror(errno));
- 
- 	if (WIFSIGNALED(es) &&
- 	    (WTERMSIG(es) == SIGINT || WTERMSIG(es) == SIGQUIT))
- 		exit(1);
- 
- 	if (WEXITSTATUS(es) == 127)
--		tst_resm(TBROK, "%s: can't run \"%s\": %s", tname, filename0,
--			 strerror(saved_errno));
-+		tst_resm(TBROK | TERRNO, "%s: can't run \"%s\"", tname,
-+			 filename0);
- 	if (WEXITSTATUS(es))
- 		tst_resm(TFAIL, "%s: present, but incorrect", tname);
- 	else
- 		tst_resm(TPASS, "%s present and correct", tname);
--	return 0;
- }
- 
--char *field_fmt = "\n\texit((offsetof(struct %s, %s) != %s) || "
--    "sizeof(tst.%s) != (%s));\n";
-+#define FIELD_FMT	"\n\texit((offsetof(struct %s, %s) != %s) || " \
-+			"sizeof(tst.%s) != (%s));\n"
- /* no offset check */
--char *field_fmt2 = "\n\texit(sizeof(tst.%s) != (%s));\n";
-+#define FIELD_FMT2	"\n\texit(sizeof(tst.%s) != (%s));\n"
- 
--const char *stmpl =
--    "%s\n#ifndef offsetof\n"
--    "#define offsetof(dtype, dfield) ((int)&((dtype *)0)->dfield)\n"
--    "#endif\n\nstruct %s tst;\n\nmain(int argc, char *argv[])\n{\n\t%s\n}\n";
-+#define STMPL	"%s#include <stdlib.h>\n\n\n" \
-+		"#ifndef offsetof\n" \
-+		"#define offsetof(dtype, dfield) " \
-+		"((int)&((dtype *)0)->dfield)\n" \
-+		"#endif\n\nstruct %s tst;\n\n" \
-+		"int main(int argc, char *argv[])\n{\n\t%s\n}\n"
- 
--int
--structcheck(char *tname, char *incl, char *structure, char *field,
--	    char *offset, char *size)
-+void structcheck(char *tname, char *incl, char *structure, char *field,
-+		 char *offset, char *size)
- {
--	int rv;
- 	static char filename[1024];
- 
- 	if (offset)
--		sprintf(fieldref, field_fmt, structure, field, offset, field,
-+		sprintf(fieldref, FIELD_FMT, structure, field, offset, field,
- 			size);
- 	else
--		sprintf(fieldref, field_fmt2, field, size);
--	sprintf(program, stmpl, incl, structure, fieldref);
--	snprintf(filename, sizeof(filename), filetmpl, strfpn(structure),
-+		sprintf(fieldref, FIELD_FMT2, field, size);
-+	sprintf(program, STMPL, incl, structure, fieldref);
-+	snprintf(filename, sizeof(filename), FILETMPL, strfpn(structure),
- 		 structure);
--	rv = runcc(tname, filename, program);
--	return rv;
-+	runcc(tname, filename, program);
- }
- 
--char *aliasfmt =
--    "exit(&tst.%s != &tst.%s || sizeof(tst.%s) != sizeof(tst.%s));";
-+#define ALIASFMT	"exit(&tst.%s != &tst.%s || " \
-+			"sizeof(tst.%s) != sizeof(tst.%s));"
- 
--int
--aliascheck(char *tname, char *incl, char *structure, char *field, char *dname)
-+void aliascheck(char *tname, char *incl, char *structure, char *field,
-+		char *dname)
- {
--	int rv;
- 	static char filename[1024];
- 
--	sprintf(fieldref, aliasfmt, field, dname, field, dname);
--	sprintf(program, stmpl, incl, structure, fieldref);
--	snprintf(filename, sizeof(filename), filetmpl, strfpn(structure),
-+	sprintf(fieldref, ALIASFMT, field, dname, field, dname);
-+	sprintf(program, STMPL, incl, structure, fieldref);
-+	snprintf(filename, sizeof(filename), FILETMPL, strfpn(structure),
- 		 structure);
--	rv = runcc(tname, filename, program);
--	return rv;
-+	runcc(tname, filename, program);
- }
- 
--const char *dtmpl =
--    "%s\n\nmain(int argc, char *argv[])\n{\n\texit((%s) != (%s));\n}\n";
-+#define DTMPL	"%s#include <stdlib.h>\n\n\n" \
-+		"int main(int argc, char *argv[])\n" \
-+		"{\n\texit((%s) != (%s));\n}\n"
- 
--int valuecheck(char *tname, char *incl, char *dname, char *dval)
-+void valuecheck(char *tname, char *incl, char *dname, char *dval)
- {
--	int rv;
- 	static char filename[1024];
- 
--	sprintf(program, dtmpl, incl, dname, dval);
--	snprintf(filename, sizeof(filename), filetmpl, strfpn(dname), dname);
--	rv = runcc(tname, filename, program);
--	return rv;
-+	sprintf(program, DTMPL, incl, dname, dval);
-+	snprintf(filename, sizeof(filename), FILETMPL, strfpn(dname), dname);
-+	runcc(tname, filename, program);
- }
- 
--const char *ftmpl =
--    "%s\n\nmain(int argc, char *argv[])\n{\n#ifdef %s\n\texit(0);\n#else\n"
--    "\tsyntax error;\n#endif\n}\n";
-+#define FTMPL	"%s#include <stdlib.h>\n\n\n" \
-+		"int main(int argc, char *argv[])\n" \
-+		"{\n#ifdef %s\n\texit(0);\n#else\n" \
-+		"\tsyntax error;\n#endif\n}\n"
- 
--int funccheck(char *tname, char *incl, char *fname)
-+void funccheck(char *tname, char *incl, char *fname)
- {
--	int rv;
- 	static char filename[1024];
- 
--	sprintf(program, ftmpl, incl, fname);
--	snprintf(filename, sizeof(filename), filetmpl, strfpn(fname), fname);
--	rv = runcc(tname, filename, program);
--	return rv;
-+	sprintf(program, FTMPL, incl, fname);
-+	snprintf(filename, sizeof(filename), FILETMPL, strfpn(fname), fname);
-+	runcc(tname, filename, program);
- }
-diff --git a/testcases/network/lib6/runcc.h b/testcases/network/lib6/runcc.h
-index 4e2a0d5..a66addb 100644
---- a/testcases/network/lib6/runcc.h
-+++ b/testcases/network/lib6/runcc.h
-@@ -1,30 +1,38 @@
- /*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 3 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-  */
- 
--int aliascheck(char *tname, char *incl, char *structure, char *field,
--	char *dname);
--int funccheck(char *tname, char *incl, char *fname);
--int structcheck(char *tname, char *incl, char *structure, char *field,
--	char *offset, char *size);
--int valuecheck(char *tname, char *incl, char *dname, char *dval);
-+#ifndef __RUNCC_H__
-+#define __RUNCC_H__
- 
--#define IP6_H "#include <netinet/ip6.h>\n"
--#define IN_H "#include <netinet/in.h>\n"
--#define ICMP6_H "#include <netinet/icmp6.h>\n"
--#define SOCKET_H "#include <sys/types.h>\n#include <sys/socket.h>\n"
-+void aliascheck(char *tname, char *incl, char *structure, char *field,
-+		char *dname);
++/*
++ * DESCRIPTION
++ *  Test for feature MNT_EXPIRE of umount2().
++ *  "Mark the mount point as expired.If a mount point is not currently
++ *   in use, then an initial call to umount2() with this flag fails with
++ *   the error EAGAIN, but marks the mount point as expired. The mount
++ *   point remains expired as long as it isn't accessed by any process.
++ *   A second umount2() call specifying MNT_EXPIRE unmounts an expired
++ *   mount point. This flag cannot be specified with either MNT_FORCE or
++ *   MNT_DETACH. (fails with the error EINVAL)"
++ */
 +
-+void funccheck(char *tname, char *incl, char *fname);
++#include <errno.h>
++#include <sys/mount.h>
 +
-+void structcheck(char *tname, char *incl, char *structure, char *field,
-+		 char *offset, char *size);
++#include "test.h"
++#include "safe_macros.h"
++#include "lapi/mount.h"
 +
-+void valuecheck(char *tname, char *incl, char *dname, char *dval);
++static void setup(void);
++static void umount2_verify(void);
++static int umount2_verify_1(void);
++static int umount2_verify_2(void);
++static int umount2_verify_3(void);
++static void cleanup(void);
 +
-+#define IP6_H		"#include <netinet/ip6.h>\n"
-+#define IN_H		"#include <netinet/in.h>\n"
-+#define ICMP6_H		"#include <netinet/icmp6.h>\n"
-+#define SOCKET_H	"#include <sys/types.h>\n#include <sys/socket.h>\n"
++char *TCID = "umount2_02";
++int TST_TOTAL = 1;
 +
-+#endif  /* __RUNCC_H__ */
++#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
++#define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
++#define MNTPOINT	"mntpoint"
++#define EXP_ERRNO	EAGAIN
++
++static int fd;
++static int mount_flag;
++
++static const char *device;
++static const char *fs_type;
++
++int main(int ac, char **av)
++{
++	int lc;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		umount2_verify();
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	tst_require_root(NULL);
++
++	if ((tst_kvercmp(2, 6, 8)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels "
++			"that are 2.6.8 or higher");
++	}
++
++	tst_sig(NOFORK, DEF_HANDLER, NULL);
++
++	tst_tmpdir();
++
++	fs_type = tst_dev_fs_type();
++	device = tst_acquire_device(cleanup);
++
++	if (!device)
++		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
++
++	tst_mkfs(cleanup, device, fs_type, NULL);
++
++	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
++
++	TEST_PAUSE;
++}
++
++static void umount2_verify(void)
++{
++	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
++	mount_flag = 1;
++
++	if (umount2_verify_1())
++		goto EXIT;
++
++	if (umount2_verify_2())
++		goto EXIT;
++
++	/* a new accesse removes the expired mark of the mount point */
++	fd = SAFE_CREAT(cleanup, MNTPOINT "/file", FILE_MODE);
++
++	SAFE_CLOSE(cleanup, fd);
++	fd = 0;
++
++	if (umount2_verify_2())
++		goto EXIT;
++
++	if (umount2_verify_3())
++		goto EXIT;
++
++	mount_flag = 0;
++
++	tst_resm(TPASS, "umount2(2) Passed");
++
++EXIT:
++	if (mount_flag) {
++		SAFE_UMOUNT(cleanup, MNTPOINT);
++		mount_flag = 0;
++	}
++}
++
++/* MNT_EXPIRE cannot be specified with either MNT_FORCE or MNT_DETACH */
++static int umount2_verify_1(void)
++{
++	TEST(umount2(MNTPOINT, MNT_EXPIRE | MNT_FORCE));
++
++	if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
++		tst_resm(TFAIL | TTERRNO, "umount2(2) MNT_EXPIRE flag "
++			"performed abnormally "
++			"expected error = %d : %s",
++			EINVAL, strerror(EINVAL));
++		return 1;
++	}
++
++	TEST(umount2(MNTPOINT, MNT_EXPIRE | MNT_DETACH));
++
++	if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
++		tst_resm(TFAIL | TTERRNO, "umount2(2) MNT_EXPIRE flag "
++			"performed abnormally "
++			"expected error = %d : %s",
++			EINVAL, strerror(EINVAL));
++		return 1;
++	}
++
++	return 0;
++}
++
++/* the initial call to umount2() with MNT_EXPIRE flag */
++static int umount2_verify_2(void)
++{
++	TEST(umount2(MNTPOINT, MNT_EXPIRE));
++
++	if (TEST_RETURN == 0 || TEST_ERRNO != EAGAIN) {
++		tst_resm(TFAIL | TTERRNO, "umount2(2) MNT_EXPIRE flag "
++			"performed abnormally "
++			"expected error = %d : %s",
++			EAGAIN, strerror(EAGAIN));
++		return 1;
++	}
++
++	return 0;
++}
++
++/* the second call to umount2() with MNT_EXPIRE flag */
++static int umount2_verify_3(void)
++{
++	TEST(umount2(MNTPOINT, MNT_EXPIRE));
++
++	if (TEST_RETURN != 0) {
++		tst_resm(TFAIL | TTERRNO, "umount2(2) Failed");
++		return 1;
++	}
++
++	return 0;
++}
++
++static void cleanup(void)
++{
++	if (fd > 0 && close(fd))
++		tst_resm(TWARN | TERRNO, "Failed to close file");
++
++	if (mount_flag && tst_umount(MNTPOINT))
++		tst_resm(TWARN | TERRNO, "Failed to unmount");
++
++	if (device)
++		tst_release_device(NULL, device);
++
++	tst_rmdir();
++}
 -- 
-1.9.3
+1.8.4.2
 
 
 ------------------------------------------------------------------------------
