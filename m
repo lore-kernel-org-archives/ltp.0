@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZCN1l-0007C7-6K
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 07:10:49 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFYvr-0004oU-IJ
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 02:29:55 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZCN1j-0006sA-RU
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 07:10:49 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t6778xlq002387
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2015 15:08:59 +0800
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 7 Jul 2015 15:10:58 +0800
-Message-ID: <1436253058-7639-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZFYvq-0001B5-JT
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 02:29:55 +0000
+Message-ID: <1437013824.21784.9.camel@G08FNSTD140232.g08.fujitsu.local>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 16 Jul 2015 10:30:24 +0800
+In-Reply-To: <55A680FC.2010807@oracle.com>
+References: <55842886.4090202@oracle.com>
+	<1436411125-8012-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<55A680FC.2010807@oracle.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] futex/futex_wake04.c: add kernel version check
+Subject: Re: [LTP] [PATCH v4 01/11] SAFE_MACROS: Add socket(), bind(),
+ listen(), connect() and getsockname()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,79 +30,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Compilation failed on RHEL5U11GA because the flag MAP_HUGETLB of
-mmap(2) are only available on kernels that are 2.6.32 or higher,
-therefore add kernel version check, as well as add mmap.h to
-define the flag in order to avoid compilation error.
+Hi,
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- include/lapi/mmap.h                            | 26 ++++++++++++++++++++++++++
- testcases/kernel/syscalls/futex/futex_wake04.c |  7 +++++++
- 2 files changed, 33 insertions(+)
- create mode 100644 include/lapi/mmap.h
+On Wed, 2015-07-15 at 18:49 +0300, Alexey Kodanev wrote:
+> Hi,
+> On 07/09/2015 06:05 AM, Zeng Linggang wrote:
+> > +int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
+> > +	      int socket, const struct sockaddr *address,
+> > +	      socklen_t address_len)
+> > +{
+> > +	int err, ret, i;
+> > +
+> > +	for (i = 0; i < 30; i++) {
+> > +		ret = bind(socket, address, address_len);
+> > +		err = errno;
+> > +
+> > +		if (!ret)
+> > +			return 0;
+> > +
+> > +		tst_resm(TINFO, "bind('%p') failed with %s, try %2i...",
+> > +			 address, tst_strerrno(err), i+1);
+> > +
+> 
+> I'd wait only if errno is EADDRINUSE; otherwise exit with TBROK 
+> immediately. And waiting for 3 seconds in the loop is too small, please 
+> increase the time.
+> 
 
-diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
-new file mode 100644
-index 0000000..e8e5917
---- /dev/null
-+++ b/include/lapi/mmap.h
-@@ -0,0 +1,26 @@
-+/*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
-+ */
-+
-+#ifndef __LAPI_MMAP_H__
-+#define __LAPI_MMAP_H__
-+
-+#ifndef MAP_HUGETLB
-+#define MAP_HUGETLB 0x40000
-+#endif
-+
-+#endif /* __LAPI_MMAP_H__ */
-diff --git a/testcases/kernel/syscalls/futex/futex_wake04.c b/testcases/kernel/syscalls/futex/futex_wake04.c
-index 955b05e..fa98636 100644
---- a/testcases/kernel/syscalls/futex/futex_wake04.c
-+++ b/testcases/kernel/syscalls/futex/futex_wake04.c
-@@ -46,6 +46,7 @@
- #include "safe_macros.h"
- #include "futextest.h"
- #include "futex_utils.h"
-+#include "lapi/mmap.h"
- 
- #define PATH_MEMINFO "/proc/meminfo"
- #define PATH_NR_HUGEPAGES "/proc/sys/vm/nr_hugepages"
-@@ -62,6 +63,12 @@ static long orig_hugepages;
- static void setup(void)
- {
- 	tst_require_root(NULL);
-+
-+	if ((tst_kvercmp(2, 6, 32)) < 0) {
-+		tst_brkm(TCONF, NULL, "This test can only run on kernels "
-+			"that are 2.6.32 or higher");
-+	}
-+
- 	tst_tmpdir();
- 
- 	SAFE_FILE_SCANF(NULL, PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
--- 
-1.8.4.2
+Yeah, you are right.
+It is a typo that I missed one zero. :)
+
+Thanks for your comments and
+best regards,
+zeng
+
+> The rest looks good.
+> 
+> Thanks,
+> Alexey
+
 
 
 ------------------------------------------------------------------------------
