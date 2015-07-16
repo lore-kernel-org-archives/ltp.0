@@ -1,19 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZDUNY-0006S3-Ix
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2015 09:13:56 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZDUNQ-00046V-Ao
-	for ltp-list@lists.sourceforge.net; Fri, 10 Jul 2015 09:13:56 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Sat, 11 Jul 2015 01:16:25 +0800
-Message-ID: <1436548585-27189-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZFkia-000609-RK
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 15:05:00 +0000
+Date: Thu, 16 Jul 2015 17:03:24 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150716150324.GD24185@rei.suse.de>
+References: <7392d2ee56d8b865a4edefc0e72bff60f54c8db0.1435648319.git.jstancek@redhat.com>
+	<145230294.17766706.1436959871967.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] Writing "deny" to the /proc/[pid]/setgroups file
-	before writing to /proc/[pid]/gid_map.
+Content-Disposition: inline
+In-Reply-To: <145230294.17766706.1436959871967.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH v2] checkpoints: support for propagating value
+	from	wake to wait
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,154 +26,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
----
- testcases/kernel/containers/userns/userns03.c | 77 +++++++++++++--------------
- 1 file changed, 38 insertions(+), 39 deletions(-)
+Hi!
+> Any thoughts about v2?
 
-diff --git a/testcases/kernel/containers/userns/userns03.c b/testcases/kernel/containers/userns/userns03.c
-index f724967..4e12ff1 100644
---- a/testcases/kernel/containers/userns/userns03.c
-+++ b/testcases/kernel/containers/userns/userns03.c
-@@ -23,7 +23,8 @@
-  * ID-outside-ns is defined with respect to the user namespace of the process
-  * opening the file.
-  *
-- * GID check is skipped if setgroups is allowed, see kernel commits:
-+ * The string "deny" would be written to /proc/self/setgroups before GID
-+ * check if setgroups is allowed, see kernel commits:
-  *
-  *   commit 9cc46516ddf497ea16e8d7cb986ae03a0f6b92f8
-  *   Author: Eric W. Biederman <ebiederm@xmission.com>
-@@ -87,17 +88,11 @@ static int child_fn2(void)
- 	uid = geteuid();
- 	gid = getegid();
- 
--	if (uid != CHILD2UID) {
--		printf("unexpected uid=%d\n", uid);
-+	if (uid != CHILD2UID || gid != CHILD2GID) {
-+		printf("unexpected uid=%d gid=%d\n", uid, gid);
- 		exit_val = 1;
- 	}
- 
--	if (setgroupstag == false) {
--		if (gid != CHILD2GID) {
--			printf("unexpected: gid=%d\n", gid);
--			exit_val = 1;
--		}
--	}
- 	/*Get the uid parameters of the child_fn2 process.*/
- 	SAFE_FILE_SCANF(NULL, "/proc/self/uid_map", "%d %d %d", &idinsidens,
- 		&idoutsidens, &length);
-@@ -127,27 +122,25 @@ static int child_fn2(void)
- 		exit_val = 1;
- 	}
- 
--	if (setgroupstag == false) {
--		sprintf(cpid1gidpath, "/proc/%d/gid_map", cpid1);
--		SAFE_FILE_SCANF(NULL, "/proc/self/gid_map", "%d %d %d",
--			 &idinsidens, &idoutsidens, &length);
-+	sprintf(cpid1gidpath, "/proc/%d/gid_map", cpid1);
-+	SAFE_FILE_SCANF(NULL, "/proc/self/gid_map", "%d %d %d",
-+		 &idinsidens, &idoutsidens, &length);
- 
--		if (idinsidens != CHILD2GID || idoutsidens != parentgid) {
--			printf("child_fn2 checks /proc/cpid2/gid_map:\n");
--			printf("unexpected: idinsidens=%d idoutsidens=%d\n",
--				idinsidens, idoutsidens);
--			exit_val = 1;
--		}
-+	if (idinsidens != CHILD2GID || idoutsidens != parentgid) {
-+		printf("child_fn2 checks /proc/cpid2/gid_map:\n");
-+		printf("unexpected: idinsidens=%d idoutsidens=%d\n",
-+			idinsidens, idoutsidens);
-+		exit_val = 1;
-+	}
- 
--		SAFE_FILE_SCANF(NULL, cpid1gidpath, "%d %d %d", &idinsidens,
--			&idoutsidens, &length);
-+	SAFE_FILE_SCANF(NULL, cpid1gidpath, "%d %d %d", &idinsidens,
-+		&idoutsidens, &length);
- 
--		if (idinsidens != CHILD1GID || idoutsidens != CHILD2GID) {
--			printf("child_fn1 checks /proc/cpid1/gid_map:\n");
--			printf("unexpected: idinsidens=%d idoutsidens=%d\n",
--				idinsidens, idoutsidens);
--			exit_val = 1;
--		}
-+	if (idinsidens != CHILD1GID || idoutsidens != CHILD2GID) {
-+		printf("child_fn1 checks /proc/cpid1/gid_map:\n");
-+		printf("unexpected: idinsidens=%d idoutsidens=%d\n",
-+			idinsidens, idoutsidens);
-+		exit_val = 1;
- 	}
- 
- 	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
-@@ -162,17 +155,11 @@ static void cleanup(void)
- 
- static void setup(void)
- {
--	char read_buf[BUFSIZ];
--
- 	check_newuser();
- 	tst_tmpdir();
- 	TST_CHECKPOINT_INIT(NULL);
--	if (access("/proc/self/setgroups", F_OK) == 0) {
--		SAFE_FILE_SCANF(cleanup, "/proc/self/setgroups", "%s",
--			read_buf);
--		if (strcmp(read_buf, "deny") == 0)
--			setgroupstag = false;
--	}
-+	if (access("/proc/self/setgroups", F_OK) == 0)
-+		setgroupstag = false;
- }
- 
- static int updatemap(int cpid, bool type, int idnum, int parentmappid)
-@@ -198,8 +185,10 @@ static int updatemap(int cpid, bool type, int idnum, int parentmappid)
- int main(int argc, char *argv[])
- {
- 	pid_t cpid2;
-+	char path[BUFSIZ];
- 	int cpid1status, cpid2status;
- 	int lc;
-+	int fd;
- 
- 	tst_parse_opts(argc, argv, NULL, NULL);
- 	setup();
-@@ -222,13 +211,23 @@ int main(int argc, char *argv[])
- 			tst_brkm(TBROK | TERRNO, cleanup,
- 				"cpid2 clone failed");
- 
-+		if (setgroupstag == false) {
-+			sprintf(path, "/proc/%d/setgroups", cpid1);
-+			fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
-+			SAFE_WRITE(cleanup, 1, fd, "deny", 4);
-+			SAFE_CLOSE(cleanup, fd);
-+
-+			sprintf(path, "/proc/%d/setgroups", cpid2);
-+			fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
-+			SAFE_WRITE(cleanup, 1, fd, "deny", 4);
-+			SAFE_CLOSE(cleanup, fd);
-+		}
-+
- 		updatemap(cpid1, UID_MAP, CHILD1UID, parentuid);
- 		updatemap(cpid2, UID_MAP, CHILD2UID, parentuid);
- 
--		if (setgroupstag == false) {
--			updatemap(cpid1, GID_MAP, CHILD1GID, parentuid);
--			updatemap(cpid2, GID_MAP, CHILD2GID, parentuid);
--		}
-+		updatemap(cpid1, GID_MAP, CHILD1GID, parentuid);
-+		updatemap(cpid2, GID_MAP, CHILD2GID, parentuid);
- 
- 		TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(cleanup, 1);
- 
+Sorry for the delay. I had week of time off and I had to dig out from my
+inbox when I returned...
+
 -- 
-1.9.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
