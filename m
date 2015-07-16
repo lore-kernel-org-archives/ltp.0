@@ -1,19 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZAg2w-0002Ix-VU
-	for ltp-list@lists.sourceforge.net; Thu, 02 Jul 2015 15:05:02 +0000
-Date: Thu, 2 Jul 2015 17:03:40 +0200
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZFg5k-0006QF-Uv
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 10:08:36 +0000
+Date: Thu, 16 Jul 2015 12:07:04 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150702150340.GB21990@rei.suse.de>
-References: <1435320294-45783-1-git-send-email-maninder1.s@samsung.com>
-	<1435320294-45783-6-git-send-email-maninder1.s@samsung.com>
-	<20150702150222.GA21990@rei.suse.de>
+Message-ID: <20150716100703.GA23364@rei.suse.de>
+References: <1437037015-10320-1-git-send-email-liuhangbin@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20150702150222.GA21990@rei.suse.de>
-Subject: Re: [LTP] [PATCH 05/13] kernel/mq_open: use ARRAY_SIZE
+In-Reply-To: <1437037015-10320-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCHv3 1/2] testcases/lib/test.sh: add tst_retry() to
+ ensure cmd exec succeed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,21 +25,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Maninder Singh <maninder1.s@samsung.com>
-Cc: ltp-list@lists.sourceforge.net, pankaj.m@samsung.com
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> >  			/*
-> >  			 * Execute test
-> >  			 */
-> > -			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
-> > +			for (i = 0; i < (int)ARRAY_SIZE(tcase);
-> >  			     i++) {
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> ---
+>  testcases/lib/test.sh | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
 > 
-> After the change the whole for statement fits on one line (has less than
-> 80 chars) can you fix that as well?
+> diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+> index 1c9b126..60a9984 100644
+> --- a/testcases/lib/test.sh
+> +++ b/testcases/lib/test.sh
+> @@ -134,6 +134,26 @@ tst_check_cmds()
+>  	done
+>  }
+>  
+> +# tst_retry "command" [times]
+> +# try run command for specified times, default is 3.
+> +# Function returns 0 if succeed in RETRIES times or the last retcode the cmd
+> +# returned
+> +tst_retry()
+> +{
+> +	local cmd="$1"
+> +	local RETRIES=${2:-"3"}
+> +	while [ $RETRIES -gt 0 ]; do
+> +		eval "$cmd"
+> +		ret=$?
+> +		if [ $ret -eq 0 ]; then
+> +			break
+> +		fi
+> +		let RETRIES=$((RETRIES-1))
 
-And the same for the rest of mq_* testcases in this patchset.
+The let keyword is known only by bash. So the whole line should just be
+the RETRIES=$((RETRIES-1)).
+
+Have a look at https://wiki.ubuntu.com/DashAsBinSh#let
+
+> +		sleep 1
+> +	done
+> +	return $ret
+> +}
+> +
+>  # tst_timeout "command arg1 arg2 ..." timeout
+>  # Runs command for specified timeout (in seconds).
+>  # Function returns retcode of command or 1 if arguments are invalid.
+> -- 
+> 1.9.3
+> 
 
 -- 
 Cyril Hrubis
