@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZEwcQ-0001DE-KN
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 09:35:18 +0000
-Date: Tue, 14 Jul 2015 11:33:47 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150714093347.GB3729@rei.suse.de>
-References: <1435910527-27802-1-git-send-email-liuhangbin@gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <weijg.fnst@cn.fujitsu.com>) id 1ZFgeA-0007pA-7W
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 10:44:10 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZFge9-0000bA-8Y
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 10:44:10 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t6GAgFee027811
+	for <ltp-list@lists.sourceforge.net>; Thu, 16 Jul 2015 18:42:15 +0800
+From: "Wei,Jiangang" <weijg.fnst@cn.fujitsu.com>
+Date: Thu, 16 Jul 2015 18:43:23 +0800
+Message-ID: <1437043403-11184-2-git-send-email-weijg.fnst@cn.fujitsu.com>
+In-Reply-To: <1437043403-11184-1-git-send-email-weijg.fnst@cn.fujitsu.com>
+References: <1437043403-11184-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1435910527-27802-1-git-send-email-liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCH] network/stress/ns-tools: make PING_MAX times
-	adjustable
+Subject: [LTP] [PATCH 2/2] pan/splitstr.c: free arg_string before return
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,38 +31,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Some switches need a while to learn the new assigned address, which make the
-> connectivity check failed. Make PING_MAX adjustable to let user can pre-define
-> it based on their own environment.
-> 
-> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> ---
->  testcases/network/stress/ns-tools/check_icmpv4_connectivity | 2 +-
->  testcases/network/stress/ns-tools/check_icmpv6_connectivity | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/network/stress/ns-tools/check_icmpv4_connectivity b/testcases/network/stress/ns-tools/check_icmpv4_connectivity
-> index 7630aae..2daaea4 100644
-> --- a/testcases/network/stress/ns-tools/check_icmpv4_connectivity
-> +++ b/testcases/network/stress/ns-tools/check_icmpv4_connectivity
-> @@ -47,7 +47,7 @@
->  $trace_logic
->  
->  # The max number of ICMP echo request
-> -PING_MAX=10
-> +PING_MAX=${PING_MAX:-"10"}
+Signed-off-by: Wei,Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ pan/splitstr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I do not like exposing random shell variables as interface without any
-documentation. Can't we just increase the PING_MAX to make it work for
-everybody without any extra work?
-
+diff --git a/pan/splitstr.c b/pan/splitstr.c
+index 39b4698..608c682 100644
+--- a/pan/splitstr.c
++++ b/pan/splitstr.c
+@@ -136,6 +136,7 @@ const char **splitstr(const char *str, const char *separator, int *argcount)
+ 	if (argcount != NULL)
+ 		*argcount = num_toks;
+ 
++	free(arg_string);
+ 	/*
+ 	 * Return the argument array.
+ 	 */
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
