@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1ZJeA3-0004Bp-Pw
-	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 08:53:27 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZJeA2-0006ph-DM
-	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 08:53:27 +0000
-Received: from int-mx10.intmail.prod.int.phx2.redhat.com
-	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-	by mx1.redhat.com (Postfix) with ESMTPS id 4A4FF91D06
-	for <ltp-list@lists.sourceforge.net>;
-	Mon, 27 Jul 2015 08:53:20 +0000 (UTC)
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 27 Jul 2015 16:53:12 +0800
-Message-Id: <1437987192-7436-1-git-send-email-liwang@redhat.com>
-Subject: [LTP] [Patch v2] syscalls/sysfs: replace syscall() macro by
-	ltp_syscall()
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFbkU-0004oV-4I
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:22 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZFbkR-0000of-Md
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:22 +0000
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 16 Jul 2015 13:30:37 +0800
+Message-ID: <1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <55A680FC.2010807@oracle.com>
+References: <55A680FC.2010807@oracle.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v5 01/11] SAFE_MACROS: Add socket(), bind(), listen(),
+	connect() and getsockname()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,278 +25,228 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: alexey.kodanev@oracle.com
+Cc: ltp-list@lists.sourceforge.net
 
-v1 ---> v2
-	a. remove the __NR_sysfs macro defined
-	b. replace syscall() with ltp_syscall()
-
-Signed-off-by: Li Wang <liwang@redhat.com>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/sysfs/sysfs01.c | 11 +++--------
- testcases/kernel/syscalls/sysfs/sysfs02.c | 11 +++--------
- testcases/kernel/syscalls/sysfs/sysfs03.c | 11 +++--------
- testcases/kernel/syscalls/sysfs/sysfs04.c |  9 ++-------
- testcases/kernel/syscalls/sysfs/sysfs05.c |  9 ++-------
- testcases/kernel/syscalls/sysfs/sysfs06.c |  9 ++-------
- 6 files changed, 15 insertions(+), 45 deletions(-)
+ include/safe_macros.h |   1 +
+ include/safe_net.h    |  54 +++++++++++++++++++++++
+ lib/safe_net.c        | 119 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 174 insertions(+)
+ create mode 100644 include/safe_net.h
+ create mode 100644 lib/safe_net.c
 
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs01.c b/testcases/kernel/syscalls/sysfs/sysfs01.c
-index 11ebe43..582918a 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs01.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs01.c
-@@ -66,10 +66,11 @@
-  *Kernel should be compiled with proc filesystem support
-  ******************************************************************************/
+diff --git a/include/safe_macros.h b/include/safe_macros.h
+index 0e7651d..1a09af6 100644
+--- a/include/safe_macros.h
++++ b/include/safe_macros.h
+@@ -28,6 +28,7 @@
+ #include <dirent.h>
  
--#include "test.h"
- #include <errno.h>
- #include <unistd.h>
- #include <syscall.h>
+ #include "safe_stdio.h"
++#include "safe_net.h"
+ 
+ char*	safe_basename(const char *file, const int lineno,
+ 	    void (*cleanup_fn)(void), char *path);
+diff --git a/include/safe_net.h b/include/safe_net.h
+new file mode 100644
+index 0000000..2c9ddb6
+--- /dev/null
++++ b/include/safe_net.h
+@@ -0,0 +1,54 @@
++/*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#ifndef __SAFE_NET_H__
++#define __SAFE_NET_H__
++
++#include <sys/types.h>
++#include <sys/socket.h>
++
++int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
++		int domain, int type, int protocol);
++#define SAFE_SOCKET(cleanup_fn, domain, type, protocol) \
++	safe_socket(__FILE__, __LINE__, (cleanup_fn), domain, type, protocol)
++
++int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
++	      int socket, const struct sockaddr *address,
++	      socklen_t address_len);
++#define SAFE_BIND(cleanup_fn, socket, address, address_len) \
++	safe_bind(__FILE__, __LINE__, (cleanup_fn), socket, address, \
++		  address_len)
++
++int safe_listen(const char *file, const int lineno, void (cleanup_fn)(void),
++		int socket, int backlog);
++#define SAFE_LISTEN(cleanup_fn, socket, backlog) \
++	safe_listen(__FILE__, __LINE__, (cleanup_fn), socket, backlog)
++
++int safe_connect(const char *file, const int lineno, void (cleanup_fn)(void),
++		 int sockfd, const struct sockaddr *addr, socklen_t addrlen);
++#define SAFE_CONNECT(cleanup_fn, sockfd, addr, addrlen) \
++	safe_connect(__FILE__, __LINE__, (cleanup_fn), sockfd, addr, addrlen)
++
++int safe_getsockname(const char *file, const int lineno,
++		     void (cleanup_fn)(void), int sockfd, struct sockaddr *addr,
++		     socklen_t *addrlen);
++#define SAFE_GETSOCKNAME(cleanup_fn, sockfd, addr, addrlen) \
++	safe_getsockname(__FILE__, __LINE__, (cleanup_fn), sockfd, addr, \
++			 addrlen)
++
++#endif /* __SAFE_NET_H__ */
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+new file mode 100644
+index 0000000..48c4056
+--- /dev/null
++++ b/lib/safe_net.c
+@@ -0,0 +1,119 @@
++/*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ */
++
++#include <errno.h>
 +#include "test.h"
-+#include "linux_syscall_numbers.h"
- 
- static void setup();
- static void cleanup();
-@@ -85,14 +86,12 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--#ifdef __NR_sysfs
--
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
- 		tst_count = 0;
- 
- 		/* option 1, buf holds fs name */
--		TEST(syscall(__NR_sysfs, 1, "proc"));
-+		TEST(ltp_syscall(__NR_sysfs, 1, "proc"));
- 
- 		/* check return code */
- 		if (TEST_RETURN == -1) {
-@@ -102,10 +101,6 @@ int main(int ac, char **av)
- 			tst_resm(TPASS, "sysfs(2) Passed for " "option 1");
- 		}
- 	}			/*End of TEST_LOOPING */
--#else
--	tst_resm(TWARN,
--		 "This test can only run on kernels that support the sysfs system call");
--#endif
- 
- 	/*Clean up and exit */
- 	cleanup();
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs02.c b/testcases/kernel/syscalls/sysfs/sysfs02.c
-index f7cb96a..d7e8923 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs02.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs02.c
-@@ -64,10 +64,11 @@
-  *There is no glibc or libc support
-  *****************************************************************************/
- 
--#include "test.h"
- #include <errno.h>
- #include <unistd.h>
- #include <syscall.h>
-+#include "test.h"
-+#include "linux_syscall_numbers.h"
- 
- static void setup();
- static void cleanup();
-@@ -84,14 +85,12 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--#ifdef __NR_sysfs
--
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
- 		tst_count = 0;
- 
- 		/*option 2 buf holds fs name */
--		TEST(syscall(__NR_sysfs, 2, 0, buf));
-+		TEST(ltp_syscall(__NR_sysfs, 2, 0, buf));
- 
- 		/* check return code */
- 		if (TEST_RETURN == -1) {
-@@ -102,10 +101,6 @@ int main(int ac, char **av)
- 			tst_resm(TPASS, "sysfs(2) Passed for option 2");
- 		}
- 	}			/*End of TEST_LOOPING */
--#else
--	tst_resm(TWARN,
--		 "This test can only run on kernels that support the sysfs system call");
--#endif
- 
- 	/*Clean up and exit */
- 	cleanup();
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs03.c b/testcases/kernel/syscalls/sysfs/sysfs03.c
-index 59b997e..51fdc92 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs03.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs03.c
-@@ -64,10 +64,11 @@
-  *There is no glibc or libc support
-  *****************************************************************************/
- 
--#include "test.h"
- #include <errno.h>
- #include <unistd.h>
- #include <syscall.h>
-+#include "test.h"
-+#include "linux_syscall_numbers.h"
- 
- static void setup();
- static void cleanup();
-@@ -83,13 +84,11 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--#ifdef __NR_sysfs
--
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
- 		tst_count = 0;
- 
--		TEST(syscall(__NR_sysfs, 3));
-+		TEST(ltp_syscall(__NR_sysfs, 3));
- 
- 		/* check return code */
- 		if (TEST_RETURN == -1) {
-@@ -100,10 +99,6 @@ int main(int ac, char **av)
- 			tst_resm(TPASS, "sysfs(2) Passed for option 3");
- 		}
- 	}			/*End of TEST_LOOPING */
--#else
--	tst_resm(TWARN,
--		 "This test can only run on kernels that support the sysfs system call");
--#endif
- 
- 	/*Clean up and exit */
- 	cleanup();
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs04.c b/testcases/kernel/syscalls/sysfs/sysfs04.c
-index f4fda36..6f596e1 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs04.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs04.c
-@@ -71,6 +71,7 @@
- #include <errno.h>
- #include  <syscall.h>
- #include "test.h"
-+#include "linux_syscall_numbers.h"
- 
- #define INVALID_OPTION 100
- static void setup();
-@@ -87,12 +88,10 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--#ifdef __NR_sysfs
--
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
- 		tst_count = 0;
--		TEST(syscall(__NR_sysfs, INVALID_OPTION));
-+		TEST(ltp_syscall(__NR_sysfs, INVALID_OPTION));
- 
- 		/* check return code */
- 		if ((TEST_RETURN == -1) && (TEST_ERRNO == EINVAL)) {
-@@ -104,10 +103,6 @@ int main(int ac, char **av)
- 				 " : EINVAL and got %d", EINVAL, TEST_ERRNO);
- 		}
- 	}
--#else
--	tst_resm(TWARN,
--		 "This test can only run on kernels that support the sysfs system call");
--#endif
- 
- 	/*Clean up and exit */
- 	cleanup();
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs05.c b/testcases/kernel/syscalls/sysfs/sysfs05.c
-index e97f0c8..749efe7 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs05.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs05.c
-@@ -72,6 +72,7 @@
- #include <errno.h>
- #include <syscall.h>
- #include "test.h"
-+#include "linux_syscall_numbers.h"
- 
- static void setup();
- static void cleanup();
-@@ -101,14 +102,12 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--#ifdef __NR_sysfs
--
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
- 		for (i = 0; i < TST_TOTAL; i++) {
- 
- 			tst_count = 0;
--			TEST(syscall(__NR_sysfs, option[i], fsname[i]));
-+			TEST(ltp_syscall(__NR_sysfs, option[i], fsname[i]));
- 
- 			/* check return code */
- 			if ((TEST_RETURN == -1)
-@@ -128,10 +127,6 @@ int main(int ac, char **av)
- 
- 		}		/*End of TEST LOOPS */
- 	}
--#else
--	tst_resm(TWARN,
--		 "This test can only run on kernels that support the sysfs system call");
--#endif
- 
- 	/*Clean up and exit */
- 	cleanup();
-diff --git a/testcases/kernel/syscalls/sysfs/sysfs06.c b/testcases/kernel/syscalls/sysfs/sysfs06.c
-index 121e944..a282d93 100644
---- a/testcases/kernel/syscalls/sysfs/sysfs06.c
-+++ b/testcases/kernel/syscalls/sysfs/sysfs06.c
-@@ -73,6 +73,7 @@
- #include <syscall.h>
- #include <sys/mman.h>
- #include "test.h"
-+#include "linux_syscall_numbers.h"
- 
- static void setup();
- static void cleanup();
-@@ -104,14 +105,12 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--#ifdef __NR_sysfs
--
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 
- 		for (i = 0; i < TST_TOTAL; i++) {
- 
- 			tst_count = 0;
--			TEST(syscall
-+			TEST(ltp_syscall
- 			     (__NR_sysfs, option[i], fsindex[i], bad_addr));
- 
- 			/* check return code */
-@@ -131,10 +130,6 @@ int main(int ac, char **av)
- 			}
- 		}		/*End of TEST LOOPS */
- 	}
--#else
--	tst_resm(TWARN,
--		 "This test can only run on kernels that support the sysfs system call");
--#endif
- 
- 	/*Clean up and exit */
- 	cleanup();
++#include "safe_net.h"
++
++int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
++		int domain, int type, int protocol)
++{
++	int rval;
++
++	rval = socket(domain, type, protocol);
++
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
++			 domain, type, protocol);
++	}
++
++	return rval;
++}
++
++int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
++	      int socket, const struct sockaddr *address,
++	      socklen_t address_len)
++{
++	int err, ret, i;
++
++	for (i = 0; i < 30; i++) {
++		ret = bind(socket, address, address_len);
++		err = errno;
++
++		if (!ret)
++			return 0;
++
++		if (err != EADDRINUSE) {
++			tst_brkm(TBROK | TERRNO, cleanup_fn,
++				 "%s:%d: bind(%d, %p, %d) failed", file, lineno,
++				 socket, address, address_len);
++		}
++
++		tst_resm(TINFO, "bind('%p') failed with %s, try %2i...",
++			 address, tst_strerrno(err), i+1);
++
++		if (i == 0 && err == EADDRINUSE)
++			tst_resm(TINFO, "The given address is already in use.");
++
++		usleep(1000000);
++	}
++
++	tst_brkm(TBROK | TERRNO, cleanup_fn,
++		 "%s:%d: Failed to bind(%d, %p, %d) after 30 retries",
++		 file, lineno, socket, address, address_len);
++}
++
++int safe_listen(const char *file, const int lineno, void (cleanup_fn)(void),
++		int socket, int backlog)
++{
++	int rval;
++
++	rval = listen(socket, backlog);
++
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: listen(%d, %d) failed", file, lineno, socket,
++			 backlog);
++	}
++
++	return rval;
++}
++
++int safe_connect(const char *file, const int lineno, void (cleanup_fn)(void),
++		 int sockfd, const struct sockaddr *addr, socklen_t addrlen)
++{
++	int rval;
++
++	rval = connect(sockfd, addr, addrlen);
++
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: connect(%d, %p, %d) failed", file, lineno,
++			 sockfd, addr, addrlen);
++	}
++
++	return rval;
++}
++
++int safe_getsockname(const char *file, const int lineno,
++		     void (cleanup_fn)(void), int sockfd, struct sockaddr *addr,
++		     socklen_t *addrlen)
++{
++	int rval;
++
++	rval = getsockname(sockfd, addr, addrlen);
++
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: getsockname(%d, %p, %p) failed", file, lineno,
++			 sockfd, addr, addrlen);
++	}
++
++	return rval;
++}
 -- 
-1.8.3.1
+1.9.3
 
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
