@@ -1,26 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <manjeet.p@samsung.com>) id 1ZKNNZ-0004AN-OW
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 09:10:25 +0000
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1ZKNNX-00026y-Qn
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 09:10:25 +0000
-Received: from epcpsbgr1.samsung.com
-	(u141.gpu120.samsung.co.kr [203.254.230.141])
-	by mailout2.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NS801PGVS54FHA0@mailout2.samsung.com> for
-	ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 18:10:16 +0900 (KST)
-Date: Wed, 29 Jul 2015 09:10:06 +0000 (GMT)
-From: Manjeet Pawar <manjeet.p@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <942263473.174871438161006326.JavaMail.weblogic@epmlwas07a>
-Subject: Re: [LTP] Regarding memcg control  testcase (mem_process.c)
-Reply-To: manjeet.p@samsung.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFbkV-0004oi-Ig
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:23 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZFbkS-0000oj-KZ
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:23 +0000
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 16 Jul 2015 13:30:38 +0800
+Message-ID: <1437024647-2066-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <55A680FC.2010807@oracle.com>
+	<1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH v5 02/11] lib6/runcc.c: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,81 +28,384 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: AJEET YADAV <ajeet.y@samsung.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, PANKAJ MISHRA <pankaj.m@samsung.com>
+To: alexey.kodanev@oracle.com
+Cc: ltp-list@lists.sourceforge.net
 
-HI Jan,
-Now we have run all memcg testcases , they need mainly two things:
-1) echo -16 > /proc/$pid/oom_adj
-2) and a long sleep ( 30 seconds) so that after OOM , it get killed, normally it takes some time, so After increasing the sleep time, mem_process get killed.
-Thanks for your support.
+* Add 'static' before some functions and global variables.
+
+* Not use 'mkstemp', use 'tst_tmpdir and tst_rmdir' in actual test.
+
+* Use 'SAFE_FILE_PRINTF' instead of 'open-write-close'.
+
+* Change 'runcc', 'aliascheck', 'funccheck', 'structcheck' and
+  'valuecheck' to non-return because of the ignore return value.
+
+* Use 'MACRO' instead of 'const char *'.
+
+* Some cleanup.
+
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/network/lib6/runcc.c | 177 ++++++++++++++++-------------------------
+ testcases/network/lib6/runcc.h |  52 +++++++-----
+ 2 files changed, 100 insertions(+), 129 deletions(-)
+
+diff --git a/testcases/network/lib6/runcc.c b/testcases/network/lib6/runcc.c
+index 91a0b16..cfc283c 100644
+--- a/testcases/network/lib6/runcc.c
++++ b/testcases/network/lib6/runcc.c
+@@ -1,31 +1,21 @@
+ /*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * runcc.a - common functions for lib6 testing
+- *
+- * HISTORY
+- *	05/2005 written by David L Stevens
+- *
+- * RESTRICTIONS:
+- *  None.
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  *
++ * Author: David L Stevens
+  */
+ 
+ #include <stdio.h>
+@@ -34,20 +24,23 @@
+ #include <ctype.h>
+ 
+ #include <sys/wait.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
+ 
+ #include "test.h"
+ 
+-char fieldref[1024];
+-char program[8192];
++static char fieldref[1024];
++static char program[8192];
+ 
+-char *filetmpl = "/tmp/%.*s_XXXXXX";
++#define FILETMPL	"./%.*s"
+ 
+-char cmd[1024];
++static char cmd[1024];
+ 
+ /*
+  * like strspn, with ASCII, numbers and underscore only
+  */
+-int strfpn(char *name)
++static int strfpn(char *name)
+ {
+ 	int i;
+ 
+@@ -57,31 +50,17 @@ int strfpn(char *name)
+ 	return i;
+ }
+ 
+-int runcc(char *tname, char *filename0, char *program)
++static void runcc(char *tname, char *filename0, char *program)
+ {
+ 	static char filename[1024];
+-	int fd, es, saved_errno;
++	int es;
+ 	char *cflags = "";
+ 
+-	fd = mkstemp(filename0);
+-	if (fd < 0) {
+-		perror("mkstemp");
+-		return -1;
+-	}
+ 	strncpy(filename, filename0, sizeof(filename) - 1);
+ 	filename[sizeof(filename) - 1] = '\0';
+ 	strncat(filename, ".c", sizeof(filename) - strlen(filename) - 1);
+-	if (rename(filename0, filename) < 0) {
+-		perror("rename");
+-		unlink(filename0);
+-		return -1;
+-	}
+-	if (write(fd, program, strlen(program)) < 0) {
+-		perror("write");
+-		unlink(filename);
+-		return -1;
+-	}
+-	(void)close(fd);
++
++	SAFE_FILE_PRINTF(NULL, filename, "%s", program);
+ 
+ 	cflags = getenv("CFLAGS");
+ 	if (cflags == NULL) {
+@@ -89,19 +68,13 @@ int runcc(char *tname, char *filename0, char *program)
+ 		cflags = "";
+ 	}
+ 
+-	snprintf(cmd, sizeof(cmd), "%s %s -o %s %s > /tmp/test 2>&1", "cc",
++	snprintf(cmd, sizeof(cmd), "%s %s -o %s %s > test 2>&1", "cc",
+ 		 cflags, filename0, filename);
+ 	es = system(cmd);
+ 	if (WEXITSTATUS(es) == 127) {
+-		tst_resm(TBROK, "can't run C compiler: \"%s\"", cmd);
+-		if (unlink(filename) < 0)
+-			tst_resm(TWARN, "%s; unlink \"%s\" failed: %s", tname,
+-				 filename, strerror(errno));
+-		return -1;
++		tst_brkm(TBROK | TERRNO, NULL, "can't run C compiler: \"%s\"",
++			 cmd);
+ 	}
+-	if (unlink(filename) < 0)
+-		tst_resm(TWARN, "%s: unlink \"%s\" failed: %s", tname,
+-			 filename, strerror(errno));
+ 
+ 	if (WIFSIGNALED(es) &&
+ 	    (WTERMSIG(es) == SIGINT || WTERMSIG(es) == SIGQUIT))
+@@ -109,101 +82,91 @@ int runcc(char *tname, char *filename0, char *program)
+ 
+ 	if (WEXITSTATUS(es)) {
+ 		tst_resm(TFAIL, "%s: not present", tname);
+-		return -1;
++		return;
+ 	}
+ 	/* run the test */
+ 
+ 	es = system(filename0);
+-	saved_errno = errno;
+-	if (unlink(filename0) < 0)
+-		tst_resm(TWARN, "%s: unlink \"%s\" failed: %s", tname,
+-			 filename0, strerror(errno));
+ 
+ 	if (WIFSIGNALED(es) &&
+ 	    (WTERMSIG(es) == SIGINT || WTERMSIG(es) == SIGQUIT))
+ 		exit(1);
+ 
+ 	if (WEXITSTATUS(es) == 127)
+-		tst_resm(TBROK, "%s: can't run \"%s\": %s", tname, filename0,
+-			 strerror(saved_errno));
++		tst_resm(TBROK | TERRNO, "%s: can't run \"%s\"", tname,
++			 filename0);
+ 	if (WEXITSTATUS(es))
+ 		tst_resm(TFAIL, "%s: present, but incorrect", tname);
+ 	else
+ 		tst_resm(TPASS, "%s present and correct", tname);
+-	return 0;
+ }
+ 
+-char *field_fmt = "\n\texit((offsetof(struct %s, %s) != %s) || "
+-    "sizeof(tst.%s) != (%s));\n";
++#define FIELD_FMT	"\n\texit((offsetof(struct %s, %s) != %s) || " \
++			"sizeof(tst.%s) != (%s));\n"
+ /* no offset check */
+-char *field_fmt2 = "\n\texit(sizeof(tst.%s) != (%s));\n";
++#define FIELD_FMT2	"\n\texit(sizeof(tst.%s) != (%s));\n"
+ 
+-const char *stmpl =
+-    "%s\n#ifndef offsetof\n"
+-    "#define offsetof(dtype, dfield) ((int)&((dtype *)0)->dfield)\n"
+-    "#endif\n\nstruct %s tst;\n\nmain(int argc, char *argv[])\n{\n\t%s\n}\n";
++#define STMPL	"%s#include <stdlib.h>\n\n\n" \
++		"#ifndef offsetof\n" \
++		"#define offsetof(dtype, dfield) " \
++		"((int)&((dtype *)0)->dfield)\n" \
++		"#endif\n\nstruct %s tst;\n\n" \
++		"int main(int argc, char *argv[])\n{\n\t%s\n}\n"
+ 
+-int
+-structcheck(char *tname, char *incl, char *structure, char *field,
+-	    char *offset, char *size)
++void structcheck(char *tname, char *incl, char *structure, char *field,
++		 char *offset, char *size)
+ {
+-	int rv;
+ 	static char filename[1024];
+ 
+ 	if (offset)
+-		sprintf(fieldref, field_fmt, structure, field, offset, field,
++		sprintf(fieldref, FIELD_FMT, structure, field, offset, field,
+ 			size);
+ 	else
+-		sprintf(fieldref, field_fmt2, field, size);
+-	sprintf(program, stmpl, incl, structure, fieldref);
+-	snprintf(filename, sizeof(filename), filetmpl, strfpn(structure),
++		sprintf(fieldref, FIELD_FMT2, field, size);
++	sprintf(program, STMPL, incl, structure, fieldref);
++	snprintf(filename, sizeof(filename), FILETMPL, strfpn(structure),
+ 		 structure);
+-	rv = runcc(tname, filename, program);
+-	return rv;
++	runcc(tname, filename, program);
+ }
+ 
+-char *aliasfmt =
+-    "exit(&tst.%s != &tst.%s || sizeof(tst.%s) != sizeof(tst.%s));";
++#define ALIASFMT	"exit(&tst.%s != &tst.%s || " \
++			"sizeof(tst.%s) != sizeof(tst.%s));"
+ 
+-int
+-aliascheck(char *tname, char *incl, char *structure, char *field, char *dname)
++void aliascheck(char *tname, char *incl, char *structure, char *field,
++		char *dname)
+ {
+-	int rv;
+ 	static char filename[1024];
+ 
+-	sprintf(fieldref, aliasfmt, field, dname, field, dname);
+-	sprintf(program, stmpl, incl, structure, fieldref);
+-	snprintf(filename, sizeof(filename), filetmpl, strfpn(structure),
++	sprintf(fieldref, ALIASFMT, field, dname, field, dname);
++	sprintf(program, STMPL, incl, structure, fieldref);
++	snprintf(filename, sizeof(filename), FILETMPL, strfpn(structure),
+ 		 structure);
+-	rv = runcc(tname, filename, program);
+-	return rv;
++	runcc(tname, filename, program);
+ }
+ 
+-const char *dtmpl =
+-    "%s\n\nmain(int argc, char *argv[])\n{\n\texit((%s) != (%s));\n}\n";
++#define DTMPL	"%s#include <stdlib.h>\n\n\n" \
++		"int main(int argc, char *argv[])\n" \
++		"{\n\texit((%s) != (%s));\n}\n"
+ 
+-int valuecheck(char *tname, char *incl, char *dname, char *dval)
++void valuecheck(char *tname, char *incl, char *dname, char *dval)
+ {
+-	int rv;
+ 	static char filename[1024];
+ 
+-	sprintf(program, dtmpl, incl, dname, dval);
+-	snprintf(filename, sizeof(filename), filetmpl, strfpn(dname), dname);
+-	rv = runcc(tname, filename, program);
+-	return rv;
++	sprintf(program, DTMPL, incl, dname, dval);
++	snprintf(filename, sizeof(filename), FILETMPL, strfpn(dname), dname);
++	runcc(tname, filename, program);
+ }
+ 
+-const char *ftmpl =
+-    "%s\n\nmain(int argc, char *argv[])\n{\n#ifdef %s\n\texit(0);\n#else\n"
+-    "\tsyntax error;\n#endif\n}\n";
++#define FTMPL	"%s#include <stdlib.h>\n\n\n" \
++		"int main(int argc, char *argv[])\n" \
++		"{\n#ifdef %s\n\texit(0);\n#else\n" \
++		"\tsyntax error;\n#endif\n}\n"
+ 
+-int funccheck(char *tname, char *incl, char *fname)
++void funccheck(char *tname, char *incl, char *fname)
+ {
+-	int rv;
+ 	static char filename[1024];
+ 
+-	sprintf(program, ftmpl, incl, fname);
+-	snprintf(filename, sizeof(filename), filetmpl, strfpn(fname), fname);
+-	rv = runcc(tname, filename, program);
+-	return rv;
++	sprintf(program, FTMPL, incl, fname);
++	snprintf(filename, sizeof(filename), FILETMPL, strfpn(fname), fname);
++	runcc(tname, filename, program);
+ }
+diff --git a/testcases/network/lib6/runcc.h b/testcases/network/lib6/runcc.h
+index 4e2a0d5..a66addb 100644
+--- a/testcases/network/lib6/runcc.h
++++ b/testcases/network/lib6/runcc.h
+@@ -1,30 +1,38 @@
+ /*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+  */
+ 
+-int aliascheck(char *tname, char *incl, char *structure, char *field,
+-	char *dname);
+-int funccheck(char *tname, char *incl, char *fname);
+-int structcheck(char *tname, char *incl, char *structure, char *field,
+-	char *offset, char *size);
+-int valuecheck(char *tname, char *incl, char *dname, char *dval);
++#ifndef __RUNCC_H__
++#define __RUNCC_H__
+ 
+-#define IP6_H "#include <netinet/ip6.h>\n"
+-#define IN_H "#include <netinet/in.h>\n"
+-#define ICMP6_H "#include <netinet/icmp6.h>\n"
+-#define SOCKET_H "#include <sys/types.h>\n#include <sys/socket.h>\n"
++void aliascheck(char *tname, char *incl, char *structure, char *field,
++		char *dname);
++
++void funccheck(char *tname, char *incl, char *fname);
++
++void structcheck(char *tname, char *incl, char *structure, char *field,
++		 char *offset, char *size);
++
++void valuecheck(char *tname, char *incl, char *dname, char *dval);
++
++#define IP6_H		"#include <netinet/ip6.h>\n"
++#define IN_H		"#include <netinet/in.h>\n"
++#define ICMP6_H		"#include <netinet/icmp6.h>\n"
++#define SOCKET_H	"#include <sys/types.h>\n#include <sys/socket.h>\n"
++
++#endif  /* __RUNCC_H__ */
+-- 
+1.9.3
 
 
-
-------- Original Message -------
-Sender : Jan Stancek<jstancek@redhat.com>
-Date : Jul 29, 2015 15:48 (GMT+09:00)
-Title : Re: [LTP] Regarding memcg control testcase (mem_process.c)
-
-
-
-
-
------ Original Message -----
-> From: "Manjeet Pawar" 
-> To: "Jan Stancek" , ltp-list@lists.sourceforge.net
-> Cc: "AJEET YADAV" , "PANKAJ MISHRA" 
-> Sent: Wednesday, 29 July, 2015 5:54:55 AM
-> Subject: Re: Re: [LTP]  Regarding memcg control  testcase (mem_process.c)
-> 
-> Hello Jan,
-> After doing analysis, I found that When memory hog process (mem_process)
-> tries to mmap double the memory of the cgroup limit which is 4096 . I am
-> getting OOM in that situation and send kill signal to process (which is
-> expected behaviour) . But it could not kill the process and
->  it sets the process state to uninterrupted sleep state.
-> 
-> To get this OOM , i need to change oom_adj value of the process '208' from
-> -17 to -16. If i dont do this, I dont get OOM and process always stuck at
-> mmap and try to allocate 8192 Bytes of memory.
-
-That explains it, -17 means OOM is disabled:
-#define OOM_DISABLE (-17)
-
-> logs:-
-> [2-74.5749] Memory cgroup out of memory: Kill process 208 (mem_process) score
-> 147000 or sacrifice child
-> [2-74.5840] Killed process 208 (mem_process) total-vm:2704kB, anon-rss:80kB,
-> file-rss:484kB
-> by mmap is -1237753856
-> Warning: bad syntax, perhaps a bogus '-'? See /usr/share/doc/procps-3.2.8/FAQ
-> root       208 39.6  0.0   2704   564 ?        D    00:01   0:02 mem_process
-> -m 8192  // D - means uninterrupted sleep
-> root       215  0.0  0.0   2412   584 ?        S    00:01   0:00 grep -r 208
-
-No idea why it's getting stuck though. I'd try with oom_adj == 0. If that makes
-no difference, /proc//stack might give some additional clues.
-
-Do you see similar behaviour with other OOM testcases?
-
-Regards,
-Jan
-
-> 
-> I am using 3.10.84 kernel. LTP is of latest  version (ltp-full-20150420)
-> 
-> Regards
-> Manjeet
-> 
-> ------- Original Message -------
-> Sender : Jan Stancek
-> Date : Jul 27, 2015 17:32 (GMT+09:00)
-> Title : Re: [LTP] Regarding memcg control testcase (mem_process.c)
-> 
-> 
-> 
-> 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
