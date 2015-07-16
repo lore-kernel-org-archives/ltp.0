@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZJK6z-0002dK-O3
-	for ltp-list@lists.sourceforge.net; Sun, 26 Jul 2015 11:28:57 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZJK6y-0006re-9c
-	for ltp-list@lists.sourceforge.net; Sun, 26 Jul 2015 11:28:57 +0000
-Date: Sun, 26 Jul 2015 07:28:48 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1850032319.178415.1437910128151.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1292620122.336321437710865744.JavaMail.weblogic@epmlwas09d>
-References: <1292620122.336321437710865744.JavaMail.weblogic@epmlwas09d>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFbkV-0007sm-S5
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:23 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZFbkU-0000of-SV
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:23 +0000
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 16 Jul 2015 13:30:39 +0800
+Message-ID: <1437024647-2066-3-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <55A680FC.2010807@oracle.com>
+	<1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Regarding memcg control  testcase (mem_process.c)
+Subject: [LTP] [PATCH v5 03/11] asapi_01: Use 'tst_tmpdir' and more cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,96 +28,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: manjeet p <manjeet.p@samsung.com>
-Cc: ajeet y <ajeet.y@samsung.com>, ltp-list@lists.sourceforge.net, pankaj m <pankaj.m@samsung.com>
+To: alexey.kodanev@oracle.com
+Cc: ltp-list@lists.sourceforge.net
 
+* Use 'tst_tmpdir' and 'tst_rmdir'.
+* Add 'static' for the cleanup.
 
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/network/lib6/asapi_01.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
+diff --git a/testcases/network/lib6/asapi_01.c b/testcases/network/lib6/asapi_01.c
+index 5d8bdc7..a129569 100644
+--- a/testcases/network/lib6/asapi_01.c
++++ b/testcases/network/lib6/asapi_01.c
+@@ -198,6 +198,7 @@ static struct ftent {
+ };
+ 
+ static void setup(void);
++static void cleanup(void);
+ static void do_test(const struct ftent *);
+ 
+ char *TCID = "asapi_01";
+@@ -218,15 +219,23 @@ int main(int argc, char *argv[])
+ 			do_test(&ftab[i]);
+ 	}
+ 
++	cleanup();
+ 	tst_exit();
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
+ 	TEST_PAUSE;
++
++	tst_tmpdir();
++}
++
++static void cleanup(void)
++{
++	tst_rmdir();
+ }
+ 
+-void do_test(const struct ftent *ftptr)
++static void do_test(const struct ftent *ftptr)
+ {
+ 	switch (ftptr->ft_type) {
+ 	case EXISTS:
+-- 
+1.9.3
 
-
------ Original Message -----
-> From: "Manjeet Pawar" <manjeet.p@samsung.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "ajeet y" <ajeet.y@samsung.com>, "pankaj m" <pankaj.m@samsung.com>
-> Sent: Friday, 24 July, 2015 6:07:45 AM
-> Subject: [LTP]  Regarding memcg control  testcase (mem_process.c)
-> 
-> Hi,
-> 
-> I am trying to run memcg control testcase using script memcg_control_test.sh.
-> This script calls a memory hog process 'mem_process'.
-> The condition for this testcase to pass is 'when the memory hog process is
-> killed on crossing boundary'. please check the below function.
-> 
-> <taken from memcg_control_test.sh>
-> -----------------------------
-> # Check if the test process is killed on crossing boundary
-> test_proc_kill()
-> {
->     ( cd $TMP && mem_process -m $PROC_MEM & )
->     sleep 1
->     echo $! > tasks
-
-mem_process is getting started via subshell, so I'd assume $! in parent is bogus.
-Can you try this instead:
-
-        pushd $TMP || return
-        mem_process -m $PROC_MEM &
-        local pid=$!
-        popd
-
-        sleep 1
-        echo $pid > tasks
-
-
-> 
->     #Instruct the test process to start acquiring memory
->     echo m > $STATUS_PIPE
->     sleep 5
-> 
->     #Check if killed
->     ps -p $! > /dev/null 2> /dev/null    ----> at this point the process
->     'mem_process' must have terminated so that last return value ($?) can be
->     non-zero.
->     if [ $? -eq 0 ]; then
->         echo m > $STATUS_PIPE
->         echo x > $STATUS_PIPE
->     else
->         : $((KILLED_CNT += 1))
->     fi
-> }
-> -------------------------
-> In my case: 'mem_process' does not terminate until we pass 'x' to it, but the
-> expected behaviour according to testcase  that the memory hog process
-> must be killed on crossing bounday.
-> Inputs taken by testcase are : "./memcg_control_test.sh 4096 4096 8192"
-> If I change the inputs from 8192 to other (1024,10MB,100MB etc) . In all
-> situation memory hog process does not terminate.
-> So what is the ideal condition for this process to terminate to make whole
-> testcase pass. ?
-
-mem_process getting killed by OOM seems like expected outcome:
-
-memcg_control    0  TINFO  :  Test #1: Checking if the memory usage limit imposed by the topmost group is enforced
-./memcg_control_test.sh: line 56:  2795 Killed                  mem_process -m $PROC_MEM  (wd: /tmp)
-memcg_control    1  TPASS  :  Test #1: passed
-memcg_control    1  TPASS  :  memcg_control: passed
-
-If it still doesn't get killed, I'd recommend checking "memory.usage_in_bytes".
-
-Regards,
-Jan
-
-
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
