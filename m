@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1ZCQWH-0008IS-OA
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 10:54:33 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFbkZ-0001Or-IT
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:27 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZCQWG-0006Vy-Mf
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 10:54:33 +0000
-Message-ID: <559BAD6F.3070206@cn.fujitsu.com>
-Date: Tue, 7 Jul 2015 18:43:59 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZFbkV-0005nb-Dt
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:27 +0000
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 16 Jul 2015 13:30:41 +0800
+Message-ID: <1437024647-2066-5-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <55A680FC.2010807@oracle.com>
+	<1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] getrandom compilation broken in RHEL5.11GA
+Subject: [LTP] [PATCH v5 05/11] asapi_03: Use 'tst_tmpdir' and more cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,48 +25,63 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, ced.hnyda@gmail.com
-Cc: LTP <ltp-list@lists.sourceforge.net>
+To: alexey.kodanev@oracle.com
+Cc: ltp-list@lists.sourceforge.net
 
-hello Jan, Cedric,
+* Use 'tst_tmpdir' and 'tst_rmdir'.
+* Add 'static' for the cleanup.
 
-When I compile ltp in RHEL5.11GA, I run into these errors:
----------------------------------------------------------------------------=
---------------------------------
-[root@RHEL5U11ga_Intel64 getrandom]# make
-make -C "/root/ltp/testcases/kernel/include" -f "/root/ltp/testcases/kernel=
-/include/Makefile" all
-make[1]: Entering directory `/root/ltp/testcases/kernel/include'
-make[1]: Nothing to be done for `all'.
-make[1]: Leaving directory `/root/ltp/testcases/kernel/include'
-gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 -Wold-style-de=
-finition -D_FORTIFY_SOURCE=3D2 -I/root/ltp/testcases/kernel/include -I../..=
-/../../include -I../../../../include   -L../../../../lib  getrandom01.c   -=
-lltp -o getrandom01
-In file included from getrandom01.c:29:
-/usr/include/linux/random.h:38: error: expected specifier-qualifier-list be=
-fore =91__u32=92
-/usr/include/linux/random.h:42: error: expected specifier-qualifier-list be=
-fore =91__u32=92
-make: *** [getrandom01] Error 1
----------------------------------------------------------------------------=
----------------------------------
-I tried to add "#include <sys/types.h>" or "#include <linux/types.h>", neit=
-her works. There maybe some bugs
-in RHEL5.11GA's glibc. Given that we use ltp_syscall() and have "GRND_RANDO=
-M  GRND_NONBLOCK" defined in
-lapi/getrandom.h, what about we remove "#include <linux/random.h>" form the=
-se these 4 test cases, then
-they will compile correctly in RHEL5.
-
-Regards,
-Xiaoguang Wang
-
----------------------------------------------------------------------------=
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
+ testcases/network/lib6/asapi_03.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/network/lib6/asapi_03.c b/testcases/network/lib6/asapi_03.c
+index f458d7d..61be294 100644
+--- a/testcases/network/lib6/asapi_03.c
++++ b/testcases/network/lib6/asapi_03.c
+@@ -181,6 +181,7 @@ static struct ftent {
+ };
+ 
+ static void setup(void);
++static void cleanup(void);
+ static void do_test(const struct ftent *);
+ 
+ char *TCID = "asapi_03";
+@@ -201,15 +202,23 @@ int main(int argc, char *argv[])
+ 			do_test(&ftab[i]);
+ 	}
+ 
++	cleanup();
+ 	tst_exit();
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
+ 	TEST_PAUSE;
++
++	tst_tmpdir();
++}
++
++static void cleanup(void)
++{
++	tst_rmdir();
+ }
+ 
+-void do_test(const struct ftent *ftptr)
++static void do_test(const struct ftent *ftptr)
+ {
+ 	switch (ftptr->ft_type) {
+ 	case EXISTS:
+-- 
+1.9.3
+
+
+------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
 GigeNET's Cloud Solutions provide you with the tools and support that
 you need to offload your IT needs and focus on growing your business.
