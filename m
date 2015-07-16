@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <VDavydov@odin.com>) id 1ZHu8Q-00058l-0A
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 13:32:34 +0000
-Received: from mx2.parallels.com ([199.115.105.18])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZHu8O-0004zE-US
-	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 13:32:33 +0000
-Received: from mail.parallels.com ([199.115.105.252])
-	by mx2.parallels.com with esmtps (TLSv1:AES128-SHA:128) (Exim 4.85)
-	(envelope-from <VDavydov@odin.com>) id 1ZHCLc-0003qK-8S
-	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2015 07:47:16 -0700
-From: Vladimir Davydov <vdavydov@parallels.com>
-Date: Mon, 20 Jul 2015 17:47:11 +0300
-Message-ID: <1437403631-11091-1-git-send-email-vdavydov@parallels.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZFbkc-0001PF-Lu
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:30 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZFbkb-0005nb-RT
+	for ltp-list@lists.sourceforge.net; Thu, 16 Jul 2015 05:30:30 +0000
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 16 Jul 2015 13:30:47 +0800
+Message-ID: <1437024647-2066-11-git-send-email-zenglg.jy@cn.fujitsu.com>
+In-Reply-To: <1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <55A680FC.2010807@oracle.com>
+	<1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] memcg_control: fix mem_process not moved to cgroup
+Subject: [LTP] [PATCH v5 11/11] ipv6_lib: Add it into default
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,42 +28,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: alexey.kodanev@oracle.com
+Cc: ltp-list@lists.sourceforge.net
 
-$! is not set after ( cmd & )
-
-This bug was introduced by commit 49010e502a74c ("Replace pushd // popd
-with cd calls.").
-
-Since we create a sub-shell in test_proc_kill only to preserve PWD,
-let's change this to cd $OLDPWD. In contrast to pushd/popd this will
-work in busybox.
-
-Signed-off-by: Vladimir Davydov <vdavydov@parallels.com>
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/kernel/controllers/memcg/control/memcg_control_test.sh | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ scenario_groups/default | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-index fa50516ba71b..168efe3ee35c 100644
---- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-+++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
-@@ -54,7 +54,9 @@ FAIL=1
- # Check if the test process is killed on crossing boundary
- test_proc_kill()
- {
--	( cd $TMP && mem_process -m $PROC_MEM & )
-+	cd $TMP
-+	mem_process -m $PROC_MEM &
-+	cd $OLDPWD
- 	sleep 1
- 	echo $! > tasks
- 
+diff --git a/scenario_groups/default b/scenario_groups/default
+index 3a55702..60b1b27 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -32,3 +32,4 @@ dma_thread_diotest
+ cpuacct
+ can
+ cpuhotplug
++ipv6_lib
 -- 
-2.1.4
+1.9.3
 
 
 ------------------------------------------------------------------------------
+Don't Limit Your Business. Reach for the Cloud.
+GigeNET's Cloud Solutions provide you with the tools and support that
+you need to offload your IT needs and focus on growing your business.
+Configured For All Businesses. Start Your Cloud Today.
+https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
