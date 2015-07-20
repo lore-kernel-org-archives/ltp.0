@@ -1,34 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jbastian@redhat.com>) id 1ZDDVW-0004bA-FF
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 15:13:02 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZDDVU-0007yd-Ob
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 15:13:02 +0000
-Received: from int-mx13.intmail.prod.int.phx2.redhat.com
-	(int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
-	by mx1.redhat.com (Postfix) with ESMTPS id A7935BE28E
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  9 Jul 2015 15:12:54 +0000 (UTC)
-Received: from tarantula.localdomain (ovpn-113-174.phx2.redhat.com
-	[10.3.113.174])
-	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t69FCq8n003536
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 11:12:54 -0400
-Date: Thu, 9 Jul 2015 10:12:52 -0500
-From: Jeffrey Bastian <jbastian@redhat.com>
-Message-ID: <20150709151252.GS17625@tarantula.localdomain>
-References: <20150708203358.GA24428@tarantula.localdomain>
-	<1538874773.14815420.1436428293231.JavaMail.zimbra@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1ZHfyX-0002PZ-HJ
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2015 22:25:25 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZHfyW-0002xs-9P
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2015 22:25:25 +0000
+Date: Mon, 20 Jul 2015 08:17:29 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1723241423.662829.1437394649041.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1437394221-22320-1-git-send-email-sunyuan3@huawei.com>
+References: <1437394221-22320-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1538874773.14815420.1436428293231.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] proc/proc01.c: ignore stable_secret files
+Subject: Re: [LTP] [PATCH] userns02: always set/check GID mapping
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -41,23 +27,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Jul 09, 2015 at 03:51:33AM -0400, Jan Stancek wrote:
-> > Ignore the stable_secret files in the proc01 test.
->
-> Can we add it to known_issues array instead? It looks like there's no
-> problem
-> with opening/reading the file (in sense that would cause adverse
-> effects,
-> e.g. hang the test).
 
-For some reason, I thought the known_issues array could not handle
-wildcards like '*' when I looked at it last night, but I see now that
-wildcards are perfectly fine.  I'll re-work the patch.
 
-Thanks!
-Jeff
+
+
+----- Original Message -----
+> From: "Yuan Sun" <sunyuan3@huawei.com>
+> To: jstancek@redhat.com
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Monday, 20 July, 2015 2:10:21 PM
+> Subject: [PATCH] userns02: always set/check GID mapping
+> 
+> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+
+Pushed with following text added to commit message:
+    The test previously relied on fact that it can always set GID mapping.
+    To allow this for unprivileged users on kernels >= 3.19, we have to
+    disable setgroups first.
+
+Thanks,
+Jan
+
+> ---
+>  testcases/kernel/containers/userns/userns02.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/containers/userns/userns02.c
+> b/testcases/kernel/containers/userns/userns02.c
+> index 3bcb97d..e1677b6 100644
+> --- a/testcases/kernel/containers/userns/userns02.c
+> +++ b/testcases/kernel/containers/userns/userns02.c
+> @@ -62,7 +62,6 @@ static int child_fn1(void)
+>  static void setup(void)
+>  {
+>  	check_newuser();
+> -
+>  	tst_tmpdir();
+>  	TST_CHECKPOINT_INIT(NULL);
+>  }
+> @@ -96,6 +95,14 @@ int main(int argc, char *argv[])
+>  		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
+>  		SAFE_WRITE(cleanup, 1, fd, content, strlen(content));
+>  		SAFE_CLOSE(cleanup, fd);
+> +
+> +		if (access("/proc/self/setgroups", F_OK) == 0) {
+> +			sprintf(path, "/proc/%d/setgroups", childpid);
+> +			fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
+> +			SAFE_WRITE(cleanup, 1, fd, "deny", 4);
+> +			SAFE_CLOSE(cleanup, fd);
+> +		}
+> +
+>  		sprintf(path, "/proc/%d/gid_map", childpid);
+>  		sprintf(content, "100 %d 1", parentgid);
+>  		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
+> --
+> 1.9.1
+> 
+> 
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
