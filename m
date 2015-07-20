@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZCHG4-0005rx-OF
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:12 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZCHG1-0000pz-Qg
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:12 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t670xL8T010530
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2015 08:59:21 +0800
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 7 Jul 2015 09:01:20 +0800
-Message-ID: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <srikanth007m@gmail.com>) id 1ZHqBy-0007qQ-0F
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 09:19:58 +0000
+Received: from mail-qg0-f51.google.com ([209.85.192.51])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZHqBx-0002In-2p
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 09:19:57 +0000
+Received: by qgeu79 with SMTP id u79so44150748qge.1
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 22 Jul 2015 02:19:51 -0700 (PDT)
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 1/3] umount2/umount2_01.c: add new test
+Date: Mon, 20 Jul 2015 19:06:20 +0530
+Message-ID: <CANKSX+HdUHTsLS2ON7ijqAoMnOvn1zmtFbVfemrVkfqGn-G1=Q@mail.gmail.com>
+From: "$rik@nth " <srikanth007m@gmail.com>
+Subject: [LTP] Cross-compiling issues
+Reply-To: srikanth007m@gmail.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,318 +26,132 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1399419596955184001=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Add new testcase to verify the flag MNT_DETACH of umount2(2).
+--===============1399419596955184001==
+Content-Type: multipart/alternative; boundary=001a11c13cce7e6680051b4e9ff4
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- include/lapi/umount.h                          |  34 +++++
- runtest/ltplite                                |   2 +
- runtest/syscalls                               |   2 +
- testcases/kernel/syscalls/.gitignore           |   1 +
- testcases/kernel/syscalls/umount2/Makefile     |  23 ++++
- testcases/kernel/syscalls/umount2/umount2_01.c | 176 +++++++++++++++++++++++++
- 6 files changed, 238 insertions(+)
- create mode 100644 include/lapi/umount.h
- create mode 100644 testcases/kernel/syscalls/umount2/Makefile
- create mode 100644 testcases/kernel/syscalls/umount2/umount2_01.c
+--001a11c13cce7e6680051b4e9ff4
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/include/lapi/umount.h b/include/lapi/umount.h
-new file mode 100644
-index 0000000..67858e1
---- /dev/null
-+++ b/include/lapi/umount.h
-@@ -0,0 +1,34 @@
-+/*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
-+ */
-+
-+#ifndef __LAPI_UMOUNT_H__
-+#define __LAPI_UMOUNT_H__
-+
-+#ifndef MNT_DETACH
-+#define MNT_DETACH 2
-+#endif
-+
-+#ifndef MNT_EXPIRE
-+#define MNT_EXPIRE 4
-+#endif
-+
-+#ifndef UMOUNT_NOFOLLOW
-+#define UMOUNT_NOFOLLOW 8
-+#endif
-+
-+#endif /* __LAPI_UMOUNT_H__ */
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 3bc681c..5f8ef8c 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -965,6 +965,8 @@ unlink08 unlink08
- #umount02 umount02 -D /dev/...
- #umount03 umount03 -D /dev/...
- 
-+umount2_01 umount2_01
-+
- ustat01 ustat01
- ustat02 ustat02
- 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 70d4945..762730f 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1314,6 +1314,8 @@ umount01 umount01
- umount02 umount02
- umount03 umount03
- 
-+umount2_01 umount2_01
-+
- ustat01 ustat01
- ustat02 ustat02
- 
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 172aeec..542ec3b 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -1002,6 +1002,7 @@
- /umount/umount01
- /umount/umount02
- /umount/umount03
-+/umount2/umount2_01
- /uname/uname01
- /uname/uname02
- /uname/uname03
-diff --git a/testcases/kernel/syscalls/umount2/Makefile b/testcases/kernel/syscalls/umount2/Makefile
-new file mode 100644
-index 0000000..bbf0541
---- /dev/null
-+++ b/testcases/kernel/syscalls/umount2/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (c) 2015 Fujitsu Ltd.
-+#  Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program.
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/umount2/umount2_01.c b/testcases/kernel/syscalls/umount2/umount2_01.c
-new file mode 100644
-index 0000000..7c59c06
---- /dev/null
-+++ b/testcases/kernel/syscalls/umount2/umount2_01.c
-@@ -0,0 +1,176 @@
-+/*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * alone with this program.
-+ */
-+
-+/*
-+ * DESCRIPTION
-+ *  Test for feature MNT_DETACH of umount2().
-+ *  "Perform a lazy unmount: make the mount point unavailable for
-+ *   new accesses, and actually perform the unmount when the mount
-+ *   point ceases to be busy."
-+ */
-+
-+#include <errno.h>
-+#include <sys/mount.h>
-+
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "lapi/umount.h"
-+
-+static void setup(void);
-+static void umount2_verify(void);
-+static void cleanup(void);
-+
-+char *TCID = "umount2_01";
-+int TST_TOTAL = 1;
-+
-+#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-+#define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
-+#define MNTPOINT	"mntpoint"
-+
-+static int fd;
-+static int fd_new;
-+static int mount_flag;
-+
-+static char buf[256];
-+
-+static const char *device;
-+static const char *fs_type;
-+static const char *str = "abcdefghijklmnopqrstuvwxyz";
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		umount2_verify();
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+
-+	tst_sig(NOFORK, DEF_HANDLER, NULL);
-+
-+	tst_tmpdir();
-+
-+	fs_type = tst_dev_fs_type();
-+	device = tst_acquire_device(cleanup);
-+
-+	if (!device)
-+		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
-+
-+	tst_mkfs(cleanup, device, fs_type, NULL);
-+
-+	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void umount2_verify(void)
-+{
-+	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
-+	mount_flag = 1;
-+
-+	fd = SAFE_CREAT(cleanup, MNTPOINT "/file", FILE_MODE);
-+
-+	do {
-+		TEST(umount2(MNTPOINT, MNT_DETACH));
-+
-+		if (TEST_RETURN != 0) {
-+			tst_resm(TFAIL, "umount2(2) Failed while "
-+				"unmounting %s errno = %d : %s",
-+				MNTPOINT, TEST_ERRNO,
-+				strerror(TEST_ERRNO));
-+			break;
-+		}
-+
-+		mount_flag = 0;
-+
-+		/* check the unavailability for new access */
-+		fd_new = open(MNTPOINT "/file", O_RDONLY);
-+
-+		if (fd_new != -1) {
-+			tst_resm(TFAIL, "umount2(2) MNT_DETACH flag "
-+				"performed abnormally "
-+				"expected error = %d : %s",
-+				ENOENT, strerror(ENOENT));
-+			break;
-+		}
-+
-+		/*
-+		 * check the old fd still points to the file
-+		 * in previous mount point and is available
-+		 */
-+		SAFE_WRITE(cleanup, 0, fd, str, strlen(str));
-+
-+		SAFE_CLOSE(cleanup, fd);
-+
-+		SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
-+		mount_flag = 1;
-+
-+		fd = SAFE_OPEN(cleanup, MNTPOINT "/file", O_RDONLY);
-+
-+		SAFE_READ(cleanup, 0, fd, buf, 255);
-+
-+		if (strcmp(str, buf)) {
-+			tst_resm(TFAIL, "umount2(2) MNT_DETACH flag "
-+				"performed abnormally");
-+			break;
-+		}
-+
-+		tst_resm(TPASS, "umount2(2) Passed");
-+	} while (0);
-+
-+	if (fd_new > 0) {
-+		SAFE_CLOSE(cleanup, fd_new);
-+		fd_new = 0;
-+	}
-+
-+	SAFE_CLOSE(cleanup, fd);
-+	fd = 0;
-+
-+	if (mount_flag) {
-+		SAFE_UMOUNT(cleanup, MNTPOINT);
-+		mount_flag = 0;
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	if (fd_new > 0 && close(fd_new))
-+		tst_resm(TWARN | TERRNO, "Failed to close file");
-+
-+	if (fd > 0 && close(fd))
-+		tst_resm(TWARN | TERRNO, "Failed to close file");
-+
-+	if (mount_flag && tst_umount(MNTPOINT))
-+		tst_resm(TWARN | TERRNO, "Failed to unmount");
-+
-+	if (device)
-+		tst_release_device(NULL, device);
-+
-+	tst_rmdir();
-+}
--- 
-1.8.4.2
+Hi,
 
+Though i am not expert in compiling LTP, but i am trying to cross compile
+current LTP for arm. Here is how i am configuring
+
+Go to root folder of ltp and execute
+./configure AR=3Darm-linux-gnueabi-ar CC=3Darm-linux-gnueabi-gcc
+RANLIB=3Darm-linux-gnueabi-gcc-ranlib-4.7 STRIP=3Darm-linux-gnueabi-strip
+--host=3Darm-linux --target=3Darm-linux CFLAGS=3D"-static" LDFLAGS=3D"-stat=
+ic
+-pthread"
+
+Failing at
+configure: error: cannot run /bin/sh ./config.sub
+configure: error: ./configure failed for utils/ffsb-6.0-rc2
+
+But still i ignored these messages and tried building some specific tests.
+Ex: realtime tests
+Go to testcases/realtime/func/sched_football and run make. Here make failed
+due to `ld: cannot find -lrealtime`
+
+arm-linux-gnueabi-gcc -static -g -O2 -fno-strict-aliasing -pipe -Wall -W
+-static -Wold-style-definition -D_GNU_SOURCE
+ -I/local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/inclu=
+de
+-I/local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/includ=
+e
+-I../../../../include -I../../../../include -static -pthread
+ -L/local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/lib
+-L../../../../lib  sched_football.c   -lrealtime -lpthread -lrt -lm -o
+sched_football
+In file included from sched_football.c:69:0:
+/local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/include/=
+librttest.h:
+In function =C3=A2atomic_add=C3=A2:
+/local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/include/=
+librttest.h:115:34:
+warning: unused parameter =C3=A2i=C3=A2 [-Wunused-parameter]
+/local/mnt/workspace/Srikanth/ltp-full-20140828/testcases/realtime/include/=
+librttest.h:115:47:
+warning: unused parameter =C3=A2v=C3=A2 [-Wunused-parameter]
+sched_football.c: In function =C3=A2thread_defense=C3=A2:
+sched_football.c:111:28: warning: unused parameter =C3=A2arg=C3=A2
+[-Wunused-parameter]
+sched_football.c: In function =C3=A2thread_offense=C3=A2:
+sched_football.c:122:28: warning: unused parameter =C3=A2arg=C3=A2
+[-Wunused-parameter]
+/usr/lib/gcc-cross/arm-linux-gnueabi/4.7/../../../../arm-linux-gnueabi/bin/=
+ld:
+cannot find -lrealtime
+collect2: error: ld returned 1 exit status
+make: *** [sched_football] Error 1
+
+
+Pointers from anyone who tried cross compiling ltp for arm would really
+helpful.
+
+TIA.
+
+--=20
+Thanks & Regards,
+M.Srikanth Kumar.
+
+--001a11c13cce7e6680051b4e9ff4
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi,=C2=A0<div><br></div><div>Though i am not expert in com=
+piling LTP, but i am trying to cross compile current LTP for arm. Here is h=
+ow i am configuring=C2=A0</div><div><br></div><div>Go to root folder of ltp=
+ and execute</div><div>./configure AR=3Darm-linux-gnueabi-ar CC=3Darm-linux=
+-gnueabi-gcc RANLIB=3Darm-linux-gnueabi-gcc-ranlib-4.7 STRIP=3Darm-linux-gn=
+ueabi-strip --host=3Darm-linux --target=3Darm-linux CFLAGS=3D&quot;-static&=
+quot; LDFLAGS=3D&quot;-static -pthread&quot;</div><div><br clear=3D"all"><d=
+iv>Failing at=C2=A0</div><div><div>configure: error: cannot run /bin/sh ./c=
+onfig.sub</div><div>configure: error: ./configure failed for utils/ffsb-6.0=
+-rc2</div></div><div><br></div><div>But still i ignored these messages and =
+tried building some specific tests. Ex: realtime tests</div><div>Go to=C2=
+=A0testcases/realtime/func/sched_football and run make. Here make failed du=
+e to `ld: cannot find -lrealtime`</div><div><br></div><div>arm-linux-gnueab=
+i-gcc -static -g -O2 -fno-strict-aliasing -pipe -Wall -W -static -Wold-styl=
+e-definition -D_GNU_SOURCE =C2=A0-I/local/mnt/workspace/Srikanth/ltp-full-2=
+0140828/testcases/realtime/include -I/local/mnt/workspace/Srikanth/ltp-full=
+-20140828/testcases/realtime/include -I../../../../include -I../../../../in=
+clude -static -pthread =C2=A0-L/local/mnt/workspace/Srikanth/ltp-full-20140=
+828/testcases/realtime/lib -L../../../../lib =C2=A0sched_football.c =C2=A0 =
+-lrealtime -lpthread -lrt -lm -o sched_football<br></div><div><div>In file =
+included from sched_football.c:69:0:</div><div>/local/mnt/workspace/Srikant=
+h/ltp-full-20140828/testcases/realtime/include/librttest.h: In function =C3=
+=A2atomic_add=C3=A2:</div><div>/local/mnt/workspace/Srikanth/ltp-full-20140=
+828/testcases/realtime/include/librttest.h:115:34: warning: unused paramete=
+r =C3=A2i=C3=A2 [-Wunused-parameter]</div><div>/local/mnt/workspace/Srikant=
+h/ltp-full-20140828/testcases/realtime/include/librttest.h:115:47: warning:=
+ unused parameter =C3=A2v=C3=A2 [-Wunused-parameter]</div><div>sched_footba=
+ll.c: In function =C3=A2thread_defense=C3=A2:</div><div>sched_football.c:11=
+1:28: warning: unused parameter =C3=A2arg=C3=A2 [-Wunused-parameter]</div><=
+div>sched_football.c: In function =C3=A2thread_offense=C3=A2:</div><div>sch=
+ed_football.c:122:28: warning: unused parameter =C3=A2arg=C3=A2 [-Wunused-p=
+arameter]</div><div>/usr/lib/gcc-cross/arm-linux-gnueabi/4.7/../../../../ar=
+m-linux-gnueabi/bin/ld: cannot find -lrealtime</div><div>collect2: error: l=
+d returned 1 exit status</div><div>make: *** [sched_football] Error 1</div>=
+</div><div><br></div><div><br></div><div>Pointers from anyone who tried cro=
+ss compiling ltp for arm would really helpful.=C2=A0</div><div><br></div><d=
+iv>TIA.</div><div><br></div>-- <br><div class=3D"gmail_signature">Thanks &a=
+mp; Regards,<br>M.Srikanth Kumar.</div>
+</div></div>
+
+--001a11c13cce7e6680051b4e9ff4--
+
+
+--===============1399419596955184001==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
@@ -345,7 +159,16 @@ GigeNET's Cloud Solutions provide you with the tools and support that
 you need to offload your IT needs and focus on growing your business.
 Configured For All Businesses. Start Your Cloud Today.
 https://www.gigenetcloud.com/
+--===============1399419596955184001==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1399419596955184001==--
+
