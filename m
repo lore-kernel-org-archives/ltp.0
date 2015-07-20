@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <srikanth007m@gmail.com>) id 1ZKRTP-00018T-KX
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 13:32:43 +0000
-Received: from mail-qg0-f47.google.com ([209.85.192.47])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZKRTK-0003WH-1g
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 13:32:43 +0000
-Received: by qgeu79 with SMTP id u79so4180255qge.1
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 29 Jul 2015 06:32:32 -0700 (PDT)
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <VDavydov@odin.com>) id 1ZHu8Q-00058l-0A
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 13:32:34 +0000
+Received: from mx2.parallels.com ([199.115.105.18])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZHu8O-0004zE-US
+	for ltp-list@lists.sourceforge.net; Wed, 22 Jul 2015 13:32:33 +0000
+Received: from mail.parallels.com ([199.115.105.252])
+	by mx2.parallels.com with esmtps (TLSv1:AES128-SHA:128) (Exim 4.85)
+	(envelope-from <VDavydov@odin.com>) id 1ZHCLc-0003qK-8S
+	for ltp-list@lists.sourceforge.net; Mon, 20 Jul 2015 07:47:16 -0700
+From: Vladimir Davydov <vdavydov@parallels.com>
+Date: Mon, 20 Jul 2015 17:47:11 +0300
+Message-ID: <1437403631-11091-1-git-send-email-vdavydov@parallels.com>
 MIME-Version: 1.0
-Date: Wed, 29 Jul 2015 19:02:32 +0530
-Message-ID: <CANKSX+HAqaZARVLcDWU3Uhv2CYDjSBrrq2H4OrkOSaY647saaA@mail.gmail.com>
-From: "$rik@nth " <srikanth007m@gmail.com>
-Subject: [LTP] LTP make failed
-Reply-To: srikanth007m@gmail.com
+Subject: [LTP] [PATCH] memcg_control: fix mem_process not moved to cgroup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,137 +26,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============3064127519816786564=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
---===============3064127519816786564==
-Content-Type: multipart/alternative; boundary=001a113b557a7789fc051c039e30
+$! is not set after ( cmd & )
 
---001a113b557a7789fc051c039e30
-Content-Type: text/plain; charset=UTF-8
+This bug was introduced by commit 49010e502a74c ("Replace pushd // popd
+with cd calls.").
 
-Hi,
+Since we create a sub-shell in test_proc_kill only to preserve PWD,
+let's change this to cd $OLDPWD. In contrast to pushd/popd this will
+work in busybox.
 
-I am trying to cross compile LTP and observing some issue. Any help or
-suggestions to overcome from these errors. TIA
+Signed-off-by: Vladimir Davydov <vdavydov@parallels.com>
+---
+ testcases/kernel/controllers/memcg/control/memcg_control_test.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-
-make[1]: Entering directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/hugetlb/hugemmap'
-make -C "/local/mnt2/workspace2/LTP/ltp-full-20150420/lib" -f
-"/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/Makefile" all
-make[2]: Entering directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/lib'
-make[3]: Entering directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests'
-make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests'
-make[2]: Leaving directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/lib'
-make -C ../../../../../testcases/kernel/mem/lib -f
-"/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib/Makefile"
-all
-make[2]: Entering directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib'
-make -C /local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib
--f
-"/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib/Makefile"
-all
-make[3]: Entering directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib'
-if [ -z "numa_helper.o" ] ; then \
-                echo "Cowardly refusing to create empty archive"; \
-                exit 1; \
-        fi
-arm-linux-gnueabi-ar -rc "lib/libipc_hugetlb.a" numa_helper.o
-arm-linux-gnueabi-ar: lib/libipc_hugetlb.a: No such file or directory
-make[3]: *** [lib/libipc_hugetlb.a] Error 1
-make[3]: Leaving directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib'
-make[2]: ***
-[/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib/libkerntest.a]
-Error 2
-make[2]: Leaving directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib'
-make[1]: *** [../../../../../testcases/kernel/mem/lib/libmem.a] Error 2
-make[1]: Leaving directory
-`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/hugetlb/hugemmap'
-make: *** [all] Error 2
-
-Here the file is there "ib/libipc_hugetlb.a: No such file or directory" but
-still it showing the error.
-
+diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+index fa50516ba71b..168efe3ee35c 100644
+--- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
++++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+@@ -54,7 +54,9 @@ FAIL=1
+ # Check if the test process is killed on crossing boundary
+ test_proc_kill()
+ {
+-	( cd $TMP && mem_process -m $PROC_MEM & )
++	cd $TMP
++	mem_process -m $PROC_MEM &
++	cd $OLDPWD
+ 	sleep 1
+ 	echo $! > tasks
+ 
 -- 
-Thanks & Regards,
-M.Srikanth Kumar.
+2.1.4
 
---001a113b557a7789fc051c039e30
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr"><div>Hi,=C2=A0</div><div><br></div><div>I am trying to cro=
-ss compile LTP and observing some issue. Any help or suggestions to overcom=
-e from these errors. TIA</div><div><br></div><div><br></div><div>make[1]: E=
-ntering directory `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/k=
-ernel/mem/hugetlb/hugemmap&#39;</div><div>make -C &quot;/local/mnt2/workspa=
-ce2/LTP/ltp-full-20150420/lib&quot; -f &quot;/local/mnt2/workspace2/LTP/ltp=
--full-20150420/lib/Makefile&quot; all</div><div>make[2]: Entering directory=
- `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib&#39;</div><div>make[3]: =
-Entering directory `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests&=
-#39;</div><div>make[3]: Nothing to be done for `all&#39;.</div><div>make[3]=
-: Leaving directory `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests=
-&#39;</div><div>make[2]: Leaving directory `/local/mnt2/workspace2/LTP/ltp-=
-full-20150420/lib&#39;</div><div>make -C ../../../../../testcases/kernel/me=
-m/lib -f &quot;/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kerne=
-l/mem/lib/Makefile&quot; all</div><div>make[2]: Entering directory `/local/=
-mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib&#39;</div><d=
-iv>make -C /local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/li=
-b -f &quot;/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/li=
-b/Makefile&quot; all</div><div>make[3]: Entering directory `/local/mnt2/wor=
-kspace2/LTP/ltp-full-20150420/testcases/kernel/lib&#39;</div><div>if [ -z &=
-quot;numa_helper.o&quot; ] ; then \</div><div>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 echo &quot;Cowardly refusing to create empty ar=
-chive&quot;; \</div><div>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 exit 1; \</div><div>=C2=A0 =C2=A0 =C2=A0 =C2=A0 fi</div><div>arm-lin=
-ux-gnueabi-ar -rc &quot;lib/libipc_hugetlb.a&quot; numa_helper.o</div><div>=
-arm-linux-gnueabi-ar: lib/libipc_hugetlb.a: No such file or directory</div>=
-<div>make[3]: *** [lib/libipc_hugetlb.a] Error 1</div><div>make[3]: Leaving=
- directory `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/l=
-ib&#39;</div><div>make[2]: *** [/local/mnt2/workspace2/LTP/ltp-full-2015042=
-0/testcases/kernel/lib/libkerntest.a] Error 2</div><div>make[2]: Leaving di=
-rectory `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/=
-lib&#39;</div><div>make[1]: *** [../../../../../testcases/kernel/mem/lib/li=
-bmem.a] Error 2</div><div>make[1]: Leaving directory `/local/mnt2/workspace=
-2/LTP/ltp-full-20150420/testcases/kernel/mem/hugetlb/hugemmap&#39;</div><di=
-v>make: *** [all] Error 2</div><div><br></div><div>Here the file is there &=
-quot;ib/libipc_hugetlb.a: No such file or directory&quot; but still it show=
-ing the error.<br></div><div><br></div>-- <br><div class=3D"gmail_signature=
-">Thanks &amp; Regards,<br>M.Srikanth Kumar.</div>
-</div>
-
---001a113b557a7789fc051c039e30--
-
-
---===============3064127519816786564==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
---===============3064127519816786564==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============3064127519816786564==--
-
