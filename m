@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZCHG5-0004Rx-VM
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:13 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZCHG4-0005ow-Ez
-	for ltp-list@lists.sourceforge.net; Tue, 07 Jul 2015 01:01:13 +0000
-Received: from G08CNEXCHPEKD01.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t670xNSE010536
-	for <ltp-list@lists.sourceforge.net>; Tue, 7 Jul 2015 08:59:24 +0800
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 7 Jul 2015 09:01:22 +0800
-Message-ID: <1436230882-3282-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
-In-Reply-To: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1436230882-3282-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZHg7P-0007U7-OB
+	for ltp-list@lists.sourceforge.net; Tue, 21 Jul 2015 22:34:35 +0000
+Date: Tue, 21 Jul 2015 08:41:02 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150721064102.GA19522@rei.suse.de>
+References: <201507201533.BJO62118@szxrg03-dlp.huawei.com>
+	<55AD9A2B.5040407@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH 3/3] umount2/umount2_03.c: add new test
+Content-Disposition: inline
+In-Reply-To: <55AD9A2B.5040407@huawei.com>
+Subject: Re: [LTP] Fwd: Warning: could not send message for past 4 hours
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,206 +25,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Add new testcase to verify the flag UMOUNT_NOFOLLOW of umount2(2).
+Hi!
+> Hi Jan and Cyril,
+>      ltp-list@lists.sourceforge.net can't work well.
+> No message is received from the mail in the past 4 days.
+> Who is the administrator of the email?
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- runtest/ltplite                                |   1 +
- runtest/syscalls                               |   1 +
- testcases/kernel/syscalls/.gitignore           |   1 +
- testcases/kernel/syscalls/umount2/umount2_03.c | 142 +++++++++++++++++++++++++
- 4 files changed, 145 insertions(+)
- create mode 100644 testcases/kernel/syscalls/umount2/umount2_03.c
+Whole sourceforge (where we had our mailing list hosted) is down since
+16. 7. (we put a notice on our page). We are figuring out where to move
+the mailing list meanwhile.
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index f5a8a52..083e48e 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -967,6 +967,7 @@ unlink08 unlink08
- 
- umount2_01 umount2_01
- umount2_02 umount2_02
-+umount2_03 umount2_03
- 
- ustat01 ustat01
- ustat02 ustat02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 92716d2..2fbf4de 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1316,6 +1316,7 @@ umount03 umount03
- 
- umount2_01 umount2_01
- umount2_02 umount2_02
-+umount2_03 umount2_03
- 
- ustat01 ustat01
- ustat02 ustat02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 4ee0b0d..046c909 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -1004,6 +1004,7 @@
- /umount/umount03
- /umount2/umount2_01
- /umount2/umount2_02
-+/umount2/umount2_03
- /uname/uname01
- /uname/uname02
- /uname/uname03
-diff --git a/testcases/kernel/syscalls/umount2/umount2_03.c b/testcases/kernel/syscalls/umount2/umount2_03.c
-new file mode 100644
-index 0000000..470fe1e
---- /dev/null
-+++ b/testcases/kernel/syscalls/umount2/umount2_03.c
-@@ -0,0 +1,142 @@
-+/*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * alone with this program.
-+ */
-+
-+/*
-+ * DESCRIPTION
-+ *  Test for feature UMOUNT_NOFOLLOW of umount2().
-+ *  "Don't dereference target if it is a symbolic link,
-+ *   and fails with the error EINVAL."
-+ */
-+
-+#include <errno.h>
-+#include <sys/mount.h>
-+
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "lapi/umount.h"
-+
-+static void setup(void);
-+static void umount2_verify(void);
-+static void cleanup(void);
-+
-+char *TCID = "umount2_03";
-+int TST_TOTAL = 1;
-+
-+#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-+#define MNTPOINT	"mntpoint"
-+#define SYMLINK		"symlink"
-+
-+static int mount_flag;
-+
-+static const char *device;
-+static const char *fs_type;
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		umount2_verify();
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root(NULL);
-+
-+	if ((tst_kvercmp(2, 6, 34)) < 0) {
-+		tst_brkm(TCONF, NULL, "This test can only run on kernels "
-+			"that are 2.6.34 or higher");
-+	}
-+
-+	tst_sig(NOFORK, DEF_HANDLER, NULL);
-+
-+	tst_tmpdir();
-+
-+	fs_type = tst_dev_fs_type();
-+	device = tst_acquire_device(cleanup);
-+
-+	if (!device)
-+		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
-+
-+	tst_mkfs(cleanup, device, fs_type, NULL);
-+
-+	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
-+
-+	SAFE_SYMLINK(cleanup, MNTPOINT, SYMLINK);
-+
-+	TEST_PAUSE;
-+}
-+
-+static void umount2_verify(void)
-+{
-+	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
-+	mount_flag = 1;
-+
-+	do {
-+		TEST(umount2(SYMLINK, UMOUNT_NOFOLLOW));
-+
-+		if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
-+			tst_resm(TFAIL | TTERRNO,
-+				"umount2(2) UMOUNT_NOFOLLOW flag "
-+				"performed abnormally "
-+				"expected error = %d : %s",
-+				EINVAL, strerror(EINVAL));
-+			if (TEST_RETURN == 0)
-+				mount_flag = 0;
-+			break;
-+		}
-+
-+		TEST(umount2(MNTPOINT, UMOUNT_NOFOLLOW));
-+
-+		if (TEST_RETURN != 0) {
-+			tst_resm(TFAIL, "umount2(2) Failed while "
-+				"unmounting %s errno = %d : %s",
-+				MNTPOINT, TEST_ERRNO,
-+				strerror(TEST_ERRNO));
-+			break;
-+		}
-+
-+		mount_flag = 0;
-+
-+		tst_resm(TPASS, "umount2(2) Passed");
-+	} while (0);
-+
-+	if (mount_flag) {
-+		SAFE_UMOUNT(cleanup, MNTPOINT);
-+		mount_flag = 0;
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	if (mount_flag && tst_umount(MNTPOINT))
-+		tst_resm(TWARN | TERRNO, "Failed to unmount");
-+
-+	if (device)
-+		tst_release_device(NULL, device);
-+
-+	tst_rmdir();
-+}
 -- 
-1.8.4.2
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 Don't Limit Your Business. Reach for the Cloud.
