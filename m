@@ -1,35 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jbastian@redhat.com>) id 1ZDBCV-0005Mg-9u
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 12:45:15 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZDBCS-0005yu-Fp
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 12:45:15 +0000
-Received: from int-mx09.intmail.prod.int.phx2.redhat.com
-	(int-mx09.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-	by mx1.redhat.com (Postfix) with ESMTPS id 7D9E040E680
-	for <ltp-list@lists.sourceforge.net>;
-	Thu,  9 Jul 2015 12:45:06 +0000 (UTC)
-Received: from tarantula.localdomain (ovpn-113-174.phx2.redhat.com
-	[10.3.113.174])
-	by int-mx09.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t69Cj4L6021837
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 08:45:05 -0400
-Date: Thu, 9 Jul 2015 07:45:03 -0500
-From: Jeffrey Bastian <jbastian@redhat.com>
-Message-ID: <20150709124503.GM17625@tarantula.localdomain>
-References: <20150708194114.GA20060@tarantula.localdomain>
-	<904998018.14796051.1436425198776.JavaMail.zimbra@redhat.com>
-	<431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwan@redhat.com>) id 1ZIFIt-0006cy-Eo
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2015 12:08:47 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZIFIq-0001GV-7x
+	for ltp-list@lists.sourceforge.net; Thu, 23 Jul 2015 12:08:47 +0000
+Date: Thu, 23 Jul 2015 08:08:32 -0400 (EDT)
+From: Li Wang <liwang@redhat.com>
+Message-ID: <1419220139.2098466.1437653312452.JavaMail.zimbra@redhat.com>
+In-Reply-To: <DUB407-EAS81F92E7EF5284309697E5785820@phx.gbl>
+References: <DUB407-EAS338A9D3F666651011BAB67485820@phx.gbl>
+	<DUB407-EAS81F92E7EF5284309697E5785820@phx.gbl>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH] syslog/syslog-lib.sh: support systemd journal
+Subject: Re: [LTP] OOM messages when running full ltp tests on a Hyper-V VM
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -39,44 +25,89 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Cristian Valean <cristian.valean@live.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On Thu, Jul 09, 2015 at 04:19:09AM -0400, Jan Stancek wrote:
-> It still appears supported, but turned off by default in systemd 216:
-> 
-<snip>
-> 
-> So I think we should use imjournal if possible, otherwise fall back
-> to imuxsock. But I think it should be one or the other, using both
-> in same config seems wrong to me.
-
-
-I was testing with systemd-219 when I ran into this problem, hence my
-patch submission.
-
-I think it's ok to leave both modules enabled, though.  The default
-rsyslog.conf in Fedora (up to F21) had both enabled:
-
-$ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
-$ModLoad imjournal # provides access to the systemd journal
-
-See http://pkgs.fedoraproject.org/cgit/rsyslog.git/tree/rsyslog.conf?h=f21#n9
-
-(Fedora 22 dropped imuxsock with the rebase to rsyslog-8.8.0.)
-
--- 
-Jeff Bastian
-
-------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+SGksCgotLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tCj4gCj4gCj4gTXkgYXBvbG9naWVzIGZv
+ciB0aGUgaW5jb21wbGV0ZSByZXBseSwgaXQgZ290IHNlbnQgb3V0IGJlZm9yZSBhbGwgZGV0YWls
+cwo+IHdlbnQgaXQuCj4gCj4gCj4gCj4gVG8gY29udGludWUgdGhlIGluaXRpYWwgdGhyZWFkOgo+
+IAo+IEnigJltIHRyeWluZyB0byBydW4gYSBmdWxsIGx0cCB0ZXN0IHJ1biBvbiBVYnVudHUgMTQu
+MDQuMiBhcyBhIEh5cGVyLVYgVk0uCj4gCj4gVGhlIFZNIGlzIHNldCB3aXRoIDggb3IgMTJHQiBh
+bmQgNCB2Q1BVcywgaG93ZXZlciBkdXJpbmcgdGhlIHRlc3RzIGV4ZWN1dGlvbgo+IHRoZSBzeXNs
+b2cgcmVjb3JkcyBvdmVyIDMwIGNhbGwgdHJhY2VzIHNpbWlsYXIgdG8gdGhlIG9uZSBiZWxvdy4K
+Ckl0IGlzIG5vcm1hbCB0byBnZXQgdGhlc2UgY2FsbHRyYWNlLCB5b3UgY2FuIGNoZWNrIHRoZSBv
+b20wKi5jIGZpbGUuIFRoZXNlIGtpbmQgb2YKIHByb2dyYW1zIGFyZSBkZXNpZ24gdG8gdmVyaWZ5
+IHRoZSBPT00tS2lsbGVyIHdvcmsgd2VsbC4KCiQgY2F0IG9vbTAxLmMgCi4uLgogKgogKiBUaGUg
+cHJvZ3JhbSBpcyBkZXNpZ25lZCB0byBjb3BlIHdpdGggdW5wcmVkaWN0YWJsZSBsaWtlIGFtb3Vu
+dCBhbmQKICogc3lzdGVtIHBoeXNpY2FsIG1lbW9yeSwgc3dhcCBzaXplIGFuZCBvdGhlciBWTU0g
+dGVjaG5vbG9neSBsaWtlIEtTTSwKICogbWVtY2csIG1lbW9yeSBob3RwbHVnIGFuZCBzbyBvbiB3
+aGljaCBtYXkgYWZmZWN0IHRoZSBPT00KICogYmVoYXZpb3Vycy4gSXQgc2ltcGx5IGluY3JlYXNl
+IHRoZSBtZW1vcnkgY29uc3VtcHRpb24gM0cgZWFjaCB0aW1lCiAqIHVudGlsIGFsbCB0aGUgYXZh
+aWxhYmxlIG1lbW9yeSBpcyBjb25zdW1lZCBhbmQgT09NIGlzIHRyaWdnZXJlZC4KClJlZ2FyZHMs
+CkxpIFdhbmcKCj4gCj4gCj4gCj4gSGF2ZW7igJl0IHRyaWVkIHZtd2FyZSBvciBvdGhlciBwbGF0
+Zm9ybXMsIGJ1dCBJ4oCZbSB3b25kZXJpbmcgd2h5IExUUCBwcm9jZXNzZXMKPiBnbyBvdmVyIHRo
+ZSBsaW1pdCwgb3Igd2hhdCB3b3VsZCBiZSBhIHJlZmVyZW5jZSBzeXN0ZW0gcmVzb3VyY2VzIHRo
+YXQgd291bGQKPiBhY2NvbW1vZGF0ZSBhIGZ1bGwgcnVuLgo+IAo+IE90aGVyd2lzZSwgYXJlIHRo
+ZXJlIGFyZSBwYXJhbXMgdGhhdCBjYW4gbGltaXRvciBzcGVjaWZ5IHRoZSByZXNvdXJjZXMgdGhh
+dAo+IExUUCBjYW4gdXNlPwo+IAo+IAo+IAo+IFNhbXBsZSBjYWxsIHRyYWNlOgo+IAo+IEp1bCAy
+MiAwMToxNzo1MCB1YnVudHUga2VybmVsOiBbIDU3NTcuMDExNzExXSBPdXQgb2YgbWVtb3J5OiBL
+aWxsIHByb2Nlc3MKPiA1OTAyIChvb20wMSkgc2NvcmUgOTM3IG9yIHNhY3JpZmljZSBjaGlsZAo+
+IAo+IEp1bCAyMiAwMToxNzo1MCB1YnVudHUga2VybmVsOiBbIDU3NTcuMDE0MDk5XSBLaWxsZWQg
+cHJvY2VzcyA1OTAyIChvb20wMSkKPiB0b3RhbC12bToxNTc1OTc4NGtCLCBhbm9uLXJzczo3NzIz
+NjIwa0IsIGZpbGUtcnNzOjQwa0IKPiAKPiBKdWwgMjIgMDE6MjU6MjYgdWJ1bnR1IGtlcm5lbDog
+WyA2MjExLjk4MTU4NV0gbWluX2ZyZWVfa2J5dGVzIGludm9rZWQKPiBvb20ta2lsbGVyOiBnZnBf
+bWFzaz0weDI4MGRhLCBvcmRlcj0wLCBvb21fc2NvcmVfYWRqPTAKPiAKPiBKdWwgMjIgMDE6MjU6
+MjYgdWJ1bnR1IGtlcm5lbDogWyA2MjExLjk4MjY2Ml0gbWluX2ZyZWVfa2J5dGVzIGNwdXNldD0v
+Cj4gbWVtc19hbGxvd2VkPTAKPiAKPiBKdWwgMjIgMDE6MjU6MjYgdWJ1bnR1IGtlcm5lbDogWyA2
+MjExLjk4MzcyM10gQ1BVOiAxIFBJRDogMTI1MzIgQ29tbToKPiBtaW5fZnJlZV9rYnl0ZXMgTm90
+IHRhaW50ZWQgMy4xNi4wLTQzLWdlbmVyaWMgIzU4fjE0LjA0LjEtVWJ1bnR1Cj4gCj4gCj4gCj4g
+SnVsIDIyIDAxOjE3OjUwIHVidW50dSBrZXJuZWw6IFsgNTc1Ni41MzE3NjRdIENhbGwgVHJhY2U6
+Cj4gCj4gSnVsIDIyIDAxOjE3OjUwIHVidW50dSBrZXJuZWw6IFsgNTc1Ni41MzQ1NzBdIFs8ZmZm
+ZmZmZmY4MTc2NWE5MT5dCj4gZHVtcF9zdGFjaysweDQ1LzB4NTYKPiAKPiBKdWwgMjIgMDE6MTc6
+NTAgdWJ1bnR1IGtlcm5lbDogWyA1NzU2LjUzNzg4OF0gWzxmZmZmZmZmZjgxNzVmNjQ1Pl0KPiBk
+dW1wX2hlYWRlcisweDdmLzB4MWYxCj4gCj4gSnVsIDIyIDAxOjE3OjUwIHVidW50dSBrZXJuZWw6
+IFsgNTc1Ni41NDA2NTVdIFs8ZmZmZmZmZmY4MTE2NTVjNT5dCj4gb29tX2tpbGxfcHJvY2Vzcysw
+eDIwNS8weDM2MAo+IAo+IEp1bCAyMiAwMToxNzo1MCB1YnVudHUga2VybmVsOiBbIDU3NTYuNTQz
+MzYxXSBbPGZmZmZmZmZmODEyZWJiZDU+XSA/Cj4gc2VjdXJpdHlfY2FwYWJsZV9ub2F1ZGl0KzB4
+MTUvMHgyMAo+IAo+IEp1bCAyMiAwMToxNzo1MCB1YnVudHUga2VybmVsOiBbIDU3NTYuNTU0NTM2
+XSBbPGZmZmZmZmZmODExNjVkNzI+XQo+IG91dF9vZl9tZW1vcnkrMHg0OTIvMHg0ZDAKPiAKPiBK
+dWwgMjIgMDE6MTc6NTAgdWJ1bnR1IGtlcm5lbDogWyA1NzU2LjU1NzE2MF0gWzxmZmZmZmZmZjgx
+NzYwMTlkPl0KPiBfX2FsbG9jX3BhZ2VzX3Nsb3dwYXRoKzB4NjNlLzB4Nzc1Cj4gCj4gSnVsIDIy
+IDAxOjE3OjUwIHVidW50dSBrZXJuZWw6IFsgNTc1Ni41NTk4MDddIFs8ZmZmZmZmZmY4MTE2YmIy
+Mz5dCj4gX19hbGxvY19wYWdlc19ub2RlbWFzaysweDI3My8weDJhMAo+IAo+IEp1bCAyMiAwMTox
+Nzo1MCB1YnVudHUga2VybmVsOiBbIDU3NTYuNTYzNjAxXSBbPGZmZmZmZmZmODExYWU5M2E+XQo+
+IGFsbG9jX3BhZ2VzX3ZtYSsweDlhLzB4MTUwCj4gCj4gSnVsIDIyIDAxOjE3OjUwIHVidW50dSBr
+ZXJuZWw6IFsgNTc1Ni41NjkzNzddIFs8ZmZmZmZmZmY4MTE4ZjQ5Yz5dCj4gaGFuZGxlX21tX2Zh
+dWx0KzB4Y2ZjLzB4MTBjMAo+IAo+IEp1bCAyMiAwMToxNzo1MCB1YnVudHUga2VybmVsOiBbIDU3
+NTYuNTc0NjMwXSBbPGZmZmZmZmZmODE3NjljNWY+XSA/Cj4gX19zY2hlZHVsZSsweDM1Zi8weDdh
+MAo+IAo+IEp1bCAyMiAwMToxNzo1MCB1YnVudHUga2VybmVsOiBbIDU3NTYuNTgyNDc5XSBbPGZm
+ZmZmZmZmODEwNWFmNWU+XQo+IF9fZG9fcGFnZV9mYXVsdCsweDE5ZS8weDU2MAo+IAo+IEp1bCAy
+MiAwMToxNzo1MCB1YnVudHUga2VybmVsOiBbIDU3NTYuNTkwNjY0XSBbPGZmZmZmZmZmODEwYTYy
+ZTg+XSA/Cj4gX19lbnF1ZXVlX2VudGl0eSsweDc4LzB4ODAKPiAKPiBKdWwgMjIgMDE6MTc6NTAg
+dWJ1bnR1IGtlcm5lbDogWyA1NzU2LjU5NzM4Ml0gWzxmZmZmZmZmZjgxMGE4MDE1Pl0gPwo+IHNl
+dF9uZXh0X2VudGl0eSsweDk1LzB4YjAKPiAKPiBKdWwgMjIgMDE6MTc6NTAgdWJ1bnR1IGtlcm5l
+bDogWyA1NzU2LjYwODIxNV0gWzxmZmZmZmZmZjgxMDExNjI3Pl0gPwo+IF9fc3dpdGNoX3RvKzB4
+MTY3LzB4NTgwCj4gCj4gSnVsIDIyIDAxOjE3OjUwIHVidW50dSBrZXJuZWw6IFsgNTc1Ni42MTQx
+NTZdIFs8ZmZmZmZmZmY4MTA1YjM1MT5dCj4gZG9fcGFnZV9mYXVsdCsweDMxLzB4NzAKPiAKPiBK
+dWwgMjIgMDE6MTc6NTAgdWJ1bnR1IGtlcm5lbDogWyA1NzU2LjYxNjg3NV0gWzxmZmZmZmZmZjgx
+NzcwMTY4Pl0KPiBwYWdlX2ZhdWx0KzB4MjgvMHgzMAo+IAo+IAo+IAo+IAo+IEZyb206IENyaXN0
+aWFuIFZhbGVhbiBbbWFpbHRvOmNyaXN0aWFuLnZhbGVhbkBsaXZlLmNvbV0KPiBTZW50OiBUaHVy
+c2RheSwgSnVseSAyMywgMjAxNSAyOjM0IFBNCj4gVG86IGx0cC1saXN0QGxpc3RzLnNvdXJjZWZv
+cmdlLm5ldAo+IFN1YmplY3Q6IFtMVFBdIE9PTSBtZXNzYWdlcyB3aGVuIHJ1bm5pbmcgZnVsbCBs
+dHAgdGVzdHMgb24gYSBIeXBlci1WIFZNCj4gCj4gCj4gCj4gCj4gSeKAmW0gdHJ5aW5nIHRvIHJ1
+biBhIGZ1bGwgbHRwIHRlc3QgcnVuIG9uIFVidW50dSAxNC4wNC4yIGFzIGEgSHlwZXItViBWTS4K
+PiAKPiAKPiAKPiBUaGUgVk0gaXMgc2V0IHdpdGggOCBvciAxMkdCIGFuZCA0IHZDUFVzLCBob3dl
+dmVyIGR1cmluZyB0aGUgdGVzdHMgZXhlY3V0aW9uCj4gdGhlIHN5c2xvZyByZWNvcmRzIG92ZXIg
+MzAgY2FsbCB0cmFjZXMgc2ltaWxhciB0byB0aGUgb25lIGJlbG93Lgo+IAo+IAo+IAo+IAo+IAo+
+IC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCj4gTHRwLWxpc3QgbWFpbGluZyBsaXN0Cj4gTHRwLWxpc3RAbGlz
+dHMuc291cmNlZm9yZ2UubmV0Cj4gaHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMv
+bGlzdGluZm8vbHRwLWxpc3QKPiAKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QK
+THRwLWxpc3RAbGlzdHMuc291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2Uu
+bmV0L2xpc3RzL2xpc3RpbmZvL2x0cC1saXN0Cg==
