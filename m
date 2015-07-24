@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZKq2o-0006ph-O2
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 15:46:54 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZKq2n-0000vu-Ii
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 15:46:54 +0000
-Date: Thu, 30 Jul 2015 17:46:36 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150730154636.GA9874@rei.suse.de>
-References: <1437058074-14800-1-git-send-email-liuhangbin@gmail.com>
+	(envelope-from <jstancek@redhat.com>) id 1ZIciZ-0006B7-82
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2015 13:08:51 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZIciX-0000B5-WA
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2015 13:08:51 +0000
+Date: Fri, 24 Jul 2015 09:08:43 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <264408049.3940234.1437743323021.JavaMail.zimbra@redhat.com>
+In-Reply-To: <DUB407-EAS55640DF929C2D5CE78788E85810@phx.gbl>
+References: <DUB407-EAS55640DF929C2D5CE78788E85810@phx.gbl>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1437058074-14800-1-git-send-email-liuhangbin@gmail.com>
-Subject: Re: [LTP] [PATCHv4 1/2] testcases/lib/test.sh: add tst_retry() to
- ensure cmd exec succeed
+Subject: Re: [LTP] netns tests failure on ubuntu
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,17 +27,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: Cristian Valean <cristian.valean@live.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-I've added a TCONF message in case that we failed to run the command,
-added documentation into the test-writing-guidelines.txt and pushed,
-thanks.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+----- Original Message -----
+> From: "Cristian Valean" <cristian.valean@live.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Friday, 24 July, 2015 10:15:18 AM
+> Subject: [LTP] netns tests failure on ubuntu
+> 
+> 
+> 
+> Hello,
+> 
+> All the netns tests are failing when running on ubuntu 14.04.2 from my run.
+> Is there any configuration to be made or how I can troubleshoot this
+> further?
+> 
+
+I'd suggest adding "set -x" to those scripts, that should give you
+much more verbose output to start with.
+
+Regards,
+Jan
 
 ------------------------------------------------------------------------------
 _______________________________________________
