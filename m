@@ -1,27 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZKXII-0005DV-0A
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 19:45:38 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZKXIB-0004vA-7e
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 19:45:37 +0000
-Date: Wed, 29 Jul 2015 21:45:15 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150729194515.GA7009@rei.suse.de>
-References: <CANKSX+HAqaZARVLcDWU3Uhv2CYDjSBrrq2H4OrkOSaY647saaA@mail.gmail.com>
-	<20150729144508.GB3427@rei.suse.de>
-	<CANKSX+ETp0jdXp+zSUtUPn8SWUQaCh1bETYzcpF_C8kZpPtGdQ@mail.gmail.com>
-	<20150729152949.GA6478@rei.suse.de>
-	<1186607709.563342.1438184803657.JavaMail.zimbra@redhat.com>
-	<20150729155005.GC3427@rei.suse.de>
-	<CANKSX+EukvUBmjMf7TMxTzcsMXmzfGb+FYqrdo7vKnEiLb6wyg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CANKSX+EukvUBmjMf7TMxTzcsMXmzfGb+FYqrdo7vKnEiLb6wyg@mail.gmail.com>
-Subject: Re: [LTP] LTP make failed
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwang@redhat.com>) id 1ZIXJ8-0005Po-Ht
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2015 07:22:14 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZIXJ6-0003a2-SS
+	for ltp-list@lists.sourceforge.net; Fri, 24 Jul 2015 07:22:14 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (Postfix) with ESMTPS id 86751AE5A1
+	for <ltp-list@lists.sourceforge.net>;
+	Fri, 24 Jul 2015 07:22:06 +0000 (UTC)
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 24 Jul 2015 15:22:00 +0800
+Message-Id: <1437722520-2794-1-git-send-email-liwang@redhat.com>
+Subject: [LTP] [PATCH] syscalls/sysfs: replace the TWARN to TCONF
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,33 +26,107 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "$rik@nth " <srikanth007m@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> FYI, Here is my host configuration.
-> Linux srikanth-linux 3.15.0-031500rc2-generic #201404201435 SMP Sun
-> Apr 20 18:36:18 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
-> 
-> @Cyril - libkerntest.a got generated with your suggested changes. Does
-> that make any difference between INTERNAL_LIB to LIB? Should i need to
-> change any other files to unblock the compilation?
+I run some of these cases on aarch64 today and get a series waring, that's because
+sysfs syscall is not implemented on aarch64. So, maybe TCONF is better than TWARN
+in the testcase.
 
-The only difference between INTERNAL_LIB and LIB is one ifneq and
-variable assigment in the lib.mk. So if that does not work for you, you
-either hit bug in make, libc, kernel or hardware. Changing it from
-INTERNAL_LIB to LIB only works around that bug.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/syscalls/sysfs/sysfs01.c | 2 +-
+ testcases/kernel/syscalls/sysfs/sysfs02.c | 2 +-
+ testcases/kernel/syscalls/sysfs/sysfs03.c | 2 +-
+ testcases/kernel/syscalls/sysfs/sysfs04.c | 2 +-
+ testcases/kernel/syscalls/sysfs/sysfs05.c | 2 +-
+ testcases/kernel/syscalls/sysfs/sysfs06.c | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
 
-I've just recompiled LTP for arm without a problem. In your case I would
-try to run memtest over night on your machine first. Otherwise you may
-spend hours trying to catch something that in reality is a hardware bug.
-
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs01.c b/testcases/kernel/syscalls/sysfs/sysfs01.c
+index 11ebe43..c29f6c0 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs01.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs01.c
+@@ -103,7 +103,7 @@ int main(int ac, char **av)
+ 		}
+ 	}			/*End of TEST_LOOPING */
+ #else
+-	tst_resm(TWARN,
++	tst_resm(TCONF,
+ 		 "This test can only run on kernels that support the sysfs system call");
+ #endif
+ 
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs02.c b/testcases/kernel/syscalls/sysfs/sysfs02.c
+index f7cb96a..54557cc 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs02.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs02.c
+@@ -103,7 +103,7 @@ int main(int ac, char **av)
+ 		}
+ 	}			/*End of TEST_LOOPING */
+ #else
+-	tst_resm(TWARN,
++	tst_resm(TCONF,
+ 		 "This test can only run on kernels that support the sysfs system call");
+ #endif
+ 
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs03.c b/testcases/kernel/syscalls/sysfs/sysfs03.c
+index 59b997e..9048dfe 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs03.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs03.c
+@@ -101,7 +101,7 @@ int main(int ac, char **av)
+ 		}
+ 	}			/*End of TEST_LOOPING */
+ #else
+-	tst_resm(TWARN,
++	tst_resm(TCONF,
+ 		 "This test can only run on kernels that support the sysfs system call");
+ #endif
+ 
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs04.c b/testcases/kernel/syscalls/sysfs/sysfs04.c
+index f4fda36..2b2530a 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs04.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs04.c
+@@ -105,7 +105,7 @@ int main(int ac, char **av)
+ 		}
+ 	}
+ #else
+-	tst_resm(TWARN,
++	tst_resm(TCONF,
+ 		 "This test can only run on kernels that support the sysfs system call");
+ #endif
+ 
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs05.c b/testcases/kernel/syscalls/sysfs/sysfs05.c
+index e97f0c8..2ab6707 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs05.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs05.c
+@@ -129,7 +129,7 @@ int main(int ac, char **av)
+ 		}		/*End of TEST LOOPS */
+ 	}
+ #else
+-	tst_resm(TWARN,
++	tst_resm(TCONF,
+ 		 "This test can only run on kernels that support the sysfs system call");
+ #endif
+ 
+diff --git a/testcases/kernel/syscalls/sysfs/sysfs06.c b/testcases/kernel/syscalls/sysfs/sysfs06.c
+index 121e944..7ef5ee2 100644
+--- a/testcases/kernel/syscalls/sysfs/sysfs06.c
++++ b/testcases/kernel/syscalls/sysfs/sysfs06.c
+@@ -132,7 +132,7 @@ int main(int ac, char **av)
+ 		}		/*End of TEST LOOPS */
+ 	}
+ #else
+-	tst_resm(TWARN,
++	tst_resm(TCONF,
+ 		 "This test can only run on kernels that support the sysfs system call");
+ #endif
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
