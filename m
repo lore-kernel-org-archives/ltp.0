@@ -1,22 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZAFjG-000705-2u
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 10:58:58 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZAFjA-0005fx-HJ
-	for ltp-list@lists.sourceforge.net; Wed, 01 Jul 2015 10:58:58 +0000
-Message-ID: <5593C7D9.5020908@huawei.com>
-Date: Wed, 1 Jul 2015 18:58:33 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1ZJK6z-0002dK-O3
+	for ltp-list@lists.sourceforge.net; Sun, 26 Jul 2015 11:28:57 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZJK6y-0006re-9c
+	for ltp-list@lists.sourceforge.net; Sun, 26 Jul 2015 11:28:57 +0000
+Date: Sun, 26 Jul 2015 07:28:48 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1850032319.178415.1437910128151.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1292620122.336321437710865744.JavaMail.weblogic@epmlwas09d>
+References: <1292620122.336321437710865744.JavaMail.weblogic@epmlwas09d>
 MIME-Version: 1.0
-References: <1435732532-10995-1-git-send-email-liuhangbin@gmail.com>
-	<105343732.10909567.1435733733296.JavaMail.zimbra@redhat.com>
-In-Reply-To: <105343732.10909567.1435733733296.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCHv3] containers: Use ltp_syscall for setns incase
- some libc library do not support it
+Subject: Re: [LTP] Regarding memcg control  testcase (mem_process.c)
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,96 +27,96 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>, liuhangbin@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: manjeet p <manjeet.p@samsung.com>
+Cc: ajeet y <ajeet.y@samsung.com>, ltp-list@lists.sourceforge.net, pankaj m <pankaj.m@samsung.com>
 
 
-I was not familiar with ltp_syscall and didn't have comment. Thanks you 
-for updating userns04 case.
-Regards.
-Yuan
 
-On 2015/7/1 14:55, Jan Stancek wrote:
->
->
->
-> ----- Original Message -----
->> From: "Hangbin Liu" <liuhangbin@gmail.com>
->> To: "LTP List" <ltp-list@lists.sourceforge.net>
->> Cc: "Jan Stancek" <jstancek@redhat.com>
->> Sent: Wednesday, 1 July, 2015 8:35:32 AM
->> Subject: [LTP][PATCHv3] containers: Use ltp_syscall for setns incase some libc library do not support it
->>
->> Use ltp_syscall for setns incase some libc library do not support it. Also
->> check whether we support setns in setup(). If it's support the syscall will
->> silently fails and test continues. If not, then tst_brkm call will end the
->> test with TCONF.
->>
->> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-> Pushed with cosmetic change to commit message.
->
-> Thanks,
-> Jan
->
->> ---
->>   testcases/kernel/containers/userns/userns04.c | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/testcases/kernel/containers/userns/userns04.c
->> b/testcases/kernel/containers/userns/userns04.c
->> index 7077679..9836fd9 100644
->> --- a/testcases/kernel/containers/userns/userns04.c
->> +++ b/testcases/kernel/containers/userns/userns04.c
->> @@ -35,6 +35,7 @@ int TST_TOTAL = 1;
->>   static void setup(void)
->>   {
->>   	check_newuser();
->> +	ltp_syscall(__NR_setns, -1, 0);
->>   	tst_tmpdir();
->>   	TST_CHECKPOINT_INIT(NULL);
->>   }
->> @@ -55,7 +56,7 @@ static int child_fn2(void *arg)
->>   	int exit_val = 0;
->>   	int ret;
->>   
->> -	ret = setns(((long)arg), CLONE_NEWUSER);
->> +	ret = ltp_syscall(__NR_setns, ((long)arg), CLONE_NEWUSER);
->>   	if (ret != -1) {
->>   		printf("child2 setns() unexpected success\n");
->>   		exit_val = 1;
->> @@ -112,7 +113,7 @@ static void test_cap_sys_admin(void)
->>   	case -1:
->>   		tst_brkm(TBROK | TERRNO, cleanup, "fork");
->>   	case 0:
->> -		if (setns(fd, CLONE_NEWUSER) == -1) {
->> +		if (ltp_syscall(__NR_setns, fd, CLONE_NEWUSER) == -1) {
->>   			printf("parent pid setns failure: (%d) %s",
->>   				errno, strerror(errno));
->>   			exit(1);
->> --
->> 1.9.3
->>
->>
+
+
+----- Original Message -----
+> From: "Manjeet Pawar" <manjeet.p@samsung.com>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "ajeet y" <ajeet.y@samsung.com>, "pankaj m" <pankaj.m@samsung.com>
+> Sent: Friday, 24 July, 2015 6:07:45 AM
+> Subject: [LTP]  Regarding memcg control  testcase (mem_process.c)
+> 
+> Hi,
+> 
+> I am trying to run memcg control testcase using script memcg_control_test.sh.
+> This script calls a memory hog process 'mem_process'.
+> The condition for this testcase to pass is 'when the memory hog process is
+> killed on crossing boundary'. please check the below function.
+> 
+> <taken from memcg_control_test.sh>
+> -----------------------------
+> # Check if the test process is killed on crossing boundary
+> test_proc_kill()
+> {
+>     ( cd $TMP && mem_process -m $PROC_MEM & )
+>     sleep 1
+>     echo $! > tasks
+
+mem_process is getting started via subshell, so I'd assume $! in parent is bogus.
+Can you try this instead:
+
+        pushd $TMP || return
+        mem_process -m $PROC_MEM &
+        local pid=$!
+        popd
+
+        sleep 1
+        echo $pid > tasks
+
+
+> 
+>     #Instruct the test process to start acquiring memory
+>     echo m > $STATUS_PIPE
+>     sleep 5
+> 
+>     #Check if killed
+>     ps -p $! > /dev/null 2> /dev/null    ----> at this point the process
+>     'mem_process' must have terminated so that last return value ($?) can be
+>     non-zero.
+>     if [ $? -eq 0 ]; then
+>         echo m > $STATUS_PIPE
+>         echo x > $STATUS_PIPE
+>     else
+>         : $((KILLED_CNT += 1))
+>     fi
+> }
+> -------------------------
+> In my case: 'mem_process' does not terminate until we pass 'x' to it, but the
+> expected behaviour according to testcase  that the memory hog process
+> must be killed on crossing bounday.
+> Inputs taken by testcase are : "./memcg_control_test.sh 4096 4096 8192"
+> If I change the inputs from 8192 to other (1024,10MB,100MB etc) . In all
+> situation memory hog process does not terminate.
+> So what is the ideal condition for this process to terminate to make whole
+> testcase pass. ?
+
+mem_process getting killed by OOM seems like expected outcome:
+
+memcg_control    0  TINFO  :  Test #1: Checking if the memory usage limit imposed by the topmost group is enforced
+./memcg_control_test.sh: line 56:  2795 Killed                  mem_process -m $PROC_MEM  (wd: /tmp)
+memcg_control    1  TPASS  :  Test #1: passed
+memcg_control    1  TPASS  :  memcg_control: passed
+
+If it still doesn't get killed, I'd recommend checking "memory.usage_in_bytes".
+
+Regards,
+Jan
+
+
+> 
 > ------------------------------------------------------------------------------
-> Don't Limit Your Business. Reach for the Cloud.
-> GigeNET's Cloud Solutions provide you with the tools and support that
-> you need to offload your IT needs and focus on growing your business.
-> Configured For All Businesses. Start Your Cloud Today.
-> https://www.gigenetcloud.com/
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/ltp-list
->
->
-
+> 
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
