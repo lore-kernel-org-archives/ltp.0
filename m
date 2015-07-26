@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZL6Qr-0000yb-67
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 09:16:49 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZL6Ql-0002Tf-IV
-	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 09:16:49 +0000
-Message-ID: <55BB3CE5.2020406@huawei.com>
-Date: Fri, 31 Jul 2015 17:16:21 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1ZJKNM-0002y2-Dh
+	for ltp-list@lists.sourceforge.net; Sun, 26 Jul 2015 11:45:52 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZJKNK-0006dl-PW
+	for ltp-list@lists.sourceforge.net; Sun, 26 Jul 2015 11:45:52 +0000
+Date: Sun, 26 Jul 2015 07:45:43 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1216267366.178924.1437911143948.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1437722520-2794-1-git-send-email-liwang@redhat.com>
+References: <1437722520-2794-1-git-send-email-liwang@redhat.com>
 MIME-Version: 1.0
-References: <1438323464-29672-1-git-send-email-sunyuan3@huawei.com>
-In-Reply-To: <1438323464-29672-1-git-send-email-sunyuan3@huawei.com>
-Subject: Re: [LTP] [PATCH V2] containers: new testcase userns05
+Subject: Re: [LTP] [PATCH] syscalls/sysfs: replace the TWARN to TCONF
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,172 +27,150 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
+To: Li Wang <liwang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-I forgot to add .gitignore. Please ignore the patch.
-On 2015/7/31 14:17, Yuan Sun wrote:
->    A process created via fork(2) or clone(2) without the CLONE_NEWUSER
-> flag is a member of the same user namespace as its parent.
->    When unshare an user namespace, the calling process is moved into a
-> new user namespace which is not shared with any previously existing
-> process.
->
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->   testcases/kernel/containers/userns/userns05.c | 142 ++++++++++++++++++++++++++
->   1 file changed, 142 insertions(+)
->   create mode 100644 testcases/kernel/containers/userns/userns05.c
->
-> diff --git a/testcases/kernel/containers/userns/userns05.c b/testcases/kernel/containers/userns/userns05.c
-> new file mode 100644
-> index 0000000..18178d0
-> --- /dev/null
-> +++ b/testcases/kernel/containers/userns/userns05.c
-> @@ -0,0 +1,142 @@
-> +/*
-> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * Verify that:
-> + * A process created via fork(2) or clone(2) without the
-> + * CLONE_NEWUSER flag is a member of the same user namespace as its
-> + * parent.
-> + * When unshare an user namespace, the calling process is moved into
-> + * a new user namespace which is not shared with any previously
-> + * existing process.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <assert.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "userns_helper.h"
-> +
-> +char *TCID = "user_namespace5";
-> +int TST_TOTAL = 1;
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +/*
-> + * child_fn1() - Inside a new user namespace
-> + */
-> +static int child_fn1(void)
-> +{
-> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-> +	return 0;
-> +}
-> +
-> +static long getusernsidbypid(int pid)
-> +{
-> +	char path[BUFSIZ];
-> +	char userid[BUFSIZ];
-> +	long id = 0;
-> +
-> +	sprintf(path, "/proc/%d/ns/user", pid);
-> +
-> +	if (readlink(path, userid, BUFSIZ) == -1)
-> +		tst_resm(TFAIL, "readlink failure.");
-> +
-> +	if (sscanf(userid, "user:[%ld]", &id) != 1)
-> +		tst_resm(TFAIL | TERRNO, "sscanf failure.");
-> +	return id;
-> +}
-> +
-> +static void test_userns_id(void)
-> +{
-> +	int cpid1, cpid2, cpid3;
-> +	long parentuserns, cpid1userns, cpid2userns, newparentuserns;
-> +
-> +	parentuserns = getusernsidbypid(getpid());
-> +	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1,
-> +		NULL);
-> +	if (cpid1 < 0)
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-> +	cpid1userns = getusernsidbypid(cpid1);
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-> +
-> +	/* A process created via fork(2) or clone(2) without the
-> +	CLONE_NEWUSER flag is a member of the same user namespace as its
-> +	parent.*/
-> +	if (parentuserns != cpid1userns)
-> +		tst_resm(TFAIL, "userns:parent should be equal to cpid1");
-> +
-> +	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> +		(void *)child_fn1, NULL);
-> +	if (cpid2 < 0)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-> +	cpid2userns = getusernsidbypid(cpid2);
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-> +
-> +	if (parentuserns == cpid2userns)
-> +		tst_resm(TFAIL, "userns:parent should be not equal to cpid2");
-> +
-> +	switch (cpid3 = fork()) {
-> +	case -1:
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-> +	case 0:
-> +		if (unshare(CLONE_NEWUSER) == -1) {
-> +			printf("parent pid unshare failure: (%d) %s",
-> +				errno, strerror(errno));
-> +			exit(1);
-> +		}
-> +		newparentuserns = getusernsidbypid(getpid());
-> +
-> +		/* When unshare an user namespace, the calling process
-> +		is moved into a new user namespace which is not shared
-> +		with any previously existing process.*/
-> +		if (parentuserns == newparentuserns)
-> +			exit(1);
-> +		exit(0);
-> +	}
-> +
-> +	tst_record_childstatus(cleanup, cpid1);
-> +	tst_record_childstatus(cleanup, cpid2);
-> +	tst_record_childstatus(cleanup, cpid3);
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	check_newuser();
-> +
-> +	tst_tmpdir();
-> +	TST_CHECKPOINT_INIT(NULL);
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +
-> +	tst_parse_opts(argc, argv, NULL, NULL);
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +		test_userns_id();
-> +	}
-> +	cleanup();
-> +	tst_exit();
-> +}
 
+
+
+
+----- Original Message -----
+> From: "Li Wang" <liwang@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Sent: Friday, 24 July, 2015 9:22:00 AM
+> Subject: [LTP] [PATCH] syscalls/sysfs: replace the TWARN to TCONF
+> 
+> I run some of these cases on aarch64 today and get a series waring, that's
+> because
+> sysfs syscall is not implemented on aarch64. So, maybe TCONF is better than
+> TWARN
+> in the testcase.
+
+Are you sure it's not supported? Or is it just disabled in your kernel config?
+I'm looking at Kconfig and nothing suggests you can't use it on aarch64:
+
+config SYSFS_SYSCALL
+        bool "Sysfs syscall support" if EXPERT
+        default y
+        ---help---
+          sys_sysfs is an obsolete system call no longer supported in libc.
+          Note that disabling this option is more secure but might break
+          compatibility with some systems.
+
+          If unsure say Y here.
+
+We have "linux_syscall_numbers.h", if you include that and use
+ltp_syscall() instead of syscall() you can remove the #ifdef,
+as it should TCONF at runtime (in case kernel gives you ENOSYS)
+
+Regards,
+Jan
+
+> 
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/syscalls/sysfs/sysfs01.c | 2 +-
+>  testcases/kernel/syscalls/sysfs/sysfs02.c | 2 +-
+>  testcases/kernel/syscalls/sysfs/sysfs03.c | 2 +-
+>  testcases/kernel/syscalls/sysfs/sysfs04.c | 2 +-
+>  testcases/kernel/syscalls/sysfs/sysfs05.c | 2 +-
+>  testcases/kernel/syscalls/sysfs/sysfs06.c | 2 +-
+>  6 files changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/sysfs/sysfs01.c
+> b/testcases/kernel/syscalls/sysfs/sysfs01.c
+> index 11ebe43..c29f6c0 100644
+> --- a/testcases/kernel/syscalls/sysfs/sysfs01.c
+> +++ b/testcases/kernel/syscalls/sysfs/sysfs01.c
+> @@ -103,7 +103,7 @@ int main(int ac, char **av)
+>  		}
+>  	}			/*End of TEST_LOOPING */
+>  #else
+> -	tst_resm(TWARN,
+> +	tst_resm(TCONF,
+>  		 "This test can only run on kernels that support the sysfs system call");
+>  #endif
+>  
+> diff --git a/testcases/kernel/syscalls/sysfs/sysfs02.c
+> b/testcases/kernel/syscalls/sysfs/sysfs02.c
+> index f7cb96a..54557cc 100644
+> --- a/testcases/kernel/syscalls/sysfs/sysfs02.c
+> +++ b/testcases/kernel/syscalls/sysfs/sysfs02.c
+> @@ -103,7 +103,7 @@ int main(int ac, char **av)
+>  		}
+>  	}			/*End of TEST_LOOPING */
+>  #else
+> -	tst_resm(TWARN,
+> +	tst_resm(TCONF,
+>  		 "This test can only run on kernels that support the sysfs system call");
+>  #endif
+>  
+> diff --git a/testcases/kernel/syscalls/sysfs/sysfs03.c
+> b/testcases/kernel/syscalls/sysfs/sysfs03.c
+> index 59b997e..9048dfe 100644
+> --- a/testcases/kernel/syscalls/sysfs/sysfs03.c
+> +++ b/testcases/kernel/syscalls/sysfs/sysfs03.c
+> @@ -101,7 +101,7 @@ int main(int ac, char **av)
+>  		}
+>  	}			/*End of TEST_LOOPING */
+>  #else
+> -	tst_resm(TWARN,
+> +	tst_resm(TCONF,
+>  		 "This test can only run on kernels that support the sysfs system call");
+>  #endif
+>  
+> diff --git a/testcases/kernel/syscalls/sysfs/sysfs04.c
+> b/testcases/kernel/syscalls/sysfs/sysfs04.c
+> index f4fda36..2b2530a 100644
+> --- a/testcases/kernel/syscalls/sysfs/sysfs04.c
+> +++ b/testcases/kernel/syscalls/sysfs/sysfs04.c
+> @@ -105,7 +105,7 @@ int main(int ac, char **av)
+>  		}
+>  	}
+>  #else
+> -	tst_resm(TWARN,
+> +	tst_resm(TCONF,
+>  		 "This test can only run on kernels that support the sysfs system call");
+>  #endif
+>  
+> diff --git a/testcases/kernel/syscalls/sysfs/sysfs05.c
+> b/testcases/kernel/syscalls/sysfs/sysfs05.c
+> index e97f0c8..2ab6707 100644
+> --- a/testcases/kernel/syscalls/sysfs/sysfs05.c
+> +++ b/testcases/kernel/syscalls/sysfs/sysfs05.c
+> @@ -129,7 +129,7 @@ int main(int ac, char **av)
+>  		}		/*End of TEST LOOPS */
+>  	}
+>  #else
+> -	tst_resm(TWARN,
+> +	tst_resm(TCONF,
+>  		 "This test can only run on kernels that support the sysfs system call");
+>  #endif
+>  
+> diff --git a/testcases/kernel/syscalls/sysfs/sysfs06.c
+> b/testcases/kernel/syscalls/sysfs/sysfs06.c
+> index 121e944..7ef5ee2 100644
+> --- a/testcases/kernel/syscalls/sysfs/sysfs06.c
+> +++ b/testcases/kernel/syscalls/sysfs/sysfs06.c
+> @@ -132,7 +132,7 @@ int main(int ac, char **av)
+>  		}		/*End of TEST LOOPS */
+>  	}
+>  #else
+> -	tst_resm(TWARN,
+> +	tst_resm(TCONF,
+>  		 "This test can only run on kernels that support the sysfs system call");
+>  #endif
+>  
+> --
+> 1.8.3.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
 _______________________________________________
