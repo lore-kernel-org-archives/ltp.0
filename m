@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZD6cQ-0002cI-Tc
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 07:51:42 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZD6cN-0002AJ-Lm
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 07:51:42 +0000
-Date: Thu, 9 Jul 2015 03:51:33 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1538874773.14815420.1436428293231.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20150708203358.GA24428@tarantula.localdomain>
-References: <20150708203358.GA24428@tarantula.localdomain>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwan@redhat.com>) id 1ZJdka-0003Bw-Vu
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 08:27:08 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZJdkZ-00075E-D1
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 08:27:08 +0000
+Date: Mon, 27 Jul 2015 04:27:01 -0400 (EDT)
+From: Li Wang <liwang@redhat.com>
+Message-ID: <204402314.282015.1437985621208.JavaMail.zimbra@redhat.com>
+In-Reply-To: <597743632.351275.1437982462629.JavaMail.zimbra@redhat.com>
+References: <1437722520-2794-1-git-send-email-liwang@redhat.com>
+	<1216267366.178924.1437911143948.JavaMail.zimbra@redhat.com>
+	<2055436226.240732.1437976466421.JavaMail.zimbra@redhat.com>
+	<597743632.351275.1437982462629.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] proc/proc01.c: ignore stable_secret files
+Subject: Re: [LTP] [PATCH] syscalls/sysfs: replace the TWARN to TCONF
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,99 +30,175 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jeffrey Bastian <jbastian@redhat.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 
+> 
+> ----- Original Message -----
+> > From: "Li Wang" <liwang@redhat.com>
+> > To: "Jan Stancek" <jstancek@redhat.com>
+> > Cc: ltp-list@lists.sourceforge.net
+> > Sent: Monday, 27 July, 2015 7:54:26 AM
+> > Subject: Re: [LTP] [PATCH] syscalls/sysfs: replace the TWARN to TCONF
+> > 
+> > Hi Jan,
+> > 
+> > ----- Original Message -----
+> > > 
+> > > 
+> > > 
+> > > 
+> > > ----- Original Message -----
+> > > > From: "Li Wang" <liwang@redhat.com>
+> > > > To: ltp-list@lists.sourceforge.net
+> > > > Sent: Friday, 24 July, 2015 9:22:00 AM
+> > > > Subject: [LTP] [PATCH] syscalls/sysfs: replace the TWARN to TCONF
+> > > > 
+> > > > I run some of these cases on aarch64 today and get a series waring,
+> > > > that's
+> > > > because
+> > > > sysfs syscall is not implemented on aarch64. So, maybe TCONF is better
+> > > > than
+> > > > TWARN
+> > > > in the testcase.
+> > > 
+> > > Are you sure it's not supported? Or is it just disabled in your kernel
+> > > config?
+> > > I'm looking at Kconfig and nothing suggests you can't use it on aarch64:
+> > 
+> > Hmm, to be precise, it has supported sysfs_syscall but not define
+> > '__NR_sysfs' on aarch64.
+> 
+> Hi,
+> 
+> Same question:
+>   http://linux-arm-kernel.infradead.narkive.com/n9PCFfpR/arm64-dose-arm64-support-the-sysfs-system-call
+> 
+> So it looks like you can enable CONFIG_SYSFS_SYSCALL, but still you won't
+> be able to use it (for 64bit on 64bit), since it doesn't appear to be in
+> syscall table.
+
+yes.
+
+> 
+> > 
+> > My system config:
+> > # grep -i sysfs_syscall /boot/config-4.1.0-0.12.el7.aarch64
+> > CONFIG_SYSFS_SYSCALL=y
+> > # grep -i EXPERT /boot/config-4.1.0-0.12.el7.aarch64
+> > CONFIG_EXPERT is not set
+> > 
+> > (1)---->
+> > If I change the code as:
+> > 
+> > diff --git a/testcases/kernel/syscalls/sysfs/sysfs01.c
+> > b/testcases/kernel/syscalls/sysfs/sysfs01.c
+> > index 11ebe43..770c9c9 100644
+> > --- a/testcases/kernel/syscalls/sysfs/sysfs01.c
+> > +++ b/testcases/kernel/syscalls/sysfs/sysfs01.c
+> > @@ -67,6 +67,7 @@
+> >   ******************************************************************************/
+> >  
+> >  #include "test.h"
+> > +#include "linux_syscall_numbers.h"
+> >  #include <errno.h>
+> >  #include <unistd.h>
+> >  #include <syscall.h>
+> > @@ -85,14 +86,12 @@ int main(int ac, char **av)
+> >  
+> >         setup();
+> >  
+> > -#ifdef __NR_sysfs
+> > -
+> >         for (lc = 0; TEST_LOOPING(lc); lc++) {
+> >  
+> >                 tst_count = 0;
+> >  
+> >                 /* option 1, buf holds fs name */
+> > -               TEST(syscall(__NR_sysfs, 1, "proc"));
+> > +               TEST(ltp_syscall(__NR_sysfs, 1, "proc"));
+> >  
+> >                 /* check return code */
+> >                 if (TEST_RETURN == -1) {
+> > @@ -102,10 +101,6 @@ int main(int ac, char **av)
+> >                         tst_resm(TPASS, "sysfs(2) Passed for " "option 1");
+> >                 }
+> >         }                       /*End of TEST_LOOPING */
+> > -#else
+> > -       tst_resm(TWARN,
+> > -                "This test can only run on kernels that support the sysfs
+> > system call");
+> > -#endif
+> >  
+> >         /*Clean up and exit */
+> >         cleanup();
+> > 
+> > 
+> > It's show:
+> > 
+> > # ./sysfs01
+> > sysfs01     1  TCONF  :  sysfs01.c:94: syscall __NR_sysfs not supported on
+> > your arch
+> > sysfs01     2  TCONF  :  sysfs01.c:94: Remaining cases not appropriate for
+> > configuration
+> 
+> I think this is correct way to go.
+
+Ok, I will post a patch V2.
+
+> 
+> > 
+> > 
+> > 
+> > (2)---->
+> > then I add the macro to "linux_syscall_numbers.h" by manual:
+> 
+> linux_syscall_numbers.h is generated from *.in files in the same directory.
+
+ok, got it.
+
+> 
+> > 
+> > # grep -e __aarch64 -e __NR_sysfs  linux_syscall_numbers.h -A 2 -B 2
+> > 
+> > #ifdef __aarch64__
+> > ...
+> > # ifndef __NR_sysfs
+> > #  define __NR_sysfs 135
+> > # endif
+> 
+> This appears to be taken from unistd32.h.
+> 
+> > 
+> > 
+> > It's failed as:
+> > 
+> > # ./sysfs01
+> > sysfs01     1  TFAIL  :  sysfs01.c:99: sysfs(2) Failed for option 1 and set
+> > errno to 22
+> > 
+> 
+> Yeah, I think that's because the number you picked is used for
+> __NR_rt_sigprocmask:
+
+yes. 
+
+Thanks,
+Li Wang
 
 
-
------ Original Message -----
-> From: "Jeffrey Bastian" <jbastian@redhat.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 8 July, 2015 10:33:58 PM
-> Subject: [LTP] [PATCH] proc/proc01.c: ignore stable_secret files
 > 
-> Linux 4.1.0 introduced a per-NIC IPv6 stable_secret file for RFC7217.
-> The stable_secret file for each NIC cannot be read until it is set,
-> thus LTP fails like this:
+> $ grep -e __aarch64 -e __NR_rt_sigproc linux_syscall_numbers.h
+> #ifdef __aarch64__
+> # ifndef __NR_rt_sigprocmask
+> #  define __NR_rt_sigprocmask 135
 > 
-> proc01      1  TFAIL  :  proc01.c:392: read failed:
-> /proc/sys/net/ipv6/conf/all/stable_secret: errno=EIO(5): Input/output error
-> proc01      2  TFAIL  :  proc01.c:392: read failed:
-> /proc/sys/net/ipv6/conf/default/stable_secret: errno=EIO(5): Input/output
-> error
-> proc01      3  TFAIL  :  proc01.c:392: read failed:
-> /proc/sys/net/ipv6/conf/eno1/stable_secret: errno=EIO(5): Input/output error
-> ...
-> 
-> Ignore the stable_secret files in the proc01 test.
-
-Can we add it to known_issues array instead? It looks like there's no problem
-with opening/reading the file (in sense that would cause adverse effects,
-e.g. hang the test).
-
-Regards,
-Jan
-
-> 
-> TODO: A future test should verify stable_secret functionality.
->   ~]# cat /proc/sys/net/ipv6/conf/eno1/stable_secret
->   cat: /proc/sys/net/ipv6/conf/eno1/stable_secret: Input/output error
->   ~]# echo "ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255" >
->   /proc/sys/net/ipv6/conf/eno1/stable_secret
->   ~]# cat /proc/sys/net/ipv6/conf/eno1/stable_secret
->   ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff
-> 
-> Signed-off-by: Jeffrey Bastian <jbastian@redhat.com>
-> ---
->  testcases/kernel/fs/proc/proc01.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/testcases/kernel/fs/proc/proc01.c
-> b/testcases/kernel/fs/proc/proc01.c
-> index f513110eca0e..b9ff3ac42fe2 100644
-> --- a/testcases/kernel/fs/proc/proc01.c
-> +++ b/testcases/kernel/fs/proc/proc01.c
-> @@ -290,14 +290,15 @@ static long readproc(const char *obj)
->  			     dir_ent != NULL;
->  			     dir_ent = (struct dirent *)readdir(dir)) {
->  
-> -				/* Ignore ".", "..", "kcore", and
-> -				 * "/proc/<pid>" (unless this is our
-> +				/* Ignore ".", "..", "kcore", "stable_secret",
-> +                                 * and "/proc/<pid>" (unless this is our
->  				 * starting point as directed by the
->  				 * user).
->  				 */
->  				if (strcmp(dir_ent->d_name, ".") &&
->  				    strcmp(dir_ent->d_name, "..") &&
->  				    strcmp(dir_ent->d_name, "kcore") &&
-> +				    strcmp(dir_ent->d_name, "stable_secret") &&
->  				    (fnmatch("[0-9]*", dir_ent->d_name,
->  					     FNM_PATHNAME) ||
->  				     strcmp(obj, procpath))) {
-> --
-> 1.9.4
-> 
-> ------------------------------------------------------------------------------
-> Don't Limit Your Business. Reach for the Cloud.
-> GigeNET's Cloud Solutions provide you with the tools and support that
-> you need to offload your IT needs and focus on growing your business.
-> Configured For All Businesses. Start Your Cloud Today.
-> https://www.gigenetcloud.com/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> Regards,
+> Jan
 > 
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
