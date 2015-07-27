@@ -1,31 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zm-0003fe-KI
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:54 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZD5Zl-0004Zi-HH
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:54 +0000
-Received: from userv0021.oracle.com (userv0021.oracle.com [156.151.31.71])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t696ilwk020377
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:47 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-	by userv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t696il2n020721
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:47 GMT
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696ikM8005052
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:46 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  9 Jul 2015 09:47:34 +0300
-Message-Id: <1436424468-11756-10-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 09/23] network/virt/vlan03: add new test-case
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZJjiA-0003h8-Dt
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 14:49:02 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZJji7-0002KY-WA
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 14:49:02 +0000
+Date: Mon, 27 Jul 2015 16:48:44 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150727144844.GB15383@rei.suse.de>
+References: <1436876572-28759-2-git-send-email-mmarhefk@redhat.com>
+	<1436958405-21403-1-git-send-email-mmarhefk@redhat.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1436958405-21403-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2 v2] containers/netns tests rewritten
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,129 +26,160 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-It is based on vxlan03 test-case and use the same approach.
+Hi!
+> All original test cases in ltp/testcases/kernel/containers/netns
+> were removed and replaced with the new ones. The new test cases
+> cover all of the tests in the original code and everything else
+> in the original code didn't exercise new code paths in the kernel.
+> Mapping of old test cases to the new ones:
+> 
+> netns_crtchild -> netns_comm
+> netns_two_children_ns -> netns_comm
+> netns_crtchild_delchild -> netns_sysfs
+> netns_par_chld_ipv6, netns_par_chld_ftp -> nets_comm (netns_comm
+>     does not complicate it with sshd or ftp, it just tests
+>     communication using ping/ping6)
+> netns_devices, netns_devices2 -> netns_comm
+> netns_isolation -> netns_breakns
+> 
+> New testcases also use the helper tools for creating and working
+> with namespaces from ltp/testcases/kernel/containers/share.
+> 
+> diff --git a/runtest/containers b/runtest/containers
+> index de4197e..2dee944 100644
+> --- a/runtest/containers
+> +++ b/runtest/containers
+> @@ -23,15 +23,24 @@ mqns_03_clone mqns_03 -clone
+>  mqns_04 mqns_04
+>  mqns_04_clone mqns_04 -clone
+>  
+> -netns_crtchild netns_crtchild
+> -netns_two_children_ns netns_two_children_ns
+> -netns_crtchild_delchild netns_crtchild_delchild
+> -netns_par_chld_ipv6 netns_par_chld_ipv6
+> -netns_par_chld_ftp netns_par_chld_ftp.sh
+>  netns_netlink netns_netlink
+> -netns_devices netns_devices.sh
+> -netns_devices2 netns_devices2.sh
+> -netns_isolation netns_isolation.sh
+> +netns_breakns netns_breakns.sh ns_exec ipv4 netlink
+> +netns_breakns netns_breakns.sh ns_exec ipv6 netlink
+> +netns_breakns netns_breakns.sh ns_exec ipv4 ioctl
+> +netns_breakns netns_breakns.sh ns_exec ipv6 ioctl
+> +netns_breakns netns_breakns.sh ip ipv4 netlink
+> +netns_breakns netns_breakns.sh ip ipv6 netlink
+> +netns_breakns netns_breakns.sh ip ipv4 ioctl
+> +netns_breakns netns_breakns.sh ip ipv6 ioctl
+> +netns_comm netns_comm.sh ns_exec ipv4 netlink
+> +netns_comm netns_comm.sh ns_exec ipv6 netlink
+> +netns_comm netns_comm.sh ns_exec ipv4 ioctl
+> +netns_comm netns_comm.sh ns_exec ipv6 ioctl
+> +netns_comm netns_comm.sh ip ipv4 netlink
+> +netns_comm netns_comm.sh ip ipv6 netlink
+> +netns_comm netns_comm.sh ip ipv4 ioctl
+> +netns_comm netns_comm.sh ip ipv6 ioctl
+> +netns_sysfs netns_sysfs.sh
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- runtest/network_stress.features  |    1 +
- testcases/network/virt/Makefile  |    1 +
- testcases/network/virt/vlan03.sh |   69 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 71 insertions(+), 0 deletions(-)
- create mode 100755 testcases/network/virt/vlan03.sh
+I'm really against having different testcases with the same name.
 
-diff --git a/runtest/network_stress.features b/runtest/network_stress.features
-index 35bcfaf..2071d94 100644
---- a/runtest/network_stress.features
-+++ b/runtest/network_stress.features
-@@ -16,3 +16,4 @@ vxlan_ipv6_uni_03 vxlan03.sh -6 -d uni
- 
- vlan01 vlan01.sh
- vlan02 vlan02.sh
-+vlan03 vlan03.sh
-diff --git a/testcases/network/virt/Makefile b/testcases/network/virt/Makefile
-index 2ef0b37..af19f5b 100644
---- a/testcases/network/virt/Makefile
-+++ b/testcases/network/virt/Makefile
-@@ -21,6 +21,7 @@ include $(top_srcdir)/include/mk/env_pre.mk
- INSTALL_TARGETS		:= virt_lib.sh \
- 			   vlan01.sh \
- 			   vlan02.sh \
-+			   vlan03.sh \
- 			   vxlan01.sh \
- 			   vxlan02.sh \
- 			   vxlan03.sh \
-diff --git a/testcases/network/virt/vlan03.sh b/testcases/network/virt/vlan03.sh
-new file mode 100755
-index 0000000..4cc9a05
---- /dev/null
-+++ b/testcases/network/virt/vlan03.sh
-@@ -0,0 +1,69 @@
-+#!/bin/sh
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+#
-+# Test-case 1: It requires remote host. Test will setup IPv4 and IPv6 virtual
-+#              sub-nets between two hosts, then will compare TCP performance
-+#              with and without VLAN using ping or tcp_fastopen test.
-+#
-+# Test-case 2: The same as above but must fail, because VLAN allows
-+#              to communicate only within the same VLAN segment.
-+
-+TCID=vlan03
-+TST_TOTAL=2
-+
-+virt_type="vlan"
-+
-+. test_net.sh
-+. virt_lib.sh
-+
-+cleanup()
-+{
-+	cleanup_vifaces
-+	tst_rhost_run -c "ip link delete ltp_v0"
-+	if [ "$net_load" = "TFO" ]; then
-+		tst_rhost_run -c "pkill -9 tcp_fastopen\$"
-+		pkill -9 "tcp_fastopen\$"
-+	fi
-+}
-+TST_CLEANUP="cleanup"
-+
-+if [ "$net_load" = "TFO" ]; then
-+	tst_check_cmds "tcp_fastopen"
-+fi
-+
-+if [ -z $ip_local -o -z $ip_remote ]; then
-+	tst_brkm TBROK "you must specify IP address"
-+fi
-+
-+tst_resm TINFO "networks with the same VLAN ID must work"
-+
-+res="TPASS"
-+
-+virt_setup "id 4094" "id 4094"
-+virt_compare_netperf || res="TFAIL"
-+
-+tst_resm $res "done"
-+
-+tst_resm TINFO "different VLAN ID shall not work together"
-+res="TPASS"
-+virt_setup "id 4093" "id 4094"
-+virt_compare_netperf && res="TFAIL"
-+
-+tst_resm $res "done"
-+
-+tst_exit
+> diff --git a/testcases/kernel/containers/netns/netns_breakns.sh b/testcases/kernel/containers/netns/netns_breakns.sh
+> new file mode 100755
+> index 0000000..46d8ca3
+> --- /dev/null
+> +++ b/testcases/kernel/containers/netns/netns_breakns.sh
+> @@ -0,0 +1,74 @@
+> +#!/bin/sh
+> +#==============================================================================
+> +# Copyright (c) 2015 Red Hat, Inc.
+> +#
+> +# This program is free software: you can redistribute it and/or modify
+> +# it under the terms of version 2 the GNU General Public License as
+> +# published by the Free Software Foundation.
+> +#
+> +# This program is distributed in the hope that it will be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+> +#
+> +# Written by Matus Marhefka <mmarhefk@redhat.com>
+> +#
+> +#==============================================================================
+> +#
+> +# SYNOPSIS:
+> +# netns_breakns.sh <NS_EXEC_PROGRAM> <IP_VERSION> <COMM_TYPE>
+> +#
+> +# OPTIONS:
+> +#	* NS_EXEC_PROGRAM (ns_exec|ip)
+> +#		Program which will be used to enter and run other commands
+> +#		inside a network namespace.
+> +#	* IP_VERSION (ipv4|ipv6)
+> +#		Version of IP. (ipv4|ipv6)
+> +#	* COMM_TYPE (netlink|ioctl)
+> +#		Communication type between kernel and user space
+> +#		for basic setup: enabling and assigning IP addresses
+> +#		to the virtual ethernet devices. (Uses 'ip' command for netlink
+> +#		and 'ifconfig' for ioctl.)
+> +#
+> +# Tests communication with ip (uses netlink) and ifconfig (uses ioctl)
+> +# over a device which is not visible from the current network namespace.
+> +#
+> +# There are two test cases which are trying to set an ip address on the veth1
+> +# device which is not inside the network namespace referred to by NS_HANDLE0:
+> +# 1. using netlink (ip command).
+> +# 2. using ioctl (ifconfig command).
+> +#==============================================================================
+> +
+> +TCID="netns_breakns"
+> +TST_TOTAL=2
+> +. netns_helper.sh
+> +
+> +# SETUP
+> +netns_setup $1 $2 $3 "192.168.0.2" "192.168.0.3" "fd00::2" "fd00::3"
+> +TCID="netns_breakns_$1_$2_$3"
+
+Hmm, why don't we define the TCID="netns_breakns_$1_$2_$3" from the
+start?
+
+> +tst_resm TINFO "NS interaction: $1 | devices setup: $3"
+> +
+> +
+> +# TEST CASE #1
+> +$NS_EXEC $NS_HANDLE0 ip address add $IP1/$NETMASK dev veth1 2>/dev/null
+> +if [ $? -ne 0 ]; then
+> +	tst_resm TPASS "controlling device over netlink"
+> +else
+> +	tst_resm TFAIL "controlling device over netlink"
+> +fi
+> +
+> +
+> +# TEST CASE #2
+> +tst_check_cmds ifconfig
+> +$NS_EXEC $NS_HANDLE0 ifconfig veth1 $IFCONF_IN6_ARG $IP1/$NETMASK 2>/dev/null
+> +if [ $? -ne 0 ]; then
+> +	tst_resm TPASS "controlling device over ioctl"
+> +else
+> +	tst_resm TFAIL "controlling device over ioctl"
+> +fi
+> +
+> +
+> +tst_exit
+
+Otherwise it looks good.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
