@@ -1,25 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZKTcd-0003Rx-3c
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 15:50:23 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZKTcc-0001Qg-02
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 15:50:23 +0000
-Date: Wed, 29 Jul 2015 17:50:06 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150729155005.GC3427@rei.suse.de>
-References: <CANKSX+HAqaZARVLcDWU3Uhv2CYDjSBrrq2H4OrkOSaY647saaA@mail.gmail.com>
-	<20150729144508.GB3427@rei.suse.de>
-	<CANKSX+ETp0jdXp+zSUtUPn8SWUQaCh1bETYzcpF_C8kZpPtGdQ@mail.gmail.com>
-	<20150729152949.GA6478@rei.suse.de>
-	<1186607709.563342.1438184803657.JavaMail.zimbra@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1186607709.563342.1438184803657.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] LTP make failed
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xcf733520@sina.com>) id 1ZJc6m-0001Bn-NN
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 06:41:56 +0000
+Received: from mail7-217.sinamail.sina.com.cn ([202.108.7.217]
+	helo=smtp545-124.mail.sina.com.cn)
+	by sog-mx-3.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1ZJc6k-0003QK-Js
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 06:41:56 +0000
+Date: Mon, 27 Jul 2015 14:23:44 +0800
+From: xcf733520 <xcf733520@sina.com>
+Mime-Version: 1.0
+Message-ID: <201507271423431749597@sina.com>
+Subject: [LTP]  ltpstress script  is stopping for no reason
+Reply-To: xcf733520 <xcf733520@sina.com>
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,30 +27,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> One thing I noticed is that those libraries which failed were "INTERNAL_LIB".
-> 
-> Can you try this:
-> 
-> 1. cd $LTP/testcases/kernel/lib
-> 2. edit Makefile and change this line:
->       INTERNAL_LIB            := libkerntest.a
-> to:
->       LIB            := libkerntest.a
-> 3. run make
-> 
-> Does that make any difference?
+Hi All,
 
-But these behave differently only on install target. For any other
-target LIB is the same as INTERNAL_LIB.
+     During LTP stress test, I have a trouble that  ltpstress script  is stopping for no reasons.  I used  another Linux
+OS to connect with test the Linux OS server  by the sshd  way .  My command  as below,
+    ./ltpstress.sh -d /root/report/ltpstress_0720.sardata -p -l /root/report/ltpstresslog.0720 -m 4096 -t 502 &
+I have set running 502 hours, but stopping affter running 144 hours  ssh connected always.  
+ 
+Check  the dmesg,
+ Jul 26 04:02:16 platform-test fmtmsg01: LTP:fmtmsg: LTP_TEST: LTP fmtmsg() test3 message, NOT an error TO FIX: This is correct output, no action needed  LTP:msg:003 
+ Jul 26 04:02:16 platform-test xinetd[2182]: START: shell pid=17690 from=127.0.0.1
+ Jul 26 04:02:16 platform-test rshd[17691]: root@platform-test.localdomain as root: cmd='/opt/ltp/testcases/bin/rpc_server'
+ Jul 26 04:02:16 platform-test xinetd[2182]: EXIT: shell status=0 pid=17690 duration=0(sec)
+ Jul 26 04:02:16 platform-test xinetd[2182]: START: shell pid=17716 from=127.0.0.1
+ Jul 26 04:02:16 platform-test rshd[17719]: root@platform-test.localdomain as root: cmd='ps -ewf'
+ Jul 26 04:02:16 platform-test xinetd[2182]: EXIT: shell status=0 pid=17716 duration=0(sec)
+ Jul 26 04:02:16 platform-test xinetd[2182]: START: shell pid=17762 from=127.0.0.1
+ Jul 26 04:02:16 platform-test rshd[17763]: root@platform-test.localdomain as root: cmd='kill -9 17712'
+ Jul 26 04:02:16 platform-test xinetd[2182]: EXIT: shell status=0 pid=17762 duration=0(sec) 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
+Thanks,
+--------------
+Helu
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
