@@ -1,31 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zs-0003gR-9W
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:45:00 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZD5Zr-0004Zs-FI
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:45:00 +0000
-Received: from aserv0022.oracle.com (aserv0022.oracle.com [141.146.126.234])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t696irS0020458
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:54 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-	by aserv0022.oracle.com (8.13.8/8.13.8) with ESMTP id t696irX4019229
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:53 GMT
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696ircm009428
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:53 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  9 Jul 2015 09:47:39 +0300
-Message-Id: <1436424468-11756-15-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 14/23] network/virt/vxlan01.sh: add parameters
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <manjeet.p@samsung.com>) id 1ZJdWq-00037e-Pw
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 08:12:56 +0000
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZJdWo-0006Ex-Hw
+	for ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 08:12:56 +0000
+Received: from epcpsbgr2.samsung.com
+	(u142.gpu120.samsung.co.kr [203.254.230.142])
+	by mailout1.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NS5027OQ05BNS60@mailout1.samsung.com> for
+	ltp-list@lists.sourceforge.net; Mon, 27 Jul 2015 17:12:47 +0900 (KST)
+Date: Mon, 27 Jul 2015 08:12:46 +0000 (GMT)
+From: Manjeet Pawar <manjeet.p@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <1819982097.50101437984766322.JavaMail.weblogic@epmlwas01c>
+Subject: Re: [LTP] Regarding memcg control  testcase (mem_process.c)
+Reply-To: manjeet.p@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,69 +30,112 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Jan Stancek <jstancek@redhat.com>
+Cc: AJEET YADAV <ajeet.y@samsung.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, PANKAJ MISHRA <pankaj.m@samsung.com>
 
-Add some parameters while adding VxLAN virtual interfaces such as:
-l2miss, l3miss, norsc, nolearning, noproxy, ttl, tos, gbp.
+Hello Mr Jan,
+Thanks for your reply,
+With actual testscript I checked my "$!" , it is printing correct pid.
+Also changes which you suggest, I tried with those changes , it is showing me either "mmap failed:ffffffff" sometimes or "a successful mmap call". 
+In my case "memory.usage_in_bytes" is 4096. 
+Testcase is run as "./memcg_control_test.sh 4096 4096 8192". 
+I am not getting this "mem_process getting killed by OOM seems like expected outcome:" 
+May i know which kernel verison you are using.? Now I am doubtful on my kernel.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/virt/vxlan01.sh |   24 ++++++++++++++++++++++--
- 1 files changed, 22 insertions(+), 2 deletions(-)
+Regards
+Manjeet
 
-diff --git a/testcases/network/virt/vxlan01.sh b/testcases/network/virt/vxlan01.sh
-index 6673d7e..63a52d0 100755
---- a/testcases/network/virt/vxlan01.sh
-+++ b/testcases/network/virt/vxlan01.sh
-@@ -24,11 +24,31 @@ TST_TOTAL=1
- 
- virt_type="vxlan"
- start_id=16700000
--virt_count=5000
- 
- . test_net.sh
- . virt_lib.sh
- 
--virt_multiple_add_test "group 239.1.1.1"
-+opts="l2miss l3miss,norsc nolearning noproxy,ttl 0x01 tos 0x01,ttl 0xff tos 0xff,gbp"
-+
-+start_id=1
-+virt_count=1000
-+
-+for n in $(seq 1 5); do
-+	params="$(echo $opts | cut -d',' -f$n)"
-+
-+	tst_resm TINFO "add $virt_type with '$params'"
-+
-+	virt_add ltp_v0 id 0 $params > /dev/null 2>&1
-+	if [ $? -ne 0 ]; then
-+		tst_resm TCONF "iproute or kernel doesn't support '$params'"
-+		params=""
-+	else
-+		ROD_SILENT "ip li delete ltp_v0"
-+	fi
-+
-+	virt_multiple_add_test "$params"
-+
-+	start_id=$(($start_id + $virt_count))
-+done
- 
- tst_exit
--- 
-1.7.1
+------- Original Message -------
+Sender : Jan Stancek<jstancek@redhat.com>
+Date : Jul 26, 2015 20:28 (GMT+09:00)
+Title : Re: [LTP] Regarding memcg control testcase (mem_process.c)
 
 
+----- Original Message -----
+> From: "Manjeet Pawar" 
+> To: ltp-list@lists.sourceforge.net
+> Cc: "ajeet y" , "pankaj m" 
+> Sent: Friday, 24 July, 2015 6:07:45 AM
+> Subject: [LTP]  Regarding memcg control  testcase (mem_process.c)
+> 
+> Hi,
+> 
+> I am trying to run memcg control testcase using script memcg_control_test.sh.
+> This script calls a memory hog process 'mem_process'.
+> The condition for this testcase to pass is 'when the memory hog process is
+> killed on crossing boundary'. please check the below function.
+> 
+> 
+> -----------------------------
+> # Check if the test process is killed on crossing boundary
+> test_proc_kill()
+> {
+>     ( cd $TMP && mem_process -m $PROC_MEM & )
+>     sleep 1
+>     echo $! > tasks
+
+mem_process is getting started via subshell, so I'd assume $! in parent is bogus.
+Can you try this instead:
+
+        pushd $TMP || return
+        mem_process -m $PROC_MEM &
+        local pid=$!
+        popd
+
+        sleep 1
+        echo $pid > tasks
+
+
+> 
+>     #Instruct the test process to start acquiring memory
+>     echo m > $STATUS_PIPE
+>     sleep 5
+> 
+>     #Check if killed
+>     ps -p $! > /dev/null 2> /dev/null    ----> at this point the process
+>     'mem_process' must have terminated so that last return value ($?) can be
+>     non-zero.
+>     if [ $? -eq 0 ]; then
+>         echo m > $STATUS_PIPE
+>         echo x > $STATUS_PIPE
+>     else
+>         : $((KILLED_CNT += 1))
+>     fi
+> }
+> -------------------------
+> In my case: 'mem_process' does not terminate until we pass 'x' to it, but the
+> expected behaviour according to testcase  that the memory hog process
+> must be killed on crossing bounday.
+> Inputs taken by testcase are : "./memcg_control_test.sh 4096 4096 8192"
+> If I change the inputs from 8192 to other (1024,10MB,100MB etc) . In all
+> situation memory hog process does not terminate.
+> So what is the ideal condition for this process to terminate to make whole
+> testcase pass. ?
+
+mem_process getting killed by OOM seems like expected outcome:
+
+memcg_control    0  TINFO  :  Test #1: Checking if the memory usage limit imposed by the topmost group is enforced
+./memcg_control_test.sh: line 56:  2795 Killed                  mem_process -m $PROC_MEM  (wd: /tmp)
+memcg_control    1  TPASS  :  Test #1: passed
+memcg_control    1  TPASS  :  memcg_control: passed
+
+If it still doesn't get killed, I'd recommend checking "memory.usage_in_bytes".
+
+Regards,
+Jan
+
+
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
