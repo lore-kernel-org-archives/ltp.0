@@ -1,18 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZFBLZ-0001u8-9R
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2015 01:18:53 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZFBLU-0005GH-I7
-	for ltp-list@lists.sourceforge.net; Wed, 15 Jul 2015 01:18:53 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Wed, 15 Jul 2015 17:22:45 +0800
-Message-ID: <1436952165-23665-1-git-send-email-sunyuan3@huawei.com>
+	(envelope-from <jstancek@redhat.com>) id 1ZK2mM-0002GW-2U
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 11:10:38 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZK2mK-00064j-Om
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 11:10:38 +0000
+Date: Tue, 28 Jul 2015 07:10:30 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <1035562052.1262041.1438081830548.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1437987192-7436-1-git-send-email-liwang@redhat.com>
+References: <1437987192-7436-1-git-send-email-liwang@redhat.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] containers: new testcase userns05
+Subject: Re: [LTP] [Patch v2] syscalls/sysfs: replace syscall() macro by
+ ltp_syscall()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,224 +28,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
+To: Li Wang <liwang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
-  A process created via fork(2) or clone(2) without the CLONE_NEWUSER
-flag is a member of the same user namespace as its parent.
-  When unshare an user namespace, the calling process is moved into a
-new user namespace which is not shared with any previously existing
-process.
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
----
- runtest/containers                            |   1 +
- testcases/kernel/containers/.gitignore        |   1 +
- testcases/kernel/containers/userns/userns05.c | 167 ++++++++++++++++++++++++++
- 3 files changed, 169 insertions(+)
- create mode 100644 testcases/kernel/containers/userns/userns05.c
 
-diff --git a/runtest/containers b/runtest/containers
-index de4197e..cece80b 100644
---- a/runtest/containers
-+++ b/runtest/containers
-@@ -72,3 +72,4 @@ userns01 userns01
- userns02 userns02
- userns03 userns03
- userns04 userns04
-+userns05 userns05
-diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-index 85ced78..b433b03 100644
---- a/testcases/kernel/containers/.gitignore
-+++ b/testcases/kernel/containers/.gitignore
-@@ -7,3 +7,4 @@ userns/userns01
- userns/userns02
- userns/userns03
- userns/userns04
-+userns/userns05
-diff --git a/testcases/kernel/containers/userns/userns05.c b/testcases/kernel/containers/userns/userns05.c
-new file mode 100644
-index 0000000..8d25c56
---- /dev/null
-+++ b/testcases/kernel/containers/userns/userns05.c
-@@ -0,0 +1,167 @@
-+/*
-+ * Copyright (c) Huawei Technologies Co., Ltd., 2015
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ */
-+
-+/*
-+ * Verify that:
-+ * A process created via fork(2) or clone(2) without the
-+ * CLONE_NEWUSER flag is a member of the same user namespace as its
-+ * parent.
-+ * When unshare an user namespace, the calling process is moved into
-+ * a new user namespace which is not shared with any previously
-+ * existing process.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/wait.h>
-+#include <assert.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <errno.h>
-+#include "test.h"
-+#include "userns_helper.h"
-+
-+char *TCID = "user_namespace5";
-+int TST_TOTAL = 1;
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
-+}
-+
-+/*
-+ * child_fn1() - Inside a new user namespace
-+ */
-+static int child_fn1(void)
-+{
-+	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-+	return 0;
-+}
-+
-+static int wait4child(pid_t pid, const char *msg)
-+{
-+	int status;
-+
-+	if (waitpid(pid, &status, 0) == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+	} else if (WIFSIGNALED(status)) {
-+		tst_resm(TFAIL, "%s: child was killed with signal = %d",
-+			msg, WTERMSIG(status));
-+		return WTERMSIG(status);
-+	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-+		tst_resm(TFAIL, "%s: child returns %d", msg, status);
-+		return WEXITSTATUS(status);
-+	}
-+
-+	return 0;
-+}
-+
-+static long getusernsidbypid(int pid)
-+{
-+	char path[BUFSIZ];
-+	char userid[BUFSIZ];
-+	long id;
-+
-+	sprintf(path, "/proc/%d/ns/user", pid);
-+
-+	if (readlink(path, userid, BUFSIZ) == -1)
-+		tst_resm(TFAIL, "readlink failure.");
-+
-+	if (sscanf(userid, "user:[%ld]", &id) != 1)
-+		tst_resm(TFAIL, "sscanf failure.");
-+	return id;
-+}
-+
-+static void test_userns_id(void)
-+{
-+	int status;
-+	int cpid1, cpid2, cpid3;
-+	long parentuserns, cpid1userns, cpid2userns, newparentuserns;
-+
-+	parentuserns = getusernsidbypid(getpid());
-+	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1,
-+		NULL);
-+	if (cpid1 < 0)
-+		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-+	cpid1userns = getusernsidbypid(cpid1);
-+	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-+
-+	/* A process created via fork(2) or clone(2) without the
-+	CLONE_NEWUSER flag is a member of the same user namespace as its
-+	parent.*/
-+	if (parentuserns != cpid1userns)
-+		tst_resm(TFAIL, "userns:parent should be equal to cpid1");
-+
-+	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-+		(void *)child_fn1, NULL);
-+	if (cpid2 < 0)
-+		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-+	cpid2userns = getusernsidbypid(cpid2);
-+	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-+
-+	if (parentuserns == cpid2userns)
-+		tst_resm(TFAIL, "userns:parent should be not equal to cpid2");
-+
-+	switch (cpid3 = fork()) {
-+	case -1:
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+	case 0:
-+		if (unshare(CLONE_NEWUSER) == -1) {
-+			printf("parent pid unshare failure: (%d) %s",
-+				errno, strerror(errno));
-+			exit(1);
-+		}
-+		newparentuserns = getusernsidbypid(getpid());
-+
-+		/* When unshare an user namespace, the calling process
-+		is moved into a new user namespace which is not shared
-+		with any previously existing process.*/
-+		if (parentuserns == newparentuserns)
-+			exit(1);
-+		exit(0);
-+	}
-+
-+	status = 0;
-+	status |= wait4child(cpid1, "child1");
-+	status |= wait4child(cpid2, "child2");
-+	status |= wait4child(cpid3, "child3");
-+	if (status == 0)
-+		tst_resm(TPASS, "The usernsid function works well.");
-+	else
-+		tst_resm(TFAIL, "Some children reported failure.");
-+}
-+
-+static void setup(void)
-+{
-+	check_newuser();
-+
-+	tst_tmpdir();
-+	TST_CHECKPOINT_INIT(NULL);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+
-+	tst_parse_opts(argc, argv, NULL, NULL);
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+		test_userns_id();
-+	}
-+	cleanup();
-+	tst_exit();
-+}
-+
--- 
-1.9.1
+----- Original Message -----
+> From: "Li Wang" <liwang@redhat.com>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "Jan Stancek" <jstancek@redhat.com>
+> Sent: Monday, 27 July, 2015 10:53:12 AM
+> Subject: [Patch v2] syscalls/sysfs: replace syscall() macro by ltp_syscall()
+> 
+> v1 ---> v2
+> 	a. remove the __NR_sysfs macro defined
+> 	b. replace syscall() with ltp_syscall()
+> 
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
+Pushed with modified commit message, that reflects final version of patch.
+
+Thanks,
+Jan
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
