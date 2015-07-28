@@ -1,31 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zg-0004Q6-DC
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:48 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZD5Zf-0006uH-M2
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:48 +0000
-Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t696ig91020261
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:42 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t696if4W022992
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:41 GMT
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696ifD6009345
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:41 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  9 Jul 2015 09:47:30 +0300
-Message-Id: <1436424468-11756-6-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 05/23] network/virt_lib.sh: fix regexpr in cleanup
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1ZJyg5-0005fU-Mp
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 06:47:53 +0000
+Received: from mx5-phx2.redhat.com ([209.132.183.37])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZJyg4-0002bT-2L
+	for ltp-list@lists.sourceforge.net; Tue, 28 Jul 2015 06:47:53 +0000
+Date: Tue, 28 Jul 2015 02:47:45 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <2134014586.1093682.1438066065045.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1438016307-28805-1-git-send-email-jack@suse.com>
+References: <1438016307-28805-1-git-send-email-jack@suse.com>
+MIME-Version: 1.0
+Subject: Re: [LTP] [PATCH] inotify: Add test for inotify mark destruction
+ race
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,43 +25,198 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Jan Kara <jack@suse.com>
+Cc: ltp-list@lists.sourceforge.net
 
-So that 'ltp_v0@xxx' names are included too.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/virt/virt_lib.sh |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-index 9024a3e..22e4415 100644
---- a/testcases/network/virt/virt_lib.sh
-+++ b/testcases/network/virt/virt_lib.sh
-@@ -88,7 +88,7 @@ done
- cleanup_vifaces()
- {
- 	tst_resm TINFO "cleanup virtual interfaces..."
--	local viface=`ip link | sed -nE 's/^[0-9]+: (ltp_v[0-9]+):.+/\1/p'`
-+	local viface=`ip li | sed -nE 's/^[0-9]+: (ltp_v[0-9]+)[@:].+/\1/p'`
- 	for vx in $viface; do
- 		ROD_SILENT "ip link set $vx down"
- 		ROD_SILENT "ip link delete $vx"
--- 
-1.7.1
+----- Original Message -----
+> From: "Jan Kara" <jack@suse.com>
+> To: ltp-list@lists.sourceforge.net
+> Cc: "Jan Kara" <jack@suse.com>
+> Sent: Monday, 27 July, 2015 6:58:27 PM
+> Subject: [LTP] [PATCH] inotify: Add test for inotify mark destruction race
+> 
+> Kernels prior to 4.2 have a race when inode is being deleted while
 
+Hi,
+
+Do you also have the commit id(s) that fix the problem? That might be valuable
+information for people who find their kernel crashing.
+
+Regards,
+Jan
+
+> inotify group watching that inode is being torn down. When the race is
+> hit, the kernel crashes or loops. Test for that race.
+> 
+> Signed-off-by: Jan Kara <jack@suse.com>
+> ---
+>  runtest/syscalls                              |   1 +
+>  testcases/kernel/syscalls/inotify/inotify06.c | 121
+>  ++++++++++++++++++++++++++
+>  2 files changed, 122 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/inotify/inotify06.c
+> 
+> This tests for a kernel bug which causes a crash when triggered. I'm not sure
+> how (whether) tests like this should be integrated with LTP. So here is my
+> attempt at that.
+> 
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 70d4945706ea..c532fe307df9 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -449,6 +449,7 @@ inotify02 inotify02
+>  inotify03 inotify03
+>  inotify04 inotify04
+>  inotify05 inotify05
+> +inotify06 inotify06
+>  
+>  fanotify01 fanotify01
+>  fanotify02 fanotify02
+> diff --git a/testcases/kernel/syscalls/inotify/inotify06.c
+> b/testcases/kernel/syscalls/inotify/inotify06.c
+> new file mode 100644
+> index 000000000000..d5e14cb7e08d
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/inotify/inotify06.c
+> @@ -0,0 +1,121 @@
+> +#include "config.h"
+> +
+> +#include <stdio.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +#include <fcntl.h>
+> +#include <time.h>
+> +#include <signal.h>
+> +#include <sys/inotify.h>
+> +#include <sys/time.h>
+> +#include <sys/wait.h>
+> +#include <sys/syscall.h>
+> +
+> +#include "test.h"
+> +#include "linux_syscall_numbers.h"
+> +#include "inotify.h"
+> +#include "safe_macros.h"
+> +
+> +char *TCID = "inotify06";
+> +int TST_TOTAL = 1;
+> +
+> +#if defined(HAVE_SYS_INOTIFY_H)
+> +#include <sys/inotify.h>
+> +
+> +/* Number of seconds to run the test for */
+> +#define DURATION 10
+> +/* Number of files to test (must be > 1) */
+> +#define FILES 5
+> +
+> +char names[FILES][PATH_MAX];
+> +
+> +static void cleanup(void)
+> +{
+> +	tst_rmdir();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	int i;
+> +
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +
+> +	TEST_PAUSE;
+> +
+> +	tst_tmpdir();
+> +
+> +	for (i = 0; i < FILES; i++)
+> +		sprintf(names[i], "fname_%d", i);
+> +}
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int inotify_fd, fd;
+> +	pid_t pid;
+> +	time_t start;
+> +	int i, lc;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		pid = fork();
+> +		if (pid == 0) {
+> +			while (1) {
+> +				for (i = 0; i < FILES; i++) {
+> +					fd = SAFE_OPEN(cleanup, names[i],
+> +						       O_CREAT | O_RDWR, 0600);
+> +					SAFE_CLOSE(cleanup, fd);
+> +				}
+> +				for (i = 0; i < FILES; i++)
+> +					SAFE_UNLINK(cleanup, names[i]);
+> +			}
+> +		} else if (pid == -1)
+> +			tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
+> +
+> +		start = time(NULL);
+> +		while (time(NULL) - start < DURATION) {
+> +			inotify_fd = syscall(__NR_inotify_init1, O_NONBLOCK);
+> +			if (inotify_fd < 0) {
+> +				if (errno == ENOSYS) {
+> +					tst_brkm(TCONF, cleanup,
+> +					 	 "inotify is not configured in this "
+> +						 "kernel.");
+> +				} else {
+> +					tst_brkm(TBROK | TERRNO, cleanup,
+> +						 "inotify_init failed");
+> +				}
+> +			}
+> +			for (i = 0; i < FILES; i++) {
+> +				/*
+> +				 * Both failure and success are fine since
+> +				 * files are being deleted in parallel - this
+> +				 * is what provokes the race we want to test
+> +				 * for...
+> +				 */
+> +				myinotify_add_watch(inotify_fd, names[i],
+> +						    IN_MODIFY);
+> +			}
+> +			SAFE_CLOSE(cleanup, inotify_fd);
+> +		}
+> +		/* We survived for given time - test succeeded */
+> +		tst_resm(TPASS, "kernel survived inotify beating");
+> +
+> +		/* Kill the child creating / deleting files and wait for it */
+> +		kill(pid, SIGKILL);
+> +		wait(NULL);
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +#else
+> +
+> +int main(void)
+> +{
+> +	tst_brkm(TCONF, NULL, "system doesn't have required inotify support");
+> +}
+> +
+> +#endif
+> --
+> 2.1.4
+> 
+> 
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+> 
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
