@@ -1,20 +1,27 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZKLAa-0000aA-07
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 06:48:52 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZKLAY-0001tH-JB
-	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 06:48:51 +0000
-Date: Wed, 29 Jul 2015 02:48:43 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1961298991.213904.1438152523150.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1590056734.149151438142095446.JavaMail.weblogic@epmlwas07a>
-References: <1590056734.149151438142095446.JavaMail.weblogic@epmlwas07a>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZKXII-0005DV-0A
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 19:45:38 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZKXIB-0004vA-7e
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 19:45:37 +0000
+Date: Wed, 29 Jul 2015 21:45:15 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150729194515.GA7009@rei.suse.de>
+References: <CANKSX+HAqaZARVLcDWU3Uhv2CYDjSBrrq2H4OrkOSaY647saaA@mail.gmail.com>
+	<20150729144508.GB3427@rei.suse.de>
+	<CANKSX+ETp0jdXp+zSUtUPn8SWUQaCh1bETYzcpF_C8kZpPtGdQ@mail.gmail.com>
+	<20150729152949.GA6478@rei.suse.de>
+	<1186607709.563342.1438184803657.JavaMail.zimbra@redhat.com>
+	<20150729155005.GC3427@rei.suse.de>
+	<CANKSX+EukvUBmjMf7TMxTzcsMXmzfGb+FYqrdo7vKnEiLb6wyg@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Regarding memcg control  testcase (mem_process.c)
+Content-Disposition: inline
+In-Reply-To: <CANKSX+EukvUBmjMf7TMxTzcsMXmzfGb+FYqrdo7vKnEiLb6wyg@mail.gmail.com>
+Subject: Re: [LTP] LTP make failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,67 +34,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: manjeet p <manjeet.p@samsung.com>
-Cc: AJEET YADAV <ajeet.y@samsung.com>, ltp-list@lists.sourceforge.net, PANKAJ MISHRA <pankaj.m@samsung.com>
+To: "$rik@nth " <srikanth007m@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-
-
-
-
------ Original Message -----
-> From: "Manjeet Pawar" <manjeet.p@samsung.com>
-> To: "Jan Stancek" <jstancek@redhat.com>, ltp-list@lists.sourceforge.net
-> Cc: "AJEET YADAV" <ajeet.y@samsung.com>, "PANKAJ MISHRA" <pankaj.m@samsung.com>
-> Sent: Wednesday, 29 July, 2015 5:54:55 AM
-> Subject: Re: Re: [LTP]  Regarding memcg control  testcase (mem_process.c)
+Hi!
+> FYI, Here is my host configuration.
+> Linux srikanth-linux 3.15.0-031500rc2-generic #201404201435 SMP Sun
+> Apr 20 18:36:18 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
 > 
-> Hello Jan,
-> After doing analysis, I found that When memory hog process (mem_process)
-> tries to mmap double the memory of the cgroup limit which is 4096 . I am
-> getting OOM in that situation and send kill signal to process (which is
-> expected behaviour) . But it could not kill the process and
->  it sets the process state to uninterrupted sleep state.
-> 
-> To get this OOM , i need to change oom_adj value of the process '208' from
-> -17 to -16. If i dont do this, I dont get OOM and process always stuck at
-> mmap and try to allocate 8192 Bytes of memory.
+> @Cyril - libkerntest.a got generated with your suggested changes. Does
+> that make any difference between INTERNAL_LIB to LIB? Should i need to
+> change any other files to unblock the compilation?
 
-That explains it, -17 means OOM is disabled:
-#define OOM_DISABLE (-17)
+The only difference between INTERNAL_LIB and LIB is one ifneq and
+variable assigment in the lib.mk. So if that does not work for you, you
+either hit bug in make, libc, kernel or hardware. Changing it from
+INTERNAL_LIB to LIB only works around that bug.
 
-> logs:-
-> [2-74.5749] Memory cgroup out of memory: Kill process 208 (mem_process) score
-> 147000 or sacrifice child
-> [2-74.5840] Killed process 208 (mem_process) total-vm:2704kB, anon-rss:80kB,
-> file-rss:484kB
-> by mmap is -1237753856
-> Warning: bad syntax, perhaps a bogus '-'? See /usr/share/doc/procps-3.2.8/FAQ
-> root       208 39.6  0.0   2704   564 ?        D    00:01   0:02 mem_process
-> -m 8192  // D - means uninterrupted sleep
-> root       215  0.0  0.0   2412   584 ?        S    00:01   0:00 grep -r 208
+I've just recompiled LTP for arm without a problem. In your case I would
+try to run memtest over night on your machine first. Otherwise you may
+spend hours trying to catch something that in reality is a hardware bug.
 
-No idea why it's getting stuck though. I'd try with oom_adj == 0. If that makes
-no difference, /proc/<pid>/stack might give some additional clues.
-
-Do you see similar behaviour with other OOM testcases?
-
-Regards,
-Jan
-
-> 
-> I am using 3.10.84 kernel. LTP is of latest  version (ltp-full-20150420)
-> 
-> Regards
-> Manjeet
-> 
-> ------- Original Message -------
-> Sender : Jan Stancek<jstancek@redhat.com>
-> Date : Jul 27, 2015 17:32 (GMT+09:00)
-> Title : Re: [LTP] Regarding memcg control testcase (mem_process.c)
-> 
-> 
-> 
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
