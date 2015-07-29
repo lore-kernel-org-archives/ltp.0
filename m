@@ -1,21 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZEx9S-0001I9-JF
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 10:09:26 +0000
-Date: Tue, 14 Jul 2015 12:07:55 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150714100754.GD3729@rei.suse.de>
-References: <1436896005-21714-1-git-send-email-sunyuan3@huawei.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1436896005-21714-1-git-send-email-sunyuan3@huawei.com>
-Subject: Re: [LTP] [PATCH] A process created via fork(2) or clone(2) without
- the CLONE_NEWUSER flag is a member of the same user namespace as its
- parent. When unshare an user namespace,
- the calling process is moved into a new user namespace which is not shared
- with any previously existing process.
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <manjeet.p@samsung.com>) id 1ZKISQ-0000uz-OH
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 03:55:06 +0000
+Received: from mailout4.samsung.com ([203.254.224.34])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1ZKISO-0007Iw-Ae
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 03:55:06 +0000
+Received: from epcpsbgr2.samsung.com
+	(u142.gpu120.samsung.co.kr [203.254.230.142])
+	by mailout4.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NS802208DJKXQ70@mailout4.samsung.com> for
+	ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 12:54:56 +0900 (KST)
+Date: Wed, 29 Jul 2015 03:54:56 +0000 (GMT)
+From: Manjeet Pawar <manjeet.p@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <1590056734.149151438142095446.JavaMail.weblogic@epmlwas07a>
+Subject: Re: [LTP] Regarding memcg control  testcase (mem_process.c)
+Reply-To: manjeet.p@samsung.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,249 +33,168 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+Cc: AJEET YADAV <ajeet.y@samsung.com>, PANKAJ MISHRA <pankaj.m@samsung.com>
 
-Hi!
-The commit message format is - first line is short description then
-empty line followed by detailed description. In this case it should have
-been something as:
+Hello Jan,
+After doing analysis, I found that When memory hog process (mem_process) tries to mmap double the memory of the cgroup limit which is 4096 . I am getting OOM in that situation and send kill signal to process (which is expected behaviour) . But it could not kill the process and
+ it sets the process state to uninterrupted sleep state.
 
-containers: Add userns05
+To get this OOM , i need to change oom_adj value of the process '208' from -17 to -16. If i dont do this, I dont get OOM and process always stuck at mmap and try to allocate 8192 Bytes of memory.
+logs:- 
+[2-74.5749] Memory cgroup out of memory: Kill process 208 (mem_process) score 147000 or sacrifice child
+[2-74.5840] Killed process 208 (mem_process) total-vm:2704kB, anon-rss:80kB, file-rss:484kB
+by mmap is -1237753856
+Warning: bad syntax, perhaps a bogus '-'? See /usr/share/doc/procps-3.2.8/FAQ
+root       208 39.6  0.0   2704   564 ?        D    00:01   0:02 mem_process -m 8192  // D - means uninterrupted sleep
+root       215  0.0  0.0   2412   584 ?        S    00:01   0:00 grep -r 208
 
-A process created via fork(2) or clone(2) without the CLONE_NEWUSER flag
-is a member of the same user namespace as its parent.
-...
+I am using 3.10.84 kernel. LTP is of latest  version (ltp-full-20150420)
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+Regards
+Manjeet
 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->  runtest/containers                            |   1 +
->  testcases/kernel/containers/.gitignore        |   1 +
->  testcases/kernel/containers/userns/userns05.c | 167 ++++++++++++++++++++++++++
->  3 files changed, 169 insertions(+)
->  create mode 100644 testcases/kernel/containers/userns/userns05.c
+------- Original Message -------
+Sender : Jan Stancek<jstancek@redhat.com>
+Date : Jul 27, 2015 17:32 (GMT+09:00)
+Title : Re: [LTP] Regarding memcg control testcase (mem_process.c)
+
+
+
+
+
+----- Original Message -----
+> From: "Manjeet Pawar" 
+> To: "Jan Stancek" 
+> Cc: ltp-list@lists.sourceforge.net, "AJEET YADAV" , "PANKAJ MISHRA" 
+> Sent: Monday, 27 July, 2015 10:12:46 AM
+> Subject: Re: Re: [LTP]  Regarding memcg control  testcase (mem_process.c)
 > 
-> diff --git a/runtest/containers b/runtest/containers
-> index de4197e..cece80b 100644
-> --- a/runtest/containers
-> +++ b/runtest/containers
-> @@ -72,3 +72,4 @@ userns01 userns01
->  userns02 userns02
->  userns03 userns03
->  userns04 userns04
-> +userns05 userns05
-> diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
-> index 85ced78..b433b03 100644
-> --- a/testcases/kernel/containers/.gitignore
-> +++ b/testcases/kernel/containers/.gitignore
-> @@ -7,3 +7,4 @@ userns/userns01
->  userns/userns02
->  userns/userns03
->  userns/userns04
-> +userns/userns05
-> diff --git a/testcases/kernel/containers/userns/userns05.c b/testcases/kernel/containers/userns/userns05.c
-> new file mode 100644
-> index 0000000..8d25c56
-> --- /dev/null
-> +++ b/testcases/kernel/containers/userns/userns05.c
-> @@ -0,0 +1,167 @@
-> +/*
-> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * Verify that:
-> + * A process created via fork(2) or clone(2) without the
-> + * CLONE_NEWUSER flag is a member of the same user namespace as its
-> + * parent.
-> + * When unshare an user namespace, the calling process is moved into
-> + * a new user namespace which is not shared with any previously
-> + * existing process.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <assert.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "userns_helper.h"
-> +
-> +char *TCID = "user_namespace5";
-> +int TST_TOTAL = 1;
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +/*
-> + * child_fn1() - Inside a new user namespace
-> + */
-> +static int child_fn1(void)
-> +{
-> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-> +	return 0;
-> +}
-> +
-> +static int wait4child(pid_t pid, const char *msg)
-> +{
-> +	int status;
-> +
-> +	if (waitpid(pid, &status, 0) == -1) {
-> +		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-> +	} else if (WIFSIGNALED(status)) {
-> +		tst_resm(TFAIL, "%s: child was killed with signal = %d",
-> +			msg, WTERMSIG(status));
-> +		return WTERMSIG(status);
-> +	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-> +		tst_resm(TFAIL, "%s: child returns %d", msg, status);
-> +		return WEXITSTATUS(status);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static long getusernsidbypid(int pid)
-> +{
-> +	char path[BUFSIZ];
-> +	char userid[BUFSIZ];
-> +	long id;
-> +
-> +	sprintf(path, "/proc/%d/ns/user", pid);
-> +
-> +	if (readlink(path, userid, BUFSIZ) == -1)
-> +		tst_resm(TFAIL, "readlink failure.");
-> +
-> +	if (sscanf(userid, "user:[%ld]", &id) != 1)
-> +		tst_resm(TFAIL, "sscanf failure.");
-> +	return id;
-> +}
-> +
-> +static void test_userns_id(void)
-> +{
-> +	int status;
-> +	int cpid1, cpid2, cpid3;
-> +	long parentuserns, cpid1userns, cpid2userns, newparentuserns;
-> +
-> +	parentuserns = getusernsidbypid(getpid());
-> +	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1,
-> +		NULL);
-> +	if (cpid1 < 0)
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-> +	cpid1userns = getusernsidbypid(cpid1);
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-> +
-> +	/* A process created via fork(2) or clone(2) without the
-> +	CLONE_NEWUSER flag is a member of the same user namespace as its
-> +	parent.*/
-> +	if (parentuserns != cpid1userns)
-> +		tst_resm(TFAIL, "userns:parent should be equal to cpid1");
-> +
-> +	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> +		(void *)child_fn1, NULL);
-> +	if (cpid2 < 0)
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
-> +	cpid2userns = getusernsidbypid(cpid2);
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-> +
-> +	if (parentuserns == cpid2userns)
-> +		tst_resm(TFAIL, "userns:parent should be not equal to cpid2");
-> +
-> +	switch (cpid3 = fork()) {
-> +	case -1:
-> +		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-> +	case 0:
-> +		if (unshare(CLONE_NEWUSER) == -1) {
-> +			printf("parent pid unshare failure: (%d) %s",
-> +				errno, strerror(errno));
-> +			exit(1);
-> +		}
-> +		newparentuserns = getusernsidbypid(getpid());
-> +
-> +		/* When unshare an user namespace, the calling process
-> +		is moved into a new user namespace which is not shared
-> +		with any previously existing process.*/
-> +		if (parentuserns == newparentuserns)
-> +			exit(1);
-> +		exit(0);
-> +	}
-> +
-> +	status = 0;
-> +	status |= wait4child(cpid1, "child1");
-> +	status |= wait4child(cpid2, "child2");
-> +	status |= wait4child(cpid3, "child3");
+> Hello Mr Jan,
+> Thanks for your reply,
+> With actual testscript I checked my "$!" , it is printing correct pid.
+> Also changes which you suggest, I tried with those changes , it is showing me
+> either "mmap failed:ffffffff"
 
-We have tst_record_childstatus() exactly for this purpose.
+When it fails, what is the errno?
 
-> +	if (status == 0)
-> +		tst_resm(TPASS, "The usernsid function works well.");
-> +	else
-> +		tst_resm(TFAIL, "Some children reported failure.");
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	check_newuser();
-> +
-> +	tst_tmpdir();
-> +	TST_CHECKPOINT_INIT(NULL);
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +
-> +	tst_parse_opts(argc, argv, NULL, NULL);
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +		test_userns_id();
-> +	}
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> -- 
-> 1.9.1
+> sometimes or "a successful mmap call".
+
+Where is this message coming from? I can't find such string in my LTP.
+
+> In my case "memory.usage_in_bytes" is 4096.
+> Testcase is run as "./memcg_control_test.sh 4096 4096 8192".
+> I am not getting this "mem_process getting killed by OOM seems like expected
+> outcome:"
+> May i know which kernel verison you are using.? Now I am doubtful on my
+> kernel.
+
+I'm on 4.0.4.
+
+What is your kernel/arch and LTP version?
+
+Regards,
+Jan
+
+> 
+> Regards
+> Manjeet
+> 
+> ------- Original Message -------
+> Sender : Jan Stancek
+> Date : Jul 26, 2015 20:28 (GMT+09:00)
+> Title : Re: [LTP] Regarding memcg control testcase (mem_process.c)
 > 
 > 
-> ------------------------------------------------------------------------------
-> Don't Limit Your Business. Reach for the Cloud.
-> GigeNET's Cloud Solutions provide you with the tools and support that
-> you need to offload your IT needs and focus on growing your business.
-> Configured For All Businesses. Start Your Cloud Today.
-> https://www.gigenetcloud.com/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
+> ----- Original Message -----
+> > From: "Manjeet Pawar"
+> > To: ltp-list@lists.sourceforge.net
+> > Cc: "ajeet y" , "pankaj m"
+> > Sent: Friday, 24 July, 2015 6:07:45 AM
+> > Subject: [LTP]  Regarding memcg control  testcase (mem_process.c)
+> > 
+> > Hi,
+> > 
+> > I am trying to run memcg control testcase using script
+> > memcg_control_test.sh.
+> > This script calls a memory hog process 'mem_process'.
+> > The condition for this testcase to pass is 'when the memory hog process is
+> > killed on crossing boundary'. please check the below function.
+> > 
+> > 
+> > -----------------------------
+> > # Check if the test process is killed on crossing boundary
+> > test_proc_kill()
+> > {
+> >     ( cd $TMP && mem_process -m $PROC_MEM & )
+> >     sleep 1
+> >     echo $! > tasks
+> 
+> mem_process is getting started via subshell, so I'd assume $! in parent is
+> bogus.
+> Can you try this instead:
+> 
+>         pushd $TMP || return
+>         mem_process -m $PROC_MEM &
+>         local pid=$!
+>         popd
+> 
+>         sleep 1
+>         echo $pid > tasks
+> 
+> 
+> > 
+> >     #Instruct the test process to start acquiring memory
+> >     echo m > $STATUS_PIPE
+> >     sleep 5
+> > 
+> >     #Check if killed
+> >     ps -p $! > /dev/null 2> /dev/null    ----> at this point the process
+> >     'mem_process' must have terminated so that last return value ($?) can
+> >     be
+> >     non-zero.
+> >     if [ $? -eq 0 ]; then
+> >         echo m > $STATUS_PIPE
+> >         echo x > $STATUS_PIPE
+> >     else
+> >         : $((KILLED_CNT += 1))
+> >     fi
+> > }
+> > -------------------------
+> > In my case: 'mem_process' does not terminate until we pass 'x' to it, but
+> > the
+> > expected behaviour according to testcase  that the memory hog process
+> > must be killed on crossing bounday.
+> > Inputs taken by testcase are : "./memcg_control_test.sh 4096 4096 8192"
+> > If I change the inputs from 8192 to other (1024,10MB,100MB etc) . In all
+> > situation memory hog process does not terminate.
+> > So what is the ideal condition for this process to terminate to make whole
+> > testcase pass. ?
+> 
+> mem_process getting killed by OOM seems like expected outcome:
+> 
+> memcg_control    0  TINFO  :  Test #1: Checking if the memory usage limit
+> imposed by the topmost group is enforced
+> ./memcg_control_test.sh: line 56:  2795 Killed                  mem_process
+> -m $PROC_MEM  (wd: /tmp)
+> memcg_control    1  TPASS  :  Test #1: passed
+> memcg_control    1  TPASS  :  memcg_control: passed
+> 
+> If it still doesn't get killed, I'd recommend checking
+> "memory.usage_in_bytes".
+> 
+> Regards,
+> Jan
+> 
+> 
+> > 
+> > ------------------------------------------------------------------------------
+> > _______________________________________________
+> > Ltp-list mailing list
+> > Ltp-list@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/ltp-list
+> >
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
