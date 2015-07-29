@@ -2,25 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZAxL3-0000Vm-CX
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 09:32:53 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZAxL1-0006GO-UC
-	for ltp-list@lists.sourceforge.net; Fri, 03 Jul 2015 09:32:53 +0000
-Date: Fri, 3 Jul 2015 05:32:11 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <40301374.12208438.1435915931114.JavaMail.zimbra@redhat.com>
-In-Reply-To: <559654BB.5050300@huawei.com>
-References: <1435724565-19631-1-git-send-email-sunyuan3@huawei.com>
-	<1715707849.11822659.1435846199391.JavaMail.zimbra@redhat.com>
-	<5595FC03.10602@huawei.com>
-	<1526251635.12159899.1435909417100.JavaMail.zimbra@redhat.com>
-	<55965241.5020206@huawei.com>
-	<20150703091815.GA2855@dustball.brq.redhat.com>
-	<559654BB.5050300@huawei.com>
+	(envelope-from <srikanth007m@gmail.com>) id 1ZKRTP-00018T-KX
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 13:32:43 +0000
+Received: from mail-qg0-f47.google.com ([209.85.192.47])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZKRTK-0003WH-1g
+	for ltp-list@lists.sourceforge.net; Wed, 29 Jul 2015 13:32:43 +0000
+Received: by qgeu79 with SMTP id u79so4180255qge.1
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 29 Jul 2015 06:32:32 -0700 (PDT)
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2] userns01: add capability verification
+Date: Wed, 29 Jul 2015 19:02:32 +0530
+Message-ID: <CANKSX+HAqaZARVLcDWU3Uhv2CYDjSBrrq2H4OrkOSaY647saaA@mail.gmail.com>
+From: "$rik@nth " <srikanth007m@gmail.com>
+Subject: [LTP] LTP make failed
+Reply-To: srikanth007m@gmail.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,66 +26,137 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3064127519816786564=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+
+--===============3064127519816786564==
+Content-Type: multipart/alternative; boundary=001a113b557a7789fc051c039e30
+
+--001a113b557a7789fc051c039e30
+Content-Type: text/plain; charset=UTF-8
+
+Hi,
+
+I am trying to cross compile LTP and observing some issue. Any help or
+suggestions to overcome from these errors. TIA
 
 
+make[1]: Entering directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/hugetlb/hugemmap'
+make -C "/local/mnt2/workspace2/LTP/ltp-full-20150420/lib" -f
+"/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/Makefile" all
+make[2]: Entering directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/lib'
+make[3]: Entering directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests'
+make[2]: Leaving directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/lib'
+make -C ../../../../../testcases/kernel/mem/lib -f
+"/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib/Makefile"
+all
+make[2]: Entering directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib'
+make -C /local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib
+-f
+"/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib/Makefile"
+all
+make[3]: Entering directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib'
+if [ -z "numa_helper.o" ] ; then \
+                echo "Cowardly refusing to create empty archive"; \
+                exit 1; \
+        fi
+arm-linux-gnueabi-ar -rc "lib/libipc_hugetlb.a" numa_helper.o
+arm-linux-gnueabi-ar: lib/libipc_hugetlb.a: No such file or directory
+make[3]: *** [lib/libipc_hugetlb.a] Error 1
+make[3]: Leaving directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib'
+make[2]: ***
+[/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/lib/libkerntest.a]
+Error 2
+make[2]: Leaving directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib'
+make[1]: *** [../../../../../testcases/kernel/mem/lib/libmem.a] Error 2
+make[1]: Leaving directory
+`/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/hugetlb/hugemmap'
+make: *** [all] Error 2
+
+Here the file is there "ib/libipc_hugetlb.a: No such file or directory" but
+still it showing the error.
+
+-- 
+Thanks & Regards,
+M.Srikanth Kumar.
+
+--001a113b557a7789fc051c039e30
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Hi,=C2=A0</div><div><br></div><div>I am trying to cro=
+ss compile LTP and observing some issue. Any help or suggestions to overcom=
+e from these errors. TIA</div><div><br></div><div><br></div><div>make[1]: E=
+ntering directory `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/k=
+ernel/mem/hugetlb/hugemmap&#39;</div><div>make -C &quot;/local/mnt2/workspa=
+ce2/LTP/ltp-full-20150420/lib&quot; -f &quot;/local/mnt2/workspace2/LTP/ltp=
+-full-20150420/lib/Makefile&quot; all</div><div>make[2]: Entering directory=
+ `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib&#39;</div><div>make[3]: =
+Entering directory `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests&=
+#39;</div><div>make[3]: Nothing to be done for `all&#39;.</div><div>make[3]=
+: Leaving directory `/local/mnt2/workspace2/LTP/ltp-full-20150420/lib/tests=
+&#39;</div><div>make[2]: Leaving directory `/local/mnt2/workspace2/LTP/ltp-=
+full-20150420/lib&#39;</div><div>make -C ../../../../../testcases/kernel/me=
+m/lib -f &quot;/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kerne=
+l/mem/lib/Makefile&quot; all</div><div>make[2]: Entering directory `/local/=
+mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/lib&#39;</div><d=
+iv>make -C /local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/li=
+b -f &quot;/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/li=
+b/Makefile&quot; all</div><div>make[3]: Entering directory `/local/mnt2/wor=
+kspace2/LTP/ltp-full-20150420/testcases/kernel/lib&#39;</div><div>if [ -z &=
+quot;numa_helper.o&quot; ] ; then \</div><div>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 =C2=A0 =C2=A0 =C2=A0 echo &quot;Cowardly refusing to create empty ar=
+chive&quot;; \</div><div>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
+=C2=A0 exit 1; \</div><div>=C2=A0 =C2=A0 =C2=A0 =C2=A0 fi</div><div>arm-lin=
+ux-gnueabi-ar -rc &quot;lib/libipc_hugetlb.a&quot; numa_helper.o</div><div>=
+arm-linux-gnueabi-ar: lib/libipc_hugetlb.a: No such file or directory</div>=
+<div>make[3]: *** [lib/libipc_hugetlb.a] Error 1</div><div>make[3]: Leaving=
+ directory `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/l=
+ib&#39;</div><div>make[2]: *** [/local/mnt2/workspace2/LTP/ltp-full-2015042=
+0/testcases/kernel/lib/libkerntest.a] Error 2</div><div>make[2]: Leaving di=
+rectory `/local/mnt2/workspace2/LTP/ltp-full-20150420/testcases/kernel/mem/=
+lib&#39;</div><div>make[1]: *** [../../../../../testcases/kernel/mem/lib/li=
+bmem.a] Error 2</div><div>make[1]: Leaving directory `/local/mnt2/workspace=
+2/LTP/ltp-full-20150420/testcases/kernel/mem/hugetlb/hugemmap&#39;</div><di=
+v>make: *** [all] Error 2</div><div><br></div><div>Here the file is there &=
+quot;ib/libipc_hugetlb.a: No such file or directory&quot; but still it show=
+ing the error.<br></div><div><br></div>-- <br><div class=3D"gmail_signature=
+">Thanks &amp; Regards,<br>M.Srikanth Kumar.</div>
+</div>
+
+--001a113b557a7789fc051c039e30--
 
 
-
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Friday, 3 July, 2015 11:24:11 AM
-> Subject: Re: [PATCH V2] userns01: add capability verification
-> 
-> 
-> Interesting. Log is as follow. I will have a research.
-> 
-> log:
-> root@ubuntu:/tmp/tt# gcc test.c -lcap
-> root@ubuntu:/tmp/tt# ls
-> a.out  test.c
-> root@ubuntu:/tmp/tt# ./a.out
-> ffffffff ffffffff
-> ffffffff ffffffff
-> cap_compare: 0
-
-How about if you run this as root:
-
-# cat /proc/self/status | grep CapEff
-CapEff: 0000003fffffffff
-
-
-
-> 
-> 
-> On 2015/7/3 17:18, Jan Stancek wrote:
-> > On Fri, Jul 03, 2015 at 05:13:37PM +0800, Yuan Sun wrote:
-> >> Hi Jan,
-> >>      The following link is unaccessible because HuaWei's network
-> >> security strategy.
-> >>      Could you please attach the test.c file for me?
-> >> http://fpaste.org/239445/35909330/
-> > Was afraid my web email client would mangle it. Attached.
-> >
-> > Regards,
-> > Jan
-> >
-> 
-> 
+--===============3064127519816786564==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
+
+--===============3064127519816786564==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============3064127519816786564==--
+
