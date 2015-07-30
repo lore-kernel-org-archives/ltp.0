@@ -1,23 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1ZD1Iv-0001SB-IW
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 02:11:13 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZD1Iu-0004ox-De
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 02:11:13 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t6929Mub012049
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 10:09:23 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Thu, 9 Jul 2015 09:59:59 +0800
-Message-ID: <1436407199-12492-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZKiXd-0005Wf-Jl
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 07:46:13 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZKiXc-00063p-5k
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 07:46:13 +0000
+Date: Thu, 30 Jul 2015 09:45:54 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150730074554.GA27713@rei.suse.de>
+References: <CANKSX+HAqaZARVLcDWU3Uhv2CYDjSBrrq2H4OrkOSaY647saaA@mail.gmail.com>
+	<20150729144508.GB3427@rei.suse.de>
+	<CANKSX+ETp0jdXp+zSUtUPn8SWUQaCh1bETYzcpF_C8kZpPtGdQ@mail.gmail.com>
+	<20150729152949.GA6478@rei.suse.de>
+	<1186607709.563342.1438184803657.JavaMail.zimbra@redhat.com>
+	<20150729155005.GC3427@rei.suse.de>
+	<CANKSX+EukvUBmjMf7TMxTzcsMXmzfGb+FYqrdo7vKnEiLb6wyg@mail.gmail.com>
+	<20150729194515.GA7009@rei.suse.de>
+	<CANKSX+FRJcg3xmc2BbWiDzmSqT2NC+hQib-UsWA4yoWTq8fB3g@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] syscalls/getrandom: remove reference to
-	'<linux/random.h>'
+Content-Disposition: inline
+In-Reply-To: <CANKSX+FRJcg3xmc2BbWiDzmSqT2NC+hQib-UsWA4yoWTq8fB3g@mail.gmail.com>
+Subject: Re: [LTP] LTP make failed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,64 +33,32 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: "$rik@nth " <srikanth007m@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-R2l2ZW4gdGhhdCB3ZSB1c2UgbHRwX3N5c2NhbGwoKSB0byBjYWxsIGdldHJhbmRvbSgyKSBhbmQg
-YWxyZWFkeQpoYXZlICJHUk5EX1JBTkRPTSwgR1JORF9OT05CTE9DSyIgZGVmaW5lZCBpbiBsYXBp
-L2dldHJhbmRvbS5oLCBpbmRlZWQKd2UgZG9uJ3QgbmVlZCB0byBpbmNsdWRlICc8bGludXgvcmFu
-ZG9tLmg+Jy4gQWxzbyBpbmNsdWRpbmcKJzxsaW51eC9yYW5kb20uaD4nJyB3aWxsIHJlc3VsdCBp
-biBzb21lIGNvbXBpbGF0aW9uIGVycm9ycyBpbiBvbGRlcgpsaW51eCBkaXN0cmlidXRpb24sIGZv
-ciBleGFtcGxlLCBpbiBSSEVMNS4xMUdBLCB0aGVyZSB3aWxsIGJlIHN1Y2gKZXJyb3JzOgogIElu
-IGZpbGUgaW5jbHVkZWQgZnJvbSBnZXRyYW5kb20wMS5jOjI5OgogIC91c3IvaW5jbHVkZS9saW51
-eC9yYW5kb20uaDozODogZXJyb3I6IGV4cGVjdGVkIHNwZWNpZmllci1xdWFsaWZpZXItbGlzdCBi
-ZWZvcmUg4oCYX191MzLigJkKICAvdXNyL2luY2x1ZGUvbGludXgvcmFuZG9tLmg6NDI6IGVycm9y
-OiBleHBlY3RlZCBzcGVjaWZpZXItcXVhbGlmaWVyLWxpc3QgYmVmb3JlIOKAmF9fdTMy4oCZClRo
-aXMgcGF0Y2ggd2lsbCBhbHNvIGZpeCB0aGVzZSBjb21waWxhdGlvbiBlcnJvcnMuCgpTaWduZWQt
-b2ZmLWJ5OiBYaWFvZ3VhbmcgV2FuZyA8d2FuZ3hnLmZuc3RAY24uZnVqaXRzdS5jb20+Ci0tLQog
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRyYW5kb20vZ2V0cmFuZG9tMDEuYyB8IDEgLQog
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRyYW5kb20vZ2V0cmFuZG9tMDIuYyB8IDEgLQog
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRyYW5kb20vZ2V0cmFuZG9tMDMuYyB8IDEgLQog
-dGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRyYW5kb20vZ2V0cmFuZG9tMDQuYyB8IDEgLQog
-NCBmaWxlcyBjaGFuZ2VkLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9r
-ZXJuZWwvc3lzY2FsbHMvZ2V0cmFuZG9tL2dldHJhbmRvbTAxLmMgYi90ZXN0Y2FzZXMva2VybmVs
-L3N5c2NhbGxzL2dldHJhbmRvbS9nZXRyYW5kb20wMS5jCmluZGV4IDgxODM3MmUuLjEwMzc0OGEg
-MTAwNjQ0Ci0tLSBhL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cmFuZG9tL2dldHJhbmRv
-bTAxLmMKKysrIGIvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRyYW5kb20vZ2V0cmFuZG9t
-MDEuYwpAQCAtMjYsNyArMjYsNiBAQAogICoKICAqLwogCi0jaW5jbHVkZSA8bGludXgvcmFuZG9t
-Lmg+CiAjaW5jbHVkZSAibGFwaS9nZXRyYW5kb20uaCIKICNpbmNsdWRlICJsaW51eF9zeXNjYWxs
-X251bWJlcnMuaCIKICNpbmNsdWRlICJ0ZXN0LmgiCmRpZmYgLS1naXQgYS90ZXN0Y2FzZXMva2Vy
-bmVsL3N5c2NhbGxzL2dldHJhbmRvbS9nZXRyYW5kb20wMi5jIGIvdGVzdGNhc2VzL2tlcm5lbC9z
-eXNjYWxscy9nZXRyYW5kb20vZ2V0cmFuZG9tMDIuYwppbmRleCA5MDU5MTdiLi4wYWM4YmQyIDEw
-MDY0NAotLS0gYS90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldHJhbmRvbS9nZXRyYW5kb20w
-Mi5jCisrKyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cmFuZG9tL2dldHJhbmRvbTAy
-LmMKQEAgLTI3LDcgKzI3LDYgQEAKICAqCiAgKi8KIAotI2luY2x1ZGUgPGxpbnV4L3JhbmRvbS5o
-PgogI2luY2x1ZGUgImxhcGkvZ2V0cmFuZG9tLmgiCiAjaW5jbHVkZSAibGludXhfc3lzY2FsbF9u
-dW1iZXJzLmgiCiAjaW5jbHVkZSAidGVzdC5oIgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9nZXRyYW5kb20vZ2V0cmFuZG9tMDMuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lz
-Y2FsbHMvZ2V0cmFuZG9tL2dldHJhbmRvbTAzLmMKaW5kZXggOWMxM2QwOS4uMDM5NTBlMCAxMDA2
-NDQKLS0tIGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRyYW5kb20vZ2V0cmFuZG9tMDMu
-YworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldHJhbmRvbS9nZXRyYW5kb20wMy5j
-CkBAIC0zMCw3ICszMCw2IEBACiAgKiAgbnVtYmVyIG9mIGJ5dGVzIHJlcXVpcmVkIGFuZCBleHBl
-Y3RzIHN1Y2Nlc3MuCiAgKi8KIAotI2luY2x1ZGUgPGxpbnV4L3JhbmRvbS5oPgogI2luY2x1ZGUg
-ImxhcGkvZ2V0cmFuZG9tLmgiCiAjaW5jbHVkZSAibGludXhfc3lzY2FsbF9udW1iZXJzLmgiCiAj
-aW5jbHVkZSAidGVzdC5oIgpkaWZmIC0tZ2l0IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9n
-ZXRyYW5kb20vZ2V0cmFuZG9tMDQuYyBiL3Rlc3RjYXNlcy9rZXJuZWwvc3lzY2FsbHMvZ2V0cmFu
-ZG9tL2dldHJhbmRvbTA0LmMKaW5kZXggNGUwOTllMS4uMTBhYjQ0YiAxMDA2NDQKLS0tIGEvdGVz
-dGNhc2VzL2tlcm5lbC9zeXNjYWxscy9nZXRyYW5kb20vZ2V0cmFuZG9tMDQuYworKysgYi90ZXN0
-Y2FzZXMva2VybmVsL3N5c2NhbGxzL2dldHJhbmRvbS9nZXRyYW5kb20wNC5jCkBAIC0zMCw3ICsz
-MCw2IEBACiAgKiAgZGVzY3JpcHRvcnMgdG8gMyBhbmQgZXhwZWN0cyBzdWNjZXNzLgogICovCiAK
-LSNpbmNsdWRlIDxsaW51eC9yYW5kb20uaD4KICNpbmNsdWRlIDxzeXMvcmVzb3VyY2UuaD4KICNp
-bmNsdWRlICJsYXBpL2dldHJhbmRvbS5oIgogI2luY2x1ZGUgImxpbnV4X3N5c2NhbGxfbnVtYmVy
-cy5oIgotLSAKMS44LjIuMQoKCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQpEb24ndCBMaW1pdCBZb3Vy
-IEJ1c2luZXNzLiBSZWFjaCBmb3IgdGhlIENsb3VkLgpHaWdlTkVUJ3MgQ2xvdWQgU29sdXRpb25z
-IHByb3ZpZGUgeW91IHdpdGggdGhlIHRvb2xzIGFuZCBzdXBwb3J0IHRoYXQKeW91IG5lZWQgdG8g
-b2ZmbG9hZCB5b3VyIElUIG5lZWRzIGFuZCBmb2N1cyBvbiBncm93aW5nIHlvdXIgYnVzaW5lc3Mu
-CkNvbmZpZ3VyZWQgRm9yIEFsbCBCdXNpbmVzc2VzLiBTdGFydCBZb3VyIENsb3VkIFRvZGF5Lgpo
-dHRwczovL3d3dy5naWdlbmV0Y2xvdWQuY29tLwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpMdHAtbGlzdCBtYWlsaW5nIGxpc3QKTHRwLWxpc3RAbGlzdHMu
-c291cmNlZm9yZ2UubmV0Cmh0dHBzOi8vbGlzdHMuc291cmNlZm9yZ2UubmV0L2xpc3RzL2xpc3Rp
-bmZvL2x0cC1saXN0Cg==
+Hi!
+> Can you tell me what kind of steps you followed to cross compile LTP
+> for arm? Does it make any difference from the configure what i am
+> using and you.
+
+I've just installed arm cross compiler and used the configure parameters
+you send. But I've removed the CFLAGS=-static, passing -static to CFLAGS
+is wrong and indeed it breaks at testcases/ade/ldd/ that creates dynamic
+library for testing ldd binary.
+
+> memtest suite? can you point me to the location
+
+https://en.wikipedia.org/wiki/Memtest86
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
