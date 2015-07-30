@@ -1,18 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZExCs-0001PP-RX
-	for ltp-list@lists.sourceforge.net; Tue, 14 Jul 2015 10:12:58 +0000
-Date: Tue, 14 Jul 2015 12:11:27 +0200
+	(envelope-from <metan@suse.de>) id 1ZKnOj-0002V3-Jj
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 12:57:21 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZKnOi-00040T-E6
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 12:57:21 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 847C8AC22
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 30 Jul 2015 12:57:13 +0000 (UTC)
+Date: Thu, 30 Jul 2015 14:57:03 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150714101126.GE3729@rei.suse.de>
-References: <1435895009-18134-1-git-send-email-sunyuan3@huawei.com>
-	<20150714094052.GC3729@rei.suse.de> <55A4DD8E.90501@huawei.com>
+Message-ID: <20150730125703.GE18339@rei.suse.de>
+References: <1438016307-28805-1-git-send-email-jack@suse.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <55A4DD8E.90501@huawei.com>
-Subject: Re: [LTP] [PATCH] Add check_simple_capset in filecapstest.sh.
+In-Reply-To: <1438016307-28805-1-git-send-email-jack@suse.com>
+Subject: Re: [LTP] [PATCH] inotify: Add test for inotify mark destruction
+	race
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -25,50 +33,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
+To: Jan Kara <jack@suse.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> >> +echo "testing for simple capset"
-> >> +check_simple_capset
-> >> +tmp=$?
-> >> +if [ $tmp -ne 0 ]; then
-> >> +	exit_code=$tmp
-> >> +fi
-> > Rather than adding to the script, can we split it so that each of the
-> > binaries can be run separately and that we have one entry per test in
-> > the runtest file?
-> You mean that I need to add check_simple_capset to ltp/runtest/filecaps. 
-> Is it right?
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		pid = fork();
+> +		if (pid == 0) {
+> +			while (1) {
+> +				for (i = 0; i < FILES; i++) {
+> +					fd = SAFE_OPEN(cleanup, names[i],
+> +						       O_CREAT | O_RDWR, 0600);
+> +					SAFE_CLOSE(cleanup, fd);
+> +				}
+> +				for (i = 0; i < FILES; i++)
+> +					SAFE_UNLINK(cleanup, names[i]);
+> +			}
+> +		} else if (pid == -1)
+> +			tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
+> +
+> +		start = time(NULL);
+> +		while (time(NULL) - start < DURATION) {
 
-Yes along with the rest of tests that are executed from the script and
-move any required setup from the script to the testcases as well. Looks
-to me like tst_tmpdir() would be needed but I haven't checked throughly.
+Using time() for measuring how long something has been executed is not a
+good idea for several reasons. Can't we settle for large enough number
+of iterations instead?
 
-Idealy we would have one record in runtest files per test.
+> +			inotify_fd = syscall(__NR_inotify_init1, O_NONBLOCK);
+> +			if (inotify_fd < 0) {
+> +				if (errno == ENOSYS) {
+> +					tst_brkm(TCONF, cleanup,
+> +					 	 "inotify is not configured in this "
+> +						 "kernel.");
+> +				} else {
+> +					tst_brkm(TBROK | TERRNO, cleanup,
+> +						 "inotify_init failed");
+> +				}
+> +			}
 
-> > It would also be good idea to prefix the test binaris with capset_ or
-> > something similar (in a separate patch please).
-> >
-> The following file names need updating. Is it right?
-> 
-> check_simple_capset.c -> capset_check_simple.c
-> inh_capped.c -> capset_inh.c
-> print_caps.c -> capset_print.c
-> verify_caps_exec.c -> capset_verify_exec.c
-
-Yes please.
+The rest looks good to me.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
