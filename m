@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZKohJ-0000YA-Gp
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 14:20:37 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZKq2o-0006ph-O2
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 15:46:54 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZKohH-0007WO-ID
-	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 14:20:37 +0000
-Date: Thu, 30 Jul 2015 16:20:19 +0200
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZKq2n-0000vu-Ii
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 15:46:54 +0000
+Date: Thu, 30 Jul 2015 17:46:36 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150730142019.GB21727@rei.suse.de>
-References: <1432630734.31833.5.camel@G08FNSTD140232>
-	<20150603162630.GA8444@rei.suse.de>
-	<1433398217.2651.1.camel@G08FNSTD140232.g08.fujitsu.local>
-	<20150702125856.GA17802@rei.suse.de>
-	<1436241863.22274.4.camel@G08FNSTD140232.g08.fujitsu.local>
+Message-ID: <20150730154636.GA9874@rei.suse.de>
+References: <1437058074-14800-1-git-send-email-liuhangbin@gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1436241863.22274.4.camel@G08FNSTD140232.g08.fujitsu.local>
-Subject: Re: [LTP] [PATCH v3] cpuset: regression test for "system crash if
- cpuset_cpumask_can_shrink() is passed an empty cpumask"
+In-Reply-To: <1437058074-14800-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: [LTP] [PATCHv4 1/2] testcases/lib/test.sh: add tst_retry() to
+ ensure cmd exec succeed
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,38 +29,12 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Cc: ltp-list <ltp-list@lists.sourceforge.net>
+To: Hangbin Liu <liuhangbin@gmail.com>
+Cc: LTP List <ltp-list@lists.sourceforge.net>
 
 Hi!
-> +cleanup()
-> +{
-> +	if [ -d "${root_cpuset_dir}/testdir" ]; then
-> +		rmdir ${root_cpuset_dir}/testdir
-> +	fi
-> +
-> +	if [ "${mount_flag}" == "1" ]; then
-> +		umount ${root_cpuset_dir}
-> +		if [ $? -ne 0 ]; then
-> +			tst_resm TWARN "'umount ${root_cpuset_dir}' failed"
-> +		fi
-> +
-> +		if [ -d "${root_cpuset_dir}" ]; then
-> +			rmdir ${root_cpuset_dir}
-> +		fi
-> +	fi
-> +
-> +	if [ -n ${cpu_exclusive_value} -a ${cpu_exclusive_value} -ne 1 ]; then
-> +		# Need to flush, or may be output:
-> +		# "write error: Device or resource busy"
-> +		sync
-> +
-> +		echo ${cpu_exclusive_value} > \
-> +		     ${root_cpuset_dir}/${cpu_exclusive}
-> +	fi
-
-I've moved the cpu_exclusive restoration before the umount above (since
-we need to do the steps from setup in reverse order here) and pushed,
+I've added a TCONF message in case that we failed to run the command,
+added documentation into the test-writing-guidelines.txt and pushed,
 thanks.
 
 -- 
