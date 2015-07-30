@@ -1,31 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5Zf-0003f2-G7
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:47 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZD5Ze-00080W-JI
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:44:47 +0000
-Received: from userv0021.oracle.com (userv0021.oracle.com [156.151.31.71])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t696ieY5019777
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:40 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-	by userv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t696ieK5020412
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:40 GMT
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-	by aserv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696ie6C005007
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:44:40 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  9 Jul 2015 09:47:29 +0300
-Message-Id: <1436424468-11756-5-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 04/23] network/virt_lib.sh: use ROD_SILENT in cleanup
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZKohJ-0000YA-Gp
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 14:20:37 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZKohH-0007WO-ID
+	for ltp-list@lists.sourceforge.net; Thu, 30 Jul 2015 14:20:37 +0000
+Date: Thu, 30 Jul 2015 16:20:19 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150730142019.GB21727@rei.suse.de>
+References: <1432630734.31833.5.camel@G08FNSTD140232>
+	<20150603162630.GA8444@rei.suse.de>
+	<1433398217.2651.1.camel@G08FNSTD140232.g08.fujitsu.local>
+	<20150702125856.GA17802@rei.suse.de>
+	<1436241863.22274.4.camel@G08FNSTD140232.g08.fujitsu.local>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1436241863.22274.4.camel@G08FNSTD140232.g08.fujitsu.local>
+Subject: Re: [LTP] [PATCH v3] cpuset: regression test for "system crash if
+ cpuset_cpumask_can_shrink() is passed an empty cpumask"
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,42 +30,48 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Cc: ltp-list <ltp-list@lists.sourceforge.net>
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/virt/virt_lib.sh |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+Hi!
+> +cleanup()
+> +{
+> +	if [ -d "${root_cpuset_dir}/testdir" ]; then
+> +		rmdir ${root_cpuset_dir}/testdir
+> +	fi
+> +
+> +	if [ "${mount_flag}" == "1" ]; then
+> +		umount ${root_cpuset_dir}
+> +		if [ $? -ne 0 ]; then
+> +			tst_resm TWARN "'umount ${root_cpuset_dir}' failed"
+> +		fi
+> +
+> +		if [ -d "${root_cpuset_dir}" ]; then
+> +			rmdir ${root_cpuset_dir}
+> +		fi
+> +	fi
+> +
+> +	if [ -n ${cpu_exclusive_value} -a ${cpu_exclusive_value} -ne 1 ]; then
+> +		# Need to flush, or may be output:
+> +		# "write error: Device or resource busy"
+> +		sync
+> +
+> +		echo ${cpu_exclusive_value} > \
+> +		     ${root_cpuset_dir}/${cpu_exclusive}
+> +	fi
 
-diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-index e8eedca..9024a3e 100644
---- a/testcases/network/virt/virt_lib.sh
-+++ b/testcases/network/virt/virt_lib.sh
-@@ -90,7 +90,8 @@ cleanup_vifaces()
- 	tst_resm TINFO "cleanup virtual interfaces..."
- 	local viface=`ip link | sed -nE 's/^[0-9]+: (ltp_v[0-9]+):.+/\1/p'`
- 	for vx in $viface; do
--		ip link delete $vx
-+		ROD_SILENT "ip link set $vx down"
-+		ROD_SILENT "ip link delete $vx"
- 	done
- }
- 
+I've moved the cpu_exclusive restoration before the umount above (since
+we need to do the steps from setup in reverse order here) and pushed,
+thanks.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
