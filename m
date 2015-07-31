@@ -1,23 +1,35 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZOoT9-0006yB-28
-	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2015 14:54:31 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZOoT4-0002f2-RY
-	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2015 14:54:31 +0000
-Date: Mon, 10 Aug 2015 16:54:01 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150810145401.GA10688@rei.suse.de>
-References: <55C1F762.4090001@cn.fujitsu.com>
-	<1438846166-8917-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vpuliyal@in.ibm.com>) id 1ZL5qR-00082n-Dm
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 08:39:11 +0000
+Received: from e28smtp04.in.ibm.com ([122.248.162.4])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZL5qO-0001uf-RD
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 08:39:11 +0000
+Received: from /spool/local
+	by e28smtp04.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <vpuliyal@in.ibm.com>;
+	Fri, 31 Jul 2015 13:38:43 +0530
+Received: from d28relay02.in.ibm.com (d28relay02.in.ibm.com [9.184.220.59])
+	by d28dlp03.in.ibm.com (Postfix) with ESMTP id B2D511258068
+	for <Ltp-list@lists.sourceforge.net>;
+	Fri, 31 Jul 2015 13:41:45 +0530 (IST)
+Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
+	by d28relay02.in.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	t6V88W5c57016554
+	for <Ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2015 13:38:35 +0530
+Received: from d28av04.in.ibm.com (localhost [127.0.0.1])
+	by d28av04.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	t6V88V3v013725
+	for <Ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2015 13:38:31 +0530
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1438846166-8917-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v3 1/2] umount2/umount2_02.c: add MNT_EXPIRE flag
-	test
+Message-ID: <OF65A761E0.9AA157C2-ON65257E93.002B0BBB-65257E93.002CB911@in.ibm.com>
+From: Vijay K Puliyala <vpuliyal@in.ibm.com>
+Date: Fri, 31 Jul 2015 13:38:29 +0530
+Subject: Re: [LTP] : Test Cases for libnuma
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,240 +39,223 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1547214949130251015=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: subrata@linux.vnet.ibm.com
+Cc: Ltp-list@lists.sourceforge.net
 
-Hi!
-> +/*
-> + * Copyright (c) 2015 Fujitsu Ltd.
-> + * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> + *
-> + * This program is free software; you can redistribute it and/or modify it
-> + * under the terms of version 2 of the GNU General Public License as
-> + * published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it would be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * alone with this program.
-> + */
-> +
-> +/*
-> + * DESCRIPTION
-> + *  Test for feature MNT_EXPIRE of umount2().
-> + *  "Mark the mount point as expired.If a mount point is not currently
-> + *   in use, then an initial call to umount2() with this flag fails with
-> + *   the error EAGAIN, but marks the mount point as expired. The mount
-> + *   point remains expired as long as it isn't accessed by any process.
-> + *   A second umount2() call specifying MNT_EXPIRE unmounts an expired
-> + *   mount point. This flag cannot be specified with either MNT_FORCE or
-> + *   MNT_DETACH. (fails with the error EINVAL)"
-> + */
-> +
-> +#include <errno.h>
-> +#include <sys/mount.h>
-> +
-> +#include "test.h"
-> +#include "safe_macros.h"
-> +#include "lapi/mount.h"
-> +
-> +#define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
-> +#define MNTPOINT	"mntpoint"
-> +
-> +static void setup(void);
-> +static void test_umount2(int i);
-> +static void verify_failure(int i);
-> +static void verify_success(int i);
-> +static void cleanup(void);
-> +
-> +static const char *device;
-> +static const char *fs_type;
-> +
-> +static int mount_flag;
-> +
-> +static struct test_case_t {
-> +	int flag;
-> +	int exp_errno;
-> +	const char *string;
+This is a multipart message in MIME format.
+--===============1547214949130251015==
+Content-Type: multipart/alternative;
+	boundary="=_alternative 002CB91065257E93_="
 
-Same as the fcntl testcase. Can you please name this variable more
-reasonably?
+This is a multipart message in MIME format.
+--=_alternative 002CB91065257E93_=
+Content-Type: text/plain; charset="US-ASCII"
 
-> +} test_cases[] = {
-> +	{MNT_EXPIRE | MNT_FORCE, EINVAL,
-> +		"umount2(2) with MNT_EXPIRE | MNT_FORCE expected EINVAL"},
-> +	{MNT_EXPIRE | MNT_DETACH, EINVAL,
-> +		"umount2(2) with MNT_EXPIRE | MNT_DETACH expected EINVAL"},
-> +	{MNT_EXPIRE, EAGAIN,
-> +		"initial call to umount2(2) with MNT_EXPIRE expected EAGAIN"},
-> +	{MNT_EXPIRE, EAGAIN,
-> +		"umount2(2) with MNT_EXPIRE after access(2) expected EAGAIN"},
-> +	{MNT_EXPIRE, 0,
-> +		"second call to umount2(2) with MNT_EXPIRE expected success"},
-> +};
-> +
-> +char *TCID = "umount2_02";
-> +int TST_TOTAL = ARRAY_SIZE(test_cases);
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc;
-> +	int tc;
-> +
-> +	tst_parse_opts(ac, av, NULL, NULL);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
-> +		mount_flag = 1;
-> +
-> +		for (tc = 0; tc < TST_TOTAL; tc++)
-> +			test_umount2(tc);
-> +
-> +		if (mount_flag) {
-> +			SAFE_UMOUNT(cleanup, MNTPOINT);
-> +			mount_flag = 0;
-> +		}
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_require_root();
-> +
-> +	if ((tst_kvercmp(2, 6, 8)) < 0) {
-> +		tst_brkm(TCONF, NULL, "This test can only run on kernels "
-> +			"that are 2.6.8 or higher");
-> +	}
-> +
-> +	tst_sig(NOFORK, DEF_HANDLER, NULL);
-> +
-> +	tst_tmpdir();
-> +
-> +	fs_type = tst_dev_fs_type();
-> +	device = tst_acquire_device(cleanup);
-> +
-> +	if (!device)
-> +		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
-> +
-> +	tst_mkfs(cleanup, device, fs_type, NULL);
-> +
-> +	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +static void test_umount2(int i)
-> +{
-> +	/* a new access removes the expired mark of the mount point */
-> +	if (strstr(test_cases[i].string, "access(2)") != NULL) {
-> +		if (access(MNTPOINT, F_OK) == -1)
-> +			tst_brkm(TBROK | TERRNO, cleanup, "access(2) failed");
-> +	}
+Hi Subrata,
 
-This is too fragile and may fail horribly if we ever change the testcase
-output. If you need to do a special setup before this testcase add a
-function pointer to the testcase structure and call it here if it's not
-NULL.
+I have installed LTP on SUSE.  I want to run numa testcases.  I have done 
+below steps to run numa.
 
-I.e. Add void (*setup)(void) to the test case structure, set it to a
-function that does the access for this case and here do:
+_______________________________________________________________________
 
-	if (tcases[i].setup)
-		tcases[i].setup();
+perf2877:/vijay/NUMA/ltp-full-20150420 # ./runltp -f numa
+FATAL: LTP not installed correctly
+INFO:  Follow directions in INSTALL!
+
+______________________________________________________________________
+
+perf2877:/vijay/NUMA/ltp-full-20150420 # /opt/ltp/runltp -f numa
+
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=move_pages11 stime=1438256071
+cmdline="cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod 
+04755 move_pages11 && move_pages.sh 11"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+move_pages11    1  TCONF  :  move_pages_support.c:412: NUMA support not 
+provided
+move_pages11    2  TCONF  :  move_pages_support.c:412: Remaining cases not 
+appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20150420
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20150420
+       ###############################################################
 
 
-Or even easier we can add an integer flag to the structure and do:
+But if I run only  "/opt/ltp/runltp" with out any options or with out " -f 
+numa " option  it is giving results.
+____________________________________________________________________________
+If I run numa01.sh I am getting below errors.
+perf2877:/vijay/NUMA/ltp-full-20150420/testcases/kernel/numa # ./numa01.sh
+./numa01.sh: line 66: tst_brkm: command not found
+./numa01.sh: line 784: tst_resm: command not found
+./numa01.sh: line 215: tst_resm: command not found
+___________________________________________________________________
 
-	if (tcases[i].do_access) {
-		if (access(MNTPOINT, F_OK) == -1)
-			tst_brkm(TBROK | TERRNO, cleanup, "access(2) failed");
-	}
 
-> +	TEST(umount2(MNTPOINT, test_cases[i].flag));
-> +
-> +	if (test_cases[i].exp_errno != 0)
-> +		verify_failure(i);
-> +	else
-> +		verify_success(i);
-> +}
-> +
-> +static void verify_failure(int i)
-> +{
-> +	if (TEST_RETURN == 0) {
-> +		tst_resm(TFAIL, "umount2(2) succeeded unexpectedly, %s",
-> +			test_cases[i].string);
-> +		mount_flag = 0;
-> +		return;
-> +	}
-> +
-> +	if (TEST_ERRNO != test_cases[i].exp_errno) {
-> +		tst_resm(TFAIL | TTERRNO, "umount2(2) failed unexpectedly, %s",
-> +			test_cases[i].string);
+Please correct me if I have done any mistake. 
 
-The same as below. Why don't we just print the message from the
-structure?
+I have installed  below packages 
 
-> +		return;
-> +	}
-> +
-> +	tst_resm(TPASS, "umount2(2) failed as expected");
+perf2877:/opt/ltp # rpm -q libnuma-devel
+libnuma-devel-2.0.9-5.1.1
+perf2877:/opt/ltp # rpm -q libnuma1
+libnuma1-2.0.9-5.1.1
+perf2877:/opt/ltp # rpm -q libnuma-devel
+libnuma-devel-2.0.9-5.1.1
+perf2877:/opt/ltp # rpm -q autoconf
+autoconf-2.69-9.3
+perf2877:/opt/ltp # rpm -q automake
+automake-1.10.1-4.131.9.1
+perf2877:/opt/ltp #
 
-Can we print which errno have we succesfully failed with?
+Also please add me in mailing list.
 
-> +}
-> +
-> +static void verify_success(int i)
-> +{
-> +	if (TEST_RETURN != 0) {
-> +		tst_resm(TFAIL | TTERRNO, "umount2(2) failed, %s",
-> +			test_cases[i].string);
 
-This would create pretty ugly messages i.e.
+Thanks
+Vijay Kumar
 
-"umount2(2) failed, second call to umount2(2) with MNT_EXPIRE expected
-success"
+--=_alternative 002CB91065257E93_=
+Content-Type: text/html; charset="US-ASCII"
 
-What about we just print the message from the structure here?
+<font size=2 face="sans-serif">Hi Subrata,</font>
+<br>
+<br><font size=2 face="sans-serif">I have installed LTP on SUSE. &nbsp;I
+want to run numa testcases. &nbsp;I have done below steps to run numa.</font>
+<br>
+<br><font size=2 face="sans-serif">_______________________________________________________________________</font>
+<br>
+<br><font size=2 face="sans-serif">perf2877:/vijay/NUMA/ltp-full-20150420
+# ./runltp -f numa</font>
+<br><font size=2 face="sans-serif">FATAL: LTP not installed correctly</font>
+<br><font size=2 face="sans-serif">INFO: &nbsp;Follow directions in INSTALL!</font>
+<br>
+<br><font size=2 face="sans-serif">______________________________________________________________________</font>
+<br>
+<br><font size=2 face="sans-serif">perf2877:/vijay/NUMA/ltp-full-20150420
+# /opt/ltp/runltp -f numa</font>
+<br>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;execution_status&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">initiation_status=&quot;ok&quot;</font>
+<br><font size=2 face="sans-serif">duration=0 termination_type=exited termination_id=32
+corefile=no</font>
+<br><font size=2 face="sans-serif">cutime=0 cstime=0</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;test_end&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;test_start&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">tag=move_pages11 stime=1438256071</font>
+<br><font size=2 face="sans-serif">cmdline=&quot;cd $LTPROOT/testcases/bin
+&amp;&amp; chown root move_pages11 &amp;&amp; chmod 04755 move_pages11
+&amp;&amp; move_pages.sh 11&quot;</font>
+<br><font size=2 face="sans-serif">contacts=&quot;&quot;</font>
+<br><font size=2 face="sans-serif">analysis=exit</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;test_output&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">incrementing stop</font>
+<br><font size=2 face="sans-serif">move_pages11 &nbsp; &nbsp;1 &nbsp;TCONF
+&nbsp;: &nbsp;move_pages_support.c:412:<b> NUMA support not provided</b></font>
+<br><font size=2 face="sans-serif">move_pages11 &nbsp; &nbsp;2 &nbsp;TCONF
+&nbsp;: &nbsp;move_pages_support.c:412: Remaining cases not appropriate
+for configuration</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;execution_status&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">initiation_status=&quot;ok&quot;</font>
+<br><font size=2 face="sans-serif">duration=0 termination_type=exited termination_id=32
+corefile=no</font>
+<br><font size=2 face="sans-serif">cutime=0 cstime=0</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;test_end&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif"><b><i>INFO: ltp-pan reported some tests
+FAIL</i></b></font>
+<br><font size=2 face="sans-serif">LTP Version: 20150420</font>
+<br>
+<br><font size=2 face="sans-serif">&nbsp; &nbsp; &nbsp; &nbsp;###############################################################</font>
+<br>
+<br><font size=2 face="sans-serif">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+Done executing testcases.</font>
+<br><font size=2 face="sans-serif">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+LTP Version: &nbsp;20150420</font>
+<br><font size=2 face="sans-serif">&nbsp; &nbsp; &nbsp; &nbsp;###############################################################</font>
+<br>
+<br>
+<br><font size=2 face="sans-serif">But if I run only &nbsp;&quot;/opt/ltp/runltp&quot;
+with out any options or with out &quot; -f numa &quot; option &nbsp;it
+is giving results.</font>
+<br><font size=2 face="sans-serif">____________________________________________________________________________</font>
+<br><font size=2 face="sans-serif">If I run numa01.sh I am getting below
+errors.</font>
+<br><font size=2 face="sans-serif">perf2877:/vijay/NUMA/ltp-full-20150420/testcases/kernel/numa
+# ./numa01.sh</font>
+<br><font size=2 face="sans-serif">./numa01.sh: line 66: tst_brkm: command
+not found</font>
+<br><font size=2 face="sans-serif">./numa01.sh: line 784: tst_resm: command
+not found</font>
+<br><font size=2 face="sans-serif">./numa01.sh: line 215: tst_resm: command
+not found</font>
+<br><font size=2 face="sans-serif">___________________________________________________________________</font>
+<br>
+<br>
+<br><font size=2 face="sans-serif">Please correct me if I have done any
+mistake. </font>
+<br>
+<br><font size=2 face="sans-serif">I have installed &nbsp;below packages
+&nbsp;</font>
+<br>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q libnuma-devel</font>
+<br><font size=2 face="sans-serif">libnuma-devel-2.0.9-5.1.1</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q libnuma1</font>
+<br><font size=2 face="sans-serif">libnuma1-2.0.9-5.1.1</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q libnuma-devel</font>
+<br><font size=2 face="sans-serif">libnuma-devel-2.0.9-5.1.1</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q autoconf</font>
+<br><font size=2 face="sans-serif">autoconf-2.69-9.3</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q automake</font>
+<br><font size=2 face="sans-serif">automake-1.10.1-4.131.9.1</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp #</font>
+<br>
+<br><font size=2 face="sans-serif">Also please add me in mailing list.</font>
+<br>
+<br>
+<br><font size=2 face="sans-serif">Thanks</font>
+<br><font size=2 face="sans-serif">Vijay Kumar</font>
+<br>
+--=_alternative 002CB91065257E93_=--
 
-> +		return;
-> +	}
-> +
-> +	tst_resm(TPASS, "umount2(2) succeeded as expected");
-> +	mount_flag = 0;
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (mount_flag && tst_umount(MNTPOINT))
-> +		tst_resm(TWARN | TERRNO, "Failed to unmount");
-> +
-> +	if (device)
-> +		tst_release_device(NULL, device);
-> +
-> +	tst_rmdir();
-> +}
-> -- 
-> 1.8.4.2
-> 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+--===============1547214949130251015==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--===============1547214949130251015==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============1547214949130251015==--
+
+
