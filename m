@@ -1,32 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZD5a3-0008Br-ON
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:45:11 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZD5a2-0006xD-T8
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 06:45:11 +0000
-Received: from userv0021.oracle.com (userv0021.oracle.com [156.151.31.71])
-	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t696j4ml020463
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:45:05 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-	by userv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t696j4Qd021536
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:45:04 GMT
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-	by userv0122.oracle.com (8.13.8/8.13.8) with ESMTP id t696j4MU009502
-	for <ltp-list@lists.sourceforge.net>; Thu, 9 Jul 2015 06:45:04 GMT
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  9 Jul 2015 09:47:48 +0300
-Message-Id: <1436424468-11756-24-git-send-email-alexey.kodanev@oracle.com>
-In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-Subject: [LTP] [PATCH 23/23] network/virt: don't skip when feature options
-	not supported
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZL6U6-00006f-3w
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 09:20:10 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZL6U0-0003gJ-UC
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 09:20:10 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Fri, 31 Jul 2015 17:20:07 +0800
+Message-ID: <1438334407-366-1-git-send-email-sunyuan3@huawei.com>
+MIME-Version: 1.0
+Subject: [LTP] [PATCH V3] containers: new testcase userns05
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,79 +22,197 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: jstancek@redhat.com
+Cc: ltp-list@lists.sourceforge.net
 
-Clear parameters variable and proceed, but only once.
+  A process created via fork(2) or clone(2) without the CLONE_NEWUSER
+flag is a member of the same user namespace as its parent.
+  When unshare an user namespace, the calling process is moved into a
+new user namespace which is not shared with any previously existing
+process.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
 ---
- testcases/network/virt/vlan03.sh  |   12 ++++++++----
- testcases/network/virt/vxlan03.sh |    6 +++++-
- 2 files changed, 13 insertions(+), 5 deletions(-)
+ runtest/containers                            |   1 +
+ testcases/kernel/containers/.gitignore        |   1 +
+ testcases/kernel/containers/userns/userns05.c | 142 ++++++++++++++++++++++++++
+ 3 files changed, 144 insertions(+)
+ create mode 100644 testcases/kernel/containers/userns/userns05.c
 
-diff --git a/testcases/network/virt/vlan03.sh b/testcases/network/virt/vlan03.sh
-index a067065..5c49d41 100755
---- a/testcases/network/virt/vlan03.sh
-+++ b/testcases/network/virt/vlan03.sh
-@@ -63,18 +63,22 @@ rh1="reorder_hdr on"
- opts="$p0 $lb0 $rh0,$p0 $lb1 $rh1,$p1 $lb0 $rh0,$p1 $lb1 $rh1"
- 
- for n in $(seq 1 4); do
--	params="$(echo $opts | cut -d',' -f$n)"
-+	p="$(echo $opts | cut -d',' -f$n)"
- 
--	virt_check_cmd virt_add ltp_v0 id 0 $params || continue
-+	virt_check_cmd virt_add ltp_v0 id 0 $p
-+	if [ $? -ne 0 ]; then
-+		[ $n -gt 1 ] && continue
-+		p=""
-+	fi
- 
--	virt_setup "id 4094 $params" "id 4094 $params"
-+	virt_setup "id 4094 $p" "id 4094 $p"
- 	virt_compare_netperf || res="TFAIL"
- 
- 	tst_resm $res "done"
- 
- 	tst_resm TINFO "different VLAN ID shall not work together"
- 	res="TPASS"
--	virt_setup "id 4093 $params" "id 4094 $params"
-+	virt_setup "id 4093 $p" "id 4094 $p"
- 	virt_compare_netperf && res="TFAIL"
- 
- 	tst_resm $res "done"
-diff --git a/testcases/network/virt/vxlan03.sh b/testcases/network/virt/vxlan03.sh
-index 613f4c2..b105afb 100755
---- a/testcases/network/virt/vxlan03.sh
-+++ b/testcases/network/virt/vxlan03.sh
-@@ -69,7 +69,11 @@ opts="dstport 0,dstport 0 gbp"
- for n in $(seq 1 2); do
- 	p="$(echo $opts | cut -d',' -f$n)"
- 
--	virt_check_cmd virt_add ltp_v0 id 0 $p || continue
-+	virt_check_cmd virt_add ltp_v0 id 0 $p
-+	if [ $? -ne 0 ]; then
-+		[ $n -gt 1 ] && continue
-+		p=""
-+	fi
- 
- 	tst_resm TINFO "the same VNI must work"
- 	# VNI is 24 bits long, so max value, which is not reserved, is 0xFFFFFE
+diff --git a/runtest/containers b/runtest/containers
+index de4197e..cece80b 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -72,3 +72,4 @@ userns01 userns01
+ userns02 userns02
+ userns03 userns03
+ userns04 userns04
++userns05 userns05
+diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+index 85ced78..b433b03 100644
+--- a/testcases/kernel/containers/.gitignore
++++ b/testcases/kernel/containers/.gitignore
+@@ -7,3 +7,4 @@ userns/userns01
+ userns/userns02
+ userns/userns03
+ userns/userns04
++userns/userns05
+diff --git a/testcases/kernel/containers/userns/userns05.c b/testcases/kernel/containers/userns/userns05.c
+new file mode 100644
+index 0000000..18178d0
+--- /dev/null
++++ b/testcases/kernel/containers/userns/userns05.c
+@@ -0,0 +1,142 @@
++/*
++ * Copyright (c) Huawei Technologies Co., Ltd., 2015
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ */
++
++/*
++ * Verify that:
++ * A process created via fork(2) or clone(2) without the
++ * CLONE_NEWUSER flag is a member of the same user namespace as its
++ * parent.
++ * When unshare an user namespace, the calling process is moved into
++ * a new user namespace which is not shared with any previously
++ * existing process.
++ */
++
++#define _GNU_SOURCE
++#include <sys/wait.h>
++#include <assert.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <errno.h>
++#include "test.h"
++#include "userns_helper.h"
++
++char *TCID = "user_namespace5";
++int TST_TOTAL = 1;
++
++static void cleanup(void)
++{
++	tst_rmdir();
++}
++
++/*
++ * child_fn1() - Inside a new user namespace
++ */
++static int child_fn1(void)
++{
++	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
++	return 0;
++}
++
++static long getusernsidbypid(int pid)
++{
++	char path[BUFSIZ];
++	char userid[BUFSIZ];
++	long id = 0;
++
++	sprintf(path, "/proc/%d/ns/user", pid);
++
++	if (readlink(path, userid, BUFSIZ) == -1)
++		tst_resm(TFAIL, "readlink failure.");
++
++	if (sscanf(userid, "user:[%ld]", &id) != 1)
++		tst_resm(TFAIL | TERRNO, "sscanf failure.");
++	return id;
++}
++
++static void test_userns_id(void)
++{
++	int cpid1, cpid2, cpid3;
++	long parentuserns, cpid1userns, cpid2userns, newparentuserns;
++
++	parentuserns = getusernsidbypid(getpid());
++	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1,
++		NULL);
++	if (cpid1 < 0)
++		tst_brkm(TFAIL | TERRNO, cleanup, "clone failed");
++	cpid1userns = getusernsidbypid(cpid1);
++	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
++
++	/* A process created via fork(2) or clone(2) without the
++	CLONE_NEWUSER flag is a member of the same user namespace as its
++	parent.*/
++	if (parentuserns != cpid1userns)
++		tst_resm(TFAIL, "userns:parent should be equal to cpid1");
++
++	cpid2 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
++		(void *)child_fn1, NULL);
++	if (cpid2 < 0)
++		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
++	cpid2userns = getusernsidbypid(cpid2);
++	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
++
++	if (parentuserns == cpid2userns)
++		tst_resm(TFAIL, "userns:parent should be not equal to cpid2");
++
++	switch (cpid3 = fork()) {
++	case -1:
++		tst_brkm(TBROK | TERRNO, cleanup, "fork");
++	case 0:
++		if (unshare(CLONE_NEWUSER) == -1) {
++			printf("parent pid unshare failure: (%d) %s",
++				errno, strerror(errno));
++			exit(1);
++		}
++		newparentuserns = getusernsidbypid(getpid());
++
++		/* When unshare an user namespace, the calling process
++		is moved into a new user namespace which is not shared
++		with any previously existing process.*/
++		if (parentuserns == newparentuserns)
++			exit(1);
++		exit(0);
++	}
++
++	tst_record_childstatus(cleanup, cpid1);
++	tst_record_childstatus(cleanup, cpid2);
++	tst_record_childstatus(cleanup, cpid3);
++}
++
++static void setup(void)
++{
++	check_newuser();
++
++	tst_tmpdir();
++	TST_CHECKPOINT_INIT(NULL);
++}
++
++int main(int argc, char *argv[])
++{
++	int lc;
++
++	tst_parse_opts(argc, argv, NULL, NULL);
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		test_userns_id();
++	}
++	cleanup();
++	tst_exit();
++}
 -- 
-1.7.1
+1.9.1
 
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
