@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZDC3X-0007wL-Ah
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 13:40:03 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZDC3U-0004S7-UV
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 13:40:03 +0000
-Date: Thu, 9 Jul 2015 09:39:54 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1737674583.15006076.1436449194123.JavaMail.zimbra@redhat.com>
-In-Reply-To: <20150709124503.GM17625@tarantula.localdomain>
-References: <20150708194114.GA20060@tarantula.localdomain>
-	<904998018.14796051.1436425198776.JavaMail.zimbra@redhat.com>
-	<431985009.14827500.1436429949621.JavaMail.zimbra@redhat.com>
-	<20150709124503.GM17625@tarantula.localdomain>
+	(envelope-from <liwan@redhat.com>) id 1ZLAxt-00061N-Uk
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 14:07:13 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZLAxr-0006v0-1D
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 14:07:13 +0000
+Received: from zmail22.collab.prod.int.phx2.redhat.com
+	(zmail22.collab.prod.int.phx2.redhat.com [10.5.83.26])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id t6VE75EY019992
+	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2015 10:07:05 -0400
+Date: Fri, 31 Jul 2015 10:07:04 -0400 (EDT)
+From: Li Wang <liwang@redhat.com>
+Message-ID: <481838215.1118179.1438351624934.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
+References: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] syslog/syslog-lib.sh: support systemd journal
+Subject: Re: [LTP] How to compie a ltp-case into 32-bit on the 64bit system
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,131 +31,214 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jeffrey Bastian <jbastian@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+The program is here.
 
+msgrcv08.c
+----------- 
+/*
+ * Copyright (c) 2015   Author: Gabriellla Schmidt <gsc@bruker.de>
+ *                      Modify: Li Wang <liwang@redhat.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of version 2 of the GNU General Public License as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it would be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * you should have received a copy of the GNU General Public License along
+ * with this program; if not, write the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
 
+/*
+ * Description:
+ *
+ * A regression test for:
+ * 	commit e7ca2552369c1dfe0216c626baf82c3d83ec36bb
+ * 	Author: Mateusz Guzik <mguzik@redhat.com>
+ *	Date:   Mon Jan 27 17:07:11 2014 -0800
+ *
+ *     		ipc: fix compat msgrcv with negative msgtyp
+ *
+ * Reproduce:
+ *
+ *	32-bit application using the msgrcv() system call
+ *	gives the error message:
+ *
+ *		msgrcv: No message of desired type
+ *
+ *	If this progarm is compiled as 64-bit application it doesn't works.
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/msg.h>
+#include "test.h"
+
+const char *TCID = "msgrcv08";
+const int TST_TOTAL = 1;
+
+struct msgbuf
+{
+	long mtype;     /* message type, must be > 0 */
+	char mtext[16]; /* message data */
+};
+
+static void setup(void)
+{
+	tst_require_root(NULL);
+
+	TEST_PAUSE;
+}
+
+static void cleanup(void)
+{
+}
+
+static int msr(int msqid)
+{
+	struct msgbuf msbs;
+	struct msgbuf msbr;
+	ssize_t sret;
+	long   mtype = 121;
+
+	memset(&msbs, 0, sizeof(msbs));
+	msbs.mtype = mtype;
+
+	if (msgsnd(msqid, &msbs, sizeof(msbs.mtext), IPC_NOWAIT))
+		tst_brkm(TBROK, NULL, "msgsnd error");
+
+	sret = msgrcv(msqid, &msbr, sizeof(msbr.mtext), -mtype, IPC_NOWAIT | MSG_NOERROR);
+
+	if (sret < 0) {
+		tst_resm(TFAIL, "Bug: No message of desired type.");
+		return -1;
+	}
+
+	if (msbr.mtype != mtype)
+		tst_brkm(TBROK, NULL, "found mtype %ld, expected %ld\n", msbr.mtype, mtype);
+
+	if ((size_t)sret != sizeof(msbs.mtext))
+		tst_brkm(TBROK, NULL, "received %lu, expected %lu\n",
+				(unsigned long)sret, (unsigned long)sizeof(msbs.mtext));
+
+	return 0;
+}
+
+static void msgrcv_test(void)
+{
+	int ret;
+	int msqid = msgget(IPC_PRIVATE, IPC_CREAT | IPC_EXCL | 0666);
+
+	if (msqid < 0)
+		tst_brkm(TBROK, NULL, "msgget error");
+
+	ret = msr(msqid);
+
+	if (msgctl(msqid, IPC_RMID, 0))
+		tst_brkm(TBROK, NULL, "msgctl error");
+
+	if (!ret)
+		tst_resm(TPASS, "Hi, no regression found!");
+}
+
+int main(int argc, char *argv[])
+{
+	int lc;
+
+	tst_parse_opts(argc, argv, NULL, NULL);
+
+	setup();
+
+	for (lc = 0; TEST_LOOPING(lc); lc++)
+		msgrcv_test();
+
+	cleanup();
+	tst_exit();
+}
+
+-- 
+Regards, 
+Li Wang 
+Email: liwang@redhat.com 
 
 
 ----- Original Message -----
-> From: "Jeffrey Bastian" <jbastian@redhat.com>
-> To: ltp-list@lists.sourceforge.net
-> Sent: Thursday, 9 July, 2015 2:45:03 PM
-> Subject: Re: [LTP] [PATCH] syslog/syslog-lib.sh: support systemd journal
+> Hi all,
 > 
-> On Thu, Jul 09, 2015 at 04:19:09AM -0400, Jan Stancek wrote:
-> > It still appears supported, but turned off by default in systemd 216:
-> > 
-> <snip>
-> > 
-> > So I think we should use imjournal if possible, otherwise fall back
-> > to imuxsock. But I think it should be one or the other, using both
-> > in same config seems wrong to me.
+> I am going to add a new testcase:
+> ltp/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
+> for regression test.
+> 
+> But the key point is that this program 'msgrcv08.c' should be compiled into
+> 32-bit,
+> if it is compiled as 64-bit application it doesn't work.
 > 
 > 
-> I was testing with systemd-219 when I ran into this problem, hence my
-> patch submission.
-
-Do the testcases pass for you with this patch? They still fail for me with
-rsyslog-7.4.7-7.el7_0 and systemd-219-5.el7.
-
-This is config used by syslogs tests:
-
-# cat /etc/rsyslog.conf
-$ModLoad imuxsock.so
-$ModLoad imjournal # provides access to the systemd journal
-$IMJournalStateFile imjournal.state
-$SystemLogSocketName /run/systemd/journal/syslog
-mail.debug      /var/log/maillog
-
-which fails for me unless I add "$WorkDirectory" option.
-I'm guessing that's needed to find imjournal.state file:
-# ll /var/lib/rsyslog
-total 4
--rw-r--r--. 1 root root 124 Jul  9 09:21 imjournal.state
-
+> So, I try to add one line in the .../ipc/msgrcv/Makefile:
 > 
-> I think it's ok to leave both modules enabled, though.  The default
-> rsyslog.conf in Fedora (up to F21) had both enabled:
-
-It seems to duplicate messages for me in quite unpredictable way.
-After running syslog02:
-
-[root@ibm-ls21-04 bin]# cat /var/log/maillog
-
-2015-07-09T09:33:44.681130-04:00 ibm-ls21-04 syslogtst: syslogtst: mail emerg test.
-2015-07-09T09:33:44.681379-04:00 ibm-ls21-04 syslogtst: syslogtst: mail emerg test.
-2015-07-09T09:33:44.681379-04:00 ibm-ls21-04 syslogtst: syslogtst: mail emerg test.
-2015-07-09T09:33:48.812431-04:00 ibm-ls21-04 syslogtst: syslogtst: mail alert test.
-2015-07-09T09:33:48.812349-04:00 ibm-ls21-04 syslogtst: syslogtst: mail alert test.
-2015-07-09T09:33:44.681379-04:00 ibm-ls21-04 syslogtst: syslogtst: mail emerg test.
-2015-07-09T09:33:48.812431-04:00 ibm-ls21-04 syslogtst: syslogtst: mail alert test.
-2015-07-09T09:33:52.943509-04:00 ibm-ls21-04 syslogtst: syslogtst: mail crit test.
-2015-07-09T09:33:52.943588-04:00 ibm-ls21-04 syslogtst: syslogtst: mail crit test.
-2015-07-09T09:33:44.681379-04:00 ibm-ls21-04 syslogtst: syslogtst: mail emerg test.
-2015-07-09T09:33:48.812431-04:00 ibm-ls21-04 syslogtst: syslogtst: mail alert test.
-2015-07-09T09:33:52.943588-04:00 ibm-ls21-04 syslogtst: syslogtst: mail crit test.
-2015-07-09T09:33:57.072698-04:00 ibm-ls21-04 syslogtst: syslogtst: mail err test.
-2015-07-09T09:33:57.072774-04:00 ibm-ls21-04 syslogtst: syslogtst: mail err test.
-2015-07-09T09:33:44.681379-04:00 ibm-ls21-04 syslogtst: syslogtst: mail emerg test.
-2015-07-09T09:33:48.812431-04:00 ibm-ls21-04 syslogtst: syslogtst: mail alert test.
-2015-07-09T09:33:52.943588-04:00 ibm-ls21-04 syslogtst: syslogtst: mail crit test.
-2015-07-09T09:33:57.072774-04:00 ibm-ls21-04 syslogtst: syslogtst: mail err test.
-2015-07-09T09:34:01.202191-04:00 ibm-ls21-04 syslogtst: syslogtst: mail warning test.
-2015-07-09T09:34:01.202268-04:00 ibm-ls21-04 syslogtst: syslogtst: mail warning test.
-2015-07-09T09:33:44.681379-04:00 ibm-ls21-04 syslogtst: syslogtst: mail emerg test.
-2015-07-09T09:33:48.812431-04:00 ibm-ls21-04 syslogtst: syslogtst: mail alert test.
-2015-07-09T09:33:52.943588-04:00 ibm-ls21-04 syslogtst: syslogtst: mail crit test.
-2015-07-09T09:33:57.072774-04:00 ibm-ls21-04 syslogtst: syslogtst: mail err test.
-2015-07-09T09:34:01.202268-04:00 ibm-ls21-04 syslogtst: syslogtst: mail warning test.
-2015-07-09T09:34:05.333899-04:00 ibm-ls21-04 syslogtst: syslogtst: mail notice test.
-2015-07-09T09:34:05.333818-04:00 ibm-ls21-04 syslogtst: syslogtst: mail notice test.
-2015-07-09T09:33:44.681379-04:00 ibm-ls21-04 syslogtst: syslogtst: mail emerg test.
-2015-07-09T09:33:48.812431-04:00 ibm-ls21-04 syslogtst: syslogtst: mail alert test.
-2015-07-09T09:33:52.943588-04:00 ibm-ls21-04 syslogtst: syslogtst: mail crit test.
-2015-07-09T09:33:57.072774-04:00 ibm-ls21-04 syslogtst: syslogtst: mail err test.
-2015-07-09T09:34:01.202268-04:00 ibm-ls21-04 syslogtst: syslogtst: mail warning test.
-2015-07-09T09:34:05.333899-04:00 ibm-ls21-04 syslogtst: syslogtst: mail notice test.
-2015-07-09T09:34:09.464783-04:00 ibm-ls21-04 syslogtst: syslogtst: mail info test.
-2015-07-09T09:34:09.464862-04:00 ibm-ls21-04 syslogtst: syslogtst: mail info test.
-2015-07-09T09:34:13.563791-04:00 ibm-ls21-04 syslogtst: syslogtst: mail debug test.
-2015-07-09T09:34:13.563870-04:00 ibm-ls21-04 syslogtst: syslogtst: mail debug test.
-Jul  9 09:34:13 ibm-ls21-04 syslogtst: syslogtst: mail debug test.
-
-if I use only imjournal I get:
-# cat /var/log/maillog
-
-2015-07-09T09:37:30.452833-04:00 ibm-ls21-04 syslogtst: syslogtst: mail emerg test.
-2015-07-09T09:37:34.583176-04:00 ibm-ls21-04 syslogtst: syslogtst: mail alert test.
-2015-07-09T09:37:38.713671-04:00 ibm-ls21-04 syslogtst: syslogtst: mail crit test.
-2015-07-09T09:37:42.843411-04:00 ibm-ls21-04 syslogtst: syslogtst: mail err test.
-2015-07-09T09:37:46.975099-04:00 ibm-ls21-04 syslogtst: syslogtst: mail warning test.
-2015-07-09T09:37:51.104797-04:00 ibm-ls21-04 syslogtst: syslogtst: mail notice test.
-2015-07-09T09:37:55.236947-04:00 ibm-ls21-04 syslogtst: syslogtst: mail info test.
-2015-07-09T09:37:59.366192-04:00 ibm-ls21-04 syslogtst: syslogtst: mail debug test.
-
-Regards,
-Jan
-
+>   msgrcv08: CFLAGS+=-m32
 > 
-> $ModLoad imuxsock # provides support for local system logging (e.g. via
-> logger command)
-> $ModLoad imjournal # provides access to the systemd journal
+> and I get some compile errors like:
+> -----
+> # make
+> make -C ../lib -f
+> "/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib/Makefile"
+> all
+> make[1]: Entering directory
+> `/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/lib'
+> make[1]: Nothing to be done for `all'.
+> make[1]: Leaving directory
+> `/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/lib'
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2
+> -Wold-style-definition -m32 -D_FORTIFY_SOURCE=2
+> -I/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/include
+> -I/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib
+> -I../../../../../include -I../../../../../include
+> -L/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib
+> -L../../../../../lib  msgrcv08.c   -lltp -lipc -o msgrcv08
+> /usr/bin/ld: skipping incompatible ../../../../../lib/libltp.a when searching
+> for -lltp
+> /usr/bin/ld: cannot find -lltp
+> /usr/bin/ld: skipping incompatible
+> /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib/libipc.a
+> when searching for -lipc
+> /usr/bin/ld: cannot find -lipc
+> collect2: error: ld returned 1 exit status
+> make: *** [msgrcv08] Error 1
+> -----
 > 
-> See http://pkgs.fedoraproject.org/cgit/rsyslog.git/tree/rsyslog.conf?h=f21#n9
+> these because the libltp.a is 64-bit.
 > 
-> (Fedora 22 dropped imuxsock with the rebase to rsyslog-8.8.0.)
+> 
+> Then, I came up with a idea that I don't include the ltp-lib file in
+> 'msgrcv08.c',
+> and just add two lines in the .../ipc/msgrcv/Makefile:
+> 
+>   msgrcv08:
+> 	gcc -g -O2 -Wall -m32 msgrcv08.c -o msgrcv08
+> 
+> It works for me, but I know it's not appropriate for LTP management.
+> 
+> What should I do? or, Is there any good way to solve this problem?
+> 
+> Thanks~
 > 
 > --
-> Jeff Bastian
+> Regards,
+> Li Wang
+> Email: liwang@redhat.com
+> 
+> 
 > 
 > ------------------------------------------------------------------------------
-> Don't Limit Your Business. Reach for the Cloud.
-> GigeNET's Cloud Solutions provide you with the tools and support that
-> you need to offload your IT needs and focus on growing your business.
-> Configured For All Businesses. Start Your Cloud Today.
-> https://www.gigenetcloud.com/
 > _______________________________________________
 > Ltp-list mailing list
 > Ltp-list@lists.sourceforge.net
@@ -162,11 +246,6 @@ Jan
 > 
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
