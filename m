@@ -1,30 +1,39 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1ZSNLH-00030i-NE
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 10:45:07 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZSNLF-0005fa-Q1
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 10:45:07 +0000
-Received: from int-mx11.intmail.prod.int.phx2.redhat.com
-	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
-	by mx1.redhat.com (Postfix) with ESMTPS id 0BC48A2C10
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 20 Aug 2015 10:45:00 +0000 (UTC)
-Received: from dhcp-13-206.nay.redhat.com (dhcp12-104.nay.redhat.com
-	[10.66.12.104] (may be forged))
-	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t7KAiuea028669
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2015 06:44:59 -0400
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 20 Aug 2015 18:44:55 +0800
-Message-Id: <1440067495-10326-1-git-send-email-liwang@redhat.com>
-Subject: [LTP] [PATCH] ltp/pounder: do some cleanup work for pounder21 test
-	suites
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vpuliyal@in.ibm.com>) id 1ZL5bc-0007OI-DJ
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 08:23:52 +0000
+Received: from e28smtp03.in.ibm.com ([122.248.162.3])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZL5bb-0001MG-13
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 08:23:52 +0000
+Received: from /spool/local
+	by e28smtp03.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
+	Only! Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <vpuliyal@in.ibm.com>;
+	Fri, 31 Jul 2015 13:43:28 +0530
+Received: from d28relay04.in.ibm.com (d28relay04.in.ibm.com [9.184.220.61])
+	by d28dlp02.in.ibm.com (Postfix) with ESMTP id 88E13394006E
+	for <Ltp-list@lists.sourceforge.net>;
+	Fri, 31 Jul 2015 13:43:24 +0530 (IST)
+Received: from d28av01.in.ibm.com (d28av01.in.ibm.com [9.184.220.63])
+	by d28relay04.in.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
+	t6V8D1X952559946
+	for <Ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2015 13:43:01 +0530
+Received: from d28av01.in.ibm.com (localhost [127.0.0.1])
+	by d28av01.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
+	t6V8D050009110
+	for <Ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2015 13:43:00 +0530
+Received: from d23ml206.in.ibm.com (d23ml206.in.ibm.com [9.182.109.28])
+	by d28av01.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	t6V8D0PB009077
+	for <Ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2015 13:43:00 +0530
+MIME-Version: 1.0
+Message-ID: <OF6BBCEC9B.330C6BB2-ON65257E93.002CF6C5-65257E93.002D2260@in.ibm.com>
+From: Vijay K Puliyala <vpuliyal@in.ibm.com>
+Date: Fri, 31 Jul 2015 13:42:59 +0530
+Subject: Re: [LTP] : Test Cases for libnuma
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,229 +43,220 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4319620307140003638=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Ltp-list@lists.sourceforge.net
 
-ChangeLog:
-	- Cleanup ltp buildscript in pounder
-	- Remove two outdated patches from pounder21/src/
+This is a multipart message in MIME format.
+--===============4319620307140003638==
+Content-Type: multipart/alternative;
+	boundary="=_alternative 002D225E65257E93_="
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- tools/pounder21/build_scripts/ltp          |  41 ----------
- tools/pounder21/src/ltp-debian-build.patch | 120 -----------------------------
- tools/pounder21/src/ltp-setregid-fix.patch |  14 ----
- 3 files changed, 175 deletions(-)
- delete mode 100644 tools/pounder21/src/ltp-debian-build.patch
- delete mode 100644 tools/pounder21/src/ltp-setregid-fix.patch
+This is a multipart message in MIME format.
+--=_alternative 002D225E65257E93_=
+Content-Type: text/plain; charset="US-ASCII"
 
-diff --git a/tools/pounder21/build_scripts/ltp b/tools/pounder21/build_scripts/ltp
-index dfebe28..314719c 100755
---- a/tools/pounder21/build_scripts/ltp
-+++ b/tools/pounder21/build_scripts/ltp
-@@ -25,47 +25,6 @@ source "$POUNDER_HOME/libpounder.sh"
- # Go up two levels to the top ltp dir.
- cd "$POUNDER_HOME/../../"
- 
--# Apply a patch if this is Debian/Ubuntu.
--if [ -f /etc/debian_version ]; then
--	# Have we already patched this?
--	if [ ! -e "testcases/network/sctp/func_tests/test_1_to_1_connect.c.pounder" ]; then
--		cp -pRdu testcases/network/sctp/func_tests/test_1_to_1_connect.c testcases/network/sctp/func_tests/test_1_to_1_connect.c.pounder
--		echo "Debian/Ubuntu detected; applying build fixes..."
--		patch -p1 < $POUNDER_SRCDIR/ltp-debian-build.patch
--		RESULT=$?
--		if [ $RESULT -ne 0 ]; then
--			echo Patching failed.
--			exit 1
--		fi
--	fi
--else
--	# We need to _unpatch_ this.
--	if [ -e "testcases/network/sctp/func_tests/test_1_to_1_connect.c.pounder" ]; then
--		rm -rf testcases/network/sctp/func_tests/test_1_to_1_connect.c.pounder
--		echo "Previous Debian/Ubuntu detected; removing build fixes..."
--		patch -p1 -R < $POUNDER_SRCDIR/ltp-debian-build.patch
--		RESULT=$?
--		if [ $RESULT -ne 0 ]; then
--			echo Patching failed.
--			exit 1
--		fi
--	fi
--
--fi
--
--# NAK the setregid EPERM -> EINVAL patch, because it's
--# broken on 2.6!  May be fixed some time after 20050804 release.
--#if [ ! -e "testcases/kernel/syscalls/setregid/setregid02.c.pounder" ]; then
--#	echo "Patching some holes in ltp..."
--#	cp -pRdu testcases/kernel/syscalls/setregid/setregid02.c testcases/kernel/syscalls/setregid/setregid02.c.pounder
--#	patch -p1 < $POUNDER_SRCDIR/ltp-setregid-fix.patch
--#	RESULT=$?
--#	if [ $RESULT -ne 0 ]; then
--#		echo Patching failed.
--#		exit 1
--#	fi
--#fi
--
- # Build
- ./configure
- make -j$NR_CPUS
-diff --git a/tools/pounder21/src/ltp-debian-build.patch b/tools/pounder21/src/ltp-debian-build.patch
-deleted file mode 100644
-index 9447e7b..0000000
---- a/tools/pounder21/src/ltp-debian-build.patch
-+++ /dev/null
-@@ -1,120 +0,0 @@
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_connect.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_connect.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_connect.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_connect.c	2005-08-15 22:45:58.000000000 -0700
--@@ -51,7 +51,7 @@
-- #include <string.h>
-- #include <sys/types.h>
-- #include <sys/socket.h>
---#include <linux/socket.h>
--+
-- #include <netinet/in.h>         /* for sockaddr_in */
-- #include <arpa/inet.h>
-- #include <sys/errno.h>
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_nonblock.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_nonblock.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_nonblock.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_nonblock.c	2005-08-15 22:45:58.000000000 -0700
--@@ -53,7 +53,7 @@
-- #include <errno.h>
-- #include <netinet/sctp.h>
-- #include <sys/uio.h>
---#include <linux/socket.h>
--+
-- #include <sctputil.h>
--
-- char *TCID = __FILE__;
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_recvfrom.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_recvfrom.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_recvfrom.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_recvfrom.c	2005-08-15 22:45:58.000000000 -0700
--@@ -53,7 +53,7 @@
-- #include <errno.h>
-- #include <netinet/sctp.h>
-- #include <sys/uio.h>
---#include <linux/socket.h>
--+
-- #include <sctputil.h>
--
-- char *TCID = __FILE__;
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_recvmsg.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_recvmsg.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_recvmsg.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_recvmsg.c	2005-08-15 22:45:58.000000000 -0700
--@@ -54,7 +54,7 @@
-- #include <errno.h>
-- #include <netinet/sctp.h>
-- #include <sys/uio.h>
---#include <linux/socket.h>
--+
-- #include <sctputil.h>
--
-- #define MSG_EOF 0x200
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_rtoinfo.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_rtoinfo.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_rtoinfo.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_rtoinfo.c	2005-08-15 22:45:58.000000000 -0700
--@@ -45,7 +45,7 @@
-- #include <string.h>
-- #include <sys/types.h>
-- #include <sys/socket.h>
---#include <linux/socket.h>
--+
-- #include <linux/in.h>         /* for sockaddr_in */
-- #include <linux/in6.h>         /* for sockaddr_in6 */
-- #include <sys/errno.h>
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_send.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_send.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_send.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_send.c	2005-08-15 22:45:58.000000000 -0700
--@@ -54,7 +54,7 @@
-- #include <errno.h>
-- #include <netinet/sctp.h>
-- #include <sys/uio.h>
---#include <linux/socket.h>
--+
-- #include <sctputil.h>
--
-- char *TCID = __FILE__;
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_sendmsg.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_sendmsg.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_sendmsg.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_sendmsg.c	2005-08-15 22:45:58.000000000 -0700
--@@ -61,7 +61,7 @@
-- #include <errno.h>
-- #include <netinet/sctp.h>
-- #include <sys/uio.h>
---#include <linux/socket.h>
--+
-- #include <sctputil.h>
--
-- #define MSG_EOF 0x200
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_sendto.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_sendto.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_sendto.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_sendto.c	2005-08-15 22:45:58.000000000 -0700
--@@ -50,7 +50,7 @@
-- #include <errno.h>
-- #include <netinet/sctp.h>
-- #include <sys/uio.h>
---#include <linux/socket.h>
--+
-- #include <sctputil.h>
--
-- char *TCID = __FILE__;
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_shutdown.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_shutdown.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_shutdown.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_shutdown.c	2005-08-15 22:45:58.000000000 -0700
--@@ -45,7 +45,7 @@
-- #include <sys/socket.h>
-- #include <netinet/in.h>
-- #include <arpa/inet.h>
---#include <linux/socket.h>
--+
-- #include <netinet/sctp.h>
-- #include <sys/types.h>
-- #include <unistd.h>
--diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_threads.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_threads.c
----- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_threads.c	2005-08-04 13:33:05.000000000 -0700
--+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_threads.c	2005-08-15 22:45:58.000000000 -0700
--@@ -47,7 +47,7 @@
-- #include <errno.h>
-- #include <netinet/sctp.h>
-- #include <sys/uio.h>
---#include <linux/socket.h>
--+
-- #include <sctputil.h>
--
-- #define THREADS 10    /* FIXME should be 500 instead of 10 */
-diff --git a/tools/pounder21/src/ltp-setregid-fix.patch b/tools/pounder21/src/ltp-setregid-fix.patch
-deleted file mode 100644
-index f26ee53..0000000
---- a/tools/pounder21/src/ltp-setregid-fix.patch
-+++ /dev/null
-@@ -1,14 +0,0 @@
--diff -Naur ltp-full-20050804/testcases/kernel/syscalls/setregid/setregid02.c ltp-full-20050804-new/testcases/kernel/syscalls/setregid/setregid02.c
----- ltp-full-20050804/testcases/kernel/syscalls/setregid/setregid02.c	2005-08-04 13:33:06.000000000 -0700
--+++ ltp-full-20050804-new/testcases/kernel/syscalls/setregid/setregid02.c	2005-08-17 11:33:35.000000000 -0700
--@@ -106,8 +106,8 @@
-- 	{ &bin_gr_gid, &neg_one, EPERM, &users, &users, "After setregid(bin, -1)," },
-- 	{ &root_gr_gid, &bin_gr_gid, EPERM, &users, &users, "After setregid(root, bin)" },
-- 	{ &bin_gr_gid, &root_gr_gid, EPERM, &users, &users, "After setregid(bin, root)," },
---	{ &inval_user, &neg_one, EINVAL, &users, &users, "After setregid(invalid group, -1)," },
---	{ &neg_one, &inval_user, EINVAL, &users, &users, "After setregid(-1, invalid group)," },
--+	{ &inval_user, &neg_one, EPERM, &users, &users, "After setregid(invalid group, -1)," },
--+	{ &neg_one, &inval_user, EPERM, &users, &users, "After setregid(-1, invalid group)," },
-- };
--
-- int TST_TOTAL = sizeof(test_data)/sizeof(test_data[0]);
--- 
-1.8.3.1
+Hi,
 
+I have installed LTP on SUSE.  I want to run numa testcases.  I have done 
+below steps to run numa.
+
+_______________________________________________________________________
+
+perf2877:/vijay/NUMA/ltp-full-20150420 # ./runltp -f numa
+FATAL: LTP not installed correctly
+INFO:  Follow directions in INSTALL!
+
+______________________________________________________________________
+
+perf2877:/vijay/NUMA/ltp-full-20150420 # /opt/ltp/runltp -f numa
+
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=move_pages11 stime=1438256071
+cmdline="cd $LTPROOT/testcases/bin && chown root move_pages11 && chmod 
+04755 move_pages11 && move_pages.sh 11"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+move_pages11    1  TCONF  :  move_pages_support.c:412: NUMA support not 
+provided
+move_pages11    2  TCONF  :  move_pages_support.c:412: Remaining cases not 
+appropriate for configuration
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=32 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+INFO: ltp-pan reported some tests FAIL
+LTP Version: 20150420
+
+       ###############################################################
+
+            Done executing testcases.
+            LTP Version:  20150420
+       ###############################################################
+
+
+But if I run only  "/opt/ltp/runltp" with out any options or with out " -f 
+numa " option  it is giving results.
+____________________________________________________________________________
+If I run numa01.sh I am getting below errors.
+perf2877:/vijay/NUMA/ltp-full-20150420/testcases/kernel/numa # ./numa01.sh
+./numa01.sh: line 66: tst_brkm: command not found
+./numa01.sh: line 784: tst_resm: command not found
+./numa01.sh: line 215: tst_resm: command not found
+___________________________________________________________________
+
+
+Please correct me if I have done any mistake. 
+
+I have installed  below packages 
+
+perf2877:/opt/ltp # rpm -q libnuma-devel
+libnuma-devel-2.0.9-5.1.1
+perf2877:/opt/ltp # rpm -q libnuma1
+libnuma1-2.0.9-5.1.1
+perf2877:/opt/ltp # rpm -q libnuma-devel
+libnuma-devel-2.0.9-5.1.1
+perf2877:/opt/ltp # rpm -q autoconf
+autoconf-2.69-9.3
+perf2877:/opt/ltp # rpm -q automake
+automake-1.10.1-4.131.9.1
+perf2877:/opt/ltp #
+
+Also please add me in mailing list.
+
+
+Thanks
+Vijay Kumar
+--=_alternative 002D225E65257E93_=
+Content-Type: text/html; charset="US-ASCII"
+
+<font size=2 face="sans-serif">Hi,</font>
+<br>
+<br><font size=2 face="sans-serif">I have installed LTP on SUSE. &nbsp;I
+want to run numa testcases. &nbsp;I have done below steps to run numa.</font>
+<br>
+<br><font size=2 face="sans-serif">_______________________________________________________________________</font>
+<br>
+<br><font size=2 face="sans-serif">perf2877:/vijay/NUMA/ltp-full-20150420
+# ./runltp -f numa</font>
+<br><font size=2 face="sans-serif">FATAL: LTP not installed correctly</font>
+<br><font size=2 face="sans-serif">INFO: &nbsp;Follow directions in INSTALL!</font>
+<br>
+<br><font size=2 face="sans-serif">______________________________________________________________________</font>
+<br>
+<br><font size=2 face="sans-serif">perf2877:/vijay/NUMA/ltp-full-20150420
+# /opt/ltp/runltp -f numa</font>
+<br>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;execution_status&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">initiation_status=&quot;ok&quot;</font>
+<br><font size=2 face="sans-serif">duration=0 termination_type=exited termination_id=32
+corefile=no</font>
+<br><font size=2 face="sans-serif">cutime=0 cstime=0</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;test_end&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;test_start&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">tag=move_pages11 stime=1438256071</font>
+<br><font size=2 face="sans-serif">cmdline=&quot;cd $LTPROOT/testcases/bin
+&amp;&amp; chown root move_pages11 &amp;&amp; chmod 04755 move_pages11
+&amp;&amp; move_pages.sh 11&quot;</font>
+<br><font size=2 face="sans-serif">contacts=&quot;&quot;</font>
+<br><font size=2 face="sans-serif">analysis=exit</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;test_output&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">incrementing stop</font>
+<br><font size=2 face="sans-serif">move_pages11 &nbsp; &nbsp;1 &nbsp;TCONF
+&nbsp;: &nbsp;move_pages_support.c:412:<b> NUMA support not provided</b></font>
+<br><font size=2 face="sans-serif">move_pages11 &nbsp; &nbsp;2 &nbsp;TCONF
+&nbsp;: &nbsp;move_pages_support.c:412: Remaining cases not appropriate
+for configuration</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;execution_status&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif">initiation_status=&quot;ok&quot;</font>
+<br><font size=2 face="sans-serif">duration=0 termination_type=exited termination_id=32
+corefile=no</font>
+<br><font size=2 face="sans-serif">cutime=0 cstime=0</font>
+<br><font size=2 face="sans-serif">&lt;&lt;&lt;test_end&gt;&gt;&gt;</font>
+<br><font size=2 face="sans-serif"><b><i>INFO: ltp-pan reported some tests
+FAIL</i></b></font>
+<br><font size=2 face="sans-serif">LTP Version: 20150420</font>
+<br>
+<br><font size=2 face="sans-serif">&nbsp; &nbsp; &nbsp; &nbsp;###############################################################</font>
+<br>
+<br><font size=2 face="sans-serif">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+Done executing testcases.</font>
+<br><font size=2 face="sans-serif">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+LTP Version: &nbsp;20150420</font>
+<br><font size=2 face="sans-serif">&nbsp; &nbsp; &nbsp; &nbsp;###############################################################</font>
+<br>
+<br>
+<br><font size=2 face="sans-serif">But if I run only &nbsp;&quot;/opt/ltp/runltp&quot;
+with out any options or with out &quot; -f numa &quot; option &nbsp;it
+is giving results.</font>
+<br><font size=2 face="sans-serif">____________________________________________________________________________</font>
+<br><font size=2 face="sans-serif">If I run numa01.sh I am getting below
+errors.</font>
+<br><font size=2 face="sans-serif">perf2877:/vijay/NUMA/ltp-full-20150420/testcases/kernel/numa
+# ./numa01.sh</font>
+<br><font size=2 face="sans-serif">./numa01.sh: line 66: tst_brkm: command
+not found</font>
+<br><font size=2 face="sans-serif">./numa01.sh: line 784: tst_resm: command
+not found</font>
+<br><font size=2 face="sans-serif">./numa01.sh: line 215: tst_resm: command
+not found</font>
+<br><font size=2 face="sans-serif">___________________________________________________________________</font>
+<br>
+<br>
+<br><font size=2 face="sans-serif">Please correct me if I have done any
+mistake. </font>
+<br>
+<br><font size=2 face="sans-serif">I have installed &nbsp;below packages
+&nbsp;</font>
+<br>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q libnuma-devel</font>
+<br><font size=2 face="sans-serif">libnuma-devel-2.0.9-5.1.1</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q libnuma1</font>
+<br><font size=2 face="sans-serif">libnuma1-2.0.9-5.1.1</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q libnuma-devel</font>
+<br><font size=2 face="sans-serif">libnuma-devel-2.0.9-5.1.1</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q autoconf</font>
+<br><font size=2 face="sans-serif">autoconf-2.69-9.3</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp # rpm -q automake</font>
+<br><font size=2 face="sans-serif">automake-1.10.1-4.131.9.1</font>
+<br><font size=2 face="sans-serif">perf2877:/opt/ltp #</font>
+<br>
+<br><font size=2 face="sans-serif">Also please add me in mailing list.</font>
+<br>
+<br>
+<br><font size=2 face="sans-serif">Thanks</font>
+<br><font size=2 face="sans-serif">Vijay Kumar</font>
+--=_alternative 002D225E65257E93_=--
+
+
+
+--===============4319620307140003638==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--===============4319620307140003638==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4319620307140003638==--
+
+
