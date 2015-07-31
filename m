@@ -2,23 +2,22 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <maninder1.s@samsung.com>) id 1ZD4Tr-0000qt-D3
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 05:34:43 +0000
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1ZD4Tp-00056w-FZ
-	for ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 05:34:43 +0000
-Received: from epcpsbgr4.samsung.com
-	(u144.gpu120.samsung.co.kr [203.254.230.144])
-	by mailout1.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NR7004OAGTMJB80@mailout1.samsung.com> for
-	ltp-list@lists.sourceforge.net; Thu, 09 Jul 2015 14:34:34 +0900 (KST)
-From: Maninder Singh <maninder1.s@samsung.com>
-Date: Thu, 09 Jul 2015 11:03:57 +0530
-Message-id: <1436420037-18441-1-git-send-email-maninder1.s@samsung.com>
-Subject: [LTP] [PATCH 2/2] open_posix/shm_unlink: sanity checking after
- calling pathconf
+	(envelope-from <liwan@redhat.com>) id 1ZL3jz-0001Sm-Dm
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 06:24:23 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZL3jx-0000O3-Uh
+	for ltp-list@lists.sourceforge.net; Fri, 31 Jul 2015 06:24:23 +0000
+Received: from zmail22.collab.prod.int.phx2.redhat.com
+	(zmail22.collab.prod.int.phx2.redhat.com [10.5.83.26])
+	by mx3-phx2.redhat.com (8.13.8/8.13.8) with ESMTP id t6V6OFXL021800
+	for <ltp-list@lists.sourceforge.net>; Fri, 31 Jul 2015 02:24:15 -0400
+Date: Fri, 31 Jul 2015 02:24:15 -0400 (EDT)
+From: Li Wang <liwang@redhat.com>
+Message-ID: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
+In-Reply-To: <751019010.974973.1438321471218.JavaMail.zimbra@redhat.com>
+MIME-Version: 1.0
+Subject: [LTP] How to compie a ltp-case into 32-bit on the 64bit system
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,47 +27,63 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: pankaj.m@samsung.com
 
-sanity checking after calling pathconf added
+Hi all,
 
-Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-Reviewed-by: Yogesh Narayan Gaur <yn.gaur@samsung.com>
----
- .../conformance/interfaces/shm_unlink/10-1.c       |    5 +++++
- 1 file changed, 5 insertions(+)
+I am going to add a new testcase: ltp/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c 
+for regression test.
 
-diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c
-index 768863c..20e5bef 100644
---- a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c
-+++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c
-@@ -27,6 +27,11 @@ int main(void)
- 	char *shm_name;
- 
- 	name_max = pathconf("/", _PC_NAME_MAX);
-+
-+	if (name_max == -1) {
-+		perror("An error occurs when calling pathconf()");
-+		return PTS_UNRESOLVED;
-+	}
- 	shm_name = malloc(name_max + 3);
- 
- 	if (!shm_name) {
+But the key point is that this program 'msgrcv08.c' should be compiled into 32-bit, 
+if it is compiled as 64-bit application it doesn't work.
+
+
+So, I try to add one line in the .../ipc/msgrcv/Makefile:
+
+  msgrcv08: CFLAGS+=-m32
+
+and I get some compile errors like:
+-----
+# make
+make -C ../lib -f "/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib/Makefile" all
+make[1]: Entering directory `/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/lib'
+make[1]: Nothing to be done for `all'.
+make[1]: Leaving directory `/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/lib'
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 -Wold-style-definition -m32 -D_FORTIFY_SOURCE=2 -I/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/include -I/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib -I../../../../../include -I../../../../../include   -L/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib -L../../../../../lib  msgrcv08.c   -lltp -lipc -o msgrcv08
+/usr/bin/ld: skipping incompatible ../../../../../lib/libltp.a when searching for -lltp
+/usr/bin/ld: cannot find -lltp
+/usr/bin/ld: skipping incompatible /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150420/testcases/kernel/syscalls/ipc/msgrcv/../lib/libipc.a when searching for -lipc
+/usr/bin/ld: cannot find -lipc
+collect2: error: ld returned 1 exit status
+make: *** [msgrcv08] Error 1
+-----
+
+these because the libltp.a is 64-bit.
+
+
+Then, I came up with a idea that I don't include the ltp-lib file in 'msgrcv08.c', 
+and just add two lines in the .../ipc/msgrcv/Makefile:
+
+  msgrcv08:
+	gcc -g -O2 -Wall -m32 msgrcv08.c -o msgrcv08
+
+It works for me, but I know it's not appropriate for LTP management.
+
+What should I do? or, Is there any good way to solve this problem?
+
+Thanks~
+
 -- 
-1.7.9.5
+Regards, 
+Li Wang 
+Email: liwang@redhat.com 
+
 
 
 ------------------------------------------------------------------------------
-Don't Limit Your Business. Reach for the Cloud.
-GigeNET's Cloud Solutions provide you with the tools and support that
-you need to offload your IT needs and focus on growing your business.
-Configured For All Businesses. Start Your Cloud Today.
-https://www.gigenetcloud.com/
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
