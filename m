@@ -1,23 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZMEEO-0004Md-BB
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 11:48:36 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZMEEK-0007SK-Vy
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 11:48:36 +0000
-Date: Mon, 3 Aug 2015 13:48:12 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150803114812.GA1648@rei.suse.de>
-References: <751019010.974973.1438321471218.JavaMail.zimbra@redhat.com>
-	<1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
-	<20150803083908.GA31324@rei.suse.de>
-	<CAEemH2dOo=3Gq=c4eLuYL=itfYHLZMqFMDh_88k7ttUikqLA9Q@mail.gmail.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1ZLLRQ-0005yK-8i
+	for ltp-list@lists.sourceforge.net; Sat, 01 Aug 2015 01:18:24 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZLLRN-0005rD-Gv
+	for ltp-list@lists.sourceforge.net; Sat, 01 Aug 2015 01:18:24 +0000
+Message-ID: <55BC1E51.6090508@huawei.com>
+Date: Sat, 1 Aug 2015 09:18:09 +0800
+From: Cui Bixuan <cuibixuan@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAEemH2dOo=3Gq=c4eLuYL=itfYHLZMqFMDh_88k7ttUikqLA9Q@mail.gmail.com>
+References: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
 Subject: Re: [LTP] How to compie a ltp-case into 32-bit on the 64bit system
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
@@ -31,26 +27,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> Yes, you are right.
+On 2015/7/31 14:24, Li Wang wrote:
+
+> Then, I came up with a idea that I don't include the ltp-lib file in 'msgrcv08.c', 
+> and just add two lines in the .../ipc/msgrcv/Makefile:
 > 
-> But I hope to finish the  'msgrcv08' test by LTP automatically. To
-> recompile the whole LTP-Lib in 32-bit only for this one case is not my
-> expected.  I tend to give up the testcase if we don't have any other  way.
-> :(
+>   msgrcv08:
+> 	gcc -g -O2 -Wall -m32 msgrcv08.c -o msgrcv08
+> 
+> It works for me, but I know it's not appropriate for LTP management.
+> 
+> What should I do? or, Is there any good way to solve this problem?
+Hi,
+    For LTP, we can run './configure CC=[SDK-32]; make;' to compile 32-bit testcases.
+So, I think, if the case 'msgrcv08.c' will not work as 64-bit application, it can check the
+SDK first. And do 'TCONF: not gcc32' if it's 64-bit application.
 
-This is not how this works. You have to compile and run LTP for both
-32bit and 64bit to test both 64bit and 32bit versions of syscalls.
+    It's not a good idea that ipc/msgrcv/Makefile to control it, I mean, LTP user to control
+it in ./configure which will be better.
 
-So the right solution is to make the test exit with TCONF when compiled
-for 64bit.
+    What do you think?
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks,
+Cui Bixuan
+
+> 
+> Thanks~
+> 
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
