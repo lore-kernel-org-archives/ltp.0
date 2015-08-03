@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZUCFn-0006xs-Hq
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2015 11:18:59 +0000
+	(envelope-from <metan@suse.de>) id 1ZMH8K-0006WQ-Mc
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 14:54:32 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZUCFm-0002Pj-Jg
-	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2015 11:18:59 +0000
-Date: Tue, 25 Aug 2015 13:18:23 +0200
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZMH8H-0006Sk-DZ
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 14:54:32 +0000
+Date: Mon, 3 Aug 2015 16:54:05 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150825111823.GA20082@rei.suse.de>
-References: <1440492714-3600-1-git-send-email-alexey.kodanev@oracle.com>
-	<55DC450D.4070501@oracle.com>
+Message-ID: <20150803145404.GA7519@rei.suse.de>
+References: <1438405111-6640-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <55DC450D.4070501@oracle.com>
-Subject: Re: [LTP] [PATCH] network/tcp_fastopen: fix typo in check_opt() and
- check_opt_l()
+In-Reply-To: <1438405111-6640-1-git-send-email-sunyuan3@huawei.com>
+Subject: Re: [LTP] [PATCH] define CLONE_NEWNS in case a standard library
+ isn't installed.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,15 +29,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> Can we apply this patch before release?
+> diff --git a/testcases/kernel/containers/libclone/libclone.h b/testcases/kernel/containers/libclone/libclone.h
+> index 3a38bc9..60e9e54 100644
+> --- a/testcases/kernel/containers/libclone/libclone.h
+> +++ b/testcases/kernel/containers/libclone/libclone.h
+> @@ -75,8 +75,12 @@
+>  #define CLONE_NEWNET		0x40000000
+>  #endif
+>  
+> +#ifndef CLONE_NEWNS
+> +#define CLONE_NEWNS		0x00020000
+> +#endif
 
-Sure, acked.
+There is a in-flight patch that moves these constants to common place
+(include/lapi) and adds this value as well:
 
-(I wonder how we missed that in the review...)
+[PATCH 1/2 v2] added helper tools for creating and working with namespaces
+
+I will not apply this one, because that will cause unnecessary conflict.
+
+Thanks for the patch anyway.
 
 -- 
 Cyril Hrubis
