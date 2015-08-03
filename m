@@ -1,32 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1ZRcOG-0003s2-6h
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 08:37:04 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZRcOF-0001de-7D
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 08:37:04 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (Postfix) with ESMTPS id 2C8FF2F3
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwan@redhat.com>) id 1ZMCkl-0005FH-2N
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 10:13:55 +0000
+Received: from mail-ob0-f182.google.com ([209.85.214.182])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZMCki-0002q7-VL
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 10:13:55 +0000
+Received: by obre1 with SMTP id e1so95528218obr.1
 	for <ltp-list@lists.sourceforge.net>;
-	Tue, 18 Aug 2015 08:36:57 +0000 (UTC)
-Received: from dhcp-13-206.nay.redhat.com (dhcp12-104.nay.redhat.com
-	[10.66.12.104] (may be forged))
-	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t7I8amis026359
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 18 Aug 2015 04:36:55 -0400
+	Mon, 03 Aug 2015 03:13:47 -0700 (PDT)
+MIME-Version: 1.0
+In-Reply-To: <55BC1E51.6090508@huawei.com>
+References: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
+	<55BC1E51.6090508@huawei.com>
+Date: Mon, 3 Aug 2015 18:08:36 +0800
+Message-ID: <CAEemH2f6Jd7TkXUDd0725be5yuoLyTYv4T-GA=S_Vz8YZr5j6g@mail.gmail.com>
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 18 Aug 2015 16:36:45 +0800
-Message-Id: <1439887006-17985-2-git-send-email-liwang@redhat.com>
-In-Reply-To: <1439887006-17985-1-git-send-email-liwang@redhat.com>
-References: <1439887006-17985-1-git-send-email-liwang@redhat.com>
-Subject: [LTP] [PATCH 2/3] ltp/pounder: Don't let the testing log output to
-	/dev/tty
+Subject: Re: [LTP] How to compie a ltp-case into 32-bit on the 64bit system
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -36,163 +28,177 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2869403598779925379=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-During the pounder21 test, it gives many errors like:
+--===============2869403598779925379==
+Content-Type: multipart/alternative; boundary=089e0111b2a2574f43051c655a0a
 
-./pounder: line 262: /dev/tty: No such device or address
-./pounder: line 263: /dev/tty: No such device or address
+--089e0111b2a2574f43051c655a0a
+Content-Type: text/plain; charset=UTF-8
 
-After google '/dev/tty', got this description:
+Hi,
 
-/dev/tty is the controlling terminal for the current process, if there is such a terminal.
-Do ps -a and look for /dev/tty. If it doesn't appear then that process doesn't have a
-controlling terminal.  It is quite normal for there to be no controlling terminal. So if
-there is no device associated with it then the kernel will just ignore anything you send
-to that file. It only cares if it has attached a device (possibly pseudo) to that node. If
-it does care, and echoing is on, then anything you send to the (special) file will be echoed.
+On Sat, Aug 1, 2015 at 9:18 AM, Cui Bixuan <cuibixuan@huawei.com> wrote:
 
-The second part may be related to the login shell. Check in /etc/passwd and make sure that
-you really do start bash for the user you are logging in as. Using /bin/sh instead is a likely cause.
-So do grep username /etc/passwd and look for the path to the program that is launched at the end of
-the text line. If its /bin/sh then you have the wrong shell. What you should have is /bin/bash.
+> On 2015/7/31 14:24, Li Wang wrote:
+>
+> > Then, I came up with a idea that I don't include the ltp-lib file in
+> 'msgrcv08.c',
+> > and just add two lines in the .../ipc/msgrcv/Makefile:
+> >
+> >   msgrcv08:
+> >       gcc -g -O2 -Wall -m32 msgrcv08.c -o msgrcv08
+> >
+> > It works for me, but I know it's not appropriate for LTP management.
+> >
+> > What should I do? or, Is there any good way to solve this problem?
+> Hi,
+>     For LTP, we can run './configure CC=[SDK-32]; make;' to compile 32-bit
+> testcases.
+> So, I think, if the case 'msgrcv08.c' will not work as 64-bit application,
+> it can check the
+> SDK first. And do 'TCONF: not gcc32' if it's 64-bit application.
+>
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- tools/pounder21/Install              |  2 +-
- tools/pounder21/fancy_timed_loop.c   |  2 +-
- tools/pounder21/infinite_loop.c      |  2 +-
- tools/pounder21/pounder              | 14 +++++++-------
- tools/pounder21/test_scripts/memtest |  2 +-
- tools/pounder21/timed_loop.c         |  2 +-
- 6 files changed, 12 insertions(+), 12 deletions(-)
+Thanks for review.  Do u know how to check the SDK first in msgrcv08.c
+file?
 
-diff --git a/tools/pounder21/Install b/tools/pounder21/Install
-index bf13528..6fb3a8f 100755
---- a/tools/pounder21/Install
-+++ b/tools/pounder21/Install
-@@ -65,7 +65,7 @@ done
- # Set up optdir
- mkdir -p "$POUNDER_OPTDIR"
- if [ ! -d "$POUNDER_OPTDIR" ]; then
--	echo "Could not create $POUNDER_OPTDIR; aborting." > /dev/tty
-+	echo "Could not create $POUNDER_OPTDIR; aborting."
- 	exit 1
- fi
- 
-diff --git a/tools/pounder21/fancy_timed_loop.c b/tools/pounder21/fancy_timed_loop.c
-index cf8580e..50305c3 100644
---- a/tools/pounder21/fancy_timed_loop.c
-+++ b/tools/pounder21/fancy_timed_loop.c
-@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
- 
- 	tty_fp = fdopen(3, "w+");
- 	if (tty_fp == NULL) {
--		tty_fp = fopen("/dev/tty", "w+");
-+		tty_fp = fdopen(STDOUT_FILENO, "w+");
- 		if (tty_fp == NULL) {
- 			perror("stdout");
- 			exit(2);
-diff --git a/tools/pounder21/infinite_loop.c b/tools/pounder21/infinite_loop.c
-index d78b442..804dd2e 100644
---- a/tools/pounder21/infinite_loop.c
-+++ b/tools/pounder21/infinite_loop.c
-@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
- 
- 	tty_fp = fdopen(3, "w+");
- 	if (tty_fp == NULL) {
--		tty_fp = fopen("/dev/tty", "w+");
-+		tty_fp = fdopen(STDOUT_FILENO, "w+");
- 		if (tty_fp == NULL) {
- 			perror("stdout");
- 			exit(2);
-diff --git a/tools/pounder21/pounder b/tools/pounder21/pounder
-index c3defcf..caf60d3 100755
---- a/tools/pounder21/pounder
-+++ b/tools/pounder21/pounder
-@@ -201,8 +201,8 @@ shift `expr $OPTIND - 1`
- 
- # Are we already running?
- if [ -f "$POUNDER_PIDFILE" ]; then
--	echo "File $POUNDER_PIDFILE exists; pounder may already be running." > /dev/tty
--	echo "Either run 'pounder -k' to stop all tests, or remove it." > /dev/tty
-+	echo "File $POUNDER_PIDFILE exists; pounder may already be running."
-+	echo "Either run 'pounder -k' to stop all tests, or remove it."
- 	exit 1
- fi
- 
-@@ -225,21 +225,21 @@ fi
- # Set up log directory
- mkdir -p "$POUNDER_LOGDIR" 2> /dev/null
- if [ ! -d "$POUNDER_LOGDIR" ]; then
--	echo "Could not create $POUNDER_LOGDIR; aborting." > /dev/tty
-+	echo "Could not create $POUNDER_LOGDIR; aborting."
- 	exit 1
- fi
- 
- # Set up dir for optional components
- mkdir -p "$POUNDER_OPTDIR"
- if [ ! -d "$POUNDER_OPTDIR" ]; then
--	echo "Could not create $POUNDER_OPTDIR; aborting." > /dev/tty
-+	echo "Could not create $POUNDER_OPTDIR; aborting."
- 	exit 1
- fi
- 
- # Set up tmpdir
- mkdir -p "$POUNDER_TMPDIR"
- if [ ! -d "$POUNDER_TMPDIR" ]; then
--	echo "Could not create $POUNDER_TMPDIR; aborting." > /dev/tty
-+	echo "Could not create $POUNDER_TMPDIR; aborting."
- 	exit 1
- fi
- 
-@@ -259,8 +259,8 @@ fi
- export > "$POUNDER_LOGDIR/environment"
- 
- echo "Starting $POUNDER_VERSION"
--echo "STARTING TESTS." > /dev/tty
--echo "To kill all tests, run 'pounder -k' or press ^C."> /dev/tty
-+echo "STARTING TESTS."
-+echo "To kill all tests, run 'pounder -k' or press ^C."
- 
- # Handle the duration thing...
- function kill_after {
-diff --git a/tools/pounder21/test_scripts/memtest b/tools/pounder21/test_scripts/memtest
-index c040147..e212bde 100755
---- a/tools/pounder21/test_scripts/memtest
-+++ b/tools/pounder21/test_scripts/memtest
-@@ -22,7 +22,7 @@
- 
- # Can we find the script?
- if [ ! -f "$POUNDER_OPTDIR/memtest.sh" ]; then
--	echo "Can't find memtest.sh; did you run Install?" > /dev/tty
-+	echo "Can't find memtest.sh; did you run Install?"
- 	exit -1
- fi
- 
-diff --git a/tools/pounder21/timed_loop.c b/tools/pounder21/timed_loop.c
-index 966c08a..0cd7305 100644
---- a/tools/pounder21/timed_loop.c
-+++ b/tools/pounder21/timed_loop.c
-@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
- 
- 	tty_fp = fdopen(3, "w+");
- 	if (tty_fp == NULL) {
--		tty_fp = fopen("/dev/tty", "w+");
-+		tty_fp = fdopen(STDOUT_FILENO, "w+");
- 		if (tty_fp == NULL) {
- 			perror("stdout");
- 			exit(2);
+For me, LTP always running on 64-bit system. So I wanted to run this case
+with others(msgrcv0*[1-7}) at the same time. seems like it's very difficult
+to achieve.
+
+
+>
+>     It's not a good idea that ipc/msgrcv/Makefile to control it, I mean,
+> LTP user to control
+> it in ./configure which will be better.
+>
+
+>     What do you think?
+>
+
+Agree, it's not wise to control the case by Makefile.  and,  it's easy to
+get TCONF but hard to get it work.
+
+
+> Thanks,
+> Cui Bixuan
+>
+> >
+> > Thanks~
+> >
+>
+>
+>
+> ------------------------------------------------------------------------------
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+
+
+
 -- 
-1.8.3.1
+Regards,
+Li Wang
+Email: liwang@redhat.com
 
+--089e0111b2a2574f43051c655a0a
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi,<br><div class=3D"gmail_extra"><br><div class=3D"gmail_=
+quote">On Sat, Aug 1, 2015 at 9:18 AM, Cui Bixuan <span dir=3D"ltr">&lt;<a =
+href=3D"mailto:cuibixuan@huawei.com" target=3D"_blank">cuibixuan@huawei.com=
+</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin=
+:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><span>On 2015/7/31=
+ 14:24, Li Wang wrote:<br>
+<br>
+&gt; Then, I came up with a idea that I don&#39;t include the ltp-lib file =
+in &#39;msgrcv08.c&#39;,<br>
+&gt; and just add two lines in the .../ipc/msgrcv/Makefile:<br>
+&gt;<br>
+&gt;=C2=A0 =C2=A0msgrcv08:<br>
+&gt;=C2=A0 =C2=A0 =C2=A0 =C2=A0gcc -g -O2 -Wall -m32 msgrcv08.c -o msgrcv08=
+<br>
+&gt;<br>
+&gt; It works for me, but I know it&#39;s not appropriate for LTP managemen=
+t.<br>
+&gt;<br>
+&gt; What should I do? or, Is there any good way to solve this problem?<br>
+</span>Hi,<br>
+=C2=A0 =C2=A0 For LTP, we can run &#39;./configure CC=3D[SDK-32]; make;&#39=
+; to compile 32-bit testcases.<br>
+So, I think, if the case &#39;msgrcv08.c&#39; will not work as 64-bit appli=
+cation, it can check the<br>
+SDK first. And do &#39;TCONF: not gcc32&#39; if it&#39;s 64-bit application=
+.<br></blockquote><div><br></div><div>Thanks for review.=C2=A0 Do u know ho=
+w to check the SDK first in msgrcv08.c file? <br><br></div><div>For me, LTP=
+ always running on 64-bit system. So I wanted to run this case with others(=
+msgrcv0*[1-7}) at the same time. seems like it&#39;s very difficult to achi=
+eve.<br>=C2=A0<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0=
+ 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex">
+<br>
+=C2=A0 =C2=A0 It&#39;s not a good idea that ipc/msgrcv/Makefile to control =
+it, I mean, LTP user to control<br>
+it in ./configure which will be better.<br></blockquote><blockquote class=
+=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padd=
+ing-left:1ex">
+<br>
+=C2=A0 =C2=A0 What do you think?<br></blockquote><div>=C2=A0</div><div>Agre=
+e, it&#39;s not wise to control the case by Makefile.=C2=A0 and,=C2=A0 it&#=
+39;s easy to get TCONF but hard to get it work.<br><br></div><blockquote cl=
+ass=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;p=
+adding-left:1ex">
+<br>
+Thanks,<br>
+Cui Bixuan<br>
+<br>
+&gt;<br>
+&gt; Thanks~<br>
+<div><div>&gt;<br>
+<br>
+<br>
+---------------------------------------------------------------------------=
+---<br>
+_______________________________________________<br>
+Ltp-list mailing list<br>
+<a href=3D"mailto:Ltp-list@lists.sourceforge.net" target=3D"_blank">Ltp-lis=
+t@lists.sourceforge.net</a><br>
+<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" rel=3D"no=
+referrer" target=3D"_blank">https://lists.sourceforge.net/lists/listinfo/lt=
+p-list</a><br>
+</div></div></blockquote></div><br><br clear=3D"all"><br>-- <br><div><div d=
+ir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div>Regards,<br></d=
+iv>Li Wang<br></div><div>Email: <a href=3D"mailto:liwang@redhat.com" target=
+=3D"_blank">liwang@redhat.com</a><br></div></div></div></div></div></div>
+</div></div>
+
+--089e0111b2a2574f43051c655a0a--
+
+
+--===============2869403598779925379==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--===============2869403598779925379==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============2869403598779925379==--
+
