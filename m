@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZMH8K-0006WQ-Mc
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 14:54:32 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZMHLt-0001JH-6G
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 15:08:33 +0000
 Received: from mx2.suse.de ([195.135.220.15])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZMH8H-0006Sk-DZ
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 14:54:32 +0000
-Date: Mon, 3 Aug 2015 16:54:05 +0200
+	(Exim 4.76) id 1ZMHLs-000713-4Q
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 15:08:33 +0000
+Date: Mon, 3 Aug 2015 17:08:09 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150803145404.GA7519@rei.suse.de>
-References: <1438405111-6640-1-git-send-email-sunyuan3@huawei.com>
+Message-ID: <20150803150809.GA7852@rei.suse.de>
+References: <201507271423431749597@sina.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1438405111-6640-1-git-send-email-sunyuan3@huawei.com>
-Subject: Re: [LTP] [PATCH] define CLONE_NEWNS in case a standard library
- isn't installed.
+In-Reply-To: <201507271423431749597@sina.com>
+Subject: Re: [LTP] ltpstress script  is stopping for no reason
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,30 +28,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: xcf733520 <xcf733520@sina.com>
+Cc: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
 Hi!
-> diff --git a/testcases/kernel/containers/libclone/libclone.h b/testcases/kernel/containers/libclone/libclone.h
-> index 3a38bc9..60e9e54 100644
-> --- a/testcases/kernel/containers/libclone/libclone.h
-> +++ b/testcases/kernel/containers/libclone/libclone.h
-> @@ -75,8 +75,12 @@
->  #define CLONE_NEWNET		0x40000000
->  #endif
->  
-> +#ifndef CLONE_NEWNS
-> +#define CLONE_NEWNS		0x00020000
-> +#endif
+>      During LTP stress test, I have a trouble that  ltpstress script  is stopping for no reasons.  I used  another Linux
+> OS to connect with test the Linux OS server  by the sshd  way .  My command  as below,
+>     ./ltpstress.sh -d /root/report/ltpstress_0720.sardata -p -l /root/report/ltpstresslog.0720 -m 4096 -t 502 &
+> I have set running 502 hours, but stopping affter running 144 hours  ssh connected always.  
 
-There is a in-flight patch that moves these constants to common place
-(include/lapi) and adds this value as well:
+No idea what happened. What was the output of the script on the command
+line? Has it died silently or has it yielded "Testing done" message?
 
-[PATCH 1/2 v2] added helper tools for creating and working with namespaces
+Have you checked the test output logfiles?
 
-I will not apply this one, because that will cause unnecessary conflict.
+> Check  the dmesg,
+>  Jul 26 04:02:16 platform-test fmtmsg01: LTP:fmtmsg: LTP_TEST: LTP fmtmsg() test3 message, NOT an error TO FIX: This is correct output, no action needed  LTP:msg:003 
+>  Jul 26 04:02:16 platform-test xinetd[2182]: START: shell pid=17690 from=127.0.0.1
+>  Jul 26 04:02:16 platform-test rshd[17691]: root@platform-test.localdomain as root: cmd='/opt/ltp/testcases/bin/rpc_server'
+>  Jul 26 04:02:16 platform-test xinetd[2182]: EXIT: shell status=0 pid=17690 duration=0(sec)
+>  Jul 26 04:02:16 platform-test xinetd[2182]: START: shell pid=17716 from=127.0.0.1
+>  Jul 26 04:02:16 platform-test rshd[17719]: root@platform-test.localdomain as root: cmd='ps -ewf'
+>  Jul 26 04:02:16 platform-test xinetd[2182]: EXIT: shell status=0 pid=17716 duration=0(sec)
+>  Jul 26 04:02:16 platform-test xinetd[2182]: START: shell pid=17762 from=127.0.0.1
+>  Jul 26 04:02:16 platform-test rshd[17763]: root@platform-test.localdomain as root: cmd='kill -9 17712'
+>  Jul 26 04:02:16 platform-test xinetd[2182]: EXIT: shell status=0 pid=17762 duration=0(sec) 
 
-Thanks for the patch anyway.
+This does not seem to be relevant, at least to me.
 
 -- 
 Cyril Hrubis
