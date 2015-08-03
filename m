@@ -1,21 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZRVOS-0004ul-9U
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 01:08:48 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZRVOM-0002vx-KS
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 01:08:48 +0000
-Message-ID: <55D2857D.6000909@huawei.com>
-Date: Tue, 18 Aug 2015 09:08:13 +0800
-From: Yuan Sun <sunyuan3@huawei.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZMHyf-0003Lf-WA
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 15:48:38 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZMHyc-0007VZ-Mj
+	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 15:48:37 +0000
+Date: Mon, 3 Aug 2015 17:48:13 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150803154813.GB7852@rei.suse.de>
+References: <55BEFD37.9090502@cn.fujitsu.com>
+	<1438582432-10124-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <1439540244-15421-1-git-send-email-sunyuan3@huawei.com>
-	<2105335239.10970039.1439818423738.JavaMail.zimbra@redhat.com>
-In-Reply-To: <2105335239.10970039.1439818423738.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] [PATCH V3] container: new testcase pidns32
+Content-Disposition: inline
+In-Reply-To: <1438582432-10124-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] open/open13.c: add O_PATH flag test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,45 +29,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
+To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> +static void verify_fchown(void)
+> +{
+> +	uid_t tuid = 1000;
+> +	gid_t tgid = 1000;
+> +
+> +	TEST(fchown(fd, tuid, tgid));
 
-On 2015/8/17 21:33, Jan Stancek wrote:
->
->
->
-> ----- Original Message -----
->> From: "Yuan Sun" <sunyuan3@huawei.com>
->> To: jstancek@redhat.com
->> Cc: ltp-list@lists.sourceforge.net
->> Sent: Friday, 14 August, 2015 10:17:24 AM
->> Subject: [PATCH V3] container: new testcase pidns32
->>
->> Kernel imposes a limit of 32 nested levels of pid namespaces.
->>
->> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> Hi,
->
-> pushed with updated commit message and removed kernel version check.
-> Since we expect that 32 levels will work on any kernel, there's
-> no need for it now.
-Yes, you are right. I agree with you. Thank you.
-     Yuan
->
-> Regards,
-> Jan
->
->> ---
->>   runtest/containers                           |   1 +
->>   testcases/kernel/containers/pidns/.gitignore |   1 +
->>   testcases/kernel/containers/pidns/pidns32.c  | 103
->>   +++++++++++++++++++++++++++
->>   3 files changed, 105 insertions(+)
->>   create mode 100644 testcases/kernel/containers/pidns/pidns32.c
->>
->
+Any reason why don't we pass the numbers directly to the call?
 
+I.e. TEST(fchonw(fd, 1000, 1000)); ?
+
+Otherwise this looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
