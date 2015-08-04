@@ -1,29 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwang@redhat.com>) id 1ZRcOF-0003rs-06
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 08:37:03 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZRcOD-0002wC-3L
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 08:37:02 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (Postfix) with ESMTPS id F2ED496EF
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 18 Aug 2015 08:36:54 +0000 (UTC)
-Received: from dhcp-13-206.nay.redhat.com (dhcp12-104.nay.redhat.com
-	[10.66.12.104] (may be forged))
-	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
-	id t7I8amir026359
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
-	verify=NO)
-	for <ltp-list@lists.sourceforge.net>; Tue, 18 Aug 2015 04:36:52 -0400
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 18 Aug 2015 16:36:44 +0800
-Message-Id: <1439887006-17985-1-git-send-email-liwang@redhat.com>
-Subject: [LTP] [PATCH 1/3] ltp/tools: remove the scripts/numa_test.sh file
+	(envelope-from <metan@suse.de>) id 1ZMgOj-0002mH-Pz
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2015 17:53:09 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZMgOi-0000Of-Mk
+	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2015 17:53:09 +0000
+Date: Tue, 4 Aug 2015 19:52:47 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150804175247.GC20633@rei.suse.de>
+References: <1436949363-8356-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+	<1436949363-8356-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1436949363-8356-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2 3/3] umount2/umount2_03.c: add new test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,87 +26,73 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Not only ltp/Makefile cancel the calling of the numa_test.sh, but
-there are no any other testcases using it.
+Hi!
+> +static void umount2_verify(void)
+> +{
+> +	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
+> +	mount_flag = 1;
+> +
+> +	TEST(umount2(SYMLINK, UMOUNT_NOFOLLOW));
+> +
+> +	if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
+> +		tst_resm(TFAIL | TTERRNO,
+> +			"umount2(2) UMOUNT_NOFOLLOW flag "
+> +			"performed abnormally "
+> +			"expected error = %d : %s",
+> +			EINVAL, strerror(EINVAL));
 
-per: ef77253961f909f87e82e6d2b620e87af33e9665
+Let's keep the messages short and to the point, what about:
 
-ltp also has another copy of it: /testcases/kernel/numa/test.sh
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- tools/scripts/numa_test.sh | 53 ----------------------------------------------
- 1 file changed, 53 deletions(-)
- delete mode 100755 tools/scripts/numa_test.sh
+tst_resm(TFAIL | TTERRNO,
+         "umount2('symlink', UMOUNT_NOFOLLOW) failed unexpectedly, expected EINVAL");
 
-diff --git a/tools/scripts/numa_test.sh b/tools/scripts/numa_test.sh
-deleted file mode 100755
-index 1b46149..0000000
---- a/tools/scripts/numa_test.sh
-+++ /dev/null
-@@ -1,53 +0,0 @@
--#############################################################################
--##
--## Copyright (c) International Business Machines  Corp., 2007
--##
--## This program is free software;  you can redistribute it and#or modify
--## it under the terms of the GNU General Public License as published by
--## the Free Software Foundation; either version 2 of the License, or
--## (at your option) any later version.
--##
--## This program is distributed in the hope that it will be useful, but
--## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
--## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
--## for more details.
--##
--## You should have received a copy of the GNU General Public License
--## along with this program;  if not, write to the Free Software
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
--##
--#############################################################################
--#
--# Author         Pradeep Kumar Surisetty, pradeepkumars@in.ibm.com
--#
--# History        Nov 27 2007 -created- pradeep kumar surisetty
--#! /bin/sh
--#
--# File :         numa_test.sh
--
--
--#!/bin/sh
--x=0
--chk_ifexist()
--{
--if [ ! -d /sys/devices/system/node ]
--then
--x=0
--else
--x=$(ls /sys/devices/system/node | wc -l)
--fi
--if [ $x -gt 1 ]
--then
--	if [ ! -f /usr/include/numa.h ]
--	then
--		echo no;
-- 	else
--		echo yes;
--	fi
--else
--        echo no;     #numa is not present
--
--fi
--}
--chk_ifexist
--
+
+Also it would be better if if we had separate case for the when the call
+succeeded something as:
+
+tst_resm(TFAIL, "umount2('symlink', UMOUNT_NOFOLLOW) "
+         "succeeded unexpectedly");
+
+> +		if (TEST_RETURN == 0)
+> +			mount_flag = 0;
+> +		goto EXIT;
+> +	}
+> +
+> +	TEST(umount2(MNTPOINT, UMOUNT_NOFOLLOW));
+> +
+> +	if (TEST_RETURN != 0) {
+> +		tst_resm(TFAIL | TTERRNO, "umount2(2) Failed");
+> +		goto EXIT;
+> +	}
+> +
+> +	mount_flag = 0;
+> +
+> +	tst_resm(TPASS, "umount2(2) Passed");
+> +
+> +EXIT:
+> +	if (mount_flag) {
+> +		SAFE_UMOUNT(cleanup, MNTPOINT);
+> +		mount_flag = 0;
+> +	}
+> +}
+
+
+Again, these are two testcases you should print two PASS/FAIL for each of
+them. What about you split the verify funciton into two
+umount2_verify_failure and umount2_verify_success and mount and umout
+the device in each of them. That way we can make the code flow more
+straightforward.
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
