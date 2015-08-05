@@ -1,20 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZRKY8-0000WP-Io
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2015 13:34:04 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZRKY5-0007Cf-UC
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2015 13:34:04 +0000
-Date: Mon, 17 Aug 2015 09:33:43 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <2105335239.10970039.1439818423738.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1439540244-15421-1-git-send-email-sunyuan3@huawei.com>
-References: <1439540244-15421-1-git-send-email-sunyuan3@huawei.com>
+	(envelope-from <metan@suse.de>) id 1ZN2Jo-0001vZ-NO
+	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 17:17:32 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZN2Jn-0005AO-E6
+	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 17:17:32 +0000
+Date: Wed, 5 Aug 2015 19:17:09 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150805171709.GA4216@rei.suse.de>
+References: <55A680FC.2010807@oracle.com>
+	<1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+	<1437024647-2066-2-git-send-email-zenglg.jy@cn.fujitsu.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V3] container: new testcase pidns32
+Content-Disposition: inline
+In-Reply-To: <1437024647-2066-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v5 02/11] lib6/runcc.c: Cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,41 +30,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
+To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+First of all, I would like to ask everybody what they think about these
+testcases (testcases/network/lib6/). Quite a bit of the functionality
+there is validating that ipv6 devel headers and structures are present
+and can be compiled. This looks more like conform test suitable for
+glibc to me. Do we want to really keep these? Because they would need a
+bit more work to make them less ugly...
 
-
-
-
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Friday, 14 August, 2015 10:17:24 AM
-> Subject: [PATCH V3] container: new testcase pidns32
-> 
-> Kernel imposes a limit of 32 nested levels of pid namespaces.
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-
-Hi,
-
-pushed with updated commit message and removed kernel version check.
-Since we expect that 32 levels will work on any kernel, there's
-no need for it now.
-
-Regards,
-Jan
-
-> ---
->  runtest/containers                           |   1 +
->  testcases/kernel/containers/pidns/.gitignore |   1 +
->  testcases/kernel/containers/pidns/pidns32.c  | 103
->  +++++++++++++++++++++++++++
->  3 files changed, 105 insertions(+)
->  create mode 100644 testcases/kernel/containers/pidns/pidns32.c
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
