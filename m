@@ -1,30 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1ZRJIB-0005bo-Id
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2015 12:13:31 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZRJI9-0004eL-HI
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2015 12:13:31 +0000
-Received: from aserv0021.oracle.com (aserv0021.oracle.com [141.146.126.233])
-	by aserp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
-	ESMTP id t7HCDNlx023098
-	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2015 12:13:23 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-	by aserv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t7HCDNcE027059
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2015 12:13:23 GMT
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-	by aserv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t7HCDN8U006065
-	for <ltp-list@lists.sourceforge.net>; Mon, 17 Aug 2015 12:13:23 GMT
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 17 Aug 2015 15:13:17 +0300
-Message-Id: <1439813598-11524-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Subject: [LTP] [PATCH 1/2] ltp_rt_sigaction: SPARC fixes for -O0
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZNLvT-0000bk-Un
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2015 14:13:43 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZNLvR-0004vS-CE
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2015 14:13:43 +0000
+Date: Thu, 6 Aug 2015 16:13:17 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150806141316.GA19339@rei.suse.de>
+References: <1437654435-16682-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <1437654435-16682-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Subject: Re: [LTP] [PATCH v2] fcntl/fcntl32.c: add new test
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,113 +25,220 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
-Cc: vasily.isaenko@oracle.com
+To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net
 
-The *sigreturn_stub functions are copied from glibc, and they
-work only if optimization > 0, since they expect that the compiler
-does not add an epilogue.
+Hi!
+> Add new testcase to verify that a write lease may be placed
+> on a file only if there are no other open file descriptors
+> for the file.
+> 
+> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+> ---
+>  runtest/ltplite                           |   1 +
+>  runtest/syscalls                          |   2 +
+>  testcases/kernel/syscalls/.gitignore      |   2 +
+>  testcases/kernel/syscalls/fcntl/fcntl32.c | 129 ++++++++++++++++++++++++++++++
+>  4 files changed, 134 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/fcntl/fcntl32.c
+> 
+> diff --git a/runtest/ltplite b/runtest/ltplite
+> index 3bc681c..8ce0daa 100644
+> --- a/runtest/ltplite
+> +++ b/runtest/ltplite
+> @@ -225,6 +225,7 @@ fcntl26 fcntl26
+>  fcntl29 fcntl29
+>  fcntl30 fcntl30
+>  fcntl31 fcntl31
+> +fcntl32 fcntl32
+>  
+>  fdatasync01 fdatasync01
+>  fdatasync02 fdatasync02
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 70d4945..0d14528 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -258,6 +258,8 @@ fcntl30 fcntl30
+>  fcntl30_64 fcntl30_64
+>  fcntl31 fcntl31
+>  fcntl31_64 fcntl31_64
+> +fcntl32 fcntl32
+> +fcntl32_64 fcntl32_64
+>  
+>  fdatasync01 fdatasync01
+>  fdatasync02 fdatasync02
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+> index 172aeec..13c7a79 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -221,6 +221,8 @@
+>  /fcntl/fcntl30_64
+>  /fcntl/fcntl31
+>  /fcntl/fcntl31_64
+> +/fcntl/fcntl32
+> +/fcntl/fcntl32_64
+>  /fdatasync/fdatasync01
+>  /fdatasync/fdatasync02
+>  /flock/flock01
+> diff --git a/testcases/kernel/syscalls/fcntl/fcntl32.c b/testcases/kernel/syscalls/fcntl/fcntl32.c
+> new file mode 100644
+> index 0000000..46e316f
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/fcntl/fcntl32.c
+> @@ -0,0 +1,129 @@
+> +/*
+> + * Copyright (c) 2015 Fujitsu Ltd.
+> + * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * alone with this program.
+> + */
+> +
+> +/*
+> + * DESCRIPTION
+> + *  Basic test for fcntl(2) using F_SETLEASE & F_WRLCK argument.
+> + *  "A write lease may be placed on a file only if there are
+> + *  no other open file descriptors for the file."
+> + */
+> +
+> +#include <errno.h>
+> +
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "tst_fs_type.h"
+> +
+> +static void setup(void);
+> +static void fcntl_verify(int);
+> +static void cleanup(void);
+> +
+> +#define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
+> +
+> +int fd1;
+> +int fd2;
 
-For example, with -O > 0:
+static
 
-0000000000102140 <__rt_sigreturn_stub>:
-  102140:       82 10 20 65     mov  0x65, %g1  ! 65 <_init-0x101f23>
-  102144:       91 d0 20 6d     ta  0x6d
-  102148:       81 c3 e0 08     retl
-  10214c:       01 00 00 00     nop
+> +static struct test_case_t {
+> +	int fd1_flag;
+> +	int fd2_flag;
+> +} test_cases[] = {
+> +	{O_RDONLY, O_RDONLY},
+> +	{O_RDONLY, O_WRONLY},
+> +	{O_RDONLY, O_RDWR},
+> +	{O_WRONLY, O_RDONLY},
+> +	{O_WRONLY, O_WRONLY},
+> +	{O_WRONLY, O_RDWR},
+> +	{O_RDWR, O_RDONLY},
+> +	{O_RDWR, O_WRONLY},
+> +	{O_RDWR, O_RDWR},
+> +};
+> +
+> +char *TCID = "fcntl32";
+> +int TST_TOTAL = ARRAY_SIZE(test_cases);
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	int tc;
+> +	long type;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	setup();
+> +
+> +	switch ((type = tst_fs_type(cleanup, "."))) {
+> +	case TST_NFS_MAGIC:
+> +	case TST_RAMFS_MAGIC:
+> +	case TST_TMPFS_MAGIC:
+> +		tst_brkm(TCONF, cleanup,
+> +			"Cannot do fcntl on a file on %s filesystem",
+                                   ^
+				   fcntl(..., F_SETLEASE, ...)
 
-but without -O:
+		Otherwise this is quite missleading.
 
-000000000010212c <__rt_sigreturn_stub>:
-  10212c:       9d e3 bf 50     save  %sp, -176, %sp  <--- this
-  102130:       82 10 20 65     mov  0x65, %g1
-  102134:       91 d0 20 6d     ta  0x6d
-  102138:       81 cf e0 08     rett  %i7 + 8
-  10213c:       01 00 00 00     nop
+> +			tst_fs_type_name(type));
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		for (tc = 0; tc < TST_TOTAL; tc++)
+> +			fcntl_verify(tc);
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +	TEST_PAUSE;
+> +
+> +	tst_tmpdir();
+> +
+> +	SAFE_TOUCH(cleanup, "file", FILE_MODE, NULL);
+> +}
+> +
+> +static void fcntl_verify(int i)
+> +{
+> +	fd1 = SAFE_OPEN(cleanup, "file", test_cases[i].fd1_flag);
+> +	fd2 = SAFE_OPEN(cleanup, "file", test_cases[i].fd2_flag);
+> +
+> +	TEST(fcntl(fd1, F_SETLEASE, F_WRLCK));
+> +
+> +	SAFE_CLOSE(cleanup, fd1);
+> +	fd1 = 0;
+> +	SAFE_CLOSE(cleanup, fd2);
+> +	fd2 = 0;
+> +
+> +	if (TEST_RETURN != -1) {
+> +		tst_resm(TFAIL, "fcntl(2) succeeded unexpectedly");
 
-Therefore, if we build LTP with OPT_CFLAGS="", ltp_rt_sigaction() will
-malfunction.
+                                 ^
+				 fcntl(..., F_SETLEASE, F_WRLCK)
 
-To avoid this, let's declare a new symbol pointing to the instruction we
-need ('mov ...').
+> +		return;
+> +	}
 
-The trick was proposed by Jose E. Marchesi <jose.marchesi@oracle.com>.
+Hmm do we care about specific errno here?
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- include/lapi/rt_sigaction.h |   20 ++++++++++++--------
- 1 files changed, 12 insertions(+), 8 deletions(-)
+I would expect EBUSY or EAGAIN.
 
-diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
-index 46f6a50..f99c372 100644
---- a/include/lapi/rt_sigaction.h
-+++ b/include/lapi/rt_sigaction.h
-@@ -105,12 +105,14 @@ static inline int sig_initial(int sig)
- # if defined __arch64__ || defined __sparcv9
- 
- /*
-- * From glibc/sysdeps/unix/sysv/linux/sparc/sparc64/sigaction.c
-+ * Based on glibc/sysdeps/unix/sysv/linux/sparc/sparc64/sigaction.c
-  */
- 
-+extern char *__rt_sig_stub;
-+
- static void __rt_sigreturn_stub(void)
- {
--	__asm__ ("mov %0, %%g1\n\t"
-+	__asm__ ("__rt_sig_stub: mov %0, %%g1\n\t"
- 		"ta  0x6d\n\t"
- 		: /* no outputs */
- 		: "i" (__NR_rt_sigreturn));
-@@ -119,12 +121,14 @@ static void __rt_sigreturn_stub(void)
- # else /* sparc32 */
- 
- /*
-- * From glibc/sysdeps/unix/sysv/linux/sparc/sparc32/sigaction.c
-+ * Based on glibc/sysdeps/unix/sysv/linux/sparc/sparc32/sigaction.c
-  */
- 
-+extern char *__rt_sig_stub, *__sig_stub;
-+
- static void __rt_sigreturn_stub(void)
- {
--	__asm__ ("mov %0, %%g1\n\t"
-+	__asm__ ("__rt_sig_stub: mov %0, %%g1\n\t"
- 		"ta  0x10\n\t"
- 		: /* no outputs */
- 		: "i" (__NR_rt_sigreturn));
-@@ -132,7 +136,7 @@ static void __rt_sigreturn_stub(void)
- 
- static void __sigreturn_stub(void)
- {
--	__asm__ ("mov %0, %%g1\n\t"
-+	__asm__ ("__sig_stub: mov %0, %%g1\n\t"
- 		"ta  0x10\n\t"
- 		: /* no outputs */
- 		: "i" (__NR_sigreturn));
-@@ -181,12 +185,12 @@ static int ltp_rt_sigaction(int signum, const struct sigaction *act,
- #ifdef __sparc__
- 	unsigned long stub = 0;
- # if defined __arch64__ || defined __sparcv9
--	stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-+	stub = ((unsigned long) &__rt_sig_stub) - 8;
- # else /* sparc32 */
- 	if ((kact.sa_flags & SA_SIGINFO) != 0)
--		stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-+		stub = ((unsigned long) &__rt_sig_stub) - 8;
- 	else
--		stub = ((unsigned long) &__sigreturn_stub) - 8;
-+		stub = ((unsigned long) &__sig_stub) - 8;
- # endif
- #endif
- 
+> +	tst_resm(TPASS | TTERRNO, "fcntl(2) failed as expected");
+                                       ^
+				       here as well
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd1 > 0 && close(fd1))
+> +		tst_resm(TWARN | TTERRNO, "Failed to close file");
+> +
+> +	if (fd2 > 0 && close(fd2))
+> +		tst_resm(TWARN | TTERRNO, "Failed to close file");
+> +
+> +	tst_rmdir();
+> +}
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
