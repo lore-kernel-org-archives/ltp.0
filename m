@@ -2,21 +2,28 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZTobl-0006lU-QC
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2015 10:04:05 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZTobi-00075d-UW
-	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2015 10:04:05 +0000
-Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t7OA3nXS007148
-	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2015 18:03:49 +0800
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Mon, 24 Aug 2015 18:04:24 +0800
-Message-ID: <1440410664-10266-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] cpuhotplug_hotplug.sh: fix the return of cpu number
+	(envelope-from <liwang@redhat.com>) id 1ZNDfh-0005hi-I2
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2015 05:24:53 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZNDff-0001ij-SJ
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2015 05:24:53 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (Postfix) with ESMTPS id D6DE4A4CC8
+	for <ltp-list@lists.sourceforge.net>;
+	Thu,  6 Aug 2015 05:24:45 +0000 (UTC)
+Received: from dhcp-13-206.nay.redhat.com (dhcp12-104.nay.redhat.com
+	[10.66.12.104] (may be forged))
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t765Og9m023725
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 6 Aug 2015 01:24:44 -0400
+From: Li Wang <liwang@redhat.com>
+Date: Thu,  6 Aug 2015 13:24:40 +0800
+Message-Id: <1438838680-9954-1-git-send-email-liwang@redhat.com>
+Subject: [LTP] [PATCH v2] ipc/msgrcv: add new testcase msgrcv08
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,159 +33,205 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-In shell, function's return value can not exceed 255, if we run
-the test on machines which have more than 255 cpus, the result
-will be incorrect, so fix that by using global variable instead.
+system call msgrcv() from 32-bit application shows error:
+"msgrcv: No message of desired type"
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+This simple program is writen for the issue as an regression case.
+
+v1 --> v2
+	1. Remove setup() cleanup() function
+	2. Use %zi and %zu instead of the %lu in the line: 81
+	3. Print TPASS in the msr() function instead of doing return 0
+
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh   | 2 +-
- testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh   | 2 +-
- testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh   | 2 +-
- testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh   | 4 ++--
- testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh   | 2 +-
- testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh   | 2 +-
- testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh   | 2 +-
- .../kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh      | 8 ++++----
- 8 files changed, 12 insertions(+), 12 deletions(-)
+ runtest/ltplite                                 |   1 +
+ runtest/syscalls                                |   1 +
+ runtest/syscalls-ipc                            |   1 +
+ testcases/kernel/syscalls/.gitignore            |   1 +
+ testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c | 117 ++++++++++++++++++++++++
+ 5 files changed, 121 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
-index 8ae1379..e75da21 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
-@@ -112,7 +112,7 @@ LOOP_COUNT=1
- tst_check_cmds perl
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 3bc681c..2b204e8 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -496,6 +496,7 @@ msgrcv04 msgrcv04
+ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
+ msgrcv07 msgrcv07
++msgrcv08 msgrcv08
  
- get_present_cpus_num
--if [ $? -lt 2 ]; then
-+if [ $PRESENT_CPUS_NUM -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 70d4945..abdb146 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -662,6 +662,7 @@ msgrcv04 msgrcv04
+ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
+ msgrcv07 msgrcv07
++msgrcv08 msgrcv08
  
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
-index c42cc1b..f6b4345 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
-@@ -55,7 +55,7 @@ done
- LOOP_COUNT=1
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index bd9bf30..5592a00 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -24,6 +24,7 @@ msgrcv04 msgrcv04
+ msgrcv05 msgrcv05
+ msgrcv06 msgrcv06
+ msgrcv07 msgrcv07
++msgrcv08 msgrcv08
  
- get_present_cpus_num
--if [ $? -lt 2 ]; then
-+if [ $PRESENT_CPUS_NUM -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
- 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-index 3469b10..a68ac7d 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
-@@ -64,7 +64,7 @@ done
- LOOP_COUNT=1
- 
- get_present_cpus_num
--cpus_num=$?
-+cpus_num=${PRESENT_CPUS_NUM}
- if [ $cpus_num -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-index 58a822e..3ecbb36 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
-@@ -49,13 +49,13 @@ done
- LOOP_COUNT=1
- 
- get_present_cpus_num
--cpus_num=$?
-+cpus_num=${PRESENT_CPUS_NUM}
- if [ $cpus_num -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
- 
- get_hotplug_cpus_num
--if [ $? -lt 1 ]; then
-+if [ $HOTPLUG_CPUS_NUM -lt 1 ]; then
- 	tst_brkm TCONF "system doesn't have at least one hotpluggable CPU"
- fi
- 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-index 60382c8..8009af2 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-@@ -56,7 +56,7 @@ LOOP_COUNT=1
- tst_check_cmds sar
- 
- get_present_cpus_num
--if [ $? -lt 2 ]; then
-+if [ $PRESENT_CPUS_NUM -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
- 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
-index 6710fad..5e71abf 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
-@@ -50,7 +50,7 @@ done
- LOOP_COUNT=1
- 
- get_present_cpus_num
--if [ $? -lt 2 ]; then
-+if [ $PRESENT_CPUS_NUM -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
- 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
-index 7edb3a9..81dc225 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
-@@ -56,7 +56,7 @@ done
- LOOP_COUNT=1
- 
- get_present_cpus_num
--if [ $? -lt 2 ]; then
-+if [ $PRESENT_CPUS_NUM -lt 2 ]; then
- 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
- fi
- 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-index 6920393..be8bce2 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-@@ -165,11 +165,11 @@ get_present_cpus()
- 
- # get_present_cpus_num()
- #
--#  Prints the number of present CPUs
-+#  Gets the number of present CPUs
- #
- get_present_cpus_num()
- {
--    return $(get_present_cpus | wc -w)
-+	PRESENT_CPUS_NUM=`get_present_cpus | wc -w`
- }
- 
- # get_hotplug_cpus()
-@@ -192,11 +192,11 @@ get_hotplug_cpus()
- 
- # get_hotplug_cpus_num()
- #
--#  Prints the number of hotpluggable CPUs
-+#  Gets the number of hotpluggable CPUs
- #
- get_hotplug_cpus_num()
- {
--    return $(get_hotplug_cpus | wc -w)
-+	HOTPLUG_CPUS_NUM=`get_hotplug_cpus | wc -w`
- }
- 
- # get_all_cpu_states()
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 172aeec..3d38d86 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -400,6 +400,7 @@
+ /ipc/msgrcv/msgrcv05
+ /ipc/msgrcv/msgrcv06
+ /ipc/msgrcv/msgrcv07
++/ipc/msgrcv/msgrcv08
+ /ipc/msgsnd/msgsnd01
+ /ipc/msgsnd/msgsnd02
+ /ipc/msgsnd/msgsnd03
+diff --git a/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
+new file mode 100644
+index 0000000..6ea407c
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/msgrcv/msgrcv08.c
+@@ -0,0 +1,117 @@
++/*
++ * Copyright (c) 2015   Author: Gabriellla Schmidt <gsc@bruker.de>
++ *                      Modify: Li Wang <liwang@redhat.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * you should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++/*
++ * Description:
++ *
++ * A regression test for:
++ *      commit e7ca2552369c1dfe0216c626baf82c3d83ec36bb
++ *      Author: Mateusz Guzik <mguzik@redhat.com>
++ *      Date:   Mon Jan 27 17:07:11 2014 -0800
++ *
++ *           ipc: fix compat msgrcv with negative msgtyp
++ *
++ * Reproduce:
++ *
++ *      32-bit application using the msgrcv() system call
++ *      gives the error message:
++ *
++ *           msgrcv: No message of desired type
++ *
++ *      If this progarm is compiled as 64-bit application it works.
++ */
++
++#include <stdio.h>
++#include <string.h>
++#include <unistd.h>
++#include <sys/types.h>
++#include <sys/ipc.h>
++#include <sys/msg.h>
++#include "test.h"
++
++const char *TCID = "msgrcv08";
++const int TST_TOTAL = 1;
++
++#if __WORDSIZE == 32
++
++struct msgbuf {
++	long mtype;     /* message type, must be > 0 */
++	char mtext[16]; /* message data */
++};
++
++static void msr(int msqid)
++{
++	struct msgbuf msbs;
++	struct msgbuf msbr;
++	ssize_t sret;
++	long mtype = 121;
++
++	memset(&msbs, 0, sizeof(msbs));
++	msbs.mtype = mtype;
++
++	if (msgsnd(msqid, &msbs, sizeof(msbs.mtext), IPC_NOWAIT))
++		tst_brkm(TBROK | TERRNO, NULL, "msgsnd error");
++
++	sret = msgrcv(msqid, &msbr, sizeof(msbr.mtext), -mtype, IPC_NOWAIT | MSG_NOERROR);
++
++	if (sret < 0) {
++		tst_resm(TFAIL, "Bug: No message of desired type.");
++		return;
++	}
++
++	if (msbr.mtype != mtype)
++		tst_brkm(TBROK, NULL,
++			"found mtype %ld, expected %ld\n", msbr.mtype, mtype);
++
++	if ((size_t)sret != sizeof(msbs.mtext))
++		tst_brkm(TBROK, NULL, "received %zi, expected %zu\n",
++			(ssize_t)sret, (size_t)sizeof(msbs.mtext));
++
++	tst_resm(TPASS, "No regression found.");
++}
++
++static void msgrcv_test(void)
++{
++	int msqid = msgget(IPC_PRIVATE, IPC_CREAT | IPC_EXCL | 0666);
++
++	if (msqid < 0)
++		tst_brkm(TBROK | TERRNO, NULL, "msgget error");
++
++	msr(msqid);
++
++	if (msgctl(msqid, IPC_RMID, 0))
++		tst_brkm(TBROK | TERRNO, NULL, "msgctl error");
++}
++
++int main(int argc, char *argv[])
++{
++	int lc;
++
++	tst_parse_opts(argc, argv, NULL, NULL);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++)
++		msgrcv_test();
++
++	tst_exit();
++}
++
++#else /* no 64-bit */
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "not works when compiled as 64-bit application.");
++}
++#endif
 -- 
-1.8.4.2
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
