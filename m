@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZN2WC-0005Yo-LU
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 17:30:20 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZNJnT-00069T-UK
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2015 11:57:19 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZN2WB-0004Ec-PO
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 17:30:20 +0000
-Date: Wed, 5 Aug 2015 19:29:58 +0200
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZNJnP-0008MX-Hm
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2015 11:57:19 +0000
+Date: Thu, 6 Aug 2015 13:56:52 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150805172957.GB4216@rei.suse.de>
+Message-ID: <20150806115652.GA12066@rei.suse.de>
 References: <55A680FC.2010807@oracle.com>
 	<1437024647-2066-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<1437024647-2066-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-	<20150805171709.GA4216@rei.suse.de>
+	<20150805140001.GA821@rei.suse.de> <55C236CB.8060508@oracle.com>
+	<1438858276.11271.20.camel@G08FNSTD140232>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20150805171709.GA4216@rei.suse.de>
-Subject: Re: [LTP] [PATCH v5 02/11] lib6/runcc.c: Cleanup
+In-Reply-To: <1438858276.11271.20.camel@G08FNSTD140232>
+Subject: Re: [LTP] [PATCH v5 01/11] SAFE_MACROS: Add socket(), bind(),
+ listen(), connect() and getsockname()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -35,16 +36,22 @@ To: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> First of all, I would like to ask everybody what they think about these
-> testcases (testcases/network/lib6/). Quite a bit of the functionality
-> there is validating that ipv6 devel headers and structures are present
-> and can be compiled. This looks more like conform test suitable for
-> glibc to me. Do we want to really keep these? Because they would need a
-> bit more work to make them less ugly...
+> > >> +int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
+> > >> +	      int socket, const struct sockaddr *address,
+> > >> +	      socklen_t address_len)
+> > >> +{
+> > >> +	int err, ret, i;
+> > >> +
+> > >> +	for (i = 0; i < 30; i++) {
+> > 30 sec still may not be enough, I would set it to 2 minutes.
+> 
+> To be honest, I am not sure how long we should wait.
+> 2 minutes is OK for me.
 
-To be clear. I'm for dropping the ugly runcc.* interface and the
-testcases that use it. That would be asapi_01.c, asapi_02.c, asapi_03,c,
-half of asapi_05.c and asapi_07.c and fixing the rest of the testcases.
+That depends on how long can TCP connection stay in the TIME_WAIT state,
+googling around suggests that it's 1 minute for Linux. So IMHO anything
+greater than 1 minute should do. So 2 minutes looks like good choice to
+me.
 
 -- 
 Cyril Hrubis
