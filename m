@@ -1,19 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZMIBa-0004M6-Gj
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 16:01:58 +0000
+	(envelope-from <metan@suse.de>) id 1ZNL4V-0007ex-QM
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2015 13:18:59 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZMIBX-0007vw-7Z
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 16:01:58 +0000
-Date: Mon, 3 Aug 2015 18:01:35 +0200
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZNL4R-0008Vm-Lg
+	for ltp-list@lists.sourceforge.net; Thu, 06 Aug 2015 13:18:59 +0000
+Date: Thu, 6 Aug 2015 15:18:31 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150803160135.GC7852@rei.suse.de>
+Message-ID: <20150806131831.GA12972@rei.suse.de>
+References: <1438838680-9954-1-git-send-email-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] LTP github issue #46
+In-Reply-To: <1438838680-9954-1-git-send-email-liwang@redhat.com>
+Subject: Re: [LTP] [PATCH v2] ipc/msgrcv: add new testcase msgrcv08
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,15 +28,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
+To: Li Wang <liwang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Can you look at $SUBJECT
+> +	if ((size_t)sret != sizeof(msbs.mtext))
+> +		tst_brkm(TBROK, NULL, "received %zi, expected %zu\n",
+> +			(ssize_t)sret, (size_t)sizeof(msbs.mtext));
 
-https://github.com/linux-test-project/ltp/pull/46/files
-
-Looks good to me. Is it OK for you as well?
+I've removed these cast completly (since sret is ssize_t allready and
+the same for the sizeof()). Fixed the commit message and pushed, thanks.
 
 -- 
 Cyril Hrubis
