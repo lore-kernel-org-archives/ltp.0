@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZPA5G-0008BL-GQ
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 13:59:18 +0000
-Received: from mx5-phx2.redhat.com ([209.132.183.37])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZPA5C-0008D7-T3
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 13:59:18 +0000
-Date: Tue, 11 Aug 2015 09:58:58 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <121447065.7623297.1439301538492.JavaMail.zimbra@redhat.com>
-In-Reply-To: <55C9B596.7060802@huawei.com>
-References: <1438923308-5194-1-git-send-email-sunyuan3@huawei.com>
-	<10491102.7385545.1439280346874.JavaMail.zimbra@redhat.com>
-	<55C9B596.7060802@huawei.com>
+	(envelope-from <cuibixuan@huawei.com>) id 1ZNauU-0000hS-4E
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2015 06:13:42 +0000
+Received: from szxga02-in.huawei.com ([119.145.14.65])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZNauP-0001te-Cm
+	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2015 06:13:42 +0000
+From: Cui Bixuan <cuibixuan@huawei.com>
+Date: Fri, 7 Aug 2015 06:13:03 +0000
+Message-ID: <1438927983-154395-1-git-send-email-cuibixuan@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2] container: new testcase pidns32
+Subject: [LTP]  [PATCH] iptables/iptables_tests: Some cleanup
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,254 +25,264 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+* Save the iptables before the testcase and restore it after the testcase
+* Add lib function 'cmd_test' for test01
+* Add remove_rule and remove_all_rules for test to flush the rules
+* Delete the needless check(grep -c Chain and grep "100% packet loss")
+  in test01 and test02
 
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+---
+ testcases/network/iptables/iptables_tests.sh |  160 +++++++++-----------------
+ 1 files changed, 53 insertions(+), 107 deletions(-)
 
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Tuesday, 11 August, 2015 10:43:02 AM
-> Subject: Re: [PATCH V2] container: new testcase pidns32
-> 
-> Hi Jan,
->      See in-line comments.
-> On 2015/8/11 16:05, Jan Stancek wrote:
-> >
-> > ----- Original Message -----
-> >> From: "Yuan Sun" <sunyuan3@huawei.com>
-> >> To: jstancek@redhat.com
-> >> Cc: ltp-list@lists.sourceforge.net
-> >> Sent: Friday, 7 August, 2015 6:55:08 AM
-> >> Subject: [PATCH V2] container: new testcase pidns32
-> >>
-> >> Kernel imposes a limit of 32 nested levels of pid namespaces.
-> >>
-> >> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> >> ---
-> >>   runtest/containers                           |  1 +
-> >>   testcases/kernel/containers/pidns/.gitignore |  1 +
-> >>   testcases/kernel/containers/pidns/pidns32.c  | 96
-> >>   ++++++++++++++++++++++++++++
-> >>   3 files changed, 98 insertions(+)
-> >>   create mode 100644 testcases/kernel/containers/pidns/pidns32.c
-> >>
-> >> diff --git a/runtest/containers b/runtest/containers
-> >> index 9dc44bc..ac37ab2 100644
-> >> --- a/runtest/containers
-> >> +++ b/runtest/containers
-> >> @@ -13,6 +13,7 @@ pidns17 pidns17
-> >>   pidns20 pidns20
-> >>   pidns30 pidns30
-> >>   pidns31 pidns31
-> >> +pidns32 pidns32
-> >>   
-> >>   mqns_01 mqns_01
-> >>   mqns_01_clone mqns_01 -clone
-> >> diff --git a/testcases/kernel/containers/pidns/.gitignore
-> >> b/testcases/kernel/containers/pidns/.gitignore
-> >> index e56c1f9..488b045 100644
-> >> --- a/testcases/kernel/containers/pidns/.gitignore
-> >> +++ b/testcases/kernel/containers/pidns/.gitignore
-> >> @@ -12,3 +12,4 @@
-> >>   /pidns20
-> >>   /pidns30
-> >>   /pidns31
-> >> +/pidns32
-> >> diff --git a/testcases/kernel/containers/pidns/pidns32.c
-> >> b/testcases/kernel/containers/pidns/pidns32.c
-> >> new file mode 100644
-> >> index 0000000..d0d3e1e
-> >> --- /dev/null
-> >> +++ b/testcases/kernel/containers/pidns/pidns32.c
-> >> @@ -0,0 +1,96 @@
-> >> +/*
-> >> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
-> >> + * This program is free software; you can redistribute it and/or modify
-> >> + * it under the terms of the GNU General Public License as published by
-> >> + * the Free Software Foundation; either version 2 of the License, or
-> >> + *  (at your option) any later version.
-> >> + *
-> >> + * This program is distributed in the hope that it will be useful,
-> >> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> >> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> >> + * the GNU General Public License for more details.
-> >> + */
-> >> +
-> >> +/*
-> > Hi,
-> >
-> > I'm still not entirely convinced about this test.
-> >
-> >> + * Verify that:
-> >> + * The kernel imposes a limit of 32 nested levels of pid namespaces.
-> > If it doesn't, is that a bad thing? Are there some adverse effects, when
-> > such limitation is lacking?
-> It is a kernel feature. 
+diff --git a/testcases/network/iptables/iptables_tests.sh b/testcases/network/iptables/iptables_tests.sh
+index a3f90a3..ae9c3d9 100755
+--- a/testcases/network/iptables/iptables_tests.sh
++++ b/testcases/network/iptables/iptables_tests.sh
+@@ -40,19 +40,16 @@ init()
+ 		fi
+ 	fi
+ 
+-	tst_resm TINFO "INIT: Flushing all rules."
+-	iptables -F -t filter > tst_iptables.out 2>&1
+-	iptables -F -t nat > tst_iptables.out 2>&1
+-	iptables -F -t mangle > tst_iptables.out 2>&1
++	tst_resm TINFO "INIT: Saving and Flushing all rules."
++	ROD_SILENT iptables-save > saved_iptables
++	ROD_SILENT iptables -F
+ }
+ 
+ cleanup()
+ {
+ 	lsmod | grep "ip_tables" > tst_iptables.out 2>&1
+ 	if [ $? -eq 0 ]; then
+-		iptables -F -t filter > tst_iptables.out 2>&1
+-		iptables -F -t nat > tst_iptables.out 2>&1
+-		iptables -F -t mangle > tst_iptables.out 2>&1
++		ROD_SILENT iptables-restore < saved_iptables
+ 		rmmod -v ipt_limit ipt_multiport ipt_LOG ipt_REJECT \
+ 			 iptable_mangle iptable_nat ip_conntrack \
+ 			 iptable_filter ip_tables nf_nat_ipv4 nf_nat \
+@@ -63,63 +60,54 @@ cleanup()
+ 	tst_rmdir
+ }
+ 
+-test01()
++cmd_test()
+ {
+-	local chaincnt=0
+-
+-	local cmd="iptables -L -t filter"
++	cmd=$*
+ 	tst_resm TINFO "$cmd will list all rules in table filter."
+ 	$cmd > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
++	ret=$?
++	if [ $ret -ne 0 ]; then
+ 		tst_resm TFAIL "$cmd failed to list rules."
+ 		cat tst_iptables.out
+-		return
+-	else
+-		chaincnt=$(grep -c Chain tst_iptables.out)
+-		if [ $chaincnt -lt 3 ]; then
+-			tst_resm TFAIL "$cmd failed to list rules."
+-			cat tst_iptables.out
+-			return
+-		else
+-			tst_resm TINFO "$cmd lists rules."
+-		fi
+ 	fi
+ 
+-	local cmd="iptables -L -t nat"
+-	tst_resm TINFO "$cmd will list all rules in table nat."
+-	$cmd > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "$cmd failed to list rules."
++	return $ret
++}
++
++remove_rule()
++{
++	tst_resm TINFO "Deleting rule."
++	iptables -D INPUT 1 > tst_iptables.out 2>&1
++	ret=$?
++	if [ $ret -ne 0 ]; then
++		tst_resm TFAIL "iptables did not remove the rule."
+ 		cat tst_iptables.out
+-		return
+-	else
+-		chaincnt=$(grep -c Chain tst_iptables.out)
+-		if [ $chaincnt -lt 3 ]; then
+-			tst_resm TFAIL "$cmd failed to list rules."
+-			cat tst_iptables.out
+-			return
+-		else
+-			tst_resm TINFO "$cmd lists rules."
+-		fi
+ 	fi
+ 
+-	local cmd="iptables -L -t mangle"
+-	tst_resm TINFO "$cmd will list all rules in table mangle."
+-	$cmd > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "$cmd failed to list rules."
++	return $ret
++}
++
++remove_all_rules()
++{
++	tst_resm TINFO "Flushing all rules."
++	iptables -F > tst_iptables.out 2>&1
++	ret=$?
++	if [ $ret -ne 0 ]; then
++		tst_resm TFAIL "iptables did not flush all rules."
+ 		cat tst_iptables.out
+-		return
+-	else
+-		chaincnt=$(grep -c Chain tst_iptables.out)
+-		if [ $chaincnt -lt 5 ]; then
+-			tst_resm TFAIL "$cmd failed to list rules."
+-			cat tst_iptables.out
+-		else
+-			tst_resm TINFO "$cmd lists rules."
+-		fi
+ 	fi
+ 
++	return $ret
++}
++
++test01()
++{
++	cmd_test iptables -L -t filter || return
++
++	cmd_test iptables -L -t nat || return
++
++	cmd_test iptables -L -t mangle || return
++
+ 	tst_resm TPASS "iptables -L lists rules."
+ }
+ 
+@@ -137,29 +125,15 @@ test02()
+ 
+ 	tst_resm TINFO "Pinging 127.0.0.1"
+ 	ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
+-		grep "100% packet loss" tst_iptables.out > tst_iptables.err 2>&1
+-		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL \
+-				 "iptables did not block packets from loopback"
+-			cat tst_iptables.err
+-			return
+-		else
+-			tst_resm TINFO "Ping 127.0.0.1 not successful."
+-		fi
+-	else
++	if [ $? -eq 0 ]; then
+ 		tst_resm TFAIL "iptables did not block icmp from 127.0.0.1"
+ 		cat tst_iptables.out
+ 		return
+ 	fi
++	tst_resm TINFO "ping failed, iptables blocked ICMP as expected"
++
++	remove_rule || return
+ 
+-	tst_resm TINFO "Deleting icmp DROP from 127.0.0.1 rule."
+-	iptables -D INPUT 1 > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "iptables did not remove the rule."
+-		cat tst_iptables.out
+-		return
+-	fi
+ 	tst_resm TINFO "Pinging 127.0.0.1 again"
+ 	ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
+ 	if [ $? -ne 0 ]; then
+@@ -188,28 +162,15 @@ test03()
+ 
+ 	tst_resm TINFO "Pinging 127.0.0.1"
+ 	ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
+-		grep "100% packet loss" tst_iptables.out > tst_iptables.err 2>&1
+-		if [ $? -ne 0 ]; then
+-			tst_resm TFAIL "iptables did not block ping request."
+-			cat tst_iptables.err
+-			return
+-		else
+-			tst_resm TINFO "Ping 127.0.0.1 not successful."
+-		fi
+-	else
++	if [ $? -eq 0 ]; then
+ 		tst_resm TFAIL "iptables did not reject ping request."
+ 		cat tst_iptables.out
+ 		return
+ 	fi
++	tst_resm TINFO "ping failed, iptables reject ping request as expected"
++
++	remove_rule || return
+ 
+-	tst_resm TINFO "Deleting icmp request REJECT rule."
+-	iptables -D INPUT 1 > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "iptables did not remove the rule."
+-		cat tst_iptables.out
+-		return
+-	fi
+ 	tst_resm TINFO "Pinging 127.0.0.1 again"
+ 	ping -c 2 127.0.0.1 > tst_iptables.out 2>&1
+ 	if [ $? -ne 0 ]; then
+@@ -259,13 +220,8 @@ test04()
+ 		return
+ 	fi
+ 
+-	tst_resm TINFO "Deleting the rule to log."
+-	iptables -D INPUT 1 > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "iptables did not remove the rule."
+-		cat tst_iptables.out
+-		return
+-	fi
++	remove_rule || return
++
+ 	tst_resm TINFO "iptables logging succsess"
+ 	tst_resm TPASS "iptables can log packets to particular port."
+ }
+@@ -317,13 +273,8 @@ test05()
+ 		fi
+ 	done
+ 
+-	tst_resm TINFO "Flushing all rules."
+-	iptables -F > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "iptables did not flush all rules."
+-		cat tst_iptables.out
+-		return
+-	fi
++	remove_all_rules || return
++
+ 	tst_resm TINFO "iptables logging succsess"
+ 	tst_resm TPASS "iptables can log packets to multiple ports."
+ }
+@@ -365,13 +316,8 @@ test06()
+ 		return
+ 	fi
+ 
+-	tst_resm TINFO "Deleting the rule to log."
+-	iptables -D INPUT 1 > tst_iptables.out 2>&1
+-	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "iptables did not remove the rule."
+-		cat tst_iptables.out
+-		return
+-	fi
++	remove_rule || return
++
+ 	tst_resm TINFO "iptables limited logging succsess"
+ 	tst_resm TPASS "iptables can log packets with limited rate."
+ }
+-- 
+1.6.0.2
 
-My concern is that it's not documented, and can be changed at any time.
-There's no way to learn what that value is, unless you look at source code.
-
-As suggested by Cyril, test could verify that we can create at least MAXNEST-1 pid
-namespaces and stop there. What do you think?
-
-Regards,
-Jan
-
-
-> The following information is from
-> http://www.serverphorums.com/read.php?12,580615
-> 
-> 'struct pid' is a "variable sized struct" - a header with an array
-> of upids at the end.
-> 
-> A size of the array depends on a level (depth) of pid namespaces. Now
-> a level of pidns is not limited, so 'struct pid' can be more than one
-> page.
-> 
-> Looks reasonable, that it should be less than a page. MAX_PIS_NS_LEVEL
-> is not calculated from PAGE_SIZE, because in this case it depends on
-> architectures, config options and it will be reduced, if someone adds a
-> new fields in struct pid or struct upid.
-> 
-> I suggest to set MAX_PID_NS_LEVEL = 32, because it saves ability to
-> expand "struct pid" and it's more than enough for all known for me
-> use-cases. When someone finds a reasonable use case, we can add a
-> config option or a sysctl parameter.
-> 
-> In addition it will reduce effect of another problem, when we have many
-> nested namespaces and the oldest one starts dying. zap_pid_ns_processe
-> will be called for each namespace and find_vpid will be called for each
-> process in a namespace. find_vpid will be called minimum max_level^2 / 2
-> times. The reason of that is that when we found a bit in pidmap, we
-> can't determine this pidns is top for this process or it isn't.
-> 
-> vpid is a heavy operation, so a fork bomb, which create many nested
-> namespace, can do a system inaccessible for a long time.
-> >
-> >> + */
-> >> +
-> >> +#define _GNU_SOURCE
-> >> +#include <sys/wait.h>
-> >> +#include <assert.h>
-> >> +#include <stdio.h>
-> >> +#include <stdlib.h>
-> >> +#include <unistd.h>
-> >> +#include <string.h>
-> >> +#include <errno.h>
-> >> +#include "test.h"
-> >> +#include "pidns_helper.h"
-> >> +
-> >> +#define MAXNEST 32
-> >> +
-> >> +char *TCID = "pidns32";
-> >> +int TST_TOTAL = 1;
-> >> +
-> >> +static void setup(void)
-> >> +{
-> >> +	if (tst_kvercmp(3, 7, 0) < 0)
-> >> +		tst_brkm(TCONF, NULL, "nest depth limitation not supported");
-> >> +	tst_require_root();
-> >> +	check_newpid();
-> >> +	tst_tmpdir();
-> >> +}
-> >> +
-> >> +static void cleanup(void)
-> >> +{
-> >> +	tst_rmdir();
-> >> +}
-> >> +
-> >> +static int child_fn1(void *arg)
-> >> +{
-> >> +	pid_t cpid1;
-> >> +	long level = (long)arg;
-> >> +
-> >> +	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD,
-> >> +		(void *)child_fn1, (void *)(level + 1));
-> > You are relying on fact that clone will fail at MAXNEST levels.
-> > If it doesn't then this keeps making child processes presumably
-> > until you hit OOM.
-> >
-> > First action of new child should be to check current level. If it's
-> > over, test can end there.
-> Yes, you are right. I will update the code.
-> >
-> >> +	if (cpid1 < 0) {
-> >> +		if (level == MAXNEST)
-> >> +			return 0;
-> >> +		return 1;
-> >> +	}
-> >> +	if (waitpid(cpid1, NULL, 0) == -1)
-> >> +		return 1;
-> > If you ignore status in waitpid() call, how do you know that child at
-> > MAXNEXT level failed test condition?
->   79 /* MAX_PID_NS_LEVEL is needed for limiting size of 'struct pid' */
->   80 #define MAX_PID_NS_LEVEL 32
->   81
->   82 static struct pid_namespace *create_pid_namespace(struct
-> user_namespace *user_ns,
->   83         struct pid_namespace *parent_pid_ns)
->   84 {
->   85         struct pid_namespace *ns;
->   86         unsigned int level = parent_pid_ns->level + 1;
->   87         int i;
->   88         int err;
->   89
->   90         if (level > MAX_PID_NS_LEVEL) {
->   91                 err = -EINVAL;
->   92                 goto out;
->   93         }
-> http://lxr.free-electrons.com/source/kernel/pid_namespace.c
-> 
-> I need to update the code to judge if the error is EINVAL.
-> >
-> > Regards,
-> > Jan
-> >
-> >> +	if (level > MAXNEST) {
-> >> +		printf("MAX_PIS_NS_LEVEL doestn't take effect\n");
-> >> +		return 1;
-> >> +	}
-> >> +	return 0;
-> >> +}
-> >> +
-> >> +static void test_max_nest(void)
-> >> +{
-> >> +	pid_t cpid1;
-> >> +
-> >> +	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD,
-> >> +		(void *)child_fn1, (void *)1);
-> >> +	if (cpid1 < 0)
-> >> +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-> >> +
-> >> +	tst_record_childstatus(cleanup, cpid1);
-> >> +}
-> >> +
-> >> +int main(int argc, char *argv[])
-> >> +{
-> >> +	int lc;
-> >> +
-> >> +	setup();
-> >> +	tst_parse_opts(argc, argv, NULL, NULL);
-> >> +
-> >> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> >> +		tst_count = 0;
-> >> +		test_max_nest();
-> >> +	}
-> >> +
-> >> +	cleanup();
-> >> +	tst_exit();
-> >> +}
-> >> --
-> >> 1.9.1
-> >>
-> >>
-> > .
-> >
-> 
-> 
 
 ------------------------------------------------------------------------------
 _______________________________________________
