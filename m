@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZMxgR-0007bM-54
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 12:20:35 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZP4pa-0005eH-Bc
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 08:22:46 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZMxgQ-0006T5-6r
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 12:20:35 +0000
-Date: Wed, 5 Aug 2015 14:20:12 +0200
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZP4pX-0007Nu-QJ
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 08:22:46 +0000
+Date: Tue, 11 Aug 2015 10:22:17 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150805122011.GC31234@rei.suse.de>
-References: <1436347259-942-1-git-send-email-liuchangsheng@inspur.com>
+Message-ID: <20150811082217.GA12940@rei.suse.de>
+References: <CANKSX+Hrqg88_dFtJhUYRFQ9yi0bnOfUDxBZWC2Qt_oW8+FDAw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1436347259-942-1-git-send-email-liuchangsheng@inspur.com>
-Subject: Re: [LTP] [PATCH] netns,
- make a verfication to name of virtul network interface card
+In-Reply-To: <CANKSX+Hrqg88_dFtJhUYRFQ9yi0bnOfUDxBZWC2Qt_oW8+FDAw@mail.gmail.com>
+Subject: Re: [LTP] Lachesis Linux tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,15 +28,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Changsheng Liu <liuchangsheng@inspur.com>
-Cc: ltp-list@lists.sourceforge.net, wunan@inspur.com
+To: "$rik@nth " <srikanth007m@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> The current ltp version get name of virtul network interface card
-> with "veth62@veth63" in the newest kernel version,
-> But we need a file name with "veth62".
+> Does the Lachesis is part of LTP? or Its a standalone linux test
+> framework available in opensource.
 
-That looks suspicious, Alexey have you seen this?
+Never heard of it.
+
+There is an pdf on lwn net about it but the links to repository are
+dead. I'm afraid that the project does not exist anymore.
 
 -- 
 Cyril Hrubis
