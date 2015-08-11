@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZMgOj-0002mH-Pz
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2015 17:53:09 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZPE2c-0002e8-9p
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:12:50 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZMgOi-0000Of-Mk
-	for ltp-list@lists.sourceforge.net; Tue, 04 Aug 2015 17:53:09 +0000
-Date: Tue, 4 Aug 2015 19:52:47 +0200
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZPE2Y-0007Z8-IJ
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:12:50 +0000
+Date: Tue, 11 Aug 2015 20:12:20 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150804175247.GC20633@rei.suse.de>
-References: <1436949363-8356-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-	<1436949363-8356-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20150811181219.GB24227@rei.suse.de>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+	<1436424468-11756-10-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1436949363-8356-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2 3/3] umount2/umount2_03.c: add new test
+In-Reply-To: <1436424468-11756-10-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH 09/23] network/virt/vlan03: add new test-case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,66 +29,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> +static void umount2_verify(void)
-> +{
-> +	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
-> +	mount_flag = 1;
+> +tst_resm TINFO "networks with the same VLAN ID must work"
 > +
-> +	TEST(umount2(SYMLINK, UMOUNT_NOFOLLOW));
+> +res="TPASS"
 > +
-> +	if (TEST_RETURN == 0 || TEST_ERRNO != EINVAL) {
-> +		tst_resm(TFAIL | TTERRNO,
-> +			"umount2(2) UMOUNT_NOFOLLOW flag "
-> +			"performed abnormally "
-> +			"expected error = %d : %s",
-> +			EINVAL, strerror(EINVAL));
-
-Let's keep the messages short and to the point, what about:
-
-
-tst_resm(TFAIL | TTERRNO,
-         "umount2('symlink', UMOUNT_NOFOLLOW) failed unexpectedly, expected EINVAL");
-
-
-Also it would be better if if we had separate case for the when the call
-succeeded something as:
-
-tst_resm(TFAIL, "umount2('symlink', UMOUNT_NOFOLLOW) "
-         "succeeded unexpectedly");
-
-> +		if (TEST_RETURN == 0)
-> +			mount_flag = 0;
-> +		goto EXIT;
-> +	}
+> +virt_setup "id 4094" "id 4094"
+> +virt_compare_netperf || res="TFAIL"
 > +
-> +	TEST(umount2(MNTPOINT, UMOUNT_NOFOLLOW));
+> +tst_resm $res "done"
 > +
-> +	if (TEST_RETURN != 0) {
-> +		tst_resm(TFAIL | TTERRNO, "umount2(2) Failed");
-> +		goto EXIT;
-> +	}
+> +tst_resm TINFO "different VLAN ID shall not work together"
+> +res="TPASS"
+> +virt_setup "id 4093" "id 4094"
+> +virt_compare_netperf && res="TFAIL"
 > +
-> +	mount_flag = 0;
-> +
-> +	tst_resm(TPASS, "umount2(2) Passed");
-> +
-> +EXIT:
-> +	if (mount_flag) {
-> +		SAFE_UMOUNT(cleanup, MNTPOINT);
-> +		mount_flag = 0;
-> +	}
-> +}
+> +tst_resm $res "done"
 
-
-Again, these are two testcases you should print two PASS/FAIL for each of
-them. What about you split the verify funciton into two
-umount2_verify_failure and umount2_verify_success and mount and umout
-the device in each of them. That way we can make the code flow more
-straightforward.
+I would rather see the test issuing one PASS/FAIL for each of the
+asserting here. Why cannot we use tst_resm TPASS/TFAIL in the
+virt_compare_netperf function?
 
 -- 
 Cyril Hrubis
