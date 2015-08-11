@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZOmCM-0000W6-3S
-	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2015 12:29:02 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZPEMD-00020h-0l
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:33:05 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZOmCI-0006ZD-VH
-	for ltp-list@lists.sourceforge.net; Mon, 10 Aug 2015 12:29:02 +0000
-Date: Mon, 10 Aug 2015 14:28:32 +0200
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZPEMA-00088n-DU
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:33:04 +0000
+Date: Tue, 11 Aug 2015 20:32:36 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150810122832.GA25209@rei.suse.de>
-References: <1438927624-27401-1-git-send-email-sunyuan3@huawei.com>
+Message-ID: <20150811183236.GF24227@rei.suse.de>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+	<1436424468-11756-20-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1438927624-27401-1-git-send-email-sunyuan3@huawei.com>
-Subject: Re: [LTP] [PATCH] Add tst_wait_record_childstatus function.
+In-Reply-To: <1436424468-11756-20-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH 19/23] network/virt: add test-case 02 to
+	virt_lib.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,96 +30,207 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->  doc/test-writing-guidelines.txt               |  7 +++---
->  include/test.h                                |  2 ++
->  lib/tst_res.c                                 | 31 +++++++++++++++++++++++++++
->  testcases/kernel/containers/userns/userns01.c | 13 ++---------
->  4 files changed, 39 insertions(+), 14 deletions(-)
-> 
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index 69b8cb7..8b46a19 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -631,15 +631,16 @@ If you have to do the test in a child process you have two possibilities:
->  * Or you can stick to plain old 'exit()' with 'TPASS', 'TBROK', 'TFAIL' and
->    'TCONF' constants.
+> diff --git a/testcases/network/virt/ipvlan01.sh b/testcases/network/virt/ipvlan01.sh
+> index 706c1d8..156de78 100755
+> --- a/testcases/network/virt/ipvlan01.sh
+> +++ b/testcases/network/virt/ipvlan01.sh
+> @@ -16,8 +16,8 @@
+>  #
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>  #
+> -# Test-case 1: Local test, check if we can create and then delete ipvlan
+> -#              interface 500 times.
+> +# Local test, check if we can create and then delete ipvlan
+> +# interface 1000 times.
 >  
-> -Then you call 'tst_record_childstatus()' to records the result of the test
-> -(done in child process) which propagates the child result (child exit status)
-> -to the parent process correctly.
-> +Then you call 'tst_record_childstatus()' or 'tst_wait_record_childstatus' to
-> +records the result of the test (done in child process) which propagates the
-> +child result (child exit status) to the parent process correctly.
+>  TCID=ipvlan01
+>  TST_TOTAL=2
+> @@ -27,19 +27,8 @@ virt_type="ipvlan"
+>  . test_net.sh
+>  . virt_lib.sh
 >  
->  [source,c]
->  -------------------------------------------------------------------------------
->  #include "test.h"
+> -modes="l2 l3"
+> +options="mode l2,mode l3"
 >  
->  void tst_record_childstatus(void (*cleanup)(void), pid_t child);
-> +void tst_wait_record_childstatus(void (*cleanup)(void));
->  -------------------------------------------------------------------------------
+> -start_id=1
+> -virt_count=500
+> -
+> -for m in $modes; do
+> -	tst_resm TINFO "add $virt_type with mode '$m'"
+> -
+> -	virt_check_cmd virt_add ltp_v0 mode $m || m=""
+> -
+> -	virt_add_delete_test "mode $m"
+> -
+> -	start_id=$(($start_id + $virt_count))
+> -done
+> +virt_test_02 "$options"
 >  
->  This function does a 'waitpid()' on child process and record child process's
-> diff --git a/include/test.h b/include/test.h
-> index ac00590..15b2139 100644
-> --- a/include/test.h
-> +++ b/include/test.h
-> @@ -194,6 +194,8 @@ pid_t tst_fork(void);
->   */
->  void tst_record_childstatus(void (*cleanup)(void), pid_t child);
+>  tst_exit
+> diff --git a/testcases/network/virt/macvlan01.sh b/testcases/network/virt/macvlan01.sh
+> index 35febd0..402edde 100755
+> --- a/testcases/network/virt/macvlan01.sh
+> +++ b/testcases/network/virt/macvlan01.sh
+> @@ -16,8 +16,8 @@
+>  #
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>  #
+> -# Test-case 1: Local test, check if we can create and then delete macvlan
+> -#              interface 500 times.
+> +# Local test, check if we can create and then delete macvlan
+> +# interface 2000 times.
 >  
-> +void tst_wait_record_childstatus(void (*cleanup)(void));
-> +
->  extern int tst_count;
+>  TCID=macvlan01
+>  TST_TOTAL=4
+> @@ -27,19 +27,8 @@ virt_type="macvlan"
+>  . test_net.sh
+>  . virt_lib.sh
 >  
->  /* lib/tst_sig.c */
-> diff --git a/lib/tst_res.c b/lib/tst_res.c
-> index 7a64a50..f21c1d2 100644
-> --- a/lib/tst_res.c
-> +++ b/lib/tst_res.c
-> @@ -572,6 +572,37 @@ void tst_record_childstatus(void (*cleanup)(void), pid_t child)
->  	}
+> -modes="private vepa bridge passthru"
+> +options="mode private,mode vepa,mode bridge,mode passthru"
+>  
+> -start_id=1
+> -virt_count=500
+> -
+> -for m in $modes; do
+> -	tst_resm TINFO "add $virt_type with mode '$m'"
+> -
+> -	virt_check_cmd virt_add ltp_v0 mode $m || m=""
+> -
+> -	virt_add_delete_test "mode $m"
+> -
+> -	start_id=$(($start_id + $virt_count))
+> -done
+> +virt_test_02 "$options"
+>  
+>  tst_exit
+> diff --git a/testcases/network/virt/macvtap01.sh b/testcases/network/virt/macvtap01.sh
+> index 8bb3636..3408c94 100755
+> --- a/testcases/network/virt/macvtap01.sh
+> +++ b/testcases/network/virt/macvtap01.sh
+> @@ -16,8 +16,8 @@
+>  #
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>  #
+> -# Test-case 1: Local test, check if we can create and then delete macvtap
+> -#              interface 500 times.
+> +# Local test, check if we can create and then delete macvtap
+> +# interface 2000 times.
+>  
+>  TCID=macvtap01
+>  TST_TOTAL=4
+> @@ -27,19 +27,8 @@ virt_type="macvtap"
+>  . test_net.sh
+>  . virt_lib.sh
+>  
+> -modes="private vepa bridge passthru"
+> +options="mode private,mode vepa,mode bridge,mode passthru"
+>  
+> -start_id=1
+> -virt_count=500
+> -
+> -for m in $modes; do
+> -	tst_resm TINFO "add $virt_type with mode '$m'"
+> -
+> -	virt_check_cmd virt_add ltp_v0 mode $m || m=""
+> -
+> -	virt_add_delete_test "mode $m"
+> -
+> -	start_id=$(($start_id + $virt_count))
+> -done
+> +virt_test_02 "$options"
+>  
+>  tst_exit
+> diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
+> index 2ccba43..d79f7bc 100644
+> --- a/testcases/network/virt/virt_lib.sh
+> +++ b/testcases/network/virt/virt_lib.sh
+> @@ -289,6 +289,34 @@ virt_test_01()
+>  	done
 >  }
 >  
-> +void tst_wait_record_childstatus(void (*cleanup)(void))
+> +# Check if we can create then delete virtual interface n times.
+> +# virt_test_02 [OPTIONS]
+> +# OPTIONS - different options separated by comma.
+> +virt_test_02()
 > +{
-> +	int status, ttype_result;
+> +	start_id=1
+> +	virt_count=500
 > +
-> +	if (wait(&status) < 0)
-> +		tst_brkm(TWARN | TERRNO, NULL, "wait failed");
+> +	local opts=${1:-""}
+> +	local n=0
 > +
-> +	if (WIFEXITED(status)) {
-> +		ttype_result = WEXITSTATUS(status);
-> +		ttype_result = TTYPE_RESULT(ttype_result);
-> +		T_exitval |= ttype_result;
-> +
-> +		if (ttype_result == TPASS)
-> +			tst_resm(TINFO, "Child process returned TPASS");
-> +
-> +		if (ttype_result & TFAIL)
-> +			tst_resm(TINFO, "Child process returned TFAIL");
-> +
-> +		if (ttype_result & TBROK)
-> +			tst_resm(TINFO, "Child process returned TBROK");
-> +
-> +		if (ttype_result & TCONF)
-> +			tst_resm(TINFO, "Child process returned TCONF");
-> +
-> +	} else {
-> +		tst_brkm(TBROK, cleanup, "child process killed by "
-> +			 "unexpected signal %s(%d)",
-> +			 tst_strsig(WTERMSIG(status)), WTERMSIG(status));
-> +	}
-> +}
+> +	while ((1)); do
 
-There is no need for this. If you pass -1 as pid to waitpid() it's the
-same as calling wait().
+while true; here as well
+
+> +		n=$((n + 1))
+> +		p="$(echo $opts | cut -d',' -f$n)"
+> +		if [ -z "$p" -a $n -gt 1 ]; then
+> +			break
+> +		fi
+> +
+> +		tst_resm TINFO "add and then delete $virt_type with '$p'"
+> +
+> +		virt_check_cmd virt_add ltp_v0 $p || p=""
+> +
+> +		virt_add_delete_test "$p"
+> +
+> +		start_id=$(($start_id + $virt_count))
+> +	done
+> +}
+> +
+>  tst_require_root
+>  
+>  case "$virt_type" in
+> diff --git a/testcases/network/virt/vlan02.sh b/testcases/network/virt/vlan02.sh
+> index 0fb35a3..60addba 100755
+> --- a/testcases/network/virt/vlan02.sh
+> +++ b/testcases/network/virt/vlan02.sh
+> @@ -16,8 +16,8 @@
+>  #
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>  #
+> -# Test-case 1: Local test, check if we can create and then delete VLAN
+> -#              interface 4095 times.
+> +# Local test, check if we can create and then delete VLAN
+> +# interface 4095 times.
+>  #
+>  
+>  TCID=vlan02
+> diff --git a/testcases/network/virt/vxlan02.sh b/testcases/network/virt/vxlan02.sh
+> index 1470495..0b3a21c 100755
+> --- a/testcases/network/virt/vxlan02.sh
+> +++ b/testcases/network/virt/vxlan02.sh
+> @@ -16,8 +16,8 @@
+>  #
+>  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+>  #
+> -# Test-case 1: Local test, check if we can create and then delete VXLAN
+> -#              interface 5000 times.
+> +# Local test, check if we can create and then delete VXLAN
+> +# interface 5000 times.
+>  #
+>  
+>  TCID=vxlan02
+> -- 
+> 1.7.1
+> 
+> 
+> ------------------------------------------------------------------------------
+> Don't Limit Your Business. Reach for the Cloud.
+> GigeNET's Cloud Solutions provide you with the tools and support that
+> you need to offload your IT needs and focus on growing your business.
+> Configured For All Businesses. Start Your Cloud Today.
+> https://www.gigenetcloud.com/
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
 
 -- 
 Cyril Hrubis
