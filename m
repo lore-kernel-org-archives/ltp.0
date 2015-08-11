@@ -2,25 +2,21 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZPAKS-0008SX-Sq
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 14:15:00 +0000
+	(envelope-from <metan@suse.de>) id 1ZP8vB-0005Ha-An
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 12:44:49 +0000
 Received: from mx2.suse.de ([195.135.220.15])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZPAKQ-0000Lb-E4
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 14:15:00 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id C3E18AD4E
-	for <ltp-list@lists.sourceforge.net>;
-	Tue, 11 Aug 2015 14:14:51 +0000 (UTC)
-Date: Tue, 11 Aug 2015 16:14:32 +0200
+	(Exim 4.76) id 1ZP8v7-00066E-2H
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 12:44:49 +0000
+Date: Tue, 11 Aug 2015 14:44:18 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150811141432.GA21861@rei.suse.de>
-References: <1439215460-15670-1-git-send-email-jack@suse.com>
+Message-ID: <20150811124417.GA19789@rei.suse.de>
+References: <1438927624-27401-1-git-send-email-sunyuan3@huawei.com>
+	<20150810122832.GA25209@rei.suse.de> <55C94D78.5030502@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1439215460-15670-1-git-send-email-jack@suse.com>
-Subject: Re: [LTP] [PATCH v2] inotify: Add test for inotify mark destruction
- race
+In-Reply-To: <55C94D78.5030502@huawei.com>
+Subject: Re: [LTP] [PATCH] Add tst_wait_record_childstatus function.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,31 +29,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Kara <jack@suse.com>
+To: Yuan Sun <sunyuan3@huawei.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-Pushed with following changes:
+>      Yes. You are right. I agree with you.
+> "tst_record_childstatus(NULL, -1);" can be used in userns01.
 
-* Added GPL header at the start of the file
+FYI: I've just pushed a patch that adds note to the
+test-writing-guidelines documentation about this.
 
-* Removed cleanup parameter from SAFE calls in child
-  because if one of the calls in child fails the temporary
-  directory would be deleted, then parent would attempt to
-  remove the directory and that will fail horribly.
+Have a look at the note at the end of this paragraph:
 
-* Moved to body of the test to separate function to spare
-  some indentation.
-
-* Used tst_fork() instead of fork() (flushes userspace stdio buffers
-  before fork, otherwise messages from test may end up duplicated
-  several times)
-
-* Used ltp_syscall() instead of syscall() which handles ENOSYS etc.
-
-* Added inotify06 binary to gitignore.
-
-And checked that it still Opses kernel after these changes, thanks.
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#227-doing-real-test-in-the-child-process
 
 -- 
 Cyril Hrubis
