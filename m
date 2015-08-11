@@ -1,23 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZPrez-00049J-M8
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2015 12:31:05 +0000
+	(envelope-from <metan@suse.de>) id 1ZPEXy-0002U6-ED
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:45:14 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZPrew-0001wb-SO
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2015 12:31:05 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 4364075012
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 13 Aug 2015 12:30:56 +0000 (UTC)
-Date: Thu, 13 Aug 2015 14:30:35 +0200
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZPEXw-000077-2j
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:45:14 +0000
+Date: Tue, 11 Aug 2015 20:44:44 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150813123035.GB14976@rei.suse.de>
+Message-ID: <20150811184444.GG24227@rei.suse.de>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] LTP release
+In-Reply-To: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: Re: [LTP] [PATCH 00/23] Add vlan, ipvlan, gre, macvlan interfaces
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,17 +28,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-It's about the time we start preparing for another release.
+> Most interfaces share the same ip command syntax and the same test
+> scenarious can be applied to them. So rename vxlan directory to more
+> general 'virt' directory and add those interfaces to it.
 
-I would like to get the release ready somewhere at the end of this
-month. Does everyone think that this is manageable?
-
-So as usually if there are patches that should be part of the release or
-bugs that should be fixed before we start pre-release testing, please
-let us know.
+Apart from the minor nitpicks this patchset looks good to me.
 
 -- 
 Cyril Hrubis
