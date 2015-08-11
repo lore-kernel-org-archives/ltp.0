@@ -1,20 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1ZLLRQ-0005yK-8i
-	for ltp-list@lists.sourceforge.net; Sat, 01 Aug 2015 01:18:24 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZLLRN-0005rD-Gv
-	for ltp-list@lists.sourceforge.net; Sat, 01 Aug 2015 01:18:24 +0000
-Message-ID: <55BC1E51.6090508@huawei.com>
-Date: Sat, 1 Aug 2015 09:18:09 +0800
-From: Cui Bixuan <cuibixuan@huawei.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jstancek@redhat.com>) id 1ZP4ZM-0004zk-8k
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 08:06:00 +0000
+Received: from mx3-phx2.redhat.com ([209.132.183.24])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZP4ZJ-0005He-Fp
+	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 08:06:00 +0000
+Date: Tue, 11 Aug 2015 04:05:46 -0400 (EDT)
+From: Jan Stancek <jstancek@redhat.com>
+Message-ID: <10491102.7385545.1439280346874.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1438923308-5194-1-git-send-email-sunyuan3@huawei.com>
+References: <1438923308-5194-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-References: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1010625653.980528.1438323855616.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] How to compie a ltp-case into 32-bit on the 64bit system
+Subject: Re: [LTP] [PATCH V2] container: new testcase pidns32
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,36 +27,182 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Yuan Sun <sunyuan3@huawei.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 2015/7/31 14:24, Li Wang wrote:
 
-> Then, I came up with a idea that I don't include the ltp-lib file in 'msgrcv08.c', 
-> and just add two lines in the .../ipc/msgrcv/Makefile:
+
+----- Original Message -----
+> From: "Yuan Sun" <sunyuan3@huawei.com>
+> To: jstancek@redhat.com
+> Cc: ltp-list@lists.sourceforge.net
+> Sent: Friday, 7 August, 2015 6:55:08 AM
+> Subject: [PATCH V2] container: new testcase pidns32
 > 
->   msgrcv08:
-> 	gcc -g -O2 -Wall -m32 msgrcv08.c -o msgrcv08
+> Kernel imposes a limit of 32 nested levels of pid namespaces.
 > 
-> It works for me, but I know it's not appropriate for LTP management.
+> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+> ---
+>  runtest/containers                           |  1 +
+>  testcases/kernel/containers/pidns/.gitignore |  1 +
+>  testcases/kernel/containers/pidns/pidns32.c  | 96
+>  ++++++++++++++++++++++++++++
+>  3 files changed, 98 insertions(+)
+>  create mode 100644 testcases/kernel/containers/pidns/pidns32.c
 > 
-> What should I do? or, Is there any good way to solve this problem?
+> diff --git a/runtest/containers b/runtest/containers
+> index 9dc44bc..ac37ab2 100644
+> --- a/runtest/containers
+> +++ b/runtest/containers
+> @@ -13,6 +13,7 @@ pidns17 pidns17
+>  pidns20 pidns20
+>  pidns30 pidns30
+>  pidns31 pidns31
+> +pidns32 pidns32
+>  
+>  mqns_01 mqns_01
+>  mqns_01_clone mqns_01 -clone
+> diff --git a/testcases/kernel/containers/pidns/.gitignore
+> b/testcases/kernel/containers/pidns/.gitignore
+> index e56c1f9..488b045 100644
+> --- a/testcases/kernel/containers/pidns/.gitignore
+> +++ b/testcases/kernel/containers/pidns/.gitignore
+> @@ -12,3 +12,4 @@
+>  /pidns20
+>  /pidns30
+>  /pidns31
+> +/pidns32
+> diff --git a/testcases/kernel/containers/pidns/pidns32.c
+> b/testcases/kernel/containers/pidns/pidns32.c
+> new file mode 100644
+> index 0000000..d0d3e1e
+> --- /dev/null
+> +++ b/testcases/kernel/containers/pidns/pidns32.c
+> @@ -0,0 +1,96 @@
+> +/*
+> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + *  (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> + * the GNU General Public License for more details.
+> + */
+> +
+> +/*
+
 Hi,
-    For LTP, we can run './configure CC=[SDK-32]; make;' to compile 32-bit testcases.
-So, I think, if the case 'msgrcv08.c' will not work as 64-bit application, it can check the
-SDK first. And do 'TCONF: not gcc32' if it's 64-bit application.
 
-    It's not a good idea that ipc/msgrcv/Makefile to control it, I mean, LTP user to control
-it in ./configure which will be better.
+I'm still not entirely convinced about this test.
 
-    What do you think?
+> + * Verify that:
+> + * The kernel imposes a limit of 32 nested levels of pid namespaces.
 
-Thanks,
-Cui Bixuan
+If it doesn't, is that a bad thing? Are there some adverse effects, when
+such limitation is lacking?
 
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <sys/wait.h>
+> +#include <assert.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +#include "test.h"
+> +#include "pidns_helper.h"
+> +
+> +#define MAXNEST 32
+> +
+> +char *TCID = "pidns32";
+> +int TST_TOTAL = 1;
+> +
+> +static void setup(void)
+> +{
+> +	if (tst_kvercmp(3, 7, 0) < 0)
+> +		tst_brkm(TCONF, NULL, "nest depth limitation not supported");
+> +	tst_require_root();
+> +	check_newpid();
+> +	tst_tmpdir();
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	tst_rmdir();
+> +}
+> +
+> +static int child_fn1(void *arg)
+> +{
+> +	pid_t cpid1;
+> +	long level = (long)arg;
+> +
+> +	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD,
+> +		(void *)child_fn1, (void *)(level + 1));
+
+You are relying on fact that clone will fail at MAXNEST levels.
+If it doesn't then this keeps making child processes presumably
+until you hit OOM.
+
+First action of new child should be to check current level. If it's
+over, test can end there.
+
+> +	if (cpid1 < 0) {
+> +		if (level == MAXNEST)
+> +			return 0;
+> +		return 1;
+> +	}
+> +	if (waitpid(cpid1, NULL, 0) == -1)
+> +		return 1;
+
+If you ignore status in waitpid() call, how do you know that child at
+MAXNEXT level failed test condition?
+
+Regards,
+Jan
+
+> +	if (level > MAXNEST) {
+> +		printf("MAX_PIS_NS_LEVEL doestn't take effect\n");
+> +		return 1;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void test_max_nest(void)
+> +{
+> +	pid_t cpid1;
+> +
+> +	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD,
+> +		(void *)child_fn1, (void *)1);
+> +	if (cpid1 < 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
+> +
+> +	tst_record_childstatus(cleanup, cpid1);
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +	int lc;
+> +
+> +	setup();
+> +	tst_parse_opts(argc, argv, NULL, NULL);
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +		test_max_nest();
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> --
+> 1.9.1
 > 
-> Thanks~
 > 
-
 
 ------------------------------------------------------------------------------
 _______________________________________________
