@@ -1,21 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZSQoe-0001im-O9
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 14:27:40 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZPU6f-0000jv-Io
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2015 11:22:05 +0000
 Received: from mx2.suse.de ([195.135.220.15])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZSQod-0000m4-K6
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 14:27:40 +0000
-Date: Thu, 20 Aug 2015 16:27:06 +0200
+	(Exim 4.76) id 1ZPU6d-0000Xy-5J
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2015 11:22:05 +0000
+Date: Wed, 12 Aug 2015 13:21:35 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150820142706.GA3994@rei.suse.de>
-References: <1439962200-20435-1-git-send-email-sunyuan3@huawei.com>
+Message-ID: <20150812112135.GA32393@rei.suse.de>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+	<1436424468-11756-10-git-send-email-alexey.kodanev@oracle.com>
+	<20150811181219.GB24227@rei.suse.de> <55CB2A43.8060808@oracle.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1439962200-20435-1-git-send-email-sunyuan3@huawei.com>
-Subject: Re: [LTP] [PATCH] Use cpuctl_test* as TCID for cpuctl_test*.c.
+In-Reply-To: <55CB2A43.8060808@oracle.com>
+Subject: Re: [LTP] [PATCH 09/23] network/virt/vlan03: add new test-case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,11 +30,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
 Hi!
-Pushed, thanks.
+> We can use tst_resm there and we would need to provide one more 
+> parameter to determine was it PASS or FAIL (the expected result). It 
+> will complicate virt_compare_netperf() a bit but still should be OK.
+
+That sounds reasonable to me.
 
 -- 
 Cyril Hrubis
