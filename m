@@ -2,21 +2,23 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <stanislav.kholmanskikh@oracle.com>)
-	id 1ZS4Ft-0006kK-7c
-	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2015 14:22:17 +0000
-Received: from userp1040.oracle.com ([156.151.31.81])
+	(envelope-from <metan@suse.de>) id 1ZPUXb-000501-Cw
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2015 11:49:55 +0000
+Received: from mx2.suse.de ([195.135.220.15])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZS4Fn-00009u-Ci
-	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2015 14:22:17 +0000
-Message-ID: <55D4910A.8030008@oracle.com>
-Date: Wed, 19 Aug 2015 17:22:02 +0300
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+	(Exim 4.76) id 1ZPUXX-00069N-GG
+	for ltp-list@lists.sourceforge.net; Wed, 12 Aug 2015 11:49:55 +0000
+Date: Wed, 12 Aug 2015 13:49:23 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150812114923.GC32393@rei.suse.de>
+References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
+	<1436424468-11756-19-git-send-email-alexey.kodanev@oracle.com>
+	<20150811182857.GE24227@rei.suse.de> <55CB31E5.1050808@oracle.com>
 MIME-Version: 1.0
-References: <1439813598-11524-1-git-send-email-stanislav.kholmanskikh@oracle.com>	<980148897.10916298.1439815783172.JavaMail.zimbra@redhat.com>
-	<55D1DED0.2080303@oracle.com>
-In-Reply-To: <55D1DED0.2080303@oracle.com>
-Subject: Re: [LTP] [PATCH 1/2] ltp_rt_sigaction: SPARC fixes for -O0
+Content-Disposition: inline
+In-Reply-To: <55CB31E5.1050808@oracle.com>
+Subject: Re: [LTP] [PATCH 18/23] network/virt: move checking for command
+ support to virt_lib.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,34 +31,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: Alexey Kodanev <alexey.kodanev@oracle.com>
+Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
 
-On 08/17/2015 04:17 PM, Stanislav Kholmanskikh wrote:
->
->
-> On 08/17/2015 03:49 PM, Jan Stancek wrote:
->>
->>
->>
->>
->> ----- Original Message -----
->>> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
->>> To: ltp-list@lists.sourceforge.net
->>> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
->>> Sent: Monday, 17 August, 2015 2:13:17 PM
->>> Subject: [LTP] [PATCH 1/2] ltp_rt_sigaction: SPARC fixes for -O0
->>>
->>> The *sigreturn_stub functions are copied from glibc, and they
->>> work only if optimization > 0, since they expect that the compiler
->>> does not add an epilogue.
->>
->> Isn't that prologue?
->> Other than that it looks good to me, ACK.
->
-> Yes, sure. You are right. That was my typo :-[
+Hi!
+> > I would rather see the test doing TCONF for unsupported options and
+> > skipping the actual test. And I know that getting TCONF for testcases
+> > that only skip one test out of many is annoying, which is why I'm
+> > pondering a plan to change bitflags in the test library (both C and bash
+> > one) to counters so that we can say how much of the testcase was
+> > actually skipped.
+> 
+> That is a great news! OK, I will use TCONF. Will counters be added in 
+> the ltp-pan log file?
 
-Pushed both the patches.
+I hope so. I was thinking of producing logfiles in different standart
+formats as well. There are at least TAP[1] that comes from perl
+community and JUnit that comes from Jenkins.
+
+[1] https://testanything.org/
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
