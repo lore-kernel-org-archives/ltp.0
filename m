@@ -1,20 +1,19 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZMxlI-0007s6-JN
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 12:25:36 +0000
-Received: from mx4-phx2.redhat.com ([209.132.183.25])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZMxlH-0006dY-43
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 12:25:36 +0000
-Date: Wed, 5 Aug 2015 08:25:16 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <679430614.4320565.1438777516195.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1437570025-3897-1-git-send-email-sunyuan3@huawei.com>
-References: <1437570025-3897-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <cuibixuan@huawei.com>) id 1ZPgy9-00087D-7v
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2015 01:06:09 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZPgy3-0006N3-KQ
+	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2015 01:06:09 +0000
+From: Cui Bixuan <cuibixuan@huawei.com>
+Date: Thu, 13 Aug 2015 01:05:26 +0000
+Message-ID: <1439427926-7958-1-git-send-email-cuibixuan@huawei.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] container: new testcase pidns32
+Subject: [LTP] [PATCH] edf-scheduler/edf_test01: Add new testcase to test
+	edf-sched
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,189 +26,210 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+Add testcase 'edf_test01' to test edf-sched
 
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+---
+ runtest/sched                                     |    2 +
+ testcases/kernel/sched/edf-scheduler/.gitignore   |    1 +
+ testcases/kernel/sched/edf-scheduler/Makefile     |   25 ++++
+ testcases/kernel/sched/edf-scheduler/edf_test01.c |  129 +++++++++++++++++++++
+ 4 files changed, 157 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/sched/edf-scheduler/.gitignore
+ create mode 100644 testcases/kernel/sched/edf-scheduler/Makefile
+ create mode 100644 testcases/kernel/sched/edf-scheduler/edf_test01.c
 
+diff --git a/runtest/sched b/runtest/sched
+index 16877a3..39b4c5a 100644
+--- a/runtest/sched
++++ b/runtest/sched
+@@ -9,6 +9,8 @@ trace_sched01		trace_sched -c 1
+ hackbench01 hackbench 50 process 1000
+ hackbench02 hackbench 20 thread 1000
+ 
++edf_test01 edf_test01
++
+ sched_cli_serv run_sched_cliserv.sh
+ # Run this stress test for 2 minutes
+ sched_stress sched_stress.sh
+diff --git a/testcases/kernel/sched/edf-scheduler/.gitignore b/testcases/kernel/sched/edf-scheduler/.gitignore
+new file mode 100644
+index 0000000..20d383b
+--- /dev/null
++++ b/testcases/kernel/sched/edf-scheduler/.gitignore
+@@ -0,0 +1 @@
++/edf_test01
+diff --git a/testcases/kernel/sched/edf-scheduler/Makefile b/testcases/kernel/sched/edf-scheduler/Makefile
+new file mode 100644
+index 0000000..4ab9a6c
+--- /dev/null
++++ b/testcases/kernel/sched/edf-scheduler/Makefile
+@@ -0,0 +1,25 @@
++#
++#  Copyright (c) International Business Machines  Corp., 2008
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++LDLIBS			+= -lpthread
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/sched/edf-scheduler/edf_test01.c b/testcases/kernel/sched/edf-scheduler/edf_test01.c
+new file mode 100644
+index 0000000..6c136c8
+--- /dev/null
++++ b/testcases/kernel/sched/edf-scheduler/edf_test01.c
+@@ -0,0 +1,129 @@
++#define _GNU_SOURCE
++#include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <time.h>
++#include <linux/unistd.h>
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <sys/syscall.h>
++#include <pthread.h>
++#include <sched.h> 
++#include <errno.h>
++
++#include "test.h"
++
++char *TCID = "edf_test01";
++int TST_TOTAL = 1;
++
++#define gettid() syscall(__NR_gettid)
++
++#define SCHED_DEADLINE	6
++
++/* XXX use the proper syscall numbers */
++#ifdef __x86_64__
++#define __NR_sched_setattr		314
++#define __NR_sched_getattr		315
++#endif
++
++#ifdef __i386__
++#define __NR_sched_setattr		351
++#define __NR_sched_getattr		352
++#endif
++
++#ifdef __arm__
++#define __NR_sched_setattr		380
++#define __NR_sched_getattr		381
++#endif
++
++struct sched_attr {
++	__u32 size;
++
++	__u32 sched_policy;
++	__u64 sched_flags;
++
++	/* SCHED_NORMAL, SCHED_BATCH */
++	__s32 sched_nice;
++
++	/* SCHED_FIFO, SCHED_RR */
++	__u32 sched_priority;
++
++	/* SCHED_DEADLINE (nsec) */
++	__u64 sched_runtime;
++	__u64 sched_deadline;
++	__u64 sched_period;
++};
++
++int sched_setattr(pid_t pid,
++       	  const struct sched_attr *attr,
++       	  unsigned int flags)
++{
++	return syscall(__NR_sched_setattr, pid, attr, flags);
++}
++
++int sched_getattr(pid_t pid,
++       	  struct sched_attr *attr,
++       	  unsigned int size,
++       	  unsigned int flags)
++{
++	return syscall(__NR_sched_getattr, pid, attr, size, flags);
++}
++
++void *run_deadline(void* data)
++{
++	struct sched_attr attr, attr_copy;
++	int ret;
++	unsigned int flags = 0;
++	unsigned int size;
++
++	attr.size = sizeof(attr);
++	attr.sched_flags = 0;
++	attr.sched_nice = 0;
++	attr.sched_priority = 0;
++
++	/* This creates a 10ms/30ms reservation */
++	attr.sched_policy = SCHED_DEADLINE;
++	attr.sched_runtime = 10 * 1000 * 1000;
++	attr.sched_period = 30 * 1000 * 1000;
++	attr.sched_deadline = 30 * 1000 * 1000;
++
++	ret = sched_setattr(0, &attr, flags);
++	if ( ret < 0) {
++		printf("errno = %d, ret = %d\n", errno, ret);
++		tst_brkm(TFAIL, NULL, "sched_setattr error\n");
++	}
++
++	size = sizeof(attr_copy);
++	ret = sched_getattr(0, &attr_copy, size, flags);
++	if ( ret < 0) {
++                printf("errno = %d, ret = %d\n", errno, ret);
++        	tst_brkm(TFAIL, NULL, "sched_getattr error\n");
++	}
++
++	if ( (10000000 != attr_copy.sched_runtime) || 
++		(30000000 != attr_copy.sched_period) || 
++		(30000000 != attr_copy.sched_deadline) ) {
++		tst_brkm(TFAIL, NULL, "edf_test01 failed\n");
++	}
++
++	return NULL;
++}
++
++int main (int argc, char **argv)
++{
++	pthread_t thread;
++
++	if ((tst_kvercmp(3, 14, 0)) < 0) {
++		tst_brkm(TCONF, NULL, "EDF needs kernel 3.14 or higher\n");
++	}
++
++	pthread_create(&thread, NULL, run_deadline, NULL);
++
++	sleep(1);
++
++	pthread_join(thread, NULL);
++
++	tst_resm(TPASS, "edf_test01 succeed");
++	tst_exit();
++}
+-- 
+1.6.0.2
 
-
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Wednesday, 22 July, 2015 3:00:25 PM
-> Subject: [PATCH] container: new testcase pidns32
-> 
-
-Hi,
-
-> Kernel imposes a limit of 32 nested levels of pid namespaces.
-
-I have some concerns about this number. It looks more like
-implementation detail. Also it doesn't seem to apply for all
-kernels out there.
-
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-> ---
->  testcases/kernel/containers/pidns/.gitignore |   1 +
->  testcases/kernel/containers/pidns/pidns32.c  | 113
-
-You're missing runtest entry.
-
->  +++++++++++++++++++++++++++
->  2 files changed, 114 insertions(+)
->  create mode 100644 testcases/kernel/containers/pidns/pidns32.c
-> 
-> diff --git a/testcases/kernel/containers/pidns/.gitignore
-> b/testcases/kernel/containers/pidns/.gitignore
-> index e56c1f9..488b045 100644
-> --- a/testcases/kernel/containers/pidns/.gitignore
-> +++ b/testcases/kernel/containers/pidns/.gitignore
-> @@ -12,3 +12,4 @@
->  /pidns20
->  /pidns30
->  /pidns31
-> +/pidns32
-> diff --git a/testcases/kernel/containers/pidns/pidns32.c
-> b/testcases/kernel/containers/pidns/pidns32.c
-> new file mode 100644
-> index 0000000..8a4459b
-> --- /dev/null
-> +++ b/testcases/kernel/containers/pidns/pidns32.c
-> @@ -0,0 +1,113 @@
-> +/*
-> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * Verify that:
-> + * The kernel imposes a limit of 32 nested levels of pid namespaces.
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <assert.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "pidns_helper.h"
-> +
-> +#define MAXNEST 32
-> +
-> +char *TCID = "pidns32";
-> +int TST_TOTAL = 1;
-> +
-> +static void setup(void)
-> +{
-
-This should probably include tst_require_root too, since CLONE_NEWPID requires CAP_SYS_ADMIN.
-
-> +	check_newpid();
-> +	tst_tmpdir();
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +static int child_fn1(void *arg)
-> +{
-> +	pid_t cpid1;
-> +	long level = (long)arg;
-> +
-> +	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD,
-> +		(void *)child_fn1, (void *)(level + 1));
-
-You are relying on clone failing and you check level only after that.
-If I take sufficiently old kernel (which doesn't impose 32 levels as maximum),
-the testcase runs until it's killed by OOM.
-
-> +	if (cpid1 < 0) {
-> +		if (level == (MAXNEST))
-> +			return 0;
-> +		return 1;
-> +	}
-> +	if (waitpid(cpid1, NULL, 0) == -1)
-> +		return 1;
-> +	return 0;
-> +}
-> +
-> +static int wait4child(pid_t pid, const char *msg)
-> +{
-> +	int status;
-> +
-> +	if (waitpid(pid, &status, 0) == -1) {
-> +		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-> +	} else if (WIFSIGNALED(status)) {
-> +		tst_resm(TFAIL, "%s: child was killed with signal = %d",
-> +			msg, WTERMSIG(status));
-> +		return WTERMSIG(status);
-> +	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-> +		tst_resm(TFAIL, "%s: child returns %d", msg, status);
-> +		return WEXITSTATUS(status);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void test_max_nest(void)
-> +{
-> +	pid_t cpid1;
-> +	int status;
-> +
-> +	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD,
-> +		(void *)child_fn1, (void *)1);
-> +	if (cpid1 < 0)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-> +
-> +	status = 0;
-> +	status |= wait4child(cpid1, "child1");
-> +	if (status == 0)
-> +		tst_resm(TPASS, "The function works well.");
-> +	else
-> +		tst_resm(TFAIL, "Some child reported failure.");
-
-This can be replaced by using tst_record_childstatus().
-
-Regards,
-Jan
-
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +
-> +	setup();
-> +	tst_parse_opts(argc, argv, NULL, NULL);
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +		test_max_nest();
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> --
-> 1.9.1
-> 
-> 
 
 ------------------------------------------------------------------------------
 _______________________________________________
