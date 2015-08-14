@@ -1,18 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZNZgI-0004WK-WA
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2015 04:54:59 +0000
-Received: from szxga02-in.huawei.com ([119.145.14.65])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZNZgB-0007cE-0A
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2015 04:54:58 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZQABM-00078W-UR
+	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2015 08:17:44 +0000
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZQABG-0004qK-3N
+	for ltp-list@lists.sourceforge.net; Fri, 14 Aug 2015 08:17:44 +0000
 From: Yuan Sun <sunyuan3@huawei.com>
-Date: Fri, 7 Aug 2015 12:55:08 +0800
-Message-ID: <1438923308-5194-1-git-send-email-sunyuan3@huawei.com>
+Date: Fri, 14 Aug 2015 16:17:24 +0800
+Message-ID: <1439540244-15421-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH V2] container: new testcase pidns32
+Subject: [LTP] [PATCH V3] container: new testcase pidns32
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -32,10 +32,10 @@ Kernel imposes a limit of 32 nested levels of pid namespaces.
 
 Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
 ---
- runtest/containers                           |  1 +
- testcases/kernel/containers/pidns/.gitignore |  1 +
- testcases/kernel/containers/pidns/pidns32.c  | 96 ++++++++++++++++++++++++++++
- 3 files changed, 98 insertions(+)
+ runtest/containers                           |   1 +
+ testcases/kernel/containers/pidns/.gitignore |   1 +
+ testcases/kernel/containers/pidns/pidns32.c  | 103 +++++++++++++++++++++++++++
+ 3 files changed, 105 insertions(+)
  create mode 100644 testcases/kernel/containers/pidns/pidns32.c
 
 diff --git a/runtest/containers b/runtest/containers
@@ -61,10 +61,10 @@ index e56c1f9..488b045 100644
 +/pidns32
 diff --git a/testcases/kernel/containers/pidns/pidns32.c b/testcases/kernel/containers/pidns/pidns32.c
 new file mode 100644
-index 0000000..d0d3e1e
+index 0000000..fe530d3
 --- /dev/null
 +++ b/testcases/kernel/containers/pidns/pidns32.c
-@@ -0,0 +1,96 @@
+@@ -0,0 +1,103 @@
 +/*
 + * Copyright (c) Huawei Technologies Co., Ltd., 2015
 + * This program is free software; you can redistribute it and/or modify
@@ -117,19 +117,26 @@ index 0000000..d0d3e1e
 +{
 +	pid_t cpid1;
 +	long level = (long)arg;
++	int status;
 +
++	if (level == MAXNEST)
++		return 0;
 +	cpid1 = ltp_clone_quick(CLONE_NEWPID | SIGCHLD,
 +		(void *)child_fn1, (void *)(level + 1));
 +	if (cpid1 < 0) {
-+		if (level == MAXNEST)
-+			return 0;
-+		return 1;
++		printf("level %ld:unexpected error: (%d) %s\n",
++			level, errno, strerror(errno));
++		return -1;
 +	}
-+	if (waitpid(cpid1, NULL, 0) == -1)
-+		return 1;
-+	if (level > MAXNEST) {
-+		printf("MAX_PIS_NS_LEVEL doestn't take effect\n");
-+		return 1;
++	if (waitpid(cpid1, &status, 0) == -1)
++		return -1;
++
++	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
++		printf("child exited abnormally\n");
++		return -1;
++	} else if (WIFSIGNALED(status)) {
++		printf("child was killed with signal = %d", WTERMSIG(status));
++		return -1;
 +	}
 +	return 0;
 +}
