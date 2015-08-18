@@ -1,22 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZMHyf-0003Lf-WA
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 15:48:38 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZMHyc-0007VZ-Mj
-	for ltp-list@lists.sourceforge.net; Mon, 03 Aug 2015 15:48:37 +0000
-Date: Mon, 3 Aug 2015 17:48:13 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150803154813.GB7852@rei.suse.de>
-References: <55BEFD37.9090502@cn.fujitsu.com>
-	<1438582432-10124-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1ZRdS3-0006bi-2i
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 09:45:03 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZRdS1-00048l-9u
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 09:45:03 +0000
+Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t7I9ipm1006827
+	for <ltp-list@lists.sourceforge.net>; Tue, 18 Aug 2015 17:44:51 +0800
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Tue, 18 Aug 2015 17:32:25 +0800
+Message-ID: <1439890345-20039-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1438582432-10124-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] open/open13.c: add O_PATH flag test
+Subject: [LTP] [PATCH] netns: adjust the code corresponding to new version
+	iproute's output format
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,26 +30,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +static void verify_fchown(void)
-> +{
-> +	uid_t tuid = 1000;
-> +	gid_t tgid = 1000;
-> +
-> +	TEST(fchown(fd, tuid, tgid));
+In RHEL7.1GA, 'ip link show' gives(iproute-3.10.0-21.el7.x86_64):
+3: veth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000
+    link/ether 36:24:b9:e2:99:44 brd ff:ff:ff:ff:ff:ff
+4: veth1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000
+    link/ether 46:e7:39:82:80:b4 brd ff:ff:ff:ff:ff:ff
+But in RHEL7.2Alpha, 'ip link show' gives(iproute-3.10.0-46.el7.x86_64):
+3: veth0@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000
+    link/ether da:01:6a:91:78:06 brd ff:ff:ff:ff:ff:ff
+4: veth1@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000
+    link/ether b2:6a:0a:32:35:e3 brd ff:ff:ff:ff:ff:ff
 
-Any reason why don't we pass the numbers directly to the call?
+This difference will make create_veth() generate wrong device name, fix this.
 
-I.e. TEST(fchonw(fd, 1000, 1000)); ?
+Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+---
+ testcases/kernel/containers/netns/netns_initialize.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Otherwise this looks good.
-
+diff --git a/testcases/kernel/containers/netns/netns_initialize.sh b/testcases/kernel/containers/netns/netns_initialize.sh
+index d44a02b..28f4015 100755
+--- a/testcases/kernel/containers/netns/netns_initialize.sh
++++ b/testcases/kernel/containers/netns/netns_initialize.sh
+@@ -112,7 +112,7 @@ create_veth()
+     ip link add type veth
+     sleep 1
+     ip link show > /tmp/net2
+-    eval `diff /tmp/net1 /tmp/net2 | awk -F": "  '/^> [0-9]*:/ { print "dev" i+0 "=" $2; i++  }'`
++    eval `diff /tmp/net1 /tmp/net2 | awk -F": " '/^> [0-9]*:/ {print "dev" i+0 "=" $2; i++}' | awk -F'@' '{print $1}'`
+ }
+ 
+ # return 1 if disabled originally, 0 for enabled originally.
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.2.1
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
