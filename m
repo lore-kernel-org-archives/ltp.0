@@ -1,19 +1,32 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1ZPgy9-00087D-7v
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2015 01:06:09 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZPgy3-0006N3-KQ
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2015 01:06:09 +0000
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Thu, 13 Aug 2015 01:05:26 +0000
-Message-ID: <1439427926-7958-1-git-send-email-cuibixuan@huawei.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] edf-scheduler/edf_test01: Add new testcase to test
-	edf-sched
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwang@redhat.com>) id 1ZRcOG-0003s2-6h
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 08:37:04 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZRcOF-0001de-7D
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 08:37:04 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (Postfix) with ESMTPS id 2C8FF2F3
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 18 Aug 2015 08:36:57 +0000 (UTC)
+Received: from dhcp-13-206.nay.redhat.com (dhcp12-104.nay.redhat.com
+	[10.66.12.104] (may be forged))
+	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t7I8amis026359
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 18 Aug 2015 04:36:55 -0400
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 18 Aug 2015 16:36:45 +0800
+Message-Id: <1439887006-17985-2-git-send-email-liwang@redhat.com>
+In-Reply-To: <1439887006-17985-1-git-send-email-liwang@redhat.com>
+References: <1439887006-17985-1-git-send-email-liwang@redhat.com>
+Subject: [LTP] [PATCH 2/3] ltp/pounder: Don't let the testing log output to
+	/dev/tty
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -23,212 +36,159 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
 
-Add testcase 'edf_test01' to test edf-sched
+During the pounder21 test, it gives many errors like:
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+./pounder: line 262: /dev/tty: No such device or address
+./pounder: line 263: /dev/tty: No such device or address
+
+After google '/dev/tty', got this description:
+
+/dev/tty is the controlling terminal for the current process, if there is such a terminal.
+Do ps -a and look for /dev/tty. If it doesn't appear then that process doesn't have a
+controlling terminal.  It is quite normal for there to be no controlling terminal. So if
+there is no device associated with it then the kernel will just ignore anything you send
+to that file. It only cares if it has attached a device (possibly pseudo) to that node. If
+it does care, and echoing is on, then anything you send to the (special) file will be echoed.
+
+The second part may be related to the login shell. Check in /etc/passwd and make sure that
+you really do start bash for the user you are logging in as. Using /bin/sh instead is a likely cause.
+So do grep username /etc/passwd and look for the path to the program that is launched at the end of
+the text line. If its /bin/sh then you have the wrong shell. What you should have is /bin/bash.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- runtest/sched                                     |    2 +
- testcases/kernel/sched/edf-scheduler/.gitignore   |    1 +
- testcases/kernel/sched/edf-scheduler/Makefile     |   25 ++++
- testcases/kernel/sched/edf-scheduler/edf_test01.c |  129 +++++++++++++++++++++
- 4 files changed, 157 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/sched/edf-scheduler/.gitignore
- create mode 100644 testcases/kernel/sched/edf-scheduler/Makefile
- create mode 100644 testcases/kernel/sched/edf-scheduler/edf_test01.c
+ tools/pounder21/Install              |  2 +-
+ tools/pounder21/fancy_timed_loop.c   |  2 +-
+ tools/pounder21/infinite_loop.c      |  2 +-
+ tools/pounder21/pounder              | 14 +++++++-------
+ tools/pounder21/test_scripts/memtest |  2 +-
+ tools/pounder21/timed_loop.c         |  2 +-
+ 6 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/runtest/sched b/runtest/sched
-index 16877a3..39b4c5a 100644
---- a/runtest/sched
-+++ b/runtest/sched
-@@ -9,6 +9,8 @@ trace_sched01		trace_sched -c 1
- hackbench01 hackbench 50 process 1000
- hackbench02 hackbench 20 thread 1000
+diff --git a/tools/pounder21/Install b/tools/pounder21/Install
+index bf13528..6fb3a8f 100755
+--- a/tools/pounder21/Install
++++ b/tools/pounder21/Install
+@@ -65,7 +65,7 @@ done
+ # Set up optdir
+ mkdir -p "$POUNDER_OPTDIR"
+ if [ ! -d "$POUNDER_OPTDIR" ]; then
+-	echo "Could not create $POUNDER_OPTDIR; aborting." > /dev/tty
++	echo "Could not create $POUNDER_OPTDIR; aborting."
+ 	exit 1
+ fi
  
-+edf_test01 edf_test01
-+
- sched_cli_serv run_sched_cliserv.sh
- # Run this stress test for 2 minutes
- sched_stress sched_stress.sh
-diff --git a/testcases/kernel/sched/edf-scheduler/.gitignore b/testcases/kernel/sched/edf-scheduler/.gitignore
-new file mode 100644
-index 0000000..20d383b
---- /dev/null
-+++ b/testcases/kernel/sched/edf-scheduler/.gitignore
-@@ -0,0 +1 @@
-+/edf_test01
-diff --git a/testcases/kernel/sched/edf-scheduler/Makefile b/testcases/kernel/sched/edf-scheduler/Makefile
-new file mode 100644
-index 0000000..4ab9a6c
---- /dev/null
-+++ b/testcases/kernel/sched/edf-scheduler/Makefile
-@@ -0,0 +1,25 @@
-+#
-+#  Copyright (c) International Business Machines  Corp., 2008
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+LDLIBS			+= -lpthread
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/sched/edf-scheduler/edf_test01.c b/testcases/kernel/sched/edf-scheduler/edf_test01.c
-new file mode 100644
-index 0000000..6c136c8
---- /dev/null
-+++ b/testcases/kernel/sched/edf-scheduler/edf_test01.c
-@@ -0,0 +1,129 @@
-+#define _GNU_SOURCE
-+#include <unistd.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <time.h>
-+#include <linux/unistd.h>
-+#include <linux/kernel.h>
-+#include <linux/types.h>
-+#include <sys/syscall.h>
-+#include <pthread.h>
-+#include <sched.h> 
-+#include <errno.h>
-+
-+#include "test.h"
-+
-+char *TCID = "edf_test01";
-+int TST_TOTAL = 1;
-+
-+#define gettid() syscall(__NR_gettid)
-+
-+#define SCHED_DEADLINE	6
-+
-+/* XXX use the proper syscall numbers */
-+#ifdef __x86_64__
-+#define __NR_sched_setattr		314
-+#define __NR_sched_getattr		315
-+#endif
-+
-+#ifdef __i386__
-+#define __NR_sched_setattr		351
-+#define __NR_sched_getattr		352
-+#endif
-+
-+#ifdef __arm__
-+#define __NR_sched_setattr		380
-+#define __NR_sched_getattr		381
-+#endif
-+
-+struct sched_attr {
-+	__u32 size;
-+
-+	__u32 sched_policy;
-+	__u64 sched_flags;
-+
-+	/* SCHED_NORMAL, SCHED_BATCH */
-+	__s32 sched_nice;
-+
-+	/* SCHED_FIFO, SCHED_RR */
-+	__u32 sched_priority;
-+
-+	/* SCHED_DEADLINE (nsec) */
-+	__u64 sched_runtime;
-+	__u64 sched_deadline;
-+	__u64 sched_period;
-+};
-+
-+int sched_setattr(pid_t pid,
-+       	  const struct sched_attr *attr,
-+       	  unsigned int flags)
-+{
-+	return syscall(__NR_sched_setattr, pid, attr, flags);
-+}
-+
-+int sched_getattr(pid_t pid,
-+       	  struct sched_attr *attr,
-+       	  unsigned int size,
-+       	  unsigned int flags)
-+{
-+	return syscall(__NR_sched_getattr, pid, attr, size, flags);
-+}
-+
-+void *run_deadline(void* data)
-+{
-+	struct sched_attr attr, attr_copy;
-+	int ret;
-+	unsigned int flags = 0;
-+	unsigned int size;
-+
-+	attr.size = sizeof(attr);
-+	attr.sched_flags = 0;
-+	attr.sched_nice = 0;
-+	attr.sched_priority = 0;
-+
-+	/* This creates a 10ms/30ms reservation */
-+	attr.sched_policy = SCHED_DEADLINE;
-+	attr.sched_runtime = 10 * 1000 * 1000;
-+	attr.sched_period = 30 * 1000 * 1000;
-+	attr.sched_deadline = 30 * 1000 * 1000;
-+
-+	ret = sched_setattr(0, &attr, flags);
-+	if ( ret < 0) {
-+		printf("errno = %d, ret = %d\n", errno, ret);
-+		tst_brkm(TFAIL, NULL, "sched_setattr error\n");
-+	}
-+
-+	size = sizeof(attr_copy);
-+	ret = sched_getattr(0, &attr_copy, size, flags);
-+	if ( ret < 0) {
-+                printf("errno = %d, ret = %d\n", errno, ret);
-+        	tst_brkm(TFAIL, NULL, "sched_getattr error\n");
-+	}
-+
-+	if ( (10000000 != attr_copy.sched_runtime) || 
-+		(30000000 != attr_copy.sched_period) || 
-+		(30000000 != attr_copy.sched_deadline) ) {
-+		tst_brkm(TFAIL, NULL, "edf_test01 failed\n");
-+	}
-+
-+	return NULL;
-+}
-+
-+int main (int argc, char **argv)
-+{
-+	pthread_t thread;
-+
-+	if ((tst_kvercmp(3, 14, 0)) < 0) {
-+		tst_brkm(TCONF, NULL, "EDF needs kernel 3.14 or higher\n");
-+	}
-+
-+	pthread_create(&thread, NULL, run_deadline, NULL);
-+
-+	sleep(1);
-+
-+	pthread_join(thread, NULL);
-+
-+	tst_resm(TPASS, "edf_test01 succeed");
-+	tst_exit();
-+}
+diff --git a/tools/pounder21/fancy_timed_loop.c b/tools/pounder21/fancy_timed_loop.c
+index cf8580e..50305c3 100644
+--- a/tools/pounder21/fancy_timed_loop.c
++++ b/tools/pounder21/fancy_timed_loop.c
+@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
+ 
+ 	tty_fp = fdopen(3, "w+");
+ 	if (tty_fp == NULL) {
+-		tty_fp = fopen("/dev/tty", "w+");
++		tty_fp = fdopen(STDOUT_FILENO, "w+");
+ 		if (tty_fp == NULL) {
+ 			perror("stdout");
+ 			exit(2);
+diff --git a/tools/pounder21/infinite_loop.c b/tools/pounder21/infinite_loop.c
+index d78b442..804dd2e 100644
+--- a/tools/pounder21/infinite_loop.c
++++ b/tools/pounder21/infinite_loop.c
+@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
+ 
+ 	tty_fp = fdopen(3, "w+");
+ 	if (tty_fp == NULL) {
+-		tty_fp = fopen("/dev/tty", "w+");
++		tty_fp = fdopen(STDOUT_FILENO, "w+");
+ 		if (tty_fp == NULL) {
+ 			perror("stdout");
+ 			exit(2);
+diff --git a/tools/pounder21/pounder b/tools/pounder21/pounder
+index c3defcf..caf60d3 100755
+--- a/tools/pounder21/pounder
++++ b/tools/pounder21/pounder
+@@ -201,8 +201,8 @@ shift `expr $OPTIND - 1`
+ 
+ # Are we already running?
+ if [ -f "$POUNDER_PIDFILE" ]; then
+-	echo "File $POUNDER_PIDFILE exists; pounder may already be running." > /dev/tty
+-	echo "Either run 'pounder -k' to stop all tests, or remove it." > /dev/tty
++	echo "File $POUNDER_PIDFILE exists; pounder may already be running."
++	echo "Either run 'pounder -k' to stop all tests, or remove it."
+ 	exit 1
+ fi
+ 
+@@ -225,21 +225,21 @@ fi
+ # Set up log directory
+ mkdir -p "$POUNDER_LOGDIR" 2> /dev/null
+ if [ ! -d "$POUNDER_LOGDIR" ]; then
+-	echo "Could not create $POUNDER_LOGDIR; aborting." > /dev/tty
++	echo "Could not create $POUNDER_LOGDIR; aborting."
+ 	exit 1
+ fi
+ 
+ # Set up dir for optional components
+ mkdir -p "$POUNDER_OPTDIR"
+ if [ ! -d "$POUNDER_OPTDIR" ]; then
+-	echo "Could not create $POUNDER_OPTDIR; aborting." > /dev/tty
++	echo "Could not create $POUNDER_OPTDIR; aborting."
+ 	exit 1
+ fi
+ 
+ # Set up tmpdir
+ mkdir -p "$POUNDER_TMPDIR"
+ if [ ! -d "$POUNDER_TMPDIR" ]; then
+-	echo "Could not create $POUNDER_TMPDIR; aborting." > /dev/tty
++	echo "Could not create $POUNDER_TMPDIR; aborting."
+ 	exit 1
+ fi
+ 
+@@ -259,8 +259,8 @@ fi
+ export > "$POUNDER_LOGDIR/environment"
+ 
+ echo "Starting $POUNDER_VERSION"
+-echo "STARTING TESTS." > /dev/tty
+-echo "To kill all tests, run 'pounder -k' or press ^C."> /dev/tty
++echo "STARTING TESTS."
++echo "To kill all tests, run 'pounder -k' or press ^C."
+ 
+ # Handle the duration thing...
+ function kill_after {
+diff --git a/tools/pounder21/test_scripts/memtest b/tools/pounder21/test_scripts/memtest
+index c040147..e212bde 100755
+--- a/tools/pounder21/test_scripts/memtest
++++ b/tools/pounder21/test_scripts/memtest
+@@ -22,7 +22,7 @@
+ 
+ # Can we find the script?
+ if [ ! -f "$POUNDER_OPTDIR/memtest.sh" ]; then
+-	echo "Can't find memtest.sh; did you run Install?" > /dev/tty
++	echo "Can't find memtest.sh; did you run Install?"
+ 	exit -1
+ fi
+ 
+diff --git a/tools/pounder21/timed_loop.c b/tools/pounder21/timed_loop.c
+index 966c08a..0cd7305 100644
+--- a/tools/pounder21/timed_loop.c
++++ b/tools/pounder21/timed_loop.c
+@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
+ 
+ 	tty_fp = fdopen(3, "w+");
+ 	if (tty_fp == NULL) {
+-		tty_fp = fopen("/dev/tty", "w+");
++		tty_fp = fdopen(STDOUT_FILENO, "w+");
+ 		if (tty_fp == NULL) {
+ 			perror("stdout");
+ 			exit(2);
 -- 
-1.6.0.2
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
