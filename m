@@ -1,18 +1,33 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <sunyuan3@huawei.com>) id 1ZNZok-0007A2-SC
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2015 05:03:42 +0000
-Received: from szxga01-in.huawei.com ([58.251.152.64])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZNZog-0002qg-BK
-	for ltp-list@lists.sourceforge.net; Fri, 07 Aug 2015 05:03:42 +0000
-From: Yuan Sun <sunyuan3@huawei.com>
-Date: Fri, 7 Aug 2015 13:04:00 +0800
-Message-ID: <1438923840-13909-1-git-send-email-sunyuan3@huawei.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH] container: use tst_record_childstatus() in userns
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwang@redhat.com>) id 1ZRcOI-0007Wu-4g
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 08:37:06 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZRcOH-0002wK-8B
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 08:37:06 +0000
+Received: from int-mx14.intmail.prod.int.phx2.redhat.com
+	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
+	by mx1.redhat.com (Postfix) with ESMTPS id 960CE98C2F
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 18 Aug 2015 08:36:59 +0000 (UTC)
+Received: from dhcp-13-206.nay.redhat.com (dhcp12-104.nay.redhat.com
+	[10.66.12.104] (may be forged))
+	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t7I8amit026359
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Tue, 18 Aug 2015 04:36:58 -0400
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 18 Aug 2015 16:36:46 +0800
+Message-Id: <1439887006-17985-3-git-send-email-liwang@redhat.com>
+In-Reply-To: <1439887006-17985-2-git-send-email-liwang@redhat.com>
+References: <1439887006-17985-1-git-send-email-liwang@redhat.com>
+	<1439887006-17985-2-git-send-email-liwang@redhat.com>
+Subject: [LTP] [PATCH 3/3] pounder/cpufreq: Skip the test if processors are
+	not supported by cpufreq
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,149 +37,54 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: jstancek@redhat.com
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+During the pounder21/cpufreq test, it print so many errors:
+
+[2015-08-17 08:43:24] (17818) cpufreq.bin: FAIL with code 4.
+[2015-08-17 08:43:24] (17818) cpufreq.bin: START loop #2.
+[2015-08-17 08:43:25] (17812) cpufreq.bin: FAIL with code 4.
+[2015-08-17 08:43:25] (17812) cpufreq.bin: START loop #2.
+[2015-08-17 08:43:27] (17812) cpufreq.bin: FAIL with code 4.
+...
+
+The reason is that the case canceled some cpufreq check steps before,
+now reuse them to make sure it could be skiped on a system without
+cpufreq support.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/containers/userns/userns02.c | 14 +-----------
- testcases/kernel/containers/userns/userns03.c | 24 ++-------------------
- testcases/kernel/containers/userns/userns04.c | 31 ++++-----------------------
- 3 files changed, 7 insertions(+), 62 deletions(-)
+ tools/pounder21/test_scripts/cpufreq | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/kernel/containers/userns/userns02.c b/testcases/kernel/containers/userns/userns02.c
-index e1677b6..32db7bc 100644
---- a/testcases/kernel/containers/userns/userns02.c
-+++ b/testcases/kernel/containers/userns/userns02.c
-@@ -68,7 +68,6 @@ static void setup(void)
+diff --git a/tools/pounder21/test_scripts/cpufreq b/tools/pounder21/test_scripts/cpufreq
+index ba94a76..4df70a9 100755
+--- a/tools/pounder21/test_scripts/cpufreq
++++ b/tools/pounder21/test_scripts/cpufreq
+@@ -21,12 +21,12 @@
  
- int main(int argc, char *argv[])
- {
--	int status;
- 	int lc;
- 	int childpid;
- 	int parentuid;
-@@ -111,19 +110,8 @@ int main(int argc, char *argv[])
  
- 		TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+ # Do any CPU support cpufreq?
+-#CPUFREQ_ENABLED_CPUS=`/bin/ls -lad /sys/devices/system/cpu/cpu*/cpufreq 2> /dev/null | wc -l`
++CPUFREQ_ENABLED_CPUS=`/bin/ls -lad /sys/devices/system/cpu/cpu*/cpufreq 2> /dev/null | wc -l`
  
--		if (waitpid(childpid, &status, 0) < 0)
--			tst_brkm(TBROK | TERRNO, cleanup, "waitpid failed");
--
--		if (WIFSIGNALED(status)) {
--			tst_resm(TFAIL, "child was killed with signal = %d",
--				WTERMSIG(status));
--		} else if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
--			tst_resm(TFAIL, "child exited abnormally");
--		else
--			tst_resm(TPASS, "the uid and the gid are right inside "
--				"the container");
-+		tst_record_childstatus(cleanup, childpid);
- 	}
- 	cleanup();
- 	tst_exit();
- }
--
-diff --git a/testcases/kernel/containers/userns/userns03.c b/testcases/kernel/containers/userns/userns03.c
-index 9b8ede5..6e3cedd 100644
---- a/testcases/kernel/containers/userns/userns03.c
-+++ b/testcases/kernel/containers/userns/userns03.c
-@@ -166,7 +166,6 @@ int main(int argc, char *argv[])
- {
- 	pid_t cpid2;
- 	char path[BUFSIZ];
--	int cpid1status, cpid2status;
- 	int lc;
- 	int fd;
+-#if [ "$CPUFREQ_ENABLED_CPUS" -lt 1 ]; then
+-#	echo "None of your CPUs support cpufreq.  Bye."
+-#	exit 255
+-#fi
++if [ "$CPUFREQ_ENABLED_CPUS" -lt 1 ]; then
++	echo "None of your CPUs support cpufreq.  Bye."
++	exit 255
++fi
  
-@@ -211,27 +210,8 @@ int main(int argc, char *argv[])
- 
- 		TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(cleanup, 1);
- 
--		if ((waitpid(cpid1, &cpid1status, 0) < 0) ||
--			(waitpid(cpid2, &cpid2status, 0) < 0))
--				tst_brkm(TBROK | TERRNO, cleanup,
--				"parent: waitpid failed.");
--
--		if (WIFSIGNALED(cpid1status)) {
--			tst_resm(TFAIL, "child1 was killed with signal = %d",
--				WTERMSIG(cpid1status));
--		} else if (WIFEXITED(cpid1status) &&
--			WEXITSTATUS(cpid1status) != 0) {
--			tst_resm(TFAIL, "child1 exited abnormally");
--		}
--
--		if (WIFSIGNALED(cpid2status)) {
--			tst_resm(TFAIL, "child2 was killed with signal = %d",
--				WTERMSIG(cpid2status));
--		} else if (WIFEXITED(cpid2status) &&
--			WEXITSTATUS(cpid2status) != 0) {
--			tst_resm(TFAIL, "child2 exited abnormally");
--		} else
--			tst_resm(TPASS, "test pass");
-+		tst_record_childstatus(cleanup, cpid1);
-+		tst_record_childstatus(cleanup, cpid2);
- 	}
- 	cleanup();
- 	tst_exit();
-diff --git a/testcases/kernel/containers/userns/userns04.c b/testcases/kernel/containers/userns/userns04.c
-index 9836fd9..4d38891 100644
---- a/testcases/kernel/containers/userns/userns04.c
-+++ b/testcases/kernel/containers/userns/userns04.c
-@@ -70,29 +70,11 @@ static int child_fn2(void *arg)
- 	return exit_val;
- }
- 
--static int wait4child(pid_t pid, const char *msg)
--{
--	int status;
--
--	if (waitpid(pid, &status, 0) == -1) {
--		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
--	} else if (WIFSIGNALED(status)) {
--		tst_resm(TFAIL, "%s: child was killed with signal = %d",
--			msg, WTERMSIG(status));
--		return WTERMSIG(status);
--	} else if (!WIFEXITED(status) || WEXITSTATUS(status) != 0) {
--		tst_resm(TFAIL, "%s: child returns %d", msg, status);
--		return WEXITSTATUS(status);
--	}
--
--	return 0;
--}
--
- static void test_cap_sys_admin(void)
- {
- 	pid_t cpid1, cpid2, cpid3;
- 	char path[BUFSIZ];
--	int fd, status;
-+	int fd;
- 
- 	/* child 1 */
- 	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-@@ -124,14 +106,9 @@ static void test_cap_sys_admin(void)
- 	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
- 	TST_SAFE_CHECKPOINT_WAKE(cleanup, 1);
- 
--	status = 0;
--	status |= wait4child(cpid1, "child1");
--	status |= wait4child(cpid2, "child2");
--	status |= wait4child(cpid3, "child3");
--	if (status == 0)
--		tst_resm(TPASS, "The setns function works well.");
--	else
--		tst_resm(TFAIL, "Some child reported failure.");
-+	tst_record_childstatus(cleanup, cpid1);
-+	tst_record_childstatus(cleanup, cpid2);
-+	tst_record_childstatus(cleanup, cpid3);
- 
- 	SAFE_CLOSE(cleanup, fd);
- 
+ # Turn on acpi_pstate_strict to ensure that state transitions actually happen...
+ if [ -f /sys/module/acpi_cpufreq/parameters/acpi_pstate_strict ]; then
 -- 
-1.9.1
+1.8.3.1
 
 
 ------------------------------------------------------------------------------
