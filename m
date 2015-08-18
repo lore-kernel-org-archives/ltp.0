@@ -1,20 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZMydq-0007R8-SV
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 13:21:58 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZMydp-0003dy-HI
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 13:21:58 +0000
-Date: Wed, 5 Aug 2015 09:21:46 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <584308599.4393130.1438780906980.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1438334146-32590-1-git-send-email-sunyuan3@huawei.com>
-References: <1438334146-32590-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZRgJd-0007TP-Qs
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 12:48:33 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZRgJc-00024q-PK
+	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 12:48:33 +0000
+Date: Tue, 18 Aug 2015 14:48:00 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150818124759.GB22482@rei.suse.de>
+References: <CACwVHNqEdn8kuQ-pdD35=O64criD+d3R1S2jUnMgVQt-XxrTyg@mail.gmail.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH V2] containers: new testcase userns06
+Content-Disposition: inline
+In-Reply-To: <CACwVHNqEdn8kuQ-pdD35=O64criD+d3R1S2jUnMgVQt-XxrTyg@mail.gmail.com>
+Subject: Re: [LTP] Test Patch for diotest6
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,35 +28,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
+To: Sandy Sun <a22017@motorola.com>
 Cc: ltp-list@lists.sourceforge.net
 
+Hi!
+> I found pointer issue in diotest6. It wrongly use iov1/iov2 as pointer to
+> "buf" when read/write
+> from fd_r/w.  It should be iov1[j].iov_base.
 
+Looks like you are right. But since none of the syscalls the test
+uses works with struct iovec can't we get rid of them?
 
+As far as I can see the testcase can work with just two buffers, one
+gets initialized in each iteration and one is read back and compared
+with the initialized one.
 
-
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Friday, 31 July, 2015 11:15:46 AM
-> Subject: [PATCH V2] containers: new testcase userns06
-> 
-> When a process with non-zero user IDs performs an execve(), the
-> process's capability sets are cleared. When a process with zero
-> user IDs performs an execve(), the process's capability sets are
-> set.
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-
-Pushed with these changes:
-- some ifdefs from userns06.c removed as they were around code,
-  that had nothing to do with LIB_CAP
-- added LTP_ATTRIBUTE_UNUSED to updatemap()
-- fixed TCID of userns06_capcheck to "userns06_capcheck"
-
-Regards,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
