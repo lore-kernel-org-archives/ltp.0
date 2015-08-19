@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZPE2c-0002e8-9p
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:12:50 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZS3g0-0001T4-TU
+	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2015 13:45:12 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZPE2Y-0007Z8-IJ
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:12:50 +0000
-Date: Tue, 11 Aug 2015 20:12:20 +0200
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZS3fy-0001Pp-7C
+	for ltp-list@lists.sourceforge.net; Wed, 19 Aug 2015 13:45:12 +0000
+Date: Wed, 19 Aug 2015 15:44:38 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150811181219.GB24227@rei.suse.de>
-References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-	<1436424468-11756-10-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20150819134438.GA22714@rei.suse.de>
+References: <1436876572-28759-2-git-send-email-mmarhefk@redhat.com>
+	<1439899125-7646-1-git-send-email-mmarhefk@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1436424468-11756-10-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH 09/23] network/virt/vlan03: add new test-case
+In-Reply-To: <1439899125-7646-1-git-send-email-mmarhefk@redhat.com>
+Subject: Re: [LTP] [PATCH 2/2 v3] containers/netns tests rewritten
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,29 +29,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> +tst_resm TINFO "networks with the same VLAN ID must work"
+> +cleanup()
+> +{
+> +	tst_rmdir
+> +	ip link del dummy0 2>/dev/null
+> +	kill -9 $NS_HANDLE 2>/dev/null
+> +}
 > +
-> +res="TPASS"
+> +tst_tmpdir
+> +NS_HANDLE=$(ns_create net mnt)
+> +if [ $? -eq 1 ]; then
+> +	tst_resm TINFO "$NS_HANDLE"
+> +	tst_brkm TBROK "unable to create a new network namespace"
+> +fi
+> +TST_CLEANUP=cleanup
+> +ls /sys/class/net >sysfs_before
 > +
-> +virt_setup "id 4094" "id 4094"
-> +virt_compare_netperf || res="TFAIL"
 > +
-> +tst_resm $res "done"
-> +
-> +tst_resm TINFO "different VLAN ID shall not work together"
-> +res="TPASS"
-> +virt_setup "id 4093" "id 4094"
-> +virt_compare_netperf && res="TFAIL"
-> +
-> +tst_resm $res "done"
+> +ns_exec $NS_HANDLE ip link add dummy0 type dummy || \
+> +	tst_brkm TBROK "failed to add a new dummy device"
+> +ns_exec $NS_HANDLE mount -t sysfs none /sys 2>/dev/null
+> +kill -9 $NS_HANDLE
 
-I would rather see the test issuing one PASS/FAIL for each of the
-asserting here. Why cannot we use tst_resm TPASS/TFAIL in the
-virt_compare_netperf function?
+I'm a bit puzzled here. Why do we have to mount the sysfs in the
+namespace if we aren't doing anything with it?
+
+Also shouldn't we destroy the namespace after we save the sysfs_after?
+
+> +ls /sys/class/net >sysfs_after
+> +diff sysfs_before sysfs_after
+> +if [ $? -eq 0 ]; then
+> +	tst_resm TPASS "sysfs not affected by a separate namespace"
+> +else
+> +	tst_resm TFAIL "sysfs affected by a separate namespace"
+> +fi
+> +
+> +tst_exit
+
+Otherwise I'm ready to push these two patches (I did minor fixes in the
+first one to silence compiler warnings though).
 
 -- 
 Cyril Hrubis
