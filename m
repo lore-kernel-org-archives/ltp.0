@@ -1,22 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
 	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZSSHh-0000lz-Uf
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 16:01:45 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZSSHf-0001mp-J2
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 16:01:45 +0000
-Date: Thu, 20 Aug 2015 18:01:11 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150820160111.GD5144@rei.suse.de>
-References: <1440067495-10326-1-git-send-email-liwang@redhat.com>
+	(envelope-from <sunyuan3@huawei.com>) id 1ZSK9X-00062W-AL
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 07:20:47 +0000
+Received: from szxga03-in.huawei.com ([119.145.14.66])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZSK9S-0007aN-Uz
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 07:20:47 +0000
+From: Yuan Sun <sunyuan3@huawei.com>
+Date: Thu, 20 Aug 2015 15:20:53 +0800
+Message-ID: <1440055253-23430-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1440067495-10326-1-git-send-email-liwang@redhat.com>
-Subject: Re: [LTP] [PATCH] ltp/pounder: do some cleanup work for pounder21
- test suites
+Subject: [LTP] [PATCH] containers: new testcase userns07
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,15 +25,177 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
+To: jstancek@redhat.com
 Cc: ltp-list@lists.sourceforge.net
 
-Hi!
-Pushed, thanks.
+Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
+---
+ runtest/containers                            |   1 +
+ testcases/kernel/containers/.gitignore        |   1 +
+ testcases/kernel/containers/userns/userns07.c | 133 ++++++++++++++++++++++++++
+ 3 files changed, 135 insertions(+)
+ create mode 100644 testcases/kernel/containers/userns/userns07.c
 
+diff --git a/runtest/containers b/runtest/containers
+index ac37ab2..80de20e 100644
+--- a/runtest/containers
++++ b/runtest/containers
+@@ -75,3 +75,4 @@ userns03 userns03
+ userns04 userns04
+ userns05 userns05
+ userns06 userns06
++userns07 userns07
+diff --git a/testcases/kernel/containers/.gitignore b/testcases/kernel/containers/.gitignore
+index 3f96f42..7dc2608 100644
+--- a/testcases/kernel/containers/.gitignore
++++ b/testcases/kernel/containers/.gitignore
+@@ -10,3 +10,4 @@ userns/userns04
+ userns/userns05
+ userns/userns06_capcheck
+ userns/userns06
++userns/userns07
+diff --git a/testcases/kernel/containers/userns/userns07.c b/testcases/kernel/containers/userns/userns07.c
+new file mode 100644
+index 0000000..decabc8
+--- /dev/null
++++ b/testcases/kernel/containers/userns/userns07.c
+@@ -0,0 +1,133 @@
++/*
++ * Copyright (c) Huawei Technologies Co., Ltd., 2015
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ */
++
++/*
++ * Verify that:
++ * The kernel imposes a limit of 32 nested levels of user namespaces.
++ */
++
++#define _GNU_SOURCE
++#include <sys/wait.h>
++#include <assert.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
++#include <string.h>
++#include <errno.h>
++#include "test.h"
++#include "userns_helper.h"
++
++#define MAXNEST 32
++
++char *TCID = "userns07";
++int TST_TOTAL = 1;
++
++static void setup(void)
++{
++	check_newuser();
++	tst_tmpdir();
++	TST_CHECKPOINT_INIT(NULL);
++}
++
++static void cleanup(void)
++{
++	tst_rmdir();
++}
++
++static int child_fn1(void *arg)
++{
++	pid_t cpid1;
++	long level = (long)arg;
++	int status;
++	int parentuid;
++	int parentgid;
++
++	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
++
++	if (level == MAXNEST)
++		return 0;
++	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
++		(void *)child_fn1, (void *)(level + 1));
++	if (cpid1 < 0) {
++		printf("level %ld:unexpected error: (%d) %s\n",
++			level, errno, strerror(errno));
++		return 1;
++	}
++
++	parentuid = geteuid();
++	parentgid = getegid();
++
++	updatemap(cpid1, UID_MAP, 0, parentuid, cleanup);
++	updatemap(cpid1, GID_MAP, 0, parentgid, cleanup);
++
++	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
++
++	if (waitpid(cpid1, &status, 0) == -1)
++		return 1;
++
++	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
++		printf("child exited abnormally\n");
++		return 1;
++	} else if (WIFSIGNALED(status)) {
++		printf("child was killed with signal = %d", WTERMSIG(status));
++		return 1;
++	}
++	return 0;
++}
++
++static void test_max_nest(void)
++{
++	pid_t cpid1;
++	int parentuid;
++	int parentgid;
++	int fd;
++	char path[BUFSIZ];
++
++	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
++		(void *)child_fn1, (void *)0);
++	if (cpid1 < 0)
++		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
++
++	parentuid = geteuid();
++	parentgid = getegid();
++
++	if (access("/proc/self/setgroups", F_OK) == 0) {
++		sprintf(path, "/proc/%d/setgroups", cpid1);
++		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
++		SAFE_WRITE(cleanup, 1, fd, "deny", 4);
++		SAFE_CLOSE(cleanup, fd);
++	}
++
++	updatemap(cpid1, UID_MAP, 0, parentuid, cleanup);
++	updatemap(cpid1, GID_MAP, 0, parentgid, cleanup);
++
++	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
++	tst_record_childstatus(cleanup, cpid1);
++}
++
++int main(int argc, char *argv[])
++{
++	int lc;
++
++	setup();
++	tst_parse_opts(argc, argv, NULL, NULL);
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		test_max_nest();
++	}
++
++	cleanup();
++	tst_exit();
++}
++
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.1
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
