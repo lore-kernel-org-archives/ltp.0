@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZSS1C-0005fE-Pg
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 15:44:42 +0000
+	(envelope-from <metan@suse.de>) id 1ZSQoe-0001im-O9
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 14:27:40 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZSS1B-0007LA-Rs
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 15:44:42 +0000
-Date: Thu, 20 Aug 2015 17:44:09 +0200
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZSQod-0000m4-K6
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 14:27:40 +0000
+Date: Thu, 20 Aug 2015 16:27:06 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150820154409.GA5144@rei.suse.de>
-References: <1439887006-17985-1-git-send-email-liwang@redhat.com>
+Message-ID: <20150820142706.GA3994@rei.suse.de>
+References: <1439962200-20435-1-git-send-email-sunyuan3@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1439887006-17985-1-git-send-email-liwang@redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] ltp/tools: remove the scripts/numa_test.sh
-	file
+In-Reply-To: <1439962200-20435-1-git-send-email-sunyuan3@huawei.com>
+Subject: Re: [LTP] [PATCH] Use cpuctl_test* as TCID for cpuctl_test*.c.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,7 +28,7 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
+To: Yuan Sun <sunyuan3@huawei.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
