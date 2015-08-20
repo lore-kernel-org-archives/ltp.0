@@ -1,20 +1,30 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZRJrO-0006uB-6F
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2015 12:49:54 +0000
-Received: from mx3-phx2.redhat.com ([209.132.183.24])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZRJrL-0005pu-8X
-	for ltp-list@lists.sourceforge.net; Mon, 17 Aug 2015 12:49:54 +0000
-Date: Mon, 17 Aug 2015 08:49:43 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <980148897.10916298.1439815783172.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1439813598-11524-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1439813598-11524-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH 1/2] ltp_rt_sigaction: SPARC fixes for -O0
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <liwang@redhat.com>) id 1ZSNLH-00030i-NE
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 10:45:07 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZSNLF-0005fa-Q1
+	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 10:45:07 +0000
+Received: from int-mx11.intmail.prod.int.phx2.redhat.com
+	(int-mx11.intmail.prod.int.phx2.redhat.com [10.5.11.24])
+	by mx1.redhat.com (Postfix) with ESMTPS id 0BC48A2C10
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 20 Aug 2015 10:45:00 +0000 (UTC)
+Received: from dhcp-13-206.nay.redhat.com (dhcp12-104.nay.redhat.com
+	[10.66.12.104] (may be forged))
+	by int-mx11.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t7KAiuea028669
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256
+	verify=NO)
+	for <ltp-list@lists.sourceforge.net>; Thu, 20 Aug 2015 06:44:59 -0400
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 20 Aug 2015 18:44:55 +0800
+Message-Id: <1440067495-10326-1-git-send-email-liwang@redhat.com>
+Subject: [LTP] [PATCH] ltp/pounder: do some cleanup work for pounder21 test
+	suites
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -24,138 +34,226 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Cc: vasily isaenko <vasily.isaenko@oracle.com>, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
+ChangeLog:
+	- Cleanup ltp buildscript in pounder
+	- Remove two outdated patches from pounder21/src/
 
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ tools/pounder21/build_scripts/ltp          |  41 ----------
+ tools/pounder21/src/ltp-debian-build.patch | 120 -----------------------------
+ tools/pounder21/src/ltp-setregid-fix.patch |  14 ----
+ 3 files changed, 175 deletions(-)
+ delete mode 100644 tools/pounder21/src/ltp-debian-build.patch
+ delete mode 100644 tools/pounder21/src/ltp-setregid-fix.patch
 
+diff --git a/tools/pounder21/build_scripts/ltp b/tools/pounder21/build_scripts/ltp
+index dfebe28..314719c 100755
+--- a/tools/pounder21/build_scripts/ltp
++++ b/tools/pounder21/build_scripts/ltp
+@@ -25,47 +25,6 @@ source "$POUNDER_HOME/libpounder.sh"
+ # Go up two levels to the top ltp dir.
+ cd "$POUNDER_HOME/../../"
+ 
+-# Apply a patch if this is Debian/Ubuntu.
+-if [ -f /etc/debian_version ]; then
+-	# Have we already patched this?
+-	if [ ! -e "testcases/network/sctp/func_tests/test_1_to_1_connect.c.pounder" ]; then
+-		cp -pRdu testcases/network/sctp/func_tests/test_1_to_1_connect.c testcases/network/sctp/func_tests/test_1_to_1_connect.c.pounder
+-		echo "Debian/Ubuntu detected; applying build fixes..."
+-		patch -p1 < $POUNDER_SRCDIR/ltp-debian-build.patch
+-		RESULT=$?
+-		if [ $RESULT -ne 0 ]; then
+-			echo Patching failed.
+-			exit 1
+-		fi
+-	fi
+-else
+-	# We need to _unpatch_ this.
+-	if [ -e "testcases/network/sctp/func_tests/test_1_to_1_connect.c.pounder" ]; then
+-		rm -rf testcases/network/sctp/func_tests/test_1_to_1_connect.c.pounder
+-		echo "Previous Debian/Ubuntu detected; removing build fixes..."
+-		patch -p1 -R < $POUNDER_SRCDIR/ltp-debian-build.patch
+-		RESULT=$?
+-		if [ $RESULT -ne 0 ]; then
+-			echo Patching failed.
+-			exit 1
+-		fi
+-	fi
+-
+-fi
+-
+-# NAK the setregid EPERM -> EINVAL patch, because it's
+-# broken on 2.6!  May be fixed some time after 20050804 release.
+-#if [ ! -e "testcases/kernel/syscalls/setregid/setregid02.c.pounder" ]; then
+-#	echo "Patching some holes in ltp..."
+-#	cp -pRdu testcases/kernel/syscalls/setregid/setregid02.c testcases/kernel/syscalls/setregid/setregid02.c.pounder
+-#	patch -p1 < $POUNDER_SRCDIR/ltp-setregid-fix.patch
+-#	RESULT=$?
+-#	if [ $RESULT -ne 0 ]; then
+-#		echo Patching failed.
+-#		exit 1
+-#	fi
+-#fi
+-
+ # Build
+ ./configure
+ make -j$NR_CPUS
+diff --git a/tools/pounder21/src/ltp-debian-build.patch b/tools/pounder21/src/ltp-debian-build.patch
+deleted file mode 100644
+index 9447e7b..0000000
+--- a/tools/pounder21/src/ltp-debian-build.patch
++++ /dev/null
+@@ -1,120 +0,0 @@
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_connect.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_connect.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_connect.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_connect.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -51,7 +51,7 @@
+- #include <string.h>
+- #include <sys/types.h>
+- #include <sys/socket.h>
+--#include <linux/socket.h>
+-+
+- #include <netinet/in.h>         /* for sockaddr_in */
+- #include <arpa/inet.h>
+- #include <sys/errno.h>
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_nonblock.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_nonblock.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_nonblock.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_nonblock.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -53,7 +53,7 @@
+- #include <errno.h>
+- #include <netinet/sctp.h>
+- #include <sys/uio.h>
+--#include <linux/socket.h>
+-+
+- #include <sctputil.h>
+-
+- char *TCID = __FILE__;
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_recvfrom.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_recvfrom.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_recvfrom.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_recvfrom.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -53,7 +53,7 @@
+- #include <errno.h>
+- #include <netinet/sctp.h>
+- #include <sys/uio.h>
+--#include <linux/socket.h>
+-+
+- #include <sctputil.h>
+-
+- char *TCID = __FILE__;
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_recvmsg.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_recvmsg.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_recvmsg.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_recvmsg.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -54,7 +54,7 @@
+- #include <errno.h>
+- #include <netinet/sctp.h>
+- #include <sys/uio.h>
+--#include <linux/socket.h>
+-+
+- #include <sctputil.h>
+-
+- #define MSG_EOF 0x200
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_rtoinfo.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_rtoinfo.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_rtoinfo.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_rtoinfo.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -45,7 +45,7 @@
+- #include <string.h>
+- #include <sys/types.h>
+- #include <sys/socket.h>
+--#include <linux/socket.h>
+-+
+- #include <linux/in.h>         /* for sockaddr_in */
+- #include <linux/in6.h>         /* for sockaddr_in6 */
+- #include <sys/errno.h>
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_send.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_send.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_send.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_send.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -54,7 +54,7 @@
+- #include <errno.h>
+- #include <netinet/sctp.h>
+- #include <sys/uio.h>
+--#include <linux/socket.h>
+-+
+- #include <sctputil.h>
+-
+- char *TCID = __FILE__;
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_sendmsg.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_sendmsg.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_sendmsg.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_sendmsg.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -61,7 +61,7 @@
+- #include <errno.h>
+- #include <netinet/sctp.h>
+- #include <sys/uio.h>
+--#include <linux/socket.h>
+-+
+- #include <sctputil.h>
+-
+- #define MSG_EOF 0x200
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_sendto.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_sendto.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_sendto.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_sendto.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -50,7 +50,7 @@
+- #include <errno.h>
+- #include <netinet/sctp.h>
+- #include <sys/uio.h>
+--#include <linux/socket.h>
+-+
+- #include <sctputil.h>
+-
+- char *TCID = __FILE__;
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_shutdown.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_shutdown.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_shutdown.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_shutdown.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -45,7 +45,7 @@
+- #include <sys/socket.h>
+- #include <netinet/in.h>
+- #include <arpa/inet.h>
+--#include <linux/socket.h>
+-+
+- #include <netinet/sctp.h>
+- #include <sys/types.h>
+- #include <unistd.h>
+-diff -Naur ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_threads.c ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_threads.c
+---- ltp-full-20050804/testcases/network/sctp/func_tests/test_1_to_1_threads.c	2005-08-04 13:33:05.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/network/sctp/func_tests/test_1_to_1_threads.c	2005-08-15 22:45:58.000000000 -0700
+-@@ -47,7 +47,7 @@
+- #include <errno.h>
+- #include <netinet/sctp.h>
+- #include <sys/uio.h>
+--#include <linux/socket.h>
+-+
+- #include <sctputil.h>
+-
+- #define THREADS 10    /* FIXME should be 500 instead of 10 */
+diff --git a/tools/pounder21/src/ltp-setregid-fix.patch b/tools/pounder21/src/ltp-setregid-fix.patch
+deleted file mode 100644
+index f26ee53..0000000
+--- a/tools/pounder21/src/ltp-setregid-fix.patch
++++ /dev/null
+@@ -1,14 +0,0 @@
+-diff -Naur ltp-full-20050804/testcases/kernel/syscalls/setregid/setregid02.c ltp-full-20050804-new/testcases/kernel/syscalls/setregid/setregid02.c
+---- ltp-full-20050804/testcases/kernel/syscalls/setregid/setregid02.c	2005-08-04 13:33:06.000000000 -0700
+-+++ ltp-full-20050804-new/testcases/kernel/syscalls/setregid/setregid02.c	2005-08-17 11:33:35.000000000 -0700
+-@@ -106,8 +106,8 @@
+- 	{ &bin_gr_gid, &neg_one, EPERM, &users, &users, "After setregid(bin, -1)," },
+- 	{ &root_gr_gid, &bin_gr_gid, EPERM, &users, &users, "After setregid(root, bin)" },
+- 	{ &bin_gr_gid, &root_gr_gid, EPERM, &users, &users, "After setregid(bin, root)," },
+--	{ &inval_user, &neg_one, EINVAL, &users, &users, "After setregid(invalid group, -1)," },
+--	{ &neg_one, &inval_user, EINVAL, &users, &users, "After setregid(-1, invalid group)," },
+-+	{ &inval_user, &neg_one, EPERM, &users, &users, "After setregid(invalid group, -1)," },
+-+	{ &neg_one, &inval_user, EPERM, &users, &users, "After setregid(-1, invalid group)," },
+- };
+-
+- int TST_TOTAL = sizeof(test_data)/sizeof(test_data[0]);
+-- 
+1.8.3.1
 
-
------ Original Message -----
-> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
-> To: ltp-list@lists.sourceforge.net
-> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
-> Sent: Monday, 17 August, 2015 2:13:17 PM
-> Subject: [LTP] [PATCH 1/2] ltp_rt_sigaction: SPARC fixes for -O0
-> 
-> The *sigreturn_stub functions are copied from glibc, and they
-> work only if optimization > 0, since they expect that the compiler
-> does not add an epilogue.
-
-Isn't that prologue?
-Other than that it looks good to me, ACK.
-
-Regards,
-Jan
-
-> 
-> For example, with -O > 0:
-> 
-> 0000000000102140 <__rt_sigreturn_stub>:
->   102140:       82 10 20 65     mov  0x65, %g1  ! 65 <_init-0x101f23>
->   102144:       91 d0 20 6d     ta  0x6d
->   102148:       81 c3 e0 08     retl
->   10214c:       01 00 00 00     nop
-> 
-> but without -O:
-> 
-> 000000000010212c <__rt_sigreturn_stub>:
->   10212c:       9d e3 bf 50     save  %sp, -176, %sp  <--- this
->   102130:       82 10 20 65     mov  0x65, %g1
->   102134:       91 d0 20 6d     ta  0x6d
->   102138:       81 cf e0 08     rett  %i7 + 8
->   10213c:       01 00 00 00     nop
-> 
-> Therefore, if we build LTP with OPT_CFLAGS="", ltp_rt_sigaction() will
-> malfunction.
-> 
-> To avoid this, let's declare a new symbol pointing to the instruction we
-> need ('mov ...').
-> 
-> The trick was proposed by Jose E. Marchesi <jose.marchesi@oracle.com>.
-> 
-> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-> ---
->  include/lapi/rt_sigaction.h |   20 ++++++++++++--------
->  1 files changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
-> index 46f6a50..f99c372 100644
-> --- a/include/lapi/rt_sigaction.h
-> +++ b/include/lapi/rt_sigaction.h
-> @@ -105,12 +105,14 @@ static inline int sig_initial(int sig)
->  # if defined __arch64__ || defined __sparcv9
->  
->  /*
-> - * From glibc/sysdeps/unix/sysv/linux/sparc/sparc64/sigaction.c
-> + * Based on glibc/sysdeps/unix/sysv/linux/sparc/sparc64/sigaction.c
->   */
->  
-> +extern char *__rt_sig_stub;
-> +
->  static void __rt_sigreturn_stub(void)
->  {
-> -	__asm__ ("mov %0, %%g1\n\t"
-> +	__asm__ ("__rt_sig_stub: mov %0, %%g1\n\t"
->  		"ta  0x6d\n\t"
->  		: /* no outputs */
->  		: "i" (__NR_rt_sigreturn));
-> @@ -119,12 +121,14 @@ static void __rt_sigreturn_stub(void)
->  # else /* sparc32 */
->  
->  /*
-> - * From glibc/sysdeps/unix/sysv/linux/sparc/sparc32/sigaction.c
-> + * Based on glibc/sysdeps/unix/sysv/linux/sparc/sparc32/sigaction.c
->   */
->  
-> +extern char *__rt_sig_stub, *__sig_stub;
-> +
->  static void __rt_sigreturn_stub(void)
->  {
-> -	__asm__ ("mov %0, %%g1\n\t"
-> +	__asm__ ("__rt_sig_stub: mov %0, %%g1\n\t"
->  		"ta  0x10\n\t"
->  		: /* no outputs */
->  		: "i" (__NR_rt_sigreturn));
-> @@ -132,7 +136,7 @@ static void __rt_sigreturn_stub(void)
->  
->  static void __sigreturn_stub(void)
->  {
-> -	__asm__ ("mov %0, %%g1\n\t"
-> +	__asm__ ("__sig_stub: mov %0, %%g1\n\t"
->  		"ta  0x10\n\t"
->  		: /* no outputs */
->  		: "i" (__NR_sigreturn));
-> @@ -181,12 +185,12 @@ static int ltp_rt_sigaction(int signum, const struct
-> sigaction *act,
->  #ifdef __sparc__
->  	unsigned long stub = 0;
->  # if defined __arch64__ || defined __sparcv9
-> -	stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-> +	stub = ((unsigned long) &__rt_sig_stub) - 8;
->  # else /* sparc32 */
->  	if ((kact.sa_flags & SA_SIGINFO) != 0)
-> -		stub = ((unsigned long) &__rt_sigreturn_stub) - 8;
-> +		stub = ((unsigned long) &__rt_sig_stub) - 8;
->  	else
-> -		stub = ((unsigned long) &__sigreturn_stub) - 8;
-> +		stub = ((unsigned long) &__sig_stub) - 8;
->  # endif
->  #endif
->  
-> --
-> 1.7.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-> 
 
 ------------------------------------------------------------------------------
 _______________________________________________
