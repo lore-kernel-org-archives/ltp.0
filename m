@@ -1,24 +1,29 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <liwan@redhat.com>) id 1ZPiSD-0003Pw-O9
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2015 02:41:17 +0000
-Received: from mail-oi0-f48.google.com ([209.85.218.48])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZPiSB-0007mt-LO
-	for ltp-list@lists.sourceforge.net; Thu, 13 Aug 2015 02:41:17 +0000
-Received: by oio137 with SMTP id 137so19758160oio.0
-	for <ltp-list@lists.sourceforge.net>;
-	Wed, 12 Aug 2015 19:41:09 -0700 (PDT)
-MIME-Version: 1.0
-In-Reply-To: <1439432306-2918-1-git-send-email-liwang@redhat.com>
-References: <1439432306-2918-1-git-send-email-liwang@redhat.com>
-Date: Thu, 13 Aug 2015 10:41:09 +0800
-Message-ID: <CAEemH2dFKTJecMomJBomQ61OsbA8jSybivXeHcDFmJDKpn7jSA@mail.gmail.com>
-From: Li Wang <liwang@redhat.com>
-Subject: Re: [LTP] [PATCH] mem/thp: skip thp02/thp03 if system not support
-	hugepage
+	(envelope-from <alexey.kodanev@oracle.com>) id 1ZTuHR-0001Ez-1i
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2015 16:07:29 +0000
+Received: from userp1040.oracle.com ([156.151.31.81])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZTuHO-0001fb-Ri
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2015 16:07:29 +0000
+Received: from userv0021.oracle.com (userv0021.oracle.com [156.151.31.71])
+	by userp1040.oracle.com (Sentrion-MTA-4.3.2/Sentrion-MTA-4.3.2) with
+	ESMTP id t7OG7KOF031732
+	(version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2015 16:07:21 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+	by userv0021.oracle.com (8.13.8/8.13.8) with ESMTP id t7OG7KXI006835
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2015 16:07:20 GMT
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+	by userv0121.oracle.com (8.13.8/8.13.8) with ESMTP id t7OG7KkE022135
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2015 16:07:20 GMT
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 24 Aug 2015 19:10:41 +0300
+Message-Id: <1440432641-18320-1-git-send-email-alexey.kodanev@oracle.com>
+Subject: [LTP] [PATCH] network: add test for low latency busy poll
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,211 +33,176 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: multipart/mixed; boundary="===============8498003089580045467=="
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
+Cc: vasily.isaenko@oracle.com
 
---===============8498003089580045467==
-Content-Type: multipart/alternative; boundary=001a113b11688eee6f051d28440d
+The test measures the performance of TCP client/server
+with and without busy poll feature, then it compares results.
 
---001a113b11688eee6f051d28440d
-Content-Type: text/plain; charset=UTF-8
+Enabling of busy poll is done globally via sysctl knobs,
+values are set to recommended ones (according to Linux docs).
 
-Hi,
+The feature was added in Linux 3.11.
 
-On Thu, Aug 13, 2015 at 10:18 AM, Li Wang <liwang@redhat.com> wrote:
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ runtest/network_stress.features            |    3 +
+ testcases/network/busy_poll/Makefile       |   22 +++++++
+ testcases/network/busy_poll/busy_poll01.sh |   92 ++++++++++++++++++++++++++++
+ 3 files changed, 117 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/network/busy_poll/Makefile
+ create mode 100755 testcases/network/busy_poll/busy_poll01.sh
 
-> Sometimes we get fails on system which not support hugepage:
->
-> thp02       1  TBROK  :  mem.c:1035: cannot find "Hugepagesize:" in
-> /proc/meminfo
-> thp02       2  TBROK  :  mem.c:1035: Remaining cases broken
->
-> thp03       1  TBROK  :  mem.c:1035: cannot find "Hugepagesize:" in
-> /proc/meminfo
-> thp03       2  TBROK  :  mem.c:1035: Remaining cases broken
->
-> Maybe skip the cases are better than TBROK them.
->
-
-
-After thinking over this patch, I feel the subject is not good to explain,
-to be precisely,
-
-"mem/thp: skip the case thp02/thp03 if THP is disable" is better than
-previous.
-
-Since this regression case should rely on the THP enable but hupepage.
-
-
-
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/mem/thp/thp02.c | 3 +++
->  testcases/kernel/mem/thp/thp03.c | 3 +++
->  2 files changed, 6 insertions(+)
->
-> diff --git a/testcases/kernel/mem/thp/thp02.c
-> b/testcases/kernel/mem/thp/thp02.c
-> index 1470ae6..41d9192 100644
-> --- a/testcases/kernel/mem/thp/thp02.c
-> +++ b/testcases/kernel/mem/thp/thp02.c
-> @@ -121,6 +121,9 @@ static void do_mremap(void)
->
->  void setup(void)
->  {
-> +       if (access(PATH_THP, F_OK) == -1)
-> +               tst_brkm(TCONF, NULL, "THP is not enabled");
-> +
->         tst_sig(FORK, DEF_HANDLER, cleanup);
->         TEST_PAUSE;
->
-> diff --git a/testcases/kernel/mem/thp/thp03.c
-> b/testcases/kernel/mem/thp/thp03.c
-> index 8f62d0c..42f9025 100644
-> --- a/testcases/kernel/mem/thp/thp03.c
-> +++ b/testcases/kernel/mem/thp/thp03.c
-> @@ -113,6 +113,9 @@ static void thp_test(void)
->
->  void setup(void)
->  {
-> +       if (access(PATH_THP, F_OK) == -1)
-> +               tst_brkm(TCONF, NULL, "THP is not enabled");
-> +
->         hugepage_size = read_meminfo("Hugepagesize:") * KB;
->         unaligned_size = hugepage_size * 4 - 1;
->         page_size = SAFE_SYSCONF(NULL, _SC_PAGESIZE);
-> --
-> 1.8.3.1
->
->
->
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
-
-
-
+diff --git a/runtest/network_stress.features b/runtest/network_stress.features
+index f48f0a7..a94e13b 100644
+--- a/runtest/network_stress.features
++++ b/runtest/network_stress.features
+@@ -2,6 +2,9 @@
+ # Stress tests for various network features
+ #
+ 
++busy_poll01 busy_poll01.sh
++busy_poll01_ipv6 busy_poll01.sh -6
++
+ tcp_fastopen tcp_fastopen_run.sh
+ tcp_fastopen6 tcp_fastopen_run.sh -6
+ 
+diff --git a/testcases/network/busy_poll/Makefile b/testcases/network/busy_poll/Makefile
+new file mode 100644
+index 0000000..8624fdf
+--- /dev/null
++++ b/testcases/network/busy_poll/Makefile
+@@ -0,0 +1,22 @@
++# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++INSTALL_TARGETS		:= busy_poll01.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/busy_poll/busy_poll01.sh b/testcases/network/busy_poll/busy_poll01.sh
+new file mode 100755
+index 0000000..ecb34d7
+--- /dev/null
++++ b/testcases/network/busy_poll/busy_poll01.sh
+@@ -0,0 +1,92 @@
++#!/bin/sh
++
++# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++#
++# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++#
++
++TST_TOTAL=1
++TCID="busy_poll01"
++
++clients_num=2
++client_requests=500000
++max_requests=3
++
++. test_net.sh
++
++cleanup()
++{
++	tst_rhost_run -c "pkill -9 tcp_fastopen\$"
++	tst_rmdir
++
++	sysctl -q -w net.core.busy_read=$busy_read_old
++	sysctl -q -w net.core.busy_poll=$busy_poll_old
++
++	tst_rhost_run -c "sysctl -q -w net.core.busy_read=$rbusy_read_old"
++	tst_rhost_run -c "sysctl -q -w net.core.busy_poll=$rbusy_poll_old"
++}
++
++
++tst_require_root
++
++tst_kvercmp 3 11 0
++[ $? -eq 0 ] && tst_brkm TCONF "test must be run with kernel 3.11 or newer"
++
++if [ ! -f "/proc/sys/net/core/busy_read" -a \
++     ! -f "/proc/sys/net/core/busy_poll" ]; then
++	tst_brkm TCONF "busy poll not configured, CONFIG_NET_RX_BUSY_POLL"
++fi
++
++set_busy_poll()
++{
++	local value=${1:-"0"}
++	ROD_SILENT sysctl -q -w net.core.busy_read=$value
++	ROD_SILENT sysctl -q -w net.core.busy_poll=$value
++
++	tst_rhost_run -s -c "sysctl -q -w net.core.busy_read=$value"
++	tst_rhost_run -s -c "sysctl -q -w net.core.busy_poll=$value"
++}
++
++tst_check_cmds pkill sysctl
++
++tst_tmpdir
++
++busy_read_old="$(cat /proc/sys/net/core/busy_read)"
++busy_poll_old="$(cat /proc/sys/net/core/busy_poll)"
++
++rbusy_read_old=$(tst_rhost_run -c 'cat /proc/sys/net/core/busy_read')
++rbusy_poll_old=$(tst_rhost_run -c 'cat /proc/sys/net/core/busy_poll')
++
++TST_CLEANUP="cleanup"
++trap "tst_brkm TBROK 'test interrupted'" INT
++
++for x in 50 0; do
++	tst_resm TINFO "set low latency busy poll to $x"
++	set_busy_poll $x
++	tst_netload $(tst_ipaddr rhost) res_$x TFO || \
++		tst_brkm TBROK "netload() failed"
++	tst_resm TINFO "time spent is '$(cat res_$x)' ms"
++done
++
++poll_cmp=$(( 100 - ($(cat res_50) * 100) / $(cat res_0) ))
++
++if [ "$poll_cmp" -lt 1 ]; then
++	tst_resm TFAIL "busy poll result is '$poll_cmp' %"
++else
++	tst_resm TPASS "busy poll increased performance by '$poll_cmp' %"
++fi
++
++tst_exit
 -- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
+1.7.1
 
---001a113b11688eee6f051d28440d
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">Hi,<br><div class=3D"gmail_extra"><br><div class=3D"gmail_=
-quote">On Thu, Aug 13, 2015 at 10:18 AM, Li Wang <span dir=3D"ltr">&lt;<a h=
-ref=3D"mailto:liwang@redhat.com" target=3D"_blank">liwang@redhat.com</a>&gt=
-;</span> wrote:<br><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 =
-.8ex;border-left:1px #ccc solid;padding-left:1ex">Sometimes we get fails on=
- system which not support hugepage:<br>
-<br>
-thp02=C2=A0 =C2=A0 =C2=A0 =C2=A01=C2=A0 TBROK=C2=A0 :=C2=A0 mem.c:1035: can=
-not find &quot;Hugepagesize:&quot; in /proc/meminfo<br>
-thp02=C2=A0 =C2=A0 =C2=A0 =C2=A02=C2=A0 TBROK=C2=A0 :=C2=A0 mem.c:1035: Rem=
-aining cases broken<br>
-<br>
-thp03=C2=A0 =C2=A0 =C2=A0 =C2=A01=C2=A0 TBROK=C2=A0 :=C2=A0 mem.c:1035: can=
-not find &quot;Hugepagesize:&quot; in /proc/meminfo<br>
-thp03=C2=A0 =C2=A0 =C2=A0 =C2=A02=C2=A0 TBROK=C2=A0 :=C2=A0 mem.c:1035: Rem=
-aining cases broken<br>
-<br>
-Maybe skip the cases are better than TBROK them.<br></blockquote><div><br><=
-/div><div><br>After thinking over this patch, I feel the subject is not goo=
-d to explain, to be precisely, <br><br>&quot;mem/thp: skip the case thp02/t=
-hp03 if THP is disable&quot; is better than previous. <br><br>Since this re=
-gression case should rely on the THP enable but hupepage.<br><br></div><div=
->=C2=A0</div><blockquote class=3D"gmail_quote" style=3D"margin:0 0 0 .8ex;b=
-order-left:1px #ccc solid;padding-left:1ex">
-<br>
-Signed-off-by: Li Wang &lt;<a href=3D"mailto:liwang@redhat.com">liwang@redh=
-at.com</a>&gt;<br>
----<br>
-=C2=A0testcases/kernel/mem/thp/thp02.c | 3 +++<br>
-=C2=A0testcases/kernel/mem/thp/thp03.c | 3 +++<br>
-=C2=A02 files changed, 6 insertions(+)<br>
-<br>
-diff --git a/testcases/kernel/mem/thp/thp02.c b/testcases/kernel/mem/thp/th=
-p02.c<br>
-index 1470ae6..41d9192 100644<br>
---- a/testcases/kernel/mem/thp/thp02.c<br>
-+++ b/testcases/kernel/mem/thp/thp02.c<br>
-@@ -121,6 +121,9 @@ static void do_mremap(void)<br>
-<br>
-=C2=A0void setup(void)<br>
-=C2=A0{<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (access(PATH_THP, F_OK) =3D=3D -1)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brkm(TCONF, NUL=
-L, &quot;THP is not enabled&quot;);<br>
-+<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 tst_sig(FORK, DEF_HANDLER, cleanup);<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 TEST_PAUSE;<br>
-<br>
-diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/th=
-p03.c<br>
-index 8f62d0c..42f9025 100644<br>
---- a/testcases/kernel/mem/thp/thp03.c<br>
-+++ b/testcases/kernel/mem/thp/thp03.c<br>
-@@ -113,6 +113,9 @@ static void thp_test(void)<br>
-<br>
-=C2=A0void setup(void)<br>
-=C2=A0{<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0if (access(PATH_THP, F_OK) =3D=3D -1)<br>
-+=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0tst_brkm(TCONF, NUL=
-L, &quot;THP is not enabled&quot;);<br>
-+<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 hugepage_size =3D read_meminfo(&quot;Hugepagesi=
-ze:&quot;) * KB;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 unaligned_size =3D hugepage_size * 4 - 1;<br>
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 page_size =3D SAFE_SYSCONF(NULL, _SC_PAGESIZE);=
-<br>
-<span class=3D"HOEnZb"><font color=3D"#888888">--<br>
-1.8.3.1<br>
-<br>
-<br>
----------------------------------------------------------------------------=
----<br>
-_______________________________________________<br>
-Ltp-list mailing list<br>
-<a href=3D"mailto:Ltp-list@lists.sourceforge.net">Ltp-list@lists.sourceforg=
-e.net</a><br>
-<a href=3D"https://lists.sourceforge.net/lists/listinfo/ltp-list" rel=3D"no=
-referrer" target=3D"_blank">https://lists.sourceforge.net/lists/listinfo/lt=
-p-list</a><br>
-</font></span></blockquote></div><br><br clear=3D"all"><br>-- <br><div clas=
-s=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=
-=3D"ltr"><div>Regards,<br></div>Li Wang<br></div><div>Email: <a href=3D"mai=
-lto:liwang@redhat.com" target=3D"_blank">liwang@redhat.com</a><br></div></d=
-iv></div></div></div></div>
-</div></div>
-
---001a113b11688eee6f051d28440d--
-
-
---===============8498003089580045467==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
 ------------------------------------------------------------------------------
-
---===============8498003089580045467==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
-
---===============8498003089580045467==--
-
