@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZPEE0-0001kN-Vv
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:24:36 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZPEDy-0007tx-7s
-	for ltp-list@lists.sourceforge.net; Tue, 11 Aug 2015 18:24:36 +0000
-Date: Tue, 11 Aug 2015 20:24:08 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150811182407.GD24227@rei.suse.de>
-References: <1436424468-11756-1-git-send-email-alexey.kodanev@oracle.com>
-	<1436424468-11756-18-git-send-email-alexey.kodanev@oracle.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <fenggw-fnst@cn.fujitsu.com>) id 1ZTobl-0006lU-QC
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2015 10:04:05 +0000
+Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZTobi-00075d-UW
+	for ltp-list@lists.sourceforge.net; Mon, 24 Aug 2015 10:04:05 +0000
+Received: from G08CNEXCHPEKD03.g08.fujitsu.local (localhost.localdomain
+	[127.0.0.1])
+	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t7OA3nXS007148
+	for <ltp-list@lists.sourceforge.net>; Mon, 24 Aug 2015 18:03:49 +0800
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Mon, 24 Aug 2015 18:04:24 +0800
+Message-ID: <1440410664-10266-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1436424468-11756-18-git-send-email-alexey.kodanev@oracle.com>
-Subject: Re: [LTP] [PATCH 17/23] network/virt: add test-case 01 to
-	virt_lib.sh
+Subject: [LTP] [PATCH] cpuhotplug_hotplug.sh: fix the return of cpu number
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,164 +29,157 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Alexey Kodanev <alexey.kodanev@oracle.com>
-Cc: vasily.isaenko@oracle.com, ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +# Check if we can create then delete virtual interface n times.
-> +# virt_test_01 [OPTIONS]
-> +# OPTIONS - different options separated by comma.
-> +virt_test_01()
-> +{
-> +	start_id=1
-> +	virt_count=500
-> +
-> +	local opts=${1:-""}
-> +	local n=0
-> +
-> +	while ((1)); do
+In shell, function's return value can not exceed 255, if we run
+the test on machines which have more than 255 cpus, the result
+will be incorrect, so fix that by using global variable instead.
 
-This does not work with dash, use "while true; do" instead.
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh   | 2 +-
+ testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh   | 2 +-
+ testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh   | 2 +-
+ testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh   | 4 ++--
+ testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh   | 2 +-
+ testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh   | 2 +-
+ testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh   | 2 +-
+ .../kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh      | 8 ++++----
+ 8 files changed, 12 insertions(+), 12 deletions(-)
 
-> +		n=$((n + 1))
-> +		p="$(echo $opts | cut -d',' -f$n)"
-> +		if [ -z "$p" -a $n -gt 1 ]; then
-> +			break
-> +		fi
-> +
-> +		tst_resm TINFO "add $virt_type with '$p'"
-> +
-> +		virt_add ltp_v0 id 0 $p > /dev/null 2>&1
-> +		if [ $? -ne 0 ]; then
-> +			tst_resm TCONF "iproute/kernel doesn't support '$p'"
-> +			p=""
-
-Again shouldn't we just continue here instead?
-
-> +		else
-> +			ROD_SILENT "ip li delete ltp_v0"
-> +		fi
-> +
-> +		virt_multiple_add_test "$p"
-> +
-> +		start_id=$(($start_id + $virt_count))
-> +	done
-> +}
-> +
->  tst_require_root
->  
->  case "$virt_type" in
-> diff --git a/testcases/network/virt/vlan01.sh b/testcases/network/virt/vlan01.sh
-> index ac74463..fb96562 100755
-> --- a/testcases/network/virt/vlan01.sh
-> +++ b/testcases/network/virt/vlan01.sh
-> @@ -16,7 +16,7 @@
->  #
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
-> -# Test-case 1: Local test, check if we can create 4095 VLAN interfaces.
-> +# Local test, check if we can create 4000 VLAN interfaces.
->  #
->  
->  TCID=vlan01
-> @@ -34,28 +34,9 @@ lb1="loose_binding on"
->  rh0="reorder_hdr off"
->  rh1="reorder_hdr on"
->  
-> -opts="$p0 $lb0 $rh0,$p0 $lb0 $rh1,$p0 $lb1 $rh0,$p0 $lb1 $rh1,\
-> +options="$p0 $lb0 $rh0,$p0 $lb0 $rh1,$p0 $lb1 $rh0,$p0 $lb1 $rh1,\
->  $p1 $lb0 $rh0,$p1 $lb0 $rh1,$p1 $lb1 $rh0,$p1 $lb1 $rh1,"
->  
-> -start_id=1
-> -virt_count=500
-> -
-> -for n in $(seq 1 8); do
-> -	params="$(echo $opts | cut -d',' -f$n)"
-> -
-> -	tst_resm TINFO "add $virt_type with '$params'"
-> -
-> -	virt_add ltp_v0 id 0 $params > /dev/null 2>&1
-> -	if [ $? -ne 0 ]; then
-> -		tst_resm TCONF "iproute or kernel doesn't support '$params'"
-> -		params=""
-> -	else
-> -		ROD_SILENT "ip li delete ltp_v0"
-> -	fi
-> -
-> -	virt_multiple_add_test "$params"
-> -
-> -	start_id=$(($start_id + $virt_count))
-> -done
-> +virt_test_01 "$options"
->  
->  tst_exit
-> diff --git a/testcases/network/virt/vxlan01.sh b/testcases/network/virt/vxlan01.sh
-> index 63a52d0..4dfe3d7 100755
-> --- a/testcases/network/virt/vxlan01.sh
-> +++ b/testcases/network/virt/vxlan01.sh
-> @@ -16,11 +16,11 @@
->  #
->  # Author: Alexey Kodanev <alexey.kodanev@oracle.com>
->  #
-> -# Test-case 1: Local test, check if we can create 5000 VXLAN interfaces.
-> +# Local test, check if we can create 2500 VXLAN interfaces.
->  #
->  
->  TCID=vxlan01
-> -TST_TOTAL=1
-> +TST_TOTAL=5
->  
->  virt_type="vxlan"
->  start_id=16700000
-> @@ -28,27 +28,9 @@ start_id=16700000
->  . test_net.sh
->  . virt_lib.sh
->  
-> -opts="l2miss l3miss,norsc nolearning noproxy,ttl 0x01 tos 0x01,ttl 0xff tos 0xff,gbp"
-> +options="l2miss l3miss,norsc nolearning noproxy,\
-> +ttl 0x01 tos 0x01,ttl 0xff tos 0xff,gbp"
->  
-> -start_id=1
-> -virt_count=1000
-> -
-> -for n in $(seq 1 5); do
-> -	params="$(echo $opts | cut -d',' -f$n)"
-> -
-> -	tst_resm TINFO "add $virt_type with '$params'"
-> -
-> -	virt_add ltp_v0 id 0 $params > /dev/null 2>&1
-> -	if [ $? -ne 0 ]; then
-> -		tst_resm TCONF "iproute or kernel doesn't support '$params'"
-> -		params=""
-> -	else
-> -		ROD_SILENT "ip li delete ltp_v0"
-> -	fi
-> -
-> -	virt_multiple_add_test "$params"
-> -
-> -	start_id=$(($start_id + $virt_count))
-> -done
-> +virt_test_01 "$options"
->  
->  tst_exit
-> -- 
-> 1.7.1
-> 
-> 
-> ------------------------------------------------------------------------------
-> Don't Limit Your Business. Reach for the Cloud.
-> GigeNET's Cloud Solutions provide you with the tools and support that
-> you need to offload your IT needs and focus on growing your business.
-> Configured For All Businesses. Start Your Cloud Today.
-> https://www.gigenetcloud.com/
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+index 8ae1379..e75da21 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug01.sh
+@@ -112,7 +112,7 @@ LOOP_COUNT=1
+ tst_check_cmds perl
+ 
+ get_present_cpus_num
+-if [ $? -lt 2 ]; then
++if [ $PRESENT_CPUS_NUM -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+index c42cc1b..f6b4345 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug02.sh
+@@ -55,7 +55,7 @@ done
+ LOOP_COUNT=1
+ 
+ get_present_cpus_num
+-if [ $? -lt 2 ]; then
++if [ $PRESENT_CPUS_NUM -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+index 3469b10..a68ac7d 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug03.sh
+@@ -64,7 +64,7 @@ done
+ LOOP_COUNT=1
+ 
+ get_present_cpus_num
+-cpus_num=$?
++cpus_num=${PRESENT_CPUS_NUM}
+ if [ $cpus_num -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+index 58a822e..3ecbb36 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug04.sh
+@@ -49,13 +49,13 @@ done
+ LOOP_COUNT=1
+ 
+ get_present_cpus_num
+-cpus_num=$?
++cpus_num=${PRESENT_CPUS_NUM}
+ if [ $cpus_num -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
+ get_hotplug_cpus_num
+-if [ $? -lt 1 ]; then
++if [ $HOTPLUG_CPUS_NUM -lt 1 ]; then
+ 	tst_brkm TCONF "system doesn't have at least one hotpluggable CPU"
+ fi
+ 
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+index 60382c8..8009af2 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
+@@ -56,7 +56,7 @@ LOOP_COUNT=1
+ tst_check_cmds sar
+ 
+ get_present_cpus_num
+-if [ $? -lt 2 ]; then
++if [ $PRESENT_CPUS_NUM -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+index 6710fad..5e71abf 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug06.sh
+@@ -50,7 +50,7 @@ done
+ LOOP_COUNT=1
+ 
+ get_present_cpus_num
+-if [ $? -lt 2 ]; then
++if [ $PRESENT_CPUS_NUM -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+index 7edb3a9..81dc225 100755
+--- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug07.sh
+@@ -56,7 +56,7 @@ done
+ LOOP_COUNT=1
+ 
+ get_present_cpus_num
+-if [ $? -lt 2 ]; then
++if [ $PRESENT_CPUS_NUM -lt 2 ]; then
+ 	tst_brkm TCONF "system doesn't have required CPU hotplug support"
+ fi
+ 
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+index 6920393..be8bce2 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+@@ -165,11 +165,11 @@ get_present_cpus()
+ 
+ # get_present_cpus_num()
+ #
+-#  Prints the number of present CPUs
++#  Gets the number of present CPUs
+ #
+ get_present_cpus_num()
+ {
+-    return $(get_present_cpus | wc -w)
++	PRESENT_CPUS_NUM=`get_present_cpus | wc -w`
+ }
+ 
+ # get_hotplug_cpus()
+@@ -192,11 +192,11 @@ get_hotplug_cpus()
+ 
+ # get_hotplug_cpus_num()
+ #
+-#  Prints the number of hotpluggable CPUs
++#  Gets the number of hotpluggable CPUs
+ #
+ get_hotplug_cpus_num()
+ {
+-    return $(get_hotplug_cpus | wc -w)
++	HOTPLUG_CPUS_NUM=`get_hotplug_cpus | wc -w`
+ }
+ 
+ # get_all_cpu_states()
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
