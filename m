@@ -1,23 +1,28 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZSS91-0004cv-Gj
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 15:52:47 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZSS8z-0007YZ-7c
-	for ltp-list@lists.sourceforge.net; Thu, 20 Aug 2015 15:52:47 +0000
-Date: Thu, 20 Aug 2015 17:52:13 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150820155213.GB5144@rei.suse.de>
-References: <1439887006-17985-1-git-send-email-liwang@redhat.com>
-	<1439887006-17985-2-git-send-email-liwang@redhat.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1439887006-17985-2-git-send-email-liwang@redhat.com>
-Subject: Re: [LTP] [PATCH 2/3] ltp/pounder: Don't let the testing log output
- to /dev/tty
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <mmarhefk@redhat.com>) id 1ZUFUO-0001tX-4M
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2015 14:46:16 +0000
+Received: from mx1.redhat.com ([209.132.183.28])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZUFUL-0002gR-S4
+	for ltp-list@lists.sourceforge.net; Tue, 25 Aug 2015 14:46:15 +0000
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com
+	(int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (Postfix) with ESMTPS id C26A78C1B0
+	for <ltp-list@lists.sourceforge.net>;
+	Tue, 25 Aug 2015 14:46:07 +0000 (UTC)
+Received: from cc-vtoe10.lab.eng.brq.redhat.com
+	(cc-vtoe10.lab.eng.brq.redhat.com [10.34.89.68])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP
+	id t7PEk6F4010185
+	for <ltp-list@lists.sourceforge.net>; Tue, 25 Aug 2015 10:46:07 -0400
+From: Matus Marhefka <mmarhefk@redhat.com>
+Date: Tue, 25 Aug 2015 16:46:02 +0200
+Message-Id: <1440513962-10908-1-git-send-email-mmarhefk@redhat.com>
+Subject: [LTP] [PATCH] containers/netns: added one more test case for
+	netns_sysfs.sh
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,85 +32,99 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Li Wang <liwang@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> During the pounder21 test, it gives many errors like:
-> 
-> ./pounder: line 262: /dev/tty: No such device or address
-> ./pounder: line 263: /dev/tty: No such device or address
-> 
-> After google '/dev/tty', got this description:
-> 
-> /dev/tty is the controlling terminal for the current process, if there is such a terminal.
-> Do ps -a and look for /dev/tty. If it doesn't appear then that process doesn't have a
-> controlling terminal.  It is quite normal for there to be no controlling terminal. So if
-> there is no device associated with it then the kernel will just ignore anything you send
-> to that file. It only cares if it has attached a device (possibly pseudo) to that node. If
-> it does care, and echoing is on, then anything you send to the (special) file will be echoed.
+* renamed "dummy0" to "dummy_test0" to not collide with existing
+  interfaces
+* added test case which checks that only "localhost" and "dummy"
+  interfaces are seen in /sys/class/net/ after mounting sysfs
+  in a new namespace
 
-Writing directly to /dev/tty is indeed wrong thing to do.
+Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+---
+ testcases/kernel/containers/netns/netns_sysfs.sh | 39 +++++++++++++++++++-----
+ 1 file changed, 31 insertions(+), 8 deletions(-)
 
-> The second part may be related to the login shell. Check in /etc/passwd and make sure that
-> you really do start bash for the user you are logging in as. Using /bin/sh instead is a likely cause.
-> So do grep username /etc/passwd and look for the path to the program that is launched at the end of
-> the text line. If its /bin/sh then you have the wrong shell. What you should have is /bin/bash.
-
-Eh? I do not understand this part at all. It does not seem to be related
-to the problem at all.
-
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  tools/pounder21/Install              |  2 +-
->  tools/pounder21/fancy_timed_loop.c   |  2 +-
->  tools/pounder21/infinite_loop.c      |  2 +-
->  tools/pounder21/pounder              | 14 +++++++-------
->  tools/pounder21/test_scripts/memtest |  2 +-
->  tools/pounder21/timed_loop.c         |  2 +-
->  6 files changed, 12 insertions(+), 12 deletions(-)
-> 
-> diff --git a/tools/pounder21/Install b/tools/pounder21/Install
-> index bf13528..6fb3a8f 100755
-> --- a/tools/pounder21/Install
-> +++ b/tools/pounder21/Install
-> @@ -65,7 +65,7 @@ done
->  # Set up optdir
->  mkdir -p "$POUNDER_OPTDIR"
->  if [ ! -d "$POUNDER_OPTDIR" ]; then
-> -	echo "Could not create $POUNDER_OPTDIR; aborting." > /dev/tty
-> +	echo "Could not create $POUNDER_OPTDIR; aborting."
->  	exit 1
->  fi
->  
-> diff --git a/tools/pounder21/fancy_timed_loop.c b/tools/pounder21/fancy_timed_loop.c
-> index cf8580e..50305c3 100644
-> --- a/tools/pounder21/fancy_timed_loop.c
-> +++ b/tools/pounder21/fancy_timed_loop.c
-> @@ -92,7 +92,7 @@ int main(int argc, char *argv[])
->  
->  	tty_fp = fdopen(3, "w+");
->  	if (tty_fp == NULL) {
-> -		tty_fp = fopen("/dev/tty", "w+");
-> +		tty_fp = fdopen(STDOUT_FILENO, "w+");
->  		if (tty_fp == NULL) {
->  			perror("stdout");
->  			exit(2);
-
-Can't we rather rename the FILE * to 'out' or similar, naming it tty_fp
-when it does not point to tty is kind of confusing.
-
-Also we can simply do FILE *out = stdout; If we reopen it by it's file
-descriptior we will end up with two different file objects, each of them
-will buffer data and we will end up with messed output when something
-will write to stdout and not the one we created.
-
+diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
+index c10fa36..a58495e 100755
+--- a/testcases/kernel/containers/netns/netns_sysfs.sh
++++ b/testcases/kernel/containers/netns/netns_sysfs.sh
+@@ -23,13 +23,14 @@
+ #==============================================================================
+ 
+ TCID="netns_sysfs"
+-TST_TOTAL=2
++TST_TOTAL=3
++DUMMYDEV="dummy_test0"
+ . test.sh
+ 
+ cleanup()
+ {
+ 	tst_rmdir
+-	ip link del dummy0 2>/dev/null
++	ip link del $DUMMYDEV 2>/dev/null
+ 	kill -9 $NS_HANDLE 2>/dev/null
+ }
+ 
+@@ -43,23 +44,45 @@ TST_CLEANUP=cleanup
+ ls /sys/class/net >sysfs_before
+ 
+ 
+-ns_exec $NS_HANDLE ip link add dummy0 type dummy || \
++ns_exec $NS_HANDLE ip link add $DUMMYDEV type dummy || \
+ 	tst_brkm TBROK "failed to add a new dummy device"
+ ns_exec $NS_HANDLE mount -t sysfs none /sys 2>/dev/null
+ 
+-ns_exec $NS_HANDLE test -d /sys/class/net/dummy0
++
++# TEST CASE #1
++ns_exec $NS_HANDLE test -d "/sys/class/net/$DUMMYDEV"
+ if [ $? -eq 0 ]; then
+-	tst_resm TPASS "sysfs in new namespace has dummy0 interface"
++	tst_resm TPASS "sysfs in new namespace has $DUMMYDEV interface"
++else
++	tst_resm TFAIL "sysfs in new namespace does not have $DUMMYDEV interface"
++fi
++
++
++# TEST CASE #2
++res=0
++classnet=$(ns_exec $NS_HANDLE ls /sys/class/net/)
++for d in $classnet; do
++	if [ "$d" != "lo" ]; then
++		if [ "$d" != $DUMMYDEV ]; then
++			tst_resm TINFO "sysfs in new namespace should not contain: $d"
++			res=1
++		fi
++	fi
++done
++if [ $res -eq 0 ]; then
++	tst_resm TPASS "sysfs in new namespace has only lo and $DUMMYDEV interfaces"
+ else
+-	tst_resm TFAIL "sysfs in new namespace does not have dummy0 interface"
++	tst_resm TFAIL "sysfs in new namespace has more than lo and $DUMMYDEV interfaces"
+ fi
+ 
++
++# TEST CASE #3
+ ls /sys/class/net >sysfs_after
+ diff sysfs_before sysfs_after
+ if [ $? -eq 0 ]; then
+-	tst_resm TPASS "sysfs not affected by a separate namespace"
++	tst_resm TPASS "main sysfs not affected by a separate namespace"
+ else
+-	tst_resm TFAIL "sysfs affected by a separate namespace"
++	tst_resm TFAIL "main sysfs affected by a separate namespace"
+ fi
+ 
+ tst_exit
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
 
 ------------------------------------------------------------------------------
 _______________________________________________
