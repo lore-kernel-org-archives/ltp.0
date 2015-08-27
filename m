@@ -1,22 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZMyI4-0006ra-7n
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 12:59:28 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZUvn2-0000MN-P0
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2015 11:56:20 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZMyI3-0002od-5o
-	for ltp-list@lists.sourceforge.net; Wed, 05 Aug 2015 12:59:28 +0000
-Date: Wed, 5 Aug 2015 14:59:04 +0200
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZUvn1-0000hD-LU
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2015 11:56:20 +0000
+Date: Thu, 27 Aug 2015 13:55:42 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150805125903.GD31234@rei.suse.de>
-References: <1436420037-18441-1-git-send-email-maninder1.s@samsung.com>
+Message-ID: <20150827115542.GA27851@rei.suse.cz>
+References: <1436876572-28759-1-git-send-email-mmarhefk@redhat.com>
+	<1439899089-7601-1-git-send-email-mmarhefk@redhat.com>
+	<20150826150521.GA19278@rei.suse.de>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1436420037-18441-1-git-send-email-maninder1.s@samsung.com>
-Subject: Re: [LTP] [PATCH 2/2] open_posix/shm_unlink: sanity checking after
- calling pathconf
+In-Reply-To: <20150826150521.GA19278@rei.suse.de>
+Subject: Re: [LTP] [PATCH 1/2 v3] added helper tools for creating and
+ working with namespaces
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,32 +31,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Maninder Singh <maninder1.s@samsung.com>
-Cc: ltp-list@lists.sourceforge.net, pankaj.m@samsung.com
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> sanity checking after calling pathconf added
+> On SLES12 (kernel 3.12.28) setns() fails for the fd opened from "user"
+> namespace. I'm getting EINVAL here. Everything seems to work fine if I
+> comment the rf |= open_ns_fd(argv[1], "user"); line above.
 > 
-> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-> Reviewed-by: Yogesh Narayan Gaur <yn.gaur@samsung.com>
-> ---
->  .../conformance/interfaces/shm_unlink/10-1.c       |    5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c
-> index 768863c..20e5bef 100644
-> --- a/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c
-> +++ b/testcases/open_posix_testsuite/conformance/interfaces/shm_unlink/10-1.c
-> @@ -27,6 +27,11 @@ int main(void)
->  	char *shm_name;
->  
->  	name_max = pathconf("/", _PC_NAME_MAX);
-> +
-> +	if (name_max == -1) {
-> +		perror("An error occurs when calling pathconf()");
+> Unfortunately EINVAL seems to be catch-all error for setns(), any idea
+> what is wrong here?
 
-I've shortened this error message to "pathconf() failed" here and in
-10-2.c and pushed both patches, thanks.
+And it seems to be the case of:
+
+EINVAL The caller attempted to join the user namespace in which
+       it is already a member.
+
+Since the ns_create only creates a new network namespace the rest of the
+namespaces are inherited. At least when I change the ns_create that
+creates the handle to create new user namespace as well it can
+succesfully join it.
+
+Why do we attempt to join all namespaces in the ns_exec? I guess that we
+will have to change it to get a list of namespaces to join the same way
+the ns_create does it.
 
 -- 
 Cyril Hrubis
