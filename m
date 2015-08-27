@@ -1,24 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZUvn2-0000MN-P0
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2015 11:56:20 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZUvn1-0000hD-LU
-	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2015 11:56:20 +0000
-Date: Thu, 27 Aug 2015 13:55:42 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150827115542.GA27851@rei.suse.cz>
-References: <1436876572-28759-1-git-send-email-mmarhefk@redhat.com>
-	<1439899089-7601-1-git-send-email-mmarhefk@redhat.com>
-	<20150826150521.GA19278@rei.suse.de>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <qianshuijiaolong@126.com>) id 1ZUv24-0004kB-2j
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2015 11:07:48 +0000
+Received: from m15-3.126.com ([220.181.15.3])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
+	id 1ZUv22-0006X3-7f
+	for ltp-list@lists.sourceforge.net; Thu, 27 Aug 2015 11:07:48 +0000
+Date: Thu, 27 Aug 2015 19:07:37 +0800 (CST)
+From: =?GBK?B?tPPErtau06U=?= <qianshuijiaolong@126.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20150826150521.GA19278@rei.suse.de>
-Subject: Re: [LTP] [PATCH 1/2 v3] added helper tools for creating and
- working with namespaces
+Message-ID: <5a7d12cf.debc.14f6ed773c1.Coremail.qianshuijiaolong@126.com>
+Subject: [LTP] Linux 3.10
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,40 +22,63 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8468367403864433503=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> On SLES12 (kernel 3.12.28) setns() fails for the fd opened from "user"
-> namespace. I'm getting EINVAL here. Everything seems to work fine if I
-> comment the rf |= open_ns_fd(argv[1], "user"); line above.
-> 
-> Unfortunately EINVAL seems to be catch-all error for setns(), any idea
-> what is wrong here?
+--===============8468367403864433503==
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_222078_1233768387.1440673657793"
 
-And it seems to be the case of:
+------=_Part_222078_1233768387.1440673657793
+Content-Type: text/plain; charset=GBK
+Content-Transfer-Encoding: base64
 
-EINVAL The caller attempted to join the user namespace in which
-       it is already a member.
+aGVsbG8gZGVhcjoKICAgIERvZXMgbHRwIHN1cHBvcnQgTGludXggMy4xMD8gSSB3YW50IHdyaXRl
+IGEgIHZpcnR1YWwgdXNiIGRldmljZSBhbmQgSSB3YW4gdG8gIHJlZmVyZW5jZSB0aGUgdHVzYiBt
+b2R1bGUuQnV0IHdoZW4gSSBjb21waWxlIHRoZSAgbW9kdWxlIG9uIHVidW50dSAxMi4wNCxJIGdl
+dCBtYW55IGVycm9ycy4KTm93IEkgbmVlZCB5b3VyIGhlbHAuUGxlYXNlIGhlbHAgbWUuClRoYW5r
+cyB2ZXJ5IHZlcnkgbXVjaC4K
+------=_Part_222078_1233768387.1440673657793
+Content-Type: text/html; charset=GBK
+Content-Transfer-Encoding: base64
 
-Since the ns_create only creates a new network namespace the rest of the
-namespaces are inherited. At least when I change the ns_create that
-creates the handle to create new user namespace as well it can
-succesfully join it.
+PGRpdiBzdHlsZT0ibGluZS1oZWlnaHQ6MS43O2NvbG9yOiMwMDAwMDA7Zm9udC1zaXplOjE0cHg7
+Zm9udC1mYW1pbHk6QXJpYWwiPjxkaXY+aGVsbG8gZGVhcjo8YnI+Jm5ic3A7Jm5ic3A7Jm5ic3A7
+IERvZXMgbHRwIHN1cHBvcnQgTGludXggMy4xMD8gSSB3YW50IHdyaXRlIGEmbmJzcDsgdmlydHVh
+bCB1c2IgZGV2aWNlIGFuZCBJIHdhbiB0byZuYnNwOyByZWZlcmVuY2UgdGhlIHR1c2IgbW9kdWxl
+LkJ1dCB3aGVuIEkgY29tcGlsZSB0aGUmbmJzcDsgbW9kdWxlIG9uIHVidW50dSAxMi4wNCxJIGdl
+dCBtYW55IGVycm9ycy48YnI+Tm93IEkgbmVlZCB5b3VyIGhlbHAuUGxlYXNlIGhlbHAgbWUuPGJy
+PlRoYW5rcyB2ZXJ5IHZlcnkgbXVjaC48YnI+PC9kaXY+PC9kaXY+PGJyPjxicj48c3BhbiB0aXRs
+ZT0ibmV0ZWFzZWZvb3RlciI+PHA+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZTogMTJweDsgbGluZS1o
+ZWlnaHQ6IDE4cHg7Ij48YSBocmVmPSJodHRwOi8vci5tYWlsLjE2My5jb20vci5qc3A/dXJsPWh0
+dHAlM0ElMkYlMkYxLjE2My5jb20lMkZoZCUyRm9uZWFjdCUyRmhkZnJhbWUuZG8lM0ZpZCUzRDIx
+JTI2ZnJvbSUzRGZvb3Rlcl9iZWF1dHkmc2lnbj04MTc1OTM2ODEmX3JfaWdub3JlX3N0YXRJZD03
+XzEzXzc5XzQ4Jl9yX2lnbm9yZV91aWQ9bnRAMTYzLmNvbSIgdGFyZ2V0PSJfYmxhbmsiPs/EyNWz
+qc/6sPG088XGw8DXsda70qox1Ko8L2E+PC9zcGFuPjwvcD48L3NwYW4+
+------=_Part_222078_1233768387.1440673657793--
 
-Why do we attempt to join all namespaces in the ns_exec? I guess that we
-will have to change it to get a list of namespaces to join the same way
-the ns_create does it.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+--===============8468367403864433503==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
+
+--===============8468367403864433503==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============8468367403864433503==--
+
+
