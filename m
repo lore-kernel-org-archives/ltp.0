@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZXTSq-00022H-68
-	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 12:18:00 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZWnbk-0004Rw-9U
+	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 15:36:24 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZXTSn-0000S0-PH
-	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 12:18:00 +0000
-Date: Thu, 3 Sep 2015 14:17:11 +0200
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZWnbj-00080G-Bq
+	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 15:36:24 +0000
+Date: Tue, 1 Sep 2015 17:35:42 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150903121711.GA25522@rei.suse.cz>
-References: <CANKSX+FjoktkpNQ4tRkEKLv_XKuDHF57-TaO13bs2wYAJDcQiw@mail.gmail.com>
-	<20150903111522.GA24962@rei.suse.cz>
-	<CANKSX+EGOtjDKHhX3sHRcxgeJRZbQDwSYoLa7zh64V3GROqnYA@mail.gmail.com>
+Message-ID: <20150901153542.GA17536@rei.suse.cz>
+References: <20150813123035.GB14976@rei.suse.de>
+	<20150820150617.GE3994@rei.suse.de>
+	<20150831112319.GB17776@rei.suse.cz>
+	<55E53DA4.6090005@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <CANKSX+EGOtjDKHhX3sHRcxgeJRZbQDwSYoLa7zh64V3GROqnYA@mail.gmail.com>
-Subject: Re: [LTP] Syscall/io_* tests failing to compile
+In-Reply-To: <55E53DA4.6090005@cn.fujitsu.com>
+Subject: Re: [LTP] LTP release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,31 +31,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "$rik@nth " <srikanth007m@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, jjaburek@redhat.com
 
 Hi!
-> I haven't modified any of the config files at all. Even i cross
-> checked on couple machines and faced similar issues.
+> > Now the only problem that that blocks the release on my side are
+> > failures of the newly rewritten netns testcases that were discussed
+> > last week.
+> > 
+> 
+> In RHEL5.11GA, ns_ifmove.c gives compilation error since 'IFLA_NET_NS_PID'
+> undeclared in the kernel.
 
-Hmm, you are cross compiling right? Have you installed the libaio-dev on
-the host machine? Because that will not work since that contains native
-binaries and you cannot link against them.
-
-If that is the case you can either cross compile the libaio and set
-right path for linker etc. or set up an arm virtual machine or chroot
-with qemu arm emulation and compile LTP there.
+Should be fixed in latest git, please test (don't forget to regenerate
+configure script).
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
-Get real-time metrics from all of your servers, apps and tools
-in one place.
-SourceForge users - Click here to start your Free Trial of Datadog now!
-http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
