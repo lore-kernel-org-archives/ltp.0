@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZZ056-00014Y-BT
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2015 17:19:48 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZWls5-0007UQ-0n
+	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 13:45:09 +0000
 Received: from mx2.suse.de ([195.135.220.15])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZZ055-0005Lg-3t
-	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2015 17:19:48 +0000
-Date: Mon, 7 Sep 2015 19:19:02 +0200
+	(Exim 4.76) id 1ZWls4-0004L1-0a
+	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 13:45:09 +0000
+Date: Tue, 1 Sep 2015 15:44:27 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150907171902.GA7580@rei.suse.cz>
-References: <1440410664-10266-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20150901134427.GD27041@rei.suse.cz>
+References: <1440152036-16859-1-git-send-email-liwang@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1440410664-10266-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH] cpuhotplug_hotplug.sh: fix the return of cpu
-	number
+In-Reply-To: <1440152036-16859-1-git-send-email-liwang@redhat.com>
+Subject: Re: [LTP] [PATCH v2] ltp/pounder: Don't let the testing log output
+ to /dev/tty
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,39 +29,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+To: Li Wang <liwang@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-> index 6920393..be8bce2 100644
-> --- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-> @@ -165,11 +165,11 @@ get_present_cpus()
->  
->  # get_present_cpus_num()
->  #
-> -#  Prints the number of present CPUs
-> +#  Gets the number of present CPUs
->  #
->  get_present_cpus_num()
->  {
-> -    return $(get_present_cpus | wc -w)
-> +	PRESENT_CPUS_NUM=`get_present_cpus | wc -w`
->  }
+> +	out = fdopen(3, "w+");
 
-Passing the value by global variable is ugly. Why don't we echo the
-value here as:
+This is just complicated way of doing out = stderr;
 
-echo $(get_present_cpus |wc -w), or even just call 'get_presnt_cpus |wc -w'
+And I doubt that this will fail under normal circumstances.
 
-and do:
+So what about doing just out = stderr; or out = stdout instead?
 
-if [ $(get_present_cpus_num) -lt 2 ]; then
-...
-fi
-
-in the testcases?
+Otherwise it looks fine and I'm OK with applying this before the
+release.
 
 -- 
 Cyril Hrubis
