@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZXUrX-00075H-6H
-	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 13:47:35 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZWjy5-000673-BO
+	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 11:43:13 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZXUrU-0005QZ-N4
-	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 13:47:35 +0000
-Date: Thu, 3 Sep 2015 15:46:50 +0200
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZWjy3-0001KP-AY
+	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 11:43:13 +0000
+Date: Tue, 1 Sep 2015 13:42:30 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150903134650.GB25522@rei.suse.cz>
+Message-ID: <20150901114230.GA27041@rei.suse.cz>
+References: <20150813123035.GB14976@rei.suse.de>
+	<20150820150617.GE3994@rei.suse.de>
+	<20150831112319.GB17776@rei.suse.cz>
+	<55E53DA4.6090005@cn.fujitsu.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for
- SEPTEMBER 2015
+In-Reply-To: <55E53DA4.6090005@cn.fujitsu.com>
+Subject: Re: [LTP] LTP release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,67 +31,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net, linux-kernel@vger.kernel.org, libc-alpha@sourceware.org
-Cc: lwn@lwn.net, akpm@linux-foundation.org, torvalds@linux-foundation.org
+To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Cc: ltp-list@lists.sourceforge.net, jjaburek@redhat.com
 
-Good news everyone,
+Hi!
+> > I've did my release testing and pushed a few fixes, mosty minor ones.
+> > 
+> > Now the only problem that that blocks the release on my side are
+> > failures of the newly rewritten netns testcases that were discussed
+> > last week.
+> > 
+> 
+> In RHEL5.11GA, ns_ifmove.c gives compilation error since 'IFLA_NET_NS_PID'
+> undeclared in the kernel.
 
-the Linux Test Project test suite stable release for *September 2015*
-has been released.
+Looks like we need a configure check for the enum constant and way to
+propagate TCONF from the ns_ifmove to the netns_helper.sh.
 
-Since the last release 272 patches by 27 authors were merged.
-
-Notable changes are:
-
-* Network namespace testcases were rewritten from scratch
-
-* New user namespaces testcases
-
-* New testcases for various virtual network interfaces
-
-* New umount2() testcases (for UMOUNT_NOFOLLOW, MNT_EXPIRE and MNT_DETACH flags)
-
-* New open() testcase (for O_PATH flag)
-
-* New getrandom() testcases
-
-* New inotify, cpuset, futex_wake() and recvmsg() regression tests
-
-+ The usual number of fixes and enhancements
-
-The latest version of the test-suite contains 3000+ tests for the Linux
-and can be downloaded at:
-
-https://github.com/linux-test-project/ltp/releases/tag/20150903
-
-The project pages as well as GIT repository are hosted on GitHub:
-
-https://github.com/linux-test-project/ltp
-http://linux-test-project.github.io/
-
-If you ever wondered how to write a LTP testcase, don't miss our
-(continuously updated) developer documentation at:
-
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-https://github.com/linux-test-project/ltp/wiki/BuildSystem
-
-Patches, new tests, bugs, comments or questions should go to to our
-mailing list at ltp-list@lists.sourceforge.net.
-
-
-PS: We had numerous troubles with mailing list on sourceforge, if you are aware
-    of good and free mailing list hosting service please let us know.
+I will look into this.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
-Get real-time metrics from all of your servers, apps and tools
-in one place.
-SourceForge users - Click here to start your Free Trial of Datadog now!
-http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
