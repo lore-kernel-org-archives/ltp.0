@@ -2,23 +2,25 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZZHOJ-0007ED-1S
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 11:48:47 +0000
+	(envelope-from <metan@suse.de>) id 1ZWlOq-0007dg-CR
+	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 13:14:56 +0000
 Received: from mx2.suse.de ([195.135.220.15])
 	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZZHOH-0003K1-GY
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 11:48:47 +0000
-Date: Tue, 8 Sep 2015 13:48:01 +0200
+	(Exim 4.76) id 1ZWlOk-0003O8-NF
+	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 13:14:56 +0000
+Date: Tue, 1 Sep 2015 15:14:10 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150908114800.GB3357@rei.suse.cz>
-References: <1441386175-23123-1-git-send-email-yuriy.kolerov@synopsys.com>
-	<20150907152930.GC26079@rei.suse.cz>
-	<3ABF60118B9B784CA5BF7C841D2F00ECA8A38F@de02wembxa.internal.synopsys.com>
+Message-ID: <20150901131410.GC27041@rei.suse.cz>
+References: <20150813123035.GB14976@rei.suse.de>
+	<20150820150617.GE3994@rei.suse.de>
+	<20150831112319.GB17776@rei.suse.cz>
+	<55E53DA4.6090005@cn.fujitsu.com>
+	<20150901114230.GA27041@rei.suse.cz>
+	<1488894521.16163428.1441112961686.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <3ABF60118B9B784CA5BF7C841D2F00ECA8A38F@de02wembxa.internal.synopsys.com>
-Subject: Re: [LTP] [PATCH] Enable including config.mk and features.mk for
- *clean targets
+In-Reply-To: <1488894521.16163428.1441112961686.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] LTP release
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,20 +33,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuriy Kolerov <Yuriy.Kolerov@synopsys.com>
-Cc: "Anton.Kolesov@synopsys.com" <Anton.Kolesov@synopsys.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "Francois.Bedard@synopsys.com" <Francois.Bedard@synopsys.com>
+To: Matus Marhefka <mmarhefk@redhat.com>
+Cc: ltp-list@lists.sourceforge.net, jjaburek@redhat.com
 
 Hi!
-> I try to build LTP with POSIX testsuite and run "make clean". As a result "testcases/open_posix_testsuite" is no cleaned properly. It happens because that directory is filtered by "make" here:
-> https://github.com/linux-test-project/ltp/blob/master/testcases/Makefile#L33
-> 
-> And it's filtered because WITH_OPEN_POSIX_TESTSUITE symbol is not defined when you run "make clean". And it's not defined because "config.mk" and "features.mk" are not included for "clean" target:
-> https://github.com/linux-test-project/ltp/blob/master/include/mk/env_pre.mk#L98
-> 
-> So I've decided to include these configuration files for "clean" target too. I've supposed that "clean" target may be invoked even if those files don't exist so I've used error suppression mechanism.
+> another solution could be to let ns_ifmove.c as it is (so it won't build)
+> and only add a check for binaries:
+> tst_check_cmds ns_create ns_exec ns_ifmove
 
-Ah, right, now I understand what this fixes. I will have a look at the
-patch.
+We would have to ingore the return value from the ns_ifmove build, which
+means custom rule in the Makefile, which is ugly.
+
+> to the netns test code. On the other hand, this will produce unclear
+> output from the netns testcases, you will only know that ns_ifmove
+> binary is unavailable, but won't know why.
+> 
+> The other way, as you pointed out, would be to check for kernel version
+> and propagate TCONF to the netns_helper.sh. The patch which adds what we
+> need ('IFLA_NET_NS_PID') to the kernel is:
+> http://lists.linuxfoundation.org/pipermail/containers/2007-September/007113.html
+
+Kernel version is completly orthogonal problem here.
+
+The compilation fails since the IFLA_NET_NS_PID is not present in
+linux/if_link.h. I've just finished a patch that adds autoconf check for
+the constant, adds ifdefs into the ns_ifmove and propagates TCONF from
+ns_ifmove to the helper. This may still fail if somebody runs the test
+on recent enough userspace with older kernel. But I doubt that this will
+be the case, at least for any released distribution.
 
 -- 
 Cyril Hrubis
