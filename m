@@ -1,24 +1,25 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jeantsuru@icloud.com>) id 1Zb8Fk-0000MQ-Ss
-	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2015 14:27:36 +0000
-Received: from mr11p00im-asmtp002.me.com ([17.110.69.253])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1Zb8Fk-0000R3-1A
-	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2015 14:27:36 +0000
-Received: from [192.168.11.4] (softbank126006096222.bbtec.net [126.6.96.222])
-	by mr11p00im-asmtp002.me.com
-	(Oracle Communications Messaging Server 7.0.5.35.0 64bit (built Mar 31
-	2015))
-	with ESMTPSA id <0NUM00DOBDHR7J00@mr11p00im-asmtp002.me.com> for
-	ltp-list@lists.sourceforge.net; Sun, 13 Sep 2015 14:27:29 +0000 (GMT)
-Date: Sun, 13 Sep 2015 23:27:26 +0900
-From: Takeshi Misawa <jeantsuru@icloud.com>
-Message-id: <55F587CE.1070904@iCloud.com>
-MIME-version: 1.0
-Subject: [LTP] settimeofday01:TFAIL in Kernel 4.2.0
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZX5ys-0004ur-FT
+	for ltp-list@lists.sourceforge.net; Wed, 02 Sep 2015 11:13:30 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZX5yr-0004BS-91
+	for ltp-list@lists.sourceforge.net; Wed, 02 Sep 2015 11:13:30 +0000
+Date: Wed, 2 Sep 2015 13:12:46 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150902111246.GA1232@rei>
+References: <20150829232628.GA14374@fifo99.com>
+	<20150831102243.GA17387@rei.suse.cz>
+	<20150831170112.GA18725@fifo99.com>
+	<20150901154229.GB17536@rei.suse.cz>
+	<20150901232815.GA21660@fifo99.com>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20150901232815.GA21660@fifo99.com>
+Subject: Re: [LTP] Test Anything Protocal output
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,43 +29,39 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: dwalker@fifo99.com
+Cc: ltp-list@lists.sourceforge.net
 
-VGhpcyBpcyBhIG15IGZpcnN0IG1haWwgdG8gTFRQIG1haWxpbmcgbGlzdC4KCkknbSB0ZXN0aW5n
-IExpbnV4IEtlcm5lbCA0LjIuMCBieSBMVFAuIEkgc2F3IGEgZm9sbG93aW5nIEVycm9yLgotLS0t
-LQpzZXR0aW1lb2ZkYXkwMSAgICAxICBURkFJTCAgOiAgc2V0dGltZW9mZGF5MDEuYzo5ODogRXJy
-b3IgU2V0dGluZyBUaW1lLCAKZXJybm89MjIKc2V0dGltZW9mZGF5MDEgICAgMiAgVEZBSUwgIDog
-IHNldHRpbWVvZmRheTAxLmM6MTIwOiBUZXN0IGNvbmRpdGlvbiAxIGZhaWxlZApzZXR0aW1lb2Zk
-YXkwMSAgICAzICBUUEFTUyAgOiAgVGVzdCBjb25kaXRpb24gMiBzdWNjZXNzZnVsCi0tLS0tCgpJ
-biBjb21taXQgb2YgTGludXggS2VybmVsOgplMWQ3YmE4NzM1NTUxZWQ3OWM3YTA0NjNhMDQyMzUz
-NTc0Yjk2ZGEzICJ0aW1lOiBBbHdheXMgbWFrZSBzdXJlIAp3YWxsX3RvX21vbm90b25pYyBpc24n
-dCBwb3NpdGl2ZSIKYWRkIGEgbmV3IGNoZWNrIHRvIGRvX3NldHRpbWVvZmRheTY0KCkuCgpUaGlz
-IGNvbW1pdCBzYWlkOgoiQXMgYSByZXN1bHQgb25lIGNhbid0IHNldCB0aGUgQ0xPQ0tfUkVBTFRJ
-TUUgdGltZSBwcmlvciB0byAoMTk3MCArIApzeXN0ZW0gdXB0aW1lKS4iCgpJbiBzZXR0aW1lb2Zk
-YXkwMSB0ZXN0IGNhc2UsIHBhcmFtZXRlciBvZiBmaXJzdCBzZXR0aW1lb2ZkYXkoKSBpcyAKMTAw
-czEwMM68cy4gQSBsb3Qgb2YgY2FzZXMsIFRFU1RfUkVUVVJOIGlzIC0xLgoKSSdkIGJldHRlciB0
-byBtb2RpZnkgc2V0dGltZW9mZGF5MDEgdGVzdCBjYXNlLgoKVG8gbWVldCB0aGF0IHJlcXVpcmVt
-ZW50LCBJIG1hZGUgZm9sbG93aW5nIGNoYW5nZXMuKEkgaGF2ZSBsZXNzIApjb25maWRlbmNlIHRo
-YXQgaXQgaXMgY29ycmVjdC4uLikKLS0tLS0KZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
-c3lzY2FsbHMvc2V0dGltZW9mZGF5L3NldHRpbWVvZmRheTAxLmMgCmIvdGVzdGNhc2VzL2tlcm5l
-bC9zeXNjYWxscy9zZXR0aW1lb2ZkYXkKaW5kZXggYjU5ODgwMC4uYTY4OTRmYiAxMDA2NDQKLS0t
-IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXR0aW1lb2ZkYXkvc2V0dGltZW9mZGF5MDEu
-YworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldHRpbWVvZmRheS9zZXR0aW1lb2Zk
-YXkwMS5jCkBAIC04OCw5ICs4OCwxMCBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3Yp
-CiAgICAgICAgICAgICAgIGludCBjb25kaXRpb25fbnVtYmVyID0gMTsKICAgICAgICAgICAgICAg
-LyogcmVzZXQgdHN0X2NvdW50IGluIGNhc2Ugd2UgYXJlIGxvb3BpbmcgKi8KICAgICAgICAgICAg
-ICAgdHN0X2NvdW50ID0gMDsKLQotICAgICAgICAgICAgICAgdHAudHZfc2VjID0gVkFMX1NFQzsK
-LSAgICAgICAgICAgICAgIHRwLnR2X3VzZWMgPSBWQUxfTVNFQzsKKworICAgICAgICAgICAgICAg
-Z2V0dGltZW9mZGF5KCZ0cCwgTlVMTCk7CisgICAgICAgICAgICAgICB0cC50dl9zZWMgKz0gVkFM
-X1NFQzsKKyAgICAgICAgICAgICAgIHRwLnR2X3VzZWMgKz0gVkFMX01TRUM7CgogICAgICAgICAg
-ICAgICBURVNUKHNldHRpbWVvZmRheSgmdHAsIE5VTEwpKTsKICAgICAgICAgICAgICAgaWYgKFRF
-U1RfUkVUVVJOID09IC0xKSB7Ci0tLS0KClJlc3VsdDoKc2V0dGltZW9mZGF5MDEgICAgMSAgVFBB
-U1MgIDogIFRlc3QgY29uZGl0aW9uIDEgc3VjY2Vzc2Z1bApzZXR0aW1lb2ZkYXkwMSAgICAyICBU
-UEFTUyAgOiAgVGVzdCBjb25kaXRpb24gMiBzdWNjZXNzZnVsCgpUaGFua3MuCgoKLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
-aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
+Hi!
+> > > Well, if your re-writing it, than TAP could be added after that. Is this re-write
+> > > a long term thing, or something your planning to complete in the next couple months?
+> > 
+> > The tst_res.c is one of the last files under the lib/ that hasn't been
+> > cleaned up yet and I certainly want to do that before next release,
+> > which would be in aprox. three months.
+> 
+> Ok, I can wait for that. Are you planning on doing it in steps, or just one big update
+> for the file ? I ask only to see if there's something I could look at prior to the final release.
+
+Just now I'm still in the planning and designing phase. I will likely
+want to discuss the changes before they get commited to LTP, either as
+patches on ML or as separate git repo. We can wire up TAP output at that
+point.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
+
+------------------------------------------------------------------------------
+Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+Get real-time metrics from all of your servers, apps and tools
+in one place.
+SourceForge users - Click here to start your Free Trial of Datadog now!
+http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
