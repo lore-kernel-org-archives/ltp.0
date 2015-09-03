@@ -1,24 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZWjz3-0002uk-0q
-	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 11:44:13 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZWjz1-0000AP-1u
-	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 11:44:12 +0000
-Date: Tue, 1 Sep 2015 13:43:31 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150901114330.GB27041@rei.suse.cz>
-References: <20150813123035.GB14976@rei.suse.de>
-	<20150820150617.GE3994@rei.suse.de>
-	<20150831112319.GB17776@rei.suse.cz>
-	<75454012.15990077.1441091460626.JavaMail.zimbra@redhat.com>
+	(envelope-from <srikanth007m@gmail.com>) id 1ZXMCN-0005n4-6N
+	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 04:32:31 +0000
+Received: from mail-qk0-f171.google.com ([209.85.220.171])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZXMCM-0004f0-Da
+	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 04:32:31 +0000
+Received: by qkcj187 with SMTP id j187so16744458qkc.2
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 02 Sep 2015 21:32:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <75454012.15990077.1441091460626.JavaMail.zimbra@redhat.com>
-Subject: Re: [LTP] LTP release
+Date: Thu, 3 Sep 2015 10:02:24 +0530
+Message-ID: <CANKSX+FjoktkpNQ4tRkEKLv_XKuDHF57-TaO13bs2wYAJDcQiw@mail.gmail.com>
+From: "$rik@nth " <srikanth007m@gmail.com>
+Subject: [LTP]  Syscall/io_* tests failing to compile
+Reply-To: srikanth007m@gmail.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,25 +29,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Matus Marhefka <mmarhefk@redhat.com>
-Cc: ltp-list@lists.sourceforge.net, Jiri Jaburek <jjaburek@redhat.com>
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> as you mentioned, the problem in ns_exec was setns'ing the "user" namespace,
-> I think it would be sufficient to just comment/remove this line:
-> rf |= open_ns_fd(argv[1], "user");
-> from ns_exec.c or even all calls to open_ns_fd() function except for the network
-> namespace as it is used in netns testcases. I will rewrite ns_create and ns_exec
-> after the release.
+Hi All,
 
-I was trying to be more defensive and remove everything that is not
-needed, but I can live with this solution as well.
+
+I am seeing below errors while compiling syscalls from the latest
+available LTP tar ball from sourceforge. My system is having latest
+libaio-dev library as well.
+
+the same issue even observed for other io syscalls(io_getevents etc..)
+as well. Do i need to setup any other environment to compile it
+successfully.
+
+/usr/bin/arm-linux-gnueabihf-gcc -static -g -O2 -fno-strict-aliasing
+-pipe -Wall -W -static -Wold-style-definition
+-I/home/LTP/ltp-full-20150420/testcases/kernel/include
+-I../../../../include -I../../../../include -static -pthread
+-L../../../../lib  io_destroy01.c   -lltp  -o io_destroy01
+/tmp/cc0f3RO7.o: In function `main':
+/home/LTP/ltp-full-20150420/testcases/kernel/syscalls/io_destroy/io_destroy01.c:77:
+undefined reference to `io_destroy'
+collect2: ld returned 1 exit status
+make: *** [io_destroy01] Error 1
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks & Regards,
+M.Srikanth Kumar.
 
 ------------------------------------------------------------------------------
+Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+Get real-time metrics from all of your servers, apps and tools
+in one place.
+SourceForge users - Click here to start your Free Trial of Datadog now!
+http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
