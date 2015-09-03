@@ -1,26 +1,23 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZfBU8-0004es-Un
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2015 18:43:12 +0000
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZXTSq-00022H-68
+	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 12:18:00 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZfBU7-0003N6-Hf
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2015 18:43:12 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id A814EAC02
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 24 Sep 2015 18:43:03 +0000 (UTC)
-Date: Thu, 24 Sep 2015 20:42:08 +0200
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZXTSn-0000S0-PH
+	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 12:18:00 +0000
+Date: Thu, 3 Sep 2015 14:17:11 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150924184208.GB1260@rei.suse.cz>
-References: <1441889771-8243-1-git-send-email-chnyda@suse.com>
+Message-ID: <20150903121711.GA25522@rei.suse.cz>
+References: <CANKSX+FjoktkpNQ4tRkEKLv_XKuDHF57-TaO13bs2wYAJDcQiw@mail.gmail.com>
+	<20150903111522.GA24962@rei.suse.cz>
+	<CANKSX+EGOtjDKHhX3sHRcxgeJRZbQDwSYoLa7zh64V3GROqnYA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1441889771-8243-1-git-send-email-chnyda@suse.com>
-Subject: Re: [LTP] [PATCH] cgroup_fj: fixed exit codes in case of not
- supported tests
+In-Reply-To: <CANKSX+EGOtjDKHhX3sHRcxgeJRZbQDwSYoLa7zh64V3GROqnYA@mail.gmail.com>
+Subject: Re: [LTP] Syscall/io_* tests failing to compile
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,32 +30,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cedric Hnyda <chnyda@suse.com>
+To: "$rik@nth " <srikanth007m@gmail.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> @@ -125,8 +125,8 @@ esac
->  ret=$?
->  if [ $ret -eq 0 ]; then
->  	tst_resm TPASS "case$i($CASETYPE$CASECMD)    PASS"
-> -elif [ $ret -ne 9 ]; then
-> +elif [ $ret -ne 32 ]; then
->  	tst_resm TFAIL "case$i($CASETYPE $CASECMD)    FAIL"
->  fi
->  
-> -exit $ret;
-> +tst_exit
+> I haven't modified any of the config files at all. Even i cross
+> checked on couple machines and faced similar issues.
 
-Unless the whole script is converted to the test.sh the exit $ret must
-stay here, otherwise the return status from the test will be always 0.
+Hmm, you are cross compiling right? Have you installed the libaio-dev on
+the host machine? Because that will not work since that contains native
+binaries and you cannot link against them.
 
-The rest looks fine.
+If that is the case you can either cross compile the libaio and set
+right path for linker etc. or set up an arm virtual machine or chroot
+with qemu arm emulation and compile LTP there.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+Get real-time metrics from all of your servers, apps and tools
+in one place.
+SourceForge users - Click here to start your Free Trial of Datadog now!
+http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
