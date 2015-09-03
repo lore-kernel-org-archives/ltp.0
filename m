@@ -1,26 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZZDrg-00084j-Ho
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 08:02:52 +0000
-Received: from mx1.redhat.com ([209.132.183.28])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZZDrf-0007iG-2M
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 08:02:52 +0000
-Received: from int-mx14.intmail.prod.int.phx2.redhat.com
-	(int-mx14.intmail.prod.int.phx2.redhat.com [10.5.11.27])
-	by mx1.redhat.com (Postfix) with ESMTPS id 31BBDC0798E1
-	for <ltp-list@lists.sourceforge.net>;
-	Tue,  8 Sep 2015 08:02:45 +0000 (UTC)
-Received: from dustball.brq.redhat.com (dustball.brq.redhat.com [10.34.26.57])
-	by int-mx14.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with
-	ESMTP id t8882h2t011126
-	for <ltp-list@lists.sourceforge.net>; Tue, 8 Sep 2015 04:02:44 -0400
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue,  8 Sep 2015 10:02:40 +0200
-Message-Id: <16f324dac1804ac5d787d210b97187e07766b47d.1441699315.git.jstancek@redhat.com>
-Subject: [LTP] [PATCH] linux_syscall_numbers: speed up generation
+	(envelope-from <metan@suse.de>) id 1ZXUrX-00075H-6H
+	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 13:47:35 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZXUrU-0005QZ-N4
+	for ltp-list@lists.sourceforge.net; Thu, 03 Sep 2015 13:47:35 +0000
+Date: Thu, 3 Sep 2015 15:46:50 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150903134650.GB25522@rei.suse.cz>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for
+ SEPTEMBER 2015
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,72 +24,70 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net, linux-kernel@vger.kernel.org, libc-alpha@sourceware.org
+Cc: lwn@lwn.net, akpm@linux-foundation.org, torvalds@linux-foundation.org
 
-Replace cat with echo, which should be a builtin function
-for most shells. Avoiding to spawn 'cat' for every syscall
-entry can save time when generating linux_syscall_numbers.h:
+Good news everyone,
 
-$ time ./regen.sh
+the Linux Test Project test suite stable release for *September 2015*
+has been released.
 
-Before:
- real    0m24.642s
- user    0m1.263s
- sys     0m7.135s
+Since the last release 272 patches by 27 authors were merged.
 
-After:
- real    0m0.130s
- user    0m0.241s
- sys     0m0.056s
+Notable changes are:
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/include/regen.sh | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+* Network namespace testcases were rewritten from scratch
 
-diff --git a/testcases/kernel/include/regen.sh b/testcases/kernel/include/regen.sh
-index eebac0f67308..9efc4f17cf88 100755
---- a/testcases/kernel/include/regen.sh
-+++ b/testcases/kernel/include/regen.sh
-@@ -71,11 +71,9 @@ for arch in $(cat "${srcdir}/order") ; do
- 		if [ $# -eq 0 ] ; then
- 			err "invalid line found: $line"
- 		fi
--		cat <<-EOF
--		# ifndef ${nr}
--		#  define ${nr} $*
--		# endif
--		EOF
-+		echo "# ifndef ${nr}"
-+		echo "#  define ${nr} $*"
-+		echo "# endif"
- 	done < "${srcdir}/${arch}.in"
- 	echo "#endif"
- 	echo
-@@ -97,11 +95,9 @@ echo "/* Common stubs */"
- echo "#define __LTP__NR_INVALID_SYSCALL -1" >> "${output_pid}"
- for nr in $(awk '{print $1}' "${srcdir}/"*.in | sort -u) ; do
- 	nr="__NR_${nr}"
--	cat <<-EOF
--	# ifndef ${nr}
--	#  define ${nr} __LTP__NR_INVALID_SYSCALL
--	# endif
--	EOF
-+	echo "# ifndef ${nr}"
-+	echo "#  define ${nr} __LTP__NR_INVALID_SYSCALL"
-+	echo "# endif"
- done
- echo "#endif"
- ) >> "${output_pid}._footer"
+* New user namespaces testcases
+
+* New testcases for various virtual network interfaces
+
+* New umount2() testcases (for UMOUNT_NOFOLLOW, MNT_EXPIRE and MNT_DETACH flags)
+
+* New open() testcase (for O_PATH flag)
+
+* New getrandom() testcases
+
+* New inotify, cpuset, futex_wake() and recvmsg() regression tests
+
++ The usual number of fixes and enhancements
+
+The latest version of the test-suite contains 3000+ tests for the Linux
+and can be downloaded at:
+
+https://github.com/linux-test-project/ltp/releases/tag/20150903
+
+The project pages as well as GIT repository are hosted on GitHub:
+
+https://github.com/linux-test-project/ltp
+http://linux-test-project.github.io/
+
+If you ever wondered how to write a LTP testcase, don't miss our
+(continuously updated) developer documentation at:
+
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
+https://github.com/linux-test-project/ltp/wiki/BuildSystem
+
+Patches, new tests, bugs, comments or questions should go to to our
+mailing list at ltp-list@lists.sourceforge.net.
+
+
+PS: We had numerous troubles with mailing list on sourceforge, if you are aware
+    of good and free mailing list hosting service please let us know.
+
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+Get real-time metrics from all of your servers, apps and tools
+in one place.
+SourceForge users - Click here to start your Free Trial of Datadog now!
+http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
