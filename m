@@ -1,22 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZbnYQ-0001ph-NZ
-	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2015 10:33:38 +0000
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZZ0hf-0002fx-4R
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2015 17:59:39 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZbnYP-0006C0-LR
-	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2015 10:33:38 +0000
-Date: Tue, 15 Sep 2015 12:32:46 +0200
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZZ0hd-0006SV-Rn
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2015 17:59:39 +0000
+Date: Mon, 7 Sep 2015 19:58:52 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150915103246.GA7077@rei.suse.cz>
-References: <20150609122628.GE29057@dhcp22.suse.cz>
-	<20150902132506.GA6661@rei.suse.cz>
+Message-ID: <20150907175852.GB7580@rei.suse.cz>
+References: <1441586639-57352-1-git-send-email-cuibixuan@huawei.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <20150902132506.GA6661@rei.suse.cz>
-Subject: Re: [LTP] ltp: thp04.c test case
+In-Reply-To: <1441586639-57352-1-git-send-email-cuibixuan@huawei.com>
+Subject: Re: [LTP] [PATCH] include/linux_syscall_numbers.h:Delete
+ linux_syscall_numbers.h
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -29,17 +29,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Michal Hocko <mhocko@suse.cz>
-Cc: ltp-list@lists.sourceforge.net, Zhouping Liu <zliu@redhat.com>, Vlastimil Babka <vbabka@suse.cz>
+To: Cui Bixuan <cuibixuan@huawei.com>
+Cc: zhuyanpeng@huawei.com, ltp-list@lists.sourceforge.net, zhanyongming@huawei.com
 
 Hi!
-> There was no response for about three months. If nobody stands up and
-> fixes the testcase I would go for dropping it since it does not work
-> reliably as it is.
+> Delete linux_syscall_numbers.h in LTP otherwise it will not be
+> compiled when do 'make':
+> make: Nothing to be done for `all'.
 
-And the test has been removed in:
+Looks like the reason why the file was added to git in the first place
+is that the script is relatively slow (takes seconds on new enough
+machine). Does that still concern anybody?
 
-https://github.com/linux-test-project/ltp/commit/19cdd120b43aa6a6a4993b61e6ef675d1cdf04b4
+I guess that what you are trying to solve is that the file is not up to
+date and it's not updated automatically because the timestamp for the
+*.in files is the same as the linux_syscall_numbers.h since the files
+were created at the same time when the git was checked up.
 
 -- 
 Cyril Hrubis
