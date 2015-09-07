@@ -1,40 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <a10gupta@linux.vnet.ibm.com>) id 1ZgRMq-0004KP-Rq
-	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2015 05:52:52 +0000
-Received: from e28smtp02.in.ibm.com ([122.248.162.2])
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZYxVo-0004ns-Ih
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2015 14:35:12 +0000
+Received: from mx2.suse.de ([195.135.220.15])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZgRMp-0006hV-Mt
-	for ltp-list@lists.sourceforge.net; Mon, 28 Sep 2015 05:52:52 +0000
-Received: from /spool/local
-	by e28smtp02.in.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use
-	Only! Violators will be prosecuted
-	for <ltp-list@lists.sourceforge.net> from <a10gupta@linux.vnet.ibm.com>;
-	Mon, 28 Sep 2015 11:22:43 +0530
-Received: from d28relay02.in.ibm.com (d28relay02.in.ibm.com [9.184.220.59])
-	by d28dlp01.in.ibm.com (Postfix) with ESMTP id 2154DE0056
+	(Exim 4.76) id 1ZYxVm-0008Rr-H2
+	for ltp-list@lists.sourceforge.net; Mon, 07 Sep 2015 14:35:12 +0000
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id E889AAABB
 	for <ltp-list@lists.sourceforge.net>;
-	Mon, 28 Sep 2015 11:22:23 +0530 (IST)
-Received: from d28av04.in.ibm.com (d28av04.in.ibm.com [9.184.220.66])
-	by d28relay02.in.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id
-	t8S5qc1B32636968
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Sep 2015 11:22:38 +0530
-Received: from d28av04.in.ibm.com (localhost [127.0.0.1])
-	by d28av04.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP id
-	t8S5qbHu023431
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Sep 2015 11:22:37 +0530
-Received: from [9.109.223.73] ([9.109.223.73])
-	by d28av04.in.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
-	t8S5qb5v023409
-	for <ltp-list@lists.sourceforge.net>; Mon, 28 Sep 2015 11:22:37 +0530
-From: Abhishek Dasgupta <a10gupta@linux.vnet.ibm.com>
-Message-ID: <5608D5A4.8050303@linux.vnet.ibm.com>
-Date: Mon, 28 Sep 2015 11:22:36 +0530
+	Mon,  7 Sep 2015 14:35:03 +0000 (UTC)
+Date: Mon, 7 Sep 2015 16:34:26 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150907143426.GA26079@rei.suse.cz>
+References: <1441619902-25433-1-git-send-email-chnyda@suse.com>
 MIME-Version: 1.0
-Subject: [LTP] How to run individual C testcase file like
- ltp/testcases/kernel/containers/pidns/pidns01.c
+Content-Disposition: inline
+In-Reply-To: <1441619902-25433-1-git-send-email-chnyda@suse.com>
+Subject: Re: [LTP] [PATCH] cgroup_fj: renamed arguments because the previous
+ ones were not clear.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -47,29 +33,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: Cedric Hnyda <chnyda@suse.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hi,
+Hi!
+>  case $mount_times in
+> -"1" )
+> +"1"|"100")
+>  	mount_times=1
+>  	;;
+> -"2" )
+> -	mount_times=100
+> -	;;
+>  *  )
 
-     I am new to LTP and developing a testcase under pidns. I want to 
-start with , if there is any way to run , suppose pidns01.c using only 
-gcc command. Only using gcc command, it should be possible to run 
-pidns01.c as the file contains main program. I am also interested in 
-knowing the parameters used to call the file using gcc command.
 
-   Regards,
+Hmm, after the change the mount_times is always set to 1 (forget to
+remove mount_times=1?).
 
-   ---------------------------------------------------------------------------------------
-   Abhishek Dasgupta
-   Linux Software Developer - Linux Technology Centre
-   IBM Systems Lab,
-   IBM India Pvt. Ltd.
-   Embassy Golf Link, D Block
-   Koramongala - Off Indiranagar Ring Road
-   Bangalore - 560 071
-   Mobile: +91-8884107981
-   ---------------------------------------------------------------------------------------
+Also we may only want to check that the parameter is a numeric so that
+we can tune the test parameters later (and for other parameters that can
+be tuned such as number of subgroup as well).
 
+The portable way to do that seems to be case statement:
+
+case $mount_times in
+	''|*[!0-9]*) usage;;
+	*) ;;
+esac
+
+
+Otherwise the patch looks good.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
