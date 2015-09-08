@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
 	helo=mx.sourceforge.net)
 	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1ZZHxo-0000Bp-26
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 12:25:28 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZZHxn-0007V7-2v
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 12:25:28 +0000
-Message-ID: <55EED49C.8080309@oracle.com>
-Date: Tue, 08 Sep 2015 15:29:16 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+	(envelope-from <metan@suse.de>) id 1ZZHOJ-0007ED-1S
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 11:48:47 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZZHOH-0003K1-GY
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 11:48:47 +0000
+Date: Tue, 8 Sep 2015 13:48:01 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150908114800.GB3357@rei.suse.cz>
+References: <1441386175-23123-1-git-send-email-yuriy.kolerov@synopsys.com>
+	<20150907152930.GC26079@rei.suse.cz>
+	<3ABF60118B9B784CA5BF7C841D2F00ECA8A38F@de02wembxa.internal.synopsys.com>
 MIME-Version: 1.0
-References: <201509081939589887103@sina.com>
-In-Reply-To: <201509081939589887103@sina.com>
-Subject: Re: [LTP] about testscript run
+Content-Disposition: inline
+In-Reply-To: <3ABF60118B9B784CA5BF7C841D2F00ECA8A38F@de02wembxa.internal.synopsys.com>
+Subject: Re: [LTP] [PATCH] Enable including config.mk and features.mk for
+ *clean targets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,28 +31,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: xcf733520 <xcf733520@sina.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+To: Yuriy Kolerov <Yuriy.Kolerov@synopsys.com>
+Cc: "Anton.Kolesov@synopsys.com" <Anton.Kolesov@synopsys.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "Francois.Bedard@synopsys.com" <Francois.Bedard@synopsys.com>
 
-Hi,
-On 09/08/2015 02:39 PM, xcf733520 wrote:
-> Hi all,
->
->       I try to run testscript in the directory of /opt/ltp/testscripts, when try networkstress.sh/networktests.sh  it show as below,
->
->       ./network.sh: line 5: test_net.sh: No such file or directory
+Hi!
+> I try to build LTP with POSIX testsuite and run "make clean". As a result "testcases/open_posix_testsuite" is no cleaned properly. It happens because that directory is filtered by "make" here:
+> https://github.com/linux-test-project/ltp/blob/master/testcases/Makefile#L33
+> 
+> And it's filtered because WITH_OPEN_POSIX_TESTSUITE symbol is not defined when you run "make clean". And it's not defined because "config.mk" and "features.mk" are not included for "clean" target:
+> https://github.com/linux-test-project/ltp/blob/master/include/mk/env_pre.mk#L98
+> 
+> So I've decided to include these configuration files for "clean" target too. I've supposed that "clean" target may be invoked even if those files don't exist so I've used error suppression mechanism.
 
-test_net.sh script should be in the PATH. Usually, installation 
-directory /opt/ltp/testcases/bin is set to the PATH. Then you can run 
-./networktests.sh.
+Ah, right, now I understand what this fixes. I will have a look at the
+patch.
 
-Alternatively, you can try to set the PATH to networkstress.sh or 
-networktests.sh:
-
-$ PATH=/opt/ltp/testcases/bin:$PATH ./networktests.sh
-
-Thanks,
-Alexey
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
 _______________________________________________
