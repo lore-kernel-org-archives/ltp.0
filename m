@@ -1,24 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZWjy5-000673-BO
-	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 11:43:13 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZWjy3-0001KP-AY
-	for ltp-list@lists.sourceforge.net; Tue, 01 Sep 2015 11:43:13 +0000
-Date: Tue, 1 Sep 2015 13:42:30 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150901114230.GA27041@rei.suse.cz>
-References: <20150813123035.GB14976@rei.suse.de>
-	<20150820150617.GE3994@rei.suse.de>
-	<20150831112319.GB17776@rei.suse.cz>
-	<55E53DA4.6090005@cn.fujitsu.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <55E53DA4.6090005@cn.fujitsu.com>
-Subject: Re: [LTP] LTP release
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <xcf733520@sina.com>) id 1ZZHVa-0003oJ-Ci
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 11:56:18 +0000
+Received: from mail115-171.sinamail.sina.com.cn ([218.30.115.171]
+	helo=smtp682-33.mail.sina.com.cn)
+	by sog-mx-2.v43.ch3.sourceforge.com with smtp (Exim 4.76)
+	id 1ZZHVW-0001SR-4y
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 11:56:18 +0000
+Date: Tue, 8 Sep 2015 19:39:59 +0800
+From: xcf733520 <xcf733520@sina.com>
+Mime-Version: 1.0
+Message-ID: <201509081939589887103@sina.com>
+Subject: [LTP] about testscript run
+Reply-To: xcf733520 <xcf733520@sina.com>
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,29 +27,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Cc: ltp-list@lists.sourceforge.net, jjaburek@redhat.com
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
 
-Hi!
-> > I've did my release testing and pushed a few fixes, mosty minor ones.
-> > 
-> > Now the only problem that that blocks the release on my side are
-> > failures of the newly rewritten netns testcases that were discussed
-> > last week.
-> > 
-> 
-> In RHEL5.11GA, ns_ifmove.c gives compilation error since 'IFLA_NET_NS_PID'
-> undeclared in the kernel.
+Hi all,
 
-Looks like we need a configure check for the enum constant and way to
-propagate TCONF from the ns_ifmove to the netns_helper.sh.
+     I try to run testscript in the directory of /opt/ltp/testscripts, when try networkstress.sh/networktests.sh  it show as below,
 
-I will look into this.
+     ./network.sh: line 5: test_net.sh: No such file or directory
+  
+     Do them  networkstress.sh/networktests.sh  run directly?     
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
-
+    
+--------------
+xcf733520
 ------------------------------------------------------------------------------
 _______________________________________________
 Ltp-list mailing list
