@@ -1,24 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <srikanth007m@gmail.com>) id 1ZeK6L-0003SP-Hp
-	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2015 09:43:05 +0000
-Received: from mail-qg0-f43.google.com ([209.85.192.43])
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <sunyuan3@huawei.com>) id 1ZZFIg-0004Ly-SD
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 09:34:50 +0000
+Received: from szxga01-in.huawei.com ([58.251.152.64])
 	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZeK6K-0002LN-KT
-	for Ltp-list@lists.sourceforge.net; Tue, 22 Sep 2015 09:43:05 +0000
-Received: by qgez77 with SMTP id z77so111891537qge.1
-	for <Ltp-list@lists.sourceforge.net>;
-	Tue, 22 Sep 2015 02:42:59 -0700 (PDT)
+	(Exim 4.76) id 1ZZFIb-0002iL-QK
+	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 09:34:50 +0000
+Message-ID: <55EEABA0.5040602@huawei.com>
+Date: Tue, 8 Sep 2015 17:34:24 +0800
+From: Yuan Sun <sunyuan3@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAO0kMxBSMF4fTMDSvzbQSsTnteSDoSE9ByCampY3AntKTe=62w@mail.gmail.com>
-References: <CAO0kMxBSMF4fTMDSvzbQSsTnteSDoSE9ByCampY3AntKTe=62w@mail.gmail.com>
-Date: Tue, 22 Sep 2015 15:12:59 +0530
-Message-ID: <CANKSX+ESWx-7xKAu-NyiUNRF73EVZ_ukRkFLhtaBEeme2JJ7qw@mail.gmail.com>
-From: "$rik@nth " <srikanth007m@gmail.com>
-Subject: Re: [LTP] About to cross compile LTP...
-Reply-To: srikanth007m@gmail.com
+References: <1440055253-23430-1-git-send-email-sunyuan3@huawei.com>
+	<1081951156.6922165.1441698485261.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1081951156.6922165.1441698485261.JavaMail.zimbra@redhat.com>
+Subject: Re: [LTP] [PATCH] containers: new testcase userns07
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,43 +28,206 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: kamal p <pkamalbhaskar@gmail.com>
-Cc: Ltp-list@lists.sourceforge.net
+To: Jan Stancek <jstancek@redhat.com>
+Cc: ltp-list@lists.sourceforge.net
 
-You can cross compile LTP either in chroot environment or with ARM toolchain.
+Thank you, Jan.
 
-If it is with toolchain, then make sure you are setting them in the
-environment before compiling.
-
-configure AR=arm-linux-gnueabi-ar CC=arm-linux-gnueabi-gcc
-RANLIB=arm-linux-gnueabi-gcc-ranlib-4.7 STRIP=arm-linux-gnueabi-strip
---host=arm-linux --target=arm-linux CFLAGS="-static" LDFLAGS="-static
--pthread"
-
-On Tue, Sep 22, 2015 at 1:00 PM, kamal p <pkamalbhaskar@gmail.com> wrote:
+On 2015/9/8 15:48, Jan Stancek wrote:
+>
+> ----- Original Message -----
+>> From: "Yuan Sun" <sunyuan3@huawei.com>
+>> To: jstancek@redhat.com
+>> Cc: ltp-list@lists.sourceforge.net
+>> Sent: Thursday, 20 August, 2015 9:20:53 AM
+>> Subject: [PATCH] containers: new testcase userns07
+>>
+>> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
 > Hi,
 >
->    I want to cross compile LTP test suite and test it on my target embedded
-> linux system.can I compile like this?.If we can do please tell me the
-> procedure ( i.e cross compilation tool & other components required) to
-> accomplish these task.
+> pushed with couple small changes (see comments below).
 >
 > Regards,
-> Kamal bhaskar.
+> Jan
 >
-> ------------------------------------------------------------------------------
+>> ---
+>>   runtest/containers                            |   1 +
+>>   testcases/kernel/containers/.gitignore        |   1 +
+>>   testcases/kernel/containers/userns/userns07.c | 133
+>>   ++++++++++++++++++++++++++
+>>   3 files changed, 135 insertions(+)
+>>   create mode 100644 testcases/kernel/containers/userns/userns07.c
+>>
+>> diff --git a/runtest/containers b/runtest/containers
+>> index ac37ab2..80de20e 100644
+>> --- a/runtest/containers
+>> +++ b/runtest/containers
+>> @@ -75,3 +75,4 @@ userns03 userns03
+>>   userns04 userns04
+>>   userns05 userns05
+>>   userns06 userns06
+>> +userns07 userns07
+>> diff --git a/testcases/kernel/containers/.gitignore
+>> b/testcases/kernel/containers/.gitignore
+>> index 3f96f42..7dc2608 100644
+>> --- a/testcases/kernel/containers/.gitignore
+>> +++ b/testcases/kernel/containers/.gitignore
+>> @@ -10,3 +10,4 @@ userns/userns04
+>>   userns/userns05
+>>   userns/userns06_capcheck
+>>   userns/userns06
+>> +userns/userns07
+>> diff --git a/testcases/kernel/containers/userns/userns07.c
+>> b/testcases/kernel/containers/userns/userns07.c
+>> new file mode 100644
+>> index 0000000..decabc8
+>> --- /dev/null
+>> +++ b/testcases/kernel/containers/userns/userns07.c
+>> @@ -0,0 +1,133 @@
+>> +/*
+>> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + *  (at your option) any later version.
+>> + *
+>> + * This program is distributed in the hope that it will be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+>> + * the GNU General Public License for more details.
+>> + */
+>> +
+>> +/*
+>> + * Verify that:
+>> + * The kernel imposes a limit of 32 nested levels of user namespaces.
+>> + */
+> Changed to ".. of at least 32 nested levels ...".
 >
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>> +
+>> +#define _GNU_SOURCE
+>> +#include <sys/wait.h>
+>> +#include <assert.h>
+>> +#include <stdio.h>
+>> +#include <stdlib.h>
+>> +#include <unistd.h>
+>> +#include <string.h>
+>> +#include <errno.h>
+>> +#include "test.h"
+>> +#include "userns_helper.h"
+>> +
+>> +#define MAXNEST 32
+>> +
+>> +char *TCID = "userns07";
+>> +int TST_TOTAL = 1;
+>> +
+>> +static void setup(void)
+>> +{
+>> +	check_newuser();
+>> +	tst_tmpdir();
+>> +	TST_CHECKPOINT_INIT(NULL);
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	tst_rmdir();
+>> +}
+>> +
+>> +static int child_fn1(void *arg)
+>> +{
+>> +	pid_t cpid1;
+>> +	long level = (long)arg;
+>> +	int status;
+>> +	int parentuid;
+>> +	int parentgid;
+>> +
+>> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
+>> +
+>> +	if (level == MAXNEST)
+>> +		return 0;
+>> +	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
+>> +		(void *)child_fn1, (void *)(level + 1));
+>> +	if (cpid1 < 0) {
+>> +		printf("level %ld:unexpected error: (%d) %s\n",
+>> +			level, errno, strerror(errno));
+>> +		return 1;
+>> +	}
+>> +
+>> +	parentuid = geteuid();
+>> +	parentgid = getegid();
+>> +
+>> +	updatemap(cpid1, UID_MAP, 0, parentuid, cleanup);
+>> +	updatemap(cpid1, GID_MAP, 0, parentgid, cleanup);
+> updatemap in child process shouldn't call cleanup.
+>
+>> +
+>> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+>> +
+>> +	if (waitpid(cpid1, &status, 0) == -1)
+>> +		return 1;
+>> +
+>> +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+>> +		printf("child exited abnormally\n");
+>> +		return 1;
+>> +	} else if (WIFSIGNALED(status)) {
+>> +		printf("child was killed with signal = %d", WTERMSIG(status));
+>> +		return 1;
+>> +	}
+>> +	return 0;
+>> +}
+>> +
+>> +static void test_max_nest(void)
+>> +{
+>> +	pid_t cpid1;
+>> +	int parentuid;
+>> +	int parentgid;
+>> +	int fd;
+>> +	char path[BUFSIZ];
+>> +
+>> +	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
+>> +		(void *)child_fn1, (void *)0);
+>> +	if (cpid1 < 0)
+>> +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
+>> +
+>> +	parentuid = geteuid();
+>> +	parentgid = getegid();
+>> +
+>> +	if (access("/proc/self/setgroups", F_OK) == 0) {
+>> +		sprintf(path, "/proc/%d/setgroups", cpid1);
+>> +		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
+>> +		SAFE_WRITE(cleanup, 1, fd, "deny", 4);
+>> +		SAFE_CLOSE(cleanup, fd);
+>> +	}
+>> +
+>> +	updatemap(cpid1, UID_MAP, 0, parentuid, cleanup);
+>> +	updatemap(cpid1, GID_MAP, 0, parentgid, cleanup);
+>> +
+>> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
+>> +	tst_record_childstatus(cleanup, cpid1);
+>> +}
+>> +
+>> +int main(int argc, char *argv[])
+>> +{
+>> +	int lc;
+>> +
+>> +	setup();
+>> +	tst_parse_opts(argc, argv, NULL, NULL);
+>> +
+>> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>> +		tst_count = 0;
+>> +		test_max_nest();
+>> +	}
+>> +
+>> +	cleanup();
+>> +	tst_exit();
+>> +}
+>> +
+>> --
+>> 1.9.1
+>>
+>>
+> .
 >
 
-
-
--- 
-Thanks & Regards,
-M.Srikanth Kumar.
 
 ------------------------------------------------------------------------------
 _______________________________________________
