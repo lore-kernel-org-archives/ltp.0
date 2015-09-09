@@ -1,23 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZZI3Q-0004vN-Dj
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 12:31:16 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZZedr-00041q-OV
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2015 12:38:23 +0000
 Received: from mx2.suse.de ([195.135.220.15])
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZZI3O-0002iT-F4
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 12:31:16 +0000
-Date: Tue, 8 Sep 2015 14:30:30 +0200
+	(Exim 4.76) id 1ZZedq-0007qu-Mn
+	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2015 12:38:23 +0000
+Date: Wed, 9 Sep 2015 14:37:37 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150908123029.GA3747@rei.suse.cz>
-References: <55EEA2EF.6040706@cn.fujitsu.com>
-	<1441704883-4331-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20150909123737.GA13664@rei.suse.cz>
+References: <dde73925917fe3524a598d859fdb66ca95711fc3.1441798744.git.jstancek@redhat.com>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1441704883-4331-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Subject: Re: [LTP] [PATCH v2] cpuhotplug_hotplug.sh: fix the return of cpu
-	number
+In-Reply-To: <dde73925917fe3524a598d859fdb66ca95711fc3.1441798744.git.jstancek@redhat.com>
+Subject: Re: [LTP] [PATCH] mprotect04: fix powerpc crash when copying
+ exec_func
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,29 +29,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+To: Jan Stancek <jstancek@redhat.com>
 Cc: ltp-list@lists.sourceforge.net
 
 Hi!
-> diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-> index 6920393..48bd814 100644
-> --- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-> +++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-> @@ -169,7 +169,7 @@ get_present_cpus()
->  #
->  get_present_cpus_num()
->  {
-> -    return $(get_present_cpus | wc -w)
-> +	echo $(get_present_cpus | wc -w)
+> Testcase tried to copy page size area starting at &exec_func.
+> This results in crash on powerpc, because &exec_func is too close
+> to end of page and subsequent page is not mapped:
 
-I've changed the tab here back to four spaces since rest of the file
-uses four spaces for indentation and pushed, thanks.
+I was wondering about this problem when I was fixing the test, but could
+not actually hit it.
+
+> -static void *get_func(void *mem)
+> +static int page_present(void *p)
+>  {
+> -	memcpy(mem, exec_func, getpagesize());
+> +	int fd;
+> +
+> +	fd = SAFE_OPEN(cleanup, "page_present", O_WRONLY|O_CREAT, 0644);
+
+Why don't we use "/dev/null"?
+
+
+The rest looks good to me.
 
 -- 
 Cyril Hrubis
 chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+Get real-time metrics from all of your servers, apps and tools
+in one place.
+SourceForge users - Click here to start your Free Trial of Datadog now!
+http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
