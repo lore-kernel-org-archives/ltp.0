@@ -1,22 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZZedr-00041q-OV
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2015 12:38:23 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZZedq-0007qu-Mn
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2015 12:38:23 +0000
-Date: Wed, 9 Sep 2015 14:37:37 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150909123737.GA13664@rei.suse.cz>
-References: <dde73925917fe3524a598d859fdb66ca95711fc3.1441798744.git.jstancek@redhat.com>
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <pkamalbhaskar@gmail.com>) id 1ZZtbg-0007Kl-SI
+	for Ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 04:37:08 +0000
+Received: from mail-ig0-f181.google.com ([209.85.213.181])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZZtbe-0003N6-Q9
+	for Ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 04:37:08 +0000
+Received: by igcrk20 with SMTP id rk20so7328368igc.1
+	for <Ltp-list@lists.sourceforge.net>;
+	Wed, 09 Sep 2015 21:37:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <dde73925917fe3524a598d859fdb66ca95711fc3.1441798744.git.jstancek@redhat.com>
-Subject: Re: [LTP] [PATCH] mprotect04: fix powerpc crash when copying
- exec_func
+Date: Thu, 10 Sep 2015 10:07:01 +0530
+Message-ID: <CAO0kMxDg1KJWzFMqyYOmP5xLe78pyf21MwizsM_P38Vbx02HeQ@mail.gmail.com>
+From: kamal p <pkamalbhaskar@gmail.com>
+Subject: [LTP] Query related to LTP test suite run
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -26,36 +25,46 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4555614943184136326=="
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Jan Stancek <jstancek@redhat.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Ltp-list@lists.sourceforge.net
 
-Hi!
-> Testcase tried to copy page size area starting at &exec_func.
-> This results in crash on powerpc, because &exec_func is too close
-> to end of page and subsequent page is not mapped:
+--===============4555614943184136326==
+Content-Type: multipart/alternative; boundary=047d7b10ce15798099051f5d268b
 
-I was wondering about this problem when I was fixing the test, but could
-not actually hit it.
+--047d7b10ce15798099051f5d268b
+Content-Type: text/plain; charset=UTF-8
 
-> -static void *get_func(void *mem)
-> +static int page_present(void *p)
->  {
-> -	memcpy(mem, exec_func, getpagesize());
-> +	int fd;
-> +
-> +	fd = SAFE_OPEN(cleanup, "page_present", O_WRONLY|O_CREAT, 0644);
+Hi,
+  I've query which is based on LTP test-cases running.
+  these days I've downloaded and installed LTP on my linux host machine.
+  while running the test cases using runltp script my system went to crash
+after running few testcases.
+  why I am facing these problem and Please clarify me anyone with relevant
+answer for these same.
+Regards &Thanks,
+Kamal
 
-Why don't we use "/dev/null"?
+--047d7b10ce15798099051f5d268b
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div><div><div><div><div>Hi,<br></div>=C2=A0 I&#39;ve quer=
+y which is based on LTP test-cases running. <br></div>=C2=A0 these days I&#=
+39;ve downloaded and installed LTP on my linux host machine.<br>=C2=A0 whil=
+e running the test cases using runltp script my system went to crash after =
+running few testcases.<br></div>=C2=A0 why I am facing these problem and Pl=
+ease clarify me anyone with relevant answer for these same.<br></div>Regard=
+s &amp;Thanks,<br></div>Kamal<br></div>
+
+--047d7b10ce15798099051f5d268b--
 
 
-The rest looks good to me.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+--===============4555614943184136326==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 ------------------------------------------------------------------------------
 Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
@@ -63,7 +72,16 @@ Get real-time metrics from all of your servers, apps and tools
 in one place.
 SourceForge users - Click here to start your Free Trial of Datadog now!
 http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
+--===============4555614943184136326==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
 https://lists.sourceforge.net/lists/listinfo/ltp-list
+
+--===============4555614943184136326==--
+
