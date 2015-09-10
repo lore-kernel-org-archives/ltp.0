@@ -1,23 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZZdc0-0001dl-Hc
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2015 11:32:24 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZZdby-0004lR-5t
-	for ltp-list@lists.sourceforge.net; Wed, 09 Sep 2015 11:32:24 +0000
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 995EBACC2
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <wanlong.gao@gmail.com>) id 1Za0NB-0000rH-5P
+	for ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 11:50:37 +0000
+Received: from mail-la0-f41.google.com ([209.85.215.41])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1Za0NA-0000UZ-Bq
+	for ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 11:50:37 +0000
+Received: by lamp12 with SMTP id p12so25592443lam.0
 	for <ltp-list@lists.sourceforge.net>;
-	Wed,  9 Sep 2015 11:32:15 +0000 (UTC)
-Date: Wed, 9 Sep 2015 13:31:37 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150909113136.GA13546@rei.suse.cz>
+	Thu, 10 Sep 2015 04:50:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Subject: [LTP] Moving the mailing list
+In-Reply-To: <CAO0kMxAv17kx5bg7L++dmQ=OT6nsidj_VCJWtvfF__xBgmJ0XA@mail.gmail.com>
+References: <CAO0kMxAv17kx5bg7L++dmQ=OT6nsidj_VCJWtvfF__xBgmJ0XA@mail.gmail.com>
+Date: Thu, 10 Sep 2015 19:50:29 +0800
+Message-ID: <CAGxEiDC4J8yRjj+xj7bZVzTbh=-YrERnRZQxjswMH6ndggm8Fg@mail.gmail.com>
+From: Wanlong Gao <wanlong.gao@gmail.com>
+Subject: Re: [LTP] Ltp user defined test-cases to run
+Reply-To: wanlong.gao@gmail.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,18 +31,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: kamal p <pkamalbhaskar@gmail.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Good news everyone,
-the Italian Linux Society (ILS - www.ils.org) members are kind enough to
-support us with mailing list on ltp@lists.linux.it. I've send an
-invitation to the list to everyone subscribed to this list. I would like
-to wait for a few days for everyone to subscribe to the new list and
-then we will move the discusssion there.
+On 9/10/15, kamal p <pkamalbhaskar@gmail.com> wrote:
+> Hi ,
+>
+>   Can anyone tell me the procedure how to run user defined set of
+> test-cases(LTP) using runltp with "-f" option by creating command file
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+$ cat >runtest/myset <<EOF
+# list the cases you like
+accept01 accept01
+accept4_01 accept4_01
+
+access01 access01
+access02 access02
+EOF
+
+$ ./runltp -f myset
+
+Thanks,
+Wanlong Gao
+
+
+>
+> Regards,
+> Kamal
+>
 
 ------------------------------------------------------------------------------
 Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
