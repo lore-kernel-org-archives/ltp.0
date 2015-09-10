@@ -1,23 +1,20 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wangxg.fnst@cn.fujitsu.com>) id 1ZRdS3-0006bi-2i
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 09:45:03 +0000
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZZvHp-0006LI-59
+	for Ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 06:24:45 +0000
 Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
 	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZRdS1-00048l-9u
-	for ltp-list@lists.sourceforge.net; Tue, 18 Aug 2015 09:45:03 +0000
-Received: from G08CNEXCHPEKD02.g08.fujitsu.local (localhost.localdomain
-	[127.0.0.1])
-	by edo.cn.fujitsu.com (8.14.3/8.13.1) with ESMTP id t7I9ipm1006827
-	for <ltp-list@lists.sourceforge.net>; Tue, 18 Aug 2015 17:44:51 +0800
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Tue, 18 Aug 2015 17:32:25 +0800
-Message-ID: <1439890345-20039-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
+	id 1ZZvHn-0006La-ST
+	for Ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 06:24:45 +0000
+Message-ID: <1441866309.29760.18.camel@G08FNSTD140232>
+From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+Date: Thu, 10 Sep 2015 14:25:09 +0800
+In-Reply-To: <CAO0kMxDg1KJWzFMqyYOmP5xLe78pyf21MwizsM_P38Vbx02HeQ@mail.gmail.com>
+References: <CAO0kMxDg1KJWzFMqyYOmP5xLe78pyf21MwizsM_P38Vbx02HeQ@mail.gmail.com>
 MIME-Version: 1.0
-Subject: [LTP] [PATCH] netns: adjust the code corresponding to new version
-	iproute's output format
+Subject: Re: [LTP] Query related to LTP test suite run
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -30,44 +27,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: ltp-list@lists.sourceforge.net
+To: kamal p <pkamalbhaskar@gmail.com>
+Cc: Ltp-list@lists.sourceforge.net, ltp@lists.linux.it
 
-In RHEL7.1GA, 'ip link show' gives(iproute-3.10.0-21.el7.x86_64):
-3: veth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000
-    link/ether 36:24:b9:e2:99:44 brd ff:ff:ff:ff:ff:ff
-4: veth1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000
-    link/ether 46:e7:39:82:80:b4 brd ff:ff:ff:ff:ff:ff
-But in RHEL7.2Alpha, 'ip link show' gives(iproute-3.10.0-46.el7.x86_64):
-3: veth0@veth1: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000
-    link/ether da:01:6a:91:78:06 brd ff:ff:ff:ff:ff:ff
-4: veth1@veth0: <BROADCAST,MULTICAST,M-DOWN> mtu 1500 qdisc noop state DOWN mode DEFAULT qlen 1000
-    link/ether b2:6a:0a:32:35:e3 brd ff:ff:ff:ff:ff:ff
+Hello,
 
-This difference will make create_veth() generate wrong device name, fix this.
+CC: ltp@lists.linux.it
 
-Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
----
- testcases/kernel/containers/netns/netns_initialize.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, 2015-09-10 at 10:07 +0530, kamal p wrote:
+> Hi,
+> 
+>   I've query which is based on LTP test-cases running. 
+> 
+>   these days I've downloaded and installed LTP on my linux host
+> machine.
+>   while running the test cases using runltp script my system went to
+> crash after running few testcases.
+> 
+>   why I am facing these problem and Please clarify me anyone with
+> relevant answer for these same.
+> 
 
-diff --git a/testcases/kernel/containers/netns/netns_initialize.sh b/testcases/kernel/containers/netns/netns_initialize.sh
-index d44a02b..28f4015 100755
---- a/testcases/kernel/containers/netns/netns_initialize.sh
-+++ b/testcases/kernel/containers/netns/netns_initialize.sh
-@@ -112,7 +112,7 @@ create_veth()
-     ip link add type veth
-     sleep 1
-     ip link show > /tmp/net2
--    eval `diff /tmp/net1 /tmp/net2 | awk -F": "  '/^> [0-9]*:/ { print "dev" i+0 "=" $2; i++  }'`
-+    eval `diff /tmp/net1 /tmp/net2 | awk -F": " '/^> [0-9]*:/ {print "dev" i+0 "=" $2; i++}' | awk -F'@' '{print $1}'`
- }
- 
- # return 1 if disabled originally, 0 for enabled originally.
--- 
-1.8.2.1
+As I known, inotify06 would make some system crash caused by a known
+kernel bug and the bug has been fixed, you can see this url:
+https://github.com/torvalds/linux/commit/8f2f3eb59dff4ec538de55f2e0592fec85966aab
+
+If the issue is inotify06, I suggest that you should remove it before
+using runltp script.
+You can just do like:
+rm -rf <path_to_install_ltp>/testcases/bin/inotify06
+
+Thanks,
+Zeng
+
+> Regards &Thanks,
+> 
+> Kamal
+> 
+> ------------------------------------------------------------------------------
+> Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+> Get real-time metrics from all of your servers, apps and tools
+> in one place.
+> SourceForge users - Click here to start your Free Trial of Datadog now!
+> http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+
 
 
 ------------------------------------------------------------------------------
+Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+Get real-time metrics from all of your servers, apps and tools
+in one place.
+SourceForge users - Click here to start your Free Trial of Datadog now!
+http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
