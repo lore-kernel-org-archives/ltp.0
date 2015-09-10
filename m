@@ -1,41 +1,41 @@
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Thu, 10 Sep 2015 09:04:07 +0800
-Subject: [LTP] [PATCH]  [PATCH] rmdir/rmdir05: Delete unnecessary if
-In-Reply-To: <1441846935-44787-1-git-send-email-cuibixuan@huawei.com>
-References: <1441846935-44787-1-git-send-email-cuibixuan@huawei.com>
-Message-ID: <55F0D707.4040407@huawei.com>
+From: Wanlong Gao <wanlong.gao@gmail.com>
+Date: Thu, 10 Sep 2015 11:34:06 +0800
+Subject: [LTP] Moving the mailing list
+In-Reply-To: <20150909113136.GA13546@rei.suse.cz>
+References: <20150909113136.GA13546@rei.suse.cz>
+Message-ID: <CAGxEiDD9DAyYm6uD3FrLJgd3-vx++zV35EWTEwP_GRN4pUGd4Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Delete unnecessary if in testcase
+On 9/9/15, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Good news everyone,
+> the Italian Linux Society (ILS - www.ils.org) members are kind enough to
+> support us with mailing list on ltp@lists.linux.it. I've send an
+> invitation to the list to everyone subscribed to this list. I would like
+> to wait for a few days for everyone to subscribe to the new list and
+> then we will move the discusssion there.
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
----
- testcases/kernel/syscalls/rmdir/rmdir05.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
+Great news!
 
-diff --git a/testcases/kernel/syscalls/rmdir/rmdir05.c b/testcases/kernel/syscalls/rmdir/rmdir05.c
-index 10037c7..2f0f102 100644
---- a/testcases/kernel/syscalls/rmdir/rmdir05.c
-+++ b/testcases/kernel/syscalls/rmdir/rmdir05.c
-@@ -81,9 +81,6 @@ int main(int argc, char **argv)
- 		TEST(rmdir("."));
+Cheers,
+Wanlong Gao
 
- 		if (TEST_RETURN == -1) {
--		}
--
--		if (TEST_RETURN == -1) {
- 			if (TEST_ERRNO & (EBUSY | ENOTEMPTY)) {
- 				/* For functionality tests, verify that the
- 				 * directory wasn't removed.
--- 
-1.6.0.2
-
-
-.
-
-
-
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+>
+> ------------------------------------------------------------------------------
+> Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+> Get real-time metrics from all of your servers, apps and tools
+> in one place.
+> SourceForge users - Click here to start your Free Trial of Datadog now!
+> http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
