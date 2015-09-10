@@ -1,23 +1,18 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Zgxq2-0005Ll-59
-	for ltp-list@lists.sourceforge.net; Tue, 29 Sep 2015 16:33:10 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Zgxpv-0004DD-KW
-	for ltp-list@lists.sourceforge.net; Tue, 29 Sep 2015 16:33:10 +0000
-Date: Tue, 29 Sep 2015 18:31:53 +0200
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150929163153.GA32435@rei.suse.cz>
-References: <1439427926-7958-1-git-send-email-cuibixuan@huawei.com>
-	<20150813135813.GA9179@rei.suse.de> <55ECDBD3.1050202@huawei.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <55ECDBD3.1050202@huawei.com>
-Subject: Re: [LTP] [PATCH v2] sched_getattr/sched_getattr01: Add new
- testcase to test sched_getattr
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <chnyda@suse.com>) id 1Za1P7-0005oK-Ql
+	for ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 12:56:41 +0000
+Received: from smtp.nue.novell.com ([195.135.221.5])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Za1P5-0004tL-JY
+	for ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 12:56:41 +0000
+From: Cedric Hnyda <chnyda@suse.com>
+Date: Thu, 10 Sep 2015 14:56:11 +0200
+Message-Id: <1441889771-8243-1-git-send-email-chnyda@suse.com>
+Subject: [LTP] [PATCH] cgroup_fj: fixed exit codes in case of not supported
+	tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,197 +22,429 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cui Bixuan <cuibixuan@huawei.com>
-Cc: ltp-list@lists.sourceforge.net, zhanyongming@huawei.com, zhuyanpeng@huawei.com
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-> +/*
-> + * Copyright (c) 2015 Cui Bixuan <cuibixuan@huawei.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + */
-> +
-> +#ifndef __SCHED_H__
-> +#define __SCHED_H__
-> +
-> +#include "linux_syscall_numbers.h"
+Signed-off-by: Cedric Hnyda <chnyda@suse.com>
 
-You should include stdint.h here to get the int32_t and uint64_t types
-defined.
+Updated
+---
+ .../controllers/cgroup_fj/cgroup_fj_function.sh    |  12 +--
+ .../controllers/cgroup_fj/cgroup_fj_function2.sh   |   2 +-
+ .../controllers/cgroup_fj/cgroup_fj_stress.sh      |   2 +-
+ .../controllers/cgroup_fj/cgroup_fj_utility.sh     | 103 +++++++++++----------
+ .../controllers/cgroup_fj/run_cgroup_test_fj.sh    |   4 +-
+ 5 files changed, 62 insertions(+), 61 deletions(-)
 
-> diff --git a/runtest/sched b/runtest/sched
-> index 16877a3..10a1648 100644
-> --- a/runtest/sched
-> +++ b/runtest/sched
-> @@ -9,6 +9,8 @@ trace_sched01		trace_sched -c 1
->  hackbench01 hackbench 50 process 1000
->  hackbench02 hackbench 20 thread 1000
-> 
-> +sched_getattr01 sched_getattr01
-
-Given that this is simple sched_getattr syscall test we may as well
-include the test in runtest/syscalls.
-
-> diff --git a/testcases/kernel/syscalls/sched_getattr/Makefile b/testcases/kernel/syscalls/sched_getattr/Makefile
-> new file mode 100644
-> index 0000000..30d6cf3
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sched_getattr/Makefile
-> @@ -0,0 +1,25 @@
-> +#
-> +#  Copyright (c) International Business Machines  Corp., 2008
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program;  if not, write to the Free Software
-> +#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +CFLAGS			+= -lpthread
-                                    ^
-				    This should be -pthread see for
-				    example 'man pthread_create'
-
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
-> new file mode 100644
-> index 0000000..6570e86
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
-> @@ -0,0 +1,92 @@
-> +#define _GNU_SOURCE
-> +#include <unistd.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +#include <time.h>
-> +#include <linux/unistd.h>
-> +#include <linux/kernel.h>
-> +#include <linux/types.h>
-> +#include <sys/syscall.h>
-> +#include <pthread.h>
-> +#include <sched.h>
-> +#include <errno.h>
-> +
-> +#include "test.h"
-> +#include "linux_syscall_numbers.h"
-> +#include "lapi/sched.h"
-> +
-> +char *TCID = "edf_test01";
-> +int TST_TOTAL = 1;
-> +
-> +#define SCHED_DEADLINE	6
-> +#define RUNTIME_VAL 10000000
-> +#define PERIOD_VAL 30000000
-> +#define DEADLINE_VAL 30000000
-> +
-> +void *run_deadline(void *data)
-> +{
-> +	struct sched_attr attr, attr_copy;
-> +	int ret;
-> +	unsigned int flags = 0;
-> +	unsigned int size;
-> +
-> +	attr.size = sizeof(attr);
-> +	attr.sched_flags = 0;
-> +	attr.sched_nice = 0;
-> +	attr.sched_priority = 0;
-> +
-> +	/* This creates a 10ms/30ms reservation */
-> +	attr.sched_policy = SCHED_DEADLINE;
-> +	attr.sched_runtime = 10 * 1000 * 1000;
-> +	attr.sched_period = 30 * 1000 * 1000;
-> +	attr.sched_deadline = 30 * 1000 * 1000;
-> +
-> +	ret = sched_setattr(0, &attr, flags);
-> +	if (ret < 0)
-> +		tst_brkm(TFAIL | TERRNO, NULL, "sched_setattr error\n");
-> +
-> +	size = sizeof(attr_copy);
-> +	ret = sched_getattr(0, &attr_copy, size, flags);
-> +	if (ret < 0)
-> +		tst_brkm(TFAIL | TERRNO, NULL, "sched_getattr error\n");
-> +
-> +	int fail = 0;
-> +
-> +	if (attr_copy.sched_runtime != RUNTIME_VAL) {
-> +		tst_resm(TINFO, "sched_runtime is incorrect (%llu),expected"
-> +				" %u", attr.sched_runtime, RUNTIME_VAL);
-> +		fail++;
-> +	}
-> +	if (attr_copy.sched_period != PERIOD_VAL) {
-> +		tst_resm(TINFO, "sched_period is incorrect (%llu),expected"
-> +				" %u", attr.sched_period, PERIOD_VAL);
-                                          ^
-				Technically this is uint64_t so the
-				clean way to print it is to use PRIu64
-				or to cast the attribute to long long
-				unsigned int.
-> +		fail++;
-> +	}
-> +	if (attr_copy.sched_deadline != DEADLINE_VAL) {
-> +		tst_resm(TINFO, "sched_deadline is incorrect (%llu),expected"
-> +				" %u", attr.sched_deadline, DEADLINE_VAL);
-> +		fail++;
-> +	}
-> +
-> +	if (fail)
-> +		tst_resm(TFAIL, "attributes were read back incorrectly");
-> +	else
-> +		tst_resm(TPASS, "attributes were read back correctly");
-> +
-> +	return NULL;
-> +}
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	pthread_t thread;
-> +
-> +	if ((tst_kvercmp(3, 14, 0)) < 0)
-> +		tst_brkm(TCONF, NULL, "EDF needs kernel 3.14 or higher\n");
-> +
-> +	pthread_create(&thread, NULL, run_deadline, NULL);
-> +
-> +	pthread_join(thread, NULL);
-> +
-> +	tst_exit();
-> +}
-
-Otherwise it looks good.
-
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+index 2202708..546cc87 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
+@@ -38,7 +38,7 @@ release_agent_para_str="";
+ notify_on_release_str="";
+ release_agent_str="";
+ 
+-expectted=1;
++expected=1;
+ 
+ # Create some processes and move them to cgroups
+ pid=0;
+@@ -127,7 +127,7 @@ export TMPFILE=$TESTROOT/tmp_tasks
+ 
+ ##########################  main   #######################
+ if [ "$#" -ne "9" ]; then
+-	echo "ERROR: Wrong inputed parameter..Exiting test";
++	echo "ERROR: Wrong input parameters... Exiting test";
+ 	usage;
+ 	exit -1;
+ fi
+@@ -210,17 +210,17 @@ esac
+ # echo notify_on_release that analysed from parameter
+ case $notify_on_release in
+ "1"|"2"|"3")
+-	expectted=1
++	expected=1
+ 	;;
+ *)
+-	expectted=0
++	expected=0
+ 	;;
+ esac
+ 
+ #if [ $notify_on_release -ne 0 ] && [ $notify_on_release -ne 1 ] && [ $notify_on_release -ne 2 ];then
+-#	expectted=0
++#	expected=0
+ #fi
+-do_echo 1 $expectted $notify_on_release_str /dev/cgroup/subgroup_1/notify_on_release;
++do_echo 1 $expected $notify_on_release_str /dev/cgroup/subgroup_1/notify_on_release;
+ 
+ # echo release_agent that analysed from parameter
+ if [ $release_agent_echo -ne 1 ]; then
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh
+index 57d131d..aa81143 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh
+@@ -45,7 +45,7 @@ usage()
+ 
+ exit_parameter()
+ {
+-	echo "ERROR: Wrong inputed parameter..Exiting test"
++	echo "ERROR: Wrong input parametes... Exiting test"
+ 	exit -1;
+ }
+ 
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
+index fd9fa2a..b53f455 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
+@@ -76,7 +76,7 @@ usage()
+ 
+ exit_parameter()
+ {
+-	echo "ERROR: Wrong inputed parameter..Exiting test"
++	echo "ERROR: Wrong input parameters... Exiting test"
+ 	exit -1;
+ }
+ 
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
+index 75c0dcb..8f00b85 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
+@@ -45,7 +45,8 @@ exist_subsystem()
+ 
+ 	exist=`grep -w $checksubsystem /proc/cgroups | cut -f1`;
+ 	if [ "$exist" = "" ]; then
+-		exit 9
++		tst_brkm TCONF NULL "Subsystem $subsystem not supported"
++		exit 32
+ 	fi
+ }
+ 
+@@ -220,7 +221,7 @@ get_release_agent()
+ }
+ 
+ # check the exit status, and exit or echo info.
+-# exit status	expectted value	echo info	exit or not
++# exit status	expected value	echo info	exit or not
+ # 0		0		no		no
+ # 0		1		yes	yes
+ # not 0	0		yes	yes
+@@ -233,20 +234,20 @@ do_exit()
+ 	fi
+ 
+ 	exit_here=$1
+-	expectted=$2
++	expected=$2
+ 	exit_status=$3
+ 
+ 	if [ $exit_status -eq 0 ] ;then
+-		if [ $expectted -lt 1 ]; then
+-			echo "								against with expectted"
++		if [ $expected -lt 1 ]; then
++			echo "								against with expected"
+ 			if [ $exit_here -ge 1 ]; then
+ 				cleanup;
+ 				exit -1
+ 			fi
+ 		fi
+ 	else
+-		if [ $expectted -ge 1 ]; then
+-			echo "								against with expectted"
++		if [ $expected -ge 1 ]; then
++			echo "								against with expected"
+ 			if [ $exit_here -ge 1 ]; then
+ 				cleanup;
+ 				exit -1
+@@ -268,20 +269,20 @@ do_echo()
+ 	fi
+ 
+ 	exit_here=$1
+-	expectted=$2
++	expected=$2
+ 	value=$3
+ 	target=$4
+ 
+ 	if [ $no_debug -ne 1 ]; then
+-		if [ $expectted -ge 1 ]; then
+-			echo "\"echo $value > $target\" (expectted: success)"
++		if [ $expected -ge 1 ]; then
++			echo "\"echo $value > $target\" (expected: success)"
+ 		else
+-			echo "\"echo $value > $target\" (expectted: fail)"
++			echo "\"echo $value > $target\" (expected: fail)"
+ 		fi
+ 	fi
+ 
+ 	`echo $value > $target`
+-	do_exit $exit_here $expectted $?;
++	do_exit $exit_here $expected $?;
+ }
+ 
+ do_mkdir()
+@@ -292,7 +293,7 @@ do_mkdir()
+ 	fi
+ 
+ 	exit_here=$1
+-	expectted=$2
++	expected=$2
+ 	target=$3
+ 	parents=0
+ 	if [ "$#" -eq "4" ] && [ "$4" -ne 0 ]; then
+@@ -300,10 +301,10 @@ do_mkdir()
+ 	fi
+ 
+ 	if [ $no_debug -ne 1 ]; then
+-		if [ $expectted -ge 1 ]; then
+-			echo "\"mkdir $target\" (expectted: success)"
++		if [ $expected -ge 1 ]; then
++			echo "\"mkdir $target\" (expected: success)"
+ 		else
+-			echo "\"mkdir $target\" (expectted: fail)"
++			echo "\"mkdir $target\" (expected: fail)"
+ 		fi
+ 	fi
+ 
+@@ -316,7 +317,7 @@ do_mkdir()
+ 	else
+ 		mkdir -p $target
+ 	fi
+-	do_exit $exit_here $expectted $?;
++	do_exit $exit_here $expected $?;
+ }
+ 
+ do_rmdir()
+@@ -327,7 +328,7 @@ do_rmdir()
+ 	fi
+ 
+ 	exit_here=$1
+-	expectted=$2
++	expected=$2
+ 	target=$3
+ 
+ 	if ! [ -e $target ]; then
+@@ -336,15 +337,15 @@ do_rmdir()
+ 	fi
+ 
+ 	if [ $no_debug -ne 1 ]; then
+-		if [ $expectted -ge 1 ]; then
+-			echo "\"rmdir $target\" (expectted: success)"
++		if [ $expected -ge 1 ]; then
++			echo "\"rmdir $target\" (expected: success)"
+ 		else
+-			echo "\"rmdir $target\" (expectted: fail)"
++			echo "\"rmdir $target\" (expected: fail)"
+ 		fi
+ 	fi
+ 
+ 	rmdir $3 $4 $5
+-	do_exit $exit_here $expectted $?;
++	do_exit $exit_here $expected $?;
+ }
+ 
+ do_mount()
+@@ -355,7 +356,7 @@ do_mount()
+ 	fi
+ 
+ 	exit_here=$1
+-	expectted=$2
++	expected=$2
+ 	para_o=$3
+ 	target=$4
+ 	something="cgroup"
+@@ -364,15 +365,15 @@ do_mount()
+ 	fi
+ 
+ 	if [ $no_debug -ne 1 ]; then
+-		if [ $expectted -ge 1 ]; then
+-			echo "\"mount -t cgroup $para_o $something $target\" (expectted: success)"
++		if [ $expected -ge 1 ]; then
++			echo "\"mount -t cgroup $para_o $something $target\" (expected: success)"
+ 		else
+-			echo "\"mount -t cgroup $para_o $something $target\" (expectted: fail)"
++			echo "\"mount -t cgroup $para_o $something $target\" (expected: fail)"
+ 		fi
+ 	fi
+ 
+ 	mount -t cgroup $para_o $something $target
+-	do_exit $exit_here $expectted $?;
++	do_exit $exit_here $expected $?;
+ }
+ 
+ do_umount()
+@@ -383,54 +384,54 @@ do_umount()
+ 	fi
+ 
+ 	exit_here=$1
+-	expectted=$2
++	expected=$2
+ 	target=$3
+ 
+ 	if [ $no_debug -ne 1 ]; then
+-		if [ $expectted -ge 1 ]; then
+-			echo "\"umount $target\" (expectted: success)"
++		if [ $expected -ge 1 ]; then
++			echo "\"umount $target\" (expected: success)"
+ 		else
+-			echo "\"umount $target\" (expectted: fail)"
++			echo "\"umount $target\" (expected: fail)"
+ 		fi
+ 	fi
+ 
+ 	umount $target
+-	do_exit $exit_here $expectted $?;
++	do_exit $exit_here $expected $?;
+ }
+ 
+ do_mv()
+ {
+ 	if [ "$#" -ne "4" ]; then
+-		echo "ERROR: mv failed,your parameter is wrong..Exiting test"
++		echo "ERROR: mv failed,your parameter is wrong... Exiting test"
+ 		exit -1
+ 	fi
+ 
+ 	exit_here=$1
+-	expectted=$2
++	expected=$2
+ 	source=$3
+ 	target=$4
+ 
+ 	if [ $no_debug -ne 1 ]; then
+-		if [ $expectted -ge 1 ]; then
+-			echo "\"mv $source $target\" (expectted: success)"
++		if [ $expected -ge 1 ]; then
++			echo "\"mv $source $target\" (expected: success)"
+ 		else
+-			echo "\"mv $source $target\" (expectted: fail)"
++			echo "\"mv $source $target\" (expected: fail)"
+ 		fi
+ 	fi
+ 
+ 	mv $source $target
+-	do_exit $exit_here $expectted $?;
++	do_exit $exit_here $expected $?;
+ }
+ 
+ do_kill()
+ {
+ 	if [ "$#" -ne "4" ]; then
+-		echo "ERROR: kill failed,your parameter is wrong..Exiting test"
++		echo "ERROR: kill failed,your parameter is wrong... Exiting test"
+ 		exit -1
+ 	fi
+ 
+ 	exit_here=$1
+-	expectted=$2
++	expected=$2
+ 	signo=$3
+ 	pid=$4
+ 
+@@ -439,15 +440,15 @@ do_kill()
+ 	fi
+ 
+ 	if [ $no_debug -ne 1 ]; then
+-		if [ $expectted -ge 1 ]; then
+-			echo "\"kill -$signo $pid\" (expectted: success)"
++		if [ $expected -ge 1 ]; then
++			echo "\"kill -$signo $pid\" (expected: success)"
+ 		else
+-			echo "\"kill -$signo $pid\" (expectted: fail)"
++			echo "\"kill -$signo $pid\" (expected: fail)"
+ 		fi
+ 	fi
+ 
+ 	kill -s $signo $pid
+-	do_exit $exit_here $expectted $?;
++	do_exit $exit_here $expected $?;
+ }
+ 
+ setup()
+@@ -464,7 +465,7 @@ setup()
+ 		cp -f $TESTROOT/cgroup_fj_release_agent /root
+ 		chmod a+x /root/cgroup_fj_release_agent
+ 	else
+-		echo "ERROR: $TESTROOT/cgroup_fj_release_agent isn't exist..Exiting test"
++		echo "ERROR: $TESTROOT/cgroup_fj_release_agent doesn't exist... Exiting test"
+ 		exit -1;
+ 	fi
+ 
+@@ -476,7 +477,7 @@ setup()
+ 	then
+ 		chmod a+x $TESTROOT/cgroup_fj_proc
+ 	else
+-		echo "ERROR: $TESTROOT/cgroup_fj_proc isn't exist..Exiting test"
++		echo "ERROR: $TESTROOT/cgroup_fj_proc doesn't exist... Exiting test"
+ 		exit -1;
+ 	fi
+ }
+@@ -547,7 +548,7 @@ reclaim_foundling()
+ mkdir_subgroup()
+ {
+ 	if ! [ -e /dev/cgroup ]; then
+-		echo "ERROR: /dev/cgroup isn't exist..Exiting test"
++		echo "ERROR: /dev/cgroup doesn't exist... Exiting test"
+ 		exit -1;
+ 	fi
+ 
+@@ -556,10 +557,10 @@ mkdir_subgroup()
+ 
+ mount_cgroup ()
+ {
+-	expectted=1
++	expected=1
+ 	PARAMETER_O="";
+ 	if [ "$subsystem" == "abc" ]; then
+-		expectted=0
++		expected=0
+ 	fi
+ 	if [ "$subsystem" != "" ]; then
+ 		PARAMETER_O="$subsystem"
+@@ -593,7 +594,7 @@ mount_cgroup ()
+ 		PARAMETER_O="-o""$PARAMETER_O"
+ 	fi
+ 
+-	do_mount 1 $expectted "$PARAMETER_O" /dev/cgroup
++	do_mount 1 $expected "$PARAMETER_O" /dev/cgroup
+ }
+ 
+ check_para()
+@@ -613,7 +614,7 @@ check_para()
+ 
+ 	if [ $ret1 -ne 0 ] || [ $ret2 -ne 0 ] || [ $ret3 -ne 0 ] || [ $ret4 -ne 0 ] || [ $ret5 -ne 0 ] || [ $ret6 -ne 0 ]
+ 	then
+-		echo "ERROR: Wrong inputed parameter..Exiting test"
++		echo "ERROR: Wrong input parameters..Exiting test"
+ 		return -1
+ 	fi
+ 
+diff --git a/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh b/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
+index c8e698b..1d1598e 100755
+--- a/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
++++ b/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
+@@ -125,8 +125,8 @@ esac
+ ret=$?
+ if [ $ret -eq 0 ]; then
+ 	tst_resm TPASS "case$i($CASETYPE$CASECMD)    PASS"
+-elif [ $ret -ne 9 ]; then
++elif [ $ret -ne 32 ]; then
+ 	tst_resm TFAIL "case$i($CASETYPE $CASECMD)    FAIL"
+ fi
+ 
+-exit $ret;
++tst_exit
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.1.4
+
 
 ------------------------------------------------------------------------------
+Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+Get real-time metrics from all of your servers, apps and tools
+in one place.
+SourceForge users - Click here to start your Free Trial of Datadog now!
+http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
