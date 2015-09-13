@@ -1,18 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <cuibixuan@huawei.com>) id 1ZZqGC-0001Ik-Mm
-	for ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 01:02:44 +0000
-Received: from szxga03-in.huawei.com ([119.145.14.66])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZZqG9-0005zS-OV
-	for ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 01:02:44 +0000
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Thu, 10 Sep 2015 01:02:15 +0000
-Message-ID: <1441846935-44787-1-git-send-email-cuibixuan@huawei.com>
-MIME-Version: 1.0
-Subject: [LTP] [PATCH]  [PATCH] rmdir/rmdir05: Delete unnecessary if
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <jeantsuru@icloud.com>) id 1Zb8Fk-0000MQ-Ss
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2015 14:27:36 +0000
+Received: from mr11p00im-asmtp002.me.com ([17.110.69.253])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1Zb8Fk-0000R3-1A
+	for ltp-list@lists.sourceforge.net; Sun, 13 Sep 2015 14:27:36 +0000
+Received: from [192.168.11.4] (softbank126006096222.bbtec.net [126.6.96.222])
+	by mr11p00im-asmtp002.me.com
+	(Oracle Communications Messaging Server 7.0.5.35.0 64bit (built Mar 31
+	2015))
+	with ESMTPSA id <0NUM00DOBDHR7J00@mr11p00im-asmtp002.me.com> for
+	ltp-list@lists.sourceforge.net; Sun, 13 Sep 2015 14:27:29 +0000 (GMT)
+Date: Sun, 13 Sep 2015 23:27:26 +0900
+From: Takeshi Misawa <jeantsuru@icloud.com>
+Message-id: <55F587CE.1070904@iCloud.com>
+MIME-version: 1.0
+Subject: [LTP] settimeofday01:TFAIL in Kernel 4.2.0
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -22,44 +28,43 @@ List-Post: <mailto:ltp-list@lists.sourceforge.net>
 List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: zhuyanpeng@huawei.com, zhanyongming@huawei.com
 
-Delete unnecessary if in testcase
-
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
----
- testcases/kernel/syscalls/rmdir/rmdir05.c |    3 ---
- 1 files changed, 0 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/syscalls/rmdir/rmdir05.c b/testcases/kernel/syscalls/rmdir/rmdir05.c
-index 10037c7..2f0f102 100644
---- a/testcases/kernel/syscalls/rmdir/rmdir05.c
-+++ b/testcases/kernel/syscalls/rmdir/rmdir05.c
-@@ -81,9 +81,6 @@ int main(int argc, char **argv)
- 		TEST(rmdir("."));
- 
- 		if (TEST_RETURN == -1) {
--		}
--
--		if (TEST_RETURN == -1) {
- 			if (TEST_ERRNO & (EBUSY | ENOTEMPTY)) {
- 				/* For functionality tests, verify that the
- 				 * directory wasn't removed.
--- 
-1.6.0.2
-
-
-------------------------------------------------------------------------------
-Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
-Get real-time metrics from all of your servers, apps and tools
-in one place.
-SourceForge users - Click here to start your Free Trial of Datadog now!
-http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+VGhpcyBpcyBhIG15IGZpcnN0IG1haWwgdG8gTFRQIG1haWxpbmcgbGlzdC4KCkknbSB0ZXN0aW5n
+IExpbnV4IEtlcm5lbCA0LjIuMCBieSBMVFAuIEkgc2F3IGEgZm9sbG93aW5nIEVycm9yLgotLS0t
+LQpzZXR0aW1lb2ZkYXkwMSAgICAxICBURkFJTCAgOiAgc2V0dGltZW9mZGF5MDEuYzo5ODogRXJy
+b3IgU2V0dGluZyBUaW1lLCAKZXJybm89MjIKc2V0dGltZW9mZGF5MDEgICAgMiAgVEZBSUwgIDog
+IHNldHRpbWVvZmRheTAxLmM6MTIwOiBUZXN0IGNvbmRpdGlvbiAxIGZhaWxlZApzZXR0aW1lb2Zk
+YXkwMSAgICAzICBUUEFTUyAgOiAgVGVzdCBjb25kaXRpb24gMiBzdWNjZXNzZnVsCi0tLS0tCgpJ
+biBjb21taXQgb2YgTGludXggS2VybmVsOgplMWQ3YmE4NzM1NTUxZWQ3OWM3YTA0NjNhMDQyMzUz
+NTc0Yjk2ZGEzICJ0aW1lOiBBbHdheXMgbWFrZSBzdXJlIAp3YWxsX3RvX21vbm90b25pYyBpc24n
+dCBwb3NpdGl2ZSIKYWRkIGEgbmV3IGNoZWNrIHRvIGRvX3NldHRpbWVvZmRheTY0KCkuCgpUaGlz
+IGNvbW1pdCBzYWlkOgoiQXMgYSByZXN1bHQgb25lIGNhbid0IHNldCB0aGUgQ0xPQ0tfUkVBTFRJ
+TUUgdGltZSBwcmlvciB0byAoMTk3MCArIApzeXN0ZW0gdXB0aW1lKS4iCgpJbiBzZXR0aW1lb2Zk
+YXkwMSB0ZXN0IGNhc2UsIHBhcmFtZXRlciBvZiBmaXJzdCBzZXR0aW1lb2ZkYXkoKSBpcyAKMTAw
+czEwMM68cy4gQSBsb3Qgb2YgY2FzZXMsIFRFU1RfUkVUVVJOIGlzIC0xLgoKSSdkIGJldHRlciB0
+byBtb2RpZnkgc2V0dGltZW9mZGF5MDEgdGVzdCBjYXNlLgoKVG8gbWVldCB0aGF0IHJlcXVpcmVt
+ZW50LCBJIG1hZGUgZm9sbG93aW5nIGNoYW5nZXMuKEkgaGF2ZSBsZXNzIApjb25maWRlbmNlIHRo
+YXQgaXQgaXMgY29ycmVjdC4uLikKLS0tLS0KZGlmZiAtLWdpdCBhL3Rlc3RjYXNlcy9rZXJuZWwv
+c3lzY2FsbHMvc2V0dGltZW9mZGF5L3NldHRpbWVvZmRheTAxLmMgCmIvdGVzdGNhc2VzL2tlcm5l
+bC9zeXNjYWxscy9zZXR0aW1lb2ZkYXkKaW5kZXggYjU5ODgwMC4uYTY4OTRmYiAxMDA2NDQKLS0t
+IGEvdGVzdGNhc2VzL2tlcm5lbC9zeXNjYWxscy9zZXR0aW1lb2ZkYXkvc2V0dGltZW9mZGF5MDEu
+YworKysgYi90ZXN0Y2FzZXMva2VybmVsL3N5c2NhbGxzL3NldHRpbWVvZmRheS9zZXR0aW1lb2Zk
+YXkwMS5jCkBAIC04OCw5ICs4OCwxMCBAQCBpbnQgbWFpbihpbnQgYXJnYywgY2hhciAqKmFyZ3Yp
+CiAgICAgICAgICAgICAgIGludCBjb25kaXRpb25fbnVtYmVyID0gMTsKICAgICAgICAgICAgICAg
+LyogcmVzZXQgdHN0X2NvdW50IGluIGNhc2Ugd2UgYXJlIGxvb3BpbmcgKi8KICAgICAgICAgICAg
+ICAgdHN0X2NvdW50ID0gMDsKLQotICAgICAgICAgICAgICAgdHAudHZfc2VjID0gVkFMX1NFQzsK
+LSAgICAgICAgICAgICAgIHRwLnR2X3VzZWMgPSBWQUxfTVNFQzsKKworICAgICAgICAgICAgICAg
+Z2V0dGltZW9mZGF5KCZ0cCwgTlVMTCk7CisgICAgICAgICAgICAgICB0cC50dl9zZWMgKz0gVkFM
+X1NFQzsKKyAgICAgICAgICAgICAgIHRwLnR2X3VzZWMgKz0gVkFMX01TRUM7CgogICAgICAgICAg
+ICAgICBURVNUKHNldHRpbWVvZmRheSgmdHAsIE5VTEwpKTsKICAgICAgICAgICAgICAgaWYgKFRF
+U1RfUkVUVVJOID09IC0xKSB7Ci0tLS0KClJlc3VsdDoKc2V0dGltZW9mZGF5MDEgICAgMSAgVFBB
+U1MgIDogIFRlc3QgY29uZGl0aW9uIDEgc3VjY2Vzc2Z1bApzZXR0aW1lb2ZkYXkwMSAgICAyICBU
+UEFTUyAgOiAgVGVzdCBjb25kaXRpb24gMiBzdWNjZXNzZnVsCgpUaGFua3MuCgoKLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkx0cC1saXN0IG1haWxpbmcgbGlzdApMdHAtbGlzdEBsaXN0cy5zb3VyY2Vmb3JnZS5uZXQK
+aHR0cHM6Ly9saXN0cy5zb3VyY2Vmb3JnZS5uZXQvbGlzdHMvbGlzdGluZm8vbHRwLWxpc3QK
