@@ -1,82 +1,61 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 14 Sep 2015 12:56:51 +0300
-Subject: [LTP] [PATCH v6 2/7] SAFE_MACROS: Add socket(), bind(), listen(),
- connect() and getsockname()
-In-Reply-To: <1441016132-18804-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <20150805172957.GB4216@rei.suse.de>
- <1441016132-18804-1-git-send-email-zenglg.jy@cn.fujitsu.com>
- <1441016132-18804-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-Message-ID: <55F699E3.9010104@oracle.com>
+From: kai.kang@windriver.com <kai.kang@windriver.com>
+Date: Mon, 14 Sep 2015 18:11:01 +0800
+Subject: [LTP] [PATCH] replace inline with static inline for gcc 5.x
+Message-ID: <1442225461-14559-1-git-send-email-kai.kang@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 08/31/2015 01:15 PM, Zeng Linggang wrote:
-> Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->   include/safe_macros.h |   1 +
->   include/safe_net.h    |  59 +++++++++++++++++++++++++
->   lib/safe_net.c        | 117 ++++++++++++++++++++++++++++++++++++++++++++++++++
->   3 files changed, 177 insertions(+)
->   create mode 100644 include/safe_net.h
->   create mode 100644 lib/safe_net.c
->
-...
-> +
-> +#define	GET_ADDR(sock_addr) \
-> +	(inet_ntoa(((struct sockaddr_in *)sock_addr)->sin_addr))
-> +
+From: Kai Kang <kai.kang@windriver.com>
 
-It won't work with IPv6. inet_ntoa is considered as deprecated, please 
-use inet_ntop() instead. Also the name of the macro should be with the 
-prefix TST_ or LTP_. I would use LTP_SOCK_ADDR or similar. In case of 
-different ai_family, defining it as a function is more appropriate.
+gcc 5.x defaults to -std=gnu11 instead of -std=gnu89 which causes
+semantics for inline functions changes.
 
-...
-> +
-> +int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
-> +	      int socket, const struct sockaddr *address,
-> +	      socklen_t address_len)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < 120; i++) {
-> +		if (!bind(socket, address, address_len)) {
-> +			tst_resm(TINFO, "bind is OK now");
-> +			return 0;
-> +		}
-> +
-> +		if (errno != EADDRINUSE) {
-> +			tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +				 "%s:%d: bind(%d, %s, %d) failed", file, lineno,
-> +				 socket, GET_ADDR(address), address_len);
+GNU89 inline: Same as C99 extern inline.
 
-In bind(), the port address is more important.
+So the standalone 'inline' causes error such as:
 
-> +		}
-> +
-> +		if ((i + 1) % 10 == 1) {
-> +			tst_resm(TINFO, "address is in use, waited %3i sec",
-> +				 i + 1);
-> +		}
+git/testcases/kernel/syscalls/kill/kill10.c:355: undefined reference to `k_sigaction'
 
-"if" block should go after sleep. Also why "==1"? May be "== 0" instead. 
-Otherwise you will print it after 1s, 11s, 21s, ... etc.
+Replace inline with static inline to fix this issue.
 
-> +
-> +		sleep(1);
-> +	}
-> +
-> +	tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +		 "%s:%d: Failed to bind(%d, %p, %d) after 30 retries", file,
-> +		 lineno, socket, GET_ADDR(address), address_len);
+Ref:
+https://gcc.gnu.org/gcc-5/porting_to.html
 
-Please correct the message. I would remove "after 30 retries".
+Signed-off-by: Kai Kang <kai.kang@windriver.com>
+---
+ testcases/kernel/controllers/libcontrollers/libcontrollers.c | 2 +-
+ testcases/kernel/syscalls/kill/kill10.c                      | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks,
-Alexey
+diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+index 844c5bc..75766fc 100644
+--- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
++++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+@@ -158,7 +158,7 @@ int read_file(char *filepath, int action, unsigned int *value)
+  * Prints error message and returns -1
+  */
+ 
+-inline void error_function(char *msg1, char *msg2)
++static inline void error_function(char *msg1, char *msg2)
+ {
+ 	fprintf(stdout, "ERROR: %s ", msg1);
+ 	fprintf(stdout, "%s\n", msg2);
+diff --git a/testcases/kernel/syscalls/kill/kill10.c b/testcases/kernel/syscalls/kill/kill10.c
+index 982d9da..0c51a91 100644
+--- a/testcases/kernel/syscalls/kill/kill10.c
++++ b/testcases/kernel/syscalls/kill/kill10.c
+@@ -185,7 +185,7 @@ int child_checklist_total = 0;
+ int checklist_cmp(const void *a, const void *b);
+ void checklist_reset(int bit);
+ 
+-inline int k_sigaction(int sig, struct sigaction *sa, struct sigaction *osa);
++static inline int k_sigaction(int sig, struct sigaction *sa, struct sigaction *osa);
+ 
+ char *TCID = "kill10";
+ int TST_TOTAL = 1;
+-- 
+2.4.1
+
