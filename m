@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 Sep 2015 10:37:29 +0200
-Subject: [LTP] LTP and commit e1d7ba8735551ed7 ("time: Always make sure
- wall_to_monotonic isn't positive")
-In-Reply-To: <20150914134603.GD7002@leverpostej>
-References: <20150914134603.GD7002@leverpostej>
-Message-ID: <20150915083729.GA3860@rei.nue.novell.com>
+Date: Tue, 15 Sep 2015 10:51:25 +0200
+Subject: [LTP] settimeofday01:TFAIL in Kernel 4.2.0
+In-Reply-To: <55F587CE.1070904@iCloud.com>
+References: <55F587CE.1070904@iCloud.com>
+Message-ID: <20150915085125.GB3351@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,28 +11,40 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> While testing v4.3-rc1 with the LTP, we spotted failures in a couple of
-> timekeeping tests, which seem to be a result of commit e1d7ba8735551ed7
-> ("time: Always make sure wall_to_monotonic isn't positive").
+> This is a my first mail to LTP mailing list.
 > 
-> In both cases this is because the new time would be before the boot
-> time, so I guess these are covered by the caveat at the end of the
-> commit message.
+> I'm testing Linux Kernel 4.2.0 by LTP. I saw a following Error.
+> -----
+> settimeofday01    1  TFAIL  :  settimeofday01.c:98: Error Setting Time, 
+> errno=22
+> settimeofday01    2  TFAIL  :  settimeofday01.c:120: Test condition 1 failed
+> settimeofday01    3  TPASS  :  Test condition 2 successful
+> -----
 > 
-> settimeofday01 [1] tries tries to settimeofday() with a timeval 100s and
-> 100ns, while clock_gettime02 [2] tries to clock_settime to 1s and
-> 100ns. Neither expect -EINVAL, and report failure with the new
-> behaviour.
+> In commit of Linux Kernel:
+> e1d7ba8735551ed79c7a0463a042353574b96da3 "time: Always make sure 
+> wall_to_monotonic isn't positive"
+> add a new check to do_settimeofday64().
 > 
-> While I don't know that any "real" software is affected, I thought I
-> should let you know.
+> This commit said:
+> "As a result one can't set the CLOCK_REALTIME time prior to (1970 + 
+> system uptime)."
+> 
+> In settimeofday01 test case, parameter of first settimeofday() is 
+> 100s100??s. A lot of cases, TEST_RETURN is -1.
+> 
+> I'd better to modify settimeofday01 test case.
+> 
+> To meet that requirement, I made following changes.(I have less 
+> confidence that it is correct...)
 
-Thanks for the report, we allready have patch for the first testcase on
-the mailing list that initializes the the timeval value to current time
-+ small amount. I will have a look at the second test as well.
+The patch looks good but does not apply since the the whitespaces are
+corrupted. Can you please resend correct one with a better changelog and
+Signed-off-by line? (set you name and email in git, then use git commit
+-s and git format-patch -1 and send the result)
 
-> [1] https://github.com/linux-test-project/ltp/blob/20150903/testcases/kernel/syscalls/settimeofday/settimeofday01.c
-> [2] https://github.com/linux-test-project/ltp/blob/20150903/testcases/kernel/timers/clock_settime/clock_settime02.c
+Also the mailing list has moved to ltp@lists.linux.it, please use that
+one from now on.
 
 -- 
 Cyril Hrubis
