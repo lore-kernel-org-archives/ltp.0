@@ -1,81 +1,52 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 15 Sep 2015 19:16:31 +0800
-Subject: [LTP] [PATCH] containers/netns/: fix kernel supporting check
-Message-ID: <1442315791-20260-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Wanlong Gao <wanlong.gao@gmail.com>
+Date: Tue, 15 Sep 2015 21:33:27 +0800
+Subject: [LTP] [PATCH] MAINTAINERS: Update LTP mailing list
+In-Reply-To: <20150915104017.GA7330@rei.suse.cz>
+References: <20150915104017.GA7330@rei.suse.cz>
+Message-ID: <20150915133327.GC26095@WanlongdeMacBook-Pro.local>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On RHEL5.11GA, test result should be TCONF but not TFAIL since
-setns() is not supported, so fix this.
+On Tue, Sep 15, 2015 at 12:40:17PM +0200, Cyril Hrubis wrote:
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 7ba7ab7..7e65ceb 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6456,7 +6456,7 @@ M:	Wanlong Gao <gaowanlong@cn.fujitsu.com>
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- testcases/kernel/containers/netns/netns_helper.sh | 8 +++++++-
- testcases/kernel/containers/netns/netns_sysfs.sh  | 9 ++++++++-
- testcases/kernel/containers/share/ns_exec.c       | 6 ++----
- 3 files changed, 17 insertions(+), 6 deletions(-)
+Cyril,
 
-diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
-index cea1541..f9d6cba 100755
---- a/testcases/kernel/containers/netns/netns_helper.sh
-+++ b/testcases/kernel/containers/netns/netns_helper.sh
-@@ -188,8 +188,14 @@ netns_ns_exec_setup()
- 		tst_brkm TBROK "unable to create a new network namespace"
- 	fi
- 
--	$NS_EXEC $NS_HANDLE0 ip link add veth0 type veth peer name veth1 || \
-+	$NS_EXEC $NS_HANDLE0 ip link add veth0 type veth peer name veth1
-+	if [ $? -eq 32 ]; then
-+		tst_brkm TCONF "setns not supported"
-+	fi
-+
-+	if [ $? -ne 0 ]; then
- 		tst_brkm TBROK "unable to create veth pair devices"
-+	fi
- 
- 	$NS_EXEC $NS_HANDLE0 ns_ifmove veth1 $NS_HANDLE1
- 	if [ $? -eq 0 ]; then
-diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
-index c10fa36..6c95a7d 100755
---- a/testcases/kernel/containers/netns/netns_sysfs.sh
-+++ b/testcases/kernel/containers/netns/netns_sysfs.sh
-@@ -43,8 +43,15 @@ TST_CLEANUP=cleanup
- ls /sys/class/net >sysfs_before
- 
- 
--ns_exec $NS_HANDLE ip link add dummy0 type dummy || \
-+ns_exec $NS_HANDLE ip link add dummy0 type dummy
-+if [ $? -eq 32 ]; then
-+	tst_brkm TCONF "setns not supported"
-+fi
-+
-+if [ $? -ne 0 ]; then
- 	tst_brkm TBROK "failed to add a new dummy device"
-+fi
-+
- ns_exec $NS_HANDLE mount -t sysfs none /sys 2>/dev/null
- 
- ns_exec $NS_HANDLE test -d /sys/class/net/dummy0
-diff --git a/testcases/kernel/containers/share/ns_exec.c b/testcases/kernel/containers/share/ns_exec.c
-index e2f068c..9148b46 100644
---- a/testcases/kernel/containers/share/ns_exec.c
-+++ b/testcases/kernel/containers/share/ns_exec.c
-@@ -86,10 +86,8 @@ int main(int argc, char *argv[])
- 	int i, rv, pid;
- 
- 	rv = syscall(__NR_setns, -1, 0);
--	if (rv == -1 && errno == ENOSYS) {
--		tst_resm(TINFO, "setns is not supported in the kernel");
--		return 1;
--	}
-+	if (rv == -1 && errno == ENOSYS)
-+		tst_brkm(TCONF, NULL, "setns is not supported in the kernel");
- 
- 	if (argc < 3) {
- 		tst_resm(TINFO, "%s <NS_PID> <PROGRAM> [ARGS]\n", argv[0]);
--- 
-1.8.4.2
+Would you help update my email address in above line BTW? to:
 
+Wanlong Gao <wanlong.gao@gmail.com>
+
+
+Thanks,
+Wanlong Gao
+
+>  M:	Jan Stancek <jstancek@redhat.com>
+>  M:	Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+>  M:	Alexey Kodanev <alexey.kodanev@oracle.com>
+> -L:	ltp-list@lists.sourceforge.net (subscribers-only)
+> +L:	ltp@lists.linux.it (subscribers-only)
+>  W:	http://linux-test-project.github.io/
+>  T:	git git://github.com/linux-test-project/ltp.git
+>  S:	Maintained
+> -- 
+> 2.4.6
+> 
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
+> -- 
+> Mailing list info: http://lists.linux.it/listinfo/ltp
