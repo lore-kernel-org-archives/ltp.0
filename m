@@ -1,26 +1,22 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1ZfAwx-0003Fq-W8
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2015 18:08:56 +0000
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZbnYQ-0001ph-NZ
+	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2015 10:33:38 +0000
 Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZfAww-0000b8-Qu
-	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2015 18:08:55 +0000
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
-	by mx2.suse.de (Postfix) with ESMTP id 0A598ABC8
-	for <ltp-list@lists.sourceforge.net>;
-	Thu, 24 Sep 2015 18:08:47 +0000 (UTC)
-Date: Thu, 24 Sep 2015 20:07:51 +0200
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZbnYP-0006C0-LR
+	for ltp-list@lists.sourceforge.net; Tue, 15 Sep 2015 10:33:38 +0000
+Date: Tue, 15 Sep 2015 12:32:46 +0200
 From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20150924180751.GA1094@rei.suse.cz>
-References: <1441708477-26192-1-git-send-email-chnyda@suse.com>
+Message-ID: <20150915103246.GA7077@rei.suse.cz>
+References: <20150609122628.GE29057@dhcp22.suse.cz>
+	<20150902132506.GA6661@rei.suse.cz>
 MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <1441708477-26192-1-git-send-email-chnyda@suse.com>
-Subject: Re: [LTP] [PATCH] cgroup_fj: renamed arguments because the previous
- ones were not clear.
+In-Reply-To: <20150902132506.GA6661@rei.suse.cz>
+Subject: Re: [LTP] ltp: thp04.c test case
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -33,27 +29,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Cedric Hnyda <chnyda@suse.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Michal Hocko <mhocko@suse.cz>
+Cc: ltp-list@lists.sourceforge.net, Zhouping Liu <zliu@redhat.com>, Vlastimil Babka <vbabka@suse.cz>
 
 Hi!
-> +''|*[!0-9]*) 
-> +	usage
-> +	exit_parameter;;
-> +    *) ;;
->  esac
+> There was no response for about three months. If nobody stands up and
+> fixes the testcase I would go for dropping it since it does not work
+> reliably as it is.
 
-I've removed the trailing whitespace at the end of the ''|*[!0-9]*) and
-updated the commit message and pushed, thanks.
+And the test has been removed in:
 
-BTW: The canonical format for the git commit message is:
-
-short commit description <= 50 characters
-[empty line]
-longer commit description that may span across multiple lines with lines
-up to 72 chars long...
-[empty line]
-Signed-off-by: ...
+https://github.com/linux-test-project/ltp/commit/19cdd120b43aa6a6a4993b61e6ef675d1cdf04b4
 
 -- 
 Cyril Hrubis
