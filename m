@@ -1,170 +1,129 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 16 Sep 2015 12:47:16 +0300
-Subject: [LTP] [PATCH 1/4] network: add test for low latency busy poll
-Message-ID: <1442396839-29900-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Wed, 16 Sep 2015 12:47:17 +0300
+Subject: [LTP] [PATCH 2/4] network/tcp_fastopen: add SO_BUSY_POLL sockoption
+In-Reply-To: <1442396839-29900-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1442396839-29900-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1442396839-29900-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test measures the performance of TCP client/server
-with and without busy poll feature, then it compares results.
-
-Enabling of busy poll is done globally via sysctl knobs,
-values are set to recommended ones (according to Linux docs).
-
-The feature was added in Linux 3.11.
+Introduce new parameter 'b'. That way we can control whether
+sockets are using this feature or not.
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/network_stress.features            |    3 +
- testcases/network/busy_poll/Makefile       |   22 +++++++
- testcases/network/busy_poll/busy_poll01.sh |   92 ++++++++++++++++++++++++++++
- 3 files changed, 117 insertions(+), 0 deletions(-)
- create mode 100644 testcases/network/busy_poll/Makefile
- create mode 100755 testcases/network/busy_poll/busy_poll01.sh
+ testcases/network/tcp_fastopen/tcp_fastopen.c |   28 ++++++++++++++++++++++--
+ 1 files changed, 25 insertions(+), 3 deletions(-)
 
-diff --git a/runtest/network_stress.features b/runtest/network_stress.features
-index f48f0a7..a94e13b 100644
---- a/runtest/network_stress.features
-+++ b/runtest/network_stress.features
-@@ -2,6 +2,9 @@
- # Stress tests for various network features
- #
+diff --git a/testcases/network/tcp_fastopen/tcp_fastopen.c b/testcases/network/tcp_fastopen/tcp_fastopen.c
+index 08a6019..b42c8c2 100644
+--- a/testcases/network/tcp_fastopen/tcp_fastopen.c
++++ b/testcases/network/tcp_fastopen/tcp_fastopen.c
+@@ -44,6 +44,10 @@ static const int max_msg_len = 1500;
+ #define TCP_FASTOPEN	23
+ #endif
  
-+busy_poll01 busy_poll01.sh
-+busy_poll01_ipv6 busy_poll01.sh -6
++#ifndef SO_BUSY_POLL
++#define SO_BUSY_POLL	46
++#endif
 +
- tcp_fastopen tcp_fastopen_run.sh
- tcp_fastopen6 tcp_fastopen_run.sh -6
+ /* TCP client requiers */
+ #ifndef MSG_FASTOPEN
+ #define MSG_FASTOPEN	0x20000000 /* Send data in TCP SYN */
+@@ -89,6 +93,7 @@ static int client_max_requests	= 10;
+ static int clients_num		= 2;
+ static char *tcp_port		= "61000";
+ static char *server_addr	= "localhost";
++static int busy_poll		= -1;
+ /* server socket */
+ static int sfd;
  
-diff --git a/testcases/network/busy_poll/Makefile b/testcases/network/busy_poll/Makefile
-new file mode 100644
-index 0000000..8624fdf
---- /dev/null
-+++ b/testcases/network/busy_poll/Makefile
-@@ -0,0 +1,22 @@
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+@@ -101,7 +106,7 @@ static char *rpath		= "./tfo_result";
+ static int force_run;
+ static int verbose;
+ 
+-static char *narg, *Narg, *qarg, *rarg, *Rarg, *aarg, *Targ;
++static char *narg, *Narg, *qarg, *rarg, *Rarg, *aarg, *Targ, *barg;
+ 
+ static const option_t options[] = {
+ 	/* server params */
+@@ -119,6 +124,7 @@ static const option_t options[] = {
+ 
+ 	/* common */
+ 	{"g:", NULL, &tcp_port},
++	{"b:", NULL, &barg},
+ 	{"F", &force_run, NULL},
+ 	{"l", &tcp_mode, NULL},
+ 	{"o", &fastopen_api, NULL},
+@@ -135,6 +141,7 @@ static void help(void)
+ 	printf("  -O      TFO support is off, default is on\n");
+ 	printf("  -l      Become TCP Client, default is TCP server\n");
+ 	printf("  -g x    x - server port, default is %s\n", tcp_port);
++	printf("  -b x    x - low latency busy poll timeout\n");
+ 
+ 	printf("\n          Client:\n");
+ 	printf("  -H x    x - server name or ip address, default is '%s'\n",
+@@ -269,11 +276,16 @@ static int client_connect_send(const char *msg, int size)
+ {
+ 	int cfd = socket(remote_addrinfo->ai_family, SOCK_STREAM, 0);
+ 	const int flag = 1;
+-	setsockopt(cfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+ 
+ 	if (cfd == -1)
+ 		return cfd;
+ 
++	setsockopt(cfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
++	if (busy_poll >= 0) {
++		setsockopt(cfd, SOL_SOCKET, SO_BUSY_POLL,
++			   &busy_poll, sizeof(busy_poll));
++	}
 +
-+top_srcdir		?= ../../..
+ 	if (fastopen_api == TFO_ENABLED) {
+ 		/* Replaces connect() + send()/write() */
+ 		if (sendto(cfd, msg, size, MSG_FASTOPEN | MSG_NOSIGNAL,
+@@ -500,6 +512,11 @@ void *server_fn(void *cfd)
+ 	char recv_msg[max_msg_len];
+ 
+ 	setsockopt(client_fd, SOL_SOCKET, SO_LINGER, &clo, sizeof(clo));
++	if (busy_poll >= 0) {
++		setsockopt(client_fd, SOL_SOCKET, SO_BUSY_POLL,
++			   &busy_poll, sizeof(busy_poll));
++	}
 +
-+include $(top_srcdir)/include/mk/testcases.mk
+ 	ssize_t recv_len;
+ 
+ 	while (1) {
+@@ -689,7 +706,6 @@ static void check_opt_l(const char *name, char *arg, long *val, long lim)
+ 
+ static void setup(int argc, char *argv[])
+ {
+-	
+ 	tst_parse_opts(argc, argv, options, help);
+ 
+ 	/* if client_num is not set, use num of processors */
+@@ -702,6 +718,7 @@ static void setup(int argc, char *argv[])
+ 	check_opt("N", Narg, &server_msg_size, 1);
+ 	check_opt("q", qarg, &tfo_queue_size, 1);
+ 	check_opt_l("T", Targ, &wait_timeout, 0L);
++	check_opt("b", barg, &busy_poll, 0);
+ 
+ 	if (!force_run)
+ 		tst_require_root();
+@@ -711,6 +728,11 @@ static void setup(int argc, char *argv[])
+ 			"Test must be run with kernel 3.7 or newer");
+ 	}
+ 
++	if (!force_run && busy_poll >= 0 && tst_kvercmp(3, 11, 0) < 0) {
++		tst_brkm(TCONF, NULL,
++			"Test must be run with kernel 3.11 or newer");
++	}
 +
-+INSTALL_TARGETS		:= busy_poll01.sh
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/busy_poll/busy_poll01.sh b/testcases/network/busy_poll/busy_poll01.sh
-new file mode 100755
-index 0000000..ecb34d7
---- /dev/null
-+++ b/testcases/network/busy_poll/busy_poll01.sh
-@@ -0,0 +1,92 @@
-+#!/bin/sh
-+
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+#
-+
-+TST_TOTAL=1
-+TCID="busy_poll01"
-+
-+clients_num=2
-+client_requests=500000
-+max_requests=3
-+
-+. test_net.sh
-+
-+cleanup()
-+{
-+	tst_rhost_run -c "pkill -9 tcp_fastopen\$"
-+	tst_rmdir
-+
-+	sysctl -q -w net.core.busy_read=$busy_read_old
-+	sysctl -q -w net.core.busy_poll=$busy_poll_old
-+
-+	tst_rhost_run -c "sysctl -q -w net.core.busy_read=$rbusy_read_old"
-+	tst_rhost_run -c "sysctl -q -w net.core.busy_poll=$rbusy_poll_old"
-+}
-+
-+
-+tst_require_root
-+
-+tst_kvercmp 3 11 0
-+[ $? -eq 0 ] && tst_brkm TCONF "test must be run with kernel 3.11 or newer"
-+
-+if [ ! -f "/proc/sys/net/core/busy_read" -a \
-+     ! -f "/proc/sys/net/core/busy_poll" ]; then
-+	tst_brkm TCONF "busy poll not configured, CONFIG_NET_RX_BUSY_POLL"
-+fi
-+
-+set_busy_poll()
-+{
-+	local value=${1:-"0"}
-+	ROD_SILENT sysctl -q -w net.core.busy_read=$value
-+	ROD_SILENT sysctl -q -w net.core.busy_poll=$value
-+
-+	tst_rhost_run -s -c "sysctl -q -w net.core.busy_read=$value"
-+	tst_rhost_run -s -c "sysctl -q -w net.core.busy_poll=$value"
-+}
-+
-+tst_check_cmds pkill sysctl
-+
-+tst_tmpdir
-+
-+busy_read_old="$(cat /proc/sys/net/core/busy_read)"
-+busy_poll_old="$(cat /proc/sys/net/core/busy_poll)"
-+
-+rbusy_read_old=$(tst_rhost_run -c 'cat /proc/sys/net/core/busy_read')
-+rbusy_poll_old=$(tst_rhost_run -c 'cat /proc/sys/net/core/busy_poll')
-+
-+TST_CLEANUP="cleanup"
-+trap "tst_brkm TBROK 'test interrupted'" INT
-+
-+for x in 50 0; do
-+	tst_resm TINFO "set low latency busy poll to $x"
-+	set_busy_poll $x
-+	tst_netload $(tst_ipaddr rhost) res_$x TFO || \
-+		tst_brkm TBROK "netload() failed"
-+	tst_resm TINFO "time spent is '$(cat res_$x)' ms"
-+done
-+
-+poll_cmp=$(( 100 - ($(cat res_50) * 100) / $(cat res_0) ))
-+
-+if [ "$poll_cmp" -lt 1 ]; then
-+	tst_resm TFAIL "busy poll result is '$poll_cmp' %"
-+else
-+	tst_resm TPASS "busy poll increased performance by '$poll_cmp' %"
-+fi
-+
-+tst_exit
+ 	/* check tcp fast open knob */
+ 	if (!force_run && access(tfo_cfg, F_OK) == -1)
+ 		tst_brkm(TCONF, NULL, "Failed to find '%s'", tfo_cfg);
 -- 
 1.7.1
 
