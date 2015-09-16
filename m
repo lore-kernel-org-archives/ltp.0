@@ -1,7 +1,9 @@
 From: kai.kang@windriver.com <kai.kang@windriver.com>
-Date: Wed, 16 Sep 2015 18:13:12 +0800
-Subject: [LTP] [PATCH] V2: replace inline with static inline for gcc 5.x
-Message-ID: <1442398393-12186-1-git-send-email-kai.kang@windriver.com>
+Date: Wed, 16 Sep 2015 18:13:13 +0800
+Subject: [LTP] [PATCH] replace inline with static inline for gcc 5.x
+In-Reply-To: <1442398393-12186-1-git-send-email-kai.kang@windriver.com>
+References: <1442398393-12186-1-git-send-email-kai.kang@windriver.com>
+Message-ID: <1442398393-12186-2-git-send-email-kai.kang@windriver.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,17 +12,75 @@ To: ltp@lists.linux.it
 
 From: Kai Kang <kai.kang@windriver.com>
 
-V2:
-* replace 'inline' with 'static inline' both for declare and definition
+gcc 5.x defaults to -std=gnu11 instead of -std=gnu89 which causes
+semantics for inline functions changes.
 
-Kai Kang (1):
-  replace inline with static inline for gcc 5.x
+GNU89 inline: Same as C99 extern inline.
 
+So the standalone 'inline' causes error such as:
+
+git/testcases/kernel/syscalls/kill/kill10.c:355: undefined reference to `k_sigaction'
+
+Replace inline with static inline to fix this issue.
+
+Ref:
+https://gcc.gnu.org/gcc-5/porting_to.html
+
+Signed-off-by: Kai Kang <kai.kang@windriver.com>
+---
  testcases/kernel/controllers/libcontrollers/libcontrollers.c | 2 +-
  testcases/kernel/controllers/libcontrollers/libcontrollers.h | 2 +-
  testcases/kernel/syscalls/kill/kill10.c                      | 4 ++--
  3 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.c b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+index 844c5bc..75766fc 100644
+--- a/testcases/kernel/controllers/libcontrollers/libcontrollers.c
++++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.c
+@@ -158,7 +158,7 @@ int read_file(char *filepath, int action, unsigned int *value)
+  * Prints error message and returns -1
+  */
+ 
+-inline void error_function(char *msg1, char *msg2)
++static inline void error_function(char *msg1, char *msg2)
+ {
+ 	fprintf(stdout, "ERROR: %s ", msg1);
+ 	fprintf(stdout, "%s\n", msg2);
+diff --git a/testcases/kernel/controllers/libcontrollers/libcontrollers.h b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+index bd8e2d8..cdde9f9 100644
+--- a/testcases/kernel/controllers/libcontrollers/libcontrollers.h
++++ b/testcases/kernel/controllers/libcontrollers/libcontrollers.h
+@@ -70,7 +70,7 @@ enum{
+ 	GET_TASKS
+ };
+ 
+-inline void error_function(char *msg1, char *msg2);
++static inline void error_function(char *msg1, char *msg2);
+ 
+ int read_shares_file(char *filepath);
+ 
+diff --git a/testcases/kernel/syscalls/kill/kill10.c b/testcases/kernel/syscalls/kill/kill10.c
+index 982d9da..33dbcd3 100644
+--- a/testcases/kernel/syscalls/kill/kill10.c
++++ b/testcases/kernel/syscalls/kill/kill10.c
+@@ -185,7 +185,7 @@ int child_checklist_total = 0;
+ int checklist_cmp(const void *a, const void *b);
+ void checklist_reset(int bit);
+ 
+-inline int k_sigaction(int sig, struct sigaction *sa, struct sigaction *osa);
++static inline int k_sigaction(int sig, struct sigaction *sa, struct sigaction *osa);
+ 
+ char *TCID = "kill10";
+ int TST_TOTAL = 1;
+@@ -756,7 +756,7 @@ void checklist_reset(int bit)
+ 
+ }
+ 
+-inline int k_sigaction(int sig, struct sigaction *sa, struct sigaction *osa)
++static inline int k_sigaction(int sig, struct sigaction *sa, struct sigaction *osa)
+ {
+ 	int ret;
+ 	if ((ret = sigaction(sig, sa, osa)) == -1) {
 -- 
 2.4.1
 
