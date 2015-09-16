@@ -1,27 +1,32 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 16 Sep 2015 15:57:15 +0200
-Subject: [LTP] [PATCH] Enable including config.mk and features.mk for
- *clean targets
-In-Reply-To: <20150916135559.GA10788@rei.nue.novell.com>
-References: <1441386175-23123-1-git-send-email-yuriy.kolerov@synopsys.com>
- <20150908115801.GA3576@rei.suse.cz>
- <3ABF60118B9B784CA5BF7C841D2F00ECA8A6E4@de02wembxa.internal.synopsys.com>
- <20150916135559.GA10788@rei.nue.novell.com>
-Message-ID: <20150916135715.GB10788@rei.nue.novell.com>
+From: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+Date: Wed, 16 Sep 2015 17:46:15 +0300
+Subject: [LTP] [PATCH v2] Include config.mk and features.mk in env_pre.mk
+	for all targets
+Message-ID: <1442414775-16702-1-git-send-email-yuriy.kolerov@synopsys.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Seems like it's a better and more concise solution. Need I to prepare and send a second version of the PATCH?
-> 
-> Ideally yes, if you send a patch I will apply it right away.
 
-Also we moved to the ltp@lists.linux.it, please use that one from now
-on.
+If config.mk or features.mk doesn't exist it's not an error
+for some targets which are filtered below (e.g. clean).
+However these config files may be needed for those targets
+thus it would be wise to do silent inclusion.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+In particular open_posix_testsuite is not cleaned without
+including these .mk files.
+
+Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+---
+ include/mk/env_pre.mk | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Include-config.mk-and-features.mk-in-env_pre.mk-for-.patch
+Type: text/x-patch
+Size: 704 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20150916/16d6ee80/attachment.bin>
