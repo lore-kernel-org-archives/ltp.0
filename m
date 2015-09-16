@@ -1,20 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
-	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <jstancek@redhat.com>) id 1ZZDdb-0003sT-6n
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 07:48:19 +0000
-Received: from mx6-phx2.redhat.com ([209.132.183.39])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1ZZDdZ-0007IL-1S
-	for ltp-list@lists.sourceforge.net; Tue, 08 Sep 2015 07:48:19 +0000
-Date: Tue, 8 Sep 2015 03:48:05 -0400 (EDT)
-From: Jan Stancek <jstancek@redhat.com>
-Message-ID: <1081951156.6922165.1441698485261.JavaMail.zimbra@redhat.com>
-In-Reply-To: <1440055253-23430-1-git-send-email-sunyuan3@huawei.com>
-References: <1440055253-23430-1-git-send-email-sunyuan3@huawei.com>
+	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1ZcDCg-0004zP-5a
+	for ltp-list@lists.sourceforge.net; Wed, 16 Sep 2015 13:56:54 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZcDCe-0006nc-Vs
+	for ltp-list@lists.sourceforge.net; Wed, 16 Sep 2015 13:56:54 +0000
+Date: Wed, 16 Sep 2015 15:55:59 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150916135559.GA10788@rei.nue.novell.com>
+References: <1441386175-23123-1-git-send-email-yuriy.kolerov@synopsys.com>
+	<20150908115801.GA3576@rei.suse.cz>
+	<3ABF60118B9B784CA5BF7C841D2F00ECA8A6E4@de02wembxa.internal.synopsys.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] [PATCH] containers: new testcase userns07
+Content-Disposition: inline
+In-Reply-To: <3ABF60118B9B784CA5BF7C841D2F00ECA8A6E4@de02wembxa.internal.synopsys.com>
+Subject: Re: [LTP] [PATCH] Enable including config.mk and features.mk for
+ *clean targets
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,206 +31,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yuan Sun <sunyuan3@huawei.com>
-Cc: ltp-list@lists.sourceforge.net
+To: Yuriy Kolerov <Yuriy.Kolerov@synopsys.com>
+Cc: "Anton.Kolesov@synopsys.com" <Anton.Kolesov@synopsys.com>, "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>, "Francois.Bedard@synopsys.com" <Francois.Bedard@synopsys.com>
 
+Hi!
+> Seems like it's a better and more concise solution. Need I to prepare and send a second version of the PATCH?
 
+Ideally yes, if you send a patch I will apply it right away.
 
------ Original Message -----
-> From: "Yuan Sun" <sunyuan3@huawei.com>
-> To: jstancek@redhat.com
-> Cc: ltp-list@lists.sourceforge.net
-> Sent: Thursday, 20 August, 2015 9:20:53 AM
-> Subject: [PATCH] containers: new testcase userns07
-> 
-> Signed-off-by: Yuan Sun <sunyuan3@huawei.com>
-
-Hi,
-
-pushed with couple small changes (see comments below).
-
-Regards,
-Jan
-
-> ---
->  runtest/containers                            |   1 +
->  testcases/kernel/containers/.gitignore        |   1 +
->  testcases/kernel/containers/userns/userns07.c | 133
->  ++++++++++++++++++++++++++
->  3 files changed, 135 insertions(+)
->  create mode 100644 testcases/kernel/containers/userns/userns07.c
-> 
-> diff --git a/runtest/containers b/runtest/containers
-> index ac37ab2..80de20e 100644
-> --- a/runtest/containers
-> +++ b/runtest/containers
-> @@ -75,3 +75,4 @@ userns03 userns03
->  userns04 userns04
->  userns05 userns05
->  userns06 userns06
-> +userns07 userns07
-> diff --git a/testcases/kernel/containers/.gitignore
-> b/testcases/kernel/containers/.gitignore
-> index 3f96f42..7dc2608 100644
-> --- a/testcases/kernel/containers/.gitignore
-> +++ b/testcases/kernel/containers/.gitignore
-> @@ -10,3 +10,4 @@ userns/userns04
->  userns/userns05
->  userns/userns06_capcheck
->  userns/userns06
-> +userns/userns07
-> diff --git a/testcases/kernel/containers/userns/userns07.c
-> b/testcases/kernel/containers/userns/userns07.c
-> new file mode 100644
-> index 0000000..decabc8
-> --- /dev/null
-> +++ b/testcases/kernel/containers/userns/userns07.c
-> @@ -0,0 +1,133 @@
-> +/*
-> + * Copyright (c) Huawei Technologies Co., Ltd., 2015
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +/*
-> + * Verify that:
-> + * The kernel imposes a limit of 32 nested levels of user namespaces.
-> + */
-
-Changed to ".. of at least 32 nested levels ...".
-
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/wait.h>
-> +#include <assert.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <unistd.h>
-> +#include <string.h>
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "userns_helper.h"
-> +
-> +#define MAXNEST 32
-> +
-> +char *TCID = "userns07";
-> +int TST_TOTAL = 1;
-> +
-> +static void setup(void)
-> +{
-> +	check_newuser();
-> +	tst_tmpdir();
-> +	TST_CHECKPOINT_INIT(NULL);
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +static int child_fn1(void *arg)
-> +{
-> +	pid_t cpid1;
-> +	long level = (long)arg;
-> +	int status;
-> +	int parentuid;
-> +	int parentgid;
-> +
-> +	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
-> +
-> +	if (level == MAXNEST)
-> +		return 0;
-> +	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> +		(void *)child_fn1, (void *)(level + 1));
-> +	if (cpid1 < 0) {
-> +		printf("level %ld:unexpected error: (%d) %s\n",
-> +			level, errno, strerror(errno));
-> +		return 1;
-> +	}
-> +
-> +	parentuid = geteuid();
-> +	parentgid = getegid();
-> +
-> +	updatemap(cpid1, UID_MAP, 0, parentuid, cleanup);
-> +	updatemap(cpid1, GID_MAP, 0, parentgid, cleanup);
-
-updatemap in child process shouldn't call cleanup.
-
-> +
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-> +
-> +	if (waitpid(cpid1, &status, 0) == -1)
-> +		return 1;
-> +
-> +	if (WIFEXITED(status) && WEXITSTATUS(status) != 0) {
-> +		printf("child exited abnormally\n");
-> +		return 1;
-> +	} else if (WIFSIGNALED(status)) {
-> +		printf("child was killed with signal = %d", WTERMSIG(status));
-> +		return 1;
-> +	}
-> +	return 0;
-> +}
-> +
-> +static void test_max_nest(void)
-> +{
-> +	pid_t cpid1;
-> +	int parentuid;
-> +	int parentgid;
-> +	int fd;
-> +	char path[BUFSIZ];
-> +
-> +	cpid1 = ltp_clone_quick(CLONE_NEWUSER | SIGCHLD,
-> +		(void *)child_fn1, (void *)0);
-> +	if (cpid1 < 0)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-> +
-> +	parentuid = geteuid();
-> +	parentgid = getegid();
-> +
-> +	if (access("/proc/self/setgroups", F_OK) == 0) {
-> +		sprintf(path, "/proc/%d/setgroups", cpid1);
-> +		fd = SAFE_OPEN(cleanup, path, O_WRONLY, 0644);
-> +		SAFE_WRITE(cleanup, 1, fd, "deny", 4);
-> +		SAFE_CLOSE(cleanup, fd);
-> +	}
-> +
-> +	updatemap(cpid1, UID_MAP, 0, parentuid, cleanup);
-> +	updatemap(cpid1, GID_MAP, 0, parentgid, cleanup);
-> +
-> +	TST_SAFE_CHECKPOINT_WAKE(cleanup, 0);
-> +	tst_record_childstatus(cleanup, cpid1);
-> +}
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int lc;
-> +
-> +	setup();
-> +	tst_parse_opts(argc, argv, NULL, NULL);
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +		test_max_nest();
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> +
-> --
-> 1.9.1
-> 
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
+Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
+Get real-time metrics from all of your servers, apps and tools
+in one place.
+SourceForge users - Click here to start your Free Trial of Datadog now!
+http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
