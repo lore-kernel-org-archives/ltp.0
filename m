@@ -1,71 +1,61 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 22 Sep 2015 06:52:56 -0400 (EDT)
-Subject: [LTP] [PATCH] Fix including config.mk and features.mk in
- env_pre.mk
-In-Reply-To: <1442515917-8628-1-git-send-email-yuriy.kolerov@synopsys.com>
-References: <1442515917-8628-1-git-send-email-yuriy.kolerov@synopsys.com>
-Message-ID: <412502200.14930023.1442919176767.JavaMail.zimbra@redhat.com>
+From: Takeshi Misawa <jeantsuru@icloud.com>
+Date: Sat, 19 Sep 2015 16:57:14 +0900
+Subject: [LTP] settimeofday01:TFAIL in Kernel 4.2.0
+In-Reply-To: <20150915085125.GB3351@rei.suse.cz>
+References: <55F587CE.1070904@iCloud.com> <20150915085125.GB3351@rei.suse.cz>
+Message-ID: <55FD155A.5020102@iCloud.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+> Hi!
+>> This is a my first mail to LTP mailing list.
+>>
+>> I'm testing Linux Kernel 4.2.0 by LTP. I saw a following Error.
+>> -----
+>> settimeofday01    1  TFAIL  :  settimeofday01.c:98: Error Setting Time,
+>> errno=22
+>> settimeofday01    2  TFAIL  :  settimeofday01.c:120: Test condition 1 failed
+>> settimeofday01    3  TPASS  :  Test condition 2 successful
+>> -----
+>>
+>> In commit of Linux Kernel:
+>> e1d7ba8735551ed79c7a0463a042353574b96da3 "time: Always make sure
+>> wall_to_monotonic isn't positive"
+>> add a new check to do_settimeofday64().
+>>
+>> This commit said:
+>> "As a result one can't set the CLOCK_REALTIME time prior to (1970 +
+>> system uptime)."
+>>
+>> In settimeofday01 test case, parameter of first settimeofday() is
+>> 100s100??s. A lot of cases, TEST_RETURN is -1.
+>>
+>> I'd better to modify settimeofday01 test case.
+>>
+>> To meet that requirement, I made following changes.(I have less
+>> confidence that it is correct...)
+>
+> The patch looks good but does not apply since the the whitespaces are
+> corrupted. Can you please resend correct one with a better changelog and
+> Signed-off-by line? (set you name and email in git, then use git commit
+> -s and git format-patch -1 and send the result)
+>
+> Also the mailing list has moved to ltp@lists.linux.it, please use that
+> one from now on.
+>
 
+Thank you for reply and kindly advice.
 
------ Original Message -----
-> From: "Yuriy Kolerov" <yuriy.kolerov@synopsys.com>
-> To: ltp@lists.linux.it
-> Cc: "Anton Kolesov" <Anton.Kolesov@synopsys.com>, "Francois Bedard" <Francois.Bedard@synopsys.com>
-> Sent: Thursday, 17 September, 2015 8:51:57 PM
-> Subject: [LTP] [PATCH] Fix including config.mk and features.mk in env_pre.mk
-> 
-> If you try to run make in the clean sources tree then it leads
-> to the infinite loop.
-> 
-> So check if config.mk or features.mk exists before inclusing and
-> don't use "-include" form. The problem is that inclusion of these
-> files may lead to the infinite loop if these files don't exist.
-> It happens because config.mk and features.mk have recipes and
-> Make tries to generate them and include them in env_pre.mk again
-> and again until resources are exhausted.
-> 
-> Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+I resent a patch. (Sorry for my late reply.)
 
-Yuriy, you were first, I tested/pushed your version.
-
-Thanks,
-Jan
-
-> ---
->  include/mk/env_pre.mk | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/mk/env_pre.mk b/include/mk/env_pre.mk
-> index 9c757e3..b8d47d4 100644
-> --- a/include/mk/env_pre.mk
-> +++ b/include/mk/env_pre.mk
-> @@ -98,8 +98,12 @@ endif
->  # which are filtered below (e.g. clean). However these config files may be
->  # needed for those targets (eg. the open posix testsuite is not cleaned even
->  if
->  # it's enabled by configure) thus it would be wise to do silent inclusion.
-> --include $(abs_top_builddir)/include/mk/config.mk
-> --include $(abs_top_builddir)/include/mk/features.mk
-> +ifneq ("$(wildcard $(abs_top_builddir)/include/mk/config.mk)","")
-> +include $(abs_top_builddir)/include/mk/config.mk
-> +endif
-> +ifneq ("$(wildcard $(abs_top_builddir)/include/mk/features.mk)","")
-> +include $(abs_top_builddir)/include/mk/features.mk
-> +endif
->  
->  # autotools, *clean, and help don't require config.mk, features.mk, etc...
->  ifeq ($(filter autotools %clean .gitignore gitignore.%
->  help,$(MAKECMDGOALS)),)
-> --
-> 2.2.0
-> 
-> 
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
-> 
+Thanks
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: settimeofday01-fix-settimeofday-argument-4.2.patch
+Type: text/x-patch
+Size: 1371 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20150919/a0536233/attachment.bin>
