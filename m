@@ -1,18 +1,21 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 21 Sep 2015 15:32:09 +0200
-Subject: [LTP] [PATCH] include config.mk and features.mk in env_pre.mk only
-	if they exist
-Message-ID: <f1dfb6560fe17718bd189544b27c793251c1efca.1442842161.git.jstancek@redhat.com>
+Date: Mon, 21 Sep 2015 15:52:03 +0200
+Subject: [LTP] [PATCH v2] avoid triggering config.mk/features.mk target in
+	clean tree
+Message-ID: <a10a17c27f9aa95c40f8852b9def41606ef95af0.1442843410.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+After commit 60069253cbcd1bae213076b06f451a603f280064
+  Include config.mk and features.mk in env_pre.mk for all targets
+
 $ git clean -f -d -x
 $ make autotools
 
-now leads to an infinite loop, that is running help target:
+  leads to an infinite loop, that is running help target:
 make -C /usr/src/ltp help; false
 make[1]: Entering directory `/usr/src/ltp'
 make -C /usr/src/ltp help; false
@@ -23,8 +26,8 @@ make -C /usr/src/ltp help; false
 ...
 
 because include/mk/automake.mk has rule for these 2 files, which
-don't exist in clean tree. So it triggers help target, which again
-includes env_pre.mk and loop continues.
+don't exist in clean tree. So, it spawns new make for help target,
+which again includes env_pre.mk and loop continues.
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
