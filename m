@@ -1,95 +1,83 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Mon, 21 Sep 2015 10:01:14 +0800
-Subject: [LTP] [PATCH v2] containers/netns/: fix kernel supporting check
-In-Reply-To: <55FA99A3.8040006@cn.fujitsu.com>
-References: <55FA99A3.8040006@cn.fujitsu.com>
-Message-ID: <1442800874-3449-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Wei Jiangang <weijg.fnst@cn.fujitsu.com>
+Date: Mon, 21 Sep 2015 17:33:31 +0800
+Subject: [LTP] [PATCH 1/2] testscripts: make redirects happen in correct
+	order
+Message-ID: <1442828012-5468-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On RHEL5.11GA, test result should be TCONF but not TFAIL since
-setns() is not supported, so fix this.
+It should redirect stdout to /dev/null firstly,
+then redirect stderr to whatever stdout currently points at.
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Signed-off-by: Wei Jiangang <weijg.fnst@cn.fujitsu.com>
 ---
- testcases/kernel/containers/netns/netns_helper.sh |  4 +++
- testcases/kernel/containers/netns/netns_sysfs.sh  |  5 ++++
- testcases/kernel/containers/share/setns_check.c   | 32 +++++++++++++++++++++++
- 3 files changed, 41 insertions(+)
- create mode 100644 testcases/kernel/containers/share/setns_check.c
+ testscripts/ltpstress.sh   |  4 ++--
+ testscripts/runEALtests.sh | 10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
-index cea1541..ac08125 100755
---- a/testcases/kernel/containers/netns/netns_helper.sh
-+++ b/testcases/kernel/containers/netns/netns_helper.sh
-@@ -110,6 +110,10 @@ netns_setup()
+diff --git a/testscripts/ltpstress.sh b/testscripts/ltpstress.sh
+index 39a5caf..1a16779 100755
+--- a/testscripts/ltpstress.sh
++++ b/testscripts/ltpstress.sh
+@@ -265,10 +265,10 @@ fi
+ ulimit -u unlimited
  
- 	case "$1" in
- 	ns_exec)
-+		setns_check
-+		if [ $? -eq 32 ]; then
-+			tst_brkm TCONF "setns not supported"
-+		fi
- 		netns_ns_exec_setup
- 		TST_CLEANUP=netns_ns_exec_cleanup
- 		;;
-diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
-index c10fa36..06de00f 100755
---- a/testcases/kernel/containers/netns/netns_sysfs.sh
-+++ b/testcases/kernel/containers/netns/netns_sysfs.sh
-@@ -26,6 +26,11 @@ TCID="netns_sysfs"
- TST_TOTAL=2
- . test.sh
+ if [ $PROC_NUM -gt 0 ];then
+-  genload --vm $PROC_NUM --vm-bytes 1073741824 2>&1 1>/dev/null &
++  genload --vm $PROC_NUM --vm-bytes 1073741824 1>/dev/null 2>&1 &
+ fi
+ if [ $leftover_memsize -gt 0 ];then
+-  genload --vm 1 --vm-bytes $(($leftover_memsize * 1024)) 2>&1 1>/dev/null &
++  genload --vm 1 --vm-bytes $(($leftover_memsize * 1024)) 1>/dev/null 2>&1 &
+ fi
  
-+setns_check
-+if [ $? -eq 32 ]; then
-+	tst_brkm TCONF "setns not supported"
-+fi
-+
- cleanup()
- {
- 	tst_rmdir
-diff --git a/testcases/kernel/containers/share/setns_check.c b/testcases/kernel/containers/share/setns_check.c
-new file mode 100644
-index 0000000..7ba891c
---- /dev/null
-+++ b/testcases/kernel/containers/share/setns_check.c
-@@ -0,0 +1,32 @@
-+/* Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of version 2 the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ *
-+ ***********************************************************************
-+ * Check for setns() availability, should be called before ns_exec.
-+ *
-+ */
-+
-+#include "test.h"
-+#include "linux_syscall_numbers.h"
-+
-+char *TCID = "setns_check";
-+
-+int main(void)
-+{
-+	if (syscall(__NR_setns, -1, 0) == -1 && errno == ENOSYS)
-+		tst_brkm(TCONF, NULL, "setns is not supported in the kernel");
-+	else
-+		return 0;
-+}
+ if [ $NO_NETWORK -eq 0 ];then
+diff --git a/testscripts/runEALtests.sh b/testscripts/runEALtests.sh
+index bcd3f29..577be28 100755
+--- a/testscripts/runEALtests.sh
++++ b/testscripts/runEALtests.sh
+@@ -84,7 +84,7 @@ fi
+ while getopts cd:f:hi:l:m:Nnpqr:t:x arg
+ do  case $arg in
+     c)
+-            $LTPROOT/../testcases/bin/genload --cpu 1 2>&1 1>/dev/null &
++            $LTPROOT/../testcases/bin/genload --cpu 1 1>/dev/null 2>&1 &
+ 	    GenLoad=1 ;;
+ 
+     d)      # append $$ to TMP, as it is recursively
+@@ -97,9 +97,9 @@ do  case $arg in
+ 
+     i)
+             bytesize=$(($OPTARG * 1024 * 1024))
+-            $LTPROOT/../testcases/bin/genload --io 1 2>&1 1>/dev/null &
++            $LTPROOT/../testcases/bin/genload --io 1 1>/dev/null 2>&1 &
+             $LTPROOT/../testcases/bin/genload --hdd 0 --hdd-bytes $bytesize \
+-            2>&1 1>/dev/null &
++            1>/dev/null 2>&1 &
+ 	    GenLoad=1 ;;
+ 
+     l)
+@@ -125,7 +125,7 @@ do  case $arg in
+     m)
+             memsize=$(($OPTARG * 1024 * 1024))
+ 	    $LTPROOT/../testcases/bin/genload  --vm 0 --vm-bytes $memsize\
+-            2>&1 1>/dev/null &
++            1>/dev/null 2>&1 &
+ 	    GenLoad=1;;
+ 
+     N)	    run_netest=1;;
+@@ -217,7 +217,7 @@ fi
+ 
+ if [ $GenLoad -eq 1 ]
+ then
+-	killall -9 genload
++	killall -9 genload >/dev/null 2>&1
+ fi
+ 
+ if [ $NetPipe -eq 1 ]
 -- 
-1.8.4.2
+1.9.3
 
