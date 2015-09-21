@@ -1,34 +1,55 @@
-From: Wei Jiangang <weijg.fnst@cn.fujitsu.com>
-Date: Mon, 21 Sep 2015 17:33:32 +0800
-Subject: [LTP] [PATCH 2/2] cpuhotplug_hotplug.sh: do/done should be
-	left-aligned
-In-Reply-To: <1442828012-5468-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <1442828012-5468-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Message-ID: <1442828012-5468-2-git-send-email-weijg.fnst@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 21 Sep 2015 15:32:09 +0200
+Subject: [LTP] [PATCH] include config.mk and features.mk in env_pre.mk only
+	if they exist
+Message-ID: <f1dfb6560fe17718bd189544b27c793251c1efca.1442842161.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Wei Jiangang <weijg.fnst@cn.fujitsu.com>
----
- testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+$ git clean -f -d -x
+$ make autotools
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-index d9cf965..ad8675a 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-@@ -28,7 +28,7 @@ migrate_irq()
-     MASK=$((1<<${CPU}))
-     IRQS=$2
-     for irq in ${IRQS}
--      do
-+    do
-       echo $MASK > /proc/irq/${irq}/smp_affinity || \
-         tst_resm TINFO "It is NOT permitted to change the IRQ $irq smp_affinity"
-     done
+now leads to an infinite loop, that is running help target:
+make -C /usr/src/ltp help; false
+make[1]: Entering directory `/usr/src/ltp'
+make -C /usr/src/ltp help; false
+make[2]: Entering directory `/usr/src/ltp'
+make -C /usr/src/ltp help; false
+make[3]: Entering directory `/usr/src/ltp'
+make -C /usr/src/ltp help; false
+...
+
+because include/mk/automake.mk has rule for these 2 files, which
+don't exist in clean tree. So it triggers help target, which again
+includes env_pre.mk and loop continues.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/mk/env_pre.mk | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/include/mk/env_pre.mk b/include/mk/env_pre.mk
+index 9c757e35e455..a7674141c83c 100644
+--- a/include/mk/env_pre.mk
++++ b/include/mk/env_pre.mk
+@@ -98,8 +98,12 @@ endif
+ # which are filtered below (e.g. clean). However these config files may be
+ # needed for those targets (eg. the open posix testsuite is not cleaned even if
+ # it's enabled by configure) thus it would be wise to do silent inclusion.
+--include $(abs_top_builddir)/include/mk/config.mk
+--include $(abs_top_builddir)/include/mk/features.mk
++ifneq ($(wildcard $(abs_top_builddir)/include/mk/config.mk),)
++include $(abs_top_builddir)/include/mk/config.mk
++endif
++ifneq ($(wildcard $(abs_top_builddir)/include/mk/features.mk),)
++include $(abs_top_builddir)/include/mk/features.mk
++endif
+ 
+ # autotools, *clean, and help don't require config.mk, features.mk, etc...
+ ifeq ($(filter autotools %clean .gitignore gitignore.% help,$(MAKECMDGOALS)),)
 -- 
-1.9.3
+1.8.3.1
 
