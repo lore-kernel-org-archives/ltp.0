@@ -1,47 +1,95 @@
-From: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
-Date: Thu, 17 Sep 2015 21:51:57 +0300
-Subject: [LTP] [PATCH] Fix including config.mk and features.mk in env_pre.mk
-Message-ID: <1442515917-8628-1-git-send-email-yuriy.kolerov@synopsys.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Mon, 21 Sep 2015 10:01:14 +0800
+Subject: [LTP] [PATCH v2] containers/netns/: fix kernel supporting check
+In-Reply-To: <55FA99A3.8040006@cn.fujitsu.com>
+References: <55FA99A3.8040006@cn.fujitsu.com>
+Message-ID: <1442800874-3449-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If you try to run make in the clean sources tree then it leads
-to the infinite loop.
+On RHEL5.11GA, test result should be TCONF but not TFAIL since
+setns() is not supported, so fix this.
 
-So check if config.mk or features.mk exists before inclusing and
-don't use "-include" form. The problem is that inclusion of these
-files may lead to the infinite loop if these files don't exist.
-It happens because config.mk and features.mk have recipes and
-Make tries to generate them and include them in env_pre.mk again
-and again until resources are exhausted.
-
-Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- include/mk/env_pre.mk | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ testcases/kernel/containers/netns/netns_helper.sh |  4 +++
+ testcases/kernel/containers/netns/netns_sysfs.sh  |  5 ++++
+ testcases/kernel/containers/share/setns_check.c   | 32 +++++++++++++++++++++++
+ 3 files changed, 41 insertions(+)
+ create mode 100644 testcases/kernel/containers/share/setns_check.c
 
-diff --git a/include/mk/env_pre.mk b/include/mk/env_pre.mk
-index 9c757e3..b8d47d4 100644
---- a/include/mk/env_pre.mk
-+++ b/include/mk/env_pre.mk
-@@ -98,8 +98,12 @@ endif
- # which are filtered below (e.g. clean). However these config files may be
- # needed for those targets (eg. the open posix testsuite is not cleaned even if
- # it's enabled by configure) thus it would be wise to do silent inclusion.
---include $(abs_top_builddir)/include/mk/config.mk
---include $(abs_top_builddir)/include/mk/features.mk
-+ifneq ("$(wildcard $(abs_top_builddir)/include/mk/config.mk)","")
-+include $(abs_top_builddir)/include/mk/config.mk
-+endif
-+ifneq ("$(wildcard $(abs_top_builddir)/include/mk/features.mk)","")
-+include $(abs_top_builddir)/include/mk/features.mk
-+endif
+diff --git a/testcases/kernel/containers/netns/netns_helper.sh b/testcases/kernel/containers/netns/netns_helper.sh
+index cea1541..ac08125 100755
+--- a/testcases/kernel/containers/netns/netns_helper.sh
++++ b/testcases/kernel/containers/netns/netns_helper.sh
+@@ -110,6 +110,10 @@ netns_setup()
  
- # autotools, *clean, and help don't require config.mk, features.mk, etc...
- ifeq ($(filter autotools %clean .gitignore gitignore.% help,$(MAKECMDGOALS)),)
+ 	case "$1" in
+ 	ns_exec)
++		setns_check
++		if [ $? -eq 32 ]; then
++			tst_brkm TCONF "setns not supported"
++		fi
+ 		netns_ns_exec_setup
+ 		TST_CLEANUP=netns_ns_exec_cleanup
+ 		;;
+diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
+index c10fa36..06de00f 100755
+--- a/testcases/kernel/containers/netns/netns_sysfs.sh
++++ b/testcases/kernel/containers/netns/netns_sysfs.sh
+@@ -26,6 +26,11 @@ TCID="netns_sysfs"
+ TST_TOTAL=2
+ . test.sh
+ 
++setns_check
++if [ $? -eq 32 ]; then
++	tst_brkm TCONF "setns not supported"
++fi
++
+ cleanup()
+ {
+ 	tst_rmdir
+diff --git a/testcases/kernel/containers/share/setns_check.c b/testcases/kernel/containers/share/setns_check.c
+new file mode 100644
+index 0000000..7ba891c
+--- /dev/null
++++ b/testcases/kernel/containers/share/setns_check.c
+@@ -0,0 +1,32 @@
++/* Copyright (c) 2015 Fujitsu Ltd.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of version 2 the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ *
++ ***********************************************************************
++ * Check for setns() availability, should be called before ns_exec.
++ *
++ */
++
++#include "test.h"
++#include "linux_syscall_numbers.h"
++
++char *TCID = "setns_check";
++
++int main(void)
++{
++	if (syscall(__NR_setns, -1, 0) == -1 && errno == ENOSYS)
++		tst_brkm(TCONF, NULL, "setns is not supported in the kernel");
++	else
++		return 0;
++}
 -- 
-2.2.0
+1.8.4.2
 
