@@ -1,11 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 22 Sep 2015 06:48:38 -0400 (EDT)
-Subject: [LTP] [PATCH v2] avoid triggering config.mk/features.mk target
- in clean tree
-In-Reply-To: <20150922104504.GB9955@rei.suse.cz>
-References: <a10a17c27f9aa95c40f8852b9def41606ef95af0.1442843410.git.jstancek@redhat.com>
- <20150922104504.GB9955@rei.suse.cz>
-Message-ID: <527059952.14929535.1442918918908.JavaMail.zimbra@redhat.com>
+Date: Tue, 22 Sep 2015 06:52:56 -0400 (EDT)
+Subject: [LTP] [PATCH] Fix including config.mk and features.mk in
+ env_pre.mk
+In-Reply-To: <1442515917-8628-1-git-send-email-yuriy.kolerov@synopsys.com>
+References: <1442515917-8628-1-git-send-email-yuriy.kolerov@synopsys.com>
+Message-ID: <412502200.14930023.1442919176767.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,50 +13,59 @@ To: ltp@lists.linux.it
 
 
 
-
-
 ----- Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it, "yuriy kolerov" <yuriy.kolerov@synopsys.com>
-> Sent: Tuesday, 22 September, 2015 12:45:04 PM
-> Subject: Re: [PATCH v2] avoid triggering config.mk/features.mk target in clean tree
+> From: "Yuriy Kolerov" <yuriy.kolerov@synopsys.com>
+> To: ltp@lists.linux.it
+> Cc: "Anton Kolesov" <Anton.Kolesov@synopsys.com>, "Francois Bedard" <Francois.Bedard@synopsys.com>
+> Sent: Thursday, 17 September, 2015 8:51:57 PM
+> Subject: [LTP] [PATCH] Fix including config.mk and features.mk in env_pre.mk
 > 
-> Hi!
-> > diff --git a/include/mk/env_pre.mk b/include/mk/env_pre.mk
-> > index 9c757e35e455..a7674141c83c 100644
-> > --- a/include/mk/env_pre.mk
-> > +++ b/include/mk/env_pre.mk
-> > @@ -98,8 +98,12 @@ endif
-> >  # which are filtered below (e.g. clean). However these config files may be
-> >  # needed for those targets (eg. the open posix testsuite is not cleaned
-> >  even if
-> >  # it's enabled by configure) thus it would be wise to do silent inclusion.
-> > --include $(abs_top_builddir)/include/mk/config.mk
-> > --include $(abs_top_builddir)/include/mk/features.mk
-> > +ifneq ($(wildcard $(abs_top_builddir)/include/mk/config.mk),)
-> > +include $(abs_top_builddir)/include/mk/config.mk
-> > +endif
-> > +ifneq ($(wildcard $(abs_top_builddir)/include/mk/features.mk),)
-> > +include $(abs_top_builddir)/include/mk/features.mk
-> > +endif
-> >  
-> >  # autotools, *clean, and help don't require config.mk, features.mk, etc...
-> >  ifeq ($(filter autotools %clean .gitignore gitignore.%
-> >  help,$(MAKECMDGOALS)),)
+> If you try to run make in the clean sources tree then it leads
+> to the infinite loop.
 > 
-> Looks good to me (thanks for fixing this). Also notice that we have
-> nearly identical patch from Yuriy Kolerov ([LTP] [PATCH] Fix including
-> config.mk and features.mk in env_pre.mk) sent to the list.
+> So check if config.mk or features.mk exists before inclusing and
+> don't use "-include" form. The problem is that inclusion of these
+> files may lead to the infinite loop if these files don't exist.
+> It happens because config.mk and features.mk have recipes and
+> Make tries to generate them and include them in env_pre.mk again
+> and again until resources are exhausted.
+> 
+> Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
 
-My apologies, I missed his patch for some reason. I'll test/review his version.
+Yuriy, you were first, I tested/pushed your version.
 
-Regards,
+Thanks,
 Jan
 
-
+> ---
+>  include/mk/env_pre.mk | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/mk/env_pre.mk b/include/mk/env_pre.mk
+> index 9c757e3..b8d47d4 100644
+> --- a/include/mk/env_pre.mk
+> +++ b/include/mk/env_pre.mk
+> @@ -98,8 +98,12 @@ endif
+>  # which are filtered below (e.g. clean). However these config files may be
+>  # needed for those targets (eg. the open posix testsuite is not cleaned even
+>  if
+>  # it's enabled by configure) thus it would be wise to do silent inclusion.
+> --include $(abs_top_builddir)/include/mk/config.mk
+> --include $(abs_top_builddir)/include/mk/features.mk
+> +ifneq ("$(wildcard $(abs_top_builddir)/include/mk/config.mk)","")
+> +include $(abs_top_builddir)/include/mk/config.mk
+> +endif
+> +ifneq ("$(wildcard $(abs_top_builddir)/include/mk/features.mk)","")
+> +include $(abs_top_builddir)/include/mk/features.mk
+> +endif
+>  
+>  # autotools, *clean, and help don't require config.mk, features.mk, etc...
+>  ifeq ($(filter autotools %clean .gitignore gitignore.%
+>  help,$(MAKECMDGOALS)),)
+> --
+> 2.2.0
+> 
 > 
 > --
-> Cyril Hrubis
-> chrubis@suse.cz
+> Mailing list info: http://lists.linux.it/listinfo/ltp
 > 
