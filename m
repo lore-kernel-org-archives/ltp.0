@@ -1,120 +1,19 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 22 Sep 2015 04:08:53 -0400 (EDT)
-Subject: [LTP] [PATCH v2] lib/mem.c: handle the case oom0{3,
- 5} exit with 'EAGAIN' situation
-In-Reply-To: <CAEemH2dkVknnetrhZ15_rZZ4Q6dOGQ_6gqhBT1boQs6mEP=aYA@mail.gmail.com>
-References: <1442397332-25347-1-git-send-email-liwang@redhat.com>
- <317477236.12581685.1442405568730.JavaMail.zimbra@redhat.com>
- <CAEemH2fbU9msHF7hBQ=pDiLwijd4GbBQswEYU2Ek6vS0Bg65rA@mail.gmail.com>
- <CAEemH2dkVknnetrhZ15_rZZ4Q6dOGQ_6gqhBT1boQs6mEP=aYA@mail.gmail.com>
-Message-ID: <1522432435.14873649.1442909333765.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 22 Sep 2015 12:11:42 +0300
+Subject: [LTP] [PATCH] lib/test_net.sh: add waiting loop to netload()
+In-Reply-To: <55FA7DC0.7000206@oracle.com>
+References: <1442396622-29765-1-git-send-email-alexey.kodanev@oracle.com>
+ <675138819.13128994.1442475711763.JavaMail.zimbra@redhat.com>
+ <55FA7DC0.7000206@oracle.com>
+Message-ID: <56011B4E.5030204@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Patch applied.
 
+Thanks,
+Alexey
 
-
-
------ Original Message -----
-> From: "Li Wang" <liwang@redhat.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Tuesday, 22 September, 2015 9:50:39 AM
-> Subject: Re: [LTP] [PATCH v2] lib/mem.c: handle the case oom0{3, 5} exit with 'EAGAIN' situation
-> 
-> Hi,
-> 
-> 
-> On Thu, Sep 17, 2015 at 11:10 AM, Li Wang <liwang@redhat.com> wrote:
-> 
-> > Hi,
-> >
-> > On Wed, Sep 16, 2015 at 8:12 PM, Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> >>
-> >>
-> >>
-> >>
-> >> ----- Original Message -----
-> >> > From: "Li Wang" <liwang@redhat.com>
-> >> > To: ltp@lists.linux.it
-> >> > Sent: Wednesday, 16 September, 2015 11:55:32 AM
-> >> > Subject: [LTP] [PATCH v2] lib/mem.c: handle the case oom0{3,  5} exit
-> >> with 'EAGAIN' situation
-> >> >
-> >> > v1 --> v2
-> >> >       1. limited the number of loops
-> >> >       2. added the usleep(300) to wait resource freed
-> >> >
-> >> > Sometimes oom0{3,5} failed as the following results:
-> >> >
-> >> > oom05       0  TINFO  :  start OOM testing for mlocked pages.
-> >> > oom05       0  TINFO  :  expected victim is 3371.
-> >> > oom05       0  TINFO  :  thread (3fff788ff1c0), allocating 3221225472
-> >> bytes.
-> >> > ...
-> >> > oom05       5  TFAIL  :  mem.c:153: victim unexpectedly ended with
-> >> retcode:
-> >> > 11, expected: 12
-> >> >
-> >> > In the OOM test, that tries to consume all memory. But the test doesn't
-> >> retry
-> >> > to mlock, it simply
-> >> > exits with errno returned by mlock. At the moment testcase is expecting
-> >> > either ENOMEM or getting
-> >> > killed by kernel.
-> >> >
-> >> > Here do retry the function if mlock() fail with 'EAGAIN' errno.
-> >> >
-> >> > Signed-off-by: Li Wang <liwang@redhat.com>
-> >> > ---
-> >> >  testcases/kernel/mem/lib/mem.c | 12 ++++++++++--
-> >> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >> >
-> >> > diff --git a/testcases/kernel/mem/lib/mem.c
-> >> b/testcases/kernel/mem/lib/mem.c
-> >> > index 8fe4bf0..b8a55e2 100644
-> >> > --- a/testcases/kernel/mem/lib/mem.c
-> >> > +++ b/testcases/kernel/mem/lib/mem.c
-> >> > @@ -30,6 +30,7 @@ static int alloc_mem(long int length, int testcase)
-> >> >  {
-> >> >       char *s;
-> >> >       long i, pagesz = getpagesize();
-> >> > +     int loop = 10;
-> >> >
-> >> >       tst_resm(TINFO, "thread (%lx), allocating %ld bytes.",
-> >> >               (unsigned long) pthread_self(), length);
-> >> > @@ -39,8 +40,15 @@ static int alloc_mem(long int length, int testcase)
-> >> >       if (s == MAP_FAILED)
-> >> >               return errno;
-> >> >
-> >> > -     if (testcase == MLOCK && mlock(s, length) == -1)
-> >> > -             return errno;
-> >> > +     if (testcase == MLOCK) {
-> >> > +             while (mlock(s, length) == -1 && loop > 0) {
-> >> > +                     if (EAGAIN != errno)
-> >> > +                             return errno;
-> >> > +                     usleep(300);
-> >>
-> >> usleep is in microseconds, so this wouldn't give system much time.
-> >>
-> >
-> Sorry, Ping.
-> 
-> Would you mind if I sent V3 with usleep(300000)? or any other advice?
-
-No need. I changed it (along with small changes to description) and pushed.
-
-Regards,
-Jan
-
-> 
-> 
-> --
-> Regards,
-> Li Wang
-> Email: liwang@redhat.com
-> 
