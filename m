@@ -1,24 +1,26 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+Received: from sog-mx-4.v43.ch3.sourceforge.com ([172.29.43.194]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <wanlong.gao@gmail.com>) id 1ZZuj3-0005Og-BJ
-	for Ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 05:48:49 +0000
-Received: from mail-lb0-f173.google.com ([209.85.217.173])
-	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1ZZuj2-0000CY-EO
-	for Ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 05:48:49 +0000
-Received: by lbpo4 with SMTP id o4so17213558lbp.2
-	for <Ltp-list@lists.sourceforge.net>;
-	Wed, 09 Sep 2015 22:48:42 -0700 (PDT)
+	(envelope-from <metan@suse.de>) id 1ZfBU8-0004es-Un
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2015 18:43:12 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-4.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZfBU7-0003N6-Hf
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2015 18:43:12 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id A814EAC02
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 24 Sep 2015 18:43:03 +0000 (UTC)
+Date: Thu, 24 Sep 2015 20:42:08 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150924184208.GB1260@rei.suse.cz>
+References: <1441889771-8243-1-git-send-email-chnyda@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <CAO0kMxDg1KJWzFMqyYOmP5xLe78pyf21MwizsM_P38Vbx02HeQ@mail.gmail.com>
-References: <CAO0kMxDg1KJWzFMqyYOmP5xLe78pyf21MwizsM_P38Vbx02HeQ@mail.gmail.com>
-Date: Thu, 10 Sep 2015 13:48:41 +0800
-Message-ID: <CAGxEiDBih4Ged2+LST_30CM8dMMwwM3vMetx=0vwNPHaA-8hRQ@mail.gmail.com>
-From: Wanlong Gao <wanlong.gao@gmail.com>
-Subject: Re: [LTP] Query related to LTP test suite run
-Reply-To: wanlong.gao@gmail.com
+Content-Disposition: inline
+In-Reply-To: <1441889771-8243-1-git-send-email-chnyda@suse.com>
+Subject: Re: [LTP] [PATCH] cgroup_fj: fixed exit codes in case of not
+ supported tests
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,35 +33,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: kamal p <pkamalbhaskar@gmail.com>
-Cc: Ltp-list@lists.sourceforge.net
+To: Cedric Hnyda <chnyda@suse.com>
+Cc: ltp-list@lists.sourceforge.net
 
-On 9/10/15, kamal p <pkamalbhaskar@gmail.com> wrote:
-> Hi,
->   I've query which is based on LTP test-cases running.
->   these days I've downloaded and installed LTP on my linux host machine.
->   while running the test cases using runltp script my system went to crash
-> after running few testcases.
->   why I am facing these problem and Please clarify me anyone with relevant
-> answer for these same.
+Hi!
+> @@ -125,8 +125,8 @@ esac
+>  ret=$?
+>  if [ $ret -eq 0 ]; then
+>  	tst_resm TPASS "case$i($CASETYPE$CASECMD)    PASS"
+> -elif [ $ret -ne 9 ]; then
+> +elif [ $ret -ne 32 ]; then
+>  	tst_resm TFAIL "case$i($CASETYPE $CASECMD)    FAIL"
+>  fi
+>  
+> -exit $ret;
+> +tst_exit
 
-It's possible that system crashes by some test case, you can check the LTP
-result log to see which may cause it. And you can run the specific test case
-suite under "runtest/" directory using the "-f" option of "runltp".
+Unless the whole script is converted to the test.sh the exit $ret must
+stay here, otherwise the return status from the test will be always 0.
 
-Thanks,
-Wanlong Gao
+The rest looks fine.
 
-> Regards &Thanks,
-> Kamal
->
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
-Get real-time metrics from all of your servers, apps and tools
-in one place.
-SourceForge users - Click here to start your Free Trial of Datadog now!
-http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
