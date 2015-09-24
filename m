@@ -2,19 +2,25 @@ Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
 	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <zenglg.jy@cn.fujitsu.com>) id 1ZZvHp-0006LI-59
-	for Ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 06:24:45 +0000
-Received: from [59.151.112.132] (helo=heian.cn.fujitsu.com)
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtp (Exim 4.76)
-	id 1ZZvHn-0006La-ST
-	for Ltp-list@lists.sourceforge.net; Thu, 10 Sep 2015 06:24:45 +0000
-Message-ID: <1441866309.29760.18.camel@G08FNSTD140232>
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 10 Sep 2015 14:25:09 +0800
-In-Reply-To: <CAO0kMxDg1KJWzFMqyYOmP5xLe78pyf21MwizsM_P38Vbx02HeQ@mail.gmail.com>
-References: <CAO0kMxDg1KJWzFMqyYOmP5xLe78pyf21MwizsM_P38Vbx02HeQ@mail.gmail.com>
+	(envelope-from <metan@suse.de>) id 1ZfAwx-0003Fq-W8
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2015 18:08:56 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1ZfAww-0000b8-Qu
+	for ltp-list@lists.sourceforge.net; Thu, 24 Sep 2015 18:08:55 +0000
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+	by mx2.suse.de (Postfix) with ESMTP id 0A598ABC8
+	for <ltp-list@lists.sourceforge.net>;
+	Thu, 24 Sep 2015 18:08:47 +0000 (UTC)
+Date: Thu, 24 Sep 2015 20:07:51 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20150924180751.GA1094@rei.suse.cz>
+References: <1441708477-26192-1-git-send-email-chnyda@suse.com>
 MIME-Version: 1.0
-Subject: Re: [LTP] Query related to LTP test suite run
+Content-Disposition: inline
+In-Reply-To: <1441708477-26192-1-git-send-email-chnyda@suse.com>
+Subject: Re: [LTP] [PATCH] cgroup_fj: renamed arguments because the previous
+ ones were not clear.
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -27,62 +33,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: kamal p <pkamalbhaskar@gmail.com>
-Cc: Ltp-list@lists.sourceforge.net, ltp@lists.linux.it
+To: Cedric Hnyda <chnyda@suse.com>
+Cc: ltp-list@lists.sourceforge.net
 
-Hello,
+Hi!
+> +''|*[!0-9]*) 
+> +	usage
+> +	exit_parameter;;
+> +    *) ;;
+>  esac
 
-CC: ltp@lists.linux.it
+I've removed the trailing whitespace at the end of the ''|*[!0-9]*) and
+updated the commit message and pushed, thanks.
 
-On Thu, 2015-09-10 at 10:07 +0530, kamal p wrote:
-> Hi,
-> 
->   I've query which is based on LTP test-cases running. 
-> 
->   these days I've downloaded and installed LTP on my linux host
-> machine.
->   while running the test cases using runltp script my system went to
-> crash after running few testcases.
-> 
->   why I am facing these problem and Please clarify me anyone with
-> relevant answer for these same.
-> 
+BTW: The canonical format for the git commit message is:
 
-As I known, inotify06 would make some system crash caused by a known
-kernel bug and the bug has been fixed, you can see this url:
-https://github.com/torvalds/linux/commit/8f2f3eb59dff4ec538de55f2e0592fec85966aab
+short commit description <= 50 characters
+[empty line]
+longer commit description that may span across multiple lines with lines
+up to 72 chars long...
+[empty line]
+Signed-off-by: ...
 
-If the issue is inotify06, I suggest that you should remove it before
-using runltp script.
-You can just do like:
-rm -rf <path_to_install_ltp>/testcases/bin/inotify06
-
-Thanks,
-Zeng
-
-> Regards &Thanks,
-> 
-> Kamal
-> 
-> ------------------------------------------------------------------------------
-> Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
-> Get real-time metrics from all of your servers, apps and tools
-> in one place.
-> SourceForge users - Click here to start your Free Trial of Datadog now!
-> http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
 
 ------------------------------------------------------------------------------
-Monitor Your Dynamic Infrastructure at Any Scale With Datadog!
-Get real-time metrics from all of your servers, apps and tools
-in one place.
-SourceForge users - Click here to start your Free Trial of Datadog now!
-http://pubads.g.doubleclick.net/gampad/clk?id=241902991&iu=/4140
 _______________________________________________
 Ltp-list mailing list
 Ltp-list@lists.sourceforge.net
