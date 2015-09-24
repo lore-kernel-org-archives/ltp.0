@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 24 Sep 2015 16:26:17 +0200
-Subject: [LTP] settimeofday01:TFAIL in Kernel 4.2.0
-In-Reply-To: <55FD155A.5020102@iCloud.com>
-References: <55F587CE.1070904@iCloud.com> <20150915085125.GB3351@rei.suse.cz>
- <55FD155A.5020102@iCloud.com>
-Message-ID: <20150924142617.GA32030@rei.suse.cz>
+Date: Thu, 24 Sep 2015 16:51:43 +0200
+Subject: [LTP] LTP and commit e1d7ba8735551ed7 ("time: Always make sure
+ wall_to_monotonic isn't positive")
+In-Reply-To: <20150915083729.GA3860@rei.nue.novell.com>
+References: <20150914134603.GD7002@leverpostej>
+ <20150915083729.GA3860@rei.nue.novell.com>
+Message-ID: <20150924145143.GB32030@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,11 +13,14 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Thank you for reply and kindly advice.
+> Thanks for the report, we allready have patch for the first testcase on
+> the mailing list that initializes the the timeval value to current time
+> + small amount. I will have a look at the second test as well.
 > 
-> I resent a patch. (Sorry for my late reply.)
+> > [1] https://github.com/linux-test-project/ltp/blob/20150903/testcases/kernel/syscalls/settimeofday/settimeofday01.c
+> > [2] https://github.com/linux-test-project/ltp/blob/20150903/testcases/kernel/timers/clock_settime/clock_settime02.c
 
-Pushed with minor changes to the commit message, thanks.
+Both should be fixed in latest git.
 
 -- 
 Cyril Hrubis
