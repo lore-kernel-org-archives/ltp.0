@@ -1,45 +1,62 @@
-From: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
-Date: Wed, 23 Sep 2015 15:20:17 +0300
-Subject: [LTP] [PATCH] syscalls/setregid02: Fix retrieving a group of user
-	"nobody"
-Message-ID: <1443010817-10169-1-git-send-email-yuriy.kolerov@synopsys.com>
+From: $rik@nth  <srikanth007m@gmail.com>
+Date: Thu, 24 Sep 2015 08:13:22 +0530
+Subject: [LTP] LTP cross compilation
+In-Reply-To: <CAO0kMxDo9Q_qs4GSxA3x10wBV6+yW4KdUciP8n8mS1mrSBu=pA@mail.gmail.com>
+References: <CAO0kMxDo9Q_qs4GSxA3x10wBV6+yW4KdUciP8n8mS1mrSBu=pA@mail.gmail.com>
+Message-ID: <CANKSX+FhukcRoe=kTBUWyvDvvaPJaGTfnbsENrCjUWQvT3+mpA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+>arm-none-linux-gnueabi-gcc: unrecognized option '-static-lpthread'
 
-In setup this test sets UID and GID of the user "nobody". Then
-it expects that user "nobody" is in group "nobody" and tries to
-retrive a structure for group "nobody" using getgrnam(). However
-some Linux distributions use group "nogroup" for user "nobody".
-Thus it's necessary to retrieve a group of user "nobody" not by
-hardcoded name but by its GID. It's necessary because group
-"nobody" may not exist.
+provide a space between -static and -lpthread. If you are making
+bionic changes to LTP, then make it to pthread.
 
-I've replaced a variable "nobody" by more generic "ltpgroup".
-Then I've splitted a macro GET_GID on GET_GROUP_BY_NAME an
-GET_GROUP_BY_GID and used GET_GROUP_BY_GID for getting a group
-for the user "nobody".
+On Wed, Sep 23, 2015 at 12:43 PM, kamal p <pkamalbhaskar@gmail.com> wrote:
+> Hi,
+>
+>    when I cross compiling the LTP i've faced an issue ,which is related to
+> linking error such as undefined reference to 'pthread_mutex_lock'. In
+> additon to './configure' i've given CFLAGS="-static"
+> LDFLAGS="-static-pthread" ..Is these was the correct? If no, please tell me
+> how will I cross compile LTP with relevent and clear procedure.
+>
+>      Error which I got is as follows:
+>       make -C "lib" \
+>         -f "/home/kamal/Desktop/CrossCom_ltp/ltp-full-20150903/lib/Makefile"
+> all
+> make[1]: Entering directory
+> `/home/kamal/Desktop/CrossCom_ltp/ltp-full-20150903/lib'
+> make[2]: Entering directory
+> `/home/kamal/Desktop/CrossCom_ltp/ltp-full-20150903/lib/tests'
+> arm-none-linux-gnueabi-gcc -static -g -O2 -fno-strict-aliasing -pipe -Wall
+> -W -static -Wold-style-definition -W  -I../../include -I../../include
+> -static-lpthread  -L../../lib  trerrno.c   -lltp -o trerrno
+> arm-none-linux-gnueabi-gcc: unrecognized option '-static-lpthread'
+> ../../lib/libltp.a(safe_macros.o): In function `safe_getpwnam':
+> /home/kamal/Desktop/CrossCom_ltp/ltp-full-20150903/lib/safe_macros.c:118:
+> warning: Using 'getpwnam' in statically linked applications requires at
+> runtime the shared libraries from the glibc version used for linking
+> ../../lib/libltp.a(tst_res.o): In function `tst_environ':
+> /home/kamal/Desktop/CrossCom_ltp/ltp-full-20150903/lib/tst_res.c:587:
+> undefined reference to `pthread_mutex_lock'
+> /home/kamal/Desktop/CrossCom_ltp/ltp-full-20150903/lib/tst_res.c:592:
+> undefined reference to `pthread_mutex_unlock'
+>
+> Regards,
+> Kamal bhaskar
+>
+>
+>
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+>
 
-On my test system I have user "nobody" in group "nogroup". So
-I've got this error messages for this test:
 
-    ----------->8----------
-    setregid02.c:160: getgrnam("nobody") failed: errno=SUCCESS(0): Success
-    setregid02.c:160: Remaining cases broken
-    ----------->8----------
 
-Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
----
- testcases/kernel/syscalls/setregid/setregid02.c | 31 ++++++++++++++++---------
- 1 file changed, 20 insertions(+), 11 deletions(-)
-
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-syscalls-setregid02-Fix-retrieving-a-group-of-user-n.patch
-Type: text/x-patch
-Size: 2238 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20150923/edef6641/attachment.bin>
+-- 
+Thanks & Regards,
+M.Srikanth Kumar.
