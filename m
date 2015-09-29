@@ -1,29 +1,28 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 29 Sep 2015 11:20:33 +0200
-Subject: [LTP] How to run individual C testcase file like
- ltp/testcases/kernel/containers/pidns/pidns01.c
-In-Reply-To: <5608D654.2010400@linux.vnet.ibm.com>
-References: <5608D654.2010400@linux.vnet.ibm.com>
-Message-ID: <20150929092033.GB24796@rei.suse.cz>
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Tue, 29 Sep 2015 11:22:44 +0200
+Subject: [LTP] membarrier test-case?
+In-Reply-To: <20150929091650.GA24796@rei.suse.cz>
+References: <CA+icZUUi_yNcy8pwk0nzctar_pWHrrm0EViV4sAfXr2oM=kYng@mail.gmail.com>
+ <20150929091650.GA24796@rei.suse.cz>
+Message-ID: <CA+icZUXpsYL6d+DkN2Np0d=EpP3a5C2uoyc-Bz2UX0KhKtRTyA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->      I am new to LTP and developing a testcase under pidns. I want to
-> start with , if there is any way to run , suppose pidns01.c using only
-> gcc command. Only using gcc command, it should be possible to run
-> pidns01.c as the file contains main program. I am also interested in
-> knowing the parameters used to call the file using gcc command.
+On Tue, Sep 29, 2015 at 11:16 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hi!
+>> while digging into a llvmlinux issue with CLANG v3.7 [1] I saw a
+>> "membarrier_test.c" in selftests-dir in Linux v4.3-rcN.
+>>
+>> Does something similiar exist in LTP?
+>
+> No. The membarrier syscall is not part of any officially released kernel
+> yet. Once it gets released and once somebody has time to look into it we
+> may add testcases for it into LTP.
+>
 
-This does not make any sense at all. You speak about running testcases
-then continue to talk about the gcc compiler.
+So, wait for Linux v4.3.
 
-What do you want to do? Compile individual test? Run individual test? Or
-both?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+- Sedat -
