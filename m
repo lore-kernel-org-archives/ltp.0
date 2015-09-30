@@ -1,37 +1,83 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 29 Sep 2015 18:45:30 +0200
-Subject: [LTP] [PATCH] ftp/ftp02: The case needs to check vsftpd first
-In-Reply-To: <1442365546-63246-1-git-send-email-cuibixuan@huawei.com>
-References: <1442365546-63246-1-git-send-email-cuibixuan@huawei.com>
-Message-ID: <20150929164530.GA32482@rei.suse.cz>
+From: Wei Jiangang <weijg.fnst@cn.fujitsu.com>
+Date: Wed, 30 Sep 2015 11:25:55 +0800
+Subject: [LTP] [PATCH 1/2] testscripts: make redirects happen in correct
+	order
+Message-ID: <1443583556-20470-1-git-send-email-weijg.fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> ---
->  testcases/network/tcp_cmds/ftp/ftp02 |    2 +-
->  1 files changed, 1 insertions(+), 1 deletions(-)
-> 
-> diff --git a/testcases/network/tcp_cmds/ftp/ftp02 b/testcases/network/tcp_cmds/ftp/ftp02
-> index 92e7944..6b84f22 100755
-> --- a/testcases/network/tcp_cmds/ftp/ftp02
-> +++ b/testcases/network/tcp_cmds/ftp/ftp02
-> @@ -38,7 +38,7 @@
->  
->  setup()
->  {
-> -	tst_check_cmds expect ftp useradd userdel
-> +	tst_check_cmds expect ftp useradd userdel vsftpd
->  	export TEST_USER="ftpuser2"
+It should redirect stdout to /dev/null firstly,
+then redirect stderr to whatever stdout currently points at.
 
-I see that rest of the ftp testcases that uses vsftpd has it in
-tst_check_cmds. However it would be cleaner to add this check to the top
-of the ftp_setup file so that it's called at the moment the file is
-sourced and remove it from the individual testcases.
+Signed-off-by: Wei Jiangang <weijg.fnst@cn.fujitsu.com>
+---
+ testscripts/ltpstress.sh   |  4 ++--
+ testscripts/runEALtests.sh | 10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
+diff --git a/testscripts/ltpstress.sh b/testscripts/ltpstress.sh
+index 39a5caf..1a16779 100755
+--- a/testscripts/ltpstress.sh
++++ b/testscripts/ltpstress.sh
+@@ -265,10 +265,10 @@ fi
+ ulimit -u unlimited
+ 
+ if [ $PROC_NUM -gt 0 ];then
+-  genload --vm $PROC_NUM --vm-bytes 1073741824 2>&1 1>/dev/null &
++  genload --vm $PROC_NUM --vm-bytes 1073741824 1>/dev/null 2>&1 &
+ fi
+ if [ $leftover_memsize -gt 0 ];then
+-  genload --vm 1 --vm-bytes $(($leftover_memsize * 1024)) 2>&1 1>/dev/null &
++  genload --vm 1 --vm-bytes $(($leftover_memsize * 1024)) 1>/dev/null 2>&1 &
+ fi
+ 
+ if [ $NO_NETWORK -eq 0 ];then
+diff --git a/testscripts/runEALtests.sh b/testscripts/runEALtests.sh
+index bcd3f29..577be28 100755
+--- a/testscripts/runEALtests.sh
++++ b/testscripts/runEALtests.sh
+@@ -84,7 +84,7 @@ fi
+ while getopts cd:f:hi:l:m:Nnpqr:t:x arg
+ do  case $arg in
+     c)
+-            $LTPROOT/../testcases/bin/genload --cpu 1 2>&1 1>/dev/null &
++            $LTPROOT/../testcases/bin/genload --cpu 1 1>/dev/null 2>&1 &
+ 	    GenLoad=1 ;;
+ 
+     d)      # append $$ to TMP, as it is recursively
+@@ -97,9 +97,9 @@ do  case $arg in
+ 
+     i)
+             bytesize=$(($OPTARG * 1024 * 1024))
+-            $LTPROOT/../testcases/bin/genload --io 1 2>&1 1>/dev/null &
++            $LTPROOT/../testcases/bin/genload --io 1 1>/dev/null 2>&1 &
+             $LTPROOT/../testcases/bin/genload --hdd 0 --hdd-bytes $bytesize \
+-            2>&1 1>/dev/null &
++            1>/dev/null 2>&1 &
+ 	    GenLoad=1 ;;
+ 
+     l)
+@@ -125,7 +125,7 @@ do  case $arg in
+     m)
+             memsize=$(($OPTARG * 1024 * 1024))
+ 	    $LTPROOT/../testcases/bin/genload  --vm 0 --vm-bytes $memsize\
+-            2>&1 1>/dev/null &
++            1>/dev/null 2>&1 &
+ 	    GenLoad=1;;
+ 
+     N)	    run_netest=1;;
+@@ -217,7 +217,7 @@ fi
+ 
+ if [ $GenLoad -eq 1 ]
+ then
+-	killall -9 genload
++	killall -9 genload >/dev/null 2>&1
+ fi
+ 
+ if [ $NetPipe -eq 1 ]
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
