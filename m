@@ -1,9 +1,9 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 30 Sep 2015 16:09:27 +0300
-Subject: [LTP] [PATCH 09/10] network/nfs04: move to nfs_stress directory
+Date: Wed, 30 Sep 2015 16:09:22 +0300
+Subject: [LTP] [PATCH 04/10] network/nfs02: move to nfs_stress
 In-Reply-To: <1443618568-29200-1-git-send-email-alexey.kodanev@oracle.com>
 References: <1443618568-29200-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1443618568-29200-9-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1443618568-29200-4-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,41 +12,23 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/network/.gitignore                       |    2 +-
- testcases/network/nfs/nfs04/Makefile               |   31 ---
- testcases/network/nfs/nfs04/nfs04                  |  197 --------------------
- testcases/network/nfs/nfs04/nfs04_create_file.c    |   74 --------
- testcases/network/nfs/nfs_stress/Makefile          |    5 +-
- testcases/network/nfs/nfs_stress/nfs04             |  197 ++++++++++++++++++++
- .../network/nfs/nfs_stress/nfs04_create_file.c     |   74 ++++++++
- 7 files changed, 276 insertions(+), 304 deletions(-)
- delete mode 100644 testcases/network/nfs/nfs04/Makefile
- delete mode 100755 testcases/network/nfs/nfs04/nfs04
- delete mode 100644 testcases/network/nfs/nfs04/nfs04_create_file.c
- create mode 100755 testcases/network/nfs/nfs_stress/nfs04
- create mode 100644 testcases/network/nfs/nfs_stress/nfs04_create_file.c
+ testcases/network/nfs/nfs02/Makefile      |   31 ----
+ testcases/network/nfs/nfs02/nfs02         |  245 -----------------------------
+ testcases/network/nfs/nfs_stress/Makefile |   33 ++---
+ testcases/network/nfs/nfs_stress/nfs02    |  245 +++++++++++++++++++++++++++++
+ 4 files changed, 259 insertions(+), 295 deletions(-)
+ delete mode 100644 testcases/network/nfs/nfs02/Makefile
+ delete mode 100755 testcases/network/nfs/nfs02/nfs02
+ create mode 100755 testcases/network/nfs/nfs_stress/nfs02
 
-diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
-index eae306a..7fd6c16 100644
---- a/testcases/network/.gitignore
-+++ b/testcases/network/.gitignore
-@@ -18,7 +18,7 @@
- /multicast/mc_opts/mc_verify_opts
- /multicast/mc_opts/mc_verify_opts_error
- /nfs/nfs_stress/open_files
--/nfs/nfs04/nfs04_create_file
-+/nfs/nfs_stress/nfs04_create_file
- /nfs/nfs_fsstress/fsstress
- /nfs/nfslock01/nfs_flock
- /nfs/nfslock01/nfs_flock_dgen
-diff --git a/testcases/network/nfs/nfs04/Makefile b/testcases/network/nfs/nfs04/Makefile
+diff --git a/testcases/network/nfs/nfs02/Makefile b/testcases/network/nfs/nfs02/Makefile
 deleted file mode 100644
-index 9676a57..0000000
---- a/testcases/network/nfs/nfs04/Makefile
+index 226c481..0000000
+--- a/testcases/network/nfs/nfs02/Makefile
 +++ /dev/null
 @@ -1,31 +0,0 @@
 -#
--#    network/nfs/nfs04 testcases Makefile.
+-#    network/nfs/nfs02 testcases Makefile.
 -#
 -#    Copyright (C) 2009, Cisco Systems Inc.
 -#
@@ -71,20 +53,20 @@ index 9676a57..0000000
 -
 -include $(top_srcdir)/include/mk/env_pre.mk
 -
--CPPFLAGS		+= -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+-INSTALL_TARGETS		:= nfs02
 -
--INSTALL_TARGETS		:= nfs04
+-MAKE_TARGETS		:=
 -
 -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/nfs/nfs04/nfs04 b/testcases/network/nfs/nfs04/nfs04
+diff --git a/testcases/network/nfs/nfs02/nfs02 b/testcases/network/nfs/nfs02/nfs02
 deleted file mode 100755
-index 7518d5b..0000000
---- a/testcases/network/nfs/nfs04/nfs04
+index c192d96..0000000
+--- a/testcases/network/nfs/nfs02/nfs02
 +++ /dev/null
-@@ -1,197 +0,0 @@
+@@ -1,245 +0,0 @@
 -#! /bin/sh
 -#
--#   Copyright (c) International Business Machines  Corp., 2003
+-#   Copyright (c) International Business Machines  Corp., 2001
 -#
 -#   This program is free software;  you can redistribute it and/or modify
 -#   it under the terms of the GNU General Public License as published by
@@ -100,16 +82,10 @@ index 7518d5b..0000000
 -#   along with this program;  if not, write to the Free Software
 -#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 -#
+-#  FILE   : nfs02
 -#
--#
--#  FILE   : nfs04.sh
--#
--#  PURPOSE: Creates a text file of specified size locally and copies
--#	    the file to an NFS mountpoint.  The two files are compared
--#	    and checked for differences.  If the files differ, then
--#	    the test fails.  By default, this test creates a 10Mb file
--#	    and runs for one loop.
--#
+-#  PURPOSE: Tests NFS copy of various filesizes, file consistency between copies
+-#           and preservation of write/nowrite permissions.
 -#
 -#  SETUP: The home directory of root on the machine exported as "RHOST"
 -#         MUST have a ".rhosts" file with the hostname of the machine
@@ -117,10 +93,10 @@ index 7518d5b..0000000
 -#
 -#
 -#  HISTORY:
--#    10/17/03 Robbie Williamson (robbiew@us.ibm.com)
--#      -Written
+-#    05/15/01 Robbie Williamson (robbiew@us.ibm.com)
+-#      -Ported
 -#
--#***********************************************************************
+-#**********************************************************************
 -
 -#Uncomment line below for debug output.
 -#trace_logic=${trace_logic:-"set -x"}
@@ -130,141 +106,188 @@ index 7518d5b..0000000
 -#-----------------------------------------------------------------------
 -# Initialize local variables
 -#-----------------------------------------------------------------------
--TC=${TC:=nfs04}
+-
+-TC=nfs02
 -TCbin=${TCbin:=`pwd`}
--TCtmp=${TCtmp:=/tmp/$TC$$}
+-TCdat=${TCdat:=$TCbin/datafiles}
+-TCsrc=${TCsrc:=$TCbin}
+-TCtmp=${TCtmp:=$TCbin/$TC$$}
 -export TCID=$TC
 -export TST_TOTAL=1
+-export TST_COUNT=1
 -
--# If CLEANUP is not set; set it to "ON"
+-PID=$$
+-
+-RHOST=${RHOST:=`hostname`}
+-VERSION=${VERSION:=3}
+-SOCKET_TYPE=${SOCKET_TYPE:=udp}
+-TESTDIR=${TESTDIR:=/tmp/$TC$PID.testdir}
 -CLEANUP=${CLEANUP:="ON"}
+-NFS_TYPE=${NFS_TYPE:=nfs}
 -
--#=============================================================================
--# FUNCTION NAME:        setup_testcase
--#
--# FUNCTION DESCRIPTION: Perform the setup function for the testcase.
--#
--# PARAMETERS:   	None.
--#
--# RETURNS:      	None.
--#=============================================================================
--
--setup_testcase()
+-#---------------------------------------------------------------------#
+-# FUNCTION: do_setup
+-# PURPOSE:  To create the necessary files to carry out the test
+-# INPUT:    None.
+-# OUTPUT:   None.
+-#---------------------------------------------------------------------#
+-do_setup()
 -{
 -$trace_logic
 -
--    PID=$$
+-   echo "do_setup $TC"
 -
--    VERSION=${VERSION:=3}
--    RHOST=${RHOST:=`hostname`}
--    FILESIZE=${FILESIZE:=10}
--    SOCKET_TYPE=${SOCKET_TYPE:=udp}
--    TESTDIR=${TESTDIR:=/tmp/$TC$PID.testdir}
--    NFS_TYPE=${NFS_TYPE:=nfs}
--    LOOPS=${LOOPS:=1}
--    export TST_COUNT=$LOOPS
+-   echo ""
+-   echo "Test Options:"
+-   echo " VERSION: $VERSION"
+-   echo " RHOST: $RHOST"
+-   echo " SOCKET_TYPE: $SOCKET_TYPE"
+-   echo " NFS_TYPE: $NFS_TYPE"
+-   echo " TESTDIR: $TESTDIR"
 -
--    echo ""
--    echo "Test Options:"
--    echo " VERSION: $VERSION"
--    echo " RHOST: $RHOST"
--    echo " FILESIZE: $FILESIZE"
--    echo " SOCKET_TYPE: $SOCKET_TYPE"
--    echo " TESTDIR: $TESTDIR"
--    echo " NFS_TYPE: $NFS_TYPE"
--    echo " LOOPS: $LOOPS"
+-   if [ "x$NFS_TYPE" != "xnfs4" ]; then
+-      OPTS="-o vers=$VERSION,proto=$SOCKET_TYPE"
+-   fi
 -
--    if [ "x$NFS_TYPE" != "xnfs4" ]; then
--        OPTS=${OPTS:="-o proto=$SOCKET_TYPE,vers=$VERSION "}
--    fi
+-   IAM=${IAM:=`whoami`}
+-   [ $IAM = "root" ] || end_testcase "Must be root user"
 -
--    REMOTE_DIR=${RHOST}:$TESTDIR
--    LUSER=${LUSER:=root}
--    mkdir -p $TCtmp || end_testcase "Could not create $TCtmp"
--    chmod 777 $TCtmp
+-   #Setup and Export the data directory on RHOST
+-   rsh -n $RHOST "mkdir -p $TESTDIR"
+-   [ $? -eq 0 ] || end_testcase "Could not create $TESTDIR from $RHOST"
 -
--    tst_resm TINFO "Setting up remote machine: $RHOST"
--    rsh -n $RHOST "mkdir -p $TESTDIR"
--    [ $? = 0 ] || end_testcase "Could not create remote directory"
--    rsh -n $RHOST "touch $TESTDIR/testfile"
--    [ $? = 0 ] || end_testcase "Could not create testfile in remote directory"
+-   if [ "x$NFS_TYPE" = "xnfs4" ]; then
+-      rsh -n $RHOST "mkdir -p /export$TESTDIR"
+-      [ $? = 0 ] || end_testcase "Could not create /export$TESTDIR on server"
+-      rsh -n $RHOST "mount --bind $TESTDIR /export$TESTDIR"
+-      [ $? = 0 ] || end_testcase "Could notbind $TESTDIR to /export"
+-      rsh -n $RHOST "/usr/sbin/exportfs -o no_root_squash,rw,nohide,insecure,no_subtree_check *:$TESTDIR"
+-      [ $? = 0 ] || end_testcase "Could not export remote directory"
+-   else
+-      rsh -n $RHOST "/usr/sbin/exportfs -i *:$TESTDIR -o rw,no_root_squash "
+-      [ $? -eq 0 ] || end_testcase "Could not export $TESTDIR from $RHOST"
+-   fi
 -
--    if [ "x$NFS_TYPE" = "xnfs4" ]; then
--        rsh -n $RHOST "mkdir -p /export$TESTDIR"
--        [ $? = 0 ] || end_testcase "Could not create /export$TESTDIR on server"
--        rsh -n $RHOST "mount --bind $TESTDIR /export$TESTDIR"
--        [ $? = 0 ] || end_testcase "Could not bind $TESTDIR to /export"
--        rsh -n $RHOST "/usr/sbin/exportfs -o no_root_squash,rw,nohide,insecure,no_subtree_check *:$TESTDIR"
--        [ $? = 0 ] || end_testcase "Could not export remote directory"
--    else
--        rsh -n $RHOST "/usr/sbin/exportfs -i -o no_root_squash,rw *:$TESTDIR"
--        [ $? = 0 ] || end_testcase "Could not export remote directory"
--    fi
+-   #Verify export
+-   showmount -e $RHOST | grep $TESTDIR
+-   [ $? -eq 0 ] || end_testcase "$TESTDIR not exported"
 -
--    tst_resm TINFO "Mounting NFS filesystem"
--    mount -t $NFS_TYPE $OPTS $REMOTE_DIR $TCtmp || end_testcase "Cannot mount $TCtmp"
--    [ $? = 0 ] || end_testcase "Could not mount $REMOTE_DIR"
+-   #Create $TCtmp for mount point
+-   mkdir -p $TCtmp
+-   [ $? -eq 0 ] || end_testcase "Could not create $TCtmp"
+-
+-   #Mount $TCdat from RHOST.
+-   mount -t $NFS_TYPE $OPTS $RHOST:$TESTDIR $TCtmp
+-   [ $? -eq 0 ] || end_testcase "Could not mount from $RHOST"
+-
 -}
 -
 -
--#=============================================================================
--# FUNCTION NAME:        do_test
--#
--# FUNCTION DESCRIPTION: Perform the test
--#
--# PARAMETERS:   	None.
--#
--# RETURNS:      	None.
--#=============================================================================
--do_test()
+-#---------------------------------------------------------------------#
+-# FUNCTION: do_test1
+-# PURPOSE:  Perform the necessary steps to complete the test.
+-# INPUT:    None.
+-# OUTPUT:    Error messages are logged if any of the tests fail.
+-#---------------------------------------------------------------------#
+-do_test1()
 -{
 -$trace_logic
--  loopcount=0
--  nfs04_create_file $FILESIZE /tmp/nfs04$PID.testfile >/dev/null
--  if [ $? != 0 ]; then
--	end_testcase "Could not create testfile"
--  fi
--  tst_resm TINFO "Test Started"
--  while [ $loopcount -lt $LOOPS ]
--    do
--	cp /tmp/nfs04$PID.testfile $TCtmp/nfs04$PID.testfile$loopcount
--	cmp /tmp/nfs04$PID.testfile $TCtmp/nfs04$PID.testfile$loopcount
--	retval=$?
--	if [ "$retval" != 0 ]; then
--		end_testcase "Error in loop $loopcount: First cmp FAILED"
--	fi
--	cp $TCtmp/nfs04$PID.testfile$loopcount /tmp/nfs04$PID.testfile_compare
--	cmp /tmp/nfs04$PID.testfile /tmp/nfs04$PID.testfile_compare
--	retval=$?
--	if [ "$retval" != 0 ]; then
--		end_testcase "Error in loop $loopcount: Second cmp FAILED"
--	fi
--	rm -f /tmp/nfs04$PID.testfile_compare
--	loopcount=$(( $loopcount + 1 ))
--	tst_resm TINFO "Completed Loop $loopcount"
--    done
+-  echo "do_test1 $TC "
+-  cp $TCdat/ascii.jmb $TCtmp &
+-  wait $!
+-  echo "compare both ascii.jmbs"
+-  diff $TCtmp/ascii.jmb $TCdat/ascii.jmb
+-  [ $? -eq 0 ] || end_testcase "'diff' of ascii.jmb FAILED"
+-
 -}
 -
+-#---------------------------------------------------------------------#
+-# FUNCTION: do_test2
+-# PURPOSE:  Perform the necessary steps to complete the test.
+-# INPUT:    None.
+-# OUTPUT:    Error messages are logged if any of the tests fail.
+-#---------------------------------------------------------------------#
+-do_test2()
+-{
+-$trace_logic
+-   echo "do_test2 $TC "
+-   cp $TCdat/ascii.sm $TCtmp &
+-   wait $!
+-   cp $TCdat/ascii.med $TCtmp &
+-   wait $!
+-   cp $TCdat/ascii.lg $TCtmp &
+-   wait $!
+-
+-   #small file
+-   cp $TCtmp/ascii.sm $TCtmp/ascii.smcp &
+-   wait $!
+-   diff $TCtmp/ascii.smcp $TCdat/ascii.sm
+-   [ $? -eq 0 ] || end_testcase "'diff' of ascii.sm FAILED"
+-
+-   #medium file
+-   cp $TCtmp/ascii.med $TCtmp/ascii.medcp &
+-   wait $!
+-   diff $TCtmp/ascii.medcp $TCdat/ascii.med
+-   [ $? -eq 0 ] || end_testcase "'diff' of ascii.med FAILED"
+-
+-   #large file
+-   cp $TCtmp/ascii.lg $TCtmp/ascii.lgcp &
+-   wait $!
+-   diff $TCtmp/ascii.lgcp $TCdat/ascii.lg
+-   [ $? -eq 0 ] || end_testcase "'diff' of ascii.lg FAILED"
+-
+-}
+-
+-#---------------------------------------------------------------------#
+-# FUNCTION: do_test3
+-# PURPOSE:  Perform the necessary steps to complete the test.
+-# INPUT:    None.
+-# OUTPUT:    Error messages are logged if any of the tests fail.
+-#---------------------------------------------------------------------#
+-do_test3()
+-{
+-$trace_logic
+-   echo "do_test3 $TC "
+-   chmod a-wx $TCtmp/ascii.sm &
+-   wait $!
+-   ls -l $TCtmp/ascii.sm | grep "r--"
+-   [ $? -eq 0 ] || end_testcase "Removal of write permissions not honored on ascii.sm"
+-   chmod a+w $TCtmp/ascii.sm
+-}
+-
+-#---------------------------------------------------------------------#
+-# FUNCTION: do_cleanup
+-# PURPOSE:  To delete all the files created to run this test.
+-# INPUT:    None.
+-# OUTPUT:   None.
+-#---------------------------------------------------------------------#
+-do_cleanup()
+-{
+-$trace_logic
+-   echo "do_cleanup $TC "
+-   rm -f $TCtmp/*.fil*
+-   cd $TCbin
+-   umount $TCtmp
+-   sleep 3
+-   rmdir $TCtmp
+-   rsh -n $RHOST "/usr/sbin/exportfs -u *:$TESTDIR"
+-   rsh -n $RHOST "rm -rf $TESTDIR"
+-}
 -
 -#=============================================================================
 -# FUNCTION NAME:        end_testcase
 -#
 -# FUNCTION DESCRIPTION: Clean up
 -#
--# PARAMETERS:   	None.
+-# PARAMETERS:           None.
 -#
--# RETURNS:      	None.
+-# RETURNS:              None.
 -#=============================================================================
 -end_testcase()
 -{
 -$trace_logic
 -    if [ "$CLEANUP" = "ON" ]; then
--	sleep 2
--        umount $TCtmp || tst_resm TBROK "Cannot umount $TCtmp"
--	rm -rf $TCtmp || tst_resm TBROK "Cannot remove $TCtmp"
--        rsh -n $RHOST "/usr/sbin/exportfs -u *:$TESTDIR"
--		 rsh -n $RHOST "rm -rf $TESTDIR"
--	rm -f /tmp/nfs04$PID.testfile*
+-       do_cleanup
 -    fi
 -
 -    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
@@ -273,119 +296,77 @@ index 7518d5b..0000000
 -}
 -
 -#=============================================================================
--# MAIN PROCEDURE
--#=============================================================================
--
--setup_testcase
--do_test
+-#---------------------------------------------------------------------#
+-# FUNCTION: MAIN
+-# PURPOSE:  To invoke the functions to perform the tasks described in
+-#           the prologue.
+-# INPUT:    None.
+-# OUTPUT:   A testcase run log with the results of the execution of this
+-#           test.
+-#---------------------------------------------------------------------#
+-do_setup
+-do_test1
+-do_test2
+-do_test3
 -end_testcase
-diff --git a/testcases/network/nfs/nfs04/nfs04_create_file.c b/testcases/network/nfs/nfs04/nfs04_create_file.c
-deleted file mode 100644
-index 653c500..0000000
---- a/testcases/network/nfs/nfs04/nfs04_create_file.c
-+++ /dev/null
-@@ -1,74 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2003
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- *  FILE        : create_file.c
-- *  PURPOSE	: Creates a text file of specified size.
-- *  HISTORY	:
-- *  	10/17/2003 Robbie Williamson
-- *	  -Written
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <string.h>
--
--/* set write buffer size to whatever floats your boat.  I usually use 1M */
--#define BSIZE 1048576L
--
--int main(int argc, char *argv[])
--{
--	off_t i;
--	long bufnum;
--	char buf[BSIZE];
--	off_t fd;
--
--	if (argc != 3 || atoi(argv[1]) < 1) {
--		printf
--		    ("usage:\n\tcreate_file <# of %ld buffers to write> <name of file to create>\n\t ex. # create_file 10 /tmp/testfile\n",
--		     BSIZE);
--		exit(3);
--	}
--	bufnum = strtol(argv[1], NULL, 0);
--	printf("Started building a %lu megabyte file\n", bufnum);
--	buf[0] = 'A';
--	for (i = 1; i < BSIZE; i++)
--		buf[i] = buf[i - 1] + 1;
--	buf[BSIZE - 1] = 'Z';
--
--	if ((fd = creat(argv[2], 0755)) == -1)
--		perror("lftest: ");
--
--	for (i = 0; i < bufnum; i++) {
--		if (write(fd, buf, BSIZE) == -1)
--			return -1;
--		else {
--			printf(".");
--			fflush(stdout);
--		}
--		fsync(fd);
--	}
--	close(fd);
--	printf("\nFinished building a %lu megabyte file\n", bufnum);
--	return (0);
--}
 diff --git a/testcases/network/nfs/nfs_stress/Makefile b/testcases/network/nfs/nfs_stress/Makefile
-index 69d2c81..2b5242c 100644
+index 58e24d0..ff61dfb 100644
 --- a/testcases/network/nfs/nfs_stress/Makefile
 +++ b/testcases/network/nfs/nfs_stress/Makefile
-@@ -18,9 +18,12 @@ top_srcdir		?= ../../../..
+@@ -1,30 +1,25 @@
++# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (C) 2009, Cisco Systems Inc.
+ #
+-#    network/nfs/nfs01 testcases Makefile.
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
+ #
+-#    Copyright (C) 2009, Cisco Systems Inc.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Garrett Cooper, July 2009
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
+ #
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
+ 
+ top_srcdir		?= ../../../..
  
  include $(top_srcdir)/include/mk/env_pre.mk
  
-+nfs04_create_file: CPPFLAGS += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
-+
  INSTALL_TARGETS		:= nfs_lib.sh \
- 			   nfs01 \
- 			   nfs02 \
--			   nfs03
-+			   nfs03 \
-+			   nfs04
+-			   nfs01
++			   nfs01 \
++			   nfs02
  
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/nfs/nfs_stress/nfs04 b/testcases/network/nfs/nfs_stress/nfs04
+diff --git a/testcases/network/nfs/nfs_stress/nfs02 b/testcases/network/nfs/nfs_stress/nfs02
 new file mode 100755
-index 0000000..7518d5b
+index 0000000..c192d96
 --- /dev/null
-+++ b/testcases/network/nfs/nfs_stress/nfs04
-@@ -0,0 +1,197 @@
++++ b/testcases/network/nfs/nfs_stress/nfs02
+@@ -0,0 +1,245 @@
 +#! /bin/sh
 +#
-+#   Copyright (c) International Business Machines  Corp., 2003
++#   Copyright (c) International Business Machines  Corp., 2001
 +#
 +#   This program is free software;  you can redistribute it and/or modify
 +#   it under the terms of the GNU General Public License as published by
@@ -401,16 +382,10 @@ index 0000000..7518d5b
 +#   along with this program;  if not, write to the Free Software
 +#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 +#
++#  FILE   : nfs02
 +#
-+#
-+#  FILE   : nfs04.sh
-+#
-+#  PURPOSE: Creates a text file of specified size locally and copies
-+#	    the file to an NFS mountpoint.  The two files are compared
-+#	    and checked for differences.  If the files differ, then
-+#	    the test fails.  By default, this test creates a 10Mb file
-+#	    and runs for one loop.
-+#
++#  PURPOSE: Tests NFS copy of various filesizes, file consistency between copies
++#           and preservation of write/nowrite permissions.
 +#
 +#  SETUP: The home directory of root on the machine exported as "RHOST"
 +#         MUST have a ".rhosts" file with the hostname of the machine
@@ -418,10 +393,10 @@ index 0000000..7518d5b
 +#
 +#
 +#  HISTORY:
-+#    10/17/03 Robbie Williamson (robbiew@us.ibm.com)
-+#      -Written
++#    05/15/01 Robbie Williamson (robbiew@us.ibm.com)
++#      -Ported
 +#
-+#***********************************************************************
++#**********************************************************************
 +
 +#Uncomment line below for debug output.
 +#trace_logic=${trace_logic:-"set -x"}
@@ -431,141 +406,188 @@ index 0000000..7518d5b
 +#-----------------------------------------------------------------------
 +# Initialize local variables
 +#-----------------------------------------------------------------------
-+TC=${TC:=nfs04}
++
++TC=nfs02
 +TCbin=${TCbin:=`pwd`}
-+TCtmp=${TCtmp:=/tmp/$TC$$}
++TCdat=${TCdat:=$TCbin/datafiles}
++TCsrc=${TCsrc:=$TCbin}
++TCtmp=${TCtmp:=$TCbin/$TC$$}
 +export TCID=$TC
 +export TST_TOTAL=1
++export TST_COUNT=1
 +
-+# If CLEANUP is not set; set it to "ON"
++PID=$$
++
++RHOST=${RHOST:=`hostname`}
++VERSION=${VERSION:=3}
++SOCKET_TYPE=${SOCKET_TYPE:=udp}
++TESTDIR=${TESTDIR:=/tmp/$TC$PID.testdir}
 +CLEANUP=${CLEANUP:="ON"}
++NFS_TYPE=${NFS_TYPE:=nfs}
 +
-+#=============================================================================
-+# FUNCTION NAME:        setup_testcase
-+#
-+# FUNCTION DESCRIPTION: Perform the setup function for the testcase.
-+#
-+# PARAMETERS:   	None.
-+#
-+# RETURNS:      	None.
-+#=============================================================================
-+
-+setup_testcase()
++#---------------------------------------------------------------------#
++# FUNCTION: do_setup
++# PURPOSE:  To create the necessary files to carry out the test
++# INPUT:    None.
++# OUTPUT:   None.
++#---------------------------------------------------------------------#
++do_setup()
 +{
 +$trace_logic
 +
-+    PID=$$
++   echo "do_setup $TC"
 +
-+    VERSION=${VERSION:=3}
-+    RHOST=${RHOST:=`hostname`}
-+    FILESIZE=${FILESIZE:=10}
-+    SOCKET_TYPE=${SOCKET_TYPE:=udp}
-+    TESTDIR=${TESTDIR:=/tmp/$TC$PID.testdir}
-+    NFS_TYPE=${NFS_TYPE:=nfs}
-+    LOOPS=${LOOPS:=1}
-+    export TST_COUNT=$LOOPS
++   echo ""
++   echo "Test Options:"
++   echo " VERSION: $VERSION"
++   echo " RHOST: $RHOST"
++   echo " SOCKET_TYPE: $SOCKET_TYPE"
++   echo " NFS_TYPE: $NFS_TYPE"
++   echo " TESTDIR: $TESTDIR"
 +
-+    echo ""
-+    echo "Test Options:"
-+    echo " VERSION: $VERSION"
-+    echo " RHOST: $RHOST"
-+    echo " FILESIZE: $FILESIZE"
-+    echo " SOCKET_TYPE: $SOCKET_TYPE"
-+    echo " TESTDIR: $TESTDIR"
-+    echo " NFS_TYPE: $NFS_TYPE"
-+    echo " LOOPS: $LOOPS"
++   if [ "x$NFS_TYPE" != "xnfs4" ]; then
++      OPTS="-o vers=$VERSION,proto=$SOCKET_TYPE"
++   fi
 +
-+    if [ "x$NFS_TYPE" != "xnfs4" ]; then
-+        OPTS=${OPTS:="-o proto=$SOCKET_TYPE,vers=$VERSION "}
-+    fi
++   IAM=${IAM:=`whoami`}
++   [ $IAM = "root" ] || end_testcase "Must be root user"
 +
-+    REMOTE_DIR=${RHOST}:$TESTDIR
-+    LUSER=${LUSER:=root}
-+    mkdir -p $TCtmp || end_testcase "Could not create $TCtmp"
-+    chmod 777 $TCtmp
++   #Setup and Export the data directory on RHOST
++   rsh -n $RHOST "mkdir -p $TESTDIR"
++   [ $? -eq 0 ] || end_testcase "Could not create $TESTDIR from $RHOST"
 +
-+    tst_resm TINFO "Setting up remote machine: $RHOST"
-+    rsh -n $RHOST "mkdir -p $TESTDIR"
-+    [ $? = 0 ] || end_testcase "Could not create remote directory"
-+    rsh -n $RHOST "touch $TESTDIR/testfile"
-+    [ $? = 0 ] || end_testcase "Could not create testfile in remote directory"
++   if [ "x$NFS_TYPE" = "xnfs4" ]; then
++      rsh -n $RHOST "mkdir -p /export$TESTDIR"
++      [ $? = 0 ] || end_testcase "Could not create /export$TESTDIR on server"
++      rsh -n $RHOST "mount --bind $TESTDIR /export$TESTDIR"
++      [ $? = 0 ] || end_testcase "Could notbind $TESTDIR to /export"
++      rsh -n $RHOST "/usr/sbin/exportfs -o no_root_squash,rw,nohide,insecure,no_subtree_check *:$TESTDIR"
++      [ $? = 0 ] || end_testcase "Could not export remote directory"
++   else
++      rsh -n $RHOST "/usr/sbin/exportfs -i *:$TESTDIR -o rw,no_root_squash "
++      [ $? -eq 0 ] || end_testcase "Could not export $TESTDIR from $RHOST"
++   fi
 +
-+    if [ "x$NFS_TYPE" = "xnfs4" ]; then
-+        rsh -n $RHOST "mkdir -p /export$TESTDIR"
-+        [ $? = 0 ] || end_testcase "Could not create /export$TESTDIR on server"
-+        rsh -n $RHOST "mount --bind $TESTDIR /export$TESTDIR"
-+        [ $? = 0 ] || end_testcase "Could not bind $TESTDIR to /export"
-+        rsh -n $RHOST "/usr/sbin/exportfs -o no_root_squash,rw,nohide,insecure,no_subtree_check *:$TESTDIR"
-+        [ $? = 0 ] || end_testcase "Could not export remote directory"
-+    else
-+        rsh -n $RHOST "/usr/sbin/exportfs -i -o no_root_squash,rw *:$TESTDIR"
-+        [ $? = 0 ] || end_testcase "Could not export remote directory"
-+    fi
++   #Verify export
++   showmount -e $RHOST | grep $TESTDIR
++   [ $? -eq 0 ] || end_testcase "$TESTDIR not exported"
 +
-+    tst_resm TINFO "Mounting NFS filesystem"
-+    mount -t $NFS_TYPE $OPTS $REMOTE_DIR $TCtmp || end_testcase "Cannot mount $TCtmp"
-+    [ $? = 0 ] || end_testcase "Could not mount $REMOTE_DIR"
++   #Create $TCtmp for mount point
++   mkdir -p $TCtmp
++   [ $? -eq 0 ] || end_testcase "Could not create $TCtmp"
++
++   #Mount $TCdat from RHOST.
++   mount -t $NFS_TYPE $OPTS $RHOST:$TESTDIR $TCtmp
++   [ $? -eq 0 ] || end_testcase "Could not mount from $RHOST"
++
 +}
 +
 +
-+#=============================================================================
-+# FUNCTION NAME:        do_test
-+#
-+# FUNCTION DESCRIPTION: Perform the test
-+#
-+# PARAMETERS:   	None.
-+#
-+# RETURNS:      	None.
-+#=============================================================================
-+do_test()
++#---------------------------------------------------------------------#
++# FUNCTION: do_test1
++# PURPOSE:  Perform the necessary steps to complete the test.
++# INPUT:    None.
++# OUTPUT:    Error messages are logged if any of the tests fail.
++#---------------------------------------------------------------------#
++do_test1()
 +{
 +$trace_logic
-+  loopcount=0
-+  nfs04_create_file $FILESIZE /tmp/nfs04$PID.testfile >/dev/null
-+  if [ $? != 0 ]; then
-+	end_testcase "Could not create testfile"
-+  fi
-+  tst_resm TINFO "Test Started"
-+  while [ $loopcount -lt $LOOPS ]
-+    do
-+	cp /tmp/nfs04$PID.testfile $TCtmp/nfs04$PID.testfile$loopcount
-+	cmp /tmp/nfs04$PID.testfile $TCtmp/nfs04$PID.testfile$loopcount
-+	retval=$?
-+	if [ "$retval" != 0 ]; then
-+		end_testcase "Error in loop $loopcount: First cmp FAILED"
-+	fi
-+	cp $TCtmp/nfs04$PID.testfile$loopcount /tmp/nfs04$PID.testfile_compare
-+	cmp /tmp/nfs04$PID.testfile /tmp/nfs04$PID.testfile_compare
-+	retval=$?
-+	if [ "$retval" != 0 ]; then
-+		end_testcase "Error in loop $loopcount: Second cmp FAILED"
-+	fi
-+	rm -f /tmp/nfs04$PID.testfile_compare
-+	loopcount=$(( $loopcount + 1 ))
-+	tst_resm TINFO "Completed Loop $loopcount"
-+    done
++  echo "do_test1 $TC "
++  cp $TCdat/ascii.jmb $TCtmp &
++  wait $!
++  echo "compare both ascii.jmbs"
++  diff $TCtmp/ascii.jmb $TCdat/ascii.jmb
++  [ $? -eq 0 ] || end_testcase "'diff' of ascii.jmb FAILED"
++
 +}
 +
++#---------------------------------------------------------------------#
++# FUNCTION: do_test2
++# PURPOSE:  Perform the necessary steps to complete the test.
++# INPUT:    None.
++# OUTPUT:    Error messages are logged if any of the tests fail.
++#---------------------------------------------------------------------#
++do_test2()
++{
++$trace_logic
++   echo "do_test2 $TC "
++   cp $TCdat/ascii.sm $TCtmp &
++   wait $!
++   cp $TCdat/ascii.med $TCtmp &
++   wait $!
++   cp $TCdat/ascii.lg $TCtmp &
++   wait $!
++
++   #small file
++   cp $TCtmp/ascii.sm $TCtmp/ascii.smcp &
++   wait $!
++   diff $TCtmp/ascii.smcp $TCdat/ascii.sm
++   [ $? -eq 0 ] || end_testcase "'diff' of ascii.sm FAILED"
++
++   #medium file
++   cp $TCtmp/ascii.med $TCtmp/ascii.medcp &
++   wait $!
++   diff $TCtmp/ascii.medcp $TCdat/ascii.med
++   [ $? -eq 0 ] || end_testcase "'diff' of ascii.med FAILED"
++
++   #large file
++   cp $TCtmp/ascii.lg $TCtmp/ascii.lgcp &
++   wait $!
++   diff $TCtmp/ascii.lgcp $TCdat/ascii.lg
++   [ $? -eq 0 ] || end_testcase "'diff' of ascii.lg FAILED"
++
++}
++
++#---------------------------------------------------------------------#
++# FUNCTION: do_test3
++# PURPOSE:  Perform the necessary steps to complete the test.
++# INPUT:    None.
++# OUTPUT:    Error messages are logged if any of the tests fail.
++#---------------------------------------------------------------------#
++do_test3()
++{
++$trace_logic
++   echo "do_test3 $TC "
++   chmod a-wx $TCtmp/ascii.sm &
++   wait $!
++   ls -l $TCtmp/ascii.sm | grep "r--"
++   [ $? -eq 0 ] || end_testcase "Removal of write permissions not honored on ascii.sm"
++   chmod a+w $TCtmp/ascii.sm
++}
++
++#---------------------------------------------------------------------#
++# FUNCTION: do_cleanup
++# PURPOSE:  To delete all the files created to run this test.
++# INPUT:    None.
++# OUTPUT:   None.
++#---------------------------------------------------------------------#
++do_cleanup()
++{
++$trace_logic
++   echo "do_cleanup $TC "
++   rm -f $TCtmp/*.fil*
++   cd $TCbin
++   umount $TCtmp
++   sleep 3
++   rmdir $TCtmp
++   rsh -n $RHOST "/usr/sbin/exportfs -u *:$TESTDIR"
++   rsh -n $RHOST "rm -rf $TESTDIR"
++}
 +
 +#=============================================================================
 +# FUNCTION NAME:        end_testcase
 +#
 +# FUNCTION DESCRIPTION: Clean up
 +#
-+# PARAMETERS:   	None.
++# PARAMETERS:           None.
 +#
-+# RETURNS:      	None.
++# RETURNS:              None.
 +#=============================================================================
 +end_testcase()
 +{
 +$trace_logic
 +    if [ "$CLEANUP" = "ON" ]; then
-+	sleep 2
-+        umount $TCtmp || tst_resm TBROK "Cannot umount $TCtmp"
-+	rm -rf $TCtmp || tst_resm TBROK "Cannot remove $TCtmp"
-+        rsh -n $RHOST "/usr/sbin/exportfs -u *:$TESTDIR"
-+		 rsh -n $RHOST "rm -rf $TESTDIR"
-+	rm -f /tmp/nfs04$PID.testfile*
++       do_cleanup
 +    fi
 +
 +    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
@@ -574,92 +596,19 @@ index 0000000..7518d5b
 +}
 +
 +#=============================================================================
-+# MAIN PROCEDURE
-+#=============================================================================
-+
-+setup_testcase
-+do_test
++#---------------------------------------------------------------------#
++# FUNCTION: MAIN
++# PURPOSE:  To invoke the functions to perform the tasks described in
++#           the prologue.
++# INPUT:    None.
++# OUTPUT:   A testcase run log with the results of the execution of this
++#           test.
++#---------------------------------------------------------------------#
++do_setup
++do_test1
++do_test2
++do_test3
 +end_testcase
-diff --git a/testcases/network/nfs/nfs_stress/nfs04_create_file.c b/testcases/network/nfs/nfs_stress/nfs04_create_file.c
-new file mode 100644
-index 0000000..653c500
---- /dev/null
-+++ b/testcases/network/nfs/nfs_stress/nfs04_create_file.c
-@@ -0,0 +1,74 @@
-+/*
-+ *
-+ *   Copyright (c) International Business Machines  Corp., 2003
-+ *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program;  if not, write to the Free Software
-+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ */
-+
-+/*
-+ *  FILE        : create_file.c
-+ *  PURPOSE	: Creates a text file of specified size.
-+ *  HISTORY	:
-+ *  	10/17/2003 Robbie Williamson
-+ *	  -Written
-+ */
-+
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <string.h>
-+
-+/* set write buffer size to whatever floats your boat.  I usually use 1M */
-+#define BSIZE 1048576L
-+
-+int main(int argc, char *argv[])
-+{
-+	off_t i;
-+	long bufnum;
-+	char buf[BSIZE];
-+	off_t fd;
-+
-+	if (argc != 3 || atoi(argv[1]) < 1) {
-+		printf
-+		    ("usage:\n\tcreate_file <# of %ld buffers to write> <name of file to create>\n\t ex. # create_file 10 /tmp/testfile\n",
-+		     BSIZE);
-+		exit(3);
-+	}
-+	bufnum = strtol(argv[1], NULL, 0);
-+	printf("Started building a %lu megabyte file\n", bufnum);
-+	buf[0] = 'A';
-+	for (i = 1; i < BSIZE; i++)
-+		buf[i] = buf[i - 1] + 1;
-+	buf[BSIZE - 1] = 'Z';
-+
-+	if ((fd = creat(argv[2], 0755)) == -1)
-+		perror("lftest: ");
-+
-+	for (i = 0; i < bufnum; i++) {
-+		if (write(fd, buf, BSIZE) == -1)
-+			return -1;
-+		else {
-+			printf(".");
-+			fflush(stdout);
-+		}
-+		fsync(fd);
-+	}
-+	close(fd);
-+	printf("\nFinished building a %lu megabyte file\n", bufnum);
-+	return (0);
-+}
 -- 
 1.7.1
 
