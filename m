@@ -1,9 +1,9 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 30 Sep 2015 16:09:22 +0300
-Subject: [LTP] [PATCH 04/10] network/nfs02: move to nfs_stress
+Date: Wed, 30 Sep 2015 16:09:25 +0300
+Subject: [LTP] [PATCH 07/10] network/nfs03: move to nfs_stress directory
 In-Reply-To: <1443618568-29200-1-git-send-email-alexey.kodanev@oracle.com>
 References: <1443618568-29200-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1443618568-29200-4-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1443618568-29200-7-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,23 +12,23 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/network/nfs/nfs02/Makefile      |   31 ----
- testcases/network/nfs/nfs02/nfs02         |  245 -----------------------------
- testcases/network/nfs/nfs_stress/Makefile |   33 ++---
- testcases/network/nfs/nfs_stress/nfs02    |  245 +++++++++++++++++++++++++++++
- 4 files changed, 259 insertions(+), 295 deletions(-)
- delete mode 100644 testcases/network/nfs/nfs02/Makefile
- delete mode 100755 testcases/network/nfs/nfs02/nfs02
- create mode 100755 testcases/network/nfs/nfs_stress/nfs02
+ testcases/network/nfs/nfs03/Makefile      |   31 --
+ testcases/network/nfs/nfs03/nfs03         |  428 -----------------------------
+ testcases/network/nfs/nfs_stress/Makefile |    3 +-
+ testcases/network/nfs/nfs_stress/nfs03    |  428 +++++++++++++++++++++++++++++
+ 4 files changed, 430 insertions(+), 460 deletions(-)
+ delete mode 100644 testcases/network/nfs/nfs03/Makefile
+ delete mode 100755 testcases/network/nfs/nfs03/nfs03
+ create mode 100755 testcases/network/nfs/nfs_stress/nfs03
 
-diff --git a/testcases/network/nfs/nfs02/Makefile b/testcases/network/nfs/nfs02/Makefile
+diff --git a/testcases/network/nfs/nfs03/Makefile b/testcases/network/nfs/nfs03/Makefile
 deleted file mode 100644
-index 226c481..0000000
---- a/testcases/network/nfs/nfs02/Makefile
+index 33464f5..0000000
+--- a/testcases/network/nfs/nfs03/Makefile
 +++ /dev/null
 @@ -1,31 +0,0 @@
 -#
--#    network/nfs/nfs02 testcases Makefile.
+-#    network/nfs/nfs03 testcases Makefile.
 -#
 -#    Copyright (C) 2009, Cisco Systems Inc.
 -#
@@ -53,17 +53,17 @@ index 226c481..0000000
 -
 -include $(top_srcdir)/include/mk/env_pre.mk
 -
--INSTALL_TARGETS		:= nfs02
+-INSTALL_TARGETS		:= nfs03
 -
 -MAKE_TARGETS		:=
 -
 -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/nfs/nfs02/nfs02 b/testcases/network/nfs/nfs02/nfs02
+diff --git a/testcases/network/nfs/nfs03/nfs03 b/testcases/network/nfs/nfs03/nfs03
 deleted file mode 100755
-index c192d96..0000000
---- a/testcases/network/nfs/nfs02/nfs02
+index a6c53ab..0000000
+--- a/testcases/network/nfs/nfs03/nfs03
 +++ /dev/null
-@@ -1,245 +0,0 @@
+@@ -1,428 +0,0 @@
 -#! /bin/sh
 -#
 -#   Copyright (c) International Business Machines  Corp., 2001
@@ -82,10 +82,12 @@ index c192d96..0000000
 -#   along with this program;  if not, write to the Free Software
 -#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 -#
--#  FILE   : nfs02
 -#
--#  PURPOSE: Tests NFS copy of various filesizes, file consistency between copies
--#           and preservation of write/nowrite permissions.
+-#
+-#  FILE   : nfs03
+-#
+-#  DESCRIPTION: This script sets up the NFS directories in the remote machine
+-#		and runs the LTP's filesystem test: fs_inod.
 -#
 -#  SETUP: The home directory of root on the machine exported as "RHOST"
 -#         MUST have a ".rhosts" file with the hostname of the machine
@@ -93,10 +95,10 @@ index c192d96..0000000
 -#
 -#
 -#  HISTORY:
--#    05/15/01 Robbie Williamson (robbiew@us.ibm.com)
--#      -Ported
+-#    11/2/01 Robbie Williamson (robbiew@us.ibm.com)
+-#      -Created
 -#
--#**********************************************************************
+-#***********************************************************************
 -
 -#Uncomment line below for debug output.
 -#trace_logic=${trace_logic:-"set -x"}
@@ -106,188 +108,376 @@ index c192d96..0000000
 -#-----------------------------------------------------------------------
 -# Initialize local variables
 -#-----------------------------------------------------------------------
--
--TC=nfs02
+-TC=${TC:=nfs03}
 -TCbin=${TCbin:=`pwd`}
--TCdat=${TCdat:=$TCbin/datafiles}
+-TCdat=${TCdat:=$TCbin}
 -TCsrc=${TCsrc:=$TCbin}
 -TCtmp=${TCtmp:=$TCbin/$TC$$}
+-TCdump=${TCdump:=$TCbin}
+-RHOST=${RHOST:=`hostname | awk {'print $1'}`}
 -export TCID=$TC
 -export TST_TOTAL=1
 -export TST_COUNT=1
 -
 -PID=$$
 -
--RHOST=${RHOST:=`hostname`}
+-# Setting the NFS to version 3 by default
 -VERSION=${VERSION:=3}
 -SOCKET_TYPE=${SOCKET_TYPE:=udp}
 -TESTDIR=${TESTDIR:=/tmp/$TC$PID.testdir}
--CLEANUP=${CLEANUP:="ON"}
 -NFS_TYPE=${NFS_TYPE:=nfs}
 -
--#---------------------------------------------------------------------#
--# FUNCTION: do_setup
--# PURPOSE:  To create the necessary files to carry out the test
--# INPUT:    None.
--# OUTPUT:   None.
--#---------------------------------------------------------------------#
--do_setup()
+-# If CLEANUP is not set; set it to "ON"
+-CLEANUP=${CLEANUP:="ON"}
+-
+-DIR_NUM=$1
+-FILE_NUM=$2
+-NFSD_NUM=$3
+-
+-DIR_NUM=${DIR_NUM:=100}
+-FILE_NUM=${FILE_NUM:= 100}
+-THREAD_NUM=${THREAD_NUM:=1}
+-
+-#============================================================================
+-# FUNCTION NAME:        fs_inod
+-#
+-# FUNCTION DESCRIPTION: Filesystems test from LTP.
+-#
+-# PARAMETERS:		Filesystem, number of directories, number of files,
+-#			and loops
+-#
+-# RETURNS:		0 for PASS and Error Code for FAIL.
+-#============================================================================
+-fs_inod()
+-{
+-
+-#=============================================================================
+-# FUNCTION NAME:        err_log
+-#
+-# FUNCTION DESCRIPTION: Log error
+-#
+-# PARAMETERS:           None.
+-#
+-# RETURNS:              None.
+-#=============================================================================
+-err_log()
+-{
+-    error "$1"
+-    : $(($step_errors+=1))
+-}
+-
+-
+-#=============================================================================
+-# FUNCTION NAME:        make_subdirs
+-#
+-# FUNCTION DESCRIPTION: Creates $numsubdirs subdirectories
+-#
+-# PARAMETERS:           None.
+-#
+-# RETURNS:              None.
+-#=============================================================================
+-make_subdirs()
+-{
+-    i=0;
+-    while [ "$i" -lt "$numsubdirs" ]; do
+-        [ -d dir$i ] || { \
+-            echo "$0: mkdir dir$i"
+-            mkdir -p dir$i || echo "mkdir dir$i FAILED"
+-        }
+-        : $(( i += 1 ))
+-    done;
+-}
+-
+-
+-#=============================================================================
+-# FUNCTION NAME:        touch_files
+-#
+-# FUNCTION DESCRIPTION: Creates $numfiles in each of $numsubdirs directories
+-#
+-# PARAMETERS:           None.
+-#
+-# RETURNS:              None.
+-#=============================================================================
+-touch_files()
+-{
+-    echo "$0: touch files [0-$numsubdirs]/file$numsubdirs[0-$numfiles]"
+-    j=0;
+-
+-    while [ "$j" -lt "$numsubdirs" ]; do
+-        cd dir$j
+-        k=0;
+-
+-        while [ "$k" -lt "$numfiles" ]; do
+-            >file$j$k || err_log ">file$j$k FAILED"
+-            : $(( k += 1 ))
+-        done
+-
+-        : $(( j += 1 ))
+-        cd ..
+-    done
+-}
+-
+-
+-#=============================================================================
+-# FUNCTION NAME:        rm_files
+-#
+-# FUNCTION DESCRIPTION: Removes $numfiles in each $numsubdir directory
+-#
+-# PARAMETERS:   None.
+-#
+-# RETURNS:      None.
+-#=============================================================================
+-rm_files()
+-{
+-    echo "$0: rm files [0-$numsubdirs]/file$numsubdirs[0-$numfiles]"
+-    j=0;
+-
+-    while [ "$j" -lt "$numsubdirs" ]; do
+-        cd dir$j
+-        k=0;
+-
+-        while [ "$k" -lt "$numfiles" ]; do
+-            rm -f file$j$k || err_log "rm -f file$j$k FAILED"
+-            : $(( k += 1 ))
+-        done
+-
+-        : $(( j += 1 ))
+-        cd ..
+-    done
+-}
+-
+-
+-#=============================================================================
+-# FUNCTION NAME:        step1
+-#
+-# FUNCTION DESCRIPTION: multiple processes creating and deleting files
+-#
+-# PARAMETERS:           None.
+-#
+-# RETURNS:              None.
+-#=============================================================================
+-step1()
+-{
+-    echo "=============================================="
+-    echo "MULTIPLE PROCESSES CREATING AND DELETING FILES"
+-    echo "=============================================="
+-
+-    echo "$0: creating dir2 subdirectories"
+-    [ -d dir2 ] || { \
+-        mkdir -p dir2 || end_testcase "mkdir dir2 failed"
+-    }
+-    cd dir2 || err_log "cd dir2 FAILED"
+-    make_subdirs || err_log "make_subdirs on dir2 FAILED"
+-    cd ..
+-
+-    echo "$0: creating dir1 subdirectories & files"
+-    [ -d dir1 ] || { \
+-        mkdir dir1 || abort "mkdir dir1 FAILED"
+-    }
+-    cd dir1 || err_log "cd dir1 FAILED"
+-    make_subdirs || err_log "make_subdirs on dir1 FAILED"
+-    touch_files
+-    pid1=$!
+-
+-    i=1;
+-    while [ "$i" -le "$numloops" ]; do
+-        echo "Executing loop $i of $numloops..."
+-
+-#       Added date stamps to track execution time and duration
+-
+-        echo "$0: cd ../dir1 & creating files"
+-        cd ../dir1
+-        wait $pid1
+-        touch_files &
+-        pid1=$!
+-
+-        echo "$0: cd ../dir1 & removing files"
+-        cd ../dir1
+-        wait $pid1
+-        rm_files &
+-        pid1=$!
+-
+-        echo "$0: cd ../dir2 & creating files"
+-        cd ../dir2
+-        wait $pid2
+-        touch_files &
+-        pid2=$!
+-
+-        echo "$0: cd ../dir2 & removing files"
+-        cd ../dir2
+-        wait $pid2
+-        rm_files &
+-        pid2=$!
+-
+-        : $(( i += 1 ))
+-    done
+-
+-    # wait for all background processes to complete execution
+-    wait
+-    return $step_errors
+-}
+-
+-
+-#=============================================================================
+-# MAIN
+-#     See the description, purpose, and design of this test under TEST
+-#     in this test's prolog.
+-#=============================================================================
+-    USAGE="Usage: ./fs_inod [volumename] [numsubdirectories] [numfiles] [numloops]"
+-
+-    if [ $# -ne 4 ]
+-    then
+-       echo $USAGE
+-       exit 2
+-    fi
+-
+-    testvol=$1
+-    numsubdirs=$2
+-    numfiles=$3
+-    numloops=$4
+-
+-    cd $testvol || exit 2
+-
+-    echo "FS_INODE: File system stress - inode allocation/deallocation"
+-    echo "Volume under test: $testvol"
+-    echo "Number of subdirectories: $numsubdirs"
+-    echo "Number of files: $numfiles"
+-    echo "Number of loops: $numloops"
+-    echo "Execution begins "
+-    date
+-
+-    STEPS="1"
+-    for I in $STEPS
+-    do
+-         step_errors=0
+-         step$I
+-         if [ $? != 0 ]; then
+-            error "step$I failed - see above errors"
+-         fi
+-    done
+-
+-# Clean up and timestamp
+-    rm -rf $testvol/dir*
+-    echo "Execution completed"
+-    date
+-
+-    return $ERRORS
+-}
+-
+-#=============================================================================
+-# FUNCTION NAME:        setup_testcase
+-#
+-# FUNCTION DESCRIPTION: Perform the setup function for the testcase.
+-#
+-# PARAMETERS:   	None.
+-#
+-# RETURNS:      	None.
+-#=============================================================================
+-
+-setup_testcase()
 -{
 -$trace_logic
 -
--   echo "do_setup $TC"
 -
--   echo ""
--   echo "Test Options:"
--   echo " VERSION: $VERSION"
--   echo " RHOST: $RHOST"
--   echo " SOCKET_TYPE: $SOCKET_TYPE"
--   echo " NFS_TYPE: $NFS_TYPE"
--   echo " TESTDIR: $TESTDIR"
+-    echo ""
+-    echo "Test Options:"
+-    echo " VERSION: $VERSION"
+-    echo " SOCKET_TYPE: $SOCKET_TYPE"
+-    echo " TESTDIR: $TESTDIR"
+-    echo " RHOST: $RHOST"
+-    echo " NFS_TYPE: $NFS_TYPE"
+-    echo ""
+-    echo "Test Parameters:"
+-    echo " Number of Directories: $DIR_NUM"
+-    echo " Number of Files per Directory: $FILE_NUM"
+-    echo " Number of nfsds tested: $THREAD_NUM"
+-    echo ""
 -
--   if [ "x$NFS_TYPE" != "xnfs4" ]; then
--      OPTS="-o vers=$VERSION,proto=$SOCKET_TYPE"
--   fi
+-    if [ "x$NFS_TYPE" != "xnfs4" ]; then
+-        OPTS=${OPTS:="-o vers=$VERSION,proto=$SOCKET_TYPE "}
+-    fi
 -
--   IAM=${IAM:=`whoami`}
--   [ $IAM = "root" ] || end_testcase "Must be root user"
+-    REMOTE_DIR=${RHOST}:$TESTDIR
+-    mkdir -p $TCtmp || end_testcase "Could not create $TCtmp"
+-    chmod 777 $TCtmp
 -
--   #Setup and Export the data directory on RHOST
--   rsh -n $RHOST "mkdir -p $TESTDIR"
--   [ $? -eq 0 ] || end_testcase "Could not create $TESTDIR from $RHOST"
+-    echo "Setting up remote machine: $RHOST"
+-    rsh -n $RHOST "mkdir -p $TESTDIR"
+-    [ $? = 0 ] || end_testcase "Could not create remote directory"
 -
--   if [ "x$NFS_TYPE" = "xnfs4" ]; then
--      rsh -n $RHOST "mkdir -p /export$TESTDIR"
--      [ $? = 0 ] || end_testcase "Could not create /export$TESTDIR on server"
--      rsh -n $RHOST "mount --bind $TESTDIR /export$TESTDIR"
--      [ $? = 0 ] || end_testcase "Could notbind $TESTDIR to /export"
--      rsh -n $RHOST "/usr/sbin/exportfs -o no_root_squash,rw,nohide,insecure,no_subtree_check *:$TESTDIR"
--      [ $? = 0 ] || end_testcase "Could not export remote directory"
--   else
--      rsh -n $RHOST "/usr/sbin/exportfs -i *:$TESTDIR -o rw,no_root_squash "
--      [ $? -eq 0 ] || end_testcase "Could not export $TESTDIR from $RHOST"
--   fi
+-    if [ "x$NFS_TYPE" = "xnfs4" ]; then
+-        rsh -n $RHOST "mkdir -p /export$TESTDIR"
+-        [ $? = 0 ] || end_testcase "Could not create /export$TESTDIR on server"
+-        echo "rsh -n $RHOST 'mount --bind $TESTDIR /export$TESTDIR'"
+-        rsh -n $RHOST "mount --bind $TESTDIR /export$TESTDIR"
+-        [ $? = 0 ] || end_testcase "Could not bind $TESTDIR to /export"
+-        rsh -n $RHOST "/usr/sbin/exportfs -i -o no_root_squash,rw *:$TESTDIR"
+-        [ $? = 0 ] || end_testcase "Could not export remote directory"
+-    else
+-        rsh -n $RHOST "/usr/sbin/exportfs -i -o no_root_squash,rw *:$TESTDIR"
+-        [ $? = 0 ] || end_testcase "Could not export remote directory"
+-    fi
 -
--   #Verify export
--   showmount -e $RHOST | grep $TESTDIR
--   [ $? -eq 0 ] || end_testcase "$TESTDIR not exported"
+-    echo "Mounting NFS filesystem $REMOTE_DIR on $TCtmp with options '$OPTS'"
+-    mount -t $NFS_TYPE $OPTS $REMOTE_DIR $TCtmp || end_testcase "Cannot mount $TCtmp"
+-    [ $? = 0 ] || end_testcase "Could not mount $REMOTE_DIR"
 -
--   #Create $TCtmp for mount point
--   mkdir -p $TCtmp
--   [ $? -eq 0 ] || end_testcase "Could not create $TCtmp"
--
--   #Mount $TCdat from RHOST.
--   mount -t $NFS_TYPE $OPTS $RHOST:$TESTDIR $TCtmp
--   [ $? -eq 0 ] || end_testcase "Could not mount from $RHOST"
+-    echo "Setting server side nfsd count to $THREAD_NUM"
+-    ORIG_NFSD=`rsh -n $RHOST "ps -ef" | grep nfsd | grep -v grep | wc -l`
+-    rsh -n $RHOST "/usr/sbin/rpc.nfsd $THREAD_NUM"
+-    [ $? = 0 ] || end_testcase "Could not set the number of nfsds on $RHOST"
 -
 -}
 -
 -
--#---------------------------------------------------------------------#
--# FUNCTION: do_test1
--# PURPOSE:  Perform the necessary steps to complete the test.
--# INPUT:    None.
--# OUTPUT:    Error messages are logged if any of the tests fail.
--#---------------------------------------------------------------------#
--do_test1()
+-#=============================================================================
+-# FUNCTION NAME:        do_test
+-#
+-# FUNCTION DESCRIPTION: Perform the test
+-#
+-# PARAMETERS:   	None.
+-#
+-# RETURNS:      	None.
+-#=============================================================================
+-do_test()
 -{
 -$trace_logic
--  echo "do_test1 $TC "
--  cp $TCdat/ascii.jmb $TCtmp &
--  wait $!
--  echo "compare both ascii.jmbs"
--  diff $TCtmp/ascii.jmb $TCdat/ascii.jmb
--  [ $? -eq 0 ] || end_testcase "'diff' of ascii.jmb FAILED"
+-    echo "fs_inod starting on $TCtmp."
+-    fs_inod $TCtmp $DIR_NUM $FILE_NUM 1
+-    retval=$?
+-    echo "fs_inod on $TCtmp finished."
 -
+-    if [ "$retval" != 0 ]; then
+-      end_testcase "Errors have resulted from this test: fs_inod returned $retval."
+-    fi
+-
+-    cd /
 -}
 -
--#---------------------------------------------------------------------#
--# FUNCTION: do_test2
--# PURPOSE:  Perform the necessary steps to complete the test.
--# INPUT:    None.
--# OUTPUT:    Error messages are logged if any of the tests fail.
--#---------------------------------------------------------------------#
--do_test2()
--{
--$trace_logic
--   echo "do_test2 $TC "
--   cp $TCdat/ascii.sm $TCtmp &
--   wait $!
--   cp $TCdat/ascii.med $TCtmp &
--   wait $!
--   cp $TCdat/ascii.lg $TCtmp &
--   wait $!
--
--   #small file
--   cp $TCtmp/ascii.sm $TCtmp/ascii.smcp &
--   wait $!
--   diff $TCtmp/ascii.smcp $TCdat/ascii.sm
--   [ $? -eq 0 ] || end_testcase "'diff' of ascii.sm FAILED"
--
--   #medium file
--   cp $TCtmp/ascii.med $TCtmp/ascii.medcp &
--   wait $!
--   diff $TCtmp/ascii.medcp $TCdat/ascii.med
--   [ $? -eq 0 ] || end_testcase "'diff' of ascii.med FAILED"
--
--   #large file
--   cp $TCtmp/ascii.lg $TCtmp/ascii.lgcp &
--   wait $!
--   diff $TCtmp/ascii.lgcp $TCdat/ascii.lg
--   [ $? -eq 0 ] || end_testcase "'diff' of ascii.lg FAILED"
--
--}
--
--#---------------------------------------------------------------------#
--# FUNCTION: do_test3
--# PURPOSE:  Perform the necessary steps to complete the test.
--# INPUT:    None.
--# OUTPUT:    Error messages are logged if any of the tests fail.
--#---------------------------------------------------------------------#
--do_test3()
--{
--$trace_logic
--   echo "do_test3 $TC "
--   chmod a-wx $TCtmp/ascii.sm &
--   wait $!
--   ls -l $TCtmp/ascii.sm | grep "r--"
--   [ $? -eq 0 ] || end_testcase "Removal of write permissions not honored on ascii.sm"
--   chmod a+w $TCtmp/ascii.sm
--}
--
--#---------------------------------------------------------------------#
--# FUNCTION: do_cleanup
--# PURPOSE:  To delete all the files created to run this test.
--# INPUT:    None.
--# OUTPUT:   None.
--#---------------------------------------------------------------------#
--do_cleanup()
--{
--$trace_logic
--   echo "do_cleanup $TC "
--   rm -f $TCtmp/*.fil*
--   cd $TCbin
--   umount $TCtmp
--   sleep 3
--   rmdir $TCtmp
--   rsh -n $RHOST "/usr/sbin/exportfs -u *:$TESTDIR"
--   rsh -n $RHOST "rm -rf $TESTDIR"
--}
 -
 -#=============================================================================
 -# FUNCTION NAME:        end_testcase
 -#
 -# FUNCTION DESCRIPTION: Clean up
 -#
--# PARAMETERS:           None.
+-# PARAMETERS:   	None.
 -#
--# RETURNS:              None.
+-# RETURNS:      	None.
 -#=============================================================================
 -end_testcase()
 -{
 -$trace_logic
 -    if [ "$CLEANUP" = "ON" ]; then
--       do_cleanup
+-	cd \
+-
+-	echo "Cleaning up testcase"
+-        /bin/umount $TCtmp || echo "Cannot umount $TCtmp"
+-	sleep 2
+-	rmdir $TCtmp || echo "Cannot remove $TCtmp"
+-        rsh -n $RHOST "/usr/sbin/exportfs -u *:$TESTDIR"
+-		 rsh -n $RHOST "rm -rf $TESTDIR"
+-	rsh -n $RHOST "/usr/sbin/rpc.nfsd $ORIG_NFSD"
+-
 -    fi
 -
 -    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
@@ -296,74 +486,31 @@ index c192d96..0000000
 -}
 -
 -#=============================================================================
--#---------------------------------------------------------------------#
--# FUNCTION: MAIN
--# PURPOSE:  To invoke the functions to perform the tasks described in
--#           the prologue.
--# INPUT:    None.
--# OUTPUT:   A testcase run log with the results of the execution of this
--#           test.
--#---------------------------------------------------------------------#
--do_setup
--do_test1
--do_test2
--do_test3
+-# MAIN PROCEDURE
+-#=============================================================================
+-
+-setup_testcase
+-do_test
 -end_testcase
 diff --git a/testcases/network/nfs/nfs_stress/Makefile b/testcases/network/nfs/nfs_stress/Makefile
-index 58e24d0..ff61dfb 100644
+index ff61dfb..69d2c81 100644
 --- a/testcases/network/nfs/nfs_stress/Makefile
 +++ b/testcases/network/nfs/nfs_stress/Makefile
-@@ -1,30 +1,25 @@
-+# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+# Copyright (C) 2009, Cisco Systems Inc.
- #
--#    network/nfs/nfs01 testcases Makefile.
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
- #
--#    Copyright (C) 2009, Cisco Systems Inc.
--#
--#    This program is free software; you can redistribute it and/or modify
--#    it under the terms of the GNU General Public License as published by
--#    the Free Software Foundation; either version 2 of the License, or
--#    (at your option) any later version.
--#
--#    This program is distributed in the hope that it will be useful,
--#    but WITHOUT ANY WARRANTY; without even the implied warranty of
--#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
--#    GNU General Public License for more details.
--#
--#    You should have received a copy of the GNU General Public License along
--#    with this program; if not, write to the Free Software Foundation, Inc.,
--#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
--#
--# Garrett Cooper, July 2009
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
- #
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
- 
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
+@@ -20,6 +20,7 @@ include $(top_srcdir)/include/mk/env_pre.mk
  
  INSTALL_TARGETS		:= nfs_lib.sh \
--			   nfs01
-+			   nfs01 \
-+			   nfs02
+ 			   nfs01 \
+-			   nfs02
++			   nfs02 \
++			   nfs03
  
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/nfs/nfs_stress/nfs02 b/testcases/network/nfs/nfs_stress/nfs02
+diff --git a/testcases/network/nfs/nfs_stress/nfs03 b/testcases/network/nfs/nfs_stress/nfs03
 new file mode 100755
-index 0000000..c192d96
+index 0000000..a6c53ab
 --- /dev/null
-+++ b/testcases/network/nfs/nfs_stress/nfs02
-@@ -0,0 +1,245 @@
++++ b/testcases/network/nfs/nfs_stress/nfs03
+@@ -0,0 +1,428 @@
 +#! /bin/sh
 +#
 +#   Copyright (c) International Business Machines  Corp., 2001
@@ -382,10 +529,12 @@ index 0000000..c192d96
 +#   along with this program;  if not, write to the Free Software
 +#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 +#
-+#  FILE   : nfs02
 +#
-+#  PURPOSE: Tests NFS copy of various filesizes, file consistency between copies
-+#           and preservation of write/nowrite permissions.
++#
++#  FILE   : nfs03
++#
++#  DESCRIPTION: This script sets up the NFS directories in the remote machine
++#		and runs the LTP's filesystem test: fs_inod.
 +#
 +#  SETUP: The home directory of root on the machine exported as "RHOST"
 +#         MUST have a ".rhosts" file with the hostname of the machine
@@ -393,10 +542,10 @@ index 0000000..c192d96
 +#
 +#
 +#  HISTORY:
-+#    05/15/01 Robbie Williamson (robbiew@us.ibm.com)
-+#      -Ported
++#    11/2/01 Robbie Williamson (robbiew@us.ibm.com)
++#      -Created
 +#
-+#**********************************************************************
++#***********************************************************************
 +
 +#Uncomment line below for debug output.
 +#trace_logic=${trace_logic:-"set -x"}
@@ -406,188 +555,376 @@ index 0000000..c192d96
 +#-----------------------------------------------------------------------
 +# Initialize local variables
 +#-----------------------------------------------------------------------
-+
-+TC=nfs02
++TC=${TC:=nfs03}
 +TCbin=${TCbin:=`pwd`}
-+TCdat=${TCdat:=$TCbin/datafiles}
++TCdat=${TCdat:=$TCbin}
 +TCsrc=${TCsrc:=$TCbin}
 +TCtmp=${TCtmp:=$TCbin/$TC$$}
++TCdump=${TCdump:=$TCbin}
++RHOST=${RHOST:=`hostname | awk {'print $1'}`}
 +export TCID=$TC
 +export TST_TOTAL=1
 +export TST_COUNT=1
 +
 +PID=$$
 +
-+RHOST=${RHOST:=`hostname`}
++# Setting the NFS to version 3 by default
 +VERSION=${VERSION:=3}
 +SOCKET_TYPE=${SOCKET_TYPE:=udp}
 +TESTDIR=${TESTDIR:=/tmp/$TC$PID.testdir}
-+CLEANUP=${CLEANUP:="ON"}
 +NFS_TYPE=${NFS_TYPE:=nfs}
 +
-+#---------------------------------------------------------------------#
-+# FUNCTION: do_setup
-+# PURPOSE:  To create the necessary files to carry out the test
-+# INPUT:    None.
-+# OUTPUT:   None.
-+#---------------------------------------------------------------------#
-+do_setup()
++# If CLEANUP is not set; set it to "ON"
++CLEANUP=${CLEANUP:="ON"}
++
++DIR_NUM=$1
++FILE_NUM=$2
++NFSD_NUM=$3
++
++DIR_NUM=${DIR_NUM:=100}
++FILE_NUM=${FILE_NUM:= 100}
++THREAD_NUM=${THREAD_NUM:=1}
++
++#============================================================================
++# FUNCTION NAME:        fs_inod
++#
++# FUNCTION DESCRIPTION: Filesystems test from LTP.
++#
++# PARAMETERS:		Filesystem, number of directories, number of files,
++#			and loops
++#
++# RETURNS:		0 for PASS and Error Code for FAIL.
++#============================================================================
++fs_inod()
++{
++
++#=============================================================================
++# FUNCTION NAME:        err_log
++#
++# FUNCTION DESCRIPTION: Log error
++#
++# PARAMETERS:           None.
++#
++# RETURNS:              None.
++#=============================================================================
++err_log()
++{
++    error "$1"
++    : $(($step_errors+=1))
++}
++
++
++#=============================================================================
++# FUNCTION NAME:        make_subdirs
++#
++# FUNCTION DESCRIPTION: Creates $numsubdirs subdirectories
++#
++# PARAMETERS:           None.
++#
++# RETURNS:              None.
++#=============================================================================
++make_subdirs()
++{
++    i=0;
++    while [ "$i" -lt "$numsubdirs" ]; do
++        [ -d dir$i ] || { \
++            echo "$0: mkdir dir$i"
++            mkdir -p dir$i || echo "mkdir dir$i FAILED"
++        }
++        : $(( i += 1 ))
++    done;
++}
++
++
++#=============================================================================
++# FUNCTION NAME:        touch_files
++#
++# FUNCTION DESCRIPTION: Creates $numfiles in each of $numsubdirs directories
++#
++# PARAMETERS:           None.
++#
++# RETURNS:              None.
++#=============================================================================
++touch_files()
++{
++    echo "$0: touch files [0-$numsubdirs]/file$numsubdirs[0-$numfiles]"
++    j=0;
++
++    while [ "$j" -lt "$numsubdirs" ]; do
++        cd dir$j
++        k=0;
++
++        while [ "$k" -lt "$numfiles" ]; do
++            >file$j$k || err_log ">file$j$k FAILED"
++            : $(( k += 1 ))
++        done
++
++        : $(( j += 1 ))
++        cd ..
++    done
++}
++
++
++#=============================================================================
++# FUNCTION NAME:        rm_files
++#
++# FUNCTION DESCRIPTION: Removes $numfiles in each $numsubdir directory
++#
++# PARAMETERS:   None.
++#
++# RETURNS:      None.
++#=============================================================================
++rm_files()
++{
++    echo "$0: rm files [0-$numsubdirs]/file$numsubdirs[0-$numfiles]"
++    j=0;
++
++    while [ "$j" -lt "$numsubdirs" ]; do
++        cd dir$j
++        k=0;
++
++        while [ "$k" -lt "$numfiles" ]; do
++            rm -f file$j$k || err_log "rm -f file$j$k FAILED"
++            : $(( k += 1 ))
++        done
++
++        : $(( j += 1 ))
++        cd ..
++    done
++}
++
++
++#=============================================================================
++# FUNCTION NAME:        step1
++#
++# FUNCTION DESCRIPTION: multiple processes creating and deleting files
++#
++# PARAMETERS:           None.
++#
++# RETURNS:              None.
++#=============================================================================
++step1()
++{
++    echo "=============================================="
++    echo "MULTIPLE PROCESSES CREATING AND DELETING FILES"
++    echo "=============================================="
++
++    echo "$0: creating dir2 subdirectories"
++    [ -d dir2 ] || { \
++        mkdir -p dir2 || end_testcase "mkdir dir2 failed"
++    }
++    cd dir2 || err_log "cd dir2 FAILED"
++    make_subdirs || err_log "make_subdirs on dir2 FAILED"
++    cd ..
++
++    echo "$0: creating dir1 subdirectories & files"
++    [ -d dir1 ] || { \
++        mkdir dir1 || abort "mkdir dir1 FAILED"
++    }
++    cd dir1 || err_log "cd dir1 FAILED"
++    make_subdirs || err_log "make_subdirs on dir1 FAILED"
++    touch_files
++    pid1=$!
++
++    i=1;
++    while [ "$i" -le "$numloops" ]; do
++        echo "Executing loop $i of $numloops..."
++
++#       Added date stamps to track execution time and duration
++
++        echo "$0: cd ../dir1 & creating files"
++        cd ../dir1
++        wait $pid1
++        touch_files &
++        pid1=$!
++
++        echo "$0: cd ../dir1 & removing files"
++        cd ../dir1
++        wait $pid1
++        rm_files &
++        pid1=$!
++
++        echo "$0: cd ../dir2 & creating files"
++        cd ../dir2
++        wait $pid2
++        touch_files &
++        pid2=$!
++
++        echo "$0: cd ../dir2 & removing files"
++        cd ../dir2
++        wait $pid2
++        rm_files &
++        pid2=$!
++
++        : $(( i += 1 ))
++    done
++
++    # wait for all background processes to complete execution
++    wait
++    return $step_errors
++}
++
++
++#=============================================================================
++# MAIN
++#     See the description, purpose, and design of this test under TEST
++#     in this test's prolog.
++#=============================================================================
++    USAGE="Usage: ./fs_inod [volumename] [numsubdirectories] [numfiles] [numloops]"
++
++    if [ $# -ne 4 ]
++    then
++       echo $USAGE
++       exit 2
++    fi
++
++    testvol=$1
++    numsubdirs=$2
++    numfiles=$3
++    numloops=$4
++
++    cd $testvol || exit 2
++
++    echo "FS_INODE: File system stress - inode allocation/deallocation"
++    echo "Volume under test: $testvol"
++    echo "Number of subdirectories: $numsubdirs"
++    echo "Number of files: $numfiles"
++    echo "Number of loops: $numloops"
++    echo "Execution begins "
++    date
++
++    STEPS="1"
++    for I in $STEPS
++    do
++         step_errors=0
++         step$I
++         if [ $? != 0 ]; then
++            error "step$I failed - see above errors"
++         fi
++    done
++
++# Clean up and timestamp
++    rm -rf $testvol/dir*
++    echo "Execution completed"
++    date
++
++    return $ERRORS
++}
++
++#=============================================================================
++# FUNCTION NAME:        setup_testcase
++#
++# FUNCTION DESCRIPTION: Perform the setup function for the testcase.
++#
++# PARAMETERS:   	None.
++#
++# RETURNS:      	None.
++#=============================================================================
++
++setup_testcase()
 +{
 +$trace_logic
 +
-+   echo "do_setup $TC"
 +
-+   echo ""
-+   echo "Test Options:"
-+   echo " VERSION: $VERSION"
-+   echo " RHOST: $RHOST"
-+   echo " SOCKET_TYPE: $SOCKET_TYPE"
-+   echo " NFS_TYPE: $NFS_TYPE"
-+   echo " TESTDIR: $TESTDIR"
++    echo ""
++    echo "Test Options:"
++    echo " VERSION: $VERSION"
++    echo " SOCKET_TYPE: $SOCKET_TYPE"
++    echo " TESTDIR: $TESTDIR"
++    echo " RHOST: $RHOST"
++    echo " NFS_TYPE: $NFS_TYPE"
++    echo ""
++    echo "Test Parameters:"
++    echo " Number of Directories: $DIR_NUM"
++    echo " Number of Files per Directory: $FILE_NUM"
++    echo " Number of nfsds tested: $THREAD_NUM"
++    echo ""
 +
-+   if [ "x$NFS_TYPE" != "xnfs4" ]; then
-+      OPTS="-o vers=$VERSION,proto=$SOCKET_TYPE"
-+   fi
++    if [ "x$NFS_TYPE" != "xnfs4" ]; then
++        OPTS=${OPTS:="-o vers=$VERSION,proto=$SOCKET_TYPE "}
++    fi
 +
-+   IAM=${IAM:=`whoami`}
-+   [ $IAM = "root" ] || end_testcase "Must be root user"
++    REMOTE_DIR=${RHOST}:$TESTDIR
++    mkdir -p $TCtmp || end_testcase "Could not create $TCtmp"
++    chmod 777 $TCtmp
 +
-+   #Setup and Export the data directory on RHOST
-+   rsh -n $RHOST "mkdir -p $TESTDIR"
-+   [ $? -eq 0 ] || end_testcase "Could not create $TESTDIR from $RHOST"
++    echo "Setting up remote machine: $RHOST"
++    rsh -n $RHOST "mkdir -p $TESTDIR"
++    [ $? = 0 ] || end_testcase "Could not create remote directory"
 +
-+   if [ "x$NFS_TYPE" = "xnfs4" ]; then
-+      rsh -n $RHOST "mkdir -p /export$TESTDIR"
-+      [ $? = 0 ] || end_testcase "Could not create /export$TESTDIR on server"
-+      rsh -n $RHOST "mount --bind $TESTDIR /export$TESTDIR"
-+      [ $? = 0 ] || end_testcase "Could notbind $TESTDIR to /export"
-+      rsh -n $RHOST "/usr/sbin/exportfs -o no_root_squash,rw,nohide,insecure,no_subtree_check *:$TESTDIR"
-+      [ $? = 0 ] || end_testcase "Could not export remote directory"
-+   else
-+      rsh -n $RHOST "/usr/sbin/exportfs -i *:$TESTDIR -o rw,no_root_squash "
-+      [ $? -eq 0 ] || end_testcase "Could not export $TESTDIR from $RHOST"
-+   fi
++    if [ "x$NFS_TYPE" = "xnfs4" ]; then
++        rsh -n $RHOST "mkdir -p /export$TESTDIR"
++        [ $? = 0 ] || end_testcase "Could not create /export$TESTDIR on server"
++        echo "rsh -n $RHOST 'mount --bind $TESTDIR /export$TESTDIR'"
++        rsh -n $RHOST "mount --bind $TESTDIR /export$TESTDIR"
++        [ $? = 0 ] || end_testcase "Could not bind $TESTDIR to /export"
++        rsh -n $RHOST "/usr/sbin/exportfs -i -o no_root_squash,rw *:$TESTDIR"
++        [ $? = 0 ] || end_testcase "Could not export remote directory"
++    else
++        rsh -n $RHOST "/usr/sbin/exportfs -i -o no_root_squash,rw *:$TESTDIR"
++        [ $? = 0 ] || end_testcase "Could not export remote directory"
++    fi
 +
-+   #Verify export
-+   showmount -e $RHOST | grep $TESTDIR
-+   [ $? -eq 0 ] || end_testcase "$TESTDIR not exported"
++    echo "Mounting NFS filesystem $REMOTE_DIR on $TCtmp with options '$OPTS'"
++    mount -t $NFS_TYPE $OPTS $REMOTE_DIR $TCtmp || end_testcase "Cannot mount $TCtmp"
++    [ $? = 0 ] || end_testcase "Could not mount $REMOTE_DIR"
 +
-+   #Create $TCtmp for mount point
-+   mkdir -p $TCtmp
-+   [ $? -eq 0 ] || end_testcase "Could not create $TCtmp"
-+
-+   #Mount $TCdat from RHOST.
-+   mount -t $NFS_TYPE $OPTS $RHOST:$TESTDIR $TCtmp
-+   [ $? -eq 0 ] || end_testcase "Could not mount from $RHOST"
++    echo "Setting server side nfsd count to $THREAD_NUM"
++    ORIG_NFSD=`rsh -n $RHOST "ps -ef" | grep nfsd | grep -v grep | wc -l`
++    rsh -n $RHOST "/usr/sbin/rpc.nfsd $THREAD_NUM"
++    [ $? = 0 ] || end_testcase "Could not set the number of nfsds on $RHOST"
 +
 +}
 +
 +
-+#---------------------------------------------------------------------#
-+# FUNCTION: do_test1
-+# PURPOSE:  Perform the necessary steps to complete the test.
-+# INPUT:    None.
-+# OUTPUT:    Error messages are logged if any of the tests fail.
-+#---------------------------------------------------------------------#
-+do_test1()
++#=============================================================================
++# FUNCTION NAME:        do_test
++#
++# FUNCTION DESCRIPTION: Perform the test
++#
++# PARAMETERS:   	None.
++#
++# RETURNS:      	None.
++#=============================================================================
++do_test()
 +{
 +$trace_logic
-+  echo "do_test1 $TC "
-+  cp $TCdat/ascii.jmb $TCtmp &
-+  wait $!
-+  echo "compare both ascii.jmbs"
-+  diff $TCtmp/ascii.jmb $TCdat/ascii.jmb
-+  [ $? -eq 0 ] || end_testcase "'diff' of ascii.jmb FAILED"
++    echo "fs_inod starting on $TCtmp."
++    fs_inod $TCtmp $DIR_NUM $FILE_NUM 1
++    retval=$?
++    echo "fs_inod on $TCtmp finished."
 +
++    if [ "$retval" != 0 ]; then
++      end_testcase "Errors have resulted from this test: fs_inod returned $retval."
++    fi
++
++    cd /
 +}
 +
-+#---------------------------------------------------------------------#
-+# FUNCTION: do_test2
-+# PURPOSE:  Perform the necessary steps to complete the test.
-+# INPUT:    None.
-+# OUTPUT:    Error messages are logged if any of the tests fail.
-+#---------------------------------------------------------------------#
-+do_test2()
-+{
-+$trace_logic
-+   echo "do_test2 $TC "
-+   cp $TCdat/ascii.sm $TCtmp &
-+   wait $!
-+   cp $TCdat/ascii.med $TCtmp &
-+   wait $!
-+   cp $TCdat/ascii.lg $TCtmp &
-+   wait $!
-+
-+   #small file
-+   cp $TCtmp/ascii.sm $TCtmp/ascii.smcp &
-+   wait $!
-+   diff $TCtmp/ascii.smcp $TCdat/ascii.sm
-+   [ $? -eq 0 ] || end_testcase "'diff' of ascii.sm FAILED"
-+
-+   #medium file
-+   cp $TCtmp/ascii.med $TCtmp/ascii.medcp &
-+   wait $!
-+   diff $TCtmp/ascii.medcp $TCdat/ascii.med
-+   [ $? -eq 0 ] || end_testcase "'diff' of ascii.med FAILED"
-+
-+   #large file
-+   cp $TCtmp/ascii.lg $TCtmp/ascii.lgcp &
-+   wait $!
-+   diff $TCtmp/ascii.lgcp $TCdat/ascii.lg
-+   [ $? -eq 0 ] || end_testcase "'diff' of ascii.lg FAILED"
-+
-+}
-+
-+#---------------------------------------------------------------------#
-+# FUNCTION: do_test3
-+# PURPOSE:  Perform the necessary steps to complete the test.
-+# INPUT:    None.
-+# OUTPUT:    Error messages are logged if any of the tests fail.
-+#---------------------------------------------------------------------#
-+do_test3()
-+{
-+$trace_logic
-+   echo "do_test3 $TC "
-+   chmod a-wx $TCtmp/ascii.sm &
-+   wait $!
-+   ls -l $TCtmp/ascii.sm | grep "r--"
-+   [ $? -eq 0 ] || end_testcase "Removal of write permissions not honored on ascii.sm"
-+   chmod a+w $TCtmp/ascii.sm
-+}
-+
-+#---------------------------------------------------------------------#
-+# FUNCTION: do_cleanup
-+# PURPOSE:  To delete all the files created to run this test.
-+# INPUT:    None.
-+# OUTPUT:   None.
-+#---------------------------------------------------------------------#
-+do_cleanup()
-+{
-+$trace_logic
-+   echo "do_cleanup $TC "
-+   rm -f $TCtmp/*.fil*
-+   cd $TCbin
-+   umount $TCtmp
-+   sleep 3
-+   rmdir $TCtmp
-+   rsh -n $RHOST "/usr/sbin/exportfs -u *:$TESTDIR"
-+   rsh -n $RHOST "rm -rf $TESTDIR"
-+}
 +
 +#=============================================================================
 +# FUNCTION NAME:        end_testcase
 +#
 +# FUNCTION DESCRIPTION: Clean up
 +#
-+# PARAMETERS:           None.
++# PARAMETERS:   	None.
 +#
-+# RETURNS:              None.
++# RETURNS:      	None.
 +#=============================================================================
 +end_testcase()
 +{
 +$trace_logic
 +    if [ "$CLEANUP" = "ON" ]; then
-+       do_cleanup
++	cd \
++
++	echo "Cleaning up testcase"
++        /bin/umount $TCtmp || echo "Cannot umount $TCtmp"
++	sleep 2
++	rmdir $TCtmp || echo "Cannot remove $TCtmp"
++        rsh -n $RHOST "/usr/sbin/exportfs -u *:$TESTDIR"
++		 rsh -n $RHOST "rm -rf $TESTDIR"
++	rsh -n $RHOST "/usr/sbin/rpc.nfsd $ORIG_NFSD"
++
 +    fi
 +
 +    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
@@ -596,18 +933,11 @@ index 0000000..c192d96
 +}
 +
 +#=============================================================================
-+#---------------------------------------------------------------------#
-+# FUNCTION: MAIN
-+# PURPOSE:  To invoke the functions to perform the tasks described in
-+#           the prologue.
-+# INPUT:    None.
-+# OUTPUT:   A testcase run log with the results of the execution of this
-+#           test.
-+#---------------------------------------------------------------------#
-+do_setup
-+do_test1
-+do_test2
-+do_test3
++# MAIN PROCEDURE
++#=============================================================================
++
++setup_testcase
++do_test
 +end_testcase
 -- 
 1.7.1
