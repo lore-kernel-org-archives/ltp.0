@@ -1,938 +1,636 @@
 From: Cedric Hnyda <chnyda@suse.com>
-Date: Thu,  1 Oct 2015 10:01:04 +0200
-Subject: [LTP]  [PATCH V4] controllers/cgroup_fj: split cgroup_fj tests
-Message-ID: <1443686464-9965-1-git-send-email-chnyda@suse.com>
+Date: Thu,  1 Oct 2015 11:46:25 +0200
+Subject: [LTP]  [PATCH V3] syscall/renameat2: Add tests for renameat2
+Message-ID: <1443692785-3862-1-git-send-email-chnyda@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Split cgroup_fj tests to run them separately
-and removed the useless LOGFILE
+Added tests for the syscall renameat2.
 
-Signed-off-by: Cedric Hnyda <chnyda@suse.com>
+Signed-off-by: chnyda <chnyda@suse.com>
 ---
- runtest/controllers                                | 197 ++++++++++++++++++++-
- .../controllers/cgroup_fj/cgroup_fj_function.sh    |  12 +-
- .../controllers/cgroup_fj/cgroup_fj_function2.sh   |  11 +-
- .../controllers/cgroup_fj/cgroup_fj_stress.sh      |  16 +-
- .../controllers/cgroup_fj/cgroup_fj_testcases.sh   | 194 --------------------
- .../controllers/cgroup_fj/cgroup_fj_utility.sh     |  74 ++++----
- .../controllers/cgroup_fj/run_cgroup_test_fj.sh    |  82 ++++-----
- 7 files changed, 278 insertions(+), 308 deletions(-)
- delete mode 100644 testcases/kernel/controllers/cgroup_fj/cgroup_fj_testcases.sh
+ configure.ac                                      |   1 +
+ include/lapi/fcntl.h                              |  12 ++
+ m4/ltp-renameat2.m4                               |  27 ++++
+ runtest/syscalls                                  |   3 +
+ testcases/kernel/include/arm.in                   |   1 +
+ testcases/kernel/include/i386.in                  |   1 +
+ testcases/kernel/include/ia64.in                  |   1 +
+ testcases/kernel/include/powerpc.in               |   1 +
+ testcases/kernel/include/powerpc64.in             |   1 +
+ testcases/kernel/include/s390.in                  |   1 +
+ testcases/kernel/include/s390x.in                 |   1 +
+ testcases/kernel/include/sparc.in                 |   1 +
+ testcases/kernel/include/sparc64.in               |   1 +
+ testcases/kernel/include/x86_64.in                |   1 +
+ testcases/kernel/syscalls/.gitignore              |   2 +
+ testcases/kernel/syscalls/renameat2/Makefile      |  24 ++++
+ testcases/kernel/syscalls/renameat2/renameat2.h   |  37 +++++
+ testcases/kernel/syscalls/renameat2/renameat201.c | 159 ++++++++++++++++++++++
+ testcases/kernel/syscalls/renameat2/renameat202.c | 156 +++++++++++++++++++++
+ 19 files changed, 431 insertions(+)
+ create mode 100644 m4/ltp-renameat2.m4
+ create mode 100644 testcases/kernel/syscalls/renameat2/Makefile
+ create mode 100644 testcases/kernel/syscalls/renameat2/renameat2.h
+ create mode 100644 testcases/kernel/syscalls/renameat2/renameat201.c
+ create mode 100644 testcases/kernel/syscalls/renameat2/renameat202.c
 
-diff --git a/runtest/controllers b/runtest/controllers
-index 7ec8ab2..a163cd2 100644
---- a/runtest/controllers
-+++ b/runtest/controllers
-@@ -10,7 +10,202 @@ memcg_use_hierarchy	memcg_use_hierarchy_test.sh
- memcg_usage_in_bytes	memcg_usage_in_bytes_test.sh
- memcg_stress		memcg_stress_test.sh
- memcg_control		PAGESIZE=$(mem_process -p);memcg_control_test.sh $PAGESIZE $PAGESIZE $((PAGESIZE * 2))
--cgroup_fj	run_cgroup_test_fj.sh
+diff --git a/configure.ac b/configure.ac
+index ecea070..76c7628 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -165,6 +165,7 @@ LTP_CHECK_MKNODAT
+ LTP_CHECK_READLINKAT
+ LTP_CHECK_OPENAT
+ LTP_CHECK_RENAMEAT
++LTP_CHECK_RENAMEAT2
+ LTP_CHECK_FALLOCATE
+ LTP_CHECK_SYSCALL_FCNTL
+ LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
+diff --git a/include/lapi/fcntl.h b/include/lapi/fcntl.h
+index 3667b5e..0661651 100644
+--- a/include/lapi/fcntl.h
++++ b/include/lapi/fcntl.h
+@@ -67,6 +67,18 @@
+ # define FALLOC_FL_KEEP_SIZE 1
+ #endif
+ 
++#ifndef RENAME_NOREPLACE
++# define RENAME_NOREPLACE	(1 << 0)
++#endif
 +
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_debug_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function debug no yes 1 yes 2 3 2 1
-+cgroup_fj_function_debug_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function debug yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_debug_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function debug yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_debug_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function debug yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_debug_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function debug yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_debug_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function debug yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_debug_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function debug yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_cpuset_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_cpuset_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset no yes 1 yes 2 3 2 1
-+cgroup_fj_function_cpuset_yes_no_1_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset yes no 1 yes 2 3 2 1
-+cgroup_fj_function_cpuset_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_cpuset_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_cpuset_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_cpuset_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_cpuset_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_cpuset_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_cpuset_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuset yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_ns_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function ns yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_ns_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function ns no yes 1 yes 2 3 2 1
-+cgroup_fj_function_ns_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function ns yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_ns_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function ns yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_ns_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function ns yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_ns_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function ns yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_ns_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function ns yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_ns_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function ns yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_ns_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function ns yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_cpu_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function cpu yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_cpu_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function cpu no yes 1 yes 2 3 2 1
-+cgroup_fj_function_cpu_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function cpu yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_cpu_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function cpu yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_cpu_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function cpu yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_cpu_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function cpu yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_cpu_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function cpu yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_cpu_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function cpu yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_cpu_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function cpu yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_cpuacct_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuacct yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_cpuacct_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuacct no yes 1 yes 2 3 2 1
-+cgroup_fj_function_cpuacct_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuacct yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_cpuacct_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuacct yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_cpuacct_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuacct yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_cpuacct_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuacct yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_cpuacct_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuacct yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_cpuacct_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuacct yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_cpuacct_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function cpuacct yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_memory_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function memory yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_memory_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function memory no yes 1 yes 2 3 2 1
-+cgroup_fj_function_memory_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function memory yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_memory_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function memory yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_memory_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function memory yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_memory_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function memory yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_memory_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function memory yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_memory_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function memory yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_memory_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function memory yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_all_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function all yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_all_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function all no yes 1 yes 2 3 2 1
-+cgroup_fj_function_all_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function all yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_all_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function all yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_all_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function all yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_all_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function all yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_all_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function all yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_all_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function all yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_all_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function all yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_none_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function none yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_debug,debug_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function debug,debug yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_debug,debug_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function debug,debug no yes 1 yes 2 3 2 1
-+cgroup_fj_function_debug,debug_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function debug,debug yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_debug,debug_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function debug,debug yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_debug,debug_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function debug,debug yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_debug,debug_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function debug,debug yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_debug,debug_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function debug,debug yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_debug,debug_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function debug,debug yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_debug,debug_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function debug,debug yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_nonexistent_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function nonexistent yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_freezer_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function freezer yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_freezer_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function freezer no yes 1 yes 2 3 2 1
-+cgroup_fj_function_freezer_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function freezer yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_freezer_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function freezer yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_freezer_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function freezer yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_freezer_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function freezer yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_freezer_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function freezer yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_freezer_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function freezer yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_freezer_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function freezer yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_devices_yes_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function devices yes yes 1 yes 2 3 2 1
-+cgroup_fj_function_devices_no_yes_1_yes_2_3_2_1 run_cgroup_test_fj.sh function devices no yes 1 yes 2 3 2 1
-+cgroup_fj_function_devices_yes_yes_2_yes_2_3_2_1 run_cgroup_test_fj.sh function devices yes yes 2 yes 2 3 2 1
-+cgroup_fj_function_devices_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function devices yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_devices_yes_yes_4_yes_2_3_2_1 run_cgroup_test_fj.sh function devices yes yes 4 yes 2 3 2 1
-+cgroup_fj_function_devices_yes_yes_5_yes_2_3_2_1 run_cgroup_test_fj.sh function devices yes yes 5 yes 2 3 2 1
-+cgroup_fj_function_devices_yes_yes_6_yes_2_3_2_1 run_cgroup_test_fj.sh function devices yes yes 6 yes 2 3 2 1
-+cgroup_fj_function_devices_yes_yes_7_yes_2_3_2_1 run_cgroup_test_fj.sh function devices yes yes 7 yes 2 3 2 1
-+cgroup_fj_function_devices_yes_yes_8_yes_2_3_2_1 run_cgroup_test_fj.sh function devices yes yes 8 yes 2 3 2 1
-+cgroup_fj_function_debug_yes_yes_1_yes_1_2_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 1 2 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_2_2_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 2 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_2_5_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 5 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_3_1_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 3 1 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_3_2_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 3 2 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_3_4_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 3 4 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_4_3_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 4 3 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_4_5_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 4 5 1 1
-+cgroup_fj_function_debug_yes_yes_1_no_1_1_1_1 run_cgroup_test_fj.sh function debug yes yes 1 no 1 1 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_1_1_1_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 1 1 1 1
-+cgroup_fj_function_debug_yes_yes_1_yes_1_3_2_1 run_cgroup_test_fj.sh function debug yes yes 1 yes 1 3 2 1
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_2_2 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 2 2
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_2_3 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 2 3
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_2_4 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 2 4
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_2_5 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 2 5
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_2_6 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 2 6
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_2_7 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 2 7
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_3_2 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 3 2
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_4_2 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 4 2
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_5_2 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 5 2
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_6_2 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 6 2
-+cgroup_fj_function_debug_yes_yes_1_yes_2_3_7_2 run_cgroup_test_fj.sh function debug yes yes 1 yes 2 3 7 2
-+cgroup_fj_function_debug_yes_yes_2_yes_2_3_2_2 run_cgroup_test_fj.sh function debug yes yes 2 yes 2 3 2 2
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_1_1 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 1 1
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_1_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 1 2
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_1_3 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 1 3
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_2_1 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 2 1
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_2_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 2 2
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_2_3 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 2 3
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_2_4 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 2 4
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_2_5 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 2 5
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_2_6 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 2 6
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_2_7 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 2 7
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_3_1 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 3 1
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_3_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 3 2
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_3_3 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 3 3
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_4_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 4 2
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_5_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 5 2
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_6_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 6 2
-+cgroup_fj_function_debug_yes_yes_3_yes_2_3_7_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 7 2
-+cgroup_fj_function2_1 run_cgroup_test_fj.sh function2 1
-+cgroup_fj_function2_2 run_cgroup_test_fj.sh function2 2
-+cgroup_fj_function2_3 run_cgroup_test_fj.sh function2 3
-+cgroup_fj_function2_4 run_cgroup_test_fj.sh function2 4
-+cgroup_fj_function2_5 run_cgroup_test_fj.sh function2 5
-+cgroup_fj_function2_6 run_cgroup_test_fj.sh function2 6
-+cgroup_fj_function2_7 run_cgroup_test_fj.sh function2 7
-+cgroup_fj_function2_8 run_cgroup_test_fj.sh function2 8
-+cgroup_fj_function2_9 run_cgroup_test_fj.sh function2 9
-+cgroup_fj_function2_10 run_cgroup_test_fj.sh function2 10
-+cgroup_fj_function2_11 run_cgroup_test_fj.sh function2 11
-+cgroup_fj_function2_12 run_cgroup_test_fj.sh function2 12
-+cgroup_fj_function2_13 run_cgroup_test_fj.sh function2 13
-+cgroup_fj_stress_debug_100_1_1_1 run_cgroup_test_fj.sh stress debug 100 1 1 1
-+cgroup_fj_stress_cpuset_100_1_1_1 run_cgroup_test_fj.sh stress cpuset 100 1 1 1
-+cgroup_fj_stress_ns_100_1_1_1 run_cgroup_test_fj.sh stress ns 100 1 1 1
-+cgroup_fj_stress_cpu_100_1_1_1 run_cgroup_test_fj.sh stress cpu 100 1 1 1
-+cgroup_fj_stress_cpuacct_100_1_1_1 run_cgroup_test_fj.sh stress cpuacct 100 1 1 1
-+cgroup_fj_stress_memory_100_1_1_1 run_cgroup_test_fj.sh stress memory 100 1 1 1
-+cgroup_fj_stress_all_100_1_1_1 run_cgroup_test_fj.sh stress all 100 1 1 1
-+cgroup_fj_stress_debug_1_1_1_2 run_cgroup_test_fj.sh stress debug 1 1 1 2
-+cgroup_fj_stress_debug_1_1_100_1 run_cgroup_test_fj.sh stress debug 1 1 100 1
-+cgroup_fj_stress_debug_1_1_100_2 run_cgroup_test_fj.sh stress debug 1 1 100 2
-+cgroup_fj_stress_debug_1_1_100_3 run_cgroup_test_fj.sh stress debug 1 1 100 3
-+cgroup_fj_stress_debug_1_100_1_1 run_cgroup_test_fj.sh stress debug 1 100 1 1
-+cgroup_fj_stress_debug_1_100_1_2 run_cgroup_test_fj.sh stress debug 1 100 1 2
-+cgroup_fj_stress_debug_1_100_1_3 run_cgroup_test_fj.sh stress debug 1 100 1 3
-+cgroup_fj_stress_debug_1_100_100_1 run_cgroup_test_fj.sh stress debug 1 100 100 1
-+cgroup_fj_stress_debug_1_100_100_2 run_cgroup_test_fj.sh stress debug 1 100 100 2
-+cgroup_fj_stress_cpuset_1_1_1_2 run_cgroup_test_fj.sh stress cpuset 1 1 1 2
-+cgroup_fj_stress_cpuset_1_1_100_1 run_cgroup_test_fj.sh stress cpuset 1 1 100 1
-+cgroup_fj_stress_cpuset_1_1_100_2 run_cgroup_test_fj.sh stress cpuset 1 1 100 2
-+cgroup_fj_stress_cpuset_1_1_100_3 run_cgroup_test_fj.sh stress cpuset 1 1 100 3
-+cgroup_fj_stress_cpuset_1_100_1_1 run_cgroup_test_fj.sh stress cpuset 1 100 1 1
-+cgroup_fj_stress_cpuset_1_100_1_2 run_cgroup_test_fj.sh stress cpuset 1 100 1 2
-+cgroup_fj_stress_cpuset_1_100_1_3 run_cgroup_test_fj.sh stress cpuset 1 100 1 3
-+cgroup_fj_stress_cpuset_1_100_100_1 run_cgroup_test_fj.sh stress cpuset 1 100 100 1
-+cgroup_fj_stress_cpuset_1_100_100_2 run_cgroup_test_fj.sh stress cpuset 1 100 100 2
-+cgroup_fj_stress_cpu_1_1_1_2 run_cgroup_test_fj.sh stress cpu 1 1 1 2
-+cgroup_fj_stress_cpu_1_100_1_1 run_cgroup_test_fj.sh stress cpu 1 100 1 1
-+cgroup_fj_stress_cpu_1_100_1_2 run_cgroup_test_fj.sh stress cpu 1 100 1 2
-+cgroup_fj_stress_cpu_1_100_1_3 run_cgroup_test_fj.sh stress cpu 1 100 1 3
-+cgroup_fj_stress_cpuacct_1_1_1_2 run_cgroup_test_fj.sh stress cpuacct 1 1 1 2
-+cgroup_fj_stress_cpuacct_1_1_100_1 run_cgroup_test_fj.sh stress cpuacct 1 1 100 1
-+cgroup_fj_stress_cpuacct_1_1_100_2 run_cgroup_test_fj.sh stress cpuacct 1 1 100 2
-+cgroup_fj_stress_cpuacct_1_1_100_3 run_cgroup_test_fj.sh stress cpuacct 1 1 100 3
-+cgroup_fj_stress_cpuacct_1_100_1_1 run_cgroup_test_fj.sh stress cpuacct 1 100 1 1
-+cgroup_fj_stress_cpuacct_1_100_1_2 run_cgroup_test_fj.sh stress cpuacct 1 100 1 2
-+cgroup_fj_stress_cpuacct_1_100_1_3 run_cgroup_test_fj.sh stress cpuacct 1 100 1 3
-+cgroup_fj_stress_cpuacct_1_100_100_1 run_cgroup_test_fj.sh stress cpuacct 1 100 100 1
-+cgroup_fj_stress_cpuacct_1_100_100_2 run_cgroup_test_fj.sh stress cpuacct 1 100 100 2
-+cgroup_fj_stress_memory_1_1_1_2 run_cgroup_test_fj.sh stress memory 1 1 1 2
-+cgroup_fj_stress_memory_1_1_100_1 run_cgroup_test_fj.sh stress memory 1 1 100 1
-+cgroup_fj_stress_memory_1_1_100_2 run_cgroup_test_fj.sh stress memory 1 1 100 2
-+cgroup_fj_stress_memory_1_1_100_3 run_cgroup_test_fj.sh stress memory 1 1 100 3
-+cgroup_fj_stress_memory_1_100_1_1 run_cgroup_test_fj.sh stress memory 1 100 1 1
-+cgroup_fj_stress_memory_1_100_1_2 run_cgroup_test_fj.sh stress memory 1 100 1 2
-+cgroup_fj_stress_memory_1_100_1_3 run_cgroup_test_fj.sh stress memory 1 100 1 3
-+cgroup_fj_stress_memory_1_100_100_1 run_cgroup_test_fj.sh stress memory 1 100 100 1
-+cgroup_fj_stress_memory_1_100_100_2 run_cgroup_test_fj.sh stress memory 1 100 100 2
++#ifndef RENAME_EXCHANGE
++# define RENAME_EXCHANGE		(1 << 1)
++#endif
 +
- controllers	test_controllers.sh
- 
- cpuset_base_ops	cpuset_base_ops_testset.sh
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
-index 673a942..cbb1cd3 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
-@@ -120,24 +120,18 @@ usage()
- }
- 
- export TESTROOT=`pwd`
--if [ "$LOGFILE" = "" ]; then
--	LOGFILE="/dev/stdout"
--fi
++#ifndef RENAME_WHITEOUT
++# define RENAME_WHITEOUT		(1 << 2)
++#endif
 +
- export TMPFILE=$TESTROOT/tmp_tasks
+ /* splice, vmsplice, tee */
  
- . $TESTROOT/cgroup_fj_utility.sh
- 
- ##########################  main   #######################
- if [ "$#" -ne "9" ]; then
--	echo "ERROR: Wrong inputed parameter..Exiting test" >> $LOGFILE;
-+	echo "ERROR: Wrong inputed parameter..Exiting test";
- 	usage;
- 	exit -1;
- fi
- 
--echo "-------------------------------------------------------------------------" >> $LOGFILE
--echo "case no : $CASENO1" >> $LOGFILE
--echo `date` >> $LOGFILE
--
- check_para;
- if [ $? -ne 0 ]; then
- 	usage;
-@@ -145,8 +139,6 @@ if [ $? -ne 0 ]; then
- fi
- setup;
- 
--echo "INFO: now we begin to test no $CASENO1 ..." >> $LOGFILE
--
- mount_cgroup;
- 
- $TESTROOT/cgroup_fj_proc &
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh
-index 2b47df1..2f304ae 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh
-@@ -45,14 +45,11 @@ usage()
- 
- exit_parameter()
- {
--	echo "ERROR: Wrong inputed parameter..Exiting test" >> $LOGFILE
-+	echo "ERROR: Wrong inputed parameter..Exiting test"
- 	exit -1;
- }
- 
- export TESTROOT=`pwd`
--if [ "$LOGFILE" = "" ]; then
--	LOGFILE="/dev/stdout"
--fi
- export TMPFILE=$TESTROOT/tmp_tasks
- 
- . $TESTROOT/cgroup_fj_utility.sh
-@@ -303,15 +300,9 @@ if [ "$#" -ne "1" ] || [ $caseno -lt 1 ] || [ $caseno -gt 13 ]; then
- 	exit_parameter;
- fi
- 
--echo "-------------------------------------------------------------------------" >> $LOGFILE
--echo "case no : $CASENO1" >> $LOGFILE
--echo `date` >> $LOGFILE
--
- exist_subsystem "debug"
- setup;
- 
--echo "INFO: now we begin to test no $CASENO1 ..." >> $LOGFILE
--
- if [ $caseno -lt 3 ] || [ $caseno -gt 6 ]; then
- 	mount_cgroup;
- 	$TESTROOT/cgroup_fj_proc &
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
-index a447e6c..e6d64fd 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
-@@ -76,14 +76,11 @@ usage()
- 
- exit_parameter()
- {
--	echo "ERROR: Wrong inputed parameter..Exiting test" >> $LOGFILE
-+	echo "ERROR: Wrong inputed parameter..Exiting test"
- 	exit -1;
- }
- 
- export TESTROOT=`pwd`
--if [ "$LOGFILE" = "" ]; then
--	LOGFILE="/dev/stdout"
--fi
- export TMPFILE=$TESTROOT/tmp_tasks
- 
- . $TESTROOT/cgroup_fj_utility.sh
-@@ -150,14 +147,9 @@ case $subgroup_hiers in
- esac
- 
- ##########################  main   #######################
--echo "-------------------------------------------------------------------------" >> $LOGFILE
--echo "case no : $CASENO2" >> $LOGFILE
--echo `date` >> $LOGFILE
- 
- setup;
- 
--echo "INFO: now we begin to stress test no $CASENO2 ..." >> $LOGFILE
--
- mount_cgroup;
- 
- $TESTROOT/cgroup_fj_proc &
-@@ -209,9 +201,9 @@ if [ $mount_times -ne 1 ]; then
- 			fi
- 		fi
- 		let "count = $count + 1"
--		echo "$count .. OK" >> $LOGFILE
-+		echo "$count .. OK"
- 	done
--	echo "...executed $count times" >> $LOGFILE
-+	echo "...executed $count times"
- else
- 	get_subgroup_path2 $subgroup_hiers
- 	count=0
-@@ -242,7 +234,7 @@ else
- 			pathes[$count]="$cur_subgroup_path1""$cur_subgroup_path2"
- 		done
- 	done
--	echo "...mkdired $count times" >> $LOGFILE
-+	echo "...mkdired $count times"
- 
- 	sleep 1
- 
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_testcases.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_testcases.sh
-deleted file mode 100644
-index a03918a..0000000
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_testcases.sh
-+++ /dev/null
-@@ -1,194 +0,0 @@
--function	debug yes yes 1 yes 2 3 2 1
--function	debug no yes 1 yes 2 3 2 1
--function	debug yes yes 2 yes 2 3 2 1
--function	debug yes yes 3 yes 2 3 2 1
--function	debug yes yes 4 yes 2 3 2 1
--function	debug yes yes 5 yes 2 3 2 1
--function	debug yes yes 6 yes 2 3 2 1
--function	debug yes yes 7 yes 2 3 2 1
--function	debug yes yes 8 yes 2 3 2 1
--function	cpuset yes yes 1 yes 2 3 2 1
--function	cpuset no yes 1 yes 2 3 2 1
--function	cpuset yes no 1 yes 2 3 2 1
--function	cpuset yes yes 2 yes 2 3 2 1
--function	cpuset yes yes 3 yes 2 3 2 1
--function	cpuset yes yes 4 yes 2 3 2 1
--function	cpuset yes yes 5 yes 2 3 2 1
--function	cpuset yes yes 6 yes 2 3 2 1
--function	cpuset yes yes 7 yes 2 3 2 1
--function	cpuset yes yes 8 yes 2 3 2 1
--function	ns yes yes 1 yes 2 3 2 1
--function	ns no yes 1 yes 2 3 2 1
--function	ns yes yes 2 yes 2 3 2 1
--function	ns yes yes 3 yes 2 3 2 1
--function	ns yes yes 4 yes 2 3 2 1
--function	ns yes yes 5 yes 2 3 2 1
--function	ns yes yes 6 yes 2 3 2 1
--function	ns yes yes 7 yes 2 3 2 1
--function	ns yes yes 8 yes 2 3 2 1
--function	cpu yes yes 1 yes 2 3 2 1
--function	cpu no yes 1 yes 2 3 2 1
--function	cpu yes yes 2 yes 2 3 2 1
--function	cpu yes yes 3 yes 2 3 2 1
--function	cpu yes yes 4 yes 2 3 2 1
--function	cpu yes yes 5 yes 2 3 2 1
--function	cpu yes yes 6 yes 2 3 2 1
--function	cpu yes yes 7 yes 2 3 2 1
--function	cpu yes yes 8 yes 2 3 2 1
--function	cpuacct yes yes 1 yes 2 3 2 1
--function	cpuacct no yes 1 yes 2 3 2 1
--function	cpuacct yes yes 2 yes 2 3 2 1
--function	cpuacct yes yes 3 yes 2 3 2 1
--function	cpuacct yes yes 4 yes 2 3 2 1
--function	cpuacct yes yes 5 yes 2 3 2 1
--function	cpuacct yes yes 6 yes 2 3 2 1
--function	cpuacct yes yes 7 yes 2 3 2 1
--function	cpuacct yes yes 8 yes 2 3 2 1
--function	memory yes yes 1 yes 2 3 2 1
--function	memory no yes 1 yes 2 3 2 1
--function	memory yes yes 2 yes 2 3 2 1
--function	memory yes yes 3 yes 2 3 2 1
--function	memory yes yes 4 yes 2 3 2 1
--function	memory yes yes 5 yes 2 3 2 1
--function	memory yes yes 6 yes 2 3 2 1
--function	memory yes yes 7 yes 2 3 2 1
--function	memory yes yes 8 yes 2 3 2 1
--function	all yes yes 1 yes 2 3 2 1
--function	all no yes 1 yes 2 3 2 1
--function	all yes yes 2 yes 2 3 2 1
--function	all yes yes 3 yes 2 3 2 1
--function	all yes yes 4 yes 2 3 2 1
--function	all yes yes 5 yes 2 3 2 1
--function	all yes yes 6 yes 2 3 2 1
--function	all yes yes 7 yes 2 3 2 1
--function	all yes yes 8 yes 2 3 2 1
--function	none yes yes 1 yes 2 3 2 1
--function	debug,debug yes yes 1 yes 2 3 2 1
--function	debug,debug no yes 1 yes 2 3 2 1
--function	debug,debug yes yes 2 yes 2 3 2 1
--function	debug,debug yes yes 3 yes 2 3 2 1
--function	debug,debug yes yes 4 yes 2 3 2 1
--function	debug,debug yes yes 5 yes 2 3 2 1
--function	debug,debug yes yes 6 yes 2 3 2 1
--function	debug,debug yes yes 7 yes 2 3 2 1
--function	debug,debug yes yes 8 yes 2 3 2 1
--function	nonexistent yes yes 1 yes 2 3 2 1
--function	freezer yes yes 1 yes 2 3 2 1
--function	freezer no yes 1 yes 2 3 2 1
--function	freezer yes yes 2 yes 2 3 2 1
--function	freezer yes yes 3 yes 2 3 2 1
--function	freezer yes yes 4 yes 2 3 2 1
--function	freezer yes yes 5 yes 2 3 2 1
--function	freezer yes yes 6 yes 2 3 2 1
--function	freezer yes yes 7 yes 2 3 2 1
--function	freezer yes yes 8 yes 2 3 2 1
--function	devices yes yes 1 yes 2 3 2 1
--function	devices no yes 1 yes 2 3 2 1
--function	devices yes yes 2 yes 2 3 2 1
--function	devices yes yes 3 yes 2 3 2 1
--function	devices yes yes 4 yes 2 3 2 1
--function	devices yes yes 5 yes 2 3 2 1
--function	devices yes yes 6 yes 2 3 2 1
--function	devices yes yes 7 yes 2 3 2 1
--function	devices yes yes 8 yes 2 3 2 1
--function	debug yes yes 1 yes 1 2 1 1
--function	debug yes yes 1 yes 2 2 1 1
--function	debug yes yes 1 yes 2 3 1 1
--function	debug yes yes 1 yes 2 5 1 1
--function	debug yes yes 1 yes 3 1 1 1
--function	debug yes yes 1 yes 3 2 1 1
--function	debug yes yes 1 yes 3 4 1 1
--function	debug yes yes 1 yes 4 3 1 1
--function	debug yes yes 1 yes 4 5 1 1
--function	debug yes yes 1 no 1 1 1 1
--function	debug yes yes 1 yes 1 1 1 1
--function	debug yes yes 1 yes 1 3 2 1
--function	debug yes yes 1 yes 2 3 2 2
--function	debug yes yes 1 yes 2 3 2 3
--function	debug yes yes 1 yes 2 3 2 4
--function	debug yes yes 1 yes 2 3 2 5
--function	debug yes yes 1 yes 2 3 2 6
--function	debug yes yes 1 yes 2 3 2 7
--function	debug yes yes 1 yes 2 3 3 2
--function	debug yes yes 1 yes 2 3 4 2
--function	debug yes yes 1 yes 2 3 5 2
--function	debug yes yes 1 yes 2 3 6 2
--function	debug yes yes 1 yes 2 3 7 2
--function	debug yes yes 2 yes 2 3 2 2
--function	debug yes yes 3 yes 2 3 1 1
--function	debug yes yes 3 yes 2 3 1 2
--function	debug yes yes 3 yes 2 3 1 3
--function	debug yes yes 3 yes 2 3 2 1
--function	debug yes yes 3 yes 2 3 2 2
--function	debug yes yes 3 yes 2 3 2 3
--function	debug yes yes 3 yes 2 3 2 4
--function	debug yes yes 3 yes 2 3 2 5
--function	debug yes yes 3 yes 2 3 2 6
--function	debug yes yes 3 yes 2 3 2 7
--function	debug yes yes 3 yes 2 3 3 1
--function	debug yes yes 3 yes 2 3 3 2
--function	debug yes yes 3 yes 2 3 3 3
--function	debug yes yes 3 yes 2 3 4 2
--function	debug yes yes 3 yes 2 3 5 2
--function	debug yes yes 3 yes 2 3 6 2
--function	debug yes yes 3 yes 2 3 7 2
--function2	1
--function2	2
--function2	3
--function2	4
--function2	5
--function2	6
--function2	7
--function2	8
--function2	9
--function2	10
--function2	11
--function2	12
--function2	13
--stress	debug 100 1 1 1
--stress	cpuset 100 1 1 1
--stress	ns 100 1 1 1
--stress	cpu 100 1 1 1
--stress	cpuacct 100 1 1 1
--stress	memory 100 1 1 1
--stress	all 100 1 1 1
--stress	debug 1 1 1 2
--stress	debug 1 1 100 1
--stress	debug 1 1 100 2
--stress	debug 1 1 100 3
--stress	debug 1 100 1 1
--stress	debug 1 100 1 2
--stress	debug 1 100 1 3
--stress	debug 1 100 100 1
--stress	debug 1 100 100 2
--stress	cpuset 1 1 1 2
--stress	cpuset 1 1 100 1
--stress	cpuset 1 1 100 2
--stress	cpuset 1 1 100 3
--stress	cpuset 1 100 1 1
--stress	cpuset 1 100 1 2
--stress	cpuset 1 100 1 3
--stress	cpuset 1 100 100 1
--stress	cpuset 1 100 100 2
--stress	cpu 1 1 1 2
--stress	cpu 1 100 1 1
--stress	cpu 1 100 1 2
--stress	cpu 1 100 1 3
--stress	cpuacct 1 1 1 2
--stress	cpuacct 1 1 100 1
--stress	cpuacct 1 1 100 2
--stress	cpuacct 1 1 100 3
--stress	cpuacct 1 100 1 1
--stress	cpuacct 1 100 1 2
--stress	cpuacct 1 100 1 3
--stress	cpuacct 1 100 100 1
--stress	cpuacct 1 100 100 2
--stress	memory 1 1 1 2
--stress	memory 1 1 100 1
--stress	memory 1 1 100 2
--stress	memory 1 1 100 3
--stress	memory 1 100 1 1
--stress	memory 1 100 1 2
--stress	memory 1 100 1 3
--stress	memory 1 100 100 1
--stress	memory 1 100 100 2
-\ No newline at end of file
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
-index 1e2e521..9e4e035 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_utility.sh
-@@ -228,7 +228,7 @@ get_release_agent()
- do_exit()
- {
- 	if [ "$#" -ne "3" ]; then
--		echo "ERROR: exit failed,your parameter is wrong..Exiting test" >> $LOGFILE
-+		echo "ERROR: exit failed,your parameter is wrong..Exiting test"
- 		exit -1
- 	fi
- 
-@@ -238,7 +238,6 @@ do_exit()
- 
- 	if [ $exit_status -eq 0 ] ;then
- 		if [ $expectted -lt 1 ]; then
--			echo "								against with expectted" >> $LOGFILE
- 			if [ $exit_here -ge 1 ]; then
- 				cleanup;
- 				exit -1
-@@ -246,7 +245,6 @@ do_exit()
- 		fi
- 	else
- 		if [ $expectted -ge 1 ]; then
--			echo "								against with expectted" >> $LOGFILE
- 			if [ $exit_here -ge 1 ]; then
- 				cleanup;
- 				exit -1
-@@ -263,7 +261,7 @@ do_exit()
- do_echo()
- {
- 	if [ "$#" -ne "4" ]; then
--		echo "ERROR: echo failed,your parameter is wrong..Exiting test" >> $LOGFILE
-+		echo "ERROR: echo failed,your parameter is wrong..Exiting test"
- 		exit -1
- 	fi
- 
-@@ -274,20 +272,20 @@ do_echo()
- 
- 	if [ $no_debug -ne 1 ]; then
- 		if [ $expectted -ge 1 ]; then
--			echo "\"echo $value > $target\" (expectted: success)" >> $LOGFILE
-+			echo "\"echo $value > $target\" (expectted: success)"
- 		else
--			echo "\"echo $value > $target\" (expectted: fail)" >> $LOGFILE
-+			echo "\"echo $value > $target\" (expectted: fail)"
- 		fi
- 	fi
- 
--	`echo $value > $target` >> $LOGFILE 2>&1
-+	`echo $value > $target`
- 	do_exit $exit_here $expectted $?;
- }
- 
- do_mkdir()
- {
- 	if [ "$#" -ne "3" ] && [ "$#" -ne "4" ]; then
--		echo "ERROR: mkdir failed,your parameter is wrong..Exiting test" >> $LOGFILE
-+		echo "ERROR: mkdir failed,your parameter is wrong..Exiting test"
- 		exit -1
- 	fi
- 
-@@ -301,9 +299,9 @@ do_mkdir()
- 
- 	if [ $no_debug -ne 1 ]; then
- 		if [ $expectted -ge 1 ]; then
--			echo "\"mkdir $target\" (expectted: success)" >> $LOGFILE
-+			echo "\"mkdir $target\" (expectted: success)"
- 		else
--			echo "\"mkdir $target\" (expectted: fail)" >> $LOGFILE
-+			echo "\"mkdir $target\" (expectted: fail)"
- 		fi
- 	fi
- 
-@@ -312,9 +310,9 @@ do_mkdir()
- 	fi
- 
- 	if [ $parents -ne "1" ]; then
--		mkdir $target >> $LOGFILE 2>&1
-+		mkdir $target
- 	else
--		mkdir -p $target >> $LOGFILE 2>&1
-+		mkdir -p $target
- 	fi
- 	do_exit $exit_here $expectted $?;
- }
-@@ -322,7 +320,7 @@ do_mkdir()
- do_rmdir()
- {
- 	if [ "$#" -lt "3" ]; then
--		echo "ERROR: rmdir failed,your parameter is wrong..Exiting test" >> $LOGFILE
-+		echo "ERROR: rmdir failed,your parameter is wrong..Exiting test"
- 		exit -1
- 	fi
- 
-@@ -331,26 +329,26 @@ do_rmdir()
- 	target=$3
- 
- 	if ! [ -e $target ]; then
--		echo "INFO: $target is not exist" >> $LOGFILE
-+		echo "INFO: $target is not exist"
- 		return
- 	fi
- 
- 	if [ $no_debug -ne 1 ]; then
- 		if [ $expectted -ge 1 ]; then
--			echo "\"rmdir $target\" (expectted: success)" >> $LOGFILE
-+			echo "\"rmdir $target\" (expectted: success)"
- 		else
--			echo "\"rmdir $target\" (expectted: fail)" >> $LOGFILE
-+			echo "\"rmdir $target\" (expectted: fail)"
- 		fi
- 	fi
- 
--	rmdir $3 $4 $5 >> $LOGFILE 2>&1
-+	rmdir $3 $4 $5
- 	do_exit $exit_here $expectted $?;
- }
- 
- do_mount()
- {
- 	if [ "$#" -ne "4" ] && [ "$#" -ne "5" ] ; then
--		echo "ERROR: mount failed,your parameter is wrong..Exiting test" >> $LOGFILE
-+		echo "ERROR: mount failed,your parameter is wrong..Exiting test"
- 		exit -1
- 	fi
- 
-@@ -365,20 +363,20 @@ do_mount()
- 
- 	if [ $no_debug -ne 1 ]; then
- 		if [ $expectted -ge 1 ]; then
--			echo "\"mount -t cgroup $para_o $something $target\" (expectted: success)" >> $LOGFILE
-+			echo "\"mount -t cgroup $para_o $something $target\" (expectted: success)"
- 		else
--			echo "\"mount -t cgroup $para_o $something $target\" (expectted: fail)" >> $LOGFILE
-+			echo "\"mount -t cgroup $para_o $something $target\" (expectted: fail)"
- 		fi
- 	fi
- 
--	mount -t cgroup $para_o $something $target >> $LOGFILE 2>&1
-+	mount -t cgroup $para_o $something $target
- 	do_exit $exit_here $expectted $?;
- }
- 
- do_umount()
- {
- 	if [ "$#" -ne "3" ]; then
--		echo "ERROR: umount failed,your parameter is wrong..Exiting test" >> $LOGFILE
-+		echo "ERROR: umount failed,your parameter is wrong..Exiting test"
- 		exit -1
- 	fi
- 
-@@ -388,20 +386,20 @@ do_umount()
- 
- 	if [ $no_debug -ne 1 ]; then
- 		if [ $expectted -ge 1 ]; then
--			echo "\"umount $target\" (expectted: success)" >> $LOGFILE
-+			echo "\"umount $target\" (expectted: success)"
- 		else
--			echo "\"umount $target\" (expectted: fail)" >> $LOGFILE
-+			echo "\"umount $target\" (expectted: fail)"
- 		fi
- 	fi
- 
--	umount $target >> $LOGFILE 2>&1
-+	umount $target
- 	do_exit $exit_here $expectted $?;
- }
- 
- do_mv()
- {
- 	if [ "$#" -ne "4" ]; then
--		echo "ERROR: mv failed,your parameter is wrong..Exiting test" >> $LOGFILE
-+		echo "ERROR: mv failed,your parameter is wrong..Exiting test"
- 		exit -1
- 	fi
- 
-@@ -412,20 +410,20 @@ do_mv()
- 
- 	if [ $no_debug -ne 1 ]; then
- 		if [ $expectted -ge 1 ]; then
--			echo "\"mv $source $target\" (expectted: success)" >> $LOGFILE
-+			echo "\"mv $source $target\" (expectted: success)"
- 		else
--			echo "\"mv $source $target\" (expectted: fail)" >> $LOGFILE
-+			echo "\"mv $source $target\" (expectted: fail)"
- 		fi
- 	fi
- 
--	mv $source $target >> $LOGFILE 2>&1
-+	mv $source $target
- 	do_exit $exit_here $expectted $?;
- }
- 
- do_kill()
- {
- 	if [ "$#" -ne "4" ]; then
--		echo "ERROR: kill failed,your parameter is wrong..Exiting test" >> $LOGFILE
-+		echo "ERROR: kill failed,your parameter is wrong..Exiting test"
- 		exit -1
- 	fi
- 
-@@ -440,13 +438,13 @@ do_kill()
- 
- 	if [ $no_debug -ne 1 ]; then
- 		if [ $expectted -ge 1 ]; then
--			echo "\"kill -$signo $pid\" (expectted: success)" >> $LOGFILE
-+			echo "\"kill -$signo $pid\" (expectted: success)"
- 		else
--			echo "\"kill -$signo $pid\" (expectted: fail)" >> $LOGFILE
-+			echo "\"kill -$signo $pid\" (expectted: fail)"
- 		fi
- 	fi
- 
--	kill -s $signo $pid >> $LOGFILE 2>&1
-+	kill -s $signo $pid
- 	do_exit $exit_here $expectted $?;
- }
- 
-@@ -464,7 +462,7 @@ setup()
- 		cp -f $TESTROOT/cgroup_fj_release_agent /root
- 		chmod a+x /root/cgroup_fj_release_agent
- 	else
--		echo "ERROR: $TESTROOT/cgroup_fj_release_agent isn't exist..Exiting test" >> $LOGFILE
-+		echo "ERROR: $TESTROOT/cgroup_fj_release_agent isn't exist..Exiting test"
- 		exit -1;
- 	fi
- 
-@@ -476,7 +474,7 @@ setup()
- 	then
- 		chmod a+x $TESTROOT/cgroup_fj_proc
- 	else
--		echo "ERROR: $TESTROOT/cgroup_fj_proc isn't exist..Exiting test" >> $LOGFILE
-+		echo "ERROR: $TESTROOT/cgroup_fj_proc isn't exist..Exiting test"
- 		exit -1;
- 	fi
- }
-@@ -484,7 +482,7 @@ setup()
- cleanup()
- {
- 	if [ $no_debug -ne 1 ]; then
--		echo "INFO: we now cleanup ..." >> $LOGFILE
-+		echo "INFO: we now cleanup ..."
- 	fi
- 
- 	export LANG=en_US.UTF-8
-@@ -547,7 +545,7 @@ reclaim_foundling()
- mkdir_subgroup()
- {
- 	if ! [ -e /dev/cgroup ]; then
--		echo "ERROR: /dev/cgroup isn't exist..Exiting test" >> $LOGFILE
-+		echo "ERROR: /dev/cgroup isn't exist..Exiting test"
- 		exit -1;
- 	fi
- 
-@@ -613,7 +611,7 @@ check_para()
- 
- 	if [ $ret1 -ne 0 ] || [ $ret2 -ne 0 ] || [ $ret3 -ne 0 ] || [ $ret4 -ne 0 ] || [ $ret5 -ne 0 ] || [ $ret6 -ne 0 ]
- 	then
--		echo "ERROR: Wrong inputed parameter..Exiting test" >> $LOGFILE
-+		echo "ERROR: Wrong inputed parameter..Exiting test"
- 		return -1
- 	fi
- 
-diff --git a/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh b/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-index f0b43b8..2193f5d 100755
---- a/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/run_cgroup_test_fj.sh
-@@ -23,12 +23,22 @@
- ################################################################################
- cd $LTPROOT/testcases/bin
- 
--export TCID="cgroup_test_fj"
--export TST_TOTAL=194
-+cnt=1
-+for arg; do
-+	if [ $cnt -gt 1 ]; then
-+		NAME+="_"
-+		NAME+=$arg
-+	fi
-+	cnt=$(( $cnt + 1 ))
-+done
+ #ifndef SPLICE_F_NONBLOCK
+diff --git a/m4/ltp-renameat2.m4 b/m4/ltp-renameat2.m4
+new file mode 100644
+index 0000000..2bc7313
+--- /dev/null
++++ b/m4/ltp-renameat2.m4
+@@ -0,0 +1,27 @@
++dnl
++dnl Copyright (c) Linux Test Project, 2015
++dnl
++dnl This program is free software;  you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program;  if not, write to the Free Software Foundation,
++dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++dnl
++dnl Author: Cedric Hnyda <chnyda@suse.com>
++dnl
 +
-+PREFIX="cgroup_fj_"
++dnl
++dnl LTP_CHECK_RENAMEAT2
++dnl ----------------------------
++dnl
++AC_DEFUN([LTP_CHECK_RENAMEAT2],[
++AC_CHECK_FUNCS(renameat2,,)
++])
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 25d10ac..0d5fdb4 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -863,6 +863,9 @@ rename14 rename14
+ #renameat test cases
+ renameat01 renameat01
+ 
++renameat201 renameat201
++renameat202 renameat202
 +
-+export TCID=$PREFIX$1$NAME
-+export TST_TOTAL=1
- export TST_COUNT=1
- 
- export TESTROOT=`pwd`
--export LOGFILE=$LTPROOT/output/cgroup_fj_log_`date +%F`.txt
- export TMPFILE=$TESTROOT/tmp_tasks
- export CASENO1=0
- export CASENO2=0
-@@ -86,47 +96,33 @@ if [ "$SYBSYSCOMPILED" = "" ];then	# Warning and exit if all cgroup subsystem ar
- 	exit -2;
- fi
- 
--echo "Now, we start the test for cgroup...";
--
--rm -f $LOGFILE 2>/dev/null
--echo `date` > $LOGFILE
--echo `uname -a` >> $LOGFILE
-+CASETYPE=$1
-+shift
-+CASECMD=$@
- 
--echo "" >> $LOGFILE
--echo "Now, we start the test for basic function of cgroup..." >> $LOGFILE
-+case $CASETYPE in
-+"function" )
-+	: $(( CASENO1 += 1 ))
-+	export CASENO1=$CASENO1
-+	./cgroup_fj_function.sh $CASECMD
-+	;;
-+"function2" )
-+	: $(( CASENO1 += 1 ))
-+	export CASENO1=$CASENO1
-+	./cgroup_fj_function2.sh $CASECMD
-+	;;
-+"stress" )
-+	: $(( CASENO2 += 1 ))
-+	export CASENO2=$CASENO2
-+	./cgroup_fj_stress.sh $CASECMD
-+	;;
-+esac
- 
--nlines=`cat cgroup_fj_testcases.sh | wc -l`
--for i in `seq 1 $nlines`
--do
--	CASETYPE=`sed -n "$i""p" cgroup_fj_testcases.sh | cut -f1`
--	CASECMD=`sed -n "$i""p" cgroup_fj_testcases.sh | cut -f2`
--	echo $CASETYPE | grep "#"
--	if [ $? -ne 0 ]; then
--		case $CASETYPE in
--		"function" )
--			: $(( CASENO1 += 1 ))
--			export CASENO1=$CASENO1
--			$TESTROOT/cgroup_fj_function.sh $CASECMD
--			;;
--		"function2" )
--			: $(( CASENO1 += 1 ))
--			export CASENO1=$CASENO1
--			$TESTROOT/cgroup_fj_function2.sh $CASECMD
--			;;
--		"stress" )
--			: $(( CASENO2 += 1 ))
--			export CASENO2=$CASENO2
--			$TESTROOT/cgroup_fj_stress.sh $CASECMD
--			;;
--		esac
--
--		ret=$?
--		if [ $ret -eq 0 ]; then
--			tst_resm TPASS "case$i(`sed -n "$i""p" cgroup_fj_testcases.sh`)    PASS"
--		elif [ $ret -ne 9 ]; then
--			tst_resm TFAIL "case$i(`sed -n "$i""p" cgroup_fj_testcases.sh`)    FAIL"
--		fi
--	fi
--done
-+ret=$?
-+if [ $ret -eq 0 ]; then
-+	tst_resm TPASS "case$i($CASETYPE$CASECMD)    PASS"
-+elif [ $ret -ne 9 ]; then
-+	tst_resm TFAIL "case$i($CASETYPE $CASECMD)    FAIL"
-+fi
- 
- exit $ret;
+ rmdir01 rmdir01
+ rmdir02 rmdir02
+ rmdir03 rmdir03
+diff --git a/testcases/kernel/include/arm.in b/testcases/kernel/include/arm.in
+index 841b064..eb130b7 100644
+--- a/testcases/kernel/include/arm.in
++++ b/testcases/kernel/include/arm.in
+@@ -333,4 +333,5 @@ accept4 (__NR_SYSCALL_BASE+366)
+ fanotify_init (__NR_SYSCALL_BASE+367)
+ fanotify_mark (__NR_SYSCALL_BASE+368)
+ prlimit64 (__NR_SYSCALL_BASE+369)
++renameat2 (__NR_SYSCALL_BASE+382)
+ getrandom (__NR_SYSCALL_BASE+384)
+diff --git a/testcases/kernel/include/i386.in b/testcases/kernel/include/i386.in
+index a4585c2..0e39902 100644
+--- a/testcases/kernel/include/i386.in
++++ b/testcases/kernel/include/i386.in
+@@ -333,4 +333,5 @@ recvmmsg 337
+ fanotify_init 338
+ fanotify_mark 339
+ prlimit64 340
++renameat2 354
+ getrandom 355
+diff --git a/testcases/kernel/include/ia64.in b/testcases/kernel/include/ia64.in
+index 4f8fb74..846141f 100644
+--- a/testcases/kernel/include/ia64.in
++++ b/testcases/kernel/include/ia64.in
+@@ -292,4 +292,5 @@ recvmmsg 1322
+ fanotify_init 1323
+ fanotify_mark 1324
+ prlimit64 1325
++renameat2 1338
+ getrandom 1339
+diff --git a/testcases/kernel/include/powerpc.in b/testcases/kernel/include/powerpc.in
+index 4025436..ef7469f 100644
+--- a/testcases/kernel/include/powerpc.in
++++ b/testcases/kernel/include/powerpc.in
+@@ -340,4 +340,5 @@ recvmsg 342
+ recvmmsg 343
+ accept4 344
+ syscalls 345
++renameat2 357
+ getrandom 359
+diff --git a/testcases/kernel/include/powerpc64.in b/testcases/kernel/include/powerpc64.in
+index 4025436..ef7469f 100644
+--- a/testcases/kernel/include/powerpc64.in
++++ b/testcases/kernel/include/powerpc64.in
+@@ -340,4 +340,5 @@ recvmsg 342
+ recvmmsg 343
+ accept4 344
+ syscalls 345
++renameat2 357
+ getrandom 359
+diff --git a/testcases/kernel/include/s390.in b/testcases/kernel/include/s390.in
+index 9c7cfa1..c97caa5 100644
+--- a/testcases/kernel/include/s390.in
++++ b/testcases/kernel/include/s390.in
+@@ -324,4 +324,5 @@ setgid 214
+ setfsuid 215
+ setfsgid 216
+ newfstatat 293
++renameat2 347
+ getrandom 349
+diff --git a/testcases/kernel/include/s390x.in b/testcases/kernel/include/s390x.in
+index 9c7cfa1..c97caa5 100644
+--- a/testcases/kernel/include/s390x.in
++++ b/testcases/kernel/include/s390x.in
+@@ -324,4 +324,5 @@ setgid 214
+ setfsuid 215
+ setfsgid 216
+ newfstatat 293
++renameat2 347
+ getrandom 349
+diff --git a/testcases/kernel/include/sparc.in b/testcases/kernel/include/sparc.in
+index 697378f..0c394f8 100644
+--- a/testcases/kernel/include/sparc.in
++++ b/testcases/kernel/include/sparc.in
+@@ -331,3 +331,4 @@ recvmmsg 328
+ fanotify_init 329
+ fanotify_mark 330
+ prlimit64 331
++renameat2 345
+diff --git a/testcases/kernel/include/sparc64.in b/testcases/kernel/include/sparc64.in
+index 83c1792..a70540a 100644
+--- a/testcases/kernel/include/sparc64.in
++++ b/testcases/kernel/include/sparc64.in
+@@ -307,3 +307,4 @@ recvmmsg 328
+ fanotify_init 329
+ fanotify_mark 330
+ prlimit64 331
++renameat2 345
+diff --git a/testcases/kernel/include/x86_64.in b/testcases/kernel/include/x86_64.in
+index 860e726..726b76f 100644
+--- a/testcases/kernel/include/x86_64.in
++++ b/testcases/kernel/include/x86_64.in
+@@ -300,4 +300,5 @@ recvmmsg 299
+ fanotify_init 300
+ fanotify_mark 301
+ prlimit64 302
++renameat2 316
+ getrandom 318
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index f3a18ab..2553b2c 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -713,6 +713,8 @@
+ /rename/rename13
+ /rename/rename14
+ /renameat/renameat01
++/renameat2/renameat201
++/renameat2/renameat202
+ /rmdir/rmdir01
+ /rmdir/rmdir02
+ /rmdir/rmdir03
+diff --git a/testcases/kernel/syscalls/renameat2/Makefile b/testcases/kernel/syscalls/renameat2/Makefile
+new file mode 100644
+index 0000000..083a071
+--- /dev/null
++++ b/testcases/kernel/syscalls/renameat2/Makefile
+@@ -0,0 +1,24 @@
++#
++#  Copyright (C) 2015 Cedric Hnyda chnyda@suse.com
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program;  if not, write to the Free Software
++#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/renameat2/renameat2.h b/testcases/kernel/syscalls/renameat2/renameat2.h
+new file mode 100644
+index 0000000..8c69746
+--- /dev/null
++++ b/testcases/kernel/syscalls/renameat2/renameat2.h
+@@ -0,0 +1,37 @@
++/*
++ * Copyright (C) 2015 Cedric Hnyda chnyda@suse.com
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it is
++ * free of the rightful claim of any third person regarding infringement
++ * or the like.  Any license provided herein, whether implied or
++ * otherwise, applies only to this software file.  Patent licenses, if
++ * any, provided herein do not apply to combinations of this program with
++ * other software, or any other product whatsoever.
++ *
++ */
++
++#ifndef RENAMEAT2_H
++#define RENAMEAT2_H
++
++#include <sys/types.h>
++#include "config.h"
++#include "linux_syscall_numbers.h"
++
++#if !defined(HAVE_RENAMEAT2)
++int renameat2(int olddirfd, const char *oldpath, int newdirfd,
++				const char *newpath, unsigned int flags)
++{
++	return ltp_syscall(__NR_renameat2, olddirfd, oldpath, newdirfd,
++						newpath, flags);
++}
++#endif
++
++#endif /* RENAMEAT2_H */
+diff --git a/testcases/kernel/syscalls/renameat2/renameat201.c b/testcases/kernel/syscalls/renameat2/renameat201.c
+new file mode 100644
+index 0000000..18db090
+--- /dev/null
++++ b/testcases/kernel/syscalls/renameat2/renameat201.c
+@@ -0,0 +1,159 @@
++/*
++ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it is
++ * free of the rightful claim of any third person regarding infringement
++ * or the like.  Any license provided herein, whether implied or
++ * otherwise, applies only to this software file.  Patent licenses, if
++ * any, provided herein do not apply to combinations of this program with
++ * other software, or any other product whatsoever.
++ */
++
++ /* Description:
++ *   Verify that:
++ *   1) renameat2(2) returns -1 and sets errno to EEXIST because newpath
++ *		already exists and the flag RENAME_NOREPLACE is used.
++ *   2) renameat2(2) returns 0.
++ *   3) renameat2(2) returns -1 and sets errno to ENOENT because the flag
++ *		RENAME_EXCHANGE is used and newpath does not exist.
++ *   4) renameat2(2) returns 0 because the flag RENAME_NOREPLACE is used,
++ *		both olddirfd and newdirfd are valid and oldpath exists and
++ *		newpath does not exist.
++ *   5) renameat2(2) returns -1 and sets errno to EINVAL because
++ *		RENAME_NOREPLACE and RENAME_EXCHANGE are used together
++ *   6) renameat2(2) returns -1 and sets errno to EINVAL because
++ *		RENAME_WHITEOUT and RENAME_EXCHANGE are used together
++ */
++
++#define _GNU_SOURCE
++
++#include "test.h"
++#include "safe_macros.h"
++#include "lapi/fcntl.h"
++#include "renameat2.h"
++
++#define TEST_DIR "test_dir/"
++#define TEST_DIR2 "test_dir2/"
++
++#define TEST_FILE "test_file"
++#define TEST_FILE2 "test_file2"
++#define TEST_FILE3 "test_file3"
++#define NON_EXIST "non_exist"
++
++char *TCID = "renameat201";
++
++static int olddirfd;
++static int newdirfd;
++
++
++static struct test_case {
++	int *olddirfd;
++	const char *oldpath;
++	int *newdirfd;
++	const char *newpath;
++	int flags;
++	int exp_errno;
++} test_cases[] = {
++	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE2, RENAME_NOREPLACE, EEXIST},
++	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE2, RENAME_EXCHANGE, 0},
++	{&olddirfd, TEST_FILE, &newdirfd, NON_EXIST, RENAME_EXCHANGE, ENOENT},
++	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE3, RENAME_NOREPLACE, 0},
++	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE2, RENAME_NOREPLACE
++				| RENAME_EXCHANGE, EINVAL},
++	{&olddirfd, TEST_FILE, &newdirfd, TEST_FILE2, RENAME_WHITEOUT
++				| RENAME_EXCHANGE, EINVAL}
++};
++
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++
++static void setup(void);
++static void cleanup(void);
++static void renameat2_verify(const struct test_case *test);
++
++
++int main(int ac, char **av)
++{
++	int i;
++	int lc;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; lc < TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			renameat2_verify(&test_cases[i]);
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	if ((tst_kvercmp(3, 15, 0)) < 0) {
++		tst_brkm(TCONF, NULL,
++			"This test can only run on kernels that are 3.15. and higher");
++	}
++
++	tst_tmpdir();
++
++	SAFE_MKDIR(cleanup, TEST_DIR, 0700);
++	SAFE_MKDIR(cleanup, TEST_DIR2, 0700);
++
++	SAFE_TOUCH(cleanup, TEST_DIR TEST_FILE, 0600, NULL);
++	SAFE_TOUCH(cleanup, TEST_DIR2 TEST_FILE2, 0600, NULL);
++	SAFE_TOUCH(cleanup, TEST_DIR TEST_FILE3, 0600, NULL);
++
++	olddirfd = SAFE_OPEN(cleanup, TEST_DIR, O_DIRECTORY);
++	newdirfd = SAFE_OPEN(cleanup, TEST_DIR2, O_DIRECTORY);
++}
++
++static void cleanup(void)
++{
++	if (olddirfd > 0 && close(olddirfd) < 0)
++		tst_resm(TWARN | TERRNO, "close olddirfd failed");
++
++	if (newdirfd > 0 && close(newdirfd) < 0)
++		tst_resm(TWARN | TERRNO, "close newdirfd failed");
++
++	tst_rmdir();
++
++}
++
++static void renameat2_verify(const struct test_case *test)
++{
++	TEST(renameat2(*(test->olddirfd), test->oldpath,
++			*(test->newdirfd), test->newpath, test->flags));
++
++	if (test->exp_errno && TEST_RETURN != -1) {
++		tst_resm(TFAIL, "renameat2() succeeded unexpectedly");
++		return;
++	}
++
++	if (test->exp_errno == 0 && TEST_RETURN != 0) {
++		tst_resm(TFAIL | TTERRNO, "renameat2() failed unexpectedly");
++		return;
++	}
++
++	if (test->exp_errno == TEST_ERRNO) {
++		tst_resm(TPASS | TTERRNO,
++		"renameat2() returned the expected value");
++		return;
++	}
++
++	tst_resm(TFAIL | TTERRNO,
++		"renameat2() got unexpected return value: expected: %d - %s",
++			test->exp_errno, tst_strerrno(test->exp_errno));
++
++}
+diff --git a/testcases/kernel/syscalls/renameat2/renameat202.c b/testcases/kernel/syscalls/renameat2/renameat202.c
+new file mode 100644
+index 0000000..46430d8
+--- /dev/null
++++ b/testcases/kernel/syscalls/renameat2/renameat202.c
+@@ -0,0 +1,156 @@
++/*
++ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it is
++ * free of the rightful claim of any third person regarding infringement
++ * or the like.  Any license provided herein, whether implied or
++ * otherwise, applies only to this software file.  Patent licenses, if
++ * any, provided herein do not apply to combinations of this program with
++ * other software, or any other product whatsoever.
++ */
++
++ /* Description:
++ *   Calls renameat2(2) with the flag RENAME_EXCHANGE and check that
++ *   the content was swapped
++ */
++
++#define _GNU_SOURCE
++
++#include "test.h"
++#include "safe_macros.h"
++#include "lapi/fcntl.h"
++#include "renameat2.h"
++
++#define TEST_DIR "test_dir/"
++#define TEST_DIR2 "test_dir2/"
++
++#define TEST_FILE "test_file"
++#define TEST_FILE2 "test_file2"
++
++char *TCID = "renameat202";
++
++static int olddirfd;
++static int newdirfd;
++static int fd = -1;
++static int cnt;
++
++static const char content[] = "content";
++
++
++int TST_TOTAL = 1;
++
++static void setup(void);
++static void cleanup(void);
++static void renameat2_verify(void);
++
++
++int main(int ac, char **av)
++{
++	int lc;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++
++		tst_count = 0;
++
++		TEST(renameat2(olddirfd, TEST_FILE,
++				newdirfd, TEST_FILE2, RENAME_EXCHANGE));
++
++		cnt++;
++
++		renameat2_verify();
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++static void setup(void)
++{
++	if ((tst_kvercmp(3, 15, 0)) < 0) {
++		tst_brkm(TCONF, NULL,
++			"This test can only run on kernels that are 3.15. and higher");
++	}
++
++	cnt = 0;
++
++	tst_tmpdir();
++
++	SAFE_MKDIR(cleanup, TEST_DIR, 0700);
++	SAFE_MKDIR(cleanup, TEST_DIR2, 0700);
++
++	SAFE_TOUCH(cleanup, TEST_DIR TEST_FILE, 0600, NULL);
++	SAFE_TOUCH(cleanup, TEST_DIR2 TEST_FILE2, 0600, NULL);
++
++	olddirfd = SAFE_OPEN(cleanup, TEST_DIR, O_DIRECTORY);
++	newdirfd = SAFE_OPEN(cleanup, TEST_DIR2, O_DIRECTORY);
++
++	SAFE_FILE_PRINTF(cleanup, TEST_DIR TEST_FILE, "%s", content);
++
++}
++
++static void cleanup(void)
++{
++	if (olddirfd > 0 && close(olddirfd) < 0)
++		tst_resm(TWARN | TERRNO, "close olddirfd failed");
++
++	if (newdirfd > 0 && close(newdirfd) < 0)
++		tst_resm(TWARN | TERRNO, "close newdirfd failed");
++
++	if (fd > 0 && close(fd) < 0)
++		tst_resm(TWARN | TERRNO, "close fd failed");
++
++	tst_rmdir();
++
++}
++
++static void renameat2_verify(void)
++{
++	char str[sizeof(content)];
++	struct stat st;
++	char *emptyfile;
++	char *contentfile;
++
++	if (TEST_RETURN != 0) {
++		tst_resm(TFAIL, "renameat2() failed unexpectedly");
++		return;
++	}
++
++	if (cnt % 2 == 1) {
++		emptyfile = TEST_DIR TEST_FILE;
++		contentfile = TEST_DIR2 TEST_FILE2;
++	} else {
++		emptyfile = TEST_DIR2 TEST_FILE2;
++		contentfile = TEST_DIR TEST_FILE;
++	}
++
++	fd = SAFE_OPEN(cleanup, contentfile, O_RDONLY);
++
++	if (stat(emptyfile, &st) < 0)
++		tst_brkm(TERRNO | TFAIL, cleanup, "stat failed");
++
++	SAFE_READ(cleanup, 0, fd, str, strlen(content) + 10);
++
++	if (fd > 0 && close(fd) < 0)
++		tst_brkm(TERRNO | TFAIL, cleanup, "close fd failed");
++	fd = 0;
++
++	if (str[strlen(content)] == '\0' && !strcmp(content, str)
++		&& !st.st_size)
++		tst_resm(TPASS,
++			"renameat2() swapped the content of the two files");
++	else
++		tst_resm(TFAIL,
++			"renameat2() didn't swap the content of the two files");
++}
 -- 
 2.1.4
 
