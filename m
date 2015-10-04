@@ -1,63 +1,67 @@
-From: Yuriy Kolerov <Yuriy.Kolerov@synopsys.com>
-Date: Fri, 2 Oct 2015 12:23:13 +0000
-Subject: [LTP] [PATCH] syscalls/setregid02: Fix retrieving a group of
- user "nobody"
-In-Reply-To: <1443010817-10169-1-git-send-email-yuriy.kolerov@synopsys.com>
-References: <1443010817-10169-1-git-send-email-yuriy.kolerov@synopsys.com>
-Message-ID: <3ABF60118B9B784CA5BF7C841D2F00ECFA269F@de02wembxa.internal.synopsys.com>
+From: Nicolas Joly <njoly@pasteur.fr>
+Date: Sun, 4 Oct 2015 10:25:51 +0200
+Subject: [LTP] [PATCH] Cleanup GCC_WARN_OLDSTYLE content
+Message-ID: <20151004082551.GA20256@issan.sis.pasteur.fr>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello!
 
-Ping.
+Hi,
 
-Regards,
-Yuriy Kolerov
+Checking some build logs, i noticed that some flags "-g -O2" are
+present multiple times.
 
+cc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -g -O2 -Wold-style-definition  -I/home/njoly/emul/linux/ltp64/testcases/kernel/include -I../../../../include -I../../../../include   -L../../../../lib  access01.c   -lltp -o access01
 
-> -----Original Message-----
-> From: Yuriy Kolerov [mailto:yuriy.kolerov@synopsys.com]
-> Sent: Wednesday, September 23, 2015 3:20 PM
-> To: ltp@lists.linux.it; Vineet Gupta; Alexey Brodkin; Anton Kolesov
-> Cc: Francois Bedard; yuriy.kolerov@synopsys.com
-> Subject: [LTP] [PATCH] syscalls/setregid02: Fix retrieving a group of user
-> "nobody"
-> 
-> 
-> In setup this test sets UID and GID of the user "nobody". Then it expects that
-> user "nobody" is in group "nobody" and tries to retrive a structure for group
-> "nobody" using getgrnam(). However some Linux distributions use group
-> "nogroup" for user "nobody".
-> Thus it's necessary to retrieve a group of user "nobody" not by hardcoded
-> name but by its GID. It's necessary because group "nobody" may not exist.
-> 
-> I've replaced a variable "nobody" by more generic "ltpgroup".
-> Then I've splitted a macro GET_GID on GET_GROUP_BY_NAME an
-> GET_GROUP_BY_GID and used GET_GROUP_BY_GID for getting a group for
-> the user "nobody".
-> 
-> On my test system I have user "nobody" in group "nogroup". So I've got this
-> error messages for this test:
-> 
->     ----------->8----------
->     setregid02.c:160: getgrnam("nobody") failed: errno=SUCCESS(0): Success
->     setregid02.c:160: Remaining cases broken
->     ----------->8----------
-> 
-> Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
-> ---
->  testcases/kernel/syscalls/setregid/setregid02.c | 31 ++++++++++++++++----
-> -----
->  1 file changed, 20 insertions(+), 11 deletions(-)
+The third copy on the previous command line comes from
+GCC_WARN_OLDSTYLE variable which does include CFLAGS, duplicating them
+and adding the needed -Wold-style-definition warning option.
 
+Attached a small patch to clean this part by only adding the needed
+option to GCC_WARN_OLDSTYLE.
+
+Thanks.
+
+-- 
+Nicolas Joly
+
+Cluster & Computing Group
+Biology IT Center
+Institut Pasteur, Paris.
 -------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-syscalls-setregid02-Fix-retrieving-a-group-of-user-n.patch
-Type: application/octet-stream
-Size: 2306 bytes
-Desc: 0001-syscalls-setregid02-Fix-retrieving-a-group-of-user-n.patch
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20151002/f6765d44/attachment.obj>
+commit bf5a215a6d0ec3774b56c08f56c397753b10997f
+Author: Nicolas Joly <njoly@pasteur.fr>
+Date:   Sat Mar 21 09:24:49 2015 +0100
+
+    m4: ltp-warn_oldstyle: Cleanup GCC_WARN_OLDSTYLE content.
+    
+    Do not save whole CFLAGS to GCC_WARN_OLDSTYLE, only the needed option.
+    
+    Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
+
+diff --git a/m4/ltp-warn_oldstyle.m4 b/m4/ltp-warn_oldstyle.m4
+index a35adcc..717e0a3 100644
+--- a/m4/ltp-warn_oldstyle.m4
++++ b/m4/ltp-warn_oldstyle.m4
+@@ -19,14 +19,15 @@ dnl
+ 
+ AC_DEFUN([LTP_CHECK_CC_WARN_OLDSTYLE],[dnl
+ 
+-AC_MSG_CHECKING([if $CC supports -Wold-style-definition])
++wflag="-Wold-style-definition"
++AC_MSG_CHECKING([if $CC supports $wflag])
+ 
+ backup_cflags="$CFLAGS"
+-CFLAGS+=" -Wold-style-definition"
++CFLAGS+=" $wflag"
+ 
+ AC_LINK_IFELSE(
+ 	[AC_LANG_PROGRAM([])],
+-	[GCC_WARN_OLDSTYLE="$CFLAGS"]
++	[GCC_WARN_OLDSTYLE="$wflag"]
+ 	[AC_MSG_RESULT([yes])],
+ 	[AC_MSG_RESULT([no])]
+ )
