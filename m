@@ -1,38 +1,75 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 5 Oct 2015 12:58:42 +0200
-Subject: [LTP] LTP Question
-In-Reply-To: <CAKxdZb9wLCrnKw+TBpYw-_1Usq+_yEwPOP54TeTPZsiTg=6WBw@mail.gmail.com>
-References: <CAKxdZb-3b+K+p_dXy++rfMTFTSjvP+V9RTMVBt1Ac923d=jvwg@mail.gmail.com>
- <20151001121648.GG8256@rei.suse.cz>
- <CAKxdZb9wLCrnKw+TBpYw-_1Usq+_yEwPOP54TeTPZsiTg=6WBw@mail.gmail.com>
-Message-ID: <20151005105841.GA17973@rei.suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 5 Oct 2015 08:01:16 -0400 (EDT)
+Subject: [LTP] [PATCH] kernel/include: getrandom
+In-Reply-To: <1444040225-7683-1-git-send-email-chnyda@suse.com>
+References: <1444040225-7683-1-git-send-email-chnyda@suse.com>
+Message-ID: <965311462.24814129.1444046476773.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Thanks a lot for responding...
-> Yes, the testcases/audit/ directory was never part of LTP, but we have
-> downloaded "Red Hat LSPP_EAL4 + Re-Release" from following link:
+
+
+
+
+----- Original Message -----
+> From: "Cedric Hnyda" <chnyda@suse.com>
+> To: ltp@lists.linux.it
+> Cc: "Cedric Hnyda" <chnyda@suse.com>
+> Sent: Monday, 5 October, 2015 12:17:05 PM
+> Subject: [LTP]  [PATCH] kernel/include: getrandom
 > 
-> "http://sourceforge.net/projects/ltp/files/EAL4%2B%20Certification%20Test%20Suite/Red%20Hat%20LSPP_EAL4%20%2B%20Re-Release/"
+> Add getrandom's number for sparc64, sparc and aarch64
 > 
-> And the testcases/audit/ directory has added under /Test/LTP
-> directory. In the TestPlan of EAL4 is required to executing the
-> testcases/audit for evaluating Authentication and Identification. Now,
-> I don't find these testcases in LTP-2015-04-20. If any testcases are
-> replaced to evaluate Authentication of the OS, please help me about
-> this matter.
+> Signed-off-by: Cedric Hnyda <chnyda@suse.com>
 
-As far as I know there are no testcases for audit in LTP. But there is a
-separate audit-test project on LTP, have a look at:
+Pushed.
 
-http://sourceforge.net/projects/audit-test/
+Regards,
+Jan
 
-Also always keep the ltp@lists.linux.it in CC when discussing LTP.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> ---
+>  testcases/kernel/include/aarch64.in | 1 +
+>  testcases/kernel/include/sparc.in   | 1 +
+>  testcases/kernel/include/sparc64.in | 1 +
+>  3 files changed, 3 insertions(+)
+> 
+> diff --git a/testcases/kernel/include/aarch64.in
+> b/testcases/kernel/include/aarch64.in
+> index ceb67c6..173584c 100644
+> --- a/testcases/kernel/include/aarch64.in
+> +++ b/testcases/kernel/include/aarch64.in
+> @@ -253,3 +253,4 @@ clock_adjtime 266
+>  syncfs 267
+>  setns 268
+>  sendmmsg 269
+> +getrandom 384
+> diff --git a/testcases/kernel/include/sparc.in
+> b/testcases/kernel/include/sparc.in
+> index 697378f..18f55e6 100644
+> --- a/testcases/kernel/include/sparc.in
+> +++ b/testcases/kernel/include/sparc.in
+> @@ -331,3 +331,4 @@ recvmmsg 328
+>  fanotify_init 329
+>  fanotify_mark 330
+>  prlimit64 331
+> +getrandom 347
+> diff --git a/testcases/kernel/include/sparc64.in
+> b/testcases/kernel/include/sparc64.in
+> index 83c1792..2319369 100644
+> --- a/testcases/kernel/include/sparc64.in
+> +++ b/testcases/kernel/include/sparc64.in
+> @@ -307,3 +307,4 @@ recvmmsg 328
+>  fanotify_init 329
+>  fanotify_mark 330
+>  prlimit64 331
+> +getrandom 347
+> --
+> 2.1.4
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
