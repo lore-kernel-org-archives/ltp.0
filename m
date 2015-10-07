@@ -1,56 +1,25 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 7 Oct 2015 18:00:26 +0800
-Subject: [LTP] [PATCH v3] fcntl/fcntl32.c: add F_SETLEASE and F_WRLCK
- argument test
-In-Reply-To: <20150930164132.GC8256@rei.suse.cz>
-References: <55EFA462.5010608@cn.fujitsu.com>
- <1442307339-16873-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20150930164132.GC8256@rei.suse.cz>
-Message-ID: <5614ED3A.10609@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 07 Oct 2015 13:22:25 +0300
+Subject: [LTP] [PATCH 02/10] network/nfs: rename nfs dir to nfs_stress
+In-Reply-To: <5613D038.7000803@oracle.com>
+References: <1443618568-29200-1-git-send-email-alexey.kodanev@oracle.com>
+ <1443618568-29200-2-git-send-email-alexey.kodanev@oracle.com>
+ <20151006132138.GB28743@rei.suse.cz> <5613D038.7000803@oracle.com>
+Message-ID: <5614F261.2000803@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Thanks for your reply.
+Hi,
 
-On 2015/10/01 00:41, Cyril Hrubis wrote:
-> Hi!
->> +int main(int ac, char **av)
->> +{
->> +	int lc;
->> +	int tc;
->> +	long type;
->> +
->> +	tst_parse_opts(ac, av, NULL, NULL);
->> +
->> +	setup();
->> +
->> +	switch ((type = tst_fs_type(cleanup, "."))) {
->> +	case TST_NFS_MAGIC:
->> +	case TST_RAMFS_MAGIC:
->> +	case TST_TMPFS_MAGIC:
->> +		tst_brkm(TCONF, cleanup, "%s filesystem does not support "
->> +			 "fcntl(2)'s F_SETLEASE operation",
->> +			 tst_fs_type_name(type));
->> +	default:
->> +		break;
->> +	}
-> 
-> Same as the second one. I would preffer figuring out that the fcntl() is
-> unsupported by actually trying to use it.
-> 
+Patchset applied with the following changes:
+* open_files.c ->nfs01_open_files,
+* added cd $TST_TMPDIR in setup after 'mount' command. This is need 
+because mount is called on test current working directory, so the test 
+could still write to the local dir instead of nfs mount.
 
-It will return EAGAIN when we actually use it, I don't think it's a reasonable errno,
-since on ramfs or tmpfs, when opening or creating a new file, the dentry->d_count
-will get an extra count to be 2 but not 1. Please have a look at the following link:
-http://www.gossamer-threads.com/lists/linux/kernel/913113
+Best regards,
+Alexey
 
-I feel the expression is not clear, it should be "cannot do fcntl()'s F_SETLEASE operation
-on %s filesystem"
-
-> 
-> Otherwise it looks fine.
-> 
