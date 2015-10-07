@@ -1,11 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 7 Oct 2015 16:23:34 +0200
-Subject: [LTP] [PATCH v2] containers/share: added namespaces types
- argument for ns_exec
-In-Reply-To: <1444223297-18882-1-git-send-email-mmarhefk@redhat.com>
-References: <1443775836-21843-1-git-send-email-mmarhefk@redhat.com>
- <1444223297-18882-1-git-send-email-mmarhefk@redhat.com>
-Message-ID: <20151007142334.GA3478@rei.suse.cz>
+Date: Wed, 7 Oct 2015 16:39:07 +0200
+Subject: [LTP] [PATCH v2] syscall/renameat2: Fix filesystem
+In-Reply-To: <1444226598-15717-1-git-send-email-chnyda@suse.com>
+References: <1444226598-15717-1-git-send-email-chnyda@suse.com>
+Message-ID: <20151007143907.GB3478@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
