@@ -1,320 +1,116 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 7 Oct 2015 20:07:21 +0800
-Subject: [LTP] [PATCH v2] fcntl/fcntl33.c: add F_SETLEASE test
-In-Reply-To: <20150930163810.GB8256@rei.suse.cz>
-References: <1440145583-9317-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1442308070-17325-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20150930163810.GB8256@rei.suse.cz>
-Message-ID: <56150AF9.8010808@cn.fujitsu.com>
+From: Cedric Hnyda <chnyda@suse.com>
+Date: Wed,  7 Oct 2015 14:13:31 +0200
+Subject: [LTP]  [PATCH] syscall/renameat2: Fix filesystem
+Message-ID: <1444220011-11327-1-git-send-email-chnyda@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+The flag RENAME_EXCHANGE for the syscall renameat2 is not supported
+on BTRFS filesystem. The filesystem type is now tested if the
+syscall returns EINVAL.
 
-On 2015/10/01 00:38, Cyril Hrubis wrote:
-> Hi!
->> +#include <errno.h>
->> +
->> +#include "test.h"
->> +#include "safe_macros.h"
->> +#include "tst_fs_type.h"
->> +
->> +/*
->> + * MIN_TIME_LIMIT is defined to 5 senconds as a minimal acceptable
->> + * amount of time for the lease breaker waitting for unblock via
->                                             ^
-> 					   waiting
-> 
+Signed-off-by: Cedric Hnyda <chnyda@suse.com>
+---
+ testcases/kernel/syscalls/renameat2/renameat201.c | 11 ++++++++++-
+ testcases/kernel/syscalls/renameat2/renameat202.c | 12 +++++++++++-
+ 2 files changed, 21 insertions(+), 2 deletions(-)
 
-OK, thanks.
+diff --git a/testcases/kernel/syscalls/renameat2/renameat201.c b/testcases/kernel/syscalls/renameat2/renameat201.c
+index 18db090..b093e83 100644
+--- a/testcases/kernel/syscalls/renameat2/renameat201.c
++++ b/testcases/kernel/syscalls/renameat2/renameat201.c
+@@ -36,6 +36,7 @@
+ #define _GNU_SOURCE
+ 
+ #include "test.h"
++#include "tst_fs_type.h"
+ #include "safe_macros.h"
+ #include "lapi/fcntl.h"
+ #include "renameat2.h"
+@@ -52,7 +53,7 @@ char *TCID = "renameat201";
+ 
+ static int olddirfd;
+ static int newdirfd;
+-
++static long fs_type;
+ 
+ static struct test_case {
+ 	int *olddirfd;
+@@ -108,6 +109,8 @@ static void setup(void)
+ 
+ 	tst_tmpdir();
+ 
++	fs_type = tst_fs_type(cleanup, ".");
++
+ 	SAFE_MKDIR(cleanup, TEST_DIR, 0700);
+ 	SAFE_MKDIR(cleanup, TEST_DIR2, 0700);
+ 
+@@ -136,6 +139,12 @@ static void renameat2_verify(const struct test_case *test)
+ 	TEST(renameat2(*(test->olddirfd), test->oldpath,
+ 			*(test->newdirfd), test->newpath, test->flags));
+ 
++	if (TEST_ERRNO == EINVAL && fs_type == TST_BTRFS_MAGIC) {
++		tst_brkm(TCONF, cleanup,
++			"RENAME_EXCHANGE flag is not implemeted on %s",
++			tst_fs_type_name(fs_type));
++	}
++
+ 	if (test->exp_errno && TEST_RETURN != -1) {
+ 		tst_resm(TFAIL, "renameat2() succeeded unexpectedly");
+ 		return;
+diff --git a/testcases/kernel/syscalls/renameat2/renameat202.c b/testcases/kernel/syscalls/renameat2/renameat202.c
+index e695e85..c9731f5 100644
+--- a/testcases/kernel/syscalls/renameat2/renameat202.c
++++ b/testcases/kernel/syscalls/renameat2/renameat202.c
+@@ -25,6 +25,7 @@
+ #define _GNU_SOURCE
+ 
+ #include "test.h"
++#include "tst_fs_type.h"
+ #include "safe_macros.h"
+ #include "lapi/fcntl.h"
+ #include "renameat2.h"
+@@ -43,6 +44,7 @@ static int fd = -1;
+ static int cnt;
+ 
+ static const char content[] = "content";
++static long fs_type;
+ 
+ 
+ int TST_TOTAL = 1;
+@@ -85,6 +87,8 @@ static void setup(void)
+ 
+ 	tst_tmpdir();
+ 
++	fs_type = tst_fs_type(cleanup, ".");
++
+ 	SAFE_MKDIR(cleanup, TEST_DIR, 0700);
+ 	SAFE_MKDIR(cleanup, TEST_DIR2, 0700);
+ 
+@@ -120,6 +124,12 @@ static void renameat2_verify(void)
+ 	char *emptyfile;
+ 	char *contentfile;
+ 
++	if (TEST_ERRNO == EINVAL && fs_type == TST_BTRFS_MAGIC) {
++		tst_brkm(TCONF, cleanup,
++			"RENAME_EXCHANGE flag is not implemeted on %s",
++			tst_fs_type_name(fs_type));
++	}
++
+ 	if (TEST_RETURN != 0) {
+ 		tst_resm(TFAIL, "renameat2() failed unexpectedly");
+ 		return;
+@@ -148,6 +158,6 @@ static void renameat2_verify(void)
+ 		tst_resm(TPASS,
+ 			"renameat2() swapped the content of the two files");
+ 	else
+-		tst_resm(TFAIL,
++		tst_resm(TFAIL | TTERRNO,
+ 			"renameat2() didn't swap the content of the two files");
+ }
+-- 
+2.1.4
 
->> + * lease holder voluntarily downgrade or remove the lease, if the
->> + * lease breaker is unblocked within MIN_TIME_LIMIT we may consider
->> + * that the feature of the lease mechanism works well.
->> + */
-> 
-> We set the lease-break-time to 45 in the setup(), what units are that?
-> ms? It would be better to note what value for timeout have we set in
-> kernel here as well. 
-> 
-
-It's 45s(default time in kernel).
-got it, will note that.
-
->> +#define MIN_TIME_LIMIT	5
->> +
->> +#define OP_OPEN_RDONLY	0
->> +#define OP_OPEN_WRONLY	1
->> +#define OP_OPEN_RDWR	2
->> +#define OP_TRUNCATE	3
->> +
->> +#define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
->> +#define PATH_LS_BRK_T	"/proc/sys/fs/lease-break-time"
->> +
->> +static void setup(void);
->> +static void do_test(int);
->> +static int do_child(int);
->> +static void cleanup(void);
->> +
->> +static int fd;
->> +static int ls_brk_t;
->> +
->> +static sigset_t newset, oldset;
->> +static struct timespec timeout;
->> +static struct test_case_t {
->> +	int lease_type;
->> +	int op_type;
->> +	char *desc;
->> +} test_cases[] = {
->> +	{F_WRLCK, OP_OPEN_RDONLY,
->> +		"open(O_RDONLY) conflicts with fcntl(F_SETLEASE, F_WRLCK)"},
->> +	{F_WRLCK, OP_OPEN_WRONLY,
->> +		"open(O_WRONLY) conflicts with fcntl(F_SETLEASE, F_WRLCK)"},
->> +	{F_WRLCK, OP_OPEN_RDWR,
->> +		"open(O_RDWR) conflicts with fcntl(F_SETLEASE, F_WRLCK)"},
->> +	{F_WRLCK, OP_TRUNCATE,
->> +		"truncate() conflicts with fcntl(F_SETLEASE, F_WRLCK)"},
->> +	{F_RDLCK, OP_OPEN_WRONLY,
->> +		"open(O_WRONLY) conflicts with fcntl(F_SETLEASE, F_RDLCK)"},
->> +	{F_RDLCK, OP_OPEN_RDWR,
->> +		"open(O_RDWR) conflicts with fcntl(F_SETLEASE, F_RDLCK)"},
->> +	{F_RDLCK, OP_TRUNCATE,
->> +		"truncate() conflicts with fcntl(F_SETLEASE, F_RDLCK)"},
->> +};
->> +
->> +char *TCID = "fcntl33";
->> +int TST_TOTAL = ARRAY_SIZE(test_cases);
->> +
->> +int main(int ac, char **av)
->> +{
->> +	int lc;
->> +	int tc;
->> +	long type;
->> +
->> +	tst_parse_opts(ac, av, NULL, NULL);
->> +
->> +	setup();
->> +
->> +	switch ((type = tst_fs_type(cleanup, "."))) {
->> +	case TST_NFS_MAGIC:
->> +	case TST_RAMFS_MAGIC:
->> +	case TST_TMPFS_MAGIC:
->> +		tst_brkm(TCONF, cleanup, "%s filesystem does not support "
->> +			 "fcntl()'s F_SETLEASE operation",
->> +			 tst_fs_type_name(type));
->> +	default:
->> +		break;
->> +	}
-> 
-> What does happen when we try the fcntl() on unsupported FS?
-> 
-> Do we get reasonable errno? I would expect ENOSYS but as far as I can
-> see the manual page is silent about this.
-> 
-> If we get reasonable errno we should rather do test in the test setup,
-> we should call the fcntl on a fd in the setup and continue only if it
-> hasn't failed with that errno.
-> 
-
-Here is the same as fcntl32 I replied, thanks.
-
->> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
->> +		tst_count = 0;
->> +
->> +		for (tc = 0; tc < TST_TOTAL; tc++)
->> +			do_test(tc);
->> +	}
->> +
->> +	cleanup();
->> +	tst_exit();
->> +}
->> +
->> +static void setup(void)
->> +{
->> +	tst_sig(FORK, DEF_HANDLER, cleanup);
->> +
->> +	tst_timer_check(CLOCK_MONOTONIC);
->> +
->> +	/* Backup the lease-break-time. */
->> +	SAFE_FILE_SCANF(NULL, PATH_LS_BRK_T, "%d", &ls_brk_t);
->> +	SAFE_FILE_PRINTF(NULL, PATH_LS_BRK_T, "%d", 45);
->> +
->> +	tst_tmpdir();
->> +
->> +	SAFE_TOUCH(cleanup, "file", FILE_MODE, NULL);
->> +
->> +	sigemptyset(&newset);
->> +	sigaddset(&newset, SIGIO);
->> +
->> +	if (sigprocmask(SIG_SETMASK, &newset, &oldset) < 0)
->> +		tst_brkm(TBROK | TERRNO, cleanup, "sigprocmask() failed");
->> +
->> +	/* Time limit for lease holder to receive SIGIO. */
->> +	timeout.tv_sec = 5;
->> +	timeout.tv_nsec = 0;
-> 
-> You can initialize this statically as:
-> 
-> static struct timespec timeout = {.tv_sec = 5};
-> 
-
-I see, thanks.
-
->> +	TEST_PAUSE;
->> +}
->> +
->> +static void do_test(int i)
->> +{
->> +	pid_t cpid;
->> +
->> +	cpid = tst_fork();
->> +	if (cpid < 0)
->> +		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
->> +
->> +	if (cpid == 0)
->> +		do_child(i);
->> +
->> +	fd = SAFE_OPEN(cleanup, "file", O_RDONLY);
->> +
->> +	TEST(fcntl(fd, F_SETLEASE, test_cases[i].lease_type));
->> +	if (TEST_RETURN == -1) {
->> +		tst_resm(TFAIL | TTERRNO, "fcntl() failed to set lease");
->> +		SAFE_WAITPID(cleanup, cpid, NULL, 0);
->> +		SAFE_CLOSE(cleanup, fd);
->> +		fd = 0;
->> +		return;
->> +	}
->> +
->> +	/* Wait for SIGIO caused by lease breaker. */
->> +	TEST(sigtimedwait(&newset, NULL, &timeout));
->> +	if (TEST_RETURN == -1) {
->> +		if (TEST_ERRNO == EAGAIN) {
->> +			tst_resm(TFAIL | TTERRNO, "failed to receive SIGIO "
->> +				 "within %lis", timeout.tv_sec);
->> +			SAFE_WAITPID(cleanup, cpid, NULL, 0);
->> +			SAFE_CLOSE(cleanup, fd);
->> +			fd = 0;
->> +			return;
->> +		}
->> +		tst_brkm(TBROK | TTERRNO, cleanup, "sigtimedwait() failed");
->> +	} else if (TEST_RETURN != SIGIO) {
->> +		tst_brkm(TBROK, cleanup, "received wrong signal");
->> +	}
-> 
-> No need for the else here, the previous if () exits the function
-> execution anyway.
-> 
-
-OK.
-
->> +	/* Try to downgrade or remove the lease. */
->> +	switch (test_cases[i].lease_type) {
->> +	case F_WRLCK:
->> +		TEST(fcntl(fd, F_SETLEASE, F_RDLCK));
->> +		if (TEST_RETURN == 0)
->> +			break;
->> +	case F_RDLCK:
->> +		TEST(fcntl(fd, F_SETLEASE, F_UNLCK));
->> +		if (TEST_RETURN == -1) {
->> +			tst_resm(TFAIL | TTERRNO,
->> +				 "fcnt() failed to remove the lease");
->                                     ^
-> 				    fcntl()
-
-OK, thanks for review.
-
->> +		}
->> +		break;
->> +	default:
->> +		break;
->> +	}
-> 
-> Do we need to remove the lease here? Isn't it removed once anyway once
-> we close the file descriptor at the end of the function?
-> 
-> Or do we do that so that child gets ublocked in case that the lease
-> hasn't timeouted?
-> 
-
-We need to remove the lease so that child gets unblocked in order to verify
-the lease mechanism, that is to say, child will be unblocked as soon as the
-lease holder successes to downgrade or remove the lease voluntarily.
-
-If it fails to do that within MIN_TIME_LIMIT, then kernel will forcibly
-downgrades or removes the lease within lease-break-time anyway, but under
-this condition we get TFAIL.
-
->> +	tst_record_childstatus(cleanup, cpid);
->> +
->> +	SAFE_CLOSE(cleanup, fd);
->> +	fd = 0;
->> +}
->> +
->> +static int do_child(int i)
->> +{
->> +	long long elapsed_ms;
->> +
->> +	if (tst_process_state_wait2(getppid(), 'S') != 0) {
->> +		tst_brkm(TBROK | TERRNO, NULL,
->> +			 "failed to wait for parent process's state");
->> +	}
->> +
->> +	tst_timer_start(CLOCK_MONOTONIC);
->> +
->> +	switch (test_cases[i].op_type) {
->> +	case OP_OPEN_RDONLY:
->> +		SAFE_OPEN(NULL, "file", O_RDONLY);
->> +		break;
->> +	case OP_OPEN_WRONLY:
->> +		SAFE_OPEN(NULL, "file", O_WRONLY);
->> +		break;
->> +	case OP_OPEN_RDWR:
->> +		SAFE_OPEN(NULL, "file", O_RDWR);
->> +		break;
->> +	case OP_TRUNCATE:
->> +		SAFE_TRUNCATE(NULL, "file", 0);
->> +		break;
->> +	default:
->> +		break;
->> +	}
->> +
->> +	tst_timer_stop();
->> +
->> +	elapsed_ms = tst_timer_elapsed_ms();
->> +
->> +	if (elapsed_ms < MIN_TIME_LIMIT * 1000) {
->> +		tst_resm(TPASS, "%s, unblocked within %ds",
->> +			 test_cases[i].desc, MIN_TIME_LIMIT);
->> +	} else {
->> +		tst_resm(TFAIL, "%s, unblocked too long %llims, "
->                                        ^
-> 				       blocked?
-> 
-
-My expression fault of a misunderstanding, thanks for review.
-will fix them in next version.
-
->> +			 "expected within %ds",
->> +			 test_cases[i].desc, elapsed_ms, MIN_TIME_LIMIT);
->> +	}
->> +
->> +	tst_exit();
->> +}
->> +
->> +static void cleanup(void)
->> +{
->> +	if (sigprocmask(SIG_SETMASK, &oldset, NULL) < 0)
->> +		tst_resm(TWARN | TERRNO, "sigprocmask restore oldset failed");
->> +
->> +	if (fd > 0 && close(fd))
->> +		tst_resm(TWARN | TERRNO, "failed to close file");
->> +
->> +	tst_rmdir();
->> +
->> +	/* Restore the lease-break-time. */
->> +	FILE_PRINTF(PATH_LS_BRK_T, "%d", ls_brk_t);
->> +}
-> 
