@@ -1,9 +1,9 @@
 From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 7 Oct 2015 18:47:45 +0800
-Subject: [LTP] [PATCH v7 3/7] lib6/asapi_04.c: Cleanup
+Date: Wed, 7 Oct 2015 18:47:46 +0800
+Subject: [LTP] [PATCH v7 4/7] lib6/asapi_05.c: Cleanup
 In-Reply-To: <1444214869-3597-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 References: <1444214869-3597-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-Message-ID: <1444214869-3597-3-git-send-email-zenglg.jy@cn.fujitsu.com>
+Message-ID: <1444214869-3597-4-git-send-email-zenglg.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,23 +11,21 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 * Add 'static' before some functions and global variables.
+* Remove cleanup().
 * Remove useless comments.
 * Use SAFE_XXX().
-* Modify the format of ptab[] and cstab[].
-* Use 'pthread_join()' instead of 'sem_*'.
-* Rewrite 'csum_test()' and 'isocketpair()'.
-* Remove cleanup().
+* Modify the format of etab[] and ftab[].
 * Some cleanup.
 
 Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/network/lib6/asapi_04.c | 301 +++++++++++++++-----------------------
- 1 file changed, 117 insertions(+), 184 deletions(-)
+ testcases/network/lib6/asapi_05.c | 159 ++++++++++++++------------------------
+ 1 file changed, 60 insertions(+), 99 deletions(-)
 
-diff --git a/testcases/network/lib6/asapi_04.c b/testcases/network/lib6/asapi_04.c
-index 76de26b..df26494 100644
---- a/testcases/network/lib6/asapi_04.c
-+++ b/testcases/network/lib6/asapi_04.c
+diff --git a/testcases/network/lib6/asapi_05.c b/testcases/network/lib6/asapi_05.c
+index e251eee..f8c30f1 100644
+--- a/testcases/network/lib6/asapi_05.c
++++ b/testcases/network/lib6/asapi_05.c
 @@ -1,38 +1,21 @@
  /*
 + * Copyright (c) 2015 Fujitsu Ltd.
@@ -59,14 +57,14 @@ index 76de26b..df26494 100644
 - */
 -
 -/*
-- * Test Name: asapi_04
+- * Test Name: asapi_05
 - *
 - * Test Description:
-- *  Verify that in6 and sockaddr fields are present. Most of these are
-- *  "PASS" if they just compile.
+- *  These tests are for the "Advanced Sockets API" (RFC 3542)
+- *  Verify that in6 and sockaddr fields are present.
 - *
 - * Usage:  <for command-line>
-- *  asapi_04
+- *  asapi_05
 - *
 - * HISTORY
 - *	04/2005 written by David L Stevens
@@ -80,462 +78,211 @@ index 76de26b..df26494 100644
   */
  
  #include <stdio.h>
-@@ -48,33 +31,33 @@
- #include <netinet/in.h>
+@@ -47,86 +30,74 @@
+ #include <netinet/icmp6.h>
  
  #include "test.h"
 +#include "safe_macros.h"
  
--char *TCID = "asapi_04";	/* Test program identifier.    */
-+char *TCID = "asapi_04";
+-char *TCID = "asapi_05";	/* Test program identifier.    */
++char *TCID = "asapi_05";
  
--pid_t pid;
-+static pid_t pid;
- 
--struct {
-+static struct {
- 	char *prt_name;
- 	int prt_value;
- } ptab[] = {
--	{
--	"hopopt", 0}, {
--	"ipv6", 41}, {
--	"ipv6-route", 43}, {
--	"ipv6-frag", 44}, {
--	"esp", 50}, {
--	"ah", 51}, {
--	"ipv6-icmp", 58}, {
--	"ipv6-nonxt", 59}, {
--"ipv6-opts", 60},};
--
--#define PTCOUNT	(sizeof(ptab)/sizeof(ptab[0]))
-+	{"hopopt", 0},
-+	{"ipv6", 41},
-+	{"ipv6-route", 43},
-+	{"ipv6-frag", 44},
-+	{"esp", 50},
-+	{"ah", 51},
-+	{"ipv6-icmp", 58},
-+	{"ipv6-nonxt", 59},
-+	{"ipv6-opts", 60},
-+};
- 
--#define READ_TIMEOUT	5	/* secs */
-+#define PTCOUNT		ARRAY_SIZE(ptab)
-+#define READ_TIMEOUT	5
- 
--void do_tests(void);
--void setup(void), cleanup(void);
--int csum_test(char *rhost);
-+static void do_tests(void);
+-void setup(void);
+-void cleanup(void);
 +static void setup(void);
-+static void csum_test(void);
+ 
+-void icmp6_ft(void);
++static void icmp6_ft(void);
  
  int main(int argc, char *argv[])
  {
-@@ -82,52 +65,48 @@ int main(int argc, char *argv[])
+ 	int lc;
  
- 	tst_parse_opts(argc, argv, 0, 0);
+-	/* Parse standard options given to run the test. */
+ 	tst_parse_opts(argc, argv, NULL, NULL);
  
--	pid = getpid();
--
  	setup();
  
- 	for (lc = 0; TEST_LOOPING(lc); ++lc)
- 		do_tests();
- 
+-	for (lc = 0; TEST_LOOPING(lc); ++lc) {
++	for (lc = 0; TEST_LOOPING(lc); ++lc)
+ 		icmp6_ft();
+-	}
+-
 -	cleanup();
--
+ 
  	tst_exit();
- }
- 
--void do_tests(void)
-+static void do_tests(void)
- {
--	int i;
-+	unsigned int i;
- 
- /* RFC 3542, Section 2.3 */
- #ifndef IN6_ARE_ADDR_EQUAL
--	tst_resm(TBROK, "IN6_ARE_ADDR_EQUAL not present");
-+	tst_resm(TCONF, "IN6_ARE_ADDR_EQUAL not present");
- #else /* IN6_ARE_ADDR_EQUAL */
- 	/*
- 	 * set each bit in an address and check for unequal; then set
- 	 * in the second address and check for equal. Covers all bits, all
- 	 * combinations.
- 	 */
--	{
--		struct in6_addr a1, a2;
--		int word, bit;
--		int rv = 1;
-+	struct in6_addr a1, a2;
-+	int word, bit;
-+	int rv = 1;
- 
--		memset(&a1, 0, sizeof(a1));
--		memset(&a2, 0, sizeof(a2));
-+	memset(&a1, 0, sizeof(a1));
-+	memset(&a2, 0, sizeof(a2));
- 
--		rv = IN6_ARE_ADDR_EQUAL(&a1, &a2);
-+	rv = IN6_ARE_ADDR_EQUAL(&a1, &a2);
- 
--		for (word = 0; word < 4; ++word)
--			for (bit = 0; bit < 32; ++bit) {
--				uint32_t newbit = 1 << bit;
-+	for (word = 0; word < 4; ++word) {
-+		for (bit = 0; bit < 32; ++bit) {
-+			uint32_t newbit = 1U << bit;
- 
--				a1.s6_addr32[word] |= newbit;	/* unequal */
--				rv &= !IN6_ARE_ADDR_EQUAL(&a1, &a2);
--				a2.s6_addr32[word] |= newbit;	/* equal */
--				rv &= IN6_ARE_ADDR_EQUAL(&a1, &a2);
--			}
--		tst_resm(rv ? TPASS : TFAIL, "IN6_ARE_ADDR_EQUAL");
-+			a1.s6_addr32[word] |= newbit;
-+			rv &= !IN6_ARE_ADDR_EQUAL(&a1, &a2);
-+			a2.s6_addr32[word] |= newbit;
-+			rv &= IN6_ARE_ADDR_EQUAL(&a1, &a2);
-+		}
- 	}
-+
-+	tst_resm(rv ? TPASS : TFAIL, "IN6_ARE_ADDR_EQUAL");
- #endif /* IN6_ARE_ADDR_EQUAL */
- 
- /* RFC 3542, Section 2.4 */
-@@ -141,7 +120,7 @@ void do_tests(void)
- 			 ptab[i].prt_name);
- 	}
- /* RFC 3542, Section 3.1 */
--	csum_test("::1");
-+	csum_test();
- }
- 
- /*
-@@ -162,10 +141,10 @@ struct tprot {
- 	unsigned char tp_dat[0];	/* user data */
- };
- 
--unsigned char tpbuf[sizeof(struct tprot) + 2048];
--unsigned char rpbuf[sizeof(struct tprot) + 2048];
-+static unsigned char tpbuf[sizeof(struct tprot) + 2048];
-+static unsigned char rpbuf[sizeof(struct tprot) + 2048];
- 
--struct csent {
-+static struct csent {
- 	int cs_offset;
- 	int cs_dlen;
- 	int cs_setresult;	/* setsockopt expected result */
-@@ -173,25 +152,24 @@ struct csent {
- 	int cs_sndresult;	/* send expected result */
- 	int cs_snderrno;	/* send expected errno */
- } cstab[] = {
--	{
--	0, 5, 0, 0, 0, 0}, {
--	6, 30, 0, 0, 0, 0}, {
--	3, 20, -1, EINVAL, -1, -1},	/* non-aligned offset */
--	{
--	4, 5, 0, 0, -1, EINVAL},	/* not enough space */
--	{
--	50, 5, 0, 0, -1, EINVAL},	/* outside of packet */
--	{
--	22, 30, 0, 0, 0, 0}, {
--	2000, 2004, 0, 0, 0, 0},	/* in a fragment (over Ethernet) */
-+	{0, 5, 0, 0, 0, 0},
-+	{6, 30, 0, 0, 0, 0},
-+	{3, 20, -1, EINVAL, -1, -1},	/* non-aligned offset */
-+	{4, 5, 0, 0, -1, EINVAL},	/* not enough space */
-+	{50, 5, 0, 0, -1, EINVAL},	/* outside of packet */
-+	{22, 30, 0, 0, 0, 0},
-+	{2000, 2004, 0, 0, 0, 0},	/* in a fragment (over Ethernet) */
- };
- 
--#define CSCOUNT	(sizeof(cstab)/sizeof(cstab[0]))
-+#define CSCOUNT	ARRAY_SIZE(cstab)
- 
--static int recvtprot(int sd, unsigned char *packet, int psize)
-+int TST_TOTAL = PTCOUNT + CSCOUNT;
-+
-+static int recvtprot(int sd, unsigned char *packet)
- {
- 	struct tprot *tpt;
--	int cc, total, expected;
-+	int cc;
-+	unsigned int total, expected;
- 	int gothead;
- 
- 	tpt = (struct tprot *)packet;
-@@ -210,15 +188,17 @@ static int recvtprot(int sd, unsigned char *packet, int psize)
- 				gothead = 1;
- 				expected += ntohl(tpt->tp_dlen);
- 			}
--		} else
-+		} else {
- 			break;
-+		}
- 	}
- 	if (cc < 0)
- 		return cc;
- 	return total;
- }
- 
--unsigned short csum(unsigned short partial, unsigned char *packet, int len)
-+static unsigned short csum(unsigned short partial, unsigned char *packet,
-+			   int len)
- {
- 	unsigned long sum = partial;
- 	unsigned short *ps;
-@@ -234,7 +214,7 @@ unsigned short csum(unsigned short partial, unsigned char *packet, int len)
- 	return ~sum;
- }
- 
--struct ph {
-+static struct ph {
- 	struct in6_addr ph_sa;
- 	struct in6_addr ph_da;
- 	uint32_t ph_len;
-@@ -242,13 +222,14 @@ struct ph {
- 	uint8_t ph_nh;
- } ph;
- 
--static int client(int prot, int sfd)
-+static int client(int sfd)
- {
- 	struct tprot *pttp = (struct tprot *)tpbuf;
- 	struct tprot *prtp = (struct tprot *)rpbuf;
- 	struct sockaddr_in6 rsin6;
- 	static int seq;
--	int i, sd, cc, cs;
-+	unsigned int i;
-+	int sd, cc, cs;
- 
- 	memset(&rsin6, 0, sizeof(rsin6));
- 	rsin6.sin6_family = AF_INET6;
-@@ -259,11 +240,8 @@ static int client(int prot, int sfd)
- 	ph.ph_da = rsin6.sin6_addr;
- 	ph.ph_nh = NH_TEST;
- 
--	sd = socket(PF_INET6, SOCK_RAW, NH_TEST);
--	if (sd < 0) {
--		tst_resm(TBROK, "can't create raw socket: %s", strerror(errno));
--		return -1;
--	}
-+	sd = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, NH_TEST);
-+
- 	for (i = 0; i < CSCOUNT; ++i) {
- 		int offset, len, xlen;
- 		int rv;
-@@ -322,9 +300,9 @@ static int client(int prot, int sfd)
- 				 offset, len);
- 			continue;
- 		}
--		while ((cc = recvtprot(sfd, rpbuf, sizeof(rpbuf)))) {
--			if (htonl(prtp->tp_pid) == pid &&
--			    htonl(prtp->tp_seq) == seq)
-+		while ((cc = recvtprot(sfd, rpbuf))) {
-+			if (htonl(prtp->tp_pid) == (uint32_t)pid &&
-+			    htonl(prtp->tp_seq) == (uint32_t)seq)
- 				break;
- 		}
- 		rv = 1;
-@@ -334,7 +312,7 @@ static int client(int prot, int sfd)
- 				continue;
- 			if (*p != 0xa5) {
- 				tst_resm(TFAIL, "IPV6_CHECKSUM corrupt data "
--					 "0x%02x != 0xa5 at offset %d in packet",
-+					 "0x%02x != 0xa5 at offset %zd in packet",
- 					 *p, p - rpbuf);
- 				rv = 0;
- 				break;
-@@ -356,99 +334,60 @@ static int client(int prot, int sfd)
- }
- 
- static int listen_fd, connect_fd;
--sem_t ilsem;
- 
--void *ilistener(void *arg)
-+static void *ilistener(void *arg LTP_ATTRIBUTE_UNUSED)
- {
- 	connect_fd = accept(listen_fd, 0, 0);
- 	close(listen_fd);
--	sem_post(&ilsem);
- 	return NULL;
- }
- 
--int isocketpair(int pf, int type, int proto, int fd[2])
-+static void isocketpair(int pf, int type, int proto, int fd[2])
- {
- 	pthread_t thid;
- 	struct sockaddr_in sin4;
- 	socklen_t namelen;
- 
--/* restrict to PF_INET for now */
--	if (pf != PF_INET) {
--		errno = EOPNOTSUPP;
--		return -1;
--	}
--	sem_init(&ilsem, 0, 0);
--	listen_fd = socket(pf, type, proto);
--	if (listen_fd < 0) {
--		perror("socket");
--		return -1;
--	}
-+	listen_fd = SAFE_SOCKET(NULL, pf, type, proto);
-+
- 	memset(&sin4, 0, sizeof(sin4));
--	if (bind(listen_fd, (struct sockaddr *)&sin4, sizeof(sin4)) < 0) {
--		perror("bind");
--		return -1;
--	}
--	if (listen(listen_fd, 10) < 0) {
--		perror("listen");
--		return -1;
--	}
-+
-+	SAFE_BIND(NULL, listen_fd, (struct sockaddr *)&sin4, sizeof(sin4));
-+
-+	SAFE_LISTEN(NULL, listen_fd, 10);
-+
- 	namelen = sizeof(sin4);
--	if (getsockname(listen_fd, (struct sockaddr *)&sin4, &namelen) < 0) {
--		perror("getsockname");
--		return -1;
--	}
--	if (pthread_create(&thid, 0, ilistener, 0) < 0) {
--		perror("pthread_create");
--		return -1;
--	}
-+	SAFE_GETSOCKNAME(NULL, listen_fd, (struct sockaddr *)&sin4, &namelen);
-+
-+	if (pthread_create(&thid, 0, ilistener, 0) < 0)
-+		tst_brkm(TBROK | TERRNO, NULL, "pthread_create error");
-+
-+	fd[0] = SAFE_SOCKET(NULL, pf, type, proto);
- 
--	fd[0] = socket(pf, type, proto);
--	if (fd[0] < 0) {
--		perror("socket");
--		return -1;
--	}
- 	sin4.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
--	if (connect(fd[0], (struct sockaddr *)&sin4, sizeof(sin4)) < 0) {
--		perror("connect");
--		return -1;
--	}
--	sem_wait(&ilsem);
-+
-+	SAFE_CONNECT(NULL, fd[0], (struct sockaddr *)&sin4, sizeof(sin4));
-+
-+	pthread_join(thid, NULL);
-+
- 	fd[1] = connect_fd;
--	sem_destroy(&ilsem);
--	return 0;
- }
- 
- #ifndef MAX
- #define MAX(a, b) (@ >= (b) ? (a) : (b))
- #endif /* MAX */
- 
--int csum_test(char *rhost)
-+static void csum_test(void)
- {
- 	fd_set rset, rset_save;
- 	int csd[2];		/* control sockets */
- 	int sd, nfds, maxfd, cc;
- 	struct timeval tv;
- 
--/* rhost == loopback, for now */
--	if (strcmp(rhost, "::1")) {
--		tst_resm(TBROK, "invalid rhost \"%s\"", rhost);
--		return -1;
--	}
--	if (isocketpair(PF_INET, SOCK_STREAM, 0, csd) < 0) {
--		tst_resm(TBROK, "socketpair: %s", strerror(errno));
--		return -1;
--	}
--	sd = socket(PF_INET6, SOCK_RAW, NH_TEST);
--	if (sd < 0) {
--		int saved_errno = errno;
--
--		if (errno == EPERM && geteuid())
--			tst_resm(TBROK, "IPV6_CHECKSUM tests must run as root");
--		else
--			tst_resm(TBROK, "All IPv6_CHECKSUM tests broken: "
--				 "socket: %s", strerror(saved_errno));
--		return -1;
--	}
-+	isocketpair(PF_INET, SOCK_STREAM, 0, csd);
-+
-+	sd = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, NH_TEST);
-+
- 	FD_ZERO(&rset_save);
- 	FD_SET(sd, &rset_save);
- 	FD_SET(csd[1], &rset_save);
-@@ -457,16 +396,16 @@ int csum_test(char *rhost)
- 
- 	/* server socket set; now start the client */
- 	switch (fork()) {
--	case 0:		/* child */
-+	case 0:
- 		close(csd[0]);
- 		break;
- 	case -1:
--		tst_resm(TBROK, "can't fork rserver");
--		return -1;
--	default:		/* parent */
-+		tst_brkm(TBROK, NULL, "can't fork rserver");
-+	default:
- 		close(sd);
- 		close(csd[1]);
--		return client(pid, csd[0]);
-+		client(csd[0]);
-+		return;
- 	}
- 
- 	tv.tv_sec = READ_TIMEOUT;
-@@ -478,7 +417,7 @@ int csum_test(char *rhost)
- 			exit(0);
- 		} else if (nfds == 0) {
- 			fprintf(stderr, "server read timed out");
--			return -1;
-+			return;
- 		}
- 		if (FD_ISSET(sd, &rset)) {
- 			static char packet[2048];
-@@ -499,9 +438,8 @@ int csum_test(char *rhost)
- 			char buf[2048];
- 
- 			cc = read(csd[1], buf, sizeof(buf));
--			if (cc == 0) {
-+			if (cc == 0)
- 				exit(0);
--			}
- 			if (cc < 0) {
- 				perror("server read");
- 				exit(1);
-@@ -512,16 +450,11 @@ int csum_test(char *rhost)
- 		tv.tv_sec = READ_TIMEOUT;
- 		tv.tv_usec = 0;
- 	}
--	return 0;
  }
  
 -void setup(void)
 +static void setup(void)
  {
 -	TEST_PAUSE;		/* if -P option specified */
--}
 +	TEST_PAUSE;
+ 	tst_require_root();
+ }
  
 -void cleanup(void)
 -{
-+	pid = getpid();
+-}
+-
+-/*
+- * This is for old, broken glibc-header icmp6_filter structure definitions.
+- * If icmp6.h has struct icmp6_filter with field named "data" instead
+- * of the standard "icmp_filt", uncomment this line.
+- */
+-/*#define icmp_filt	data */
+-
+-enum tt { T_WILLPASS, T_WILLBLOCK, T_SETPASS, T_SETBLOCK, T_SETPASSALL,
++enum tt {
++	T_WILLPASS,
++	T_WILLBLOCK,
++	T_SETPASS,
++	T_SETBLOCK,
++	T_SETPASSALL,
+ 	T_SETBLOCKALL
+ };
+-struct ftent {
+-	char *ft_tname;		/* test name, for logging */
++
++static struct ftent {
++	char *ft_tname;			/* test name, for logging */
+ 	unsigned char ft_sndtype;	/* send type field */
+ 	unsigned char ft_flttype;	/* filter type field */
+-	enum tt ft_test;	/* what macro to test */
+-	int ft_expected;	/* packet should pass? */
++	enum tt ft_test;		/* what macro to test */
++	int ft_expected;		/* packet should pass? */
+ } ftab[] = {
+-	{
+-	"ICMP6_FILTER_SETPASS s 20 f 20", 20, 20, T_SETPASS, 1}, {
+-	"ICMP6_FILTER_SETPASS s 20 f 21", 20, 21, T_SETPASS, 0}, {
+-	"ICMP6_FILTER_SETBLOCK s 20 f 20", 20, 20, T_SETBLOCK, 0}, {
+-	"ICMP6_FILTER_SETBLOCK s 20 f 21", 20, 21, T_SETBLOCK, 1}, {
+-	"ICMP6_FILTER_PASSALL s 20", 20, 0, T_SETPASSALL, 1}, {
+-	"ICMP6_FILTER_PASSALL s 20", 21, 0, T_SETPASSALL, 1}, {
+-	"ICMP6_FILTER_BLOCKALL s 20", 20, 0, T_SETBLOCKALL, 0}, {
+-	"ICMP6_FILTER_BLOCKALL s 20", 21, 0, T_SETBLOCKALL, 0}, {
+-	"ICMP6_FILTER_WILLBLOCK s 20 f 21", 20, 21, T_WILLBLOCK, 0}, {
+-	"ICMP6_FILTER_WILLBLOCK s 20 f 20", 20, 20, T_WILLBLOCK, 1}, {
+-	"ICMP6_FILTER_WILLPASS s 20 f 21", 20, 21, T_WILLPASS, 0}, {
+-"ICMP6_FILTER_WILLPASS s 22 f 22", 22, 22, T_WILLPASS, 1},};
+-
+-#define FTCOUNT	(sizeof(ftab)/sizeof(ftab[0]))
+-
+-int ic6_send1(char *tname, unsigned char type)
++	{"ICMP6_FILTER_SETPASS s 20 f 20", 20, 20, T_SETPASS, 1},
++	{"ICMP6_FILTER_SETPASS s 20 f 21", 20, 21, T_SETPASS, 0},
++	{"ICMP6_FILTER_SETBLOCK s 20 f 20", 20, 20, T_SETBLOCK, 0},
++	{"ICMP6_FILTER_SETBLOCK s 20 f 21", 20, 21, T_SETBLOCK, 1},
++	{"ICMP6_FILTER_PASSALL s 20", 20, 0, T_SETPASSALL, 1},
++	{"ICMP6_FILTER_PASSALL s 20", 21, 0, T_SETPASSALL, 1},
++	{"ICMP6_FILTER_BLOCKALL s 20", 20, 0, T_SETBLOCKALL, 0},
++	{"ICMP6_FILTER_BLOCKALL s 20", 21, 0, T_SETBLOCKALL, 0},
++	{"ICMP6_FILTER_WILLBLOCK s 20 f 21", 20, 21, T_WILLBLOCK, 0},
++	{"ICMP6_FILTER_WILLBLOCK s 20 f 20", 20, 20, T_WILLBLOCK, 1},
++	{"ICMP6_FILTER_WILLPASS s 20 f 21", 20, 21, T_WILLPASS, 0},
++	{"ICMP6_FILTER_WILLPASS s 22 f 22", 22, 22, T_WILLPASS, 1},
++};
++
++#define FTCOUNT	ARRAY_SIZE(ftab)
++
++static int ic6_send1(char *tname, unsigned char type)
+ {
+ 	struct sockaddr_in6 sin6;
+ 	struct icmp6_hdr ic6;
+ 	int s;
+ 
+-	s = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+-	if (s == -1) {
+-		tst_resm(TBROK, "%s: socket failed", tname);
+-		return 1;
+-	}
++	s = SAFE_SOCKET(NULL, AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
++
+ 	memset(&ic6, 0, sizeof(ic6));
+ 	ic6.icmp6_type = type;
+ 	ic6.icmp6_data32[0] = htonl(getpid());
+@@ -142,7 +113,7 @@ int ic6_send1(char *tname, unsigned char type)
+ 	return 0;
+ }
+ 
+-int ic6_recv1(char *tname, int sall, int sf)
++static int ic6_recv1(char *tname, int sall, int sf)
+ {
+ 	fd_set readfds, readfds_saved;
+ 	struct timeval tv;
+@@ -185,7 +156,7 @@ int ic6_recv1(char *tname, int sall, int sf)
+ 				return -1;
+ 			}
+ 			/* if packet check succeeds... */
+-			if (htonl(pic6->icmp6_data32[0]) == getpid())
++			if (htonl(pic6->icmp6_data32[0]) == (uint32_t)getpid())
+ 				gotall = 1;
+ 		}
+ 		if (FD_ISSET(sf, &readfds)) {
+@@ -196,7 +167,7 @@ int ic6_recv1(char *tname, int sall, int sf)
+ 				return -1;
+ 			}
+ 			/* if packet check succeeds... */
+-			if (htonl(pic6->icmp6_data32[0]) == getpid())
++			if (htonl(pic6->icmp6_data32[0]) == (uint32_t)getpid())
+ 				gotone = 1;
+ 		}
+ 		memcpy(&readfds, &readfds_saved, sizeof(readfds));
+@@ -211,18 +182,14 @@ int ic6_recv1(char *tname, int sall, int sf)
+ }
+ 
+ /* functional tests */
+-void icmp6_ft(void)
++static void icmp6_ft(void)
+ {
+ 	struct icmp6_filter i6f;
+ 	int sall, sf;
+-	int i;
++	unsigned int i;
++
++	sall = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+ 
+-	sall = socket(PF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+-	if (sall < 0) {
+-		tst_resm(TBROK | TERRNO,
+-			 "icmp6_ft socket: can't create sall socket");
+-		return;
+-	}
+ 	ICMP6_FILTER_SETPASSALL(&i6f);
+ 	if (setsockopt(sall, IPPROTO_ICMPV6, ICMP6_FILTER, &i6f,
+ 		       sizeof(i6f)) < 0) {
+@@ -230,12 +197,7 @@ void icmp6_ft(void)
+ 			 "setsockopt pass all ICMP6_FILTER failed");
+ 	}
+ 
+-	sf = socket(PF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+-	if (sf < 0) {
+-		tst_resm(TBROK | TERRNO,
+-			 "icmp6_ft socket: can't create test socket");
+-		return;
+-	}
++	sf = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
+ 
+ 	int rv;
+ 
+@@ -284,8 +246,9 @@ void icmp6_ft(void)
+ 			if (ic6_send1(ftab[i].ft_tname, ftab[i].ft_sndtype))
+ 				continue;
+ 			rv = ic6_recv1(ftab[i].ft_tname, sall, sf);
+-		} else
++		} else {
+ 			rv = -1;
++		}
+ 
+ 		if (rv < 0)
+ 			continue;
+@@ -296,5 +259,3 @@ void icmp6_ft(void)
+ 			tst_resm(TPASS, "%s", ftab[i].ft_tname);
+ 	}
  }
 -
--int TST_TOTAL = PTCOUNT + CSCOUNT;
+-int TST_TOTAL = FTCOUNT;
 -- 
 1.9.3
 
