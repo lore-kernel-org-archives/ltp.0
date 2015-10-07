@@ -1,38 +1,56 @@
-From: Wei Jiangang <weijg.fnst@cn.fujitsu.com>
-Date: Wed, 7 Oct 2015 09:45:36 +0800
-Subject: [LTP] [PATCH v2 2/2] cpuhotplug_hotplug.sh: change the style of
-	for-loop
-In-Reply-To: <1444182336-14628-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-References: <20150930121613.GA8132@rei.suse.cz>
- <1444182336-14628-1-git-send-email-weijg.fnst@cn.fujitsu.com>
-Message-ID: <1444182336-14628-2-git-send-email-weijg.fnst@cn.fujitsu.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 7 Oct 2015 18:00:26 +0800
+Subject: [LTP] [PATCH v3] fcntl/fcntl32.c: add F_SETLEASE and F_WRLCK
+ argument test
+In-Reply-To: <20150930164132.GC8256@rei.suse.cz>
+References: <55EFA462.5010608@cn.fujitsu.com>
+ <1442307339-16873-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20150930164132.GC8256@rei.suse.cz>
+Message-ID: <5614ED3A.10609@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Let do and for cycles on same line by using semicolon.
+Hi!
+Thanks for your reply.
 
-Signed-off-by: Wei Jiangang <weijg.fnst@cn.fujitsu.com>
----
- testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+On 2015/10/01 00:41, Cyril Hrubis wrote:
+> Hi!
+>> +int main(int ac, char **av)
+>> +{
+>> +	int lc;
+>> +	int tc;
+>> +	long type;
+>> +
+>> +	tst_parse_opts(ac, av, NULL, NULL);
+>> +
+>> +	setup();
+>> +
+>> +	switch ((type = tst_fs_type(cleanup, "."))) {
+>> +	case TST_NFS_MAGIC:
+>> +	case TST_RAMFS_MAGIC:
+>> +	case TST_TMPFS_MAGIC:
+>> +		tst_brkm(TCONF, cleanup, "%s filesystem does not support "
+>> +			 "fcntl(2)'s F_SETLEASE operation",
+>> +			 tst_fs_type_name(type));
+>> +	default:
+>> +		break;
+>> +	}
+> 
+> Same as the second one. I would preffer figuring out that the fcntl() is
+> unsupported by actually trying to use it.
+> 
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-index d9cf965..f23463b 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-@@ -27,8 +27,7 @@ migrate_irq()
-     CPU=${1#cpu}
-     MASK=$((1<<${CPU}))
-     IRQS=$2
--    for irq in ${IRQS}
--      do
-+    for irq in ${IRQS}; do
-       echo $MASK > /proc/irq/${irq}/smp_affinity || \
-         tst_resm TINFO "It is NOT permitted to change the IRQ $irq smp_affinity"
-     done
--- 
-1.9.3
+It will return EAGAIN when we actually use it, I don't think it's a reasonable errno,
+since on ramfs or tmpfs, when opening or creating a new file, the dentry->d_count
+will get an extra count to be 2 but not 1. Please have a look at the following link:
+http://www.gossamer-threads.com/lists/linux/kernel/913113
 
+I feel the expression is not clear, it should be "cannot do fcntl()'s F_SETLEASE operation
+on %s filesystem"
+
+> 
+> Otherwise it looks fine.
+> 
