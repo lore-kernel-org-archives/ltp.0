@@ -1,10 +1,10 @@
 From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 8 Oct 2015 19:29:38 +0800
-Subject: [LTP] [PATCH v8 4/7] lib6/asapi_05.c: Cleanup
+Date: Thu, 8 Oct 2015 19:29:39 +0800
+Subject: [LTP] [PATCH v8 5/7] lib6/asapi_06.c: Cleanup
 In-Reply-To: <1444303781-18441-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 References: <20151007132856.GD2608@rei.suse.cz>
  <1444303781-18441-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-Message-ID: <1444303781-18441-4-git-send-email-zenglg.jy@cn.fujitsu.com>
+Message-ID: <1444303781-18441-5-git-send-email-zenglg.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,19 +15,24 @@ To: ltp@lists.linux.it
 * Remove cleanup().
 * Remove useless comments.
 * Use SAFE_XXX().
-* Modify the format of etab[] and ftab[].
+* Remove unused variables.
+* Modify the format of sotab[] and cmtab[].
+* Modify the initialization of sotab[].
+* Remove IPV6_PKTINFO test. IPV6_PKTINFO is only implemented
+  by setsockopt() not by getsockopt(). see:
+  https://github.com/torvalds/linux/commit/b24a2516d10751d7ed5afb58420df25370c9dffb
 * Some cleanup.
 
 Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
 ---
- testcases/network/lib6/asapi_05.c | 159 ++++++++++++++------------------------
- 1 file changed, 60 insertions(+), 99 deletions(-)
+ testcases/network/lib6/asapi_06.c | 473 ++++++++------------------------------
+ 1 file changed, 99 insertions(+), 374 deletions(-)
 
-diff --git a/testcases/network/lib6/asapi_05.c b/testcases/network/lib6/asapi_05.c
-index e251eee..f8c30f1 100644
---- a/testcases/network/lib6/asapi_05.c
-+++ b/testcases/network/lib6/asapi_05.c
-@@ -1,38 +1,21 @@
+diff --git a/testcases/network/lib6/asapi_06.c b/testcases/network/lib6/asapi_06.c
+index 960ebb5..c6e2c8e 100644
+--- a/testcases/network/lib6/asapi_06.c
++++ b/testcases/network/lib6/asapi_06.c
+@@ -1,37 +1,21 @@
  /*
 + * Copyright (c) 2015 Fujitsu Ltd.
 + * Copyright (c) International Business Machines  Corp., 2001
@@ -58,17 +63,16 @@ index e251eee..f8c30f1 100644
 - */
 -
 -/*
-- * Test Name: asapi_05
+- * Test Name: asapi_06
 - *
 - * Test Description:
-- *  These tests are for the "Advanced Sockets API" (RFC 3542)
-- *  Verify that in6 and sockaddr fields are present.
+- *  Tests for RFC 3542 section 4 socket options and ancillary data
 - *
 - * Usage:  <for command-line>
-- *  asapi_05
+- *  asapi_06
 - *
 - * HISTORY
-- *	04/2005 written by David L Stevens
+- *	05/2005 written by David L Stevens
 - *
 - * RESTRICTIONS:
 - *  None.
@@ -78,212 +82,583 @@ index e251eee..f8c30f1 100644
 + * Author: David L Stevens
   */
  
- #include <stdio.h>
-@@ -47,86 +30,74 @@
- #include <netinet/icmp6.h>
+ #include "config.h"
+@@ -57,25 +41,16 @@
+ #include <arpa/inet.h>
  
  #include "test.h"
 +#include "safe_macros.h"
  
--char *TCID = "asapi_05";	/* Test program identifier.    */
-+char *TCID = "asapi_05";
+-char *TCID = "asapi_06";	/* Test program identifier.    */
++char *TCID = "asapi_06";
  
--void setup(void);
--void cleanup(void);
+ int TST_TOTAL = 1;
+ 
+-pid_t pid;
+-
+-struct {
+-	char *prt_name;
+-	int prt_value;
+-} ptab[] = {
+-};
+-
+-#define PTCOUNT	(sizeof(ptab)/sizeof(ptab[0]))
+-
+ #define READ_TIMEOUT	5	/* secs */
+ 
+-void do_tests(void);
+-void setup(void), cleanup(void);
++static void do_tests(void);
 +static void setup(void);
- 
--void icmp6_ft(void);
-+static void icmp6_ft(void);
  
  int main(int argc, char *argv[])
  {
- 	int lc;
+@@ -83,14 +58,11 @@ int main(int argc, char *argv[])
  
--	/* Parse standard options given to run the test. */
  	tst_parse_opts(argc, argv, NULL, NULL);
  
+-	pid = getpid();
+-
  	setup();
  
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+	for (lc = 0; TEST_LOOPING(lc); ++lc)
- 		icmp6_ft();
--	}
--
--	cleanup();
+ 	for (lc = 0; TEST_LOOPING(lc); ++lc)
+ 		do_tests();
  
+-	cleanup();
  	tst_exit();
  }
  
--void setup(void)
-+static void setup(void)
+@@ -150,7 +122,7 @@ union soval {
+ #define IN6_ANY		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+ 
+ /* so_clrval and so_setval members are initilized in the body */
+-struct soent {
++static struct soent {
+ 	char *so_tname;
+ 	int so_opt;
+ 	int so_dorecv;		/* do receive test? */
+@@ -160,73 +132,52 @@ struct soent {
+ 	union soval so_setval;
+ 	socklen_t so_valsize;
+ } sotab[] = {
+-/* RFC 3542, Section 4 */
+-	{
+-		"IPV6_RECVPKTINFO", IPV6_RECVPKTINFO, 1, IPV6_PKTINFO, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)}, {
+-		"IPV6_RECVHOPLIMIT", IPV6_RECVHOPLIMIT, 1, IPV6_HOPLIMIT, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)}, {
+-		"IPV6_RECVRTHDR", IPV6_RECVRTHDR, 0, IPV6_RTHDR, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)}, {
+-		"IPV6_RECVHOPOPTS", IPV6_RECVHOPOPTS, 0, IPV6_HOPOPTS, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)}, {
+-		"IPV6_RECVDSTOPTS", IPV6_RECVDSTOPTS, 0, IPV6_DSTOPTS, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)}, {
+-		"IPV6_RECVTCLASS", IPV6_RECVTCLASS, 1, IPV6_TCLASS, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)},
+-/* make sure TCLASS stays when setting another opt */
+-	{
+-		"IPV6_RECVTCLASS (2)", IPV6_RECVHOPLIMIT, 1, IPV6_TCLASS, 0, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)},
+-/* OLD values */
+-	{
+-		"IPV6_2292PKTINFO", IPV6_2292PKTINFO, 1, IPV6_2292PKTINFO, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)}, {
+-		"IPV6_2292HOPLIMIT", IPV6_2292HOPLIMIT, 1, IPV6_2292HOPLIMIT, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)}, {
+-		"IPV6_2292RTHDR", IPV6_2292RTHDR, 0, IPV6_2292RTHDR, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)}, {
+-		"IPV6_2292HOPOPTS", IPV6_2292HOPOPTS, 0, IPV6_2292HOPOPTS, 1, { { { { {
+-		0}}}}}, { { { { {
+-	0}}}}}, sizeof(int)}, {
+-		"IPV6_2292DSTOPTS", IPV6_2292DSTOPTS, 0, IPV6_2292DSTOPTS, 1, { { { { {
+-		0}}}}}, { { { { {
+-0}}}}}, sizeof(int)},};
+-
+-#define SOCOUNT	(sizeof(sotab)/sizeof(sotab[0]))
++	/* RFC 3542, Section 4 */
++	{"IPV6_RECVPKTINFO", IPV6_RECVPKTINFO, 1, IPV6_PKTINFO, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	{"IPV6_RECVHOPLIMIT", IPV6_RECVHOPLIMIT, 1, IPV6_HOPLIMIT, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	{"IPV6_RECVRTHDR", IPV6_RECVRTHDR, 0, IPV6_RTHDR, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	{"IPV6_RECVHOPOPTS", IPV6_RECVHOPOPTS, 0, IPV6_HOPOPTS, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	{"IPV6_RECVDSTOPTS", IPV6_RECVDSTOPTS, 0, IPV6_DSTOPTS, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	{"IPV6_RECVTCLASS", IPV6_RECVTCLASS, 1, IPV6_TCLASS, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	/* make sure TCLASS stays when setting another opt */
++	{"IPV6_RECVTCLASS (2)", IPV6_RECVHOPLIMIT, 1, IPV6_TCLASS, 0,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	/* OLD values */
++	{"IPV6_2292PKTINFO", IPV6_2292PKTINFO, 1, IPV6_2292PKTINFO, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	{"IPV6_2292HOPLIMIT", IPV6_2292HOPLIMIT, 1, IPV6_2292HOPLIMIT, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	{"IPV6_2292RTHDR", IPV6_2292RTHDR, 0, IPV6_2292RTHDR, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	{"IPV6_2292HOPOPTS", IPV6_2292HOPOPTS, 0, IPV6_2292HOPOPTS, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++	{"IPV6_2292DSTOPTS", IPV6_2292DSTOPTS, 0, IPV6_2292DSTOPTS, 1,
++	 {{{{{0} } }, 0} }, {{{{{0} } }, 0} }, sizeof(int)},
++};
++
++#define SOCOUNT	ARRAY_SIZE(sotab)
+ 
+ struct soprot {
+-	int sop_pid;		/* sender PID */
+-	int sop_seq;		/* sequence # */
+-	int sop_dlen;		/* tp_dat length */
++	int sop_pid;			/* sender PID */
++	int sop_seq;			/* sequence # */
++	int sop_dlen;			/* tp_dat length */
+ 	unsigned char sop_dat[0];	/* user data */
+ };
+ 
+-unsigned char tpbuf[sizeof(struct soprot) + 2048];
+-unsigned char rpbuf[sizeof(struct soprot) + 2048];
++static unsigned char tpbuf[sizeof(struct soprot) + 2048];
++static unsigned char rpbuf[sizeof(struct soprot) + 2048];
+ 
+-unsigned char control[2048];
+-int clen;
++static unsigned char control[2048];
+ 
+-int seq;
++static int seq;
+ 
+-int setupso(void)
+-{
+-/* add routing headers, other ancillary data here */
+-	return 0;
+-}
+-
+-struct cme {
++static struct cme {
+ 	int cm_len;
+ 	int cm_level;
+ 	int cm_type;
+@@ -235,26 +186,21 @@ struct cme {
+ 		uint32_t cmu_hops;
+ 	} cmu;
+ } cmtab[] = {
+-	{
+-		sizeof(uint32_t), SOL_IPV6, IPV6_TCLASS, {
+-		0x12}
+-	}
+-	, {
+-		sizeof(uint32_t), SOL_IPV6, IPV6_HOPLIMIT, {
+-		0x21}
+-	}
+-,};
++	{sizeof(uint32_t), SOL_IPV6, IPV6_TCLASS, {0x12} },
++	{sizeof(uint32_t), SOL_IPV6, IPV6_HOPLIMIT, {0x21} },
++};
+ 
+-#define CMCOUNT	(sizeof(cmtab)/sizeof(cmtab[0]))
++#define CMCOUNT	ARRAY_SIZE(cmtab)
+ 
+-ssize_t sendall(int st)
++static ssize_t sendall(int st)
  {
+ 	struct sockaddr_in6 sin6;
+ 	struct msghdr msg;
+ 	struct iovec iov;
+ 	struct soprot *psop;
+ 	unsigned char *pd;
+-	int i, ctotal;
++	unsigned int i;
++	int ctotal;
+ 
+ 	psop = (struct soprot *)tpbuf;
+ 	psop->sop_pid = htonl(getpid());
+@@ -291,7 +237,7 @@ ssize_t sendall(int st)
+ 	return sendmsg(st, &msg, 0);
+ }
+ 
+-void so_test(struct soent *psoe)
++static void so_test(struct soent *psoe)
+ {
+ 	struct sockaddr_in6 sin6;
+ 	union soval sobuf;
+@@ -300,63 +246,51 @@ void so_test(struct soent *psoe)
+ 	int st;
+ 
+ 	if (psoe->so_opt == -1) {
+-		tst_resm(TBROK, "%s not present at compile time",
++		tst_brkm(TBROK | TERRNO, NULL, "%s not present at compile time",
+ 			 psoe->so_tname);
+-		return;
+ 	}
+ 	if (psoe->so_clear || sr < 0) {
+ 		if (sr < 0)
+ 			close(sr);
+-		sr = socket(PF_INET6, SOCK_RAW, NH_TEST);
+-		if (sr < 0) {
+-			tst_resm(TBROK, "%s socket: %s", psoe->so_tname,
+-				 strerror(errno));
+-			return;
+-		}
++		sr = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, NH_TEST);
+ 	}
+ 	memset(&sin6, 0, sizeof(sin6));
+ 	sin6.sin6_family = AF_INET6;
+ 	sin6.sin6_addr = in6addr_loopback;
+-	if (bind(sr, (struct sockaddr *)&sin6, sizeof(sin6)) < 0) {
+-		tst_resm(TBROK, "%s: bind: %s", psoe->so_tname,
+-			 strerror(errno));
+-	}
++
++	SAFE_BIND(NULL, sr, (struct sockaddr *)&sin6, sizeof(sin6));
++
+ 	if (setsockopt(sr, SOL_IPV6, psoe->so_opt, &psoe->so_clrval,
+ 		       psoe->so_valsize) < 0) {
+-		tst_resm(TBROK, "%s: setsockopt: %s", psoe->so_tname,
+-			 strerror(errno));
+-		return;
++		tst_brkm(TBROK | TERRNO, NULL, "%s: setsockopt",
++			 psoe->so_tname);
+ 	}
++
+ 	TEST(setsockopt(sr, SOL_IPV6, psoe->so_opt, &psoe->so_setval,
+ 			psoe->so_valsize));
+ 	if (TEST_RETURN != 0) {
+-		tst_resm(TFAIL, "%s set-get: setsockopt: %s", psoe->so_tname,
+-			 strerror(errno));
++		tst_resm(TFAIL | TERRNO, "%s set-get: setsockopt",
++			 psoe->so_tname);
+ 		return;
+ 	}
++
+ 	valsize = psoe->so_valsize;
+ 	TEST(getsockopt(sr, SOL_IPV6, psoe->so_opt, &sobuf, &valsize));
+ 	if (TEST_RETURN != 0) {
+-		tst_resm(TBROK, "%s set-get: getsockopt: %s", psoe->so_tname,
+-			 strerror(errno));
+-		return;
+-	} else if (memcmp(&psoe->so_setval, &sobuf, psoe->so_valsize))
++		tst_brkm(TBROK | TERRNO, NULL, "%s set-get: getsockopt",
++			 psoe->so_tname);
++	} else if (memcmp(&psoe->so_setval, &sobuf, psoe->so_valsize)) {
+ 		tst_resm(TFAIL, "%s set-get optval != setval", psoe->so_tname);
+-	else
++	} else {
+ 		tst_resm(TPASS, "%s set-get", psoe->so_tname);
+-
+-	st = socket(PF_INET6, SOCK_RAW, NH_TEST);
+-	if (st < 0) {
+-		tst_resm(TBROK, "%s transmit socket: %s", psoe->so_tname,
+-			 strerror(errno));
+-		return;
+-	}
+-	if (sendall(st) < 0) {
+-		tst_resm(TBROK, "%s transmit sendto: %s", psoe->so_tname,
+-			 strerror(errno));
+-		close(st);
+-		return;
+ 	}
++
++	st = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, NH_TEST);
++
++	if (sendall(st) < 0)
++		tst_brkm(TBROK | TERRNO, NULL, "%s transmit sendto",
++			 psoe->so_tname);
++
+ 	close(st);
+ 
+ 	/* receiver processing */
+@@ -382,12 +316,11 @@ void so_test(struct soent *psoe)
+ 			if (nfds < 0) {
+ 				if (errno == EINTR)
+ 					continue;
+-				tst_resm(TBROK, "%s select: %s", psoe->so_tname,
+-					 strerror(errno));
+-				return;
++				tst_brkm(TBROK | TERRNO, NULL, "%s select",
++					 psoe->so_tname);
+ 			}
+ 			if (nfds == 0) {
+-				tst_resm(TBROK, "%s recvmsg timed out",
++				tst_brkm(TBROK, NULL, "%s recvmsg timed out",
+ 					 psoe->so_tname);
+ 				return;
+ 			}
+@@ -405,11 +338,10 @@ void so_test(struct soent *psoe)
+ 
+ 			cc = recvmsg(sr, &msg, 0);
+ 			if (cc < 0) {
+-				tst_resm(TBROK, "%s recvmsg: %s",
+-					 psoe->so_tname, strerror(errno));
+-				return;
++				tst_brkm(TBROK | TERRNO, NULL, "%s recvmsg",
++					 psoe->so_tname);
+ 			}
+-/* check pid & seq here */
++			/* check pid & seq here */
+ 			break;
+ 		}
+ 		gotone = 0;
+@@ -419,9 +351,9 @@ void so_test(struct soent *psoe)
+ 				break;
+ 			gotone = pcmsg->cmsg_level == SOL_IPV6 &&
+ 			    pcmsg->cmsg_type == psoe->so_cmtype;
+-			if (gotone)
++			if (gotone) {
+ 				break;
+-			else if (psoe->so_clear) {
++			} else if (psoe->so_clear) {
+ 				tst_resm(TFAIL, "%s receive: extraneous data "
+ 					 "in control: level %d type %d len %zu",
+ 					 psoe->so_tname, pcmsg->cmsg_level,
+@@ -429,232 +361,25 @@ void so_test(struct soent *psoe)
+ 				return;
+ 			}
+ 		}
+-/* check contents here */
++		/* check contents here */
+ 		if (psoe->so_dorecv)
+ 			tst_resm(gotone ? TPASS : TFAIL, "%s receive",
+ 				 psoe->so_tname);
+ 	}
+ }
+ 
+-#define IPV6_ADDR_NODE		1
+-#define IPV6_ADDR_LINK		2
+-#define IPV6_ADDR_GLOBAL	3
+-
+-#ifdef HAVE_IFADDRS_H
+-static int ipv6_addr_scope(struct in6_addr *pin6)
+-{
+-	if ((ntohl(pin6->s6_addr32[0]) & 0xFFC00000) == 0xFE800000)
+-		return IPV6_ADDR_LINK;
+-	if (memcmp(pin6, &in6addr_loopback, sizeof(*pin6)) == 0)
+-		return IPV6_ADDR_NODE;
+-	return IPV6_ADDR_GLOBAL;
+-}
+-#endif /* HAVE_IFADDRS_H */
+-
+-int getsock(char *tname, struct sockaddr_in6 *psin6_arg, int scope)
+-{
+-#ifdef HAVE_IFADDRS_H
+-	static struct ifaddrs *pifa_head;
+-	struct ifaddrs *pifa;
+-	struct sockaddr_in6 *psin6;
+-	char strbuf[128];
+-	int ifindex = 0;
+-	int s;
+-
+-	if (!pifa_head && getifaddrs(&pifa_head)) {
+-		tst_resm(TBROK, "%s: getifaddrs failed", tname);
+-		return -1;
+-	}
+-	if (psin6_arg)
+-		ifindex = psin6_arg->sin6_scope_id;
+-
+-	/* first, find a global address */
+-	for (pifa = pifa_head; pifa; pifa = pifa->ifa_next) {
+-		int this_scope;
+-
+-		if (!(pifa->ifa_flags & IFF_UP))
+-			continue;
+-		if (pifa->ifa_addr->sa_family != AF_INET6)
+-			continue;
+-		psin6 = (struct sockaddr_in6 *)pifa->ifa_addr;
+-		this_scope = ipv6_addr_scope(&psin6->sin6_addr);
+-		if (this_scope &&
+-		    ((this_scope < 0 && -this_scope == scope) ||
+-		     (this_scope > 0 && this_scope != scope)))
+-			continue;
+-		psin6->sin6_scope_id = if_nametoindex(pifa->ifa_name);
+-		if ((ifindex < 0 && -ifindex == psin6->sin6_scope_id) ||
+-		    (ifindex > 0 && ifindex != psin6->sin6_scope_id))
+-			continue;
+-		s = socket(PF_INET6, SOCK_DGRAM, 0);
+-		if (s < 0) {
+-			tst_resm(TBROK, "%s: socket %s", tname,
+-				 strerror(errno));
+-			return -1;
+-		}
+-		if (bind(s, pifa->ifa_addr, sizeof(struct sockaddr_in6)) < 0) {
+-			tst_resm(TBROK, "%s: bind \"%s\": %s", tname,
+-				 inet_ntop(AF_INET6, &psin6->sin6_addr, strbuf,
+-					   sizeof(strbuf)), strerror(errno));
+-			return -1;
+-		}
+-		if (psin6_arg) {
+-			*psin6_arg = *psin6;
+-			psin6_arg->sin6_scope_id =
+-			    if_nametoindex(pifa->ifa_name);
+-		}
+-		return s;
+-	}
+-	{
+-		char *scopestr, *intfstr;
+-
+-		switch (scope) {
+-		case IPV6_ADDR_NODE:
+-			scopestr = " node-local";
+-			break;
+-		case IPV6_ADDR_LINK:
+-			scopestr = " link-local";
+-			break;
+-		case IPV6_ADDR_GLOBAL:
+-			scopestr = " global";
+-			break;
+-		default:
+-			scopestr = "";
+-			break;
+-		}
+-		if (ifindex < 0) {
+-			intfstr = " not on ifindex";
+-			ifindex = -ifindex;
+-		} else if (ifindex)
+-			intfstr = " on ifindex";
+-		else
+-			intfstr = 0;
+-
+-		if (intfstr)
+-			tst_resm(TBROK, "%s: getsock : no%s addresses%s %d",
+-				 tname, scopestr, intfstr, ifindex);
+-		else
+-			tst_resm(TBROK, "%s: getsock : no%s addresses",
+-				 tname, scopestr);
+-	}
+-	return -1;
+-#else /* HAVE_IFADDRS_H */
+-	return -1;
+-#endif
+-}
+-
+-#ifdef notyet
+-/*
+- * RFC 3542 IPV6_PKTINFO not in mainline yet (as of 2.6.15). The get/set
+- * tests are below, and comments for some further tests to be added later
+- */
+-void test_pktinfo(void)
+-{
+-	int s_snd, s_rcv[3] = { -1, -1, -1 };
+-	struct sockaddr_in6 sa_rcv[3];
+-	int s, i;
+-	struct ifaddrs *pifa_head, *pifa;
+-	struct sockaddr_in6 *psin6;
+-	char strbuf[128];
+-	char *tname = "IPV6_PKTINFO";
+-	struct in6_pktinfo pi, pi_tmp;
+-	int sinlen;
+-	int optlen;
+-
+-	s_snd = getsock(tname, 0, IPV6_ADDR_GLOBAL);
+-	if (s_snd < 0) {
+-		tst_resm(TBROK, "%s: can't create send socket", tname);
+-		return;
+-	}
+-	/* global-scope address, interface X */
+-	sa_rcv[0].sin6_scope_id = 0;
+-	s_rcv[0] = getsock(tname, &sa_rcv[0], IPV6_ADDR_GLOBAL);
+-	if (s_rcv[0] == -1) {
+-		tst_resm(TBROK, "%s: only link-scope addresses", tname);
+-		return;
+-	}
+-	/* link-local-scope address, interface X */
+-	sa_rcv[1].sin6_scope_id = sa_rcv[0].sin6_scope_id;
+-	s_rcv[1] = getsock(tname, &sa_rcv[1], IPV6_ADDR_LINK);
+-	if (s_rcv[1] < 0) {
+-		tst_resm(TBROK, "%s: no link-local address on ifindex %d",
+-			 tname, sa_rcv[0].sin6_scope_id);
+-		return;
+-	}
+-	/* link-local-scope address, interface Y */
+-	sa_rcv[2].sin6_scope_id = -sa_rcv[0].sin6_scope_id;
+-	s_rcv[2] = getsock(tname, &sa_rcv[2], IPV6_ADDR_LINK);
+-	if (s_rcv[2] < 0) {
+-		tst_resm(TBROK, "%s: only one interface?", tname);
+-		return;
+-	}
+-	/* send to rcv1 to verify communication */
+-	/* force to rcv2 w/ PKTINFO */
+-/* TESTS: */
+-/* sticky set-get */
+-	tname = "IPV6_PKTINFO set";
+-	pi.ipi6_addr = sa_rcv[1].sin6_addr;
+-	pi.ipi6_ifindex = sa_rcv[1].sin6_scope_id;
+-	TEST(setsockopt(s_snd, SOL_IPV6, IPV6_PKTINFO, &pi, sizeof(pi)));
+-	if (TEST_RETURN != 0)
+-		tst_resm(TFAIL, "%s: %s", tname, strerror(errno));
+-	else
+-		tst_resm(TPASS, "%s", tname);
+-
+-	tname = "IPV6_PKTINFO get";
+-	optlen = sizeof(pi_tmp);
+-	TEST(getsockopt(s_snd, SOL_IPV6, IPV6_PKTINFO, &pi_tmp, &optlen));
+-	if (TEST_RETURN != 0)
+-		tst_resm(TFAIL, "%s: %s", tname, strerror(errno));
+-	else if (memcmp(&pi, &pi_tmp, sizeof(pi)) != 0) {
+-		char strbuf2[64];
+-		tst_resm(TFAIL, "%s: {\"%s\",%d} != {\"%s\",%d}", tname,
+-			 inet_ntop(AF_INET6, &pi_tmp.ipi6_addr, strbuf,
+-				   sizeof(strbuf)), pi_tmp.ipi6_ifindex,
+-			 inet_ntop(AF_INET6, &pi.ipi6_addr, strbuf2,
+-				   sizeof(strbuf2)), pi.ipi6_ifindex);
+-	} else
+-		tst_resm(TPASS, "%s", tname);
+-/* ancillary data override */
+-/* link-local, wrong interface */
+-	tname = "IPV6_PKTINFO invalid {lladdr, intf}";
+-	pi.ipi6_addr = sa_rcv[1].sin6_addr;
+-	pi.ipi6_ifindex = sa_rcv[2].sin6_scope_id;
+-	TEST(setsockopt(s_snd, SOL_IPV6, IPV6_PKTINFO, &pi, sizeof(pi)));
+-	if (TEST_RETURN == 0)
+-		tst_resm(TFAIL, "%s returns success, should be -1, EINVAL",
+-			 tname);
+-	else if (TEST_ERRNO != EINVAL)
+-		tst_resm(TFAIL, "%s errno %d != %d", tname, TEST_ERRNO, EINVAL);
+-	else
+-		tst_resm(TPASS, "%s", tname);
+-/* nonexistent interface */
+-/* non-local address */
+-/* clear address */
+-/* clear interface */
+-/* sendmsg() sin6_scope differs with ancillary data interface */
+-}
+-#endif /* notyet */
+-
+-void do_tests(void)
++static void do_tests(void)
+ {
+-	int i;
++	unsigned int i;
+ 
+ 	for (i = 0; i < SOCOUNT; ++i) {
+ 		sotab[i].so_clrval.sou_bool = 0;
+ 		sotab[i].so_setval.sou_bool = 1;
+ 		so_test(&sotab[i]);
+ 	}
+-#ifdef notyet
+-	test_pktinfo();
+-#endif /* notyet - see test_pktinfo() comment above */
+-}
+-
+-void setup(void)
+-{
 -	TEST_PAUSE;		/* if -P option specified */
-+	TEST_PAUSE;
- 	tst_require_root();
  }
  
 -void cleanup(void)
--{
--}
--
--/*
-- * This is for old, broken glibc-header icmp6_filter structure definitions.
-- * If icmp6.h has struct icmp6_filter with field named "data" instead
-- * of the standard "icmp_filt", uncomment this line.
-- */
--/*#define icmp_filt	data */
--
--enum tt { T_WILLPASS, T_WILLBLOCK, T_SETPASS, T_SETBLOCK, T_SETPASSALL,
-+enum tt {
-+	T_WILLPASS,
-+	T_WILLBLOCK,
-+	T_SETPASS,
-+	T_SETBLOCK,
-+	T_SETPASSALL,
- 	T_SETBLOCKALL
- };
--struct ftent {
--	char *ft_tname;		/* test name, for logging */
-+
-+static struct ftent {
-+	char *ft_tname;			/* test name, for logging */
- 	unsigned char ft_sndtype;	/* send type field */
- 	unsigned char ft_flttype;	/* filter type field */
--	enum tt ft_test;	/* what macro to test */
--	int ft_expected;	/* packet should pass? */
-+	enum tt ft_test;		/* what macro to test */
-+	int ft_expected;		/* packet should pass? */
- } ftab[] = {
--	{
--	"ICMP6_FILTER_SETPASS s 20 f 20", 20, 20, T_SETPASS, 1}, {
--	"ICMP6_FILTER_SETPASS s 20 f 21", 20, 21, T_SETPASS, 0}, {
--	"ICMP6_FILTER_SETBLOCK s 20 f 20", 20, 20, T_SETBLOCK, 0}, {
--	"ICMP6_FILTER_SETBLOCK s 20 f 21", 20, 21, T_SETBLOCK, 1}, {
--	"ICMP6_FILTER_PASSALL s 20", 20, 0, T_SETPASSALL, 1}, {
--	"ICMP6_FILTER_PASSALL s 20", 21, 0, T_SETPASSALL, 1}, {
--	"ICMP6_FILTER_BLOCKALL s 20", 20, 0, T_SETBLOCKALL, 0}, {
--	"ICMP6_FILTER_BLOCKALL s 20", 21, 0, T_SETBLOCKALL, 0}, {
--	"ICMP6_FILTER_WILLBLOCK s 20 f 21", 20, 21, T_WILLBLOCK, 0}, {
--	"ICMP6_FILTER_WILLBLOCK s 20 f 20", 20, 20, T_WILLBLOCK, 1}, {
--	"ICMP6_FILTER_WILLPASS s 20 f 21", 20, 21, T_WILLPASS, 0}, {
--"ICMP6_FILTER_WILLPASS s 22 f 22", 22, 22, T_WILLPASS, 1},};
--
--#define FTCOUNT	(sizeof(ftab)/sizeof(ftab[0]))
--
--int ic6_send1(char *tname, unsigned char type)
-+	{"ICMP6_FILTER_SETPASS s 20 f 20", 20, 20, T_SETPASS, 1},
-+	{"ICMP6_FILTER_SETPASS s 20 f 21", 20, 21, T_SETPASS, 0},
-+	{"ICMP6_FILTER_SETBLOCK s 20 f 20", 20, 20, T_SETBLOCK, 0},
-+	{"ICMP6_FILTER_SETBLOCK s 20 f 21", 20, 21, T_SETBLOCK, 1},
-+	{"ICMP6_FILTER_PASSALL s 20", 20, 0, T_SETPASSALL, 1},
-+	{"ICMP6_FILTER_PASSALL s 20", 21, 0, T_SETPASSALL, 1},
-+	{"ICMP6_FILTER_BLOCKALL s 20", 20, 0, T_SETBLOCKALL, 0},
-+	{"ICMP6_FILTER_BLOCKALL s 20", 21, 0, T_SETBLOCKALL, 0},
-+	{"ICMP6_FILTER_WILLBLOCK s 20 f 21", 20, 21, T_WILLBLOCK, 0},
-+	{"ICMP6_FILTER_WILLBLOCK s 20 f 20", 20, 20, T_WILLBLOCK, 1},
-+	{"ICMP6_FILTER_WILLPASS s 20 f 21", 20, 21, T_WILLPASS, 0},
-+	{"ICMP6_FILTER_WILLPASS s 22 f 22", 22, 22, T_WILLPASS, 1},
-+};
-+
-+#define FTCOUNT	ARRAY_SIZE(ftab)
-+
-+static int ic6_send1(char *tname, unsigned char type)
++static void setup(void)
  {
- 	struct sockaddr_in6 sin6;
- 	struct icmp6_hdr ic6;
- 	int s;
- 
--	s = socket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
--	if (s == -1) {
--		tst_resm(TBROK, "%s: socket failed", tname);
--		return 1;
--	}
-+	s = SAFE_SOCKET(NULL, AF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
-+
- 	memset(&ic6, 0, sizeof(ic6));
- 	ic6.icmp6_type = type;
- 	ic6.icmp6_data32[0] = htonl(getpid());
-@@ -142,7 +113,7 @@ int ic6_send1(char *tname, unsigned char type)
- 	return 0;
++	TEST_PAUSE;
  }
- 
--int ic6_recv1(char *tname, int sall, int sf)
-+static int ic6_recv1(char *tname, int sall, int sf)
- {
- 	fd_set readfds, readfds_saved;
- 	struct timeval tv;
-@@ -185,7 +156,7 @@ int ic6_recv1(char *tname, int sall, int sf)
- 				return -1;
- 			}
- 			/* if packet check succeeds... */
--			if (htonl(pic6->icmp6_data32[0]) == getpid())
-+			if (htonl(pic6->icmp6_data32[0]) == (uint32_t)getpid())
- 				gotall = 1;
- 		}
- 		if (FD_ISSET(sf, &readfds)) {
-@@ -196,7 +167,7 @@ int ic6_recv1(char *tname, int sall, int sf)
- 				return -1;
- 			}
- 			/* if packet check succeeds... */
--			if (htonl(pic6->icmp6_data32[0]) == getpid())
-+			if (htonl(pic6->icmp6_data32[0]) == (uint32_t)getpid())
- 				gotone = 1;
- 		}
- 		memcpy(&readfds, &readfds_saved, sizeof(readfds));
-@@ -211,18 +182,14 @@ int ic6_recv1(char *tname, int sall, int sf)
- }
- 
- /* functional tests */
--void icmp6_ft(void)
-+static void icmp6_ft(void)
- {
- 	struct icmp6_filter i6f;
- 	int sall, sf;
--	int i;
-+	unsigned int i;
-+
-+	sall = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
- 
--	sall = socket(PF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
--	if (sall < 0) {
--		tst_resm(TBROK | TERRNO,
--			 "icmp6_ft socket: can't create sall socket");
--		return;
--	}
- 	ICMP6_FILTER_SETPASSALL(&i6f);
- 	if (setsockopt(sall, IPPROTO_ICMPV6, ICMP6_FILTER, &i6f,
- 		       sizeof(i6f)) < 0) {
-@@ -230,12 +197,7 @@ void icmp6_ft(void)
- 			 "setsockopt pass all ICMP6_FILTER failed");
- 	}
- 
--	sf = socket(PF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
--	if (sf < 0) {
--		tst_resm(TBROK | TERRNO,
--			 "icmp6_ft socket: can't create test socket");
--		return;
--	}
-+	sf = SAFE_SOCKET(NULL, PF_INET6, SOCK_RAW, IPPROTO_ICMPV6);
- 
- 	int rv;
- 
-@@ -284,8 +246,9 @@ void icmp6_ft(void)
- 			if (ic6_send1(ftab[i].ft_tname, ftab[i].ft_sndtype))
- 				continue;
- 			rv = ic6_recv1(ftab[i].ft_tname, sall, sf);
--		} else
-+		} else {
- 			rv = -1;
-+		}
- 
- 		if (rv < 0)
- 			continue;
-@@ -296,5 +259,3 @@ void icmp6_ft(void)
- 			tst_resm(TPASS, "%s", ftab[i].ft_tname);
- 	}
- }
--
--int TST_TOTAL = FTCOUNT;
 -- 
 1.9.3
 
