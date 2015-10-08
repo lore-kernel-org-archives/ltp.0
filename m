@@ -1,805 +1,472 @@
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Thu, 8 Oct 2015 19:29:40 +0800
-Subject: [LTP] [PATCH v8 6/7] lib6/getaddrinfo_01.c: Cleanup
-In-Reply-To: <1444303781-18441-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <20151007132856.GD2608@rei.suse.cz>
- <1444303781-18441-1-git-send-email-zenglg.jy@cn.fujitsu.com>
-Message-ID: <1444303781-18441-6-git-send-email-zenglg.jy@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 8 Oct 2015 15:01:35 +0200
+Subject: [LTP] [PATCH] syscall/kcmp: Add tests for kcmp
+In-Reply-To: <1444293886-10391-1-git-send-email-chnyda@suse.com>
+References: <1444293886-10391-1-git-send-email-chnyda@suse.com>
+Message-ID: <20151008130135.GB8947@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* Add 'static' before some functions and global variables.
-* Remove cleanup() function.
-* Remove useless comments.
-* In every test function, using TINFO instead of TPASS
-  marks the success of each inner test.
-* Some cleanup.
+Hi!
+> diff --git a/m4/ltp-kcmp_type.m4 b/m4/ltp-kcmp_type.m4
+> new file mode 100644
+> index 0000000..f4d7e2d
+> --- /dev/null
+> +++ b/m4/ltp-kcmp_type.m4
+> @@ -0,0 +1,23 @@
+> +dnl
+> +dnl Copyright (c) Linux Test Project, 2015
+> +dnl
+> +dnl This program is free software;  you can redistribute it and/or modify
+> +dnl it under the terms of the GNU General Public License as published by
+> +dnl the Free Software Foundation; either version 2 of the License, or
+> +dnl (at your option) any later version.
+> +dnl
+> +dnl This program is distributed in the hope that it will be useful,
+> +dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +dnl the GNU General Public License for more details.
+> +dnl
+> +dnl You should have received a copy of the GNU General Public License
+> +dnl along with this program;  if not, write to the Free Software Foundation,
+> +dnl Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> +dnl
+> +dnl Author: Cedric Hnyda <chnyda@suse.com>
+> +dnl
+> +
+> +AC_DEFUN([LTP_CHECK_KCMP_TYPE],[
+> +AC_CHECK_TYPES([enum kcmp_type],,)
+> +])
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
----
- testcases/network/lib6/getaddrinfo_01.c | 503 ++++++++++++++++++--------------
- 1 file changed, 281 insertions(+), 222 deletions(-)
+We should pass the third parameter as [#include <linux/kcmp.h>] (which
+is the place the enum will be defined in new enough kernel headers
+package). Otherwise this will always report that the enum is missing as
+by default it only uses a few system includes (see:
+https://www.gnu.org/software/autoconf/manual/autoconf-2.64/html_node/Default-Includes.html#Default-Includes)
 
-diff --git a/testcases/network/lib6/getaddrinfo_01.c b/testcases/network/lib6/getaddrinfo_01.c
-index ec29b5d..a812e77 100644
---- a/testcases/network/lib6/getaddrinfo_01.c
-+++ b/testcases/network/lib6/getaddrinfo_01.c
-@@ -1,43 +1,21 @@
- /*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 3 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Test Name: getaddrinfo_01
-- *
-- * Test Description:
-- *  Tests for getaddrinfo library function
-- *
-- * Usage:  <for command-line>
-- *  getaddrinfo_01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2004 written by David L Stevens
-- *
-- * RESTRICTIONS:
-- *  None.
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  *
-+ * Author: David L Stevens
-  */
- 
- #include <unistd.h>
-@@ -53,40 +31,38 @@
- #define AI_V4MAPPED    0x0008	/* IPv4 mapped addresses are acceptable.  */
- #endif
- 
--char *TCID = "getaddrinfo_01";	/* Test program identifier.    */
--int testno;
-+static void setup(void);
-+static void gaiv4(void);
-+static void gaiv6(void);
- 
--void setup(void), cleanup(void);
--
--int TST_TOTAL = 1;
--
--/* a host that isn't where LTP is running */
--#define REMOTEHOSTNAME	"www.ibm.com"
--
--void gaiv4(void), gaiv6(void);
--void dumpres(struct addrinfo *);
-+char *TCID = "getaddrinfo_01";
-+int TST_TOTAL = 2;
- 
- int main(int argc, char *argv[])
- {
- 	int lc;
- 
--	/* Parse standard options given to run the test. */
- 	tst_parse_opts(argc, argv, NULL, NULL);
- 
- 	setup();
- 
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+		tst_count = 0;
-+
- 		gaiv4();
- 		gaiv6();
- 	}
--	cleanup();
- 
--	return (0);
-+	tst_exit();
- }
- 
--/* getaddrinfo tests (v4) */
-+static void setup(void)
-+{
-+	TEST_PAUSE;
-+}
- 
--void gaiv4(void)
-+/* getaddrinfo tests (v4) */
-+static void gaiv4(void)
- {
- 	struct addrinfo *aires, hints, *pai;
- 	char hostname[MAXHOSTNAMELEN + 1];
-@@ -132,13 +108,18 @@ void gaiv4(void)
- 				 psin ? psin->sin_family : 0,
- 				 psin ? psin->sin_port : 0,
- 				 psin ? htons(psin->sin_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv4 basic lookup");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 basic "
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv4 basic lookup");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv4 basic "
- 			 "lookup (\"%s\") returns %ld (\"%s\")", hostname,
- 			 TEST_RETURN, gai_strerror(TEST_RETURN));
-+		return;
-+	}
- 
- 	/* test 2, IPv4 canonical name */
- 	memset(&hints, 0, sizeof(hints));
-@@ -152,20 +133,26 @@ void gaiv4(void)
- 		if (!pai) {
- 			tst_resm(TFAIL, "getaddrinfo IPv4 canonical name: no "
- 				 "entries with canonical name set");
-+			freeaddrinfo(aires);
-+			return;
- 		} else if (strcasecmp(hostname, pai->ai_canonname)) {
- 			tst_resm(TFAIL, "getaddrinfo IPv4 canonical name "
- 				 "(\"%s\") doesn't match hostname (\"%s\")",
- 				 pai->ai_canonname, hostname);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv4 canonical name");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 "
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv4 canonical name");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv4 "
- 			 "canonical name (\"%s\") returns %ld (\"%s\")",
- 			 shortname, TEST_RETURN, gai_strerror(TEST_RETURN));
-+		return;
-+	}
- 
- 	/* test 3, IPv4 host+service name */
--
- 	memset(&hints, 0, sizeof(hints));
- 	/*
- 	 * These are hard-coded for echo/7 to avoid using getservbyname(),
-@@ -200,13 +187,18 @@ void gaiv4(void)
- 				 psin ? psin->sin_family : 0,
- 				 psin ? psin->sin_port : 0,
- 				 psin ? htons(psin->sin_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv4 host+service");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 host+"
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv4 host+service");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv4 host+"
- 			 "service returns %ld (\"%s\")", TEST_RETURN,
- 			 gai_strerror(TEST_RETURN));
-+		return;
-+	}
- 
- 	/* test 4, IPv4 hostname+service, AI_PASSIVE */
- 	memset(&hints, 0, sizeof(hints));
-@@ -244,18 +236,22 @@ void gaiv4(void)
- 				 psin ? psin->sin_family : 0,
- 				 psin ? psin->sin_port : 0,
- 				 psin ? htons(psin->sin_port) : 0);
--		} else
--			tst_resm(TPASS,
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO,
- 				 "getaddrinfo IPv4 host+service PASSIVE");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 host+"
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv4 host+"
- 			 "service, PASSIVE (\"%s\", \"%s\") returns %ld (\"%s\")",
- 			 hostname, service, TEST_RETURN,
- 			 gai_strerror(TEST_RETURN));
-+		return;
-+	}
- 
- 	/* test 5, IPv4 host+service w/ AI_NUMERICHOST */
--
- 	memset(&hints, 0, sizeof(hints));
- 	strcpy(service, "echo");
- 	servnum = 7;
-@@ -266,8 +262,11 @@ void gaiv4(void)
- 		tst_resm(TFAIL, "getaddrinfo IPv4 AI_NUMERICHOST w/ hostname: "
- 			 "returns %ld expected %d (EAI_NONAME)",
- 			 TEST_RETURN, EAI_NONAME);
-+		if (!TEST_RETURN)
-+			freeaddrinfo(aires);
-+		return;
- 	} else
--		tst_resm(TPASS, "getaddrinfo IPv4 AI_NUMERICHOST w/ hostname");
-+		tst_resm(TINFO, "getaddrinfo IPv4 AI_NUMERICHOST w/ hostname");
- 	if (!TEST_RETURN)
- 		freeaddrinfo(aires);
- 
-@@ -306,17 +305,28 @@ void gaiv4(void)
- 				 psin ? psin->sin_family : 0,
- 				 psin ? psin->sin_port : 0,
- 				 psin ? htons(psin->sin_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv4 0+service, PASSIVE");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
--			 "getaddrinfo IPv4 0+service, PASSIVE (\"\", \"%s\") "
--			 "returns %ld (\"%s\")", service, TEST_RETURN,
--			 gai_strerror(TEST_RETURN));
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv4 0+service, PASSIVE");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		if (TEST_RETURN == EAI_BADFLAGS) {
-+			tst_resm(TINFO, "getaddrinfo IPv4 0+service,"
-+				" PASSIVE (\"\", \"%s\") returns %ld (\"%s\")",
-+				service, TEST_RETURN,
-+				gai_strerror(TEST_RETURN));
-+		} else {
-+			tst_resm(TFAIL, "getaddrinfo IPv4 0+service,i"
-+				" PASSIVE (\"\", \"%s\") returns %ld (\"%s\")",
-+				service, TEST_RETURN,
-+				gai_strerror(TEST_RETURN));
-+			return;
-+		}
-+	}
- 
- 	/* test 7, IPv4 0+service */
--
- 	memset(&hints, 0, sizeof(hints));
- 	hints.ai_family = AF_INET;
- 	hints.ai_socktype = SOCK_STREAM;
-@@ -350,19 +360,30 @@ void gaiv4(void)
- 				 psin ? psin->sin_family : 0,
- 				 psin ? psin->sin_port : 0,
- 				 psin ? htons(psin->sin_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv4 0+service");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
--			 "getaddrinfo IPv4 0+service (\"\", \"%s\") returns %ld "
--			 "(\"%s\")", service, TEST_RETURN,
--			 gai_strerror(TEST_RETURN));
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv4 0+service");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		if (TEST_RETURN == EAI_BADFLAGS) {
-+			tst_resm(TINFO, "getaddrinfo IPv4 "
-+				"0+service (\"\", \"%s\") returns %ld (\"%s\")",
-+				service, TEST_RETURN,
-+				gai_strerror(TEST_RETURN));
-+		} else {
-+			tst_resm(TFAIL, "getaddrinfo IPv4 "
-+				"0+service (\"\", \"%s\") returns %ld (\"%s\")",
-+				service, TEST_RETURN,
-+				gai_strerror(TEST_RETURN));
-+			return;
-+		}
-+	}
- 
- 	/* test 8, IPv4 host+service, AI_NUMERICSERV */
--
- #ifndef AI_NUMERICSERV
--	tst_resm(TFAIL, "getaddrinfo IPv4 host+service, AI_NUMERICSERV: flag "
-+	tst_resm(TCONF, "getaddrinfo IPv4 host+service, AI_NUMERICSERV: flag "
- 		 "not implemented");
- #else
- 	memset(&hints, 0, sizeof(hints));
-@@ -376,15 +397,18 @@ void gaiv4(void)
- 			 "getaddrinfo IPv4 host+service, AI_NUMERICSERV: "
- 			 "returns %ld (\"%s\") expected %d (EAI_NONAME)",
- 			 TEST_RETURN, gai_strerror(TEST_RETURN), EAI_NONAME);
--	} else
--		tst_resm(TPASS,
-+		if (!TEST_RETURN)
-+			freeaddrinfo(aires);
-+		return;
-+	} else {
-+		tst_resm(TINFO,
- 			 "getaddrinfo IPv4 host+service, AI_NUMERICSERV");
-+	}
- 	if (!TEST_RETURN)
- 		freeaddrinfo(aires);
- #endif /* AI_NUMERICSERV */
- 
- 	/* test 9, IPv4 SOCK_STREAM/IPPROTO_UDP hints */
--
- 	memset(&hints, 0, sizeof(hints));
- 	hints.ai_family = AF_INET;
- 	hints.ai_socktype = SOCK_STREAM;
-@@ -396,12 +420,13 @@ void gaiv4(void)
- 		tst_resm(TFAIL, "getaddrinfo IPv4 SOCK_STREAM/IPPROTO_UDP "
- 			 "hints");
- 		freeaddrinfo(aires);
--	} else
--		tst_resm(TPASS, "getaddrinfo IPv4 SOCK_STREAM/IPPROTO_UDP "
-+		return;
-+	} else {
-+		tst_resm(TINFO, "getaddrinfo IPv4 SOCK_STREAM/IPPROTO_UDP "
- 			 "hints");
-+	}
- 
- 	/* test 10, IPv4 socktype 0, 513 */
--
- 	memset(&hints, 0, sizeof(hints));
- 	hints.ai_family = AF_INET;
- 	hints.ai_socktype = 0;
-@@ -439,20 +464,31 @@ void gaiv4(void)
- 				 psin ? psin->sin_family : 0,
- 				 psin ? psin->sin_port : 0,
- 				 psin ? htons(psin->sin_port) : 0);
--		} else if (got_tcp && got_udp)
--			tst_resm(TPASS, "getaddrinfo IPv4 socktype 0,513");
--		else
-+			freeaddrinfo(aires);
-+			return;
-+		} else if (got_tcp && got_udp) {
-+			tst_resm(TINFO, "getaddrinfo IPv4 socktype 0,513");
-+			freeaddrinfo(aires);
-+		} else {
- 			tst_resm(TFAIL, "getaddrinfo IPv4 socktype 0,513 TCP %d"
- 				 " UDP %d", got_tcp, got_udp);
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
--			 "getaddrinfo IPv4 socktype 0,513 (\"\", \"%s\") returns"
--			 " %ld (\"%s\")", service, TEST_RETURN,
--			 gai_strerror(TEST_RETURN));
-+			freeaddrinfo(aires);
-+			return;
-+		}
-+	} else {
-+		if (TEST_RETURN == EAI_BADFLAGS) {
-+			tst_resm(TINFO, "getaddrinfo IPv4 socktype 0,513"
-+				" (\"\", \"%s\") returns %ld (\"%s\")", service,
-+				TEST_RETURN, gai_strerror(TEST_RETURN));
-+		} else {
-+			tst_resm(TFAIL, "getaddrinfo IPv4 socktype 0,513"
-+				" (\"\", \"%s\") returns %ld (\"%s\")", service,
-+				TEST_RETURN, gai_strerror(TEST_RETURN));
-+			return;
-+		}
-+	}
- 
- 	/* test 11, IPv4 AI_V4MAPPED */
--
- 	/* AI_V4MAPPED should be ignored because family != AF_INET6 */
- 	memset(&hints, 0, sizeof(hints));
- 	hints.ai_family = AF_INET;
-@@ -482,18 +518,25 @@ void gaiv4(void)
- 				 psin ? psin->sin_family : 0,
- 				 psin ? psin->sin_port : 0,
- 				 psin ? htons(psin->sin_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv4 AI_V4MAPPED");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 "
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv4 AI_V4MAPPED");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv4 "
- 			 "AI_V4MAPPED (\"%s\") returns %ld (\"%s\")", hostname,
- 			 TEST_RETURN, gai_strerror(TEST_RETURN));
-+		return;
-+	}
-+
-+
-+	tst_resm(TPASS, "getaddrinfo tests (v4) succeed");
- }
- 
- /* getaddrinfo tests (v6) */
--
--void gaiv6(void)
-+static void gaiv6(void)
- {
- 	struct addrinfo *aires, hints, *pai;
- 	char hostname[MAXHOSTNAMELEN + 1];
-@@ -539,13 +582,18 @@ void gaiv6(void)
- 				 psin6 ? psin6->sin6_family : 0,
- 				 psin6 ? psin6->sin6_port : 0,
- 				 psin6 ? htons(psin6->sin6_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv6 basic lookup");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 basic "
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv6 basic lookup");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv6 basic "
- 			 "lookup (\"%s\") returns %ld (\"%s\")", hostname,
- 			 TEST_RETURN, gai_strerror(TEST_RETURN));
-+		return;
-+	}
- 
- 	/* test 13, IPv6 canonical name */
- 	memset(&hints, 0, sizeof(hints));
-@@ -559,20 +607,26 @@ void gaiv6(void)
- 		if (!pai) {
- 			tst_resm(TFAIL, "getaddrinfo IPv6 canonical name: no "
- 				 "entries with canonical name set");
-+			freeaddrinfo(aires);
-+			return;
- 		} else if (strcasecmp(hostname, pai->ai_canonname)) {
- 			tst_resm(TFAIL, "getaddrinfo IPv6 canonical name "
- 				 "(\"%s\") doesn't match hostname (\"%s\")",
- 				 pai->ai_canonname, hostname);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv6 canonical name");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 "
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv6 canonical name");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv6 "
- 			 "canonical name (\"%s\") returns %ld (\"%s\")",
- 			 shortname, TEST_RETURN, gai_strerror(TEST_RETURN));
-+		return;
-+	}
- 
- 	/* test 14, IPv6 host+service name */
--
- 	memset(&hints, 0, sizeof(hints));
- 	/*
- 	 * These are hard-coded for echo/7 to avoid using getservbyname(),
-@@ -607,13 +661,18 @@ void gaiv6(void)
- 				 psin6 ? psin6->sin6_family : 0,
- 				 psin6 ? psin6->sin6_port : 0,
- 				 psin6 ? htons(psin6->sin6_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv6 host+service");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 host+"
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv6 host+service");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv6 host+"
- 			 "service returns %ld (\"%s\")", TEST_RETURN,
- 			 gai_strerror(TEST_RETURN));
-+		return;
-+	}
- 
- 	/* test 15, IPv6 hostname+service, AI_PASSIVE */
- 	memset(&hints, 0, sizeof(hints));
-@@ -652,18 +711,22 @@ void gaiv6(void)
- 				 psin6 ? psin6->sin6_family : 0,
- 				 psin6 ? psin6->sin6_port : 0,
- 				 psin6 ? htons(psin6->sin6_port) : 0);
--		} else
--			tst_resm(TPASS,
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO,
- 				 "getaddrinfo IPv6 host+service PASSIVE");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 host+"
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv6 host+"
- 			 "service, PASSIVE (\"%s\", \"%s\") returns %ld (\"%s\")",
- 			 hostname, service, TEST_RETURN,
- 			 gai_strerror(TEST_RETURN));
-+		return;
-+	}
- 
- 	/* test 16, IPv6 host+service w/ AI_NUMERICHOST */
--
- 	memset(&hints, 0, sizeof(hints));
- 	strcpy(service, "echo");
- 	servnum = 7;
-@@ -674,8 +737,11 @@ void gaiv6(void)
- 		tst_resm(TFAIL, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname: "
- 			 "returns %ld expected %d (EAI_NONAME)",
- 			 TEST_RETURN, EAI_NONAME);
-+		if (!TEST_RETURN)
-+			freeaddrinfo(aires);
-+		return;
- 	} else
--		tst_resm(TPASS, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname");
-+		tst_resm(TINFO, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname");
- 	if (!TEST_RETURN)
- 		freeaddrinfo(aires);
- 
-@@ -715,17 +781,26 @@ void gaiv6(void)
- 				 psin6 ? psin6->sin6_family : 0,
- 				 psin6 ? psin6->sin6_port : 0,
- 				 psin6 ? htons(psin6->sin6_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv6 0+service, PASSIVE");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
--			 "getaddrinfo IPv6 0+service, PASSIVE (\"\", \"%s\") "
--			 "returns %ld (\"%s\")", service, TEST_RETURN,
--			 gai_strerror(TEST_RETURN));
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv6 0+service, PASSIVE");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		if (TEST_RETURN == EAI_BADFLAGS) {
-+			tst_resm(TINFO, "getaddrinfo IPv6 0+service, PASSIVE"
-+				" (\"\", \"%s\") returns %ld (\"%s\")", service,
-+				TEST_RETURN, gai_strerror(TEST_RETURN));
-+		} else {
-+			tst_resm(TFAIL, "getaddrinfo IPv6 0+service, PASSIVE"
-+				" (\"\", \"%s\") returns %ld (\"%s\")", service,
-+				TEST_RETURN, gai_strerror(TEST_RETURN));
-+			return;
-+		}
-+	}
- 
- 	/* test 18, IPv6 0+service */
--
- 	memset(&hints, 0, sizeof(hints));
- 	hints.ai_family = AF_INET6;
- 	hints.ai_socktype = SOCK_STREAM;
-@@ -760,19 +835,28 @@ void gaiv6(void)
- 				 psin6 ? psin6->sin6_family : 0,
- 				 psin6 ? psin6->sin6_port : 0,
- 				 psin6 ? htons(psin6->sin6_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv6 0+service");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
--			 "getaddrinfo IPv6 0+service (\"\", \"%s\") returns %ld "
--			 "(\"%s\")", service, TEST_RETURN,
--			 gai_strerror(TEST_RETURN));
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv6 0+service");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		if (TEST_RETURN == EAI_BADFLAGS) {
-+			tst_resm(TINFO, "getaddrinfo IPv6 0+service"
-+				" (\"\", \"%s\") returns %ld (\"%s\")", service,
-+				TEST_RETURN, gai_strerror(TEST_RETURN));
-+		} else {
-+			tst_resm(TFAIL, "getaddrinfo IPv6 0+service"
-+				" (\"\", \"%s\") returns %ld (\"%s\")", service,
-+				TEST_RETURN, gai_strerror(TEST_RETURN));
-+			return;
-+		}
-+	}
- 
- 	/* test 19, IPv6 host+service, AI_NUMERICSERV */
--
- #ifndef AI_NUMERICSERV
--	tst_resm(TFAIL, "getaddrinfo IPv6 host+service, AI_NUMERICSERV: flag "
-+	tst_resm(TCONF, "getaddrinfo IPv6 host+service, AI_NUMERICSERV: flag "
- 		 "not implemented");
- #else
- 	memset(&hints, 0, sizeof(hints));
-@@ -786,15 +870,17 @@ void gaiv6(void)
- 			 "getaddrinfo IPv6 host+service, AI_NUMERICSERV: "
- 			 "returns %ld (\"%s\") expected %d (EAI_NONAME)",
- 			 TEST_RETURN, gai_strerror(TEST_RETURN), EAI_NONAME);
-+		if (!TEST_RETURN)
-+			freeaddrinfo(aires);
-+		return;
- 	} else
--		tst_resm(TPASS,
-+		tst_resm(TINFO,
- 			 "getaddrinfo IPv6 host+service, AI_NUMERICSERV");
- 	if (!TEST_RETURN)
- 		freeaddrinfo(aires);
- #endif /* AI_NUMERICSERV */
- 
- 	/* test 20, IPv6 SOCK_STREAM/IPPROTO_UDP hints */
--
- 	memset(&hints, 0, sizeof(hints));
- 	hints.ai_family = AF_INET6;
- 	hints.ai_socktype = SOCK_STREAM;
-@@ -806,12 +892,13 @@ void gaiv6(void)
- 		tst_resm(TFAIL, "getaddrinfo IPv6 SOCK_STREAM/IPPROTO_UDP "
- 			 "hints");
- 		freeaddrinfo(aires);
--	} else
--		tst_resm(TPASS, "getaddrinfo IPv6 SOCK_STREAM/IPPROTO_UDP "
-+		return;
-+	} else {
-+		tst_resm(TINFO, "getaddrinfo IPv6 SOCK_STREAM/IPPROTO_UDP "
- 			 "hints");
-+	}
- 
- 	/* test 21, IPv6 socktype 0, 513 */
--
- 	memset(&hints, 0, sizeof(hints));
- 	hints.ai_family = AF_INET6;
- 	hints.ai_socktype = 0;
-@@ -850,20 +937,31 @@ void gaiv6(void)
- 				 psin6 ? psin6->sin6_family : 0,
- 				 psin6 ? psin6->sin6_port : 0,
- 				 psin6 ? htons(psin6->sin6_port) : 0);
--		} else if (got_tcp && got_udp)
--			tst_resm(TPASS, "getaddrinfo IPv6 socktype 0,513");
--		else
-+			freeaddrinfo(aires);
-+			return;
-+		} else if (got_tcp && got_udp) {
-+			tst_resm(TINFO, "getaddrinfo IPv6 socktype 0,513");
-+			freeaddrinfo(aires);
-+		} else {
- 			tst_resm(TFAIL, "getaddrinfo IPv6 socktype 0,513 TCP %d"
- 				 " UDP %d", got_tcp, got_udp);
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
--			 "getaddrinfo IPv6 socktype 0,513 (\"\", \"%s\") returns"
--			 " %ld (\"%s\")", service, TEST_RETURN,
--			 gai_strerror(TEST_RETURN));
-+			freeaddrinfo(aires);
-+			return;
-+		}
-+	} else {
-+		if (TEST_RETURN == EAI_BADFLAGS) {
-+			tst_resm(TINFO, "getaddrinfo IPv6 socktype 0,513"
-+				" (\"\", \"%s\") returns %ld (\"%s\")", service,
-+				TEST_RETURN, gai_strerror(TEST_RETURN));
-+		} else {
-+			tst_resm(TFAIL, "getaddrinfo IPv6 socktype 0,513"
-+				" (\"\", \"%s\") returns %ld (\"%s\")", service,
-+				TEST_RETURN, gai_strerror(TEST_RETURN));
-+			return;
-+		}
-+	}
- 
- 	/* test 22, IPv6 AI_V4MAPPED */
--
- 	memset(&hints, 0, sizeof(hints));
- 	hints.ai_family = AF_INET6;
- 	hints.ai_flags = AI_V4MAPPED;
-@@ -892,57 +990,18 @@ void gaiv6(void)
- 				 psin6 ? psin6->sin6_family : 0,
- 				 psin6 ? psin6->sin6_port : 0,
- 				 psin6 ? htons(psin6->sin6_port) : 0);
--		} else
--			tst_resm(TPASS, "getaddrinfo IPv6 AI_V4MAPPED");
--		freeaddrinfo(aires);
--	} else
--		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 "
-+			freeaddrinfo(aires);
-+			return;
-+		} else {
-+			tst_resm(TINFO, "getaddrinfo IPv6 AI_V4MAPPED");
-+			freeaddrinfo(aires);
-+		}
-+	} else {
-+		tst_resm(TFAIL, "getaddrinfo IPv6 "
- 			 "AI_V4MAPPED (\"%s\") returns %ld (\"%s\")", hostname,
- 			 TEST_RETURN, gai_strerror(TEST_RETURN));
--}
--
--/* this prints an addrinfo list; useful for debugging */
--void dumpres(struct addrinfo *pai)
--{
--	int count = 1;
--	for (; pai; pai = pai->ai_next, count++) {
--		printf("result %d [0x%p]\n", count, pai);
--		printf("\tai_flags %x\n", pai->ai_flags);
--		printf("\tai_family %d\n", pai->ai_family);
--		printf("\tai_socktype %d\n", pai->ai_socktype);
--		printf("\tai_protocol %d\n", pai->ai_protocol);
--		printf("\tai_addrlen %d\n", pai->ai_addrlen);
--		printf("\tai_canonname \"%s\"\n", pai->ai_canonname);
--		printf("\tai_addr.sa_family %x\n", pai->ai_addr->sa_family);
--		if (pai->ai_addr->sa_family == AF_INET) {
--			char buf[1024];
--			struct sockaddr_in *psin =
--			    (struct sockaddr_in *)pai->ai_addr;
--
--			if (!inet_ntop(AF_INET, &psin->sin_addr, buf,
--				       sizeof(buf)))
--				buf[0] = '\0';
--			printf("\tai_addr.sin_addr \"%s\"\n", buf);
--		} else if (pai->ai_addr->sa_family == AF_INET6) {
--			char buf[1024];
--
--			struct sockaddr_in6 *psin6 =
--			    (struct sockaddr_in6 *)pai->ai_addr;
--			if (!inet_ntop(AF_INET6, &psin6->sin6_addr, buf,
--				       sizeof(buf)))
--				buf[0] = '\0';
--			printf("\tai_addr.sin6_addr \"%s\"\n", buf);
--
--		}
--		printf("\tai_next %p\n", pai->ai_next);
-+		return;
- 	}
--}
- 
--void setup(void)
--{
--	TEST_PAUSE;		/* if -P option specified */
--}
--
--void cleanup(void)
--{
-+	tst_resm(TPASS, "getaddrinfo tests (v6) succeed");
- }
+
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it is
+> + * free of the rightful claim of any third person regarding infringement
+> + * or the like.  Any license provided herein, whether implied or
+> + * otherwise, applies only to this software file.  Patent licenses, if
+> + * any, provided herein do not apply to combinations of this program with
+> + * other software, or any other product whatsoever.
+> + */
+
+This is GPLv2 header, can we please use GPLv2+ instead?
+
+Have a look at: include/lapi/fcntl.h for instance.
+
+And it looks like I've missed that in the renameat2 case as well,
+sorry. Can you please fix these as well?
+
+> +#ifndef KCMP_H
+> +#define KCMP_H
+> +
+> +#include <sys/types.h>
+> +#include "config.h"
+> +#include "linux_syscall_numbers.h"
+> +
+> +#if !defined(HAVE_ENUM_KCMP_TYPE)
+> +
+> +enum kcmp_type {
+> +	KCMP_FILE,
+> +	KCMP_VM,
+> +	KCMP_FILES,
+> +	KCMP_FS,
+> +	KCMP_SIGHAND,
+> +	KCMP_IO,
+> +	KCMP_SYSVSEM,
+> +	KCMP_TYPES,
+> +};
+> +
+> +#endif
+
+Here should be an #else branch that includes the <linux/kcmp.h> in case
+that the enum is defined there. Otherwise the definitions would be
+missing when the header actuall exists and the code will fail to
+compile.
+
+> +#if !defined(HAVE_KCMP)
+> +
+> +int kcmp(int pid1, int pid2, int type, int fd1, int fd2)
+> +{
+> +	return ltp_syscall(__NR_kcmp, pid1, pid2, type, fd1, fd2);
+> +}
+> +
+> +#endif
+> +
+> +#endif /* KCMP_H */
+
+And this file may be moved to include/lapi/ so that we have all fallback
+definitions in one place. However in this case I doubt that we will want
+to reuse it, so it can also stay in the kcmp directory as well.
+
+> diff --git a/testcases/kernel/syscalls/kcmp/kcmp01.c b/testcases/kernel/syscalls/kcmp/kcmp01.c
+> new file mode 100644
+> index 0000000..585e89e
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/kcmp/kcmp01.c
+> @@ -0,0 +1,143 @@
+> +/*
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it is
+> + * free of the rightful claim of any third person regarding infringement
+> + * or the like.  Any license provided herein, whether implied or
+> + * otherwise, applies only to this software file.  Patent licenses, if
+> + * any, provided herein do not apply to combinations of this program with
+> + * other software, or any other product whatsoever.
+> + */
+> +
+> + /* Description:
+> + *   Verify that:
+> + *		1) kcmp returns 0 with two process and two fd refering to the
+> + *			same fd
+                             ^
+			     open file would be less confusing in this
+			     context
+
+> + *		2) kcmp doesn't return 0 with two process and two fd refering
+> + *		    to the same fd
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "lapi/fcntl.h"
+> +#include "kcmp.h"
+> +
+> +#define TEST_FILE "test_file"
+> +#define TEST_FILE2 "test_file2"
+> +
+> +
+> +static int fd1;
+> +static int fd2;
+> +static int fd3;
+> +static int pid1;
+> +static int pid2;
+> +
+> +char *TCID = "kcmp01";
+> +
+> +static struct test_case {
+> +	int *pid1;
+> +	int *pid2;
+> +	int type;
+> +	int *fd1;
+> +	int *fd2;
+> +	int exp_fail;
+> +} test_cases[] = {
+> +	{&pid1, &pid2, KCMP_FILE, &fd1, &fd2, 0},
+> +	{&pid1, &pid2, KCMP_FILE, &fd1, &fd3, 1},
+> +};
+> +
+> +int TST_TOTAL = ARRAY_SIZE(test_cases);
+> +
+> +static void cleanup(void);
+> +static void setup(void);
+> +static void do_child(const struct test_case *test);
+> +static void cleanup_child(void);
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	int i;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		for (i = 0; i < TST_TOTAL; ++i) {
+> +			pid2 = tst_fork();
+
+Unline SAFE_MACROS() the tst_fork() may still fail, it's unlikely but
+possible (for isntance it may fail if there is not enough system memory
+left).
+
+So we need to check the return value from the function and call
+tst_brkm() if it failed.
+
+Or we can add SAFE_FORK() that would call tst_fork() and make use of it
+here.
+
+> +			if (!pid2)
+> +				do_child(&test_cases[i]);
+> +			else
+> +				tst_record_childstatus(cleanup, pid2);
+> +			tst_count++;
+> +		}
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void do_child(const struct test_case *test)
+> +{
+> +	pid2 = getpid();
+> +	fd2 = dup(fd1);
+> +	fd3 = SAFE_OPEN(cleanup_child, TEST_FILE2, O_CREAT | O_RDWR, 0666);
+> +
+> +	TEST(kcmp(*(test->pid1), *(test->pid2), test->type,
+> +			  *(test->fd1), *(test->fd2)));
+> +	cleanup_child();
+
+Well, these file descriptors will be closed when the child exits (when
+tst_exit() calls exit() file descriptors are closed, etc.). So this is
+not strictly needed...
+
+The reason why we strictly close all remaining file descriptors before
+we call tst_rmdir() in cleanup() is "nfs silly rename" which breaks the
+cleanup in case that file was unlinked but there is open file descriptor
+pointing to the file (in this case NFS keeps the file as .nfsXXXXX which
+couldn't be deleted). Which caused test failures if TMPDIR points to NFS
+mounts.
+
+> +	if (TEST_RETURN == -1)
+> +		tst_resm(TFAIL | TTERRNO, "kcmp() failed unexpectedly");
+> +
+> +	if ((test->exp_fail && TEST_RETURN == 0)
+> +		|| (test->exp_fail == 0 && TEST_RETURN))
+                           ^
+			   This should rather be exp_different or
+			   something similar. As it is it's quite
+			   confusing since the call actually haven't
+			   failed but reported that resources are
+			   different.
+> +		tst_resm(TFAIL, "kcmp() didn't return the expected value");
+
+                                     ^
+				     Can we be a litte more specific
+				     here? Can we print hat have we
+				     expected and what was the result?
+
+> +	if ((test->exp_fail == 0 && TEST_RETURN == 0)
+> +		|| (test->exp_fail && TEST_RETURN))
+> +		tst_resm(TPASS, "kcmp() returned the expected value");
+> +
+> +	tst_exit();
+> +}
+> +
+> +static void cleanup_child(void)
+> +{
+> +	if (fd2 > 0 && close(fd2) < 0)
+> +		tst_resm(TWARN | TERRNO, "close fd2 failed");
+> +	fd2 = 0;
+> +	if (fd3 > 0 && close(fd3) < 0)
+> +		tst_resm(TWARN | TERRNO, "close fd3 failed");
+> +	fd3 = 0;
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if ((tst_kvercmp(3, 5, 0)) < 0) {
+> +		tst_brkm(TCONF, NULL,
+> +			"This test can only run on kernels that are 3.5. and higher");
+> +	}
+> +
+> +	tst_tmpdir();
+> +
+> +	pid1 = getpid();
+> +	fd1 = SAFE_OPEN(cleanup, TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd1 > 0 && close(fd1) < 0)
+> +		tst_resm(TWARN | TERRNO, "close fd1 failed");
+> +	tst_rmdir();
+> +}
+> diff --git a/testcases/kernel/syscalls/kcmp/kcmp02.c b/testcases/kernel/syscalls/kcmp/kcmp02.c
+> new file mode 100644
+> index 0000000..0d734ad
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/kcmp/kcmp02.c
+> @@ -0,0 +1,137 @@
+> +/*
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it is
+> + * free of the rightful claim of any third person regarding infringement
+> + * or the like.  Any license provided herein, whether implied or
+> + * otherwise, applies only to this software file.  Patent licenses, if
+> + * any, provided herein do not apply to combinations of this program with
+> + * other software, or any other product whatsoever.
+> + */
+> +
+> + /* Description:
+> + *   Verify that:
+> + *		1) kcmp fails with bad pid
+> + *		2) kcmp fails with invalid flag
+> + *		3) kcmp fails with invalid fd
+> + */
+> +
+> +#define _GNU_SOURCE
+> +
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "lapi/fcntl.h"
+> +#include "kcmp.h"
+> +
+> +#define TEST_FILE "test_file"
+> +#define TEST_FILE2 "test_file2"
+> +
+> +static int fd1;
+> +static int fd2;
+> +static int fd_fake;
+> +static int pid1;
+> +static int pid_fake = -1;
+> +static int fd_fake = -1;
+> +
+> +char *TCID = "kcmp02";
+> +
+> +#include <sys/types.h>
+> +#include <sys/wait.h>
+> +
+> +static struct test_case {
+> +	int *pid1;
+> +	int *pid2;
+> +	int type;
+> +	int *fd1;
+> +	int *fd2;
+> +	int exp_errno;
+> +} test_cases[] = {
+> +	{&pid1, &pid_fake, KCMP_FILE, &fd1, &fd2, ESRCH},
+
+We have tst_get_unused_pid() please make use of it.
+
+> +	{&pid1, &pid1, EINVAL, &fd1, &fd2, EINVAL},
+                         ^
+			Why? It fails only by chance since EINVAL is 22
+			and KCMP_TYPES is less than 22. Good values for
+			this are >= KCMP_TYPES and < 0 since enum starts
+			on 0 by definition.
+
+			So I would test with KCMP_TYPES, KCMP_TYPES + 1,
+			INT_MAX, -1, and INT_MIN, which should be enough
+			to cover most of the possibilities.
+
+> +	{&pid1, &pid1, KCMP_FILE, &fd1, &fd_fake, EBADF}
+> +};
+> +
+> +int TST_TOTAL = ARRAY_SIZE(test_cases);
+> +
+> +static void cleanup(void);
+> +static void setup(void);
+> +static void kcmp_verify(const struct test_case *test);
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	int i;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		for (i = 0; i < TST_TOTAL; i++)
+> +			kcmp_verify(&test_cases[i]);
+> +
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void kcmp_verify(const struct test_case *test)
+> +{
+> +	TEST(kcmp(*(test->pid1), *(test->pid2), test->type,
+> +			  *(test->fd1), *(test->fd2)));
+> +
+> +	if (test->exp_errno && TEST_RETURN != -1) {
+> +		tst_resm(TFAIL, "kcmp() succeeded unexpectedly");
+> +		return;
+> +	}
+> +
+> +	if (!test->exp_errno && !TEST_RETURN) {
+> +		tst_resm(TFAIL | TTERRNO, "kcmp() failed unexpectedly");
+> +		return;
+> +	}
+
+We do not have possitive testcases in this tests -> this branch is never
+called.
+
+> +	if (test->exp_errno == TEST_ERRNO) {
+> +		tst_resm(TPASS | TTERRNO, "kcmp() returned the expected value");
+> +		return;
+> +	}
+> +
+> +	tst_resm(TFAIL | TTERRNO,
+> +		"kcmp() got unexpected return value: expected: %d - %s",
+> +			test->exp_errno, tst_strerrno(test->exp_errno));
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if ((tst_kvercmp(3, 5, 0)) < 0) {
+> +		tst_brkm(TCONF, NULL,
+> +			"This test can only run on kernels that are 3.5. and higher");
+> +	}
+> +
+> +	tst_tmpdir();
+> +
+> +	pid1 = getpid();
+> +	fd1 = SAFE_OPEN(cleanup, TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
+> +	fd2 = SAFE_OPEN(cleanup, TEST_FILE2, O_CREAT | O_RDWR | O_TRUNC);
+> +
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (fd1 > 0 && close(fd1) < 0)
+> +		tst_resm(TWARN | TERRNO, "close fd1 failed");
+> +
+> +	if (fd2 > 0 && close(fd2) < 0)
+> +		tst_resm(TWARN | TERRNO, "close fd2 failed");
+> +	tst_rmdir();
+> +
+> +}
+> -- 
+> 2.1.4
+> 
+> 
+> -- 
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+
 -- 
-1.9.3
-
+Cyril Hrubis
+chrubis@suse.cz
