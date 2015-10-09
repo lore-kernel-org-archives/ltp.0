@@ -1,33 +1,38 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri,  9 Oct 2015 12:45:15 +0300
-Subject: [LTP] [Committed] network/nfs_stress/nfs01: fix test binary name
-Message-ID: <1444383915-22848-1-git-send-email-alexey.kodanev@oracle.com>
+From: Cedric Hnyda <chnyda@suse.com>
+Date: Fri,  9 Oct 2015 16:26:44 +0200
+Subject: [LTP]  [PATCH] inotify06: kernel version fix
+Message-ID: <1444400804-3658-1-git-send-email-chnyda@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/nfs/nfs_stress/nfs01 |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+inotify06 is a regression test for kernels >= 4.2.
+Add a condition so that only >= 4.2 kernels can run the test
+because previous kernel are likely to crash because of the test.
 
-diff --git a/testcases/network/nfs/nfs_stress/nfs01 b/testcases/network/nfs/nfs_stress/nfs01
-index 0f6877e..19c7f4b 100755
---- a/testcases/network/nfs/nfs_stress/nfs01
-+++ b/testcases/network/nfs/nfs_stress/nfs01
-@@ -29,8 +29,8 @@ TST_CLEANUP="nfs_cleanup"
- 
- do_test()
+Signed-off-by: Cedric Hnyda <chnyda@suse.com>
+---
+ testcases/kernel/syscalls/inotify/inotify06.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/testcases/kernel/syscalls/inotify/inotify06.c b/testcases/kernel/syscalls/inotify/inotify06.c
+index 71f7596..090729d 100644
+--- a/testcases/kernel/syscalls/inotify/inotify06.c
++++ b/testcases/kernel/syscalls/inotify/inotify06.c
+@@ -69,6 +69,11 @@ static void setup(void)
  {
--	tst_resm TINFO "starting 'open_files $NFILES'"
--	ROD open_files $NFILES
-+	tst_resm TINFO "starting 'nfs01_open_files $NFILES'"
-+	ROD nfs01_open_files $NFILES
+ 	int i;
  
- 	cd $LTPROOT
- 	ROD umount $TST_TMPDIR
++	if ((tst_kvercmp(4, 2, 0)) < 0) {
++		tst_brkm(TCONF, NULL,
++			"This test can only run on kernels that are 4.2. and higher");
++	}
++
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
+ 	TEST_PAUSE;
 -- 
-1.7.1
+2.1.4
 
