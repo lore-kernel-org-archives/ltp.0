@@ -1,35 +1,33 @@
-From: $rik@nth  <srikanth007m@gmail.com>
-Date: Fri, 9 Oct 2015 08:28:42 +0530
-Subject: [LTP] inotify06 test causing kernel panic
-In-Reply-To: <20151008202533.GA11505@rei.suse.cz>
-References: <CANKSX+G1QKMqRF8TzSxGQAe=i+VQFAqmL8qpBTdaup1pSzivww@mail.gmail.com>
- <20151008202533.GA11505@rei.suse.cz>
-Message-ID: <CANKSX+EBfkoZKCBOZdEhT6+Ba2PR5xFCc2iCnAe4jVd6amffqw@mail.gmail.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri,  9 Oct 2015 12:45:15 +0300
+Subject: [LTP] [Committed] network/nfs_stress/nfs01: fix test binary name
+Message-ID: <1444383915-22848-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Yes. Later i saw the source and noticed.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/nfs/nfs_stress/nfs01 |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-
-On Fri, Oct 9, 2015 at 1:55 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> on latest available LTP release there is one newly added test
->> `inotify06 `. Which is causing kernel panic. Is the test targeted to
->> >4.0 kernel? Can anyone confirm.
->
-> If you look at the test source it clearly says that it's regression test
-> for a bug in inotify that has been fixed in kernel 4.2 and that older
-> kernels are buggy and will likely panic.
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-
-
-
+diff --git a/testcases/network/nfs/nfs_stress/nfs01 b/testcases/network/nfs/nfs_stress/nfs01
+index 0f6877e..19c7f4b 100755
+--- a/testcases/network/nfs/nfs_stress/nfs01
++++ b/testcases/network/nfs/nfs_stress/nfs01
+@@ -29,8 +29,8 @@ TST_CLEANUP="nfs_cleanup"
+ 
+ do_test()
+ {
+-	tst_resm TINFO "starting 'open_files $NFILES'"
+-	ROD open_files $NFILES
++	tst_resm TINFO "starting 'nfs01_open_files $NFILES'"
++	ROD nfs01_open_files $NFILES
+ 
+ 	cd $LTPROOT
+ 	ROD umount $TST_TMPDIR
 -- 
-Thanks & Regards,
-M.Srikanth Kumar.
+1.7.1
+
