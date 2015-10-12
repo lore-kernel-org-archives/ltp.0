@@ -1,128 +1,31 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 12 Oct 2015 17:01:24 +0800
-Subject: [LTP] [PATCH] mem/hugetlb: shift an empty region to use in
-	hugemmap02.c
-In-Reply-To: <1444459606-20540-1-git-send-email-liwang@redhat.com>
-References: <1444459606-20540-1-git-send-email-liwang@redhat.com>
-Message-ID: <CAEemH2eFhXppcVGc6kse3RU0L0_MpwEYZK4Mq=cTG3xrszfaFg@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 12 Oct 2015 11:20:37 +0200
+Subject: [LTP] proc01 causing kernel panic
+In-Reply-To: <CANKSX+HCdoZ2+fk7eTkiiysAHhOds-Vdy87ONhC5ecrHD0C8iw@mail.gmail.com>
+References: <CANKSX+HCdoZ2+fk7eTkiiysAHhOds-Vdy87ONhC5ecrHD0C8iw@mail.gmail.com>
+Message-ID: <20151012092037.GA24891@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> Can anyone help in debugging the proc01 test causing the kernel panic.
+>   6821.197961:   <6> Process proc01 (pid: 9052, stack limit = 0xffffffc01e1e0058)
+>   6821.204642:   <6> Call trace:
+>   6821.207083:   <2> [<ffffffc000669b40>] rndis_proc_show+0xa4/0xf8
+>   6821.212549:   <2> [<ffffffc0001bb4d0>] seq_read+0x180/0x3ac
+>   6821.217582:   <2> [<ffffffc0001ec5a8>] proc_reg_read+0x64/0x84
+>   6821.222878:   <2> [<ffffffc00019c1c0>] vfs_read+0x90/0x148
+>   6821.227824:   <2> [<ffffffc00019c928>] SyS_read+0x44/0x84
+>   6821.232688:   <6> Code: f9401c28 53001d2a f90007e8 f9401428 (b9421908) 
+>   6821.239083:   <6> ---[ end trace 64a7e95832f9f646 ]---
+>   6821.243380:   <6> Kernel panic - not syncing: Fatal exception
 
-On Sat, Oct 10, 2015 at 2:46 PM, Li Wang <liwang@redhat.com> wrote:
-
-> the testcase 'hugemmap02' always failed on s390x as:
-> ----------
-> hugemmap02    0  TINFO  :  set nr_hugepages to 128
-> hugemmap02    1  TPASS  :  huge mmap succeeded (64-bit)
-> ./hugemmap02: relocation error: ./hugemmap02: symbol , version GLIBC_2.2
-> not defined in file libc.so.6 with link time reference
-> ----------
->
-> the reason is that function
->         "addr = mmap(LOW_ADDR, page_sz, PROT_READ,
->                 MAP_SHARED | MAP_FIXED, nfildes, 0);"
-> expect to map in the virtual address from 0x80000000 to 0x80001000.
->
-> but in the program we could obviously see the region has been used:
-> ---------
->  # readelf -s hugemmap02 |grep 80001 -B 10
->
->    120: 0000000080002c00     0 FUNC    GLOBAL DEFAULT  UND getgid@GLIBC_2.2
-> (4)
->
->    Symbol table '.symtab' contains 406 entries:
->       Num:    Value          Size Type    Bind   Vis      Ndx Name
->         0: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT  UND
->         1: 0000000080000238     0 SECTION LOCAL  DEFAULT    1
->         2: 0000000080000248     0 SECTION LOCAL  DEFAULT    2
->         3: 0000000080000268     0 SECTION LOCAL  DEFAULT    3
->         4: 0000000080000290     0 SECTION LOCAL  DEFAULT    4
->         5: 0000000080000678     0 SECTION LOCAL  DEFAULT    5
->         6: 00000000800011d0     0 SECTION LOCAL  DEFAULT    6
->         7: 00000000800015f0     0 SECTION LOCAL  DEFAULT    7
->         8: 00000000800016e8     0 SECTION LOCAL  DEFAULT    8
->         9: 0000000080001768     0 SECTION LOCAL  DEFAULT    9
->        10: 00000000800017c8     0 SECTION LOCAL  DEFAULT   10
-> ----------
->
-> then I print the address during the program runing. it looks like as the
-> guess:
-> ----------
-> hugemmap02    0  TINFO  :  set nr_hugepages to 128
-> program address:
-> 80000000-80012000 r-xp 00000000 fd:00 68124645
->  /mnt/tests/kernel/vm/hugepage/ltp-hugetlbfs/ltp-full-20150903/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02
-> 80012000-80013000 r--p 00011000 fd:00 68124645
->  /mnt/tests/kernel/vm/hugepage/ltp-hugetlbfs/ltp-full-20150903/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02
-> ...
-> 80014000-80017000 rw-p 00000000 00:00 0
-> 9cf72000-9cf93000 rw-p 00000000 00:00 0
-> [heap]
-> 3ffad56e000-3ffbd56e000 r--s 00000000 00:05 2677
->  /dev/zero
-> 3ffbd56e000-3ffcd56e000 r--s 00000000 00:05 2677
->  /dev/zero
-> ...
-> ?Lhugemmap02    1  TPASS  :  huge mmap succeeded (64-bit)
-> ./hugemmap02: relocation error: ./hugemmap02: symbol , version GLIBC_2.2
-> not defined in file libc.so.6 with link time reference
-> -----------
->
-> So I draft this patch to shift 'LOW_ADDR' with an empty region on s390x.
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-> index cfdcb3c..c5bb429 100644
-> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-> @@ -56,8 +56,14 @@
->  #include "safe_macros.h"
->  #include "mem.h"
->
-> +#if __s390__ || __s390x__
-> +#define LOW_ADDR       (void *)(0x90000000)
-> +#define LOW_ADDR2      (void *)(0xa0000000)
->
-
-looks like the LOW_ADDR defined in limited is not a good idea, if the
-program can shift the region dynamically, that would be better.
-
-so, please ignore this patch, I will format V2 to achieve the method.
-
-
-
-> +
-> +#else
->  #define LOW_ADDR       (void *)(0x80000000)
->  #define LOW_ADDR2      (void *)(0x90000000)
-> +#endif
->
->  static char TEMPFILE[MAXPATHLEN];
->
-> --
-> 1.8.3.1
->
->
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
->
-
-
+Looks like a bug in rndis kernel driver (because reading the proc files
+the driver export causes kernel panic).
 
 -- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20151012/d4bc9ced/attachment.html>
+Cyril Hrubis
+chrubis@suse.cz
