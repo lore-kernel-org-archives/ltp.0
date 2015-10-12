@@ -1,124 +1,24 @@
-From: $rik@nth  <srikanth007m@gmail.com>
-Date: Fri, 9 Oct 2015 20:23:07 +0530
-Subject: [LTP]  proc01 causing kernel panic
-Message-ID: <CANKSX+HCdoZ2+fk7eTkiiysAHhOds-Vdy87ONhC5ecrHD0C8iw@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 12 Oct 2015 12:23:30 +0200
+Subject: [LTP] [PATCH] inotify06: kernel version fix
+In-Reply-To: <1444400804-3658-1-git-send-email-chnyda@suse.com>
+References: <1444400804-3658-1-git-send-email-chnyda@suse.com>
+Message-ID: <20151012102330.GA16397@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi LTP/Cyril,
+Hi!
+> inotify06 is a regression test for kernels >= 4.2.
+> Add a condition so that only >= 4.2 kernels can run the test
+> because previous kernel are likely to crash because of the test.
 
-Can anyone help in debugging the proc01 test causing the kernel panic.
-
-Kernel verison: 3.18
-LTP Version: LTP-09042015
-
-Find the attached kernel signatures and strace log of proc01.
+No, it's a regression test for a bug that was fixed in 4.2 and
+backported to stable kernel branches. It's okay that it brings down
+unpatched kernels, since they are buggy and should be updated.
 
 -- 
-Thanks & Regards,
-M.Srikanth Kumar.
--------------- next part --------------
-  6820.421434:   <6> ICMPv6: process `proc01' is using deprecated sysctl (syscall) net.ipv6.neigh.default.base_reachable_time - use net.ipv6.neigh.default.base_reachable_time_ms instead
-  6820.623973:   <6> nr_pdflush_threads exported in /proc is scheduled for removal
-  6820.637781:   <6> Unable to handle kernel NULL pointer dereference at virtual address 00000218
-  6820.644912:   <6> pgd = ffffffc0594ad000
-  6820.648335:   <2> [00000218] *pgd=00000000d94c9003, *pud=00000000d94c9003, *pmd=00000000a56b1003, *pte=0000000000000000
-  6820.658662:   <6> Internal error: Oops: 96000007 [#1] PREEMPT SMP
-  6820.664018:   <2> Modules linked in: control(PO)
-  6820.668193:   <6> CPU: 4 PID: 9052 Comm: proc01 Tainted: P        W  O   3.18.20-ga7b28e9-13935-gcab9121 #1
-  6820.677386:   <6> Hardware name: RasbPi
-  6820.683986:   <6> task: ffffffc021d18000 ti: ffffffc01e1e0000 task.ti: ffffffc01e1e0000
-  6820.691459:   <2> PC is at rndis_proc_show+0xa4/0xf8
-  6820.695881:   <2> LR is at seq_read+0x184/0x3ac
-  6820.699872:   <2> pc : [<ffffffc000669b40>] lr : [<ffffffc0001bb4d4>] pstate: 80000145
-  6820.707246:   <2> sp : ffffffc01e1e3d50
-  6820.710547:   <2> x29: ffffffc01e1e3d90 x28: ffffffc01e1e3e00 
-  6820.715841:   <2> x27: ffffffc060ee9fc0 x26: ffffffc01659e680 
-  6820.721135:   <2> x25: ffffffc01e1e3ec8 x24: 00000000000c1fa8 
-  6820.726431:   <2> x23: 0000000000000001 x22: 0000000000000001 
-  6820.731726:   <2> x21: 0000000000000400 x20: 0000000000000000 
-  6820.737020:   <2> x19: ffffffc060ee9f80 x18: 0000000000000000 
-  6820.742315:   <2> x17: 0000000000000000 x16: ffffffc00019c8e4 
-  6820.747611:   <2> x15: 0000000000000000 x14: 000000000000abb8 
-  6820.752906:   <2> x13: 00000000ff8c8b80 x12: 0000000000000000 
-  6820.758201:   <2> x11: 0000000000000000 x10: 0000000000000000 
-  6820.763497:   <2> x9 : 0000000000000000 x8 : 0000000000000000 
-  6820.768791:   <2> x7 : ffffffc001174dc2 x6 : 0000000000000000 
-  6820.774087:   <2> x5 : 0000000000000000 x4 : ffffffc00117c320 
-  6820.779381:   <2> x3 : ffffffc0010ead47 x2 : 0000000000000000 
-  6820.784676:   <2> x1 : ffffffc0017d7858 x0 : ffffffc060ee9f80 
-  6820.789974:   <2> 
-PC: 0xffffffc000669a40:
-  6820.794919:   <2> 9a40  b0005861 9107c421 aa1403e0 97ed4841 b0005861 b940f662 91081421 aa1403e0
-  6820.803079:   <2> 9a60  97ed483c aa1903e0 aa1b03e1 94176a63 910006b5 f10016bf 54fffa61 52800000
-  6820.811238:   <2> 9a80  f9402bfb a94153f3 a9425bf5 a94363f7 a9446bf9 a8c67bfd d65f03c0 d10143ff
-  6820.819398:   <2> 9aa0  a9047bfd 910103fd f9404c01 39400423 39400022 35000083 b0005403 91351c63
-  6820.827559:   <2> 9ac0  14000003 f00058a3 9121e863 b9400425 710008bf 540000c8 f0003484 91004084
-  6820.835717:   <2> 9ae0  91028084 f8655884 14000003 f00051c4 91392884 b9401026 b9400825 350000e6
-  6820.843877:   <2> 9b00  b9400c26 52800c87 1b077cc6 b0005d87 9113a0e7 14000004 f0005847 52800006
-  6820.852038:   <2> 9b20  913708e7 b9403028 3940d029 b90003e8 f9401c28 53001d2a f90007e8 f9401428
-  6820.860197:   <2> 9b40  b9421908 91014108 9b0a7d08 f9000be8 d0008b68 91216108 b94f910a b9001bea
-  6820.868358:   <2> 9b60  b90023e9 b94f9508 b9002be8 3940d421 b90033e1 b0005861 91086021 97ed47f5
-  6820.876517:   <2> 9b80  d10103bf 52800000 a9447bfd 910143ff d65f03c0 a9bc7bfd 910003fd a90153f3
-  6820.884676:   <2> 9ba0  a9025bf5 f9001bf7 aa0003f4 f9404c13 b4000413 f940c662 b0005861 910c3821
-  6820.892836:   <2> 9bc0  b0005876 91064275 91078277 97ed47e1 910d2ed6 b0005861 b9408a62 f940c263
-  6820.900996:   <2> 9be0  aa1403e0 910c8421 97ed47da b84046a2 aa1403e0 aa1603e1 97ed47d6 eb1702bf
-  6820.909155:   <2> 9c00  54ffff61 b941ea62 b0005861 b941e263 910d3c21 aa1403e0 97ed47ce b0005861
-  6820.917315:   <2> 9c20  f940fa62 aa1403e0 910dd021 97ed47c9 52800000 f9401bf7 a94153f3 a9425bf5
-  6820.925478:   <2> 
-LR: 0xffffffc0001bb3d4:
-  6820.930424:   <2> b3d4  f9400320 f9001a60 f9400260 b4000080 f9400e74 b5000134 14000028 d2820000
-  6820.938582:   <2> b3f4  f9000660 97ffff2e f9000260 b5ffff20 12800177 140000a6 910003e0 eb1402bf
-  6820.946742:   <2> b414  9272c400 9a9492b4 f9400263 f9400a61 f9400402 aa1803e0 ab140000 fa423002
-  6820.954902:   <2> b434  9a9f87e4 aa1403e0 b40000a4 aa1803e0 8b010061 aa1403e2 9404dcb1 2a0003f7
-  6820.963061:   <2> b454  35001380 f9400e60 cb1402b5 f9400a61 cb140000 f9000e60 8b140021 f9000a61
-  6820.971221:   <2> b474  b5000080 f9401660 91000400 f9001660 b40010d5 8b140318 9101c3bc f9401660
-  6820.979382:   <2> b494  f81f0f80 f9404660 aa1c03e1 f9400002 aa1303e0 d63f0040 aa0003f6 2a1603f7
-  6820.987542:   <2> b4b4  b40005b6 b14006df 54000568 f9404660 aa1603e1 f9400c02 aa1303e0 d63f0040
-  6820.995701:   <2> b4d4  6b1f001f 2a0003f7 5400046b 54000040 f9000e7f f9400e61 f9404660 b5000141
-  6821.003859:   <2> b4f4  f9400803 aa1603e1 aa1303e0 aa1c03e2 d63f0060 aa0003f6 f94033a0 f9001660
-  6821.012019:   <2> b514  17ffffe7 f9400662 eb02003f 54000623 f9400402 aa1603e1 aa1303e0 d63f0040
-  6821.020180:   <2> b534  f9400260 97feb922 f9000e7f f9400660 d37ff800 f9000660 97fffed9 f9000260
-  6821.028341:   <2> b554  b40009e0 f9401660 f9001e7f f90033a0 17ffffcd f9404660 aa1603e1 f9400402
-  6821.036500:   <2> b574  aa1303e0 d63f0040 f9000e7f 14000047 f94033a0 aa1603e1 f90037a0 9101a3a2
-  6821.044659:   <2> b594  f9404660 f9400803 aa1303e0 d63f0060 aa0003f6 b40002c0 b140041f 54000288
-  6821.052818:   <2> b5b4  f9404660 aa1603e1 f9400c02 aa1303e0 d63f0040 35000160 f9400e62 f9400661
-  6821.060981:   <2> 
-SP: 0xffffffc01e1e3c50:
-  6821.065927:   <2> 3c50  0117c320 ffffffc0 00000000 00000000 00000000 00000000 01174dc2 ffffffc0
-  6821.074085:   <2> 3c70  00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-  6821.082246:   <2> 3c90  00000000 00000000 ff8c8b80 00000000 0000abb8 00000000 00000000 00000000
-  6821.090404:   <2> 3cb0  0019c8e4 ffffffc0 00000000 00000000 00000000 00000000 60ee9f80 ffffffc0
-  6821.098566:   <2> 3cd0  00000000 00000000 00000400 00000000 00000001 00000000 00000001 00000000
-  6821.106724:   <2> 3cf0  000c1fa8 00000000 1e1e3ec8 ffffffc0 1659e680 ffffffc0 60ee9fc0 ffffffc0
-  6821.114884:   <2> 3d10  1e1e3e00 ffffffc0 1e1e3d90 ffffffc0 001bb4d4 ffffffc0 1e1e3d50 ffffffc0
-  6821.123045:   <2> 3d30  00669b40 ffffffc0 80000145 00000000 1e1e3ec8 ffffffc0 1659e680 ffffffc0
-  6821.131204:   <2> 3d50  00000000 ffffffc0 00000000 00000000 013e2000 ffffffc0 00c42cf0 ffffffc0
-  6821.139363:   <2> 3d70  60ee9fc0 ffffffc0 000c0768 ffffffc0 1e1e3da0 ffffffc0 001bb3fc ffffffc0
-  6821.147523:   <2> 3d90  1e1e3da0 ffffffc0 001bb4d4 ffffffc0 1e1e3e10 ffffffc0 001ec5ac ffffffc0
-  6821.155684:   <2> 3db0  fffffffb ffffffff 6c4aed00 ffffffc0 1e1e3ec8 ffffffc0 000c1fa8 00000000
-  6821.163843:   <2> 3dd0  80000010 00000000 00000011 00000000 00000182 00000000 00000003 00000000
-  6821.172003:   <2> 3df0  0008e000 ffffffc0 1e1e0000 ffffffc0 00000000 00000000 0019c19c ffffffc0
-  6821.180162:   <2> 3e10  1e1e3e30 ffffffc0 0019c1c4 ffffffc0 1659e680 ffffffc0 00000400 00000000
-  6821.188323:   <2> 3e30  1e1e3e80 ffffffc0 0019c92c ffffffc0 1659e680 ffffffc0 1659e680 ffffffc0
-  6821.196481:   <2> 
-  6821.197961:   <6> Process proc01 (pid: 9052, stack limit = 0xffffffc01e1e0058)
-  6821.204642:   <6> Call trace:
-  6821.207083:   <2> [<ffffffc000669b40>] rndis_proc_show+0xa4/0xf8
-  6821.212549:   <2> [<ffffffc0001bb4d0>] seq_read+0x180/0x3ac
-  6821.217582:   <2> [<ffffffc0001ec5a8>] proc_reg_read+0x64/0x84
-  6821.222878:   <2> [<ffffffc00019c1c0>] vfs_read+0x90/0x148
-  6821.227824:   <2> [<ffffffc00019c928>] SyS_read+0x44/0x84
-  6821.232688:   <6> Code: f9401c28 53001d2a f90007e8 f9401428 (b9421908) 
-  6821.239083:   <6> ---[ end trace 64a7e95832f9f646 ]---
-  6821.243380:   <6> Kernel panic - not syncing: Fatal exception
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: strace-proc01
-Type: application/octet-stream
-Size: 2973319 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20151009/e3d45907/attachment-0001.obj>
+Cyril Hrubis
+chrubis@suse.cz
