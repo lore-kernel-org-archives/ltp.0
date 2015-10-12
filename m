@@ -1,9 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 12 Oct 2015 18:15:21 +0200
-Subject: [LTP] [PATCH V2] syscall/kcmp: Add tests for kcmp
-In-Reply-To: <1444315747-21818-1-git-send-email-chnyda@suse.com>
-References: <1444315747-21818-1-git-send-email-chnyda@suse.com>
-Message-ID: <20151012161521.GB22254@rei.suse.cz>
+Date: Mon, 12 Oct 2015 19:43:16 +0200
+Subject: [LTP] [PATCH v3] fcntl/fcntl32.c: add F_SETLEASE and F_WRLCK
+ argument test
+In-Reply-To: <5614ED3A.10609@cn.fujitsu.com>
+References: <55EFA462.5010608@cn.fujitsu.com>
+ <1442307339-16873-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20150930164132.GC8256@rei.suse.cz> <5614ED3A.10609@cn.fujitsu.com>
+Message-ID: <20151012174315.GA24472@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,62 +14,19 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed with a few changes (explained below), thanks.
+> > Same as the second one. I would preffer figuring out that the fcntl() is
+> > unsupported by actually trying to use it.
+> > 
+> 
+> It will return EAGAIN when we actually use it, I don't think it's a reasonable errno,
+> since on ramfs or tmpfs, when opening or creating a new file, the dentry->d_count
+> will get an extra count to be 2 but not 1. Please have a look at the following link:
+> http://www.gossamer-threads.com/lists/linux/kernel/913113
 
-> +#if !defined(HAVE_ENUM_KCMP_TYPE)
-> +
-> +enum kcmp_type {
-> +	KCMP_FILE,
-> +	KCMP_VM,
-> +	KCMP_FILES,
-> +	KCMP_FS,
-> +	KCMP_SIGHAND,
-> +	KCMP_IO,
-> +	KCMP_SYSVSEM,
-> +	KCMP_TYPES,
-> +};
-> +
-> +#endif
-> +
-> +#if !defined(HAVE_KCMP)
-> +
-> +int kcmp(int pid1, int pid2, int type, int fd1, int fd2)
-> +{
-> +	return ltp_syscall(__NR_kcmp, pid1, pid2, type, fd1, fd2);
-> +}
-> +
-> +#else
-> +
-> +#include <linux/kcmp.h>
-> +
-> +#endif
-
-This was wrong #if to add the #else to, the kcmp.h defines the enum not
-the syscall. I've fixed that.
-
-> +static struct test_case {
-> +	int *pid1;
-> +	int *pid2;
-> +	int type;
-> +	int *fd1;
-> +	int *fd2;
-> +	int exp_different;
-> +} test_cases[] = {
-> +	{&pid1, &pid2, KCMP_FILE, &fd1, &fd2, 0},
-> +	{&pid1, &pid2, KCMP_FILE, &fd1, &fd3, 1},
-> +};
-
-I've added a few more tests here. Case where pid1 == pid2, fd1 == fd2
-and both at the same time.
-
-> +	if (test->exp_errno && TEST_RETURN != -1) {
-> +		tst_resm(TFAIL, "kcmp() succeeded unexpectedly");
-> +		return;
-> +	}
-> +
-
-And I've removed the test->exp_errno from this condition, since we test
-only failures in this test.
+Hmm, so the kernel thinks that the file has been opened two times
+allready and returns EAGAIN when we try the lock. It may be better to
+just to skip these filesystems as you did then, since it's unlikely that
+somebody will fix this in kernel.
 
 -- 
 Cyril Hrubis
