@@ -1,186 +1,221 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 12 Oct 2015 18:53:55 +0800
-Subject: [LTP] [PATCH v2] mem/hugetlb: shift an empty region to use in
-	hugemmap02.c
-Message-ID: <1444647235-3041-1-git-send-email-liwang@redhat.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Mon, 12 Oct 2015 19:14:53 +0800
+Subject: [LTP] [PATCH v4] fcntl/fcntl32.c: add F_SETLEASE and F_WRLCK
+	argument test
+In-Reply-To: <5614ED3A.10609@cn.fujitsu.com>
+References: <5614ED3A.10609@cn.fujitsu.com>
+Message-ID: <1444648493-30962-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-v1 --> v2
-	1. add a function 'range_is_mapped()' in the mem.c
-	2. choice the mmap address region dynamically
+Add new testcase to verify that a write lease may be placed
+on a file only if there are no other open file descriptors
+for the file.
 
-the testcase 'hugemmap02' always failed on s390x as:
-----------
-hugemmap02    0  TINFO  :  set nr_hugepages to 128
-hugemmap02    1  TPASS  :  huge mmap succeeded (64-bit)
-./hugemmap02: relocation error: ./hugemmap02: symbol , version GLIBC_2.2 not defined in file libc.so.6 with link time reference
-----------
-
-it is caused by mapping in zero where libc.so.6 was loaded and resulting in
-the dynamic loader finding no information about versions for the library.
-
-running the program, we could obviously see the region area:
----------------
-program address:
-80000000-80001000 r--s 00000000 00:05 2644                               /dev/zero
-80001000-80012000 r-xp 00001000 fd:00 35121302                           /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02
-80012000-80013000 r--p 00011000 fd:00 35121302                           /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02
-80013000-80014000 rw-p 00012000 fd:00 35121302                           /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02
-80014000-80017000 rw-p 00000000 00:00 0
-90000000-90200000 rw-s 00000000 00:29 75950                              /tmp/hugme85Xf/mmapfile41071
-9c14f000-9c170000 rw-p 00000000 00:00 0                                  [heap]
-3ffad342000-3ffbd342000 r--s 00000000 00:05 2644                         /dev/zero
-3ffbd342000-3ffcd342000 r--s 00000000 00:05 2644                         /dev/zero
-3ffcd342000-3ffdd342000 r--s 00000000 00:05 2644                         /dev/zero
-3ffdd342000-3ffed342000 r--s 00000000 00:05 2644                         /dev/zero
-3ffed342000-3fffd342000 r--s 00000000 00:05 2644                         /dev/zero
-3fffd342000-3fffd344000 rw-p 00000000 00:00 0
-3fffd344000-3fffd4db000 r-xp 00000000 fd:00 5438                         /usr/lib64/libc-2.17.so
-3fffd4db000-3fffd4df000 r--p 00196000 fd:00 5438                         /usr/lib64/libc-2.17.so
-3fffd4df000-3fffd4e1000 rw-p 0019a000 fd:00 5438                         /usr/lib64/libc-2.17.so
-3fffd4e1000-3fffd4e6000 rw-p 00000000 00:00 0
-3fffd4e6000-3fffd4fe000 r-xp 00000000 fd:00 5464                         /usr/lib64/libpthread-2.17.so
-3fffd4fe000-3fffd4ff000 r--p 00017000 fd:00 5464                         /usr/lib64/libpthread-2.17.so
-3fffd4ff000-3fffd500000 rw-p 00018000 fd:00 5464                         /usr/lib64/libpthread-2.17.so
-3fffd500000-3fffd504000 rw-p 00000000 00:00 0
-3fffd50c000-3fffd510000 rw-p 00000000 00:00 0
-3fffd510000-3fffd512000 r-xp 00000000 00:00 0                            [vdso]
-3fffd512000-3fffd534000 r-xp 00000000 fd:00 5431                         /usr/lib64/ld-2.17.so
-3fffd534000-3fffd535000 r--p 00022000 fd:00 5431                         /usr/lib64/ld-2.17.so
-3fffd535000-3fffd536000 rw-p 00023000 fd:00 5431                         /usr/lib64/ld-2.17.so
-3fffd536000-3fffd537000 rw-p 00000000 00:00 0
-3ffffaaf000-3ffffad0000 rw-p 00000000 00:00 0                            [stack]
--------------
-
-Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c | 24 ++++++++++--
- testcases/kernel/mem/include/mem.h                 |  2 +
- testcases/kernel/mem/lib/mem.c                     | 43 ++++++++++++++++++++++
- 3 files changed, 65 insertions(+), 4 deletions(-)
+ runtest/ltplite                           |   1 +
+ runtest/stress.part3                      |   1 +
+ runtest/syscalls                          |   2 +
+ testcases/kernel/syscalls/.gitignore      |   2 +
+ testcases/kernel/syscalls/fcntl/fcntl32.c | 135 ++++++++++++++++++++++++++++++
+ 5 files changed, 141 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/fcntl/fcntl32.c
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-index cfdcb3c..a4fbff9 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-@@ -56,8 +56,8 @@
- #include "safe_macros.h"
- #include "mem.h"
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 7f3efdc..63a1583 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -225,6 +225,7 @@ fcntl26 fcntl26
+ fcntl29 fcntl29
+ fcntl30 fcntl30
+ fcntl31 fcntl31
++fcntl32 fcntl32
  
--#define LOW_ADDR       (void *)(0x80000000)
--#define LOW_ADDR2      (void *)(0x90000000)
-+#define LOW_ADDR       0x80000000
-+#define LOW_ADDR2      0x90000000
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index ab9af3c..ca8b70c 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -164,6 +164,7 @@ fcntl26 fcntl26
+ fcntl29 fcntl29
+ fcntl30 fcntl30
+ fcntl31 fcntl31
++fcntl32 fcntl32
  
- static char TEMPFILE[MAXPATHLEN];
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index c54a637..db03ccc 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -258,6 +258,8 @@ fcntl30 fcntl30
+ fcntl30_64 fcntl30_64
+ fcntl31 fcntl31
+ fcntl31_64 fcntl31_64
++fcntl32 fcntl32
++fcntl32_64 fcntl32_64
  
-@@ -65,6 +65,8 @@ char *TCID = "hugemmap02";
- int TST_TOTAL = 1;
- static unsigned long *addr;
- static unsigned long *addr2;
-+static unsigned long low_addr = LOW_ADDR;
-+static unsigned long low_addr2 = LOW_ADDR2;
- static unsigned long *addrlist[5];
- static int i;
- static int fildes;
-@@ -127,15 +129,29 @@ int main(int ac, char **av)
- 			addrlist[i] = addr;
- 		}
- 
-+		while (range_is_mapped(low_addr, low_addr + 0x1000) == 1) {
-+			low_addr = low_addr + 0x10000000;
+ fdatasync01 fdatasync01
+ fdatasync02 fdatasync02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 9f659c5..3bba587 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -221,6 +221,8 @@
+ /fcntl/fcntl30_64
+ /fcntl/fcntl31
+ /fcntl/fcntl31_64
++/fcntl/fcntl32
++/fcntl/fcntl32_64
+ /fdatasync/fdatasync01
+ /fdatasync/fdatasync02
+ /flock/flock01
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl32.c b/testcases/kernel/syscalls/fcntl/fcntl32.c
+new file mode 100644
+index 0000000..f87f7f4
+--- /dev/null
++++ b/testcases/kernel/syscalls/fcntl/fcntl32.c
+@@ -0,0 +1,135 @@
++/*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License
++ * alone with this program.
++ */
 +
-+			if (low_addr < LOW_ADDR)
-+				tst_brkm(TBROK | TERRNO, cleanup,
-+						"no empty region to use");
-+		}
- 		/* mmap using normal pages and a low memory address */
--		addr = mmap(LOW_ADDR, page_sz, PROT_READ,
-+		addr = mmap((void *)low_addr, page_sz, PROT_READ,
- 			    MAP_SHARED | MAP_FIXED, nfildes, 0);
- 		if (addr == MAP_FAILED)
- 			tst_brkm(TBROK | TERRNO, cleanup,
- 				 "mmap failed on nfildes");
- 
-+		while (range_is_mapped(low_addr2, low_addr2 + 0x1000) == 1) {
-+			low_addr2 = low_addr2 + 0x10000000;
++/*
++ * DESCRIPTION
++ *  Basic test for fcntl(2) using F_SETLEASE & F_WRLCK argument.
++ *  "A write lease may be placed on a file only if there are
++ *  no other open file descriptors for the file."
++ */
 +
-+			if (low_addr2 < LOW_ADDR2)
-+				tst_brkm(TBROK | TERRNO, cleanup,
-+						"no empty region to use");
-+		}
- 		/* Attempt to mmap a huge page into a low memory address */
--		addr2 = mmap(LOW_ADDR2, map_sz, PROT_READ | PROT_WRITE,
-+		addr2 = mmap((void *)low_addr2, map_sz, PROT_READ | PROT_WRITE,
- 			     MAP_SHARED, fildes, 0);
- #if __WORDSIZE == 64		/* 64-bit process */
- 		if (addr2 == MAP_FAILED) {
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index fd1879c..7ed3835 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -100,4 +100,6 @@ void setup(void);
- 
- void update_shm_size(size_t *shm_size);
- 
-+/* MMAP */
-+int range_is_mapped(unsigned long low, unsigned long high)
- #endif
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 118b6c0..e0e1bdf 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -1113,3 +1113,46 @@ void update_shm_size(size_t * shm_size)
- 		*shm_size = shmmax;
- 	}
- }
++#include <errno.h>
 +
-+int range_is_mapped(unsigned long low, unsigned long high)
++#include "test.h"
++#include "safe_macros.h"
++#include "tst_fs_type.h"
++
++static void setup(void);
++static void verify_fcntl(int);
++static void cleanup(void);
++
++#define FILE_MODE	(S_IRWXU | S_IRWXG | S_IRWXO | S_ISUID | S_ISGID)
++
++static int fd1;
++static int fd2;
++
++static struct test_case_t {
++	int fd1_flag;
++	int fd2_flag;
++} test_cases[] = {
++	{O_RDONLY, O_RDONLY},
++	{O_RDONLY, O_WRONLY},
++	{O_RDONLY, O_RDWR},
++	{O_WRONLY, O_RDONLY},
++	{O_WRONLY, O_WRONLY},
++	{O_WRONLY, O_RDWR},
++	{O_RDWR, O_RDONLY},
++	{O_RDWR, O_WRONLY},
++	{O_RDWR, O_RDWR},
++};
++
++char *TCID = "fcntl32";
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++
++int main(int ac, char **av)
 +{
-+	FILE *f;
-+	int MAPS_BUF_SZ = 4096;
-+	char line[MAPS_BUF_SZ];
-+	char *tmp;
++	int lc;
++	int tc;
++	long type;
 +
-+	f = fopen("/proc/self/maps", "r");
-+	if (!f) {
-+		printf("Failed to open /proc/self/maps.\n");
-+		return -1;
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (tc = 0; tc < TST_TOTAL; tc++)
++			verify_fcntl(tc);
 +	}
 +
-+	while (1) {
-+		unsigned long start, end;
-+		int ret;
++	cleanup();
++	tst_exit();
++}
 +
-+		tmp = fgets(line, MAPS_BUF_SZ, f);
-+		if (!tmp)
-+			break;
++static void setup(void)
++{
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	TEST_PAUSE;
 +
-+		ret = sscanf(line, "%lx-%lx", &start, &end);
-+		if (ret != 2) {
-+			printf("Couldn't parse /proc/self/maps line: %s\n",
-+					line);
-+			fclose(f);
-+			return -1;
-+		}
++	tst_tmpdir();
 +
-+		if ((start >= low) && (start < high)) {
-+			fclose(f);
-+			return 1;
-+		}
-+		if ((end >= low) && (end < high)) {
-+			fclose(f);
-+			return 1;
++	fd1 = SAFE_CREAT(cleanup, "file", FILE_MODE);
++	TEST(fcntl(fd1, F_SETLEASE, F_WRLCK));
++	if (TEST_RETURN == -1 && TEST_ERRNO == EAGAIN) {
++		tst_brkm(TCONF, cleanup,
++			 "Cannot do fcntl(F_SETLEASE, F_WRLCK) "
++			 "on %s filesystem",
++			 tst_fs_type_name(tst_fs_type(cleanup, ".")));
++	}
++	SAFE_CLOSE(cleanup, fd1);
++	fd1 = 0;
++}
++
++static void verify_fcntl(int i)
++{
++	fd1 = SAFE_OPEN(cleanup, "file", test_cases[i].fd1_flag);
++	fd2 = SAFE_OPEN(cleanup, "file", test_cases[i].fd2_flag);
++
++	TEST(fcntl(fd1, F_SETLEASE, F_WRLCK));
++
++	if (TEST_RETURN == 0) {
++		tst_resm(TFAIL, "fcntl(F_SETLEASE, F_WRLCK) "
++			 "succeeded unexpectedly");
++	} else {
++		if (TEST_ERRNO == EBUSY || TEST_ERRNO == EAGAIN) {
++			tst_resm(TPASS | TTERRNO,
++				 "fcntl(F_SETLEASE, F_WRLCK) "
++				 "failed as expected");
++		} else {
++			tst_resm(TFAIL | TTERRNO,
++				 "fcntl(F_SETLEASE, F_WRLCK) "
++				 "failed unexpectedly, "
++				 "expected errno is EBUSY or EAGAIN");
 +		}
 +	}
 +
-+	fclose(f);
-+	return 0;
++	SAFE_CLOSE(cleanup, fd1);
++	fd1 = 0;
++	SAFE_CLOSE(cleanup, fd2);
++	fd2 = 0;
++}
++
++static void cleanup(void)
++{
++	if (fd1 > 0 && close(fd1))
++		tst_resm(TWARN | TERRNO, "Failed to close file");
++
++	if (fd2 > 0 && close(fd2))
++		tst_resm(TWARN | TERRNO, "Failed to close file");
++
++	tst_rmdir();
 +}
 -- 
-1.8.3.1
+1.8.4.2
 
