@@ -1,75 +1,187 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 13 Oct 2015 21:39:24 +0800
-Subject: [LTP] [PATCH v2] mem/hugetlb: shift an empty region to use in
+Date: Tue, 13 Oct 2015 22:11:30 +0800
+Subject: [LTP] [PATCH v3] mem/hugetlb: shift an empty region to use in
 	hugemmap02.c
-In-Reply-To: <20151013105318.GA26969@rei.suse.cz>
-References: <1444647235-3041-1-git-send-email-liwang@redhat.com>
- <20151012182924.GB24472@rei.suse.cz>
- <CAEemH2eZKj6USX5nmVrRQ7QVykOrYZ9c=BhVPASW3=YTatZ0zA@mail.gmail.com>
- <CAEemH2dGJE+zhHH83yeNzAW=A0H8o0T-D3nH=yc1Xt5sN0m2TQ@mail.gmail.com>
- <20151013105318.GA26969@rei.suse.cz>
-Message-ID: <CAEemH2f_fc2RA3hDn7MxTF_o+geXVVx57W41YNHbqp+tkmgVYA@mail.gmail.com>
+Message-ID: <1444745490-9044-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+v2 --> v3
+	1. delete the line[MAPS_BUF_SZ] array
+	2. use the tst_resm(TWARN, ...) to replace printf()
+	3. achieve range_is_mapped() function just by fscanf()
 
-On Tue, Oct 13, 2015 at 6:53 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+the testcase 'hugemmap02' always failed on s390x as:
+----------
+hugemmap02    0  TINFO  :  set nr_hugepages to 128
+hugemmap02    1  TPASS  :  huge mmap succeeded (64-bit)
+./hugemmap02: relocation error: ./hugemmap02: symbol , version GLIBC_2.2 not defined in file libc.so.6 with link time reference
+----------
 
-> Hi!
-> > okay, seems you are right. I tried and achieved another one,  following
-> > code test pass on my s390x system.
-> > -----------------------------------------
-> > int range_is_mapped(unsigned long low, unsigned long high)
-> > {
-> >     FILE *f = SAFE_FOPEN(NULL, "/proc/self/maps", "r");
->
-> If we start to use SAFE_MACROS() here we have to pass the cleanup
-> callback to the range_is_mapped() as a first parameter so that we can
-> pass correct cleanup callback to the SAFE_MACROS().
->
+it is caused by mapping in zero where libc.so.6 was loaded and resulting in
+the dynamic loader finding no information about versions for the library.
 
-ok, now I prefer to use fopen()/fclose() to keep simple.
+running the program, we could obviously see the region area:
+---------------
+program address:
+80000000-80001000 r--s 00000000 00:05 2644                               /dev/zero
+80001000-80012000 r-xp 00001000 fd:00 35121302                           /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02
+80012000-80013000 r--p 00011000 fd:00 35121302                           /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02
+80013000-80014000 rw-p 00012000 fd:00 35121302                           /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02
+80014000-80017000 rw-p 00000000 00:00 0
+90000000-90200000 rw-s 00000000 00:29 75950                              /tmp/hugme85Xf/mmapfile41071
+9c14f000-9c170000 rw-p 00000000 00:00 0                                  [heap]
+3ffad342000-3ffbd342000 r--s 00000000 00:05 2644                         /dev/zero
+3ffbd342000-3ffcd342000 r--s 00000000 00:05 2644                         /dev/zero
+3ffcd342000-3ffdd342000 r--s 00000000 00:05 2644                         /dev/zero
+3ffdd342000-3ffed342000 r--s 00000000 00:05 2644                         /dev/zero
+3ffed342000-3fffd342000 r--s 00000000 00:05 2644                         /dev/zero
+3fffd342000-3fffd344000 rw-p 00000000 00:00 0
+3fffd344000-3fffd4db000 r-xp 00000000 fd:00 5438                         /usr/lib64/libc-2.17.so
+3fffd4db000-3fffd4df000 r--p 00196000 fd:00 5438                         /usr/lib64/libc-2.17.so
+3fffd4df000-3fffd4e1000 rw-p 0019a000 fd:00 5438                         /usr/lib64/libc-2.17.so
+3fffd4e1000-3fffd4e6000 rw-p 00000000 00:00 0
+3fffd4e6000-3fffd4fe000 r-xp 00000000 fd:00 5464                         /usr/lib64/libpthread-2.17.so
+3fffd4fe000-3fffd4ff000 r--p 00017000 fd:00 5464                         /usr/lib64/libpthread-2.17.so
+3fffd4ff000-3fffd500000 rw-p 00018000 fd:00 5464                         /usr/lib64/libpthread-2.17.so
+3fffd500000-3fffd504000 rw-p 00000000 00:00 0
+3fffd50c000-3fffd510000 rw-p 00000000 00:00 0
+3fffd510000-3fffd512000 r-xp 00000000 00:00 0                            [vdso]
+3fffd512000-3fffd534000 r-xp 00000000 fd:00 5431                         /usr/lib64/ld-2.17.so
+3fffd534000-3fffd535000 r--p 00022000 fd:00 5431                         /usr/lib64/ld-2.17.so
+3fffd535000-3fffd536000 rw-p 00023000 fd:00 5431                         /usr/lib64/ld-2.17.so
+3fffd536000-3fffd537000 rw-p 00000000 00:00 0
+3ffffaaf000-3ffffad0000 rw-p 00000000 00:00 0                            [stack]
+-------------
 
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c | 25 +++++++++++++---
+ testcases/kernel/mem/include/mem.h                 |  2 ++
+ testcases/kernel/mem/lib/mem.c                     | 35 ++++++++++++++++++++++
+ 3 files changed, 58 insertions(+), 4 deletions(-)
 
->
-> >     char buf[512];
-> >
-> >     while (!feof(f)) {
-> >         unsigned long start, end;
-> >         int ret;
-> >
-> >         ret = fscanf(f, "%lx-%lx %[^\n]%*c]", &start, &end, buf);
->
-> You can do even better with:
->
->                 ret = fscanf(f, "%lx-%lx %*[^\n]\n", &start, &end);
->
-
-great!
-
-
->
-> Which says read two long ints and then ignore everything until the end
-> of line.
->
-> You could have ommited the last '\n' in the format string, but then you
-> would need to exit the loop when the fscanf() returns -1 since the
-> feof() would not exit the loop since there would still be the last
-> newline in the buffer after we read the last line...
->
-
-ok, agreed. I will sent V3.
-
-thanks for reviewing the patch.
-
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+index cfdcb3c..289b593 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+@@ -56,8 +56,8 @@
+ #include "safe_macros.h"
+ #include "mem.h"
+ 
+-#define LOW_ADDR       (void *)(0x80000000)
+-#define LOW_ADDR2      (void *)(0x90000000)
++#define LOW_ADDR       0x80000000
++#define LOW_ADDR2      0x90000000
+ 
+ static char TEMPFILE[MAXPATHLEN];
+ 
+@@ -65,6 +65,8 @@ char *TCID = "hugemmap02";
+ int TST_TOTAL = 1;
+ static unsigned long *addr;
+ static unsigned long *addr2;
++static unsigned long low_addr = LOW_ADDR;
++static unsigned long low_addr2 = LOW_ADDR2;
+ static unsigned long *addrlist[5];
+ static int i;
+ static int fildes;
+@@ -75,6 +77,7 @@ static long hugepages = 128;
+ static long orig_hugepages;
+ 
+ static void help(void);
++int range_is_mapped(unsigned long low, unsigned long high);
+ 
+ int main(int ac, char **av)
+ {
+@@ -127,15 +130,29 @@ int main(int ac, char **av)
+ 			addrlist[i] = addr;
+ 		}
+ 
++		while (range_is_mapped(low_addr, low_addr + 0x1000) == 1) {
++			low_addr = low_addr + 0x10000000;
++
++			if (low_addr < LOW_ADDR)
++				tst_brkm(TBROK | TERRNO, cleanup,
++						"no empty region to use");
++		}
+ 		/* mmap using normal pages and a low memory address */
+-		addr = mmap(LOW_ADDR, page_sz, PROT_READ,
++		addr = mmap((void *)low_addr, page_sz, PROT_READ,
+ 			    MAP_SHARED | MAP_FIXED, nfildes, 0);
+ 		if (addr == MAP_FAILED)
+ 			tst_brkm(TBROK | TERRNO, cleanup,
+ 				 "mmap failed on nfildes");
+ 
++		while (range_is_mapped(low_addr2, low_addr2 + 0x1000) == 1) {
++			low_addr2 = low_addr2 + 0x10000000;
++
++			if (low_addr2 < LOW_ADDR2)
++				tst_brkm(TBROK | TERRNO, cleanup,
++						"no empty region to use");
++		}
+ 		/* Attempt to mmap a huge page into a low memory address */
+-		addr2 = mmap(LOW_ADDR2, map_sz, PROT_READ | PROT_WRITE,
++		addr2 = mmap((void *)low_addr2, map_sz, PROT_READ | PROT_WRITE,
+ 			     MAP_SHARED, fildes, 0);
+ #if __WORDSIZE == 64		/* 64-bit process */
+ 		if (addr2 == MAP_FAILED) {
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index fd1879c..21cee54 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -100,4 +100,6 @@ void setup(void);
+ 
+ void update_shm_size(size_t *shm_size);
+ 
++/* MMAP */
++int range_is_mapped(unsigned long low, unsigned long high);
+ #endif
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 118b6c0..80934cd 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -1113,3 +1113,38 @@ void update_shm_size(size_t * shm_size)
+ 		*shm_size = shmmax;
+ 	}
+ }
++
++int range_is_mapped(unsigned long low, unsigned long high)
++{
++	FILE *f;
++
++	f = fopen("/proc/self/maps", "r");
++	if (!f) {
++		tst_resm(TWARN | TERRNO, "Failed to open /proc/self/maps.");
++		return -1;
++	}
++
++	while (!feof(f)) {
++		unsigned long start, end;
++		int ret;
++
++		ret = fscanf(f, "%lx-%lx %*[^\n]\n", &start, &end);
++		if (ret != 2) {
++			tst_resm(TWARN | TERRNO, "Couldn't parse /proc/self/maps line.");
++			fclose(f);
++			return -1;
++		}
++
++		if ((start >= low) && (start < high)) {
++			fclose(f);
++			return 1;
++		}
++		if ((end >= low) && (end < high)) {
++			fclose(f);
++			return 1;
++		}
++	}
++
++	fclose(f);
++	return 0;
++}
 -- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20151013/d3351495/attachment.html>
+1.8.3.1
+
