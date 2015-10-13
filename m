@@ -1,125 +1,51 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 13 Oct 2015 13:45:04 +0300
-Subject: [LTP] [PATCH v8 2/7] SAFE_MACROS: Add socket(), bind(), listen(),
- connect() and getsockname()
-In-Reply-To: <1444303781-18441-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <20151007132856.GD2608@rei.suse.cz>
- <1444303781-18441-1-git-send-email-zenglg.jy@cn.fujitsu.com>
- <1444303781-18441-2-git-send-email-zenglg.jy@cn.fujitsu.com>
-Message-ID: <561CE0B0.2000801@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 13 Oct 2015 12:53:18 +0200
+Subject: [LTP] [PATCH v2] mem/hugetlb: shift an empty region to use in
+ hugemmap02.c
+In-Reply-To: <CAEemH2dGJE+zhHH83yeNzAW=A0H8o0T-D3nH=yc1Xt5sN0m2TQ@mail.gmail.com>
+References: <1444647235-3041-1-git-send-email-liwang@redhat.com>
+ <20151012182924.GB24472@rei.suse.cz>
+ <CAEemH2eZKj6USX5nmVrRQ7QVykOrYZ9c=BhVPASW3=YTatZ0zA@mail.gmail.com>
+ <CAEemH2dGJE+zhHH83yeNzAW=A0H8o0T-D3nH=yc1Xt5sN0m2TQ@mail.gmail.com>
+Message-ID: <20151013105318.GA26969@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 10/08/2015 02:29 PM, Zeng Linggang wrote:
-> +#include <errno.h>
-> +#include "test.h"
-> +#include "safe_net.h"
-> +
-> +char *tst_sock_addr(const struct sockaddr *sa, socklen_t salen, char *res,
-> +		    size_t len)
-> +{
-> +	char portstr[8];
-> +
-> +	switch (sa->sa_family) {
-> +
-> +	case AF_INET: {
-> +		struct sockaddr_in *sin = (struct sockaddr_in *)sa;
-> +
-> +		if (!inet_ntop(AF_INET, &sin->sin_addr, res, len))
-> +			return NULL;
-> +
-> +		if (ntohs(sin->sin_port) != 0) {
-> +			snprintf(portstr, sizeof(portstr), ":%d",
-> +				 ntohs(sin->sin_port));
-> +			strcat(res, portstr);
-> +		}
-> +
-> +		return res;
-> +	}
-> +
-> +	case AF_INET6: {
-> +		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)sa;
-> +
-> +		res[0] = '[';
-> +		if (!inet_ntop(AF_INET6, &sin6->sin6_addr, res + 1, len - 1))
-> +			return NULL;
-> +
-> +		if (ntohs(sin6->sin6_port) != 0) {
-> +			snprintf(portstr, sizeof(portstr), "]:%d",
-> +				 ntohs(sin6->sin6_port));
-> +			strcat(res, portstr);
-> +			return res;
-> +		}
-> +
-> +		return res + 1;
-> +	}
-> +
-> +	case AF_UNIX: {
-> +		struct sockaddr_un *unp = (struct sockaddr_un *)sa;
-> +
-> +		if (unp->sun_path[0] == '\0')
-> +			strcpy(res, "(no pathname bound)");
-> +		else
-> +			snprintf(res, len, "%s", unp->sun_path);
-> +
-> +		return res;
-> +	}
-> +
-> +	default: {
-> +		snprintf(res, len,
-> +			 "sock_ntop: unknown AF_xxx: %d, len: %d",
-> +			 sa->sa_family, salen);
-> +
-> +		return res;
-> +	}
-> +
-> +	}
-> +
-> +	return NULL;
+Hi!
+> okay, seems you are right. I tried and achieved another one,  following
+> code test pass on my s390x system.
+> -----------------------------------------
+> int range_is_mapped(unsigned long low, unsigned long high)
+> {
+>     FILE *f = SAFE_FOPEN(NULL, "/proc/self/maps", "r");
 
-The last return is redundant here.
+If we start to use SAFE_MACROS() here we have to pass the cleanup
+callback to the range_is_mapped() as a first parameter so that we can
+pass correct cleanup callback to the SAFE_MACROS().
 
-> +}
-> +
-> +int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
-> +		int domain, int type, int protocol)
-> +{
-> +	int rval;
-> +
-> +	rval = socket(domain, type, protocol);
-> +
-> +	if (rval < 0) {
-> +		tst_brkm(TBROK | TERRNO, cleanup_fn,
-> +			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
-> +			 domain, type, protocol);
-> +	}
-> +
-> +	return rval;
-> +}
-> +
-> +int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
-> +	      int socket, const struct sockaddr *address,
-> +	      socklen_t address_len)
-> +{
-> +	int i;
-> +	char buf[128];
-> +
-> +	for (i = 0; i < 120; i++) {
-> +		if (!bind(socket, address, address_len)) {
-> +			tst_resm(TINFO, "bind is OK now");
+>     char buf[512];
+> 
+>     while (!feof(f)) {
+>         unsigned long start, end;
+>         int ret;
+> 
+>         ret = fscanf(f, "%lx-%lx %[^\n]%*c]", &start, &end, buf);
 
-I doubt that we need to print "bind is OK now"... the other library 
-functions don't print anything on success.
+You can do even better with:
 
-Otherwise it looks good.
+                ret = fscanf(f, "%lx-%lx %*[^\n]\n", &start, &end);
 
-Also, could you please send a patch that renames asapi_04/05/06 to 
-asapi_01/02/03?
+Which says read two long ints and then ignore everything until the end
+of line.
 
-Best regards,
-Alexey
+You could have ommited the last '\n' in the format string, but then you
+would need to exit the loop when the fscanf() returns -1 since the
+feof() would not exit the loop since there would still be the last
+newline in the buffer after we read the last line...
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
