@@ -1,12 +1,12 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 13 Oct 2015 18:15:23 +0800
-Subject: [LTP] [PATCH v2] mem/hugetlb: shift an empty region to use in
-	hugemmap02.c
-In-Reply-To: <CAEemH2eZKj6USX5nmVrRQ7QVykOrYZ9c=BhVPASW3=YTatZ0zA@mail.gmail.com>
-References: <1444647235-3041-1-git-send-email-liwang@redhat.com>
- <20151012182924.GB24472@rei.suse.cz>
- <CAEemH2eZKj6USX5nmVrRQ7QVykOrYZ9c=BhVPASW3=YTatZ0zA@mail.gmail.com>
-Message-ID: <CAEemH2dGJE+zhHH83yeNzAW=A0H8o0T-D3nH=yc1Xt5sN0m2TQ@mail.gmail.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 13 Oct 2015 13:45:04 +0300
+Subject: [LTP] [PATCH v8 2/7] SAFE_MACROS: Add socket(), bind(), listen(),
+ connect() and getsockname()
+In-Reply-To: <1444303781-18441-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+References: <20151007132856.GD2608@rei.suse.cz>
+ <1444303781-18441-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+ <1444303781-18441-2-git-send-email-zenglg.jy@cn.fujitsu.com>
+Message-ID: <561CE0B0.2000801@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,196 +14,112 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi,
+On 10/08/2015 02:29 PM, Zeng Linggang wrote:
+> +#include <errno.h>
+> +#include "test.h"
+> +#include "safe_net.h"
+> +
+> +char *tst_sock_addr(const struct sockaddr *sa, socklen_t salen, char *res,
+> +		    size_t len)
+> +{
+> +	char portstr[8];
+> +
+> +	switch (sa->sa_family) {
+> +
+> +	case AF_INET: {
+> +		struct sockaddr_in *sin = (struct sockaddr_in *)sa;
+> +
+> +		if (!inet_ntop(AF_INET, &sin->sin_addr, res, len))
+> +			return NULL;
+> +
+> +		if (ntohs(sin->sin_port) != 0) {
+> +			snprintf(portstr, sizeof(portstr), ":%d",
+> +				 ntohs(sin->sin_port));
+> +			strcat(res, portstr);
+> +		}
+> +
+> +		return res;
+> +	}
+> +
+> +	case AF_INET6: {
+> +		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)sa;
+> +
+> +		res[0] = '[';
+> +		if (!inet_ntop(AF_INET6, &sin6->sin6_addr, res + 1, len - 1))
+> +			return NULL;
+> +
+> +		if (ntohs(sin6->sin6_port) != 0) {
+> +			snprintf(portstr, sizeof(portstr), "]:%d",
+> +				 ntohs(sin6->sin6_port));
+> +			strcat(res, portstr);
+> +			return res;
+> +		}
+> +
+> +		return res + 1;
+> +	}
+> +
+> +	case AF_UNIX: {
+> +		struct sockaddr_un *unp = (struct sockaddr_un *)sa;
+> +
+> +		if (unp->sun_path[0] == '\0')
+> +			strcpy(res, "(no pathname bound)");
+> +		else
+> +			snprintf(res, len, "%s", unp->sun_path);
+> +
+> +		return res;
+> +	}
+> +
+> +	default: {
+> +		snprintf(res, len,
+> +			 "sock_ntop: unknown AF_xxx: %d, len: %d",
+> +			 sa->sa_family, salen);
+> +
+> +		return res;
+> +	}
+> +
+> +	}
+> +
+> +	return NULL;
 
-On Tue, Oct 13, 2015 at 1:39 PM, Li Wang <liwang@redhat.com> wrote:
+The last return is redundant here.
 
-> Hi,
->
-> On Tue, Oct 13, 2015 at 2:29 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
->
->> Hi!
->> Generall idea looks good, a few comments below.
->>
->> > +/* MMAP */
->> > +int range_is_mapped(unsigned long low, unsigned long high)
->> >  #endif
->> > diff --git a/testcases/kernel/mem/lib/mem.c
->> b/testcases/kernel/mem/lib/mem.c
->> > index 118b6c0..e0e1bdf 100644
->> > --- a/testcases/kernel/mem/lib/mem.c
->> > +++ b/testcases/kernel/mem/lib/mem.c
->> > @@ -1113,3 +1113,46 @@ void update_shm_size(size_t * shm_size)
->> >               *shm_size = shmmax;
->> >       }
->> >  }
->> > +
->> > +int range_is_mapped(unsigned long low, unsigned long high)
->> > +{
->> > +     FILE *f;
->> > +     int MAPS_BUF_SZ = 4096;
->> > +     char line[MAPS_BUF_SZ];
->> > +     char *tmp;
->> > +
->> > +     f = fopen("/proc/self/maps", "r");
->> > +     if (!f) {
->> > +             printf("Failed to open /proc/self/maps.\n");
->>                 ^
->>                 should rather be tst_resm(TWARN, );
->>
->
-> ok. looks like using
->     FILE * f = SAFE_FOPEN(NULL, "/proc/self/maps", "r");
-> is better than above.
->
->
->> > +             return -1;
->> > +     }
->> > +
->> > +     while (1) {
->> > +             unsigned long start, end;
->> > +             int ret;
->> > +
->> > +             tmp = fgets(line, MAPS_BUF_SZ, f);
->> > +             if (!tmp)
->> > +                     break;
->> > +
->> > +             ret = sscanf(line, "%lx-%lx", &start, &end);
->> > +             if (ret != 2) {
->> > +                     printf("Couldn't parse /proc/self/maps line:
->> %s\n",
->> > +                                     line);
->>                         ^
->>                         here as well
->>
->
-> ok.
->
->
->> > +                     fclose(f);
->> > +                     return -1;
->> > +             }
->>
->> Why don't you just use fscanf()? It doesn't make sense to read the line
->> into the buffer and then sscanf() the values.
->>
->
-okay, seems you are right. I tried and achieved another one,  following
-code test pass on my s390x system.
------------------------------------------
-int range_is_mapped(unsigned long low, unsigned long high)
-{
-    FILE *f = SAFE_FOPEN(NULL, "/proc/self/maps", "r");
+> +}
+> +
+> +int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
+> +		int domain, int type, int protocol)
+> +{
+> +	int rval;
+> +
+> +	rval = socket(domain, type, protocol);
+> +
+> +	if (rval < 0) {
+> +		tst_brkm(TBROK | TERRNO, cleanup_fn,
+> +			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
+> +			 domain, type, protocol);
+> +	}
+> +
+> +	return rval;
+> +}
+> +
+> +int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
+> +	      int socket, const struct sockaddr *address,
+> +	      socklen_t address_len)
+> +{
+> +	int i;
+> +	char buf[128];
+> +
+> +	for (i = 0; i < 120; i++) {
+> +		if (!bind(socket, address, address_len)) {
+> +			tst_resm(TINFO, "bind is OK now");
 
-    char buf[512];
+I doubt that we need to print "bind is OK now"... the other library 
+functions don't print anything on success.
 
-    while (!feof(f)) {
-        unsigned long start, end;
-        int ret;
+Otherwise it looks good.
 
-        ret = fscanf(f, "%lx-%lx %[^\n]%*c]", &start, &end, buf);
-        if (ret != 3) {
-            tst_resm(TWARN | TERRNO, "Couldn't parse /proc/self/maps
-line.");
-            SAFE_FCLOSE(NULL, f);
-        }
+Also, could you please send a patch that renames asapi_04/05/06 to 
+asapi_01/02/03?
 
-        if ((start >= low) && (start < high)) {
-            SAFE_FCLOSE(NULL, f);
-            return 1;
-        }
-        if ((end >= low) && (end < high)) {
-            SAFE_FCLOSE(NULL, f);
-            return 1;
-        }
-    }
+Best regards,
+Alexey
 
-    SAFE_FCLOSE(NULL, f);
-    return 0;
-}
-
-so, which one is better?  I will format patch V3 when getting some
-proposals.
-
-cc' jstancek@ if has some good idea.
-
-
-> hmm, we need to read the '/proc/self/maps' line by line, It easy to use fgets()
-> to get each line in and then sscanf() that.
->
-> fscanf() will never read the newline at the end of the first line. So
-> when it is called the second time, it will fail (returning 0, not EOF) and
-> read nothing, leaving the [start, end] unchanged.
-> maybe I don't know if fscanf() could achieve that also?
->
-> so what about something like:
-> --------------------------------------
-> int range_is_mapped(unsigned long low, unsigned long high)
-> {
->     FILE *f = SAFE_FOPEN(NULL, "/proc/self/maps", "r");
->
->     int MAPS_BUF_SZ = 4096;
->     char line[MAPS_BUF_SZ];
->
->     while (fgets(line, MAPS_BUF_SZ, f)) {
->         unsigned long start, end;
->         int ret;
->
->         ret = sscanf(line, "%lx-%lx", &start, &end);
->         if (ret != 2) {
->             tst_resm(TWARN | TERRNO, "Couldn't parse /proc/self/maps
-> line.");
->             SAFE_FCLOSE(NULL, f);
->         }
->
->         if ((start >= low) && (start < high)) {
->             SAFE_FCLOSE(NULL, f);
->             return 1;
->         }
->         if ((end >= low) && (end < high)) {
->             SAFE_FCLOSE(NULL, f);
->             return 1;
->         }
->     }
->
->     SAFE_FCLOSE(NULL, f);
->     return 0;
-> }
->
->
->
->> > +             if ((start >= low) && (start < high)) {
->> > +                     fclose(f);
->> > +                     return 1;
->> > +             }
->> > +             if ((end >= low) && (end < high)) {
->> > +                     fclose(f);
->> > +                     return 1;
->> > +             }
->> > +     }
->> > +
->> > +     fclose(f);
->> > +     return 0;
->> > +}
->>
->> --
->> Cyril Hrubis
->> chrubis@suse.cz
->>
->
->
->
-> --
-> Regards,
-> Li Wang
-> Email: liwang@redhat.com
->
-
-
-
--- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20151013/6ec80a51/attachment.html>
