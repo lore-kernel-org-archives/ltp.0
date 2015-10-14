@@ -1,1244 +1,52 @@
 From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 14 Oct 2015 16:21:17 +0800
-Subject: [LTP] [PATCH v9 1/8] lib6: Remove runcc.* and the testcases that
-	use it.
-In-Reply-To: <561CE0B0.2000801@oracle.com>
+Date: Wed, 14 Oct 2015 16:21:22 +0800
+Subject: [LTP] [PATCH v9 6/8] lib6/getaddrinfo_01.c: Cleanup
+In-Reply-To: <1444810884-32508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
 References: <561CE0B0.2000801@oracle.com>
-Message-ID: <1444810884-32508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+ <1444810884-32508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
+Message-ID: <1444810884-32508-6-git-send-email-zenglg.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- runtest/ipv6_lib                  |   4 -
- testcases/network/.gitignore      |   4 -
- testcases/network/lib6/Makefile   |   4 -
- testcases/network/lib6/asapi_01.c | 251 ----------------------------
- testcases/network/lib6/asapi_02.c | 338 --------------------------------------
- testcases/network/lib6/asapi_03.c | 234 --------------------------
- testcases/network/lib6/asapi_05.c | 119 +-------------
- testcases/network/lib6/asapi_07.c | 144 ----------------
- testcases/network/lib6/runcc.c    | 209 -----------------------
- testcases/network/lib6/runcc.h    |  30 ----
- 10 files changed, 1 insertion(+), 1336 deletions(-)
- delete mode 100644 testcases/network/lib6/asapi_01.c
- delete mode 100644 testcases/network/lib6/asapi_02.c
- delete mode 100644 testcases/network/lib6/asapi_03.c
- delete mode 100644 testcases/network/lib6/asapi_07.c
- delete mode 100644 testcases/network/lib6/runcc.c
- delete mode 100644 testcases/network/lib6/runcc.h
+* Add 'static' before some functions and global variables.
+* Remove cleanup() function.
+* Remove useless comments.
+* In every test function, using TINFO instead of TPASS
+  marks the success of each inner test.
+* Some cleanup.
 
-diff --git a/runtest/ipv6_lib b/runtest/ipv6_lib
-index 75614fb..203e275 100644
---- a/runtest/ipv6_lib
-+++ b/runtest/ipv6_lib
-@@ -2,10 +2,6 @@
- in6_01 in6_01
- in6_02 in6_02
- getaddrinfo_01 getaddrinfo_01
--asapi_01 asapi_01
--asapi_02 asapi_02
--asapi_03 asapi_03
- asapi_04 asapi_04
- asapi_05 asapi_05
- asapi_06 asapi_06
--asapi_07 asapi_07
-diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
-index aa6d4da..18b0203 100644
---- a/testcases/network/.gitignore
-+++ b/testcases/network/.gitignore
-@@ -1,13 +1,9 @@
- /can/filter-tests/can_filter
- /can/filter-tests/can_rcv_own_msgs
- /datafiles/
--/lib6/asapi_01
--/lib6/asapi_02
--/lib6/asapi_03
- /lib6/asapi_04
- /lib6/asapi_05
- /lib6/asapi_06
--/lib6/asapi_07
- /lib6/getaddrinfo_01
- /lib6/in6_01
- /lib6/in6_02
-diff --git a/testcases/network/lib6/Makefile b/testcases/network/lib6/Makefile
-index e337938..e9fde3b 100644
---- a/testcases/network/lib6/Makefile
-+++ b/testcases/network/lib6/Makefile
-@@ -31,8 +31,4 @@ LDLIBS				+= -lpthread
- 
- CLEAN_TARGETS			+= $(LIB)
- 
--FILTER_OUT_MAKE_TARGETS		:= runcc
--
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
--
--$(MAKE_TARGETS): %: %.o runcc.o
-diff --git a/testcases/network/lib6/asapi_01.c b/testcases/network/lib6/asapi_01.c
-deleted file mode 100644
-index 5d8bdc7..0000000
---- a/testcases/network/lib6/asapi_01.c
-+++ /dev/null
-@@ -1,251 +0,0 @@
--/*
-- *
+Signed-off-by: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
+---
+ testcases/network/lib6/getaddrinfo_01.c | 503 ++++++++++++++++++--------------
+ 1 file changed, 281 insertions(+), 222 deletions(-)
+
+diff --git a/testcases/network/lib6/getaddrinfo_01.c b/testcases/network/lib6/getaddrinfo_01.c
+index ec29b5d..a812e77 100644
+--- a/testcases/network/lib6/getaddrinfo_01.c
++++ b/testcases/network/lib6/getaddrinfo_01.c
+@@ -1,43 +1,21 @@
+ /*
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
 - *   Copyright (c) International Business Machines  Corp., 2001
-- *   Author: David L Stevens
-- *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
+  *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
 - *   the Free Software Foundation; either version 2 of the License, or
 - *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software Foundation,
-- *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--/*
-- *   Description:
-- *     These tests are for the "Advanced Sockets API" (RFC 3542)
-- *     Verify that in6 and sockaddr fields are present.
-- */
--
--#include <stdio.h>
--#include <unistd.h>
--#include <errno.h>
--
--#include <sys/wait.h>
--
--#include <netinet/ip6.h>
--
--#include "test.h"
--#include "runcc.h"
--
--enum ttype { EXISTS, ALIAS, VALUE };
--
--static struct ftent {
--	char *ft_tname;		/* test name */
--	int ft_type;		/* test type */
--	char *ft_incl;		/* include file list */
--	char *ft_struct;	/* structure name */
--	char *ft_field;		/* field name */
--	char *ft_offset;	/* field offset */
--	union {
--		char *fu_value;	/* field size or value */
--		char *fu_dname;	/* #define name */
--	} ftun;
--#define ft_value	ftun.fu_value
--#define ft_dname	ftun.fu_dname
--} ftab[] = {
--	/* section 2.1 structure & field definitions */
--	{ "ip6_hdr un1_flow", EXISTS, IP6_H, "ip6_hdr",
--		"ip6_ctlun.ip6_un1.ip6_un1_flow", "0", {"4"} },
--	{ "ip6_hdr ip6_flow", ALIAS, IP6_H, "ip6_hdr",
--		"ip6_ctlun.ip6_un1.ip6_un1_flow", NULL, {"ip6_flow"} },
--	{ "ip6_hdr un1_plen", EXISTS, IP6_H, "ip6_hdr",
--		"ip6_ctlun.ip6_un1.ip6_un1_plen", "4", {"2"} },
--	{ "ip6_hdr ip6_plen", ALIAS, IP6_H, "ip6_hdr",
--		"ip6_ctlun.ip6_un1.ip6_un1_plen", "4", {"ip6_plen"} },
--	{ "ip6_hdr un1_nxt", EXISTS, IP6_H, "ip6_hdr",
--		"ip6_ctlun.ip6_un1.ip6_un1_nxt", "6", {"1"} },
--	{ "ip6_hdr ip6_nxt", ALIAS, IP6_H, "ip6_hdr",
--		"ip6_ctlun.ip6_un1.ip6_un1_nxt", NULL, {"ip6_nxt"} },
--	{ "ip6_hdr un1_hlim", EXISTS, IP6_H, "ip6_hdr",
--		"ip6_ctlun.ip6_un1.ip6_un1_hlim", "7", {"1"} },
--	{ "ip6_hdr ip6_hlim", ALIAS, IP6_H, "ip6_hdr",
--		"ip6_ctlun.ip6_un1.ip6_un1_hlim", NULL, {"ip6_hlim"} },
--	{ "ip6_hdr un1_vfc", EXISTS, IP6_H, "ip6_hdr",
--		"ip6_ctlun.ip6_un2_vfc", "0", {"1"} },
--	{ "ip6_hdr ip6_src", EXISTS, IP6_H, "ip6_hdr",
--		"ip6_src", "sizeof(struct ip6_hdrctl)",
--		{"sizeof(struct in6_addr)"} },
--	{ "ip6_hdr ip6_dst", EXISTS, IP6_H, "ip6_hdr", "ip6_dst",
--		"(sizeof(struct ip6_hdrctl)+sizeof(struct in6_addr))",
--		{"sizeof(struct in6_addr)"} },
--	/* section 2.2 structure and field definitions */
--	{ "IPPROTO_HOPOPTS", VALUE, IN_H, "IPPROTO_HOPOPTS",
--		NULL, NULL, {"0"} },
--	{ "IPPROTO_IPV6", VALUE, IN_H, "IPPROTO_IPV6",
--		NULL, NULL, {"41"} },
--	{ "IPPROTO_ROUTING", VALUE, IN_H, "IPPROTO_ROUTING",
--		NULL, NULL, {"43"} },
--	{ "IPPROTO_FRAGMENT", VALUE, IN_H, "IPPROTO_FRAGMENT",
--		NULL, NULL, {"44"} },
--	{ "IPPROTO_ESP", VALUE, IN_H, "IPPROTO_ESP",
--		NULL, NULL, {"50"} },
--	{ "IPPROTO_AH", VALUE, IN_H, "IPPROTO_AH",
--		NULL, NULL, {"51"} },
--	{ "IPPROTO_ICMPV6", VALUE, IN_H, "IPPROTO_ICMPV6",
--		NULL, NULL, {"58"} },
--	{ "IPPROTO_NONE", VALUE, IN_H, "IPPROTO_NONE",
--		NULL, NULL, {"59"} },
--	{ "IPPROTO_DSTOPTS", VALUE, IN_H, "IPPROTO_DSTOPTS",
--		NULL, NULL, {"60"} },
--	/* ip6_hbh */
--	{ "ip6_hbh ip6h_nxt", EXISTS, IP6_H, "ip6_hbh",
--		"ip6h_nxt", "0", {"1"} },
--	{ "ip6_hbh ip6h_nxt", EXISTS, IP6_H, "ip6_hbh",
--		"ip6h_len", "1", {"1"} },
--	/* ip6_dest */
--	{ "ip6_dest ip6d_nxt", EXISTS, IP6_H, "ip6_dest",
--		"ip6d_nxt", "0", {"1"} },
--	{ "ip6_dest ip6d_nxt", EXISTS, IP6_H, "ip6_dest",
--		"ip6d_len", "1", {"1"} },
--	/* ip6_rthdr0 */
--	{ "ip6_rthdr0 ip6r0_nxt", EXISTS, IP6_H, "ip6_rthdr0",
--		"ip6r0_nxt", "0", {"1"} },
--	{ "ip6_rthdr0 ip6r0_len", EXISTS, IP6_H, "ip6_rthdr0",
--		"ip6r0_len", "1", {"1"} },
--	{ "ip6_rthdr0 ip6r0_type", EXISTS, IP6_H, "ip6_rthdr0",
--		"ip6r0_type", "2", {"1"} },
--	{ "ip6_rthdr0 ip6r0_segleft", EXISTS, IP6_H, "ip6_rthdr0",
--		"ip6r0_segleft", "3", {"1"} },
--	{ "ip6_rthdr0 ip6r0_reserved", EXISTS, IP6_H, "ip6_rthdr0",
--		"ip6r0_reserved", "4", {"1"} },
--	/* ip6_frag */
--	{ "ip6_frag ip6f_nxt", EXISTS, IP6_H, "ip6_frag",
--		"ip6f_nxt", "0", {"1"} },
--	{ "ip6_frag ip6f_reserved", EXISTS, IP6_H, "ip6_frag",
--		"ip6f_reserved", "1", {"1"} },
--	{ "ip6_frag ip6f_offlg", EXISTS, IP6_H, "ip6_frag",
--		"ip6f_offlg", "2", {"2"} },
--	{ "ip6_frag ip6f_ident", EXISTS, IP6_H, "ip6_frag",
--		"ip6f_ident", "4", {"4"} },
--	{ "IP6F_OFF_MASK", VALUE, IP6_H, "IP6F_OFF_MASK",
--		NULL, NULL, {"htons(0xfff8)"} },
--	{ "IP6F_RESERVED_MASK", VALUE, IP6_H, "IP6F_RESERVED_MASK",
--		NULL, NULL, {"htons(0x0006)"} },
--	{ "IP6F_MORE_FRAG", VALUE, IP6_H, "IP6F_MORE_FRAG",
--		NULL, NULL, {"htons(0x0001)"} },
--	{ "IP6OPT_TYPE", VALUE, IP6_H, "IP6OPT_TYPE(0xff)",
--		NULL, NULL, {"0xc0"} },
--	{ "IP6OPT_TYPE_SKIP", VALUE, IP6_H, "IP6OPT_TYPE_SKIP",
--		NULL, NULL, {"0x00"} },
--	{ "IP6OPT_TYPE_DISCARD", VALUE, IP6_H, "IP6OPT_TYPE_DISCARD",
--		NULL, NULL, {"0x40"} },
--	{ "IP6OPT_TYPE_FORCEICMP", VALUE, IP6_H, "IP6OPT_TYPE_FORCEICMP",
--		NULL, NULL, {"0x80"} },
--	{ "IP6OPT_TYPE_ICMP", VALUE, IP6_H, "IP6OPT_TYPE_ICMP",
--		NULL, NULL, {"0xc0"} },
--	{ "IP6OPT_TYPE_MUTABLE", VALUE, IP6_H, "IP6OPT_TYPE_MUTABLE",
--		NULL, NULL, {"0x20"} },
--	{ "IP6OPT_PAD1", VALUE, IP6_H, "IP6OPT_PAD1",
--		NULL, NULL, {"0x00"} },
--	{ "IP6OPT_PADN", VALUE, IP6_H, "IP6OPT_PADN",
--		NULL, NULL, {"0x01"} },
--	{ "IP6OPT_JUMBO", VALUE, IP6_H, "IP6OPT_JUMBO",
--		NULL, NULL, {"0xc2"} },
--	{ "IP6OPT_NSAP_ADDR", VALUE, IP6_H, "IP6OPT_NSAP_ADDR",
--		NULL, NULL, {"0xc3"} },
--	{ "IP6OPT_TUNNEL_LIMIT", VALUE, IP6_H, "IP6OPT_TUNNEL_LIMIT",
--		NULL, NULL, {"0x04"} },
--	{ "IP6OPT_ROUTER_ALERT", VALUE, IP6_H, "IP6OPT_ROUTER_ALERT",
--		NULL, NULL, {"0x05"} },
--	/* ip6_opt_jumbo */
--	{ "ip6_opt_jumbo ip6oj_type", EXISTS, IP6_H, "ip6_opt_jumbo",
--		"ip6oj_type", "0", {"1"} },
--	{ "ip6_opt_jumbo ip6oj_len", EXISTS, IP6_H, "ip6_opt_jumbo",
--		"ip6oj_len", "1", {"1"} },
--	{ "ip6_opt_jumbo ip6oj_jumbo_len element", EXISTS, IP6_H,
--		"ip6_opt_jumbo", "ip6oj_jumbo_len[0]", "2", {"1"} },
--	{ "ip6_opt_jumbo ip6oj_jumbo_len array", EXISTS, IP6_H,
--		"ip6_opt_jumbo", "ip6oj_jumbo_len", "2", {"4"} },
--	/* ip6_opt_nsap */
--	{ "ip6_opt_nsap ip6on_type", EXISTS, IP6_H, "ip6_opt_nsap",
--		"ip6on_type", "0", {"1"} },
--	{ "ip6_opt_nsap ip6on_len", EXISTS, IP6_H, "ip6_opt_nsap",
--		"ip6on_len", "1", {"1"} },
--	{ "ip6_opt_nsap ip6on_src_nsap_len", EXISTS, IP6_H,
--		"ip6_opt_nsap", "ip6on_src_nsap_len", "2", {"1"} },
--	{ "ip6_opt_nsap ip6on_dst_nsap_len", EXISTS, IP6_H,
--		"ip6_opt_nsap", "ip6on_dst_nsap_len", "3", {"1"} },
--	/* ip6_opt_tunnel */
--	{ "ip6_opt_tunnel ip6ot_type", EXISTS, IP6_H,
--		"ip6_opt_tunnel", "ip6ot_type", "0", {"1"} },
--	{ "ip6_opt_tunnel ip6ot_len", EXISTS, IP6_H,
--		"ip6_opt_tunnel", "ip6ot_len", "1", {"1"} },
--	{ "ip6_opt_tunnel ip6ot_encap_limit", EXISTS, IP6_H,
--		"ip6_opt_tunnel", "ip6ot_encap_limit", "2", {"1"} },
--	/* ip6_opt_router */
--	{ "ip6_opt_router ip6or_type", EXISTS, IP6_H,
--		"ip6_opt_router", "ip6or_type", "0", {"1"} },
--	{ "ip6_opt_router ip6or_len", EXISTS, IP6_H,
--		"ip6_opt_router", "ip6or_len", "1", {"1"} },
--	{ "ip6_opt_router ip6or_value element", EXISTS, IP6_H,
--		"ip6_opt_router", "ip6or_value[0]", "2", {"1"} },
--	{ "ip6_opt_router ip6or_value array", EXISTS, IP6_H,
--		"ip6_opt_router", "ip6or_value", "2", {"2"} },
--	/* IP6_ALERT_* definitions */
--	{ "IP6_ALERT_MLD", VALUE, IP6_H, "IP6_ALERT_MLD",
--		NULL, NULL, {"0"} },
--	{ "IP6_ALERT_RSVP", VALUE, IP6_H, "IP6_ALERT_RSVP",
--		NULL, NULL, {"htons(1)"} },
--	{ "IP6_ALERT_AN", VALUE, IP6_H, "IP6_ALERT_AN",
--		NULL, NULL, {"htons(2)"} },
--};
--
--static void setup(void);
--static void do_test(const struct ftent *);
--
--char *TCID = "asapi_01";
--int TST_TOTAL = ARRAY_SIZE(ftab);
--
--int main(int argc, char *argv[])
--{
--	int i, lc;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++)
--			do_test(&ftab[i]);
--	}
--
--	tst_exit();
--}
--
--void setup(void)
--{
--	TEST_PAUSE;
--}
--
--void do_test(const struct ftent *ftptr)
--{
--	switch (ftptr->ft_type) {
--	case EXISTS:
--		structcheck(ftptr->ft_tname, ftptr->ft_incl,
--			ftptr->ft_struct, ftptr->ft_field,
--			ftptr->ft_offset, ftptr->ft_value);
--		break;
--	case ALIAS:
--		aliascheck(ftptr->ft_tname, ftptr->ft_incl,
--			ftptr->ft_struct, ftptr->ft_field,
--			ftptr->ft_dname);
--		break;
--	case VALUE:
--		valuecheck(ftptr->ft_tname, ftptr->ft_incl,
--			ftptr->ft_struct, ftptr->ft_dname);
--		break;
--	default:
--		tst_resm(TBROK, "invalid type %d",
--			ftptr->ft_type);
--		break;
--	}
--}
-diff --git a/testcases/network/lib6/asapi_02.c b/testcases/network/lib6/asapi_02.c
-deleted file mode 100644
-index 01bee37..0000000
---- a/testcases/network/lib6/asapi_02.c
-+++ /dev/null
-@@ -1,338 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *   Author: David L Stevens
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software Foundation,
-- *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--/*
-- *   Description:
-- *     These tests are for the "Advanced Sockets API" (RFC 3542)
-- *     Verify that in6 and sockaddr fields are present.
-- */
--
--#include <stdio.h>
--#include <unistd.h>
--#include <errno.h>
--
--#include <sys/wait.h>
--
--#include <netinet/ip6.h>
--
--#include "test.h"
--#include "runcc.h"
--
--enum ttype { EXISTS, ALIAS, VALUE };
--
--static struct ftent {
--	char *ft_tname;		/* test name */
--	int ft_type;		/* test type */
--	char *ft_incl;		/* include file list */
--	char *ft_struct;	/* structure name */
--	char *ft_field;		/* field name */
--	char *ft_offset;	/* field offset */
--	union {
--		char *fu_value;	/* field size or value */
--		char *fu_dname;	/* #define name */
--	} ftun;
--#define ft_value	ftun.fu_value
--#define ft_dname	ftun.fu_dname
--} ftab[] = {
--	/* Section 2.2, icmp6_hdr & defines */
--	{ "icmp6_hdr icmp6_type", EXISTS, ICMP6_H, "icmp6_hdr",
--		"icmp6_type", "0", {"1"} },
--	{ "icmp6_hdr icmp6_code", EXISTS, ICMP6_H, "icmp6_hdr",
--		"icmp6_code", "1", {"1"} },
--	{ "icmp6_hdr icmp6_cksum", EXISTS, ICMP6_H, "icmp6_hdr",
--		"icmp6_cksum", "2", {"2"} },
--	{ "icmp6_hdr icmp6_un_data32 element", EXISTS, ICMP6_H,
--		"icmp6_hdr", "icmp6_dataun.icmp6_un_data32[0]", "4", {"4"} },
--	{ "icmp6_hdr icmp6_un_data32 array", EXISTS, ICMP6_H,
--		"icmp6_hdr", "icmp6_dataun.icmp6_un_data32", "4", {"4"} },
--	{ "icmp6_hdr icmp6_un_data16 element", EXISTS, ICMP6_H,
--		"icmp6_hdr", "icmp6_dataun.icmp6_un_data16[0]", "4", {"2"} },
--	{ "icmp6_hdr icmp6_un_data16 array", EXISTS, ICMP6_H,
--		"icmp6_hdr", "icmp6_dataun.icmp6_un_data16", "4", {"4"} },
--	{ "icmp6_hdr icmp6_un_data8 element", EXISTS, ICMP6_H,
--		"icmp6_hdr", "icmp6_dataun.icmp6_un_data8[0]", "4", {"1"} },
--	{ "icmp6_hdr icmp6_un_data8 array", EXISTS, ICMP6_H,
--		"icmp6_hdr", "icmp6_dataun.icmp6_un_data8", "4", {"4"} },
--	/* icmp6_hdr definitions */
--	{ "icmp6_hdr icmp6_data32 define", ALIAS, ICMP6_H, "icmp6_hdr",
--		"icmp6_dataun.icmp6_un_data32", NULL, {"icmp6_data32"} },
--	{ "icmp6_hdr icmp6_data16 define", ALIAS, ICMP6_H, "icmp6_hdr",
--		"icmp6_dataun.icmp6_un_data16", NULL, {"icmp6_data16"} },
--	{ "icmp6_hdr icmp6_data8 define", ALIAS, ICMP6_H, "icmp6_hdr",
--		"icmp6_dataun.icmp6_un_data8", NULL, {"icmp6_data8"} },
--	{ "icmp6_hdr icmp6_pptr define", ALIAS, ICMP6_H, "icmp6_hdr",
--		"icmp6_dataun.icmp6_un_data32[0]", NULL, {"icmp6_pptr"} },
--	{ "icmp6_hdr icmp6_mtu define", ALIAS, ICMP6_H, "icmp6_hdr",
--		"icmp6_dataun.icmp6_un_data32[0]", NULL, {"icmp6_mtu"} },
--	{ "icmp6_hdr icmp6_id define", ALIAS, ICMP6_H, "icmp6_hdr",
--		"icmp6_dataun.icmp6_un_data16[0]", NULL, {"icmp6_id"} },
--	{ "icmp6_hdr icmp6_seq define", ALIAS, ICMP6_H, "icmp6_hdr",
--		"icmp6_dataun.icmp6_un_data16[1]", NULL, {"icmp6_seq"} },
--	{ "icmp6_hdr icmp6_maxdelay define", ALIAS, ICMP6_H, "icmp6_hdr",
--		"icmp6_dataun.icmp6_un_data16[0]", NULL, {"icmp6_maxdelay"} },
--	/* Section 2.2.1 ICMPv6 Type and Code Values */
--	{ "ICMP6_DST_UNREACH", VALUE, ICMP6_H, "ICMP6_DST_UNREACH",
--		NULL, NULL, {"1"} },
--	{ "ICMP6_PACKET_TOO_BIG", VALUE, ICMP6_H, "ICMP6_PACKET_TOO_BIG",
--		NULL, NULL, {"2"} },
--	{ "ICMP6_TIME_EXCEEDED", VALUE, ICMP6_H, "ICMP6_TIME_EXCEEDED",
--		NULL, NULL, {"3"} },
--	{ "ICMP6_PARAM_PROB", VALUE, ICMP6_H, "ICMP6_PARAM_PROB",
--		NULL, NULL, {"4"} },
--	{ "ICMP6_INFOMSG_MASK", VALUE, ICMP6_H, "ICMP6_INFOMSG_MASK",
--		NULL, NULL, {"0x80"} },
--	{ "ICMP6_ECHO_REQUEST", VALUE, ICMP6_H, "ICMP6_ECHO_REQUEST",
--		NULL, NULL, {"128"} },
--	{ "ICMP6_ECHO_REPLY", VALUE, ICMP6_H, "ICMP6_ECHO_REPLY",
--		NULL, NULL, {"129"} },
--	{ "ICMP6_DST_UNREACH_NOROUTE", VALUE, ICMP6_H,
--		"ICMP6_DST_UNREACH_NOROUTE", NULL, NULL, {"0"} },
--	{ "ICMP6_DST_UNREACH_ADMIN", VALUE, ICMP6_H,
--		"ICMP6_DST_UNREACH_ADMIN", NULL, NULL, {"1"} },
--	{ "ICMP6_DST_UNREACH_BEYONDSCOPE", VALUE, ICMP6_H,
--		"ICMP6_DST_UNREACH_BEYONDSCOPE", NULL, NULL, {"2"} },
--	{ "ICMP6_DST_UNREACH_ADDR", VALUE, ICMP6_H,
--		"ICMP6_DST_UNREACH_ADDR", NULL, NULL, {"3"} },
--	{ "ICMP6_DST_UNREACH_NOPORT", VALUE, ICMP6_H,
--		"ICMP6_DST_UNREACH_NOPORT", NULL, NULL, {"4"} },
--	{ "ICMP6_TIME_EXCEED_TRANSIT", VALUE, ICMP6_H,
--		"ICMP6_TIME_EXCEED_TRANSIT", NULL, NULL, {"0"} },
--	{ "ICMP6_TIME_EXCEED_REASSEMBLY", VALUE, ICMP6_H,
--		"ICMP6_TIME_EXCEED_REASSEMBLY", NULL, NULL, {"1"} },
--	{ "ICMP6_PARAMPROB_HEADER", VALUE, ICMP6_H,
--		"ICMP6_PARAMPROB_HEADER", NULL, NULL, {"0"} },
--	{ "ICMP6_PARAMPROB_NEXTHEADER", VALUE, ICMP6_H,
--		"ICMP6_PARAMPROB_NEXTHEADER", NULL, NULL, {"1"} },
--	{ "ICMP6_PARAMPROB_OPTION", VALUE, ICMP6_H,
--		"ICMP6_PARAMPROB_OPTION", NULL, NULL, {"2"} },
--	/* section 2.2.2, Neighbor Discovery */
--	{ "ND_ROUTER_SOLICIT", VALUE, ICMP6_H,
--		"ND_ROUTER_SOLICIT", NULL, NULL, {"133"} },
--	{ "ND_ROUTER_ADVERT", VALUE, ICMP6_H,
--		"ND_ROUTER_ADVERT", NULL, NULL, {"134"} },
--	{ "ND_NEIGHBOR_SOLICIT", VALUE, ICMP6_H,
--		"ND_NEIGHBOR_SOLICIT", NULL, NULL, {"135"} },
--	{ "ND_NEIGHBOR_ADVERT", VALUE, ICMP6_H,
--		"ND_NEIGHBOR_ADVERT", NULL, NULL, {"136"} },
--	{ "ND_REDIRECT", VALUE, ICMP6_H,
--		"ND_REDIRECT", NULL, NULL, {"137"} },
--	{ "nd_router_solicit nd_rs_hdr", EXISTS, ICMP6_H,
--		"nd_router_solicit", "nd_rs_hdr", "0",
--		{"sizeof(struct icmp6_hdr)"} },
--	{ "nd_router_solicit nd_rs_type define", ALIAS, ICMP6_H,
--		"nd_router_solicit", "nd_rs_hdr.icmp6_type",
--		NULL, {"nd_rs_type"} },
--	{ "nd_router_solicit nd_rs_code define", ALIAS, ICMP6_H,
--		"nd_router_solicit", "nd_rs_hdr.icmp6_code",
--		NULL, {"nd_rs_code"} },
--	{ "nd_router_solicit nd_rs_cksum define", ALIAS, ICMP6_H,
--		"nd_router_solicit", "nd_rs_hdr.icmp6_cksum",
--		NULL, {"nd_rs_cksum"} },
--	{ "nd_router_solicit nd_rs_reserved define", ALIAS, ICMP6_H,
--		"nd_router_solicit", "nd_rs_hdr.icmp6_data32[0]",
--		NULL, {"nd_rs_reserved"} },
--	{ "nd_router_advert nd_ra_hdr", EXISTS, ICMP6_H,
--		"nd_router_advert", "nd_ra_hdr", "0",
--		{"sizeof(struct icmp6_hdr)"} },
--	{ "nd_router_advert nd_ra_reachable", EXISTS, ICMP6_H,
--		"nd_router_advert", "nd_ra_reachable",
--		"sizeof(struct icmp6_hdr)", {"4"} },
--	{ "nd_router_advert nd_ra_retransmit", EXISTS, ICMP6_H,
--		"nd_router_advert", "nd_ra_retransmit",
--		"sizeof(struct icmp6_hdr)+4", {"4"} },
--	{ "nd_router_advert nd_ra_type define", ALIAS, ICMP6_H,
--		"nd_router_advert", "nd_ra_hdr.icmp6_type",
--		NULL, {"nd_ra_type"} },
--	{ "nd_router_advert nd_ra_code define", ALIAS, ICMP6_H,
--		"nd_router_advert", "nd_ra_hdr.icmp6_code",
--		NULL, {"nd_ra_code"} },
--	{ "nd_router_advert nd_ra_cksum define", ALIAS, ICMP6_H,
--		"nd_router_advert", "nd_ra_hdr.icmp6_cksum",
--		NULL, {"nd_ra_cksum"} },
--	{ "nd_router_advert nd_ra_curhoplimit define", ALIAS, ICMP6_H,
--		"nd_router_advert", "nd_ra_hdr.icmp6_data8[0]",
--		NULL, {"nd_ra_curhoplimit"} },
--	{ "nd_router_advert nd_ra_flags_reserved define", ALIAS, ICMP6_H,
--		"nd_router_advert", "nd_ra_hdr.icmp6_data8[1]",
--		NULL, {"nd_ra_flags_reserved"} },
--	{ "ND_RA_FLAG_MANAGED", VALUE, ICMP6_H,
--		"ND_RA_FLAG_MANAGED", NULL, NULL, {"0x80"} },
--	{ "ND_RA_FLAG_OTHER", VALUE, ICMP6_H,
--		"ND_RA_FLAG_OTHER", NULL, NULL, {"0x40"} },
--	{ "nd_router_advert nd_ra_router_lifetime define", ALIAS, ICMP6_H,
--		"nd_router_advert", "nd_ra_hdr.icmp6_data16[1]",
--		NULL, {"nd_ra_router_lifetime"} },
--	{ "nd_neighbor_solicit nd_ns_hdr", EXISTS, ICMP6_H,
--		"nd_neighbor_solicit", "nd_ns_hdr",
--		"0", {"sizeof(struct icmp6_hdr)"} },
--	{ "nd_neighbor_solicit nd_ns_target", EXISTS, ICMP6_H,
--		"nd_neighbor_solicit", "nd_ns_target",
--		"sizeof(struct icmp6_hdr)", {"sizeof(struct in6_addr)"} },
--	{ "nd_neighbor_solicit nd_ns_type define", ALIAS, ICMP6_H,
--		"nd_neighbor_solicit", "nd_ns_hdr.icmp6_type",
--		NULL, {"nd_ns_type"} },
--	{ "nd_neighbor_solicit nd_ns_code define", ALIAS, ICMP6_H,
--		"nd_neighbor_solicit", "nd_ns_hdr.icmp6_code",
--		NULL, {"nd_ns_code"} },
--	{ "nd_neighbor_solicit nd_ns_cksum define", ALIAS, ICMP6_H,
--		"nd_neighbor_solicit", "nd_ns_hdr.icmp6_cksum",
--		NULL, {"nd_ns_cksum"} },
--	{ "nd_neighbor_solicit nd_ns_reserved define", ALIAS, ICMP6_H,
--		"nd_neighbor_solicit", "nd_ns_hdr.icmp6_data32[0]",
--		NULL, {"nd_ns_reserved"} },
--	{ "nd_neighbor_advert nd_na_hdr", EXISTS, ICMP6_H,
--		"nd_neighbor_advert", "nd_na_hdr",
--		"0", {"sizeof(struct icmp6_hdr)"} },
--	{ "nd_neighbor_advert nd_na_target", EXISTS, ICMP6_H,
--		"nd_neighbor_advert", "nd_na_target",
--		"sizeof(struct icmp6_hdr)", {"sizeof(struct in6_addr)"} },
--	{ "nd_neighbor_advert nd_na_type define", ALIAS, ICMP6_H,
--		"nd_neighbor_advert", "nd_na_hdr.icmp6_type",
--		NULL, {"nd_na_type"} },
--	{ "nd_neighbor_advert nd_na_code define", ALIAS, ICMP6_H,
--		"nd_neighbor_advert", "nd_na_hdr.icmp6_code",
--		NULL, {"nd_na_code"} },
--	{ "nd_neighbor_advert nd_na_cksum define", ALIAS, ICMP6_H,
--		"nd_neighbor_advert", "nd_na_hdr.icmp6_cksum",
--		NULL, {"nd_na_cksum"} },
--	{ "nd_neighbor_advert nd_na_flags_reserved define", ALIAS,
--		ICMP6_H, "nd_neighbor_advert", "nd_na_hdr.icmp6_data32[0]",
--		NULL, {"nd_na_flags_reserved"}	},
--	{ "ND_NA_FLAG_ROUTER", VALUE, ICMP6_H, "ND_NA_FLAG_ROUTER",
--		NULL, NULL, {"htonl(0x80000000)"} },
--	{ "ND_NA_FLAG_SOLICITED", VALUE, ICMP6_H, "ND_NA_FLAG_SOLICITED",
--		NULL, NULL, {"htonl(0x40000000)"} },
--	{ "ND_NA_FLAG_OVERRIDE", VALUE, ICMP6_H, "ND_NA_FLAG_OVERRIDE",
--		NULL, NULL, {"htonl(0x20000000)"} },
--	{ "nd_redirect nd_rd_hdr", EXISTS, ICMP6_H, "nd_redirect",
--		"nd_rd_hdr", "0", {"sizeof(struct icmp6_hdr)"} },
--	{ "nd_redirect nd_rd_target", EXISTS, ICMP6_H,
--		"nd_redirect", "nd_rd_target",
--		"sizeof(struct icmp6_hdr)", {"sizeof(struct in6_addr)"} },
--	{ "nd_redirect nd_rd_dst", EXISTS, ICMP6_H, "nd_redirect",
--		"nd_rd_dst", "sizeof(struct icmp6_hdr)+sizeof(struct in6_addr)",
--		{"sizeof(struct in6_addr)"} },
--	{ "nd_redirect nd_rd_type define", ALIAS, ICMP6_H,
--		"nd_neighbor_advert", "nd_na_hdr.icmp6_data32[0]",
--		NULL, {"nd_na_flags_reserved"} },
--	{ "nd_opt_hdr nd_rd_hdr", EXISTS, ICMP6_H, "nd_opt_hdr",
--		"nd_opt_type", "0", {"1"} },
--	{ "nd_opt_hdr nd_rd_hdr", EXISTS, ICMP6_H, "nd_opt_hdr",
--		"nd_opt_len", "1", {"1"} },
--	{ "ND_OPT_SOURCE_LINKADDR", VALUE, ICMP6_H,
--		"ND_OPT_SOURCE_LINKADDR", NULL, NULL, {"1"} },
--	{ "ND_OPT_TARGET_LINKADDR", VALUE, ICMP6_H,
--		"ND_OPT_TARGET_LINKADDR", NULL, NULL, {"2"} },
--	{ "ND_OPT_PREFIX_INFORMATION", VALUE, ICMP6_H,
--		"ND_OPT_PREFIX_INFORMATION", NULL, NULL, {"3"} },
--	{ "ND_OPT_REDIRECTED_HEADER", VALUE, ICMP6_H,
--		"ND_OPT_REDIRECTED_HEADER", NULL, NULL, {"4"} },
--	{ "ND_OPT_MTU", VALUE, ICMP6_H, "ND_OPT_MTU",
--		NULL, NULL, {"5"} },
--	{ "nd_opt_prefix_info nd_opt_pi_type", EXISTS, ICMP6_H,
--		"nd_opt_prefix_info", "nd_opt_pi_type", "0", {"1"} },
--	{ "nd_opt_prefix_info nd_opt_pi_len", EXISTS, ICMP6_H,
--		"nd_opt_prefix_info", "nd_opt_pi_len", "1", {"1"} },
--	{ "nd_opt_prefix_info nd_opt_pi_prefix_len", EXISTS, ICMP6_H,
--		"nd_opt_prefix_info", "nd_opt_pi_prefix_len", "2", {"1"} },
--	{ "nd_opt_prefix_info nd_opt_pi_flags_reserved", EXISTS, ICMP6_H,
--		"nd_opt_prefix_info", "nd_opt_pi_flags_reserved", "3", {"1"} },
--	{ "nd_opt_prefix_info nd_opt_pi_valid_time", EXISTS, ICMP6_H,
--		"nd_opt_prefix_info", "nd_opt_pi_valid_time", "4", {"4"} },
--	{ "nd_opt_prefix_info nd_opt_pi_preferred_time", EXISTS, ICMP6_H,
--		"nd_opt_prefix_info", "nd_opt_pi_preferred_time", "8", {"4"} },
--	{ "nd_opt_prefix_info nd_opt_pi_reserved2", EXISTS, ICMP6_H,
--		"nd_opt_prefix_info", "nd_opt_pi_reserved2", "12", {"4"} },
--	{ "nd_opt_prefix_info nd_opt_pi_prefix", EXISTS, ICMP6_H,
--		"nd_opt_prefix_info", "nd_opt_pi_prefix",
--		"16", {"sizeof(struct in6_addr)"} },
--	{ "ND_OPT_PI_FLAG_ONLINK", VALUE, ICMP6_H,
--		"ND_OPT_PI_FLAG_ONLINK", NULL, NULL, {"0x80"} },
--	{ "ND_OPT_PI_FLAG_AUTO", VALUE, ICMP6_H,
--		"ND_OPT_PI_FLAG_AUTO", NULL, NULL, {"0x40"} },
--	{ "nd_opt_rd_hdr nd_opt_rh_type", EXISTS, ICMP6_H,
--		"nd_opt_rd_hdr", "nd_opt_rh_type", "0", {"1"} },
--	{ "nd_opt_rd_hdr nd_opt_rh_len", EXISTS, ICMP6_H,
--		"nd_opt_rd_hdr", "nd_opt_rh_len", "1", {"1"} },
--	{ "nd_opt_rd_hdr nd_opt_rh_reserved1", EXISTS, ICMP6_H,
--		"nd_opt_rd_hdr", "nd_opt_rh_reserved1", "2", {"2"} },
--	{ "nd_opt_rd_hdr nd_opt_rh_reserved2", EXISTS, ICMP6_H,
--		"nd_opt_rd_hdr", "nd_opt_rh_reserved2", "4", {"4"} },
--	{ "nd_opt_mtu nd_opt_mtu_type", EXISTS, ICMP6_H,
--		"nd_opt_mtu", "nd_opt_mtu_type", "0", {"1"} },
--	{ "nd_opt_mtu nd_opt_mtu_len", EXISTS, ICMP6_H,
--		"nd_opt_mtu", "nd_opt_mtu_len", "1", {"1"} },
--	{ "nd_opt_mtu nd_opt_mtu_reserved", EXISTS, ICMP6_H,
--		"nd_opt_mtu", "nd_opt_mtu_reserved", "2", {"2"} },
--	{ "nd_opt_mtu nd_opt_mtu_mtu", EXISTS, ICMP6_H,
--		"nd_opt_mtu", "nd_opt_mtu_mtu", "4", {"4"} },
--};
--
--static void setup(void);
--static void do_test(const struct ftent *);
--
--char *TCID = "asapi_02";
--int TST_TOTAL = ARRAY_SIZE(ftab);
--
--int main(int argc, char *argv[])
--{
--	int i, lc;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++)
--			do_test(&ftab[i]);
--	}
--
--	tst_exit();
--}
--
--void setup(void)
--{
--	TEST_PAUSE;
--}
--
--void do_test(const struct ftent *ftptr)
--{
--	switch (ftptr->ft_type) {
--	case EXISTS:
--		structcheck(ftptr->ft_tname, ftptr->ft_incl,
--			ftptr->ft_struct, ftptr->ft_field,
--			ftptr->ft_offset, ftptr->ft_value);
--		break;
--	case ALIAS:
--		aliascheck(ftptr->ft_tname, ftptr->ft_incl,
--			ftptr->ft_struct, ftptr->ft_field,
--			ftptr->ft_dname);
--		break;
--	case VALUE:
--		valuecheck(ftptr->ft_tname, ftptr->ft_incl,
--			ftptr->ft_struct, ftptr->ft_dname);
--		break;
--	default:
--		tst_resm(TBROK, "invalid type %d",
--			ftptr->ft_type);
--		break;
--	}
--}
-diff --git a/testcases/network/lib6/asapi_03.c b/testcases/network/lib6/asapi_03.c
-deleted file mode 100644
-index f458d7d..0000000
---- a/testcases/network/lib6/asapi_03.c
-+++ /dev/null
-@@ -1,234 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *   Author: David L Stevens
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software Foundation,
-- *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--/*
-- *   Description:
-- *     These tests are for the "Advanced Sockets API" (RFC 3542)
-- *     Verify that in6 and sockaddr fields are present.
-- */
--
--#include <stdio.h>
--#include <unistd.h>
--#include <errno.h>
--
--#include <sys/wait.h>
--
--#include <netinet/ip6.h>
--
--#include "test.h"
--#include "runcc.h"
--
--enum ttype { EXISTS, ALIAS, VALUE };
--
--static struct ftent {
--	char *ft_tname;		/* test name */
--	int ft_type;		/* test type */
--	char *ft_incl;		/* include file list */
--	char *ft_struct;	/* structure name */
--	char *ft_field;		/* field name */
--	char *ft_offset;	/* field offset */
--	union {
--		char *fu_value;	/* field size or value */
--		char *fu_dname;	/* #define name */
--	} ftun;
--#define ft_value	ftun.fu_value
--#define ft_dname	ftun.fu_dname
--} ftab[] = {
--	/* section 2.2.3, MLDv1 */
--	{ "MLD_LISTENER_QUERY", VALUE, ICMP6_H,
--		"MLD_LISTENER_QUERY", NULL, NULL, {"130"} },
--	{ "MLD_LISTENER_REPORT", VALUE, ICMP6_H,
--		"MLD_LISTENER_REPORT", NULL, NULL, {"131"} },
--	{ "MLD_LISTENER_REDUCTION", VALUE, ICMP6_H,
--		"MLD_LISTENER_REDUCTION", NULL, NULL, {"132"} },
--	{ "mld_hdr mld_icmp6_hdr", EXISTS, ICMP6_H,
--		"mld_hdr", "mld_icmp6_hdr", "0",
--		{"sizeof(struct icmp6_hdr)"} },
--	{ "mld_hdr mld_addr", EXISTS, ICMP6_H, "mld_hdr",
--		"mld_addr", "sizeof(struct icmp6_hdr)",
--		{"sizeof(struct in6_addr)"} },
--	{ "mld_hdr mld_type define", ALIAS, ICMP6_H, "mld_hdr",
--		"mld_icmp6_hdr.icmp6_type", NULL, {"mld_type"} },
--	{ "mld_hdr mld_code define", ALIAS, ICMP6_H, "mld_hdr",
--		"mld_icmp6_hdr.icmp6_code", NULL, {"mld_code"} },
--	{ "mld_hdr mld_cksum define", ALIAS, ICMP6_H, "mld_hdr",
--		"mld_icmp6_hdr.icmp6_cksum", NULL, {"mld_cksum"} },
--	{ "mld_hdr mld_maxdelay define", ALIAS, ICMP6_H, "mld_hdr",
--		"mld_icmp6_hdr.icmp6_data16[0]", NULL, {"mld_maxdelay"} },
--	{ "mld_hdr mld_reserved define", ALIAS, ICMP6_H, "mld_hdr",
--		"mld_icmp6_hdr.icmp6_data16[1]", NULL, {"mld_reserved"} },
--	/* section 2.2.4, Router renumbering */
--	{ "ICMP6_ROUTER_RENUMBERING", VALUE, ICMP6_H,
--		"ICMP6_ROUTER_RENUMBERING", NULL, NULL, {"138"} },
--	{ "icmp6_router_renum rr_hdr", EXISTS, ICMP6_H,
--		"icmp6_router_renum", "rr_hdr", "0",
--		{"sizeof(struct icmp6_hdr)"} },
--	{ "icmp6_router_renum rr_segnum", EXISTS, ICMP6_H,
--		"icmp6_router_renum", "rr_segnum",
--		"sizeof(struct icmp6_hdr)", {"1"} },
--	{ "icmp6_router_renum rr_flags", EXISTS, ICMP6_H,
--		"icmp6_router_renum", "rr_flags",
--		"sizeof(struct icmp6_hdr)+1", {"1"} },
--	{ "icmp6_router_renum rr_maxdelay", EXISTS, ICMP6_H,
--		"icmp6_router_renum", "rr_maxdelay",
--		"sizeof(struct icmp6_hdr)+2", {"2"} },
--	{ "icmp6_router_renum rr_reserved", EXISTS, ICMP6_H,
--		"icmp6_router_renum", "rr_reserved",
--		"sizeof(struct icmp6_hdr)+4", {"4"} },
--	{ "icmp6_router_renum rr_type define", ALIAS, ICMP6_H,
--		"icmp6_router_renum", "rr_hdr.icmp6_type",
--		NULL, {"rr_type"} },
--	{ "icmp6_router_renum rr_code define", ALIAS, ICMP6_H,
--		"icmp6_router_renum", "rr_hdr.icmp6_code",
--		NULL, {"rr_code"} },
--	{ "icmp6_router_renum rr_cksum define", ALIAS, ICMP6_H,
--		"icmp6_router_renum", "rr_hdr.icmp6_cksum",
--		NULL, {"rr_cksum"} },
--	{ "icmp6_router_renum rr_seqnum define", ALIAS, ICMP6_H,
--		"icmp6_router_renum", "rr_hdr.icmp6_data32[0]",
--		NULL, {"rr_seqnum"} },
--	{ "ICMP6_RR_FLAGS_TEST", VALUE, ICMP6_H,
--		"ICMP6_RR_FLAGS_TEST", NULL, NULL, {"0x80"} },
--	{ "ICMP6_RR_FLAGS_REQRESULT", VALUE, ICMP6_H,
--		"ICMP6_RR_FLAGS_REQRESULT", NULL, NULL, {"0x40"} },
--	{ "ICMP6_RR_FLAGS_FORCEAPPLY", VALUE, ICMP6_H,
--		"ICMP6_RR_FLAGS_FORCEAPPLY", NULL, NULL, {"0x20"} },
--	{ "ICMP6_RR_FLAGS_SPECSITE", VALUE, ICMP6_H,
--		"ICMP6_RR_FLAGS_SPECSITE", NULL, NULL, {"0x10"} },
--	{ "ICMP6_RR_FLAGS_PREVDONE", VALUE, ICMP6_H,
--		"ICMP6_RR_FLAGS_PREVDONE", NULL, NULL, {"0x08"} },
--	{ "rr_pco_match rpm_code", EXISTS, ICMP6_H,
--		"rr_pco_match", "rpm_code", "0", {"1"} },
--	{ "rr_pco_match rpm_len", EXISTS, ICMP6_H,
--		"rr_pco_match", "rpm_len", "1", {"1"} },
--	{ "rr_pco_match rpm_ordinal", EXISTS, ICMP6_H,
--		"rr_pco_match", "rpm_ordinal", "2", {"1"} },
--	{ "rr_pco_match rpm_matchlen", EXISTS, ICMP6_H,
--		"rr_pco_match", "rpm_matchlen", "3", {"1"} },
--	{ "rr_pco_match rpm_minlen", EXISTS, ICMP6_H,
--		"rr_pco_match", "rpm_minlen", "4", {"1"} },
--	{ "rr_pco_match rpm_maxlen", EXISTS, ICMP6_H,
--		"rr_pco_match", "rpm_maxlen", "5", {"1"} },
--	{ "rr_pco_match rpm_reserved", EXISTS, ICMP6_H,
--		"rr_pco_match", "rpm_reserved", "6", {"2"} },
--	{ "rr_pco_match rpm_prefix", EXISTS, ICMP6_H,
--		"rr_pco_match", "rpm_prefix", "8",
--		{"sizeof(struct in6_addr)"} },
--	{ "RPM_PCO_ADD", VALUE, ICMP6_H, "RPM_PCO_ADD",
--		NULL, NULL, {"1"} },
--	{ "RPM_PCO_CHANGE", VALUE, ICMP6_H, "RPM_PCO_CHANGE",
--		NULL, NULL, {"2"} },
--	{ "RPM_PCO_SETGLOBAL", VALUE, ICMP6_H, "RPM_PCO_SETGLOBAL",
--		NULL, NULL, {"3"} },
--	{ "rr_pco_use rpu_uselen", EXISTS, ICMP6_H, "rr_pco_use",
--		"rpu_uselen", "0", {"1"} },
--	{ "rr_pco_use rpu_keeplen", EXISTS, ICMP6_H, "rr_pco_use",
--		"rpu_keeplen", "1", {"1"} },
--	{ "rr_pco_use rpu_ramask", EXISTS, ICMP6_H, "rr_pco_use",
--		"rpu_ramask", "2", {"1"} },
--	{ "rr_pco_use rpu_raflags", EXISTS, ICMP6_H, "rr_pco_use",
--		"rpu_raflags", "3", {"1"} },
--	{ "rr_pco_use rpu_vltime", EXISTS, ICMP6_H, "rr_pco_use",
--		"rpu_vltime", "4", {"4"} },
--	{ "rr_pco_use rpu_pltime", EXISTS, ICMP6_H, "rr_pco_use",
--		"rpu_pltime", "8", {"4"} },
--	{ "rr_pco_use rpu_flags", EXISTS, ICMP6_H, "rr_pco_use",
--		"rpu_flags", "12", {"4"} },
--	{ "rr_pco_use rpu_prefix", EXISTS, ICMP6_H, "rr_pco_use",
--		"rpu_prefix", "16", {"sizeof(struct in6_addr)"} },
--	{ "ICMP6_RR_PCOUSE_RAFLAGS_ONLINK", VALUE, ICMP6_H,
--		"ICMP6_RR_PCOUSE_RAFLAGS_ONLINK", NULL, NULL, {"0x20"} },
--	{ "ICMP6_RR_PCOUSE_RAFLAGS_AUTO", VALUE, ICMP6_H,
--		"ICMP6_RR_PCOUSE_RAFLAGS_AUTO", NULL, NULL, {"0x10"} },
--	{ "ICMP6_RR_PCOUSE_FLAGS_DECRVLTIME", VALUE, ICMP6_H,
--		"ICMP6_RR_PCOUSE_FLAGS_DECRVLTIME", NULL, NULL,
--		{"htonl(0x80000000)"} },
--	{ "ICMP6_RR_PCOUSE_FLAGS_DECRPLTIME", VALUE, ICMP6_H,
--		"ICMP6_RR_PCOUSE_FLAGS_DECRPLTIME", NULL, NULL,
--		{"htonl(0x40000000)"} },
--	{ "rr_result rrr_flags", EXISTS, ICMP6_H, "rr_result",
--		"rrr_flags", "0", {"2"} },
--	{ "rr_result rrr_ordinal", EXISTS, ICMP6_H, "rr_result",
--		"rrr_ordinal", "2", {"1"} },
--	{ "rr_result rrr_matchedlen", EXISTS, ICMP6_H, "rr_result",
--		"rrr_matchedlen", "3", {"1"} },
--	{ "rr_result rrr_ifid", EXISTS, ICMP6_H, "rr_result",
--		"rrr_ifid", "4", {"4"} },
--	{ "rr_result rrr_prefix", EXISTS, ICMP6_H, "rr_result",
--		"rrr_prefix", "8", {"sizeof(struct in6_addr)"} },
--	{ "ICMP6_RR_RESULT_FLAGS_OOB", VALUE, ICMP6_H,
--		"ICMP6_RR_RESULT_FLAGS_OOB", NULL, NULL,
--		{"htons(0x0002)"} },
--	{ "ICMP6_RR_RESULT_FLAGS_FORBIDDEN", VALUE, ICMP6_H,
--		"ICMP6_RR_RESULT_FLAGS_FORBIDDEN", NULL, NULL,
--		{"htons(0x0001)"} },
--};
--
--static void setup(void);
--static void do_test(const struct ftent *);
--
--char *TCID = "asapi_03";
--int TST_TOTAL = ARRAY_SIZE(ftab);
--
--int main(int argc, char *argv[])
--{
--	int i, lc;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++)
--			do_test(&ftab[i]);
--	}
--
--	tst_exit();
--}
--
--void setup(void)
--{
--	TEST_PAUSE;
--}
--
--void do_test(const struct ftent *ftptr)
--{
--	switch (ftptr->ft_type) {
--	case EXISTS:
--		structcheck(ftptr->ft_tname, ftptr->ft_incl,
--			ftptr->ft_struct, ftptr->ft_field,
--			ftptr->ft_offset, ftptr->ft_value);
--		break;
--	case ALIAS:
--		aliascheck(ftptr->ft_tname, ftptr->ft_incl,
--			ftptr->ft_struct, ftptr->ft_field,
--			ftptr->ft_dname);
--		break;
--	case VALUE:
--		valuecheck(ftptr->ft_tname, ftptr->ft_incl,
--			ftptr->ft_struct, ftptr->ft_dname);
--		break;
--	default:
--		tst_resm(TBROK, "invalid type %d",
--			ftptr->ft_type);
--		break;
--	}
--}
-diff --git a/testcases/network/lib6/asapi_05.c b/testcases/network/lib6/asapi_05.c
-index b2e7d2a..e251eee 100644
---- a/testcases/network/lib6/asapi_05.c
-+++ b/testcases/network/lib6/asapi_05.c
-@@ -47,14 +47,12 @@
- #include <netinet/icmp6.h>
- 
- #include "test.h"
--#include "runcc.h"
- 
- char *TCID = "asapi_05";	/* Test program identifier.    */
- 
- void setup(void);
- void cleanup(void);
- 
--void icmp6_et(void);
- void icmp6_ft(void);
- 
- int main(int argc, char *argv[])
-@@ -67,7 +65,6 @@ int main(int argc, char *argv[])
- 	setup();
- 
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		icmp6_et();
- 		icmp6_ft();
- 	}
- 
-@@ -76,120 +73,6 @@ int main(int argc, char *argv[])
- 	tst_exit();
- }
- 
--enum ttype { EXISTS, ALIAS, VALUE, DEFINED };
--
--struct etent {
--	char *et_tname;		/* test name */
--	int et_type;		/* test type */
--	char *et_incl;		/* include file list */
--	char *et_struct;	/* structure name */
--	char *et_field;		/* field name */
--	char *et_offset;	/* field offset */
--	union {
--		char *fu_value;	/* field size or value */
--		char *fu_dname;	/* #define name */
--	} ftun;
--#define et_value	ftun.fu_value
--#define et_dname	ftun.fu_dname
--} etab[] = {
--/* existence checks, RFC 3542 section 3 */
--	{
--		"icmp6_filter icmp6_filt", EXISTS, ICMP6_H, "icmp6_filter",
--		    "icmp6_filt", "0", {
--	"32"}}, {
--		"icmp6_filter icmp6_filt[0]", EXISTS, ICMP6_H, "icmp6_filter",
--		    "icmp6_filt[0]", "0", {
--	"4"}}, {
--		"ICMP6_FILTER_WILLPASS", DEFINED, ICMP6_H,
--		    "ICMP6_FILTER_WILLPASS", NULL, NULL, {
--	0}}, {
--		"ICMP6_FILTER_WILLBLOCK", DEFINED, ICMP6_H,
--		    "ICMP6_FILTER_WILLBLOCK", NULL, NULL, {
--	0}}, {
--		"ICMP6_FILTER_SETPASS", DEFINED, ICMP6_H,
--		    "ICMP6_FILTER_SETPASS", NULL, NULL, {
--	0}}, {
--		"ICMP6_FILTER_SETBLOCK", DEFINED, ICMP6_H,
--		    "ICMP6_FILTER_SETBLOCK", NULL, NULL, {
--	0}}, {
--		"ICMP6_FILTER_SETPASSALL", DEFINED, ICMP6_H,
--		    "ICMP6_FILTER_SETPASSALL", NULL, NULL, {
--	0}}, {
--		"ICMP6_FILTER_SETBLOCKALL", DEFINED, ICMP6_H,
--		    "ICMP6_FILTER_SETBLOCKALL", NULL, NULL, {
--	0}}, {
--		"ICMP6_FILTER", DEFINED, ICMP6_H, "ICMP6_FILTER", NULL, NULL, {
--	0}},
--/* existence checks, RFC 3542 section 4 */
--/* socket options */
--	{
--		"IPV6_RECVPKTINFO", VALUE, IN_H, "IPV6_RECVPKTINFO", NULL, NULL, {
--	"IPV6_RECVPKTINFO"}}, {
--		"IPV6_RECVHOPLIMIT", VALUE, IN_H, "IPV6_RECVHOPLIMIT", NULL,
--		    NULL, {
--	"IPV6_RECVHOPLIMIT"}}, {
--		"IPV6_RECVRTHDR", VALUE, IN_H, "IPV6_RECVRTHDR", NULL, NULL, {
--	"IPV6_RECVRTHDR"}}, {
--		"IPV6_RECVHOPOPTS", VALUE, IN_H, "IPV6_RECVHOPOPTS", NULL, NULL, {
--	"IPV6_RECVHOPOPTS"}}, {
--		"IPV6_RECVDSTOPTS", VALUE, IN_H, "IPV6_RECVDSTOPTS", NULL, NULL, {
--	"IPV6_RECVDSTOPTS"}}, {
--		"IPV6_RECVTCLASS", VALUE, IN_H, "IPV6_RECVTCLASS", NULL, NULL, {
--	"IPV6_RECVTCLASS"}},
--/* cmsg types */
--	{
--		"IPV6_PKTINFO", DEFINED, IN_H, "IPV6_PKTINFO", NULL, NULL, {
--	0}}, {
--		"IPV6_HOPLIMIT", DEFINED, IN_H, "IPV6_HOPLIMIT", NULL, NULL, {
--	0}}, {
--		"IPV6_NEXTHOP", DEFINED, IN_H, "IPV6_NEXTHOP", NULL, NULL, {
--	0}}, {
--		"IPV6_RTHDR", DEFINED, IN_H, "IPV6_RTHDR", NULL, NULL, {
--	0}}, {
--		"IPV6_HOPOPTS", DEFINED, IN_H, "IPV6_HOPOPTS", NULL, NULL, {
--	0}}, {
--		"IPV6_DSTOPTS", DEFINED, IN_H, "IPV6_DSTOPTS", NULL, NULL, {
--	0}}, {
--		"IPV6_RTHDRDSTOPTS", DEFINED, IN_H, "IPV6_RTHDRDSTOPTS", NULL,
--		    NULL, {
--	0}}, {
--		"IPV6_TCLASS", DEFINED, IN_H, "IPV6_TCLASS", NULL, NULL, {
--0}},};
--
--#define ETCOUNT	(sizeof(etab)/sizeof(etab[0]))
--
--/*  existence tests */
--void icmp6_et(void)
--{
--	int i;
--
--	for (i = 0; i < ETCOUNT; ++i) {
--		switch (etab[i].et_type) {
--		case EXISTS:
--			structcheck(etab[i].et_tname, etab[i].et_incl,
--				    etab[i].et_struct, etab[i].et_field,
--				    etab[i].et_offset, etab[i].et_value);
--			break;
--		case ALIAS:
--			aliascheck(etab[i].et_tname, etab[i].et_incl,
--				   etab[i].et_struct, etab[i].et_field,
--				   etab[i].et_dname);
--			break;
--		case VALUE:
--			valuecheck(etab[i].et_tname, etab[i].et_incl,
--				   etab[i].et_struct, etab[i].et_dname);
--			break;
--		case DEFINED:
--			funccheck(etab[i].et_tname, etab[i].et_incl,
--				  etab[i].et_struct);
--			break;
--		default:
--			tst_resm(TBROK, "invalid type %d", etab[i].et_type);
--			break;
--		}
--	}
--}
--
- void setup(void)
- {
- 	TEST_PAUSE;		/* if -P option specified */
-@@ -414,4 +297,4 @@ void icmp6_ft(void)
- 	}
- }
- 
--int TST_TOTAL = ETCOUNT;
-+int TST_TOTAL = FTCOUNT;
-diff --git a/testcases/network/lib6/asapi_07.c b/testcases/network/lib6/asapi_07.c
-deleted file mode 100644
-index 826cea6..0000000
---- a/testcases/network/lib6/asapi_07.c
-+++ /dev/null
-@@ -1,144 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *   Author: David L Stevens
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software Foundation,
-- *   Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--/*
-- *   Description:
-- *     These tests are for the "Advanced Sockets API" (RFC 3542)
-- *     Section 20, ancillary data macros and structure definitions
-- */
--
--#include <stdio.h>
--#include <unistd.h>
--#include <errno.h>
--
--#include <sys/wait.h>
--
--#include <netinet/in.h>
--#include <netinet/ip6.h>
--#include <netinet/icmp6.h>
--
--#include "test.h"
--#include "runcc.h"
--
--enum ttype { EXISTS, ALIAS, VALUE, DEFINED };
--
--static struct etent {
--	char *et_tname;		/* test name */
--	int et_type;		/* test type */
--	char *et_incl;		/* include file list */
--	char *et_struct;	/* structure name */
--	char *et_field;		/* field name */
--	char *et_offset;	/* field offset */
--	union {
--		char *fu_value;	/* field size or value */
--		char *fu_dname;	/* #define name */
--	} ftun;
--#define et_value	ftun.fu_value
--#define et_dname	ftun.fu_dname
--} etab[] = {
--	/* existence checks, RFC 3542 sections 5, 20 */
--	{ "msghdr msg_name", EXISTS, SOCKET_H, "msghdr",
--		"msg_name", NULL, {"sizeof(void *)"} },
--	{ "msghdr msg_namelen", EXISTS, SOCKET_H, "msghdr",
--		"msg_namelen", NULL, {"sizeof(socklen_t)"} },
--	{ "msghdr msg_iov", EXISTS, SOCKET_H, "msghdr",
--		"msg_iov", NULL, {"sizeof(struct iovec *)"} },
--	{ "msghdr msg_iovlen", EXISTS, SOCKET_H, "msghdr",
--		"msg_iovlen", NULL, {"sizeof(size_t)"} },
--	{ "msghdr msg_control", EXISTS, SOCKET_H, "msghdr",
--		"msg_control", NULL, {"sizeof(void *)"} },
--	{ "msghdr msg_controllen", EXISTS, SOCKET_H, "msghdr",
--		"msg_controllen", NULL, {"sizeof(size_t)"} },
--	{ "msghdr msg_flags", EXISTS, SOCKET_H, "msghdr",
--		"msg_flags", NULL, {"sizeof(int)"} },
--	{ "cmsghdr cmsg_len", EXISTS, SOCKET_H, "cmsghdr",
--		"cmsg_len", NULL, {"sizeof(size_t)"} },
--	{ "cmsghdr cmsg_level", EXISTS, SOCKET_H, "cmsghdr",
--		"cmsg_level", NULL, {"sizeof(int)"} },
--	{ "cmsghdr cmsg_type", EXISTS, SOCKET_H, "cmsghdr",
--		"cmsg_type", NULL, {"sizeof(int)"} },
--	{ "CMSG_DATA", DEFINED, SOCKET_H, "CMSG_DATA",
--		NULL, NULL, {0} },
--	{ "CMSG_NXTHDR", DEFINED, SOCKET_H, "CMSG_NXTHDR",
--		NULL, NULL, {0} },
--	{ "CMSG_FIRSTHDR", DEFINED, SOCKET_H, "CMSG_FIRSTHDR",
--		NULL, NULL, {0} },
--	{ "CMSG_SPACE", DEFINED, SOCKET_H, "CMSG_SPACE",
--		NULL, NULL, {0} },
--	{ "CMSG_LEN", DEFINED, SOCKET_H, "CMSG_LEN",
--		NULL, NULL, {0} },
--};
--
--static void setup(void);
--static void adatet(const struct etent *etptr);
--
--char *TCID = "asapi_07";
--int TST_TOTAL = ARRAY_SIZE(etab);
--
--int main(int argc, char *argv[])
--{
--	int i, lc;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++)
--			adatet(&etab[i]);
--	}
--
--	tst_exit();
--}
--
--void setup(void)
--{
--	TEST_PAUSE;
--}
--
--/*  existence tests */
--void adatet(const struct etent *etptr)
--{
--	switch (etptr->et_type) {
--	case EXISTS:
--		structcheck(etptr->et_tname, etptr->et_incl,
--			etptr->et_struct, etptr->et_field,
--			etptr->et_offset, etptr->et_value);
--		break;
--	case ALIAS:
--		aliascheck(etptr->et_tname, etptr->et_incl,
--			etptr->et_struct, etptr->et_field,
--			etptr->et_dname);
--		break;
--	case VALUE:
--		valuecheck(etptr->et_tname, etptr->et_incl,
--			etptr->et_struct, etptr->et_dname);
--		break;
--	case DEFINED:
--		funccheck(etptr->et_tname, etptr->et_incl,
--			etptr->et_struct);
--		break;
--	default:
--		tst_resm(TBROK, "invalid type %d",
--			etptr->et_type);
--		break;
--	}
--}
-diff --git a/testcases/network/lib6/runcc.c b/testcases/network/lib6/runcc.c
-deleted file mode 100644
-index 91a0b16..0000000
---- a/testcases/network/lib6/runcc.c
-+++ /dev/null
-@@ -1,209 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
+  *
 - *   This program is distributed in the hope that it will be useful,
 - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
 - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
@@ -1250,231 +58,748 @@ index 91a0b16..0000000
 - */
 -
 -/*
-- * runcc.a - common functions for lib6 testing
+- * Test Name: getaddrinfo_01
+- *
+- * Test Description:
+- *  Tests for getaddrinfo library function
+- *
+- * Usage:  <for command-line>
+- *  getaddrinfo_01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
 - *
 - * HISTORY
-- *	05/2005 written by David L Stevens
+- *	07/2004 written by David L Stevens
 - *
 - * RESTRICTIONS:
 - *  None.
-- *
-- */
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  *
++ * Author: David L Stevens
+  */
+ 
+ #include <unistd.h>
+@@ -53,40 +31,38 @@
+ #define AI_V4MAPPED    0x0008	/* IPv4 mapped addresses are acceptable.  */
+ #endif
+ 
+-char *TCID = "getaddrinfo_01";	/* Test program identifier.    */
+-int testno;
++static void setup(void);
++static void gaiv4(void);
++static void gaiv6(void);
+ 
+-void setup(void), cleanup(void);
 -
--#include <stdio.h>
--#include <unistd.h>
--#include <errno.h>
--#include <ctype.h>
+-int TST_TOTAL = 1;
 -
--#include <sys/wait.h>
+-/* a host that isn't where LTP is running */
+-#define REMOTEHOSTNAME	"www.ibm.com"
 -
--#include "test.h"
+-void gaiv4(void), gaiv6(void);
+-void dumpres(struct addrinfo *);
++char *TCID = "getaddrinfo_01";
++int TST_TOTAL = 2;
+ 
+ int main(int argc, char *argv[])
+ {
+ 	int lc;
+ 
+-	/* Parse standard options given to run the test. */
+ 	tst_parse_opts(argc, argv, NULL, NULL);
+ 
+ 	setup();
+ 
+ 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
++		tst_count = 0;
++
+ 		gaiv4();
+ 		gaiv6();
+ 	}
+-	cleanup();
+ 
+-	return (0);
++	tst_exit();
+ }
+ 
+-/* getaddrinfo tests (v4) */
++static void setup(void)
++{
++	TEST_PAUSE;
++}
+ 
+-void gaiv4(void)
++/* getaddrinfo tests (v4) */
++static void gaiv4(void)
+ {
+ 	struct addrinfo *aires, hints, *pai;
+ 	char hostname[MAXHOSTNAMELEN + 1];
+@@ -132,13 +108,18 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 basic lookup");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 basic "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 basic lookup");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 basic "
+ 			 "lookup (\"%s\") returns %ld (\"%s\")", hostname,
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 2, IPv4 canonical name */
+ 	memset(&hints, 0, sizeof(hints));
+@@ -152,20 +133,26 @@ void gaiv4(void)
+ 		if (!pai) {
+ 			tst_resm(TFAIL, "getaddrinfo IPv4 canonical name: no "
+ 				 "entries with canonical name set");
++			freeaddrinfo(aires);
++			return;
+ 		} else if (strcasecmp(hostname, pai->ai_canonname)) {
+ 			tst_resm(TFAIL, "getaddrinfo IPv4 canonical name "
+ 				 "(\"%s\") doesn't match hostname (\"%s\")",
+ 				 pai->ai_canonname, hostname);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 canonical name");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 canonical name");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 "
+ 			 "canonical name (\"%s\") returns %ld (\"%s\")",
+ 			 shortname, TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 3, IPv4 host+service name */
 -
--char fieldref[1024];
--char program[8192];
+ 	memset(&hints, 0, sizeof(hints));
+ 	/*
+ 	 * These are hard-coded for echo/7 to avoid using getservbyname(),
+@@ -200,13 +187,18 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 host+service");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 host+"
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 host+service");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 host+"
+ 			 "service returns %ld (\"%s\")", TEST_RETURN,
+ 			 gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 4, IPv4 hostname+service, AI_PASSIVE */
+ 	memset(&hints, 0, sizeof(hints));
+@@ -244,18 +236,22 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS,
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO,
+ 				 "getaddrinfo IPv4 host+service PASSIVE");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 host+"
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 host+"
+ 			 "service, PASSIVE (\"%s\", \"%s\") returns %ld (\"%s\")",
+ 			 hostname, service, TEST_RETURN,
+ 			 gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 5, IPv4 host+service w/ AI_NUMERICHOST */
 -
--char *filetmpl = "/tmp/%.*s_XXXXXX";
+ 	memset(&hints, 0, sizeof(hints));
+ 	strcpy(service, "echo");
+ 	servnum = 7;
+@@ -266,8 +262,11 @@ void gaiv4(void)
+ 		tst_resm(TFAIL, "getaddrinfo IPv4 AI_NUMERICHOST w/ hostname: "
+ 			 "returns %ld expected %d (EAI_NONAME)",
+ 			 TEST_RETURN, EAI_NONAME);
++		if (!TEST_RETURN)
++			freeaddrinfo(aires);
++		return;
+ 	} else
+-		tst_resm(TPASS, "getaddrinfo IPv4 AI_NUMERICHOST w/ hostname");
++		tst_resm(TINFO, "getaddrinfo IPv4 AI_NUMERICHOST w/ hostname");
+ 	if (!TEST_RETURN)
+ 		freeaddrinfo(aires);
+ 
+@@ -306,17 +305,28 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 0+service, PASSIVE");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv4 0+service, PASSIVE (\"\", \"%s\") "
+-			 "returns %ld (\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 0+service, PASSIVE");
++			freeaddrinfo(aires);
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv4 0+service,"
++				" PASSIVE (\"\", \"%s\") returns %ld (\"%s\")",
++				service, TEST_RETURN,
++				gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv4 0+service,i"
++				" PASSIVE (\"\", \"%s\") returns %ld (\"%s\")",
++				service, TEST_RETURN,
++				gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 7, IPv4 0+service */
 -
--char cmd[1024];
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET;
+ 	hints.ai_socktype = SOCK_STREAM;
+@@ -350,19 +360,30 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 0+service");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv4 0+service (\"\", \"%s\") returns %ld "
+-			 "(\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 0+service");
++			freeaddrinfo(aires);
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv4 "
++				"0+service (\"\", \"%s\") returns %ld (\"%s\")",
++				service, TEST_RETURN,
++				gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv4 "
++				"0+service (\"\", \"%s\") returns %ld (\"%s\")",
++				service, TEST_RETURN,
++				gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 8, IPv4 host+service, AI_NUMERICSERV */
 -
--/*
-- * like strspn, with ASCII, numbers and underscore only
-- */
--int strfpn(char *name)
--{
--	int i;
+ #ifndef AI_NUMERICSERV
+-	tst_resm(TFAIL, "getaddrinfo IPv4 host+service, AI_NUMERICSERV: flag "
++	tst_resm(TCONF, "getaddrinfo IPv4 host+service, AI_NUMERICSERV: flag "
+ 		 "not implemented");
+ #else
+ 	memset(&hints, 0, sizeof(hints));
+@@ -376,15 +397,18 @@ void gaiv4(void)
+ 			 "getaddrinfo IPv4 host+service, AI_NUMERICSERV: "
+ 			 "returns %ld (\"%s\") expected %d (EAI_NONAME)",
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN), EAI_NONAME);
+-	} else
+-		tst_resm(TPASS,
++		if (!TEST_RETURN)
++			freeaddrinfo(aires);
++		return;
++	} else {
++		tst_resm(TINFO,
+ 			 "getaddrinfo IPv4 host+service, AI_NUMERICSERV");
++	}
+ 	if (!TEST_RETURN)
+ 		freeaddrinfo(aires);
+ #endif /* AI_NUMERICSERV */
+ 
+ 	/* test 9, IPv4 SOCK_STREAM/IPPROTO_UDP hints */
 -
--	for (i = 0; *name; ++name, ++i)
--		if (!(isalnum(*name) || *name == '_'))
--			break;
--	return i;
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET;
+ 	hints.ai_socktype = SOCK_STREAM;
+@@ -396,12 +420,13 @@ void gaiv4(void)
+ 		tst_resm(TFAIL, "getaddrinfo IPv4 SOCK_STREAM/IPPROTO_UDP "
+ 			 "hints");
+ 		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TPASS, "getaddrinfo IPv4 SOCK_STREAM/IPPROTO_UDP "
++		return;
++	} else {
++		tst_resm(TINFO, "getaddrinfo IPv4 SOCK_STREAM/IPPROTO_UDP "
+ 			 "hints");
++	}
+ 
+ 	/* test 10, IPv4 socktype 0, 513 */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET;
+ 	hints.ai_socktype = 0;
+@@ -439,20 +464,31 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else if (got_tcp && got_udp)
+-			tst_resm(TPASS, "getaddrinfo IPv4 socktype 0,513");
+-		else
++			freeaddrinfo(aires);
++			return;
++		} else if (got_tcp && got_udp) {
++			tst_resm(TINFO, "getaddrinfo IPv4 socktype 0,513");
++			freeaddrinfo(aires);
++		} else {
+ 			tst_resm(TFAIL, "getaddrinfo IPv4 socktype 0,513 TCP %d"
+ 				 " UDP %d", got_tcp, got_udp);
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv4 socktype 0,513 (\"\", \"%s\") returns"
+-			 " %ld (\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv4 socktype 0,513"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv4 socktype 0,513"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 11, IPv4 AI_V4MAPPED */
+-
+ 	/* AI_V4MAPPED should be ignored because family != AF_INET6 */
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET;
+@@ -482,18 +518,25 @@ void gaiv4(void)
+ 				 psin ? psin->sin_family : 0,
+ 				 psin ? psin->sin_port : 0,
+ 				 psin ? htons(psin->sin_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv4 AI_V4MAPPED");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv4 AI_V4MAPPED");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv4 "
+ 			 "AI_V4MAPPED (\"%s\") returns %ld (\"%s\")", hostname,
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
++
++
++	tst_resm(TPASS, "getaddrinfo tests (v4) succeed");
+ }
+ 
+ /* getaddrinfo tests (v6) */
+-
+-void gaiv6(void)
++static void gaiv6(void)
+ {
+ 	struct addrinfo *aires, hints, *pai;
+ 	char hostname[MAXHOSTNAMELEN + 1];
+@@ -539,13 +582,18 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 basic lookup");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 basic "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 basic lookup");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 basic "
+ 			 "lookup (\"%s\") returns %ld (\"%s\")", hostname,
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 13, IPv6 canonical name */
+ 	memset(&hints, 0, sizeof(hints));
+@@ -559,20 +607,26 @@ void gaiv6(void)
+ 		if (!pai) {
+ 			tst_resm(TFAIL, "getaddrinfo IPv6 canonical name: no "
+ 				 "entries with canonical name set");
++			freeaddrinfo(aires);
++			return;
+ 		} else if (strcasecmp(hostname, pai->ai_canonname)) {
+ 			tst_resm(TFAIL, "getaddrinfo IPv6 canonical name "
+ 				 "(\"%s\") doesn't match hostname (\"%s\")",
+ 				 pai->ai_canonname, hostname);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 canonical name");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 canonical name");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 "
+ 			 "canonical name (\"%s\") returns %ld (\"%s\")",
+ 			 shortname, TEST_RETURN, gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 14, IPv6 host+service name */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	/*
+ 	 * These are hard-coded for echo/7 to avoid using getservbyname(),
+@@ -607,13 +661,18 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 host+service");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 host+"
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 host+service");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 host+"
+ 			 "service returns %ld (\"%s\")", TEST_RETURN,
+ 			 gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 15, IPv6 hostname+service, AI_PASSIVE */
+ 	memset(&hints, 0, sizeof(hints));
+@@ -652,18 +711,22 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS,
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO,
+ 				 "getaddrinfo IPv6 host+service PASSIVE");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 host+"
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 host+"
+ 			 "service, PASSIVE (\"%s\", \"%s\") returns %ld (\"%s\")",
+ 			 hostname, service, TEST_RETURN,
+ 			 gai_strerror(TEST_RETURN));
++		return;
++	}
+ 
+ 	/* test 16, IPv6 host+service w/ AI_NUMERICHOST */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	strcpy(service, "echo");
+ 	servnum = 7;
+@@ -674,8 +737,11 @@ void gaiv6(void)
+ 		tst_resm(TFAIL, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname: "
+ 			 "returns %ld expected %d (EAI_NONAME)",
+ 			 TEST_RETURN, EAI_NONAME);
++		if (!TEST_RETURN)
++			freeaddrinfo(aires);
++		return;
+ 	} else
+-		tst_resm(TPASS, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname");
++		tst_resm(TINFO, "getaddrinfo IPv6 AI_NUMERICHOST w/ hostname");
+ 	if (!TEST_RETURN)
+ 		freeaddrinfo(aires);
+ 
+@@ -715,17 +781,26 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 0+service, PASSIVE");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv6 0+service, PASSIVE (\"\", \"%s\") "
+-			 "returns %ld (\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 0+service, PASSIVE");
++			freeaddrinfo(aires);
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv6 0+service, PASSIVE"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv6 0+service, PASSIVE"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 18, IPv6 0+service */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET6;
+ 	hints.ai_socktype = SOCK_STREAM;
+@@ -760,19 +835,28 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 0+service");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv6 0+service (\"\", \"%s\") returns %ld "
+-			 "(\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 0+service");
++			freeaddrinfo(aires);
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv6 0+service"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv6 0+service"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 19, IPv6 host+service, AI_NUMERICSERV */
+-
+ #ifndef AI_NUMERICSERV
+-	tst_resm(TFAIL, "getaddrinfo IPv6 host+service, AI_NUMERICSERV: flag "
++	tst_resm(TCONF, "getaddrinfo IPv6 host+service, AI_NUMERICSERV: flag "
+ 		 "not implemented");
+ #else
+ 	memset(&hints, 0, sizeof(hints));
+@@ -786,15 +870,17 @@ void gaiv6(void)
+ 			 "getaddrinfo IPv6 host+service, AI_NUMERICSERV: "
+ 			 "returns %ld (\"%s\") expected %d (EAI_NONAME)",
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN), EAI_NONAME);
++		if (!TEST_RETURN)
++			freeaddrinfo(aires);
++		return;
+ 	} else
+-		tst_resm(TPASS,
++		tst_resm(TINFO,
+ 			 "getaddrinfo IPv6 host+service, AI_NUMERICSERV");
+ 	if (!TEST_RETURN)
+ 		freeaddrinfo(aires);
+ #endif /* AI_NUMERICSERV */
+ 
+ 	/* test 20, IPv6 SOCK_STREAM/IPPROTO_UDP hints */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET6;
+ 	hints.ai_socktype = SOCK_STREAM;
+@@ -806,12 +892,13 @@ void gaiv6(void)
+ 		tst_resm(TFAIL, "getaddrinfo IPv6 SOCK_STREAM/IPPROTO_UDP "
+ 			 "hints");
+ 		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TPASS, "getaddrinfo IPv6 SOCK_STREAM/IPPROTO_UDP "
++		return;
++	} else {
++		tst_resm(TINFO, "getaddrinfo IPv6 SOCK_STREAM/IPPROTO_UDP "
+ 			 "hints");
++	}
+ 
+ 	/* test 21, IPv6 socktype 0, 513 */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET6;
+ 	hints.ai_socktype = 0;
+@@ -850,20 +937,31 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else if (got_tcp && got_udp)
+-			tst_resm(TPASS, "getaddrinfo IPv6 socktype 0,513");
+-		else
++			freeaddrinfo(aires);
++			return;
++		} else if (got_tcp && got_udp) {
++			tst_resm(TINFO, "getaddrinfo IPv6 socktype 0,513");
++			freeaddrinfo(aires);
++		} else {
+ 			tst_resm(TFAIL, "getaddrinfo IPv6 socktype 0,513 TCP %d"
+ 				 " UDP %d", got_tcp, got_udp);
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN == EAI_BADFLAGS ? TPASS : TFAIL,
+-			 "getaddrinfo IPv6 socktype 0,513 (\"\", \"%s\") returns"
+-			 " %ld (\"%s\")", service, TEST_RETURN,
+-			 gai_strerror(TEST_RETURN));
++			freeaddrinfo(aires);
++			return;
++		}
++	} else {
++		if (TEST_RETURN == EAI_BADFLAGS) {
++			tst_resm(TINFO, "getaddrinfo IPv6 socktype 0,513"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++		} else {
++			tst_resm(TFAIL, "getaddrinfo IPv6 socktype 0,513"
++				" (\"\", \"%s\") returns %ld (\"%s\")", service,
++				TEST_RETURN, gai_strerror(TEST_RETURN));
++			return;
++		}
++	}
+ 
+ 	/* test 22, IPv6 AI_V4MAPPED */
+-
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_INET6;
+ 	hints.ai_flags = AI_V4MAPPED;
+@@ -892,57 +990,18 @@ void gaiv6(void)
+ 				 psin6 ? psin6->sin6_family : 0,
+ 				 psin6 ? psin6->sin6_port : 0,
+ 				 psin6 ? htons(psin6->sin6_port) : 0);
+-		} else
+-			tst_resm(TPASS, "getaddrinfo IPv6 AI_V4MAPPED");
+-		freeaddrinfo(aires);
+-	} else
+-		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv6 "
++			freeaddrinfo(aires);
++			return;
++		} else {
++			tst_resm(TINFO, "getaddrinfo IPv6 AI_V4MAPPED");
++			freeaddrinfo(aires);
++		}
++	} else {
++		tst_resm(TFAIL, "getaddrinfo IPv6 "
+ 			 "AI_V4MAPPED (\"%s\") returns %ld (\"%s\")", hostname,
+ 			 TEST_RETURN, gai_strerror(TEST_RETURN));
 -}
 -
--int runcc(char *tname, char *filename0, char *program)
+-/* this prints an addrinfo list; useful for debugging */
+-void dumpres(struct addrinfo *pai)
 -{
--	static char filename[1024];
--	int fd, es, saved_errno;
--	char *cflags = "";
+-	int count = 1;
+-	for (; pai; pai = pai->ai_next, count++) {
+-		printf("result %d [0x%p]\n", count, pai);
+-		printf("\tai_flags %x\n", pai->ai_flags);
+-		printf("\tai_family %d\n", pai->ai_family);
+-		printf("\tai_socktype %d\n", pai->ai_socktype);
+-		printf("\tai_protocol %d\n", pai->ai_protocol);
+-		printf("\tai_addrlen %d\n", pai->ai_addrlen);
+-		printf("\tai_canonname \"%s\"\n", pai->ai_canonname);
+-		printf("\tai_addr.sa_family %x\n", pai->ai_addr->sa_family);
+-		if (pai->ai_addr->sa_family == AF_INET) {
+-			char buf[1024];
+-			struct sockaddr_in *psin =
+-			    (struct sockaddr_in *)pai->ai_addr;
 -
--	fd = mkstemp(filename0);
--	if (fd < 0) {
--		perror("mkstemp");
--		return -1;
--	}
--	strncpy(filename, filename0, sizeof(filename) - 1);
--	filename[sizeof(filename) - 1] = '\0';
--	strncat(filename, ".c", sizeof(filename) - strlen(filename) - 1);
--	if (rename(filename0, filename) < 0) {
--		perror("rename");
--		unlink(filename0);
--		return -1;
--	}
--	if (write(fd, program, strlen(program)) < 0) {
--		perror("write");
--		unlink(filename);
--		return -1;
--	}
--	(void)close(fd);
+-			if (!inet_ntop(AF_INET, &psin->sin_addr, buf,
+-				       sizeof(buf)))
+-				buf[0] = '\0';
+-			printf("\tai_addr.sin_addr \"%s\"\n", buf);
+-		} else if (pai->ai_addr->sa_family == AF_INET6) {
+-			char buf[1024];
 -
--	cflags = getenv("CFLAGS");
--	if (cflags == NULL) {
--		tst_resm(TINFO, "CFLAGS not found, using default cc arch.");
--		cflags = "";
--	}
+-			struct sockaddr_in6 *psin6 =
+-			    (struct sockaddr_in6 *)pai->ai_addr;
+-			if (!inet_ntop(AF_INET6, &psin6->sin6_addr, buf,
+-				       sizeof(buf)))
+-				buf[0] = '\0';
+-			printf("\tai_addr.sin6_addr \"%s\"\n", buf);
 -
--	snprintf(cmd, sizeof(cmd), "%s %s -o %s %s > /tmp/test 2>&1", "cc",
--		 cflags, filename0, filename);
--	es = system(cmd);
--	if (WEXITSTATUS(es) == 127) {
--		tst_resm(TBROK, "can't run C compiler: \"%s\"", cmd);
--		if (unlink(filename) < 0)
--			tst_resm(TWARN, "%s; unlink \"%s\" failed: %s", tname,
--				 filename, strerror(errno));
--		return -1;
--	}
--	if (unlink(filename) < 0)
--		tst_resm(TWARN, "%s: unlink \"%s\" failed: %s", tname,
--			 filename, strerror(errno));
--
--	if (WIFSIGNALED(es) &&
--	    (WTERMSIG(es) == SIGINT || WTERMSIG(es) == SIGQUIT))
--		exit(1);
--
--	if (WEXITSTATUS(es)) {
--		tst_resm(TFAIL, "%s: not present", tname);
--		return -1;
--	}
--	/* run the test */
--
--	es = system(filename0);
--	saved_errno = errno;
--	if (unlink(filename0) < 0)
--		tst_resm(TWARN, "%s: unlink \"%s\" failed: %s", tname,
--			 filename0, strerror(errno));
--
--	if (WIFSIGNALED(es) &&
--	    (WTERMSIG(es) == SIGINT || WTERMSIG(es) == SIGQUIT))
--		exit(1);
--
--	if (WEXITSTATUS(es) == 127)
--		tst_resm(TBROK, "%s: can't run \"%s\": %s", tname, filename0,
--			 strerror(saved_errno));
--	if (WEXITSTATUS(es))
--		tst_resm(TFAIL, "%s: present, but incorrect", tname);
--	else
--		tst_resm(TPASS, "%s present and correct", tname);
--	return 0;
+-		}
+-		printf("\tai_next %p\n", pai->ai_next);
++		return;
+ 	}
+-}
+ 
+-void setup(void)
+-{
+-	TEST_PAUSE;		/* if -P option specified */
 -}
 -
--char *field_fmt = "\n\texit((offsetof(struct %s, %s) != %s) || "
--    "sizeof(tst.%s) != (%s));\n";
--/* no offset check */
--char *field_fmt2 = "\n\texit(sizeof(tst.%s) != (%s));\n";
--
--const char *stmpl =
--    "%s\n#ifndef offsetof\n"
--    "#define offsetof(dtype, dfield) ((int)&((dtype *)0)->dfield)\n"
--    "#endif\n\nstruct %s tst;\n\nmain(int argc, char *argv[])\n{\n\t%s\n}\n";
--
--int
--structcheck(char *tname, char *incl, char *structure, char *field,
--	    char *offset, char *size)
+-void cleanup(void)
 -{
--	int rv;
--	static char filename[1024];
--
--	if (offset)
--		sprintf(fieldref, field_fmt, structure, field, offset, field,
--			size);
--	else
--		sprintf(fieldref, field_fmt2, field, size);
--	sprintf(program, stmpl, incl, structure, fieldref);
--	snprintf(filename, sizeof(filename), filetmpl, strfpn(structure),
--		 structure);
--	rv = runcc(tname, filename, program);
--	return rv;
--}
--
--char *aliasfmt =
--    "exit(&tst.%s != &tst.%s || sizeof(tst.%s) != sizeof(tst.%s));";
--
--int
--aliascheck(char *tname, char *incl, char *structure, char *field, char *dname)
--{
--	int rv;
--	static char filename[1024];
--
--	sprintf(fieldref, aliasfmt, field, dname, field, dname);
--	sprintf(program, stmpl, incl, structure, fieldref);
--	snprintf(filename, sizeof(filename), filetmpl, strfpn(structure),
--		 structure);
--	rv = runcc(tname, filename, program);
--	return rv;
--}
--
--const char *dtmpl =
--    "%s\n\nmain(int argc, char *argv[])\n{\n\texit((%s) != (%s));\n}\n";
--
--int valuecheck(char *tname, char *incl, char *dname, char *dval)
--{
--	int rv;
--	static char filename[1024];
--
--	sprintf(program, dtmpl, incl, dname, dval);
--	snprintf(filename, sizeof(filename), filetmpl, strfpn(dname), dname);
--	rv = runcc(tname, filename, program);
--	return rv;
--}
--
--const char *ftmpl =
--    "%s\n\nmain(int argc, char *argv[])\n{\n#ifdef %s\n\texit(0);\n#else\n"
--    "\tsyntax error;\n#endif\n}\n";
--
--int funccheck(char *tname, char *incl, char *fname)
--{
--	int rv;
--	static char filename[1024];
--
--	sprintf(program, ftmpl, incl, fname);
--	snprintf(filename, sizeof(filename), filetmpl, strfpn(fname), fname);
--	rv = runcc(tname, filename, program);
--	return rv;
--}
-diff --git a/testcases/network/lib6/runcc.h b/testcases/network/lib6/runcc.h
-deleted file mode 100644
-index 4e2a0d5..0000000
---- a/testcases/network/lib6/runcc.h
-+++ /dev/null
-@@ -1,30 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--int aliascheck(char *tname, char *incl, char *structure, char *field,
--	char *dname);
--int funccheck(char *tname, char *incl, char *fname);
--int structcheck(char *tname, char *incl, char *structure, char *field,
--	char *offset, char *size);
--int valuecheck(char *tname, char *incl, char *dname, char *dval);
--
--#define IP6_H "#include <netinet/ip6.h>\n"
--#define IN_H "#include <netinet/in.h>\n"
--#define ICMP6_H "#include <netinet/icmp6.h>\n"
--#define SOCKET_H "#include <sys/types.h>\n#include <sys/socket.h>\n"
++	tst_resm(TPASS, "getaddrinfo tests (v6) succeed");
+ }
 -- 
 1.9.3
 
