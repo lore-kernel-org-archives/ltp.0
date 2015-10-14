@@ -1,145 +1,113 @@
-From: Zeng Linggang <zenglg.jy@cn.fujitsu.com>
-Date: Wed, 14 Oct 2015 14:27:10 +0800
-Subject: [LTP] [PATCH v8 2/7] SAFE_MACROS: Add socket(), bind(), listen(),
- connect() and getsockname()
-In-Reply-To: <561CE0B0.2000801@oracle.com>
-References: <20151007132856.GD2608@rei.suse.cz>
- <1444303781-18441-1-git-send-email-zenglg.jy@cn.fujitsu.com>
- <1444303781-18441-2-git-send-email-zenglg.jy@cn.fujitsu.com>
- <561CE0B0.2000801@oracle.com>
-Message-ID: <1444804030.4685.6.camel@G08FNSTD140232>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 14 Oct 2015 15:06:55 +0800
+Subject: [LTP] Fwd: [PATCH v3] mem/hugetlb: shift an empty region to use in
+	hugemmap02.c
+In-Reply-To: <CAEemH2dRZ11NJSrpNPvR-xA_C_ULsqdObWVFSGBZi-22fRGOcw@mail.gmail.com>
+References: <1444745490-9044-1-git-send-email-liwang@redhat.com>
+ <20151013164030.GB27888@rei>
+ <CAEemH2dRZ11NJSrpNPvR-xA_C_ULsqdObWVFSGBZi-22fRGOcw@mail.gmail.com>
+Message-ID: <CAEemH2d-zx8X7uhCsGAOQYZGADGA36tfytekeYsjU+=ydzXAmQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+cc' ltp@lists.linux.it
+
+---------- Forwarded message ----------
+From: Li Wang <liwang@redhat.com>
+Date: Wed, Oct 14, 2015 at 2:50 PM
+Subject: Re: [PATCH v3] mem/hugetlb: shift an empty region to use in
+hugemmap02.c
+To: Cyril Hrubis <chrubis@suse.cz>
+
 Hi,
 
-On Tue, 2015-10-13 at 13:45 +0300, Alexey Kodanev wrote:
-> Hi,
-> On 10/08/2015 02:29 PM, Zeng Linggang wrote:
-> > +#include <errno.h>
-> > +#include "test.h"
-> > +#include "safe_net.h"
-> > +
-> > +char *tst_sock_addr(const struct sockaddr *sa, socklen_t salen, char *res,
-> > +		    size_t len)
-> > +{
-> > +	char portstr[8];
-> > +
-> > +	switch (sa->sa_family) {
-> > +
-> > +	case AF_INET: {
-> > +		struct sockaddr_in *sin = (struct sockaddr_in *)sa;
-> > +
-> > +		if (!inet_ntop(AF_INET, &sin->sin_addr, res, len))
-> > +			return NULL;
-> > +
-> > +		if (ntohs(sin->sin_port) != 0) {
-> > +			snprintf(portstr, sizeof(portstr), ":%d",
-> > +				 ntohs(sin->sin_port));
-> > +			strcat(res, portstr);
-> > +		}
-> > +
-> > +		return res;
-> > +	}
-> > +
-> > +	case AF_INET6: {
-> > +		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)sa;
-> > +
-> > +		res[0] = '[';
-> > +		if (!inet_ntop(AF_INET6, &sin6->sin6_addr, res + 1, len - 1))
-> > +			return NULL;
-> > +
-> > +		if (ntohs(sin6->sin6_port) != 0) {
-> > +			snprintf(portstr, sizeof(portstr), "]:%d",
-> > +				 ntohs(sin6->sin6_port));
-> > +			strcat(res, portstr);
-> > +			return res;
-> > +		}
-> > +
-> > +		return res + 1;
-> > +	}
-> > +
-> > +	case AF_UNIX: {
-> > +		struct sockaddr_un *unp = (struct sockaddr_un *)sa;
-> > +
-> > +		if (unp->sun_path[0] == '\0')
-> > +			strcpy(res, "(no pathname bound)");
-> > +		else
-> > +			snprintf(res, len, "%s", unp->sun_path);
-> > +
-> > +		return res;
-> > +	}
-> > +
-> > +	default: {
-> > +		snprintf(res, len,
-> > +			 "sock_ntop: unknown AF_xxx: %d, len: %d",
-> > +			 sa->sa_family, salen);
-> > +
-> > +		return res;
-> > +	}
-> > +
-> > +	}
-> > +
-> > +	return NULL;
-> 
-> The last return is redundant here.
-> 
+On Wed, Oct 14, 2015 at 12:40 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Yep.
+> Hi!
+> >  int main(int ac, char **av)
+> >  {
+> > @@ -127,15 +130,29 @@ int main(int ac, char **av)
+> >                       addrlist[i] = addr;
+> >               }
+> >
+> > +             while (range_is_mapped(low_addr, low_addr + 0x1000) == 1) {
+>
+>                                                           ^ + map_sz?
+>
 
-> > +}
-> > +
-> > +int safe_socket(const char *file, const int lineno, void (cleanup_fn)(void),
-> > +		int domain, int type, int protocol)
-> > +{
-> > +	int rval;
-> > +
-> > +	rval = socket(domain, type, protocol);
-> > +
-> > +	if (rval < 0) {
-> > +		tst_brkm(TBROK | TERRNO, cleanup_fn,
-> > +			 "%s:%d: socket(%d, %d, %d) failed", file, lineno,
-> > +			 domain, type, protocol);
-> > +	}
-> > +
-> > +	return rval;
-> > +}
-> > +
-> > +int safe_bind(const char *file, const int lineno, void (cleanup_fn)(void),
-> > +	      int socket, const struct sockaddr *address,
-> > +	      socklen_t address_len)
-> > +{
-> > +	int i;
-> > +	char buf[128];
-> > +
-> > +	for (i = 0; i < 120; i++) {
-> > +		if (!bind(socket, address, address_len)) {
-> > +			tst_resm(TINFO, "bind is OK now");
-> 
-> I doubt that we need to print "bind is OK now"... the other library 
-> functions don't print anything on success.
-
-"Silence is golden" :)
-
-> 
-> Otherwise it looks good.
-> 
-> Also, could you please send a patch that renames asapi_04/05/06 to 
-> asapi_01/02/03?
-
-Hmm, OK. I will rename them in the next version(V9).
-
-Thank you very much.
-
-Best regards,
-Zeng
-
-> 
-> Best regards,
-> Alexey
-> 
+oops! I just focus on s390x before, it should be map_sz.
 
 
+>
+> > +                     low_addr = low_addr + 0x10000000;
+> > +
+> > +                     if (low_addr < LOW_ADDR)
+> > +                             tst_brkm(TBROK | TERRNO, cleanup,
+> > +                                             "no empty region to use");
+> > +             }
+>
+> Well, if we do not call tst_brkm() in the range_is_mapped() function we
+> should check here that the return value wasn't -1 and exit the test
+> accordingly...
+>
+
+hmm, check the return value here is not good, that would make confused in
+range_is_mapped() used. I'd like to handle the situation by the function
+itself.
+
+-----
+int range_is_mapped(unsigned long low, unsigned long high)
+{
+    FILE *fp;
+
+    fp = fopen("/proc/self/maps", "r");
+    if (fp == NULL)
+        tst_brkm(TBROK | TERRNO, tst_exit, "Failed to open
+/proc/self/maps.");
+
+    while (!feof(fp)) {
+        unsigned long start, end;
+        int ret;
+
+        ret = fscanf(fp, "%lx-%lx %*[^\n]\n", &start, &end);
+        if (ret != 2) {
+            fclose(fp);
+            tst_brkm(TBROK | TERRNO, tst_exit, "Couldn't parse
+/proc/self/maps line.");
+        }
+
+        if ((start >= low) && (start < high)) {
+            fclose(fp);
+            return 1;
+        }
+        if ((end >= low) && (end < high)) {
+            fclose(fp);
+            return 1;
+        }
+    }
+
+    fclose(fp);
+    return 0;
+}
+
+
+any problem?
+
+
+-- 
+Regards,
+Li Wang
+Email: liwang@redhat.com
+
+
+
+-- 
+Regards,
+Li Wang
+Email: liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20151014/81ed9953/attachment-0001.html>
