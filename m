@@ -1,47 +1,25 @@
-From: $rik@nth  <srikanth007m@gmail.com>
-Date: Thu, 15 Oct 2015 19:17:36 +0530
-Subject: [LTP]  getpwnam(nobody) failed
-Message-ID: <CANKSX+GTDu9Ce9UUmfWo4E4+uxNi9Dh8Ek=a9J2YM1=4sAZ9Pw@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 15 Oct 2015 16:11:02 +0200
+Subject: [LTP] getpwnam(nobody) failed
+In-Reply-To: <CANKSX+GTDu9Ce9UUmfWo4E4+uxNi9Dh8Ek=a9J2YM1=4sAZ9Pw@mail.gmail.com>
+References: <CANKSX+GTDu9Ce9UUmfWo4E4+uxNi9Dh8Ek=a9J2YM1=4sAZ9Pw@mail.gmail.com>
+Message-ID: <20151015141101.GB20237@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello All,
+Hi!
+> Need some help in understanding the behavior of failure cases though
+> user 'nobody' is present. I am unable to figure it out as i am running
+> them on android kernel.
 
-Need some help in understanding the behavior of failure cases though
-user 'nobody' is present. I am unable to figure it out as i am running
-them on android kernel.
-
-Few failure cases:
-Line 561: fchmod02    1  TBROK  :  fchmod02.c:174: nobody not in /etc/passwd
-Line 568: fchmod05    1  TBROK  :  fchmod05.c:178: Couldn't find uid
-of nobody: No such file or directory
-Line 588: fchown03    1  TBROK  :  safe_macros.c:122: fchown03.c:115:
-getpwnam(nobody) failed: errno=ENOENT(2): No such file or directory
-Line 591: fchown03_16    1  TBROK  :  safe_macros.c:122:
-fchown03.c:115: getpwnam(nobody) failed: errno=ENOENT(2): No such file
-or directory
-Line 1318: fstat02     1  TBROK  :  safe_macros.c:122: fstat02.c:120:
-getpwnam(nobody) failed: errno=ENOENT(2): No such file or directory
-Line 1320: fstat02     1  TBROK  :  safe_macros.c:122: fstat02.c:120:
-getpwnam(nobody) failed: errno=ENOENT(2): No such file or directory
-
-
-#cat /etc/passwd
-nobody:x:65534:65534:nobody::
-bin:x:1:1:bin::
-daemon:x:2:2:daemon::
-
-#cat /etc/group
-nobody:x:9999:
-bin:x::
-daemon:x::
-users:x:100:
-sys:x:3:
-
+I glanced over the bionic libc for android and it looks like /etc/passwd
+is not used at all. The calls are emualted using some android_id_info
+database there. I'm afraid that you have to look deeper into the bionic
+libc to figure out how exactly this works.
 
 -- 
-Thanks & Regards,
-M.Srikanth Kumar.
+Cyril Hrubis
+chrubis@suse.cz
