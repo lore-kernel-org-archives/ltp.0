@@ -1,85 +1,38 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 20 Oct 2015 11:07:48 +0300
-Subject: [LTP] [PATCH v9 6/8] lib6/getaddrinfo_01.c: Cleanup
-In-Reply-To: <1444810884-32508-6-git-send-email-zenglg.jy@cn.fujitsu.com>
-References: <561CE0B0.2000801@oracle.com>
- <1444810884-32508-1-git-send-email-zenglg.jy@cn.fujitsu.com>
- <1444810884-32508-6-git-send-email-zenglg.jy@cn.fujitsu.com>
-Message-ID: <5625F654.7090602@oracle.com>
+From: Cui Bixuan <cuibixuan@huawei.com>
+Date: Tue, 20 Oct 2015 12:11:18 +0000
+Subject: [LTP] [PATCH] sched_getattr/sched_getattr01: Use macro definitions
+	to replace numbers
+Message-ID: <1445343078-145058-1-git-send-email-cuibixuan@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 10/14/2015 11:21 AM, Zeng Linggang wrote:
-> * Add 'static' before some functions and global variables.
-> * Remove cleanup() function.
-> * Remove useless comments.
-> * In every test function, using TINFO instead of TPASS
->    marks the success of each inner test.
-> * Some cleanup.
+Use 'RUNTIME_VAL','PERIOD_VAL' and 'DEADLINE_VAL' to set attr
 
-Sorry for delay, I was going to push the patch-set but encountered with 
-a lot of warnings produced by checkpatch utility. Basically, they are 
-all because of either "else is not generally usefull after break or 
-return" or "quoted string split across lines". Then I noted that 
-test-cases there have wrong structure, comments are below.
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+---
+ .../syscalls/sched_getattr/sched_getattr01.c       |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Also,
-asapi_06.c: "commit description ... possible unwrapped" - you can trim 
-commit id a little, it will still be accessable.
-
-
->   
-> -void gaiv4(void)
-> +/* getaddrinfo tests (v4) */
-> +static void gaiv4(void)
->   {
->   	struct addrinfo *aires, hints, *pai;
->   	char hostname[MAXHOSTNAMELEN + 1];
-> @@ -132,13 +108,18 @@ void gaiv4(void)
->   				 psin ? psin->sin_family : 0,
->   				 psin ? psin->sin_port : 0,
->   				 psin ? htons(psin->sin_port) : 0);
-> -		} else
-> -			tst_resm(TPASS, "getaddrinfo IPv4 basic lookup");
-> -		freeaddrinfo(aires);
-> -	} else
-> -		tst_resm(TEST_RETURN ? TFAIL : TPASS, "getaddrinfo IPv4 basic "
-> +			freeaddrinfo(aires);
-> +			return;
-> +		} else {
-> +			tst_resm(TINFO, "getaddrinfo IPv4 basic lookup");
-> +			freeaddrinfo(aires);
-> +		}
-> +	} else {
-> +		tst_resm(TFAIL, "getaddrinfo IPv4 basic "
->   			 "lookup (\"%s\") returns %ld (\"%s\")", hostname,
->   			 TEST_RETURN, gai_strerror(TEST_RETURN));
-> +		return;
-> +	}
->   
-
-If you write the description of the particular test-case before the 
-test, you don't need to repeat the same description in each TPASS/TFAIL 
-messages after. Test-case should end with either TPASS or TFAIL, not 
-TINFO. Therefore all test-cases below could be something like this:
-
-tst_resm(TINFO, "getaddrinfo IPv4 basic lookup");
-TEST(...);
-if (!TEST_RETURN) {
-     if (error) {
-         tst_resm(TFAIL, "");
-         return;
-     }
-
-     tst_resm(TPASS, "test finished");
-} else {
-     tst_resm(TFAIL, "...");
-}
-
-Best regards,
-Alexey
+diff --git a/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
+index 267b8b1..bf6c5b6 100644
+--- a/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
++++ b/testcases/kernel/syscalls/sched_getattr/sched_getattr01.c
+@@ -38,9 +38,9 @@ void *run_deadline(void *data LTP_ATTRIBUTE_UNUSED)
+ 
+ 	/* This creates a 10ms/30ms reservation */
+ 	attr.sched_policy = SCHED_DEADLINE;
+-	attr.sched_runtime = 10 * 1000 * 1000;
+-	attr.sched_period = 30 * 1000 * 1000;
+-	attr.sched_deadline = 30 * 1000 * 1000;
++	attr.sched_runtime = RUNTIME_VAL;
++	attr.sched_period = PERIOD_VAL;
++	attr.sched_deadline = DEADLINE_VAL;
+ 
+ 	ret = sched_setattr(0, &attr, flags);
+ 	if (ret < 0)
+-- 
+1.6.0.2
 
