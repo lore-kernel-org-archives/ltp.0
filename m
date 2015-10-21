@@ -1,21 +1,21 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
 Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <metan@suse.de>) id 1Zrl3x-0001U6-3d
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2015 11:08:09 +0000
-Received: from mx2.suse.de ([195.135.220.15])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1Zrl3v-0004Xj-Pa
-	for ltp-list@lists.sourceforge.net; Thu, 29 Oct 2015 11:08:09 +0000
-Date: Thu, 29 Oct 2015 12:05:18 +0100
-From: Cyril Hrubis <chrubis@suse.cz>
-Message-ID: <20151029110517.GA23949@rei>
-References: <CAKq_7Fryb_CkGCiGghQ9gJtLBuh3Fv6T7tU1+WcH4zWub=9CkA@mail.gmail.com>
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <vichy.kuo@gmail.com>) id 1ZovQu-0000Oc-Mw
+	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2015 15:36:08 +0000
+Received: from mail-ob0-f175.google.com ([209.85.214.175])
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZovQp-0007bD-BT
+	for ltp-list@lists.sourceforge.net; Wed, 21 Oct 2015 15:36:08 +0000
+Received: by obbwb3 with SMTP id wb3so44313494obb.0
+	for <ltp-list@lists.sourceforge.net>;
+	Wed, 21 Oct 2015 08:35:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <CAKq_7Fryb_CkGCiGghQ9gJtLBuh3Fv6T7tU1+WcH4zWub=9CkA@mail.gmail.com>
-Subject: Re: [LTP] error while compiling ltp statically
+Date: Wed, 21 Oct 2015 23:35:57 +0800
+Message-ID: <CAOVJa8FYtVzST_sEkeWxaEVFCC1FBo_ASgDjncAy50AaYiFGhA@mail.gmail.com>
+From: vichy <vichy.kuo@gmail.com>
+Subject: [LTP] how to cross compile linux test project?
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -28,16 +28,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Yesuraj Abraham <yesu4tech@gmail.com>
-Cc: ltp-list@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
 
-Hi!
-This list has been retired, please use ltp@lists.linux.it
-(http://lists.linux.it/listinfo/ltp) instead.
+hi All:
+I try to compile linux test project for Arm platform.
+And below is the link suggest how to configure it.
+http://sourceforge.net/p/ltp/mailman/message/34480155/
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+But when I git clone https://github.com/linux-test-project/ltp
+it seems no configure in the git repository.
+Should I run and bootstrap to get configure file?
+
+Appreciate your kind help,
 
 ------------------------------------------------------------------------------
 _______________________________________________
