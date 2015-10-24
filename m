@@ -1,230 +1,160 @@
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Fri, 23 Oct 2015 01:08:48 +0000
-Subject: [LTP] [PATCH]  commans/sar: Add new testcases for sar
-Message-ID: <1445562528-228220-1-git-send-email-cuibixuan@huawei.com>
+From: Nicolas Joly <njoly@pasteur.fr>
+Date: Sat, 24 Oct 2015 12:36:12 +0200
+Subject: [LTP] [PATCH] Cleanup syscalls/flock test messages
+Message-ID: <20151024103612.GA29118@issan.sis.pasteur.fr>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add new testcases for sar
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
----
- runtest/commands                    |    1 +
- testcases/commands/sar/Makefile     |   29 +++++++
- testcases/commands/sar/sar_tests.sh |  153 +++++++++++++++++++++++++++++++++++
- 3 files changed, 183 insertions(+), 0 deletions(-)
- create mode 100644 testcases/commands/sar/Makefile
- create mode 100755 testcases/commands/sar/sar_tests.sh
+Hi,
 
-diff --git a/runtest/commands b/runtest/commands
-index e5260ba..56a326b 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -16,6 +16,7 @@ cp_tests01 cp_tests.sh
- ln_tests01 ln_tests.sh
- mkdir_tests01 mkdir_tests.sh
- mv_tests01 mv_tests.sh
-+sar01 sar_tests.sh
- size01 size01
- sssd01 sssd01
- sssd02 sssd02
-diff --git a/testcases/commands/sar/Makefile b/testcases/commands/sar/Makefile
-new file mode 100644
-index 0000000..ebec180
---- /dev/null
-+++ b/testcases/commands/sar/Makefile
-@@ -0,0 +1,29 @@
-+#
-+#    commands/sar testcases Makefile.
-+#
-+#    Copyright (C) 2015, Cui Bixuan <cuibixuan@huawei.com>.
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, write to the Free Software Foundation, Inc.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= sar_tests.sh
-+
-+MAKE_TARGETS		:=
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/commands/sar/sar_tests.sh b/testcases/commands/sar/sar_tests.sh
-new file mode 100755
-index 0000000..afc9cc7
---- /dev/null
-+++ b/testcases/commands/sar/sar_tests.sh
-@@ -0,0 +1,153 @@
-+#!/bin/sh
-+#
-+# Copyright (c) 2015 Cui Bixuan <cuibixuan@huawei.com>.
-+#
-+# This program is free software; you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+# the GNU General Public License for more details.
-+#
-+# Test sar command with some basic options.
-+#
-+
-+TCID=sar01
-+TST_TOTAL=19
-+. test.sh
-+
-+setup()
-+{
-+	tst_check_cmds sar
-+
-+	tst_tmpdir
-+}
-+
-+cleanup()
-+{
-+	tst_rmdir
-+}
-+
-+sar_test()
-+{
-+	$1 >${TCID}.temp 2>&1
-+	if [ $? -ne 0 ]; then
-+		tst_resm TFAIL "'$1' failed."
-+		return
-+	fi
-+
-+	grep $2 ${TCID}.temp >/dev/null
-+	if [ $? -eq 0 ]; then
-+		tst_resm TPASS "'$1' passed."
-+	else
-+		tst_resm TFAIL "'$1' failed."
-+	fi
-+}
-+
-+test1()
-+{
-+	sar_test "sar -A 1 1" "CPU"
-+}
-+
-+test2()
-+{
-+	sar_test "sar -b 1 1" "tps"
-+}
-+
-+test3()
-+{
-+	sar_test "sar -B 1 1" "pgpgin"
-+}
-+
-+test4()
-+{
-+	sar_test "sar -C 1 1" "CPU"
-+}
-+
-+test5()
-+{
-+	sar_test "sar -d 1 1" "tps"
-+}
-+
-+test6()
-+{
-+	sar_test "sar -p 1 1" "user"
-+}
-+
-+test7()
-+{
-+	sar_test "sar -q 1 1" "plist-sz"
-+}
-+
-+test8()
-+{
-+	sar_test "sar -r 1 1" "kbmemfree"
-+}
-+
-+test9()
-+{
-+	sar_test "sar -R 1 1" "frmpg"
-+}
-+
-+test10()
-+{
-+	sar_test "sar -S 1 1" "kbswpfree"
-+}
-+
-+test11()
-+{
-+	sar_test "sar -t 1 1" "CPU"
-+}
-+
-+test12()
-+{
-+	sar_test "sar -u ALL 1 1" "CPU"
-+}
-+
-+test13()
-+{
-+	sar_test "sar -u -v 1 1" "CPU"
-+}
-+
-+test14()
-+{
-+	sar_test "sar -u -w 1 1" "CPU"
-+}
-+
-+test15()
-+{
-+	sar_test "sar -u -W 1 1" "CPU"
-+}
-+
-+test16()
-+{
-+	sar_test "sar -u -y 1 1" "CPU"
-+}
-+
-+test17()
-+{
-+	sar_test "sar -I ALL 1 1" "INTR"
-+}
-+
-+test18()
-+{
-+	sar_test "sar -P ALL 1 1" "CPU"
-+}
-+
-+test19()
-+{
-+	sar_test "sar -A 1 1 -o sar_tmpfile" "CPU"
-+}
-+
-+setup
-+TST_CLEANUP="cleanup"
-+
-+for i in $(seq 1 ${TST_TOTAL})
-+do
-+	test$i
-+done
-+
-+tst_exit
+Please find a small patch that cleanup flock(2) syscalls tests to use
+TTERRNO/TERRNO in messages instead of home made versions with
+TEST_ERRNO/errno.
+
+Regards.
+
 -- 
-1.6.0.2
+Nicolas Joly
 
+Cluster & Computing Group
+Biology IT Center
+Institut Pasteur, Paris.
+-------------- next part --------------
+commit ab1d7c59b56be8b3361ee8654b69ab55520c08da
+Author: Nicolas Joly <njoly@pasteur.fr>
+Date:   Sat Oct 24 11:52:19 2015 +0200
+
+    syscalls/flock: Cleanup.
+    
+    Use TERRNO/TTERRNO in messages instead of home made versions.
+    
+    Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
+
+diff --git a/testcases/kernel/syscalls/flock/flock01.c b/testcases/kernel/syscalls/flock/flock01.c
+index 742c9f4..a7ecba1 100644
+--- a/testcases/kernel/syscalls/flock/flock01.c
++++ b/testcases/kernel/syscalls/flock/flock01.c
+@@ -83,10 +83,10 @@ struct test_case_t {
+ 	int operation;
+ 	char *opt;
+ } test_cases[] = {
+-	{
+-	LOCK_SH, "Shared Lock"}, {
+-	LOCK_UN, "Unlock"}, {
+-LOCK_EX, "Exclusive Lock"},};
++	{ LOCK_SH, "Shared Lock" },
++	{ LOCK_UN, "Unlock"},
++	{ LOCK_EX, "Exclusive Lock"}
++};
+ 
+ int main(int argc, char **argv)
+ {
+@@ -108,17 +108,15 @@ int main(int argc, char **argv)
+ 
+ 			/* Testing system call */
+ 			TEST(flock(fd, test_cases[i].operation));
+-
+ 			if (TEST_RETURN == -1) {
+-				tst_resm(TFAIL,
+-					 "flock() failed to get %s, error number=%d : %s",
+-					 test_cases[i].opt, TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
++				tst_resm(TFAIL | TTERRNO,
++					 "flock() failed to get %s",
++					 test_cases[i].opt);
+ 				continue;	/*next loop for MTKERNEL  */
+ 			} else {
+ 				tst_resm(TPASS,
+-					 "flock() succeeded with %s, returned error number=%d",
+-					 test_cases[i].opt, TEST_ERRNO);
++					 "flock() succeeded with %s",
++					 test_cases[i].opt);
+ 			}
+ 
+ 		}
+diff --git a/testcases/kernel/syscalls/flock/flock03.c b/testcases/kernel/syscalls/flock/flock03.c
+index 1e519b7..e53b3b7 100644
+--- a/testcases/kernel/syscalls/flock/flock03.c
++++ b/testcases/kernel/syscalls/flock/flock03.c
+@@ -77,19 +77,18 @@ int main(int argc, char **argv)
+ 		fd = open(FILE_NAME, O_RDWR);
+ 
+ 		if (fd == -1)
+-			tst_brkm(TFAIL, cleanup, "parent failed to open the"
+-				 "file, errno %d", errno);
++			tst_brkm(TFAIL | TERRNO, cleanup,
++				 "parent failed to open the file");
+ 
+ 		pid = FORK_OR_VFORK();
+ 
+ 		if (pid == -1)
+-			tst_brkm(TFAIL, cleanup, "fork() failed, errno %d",
+-				 errno);
++			tst_brkm(TFAIL | TERRNO, cleanup, "fork() failed");
+ 		if (pid == 0) {
+ #ifdef UCLINUX
+ 			if (self_exec(argv[0], "ds", fd, FILE_NAME) < 0)
+-				tst_brkm(TFAIL, cleanup, "self_exec failed, "
+-					 "errno &d", errno);
++				tst_brkm(TFAIL | TERRNO, cleanup,
++					 "self_exec failed");
+ #else
+ 			childfunc(fd);
+ #endif
+@@ -98,9 +97,8 @@ int main(int argc, char **argv)
+ 		TEST(flock(fd, LOCK_EX | LOCK_NB));
+ 
+ 		if (TEST_RETURN != 0)
+-			tst_resm(TFAIL,
+-				 "Parent: Initial attempt to flock() failed, "
+-				 "errno %d", TEST_ERRNO);
++			tst_resm(TFAIL | TTERRNO,
++				 "Parent: Initial attempt to flock() failed");
+ 		else
+ 			tst_resm(TPASS,
+ 				 "Parent: Initial attempt to flock() passed");
+diff --git a/testcases/kernel/syscalls/flock/flock06.c b/testcases/kernel/syscalls/flock/flock06.c
+index 8b8ac43..d9c1d2d 100644
+--- a/testcases/kernel/syscalls/flock/flock06.c
++++ b/testcases/kernel/syscalls/flock/flock06.c
+@@ -93,20 +93,20 @@ int main(int argc, char **argv)
+ 
+ 		fd1 = open(filename, O_RDWR);
+ 		if (fd1 == -1)
+-			tst_brkm(TFAIL, cleanup, "failed to open the"
+-				 "file, errno %d", errno);
++			tst_brkm(TFAIL | TERRNO, cleanup,
++				 "failed to open the file");
+ 
+ 		TEST(flock(fd1, LOCK_EX | LOCK_NB));
+ 		if (TEST_RETURN != 0)
+-			tst_resm(TFAIL, "First attempt to flock() failed, "
+-				 "errno %d", TEST_ERRNO);
++			tst_resm(TFAIL | TTERRNO,
++				 "First attempt to flock() failed");
+ 		else
+ 			tst_resm(TPASS, "First attempt to flock() passed");
+ 
+ 		fd2 = open(filename, O_RDWR);
+ 		if (fd2 == -1)
+-			tst_brkm(TFAIL, cleanup, "failed to open the"
+-				 "file, errno %d", errno);
++			tst_brkm(TFAIL | TERRNO, cleanup,
++				 "failed to open the file");
+ 
+ 		TEST(flock(fd2, LOCK_EX | LOCK_NB));
+ 		if (TEST_RETURN == -1)
+@@ -116,8 +116,7 @@ int main(int argc, char **argv)
+ 
+ 		TEST(flock(fd1, LOCK_UN));
+ 		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL, "Failed to unlock fd1, errno %d",
+-				 TEST_ERRNO);
++			tst_resm(TFAIL | TTERRNO, "Failed to unlock fd1");
+ 		else
+ 			tst_resm(TPASS, "Unlocked fd1");
+ 
