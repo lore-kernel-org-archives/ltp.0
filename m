@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 26 Oct 2015 15:33:12 +0100
-Subject: [LTP] [PATCH] Fix mlockall tests unprivileged execution
-In-Reply-To: <20151025121618.GA15376@issan.sis.pasteur.fr>
-References: <20151025121618.GA15376@issan.sis.pasteur.fr>
-Message-ID: <20151026143311.GA6059@rei>
+Date: Mon, 26 Oct 2015 15:48:59 +0100
+Subject: [LTP] [PATCH] Cleanup syscalls/flock test messages
+In-Reply-To: <20151024103612.GA29118@issan.sis.pasteur.fr>
+References: <20151024103612.GA29118@issan.sis.pasteur.fr>
+Message-ID: <20151026144859.GB6059@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,9 +11,9 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Please find a small patch that fix mlockall(2) testcases when run as
-> an unprivileged user ... It adds some missing tst_require_root()
-> needed for later seteuid() calls.
+> Please find a small patch that cleanup flock(2) syscalls tests to use
+> TTERRNO/TERRNO in messages instead of home made versions with
+> TEST_ERRNO/errno.
 
 Pushed, thanks.
 
