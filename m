@@ -1,83 +1,22 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 26 Oct 2015 17:08:52 +0100
-Subject: [LTP] [PATCH]  commans/sar: Add new testcases for sar
-In-Reply-To: <1445562528-228220-1-git-send-email-cuibixuan@huawei.com>
-References: <1445562528-228220-1-git-send-email-cuibixuan@huawei.com>
-Message-ID: <20151026160852.GC6772@rei>
+From: Hangbin Liu <liuhangbin@gmail.com>
+Date: Tue, 27 Oct 2015 15:32:47 +0800
+Subject: [LTP]  How about set IPsec with ip xfrm?
+Message-ID: <CAPwn2JRO0Dx20LzBHrLhMb85EoU9+_WRnRTS5UO2sQ9Ej3y+Cw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +TCID=sar01
-> +TST_TOTAL=19
-> +. test.sh
-> +
-> +setup()
-> +{
-> +	tst_check_cmds sar
-> +
-> +	tst_tmpdir
-> +}
-> +
-> +cleanup()
-> +{
-> +	tst_rmdir
-> +}
-> +
-> +sar_test()
-> +{
-> +	$1 >${TCID}.temp 2>&1
+Hi Cyril and Alexey,
 
-Since we call tst_tmpdir() in setup we are guaranteed to be executed in
-unique temorary directory. So we can just do:
+Msst of the network stress tests have IPsec testing, and
+we use setkey for configuration. But setkey[1] hasn't updated
+for a long time. And some distros, RHEL7 for example, even
+don't have ipset-tools package. So how about rewrite IPsec
+config with ip xfrm? or at least make both method works?
 
-$1 >temp 2>&1
+[1] http://ipsec-tools.sourceforge.net/
 
-And we do not need to worry about some other test rewriting our file.
-
-> +	if [ $? -ne 0 ]; then
-> +		tst_resm TFAIL "'$1' failed."
-> +		return
-> +	fi
-> +
-> +	grep $2 ${TCID}.temp >/dev/null
-
-Grep has -q (quiet) switch.
-
-> +	if [ $? -eq 0 ]; then
-> +		tst_resm TPASS "'$1' passed."
-> +	else
-> +		tst_resm TFAIL "'$1' failed."
-> +	fi
-
-Grepping one word is pretty loose criteria for pass/fail for a program
-that actually prints several pages of statistics.
-
-A few things that can be done here are:
-
-* Number of cpus is detected correctly
-
-* The CPU load sums to 100%
-
-
-More complicated tests can also do:
-
-* Run a program with bussy loop on a background and check that
-  it consumes CPU cycles (load at least 100/NCPU over all cpus)
-
-* Run a program that reads and writes files on background
-  and check that corresponding I/O statistics are reasonable
-
-* ...
-
-
-Getting this right would require substantial amount of effort, but
-as this test is now it's not much useful as it would pass even if sar
-was broken really badly.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks
+Hangbin Liu
