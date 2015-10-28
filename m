@@ -1,24 +1,24 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <vichy.kuo@gmail.com>) id 1Zp8d3-00077H-FB
-	for ltp-list@lists.sourceforge.net; Thu, 22 Oct 2015 05:41:33 +0000
-Received: from mail-oi0-f44.google.com ([209.85.218.44])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
-	(Exim 4.76) id 1Zp8d2-000357-Qo
-	for ltp-list@lists.sourceforge.net; Thu, 22 Oct 2015 05:41:33 +0000
-Received: by oiao187 with SMTP id o187so41907988oia.3
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <srikanth007m@gmail.com>) id 1ZrP95-0004IJ-Hp
+	for ltp-list@lists.sourceforge.net; Wed, 28 Oct 2015 11:43:59 +0000
+Received: from mail-qg0-f48.google.com ([209.85.192.48])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:RC4-SHA:128)
+	(Exim 4.76) id 1ZrP94-0002Bs-ME
+	for ltp-list@lists.sourceforge.net; Wed, 28 Oct 2015 11:43:59 +0000
+Received: by qgbb65 with SMTP id b65so3384370qgb.2
 	for <ltp-list@lists.sourceforge.net>;
-	Wed, 21 Oct 2015 22:41:27 -0700 (PDT)
+	Wed, 28 Oct 2015 04:43:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CANKSX+EC8p803DByyYE4ECw11gQk4a3Hr1SKZXpPPjw8aoz-fQ@mail.gmail.com>
-References: <CAOVJa8FYtVzST_sEkeWxaEVFCC1FBo_ASgDjncAy50AaYiFGhA@mail.gmail.com>
-	<CANKSX+EC8p803DByyYE4ECw11gQk4a3Hr1SKZXpPPjw8aoz-fQ@mail.gmail.com>
-Date: Thu, 22 Oct 2015 13:41:27 +0800
-Message-ID: <CAOVJa8HkBesYGEuEocDWgeSUpGxntKFEPnS7vU6xjR+4maWYsw@mail.gmail.com>
-From: vichy <vichy.kuo@gmail.com>
-Subject: Re: [LTP] how to cross compile linux test project?
+In-Reply-To: <CAKq_7Fryb_CkGCiGghQ9gJtLBuh3Fv6T7tU1+WcH4zWub=9CkA@mail.gmail.com>
+References: <CAKq_7Fryb_CkGCiGghQ9gJtLBuh3Fv6T7tU1+WcH4zWub=9CkA@mail.gmail.com>
+Date: Wed, 28 Oct 2015 17:13:53 +0530
+Message-ID: <CANKSX+GcymT_=YWqgnbF3w3VQNo4xwFG7ZshhFQ3HqpwuL-oFg@mail.gmail.com>
+From: "$rik@nth " <srikanth007m@gmail.com>
+Subject: Re: [LTP] error while compiling ltp statically
+Reply-To: srikanth007m@gmail.com
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -31,24 +31,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: srikanth007m@gmail.com
-Cc: ltp-list@lists.sourceforge.net
+To: Yesuraj Abraham <yesu4tech@gmail.com>, ltp-list@lists.sourceforge.net
 
-hi Strik:
+ltp-list is no more maintaining. Adding new list for communication.
 
-2015-10-21 23:59 GMT+08:00 $rik@nth <srikanth007m@gmail.com>:
-> you need to run autoconf program with no arguments and then autoconf
-> processes `configure.ac' to generate configure file.
-when i use autoconf I get below error message
-# autoconf
-configure.ac:4: error: possibly undefined macro: AM_INIT_AUTOMAKE
-      If this token and others are legitimate, please use m4_pattern_allow.
-      See the Autoconf documentation.
-configure.ac:15: error: possibly undefined macro: AM_CONDITIONAL
-#
+This is because openlog is already defined in the libc and which you
+can't redefine it again.
 
-I use ubuntu 14.04 64bit to cross compile linux test project.
-appreciate your kind help,
+On Wed, Oct 28, 2015 at 4:43 PM, Yesuraj Abraham <yesu4tech@gmail.com> wrote:
+> Hi
+> I tried compiling ltp statically using arm toolchain, as follows
+> export
+> CC=/home/ltblr/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi-gcc
+> export
+> LD=/home/ltblr/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi-ld
+> export
+> AR=/home/ltblr/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi-ar
+> export
+> AS=/home/ltblr/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi-as
+> export
+> RANLIB=/home/ltblr/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi-ranlib
+> export
+> STRIP=/home/ltblr/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/arm-none-linux-gnueabi-strip
+>
+> ./configure --host=arm-linux
+> --prefix=/home/ltblr/yesuraj/test_apps/ltp/arm-none-tool-chain/static_compilation/ltp-full-20150420/install
+> --exec-prefix=/home/ltblr/yesuraj/test_apps/ltp/arm-none-tool-chain/static_compilation/ltp-full-20150420/install
+> LDFLAGS="-static -pthread"
+>  make
+>
+> It throws the following error(s),
+>
+> /home/ltblr/CodeSourcery/Sourcery_CodeBench_Lite_for_ARM_GNU_Linux/bin/../arm-none-linux-gnueabi/libc/usr/lib/libc.a(syslog.o):
+> In function `openlog': syslog.c:(.text+0x814): multiple definition of
+> `openlog'
+> /tmp/ccusZ6dp.o:/home/ltblr/yesuraj/test_apps/ltp/arm-none-tool-chain/static_compilation/ltp-full-20150420/testcases/kernel/fs/fs-bench/random-access.c:66:
+> first defined here
+>
+> The same error is thrown for the file, random-access-del-create.c too.
+>
+> When i modified openlog to other name (openlog1) in both the files, then it
+> compiles successfully.
+>
+> However when i build using x86 tool chain in the same manner (static flag
+> enabled), it builds successfully without the above error(s).
+>
+> Regards,
+> yesuraj
+>
+> ------------------------------------------------------------------------------
+>
+> _______________________________________________
+> Ltp-list mailing list
+> Ltp-list@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/ltp-list
+>
+
+
+
+-- 
+Thanks & Regards,
+M.Srikanth Kumar.
 
 ------------------------------------------------------------------------------
 _______________________________________________
