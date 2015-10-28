@@ -1,34 +1,50 @@
 From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Wed, 28 Oct 2015 03:11:37 +0000
-Subject: [LTP] [PATCH 1/11] bind/bind02: Testcase failed when no root user
+Date: Wed, 28 Oct 2015 03:11:45 +0000
+Subject: [LTP] [PATCH 9/11] ipc/semctl: Testcases failed when no root user
 	run it
-Message-ID: <1446001907-43525-1-git-send-email-cuibixuan@huawei.com>
+In-Reply-To: <1446001907-43525-1-git-send-email-cuibixuan@huawei.com>
+References: <1446001907-43525-1-git-send-email-cuibixuan@huawei.com>
+Message-ID: <1446001907-43525-9-git-send-email-cuibixuan@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add tst_require_root() to testcase for setegid().
+Add tst_require_root() to testcase for semop() and semget().
 
 Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
 ---
- testcases/kernel/syscalls/bind/bind02.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+ testcases/kernel/syscalls/ipc/semctl/semctl06.c |    2 ++
+ testcases/kernel/syscalls/ipc/semctl/semctl07.c |    2 ++
+ 2 files changed, 4 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/bind/bind02.c b/testcases/kernel/syscalls/bind/bind02.c
-index 721f525..3dc5652 100644
---- a/testcases/kernel/syscalls/bind/bind02.c
-+++ b/testcases/kernel/syscalls/bind/bind02.c
-@@ -127,6 +127,8 @@ int main(int argc, char *argv[])
- 	 * Linux doesn't have that limitation apparently. */
- 	char *username = NULL;
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl06.c b/testcases/kernel/syscalls/ipc/semctl/semctl06.c
+index c298345..0b7d853 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/semctl06.c
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl06.c
+@@ -387,6 +387,8 @@ void setup(void)
+ {
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
  
 +	tst_require_root();
 +
- 	if (argc != 2) {
- 		tst_resm(TINFO, "Defaulting to user nobody");
- 		username = strdup(nobody_uid);
+ 	TEST_PAUSE;
+ 
+ 	tst_tmpdir();
+diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl07.c b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
+index 3cc1eff..2eb9b5e 100644
+--- a/testcases/kernel/syscalls/ipc/semctl/semctl07.c
++++ b/testcases/kernel/syscalls/ipc/semctl/semctl07.c
+@@ -155,6 +155,8 @@ void setup(void)
+ {
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
++	tst_require_root();
++
+ 	TEST_PAUSE;
+ 
+ 	tst_tmpdir();
 -- 
 1.6.0.2
 
