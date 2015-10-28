@@ -1,22 +1,21 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 27 Oct 2015 18:26:29 +0100
-Subject: [LTP] [PATCH 1/4] network: add test for low latency busy poll
-In-Reply-To: <562F7276.5090807@oracle.com>
-References: <1442396839-29900-1-git-send-email-alexey.kodanev@oracle.com>
- <562F7276.5090807@oracle.com>
-Message-ID: <20151027172629.GA31866@rei>
+From: Cui Bixuan <cuibixuan@huawei.com>
+Date: Wed, 28 Oct 2015 08:45:54 +0800
+Subject: [LTP] [PATCH v2] sched_getattr/sched_getattr01: Use macro
+ definitions to replace numbers
+In-Reply-To: <20151027124841.GA22962@rei>
+References: <1445343078-145058-1-git-send-email-cuibixuan@huawei.com>
+ <20151026152911.GA6772@rei> <562F44AC.4070609@huawei.com>
+ <20151027124841.GA22962@rei>
+Message-ID: <56301AC2.5040202@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Any comments regarding this patch-set?
+On 2015/10/27 20:48, Cyril Hrubis wrote:
+> Hi!
+> Pushed, thanks.
+Thanks
+> 
 
-I looked at the code and it looks good. I haven't looked deeper into the
-features it tries to test though.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
