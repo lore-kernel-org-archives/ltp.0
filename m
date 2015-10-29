@@ -1,77 +1,115 @@
 From: Cedric Hnyda <chnyda@suse.com>
-Date: Thu, 29 Oct 2015 17:55:57 +0100
-Subject: [LTP]  [PATCH 2/3] diotest4.c: Fixed filesystem
+Date: Thu, 29 Oct 2015 17:55:58 +0100
+Subject: [LTP]  [PATCH 3/3] diotest5.c: replaced iovec
 In-Reply-To: <1446137758-27267-1-git-send-email-chnyda@suse.com>
 References: <1446137758-27267-1-git-send-email-chnyda@suse.com>
-Message-ID: <1446137758-27267-2-git-send-email-chnyda@suse.com>
+Message-ID: <1446137758-27267-3-git-send-email-chnyda@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test 3 & 14 were failing for BTRFS
-so add TCONF for BTRFS
+Replaced iovec pointers by normal buffers.
+iovec were passed instead of expected buffers.
 
 Signed-off-by: Cedric Hnyda <chnyda@suse.com>
 ---
- testcases/kernel/io/direct_io/diotest4.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ testcases/kernel/io/direct_io/diotest5.c | 54 +++++++++-----------------------
+ 1 file changed, 14 insertions(+), 40 deletions(-)
 
-diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
-index 3ccf49e..6badd93 100644
---- a/testcases/kernel/io/direct_io/diotest4.c
-+++ b/testcases/kernel/io/direct_io/diotest4.c
-@@ -68,7 +68,7 @@
+diff --git a/testcases/kernel/io/direct_io/diotest5.c b/testcases/kernel/io/direct_io/diotest5.c
+index 0c10742..e5946bd 100644
+--- a/testcases/kernel/io/direct_io/diotest5.c
++++ b/testcases/kernel/io/direct_io/diotest5.c
+@@ -84,49 +84,30 @@ static void prg_usage(void);
+ static int runtest(int fd_r, int fd_w, int iter, off64_t offset)
+ {
+ 	int i, bufsize = BUFSIZE;
+-	struct iovec *iov1, *iov2, *iovp;
  
- char *TCID = "diotest4";
- int TST_TOTAL = 17;
--int NO_NFS = 1;
-+static long fs_type;
+ 	/* Allocate for buffers and data pointers */
+-	iov1 = (struct iovec *) valloc(sizeof(struct iovec) * nvector);
+-	if (iov1 == NULL) {
+-		tst_resm(TFAIL, "valloc() buf1 failed: %s", strerror(errno));
+-		return (-1);
+-	}
++	char *buf1, *buf2;
  
- #define BUFSIZE	4096
- #define TRUE	1
-@@ -269,12 +269,12 @@ int main(int argc, char *argv[])
- 	lseek(fd, offset, SEEK_SET);
- 	if (write(fd, buf2, 4096) == -1)
- 		tst_resm(TFAIL, "can't write to file %d", ret);
--	if (NO_NFS) {
-+	if (fs_type != TST_NFS_MAGIC && fs_type != TST_BTRFS_MAGIC) {
- 		ret = runtest_f(fd, buf2, offset, count, EINVAL, "odd count");
- 		testcheck_end(ret, &failed, &fail_count,
- 					"Odd count of read and write");
- 	} else
--		tst_resm(TCONF, "NFS support odd count IO");
-+		tst_resm(TCONF, "filesystem supports odd count IO");
- 	total++;
- 
- 	/* Test-4: Read beyond the file size */
-@@ -447,13 +447,13 @@ int main(int argc, char *argv[])
- 		tst_brkm(TBROK, cleanup, "can't open %s: %s",
- 			 filename, strerror(errno));
+-	iov2 = (struct iovec *) valloc(sizeof(struct iovec) * nvector);
+-	if (iov2 == NULL) {
+-		tst_resm(TFAIL, "valloc buf2 failed: %s", strerror(errno));
+-		return (-1);
+-	}
+-	for (i = 0, iovp = iov1; i < nvector; iovp++, i++) {
+-		iovp->iov_base = valloc(bufsize);
+-		if (iovp->iov_base == NULL) {
+-			tst_resm(TFAIL, "valloc for iovp->iov_base: %s",
+-				 strerror(errno));
+-			return (-1);
+-		}
+-		iovp->iov_len = bufsize;
+-	}
+-	for (i = 0, iovp = iov2; i < nvector; iovp++, i++) {
+-		iovp->iov_base = valloc(bufsize);
+-		if (iovp->iov_base == NULL) {
+-			tst_resm(TFAIL, "valloc, iov2 for iovp->iov_base: %s",
+-				 strerror(errno));
+-			return (-1);
+-		}
+-		iovp->iov_len = bufsize;
++	buf1 = valloc(bufsize);
++	buf2 = valloc(bufsize);
++
++	if (!buf1 || !buf2) {
++		tst_resm(TBROK | TERRNO, "valloc() failed");
++		free(buf1);
++		free(buf2);
++		return -1;
  	}
--	if (NO_NFS) {
-+	if (fs_type != TST_NFS_MAGIC && fs_type != TST_BTRFS_MAGIC) {
- 		ret = runtest_f(fd, buf2 + 1, offset, count, EINVAL,
- 			" nonaligned buf");
- 		testcheck_end(ret, &failed, &fail_count,
- 				"read, write with non-aligned buffer");
- 	} else
--		tst_resm(TCONF, "NFS support read, write with non-aligned buffer");
-+		tst_resm(TCONF, "filesystem supports read, write with non-aligned buffer");
- 	close(fd);
- 	total++;
  
-@@ -573,8 +573,7 @@ static void setup(void)
+ 	/* Test */
+ 	for (i = 0; i < iter; i++) {
+-		vfillbuf(iov1, nvector, i);
+-		vfillbuf(iov2, nvector, i + 1);
++		fillbuf(buf1, bufsize, i);
++		fillbuf(buf2, bufsize, i + 1);
+ 		if (lseek(fd_w, offset, SEEK_SET) < 0) {
+ 			tst_resm(TFAIL, "lseek before writev failed: %s",
+ 				 strerror(errno));
+ 			return (-1);
+ 		}
+-		if (writev(fd_w, iov1, nvector) < 0) {
++		if (write(fd_w, buf1, bufsize) < 0) {
+ 			tst_resm(TFAIL, "writev failed: %s", strerror(errno));
+ 			return (-1);
+ 		}
+@@ -135,23 +116,16 @@ static int runtest(int fd_r, int fd_w, int iter, off64_t offset)
+ 				 strerror(errno));
+ 			return (-1);
+ 		}
+-		if (readv(fd_r, iov2, nvector) < 0) {
++		if (read(fd_r, buf2, bufsize) < 0) {
+ 			tst_resm(TFAIL, "readv failed: %s", strerror(errno));
+ 			return (-1);
+ 		}
+-		if (vbufcmp(iov1, iov2, nvector) != 0) {
++		if (bufcmp(buf1, buf2, bufsize) != 0) {
+ 			tst_resm(TFAIL, "readv/writev comparision failed");
+ 			return (-1);
+ 		}
+ 	}
  
- 	close(fd1);
- 
--	if (tst_fs_type(cleanup, ".") == TST_NFS_MAGIC)
--		NO_NFS = 0;
-+	fs_type = tst_fs_type(cleanup, ".");
+-	/* Cleanup */
+-	for (i = 0, iovp = iov1; i < nvector; iovp++, i++)
+-		free(iovp->iov_base);
+-	for (i = 0, iovp = iov2; i < nvector; iovp++, i++)
+-		free(iovp->iov_base);
+-	free(iov1);
+-	free(iov2);
+ 	return 0;
  }
  
- static void cleanup(void)
 -- 
 2.1.4
 
