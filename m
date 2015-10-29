@@ -1,21 +1,25 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 29 Oct 2015 14:06:08 +0300
-Subject: [LTP] [PATCH 1/4] network: add test for low latency busy poll
-In-Reply-To: <5630750D.7080601@oracle.com>
-References: <1442396839-29900-1-git-send-email-alexey.kodanev@oracle.com>
- <562F7276.5090807@oracle.com> <20151027172629.GA31866@rei>
- <5630750D.7080601@oracle.com>
-Message-ID: <5631FDA0.20702@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 29 Oct 2015 12:57:46 +0100
+Subject: [LTP] [PATCH 6/11] mmap/mmap12: Testcase failed when no root
+ user run it
+In-Reply-To: <1446001907-43525-6-git-send-email-cuibixuan@huawei.com>
+References: <1446001907-43525-1-git-send-email-cuibixuan@huawei.com>
+ <1446001907-43525-6-git-send-email-cuibixuan@huawei.com>
+Message-ID: <20151029115746.GA23990@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> Add tst_require_root() to testcase for open /proc/self/pagemap file.
 
-Patch-set applied.
+On my machines the /proc/self/pagemap is readable by the process (it's
+owned by the user that has started the program).
 
-Best regards,
-Alexey
+What is output of ls -l /proc/self/pagemap on your machine?
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
