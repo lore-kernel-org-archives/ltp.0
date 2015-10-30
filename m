@@ -1,38 +1,255 @@
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Fri, 30 Oct 2015 17:19:21 +0800
-Subject: [LTP] [PATCH 6/11] mmap/mmap12: Testcase failed when no root
- user run it
-In-Reply-To: <20151029115746.GA23990@rei>
-References: <1446001907-43525-1-git-send-email-cuibixuan@huawei.com>
- <1446001907-43525-6-git-send-email-cuibixuan@huawei.com>
- <20151029115746.GA23990@rei>
-Message-ID: <56333619.5090401@huawei.com>
+From: Leonid V. Fedorenchik <Leonid.Fedorenchik@paragon-software.com>
+Date: Fri, 30 Oct 2015 12:21:14 +0300
+Subject: [LTP]  [PATCH] fs/ftest: Add printing of inode stats
+Message-ID: <1446196874-14060-1-git-send-email-Leonid.Fedorenchik@paragon-software.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2015/10/29 19:57, Cyril Hrubis wrote:
-> Hi!
->> Add tst_require_root() to testcase for open /proc/self/pagemap file.
-> 
-> On my machines the /proc/self/pagemap is readable by the process (it's
-> owned by the user that has started the program).
-> 
-> What is output of ls -l /proc/self/pagemap on your machine?
-I look my system and others:
-1) SUSE SP2: 3.0.13-0.27-default (uname -a); test PASS;  -r--r--r-- 1 root root 0 Oct 30 16:13 /proc/self/pagemap
-2) Ubuntu: 3.13.0-32-generic;                test PASS;  -r--r--r--. 1 cuibixuan cuibixuan 0 10? 30 16:19 /proc/self/pagemap
-3) SUSE: 4.2.0-0.11-default;                 test FAIL;  -r-------- 1 root root 0 Nov 13 01:39 /proc/self/pagemap
-4) arm64: linux 4.1.6;                       test FAIL;  -r-------- 1 root root 0 Jan 18 01:53 /proc/self/pagemap
+Add printing of inode's size and number. These fields are helpful
+during debugging.
 
-Maybe the higher version of the kernel change the file attributes
-of /proc/self/pagemap, I think.
+In ftest01.c also changed s/TFAIL/TINFO/ to unify output with the
+other tests.
 
-But I read the Documentation/vm/pagemap.txt and look at the source code in kernel,
-can't get it. :-(
+Signed-off-by: Leonid V. Fedorenchik <Leonid.Fedorenchik@paragon-software.com>
+---
+ testcases/kernel/fs/ftest/ftest01.c | 17 +++++++++++++----
+ testcases/kernel/fs/ftest/ftest03.c |  9 +++++++++
+ testcases/kernel/fs/ftest/ftest04.c |  9 +++++++++
+ testcases/kernel/fs/ftest/ftest05.c | 13 +++++++++++--
+ testcases/kernel/fs/ftest/ftest07.c | 13 +++++++++++--
+ testcases/kernel/fs/ftest/ftest08.c |  9 +++++++++
+ 6 files changed, 62 insertions(+), 8 deletions(-)
 
-Someone help?
-> 
+diff --git a/testcases/kernel/fs/ftest/ftest01.c b/testcases/kernel/fs/ftest/ftest01.c
+index d3390f0..f4fcd60 100644
+--- a/testcases/kernel/fs/ftest/ftest01.c
++++ b/testcases/kernel/fs/ftest/ftest01.c
+@@ -262,6 +262,7 @@ static void dotest(int testers, int me, int fd)
+ 	char *bits, *hold_bits, *buf, *val_buf, *zero_buf;
+ 	char val;
+ 	int count, collide, chunk, whenmisc, xfr, i;
++	struct stat stat;
+ 
+ 	nchunks = max_size / csize;
+ 
+@@ -367,9 +368,13 @@ static void dotest(int testers, int me, int fd)
+ 						 "count %d xfr %d file_max 0x%x, should be %d.",
+ 						 me, CHUNK(chunk), val, count,
+ 						 xfr, file_max, zero_buf[0]);
+-					tst_resm(TFAIL,
+-						 "Test[%d]: last_trunc = 0x%x.",
++					tst_resm(TINFO,
++						 "Test[%d]: last_trunc = 0x%x",
+ 						 me, last_trunc);
++					fstat(fd, &stat);
++					tst_resm(TINFO,
++						 "\tStat: size=%llx, ino=%x",
++						 stat.st_size, (unsigned)stat.st_ino);
+ 					sync();
+ 					ft_dumpbuf(buf, csize);
+ 					ft_dumpbits(bits, (nchunks + 7) / 8);
+@@ -396,9 +401,13 @@ static void dotest(int testers, int me, int fd)
+ 						 "count %d xfr %d file_max 0x%x.",
+ 						 me, CHUNK(chunk), val, count,
+ 						 xfr, file_max);
+-					tst_resm(TFAIL,
+-						 "Test[%d]: last_trunc = 0x%x.",
++					tst_resm(TINFO,
++						 "Test[%d]: last_trunc = 0x%x",
+ 						 me, last_trunc);
++					fstat(fd, &stat);
++					tst_resm(TINFO,
++						 "\tStat: size=%llx, ino=%x",
++						 stat.st_size, (unsigned)stat.st_ino);
+ 					sync();
+ 					ft_dumpbuf(buf, csize);
+ 					ft_dumpbits(bits, (nchunks + 7) / 8);
+diff --git a/testcases/kernel/fs/ftest/ftest03.c b/testcases/kernel/fs/ftest/ftest03.c
+index 10e2a4a..9dc47c9 100644
+--- a/testcases/kernel/fs/ftest/ftest03.c
++++ b/testcases/kernel/fs/ftest/ftest03.c
+@@ -295,6 +295,7 @@ static void dotest(int testers, int me, int fd)
+ 	struct iovec val_iovec[MAXIOVCNT];
+ 	struct iovec zero_iovec[MAXIOVCNT];
+ 	int w_ioveclen;
++	struct stat stat;
+ 
+ 	nchunks = max_size / csize;
+ 	whenmisc = 0;
+@@ -439,6 +440,10 @@ static void dotest(int testers, int me, int fd)
+ 						tst_resm(TINFO,
+ 							 "\tTest[%d]: last_trunc = 0x%x.",
+ 							 me, last_trunc);
++						fstat(fd, &stat);
++						tst_resm(TINFO,
++							 "\tStat: size=%llx, ino=%x",
++							 stat.st_size, (unsigned)stat.st_ino);
+ 						sync();
+ 						ft_dumpiov(&r_iovec[i]);
+ 						ft_dumpbits(bits,
+@@ -473,6 +478,10 @@ static void dotest(int testers, int me, int fd)
+ 						tst_resm(TINFO,
+ 							 "\tTest[%d]: last_trunc = 0x%x.",
+ 							 me, last_trunc);
++						fstat(fd, &stat);
++						tst_resm(TINFO,
++							 "\tStat: size=%llx, ino=%x",
++							 stat.st_size, (unsigned)stat.st_ino);
+ 						sync();
+ 						ft_dumpiov(&r_iovec[i]);
+ 						ft_dumpbits(bits,
+diff --git a/testcases/kernel/fs/ftest/ftest04.c b/testcases/kernel/fs/ftest/ftest04.c
+index c00fdfc..f2b1a61 100644
+--- a/testcases/kernel/fs/ftest/ftest04.c
++++ b/testcases/kernel/fs/ftest/ftest04.c
+@@ -232,6 +232,7 @@ static void dotest(int testers, int me, int fd)
+ 	struct iovec val0_iovec[MAXIOVCNT];
+ 	struct iovec val_iovec[MAXIOVCNT];
+ 	int w_ioveclen;
++	struct stat stat;
+ 
+ 	nchunks = max_size / (testers * csize);
+ 	whenmisc = 0;
+@@ -361,6 +362,10 @@ static void dotest(int testers, int me, int fd)
+ 							 "\tTest[%d] bad verify @ 0x%x for val %d count %d xfr %d.",
+ 							 me, CHUNK(chunk), val0,
+ 							 count, xfr);
++						fstat(fd, &stat);
++						tst_resm(TINFO,
++							 "\tStat: size=%llx, ino=%x",
++							 stat.st_size, (unsigned)stat.st_ino);
+ 						ft_dumpiov(&r_iovec[i]);
+ 						ft_dumpbits(bits,
+ 							    (nchunks + 7) / 8);
+@@ -386,6 +391,10 @@ static void dotest(int testers, int me, int fd)
+ 							 "\tTest[%d] bad verify @ 0x%x for val %d count %d xfr %d.",
+ 							 me, CHUNK(chunk), val,
+ 							 count, xfr);
++						fstat(fd, &stat);
++						tst_resm(TINFO,
++							 "\tStat: size=%llx, ino=%x",
++							 stat.st_size, (unsigned)stat.st_ino);
+ 						ft_dumpiov(&r_iovec[i]);
+ 						ft_dumpbits(bits,
+ 							    (nchunks + 7) / 8);
+diff --git a/testcases/kernel/fs/ftest/ftest05.c b/testcases/kernel/fs/ftest/ftest05.c
+index 13ae676..fe3145c 100644
+--- a/testcases/kernel/fs/ftest/ftest05.c
++++ b/testcases/kernel/fs/ftest/ftest05.c
+@@ -264,6 +264,7 @@ static void dotest(int testers, int me, int fd)
+ 	int i, count, collide, chunk, whenmisc, xfr;
+ 	char *bits, *hold_bits, *buf, *val_buf, *zero_buf;
+ 	char val;
++	struct stat stat;
+ 
+ 	nchunks = max_size / csize;
+ 
+@@ -362,8 +363,12 @@ static void dotest(int testers, int me, int fd)
+ 						 me, CHUNK(chunk), val, count,
+ 						 xfr, file_max, zero_buf[0]);
+ 					tst_resm(TINFO,
+-						 "\tTest[%d]: last_trunc = 0x%x.",
++						 "\tTest[%d]: last_trunc = 0x%x",
+ 						 me, last_trunc);
++					fstat(fd, &stat);
++					tst_resm(TINFO,
++						 "\tStat: size=%llx, ino=%x",
++						 stat.st_size, (unsigned)stat.st_ino);
+ 					sync();
+ 					ft_dumpbuf(buf, csize);
+ 					ft_dumpbits(bits, (nchunks + 7) / 8);
+@@ -389,8 +394,12 @@ static void dotest(int testers, int me, int fd)
+ 						 me, CHUNK(chunk), val, count,
+ 						 xfr, file_max);
+ 					tst_resm(TINFO,
+-						 "\tTest[%d]: last_trunc = 0x%x.",
++						 "\tTest[%d]: last_trunc = 0x%x",
+ 						 me, last_trunc);
++					fstat(fd, &stat);
++					tst_resm(TINFO,
++						 "\tStat: size=%llx, ino=%x",
++						 stat.st_size, (unsigned)stat.st_ino);
+ 					sync();
+ 					ft_dumpbuf(buf, csize);
+ 					ft_dumpbits(bits, (nchunks + 7) / 8);
+diff --git a/testcases/kernel/fs/ftest/ftest07.c b/testcases/kernel/fs/ftest/ftest07.c
+index a6f36ec..ff85202 100644
+--- a/testcases/kernel/fs/ftest/ftest07.c
++++ b/testcases/kernel/fs/ftest/ftest07.c
+@@ -292,6 +292,7 @@ static void dotest(int testers, int me, int fd)
+ 
+ 	struct iovec zero_iovec[MAXIOVCNT];
+ 	int w_ioveclen;
++	struct stat stat;
+ 
+ 	nchunks = max_size / csize;
+ 	whenmisc = 0;
+@@ -428,8 +429,12 @@ static void dotest(int testers, int me, int fd)
+ 							 me, CHUNK(chunk), val,
+ 							 count, xfr, file_max);
+ 						tst_resm(TINFO,
+-							 "\tTest[%d]: last_trunc = 0x%x.",
++							 "\tTest[%d]: last_trunc = 0x%x",
+ 							 me, last_trunc);
++						fstat(fd, &stat);
++						tst_resm(TINFO,
++							 "\tStat: size=%llx, ino=%x",
++							 stat.st_size, (unsigned)stat.st_ino);
+ 						sync();
+ 						ft_dumpiov(&r_iovec[i]);
+ 						ft_dumpbits(bits,
+@@ -462,8 +467,12 @@ static void dotest(int testers, int me, int fd)
+ 							 me, CHUNK(chunk), val,
+ 							 count, xfr, file_max);
+ 						tst_resm(TINFO,
+-							 "\tTest[%d]: last_trunc = 0x%x.",
++							 "\tTest[%d]: last_trunc = 0x%x",
+ 							 me, last_trunc);
++						fstat(fd, &stat);
++						tst_resm(TINFO,
++							 "\tStat: size=%llx, ino=%x",
++							 stat.st_size, (unsigned)stat.st_ino);
+ 						sync();
+ 						ft_dumpiov(&r_iovec[i]);
+ 						ft_dumpbits(bits,
+diff --git a/testcases/kernel/fs/ftest/ftest08.c b/testcases/kernel/fs/ftest/ftest08.c
+index 7970ab9..39ba196 100644
+--- a/testcases/kernel/fs/ftest/ftest08.c
++++ b/testcases/kernel/fs/ftest/ftest08.c
+@@ -239,6 +239,7 @@ static void dotest(int testers, int me, int fd)
+ 	struct iovec val0_iovec[MAXIOVCNT];
+ 	struct iovec val_iovec[MAXIOVCNT];
+ 	int w_ioveclen;
++	struct stat stat;
+ 
+ 	nchunks = max_size / (testers * csize);
+ 	whenmisc = 0;
+@@ -370,6 +371,10 @@ static void dotest(int testers, int me, int fd)
+ 							 " for val %d count %d xfr %d.",
+ 							 me, CHUNK(chunk), val0,
+ 							 count, xfr);
++						fstat(fd, &stat);
++						tst_resm(TINFO,
++							 "\tStat: size=%llx, ino=%x",
++							 stat.st_size, (unsigned)stat.st_ino);
+ 						ft_dumpiov(&r_iovec[i]);
+ 						ft_dumpbits(bits,
+ 							    (nchunks + 7) / 8);
+@@ -397,6 +402,10 @@ static void dotest(int testers, int me, int fd)
+ 							 " for val %d count %d xfr %d.",
+ 							 me, CHUNK(chunk), val,
+ 							 count, xfr);
++						fstat(fd, &stat);
++						tst_resm(TINFO,
++							 "\tStat: size=%llx, ino=%x",
++							 stat.st_size, (unsigned)stat.st_ino);
+ 						ft_dumpiov(&r_iovec[i]);
+ 						ft_dumpbits(bits,
+ 							    (nchunks + 7) / 8);
+-- 
+2.5.0.474.g3a9835b
 
