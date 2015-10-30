@@ -1,38 +1,41 @@
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Fri, 30 Oct 2015 16:56:36 +0800
-Subject: [LTP] [PATCH 6/11] mmap/mmap12: Testcase failed when no root
- user run it
-In-Reply-To: <20151029115746.GA23990@rei>
-References: <1446001907-43525-1-git-send-email-cuibixuan@huawei.com>
- <1446001907-43525-6-git-send-email-cuibixuan@huawei.com>
- <20151029115746.GA23990@rei>
-Message-ID: <563330C4.2060809@huawei.com>
+From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
+Date: Fri, 30 Oct 2015 16:57:50 +0800
+Subject: [LTP] [PATCH] containers/netns/netns_sysfs.sh:load dummy module
+	before collecting sysfs interface
+Message-ID: <1446195470-7568-1-git-send-email-shuang.qiu@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2015/10/29 19:57, Cyril Hrubis wrote:
-> Hi!
->> Add tst_require_root() to testcase for open /proc/self/pagemap file.
-> 
-> On my machines the /proc/self/pagemap is readable by the process (it's
-> owned by the user that has started the program).
-> 
-> What is output of ls -l /proc/self/pagemap on your machine?
-I look my system and others:
-1) SUSE SP2: 3.0.13-0.27-default (uname -a); test PASS;  -r--r--r-- 1 root root 0 Oct 30 16:13 /proc/self/pagemap
-2) Ubuntu: 3.13.0-32-generic;                test PASS;  -r--r--r--. 1 cuibixuan cuibixuan 0 10? 30 16:19 /proc/self/pagemap
-3) SUSE: 4.2.0-0.11-default;                 test FAIL;  -r-------- 1 root root 0 Nov 13 01:39 /proc/self/pagemap
-4) arm64: linux 4.1.6;                       test FAIL;  -r-------- 1 root root 0 Jan 18 01:53 /proc/self/pagemap
+From: Shuang Qiu <shuang.qiu@oracle.com>
 
-Maybe the higher version of the kernel change the file attributes
-of /proc/self/pagemap, I think.
+If dummy is compiled as module in kernel,it is loaded dynamically when
+adding dummy device.And it will also create a default dummy interface.So
+the sysfs_after will have one more interface than sysfs_before which
+makes testcase #3 failed.Loading dummy module before collecting sysfs
+interface to workaround such issue.
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+---
+ testcases/kernel/containers/netns/netns_sysfs.sh |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
 
-But I read the Documentation/vm/pagemap.txt and look at the source code in kernel,
-can't get it. :-(
-
-Someone help?
-> 
+diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
+index 7dea52b..b5791bd 100755
+--- a/testcases/kernel/containers/netns/netns_sysfs.sh
++++ b/testcases/kernel/containers/netns/netns_sysfs.sh
+@@ -47,6 +47,10 @@ if [ $? -eq 1 ]; then
+ 	tst_brkm TBROK "unable to create a new network namespace"
+ fi
+ TST_CLEANUP=cleanup
++
++#Load dummy module before collecting sysfs interface
++lsmod | grep dummy || modprobe dummy
++[ $? -eq 0 ] || tst_brkm TBROK "failed to load dummy module"
+ ls /sys/class/net >sysfs_before
+ 
+ ns_exec $NS_HANDLE $NS_TYPE mount --make-rprivate /sys
+-- 
+1.7.7
 
