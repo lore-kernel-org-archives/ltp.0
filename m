@@ -1,54 +1,31 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 30 Oct 2015 05:02:38 -0400 (EDT)
-Subject: [LTP] [PATCH] include/safe_macros.h: fix for SAFE_PREAD()
-In-Reply-To: <1446240865-11586-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1446240865-11586-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1180389514.38981689.1446195758868.JavaMail.zimbra@redhat.com>
+From: Cedric Hnyda <chnyda@suse.com>
+Date: Fri, 30 Oct 2015 10:17:11 +0100
+Subject: [LTP] [PATCH 3/3] diotest5.c: replaced iovec
+In-Reply-To: <1912499711.38973678.1446195193937.JavaMail.zimbra@redhat.com>
+References: <1446137758-27267-1-git-send-email-chnyda@suse.com>
+ <1446137758-27267-3-git-send-email-chnyda@suse.com>
+ <1912499711.38973678.1446195193937.JavaMail.zimbra@redhat.com>
+Message-ID: <56333597.1060600@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 10/30/2015 09:53 AM, Jan Stancek wrote:
+> What is the problem with iovecs here?
+> Isn't readv/writev meant to be used in this test?
+>
+>   * DESCRIPTION
+>   *      The programs test buffered and direct IO with vector arrays using
+>   *      readv() and writev() calls.
 
+My bad. You are right it is indeed irrelevant.
+I misread something.
 
+Best,
+Cedric
 
+-- 
+Cedric Hnyda
 
------ Original Message -----
-> From: "Xiao Yang" <yangx.jy@cn.fujitsu.com>
-> To: ltp@lists.linux.it
-> Sent: Friday, 30 October, 2015 10:34:25 PM
-> Subject: [LTP] [PATCH] include/safe_macros.h: fix for SAFE_PREAD()
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-
-Pushed.
-
-Regards,
-Jan
-
-> ---
->  include/safe_macros.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/safe_macros.h b/include/safe_macros.h
-> index e938f17..79edf5a 100644
-> --- a/include/safe_macros.h
-> +++ b/include/safe_macros.h
-> @@ -111,7 +111,7 @@ ssize_t	safe_read(const char *file, const int lineno,
->  
->  ssize_t safe_pread(const char *file, const int lineno, void
->  (*cleanup_fn)(void),
->  	    char len_strict, int fildes, void *buf, size_t nbyte, off_t offset);
-> -#define SAFE_PREAD(cleanup_fn, len_strict, fildes, buf, nbyte)   \
-> +#define SAFE_PREAD(cleanup_fn, len_strict, fildes, buf, nbyte, offset)   \
->  	safe_pread(__FILE__, __LINE__, cleanup_fn, (len_strict), (fildes), \
->  	    (buf), (nbyte), (offset))
->  
-> --
-> 1.8.3.1
-> 
-> 
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
-> 
