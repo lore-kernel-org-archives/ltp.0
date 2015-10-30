@@ -1,41 +1,54 @@
-From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
-Date: Fri, 30 Oct 2015 16:57:50 +0800
-Subject: [LTP] [PATCH] containers/netns/netns_sysfs.sh:load dummy module
-	before collecting sysfs interface
-Message-ID: <1446195470-7568-1-git-send-email-shuang.qiu@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 30 Oct 2015 05:02:38 -0400 (EDT)
+Subject: [LTP] [PATCH] include/safe_macros.h: fix for SAFE_PREAD()
+In-Reply-To: <1446240865-11586-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1446240865-11586-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1180389514.38981689.1446195758868.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
 
-If dummy is compiled as module in kernel,it is loaded dynamically when
-adding dummy device.And it will also create a default dummy interface.So
-the sysfs_after will have one more interface than sysfs_before which
-makes testcase #3 failed.Loading dummy module before collecting sysfs
-interface to workaround such issue.
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
----
- testcases/kernel/containers/netns/netns_sysfs.sh |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
 
-diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
-index 7dea52b..b5791bd 100755
---- a/testcases/kernel/containers/netns/netns_sysfs.sh
-+++ b/testcases/kernel/containers/netns/netns_sysfs.sh
-@@ -47,6 +47,10 @@ if [ $? -eq 1 ]; then
- 	tst_brkm TBROK "unable to create a new network namespace"
- fi
- TST_CLEANUP=cleanup
-+
-+#Load dummy module before collecting sysfs interface
-+lsmod | grep dummy || modprobe dummy
-+[ $? -eq 0 ] || tst_brkm TBROK "failed to load dummy module"
- ls /sys/class/net >sysfs_before
- 
- ns_exec $NS_HANDLE $NS_TYPE mount --make-rprivate /sys
--- 
-1.7.7
 
+
+----- Original Message -----
+> From: "Xiao Yang" <yangx.jy@cn.fujitsu.com>
+> To: ltp@lists.linux.it
+> Sent: Friday, 30 October, 2015 10:34:25 PM
+> Subject: [LTP] [PATCH] include/safe_macros.h: fix for SAFE_PREAD()
+> 
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+
+Pushed.
+
+Regards,
+Jan
+
+> ---
+>  include/safe_macros.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/safe_macros.h b/include/safe_macros.h
+> index e938f17..79edf5a 100644
+> --- a/include/safe_macros.h
+> +++ b/include/safe_macros.h
+> @@ -111,7 +111,7 @@ ssize_t	safe_read(const char *file, const int lineno,
+>  
+>  ssize_t safe_pread(const char *file, const int lineno, void
+>  (*cleanup_fn)(void),
+>  	    char len_strict, int fildes, void *buf, size_t nbyte, off_t offset);
+> -#define SAFE_PREAD(cleanup_fn, len_strict, fildes, buf, nbyte)   \
+> +#define SAFE_PREAD(cleanup_fn, len_strict, fildes, buf, nbyte, offset)   \
+>  	safe_pread(__FILE__, __LINE__, cleanup_fn, (len_strict), (fildes), \
+>  	    (buf), (nbyte), (offset))
+>  
+> --
+> 1.8.3.1
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
