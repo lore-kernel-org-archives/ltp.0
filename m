@@ -1,31 +1,38 @@
-From: Cedric Hnyda <chnyda@suse.com>
-Date: Fri, 30 Oct 2015 10:17:11 +0100
-Subject: [LTP] [PATCH 3/3] diotest5.c: replaced iovec
-In-Reply-To: <1912499711.38973678.1446195193937.JavaMail.zimbra@redhat.com>
-References: <1446137758-27267-1-git-send-email-chnyda@suse.com>
- <1446137758-27267-3-git-send-email-chnyda@suse.com>
- <1912499711.38973678.1446195193937.JavaMail.zimbra@redhat.com>
-Message-ID: <56333597.1060600@suse.com>
+From: Cui Bixuan <cuibixuan@huawei.com>
+Date: Fri, 30 Oct 2015 17:19:21 +0800
+Subject: [LTP] [PATCH 6/11] mmap/mmap12: Testcase failed when no root
+ user run it
+In-Reply-To: <20151029115746.GA23990@rei>
+References: <1446001907-43525-1-git-send-email-cuibixuan@huawei.com>
+ <1446001907-43525-6-git-send-email-cuibixuan@huawei.com>
+ <20151029115746.GA23990@rei>
+Message-ID: <56333619.5090401@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/30/2015 09:53 AM, Jan Stancek wrote:
-> What is the problem with iovecs here?
-> Isn't readv/writev meant to be used in this test?
->
->   * DESCRIPTION
->   *      The programs test buffered and direct IO with vector arrays using
->   *      readv() and writev() calls.
+On 2015/10/29 19:57, Cyril Hrubis wrote:
+> Hi!
+>> Add tst_require_root() to testcase for open /proc/self/pagemap file.
+> 
+> On my machines the /proc/self/pagemap is readable by the process (it's
+> owned by the user that has started the program).
+> 
+> What is output of ls -l /proc/self/pagemap on your machine?
+I look my system and others:
+1) SUSE SP2: 3.0.13-0.27-default (uname -a); test PASS;  -r--r--r-- 1 root root 0 Oct 30 16:13 /proc/self/pagemap
+2) Ubuntu: 3.13.0-32-generic;                test PASS;  -r--r--r--. 1 cuibixuan cuibixuan 0 10? 30 16:19 /proc/self/pagemap
+3) SUSE: 4.2.0-0.11-default;                 test FAIL;  -r-------- 1 root root 0 Nov 13 01:39 /proc/self/pagemap
+4) arm64: linux 4.1.6;                       test FAIL;  -r-------- 1 root root 0 Jan 18 01:53 /proc/self/pagemap
 
-My bad. You are right it is indeed irrelevant.
-I misread something.
+Maybe the higher version of the kernel change the file attributes
+of /proc/self/pagemap, I think.
 
-Best,
-Cedric
+But I read the Documentation/vm/pagemap.txt and look at the source code in kernel,
+can't get it. :-(
 
--- 
-Cedric Hnyda
+Someone help?
+> 
 
