@@ -1,31 +1,144 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 30 Oct 2015 17:34:25 -0400
-Subject: [LTP] [PATCH] include/safe_macros.h: fix for SAFE_PREAD()
-Message-ID: <1446240865-11586-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 30 Oct 2015 04:53:13 -0400 (EDT)
+Subject: [LTP] [PATCH 3/3] diotest5.c: replaced iovec
+In-Reply-To: <1446137758-27267-3-git-send-email-chnyda@suse.com>
+References: <1446137758-27267-1-git-send-email-chnyda@suse.com>
+ <1446137758-27267-3-git-send-email-chnyda@suse.com>
+Message-ID: <1912499711.38973678.1446195193937.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- include/safe_macros.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/safe_macros.h b/include/safe_macros.h
-index e938f17..79edf5a 100644
---- a/include/safe_macros.h
-+++ b/include/safe_macros.h
-@@ -111,7 +111,7 @@ ssize_t	safe_read(const char *file, const int lineno,
- 
- ssize_t safe_pread(const char *file, const int lineno, void (*cleanup_fn)(void),
- 	    char len_strict, int fildes, void *buf, size_t nbyte, off_t offset);
--#define SAFE_PREAD(cleanup_fn, len_strict, fildes, buf, nbyte)   \
-+#define SAFE_PREAD(cleanup_fn, len_strict, fildes, buf, nbyte, offset)   \
- 	safe_pread(__FILE__, __LINE__, cleanup_fn, (len_strict), (fildes), \
- 	    (buf), (nbyte), (offset))
- 
--- 
-1.8.3.1
 
+
+
+----- Original Message -----
+> From: "Cedric Hnyda" <chnyda@suse.com>
+> To: ltp@lists.linux.it
+> Sent: Thursday, 29 October, 2015 5:55:58 PM
+> Subject: [LTP]  [PATCH 3/3] diotest5.c: replaced iovec
+> 
+> Replaced iovec pointers by normal buffers.
+> iovec were passed instead of expected buffers.
+
+What is the problem with iovecs here?
+Isn't readv/writev meant to be used in this test?
+
+ * DESCRIPTION
+ *      The programs test buffered and direct IO with vector arrays using
+ *      readv() and writev() calls.
+
+Regards,
+Jan
+
+> 
+> Signed-off-by: Cedric Hnyda <chnyda@suse.com>
+> ---
+>  testcases/kernel/io/direct_io/diotest5.c | 54
+>  +++++++++-----------------------
+>  1 file changed, 14 insertions(+), 40 deletions(-)
+> 
+> diff --git a/testcases/kernel/io/direct_io/diotest5.c
+> b/testcases/kernel/io/direct_io/diotest5.c
+> index 0c10742..e5946bd 100644
+> --- a/testcases/kernel/io/direct_io/diotest5.c
+> +++ b/testcases/kernel/io/direct_io/diotest5.c
+> @@ -84,49 +84,30 @@ static void prg_usage(void);
+>  static int runtest(int fd_r, int fd_w, int iter, off64_t offset)
+>  {
+>  	int i, bufsize = BUFSIZE;
+> -	struct iovec *iov1, *iov2, *iovp;
+>  
+>  	/* Allocate for buffers and data pointers */
+> -	iov1 = (struct iovec *) valloc(sizeof(struct iovec) * nvector);
+> -	if (iov1 == NULL) {
+> -		tst_resm(TFAIL, "valloc() buf1 failed: %s", strerror(errno));
+> -		return (-1);
+> -	}
+> +	char *buf1, *buf2;
+>  
+> -	iov2 = (struct iovec *) valloc(sizeof(struct iovec) * nvector);
+> -	if (iov2 == NULL) {
+> -		tst_resm(TFAIL, "valloc buf2 failed: %s", strerror(errno));
+> -		return (-1);
+> -	}
+> -	for (i = 0, iovp = iov1; i < nvector; iovp++, i++) {
+> -		iovp->iov_base = valloc(bufsize);
+> -		if (iovp->iov_base == NULL) {
+> -			tst_resm(TFAIL, "valloc for iovp->iov_base: %s",
+> -				 strerror(errno));
+> -			return (-1);
+> -		}
+> -		iovp->iov_len = bufsize;
+> -	}
+> -	for (i = 0, iovp = iov2; i < nvector; iovp++, i++) {
+> -		iovp->iov_base = valloc(bufsize);
+> -		if (iovp->iov_base == NULL) {
+> -			tst_resm(TFAIL, "valloc, iov2 for iovp->iov_base: %s",
+> -				 strerror(errno));
+> -			return (-1);
+> -		}
+> -		iovp->iov_len = bufsize;
+> +	buf1 = valloc(bufsize);
+> +	buf2 = valloc(bufsize);
+> +
+> +	if (!buf1 || !buf2) {
+> +		tst_resm(TBROK | TERRNO, "valloc() failed");
+> +		free(buf1);
+> +		free(buf2);
+> +		return -1;
+>  	}
+>  
+>  	/* Test */
+>  	for (i = 0; i < iter; i++) {
+> -		vfillbuf(iov1, nvector, i);
+> -		vfillbuf(iov2, nvector, i + 1);
+> +		fillbuf(buf1, bufsize, i);
+> +		fillbuf(buf2, bufsize, i + 1);
+>  		if (lseek(fd_w, offset, SEEK_SET) < 0) {
+>  			tst_resm(TFAIL, "lseek before writev failed: %s",
+>  				 strerror(errno));
+>  			return (-1);
+>  		}
+> -		if (writev(fd_w, iov1, nvector) < 0) {
+> +		if (write(fd_w, buf1, bufsize) < 0) {
+>  			tst_resm(TFAIL, "writev failed: %s", strerror(errno));
+>  			return (-1);
+>  		}
+> @@ -135,23 +116,16 @@ static int runtest(int fd_r, int fd_w, int iter,
+> off64_t offset)
+>  				 strerror(errno));
+>  			return (-1);
+>  		}
+> -		if (readv(fd_r, iov2, nvector) < 0) {
+> +		if (read(fd_r, buf2, bufsize) < 0) {
+>  			tst_resm(TFAIL, "readv failed: %s", strerror(errno));
+>  			return (-1);
+>  		}
+> -		if (vbufcmp(iov1, iov2, nvector) != 0) {
+> +		if (bufcmp(buf1, buf2, bufsize) != 0) {
+>  			tst_resm(TFAIL, "readv/writev comparision failed");
+>  			return (-1);
+>  		}
+>  	}
+>  
+> -	/* Cleanup */
+> -	for (i = 0, iovp = iov1; i < nvector; iovp++, i++)
+> -		free(iovp->iov_base);
+> -	for (i = 0, iovp = iov2; i < nvector; iovp++, i++)
+> -		free(iovp->iov_base);
+> -	free(iov1);
+> -	free(iov2);
+>  	return 0;
+>  }
+>  
+> --
+> 2.1.4
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
