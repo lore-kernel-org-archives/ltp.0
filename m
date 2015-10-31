@@ -1,113 +1,191 @@
 From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Sat, 31 Oct 2015 08:54:07 +0800
-Subject: [LTP] [PATCH 6/11] mmap/mmap12: Testcase failed when no root
- user run it
-In-Reply-To: <492224674.39010592.1446197341093.JavaMail.zimbra@redhat.com>
-References: <1446001907-43525-1-git-send-email-cuibixuan@huawei.com>
- <1446001907-43525-6-git-send-email-cuibixuan@huawei.com>
- <20151029115746.GA23990@rei> <563330C4.2060809@huawei.com>
- <492224674.39010592.1446197341093.JavaMail.zimbra@redhat.com>
-Message-ID: <5634112F.1030203@huawei.com>
+Date: Sat, 31 Oct 2015 14:46:36 +0800
+Subject: [LTP] [PATCH v3] sched_getattr/sched_getattr02: Add new testcase
+ for sched_getattr
+In-Reply-To: <20151029160913.GE23990@rei>
+References: <1445345999-145313-1-git-send-email-cuibixuan@huawei.com>
+ <20151026154705.GB6772@rei> <56302781.30701@huawei.com>
+ <20151029160913.GE23990@rei>
+Message-ID: <563463CC.3090703@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2015/10/30 17:29, Jan Stancek wrote:
-> 
-> 
-> 
-> 
-> ----- Original Message -----
->> From: "Cui Bixuan" <cuibixuan@huawei.com>
->> To: "Cyril Hrubis" <chrubis@suse.cz>
->> Cc: zhuyanpeng@huawei.com, zhanyongming@huawei.com, ltp@lists.linux.it
->> Sent: Friday, 30 October, 2015 9:56:36 AM
->> Subject: Re: [LTP] [PATCH 6/11] mmap/mmap12: Testcase failed when no root user run it
->>
->> On 2015/10/29 19:57, Cyril Hrubis wrote:
->>> Hi!
->>>> Add tst_require_root() to testcase for open /proc/self/pagemap file.
->>>
->>> On my machines the /proc/self/pagemap is readable by the process (it's
->>> owned by the user that has started the program).
->>>
->>> What is output of ls -l /proc/self/pagemap on your machine?
->> I look my system and others:
->> 1) SUSE SP2: 3.0.13-0.27-default (uname -a); test PASS;  -r--r--r-- 1 root
->> root 0 Oct 30 16:13 /proc/self/pagemap
->> 2) Ubuntu: 3.13.0-32-generic;                test PASS;  -r--r--r--. 1
->> cuibixuan cuibixuan 0 10? 30 16:19 /proc/self/pagemap
->> 3) SUSE: 4.2.0-0.11-default;                 test FAIL;  -r-------- 1 root
->> root 0 Nov 13 01:39 /proc/self/pagemap
->> 4) arm64: linux 4.1.6;                       test FAIL;  -r-------- 1 root
->> root 0 Jan 18 01:53 /proc/self/pagemap
->>
->> Maybe the higher version of the kernel change the file attributes
->> of /proc/self/pagemap, I think.
-> 
-> commit 32ed74a4b968a4faff7aaaff557035ce5d5e70ab
-> Author: Djalal Harouni <tixxdz@opendz.org>
-> Date:   Mon Apr 7 15:38:38 2014 -0700
-> 
->     procfs: make /proc/*/pagemap 0400
->     
->     The /proc/*/pagemap contain sensitive information and currently its mode
->     is 0444.  Change this to 0400, so the VFS will prevent unprivileged
->     processes from getting file descriptors on arbitrary privileged
->     /proc/*/pagemap files.
-> 
-> but that doesn't explain why process can't read its own pagemap.
-> For 3) and 4): Did you run that as unprivileged user or as a root?
-> 
-> Can you paste full output from mmap12 run (the one that fails)?
-> 
-Ok,
+Add new testcase for sched_getattr
 
-3)
-linux-91x6:/home/cuibixuan/ltp.git/testcases/kernel/syscalls/mmap # ./mmap12
-mmap12      1  TPASS  :  Functionality of mmap() successful
-linux-91x6:/home/cuibixuan/ltp.git/testcases/kernel/syscalls/mmap # uname -a
-Linux linux-91x6 4.2.0-0.11-default #1 SMP Mon Sep 28 06:25:26 CST 2015 x86_64 x86_64 x86_64 GNU/Linux
-linux-91x6:/home/cuibixuan/ltp.git/testcases/kernel/syscalls/mmap # ./mmap12
-mmap12      1  TPASS  :  Functionality of mmap() successful
-linux-91x6:/home/cuibixuan/ltp.git/testcases/kernel/syscalls/mmap # su cuibixuan
-cuibixuan@linux-91x6:~/ltp.git/testcases/kernel/syscalls/mmap> ./mmap12
-mmap12      1  TFAIL  :  mmap12.c:112: Open dev pagemap failed: errno=EPERM(1): Operation not permitted
-cuibixuan@linux-91x6:~/ltp.git/testcases/kernel/syscalls/mmap> ls -l /proc/self/pagemap
--r-------- 1 cuibixuan users 0 Nov 13 18:19 /proc/self/pagemap
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+---
+V3:
+    * Delete sched_setattr() and related parameters;
+    * Change ind to i as loop variable;
+    * Change "returned the expected value" to "failed expectedly";
+    * Delete unnecessary initialization in setup();
+    * Delete cleanup function;
 
+V2:
+    * Add GPL header;
+    * Define array of structures 'test_cases';
+    * Use tst_get_unused_pid() to get unused pid;
+    * Change some long message;
+    * Add setup(),cleanup() and sched_getattr_verify();
+    * Change TCID to 'sched_getattr02'
 
-4)
-[root@localhost tmp]# ./mmap12
-mmap12      1  TPASS  :  Functionality of mmap() successful
-[root@localhost tmp]# su cuibixuan
-[cuibixuan@localhost tmp]$ ./mmap12
-mmap12      1  TFAIL  :  mmap12.c:112: Open dev pagemap failed: errno=EPERM(1): Operation not permitted
-[cuibixuan@localhost tmp]$ ls -l /proc/self/pagemap
--r-------- 1 cuibixuan cuibixuan 0 Jun  2 18:03 /proc/self/pagemap
-[cuibixuan@localhost tmp]$ uname -r
-4.1.6+
-[cuibixuan@localhost tmp]$ uname -i
-aarch64
+ runtest/sched                                      |    1 +
+ runtest/syscalls                                   |    1 +
+ .../syscalls/sched_getattr/sched_getattr02.c       |  118 ++++++++++++++++++++
+ 3 files changed, 120 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/sched_getattr/sched_getattr02.c
 
-> Regards,
-> Jan
-> 
->>
->> But I read the Documentation/vm/pagemap.txt and look at the source code in
->> kernel,
->> can't get it. :-(
->>
->> Someone help?
->>>
->>
->>
->> --
->> Mailing list info: http://lists.linux.it/listinfo/ltp
->>
-> 
-> .
-> 
+diff --git a/runtest/sched b/runtest/sched
+index 10a1648..4b8a1df 100644
+--- a/runtest/sched
++++ b/runtest/sched
+@@ -10,6 +10,7 @@ hackbench01 hackbench 50 process 1000
+ hackbench02 hackbench 20 thread 1000
+
+ sched_getattr01 sched_getattr01
++sched_getattr02 sched_getattr02
+
+ sched_cli_serv run_sched_cliserv.sh
+ # Run this stress test for 2 minutes
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 958f66e..724ab66 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -923,6 +923,7 @@ sched_setaffinity01 sched_setaffinity01
+ sched_getaffinity01 sched_getaffinity01
+
+ sched_getattr01 sched_getattr01
++sched_getattr02 sched_getattr02
+
+ select01 select01
+ select02 select02
+diff --git a/testcases/kernel/syscalls/sched_getattr/sched_getattr02.c b/testcases/kernel/syscalls/sched_getattr/sched_getattr02.c
+new file mode 100644
+index 0000000..f2d7764
+--- /dev/null
++++ b/testcases/kernel/syscalls/sched_getattr/sched_getattr02.c
+@@ -0,0 +1,118 @@
++/*
++ * Copyright (c) Huawei Technologies Co., Ltd., 2015
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ */
++
++#define _GNU_SOURCE
++
++#include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <time.h>
++#include <linux/unistd.h>
++#include <linux/kernel.h>
++#include <linux/types.h>
++#include <sys/syscall.h>
++#include <pthread.h>
++#include <sched.h>
++#include <errno.h>
++
++#include "test.h"
++#include "linux_syscall_numbers.h"
++#include "lapi/sched.h"
++
++char *TCID = "sched_getattr02";
++
++static pid_t pid;
++static pid_t unused_pid;
++struct sched_attr attr_copy;
++static unsigned int flags;
++static unsigned int inval_flags = 10000;
++
++static struct test_case {
++	pid_t *pid;
++	struct sched_attr *a;
++	unsigned int size;
++	unsigned int *flags;
++	int exp_errno;
++} test_cases[] = {
++	{&unused_pid, &attr_copy, sizeof(struct sched_attr), &flags, ESRCH},
++	{&pid, NULL, sizeof(struct sched_attr), &flags, EINVAL},
++	{&pid, &attr_copy, sizeof(struct sched_attr) - 1, &flags, EINVAL},
++	{&pid, &attr_copy, sizeof(struct sched_attr), &inval_flags, EINVAL}
++};
++
++static void setup(void);
++static void sched_getattr_verify(const struct test_case *test);
++
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++
++void *run_deadline(void *data LTP_ATTRIBUTE_UNUSED)
++{
++	int i;
++
++	for (i = 0; i < TST_TOTAL; i++)
++		sched_getattr_verify(&test_cases[i]);
++
++	return NULL;
++}
++
++static void sched_getattr_verify(const struct test_case *test)
++{
++	TEST(sched_getattr(*(test->pid), test->a, test->size,
++			*(test->flags)));
++
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL, "sched_getattr() succeeded unexpectedly.");
++		return;
++	}
++
++	if (TEST_ERRNO == test->exp_errno) {
++		tst_resm(TPASS | TTERRNO,
++			"sched_getattr() failed expectedly");
++		return;
++	}
++
++	tst_resm(TFAIL | TTERRNO, "sched_getattr() failed unexpectedly "
++		": expected: %d - %s",
++		test->exp_errno, tst_strerrno(test->exp_errno));
++}
++
++int main(int argc, char **argv)
++{
++	pthread_t thread;
++	int lc;
++
++	tst_parse_opts(argc, argv, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		pthread_create(&thread, NULL, run_deadline, NULL);
++		pthread_join(thread, NULL);
++	}
++
++	tst_exit();
++}
++
++void setup(void)
++{
++	unused_pid = tst_get_unused_pid(setup);
++
++	tst_require_root();
++
++	if ((tst_kvercmp(3, 14, 0)) < 0)
++		tst_brkm(TCONF, NULL, "EDF needs kernel 3.14 or higher");
++
++	TEST_PAUSE;
++}
++
+-- 
+1.6.0.2 .
 
