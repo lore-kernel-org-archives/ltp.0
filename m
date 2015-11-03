@@ -1,26 +1,16 @@
-From: yangx.jy@cn.fujitsu.com <yangx.jy@cn.fujitsu.com>
-Date: Tue, 3 Nov 2015 08:39:37 +0000
-Subject: [LTP] [PATCH] preadv/preadv01.c: add new testcase
-In-Reply-To: <1446569795-28174-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1446569795-28174-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <ED6C2EA93386DC4AA15AFF52D89BAB228D0AFA@G08CNEXMBPEKD02.g08.fujitsu.local>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 3 Nov 2015 17:57:30 -0500
+Subject: [LTP] [PATCH 1/2] preadv/preadv01.c: add new testcase
+Message-ID: <1446591451-11075-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Sorry, the structure of testcase needs to change, so please ignore this email. I will resend the patch
-
------Original Message-----
-From: Yang, Xiao/? ? 
-Sent: Wednesday, November 04, 2015 12:57 AM
-To: ltp@lists.linux.it
-Cc: Yang, Xiao/? ?
-Subject: [PATCH] preadv/preadv01.c: add new testcase
-
 This testcase can check the basic functionality of the preadv(2).
-Preadv(2) should succeed to read the expected content of data and after reading the file, the file offset is not changed.
+Preadv(2) should succeed to read the expected content of data and
+after reading the file, the file offset is not changed.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
@@ -39,29 +29,36 @@ Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
  create mode 100644 testcases/kernel/syscalls/preadv/preadv.h
  create mode 100644 testcases/kernel/syscalls/preadv/preadv01.c
 
-diff --git a/configure.ac b/configure.ac index cc89273..609de8f 100644
+diff --git a/configure.ac b/configure.ac
+index cc89273..609de8f 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -181,5 +181,6 @@ LTP_CHECK_LINUXRANDOM  LTP_CHECK_IF_LINK  LTP_CHECK_KCMP  LTP_CHECK_KCMP_TYPE
+@@ -181,5 +181,6 @@ LTP_CHECK_LINUXRANDOM
+ LTP_CHECK_IF_LINK
+ LTP_CHECK_KCMP
+ LTP_CHECK_KCMP_TYPE
 +LTP_CHECK_PREADV
  
  AC_OUTPUT
-diff --git a/m4/ltp-preadv.m4 b/m4/ltp-preadv.m4 new file mode 100644 index 0000000..2046902
+diff --git a/m4/ltp-preadv.m4 b/m4/ltp-preadv.m4
+new file mode 100644
+index 0000000..2046902
 --- /dev/null
 +++ b/m4/ltp-preadv.m4
 @@ -0,0 +1,23 @@
 +dnl
 +dnl Copyright (c) 2015 Fujitsu Ltd.
-+dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com> dnl dnl This program is 
-+free software; you can redistribute it and/or modify it dnl under the 
-+terms of version 2 of the GNU General Public License as dnl published 
-+by the Free Software Foundation.
++dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
 +dnl
-+dnl This program is distributed in the hope that it would be useful, 
-+but dnl WITHOUT ANY WARRANTY; without even the implied warranty of dnl 
-+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++dnl This program is free software; you can redistribute it and/or modify it
++dnl under the terms of version 2 of the GNU General Public License as
++dnl published by the Free Software Foundation.
 +dnl
-+dnl You should have received a copy of the GNU General Public License 
++dnl This program is distributed in the hope that it would be useful, but
++dnl WITHOUT ANY WARRANTY; without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++dnl
++dnl You should have received a copy of the GNU General Public License
 +dnl alone with this program.
 +dnl
 +
@@ -72,7 +69,8 @@ diff --git a/m4/ltp-preadv.m4 b/m4/ltp-preadv.m4 new file mode 100644 index 0000
 +AC_DEFUN([LTP_CHECK_PREADV],[
 +AC_CHECK_FUNCS(preadv,,)
 +])
-diff --git a/runtest/ltplite b/runtest/ltplite index aaa5c73..9f02c7d 100644
+diff --git a/runtest/ltplite b/runtest/ltplite
+index aaa5c73..9f02c7d 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
 @@ -588,6 +588,8 @@ pread01 pread01
@@ -84,7 +82,8 @@ diff --git a/runtest/ltplite b/runtest/ltplite index aaa5c73..9f02c7d 100644
  profil01 profil01
  
  pselect01 pselect01
-diff --git a/runtest/stress.part3 b/runtest/stress.part3 index 63505ec..f30dc9c 100644
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 63505ec..f30dc9c 100644
 --- a/runtest/stress.part3
 +++ b/runtest/stress.part3
 @@ -498,6 +498,8 @@ pread01 pread01
@@ -96,7 +95,8 @@ diff --git a/runtest/stress.part3 b/runtest/stress.part3 index 63505ec..f30dc9c 
  profil01 profil01
  
  pselect01 pselect01
-diff --git a/runtest/syscalls b/runtest/syscalls index 958f66e..5eb5034 100644
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 958f66e..5eb5034 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
 @@ -779,6 +779,9 @@ pread02_64 pread02_64
@@ -130,19 +130,20 @@ index 0000000..ac9a969
 @@ -0,0 +1,31 @@
 +#
 +#  Copyright (c) 2015 Fujitsu Ltd.
-+#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com> # #  This program is 
-+free software;  you can redistribute it and/or modify #  it under the 
-+terms of the GNU General Public License as published by #  the Free 
-+Software Foundation; either version 2 of the License, or #  (at your 
-+option) any later version.
++#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
 +#
-+#  This program is distributed in the hope that it will be useful, #  
-+but WITHOUT ANY WARRANTY;  without even the implied warranty of #  
-+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See #  the GNU 
-+General Public License for more details.
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
 +#
-+#  You should have received a copy of the GNU General Public License #  
-+along with this program.
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program.
 +#
 +#
 +
@@ -168,8 +169,7 @@ index 0000000..d9243f6
 +* Copyright (c) 2015 Fujitsu Ltd.
 +* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
 +*
-+* This program is free software; you can redistribute it and/or modify 
-+it
++* This program is free software; you can redistribute it and/or modify it
 +* under the terms of version 2 of the GNU General Public License as
 +* published by the Free Software Foundation.
 +*
@@ -189,13 +189,16 @@ index 0000000..d9243f6
 +#include "linux_syscall_numbers.h"
 +
 +#if !defined(HAVE_PREADV)
-+int preadv(int fd, const struct iovec *iov, int iovcnt, off_t offset) {
-+	return ltp_syscall(__NR_preadv, fd, iov, iovcnt, offset); } #endif
++int preadv(int fd, const struct iovec *iov, int iovcnt, off_t offset)
++{
++	return ltp_syscall(__NR_preadv, fd, iov, iovcnt, offset);
++}
++#endif
 +
 +#endif /* RREADV_H */
 diff --git a/testcases/kernel/syscalls/preadv/preadv01.c b/testcases/kernel/syscalls/preadv/preadv01.c
 new file mode 100644
-index 0000000..1caf732
+index 0000000..bb9dca3
 --- /dev/null
 +++ b/testcases/kernel/syscalls/preadv/preadv01.c
 @@ -0,0 +1,163 @@
@@ -203,8 +206,7 @@ index 0000000..1caf732
 +* Copyright (c) 2015 Fujitsu Ltd.
 +* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
 +*
-+* This program is free software; you can redistribute it and/or modify 
-+it
++* This program is free software; you can redistribute it and/or modify it
 +* under the terms of version 2 of the GNU General Public License as
 +* published by the Free Software Foundation.
 +*
@@ -254,7 +256,8 @@ index 0000000..1caf732
 +	{CHUNK, 0, 0, 0, 0x00},
 +	{CHUNK/2, 1, 0, CHUNK, 0x42},
 +	{CHUNK/4, 2, 0, CHUNK, 0x42},
-+	{CHUNK/8, 1, CHUNK*3/2, CHUNK/2, 0x41}, };
++	{CHUNK/8, 1, CHUNK*3/2, CHUNK/2, 0x41},
++};
 +
 +void verify_preadv(int);
 +void setup(void);
@@ -309,12 +312,13 @@ index 0000000..1caf732
 +		if (fail) {
 +			tst_resm(TFAIL, "Wrong buffer content");
 +		} else {
++			l_seek(fd, 0, SEEK_CUR, test_cases[i].offset_cur);
++
 +			tst_resm(TPASS, "preadv passed reading %d bytes ",
 +				 test_cases[i].byte);
 +		}
 +	}
-+
-+	l_seek(fd, 0, SEEK_CUR, test_cases[i].offset_cur); }
++}
 +
 +void setup(void)
 +{
@@ -335,9 +339,11 @@ index 0000000..1caf732
 +	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
 +
 +	SAFE_WRITE(cleanup, 1, fd, s1, CHUNK);
-+	SAFE_WRITE(cleanup, 1, fd, s2, CHUNK); }
++	SAFE_WRITE(cleanup, 1, fd, s2, CHUNK);
++}
 +
-+void *init_buffers(char content, size_t SIZE) {
++void *init_buffers(char content, size_t SIZE)
++{
 +	void *s;
 +
 +	s = SAFE_MALLOC(cleanup, SIZE);
@@ -346,9 +352,11 @@ index 0000000..1caf732
 +	return s;
 +}
 +
-+void l_seek(int fdes, off_t offset, int whence, off_t checkoff) {
++void l_seek(int fdes, off_t offset, int whence, off_t checkoff)
++{
 +	if (SAFE_LSEEK(cleanup, fdes, offset, whence) != checkoff)
-+		tst_resm(TFAIL, "file offset has changed after reading"); }
++		tst_brkm(TBROK | TERRNO, cleanup, "lseek() on file failed");
++}
 +
 +void cleanup(void)
 +{
@@ -357,6 +365,6 @@ index 0000000..1caf732
 +
 +	tst_rmdir();
 +}
---
+-- 
 1.8.3.1
 
