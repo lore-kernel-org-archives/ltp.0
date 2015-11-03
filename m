@@ -1,41 +1,38 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 3 Nov 2015 14:21:59 +0100
-Subject: [LTP] [PATCH v5] sched_getattr/sched_getattr02: Add new
- testcase for sched_getattr
-In-Reply-To: <56389A8B.6040600@huawei.com>
-References: <1445345999-145313-1-git-send-email-cuibixuan@huawei.com>
- <20151026154705.GB6772@rei> <56302781.30701@huawei.com>
- <20151029160913.GE23990@rei> <563463CC.3090703@huawei.com>
- <20151102172809.GD28478@rei> <56389A8B.6040600@huawei.com>
-Message-ID: <20151103132159.GC5795@rei>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 03 Nov 2015 17:03:05 +0300
+Subject: [LTP] How about set IPsec with ip xfrm?
+In-Reply-To: <CAPwn2JS9pB39amE4azR9OP8W18SCC8X=8brxdRLv5swEr5kCLg@mail.gmail.com>
+References: <CAPwn2JRO0Dx20LzBHrLhMb85EoU9+_WRnRTS5UO2sQ9Ej3y+Cw@mail.gmail.com>	<562F7947.30501@oracle.com>
+ <CAPwn2JS9pB39amE4azR9OP8W18SCC8X=8brxdRLv5swEr5kCLg@mail.gmail.com>
+Message-ID: <5638BE99.4010600@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	for (i = 0; i < TST_TOTAL; i++)
-> +		sched_getattr_verify(&test_cases[i]);
+Hi Hangbin,
 
-I've readded the TEST_LOOPING() here, since I asked you to do this loop
-inside of the TEST_LOOPING() loop, not to remove it. Once it's removed
-the default test parameters does not work.
+OK, I've reviewed the icmp tests draft, here are the comments:
 
-> +	tst_exit();
-> +}
-> +
-> +void setup(void)
-> +{
-> +	unused_pid = tst_get_unused_pid(setup);
-> +
-> +	tst_require_root();
+* I wouldn't add tst_ipsec() to test_net.sh because this function will 
+only be run in IPsec related tests, the rest network tests will include 
+it with no good reason. We can move all ipsec related tests to one 
+directory under network/stress/ipsec and create common library script there.
 
-And I've removed the tst_require_root() since it's not needed as we do
-not call setattr anymore.
+* c2x() function can be added to test.sh because it is more or less 
+generic, but it should be fixed to print the message in LTP style format.
 
-And pushed, thanks.
+* Make sure you don't run LTP_RSH directly.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+* Don't use absolute path to run commands, it can differ from one 
+environment to another. They should be in the PATH before the tests 
+start. You can verify that particular command is available with 
+tst_check_cmds() in the test script.
+
+* icmp_check_connectivity (ping) can be merged to test_net.sh, other 
+network test could run it too.
+
+Thanks,
+Alexey
+
