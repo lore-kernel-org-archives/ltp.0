@@ -1,332 +1,370 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 3 Nov 2015 14:16:22 +0800
-Subject: [LTP] [PATCH] commands/mkfs: Added new testcase to test mkfs(8)
- command.
-In-Reply-To: <20151102152807.GC28478@rei>
-References: <1446032247-18207-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20151102152807.GC28478@rei>
-Message-ID: <56385136.8060007@cn.fujitsu.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 3 Nov 2015 11:56:35 -0500
+Subject: [LTP] [PATCH] preadv/preadv01.c: add new testcase
+Message-ID: <1446569795-28174-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+This testcase can check the basic functionality of the preadv(2).
+Preadv(2) should succeed to read the expected content of data and
+after reading the file, the file offset is not changed.
 
-Thanks for your review.
-I will modify the test case according to your suggestion.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ configure.ac                                |   1 +
+ m4/ltp-preadv.m4                            |  23 ++++
+ runtest/ltplite                             |   2 +
+ runtest/stress.part3                        |   2 +
+ runtest/syscalls                            |   3 +
+ testcases/kernel/syscalls/.gitignore        |   2 +
+ testcases/kernel/syscalls/preadv/Makefile   |  31 ++++++
+ testcases/kernel/syscalls/preadv/preadv.h   |  31 ++++++
+ testcases/kernel/syscalls/preadv/preadv01.c | 163 ++++++++++++++++++++++++++++
+ 9 files changed, 258 insertions(+)
+ create mode 100644 m4/ltp-preadv.m4
+ create mode 100644 testcases/kernel/syscalls/preadv/Makefile
+ create mode 100644 testcases/kernel/syscalls/preadv/preadv.h
+ create mode 100644 testcases/kernel/syscalls/preadv/preadv01.c
 
-Best Regards,
-Guangwen Feng
+diff --git a/configure.ac b/configure.ac
+index cc89273..609de8f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -181,5 +181,6 @@ LTP_CHECK_LINUXRANDOM
+ LTP_CHECK_IF_LINK
+ LTP_CHECK_KCMP
+ LTP_CHECK_KCMP_TYPE
++LTP_CHECK_PREADV
+ 
+ AC_OUTPUT
+diff --git a/m4/ltp-preadv.m4 b/m4/ltp-preadv.m4
+new file mode 100644
+index 0000000..2046902
+--- /dev/null
++++ b/m4/ltp-preadv.m4
+@@ -0,0 +1,23 @@
++dnl
++dnl Copyright (c) 2015 Fujitsu Ltd.
++dnl Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++dnl
++dnl This program is free software; you can redistribute it and/or modify it
++dnl under the terms of version 2 of the GNU General Public License as
++dnl published by the Free Software Foundation.
++dnl
++dnl This program is distributed in the hope that it would be useful, but
++dnl WITHOUT ANY WARRANTY; without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl alone with this program.
++dnl
++
++dnl
++dnl LTP_CHECK_PREADV
++dnl ----------------------------
++dnl
++AC_DEFUN([LTP_CHECK_PREADV],[
++AC_CHECK_FUNCS(preadv,,)
++])
+diff --git a/runtest/ltplite b/runtest/ltplite
+index aaa5c73..9f02c7d 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -588,6 +588,8 @@ pread01 pread01
+ pread02 pread02
+ pread03 pread03
+ 
++preadv01 preadv01
++
+ profil01 profil01
+ 
+ pselect01 pselect01
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 63505ec..f30dc9c 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -498,6 +498,8 @@ pread01 pread01
+ pread02 pread02
+ pread03 pread03
+ 
++preadv01 preadv01
++
+ profil01 profil01
+ 
+ pselect01 pselect01
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 958f66e..5eb5034 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -779,6 +779,9 @@ pread02_64 pread02_64
+ pread03 pread03
+ pread03_64 pread03_64
+ 
++preadv01 preadv01
++preadv01_64 preadv01_64
++
+ profil01 profil01
+ 
+ process_vm_readv01 process_vm01 -r
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 6e4894a..2b4a8d9 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -657,6 +657,8 @@
+ /pread/pread02_64
+ /pread/pread03
+ /pread/pread03_64
++/preadv/preadv01
++/preadv/preadv01_64
+ /profil/profil01
+ /pselect/pselect01
+ /pselect/pselect01_64
+diff --git a/testcases/kernel/syscalls/preadv/Makefile b/testcases/kernel/syscalls/preadv/Makefile
+new file mode 100644
+index 0000000..ac9a969
+--- /dev/null
++++ b/testcases/kernel/syscalls/preadv/Makefile
+@@ -0,0 +1,31 @@
++#
++#  Copyright (c) 2015 Fujitsu Ltd.
++#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program.
++#
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(abs_srcdir)/../utils/newer_64.mk
++
++# FIXME (garrcoop): more messy format strings.
++CPPFLAGS		+= -Wno-error
++
++%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/preadv/preadv.h b/testcases/kernel/syscalls/preadv/preadv.h
+new file mode 100644
+index 0000000..d9243f6
+--- /dev/null
++++ b/testcases/kernel/syscalls/preadv/preadv.h
+@@ -0,0 +1,31 @@
++/*
++* Copyright (c) 2015 Fujitsu Ltd.
++* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++*
++* This program is free software; you can redistribute it and/or modify it
++* under the terms of version 2 of the GNU General Public License as
++* published by the Free Software Foundation.
++*
++* This program is distributed in the hope that it would be useful, but
++* WITHOUT ANY WARRANTY; without even the implied warranty of
++* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++*
++* You should have received a copy of the GNU General Public License
++* alone with this program.
++*/
++
++#ifndef PREADV_H
++#define PREADV_H
++
++#include <sys/types.h>
++#include "config.h"
++#include "linux_syscall_numbers.h"
++
++#if !defined(HAVE_PREADV)
++int preadv(int fd, const struct iovec *iov, int iovcnt, off_t offset)
++{
++	return ltp_syscall(__NR_preadv, fd, iov, iovcnt, offset);
++}
++#endif
++
++#endif /* RREADV_H */
+diff --git a/testcases/kernel/syscalls/preadv/preadv01.c b/testcases/kernel/syscalls/preadv/preadv01.c
+new file mode 100644
+index 0000000..1caf732
+--- /dev/null
++++ b/testcases/kernel/syscalls/preadv/preadv01.c
+@@ -0,0 +1,163 @@
++/*
++* Copyright (c) 2015 Fujitsu Ltd.
++* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++*
++* This program is free software; you can redistribute it and/or modify it
++* under the terms of version 2 of the GNU General Public License as
++* published by the Free Software Foundation.
++*
++* This program is distributed in the hope that it would be useful, but
++* WITHOUT ANY WARRANTY; without even the implied warranty of
++* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++*
++* You should have received a copy of the GNU General Public License
++* alone with this program.
++*/
++
++/*
++* Test Name: preadv01
++*
++* Test Description:
++* Testcase to check the basic functionality of the preadv(2).
++* Preadv(2) should succeed to read the expected content of data
++* and after reading the file, the file offset is not changed.
++*/
++
++#include <errno.h>
++
++#include "test.h"
++#include "preadv.h"
++#include "safe_macros.h"
++
++#define CHUNK           64
++
++static int fd;
++
++static void *s1;
++static void *s2;
++static char buf[CHUNK];
++
++static struct iovec rd_iovec[] = {
++	{buf, CHUNK},
++	{NULL, 0},
++};
++
++static struct test_case_t {
++	off_t offset_cur;
++	int count;
++	off_t offset;
++	int byte;
++	char content;
++} test_cases[] = {
++	{CHUNK, 0, 0, 0, 0x00},
++	{CHUNK/2, 1, 0, CHUNK, 0x42},
++	{CHUNK/4, 2, 0, CHUNK, 0x42},
++	{CHUNK/8, 1, CHUNK*3/2, CHUNK/2, 0x41},
++};
++
++void verify_preadv(int);
++void setup(void);
++void *init_buffers(char, size_t);
++void l_seek(int, off_t, int, off_t);
++void cleanup(void);
++
++char *TCID = "preadv01";
++int TST_TOTAL = ARRAY_SIZE(test_cases);
++
++int main(int ac, char **av)
++{
++	int lc;
++	int tc;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (tc = 0; tc < TST_TOTAL; tc++)
++			verify_preadv(tc);
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++void verify_preadv(int i)
++{
++	int c;
++	int fail = 0;
++	char *vec;
++
++	vec = rd_iovec[0].iov_base;
++
++	l_seek(fd, test_cases[i].offset_cur, SEEK_SET,
++		test_cases[i].offset_cur);
++
++	TEST(preadv(fd, rd_iovec, test_cases[i].count, test_cases[i].offset));
++
++	if (test_cases[i].byte != TEST_RETURN) {
++		tst_resm(TFAIL, "preadv failed reading %d bytes ",
++			 test_cases[i].byte);
++	} else {
++		for (c = 0; c < test_cases[i].byte; c++) {
++			if (vec[c] != test_cases[i].content)
++				fail++;
++		}
++		if (fail) {
++			tst_resm(TFAIL, "Wrong buffer content");
++		} else {
++			tst_resm(TPASS, "preadv passed reading %d bytes ",
++				 test_cases[i].byte);
++		}
++	}
++
++	l_seek(fd, 0, SEEK_CUR, test_cases[i].offset_cur);
++}
++
++void setup(void)
++{
++	if ((tst_kvercmp(2, 6, 30)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels "
++			"that are 2.6.30 and higher");
++	}
++
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	TEST_PAUSE;
++
++	tst_tmpdir();
++
++	s1 = init_buffers(0x42, CHUNK);
++	s2 = init_buffers(0x41, CHUNK);
++
++	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
++
++	SAFE_WRITE(cleanup, 1, fd, s1, CHUNK);
++	SAFE_WRITE(cleanup, 1, fd, s2, CHUNK);
++}
++
++void *init_buffers(char content, size_t SIZE)
++{
++	void *s;
++
++	s = SAFE_MALLOC(cleanup, SIZE);
++	(void)memset(s, content, SIZE);
++
++	return s;
++}
++
++void l_seek(int fdes, off_t offset, int whence, off_t checkoff)
++{
++	if (SAFE_LSEEK(cleanup, fdes, offset, whence) != checkoff)
++		tst_resm(TFAIL, "file offset has changed after reading");
++}
++
++void cleanup(void)
++{
++	if (fd > 0 && close(fd))
++		tst_resm(TWARN | TERRNO, "Failed to close file");
++
++	tst_rmdir();
++}
+-- 
+1.8.3.1
 
-On 2015/11/02 23:28, Cyril Hrubis wrote:
->> +#!/bin/sh
->> +#
->> +# Copyright (c) 2015 Fujitsu Ltd.
->> +# Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
->> +#
->> +# This program is free software; you can redistribute it and/or modify
->> +# it under the terms of the GNU General Public License as published by
->> +# the Free Software Foundation; either version 2 of the License, or
->> +# (at your option) any later version.
->> +#
->> +# This program is distributed in the hope that it will be useful,
->> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
->> +# the GNU General Public License for more details.
->> +#
->> +# Test mkfs command with some basic options.
->> +#
->> +
->> +TCID=mkfs01
->> +TST_TOTAL=5
->> +. test.sh
->> +
->> +setup()
->> +{
->> +	tst_require_root
->> +
->> +	tst_check_cmds blkid df
->> +
->> +	if [ -n "$FS_TYPE" ]; then
->> +		tst_check_cmds mkfs.${FS_TYPE}
->> +	fi
->> +
->> +	tst_tmpdir
->> +
->> +	TST_CLEANUP="cleanup"
->> +
->> +	ROD_SILENT mkdir -p mntpoint
->> +}
->> +
->> +cleanup()
->> +{
->> +	tst_release_device
->> +
->> +	tst_rmdir
->> +}
->> +
->> +mkfs_mount()
->> +{
->> +	mount ${TST_DEVICE} mntpoint
->> +	local ret=$?
->> +	if [ $ret -eq 32 ]; then
->> +		tst_brkm TCONF "Cannot mount ${FS_TYPE}, missing driver?"
->> +	fi
->> +
->> +	if [ $ret -ne 0 ]; then
->> +		tst_brkm TBROK "Failed to mount device: mount exit = $ret"
->> +	fi
->> +}
->> +
->> +mkfs_umount()
->> +{
->> +	grep -q ${TST_DEVICE} /proc/self/mounts
->                                  ^
->                             Why not just /proc/mounts?
-> 
->> +	if [ $? -eq 0 ]; then
->> +		umount ${TST_DEVICE}
->> +		if [ $? -ne 0 ];then
->> +			tst_resm TWARN "'umount ${TST_DEVICE}' failed"
->> +		fi
->> +	else
->> +		tst_resm TINFO "${TST_DEVICE} is not mounted"
->> +	fi
->> +}
->> +
->> +usage()
->> +{
->> +	cat << EOF
->> +	usage: $0 [-f <ext2|ext3|ext4|vfat|...>]
->> +
->> +	OPTIONS
->> +		-f	Specify the type of filesystem to be built. If not
->> +			specified, the default filesystem type (currently ext2)
->> +			is used.
->> +		-h	Display help text and exit.
->> +
->> +EOF
->> +	tst_brkm TCONF "Display help text or unknown options"
->                  ^
-> 		I would rather make this TWARN, because when runtest entries
->                 became corrupted somehow the test would start reporting TCONF
->                 And that may end up being undetected for quite some time.
-> 
->> +}
->> +
->> +mkfs_verify()
->> +{
->> +	if [ -z "$1" ]; then
->> +		blkid | grep "$2" | grep -q "ext2"
->> +	else
->> +		blkid | grep "$2" | grep -q "$1"
->> +	fi
-> 
-> You can actually pass the device to blkid as a parameter instead of grepping it
-> in the output.
-> 
->> +}
->> +
->> +mkfs_check()
->> +{
->> +	mkfs_mount
->> +	local blocknum=`df -aT | grep "$1" | awk '{print $3}'`
-> 
-> You can pass the mount point to the df instead of greping the device.
-> 
->> +	mkfs_umount
->> +
->> +	if [ $blocknum -gt "$2" ]; then
->> +		return 1
->> +	fi
-> 
-> So the size we get as $2 is in kB and df -T reports 1k blocks shouldn't these
-> be equal, or are there any reserved block in play?
-> 
->> +}
->> +
->> +mkfs_test()
->> +{
->> +	local mkfs_op=$1
->> +	local fs_type=$2
->> +	local fs_op=$3
->> +	local device=$4
->> +	local size=$5
->> +
->> +	if [ -n "$fs_type" ]; then
->> +		mkfs_op="-t"
-> 
-> Why are you adding the flags by the tiniest bits?
-> 
-> Why don't you rather do:
-> 
-> 	mkfs_op="-t $fs_type"
-> 
-> Which is far more logical.
-> 
->> +	fi
->> +
->> +	if [ "$fs_type" = "xfs" ] || [ "$fs_type" = "btrfs" ]; then
->> +		fs_op+=" -f"
-> 
-> This is bashism. You have to do fs_op="$fs_op -f" instead.
-> 
->> +	fi
->> +
->> +	local mkfs_cmd="mkfs $mkfs_op $fs_type $fs_op $device $size"
->> +	mkfs_cmd=`echo "$mkfs_cmd" | sed 's/\s\+/ /g'`
-> 
-> This is just cosmetic, isn't it? I would just omit it.
-> 
->> +	echo ${fs_op} | grep -q "\-c"
->> +	if [ $? -eq 0 ] && [ "$fs_type" = "ntfs" ]; then
->> +		tst_resm TCONF "'${mkfs_cmd}' not supported."
->> +		return 32
-> 
-> 		This is fairly misleading. It would be better to use return 0
->                 in case when you just need to exit the function. Because returning
->                 different values and ingoring them later is misleading.
-> 
->> +	fi
->> +
->> +	if [ -n "$size" ]; then
->> +		if [ "$fs_type" = "xfs" ] || [ "$fs_type" = "btrfs" ]; then
->> +			tst_resm TCONF "'${mkfs_cmd}' not supported."
->> +			return 32
-> 
->                         Here as well.
-> 
->> +		fi
->> +	fi
->> +
->> +	${mkfs_cmd} >temp 2>&1
->> +	if [ $? -ne 0 ]; then
->> +		grep -q -E "unknown option | invalid option" temp
->> +		if [ $? -eq 0 ]; then
->> +			tst_resm TCONF "'${mkfs_cmd}' not supported."
->> +			return 32
->> +		else
->> +			tst_resm TFAIL "'${mkfs_cmd}' failed."
->> +			cat temp
->> +			return 1
->> +		fi
->> +	fi
->> +
->> +	if [ -n "$device" ]; then
->> +		mkfs_verify "$fs_type" "$device"
->> +		if [ $? -ne 0 ]; then
->> +			tst_resm TFAIL "'${mkfs_cmd}' failed, not expected."
->> +			return 1
->> +		fi
-> 
-> We should name the function better, mkfs_verify_type() comes to mind.
-> 
->> +	fi
->> +
->> +	if [ -n "$size" ]; then
->> +		mkfs_check "$device" "$size"
->> +		if [ $? -ne 0 ]; then
->> +			tst_resm TFAIL "'${mkfs_cmd}' failed, not expected."
->> +			return 1
->> +		fi
->> +	fi
-> 
-> Here as well, mkfs_verify_size would be better.
-> 
->> +	tst_resm TPASS "'${mkfs_cmd}' passed."
->> +}
->> +
->> +test1()
->> +{
->> +	tst_acquire_device
->> +
->> +	mkfs_test "$MKFS_OP" "$FS_TYPE" "$FS_OP" "$TST_DEVICE"
->> +
->> +	tst_release_device
->> +}
->> +
->> +test2()
->> +{
->> +	tst_acquire_device
->> +
->> +	mkfs_test "$MKFS_OP" "$FS_TYPE" "$FS_OP" "$TST_DEVICE" "10000"
-> 
-> Can you just pass empty string when it should be empty instead of passing empty
-> global variable?
-> 
-> It's more confusing than it could be this way.
-> 
->> +	tst_release_device
->> +}
->> +
->> +test3()
->> +{
->> +	tst_acquire_device
->> +
->> +	mkfs_test "$MKFS_OP" "$FS_TYPE" "-c" "$TST_DEVICE"
->> +
->> +	tst_release_device
->> +}
-> 
-> Why don't we acquire device once in the setup and release it in the cleanup?
-> 
->> +test4()
->> +{
->> +	mkfs_test "-V"
->> +}
->> +
->> +test5()
->> +{
->> +	mkfs_test "-h"
->> +}
->> +
->> +MKFS_OP=""
->> +FS_TYPE=""
->> +FS_OP=""
->> +
->> +if [ $# -ne 0 ]; then
->> +	while getopts f:h OPTION; do
->> +		case $OPTION in
->> +		f)
->> +			FS_TYPE=$OPTARG;;
->> +		h)
->> +			usage;;
->> +		?)
->> +			usage;;
->> +		esac
->> +	done
->> +
->> +	if [ -z "$FS_TYPE" ]; then
->> +		usage
->> +	fi
->> +fi
-> 
-> Eh, why just not:
-> 
-> while getopts f:h OPTION; do
->         case $OPTION in
->         f)
->                 FS_TYPE=$OPTARG;;
->         h)
->                 usage;;
->         ?)
->                 usage;;
->         esac
-> done
-> 
->> +setup
->> +for i in $(seq 1 ${TST_TOTAL})
->> +do
->> +	test$i
->> +done
->> +
->> +tst_exit
->> -- 
->> 1.8.4.2
->>
->>
->> -- 
->> Mailing list info: http://lists.linux.it/listinfo/ltp
-> 
