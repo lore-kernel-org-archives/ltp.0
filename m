@@ -1,40 +1,41 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 3 Nov 2015 19:55:30 +0800
-Subject: [LTP] [PATCH] commands/mkfs: Added new testcase to test mkfs(8)
- command.
-In-Reply-To: <20151103113923.GB5795@rei>
-References: <1446032247-18207-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20151102152807.GC28478@rei> <56389879.6070101@cn.fujitsu.com>
- <20151103113923.GB5795@rei>
-Message-ID: <5638A0B2.1060600@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 3 Nov 2015 14:21:59 +0100
+Subject: [LTP] [PATCH v5] sched_getattr/sched_getattr02: Add new
+ testcase for sched_getattr
+In-Reply-To: <56389A8B.6040600@huawei.com>
+References: <1445345999-145313-1-git-send-email-cuibixuan@huawei.com>
+ <20151026154705.GB6772@rei> <56302781.30701@huawei.com>
+ <20151029160913.GE23990@rei> <563463CC.3090703@huawei.com>
+ <20151102172809.GD28478@rei> <56389A8B.6040600@huawei.com>
+Message-ID: <20151103132159.GC5795@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2015/11/03 19:39, Cyril Hrubis wrote:
-> Hi!
->>>> +	mkfs_umount
->>>> +
->>>> +	if [ $blocknum -gt "$2" ]; then
->>>> +		return 1
->>>> +	fi
->>>
->>> So the size we get as $2 is in kB and df -T reports 1k blocks shouldn't these
->>> be equal, or are there any reserved block in play?
->>>
->>
->> Indeed, "$blocknum" here is equal to struct statfs'f_blocks, which denotes total
->> data blocks in filesystem(df uses statfs(2) to get this info) and does not contain
->> some metadata in filesytem, e.g. ext3's journal space size. 
-> 
-> Ok, then we should check for lower bound as well. Something as blocknum
-> is greater than 90% of size or similar.
-> 
+Hi!
+> +	for (i = 0; i < TST_TOTAL; i++)
+> +		sched_getattr_verify(&test_cases[i]);
 
-OK, I see, thanks!
-Please ignore the v2 I just sent, I will email a v3 with lower bound check.
+I've readded the TEST_LOOPING() here, since I asked you to do this loop
+inside of the TEST_LOOPING() loop, not to remove it. Once it's removed
+the default test parameters does not work.
 
-Best Regards,
-Guangwen Feng
+> +	tst_exit();
+> +}
+> +
+> +void setup(void)
+> +{
+> +	unused_pid = tst_get_unused_pid(setup);
+> +
+> +	tst_require_root();
+
+And I've removed the tst_require_root() since it's not needed as we do
+not call setattr anymore.
+
+And pushed, thanks.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
