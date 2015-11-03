@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 3 Nov 2015 15:30:31 +0100
-Subject: [LTP] [PATCH 1/2] preadv/preadv01.c: add new testcase
-In-Reply-To: <1446591451-11075-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Tue, 3 Nov 2015 15:46:14 +0100
+Subject: [LTP] [PATCH 2/2] pwritev/pwritev01.c: add new testcase
+In-Reply-To: <1446591451-11075-2-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1446591451-11075-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20151103143031.GD5795@rei>
+ <1446591451-11075-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20151103144613.GE5795@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,11 +12,8 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/testcases/kernel/syscalls/preadv/Makefile b/testcases/kernel/syscalls/preadv/Makefile
-> new file mode 100644
-> index 0000000..ac9a969
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/preadv/Makefile
+> +++ b/testcases/kernel/syscalls/pwritev/Makefile
 > @@ -0,0 +1,31 @@
 > +#
 > +#  Copyright (c) 2015 Fujitsu Ltd.
@@ -45,7 +43,7 @@ Hi!
 > +# FIXME (garrcoop): more messy format strings.
 > +CPPFLAGS		+= -Wno-error
 
-This workaround should be needed at all.
+Here as well.
 
 > +%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
 > +
@@ -53,12 +51,12 @@ This workaround should be needed at all.
 
 ...
 
-> diff --git a/testcases/kernel/syscalls/preadv/preadv01.c b/testcases/kernel/syscalls/preadv/preadv01.c
+> diff --git a/testcases/kernel/syscalls/pwritev/pwritev01.c b/testcases/kernel/syscalls/pwritev/pwritev01.c
 > new file mode 100644
-> index 0000000..bb9dca3
+> index 0000000..ce75552
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/preadv/preadv01.c
-> @@ -0,0 +1,163 @@
+> +++ b/testcases/kernel/syscalls/pwritev/pwritev01.c
+> @@ -0,0 +1,149 @@
 > +/*
 > +* Copyright (c) 2015 Fujitsu Ltd.
 > +* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
@@ -76,29 +74,27 @@ This workaround should be needed at all.
 > +*/
 > +
 > +/*
-> +* Test Name: preadv01
+> +* Test Name: pwritev01
 > +*
 > +* Test Description:
-> +* Testcase to check the basic functionality of the preadv(2).
-> +* Preadv(2) should succeed to read the expected content of data
-> +* and after reading the file, the file offset is not changed.
+> +* Testcase to check the basic functionality of the pwritev(2).
+> +* pwritev(2) should succeed to write the expected content of data
+> +* and after writing the file, the file offset is not changed.
 > +*/
 > +
 > +#include <errno.h>
 > +
 > +#include "test.h"
-> +#include "preadv.h"
+> +#include "pwritev.h"
 > +#include "safe_macros.h"
 > +
-> +#define CHUNK           64
+> +#define	CHUNK		64
 > +
-> +static int fd;
-> +
-> +static void *s1;
-> +static void *s2;
 > +static char buf[CHUNK];
 > +
-> +static struct iovec rd_iovec[] = {
+> +static char preadbuf[CHUNK*2];
+> +
+> +static struct iovec wr_iovec[] = {
 > +	{buf, CHUNK},
 > +	{NULL, 0},
 > +};
@@ -108,22 +104,23 @@ This workaround should be needed at all.
 > +	int count;
 > +	off_t offset;
 > +	int byte;
-> +	char content;
 > +} test_cases[] = {
-> +	{CHUNK, 0, 0, 0, 0x00},
-> +	{CHUNK/2, 1, 0, CHUNK, 0x42},
-> +	{CHUNK/4, 2, 0, CHUNK, 0x42},
-> +	{CHUNK/8, 1, CHUNK*3/2, CHUNK/2, 0x41},
+> +	{CHUNK, 0, 0, 0},
+> +	{CHUNK/2, 1, 0, CHUNK},
+> +	{CHUNK/4, 1, CHUNK, CHUNK},
+> +	{CHUNK/8, 2, 0, CHUNK},
 > +};
 > +
-> +void verify_preadv(int);
+> +static int fd;
+> +
+> +void verify_pwritev(int);
+> +void check_file_contents(int, char *, int, off_t, char *);
 > +void setup(void);
-> +void *init_buffers(char, size_t);
 > +void l_seek(int, off_t, int, off_t);
 > +void cleanup(void);
 > +
-> +char *TCID = "preadv01";
-> +int TST_TOTAL = ARRAY_SIZE(test_cases);
+> +char *TCID = "pwritev01";
+> +int TST_TOTAL =  ARRAY_SIZE(test_cases);
 > +
 > +int main(int ac, char **av)
 > +{
@@ -138,104 +135,78 @@ This workaround should be needed at all.
 > +		tst_count = 0;
 > +
 > +		for (tc = 0; tc < TST_TOTAL; tc++)
-> +			verify_preadv(tc);
+> +			verify_pwritev(tc);
 > +	}
-> +
 > +	cleanup();
 > +	tst_exit();
 > +}
 > +
-> +void verify_preadv(int i)
-
-It would be a bit easier if you passed a pointer to the testcase here
-instead of the integer. That way we could just do:
-
-void verify_preadv(struct tcase *tc)
-
-...
-	if (TEST_RETURN < 0) {
-		tst_resm(TFAIL | TTERRNO, "preadv() failed");
-		return;
-	}
-
-	if (TEST_RETURN != tc->size) {
-		tst_resm(TFAIL, "preadv() read %li bytes, expected %i",
-		         TEST_RETURN, tc->size);
-		return;
-	}
-
-	for (i = 0; i < tc->size; i++) {
-		if (vec[i] != tc->content)
-			break;
-	}
-
-	if (i < tc->size) {
-		tst_resm(TFAIL, "Buffer wrong at %i have %02x expected %02x",
-		         i, vec[i], tc->content);
-		return;
-	}
-
-...
-
+> +void verify_pwritev(int i)
 > +{
-> +	int c;
-> +	int fail = 0;
-> +	char *vec;
-> +
-> +	vec = rd_iovec[0].iov_base;
-> +
 > +	l_seek(fd, test_cases[i].offset_cur, SEEK_SET,
 > +		test_cases[i].offset_cur);
 
-Why do you set different file offset here? What is the motivation?
+So you are changing the file offset in order to trick pwritev() to write
+to a differnt part of the file. Ok, then, it's the same for preadv I
+guess.
 
-Why cannot we instead check that after every pread() the file offset is
-simply set to 0?
+But you really shouldn't do wrappers to SAFE_LSEEK() and name it
+l_seek(). At least call it do_seek() so it does not look like a library
+function.
 
-> +	TEST(preadv(fd, rd_iovec, test_cases[i].count, test_cases[i].offset));
-> +
+> +	TEST(pwritev(fd, wr_iovec, test_cases[i].count, test_cases[i].offset));
 > +	if (test_cases[i].byte != TEST_RETURN) {
-                           ^
-			   This should be named size. Naming it byte is
-			   quite confusing since it's actually not a
-			   single byte but number of bytes.
+> +		tst_resm(TFAIL, "pwritev failed unexpectedly");
 
-> +		tst_resm(TFAIL, "preadv failed reading %d bytes ",
-> +			 test_cases[i].byte);
-
-You should test the separate case that preadv() returned -1 and print
-errno in that case.
-
-And in the case that preadv() read less than expected number of bytes
-you should print both actual and expected value.
+Here again, differentiate between failure and partial write.
 
 > +	} else {
-> +		for (c = 0; c < test_cases[i].byte; c++) {
-> +			if (vec[c] != test_cases[i].content)
-> +				fail++;
-> +		}
-> +
-> +		if (fail) {
-> +			tst_resm(TFAIL, "Wrong buffer content");
+> +		l_seek(fd, 0, SEEK_CUR, test_cases[i].offset_cur);
 
-		It would be a bit better to actually write at least
-		first place in the buffer with unexpected value and what
-		was expected instead here.
+Here we should really say that pwritev() changed file offset.
+
+> +		check_file_contents(fd, preadbuf, test_cases[i].byte,
+> +			test_cases[i].offset, buf);
+> +	}
+> +}
+> +
+> +void check_file_contents(int fdes1, char *pread_buf, int pread_byte,
+> +			 off_t pread_offset, char *iov_buf)
+
+Again byte does mean something different than size. Also there is
+absolutely no nedd to pass the buffer to the function if you aren't
+using it in the caller.
+
+So the function should have parameters named as:
+
+void check_file_content(int fd, int size, off_t off, char *iov_buf)
+
+> +{
+> +	if (SAFE_PREAD(cleanup, 1, fdes1, preadbuf, pread_byte,
+> +		       pread_offset) != pread_byte) {
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			 "pread failed reading %d bytes ", pread_byte);
+
+The SAFE_PREAD() has len_strict parameter. If that is set to non-zero
+the call will exit the test unless exactly requested number of bytes was
+read. Hence it cannot fail here at all.
+
+> +	} else {
+
+There is no need for the else branch since the tst_brkm() would have
+actually exit the test execution.
+
+> +		if (memcmp(iov_buf, pread_buf, pread_byte) != 0) {
+> +			tst_resm(TFAIL, "pwritev failed reading %d bytes ",
+> +				 pread_byte);
+
+Again, please be more specific on what have failed. In this case you
+should at least say that the buffer had unexpected value and ideally
+print first place when it was wrong.
 
 > +		} else {
-> +			l_seek(fd, 0, SEEK_CUR, test_cases[i].offset_cur);
-
-                        And here you check that the offset wasn't
-			changed. That is fine, but it would be far
-			better to actually call the SAFE_LSEEK() here
-			and issue better error message when the
-			resulting offset is unexpected.
-
-			I.e. "pread() has changed file offset" instead
-			of cryptic "lseek() on file failed".
-
-> +			tst_resm(TPASS, "preadv passed reading %d bytes ",
-> +				 test_cases[i].byte);
+> +			tst_resm(TPASS, "pwritev passed reading %d bytes ",
+> +				 pread_byte);
 > +		}
 > +	}
 > +}
@@ -253,61 +224,11 @@ you should print both actual and expected value.
 > +
 > +	tst_tmpdir();
 > +
-> +	s1 = init_buffers(0x42, CHUNK);
-> +	s2 = init_buffers(0x41, CHUNK);
-> +
+> +	(void)memset(&buf, 0x42, CHUNK);
+
+Drop the (void) here.
+
 > +	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
-> +
-> +	SAFE_WRITE(cleanup, 1, fd, s1, CHUNK);
-> +	SAFE_WRITE(cleanup, 1, fd, s2, CHUNK);
-
-You are not freeing the s1 and s2 here. Also there is no reason to make
-them global variables if they are used only in the setup(). Moreover 64
-bytes is small enough to be declared as an array on the stack.
-
-You can do just:
-
-	char s1[CHUNK];
-	char s2[CHUNK];
-
-	memset(s1, 0x42, sizeof(s1));
-	memset(s2, 0x41, sizeof(s2));
-
-	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
-
-	SAFE_WRITE(cleanup, 1, fd, s1, sizeof(s1));
-	SAFE_WRITE(cleanup, 1, fd, s2, sizeof(s2));
-
-Or we can do even better. We allready have tst_fill_file(), if we add
-a flag to the function that would allow us to choose between trunc and
-append mode we could just do:
-
-	int ret;
-
-	ret = tst_fill_file("file", 0x42, CHUNK, 1, TST_TRUNC);
-	ret |= tst_fill_file("file", 0x41, CHUNK, 1, TST_APPEND);
-
-	if (ret)
-		tst_brkm(TBROK | TERRNO, "Failed to write test file");
-
-> +}
-> +
-> +void *init_buffers(char content, size_t SIZE)
-                                            ^
-					    Upper case names are used
-					    for macros mainly. Please
-					    use lower case here.
-
-> +{
-> +	void *s;
-> +
-> +	s = SAFE_MALLOC(cleanup, SIZE);
-> +	(void)memset(s, content, SIZE);
-
-Why do you cast the result from memset() to (void)? It shouldn't be
-needed at all.
-
-> +	return s;
 > +}
 > +
 > +void l_seek(int fdes, off_t offset, int whence, off_t checkoff)
