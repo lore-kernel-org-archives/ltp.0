@@ -1,256 +1,189 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 3 Nov 2015 15:46:14 +0100
-Subject: [LTP] [PATCH 2/2] pwritev/pwritev01.c: add new testcase
-In-Reply-To: <1446591451-11075-2-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1446591451-11075-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1446591451-11075-2-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20151103144613.GE5795@rei>
+From: =?unknown-8bit?b?5p2O56OK?= <rocklee_104@outlook.com>
+Date: Wed, 4 Nov 2015 12:37:28 +0800
+Subject: [LTP] [PATCH v2] commands/mkfs: Added new testcase to test
+ mkfs(8) command.
+In-Reply-To: <1446551007-7826-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <56385136.8060007@cn.fujitsu.com>
+ <1446551007-7826-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <BLU436-SMTP294FE375F1A0F67CEFCDAACF2A0@phx.gbl>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+> Test mkfs(8) command with some basic options.
+>
+> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+> ---
+>   runtest/commands                  |  10 ++
+>   testcases/commands/mkfs/Makefile  |  24 +++++
+>   testcases/commands/mkfs/mkfs01.sh | 217 ++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 251 insertions(+)
+>   create mode 100644 testcases/commands/mkfs/Makefile
+>   create mode 100755 testcases/commands/mkfs/mkfs01.sh
+>
+> diff --git a/runtest/commands b/runtest/commands
+> index e5260ba..6c0485b 100644
+> --- a/runtest/commands
+> +++ b/runtest/commands
+> @@ -28,3 +28,13 @@ df01_xfs df01.sh -f xfs
+>   df01_vfat df01.sh -f vfat
+>   df01_exfat df01.sh -f exfat
+>   df01_ntfs df01.sh -f ntfs
+> +mkfs01 mkfs01.sh
+> +mkfs01_ext2 mkfs01.sh -f ext2
+> +mkfs01_ext3 mkfs01.sh -f ext3
+> +mkfs01_ext4 mkfs01.sh -f ext4
+> +mkfs01_xfs mkfs01.sh -f xfs
+> +mkfs01_btrfs mkfs01.sh -f btrfs
+> +mkfs01_minix mkfs01.sh -f minix
+> +mkfs01_msdos mkfs01.sh -f msdos
+> +mkfs01_vfat mkfs01.sh -f vfat
+> +mkfs01_ntfs mkfs01.sh -f ntfs
+> diff --git a/testcases/commands/mkfs/Makefile b/testcases/commands/mkfs/Makefile
+> new file mode 100644
+> index 0000000..6099017
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/pwritev/Makefile
-> @@ -0,0 +1,31 @@
+> +++ b/testcases/commands/mkfs/Makefile
+> @@ -0,0 +1,24 @@
 > +#
-> +#  Copyright (c) 2015 Fujitsu Ltd.
-> +#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> +#    commands/mkfs testcases Makefile.
 > +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
+> +#    Copyright (c) 2015 Fujitsu Ltd.
+> +#    Author:Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 > +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
+> +#    This program is free software; you can redistribute it and/or modify
+> +#    it under the terms of the GNU General Public License as published by
+> +#    the Free Software Foundation; either version 2 of the License, or
+> +#    (at your option) any later version.
 > +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program.
-> +#
+> +#    This program is distributed in the hope that it will be useful,
+> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +#    GNU General Public License for more details.
 > +#
 > +
-> +top_srcdir		?= ../../../..
+> +top_srcdir		?= ../../..
 > +
-> +include $(top_srcdir)/include/mk/testcases.mk
+> +include $(top_srcdir)/include/mk/env_pre.mk
 > +
-> +include $(abs_srcdir)/../utils/newer_64.mk
-> +
-> +# FIXME (garrcoop): more messy format strings.
-> +CPPFLAGS		+= -Wno-error
-
-Here as well.
-
-> +%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64
+> +INSTALL_TARGETS		:= mkfs01.sh
 > +
 > +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-
-...
-
-> diff --git a/testcases/kernel/syscalls/pwritev/pwritev01.c b/testcases/kernel/syscalls/pwritev/pwritev01.c
-> new file mode 100644
-> index 0000000..ce75552
+> diff --git a/testcases/commands/mkfs/mkfs01.sh b/testcases/commands/mkfs/mkfs01.sh
+> new file mode 100755
+> index 0000000..c1337a6
 > --- /dev/null
-> +++ b/testcases/kernel/syscalls/pwritev/pwritev01.c
-> @@ -0,0 +1,149 @@
-> +/*
-> +* Copyright (c) 2015 Fujitsu Ltd.
-> +* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> +*
-> +* This program is free software; you can redistribute it and/or modify it
-> +* under the terms of version 2 of the GNU General Public License as
-> +* published by the Free Software Foundation.
-> +*
-> +* This program is distributed in the hope that it would be useful, but
-> +* WITHOUT ANY WARRANTY; without even the implied warranty of
-> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> +*
-> +* You should have received a copy of the GNU General Public License
-> +* alone with this program.
-> +*/
+> +++ b/testcases/commands/mkfs/mkfs01.sh
+> @@ -0,0 +1,217 @@
+> +#!/bin/sh
+> +#
+> +# Copyright (c) 2015 Fujitsu Ltd.
+> +# Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+> +#
+> +# This program is free software; you can redistribute it and/or modify
+> +# it under the terms of the GNU General Public License as published by
+> +# the Free Software Foundation; either version 2 of the License, or
+> +# (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it will be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
+> +# the GNU General Public License for more details.
+> +#
+> +# Test mkfs command with some basic options.
+> +#
 > +
-> +/*
-> +* Test Name: pwritev01
-> +*
-> +* Test Description:
-> +* Testcase to check the basic functionality of the pwritev(2).
-> +* pwritev(2) should succeed to write the expected content of data
-> +* and after writing the file, the file offset is not changed.
-> +*/
+> +TCID=mkfs01
+> +TST_TOTAL=5
+> +. test.sh
 > +
-> +#include <errno.h>
-> +
-> +#include "test.h"
-> +#include "pwritev.h"
-> +#include "safe_macros.h"
-> +
-> +#define	CHUNK		64
-> +
-> +static char buf[CHUNK];
-> +
-> +static char preadbuf[CHUNK*2];
-> +
-> +static struct iovec wr_iovec[] = {
-> +	{buf, CHUNK},
-> +	{NULL, 0},
-> +};
-> +
-> +static struct test_case_t {
-> +	off_t offset_cur;
-> +	int count;
-> +	off_t offset;
-> +	int byte;
-> +} test_cases[] = {
-> +	{CHUNK, 0, 0, 0},
-> +	{CHUNK/2, 1, 0, CHUNK},
-> +	{CHUNK/4, 1, CHUNK, CHUNK},
-> +	{CHUNK/8, 2, 0, CHUNK},
-> +};
-> +
-> +static int fd;
-> +
-> +void verify_pwritev(int);
-> +void check_file_contents(int, char *, int, off_t, char *);
-> +void setup(void);
-> +void l_seek(int, off_t, int, off_t);
-> +void cleanup(void);
-> +
-> +char *TCID = "pwritev01";
-> +int TST_TOTAL =  ARRAY_SIZE(test_cases);
-> +
-> +int main(int ac, char **av)
+> +setup()
 > +{
-> +	int lc;
-> +	int tc;
+> +	tst_require_root
 > +
-> +	tst_parse_opts(ac, av, NULL, NULL);
+> +	tst_check_cmds blkid df
 > +
-> +	setup();
+> +	if [ -n "$FS_TYPE" ]; then
+> +		tst_check_cmds mkfs.${FS_TYPE}
+> +	fi
 > +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
+> +	tst_tmpdir
 > +
-> +		for (tc = 0; tc < TST_TOTAL; tc++)
-> +			verify_pwritev(tc);
-> +	}
-> +	cleanup();
-> +	tst_exit();
+> +	tst_acquire_device
+> +
+> +	TST_CLEANUP="cleanup"
+> +
+> +	ROD_SILENT mkdir -p mntpoint
 > +}
 > +
-> +void verify_pwritev(int i)
+> +cleanup()
 > +{
-> +	l_seek(fd, test_cases[i].offset_cur, SEEK_SET,
-> +		test_cases[i].offset_cur);
-
-So you are changing the file offset in order to trick pwritev() to write
-to a differnt part of the file. Ok, then, it's the same for preadv I
-guess.
-
-But you really shouldn't do wrappers to SAFE_LSEEK() and name it
-l_seek(). At least call it do_seek() so it does not look like a library
-function.
-
-> +	TEST(pwritev(fd, wr_iovec, test_cases[i].count, test_cases[i].offset));
-> +	if (test_cases[i].byte != TEST_RETURN) {
-> +		tst_resm(TFAIL, "pwritev failed unexpectedly");
-
-Here again, differentiate between failure and partial write.
-
-> +	} else {
-> +		l_seek(fd, 0, SEEK_CUR, test_cases[i].offset_cur);
-
-Here we should really say that pwritev() changed file offset.
-
-> +		check_file_contents(fd, preadbuf, test_cases[i].byte,
-> +			test_cases[i].offset, buf);
-> +	}
+> +	tst_release_device
+> +
+> +	tst_rmdir
 > +}
 > +
-> +void check_file_contents(int fdes1, char *pread_buf, int pread_byte,
-> +			 off_t pread_offset, char *iov_buf)
-
-Again byte does mean something different than size. Also there is
-absolutely no nedd to pass the buffer to the function if you aren't
-using it in the caller.
-
-So the function should have parameters named as:
-
-void check_file_content(int fd, int size, off_t off, char *iov_buf)
-
+> +mkfs_mount()
 > +{
-> +	if (SAFE_PREAD(cleanup, 1, fdes1, preadbuf, pread_byte,
-> +		       pread_offset) != pread_byte) {
-> +		tst_brkm(TBROK | TERRNO, cleanup,
-> +			 "pread failed reading %d bytes ", pread_byte);
-
-The SAFE_PREAD() has len_strict parameter. If that is set to non-zero
-the call will exit the test unless exactly requested number of bytes was
-read. Hence it cannot fail here at all.
-
-> +	} else {
-
-There is no need for the else branch since the tst_brkm() would have
-actually exit the test execution.
-
-> +		if (memcmp(iov_buf, pread_buf, pread_byte) != 0) {
-> +			tst_resm(TFAIL, "pwritev failed reading %d bytes ",
-> +				 pread_byte);
-
-Again, please be more specific on what have failed. In this case you
-should at least say that the buffer had unexpected value and ideally
-print first place when it was wrong.
-
-> +		} else {
-> +			tst_resm(TPASS, "pwritev passed reading %d bytes ",
-> +				 pread_byte);
-> +		}
-> +	}
+> +	mount ${TST_DEVICE} mntpoint
+> +	local ret=$?
+> +	if [ $ret -eq 32 ]; then
+> +		tst_brkm TCONF "Cannot mount ${FS_TYPE}, missing driver?"
+> +	fi
+> +
+> +	if [ $ret -ne 0 ]; then
+> +		tst_brkm TBROK "Failed to mount device: mount exit = $ret"
+> +	fi
 > +}
 > +
-> +void setup(void)
+> +mkfs_umount()
 > +{
-> +	if ((tst_kvercmp(2, 6, 30)) < 0) {
-> +		tst_brkm(TCONF, NULL, "This test can only run on kernels "
-> +			"that are 2.6.30 and higher");
-> +	}
+> +	grep -q ${TST_DEVICE} /proc/mounts
+> +	if [ $? -eq 0 ]; then
+> +		umount ${TST_DEVICE}
+> +		if [ $? -ne 0 ];then
+> +			tst_resm TWARN "'umount ${TST_DEVICE}' failed"
+> +		fi
+> +	else
+> +		tst_resm TINFO "${TST_DEVICE} is not mounted"
+> +	fi
+> +}
 > +
-> +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> +usage()
+> +{
+> +	cat << EOF
+> +	usage: $0 [-f <ext2|ext3|ext4|vfat|...>]
 > +
-> +	TEST_PAUSE;
+> +	OPTIONS
+> +		-f	Specify the type of filesystem to be built. If not
+> +			specified, the default filesystem type (currently ext2)
+> +			is used.
+> +		-h	Display help text and exit.
 > +
-> +	tst_tmpdir();
+> +EOF
+> +	tst_brkm TWARN "Display help text or unknown options"
+> +}
 > +
-> +	(void)memset(&buf, 0x42, CHUNK);
+> +mkfs_verify_type()
+> +{
+> +	if [ -z "$1" ]; then
+> +		blkid $2 | grep -q "ext2"
+> +	else
+> +		blkid $2 | grep -q "$1"
+> +	fi
+> +}
 
-Drop the (void) here.
-
-> +	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
-> +}
-> +
-> +void l_seek(int fdes, off_t offset, int whence, off_t checkoff)
-> +{
-> +	if (SAFE_LSEEK(cleanup, fdes, offset, whence) != checkoff)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "lseek() on file failed");
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	if (fd > 0 && close(fd))
-> +		tst_resm(TWARN | TERRNO, "Failed to close file");
-> +
-> +	tst_rmdir();
-> +}
-> -- 
-> 1.8.3.1
-> 
-> 
-> -- 
-> Mailing list info: http://lists.linux.it/listinfo/ltp
+Hi, how about:
+mkfs_verify_type()
+{
+	if [ -z "$1" ]; then
+		blkid $2 -t TYPE="ext2"
+	else
+		blkid $2 -t TYPE="$1"
+	fi
+}
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Rock Lee
