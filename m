@@ -1,51 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 5 Nov 2015 15:05:28 +0100
-Subject: [LTP] [PATCH] containers/netns/netns_sysfs.sh:load dummy module
- before collecting sysfs interface
-In-Reply-To: <563ADF10.2030803@oracle.com>
-References: <1446195470-7568-1-git-send-email-shuang.qiu@oracle.com>
- <20151104124927.GC17823@rei> <563ADF10.2030803@oracle.com>
-Message-ID: <20151105140528.GE7226@rei>
+From: Eryu Guan <eguan@redhat.com>
+Date: Thu,  5 Nov 2015 22:34:59 +0800
+Subject: [LTP] [PATCH 1/3] lib/test.sh: improvement on the check if
+	mkfs.btrfs supports -f option
+Message-ID: <1446734101-6175-1-git-send-email-eguan@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >> diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
-> >> index 7dea52b..b5791bd 100755
-> >> --- a/testcases/kernel/containers/netns/netns_sysfs.sh
-> >> +++ b/testcases/kernel/containers/netns/netns_sysfs.sh
-> >> @@ -47,6 +47,10 @@ if [ $? -eq 1 ]; then
-> >>   	tst_brkm TBROK "unable to create a new network namespace"
-> >>   fi
-> >>   TST_CLEANUP=cleanup
-> >> +
-> >> +#Load dummy module before collecting sysfs interface
-> >> +lsmod | grep dummy || modprobe dummy
-> >> +[ $? -eq 0 ] || tst_brkm TBROK "failed to load dummy module"
-> > But this will fail when dummy wasn't compiled in the kernel, right?
-> Yes,if dummy wasn't compiled in the kernel,it will also fail when adding 
-> dummy device in the next step:
-> ===cut===
-> ns_exec $NS_HANDLE $NS_TYPE ip link add $DUMMYDEV type dummy || \
->      tst_brkm TBROK "failed to add a new dummy device"
-> ===cut===
+There are two issues here:
 
-I meaned "wasn't compiled as module" i.e. compiled in kernel, sorry for
-the confusion. In that case this would work fine but the modprobe would
-fail.
+a) '\\-f' won't match string "-f", but "\\-f" or '\-f' does
+b) searching for string "-f" is not accurate, because it matches both
+   "-f" and "--features"
 
-> > Since modprobe will exit with 1 when module couldn't be found. So we
-> > should either just call 'modprobe dummy' and ignore the return value or
-> > change the code to ignore the default dummy interface.
-> I prefer 'modprobe dummy' and ignore the return value,because I'm not 
-> sure whether there is any other default dummy interface name except 
-> "dummy0".
+And the help text has been changed in btrfs-progs commit 3f312d500b73.
+So use '\-f[ |]' to match both old and new btrfs-progs.
 
-Sounds good to me.
+Signed-off-by: Eryu Guan <eguan@redhat.com>
+---
+ testcases/lib/test.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+index 1753664..6de39b9 100644
+--- a/testcases/lib/test.sh
++++ b/testcases/lib/test.sh
+@@ -277,7 +277,10 @@ tst_mkfs()
+ 	fi
+ 
+ 	if [ $fs_type = "btrfs" ]; then
+-		mkfs.btrfs 2>&1 | grep -q '\\-f' >/dev/null
++		# check if mkfs.btrfs supports -f option
++		# detect "-f --force" or "-f|--force" because btrfs-progs
++		# changes usage text in commit 3f312d500b73
++		mkfs.btrfs 2>&1 | grep -q '\-f[ |]' >/dev/null
+ 		if [ $? -eq 0 ]; then
+ 			tst_resm TINFO "Appending '-f' flag to mkfs.$fs_type"
+ 			fs_opts="-f"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.5.0
+
