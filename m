@@ -1,35 +1,47 @@
 From: Eryu Guan <eguan@redhat.com>
-Date: Thu,  5 Nov 2015 22:35:00 +0800
-Subject: [LTP] [PATCH 2/3] lib/test.sh: special case jfs in tst_mkfs
+Date: Thu,  5 Nov 2015 22:35:01 +0800
+Subject: [LTP] [PATCH 3/3] test_robind: use tst_mkfs helper to mkfs
 In-Reply-To: <1446734101-6175-1-git-send-email-eguan@redhat.com>
 References: <1446734101-6175-1-git-send-email-eguan@redhat.com>
-Message-ID: <1446734101-6175-2-git-send-email-eguan@redhat.com>
+Message-ID: <1446734101-6175-3-git-send-email-eguan@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-jfs needs "-f" option too.
+So xfs and btrfs are handled correctly.
 
 Signed-off-by: Eryu Guan <eguan@redhat.com>
 ---
- testcases/lib/test.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ testcases/kernel/fs/fs_readonly/test_robind.sh | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index 6de39b9..31c99ee 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -271,7 +271,7 @@ tst_mkfs()
- 	local device=$2
- 	local fs_opts=""
+diff --git a/testcases/kernel/fs/fs_readonly/test_robind.sh b/testcases/kernel/fs/fs_readonly/test_robind.sh
+index 5674ca4..dfe6f7e 100755
+--- a/testcases/kernel/fs/fs_readonly/test_robind.sh
++++ b/testcases/kernel/fs/fs_readonly/test_robind.sh
+@@ -194,17 +194,14 @@ setup $*
  
--	if [ $fs_type = "xfs" ]; then
-+	if [ $fs_type = "xfs" -o $fs_type = "jfs" ]; then
- 		tst_resm TINFO "Appending '-f' flag to mkfs.$fs_type"
- 		fs_opts="-f"
+ # Executes the tests for differnt FS's
+ for fstype in $FSTYPES; do
+-	opts="-F"
+ 	if [ "$fstype" = "reiserfs" ]; then
+ 		opts="-f --journal-size 513 -q"
+-	elif [ "$fstype" = "jfs" ]; then
+-		opts="-f"
+-	elif [ "$fstype" = "xfs" ]; then
+-		opts=""
++	elif echo "$fstype" | grep -q "ext"; then
++		opts="-F"
  	fi
+ 
+ 	if [ "$fstype" != "ramfs" ]; then
+-		mkfs.$fstype $opts $device > /dev/null
++		tst_mkfs $fstype $device $opts
+ 	fi
+ 
+ 	mount -t $fstype $device  dir1
 -- 
 2.5.0
 
