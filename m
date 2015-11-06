@@ -1,47 +1,103 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 06 Nov 2015 14:54:29 +0300
-Subject: [LTP] [PATCH] commands/mkswap: Added new testcase to test
-	mkswap(8).
-In-Reply-To: <563C37D6.1050707@cn.fujitsu.com>
-References: <1446692628-12706-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <563B404D.8040504@oracle.com> <563C37D6.1050707@cn.fujitsu.com>
-Message-ID: <563C94F5.9040803@oracle.com>
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Fri, 6 Nov 2015 18:16:23 +0100
+Subject: [LTP] [PATCH] containers/netns/netns_sysfs.sh:load dummy module
+ before collecting sysfs interface
+In-Reply-To: <1446195470-7568-1-git-send-email-shuang.qiu@oracle.com>
+References: <1446195470-7568-1-git-send-email-shuang.qiu@oracle.com>
+Message-ID: <563CE067.90803@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On 10/30/2015 09:57 AM, shuang.qiu@oracle.com wrote:
+> From: Shuang Qiu <shuang.qiu@oracle.com>
+> 
+> If dummy is compiled as module in kernel,it is loaded dynamically when
+> adding dummy device.And it will also create a default dummy interface.So
+> the sysfs_after will have one more interface than sysfs_before which
+> makes testcase #3 failed.Loading dummy module before collecting sysfs
+> interface to workaround such issue.
 
-On 11/06/2015 08:17 AM, Guangwen Feng wrote:
+I cannot reproduce this on any RHEL or Fedora system, but I can
+reproduce it on Debian (Jessie). If we accounted only for the module
+version of 'dummy', it could be countered by adding
 
->>> +            tst_resm TFAIL "'${mkswap_cmd}' failed."
->>> +            cat temp
->>> +            return
->>> +        fi
->>> +    fi
->>> +
->>> +    if [ -n "$device" ]; then
->>> +        mkswap_verify "$mkswap_op" "$op_arg" "$device" "$size"
->>> +        if [ $? -ne 0 ]; then
->>> +            tst_resm TFAIL "'${mkswap_cmd}' failed, not expected."
->>> +            return
->>> +        fi
->>> +    fi
->>> +
->>> +    tst_resm TPASS "'${mkswap_cmd}' passed."
->>> +}
->>> +
->>> +test1()
->>> +{
->>> +    mkswap_test "" "" "$TST_DEVICE"
->>> +}
->> May be it would be better to call mkswap_test() without such wrappers and the for loop in the end.
->>
-> Sorry, do you mean just call mkswap_test() straightforward with different arguments for all these tests?
+  options dummy numdummies=0
 
-Right, the same way it is done inside each test*().
+to any /etc/modprobe.d/* config (temporarily), however for the built-in
+version of the module, such option would need to be passed via kernel
+cmdline.
 
-Best regards,
-Alexey
+We could check [ -d /sys/module/dummy ] and if it exists, presume that
+no extra setup is necessary, because
+
+  1) if it's a module, our creation of additional dummy interface won't
+     affect existing interfaces as dummy0 is created only on insmod
+     (dummy_init_one() is called during __init with numdummies=1)
+  2) if it's built in, well .. see (1)
+
+otherwise we can try modprobing it and if it fails, end with CONF.
+
+However - wouldn't it be simply easier to add an exception for dummy0
+during the comparison check? The test operates with iface names other
+than dummy0, so a possible namespace bug would be found anyway.
+(See attached diff.)
+
+However the (quite possibly) best solution would be a one which cleans
+up after itself, so maybe the [ -d /sys/module/dummy ] solution with
+explicit modprobe / modprobe -r would work better.
+
+Your choice. :)
+
+Jiri
+
+> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+> ---
+>  testcases/kernel/containers/netns/netns_sysfs.sh |    4 ++++
+>  1 files changed, 4 insertions(+), 0 deletions(-)
+> 
+> diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
+> index 7dea52b..b5791bd 100755
+> --- a/testcases/kernel/containers/netns/netns_sysfs.sh
+> +++ b/testcases/kernel/containers/netns/netns_sysfs.sh
+> @@ -47,6 +47,10 @@ if [ $? -eq 1 ]; then
+>  	tst_brkm TBROK "unable to create a new network namespace"
+>  fi
+>  TST_CLEANUP=cleanup
+> +
+> +#Load dummy module before collecting sysfs interface
+> +lsmod | grep dummy || modprobe dummy
+> +[ $? -eq 0 ] || tst_brkm TBROK "failed to load dummy module"
+>  ls /sys/class/net >sysfs_before
+>  
+>  ns_exec $NS_HANDLE $NS_TYPE mount --make-rprivate /sys
+> 
+
+-------------- next part --------------
+diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
+index 7dea52b..e725a50 100755
+--- a/testcases/kernel/containers/netns/netns_sysfs.sh
++++ b/testcases/kernel/containers/netns/netns_sysfs.sh
+@@ -47,7 +47,10 @@ if [ $? -eq 1 ]; then
+ 	tst_brkm TBROK "unable to create a new network namespace"
+ fi
+ TST_CLEANUP=cleanup
+-ls /sys/class/net >sysfs_before
++
++# exclude dummy0 from comparison as it gets automatically created by the
++# dummy device driver upon insmod/modprobe (during ip link add)
++ls /sys/class/net | grep -v dummy0 >sysfs_before
+ 
+ ns_exec $NS_HANDLE $NS_TYPE mount --make-rprivate /sys
+ ns_exec $NS_HANDLE $NS_TYPE ip link add $DUMMYDEV type dummy || \
+@@ -84,7 +87,7 @@ fi
+ 
+ 
+ # TEST CASE #3
+-ls /sys/class/net >sysfs_after
++ls /sys/class/net | grep -v dummy0 >sysfs_after
+ diff sysfs_before sysfs_after
+ if [ $? -eq 0 ]; then
+ 	tst_resm TPASS "sysfs not affected by a separate namespace"
