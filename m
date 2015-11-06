@@ -1,41 +1,47 @@
-From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
-Date: Fri,  6 Nov 2015 18:34:28 +0800
-Subject: [LTP] [PATCH v2] containers/netns/netns_sysfs.sh:load dummy module
-	before collecting sysfs interface
-Message-ID: <1446806068-5388-1-git-send-email-shuang.qiu@oracle.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 06 Nov 2015 14:54:29 +0300
+Subject: [LTP] [PATCH] commands/mkswap: Added new testcase to test
+	mkswap(8).
+In-Reply-To: <563C37D6.1050707@cn.fujitsu.com>
+References: <1446692628-12706-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <563B404D.8040504@oracle.com> <563C37D6.1050707@cn.fujitsu.com>
+Message-ID: <563C94F5.9040803@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
+Hi,
 
-If dummy is compiled as module in kernel,it is loaded dynamically when
-adding dummy device.And it will also create a default dummy interface.So
-the sysfs_after will have one more interface than sysfs_before which
-makes testcase #3 failed.Loading dummy module before collecting sysfs
-interface to workaround such issue.
+On 11/06/2015 08:17 AM, Guangwen Feng wrote:
 
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
----
- testcases/kernel/containers/netns/netns_sysfs.sh |    3 +++
- 1 file changed, 3 insertions(+)
+>>> +            tst_resm TFAIL "'${mkswap_cmd}' failed."
+>>> +            cat temp
+>>> +            return
+>>> +        fi
+>>> +    fi
+>>> +
+>>> +    if [ -n "$device" ]; then
+>>> +        mkswap_verify "$mkswap_op" "$op_arg" "$device" "$size"
+>>> +        if [ $? -ne 0 ]; then
+>>> +            tst_resm TFAIL "'${mkswap_cmd}' failed, not expected."
+>>> +            return
+>>> +        fi
+>>> +    fi
+>>> +
+>>> +    tst_resm TPASS "'${mkswap_cmd}' passed."
+>>> +}
+>>> +
+>>> +test1()
+>>> +{
+>>> +    mkswap_test "" "" "$TST_DEVICE"
+>>> +}
+>> May be it would be better to call mkswap_test() without such wrappers and the for loop in the end.
+>>
+> Sorry, do you mean just call mkswap_test() straightforward with different arguments for all these tests?
 
-diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
-index 7dea52b..5e3ad7c 100755
---- a/testcases/kernel/containers/netns/netns_sysfs.sh
-+++ b/testcases/kernel/containers/netns/netns_sysfs.sh
-@@ -47,6 +47,9 @@ if [ $? -eq 1 ]; then
- 	tst_brkm TBROK "unable to create a new network namespace"
- fi
- TST_CLEANUP=cleanup
-+
-+#Load dummy module before collecting sysfs interface
-+lsmod | grep dummy || modprobe dummy 2>/dev/null
- ls /sys/class/net >sysfs_before
- 
- ns_exec $NS_HANDLE $NS_TYPE mount --make-rprivate /sys
--- 
-1.7.9.5
+Right, the same way it is done inside each test*().
 
+Best regards,
+Alexey
