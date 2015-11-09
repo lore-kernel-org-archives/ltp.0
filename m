@@ -1,67 +1,226 @@
-From: Lei Li <rocklee_104@outlook.com>
-Date: Mon, 9 Nov 2015 14:31:32 +0800
-Subject: [LTP] [PATCH 1/2] test_robind.sh: set default FSTYPES to
- LTP_BIG_DEV_FS_TYPE
-In-Reply-To: <1446273800-2494-1-git-send-email-eguan@redhat.com>
-References: <1446273800-2494-1-git-send-email-eguan@redhat.com>
-Message-ID: <BLU436-SMTP246325283779603A7A41F76CF150@phx.gbl>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Mon, 9 Nov 2015 14:54:05 +0800
+Subject: [LTP] [PATCH] commands/mkswap: Added new testcase to test
+	mkswap(8).
+In-Reply-To: <BLU436-SMTP1923895FA6B242E57BC28CDCF150@phx.gbl>
+References: <1446692628-12706-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <BLU436-SMTP1923895FA6B242E57BC28CDCF150@phx.gbl>
+Message-ID: <5640430D.40903@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> In test_robind.sh LTP_BIG_DEV is used, so use LTP_BIG_DEV_FS_TYPE as
-> default fs type accordingly. If LTP_BIG_DEV_FS_TYPE is not set, fall
-> back to ext3.
->
-> Signed-off-by: Eryu Guan <eguan@redhat.com>
-> ---
->   testcases/kernel/fs/fs_readonly/test_robind.sh | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/testcases/kernel/fs/fs_readonly/test_robind.sh b/testcases/kernel/fs/fs_readonly/test_robind.sh
-> index 0513275..5674ca4 100755
-> --- a/testcases/kernel/fs/fs_readonly/test_robind.sh
-> +++ b/testcases/kernel/fs/fs_readonly/test_robind.sh
-> @@ -123,9 +123,10 @@ setup()
->   		mkdir -p $dir
->   	done
->
-> -	# populating the default FS as ext3, if FS is not given
-> +	# populating the default FS as $LTP_BIG_DEV_FS_TYPE
-> +	# (or ext3 if it's not set), if FS is not given
->   	if [ -z "$*" ]; then
-> -		FSTYPES="ext3"
-> +		FSTYPES=${LTP_BIG_DEV_FS_TYPE:-ext3}
 Hi!
-	Except LTP_BIG_DEV is not set, is there any chance that 
-LTP_BIG_DEV_FS_TYP will be NULL? If LTP_BIG_DEV is not set, this test 
-case will exit with a tst_brkm, and if LTP_BIG_DEV is set, 
-LTP_BIG_DEV_FS_TYPE always gets a value in runltp script, here is the 
-snippet:
+Thanks for review!
 
-     if [ -z "$BIG_DEVICE" ]; then
-         echo "no big block device was specified on commandline."
-         echo "Tests which require a big block device are disabled."
-         echo "You can specify it with option -z"
-     else
-         export LTP_BIG_DEV=$BIG_DEVICE
-         if [ -z "$BIG_DEVICE_FS_TYPE" ]; then
-             export LTP_BIG_DEV_FS_TYPE="ext2"
-         else
-             export LTP_BIG_DEV_FS_TYPE=$BIG_DEVICE_FS_TYPE
-         fi
-     fi
+On 2015/11/09 10:00, Lei Li wrote:
+>> +setup()
+>> +{
+>> +    tst_require_root
+>> +
+>> +    tst_check_cmds losetup free mkswap
+>> +
+>> +    tst_tmpdir
+>> +
+>> +    TST_CLEANUP=cleanup
+>> +
+>> +    tst_acquire_device
+>> +
+>> +    local path=`losetup -a | grep "$TMPDIR"  | awk '{print $3}' | \
+>> +        cut -d '(' -f2 | cut -d ')' -f1`
+>> +    DEVICE_SIZE=$((`ls -l $path | awk '{print $5}'`/1024))
+> Hi!
+>     This testcase uses a loop device instead of a block device, but tst_acquire_device may offer you a block device, /opt/ltp/runltp -b /dev/sdb1 for example, then, "path" may be invilidate, and syntax error occurs in the line :
+> 
+> DEVICE_SIZE=$((`ls -l $path | awk '{print $5}'`/1024))
+> 
+> So, examination whether the "path" is validate is necessary.
+> 
 
-IMHO, FSTYPES should be ${LTP_BIG_DEV_FS_TYP} rather than 
-${LTP_BIG_DEV_FS_TYPE:-ext3}.
->   	else
->   		FSTYPES="$*"
->   	fi
->
+Indeed, I missed the condition of block device.
+I think I could use DEVICE_SIZE=$((`blockdev --getsize64 $TST_DEVICE`/1024)) instead of via path.
 
-Thanks
--- 
-Rock Lee
-rocklee_104@outlook.com
+>> +
+>> +    PAGE_SIZE=`getconf PAGE_SIZE`
+>> +}
+>> +
+>> +cleanup()
+>> +{
+>> +    tst_release_device
+>> +
+>> +    tst_rmdir
+>> +}
+>> +
+>> +mkswap_verify()
+>> +{
+>> +    local ret=0
+>> +
+>> +    local before=`free | grep "Swap" | awk '{print $2}'`
+>> +
+>> +    if [ -z "$4" ]; then
+>> +        local swapsize=$DEVICE_SIZE
+>> +    else
+>> +        local swapsize=$4
+>> +    fi
+>> +
+>> +    if [ "$1" = "-p" ]; then
+>> +        local pagesize=$2
+>> +    else
+>> +        local pagesize=$PAGE_SIZE
+>> +    fi
+>> +
+>> +    if [ "$1" = "-L" ]; then
+>> +        local swap_op="-L"
+>> +        local swapfile=$2
+>> +    elif [ "$1" = "-U" ]; then
+>> +        local swap_op="-U"
+>> +        local swapfile=$2
+>> +    else
+>> +        local swap_op=""
+>> +        local swapfile=$3
+>> +    fi
+>> +
+>> +    swapon $swap_op $swapfile 2>/dev/null
+>> +    if [ $? -ne 0 ]; then
+>> +        tst_resm TINFO "can not do swapon on $swapfile."
+>> +        if [ $pagesize -ne $PAGE_SIZE ]; then
+>> +            return $ret
+>> +        fi
+>> +
+>> +        if [ $swapsize -gt $DEVICE_SIZE ]; then
+>> +            return $ret
+>> +        fi
+>> +    fi
+>> +
+>> +    local after=`free | grep "Swap" | awk '{print $2}'`
+>> +
+>> +    local est=16
+>> +    if [ $((after-before)) -lt $((swapsize-pagesize/1024-est)) ] || \
+>> +        [ $((after-before)) -gt $((swapsize-pagesize/1024+est)) ]; then
+>> +        ret=1
+>> +    fi
+> 
+> How do you get this formula? I'm a newbie here :-)
+> 
+
+I just compare device size used for swap with the actual increment of swap.
+The increment should be equal to the device size minus a page size, but in some cases, the result fluctuates.
+
+>> +
+>> +    swapoff $swap_op $swapfile 2>/dev/null
+>> +    if [ $? -ne 0 ]; then
+>> +        tst_resm TINFO "can not do swapoff on $swapfile."
+>> +    fi
+>> +
+>> +    return $ret
+>> +}
+>> +
+>> +mkswap_test()
+>> +{
+>> +    local mkswap_op=$1
+>> +    local op_arg=$2
+>> +    local device=$3
+>> +    local size=$4
+>> +
+>> +    local mkswap_cmd="mkswap $mkswap_op $op_arg $device $size"
+>> +
+>> +    ${mkswap_cmd} >temp 2>&1
+>> +    if [ $? -ne 0 ]; then
+>> +        grep -q -E "unknown option|invalid option|Usage" temp
+>> +        if [ $? -eq 0 ]; then
+>> +            tst_resm TCONF "'${mkswap_cmd}' not supported."
+>> +            return
+>> +        else
+>> +            tst_resm TFAIL "'${mkswap_cmd}' failed."
+>> +            cat temp
+>> +            return
+>> +        fi
+>> +    fi
+>> +
+>> +    if [ -n "$device" ]; then
+>> +        mkswap_verify "$mkswap_op" "$op_arg" "$device" "$size"
+>> +        if [ $? -ne 0 ]; then
+>> +            tst_resm TFAIL "'${mkswap_cmd}' failed, not expected."
+>> +            return
+>> +        fi
+>> +    fi
+>> +
+>> +    tst_resm TPASS "'${mkswap_cmd}' passed."
+>> +}
+>> +
+>> +test1()
+>> +{
+>> +    mkswap_test "" "" "$TST_DEVICE"
+>> +}
+>> +
+>> +test2()
+>> +{
+>> +    mkswap_test "" "" "$TST_DEVICE" "10000"
+>> +}
+>> +
+>> +test3()
+>> +{
+>> +    mkswap_test "-f" "" "$TST_DEVICE" "30000"
+>> +}
+> The size of loop device is 20000 currently, but there is no guarantee that value will not be changed in the future. "10000" and "30000" may be inappropriate at that time.In my opinion, it is more reasonable like this:
+> 
+> test2()
+> {
+>     mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-10000))"
+> }
+> 
+> test3()
+> {
+>     mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+10000))"
+> }
+
+Yes, it's more reasonably, thanks.
+
+>> +
+>> +test4()
+>> +{
+>> +    mkswap_test "-c" "" "$TST_DEVICE"
+>> +}
+>> +
+>> +test5()
+>> +{
+>> +    mkswap_test "-p" "2048" "$TST_DEVICE"
+>> +}
+>> +
+>> +test6()
+>> +{
+>> +    mkswap_test "-L" "testswap" "$TST_DEVICE"
+>> +}
+>> +
+>> +test7()
+>> +{
+>> +    mkswap_test "-v1" "" "$TST_DEVICE"
+>> +}
+>> +
+>> +test8()
+>> +{
+>> +    mkswap_test "-U" "ffffffff-ffff-ffff-ffff-ffffffffffff" "$TST_DEVICE"
+>> +}
+>> +
+>> +test9()
+>> +{
+>> +    mkswap_test "-V"
+>> +}
+>> +
+>> +test10()
+>> +{
+>> +    mkswap_test "-h"
+>> +}
+>> +
+>> +setup
+>> +
+>> +for i in $(seq 1 ${TST_TOTAL})
+>> +do
+>> +    test$i
+>> +done
+>> +
+>> +tst_exit
+>>
+> 
