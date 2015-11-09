@@ -1,40 +1,77 @@
-From: Eryu Guan <eguan@redhat.com>
-Date: Sat, 31 Oct 2015 14:43:19 +0800
-Subject: [LTP] [PATCH 1/2] test_robind.sh: set default FSTYPES to
-	LTP_BIG_DEV_FS_TYPE
-Message-ID: <1446273800-2494-1-git-send-email-eguan@redhat.com>
-List-Id: <ltp.lists.linux.it>
+Return-Path: <ltp-list-bounces@lists.sourceforge.net>
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <metan@suse.de>) id 1Zvlwx-0004fh-Gh
+	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2015 12:53:31 +0000
+Received: from mx2.suse.de ([195.135.220.15])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1Zvlwu-0003XO-Fp
+	for ltp-list@lists.sourceforge.net; Mon, 09 Nov 2015 12:53:31 +0000
+Date: Mon, 9 Nov 2015 13:50:22 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Message-ID: <20151109125022.GA20990@rei>
+References: <CAOVJa8FYtVzST_sEkeWxaEVFCC1FBo_ASgDjncAy50AaYiFGhA@mail.gmail.com>
+	<20151022105504.GA7192@rei.suse.cz>
+	<CAOVJa8E1YNg5a2ZeTHY_vpDPJkntpXsys9usaHQNYvBAxDWYcg@mail.gmail.com>
+	<20151022121307.GB7192@rei.suse.cz>
+	<CAOVJa8EfpYnYXriEa9XeDxH=6vwrprqT2FE+qNugyzw4oY6skg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <CAOVJa8EfpYnYXriEa9XeDxH=6vwrprqT2FE+qNugyzw4oY6skg@mail.gmail.com>
+Subject: Re: [LTP] how to cross compile linux test project?
+List-Id: Linux Test Project General Discussions
+	<ltp-list.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
+	<mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
+List-Post: <mailto:ltp-list@lists.sourceforge.net>
+List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
+	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: ltp@lists.linux.it
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: vichy <vichy.kuo@gmail.com>
+Cc: ltp-list@lists.sourceforge.net, ltp@lists.linux.it
 
-In test_robind.sh LTP_BIG_DEV is used, so use LTP_BIG_DEV_FS_TYPE as
-default fs type accordingly. If LTP_BIG_DEV_FS_TYPE is not set, fall
-back to ext3.
+Hi!
+> I can successfully configure the LTP for arm cross-compiling.
+> But I found even if I enable posix-testsuites with below configs:
+> ./configure AR=arm-buildroot-linux-gnueabi-ar
+> CC=arm-buildroot-linux-gnueabi-gcc
+> RANLIB=arm-buildroot-linux-gnueabi-ranlib
+> STRIP=arm-buildroot-linux-gnueabi-strip --host=arm-linux
+> --target=arm-buildroot-linux LDFLAGS=-pthread
+> --with-open-posix-testsuite
+> 
+> the test binary located in testcases/open_posix_testsuite/conformance/
+> are sill for X86, Not for the host, arm, I configure.
+> 
+> Is there anything I need to take care for cross compiling
+> --with-open-posix-testsuite?
+> or --with-open-posix-testsuite so far not support cross compile ?
+> 
+> appreciate your kind help in advance,
 
-Signed-off-by: Eryu Guan <eguan@redhat.com>
----
- testcases/kernel/fs/fs_readonly/test_robind.sh | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+The build system for Open Posix Testsuite is not integrated with the
+rest of the build system. But it shouldn't need anything more than
+setting up right compiler:
 
-diff --git a/testcases/kernel/fs/fs_readonly/test_robind.sh b/testcases/kernel/fs/fs_readonly/test_robind.sh
-index 0513275..5674ca4 100755
---- a/testcases/kernel/fs/fs_readonly/test_robind.sh
-+++ b/testcases/kernel/fs/fs_readonly/test_robind.sh
-@@ -123,9 +123,10 @@ setup()
- 		mkdir -p $dir
- 	done
- 
--	# populating the default FS as ext3, if FS is not given
-+	# populating the default FS as $LTP_BIG_DEV_FS_TYPE
-+	# (or ext3 if it's not set), if FS is not given
- 	if [ -z "$*" ]; then
--		FSTYPES="ext3"
-+		FSTYPES=${LTP_BIG_DEV_FS_TYPE:-ext3}
- 	else
- 		FSTYPES="$*"
- 	fi
+$ export CC=arm-buildroot-linux-gnueabi-gcc
+$ make
+
 -- 
-2.4.3
+Cyril Hrubis
+chrubis@suse.cz
 
+------------------------------------------------------------------------------
+Presto, an open source distributed SQL query engine for big data, initially
+developed by Facebook, enables you to easily query your data on Hadoop in a 
+more interactive manner. Teradata is also now providing full enterprise
+support for Presto. Download a free open source copy now.
+http://pubads.g.doubleclick.net/gampad/clk?id=250295911&iu=/4140
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
