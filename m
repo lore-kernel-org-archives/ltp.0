@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 9 Nov 2015 16:53:03 +0100
-Subject: [LTP] [PATCH v2] containers/netns/netns_sysfs.sh:load dummy
- module before collecting sysfs interface
-In-Reply-To: <1446806068-5388-1-git-send-email-shuang.qiu@oracle.com>
-References: <1446806068-5388-1-git-send-email-shuang.qiu@oracle.com>
-Message-ID: <20151109155303.GB23947@rei>
+Date: Mon, 9 Nov 2015 18:51:27 +0100
+Subject: [LTP] [PATCH] controllers/cpuacct: rewrote testcases
+In-Reply-To: <1447061722-12065-1-git-send-email-chnyda@suse.com>
+References: <1447061722-12065-1-git-send-email-chnyda@suse.com>
+Message-ID: <20151109175127.GC23947@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,9 +11,363 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I've pushed the version from Jiri, that filters dummy modules.
+> +cpuacct_1_1 cpuacct.sh 1 1
+> +cpuacct_1_1 cpuacct.sh 1 10
+> +cpuacct_1_1 cpuacct.sh 10 10
+> +cpuacct_1_1 cpuacct.sh 1 100
+> +cpuacct_1_1 cpuacct.sh 100 1
+> +cpuacct_1_1 cpuacct.sh 100 100
+   ^
+   These should be cpuacct_100_100, etc., right?
 
-Thanks for the patch anyway.
+
+> --- /dev/null
+> +++ b/testcases/kernel/controllers/cpuacct/cpuacct.sh
+> @@ -0,0 +1,221 @@
+> +#!/bin/bash
+> +
+> +################################################################################
+> +##                                                                            ##
+> +## Copyright (c) 2015 SUSE                                                    ##
+> +##                                                                            ##
+> +## This program is free software;  you can redistribute it and#or modify      ##
+> +## it under the terms of the GNU General Public License as published by       ##
+> +## the Free Software Foundation; either version 2 of the License, or          ##
+> +## (at your option) any later version.                                        ##
+> +##                                                                            ##
+> +## This program is distributed in the hope that it will be useful, but        ##
+> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> +## for more details.                                                          ##
+> +##                                                                            ##
+> +## You should have received a copy of the GNU General Public License          ##
+> +## along with this program;  if not, write to the Free Software               ##
+> +## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301   ##
+> +## USA                                                                        ##
+> +##                                                                            ##
+> +## Author: Cedric Hnyda <chnyda@suse.com>                                     ##
+> +##                                                                            ##
+> +################################################################################
+> +
+> +# Usage
+> +# ./cpuacct.sh nbsubgroup nbprocess
+> +#
+> +# 1) nbsubgroup : number of subgroup to create
+> +# 2) nbprocess : number of process to attach to each subgroup
+> +#
+> +# Description
+> +#
+> +# 1) Find if cpuacct is mounted, if not mounted, cpuacct will be mounted
+> +# 2) Create a subgroup ltp_test in cpuacct
+> +# 3) Create nbsubgroup subgroup in ltp_test and attach them nbprocess process
+> +# 4) Check that every subgroup's tasks file is not empty (test1)
+> +# 5) Kill all created process
+> +# 6) Check that ltp_test/subgroup*/cpuacct.usage != 0 (test2)
+> +# 7) Check that sum ltp_test/subgroup*/cpuacct.usage = ltp_test/cpuacct.usage
+> +# (test3)
+> +# 8) cleanup
+> +
+> +
+> +mounted=1
+> +mount_point=""
+> +max=$1
+> +nbprocess=$2
+> +
+> +cd $LTPROOT/testcases/bin
+> +
+> +cnt=1
+> +for arg; do
+> +	if [ $cnt -gt 1 ]; then
+> +		NAME+="_"
+> +		NAME+=$arg
+> +	fi
+> +	cnt=$(( $cnt + 1 ))
+> +done
+
+Hmm, for cycle over two arguments is kind of overkill if you could have
+done just do TCID="cpuacct_$1_$2"
+
+> +PREFIX="cpuacct_"
+> +
+> +export TCID=$PREFIX$1$NAME
+> +export TESTROOT=`pwd`
+> +export TST_TOTAL=3;
+> +export TST_COUNT=1;
+> +TMPFILE="$TESTROOT/tmp_tasks"
+
+Please use tst_tmpdir and tst_rmdir from test.sh instead. The $PWD is
+not guaranteed to be writeable.
+
+> +status=0
+> +
+> +verify_result()
+> +{
+> +	result=$1
+> +	expected=$2
+> +	message=$3
+> +	if [ "$result" -ne "$expected" ]; then
+> +		tst_resm TINFO "expected $expected, got $result"
+> +		cleanup;
+> +		tst_brkm TCONF NULL $message
+> +		exit 32
+
+Please use the test.sh test library. The tst_brkm from the library calls
+exit and behaves the same as the C function. The only reason we actually
+suppport the tst_* binaries are testcases that still use them.
+
+> +	fi
+> +}
+> +
+> +mount_cpuacct()
+> +{
+> +	mount -t cgroup -o cpuacct none $mount_point
+> +	verify_result $? 0 "Error occured while mounting cgroup"
+
+Interesting idea. Maybe we should add such function to the test.sh
+library. Something that would call tst_brkm on non zero $?. Something
+as:
+
+mount -t cgroup -o cpuacct none $mount_point
+tst_brkm_err TCONF "Failed to mount cgroup $mount_point"
+
+and the test.sh would have:
+
+tst_brkm_err()
+{
+	if [ $? -ne 0 ]; then
+		tst_brkm $@
+	fi
+}
+
+> +}
+> +
+> +umount_cpuacct()
+> +{
+> +	tst_resm TINFO "Umounting cpuacct"
+> +	umount $mount_point
+> +	verify_result $? 0 "Error occured while umounting cgroup"
+> +}
+> +
+> +do_mkdir()
+> +{
+> +	path=$1
+
+This is pretty much useless, can we do just mkdir -p $1 instead?
+
+> +	mkdir -p $path
+> +	verify_result $? 0 "Error occured with mkdir"
+
+This is TBROK rather than TCONF.
+
+> +}
+> +
+> +do_rmdir()
+> +{
+> +	path=$1
+> +	rmdir $path
+> +	verify_result $? 0 "Error occured with rmdir"
+
+Here as well.
+
+> +}
+> +
+> +setup()
+> +{
+> +	mount_point=`grep -w cpuacct /proc/mounts | cut -f 2 | cut -d " " -f2`
+> +	tst_resm TINFO "cpuacct: $mount_point"
+> +	if [ "$mount_point" = "" ]; then
+> +		mounted=0
+> +		mount_point=/dev/cgroup
+> +	fi
+> +
+> +	testpath=$mount_point/ltp_test
+                                   ^
+				   Maybe we can do ltp_$TCID here so
+				   it's clear which test has created it.
+
+> +	if [ -e $testpath ]; then
+> +		rmdir $testpath/subgroup_*;
+> +		rmdir $testpath;
+> +	fi
+
+I would omit cleanups in setup like this.
+
+> +	if [ "$mounted" -eq "0" ]; then
+> +		do_mkdir $mount_point
+> +		mount_cpuacct
+> +	fi
+> +	do_mkdir $testpath
+> +	for i in `seq 1 $max`
+> +	do
+> +		do_mkdir $testpath/subgroup_$i
+> +	done
+> +
+> +	for i in `seq 1 $max`
+> +	do
+> +		for j in `seq 1 $nbprocess`
+> +		do
+> +			cpuacct_task.sh $testpath/subgroup_$i/tasks &
+> +		done
+> +	done
+> +
+> +	sleep 1
+
+So we sleep here to get count someting on the cpu counters. Maybe it
+deserves a little comment, something as
+
+# sleep a little to accumulate some statistics
+
+> +}
+> +
+> +cleanup()
+> +{
+> +	tst_resm TINFO "removing created directories"
+> +	rmdir $testpath/subgroup_*;
+> +	rmdir $testpath;
+> +	killall -9 cpuacct_task.sh 1> /dev/null 2>&1;
+> +	if [ "$mounted" -ne 1 ] ; then
+> +		umount $mount_point
+> +		do_rmdir $mount_point
+> +	fi
+> +}
+> +
+> +##########################  main   #######################
+
+Please no comments as this one.
+
+> +setup;
+> +
+> +error=0
+> +tst_resm TINFO "killing created process"
+> +for j in `seq 1 $max`
+> +do
+> +	cat $testpath/subgroup_$j/tasks > $TMPFILE
+> +	nlines=`cat $TMPFILE | wc -l`
+> +	if [ "$nlines" -eq "0" ]; then
+> +		error=1
+> +		status=1
+> +	fi
+> +	for i in `seq 1 $nlines`
+> +	do
+> +		cur_pid=`sed -n "$i""p" $TMPFILE`
+> +		if [ -e /proc/$cur_pid/ ];then
+> +			kill "$cur_pid"
+> +		fi
+> +	done
+
+        Eh, why don't you do just:
+
+	for pid in `cat $TMPFILE`; do
+		if [ -e /proc/$pid/; then
+			kill $pid
+		fi
+	done
+
+
+> +done
+
+Ah, you started the processes in the setup. It's kind of confusing to
+start test by killing processes. I would rather start them here than in
+the setup.
+
+> +sleep 1
+
+But why do we sleep here? To wait for the processes to terminate? In
+that case we should really rather do wait for all the pids we have
+killed.
+
+> +## check that every subgroup has at least one process in tasks file
+> +if [ "$error" -eq "1" ]; then
+> +	tst_resm TFAIL "Some subgroup didn't have any pid in their tasks file"
+> +else
+> +	tst_resm TPASS "subgroups' tasks files are not empty"
+> +fi
+> +
+> +acc=0
+> +error=0
+> +for i in `seq 1 $max`
+> +do
+> +    tmp=`cat $testpath/subgroup_$i/cpuacct.usage`
+> +    if [ "$tmp" -eq "0" ]; then
+> +    	error=1
+> +    	status=1
+> +    fi
+> +    ((acc = acc + tmp))
+> +done
+
+Please decide on consitent way of indentation and use it. This part
+mixes four spaces and tabs.
+
+> +## check that cpuacct.usage != 0 for every subgroup
+> +((TST_COUNT = TST_COUNT + 1))
+> +if [ "$error" -eq "1" ]; then
+> +	tst_resm TFAIL "cpuacct.usage should not be equal to 0"
+> +else
+> +	tst_resm TPASS "cpuacct.usage is not equal to 0 for every subgroup"
+> +fi
+
+I'm not 100% sure that this assertion will always hold. I will have to
+look into this.
+
+> +## check that ltp_subgroup/cpuacct.usage == sum ltp_subgroup/subgroup*/cpuacct.usage
+> +((TST_COUNT = TST_COUNT + 1))
+
+This shoudn't be done here (the test.sh library does things like that
+for you).
+
+> +ref=`cat $testpath/cpuacct.usage`
+> +if [ "$ref" != "$acc" ]; then
+> +	tst_resm TFAIL "ltp_test/cpuacct.usage not equal to ltp_test/subgroup*/cpuacct.usage"
+> +	status=1
+> +else
+> +	tst_resm TPASS "ltp_test/cpuacct.usage equal to ltp_test/subgroup*/cpuacct.usage"
+> +fi
+> +
+> +cleanup;
+> +exit $status
+
+If you used the tst_resm from . test.sh library you do not need to store
+the status and use it here. Just call tst_exit as in the C library.
+
+> diff --git a/testcases/kernel/controllers/cpuacct/cpuacct_task.sh b/testcases/kernel/controllers/cpuacct/cpuacct_task.sh
+> new file mode 100755
+> index 0000000..54a9d65
+> --- /dev/null
+> +++ b/testcases/kernel/controllers/cpuacct/cpuacct_task.sh
+> @@ -0,0 +1,30 @@
+> +#!/bin/bash
+> +
+> +################################################################################
+> +##                                                                            ##
+> +## Copyright (c) 2015 SUSE                                                    ##
+> +##                                                                            ##
+> +## This program is free software;  you can redistribute it and#or modify      ##
+> +## it under the terms of the GNU General Public License as published by       ##
+> +## the Free Software Foundation; either version 2 of the License, or          ##
+> +## (at your option) any later version.                                        ##
+> +##                                                                            ##
+> +## This program is distributed in the hope that it will be useful, but        ##
+> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+> +## for more details.                                                          ##
+> +##                                                                            ##
+> +## You should have received a copy of the GNU General Public License          ##
+> +## along with this program;  if not, write to the Free Software               ##
+> +## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+
+Please fix this overflow by moving "Foundation," to the previous line.
+
+> +##                                                                            ##
+> +## Author: Cedric Hnyda <chnyda@suse.com>                                     ##
+> +##                                                                            ##
+> +################################################################################
+> +
+> +echo $$ > $1
+> +i=0
+> +while :
+> +do
+> +	i=$i
+> +done
 
 -- 
 Cyril Hrubis
