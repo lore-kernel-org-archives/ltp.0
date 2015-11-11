@@ -1,247 +1,279 @@
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Wed, 11 Nov 2015 19:28:59 +0800
-Subject: [LTP] [PATCH v2] sched_setattr/sched_setattr01: Add new testcase
- for sched_setattr
-In-Reply-To: <20151110131940.GF23947@rei>
-References: <1446801572-215993-1-git-send-email-cuibixuan@huawei.com>
- <20151110131940.GF23947@rei>
-Message-ID: <5643267B.5020109@huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 11 Nov 2015 21:13:45 +0800
+Subject: [LTP] [PATCH v3] signal: add new testcase signal06.c
+Message-ID: <1447247625-4941-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add new testcase for sched_setattr
+v2 --> v3
+	1. add filename to .gitignore
+	2. use TEST() macro in someplace
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+the comments from Oleg's patch:
+
+save_xstate_sig()->drop_init_fpu() doesn't look right. setup_rt_frame()
+can fail after that, in this case the next setup_rt_frame() triggered
+by SIGSEGV won't save fpu simply because the old state was lost. This
+obviously mean that fpu won't be restored after sys_rt_sigreturn() from
+SIGSEGV handler.
+
+this issue was fixed on kernel v3.17-rc3-3:
+
+        commit df24fb859a4e200d9324e2974229fbb7adf00aef
+  		Author: Oleg Nesterov <oleg@redhat.com>
+  		Date:   Tue Sep 2 19:57:17 2014 +0200
+
+        commit 66463db4fc5605d51c7bb81d009d5bf30a783a2c
+                Author: Oleg Nesterov <oleg@redhat.com>
+                Date:   Tue Sep 2 19:57:13 2014 +0200
+
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
-V2:
-    * Delete #include "linux_syscall_numbers.h";
-    * Change run_deadline() to do_test();
-    * Initialize structure attr at the beginning in sched_setattr01.c;
-    * Delete 'errno = 0' in sched_setattr_verify();
-    * Change some print message
+ runtest/ltplite                             |   1 +
+ runtest/stress.part3                        |   1 +
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/.gitignore        |   1 +
+ testcases/kernel/syscalls/signal/Makefile   |   2 +
+ testcases/kernel/syscalls/signal/signal06.c | 169 ++++++++++++++++++++++++++++
+ 6 files changed, 175 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/signal/signal06.c
 
- runtest/sched                                      |    1 +
- runtest/syscalls                                   |    1 +
- testcases/kernel/syscalls/.gitignore               |    1 +
- testcases/kernel/syscalls/sched_setattr/Makefile   |   25 ++++
- .../syscalls/sched_setattr/sched_setattr01.c       |  136 ++++++++++++++++++++
- 5 files changed, 164 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/sched_setattr/Makefile
- create mode 100644 testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
-
-diff --git a/runtest/sched b/runtest/sched
-index 4b8a1df..89398df 100644
---- a/runtest/sched
-+++ b/runtest/sched
-@@ -9,6 +9,7 @@ trace_sched01		trace_sched -c 1
- hackbench01 hackbench 50 process 1000
- hackbench02 hackbench 20 thread 1000
-
-+sched_setattr01 sched_setattr01
- sched_getattr01 sched_getattr01
- sched_getattr02 sched_getattr02
-
+diff --git a/runtest/ltplite b/runtest/ltplite
+index aaa5c73..f2c9dcf 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -840,6 +840,7 @@ signal02 signal02
+ signal03 signal03
+ signal04 signal04
+ signal05 signal05
++signal06 signal06
+ 
+ sigpending02 sigpending02
+ 
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 63505ec..36bb16f 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -744,6 +744,7 @@ signal02 signal02
+ signal03 signal03
+ signal04 signal04
+ signal05 signal05
++signal06 signal06
+ 
+ sigpending02 sigpending02
+ 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 724ab66..469baee 100644
+index 958f66e..cfbcbea 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -922,6 +922,7 @@ sched_yield01 sched_yield01
- sched_setaffinity01 sched_setaffinity01
- sched_getaffinity01 sched_getaffinity01
-
-+sched_setattr01 sched_setattr01
- sched_getattr01 sched_getattr01
- sched_getattr02 sched_getattr02
-
+@@ -1143,6 +1143,7 @@ signal02 signal02
+ signal03 signal03
+ signal04 signal04
+ signal05 signal05
++signal06 signal06
+ 
+ signalfd01 signalfd01
+ 
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index aba112b..c53f0d4 100644
+index 6e4894a..8b36869 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -752,6 +752,7 @@
- /sched_rr_get_interval/sched_rr_get_interval02
- /sched_rr_get_interval/sched_rr_get_interval03
- /sched_setaffinity/sched_setaffinity01
-+/sched_setattr/sched_setattr01
- /sched_setparam/sched_setparam01
- /sched_setparam/sched_setparam02
- /sched_setparam/sched_setparam03
-diff --git a/testcases/kernel/syscalls/sched_setattr/Makefile b/testcases/kernel/syscalls/sched_setattr/Makefile
+@@ -908,6 +908,7 @@
+ /signal/signal03
+ /signal/signal04
+ /signal/signal05
++/signal/signal06
+ /signalfd/signalfd01
+ /signalfd4/signalfd4_01
+ /signalfd4/signalfd4_02
+diff --git a/testcases/kernel/syscalls/signal/Makefile b/testcases/kernel/syscalls/signal/Makefile
+index bd617d8..dad2a7d 100644
+--- a/testcases/kernel/syscalls/signal/Makefile
++++ b/testcases/kernel/syscalls/signal/Makefile
+@@ -21,3 +21,5 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++signal06: CFLAGS+=-pthread
+diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel/syscalls/signal/signal06.c
 new file mode 100644
-index 0000000..30718a9
+index 0000000..479522b
 --- /dev/null
-+++ b/testcases/kernel/syscalls/sched_setattr/Makefile
-@@ -0,0 +1,25 @@
-+#
-+#  Copyright (c) Huawei Technologies Co., Ltd., 2015
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program;  if not, write to the Free Software
-+#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+CFLAGS			+= -pthread
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c b/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
-new file mode 100644
-index 0000000..63cf890
---- /dev/null
-+++ b/testcases/kernel/syscalls/sched_setattr/sched_setattr01.c
-@@ -0,0 +1,136 @@
++++ b/testcases/kernel/syscalls/signal/signal06.c
+@@ -0,0 +1,169 @@
 +/*
-+ * Copyright (c) Huawei Technologies Co., Ltd., 2015
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
++ * Copyright (c) 2015   Author: Oleg Nesterov <oleg@redhat.com>
++ *                      Modify: Li Wang <liwang@redhat.com>
 + *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ */
-+ /* Description:
-+ *   Verify that:
-+ *              1) sched_setattr succeed with correct parameters
-+ *              2) sched_setattr fails with unused pid
-+ *              3) sched_setattr fails with invalid address
-+ *              4) sched_setattr fails with invalid flag
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * you should have received a copy of the GNU General Public License along
++ * with this program; if not, write the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 + */
 +
-+#define _GNU_SOURCE
-+#include <unistd.h>
++/*
++ * Description:
++ *
++ *      save_xstate_sig()->drop_init_fpu() doesn't look right. setup_rt_frame()
++ *      can fail after that, in this case the next setup_rt_frame() triggered
++ *      by SIGSEGV won't save fpu simply because the old state was lost. This
++ *      obviously mean that fpu won't be restored after sys_rt_sigreturn() from
++ *      SIGSEGV handler.
++ *
++ *      These commits fix the issue on v3.17-rc3-3 stable kernel:
++ *
++ *      commit df24fb859a4e200d9324e2974229fbb7adf00aef
++ * 		Author: Oleg Nesterov <oleg@redhat.com>
++ * 		Date:   Tue Sep 2 19:57:17 2014 +0200
++ *
++ *      commit 66463db4fc5605d51c7bb81d009d5bf30a783a2c
++ *               Author: Oleg Nesterov <oleg@redhat.com>
++ *               Date:   Tue Sep 2 19:57:13 2014 +0200
++ *
++ * Reproduce:
++ *	Test-case (needs -O2).
++ */
++
 +#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <time.h>
-+#include <linux/unistd.h>
-+#include <linux/kernel.h>
-+#include <linux/types.h>
++#include <signal.h>
++#include <unistd.h>
 +#include <sys/syscall.h>
++#include <sys/mman.h>
 +#include <pthread.h>
-+#include <sched.h>
++#include <assert.h>
 +#include <errno.h>
 +
 +#include "test.h"
-+#include "lapi/sched.h"
++#include "linux_syscall_numbers.h"
 +
-+char *TCID = "sched_setattr01";
++char *TCID = "signal06";
++int TST_TOTAL = 5;
 +
-+#define SCHED_DEADLINE	6
-+#define RUNTIME_VAL 10000000
-+#define PERIOD_VAL 30000000
-+#define DEADLINE_VAL 30000000
++#if __x86_64__
 +
-+static pid_t pid;
-+static pid_t unused_pid;
++#define LOOPS 10000
 +
-+static struct sched_attr attr = {
-+	.size = sizeof(struct sched_attr),
-+	.sched_flags = 0,
-+	.sched_nice = 0,
-+	.sched_priority = 0,
++volatile double D;
++volatile int FLAGE;
 +
-+	.sched_policy = SCHED_DEADLINE,
-+	.sched_runtime = RUNTIME_VAL,
-+	.sched_period = PERIOD_VAL,
-+	.sched_deadline = DEADLINE_VAL,
-+};
++char altstack[4096 * 10] __attribute__((aligned(4096)));
 +
-+static struct test_case {
-+	pid_t *pid;
-+	struct sched_attr *a;
-+	unsigned int flags;
-+	int exp_return;
-+	int exp_errno;
-+} test_cases[] = {
-+	{&pid, &attr, 0, 0, 0},
-+	{&unused_pid, &attr, 0, -1, ESRCH},
-+	{&pid, NULL, 0, -1, EINVAL},
-+	{&pid, &attr, 1000, -1, EINVAL}
-+};
-+
-+static void setup(void);
-+static void sched_setattr_verify(const struct test_case *test);
-+
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+
-+void *do_test(void *data LTP_ATTRIBUTE_UNUSED)
++void test(double d)
 +{
-+	int i;
++	int loop = 0;
++	int pid = getpid();
 +
-+	for (i = 0; i < TST_TOTAL; i++)
-+		sched_setattr_verify(&test_cases[i]);
++	D = d;
++	while (D == d && loop < LOOPS) {
++		/* sys_tkill(pid, SIGHUP); asm to avoid save/reload
++		 * fp regs around c call */
++		asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
++		asm ("syscall" : : : "ax");
 +
-+	return NULL;
-+}
-+
-+static void sched_setattr_verify(const struct test_case *test)
-+{
-+	TEST(sched_setattr(*(test->pid), test->a, test->flags));
-+
-+	if (TEST_RETURN != test->exp_return) {
-+		tst_resm(TFAIL | TTERRNO, "sched_setattr() return "
-+			"unexpectedly: expected: %d", test->exp_return);
-+		return;
++		loop++;
 +	}
 +
-+	if (TEST_ERRNO == test->exp_errno) {
-+		tst_resm(TPASS | TTERRNO,
-+			"sched_setattr() works as expected");
-+		return;
-+	}
++	FLAGE = 1;
++	tst_resm(TINFO, "loop = %d", loop);
 +
-+	tst_resm(TFAIL | TTERRNO, "sched_setattr() return unexpectedly "
-+		": expected: %d - %s",
-+		test->exp_errno, tst_strerrno(test->exp_errno));
++	if (loop == LOOPS) {
++		tst_resm(TPASS, "%s call succeeded", TCID);
++	} else {
++		tst_resm(TFAIL, "Bug Reproduced!");
++		tst_exit();
++	}
 +}
 +
-+int main(int argc, char **argv)
++void sigh(int sig LTP_ATTRIBUTE_UNUSED)
 +{
-+	pthread_t thread;
-+	int lc;
++}
 +
-+	tst_parse_opts(argc, argv, NULL, NULL);
++void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
++{
++	FLAGE = 0;
 +
-+	setup();
++	for (; ;) {
++		TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
++		if (TEST_RETURN == -1)
++			tst_brkm(TBROK | TRERRNO, NULL, "mprotect failed");
++
++		TEST(mprotect(altstack, sizeof(altstack), PROT_READ|PROT_WRITE));
++		if (TEST_RETURN == -1)
++			tst_brkm(TBROK | TRERRNO, NULL, "mprotect failed");
++
++		if (FLAGE == 1)
++			return NULL;
++	}
++}
++
++int main(int ac, char **av)
++{
++	int i, lc;
++	pthread_t pt;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	stack_t st = {
++		.ss_sp = altstack,
++		.ss_size = sizeof(altstack),
++		.ss_flags = SS_ONSTACK,
++	};
++
++	struct sigaction sa = {
++		.sa_handler = sigh,
++	};
++
++	TEST(sigaction(SIGSEGV, &sa, NULL));
++	if (TEST_RETURN == -1)
++		tst_brkm(TBROK | TRERRNO, NULL,
++				"SIGSEGV signal setup failed");
++	sigaltstack(&st, NULL);
++	sa.sa_flags = SA_ONSTACK;
++
++	TEST(sigaction(SIGHUP, &sa, NULL));
++	if (TEST_RETURN == -1)
++		tst_brkm(TBROK | TRERRNO, NULL,
++				"SIGHUP signal setup failed");
 +
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		pthread_create(&thread, NULL, do_test, NULL);
-+		pthread_join(thread, NULL);
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++) {
++
++			TEST(pthread_create(&pt, NULL, tfunc, NULL));
++			if (TEST_RETURN)
++				tst_brkm(TBROK | TRERRNO, NULL,
++						"pthread_create failed");
++
++			test(123.456);
++
++			TEST(pthread_join(pt, NULL));
++			if (TEST_RETURN)
++				tst_brkm(TBROK | TRERRNO, NULL,
++						"pthread_join failed");
++		}
 +	}
 +
 +	tst_exit();
 +}
 +
-+void setup(void)
++#else
++int main(void)
 +{
-+	unused_pid = tst_get_unused_pid(setup);
-+
-+	tst_require_root();
-+
-+	if ((tst_kvercmp(3, 14, 0)) < 0)
-+		tst_brkm(TCONF, NULL, "EDF needs kernel 3.14 or higher");
-+
-+	TEST_PAUSE;
++	tst_brkm(TCONF, NULL, "Only test on x86_64.");
 +}
++#endif
 -- 
-1.6.0.2 .
-
+1.8.3.1
 
