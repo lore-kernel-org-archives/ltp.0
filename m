@@ -1,92 +1,72 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 11 Nov 2015 12:44:32 +0300
-Subject: [LTP] [PATCH v2] commands/mkswap: Added new testcase to test
-	mkswap(8).
-In-Reply-To: <1447056173-8979-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <563C94F5.9040803@oracle.com>
- <1447056173-8979-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <56430E00.1050708@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 11 Nov 2015 05:20:58 -0500 (EST)
+Subject: [LTP] [RFC] Getting rid of cleanup parameter
+In-Reply-To: <20151110141426.GG23947@rei>
+References: <20151110141426.GG23947@rei>
+Message-ID: <138416734.6863400.1447237258306.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 11/09/2015 11:02 AM, Guangwen Feng wrote:
-> Test mkswap(8) command with some basic options.
->
-> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> ---
->   runtest/commands                      |   1 +
->   testcases/commands/mkswap/Makefile    |  22 +++++
->   testcases/commands/mkswap/mkswap01.sh | 155 ++++++++++++++++++++++++++++++++++
->   3 files changed, 178 insertions(+)
->   create mode 100644 testcases/commands/mkswap/Makefile
->   create mode 100755 testcases/commands/mkswap/mkswap01.sh
-...
-> ...
-> +
-> +mkswap_verify()
-> +{
-> +	local mkswap_op=$1
-> +	local op_arg=$2
-> +	local device=$3
-> +	local size=$4
-> +
-> +	local ret=0
-> +
-> +	local before=`free | grep "Swap" | awk '{print $2}'`
-> +
-> +	if [ -z "$size" ]; then
-> +		local swapsize=$DEVICE_SIZE
-> +	else
-> +		local swapsize=$size
-> +	fi
 
-No need to check it here if you define single variable, i.e. 
-size=${4:-$DEVICE_SIZE}
 
-> +
-> +	if [ "$mkswap_op" = "-p" ]; then
-> +		local pagesize=$op_arg
-> +	else
-> +		local pagesize=$PAGE_SIZE
-> +	fi
-> +
-> +	if [ "$mkswap_op" = "-L" ]; then
-> +		local swap_op="-L"
-> +		local swapfile=$op_arg
-> +	elif [ "$mkswap_op" = "-U" ]; then
-> +		local swap_op="-U"
 
-'swap_op' var is redundant, instead just set "mkswap_op=" in the else 
-branch below.
 
-> +		local swapfile=$op_arg
-> +	else
-> +		local swap_op=""
-> +		local swapfile=$device
-> +	fi
-> +
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: ltp@lists.linux.it
+> Sent: Tuesday, 10 November, 2015 3:14:26 PM
+> Subject: [LTP] [RFC] Getting rid of cleanup parameter
+> 
+> Hi!
+> I was looking into the LTP API expecially the tst_res* part to make it
+> cleaner and easier to use and one of the things I would like to change
+> is how we execute the cleanup function.
+> 
+> Currenlty we pass the cleanup as function parameter. The 99% of the time
+> we just pass the very same function to every call with the exception of
+> the calls in the cleanup function itself. And the callback function is
+> made in a way that it could be called at any point in the setup() as
+> well.
+> 
+> The common mistakes with that API is that people pass cleanup() paramter
+> to functions in cleanup() and to tst api in child processes. But as we
+> use it now the cleanup can be set exactly once and called from the test
+> library which could make sure that it's called exactly once, etc.
+> 
+> So my proposal is to add a call to set cleanup function,
+> tst_set_cleanup(void (*cleanup)(void)) that would be called once in the
+> setup and would store the function pointer, which would later be called
+> either when test exits prematurely or on tst_exit().
 
-> +	swapon $swap_op $swapfile 2>/dev/null
-> +	if [ $? -ne 0 ]; then
-> +		tst_resm TINFO "can not do swapon on $swapfile."
-> +		if [ $pagesize -ne $PAGE_SIZE ]; then
-> +			return $ret
-> +		fi
-> +
-> +		if [ $swapsize -gt $DEVICE_SIZE ]; then
-> +			return $ret
-> +		fi
-> +	fi
-> +
+Just thinking loud, how this would work:
 
-There are two conditions that returns 0 when swapon command fails. If it 
-is expected result, could you provide more informative tst_resm message 
-in each case. Other cases should return 1, right? But the test proceeds 
-further.
+Is the scope of cleanup set with tst_set_cleanup() going to be per process?
+For example: If I call tst_set_cleanup() and then fork couple children,
+will they automatically ignore cleanup function set in parent?
+Can I use tst_set_cleanup() in child process to setup child-specific
+cleanup function?
 
-Thanks,
-Alexey
+> When the cleanup
+> function was set with this interface the cleanup paramter for all
+> functions would be ignored (we may create static inline wrappers that
+> sets it to NULL to be used from new code).
+
+And perhaps trigger a warning/TBROK if user tries to pass non-NULL
+value while he's using the new tst_set_cleanup() approach.
+
+Regards,
+Jan
+
+> 
+> Does everybody agree with this change?
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
