@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Nov 2015 14:30:43 +0100
-Subject: [LTP] [RFC] Getting rid of cleanup parameter
-In-Reply-To: <138416734.6863400.1447237258306.JavaMail.zimbra@redhat.com>
-References: <20151110141426.GG23947@rei>
- <138416734.6863400.1447237258306.JavaMail.zimbra@redhat.com>
-Message-ID: <20151111133042.GA26695@rei.lan>
+Date: Wed, 11 Nov 2015 15:19:14 +0100
+Subject: [LTP] [PATCH V3] controllers/cpuacct: rewrote testcases
+In-Reply-To: <1447237853-26134-1-git-send-email-chnyda@suse.com>
+References: <1447237853-26134-1-git-send-email-chnyda@suse.com>
+Message-ID: <20151111141914.GB26695@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,39 +11,88 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Just thinking loud, how this would work:
-> 
-> Is the scope of cleanup set with tst_set_cleanup() going to be per process?
-> For example: If I call tst_set_cleanup() and then fork couple children,
-> will they automatically ignore cleanup function set in parent?
+Pushed with minor changes, see below.
 
-It has to be per process, since othewise we would have the callback
-called twice problem again. I.e. the callback set in test setup() would
-be executed only if tst_* call that caused exit was called from the same
-process it has been set up.
+> +export TCID="cpuacct_$1_$2"
+> +export TST_TOTAL=3
 
-> Can I use tst_set_cleanup() in child process to setup child-specific
-> cleanup function?
+The test prints PASS/FAIL twice -> corrected TST_TOTAL=2
 
-Currently I would do it so that only the main test process can setup the
-callback in order to make it simpler. Since so far I haven't found a
-situation where the parent process cannot easily cleanup after it's
-children and doing cleanup once decreases the possibility of races in
-concurently executed cleanups. Imaginge 100 children cleaning after
-themselves, it's easy to mess up when 100 cleanup functions are running
-at the same time.
+> +. test.sh
+> +
+> +setup()
+> +{
 
-But if you found good usecase we may also allow per-child cleanups.
+I've added tst_require_root here since the test needs root permissions
+and moved the TST_CLEANUP=cleanup after the tst_require_root (since
+otherwise the cleanup would be called even when the tst_require_root
+exits the test before any setup was done).
 
-> > When the cleanup
-> > function was set with this interface the cleanup paramter for all
-> > functions would be ignored (we may create static inline wrappers that
-> > sets it to NULL to be used from new code).
-> 
-> And perhaps trigger a warning/TBROK if user tries to pass non-NULL
-> value while he's using the new tst_set_cleanup() approach.
+> +	mount_point=`grep -w cpuacct /proc/mounts | cut -f 2 | cut -d " " -f2`
+> +	tst_resm TINFO "cpuacct: $mount_point"
+> +	if [ "$mount_point" = "" ]; then
+> +		mounted=0
+> +		mount_point=/dev/cgroup
+> +	fi
+> +
+> +	testpath=$mount_point/ltp_$TCID
+> +
+> +	if [ "$mounted" -eq "0" ]; then
+> +		ROD mkdir -p $mount_point
+> +		ROD mount -t cgroup -o cpuacct none $mount_point
+> +	fi
+> +	ROD mkdir $testpath
+> +}
+> +
+> +cleanup()
+> +{
+> +	tst_resm TINFO "removing created directories"
+> +	rmdir $testpath/subgroup_*;
+> +	rmdir $testpath;
+> +	if [ "$mounted" -ne 1 ] ; then
 
-Yep.
+I've removed the useless semicolons and the space before "; then"
+
+> +
+> +   
+
+And two trailing whitespaces here.
+
+> +for job in `jobs -p`; do
+> +	wait $job
+> +done
+
+...
+
+> +/*
+> +* Description:
+> +* Write the current process in argv[1]
+> +*/
+> +
+> +#include <stdio.h>
+> +#include <sys/time.h>
+> +#include <sys/types.h>
+> +#include <unistd.h>
+> +#include <stdlib.h>
+> +
+> +int main(int argc, char **argv)
+> +{
+> +	FILE *f;
+
+And added:
+
+        if (argc != 2) {
+                fprintf(stderr, "Usage: %s /cgroup/.../tasks\n", argv[0]);
+                return 1;
+        }
+
+here mostly to silence the unused argc warning.
+
+> +	f = fopen(argv[1], "a");
+> +	if (!f) {
+
+
+And pushed, thanks.
 
 -- 
 Cyril Hrubis
