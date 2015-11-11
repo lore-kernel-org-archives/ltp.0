@@ -1,179 +1,121 @@
-From: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
-Date: Wed, 11 Nov 2015 10:49:01 +0900
-Subject: [LTP] [PATCH] runtest/ltp-aio-stress.partX: change /test/aiodio to
- TMPDIR
-Message-ID: <56429E8D.6010609@jp.fujitsu.com>
+From: Lei Li <rocklee_104@outlook.com>
+Date: Wed, 11 Nov 2015 11:45:37 +0800
+Subject: [LTP] [PATCH] commands/mkswap: Added new testcase to test
+ mkswap(8).
+In-Reply-To: <5640430D.40903@cn.fujitsu.com>
+References: <1446692628-12706-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <BLU436-SMTP1923895FA6B242E57BC28CDCF150@phx.gbl>
+ <5640430D.40903@cn.fujitsu.com>
+Message-ID: <BLU436-SMTP8601D757580F449BE1A80CF130@phx.gbl>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+> Hi!
+> Thanks for review!
+>
+> On 2015/11/09 10:00, Lei Li wrote:
+>>> +setup()
+>>> +{
+>>> +    tst_require_root
+>>> +
+>>> +    tst_check_cmds losetup free mkswap
+>>> +
+>>> +    tst_tmpdir
+>>> +
+>>> +    TST_CLEANUP=cleanup
+>>> +
+>>> +    tst_acquire_device
+>>> +
+>>> +    local path=`losetup -a | grep "$TMPDIR"  | awk '{print $3}' | \
+>>> +        cut -d '(' -f2 | cut -d ')' -f1`
+>>> +    DEVICE_SIZE=$((`ls -l $path | awk '{print $5}'`/1024))
+>> Hi!
+>>      This testcase uses a loop device instead of a block device, but tst_acquire_device may offer you a block device, /opt/ltp/runltp -b /dev/sdb1 for example, then, "path" may be invilidate, and syntax error occurs in the line :
+>>
+>> DEVICE_SIZE=$((`ls -l $path | awk '{print $5}'`/1024))
+>>
+>> So, examination whether the "path" is validate is necessary.
+>>
+>
+> Indeed, I missed the condition of block device.
+> I think I could use DEVICE_SIZE=$((`blockdev --getsize64 $TST_DEVICE`/1024)) instead of via path.
+>
+>>> +
+>>> +    PAGE_SIZE=`getconf PAGE_SIZE`
+>>> +}
+>>> +
+>>> +cleanup()
+>>> +{
+>>> +    tst_release_device
+>>> +
+>>> +    tst_rmdir
+>>> +}
+>>> +
+>>> +mkswap_verify()
+>>> +{
+>>> +    local ret=0
+>>> +
+>>> +    local before=`free | grep "Swap" | awk '{print $2}'`
+>>> +
+>>> +    if [ -z "$4" ]; then
+>>> +        local swapsize=$DEVICE_SIZE
+>>> +    else
+>>> +        local swapsize=$4
+>>> +    fi
+>>> +
+>>> +    if [ "$1" = "-p" ]; then
+>>> +        local pagesize=$2
+>>> +    else
+>>> +        local pagesize=$PAGE_SIZE
+>>> +    fi
+>>> +
+>>> +    if [ "$1" = "-L" ]; then
+>>> +        local swap_op="-L"
+>>> +        local swapfile=$2
+>>> +    elif [ "$1" = "-U" ]; then
+>>> +        local swap_op="-U"
+>>> +        local swapfile=$2
+>>> +    else
+>>> +        local swap_op=""
+>>> +        local swapfile=$3
+>>> +    fi
+>>> +
+>>> +    swapon $swap_op $swapfile 2>/dev/null
+>>> +    if [ $? -ne 0 ]; then
+>>> +        tst_resm TINFO "can not do swapon on $swapfile."
+>>> +        if [ $pagesize -ne $PAGE_SIZE ]; then
+>>> +            return $ret
+>>> +        fi
+>>> +
+>>> +        if [ $swapsize -gt $DEVICE_SIZE ]; then
+>>> +            return $ret
+>>> +        fi
+>>> +    fi
+>>> +
+>>> +    local after=`free | grep "Swap" | awk '{print $2}'`
+>>> +
+>>> +    local est=16
+>>> +    if [ $((after-before)) -lt $((swapsize-pagesize/1024-est)) ] || \
+>>> +        [ $((after-before)) -gt $((swapsize-pagesize/1024+est)) ]; then
+>>> +        ret=1
+>>> +    fi
+>>
+>> How do you get this formula? I'm a newbie here :-)
+>>
+>
+> I just compare device size used for swap with the actual increment of swap.
+> The increment should be equal to the device size minus a page size, but in some cases, the result fluctuates.
 
-ltp-aio-stress.partX fails if /test/aiodio directory is not found.
-/test/aiodio should be changed to $TMPDIR just like ltp-aiodio.partX.
+Hi
+   I read the code of mkswap, find nothing about the fluctuation but
+the exact value(as you mentioned above, device size minus a page size).
+And the fluctuation didn't show up in all of my test result.Would you
+please give me some proof about the fluctuation ?
 
-Signed-off-by: Masayoshi Mizuma <m.mizuma@jp.fujitsu.com>
----
- runtest/ltp-aio-stress.part1 |  104 +++++++++++++++++++++---------------------
- runtest/ltp-aio-stress.part2 |   22 ++++----
- 2 files changed, 63 insertions(+), 63 deletions(-)
-
-diff --git a/runtest/ltp-aio-stress.part1 b/runtest/ltp-aio-stress.part1
-index e6ce367..a770a40 100644
---- a/runtest/ltp-aio-stress.part1
-+++ b/runtest/ltp-aio-stress.part1
-@@ -2,7 +2,7 @@
- #
- # aio-stress [-s size] [-r size] [-a size] [-d num] [-b num]
- #                 [-i num] [-t num] [-c num] [-C size] [-nxhlvOS ]
--#                 file1 [/test/aiodio/file2 ...]
-+#                 file1 [file2 ...]
- #       -a size in KB at which to align buffers
- #       -b max number of iocbs to give io_submit at once
- #       -c number of io contexts per file
-@@ -26,54 +26,54 @@
- #       -x turn off thread stonewalling
- #       -h this message
- #
--ADS1000 aio-stress -I500  -o2 -S -r4   /test/aiodio/file1
--ADS1001 aio-stress -I500  -o2 -S -r8   /test/aiodio/file1
--ADS1002 aio-stress -I500  -o2 -S -r16  /test/aiodio/file1
--ADS1003 aio-stress -I500  -o2 -S -r32  -t2  /test/aiodio/junkfile /test/aiodio/file2
--ADS1004 aio-stress -I500  -o2 -S -r64   /test/aiodio/junkfile /test/aiodio/file2
--ADS1005 aio-stress -I500  -o3 -S -r4    /test/aiodio/junkfile /test/aiodio/file2
--ADS1006 aio-stress -I500  -o3 -S -r8   -t2  /test/aiodio/junkfile /test/aiodio/file2
--ADS1007 aio-stress -I500  -o3 -S -r16  -t2  /test/aiodio/junkfile /test/aiodio/file2
--ADS1008 aio-stress -I500  -o3 -S -r32  -t4  /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file3  /test/aiodio/file4
--ADS1009 aio-stress -I500  -o3 -S -r64  -t4  /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file3  /test/aiodio/file4
--ADS1010 aio-stress -I500  -o3 -S -r128 -t4  /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file3  /test/aiodio/file4
--ADS1011 aio-stress -I500  -o3 -S -r256 -t8  /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file3  /test/aiodio/file4 /test/aiodio/file5  /test/aiodio/file6 /test/aiodio/file7  /test/aiodio/file8
--ADS1012 aio-stress -I500  -o3 -S -r512 -t8  /test/aiodio/junkfile /test/aiodio/file2 /test/aiodio/file3  /test/aiodio/file4 /test/aiodio/file5  /test/aiodio/file6 /test/aiodio/file7  /test/aiodio/file8
--ADS1013 aio-stress -I500  -o2 -O -r4    -t8  /test/aiodio/junkfile /test/aiodio/file2 /test/aiodio/file3  /test/aiodio/file4 /test/aiodio/file5  /test/aiodio/file6 /test/aiodio/file7  /test/aiodio/file8
--ADS1014 aio-stress -I500  -o2 -O -r8         /test/aiodio/file1 /test/aiodio/file2
--ADS1015 aio-stress -I500  -o2 -O -r16        /test/aiodio/file1 /test/aiodio/file2
--ADS1016 aio-stress -I500  -o2 -O -r32   -t2  /test/aiodio/junkfile /test/aiodio/file2
--ADS1017 aio-stress -I500  -o2 -O -r64   -t2  /test/aiodio/junkfile /test/aiodio/file2
--ADS1018 aio-stress -I500  -o3 -O -r4    -t2  /test/aiodio/junkfile /test/aiodio/file2
--ADS1019 aio-stress -I500  -o3 -O -r8    -t2  /test/aiodio/junkfile /test/aiodio/file2
--ADS1020 aio-stress -I500  -o3 -O -r16   -t2  /test/aiodio/junkfile /test/aiodio/file2
--ADS1021 aio-stress -I500  -o3 -O -r32   -t4  /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8
--ADS1022 aio-stress -I500  -o3 -O -r64   -t4  /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8
--ADS1023 aio-stress -I500  -o3 -O -r128  -t4  /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8
--ADS1024 aio-stress -I500  -o3 -O -r256  -t8  /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8 /test/aiodio/file4  /test/aiodio/file3  /test/aiodio/file5  /test/aiodio/file6
--ADS1025 aio-stress -I500  -o3 -O -r512  -t8  /test/aiodio/junkfile /test/aiodio/file2 /test/aiodio/file7  /test/aiodio/file8 /test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  /test/aiodio/file6
--ADS1026 aio-stress -I500  -o0 -S -r4    -t8  /test/aiodio/junkfile /test/aiodio/file2       /test/aiodio/file7  /test/aiodio/file8 /test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  /test/aiodio/file6
--ADS1027 aio-stress -I500  -o0 -S -r8           /test/aiodio/file2
--ADS1028 aio-stress -I500  -o0 -S -r16          /test/aiodio/file2
--ADS1029 aio-stress -I500  -o0 -S -r32   -t2    /test/aiodio/junkfile /test/aiodio/file2
--ADS1030 aio-stress -I500  -o0 -S -r64   -t2    /test/aiodio/junkfile /test/aiodio/file2
--ADS1031 aio-stress -I500  -o1 -S -r4    -t2    /test/aiodio/junkfile /test/aiodio/file2
--ADS1032 aio-stress -I500  -o1 -S -r8    -t2    /test/aiodio/junkfile /test/aiodio/file2
--ADS1033 aio-stress -I500  -o1 -S -r16   -t2    /test/aiodio/junkfile /test/aiodio/file2
--ADS1034 aio-stress -I500  -o1 -S -r32   -t4    /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8
--ADS1035 aio-stress -I500  -o1 -S -r64   -t4    /test/aiodio/junkfile /test/aiodio/file2     /test/aiodio/file7  /test/aiodio/file8
--ADS1036 aio-stress -I500  -o1 -S -r128  -t4    /test/aiodio/junkfile /test/aiodio/file2     /test/aiodio/file7  /test/aiodio/file8
--ADS1037 aio-stress -I500  -o1 -S -r256  -t8  /test/aiodio/junkfile /test/aiodio/file2     /test/aiodio/file7  /test/aiodio/file8 /test/aiodio/file4  /test/aiodio/file3  /test/aiodio/file5  /test/aiodio/file6
--ADS1038 aio-stress -I500  -o1 -S -r512  -t8  -x /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8 /test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  /test/aiodio/file6
--ADS1039 aio-stress -I500  -o1 -O -r4    -t8  -x  /test/aiodio/junkfile /test/aiodio/file2        /test/aiodio/file7  /test/aiodio/file8 /test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  /test/aiodio/file6
--ADS1040 aio-stress -I500  -o1 -O -r8    -t2  -x /test/aiodio/junkfile /test/aiodio/file2
--ADS1041 aio-stress -I500  -o1 -O -r16   -t2  -x  /test/aiodio/junkfile /test/aiodio/file2
--ADS1042 aio-stress -I500  -o1 -O -r32   -t2   /test/aiodio/junkfile /test/aiodio/file2
--ADS1043 aio-stress -I500  -o1 -O -r64   -t2   /test/aiodio/junkfile /test/aiodio/file2
--ADS1044 aio-stress -I500  -o1 -O -r4    -t4   /test/aiodio/junkfile /test/aiodio/file2        /test/aiodio/file7  /test/aiodio/file8
--ADS1045 aio-stress -I500  -o1 -O -r8    -t4   /test/aiodio/junkfile /test/aiodio/file2     /test/aiodio/file7  /test/aiodio/file8
--ADS1046 aio-stress -I500  -o1 -O -r16   -t4   /test/aiodio/junkfile /test/aiodio/file2     /test/aiodio/file7  /test/aiodio/file8
--ADS1047 aio-stress -I500  -o1 -O -r32   -t8   /test/aiodio/junkfile /test/aiodio/file2     /test/aiodio/file7  /test/aiodio/file8 /test/aiodio/file4  /test/aiodio/file3  /test/aiodio/file5  /test/aiodio/file6
--ADS1048 aio-stress -I500  -o1 -O -r64   -t8   /test/aiodio/junkfile /test/aiodio/file2  /test/aiodio/file7  /test/aiodio/file8 /test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  /test/aiodio/file6
--ADS1049 aio-stress -I500  -o1 -O -r128  -t8   /test/aiodio/junkfile /test/aiodio/file2        /test/aiodio/file7  /test/aiodio/file8 /test/aiodio/file3  /test/aiodio/file4  /test/aiodio/file5  /test/aiodio/file6
--ADS1050 aio-stress -I500  -o1 -O -r256  -t2   /test/aiodio/junkfile /test/aiodio/file2
-+ADS1000 aio-stress -I500  -o2 -S -r4   $TMPDIR/file1
-+ADS1001 aio-stress -I500  -o2 -S -r8   $TMPDIR/file1
-+ADS1002 aio-stress -I500  -o2 -S -r16  $TMPDIR/file1
-+ADS1003 aio-stress -I500  -o2 -S -r32  -t2  $TMPDIR/junkfile $TMPDIR/file2
-+ADS1004 aio-stress -I500  -o2 -S -r64   $TMPDIR/junkfile $TMPDIR/file2
-+ADS1005 aio-stress -I500  -o3 -S -r4    $TMPDIR/junkfile $TMPDIR/file2
-+ADS1006 aio-stress -I500  -o3 -S -r8   -t2  $TMPDIR/junkfile $TMPDIR/file2
-+ADS1007 aio-stress -I500  -o3 -S -r16  -t2  $TMPDIR/junkfile $TMPDIR/file2
-+ADS1008 aio-stress -I500  -o3 -S -r32  -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4
-+ADS1009 aio-stress -I500  -o3 -S -r64  -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4
-+ADS1010 aio-stress -I500  -o3 -S -r128 -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4
-+ADS1011 aio-stress -I500  -o3 -S -r256 -t8  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file3  $TMPDIR/file4 $TMPDIR/file5  $TMPDIR/file6 $TMPDIR/file7  $TMPDIR/file8
-+ADS1012 aio-stress -I500  -o3 -S -r512 -t8  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3  $TMPDIR/file4 $TMPDIR/file5  $TMPDIR/file6 $TMPDIR/file7  $TMPDIR/file8
-+ADS1013 aio-stress -I500  -o2 -O -r4    -t8  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file3  $TMPDIR/file4 $TMPDIR/file5  $TMPDIR/file6 $TMPDIR/file7  $TMPDIR/file8
-+ADS1014 aio-stress -I500  -o2 -O -r8         $TMPDIR/file1 $TMPDIR/file2
-+ADS1015 aio-stress -I500  -o2 -O -r16        $TMPDIR/file1 $TMPDIR/file2
-+ADS1016 aio-stress -I500  -o2 -O -r32   -t2  $TMPDIR/junkfile $TMPDIR/file2
-+ADS1017 aio-stress -I500  -o2 -O -r64   -t2  $TMPDIR/junkfile $TMPDIR/file2
-+ADS1018 aio-stress -I500  -o3 -O -r4    -t2  $TMPDIR/junkfile $TMPDIR/file2
-+ADS1019 aio-stress -I500  -o3 -O -r8    -t2  $TMPDIR/junkfile $TMPDIR/file2
-+ADS1020 aio-stress -I500  -o3 -O -r16   -t2  $TMPDIR/junkfile $TMPDIR/file2
-+ADS1021 aio-stress -I500  -o3 -O -r32   -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
-+ADS1022 aio-stress -I500  -o3 -O -r64   -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
-+ADS1023 aio-stress -I500  -o3 -O -r128  -t4  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
-+ADS1024 aio-stress -I500  -o3 -O -r256  -t8  $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file4  $TMPDIR/file3  $TMPDIR/file5  $TMPDIR/file6
-+ADS1025 aio-stress -I500  -o3 -O -r512  -t8  $TMPDIR/junkfile $TMPDIR/file2 $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
-+ADS1026 aio-stress -I500  -o0 -S -r4    -t8  $TMPDIR/junkfile $TMPDIR/file2       $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
-+ADS1027 aio-stress -I500  -o0 -S -r8           $TMPDIR/file2
-+ADS1028 aio-stress -I500  -o0 -S -r16          $TMPDIR/file2
-+ADS1029 aio-stress -I500  -o0 -S -r32   -t2    $TMPDIR/junkfile $TMPDIR/file2
-+ADS1030 aio-stress -I500  -o0 -S -r64   -t2    $TMPDIR/junkfile $TMPDIR/file2
-+ADS1031 aio-stress -I500  -o1 -S -r4    -t2    $TMPDIR/junkfile $TMPDIR/file2
-+ADS1032 aio-stress -I500  -o1 -S -r8    -t2    $TMPDIR/junkfile $TMPDIR/file2
-+ADS1033 aio-stress -I500  -o1 -S -r16   -t2    $TMPDIR/junkfile $TMPDIR/file2
-+ADS1034 aio-stress -I500  -o1 -S -r32   -t4    $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8
-+ADS1035 aio-stress -I500  -o1 -S -r64   -t4    $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
-+ADS1036 aio-stress -I500  -o1 -S -r128  -t4    $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
-+ADS1037 aio-stress -I500  -o1 -S -r256  -t8  $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file4  $TMPDIR/file3  $TMPDIR/file5  $TMPDIR/file6
-+ADS1038 aio-stress -I500  -o1 -S -r512  -t8  -x $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
-+ADS1039 aio-stress -I500  -o1 -O -r4    -t8  -x  $TMPDIR/junkfile $TMPDIR/file2        $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
-+ADS1040 aio-stress -I500  -o1 -O -r8    -t2  -x $TMPDIR/junkfile $TMPDIR/file2
-+ADS1041 aio-stress -I500  -o1 -O -r16   -t2  -x  $TMPDIR/junkfile $TMPDIR/file2
-+ADS1042 aio-stress -I500  -o1 -O -r32   -t2   $TMPDIR/junkfile $TMPDIR/file2
-+ADS1043 aio-stress -I500  -o1 -O -r64   -t2   $TMPDIR/junkfile $TMPDIR/file2
-+ADS1044 aio-stress -I500  -o1 -O -r4    -t4   $TMPDIR/junkfile $TMPDIR/file2        $TMPDIR/file7  $TMPDIR/file8
-+ADS1045 aio-stress -I500  -o1 -O -r8    -t4   $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
-+ADS1046 aio-stress -I500  -o1 -O -r16   -t4   $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8
-+ADS1047 aio-stress -I500  -o1 -O -r32   -t8   $TMPDIR/junkfile $TMPDIR/file2     $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file4  $TMPDIR/file3  $TMPDIR/file5  $TMPDIR/file6
-+ADS1048 aio-stress -I500  -o1 -O -r64   -t8   $TMPDIR/junkfile $TMPDIR/file2  $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
-+ADS1049 aio-stress -I500  -o1 -O -r128  -t8   $TMPDIR/junkfile $TMPDIR/file2        $TMPDIR/file7  $TMPDIR/file8 $TMPDIR/file3  $TMPDIR/file4  $TMPDIR/file5  $TMPDIR/file6
-+ADS1050 aio-stress -I500  -o1 -O -r256  -t2   $TMPDIR/junkfile $TMPDIR/file2
-diff --git a/runtest/ltp-aio-stress.part2 b/runtest/ltp-aio-stress.part2
-index 92b501c..d72f538 100644
---- a/runtest/ltp-aio-stress.part2
-+++ b/runtest/ltp-aio-stress.part2
-@@ -2,7 +2,7 @@
- #
- # aio-stress [-s size] [-r size] [-a size] [-d num] [-b num]
- #                 [-i num] [-t num] [-c num] [-C size] [-nxhlvOS ]
--#                 file1 [/test/aiodio/file2 ...]
-+#                 file1 [file2 ...]
- #       -a size in KB at which to align buffers
- #       -b max number of iocbs to give io_submit at once
- #       -c number of io contexts per file
-@@ -26,13 +26,13 @@
- #       -x turn off thread stonewalling
- #       -h this message
- #
--ADS2001 aio-stress -I500  -o2 -S -r32  -t2  /test/aiodio/junkfile /test/aiodio2/file2
--ADS2002 aio-stress -I500  -o3 -S -r8   -t2  /test/aiodio/junkfile /test/aiodio2/file2
--ADS2003 aio-stress -I500  -o3 -S -r16  -t2  /test/aiodio/junkfile /test/aiodio2/file2
--ADS2004 aio-stress -I500  -o3 -S -r32  -t4  /test/aiodio/junkfile /test/aiodio2/file2 /test/aiodio/file3 /test/aiodio2/file4
--ADS2005 aio-stress -I500  -o3 -S -r64  -t4  /test/aiodio/junkfile /test/aiodio2/file2 /test/aiodio/file3 /test/aiodio2/file4
--ADS2006 aio-stress -I500  -o2 -O -r32  -t2  /test/aiodio/junkfile /test/aiodio2/file2
--ADS2007 aio-stress -I500  -o3 -O -r8   -t2  /test/aiodio/junkfile /test/aiodio2/file2
--ADS2008 aio-stress -I500  -o3 -O -r16  -t2  /test/aiodio/junkfile /test/aiodio2/file2
--ADS2009 aio-stress -I500  -o3 -O -r32  -t4  /test/aiodio/junkfile /test/aiodio2/file2 /test/aiodio/file3 /test/aiodio2/file4
--ADS2010 aio-stress -I500  -o3 -O -r64  -t4  /test/aiodio/junkfile /test/aiodio2/file2 /test/aiodio/file3 /test/aiodio2/file4
-+ADS2001 aio-stress -I500  -o2 -S -r32  -t2  $TMPDIR/junkfile $TMPDIR2/file2
-+ADS2002 aio-stress -I500  -o3 -S -r8   -t2  $TMPDIR/junkfile $TMPDIR2/file2
-+ADS2003 aio-stress -I500  -o3 -S -r16  -t2  $TMPDIR/junkfile $TMPDIR2/file2
-+ADS2004 aio-stress -I500  -o3 -S -r32  -t4  $TMPDIR/junkfile $TMPDIR2/file2 $TMPDIR/file3 $TMPDIR2/file4
-+ADS2005 aio-stress -I500  -o3 -S -r64  -t4  $TMPDIR/junkfile $TMPDIR2/file2 $TMPDIR/file3 $TMPDIR2/file4
-+ADS2006 aio-stress -I500  -o2 -O -r32  -t2  $TMPDIR/junkfile $TMPDIR2/file2
-+ADS2007 aio-stress -I500  -o3 -O -r8   -t2  $TMPDIR/junkfile $TMPDIR2/file2
-+ADS2008 aio-stress -I500  -o3 -O -r16  -t2  $TMPDIR/junkfile $TMPDIR2/file2
-+ADS2009 aio-stress -I500  -o3 -O -r32  -t4  $TMPDIR/junkfile $TMPDIR2/file2 $TMPDIR/file3 $TMPDIR2/file4
-+ADS2010 aio-stress -I500  -o3 -O -r64  -t4  $TMPDIR/junkfile $TMPDIR2/file2 $TMPDIR/file3 $TMPDIR2/file4
+Thanks.
 -- 
-1.7.1
+Rock Lee
+rocklee_104@outlook.com
