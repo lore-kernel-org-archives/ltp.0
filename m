@@ -1,83 +1,80 @@
-From: Jiri Jaburek <jjaburek@redhat.com>
-Date: Wed, 11 Nov 2015 17:53:11 +0100
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 11 Nov 2015 19:45:56 +0100
 Subject: [LTP] [RFC] Getting rid of cleanup parameter
-In-Reply-To: <20151111133042.GA26695@rei.lan>
+In-Reply-To: <56437277.8020901@redhat.com>
 References: <20151110141426.GG23947@rei>
  <138416734.6863400.1447237258306.JavaMail.zimbra@redhat.com>
- <20151111133042.GA26695@rei.lan>
-Message-ID: <56437277.8020901@redhat.com>
+ <20151111133042.GA26695@rei.lan> <56437277.8020901@redhat.com>
+Message-ID: <20151111184555.GC19399@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/11/2015 02:30 PM, Cyril Hrubis wrote:
-> Hi!
->> Just thinking loud, how this would work:
->>
->> Is the scope of cleanup set with tst_set_cleanup() going to be per process?
->> For example: If I call tst_set_cleanup() and then fork couple children,
->> will they automatically ignore cleanup function set in parent?
+Hi!
+> This may be the case when a test spawns multiple children to do the
+> testing in parallel, with the children creating shared resources of
+> unpredictable names/references (so the cleanup cannot be done from
+> the parent).
 > 
-> It has to be per process, since othewise we would have the callback
-> called twice problem again. I.e. the callback set in test setup() would
-> be executed only if tst_* call that caused exit was called from the same
-> process it has been set up.
+> I currently cannot think of any such resource,
 > 
->> Can I use tst_set_cleanup() in child process to setup child-specific
->> cleanup function?
+>  * files can use tmpdir, removed recursively from parent
+>  * spawned processes can be walked from the parent
+>  * losetup-created devices can have a common prefix
+>  * IPC shared resources can be pre-created by the parent
+>    (or be found via a unique key or a dedicated unix user)
+>  * linux namespaces die automatically with the children
+>  * ...
 > 
-> Currently I would do it so that only the main test process can setup the
-> callback in order to make it simpler. Since so far I haven't found a
-> situation where the parent process cannot easily cleanup after it's
-> children and doing cleanup once decreases the possibility of races in
-> concurently executed cleanups. Imaginge 100 children cleaning after
-> themselves, it's easy to mess up when 100 cleanup functions are running
-> at the same time.
+> The general pattern is that the parent is always able to somehow use
+> an identifier common for all children or pre-create the resources for
+> them, collecting a list to be used for cleanup.
 > 
-> But if you found good usecase we may also allow per-child cleanups.
+> However it would be good to keep the use case in mind for the future.
 
-This may be the case when a test spawns multiple children to do the
-testing in parallel, with the children creating shared resources of
-unpredictable names/references (so the cleanup cannot be done from
-the parent).
+That is the same reasoning as I did. So I would go for disabling the
+ability for cleanup function in child processes util we find that it's
+necessary or that it fairly simplifies a solution to a given problem.
 
-I currently cannot think of any such resource,
+> Regarding tst_set_cleanup() - if it hooks the cleanup function into
+> signal handlers as well, it will need to be called before sigaction
+> setup in signal-testing tests. Nothing extraordinary, I guess, but
+> still something to note.
 
- * files can use tmpdir, removed recursively from parent
- * spawned processes can be walked from the parent
- * losetup-created devices can have a common prefix
- * IPC shared resources can be pre-created by the parent
-   (or be found via a unique key or a dedicated unix user)
- * linux namespaces die automatically with the children
- * ...
+Right, I do not expect it to be called anywhere else than beginning of
+the setup fuction.
 
-The general pattern is that the parent is always able to somehow use
-an identifier common for all children or pre-create the resources for
-them, collecting a list to be used for cleanup.
+And we also have tst_sig() function that is able to install a cleanup
+for unexpected signals that 99% of the time installs the common test
+cleanup(). I guess that we should remove the tst_sig() in favor of the
+tst_set_cleanup() as well. We would have to be able to tell the
+tst_set_cleanup() not to install the the "poisoned" handler at least for
+SIGCHLD.
 
-However it would be good to keep the use case in mind for the future.
+Or we should simply install only handlers that actually make sense to
+exit the test with TBROK. I find it silly that the LTP testcases break
+when you change the terminal size while they are running and the test
+exits because it does not expectet to get SIGWINCH.
 
-Regarding tst_set_cleanup() - if it hooks the cleanup function into
-signal handlers as well, it will need to be called before sigaction
-setup in signal-testing tests. Nothing extraordinary, I guess, but
-still something to note.
+On the other way as it is now we would catch situations where kernel
+send wrong signal to the process. Not sure if that actually had
+happened.
 
-About shell tests - maybe something similar would be useful, for
-consistency (same function name) as well as signal handling (trap)
-in shells that support it. Again - same signal handling limitations
-apply (if test re-defines trap, it may be an issue).
+> About shell tests - maybe something similar would be useful, for
+> consistency (same function name) as well as signal handling (trap)
+> in shells that support it. Again - same signal handling limitations
+> apply (if test re-defines trap, it may be an issue).
 
-> 
->>> When the cleanup
->>> function was set with this interface the cleanup paramter for all
->>> functions would be ignored (we may create static inline wrappers that
->>> sets it to NULL to be used from new code).
->>
->> And perhaps trigger a warning/TBROK if user tries to pass non-NULL
->> value while he's using the new tst_set_cleanup() approach.
-> 
-> Yep.
-> 
+Actually this change would get us closer to the shell interface, since
+the test.sh library currently has TST_CLEANUP variable that is evaluated
+before the test exits. So if we add the tst_set_cleanup() function that
+would do export TST_CLEANUP="$1" we will end up with the same interface.
 
+The traps are not there at the moment but that would be just a few lines
+of code.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
