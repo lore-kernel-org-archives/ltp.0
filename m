@@ -1,11 +1,13 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Nov 2015 19:45:56 +0100
-Subject: [LTP] [RFC] Getting rid of cleanup parameter
-In-Reply-To: <56437277.8020901@redhat.com>
-References: <20151110141426.GG23947@rei>
- <138416734.6863400.1447237258306.JavaMail.zimbra@redhat.com>
- <20151111133042.GA26695@rei.lan> <56437277.8020901@redhat.com>
-Message-ID: <20151111184555.GC19399@rei.lan>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Thu, 12 Nov 2015 11:27:24 +0800
+Subject: [LTP] [PATCH] commands/mkswap: Added new testcase to test
+	mkswap(8).
+In-Reply-To: <BLU436-SMTP8601D757580F449BE1A80CF130@phx.gbl>
+References: <1446692628-12706-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <BLU436-SMTP1923895FA6B242E57BC28CDCF150@phx.gbl>
+ <5640430D.40903@cn.fujitsu.com>
+ <BLU436-SMTP8601D757580F449BE1A80CF130@phx.gbl>
+Message-ID: <5644071C.1060202@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,68 +15,116 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> This may be the case when a test spawns multiple children to do the
-> testing in parallel, with the children creating shared resources of
-> unpredictable names/references (so the cleanup cannot be done from
-> the parent).
+
+On 2015/11/11 11:45, Lei Li wrote:
+>> Hi!
+>> Thanks for review!
+>>
+>> On 2015/11/09 10:00, Lei Li wrote:
+>>>> +setup()
+>>>> +{
+>>>> +    tst_require_root
+>>>> +
+>>>> +    tst_check_cmds losetup free mkswap
+>>>> +
+>>>> +    tst_tmpdir
+>>>> +
+>>>> +    TST_CLEANUP=cleanup
+>>>> +
+>>>> +    tst_acquire_device
+>>>> +
+>>>> +    local path=`losetup -a | grep "$TMPDIR"  | awk '{print $3}' | \
+>>>> +        cut -d '(' -f2 | cut -d ')' -f1`
+>>>> +    DEVICE_SIZE=$((`ls -l $path | awk '{print $5}'`/1024))
+>>> Hi!
+>>>      This testcase uses a loop device instead of a block device, but tst_acquire_device may offer you a block device, /opt/ltp/runltp -b /dev/sdb1 for example, then, "path" may be invilidate, and syntax error occurs in the line :
+>>>
+>>> DEVICE_SIZE=$((`ls -l $path | awk '{print $5}'`/1024))
+>>>
+>>> So, examination whether the "path" is validate is necessary.
+>>>
+>>
+>> Indeed, I missed the condition of block device.
+>> I think I could use DEVICE_SIZE=$((`blockdev --getsize64 $TST_DEVICE`/1024)) instead of via path.
+>>
+>>>> +
+>>>> +    PAGE_SIZE=`getconf PAGE_SIZE`
+>>>> +}
+>>>> +
+>>>> +cleanup()
+>>>> +{
+>>>> +    tst_release_device
+>>>> +
+>>>> +    tst_rmdir
+>>>> +}
+>>>> +
+>>>> +mkswap_verify()
+>>>> +{
+>>>> +    local ret=0
+>>>> +
+>>>> +    local before=`free | grep "Swap" | awk '{print $2}'`
+>>>> +
+>>>> +    if [ -z "$4" ]; then
+>>>> +        local swapsize=$DEVICE_SIZE
+>>>> +    else
+>>>> +        local swapsize=$4
+>>>> +    fi
+>>>> +
+>>>> +    if [ "$1" = "-p" ]; then
+>>>> +        local pagesize=$2
+>>>> +    else
+>>>> +        local pagesize=$PAGE_SIZE
+>>>> +    fi
+>>>> +
+>>>> +    if [ "$1" = "-L" ]; then
+>>>> +        local swap_op="-L"
+>>>> +        local swapfile=$2
+>>>> +    elif [ "$1" = "-U" ]; then
+>>>> +        local swap_op="-U"
+>>>> +        local swapfile=$2
+>>>> +    else
+>>>> +        local swap_op=""
+>>>> +        local swapfile=$3
+>>>> +    fi
+>>>> +
+>>>> +    swapon $swap_op $swapfile 2>/dev/null
+>>>> +    if [ $? -ne 0 ]; then
+>>>> +        tst_resm TINFO "can not do swapon on $swapfile."
+>>>> +        if [ $pagesize -ne $PAGE_SIZE ]; then
+>>>> +            return $ret
+>>>> +        fi
+>>>> +
+>>>> +        if [ $swapsize -gt $DEVICE_SIZE ]; then
+>>>> +            return $ret
+>>>> +        fi
+>>>> +    fi
+>>>> +
+>>>> +    local after=`free | grep "Swap" | awk '{print $2}'`
+>>>> +
+>>>> +    local est=16
+>>>> +    if [ $((after-before)) -lt $((swapsize-pagesize/1024-est)) ] || \
+>>>> +        [ $((after-before)) -gt $((swapsize-pagesize/1024+est)) ]; then
+>>>> +        ret=1
+>>>> +    fi
+>>>
+>>> How do you get this formula? I'm a newbie here :-)
+>>>
+>>
+>> I just compare device size used for swap with the actual increment of swap.
+>> The increment should be equal to the device size minus a page size, but in some cases, the result fluctuates.
 > 
-> I currently cannot think of any such resource,
+> Hi
+>   I read the code of mkswap, find nothing about the fluctuation but
+> the exact value(as you mentioned above, device size minus a page size).
+> And the fluctuation didn't show up in all of my test result.Would you
+> please give me some proof about the fluctuation ?
 > 
->  * files can use tmpdir, removed recursively from parent
->  * spawned processes can be walked from the parent
->  * losetup-created devices can have a common prefix
->  * IPC shared resources can be pre-created by the parent
->    (or be found via a unique key or a dedicated unix user)
->  * linux namespaces die automatically with the children
->  * ...
-> 
-> The general pattern is that the parent is always able to somehow use
-> an identifier common for all children or pre-create the resources for
-> them, collecting a list to be used for cleanup.
-> 
-> However it would be good to keep the use case in mind for the future.
 
-That is the same reasoning as I did. So I would go for disabling the
-ability for cleanup function in child processes util we find that it's
-necessary or that it fairly simplifies a solution to a given problem.
+Yes, in most of my environment, there is no fluctuation but the exact value,
+but for example, on my RHEL5.11GA, the result is not exactly equal to the value somehow,
+maybe the result is slightly different in some kernels.
 
-> Regarding tst_set_cleanup() - if it hooks the cleanup function into
-> signal handlers as well, it will need to be called before sigaction
-> setup in signal-testing tests. Nothing extraordinary, I guess, but
-> still something to note.
+Best Regards,
+Guangwen Feng
 
-Right, I do not expect it to be called anywhere else than beginning of
-the setup fuction.
-
-And we also have tst_sig() function that is able to install a cleanup
-for unexpected signals that 99% of the time installs the common test
-cleanup(). I guess that we should remove the tst_sig() in favor of the
-tst_set_cleanup() as well. We would have to be able to tell the
-tst_set_cleanup() not to install the the "poisoned" handler at least for
-SIGCHLD.
-
-Or we should simply install only handlers that actually make sense to
-exit the test with TBROK. I find it silly that the LTP testcases break
-when you change the terminal size while they are running and the test
-exits because it does not expectet to get SIGWINCH.
-
-On the other way as it is now we would catch situations where kernel
-send wrong signal to the process. Not sure if that actually had
-happened.
-
-> About shell tests - maybe something similar would be useful, for
-> consistency (same function name) as well as signal handling (trap)
-> in shells that support it. Again - same signal handling limitations
-> apply (if test re-defines trap, it may be an issue).
-
-Actually this change would get us closer to the shell interface, since
-the test.sh library currently has TST_CLEANUP variable that is evaluated
-before the test exits. So if we add the tst_set_cleanup() function that
-would do export TST_CLEANUP="$1" we will end up with the same interface.
-
-The traps are not there at the moment but that would be just a few lines
-of code.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Thanks.
