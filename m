@@ -1,455 +1,323 @@
-From: Cedric Hnyda <chnyda@suse.com>
-Date: Thu, 12 Nov 2015 09:30:43 +0100
-Subject: [LTP]  [PATCH V2] cgroup_fj: function2
-Message-ID: <1447317043-13997-1-git-send-email-chnyda@suse.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 12 Nov 2015 03:52:03 -0500 (EST)
+Subject: [LTP] [PATCH v3] signal: add new testcase signal06.c
+In-Reply-To: <1447247625-4941-1-git-send-email-liwang@redhat.com>
+References: <1447247625-4941-1-git-send-email-liwang@redhat.com>
+Message-ID: <992794806.7293527.1447318323591.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Check if the cgroup exists. The cgroup
-will be mounted (and umounted) only if it doesn't exist at
-the start of the test.
-Removed testcases 3-6 because they tested a no longer supported
-feature.
-Renamed testcases 6-13 to 3-9 (ie: testcase 3 = former testcase 7)
-Add tests for every subsystem instead of only debug except for
-testcases 1 & 2 which are specific for debug and cpuset.
 
-Signed-off-by: Cedric Hnyda <chnyda@suse.com>
----
- runtest/controllers                                |  73 ++++++--
- .../controllers/cgroup_fj/cgroup_fj_function2.sh   | 204 +++++----------------
- 2 files changed, 104 insertions(+), 173 deletions(-)
 
-diff --git a/runtest/controllers b/runtest/controllers
-index 52f2457..c62bcce 100644
---- a/runtest/controllers
-+++ b/runtest/controllers
-@@ -145,19 +145,66 @@ cgroup_fj_function_debug_yes_yes_3_yes_2_3_4_2 run_cgroup_test_fj.sh function de
- cgroup_fj_function_debug_yes_yes_3_yes_2_3_5_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 5 2
- cgroup_fj_function_debug_yes_yes_3_yes_2_3_6_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 6 2
- cgroup_fj_function_debug_yes_yes_3_yes_2_3_7_2 run_cgroup_test_fj.sh function debug yes yes 3 yes 2 3 7 2
--cgroup_fj_function2_1 run_cgroup_test_fj.sh function2 1
--cgroup_fj_function2_2 run_cgroup_test_fj.sh function2 2
--cgroup_fj_function2_3 run_cgroup_test_fj.sh function2 3
--cgroup_fj_function2_4 run_cgroup_test_fj.sh function2 4
--cgroup_fj_function2_5 run_cgroup_test_fj.sh function2 5
--cgroup_fj_function2_6 run_cgroup_test_fj.sh function2 6
--cgroup_fj_function2_7 run_cgroup_test_fj.sh function2 7
--cgroup_fj_function2_8 run_cgroup_test_fj.sh function2 8
--cgroup_fj_function2_9 run_cgroup_test_fj.sh function2 9
--cgroup_fj_function2_10 run_cgroup_test_fj.sh function2 10
--cgroup_fj_function2_11 run_cgroup_test_fj.sh function2 11
--cgroup_fj_function2_12 run_cgroup_test_fj.sh function2 12
--cgroup_fj_function2_13 run_cgroup_test_fj.sh function2 13
-+cgroup_fj_function2_1_debug run_cgroup_test_fj.sh function2 1 debug
-+cgroup_fj_function2_1_cpuset run_cgroup_test_fj.sh function2 1 cpuset
-+cgroup_fj_function2_2_debug run_cgroup_test_fj.sh function2 2 debug
-+cgroup_fj_function2_2_cpuset run_cgroup_test_fj.sh function2 2 cpuset
-+cgroup_fj_function2_3_debug run_cgroup_test_fj.sh function2 3 debug
-+cgroup_fj_function2_3_cpuset run_cgroup_test_fj.sh function2 3 cpuset
-+cgroup_fj_function2_3_ns run_cgroup_test_fj.sh function2 3 ns
-+cgroup_fj_function2_3_cpu run_cgroup_test_fj.sh function2 3 cpu
-+cgroup_fj_function2_3_cpuacct run_cgroup_test_fj.sh function2 3 cpuacct
-+cgroup_fj_function2_3_memory run_cgroup_test_fj.sh function2 3 memory
-+cgroup_fj_function2_3_freezer run_cgroup_test_fj.sh function2 3 freezer
-+cgroup_fj_function2_3_devices run_cgroup_test_fj.sh function2 3 devices
-+cgroup_fj_function2_4_debug run_cgroup_test_fj.sh function2 4 debug
-+cgroup_fj_function2_4_cpuset run_cgroup_test_fj.sh function2 4 cpuset
-+cgroup_fj_function2_4_ns run_cgroup_test_fj.sh function2 4 ns
-+cgroup_fj_function2_4_cpu run_cgroup_test_fj.sh function2 4 cpu
-+cgroup_fj_function2_4_cpuacct run_cgroup_test_fj.sh function2 4 cpuacct
-+cgroup_fj_function2_4_memory run_cgroup_test_fj.sh function2 4 memory
-+cgroup_fj_function2_4_freezer run_cgroup_test_fj.sh function2 4 freezer
-+cgroup_fj_function2_4_devices run_cgroup_test_fj.sh function2 4 devices
-+cgroup_fj_function2_5_debug run_cgroup_test_fj.sh function2 5 debug
-+cgroup_fj_function2_5_cpuset run_cgroup_test_fj.sh function2 5 cpuset
-+cgroup_fj_function2_5_ns run_cgroup_test_fj.sh function2 5 ns
-+cgroup_fj_function2_5_cpu run_cgroup_test_fj.sh function2 5 cpu
-+cgroup_fj_function2_5_cpuacct run_cgroup_test_fj.sh function2 5 cpuacct
-+cgroup_fj_function2_5_memory run_cgroup_test_fj.sh function2 5 memory
-+cgroup_fj_function2_5_freezer run_cgroup_test_fj.sh function2 5 freezer
-+cgroup_fj_function2_5_devices run_cgroup_test_fj.sh function2 5 devices
-+cgroup_fj_function2_6_debug run_cgroup_test_fj.sh function2 6 debug
-+cgroup_fj_function2_6_cpuset run_cgroup_test_fj.sh function2 6 cpuset
-+cgroup_fj_function2_6_ns run_cgroup_test_fj.sh function2 6 ns
-+cgroup_fj_function2_6_cpu run_cgroup_test_fj.sh function2 6 cpu
-+cgroup_fj_function2_6_cpuacct run_cgroup_test_fj.sh function2 6 cpuacct
-+cgroup_fj_function2_6_memory run_cgroup_test_fj.sh function2 6 memory
-+cgroup_fj_function2_6_freezer run_cgroup_test_fj.sh function2 6 freezer
-+cgroup_fj_function2_6_devices run_cgroup_test_fj.sh function2 6 devices
-+cgroup_fj_function2_7_debug run_cgroup_test_fj.sh function2 7 debug
-+cgroup_fj_function2_7_cpuset run_cgroup_test_fj.sh function2 7 cpuset
-+cgroup_fj_function2_7_ns run_cgroup_test_fj.sh function2 7 ns
-+cgroup_fj_function2_7_cpu run_cgroup_test_fj.sh function2 7 cpu
-+cgroup_fj_function2_7_cpuacct run_cgroup_test_fj.sh function2 7 cpuacct
-+cgroup_fj_function2_7_memory run_cgroup_test_fj.sh function2 7 memory
-+cgroup_fj_function2_7_freezer run_cgroup_test_fj.sh function2 7 freezer
-+cgroup_fj_function2_7_devices run_cgroup_test_fj.sh function2 7 devices
-+cgroup_fj_function2_8_debug run_cgroup_test_fj.sh function2 8 debug
-+cgroup_fj_function2_8_cpuset run_cgroup_test_fj.sh function2 8 cpuset
-+cgroup_fj_function2_8_ns run_cgroup_test_fj.sh function2 8 ns
-+cgroup_fj_function2_8_cpu run_cgroup_test_fj.sh function2 8 cpu
-+cgroup_fj_function2_8_cpuacct run_cgroup_test_fj.sh function2 8 cpuacct
-+cgroup_fj_function2_8_memory run_cgroup_test_fj.sh function2 8 memory
-+cgroup_fj_function2_8_freezer run_cgroup_test_fj.sh function2 8 freezer
-+cgroup_fj_function2_8_devices run_cgroup_test_fj.sh function2 8 devices
-+cgroup_fj_function2_9_debug run_cgroup_test_fj.sh function2 9 debug
-+cgroup_fj_function2_9_cpuset run_cgroup_test_fj.sh function2 9 cpuset
-+cgroup_fj_function2_9_ns run_cgroup_test_fj.sh function2 9 ns
-+cgroup_fj_function2_9_cpu run_cgroup_test_fj.sh function2 9 cpu
-+cgroup_fj_function2_9_cpuacct run_cgroup_test_fj.sh function2 9 cpuacct
-+cgroup_fj_function2_9_memory run_cgroup_test_fj.sh function2 9 memory
-+cgroup_fj_function2_9_freezer run_cgroup_test_fj.sh function2 9 freezer
-+cgroup_fj_function2_9_devices run_cgroup_test_fj.sh function2 9 devices
- cgroup_fj_stress_debug_100_1_1_1 run_cgroup_test_fj.sh stress debug 100 1 1 1
- cgroup_fj_stress_cpuset_100_1_1_1 run_cgroup_test_fj.sh stress cpuset 100 1 1 1
- cgroup_fj_stress_ns_100_1_1_1 run_cgroup_test_fj.sh stress ns 100 1 1 1
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh
-index 68d290b..5b8f7d8 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function2.sh
-@@ -15,22 +15,23 @@
- ## for more details.                                                          ##
- ##                                                                            ##
- ## You should have received a copy of the GNU General Public License          ##
--## along with this program;  if not, write to the Free Software               ##
--## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
-+## along with this program;  if not, write to the Free Software Foundation,   ##
-+## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
- ##                                                                            ##
- ## Author: Shi Weihua <shiwh@cn.fujitsu.com>                                  ##
- ##                                                                            ##
- ################################################################################
- 
- caseno=$1
-+subsystem=$2
- pid=0;
--subsystem=1;
- release_agent_para=1;
- release_agent_echo=1;
- subsystem_str="debug";
- remount_use_str="";
- noprefix_use_str="";
- release_agent_para_str="";
-+mounted=1
- 
- # not output debug info when stress test
- no_debug=0
-@@ -38,9 +39,9 @@ no_debug=0
- usage()
- {
- 	echo "usage of cgroup_fj_function2.sh: "
--	echo "  ./cgroup_fj_function2.sh -case number[1-13]"
--	echo "example: ./cgroup_fj_function2.sh 1"
--	echo "  will test the 1st case"
-+	echo "  ./cgroup_fj_function2.sh -case number[1-13] -subsystem"
-+	echo "example: ./cgroup_fj_function2.sh 1 cpuset"
-+	echo "  will test the 1st case with cpuset"
- }
- 
- exit_parameter()
-@@ -56,122 +57,74 @@ export TMPFILE=$TESTROOT/tmp_tasks
- 
- case1()
- {
--	do_mkdir 1 1 /dev/cgroup/subgroup_2
-+	do_mkdir 1 1 $mount_point/ltp_subgroup_2
- 
--	do_echo 1 0 $pid /dev/cgroup/subgroup_1/tasks
-+	do_echo 1 0 $pid $mount_point/ltp_subgroup_1/tasks
- 	sleep 1
--	do_echo 1 0 $pid /dev/cgroup/subgroup_2/tasks
-+	do_echo 1 0 $pid $mount_point/ltp_subgroup_2/tasks
- 	sleep 1
--	do_echo 1 1 $pid /dev/cgroup/tasks
-+	do_echo 1 1 $pid $mount_point/tasks
- }
- 
- case2()
- {
--	do_mkdir 1 1 /dev/cgroup/subgroup_2
-+	do_mkdir 1 1 $mount_point/ltp_subgroup_2
- 
- 	$TESTROOT/cgroup_fj_proc &
- 	pid2=$!
- 	sleep 1
- 
--	cat /dev/cgroup/tasks > $TMPFILE
-+	cat $mount_point/tasks > $TMPFILE
- 	nlines=`cat $TMPFILE | wc -l`
- 	for i in `seq 1 $nlines`
- 	do
- 		cur_pid=`sed -n "$i""p" $TMPFILE`
- 		if [ -e /proc/$cur_pid/ ];then
--			do_echo 1 0 "$cur_pid" /dev/cgroup/subgroup_1/tasks
-+			do_echo 1 0 "$cur_pid" $mount_point/ltp_subgroup_1/tasks
- 		fi
- 	done
- 
- 	sleep 1
- 
--	cat /dev/cgroup/subgroup_1/tasks > $TMPFILE
-+	cat $mount_point/ltp_subgroup_1/tasks > $TMPFILE
- 	nlines=`cat $TMPFILE | wc -l`
- 	for i in `seq 1 $nlines`
- 	do
- 		cur_pid=`sed -n "$i""p" $TMPFILE`
- 		if [ -e /proc/$cur_pid/ ];then
--			do_echo 1 0 "$cur_pid" /dev/cgroup/subgroup_2/tasks
-+			do_echo 1 0 "$cur_pid" $mount_point/ltp_subgroup_2/tasks
- 		fi
- 	done
- 
- 	sleep 1
- 
--	cat /dev/cgroup/subgroup_2/tasks > $TMPFILE
-+	cat $mount_point/ltp_subgroup_2/tasks > $TMPFILE
- 	nlines=`cat $TMPFILE | wc -l`
- 	for i in `seq 1 $nlines`
- 	do
- 		cur_pid=`sed -n "$i""p" $TMPFILE`
- 		if [ -e /proc/$cur_pid/ ];then
--			do_echo 1 1 "$cur_pid" /dev/cgroup/tasks
-+			do_echo 1 1 "$cur_pid" $mount_point/tasks
- 		fi
- 	done
- }
- 
- case3()
- {
--	exist_subsystem "cpuset"
--	exist_subsystem "ns"
--	do_mount 1 1 "-odebug,cpuset,ns" /dev/cgroup cgroup1
-+	do_mkdir 0 1 $mount_point/ltp_subgroup_2
- 
--	mount_str="`mount -l | grep /dev/cgroup2`"
--	if [ "$mount_str" != "" ]; then
--		do_umount 0 1 /dev/cgroup2
--	fi
--
--	if [ -e /dev/cgroup2 ]; then
--		do_rmdir 1 1 /dev/cgroup2
--	fi
--
--	do_mkdir 1 1 /dev/cgroup2
--
--	exist_subsystem "cpu"
--	exist_subsystem "cpuacct"
--	exist_subsystem "memory"
--	do_mount 1 1 "-ocpu,cpuacct,memory" /dev/cgroup2 cgroup2
--
--	sleep 1
--
--	do_umount 0 1 /dev/cgroup
--	do_rmdir 0 1 /dev/cgroup
--	do_umount 0 1 /dev/cgroup2
--	do_rmdir 0 1 /dev/cgroup2
-+	do_mv 0 1 $mount_point/ltp_subgroup_1 $mount_point/ltp_subgroup_3
- }
- 
- case4()
- {
--	exist_subsystem "cpuset"
--	exist_subsystem "ns"
--	do_mount 1 1 "-odebug,cpuset,ns" /dev/cgroup cgroup1
--
--	mount_str="`mount -l | grep /dev/cgroup2`"
--	if [ "$mount_str" != "" ]; then
--		do_umount 1 1 /dev/cgroup2
--	fi
--
--	if [ -e /dev/cgroup2 ]; then
--		do_rmdir 0 1 /dev/cgroup2
--	fi
-+	do_mkdir 0 1 $mount_point/ltp_subgroup_2
- 
--	do_mkdir 0 1 /dev/cgroup2
--
--	do_mount 1 1 "-odebug,cpuset,ns" /dev/cgroup2 cgroup2
--
--	sleep 1
--
--	do_umount 0 1 /dev/cgroup
--	do_rmdir 0 1 /dev/cgroup
--	do_umount 0 1 /dev/cgroup2
--	do_rmdir 0 1 /dev/cgroup2
-+	do_mv 0 0 $mount_point/ltp_subgroup_1 $mount_point/ltp_subgroup_2
- }
- 
- case5()
- {
--	exist_subsystem "cpuset"
--	exist_subsystem "ns"
--	exist_subsystem "memory"
--	do_mount 1 1 "-odebug,cpuset,ns" /dev/cgroup cgroup1
--
- 	mount_str="`mount -l | grep /dev/cgroup2`"
- 	if [ "$mount_str" != "" ]; then
- 		do_umount 1 1 /dev/cgroup2
-@@ -183,138 +136,69 @@ case5()
- 
- 	do_mkdir 0 1 /dev/cgroup2
- 
--	do_mount 0 1 "-odebug,cpuset,memory" /dev/cgroup2 cgroup2
-+	do_mkdir 0 1 /dev/cgroup2/ltp_subgroup_2
-+
-+	do_mv 0 1 $mount_point/ltp_subgroup_1 $mount_point/ltp_subgroup_2
- 
- 	sleep 1
- 
--	do_umount 0 1 /dev/cgroup
--	do_rmdir 0 1 /dev/cgroup
--	do_umount 0 1 /dev/cgroup2
-+	do_rmdir 0 1 /dev/cgroup2/ltp_subgroup_2
- 	do_rmdir 0 1 /dev/cgroup2
- }
- 
- case6()
- {
--	exist_subsystem "debug"
--	exist_subsystem "cpuset"
--	exist_subsystem "ns"
--	do_mount 1 1 "-odebug,cpuset,ns" /dev/cgroup cgroup1
-+	do_mkdir 0 1 $mount_point/ltp_subgroup_2
- 
--	mount_str="`mount -l | grep /dev/cgroup2`"
--	if [ "$mount_str" != "" ]; then
--		do_umount 1 1 /dev/cgroup2
--	fi
--
--	if [ -e /dev/cgroup2 ]; then
--		do_rmdir 0 1 /dev/cgroup2
--	fi
--
--	do_mkdir 0 1 /dev/cgroup2
--
--	do_mount 0 1 "-oall" /dev/cgroup2 cgroup2
--
--	sleep 1
--
--	do_umount 0 1 /dev/cgroup
--	do_rmdir 0 1 /dev/cgroup
--	do_umount 0 1 /dev/cgroup2
--	do_rmdir 0 1 /dev/cgroup2
-+	do_mv 0 0 $mount_point/ltp_subgroup_1 $mount_point/tasks
- }
- 
- case7()
- {
--	do_mkdir 0 1 /dev/cgroup/subgroup_2
--
--	do_mv 0 1 /dev/cgroup/subgroup_1 /dev/cgroup/subgroup_3
--}
--
--case8()
--{
--	do_mkdir 0 1 /dev/cgroup/subgroup_2
--
--	do_mv 0 0 /dev/cgroup/subgroup_1 /dev/cgroup/subgroup_2
--}
--
--case9()
--{
--	mount_str="`mount -l | grep /dev/cgroup2`"
--	if [ "$mount_str" != "" ]; then
--		do_umount 1 1 /dev/cgroup2
--	fi
--
--	if [ -e /dev/cgroup2 ]; then
--		do_rmdir 0 1 /dev/cgroup2
--	fi
--
--	do_mkdir 0 1 /dev/cgroup2
--
--	do_mkdir 0 1 /dev/cgroup2/subgroup_2
--
--	do_mv 0 1 /dev/cgroup/subgroup_1 /dev/cgroup/subgroup_2
--
--	sleep 1
--
--	do_rmdir 0 1 /dev/cgroup2/subgroup_2
--	do_rmdir 0 1 /dev/cgroup2
--}
--
--case10()
--{
--	do_mkdir 0 1 /dev/cgroup/subgroup_2
--
--	do_mv 0 0 /dev/cgroup/subgroup_1 /dev/cgroup/tasks
--}
--
--case11()
--{
--	do_echo 0 1 $pid /dev/cgroup/subgroup_1/tasks
-+	do_echo 0 1 $pid $mount_point/ltp_subgroup_1/tasks
- 
- 	sleep 1
- 
--	do_rmdir 0 0 /dev/cgroup/subgroup_1
-+	do_rmdir 0 0 $mount_point/ltp_subgroup_1
- 
- 	sleep 1
- 
--	do_echo 1 1 $pid /dev/cgroup/tasks
-+	do_echo 1 1 $pid $mount_point/tasks
- }
- 
--case12()
-+case8()
- {
--	do_mkdir 0 1 /dev/cgroup/subgroup_1/subgroup_1_1
-+	do_mkdir 0 1 $mount_point/ltp_subgroup_1/ltp_subgroup_1_1
- 
- 	sleep 1
- 
--	do_rmdir 0 0 /dev/cgroup/subgroup_1
-+	do_rmdir 0 0 $mount_point/ltp_subgroup_1
- 
--	do_rmdir 1 1 /dev/cgroup/subgroup_1/subgroup_1_1
-+	do_rmdir 1 1 $mount_point/ltp_subgroup_1/ltp_subgroup_1_1
- }
- 
--case13()
-+case9()
- {
--	do_rmdir 0 1 /dev/cgroup/subgroup_1
-+	do_rmdir 0 1 $mount_point/ltp_subgroup_1
- }
- 
- ##########################  main   #######################
--if [ "$#" -ne "1" ] || [ $caseno -lt 1 ] || [ $caseno -gt 13 ]; then
-+if [ "$#" -ne "2" ] || [ $caseno -lt 1 ] || [ $caseno -gt 9 ]; then
- 	usage;
- 	exit_parameter;
- fi
- 
--exist_subsystem "debug"
-+exist_subsystem $subsystem
-+
- setup;
- 
--if [ $caseno -lt 3 ] || [ $caseno -gt 6 ]; then
--	mount_cgroup;
--	$TESTROOT/cgroup_fj_proc &
--	pid=$!
--	mkdir_subgroup;
--fi
-+$TESTROOT/cgroup_fj_proc &
-+pid=$!
-+mkdir_subgroup;
- 
- case$caseno
- 
- cleanup;
--if [ $caseno -lt 3 ] || [ $caseno -gt 6 ]; then
--	do_kill 1 1 9 $pid
--fi
-+do_kill 1 1 9 $pid
- sleep 1
- exit 0;
--- 
-2.1.4
 
+
+----- Original Message -----
+> From: "Li Wang" <liwang@redhat.com>
+> To: jstancek@redhat.com
+> Cc: ltp@lists.linux.it
+> Sent: Wednesday, 11 November, 2015 2:13:45 PM
+> Subject: [PATCH v3] signal: add new testcase signal06.c
+> 
+> v2 --> v3
+> 	1. add filename to .gitignore
+> 	2. use TEST() macro in someplace
+> 
+> the comments from Oleg's patch:
+> 
+> save_xstate_sig()->drop_init_fpu() doesn't look right. setup_rt_frame()
+> can fail after that, in this case the next setup_rt_frame() triggered
+> by SIGSEGV won't save fpu simply because the old state was lost. This
+> obviously mean that fpu won't be restored after sys_rt_sigreturn() from
+> SIGSEGV handler.
+> 
+> this issue was fixed on kernel v3.17-rc3-3:
+> 
+>         commit df24fb859a4e200d9324e2974229fbb7adf00aef
+>   		Author: Oleg Nesterov <oleg@redhat.com>
+>   		Date:   Tue Sep 2 19:57:17 2014 +0200
+> 
+>         commit 66463db4fc5605d51c7bb81d009d5bf30a783a2c
+>                 Author: Oleg Nesterov <oleg@redhat.com>
+>                 Date:   Tue Sep 2 19:57:13 2014 +0200
+> 
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  runtest/ltplite                             |   1 +
+>  runtest/stress.part3                        |   1 +
+>  runtest/syscalls                            |   1 +
+>  testcases/kernel/syscalls/.gitignore        |   1 +
+>  testcases/kernel/syscalls/signal/Makefile   |   2 +
+>  testcases/kernel/syscalls/signal/signal06.c | 169
+>  ++++++++++++++++++++++++++++
+>  6 files changed, 175 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/signal/signal06.c
+
+Pushed with changes described below.
+
+Regards,
+Jan
+
+> 
+> diff --git a/runtest/ltplite b/runtest/ltplite
+> index aaa5c73..f2c9dcf 100644
+> --- a/runtest/ltplite
+> +++ b/runtest/ltplite
+> @@ -840,6 +840,7 @@ signal02 signal02
+>  signal03 signal03
+>  signal04 signal04
+>  signal05 signal05
+> +signal06 signal06
+>  
+>  sigpending02 sigpending02
+>  
+> diff --git a/runtest/stress.part3 b/runtest/stress.part3
+> index 63505ec..36bb16f 100644
+> --- a/runtest/stress.part3
+> +++ b/runtest/stress.part3
+> @@ -744,6 +744,7 @@ signal02 signal02
+>  signal03 signal03
+>  signal04 signal04
+>  signal05 signal05
+> +signal06 signal06
+>  
+>  sigpending02 sigpending02
+>  
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index 958f66e..cfbcbea 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -1143,6 +1143,7 @@ signal02 signal02
+>  signal03 signal03
+>  signal04 signal04
+>  signal05 signal05
+> +signal06 signal06
+>  
+>  signalfd01 signalfd01
+>  
+> diff --git a/testcases/kernel/syscalls/.gitignore
+> b/testcases/kernel/syscalls/.gitignore
+> index 6e4894a..8b36869 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -908,6 +908,7 @@
+>  /signal/signal03
+>  /signal/signal04
+>  /signal/signal05
+> +/signal/signal06
+>  /signalfd/signalfd01
+>  /signalfd4/signalfd4_01
+>  /signalfd4/signalfd4_02
+> diff --git a/testcases/kernel/syscalls/signal/Makefile
+> b/testcases/kernel/syscalls/signal/Makefile
+> index bd617d8..dad2a7d 100644
+> --- a/testcases/kernel/syscalls/signal/Makefile
+> +++ b/testcases/kernel/syscalls/signal/Makefile
+> @@ -21,3 +21,5 @@ top_srcdir		?= ../../../..
+>  include $(top_srcdir)/include/mk/testcases.mk
+>  
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> +
+> +signal06: CFLAGS+=-pthread
+> diff --git a/testcases/kernel/syscalls/signal/signal06.c
+> b/testcases/kernel/syscalls/signal/signal06.c
+> new file mode 100644
+> index 0000000..479522b
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/signal/signal06.c
+> @@ -0,0 +1,169 @@
+> +/*
+> + * Copyright (c) 2015   Author: Oleg Nesterov <oleg@redhat.com>
+> + *                      Modify: Li Wang <liwang@redhat.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * you should have received a copy of the GNU General Public License along
+> + * with this program; if not, write the Free Software Foundation, Inc.,
+> + * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+> + */
+> +
+> +/*
+> + * Description:
+> + *
+> + *      save_xstate_sig()->drop_init_fpu() doesn't look right.
+> setup_rt_frame()
+> + *      can fail after that, in this case the next setup_rt_frame()
+> triggered
+> + *      by SIGSEGV won't save fpu simply because the old state was lost.
+> This
+> + *      obviously mean that fpu won't be restored after sys_rt_sigreturn()
+> from
+> + *      SIGSEGV handler.
+> + *
+> + *      These commits fix the issue on v3.17-rc3-3 stable kernel:
+> + *
+> + *      commit df24fb859a4e200d9324e2974229fbb7adf00aef
+> + * 		Author: Oleg Nesterov <oleg@redhat.com>
+> + * 		Date:   Tue Sep 2 19:57:17 2014 +0200
+> + *
+> + *      commit 66463db4fc5605d51c7bb81d009d5bf30a783a2c
+> + *               Author: Oleg Nesterov <oleg@redhat.com>
+> + *               Date:   Tue Sep 2 19:57:13 2014 +0200
+> + *
+> + * Reproduce:
+> + *	Test-case (needs -O2).
+> + */
+> +
+> +#include <stdio.h>
+> +#include <signal.h>
+> +#include <unistd.h>
+> +#include <sys/syscall.h>
+> +#include <sys/mman.h>
+> +#include <pthread.h>
+> +#include <assert.h>
+> +#include <errno.h>
+> +
+> +#include "test.h"
+> +#include "linux_syscall_numbers.h"
+> +
+> +char *TCID = "signal06";
+> +int TST_TOTAL = 5;
+> +
+> +#if __x86_64__
+> +
+> +#define LOOPS 10000
+> +
+> +volatile double D;
+> +volatile int FLAGE;
+> +
+> +char altstack[4096 * 10] __attribute__((aligned(4096)));
+> +
+> +void test(double d)
+> +{
+> +	int loop = 0;
+> +	int pid = getpid();
+> +
+> +	D = d;
+> +	while (D == d && loop < LOOPS) {
+> +		/* sys_tkill(pid, SIGHUP); asm to avoid save/reload
+> +		 * fp regs around c call */
+> +		asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
+> +		asm ("syscall" : : : "ax");
+> +
+> +		loop++;
+> +	}
+> +
+> +	FLAGE = 1;
+> +	tst_resm(TINFO, "loop = %d", loop);
+> +
+> +	if (loop == LOOPS) {
+> +		tst_resm(TPASS, "%s call succeeded", TCID);
+> +	} else {
+> +		tst_resm(TFAIL, "Bug Reproduced!");
+> +		tst_exit();
+> +	}
+> +}
+> +
+> +void sigh(int sig LTP_ATTRIBUTE_UNUSED)
+> +{
+> +}
+> +
+> +void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
+> +{
+> +	FLAGE = 0;
+
+^^ I moved this below to main loop, because you can get into situation, where test()
+completes before tfunc() and then test just hangs (spins in tfunc() forever)
+
+> +
+> +	for (; ;) {
+> +		TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
+> +		if (TEST_RETURN == -1)
+> +			tst_brkm(TBROK | TRERRNO, NULL, "mprotect failed");
+
+TRERRNO makes sense only for APIs like pthread_, which don't store
+error code to errno, but return it directly.
+
+#define TERRNO  0x100   /* Append errno information to output */
+#define TTERRNO 0x200   /* Append TEST_ERRNO information to output */
+#define TRERRNO 0x400   /* Capture errno information from TEST_RETURN to
+                           output;
+
+Regards,
+Jan
+
+> +
+> +		TEST(mprotect(altstack, sizeof(altstack), PROT_READ|PROT_WRITE));
+> +		if (TEST_RETURN == -1)
+> +			tst_brkm(TBROK | TRERRNO, NULL, "mprotect failed");
+> +
+> +		if (FLAGE == 1)
+> +			return NULL;
+> +	}
+> +}
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int i, lc;
+> +	pthread_t pt;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	stack_t st = {
+> +		.ss_sp = altstack,
+> +		.ss_size = sizeof(altstack),
+> +		.ss_flags = SS_ONSTACK,
+> +	};
+> +
+> +	struct sigaction sa = {
+> +		.sa_handler = sigh,
+> +	};
+> +
+> +	TEST(sigaction(SIGSEGV, &sa, NULL));
+> +	if (TEST_RETURN == -1)
+> +		tst_brkm(TBROK | TRERRNO, NULL,
+> +				"SIGSEGV signal setup failed");
+> +	sigaltstack(&st, NULL);
+> +	sa.sa_flags = SA_ONSTACK;
+> +
+> +	TEST(sigaction(SIGHUP, &sa, NULL));
+> +	if (TEST_RETURN == -1)
+> +		tst_brkm(TBROK | TRERRNO, NULL,
+> +				"SIGHUP signal setup failed");
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		for (i = 0; i < TST_TOTAL; i++) {
+> +
+> +			TEST(pthread_create(&pt, NULL, tfunc, NULL));
+> +			if (TEST_RETURN)
+> +				tst_brkm(TBROK | TRERRNO, NULL,
+> +						"pthread_create failed");
+> +
+> +			test(123.456);
+> +
+> +			TEST(pthread_join(pt, NULL));
+> +			if (TEST_RETURN)
+> +				tst_brkm(TBROK | TRERRNO, NULL,
+> +						"pthread_join failed");
+> +		}
+> +	}
+> +
+> +	tst_exit();
+> +}
+> +
+> +#else
+> +int main(void)
+> +{
+> +	tst_brkm(TCONF, NULL, "Only test on x86_64.");
+> +}
+> +#endif
+> --
+> 1.8.3.1
+> 
+> 
