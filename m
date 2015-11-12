@@ -1,7 +1,7 @@
 From: Cedric Hnyda <chnyda@suse.com>
-Date: Thu, 12 Nov 2015 09:39:36 +0100
+Date: Thu, 12 Nov 2015 09:30:43 +0100
 Subject: [LTP]  [PATCH V2] cgroup_fj: function2
-Message-ID: <1447317576-14194-1-git-send-email-chnyda@suse.com>
+Message-ID: <1447317043-13997-1-git-send-email-chnyda@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
