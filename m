@@ -1,13 +1,12 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 12 Nov 2015 11:27:24 +0800
-Subject: [LTP] [PATCH] commands/mkswap: Added new testcase to test
+Date: Thu, 12 Nov 2015 11:32:06 +0800
+Subject: [LTP] [PATCH v2] commands/mkswap: Added new testcase to test
 	mkswap(8).
-In-Reply-To: <BLU436-SMTP8601D757580F449BE1A80CF130@phx.gbl>
-References: <1446692628-12706-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <BLU436-SMTP1923895FA6B242E57BC28CDCF150@phx.gbl>
- <5640430D.40903@cn.fujitsu.com>
- <BLU436-SMTP8601D757580F449BE1A80CF130@phx.gbl>
-Message-ID: <5644071C.1060202@cn.fujitsu.com>
+In-Reply-To: <BLU436-SMTP34950324B1CC2CC1FCF1F3CF130@phx.gbl>
+References: <563C94F5.9040803@oracle.com>
+ <1447056173-8979-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <BLU436-SMTP34950324B1CC2CC1FCF1F3CF130@phx.gbl>
+Message-ID: <56440836.2080504@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,115 +15,28 @@ To: ltp@lists.linux.it
 
 Hi!
 
-On 2015/11/11 11:45, Lei Li wrote:
->> Hi!
->> Thanks for review!
->>
->> On 2015/11/09 10:00, Lei Li wrote:
->>>> +setup()
->>>> +{
->>>> +    tst_require_root
->>>> +
->>>> +    tst_check_cmds losetup free mkswap
->>>> +
->>>> +    tst_tmpdir
->>>> +
->>>> +    TST_CLEANUP=cleanup
->>>> +
->>>> +    tst_acquire_device
->>>> +
->>>> +    local path=`losetup -a | grep "$TMPDIR"  | awk '{print $3}' | \
->>>> +        cut -d '(' -f2 | cut -d ')' -f1`
->>>> +    DEVICE_SIZE=$((`ls -l $path | awk '{print $5}'`/1024))
->>> Hi!
->>>      This testcase uses a loop device instead of a block device, but tst_acquire_device may offer you a block device, /opt/ltp/runltp -b /dev/sdb1 for example, then, "path" may be invilidate, and syntax error occurs in the line :
->>>
->>> DEVICE_SIZE=$((`ls -l $path | awk '{print $5}'`/1024))
->>>
->>> So, examination whether the "path" is validate is necessary.
->>>
->>
->> Indeed, I missed the condition of block device.
->> I think I could use DEVICE_SIZE=$((`blockdev --getsize64 $TST_DEVICE`/1024)) instead of via path.
->>
->>>> +
->>>> +    PAGE_SIZE=`getconf PAGE_SIZE`
->>>> +}
->>>> +
->>>> +cleanup()
->>>> +{
->>>> +    tst_release_device
->>>> +
->>>> +    tst_rmdir
->>>> +}
->>>> +
->>>> +mkswap_verify()
->>>> +{
->>>> +    local ret=0
->>>> +
->>>> +    local before=`free | grep "Swap" | awk '{print $2}'`
->>>> +
->>>> +    if [ -z "$4" ]; then
->>>> +        local swapsize=$DEVICE_SIZE
->>>> +    else
->>>> +        local swapsize=$4
->>>> +    fi
->>>> +
->>>> +    if [ "$1" = "-p" ]; then
->>>> +        local pagesize=$2
->>>> +    else
->>>> +        local pagesize=$PAGE_SIZE
->>>> +    fi
->>>> +
->>>> +    if [ "$1" = "-L" ]; then
->>>> +        local swap_op="-L"
->>>> +        local swapfile=$2
->>>> +    elif [ "$1" = "-U" ]; then
->>>> +        local swap_op="-U"
->>>> +        local swapfile=$2
->>>> +    else
->>>> +        local swap_op=""
->>>> +        local swapfile=$3
->>>> +    fi
->>>> +
->>>> +    swapon $swap_op $swapfile 2>/dev/null
->>>> +    if [ $? -ne 0 ]; then
->>>> +        tst_resm TINFO "can not do swapon on $swapfile."
->>>> +        if [ $pagesize -ne $PAGE_SIZE ]; then
->>>> +            return $ret
->>>> +        fi
->>>> +
->>>> +        if [ $swapsize -gt $DEVICE_SIZE ]; then
->>>> +            return $ret
->>>> +        fi
->>>> +    fi
->>>> +
->>>> +    local after=`free | grep "Swap" | awk '{print $2}'`
->>>> +
->>>> +    local est=16
->>>> +    if [ $((after-before)) -lt $((swapsize-pagesize/1024-est)) ] || \
->>>> +        [ $((after-before)) -gt $((swapsize-pagesize/1024+est)) ]; then
->>>> +        ret=1
->>>> +    fi
->>>
->>> How do you get this formula? I'm a newbie here :-)
->>>
->>
->> I just compare device size used for swap with the actual increment of swap.
->> The increment should be equal to the device size minus a page size, but in some cases, the result fluctuates.
+On 2015/11/11 12:50, Lei Li wrote:
+>> +mkswap_test "" "" "$TST_DEVICE"
+>> +mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-10000))"
+>> +mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+10000))"
+>> +mkswap_test "-c" "" "$TST_DEVICE"
+>> +mkswap_test "-p" "2048" "$TST_DEVICE"
+>> +mkswap_test "-L" "testswap" "$TST_DEVICE"
+>> +mkswap_test "-v1" "" "$TST_DEVICE"
+>> +mkswap_test "-U" "ffffffff-ffff-ffff-ffff-ffffffffffff" "$TST_DEVICE"
 > 
-> Hi
->   I read the code of mkswap, find nothing about the fluctuation but
-> the exact value(as you mentioned above, device size minus a page size).
-> And the fluctuation didn't show up in all of my test result.Would you
-> please give me some proof about the fluctuation ?
+> Hi again :-)
+>     This testcase changes UUID of a block device and will never
+> restore it. Swapon error occurs when there are two "ffffffff-
+> ffff-ffff-ffff-ffffffffffff" UUID in the system, for example, run this
+> testcase to test a block device firstly and then, test a loop device.
 > 
 
-Yes, in most of my environment, there is no fluctuation but the exact value,
-but for example, on my RHEL5.11GA, the result is not exactly equal to the value somehow,
-maybe the result is slightly different in some kernels.
+Indeed, just like you mentioned, it need to be fixed, thanks!
 
 Best Regards,
 Guangwen Feng
 
-> Thanks.
+> Maybe you should restore the UUID of the block device in cleanup().
+> 
+> Thanks
