@@ -1,7 +1,7 @@
 From: Cedric Hnyda <chnyda@suse.com>
-Date: Thu, 12 Nov 2015 15:05:32 +0100
-Subject: [LTP]  [PATCH] controllers/pid: Add new testcases
-Message-ID: <1447337132-15077-1-git-send-email-chnyda@suse.com>
+Date: Thu, 12 Nov 2015 15:08:09 +0100
+Subject: [LTP]  [PATCH v2] controllers/pids: Add new testcases
+Message-ID: <1447337289-15226-1-git-send-email-chnyda@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,10 +16,10 @@ Signed-off-by: Cedric Hnyda <chnyda@suse.com>
 ---
  runtest/controllers                           |   2 +
  testcases/kernel/controllers/pids/.gitignore  |   1 +
- testcases/kernel/controllers/pids/Makefile    |  30 +++++++
+ testcases/kernel/controllers/pids/Makefile    |  28 +++++++
  testcases/kernel/controllers/pids/pids.sh     | 109 ++++++++++++++++++++++++++
  testcases/kernel/controllers/pids/pids_task.c |  60 ++++++++++++++
- 5 files changed, 202 insertions(+)
+ 5 files changed, 200 insertions(+)
  create mode 100644 testcases/kernel/controllers/pids/.gitignore
  create mode 100644 testcases/kernel/controllers/pids/Makefile
  create mode 100644 testcases/kernel/controllers/pids/pids.sh
@@ -44,12 +44,10 @@ index 0000000..d7d4e14
 +/pids_task
 diff --git a/testcases/kernel/controllers/pids/Makefile b/testcases/kernel/controllers/pids/Makefile
 new file mode 100644
-index 0000000..c881153
+index 0000000..6500363
 --- /dev/null
 +++ b/testcases/kernel/controllers/pids/Makefile
-@@ -0,0 +1,30 @@
-+#
-+#    kernel/controllers/cpuacct test suite Makefile.
+@@ -0,0 +1,28 @@
 +#
 +#    Copyright (C) 2015, SUSE
 +#
