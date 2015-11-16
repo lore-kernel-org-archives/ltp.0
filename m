@@ -1,109 +1,60 @@
 From: Wanlong Gao <wanlong.gao@gmail.com>
-Date: Mon, 16 Nov 2015 10:42:56 +0800
-Subject: [LTP] [PATCH] semctl01: wait for children to exit between tests
-In-Reply-To: <2884421001fa51724ab19f03d6422f679509da3d.1447420556.git.jstancek@redhat.com>
-References: <2884421001fa51724ab19f03d6422f679509da3d.1447420556.git.jstancek@redhat.com>
-Message-ID: <20151116024256.GA24452@home.allenx.org>
+Date: Mon, 16 Nov 2015 13:06:27 +0800
+Subject: [LTP] [PATCH] futex: skip futex_wake04.c if system not support
+ huge pages
+In-Reply-To: <1447576860-9189-1-git-send-email-liwang@redhat.com>
+References: <1447576860-9189-1-git-send-email-liwang@redhat.com>
+Message-ID: <20151116050627.GA15996@home.allenx.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Nov 13, 2015 at 02:19:49PM +0100, Jan Stancek wrote:
-> This testcase occasionally hanged:
->  semctl01    1  TPASS  :  buf.sem_nsems and buf.sem_perm.mode are correct
->  semctl01    2  TPASS  :  buf.sem_perm.mode is correct
->  semctl01    3  TPASS  :  semaphores have expected values
->  semctl01    4  TPASS  :  number of sleeping processes is correct
->  semctl01    5  TPASS  :  last pid value is correct
->  semctl01    6  TPASS  :  semaphore value is correct
->  semctl01    7  TBROK  :  semctl01.c:338: semop succeeded - cnt_setup
-> <hangs here>
+On Sun, Nov 15, 2015 at 04:41:00PM +0800, Li Wang wrote:
+> Testcase fails on system which not support hugepages:
 > 
-> because somop in GETZCNT test unexpectedly suceeded. All children
-> are supposed to block here, because semval is not zero.
+> futex_wake04    1  TBROK  :  safe_file_ops.c:155: The FILE '/proc/sys/vm/nr_hugepages' ended prematurely at futex_wake04.c:74
+> futex_wake04    2  TBROK  :  safe_file_ops.c:155: Remaining cases broken
 > 
-> Problem is that semctl01 sends SIGKILL to children from previous
-> test (GETNCNT), but it doesn't wait for them to finish. Then it
-> proceeds to increase semval for GETZCNT test and one child from
-> previous test, which is still blocked on sem_op == -1 for SEM4
-> and has not exited yet, will decrease semval to 0. This breaks
-> GETZCNT test, child unexpectedly completes and becomes zombie.
-> Parent process then waits forever in TST_PROCESS_STATE_WAIT()
-> for state to be 'S' - sleeping.
+> Skip the testcase cases with TCONF rather than failing with TBROK.
 > 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-
-Acked-by: Wanlong Gao <wanlong.gao@gmail.com>
-
+> Signed-off-by: Li Wang <liwang@redhat.com>
 > ---
->  testcases/kernel/syscalls/ipc/semctl/semctl01.c | 30 +++++++++++++++++++------
->  1 file changed, 23 insertions(+), 7 deletions(-)
+>  testcases/kernel/syscalls/futex/futex_wake04.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl01.c b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-> index 9a516ed5e1f8..39cf64e118a7 100644
-> --- a/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-> +++ b/testcases/kernel/syscalls/ipc/semctl/semctl01.c
-> @@ -45,10 +45,10 @@
->  #ifndef _GNU_SOURCE
->  #define _GNU_SOURCE
->  #endif
-> +#include <sys/wait.h>
->  #include "ipcsem.h"
+> diff --git a/testcases/kernel/syscalls/futex/futex_wake04.c b/testcases/kernel/syscalls/futex/futex_wake04.c
+> index dcefde8..2d6bd4c 100644
+> --- a/testcases/kernel/syscalls/futex/futex_wake04.c
+> +++ b/testcases/kernel/syscalls/futex/futex_wake04.c
+> @@ -50,6 +50,7 @@
 >  
->  char *TCID = "semctl01";
-> -int TST_TOTAL = 13;
+>  #define PATH_MEMINFO "/proc/meminfo"
+>  #define PATH_NR_HUGEPAGES "/proc/sys/vm/nr_hugepages"
+> +#define PATH_SYS_HUGEPAGES "/sys/kernel/mm/hugepages/"
+
+Why not use the original "/proc/sys/vm/nr_hugepages" to check the hugetlb
+support but add a new one ?
+
+Thanks,
+Wanlong Gao
+
 >  
->  static int sem_id_1 = -1;
->  static int sem_index;
-> @@ -120,10 +120,30 @@ static struct test_case_t {
->  	{&sem_id_1, 0, IPC_RMID, func_rmid, SEMUN_CAST & buf, NULL},
->  };
+>  const char *TCID = "futex_wake04";
+>  const int TST_TOTAL = 1;
+> @@ -69,6 +70,9 @@ static void setup(void)
+>  			"that are 2.6.32 or higher");
+>  	}
 >  
-> +int TST_TOTAL = ARRAY_SIZE(TC);
+> +	if (access(PATH_SYS_HUGEPAGES, F_OK) == -1)
+> +		tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +static void kill_all_children(void)
-> +{
-> +	int j, status;
-> +
-> +	for (j = 0; j < NCHILD; j++) {
-> +		if (kill(pid_arr[j], SIGKILL) == -1)
-> +			tst_brkm(TBROK | TERRNO, cleanup, "child kill failed");
-> +	}
-> +
-> +	/*
-> +	 * make sure children finished before we proceed with next testcase
-> +	 */
-> +	for (j = 0; j < NCHILD; j++) {
-> +		if (wait(&status) == -1)
-> +			tst_brkm(TBROK | TERRNO, cleanup, "wait() failed");
-> +	}
-> +}
-> +
->  int main(int argc, char *argv[])
->  {
->  	int lc;
-> -	int i, j;
-> +	int i;
+>  	tst_tmpdir();
 >  
->  	tst_parse_opts(argc, argv, NULL, NULL);
->  
-> @@ -192,11 +212,7 @@ int main(int argc, char *argv[])
->  			switch (TC[i].cmd) {
->  			case GETNCNT:
->  			case GETZCNT:
-> -				for (j = 0; j < NCHILD; j++) {
-> -					if (kill(pid_arr[j], SIGKILL) == -1)
-> -						tst_brkm(TBROK, cleanup,
-> -							 "child kill failed");
-> -				}
-> +				kill_all_children();
->  				break;
->  			}
->  		}
+>  	SAFE_FILE_SCANF(NULL, PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
 > -- 
-> 1.8.3.1
+> 1.9.3
 > 
 > 
 > -- 
