@@ -1,37 +1,18 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 16 Nov 2015 07:11:50 -0500 (EST)
-Subject: [LTP] [PATCH] semctl01: wait for children to exit between tests
-In-Reply-To: <20151116102054.GA17888@rei.suse.cz>
-References: <2884421001fa51724ab19f03d6422f679509da3d.1447420556.git.jstancek@redhat.com>
- <20151116102054.GA17888@rei.suse.cz>
-Message-ID: <2033019854.9462978.1447675910885.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 16 Nov 2015 15:32:52 +0100
+Subject: [LTP] [PATCH v2] commands/mkfs/mkfs01.sh: fix mkfs
+In-Reply-To: <BAY403-EAS3585228DE80DA72DD48E383CF110@phx.gbl>
+References: <BAY403-EAS3585228DE80DA72DD48E383CF110@phx.gbl>
+Message-ID: <20151116143252.GF17888@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+Pushed, thanks.
 
-
-
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Monday, 16 November, 2015 11:20:54 AM
-> Subject: Re: [LTP] [PATCH] semctl01: wait for children to exit between tests
-> 
-> Hi!
-> Looks good to me as well.
-
-Pushed.
-
-Regards,
-Jan
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
