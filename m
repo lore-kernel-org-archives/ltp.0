@@ -1,103 +1,35 @@
-From: Wanlong Gao <wanlong.gao@gmail.com>
-Date: Tue, 17 Nov 2015 16:30:58 +0800
-Subject: [LTP] [PATCH] futex: skip futex_wake04.c if system not support
- huge pages
-In-Reply-To: <CAEemH2d=8jsB+agXPP9rkkiZ7eA6yifaugAVkzJfjB9POP37kA@mail.gmail.com>
-References: <1447576860-9189-1-git-send-email-liwang@redhat.com>
- <20151116050627.GA15996@home.allenx.org>
- <CAEemH2ezRDHhyNGHQgzBdMmihB_AXZ91PVcx+21u=9HGnqo9vg@mail.gmail.com>
- <20151116073720.GA1234@home.allenx.org>
- <CAEemH2es-GOQF48wTpcc=FnRWC-Qi7H3327h=gR01ptiBCGUFQ@mail.gmail.com>
- <CAEemH2d=8jsB+agXPP9rkkiZ7eA6yifaugAVkzJfjB9POP37kA@mail.gmail.com>
-Message-ID: <20151117083058.GA4248@home.allenx.org>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 18 Nov 2015 11:23:39 +0800
+Subject: [LTP] [PATCH] runtest/hugetlb: enable testcase hugemmap02.c
+Message-ID: <1447817019-19637-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Nov 17, 2015 at 03:52:29PM +0800, Li Wang wrote:
-> Hi,
-> 
-> On Mon, Nov 16, 2015 at 5:01 PM, Li Wang <liwang@redhat.com> wrote:
-> 
->     Hi,
-> 
->     On Mon, Nov 16, 2015 at 3:37 PM, Wanlong Gao <wanlong.gao@gmail.com> wrote:
->    
->         On Mon, Nov 16, 2015 at 02:00:52PM +0800, Li Wang wrote:
->         >
->         > In my test system, there exist file "/proc/sys/vm/nr_hugepages" with
->         normal
->         > permission, but reject any R/W operation.
->         >
->         > So, if I use ? if (access(PATH_NR_HUGEPAGES, F_OK) == -1),? It
->         doesn't work.
->         >
->         > # ll /proc/sys/vm/nr_hugepages
->         > -rw-r--r--. 1 root root 0 Nov 15 09:03 /proc/sys/vm/nr_hugepages
->         >
->         > # cat /proc/sys/vm/nr_hugepages
->         > cat: write error: Bad address
-> 
->         Would you show your kernel version or investigate why this happens?
->         This should not exist if we disable the hugetlbfs in kernel config.
->    
-> 
->     I looked close to my test bed, it is a KVM Guest which enabled hugetlbfs on
->     IBM POWER8E,
-> 
->     the config is:
->     CONFIG_CGROUP_HUGETLB=y
->     CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE=y
->     CONFIG_HUGETLB_PAGE_SIZE_VARIABLE=y
->     CONFIG_SYS_SUPPORTS_HUGETLBFS=y
->     CONFIG_TRANSPARENT_HUGEPAGE=y
->     # CONFIG_TRANSPARENT_HUGEPAGE_ALWAYS is not set
->     CONFIG_TRANSPARENT_HUGEPAGE_MADVISE=y
->     CONFIG_HUGETLBFS=y
->     CONFIG_HUGETLB_PAGE=y
-> 
->     # uname -r
->     3.10.0-*.el7.ppc64le
->     ?
-> 
-> 
->         > VmallocChunk:?? 8589850624 kB
->         > HardwareCorrupted:???? 0 kB
-> 
->         > AnonHugePages:???????? 0 kB
-> 
->         This tells that your kernel support THP.
-> 
->     ?
->     yes, the reason is that my kvm guest XML was not added these below line:
-> 
->     guest XML:
->     ?<memoryBacking>
->     ????? <hugepages/>
->     ?</memoryBacking>
-> 
->     after adding them, the kvm guest can works well with hugepages.
-> 
->     it is a configuration issue of guest, not a kernel bug.? so, I propose my
->     patch as previously.
-> 
-> 
-> IMO, if we use the original "/proc/sys/vm/nr_hugepages" to check the hugetlb
-> support, it does not work on the situation which I mentioned above.
-> 
-> So, I suggest to add new Marco 'PATH_SYS_HUGEPAGES'? to skip the testcase.
-> 
-> what do you think?
+the testcase has been fixed by this commit:
+	commit 74c95c22deaf143c1e00b6dc146193f89442d5ae
+	Author: Li Wang <liwang@redhat.com>
+	Date:   Thu Oct 15 11:23:23 2015 +0800
 
-It's just a workaround, anyway, I have no objection.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ runtest/hugetlb | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks,
-Wanlong Gao
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 7fcaa01..2e9f215 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -1,6 +1,5 @@
+ hugemmap01 hugemmap01
+-# test is broken in design
+-#hugemmap02 hugemmap02
++hugemmap02 hugemmap02
+ hugemmap04 hugemmap04
+ hugemmap05 hugemmap05
+ hugemmap05_1 hugemmap05 -m
+-- 
+1.8.3.1
 
-> 
-> --
-> Regards,
-> Li Wang
-> Email: liwang@redhat.com
