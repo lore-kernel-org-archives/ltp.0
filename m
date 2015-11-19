@@ -1,134 +1,70 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 Nov 2015 15:49:42 +0100
-Subject: [LTP] [PATCH v2] controllers/pids: Add new testcases
-In-Reply-To: <1447337289-15226-1-git-send-email-chnyda@suse.com>
-References: <1447337289-15226-1-git-send-email-chnyda@suse.com>
-Message-ID: <20151119144941.GE28969@rei.lan>
+Date: Thu, 19 Nov 2015 17:00:51 +0100
+Subject: [LTP] [PATCH] Cleanup syscalls/utime test messages
+In-Reply-To: <20151115100916.GA24895@issan.sis.pasteur.fr>
+References: <20151115100916.GA24895@issan.sis.pasteur.fr>
+Message-ID: <20151119160051.GF28969@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> --- /dev/null
-> +++ b/testcases/kernel/controllers/pids/pids.sh
-> @@ -0,0 +1,109 @@
-> +#!/bin/sh
-> +
-> +################################################################################
-> +##                                                                            ##
-> +## Copyright (c) 2015 SUSE                                                    ##
-> +##                                                                            ##
-> +## This program is free software;  you can redistribute it and#or modify      ##
-> +## it under the terms of the GNU General Public License as published by       ##
-> +## the Free Software Foundation; either version 2 of the License, or          ##
-> +## (at your option) any later version.                                        ##
-> +##                                                                            ##
-> +## This program is distributed in the hope that it will be useful, but        ##
-> +## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-> +## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-> +## for more details.                                                          ##
-> +##                                                                            ##
-> +## You should have received a copy of the GNU General Public License          ##
-> +## along with this program;  if not, write to the Free Software               ##
-> +## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301   ##
-> +## USA                                                                        ##
-> +##                                                                            ##
-> +## Author: Cedric Hnyda <chnyda@suse.com>                                     ##
-> +##                                                                            ##
-> +################################################################################
-> +
-> +# Usage
-> +# ./pids.sh
-> +#
-> +# Description
-> +#
-> +# 1) Find if pids is mounted, if not mounted, pids will be mounted
-> +# 2) Limit the number of pid avalaible and try to fork with pid_task
-> +#
+> diff --git a/testcases/kernel/syscalls/utime/utime01.c b/testcases/kernel/syscalls/utime/utime01.c
+> index 4bb33e9..2eb49d4 100644
+> --- a/testcases/kernel/syscalls/utime/utime01.c
+> +++ b/testcases/kernel/syscalls/utime/utime01.c
+> @@ -131,8 +131,7 @@ int main(int ac, char **av)
+>  		TEST(utime(TEMP_FILE, NULL));
+>  
+>  		if (TEST_RETURN == -1) {
+> -			tst_resm(TFAIL, "utime(%s) Failed, errno=%d : %s",
+> -				 TEMP_FILE, TEST_ERRNO, strerror(TEST_ERRNO));
+> +			tst_resm(TFAIL|TTERRNO, "utime(%s) failed", TEMP_FILE);
+>  		} else {
+>  			/*
+>  			 * Sleep for a second so that mod time and
+> @@ -146,10 +145,9 @@ int main(int ac, char **av)
+>  			 * utime(2)
+>  			 */
+>  			if ((pres_time = time(&tloc)) < 0) {
+> -				tst_brkm(TFAIL, cleanup, "time() "
+> +				tst_brkm(TFAIL|TERRNO, cleanup, "time() "
+>  					 "failed to get present time "
+> -					 "after utime, error=%d",
+> -					 errno);
+> +					 "after utime");
 
-Can we do this a bit more versatile? I.e. pass the limit to test to the
-pids.sh script and change the pids_task to expect failure after N - 1
-forks?
+This part of code is not 100% correct, since time() returns precisely
+(time_t)-1 on failure. If time_t is typedefed in system to unsigned it
+will never be true. And it looks like it's defined to be long int at the
+moment hence 4 bytes on 32bit arch and 8 bytes on 64bit arch, but that
+may change because of 2038. Heh, and the test fails if you set time
+before 01-01-1970 (yep, looks like it could be done since time_t is
+signed type), not that it matters that much though.
 
-I would like to test this with limit set to 1, 2, 10, 50 and make sure
-that we can fork limit-1 tasks. That way we will do only one test in the
-script and call the script several times instead.
+Lookig at the time man page the only error defined for time is EFAULT
+when you pass wrong pointer to it. So I would just remove the check for
+failure for all time() calls. What do you think?
 
-And actually what happens when the limit is reached and we try to attach
-process to it, does it fail too? And what happens when we set it to 0?
-(these are candidates for subsequent tests)
+>  
+>  			/*
+> @@ -157,9 +155,8 @@ int main(int ac, char **av)
+>  			 * temporary file using stat(2).
+>  			 */
+>  			if (stat(TEMP_FILE, &stat_buf) < 0) {
+> -				tst_brkm(TFAIL, cleanup, "stat(2) of "
+> -					 "%s failed, error:%d",
+> -					 TEMP_FILE, TEST_ERRNO);
+> +				tst_brkm(TFAIL|TERRNO, cleanup, "stat(2) of "
+> +					 "%s failed", TEMP_FILE);
+>  			}
 
-> +export TCID="pids"
-> +export TST_TOTAL=2
-> +mounted=1
-> +
-> +. test.sh
-> +
-> +cleanup()
-> +{
-> +	tst_resm TINFO "removing created directories"
-> +	rmdir $testpath
-> +	if [ "$mounted" -ne "1" ]; then
-> +		tst_resm TINFO "Umounting pids"
-> +		umount $mount_point
-> +		rmdir $mount_point
-> +	fi
-> +}
-> +
-> +setup()
-> +{
-> +	tst_require_root
-> +
-> +	exist=`grep -w pids /proc/cgroups | cut -f1`;
-> +	if [ "$exist" = "" ]; then
-> +		tst_brkm TCONF NULL "pids not supported"
-> +	fi
-> +
-> +	mount_point=`grep -w pids /proc/mounts | cut -f 2 | cut -d " " -f2`
-> +
-> +	if [ "$mount_point" = "" ]; then
-> +		mounted=0
-> +		mount_point=/dev/cgroup
-> +	fi
-> +
-> +	TST_CLEANUP=cleanup
-> +
-> +	testpath=$mount_point/ltp_$TCID
-> +
-> +	if [ "$mounted" -eq "0" ]; then
-> +		ROD mkdir -p $mount_point
-> +		ROD mount -t cgroup -o pids none $mount_point
-> +	fi
-> +	ROD mkdir -p $testpath
-> +}
-> +
-> +setup;
-        ^
-	Useless semicolon
+Hint: we have safe macros so this could be easily done with just:
 
-> +tst_resm TINFO "Restrict the number of pid to 1"
-> +ROD echo 1 > $testpath/pids.max
-> +
-> +pids_task "$testpath/tasks"
-> +ret=$?
-> +
-> +if [ "$ret" -eq "2" ]; then
-> +	tst_resm TPASS "fork failed as expected"
-> +elif [ "$ret" -eq "0" ]; then
-> +	tst_resm TFAIL "fork didn't fail despite the limit"
-> +else
-> +	tst_resm TBROK "failed to open $testpath/tasks"
+      SAFE_STAT(cleanup, TEMP_FILE, &stat_buf);
 
-Actually we may get here when the fork() failed unexpectedly as well.
-
-It would be better to do just tst_resm TBROK "pids_task failed" here and
-print more detailed description of the failure from the pids_task
-instead.
-
-
-Otherwise it looks good.
+      And the same for creat(), close(), etc.
 
 -- 
 Cyril Hrubis
