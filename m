@@ -1,453 +1,81 @@
-From: Cedric Hnyda <chnyda@suse.com>
-Date: Fri, 20 Nov 2015 14:34:47 +0100
-Subject: [LTP]  [PATCH V3] controllers/pids: Add new testcases
-Message-ID: <1448026487-6079-1-git-send-email-chnyda@suse.com>
+From: Nicolas Joly <njoly@pasteur.fr>
+Date: Sat, 21 Nov 2015 10:41:24 +0100
+Subject: [LTP] [PATCH] Cleanup syscalls/utime test messages
+In-Reply-To: <20151119160051.GF28969@rei.lan>
+References: <20151115100916.GA24895@issan.sis.pasteur.fr>
+ <20151119160051.GF28969@rei.lan>
+Message-ID: <20151121094124.GA16808@issan.sis.pasteur.fr>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Created new testcases to test the pids controller
-which is used to stop any new tasks from being fork()'d
-after a certain limit is reached.
+On Thu, Nov 19, 2015 at 05:00:51PM +0100, Cyril Hrubis wrote:
+> > diff --git a/testcases/kernel/syscalls/utime/utime01.c b/testcases/kernel/syscalls/utime/utime01.c
+> > index 4bb33e9..2eb49d4 100644
+> > --- a/testcases/kernel/syscalls/utime/utime01.c
+> > +++ b/testcases/kernel/syscalls/utime/utime01.c
+> > @@ -131,8 +131,7 @@ int main(int ac, char **av)
+> >  		TEST(utime(TEMP_FILE, NULL));
+> >  
+> >  		if (TEST_RETURN == -1) {
+> > -			tst_resm(TFAIL, "utime(%s) Failed, errno=%d : %s",
+> > -				 TEMP_FILE, TEST_ERRNO, strerror(TEST_ERRNO));
+> > +			tst_resm(TFAIL|TTERRNO, "utime(%s) failed", TEMP_FILE);
+> >  		} else {
+> >  			/*
+> >  			 * Sleep for a second so that mod time and
+> > @@ -146,10 +145,9 @@ int main(int ac, char **av)
+> >  			 * utime(2)
+> >  			 */
+> >  			if ((pres_time = time(&tloc)) < 0) {
+> > -				tst_brkm(TFAIL, cleanup, "time() "
+> > +				tst_brkm(TFAIL|TERRNO, cleanup, "time() "
+> >  					 "failed to get present time "
+> > -					 "after utime, error=%d",
+> > -					 errno);
+> > +					 "after utime");
+> 
+> This part of code is not 100% correct, since time() returns precisely
+> (time_t)-1 on failure. If time_t is typedefed in system to unsigned it
+> will never be true. And it looks like it's defined to be long int at the
+> moment hence 4 bytes on 32bit arch and 8 bytes on 64bit arch, but that
+> may change because of 2038. Heh, and the test fails if you set time
+> before 01-01-1970 (yep, looks like it could be done since time_t is
+> signed type), not that it matters that much though.
+> 
+> Lookig at the time man page the only error defined for time is EFAULT
+> when you pass wrong pointer to it. So I would just remove the check for
+> failure for all time() calls. What do you think?
 
-Signed-off-by: Cedric Hnyda <chnyda@suse.com>
----
- runtest/controllers                            |  22 +++
- testcases/kernel/controllers/pids/.gitignore   |   2 +
- testcases/kernel/controllers/pids/Makefile     |  28 ++++
- testcases/kernel/controllers/pids/pids.sh      | 208 +++++++++++++++++++++++++
- testcases/kernel/controllers/pids/pids_task.c  |  63 ++++++++
- testcases/kernel/controllers/pids/pids_task2.c |  60 +++++++
- 6 files changed, 383 insertions(+)
- create mode 100644 testcases/kernel/controllers/pids/.gitignore
- create mode 100644 testcases/kernel/controllers/pids/Makefile
- create mode 100644 testcases/kernel/controllers/pids/pids.sh
- create mode 100644 testcases/kernel/controllers/pids/pids_task.c
- create mode 100644 testcases/kernel/controllers/pids/pids_task2.c
+Fine. My cleanup was mostly mecanical to remove most errno direct use
+... I did not check for anything else ;)
 
-diff --git a/runtest/controllers b/runtest/controllers
-index c62bcce..254a0b0 100644
---- a/runtest/controllers
-+++ b/runtest/controllers
-@@ -277,3 +277,25 @@ cpuset_memory_spread	cpuset_memory_spread_testset.sh
- cpuset_regression_test cpuset_regression_test.sh
- 
- cgroup_xattr	cgroup_xattr
-+
-+pids_1_1 pids.sh 1 1
-+pids_1_2 pids.sh 1 2
-+pids_1_10 pids.sh 1 10
-+pids_1_50 pids.sh 1 50
-+pids_1_100 pids.sh 1 100
-+pids_2_1 pids.sh 2 1
-+pids_2_2 pids.sh 2 2
-+pids_2_10 pids.sh 2 10
-+pids_2_50 pids.sh 2 50
-+pids_2_100 pids.sh 2 100
-+pids_3_1 pids.sh 3 1
-+pids_3_2 pids.sh 3 2
-+pids_3_10 pids.sh 3 10
-+pids_3_50 pids.sh 3 50
-+pids_3_100 pids.sh 3 100
-+pids_4_1 pids.sh 4 1
-+pids_4_2 pids.sh 4 2
-+pids_4_10 pids.sh 4 10
-+pids_4_50 pids.sh 4 50
-+pids_4_100 pids.sh 4 100
-+pids_5_1 pids.sh 5 1
-diff --git a/testcases/kernel/controllers/pids/.gitignore b/testcases/kernel/controllers/pids/.gitignore
-new file mode 100644
-index 0000000..2a86ab2
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/.gitignore
-@@ -0,0 +1,2 @@
-+/pids_task
-+/pids_task2
-diff --git a/testcases/kernel/controllers/pids/Makefile b/testcases/kernel/controllers/pids/Makefile
-new file mode 100644
-index 0000000..6500363
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/Makefile
-@@ -0,0 +1,28 @@
-+#
-+#    Copyright (C) 2015, SUSE
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, write to the Free Software Foundation, Inc.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Author: Cedric Hnyda <chnyda@suse.com>
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(abs_srcdir)/../Makefile.inc
-+
-+INSTALL_TARGETS		:= *.sh
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/controllers/pids/pids.sh b/testcases/kernel/controllers/pids/pids.sh
-new file mode 100644
-index 0000000..53c9d20
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/pids.sh
-@@ -0,0 +1,208 @@
-+#!/bin/sh
-+
-+################################################################################
-+##                                                                            ##
-+## Copyright (c) 2015 SUSE                                                    ##
-+##                                                                            ##
-+## This program is free software;  you can redistribute it and#or modify      ##
-+## it under the terms of the GNU General Public License as published by       ##
-+## the Free Software Foundation; either version 2 of the License, or          ##
-+## (at your option) any later version.                                        ##
-+##                                                                            ##
-+## This program is distributed in the hope that it will be useful, but        ##
-+## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-+## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-+## for more details.                                                          ##
-+##                                                                            ##
-+## You should have received a copy of the GNU General Public License          ##
-+## along with this program;  if not, write to the Free Software               ##
-+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301   ##
-+## USA                                                                        ##
-+##                                                                            ##
-+## Author: Cedric Hnyda <chnyda@suse.com>                                     ##
-+##                                                                            ##
-+################################################################################
-+
-+# Usage
-+# ./pids.sh caseno max
-+#
-+
-+caseno=$1
-+max=$2
-+export TCID="pids_$1_$2"
-+export TST_TOTAL=1
-+mounted=1
-+
-+. test.sh
-+
-+usage()
-+{
-+	echo "usage: ./pids01 caseno max"
-+	tst_resm TFAIL "invalid parameters"
-+}
-+
-+cleanup()
-+{
-+	killall -9 pids_task2 > /dev/null
-+
-+	tst_resm TINFO "removing created directories"
-+	rmdir $testpath
-+	if [ "$mounted" -ne "1" ]; then
-+		tst_resm TINFO "Umounting pids"
-+		umount $mount_point
-+		rmdir $mount_point
-+	fi
-+}
-+
-+setup()
-+{
-+	tst_require_root
-+
-+	exist=`grep -w pids /proc/cgroups | cut -f1`;
-+	if [ "$exist" = "" ]; then
-+		tst_brkm TCONF NULL "pids not supported"
-+	fi
-+
-+	mount_point=`grep -w pids /proc/mounts | cut -f 2 | cut -d " " -f2`
-+
-+	if [ "$mount_point" = "" ]; then
-+		mounted=0
-+		mount_point=/dev/cgroup
-+	fi
-+
-+	TST_CLEANUP=cleanup
-+
-+	testpath=$mount_point/ltp_$TCID
-+
-+	if [ "$mounted" -eq "0" ]; then
-+		ROD mkdir -p $mount_point
-+		ROD mount -t cgroup -o pids none $mount_point
-+	fi
-+	ROD mkdir -p $testpath
-+}
-+
-+case1()
-+{
-+	for i in `seq 1 $max`; do
-+		pids_task2 "$testpath/tasks" &
-+	done
-+
-+	sleep 1
-+
-+	# should return 0 because there is no limit
-+	pids_task "$testpath/tasks"
-+	ret=$?
-+
-+	killall -9 pids_task2
-+
-+	if [ "$ret" -eq "2" ]; then
-+		tst_resm TFAIL "fork failed unexpectedly"
-+	elif [ "$ret" -eq "0" ]; then
-+		tst_resm TPASS "fork didn't fail"
-+	else
-+		tst_resm TBROK "pids_task failed"
-+	fi
-+}
-+
-+case2()
-+{
-+	tmp=$((max - 1))
-+	tst_resm TINFO "limit the number of pid to $max"
-+	ROD echo $max > $testpath/pids.max
-+
-+	for i in `seq 1 $tmp`; do
-+		pids_task2 "$testpath/tasks" &
-+	done
-+
-+	sleep 1
-+
-+	# should return 2 because the limit of pids is reached
-+	pids_task "$testpath/tasks"
-+	ret=$?
-+
-+	killall -9 pids_task2
-+
-+	if [ "$ret" -eq "2" ]; then
-+		tst_resm TPASS "fork failed as expected"
-+	elif [ "$ret" -eq "0" ]; then
-+		tst_resm TFAIL "fork didn't fail despite the limit"
-+	else
-+		tst_resm TBROK "pids_task failed"
-+	fi
-+}
-+
-+case3()
-+{
-+	tmp=$((max + 1))
-+	tst_resm TINFO "limit the number of avalaible pid to $tmp"
-+	ROD echo $tmp > $testpath/pids.max
-+
-+	tmp=$((max - 2))
-+	for i in `seq 1 $tmp`; do
-+		pids_task2 "$testpath/tasks" &
-+	done
-+
-+	sleep 1
-+
-+	pids_task "$testpath/tasks"
-+	ret=$?
-+
-+	killall -9 pids_task2
-+
-+	if [ "$ret" -eq "2" ]; then
-+		tst_resm TFAIL "fork failed unexpectedly"
-+	elif [ "$ret" -eq "0" ]; then
-+		tst_resm TPASS "fork worked as expected"
-+	else
-+		tst_resm TBROK "pids_task failed"
-+	fi
-+}
-+
-+case4()
-+{
-+	tst_resm TINFO "limit the number of avalaible pid to 0"
-+	ROD echo 0 > $testpath/pids.max
-+
-+	for i in `seq 1 $max`; do
-+		pids_task2 "$testpath/tasks" &
-+	done
-+
-+	sleep 1
-+
-+	# count the number of attached process
-+	cnt=0
-+	for job in `jobs -p`; do
-+		cnt=$((cnt + 1))
-+	done
-+
-+	killall -9 pids_task2
-+
-+	if [ "$cnt" -ne "$max" ]; then
-+		cnt=$((max - cnt))
-+		tst_resm TFAIL "$cnt process were not attached successfully"
-+	else
-+		tst_resm TPASS "all process were attached"
-+	fi
-+}
-+
-+case5()
-+{
-+	tst_resm TINFO "try to limit the number of avalaible pid to -1"
-+	echo -1 > $testpath/pids.max
-+
-+	if [ "$?" -eq "0" ]; then
-+		tst_resm TFAIL "managed to set the limit to -1"
-+	else
-+		tst_resm TPASS "didn't manage to set the limit to -1"
-+	fi
-+}
-+
-+setup
-+
-+if [ "$#" -ne "2" ]; then
-+	usage
-+else
-+	case$caseno
-+fi
-+
-+tst_exit
-diff --git a/testcases/kernel/controllers/pids/pids_task.c b/testcases/kernel/controllers/pids/pids_task.c
-new file mode 100644
-index 0000000..a470ccf
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/pids_task.c
-@@ -0,0 +1,63 @@
-+/*
-+ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+/*
-+* Description:
-+* Write the current process in argv[1]
-+* and returns:
-+*	-> 2 if fork fails with EAGAIN,
-+*	-> 1 if there is another problem
-+*	-> 0 if everything worked
-+*/
-+
-+#include <stdio.h>
-+#include <sys/time.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+int main(int argc, char **argv)
-+{
-+	FILE *f;
-+	int newpid;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "Usage: %s /cgroup/.../tasks\n", argv[0]);
-+		return 1;
-+	}
-+
-+	f = fopen(argv[1], "a");
-+	if (!f) {
-+		perror("fopen failed");
-+		return 1;
-+	}
-+
-+	fprintf(f, "%i\n", getpid());
-+	fclose(f);
-+
-+	newpid = fork();
-+	if (newpid == -1 && errno == EAGAIN)
-+		return 2;
-+	if (newpid == -1) {
-+		strerror(errno);
-+		return 1;
-+	}
-+	return 0;
-+}
-diff --git a/testcases/kernel/controllers/pids/pids_task2.c b/testcases/kernel/controllers/pids/pids_task2.c
-new file mode 100644
-index 0000000..3ce63fe
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/pids_task2.c
-@@ -0,0 +1,60 @@
-+/*
-+ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+/*
-+* Description:
-+* Write the current process in argv[1],
-+* return 1 if there is a problem in attaching the process,
-+* otherwise do an infinite loop
-+*/
-+
-+#include <stdio.h>
-+#include <sys/time.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+
-+int main(int argc, char **argv)
-+{
-+	FILE *f;
-+	int i;
-+
-+	i = 0;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "Usage: %s /cgroup/.../tasks\n", argv[0]);
-+		return 1;
-+	}
-+
-+	f = fopen(argv[1], "a");
-+	if (!f) {
-+		perror("fopen failed");
-+		return 1;
-+	}
-+
-+	i = fprintf(f, "%i\n", getpid());
-+
-+	fclose(f);
-+	if (i < 0)
-+		return 1;
-+
-+	while (1) {
-+	}
-+	return 0;
-+}
+> > @@ -157,9 +155,8 @@ int main(int ac, char **av)
+> >  			 * temporary file using stat(2).
+> >  			 */
+> >  			if (stat(TEMP_FILE, &stat_buf) < 0) {
+> > -				tst_brkm(TFAIL, cleanup, "stat(2) of "
+> > -					 "%s failed, error:%d",
+> > -					 TEMP_FILE, TEST_ERRNO);
+> > +				tst_brkm(TFAIL|TERRNO, cleanup, "stat(2) of "
+> > +					 "%s failed", TEMP_FILE);
+> >  			}
+> 
+> Hint: we have safe macros so this could be easily done with just:
+> 
+>       SAFE_STAT(cleanup, TEMP_FILE, &stat_buf);
+> 
+>       And the same for creat(), close(), etc.
+
+That's even simplier indeed.
+
+Will try to setup a new version that include both.
+
 -- 
-2.1.4
+Nicolas Joly
 
+Cluster & Computing Group
+Biology IT Center
+Institut Pasteur, Paris.
