@@ -1,417 +1,1223 @@
-From: Cedric Hnyda <chnyda@suse.com>
-Date: Wed, 25 Nov 2015 14:22:18 +0100
-Subject: [LTP]  [PATCH V4] controllers/pids: Add new testcases
-Message-ID: <1448457738-8058-1-git-send-email-chnyda@suse.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 25 Nov 2015 14:59:43 +0100
+Subject: [LTP] [PATCH] kernel/input: add tests
+In-Reply-To: <1448379664-13775-1-git-send-email-chnyda@suse.com>
+References: <1448379664-13775-1-git-send-email-chnyda@suse.com>
+Message-ID: <20151125135943.GD24599@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Created new testcases to test the pids controller
-which is used to stop any new tasks from being fork()'d
-after a certain limit is reached.
+Hi!
+> --- /dev/null
+> +++ b/runtest/input
+> @@ -0,0 +1,5 @@
+> +input01 input01
+> +input02 input02
+> +input03 input03
+> +input04 input04
+> +input05 input05
 
-Signed-off-by: Cedric Hnyda <chnyda@suse.com>
----
- runtest/controllers                            |  22 +++
- testcases/kernel/controllers/pids/.gitignore   |   2 +
- testcases/kernel/controllers/pids/Makefile     |  28 ++++
- testcases/kernel/controllers/pids/pids.sh      | 202 +++++++++++++++++++++++++
- testcases/kernel/controllers/pids/pids_task1.c |  63 ++++++++
- testcases/kernel/controllers/pids/pids_task2.c |  30 ++++
- 6 files changed, 347 insertions(+)
- create mode 100644 testcases/kernel/controllers/pids/.gitignore
- create mode 100644 testcases/kernel/controllers/pids/Makefile
- create mode 100644 testcases/kernel/controllers/pids/pids.sh
- create mode 100644 testcases/kernel/controllers/pids/pids_task1.c
- create mode 100644 testcases/kernel/controllers/pids/pids_task2.c
+If you create a new runtest file you should also add it to default
+scenario (scenario_groups/default) so it's actually executed by default.
 
-diff --git a/runtest/controllers b/runtest/controllers
-index c62bcce..254a0b0 100644
---- a/runtest/controllers
-+++ b/runtest/controllers
-@@ -277,3 +277,25 @@ cpuset_memory_spread	cpuset_memory_spread_testset.sh
- cpuset_regression_test cpuset_regression_test.sh
- 
- cgroup_xattr	cgroup_xattr
-+
-+pids_1_1 pids.sh 1 1
-+pids_1_2 pids.sh 1 2
-+pids_1_10 pids.sh 1 10
-+pids_1_50 pids.sh 1 50
-+pids_1_100 pids.sh 1 100
-+pids_2_1 pids.sh 2 1
-+pids_2_2 pids.sh 2 2
-+pids_2_10 pids.sh 2 10
-+pids_2_50 pids.sh 2 50
-+pids_2_100 pids.sh 2 100
-+pids_3_1 pids.sh 3 1
-+pids_3_2 pids.sh 3 2
-+pids_3_10 pids.sh 3 10
-+pids_3_50 pids.sh 3 50
-+pids_3_100 pids.sh 3 100
-+pids_4_1 pids.sh 4 1
-+pids_4_2 pids.sh 4 2
-+pids_4_10 pids.sh 4 10
-+pids_4_50 pids.sh 4 50
-+pids_4_100 pids.sh 4 100
-+pids_5_1 pids.sh 5 1
-diff --git a/testcases/kernel/controllers/pids/.gitignore b/testcases/kernel/controllers/pids/.gitignore
-new file mode 100644
-index 0000000..a87cce8
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/.gitignore
-@@ -0,0 +1,2 @@
-+/pids_task1
-+/pids_task2
-diff --git a/testcases/kernel/controllers/pids/Makefile b/testcases/kernel/controllers/pids/Makefile
-new file mode 100644
-index 0000000..6500363
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/Makefile
-@@ -0,0 +1,28 @@
-+#
-+#    Copyright (C) 2015, SUSE
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+#    You should have received a copy of the GNU General Public License along
-+#    with this program; if not, write to the Free Software Foundation, Inc.,
-+#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+#
-+# Author: Cedric Hnyda <chnyda@suse.com>
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+include $(abs_srcdir)/../Makefile.inc
-+
-+INSTALL_TARGETS		:= *.sh
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/controllers/pids/pids.sh b/testcases/kernel/controllers/pids/pids.sh
-new file mode 100644
-index 0000000..b24aa52
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/pids.sh
-@@ -0,0 +1,202 @@
-+#!/bin/sh
-+
-+################################################################################
-+##                                                                            ##
-+## Copyright (c) 2015 SUSE                                                    ##
-+##                                                                            ##
-+## This program is free software;  you can redistribute it and#or modify      ##
-+## it under the terms of the GNU General Public License as published by       ##
-+## the Free Software Foundation; either version 2 of the License, or          ##
-+## (at your option) any later version.                                        ##
-+##                                                                            ##
-+## This program is distributed in the hope that it will be useful, but        ##
-+## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
-+## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
-+## for more details.                                                          ##
-+##                                                                            ##
-+## You should have received a copy of the GNU General Public License          ##
-+## along with this program;  if not, write to the Free Software               ##
-+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301   ##
-+## USA                                                                        ##
-+##                                                                            ##
-+## Author: Cedric Hnyda <chnyda@suse.com>                                     ##
-+##                                                                            ##
-+################################################################################
-+
-+# Usage
-+# ./pids.sh caseno max
-+#
-+
-+caseno=$1
-+max=$2
-+export TCID="pids_$1_$2"
-+export TST_TOTAL=1
-+mounted=1
-+
-+. test.sh
-+
-+usage()
-+{
-+	echo "usage: ./pids01 caseno max"
-+	tst_resm TFAIL "invalid parameters"
-+}
-+
-+cleanup()
-+{
-+	killall -9 pids_task2 > /dev/null
-+
-+	tst_resm TINFO "removing created directories"
-+	rmdir $testpath
-+	if [ "$mounted" -ne "1" ]; then
-+		tst_resm TINFO "Umounting pids"
-+		umount $mount_point
-+		rmdir $mount_point
-+	fi
-+}
-+
-+setup()
-+{
-+	tst_require_root
-+
-+	exist=`grep -w pids /proc/cgroups | cut -f1`;
-+	if [ "$exist" = "" ]; then
-+		tst_brkm TCONF NULL "pids not supported"
-+	fi
-+
-+	mount_point=`grep -w pids /proc/mounts | cut -f 2 | cut -d " " -f2`
-+
-+	if [ "$mount_point" = "" ]; then
-+		mounted=0
-+		mount_point=/dev/cgroup
-+	fi
-+
-+	TST_CLEANUP=cleanup
-+
-+	testpath=$mount_point/ltp_$TCID
-+
-+	if [ "$mounted" -eq "0" ]; then
-+		ROD mkdir -p $mount_point
-+		ROD mount -t cgroup -o pids none $mount_point
-+	fi
-+	ROD mkdir -p $testpath
-+}
-+
-+start_pids_tasks2()
-+{
-+	nb=$1
-+	for i in `seq 1 $nb`; do
-+		pids_task2 &
-+		echo $! > $testpath/tasks
-+	done
-+
-+	while [ $(cat "$testpath/tasks" | wc -l) -lt $nb ]; do
-+		sleep 1
-+	done
-+}
-+
-+case1()
-+{
-+	start_pids_tasks2 $max
-+
-+	# should return 0 because there is no limit
-+	pids_task1 "$testpath/tasks"
-+	ret=$?
-+
-+	killall -9 pids_task2
-+
-+	if [ "$ret" -eq "2" ]; then
-+		tst_resm TFAIL "fork failed unexpectedly"
-+	elif [ "$ret" -eq "0" ]; then
-+		tst_resm TPASS "fork didn't fail"
-+	else
-+		tst_resm TBROK "pids_task1 failed"
-+	fi
-+}
-+
-+case2()
-+{
-+	tmp=$((max - 1))
-+	tst_resm TINFO "limit the number of pid to $max"
-+	ROD echo $max > $testpath/pids.max
-+
-+	start_pids_tasks2 $tmp
-+
-+	# should return 2 because the limit of pids is reached
-+	pids_task1 "$testpath/tasks"
-+	ret=$?
-+
-+	killall -9 pids_task2
-+
-+	if [ "$ret" -eq "2" ]; then
-+		tst_resm TPASS "fork failed as expected"
-+	elif [ "$ret" -eq "0" ]; then
-+		tst_resm TFAIL "fork didn't fail despite the limit"
-+	else
-+		tst_resm TBROK "pids_task1 failed"
-+	fi
-+}
-+
-+case3()
-+{
-+	tmp=$((max + 1))
-+	tst_resm TINFO "limit the number of avalaible pid to $tmp"
-+	ROD echo $tmp > $testpath/pids.max
-+
-+	tmp=$((max - 2))
-+	start_pids_tasks2 $tmp
-+
-+	pids_task1 "$testpath/tasks"
-+	ret=$?
-+
-+	killall -9 pids_task2
-+
-+	if [ "$ret" -eq "2" ]; then
-+		tst_resm TFAIL "fork failed unexpectedly"
-+	elif [ "$ret" -eq "0" ]; then
-+		tst_resm TPASS "fork worked as expected"
-+	else
-+		tst_resm TBROK "pids_task1 failed"
-+	fi
-+}
-+
-+case4()
-+{
-+	tst_resm TINFO "limit the number of avalaible pid to 0"
-+	ROD echo 0 > $testpath/pids.max
-+
-+	start_pids_tasks2 $max
-+
-+	# count the number of attached process
-+	cnt=`jobs -p | wc -l`
-+
-+	killall -9 pids_task2
-+
-+	if [ "$cnt" -ne "$max" ]; then
-+		cnt=$((max - cnt))
-+		tst_resm TFAIL "$cnt process were not attached successfully"
-+	else
-+		tst_resm TPASS "all process were attached"
-+	fi
-+}
-+
-+case5()
-+{
-+	tst_resm TINFO "try to limit the number of avalaible pid to -1"
-+	echo -1 > $testpath/pids.max
-+
-+	if [ "$?" -eq "0" ]; then
-+		tst_resm TFAIL "managed to set the limit to -1"
-+	else
-+		tst_resm TPASS "didn't manage to set the limit to -1"
-+	fi
-+}
-+
-+setup
-+
-+if [ "$#" -ne "2" ]; then
-+	usage
-+else
-+	case$caseno
-+fi
-+
-+tst_exit
-diff --git a/testcases/kernel/controllers/pids/pids_task1.c b/testcases/kernel/controllers/pids/pids_task1.c
-new file mode 100644
-index 0000000..a470ccf
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/pids_task1.c
-@@ -0,0 +1,63 @@
-+/*
-+ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+/*
-+* Description:
-+* Write the current process in argv[1]
-+* and returns:
-+*	-> 2 if fork fails with EAGAIN,
-+*	-> 1 if there is another problem
-+*	-> 0 if everything worked
-+*/
-+
-+#include <stdio.h>
-+#include <sys/time.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <string.h>
-+
-+int main(int argc, char **argv)
-+{
-+	FILE *f;
-+	int newpid;
-+
-+	if (argc != 2) {
-+		fprintf(stderr, "Usage: %s /cgroup/.../tasks\n", argv[0]);
-+		return 1;
-+	}
-+
-+	f = fopen(argv[1], "a");
-+	if (!f) {
-+		perror("fopen failed");
-+		return 1;
-+	}
-+
-+	fprintf(f, "%i\n", getpid());
-+	fclose(f);
-+
-+	newpid = fork();
-+	if (newpid == -1 && errno == EAGAIN)
-+		return 2;
-+	if (newpid == -1) {
-+		strerror(errno);
-+		return 1;
-+	}
-+	return 0;
-+}
-diff --git a/testcases/kernel/controllers/pids/pids_task2.c b/testcases/kernel/controllers/pids/pids_task2.c
-new file mode 100644
-index 0000000..130d619
---- /dev/null
-+++ b/testcases/kernel/controllers/pids/pids_task2.c
-@@ -0,0 +1,30 @@
-+/*
-+ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#include <stdio.h>
-+#include <sys/time.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdlib.h>
-+
-+int main(void)
-+{
-+	pause();
-+	return 0;
-+}
+> diff --git a/testcases/kernel/input/input01.c b/testcases/kernel/input/input01.c
+> new file mode 100644
+> index 0000000..dcce215
+> --- /dev/null
+> +++ b/testcases/kernel/input/input01.c
+> @@ -0,0 +1,201 @@
+> +/*
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> + /*
+> + * AUTHOR   : Cedric Hnyda
+> + * DATE STARTED : 10/21/2015
+
+Is this really necessary? The Copyright line at the top of the file
+gives nearly the same information...
+
+> + *  Create a virtual device (mouse), send events to /dev/uinput
+> + *  and check that the events are well received in /dev/input/eventX
+> + *
+> + */
+> +
+> +#include <linux/input.h>
+> +#include <linux/uinput.h>
+> +#include <fnmatch.h>
+> +
+> +#include "input_helper.h"
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "lapi/fcntl.h"
+> +
+> +#define NB_TEST 100
+> +
+> +static void setup(void);
+> +static void send_information(void);
+> +static int verify_data(struct input_event iev, int *nb);
+> +static int check_information(void);
+> +static void cleanup(void);
+> +
+> +static int fd;
+> +static int fd2;
+> +
+> +char *TCID = "uinput01";
+                 ^
+		 This should be input01 to match the source file name
+
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	int pid;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	for (lc = 0; lc < TEST_LOOPING(lc); ++lc) {
+> +
+> +		setup();
+> +		pid = tst_fork();
+> +
+> +		if (!pid)
+> +			send_information();
+> +		else {
+> +			fd2 = setup_read();
+> +			if (check_information())
+> +				tst_resm(TFAIL,
+> +					"Wrong data received in eventX");
+> +			else
+> +				tst_resm(TPASS, "Data received in eventX");
+> +		}
+
+LKML coding style, that is used by LTP prefers curly braces around both
+code block if they are necessary for one of them. But this is minor.
+
+> +	}
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct uinput_user_dev uidev;
+> +
+> +	tst_require_root();
+> +
+> +	fd = open("/dev/input/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0 && errno == ENOENT)
+> +		fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0)
+              ^
+	      Eh, did you forget && errno == ENOENT here?
+
+> +		tst_brkm(TCONF, NULL, "unable to find and open uinput");
+> +	else if (fd < 0)
+> +		tst_brkm(TBROK, NULL, "open failed");
+> +
+> +	if (ioctl(fd, UI_SET_EVBIT, EV_KEY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_KEYBIT, BTN_LEFT) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	if (ioctl(fd, UI_SET_EVBIT, EV_REL) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_RELBIT, REL_X) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_RELBIT, REL_Y) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+
+I guess that it's time to add SAFE_IOCTL(). I will add it to LTP tree so
+that you can use it in the testcases.
+
+> +	memset(&uidev, 0, sizeof(uidev));
+> +	snprintf(uidev.name, UINPUT_MAX_NAME_SIZE, VIRTUAL_DEVICE);
+> +	uidev.id.bustype = BUS_USB;
+> +	uidev.id.vendor  = 0x1;
+> +	uidev.id.product = 0x1;
+> +	uidev.id.version = 1;
+> +
+> +	if (write(fd, &uidev, sizeof(uidev)) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+
+We have SAFE_WRITE() allready. ;)
+
+> +	if (ioctl(fd, UI_DEV_CREATE) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	sleep(1);
+
+What do we wait here for? Using sleep() in testcases is frowned upon
+unless there is real need for it. I guess that we wait for the device to
+appear right? If that is the case we should loop here with a 0.1s sleep
+and exit the loop once the device was created.
+
+> +}
+> +
+> +static void send_information(void)
+> +{
+> +	struct input_event ev;
+> +	int nb;
+> +
+> +	sleep(1);
+
+Here as well.
+
+> +	for (nb = 0; nb < NB_TEST; ++nb) {
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_REL;
+> +		ev.code = REL_X;
+> +		ev.value = 10;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+
+SAFE_WRITE()
+
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_REL;
+> +		ev.code = REL_Y;
+> +		ev.value = 1;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+
+Here as well.
+
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_SYN;
+> +		ev.code = 0;
+> +		ev.value = 0;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+
+And here as well.
+
+> +		usleep(100);
+
+We sleep here so that the kernel buffers are not filled up right? What
+happens when we overfill them? Does the write fail with EAGAIN?
+
+> +	}
+> +
+> +	cleanup();
+> +}
+> +
+> +static int check_information(void)
+> +{
+> +	int nb;
+> +	int fail;
+> +	int rd;
+> +	uint i;
+> +	struct input_event iev[64];
+> +
+> +	fail = 0;
+> +	nb = 0;
+> +
+> +	while (nb < NB_TEST * 3 && !fail) {
+> +		rd = read(fd2, iev, sizeof(struct input_event) * 64);
+> +
+> +		if (rd < (int) sizeof(struct input_event))
+> +			fail = 1;
+
+What about if (rd < 0) and if (rd % sizeof(struct input_event) == 0),
+since the read size should be multiple of the input_event structure
+size.
+
+> +		for (i = 0; i < rd / sizeof(struct input_event) && !fail; i++)
+> +			fail = verify_data(iev[i], &nb);
+> +	}
+> +
+> +	SAFE_CLOSE(NULL, fd2);
+> +	return fail;
+> +}
+> +
+> +static int verify_data(struct input_event iev, int *nb)
+                            ^
+			    It's more usuall to pass structure values by
+			    pointer in C. Sice if this function couldn't
+			    be inlined the whole structure would be
+			    compied on stack...
+> +{
+> +	if (iev.type == EV_REL && *nb % 3 == 0
+> +		&& iev.value == 10 && iev.code == REL_X)
+> +		(*nb)++;
+> +	else if (iev.type == EV_REL && *nb % 3 == 1
+> +		&& iev.value == 1 && iev.code == REL_Y)
+> +		(*nb)++;
+> +	else if (iev.type == EV_SYN && *nb % 3 == 2
+> +		&& iev.code == 0)
+> +		(*nb)++;
+> +	else
+> +		return 1;
+> +	return 0;
+
+Eh, what about adding more returns to make it more readable and also
+being more verbose about what happened?
+
+
+	if (*nb % 3 == 0) {
+		if (iev->type != EV_REL) {
+			tst_resm(TINFO, "%i: Unexpected event type %i expected %i",
+			         *nb, ev->type, EV_REL);
+			return 1;
+		}
+
+		if (iev->code != REL_X) {
+			...
+		}
+
+		if (iev->value != 10) {
+			...
+		}
+
+		return 0;
+	}
+
+	if (*nb % 3 == 1) {
+		if ( ...
+
+		....
+
+	}
+
+	...
+
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (ioctl(fd, UI_DEV_DESTROY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	SAFE_CLOSE(NULL, fd);
+> +}
+> diff --git a/testcases/kernel/input/input02.c b/testcases/kernel/input/input02.c
+> new file mode 100644
+> index 0000000..5b9d90b
+> --- /dev/null
+> +++ b/testcases/kernel/input/input02.c
+> @@ -0,0 +1,166 @@
+> +/*
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> + /*
+> + * AUTHOR   : Cedric Hnyda
+> + * DATE STARTED : 10/21/2015
+> + *
+> + *  Create a virtual device (mouse), send events to /dev/uinput
+> + *  and check that the events are not received in /dev/input/eventX
+> + *  because the device is grabbed by another process
+> + *
+> + */
+> +
+> +#include <linux/input.h>
+> +#include <linux/uinput.h>
+> +#include <fnmatch.h>
+> +
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "lapi/fcntl.h"
+> +#include "input_helper.h"
+> +
+> +#define NB_TEST 100
+> +
+> +static void setup(void);
+> +static void send_information(void);
+> +static int check_information(void);
+> +static void cleanup(void);
+> +
+> +static int fd;
+> +static int fd2;
+> +
+> +char *TCID = "uinput02";
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	int pid;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	for (lc = 0; lc < TEST_LOOPING(lc); ++lc) {
+> +
+> +		setup();
+> +		pid = tst_fork();
+> +		fd2 = setup_read();
+> +
+> +		if (!pid)
+> +			send_information();
+> +		else {
+> +			if (check_information())
+> +				tst_resm(TFAIL, "Data received in eventX");
+> +			else
+> +				tst_resm(TPASS, "No data received in eventX");
+> +		}
+> +	}
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct uinput_user_dev uidev;
+> +
+> +	tst_require_root();
+> +
+> +	fd = open("/dev/input/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0 && errno == ENOENT)
+> +		fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0)
+> +		tst_brkm(TCONF, NULL, "unable to find and open uinput");
+> +	else if (fd < 0)
+> +		tst_brkm(TBROK, NULL, "open failed");
+
+This exact code fragment is part of the input01.c setup. Can you please
+create open_uinput() function in the library instead of copy&pasting
+code?
+
+> +	if (ioctl(fd, UI_SET_EVBIT, EV_KEY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_KEYBIT, BTN_LEFT) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	if (ioctl(fd, UI_SET_EVBIT, EV_REL) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_RELBIT, REL_X) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_RELBIT, REL_Y) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	memset(&uidev, 0, sizeof(uidev));
+> +	snprintf(uidev.name, UINPUT_MAX_NAME_SIZE, VIRTUAL_DEVICE);
+> +	uidev.id.bustype = BUS_USB;
+> +	uidev.id.vendor  = 0x1;
+> +	uidev.id.product = 0x1;
+> +	uidev.id.version = 1;
+> +
+> +	if (write(fd, &uidev, sizeof(uidev)) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	if (ioctl(fd, UI_DEV_CREATE) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	sleep(1);
+
+The same comments apply here as well.
+
+> +}
+> +
+> +static void send_information(void)
+> +{
+> +	int nb;
+> +	struct input_event ev;
+> +
+> +	if (ioctl(fd2, EVIOCGRAB, 1))
+> +		tst_brkm(TBROK, cleanup, "ioctl failed");
+> +	tst_resm(TINFO, "The virtual device was grabbed");
+> +
+> +	sleep(1);
+> +
+> +	for (nb = 0; nb < NB_TEST; ++nb) {
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_SYN;
+> +		ev.code = 0;
+> +		ev.value = 0;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +		usleep(100);
+
+Hmm, are you sure that EV_SYN actually appear on the other end of the
+input stac even when no changes were done?
+
+> +	}
+> +
+> +	cleanup();
+> +}
+> +
+> +static int check_information(void)
+> +{
+> +	int nb;
+> +	int rd;
+> +	struct input_event iev[64];
+> +
+> +	nb = 0;
+> +
+> +	while (nb == 0) {
+> +		rd = read(fd2, iev, sizeof(struct input_event) * 64);
+> +		if (rd == 0)
+> +			break;
+> +		nb++;
+> +	}
+> +
+> +	SAFE_CLOSE(NULL, fd2);
+> +	return nb == 0;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (ioctl(fd, UI_DEV_DESTROY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	SAFE_CLOSE(NULL, fd);
+> +}
+> diff --git a/testcases/kernel/input/input03.c b/testcases/kernel/input/input03.c
+> new file mode 100644
+> index 0000000..922866e
+> --- /dev/null
+> +++ b/testcases/kernel/input/input03.c
+> @@ -0,0 +1,186 @@
+> +/*
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> + /*
+> + * AUTHOR   : Cedric Hnyda
+> + * DATE STARTED : 10/21/2015
+> + *
+> + *  Create a virtual device (mouse), send events to /dev/uinput
+> + *  and check that the events are well received in /dev/input/mice
+> + *
+> + */
+> +
+> +#include <linux/input.h>
+> +#include <linux/uinput.h>
+> +#include <fnmatch.h>
+> +
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "lapi/fcntl.h"
+> +#include "input_helper.h"
+> +
+> +#define NB_TEST 100
+> +#define X_VALUE 10
+> +#define Y_VALUE 10
+> +
+> +static void setup(void);
+> +static void send_information(void);
+> +static int check_information(void);
+> +static void cleanup(void);
+> +
+> +static int fd;
+> +static int fd2;
+> +
+> +char *TCID = "uinput03";
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	int pid;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	for (lc = 0; lc < TEST_LOOPING(lc); ++lc) {
+> +
+> +		setup();
+> +		pid = tst_fork();
+> +
+> +		if (!pid)
+> +			send_information();
+> +		else {
+> +			if (check_information())
+> +				tst_resm(TFAIL, "Wrong data received");
+> +			else
+> +				tst_resm(TPASS,
+> +					"Data received in /dev/input/mice");
+> +		}
+> +	}
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct uinput_user_dev uidev;
+> +
+> +	tst_require_root();
+> +
+> +	fd = open("/dev/input/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0 && errno == ENOENT)
+> +		fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0)
+> +		tst_brkm(TCONF, NULL, "unable to find and open uinput");
+> +	else if (fd < 0)
+> +		tst_brkm(TBROK, NULL, "open failed");
+
+Here as well, fix the code and move it to the library.
+
+> +	if (ioctl(fd, UI_SET_EVBIT, EV_KEY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_KEYBIT, BTN_LEFT) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	if (ioctl(fd, UI_SET_EVBIT, EV_REL) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_RELBIT, REL_X) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_RELBIT, REL_Y) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	memset(&uidev, 0, sizeof(uidev));
+> +	snprintf(uidev.name, UINPUT_MAX_NAME_SIZE, VIRTUAL_DEVICE);
+> +	uidev.id.bustype = BUS_USB;
+> +	uidev.id.vendor  = 0x1;
+> +	uidev.id.product = 0x1;
+> +	uidev.id.version = 1;
+> +
+> +	if (write(fd, &uidev, sizeof(uidev)) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	if (ioctl(fd, UI_DEV_CREATE) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	sleep(1);
+
+And here as well.
+
+> +}
+> +
+> +static void send_information(void)
+> +{
+> +	int nb;
+> +	struct input_event ev;
+> +
+> +	sleep(1);
+> +
+> +	for (nb = 0; nb < NB_TEST; ++nb) {
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_REL;
+> +		ev.code = REL_X;
+> +		ev.value = X_VALUE;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_REL;
+> +		ev.code = REL_Y;
+> +		ev.value = Y_VALUE;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_SYN;
+> +		ev.code = 0;
+> +		ev.value = 0;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +		usleep(100);
+> +
+> +	}
+> +
+> +	cleanup();
+
+Eh, why do you call cleanup() here?
+
+Also this function si nearly identical to the one in input01.c. What
+about adding send_rel_move(int fd, int x, int y) to the library that
+would actually write the events and calling it from the testcases?
+
+> +}
+> +
+> +static int check_information(void)
+> +{
+> +	int nb;
+> +	int fail;
+> +	int rd;
+> +	char buf[3];
+> +
+> +	fd2 = SAFE_OPEN(NULL, "/dev/input/mice", O_RDONLY);
+> +	fail = 0;
+> +	nb = 0;
+> +
+> +	while (nb < NB_TEST && !fail) {
+> +		memset(buf, 0, sizeof(char) * 3);
+> +		rd = read(fd2, buf, sizeof(char) * 3);
+> +
+> +		if (rd < (int) sizeof(char) * 3)
+> +			fail = 1;
+> +		if (buf[1] != X_VALUE || buf[2] != -Y_VALUE || buf[0] != 40)
+> +			fail = 1;
+> +		nb++;
+> +	}
+
+The sizeof(char) == 1 by definition, remove it from the code.
+
+> +	SAFE_CLOSE(NULL, fd2);
+> +	return fail;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (ioctl(fd, UI_DEV_DESTROY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	SAFE_CLOSE(NULL, fd);
+> +}
+> diff --git a/testcases/kernel/input/input04.c b/testcases/kernel/input/input04.c
+> new file mode 100644
+> index 0000000..8bd0af5
+> --- /dev/null
+> +++ b/testcases/kernel/input/input04.c
+> @@ -0,0 +1,179 @@
+> +/*
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> + /*
+> + * AUTHOR   : Cedric Hnyda
+> + * DATE STARTED : 11/13/2015
+> + *
+> + *  Create a virtual device (mouse), send empty events to /dev/uinput
+> + *  and check that the events are not received in /dev/input/mice
+> + *
+> + */
+> +
+> +#include <linux/input.h>
+> +#include <linux/uinput.h>
+> +#include <fnmatch.h>
+> +
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "lapi/fcntl.h"
+> +#include "input_helper.h"
+> +
+> +#define NB_TEST 100
+> +#define X_VALUE 0
+> +#define Y_VALUE 0
+> +
+> +static void setup(void);
+> +static void send_information(void);
+> +static int check_information(void);
+> +static void cleanup(void);
+> +
+> +static int fd;
+> +static int fd2;
+> +
+> +char *TCID = "uinput04";
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	int pid;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	for (lc = 0; lc < TEST_LOOPING(lc); ++lc) {
+> +
+> +		setup();
+> +		pid = tst_fork();
+> +
+> +		if (!pid)
+> +			send_information();
+> +		else {
+> +			if (check_information())
+> +				tst_resm(TPASS,
+> +					"No data received in /dev/input/mice");
+> +			else
+> +				tst_resm(TFAIL,
+> +					"Data received /dev/input/mice");
+> +		}
+> +	}
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct uinput_user_dev uidev;
+> +
+> +	tst_require_root();
+> +
+> +	fd = open("/dev/input/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0 && errno == ENOENT)
+> +		fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0)
+> +		tst_brkm(TCONF, NULL, "unable to find and open uinput");
+> +	else if (fd < 0)
+> +		tst_brkm(TBROK, NULL, "open failed");
+
+Here as well. Move it to the library.
+
+> +	if (ioctl(fd, UI_SET_EVBIT, EV_KEY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_KEYBIT, BTN_LEFT) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	if (ioctl(fd, UI_SET_EVBIT, EV_REL) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_RELBIT, REL_X) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_RELBIT, REL_Y) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	memset(&uidev, 0, sizeof(uidev));
+> +	snprintf(uidev.name, UINPUT_MAX_NAME_SIZE, VIRTUAL_DEVICE);
+> +	uidev.id.bustype = BUS_USB;
+> +	uidev.id.vendor  = 0x1;
+> +	uidev.id.product = 0x1;
+> +	uidev.id.version = 1;
+> +
+> +	if (write(fd, &uidev, sizeof(uidev)) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	if (ioctl(fd, UI_DEV_CREATE) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	sleep(1);
+
+Here as well.
+
+> +}
+> +
+> +static void send_information(void)
+> +{
+> +	struct input_event ev;
+> +	int nb;
+> +
+> +	sleep(1);
+> +
+> +	for (nb = 0; nb < NB_TEST; ++nb) {
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_REL;
+> +		ev.code = REL_X;
+> +		ev.value = X_VALUE;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_REL;
+> +		ev.code = REL_Y;
+> +		ev.value = Y_VALUE;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_SYN;
+> +		ev.code = 0;
+> +		ev.value = 0;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +		usleep(100);
+> +	}
+
+Here as well, you could just called send_rel_move(fd, 0, 0);
+
+> +	cleanup();
+> +}
+> +
+> +static int check_information(void)
+> +{
+> +	int rv;
+> +	struct timeval timeout;
+> +	fd_set set;
+> +
+> +	fd2 = SAFE_OPEN(NULL, "/dev/input/mice", O_RDWR);
+> +	FD_ZERO(&set);
+> +	FD_SET(fd2, &set);
+> +	timeout.tv_sec = 0;
+> +	timeout.tv_usec = 10000;
+> +	rv = select(fd2 + 1, &set, NULL, NULL, &timeout);
+> +	if (rv < 0)
+> +		tst_brkm(TBROK, NULL, "select failed");
+> +	SAFE_CLOSE(NULL, fd2);
+> +	return rv == 0;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (ioctl(fd, UI_DEV_DESTROY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	SAFE_CLOSE(NULL, fd);
+> +}
+> diff --git a/testcases/kernel/input/input05.c b/testcases/kernel/input/input05.c
+> new file mode 100644
+> index 0000000..6c5b759
+> --- /dev/null
+> +++ b/testcases/kernel/input/input05.c
+> @@ -0,0 +1,174 @@
+> +/*
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> + /*
+> + * AUTHOR   : Cedric Hnyda
+> + * DATE STARTED : 11/16/2015
+> + *
+> + *  Create a virtual device (mouse), send events to /dev/uinput
+> + *  and check that the events are not received in /dev/input/eventX
+> + *  because it is not possible to sent such events
+> + *
+> + */
+> +
+> +#include <linux/input.h>
+> +#include <linux/uinput.h>
+> +#include <fnmatch.h>
+> +
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "lapi/fcntl.h"
+> +#include "input_helper.h"
+> +
+> +#define X_VALUE 10
+> +#define Y_VALUE 10
+> +
+> +#define NB_TEST 100
+> +
+> +static void setup(void);
+> +static void send_information(void);
+> +static int check_information(void);
+> +static void cleanup(void);
+> +
+> +static int fd;
+> +static int fd2;
+> +
+> +char *TCID = "uinput05";
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +	int pid;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	for (lc = 0; lc < TEST_LOOPING(lc); ++lc) {
+> +
+> +		setup();
+> +		pid = tst_fork();
+> +		fd2 = setup_read();
+> +
+> +		if (!pid)
+> +			send_information();
+> +		else {
+> +			if (check_information())
+> +				tst_resm(TFAIL, "Data received in eventX");
+> +			else
+> +				tst_resm(TPASS, "No data received in eventX");
+> +		}
+> +	}
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	struct uinput_user_dev uidev;
+> +
+> +	tst_require_root();
+> +
+> +	fd = open("/dev/input/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0 && errno == ENOENT)
+> +		fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
+> +
+> +	if (fd < 0)
+> +		tst_brkm(TCONF, NULL, "unable to find and open uinput");
+> +	else if (fd < 0)
+> +		tst_brkm(TBROK, NULL, "open failed");
+> +
+> +	if (ioctl(fd, UI_SET_EVBIT, EV_KEY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	if (ioctl(fd, UI_SET_KEYBIT, BTN_LEFT) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	memset(&uidev, 0, sizeof(uidev));
+> +	snprintf(uidev.name, UINPUT_MAX_NAME_SIZE, VIRTUAL_DEVICE);
+> +	uidev.id.bustype = BUS_USB;
+> +	uidev.id.vendor  = 0x1;
+> +	uidev.id.product = 0x1;
+> +	uidev.id.version = 1;
+> +
+> +	if (write(fd, &uidev, sizeof(uidev)) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +
+> +	if (ioctl(fd, UI_DEV_CREATE) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	sleep(1);
+> +}
+> +
+> +static void send_information(void)
+> +{
+> +	int nb;
+> +	struct input_event ev;
+> +
+> +	sleep(1);
+> +
+> +	for (nb = 0; nb < NB_TEST; ++nb) {
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_REL;
+> +		ev.code = REL_X;
+> +		ev.value = X_VALUE;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_REL;
+> +		ev.code = REL_Y;
+> +		ev.value = Y_VALUE;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +
+> +		memset(&ev, 0, sizeof(struct input_event));
+> +		ev.type = EV_SYN;
+> +		ev.code = 0;
+> +		ev.value = 0;
+> +		if (write(fd, &ev, sizeof(struct input_event)) < 0)
+> +			tst_brkm(TBROK, cleanup, "write failed");
+> +		usleep(100);
+> +
+> +	}
+> +
+> +	cleanup();
+> +}
+> +
+> +static int check_information(void)
+> +{
+> +	int nb;
+> +	int rd;
+> +	struct input_event iev[64];
+> +
+> +	nb = 0;
+> +
+> +	while (nb == 0) {
+> +		rd = read(fd2, iev, sizeof(struct input_event) * 64);
+> +		if (rd == 0)
+> +			break;
+> +		nb++;
+> +	}
+> +
+> +	SAFE_CLOSE(NULL, fd2);
+> +	return nb == 0;
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	if (ioctl(fd, UI_DEV_DESTROY) < 0)
+> +		tst_brkm(TBROK, NULL, "ioctl failed");
+> +	SAFE_CLOSE(NULL, fd);
+> +}
+
+This is nearly identical to the prevoius one. Most of the code should be
+in the library.
+
+> diff --git a/testcases/kernel/input/input_helper.c b/testcases/kernel/input/input_helper.c
+> new file mode 100644
+> index 0000000..7ba7c60
+> --- /dev/null
+> +++ b/testcases/kernel/input/input_helper.c
+> @@ -0,0 +1,91 @@
+> +/*
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> +#include <linux/input.h>
+> +#include <linux/uinput.h>
+> +#include <fnmatch.h>
+> +#include "test.h"
+> +#include "safe_macros.h"
+> +#include "input_helper.h"
+> +
+> +int setup_read(void)
+> +{
+> +	DIR *d;
+> +	char namedir1[1024];
+> +	char *event;
+> +	struct dirent *dp;
+> +	int fd2;
+> +
+> +	event = NULL;
+> +
+> +	d = opendir("/sys/devices/virtual/input/");
+> +	while ((dp = readdir(d))) {
+> +		if (!fnmatch("input[0-9]*", dp->d_name, 0)) {
+> +			memset(namedir1, 0, sizeof(namedir1));
+> +			strcat(namedir1, "/sys/devices/virtual/input/");
+> +			strcat(namedir1, dp->d_name);
+> +			if (closedir(d) < 0)
+> +				tst_brkm(TBROK, NULL, "closedir failed");
+> +			d = opendir(namedir1);
+> +			event = find_event(d, namedir1);
+> +			if (event)
+> +				break;
+> +		}
+> +	}
+> +
+> +	closedir(d);
+> +	fd2 = SAFE_OPEN(NULL, event, O_RDONLY);
+> +	free(event);
+> +	return fd2;
+> +}
+
+So these two functions looks for input device with VIRTUAL_DEVICE in
+name, right?
+
+Why don't we simply try to open all input devices in /dev/input/ one by
+one do the EVIOCGNAME ioctl() and do strcmp() on it?
+
+> +char *find_event(DIR *d, char *namedir1)
+> +{
+> +	char namedir2[1024];
+> +	char buf[256];
+> +	char *event;
+> +	struct dirent *dp;
+> +	int fd3;
+> +	int nb;
+> +
+> +	event = malloc(sizeof(char) * 256);
+
+Again sizeof(char) == 1
+
+> +	while ((dp = readdir(d))) {
+> +		if (!fnmatch("event*", dp->d_name, 0)) {
+> +			memset(namedir2, 0, sizeof(namedir2));
+> +			strcpy(namedir2, namedir1);
+> +			strcat(namedir2, "/name");
+> +			fd3 = open(namedir2, O_RDONLY);
+> +			if (fd3 > 0) {
+> +				nb = read(fd3, &buf, sizeof(VIRTUAL_DEVICE));
+> +				if (nb < 0)
+> +					tst_brkm(TBROK, NULL, "read failed");
+> +				close(fd3);
+> +				if (!strncmp(buf, VIRTUAL_DEVICE,
+> +					strlen(VIRTUAL_DEVICE))) {
+> +					memset(event, 0, 256);
+> +					strcat(event, "/dev/input/");
+> +					strcat(event, dp->d_name);
+> +					return event;
+> +				}
+> +			}
+> +		}
+> +	}
+> +	free(event);
+> +	return NULL;
+> +}
+> diff --git a/testcases/kernel/input/input_helper.h b/testcases/kernel/input/input_helper.h
+> new file mode 100644
+> index 0000000..0b62e71
+> --- /dev/null
+> +++ b/testcases/kernel/input/input_helper.h
+> @@ -0,0 +1,30 @@
+> +/*
+> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write the Free Software Foundation,
+> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> + */
+> +
+> +#ifndef INPUT_HELPER_H
+> +#define INPUT_HELPER_H
+> +
+> +#define VIRTUAL_DEVICE "virtual-device-ltp"
+> +
+> +#include <sys/types.h>
+> +#include <dirent.h>
+> +
+> +char *find_event(DIR *d, char *namedir1);
+> +int setup_read(void);
+> +
+> +#endif /* INPUT_HELPER_H */
+> -- 
+> 2.1.4
+> 
+> 
+> -- 
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+
 -- 
-2.1.4
-
+Cyril Hrubis
+chrubis@suse.cz
