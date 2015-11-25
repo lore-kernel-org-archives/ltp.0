@@ -1,36 +1,60 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 25 Nov 2015 11:39:11 +0300
-Subject: [LTP] [Committed] network/virt/gre01: set local address for
-	tunneled packets
-Message-ID: <1448440751-9483-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Wed, 25 Nov 2015 12:20:47 +0300
+Subject: [LTP] [PATCH V3] controllers/pids: Add new testcases
+In-Reply-To: <1448026487-6079-1-git-send-email-chnyda@suse.com>
+References: <1448026487-6079-1-git-send-email-chnyda@suse.com>
+Message-ID: <56557D6F.80906@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Alexey Kodanev <akodanev@gmail.com>
+Hi,
+On 11/20/2015 04:34 PM, Cedric Hnyda wrote:
+> Created new testcases to test the pids controller
+> which is used to stop any new tasks from being fork()'d
+> after a certain limit is reached.
+>
+> Signed-off-by: Cedric Hnyda <chnyda@suse.com>
+...
+> index 0000000..6500363
+> --- /dev/null
+> +++ b/testcases/kernel/controllers/pids/Makefile
+> @@ -0,0 +1,28 @@
+> +#
+> +#    Copyright (C) 2015, SUSE
+> +#
+> +#    This program is free software; you can redistribute it and/or modify
+> +#    it under the terms of the GNU General Public License as published by
+> +#    the Free Software Foundation; either version 2 of the License, or
+> +#    (at your option) any later version.
+> +#
+> +#    This program is distributed in the hope that it will be useful,
+> +#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +#    GNU General Public License for more details.
+> +#
+> +#    You should have received a copy of the GNU General Public License along
+> +#    with this program; if not, write to the Free Software Foundation, Inc.,
+> +#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+You could write the last paragraph as follows:
 
-Signed-off-by: Alexey Kodanev <akodanev@gmail.com>
----
- testcases/network/virt/gre01.sh |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-diff --git a/testcases/network/virt/gre01.sh b/testcases/network/virt/gre01.sh
-index e4bd990..a2c574f 100755
---- a/testcases/network/virt/gre01.sh
-+++ b/testcases/network/virt/gre01.sh
-@@ -50,8 +50,8 @@ if [ -z $ip_local -o -z $ip_remote ]; then
- fi
- 
- tst_resm TINFO "test $virt_type"
--virt_setup "remote $(tst_ipaddr rhost) dev $(tst_iface)" \
--"remote $(tst_ipaddr) dev $(tst_iface rhost)"
-+virt_setup "local $(tst_ipaddr) remote $(tst_ipaddr rhost) dev $(tst_iface)" \
-+"local $(tst_ipaddr rhost) remote $(tst_ipaddr) dev $(tst_iface rhost)"
- 
- virt_compare_netperf
- 
--- 
-1.7.1
+or, I guess, we may skip it. The main reason - the address can be changed.
 
+> +
+> +	while (1) {
+> +	}
+
+Is it necessary to add a busy loop to completely load CPU? If we only 
+wait, I would add a sleep, something like
+
+while (1)
+      usleep(10);
+
+
+Thanks,
+Alexey
