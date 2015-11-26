@@ -1,311 +1,393 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 26 Nov 2015 12:22:27 +0300
-Subject: [LTP] [PATCH v2] hugetlb/hugemmap: add new testcase hugemmap06.c
-In-Reply-To: <1448506977-12479-1-git-send-email-liwang@redhat.com>
-References: <1448506977-12479-1-git-send-email-liwang@redhat.com>
-Message-ID: <5656CF53.3030409@oracle.com>
+From: Cedric Hnyda <chnyda@suse.com>
+Date: Thu, 26 Nov 2015 11:07:03 +0100
+Subject: [LTP]  [PATCH V5] controllers/pids: Add new testcases
+Message-ID: <1448532423-767-1-git-send-email-chnyda@suse.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/26/2015 06:02 AM, Li Wang wrote:
-> v1 ---> v2
-> 	1. remove the useless include file
-> 	2. add huge pages checking in setup()
-> 	3. mmap huge pages in reverse order
+Created new testcases to test the pids controller
+which is used to stop any new tasks from being fork()'d
+after a certain limit is reached.
 
-A paragraph about new version changes must be after:
-
-Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Cedric Hnyda <chnyda@suse.com>
 ---
+ runtest/controllers                            |  22 +++
+ testcases/kernel/controllers/pids/.gitignore   |   2 +
+ testcases/kernel/controllers/pids/Makefile     |  28 ++++
+ testcases/kernel/controllers/pids/pids.sh      | 186 +++++++++++++++++++++++++
+ testcases/kernel/controllers/pids/pids_task1.c |  60 ++++++++
+ testcases/kernel/controllers/pids/pids_task2.c |  25 ++++
+ 6 files changed, 323 insertions(+)
+ create mode 100644 testcases/kernel/controllers/pids/.gitignore
+ create mode 100644 testcases/kernel/controllers/pids/Makefile
+ create mode 100644 testcases/kernel/controllers/pids/pids.sh
+ create mode 100644 testcases/kernel/controllers/pids/pids_task1.c
+ create mode 100644 testcases/kernel/controllers/pids/pids_task2.c
 
-as it shouldn't be in a commit message.
+diff --git a/runtest/controllers b/runtest/controllers
+index c62bcce..254a0b0 100644
+--- a/runtest/controllers
++++ b/runtest/controllers
+@@ -277,3 +277,25 @@ cpuset_memory_spread	cpuset_memory_spread_testset.sh
+ cpuset_regression_test cpuset_regression_test.sh
+ 
+ cgroup_xattr	cgroup_xattr
++
++pids_1_1 pids.sh 1 1
++pids_1_2 pids.sh 1 2
++pids_1_10 pids.sh 1 10
++pids_1_50 pids.sh 1 50
++pids_1_100 pids.sh 1 100
++pids_2_1 pids.sh 2 1
++pids_2_2 pids.sh 2 2
++pids_2_10 pids.sh 2 10
++pids_2_50 pids.sh 2 50
++pids_2_100 pids.sh 2 100
++pids_3_1 pids.sh 3 1
++pids_3_2 pids.sh 3 2
++pids_3_10 pids.sh 3 10
++pids_3_50 pids.sh 3 50
++pids_3_100 pids.sh 3 100
++pids_4_1 pids.sh 4 1
++pids_4_2 pids.sh 4 2
++pids_4_10 pids.sh 4 10
++pids_4_50 pids.sh 4 50
++pids_4_100 pids.sh 4 100
++pids_5_1 pids.sh 5 1
+diff --git a/testcases/kernel/controllers/pids/.gitignore b/testcases/kernel/controllers/pids/.gitignore
+new file mode 100644
+index 0000000..a87cce8
+--- /dev/null
++++ b/testcases/kernel/controllers/pids/.gitignore
+@@ -0,0 +1,2 @@
++/pids_task1
++/pids_task2
+diff --git a/testcases/kernel/controllers/pids/Makefile b/testcases/kernel/controllers/pids/Makefile
+new file mode 100644
+index 0000000..6500363
+--- /dev/null
++++ b/testcases/kernel/controllers/pids/Makefile
+@@ -0,0 +1,28 @@
++#
++#    Copyright (C) 2015, SUSE
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++#    You should have received a copy of the GNU General Public License along
++#    with this program; if not, write to the Free Software Foundation, Inc.,
++#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++#
++# Author: Cedric Hnyda <chnyda@suse.com>
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++include $(abs_srcdir)/../Makefile.inc
++
++INSTALL_TARGETS		:= *.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/controllers/pids/pids.sh b/testcases/kernel/controllers/pids/pids.sh
+new file mode 100644
+index 0000000..91ce51b
+--- /dev/null
++++ b/testcases/kernel/controllers/pids/pids.sh
+@@ -0,0 +1,186 @@
++#!/bin/sh
++
++################################################################################
++##                                                                            ##
++## Copyright (c) 2015 SUSE                                                    ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301   ##
++## USA                                                                        ##
++##                                                                            ##
++## Author: Cedric Hnyda <chnyda@suse.com>                                     ##
++##                                                                            ##
++################################################################################
++
++# Usage
++# ./pids.sh caseno max
++#
++
++caseno=$1
++max=$2
++export TCID="pids_$1_$2"
++export TST_TOTAL=1
++mounted=1
++
++. test.sh
++
++usage()
++{
++	echo "usage: ./pids01 caseno max"
++	tst_resm TFAIL "invalid parameters"
++}
++
++cleanup()
++{
++	killall -9 pids_task2 >/dev/null
++
++	tst_resm TINFO "removing created directories"
++	rmdir $testpath
++	if [ "$mounted" -ne "1" ]; then
++		tst_resm TINFO "Umounting pids"
++		umount $mount_point
++		rmdir $mount_point
++	fi
++}
++
++setup()
++{
++	tst_require_root
++
++	exist=`grep -w pids /proc/cgroups | cut -f1`;
++	if [ "$exist" = "" ]; then
++		tst_brkm TCONF NULL "pids not supported"
++	fi
++
++	mount_point=`grep -w pids /proc/mounts | cut -f 2 | cut -d " " -f2`
++
++	if [ "$mount_point" = "" ]; then
++		mounted=0
++		mount_point=/dev/cgroup
++	fi
++
++	TST_CLEANUP=cleanup
++
++	testpath=$mount_point/ltp_$TCID
++
++	if [ "$mounted" -eq "0" ]; then
++		ROD mkdir -p $mount_point
++		ROD mount -t cgroup -o pids none $mount_point
++	fi
++	ROD mkdir -p $testpath
++}
++
++start_pids_tasks2()
++{
++	nb=$1
++	for i in `seq 1 $nb`; do
++		pids_task2 &
++		echo $! > $testpath/tasks
++	done
++
++	if [ $(cat "$testpath/tasks" | wc -l) -ne $nb ]; then
++		tst_resm TBROK "..."
++	fi
++}
++
++case1()
++{
++	start_pids_tasks2 $max
++
++	# should return 0 because there is no limit
++	pids_task1 "$testpath/tasks"
++	ret=$?
++
++	if [ "$ret" -eq "2" ]; then
++		tst_resm TFAIL "fork failed unexpectedly"
++	elif [ "$ret" -eq "0" ]; then
++		tst_resm TPASS "fork didn't fail"
++	else
++		tst_resm TBROK "pids_task1 failed"
++	fi
++}
++
++case2()
++{
++	tmp=$((max - 1))
++	tst_resm TINFO "limit the number of pid to $max"
++	ROD echo $max > $testpath/pids.max
++
++	start_pids_tasks2 $tmp
++
++	# should return 2 because the limit of pids is reached
++	pids_task1 "$testpath/tasks"
++	ret=$?
++
++	if [ "$ret" -eq "2" ]; then
++		tst_resm TPASS "fork failed as expected"
++	elif [ "$ret" -eq "0" ]; then
++		tst_resm TFAIL "fork didn't fail despite the limit"
++	else
++		tst_resm TBROK "pids_task1 failed"
++	fi
++}
++
++case3()
++{
++	tmp=$((max + 1))
++	tst_resm TINFO "limit the number of avalaible pid to $tmp"
++	ROD echo $tmp > $testpath/pids.max
++
++	tmp=$((max - 2))
++	start_pids_tasks2 $tmp
++
++	pids_task1 "$testpath/tasks"
++	ret=$?
++
++	if [ "$ret" -eq "2" ]; then
++		tst_resm TFAIL "fork failed unexpectedly"
++	elif [ "$ret" -eq "0" ]; then
++		tst_resm TPASS "fork worked as expected"
++	else
++		tst_resm TBROK "pids_task1 failed"
++	fi
++}
++
++case4()
++{
++	tst_resm TINFO "limit the number of avalaible pid to 0"
++	ROD echo 0 > $testpath/pids.max
++
++	start_pids_tasks2 $max
++
++	tst_resm TPASS "all process were attached"
++}
++
++case5()
++{
++	tst_resm TINFO "try to limit the number of avalaible pid to -1"
++	echo -1 > $testpath/pids.max
++
++	if [ "$?" -eq "0" ]; then
++		tst_resm TFAIL "managed to set the limit to -1"
++	else
++		tst_resm TPASS "didn't manage to set the limit to -1"
++	fi
++}
++
++setup
++
++if [ "$#" -ne "2" ]; then
++	usage
++else
++	case$caseno
++fi
++
++tst_exit
+diff --git a/testcases/kernel/controllers/pids/pids_task1.c b/testcases/kernel/controllers/pids/pids_task1.c
+new file mode 100644
+index 0000000..7feae1e
+--- /dev/null
++++ b/testcases/kernel/controllers/pids/pids_task1.c
+@@ -0,0 +1,60 @@
++/*
++ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++/*
++* Description:
++* Write the current process in argv[1]
++* and returns:
++*	-> 2 if fork fails with EAGAIN,
++*	-> 1 if there is another problem
++*	-> 0 if everything worked
++*/
++
++#include <sys/types.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <errno.h>
++
++int main(int argc, char **argv)
++{
++	FILE *f;
++	int newpid;
++
++	if (argc != 2) {
++		fprintf(stderr, "Usage: %s /cgroup/.../tasks\n", argv[0]);
++		return 1;
++	}
++
++	f = fopen(argv[1], "a");
++	if (!f) {
++		perror("fopen failed");
++		return 1;
++	}
++
++	fprintf(f, "%i\n", getpid());
++	fclose(f);
++
++	newpid = fork();
++	if (newpid == -1 && errno == EAGAIN)
++		return 2;
++	if (newpid == -1) {
++		perror("fork() failed");
++		return 1;
++	}
++	return 0;
++}
+diff --git a/testcases/kernel/controllers/pids/pids_task2.c b/testcases/kernel/controllers/pids/pids_task2.c
+new file mode 100644
+index 0000000..59f41c7
+--- /dev/null
++++ b/testcases/kernel/controllers/pids/pids_task2.c
+@@ -0,0 +1,25 @@
++/*
++ * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#include <unistd.h>
++
++int main(void)
++{
++	pause();
++	return 0;
++}
+-- 
+2.1.4
 
->
-> Description of Problem:
-> 	There is a race condition if we map a same file on different processes.
-> 	Region tracking is protected by mmap_sem and hugetlb_instantiation_mutex.
-> 	When we do mmap, we don't grab a hugetlb_instantiation_mutex, but only
-> 	mmap_sem (exclusively).  This doesn't prevent other tasks from modifying
-> 	the region structure, so it can be modified by two processes concurrently.
->
-> 	Testcase hugemmap06.c is the trigger to cause system crash:
->
->          crash> bt -s
->          PID: 4492   TASK: ffff88033e437520  CPU: 2   COMMAND: "hugemmap06"
->           #0 [ffff88033dbb3960] machine_kexec+395 at ffffffff8103d1ab
->           #1 [ffff88033dbb39c0] crash_kexec+114 at ffffffff810cc4f2
->           #2 [ffff88033dbb3a90] oops_end+192 at ffffffff8153c840
->           #3 [ffff88033dbb3ac0] die+91 at ffffffff81010f5b
->           #4 [ffff88033dbb3af0] do_general_protection+338 at ffffffff8153c332
->           #5 [ffff88033dbb3b20] general_protection+37 at ffffffff8153bb05
->              [exception RIP: list_del+40]
->              RIP: ffffffff812a3598  RSP: ffff88033dbb3bd8  RFLAGS: 00010292
->              RAX: dead000000100100  RBX: ffff88013cf37340  RCX: 0000000000002dc2
->              RDX: dead000000200200  RSI: 0000000000000046  RDI: 0000000000000009
->              RBP: ffff88033dbb3be8   R8: 0000000000015598   R9: 0000000000000000
->              R10: 000000000000000f  R11: 0000000000000009  R12: 000000000000000a
->              R13: ffff88033d64b9e8  R14: ffff88033e5b9720  R15: ffff88013cf37340
->              ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
->           #6 [ffff88033dbb3bf0] region_add+154 at ffffffff811698da
->           #7 [ffff88033dbb3c40] alloc_huge_page+669 at ffffffff8116a61d
->           #8 [ffff88033dbb3ce0] hugetlb_fault+1083 at ffffffff8116b9bb
->           #9 [ffff88033dbb3d90] handle_mm_fault+917 at ffffffff81153295
->          #10 [ffff88033dbb3e00] __do_page_fault+326 at ffffffff8104f156
->          #11 [ffff88033dbb3f20] do_page_fault+62 at ffffffff8153e78e
->          #12 [ffff88033dbb3f50] page_fault+37 at ffffffff8153bb35
->              RIP: 00000000004027c6  RSP: 00007f7cadef9e80  RFLAGS: 00010297
->              RAX: 000000005a49238f  RBX: 00007ffcb2d19320  RCX: 000000357498e084
->              RDX: 000000357498e0b0  RSI: 00007f7cadef9e5c  RDI: 000000357498e4e0
->              RBP: 0000000000000008   R8: 000000357498e0a0   R9: 000000357498e100
->              R10: 00007f7cadefa9d0  R11: 0000000000000206  R12: 0000000000000007
->              R13: 0000000000000002  R14: 0000000000000003  R15: 00002aaaac000000
->              ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
->
-> The fix are all these below commits:
-> 	commit f522c3ac00a49128115f99a5fcb95a447601c1c3
-> 	Author:Joonsoo Kim < iamjoonsoo.kim @ lge.com >
-> 	Date:Wed Sep 11 14:21:53 2013 - 0700
-
-This is a more appropriate way of listing commits:
-
-f522c3ac00a4 ("mm, hugetlb: change variable name reservations to resv")
-
-
->
-> 	commit 9119 a41e9091fb3a8204039d595bcdae24193c57
-> 	Author:Joonsoo Kim < iamjoonsoo.kim @ lge.com >
-> 	Date:Thu Apr 3 14:47:25 2014 - 0700
->
-> 	commit 7 b24d8616be33616efd41ff67d3c76362c60ca84
-> 	Author:Davidlohr Bueso < davidlohr @ hp.com >
-> 	Date:Thu Apr 3 14:47:27 2014 - 0700
->
-> 	commit 1406ec9 ba6c65cb69e9243bff07ca3f51e2525e0
-> 	Author:Joonsoo Kim < iamjoonsoo.kim @ lge.com >
-> 	Date:Thu Apr 3 14:47:26 2014 - 0700
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->   
-...
-> +
-> +hugemmap06: CFLAGS+=-pthread
-> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
-> new file mode 100644
-> index 0000000..77250f2
-> --- /dev/null
-> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
-> @@ -0,0 +1,192 @@
-> +/*
-> + *  Copyright (c) Author: Herton R. Krzesinski <herton@redhat.com>
-> + *                Modify: Li Wang <liwang@redhat.com>
-> + *
-> + *  This program is free software;  you can redistribute it and/or modify
-> + *  it under the terms of the GNU General Public License as published by
-> + *  the Free Software Foundation; either version 2 of the License, or
-> + *  (at your option) any later version.
-> + *
-> + *  This program is distributed in the hope that it will be useful,
-> + *  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + *  the GNU General Public License for more details.
-> + *
-> + *  You should have received a copy of the GNU General Public License
-> + *  along with this program;  if not, write to the Free Software
-> + *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-> + *  02110-1301 USA
-> + */
-Please change it to
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-> +
-> +/*
-> + *  DESCRIPTION
-> + *
-> + *    There is a race condition if we map a same file on different processes.
-> + *    Region tracking is protected by mmap_sem and hugetlb_instantiation_mutex.
-> + *    When we do mmap, we don't grab a hugetlb_instantiation_mutex, but only
-> + *    mmap_sem (exclusively).  This doesn't prevent other tasks from modifying
-> + *    the region structure, so it can be modified by two processes concurrently.
-> + *
-> + *    This bug was fixed on stable kernel by commits:
-> + *
-> + *        commit f522c3ac00a49128115f99a5fcb95a447601c1c3
-> + *        Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> + *        Date:   Wed Sep 11 14:21:53 2013 -0700
-> + *
-> + *        commit 9119a41e9091fb3a8204039d595bcdae24193c57
-> + *        Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> + *        Date:   Thu Apr 3 14:47:25 2014 -0700
-> + *
-> + *        commit 7b24d8616be33616efd41ff67d3c76362c60ca84
-> + *        Author: Davidlohr Bueso <davidlohr@hp.com>
-> + *        Date:   Thu Apr 3 14:47:27 2014 -0700
-> + *
-> + *        commit 1406ec9ba6c65cb69e9243bff07ca3f51e2525e0
-> + *        Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> + *        Date:   Thu Apr 3 14:47:26 2014 -0700
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <errno.h>
-> +#include <pthread.h>
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <sys/mman.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +
-> +#include "test.h"
-> +#include "mem.h"
-> +
-> +char *TCID = "hugemmap06";
-> +int TST_TOTAL = 5;
-> +
-> +static long hpage_size;
-> +static long hugepages;
-> +static long orig_hugepages;
-> +
-> +struct mp {
-> +	void *addr;
-> +	int sz;
-> +};
-> +
-> +#define ARSZ 50
-> +
-> +void setup(void)
-> +{
-> +	tst_require_root();
-> +	check_hugepage();
-> +
-> +	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-> +	orig_hugepages = get_sys_tune("nr_hugepages");
-> +
-> +	hugepages = (ARSZ + 1) * TST_TOTAL;
-> +
-> +	if (hugepages * read_meminfo("Hugepagesize:") > read_meminfo("MemTotal:"))
-> +		tst_brkm(TCONF, NULL, "System RAM is not enough to test.");
-> +
-> +	set_sys_tune("nr_hugepages", hugepages, 1);
-> +
-> +	TEST_PAUSE;
-> +}
-> +
-> +void cleanup(void)
-> +{
-> +	set_sys_tune("nr_hugepages", orig_hugepages, 0);
-> +}
-> +
-> +void *thr(void *arg)
-> +{
-> +	struct mp *mmap_sz = arg;
-> +	int i, lim, a, b, c;
-> +
-> +	srand(time(NULL));
-> +	lim = rand() % 10;
-> +	for (i = 0; i < lim; i++) {
-> +		a = rand() % mmap_sz->sz;
-> +		for (c = 0; c <= a; c++) {
-> +			b = rand() % mmap_sz->sz;
-> +			*((int *)((char *)mmap_sz->addr + (b * hpage_size))) = rand();
-> +		}
-> +	}
-> +	return NULL;
-> +}
-> +
-> +void do_mmap(void)
-> +{
-> +	int i, sz;
-> +	void *addr, *new_addr;
-> +	struct mp mmap_sz[ARSZ];
-> +	pthread_t tid[ARSZ];
-> +
-> +	sz = ARSZ;
-> +	addr = mmap(NULL, sz * hpage_size,
-> +			PROT_READ | PROT_WRITE,
-> +			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-> +			-1, 0);
-> +
-> +	if (addr == MAP_FAILED) {
-> +		if (errno == ENOMEM) {
-> +			tst_brkm(TCONF, cleanup,
-> +				"Cannot allocate hugepage, memory too fragmented?");
-> +		}
-> +
-> +		tst_brkm(TBROK | TERRNO, cleanup, "Cannot allocate hugepage");
-> +	}
-> +
-> +	for (i = ARSZ - 1; i > 0; i--) {
-
-Why this is done in reverse order?
-
-> +		mmap_sz[i].sz = sz;
-> +		mmap_sz[i].addr = addr;
-> +
-> +		TEST(pthread_create(tid + i, NULL, thr, &mmap_sz[i]));
-
-This is not right, use tid[i] ( = tid + sizeof(pthread_t) * i), not tid + i.
-
-> +		if (TEST_RETURN)
-> +			tst_brkm(TBROK | TRERRNO, cleanup,
-> +					"pthread_create failed");
-> +
-> +		new_addr = mmap(addr, (sz - 1) * hpage_size,
-> +				PROT_READ | PROT_WRITE,
-> +				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB | MAP_FIXED,
-> +				-1, 0);
-> +
-> +		if (new_addr == MAP_FAILED) {
-> +			TEST(pthread_join(tid[i], NULL));
-> +			if (TEST_RETURN)
-> +				tst_brkm(TBROK | TRERRNO, cleanup,
-> +						"pthread_join failed");
-> +			tst_brkm(TFAIL | TERRNO, cleanup, "mremap failed");
-> +		}
-> +		sz--;
-> +		addr = new_addr;
-> +	}
-> +
-> +	for (++i; i < ARSZ; i++) {
-
-Could you initialize "i" here explicitly?
-
-> +		TEST(pthread_join(tid[i], NULL));
-> +		if (TEST_RETURN)
-> +			tst_brkm(TBROK | TRERRNO, cleanup,
-> +					"pthread_join failed");
-> +	}
-> +
-> +	if (munmap(addr, sz * hpage_size) == -1)
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "huge munmap failed");
-> +}
-> +
-> +int main(int ac, char **av)
-> +{
-> +	int lc, i;
-> +
-> +	tst_parse_opts(ac, av, NULL, NULL);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +		tst_count = 0;
-> +
-> +		for (i = 0; i < TST_TOTAL; i++)
-> +			do_mmap();
-> +
-> +		tst_resm(TPASS, "No regression found.");
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-
-Isn't tst_exit() calling cleanup?
-
-Best regards,
-Alexey
