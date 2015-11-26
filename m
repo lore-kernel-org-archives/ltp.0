@@ -1,128 +1,311 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 26 Nov 2015 17:00:46 +0800
-Subject: [LTP] [PATCH v2] hugetlb: checking if hugepage is supported on
- target system
-In-Reply-To: <5656C72C.4090203@oracle.com>
-References: <1448506629-12150-1-git-send-email-liwang@redhat.com>
- <5656C72C.4090203@oracle.com>
-Message-ID: <CAEemH2cUXFEMk1MXt=-eyjc3s0sinn4X2J89CxPmyKy5uZr3uw@mail.gmail.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 26 Nov 2015 12:22:27 +0300
+Subject: [LTP] [PATCH v2] hugetlb/hugemmap: add new testcase hugemmap06.c
+In-Reply-To: <1448506977-12479-1-git-send-email-liwang@redhat.com>
+References: <1448506977-12479-1-git-send-email-liwang@redhat.com>
+Message-ID: <5656CF53.3030409@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On 11/26/2015 06:02 AM, Li Wang wrote:
+> v1 ---> v2
+> 	1. remove the useless include file
+> 	2. add huge pages checking in setup()
+> 	3. mmap huge pages in reverse order
 
-On Thu, Nov 26, 2015 at 4:47 PM, Alexey Kodanev <alexey.kodanev@oracle.com>
-wrote:
+A paragraph about new version changes must be after:
 
-> Hi,
-> On 11/26/2015 05:57 AM, Li Wang wrote:
->
->> Signed-off-by: Li Wang <liwang@redhat.com>
->> ---
->>
-> ...
->
->> -       if (write(fd, nr_hugepages,
->> +       if ((unsigned int)write(fd, nr_hugepages,
->>                   strlen(nr_hugepages)) != strlen(nr_hugepages))
->>                 tst_resm(TWARN | TERRNO, "write");
->>         close(fd);
->> @@ -271,7 +270,7 @@ static void cleanup(void)
->>                 tst_resm(TWARN | TERRNO, "open");
->>         tst_resm(TINFO, "restore nr_overcommit_hugepages to %s.",
->>                  nr_overcommit_hugepages);
->> -       if (write(fd, nr_overcommit_hugepages,
->> strlen(nr_overcommit_hugepages))
->> +       if ((unsigned int)write(fd, nr_overcommit_hugepages,
->> strlen(nr_overcommit_hugepages))
->>             != strlen(nr_overcommit_hugepages))
->>
->
-> It would be better to use ssize_t, that way you won't exceed 80c per line
-> as well.
->
-> if (write(fd, nr_overcommit_hugepages, strlen(nr_overcommit_hugepages))
->             != (ssize_t)strlen(nr_overcommit_hugepages))
->
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
 
-good.
-
+as it shouldn't be in a commit message.
 
 >
+> Description of Problem:
+> 	There is a race condition if we map a same file on different processes.
+> 	Region tracking is protected by mmap_sem and hugetlb_instantiation_mutex.
+> 	When we do mmap, we don't grab a hugetlb_instantiation_mutex, but only
+> 	mmap_sem (exclusively).  This doesn't prevent other tasks from modifying
+> 	the region structure, so it can be modified by two processes concurrently.
 >
->                 tst_resm(TWARN | TERRNO, "write");
->>         close(fd);
->> @@ -287,7 +286,7 @@ static void cleanup(void)
->>         tst_rmdir();
->>   }
->>   -static void setup(void)
->> +void setup(void)
->>
+> 	Testcase hugemmap06.c is the trigger to cause system crash:
 >
-> forgot "static"?
+>          crash> bt -s
+>          PID: 4492   TASK: ffff88033e437520  CPU: 2   COMMAND: "hugemmap06"
+>           #0 [ffff88033dbb3960] machine_kexec+395 at ffffffff8103d1ab
+>           #1 [ffff88033dbb39c0] crash_kexec+114 at ffffffff810cc4f2
+>           #2 [ffff88033dbb3a90] oops_end+192 at ffffffff8153c840
+>           #3 [ffff88033dbb3ac0] die+91 at ffffffff81010f5b
+>           #4 [ffff88033dbb3af0] do_general_protection+338 at ffffffff8153c332
+>           #5 [ffff88033dbb3b20] general_protection+37 at ffffffff8153bb05
+>              [exception RIP: list_del+40]
+>              RIP: ffffffff812a3598  RSP: ffff88033dbb3bd8  RFLAGS: 00010292
+>              RAX: dead000000100100  RBX: ffff88013cf37340  RCX: 0000000000002dc2
+>              RDX: dead000000200200  RSI: 0000000000000046  RDI: 0000000000000009
+>              RBP: ffff88033dbb3be8   R8: 0000000000015598   R9: 0000000000000000
+>              R10: 000000000000000f  R11: 0000000000000009  R12: 000000000000000a
+>              R13: ffff88033d64b9e8  R14: ffff88033e5b9720  R15: ffff88013cf37340
+>              ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
+>           #6 [ffff88033dbb3bf0] region_add+154 at ffffffff811698da
+>           #7 [ffff88033dbb3c40] alloc_huge_page+669 at ffffffff8116a61d
+>           #8 [ffff88033dbb3ce0] hugetlb_fault+1083 at ffffffff8116b9bb
+>           #9 [ffff88033dbb3d90] handle_mm_fault+917 at ffffffff81153295
+>          #10 [ffff88033dbb3e00] __do_page_fault+326 at ffffffff8104f156
+>          #11 [ffff88033dbb3f20] do_page_fault+62 at ffffffff8153e78e
+>          #12 [ffff88033dbb3f50] page_fault+37 at ffffffff8153bb35
+>              RIP: 00000000004027c6  RSP: 00007f7cadef9e80  RFLAGS: 00010297
+>              RAX: 000000005a49238f  RBX: 00007ffcb2d19320  RCX: 000000357498e084
+>              RDX: 000000357498e0b0  RSI: 00007f7cadef9e5c  RDI: 000000357498e4e0
+>              RBP: 0000000000000008   R8: 000000357498e0a0   R9: 000000357498e100
+>              R10: 00007f7cadefa9d0  R11: 0000000000000206  R12: 0000000000000007
+>              R13: 0000000000000002  R14: 0000000000000003  R15: 00002aaaac000000
+>              ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
 >
+> The fix are all these below commits:
+> 	commit f522c3ac00a49128115f99a5fcb95a447601c1c3
+> 	Author:Joonsoo Kim < iamjoonsoo.kim @ lge.com >
+> 	Date:Wed Sep 11 14:21:53 2013 - 0700
 
-no, it will be conflict with the prototype in mem.h and get compiler error
-like:
--------
-hugemmap05.c:253: error: static declaration of ?cleanup? follows non-static
-declaration
-/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/include/mem.h:100:
-note: previous declaration of ?cleanup? was here
-hugemmap05.c:295: error: static declaration of ?setup? follows non-static
-declaration
-/mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/include/mem.h:101:
-note: previous declaration of ?setup? was here
-make: *** [hugemmap05] Error 1
+This is a more appropriate way of listing commits:
 
+f522c3ac00a4 ("mm, hugetlb: change variable name reservations to resv")
 
 
 >
-> ...
+> 	commit 9119 a41e9091fb3a8204039d595bcdae24193c57
+> 	Author:Joonsoo Kim < iamjoonsoo.kim @ lge.com >
+> 	Date:Thu Apr 3 14:47:25 2014 - 0700
 >
->>   diff --git a/testcases/kernel/mem/lib/mem.c
->> b/testcases/kernel/mem/lib/mem.c
->> index 215c052..84af3ce 100644
->> --- a/testcases/kernel/mem/lib/mem.c
->> +++ b/testcases/kernel/mem/lib/mem.c
->> @@ -314,6 +314,12 @@ static void verify(char **memory, char value, int
->> proc,
->>         free(s);
->>   }
->>
->>
-> ...
+> 	commit 7 b24d8616be33616efd41ff67d3c76362c60ca84
+> 	Author:Davidlohr Bueso < davidlohr @ hp.com >
+> 	Date:Thu Apr 3 14:47:27 2014 - 0700
 >
->> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
->>
-> Could be
-> if (access(PATH_HUGEPAGES, F_OK))
->        tss_brkm(...);
+> 	commit 1406ec9 ba6c65cb69e9243bff07ca3f51e2525e0
+> 	Author:Joonsoo Kim < iamjoonsoo.kim @ lge.com >
+> 	Date:Thu Apr 3 14:47:26 2014 - 0700
 >
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>   
+...
+> +
+> +hugemmap06: CFLAGS+=-pthread
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
+> new file mode 100644
+> index 0000000..77250f2
+> --- /dev/null
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
+> @@ -0,0 +1,192 @@
+> +/*
+> + *  Copyright (c) Author: Herton R. Krzesinski <herton@redhat.com>
+> + *                Modify: Li Wang <liwang@redhat.com>
+> + *
+> + *  This program is free software;  you can redistribute it and/or modify
+> + *  it under the terms of the GNU General Public License as published by
+> + *  the Free Software Foundation; either version 2 of the License, or
+> + *  (at your option) any later version.
+> + *
+> + *  This program is distributed in the hope that it will be useful,
+> + *  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> + *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> + *  the GNU General Public License for more details.
+> + *
+> + *  You should have received a copy of the GNU General Public License
+> + *  along with this program;  if not, write to the Free Software
+> + *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+> + *  02110-1301 USA
+> + */
+Please change it to
 
-looks good.
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+> +
+> +/*
+> + *  DESCRIPTION
+> + *
+> + *    There is a race condition if we map a same file on different processes.
+> + *    Region tracking is protected by mmap_sem and hugetlb_instantiation_mutex.
+> + *    When we do mmap, we don't grab a hugetlb_instantiation_mutex, but only
+> + *    mmap_sem (exclusively).  This doesn't prevent other tasks from modifying
+> + *    the region structure, so it can be modified by two processes concurrently.
+> + *
+> + *    This bug was fixed on stable kernel by commits:
+> + *
+> + *        commit f522c3ac00a49128115f99a5fcb95a447601c1c3
+> + *        Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> + *        Date:   Wed Sep 11 14:21:53 2013 -0700
+> + *
+> + *        commit 9119a41e9091fb3a8204039d595bcdae24193c57
+> + *        Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> + *        Date:   Thu Apr 3 14:47:25 2014 -0700
+> + *
+> + *        commit 7b24d8616be33616efd41ff67d3c76362c60ca84
+> + *        Author: Davidlohr Bueso <davidlohr@hp.com>
+> + *        Date:   Thu Apr 3 14:47:27 2014 -0700
+> + *
+> + *        commit 1406ec9ba6c65cb69e9243bff07ca3f51e2525e0
+> + *        Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> + *        Date:   Thu Apr 3 14:47:26 2014 -0700
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include <errno.h>
+> +#include <pthread.h>
+> +#include <stdio.h>
+> +#include <stdlib.h>
+> +#include <sys/mman.h>
+> +#include <sys/types.h>
+> +#include <unistd.h>
+> +
+> +#include "test.h"
+> +#include "mem.h"
+> +
+> +char *TCID = "hugemmap06";
+> +int TST_TOTAL = 5;
+> +
+> +static long hpage_size;
+> +static long hugepages;
+> +static long orig_hugepages;
+> +
+> +struct mp {
+> +	void *addr;
+> +	int sz;
+> +};
+> +
+> +#define ARSZ 50
+> +
+> +void setup(void)
+> +{
+> +	tst_require_root();
+> +	check_hugepage();
+> +
+> +	hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> +	orig_hugepages = get_sys_tune("nr_hugepages");
+> +
+> +	hugepages = (ARSZ + 1) * TST_TOTAL;
+> +
+> +	if (hugepages * read_meminfo("Hugepagesize:") > read_meminfo("MemTotal:"))
+> +		tst_brkm(TCONF, NULL, "System RAM is not enough to test.");
+> +
+> +	set_sys_tune("nr_hugepages", hugepages, 1);
+> +
+> +	TEST_PAUSE;
+> +}
+> +
+> +void cleanup(void)
+> +{
+> +	set_sys_tune("nr_hugepages", orig_hugepages, 0);
+> +}
+> +
+> +void *thr(void *arg)
+> +{
+> +	struct mp *mmap_sz = arg;
+> +	int i, lim, a, b, c;
+> +
+> +	srand(time(NULL));
+> +	lim = rand() % 10;
+> +	for (i = 0; i < lim; i++) {
+> +		a = rand() % mmap_sz->sz;
+> +		for (c = 0; c <= a; c++) {
+> +			b = rand() % mmap_sz->sz;
+> +			*((int *)((char *)mmap_sz->addr + (b * hpage_size))) = rand();
+> +		}
+> +	}
+> +	return NULL;
+> +}
+> +
+> +void do_mmap(void)
+> +{
+> +	int i, sz;
+> +	void *addr, *new_addr;
+> +	struct mp mmap_sz[ARSZ];
+> +	pthread_t tid[ARSZ];
+> +
+> +	sz = ARSZ;
+> +	addr = mmap(NULL, sz * hpage_size,
+> +			PROT_READ | PROT_WRITE,
+> +			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
+> +			-1, 0);
+> +
+> +	if (addr == MAP_FAILED) {
+> +		if (errno == ENOMEM) {
+> +			tst_brkm(TCONF, cleanup,
+> +				"Cannot allocate hugepage, memory too fragmented?");
+> +		}
+> +
+> +		tst_brkm(TBROK | TERRNO, cleanup, "Cannot allocate hugepage");
+> +	}
+> +
+> +	for (i = ARSZ - 1; i > 0; i--) {
 
->
-> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
->> +
->>         tst_tmpdir();
->>         SAFE_FILE_SCANF(NULL, PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
->>
->
-> Thanks,
-> Alexey
->
+Why this is done in reverse order?
 
-thanks for reviewing.
+> +		mmap_sz[i].sz = sz;
+> +		mmap_sz[i].addr = addr;
+> +
+> +		TEST(pthread_create(tid + i, NULL, thr, &mmap_sz[i]));
 
--- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20151126/0b39a56f/attachment.html>
+This is not right, use tid[i] ( = tid + sizeof(pthread_t) * i), not tid + i.
+
+> +		if (TEST_RETURN)
+> +			tst_brkm(TBROK | TRERRNO, cleanup,
+> +					"pthread_create failed");
+> +
+> +		new_addr = mmap(addr, (sz - 1) * hpage_size,
+> +				PROT_READ | PROT_WRITE,
+> +				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB | MAP_FIXED,
+> +				-1, 0);
+> +
+> +		if (new_addr == MAP_FAILED) {
+> +			TEST(pthread_join(tid[i], NULL));
+> +			if (TEST_RETURN)
+> +				tst_brkm(TBROK | TRERRNO, cleanup,
+> +						"pthread_join failed");
+> +			tst_brkm(TFAIL | TERRNO, cleanup, "mremap failed");
+> +		}
+> +		sz--;
+> +		addr = new_addr;
+> +	}
+> +
+> +	for (++i; i < ARSZ; i++) {
+
+Could you initialize "i" here explicitly?
+
+> +		TEST(pthread_join(tid[i], NULL));
+> +		if (TEST_RETURN)
+> +			tst_brkm(TBROK | TRERRNO, cleanup,
+> +					"pthread_join failed");
+> +	}
+> +
+> +	if (munmap(addr, sz * hpage_size) == -1)
+> +		tst_brkm(TFAIL | TERRNO, cleanup, "huge munmap failed");
+> +}
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc, i;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		for (i = 0; i < TST_TOTAL; i++)
+> +			do_mmap();
+> +
+> +		tst_resm(TPASS, "No regression found.");
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+
+Isn't tst_exit() calling cleanup?
+
+Best regards,
+Alexey
