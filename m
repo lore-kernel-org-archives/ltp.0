@@ -1,98 +1,51 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 26 Nov 2015 09:38:48 -0500 (EST)
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 26 Nov 2015 15:50:39 +0100
 Subject: [LTP] mtest01 parent/child process synchronization issue
 In-Reply-To: <565591C8.7060308@redhat.com>
 References: <564CACAF.1080201@redhat.com> <5652E62A.3090403@redhat.com>
  <565591C8.7060308@redhat.com>
-Message-ID: <7533547.18002409.1448548727996.JavaMail.zimbra@redhat.com>
+Message-ID: <20151126145039.GE9276@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> I am new to the list and I am not sure what the rules for posting
+> patches are. Should I use 'git send-email', sign the patch or
+> something?
 
+The usual workflow is to tell git your name and email (git config
+user.email foo_bar@email.com and git config user.name Foo Bar) and use
+git commit -s. Then both git format-patch and git send-email would
+produce signed patches.
 
-
-
------ Original Message -----
-> From: "Jiri Vohanka" <jvohanka@redhat.com>
-> To: "Jan Stancek" <jstancek@redhat.com>, ltp@lists.linux.it
-> Sent: Wednesday, 25 November, 2015 11:47:36 AM
-> Subject: Re: [LTP] mtest01 parent/child process synchronization issue
+> From 05227cd214ed7fcb5ba9e5234d06c3866bfe98dc Mon Sep 17 00:00:00 2001
+> From: jvohanka <jvohanka@redhat.com>
+> Date: Wed, 18 Nov 2015 14:39:21 +0100
+> Subject: [PATCH] Watch for SIGCHLD in mtest01 in case the child gets killed by
+>  oom-killer
 > 
-> Hi,
+> The mtest01 checks that a specified amount of memory could be allocated.
+> The memory allocation is performed by several child processes. Each
+> child allocates certain amount of memory and then sends SIGRTMIN to
+> the parent. The parent waits until it receives SIGRTMIN from all child
+> processes or until the amount of free memory is decreased by at least
+> the amount it tasked the children to allocate.
+> The problem is that in certain situations the child process gets killed
+> by oom-killer. The parent never receives SIGRTMIN from that process and
+> there is not sufficient decrease in the amount of free memory, so
+> the parent keeps waiting indefinitely.
+> This patch fixes the above issue. It modifies the test in such a way that
+> it also waits for SIGCHLD signal (which is sent when the oom-killer
+> terminates the child process). If SIGCHLD is received the test FAILS.
 
-Hi,
+Ah, and new patch is hidden as an atachement in the reply to the email.
+I nearly missed it. Ideally new version of patch should be send (inline)
+as a separate email with [PATCH vN] (where N increments with each
+version) in subject.
 
-pushed with some changes, see comments below.
-
-> 
-> >> diff --git a/testcases/kernel/mem/mtest01/mtest01.c
-> >> b/testcases/kernel/mem/mtest01/mtest01.c
-> >> index 8c9e81c..06f41d5 100644
-> >> --- a/testcases/kernel/mem/mtest01/mtest01.c
-> >> +++ b/testcases/kernel/mem/mtest01/mtest01.c
-> 
-> >> @@ -51,9 +51,12 @@
-> >>   char *TCID = "mtest01";
-> >>   int TST_TOTAL = 1;
-> >>   int pid_count = 0;
-> >> +int oom_count = 0;
-> >
-> > both of these should be static
-> 
-> You are right, I also added volatile just to be sure.
-
-I changed it to:
-  static sig_atomic_t sigchld_count;
-
-> 
-> >> @@ -284,7 +288,9 @@ int main(int argc, char *argv[])
-> >>   			kill(pid_list[i], SIGKILL);
-> >>   			i++;
-> >>   		}
-> >> -		if (dowrite)
-> >> +		if (oom_count)
-> >> +			tst_resm(TFAIL, "the child process was killed");
-> >
-> > I wouldn't combine two "if"s into one if else block, the information how
-> > much was allocated could be useful even when we hit OOM.
-> 
-> The original_maxbytes tells us how much we want to allocate, not how much was
-> already allocated. You have to watch TINFO messages emitted by
-> child processes to see what was actually allocated. I think that printing
-> ""%llu kbytes allocated" would be misleading since that is true only
-> if the test passes. I kept the if statement at its current place, but I made
-> the fail message more verbose.
-
-You're right, printing orig_maxbytes is useless.
-
-> 
-> > But mainly, problem here is that ~6 lines above child processes get killed,
-> > so you are racing with SIGCHLD here. I'd suggest to move this TFAIL before
-> > kill() loop.
-> 
-> I moved the part that kills the child processes after PASS/FAIL evaluation to
-> avoid possible race condition.
-> (Another option would be to uninstall the SIGCHLD signal handler before
-> killing the processes.)
-> 
-> >> +		else if (dowrite)
-> >>   			tst_resm(TPASS, "%llu kbytes allocated and used.",
-> >>   				 original_maxbytes / 1024);
-> >>   		else
-> 
-> I am new to the list and I am not sure what the rules for posting patches
-> are. Should I use 'git send-email', sign the patch or something?
-
-Yes, also good start is to check out "style-guide.txt" and
-"test-writing-guidelines.txt" in doc directory.
-
-Regards,
-Jan
-
-> 
-> Regards,
-> Jiri
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
