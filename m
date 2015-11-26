@@ -1,308 +1,471 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 25 Nov 2015 18:32:41 +0100
-Subject: [LTP] [PATCH V4] controllers/pids: Add new testcases
-In-Reply-To: <1448457738-8058-1-git-send-email-chnyda@suse.com>
-References: <1448457738-8058-1-git-send-email-chnyda@suse.com>
-Message-ID: <20151125173240.GE24599@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 26 Nov 2015 10:32:53 +0800
+Subject: [LTP] [PATCH] hugetlb: checking if hugepage is supported on
+ target system
+In-Reply-To: <1448439726-6832-1-git-send-email-liwang@redhat.com>
+References: <1448439726-6832-1-git-send-email-liwang@redhat.com>
+Message-ID: <CAEemH2fH1WVPQEWAYh-h_9r0x57ZUNOqVx8qth0ARN1nHLwWag@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +cleanup()
-> +{
-> +	killall -9 pids_task2 > /dev/null
-> +
-> +	tst_resm TINFO "removing created directories"
-> +	rmdir $testpath
-> +	if [ "$mounted" -ne "1" ]; then
-> +		tst_resm TINFO "Umounting pids"
-> +		umount $mount_point
-> +		rmdir $mount_point
-> +	fi
-> +}
-> +
-> +setup()
-> +{
-> +	tst_require_root
-> +
-> +	exist=`grep -w pids /proc/cgroups | cut -f1`;
-> +	if [ "$exist" = "" ]; then
-> +		tst_brkm TCONF NULL "pids not supported"
-> +	fi
-> +
-> +	mount_point=`grep -w pids /proc/mounts | cut -f 2 | cut -d " " -f2`
-> +
-> +	if [ "$mount_point" = "" ]; then
-> +		mounted=0
-> +		mount_point=/dev/cgroup
-> +	fi
-> +
-> +	TST_CLEANUP=cleanup
-> +
-> +	testpath=$mount_point/ltp_$TCID
-> +
-> +	if [ "$mounted" -eq "0" ]; then
-> +		ROD mkdir -p $mount_point
-> +		ROD mount -t cgroup -o pids none $mount_point
-> +	fi
-> +	ROD mkdir -p $testpath
-> +}
-> +
-> +start_pids_tasks2()
-> +{
-> +	nb=$1
-> +	for i in `seq 1 $nb`; do
-> +		pids_task2 &
-> +		echo $! > $testpath/tasks
-> +	done
-> +
-> +	while [ $(cat "$testpath/tasks" | wc -l) -lt $nb ]; do
-> +		sleep 1
-> +	done
+Hi,
 
-We do not have to check that the task are attached now that we attach
-the program to the cgroup tasks in the for loop here, right?
+After thinking twice, I feel that coding like below are too fussy. Now I
+tend to create a new function as 'check_hugepage()' in mem.c. and then we
+just need to add oneline  each testcae.
 
-What we should do here now instead is to check that the tasks were
-attached.  I.e.
+void check_hugepage(void)
+{
+       if (access(PATH_HUGEPAGES, F_OK) == -1)
+               tst_brkm(TCONF, NULL, "Huge page is not supported.");
+}
 
-if [ $(cat "$testpath/tasks" | wc -l) -ne $nb ]; then
-	tst_resm TBROK "..."
-fi
+Pls ignore this patch, let me post V2.
 
-Or we should handle the return value from the echo, since now the
-program would run on a backgound even when it couldn't be attached.
 
-Either way the case4() could then be simplified to only run this
-function and print TPASS if we do not TBROK here.
+On Wed, Nov 25, 2015 at 4:22 PM, Li Wang <liwang@redhat.com> wrote:
 
-> +}
+> Hi all, how about changging these codes in testcases to check if
+> system support hugepage?
+>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |  4 ++++
+>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |  4 ++++
+>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |  4 ++++
+>  testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c | 28
+> ++++++++++++----------
+>  .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmat/hugeshmat02.c     |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmat/hugeshmat03.c     |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmat/hugeshmat04.c     |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c   |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c     |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c   |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |  3 +++
+>  .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c   |  4 ++++
+>  testcases/kernel/mem/include/mem.h                 |  1 +
+>  testcases/kernel/syscalls/futex/futex_wake04.c     |  4 ++++
+>  18 files changed, 69 insertions(+), 13 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> index 62c3cc8..cae0b78 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
+> @@ -159,6 +159,10 @@ void setup(void)
+>  {
+>         TEST_PAUSE;
+>         tst_require_root();
 > +
-> +case1()
-> +{
-> +	start_pids_tasks2 $max
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	# should return 0 because there is no limit
-> +	pids_task1 "$testpath/tasks"
-> +	ret=$?
+>         if (mount("none", Hopt, "hugetlbfs", 0, NULL) < 0)
+>                 tst_brkm(TBROK | TERRNO, NULL, "mount failed on %s", Hopt);
+>
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> index 9fee330..1187b38 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> @@ -93,6 +93,9 @@ int main(int ac, char **av)
+>
+>         tst_parse_opts(ac, av, options, &help);
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	killall -9 pids_task2
+>         if (!Hflag) {
+>                 tst_tmpdir();
+>                 Hopt = tst_get_tmpdir();
+> @@ -200,6 +203,7 @@ void setup(void)
+>  {
+>         TEST_PAUSE;
+>         tst_require_root();
 > +
-> +	if [ "$ret" -eq "2" ]; then
-> +		tst_resm TFAIL "fork failed unexpectedly"
-> +	elif [ "$ret" -eq "0" ]; then
-> +		tst_resm TPASS "fork didn't fail"
-> +	else
-> +		tst_resm TBROK "pids_task1 failed"
-> +	fi
-> +}
+>         if (mount("none", Hopt, "hugetlbfs", 0, NULL) < 0)
+>                 tst_brkm(TBROK | TERRNO, NULL, "mount failed on %s", Hopt);
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+> index 727b102..0b7bc86 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
+> @@ -175,6 +175,10 @@ void setup(void)
+>  {
+>         TEST_PAUSE;
+>         tst_require_root();
 > +
-> +case2()
-> +{
-> +	tmp=$((max - 1))
-> +	tst_resm TINFO "limit the number of pid to $max"
-> +	ROD echo $max > $testpath/pids.max
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	start_pids_tasks2 $tmp
+>         if (mount("none", Hopt, "hugetlbfs", 0, NULL) < 0)
+>                 tst_brkm(TBROK | TERRNO, NULL, "mount failed on %s", Hopt);
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+> b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+> index 8dac97a..7dcf87a 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
+> @@ -48,6 +48,7 @@
+>  #include <string.h>
+>  #include <ctype.h>
+>  #include "test.h"
+> +#include "mem.h"
+>
+>  #define PROTECTION             (PROT_READ | PROT_WRITE)
+>  #define PATH_MEMINFO           "/proc/meminfo"
+> @@ -97,9 +98,7 @@ static option_t options[] = {
+>         {NULL, NULL, NULL}
+>  };
+>
+> -static void setup(void);
+> -static void cleanup(void);
+> -static void overcommit(void);
+> +static void overcommit1(void);
+>  static void write_bytes(void *addr);
+>  static void read_bytes(void *addr);
+>  static int lookup(char *line, char *pattern);
+> @@ -132,13 +131,13 @@ int main(int argc, char *argv[])
+>         setup();
+>         for (lc = 0; TEST_LOOPING(lc); lc++) {
+>                 tst_count = 0;
+> -               overcommit();
+> +               overcommit1();
+>         }
+>         cleanup();
+>         tst_exit();
+>  }
+>
+> -static void overcommit(void)
+> +static void overcommit1(void)
+>  {
+>         void *addr = NULL, *shmaddr = NULL;
+>         int fd = -1, key = -1;
+> @@ -245,7 +244,7 @@ static void overcommit(void)
+>         }
+>  }
+>
+> -static void cleanup(void)
+> +void cleanup(void)
+>  {
+>         int fd;
+>
+> @@ -253,7 +252,7 @@ static void cleanup(void)
+>                 fd = open(PATH_SHMMAX, O_WRONLY);
+>                 if (fd == -1)
+>                         tst_resm(TWARN | TERRNO, "open");
+> -               if (write(fd, shmmax, strlen(shmmax)) != strlen(shmmax))
+> +               if ((unsigned int)write(fd, shmmax, strlen(shmmax)) !=
+> strlen(shmmax))
+>                         tst_resm(TWARN | TERRNO, "write");
+>                 close(fd);
+>         }
+> @@ -261,7 +260,7 @@ static void cleanup(void)
+>         if (fd == -1)
+>                 tst_resm(TWARN | TERRNO, "open");
+>         tst_resm(TINFO, "restore nr_hugepages to %s.", nr_hugepages);
+> -       if (write(fd, nr_hugepages,
+> +       if ((unsigned int)write(fd, nr_hugepages,
+>                   strlen(nr_hugepages)) != strlen(nr_hugepages))
+>                 tst_resm(TWARN | TERRNO, "write");
+>         close(fd);
+> @@ -271,7 +270,7 @@ static void cleanup(void)
+>                 tst_resm(TWARN | TERRNO, "open");
+>         tst_resm(TINFO, "restore nr_overcommit_hugepages to %s.",
+>                  nr_overcommit_hugepages);
+> -       if (write(fd, nr_overcommit_hugepages,
+> strlen(nr_overcommit_hugepages))
+> +       if ((unsigned int)write(fd, nr_overcommit_hugepages,
+> strlen(nr_overcommit_hugepages))
+>             != strlen(nr_overcommit_hugepages))
+>                 tst_resm(TWARN | TERRNO, "write");
+>         close(fd);
+> @@ -287,7 +286,7 @@ static void cleanup(void)
+>         tst_rmdir();
+>  }
+>
+> -static void setup(void)
+> +void setup(void)
+>  {
+>         FILE *fp;
+>         int fd;
+> @@ -321,7 +320,7 @@ static void setup(void)
+>                                 tst_brkm(TBROK | TERRNO, cleanup, "open");
+>                         snprintf(buf, BUFSIZ, "%ld",
+>                                  (long)(length / 2 * hugepagesize));
+> -                       if (write(fd, buf, strlen(buf)) != strlen(buf))
+> +                       if ((unsigned int)write(fd, buf, strlen(buf)) !=
+> strlen(buf))
+>                                 tst_brkm(TBROK | TERRNO, cleanup,
+>                                          "failed to change shmmax.");
+>                 }
+> @@ -345,7 +344,7 @@ static void setup(void)
+>         if (lseek(fd, 0, SEEK_SET) == -1)
+>                 tst_brkm(TBROK | TERRNO, cleanup, "lseek");
+>         snprintf(buf, BUFSIZ, "%zd", size);
+> -       if (write(fd, buf, strlen(buf)) != strlen(buf))
+> +       if ((unsigned int)write(fd, buf, strlen(buf)) != strlen(buf))
+>                 tst_brkm(TBROK | TERRNO, cleanup,
+>                          "failed to change nr_hugepages.");
+>         close(fd);
+> @@ -369,7 +368,7 @@ static void setup(void)
+>         if (lseek(fd, 0, SEEK_SET) == -1)
+>                 tst_brkm(TBROK | TERRNO, cleanup, "lseek");
+>         snprintf(buf, BUFSIZ, "%zd", size);
+> -       if (write(fd, buf, strlen(buf)) != strlen(buf))
+> +       if ((unsigned int)write(fd, buf, strlen(buf)) != strlen(buf))
+>                 tst_brkm(TBROK | TERRNO, cleanup,
+>                          "failed to change nr_hugepages.");
+>         close(fd);
+> @@ -467,6 +466,9 @@ static void init_hugepagesize(void)
+>  {
+>         FILE *fp;
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	# should return 2 because the limit of pids is reached
-> +	pids_task1 "$testpath/tasks"
-> +	ret=$?
+>         memset(buf, -1, BUFSIZ);
+>         fp = fopen(PATH_MEMINFO, "r");
+>         if (fp == NULL)
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> index 851d4cf..31192c5 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
+> @@ -212,6 +212,9 @@ void setup(void)
+>         tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	killall -9 pids_task2
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
+> b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
+> index 52348f1..0c809ea 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
+> @@ -128,6 +128,9 @@ void setup(void)
+>         tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	if [ "$ret" -eq "2" ]; then
-> +		tst_resm TPASS "fork failed as expected"
-> +	elif [ "$ret" -eq "0" ]; then
-> +		tst_resm TFAIL "fork didn't fail despite the limit"
-> +	else
-> +		tst_resm TBROK "pids_task1 failed"
-> +	fi
-> +}
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
+> b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
+> index 723c8b5..ba73ded 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
+> @@ -134,6 +134,9 @@ void setup(void)
+>         tst_sig(FORK, DEF_HANDLER, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +case3()
-> +{
-> +	tmp=$((max + 1))
-> +	tst_resm TINFO "limit the number of avalaible pid to $tmp"
-> +	ROD echo $tmp > $testpath/pids.max
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> index f631a0a..8a7f88e 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+> @@ -127,6 +127,9 @@ void setup(void)
+>
+>         tst_require_root();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	tmp=$((max - 2))
-> +	start_pids_tasks2 $tmp
+>         mem_total = read_meminfo("MemTotal:");
+>         SAFE_FILE_SCANF(NULL, PATH_SHMMAX, "%ld", &orig_shmmax);
+>         SAFE_FILE_PRINTF(NULL, PATH_SHMMAX, "%ld", (long)SIZE);
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> index 66ad1b5..ff04ca5 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
+> @@ -395,6 +395,9 @@ void setup(void)
+>         tst_sig(FORK, sighandler, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	pids_task1 "$testpath/tasks"
-> +	ret=$?
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+> b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+> index 4aeb638..c085c09 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
+> @@ -133,6 +133,9 @@ void setup(void)
+>         tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	killall -9 pids_task2
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
+> b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
+> index 9f5c2c9..7f99acb 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
+> @@ -159,6 +159,9 @@ void setup(void)
+>         tst_sig(FORK, DEF_HANDLER, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	if [ "$ret" -eq "2" ]; then
-> +		tst_resm TFAIL "fork failed unexpectedly"
-> +	elif [ "$ret" -eq "0" ]; then
-> +		tst_resm TPASS "fork worked as expected"
-> +	else
-> +		tst_resm TBROK "pids_task1 failed"
-> +	fi
-> +}
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+> b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+> index 9770e87..7f775a4 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
+> @@ -168,6 +168,9 @@ void setup(void)
+>         tst_sig(NOFORK, sighandler, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +case4()
-> +{
-> +	tst_resm TINFO "limit the number of avalaible pid to 0"
-> +	ROD echo 0 > $testpath/pids.max
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> index ee82de3..46e6949 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
+> @@ -146,6 +146,9 @@ void setup(void)
+>         tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	start_pids_tasks2 $max
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+> b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+> index b995ef8..55bd860 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
+> @@ -141,6 +141,9 @@ void setup(void)
+>         tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	# count the number of attached process
-> +	cnt=`jobs -p | wc -l`
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> index 9284669..8a69258 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
+> @@ -116,6 +116,9 @@ void setup(void)
+>         tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>         tst_tmpdir();
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	killall -9 pids_task2
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+> b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+> index 7b8f6b4..ff410e9 100644
+> --- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+> +++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
+> @@ -138,6 +138,10 @@ void setup(void)
+>         tst_sig(FORK, DEF_HANDLER, cleanup);
+>         tst_tmpdir();
+>
 > +
-> +	if [ "$cnt" -ne "$max" ]; then
-> +		cnt=$((max - cnt))
-> +		tst_resm TFAIL "$cnt process were not attached successfully"
-> +	else
-> +		tst_resm TPASS "all process were attached"
-> +	fi
-> +}
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +case5()
-> +{
-> +	tst_resm TINFO "try to limit the number of avalaible pid to -1"
-> +	echo -1 > $testpath/pids.max
+>         orig_hugepages = get_sys_tune("nr_hugepages");
+>         set_sys_tune("nr_hugepages", hugepages, 1);
+>         hpage_size = read_meminfo("Hugepagesize:") * 1024;
+> diff --git a/testcases/kernel/mem/include/mem.h
+> b/testcases/kernel/mem/include/mem.h
+> index 4a18799..b8a3d6f 100644
+> --- a/testcases/kernel/mem/include/mem.h
+> +++ b/testcases/kernel/mem/include/mem.h
+> @@ -62,6 +62,7 @@ void thp_usage(void);
+>  /* HUGETLB */
+>
+>  #define PATH_SHMMAX            "/proc/sys/kernel/shmmax"
+> +#define PATH_HUGEPAGES         "/sys/kernel/mm/hugepages/"
+>
+>  void write_memcg(void);
+>  void create_same_memory(int size, int num, int unit);
+> diff --git a/testcases/kernel/syscalls/futex/futex_wake04.c
+> b/testcases/kernel/syscalls/futex/futex_wake04.c
+> index dcefde8..d044ba5 100644
+> --- a/testcases/kernel/syscalls/futex/futex_wake04.c
+> +++ b/testcases/kernel/syscalls/futex/futex_wake04.c
+> @@ -50,6 +50,7 @@
+>
+>  #define PATH_MEMINFO "/proc/meminfo"
+>  #define PATH_NR_HUGEPAGES "/proc/sys/vm/nr_hugepages"
+> +#define PATH_HUGEPAGES "/sys/kernel/mm/hugepages/"
+>
+>  const char *TCID = "futex_wake04";
+>  const int TST_TOTAL = 1;
+> @@ -69,6 +70,9 @@ static void setup(void)
+>                         "that are 2.6.32 or higher");
+>         }
+>
+> +       if (access(PATH_HUGEPAGES, F_OK) == -1)
+> +               tst_brkm(TCONF, NULL, "Huge page is not supported.");
 > +
-> +	if [ "$?" -eq "0" ]; then
-> +		tst_resm TFAIL "managed to set the limit to -1"
-> +	else
-> +		tst_resm TPASS "didn't manage to set the limit to -1"
-> +	fi
-> +}
-> +
-> +setup
-> +
-> +if [ "$#" -ne "2" ]; then
-> +	usage
-> +else
-> +	case$caseno
-> +fi
-> +
-> +tst_exit
-> diff --git a/testcases/kernel/controllers/pids/pids_task1.c b/testcases/kernel/controllers/pids/pids_task1.c
-> new file mode 100644
-> index 0000000..a470ccf
-> --- /dev/null
-> +++ b/testcases/kernel/controllers/pids/pids_task1.c
-> @@ -0,0 +1,63 @@
-> +/*
-> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + */
-> +
-> +/*
-> +* Description:
-> +* Write the current process in argv[1]
-> +* and returns:
-> +*	-> 2 if fork fails with EAGAIN,
-> +*	-> 1 if there is another problem
-> +*	-> 0 if everything worked
-> +*/
-> +
-> +#include <stdio.h>
-> +#include <sys/time.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <stdlib.h>
-> +#include <string.h>
-> +
-> +int main(int argc, char **argv)
-> +{
-> +	FILE *f;
-> +	int newpid;
-> +
-> +	if (argc != 2) {
-> +		fprintf(stderr, "Usage: %s /cgroup/.../tasks\n", argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	f = fopen(argv[1], "a");
-> +	if (!f) {
-> +		perror("fopen failed");
-> +		return 1;
-> +	}
-> +
-> +	fprintf(f, "%i\n", getpid());
-> +	fclose(f);
-> +
-> +	newpid = fork();
-> +	if (newpid == -1 && errno == EAGAIN)
-> +		return 2;
-> +	if (newpid == -1) {
-> +		strerror(errno);
-                ^
-		Did you mean perror("fork()") ?
-> +		return 1;
-> +	}
-> +	return 0;
-> +}
-> diff --git a/testcases/kernel/controllers/pids/pids_task2.c b/testcases/kernel/controllers/pids/pids_task2.c
-> new file mode 100644
-> index 0000000..130d619
-> --- /dev/null
-> +++ b/testcases/kernel/controllers/pids/pids_task2.c
-> @@ -0,0 +1,30 @@
-> +/*
-> + * Copyright (c) 2015 Cedric Hnyda <chnyda@suse.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write the Free Software Foundation,
-> + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> + */
-> +
-> +#include <stdio.h>
-> +#include <sys/time.h>
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <stdlib.h>
-
-technically we only need to include the unistd.h here
-
-> +int main(void)
-> +{
-> +	pause();
-> +	return 0;
-> +}
-> -- 
-> 2.1.4
-> 
-> 
-> -- 
+>         tst_tmpdir();
+>
+>         SAFE_FILE_SCANF(NULL, PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
+> --
+> 1.8.3.1
+>
+>
+> --
 > Mailing list info: http://lists.linux.it/listinfo/ltp
+>
+
+
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+Email: liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20151126/868958c6/attachment-0001.html>
