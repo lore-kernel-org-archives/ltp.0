@@ -1,108 +1,209 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 26 Nov 2015 10:02:44 -0500 (EST)
-Subject: [LTP] [PATCH] mem/oom: don't fail if pthread_create hits EAGAIN
-In-Reply-To: <20151126142612.GD9276@rei.lan>
-References: <3c782728d90f07391df826231c7327a2ddf38540.1448451542.git.jstancek@redhat.com>
- <20151126142612.GD9276@rei.lan>
-Message-ID: <1536996586.18060714.1448550164119.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 26 Nov 2015 21:05:09 +0300
+Subject: [LTP] [PATCH v2] hugetlb/hugemmap: add new testcase hugemmap06.c
+In-Reply-To: <CAEemH2fxCDRtB7jSazdBjAMzxaK0U2GwNZKLuAq00EDzbW679A@mail.gmail.com>
+References: <1448506977-12479-1-git-send-email-liwang@redhat.com>
+ <5656CF53.3030409@oracle.com>
+ <CAEemH2fxCDRtB7jSazdBjAMzxaK0U2GwNZKLuAq00EDzbW679A@mail.gmail.com>
+Message-ID: <565749D5.4060306@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
+On 11/26/2015 03:25 PM, Li Wang wrote:
+>
+>
+>
+>         +               tst_brkm(TBROK | TERRNO, cleanup, "Cannot
+>         allocate hugepage");
+>         +       }
+>         +
+>         +       for (i = ARSZ - 1; i > 0; i--) {
+>
+>
+>     Why this is done in reverse order?
+>
+>
+> well, as Jan pointed in the previous comments:
+>
+> "How about allocating the largest area first and then mmaping smaller ones
+> on top of it?
+>
+> That could prevent situation where first smallest area mmaps a gap between
+> existing libraries/heap/etc. and then larger ones with same start overlap
+> with those - since we write to those areas, bad things could happen."
+>
+> I think that is very clear to describe the potential issue. since I 
+> run the program on some s390x for many times, it is easily to get 
+> segment fault. after done in reverse order. the error gone.
+>
+> here I print the detailed mapings of the program, it show something that.
+> -----
 
+OK, but I meant that either we need to remove "sz" variable and use "i * 
+hpage_size" or
+make it straightforward as "i" doesn't influence on the actual size 
+passed to mmap and threads.
 
+So that both of the loops looks the same.
 
+Also to use the full range of declared arrays, we should do as follows 
+or declare them as ARSZ - 1:
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, 26 November, 2015 3:26:12 PM
-> Subject: Re: [LTP] [PATCH] mem/oom: don't fail if pthread_create hits EAGAIN
-> 
-> Hi!
-> > In a rare situation on system with many CPUs, small RAM
-> > and overcommit_memory == 2, threads that are already started
-> > can create memory pressure, that causes pthread_create
-> > to hit EAGAIN. Don't fail the test, keep going with threads
-> > that are already spawned.
-> 
-> It took me a while to figure out what are trying to fix, but I think I
-> understand now.
-> 
-> The thing is that if we have many processors the threads running on
-> background allocating and faulting memory would counsume available
-> memory before the for() loop has chance to finish and the
-> ptread_create() starts to fail with EAGAIN, right?
+struct mp mmap_sz[ARSZ];
+pthread_t tid[ARSZ];
 
-Correct, from my experience it's very rarely seen on powerpc
-(probably because of its large page size).
+sz = ARSZ + 1;
 
-I can trigger it easily on x86 KVM guest (1GB RAM, 4cpus, no swap)
-if I modify the test slightly:
-
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 118b6c0..18a1aa1 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -32,8 +32,10 @@ static int alloc_mem(long int length, int testcase)
-        long i, pagesz = getpagesize();
-        int loop = 10;
- 
-+/*
-        tst_resm(TINFO, "thread (%lx), allocating %ld bytes.",
-                (unsigned long) pthread_self(), length);
-+*/
- 
-        s = mmap(NULL, length, PROT_READ | PROT_WRITE,
-                 MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
-@@ -65,7 +67,14 @@ static void *child_alloc_thread(void *args)
- 
-        /* keep allocating until there's an error */
-        while (!ret)
--               ret = alloc_mem(LENGTH, (long)args);
-+               ret = alloc_mem(1024*1024, (long)args);
-+       ret = 0;
-+       while (!ret)
-+               ret = alloc_mem(4096, (long)args);
-+
-+       tst_resm(TINFO, "thread (%lx), done allocating");
-+
-+       sleep(5);
-        exit(ret);
- }
- 
-@@ -92,6 +101,7 @@ static void child_alloc(int testcase, int lite, int threads)
-                        tst_resm(TINFO | TRERRNO, "pthread_create");
-                        goto out;
-                }
-+               sleep(5);
-        }
- 
-        /* wait for one of threads to exit whole process */
-
-
-# ./oom01 
-oom01       0  TINFO  :  set overcommit_memory to 2
-oom01       0  TINFO  :  expected victim is 30038.
-oom01       0  TINFO  :  thread (ffffffff), done allocating
-oom01       0  TINFO  :  pthread_create: TEST_RETURN=EAGAIN/EWOULDBLOCK(11): Resource temporarily unavailable
-oom01       1  TFAIL  :  mem.c:163: victim unexpectedly ended with retcode: 1, expected: 12
 ...
 
+for (i = 0; i < ARSZ; ++i, --sz) {
+     mmap_sz[i].sz = sz;
+     mmap_sz[i].addr = addr;
+     ...
+}
 
-> 
-> In that case the fix looks good, acked.
+for (i = 0; i < ARSZ; ++i) {
+     pthread_join(...);
+}
 
-Pushed.
+> Program received signal SIGSEGV, Segmentation fault.
+> 0x0000004cf80a68b0 in mmap64 () from /lib64/libc.so.6
+> (gdb) bt
+> #0  0x0000004cf80a68b0 in mmap64 () from /lib64/libc.so.6
+> Cannot access memory at address 0x70
+>
+>
+>           Start Addr           End Addr       Size Offset objfile
+>           0x80000000         0x80001000 0x1000          
+> 0                              /root/a.out
+>           0x80001000         0x80002000     0x1000 
+> 0x1000                              /root/a.out
+>           0xb7a9b000         0xb7abc000 0x21000          0 [heap]
+>         0x4cf7f73000       0x4cf7f94000 0x21000          
+> 0                         /lib64/ld-2.12.so <http://ld-2.12.so>
+>         0x4cf7f94000       0x4cf7f95000     0x1000 
+> 0x20000                         /lib64/ld-2.12.so <http://ld-2.12.so>
+>         0x4cf7f95000       0x4cf7f96000     0x1000 
+> 0x21000                         /lib64/ld-2.12.so <http://ld-2.12.so>
+>         0x4cf7f96000       0x4cf7f97000 0x1000          0
+>         0x4cf7f9d000       0x4cf814d000 0x1b0000          
+> 0                         /lib64/libc-2.12.so <http://libc-2.12.so>
+>         0x4cf814d000       0x4cf8151000     0x4000 
+> 0x1af000                         /lib64/libc-2.12.so <http://libc-2.12.so>
+>         0x4cf8151000       0x4cf8152000     0x1000 
+> 0x1b3000                         /lib64/libc-2.12.so <http://libc-2.12.so>
+>         0x4cf8152000       0x4cf8157000 0x5000          0
+>         0x4cf8159000       0x4cf8176000 0x1d000          
+> 0                         /lib64/libpthread-2.12.so 
+> <http://libpthread-2.12.so>
+>         0x4cf8176000       0x4cf8177000     0x1000 
+> 0x1c000                         /lib64/libpthread-2.12.so 
+> <http://libpthread-2.12.so>
+>         0x4cf8177000       0x4cf8178000     0x1000 
+> 0x1d000                         /lib64/libpthread-2.12.so 
+> <http://libpthread-2.12.so>
+>
+>
+>         +               mmap_sz[i].sz = sz;
+>         +               mmap_sz[i].addr = addr;
+>         +
+>         +               TEST(pthread_create(tid + i, NULL, thr,
+>         &mmap_sz[i]));
+>
+>
+>     This is not right, use tid[i] ( = tid + sizeof(pthread_t) * i),
+>     not tid + i.
+>
+>
+> sorry, probably you want say this:
+>
+>         (pthread_t *)((char *)tid + sizeof(pthread_t) * i)
+>
+> but I think the original way is right.
 
-Regards,
-Jan
+Yes, you are right, sorry for misleading you.
 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+I would recommend to use the same style in one function, so
+
+TEST(pthread_create(tid + i, NULL, thr, mmap_sz + i));
+or
+TEST(pthread_create(&tid[i], NULL, thr, &mmap_sz[i]));
+
+
+> -----------
+> # cat a.c
+> #include <stdio.h>
+> int main()
+> {
+>     int a[2];
+>
+>     *a = 'a';
+>     *(a + 1) = 'b';
+>
+>     printf("a[1] = %d\n", a[1]);
+>
+>     printf("&a[0] = %p\n", a);
+>     printf("&a[1] = %p\n", a + 1);
+> }
+>
+> --------
+> # ./a.out
+> a[1] = 98
+> &a[0] = 0x3ffffe25f18
+> &a[1] = 0x3ffffe25f1c
+>
+>
+>
+>         +       }
+>         +
+>         +       for (++i; i < ARSZ; i++) {
+>
+>
+>     Could you initialize "i" here explicitly?
+>
+> ok, no problem.
+>
+>
+>         +       cleanup();
+>         +       tst_exit();
+>
+>
+>     Isn't tst_exit() calling cleanup?
+>
+>
+> hmm, I checked the /lib/tst_res.c and got the function:
+>
+> ----
+> void tst_exit(void)
+> {
+>     pthread_mutex_lock(&tmutex);
+>
+> #if DEBUG
+>     printf("IN tst_exit\n");
+>     fflush(stdout);
+>     fflush(stdout);
+> #endif
+>
+>     /* Call tst_flush() flush any output in the buffer. */
+>     tst_flush();
+>
+>     /* Mask out TINFO result from the exit status. */
+>     exit(T_exitval & ~TINFO);
+> }
+>
+> I didn't saw there anyplace call the cleanup() function. :(
+
+Right, I've read the mail thread recently about changing cleanup() to be 
+declared as a signal handler before
+and somehow thought it is already implemented in LTP...
+
+Thanks,
+Alexey
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20151126/81321814/attachment-0001.html>
