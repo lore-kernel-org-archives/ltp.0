@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 26 Nov 2015 14:59:24 +0100
-Subject: [LTP] [PATCH v2] hugetlb/hugemmap: add new testcase hugemmap06.c
-In-Reply-To: <5656CF53.3030409@oracle.com>
-References: <1448506977-12479-1-git-send-email-liwang@redhat.com>
- <5656CF53.3030409@oracle.com>
-Message-ID: <20151126135924.GB9276@rei.lan>
+Date: Thu, 26 Nov 2015 15:12:13 +0100
+Subject: [LTP] [PATCH] containers/netns/netns_sysfs.sh: removed invalid
+ excess line
+In-Reply-To: <56570EAE.4070707@redhat.com>
+References: <1448537578-21310-1-git-send-email-mmarhefk@redhat.com>
+ <56570EAE.4070707@redhat.com>
+Message-ID: <20151126141213.GC9276@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,22 +13,14 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > +		mmap_sz[i].sz = sz;
-> > +		mmap_sz[i].addr = addr;
-> > +
-> > +		TEST(pthread_create(tid + i, NULL, thr, &mmap_sz[i]));
+> Acked-by: Jiri Jaburek <jjaburek@redhat.com>
 > 
-> This is not right, use tid[i] ( = tid + sizeof(pthread_t) * i), not tid + i.
+> I admit that this was a brain fart on my part, I submitted a patch
+> against a testing/debug version of that file. Sorry about that.
 
-Hmm, since when arr + i != &arr[i] ?
+And my bad that I pushed it without doble checking...
 
-When arr is pthread_t * type it's incremented by sizeof(pthread_t). As
-far as I know arr[i] is just shorthand for *(arr + i). Which is a reason
-why obscure things like i[arr] compile and give the same answer as
-arr[i] even then technically the value is undefined.
-
-If you want to increment pointer by 1 you have to explicitly cast it to
-char * or intptr_t.
+Thanks for the fix, pushed.
 
 -- 
 Cyril Hrubis
