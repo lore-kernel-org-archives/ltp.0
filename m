@@ -1,390 +1,316 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 26 Nov 2015 10:57:09 +0800
-Subject: [LTP] [PATCH v2] hugetlb: checking if hugepage is supported on
-	target system
-Message-ID: <1448506629-12150-1-git-send-email-liwang@redhat.com>
+Date: Thu, 26 Nov 2015 11:02:57 +0800
+Subject: [LTP] [PATCH v2] hugetlb/hugemmap: add new testcase hugemmap06.c
+Message-ID: <1448506977-12479-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+v1 ---> v2
+	1. remove the useless include file
+	2. add huge pages checking in setup()
+	3. mmap huge pages in reverse order
+
+Description of Problem:
+	There is a race condition if we map a same file on different processes.
+	Region tracking is protected by mmap_sem and hugetlb_instantiation_mutex.
+	When we do mmap, we don't grab a hugetlb_instantiation_mutex, but only
+	mmap_sem (exclusively).  This doesn't prevent other tasks from modifying
+	the region structure, so it can be modified by two processes concurrently.
+
+	Testcase hugemmap06.c is the trigger to cause system crash:
+
+        crash> bt -s
+        PID: 4492   TASK: ffff88033e437520  CPU: 2   COMMAND: "hugemmap06"
+         #0 [ffff88033dbb3960] machine_kexec+395 at ffffffff8103d1ab
+         #1 [ffff88033dbb39c0] crash_kexec+114 at ffffffff810cc4f2
+         #2 [ffff88033dbb3a90] oops_end+192 at ffffffff8153c840
+         #3 [ffff88033dbb3ac0] die+91 at ffffffff81010f5b
+         #4 [ffff88033dbb3af0] do_general_protection+338 at ffffffff8153c332
+         #5 [ffff88033dbb3b20] general_protection+37 at ffffffff8153bb05
+            [exception RIP: list_del+40]
+            RIP: ffffffff812a3598  RSP: ffff88033dbb3bd8  RFLAGS: 00010292
+            RAX: dead000000100100  RBX: ffff88013cf37340  RCX: 0000000000002dc2
+            RDX: dead000000200200  RSI: 0000000000000046  RDI: 0000000000000009
+            RBP: ffff88033dbb3be8   R8: 0000000000015598   R9: 0000000000000000
+            R10: 000000000000000f  R11: 0000000000000009  R12: 000000000000000a
+            R13: ffff88033d64b9e8  R14: ffff88033e5b9720  R15: ffff88013cf37340
+            ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
+         #6 [ffff88033dbb3bf0] region_add+154 at ffffffff811698da
+         #7 [ffff88033dbb3c40] alloc_huge_page+669 at ffffffff8116a61d
+         #8 [ffff88033dbb3ce0] hugetlb_fault+1083 at ffffffff8116b9bb
+         #9 [ffff88033dbb3d90] handle_mm_fault+917 at ffffffff81153295
+        #10 [ffff88033dbb3e00] __do_page_fault+326 at ffffffff8104f156
+        #11 [ffff88033dbb3f20] do_page_fault+62 at ffffffff8153e78e
+        #12 [ffff88033dbb3f50] page_fault+37 at ffffffff8153bb35
+            RIP: 00000000004027c6  RSP: 00007f7cadef9e80  RFLAGS: 00010297
+            RAX: 000000005a49238f  RBX: 00007ffcb2d19320  RCX: 000000357498e084
+            RDX: 000000357498e0b0  RSI: 00007f7cadef9e5c  RDI: 000000357498e4e0
+            RBP: 0000000000000008   R8: 000000357498e0a0   R9: 000000357498e100
+            R10: 00007f7cadefa9d0  R11: 0000000000000206  R12: 0000000000000007
+            R13: 0000000000000002  R14: 0000000000000003  R15: 00002aaaac000000
+            ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+
+The fix are all these below commits:
+	commit f522c3ac00a49128115f99a5fcb95a447601c1c3
+	Author:Joonsoo Kim < iamjoonsoo.kim @ lge.com >
+	Date:Wed Sep 11 14:21:53 2013 - 0700
+
+	commit 9119 a41e9091fb3a8204039d595bcdae24193c57
+	Author:Joonsoo Kim < iamjoonsoo.kim @ lge.com >
+	Date:Thu Apr 3 14:47:25 2014 - 0700
+
+	commit 7 b24d8616be33616efd41ff67d3c76362c60ca84
+	Author:Davidlohr Bueso < davidlohr @ hp.com >
+	Date:Thu Apr 3 14:47:27 2014 - 0700
+
+	commit 1406ec9 ba6c65cb69e9243bff07ca3f51e2525e0
+	Author:Joonsoo Kim < iamjoonsoo.kim @ lge.com >
+	Date:Thu Apr 3 14:47:26 2014 - 0700
+
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |  1 +
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |  2 ++
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |  1 +
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c | 26 +++++++++++-----------
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |  1 +
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat02.c     |  1 +
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat03.c     |  1 +
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat04.c     |  1 +
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   |  1 +
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   |  1 +
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c   |  1 +
- .../kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c     |  1 +
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c   |  1 +
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   |  1 +
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |  1 +
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c   |  1 +
- testcases/kernel/mem/include/mem.h                 |  2 ++
- testcases/kernel/mem/lib/mem.c                     |  6 +++++
- testcases/kernel/syscalls/futex/futex_wake04.c     |  4 ++++
- 19 files changed, 41 insertions(+), 13 deletions(-)
+ runtest/hugetlb                                    |   1 +
+ testcases/kernel/mem/.gitignore                    |   1 +
+ testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   2 +
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c | 192 +++++++++++++++++++++
+ 4 files changed, 196 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-index 62c3cc8..d137135 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c
-@@ -159,6 +159,7 @@ void setup(void)
- {
- 	TEST_PAUSE;
- 	tst_require_root();
-+	check_hugepage();
- 	if (mount("none", Hopt, "hugetlbfs", 0, NULL) < 0)
- 		tst_brkm(TBROK | TERRNO, NULL, "mount failed on %s", Hopt);
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-index 9fee330..0cbb62b 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
-@@ -93,6 +93,8 @@ int main(int ac, char **av)
- 
- 	tst_parse_opts(ac, av, options, &help);
- 
+diff --git a/runtest/hugetlb b/runtest/hugetlb
+index 2e9f215..ac24513 100644
+--- a/runtest/hugetlb
++++ b/runtest/hugetlb
+@@ -2,6 +2,7 @@ hugemmap01 hugemmap01
+ hugemmap02 hugemmap02
+ hugemmap04 hugemmap04
+ hugemmap05 hugemmap05
++hugemmap06 hugemmap06
+ hugemmap05_1 hugemmap05 -m
+ hugemmap05_2 hugemmap05 -s
+ hugemmap05_3 hugemmap05 -s -m
+diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
+index 4702377..ac8e6d8 100644
+--- a/testcases/kernel/mem/.gitignore
++++ b/testcases/kernel/mem/.gitignore
+@@ -3,6 +3,7 @@
+ /hugetlb/hugemmap/hugemmap02
+ /hugetlb/hugemmap/hugemmap04
+ /hugetlb/hugemmap/hugemmap05
++/hugetlb/hugemmap/hugemmap06
+ /hugetlb/hugeshmat/hugeshmat01
+ /hugetlb/hugeshmat/hugeshmat02
+ /hugetlb/hugeshmat/hugeshmat03
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+index 71da630..3d22042 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
++++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
+@@ -25,3 +25,5 @@ top_srcdir		?= ../../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(top_srcdir)/testcases/kernel/mem/include/libmem.mk
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
++
++hugemmap06: CFLAGS+=-pthread
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
+new file mode 100644
+index 0000000..77250f2
+--- /dev/null
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
+@@ -0,0 +1,192 @@
++/*
++ *  Copyright (c) Author: Herton R. Krzesinski <herton@redhat.com>
++ *                Modify: Li Wang <liwang@redhat.com>
++ *
++ *  This program is free software;  you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ *  the GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program;  if not, write to the Free Software
++ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ *  02110-1301 USA
++ */
++
++/*
++ *  DESCRIPTION
++ *
++ *    There is a race condition if we map a same file on different processes.
++ *    Region tracking is protected by mmap_sem and hugetlb_instantiation_mutex.
++ *    When we do mmap, we don't grab a hugetlb_instantiation_mutex, but only
++ *    mmap_sem (exclusively).  This doesn't prevent other tasks from modifying
++ *    the region structure, so it can be modified by two processes concurrently.
++ *
++ *    This bug was fixed on stable kernel by commits:
++ *
++ *        commit f522c3ac00a49128115f99a5fcb95a447601c1c3
++ *        Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
++ *        Date:   Wed Sep 11 14:21:53 2013 -0700
++ *
++ *        commit 9119a41e9091fb3a8204039d595bcdae24193c57
++ *        Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
++ *        Date:   Thu Apr 3 14:47:25 2014 -0700
++ *
++ *        commit 7b24d8616be33616efd41ff67d3c76362c60ca84
++ *        Author: Davidlohr Bueso <davidlohr@hp.com>
++ *        Date:   Thu Apr 3 14:47:27 2014 -0700
++ *
++ *        commit 1406ec9ba6c65cb69e9243bff07ca3f51e2525e0
++ *        Author: Joonsoo Kim <iamjoonsoo.kim@lge.com>
++ *        Date:   Thu Apr 3 14:47:26 2014 -0700
++ */
++
++#define _GNU_SOURCE
++#include <errno.h>
++#include <pthread.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <unistd.h>
++
++#include "test.h"
++#include "mem.h"
++
++char *TCID = "hugemmap06";
++int TST_TOTAL = 5;
++
++static long hpage_size;
++static long hugepages;
++static long orig_hugepages;
++
++struct mp {
++	void *addr;
++	int sz;
++};
++
++#define ARSZ 50
++
++void setup(void)
++{
++	tst_require_root();
 +	check_hugepage();
 +
- 	if (!Hflag) {
- 		tst_tmpdir();
- 		Hopt = tst_get_tmpdir();
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-index 727b102..0332d3b 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c
-@@ -175,6 +175,7 @@ void setup(void)
- {
- 	TEST_PAUSE;
- 	tst_require_root();
-+	check_hugepage();
- 	if (mount("none", Hopt, "hugetlbfs", 0, NULL) < 0)
- 		tst_brkm(TBROK | TERRNO, NULL, "mount failed on %s", Hopt);
- 	orig_hugepages = get_sys_tune("nr_hugepages");
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-index 8dac97a..bef5a4a 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-@@ -48,6 +48,7 @@
- #include <string.h>
- #include <ctype.h>
- #include "test.h"
-+#include "mem.h"
- 
- #define PROTECTION		(PROT_READ | PROT_WRITE)
- #define PATH_MEMINFO		"/proc/meminfo"
-@@ -97,9 +98,7 @@ static option_t options[] = {
- 	{NULL, NULL, NULL}
- };
- 
--static void setup(void);
--static void cleanup(void);
--static void overcommit(void);
-+static void overcommit1(void);
- static void write_bytes(void *addr);
- static void read_bytes(void *addr);
- static int lookup(char *line, char *pattern);
-@@ -132,13 +131,13 @@ int main(int argc, char *argv[])
- 	setup();
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		tst_count = 0;
--		overcommit();
-+		overcommit1();
- 	}
- 	cleanup();
- 	tst_exit();
- }
- 
--static void overcommit(void)
-+static void overcommit1(void)
- {
- 	void *addr = NULL, *shmaddr = NULL;
- 	int fd = -1, key = -1;
-@@ -245,7 +244,7 @@ static void overcommit(void)
- 	}
- }
- 
--static void cleanup(void)
-+void cleanup(void)
- {
- 	int fd;
- 
-@@ -253,7 +252,7 @@ static void cleanup(void)
- 		fd = open(PATH_SHMMAX, O_WRONLY);
- 		if (fd == -1)
- 			tst_resm(TWARN | TERRNO, "open");
--		if (write(fd, shmmax, strlen(shmmax)) != strlen(shmmax))
-+		if ((unsigned int)write(fd, shmmax, strlen(shmmax)) != strlen(shmmax))
- 			tst_resm(TWARN | TERRNO, "write");
- 		close(fd);
- 	}
-@@ -261,7 +260,7 @@ static void cleanup(void)
- 	if (fd == -1)
- 		tst_resm(TWARN | TERRNO, "open");
- 	tst_resm(TINFO, "restore nr_hugepages to %s.", nr_hugepages);
--	if (write(fd, nr_hugepages,
-+	if ((unsigned int)write(fd, nr_hugepages,
- 		  strlen(nr_hugepages)) != strlen(nr_hugepages))
- 		tst_resm(TWARN | TERRNO, "write");
- 	close(fd);
-@@ -271,7 +270,7 @@ static void cleanup(void)
- 		tst_resm(TWARN | TERRNO, "open");
- 	tst_resm(TINFO, "restore nr_overcommit_hugepages to %s.",
- 		 nr_overcommit_hugepages);
--	if (write(fd, nr_overcommit_hugepages, strlen(nr_overcommit_hugepages))
-+	if ((unsigned int)write(fd, nr_overcommit_hugepages, strlen(nr_overcommit_hugepages))
- 	    != strlen(nr_overcommit_hugepages))
- 		tst_resm(TWARN | TERRNO, "write");
- 	close(fd);
-@@ -287,7 +286,7 @@ static void cleanup(void)
- 	tst_rmdir();
- }
- 
--static void setup(void)
-+void setup(void)
- {
- 	FILE *fp;
- 	int fd;
-@@ -321,7 +320,7 @@ static void setup(void)
- 				tst_brkm(TBROK | TERRNO, cleanup, "open");
- 			snprintf(buf, BUFSIZ, "%ld",
- 				 (long)(length / 2 * hugepagesize));
--			if (write(fd, buf, strlen(buf)) != strlen(buf))
-+			if ((unsigned int)write(fd, buf, strlen(buf)) != strlen(buf))
- 				tst_brkm(TBROK | TERRNO, cleanup,
- 					 "failed to change shmmax.");
- 		}
-@@ -345,7 +344,7 @@ static void setup(void)
- 	if (lseek(fd, 0, SEEK_SET) == -1)
- 		tst_brkm(TBROK | TERRNO, cleanup, "lseek");
- 	snprintf(buf, BUFSIZ, "%zd", size);
--	if (write(fd, buf, strlen(buf)) != strlen(buf))
-+	if ((unsigned int)write(fd, buf, strlen(buf)) != strlen(buf))
- 		tst_brkm(TBROK | TERRNO, cleanup,
- 			 "failed to change nr_hugepages.");
- 	close(fd);
-@@ -369,7 +368,7 @@ static void setup(void)
- 	if (lseek(fd, 0, SEEK_SET) == -1)
- 		tst_brkm(TBROK | TERRNO, cleanup, "lseek");
- 	snprintf(buf, BUFSIZ, "%zd", size);
--	if (write(fd, buf, strlen(buf)) != strlen(buf))
-+	if ((unsigned int)write(fd, buf, strlen(buf)) != strlen(buf))
- 		tst_brkm(TBROK | TERRNO, cleanup,
- 			 "failed to change nr_hugepages.");
- 	close(fd);
-@@ -467,6 +466,7 @@ static void init_hugepagesize(void)
- {
- 	FILE *fp;
- 
-+	check_hugepage();
- 	memset(buf, -1, BUFSIZ);
- 	fp = fopen(PATH_MEMINFO, "r");
- 	if (fp == NULL)
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-index 851d4cf..fe0f376 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat01.c
-@@ -209,6 +209,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
-index 52348f1..2b8e923 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat02.c
-@@ -125,6 +125,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-index 723c8b5..28f85b6 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat03.c
-@@ -131,6 +131,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-index f631a0a..88217e5 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
-@@ -126,6 +126,7 @@ void setup(void)
- 	long mem_total, hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 
- 	mem_total = read_meminfo("MemTotal:");
- 	SAFE_FILE_SCANF(NULL, PATH_SHMMAX, "%ld", &orig_shmmax);
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-index 66ad1b5..f4d4f19 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c
-@@ -392,6 +392,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(FORK, sighandler, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-index 4aeb638..d5b8109 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c
-@@ -130,6 +130,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-index 9f5c2c9..66df7f9 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c
-@@ -156,6 +156,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
-index 9770e87..305d2b4 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c
-@@ -165,6 +165,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(NOFORK, sighandler, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-index ee82de3..d1897b5 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget01.c
-@@ -143,6 +143,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-index b995ef8..953000f 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget02.c
-@@ -138,6 +138,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-index 9284669..d1f3205 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget03.c
-@@ -113,6 +113,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-index 7b8f6b4..ae39b33 100644
---- a/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-+++ b/testcases/kernel/mem/hugetlb/hugeshmget/hugeshmget05.c
-@@ -135,6 +135,7 @@ void setup(void)
- 	long hpage_size;
- 
- 	tst_require_root();
-+	check_hugepage();
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	tst_tmpdir();
- 
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 4a18799..4cf34d1 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -62,7 +62,9 @@ void thp_usage(void);
- /* HUGETLB */
- 
- #define PATH_SHMMAX		"/proc/sys/kernel/shmmax"
-+#define PATH_HUGEPAGES		"/sys/kernel/mm/hugepages/"
- 
-+void check_hugepage(void);
- void write_memcg(void);
- void create_same_memory(int size, int num, int unit);
- int  opt_num, opt_size, opt_unit;
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 215c052..84af3ce 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -314,6 +314,12 @@ static void verify(char **memory, char value, int proc,
- 	free(s);
- }
- 
-+void check_hugepage(void)
-+{
-+	if (access(PATH_HUGEPAGES, F_OK) == -1)
-+		tst_brkm(TCONF, NULL, "Huge page is not supported.");
++	hpage_size = read_meminfo("Hugepagesize:") * 1024;
++	orig_hugepages = get_sys_tune("nr_hugepages");
++
++	hugepages = (ARSZ + 1) * TST_TOTAL;
++
++	if (hugepages * read_meminfo("Hugepagesize:") > read_meminfo("MemTotal:"))
++		tst_brkm(TCONF, NULL, "System RAM is not enough to test.");
++
++	set_sys_tune("nr_hugepages", hugepages, 1);
++
++	TEST_PAUSE;
 +}
 +
- void write_memcg(void)
- {
- 	SAFE_FILE_PRINTF(NULL, MEMCG_LIMIT, "%ld", TESTMEM);
-diff --git a/testcases/kernel/syscalls/futex/futex_wake04.c b/testcases/kernel/syscalls/futex/futex_wake04.c
-index dcefde8..d044ba5 100644
---- a/testcases/kernel/syscalls/futex/futex_wake04.c
-+++ b/testcases/kernel/syscalls/futex/futex_wake04.c
-@@ -50,6 +50,7 @@
- 
- #define PATH_MEMINFO "/proc/meminfo"
- #define PATH_NR_HUGEPAGES "/proc/sys/vm/nr_hugepages"
-+#define PATH_HUGEPAGES "/sys/kernel/mm/hugepages/"
- 
- const char *TCID = "futex_wake04";
- const int TST_TOTAL = 1;
-@@ -69,6 +70,9 @@ static void setup(void)
- 			"that are 2.6.32 or higher");
- 	}
- 
-+	if (access(PATH_HUGEPAGES, F_OK) == -1)
-+		tst_brkm(TCONF, NULL, "Huge page is not supported.");
++void cleanup(void)
++{
++	set_sys_tune("nr_hugepages", orig_hugepages, 0);
++}
 +
- 	tst_tmpdir();
- 
- 	SAFE_FILE_SCANF(NULL, PATH_NR_HUGEPAGES, "%ld", &orig_hugepages);
++void *thr(void *arg)
++{
++	struct mp *mmap_sz = arg;
++	int i, lim, a, b, c;
++
++	srand(time(NULL));
++	lim = rand() % 10;
++	for (i = 0; i < lim; i++) {
++		a = rand() % mmap_sz->sz;
++		for (c = 0; c <= a; c++) {
++			b = rand() % mmap_sz->sz;
++			*((int *)((char *)mmap_sz->addr + (b * hpage_size))) = rand();
++		}
++	}
++	return NULL;
++}
++
++void do_mmap(void)
++{
++	int i, sz;
++	void *addr, *new_addr;
++	struct mp mmap_sz[ARSZ];
++	pthread_t tid[ARSZ];
++
++	sz = ARSZ;
++	addr = mmap(NULL, sz * hpage_size,
++			PROT_READ | PROT_WRITE,
++			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
++			-1, 0);
++
++	if (addr == MAP_FAILED) {
++		if (errno == ENOMEM) {
++			tst_brkm(TCONF, cleanup,
++				"Cannot allocate hugepage, memory too fragmented?");
++		}
++
++		tst_brkm(TBROK | TERRNO, cleanup, "Cannot allocate hugepage");
++	}
++
++	for (i = ARSZ - 1; i > 0; i--) {
++		mmap_sz[i].sz = sz;
++		mmap_sz[i].addr = addr;
++
++		TEST(pthread_create(tid + i, NULL, thr, &mmap_sz[i]));
++		if (TEST_RETURN)
++			tst_brkm(TBROK | TRERRNO, cleanup,
++					"pthread_create failed");
++
++		new_addr = mmap(addr, (sz - 1) * hpage_size,
++				PROT_READ | PROT_WRITE,
++				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB | MAP_FIXED,
++				-1, 0);
++
++		if (new_addr == MAP_FAILED) {
++			TEST(pthread_join(tid[i], NULL));
++			if (TEST_RETURN)
++				tst_brkm(TBROK | TRERRNO, cleanup,
++						"pthread_join failed");
++			tst_brkm(TFAIL | TERRNO, cleanup, "mremap failed");
++		}
++		sz--;
++		addr = new_addr;
++	}
++
++	for (++i; i < ARSZ; i++) {
++		TEST(pthread_join(tid[i], NULL));
++		if (TEST_RETURN)
++			tst_brkm(TBROK | TRERRNO, cleanup,
++					"pthread_join failed");
++	}
++
++	if (munmap(addr, sz * hpage_size) == -1)
++		tst_brkm(TFAIL | TERRNO, cleanup, "huge munmap failed");
++}
++
++int main(int ac, char **av)
++{
++	int lc, i;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			do_mmap();
++
++		tst_resm(TPASS, "No regression found.");
++	}
++
++	cleanup();
++	tst_exit();
++}
 -- 
 1.8.3.1
 
