@@ -1,39 +1,42 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 26 Nov 2015 14:49:08 +0100
-Subject: [LTP] [PATCH v2] hugetlb: checking if hugepage is supported on
- target system
-In-Reply-To: <CAEemH2cUXFEMk1MXt=-eyjc3s0sinn4X2J89CxPmyKy5uZr3uw@mail.gmail.com>
-References: <1448506629-12150-1-git-send-email-liwang@redhat.com>
- <5656C72C.4090203@oracle.com>
- <CAEemH2cUXFEMk1MXt=-eyjc3s0sinn4X2J89CxPmyKy5uZr3uw@mail.gmail.com>
-Message-ID: <20151126134908.GA9276@rei.lan>
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Thu, 26 Nov 2015 14:52:46 +0100
+Subject: [LTP] [PATCH] containers/netns/netns_sysfs.sh: removed invalid
+ excess line
+In-Reply-To: <1448537578-21310-1-git-send-email-mmarhefk@redhat.com>
+References: <1448537578-21310-1-git-send-email-mmarhefk@redhat.com>
+Message-ID: <56570EAE.4070707@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > forgot "static"?
-> >
+On 11/26/15 12:32, Matus Marhefka wrote:
+> Signed-off-by: Matus Marhefka <mmarhefk@redhat.com>
+
+For what it's worth,
+
+Acked-by: Jiri Jaburek <jjaburek@redhat.com>
+
+I admit that this was a brain fart on my part, I submitted a patch
+against a testing/debug version of that file. Sorry about that.
+
+> ---
+>  testcases/kernel/containers/netns/netns_sysfs.sh | 2 --
+>  1 file changed, 2 deletions(-)
 > 
-> no, it will be conflict with the prototype in mem.h and get compiler error
-> like:
-> -------
-> hugemmap05.c:253: error: static declaration of ???cleanup??? follows non-static
-> declaration
-> /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/include/mem.h:100:
-> note: previous declaration of ???cleanup??? was here
-> hugemmap05.c:295: error: static declaration of ???setup??? follows non-static
-> declaration
-> /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/include/mem.h:101:
-> note: previous declaration of ???setup??? was here
-> make: *** [hugemmap05] Error 1
+> diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
+> index b951f32..4c6e7e4 100755
+> --- a/testcases/kernel/containers/netns/netns_sysfs.sh
+> +++ b/testcases/kernel/containers/netns/netns_sysfs.sh
+> @@ -52,8 +52,6 @@ TST_CLEANUP=cleanup
+>  # by the dummy device driver upon insmod/modprobe (during ip link add)
+>  ls /sys/class/net | grep -v 'dummy[0-9]\+' >sysfs_before
+>  
+> -ls /sys/class/net >sysfs_before
+> -
+>  ns_exec $NS_HANDLE $NS_TYPE mount --make-rprivate /sys
+>  ns_exec $NS_HANDLE $NS_TYPE ip link add $DUMMYDEV type dummy || \
+>  	tst_brkm TBROK "failed to add a new dummy device"
+> 
 
-Why have you added the function into the mem/include/mem.h in the first
-place? There is kernel/mem/hugetlb/lib/ directory allready, just make
-use of it.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
