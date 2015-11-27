@@ -1,65 +1,35 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 27 Nov 2015 13:32:18 +0800
-Subject: [LTP] [PATCH v2] hugetlb: checking if hugepage is supported on
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 27 Nov 2015 10:41:01 +0300
+Subject: [LTP] [PATCH v3] hugetlb: checking if hugepage is supported on
  target system
-In-Reply-To: <20151126134908.GA9276@rei.lan>
-References: <1448506629-12150-1-git-send-email-liwang@redhat.com>
- <5656C72C.4090203@oracle.com>
- <CAEemH2cUXFEMk1MXt=-eyjc3s0sinn4X2J89CxPmyKy5uZr3uw@mail.gmail.com>
- <20151126134908.GA9276@rei.lan>
-Message-ID: <CAEemH2fPOevoL3=gGnrVEQXEChEvyB+wwhnWLhszwSBS=X=vvA@mail.gmail.com>
+In-Reply-To: <1448541356-20580-1-git-send-email-liwang@redhat.com>
+References: <1448541356-20580-1-git-send-email-liwang@redhat.com>
+Message-ID: <5658090D.6010201@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+
 Hi,
-
-On Thu, Nov 26, 2015 at 9:49 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
-
-> Hi!
-> > > forgot "static"?
-> > >
-> >
-> > no, it will be conflict with the prototype in mem.h and get compiler
-> error
-> > like:
-> > -------
-> > hugemmap05.c:253: error: static declaration of ???cleanup??? follows
-> non-static
-> > declaration
-> >
-> /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/include/mem.h:100:
-> > note: previous declaration of ???cleanup??? was here
-> > hugemmap05.c:295: error: static declaration of ???setup??? follows
-> non-static
-> > declaration
-> >
-> /mnt/tests/kernel/distribution/ltp/generic/ltp-full-20150903/testcases/kernel/mem/include/mem.h:101:
-> > note: previous declaration of ???setup??? was here
-> > make: *** [hugemmap05] Error 1
+On 11/26/2015 03:35 PM, Li Wang wrote:
+> Signed-off-by: Li Wang <liwang@redhat.com>
 >
-> Why have you added the function into the mem/include/mem.h in the first
-> place? There is kernel/mem/hugetlb/lib/ directory allready, just make
-> use of it.
->
+> v2 --> v3
+> 	1. (unsigned int) ---> (ssize_t)
+> 	2. make the check_hugepage() more simply
+> ---
+>   testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |  1 +
+>   testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |  2 ++
+>   testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |  1 +
+>   
 
-sounds good. how about moving the current hugetlb/lib/* two file:
+Almost right, we need to include such comments after 3 dash lines ("---").
 
-ipcshm.h ---> hugetlb.h
-libipc.c    ----> hugetlb.c
+In case your git version new enough, you can also add them with git 
+format-patch --notes, see man git-notes.
 
-and re-write some functions in it?
-then we can take a good use of it to build a lib_hugetlb.a.
+Thanks,
+Alexey
 
-if all of you have no objection, I can do that.
-
-
--- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20151127/f3d51b5e/attachment.html>
