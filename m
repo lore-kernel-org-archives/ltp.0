@@ -1,61 +1,75 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 30 Nov 2015 12:04:25 +0100
-Subject: [LTP] How to identify all LTP tests needing block device and
- how to skip them?
-In-Reply-To: <565847AC.9040807@st.com>
-References: <565847AC.9040807@st.com>
-Message-ID: <20151130110425.GA11935@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 30 Nov 2015 07:46:12 -0500 (EST)
+Subject: [LTP] [PATCH] Fix wrong pattern used by fnmatch in test
+	case	proc01.c
+In-Reply-To: <1448606649-141790-2-git-send-email-King.lijin@huawei.com>
+References: <1448606649-141790-1-git-send-email-King.lijin@huawei.com>
+ <1448606649-141790-2-git-send-email-King.lijin@huawei.com>
+Message-ID: <733187539.20734579.1448887572067.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I contact you because i am running LTP tests on a board and at the end i
-> always get this error message :
-> "
-> <<<test_end>>>
-> INFO: ltp-pan reported some tests FAIL
-> LTP Version: 20140422
+
+
+
+
+----- Original Message -----
+> From: "Li Jin" <King.lijin@huawei.com>
+> To: "king lijin" <king.lijin@huawei.com>, ltp@lists.linux.it
+> Cc: "Li Jin" <King.lijin@huawei.com>
+> Sent: Friday, 27 November, 2015 7:44:09 AM
+> Subject: [LTP] [PATCH] Fix wrong pattern used by fnmatch in test case	proc01.c
 > 
-> ###############################################################
+> fnmatch() in proc01.c should use pattern ipv6/conf/[a-z]*/stable_secret
+> to replace /ipv6/conf/*/stable_secret to check the known issue string such as
+> /proc/sys/net/ipv6/conf/all/stable_secret
+
+Hi,
+
+An explanation _why_ it is wrong would be helpful too.
+
 > 
->               Done executing testcases.
->               LTP Version:  20140422
-> ###############################################################
-> losetup: /dev/loop0: failed to use device: No such file or directory
-> "
+> Signed-off-by: Li Jin <King.lijin@huawei.com>
+> ---
+>  testcases/kernel/fs/proc/proc01.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/fs/proc/proc01.c
+> b/testcases/kernel/fs/proc/proc01.c
+> index 2825b51..197eb55 100644
+> --- a/testcases/kernel/fs/proc/proc01.c
+> +++ b/testcases/kernel/fs/proc/proc01.c
+> @@ -107,7 +107,7 @@ static const struct mapping known_issues[] = {
+>  	{"read", "/proc/fs/nfsd/.getfs", EINVAL},
+>  	{"read", "/proc/fs/nfsd/.getfd", EINVAL},
+>  	{"read", "/proc/self/net/rpc/use-gss-proxy", EAGAIN},
+> -	{"read", "/proc/sys/net/ipv6/conf/*/stable_secret", EIO},
+> +	{"read", "/proc/sys/net/ipv6/conf/[a-z]*/stable_secret", EIO},
 
-There is ~40 testcases that needs a block device to run, mostly
-testcases that test mount() syscall but there are also tests for quite a
-lot of filesystem related syscalls to test conditions as ENOSPC and
-things like mkfs testcases.
+This has problems as well:
 
-> I think that occurs because some tests actually need block device which
-> i don't have.
+# ip tuntap add 1tap mode tap
+# ./proc01 -m 128
+proc01      0  TINFO  :  /proc/sys/fs/binfmt_misc/register: is write-only.
+proc01      1  TFAIL  :  proc01.c:393: read failed: /proc/sys/net/ipv6/conf/1tap/stable_secret: errno=EIO(5): Input/output error
+...
 
-This is a bit more complicated. The testcases needs a block device, if
-you do not pass it to the runltp script (or does not export it as
-TST_DEVICE) the testcases try to create a loopback device.
+How about:
++       {"read", "/proc/sys/net/ipv6/conf/?*/stable_secret", EIO},
 
-Now looking at the error above it looks like loosetup failed because
-there is no support for loop devices in kernel. So the failure is from a
-test coded in shell (since the C library calls the ioctls() directly).
-And the equivalent functionality written in C library should handle the
-situation more gracefully and exit the test with TCONF.
+Regards,
+Jan
 
-> Although all tests are executed regardless of this error,
-> the blocking point is that i run LTP tests from custom script and this
-> error provokes an exit from custom script (of course after LTP tests
-> execution is done).
-> My question is how can i identify all these tests which can potentially
-> create this error and skip them?
-
-Grep for tst_acquire_device() function in the source code. There are two
-variants, one is coded in shell and one is coded in C. You are proably
-looking for the testcases that are written in shell though.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>  	{"", "", 0}
+>  };
+>  
+> --
+> 1.8.3.1
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
