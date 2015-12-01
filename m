@@ -1,8 +1,8 @@
 From: Li Jin <King.lijin@huawei.com>
-Date: Tue, 1 Dec 2015 13:48:06 +0800
+Date: Tue, 1 Dec 2015 16:13:46 +0800
 Subject: [LTP] [V2][PATCH] Fix wrong pattern used by fnmatch in test case
 	proc01.c
-Message-ID: <1448948886-155376-1-git-send-email-King.lijin@huawei.com>
+Message-ID: <1448957626-155721-1-git-send-email-King.lijin@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
