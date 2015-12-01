@@ -1,61 +1,94 @@
-Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <manjeet.p@samsung.com>) id 1a97r8-00055i-7w
-	for ltp-list@lists.sourceforge.net; Wed, 16 Dec 2015 08:54:42 +0000
-Received: from mailout4.samsung.com ([203.254.224.34])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1a97r5-0008Nd-V3
-	for ltp-list@lists.sourceforge.net; Wed, 16 Dec 2015 08:54:42 +0000
-Received: from epcpsbgr2.samsung.com
-	(u142.gpu120.samsung.co.kr [203.254.230.142])
-	by mailout4.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NZG01KQN0QIYFC0@mailout4.samsung.com> for
-	ltp-list@lists.sourceforge.net; Wed, 16 Dec 2015 17:54:18 +0900 (KST)
-Date: Wed, 16 Dec 2015 08:53:55 +0000 (GMT)
-From: Manjeet Pawar <manjeet.p@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1046379286.777961450256035403.JavaMail.weblogic@epmlwas06c>
-Subject: [LTP] [Query] Regarding broken_ip4_version testcase
-Reply-To: manjeet.p@samsung.com
-List-Id: Linux Test Project General Discussions
-	<ltp-list.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
-List-Post: <mailto:ltp-list@lists.sourceforge.net>
-List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+From: Lijin(Euler Dept 8) <lijin14@huawei.com>
+Date: Tue, 1 Dec 2015 09:30:27 +0800
+Subject: [LTP] [PATCH] Fix wrong pattern used by fnmatch in test case
+ proc01.c
+In-Reply-To: <733187539.20734579.1448887572067.JavaMail.zimbra@redhat.com>
+References: <1448606649-141790-1-git-send-email-King.lijin@huawei.com>
+ <1448606649-141790-2-git-send-email-King.lijin@huawei.com>
+ <733187539.20734579.1448887572067.JavaMail.zimbra@redhat.com>
+Message-ID: <565CF833.4070101@huawei.com>
+List-Id: <ltp.lists.linux.it>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
-Cc: "ajeet.y@samsung.com" <ajeet.y@samsung.com>, "pankaj.m@samsung.com" <pankaj.m@samsung.com>
+To: ltp@lists.linux.it
 
-HI,
+On 2015/11/30 20:46, Jan Stancek wrote:
+> 
+> 
+> 
+> 
+> ----- Original Message -----
+>> From: "Li Jin" <King.lijin@huawei.com>
+>> To: "king lijin" <king.lijin@huawei.com>, ltp@lists.linux.it
+>> Cc: "Li Jin" <King.lijin@huawei.com>
+>> Sent: Friday, 27 November, 2015 7:44:09 AM
+>> Subject: [LTP] [PATCH] Fix wrong pattern used by fnmatch in test case	proc01.c
+>>
+>> fnmatch() in proc01.c should use pattern ipv6/conf/[a-z]*/stable_secret
+>> to replace /ipv6/conf/*/stable_secret to check the known issue string such as
+>> /proc/sys/net/ipv6/conf/all/stable_secret
+> 
+> Hi,
+> 
+> An explanation _why_ it is wrong would be helpful too.
 
-I am running broken_ip testcases. I am using below env setting
+Got it. The reason is that a single "*" can not be used to match the any string in fnmatch.
+> 
+>>
+>> Signed-off-by: Li Jin <King.lijin@huawei.com>
+>> ---
+>>  testcases/kernel/fs/proc/proc01.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/testcases/kernel/fs/proc/proc01.c
+>> b/testcases/kernel/fs/proc/proc01.c
+>> index 2825b51..197eb55 100644
+>> --- a/testcases/kernel/fs/proc/proc01.c
+>> +++ b/testcases/kernel/fs/proc/proc01.c
+>> @@ -107,7 +107,7 @@ static const struct mapping known_issues[] = {
+>>  	{"read", "/proc/fs/nfsd/.getfs", EINVAL},
+>>  	{"read", "/proc/fs/nfsd/.getfd", EINVAL},
+>>  	{"read", "/proc/self/net/rpc/use-gss-proxy", EAGAIN},
+>> -	{"read", "/proc/sys/net/ipv6/conf/*/stable_secret", EIO},
+>> +	{"read", "/proc/sys/net/ipv6/conf/[a-z]*/stable_secret", EIO},
+> 
+> This has problems as well:
 
-export NETWORK_DELAY=30
-export LTP_RSH="ssh -q  -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa -l root"
+Just ignore it. It's the problem of my linux system
 
-Testcase:- "broken_ip4_version"
-Logs: here (xxx.xxx.xxx.xxx is rhost address)
-++ssh -n -q root@xxx.xxx.xxx.xxx 'sh -c    '\' ip link set eth0 down  || echo RTERR'\'''
-<testcase stuck here>
+> 
+> # ip tuntap add 1tap mode tap
+> # ./proc01 -m 128
+> proc01      0  TINFO  :  /proc/sys/fs/binfmt_misc/register: is write-only.
+> proc01      1  TFAIL  :  proc01.c:393: read failed: /proc/sys/net/ipv6/conf/1tap/stable_secret: errno=EIO(5): Input/output error
+> ...
+> 
+> How about:
+> +       {"read", "/proc/sys/net/ipv6/conf/?*/stable_secret", EIO},
 
-I am not able to proceed after this command. I checked my remote machine, its network is already down when this command executed, but the testcase stuck at this moment and not returning anything.
-Am I missing anything?
-I checked with all my env settings, they are working for rest of the other testcases but not for this category "broken_ip_*).
+Good idea. It works and I will send V2 patch.
 
-Thanks
-Manjeet 
-------------------------------------------------------------------------------
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
+Regards,
+
+Jin
+
+> 
+> Regards,
+> Jan
+> 
+>>  	{"", "", 0}
+>>  };
+>>  
+>> --
+>> 1.8.3.1
+>>
+>>
+>> --
+>> Mailing list info: http://lists.linux.it/listinfo/ltp
+>>
+> 
+> .
+> 
+
+
