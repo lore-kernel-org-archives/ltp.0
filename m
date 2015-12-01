@@ -1,94 +1,45 @@
-From: Lijin(Euler Dept 8) <lijin14@huawei.com>
-Date: Tue, 1 Dec 2015 09:30:27 +0800
-Subject: [LTP] [PATCH] Fix wrong pattern used by fnmatch in test case
- proc01.c
-In-Reply-To: <733187539.20734579.1448887572067.JavaMail.zimbra@redhat.com>
-References: <1448606649-141790-1-git-send-email-King.lijin@huawei.com>
- <1448606649-141790-2-git-send-email-King.lijin@huawei.com>
- <733187539.20734579.1448887572067.JavaMail.zimbra@redhat.com>
-Message-ID: <565CF833.4070101@huawei.com>
+From: $rik@nth  <srikanth007m@gmail.com>
+Date: Tue, 1 Dec 2015 07:45:05 +0530
+Subject: [LTP] 64bit ld terminates for time01.c & write04.c
+In-Reply-To: <20151130171209.GG11935@rei.lan>
+References: <CANKSX+E504F87K-3ZhaDPNcFLEVgv1oyRLeVV=vz69fMjSxtOw@mail.gmail.com>
+ <20151130171209.GG11935@rei.lan>
+Message-ID: <CANKSX+FnfbhDuhCAEf1rnehhO7n=4EBrWWGapQR5T1WmOQYjzw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2015/11/30 20:46, Jan Stancek wrote:
-> 
-> 
-> 
-> 
-> ----- Original Message -----
->> From: "Li Jin" <King.lijin@huawei.com>
->> To: "king lijin" <king.lijin@huawei.com>, ltp@lists.linux.it
->> Cc: "Li Jin" <King.lijin@huawei.com>
->> Sent: Friday, 27 November, 2015 7:44:09 AM
->> Subject: [LTP] [PATCH] Fix wrong pattern used by fnmatch in test case	proc01.c
+Thank You Cyril. I will follow up with binutils.
+
+On Mon, Nov 30, 2015 at 10:42 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hi!
+>> I'm trying to cross compile the LTP to ARM 64bit and i am using
+>> aarch64-linux-gnu- tool chain for cross compiling. Entire LTP got
+>> compiled successfully except time01 and write04 tests due to ld
+>> returned with signal 11 and core is not dumped either for debugging.
+>> So i have collected strace for reference and attached is for time01.
 >>
->> fnmatch() in proc01.c should use pattern ipv6/conf/[a-z]*/stable_secret
->> to replace /ipv6/conf/*/stable_secret to check the known issue string such as
->> /proc/sys/net/ipv6/conf/all/stable_secret
-> 
-> Hi,
-> 
-> An explanation _why_ it is wrong would be helpful too.
-
-Got it. The reason is that a single "*" can not be used to match the any string in fnmatch.
-> 
->>
->> Signed-off-by: Li Jin <King.lijin@huawei.com>
->> ---
->>  testcases/kernel/fs/proc/proc01.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/testcases/kernel/fs/proc/proc01.c
->> b/testcases/kernel/fs/proc/proc01.c
->> index 2825b51..197eb55 100644
->> --- a/testcases/kernel/fs/proc/proc01.c
->> +++ b/testcases/kernel/fs/proc/proc01.c
->> @@ -107,7 +107,7 @@ static const struct mapping known_issues[] = {
->>  	{"read", "/proc/fs/nfsd/.getfs", EINVAL},
->>  	{"read", "/proc/fs/nfsd/.getfd", EINVAL},
->>  	{"read", "/proc/self/net/rpc/use-gss-proxy", EAGAIN},
->> -	{"read", "/proc/sys/net/ipv6/conf/*/stable_secret", EIO},
->> +	{"read", "/proc/sys/net/ipv6/conf/[a-z]*/stable_secret", EIO},
-> 
-> This has problems as well:
-
-Just ignore it. It's the problem of my linux system
-
-> 
-> # ip tuntap add 1tap mode tap
-> # ./proc01 -m 128
-> proc01      0  TINFO  :  /proc/sys/fs/binfmt_misc/register: is write-only.
-> proc01      1  TFAIL  :  proc01.c:393: read failed: /proc/sys/net/ipv6/conf/1tap/stable_secret: errno=EIO(5): Input/output error
-> ...
-> 
-> How about:
-> +       {"read", "/proc/sys/net/ipv6/conf/?*/stable_secret", EIO},
-
-Good idea. It works and I will send V2 patch.
-
-Regards,
-
-Jin
-
-> 
-> Regards,
-> Jan
-> 
->>  	{"", "", 0}
->>  };
->>  
->> --
->> 1.8.3.1
->>
->>
->> --
->> Mailing list info: http://lists.linux.it/listinfo/ltp
->>
-> 
-> .
-> 
+>> aarch64-linux-gnu-gcc-4.8 -static -g -O2 -fno-strict-aliasing -pipe
+>> -Wall -W -Wold-style-definition
+>> -I/home/Srikanth/ltp-working/testcases/kernel/include
+>> -I../../../include -I../../../include -static -pthread  -L../../../lib
+>>  time01.c   -lltp -o time01
+>> collect2: error: ld terminated with signal 11 [Segmentation fault], core dumped
+>> make: *** [time01] Error 1
+>
+> Most likely you have found a bug in your binutils (which is the package
+> the ld comes from) and this is a wrong mailing list to report the
+> problem to, try mailing list or bugzilla listed at
+> https://www.gnu.org/software/binutils/.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
 
 
+
+-- 
+Thanks & Regards,
+M.Srikanth Kumar.
