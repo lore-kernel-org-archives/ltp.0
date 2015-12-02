@@ -1,5 +1,5 @@
-From: Lijin(Euler Dept 8) <lijin14@huawei.com>
-Date: Wed, 2 Dec 2015 14:05:03 +0800
+From: Jin Li <lijin14@huawei.com>
+Date: Wed, 2 Dec 2015 14:25:15 +0800
 Subject: [LTP] [PATCH] Fix wrong pattern used by fnmatch in test case
  proc01.c
 In-Reply-To: <20151201171023.GA11288@tarantula.localdomain>
@@ -9,12 +9,15 @@ References: <1448606649-141790-1-git-send-email-King.lijin@huawei.com>
  <565CF833.4070101@huawei.com>
  <619455416.21202777.1448958949649.JavaMail.zimbra@redhat.com>
  <565D69AA.1030604@huawei.com> <20151201171023.GA11288@tarantula.localdomain>
-Message-ID: <565E8A0F.7060105@huawei.com>
+Message-ID: <565E8ECB.9030509@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
+
+Resent this email because it is failed to sent the previous one to ltp@lists.linux.it
+
 
 On 2015/12/2 1:10, Jeffrey Bastian wrote:
 > On Tue, Dec 01, 2015 at 05:34:34PM +0800, Lijin(Euler Dept 8) wrote:
