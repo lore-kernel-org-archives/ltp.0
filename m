@@ -1,10 +1,8 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri,  4 Dec 2015 14:23:06 +0800
+Date: Fri,  4 Dec 2015 14:29:37 +0800
 Subject: [LTP] [PATCH v2 2/2] hugetlb: checking if hugepage is supported on
 	target system
-In-Reply-To: <1449210186-14535-1-git-send-email-liwang@redhat.com>
-References: <1449210186-14535-1-git-send-email-liwang@redhat.com>
-Message-ID: <1449210186-14535-2-git-send-email-liwang@redhat.com>
+Message-ID: <1449210577-14950-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,31 +13,31 @@ Signed-off-by: Li Wang <liwang@redhat.com>
 ---
 
 Notes:
-    v1 ---> v2
-    a. Remove the cleanup() and setup() from lib/hugetlb.h
-    b. Change the getipckey() and getuserid() to have the cleanup_fn callback
+     v1 ---> v2
+     a. Remove the cleanup() and setup() from lib/hugetlb.h
+     b. Change the getipckey() and getuserid() to have the cleanup_fn callback
 
- testcases/kernel/mem/hugetlb/hugemmap/Makefile      |  2 +-
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c  |  4 ++--
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c  |  5 +++--
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c  |  4 ++--
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c  | 14 ++++++++------
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c      |  5 +++--
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat02.c      |  5 +++--
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat03.c      |  7 ++++---
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat04.c      |  3 ++-
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c    |  6 ++++--
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c    |  6 ++++--
- .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c    |  8 +++++---
- .../kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c      |  5 +++--
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c    |  5 +++--
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c    |  5 +++--
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c    |  3 ++-
- .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c    |  7 ++++---
- testcases/kernel/mem/hugetlb/lib/hugetlb.c          | 21 +++++++++++----------
- testcases/kernel/mem/hugetlb/lib/hugetlb.h          | 11 +++++------
- testcases/kernel/syscalls/futex/futex_wake04.c      |  4 ++++
- 20 files changed, 76 insertions(+), 54 deletions(-)
+ testcases/kernel/mem/hugetlb/hugemmap/Makefile     |  2 +-
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap01.c |  4 ++--
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |  5 +++--
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap04.c |  4 ++--
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c | 14 +++++++------
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat01.c     |  5 +++--
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat02.c     |  5 +++--
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat03.c     |  7 ++++---
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat04.c     |  3 ++-
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl01.c   |  6 ++++--
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl02.c   |  6 ++++--
+ .../kernel/mem/hugetlb/hugeshmctl/hugeshmctl03.c   |  8 +++++---
+ .../kernel/mem/hugetlb/hugeshmdt/hugeshmdt01.c     |  5 +++--
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget01.c   |  5 +++--
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget02.c   |  5 +++--
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget03.c   |  3 ++-
+ .../kernel/mem/hugetlb/hugeshmget/hugeshmget05.c   |  7 ++++---
+ testcases/kernel/mem/hugetlb/lib/hugetlb.c         | 23 +++++++++++-----------
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h         | 11 +++++------
+ testcases/kernel/syscalls/futex/futex_wake04.c     |  4 ++++
+ 20 files changed, 77 insertions(+), 55 deletions(-)
 
 diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
 index 71da630..f51f6b9 100644
@@ -617,7 +615,7 @@ index 567b02d..1a96c3c 100644
  	TEST_PAUSE;
  }
 diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.c b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
-index 4b2a3d2..2728dae 100644
+index 4b2a3d2..4a9d489 100644
 --- a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
 +++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
 @@ -26,10 +26,10 @@
@@ -660,6 +658,15 @@ index 4b2a3d2..2728dae 100644
  
  	/*
  	 * Get a Sys V IPC key
+@@ -73,7 +79,7 @@ int getipckey(void)
+ 
+ 	ipc_key = ftok(curdir, ascii_a + random() % 26);
+ 	if (ipc_key == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "ftok");
++		tst_brkm(TBROK | TERRNO, cleanup_fn, "ftok");
+ 
+ 	return ipc_key;
+ }
 @@ -81,13 +87,13 @@ int getipckey(void)
  /*
   * getuserid() - return the integer value for the "user" id
