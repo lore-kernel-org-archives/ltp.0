@@ -1,193 +1,107 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Fri, 4 Dec 2015 17:12:13 +0800
-Subject: [LTP] [PATCH v2] commands/which: Added new testcase to test
-	which(1).
-In-Reply-To: <566145CE.8070004@cn.fujitsu.com>
-References: <566145CE.8070004@cn.fujitsu.com>
-Message-ID: <1449220333-14268-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 4 Dec 2015 04:20:37 -0500 (EST)
+Subject: [LTP] {get|set}_thread_area issue on ARM
+In-Reply-To: <20151204034711.GA27222@yury-N73SV>
+References: <20151204034711.GA27222@yury-N73SV>
+Message-ID: <1947123407.23593898.1449220837874.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test which(1) command with some basic options.
-
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- runtest/commands                    |   1 +
- testcases/commands/which/Makefile   |  22 +++++++
- testcases/commands/which/which01.sh | 121 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 144 insertions(+)
- create mode 100644 testcases/commands/which/Makefile
- create mode 100755 testcases/commands/which/which01.sh
-
-diff --git a/runtest/commands b/runtest/commands
-index ab600dc..b05ae7b 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -39,3 +39,4 @@ mkfs01_msdos mkfs01.sh -f msdos
- mkfs01_vfat mkfs01.sh -f vfat
- mkfs01_ntfs mkfs01.sh -f ntfs
- mkswap01 mkswap01.sh
-+which01 which01.sh
-diff --git a/testcases/commands/which/Makefile b/testcases/commands/which/Makefile
-new file mode 100644
-index 0000000..d9b4d12
---- /dev/null
-+++ b/testcases/commands/which/Makefile
-@@ -0,0 +1,22 @@
-+#
-+#    Copyright (c) 2015 Fujitsu Ltd.
-+#    Author:Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+
-+top_srcdir		?= ../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= which01.sh
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/commands/which/which01.sh b/testcases/commands/which/which01.sh
-new file mode 100755
-index 0000000..9c8b7af
---- /dev/null
-+++ b/testcases/commands/which/which01.sh
-@@ -0,0 +1,121 @@
-+#!/bin/sh
-+#
-+# Copyright (c) 2015 Fujitsu Ltd.
-+# Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+# This program is free software; you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+# the GNU General Public License for more details.
-+#
-+# Test which command with some basic options.
-+#
-+
-+TCID=which01
-+TST_TOTAL=10
-+. test.sh
-+
-+setup()
-+{
-+	tst_check_cmds which
-+
-+	tst_tmpdir
-+
-+	TST_CLEANUP="cleanup"
-+
-+	touch pname
-+	chmod +x pname
-+	PATH=$PATH:.
-+
-+	mkdir bin
-+	touch bin/pname
-+	chmod +x bin/pname
-+	PATH=$PATH:./bin
-+
-+	alias pname='pname -i'
-+}
-+
-+cleanup()
-+{
-+	tst_rmdir
-+}
-+
-+which_verify()
-+{
-+	local which_op=$1
-+
-+	shift
-+	until [ -z "$1" ]
-+	do
-+		grep -q "$1" temp
-+		if [ $? -ne 0 ]; then
-+			if [ "$which_op" = "--skip-alias" ] && \
-+				[ "$1" = "pname='pname -i'" ]; then
-+				shift
-+				continue
-+			fi
-+			return 1
-+		fi
-+		shift
-+	done
-+}
-+
-+which_test()
-+{
-+	local which_op=$1
-+	local prog_name=$2
-+
-+	local which_cmd="which $which_op $prog_name"
-+
-+	if [ "$which_op" = "--read-alias" ] || [ "$which_op" = "-i" ] || \
-+		[ "$which_op" = "--skip-alias" ]; then
-+		which_cmd="alias | $which_cmd"
-+	fi
-+
-+	eval ${which_cmd} >temp 2>&1
-+	if [ $? -ne 0 ]; then
-+		grep -q -E "unknown option|invalid option|Usage" temp
-+		if [ $? -eq 0 ]; then
-+			tst_resm TCONF "'${which_cmd}' not supported."
-+			return
-+		fi
-+
-+		tst_resm TFAIL "'${which_cmd}' failed."
-+		cat temp
-+		return
-+	fi
-+
-+	if [ -n "$prog_name" ]; then
-+		shift 2
-+		which_verify "$which_op" "$@"
-+		if [ $? -ne 0 ]; then
-+			tst_resm TFAIL "'${which_cmd}' failed, not expected."
-+			return
-+		fi
-+	fi
-+
-+	tst_resm TPASS "'${which_cmd}' passed."
-+}
-+
-+setup
-+
-+which_test "" "pname" "$PWD/pname"
-+which_test "--all" "pname" "$PWD/bin/pname" "$PWD/pname"
-+which_test "-a" "pname" "$PWD/bin/pname" "$PWD/pname"
-+which_test "--read-alias" "pname" "pname='pname -i'" "$PWD/pname"
-+which_test "-i" "pname" "pname='pname -i'" "$PWD/pname"
-+
-+alias which='which --read-alias'
-+which_test "--skip-alias" "pname" "pname='pname -i'" "$PWD/pname"
-+
-+which_test "--version"
-+which_test "-v"
-+which_test "-V"
-+which_test "--help"
-+
-+tst_exit
--- 
-1.8.4.2
 
 
 
+
+----- Original Message -----
+> From: "Yury Norov" <ynorov@caviumnetworks.com>
+> To: ltp@lists.linux.it
+> Cc: "David Howells" <dhowells@redhat.com>
+> Sent: Friday, 4 December, 2015 4:47:11 AM
+> Subject: [LTP] {get|set}_thread_area issue on ARM
+> 
+> Hi all,
+> 
+> I just tried build ltp for arm, and one (maybe, first of) test failed
+> build. Namely, set_thread_area01.c
+> 
+> The reason is that __NR_set_thread_area and __NR_get_thread_area are
+> not declared. They should come from
+> /usr/arm-linux-gnueabi/include/asm/unistd.h
+> But there's only:
+> [...]
+> #define __NR_remap_file_pages           (__NR_SYSCALL_BASE+253)
+>                                          /* for set_thread_area */
+>                                          /* for get_thread_area */
+> #define __NR_set_tid_address            (__NR_SYSCALL_BASE+256)
+> [...]
+> 
+> In kernel, there are stubs for corresponding syscall numbers. So it
+> looks like this pair is deprecated and unsupported. I can build ltp
+> for aarch64 and x84_64 just fine.
+
+Looking at history, it appears it was never supported.
+
+> 
+> Could someone explain me what am I doing wrong?
+
+Can you try to add:
+  #include "linux_syscall_numbers.h"
+to testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
+and see if it compiles. And when you run it, it should end with TCONF.
+
+Regards,
+Jan
+
+> 
+> BR,
+> Yury.
+> 
+> ltp config:
+> CCC=arm-linux-gnueabi
+> ./configure --target=arm --host=arm --prefix=$PWD/aarch32 \
+>                      CC=$CCC-gcc \
+>                      AR=$CCC-ar \
+>                      RANLIB=$CCC-ranlib \
+>                      STRIP=$CCC-strip \
+>                      LDFLAGS="-Wl,--rpath=/root/lib32
+>                      -Wl,--dynamic-linker=/root/lib32/ld-2.21.so"
+> 
+> 
+> yury@yury-N73SV:~/work/ltp$ arm-linux-gnueabi-gcc -v
+> Using built-in specs.
+> COLLECT_GCC=arm-linux-gnueabi-gcc
+> COLLECT_LTO_WRAPPER=/usr/lib/gcc-cross/arm-linux-gnueabi/5/lto-wrapper
+> Target: arm-linux-gnueabi
+> Configured with: ../src/configure -v --with-pkgversion='Ubuntu
+> 5.2.1-22ubuntu1' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs
+> --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++
+> --prefix=/usr --program-suffix=-5 --enable-shared
+> --enable-linker-build-id --libexecdir=/usr/lib
+> --without-included-gettext --enable-threads=posix --libdir=/usr/lib
+> --enable-nls --with-sysroot=/ --enable-clocale=gnu
+> --enable-libstdcxx-debug --enable-libstdcxx-time=yes
+> --with-default-libstdcxx-abi=new --enable-gnu-unique-object
+> --disable-libitm --disable-libquadmath --enable-plugin
+> --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk
+> --enable-gtk-cairo
+> --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-armel-cross/jre
+> --enable-java-home
+> --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-armel-cross
+> --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-armel-cross
+> --with-arch-directory=arm
+> --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --disable-libgcj
+> --enable-objc-gc --enable-multiarch --enable-multilib
+> --disable-sjlj-exceptions --with-arch=armv5t --with-float=soft
+> --disable-werror --enable-multilib --enable-checking=release
+> --build=x86_64-linux-gnu --host=x86_64-linux-gnu
+> --target=arm-linux-gnueabi --program-prefix=arm-linux-gnueabi-
+> --includedir=/usr/arm-linux-gnueabi/include
+> Thread model: posix
+> gcc version 5.2.1 20151010 (Ubuntu 5.2.1-22ubuntu1)
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
