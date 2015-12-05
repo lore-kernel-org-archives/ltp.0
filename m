@@ -1,120 +1,120 @@
-From: Li Wang <liwang@redhat.com>
-Date: Sat, 5 Dec 2015 16:04:11 +0800
-Subject: [LTP] [PATCH] hugetlb: add new testcase hugeshmat05.c
-In-Reply-To: <5661BF34.2090305@oracle.com>
-References: <1448619845-7867-1-git-send-email-liwang@redhat.com>
- <5661BF34.2090305@oracle.com>
-Message-ID: <CAEemH2f_zkdmGDGgMc-VFu9AoyzR3HGmc7y4ZCc=TG4f2i3tUA@mail.gmail.com>
+From: Yury Norov <ynorov@caviumnetworks.com>
+Date: Sun, 6 Dec 2015 01:28:22 +0300
+Subject: [LTP] [PATCH] set_thread_area01: fix build issue
+Message-ID: <1449354502-15020-1-git-send-email-ynorov@caviumnetworks.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+get_thread_area() and set_thread_area() system calls are not supported
+on a set of targets. Corresponding syscall numbers are not defined, and
+in LTP they become defined as '-1' in <linux_syscall_numbers.h> header.
 
-On Sat, Dec 5, 2015 at 12:28 AM, Alexey Kodanev <alexey.kodanev@oracle.com>
-wrote:
+This test uses switch-case for its own purposes with _NR_get_thread_area
+and __NR_set_thread_area as case selections. It causes compile-time
+error, at least for ARM target.
 
-> Hi,
->
->
-> On 11/27/2015 01:24 PM, Li Wang wrote:
->
->> shmget()/shmat() fails to allocate huge pages shared memory segment
->> with EINVAL if its size is not in the range [ N*HUGE_PAGE_SIZE - 4095,
->> N*HUGE_PAGE_SIZE ]. This is a problem in the memory segment size round
->> up algorithm. The requested size is rounded up to PAGE_SIZE (4096), but
->> if this roundup does not match HUGE_PAGE_SIZE (2Mb) boundary - the
->> allocation fails.
->>
->> This bug is present in all RHEL6 versions, but not in RHEL7. It looks
->> like this was fixed in mainstream kernel > v3.3 by the following patches:
->>
->> 091d0d5 shm: fix null pointer deref when userspace specifies invalid
->> hugepage size
->> af73e4d hugetlbfs: fix mmap failure in unaligned size request
->> 42d7395 mm: support more pagesizes for MAP_HUGETLB/SHM_HUGETLB
->> 40716e2 hugetlbfs: fix alignment of huge page requests
->>
->> Signed-off-by: Li Wang <liwang@redhat.com>
->> ---
->>   runtest/hugetlb                                    |   1 +
->>
->> + *
->> + * AUTHOR
->>
-> Authors
+In this patch, the test code is refactored to remove switch-case, and
+repair test build.
 
-got.
+By the way, warning about comparsion of signed and unsigned fixed too.
 
+Signed-off-by: Yury Norov <ynorov@caviumnetworks.com>
+---
+ .../syscalls/set_thread_area/set_thread_area01.c   | 39 +++++++++-------------
+ 1 file changed, 15 insertions(+), 24 deletions(-)
 
->
->
->> +void shm_test(int size)
->> +{
->> +       int shmid;
->> +       char *shmaddr;
->> +       key_t key = 5;
->> +
->> +       shmid = shmget(key, size, SHM_R | SHM_W | IPC_CREAT |
->> SHM_HUGETLB);
->>
->
-> Why not just "shmid = shmget(IPC_PRIVATE, size, 0600 | IPC_CREAT |
-> SHM_HUGETLB);"? Do we need a key_t for the test?
->
-
-ok, good! I tried to remove the key, it still works.
-
-
->
-> +       if (shmid < 0)
->> +               tst_brkm(TBROK | TERRNO, cleanup, "shmget");
->>
->
-> The message should be at least "shmget failed".
-
-got.
-
-
->
-> +                       tst_resm(TPASS, "No regression found.");
->> +               }
->>
->
-> These two loops look very similar.
-> We can just call the test with -i 15 iterations in runtest, no need for
-> such a redundancy.
->
-yeah, that would be simpler. agreed.
-
-
->
-> Otherwise it looks good.
->
-thanks for reviewing this patch. I will sent V2 next week.
-
-
->
-> Best regards,
-> Alexey
->
->
-> +       }
->> +
->> +       cleanup();
->> +       tst_exit();
->> +}
->>
->
->
-
-
+diff --git a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
+index 511543c..11b76d1 100644
+--- a/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
++++ b/testcases/kernel/syscalls/set_thread_area/set_thread_area01.c
+@@ -21,6 +21,9 @@
+ 
+ #include "set_thread_area.h"
+ 
++#define SET_THREAD_AREA	"set_thread_area()"
++#define GET_THREAD_AREA	"get_thread_area()"
++
+ char *TCID = "set_thread_area_01";
+ int TST_TOTAL = 6;
+ 
+@@ -37,6 +40,7 @@ static void setup(void)
+ 
+ struct test {
+ 	int syscall;
++	const char *const syscall_name;
+ 	thread_area_s *u_info;
+ 	int exp_ret;
+ 	int exp_errno;
+@@ -52,31 +56,18 @@ static struct user_desc u_info1 = {.entry_number = -1 };
+ static struct user_desc u_info2 = {.entry_number = -2 };
+ 
+ static struct test tests[] = {
+-	{__NR_set_thread_area, &u_info1, 0, 0},
+-	{__NR_get_thread_area, &u_info1, 0, 0},
+-	{__NR_set_thread_area, &u_info2, -1, EINVAL},
+-	{__NR_get_thread_area, &u_info2, -1, EINVAL},
+-	{__NR_set_thread_area, (void *)-9, -1, EFAULT},
+-	{__NR_get_thread_area, (void *)-9, -1, EFAULT},
++	{__NR_set_thread_area, SET_THREAD_AREA, &u_info1, 0, 0},
++	{__NR_get_thread_area, GET_THREAD_AREA, &u_info1, 0, 0},
++	{__NR_set_thread_area, SET_THREAD_AREA, &u_info2, -1, EINVAL},
++	{__NR_get_thread_area, GET_THREAD_AREA, &u_info2, -1, EINVAL},
++	{__NR_set_thread_area, SET_THREAD_AREA, (void *)-9, -1, EFAULT},
++	{__NR_get_thread_area, GET_THREAD_AREA, (void *)-9, -1, EFAULT},
+ };
+ 
+-static const char *get_name(int syscall)
+-{
+-	switch (syscall) {
+-	case __NR_set_thread_area:
+-		return "set_thread_area()";
+-		break;
+-	case __NR_get_thread_area:
+-		return "get_thread_area()";
+-		break;
+-	default:
+-		return "invalid syscall";
+-	}
+-}
+-
+ int main(int argc, char *argv[])
+ {
+-	int lc, i;
++	int lc;
++	unsigned i;
+ 
+ 	tst_parse_opts(argc, argv, NULL, NULL);
+ 
+@@ -88,7 +79,7 @@ int main(int argc, char *argv[])
+ 
+ 			if (TEST_RETURN != tests[i].exp_ret) {
+ 				tst_resm(TFAIL, "%s returned %li expected %i",
+-					 get_name(tests[i].syscall),
++					 tests[i].syscall_name,
+ 					 TEST_RETURN, tests[i].exp_ret);
+ 				continue;
+ 			}
+@@ -96,7 +87,7 @@ int main(int argc, char *argv[])
+ 			if (TEST_ERRNO != tests[i].exp_errno) {
+ 				tst_resm(TFAIL,
+ 					 "%s failed with %i (%s) expected %i (%s)",
+-					 get_name(tests[i].syscall), TEST_ERRNO,
++					 tests[i].syscall_name, TEST_ERRNO,
+ 					 strerror(TEST_ERRNO),
+ 					 tests[i].exp_errno,
+ 					 strerror(tests[i].exp_errno));
+@@ -104,7 +95,7 @@ int main(int argc, char *argv[])
+ 			}
+ 
+ 			tst_resm(TPASS, "%s returned %li errno %i (%s)",
+-				 get_name(tests[i].syscall), TEST_RETURN,
++				 tests[i].syscall_name, TEST_RETURN,
+ 				 TEST_ERRNO, strerror(TEST_ERRNO));
+ 		}
+ 	}
 -- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20151205/bbdc4097/attachment-0001.html>
+2.5.0
+
