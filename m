@@ -1,38 +1,27 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  7 Dec 2015 10:37:37 +0100
-Subject: [LTP] [PATCH] linux_syscall_numbers: add syscall number to output
-Message-ID: <f3bd16aa377ac43648722a55fc747fe78a19056e.1449480858.git.jstancek@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 7 Dec 2015 10:54:18 +0100
+Subject: [LTP] {get|set}_thread_area issue on ARM
+In-Reply-To: <20151207092503.GA11996@rei.lan>
+References: <20151204034711.GA27222@yury-N73SV>
+ <20151207092503.GA11996@rei.lan>
+Message-ID: <20151207095418.GB11996@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Some tests don't pass __NR_* as argument directly, but use a variable.
-Because ltp_syscall is a macro that stringifies "NR" argument we get
-output such as: "syscall tests[i].syscall not supported on your arch".
+Hi!
+> LTP contains stub syscall definitions for cases when certain
+> syscall is not supported by given arch. What is the exact error that
+> causes the build failure? I had a look at the test source code and the
+> only thing that could be an issue is that there would be duplicate case
+> in switch() statement since on aarch64 both __NR_set_thread_area and
+> __NR_get_thread_area would be defined to -1 (which means not implemented
+> in LTP).
 
-Add syscall number to output as well.
+And you allready fixed this problems, thanks :).
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/include/regen.sh | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/testcases/kernel/include/regen.sh b/testcases/kernel/include/regen.sh
-index 9efc4f17cf88..f93f49b7753f 100755
---- a/testcases/kernel/include/regen.sh
-+++ b/testcases/kernel/include/regen.sh
-@@ -44,7 +44,8 @@ cat << EOF > "${output_pid}"
- 	} \\
- 	if (__ret == -1 && errno == ENOSYS) { \\
- 		tst_brkm(TCONF, CLEANUP, \\
--			"syscall " #NR " not supported on your arch"); \\
-+			"syscall(%d) " #NR " not supported on your arch", \\
-+			NR); \\
- 		errno = ENOSYS; \\
- 	} \\
- 	__ret; \\
 -- 
-1.8.3.1
-
+Cyril Hrubis
+chrubis@suse.cz
