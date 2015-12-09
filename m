@@ -1,35 +1,460 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 30 Nov 2015 18:12:09 +0100
-Subject: [LTP] 64bit ld terminates for time01.c & write04.c
-In-Reply-To: <CANKSX+E504F87K-3ZhaDPNcFLEVgv1oyRLeVV=vz69fMjSxtOw@mail.gmail.com>
-References: <CANKSX+E504F87K-3ZhaDPNcFLEVgv1oyRLeVV=vz69fMjSxtOw@mail.gmail.com>
-Message-ID: <20151130171209.GG11935@rei.lan>
-List-Id: <ltp.lists.linux.it>
-MIME-Version: 1.0
+Return-Path: <ltp-list-bounces@lists.sourceforge.net>
+Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+	helo=mx.sourceforge.net)
+	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <manjeet.p@samsung.com>) id 1a6abV-0003rJ-Ez
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2015 09:00:05 +0000
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
+	(Exim 4.76) id 1a6abS-0001id-R9
+	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2015 09:00:05 +0000
+Received: from epcpsbgr3.samsung.com
+	(u143.gpu120.samsung.co.kr [203.254.230.143])
+	by mailout3.samsung.com (Oracle Communications Messaging Server
+	7.0.5.31.0 64bit (built May  5 2014))
+	with ESMTP id <0NZ302IO12BCQ6C0@mailout3.samsung.com> for
+	ltp-list@lists.sourceforge.net; Wed, 09 Dec 2015 17:59:36 +0900 (KST)
+Date: Wed, 09 Dec 2015 08:59:36 +0000 (GMT)
+From: Manjeet Pawar <manjeet.p@samsung.com>
+MIME-version: 1.0
+MIME-version: 1.0
+Message-id: <1246557963.484611449651576462.JavaMail.weblogic@epmlwas02c>
+Subject: [LTP]  [Query] Regarding network testcases
+Reply-To: manjeet.p@samsung.com
+List-Id: Linux Test Project General Discussions
+	<ltp-list.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
+	<mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
+List-Post: <mailto:ltp-list@lists.sourceforge.net>
+List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
+	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: ltp@lists.linux.it
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: ltp-list@lists.sourceforge.net
+Cc: "v.narang@samsung.com" <v.narang@samsung.com>, "ajeet.y@samsung.com" <ajeet.y@samsung.com>, pankaj.m@samsung.com
 
-Hi!
-> I'm trying to cross compile the LTP to ARM 64bit and i am using
-> aarch64-linux-gnu- tool chain for cross compiling. Entire LTP got
-> compiled successfully except time01 and write04 tests due to ld
-> returned with signal 11 and core is not dumped either for debugging.
-> So i have collected strace for reference and attached is for time01.
-> 
-> aarch64-linux-gnu-gcc-4.8 -static -g -O2 -fno-strict-aliasing -pipe
-> -Wall -W -Wold-style-definition
-> -I/home/Srikanth/ltp-working/testcases/kernel/include
-> -I../../../include -I../../../include -static -pthread  -L../../../lib
->  time01.c   -lltp -o time01
-> collect2: error: ld terminated with signal 11 [Segmentation fault], core dumped
-> make: *** [time01] Error 1
+Hi,
 
-Most likely you have found a bug in your binutils (which is the package
-the ld comes from) and this is a wrong mailing list to report the
-problem to, try mailing list or bugzilla listed at
-https://www.gnu.org/software/binutils/.
+I am facing issues while running some network testcases : e.g. if4-addr-change
+This testcase belongs to latest (ltp-full-20150903.tar.bz2)
+when I run this  if4-addr-change, I exported two new env variables a) IPV4_NETWORK = "107.109.223" and IPV6_NETWORK = "fd00::1:1:1:1", b) LHOST_IFACES = eth0 and RHOST_IFACES = eth0, which is not exported in "test_net.sh" .
+bacause "if4-addr-change " testcase invokes "est_net.sh".
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+testcase output:
+<<<<<<<<<<<<<<<<<<<test_start>>>>>>>>>>>>>>>>>>>
+tag(Testcase Name)=if4-addr-change stime=15540
+cmdline="if4-addr-change"
+contacts=""
+analysis=exit
+<<<<<<<<<<<<<<<<<<<test_output>>>>>>>>>>>>>>>>>>>
++ TST_TOTAL=1
++ TCID=if4-addr-change
++ TST_CLEANUP=tst_restore_ipaddr
++ . test_net.sh
+++ '[' -z '' ']'
+++ . test.sh
++++ export LTP_RET_VAL=0
++++ LTP_RET_VAL=0
++++ export TST_COUNT=1
++++ TST_COUNT=1
++++ export TST_LIB_LOADED=1
++++ TST_LIB_LOADED=1
++++ '[' -z if4-addr-change ']'
++++ '[' -z 1 ']'
++++ export TCID=if4-addr-change
++++ TCID=if4-addr-change
++++ export TST_TOTAL=1
++++ TST_TOTAL=1
++++ '[' -z /tmp/build_dir ']'
++++ export LTP_DATAROOT=/tmp/build_dir/testcases/data/if4-addr-change
++++ LTP_DATAROOT=/tmp/build_dir/testcases/data/if4-addr-change
+++ TST_IPV6=
+++ tst_read_opts
+++ OPTIND=0
+++ getopts :6 opt
+++ OPTIND=0
++ CHECK_INTERVAL=0
++ LHOST_IPV4_HOST_MAX=254
++ trap 'tst_brkm TBROK '\''test interrupted'\''' INT
++ tst_check_cmds ifconfig
++ for cmd in '$*'
++ command -v ifconfig
++ tst_resm TINFO 'ifconfig changes IPv4 address 10 times'
++ tst_flag2mask TINFO
++ case "$1" in
++ return 16
++ local mask=16
++ LTP_RET_VAL=16
++ local ret=TINFO
++ shift
++ echo 'if4-addr-change 1 TINFO : ifconfig changes IPv4 address 10 times'
+if4-addr-change 1 TINFO : ifconfig changes IPv4 address 10 times
++ case "$ret" in
++ tst_restore_ipaddr
++ local type=lhost
++ local link_num=0
++ tst_init_iface lhost 0
++ local type=lhost
++ local link_num=0
+++ tst_iface lhost 0
+++ local type=lhost
+++ local link_num=0
+++ link_num=1
+++ awk '{ print $1 }'
++++ tst_get_ifaces lhost
++++ local type=lhost
++++ '[' lhost = lhost ']'
++++ echo eth0
+++ echo eth0
++ local iface=eth0
++ tst_resm TINFO 'initialize '\''lhost'\'' '\''eth0'\'' interface'
++ tst_flag2mask TINFO
++ case "$1" in
++ return 16
++ local mask=16
++ LTP_RET_VAL=16
++ local ret=TINFO
++ shift
++ echo 'if4-addr-change 1 TINFO : initialize '\''lhost'\'' '\''eth0'\'' interface'
+if4-addr-change 1 TINFO : initialize 'lhost' 'eth0' interface
++ case "$ret" in
++ '[' lhost = lhost ']'
++ ip link set eth0 down
++ ip route flush dev eth0
++ ip addr flush dev eth0
++ ip link set eth0 up
++ return 0
++ local ret=0
++ local backup_tst_ipv6=
++ TST_IPV6=
++ tst_add_ipaddr lhost 0
++ local type=lhost
++ local link_num=0
++ local mask=24
++ '[' '' ']'
+++ tst_iface lhost 0
+++ local type=lhost
+++ local link_num=0
+++ link_num=1
+++ awk '{ print $1 }'
++++ tst_get_ifaces lhost
++++ local type=lhost
++++ '[' lhost = lhost ']'
++++ echo eth0
+++ echo eth0
++ local iface=eth0
++ '[' lhost = lhost ']'
+++ tst_ipaddr
+++ local type=lhost
+++ local ipv=4
+++ local tst_host=
+++ '[' lhost = lhost ']'
+++ eval 'tst_host=$LHOST_IPV4_HOST'
++++ tst_host=
+++ '[' '' ']'
+++ echo 107.109.223.
++ tst_resm TINFO 'set local addr 107.109.223./24'
++ tst_flag2mask TINFO
++ case "$1" in
++ return 16
++ local mask=16
++ LTP_RET_VAL=16
++ local ret=TINFO
++ shift
++ echo 'if4-addr-change 1 TINFO : set local addr 107.109.223./24'
+if4-addr-change 1 TINFO : set local addr 107.109.223./24
++ case "$ret" in
+++ tst_ipaddr
+++ local type=lhost
+++ local ipv=4
+++ local tst_host=
+++ '[' lhost = lhost ']'
+++ eval 'tst_host=$LHOST_IPV4_HOST'
++++ tst_host=
+++ '[' '' ']'
+++ echo 107.109.223.
++ ip addr add 107.109.223./24 dev eth0
++ return 0
++ TST_IPV6=6
++ tst_add_ipaddr lhost 0
++ local type=lhost
++ local link_num=0
++ local mask=24
++ '[' 6 ']'
++ mask=64
+++ tst_iface lhost 0
+++ local type=lhost
+++ local link_num=0
+++ link_num=1
++++ tst_get_ifaces lhost
++++ local type=lhost
++++ '[' lhost = lhost ']'
+++ awk '{ print $1 }'
++++ echo eth0
+++ echo eth0
++ local iface=eth0
++ '[' lhost = lhost ']'
+++ tst_ipaddr
+++ local type=lhost
+++ local ipv=6
+++ local tst_host=
+++ '[' lhost = lhost ']'
+++ eval 'tst_host=$LHOST_IPV6_HOST'
++++ tst_host=
+++ '[' 6 ']'
+++ echo fd00::1:1:1:1:
++ tst_resm TINFO 'set local addr fd00::1:1:1:1:/64'
++ tst_flag2mask TINFO
++ case "$1" in
++ return 16
++ local mask=16
++ LTP_RET_VAL=16
++ local ret=TINFO
++ shift
++ echo 'if4-addr-change 1 TINFO : set local addr fd00::1:1:1:1:/64'
+if4-addr-change 1 TINFO : set local addr fd00::1:1:1:1:/64
++ case "$ret" in
+++ tst_ipaddr
+++ local type=lhost
+++ local ipv=6
+++ local tst_host=
+++ '[' lhost = lhost ']'
+++ eval 'tst_host=$LHOST_IPV6_HOST'
++++ tst_host=
+++ '[' 6 ']'
+++ echo fd00::1:1:1:1:
++ ip addr add fd00::1:1:1:1:/64 dev eth0
+ip: RTNETLINK answers: Numerical result out of range
++ return 2
++ ret=2
++ TST_IPV6=
++ return 2
+++ tst_iface
+++ local type=lhost
+++ local link_num=0
+++ link_num=1
+++ awk '{ print $1 }'
++++ tst_get_ifaces lhost
++++ local type=lhost
++++ '[' lhost = lhost ']'
++++ echo eth0
+++ echo eth0
+++ tst_ipaddr rhost
+++ local type=rhost
+++ local ipv=4
+++ local tst_host=
+++ '[' rhost = lhost ']'
+++ eval 'tst_host=$RHOST_IPV4_HOST'
++++ tst_host=
+++ '[' '' ']'
+++ echo 107.109.223.
+++ tst_iface
+++ local type=lhost
+++ local link_num=0
+++ link_num=1
+++ awk '{ print $1 }'
++++ tst_get_ifaces lhost
++++ local type=lhost
++++ '[' lhost = lhost ']'
++++ echo eth0
+++ echo eth0
+++ tst_ipaddr rhost
+++ local type=rhost
+++ local ipv=4
+++ local tst_host=
+++ '[' rhost = lhost ']'
+++ eval 'tst_host=$RHOST_IPV4_HOST'
++++ tst_host=
+++ '[' '' ']'
+++ echo 107.109.223.
++ check_icmpv4_connectivity eth0 107.109.223.
+++ tst_ipaddr rhost
+++ local type=rhost
+++ local ipv=4
+++ local tst_host=
+++ '[' rhost = lhost ']'
+++ eval 'tst_host=$RHOST_IPV4_HOST'
++++ tst_host=
+++ '[' '' ']'
+++ echo 107.109.223.
++ tst_brkm TBROK 'Failed to ping to 107.109.223.'
++ case "$1" in
++ local ret=TBROK
++ shift
++ tst_resm TBROK 'Failed to ping to 107.109.223.'
++ tst_flag2mask TBROK
++ case "$1" in
++ return 2
++ local mask=2
++ LTP_RET_VAL=18
++ local ret=TBROK
++ shift
++ echo 'if4-addr-change 1 TBROK : Failed to ping to 107.109.223.'
+if4-addr-change 1 TBROK : Failed to ping to 107.109.223.
++ case "$ret" in
++ tst_exit
++ '[' -n tst_restore_ipaddr ']'
++ tst_restore_ipaddr
++ local type=lhost
++ local link_num=0
++ tst_init_iface lhost 0
++ local type=lhost
++ local link_num=0
+++ tst_iface lhost 0
+++ local type=lhost
+++ local link_num=0
+++ link_num=1
+++ awk '{ print $1 }'
++++ tst_get_ifaces lhost
++++ local type=lhost
++++ '[' lhost = lhost ']'
++++ echo eth0
+++ echo eth0
++ local iface=eth0
++ tst_resm TINFO 'initialize '\''lhost'\'' '\''eth0'\'' interface'
++ tst_flag2mask TINFO
++ case "$1" in
++ return 16
++ local mask=16
++ LTP_RET_VAL=18
++ local ret=TINFO
++ shift
++ echo 'if4-addr-change 1 TINFO : initialize '\''lhost'\'' '\''eth0'\'' interface'
+if4-addr-change 1 TINFO : initialize 'lhost' 'eth0' interface
++ case "$ret" in
++ '[' lhost = lhost ']'
++ ip link set eth0 down
++ ip route flush dev eth0
++ ip addr flush dev eth0
++ ip link set eth0 up
++ return 0
++ local ret=0
++ local backup_tst_ipv6=
++ TST_IPV6=
++ tst_add_ipaddr lhost 0
++ local type=lhost
++ local link_num=0
++ local mask=24
++ '[' '' ']'
+++ tst_iface lhost 0
+++ local type=lhost
+++ local link_num=0
+++ link_num=1
+++ awk '{ print $1 }'
++++ tst_get_ifaces lhost
++++ local type=lhost
++++ '[' lhost = lhost ']'
++++ echo eth0
+++ echo eth0
++ local iface=eth0
++ '[' lhost = lhost ']'
+++ tst_ipaddr
+++ local type=lhost
+++ local ipv=4
+++ local tst_host=
+++ '[' lhost = lhost ']'
+++ eval 'tst_host=$LHOST_IPV4_HOST'
++++ tst_host=
+++ '[' '' ']'
+++ echo 107.109.223.
++ tst_resm TINFO 'set local addr 107.109.223./24'
++ tst_flag2mask TINFO
++ case "$1" in
++ return 16
++ local mask=16
++ LTP_RET_VAL=18
++ local ret=TINFO
++ shift
++ echo 'if4-addr-change 1 TINFO : set local addr 107.109.223./24'
+if4-addr-change 1 TINFO : set local addr 107.109.223./24
++ case "$ret" in
+++ tst_ipaddr
+++ local type=lhost
+++ local ipv=4
+++ local tst_host=
+++ '[' lhost = lhost ']'
+++ eval 'tst_host=$LHOST_IPV4_HOST'
++++ tst_host=
+++ '[' '' ']'
+++ echo 107.109.223.
++ ip addr add 107.109.223./24 dev eth0
++ return 0
++ TST_IPV6=6
++ tst_add_ipaddr lhost 0
++ local type=lhost
++ local link_num=0
++ local mask=24
++ '[' 6 ']'
++ mask=64
+++ tst_iface lhost 0
+++ local type=lhost
+++ local link_num=0
+++ link_num=1
+++ awk '{ print $1 }'
++++ tst_get_ifaces lhost
++++ local type=lhost
++++ '[' lhost = lhost ']'
++++ echo eth0
+++ echo eth0
++ local iface=eth0
++ '[' lhost = lhost ']'
+++ tst_ipaddr
+++ local type=lhost
+++ local ipv=6
+++ local tst_host=
+++ '[' lhost = lhost ']'
+++ eval 'tst_host=$LHOST_IPV6_HOST'
++++ tst_host=
+++ '[' 6 ']'
+++ echo fd00::1:1:1:1:
++ tst_resm TINFO 'set local addr fd00::1:1:1:1:/64'
++ tst_flag2mask TINFO
++ case "$1" in
++ return 16
++ local mask=16
++ LTP_RET_VAL=18
++ local ret=TINFO
++ shift
++ echo 'if4-addr-change 1 TINFO : set local addr fd00::1:1:1:1:/64'
+if4-addr-change 1 TINFO : set local addr fd00::1:1:1:1:/64
++ case "$ret" in
+++ tst_ipaddr
+++ local type=lhost
+++ local ipv=6
+++ local tst_host=
+++ '[' lhost = lhost ']'
+++ eval 'tst_host=$LHOST_IPV6_HOST'
++++ tst_host=
+++ '[' 6 ']'
+++ echo fd00::1:1:1:1:
++ ip addr add fd00::1:1:1:1:/64 dev eth0
+ip: RTNETLINK answers: Numerical result out of range
++ return 2
++ ret=2
++ TST_IPV6=
++ return 2
++ exit 2
+<<<<<<<<<<<<<<<<<<<execution_status>>>>>>>>>>>>
+initiation_status="ok"
+duration=13 termination_type=exited termination_id=2 corefile=no
+cutime=49 cstime=627
+<<<<<<<<<<<<<<<<<<<test_end>>>>>>>>>>>>>>>>>>>>>
+
+Please check the IP addresses taken by the program, they are in wrong format. 
+Is there anything that I am missing to run this testcase ? . Also I tried to do manually fix to get IP addresses in correct way but that should not be done, it need many changes to be done in "test_net.sh".
+This test scripts is invoked by  other testcases like  "network_stress.broken_ip". So all these testcases are failing.
+Please suggest more detail regarding "test_net.sh". 
+
+Thanks
+
+
+
+
+------------------------------------------------------------------------------
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
