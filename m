@@ -1,85 +1,94 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 09 Dec 2015 14:15:20 +0300
-Subject: [LTP] [Query] Regarding network testcases
-In-Reply-To: <56680852.9010103@oracle.com>
-References: <1246557963.484611449651576462.JavaMail.weblogic@epmlwas02c>
- <56680852.9010103@oracle.com>
-Message-ID: <56680D48.7070808@oracle.com>
+From: Eryu Guan <eguan@redhat.com>
+Date: Thu, 10 Dec 2015 19:38:22 +0800
+Subject: [LTP] [PATCH] syscalls: avoid creating whiteout device in tests
+Message-ID: <1449747502-29612-1-git-send-email-eguan@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Sending to the correct ML.
+A char device with major 0 and minor 0 is known as whiteout device, and
+overlayfs refuses to create such device. mknod01 and mount02 fail on
+overlayfs because of this restriction.
 
-On 12/09/2015 01:54 PM, Alexey Kodanev wrote:
-> Hi,
-> On 12/09/2015 11:59 AM, Manjeet Pawar wrote:
->> Hi,
->>
->> I am facing issues while running some network testcases : e.g. 
->> if4-addr-change
->> This testcase belongs to latest (ltp-full-20150903.tar.bz2)
->> when I run this  if4-addr-change, I exported two new env variables a) 
->> IPV4_NETWORK = "107.109.223" and IPV6_NETWORK = "fd00::1:1:1:1", b) 
->> LHOST_IFACES = eth0 and RHOST_IFACES = eth0, which is not exported in 
->> "test_net.sh" .
->> bacause "if4-addr-change " testcase invokes "est_net.sh".
->>
-> ...
->> ++ echo fd00::1:1:1:1:
->> + ip addr add fd00::1:1:1:1:/64 dev eth0
->> ip: RTNETLINK answers: Numerical result out of range
->> + return 2
->> + ret=2
->> + TST_IPV6=
->> + return 2
->> + exit 2
->> <<<<<<<<<<<<<<<<<<<execution_status>>>>>>>>>>>>
->> initiation_status="ok"
->> duration=13 termination_type=exited termination_id=2 corefile=no
->> cutime=49 cstime=627
->> <<<<<<<<<<<<<<<<<<<test_end>>>>>>>>>>>>>>>>>>>>>
->>
->> Please check the IP addresses taken by the program, they are in wrong 
->> format.
->> Is there anything that I am missing to run this testcase ? . Also I 
->> tried to do manually fix to get IP addresses in correct way but that 
->> should not be done, it need many changes to be done in "test_net.sh".
->> This test scripts is invoked by  other testcases like 
->> "network_stress.broken_ip". So all these testcases are failing.
->> Please suggest more detail regarding "test_net.sh".
->
-> Defining IPv6 network as IPV6_NETWORK = "fd00::1:1:1:1" is not quite 
-> correct. Here you have specified the IPv6 address, not network.
->
-> There are other variables that should be defined as well: 
-> LHOST_IPV4_HOST, RHOST_IPV4_HOST, LHOST_IPV6_HOST, RHOST_IPV6_HOST, 
-> i.e. host specific parts.
->
-> In your case IPv6 network is "fd00::/64", and I would set vars as 
-> follows:
-> IPV6_NETWORK = "fd00"
-> LHOST_IPV6_HOST=":1:1:1:1"
->
-> After that you will get fd00::1:1:1:1/64 address in the tests 
-> (${IPV6_NETWORK}:${LHOST_IPV6_HOST}).
->
-> Best regards,
-> Alexey
->
->>
->> Thanks
->>
->>
->>
->>
->> ------------------------------------------------------------------------------ 
->>
->> _______________________________________________
->> Ltp-list mailing list
->> Ltp-list@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/ltp-list
->
+Fix it by creating null device instead.
+
+Signed-off-by: Eryu Guan <eguan@redhat.com>
+---
+ testcases/kernel/syscalls/mknod/mknod01.c | 17 +++++++++++++----
+ testcases/kernel/syscalls/mount/mount02.c |  8 ++++++--
+ 2 files changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/mknod/mknod01.c b/testcases/kernel/syscalls/mknod/mknod01.c
+index 863d02d..a35adf9 100644
+--- a/testcases/kernel/syscalls/mknod/mknod01.c
++++ b/testcases/kernel/syscalls/mknod/mknod01.c
+@@ -66,6 +66,7 @@ int TST_TOTAL = ARRAY_SIZE(tcases);
+ int main(int ac, char **av)
+ {
+ 	int lc, i;
++	dev_t dev;
+ 
+ 	tst_parse_opts(ac, av, NULL, NULL);
+ 
+@@ -75,17 +76,25 @@ int main(int ac, char **av)
+ 		tst_count = 0;
+ 
+ 		for (i = 0; i < TST_TOTAL; i++) {
++			/*
++			 * overlayfs doesn't support mknod char device with
++			 * major 0 and minor 0, which is known as whiteout_dev
++			 */
++			if (S_ISCHR(tcases[i]))
++				dev = makedev(1, 3);
++			else
++				dev = 0;
+ 			TEST(mknod(PATH, tcases[i], 0));
+ 
+ 			if (TEST_RETURN == -1) {
+ 				tst_resm(TFAIL,
+-					 "mknod(%s, %#o, 0) failed, errno=%d : %s",
+-					 PATH, tcases[i], TEST_ERRNO,
++					 "mknod(%s, %#o, %lu) failed, errno=%d : %s",
++					 PATH, tcases[i], dev, TEST_ERRNO,
+ 					 strerror(TEST_ERRNO));
+ 			} else {
+ 				tst_resm(TPASS,
+-					 "mknod(%s, %#o, 0) returned %ld",
+-					 PATH, tcases[i], TEST_RETURN);
++					 "mknod(%s, %#o, %lu) returned %ld",
++					 PATH, tcases[i], dev, TEST_RETURN);
+ 			}
+ 
+ 			SAFE_UNLINK(cleanup, PATH);
+diff --git a/testcases/kernel/syscalls/mount/mount02.c b/testcases/kernel/syscalls/mount/mount02.c
+index 85c050d..916c35e 100644
+--- a/testcases/kernel/syscalls/mount/mount02.c
++++ b/testcases/kernel/syscalls/mount/mount02.c
+@@ -170,6 +170,8 @@ static void do_umount(void)
+ 
+ static void setup(void)
+ {
++	dev_t dev;
++
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
+ 	tst_require_root();
+@@ -190,9 +192,11 @@ static void setup(void)
+ 
+ 	memset(path, 'a', PATH_MAX + 1);
+ 
+-	if (mknod(char_dev, S_IFCHR | FILE_MODE, 0)) {
++	dev = makedev(1, 3);
++	if (mknod(char_dev, S_IFCHR | FILE_MODE, dev)) {
+ 		tst_brkm(TBROK | TERRNO, cleanup,
+-		         "failed to mknod(char_dev, S_IFCHR | FILE_MODE, 0)");
++			 "failed to mknod(char_dev, S_IFCHR | FILE_MODE, %lu)",
++			 dev);
+ 	}
+ 
+ 	TEST_PAUSE;
+-- 
+2.5.0
 
