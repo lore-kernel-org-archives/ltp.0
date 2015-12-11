@@ -1,102 +1,126 @@
-From: Eryu Guan <eguan@redhat.com>
-Date: Fri, 11 Dec 2015 21:24:23 +0800
-Subject: [LTP] [PATCH v2] syscalls: avoid creating whiteout device in tests
-In-Reply-To: <1449747502-29612-1-git-send-email-eguan@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 11 Dec 2015 08:33:18 -0500 (EST)
+Subject: [LTP] [PATCH v2] syscalls: avoid creating whiteout device in
+ tests
+In-Reply-To: <1449840263-14385-1-git-send-email-eguan@redhat.com>
 References: <1449747502-29612-1-git-send-email-eguan@redhat.com>
-Message-ID: <1449840263-14385-1-git-send-email-eguan@redhat.com>
+ <1449840263-14385-1-git-send-email-eguan@redhat.com>
+Message-ID: <395869094.27126088.1449840798863.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-A char device with major 0 and minor 0 is known as whiteout device, and
-overlayfs refuses to create such device. mknod01 and mount02 fail on
-overlayfs because of this restriction.
 
-Fix it by creating null device instead.
 
-Signed-off-by: Eryu Guan <eguan@redhat.com>
----
 
-v2:
-- update the arg in mknod syscall to really use variable "dev", which is the
-  whole point of this patch
 
- testcases/kernel/syscalls/mknod/mknod01.c | 19 ++++++++++++++-----
- testcases/kernel/syscalls/mount/mount02.c |  8 ++++++--
- 2 files changed, 20 insertions(+), 7 deletions(-)
+----- Original Message -----
+> From: "Eryu Guan" <eguan@redhat.com>
+> To: ltp@lists.linux.it
+> Sent: Friday, 11 December, 2015 2:24:23 PM
+> Subject: [LTP] [PATCH v2] syscalls: avoid creating whiteout device in tests
+> 
+> A char device with major 0 and minor 0 is known as whiteout device, and
+> overlayfs refuses to create such device. mknod01 and mount02 fail on
+> overlayfs because of this restriction.
+> 
+> Fix it by creating null device instead.
+> 
+> Signed-off-by: Eryu Guan <eguan@redhat.com>
+> ---
+> 
+> v2:
+> - update the arg in mknod syscall to really use variable "dev", which is the
+>   whole point of this patch
 
-diff --git a/testcases/kernel/syscalls/mknod/mknod01.c b/testcases/kernel/syscalls/mknod/mknod01.c
-index 863d02d..c4da3a2 100644
---- a/testcases/kernel/syscalls/mknod/mknod01.c
-+++ b/testcases/kernel/syscalls/mknod/mknod01.c
-@@ -66,6 +66,7 @@ int TST_TOTAL = ARRAY_SIZE(tcases);
- int main(int ac, char **av)
- {
- 	int lc, i;
-+	dev_t dev;
- 
- 	tst_parse_opts(ac, av, NULL, NULL);
- 
-@@ -75,17 +76,25 @@ int main(int ac, char **av)
- 		tst_count = 0;
- 
- 		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(mknod(PATH, tcases[i], 0));
-+			/*
-+			 * overlayfs doesn't support mknod char device with
-+			 * major 0 and minor 0, which is known as whiteout_dev
-+			 */
-+			if (S_ISCHR(tcases[i]))
-+				dev = makedev(1, 3);
-+			else
-+				dev = 0;
-+			TEST(mknod(PATH, tcases[i], dev));
- 
- 			if (TEST_RETURN == -1) {
- 				tst_resm(TFAIL,
--					 "mknod(%s, %#o, 0) failed, errno=%d : %s",
--					 PATH, tcases[i], TEST_ERRNO,
-+					 "mknod(%s, %#o, %lu) failed, errno=%d : %s",
-+					 PATH, tcases[i], dev, TEST_ERRNO,
- 					 strerror(TEST_ERRNO));
- 			} else {
- 				tst_resm(TPASS,
--					 "mknod(%s, %#o, 0) returned %ld",
--					 PATH, tcases[i], TEST_RETURN);
-+					 "mknod(%s, %#o, %lu) returned %ld",
-+					 PATH, tcases[i], dev, TEST_RETURN);
- 			}
- 
- 			SAFE_UNLINK(cleanup, PATH);
-diff --git a/testcases/kernel/syscalls/mount/mount02.c b/testcases/kernel/syscalls/mount/mount02.c
-index 85c050d..916c35e 100644
---- a/testcases/kernel/syscalls/mount/mount02.c
-+++ b/testcases/kernel/syscalls/mount/mount02.c
-@@ -170,6 +170,8 @@ static void do_umount(void)
- 
- static void setup(void)
- {
-+	dev_t dev;
-+
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
- 	tst_require_root();
-@@ -190,9 +192,11 @@ static void setup(void)
- 
- 	memset(path, 'a', PATH_MAX + 1);
- 
--	if (mknod(char_dev, S_IFCHR | FILE_MODE, 0)) {
-+	dev = makedev(1, 3);
-+	if (mknod(char_dev, S_IFCHR | FILE_MODE, dev)) {
- 		tst_brkm(TBROK | TERRNO, cleanup,
--		         "failed to mknod(char_dev, S_IFCHR | FILE_MODE, 0)");
-+			 "failed to mknod(char_dev, S_IFCHR | FILE_MODE, %lu)",
-+			 dev);
- 	}
- 
- 	TEST_PAUSE;
--- 
-2.5.0
+Pushed with reference to Documentation about whiteout device.
 
+Regards,
+Jan
+
+> 
+>  testcases/kernel/syscalls/mknod/mknod01.c | 19 ++++++++++++++-----
+>  testcases/kernel/syscalls/mount/mount02.c |  8 ++++++--
+>  2 files changed, 20 insertions(+), 7 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mknod/mknod01.c
+> b/testcases/kernel/syscalls/mknod/mknod01.c
+> index 863d02d..c4da3a2 100644
+> --- a/testcases/kernel/syscalls/mknod/mknod01.c
+> +++ b/testcases/kernel/syscalls/mknod/mknod01.c
+> @@ -66,6 +66,7 @@ int TST_TOTAL = ARRAY_SIZE(tcases);
+>  int main(int ac, char **av)
+>  {
+>  	int lc, i;
+> +	dev_t dev;
+>  
+>  	tst_parse_opts(ac, av, NULL, NULL);
+>  
+> @@ -75,17 +76,25 @@ int main(int ac, char **av)
+>  		tst_count = 0;
+>  
+>  		for (i = 0; i < TST_TOTAL; i++) {
+> -			TEST(mknod(PATH, tcases[i], 0));
+> +			/*
+> +			 * overlayfs doesn't support mknod char device with
+> +			 * major 0 and minor 0, which is known as whiteout_dev
+> +			 */
+> +			if (S_ISCHR(tcases[i]))
+> +				dev = makedev(1, 3);
+> +			else
+> +				dev = 0;
+> +			TEST(mknod(PATH, tcases[i], dev));
+>  
+>  			if (TEST_RETURN == -1) {
+>  				tst_resm(TFAIL,
+> -					 "mknod(%s, %#o, 0) failed, errno=%d : %s",
+> -					 PATH, tcases[i], TEST_ERRNO,
+> +					 "mknod(%s, %#o, %lu) failed, errno=%d : %s",
+> +					 PATH, tcases[i], dev, TEST_ERRNO,
+>  					 strerror(TEST_ERRNO));
+>  			} else {
+>  				tst_resm(TPASS,
+> -					 "mknod(%s, %#o, 0) returned %ld",
+> -					 PATH, tcases[i], TEST_RETURN);
+> +					 "mknod(%s, %#o, %lu) returned %ld",
+> +					 PATH, tcases[i], dev, TEST_RETURN);
+>  			}
+>  
+>  			SAFE_UNLINK(cleanup, PATH);
+> diff --git a/testcases/kernel/syscalls/mount/mount02.c
+> b/testcases/kernel/syscalls/mount/mount02.c
+> index 85c050d..916c35e 100644
+> --- a/testcases/kernel/syscalls/mount/mount02.c
+> +++ b/testcases/kernel/syscalls/mount/mount02.c
+> @@ -170,6 +170,8 @@ static void do_umount(void)
+>  
+>  static void setup(void)
+>  {
+> +	dev_t dev;
+> +
+>  	tst_sig(FORK, DEF_HANDLER, cleanup);
+>  
+>  	tst_require_root();
+> @@ -190,9 +192,11 @@ static void setup(void)
+>  
+>  	memset(path, 'a', PATH_MAX + 1);
+>  
+> -	if (mknod(char_dev, S_IFCHR | FILE_MODE, 0)) {
+> +	dev = makedev(1, 3);
+> +	if (mknod(char_dev, S_IFCHR | FILE_MODE, dev)) {
+>  		tst_brkm(TBROK | TERRNO, cleanup,
+> -		         "failed to mknod(char_dev, S_IFCHR | FILE_MODE, 0)");
+> +			 "failed to mknod(char_dev, S_IFCHR | FILE_MODE, %lu)",
+> +			 dev);
+>  	}
+>  
+>  	TEST_PAUSE;
+> --
+> 2.5.0
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
