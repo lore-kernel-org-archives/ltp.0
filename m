@@ -1,126 +1,48 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 11 Dec 2015 08:33:18 -0500 (EST)
-Subject: [LTP] [PATCH v2] syscalls: avoid creating whiteout device in
- tests
-In-Reply-To: <1449840263-14385-1-git-send-email-eguan@redhat.com>
-References: <1449747502-29612-1-git-send-email-eguan@redhat.com>
- <1449840263-14385-1-git-send-email-eguan@redhat.com>
-Message-ID: <395869094.27126088.1449840798863.JavaMail.zimbra@redhat.com>
+From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Date: Fri, 11 Dec 2015 13:53:23 +0000
+Subject: [LTP] [bug report] readahead02: readahead hardcoded bytes limit
+Message-ID: <20151211135323.GA31048@red-moon>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
 
+following kernel commit:
 
+commit 600e19afc5f8a6 ("mm: use only per-device readahead limit")
 
+LTP readahead02 test produces warnings such as:
 
------ Original Message -----
-> From: "Eryu Guan" <eguan@redhat.com>
-> To: ltp@lists.linux.it
-> Sent: Friday, 11 December, 2015 2:24:23 PM
-> Subject: [LTP] [PATCH v2] syscalls: avoid creating whiteout device in tests
-> 
-> A char device with major 0 and minor 0 is known as whiteout device, and
-> overlayfs refuses to create such device. mknod01 and mount02 fail on
-> overlayfs because of this restriction.
-> 
-> Fix it by creating null device instead.
-> 
-> Signed-off-by: Eryu Guan <eguan@redhat.com>
-> ---
-> 
-> v2:
-> - update the arg in mknod syscall to really use variable "dev", which is the
->   whole point of this patch
+readahead02    0  TINFO  :  creating test file of size: 67108864#
+readahead02 (1698): drop_caches: 1#
+readahead02    0  TINFO  :  read_testfile(0)#
+readahead02 (1698): drop_caches: 1#
+readahead02    0  TINFO  :  read_testfile(1)#
+readahead02    1  TPASS  :  expected ret success - returned value = 0#
+readahead02    2  TPASS  :  offset is still at 0 as expected#
+readahead02    0  TINFO  :  read_testfile(0) took: 125319 usec#
+readahead02    0  TINFO  :  read_testfile(1) took: 119364 usec#
+readahead02    0  TINFO  :  read_testfile(0) read: 67357696 bytes#
+readahead02    0  TINFO  :  read_testfile(1) read: 63098880 bytes#
+readahead02    3  TPASS  :  readahead saved some I/O#
+readahead02    0  TINFO  :  cache can hold at least: 67372 kB#
+readahead02    0  TINFO  :  read_testfile(0) used cache: 65420 kB#
+readahead02    0  TINFO  :  read_testfile(1) used cache: 4120 kB#
+readahead02    0  TWARN  :  readahead02.c:323: using less cache than expected
 
-Pushed with reference to Documentation about whiteout device.
+It is caused by the hardcoded 2MB readahead02 limit used to issue
+the readahead syscall, the kernel now caps the number of pages
+using the per-device readahead limit, so the readahead count parameter
+should be updated accordingly.
 
-Regards,
-Jan
+There are multiple ways to fix it, simplest is reading the bdi backing
+the testfile and use its readahead limit as readahead syscall count
+parameter.
 
-> 
->  testcases/kernel/syscalls/mknod/mknod01.c | 19 ++++++++++++++-----
->  testcases/kernel/syscalls/mount/mount02.c |  8 ++++++--
->  2 files changed, 20 insertions(+), 7 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/mknod/mknod01.c
-> b/testcases/kernel/syscalls/mknod/mknod01.c
-> index 863d02d..c4da3a2 100644
-> --- a/testcases/kernel/syscalls/mknod/mknod01.c
-> +++ b/testcases/kernel/syscalls/mknod/mknod01.c
-> @@ -66,6 +66,7 @@ int TST_TOTAL = ARRAY_SIZE(tcases);
->  int main(int ac, char **av)
->  {
->  	int lc, i;
-> +	dev_t dev;
->  
->  	tst_parse_opts(ac, av, NULL, NULL);
->  
-> @@ -75,17 +76,25 @@ int main(int ac, char **av)
->  		tst_count = 0;
->  
->  		for (i = 0; i < TST_TOTAL; i++) {
-> -			TEST(mknod(PATH, tcases[i], 0));
-> +			/*
-> +			 * overlayfs doesn't support mknod char device with
-> +			 * major 0 and minor 0, which is known as whiteout_dev
-> +			 */
-> +			if (S_ISCHR(tcases[i]))
-> +				dev = makedev(1, 3);
-> +			else
-> +				dev = 0;
-> +			TEST(mknod(PATH, tcases[i], dev));
->  
->  			if (TEST_RETURN == -1) {
->  				tst_resm(TFAIL,
-> -					 "mknod(%s, %#o, 0) failed, errno=%d : %s",
-> -					 PATH, tcases[i], TEST_ERRNO,
-> +					 "mknod(%s, %#o, %lu) failed, errno=%d : %s",
-> +					 PATH, tcases[i], dev, TEST_ERRNO,
->  					 strerror(TEST_ERRNO));
->  			} else {
->  				tst_resm(TPASS,
-> -					 "mknod(%s, %#o, 0) returned %ld",
-> -					 PATH, tcases[i], TEST_RETURN);
-> +					 "mknod(%s, %#o, %lu) returned %ld",
-> +					 PATH, tcases[i], dev, TEST_RETURN);
->  			}
->  
->  			SAFE_UNLINK(cleanup, PATH);
-> diff --git a/testcases/kernel/syscalls/mount/mount02.c
-> b/testcases/kernel/syscalls/mount/mount02.c
-> index 85c050d..916c35e 100644
-> --- a/testcases/kernel/syscalls/mount/mount02.c
-> +++ b/testcases/kernel/syscalls/mount/mount02.c
-> @@ -170,6 +170,8 @@ static void do_umount(void)
->  
->  static void setup(void)
->  {
-> +	dev_t dev;
-> +
->  	tst_sig(FORK, DEF_HANDLER, cleanup);
->  
->  	tst_require_root();
-> @@ -190,9 +192,11 @@ static void setup(void)
->  
->  	memset(path, 'a', PATH_MAX + 1);
->  
-> -	if (mknod(char_dev, S_IFCHR | FILE_MODE, 0)) {
-> +	dev = makedev(1, 3);
-> +	if (mknod(char_dev, S_IFCHR | FILE_MODE, dev)) {
->  		tst_brkm(TBROK | TERRNO, cleanup,
-> -		         "failed to mknod(char_dev, S_IFCHR | FILE_MODE, 0)");
-> +			 "failed to mknod(char_dev, S_IFCHR | FILE_MODE, %lu)",
-> +			 dev);
->  	}
->  
->  	TEST_PAUSE;
-> --
-> 2.5.0
-> 
-> 
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
-> 
+Please consider updating the test.
+
+Thanks,
+Lorenzo
