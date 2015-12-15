@@ -1,88 +1,180 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 15 Dec 2015 04:52:54 -0500 (EST)
-Subject: [LTP] Question about LTP testcase netns_sysfs on RHEL6.7GA
-In-Reply-To: <566F84F7.7030205@cn.fujitsu.com>
-References: <566F84F7.7030205@cn.fujitsu.com>
-Message-ID: <1404453361.28679669.1450173174580.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 15 Dec 2015 14:57:13 +0300
+Subject: [LTP] [PATCH] network/dctcp: add dctcp congestion control
+ algorithm test
+In-Reply-To: <1445958816-27745-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1445958816-27745-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <56700019.9020502@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On 10/27/2015 06:13 PM, Alexey Kodanev wrote:
+> The test compares cubic and dctcp congestion control algorithms
+> performance. One of the hosts emulates packets congestion with netem
+> loss 0.03%. Also ECN is enabled on the host, which is required
+> for dctcp algorithm to work properly.
 
+The patch applied, also added a kernel version check to exit with TCONF if
+kernel < 3.18.
 
+Thanks,
+Alexey
 
------ Original Message -----
-> From: "Guangwen Feng" <fenggw-fnst@cn.fujitsu.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "Guangwen Feng" <fenggw-fnst@cn.fujitsu.com>
-> Sent: Tuesday, 15 December, 2015 4:11:51 AM
-> Subject: Question about LTP testcase netns_sysfs on RHEL6.7GA
-> 
-> Hello Jan,
-> 
-> I have a question about LTP test case netns_sysfs on RHEL6.7GA, which may
-> need your confirmation, thanks.
-> I just can't figure out why "/sys" mounts failed in a namespace on RHEL6.7GA.
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>   runtest/network_stress.features    |    3 +
+>   testcases/network/dctcp/Makefile   |   22 ++++++++
+>   testcases/network/dctcp/dctcp01.sh |  100 ++++++++++++++++++++++++++++++++++++
+>   3 files changed, 125 insertions(+), 0 deletions(-)
+>   create mode 100644 testcases/network/dctcp/Makefile
+>   create mode 100755 testcases/network/dctcp/dctcp01.sh
+>
+> diff --git a/runtest/network_stress.features b/runtest/network_stress.features
+> index 668f3da..bb907e5 100644
+> --- a/runtest/network_stress.features
+> +++ b/runtest/network_stress.features
+> @@ -31,3 +31,6 @@ ipvlan01 ipvlan01.sh
+>   
+>   gre_ipv4_01 gre01.sh
+>   gre_ipv6_01 gre01.sh -6
+> +
+> +dctcp_ipv4_01 dctcp01.sh
+> +dctcp_ipv6_01 dctcp01.sh -6
+> diff --git a/testcases/network/dctcp/Makefile b/testcases/network/dctcp/Makefile
+> new file mode 100644
+> index 0000000..82a6262
+> --- /dev/null
+> +++ b/testcases/network/dctcp/Makefile
+> @@ -0,0 +1,22 @@
+> +# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program. If not, see <http://www.gnu.org/licenses/>.
+> +
+> +top_srcdir		?= ../../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +INSTALL_TARGETS		:= dctcp01.sh
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/network/dctcp/dctcp01.sh b/testcases/network/dctcp/dctcp01.sh
+> new file mode 100755
+> index 0000000..7181abc
+> --- /dev/null
+> +++ b/testcases/network/dctcp/dctcp01.sh
+> @@ -0,0 +1,100 @@
+> +#!/bin/sh
+> +# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program. If not, see <http://www.gnu.org/licenses/>.
+> +#
+> +# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+> +
+> +TCID=dctcp01
+> +TST_TOTAL=1
+> +TST_CLEANUP="cleanup"
+> +def_alg="cubic"
+> +prev_alg=
+> +
+> +. test_net.sh
+> +
+> +set_cong_alg()
+> +{
+> +	local alg=$1
+> +	tst_resm TINFO "setting $alg"
+> +
+> +	ROD sysctl -q -w net.ipv4.tcp_congestion_control=$alg
+> +	tst_rhost_run -s -c "sysctl -q -w net.ipv4.tcp_congestion_control=$alg"
+> +}
+> +
+> +cleanup()
+> +{
+> +	if [ "$prev_cong_ctl" ]; then
+> +		sysctl -q -w net.ipv4.tcp_congestion_control=$prev_alg
+> +		tst_rhost_run -c \
+> +			"sysctl -q -w net.ipv4.tcp_congestion_control=$prev_alg"
+> +	fi
+> +	tst_rmdir
+> +	tc qdisc del dev $(tst_iface) root netem loss 0.03% ecn
+> +}
+> +
+> +setup()
+> +{
+> +	tst_require_root
+> +	tst_check_cmds ip sysctl tc
+> +
+> +	tst_resm TINFO "emulate congestion with packet loss 0.03% and ECN"
+> +	tc qdisc add dev $(tst_iface) root netem loss 0.03% ecn > /dev/null 2>&1
+> +	if [ $? -ne 0 ]; then
+> +		tst_brkm TCONF "netem doesn't support ECN"
+> +	fi
+> +
+> +	tst_tmpdir
+> +
+> +	prev_alg="$(cat /proc/sys/net/ipv4/tcp_congestion_control)"
+> +}
+> +
+> +test_run()
+> +{
+> +	tst_resm TINFO "compare '$def_alg' and 'dctcp' congestion alg. results"
+> +
+> +	set_cong_alg "$def_alg"
+> +
+> +	tst_netload $(tst_ipaddr rhost) tfo_res TFO
+> +	if [ $? -ne 0 ]; then
+> +		tst_resm TFAIL "test with '$def_alg' has failed"
+> +		return
+> +	fi
+> +	local res0="$(cat tfo_res)"
+> +	tst_resm TINFO "$def_alg time '$res0' ms"
+> +
+> +	set_cong_alg "dctcp"
+> +
+> +	tst_netload $(tst_ipaddr rhost) tfo_res TFO
+> +	if [ $? -ne 0 ]; then
+> +		tst_resm TFAIL "test with 'dctcp' has failed"
+> +		return
+> +	fi
+> +	local res1="$(cat tfo_res)"
+> +	tst_resm TINFO "dctcp time '$res1' ms"
+> +
+> +	local per=$(( $res0 * 100 / $res1 - 100 ))
+> +
+> +	if [ "$per" -lt "10" ]; then
+> +		tst_resm TFAIL "dctcp performance $per %"
+> +	else
+> +		tst_resm TPASS "dctcp performance $per %"
+> +	fi
+> +}
+> +
+> +setup
+> +
+> +test_run
+> +
+> +tst_exit
 
-I can reproduce it as well. The mount fails with:
-mount: none already mounted or /sys busy
-mount: according to mtab, sysfs is already mounted on /sys
-
-It looks like sysfs is not mount namespace aware in RHEL6:
-
-# unshare -m umount /sys; mount | grep /sys
-none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
-
-# ls -la /sys
-total 4
-drwxr-xr-x. 13 root root    0 Dec 15 11:06 .
-dr-xr-xr-x. 25 root root 4096 Dec 15 11:06 ..
-drwxr-xr-x.  2 root root    0 Dec 15 11:06 block
-drwxr-xr-x. 16 root root    0 Dec 15 11:06 bus
-drwxr-xr-x. 37 root root    0 Dec 15 11:06 class
-drwxr-xr-x.  4 root root    0 Dec 15 11:06 dev
-drwxr-xr-x. 10 root root    0 Dec 15 11:06 devices
-drwxr-xr-x.  4 root root    0 Dec 15 11:06 firmware
-drwxr-xr-x.  3 root root    0 Dec 15 11:06 fs
-drwxr-xr-x.  2 root root    0 Dec 15 11:06 hypervisor
-drwxr-xr-x.  5 root root    0 Dec 15 11:06 kernel
-drwxr-xr-x. 78 root root    0 Dec 15 11:06 module
-drwxr-xr-x.  2 root root    0 Dec 15 11:06 power
-
-Adding Matus (and list) to CC.
-
-Regards,
-Jan
-
-> 
-> The netns_sysfs fails on my RHEL6.7GA, and reports:
-> netns_sysfs 1 TFAIL : sysfs in new namespace does not have dummy_test0
-> interface
-> netns_sysfs 2 TINFO : sysfs in new namespace should not contain: dummy0
-> netns_sysfs 2 TINFO : sysfs in new namespace should not contain: eth0
-> netns_sysfs 2 TINFO : sysfs in new namespace should not contain: virbr0
-> netns_sysfs 2 TINFO : sysfs in new namespace should not contain: virbr0-nic
-> netns_sysfs 2 TFAIL : sysfs in new namespace has more than lo and dummy_test0
-> interfaces
-> netns_sysfs 3 TPASS : sysfs not affected by a separate namespace
-> 
-> In fact, the functionality of the test case just works well since via "ip
-> link list" in the namespace I can just get what it expected.
-> I found that it is caused by mount failure on "/sys" in the namespace.
-> However, In comparison, it does mount normally on RHEL7.2GA.
-> 
-> For test, I just created a namespace both on RHEL6.7GA and RHEL7.2GA with
-> CLONE_NEWNS and CLONE_NEWNET flags, I found that even "/proc" mounts
-> normally both on two systems, but I don't understand why "/sys" mounts
-> unsuccessfully on RHEL6.7GA. Sorry I'm not familiar with LXC, does it mean
-> the implementation of mount or net namespace is not yet complete on
-> RHEL6.7GA? Thanks!
-> 
-> 
-> Best Regards,
-> Guangwen Feng
-> 
-> 
-> 
