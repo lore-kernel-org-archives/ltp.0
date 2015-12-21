@@ -1,76 +1,139 @@
-From: Manjeet Pawar <manjeet.p@samsung.com>
-Date: Mon, 21 Dec 2015 08:54:58 +0000 (GMT)
-Subject: [LTP] [Query] Regarding broken_ip4_version testcase
-Message-ID: <1678861559.117761450688097753.JavaMail.weblogic@ep2mlwas06d>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 21 Dec 2015 17:35:17 +0800
+Subject: [LTP] [PATCH v2] hugetlb: add new testcase hugeshmat05.c
+In-Reply-To: <5677A829.6020804@oracle.com>
+References: <1450234786-12997-1-git-send-email-liwang@redhat.com>
+ <5677A829.6020804@oracle.com>
+Message-ID: <CAEemH2fem4=GviBXN642rQ+5bxVLeRXgB28yuiFqe8qSskCT3Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-HI,
->> Testcase:- "broken_ip4_version"
->> Logs: here (xxx.xxx.xxx.xxx is rhost address)
->> ++ssh -n -q root@xxx.xxx.xxx.xxx 'sh -c    '\' ip link set eth0 down  || echo RTERR'\'''
->> 
-
->requesting a pswd?
-No it does not ask for a password. if I execute command on my target shell :- ssh -n -q root@xxx.xxx.xxx.xxx 'sh -c    '\' ip link set eth0 down  || echo RTERR'\''' , It runs successfully and doesn't stuck and not asking for password, i have made password authentication "no" . But when same command execute within testcase it stuck there.
-
-Another thing is test_net.sh does not use LTP_RSH as you told. It is using below command :
- if [ -n "$TST_USE_SSH" ]; then
-        output=`ssh -n -q $user@$RHOST "sh -c \
-            '$BIN_PATH$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
-So the env variable LTP_RSH exported by me does not have any role here. test_net.sh simply use ssh to connect  remote machine which it is able to connect but command doesn't return  anything and stuck at this moment.
-
-If you see it is actually doing "ip link set eth0 down  " for the remote host. And I can see the eth0 becomes down on remote machine. But command  stuck after making eth0 down.
-
-Thanks
-------- Original Message -------
-Sender : Alexey Kodanev<alexey.kodanev@oracle.com>
-Date : Dec 21, 2015 15:45 (GMT+09:00)
-Title : Re: [LTP] [Query] Regarding broken_ip4_version testcase
-
 Hi,
-On 12/16/2015 11:53 AM, Manjeet Pawar wrote:
-> HI,
+
+On Mon, Dec 21, 2015 at 3:20 PM, Alexey Kodanev <alexey.kodanev@oracle.com>
+wrote:
+
+> Hi,
 >
-> I am running broken_ip testcases. I am using below env setting
+> On 12/16/2015 05:59 AM, Li Wang wrote:
 >
-> export NETWORK_DELAY=30
-> export LTP_RSH="ssh -q  -o StrictHostKeyChecking=no -i /root/.ssh/id_rsa -l root"
+>> shmget()/shmat() fails to allocate huge pages shared memory segment
+>> with EINVAL if its size is not in the range [ N*HUGE_PAGE_SIZE - 4095,
+>> N*HUGE_PAGE_SIZE ]. This is a problem in the memory segment size round
+>> up algorithm. The requested size is rounded up to PAGE_SIZE (4096), but
+>> if this roundup does not match HUGE_PAGE_SIZE (2Mb) boundary - the
+>> allocation fails.
+>>
+>> This bug is present in all RHEL6 versions, but not in RHEL7. It looks
+>> like this was fixed in mainstream kernel > v3.3 by the following patches:
+>>
+>> 091d0d5 shm: fix null pointer deref when userspace specifies invalid
+>> hugepage size
+>> af73e4d hugetlbfs: fix mmap failure in unaligned size request
+>> 42d7395 mm: support more pagesizes for MAP_HUGETLB/SHM_HUGETLB
+>> 40716e2 hugetlbfs: fix alignment of huge page requests
+>>
+>> Signed-off-by: Li Wang <liwang@redhat.com>
+>> ---
+>>
+>> Notes:
+>>      v1 --> v2
+>>      a.remove the key value from shmget()
+>>      b.improve the brk messages
+>>      c.just use one loop in the main function
+>>
+>>   runtest/hugetlb                                    |   1 +
+>>   testcases/kernel/mem/.gitignore                    |   1 +
+>>   .../kernel/mem/hugetlb/hugeshmat/hugeshmat05.c     | 136
+>> +++++++++++++++++++++
+>>   3 files changed, 138 insertions(+)
+>>   create mode 100644 testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
+>>
+>> diff --git a/runtest/hugetlb b/runtest/hugetlb
+>> index 2e9f215..75e6426 100644
+>> --- a/runtest/hugetlb
+>> +++ b/runtest/hugetlb
+>> @@ -10,6 +10,7 @@ hugeshmat01 hugeshmat01 -i 5
+>>   hugeshmat02 hugeshmat02 -i 5
+>>   hugeshmat03 hugeshmat03 -i 5
+>>   hugeshmat04 hugeshmat04 -i 5
+>> +hugeshmat05 hugeshmat05 -i 5
+>>
+>
+> Did you forget to increase iterations here or it is not needed anymore?
+> In the first patch, if I am not mistaken, was 15 (because of two loops).
+>
 
-LTP_RSH is not used in test_net.sh/tst_rhost_run(), which is sourced by 
-broken_ip test group.
-So it will be as you wrote below without your private key.
-
-You could try to create alias ssh='ssh -o StrictHostKeyChecking=no -i 
-/root/.ssh/id_rsa'
-and then run the test.
+it is no needed, 5 loops is enough i think. :)
 
 
 >
-> Testcase:- "broken_ip4_version"
-> Logs: here (xxx.xxx.xxx.xxx is rhost address)
-> ++ssh -n -q root@xxx.xxx.xxx.xxx 'sh -c    '\' ip link set eth0 down  || echo RTERR'\'''
-> 
+>     hugeshmctl01 hugeshmctl01 -i 5
+>>   hugeshmctl02 hugeshmctl02 -i 5
+>>
+> ...
+>
+>> +
+>> +int main(int ac, char **av)
+>> +{
+>> +       int lc;
+>> +
+>> +       tst_parse_opts(ac, av, NULL, NULL);
+>> +
+>> +       setup();
+>> +
+>> +       for (lc = 0; TEST_LOOPING(lc); lc++) {
+>> +               tst_count = 0;
+>> +
+>> +               /* N*hpage_size - page_size FAIL */
+>> +               shm_test(N * hpage_size - page_size);
+>> +
+>> +               /* N*hpage_size - page_size - 1 SUCCESS*/
+>> +               shm_test(N * hpage_size - page_size - 1);
+>> +
+>> +               /* N*hpage_size  SUCCESS */
+>> +               shm_test(N * hpage_size);
+>> +
+>> +               /* N*hpage_size + 1 FAIL */
+>>
+>
+> Could you please add more informative comments (may be explaining why it
+> is "FAIL"/"SUCCESS")
+> or remove them completely, they just repeat what is passed to the function.
+>
+> We could also set sizes in array, defining it before the "for":
+>
 
-requesting a pswd?
+ok, I tend to accept the second suggestion. because it looks like more
+neatly than before.
 
-Best regards,
-Alexey
 
-Also please send any further emails to the following ML:
+>
+> const int tst_sizes[] = { N * hpage_size - page_size,
+>                                             N * hpage_size, ... };
+>
+> for (lc ...) {
+>     tst_count = 0;
+>     for(i = 0; i < ARRAY_SIZE(tst_sizes); ++i)
+>         shm_test(tst_sizes[i]);
+> }
+>
+>
+> Best regards,
+> Alexey
+>
+>
+thanks a lot! If there is no other comments, I'd like to sent patch v3 this
+evening.
 
-ltp@lists.linux.it
 
-> I am not able to proceed after this command. I checked my remote machine, its network is already down when this command executed, but the testcase stuck at this moment and not returning anything.
-> Am I missing anything?
-> I checked with all my env settings, they are working for rest of the other testcases but not for this category "broken_ip_*).
-> Thanks
-> Manjeet
-> ------------------------------------------------------------------------------
-> _______________________________________________
-> Ltp-list mailing list
-> Ltp-list@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/ltp-list
+-- 
+Regards,
+Li Wang
+Email: liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20151221/90d14354/attachment-0001.html>
