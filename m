@@ -1,118 +1,74 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 21 Dec 2015 19:16:53 +0800
-Subject: [LTP] [PATCH v4] hugetlb/hugemmap: add new testcase hugemmap06.c
-Message-ID: <1450696613-6847-1-git-send-email-liwang@redhat.com>
+Date: Mon, 21 Dec 2015 19:18:37 +0800
+Subject: [LTP] [PATCH v3] hugetlb: add new testcase hugeshmat05.c
+Message-ID: <1450696717-6983-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Description of Problem:
-        There is a race condition if we map a same file on different processes.
-        Region tracking is protected by mmap_sem and hugetlb_instantiation_mutex.
-        When we do mmap, we don't grab a hugetlb_instantiation_mutex, but only
-        mmap_sem (exclusively).  This doesn't prevent other tasks from modifying
-        the region structure, so it can be modified by two processes concurrently.
+shmget()/shmat() fails to allocate huge pages shared memory segment
+with EINVAL if its size is not in the range [ N*HUGE_PAGE_SIZE - 4095,
+N*HUGE_PAGE_SIZE ]. This is a problem in the memory segment size round
+up algorithm. The requested size is rounded up to PAGE_SIZE (4096), but
+if this roundup does not match HUGE_PAGE_SIZE (2Mb) boundary - the
+allocation fails.
 
-        Testcase hugemmap06.c is the trigger to cause system crash:
-        crash> bt -s
-        PID: 4492   TASK: ffff88033e437520  CPU: 2   COMMAND: "hugemmap06"
-         #0 [ffff88033dbb3960] machine_kexec+395 at ffffffff8103d1ab
-         #1 [ffff88033dbb39c0] crash_kexec+114 at ffffffff810cc4f2
-         #2 [ffff88033dbb3a90] oops_end+192 at ffffffff8153c840
-         #3 [ffff88033dbb3ac0] die+91 at ffffffff81010f5b
-         #4 [ffff88033dbb3af0] do_general_protection+338 at ffffffff8153c332
-         #5 [ffff88033dbb3b20] general_protection+37 at ffffffff8153bb05
-            [exception RIP: list_del+40]
-            RIP: ffffffff812a3598  RSP: ffff88033dbb3bd8  RFLAGS: 00010292
-            RAX: dead000000100100  RBX: ffff88013cf37340  RCX: 0000000000002dc2
-            RDX: dead000000200200  RSI: 0000000000000046  RDI: 0000000000000009
-            RBP: ffff88033dbb3be8   R8: 0000000000015598   R9: 0000000000000000
-            R10: 000000000000000f  R11: 0000000000000009  R12: 000000000000000a
-            R13: ffff88033d64b9e8  R14: ffff88033e5b9720  R15: ffff88013cf37340
-            ORIG_RAX: ffffffffffffffff  CS: 0010  SS: 0000
-         #6 [ffff88033dbb3bf0] region_add+154 at ffffffff811698da
-         #7 [ffff88033dbb3c40] alloc_huge_page+669 at ffffffff8116a61d
-         #8 [ffff88033dbb3ce0] hugetlb_fault+1083 at ffffffff8116b9bb
-         #9 [ffff88033dbb3d90] handle_mm_fault+917 at ffffffff81153295
-        #10 [ffff88033dbb3e00] __do_page_fault+326 at ffffffff8104f156
-        #11 [ffff88033dbb3f20] do_page_fault+62 at ffffffff8153e78e
-        #12 [ffff88033dbb3f50] page_fault+37 at ffffffff8153bb35
-            RIP: 00000000004027c6  RSP: 00007f7cadef9e80  RFLAGS: 00010297
-            RAX: 000000005a49238f  RBX: 00007ffcb2d19320  RCX: 000000357498e084
-            RDX: 000000357498e0b0  RSI: 00007f7cadef9e5c  RDI: 000000357498e4e0
-            RBP: 0000000000000008   R8: 000000357498e0a0   R9: 000000357498e100
-            R10: 00007f7cadefa9d0  R11: 0000000000000206  R12: 0000000000000007
-            R13: 0000000000000002  R14: 0000000000000003  R15: 00002aaaac000000
-            ORIG_RAX: ffffffffffffffff  CS: 0033  SS: 002b
+This bug is present in all RHEL6 versions, but not in RHEL7. It looks
+like this was fixed in mainstream kernel > v3.3 by the following patches:
 
-The fix are all these below commits:
-       f522c3ac00(mm, hugetlb: change variable name reservations to resv)
-       9119a41e90(mm, hugetlb: unify region structure handling)
-       7b24d8616b(mm, hugetlb: fix race in region tracking)
-       1406ec9ba6(mm, hugetlb: improve, cleanup resv_map parameters)
+091d0d5 shm: fix null pointer deref when userspace specifies invalid hugepage size
+af73e4d hugetlbfs: fix mmap failure in unaligned size request
+42d7395 mm: support more pagesizes for MAP_HUGETLB/SHM_HUGETLB
+40716e2 hugetlbfs: fix alignment of huge page requests
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
 
 Notes:
-    v3 --> v4
-    - declare sz type and assign value at the same line
-    - change 'void *addr' to 'char * addr' in the mp struct
-    - take use of 'mmap_sz->addr + ...' in a clean way
-    - remove the useless pthread_join
-    - fix a tpyo 'mremap'
+    v2 --> v3
+    - remove the redundant code comments
+    - set the test sizes in array tst_sizes[]
 
  runtest/hugetlb                                    |   1 +
  testcases/kernel/mem/.gitignore                    |   1 +
- testcases/kernel/mem/hugetlb/hugemmap/Makefile     |   2 +
- testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c | 175 +++++++++++++++++++++
- 4 files changed, 179 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
+ .../kernel/mem/hugetlb/hugeshmat/hugeshmat05.c     | 135 +++++++++++++++++++++
+ 3 files changed, 137 insertions(+)
+ create mode 100644 testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
 
 diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 2e9f215..ac24513 100644
+index 2e9f215..75e6426 100644
 --- a/runtest/hugetlb
 +++ b/runtest/hugetlb
-@@ -2,6 +2,7 @@ hugemmap01 hugemmap01
- hugemmap02 hugemmap02
- hugemmap04 hugemmap04
- hugemmap05 hugemmap05
-+hugemmap06 hugemmap06
- hugemmap05_1 hugemmap05 -m
- hugemmap05_2 hugemmap05 -s
- hugemmap05_3 hugemmap05 -s -m
+@@ -10,6 +10,7 @@ hugeshmat01 hugeshmat01 -i 5
+ hugeshmat02 hugeshmat02 -i 5
+ hugeshmat03 hugeshmat03 -i 5
+ hugeshmat04 hugeshmat04 -i 5
++hugeshmat05 hugeshmat05 -i 5
+ 
+ hugeshmctl01 hugeshmctl01 -i 5
+ hugeshmctl02 hugeshmctl02 -i 5
 diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 4702377..ac8e6d8 100644
+index 4702377..46c2432 100644
 --- a/testcases/kernel/mem/.gitignore
 +++ b/testcases/kernel/mem/.gitignore
-@@ -3,6 +3,7 @@
- /hugetlb/hugemmap/hugemmap02
- /hugetlb/hugemmap/hugemmap04
- /hugetlb/hugemmap/hugemmap05
-+/hugetlb/hugemmap/hugemmap06
- /hugetlb/hugeshmat/hugeshmat01
+@@ -7,6 +7,7 @@
  /hugetlb/hugeshmat/hugeshmat02
  /hugetlb/hugeshmat/hugeshmat03
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/Makefile b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-index f51f6b9..2473aca 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/Makefile
-@@ -25,3 +25,5 @@ top_srcdir		?= ../../../../..
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../Makefile.inc
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+hugemmap06: CFLAGS+=-pthread
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
+ /hugetlb/hugeshmat/hugeshmat04
++/hugetlb/hugeshmat/hugeshmat05
+ /hugetlb/hugeshmctl/hugeshmctl01
+ /hugetlb/hugeshmctl/hugeshmctl02
+ /hugetlb/hugeshmctl/hugeshmctl03
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
 new file mode 100644
-index 0000000..e52b21d
+index 0000000..ead73ca
 --- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap06.c
-@@ -0,0 +1,175 @@
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
+@@ -0,0 +1,135 @@
 +/*
-+ *  Copyright (c) 2015 Red Hat, Inc.
++ * Copyright (c) 2015 Red Hat, Inc.
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -125,68 +81,63 @@ index 0000000..e52b21d
 + * GNU General Public License for more details.
 + *
 + * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 + */
 +
 +/*
 + * DESCRIPTION
++ *	shmget()/shmat() fails to allocate huge pages shared memory segment
++ *	with EINVAL if its size is not in the range [ N*HUGE_PAGE_SIZE - 4095,
++ *	N*HUGE_PAGE_SIZE ]. This is a problem in the memory segment size round
++ *	up algorithm. The requested size is rounded up to PAGE_SIZE (4096), but
++ *	if this roundup does not match HUGE_PAGE_SIZE (2Mb) boundary - the
++ *	allocation fails.
 + *
-+ *   There is a race condition if we map a same file on different processes.
-+ *   Region tracking is protected by mmap_sem and hugetlb_instantiation_mutex.
-+ *   When we do mmap, we don't grab a hugetlb_instantiation_mutex, but only
-+ *   mmap_sem (exclusively).  This doesn't prevent other tasks from modifying
-+ *   the region structure, so it can be modified by two processes concurrently.
++ *	This bug is present in all RHEL6 versions, but not in RHEL7. It looks
++ *	like this was fixed in mainstream kernel > v3.3 by the following patches:
 + *
-+ *   This bug was fixed on stable kernel by commits:
-+ *       f522c3ac00(mm, hugetlb: change variable name reservations to resv)
-+ *       9119a41e90(mm, hugetlb: unify region structure handling)
-+ *       7b24d8616b(mm, hugetlb: fix race in region tracking)
-+ *       1406ec9ba6(mm, hugetlb: improve, cleanup resv_map parameters)
++ *	091d0d5 (shm: fix null pointer deref when userspace specifies invalid hugepage size)
++ *	af73e4d (hugetlbfs: fix mmap failure in unaligned size request)
++ *	42d7395 (mm: support more pagesizes for MAP_HUGETLB/SHM_HUGETLB)
++ *	40716e2 (hugetlbfs: fix alignment of huge page requests)
 + *
-+ * AUTHOR:
-+ *    Herton R. Krzesinski <herton@redhat.com>
-+ *    Li Wang <liwang@redhat.com>
++ * AUTHORS
++ *	Vladislav Dronov <vdronov@redhat.com>
++ *	Li Wang <liwang@redhat.com>
++ *
 + */
 +
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <pthread.h>
-+#include <stdio.h>
 +#include <stdlib.h>
-+#include <sys/mman.h>
++#include <stdio.h>
 +#include <sys/types.h>
-+#include <unistd.h>
++#include <sys/ipc.h>
++#include <sys/shm.h>
++#include <sys/mman.h>
++#include <fcntl.h>
 +
 +#include "test.h"
 +#include "mem.h"
 +#include "hugetlb.h"
 +
-+char *TCID = "hugemmap06";
-+int TST_TOTAL = 5;
++char *TCID = "hugeshmat05";
++int TST_TOTAL = 1;
 +
++static long page_size;
 +static long hpage_size;
 +static long hugepages;
 +
-+struct mp {
-+	char *addr;
-+	int sz;
-+};
-+
-+#define ARSZ 50
++#define N 4
 +
 +void setup(void)
 +{
 +	tst_require_root();
 +	check_hugepage();
 +
-+	hpage_size = read_meminfo("Hugepagesize:") * 1024;
 +	orig_hugepages = get_sys_tune("nr_hugepages");
++	page_size = getpagesize();
++	hpage_size = read_meminfo("Hugepagesize:") * 1024;
 +
-+	hugepages = (ARSZ + 1) * TST_TOTAL;
-+
-+	if (hugepages * read_meminfo("Hugepagesize:") > read_meminfo("MemTotal:"))
-+		tst_brkm(TCONF, NULL, "System RAM is not enough to test.");
-+
++	hugepages = N + 1;
 +	set_sys_tune("nr_hugepages", hugepages, 1);
 +
 +	TEST_PAUSE;
@@ -197,88 +148,53 @@ index 0000000..e52b21d
 +	set_sys_tune("nr_hugepages", orig_hugepages, 0);
 +}
 +
-+void *thr(void *arg)
++void shm_test(int size)
 +{
-+	struct mp *mmap_sz = arg;
-+	int i, lim, a, b, c;
++	int shmid;
++	char *shmaddr;
 +
-+	srand(time(NULL));
-+	lim = rand() % 10;
-+	for (i = 0; i < lim; i++) {
-+		a = rand() % mmap_sz->sz;
-+		for (c = 0; c <= a; c++) {
-+			b = rand() % mmap_sz->sz;
-+			*(mmap_sz->addr + b * hpage_size) = rand();
-+		}
-+	}
-+	return NULL;
-+}
++	shmid = shmget(IPC_PRIVATE, size, 0600 | IPC_CREAT | SHM_HUGETLB);
++	if (shmid < 0)
++		tst_brkm(TBROK | TERRNO, cleanup, "shmget failed");
 +
-+void do_mmap(void)
-+{
-+	int i, sz = ARSZ + 1;
-+	void *addr, *new_addr;
-+	struct mp mmap_sz[ARSZ];
-+	pthread_t tid[ARSZ];
-+
-+	addr = mmap(NULL, sz * hpage_size,
-+			PROT_READ | PROT_WRITE,
-+			MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-+			-1, 0);
-+
-+	if (addr == MAP_FAILED) {
-+		if (errno == ENOMEM) {
-+			tst_brkm(TCONF, cleanup,
-+				"Cannot allocate hugepage, memory too fragmented?");
-+		}
-+
-+		tst_brkm(TBROK | TERRNO, cleanup, "Cannot allocate hugepage");
++	shmaddr = shmat(shmid, 0, 0);
++	if (shmaddr == (char *)-1) {
++		shmctl(shmid, IPC_RMID, NULL);
++		tst_brkm(TFAIL | TERRNO, cleanup, "Bug: shared memory attach failure.");
 +	}
 +
-+	for (i = 0; i < ARSZ; ++i, --sz) {
-+		mmap_sz[i].sz = sz;
-+		mmap_sz[i].addr = addr;
++	shmaddr[0] = 1;
++	tst_resm(TINFO, "allocated %d huge bytes", size);
 +
-+		TEST(pthread_create(&tid[i], NULL, thr, &mmap_sz[i]));
-+		if (TEST_RETURN)
-+			tst_brkm(TBROK | TRERRNO, cleanup,
-+					"pthread_create failed");
-+
-+		new_addr = mmap(addr, (sz - 1) * hpage_size,
-+				PROT_READ | PROT_WRITE,
-+				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB | MAP_FIXED,
-+				-1, 0);
-+
-+		if (new_addr == MAP_FAILED)
-+			tst_brkm(TFAIL | TERRNO, cleanup, "mmap failed");
-+
-+		addr = new_addr;
++	if (shmdt((const void *)shmaddr) != 0) {
++		shmctl(shmid, IPC_RMID, NULL);
++		tst_brkm(TFAIL | TERRNO, cleanup, "Detach failure.");
 +	}
 +
-+	for (i = 0; i < ARSZ; ++i) {
-+		TEST(pthread_join(tid[i], NULL));
-+		if (TEST_RETURN)
-+			tst_brkm(TBROK | TRERRNO, cleanup,
-+					"pthread_join failed");
-+	}
-+
-+	if (munmap(addr, sz * hpage_size) == -1)
-+		tst_brkm(TFAIL | TERRNO, cleanup, "huge munmap failed");
++	shmctl(shmid, IPC_RMID, NULL);
 +}
 +
 +int main(int ac, char **av)
 +{
-+	int lc, i;
++	int lc;
++	unsigned int i;
 +
 +	tst_parse_opts(ac, av, NULL, NULL);
 +
 +	setup();
 +
++	const int tst_sizes[] = {
++		N * hpage_size - page_size,
++		N * hpage_size - page_size -1,
++		hpage_size,
++		hpage_size + 1
++	};
++
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
 +
-+		for (i = 0; i < TST_TOTAL; i++)
-+			do_mmap();
++		for(i = 0; i < ARRAY_SIZE(tst_sizes); ++i)
++			shm_test(tst_sizes[i]);
 +
 +		tst_resm(TPASS, "No regression found.");
 +	}
