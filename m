@@ -1,60 +1,83 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 23 Dec 2015 11:32:54 +0800
-Subject: [LTP] [PATCH] ftrace_stress_test.sh: remove the tracing_enabled
-	file tests
-In-Reply-To: <1392836130.1371816.1450839868721.JavaMail.zimbra@redhat.com>
-References: <1450784730-43354-1-git-send-email-chuhu@redhat.com>
- <1450795306.3105.102.camel@fedora>
- <1392836130.1371816.1450839868721.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2dTCFSOuW4suJohxzUogckJMUDpuMrQruD_qciH4zDBjw@mail.gmail.com>
+From: Roman Gushchin <klamm@yandex-team.ru>
+Date: Mon, 21 Dec 2015 16:21:10 +0300
+Subject: [LTP] [PATCH] syscalls/readahead02: fix error check
+In-Reply-To: <20151211135323.GA31048@red-moon>
+References: <20151211135323.GA31048@red-moon>
+Message-ID: <1450704070-7870-1-git-send-email-klamm@yandex-team.ru>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+After commit 600e19afc5f8a6 ("mm: use only per-device readahead limit")
+readahead size is not limited anymore by 2 megabytes. Instead,
+the per-bdi limit is used.
 
+Signed-off-by: Roman Gushchin <klamm@yandex-team.ru>
+---
+ testcases/kernel/syscalls/readahead/readahead02.c | 34 +++++++++++++++++++++--
+ 1 file changed, 31 insertions(+), 3 deletions(-)
 
-> > -
-> > > -   for ((i = 0; i < $MAX_LOOP; i++))
-> > > -   {
-> > > -           echo 0 > "$TRACING_PATH"/tracing_enabled
-> > > -           echo 1 > "$TRACING_PATH"/tracing_enabled
-> >
-> > Maybe we should keep this file but switch it to "tracing_on"?
-> >
-> > -- Steve
->
-> Thanks for kind review the patch. As the case was created in 2010 when the
-> two files exit together.There is another case for testing tracing_on :
-> ftrace_tracing_on.sh.
->
-> I think we need some checker to check whether tracing_on, tracing_enabled
-> or other trace files are there, And then decide which sub stress scripts to
-> run. And for some new trace file without test code,I'm also considering add
-> some new stress script for them.
->
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index fe0b8a0..b5a7789 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -184,6 +184,30 @@ static void create_testfile(void)
+ 	free(tmp);
+ }
+ 
++static long get_device_readahead(const char *fname)
++{
++	FILE *f;
++	struct stat st;
++	unsigned long ra_kb = 0;
++	char buf[256];
++
++	if (stat(fname, &st) == -1)
++		return -1;
++	snprintf(buf, sizeof(buf), "/sys/dev/block/%d:%d/queue/read_ahead_kb",
++		 major(st.st_dev), minor(st.st_dev));
++	f = fopen(buf, "r");
++	if (!f)
++		return -1;
++
++	if (fscanf(f, "%lu", &ra_kb) != 1) {
++		fclose(f);
++		return -1;
++	}
++
++	fclose(f);
++	return ra_kb * 1024;
++}
++
+ /* read_testfile - mmap testfile and read every page.
+  * This functions measures how many I/O and time it takes to fully
+  * read contents of test file.
+@@ -206,16 +230,20 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
+ 	unsigned long time_start_usec, time_end_usec;
+ 	off_t offset;
+ 	struct timeval now;
++	long readahead_size;
++
++	readahead_size = get_device_readahead(fname);
++	if (readahead_size == -1)
++		tst_brkm(TBROK, cleanup, "Failed to get readahead size");
+ 
+ 	fd = open(fname, O_RDONLY);
+ 	if (fd < 0)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "Failed to open %s", fname);
+ 
+ 	if (do_readahead) {
+-		/* read ahead in chunks, 2MB is maximum since 3.15-rc1 */
+-		for (i = 0; i < fsize; i += 2*1024*1024) {
++		for (i = 0; i < fsize; i += readahead_size) {
+ 			TEST(ltp_syscall(__NR_readahead, fd,
+-				(off64_t) i, 2*1024*1024));
++				(off64_t) i, readahead_size));
+ 			if (TEST_RETURN != 0)
+ 				break;
+ 		}
+-- 
+2.5.0
 
-Sounds good, feel free to format patch adding them.
-
-To make the progress extendable, we could also take consider that
-reorganize the stress test to ftrace general test, then adding some
-function or regression testcases.
-
-something like:
----------
-tracing
-- ftrace_test
-   - ftrace_lib.sh
-   - ftrace_function_test.sh
-   - ftrace_stress_test.sh
-   - ftrace_regression_test.sh
-   - frace testcase directory...
-   - Makefile
-
-
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20151223/a54187dc/attachment.html>
