@@ -1,207 +1,47 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 21 Dec 2015 19:18:37 +0800
-Subject: [LTP] [PATCH v3] hugetlb: add new testcase hugeshmat05.c
-Message-ID: <1450696717-6983-1-git-send-email-liwang@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 21 Dec 2015 14:31:32 +0300
+Subject: [LTP] [Query] Regarding broken_ip4_version testcase
+In-Reply-To: <1678861559.117761450688097753.JavaMail.weblogic@ep2mlwas06d>
+References: <1678861559.117761450688097753.JavaMail.weblogic@ep2mlwas06d>
+Message-ID: <5677E314.30806@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-shmget()/shmat() fails to allocate huge pages shared memory segment
-with EINVAL if its size is not in the range [ N*HUGE_PAGE_SIZE - 4095,
-N*HUGE_PAGE_SIZE ]. This is a problem in the memory segment size round
-up algorithm. The requested size is rounded up to PAGE_SIZE (4096), but
-if this roundup does not match HUGE_PAGE_SIZE (2Mb) boundary - the
-allocation fails.
 
-This bug is present in all RHEL6 versions, but not in RHEL7. It looks
-like this was fixed in mainstream kernel > v3.3 by the following patches:
+On 12/21/2015 11:54 AM, Manjeet Pawar wrote:
+> HI,
+>>> Testcase:- "broken_ip4_version"
+>>> Logs: here (xxx.xxx.xxx.xxx is rhost address)
+>>> ++ssh -n -q root@xxx.xxx.xxx.xxx 'sh -c    '\' ip link set eth0 down  || echo RTERR'\'''
+>>>
+>> requesting a pswd?
+> No it does not ask for a password. if I execute command on my target shell :- ssh -n -q root@xxx.xxx.xxx.xxx 'sh -c    '\' ip link set eth0 down  || echo RTERR'\''' , It runs successfully and doesn't stuck and not asking for password, i have made password authentication "no" . But when same command execute within testcase it stuck there.
+>
+> Another thing is test_net.sh does not use LTP_RSH as you told. It is using below command :
+>   if [ -n "$TST_USE_SSH" ]; then
+>          output=`ssh -n -q $user@$RHOST "sh -c \
+>              '$BIN_PATH$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+> So the env variable LTP_RSH exported by me does not have any role here. test_net.sh simply use ssh to connect  remote machine which it is able to connect but command doesn't return  anything and stuck at this moment.
+>
+> If you see it is actually doing "ip link set eth0 down  " for the remote host. And I can see the eth0 becomes down on remote machine. But command  stuck after making eth0 down.
 
-091d0d5 shm: fix null pointer deref when userspace specifies invalid hugepage size
-af73e4d hugetlbfs: fix mmap failure in unaligned size request
-42d7395 mm: support more pagesizes for MAP_HUGETLB/SHM_HUGETLB
-40716e2 hugetlbfs: fix alignment of huge page requests
+Probably, your test interface is the same interface the management link 
+is working on, i.e. eth0 is used to connect two machines over ssh. Try 
+to set RHOST to the name or IP address that is not routed through eth0 
+or use another test interface to perform the test. This is a requirement 
+for network/stress group.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
+You can also remove "tst_restore_ipaddr()" from broken_*lib.sh scripts, 
+if eth0 has already been configured with IPs.
 
-Notes:
-    v2 --> v3
-    - remove the redundant code comments
-    - set the test sizes in array tst_sizes[]
+I'm going to send a patch to remove this code from them, because most 
+network tests expect IP addresses have already been set, and some of  
+network/stress tests, broken_ip in particular, don't really need to 
+restore the addresses.
 
- runtest/hugetlb                                    |   1 +
- testcases/kernel/mem/.gitignore                    |   1 +
- .../kernel/mem/hugetlb/hugeshmat/hugeshmat05.c     | 135 +++++++++++++++++++++
- 3 files changed, 137 insertions(+)
- create mode 100644 testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
-
-diff --git a/runtest/hugetlb b/runtest/hugetlb
-index 2e9f215..75e6426 100644
---- a/runtest/hugetlb
-+++ b/runtest/hugetlb
-@@ -10,6 +10,7 @@ hugeshmat01 hugeshmat01 -i 5
- hugeshmat02 hugeshmat02 -i 5
- hugeshmat03 hugeshmat03 -i 5
- hugeshmat04 hugeshmat04 -i 5
-+hugeshmat05 hugeshmat05 -i 5
- 
- hugeshmctl01 hugeshmctl01 -i 5
- hugeshmctl02 hugeshmctl02 -i 5
-diff --git a/testcases/kernel/mem/.gitignore b/testcases/kernel/mem/.gitignore
-index 4702377..46c2432 100644
---- a/testcases/kernel/mem/.gitignore
-+++ b/testcases/kernel/mem/.gitignore
-@@ -7,6 +7,7 @@
- /hugetlb/hugeshmat/hugeshmat02
- /hugetlb/hugeshmat/hugeshmat03
- /hugetlb/hugeshmat/hugeshmat04
-+/hugetlb/hugeshmat/hugeshmat05
- /hugetlb/hugeshmctl/hugeshmctl01
- /hugetlb/hugeshmctl/hugeshmctl02
- /hugetlb/hugeshmctl/hugeshmctl03
-diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
-new file mode 100644
-index 0000000..ead73ca
---- /dev/null
-+++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat05.c
-@@ -0,0 +1,135 @@
-+/*
-+ * Copyright (c) 2015 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 3 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * DESCRIPTION
-+ *	shmget()/shmat() fails to allocate huge pages shared memory segment
-+ *	with EINVAL if its size is not in the range [ N*HUGE_PAGE_SIZE - 4095,
-+ *	N*HUGE_PAGE_SIZE ]. This is a problem in the memory segment size round
-+ *	up algorithm. The requested size is rounded up to PAGE_SIZE (4096), but
-+ *	if this roundup does not match HUGE_PAGE_SIZE (2Mb) boundary - the
-+ *	allocation fails.
-+ *
-+ *	This bug is present in all RHEL6 versions, but not in RHEL7. It looks
-+ *	like this was fixed in mainstream kernel > v3.3 by the following patches:
-+ *
-+ *	091d0d5 (shm: fix null pointer deref when userspace specifies invalid hugepage size)
-+ *	af73e4d (hugetlbfs: fix mmap failure in unaligned size request)
-+ *	42d7395 (mm: support more pagesizes for MAP_HUGETLB/SHM_HUGETLB)
-+ *	40716e2 (hugetlbfs: fix alignment of huge page requests)
-+ *
-+ * AUTHORS
-+ *	Vladislav Dronov <vdronov@redhat.com>
-+ *	Li Wang <liwang@redhat.com>
-+ *
-+ */
-+
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <sys/types.h>
-+#include <sys/ipc.h>
-+#include <sys/shm.h>
-+#include <sys/mman.h>
-+#include <fcntl.h>
-+
-+#include "test.h"
-+#include "mem.h"
-+#include "hugetlb.h"
-+
-+char *TCID = "hugeshmat05";
-+int TST_TOTAL = 1;
-+
-+static long page_size;
-+static long hpage_size;
-+static long hugepages;
-+
-+#define N 4
-+
-+void setup(void)
-+{
-+	tst_require_root();
-+	check_hugepage();
-+
-+	orig_hugepages = get_sys_tune("nr_hugepages");
-+	page_size = getpagesize();
-+	hpage_size = read_meminfo("Hugepagesize:") * 1024;
-+
-+	hugepages = N + 1;
-+	set_sys_tune("nr_hugepages", hugepages, 1);
-+
-+	TEST_PAUSE;
-+}
-+
-+void cleanup(void)
-+{
-+	set_sys_tune("nr_hugepages", orig_hugepages, 0);
-+}
-+
-+void shm_test(int size)
-+{
-+	int shmid;
-+	char *shmaddr;
-+
-+	shmid = shmget(IPC_PRIVATE, size, 0600 | IPC_CREAT | SHM_HUGETLB);
-+	if (shmid < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "shmget failed");
-+
-+	shmaddr = shmat(shmid, 0, 0);
-+	if (shmaddr == (char *)-1) {
-+		shmctl(shmid, IPC_RMID, NULL);
-+		tst_brkm(TFAIL | TERRNO, cleanup, "Bug: shared memory attach failure.");
-+	}
-+
-+	shmaddr[0] = 1;
-+	tst_resm(TINFO, "allocated %d huge bytes", size);
-+
-+	if (shmdt((const void *)shmaddr) != 0) {
-+		shmctl(shmid, IPC_RMID, NULL);
-+		tst_brkm(TFAIL | TERRNO, cleanup, "Detach failure.");
-+	}
-+
-+	shmctl(shmid, IPC_RMID, NULL);
-+}
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+	unsigned int i;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
-+
-+	setup();
-+
-+	const int tst_sizes[] = {
-+		N * hpage_size - page_size,
-+		N * hpage_size - page_size -1,
-+		hpage_size,
-+		hpage_size + 1
-+	};
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for(i = 0; i < ARRAY_SIZE(tst_sizes); ++i)
-+			shm_test(tst_sizes[i]);
-+
-+		tst_resm(TPASS, "No regression found.");
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
--- 
-1.8.3.1
+Best regards,
+Alexey
 
