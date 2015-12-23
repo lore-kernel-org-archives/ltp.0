@@ -1,77 +1,178 @@
-From: Helge Deller <deller@gmx.de>
-Date: Tue, 22 Dec 2015 20:01:22 +0100
-Subject: [LTP] [PATCH v4] hugetlb/hugemmap: add new testcase hugemmap06.c
-In-Reply-To: <CAEemH2fHsmU5K3-3Jja112O_1X8MUKUfaNiYZ3j=Nh3XN8_P4A@mail.gmail.com>
-References: <1450696613-6847-1-git-send-email-liwang@redhat.com>
- <56780067.1020704@gmx.de>
- <CAEemH2fHsmU5K3-3Jja112O_1X8MUKUfaNiYZ3j=Nh3XN8_P4A@mail.gmail.com>
-Message-ID: <56799E02.20108@gmx.de>
+From: Chunyu Hu <chuhu@redhat.com>
+Date: Tue, 22 Dec 2015 22:04:28 -0500 (EST)
+Subject: [LTP] [PATCH] ftrace_stress_test.sh: remove the tracing_enabled
+ file tests
+In-Reply-To: <1450795306.3105.102.camel@fedora>
+References: <1450784730-43354-1-git-send-email-chuhu@redhat.com>
+ <1450795306.3105.102.camel@fedora>
+Message-ID: <1392836130.1371816.1450839868721.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 22.12.2015 03:36, Li Wang wrote:
-> Hi,
-> 
-> On Mon, Dec 21, 2015 at 9:36 PM, Helge Deller <deller@gmx.de <mailto:deller@gmx.de>> wrote:
-> 
->     ...
->     > +#define _GNU_SOURCE
->     > +#include <errno.h>
->     > +#include <pthread.h>
->     > +#include <stdio.h>
->     > +#include <stdlib.h>
->     > +#include <sys/mman.h>
->     > +#include <sys/types.h>
->     > +#include <unistd.h>
->     > +
->     > +#include "test.h"
->     > +#include "mem.h"
->     > +#include "hugetlb.h"
->     > +
->     > +char *TCID = "hugemmap06";
->     > +int TST_TOTAL = 5;
->     > +
->     > +static long hpage_size;
->     > +static long hugepages;
->     > +
->     > +struct mp {
->     > +     char *addr;
->     > +     int sz;
->     > +};
->     > +
->     > +#define ARSZ 50
->     > +
->     > +void setup(void)
->     > +{
->     > +     tst_require_root();
->     > +     check_hugepage();
->     > +
->     > +     hpage_size = read_meminfo("Hugepagesize:") * 1024;
->     > +     orig_hugepages = get_sys_tune("nr_hugepages");
->     > +
->     > +     hugepages = (ARSZ + 1) * TST_TOTAL;
->     > +
->     > +     if (hugepages * read_meminfo("Hugepagesize:") > read_meminfo("MemTotal:"))
->     > +             tst_brkm(TCONF, NULL, "System RAM is not enough to test.");
-> 
-> 
->     Just a general note:
-> 
->     What happens on architectures where no hugepages are available?
->     Maybe you should add a check and return TCONF() in those cases?
-> 
-> 
-> thanks for you kind note, the function above  ?check_hugepage()? do that work.
-> you could find details in the include file: /hugetlb/lib/hugetlb.h
 
-Ah - great!
-I didn't saw that.
+> From: "Steven Rostedt" <srostedt@redhat.com>
+> To: "Chuyu Hu" <chuhu@redhat.com>
+> Cc: ltp@lists.linux.it, liwan@redhat.com, jstancek@redhat.com
+> Sent: Tuesday, December 22, 2015 10:41:46 PM
+> Subject: Re: [PATCH] ftrace_stress_test.sh: remove the tracing_enabled file tests
+> 
+> On Tue, 2015-12-22 at 19:45 +0800, Chuyu Hu wrote:
+> > When running the tests on RHEL7, got message as below:
+> > ---------
+> > /mnt/testarea/ltp/testcases/bin/ftrace_stress/ftrace_tracing_enabled.sh:
+> > line 25: /mnt/testarea/ltp/testcases/bin/debugfs/tracing/tracing_enabled:
+> > Permission denied
+> > /mnt/testarea/ltp/testcases/bin/ftrace_stress/ftrace_tracing_enabled.sh:
+> > line 26: /mnt/testarea/ltp/testcases/bin/debugfs/tracing/tracing_enabled:
+> > Permission denied
+> > ---------
+> > 
+> > The reason is that the tracing_enabled file has been removed
+> > since kernel v3.8 by commits:
+> > 
+> > 02404ba tracing: Remove deprecated tracing_enabled file
+> > 0fb9656 tracing: Make tracing_enabled be equal to tracing_on
+> > 6752ab4 tracing: Deprecate tracing_enabled for tracing_on
+> > 
+> > Signed-off-by: Chuyu Hu <chuhu@redhat.com>
+> > ---
+> >  .../ftrace_stress/ftrace_tracing_enabled.sh        | 39
+> >  ----------------------
+> >  .../ftrace_stress_test/ftrace_stress_test.sh       | 20 +++++------
+> >  2 files changed, 8 insertions(+), 51 deletions(-)
+> >  delete mode 100755
+> >  testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_tracing_enabled.sh
+> > 
+> > diff --git
+> > a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_tracing_enabled.sh
+> > b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_tracing_enabled.sh
+> > deleted file mode 100755
+> > index 69f2ae6..0000000
+> > ---
+> > a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress/ftrace_tracing_enabled.sh
+> > +++ /dev/null
+> > @@ -1,39 +0,0 @@
+> > -#! /bin/sh
+> > -
+> > -###############################################################################
+> > -#
+> > #
+> > -# Copyright (c) 2010 FUJITSU LIMITED
+> > #
+> > -#
+> > #
+> > -# This program is free software; you can redistribute it and/or modify it
+> > #
+> > -# under the terms of the GNU General Public License as published by the
+> > Free  #
+> > -# Software Foundation; either version 2 of the License, or (at your
+> > option)   #
+> > -# any later version.
+> > #
+> > -#
+> > #
+> > -# Author: Li Zefan <lizf@cn.fujitsu.com>
+> > #
+> > -#
+> > #
+> > -###############################################################################
+> > -
+> > -MAX_LOOP=1500
+> > -count=0
+> > -
+> > -for ((; ;))
+> > -{
+> > -	count=$(( $count + 1 ))
+> > -
+> > -	for ((i = 0; i < $MAX_LOOP; i++))
+> > -	{
+> > -		echo 0 > "$TRACING_PATH"/tracing_enabled
+> > -		echo 1 > "$TRACING_PATH"/tracing_enabled
+> 
+> Maybe we should keep this file but switch it to "tracing_on"?
+> 
+> -- Steve
 
-Thanks,
-Helge
+Thanks for kind review the patch. As the case was created in 2010 when the two files exit together.There is another case for testing tracing_on : ftrace_tracing_on.sh.
+
+I think we need some checker to check whether tracing_on, tracing_enabled or other trace files are there, And then decide which sub stress scripts to run. And for some new trace file without test code,I'm also considering add some new stress script for them. 
+
+---
+Regards,
+Chunyu Hu
 
 
-
+> > -	}
+> > -
+> > -	enable=$(( $count % 3 ))
+> > -
+> > -	if [ $enable -eq 0 ]; then
+> > -		echo 0 > "$TRACING_PATH"/tracing_enabled
+> > -	else
+> > -		echo 1 > "$TRACING_PATH"/tracing_enabled
+> > -	fi
+> > -
+> > -	sleep 1
+> > -}
+> > -
+> > diff --git
+> > a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
+> > b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
+> > index 6a111e9..24bb3ab 100755
+> > --- a/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
+> > +++ b/testcases/kernel/tracing/ftrace_stress_test/ftrace_stress_test.sh
+> > @@ -42,7 +42,6 @@ save_old_setting()
+> >  
+> >  	old_trace_options=( `cat trace_options` )
+> >  	old_tracing_on=`cat tracing_on`
+> > -	old_tracing_enabled=`cat tracing_enabled`
+> >  	old_buffer_size=`cat buffer_size_kb`
+> >  
+> >  	if [ -e stack_max_size ]; then
+> > @@ -87,7 +86,6 @@ restore_old_setting()
+> >  
+> >  	echo $old_buffer_size > buffer_size_kb
+> >  	echo $old_tracing_on > tracing_on
+> > -	echo $old_tracing_enabled > tracing_enabled
+> >  
+> >  	for option in $old_trace_options
+> >  	do
+> > @@ -207,24 +205,22 @@ $SPATH/ftrace_stack_max_size.sh &
+> >  pid6=$!
+> >  $SPATH/ftrace_tracing_on.sh &
+> >  pid7=$!
+> > -$SPATH/ftrace_tracing_enabled.sh &
+> > -pid8=$!
+> >  $SPATH/ftrace_set_event.sh &
+> > -pid9=$!
+> > +pid8=$!
+> >  $SPATH/ftrace_buffer_size.sh &
+> > -pid10=$!
+> > +pid9=$!
+> >  $SPATH/ftrace_trace.sh &
+> > -pid11=$!
+> > +pid10=$!
+> >  $SPATH/ftrace_trace_pipe.sh &
+> > -pid12=$!
+> > +pid11=$!
+> >  $SPATH/ftrace_ftrace_enabled.sh &
+> > -pid13=$!
+> > +pid12=$!
+> >  $SPATH/ftrace_set_ftrace_pid.sh &
+> > -pid14=$!
+> > +pid13=$!
+> >  $SPATH/ftrace_profile_enabled.sh &
+> > -pid15=$!
+> > +pid14=$!
+> >  $SPATH/ftrace_trace_stat.sh &
+> > -pid16=$!
+> > +pid15=$!
+> >  
+> >  export_pids
+> >  
+> 
+> 
+> 
