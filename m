@@ -1,38 +1,74 @@
-From: Shuang Qiu <shuang.qiu@oracle.com>
-Date: Sat, 26 Dec 2015 01:37:20 +0800
-Subject: [LTP] mkfs01 testcases issue
-Message-ID: <567D7ED0.2060706@oracle.com>
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Mon, 28 Dec 2015 15:49:19 +0800
+Subject: [LTP] [PATCH] mem/oom: remove non-existent case OVERCOMMIT from
+	oom()
+Message-ID: <20151228074919.GA12782@localhost.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Looks like there is no such a case "OVERCOMMIT" in oom(), so we can just
+remove it.
 
-While running LTP commands testcases,these three 
-tests(mkfs01_msdos,mkfs01_vfat,mkswap01) sometimes failed.
-It is because that mkfs.vfat/mkswap on the test block device which is 
-made as btrfs( in previous mkfs01_btrfs test) does not work.
-blkid still show "TYPE="btrfs" after mkfs.vfat/mkswap.
-Seems the issue is only reproduced with a very small size of block 
-device(less than 20M).
-Does anyone hit similar issue,is it a kernel or btrfs bug?
+Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+---
+ testcases/kernel/mem/include/mem.h | 7 +++----
+ testcases/kernel/mem/lib/mem.c     | 2 +-
+ testcases/kernel/mem/oom/oom01.c   | 4 ++--
+ 3 files changed, 6 insertions(+), 7 deletions(-)
 
-Anyway,how about making the test block device $LTP_DEV to the original 
-filesystem in tst_release_device(),so it will avoid such effect between 
-different testcases.
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 4a18799..041c437 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -32,10 +32,9 @@ static inline void clean_node(unsigned long *array)
+ 
+ #define LENGTH			(3UL<<30)
+ #define TESTMEM			(1UL<<30)
+-#define OVERCOMMIT		1
+-#define NORMAL			2
+-#define MLOCK			3
+-#define KSM			4
++#define NORMAL			1
++#define MLOCK			2
++#define KSM			3
+ 
+ long overcommit;
+ void oom(int testcase, int lite, int retcode, int allow_sigkill);
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index cee4e91..56104cb 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -110,7 +110,7 @@ out:
+  * oom - allocates memory according to specified testcase and checks
+  *       desired outcome (e.g. child killed, operation failed with ENOMEM)
+  * @testcase: selects how child allocates memory
+- *            valid choices are: OVERCOMMIT, NORMAL, MLOCK and KSM
++ *            valid choices are: NORMAL, MLOCK and KSM
+  * @lite: if non-zero, child makes only single TESTMEM+MB allocation
+  *        if zero, child keeps allocating memory until it gets killed
+  *        or some operation fails
+diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
+index 712d7b5..e39394b 100644
+--- a/testcases/kernel/mem/oom/oom01.c
++++ b/testcases/kernel/mem/oom/oom01.c
+@@ -58,12 +58,12 @@ int main(int argc, char *argv[])
+ 
+ 		/* we expect mmap to fail before OOM is hit */
+ 		set_sys_tune("overcommit_memory", 2, 1);
+-		oom(OVERCOMMIT, 0, ENOMEM, 0);
++		oom(NORMAL, 0, ENOMEM, 0);
+ 
+ 		/* with overcommit_memory set to 0 or 1 there's no
+ 		 * guarantee that mmap fails before OOM */
+ 		set_sys_tune("overcommit_memory", 0, 1);
+-		oom(OVERCOMMIT, 0, ENOMEM, 1);
++		oom(NORMAL, 0, ENOMEM, 1);
+ 
+ 		set_sys_tune("overcommit_memory", 1, 1);
+ 		testoom(0, 0, ENOMEM, 1);
+-- 
+1.9.3
 
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -253,6 +253,7 @@ tst_acquire_device()
-  tst_release_device()
-  {
-         if [ ${TST_DEVICE_FLAG} -eq 0 ]; then
-+               tst_mkfs ${LTP_DEV_FS_TYPE} ${LTP_DEV}
-                 return
-         fi
-
-
-Thanks
-Shuang
