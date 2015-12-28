@@ -1,26 +1,42 @@
 Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-1.v43.ch3.sourceforge.com ([172.29.43.191]
+Received: from sog-mx-3.v43.ch3.sourceforge.com ([172.29.43.193]
 	helo=mx.sourceforge.net)
-	by sfs-ml-2.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <manjeet.p@samsung.com>) id 1a6abV-0003rJ-Ez
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2015 09:00:05 +0000
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by sog-mx-1.v43.ch3.sourceforge.com with esmtps (TLSv1:AES128-SHA:128)
-	(Exim 4.76) id 1a6abS-0001id-R9
-	for ltp-list@lists.sourceforge.net; Wed, 09 Dec 2015 09:00:05 +0000
-Received: from epcpsbgr3.samsung.com
-	(u143.gpu120.samsung.co.kr [203.254.230.143])
-	by mailout3.samsung.com (Oracle Communications Messaging Server
-	7.0.5.31.0 64bit (built May  5 2014))
-	with ESMTP id <0NZ302IO12BCQ6C0@mailout3.samsung.com> for
-	ltp-list@lists.sourceforge.net; Wed, 09 Dec 2015 17:59:36 +0900 (KST)
-Date: Wed, 09 Dec 2015 08:59:36 +0000 (GMT)
-From: Manjeet Pawar <manjeet.p@samsung.com>
-MIME-version: 1.0
-MIME-version: 1.0
-Message-id: <1246557963.484611449651576462.JavaMail.weblogic@epmlwas02c>
-Subject: [LTP]  [Query] Regarding network testcases
-Reply-To: manjeet.p@samsung.com
+	by sfs-ml-4.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <hanpt@linux.vnet.ibm.com>) id 1aDS7z-0002y4-HJ
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2015 07:21:59 +0000
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by sog-mx-3.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1aDS7y-0000EP-Ce
+	for ltp-list@lists.sourceforge.net; Mon, 28 Dec 2015 07:21:59 +0000
+Received: from localhost
+	by e36.co.us.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only!
+	Violators will be prosecuted
+	for <ltp-list@lists.sourceforge.net> from <hanpt@linux.vnet.ibm.com>;
+	Mon, 28 Dec 2015 00:21:52 -0700
+Received: from b03cxnp07029.gho.boulder.ibm.com
+	(b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
+	by d03dlp03.boulder.ibm.com (Postfix) with ESMTP id 355D419D803E
+	for <ltp-list@lists.sourceforge.net>;
+	Mon, 28 Dec 2015 00:09:54 -0700 (MST)
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with
+	ESMTP id tBS7Logp26804390
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2015 00:21:50 -0700
+Received: from d03av02.boulder.ibm.com (localhost [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVout) with ESMTP
+	id tBS7LodG019125
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2015 00:21:50 -0700
+Received: from localhost.localdomain ([9.83.18.123])
+	by d03av02.boulder.ibm.com (8.14.4/8.14.4/NCO v10.0 AVin) with ESMTP id
+	tBS7Lnmp019095
+	for <ltp-list@lists.sourceforge.net>; Mon, 28 Dec 2015 00:21:50 -0700
+Date: Mon, 28 Dec 2015 15:20:43 +0800
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Message-ID: <20151228072043.GA11687@localhost.localdomain>
+MIME-Version: 1.0
+Content-Disposition: inline
+Subject: [LTP] [PATCH] mem/oom: remove non-existent case OVERCOMMIT from
+	oom()
 List-Id: Linux Test Project General Discussions
 	<ltp-list.lists.sourceforge.net>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
@@ -34,423 +50,69 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Errors-To: ltp-list-bounces@lists.sourceforge.net
 To: ltp-list@lists.sourceforge.net
-Cc: "v.narang@samsung.com" <v.narang@samsung.com>, "ajeet.y@samsung.com" <ajeet.y@samsung.com>, pankaj.m@samsung.com
 
-Hi,
+Looks like there is no such a case "OVERCOMMIT" in oom(), so we can just
+remove it.
 
-I am facing issues while running some network testcases : e.g. if4-addr-change
-This testcase belongs to latest (ltp-full-20150903.tar.bz2)
-when I run this  if4-addr-change, I exported two new env variables a) IPV4_NETWORK = "107.109.223" and IPV6_NETWORK = "fd00::1:1:1:1", b) LHOST_IFACES = eth0 and RHOST_IFACES = eth0, which is not exported in "test_net.sh" .
-bacause "if4-addr-change " testcase invokes "est_net.sh".
+Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+---
+ testcases/kernel/mem/include/mem.h | 7 +++----
+ testcases/kernel/mem/lib/mem.c     | 2 +-
+ testcases/kernel/mem/oom/oom01.c   | 4 ++--
+ 3 files changed, 6 insertions(+), 7 deletions(-)
 
-testcase output:
-<<<<<<<<<<<<<<<<<<<test_start>>>>>>>>>>>>>>>>>>>
-tag(Testcase Name)=if4-addr-change stime=15540
-cmdline="if4-addr-change"
-contacts=""
-analysis=exit
-<<<<<<<<<<<<<<<<<<<test_output>>>>>>>>>>>>>>>>>>>
-+ TST_TOTAL=1
-+ TCID=if4-addr-change
-+ TST_CLEANUP=tst_restore_ipaddr
-+ . test_net.sh
-++ '[' -z '' ']'
-++ . test.sh
-+++ export LTP_RET_VAL=0
-+++ LTP_RET_VAL=0
-+++ export TST_COUNT=1
-+++ TST_COUNT=1
-+++ export TST_LIB_LOADED=1
-+++ TST_LIB_LOADED=1
-+++ '[' -z if4-addr-change ']'
-+++ '[' -z 1 ']'
-+++ export TCID=if4-addr-change
-+++ TCID=if4-addr-change
-+++ export TST_TOTAL=1
-+++ TST_TOTAL=1
-+++ '[' -z /tmp/build_dir ']'
-+++ export LTP_DATAROOT=/tmp/build_dir/testcases/data/if4-addr-change
-+++ LTP_DATAROOT=/tmp/build_dir/testcases/data/if4-addr-change
-++ TST_IPV6=
-++ tst_read_opts
-++ OPTIND=0
-++ getopts :6 opt
-++ OPTIND=0
-+ CHECK_INTERVAL=0
-+ LHOST_IPV4_HOST_MAX=254
-+ trap 'tst_brkm TBROK '\''test interrupted'\''' INT
-+ tst_check_cmds ifconfig
-+ for cmd in '$*'
-+ command -v ifconfig
-+ tst_resm TINFO 'ifconfig changes IPv4 address 10 times'
-+ tst_flag2mask TINFO
-+ case "$1" in
-+ return 16
-+ local mask=16
-+ LTP_RET_VAL=16
-+ local ret=TINFO
-+ shift
-+ echo 'if4-addr-change 1 TINFO : ifconfig changes IPv4 address 10 times'
-if4-addr-change 1 TINFO : ifconfig changes IPv4 address 10 times
-+ case "$ret" in
-+ tst_restore_ipaddr
-+ local type=lhost
-+ local link_num=0
-+ tst_init_iface lhost 0
-+ local type=lhost
-+ local link_num=0
-++ tst_iface lhost 0
-++ local type=lhost
-++ local link_num=0
-++ link_num=1
-++ awk '{ print $1 }'
-+++ tst_get_ifaces lhost
-+++ local type=lhost
-+++ '[' lhost = lhost ']'
-+++ echo eth0
-++ echo eth0
-+ local iface=eth0
-+ tst_resm TINFO 'initialize '\''lhost'\'' '\''eth0'\'' interface'
-+ tst_flag2mask TINFO
-+ case "$1" in
-+ return 16
-+ local mask=16
-+ LTP_RET_VAL=16
-+ local ret=TINFO
-+ shift
-+ echo 'if4-addr-change 1 TINFO : initialize '\''lhost'\'' '\''eth0'\'' interface'
-if4-addr-change 1 TINFO : initialize 'lhost' 'eth0' interface
-+ case "$ret" in
-+ '[' lhost = lhost ']'
-+ ip link set eth0 down
-+ ip route flush dev eth0
-+ ip addr flush dev eth0
-+ ip link set eth0 up
-+ return 0
-+ local ret=0
-+ local backup_tst_ipv6=
-+ TST_IPV6=
-+ tst_add_ipaddr lhost 0
-+ local type=lhost
-+ local link_num=0
-+ local mask=24
-+ '[' '' ']'
-++ tst_iface lhost 0
-++ local type=lhost
-++ local link_num=0
-++ link_num=1
-++ awk '{ print $1 }'
-+++ tst_get_ifaces lhost
-+++ local type=lhost
-+++ '[' lhost = lhost ']'
-+++ echo eth0
-++ echo eth0
-+ local iface=eth0
-+ '[' lhost = lhost ']'
-++ tst_ipaddr
-++ local type=lhost
-++ local ipv=4
-++ local tst_host=
-++ '[' lhost = lhost ']'
-++ eval 'tst_host=$LHOST_IPV4_HOST'
-+++ tst_host=
-++ '[' '' ']'
-++ echo 107.109.223.
-+ tst_resm TINFO 'set local addr 107.109.223./24'
-+ tst_flag2mask TINFO
-+ case "$1" in
-+ return 16
-+ local mask=16
-+ LTP_RET_VAL=16
-+ local ret=TINFO
-+ shift
-+ echo 'if4-addr-change 1 TINFO : set local addr 107.109.223./24'
-if4-addr-change 1 TINFO : set local addr 107.109.223./24
-+ case "$ret" in
-++ tst_ipaddr
-++ local type=lhost
-++ local ipv=4
-++ local tst_host=
-++ '[' lhost = lhost ']'
-++ eval 'tst_host=$LHOST_IPV4_HOST'
-+++ tst_host=
-++ '[' '' ']'
-++ echo 107.109.223.
-+ ip addr add 107.109.223./24 dev eth0
-+ return 0
-+ TST_IPV6=6
-+ tst_add_ipaddr lhost 0
-+ local type=lhost
-+ local link_num=0
-+ local mask=24
-+ '[' 6 ']'
-+ mask=64
-++ tst_iface lhost 0
-++ local type=lhost
-++ local link_num=0
-++ link_num=1
-+++ tst_get_ifaces lhost
-+++ local type=lhost
-+++ '[' lhost = lhost ']'
-++ awk '{ print $1 }'
-+++ echo eth0
-++ echo eth0
-+ local iface=eth0
-+ '[' lhost = lhost ']'
-++ tst_ipaddr
-++ local type=lhost
-++ local ipv=6
-++ local tst_host=
-++ '[' lhost = lhost ']'
-++ eval 'tst_host=$LHOST_IPV6_HOST'
-+++ tst_host=
-++ '[' 6 ']'
-++ echo fd00::1:1:1:1:
-+ tst_resm TINFO 'set local addr fd00::1:1:1:1:/64'
-+ tst_flag2mask TINFO
-+ case "$1" in
-+ return 16
-+ local mask=16
-+ LTP_RET_VAL=16
-+ local ret=TINFO
-+ shift
-+ echo 'if4-addr-change 1 TINFO : set local addr fd00::1:1:1:1:/64'
-if4-addr-change 1 TINFO : set local addr fd00::1:1:1:1:/64
-+ case "$ret" in
-++ tst_ipaddr
-++ local type=lhost
-++ local ipv=6
-++ local tst_host=
-++ '[' lhost = lhost ']'
-++ eval 'tst_host=$LHOST_IPV6_HOST'
-+++ tst_host=
-++ '[' 6 ']'
-++ echo fd00::1:1:1:1:
-+ ip addr add fd00::1:1:1:1:/64 dev eth0
-ip: RTNETLINK answers: Numerical result out of range
-+ return 2
-+ ret=2
-+ TST_IPV6=
-+ return 2
-++ tst_iface
-++ local type=lhost
-++ local link_num=0
-++ link_num=1
-++ awk '{ print $1 }'
-+++ tst_get_ifaces lhost
-+++ local type=lhost
-+++ '[' lhost = lhost ']'
-+++ echo eth0
-++ echo eth0
-++ tst_ipaddr rhost
-++ local type=rhost
-++ local ipv=4
-++ local tst_host=
-++ '[' rhost = lhost ']'
-++ eval 'tst_host=$RHOST_IPV4_HOST'
-+++ tst_host=
-++ '[' '' ']'
-++ echo 107.109.223.
-++ tst_iface
-++ local type=lhost
-++ local link_num=0
-++ link_num=1
-++ awk '{ print $1 }'
-+++ tst_get_ifaces lhost
-+++ local type=lhost
-+++ '[' lhost = lhost ']'
-+++ echo eth0
-++ echo eth0
-++ tst_ipaddr rhost
-++ local type=rhost
-++ local ipv=4
-++ local tst_host=
-++ '[' rhost = lhost ']'
-++ eval 'tst_host=$RHOST_IPV4_HOST'
-+++ tst_host=
-++ '[' '' ']'
-++ echo 107.109.223.
-+ check_icmpv4_connectivity eth0 107.109.223.
-++ tst_ipaddr rhost
-++ local type=rhost
-++ local ipv=4
-++ local tst_host=
-++ '[' rhost = lhost ']'
-++ eval 'tst_host=$RHOST_IPV4_HOST'
-+++ tst_host=
-++ '[' '' ']'
-++ echo 107.109.223.
-+ tst_brkm TBROK 'Failed to ping to 107.109.223.'
-+ case "$1" in
-+ local ret=TBROK
-+ shift
-+ tst_resm TBROK 'Failed to ping to 107.109.223.'
-+ tst_flag2mask TBROK
-+ case "$1" in
-+ return 2
-+ local mask=2
-+ LTP_RET_VAL=18
-+ local ret=TBROK
-+ shift
-+ echo 'if4-addr-change 1 TBROK : Failed to ping to 107.109.223.'
-if4-addr-change 1 TBROK : Failed to ping to 107.109.223.
-+ case "$ret" in
-+ tst_exit
-+ '[' -n tst_restore_ipaddr ']'
-+ tst_restore_ipaddr
-+ local type=lhost
-+ local link_num=0
-+ tst_init_iface lhost 0
-+ local type=lhost
-+ local link_num=0
-++ tst_iface lhost 0
-++ local type=lhost
-++ local link_num=0
-++ link_num=1
-++ awk '{ print $1 }'
-+++ tst_get_ifaces lhost
-+++ local type=lhost
-+++ '[' lhost = lhost ']'
-+++ echo eth0
-++ echo eth0
-+ local iface=eth0
-+ tst_resm TINFO 'initialize '\''lhost'\'' '\''eth0'\'' interface'
-+ tst_flag2mask TINFO
-+ case "$1" in
-+ return 16
-+ local mask=16
-+ LTP_RET_VAL=18
-+ local ret=TINFO
-+ shift
-+ echo 'if4-addr-change 1 TINFO : initialize '\''lhost'\'' '\''eth0'\'' interface'
-if4-addr-change 1 TINFO : initialize 'lhost' 'eth0' interface
-+ case "$ret" in
-+ '[' lhost = lhost ']'
-+ ip link set eth0 down
-+ ip route flush dev eth0
-+ ip addr flush dev eth0
-+ ip link set eth0 up
-+ return 0
-+ local ret=0
-+ local backup_tst_ipv6=
-+ TST_IPV6=
-+ tst_add_ipaddr lhost 0
-+ local type=lhost
-+ local link_num=0
-+ local mask=24
-+ '[' '' ']'
-++ tst_iface lhost 0
-++ local type=lhost
-++ local link_num=0
-++ link_num=1
-++ awk '{ print $1 }'
-+++ tst_get_ifaces lhost
-+++ local type=lhost
-+++ '[' lhost = lhost ']'
-+++ echo eth0
-++ echo eth0
-+ local iface=eth0
-+ '[' lhost = lhost ']'
-++ tst_ipaddr
-++ local type=lhost
-++ local ipv=4
-++ local tst_host=
-++ '[' lhost = lhost ']'
-++ eval 'tst_host=$LHOST_IPV4_HOST'
-+++ tst_host=
-++ '[' '' ']'
-++ echo 107.109.223.
-+ tst_resm TINFO 'set local addr 107.109.223./24'
-+ tst_flag2mask TINFO
-+ case "$1" in
-+ return 16
-+ local mask=16
-+ LTP_RET_VAL=18
-+ local ret=TINFO
-+ shift
-+ echo 'if4-addr-change 1 TINFO : set local addr 107.109.223./24'
-if4-addr-change 1 TINFO : set local addr 107.109.223./24
-+ case "$ret" in
-++ tst_ipaddr
-++ local type=lhost
-++ local ipv=4
-++ local tst_host=
-++ '[' lhost = lhost ']'
-++ eval 'tst_host=$LHOST_IPV4_HOST'
-+++ tst_host=
-++ '[' '' ']'
-++ echo 107.109.223.
-+ ip addr add 107.109.223./24 dev eth0
-+ return 0
-+ TST_IPV6=6
-+ tst_add_ipaddr lhost 0
-+ local type=lhost
-+ local link_num=0
-+ local mask=24
-+ '[' 6 ']'
-+ mask=64
-++ tst_iface lhost 0
-++ local type=lhost
-++ local link_num=0
-++ link_num=1
-++ awk '{ print $1 }'
-+++ tst_get_ifaces lhost
-+++ local type=lhost
-+++ '[' lhost = lhost ']'
-+++ echo eth0
-++ echo eth0
-+ local iface=eth0
-+ '[' lhost = lhost ']'
-++ tst_ipaddr
-++ local type=lhost
-++ local ipv=6
-++ local tst_host=
-++ '[' lhost = lhost ']'
-++ eval 'tst_host=$LHOST_IPV6_HOST'
-+++ tst_host=
-++ '[' 6 ']'
-++ echo fd00::1:1:1:1:
-+ tst_resm TINFO 'set local addr fd00::1:1:1:1:/64'
-+ tst_flag2mask TINFO
-+ case "$1" in
-+ return 16
-+ local mask=16
-+ LTP_RET_VAL=18
-+ local ret=TINFO
-+ shift
-+ echo 'if4-addr-change 1 TINFO : set local addr fd00::1:1:1:1:/64'
-if4-addr-change 1 TINFO : set local addr fd00::1:1:1:1:/64
-+ case "$ret" in
-++ tst_ipaddr
-++ local type=lhost
-++ local ipv=6
-++ local tst_host=
-++ '[' lhost = lhost ']'
-++ eval 'tst_host=$LHOST_IPV6_HOST'
-+++ tst_host=
-++ '[' 6 ']'
-++ echo fd00::1:1:1:1:
-+ ip addr add fd00::1:1:1:1:/64 dev eth0
-ip: RTNETLINK answers: Numerical result out of range
-+ return 2
-+ ret=2
-+ TST_IPV6=
-+ return 2
-+ exit 2
-<<<<<<<<<<<<<<<<<<<execution_status>>>>>>>>>>>>
-initiation_status="ok"
-duration=13 termination_type=exited termination_id=2 corefile=no
-cutime=49 cstime=627
-<<<<<<<<<<<<<<<<<<<test_end>>>>>>>>>>>>>>>>>>>>>
-
-Please check the IP addresses taken by the program, they are in wrong format. 
-Is there anything that I am missing to run this testcase ? . Also I tried to do manually fix to get IP addresses in correct way but that should not be done, it need many changes to be done in "test_net.sh".
-This test scripts is invoked by  other testcases like  "network_stress.broken_ip". So all these testcases are failing.
-Please suggest more detail regarding "test_net.sh". 
-
-Thanks
-
-
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index 4a18799..041c437 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -32,10 +32,9 @@ static inline void clean_node(unsigned long *array)
+ 
+ #define LENGTH			(3UL<<30)
+ #define TESTMEM			(1UL<<30)
+-#define OVERCOMMIT		1
+-#define NORMAL			2
+-#define MLOCK			3
+-#define KSM			4
++#define NORMAL			1
++#define MLOCK			2
++#define KSM			3
+ 
+ long overcommit;
+ void oom(int testcase, int lite, int retcode, int allow_sigkill);
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index cee4e91..56104cb 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -110,7 +110,7 @@ out:
+  * oom - allocates memory according to specified testcase and checks
+  *       desired outcome (e.g. child killed, operation failed with ENOMEM)
+  * @testcase: selects how child allocates memory
+- *            valid choices are: OVERCOMMIT, NORMAL, MLOCK and KSM
++ *            valid choices are: NORMAL, MLOCK and KSM
+  * @lite: if non-zero, child makes only single TESTMEM+MB allocation
+  *        if zero, child keeps allocating memory until it gets killed
+  *        or some operation fails
+diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
+index 712d7b5..e39394b 100644
+--- a/testcases/kernel/mem/oom/oom01.c
++++ b/testcases/kernel/mem/oom/oom01.c
+@@ -58,12 +58,12 @@ int main(int argc, char *argv[])
+ 
+ 		/* we expect mmap to fail before OOM is hit */
+ 		set_sys_tune("overcommit_memory", 2, 1);
+-		oom(OVERCOMMIT, 0, ENOMEM, 0);
++		oom(NORMAL, 0, ENOMEM, 0);
+ 
+ 		/* with overcommit_memory set to 0 or 1 there's no
+ 		 * guarantee that mmap fails before OOM */
+ 		set_sys_tune("overcommit_memory", 0, 1);
+-		oom(OVERCOMMIT, 0, ENOMEM, 1);
++		oom(NORMAL, 0, ENOMEM, 1);
+ 
+ 		set_sys_tune("overcommit_memory", 1, 1);
+ 		testoom(0, 0, ENOMEM, 1);
+-- 
+1.9.3
 
 
 ------------------------------------------------------------------------------
