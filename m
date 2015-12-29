@@ -1,82 +1,84 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 29 Dec 2015 18:20:30 +0800
-Subject: [LTP] [PATCH] preadv/preadv02.c: add new testcase
-Message-ID: <1451384431-29742-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Tue, 29 Dec 2015 18:20:31 +0800
+Subject: [LTP] [PATCH] pwritev/pwritev02.c: add new testcase
+In-Reply-To: <1451384431-29742-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1451384431-29742-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1451384431-29742-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) preadv(2) fails if iov_len is invalid and set errno to EINVAL.
-2) preadv(2) fails if the vector count is less than zero and set errno to EINVAL.
-3) preadv(2) fails if offset is negative and set errno to EINVAL.
+1) pwritev(2) fails if iov_len is invalid and set errno to EINVAL.
+2) pwritev(2) fails if the vector count is less than zero set errno to EINVAL.
+3) pwritev(2) fails if offset is negative and set errno to EINVAL.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- runtest/ltplite                             |   1 +
- runtest/stress.part3                        |   1 +
- runtest/syscalls                            |   2 +
- testcases/kernel/syscalls/.gitignore        |   2 +
- testcases/kernel/syscalls/preadv/preadv02.c | 126 ++++++++++++++++++++++++++++
+ runtest/ltplite                               |   1 +
+ runtest/stress.part3                          |   1 +
+ runtest/syscalls                              |   2 +
+ testcases/kernel/syscalls/.gitignore          |   2 +
+ testcases/kernel/syscalls/pwritev/pwritev02.c | 126 ++++++++++++++++++++++++++
  5 files changed, 132 insertions(+)
- create mode 100644 testcases/kernel/syscalls/preadv/preadv02.c
+ create mode 100644 testcases/kernel/syscalls/pwritev/pwritev02.c
 
 diff --git a/runtest/ltplite b/runtest/ltplite
-index 1aa93e6..e129c66 100644
+index 1aa93e6..5356cf3 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
-@@ -589,6 +589,7 @@ pread02 pread02
- pread03 pread03
+@@ -609,6 +609,7 @@ pwrite02_64 pwrite02_64
+ pwrite04_64 pwrite04_64
  
- preadv01 preadv01
-+preadv02 preadv02
+ pwritev01 pwritev01
++pwritev02 pwritev02
  
- profil01 profil01
- 
+ read01 read01
+ read02 read02
 diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 87f42ea..0ed71c0 100644
+index 87f42ea..68bacff 100644
 --- a/runtest/stress.part3
 +++ b/runtest/stress.part3
-@@ -499,6 +499,7 @@ pread02 pread02
- pread03 pread03
+@@ -518,6 +518,7 @@ pwrite02_64 pwrite02_64
+ pwrite04_64 pwrite04_64
  
- preadv01 preadv01
-+preadv02 preadv02
+ pwritev01 pwritev01
++pwritev02 pwritev02
  
- profil01 profil01
- 
+ read01 read01
+ read02 read02
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 7173f22..e940146 100644
+index 7173f22..9158f39 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -781,6 +781,8 @@ pread03_64 pread03_64
+@@ -815,6 +815,8 @@ pwrite04_64 pwrite04_64
  
- preadv01 preadv01
- preadv01_64 preadv01_64
-+preadv02 preadv02
-+preadv02_64 preadv02_64
+ pwritev01 pwritev01
+ pwritev01_64 pwritev01_64
++pwritev02 pwritev02
++pwritev02_64 pwritev02_64
  
- profil01 profil01
- 
+ quotactl01 quotactl01
+ quotactl02 quotactl02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index d5f21ef..197f444 100644
+index d5f21ef..423ad55 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -659,6 +659,8 @@
- /pread/pread03_64
- /preadv/preadv01
- /preadv/preadv01_64
-+/preadv/preadv02
-+/preadv/preadv02_64
- /profil/profil01
- /pselect/pselect01
- /pselect/pselect01_64
-diff --git a/testcases/kernel/syscalls/preadv/preadv02.c b/testcases/kernel/syscalls/preadv/preadv02.c
+@@ -680,6 +680,8 @@
+ /pwrite/pwrite04_64
+ /pwritev/pwritev01
+ /pwritev/pwritev01_64
++/pwritev/pwritev02
++/pwritev/pwritev02_64
+ /quotactl/quotactl01
+ /quotactl/quotactl02
+ /read/read01
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev02.c b/testcases/kernel/syscalls/pwritev/pwritev02.c
 new file mode 100644
-index 0000000..1fcaa3c
+index 0000000..0c8e436
 --- /dev/null
-+++ b/testcases/kernel/syscalls/preadv/preadv02.c
++++ b/testcases/kernel/syscalls/pwritev/pwritev02.c
 @@ -0,0 +1,126 @@
 +/*
 +* Copyright (c) 2015 Fujitsu Ltd.
@@ -95,23 +97,23 @@ index 0000000..1fcaa3c
 +*/
 +
 +/*
-+* Test Name: preadv02
++* Test Name: pwritev02
 +*
 +* Description:
-+* 1) preadv(2) fails if iov_len is invalid.
-+* 2) preadv(2) fails if the vector count iovcnt is less than zero.
-+* 3) preadv(2) fails if offset is negative.
++* 1) pwritev(2) fails if iov_len is invalid.
++* 2) pwritev(2) fails if the vector count iovcnt is less than zero.
++* 3) pwritev(2) fails if offset is negative.
 +*
 +* Expected Result:
-+* 1) preadv(2) should return -1 and set errno to EINVAL.
-+* 2) preadv(2) should return -1 and set errno to EINVAL.
-+* 3) preadv(2) should return -1 and set errno to EINVAL.
++* 1) pwritev(2) should return -1 and set errno to EINVAL.
++* 2) pwritev(2) should return -1 and set errno to EINVAL.
++* 3) pwritev(2) should return -1 and set errno to EINVAL.
 +*/
 +
 +#include <errno.h>
 +
 +#include "test.h"
-+#include "preadv.h"
++#include "pwritev.h"
 +#include "safe_macros.h"
 +
 +#define CHUNK           64
@@ -119,11 +121,11 @@ index 0000000..1fcaa3c
 +static int fd;
 +static char buf[CHUNK];
 +
-+static struct iovec rd_iovec1[] = {
++static struct iovec wr_iovec1[] = {
 +	{buf, -1},
 +};
 +
-+static struct iovec rd_iovec2[] = {
++static struct iovec wr_iovec2[] = {
 +	{buf, CHUNK},
 +};
 +
@@ -133,18 +135,18 @@ index 0000000..1fcaa3c
 +	off_t offset;
 +} tc[] = {
 +	/* test1 */
-+	{rd_iovec1, 1, 0},
++	{wr_iovec1, 1, 0},
 +	/* test2 */
-+	{rd_iovec2, -1, 0},
++	{wr_iovec2, -1, 0},
 +	/* test3 */
-+	{rd_iovec2, 1, -1}
++	{wr_iovec2, 1, -1}
 +};
 +
-+void verify_preadv(struct test_case_t *tc);
++void verify_pwritev(struct test_case_t *tc);
 +void setup(void);
 +void cleanup(void);
 +
-+char *TCID = "preadv02";
++char *TCID = "pwritev02";
 +int TST_TOTAL = ARRAY_SIZE(tc);
 +
 +int main(int ac, char **av)
@@ -159,23 +161,23 @@ index 0000000..1fcaa3c
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
 +		for (i = 0; i < TST_TOTAL; i++)
-+			verify_preadv(&tc[i]);
++			verify_pwritev(&tc[i]);
 +	}
 +
 +	cleanup();
 +	tst_exit();
 +}
 +
-+void verify_preadv(struct test_case_t *tc)
++void verify_pwritev(struct test_case_t *tc)
 +{
-+	TEST(preadv(fd, tc->name, tc->count, tc->offset));
++	TEST(pwritev(fd, tc->name, tc->count, tc->offset));
 +	if (TEST_RETURN == 0) {
-+		tst_resm(TFAIL, "preadv(2) succeed unexpectedly");
++		tst_resm(TFAIL, "pwritev(2) succeed unexpectedly");
 +	} else {
 +		if (TEST_ERRNO == EINVAL) {
-+			tst_resm(TPASS | TTERRNO, "preadv(2) fails as expected");
++			tst_resm(TPASS | TTERRNO, "pwritev(2) fails as expected");
 +		} else {
-+			tst_resm(TFAIL | TTERRNO, "preadv(2) fails unexpectedly,"
++			tst_resm(TFAIL | TTERRNO, "pwritev(2) fails unexpectedly,"
 +				 " expected errno is EINVAL");
 +		}
 +	}
