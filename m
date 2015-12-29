@@ -1,74 +1,211 @@
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Mon, 28 Dec 2015 15:49:19 +0800
-Subject: [LTP] [PATCH] mem/oom: remove non-existent case OVERCOMMIT from
-	oom()
-Message-ID: <20151228074919.GA12782@localhost.localdomain>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 29 Dec 2015 18:20:30 +0800
+Subject: [LTP] [PATCH] preadv/preadv02.c: add new testcase
+Message-ID: <1451384431-29742-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Looks like there is no such a case "OVERCOMMIT" in oom(), so we can just
-remove it.
+1) preadv(2) fails if iov_len is invalid and set errno to EINVAL.
+2) preadv(2) fails if the vector count is less than zero and set errno to EINVAL.
+3) preadv(2) fails if offset is negative and set errno to EINVAL.
 
-Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/mem/include/mem.h | 7 +++----
- testcases/kernel/mem/lib/mem.c     | 2 +-
- testcases/kernel/mem/oom/oom01.c   | 4 ++--
- 3 files changed, 6 insertions(+), 7 deletions(-)
+ runtest/ltplite                             |   1 +
+ runtest/stress.part3                        |   1 +
+ runtest/syscalls                            |   2 +
+ testcases/kernel/syscalls/.gitignore        |   2 +
+ testcases/kernel/syscalls/preadv/preadv02.c | 126 ++++++++++++++++++++++++++++
+ 5 files changed, 132 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/preadv/preadv02.c
 
-diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
-index 4a18799..041c437 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -32,10 +32,9 @@ static inline void clean_node(unsigned long *array)
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 1aa93e6..e129c66 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -589,6 +589,7 @@ pread02 pread02
+ pread03 pread03
  
- #define LENGTH			(3UL<<30)
- #define TESTMEM			(1UL<<30)
--#define OVERCOMMIT		1
--#define NORMAL			2
--#define MLOCK			3
--#define KSM			4
-+#define NORMAL			1
-+#define MLOCK			2
-+#define KSM			3
+ preadv01 preadv01
++preadv02 preadv02
  
- long overcommit;
- void oom(int testcase, int lite, int retcode, int allow_sigkill);
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index cee4e91..56104cb 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -110,7 +110,7 @@ out:
-  * oom - allocates memory according to specified testcase and checks
-  *       desired outcome (e.g. child killed, operation failed with ENOMEM)
-  * @testcase: selects how child allocates memory
-- *            valid choices are: OVERCOMMIT, NORMAL, MLOCK and KSM
-+ *            valid choices are: NORMAL, MLOCK and KSM
-  * @lite: if non-zero, child makes only single TESTMEM+MB allocation
-  *        if zero, child keeps allocating memory until it gets killed
-  *        or some operation fails
-diff --git a/testcases/kernel/mem/oom/oom01.c b/testcases/kernel/mem/oom/oom01.c
-index 712d7b5..e39394b 100644
---- a/testcases/kernel/mem/oom/oom01.c
-+++ b/testcases/kernel/mem/oom/oom01.c
-@@ -58,12 +58,12 @@ int main(int argc, char *argv[])
+ profil01 profil01
  
- 		/* we expect mmap to fail before OOM is hit */
- 		set_sys_tune("overcommit_memory", 2, 1);
--		oom(OVERCOMMIT, 0, ENOMEM, 0);
-+		oom(NORMAL, 0, ENOMEM, 0);
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 87f42ea..0ed71c0 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -499,6 +499,7 @@ pread02 pread02
+ pread03 pread03
  
- 		/* with overcommit_memory set to 0 or 1 there's no
- 		 * guarantee that mmap fails before OOM */
- 		set_sys_tune("overcommit_memory", 0, 1);
--		oom(OVERCOMMIT, 0, ENOMEM, 1);
-+		oom(NORMAL, 0, ENOMEM, 1);
+ preadv01 preadv01
++preadv02 preadv02
  
- 		set_sys_tune("overcommit_memory", 1, 1);
- 		testoom(0, 0, ENOMEM, 1);
+ profil01 profil01
+ 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 7173f22..e940146 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -781,6 +781,8 @@ pread03_64 pread03_64
+ 
+ preadv01 preadv01
+ preadv01_64 preadv01_64
++preadv02 preadv02
++preadv02_64 preadv02_64
+ 
+ profil01 profil01
+ 
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index d5f21ef..197f444 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -659,6 +659,8 @@
+ /pread/pread03_64
+ /preadv/preadv01
+ /preadv/preadv01_64
++/preadv/preadv02
++/preadv/preadv02_64
+ /profil/profil01
+ /pselect/pselect01
+ /pselect/pselect01_64
+diff --git a/testcases/kernel/syscalls/preadv/preadv02.c b/testcases/kernel/syscalls/preadv/preadv02.c
+new file mode 100644
+index 0000000..1fcaa3c
+--- /dev/null
++++ b/testcases/kernel/syscalls/preadv/preadv02.c
+@@ -0,0 +1,126 @@
++/*
++* Copyright (c) 2015 Fujitsu Ltd.
++* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++*
++* This program is free software; you can redistribute it and/or modify it
++* under the terms of version 2 of the GNU General Public License as
++* published by the Free Software Foundation.
++*
++* This program is distributed in the hope that it would be useful, but
++* WITHOUT ANY WARRANTY; without even the implied warranty of
++* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++*
++* You should have received a copy of the GNU General Public License
++* alone with this program.
++*/
++
++/*
++* Test Name: preadv02
++*
++* Description:
++* 1) preadv(2) fails if iov_len is invalid.
++* 2) preadv(2) fails if the vector count iovcnt is less than zero.
++* 3) preadv(2) fails if offset is negative.
++*
++* Expected Result:
++* 1) preadv(2) should return -1 and set errno to EINVAL.
++* 2) preadv(2) should return -1 and set errno to EINVAL.
++* 3) preadv(2) should return -1 and set errno to EINVAL.
++*/
++
++#include <errno.h>
++
++#include "test.h"
++#include "preadv.h"
++#include "safe_macros.h"
++
++#define CHUNK           64
++
++static int fd;
++static char buf[CHUNK];
++
++static struct iovec rd_iovec1[] = {
++	{buf, -1},
++};
++
++static struct iovec rd_iovec2[] = {
++	{buf, CHUNK},
++};
++
++static struct test_case_t {
++	struct iovec *name;
++	int count;
++	off_t offset;
++} tc[] = {
++	/* test1 */
++	{rd_iovec1, 1, 0},
++	/* test2 */
++	{rd_iovec2, -1, 0},
++	/* test3 */
++	{rd_iovec2, 1, -1}
++};
++
++void verify_preadv(struct test_case_t *tc);
++void setup(void);
++void cleanup(void);
++
++char *TCID = "preadv02";
++int TST_TOTAL = ARRAY_SIZE(tc);
++
++int main(int ac, char **av)
++{
++	int lc;
++	int i;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++		for (i = 0; i < TST_TOTAL; i++)
++			verify_preadv(&tc[i]);
++	}
++
++	cleanup();
++	tst_exit();
++}
++
++void verify_preadv(struct test_case_t *tc)
++{
++	TEST(preadv(fd, tc->name, tc->count, tc->offset));
++	if (TEST_RETURN == 0) {
++		tst_resm(TFAIL, "preadv(2) succeed unexpectedly");
++	} else {
++		if (TEST_ERRNO == EINVAL) {
++			tst_resm(TPASS | TTERRNO, "preadv(2) fails as expected");
++		} else {
++			tst_resm(TFAIL | TTERRNO, "preadv(2) fails unexpectedly,"
++				 " expected errno is EINVAL");
++		}
++	}
++}
++
++void setup(void)
++{
++	if ((tst_kvercmp(2, 6, 30)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels"
++			 " that are 2.6.30 or higher.");
++	}
++
++	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++
++	TEST_PAUSE;
++
++	tst_tmpdir();
++
++	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
++}
++
++void cleanup(void)
++{
++	if (fd > 0 && close(fd))
++		tst_resm(TWARN | TERRNO, "failed to close file");
++
++	tst_rmdir();
++}
 -- 
-1.9.3
+1.8.3.1
+
+
 
