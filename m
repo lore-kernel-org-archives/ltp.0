@@ -1,213 +1,384 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 29 Dec 2015 18:20:31 +0800
-Subject: [LTP] [PATCH] pwritev/pwritev02.c: add new testcase
-In-Reply-To: <1451384431-29742-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1451384431-29742-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1451384431-29742-2-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 30 Dec 2015 13:33:31 +0300
+Subject: [LTP] [PATCH] kernel/syscalls: add new test with 'open() +
+	O_TMPFILE'
+Message-ID: <1451471611-17666-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) pwritev(2) fails if iov_len is invalid and set errno to EINVAL.
-2) pwritev(2) fails if the vector count is less than zero set errno to EINVAL.
-3) pwritev(2) fails if offset is negative and set errno to EINVAL.
+Test does the following steps:
+* create an unnamed temporary file in TMP directory,
+* write data into it,
+* check that file not visible in the filesystem,
+* name the file and check that it becomes visible in FS.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+'openat() + O_TMPFILE' test repeats the same steps.
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/ltplite                               |   1 +
- runtest/stress.part3                          |   1 +
- runtest/syscalls                              |   2 +
- testcases/kernel/syscalls/.gitignore          |   2 +
- testcases/kernel/syscalls/pwritev/pwritev02.c | 126 ++++++++++++++++++++++++++
- 5 files changed, 132 insertions(+)
- create mode 100644 testcases/kernel/syscalls/pwritev/pwritev02.c
+ runtest/syscalls                            |    2 +
+ testcases/kernel/syscalls/.gitignore        |    2 +
+ testcases/kernel/syscalls/open/open14.c     |  153 ++++++++++++++++++++++++++
+ testcases/kernel/syscalls/openat/openat03.c |  154 +++++++++++++++++++++++++++
+ 4 files changed, 311 insertions(+), 0 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/open/open14.c
+ create mode 100644 testcases/kernel/syscalls/openat/openat03.c
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 1aa93e6..5356cf3 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -609,6 +609,7 @@ pwrite02_64 pwrite02_64
- pwrite04_64 pwrite04_64
- 
- pwritev01 pwritev01
-+pwritev02 pwritev02
- 
- read01 read01
- read02 read02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 87f42ea..68bacff 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -518,6 +518,7 @@ pwrite02_64 pwrite02_64
- pwrite04_64 pwrite04_64
- 
- pwritev01 pwritev01
-+pwritev02 pwritev02
- 
- read01 read01
- read02 read02
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 7173f22..9158f39 100644
+index 7173f22..3439948 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -815,6 +815,8 @@ pwrite04_64 pwrite04_64
+@@ -721,10 +721,12 @@ open10 open10
+ open11 open11
+ open12 open12
+ open13 open13
++open14 open14
  
- pwritev01 pwritev01
- pwritev01_64 pwritev01_64
-+pwritev02 pwritev02
-+pwritev02_64 pwritev02_64
+ #openat test cases
+ openat01 openat01
+ openat02 openat02
++openat03 openat03
  
- quotactl01 quotactl01
- quotactl02 quotactl02
+ mincore01 mincore01
+ mincore02 mincore02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index d5f21ef..423ad55 100644
+index d5f21ef..6451dc4 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -680,6 +680,8 @@
- /pwrite/pwrite04_64
- /pwritev/pwritev01
- /pwritev/pwritev01_64
-+/pwritev/pwritev02
-+/pwritev/pwritev02_64
- /quotactl/quotactl01
- /quotactl/quotactl02
- /read/read01
-diff --git a/testcases/kernel/syscalls/pwritev/pwritev02.c b/testcases/kernel/syscalls/pwritev/pwritev02.c
+@@ -624,9 +624,11 @@
+ /open/open12
+ /open/open12_child
+ /open/open13
++/open/open14
+ /openat/openat01
+ /openat/openat02
+ /openat/openat02_child
++/openat/openat03
+ /pathconf/pathconf01
+ /pause/pause01
+ /pause/pause02
+diff --git a/testcases/kernel/syscalls/open/open14.c b/testcases/kernel/syscalls/open/open14.c
 new file mode 100644
-index 0000000..0c8e436
+index 0000000..839c898
 --- /dev/null
-+++ b/testcases/kernel/syscalls/pwritev/pwritev02.c
-@@ -0,0 +1,126 @@
++++ b/testcases/kernel/syscalls/open/open14.c
+@@ -0,0 +1,153 @@
 +/*
-+* Copyright (c) 2015 Fujitsu Ltd.
-+* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+*
-+* This program is free software; you can redistribute it and/or modify it
-+* under the terms of version 2 of the GNU General Public License as
-+* published by the Free Software Foundation.
-+*
-+* This program is distributed in the hope that it would be useful, but
-+* WITHOUT ANY WARRANTY; without even the implied warranty of
-+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+*
-+* You should have received a copy of the GNU General Public License
-+* alone with this program.
-+*/
++ * Copyright (c) 2015-2016 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ *
++ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++ *
++ */
 +
-+/*
-+* Test Name: pwritev02
-+*
-+* Description:
-+* 1) pwritev(2) fails if iov_len is invalid.
-+* 2) pwritev(2) fails if the vector count iovcnt is less than zero.
-+* 3) pwritev(2) fails if offset is negative.
-+*
-+* Expected Result:
-+* 1) pwritev(2) should return -1 and set errno to EINVAL.
-+* 2) pwritev(2) should return -1 and set errno to EINVAL.
-+* 3) pwritev(2) should return -1 and set errno to EINVAL.
-+*/
-+
++#define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
 +#include <errno.h>
 +
 +#include "test.h"
-+#include "pwritev.h"
 +#include "safe_macros.h"
 +
-+#define CHUNK           64
++#ifndef O_TMPFILE
++#define O_TMPFILE	(020000000 | O_DIRECTORY)
++#endif
 +
-+static int fd;
-+static char buf[CHUNK];
++char *TCID = "open14";
++int TST_TOTAL = 1;
++static char *test_dir;
++static ssize_t size;
++static const ssize_t blocks_num = 4;
++static char *buf;
++static struct stat st;
 +
-+static struct iovec wr_iovec1[] = {
-+	{buf, -1},
-+};
++static void cleanup(void)
++{
++	tst_rmdir();
++	free(test_dir);
++	free(buf);
++}
 +
-+static struct iovec wr_iovec2[] = {
-+	{buf, CHUNK},
-+};
++static void setup(void)
++{
++	tst_tmpdir();
++	test_dir = tst_get_tmpdir();
 +
-+static struct test_case_t {
-+	struct iovec *name;
-+	int count;
-+	off_t offset;
-+} tc[] = {
-+	/* test1 */
-+	{wr_iovec1, 1, 0},
-+	/* test2 */
-+	{wr_iovec2, -1, 0},
-+	/* test3 */
-+	{wr_iovec2, 1, -1}
-+};
++	SAFE_STAT(cleanup, test_dir, &st);
++	size = st.st_blksize;
 +
-+void verify_pwritev(struct test_case_t *tc);
-+void setup(void);
-+void cleanup(void);
++	buf = SAFE_MALLOC(cleanup, size);
++	memset(buf, 1, size);
++}
 +
-+char *TCID = "pwritev02";
-+int TST_TOTAL = ARRAY_SIZE(tc);
++static int dir_not_empty(void)
++{
++	struct dirent *entry;
++	DIR *dir = SAFE_OPENDIR(cleanup, test_dir);
++	int ret = 0;
 +
-+int main(int ac, char **av)
++	while ((entry = SAFE_READDIR(cleanup, dir)) != NULL) {
++		const char *file = entry->d_name;
++
++		if (!strcmp(file, "..") || !strcmp(file, "."))
++			continue;
++
++		tst_resm(TINFO, "found a file: %s", file);
++		ret = 1;
++		break;
++	}
++
++	SAFE_CLOSEDIR(cleanup, dir);
++	return ret;
++}
++
++void test01(void)
++{
++	int fd, i;
++
++	char path[PATH_MAX], tmp[PATH_MAX];
++
++	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
++
++	TEST(open(test_dir, O_TMPFILE | O_WRONLY | O_SYNC));
++	fd = TEST_RETURN;
++	if (fd == -1) {
++		if (TEST_ERRNO == EISDIR) {
++			tst_brkm(TCONF, cleanup,
++				"O_TMPFILE not supported");
++		}
++		tst_resm(TFAIL | TERRNO, "open() failed");
++		return;
++	}
++
++	tst_resm(TINFO, "writing data to the file");
++	for (i = 0; i < blocks_num; ++i)
++		SAFE_WRITE(cleanup, 0, fd, buf, size);
++
++	SAFE_FSTAT(cleanup, fd, &st);
++	tst_resm(TINFO, "file size is '%zu'", st.st_size);
++
++	if (st.st_size != blocks_num * size) {
++		tst_resm(TFAIL, "not expected size: '%zu' != '%zu'",
++			 st.st_size, blocks_num * size);
++		SAFE_CLOSE(cleanup, fd);
++		return;
++	}
++
++	tst_resm(TINFO, "looking for the file in '%s'", test_dir);
++	if (dir_not_empty())
++		tst_brkm(TBROK, cleanup, "found a file, this is not expected");
++	tst_resm(TINFO, "file not found, OK");
++
++	snprintf(path, PATH_MAX,  "/proc/self/fd/%d", fd);
++	if (readlink(path, tmp, PATH_MAX) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "readlink() failed");
++
++	tst_resm(TINFO, "renaming '%s' -> '%s/tmpfile'",
++		 tmp, test_dir);
++	if (linkat(AT_FDCWD, path, AT_FDCWD, "tmpfile", AT_SYMLINK_FOLLOW))
++		tst_brkm(TBROK | TERRNO, cleanup, "linkat() failed");
++
++	if (!dir_not_empty())
++		tst_brkm(TBROK, cleanup, "file not found");
++
++	SAFE_UNLINK(cleanup, "tmpfile");
++	SAFE_CLOSE(cleanup, fd);
++
++	tst_resm(TPASS, "test succeeded");
++}
++
++int main(int ac, char *av[])
 +{
 +	int lc;
-+	int i;
 +
 +	tst_parse_opts(ac, av, NULL, NULL);
 +
 +	setup();
 +
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
++	for (lc = 0; TEST_LOOPING(lc); ++lc) {
 +		tst_count = 0;
-+		for (i = 0; i < TST_TOTAL; i++)
-+			verify_pwritev(&tc[i]);
++		test01();
 +	}
 +
 +	cleanup();
 +	tst_exit();
 +}
+diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
+new file mode 100644
+index 0000000..d81989e
+--- /dev/null
++++ b/testcases/kernel/syscalls/openat/openat03.c
+@@ -0,0 +1,154 @@
++/*
++ * Copyright (c) 2015-2016 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ *
++ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++ *
++ */
 +
-+void verify_pwritev(struct test_case_t *tc)
++#define _GNU_SOURCE
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <errno.h>
++
++#include "test.h"
++#include "safe_macros.h"
++#include "openat.h"
++
++#ifndef O_TMPFILE
++#define O_TMPFILE	(020000000 | O_DIRECTORY)
++#endif
++
++char *TCID = "openat03";
++int TST_TOTAL = 1;
++static char *test_dir;
++static ssize_t size;
++static const ssize_t blocks_num = 4;
++static char *buf;
++static struct stat st;
++
++static void cleanup(void)
 +{
-+	TEST(pwritev(fd, tc->name, tc->count, tc->offset));
-+	if (TEST_RETURN == 0) {
-+		tst_resm(TFAIL, "pwritev(2) succeed unexpectedly");
-+	} else {
-+		if (TEST_ERRNO == EINVAL) {
-+			tst_resm(TPASS | TTERRNO, "pwritev(2) fails as expected");
-+		} else {
-+			tst_resm(TFAIL | TTERRNO, "pwritev(2) fails unexpectedly,"
-+				 " expected errno is EINVAL");
-+		}
-+	}
-+}
-+
-+void setup(void)
-+{
-+	if ((tst_kvercmp(2, 6, 30)) < 0) {
-+		tst_brkm(TCONF, NULL, "This test can only run on kernels"
-+			 " that are 2.6.30 or higher.");
-+	}
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	tst_tmpdir();
-+
-+	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
-+}
-+
-+void cleanup(void)
-+{
-+	if (fd > 0 && close(fd))
-+		tst_resm(TWARN | TERRNO, "failed to close file");
-+
 +	tst_rmdir();
++	free(test_dir);
++	free(buf);
++}
++
++static void setup(void)
++{
++	tst_tmpdir();
++	test_dir = tst_get_tmpdir();
++
++	SAFE_STAT(cleanup, test_dir, &st);
++	size = st.st_blksize;
++
++	buf = SAFE_MALLOC(cleanup, size);
++	memset(buf, 1, size);
++}
++
++static int dir_not_empty(void)
++{
++	struct dirent *entry;
++	DIR *dir = SAFE_OPENDIR(cleanup, test_dir);
++	int ret = 0;
++
++	while ((entry = SAFE_READDIR(cleanup, dir)) != NULL) {
++		const char *file = entry->d_name;
++
++		if (!strcmp(file, "..") || !strcmp(file, "."))
++			continue;
++
++		tst_resm(TINFO, "found a file: %s", file);
++		ret = 1;
++		break;
++	}
++
++	SAFE_CLOSEDIR(cleanup, dir);
++	return ret;
++}
++
++void test01(void)
++{
++	int fd, i;
++
++	char path[PATH_MAX], tmp[PATH_MAX];
++
++	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
++
++	TEST(openat(AT_FDCWD, test_dir, O_TMPFILE | O_WRONLY | O_SYNC));
++	fd = TEST_RETURN;
++	if (fd == -1) {
++		if (TEST_ERRNO == EISDIR) {
++			tst_brkm(TCONF, cleanup,
++				"O_TMPFILE not supported");
++		}
++		tst_resm(TFAIL | TERRNO, "openat() failed");
++		return;
++	}
++
++	tst_resm(TINFO, "writing data to the file");
++	for (i = 0; i < blocks_num; ++i)
++		SAFE_WRITE(cleanup, 0, fd, buf, size);
++
++	SAFE_FSTAT(cleanup, fd, &st);
++	tst_resm(TINFO, "file size is '%zu'", st.st_size);
++
++	if (st.st_size != blocks_num * size) {
++		tst_resm(TFAIL, "not expected size: '%zu' != '%zu'",
++			 st.st_size, blocks_num * size);
++		SAFE_CLOSE(cleanup, fd);
++		return;
++	}
++
++	tst_resm(TINFO, "looking for the file in '%s'", test_dir);
++	if (dir_not_empty())
++		tst_brkm(TBROK, cleanup, "found a file, this is not expected");
++	tst_resm(TINFO, "file not found, OK");
++
++	snprintf(path, PATH_MAX,  "/proc/self/fd/%d", fd);
++	if (readlink(path, tmp, PATH_MAX) == -1)
++		tst_brkm(TBROK | TERRNO, cleanup, "readlink() failed");
++
++	tst_resm(TINFO, "renaming '%s' -> '%s/tmpfile'",
++		 tmp, test_dir);
++	if (linkat(AT_FDCWD, path, AT_FDCWD, "tmpfile", AT_SYMLINK_FOLLOW))
++		tst_brkm(TBROK | TERRNO, cleanup, "linkat() failed");
++
++	if (!dir_not_empty())
++		tst_brkm(TBROK, cleanup, "file not found");
++
++	SAFE_UNLINK(cleanup, "tmpfile");
++	SAFE_CLOSE(cleanup, fd);
++
++	tst_resm(TPASS, "test succeeded");
++}
++
++int main(int ac, char *av[])
++{
++	int lc;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); ++lc) {
++		tst_count = 0;
++		test01();
++	}
++
++	cleanup();
++	tst_exit();
 +}
 -- 
-1.8.3.1
-
-
+1.7.1
 
