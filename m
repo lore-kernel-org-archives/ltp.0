@@ -1,384 +1,241 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 30 Dec 2015 13:33:31 +0300
-Subject: [LTP] [PATCH] kernel/syscalls: add new test with 'open() +
-	O_TMPFILE'
-Message-ID: <1451471611-17666-1-git-send-email-alexey.kodanev@oracle.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 30 Dec 2015 18:44:16 +0800
+Subject: [LTP] [PATCH 2/3] epoll_wait/epoll_wait02.c: add new testcase
+In-Reply-To: <1451472257-29472-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1451472257-29472-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <1451472257-29472-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test does the following steps:
-* create an unnamed temporary file in TMP directory,
-* write data into it,
-* check that file not visible in the filesystem,
-* name the file and check that it becomes visible in FS.
+Check that epoll_wait(2) timeouts correctly.
 
-'openat() + O_TMPFILE' test repeats the same steps.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- runtest/syscalls                            |    2 +
- testcases/kernel/syscalls/.gitignore        |    2 +
- testcases/kernel/syscalls/open/open14.c     |  153 ++++++++++++++++++++++++++
- testcases/kernel/syscalls/openat/openat03.c |  154 +++++++++++++++++++++++++++
- 4 files changed, 311 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/open/open14.c
- create mode 100644 testcases/kernel/syscalls/openat/openat03.c
+ runtest/ltplite                                    |   1 +
+ runtest/stress.part3                               |   1 +
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/syscalls/.gitignore               |   1 +
+ testcases/kernel/syscalls/epoll_wait/Makefile      |   2 +
+ .../kernel/syscalls/epoll_wait/epoll_wait02.c      | 144 +++++++++++++++++++++
+ 6 files changed, 150 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
 
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 59be3ba..08bca9a 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -161,6 +161,7 @@ dup204 dup204
+ dup205 dup205
+ 
+ epoll_wait01 epoll_wait01
++epoll_wait02 epoll_wait02
+ 
+ execl01 execl01
+ execle01 execle01
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 3ed10ca..fb6bc0e 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -102,6 +102,7 @@ dup204 dup204
+ dup205 dup205
+ 
+ epoll_wait01 epoll_wait01
++epoll_wait02 epoll_wait02
+ 
+ execl01 execl01
+ execle01 execle01
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 7173f22..3439948 100644
+index 5dbd00f..6c79584 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -721,10 +721,12 @@ open10 open10
- open11 open11
- open12 open12
- open13 open13
-+open14 open14
+@@ -124,6 +124,7 @@ dup3_02 dup3_02
+ epoll_create1_01 epoll_create1_01
+ epoll01 epoll-ltp
+ epoll_wait01 epoll_wait01
++epoll_wait02 epoll_wait02
  
- #openat test cases
- openat01 openat01
- openat02 openat02
-+openat03 openat03
+ eventfd01 eventfd01
  
- mincore01 mincore01
- mincore02 mincore02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index d5f21ef..6451dc4 100644
+index 7b83307..46258ba 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -624,9 +624,11 @@
- /open/open12
- /open/open12_child
- /open/open13
-+/open/open14
- /openat/openat01
- /openat/openat02
- /openat/openat02_child
-+/openat/openat03
- /pathconf/pathconf01
- /pause/pause01
- /pause/pause02
-diff --git a/testcases/kernel/syscalls/open/open14.c b/testcases/kernel/syscalls/open/open14.c
+@@ -99,6 +99,7 @@
+ /epoll/epoll-ltp
+ /epoll_create1/epoll_create1_01
+ /epoll_wait/epoll_wait01
++/epoll_wait/epoll_wait02
+ /eventfd/eventfd01
+ /eventfd2/eventfd2_01
+ /eventfd2/eventfd2_02
+diff --git a/testcases/kernel/syscalls/epoll_wait/Makefile b/testcases/kernel/syscalls/epoll_wait/Makefile
+index fa233c8..94ca683 100644
+--- a/testcases/kernel/syscalls/epoll_wait/Makefile
++++ b/testcases/kernel/syscalls/epoll_wait/Makefile
+@@ -18,6 +18,8 @@
+ 
+ top_srcdir		?= ../../../..
+ 
++epoll_wait02: LDLIBS+=-lrt
++
+ include $(top_srcdir)/include/mk/testcases.mk
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
 new file mode 100644
-index 0000000..839c898
+index 0000000..3312902
 --- /dev/null
-+++ b/testcases/kernel/syscalls/open/open14.c
-@@ -0,0 +1,153 @@
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait02.c
+@@ -0,0 +1,144 @@
 +/*
-+ * Copyright (c) 2015-2016 Oracle and/or its affiliates. All Rights Reserved.
++ * Copyright (c) 2015 Fujitsu Ltd.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 + *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
 + *
-+ * This program is distributed in the hope that it would be useful,
++ * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
 + *
 + * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ *
-+ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *
++ * along with this program.
 + */
 +
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
++/*
++ * Description:
++ *  Check that epoll_wait(2) timeouts correctly.
++ */
++
++#include <sys/epoll.h>
++#include <unistd.h>
 +#include <errno.h>
 +
 +#include "test.h"
 +#include "safe_macros.h"
 +
-+#ifndef O_TMPFILE
-+#define O_TMPFILE	(020000000 | O_DIRECTORY)
-+#endif
-+
-+char *TCID = "open14";
++char *TCID = "epoll_wait02";
 +int TST_TOTAL = 1;
-+static char *test_dir;
-+static ssize_t size;
-+static const ssize_t blocks_num = 4;
-+static char *buf;
-+static struct stat st;
 +
-+static void cleanup(void)
++static int epfd, fds[2];
++static char *opt_sleep_ms;
++static struct epoll_event epevs[1];
++
++static option_t opts[] = {
++	{"s:", NULL, &opt_sleep_ms},
++	{NULL, NULL, NULL},
++};
++
++static void setup(void);
++static void cleanup(void);
++static void help(void);
++
++int main(int ac, char **av)
 +{
-+	tst_rmdir();
-+	free(test_dir);
-+	free(buf);
-+}
++	int lc, threshold;
++	long long elapsed_ms, sleep_ms = 100;
 +
-+static void setup(void)
-+{
-+	tst_tmpdir();
-+	test_dir = tst_get_tmpdir();
++	tst_parse_opts(ac, av, opts, help);
 +
-+	SAFE_STAT(cleanup, test_dir, &st);
-+	size = st.st_blksize;
++	if (opt_sleep_ms) {
++		sleep_ms = atoll(opt_sleep_ms);
 +
-+	buf = SAFE_MALLOC(cleanup, size);
-+	memset(buf, 1, size);
-+}
-+
-+static int dir_not_empty(void)
-+{
-+	struct dirent *entry;
-+	DIR *dir = SAFE_OPENDIR(cleanup, test_dir);
-+	int ret = 0;
-+
-+	while ((entry = SAFE_READDIR(cleanup, dir)) != NULL) {
-+		const char *file = entry->d_name;
-+
-+		if (!strcmp(file, "..") || !strcmp(file, "."))
-+			continue;
-+
-+		tst_resm(TINFO, "found a file: %s", file);
-+		ret = 1;
-+		break;
-+	}
-+
-+	SAFE_CLOSEDIR(cleanup, dir);
-+	return ret;
-+}
-+
-+void test01(void)
-+{
-+	int fd, i;
-+
-+	char path[PATH_MAX], tmp[PATH_MAX];
-+
-+	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
-+
-+	TEST(open(test_dir, O_TMPFILE | O_WRONLY | O_SYNC));
-+	fd = TEST_RETURN;
-+	if (fd == -1) {
-+		if (TEST_ERRNO == EISDIR) {
-+			tst_brkm(TCONF, cleanup,
-+				"O_TMPFILE not supported");
++		if (sleep_ms == 0) {
++			tst_brkm(TBROK, NULL,
++				 "Invalid timeout '%s'", opt_sleep_ms);
 +		}
-+		tst_resm(TFAIL | TERRNO, "open() failed");
-+		return;
 +	}
 +
-+	tst_resm(TINFO, "writing data to the file");
-+	for (i = 0; i < blocks_num; ++i)
-+		SAFE_WRITE(cleanup, 0, fd, buf, size);
-+
-+	SAFE_FSTAT(cleanup, fd, &st);
-+	tst_resm(TINFO, "file size is '%zu'", st.st_size);
-+
-+	if (st.st_size != blocks_num * size) {
-+		tst_resm(TFAIL, "not expected size: '%zu' != '%zu'",
-+			 st.st_size, blocks_num * size);
-+		SAFE_CLOSE(cleanup, fd);
-+		return;
-+	}
-+
-+	tst_resm(TINFO, "looking for the file in '%s'", test_dir);
-+	if (dir_not_empty())
-+		tst_brkm(TBROK, cleanup, "found a file, this is not expected");
-+	tst_resm(TINFO, "file not found, OK");
-+
-+	snprintf(path, PATH_MAX,  "/proc/self/fd/%d", fd);
-+	if (readlink(path, tmp, PATH_MAX) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "readlink() failed");
-+
-+	tst_resm(TINFO, "renaming '%s' -> '%s/tmpfile'",
-+		 tmp, test_dir);
-+	if (linkat(AT_FDCWD, path, AT_FDCWD, "tmpfile", AT_SYMLINK_FOLLOW))
-+		tst_brkm(TBROK | TERRNO, cleanup, "linkat() failed");
-+
-+	if (!dir_not_empty())
-+		tst_brkm(TBROK, cleanup, "file not found");
-+
-+	SAFE_UNLINK(cleanup, "tmpfile");
-+	SAFE_CLOSE(cleanup, fd);
-+
-+	tst_resm(TPASS, "test succeeded");
-+}
-+
-+int main(int ac, char *av[])
-+{
-+	int lc;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
++	threshold = sleep_ms / 100 + 10;
 +
 +	setup();
 +
-+	for (lc = 0; TEST_LOOPING(lc); ++lc) {
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
-+		test01();
++
++		tst_timer_start(CLOCK_MONOTONIC);
++		TEST(epoll_wait(epfd, epevs, 1, sleep_ms));
++		tst_timer_stop();
++
++		if (TEST_RETURN == -1) {
++			tst_resm(TFAIL | TTERRNO, "epoll_wait() failed");
++			continue;
++		}
++
++		if (TEST_RETURN != 0) {
++			tst_resm(TFAIL, "epoll_wait() unexpectedly get %li, "
++				 "expected 0", TEST_RETURN);
++			continue;
++		}
++
++		elapsed_ms = tst_timer_elapsed_ms();
++
++		if (elapsed_ms < sleep_ms) {
++			tst_resm(TFAIL, "epoll_wait() woken up too early %llims, "
++				 "expected %llims", elapsed_ms, sleep_ms);
++			continue;
++		}
++
++		if (elapsed_ms - sleep_ms > threshold) {
++			tst_resm(TFAIL, "epoll_wait() slept too long %llims, "
++				 "expected %llims, threshold %i",
++				 elapsed_ms, sleep_ms, threshold);
++			continue;
++		}
++
++		tst_resm(TPASS, "epoll_wait() slept %llims, expected %llims, "
++			 "threshold %i", elapsed_ms, sleep_ms, threshold);
 +	}
 +
 +	cleanup();
 +	tst_exit();
 +}
-diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
-new file mode 100644
-index 0000000..d81989e
---- /dev/null
-+++ b/testcases/kernel/syscalls/openat/openat03.c
-@@ -0,0 +1,154 @@
-+/*
-+ * Copyright (c) 2015-2016 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ *
-+ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+
-+#include "test.h"
-+#include "safe_macros.h"
-+#include "openat.h"
-+
-+#ifndef O_TMPFILE
-+#define O_TMPFILE	(020000000 | O_DIRECTORY)
-+#endif
-+
-+char *TCID = "openat03";
-+int TST_TOTAL = 1;
-+static char *test_dir;
-+static ssize_t size;
-+static const ssize_t blocks_num = 4;
-+static char *buf;
-+static struct stat st;
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
-+	free(test_dir);
-+	free(buf);
-+}
 +
 +static void setup(void)
 +{
-+	tst_tmpdir();
-+	test_dir = tst_get_tmpdir();
++	tst_timer_check(CLOCK_MONOTONIC);
 +
-+	SAFE_STAT(cleanup, test_dir, &st);
-+	size = st.st_blksize;
++	SAFE_PIPE(NULL, fds);
 +
-+	buf = SAFE_MALLOC(cleanup, size);
-+	memset(buf, 1, size);
++	epfd = epoll_create(1);
++	if (epfd == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "failed to create epoll instance");
++	}
++
++	epevs[0].events = EPOLLIN;
++	epevs[0].data.fd = fds[0];
++
++	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &epevs[0])) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "failed to register epoll target");
++	}
 +}
 +
-+static int dir_not_empty(void)
++static void cleanup(void)
 +{
-+	struct dirent *entry;
-+	DIR *dir = SAFE_OPENDIR(cleanup, test_dir);
-+	int ret = 0;
++	if (epfd > 0 && close(epfd))
++		tst_resm(TWARN | TERRNO, "failed to close epfd");
 +
-+	while ((entry = SAFE_READDIR(cleanup, dir)) != NULL) {
-+		const char *file = entry->d_name;
++	if (close(fds[0]))
++		tst_resm(TWARN | TERRNO, "close(fds[0]) failed");
 +
-+		if (!strcmp(file, "..") || !strcmp(file, "."))
-+			continue;
-+
-+		tst_resm(TINFO, "found a file: %s", file);
-+		ret = 1;
-+		break;
-+	}
-+
-+	SAFE_CLOSEDIR(cleanup, dir);
-+	return ret;
++	if (close(fds[1]))
++		tst_resm(TWARN | TERRNO, "close(fds[1]) failed");
 +}
 +
-+void test01(void)
++static void help(void)
 +{
-+	int fd, i;
-+
-+	char path[PATH_MAX], tmp[PATH_MAX];
-+
-+	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
-+
-+	TEST(openat(AT_FDCWD, test_dir, O_TMPFILE | O_WRONLY | O_SYNC));
-+	fd = TEST_RETURN;
-+	if (fd == -1) {
-+		if (TEST_ERRNO == EISDIR) {
-+			tst_brkm(TCONF, cleanup,
-+				"O_TMPFILE not supported");
-+		}
-+		tst_resm(TFAIL | TERRNO, "openat() failed");
-+		return;
-+	}
-+
-+	tst_resm(TINFO, "writing data to the file");
-+	for (i = 0; i < blocks_num; ++i)
-+		SAFE_WRITE(cleanup, 0, fd, buf, size);
-+
-+	SAFE_FSTAT(cleanup, fd, &st);
-+	tst_resm(TINFO, "file size is '%zu'", st.st_size);
-+
-+	if (st.st_size != blocks_num * size) {
-+		tst_resm(TFAIL, "not expected size: '%zu' != '%zu'",
-+			 st.st_size, blocks_num * size);
-+		SAFE_CLOSE(cleanup, fd);
-+		return;
-+	}
-+
-+	tst_resm(TINFO, "looking for the file in '%s'", test_dir);
-+	if (dir_not_empty())
-+		tst_brkm(TBROK, cleanup, "found a file, this is not expected");
-+	tst_resm(TINFO, "file not found, OK");
-+
-+	snprintf(path, PATH_MAX,  "/proc/self/fd/%d", fd);
-+	if (readlink(path, tmp, PATH_MAX) == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "readlink() failed");
-+
-+	tst_resm(TINFO, "renaming '%s' -> '%s/tmpfile'",
-+		 tmp, test_dir);
-+	if (linkat(AT_FDCWD, path, AT_FDCWD, "tmpfile", AT_SYMLINK_FOLLOW))
-+		tst_brkm(TBROK | TERRNO, cleanup, "linkat() failed");
-+
-+	if (!dir_not_empty())
-+		tst_brkm(TBROK, cleanup, "file not found");
-+
-+	SAFE_UNLINK(cleanup, "tmpfile");
-+	SAFE_CLOSE(cleanup, fd);
-+
-+	tst_resm(TPASS, "test succeeded");
-+}
-+
-+int main(int ac, char *av[])
-+{
-+	int lc;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-+		tst_count = 0;
-+		test01();
-+	}
-+
-+	cleanup();
-+	tst_exit();
++	printf("  -s      epoll_wait() timeout length in ms\n");
 +}
 -- 
-1.7.1
+1.8.4.2
+
+
 
