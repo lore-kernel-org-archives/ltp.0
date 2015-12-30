@@ -1,113 +1,91 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 30 Dec 2015 18:44:15 +0800
-Subject: [LTP] [PATCH 1/3] epoll_wait/epoll_wait01.c: add new testcase
-Message-ID: <1451472257-29472-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 30 Dec 2015 18:44:17 +0800
+Subject: [LTP] [PATCH 3/3] epoll_wait/epoll_wait03.c: add new testcase
+In-Reply-To: <1451472257-29472-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1451472257-29472-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <1451472257-29472-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Check that epoll_wait(2) works for EPOLLOUT and EPOLLIN events
-on a epoll instance and that struct epoll_event is set correctly.
+Verify that:
+ 1) epoll_wait(2) fails if epfd is not a valid file descriptor
+ 2) epoll_wait(2) fails if epfd is not an epoll file descriptor
+ 3) epoll_wait(2) fails if maxevents is less than zero
+ 4) epoll_wait(2) fails if maxevents is equal to zero
+
+Expected result:
+ 1) epoll_wait(2) should return -1 and set errno to EBADF
+ 2) epoll_wait(2) should return -1 and set errno to EINVAL
+ 3) epoll_wait(2) should return -1 and set errno to EINVAL
+ 4) epoll_wait(2) should return -1 and set errno to EINVAL
 
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- runtest/ltplite                                    |   2 +
- runtest/stress.part3                               |   2 +
+ runtest/ltplite                                    |   1 +
+ runtest/stress.part3                               |   1 +
  runtest/syscalls                                   |   1 +
  testcases/kernel/syscalls/.gitignore               |   1 +
- testcases/kernel/syscalls/epoll_wait/Makefile      |  23 ++
- .../kernel/syscalls/epoll_wait/epoll_wait01.c      | 263 +++++++++++++++++++++
- 6 files changed, 292 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_wait/Makefile
- create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
+ .../kernel/syscalls/epoll_wait/epoll_wait03.c      | 146 +++++++++++++++++++++
+ 5 files changed, 150 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
 
 diff --git a/runtest/ltplite b/runtest/ltplite
-index 1aa93e6..59be3ba 100644
+index 08bca9a..4686c08 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
-@@ -160,6 +160,8 @@ dup203 dup203
- dup204 dup204
- dup205 dup205
+@@ -162,6 +162,7 @@ dup205 dup205
  
-+epoll_wait01 epoll_wait01
-+
+ epoll_wait01 epoll_wait01
+ epoll_wait02 epoll_wait02
++epoll_wait03 epoll_wait03
+ 
  execl01 execl01
  execle01 execle01
- execlp01 execlp01
 diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 87f42ea..3ed10ca 100644
+index fb6bc0e..e198fb4 100644
 --- a/runtest/stress.part3
 +++ b/runtest/stress.part3
-@@ -101,6 +101,8 @@ dup203 dup203
- dup204 dup204
- dup205 dup205
+@@ -103,6 +103,7 @@ dup205 dup205
  
-+epoll_wait01 epoll_wait01
-+
+ epoll_wait01 epoll_wait01
+ epoll_wait02 epoll_wait02
++epoll_wait03 epoll_wait03
+ 
  execl01 execl01
  execle01 execle01
- execlp01 execlp01
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 7173f22..5dbd00f 100644
+index 6c79584..88c748c 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -123,6 +123,7 @@ dup3_02 dup3_02
- 
- epoll_create1_01 epoll_create1_01
+@@ -125,6 +125,7 @@ epoll_create1_01 epoll_create1_01
  epoll01 epoll-ltp
-+epoll_wait01 epoll_wait01
+ epoll_wait01 epoll_wait01
+ epoll_wait02 epoll_wait02
++epoll_wait03 epoll_wait03
  
  eventfd01 eventfd01
  
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index d5f21ef..7b83307 100644
+index 46258ba..f63077a 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -98,6 +98,7 @@
- /dup3/dup3_02
- /epoll/epoll-ltp
+@@ -100,6 +100,7 @@
  /epoll_create1/epoll_create1_01
-+/epoll_wait/epoll_wait01
+ /epoll_wait/epoll_wait01
+ /epoll_wait/epoll_wait02
++/epoll_wait/epoll_wait03
  /eventfd/eventfd01
  /eventfd2/eventfd2_01
  /eventfd2/eventfd2_02
-diff --git a/testcases/kernel/syscalls/epoll_wait/Makefile b/testcases/kernel/syscalls/epoll_wait/Makefile
+diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
 new file mode 100644
-index 0000000..fa233c8
+index 0000000..34009c5
 --- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_wait/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (c) 2015 Fujitsu Ltd.
-+#  Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+#  This program is free software; you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program.
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
-new file mode 100644
-index 0000000..46058a2
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait01.c
-@@ -0,0 +1,263 @@
++++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
+@@ -0,0 +1,146 @@
 +/*
 + * Copyright (c) 2015 Fujitsu Ltd.
 + * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
@@ -128,37 +106,61 @@ index 0000000..46058a2
 +
 +/*
 + * Description:
-+ *  Basic test for epoll_wait(2).
-+ *  Check that epoll_wait(2) works for EPOLLOUT and EPOLLIN events
-+ *  on a epoll instance and that struct epoll_event is set correctly.
++ *  1) epoll_wait(2) fails if epfd is not a valid file descriptor
++ *  2) epoll_wait(2) fails if epfd is not an epoll file descriptor
++ *  3) epoll_wait(2) fails if maxevents is less than zero
++ *  4) epoll_wait(2) fails if maxevents is equal to zero
++ *
++ * Expected Result:
++ *  1) epoll_wait(2) should return -1 and set errno to EBADF
++ *  2) epoll_wait(2) should return -1 and set errno to EINVAL
++ *  3) epoll_wait(2) should return -1 and set errno to EINVAL
++ *  4) epoll_wait(2) should return -1 and set errno to EINVAL
 + */
 +
 +#include <sys/epoll.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <poll.h>
++#include <string.h>
 +#include <errno.h>
 +
 +#include "test.h"
 +#include "safe_macros.h"
-+#include "lapi/fcntl.h"
 +
-+char *TCID = "epoll_wait01";
-+int TST_TOTAL = 3;
++static int epfd, fds[2];
++static struct epoll_event epevs[1];
 +
-+static int write_size, epfd, fds[2];
-+static struct epoll_event epevs[2];
++static struct test_case_t {
++	int epfd;
++	int maxevents;
++	int exp_errno;
++} test_cases[] = {
++	/* test1 */
++	{-1, 1, EBADF},
++	/* test2 */
++	{0, 1, EINVAL},
++	/*
++	 * test3
++	 * temporarily set epfd to 0
++	 * will be set to an epoll instance later
++	 */
++	{0, -1, EINVAL},
++	/*
++	 * test4
++	 * temporarily set epfd to 0
++	 * will be set to an epoll instance later
++	 */
++	{0, 0, EINVAL},
++};
++
++char *TCID = "epoll_wait03";
++int TST_TOTAL = ARRAY_SIZE(test_cases);
 +
 +static void setup(void);
-+static int get_writesize(void);
-+static void verify_epollout(void);
-+static void verify_epollin(void);
-+static void verify_epollio(void);
++static void verify_epoll_wait(struct test_case_t *test_cases);
 +static void cleanup(void);
 +
 +int main(int ac, char **av)
 +{
-+	int lc;
++	int lc, tc;
 +
 +	tst_parse_opts(ac, av, NULL, NULL);
 +
@@ -167,9 +169,8 @@ index 0000000..46058a2
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
 +
-+		verify_epollout();
-+		verify_epollin();
-+		verify_epollio();
++		for (tc = 0; tc < TST_TOTAL; tc++)
++			verify_epoll_wait(&test_cases[tc]);
 +	}
 +
 +	cleanup();
@@ -178,186 +179,46 @@ index 0000000..46058a2
 +
 +static void setup(void)
 +{
-+	int pipe_capacity;
-+
 +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 +
 +	TEST_PAUSE;
 +
 +	SAFE_PIPE(NULL, fds);
 +
-+	/* fcntl()'s F_GETPIPE_SZ flag availbility check */
-+	if ((tst_kvercmp(2, 6, 35)) < 0) {
-+		write_size = get_writesize();
-+	} else {
-+		pipe_capacity = fcntl(fds[1], F_GETPIPE_SZ);
-+		if (pipe_capacity == -1) {
-+			tst_brkm(TBROK | TERRNO, cleanup,
-+				 "failed to get the pipe capacity");
-+		}
-+
-+		write_size = pipe_capacity - getpagesize() + 1;
-+	}
-+
-+	epfd = epoll_create(2);
++	epfd = epoll_create(1);
 +	if (epfd == -1) {
 +		tst_brkm(TBROK | TERRNO, cleanup,
 +			 "failed to create epoll instance");
 +	}
 +
-+	epevs[0].events = EPOLLIN;
-+	epevs[0].data.fd = fds[0];
-+	epevs[1].events = EPOLLOUT;
-+	epevs[1].data.fd = fds[1];
++	test_cases[2].epfd = epfd;
++	test_cases[3].epfd = epfd;
 +
-+	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &epevs[0]) ||
-+		epoll_ctl(epfd, EPOLL_CTL_ADD, fds[1], &epevs[1])) {
++	epevs[0].events = EPOLLOUT;
++	epevs[0].data.fd = fds[1];
++
++	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[1], &epevs[0])) {
 +		tst_brkm(TBROK | TERRNO, cleanup,
 +			 "failed to register epoll target");
 +	}
 +}
 +
-+/*
-+ * fcntl(fd, F_GETPIPE_SZ) not supported on kernels which
-+ * version lower than 2.6.35, so use this function instead
-+ */
-+static int get_writesize(void)
++static void verify_epoll_wait(struct test_case_t *test_cases)
 +{
-+	int nfd, write_size;
-+
-+	struct pollfd pfd[] = {
-+		{.fd = fds[0], .events = POLLIN},
-+		{.fd = fds[1], .events = POLLOUT},
-+	};
-+
-+	write_size = 0;
-+	do {
-+		SAFE_WRITE(cleanup, 1, fds[1], "a", 1);
-+		write_size++;
-+		nfd = poll(pfd, 2, -1);
-+		if (nfd == -1)
-+			tst_brkm(TBROK | TERRNO, cleanup, "poll failed");
-+	} while (nfd == 2);
-+
-+	char buf[write_size];
-+
-+	SAFE_READ(cleanup, 1, fds[0], buf, write_size);
-+
-+	return write_size;
-+}
-+
-+static void verify_epollout(void)
-+{
-+	TEST(epoll_wait(epfd, epevs, 2, -1));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TTERRNO, "epoll_wait() epollout failed");
-+		return;
-+	}
-+
-+	if (TEST_RETURN != 1) {
-+		tst_resm(TFAIL, "epoll_wait() failed to get one fd ready");
-+		return;
-+	}
-+
-+	if (epevs[0].data.fd != fds[1]) {
-+		tst_resm(TFAIL, "epoll_wait() failed to set write fd");
-+		return;
-+	}
-+
-+	if (epevs[0].events != EPOLLOUT) {
-+		tst_resm(TFAIL, "epoll_wait() failed to set EPOLLOUT");
-+		return;
-+	}
-+
-+	tst_resm(TPASS, "epoll_wait() epollout");
-+}
-+
-+static void verify_epollin(void)
-+{
-+	char write_buf[write_size];
-+	char read_buf[sizeof(write_buf)];
-+
-+	memset(write_buf, 'a', sizeof(write_buf));
-+
-+	SAFE_WRITE(cleanup, 1, fds[1], write_buf, sizeof(write_buf));
-+
-+	TEST(epoll_wait(epfd, epevs, 2, -1));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TTERRNO, "epoll_wait() epollin failed");
-+		goto end;
-+	}
-+
-+	if (TEST_RETURN != 1) {
-+		tst_resm(TFAIL, "epoll_wait() failed to get one fd ready");
-+		goto end;
-+	}
-+
-+	if (epevs[0].data.fd != fds[0]) {
-+		tst_resm(TFAIL, "epoll_wait() failed to set read fd");
-+		goto end;
-+	}
-+
-+	if (epevs[0].events != EPOLLIN) {
-+		tst_resm(TFAIL, "epoll_wait() failed to set EPOLLIN");
-+		goto end;
-+	}
-+
-+	tst_resm(TPASS, "epoll_wait() epollin");
-+
-+end:
-+	SAFE_READ(cleanup, 1, fds[0], read_buf, sizeof(write_buf));
-+}
-+
-+static void verify_epollio(void)
-+{
-+	int i, checked0, checked1;
-+	char write_buf[] = "Testing";
-+	char read_buf[sizeof(write_buf)];
-+
-+	SAFE_WRITE(cleanup, 1, fds[1], write_buf, sizeof(write_buf));
-+
-+	TEST(epoll_wait(epfd, epevs, 2, -1));
-+
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TTERRNO, "epoll_wait() epollio failed");
-+		goto end;
-+	}
-+
-+	if (TEST_RETURN != 2) {
-+		tst_resm(TFAIL, "epoll_wait() failed to get two fds ready");
-+		goto end;
-+	}
-+
-+	checked0 = 0;
-+	checked1 = 0;
-+	for (i = 0; i < TEST_RETURN; i++) {
-+		if (checked0 == 0 && epevs[i].data.fd == fds[0]) {
-+			if (epevs[i].events != EPOLLIN) {
-+				tst_resm(TFAIL, "epoll_wait()"
-+					 "failed to set EPOLLIN");
-+				goto end;
-+			}
-+			checked0 = 1;
-+		} else if (checked1 == 0 && epevs[i].data.fd == fds[1]) {
-+			if (epevs[i].events != EPOLLOUT) {
-+				tst_resm(TFAIL, "epoll_wait()"
-+					 "failed to set EPOLLOUT");
-+				goto end;
-+			}
-+			checked1 = 1;
++	TEST(epoll_wait(test_cases->epfd, epevs, test_cases->maxevents, -1));
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL, "epoll_wait() succeed unexpectedly");
++	} else {
++		if (TEST_ERRNO == test_cases->exp_errno) {
++			tst_resm(TPASS | TTERRNO,
++				 "epoll_wait() fails as expected");
 +		} else {
-+			tst_resm(TFAIL, "epoll_wait()"
-+				 "failed to set write or read fd");
-+			goto end;
++			tst_resm(TFAIL | TTERRNO,
++				 "epoll_wait() fails unexpectedly, "
++				 "expected %d: %s", test_cases->exp_errno,
++				 strerror(test_cases->exp_errno));
 +		}
 +	}
-+
-+	tst_resm(TPASS, "epoll_wait() epollio");
-+
-+end:
-+	SAFE_READ(cleanup, 1, fds[0], read_buf, sizeof(write_buf));
 +}
 +
 +static void cleanup(void)
@@ -366,10 +227,10 @@ index 0000000..46058a2
 +		tst_resm(TWARN | TERRNO, "failed to close epfd");
 +
 +	if (close(fds[0]))
-+		tst_resm(TWARN | TERRNO, "failed to close fds[0]");
++		tst_resm(TWARN | TERRNO, "close(fds[0]) failed");
 +
 +	if (close(fds[1]))
-+		tst_resm(TWARN | TERRNO, "failed to close fds[1]");
++		tst_resm(TWARN | TERRNO, "close(fds[1]) failed");
 +}
 -- 
 1.8.4.2
