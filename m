@@ -1,7 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 5 Jan 2016 12:11:36 +0100
-Subject: [LTP] Test library API changes
-Message-ID: <20160105111136.GA32659@rei.lan>
+Date: Tue, 5 Jan 2016 14:48:15 +0100
+Subject: [LTP] mkfs01 testcases issue
+In-Reply-To: <567D7ED0.2060706@oracle.com>
+References: <567D7ED0.2060706@oracle.com>
+Message-ID: <20160105134815.GB32659@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,49 +11,42 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I'm back after my vacation and I had a some time to experiment with the
-LTP test API. My intention is to make the changes in the next
-development cycle. I.e. we will concentrate on the release in upcoming
-weeks and once that is taken care of I would like to discuss these
-changes.
+> While running LTP commands testcases,these three 
+> tests(mkfs01_msdos,mkfs01_vfat,mkswap01) sometimes failed.
+> It is because that mkfs.vfat/mkswap on the test block device which is 
+> made as btrfs( in previous mkfs01_btrfs test) does not work.
+> blkid still show "TYPE="btrfs" after mkfs.vfat/mkswap.
+> Seems the issue is only reproduced with a very small size of block 
+> device(less than 20M).
+> Does anyone hit similar issue,is it a kernel or btrfs bug?
 
-I've pushed one cleanup that removes tst_res() and tst_brk() from the
-codebase today since there was only one test using this interface and
-that was a typo anyway.
+Hmm, looks like blkid does not work for vfat formatted partition if the
+partition was formatted with btrfs beforehand. I can reproduce the problem with:
 
-Two patches that actually implement sketch of the new API are in forked
-LTP repository at:
+dd if=/dev/zero of=disk.img bs=1024 count=18000
+losetup /dev/loop0 disk.img
+mkfs.btrfs /dev/loop0
+mkfs.vfat /dev/loop0
+blkid /dev/loop0
 
-https://github.com/metan-ucw/ltp
+The output from the blkid is indeed empty, i.e. the loop device is not
+recognized as a fat partition.
 
-The interesting files are:
+Trying to mount the device results in:
 
-https://github.com/metan-ucw/ltp/blob/master/include/tst_test.h
-and
-https://github.com/metan-ucw/ltp/blob/master/lib/tst_test.c
-and one testcase that has been converted to the new library:
-https://github.com/metan-ucw/ltp/blob/master/testcases/kernel/syscalls/preadv/preadv01.c
+mount: /dev/loop0: more filesystems detected. This should not happen,
+       use -t <type> to explicitly specify the filesystem type or
+       use wipefs(8) to clean up the device.
 
-The general intention is to move as much code to the library as possible
-in order to avoid common mistakes and also to let the programmer
-concentrate on the test itself rather than spending time figuring out
-the test library API.
+So it looks like mkfs.vfat/mkswap fails to erase btrfs magic string,
+which I would call a bug in the mkfs/mkswap.
 
-One of the important changes is that the library functionality is
-exported as bitflags in the test structure rather than function calls,
-this makes the library much easier to use since this eliminates all
-problems with ordering of the resource inits/cleanups.
+> Anyway,how about making the test block device $LTP_DEV to the original 
+> filesystem in tst_release_device(),so it will avoid such effect between 
+> different testcases.
 
-Another big change is that the process no longer runs the test function
-itself but rather than that export pointer to the function that runs the
-test. This would allow us to finally fix problems with test timeouts
-etc. since we can easily fork in the test library before we start
-execution the test code and watch for segfaults/timeouts etc.
-
-The code I've wrote just a proof of concept and by no means complete.
-It's intended to start a conversation (I can send it as a patch here as
-well if desired, but I do not think that it makes sense for so early
-prototype).
+We can consider calling wipefs before we format the device with a filesystem,
+but I would rather see mkfs/mkswap fixed.
 
 -- 
 Cyril Hrubis
