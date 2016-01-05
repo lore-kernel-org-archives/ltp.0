@@ -1,120 +1,58 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 4 Jan 2016 04:41:01 -0500 (EST)
-Subject: [LTP] [PATCH] syscalls/readahead02: fix error check
-In-Reply-To: <1450704070-7870-1-git-send-email-klamm@yandex-team.ru>
-References: <20151211135323.GA31048@red-moon>
- <1450704070-7870-1-git-send-email-klamm@yandex-team.ru>
-Message-ID: <755898004.3200686.1451900461457.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 5 Jan 2016 12:11:36 +0100
+Subject: [LTP] Test library API changes
+Message-ID: <20160105111136.GA32659@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+I'm back after my vacation and I had a some time to experiment with the
+LTP test API. My intention is to make the changes in the next
+development cycle. I.e. we will concentrate on the release in upcoming
+weeks and once that is taken care of I would like to discuss these
+changes.
 
+I've pushed one cleanup that removes tst_res() and tst_brk() from the
+codebase today since there was only one test using this interface and
+that was a typo anyway.
 
------ Original Message -----
-> From: "Roman Gushchin" <klamm@yandex-team.ru>
-> To: "lorenzo pieralisi" <lorenzo.pieralisi@arm.com>
-> Cc: "Roman Gushchin" <klamm@yandex-team.ru>, ltp@lists.linux.it
-> Sent: Monday, 21 December, 2015 2:21:10 PM
-> Subject: [LTP] [PATCH] syscalls/readahead02: fix error check
-> 
-> After commit 600e19afc5f8a6 ("mm: use only per-device readahead limit")
-> readahead size is not limited anymore by 2 megabytes. Instead,
-> the per-bdi limit is used.
-> 
-> Signed-off-by: Roman Gushchin <klamm@yandex-team.ru>
-> ---
->  testcases/kernel/syscalls/readahead/readahead02.c | 34
->  +++++++++++++++++++++--
->  1 file changed, 31 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/readahead/readahead02.c
-> b/testcases/kernel/syscalls/readahead/readahead02.c
-> index fe0b8a0..b5a7789 100644
-> --- a/testcases/kernel/syscalls/readahead/readahead02.c
-> +++ b/testcases/kernel/syscalls/readahead/readahead02.c
-> @@ -184,6 +184,30 @@ static void create_testfile(void)
->  	free(tmp);
->  }
->  
+Two patches that actually implement sketch of the new API are in forked
+LTP repository at:
 
-Hi,
+https://github.com/metan-ucw/ltp
 
-approach looks OK to me, but as it is now, it will break on older kernels.
+The interesting files are:
 
-> +static long get_device_readahead(const char *fname)
-> +{
-> +	FILE *f;
-> +	struct stat st;
-> +	unsigned long ra_kb = 0;
-> +	char buf[256];
-> +
-> +	if (stat(fname, &st) == -1)
-> +		return -1;
+https://github.com/metan-ucw/ltp/blob/master/include/tst_test.h
+and
+https://github.com/metan-ucw/ltp/blob/master/lib/tst_test.c
+and one testcase that has been converted to the new library:
+https://github.com/metan-ucw/ltp/blob/master/testcases/kernel/syscalls/preadv/preadv01.c
 
-kernels < 4.5 will still impose 2M limit. So if your bdi limit is something
-larger (say 4M) the test is going to fail. How about we keep the 2M default
-for kernels prior to 600e19afc5f8a6?
+The general intention is to move as much code to the library as possible
+in order to avoid common mistakes and also to let the programmer
+concentrate on the test itself rather than spending time figuring out
+the test library API.
 
-if ((tst_kvercmp(4, 5, 0)) < 0)
-    return 2 * 1024 * 1024;
+One of the important changes is that the library functionality is
+exported as bitflags in the test structure rather than function calls,
+this makes the library much easier to use since this eliminates all
+problems with ordering of the resource inits/cleanups.
 
+Another big change is that the process no longer runs the test function
+itself but rather than that export pointer to the function that runs the
+test. This would allow us to finally fix problems with test timeouts
+etc. since we can easily fork in the test library before we start
+execution the test code and watch for segfaults/timeouts etc.
 
-> +	snprintf(buf, sizeof(buf), "/sys/dev/block/%d:%d/queue/read_ahead_kb",
-> +		 major(st.st_dev), minor(st.st_dev));
-> +	f = fopen(buf, "r");
-> +	if (!f)
-> +		return -1;
+The code I've wrote just a proof of concept and by no means complete.
+It's intended to start a conversation (I can send it as a patch here as
+well if desired, but I do not think that it makes sense for so early
+prototype).
 
-This sysfs file may not exist on older kernels, test now fails with TBROK.
-
-Regards,
-Jan
-
-> +
-> +	if (fscanf(f, "%lu", &ra_kb) != 1) {
-> +		fclose(f);
-> +		return -1;
-> +	}
-> +
-> +	fclose(f);
-> +	return ra_kb * 1024;
-> +}
-> +
->  /* read_testfile - mmap testfile and read every page.
->   * This functions measures how many I/O and time it takes to fully
->   * read contents of test file.
-> @@ -206,16 +230,20 @@ static void read_testfile(int do_readahead, const char
-> *fname, size_t fsize,
->  	unsigned long time_start_usec, time_end_usec;
->  	off_t offset;
->  	struct timeval now;
-> +	long readahead_size;
-> +
-> +	readahead_size = get_device_readahead(fname);
-> +	if (readahead_size == -1)
-> +		tst_brkm(TBROK, cleanup, "Failed to get readahead size");
->  
->  	fd = open(fname, O_RDONLY);
->  	if (fd < 0)
->  		tst_brkm(TBROK | TERRNO, cleanup, "Failed to open %s", fname);
->  
->  	if (do_readahead) {
-> -		/* read ahead in chunks, 2MB is maximum since 3.15-rc1 */
-> -		for (i = 0; i < fsize; i += 2*1024*1024) {
-> +		for (i = 0; i < fsize; i += readahead_size) {
->  			TEST(ltp_syscall(__NR_readahead, fd,
-> -				(off64_t) i, 2*1024*1024));
-> +				(off64_t) i, readahead_size));
->  			if (TEST_RETURN != 0)
->  				break;
->  		}
-> --
-> 2.5.0
-> 
-> 
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
