@@ -1,69 +1,36 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 7 Jan 2016 08:43:27 -0500 (EST)
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 7 Jan 2016 15:08:51 +0100
 Subject: [LTP] [PATCH V2] Use a union of sigval instead of sigval_t
-In-Reply-To: <1452169516-104606-1-git-send-email-raj.khem@gmail.com>
+In-Reply-To: <1370167031.5338451.1452174207521.JavaMail.zimbra@redhat.com>
 References: <1452169516-104606-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1370167031.5338451.1452174207521.JavaMail.zimbra@redhat.com>
+ <1370167031.5338451.1452174207521.JavaMail.zimbra@redhat.com>
+Message-ID: <20160107140850.GB13423@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> From: "Khem Raj" <raj.khem@gmail.com>
-> To: ltp@lists.linux.it
-> Sent: Thursday, 7 January, 2016 1:25:16 PM
-> Subject: [LTP] [PATCH V2] Use a union of sigval instead of sigval_t
+Hi!
+> > sigval_t is glibc only construct, we use a union of sigval
+> > which pretty much is same effect as sigval_t
+> > 
+> > Signed-off-by: Khem Raj <raj.khem@gmail.com>
 > 
-> sigval_t is glibc only construct, we use a union of sigval
-> which pretty much is same effect as sigval_t
+> Reviewed-by: Jan Stancek <jstancek@redhat.com>
 > 
-> Signed-off-by: Khem Raj <raj.khem@gmail.com>
-
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
-
-Looks good to me, I think this should be safe to apply before release.
-(I tested it across RHEL5.6/6.0/7.0)
-
-Cyril, do you agree?
-
-Regards,
-Jan
-
-> ---
->  lib/tlibio.c | 5 +----
->  1 file changed, 1 insertion(+), 4 deletions(-)
+> Looks good to me, I think this should be safe to apply before release.
+> (I tested it across RHEL5.6/6.0/7.0)
 > 
-> diff --git a/lib/tlibio.c b/lib/tlibio.c
-> index 6b6103f..7b6bb33 100644
-> --- a/lib/tlibio.c
-> +++ b/lib/tlibio.c
-> @@ -130,9 +130,6 @@
->  #endif
->  
->  static void lio_async_signal_handler();
-> -#ifdef sgi
-> -static void lio_async_callback_handler();
-> -#endif
->  
->  /*
->   * Define the structure as used in lio_parse_arg1 and lio_help1
-> @@ -441,7 +438,7 @@ static void lio_async_signal_handler(int sig)
->   * If the handler is called, it will increment the Received_callback
->   * global variable.
->   ***********************************************************************/
-> -static void lio_async_callback_handler(sigval_t sigval)
-> +static void lio_async_callback_handler(union sigval sigval)
->  {
->  	if (Debug_level)
->  		printf
-> --
-> 2.7.0
-> 
-> 
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
-> 
+> Cyril, do you agree?
+
+Looking into POSIX it explicitly says that the callback takes union
+sigval paramter and not sigval_t.
+(http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/signal.h.html)
+
+So this change should not break anything. Acked to go in before release
+by me as well.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
