@@ -1,54 +1,42 @@
-From: Khem Raj <raj.khem@gmail.com>
-Date: Thu,  7 Jan 2016 17:46:44 +0000
-Subject: [LTP] [PATCH 3/3] Add knob to control tirpc support
-In-Reply-To: <1452188804-8959-1-git-send-email-raj.khem@gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 7 Jan 2016 23:24:11 +0100
+Subject: [LTP] [PATCH 2/3] Add knob to control whether numa support
+ should be checked
+In-Reply-To: <1452188804-8959-2-git-send-email-raj.khem@gmail.com>
 References: <1452188804-8959-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452188804-8959-3-git-send-email-raj.khem@gmail.com>
+ <1452188804-8959-2-git-send-email-raj.khem@gmail.com>
+Message-ID: <20160107222410.GB14431@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Fathi Boudra <fathi.boudra@linaro.org>
+Hi!
+> +AC_ARG_WITH([numa],
+> +  AC_HELP_STRING([--without-numa],
+> +    [without the numa support]),
+> +  [],[with_numa=yes],
+> +)
+> +
+>  AC_CONFIG_SUBDIRS([utils/ffsb-6.0-rc2])
+>  
+>  # END testsuites knobs
+> @@ -145,7 +151,9 @@ LTP_CHECK_SELINUX
+>  LTP_CHECK_SIGNAL
+>  LTP_CHECK_SYSCALL_EVENTFD
+>  LTP_CHECK_SYSCALL_MODIFY_LDT
+> +if test "x$with_numa" = xyes; then
+>  LTP_CHECK_SYSCALL_NUMA
+> +fi
+>  LTP_CHECK_SYSCALL_QUOTACTL
+>  LTP_CHECK_SYSCALL_SIGNALFD
+>  LTP_CHECK_SYSCALL_UNSHARE
 
-allow to disable tirpc. Helps to disable it at top level for eg. musl it
-does not yet work.
+This is way to ugly. You should add the AC_ARG_WITH() to the
+corresponding m4/ltp-numa.m4 file instead.
 
-Signed-off-by: Fathi Boudra <fathi.boudra@linaro.org>
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
----
- configure.ac | 9 +++++++++
- 1 file changed, 9 insertions(+)
 
-diff --git a/configure.ac b/configure.ac
-index d1095b6..687622c 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -98,6 +98,13 @@ if test "x$with_python" = xyes; then
- else
-     AC_SUBST([WITH_PYTHON],["no"])
- fi
-+
-+# TI RPC
-+AC_ARG_WITH([tirpc],
-+  AC_HELP_STRING([--without-tirpc],
-+    [without libtirpc support]),
-+  [],[with_tirpc=yes],
-+)
- # END tools knobs
- 
- # Testsuites knobs
-@@ -177,7 +184,9 @@ LTP_CHECK_RENAMEAT2
- LTP_CHECK_FALLOCATE
- LTP_CHECK_SYSCALL_FCNTL
- LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
-+if test "x$with_tirpc" = xyes; then
- LTP_CHECK_TIRPC
-+fi
- LTP_CHECK_TEE
- LTP_CHECK_SPLICE
- LTP_CHECK_VMSPLICE
 -- 
-2.7.0
-
+Cyril Hrubis
+chrubis@suse.cz
