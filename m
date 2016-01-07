@@ -1,35 +1,208 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Thu,  7 Jan 2016 07:38:01 +0000
-Subject: [LTP] [PATCH] remove inclusion of deprecated sys/kdaemon.h header
-Message-ID: <1452152281-128165-1-git-send-email-raj.khem@gmail.com>
+Date: Thu,  7 Jan 2016 07:40:08 +0000
+Subject: [LTP] [PATCH] Rename runtests_noltp.sh script so have unique name
+Message-ID: <1452152408-128348-1-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-glibc 2.23+ has dropped this header and moreover its not used in
-testcase
+From: Martin Jansa <Martin.Jansa@gmail.com>
 
+* they are installed in the same target path
+  /opt/ltp/testcases/bin/runtests_noltp.sh
+  and overwrite each other in non-deterministic way
+  when multiple processes are used in "make install"
+
+  ./temp/log.do_install:install -m 00775
+    "ltp/20120903-r2/ltp-20120903/testcases/kernel/containers/sysvipc/runtests_noltp.sh"
+    "ltp/20120903-r2/image/opt/ltp/testcases/bin/runtests_noltp.sh"
+  ./temp/log.do_install:install -m 00775
+    "ltp/20120903-r2/ltp-20120903/testcases/kernel/containers/utsname/runtests_noltp.sh"
+    "ltp/20120903-r2/image/opt/ltp/testcases/bin/runtests_noltp.sh"
+
+Signed-off-by: Martin Jansa <Martin.Jansa@gmail.com>
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
-Upstream-Status: Pending
+ .../kernel/containers/sysvipc/runipctests_noltp.sh | 31 ++++++++++++++++
+ .../kernel/containers/sysvipc/runtests_noltp.sh    | 31 ----------------
+ .../kernel/containers/utsname/runtests_noltp.sh    | 41 ----------------------
+ .../kernel/containers/utsname/runutstests_noltp.sh | 41 ++++++++++++++++++++++
+ 4 files changed, 72 insertions(+), 72 deletions(-)
+ create mode 100644 testcases/kernel/containers/sysvipc/runipctests_noltp.sh
+ delete mode 100644 testcases/kernel/containers/sysvipc/runtests_noltp.sh
+ delete mode 100755 testcases/kernel/containers/utsname/runtests_noltp.sh
+ create mode 100755 testcases/kernel/containers/utsname/runutstests_noltp.sh
 
- testcases/kernel/syscalls/bdflush/bdflush01.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/testcases/kernel/syscalls/bdflush/bdflush01.c b/testcases/kernel/syscalls/bdflush/bdflush01.c
-index df739f1..a529ba9 100644
---- a/testcases/kernel/syscalls/bdflush/bdflush01.c
-+++ b/testcases/kernel/syscalls/bdflush/bdflush01.c
-@@ -81,7 +81,6 @@
- #include <unistd.h>
- #include <errno.h>
- #include <sys/stat.h>
--#include <sys/kdaemon.h>
- 
- #include "test.h"
- #include "linux_syscall_numbers.h"
+diff --git a/testcases/kernel/containers/sysvipc/runipctests_noltp.sh b/testcases/kernel/containers/sysvipc/runipctests_noltp.sh
+new file mode 100644
+index 0000000..84f398f
+--- /dev/null
++++ b/testcases/kernel/containers/sysvipc/runipctests_noltp.sh
+@@ -0,0 +1,31 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2007                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++##                                                                            ##
++################################################################################
++
++exit_code=0
++echo "sysvipc tests"
++for type in none clone unshare; do
++      echo "**sysvipc $type"
++      ./shmnstest_noltp $type
++      if [ $? -ne 0 ]; then
++              exit_code=$?
++      fi
++done
++exit $exit_code
+diff --git a/testcases/kernel/containers/sysvipc/runtests_noltp.sh b/testcases/kernel/containers/sysvipc/runtests_noltp.sh
+deleted file mode 100644
+index 84f398f..0000000
+--- a/testcases/kernel/containers/sysvipc/runtests_noltp.sh
++++ /dev/null
+@@ -1,31 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2007                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-################################################################################
+-
+-exit_code=0
+-echo "sysvipc tests"
+-for type in none clone unshare; do
+-      echo "**sysvipc $type"
+-      ./shmnstest_noltp $type
+-      if [ $? -ne 0 ]; then
+-              exit_code=$?
+-      fi
+-done
+-exit $exit_code
+diff --git a/testcases/kernel/containers/utsname/runtests_noltp.sh b/testcases/kernel/containers/utsname/runtests_noltp.sh
+deleted file mode 100755
+index 43cb7e2..0000000
+--- a/testcases/kernel/containers/utsname/runtests_noltp.sh
++++ /dev/null
+@@ -1,41 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2007                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-################################################################################
+-
+-oldhostname=`hostname`
+-exit_code=0
+-echo "unshare tests"
+-for i in `seq 1 5`; do
+-	echo "test $i (unshare)"
+-	./utstest_noltp unshare $i
+-	if [ $? -ne 0 ]; then
+-		exit_code=$?
+-	fi
+-done
+-echo "clone tests"
+-for i in `seq 1 5`; do
+-	echo "test $i (clone)"
+-	./utstest_noltp clone $i
+-	if [ $? -ne 0 ]; then
+-		exit_code=$?
+-	fi
+-done
+-hostname "$oldhostname"
+-exit $exit_code
+diff --git a/testcases/kernel/containers/utsname/runutstests_noltp.sh b/testcases/kernel/containers/utsname/runutstests_noltp.sh
+new file mode 100755
+index 0000000..43cb7e2
+--- /dev/null
++++ b/testcases/kernel/containers/utsname/runutstests_noltp.sh
+@@ -0,0 +1,41 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2007                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++##                                                                            ##
++################################################################################
++
++oldhostname=`hostname`
++exit_code=0
++echo "unshare tests"
++for i in `seq 1 5`; do
++	echo "test $i (unshare)"
++	./utstest_noltp unshare $i
++	if [ $? -ne 0 ]; then
++		exit_code=$?
++	fi
++done
++echo "clone tests"
++for i in `seq 1 5`; do
++	echo "test $i (clone)"
++	./utstest_noltp clone $i
++	if [ $? -ne 0 ]; then
++		exit_code=$?
++	fi
++done
++hostname "$oldhostname"
++exit $exit_code
 -- 
-2.6.4
+1.8.4.3
 
