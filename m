@@ -1,67 +1,69 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 7 Jan 2016 14:27:49 +0100
-Subject: [LTP] Test library API changes
-In-Reply-To: <1146864418.5284131.1452171696007.JavaMail.zimbra@redhat.com>
-References: <20160105111136.GA32659@rei.lan>
- <1146864418.5284131.1452171696007.JavaMail.zimbra@redhat.com>
-Message-ID: <20160107132748.GA13423@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 7 Jan 2016 08:43:27 -0500 (EST)
+Subject: [LTP] [PATCH V2] Use a union of sigval instead of sigval_t
+In-Reply-To: <1452169516-104606-1-git-send-email-raj.khem@gmail.com>
+References: <1452169516-104606-1-git-send-email-raj.khem@gmail.com>
+Message-ID: <1370167031.5338451.1452174207521.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> 1) https://github.com/metan-ucw/ltp/blob/master/include/tst_test.h#L65
-> I did like there is option for test_all(). One concern I had was
-> that forcing everybody to use test(int) was too restrictive.
-> For example, you want to pass more parameters than just testcase #.
-> Also not all tests follow "static struct tcase {" idiom, with single
-> test function that is fed different arguments. I think test_all()
-> gives us more flexibility. I was also thinking if library should
-> care about "tcnt".
 
-My primary concern for adding the test_all() was a bit different. There
-are testcases where tests depends on each other and must be executed in
-exact order. So instead of adding overly complicated way how to express
-the dependencies I've added a possibility to run all tests in one
-function. But yes the concern that enforcing too strict format may
-complicate the conversion of the testcases was there as well.
 
-> 2) https://github.com/metan-ucw/ltp/blob/master/lib/tst_test.c#L218-L219
-> This also looks more strict requirement than what we had until now.
-> It requires to count exactly how many PASS/FAIL there are.
-> Is extra PASS or SKIP message a reason to fail the test with brk?
+----- Original Message -----
+> From: "Khem Raj" <raj.khem@gmail.com>
+> To: ltp@lists.linux.it
+> Sent: Thursday, 7 January, 2016 1:25:16 PM
+> Subject: [LTP] [PATCH V2] Use a union of sigval instead of sigval_t
+> 
+> sigval_t is glibc only construct, we use a union of sigval
+> which pretty much is same effect as sigval_t
+> 
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
 
-That depends. If we want to produce more structured/detailed logs than
-PASS/FAIL/SKIP for one test binary we should be more strict about this.
-Since at the moment single skipped testcase marks the whole test as
-skipped. I would like to get to the state where the test result rather
-says: "9 passed 1 skipped".
+Reviewed-by: Jan Stancek <jstancek@redhat.com>
 
-> 3) cleanup and children
-> I know, it's a proof of concept :-).
+Looks good to me, I think this should be safe to apply before release.
+(I tested it across RHEL5.6/6.0/7.0)
 
-I wasn't looking into thread safety either. So far it's just a sketch of
-API + very minimal implementation.
+Cyril, do you agree?
 
-> 4) After first reading, I'm not sure I have clear picture of changes in API.
-> From what I gathered these are main changes:
->   test.h -> tst_test.h
->   tst_resm -> tst_res
->   tst_brkm -> tst_brk
->   safe_macros.h -> tst_safe_macros.h (now included via tst_test.h)
+Regards,
+Jan
 
-I've tried to do the changes in a way that old and new library can
-coexist for some time, since I guess that the conversion would take
-quite a lot of time. That is the main reason for the tst_resm -> tst_res
-change. The safe_macros header was split into two, the new one does not
-take the cleanup parameter and calls the same functions (as the old one)
-but with with NULL passed a the callback. What wasn't done yet is
-rerouting tst_resm()/tst_brkm() to the new library in case that new
-library is used so that rest of the code in lib/ can be called from the
-new library.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> ---
+>  lib/tlibio.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/lib/tlibio.c b/lib/tlibio.c
+> index 6b6103f..7b6bb33 100644
+> --- a/lib/tlibio.c
+> +++ b/lib/tlibio.c
+> @@ -130,9 +130,6 @@
+>  #endif
+>  
+>  static void lio_async_signal_handler();
+> -#ifdef sgi
+> -static void lio_async_callback_handler();
+> -#endif
+>  
+>  /*
+>   * Define the structure as used in lio_parse_arg1 and lio_help1
+> @@ -441,7 +438,7 @@ static void lio_async_signal_handler(int sig)
+>   * If the handler is called, it will increment the Received_callback
+>   * global variable.
+>   ***********************************************************************/
+> -static void lio_async_callback_handler(sigval_t sigval)
+> +static void lio_async_callback_handler(union sigval sigval)
+>  {
+>  	if (Debug_level)
+>  		printf
+> --
+> 2.7.0
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
