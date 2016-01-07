@@ -1,24 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 7 Jan 2016 15:54:54 +0100
-Subject: [LTP] [PATCH] mem/oom: remove non-existent case OVERCOMMIT
-	from	oom()
-In-Reply-To: <423580278.5207145.1452167840798.JavaMail.zimbra@redhat.com>
-References: <20151228074919.GA12782@localhost.localdomain>
- <423580278.5207145.1452167840798.JavaMail.zimbra@redhat.com>
-Message-ID: <20160107145453.GA14431@rei.lan>
+From: Khem Raj <raj.khem@gmail.com>
+Date: Thu,  7 Jan 2016 17:46:42 +0000
+Subject: [LTP] [PATCH 1/3] ltp: Don't link against libfl
+Message-ID: <1452188804-8959-1-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Reviewed-by: Jan Stancek <jstancek@redhat.com>
-> 
-> Looks good to me, regards,
+From: Chong Lu <Chong.Lu@windriver.com>
 
-Looks correct to me as well.
+We have already defined yywrap function in scan.l file. After this, we no longer need to
+link against libfl and so no longer get errors about undefined references to yylex.
 
+Signed-off-by: Chong Lu <Chong.Lu@windriver.com>
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+---
+ pan/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pan/Makefile b/pan/Makefile
+index 4cc6466..a4b575b 100644
+--- a/pan/Makefile
++++ b/pan/Makefile
+@@ -31,7 +31,7 @@ CPPFLAGS		+= -Wno-error
+ 
+ CPPFLAGS		+= -I$(abs_srcdir)
+ 
+-LDLIBS			+= -lm $(LEXLIB)
++LDLIBS			+= -lm
+ 
+ LFLAGS			+= -l
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.7.0
+
