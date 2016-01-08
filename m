@@ -1,54 +1,53 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:23 +0000
-Subject: [LTP] [PATCH 03/31] Add knob to control tirpc support
+Date: Fri,  8 Jan 2016 08:11:25 +0000
+Subject: [LTP] [PATCH 05/31] kernel/controllers: Link with libfts explicitly
+	on musl
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-3-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-5-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Fathi Boudra <fathi.boudra@linaro.org>
+musl does not implement fts like glibc and therefore it depends on
+external implementation for all fts APIs
 
-allow to disable tirpc. Helps to disable it at top level for eg. musl it
-does not yet work.
-
-Signed-off-by: Fathi Boudra <fathi.boudra@linaro.org>
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- configure.ac | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ testcases/kernel/controllers/Makefile.inc        | 3 +++
+ testcases/kernel/controllers/cpuset/Makefile.inc | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/configure.ac b/configure.ac
-index cc50397..9e2936b 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -98,6 +98,13 @@ if test "x$with_python" = xyes; then
- else
-     AC_SUBST([WITH_PYTHON],["no"])
- fi
-+
-+# TI RPC
-+AC_ARG_WITH([tirpc],
-+  AC_HELP_STRING([--without-tirpc],
-+    [without libtirpc support]),
-+  [],[with_tirpc=yes],
-+)
- # END tools knobs
+diff --git a/testcases/kernel/controllers/Makefile.inc b/testcases/kernel/controllers/Makefile.inc
+index b106283..ef5fc0c 100644
+--- a/testcases/kernel/controllers/Makefile.inc
++++ b/testcases/kernel/controllers/Makefile.inc
+@@ -36,6 +36,9 @@ MAKE_DEPS		:= $(LIB)
+ CPPFLAGS		+= -I$(abs_srcdir)/../$(LIBDIR)
  
- # Testsuites knobs
-@@ -169,7 +176,9 @@ LTP_CHECK_RENAMEAT2
- LTP_CHECK_FALLOCATE
- LTP_CHECK_SYSCALL_FCNTL
- LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
-+if test "x$with_tirpc" = xyes; then
- LTP_CHECK_TIRPC
-+fi
- LTP_CHECK_TEE
- LTP_CHECK_SPLICE
- LTP_CHECK_VMSPLICE
+ LDFLAGS			+= -L$(abs_builddir)/../$(LIBDIR)
++ifeq ($(LIBC),musl)
++LDLIBS			+= -lfts
++endif
+ 
+ INSTALL_TARGETS		?= *.sh
+ 
+diff --git a/testcases/kernel/controllers/cpuset/Makefile.inc b/testcases/kernel/controllers/cpuset/Makefile.inc
+index 9e002f4..e0fcb9c 100644
+--- a/testcases/kernel/controllers/cpuset/Makefile.inc
++++ b/testcases/kernel/controllers/cpuset/Makefile.inc
+@@ -42,6 +42,9 @@ MAKE_DEPS		:= $(LIBCONTROLLERS) $(LIBCPUSET)
+ LDFLAGS			+= -L$(abs_builddir)/$(LIBCPUSET_DIR) -L$(abs_builddir)/$(LIBCONTROLLERS_DIR)
+ 
+ LDLIBS			+= -lcpu_set -lcontrollers -lltp
++ifeq ($(LIBC),musl)
++LDLIBS			+= -lfts
++endif
+ 
+ INSTALL_TARGETS		?= *.sh
+ 
 -- 
 2.7.0
 
