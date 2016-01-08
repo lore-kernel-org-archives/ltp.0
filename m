@@ -1,153 +1,80 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:24 +0000
-Subject: [LTP] [PATCH 04/31] build: Add option to select libc implementation
+Date: Fri,  8 Jan 2016 08:11:30 +0000
+Subject: [LTP] [PATCH 10/31] replace __BEGIN_DECLS and __END_DECLS
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-4-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-10-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-There are more than glibc for C library implementation available on
-linux now a days, uclibc cloaked like glibc but musl e.g. is very
-different and does not implement all GNU extentions
+They are not portable across libc implementations
+therefore replace them with expanded macros
 
-Disable tests specifically not building _yet_ on musl based systems
+Include <asm-generic/types.h> to get __s32 definitions
+its not a generally available typedef
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- Makefile                                    | 5 +++++
- testcases/kernel/Makefile                   | 5 ++++-
- testcases/kernel/sched/Makefile             | 4 +++-
- testcases/kernel/syscalls/Makefile          | 5 +++++
- testcases/network/nfsv4/acl/Makefile        | 4 ++++
- testcases/network/rpc/Makefile              | 3 +++
- testcases/realtime/func/pi-tests/Makefile   | 4 ++++
- testcases/realtime/stress/pi-tests/Makefile | 5 +++++
- 8 files changed, 33 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/epoll2/include/epoll.h | 8 ++++++--
+ utils/sctp/include/netinet/sctp.h                | 9 +++++++--
+ 2 files changed, 13 insertions(+), 4 deletions(-)
 
-diff --git a/Makefile b/Makefile
-index 297f8e7..906b280 100644
---- a/Makefile
-+++ b/Makefile
-@@ -49,6 +49,11 @@ SKIP_IDCHECK		?= 0
- UCLINUX			?= 0
- export UCLINUX
+diff --git a/testcases/kernel/syscalls/epoll2/include/epoll.h b/testcases/kernel/syscalls/epoll2/include/epoll.h
+index be599c7..8cc5e7e 100644
+--- a/testcases/kernel/syscalls/epoll2/include/epoll.h
++++ b/testcases/kernel/syscalls/epoll2/include/epoll.h
+@@ -85,7 +85,9 @@ struct epoll_event
+ } EPOLL_PACKED;
  
-+# System C library implementation (glibc,uclibc,musl etc.)
-+# default to glibc if not set
-+LIBC			?= glibc
-+export LIBC
-+
- # CLEAN_TARGETS:	Targets which exist solely in clean.
- # COMMON_TARGETS:	Targets which exist in all, clean, and install.
- # INSTALL_TARGETS:	Targets which exist in clean and install (contains
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 50a12fa..4f1987f 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -47,13 +47,16 @@ SUBDIRS			+= connectors \
- 			   logging \
- 			   mem \
- 			   numa \
--			   pty \
- 			   sched \
- 			   security \
- 			   timers \
- 			   tracing \
- 			   module \
  
-+ifneq ($(LIBC),musl)
-+SUBDIRS			+= pty
-+endif
-+
- ifeq ($(WITH_POWER_MANAGEMENT_TESTSUITE),yes)
- SUBDIRS			+= power_management
- endif
-diff --git a/testcases/kernel/sched/Makefile b/testcases/kernel/sched/Makefile
-index 6245ed0..aa4eb7f 100644
---- a/testcases/kernel/sched/Makefile
-+++ b/testcases/kernel/sched/Makefile
-@@ -23,5 +23,7 @@
- top_srcdir		?= ../../..
+-__BEGIN_DECLS
++#ifdef __cplusplus
++extern "C" {
++#endif
  
- include $(top_srcdir)/include/mk/env_pre.mk
--
-+ifeq ($(LIBC),musl)
-+	FILTER_OUT_DIRS += process_stress
-+endif
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/syscalls/Makefile b/testcases/kernel/syscalls/Makefile
-index 8acb395..b749126 100644
---- a/testcases/kernel/syscalls/Makefile
-+++ b/testcases/kernel/syscalls/Makefile
-@@ -28,5 +28,10 @@ ifeq ($(UCLINUX),1)
- FILTER_OUT_DIRS	+= capget capset chmod chown clone fork getcontext llseek \
- 		   mincore mprotect nftw profil remap_file_pages sbrk
- endif
-+ifeq ($(LIBC),musl)
-+FILTER_OUT_DIRS	+= confstr fmtmsg getcontext ioctl mallopt profil \
-+		   rt_sigsuspend setdomainname sethostname sigsuspend \
-+		   ustat
-+endif
+ /* Creates an epoll instance.  Returns an fd for the new instance.
+    The "size" parameter is a hint specifying the number of file
+@@ -114,6 +116,8 @@ extern int epoll_ctl (int __epfd, int __op, int __fd,
+ extern int epoll_wait (int __epfd, struct epoll_event *__events,
+ 		       int __maxevents, int __timeout) __THROW;
  
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/network/nfsv4/acl/Makefile b/testcases/network/nfsv4/acl/Makefile
-index 8bc78c2..c36cf50 100644
---- a/testcases/network/nfsv4/acl/Makefile
-+++ b/testcases/network/nfsv4/acl/Makefile
-@@ -26,4 +26,8 @@ include $(top_srcdir)/include/mk/env_pre.mk
+-__END_DECLS
++#ifdef __cplusplus
++}
++#endif
  
- LDLIBS			+= $(ACL_LIBS)
+ #endif /* sys/epoll.h */
+diff --git a/utils/sctp/include/netinet/sctp.h b/utils/sctp/include/netinet/sctp.h
+index 51f5bfb..c61aef3 100644
+--- a/utils/sctp/include/netinet/sctp.h
++++ b/utils/sctp/include/netinet/sctp.h
+@@ -35,9 +35,12 @@
  
-+ifeq ($(LIBC),musl)
-+FILTER_OUT_MAKE_TARGETS	:= acl1
-+endif
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/rpc/Makefile b/testcases/network/rpc/Makefile
-index 39e9faa..5ca8c08 100644
---- a/testcases/network/rpc/Makefile
-+++ b/testcases/network/rpc/Makefile
-@@ -29,5 +29,8 @@ INSTALL_TARGETS		:= *.sh
- ifeq ($(TIRPC_LIBS),)
- FILTER_OUT_DIRS		+= rpc-tirpc
- endif
-+ifeq ($(LIBC),musl)
-+FILTER_OUT_DIRS	+= basic_tests
-+endif
+ #include <stdint.h>
+ #include <linux/types.h>
++#include <asm-generic/types.h>
+ #include <sys/socket.h>
  
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/realtime/func/pi-tests/Makefile b/testcases/realtime/func/pi-tests/Makefile
-index 7a7a57a..5808866 100644
---- a/testcases/realtime/func/pi-tests/Makefile
-+++ b/testcases/realtime/func/pi-tests/Makefile
-@@ -27,5 +27,9 @@ include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
+-__BEGIN_DECLS
++#ifdef __cplusplus
++extern "C" {
++#endif
  
- MAKE_TARGETS		:= testpi-0 testpi-1 testpi-2 testpi-4 testpi-5 testpi-6 testpi-7 sbrk_mutex
-+ifeq ($(LIBC),musl)
-+FILTER_OUT_MAKE_TARGETS	:= testpi-5 testpi-6 sbrk_mutex
-+endif
-+
+ typedef __s32 sctp_assoc_t;
  
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/stress/pi-tests/Makefile b/testcases/realtime/stress/pi-tests/Makefile
-index 5edc3b4..aa5987a 100644
---- a/testcases/realtime/stress/pi-tests/Makefile
-+++ b/testcases/realtime/stress/pi-tests/Makefile
-@@ -24,4 +24,9 @@ top_srcdir		?= ../../../..
+@@ -862,6 +865,8 @@ int sctp_recvmsg(int s, void *msg, size_t len, struct sockaddr *from,
+ /* Return the address length for an address family. */
+ int sctp_getaddrlen(sa_family_t family);
  
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
-+
-+ifeq ($(LIBC),musl)
-+FILTER_OUT_MAKE_TARGETS	:= testpi-3
-+endif
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
+-__END_DECLS
++#ifdef __cplusplus
++}
++#endif
+ 
+ #endif /* __linux_sctp_h__ */
 -- 
 2.7.0
 
