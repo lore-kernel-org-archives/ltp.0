@@ -1,37 +1,52 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:21 +0000
-Subject: [LTP] [PATCH 01/31] ltp: Don't link against libfl
-Message-ID: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
+Date: Fri,  8 Jan 2016 08:11:22 +0000
+Subject: [LTP] [PATCH 02/31] Add knob to control whether numa support should
+	be checked
+In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
+References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-2-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Chong Lu <Chong.Lu@windriver.com>
+From: "Roy.Li" <rongqing.li@windriver.com>
 
-We have already defined yywrap function in scan.l file. After this, we no longer need to
-link against libfl and so no longer get errors about undefined references to yylex.
+otherwise undeterministic dependency will be generated
+during build depending upong numa being staged or not
 
-Signed-off-by: Chong Lu <Chong.Lu@windriver.com>
+signed-off-by: Roy.Li <rongqing.li@windriver.com>
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- pan/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ m4/ltp-numa.m4 | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/pan/Makefile b/pan/Makefile
-index 4cc6466..a4b575b 100644
---- a/pan/Makefile
-+++ b/pan/Makefile
-@@ -31,7 +31,7 @@ CPPFLAGS		+= -Wno-error
- 
- CPPFLAGS		+= -I$(abs_srcdir)
- 
--LDLIBS			+= -lm $(LEXLIB)
-+LDLIBS			+= -lm
- 
- LFLAGS			+= -l
- 
+diff --git a/m4/ltp-numa.m4 b/m4/ltp-numa.m4
+index 60ae07b..ed7078d 100644
+--- a/m4/ltp-numa.m4
++++ b/m4/ltp-numa.m4
+@@ -24,7 +24,13 @@ dnl ----------------------------
+ dnl
+ AC_DEFUN([LTP_CHECK_SYSCALL_NUMA],
+ [dnl
+-AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
++AC_MSG_CHECKING([for numa])
++AC_ARG_WITH(
++	[numa],
++	AC_HELP_STRING([--without-numa],
++	[without numa support]),
++	[],
++	[AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
+ 	LTP_SYSCALL_NUMA_HEADERS=yes
+ 	AC_CHECK_LIB(numa,numa_alloc_onnode,[have_numa_alloc_onnode="yes"])
+ 	if  test "x$have_numa_alloc_onnode" = "xyes"; then
+@@ -48,3 +54,5 @@ if test "x$have_mpol_constants" = "xyes"; then
+ 	AC_DEFINE(HAVE_MPOL_CONSTANTS,1,[define to 1 if you have all constants required to use mbind tests])
+ fi
+ )])
++AC_MSG_RESULT([$with_numa])
++])
 -- 
 2.7.0
 
