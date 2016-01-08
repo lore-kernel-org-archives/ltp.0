@@ -1,39 +1,358 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:39 +0000
-Subject: [LTP] [PATCH 19/31] tomoyo: Replace canonicalize_file_name() with
-	realpath()
+Date: Fri,  8 Jan 2016 08:11:32 +0000
+Subject: [LTP] [PATCH 12/31] fsstress.c: Replace __int64_t with int64_t
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-19-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-12-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-canonicalize_file_name() API is specific to glibc
+int64_t is defined in ISO C99
+include limits.h to get defintions of PATH_MAX
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/fs/fsstress/fsstress.c       | 31 +++++++++---------
+ testcases/network/nfs/nfs_fsstress/fsstress.c | 47 ++++++++++++++-------------
+ 2 files changed, 40 insertions(+), 38 deletions(-)
 
-diff --git a/testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c b/testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c
-index da4af0f..5c1a3ca 100644
---- a/testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c
-+++ b/testcases/kernel/security/tomoyo/tomoyo_filesystem_test.c
-@@ -274,9 +274,9 @@ int main(int argc, char *argv[])
- 	/* Test mount(). */
- 	{
- 		static char buf[4096];
--		char *dev_ram_path = canonicalize_file_name("/dev/ram0");
-+		char *dev_ram_path = realpath("/dev/ram0", NULL);
- 		if (!dev_ram_path)
--			dev_ram_path = canonicalize_file_name("/dev/ram");
-+			dev_ram_path = realpath("/dev/ram", NULL);
- 		if (!dev_ram_path) {
- 			dev_ram_path = "/dev/ram0";
- 			mknod(dev_ram_path, S_IFBLK, MKDEV(1, 0));
+diff --git a/testcases/kernel/fs/fsstress/fsstress.c b/testcases/kernel/fs/fsstress/fsstress.c
+index 2f89903..89f0b19 100644
+--- a/testcases/kernel/fs/fsstress/fsstress.c
++++ b/testcases/kernel/fs/fsstress/fsstress.c
+@@ -36,6 +36,7 @@
+ #ifdef HAVE_SYS_PRCTL_H
+ # include <sys/prctl.h>
+ #endif
++#include <limits.h>
+ 
+ #define XFS_ERRTAG_MAX		17
+ 
+@@ -1572,7 +1573,7 @@ void bulkstat_f(int opno, long r)
+ 	__u64 last;
+ 	__s32 nent;
+ 	xfs_bstat_t *t;
+-	__int64_t total;
++	int64_t total;
+ 	xfs_fsop_bulkreq_t bsr;
+ 
+ 	last = 0;
+@@ -1764,14 +1765,14 @@ int setdirect(int fd)
+ 
+ void dread_f(int opno, long r)
+ {
+-	__int64_t align;
++	int64_t align;
+ 	char *buf = NULL;
+ 	struct dioattr diob;
+ 	int e;
+ 	pathname_t f;
+ 	int fd;
+ 	size_t len;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -1835,8 +1836,8 @@ void dread_f(int opno, long r)
+ 		return;
+ 	}
+ #endif
+-	align = (__int64_t) diob.d_miniosz;
+-	lr = ((__int64_t) random() << 32) + random();
++	align = (int64_t) diob.d_miniosz;
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % stb.st_size);
+ 	off -= (off % align);
+ 	lseek64(fd, off, SEEK_SET);
+@@ -1865,14 +1866,14 @@ void dread_f(int opno, long r)
+ 
+ void dwrite_f(int opno, long r)
+ {
+-	__int64_t align;
++	int64_t align;
+ 	char *buf = NULL;
+ 	struct dioattr diob;
+ 	int e;
+ 	pathname_t f;
+ 	int fd;
+ 	size_t len;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -1925,8 +1926,8 @@ void dwrite_f(int opno, long r)
+ 		return;
+ 	}
+ #endif
+-	align = (__int64_t) diob.d_miniosz;
+-	lr = ((__int64_t) random() << 32) + random();
++	align = (int64_t) diob.d_miniosz;
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
+ 	off -= (off % align);
+ 	lseek64(fd, off, SEEK_SET);
+@@ -2224,7 +2225,7 @@ void read_f(int opno, long r)
+ 	pathname_t f;
+ 	int fd;
+ 	size_t len;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -2262,7 +2263,7 @@ void read_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % stb.st_size);
+ 	lseek64(fd, off, SEEK_SET);
+ 	len = (random() % (getpagesize() * 32)) + 1;
+@@ -2509,7 +2510,7 @@ void truncate_f(int opno, long r)
+ {
+ 	int e;
+ 	pathname_t f;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -2530,7 +2531,7 @@ void truncate_f(int opno, long r)
+ 		free_pathname(&f);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE);
+ 	off %= maxfsize;
+ 	e = truncate64_path(&f, off) < 0 ? errno : 0;
+@@ -2626,7 +2627,7 @@ void write_f(int opno, long r)
+ 	pathname_t f;
+ 	int fd;
+ 	size_t len;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -2656,7 +2657,7 @@ void write_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
+ 	off %= maxfsize;
+ 	lseek64(fd, off, SEEK_SET);
+diff --git a/testcases/network/nfs/nfs_fsstress/fsstress.c b/testcases/network/nfs/nfs_fsstress/fsstress.c
+index ac91262..a34c416 100644
+--- a/testcases/network/nfs/nfs_fsstress/fsstress.c
++++ b/testcases/network/nfs/nfs_fsstress/fsstress.c
+@@ -31,6 +31,7 @@
+  */
+ 
+ #include "global.h"
++#include <limits.h>
+ 
+ #define XFS_ERRTAG_MAX		17
+ 
+@@ -1368,7 +1369,7 @@ void allocsp_f(int opno, long r)
+ 	pathname_t f;
+ 	int fd;
+ 	struct flock64 fl;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -1398,7 +1399,7 @@ void allocsp_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
+ 	off %= maxfsize;
+ 	fl.l_whence = SEEK_SET;
+@@ -1519,7 +1520,7 @@ void bulkstat_f(int opno, long r)
+ 	__uint64_t last;
+ 	int nent;
+ 	xfs_bstat_t *t;
+-	__int64_t total;
++	int64_t total;
+ 	xfs_fsop_bulkreq_t bsr;
+ 
+ 	last = 0;
+@@ -1708,14 +1709,14 @@ int setdirect(int fd)
+ 
+ void dread_f(int opno, long r)
+ {
+-	__int64_t align;
++	int64_t align;
+ 	char *buf;
+ 	struct dioattr diob;
+ 	int e;
+ 	pathname_t f;
+ 	int fd;
+ 	size_t len;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -1775,8 +1776,8 @@ void dread_f(int opno, long r)
+ 		return;
+ 	}
+ #endif
+-	align = (__int64_t) diob.d_miniosz;
+-	lr = ((__int64_t) random() << 32) + random();
++	align = (int64_t) diob.d_miniosz;
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % stb.st_size);
+ 	off -= (off % align);
+ 	lseek64(fd, off, SEEK_SET);
+@@ -1798,14 +1799,14 @@ void dread_f(int opno, long r)
+ 
+ void dwrite_f(int opno, long r)
+ {
+-	__int64_t align;
++	int64_t align;
+ 	char *buf;
+ 	struct dioattr diob;
+ 	int e;
+ 	pathname_t f;
+ 	int fd;
+ 	size_t len;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -1854,8 +1855,8 @@ void dwrite_f(int opno, long r)
+ 		return;
+ 	}
+ #endif
+-	align = (__int64_t) diob.d_miniosz;
+-	lr = ((__int64_t) random() << 32) + random();
++	align = (int64_t) diob.d_miniosz;
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
+ 	off -= (off % align);
+ 	lseek64(fd, off, SEEK_SET);
+@@ -1917,7 +1918,7 @@ void freesp_f(int opno, long r)
+ 	pathname_t f;
+ 	int fd;
+ 	struct flock64 fl;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -1947,7 +1948,7 @@ void freesp_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
+ 	off %= maxfsize;
+ 	fl.l_whence = SEEK_SET;
+@@ -2145,7 +2146,7 @@ void read_f(int opno, long r)
+ 	pathname_t f;
+ 	int fd;
+ 	size_t len;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -2183,7 +2184,7 @@ void read_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % stb.st_size);
+ 	lseek64(fd, off, SEEK_SET);
+ 	len = (random() % (getpagesize() * 32)) + 1;
+@@ -2281,7 +2282,7 @@ void resvsp_f(int opno, long r)
+ 	pathname_t f;
+ 	int fd;
+ 	struct flock64 fl;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -2311,7 +2312,7 @@ void resvsp_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
+ 	off %= maxfsize;
+ 	fl.l_whence = SEEK_SET;
+@@ -2428,7 +2429,7 @@ void truncate_f(int opno, long r)
+ {
+ 	int e;
+ 	pathname_t f;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -2449,7 +2450,7 @@ void truncate_f(int opno, long r)
+ 		free_pathname(&f);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
+ 	off %= maxfsize;
+ 	e = truncate64_path(&f, off) < 0 ? errno : 0;
+@@ -2491,7 +2492,7 @@ void unresvsp_f(int opno, long r)
+ 	pathname_t f;
+ 	int fd;
+ 	struct flock64 fl;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -2521,7 +2522,7 @@ void unresvsp_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
+ 	off %= maxfsize;
+ 	fl.l_whence = SEEK_SET;
+@@ -2543,7 +2544,7 @@ void write_f(int opno, long r)
+ 	pathname_t f;
+ 	int fd;
+ 	size_t len;
+-	__int64_t lr;
++	int64_t lr;
+ 	off64_t off;
+ 	struct stat64 stb;
+ 	int v;
+@@ -2573,7 +2574,7 @@ void write_f(int opno, long r)
+ 		close(fd);
+ 		return;
+ 	}
+-	lr = ((__int64_t) random() << 32) + random();
++	lr = ((int64_t) random() << 32) + random();
+ 	off = (off64_t) (lr % MIN(stb.st_size + (1024 * 1024), MAXFSIZE));
+ 	off %= maxfsize;
+ 	lseek64(fd, off, SEEK_SET);
 -- 
 2.7.0
 
