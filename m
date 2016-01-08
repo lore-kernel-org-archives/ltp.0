@@ -1,277 +1,63 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:29 +0000
-Subject: [LTP] [PATCH 09/31] Guard error.h with __GLIBC__
+Date: Fri,  8 Jan 2016 08:11:34 +0000
+Subject: [LTP] [PATCH 14/31] hyperthreading: Include sys/types.h for pid_t
+	definition
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-9-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-14-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-error API is specific to glibc so use the guard to make it conditional
-on glibc
+If sys/types.h is not included then it will not define pid_t_needed
+and therefore typedef wont be included and we get errors about pid_t
+being not known
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/faccessat/faccessat01.c   | 2 ++
- testcases/kernel/syscalls/fallocate/fallocate01.c   | 2 ++
- testcases/kernel/syscalls/fchmodat/fchmodat01.c     | 2 ++
- testcases/kernel/syscalls/fchownat/fchownat01.c     | 2 ++
- testcases/kernel/syscalls/fchownat/fchownat02.c     | 2 ++
- testcases/kernel/syscalls/fstatat/fstatat01.c       | 2 ++
- testcases/kernel/syscalls/futimesat/futimesat01.c   | 2 ++
- testcases/kernel/syscalls/linkat/linkat01.c         | 2 ++
- testcases/kernel/syscalls/linkat/linkat02.c         | 2 ++
- testcases/kernel/syscalls/mkdirat/mkdirat01.c       | 2 ++
- testcases/kernel/syscalls/mknodat/mknodat01.c       | 2 ++
- testcases/kernel/syscalls/mknodat/mknodat02.c       | 2 ++
- testcases/kernel/syscalls/openat/openat01.c         | 2 ++
- testcases/kernel/syscalls/readlinkat/readlinkat01.c | 2 ++
- testcases/kernel/syscalls/renameat/renameat01.c     | 2 ++
- testcases/kernel/syscalls/symlinkat/symlinkat01.c   | 2 ++
- testcases/kernel/syscalls/unlinkat/unlinkat01.c     | 2 ++
- 17 files changed, 34 insertions(+)
+ testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h  | 1 +
+ testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h   | 1 +
+ testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h | 1 +
+ 3 files changed, 3 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/faccessat/faccessat01.c b/testcases/kernel/syscalls/faccessat/faccessat01.c
-index 7f0e87a..c72dcf0 100644
---- a/testcases/kernel/syscalls/faccessat/faccessat01.c
-+++ b/testcases/kernel/syscalls/faccessat/faccessat01.c
-@@ -37,7 +37,9 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <unistd.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate01.c b/testcases/kernel/syscalls/fallocate/fallocate01.c
-index e72b123..643c0e2 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate01.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate01.c
-@@ -96,7 +96,9 @@
- #include <fcntl.h>
- #include <sys/syscall.h>
- #include <unistd.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <inttypes.h>
- #include <sys/utsname.h>
+diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h
+index 1ec9794..9084aa7 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h
++++ b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h
+@@ -3,6 +3,7 @@
+ #define _HTUTILS_H_
  
-diff --git a/testcases/kernel/syscalls/fchmodat/fchmodat01.c b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-index 19e9ad5..ae6d807 100644
---- a/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-+++ b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-@@ -37,7 +37,9 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <unistd.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
  #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/fchownat/fchownat01.c b/testcases/kernel/syscalls/fchownat/fchownat01.c
-index b361253..a5218af 100644
---- a/testcases/kernel/syscalls/fchownat/fchownat01.c
-+++ b/testcases/kernel/syscalls/fchownat/fchownat01.c
-@@ -28,7 +28,9 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <unistd.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
++#include <sys/types.h>
+ 
+ int is_cmdline_para(const char *para);
+ 
+diff --git a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h
+index 1ec9794..c03a124 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h
++++ b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h
+@@ -2,6 +2,7 @@
+ #ifndef _HTUTILS_H_
+ #define _HTUTILS_H_
+ 
++#include <sys/types.h>
  #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/fchownat/fchownat02.c b/testcases/kernel/syscalls/fchownat/fchownat02.c
-index 6b0304c..8d2863f 100644
---- a/testcases/kernel/syscalls/fchownat/fchownat02.c
-+++ b/testcases/kernel/syscalls/fchownat/fchownat02.c
-@@ -26,7 +26,9 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <unistd.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
+ 
+ int is_cmdline_para(const char *para);
+diff --git a/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h b/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h
+index 2977ad0..6b484e1 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h
++++ b/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h
+@@ -3,6 +3,7 @@
+ #define _HTUTILS_H_
+ 
  #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/fstatat/fstatat01.c b/testcases/kernel/syscalls/fstatat/fstatat01.c
-index 61531c6..e99fbd2 100644
---- a/testcases/kernel/syscalls/fstatat/fstatat01.c
-+++ b/testcases/kernel/syscalls/fstatat/fstatat01.c
-@@ -48,7 +48,9 @@
- #include <sys/stat.h>
- #include <sys/time.h>
- #include <fcntl.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/futimesat/futimesat01.c b/testcases/kernel/syscalls/futimesat/futimesat01.c
-index ae8d4fe..316dd78 100644
---- a/testcases/kernel/syscalls/futimesat/futimesat01.c
-+++ b/testcases/kernel/syscalls/futimesat/futimesat01.c
-@@ -37,7 +37,9 @@
- #include <sys/stat.h>
- #include <sys/time.h>
- #include <fcntl.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/linkat/linkat01.c b/testcases/kernel/syscalls/linkat/linkat01.c
-index fc0687b..83cbfe7 100644
---- a/testcases/kernel/syscalls/linkat/linkat01.c
-+++ b/testcases/kernel/syscalls/linkat/linkat01.c
-@@ -49,7 +49,9 @@
- #include <sys/time.h>
- #include <fcntl.h>
- #include <unistd.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/linkat/linkat02.c b/testcases/kernel/syscalls/linkat/linkat02.c
-index e9a752a..8d7e431 100644
---- a/testcases/kernel/syscalls/linkat/linkat02.c
-+++ b/testcases/kernel/syscalls/linkat/linkat02.c
-@@ -23,7 +23,9 @@
- #include <sys/stat.h>
- #include <fcntl.h>
- #include <unistd.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/mkdirat/mkdirat01.c b/testcases/kernel/syscalls/mkdirat/mkdirat01.c
-index 7e15947..1dbc038 100644
---- a/testcases/kernel/syscalls/mkdirat/mkdirat01.c
-+++ b/testcases/kernel/syscalls/mkdirat/mkdirat01.c
-@@ -30,7 +30,9 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/mknodat/mknodat01.c b/testcases/kernel/syscalls/mknodat/mknodat01.c
-index 26e5538..f034f05 100644
---- a/testcases/kernel/syscalls/mknodat/mknodat01.c
-+++ b/testcases/kernel/syscalls/mknodat/mknodat01.c
-@@ -29,7 +29,9 @@
- #include <sys/types.h>
- #include <fcntl.h>
- #include <sys/stat.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/mknodat/mknodat02.c b/testcases/kernel/syscalls/mknodat/mknodat02.c
-index f6368fa..7d0f7c0 100644
---- a/testcases/kernel/syscalls/mknodat/mknodat02.c
-+++ b/testcases/kernel/syscalls/mknodat/mknodat02.c
-@@ -29,7 +29,9 @@
- #include <sys/types.h>
- #include <fcntl.h>
- #include <sys/stat.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/openat/openat01.c b/testcases/kernel/syscalls/openat/openat01.c
-index 85f9a91..4ee0117 100644
---- a/testcases/kernel/syscalls/openat/openat01.c
-+++ b/testcases/kernel/syscalls/openat/openat01.c
-@@ -29,7 +29,9 @@
- #include <sys/types.h>
- #include <sys/stat.h>
- #include <fcntl.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/readlinkat/readlinkat01.c b/testcases/kernel/syscalls/readlinkat/readlinkat01.c
-index 97a49e8..b162853 100644
---- a/testcases/kernel/syscalls/readlinkat/readlinkat01.c
-+++ b/testcases/kernel/syscalls/readlinkat/readlinkat01.c
-@@ -29,7 +29,9 @@
- #include <sys/stat.h>
- #include <sys/time.h>
- #include <fcntl.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/renameat/renameat01.c b/testcases/kernel/syscalls/renameat/renameat01.c
-index f4cd51b..105a05b 100644
---- a/testcases/kernel/syscalls/renameat/renameat01.c
-+++ b/testcases/kernel/syscalls/renameat/renameat01.c
-@@ -42,7 +42,9 @@
- #include <sys/stat.h>
- #include <sys/time.h>
- #include <fcntl.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/symlinkat/symlinkat01.c b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
-index 5c238d8..cb7a7e8 100644
---- a/testcases/kernel/syscalls/symlinkat/symlinkat01.c
-+++ b/testcases/kernel/syscalls/symlinkat/symlinkat01.c
-@@ -37,7 +37,9 @@
- #include <sys/stat.h>
- #include <sys/time.h>
- #include <fcntl.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
-diff --git a/testcases/kernel/syscalls/unlinkat/unlinkat01.c b/testcases/kernel/syscalls/unlinkat/unlinkat01.c
-index 31fe4e7..26f6d9a 100644
---- a/testcases/kernel/syscalls/unlinkat/unlinkat01.c
-+++ b/testcases/kernel/syscalls/unlinkat/unlinkat01.c
-@@ -37,7 +37,9 @@
- #include <sys/stat.h>
- #include <sys/time.h>
- #include <fcntl.h>
-+#ifdef __GLIBC__
- #include <error.h>
-+#endif
- #include <stdlib.h>
- #include <errno.h>
- #include <string.h>
++#include <sys/types.h>
+ 
+ int is_cmdline_para(const char *para);
+ 
 -- 
 2.7.0
 
