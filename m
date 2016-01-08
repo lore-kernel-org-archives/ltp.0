@@ -1,56 +1,36 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:40 +0000
-Subject: [LTP] [PATCH 20/31] getdents: define getdents/getdents64 only for
-	glibc
+Date: Fri,  8 Jan 2016 08:11:42 +0000
+Subject: [LTP] [PATCH 22/31] include sys/types.h
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-20-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-22-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-getdents/getdents64 are implemented in musl and when we define static
-functions with same name, it errors out.
+Fixes
+
+error: unknown type name 'uint'
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/getdents/getdents.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ testcases/kernel/ipc/ipc_stress/shmem_test_04.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/getdents/getdents.h b/testcases/kernel/syscalls/getdents/getdents.h
-index abea655..db63d89 100644
---- a/testcases/kernel/syscalls/getdents/getdents.h
-+++ b/testcases/kernel/syscalls/getdents/getdents.h
-@@ -34,12 +34,13 @@ struct linux_dirent {
- 	char            d_name[];
- };
+diff --git a/testcases/kernel/ipc/ipc_stress/shmem_test_04.c b/testcases/kernel/ipc/ipc_stress/shmem_test_04.c
+index 72c2e60..e7e5f61 100644
+--- a/testcases/kernel/ipc/ipc_stress/shmem_test_04.c
++++ b/testcases/kernel/ipc/ipc_stress/shmem_test_04.c
+@@ -65,6 +65,7 @@
+ #include <signal.h>
+ #include <stdint.h>
+ #include <sys/mman.h>
++#include <sys/types.h>
  
-+#ifdef __GLIBC__
- static inline int
- getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int size)
- {
- 	return ltp_syscall(__NR_getdents, fd, dirp, size);
- }
--
-+#endif
- struct linux_dirent64 {
- 	uint64_t	d_ino;
- 	int64_t		d_off;
-@@ -48,10 +49,11 @@ struct linux_dirent64 {
- 	char		d_name[];
- };
- 
-+#ifdef __GLIBC__
- static inline int
- getdents64(unsigned int fd, struct linux_dirent64 *dirp64, unsigned int size)
- {
- 	return ltp_syscall(__NR_getdents64, fd, dirp64, size);
- }
--
-+#endif
- #endif /* GETDENTS_H */
+ #ifdef _LINUX_
+ typedef unsigned long ulong_t;
 -- 
 2.7.0
 
