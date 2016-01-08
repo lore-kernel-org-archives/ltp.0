@@ -1,55 +1,95 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:43 +0000
-Subject: [LTP] [PATCH 23/31] ptrace: Use int instead of enum __ptrace_request
+Date: Fri,  8 Jan 2016 08:11:37 +0000
+Subject: [LTP] [PATCH 17/31] replace sigval_t with union sigval
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-23-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-17-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-__ptrace_request is only available with glibc
+This makes it compatible across musl and glibc
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/ptrace/ptrace03.c           | 4 ++++
- testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h | 4 ++++
- 2 files changed, 8 insertions(+)
+ testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c | 2 +-
+ testcases/kernel/syscalls/timer_gettime/timer_gettime01.c       | 2 +-
+ testcases/kernel/timers/timer_create/timer_create02.c           | 4 ++--
+ testcases/kernel/timers/timer_create/timer_create03.c           | 4 ++--
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace03.c b/testcases/kernel/syscalls/ptrace/ptrace03.c
-index a4028fc..f1880cd 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace03.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace03.c
-@@ -102,7 +102,11 @@ static pid_t unused_pid;
- static pid_t zero_pid;
+diff --git a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
+index d186c1f..bc03544 100644
+--- a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
++++ b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
+@@ -54,7 +54,7 @@ int main(int ac, char **av)
  
- struct test_case_t {
-+#ifdef __GLIBC__
- 	enum __ptrace_request request;
-+#else
-+	int request;
-+#endif
- 	pid_t *pid;
- 	int exp_errno;
- } test_cases[] = {
-diff --git a/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h b/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h
-index ae538e9..85aa89d 100644
---- a/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h
-+++ b/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h
-@@ -130,7 +130,11 @@ static char *strings[] = {
- 	SPT(KILL)
- 	SPT(SINGLESTEP)
- };
-+#ifdef __GLIBC__
- static inline char *strptrace(enum __ptrace_request request)
-+#else
-+static inline char *strptrace(int request)
-+#endif
+ 	setup();
+ 
+-	ev.sigev_value = (sigval_t) 0;
++	ev.sigev_value = (union sigval) 0;
+ 	ev.sigev_signo = SIGALRM;
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+ 	TEST(ltp_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
+diff --git a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
+index b583aee..9371a6a 100644
+--- a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
++++ b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
+@@ -55,7 +55,7 @@ int main(int ac, char **av)
+ 
+ 	setup();
+ 
+-	ev.sigev_value = (sigval_t) 0;
++	ev.sigev_value = (union sigval) 0;
+ 	ev.sigev_signo = SIGALRM;
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+ 	TEST(ltp_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
+diff --git a/testcases/kernel/timers/timer_create/timer_create02.c b/testcases/kernel/timers/timer_create/timer_create02.c
+index 7f528ed..1127400 100644
+--- a/testcases/kernel/timers/timer_create/timer_create02.c
++++ b/testcases/kernel/timers/timer_create/timer_create02.c
+@@ -142,7 +142,7 @@ void setup_test(int option)
  {
- 	return strings[request];
- }
+ 	switch (option) {
+ 	case 0:
+-		evp.sigev_value = (sigval_t) 0;
++		evp.sigev_value = (union sigval) 0;
+ 		evp.sigev_signo = SIGALRM;
+ 		evp.sigev_notify = SIGEV_SIGNAL;
+ 		evp_ptr = &evp;
+@@ -151,7 +151,7 @@ void setup_test(int option)
+ 		evp_ptr = NULL;
+ 		break;
+ 	case 2:
+-		evp.sigev_value = (sigval_t) 0;
++		evp.sigev_value = (union sigval) 0;
+ 		evp.sigev_signo = SIGALRM;	/* any will do */
+ 		evp.sigev_notify = SIGEV_NONE;
+ 		evp_ptr = &evp;
+diff --git a/testcases/kernel/timers/timer_create/timer_create03.c b/testcases/kernel/timers/timer_create/timer_create03.c
+index 291fcfa..8b01bf7 100644
+--- a/testcases/kernel/timers/timer_create/timer_create03.c
++++ b/testcases/kernel/timers/timer_create/timer_create03.c
+@@ -129,7 +129,7 @@ void setup_test(int option)
+ {
+ 	switch (option) {
+ 	case 0:
+-		evp.sigev_value = (sigval_t) 0;
++		evp.sigev_value = (union sigval) 0;
+ 		evp.sigev_signo = SIGALRM;
+ 		evp.sigev_notify = SIGEV_SIGNAL;
+ 		evp_ptr = &evp;
+@@ -138,7 +138,7 @@ void setup_test(int option)
+ 		evp_ptr = NULL;
+ 		break;
+ 	case 2:
+-		evp.sigev_value = (sigval_t) 0;
++		evp.sigev_value = (union sigval) 0;
+ 		evp.sigev_signo = SIGALRM;	/* any will do */
+ 		evp.sigev_notify = SIGEV_NONE;
+ 		evp_ptr = &evp;
 -- 
 2.7.0
 
