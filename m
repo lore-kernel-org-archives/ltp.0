@@ -1,52 +1,71 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:36 +0000
-Subject: [LTP] [PATCH 16/31] ustat: Change header from ustat.h to sys/ustat.h
+Date: Fri,  8 Jan 2016 08:11:35 +0000
+Subject: [LTP] [PATCH 15/31] mincore01: Rename PAGESIZE to pagesize
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-16-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-15-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-makes it portable for musl, on glibc ustat.h is just including
-sys/ustat.h too
+PAGESIZE conflicts with system headers on musl
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/ustat/ustat01.c | 2 +-
- testcases/kernel/syscalls/ustat/ustat02.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/syscalls/mincore/mincore01.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ustat/ustat01.c b/testcases/kernel/syscalls/ustat/ustat01.c
-index 01b7688..494647b 100644
---- a/testcases/kernel/syscalls/ustat/ustat01.c
-+++ b/testcases/kernel/syscalls/ustat/ustat01.c
-@@ -20,8 +20,8 @@
-  */
- 
- #include <unistd.h>
--#include <ustat.h>
- #include <errno.h>
-+#include <sys/ustat.h>
- #include <sys/types.h>
- #include <sys/stat.h>
+diff --git a/testcases/kernel/syscalls/mincore/mincore01.c b/testcases/kernel/syscalls/mincore/mincore01.c
+index 97a3d95..fa426d1 100644
+--- a/testcases/kernel/syscalls/mincore/mincore01.c
++++ b/testcases/kernel/syscalls/mincore/mincore01.c
+@@ -45,7 +45,7 @@
  #include "test.h"
-diff --git a/testcases/kernel/syscalls/ustat/ustat02.c b/testcases/kernel/syscalls/ustat/ustat02.c
-index 4e66236..edada31 100644
---- a/testcases/kernel/syscalls/ustat/ustat02.c
-+++ b/testcases/kernel/syscalls/ustat/ustat02.c
-@@ -21,8 +21,8 @@
-  */
+ #include "safe_macros.h"
  
- #include <unistd.h>
--#include <ustat.h>
- #include <errno.h>
-+#include <sys/ustat.h>
- #include <sys/stat.h>
- #include <sys/types.h>
- #include "test.h"
+-static int PAGESIZE;
++static int pagesize;
+ static rlim_t STACK_LIMIT = 10485760;
+ 
+ static void cleanup(void);
+@@ -146,7 +146,7 @@ static void setup4(struct test_case_t *tc)
+ 	}
+ 
+ 	tc->addr = global_pointer;
+-	tc->len = as_lim.rlim_cur - (rlim_t)global_pointer + PAGESIZE;
++	tc->len = as_lim.rlim_cur - (rlim_t)global_pointer + pagesize;
+ 	tc->vector = global_vec;
+ 
+ 	/*
+@@ -161,7 +161,7 @@ static void setup(void)
+ 	char *buf;
+ 	int fd;
+ 
+-	PAGESIZE = getpagesize();
++	pagesize = getpagesize();
+ 
+ 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+ 
+@@ -170,7 +170,7 @@ static void setup(void)
+ 	TEST_PAUSE;
+ 
+ 	/* global_pointer will point to a mmapped area of global_len bytes */
+-	global_len = PAGESIZE * 2;
++	global_len = pagesize * 2;
+ 
+ 	buf = SAFE_MALLOC(cleanup, global_len);
+ 	memset(buf, 42, global_len);
+@@ -186,7 +186,7 @@ static void setup(void)
+ 				   PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+ 
+ 	global_vec = SAFE_MALLOC(cleanup,
+-				 (global_len + PAGESIZE - 1) / PAGESIZE);
++				 (global_len + pagesize - 1) / pagesize);
+ 
+ 	SAFE_CLOSE(cleanup, fd);
+ }
 -- 
 2.7.0
 
