@@ -1,52 +1,54 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:22 +0000
-Subject: [LTP] [PATCH 02/31] Add knob to control whether numa support should
-	be checked
+Date: Fri,  8 Jan 2016 08:11:23 +0000
+Subject: [LTP] [PATCH 03/31] Add knob to control tirpc support
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-2-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-3-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: "Roy.Li" <rongqing.li@windriver.com>
+From: Fathi Boudra <fathi.boudra@linaro.org>
 
-otherwise undeterministic dependency will be generated
-during build depending upong numa being staged or not
+allow to disable tirpc. Helps to disable it at top level for eg. musl it
+does not yet work.
 
-signed-off-by: Roy.Li <rongqing.li@windriver.com>
+Signed-off-by: Fathi Boudra <fathi.boudra@linaro.org>
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- m4/ltp-numa.m4 | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ configure.ac | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/m4/ltp-numa.m4 b/m4/ltp-numa.m4
-index 60ae07b..ed7078d 100644
---- a/m4/ltp-numa.m4
-+++ b/m4/ltp-numa.m4
-@@ -24,7 +24,13 @@ dnl ----------------------------
- dnl
- AC_DEFUN([LTP_CHECK_SYSCALL_NUMA],
- [dnl
--AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
-+AC_MSG_CHECKING([for numa])
-+AC_ARG_WITH(
-+	[numa],
-+	AC_HELP_STRING([--without-numa],
-+	[without numa support]),
-+	[],
-+	[AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
- 	LTP_SYSCALL_NUMA_HEADERS=yes
- 	AC_CHECK_LIB(numa,numa_alloc_onnode,[have_numa_alloc_onnode="yes"])
- 	if  test "x$have_numa_alloc_onnode" = "xyes"; then
-@@ -48,3 +54,5 @@ if test "x$have_mpol_constants" = "xyes"; then
- 	AC_DEFINE(HAVE_MPOL_CONSTANTS,1,[define to 1 if you have all constants required to use mbind tests])
+diff --git a/configure.ac b/configure.ac
+index cc50397..9e2936b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -98,6 +98,13 @@ if test "x$with_python" = xyes; then
+ else
+     AC_SUBST([WITH_PYTHON],["no"])
  fi
- )])
-+AC_MSG_RESULT([$with_numa])
-+])
++
++# TI RPC
++AC_ARG_WITH([tirpc],
++  AC_HELP_STRING([--without-tirpc],
++    [without libtirpc support]),
++  [],[with_tirpc=yes],
++)
+ # END tools knobs
+ 
+ # Testsuites knobs
+@@ -169,7 +176,9 @@ LTP_CHECK_RENAMEAT2
+ LTP_CHECK_FALLOCATE
+ LTP_CHECK_SYSCALL_FCNTL
+ LTP_CHECK_SYSCALL_PERF_EVENT_OPEN
++if test "x$with_tirpc" = xyes; then
+ LTP_CHECK_TIRPC
++fi
+ LTP_CHECK_TEE
+ LTP_CHECK_SPLICE
+ LTP_CHECK_VMSPLICE
 -- 
 2.7.0
 
