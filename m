@@ -1,143 +1,74 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:31 +0000
-Subject: [LTP] [PATCH 11/31] Rename sigset variable to sigset1
+Date: Fri,  8 Jan 2016 08:11:33 +0000
+Subject: [LTP] [PATCH 13/31] include fcntl.h for getting O_* definitions
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-11-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-13-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-sigset API from signal.h is shadowed by this name conflict
+musl exposes this issue, with glibc fcntl.h is included via some other
+header and this problem remained latent
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/mem/shmt/shmt04.c                    | 10 +++++-----
- testcases/kernel/mem/shmt/shmt06.c                    | 10 +++++-----
- testcases/kernel/syscalls/sigprocmask/sigprocmask01.c | 10 +++++-----
- 3 files changed, 15 insertions(+), 15 deletions(-)
+ testcases/kernel/ipc/ipc_stress/shmem_test_03.c   | 1 +
+ testcases/kernel/syscalls/mq_notify/mq_notify01.c | 1 +
+ testcases/network/tcp_cmds/sendfile/testsf_c.c    | 1 +
+ testcases/network/tcp_cmds/sendfile/testsf_s.c    | 1 +
+ 4 files changed, 4 insertions(+)
 
-diff --git a/testcases/kernel/mem/shmt/shmt04.c b/testcases/kernel/mem/shmt/shmt04.c
-index 7203e9e..fce87d6 100644
---- a/testcases/kernel/mem/shmt/shmt04.c
-+++ b/testcases/kernel/mem/shmt/shmt04.c
-@@ -56,7 +56,7 @@ int TST_TOTAL = 2;		/* Total number of test cases. */
- /**************/
+diff --git a/testcases/kernel/ipc/ipc_stress/shmem_test_03.c b/testcases/kernel/ipc/ipc_stress/shmem_test_03.c
+index c1b11fd..8be156f 100644
+--- a/testcases/kernel/ipc/ipc_stress/shmem_test_03.c
++++ b/testcases/kernel/ipc/ipc_stress/shmem_test_03.c
+@@ -72,6 +72,7 @@
+ #include <string.h>
+ #include <unistd.h>
+ #include <limits.h>
++#include <fcntl.h>
+ #include <sys/file.h>
+ #include <sys/ipc.h>
+ #include <sys/mman.h>
+diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify01.c b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+index 4728c70..5c7846c 100644
+--- a/testcases/kernel/syscalls/mq_notify/mq_notify01.c
++++ b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+@@ -41,6 +41,7 @@
+ #include <mqueue.h>
+ #include <signal.h>
+ #include <stdlib.h>
++#include <fcntl.h>
  
- key_t key;
--sigset_t sigset;
-+sigset_t sigset1;
+ #include "../utils/include_j_h.h"
  
- #define  SIZE  16*1024
- 
-@@ -71,9 +71,9 @@ int main(void)
- 
- 	key = (key_t) getpid();
- 
--	sigemptyset(&sigset);
--	sigaddset(&sigset, SIGUSR1);
--	sigprocmask(SIG_BLOCK, &sigset, NULL);
-+	sigemptyset(&sigset1);
-+	sigaddset(&sigset1, SIGUSR1);
-+	sigprocmask(SIG_BLOCK, &sigset1, NULL);
- 
- 	pid = fork();
- 	switch (pid) {
-@@ -148,7 +148,7 @@ int child(void)
- 	char *cp;
- 	int sig;
- 
--	sigwait(&sigset, &sig);
-+	sigwait(&sigset1, &sig);
- 	chld_pid = getpid();
- /*--------------------------------------------------------*/
- 
-diff --git a/testcases/kernel/mem/shmt/shmt06.c b/testcases/kernel/mem/shmt/shmt06.c
-index a3c9ca3..77b0fc9 100644
---- a/testcases/kernel/mem/shmt/shmt06.c
-+++ b/testcases/kernel/mem/shmt/shmt06.c
-@@ -57,7 +57,7 @@ int TST_TOTAL = 2;		/* Total number of test cases. */
- /**************/
- 
- key_t key;
--sigset_t sigset;
-+sigset_t sigset1;
- 
- int child();
- static int rm_shm(int);
-@@ -70,9 +70,9 @@ int main(void)
- 
- 	key = (key_t) getpid();
- 
--	sigemptyset(&sigset);
--	sigaddset(&sigset, SIGUSR1);
--	sigprocmask(SIG_BLOCK, &sigset, NULL);
-+	sigemptyset(&sigset1);
-+	sigaddset(&sigset1, SIGUSR1);
-+	sigprocmask(SIG_BLOCK, &sigset1, NULL);
- 
- 	pid = fork();
- 	switch (pid) {
-@@ -147,7 +147,7 @@ int child(void)
- 	char *cp;
- 	int sig;
- 
--	sigwait(&sigset, &sig);
-+	sigwait(&sigset1, &sig);
- 	chld_pid = getpid();
- 
- 	if ((shmid = shmget(key, SIZE, 0)) < 0) {
-diff --git a/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c b/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
-index 20fca52..6fb1d57 100644
---- a/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
-+++ b/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
-@@ -91,7 +91,7 @@ int TST_TOTAL = 1;
- int sig_catch = 0;		/* variable to blocked/unblocked signals */
- 
- struct sigaction sa_new;	/* struct to hold signal info */
--sigset_t sigset;		/* signal set to hold signal lists */
-+sigset_t sigset1;		/* signal set to hold signal lists */
- sigset_t sigset2;
- 
- int main(int ac, char **av)
-@@ -112,7 +112,7 @@ int main(int ac, char **av)
- 		 * so that, signal will not be delivered to
- 		 * the test process.
- 		 */
--		TEST(sigprocmask(SIG_BLOCK, &sigset, 0));
-+		TEST(sigprocmask(SIG_BLOCK, &sigset1, 0));
- 
- 		/* Get the process id of test process */
- 		my_pid = getpid();
-@@ -165,7 +165,7 @@ int main(int ac, char **av)
- 				 */
- 				errno = 0;
- 				if (sigprocmask(SIG_UNBLOCK,
--						&sigset, 0) == -1) {
-+						&sigset1, 0) == -1) {
- 					tst_brkm(TFAIL, cleanup,
- 						 "sigprocmask() failed "
- 						 "to unblock signal, "
-@@ -212,7 +212,7 @@ void setup(void)
- 	 * Initialise the signal sets with the list that
- 	 * excludes/includes  all system-defined signals.
- 	 */
--	if (sigemptyset(&sigset) == -1) {
-+	if (sigemptyset(&sigset1) == -1) {
- 		tst_brkm(TFAIL, cleanup,
- 			 "sigemptyset() failed, errno=%d : %s",
- 			 errno, strerror(errno));
-@@ -235,7 +235,7 @@ void setup(void)
- 	 * Add specified signal (SIGINT) to the signal set
- 	 * which excludes system-defined signals.
- 	 */
--	if (sigaddset(&sigset, SIGINT) == -1) {
-+	if (sigaddset(&sigset1, SIGINT) == -1) {
- 		tst_brkm(TFAIL, cleanup,
- 			 "sigaddset() failed, errno=%d : %s",
- 			 errno, strerror(errno));
+diff --git a/testcases/network/tcp_cmds/sendfile/testsf_c.c b/testcases/network/tcp_cmds/sendfile/testsf_c.c
+index 449784f..38d3274 100644
+--- a/testcases/network/tcp_cmds/sendfile/testsf_c.c
++++ b/testcases/network/tcp_cmds/sendfile/testsf_c.c
+@@ -9,6 +9,7 @@
+ #include <sys/types.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <fcntl.h>
+ #include <sys/file.h>
+ #include <arpa/inet.h>
+ #include <netinet/in.h>
+diff --git a/testcases/network/tcp_cmds/sendfile/testsf_s.c b/testcases/network/tcp_cmds/sendfile/testsf_s.c
+index 17e98ad..bce8dd1 100644
+--- a/testcases/network/tcp_cmds/sendfile/testsf_s.c
++++ b/testcases/network/tcp_cmds/sendfile/testsf_s.c
+@@ -6,6 +6,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
++#include <fcntl.h>
+ #include <sys/file.h>
+ #include <errno.h>
+ #include <sys/signal.h>
 -- 
 2.7.0
 
