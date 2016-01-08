@@ -1,80 +1,143 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:30 +0000
-Subject: [LTP] [PATCH 10/31] replace __BEGIN_DECLS and __END_DECLS
+Date: Fri,  8 Jan 2016 08:11:31 +0000
+Subject: [LTP] [PATCH 11/31] Rename sigset variable to sigset1
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-10-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-11-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-They are not portable across libc implementations
-therefore replace them with expanded macros
-
-Include <asm-generic/types.h> to get __s32 definitions
-its not a generally available typedef
+sigset API from signal.h is shadowed by this name conflict
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/epoll2/include/epoll.h | 8 ++++++--
- utils/sctp/include/netinet/sctp.h                | 9 +++++++--
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ testcases/kernel/mem/shmt/shmt04.c                    | 10 +++++-----
+ testcases/kernel/mem/shmt/shmt06.c                    | 10 +++++-----
+ testcases/kernel/syscalls/sigprocmask/sigprocmask01.c | 10 +++++-----
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/epoll2/include/epoll.h b/testcases/kernel/syscalls/epoll2/include/epoll.h
-index be599c7..8cc5e7e 100644
---- a/testcases/kernel/syscalls/epoll2/include/epoll.h
-+++ b/testcases/kernel/syscalls/epoll2/include/epoll.h
-@@ -85,7 +85,9 @@ struct epoll_event
- } EPOLL_PACKED;
+diff --git a/testcases/kernel/mem/shmt/shmt04.c b/testcases/kernel/mem/shmt/shmt04.c
+index 7203e9e..fce87d6 100644
+--- a/testcases/kernel/mem/shmt/shmt04.c
++++ b/testcases/kernel/mem/shmt/shmt04.c
+@@ -56,7 +56,7 @@ int TST_TOTAL = 2;		/* Total number of test cases. */
+ /**************/
  
+ key_t key;
+-sigset_t sigset;
++sigset_t sigset1;
  
--__BEGIN_DECLS
-+#ifdef __cplusplus
-+extern "C" {
-+#endif
+ #define  SIZE  16*1024
  
- /* Creates an epoll instance.  Returns an fd for the new instance.
-    The "size" parameter is a hint specifying the number of file
-@@ -114,6 +116,8 @@ extern int epoll_ctl (int __epfd, int __op, int __fd,
- extern int epoll_wait (int __epfd, struct epoll_event *__events,
- 		       int __maxevents, int __timeout) __THROW;
+@@ -71,9 +71,9 @@ int main(void)
  
--__END_DECLS
-+#ifdef __cplusplus
-+}
-+#endif
+ 	key = (key_t) getpid();
  
- #endif /* sys/epoll.h */
-diff --git a/utils/sctp/include/netinet/sctp.h b/utils/sctp/include/netinet/sctp.h
-index 51f5bfb..c61aef3 100644
---- a/utils/sctp/include/netinet/sctp.h
-+++ b/utils/sctp/include/netinet/sctp.h
-@@ -35,9 +35,12 @@
+-	sigemptyset(&sigset);
+-	sigaddset(&sigset, SIGUSR1);
+-	sigprocmask(SIG_BLOCK, &sigset, NULL);
++	sigemptyset(&sigset1);
++	sigaddset(&sigset1, SIGUSR1);
++	sigprocmask(SIG_BLOCK, &sigset1, NULL);
  
- #include <stdint.h>
- #include <linux/types.h>
-+#include <asm-generic/types.h>
- #include <sys/socket.h>
+ 	pid = fork();
+ 	switch (pid) {
+@@ -148,7 +148,7 @@ int child(void)
+ 	char *cp;
+ 	int sig;
  
--__BEGIN_DECLS
-+#ifdef __cplusplus
-+extern "C" {
-+#endif
+-	sigwait(&sigset, &sig);
++	sigwait(&sigset1, &sig);
+ 	chld_pid = getpid();
+ /*--------------------------------------------------------*/
  
- typedef __s32 sctp_assoc_t;
+diff --git a/testcases/kernel/mem/shmt/shmt06.c b/testcases/kernel/mem/shmt/shmt06.c
+index a3c9ca3..77b0fc9 100644
+--- a/testcases/kernel/mem/shmt/shmt06.c
++++ b/testcases/kernel/mem/shmt/shmt06.c
+@@ -57,7 +57,7 @@ int TST_TOTAL = 2;		/* Total number of test cases. */
+ /**************/
  
-@@ -862,6 +865,8 @@ int sctp_recvmsg(int s, void *msg, size_t len, struct sockaddr *from,
- /* Return the address length for an address family. */
- int sctp_getaddrlen(sa_family_t family);
+ key_t key;
+-sigset_t sigset;
++sigset_t sigset1;
  
--__END_DECLS
-+#ifdef __cplusplus
-+}
-+#endif
+ int child();
+ static int rm_shm(int);
+@@ -70,9 +70,9 @@ int main(void)
  
- #endif /* __linux_sctp_h__ */
+ 	key = (key_t) getpid();
+ 
+-	sigemptyset(&sigset);
+-	sigaddset(&sigset, SIGUSR1);
+-	sigprocmask(SIG_BLOCK, &sigset, NULL);
++	sigemptyset(&sigset1);
++	sigaddset(&sigset1, SIGUSR1);
++	sigprocmask(SIG_BLOCK, &sigset1, NULL);
+ 
+ 	pid = fork();
+ 	switch (pid) {
+@@ -147,7 +147,7 @@ int child(void)
+ 	char *cp;
+ 	int sig;
+ 
+-	sigwait(&sigset, &sig);
++	sigwait(&sigset1, &sig);
+ 	chld_pid = getpid();
+ 
+ 	if ((shmid = shmget(key, SIZE, 0)) < 0) {
+diff --git a/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c b/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
+index 20fca52..6fb1d57 100644
+--- a/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
++++ b/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
+@@ -91,7 +91,7 @@ int TST_TOTAL = 1;
+ int sig_catch = 0;		/* variable to blocked/unblocked signals */
+ 
+ struct sigaction sa_new;	/* struct to hold signal info */
+-sigset_t sigset;		/* signal set to hold signal lists */
++sigset_t sigset1;		/* signal set to hold signal lists */
+ sigset_t sigset2;
+ 
+ int main(int ac, char **av)
+@@ -112,7 +112,7 @@ int main(int ac, char **av)
+ 		 * so that, signal will not be delivered to
+ 		 * the test process.
+ 		 */
+-		TEST(sigprocmask(SIG_BLOCK, &sigset, 0));
++		TEST(sigprocmask(SIG_BLOCK, &sigset1, 0));
+ 
+ 		/* Get the process id of test process */
+ 		my_pid = getpid();
+@@ -165,7 +165,7 @@ int main(int ac, char **av)
+ 				 */
+ 				errno = 0;
+ 				if (sigprocmask(SIG_UNBLOCK,
+-						&sigset, 0) == -1) {
++						&sigset1, 0) == -1) {
+ 					tst_brkm(TFAIL, cleanup,
+ 						 "sigprocmask() failed "
+ 						 "to unblock signal, "
+@@ -212,7 +212,7 @@ void setup(void)
+ 	 * Initialise the signal sets with the list that
+ 	 * excludes/includes  all system-defined signals.
+ 	 */
+-	if (sigemptyset(&sigset) == -1) {
++	if (sigemptyset(&sigset1) == -1) {
+ 		tst_brkm(TFAIL, cleanup,
+ 			 "sigemptyset() failed, errno=%d : %s",
+ 			 errno, strerror(errno));
+@@ -235,7 +235,7 @@ void setup(void)
+ 	 * Add specified signal (SIGINT) to the signal set
+ 	 * which excludes system-defined signals.
+ 	 */
+-	if (sigaddset(&sigset, SIGINT) == -1) {
++	if (sigaddset(&sigset1, SIGINT) == -1) {
+ 		tst_brkm(TFAIL, cleanup,
+ 			 "sigaddset() failed, errno=%d : %s",
+ 			 errno, strerror(errno));
 -- 
 2.7.0
 
