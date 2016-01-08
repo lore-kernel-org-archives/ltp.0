@@ -1,37 +1,152 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Fri,  8 Jan 2016 08:11:26 +0000
-Subject: [LTP] [PATCH 06/31] sendfile: Use off64_t instead of __off64_t
+Date: Fri,  8 Jan 2016 08:11:24 +0000
+Subject: [LTP] [PATCH 04/31] build: Add option to select libc implementation
 In-Reply-To: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
 References: <1452240711-51180-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452240711-51180-6-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452240711-51180-4-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-__off64_t is specific to glibc where as off64_t is widely available
-Add _GNU_SOURCE for off64_t defines from sys/types.h
-Fixes
-<command-line>:0:7: error: unknown type name 'off64_t'
-sendfile02.c:97:18: note: in expansion of macro 'OFF_T'
+There are more than glibc for C library implementation available on
+linux now a days, uclibc cloaked like glibc but musl e.g. is very
+different and does not implement all GNU extentions
+
+Disable tests specifically not building _yet_ on musl based systems
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/sendfile/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Makefile                                    | 5 +++++
+ testcases/kernel/Makefile                   | 5 ++++-
+ testcases/kernel/sched/Makefile             | 4 +++-
+ testcases/kernel/syscalls/Makefile          | 5 +++++
+ testcases/network/nfsv4/acl/Makefile        | 4 ++++
+ testcases/network/rpc/Makefile              | 3 +++
+ testcases/realtime/func/pi-tests/Makefile   | 4 ++++
+ testcases/realtime/stress/pi-tests/Makefile | 5 +++++
+ 8 files changed, 33 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/sendfile/Makefile b/testcases/kernel/syscalls/sendfile/Makefile
-index df7b63f..1bd1b57 100644
---- a/testcases/kernel/syscalls/sendfile/Makefile
-+++ b/testcases/kernel/syscalls/sendfile/Makefile
-@@ -21,6 +21,6 @@ top_srcdir		?= ../../../..
- include $(top_srcdir)/include/mk/testcases.mk
- include $(abs_srcdir)/../utils/newer_64.mk
+diff --git a/Makefile b/Makefile
+index 297f8e7..906b280 100644
+--- a/Makefile
++++ b/Makefile
+@@ -49,6 +49,11 @@ SKIP_IDCHECK		?= 0
+ UCLINUX			?= 0
+ export UCLINUX
  
--%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64 -DOFF_T=__off64_t
-+%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64 -DOFF_T=off64_t -D_GNU_SOURCE
++# System C library implementation (glibc,uclibc,musl etc.)
++# default to glibc if not set
++LIBC			?= glibc
++export LIBC
++
+ # CLEAN_TARGETS:	Targets which exist solely in clean.
+ # COMMON_TARGETS:	Targets which exist in all, clean, and install.
+ # INSTALL_TARGETS:	Targets which exist in clean and install (contains
+diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
+index 50a12fa..4f1987f 100644
+--- a/testcases/kernel/Makefile
++++ b/testcases/kernel/Makefile
+@@ -47,13 +47,16 @@ SUBDIRS			+= connectors \
+ 			   logging \
+ 			   mem \
+ 			   numa \
+-			   pty \
+ 			   sched \
+ 			   security \
+ 			   timers \
+ 			   tracing \
+ 			   module \
  
++ifneq ($(LIBC),musl)
++SUBDIRS			+= pty
++endif
++
+ ifeq ($(WITH_POWER_MANAGEMENT_TESTSUITE),yes)
+ SUBDIRS			+= power_management
+ endif
+diff --git a/testcases/kernel/sched/Makefile b/testcases/kernel/sched/Makefile
+index 6245ed0..aa4eb7f 100644
+--- a/testcases/kernel/sched/Makefile
++++ b/testcases/kernel/sched/Makefile
+@@ -23,5 +23,7 @@
+ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+-
++ifeq ($(LIBC),musl)
++	FILTER_OUT_DIRS += process_stress
++endif
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/syscalls/Makefile b/testcases/kernel/syscalls/Makefile
+index 8acb395..b749126 100644
+--- a/testcases/kernel/syscalls/Makefile
++++ b/testcases/kernel/syscalls/Makefile
+@@ -28,5 +28,10 @@ ifeq ($(UCLINUX),1)
+ FILTER_OUT_DIRS	+= capget capset chmod chown clone fork getcontext llseek \
+ 		   mincore mprotect nftw profil remap_file_pages sbrk
+ endif
++ifeq ($(LIBC),musl)
++FILTER_OUT_DIRS	+= confstr fmtmsg getcontext ioctl mallopt profil \
++		   rt_sigsuspend setdomainname sethostname sigsuspend \
++		   ustat
++endif
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/network/nfsv4/acl/Makefile b/testcases/network/nfsv4/acl/Makefile
+index 8bc78c2..c36cf50 100644
+--- a/testcases/network/nfsv4/acl/Makefile
++++ b/testcases/network/nfsv4/acl/Makefile
+@@ -26,4 +26,8 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+ LDLIBS			+= $(ACL_LIBS)
+ 
++ifeq ($(LIBC),musl)
++FILTER_OUT_MAKE_TARGETS	:= acl1
++endif
++
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/rpc/Makefile b/testcases/network/rpc/Makefile
+index 39e9faa..5ca8c08 100644
+--- a/testcases/network/rpc/Makefile
++++ b/testcases/network/rpc/Makefile
+@@ -29,5 +29,8 @@ INSTALL_TARGETS		:= *.sh
+ ifeq ($(TIRPC_LIBS),)
+ FILTER_OUT_DIRS		+= rpc-tirpc
+ endif
++ifeq ($(LIBC),musl)
++FILTER_OUT_DIRS	+= basic_tests
++endif
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/realtime/func/pi-tests/Makefile b/testcases/realtime/func/pi-tests/Makefile
+index 7a7a57a..5808866 100644
+--- a/testcases/realtime/func/pi-tests/Makefile
++++ b/testcases/realtime/func/pi-tests/Makefile
+@@ -27,5 +27,9 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
+ 
+ MAKE_TARGETS		:= testpi-0 testpi-1 testpi-2 testpi-4 testpi-5 testpi-6 testpi-7 sbrk_mutex
++ifeq ($(LIBC),musl)
++FILTER_OUT_MAKE_TARGETS	:= testpi-5 testpi-6 sbrk_mutex
++endif
++
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/realtime/stress/pi-tests/Makefile b/testcases/realtime/stress/pi-tests/Makefile
+index 5edc3b4..aa5987a 100644
+--- a/testcases/realtime/stress/pi-tests/Makefile
++++ b/testcases/realtime/stress/pi-tests/Makefile
+@@ -24,4 +24,9 @@ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ include $(abs_srcdir)/../../config.mk
++
++ifeq ($(LIBC),musl)
++FILTER_OUT_MAKE_TARGETS	:= testpi-3
++endif
++
  include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
 2.7.0
