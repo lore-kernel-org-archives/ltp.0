@@ -1,41 +1,45 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:14:19 +0000
-Subject: [LTP] [PATCH V2 31/32] vma03: fix page size offset as per page size
-	alignment
-In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
+Date: Fri, 8 Jan 2016 23:44:30 -0800
+Subject: [LTP] [PATCH V2 30/32] lib: Use PTHREAD_MUTEX_RECURSIVE in
+ place of PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP for non-glibc
+In-Reply-To: <1452302060-103643-30-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-31-git-send-email-raj.khem@gmail.com>
+ <1452302060-103643-30-git-send-email-raj.khem@gmail.com>
+Message-ID: <CAMKF1srOh+1mBt-DSA_ixENMwg95R4Dz5ZnR3_SFJaNvOS_rkQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-the offset the param of mmap2() doesn't align the page size, but,
-this param allow must be a multiple of the page size as returned
-by sysconf(_SC_PAGE_SIZE).meanwhile offset * 4096 must be a
-multiple of the system page size, so modify the input param of offset
-pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
+On Fri, Jan 8, 2016 at 5:14 PM, Khem Raj <raj.khem@gmail.com> wrote:
+> e.g. musl does not implement the _NP mutex types
+>
 
-Signed-off-by: Chuang Dong <Chuang.Dong@windriver.com>
-Signed-off-by: Khem Raj <raj.khem@gmail.com>
----
- testcases/kernel/mem/vma/vma03.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ignore this one.
 
-diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
-index ad8a7b4..a539233 100644
---- a/testcases/kernel/mem/vma/vma03.c
-+++ b/testcases/kernel/mem/vma/vma03.c
-@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
- 		if (fd == -1)
- 			tst_brkm(TBROK | TERRNO, NULL, "open %s", TESTFILE);
- 
--		pgoff = ULONG_MAX - 1;
-+		pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
- 		map = mmap2(NULL, pgsz, PROT_READ | PROT_WRITE, MAP_PRIVATE,
- 			    fd, pgoff);
- 		if (map == MAP_FAILED)
--- 
-2.7.0
-
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+> ---
+>  lib/tst_res.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/lib/tst_res.c b/lib/tst_res.c
+> index 5c1c58c..3244b5e 100644
+> --- a/lib/tst_res.c
+> +++ b/lib/tst_res.c
+> @@ -104,8 +104,11 @@ int TEST_ERRNO;
+>         assert(strlen(buf) > 0);                \
+>  } while (0)
+>
+> +#ifdef __GLIBC__
+>  static pthread_mutex_t tmutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+> -
+> +#else
+> +static pthread_mutex_t tmutex = {  PTHREAD_MUTEX_RECURSIVE };
+> +#endif
+>  /*
+>   * Define local function prototypes.
+>   */
+> --
+> 2.7.0
+>
