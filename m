@@ -1,79 +1,35 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:14:09 +0000
-Subject: [LTP] [PATCH V2 21/32] Define _GNU_SOURCE for MREMAP_MAYMOVE
-	definition
+Date: Sat,  9 Jan 2016 01:14:13 +0000
+Subject: [LTP] [PATCH V2 25/32] mc_gethost: include sys/types.h
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-21-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-25-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-musl guards MREMAP_MAYMOVE with _GNU_SOURCE unlike glibc which uses
-__USE_GNU
-
-Fixes errors like
-error: 'MREMAP_MAYMOVE' undeclared (first use in this function)
+Fix build on musl
+error: unknown type name 'u_char'
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/mremap/mremap01.c | 4 +++-
- testcases/kernel/syscalls/mremap/mremap02.c | 2 ++
- testcases/kernel/syscalls/mremap/mremap03.c | 2 ++
- 3 files changed, 7 insertions(+), 1 deletion(-)
+ testcases/network/multicast/mc_gethost/mc_gethost.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/syscalls/mremap/mremap01.c b/testcases/kernel/syscalls/mremap/mremap01.c
-index d63d1e4..24ca174 100644
---- a/testcases/kernel/syscalls/mremap/mremap01.c
-+++ b/testcases/kernel/syscalls/mremap/mremap01.c
-@@ -76,10 +76,12 @@
-  */
- #include <unistd.h>
- #include <errno.h>
-+#include <fcntl.h>
-+#define _GNU_SOURCE
- #define __USE_GNU
- #include <sys/mman.h>
- #undef __USE_GNU
--#include <fcntl.h>
-+#undef _GNU_SOURCE
+diff --git a/testcases/network/multicast/mc_gethost/mc_gethost.c b/testcases/network/multicast/mc_gethost/mc_gethost.c
+index 5b9a790..c799e2a 100644
+--- a/testcases/network/multicast/mc_gethost/mc_gethost.c
++++ b/testcases/network/multicast/mc_gethost/mc_gethost.c
+@@ -6,6 +6,7 @@
  
- #include "test.h"
- 
-diff --git a/testcases/kernel/syscalls/mremap/mremap02.c b/testcases/kernel/syscalls/mremap/mremap02.c
-index 5a51b9a..a530a6b 100644
---- a/testcases/kernel/syscalls/mremap/mremap02.c
-+++ b/testcases/kernel/syscalls/mremap/mremap02.c
-@@ -75,9 +75,11 @@
- #include <errno.h>
- #include <unistd.h>
- #include <fcntl.h>
-+#define _GNU_SOURCE
- #define __USE_GNU
- #include <sys/mman.h>
- #undef __USE_GNU
-+#undef _GNU_SOURCE
- 
- #include "test.h"
- 
-diff --git a/testcases/kernel/syscalls/mremap/mremap03.c b/testcases/kernel/syscalls/mremap/mremap03.c
-index 12e3829..9b39f8b 100644
---- a/testcases/kernel/syscalls/mremap/mremap03.c
-+++ b/testcases/kernel/syscalls/mremap/mremap03.c
-@@ -76,9 +76,11 @@
- #include <errno.h>
- #include <unistd.h>
- #include <fcntl.h>
-+#define _GNU_SOURCE
- #define __USE_GNU
- #include <sys/mman.h>
- #undef __USE_GNU
-+#undef _GNU_SOURCE
- 
- #include "test.h"
- 
+ #include <sys/param.h>
+ #include <sys/socket.h>
++#include <sys/types.h>
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ #include <arpa/nameser.h>
 -- 
 2.7.0
 
