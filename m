@@ -1,74 +1,63 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:14:01 +0000
-Subject: [LTP] [PATCH V2 13/32] include fcntl.h for getting O_* definitions
+Date: Sat,  9 Jan 2016 01:14:02 +0000
+Subject: [LTP] [PATCH V2 14/32] hyperthreading: Include sys/types.h for
+	pid_t definition
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-13-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-14-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-musl exposes this issue, with glibc fcntl.h is included via some other
-header and this problem remained latent
+If sys/types.h is not included then it will not define pid_t_needed
+and therefore typedef wont be included and we get errors about pid_t
+being not known
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/ipc/ipc_stress/shmem_test_03.c   | 1 +
- testcases/kernel/syscalls/mq_notify/mq_notify01.c | 1 +
- testcases/network/tcp_cmds/sendfile/testsf_c.c    | 1 +
- testcases/network/tcp_cmds/sendfile/testsf_s.c    | 1 +
- 4 files changed, 4 insertions(+)
+ testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h  | 1 +
+ testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h   | 1 +
+ testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h | 1 +
+ 3 files changed, 3 insertions(+)
 
-diff --git a/testcases/kernel/ipc/ipc_stress/shmem_test_03.c b/testcases/kernel/ipc/ipc_stress/shmem_test_03.c
-index c1b11fd..8be156f 100644
---- a/testcases/kernel/ipc/ipc_stress/shmem_test_03.c
-+++ b/testcases/kernel/ipc/ipc_stress/shmem_test_03.c
-@@ -72,6 +72,7 @@
- #include <string.h>
- #include <unistd.h>
- #include <limits.h>
-+#include <fcntl.h>
- #include <sys/file.h>
- #include <sys/ipc.h>
- #include <sys/mman.h>
-diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify01.c b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
-index 4728c70..5c7846c 100644
---- a/testcases/kernel/syscalls/mq_notify/mq_notify01.c
-+++ b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
-@@ -41,6 +41,7 @@
- #include <mqueue.h>
- #include <signal.h>
- #include <stdlib.h>
-+#include <fcntl.h>
+diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h
+index 1ec9794..9084aa7 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h
++++ b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h
+@@ -3,6 +3,7 @@
+ #define _HTUTILS_H_
  
- #include "../utils/include_j_h.h"
+ #include <stdlib.h>
++#include <sys/types.h>
  
-diff --git a/testcases/network/tcp_cmds/sendfile/testsf_c.c b/testcases/network/tcp_cmds/sendfile/testsf_c.c
-index 449784f..38d3274 100644
---- a/testcases/network/tcp_cmds/sendfile/testsf_c.c
-+++ b/testcases/network/tcp_cmds/sendfile/testsf_c.c
-@@ -9,6 +9,7 @@
- #include <sys/types.h>
+ int is_cmdline_para(const char *para);
+ 
+diff --git a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h
+index 1ec9794..c03a124 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h
++++ b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h
+@@ -2,6 +2,7 @@
+ #ifndef _HTUTILS_H_
+ #define _HTUTILS_H_
+ 
++#include <sys/types.h>
  #include <stdlib.h>
- #include <string.h>
-+#include <fcntl.h>
- #include <sys/file.h>
- #include <arpa/inet.h>
- #include <netinet/in.h>
-diff --git a/testcases/network/tcp_cmds/sendfile/testsf_s.c b/testcases/network/tcp_cmds/sendfile/testsf_s.c
-index 17e98ad..bce8dd1 100644
---- a/testcases/network/tcp_cmds/sendfile/testsf_s.c
-+++ b/testcases/network/tcp_cmds/sendfile/testsf_s.c
-@@ -6,6 +6,7 @@
- #include <stdio.h>
+ 
+ int is_cmdline_para(const char *para);
+diff --git a/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h b/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h
+index 2977ad0..6b484e1 100644
+--- a/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h
++++ b/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h
+@@ -3,6 +3,7 @@
+ #define _HTUTILS_H_
+ 
  #include <stdlib.h>
- #include <unistd.h>
-+#include <fcntl.h>
- #include <sys/file.h>
- #include <errno.h>
- #include <sys/signal.h>
++#include <sys/types.h>
+ 
+ int is_cmdline_para(const char *para);
+ 
 -- 
 2.7.0
 
