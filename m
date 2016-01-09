@@ -1,155 +1,53 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:13:52 +0000
-Subject: [LTP] [PATCH V2 04/32] build: Add option to select libc
-	implementation
+Date: Sat,  9 Jan 2016 01:13:53 +0000
+Subject: [LTP] [PATCH V2 05/32] kernel/controllers: Link with libfts
+	explicitly on musl
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-4-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-5-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-There are more than glibc for C library implementation available on
-linux now a days, uclibc cloaked like glibc but musl e.g. is very
-different and does not implement all GNU extentions
-
-Disable tests specifically not building _yet_ on musl based systems
+musl does not implement fts like glibc and therefore it depends on
+external implementation for all fts APIs
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- Makefile                                    | 5 +++++
- testcases/kernel/Makefile                   | 5 ++++-
- testcases/kernel/sched/Makefile             | 4 +++-
- testcases/kernel/syscalls/Makefile          | 5 +++++
- testcases/network/nfsv4/acl/Makefile        | 4 ++++
- testcases/network/rpc/basic_tests/Makefile  | 5 +++++
- testcases/realtime/func/pi-tests/Makefile   | 4 ++++
- testcases/realtime/stress/pi-tests/Makefile | 5 +++++
- 8 files changed, 35 insertions(+), 2 deletions(-)
+ testcases/kernel/controllers/Makefile.inc        | 3 +++
+ testcases/kernel/controllers/cpuset/Makefile.inc | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index 297f8e7..906b280 100644
---- a/Makefile
-+++ b/Makefile
-@@ -49,6 +49,11 @@ SKIP_IDCHECK		?= 0
- UCLINUX			?= 0
- export UCLINUX
+diff --git a/testcases/kernel/controllers/Makefile.inc b/testcases/kernel/controllers/Makefile.inc
+index b106283..ef5fc0c 100644
+--- a/testcases/kernel/controllers/Makefile.inc
++++ b/testcases/kernel/controllers/Makefile.inc
+@@ -36,6 +36,9 @@ MAKE_DEPS		:= $(LIB)
+ CPPFLAGS		+= -I$(abs_srcdir)/../$(LIBDIR)
  
-+# System C library implementation (glibc,uclibc,musl etc.)
-+# default to glibc if not set
-+LIBC			?= glibc
-+export LIBC
-+
- # CLEAN_TARGETS:	Targets which exist solely in clean.
- # COMMON_TARGETS:	Targets which exist in all, clean, and install.
- # INSTALL_TARGETS:	Targets which exist in clean and install (contains
-diff --git a/testcases/kernel/Makefile b/testcases/kernel/Makefile
-index 50a12fa..4f1987f 100644
---- a/testcases/kernel/Makefile
-+++ b/testcases/kernel/Makefile
-@@ -47,13 +47,16 @@ SUBDIRS			+= connectors \
- 			   logging \
- 			   mem \
- 			   numa \
--			   pty \
- 			   sched \
- 			   security \
- 			   timers \
- 			   tracing \
- 			   module \
- 
-+ifneq ($(LIBC),musl)
-+SUBDIRS			+= pty
-+endif
-+
- ifeq ($(WITH_POWER_MANAGEMENT_TESTSUITE),yes)
- SUBDIRS			+= power_management
- endif
-diff --git a/testcases/kernel/sched/Makefile b/testcases/kernel/sched/Makefile
-index 6245ed0..aa4eb7f 100644
---- a/testcases/kernel/sched/Makefile
-+++ b/testcases/kernel/sched/Makefile
-@@ -23,5 +23,7 @@
- top_srcdir		?= ../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
--
+ LDFLAGS			+= -L$(abs_builddir)/../$(LIBDIR)
 +ifeq ($(LIBC),musl)
-+	FILTER_OUT_DIRS += process_stress
++LDLIBS			+= -lfts
 +endif
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/kernel/syscalls/Makefile b/testcases/kernel/syscalls/Makefile
-index 8acb395..b749126 100644
---- a/testcases/kernel/syscalls/Makefile
-+++ b/testcases/kernel/syscalls/Makefile
-@@ -28,5 +28,10 @@ ifeq ($(UCLINUX),1)
- FILTER_OUT_DIRS	+= capget capset chmod chown clone fork getcontext llseek \
- 		   mincore mprotect nftw profil remap_file_pages sbrk
- endif
+ 
+ INSTALL_TARGETS		?= *.sh
+ 
+diff --git a/testcases/kernel/controllers/cpuset/Makefile.inc b/testcases/kernel/controllers/cpuset/Makefile.inc
+index 9e002f4..e0fcb9c 100644
+--- a/testcases/kernel/controllers/cpuset/Makefile.inc
++++ b/testcases/kernel/controllers/cpuset/Makefile.inc
+@@ -42,6 +42,9 @@ MAKE_DEPS		:= $(LIBCONTROLLERS) $(LIBCPUSET)
+ LDFLAGS			+= -L$(abs_builddir)/$(LIBCPUSET_DIR) -L$(abs_builddir)/$(LIBCONTROLLERS_DIR)
+ 
+ LDLIBS			+= -lcpu_set -lcontrollers -lltp
 +ifeq ($(LIBC),musl)
-+FILTER_OUT_DIRS	+= confstr fmtmsg getcontext ioctl mallopt profil \
-+		   rt_sigsuspend setdomainname sethostname sigsuspend \
-+		   ustat
++LDLIBS			+= -lfts
 +endif
  
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/network/nfsv4/acl/Makefile b/testcases/network/nfsv4/acl/Makefile
-index 8bc78c2..c36cf50 100644
---- a/testcases/network/nfsv4/acl/Makefile
-+++ b/testcases/network/nfsv4/acl/Makefile
-@@ -26,4 +26,8 @@ include $(top_srcdir)/include/mk/env_pre.mk
+ INSTALL_TARGETS		?= *.sh
  
- LDLIBS			+= $(ACL_LIBS)
- 
-+ifeq ($(LIBC),musl)
-+FILTER_OUT_MAKE_TARGETS	:= acl1
-+endif
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/rpc/basic_tests/Makefile b/testcases/network/rpc/basic_tests/Makefile
-index 3160813..9bdf5d0 100644
---- a/testcases/network/rpc/basic_tests/Makefile
-+++ b/testcases/network/rpc/basic_tests/Makefile
-@@ -23,4 +23,9 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
-+
-+ifeq ($(LIBC),musl)
-+FILTER_OUT_DIRS += rpc01
-+endif
-+
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/realtime/func/pi-tests/Makefile b/testcases/realtime/func/pi-tests/Makefile
-index 7a7a57a..5808866 100644
---- a/testcases/realtime/func/pi-tests/Makefile
-+++ b/testcases/realtime/func/pi-tests/Makefile
-@@ -27,5 +27,9 @@ include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
- 
- MAKE_TARGETS		:= testpi-0 testpi-1 testpi-2 testpi-4 testpi-5 testpi-6 testpi-7 sbrk_mutex
-+ifeq ($(LIBC),musl)
-+FILTER_OUT_MAKE_TARGETS	:= testpi-5 testpi-6 sbrk_mutex
-+endif
-+
- 
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/realtime/stress/pi-tests/Makefile b/testcases/realtime/stress/pi-tests/Makefile
-index 5edc3b4..aa5987a 100644
---- a/testcases/realtime/stress/pi-tests/Makefile
-+++ b/testcases/realtime/stress/pi-tests/Makefile
-@@ -24,4 +24,9 @@ top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- include $(abs_srcdir)/../../config.mk
-+
-+ifeq ($(LIBC),musl)
-+FILTER_OUT_MAKE_TARGETS	:= testpi-3
-+endif
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
 2.7.0
 
