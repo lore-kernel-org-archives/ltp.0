@@ -1,39 +1,40 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:14:17 +0000
-Subject: [LTP] [PATCH V2 29/32] trace_shed: Fix build with musl
+Date: Sat,  9 Jan 2016 01:14:18 +0000
+Subject: [LTP] [PATCH V2 30/32] lib: Use PTHREAD_MUTEX_RECURSIVE in place of
+	PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP for non-glibc
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-29-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-30-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Errors on musl are
-
-trace_sched.c:425:16: error: invalid operands to binary & (have
-'thread_sched_t * {aka struct <anonymous> *}' and 'int')
-      thrd_ndx, WEXITSTATUS(status));
+e.g. musl does not implement the _NP mutex types
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/sched/tool/trace_sched.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/tst_res.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/sched/tool/trace_sched.c b/testcases/kernel/sched/tool/trace_sched.c
-index 7815686..30dca5f 100644
---- a/testcases/kernel/sched/tool/trace_sched.c
-+++ b/testcases/kernel/sched/tool/trace_sched.c
-@@ -422,7 +422,7 @@ int main(int argc,		/* number of input parameters.                        */
- 			if (status == (thread_sched_t *) - 1) {
- 				fprintf(stderr,
- 					"thread [%d] - process exited with errors %d\n",
--					thrd_ndx, WEXITSTATUS(status));
-+					thrd_ndx, WEXITSTATUS((int)status));
- 				exit(-1);
- 			} else {
- 				exp_prio[thrd_ndx] = status->exp_prio;
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index 5c1c58c..3244b5e 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -104,8 +104,11 @@ int TEST_ERRNO;
+ 	assert(strlen(buf) > 0);		\
+ } while (0)
+ 
++#ifdef __GLIBC__
+ static pthread_mutex_t tmutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
+-
++#else
++static pthread_mutex_t tmutex = {  PTHREAD_MUTEX_RECURSIVE };
++#endif
+ /*
+  * Define local function prototypes.
+  */
 -- 
 2.7.0
 
