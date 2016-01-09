@@ -1,95 +1,56 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:14:05 +0000
-Subject: [LTP] [PATCH V2 17/32] replace sigval_t with union sigval
+Date: Sat,  9 Jan 2016 01:14:08 +0000
+Subject: [LTP] [PATCH V2 20/32] getdents: define getdents/getdents64 only
+	for glibc
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-17-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-20-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This makes it compatible across musl and glibc
+getdents/getdents64 are implemented in musl and when we define static
+functions with same name, it errors out.
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c | 2 +-
- testcases/kernel/syscalls/timer_gettime/timer_gettime01.c       | 2 +-
- testcases/kernel/timers/timer_create/timer_create02.c           | 4 ++--
- testcases/kernel/timers/timer_create/timer_create03.c           | 4 ++--
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ testcases/kernel/syscalls/getdents/getdents.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
-index d186c1f..bc03544 100644
---- a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
-+++ b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
-@@ -54,7 +54,7 @@ int main(int ac, char **av)
+diff --git a/testcases/kernel/syscalls/getdents/getdents.h b/testcases/kernel/syscalls/getdents/getdents.h
+index abea655..db63d89 100644
+--- a/testcases/kernel/syscalls/getdents/getdents.h
++++ b/testcases/kernel/syscalls/getdents/getdents.h
+@@ -34,12 +34,13 @@ struct linux_dirent {
+ 	char            d_name[];
+ };
  
- 	setup();
- 
--	ev.sigev_value = (sigval_t) 0;
-+	ev.sigev_value = (union sigval) 0;
- 	ev.sigev_signo = SIGALRM;
- 	ev.sigev_notify = SIGEV_SIGNAL;
- 	TEST(ltp_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
-diff --git a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
-index b583aee..9371a6a 100644
---- a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
-+++ b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
-@@ -55,7 +55,7 @@ int main(int ac, char **av)
- 
- 	setup();
- 
--	ev.sigev_value = (sigval_t) 0;
-+	ev.sigev_value = (union sigval) 0;
- 	ev.sigev_signo = SIGALRM;
- 	ev.sigev_notify = SIGEV_SIGNAL;
- 	TEST(ltp_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
-diff --git a/testcases/kernel/timers/timer_create/timer_create02.c b/testcases/kernel/timers/timer_create/timer_create02.c
-index 7f528ed..1127400 100644
---- a/testcases/kernel/timers/timer_create/timer_create02.c
-+++ b/testcases/kernel/timers/timer_create/timer_create02.c
-@@ -142,7 +142,7 @@ void setup_test(int option)
++#ifdef __GLIBC__
+ static inline int
+ getdents(unsigned int fd, struct linux_dirent *dirp, unsigned int size)
  {
- 	switch (option) {
- 	case 0:
--		evp.sigev_value = (sigval_t) 0;
-+		evp.sigev_value = (union sigval) 0;
- 		evp.sigev_signo = SIGALRM;
- 		evp.sigev_notify = SIGEV_SIGNAL;
- 		evp_ptr = &evp;
-@@ -151,7 +151,7 @@ void setup_test(int option)
- 		evp_ptr = NULL;
- 		break;
- 	case 2:
--		evp.sigev_value = (sigval_t) 0;
-+		evp.sigev_value = (union sigval) 0;
- 		evp.sigev_signo = SIGALRM;	/* any will do */
- 		evp.sigev_notify = SIGEV_NONE;
- 		evp_ptr = &evp;
-diff --git a/testcases/kernel/timers/timer_create/timer_create03.c b/testcases/kernel/timers/timer_create/timer_create03.c
-index 291fcfa..8b01bf7 100644
---- a/testcases/kernel/timers/timer_create/timer_create03.c
-+++ b/testcases/kernel/timers/timer_create/timer_create03.c
-@@ -129,7 +129,7 @@ void setup_test(int option)
+ 	return ltp_syscall(__NR_getdents, fd, dirp, size);
+ }
+-
++#endif
+ struct linux_dirent64 {
+ 	uint64_t	d_ino;
+ 	int64_t		d_off;
+@@ -48,10 +49,11 @@ struct linux_dirent64 {
+ 	char		d_name[];
+ };
+ 
++#ifdef __GLIBC__
+ static inline int
+ getdents64(unsigned int fd, struct linux_dirent64 *dirp64, unsigned int size)
  {
- 	switch (option) {
- 	case 0:
--		evp.sigev_value = (sigval_t) 0;
-+		evp.sigev_value = (union sigval) 0;
- 		evp.sigev_signo = SIGALRM;
- 		evp.sigev_notify = SIGEV_SIGNAL;
- 		evp_ptr = &evp;
-@@ -138,7 +138,7 @@ void setup_test(int option)
- 		evp_ptr = NULL;
- 		break;
- 	case 2:
--		evp.sigev_value = (sigval_t) 0;
-+		evp.sigev_value = (union sigval) 0;
- 		evp.sigev_signo = SIGALRM;	/* any will do */
- 		evp.sigev_notify = SIGEV_NONE;
- 		evp_ptr = &evp;
+ 	return ltp_syscall(__NR_getdents64, fd, dirp64, size);
+ }
+-
++#endif
+ #endif /* GETDENTS_H */
 -- 
 2.7.0
 
