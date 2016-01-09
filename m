@@ -1,71 +1,95 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:14:03 +0000
-Subject: [LTP] [PATCH V2 15/32] mincore01: Rename PAGESIZE to pagesize
+Date: Sat,  9 Jan 2016 01:14:05 +0000
+Subject: [LTP] [PATCH V2 17/32] replace sigval_t with union sigval
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-15-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-17-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-PAGESIZE conflicts with system headers on musl
+This makes it compatible across musl and glibc
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/mincore/mincore01.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c | 2 +-
+ testcases/kernel/syscalls/timer_gettime/timer_gettime01.c       | 2 +-
+ testcases/kernel/timers/timer_create/timer_create02.c           | 4 ++--
+ testcases/kernel/timers/timer_create/timer_create03.c           | 4 ++--
+ 4 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mincore/mincore01.c b/testcases/kernel/syscalls/mincore/mincore01.c
-index 97a3d95..fa426d1 100644
---- a/testcases/kernel/syscalls/mincore/mincore01.c
-+++ b/testcases/kernel/syscalls/mincore/mincore01.c
-@@ -45,7 +45,7 @@
- #include "test.h"
- #include "safe_macros.h"
+diff --git a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
+index d186c1f..bc03544 100644
+--- a/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
++++ b/testcases/kernel/syscalls/timer_getoverrun/timer_getoverrun01.c
+@@ -54,7 +54,7 @@ int main(int ac, char **av)
  
--static int PAGESIZE;
-+static int pagesize;
- static rlim_t STACK_LIMIT = 10485760;
+ 	setup();
  
- static void cleanup(void);
-@@ -146,7 +146,7 @@ static void setup4(struct test_case_t *tc)
- 	}
+-	ev.sigev_value = (sigval_t) 0;
++	ev.sigev_value = (union sigval) 0;
+ 	ev.sigev_signo = SIGALRM;
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+ 	TEST(ltp_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
+diff --git a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
+index b583aee..9371a6a 100644
+--- a/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
++++ b/testcases/kernel/syscalls/timer_gettime/timer_gettime01.c
+@@ -55,7 +55,7 @@ int main(int ac, char **av)
  
- 	tc->addr = global_pointer;
--	tc->len = as_lim.rlim_cur - (rlim_t)global_pointer + PAGESIZE;
-+	tc->len = as_lim.rlim_cur - (rlim_t)global_pointer + pagesize;
- 	tc->vector = global_vec;
+ 	setup();
  
- 	/*
-@@ -161,7 +161,7 @@ static void setup(void)
- 	char *buf;
- 	int fd;
- 
--	PAGESIZE = getpagesize();
-+	pagesize = getpagesize();
- 
- 	tst_sig(NOFORK, DEF_HANDLER, cleanup);
- 
-@@ -170,7 +170,7 @@ static void setup(void)
- 	TEST_PAUSE;
- 
- 	/* global_pointer will point to a mmapped area of global_len bytes */
--	global_len = PAGESIZE * 2;
-+	global_len = pagesize * 2;
- 
- 	buf = SAFE_MALLOC(cleanup, global_len);
- 	memset(buf, 42, global_len);
-@@ -186,7 +186,7 @@ static void setup(void)
- 				   PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
- 
- 	global_vec = SAFE_MALLOC(cleanup,
--				 (global_len + PAGESIZE - 1) / PAGESIZE);
-+				 (global_len + pagesize - 1) / pagesize);
- 
- 	SAFE_CLOSE(cleanup, fd);
- }
+-	ev.sigev_value = (sigval_t) 0;
++	ev.sigev_value = (union sigval) 0;
+ 	ev.sigev_signo = SIGALRM;
+ 	ev.sigev_notify = SIGEV_SIGNAL;
+ 	TEST(ltp_syscall(__NR_timer_create, CLOCK_REALTIME, &ev, &timer));
+diff --git a/testcases/kernel/timers/timer_create/timer_create02.c b/testcases/kernel/timers/timer_create/timer_create02.c
+index 7f528ed..1127400 100644
+--- a/testcases/kernel/timers/timer_create/timer_create02.c
++++ b/testcases/kernel/timers/timer_create/timer_create02.c
+@@ -142,7 +142,7 @@ void setup_test(int option)
+ {
+ 	switch (option) {
+ 	case 0:
+-		evp.sigev_value = (sigval_t) 0;
++		evp.sigev_value = (union sigval) 0;
+ 		evp.sigev_signo = SIGALRM;
+ 		evp.sigev_notify = SIGEV_SIGNAL;
+ 		evp_ptr = &evp;
+@@ -151,7 +151,7 @@ void setup_test(int option)
+ 		evp_ptr = NULL;
+ 		break;
+ 	case 2:
+-		evp.sigev_value = (sigval_t) 0;
++		evp.sigev_value = (union sigval) 0;
+ 		evp.sigev_signo = SIGALRM;	/* any will do */
+ 		evp.sigev_notify = SIGEV_NONE;
+ 		evp_ptr = &evp;
+diff --git a/testcases/kernel/timers/timer_create/timer_create03.c b/testcases/kernel/timers/timer_create/timer_create03.c
+index 291fcfa..8b01bf7 100644
+--- a/testcases/kernel/timers/timer_create/timer_create03.c
++++ b/testcases/kernel/timers/timer_create/timer_create03.c
+@@ -129,7 +129,7 @@ void setup_test(int option)
+ {
+ 	switch (option) {
+ 	case 0:
+-		evp.sigev_value = (sigval_t) 0;
++		evp.sigev_value = (union sigval) 0;
+ 		evp.sigev_signo = SIGALRM;
+ 		evp.sigev_notify = SIGEV_SIGNAL;
+ 		evp_ptr = &evp;
+@@ -138,7 +138,7 @@ void setup_test(int option)
+ 		evp_ptr = NULL;
+ 		break;
+ 	case 2:
+-		evp.sigev_value = (sigval_t) 0;
++		evp.sigev_value = (union sigval) 0;
+ 		evp.sigev_signo = SIGALRM;	/* any will do */
+ 		evp.sigev_notify = SIGEV_NONE;
+ 		evp_ptr = &evp;
 -- 
 2.7.0
 
