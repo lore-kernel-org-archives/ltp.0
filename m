@@ -1,63 +1,143 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:14:02 +0000
-Subject: [LTP] [PATCH V2 14/32] hyperthreading: Include sys/types.h for
-	pid_t definition
+Date: Sat,  9 Jan 2016 01:13:59 +0000
+Subject: [LTP] [PATCH V2 11/32] Rename sigset variable to sigset1
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-14-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-11-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If sys/types.h is not included then it will not define pid_t_needed
-and therefore typedef wont be included and we get errors about pid_t
-being not known
+sigset API from signal.h is shadowed by this name conflict
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h  | 1 +
- testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h   | 1 +
- testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h | 1 +
- 3 files changed, 3 insertions(+)
+ testcases/kernel/mem/shmt/shmt04.c                    | 10 +++++-----
+ testcases/kernel/mem/shmt/shmt06.c                    | 10 +++++-----
+ testcases/kernel/syscalls/sigprocmask/sigprocmask01.c | 10 +++++-----
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h
-index 1ec9794..9084aa7 100644
---- a/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h
-+++ b/testcases/kernel/sched/hyperthreading/ht_affinity/ht_utils.h
-@@ -3,6 +3,7 @@
- #define _HTUTILS_H_
+diff --git a/testcases/kernel/mem/shmt/shmt04.c b/testcases/kernel/mem/shmt/shmt04.c
+index 7203e9e..fce87d6 100644
+--- a/testcases/kernel/mem/shmt/shmt04.c
++++ b/testcases/kernel/mem/shmt/shmt04.c
+@@ -56,7 +56,7 @@ int TST_TOTAL = 2;		/* Total number of test cases. */
+ /**************/
  
- #include <stdlib.h>
-+#include <sys/types.h>
+ key_t key;
+-sigset_t sigset;
++sigset_t sigset1;
  
- int is_cmdline_para(const char *para);
+ #define  SIZE  16*1024
  
-diff --git a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h
-index 1ec9794..c03a124 100644
---- a/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h
-+++ b/testcases/kernel/sched/hyperthreading/ht_enabled/ht_utils.h
-@@ -2,6 +2,7 @@
- #ifndef _HTUTILS_H_
- #define _HTUTILS_H_
+@@ -71,9 +71,9 @@ int main(void)
  
-+#include <sys/types.h>
- #include <stdlib.h>
+ 	key = (key_t) getpid();
  
- int is_cmdline_para(const char *para);
-diff --git a/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h b/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h
-index 2977ad0..6b484e1 100644
---- a/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h
-+++ b/testcases/kernel/sched/hyperthreading/ht_interrupt/ht_utils.h
-@@ -3,6 +3,7 @@
- #define _HTUTILS_H_
+-	sigemptyset(&sigset);
+-	sigaddset(&sigset, SIGUSR1);
+-	sigprocmask(SIG_BLOCK, &sigset, NULL);
++	sigemptyset(&sigset1);
++	sigaddset(&sigset1, SIGUSR1);
++	sigprocmask(SIG_BLOCK, &sigset1, NULL);
  
- #include <stdlib.h>
-+#include <sys/types.h>
+ 	pid = fork();
+ 	switch (pid) {
+@@ -148,7 +148,7 @@ int child(void)
+ 	char *cp;
+ 	int sig;
  
- int is_cmdline_para(const char *para);
+-	sigwait(&sigset, &sig);
++	sigwait(&sigset1, &sig);
+ 	chld_pid = getpid();
+ /*--------------------------------------------------------*/
  
+diff --git a/testcases/kernel/mem/shmt/shmt06.c b/testcases/kernel/mem/shmt/shmt06.c
+index a3c9ca3..77b0fc9 100644
+--- a/testcases/kernel/mem/shmt/shmt06.c
++++ b/testcases/kernel/mem/shmt/shmt06.c
+@@ -57,7 +57,7 @@ int TST_TOTAL = 2;		/* Total number of test cases. */
+ /**************/
+ 
+ key_t key;
+-sigset_t sigset;
++sigset_t sigset1;
+ 
+ int child();
+ static int rm_shm(int);
+@@ -70,9 +70,9 @@ int main(void)
+ 
+ 	key = (key_t) getpid();
+ 
+-	sigemptyset(&sigset);
+-	sigaddset(&sigset, SIGUSR1);
+-	sigprocmask(SIG_BLOCK, &sigset, NULL);
++	sigemptyset(&sigset1);
++	sigaddset(&sigset1, SIGUSR1);
++	sigprocmask(SIG_BLOCK, &sigset1, NULL);
+ 
+ 	pid = fork();
+ 	switch (pid) {
+@@ -147,7 +147,7 @@ int child(void)
+ 	char *cp;
+ 	int sig;
+ 
+-	sigwait(&sigset, &sig);
++	sigwait(&sigset1, &sig);
+ 	chld_pid = getpid();
+ 
+ 	if ((shmid = shmget(key, SIZE, 0)) < 0) {
+diff --git a/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c b/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
+index 20fca52..6fb1d57 100644
+--- a/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
++++ b/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
+@@ -91,7 +91,7 @@ int TST_TOTAL = 1;
+ int sig_catch = 0;		/* variable to blocked/unblocked signals */
+ 
+ struct sigaction sa_new;	/* struct to hold signal info */
+-sigset_t sigset;		/* signal set to hold signal lists */
++sigset_t sigset1;		/* signal set to hold signal lists */
+ sigset_t sigset2;
+ 
+ int main(int ac, char **av)
+@@ -112,7 +112,7 @@ int main(int ac, char **av)
+ 		 * so that, signal will not be delivered to
+ 		 * the test process.
+ 		 */
+-		TEST(sigprocmask(SIG_BLOCK, &sigset, 0));
++		TEST(sigprocmask(SIG_BLOCK, &sigset1, 0));
+ 
+ 		/* Get the process id of test process */
+ 		my_pid = getpid();
+@@ -165,7 +165,7 @@ int main(int ac, char **av)
+ 				 */
+ 				errno = 0;
+ 				if (sigprocmask(SIG_UNBLOCK,
+-						&sigset, 0) == -1) {
++						&sigset1, 0) == -1) {
+ 					tst_brkm(TFAIL, cleanup,
+ 						 "sigprocmask() failed "
+ 						 "to unblock signal, "
+@@ -212,7 +212,7 @@ void setup(void)
+ 	 * Initialise the signal sets with the list that
+ 	 * excludes/includes  all system-defined signals.
+ 	 */
+-	if (sigemptyset(&sigset) == -1) {
++	if (sigemptyset(&sigset1) == -1) {
+ 		tst_brkm(TFAIL, cleanup,
+ 			 "sigemptyset() failed, errno=%d : %s",
+ 			 errno, strerror(errno));
+@@ -235,7 +235,7 @@ void setup(void)
+ 	 * Add specified signal (SIGINT) to the signal set
+ 	 * which excludes system-defined signals.
+ 	 */
+-	if (sigaddset(&sigset, SIGINT) == -1) {
++	if (sigaddset(&sigset1, SIGINT) == -1) {
+ 		tst_brkm(TFAIL, cleanup,
+ 			 "sigaddset() failed, errno=%d : %s",
+ 			 errno, strerror(errno));
 -- 
 2.7.0
 
