@@ -1,36 +1,36 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:14:10 +0000
-Subject: [LTP] [PATCH V2 22/32] include sys/types.h
+Date: Sat,  9 Jan 2016 01:14:15 +0000
+Subject: [LTP] [PATCH V2 27/32] sysconf01: Use _SC_2_C_VERSION conditionally
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-22-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-27-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixes
-
-error: unknown type name 'uint'
+_SC_2_C_VERSION is not available on musl
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/ipc/ipc_stress/shmem_test_04.c | 1 +
- 1 file changed, 1 insertion(+)
+ testcases/kernel/syscalls/sysconf/sysconf01.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/testcases/kernel/ipc/ipc_stress/shmem_test_04.c b/testcases/kernel/ipc/ipc_stress/shmem_test_04.c
-index 72c2e60..e7e5f61 100644
---- a/testcases/kernel/ipc/ipc_stress/shmem_test_04.c
-+++ b/testcases/kernel/ipc/ipc_stress/shmem_test_04.c
-@@ -65,6 +65,7 @@
- #include <signal.h>
- #include <stdint.h>
- #include <sys/mman.h>
-+#include <sys/types.h>
- 
- #ifdef _LINUX_
- typedef unsigned long ulong_t;
+diff --git a/testcases/kernel/syscalls/sysconf/sysconf01.c b/testcases/kernel/syscalls/sysconf/sysconf01.c
+index 8542e77..e806943 100644
+--- a/testcases/kernel/syscalls/sysconf/sysconf01.c
++++ b/testcases/kernel/syscalls/sysconf/sysconf01.c
+@@ -102,7 +102,9 @@ int main(void)
+ 	test_sysconf(_SC_ATEXIT_MAX);
+ 	test_sysconf(_SC_2_C_BIND);
+ 	test_sysconf(_SC_2_C_DEV);
++#ifdef __GLIBC__
+ 	test_sysconf(_SC_2_C_VERSION);
++#endif
+ 	/* 21 - 25 */
+ 	test_sysconf(_SC_2_CHAR_TERM);
+ 	test_sysconf(_SC_2_FORT_DEV);
 -- 
 2.7.0
 
