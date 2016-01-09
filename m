@@ -1,80 +1,287 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:13:58 +0000
-Subject: [LTP] [PATCH V2 10/32] replace __BEGIN_DECLS and __END_DECLS
+Date: Sat,  9 Jan 2016 01:13:56 +0000
+Subject: [LTP] [PATCH V2 08/32] Check if __GLIBC_PREREQ is defined before
+	using it
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-10-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-8-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-They are not portable across libc implementations
-therefore replace them with expanded macros
-
-Include <asm-generic/types.h> to get __s32 definitions
-its not a generally available typedef
+__GLIBC_PREREQ is specific to glibc so it should be checked if it is
+defined or not.
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/epoll2/include/epoll.h | 8 ++++++--
- utils/sctp/include/netinet/sctp.h                | 9 +++++++--
- 2 files changed, 13 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/accept4/accept4_01.c     |  9 ++++++-
+ testcases/kernel/syscalls/getcpu/getcpu01.c        | 31 ++++++++++++++++++++++
+ .../sched_getaffinity/sched_getaffinity01.c        | 26 ++++++++++++++++++
+ 3 files changed, 65 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/epoll2/include/epoll.h b/testcases/kernel/syscalls/epoll2/include/epoll.h
-index be599c7..8cc5e7e 100644
---- a/testcases/kernel/syscalls/epoll2/include/epoll.h
-+++ b/testcases/kernel/syscalls/epoll2/include/epoll.h
-@@ -85,7 +85,9 @@ struct epoll_event
- } EPOLL_PACKED;
+diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
+index 6072bfa..2b090cb 100644
+--- a/testcases/kernel/syscalls/accept4/accept4_01.c
++++ b/testcases/kernel/syscalls/accept4/accept4_01.c
+@@ -64,6 +64,7 @@ static void cleanup(void)
+ 	tst_rmdir();
+ }
  
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if !(__GLIBC_PREREQ(2, 10))
+ static int
+ accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
+@@ -82,7 +83,6 @@ accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
+ 	}
+ 	tst_resm(TINFO, "\n");
+ #endif
+-
+ #if USE_SOCKETCALL
+ 	long args[6];
  
--__BEGIN_DECLS
-+#ifdef __cplusplus
-+extern "C" {
+@@ -97,6 +97,7 @@ accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
+ #endif
+ }
+ #endif
 +#endif
  
- /* Creates an epoll instance.  Returns an fd for the new instance.
-    The "size" parameter is a hint specifying the number of file
-@@ -114,6 +116,8 @@ extern int epoll_ctl (int __epfd, int __op, int __fd,
- extern int epoll_wait (int __epfd, struct epoll_event *__events,
- 		       int __maxevents, int __timeout) __THROW;
+ static void
+ do_test(int lfd, struct sockaddr_in *conn_addr,
+@@ -119,9 +120,15 @@ do_test(int lfd, struct sockaddr_in *conn_addr,
+ 		die("Connect Error");
  
--__END_DECLS
-+#ifdef __cplusplus
-+}
+ 	addrlen = sizeof(struct sockaddr_in);
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if !(__GLIBC_PREREQ(2, 10))
+ 	acceptfd = accept4_01(lfd, (struct sockaddr *)&claddr, &addrlen,
+ 			      closeonexec_flag | nonblock_flag);
++
++#else
++	acceptfd = accept4(lfd, (struct sockaddr *)&claddr, &addrlen,
++			   closeonexec_flag | nonblock_flag);
++#endif
+ #else
+ 	acceptfd = accept4(lfd, (struct sockaddr *)&claddr, &addrlen,
+ 			   closeonexec_flag | nonblock_flag);
+diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kernel/syscalls/getcpu/getcpu01.c
+index c927512..6de6362 100644
+--- a/testcases/kernel/syscalls/getcpu/getcpu01.c
++++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
+@@ -62,6 +62,7 @@
+ #include <dirent.h>
+ 
+ #if defined(__i386__) || defined(__x86_64__)
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2,6)
+ #if defined(__x86_64__)
+ #include <utmpx.h>
+@@ -72,13 +73,16 @@ int sys_support = 1;
+ #else
+ int sys_support = 0;
+ #endif
++#endif
+ #else
+ int sys_support = 0;
+ #endif
+ 
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if !(__GLIBC_PREREQ(2, 7))
+ #define CPU_FREE(ptr) free(ptr)
+ #endif
 +#endif
  
- #endif /* sys/epoll.h */
-diff --git a/utils/sctp/include/netinet/sctp.h b/utils/sctp/include/netinet/sctp.h
-index 51f5bfb..c61aef3 100644
---- a/utils/sctp/include/netinet/sctp.h
-+++ b/utils/sctp/include/netinet/sctp.h
-@@ -35,9 +35,12 @@
+ void cleanup(void);
+ void setup(void);
+@@ -164,9 +168,11 @@ static inline int getcpu(unsigned *cpu_id, unsigned *node_id,
+ {
+ #if defined(__i386__)
+ 	return syscall(318, cpu_id, node_id, cache_struct);
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #elif __GLIBC_PREREQ(2,6)
+ 	*cpu_id = sched_getcpu();
+ #endif
++#endif
+ 	return 0;
+ }
  
- #include <stdint.h>
- #include <linux/types.h>
-+#include <asm-generic/types.h>
- #include <sys/socket.h>
+@@ -191,15 +197,20 @@ unsigned int set_cpu_affinity(void)
+ 	cpu_set_t *set;
+ 	size_t size;
+ 	int nrcpus = 1024;
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ realloc:
+ 	set = CPU_ALLOC(nrcpus);
+ #else
+ 	set = malloc(sizeof(cpu_set_t));
+ #endif
++#else
++	set = malloc(sizeof(cpu_set_t));
++#endif
+ 	if (set == NULL) {
+ 		tst_brkm(TFAIL, NULL, "CPU_ALLOC:errno:%d", errno);
+ 	}
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ 	size = CPU_ALLOC_SIZE(nrcpus);
+ 	CPU_ZERO_S(size, set);
+@@ -207,8 +218,13 @@ realloc:
+ 	size = sizeof(cpu_set_t);
+ 	CPU_ZERO(set);
+ #endif
++#else
++	size = sizeof(cpu_set_t);
++	CPU_ZERO(set);
++#endif
+ 	if (sched_getaffinity(0, size, set) < 0) {
+ 		CPU_FREE(set);
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ 		if (errno == EINVAL && nrcpus < (1024 << 8)) {
+ 			nrcpus = nrcpus << 2;
+@@ -220,10 +236,17 @@ realloc:
+ 				 "NR_CPUS of the kernel is more than 1024, so we'd better use a newer glibc(>= 2.7)");
+ 		else
+ #endif
++#else
++		if (errno == EINVAL)
++			tst_resm(TFAIL,
++				 "NR_CPUS of the kernel is more than 1024, so we'd better use a newer glibc(>= 2.7)");
++		else
++#endif
+ 			tst_resm(TFAIL, "sched_getaffinity:errno:%d", errno);
+ 		tst_exit();
+ 	}
+ 	cpu_max = max_cpuid(size, set);
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ 	CPU_ZERO_S(size, set);
+ 	CPU_SET_S(cpu_max, size, set);
+@@ -231,6 +254,10 @@ realloc:
+ 	CPU_ZERO(set);
+ 	CPU_SET(cpu_max, set);
+ #endif
++#else
++	CPU_ZERO(set);
++	CPU_SET(cpu_max, set);
++#endif
+ 	if (sched_setaffinity(0, size, set) < 0) {
+ 		CPU_FREE(set);
+ 		tst_brkm(TFAIL, NULL, "sched_setaffinity:errno:%d", errno);
+@@ -247,11 +274,15 @@ unsigned int max_cpuid(size_t size, cpu_set_t * set)
+ {
+ 	unsigned int index, max = 0;
+ 	for (index = 0; index < size * BITS_PER_BYTE; index++)
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ 		if (CPU_ISSET_S(index, size, set))
+ #else
+ 		if (CPU_ISSET(index, set))
+ #endif
++#else
++		if (CPU_ISSET(index, set))
++#endif
+ 			max = index;
+ 	return max;
+ }
+diff --git a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+index 9d6a81a..4ed13b2 100644
+--- a/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
++++ b/testcases/kernel/syscalls/sched_getaffinity/sched_getaffinity01.c
+@@ -66,9 +66,11 @@ do { \
+ 	tst_resm((TEST_RETURN == -1 ? TPASS : TFAIL) | TTERRNO, #t); \
+ } while (0)
  
--__BEGIN_DECLS
-+#ifdef __cplusplus
-+extern "C" {
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if !(__GLIBC_PREREQ(2, 7))
+ #define CPU_FREE(ptr)	free(ptr)
+ #endif
 +#endif
  
- typedef __s32 sctp_assoc_t;
+ int main(int ac, char **av)
+ {
+@@ -95,14 +97,19 @@ static void do_test(void)
+ 	pid_t unused_pid;
+ 	unsigned len;
  
-@@ -862,6 +865,8 @@ int sctp_recvmsg(int s, void *msg, size_t len, struct sockaddr *from,
- /* Return the address length for an address family. */
- int sctp_getaddrlen(sa_family_t family);
- 
--__END_DECLS
-+#ifdef __cplusplus
-+}
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ realloc:
+ 	mask = CPU_ALLOC(nrcpus);
+ #else
+ 	mask = malloc(sizeof(cpu_set_t));
+ #endif
++#else
++	mask = malloc(sizeof(cpu_set_t));
 +#endif
+ 	if (mask == NULL)
+ 		tst_brkm(TFAIL | TTERRNO, cleanup, "fail to get enough memory");
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ 	len = CPU_ALLOC_SIZE(nrcpus);
+ 	CPU_ZERO_S(len, mask);
+@@ -110,10 +117,15 @@ realloc:
+ 	len = sizeof(cpu_set_t);
+ 	CPU_ZERO(mask);
+ #endif
++#else
++	len = sizeof(cpu_set_t);
++	CPU_ZERO(mask);
++#endif
+ 	/* positive test */
+ 	TEST(sched_getaffinity(0, len, mask));
+ 	if (TEST_RETURN == -1) {
+ 		CPU_FREE(mask);
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ 		if (errno == EINVAL && nrcpus < (1024 << 8)) {
+ 			nrcpus = nrcpus << 2;
+@@ -125,17 +137,27 @@ realloc:
+ 				 "newer glibc(>= 2.7)");
+ 		else
+ #endif
++#else
++		if (errno == EINVAL)
++			tst_resm(TFAIL, "NR_CPUS > 1024, we'd better use a "
++				 "newer glibc(>= 2.7)");
++		else
++#endif
+ 			tst_resm(TFAIL | TTERRNO, "fail to get cpu affinity");
+ 		cleanup();
+ 	} else {
+ 		tst_resm(TINFO, "cpusetsize is %d", len);
+ 		tst_resm(TINFO, "mask.__bits[0] = %lu ", mask->__bits[0]);
+ 		for (i = 0; i < num; i++) {
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ 			TEST(CPU_ISSET_S(i, len, mask));
+ #else
+ 			TEST(CPU_ISSET(i, mask));
+ #endif
++#else
++			TEST(CPU_ISSET(i, mask));
++#endif
+ 			if (TEST_RETURN != -1)
+ 				tst_resm(TPASS, "sched_getaffinity() succeed, "
+ 					 "this process %d is running "
+@@ -143,11 +165,15 @@ realloc:
+ 		}
+ 	}
  
- #endif /* __linux_sctp_h__ */
++#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+ #if __GLIBC_PREREQ(2, 7)
+ 	CPU_ZERO_S(len, mask);
+ #else
+ 	CPU_ZERO(mask);
+ #endif
++#else
++	CPU_ZERO(mask);
++#endif
+ 	/* negative tests */
+ 	QUICK_TEST(sched_getaffinity(0, len, (cpu_set_t *) - 1));
+ 	QUICK_TEST(sched_getaffinity(0, 0, mask));
 -- 
 2.7.0
 
