@@ -1,56 +1,36 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:14:11 +0000
-Subject: [LTP] [PATCH V2 23/32] ptrace: Use int instead of enum
-	__ptrace_request
+Date: Sat,  9 Jan 2016 01:14:14 +0000
+Subject: [LTP] [PATCH V2 26/32] crash01: Define _GNU_SOURCE
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-23-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-26-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-__ptrace_request is only available with glibc
+Fixes musl build errors like
+error: 'SA_NOMASK' undeclared (first use in this function)
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/syscalls/ptrace/ptrace03.c           | 4 ++++
- testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h | 4 ++++
- 2 files changed, 8 insertions(+)
+ testcases/misc/crash/crash01.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/ptrace/ptrace03.c b/testcases/kernel/syscalls/ptrace/ptrace03.c
-index a4028fc..f1880cd 100644
---- a/testcases/kernel/syscalls/ptrace/ptrace03.c
-+++ b/testcases/kernel/syscalls/ptrace/ptrace03.c
-@@ -102,7 +102,11 @@ static pid_t unused_pid;
- static pid_t zero_pid;
+diff --git a/testcases/misc/crash/crash01.c b/testcases/misc/crash/crash01.c
+index 0574521..08a02e7 100644
+--- a/testcases/misc/crash/crash01.c
++++ b/testcases/misc/crash/crash01.c
+@@ -49,7 +49,7 @@ stress test at the same time you run other tests, like a multi-user
+ benchmark.
  
- struct test_case_t {
-+#ifdef __GLIBC__
- 	enum __ptrace_request request;
-+#else
-+	int request;
-+#endif
- 	pid_t *pid;
- 	int exp_errno;
- } test_cases[] = {
-diff --git a/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h b/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h
-index ae538e9..85aa89d 100644
---- a/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h
-+++ b/testcases/kernel/syscalls/ptrace/spawn_ptrace_child.h
-@@ -130,7 +130,11 @@ static char *strings[] = {
- 	SPT(KILL)
- 	SPT(SINGLESTEP)
- };
-+#ifdef __GLIBC__
- static inline char *strptrace(enum __ptrace_request request)
-+#else
-+static inline char *strptrace(int request)
-+#endif
- {
- 	return strings[request];
- }
+ */
+-
++#define _GNU_SOURCE
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
 -- 
 2.7.0
 
