@@ -1,53 +1,38 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:13:53 +0000
-Subject: [LTP] [PATCH V2 05/32] kernel/controllers: Link with libfts
-	explicitly on musl
+Date: Sat,  9 Jan 2016 01:13:54 +0000
+Subject: [LTP] [PATCH V2 06/32] sendfile: Use off64_t instead of __off64_t
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-5-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-6-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-musl does not implement fts like glibc and therefore it depends on
-external implementation for all fts APIs
+__off64_t is specific to glibc where as off64_t is widely available
+Add _GNU_SOURCE for off64_t defines from sys/types.h
+Fixes
+<command-line>:0:7: error: unknown type name 'off64_t'
+sendfile02.c:97:18: note: in expansion of macro 'OFF_T'
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/controllers/Makefile.inc        | 3 +++
- testcases/kernel/controllers/cpuset/Makefile.inc | 3 +++
- 2 files changed, 6 insertions(+)
+ testcases/kernel/syscalls/sendfile/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/controllers/Makefile.inc b/testcases/kernel/controllers/Makefile.inc
-index b106283..ef5fc0c 100644
---- a/testcases/kernel/controllers/Makefile.inc
-+++ b/testcases/kernel/controllers/Makefile.inc
-@@ -36,6 +36,9 @@ MAKE_DEPS		:= $(LIB)
- CPPFLAGS		+= -I$(abs_srcdir)/../$(LIBDIR)
+diff --git a/testcases/kernel/syscalls/sendfile/Makefile b/testcases/kernel/syscalls/sendfile/Makefile
+index df7b63f..1bd1b57 100644
+--- a/testcases/kernel/syscalls/sendfile/Makefile
++++ b/testcases/kernel/syscalls/sendfile/Makefile
+@@ -21,6 +21,6 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/testcases.mk
+ include $(abs_srcdir)/../utils/newer_64.mk
  
- LDFLAGS			+= -L$(abs_builddir)/../$(LIBDIR)
-+ifeq ($(LIBC),musl)
-+LDLIBS			+= -lfts
-+endif
+-%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64 -DOFF_T=__off64_t
++%_64: CPPFLAGS += -D_FILE_OFFSET_BITS=64 -DOFF_T=off64_t -D_GNU_SOURCE
  
- INSTALL_TARGETS		?= *.sh
- 
-diff --git a/testcases/kernel/controllers/cpuset/Makefile.inc b/testcases/kernel/controllers/cpuset/Makefile.inc
-index 9e002f4..e0fcb9c 100644
---- a/testcases/kernel/controllers/cpuset/Makefile.inc
-+++ b/testcases/kernel/controllers/cpuset/Makefile.inc
-@@ -42,6 +42,9 @@ MAKE_DEPS		:= $(LIBCONTROLLERS) $(LIBCPUSET)
- LDFLAGS			+= -L$(abs_builddir)/$(LIBCPUSET_DIR) -L$(abs_builddir)/$(LIBCONTROLLERS_DIR)
- 
- LDLIBS			+= -lcpu_set -lcontrollers -lltp
-+ifeq ($(LIBC),musl)
-+LDLIBS			+= -lfts
-+endif
- 
- INSTALL_TARGETS		?= *.sh
- 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
 2.7.0
 
