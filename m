@@ -1,143 +1,401 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Sat,  9 Jan 2016 01:13:59 +0000
-Subject: [LTP] [PATCH V2 11/32] Rename sigset variable to sigset1
+Date: Sat,  9 Jan 2016 01:13:55 +0000
+Subject: [LTP] [PATCH V2 07/32] replace SIGCLD with SIGCHLD
 In-Reply-To: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
-Message-ID: <1452302060-103643-11-git-send-email-raj.khem@gmail.com>
+Message-ID: <1452302060-103643-7-git-send-email-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-sigset API from signal.h is shadowed by this name conflict
+its defined to use SIGCHLD anyway in
+
+bits/signum.h:#define     SIGCLD          SIGCHLD /* Same as SIGCHLD
+(System V).  */
+
+plus it helps these tests compile with musl which adheres to posix
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/mem/shmt/shmt04.c                    | 10 +++++-----
- testcases/kernel/mem/shmt/shmt06.c                    | 10 +++++-----
- testcases/kernel/syscalls/sigprocmask/sigprocmask01.c | 10 +++++-----
- 3 files changed, 15 insertions(+), 15 deletions(-)
+ lib/tst_sig.c                                   |  8 ++++----
+ testcases/kernel/connectors/pec/pec_listener.c  |  1 +
+ testcases/kernel/fs/doio/doio.c                 |  4 ++--
+ testcases/kernel/fs/doio/growfiles.c            |  2 +-
+ testcases/kernel/syscalls/fcntl/fcntl11.c       |  8 ++++----
+ testcases/kernel/syscalls/fcntl/fcntl17.c       |  8 ++++----
+ testcases/kernel/syscalls/fcntl/fcntl19.c       |  8 ++++----
+ testcases/kernel/syscalls/fcntl/fcntl20.c       |  8 ++++----
+ testcases/kernel/syscalls/fcntl/fcntl21.c       |  8 ++++----
+ testcases/kernel/syscalls/kill/kill02.c         |  6 +++---
+ testcases/kernel/syscalls/kill/kill12.c         |  8 ++++----
+ testcases/kernel/syscalls/mkdir/mkdir09.c       | 12 ++++++------
+ testcases/kernel/syscalls/sighold/sighold02.c   |  2 +-
+ testcases/network/tcp_cmds/perf_lan/pingpong.c  |  2 +-
+ testcases/network/tcp_cmds/perf_lan/pingpong6.c |  2 +-
+ 15 files changed, 44 insertions(+), 43 deletions(-)
 
-diff --git a/testcases/kernel/mem/shmt/shmt04.c b/testcases/kernel/mem/shmt/shmt04.c
-index 7203e9e..fce87d6 100644
---- a/testcases/kernel/mem/shmt/shmt04.c
-+++ b/testcases/kernel/mem/shmt/shmt04.c
-@@ -56,7 +56,7 @@ int TST_TOTAL = 2;		/* Total number of test cases. */
- /**************/
+diff --git a/lib/tst_sig.c b/lib/tst_sig.c
+index 3af5ffd..36565e1 100644
+--- a/lib/tst_sig.c
++++ b/lib/tst_sig.c
+@@ -49,7 +49,7 @@
+ 		fork_flag - set to FORK or NOFORK depending upon whether the
+ 			calling program executes a fork() system call.  It
+ 			is normally the case that the calling program treats
+-			SIGCLD as an expected signal if fork() is being used.
++			SIGCHLD as an expected signal if fork() is being used.
  
- key_t key;
--sigset_t sigset;
-+sigset_t sigset1;
+ 		handler - a pointer to the unexpected signal handler to
+ 			be executed after an unexpected signal has been
+@@ -82,7 +82,7 @@ static void (*tst_setup_signal(int, void (*)(int))) (int);
  
- #define  SIZE  16*1024
- 
-@@ -71,9 +71,9 @@ int main(void)
- 
- 	key = (key_t) getpid();
- 
--	sigemptyset(&sigset);
--	sigaddset(&sigset, SIGUSR1);
--	sigprocmask(SIG_BLOCK, &sigset, NULL);
-+	sigemptyset(&sigset1);
-+	sigaddset(&sigset1, SIGUSR1);
-+	sigprocmask(SIG_BLOCK, &sigset1, NULL);
- 
- 	pid = fork();
- 	switch (pid) {
-@@ -148,7 +148,7 @@ int child(void)
- 	char *cp;
- 	int sig;
- 
--	sigwait(&sigset, &sig);
-+	sigwait(&sigset1, &sig);
- 	chld_pid = getpid();
- /*--------------------------------------------------------*/
- 
-diff --git a/testcases/kernel/mem/shmt/shmt06.c b/testcases/kernel/mem/shmt/shmt06.c
-index a3c9ca3..77b0fc9 100644
---- a/testcases/kernel/mem/shmt/shmt06.c
-+++ b/testcases/kernel/mem/shmt/shmt06.c
-@@ -57,7 +57,7 @@ int TST_TOTAL = 2;		/* Total number of test cases. */
- /**************/
- 
- key_t key;
--sigset_t sigset;
-+sigset_t sigset1;
- 
- int child();
- static int rm_shm(int);
-@@ -70,9 +70,9 @@ int main(void)
- 
- 	key = (key_t) getpid();
- 
--	sigemptyset(&sigset);
--	sigaddset(&sigset, SIGUSR1);
--	sigprocmask(SIG_BLOCK, &sigset, NULL);
-+	sigemptyset(&sigset1);
-+	sigaddset(&sigset1, SIGUSR1);
-+	sigprocmask(SIG_BLOCK, &sigset1, NULL);
- 
- 	pid = fork();
- 	switch (pid) {
-@@ -147,7 +147,7 @@ int child(void)
- 	char *cp;
- 	int sig;
- 
--	sigwait(&sigset, &sig);
-+	sigwait(&sigset1, &sig);
- 	chld_pid = getpid();
- 
- 	if ((shmid = shmget(key, SIZE, 0)) < 0) {
-diff --git a/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c b/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
-index 20fca52..6fb1d57 100644
---- a/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
-+++ b/testcases/kernel/syscalls/sigprocmask/sigprocmask01.c
-@@ -91,7 +91,7 @@ int TST_TOTAL = 1;
- int sig_catch = 0;		/* variable to blocked/unblocked signals */
- 
- struct sigaction sa_new;	/* struct to hold signal info */
--sigset_t sigset;		/* signal set to hold signal lists */
-+sigset_t sigset1;		/* signal set to hold signal lists */
- sigset_t sigset2;
- 
- int main(int ac, char **av)
-@@ -112,7 +112,7 @@ int main(int ac, char **av)
- 		 * so that, signal will not be delivered to
- 		 * the test process.
+ /****************************************************************************
+  * tst_sig() : set-up to catch unexpected signals.  fork_flag is set to NOFORK
+- *    if SIGCLD is to be an "unexpected signal", otherwise it is set to
++ *    if SIGCHLD is to be an "unexpected signal", otherwise it is set to
+  *    FORK.  cleanup points to a cleanup routine to be executed before
+  *    tst_exit is called (cleanup is set to NULL if no cleanup is desired).
+  *    handler is a pointer to the signal handling routine (if handler is
+@@ -117,7 +117,7 @@ void tst_sig(int fork_flag, void (*handler) (), void (*cleanup) ())
+ 	for (sig = 1; sig < NSIG; sig++) {
+ 		/*
+ 		 * SIGKILL is never unexpected.
+-		 * SIGCLD is only unexpected when
++		 * SIGCHLD is only unexpected when
+ 		 *    no forking is being done.
+ 		 * SIGINFO is used for file quotas and should be expected
  		 */
--		TEST(sigprocmask(SIG_BLOCK, &sigset, 0));
-+		TEST(sigprocmask(SIG_BLOCK, &sigset1, 0));
+@@ -205,7 +205,7 @@ void tst_sig(int fork_flag, void (*handler) (), void (*cleanup) ())
+ #endif
+ 			break;
  
- 		/* Get the process id of test process */
- 		my_pid = getpid();
-@@ -165,7 +165,7 @@ int main(int ac, char **av)
- 				 */
- 				errno = 0;
- 				if (sigprocmask(SIG_UNBLOCK,
--						&sigset, 0) == -1) {
-+						&sigset1, 0) == -1) {
- 					tst_brkm(TFAIL, cleanup,
- 						 "sigprocmask() failed "
- 						 "to unblock signal, "
-@@ -212,7 +212,7 @@ void setup(void)
- 	 * Initialise the signal sets with the list that
- 	 * excludes/includes  all system-defined signals.
+-		case SIGCLD:
++		case SIGCHLD:
+ 			if (fork_flag == FORK)
+ 				continue;
+ 
+diff --git a/testcases/kernel/connectors/pec/pec_listener.c b/testcases/kernel/connectors/pec/pec_listener.c
+index a1beb13..002750a 100644
+--- a/testcases/kernel/connectors/pec/pec_listener.c
++++ b/testcases/kernel/connectors/pec/pec_listener.c
+@@ -20,6 +20,7 @@
+ /*                                                                            */
+ /******************************************************************************/
+ 
++#define _GNU_SOURCE
+ #include <sys/socket.h>
+ #include <sys/poll.h>
+ #include <sys/types.h>
+diff --git a/testcases/kernel/fs/doio/doio.c b/testcases/kernel/fs/doio/doio.c
+index 4b0dec5..5f65ef9 100644
+--- a/testcases/kernel/fs/doio/doio.c
++++ b/testcases/kernel/fs/doio/doio.c
+@@ -573,7 +573,7 @@ int main(int argc, char **argv)
+ 		case SIGTSTP:
+ 		case SIGSTOP:
+ 		case SIGCONT:
+-		case SIGCLD:
++		case SIGCHLD:
+ 		case SIGBUS:
+ 		case SIGSEGV:
+ 		case SIGQUIT:
+@@ -615,7 +615,7 @@ int main(int argc, char **argv)
+ 	}
+ 
+ 	sigemptyset(&block_mask);
+-	sigaddset(&block_mask, SIGCLD);
++	sigaddset(&block_mask, SIGCHLD);
+ 	sigprocmask(SIG_BLOCK, &block_mask, &omask);
+ 
+ 	/*
+diff --git a/testcases/kernel/fs/doio/growfiles.c b/testcases/kernel/fs/doio/growfiles.c
+index 09e7f35..bbad230 100644
+--- a/testcases/kernel/fs/doio/growfiles.c
++++ b/testcases/kernel/fs/doio/growfiles.c
+@@ -1640,7 +1640,7 @@ int set_sig(void)
+ #ifdef SIGRESTART
+ 		case SIGRESTART:
+ #endif /* SIGRESTART */
+-		case SIGCLD:
++		case SIGCHLD:
+ 			break;
+ 
+ 		default:
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl11.c b/testcases/kernel/syscalls/fcntl/fcntl11.c
+index fa6ce53..2de2b6c 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl11.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl11.c
+@@ -105,10 +105,10 @@ void setup(void)
+ 	memset(&act, 0, sizeof(act));
+ 	act.sa_handler = catch_child;
+ 	sigemptyset(&act.sa_mask);
+-	sigaddset(&act.sa_mask, SIGCLD);
+-	if ((sigaction(SIGCLD, &act, NULL)) < 0)
++	sigaddset(&act.sa_mask, SIGCHLD);
++	if ((sigaction(SIGCHLD, &act, NULL)) < 0)
+ 		tst_brkm(TBROK | TERRNO, cleanup,
+-			 "sigaction(SIGCLD, ..) failed");
++			 "sigaction(SIGCHLD, ..) failed");
+ }
+ 
+ void do_child(void)
+@@ -227,7 +227,7 @@ void stop_child(void)
+ {
+ 	struct flock fl;
+ 
+-	signal(SIGCLD, SIG_DFL);
++	signal(SIGCHLD, SIG_DFL);
+ 	fl.l_type = STOP;
+ 	parent_put(&fl);
+ 	wait(0);
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl17.c b/testcases/kernel/syscalls/fcntl/fcntl17.c
+index 5b03e39..6598b20 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl17.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl17.c
+@@ -150,9 +150,9 @@ int setup(void)
+ 	memset(&act, 0, sizeof(act));
+ 	act.sa_handler = catch_child;
+ 	sigemptyset(&act.sa_mask);
+-	sigaddset(&act.sa_mask, SIGCLD);
+-	if (sigaction(SIGCLD, &act, NULL) < 0) {
+-		tst_resm(TFAIL, "SIGCLD signal setup failed, errno: %d", errno);
++	sigaddset(&act.sa_mask, SIGCHLD);
++	if (sigaction(SIGCHLD, &act, NULL) < 0) {
++		tst_resm(TFAIL, "SIGCHLD signal setup failed, errno: %d", errno);
+ 		return 1;
+ 	}
+ 	return 0;
+@@ -381,7 +381,7 @@ void stop_children(void)
+ {
+ 	int arg;
+ 
+-	signal(SIGCLD, SIG_DFL);
++	signal(SIGCHLD, SIG_DFL);
+ 	arg = STOP;
+ 	child_free(child_pipe1[1], arg);
+ 	child_free(child_pipe2[1], arg);
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl19.c b/testcases/kernel/syscalls/fcntl/fcntl19.c
+index a542cfc..88c91d6 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl19.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl19.c
+@@ -112,9 +112,9 @@ void setup(void)
+ 	memset(&act, 0, sizeof(act));
+ 	act.sa_handler = catch_child;
+ 	sigemptyset(&act.sa_mask);
+-	sigaddset(&act.sa_mask, SIGCLD);
+-	if ((sigaction(SIGCLD, &act, NULL)) < 0) {
+-		tst_resm(TFAIL, "SIGCLD signal setup failed, errno: %d", errno);
++	sigaddset(&act.sa_mask, SIGCHLD);
++	if ((sigaction(SIGCHLD, &act, NULL)) < 0) {
++		tst_resm(TFAIL, "SIGCHLD signal setup failed, errno: %d", errno);
+ 		fail = 1;
+ 	}
+ }
+@@ -265,7 +265,7 @@ void stop_child(void)
+ {
+ 	struct flock fl;
+ 
+-	signal(SIGCLD, SIG_DFL);
++	signal(SIGCHLD, SIG_DFL);
+ 	fl.l_type = STOP;
+ 	parent_put(&fl);
+ 	wait(0);
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl20.c b/testcases/kernel/syscalls/fcntl/fcntl20.c
+index aa06bab..99fd783 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl20.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl20.c
+@@ -109,9 +109,9 @@ void setup(void)
+ 	memset(&act, 0, sizeof(act));
+ 	act.sa_handler = catch_child;
+ 	sigemptyset(&act.sa_mask);
+-	sigaddset(&act.sa_mask, SIGCLD);
+-	if (sigaction(SIGCLD, &act, NULL) == -1)
+-		tst_brkm(TFAIL | TERRNO, cleanup, "SIGCLD signal setup failed");
++	sigaddset(&act.sa_mask, SIGCHLD);
++	if (sigaction(SIGCHLD, &act, NULL) == -1)
++		tst_brkm(TFAIL | TERRNO, cleanup, "SIGCHLD signal setup failed");
+ }
+ 
+ void cleanup(void)
+@@ -264,7 +264,7 @@ void stop_child(void)
+ {
+ 	struct flock fl;
+ 
+-	signal(SIGCLD, SIG_DFL);
++	signal(SIGCHLD, SIG_DFL);
+ 	fl.l_type = STOP;
+ 	parent_put(&fl);
+ 	wait(0);
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl21.c b/testcases/kernel/syscalls/fcntl/fcntl21.c
+index 5307021..8f1a67c 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl21.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl21.c
+@@ -110,9 +110,9 @@ void setup(void)
+ 	memset(&act, 0, sizeof(act));
+ 	act.sa_handler = catch_child;
+ 	sigemptyset(&act.sa_mask);
+-	sigaddset(&act.sa_mask, SIGCLD);
+-	if ((sigaction(SIGCLD, &act, NULL)) < 0) {
+-		tst_resm(TFAIL, "SIGCLD signal setup failed, errno: %d", errno);
++	sigaddset(&act.sa_mask, SIGCHLD);
++	if ((sigaction(SIGCHLD, &act, NULL)) < 0) {
++		tst_resm(TFAIL, "SIGCHLD signal setup failed, errno: %d", errno);
+ 		fail = 1;
+ 	}
+ }
+@@ -272,7 +272,7 @@ void stop_child(void)
+ {
+ 	struct flock fl;
+ 
+-	signal(SIGCLD, SIG_DFL);
++	signal(SIGCHLD, SIG_DFL);
+ 	fl.l_type = STOP;
+ 	parent_put(&fl);
+ 	wait(0);
+diff --git a/testcases/kernel/syscalls/kill/kill02.c b/testcases/kernel/syscalls/kill/kill02.c
+index 9d6cc68..08360dd 100644
+--- a/testcases/kernel/syscalls/kill/kill02.c
++++ b/testcases/kernel/syscalls/kill/kill02.c
+@@ -701,7 +701,7 @@ void setup(void)
+ 
+ 	/*
+ 	 *  Set to catch unexpected signals.
+-	 *  SIGCLD is set to be ignored because we do not wait for termination status.
++	 *  SIGCHLD is set to be ignored because we do not wait for termination status.
+ 	 *  SIGUSR1 is set to be ignored because this is the signal we are using for
+ 	 *  the test and we are not concerned with the parent getting it.
  	 */
--	if (sigemptyset(&sigset) == -1) {
-+	if (sigemptyset(&sigset1) == -1) {
+@@ -713,9 +713,9 @@ void setup(void)
+ 			 "signal(SIGUSR1, SIG_IGN) failed");
+ 	}
+ 
+-	if (signal(SIGCLD, SIG_IGN) == SIG_ERR) {
++	if (signal(SIGCHLD, SIG_IGN) == SIG_ERR) {
+ 		tst_brkm(TBROK | TERRNO, NULL,
+-			 "signal(SIGCLD, SIG_IGN) failed");
++			 "signal(SIGCHLD, SIG_IGN) failed");
+ 	}
+ 
+ 	TEST_PAUSE;
+diff --git a/testcases/kernel/syscalls/kill/kill12.c b/testcases/kernel/syscalls/kill/kill12.c
+index 7a47a4a..d7c4147 100644
+--- a/testcases/kernel/syscalls/kill/kill12.c
++++ b/testcases/kernel/syscalls/kill/kill12.c
+@@ -98,7 +98,7 @@ int main(int argc, char **argv)
+ 
+ 	exno = 1;
+ 
+-	if (sigset(SIGCLD, chsig) == SIG_ERR) {
++	if (sigset(SIGCHLD, chsig) == SIG_ERR) {
+ 		fprintf(temp, "\tsigset failed, errno = %d\n", errno);
+ 		fail_exit();
+ 	}
+@@ -128,7 +128,7 @@ int main(int argc, char **argv)
+ 				sleep(1);
+ 
+ 			kill(pid, sig);	/* child should ignroe this sig */
+-			kill(pid, SIGCLD);	/* child should exit */
++			kill(pid, SIGCHLD);	/* child should exit */
+ 
+ #ifdef BCS
+ 			while ((npid = wait(&status)) != pid
+@@ -222,14 +222,14 @@ void do_child(void)
+ 	int exno = 1;
+ 
+ #ifdef UCLINUX
+-	if (sigset(SIGCLD, chsig) == SIG_ERR) {
++	if (sigset(SIGCHLD, chsig) == SIG_ERR) {
+ 		fprintf(temp, "\tsigset failed, errno = %d\n", errno);
+ 		fail_exit();
+ 	}
+ #endif
+ 
+ 	sigset(sig, SIG_IGN);	/* set to ignore signal */
+-	kill(getppid(), SIGCLD);	/* tell parent we are ready */
++	kill(getppid(), SIGCHLD);	/* tell parent we are ready */
+ 	while (!chflag)
+ 		sleep(1);	/* wait for parent */
+ 
+diff --git a/testcases/kernel/syscalls/mkdir/mkdir09.c b/testcases/kernel/syscalls/mkdir/mkdir09.c
+index 41c20e9..07b4fb8 100644
+--- a/testcases/kernel/syscalls/mkdir/mkdir09.c
++++ b/testcases/kernel/syscalls/mkdir/mkdir09.c
+@@ -122,10 +122,10 @@ int main(int argc, char *argv[])
+ 
+ 	}
+ 
+-	/* Set up to catch SIGCLD signal */
+-	if (signal(SIGCLD, chld) == SIG_ERR) {
++	/* Set up to catch SIGCHLD signal */
++	if (signal(SIGCHLD, chld) == SIG_ERR) {
  		tst_brkm(TFAIL, cleanup,
- 			 "sigemptyset() failed, errno=%d : %s",
- 			 errno, strerror(errno));
-@@ -235,7 +235,7 @@ void setup(void)
- 	 * Add specified signal (SIGINT) to the signal set
- 	 * which excludes system-defined signals.
- 	 */
--	if (sigaddset(&sigset, SIGINT) == -1) {
-+	if (sigaddset(&sigset1, SIGINT) == -1) {
+-			 "Error setting up SIGCLD signal, ERRNO = %d", errno);
++			 "Error setting up SIGCHLD signal, ERRNO = %d", errno);
+ 
+ 	}
+ 
+@@ -236,9 +236,9 @@ int runtest(void)
  		tst_brkm(TFAIL, cleanup,
- 			 "sigaddset() failed, errno=%d : %s",
- 			 errno, strerror(errno));
+ 			 "Error resetting SIGTERM signal, ERRNO = %d", errno);
+ 	}
+-	if (signal(SIGCLD, SIG_DFL) == SIG_ERR) {
++	if (signal(SIGCHLD, SIG_DFL) == SIG_ERR) {
+ 		tst_brkm(TFAIL, cleanup,
+-			 "Error resetting SIGCLD signal, ERRNO = %d", errno);
++			 "Error resetting SIGCHLD signal, ERRNO = %d", errno);
+ 	}
+ 
+ 	if (test_time) {
+@@ -372,7 +372,7 @@ void term(int sig)
+ 
+ void chld(int sig)
+ {
+-	/* Routine to handle SIGCLD signal. */
++	/* Routine to handle SIGCHLD signal. */
+ 
+ 	sigchld++;
+ 	if (jump) {
+diff --git a/testcases/kernel/syscalls/sighold/sighold02.c b/testcases/kernel/syscalls/sighold/sighold02.c
+index e3076fb..be01874 100644
+--- a/testcases/kernel/syscalls/sighold/sighold02.c
++++ b/testcases/kernel/syscalls/sighold/sighold02.c
+@@ -77,7 +77,7 @@ static int sigs_map[NUMSIGS];
+ static int skip_sig(int sig)
+ {
+ 	switch (sig) {
+-	case SIGCLD:
++	case SIGCHLD:
+ 	case SIGKILL:
+ 	case SIGALRM:
+ 	case SIGSTOP:
+diff --git a/testcases/network/tcp_cmds/perf_lan/pingpong.c b/testcases/network/tcp_cmds/perf_lan/pingpong.c
+index 1196312..5b06798 100644
+--- a/testcases/network/tcp_cmds/perf_lan/pingpong.c
++++ b/testcases/network/tcp_cmds/perf_lan/pingpong.c
+@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
+ 
+ 	/* Setup traps */
+ 	signal(SIGINT, finish);
+-	signal(SIGCLD, finish);
++	signal(SIGCHLD, finish);
+ 
+ 	/* Fork a child process to continue sending packets */
+ 	tst_resm(TINFO, "Create a child process to continue to send packets");
+diff --git a/testcases/network/tcp_cmds/perf_lan/pingpong6.c b/testcases/network/tcp_cmds/perf_lan/pingpong6.c
+index 9747f58..0a0fb1d 100644
+--- a/testcases/network/tcp_cmds/perf_lan/pingpong6.c
++++ b/testcases/network/tcp_cmds/perf_lan/pingpong6.c
+@@ -153,7 +153,7 @@ char *argv[];
+ 
+ 	/* Setup traps */
+ 	signal(SIGINT, finish);
+-	signal(SIGCLD, finish);
++	signal(SIGCHLD, finish);
+ 
+ 	/* Fork a child process to continue sending packets */
+ 	printf("Create a child process to continue to send packets \n");
 -- 
 2.7.0
 
