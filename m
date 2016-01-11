@@ -1,74 +1,49 @@
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Mon, 11 Jan 2016 14:08:51 +0800
-Subject: [LTP] [PATCH] mem/oom: remove non-existent case OVERCOMMIT from
- oom()
-In-Reply-To: <494674280.5705346.1452238938120.JavaMail.zimbra@redhat.com>
-References: <20151228074919.GA12782@localhost.localdomain>
- <423580278.5207145.1452167840798.JavaMail.zimbra@redhat.com>
- <20160108065941.GA2966@localhost.localdomain>
- <494674280.5705346.1452238938120.JavaMail.zimbra@redhat.com>
-Message-ID: <20160111060851.GB2966@localhost.localdomain>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 11 Jan 2016 14:47:17 +0300
+Subject: [LTP] [PATCH] Clean up hugemmap02 testcase
+In-Reply-To: <1452241254-4113-1-git-send-email-shuang.qiu@oracle.com>
+References: <1452241254-4113-1-git-send-email-shuang.qiu@oracle.com>
+Message-ID: <56939645.2080805@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Jan 08, 2016 at 02:42:18AM -0500, Jan Stancek wrote:
-> 
-> 
-> 
-> 
-> ----- Original Message -----
-> > From: "Han Pingtian" <hanpt@linux.vnet.ibm.com>
-> > To: "Jan Stancek" <jstancek@redhat.com>
-> > Cc: ltp@lists.linux.it
-> > Sent: Friday, 8 January, 2016 7:59:41 AM
-> > Subject: Re: [LTP] [PATCH] mem/oom: remove non-existent case OVERCOMMIT from oom()
-> > 
-> > On Thu, Jan 07, 2016 at 06:57:20AM -0500, Jan Stancek wrote:
-> > > 
-> > > 
-> > > ----- Original Message -----
-> > > > From: "Han Pingtian" <hanpt@linux.vnet.ibm.com>
-> > > > To: ltp@lists.linux.it
-> > > > Sent: Monday, 28 December, 2015 8:49:19 AM
-> > > > Subject: [LTP] [PATCH] mem/oom: remove non-existent case OVERCOMMIT from
-> > > > 	oom()
-> > > > 
-> > > > Looks like there is no such a case "OVERCOMMIT" in oom(), so we can just
-> > > > remove it.
-> > > > 
-> > > > Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
-> > > 
-> > > Reviewed-by: Jan Stancek <jstancek@redhat.com>
-> > > 
-> > > Looks good to me, regards,
-> > > Jan
-> > > 
-> > Hi Jan,
-> > 
-> > Thanks for reviewing! I have another question: I think when
-> > "overcommit_memory" being set to 1, mmap() will always succeed. It's
-> > that correct? I read the code of kernel, looks like in
-> > __vm_enough_memory(), if sysctl_overcommit_memory == OVERCOMMIT_ALWAYS,
-> > it will always return 0. So I think in oom01.c, we should call the
-> > testoom() as testoom(0, 0, 0, 1).
-> 
-> It can also fail if you reach max_map_count (or if map size is too big, but
-> that shouldn't be the case in this test).
-> 
-> This is current call in oom01:
->   testoom(0, 0, ENOMEM, 1);
-> 
-> Third parameter (retcode) does not apply only to mmap().
-> If you look at testoom(), it makes 3 tests:
->   oom(NORMAL, lite, retcode, allow_sigkill);
->   oom(MLOCK, lite, retcode, allow_sigkill);
->   oom(KSM, lite, retcode, allow_sigkill);
-> 
-> oom() compares that retcode to exit code of alloc_mem(),
-> which will exit when either of these 3 fails: mmap, mlock or madvise.
-> 
-Got it and thanks! I didn't know there is a vm.max_map_count.
+Hi,
+On 01/08/2016 11:20 AM, shuang.qiu@oracle.com wrote:
+> From: Shuang Qiu <shuang.qiu@oracle.com>
+>
+> It misses the cleanup when continue in the loop.
+> And it also needs to munmap() addr2 for 32-bit.
+>
+> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+> ---
+>   testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |   14 ++++----------
+>   1 file changed, 4 insertions(+), 10 deletions(-)
+>
+> diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> index 1a44993..8c2a9b2 100644
+> --- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> +++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+> @@ -155,24 +155,20 @@ int main(int ac, char **av)
+>   		addr2 = mmap((void *)low_addr2, map_sz, PROT_READ | PROT_WRITE,
+>   			     MAP_SHARED, fildes, 0);
+>   #if __WORDSIZE == 64		/* 64-bit process */
+> -		if (addr2 == MAP_FAILED) {
+> +		if (addr2 == MAP_FAILED)
+>   			tst_resm(TFAIL | TERRNO, "huge mmap failed unexpectedly"
+>   				 " with %s (64-bit)", TEMPFILE);
+> -			close(fildes);
+> -			continue;
+> -		} else {
+> +		else {
+>   			tst_resm(TPASS, "huge mmap succeeded (64-bit)");
+
+Looking at the test, there is one more fd ("nfildes") that stays not 
+closed after each loop iteration...  we can move open("/dev/zero",...)  
+to setup() or close it in the end of the loop, what do you think?
+
+Best regards,
+Alexey
 
