@@ -1,38 +1,48 @@
-From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
-Date: Wed, 13 Jan 2016 13:14:39 +0800
-Subject: [LTP] [PATCH] syscall/fallocate04:skip test02 before kernel 2.6.38
-Message-ID: <1452662079-4112-1-git-send-email-shuang.qiu@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 13 Jan 2016 13:34:39 +0100
+Subject: [LTP] [PATCH V3] Add testcases to test the kernel input stack
+In-Reply-To: <1450441421-6511-1-git-send-email-chnyda@suse.com>
+References: <1450441421-6511-1-git-send-email-chnyda@suse.com>
+Message-ID: <20160113123439.GA12985@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
+Hi!
+Pushed with a couple of fixes, thanks.
 
-FALLOC_FL_PUNCH_HOLE flag for fallocate syscall is available since Linux 2.6.38.
+The main problem with the code were subtle race conditions that made the
+testcases fail rarely. This was because the reader must open the device
+before writer starts writing in it otherwise events could be lost (it's
+not defined which of parent or child will resume execution first). So
+now the testcases open the device for reading before the test loop even
+happens.
 
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
----
- testcases/kernel/syscalls/fallocate/fallocate04.c |    5 +++++
- 1 file changed, 5 insertions(+)
+The second big problem was the /dev/input/mice that produces merged
+mouse events in PS/2 protocol. I had to switch the test from relative
+pointer movements to right button clicks since the kernel merges the
+movement events in unpredictable ways (and because of that the test
+would fail even if nobody has moved the mouse while the test was
+running). The mouse clicks are much easier to identify and hopefully
+right button clicks are safe enough. The same goes for the tests that
+expects that no events are generated for relative movements by zero. The
+PS/2 protocol actually sends packes with zero movements on mouse clicks.
+So I changed that test to work with the input device.
 
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-index 41453ac..f77e283 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-@@ -142,6 +142,11 @@ static void test02(void)
- 	tst_resm(TINFO, "read allocated file size '%zu'", alloc_size0);
- 	tst_resm(TINFO, "make a hole with FALLOC_FL_PUNCH_HOLE");
- 
-+	if (tst_kvercmp(2, 6, 38) < 0) {
-+		tst_brkm(TCONF, cleanup,
-+			 "Test must be run with kernel 2.6.38 or newer");
-+	}
-+
- 	if (fallocate(fd, FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE,
- 	    block_size, block_size) == -1) {
- 		if (errno == EOPNOTSUPP)
+Then there was couple of mostly cosmetic things, a few typos, a few
+return value checks missing, etc.
+
+The full diff is attached.
+
 -- 
-1.7.9.5
-
+Cyril Hrubis
+chrubis@suse.cz
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: input.patch
+Type: text/x-diff
+Size: 22922 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160113/9c83d675/attachment.patch>
