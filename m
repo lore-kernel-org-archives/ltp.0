@@ -1,32 +1,56 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 14 Jan 2016 19:46:06 +0100
-Subject: [LTP] LTP release status
-Message-ID: <20160114184606.GA30549@rei.lan>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 18 Jan 2016 17:49:13 +0300
+Subject: [LTP] [PATCH] kernel/input: increase the number of retries in
+	open_device
+Message-ID: <1453128553-18171-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-As you may have seen from the commits to the LTP repo I've did a
-numerous LTP builds and runs and fixed most of the problems I've found.
+In some environments the current limit (2) is not enough, and only
+3rd or 4th access will succeed. Therefore, let's increase it slightly.
+The new limit (10) is the same value we have in open_uinput().
 
-One of the last things on my TODO is to look at the cgroup_fj testcases.
-Since some of them still fail on older distributions (and we have still
-fixes waiting on ML) and evenmore they take a lot of time since they do
-sleep 1 on numerous places (some of them looks pointless to me).
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
 
-Anyway I will try to make most of the cgroup_fj testcases starting next
-week and then I would like to finally proceed with the release.
+Without this patch inputXX test cases fail with:
 
-Now the important part: if you haven't tried the latest LTP git yourself
-please do so now and report any problems you find so that we have nice
-stable release.
+[root@skholman-m7 input]# ./input01 
+input01     0  TINFO  :  Trying to load uinput kernel module
+input01     0  TINFO  :  Uinput dev not found, retrying...
+input01     0  TINFO  :  Uinput dev not found, retrying...
+input01     0  TINFO  :  Uinput dev not found, retrying...
+input01     0  TINFO  :  Found uinput dev at /dev/uinput
+input01     0  TINFO  :  Device not found, retrying...
+input01     0  TINFO  :  Device not found, retrying...
+input01     1  TPASS  :  Data received from eventX
+input01     0  TINFO  :  Unloading uinput kernel module
 
-Also if there are any important fixes that you think should be part of
-the release please let me know as well. I will have a look.
+in our environment (an in-house, relatively old kernel).
 
+Can we have this patch before the release?
+
+Thanks!
+
+ testcases/kernel/input/input_helper.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/testcases/kernel/input/input_helper.c b/testcases/kernel/input/input_helper.c
+index 71c5dec..08fa81c 100644
+--- a/testcases/kernel/input/input_helper.c
++++ b/testcases/kernel/input/input_helper.c
+@@ -72,7 +72,7 @@ static int try_open_device(void)
+ int open_device(void)
+ {
+ 	int fd;
+-	int retries = 2;
++	int retries = 10;
+ 
+ 	while (retries--) {
+ 		fd = try_open_device();
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.7.1
+
