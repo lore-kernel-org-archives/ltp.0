@@ -1,446 +1,110 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 20 Jan 2016 17:02:41 +0300
-Subject: [LTP] [PATCH] kernel/syscalls/open14: openat03: add new test-cases
-Message-ID: <1453298561-7741-1-git-send-email-alexey.kodanev@oracle.com>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Date: Wed, 20 Jan 2016 19:23:25 +0900
+Subject: [LTP] [BUG] oom hangs the system,
+	NMI backtrace shows most CPUs inshrink_slab
+In-Reply-To: <569E5287.4080503@redhat.com>
+References: <569D06F8.4040209@redhat.com>
+ <569E1010.2070806@I-love.SAKURA.ne.jp>
+ <569E5287.4080503@redhat.com>
+Message-ID: <201601201923.DCC48978.FSHLOQtOVJFFOM@I-love.SAKURA.ne.jp>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* create multiple directories and related temporary files;
+Jan Stancek wrote:
+> It took slightly longer this time. Here's full console log:
+>   http://jan.stancek.eu/tmp/oom_hangs/console.log.2-v4.4-8606-with-memalloc_wc.txt.bz2
 
-* create multiple directories and link files into them. Check
-  that files permissions correspond to the ones specified with
-  open()/openat().
+Thank you. This time, tasks are unable to make forward progress because
+memory used by oom01 (21979) cannot be reclaimed despite there is no longer
+OOM victims or dying tasks.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/kernel/syscalls/open/open14.c     |  159 ++++++++++++++++++++++++--
- testcases/kernel/syscalls/openat/openat03.c |  160 ++++++++++++++++++++++++---
- 2 files changed, 292 insertions(+), 27 deletions(-)
+----------
+[ 6822.445821] Swap cache stats: add 442518058, delete 442518058, find 382713/717869
+[ 6846.196919] Swap cache stats: add 444426248, delete 444419195, find 384554/720831
+[ 6846.575207] Out of memory: Kill process 21986 (oom01) score 953 or sacrifice child
+[ 6846.583665] Killed process 21979 (oom01) total-vm:31525420kB, anon-rss:14936316kB, file-rss:0kB, shmem-rss:0kB
+[ 6904.555880] MemAlloc-Info: 2 stalling task, 0 dying task, 0 victim task.
+[ 6904.563387] MemAlloc: oom01(22011) seq=5135 gfp=0x24280ca order=0 delay=10001
+[ 6904.571353] MemAlloc: oom01(22013) seq=5101 gfp=0x24280ca order=0 delay=10001
+[ 6905.162365] Swap cache stats: add 448028091, delete 448003852, find 386328/724035
+[ 6915.195869] MemAlloc-Info: 16 stalling task, 0 dying task, 0 victim task.
+[ 6929.233835] MemAlloc-Info: 16 stalling task, 0 dying task, 0 victim task.
+[ 6942.387848] MemAlloc-Info: 17 stalling task, 0 dying task, 0 victim task.
+[ 6953.243802] MemAlloc-Info: 18 stalling task, 0 dying task, 0 victim task.
+[ 6964.150790] MemAlloc-Info: 22 stalling task, 0 dying task, 0 victim task.
+[ 7117.623703] MemAlloc-Info: 22 stalling task, 0 dying task, 0 victim task.
+[ 7128.348659] MemAlloc-Info: 23 stalling task, 0 dying task, 0 victim task.
+[ 7215.508583] MemAlloc-Info: 23 stalling task, 0 dying task, 0 victim task.
+[ 7216.221140] Swap cache stats: add 448028091, delete 448003852, find 386328/724035
+[ 7226.262927] MemAlloc-Info: 24 stalling task, 0 dying task, 0 victim task.
+[ 7227.518106] Swap cache stats: add 448028091, delete 448003852, find 386328/724036
+[ 7237.551543] MemAlloc-Info: 25 stalling task, 0 dying task, 0 victim task.
+[ 8414.846196] Swap cache stats: add 448028091, delete 448003852, find 386328/724036
+[ 8424.879423] MemAlloc-Info: 25 stalling task, 0 dying task, 0 victim task.
+[ 8425.679183] Swap cache stats: add 448028091, delete 448003852, find 386328/724037
+[ 8435.712419] MemAlloc-Info: 26 stalling task, 0 dying task, 0 victim task.
+[ 9549.714223] Swap cache stats: add 448028091, delete 448003852, find 386328/724037
+[ 9559.747360] MemAlloc-Info: 26 stalling task, 0 dying task, 0 victim task.
+[ 9560.546201] Swap cache stats: add 448028091, delete 448003852, find 386328/724038
+[ 9570.579371] MemAlloc-Info: 27 stalling task, 0 dying task, 0 victim task.
+[ 9648.210276] MemAlloc-Info: 27 stalling task, 0 dying task, 0 victim task.
+[ 9649.057129] Swap cache stats: add 448028091, delete 448003852, find 386328/724038
+----------
 
-diff --git a/testcases/kernel/syscalls/open/open14.c b/testcases/kernel/syscalls/open/open14.c
-index 839c898..0984bfd 100644
---- a/testcases/kernel/syscalls/open/open14.c
-+++ b/testcases/kernel/syscalls/open/open14.c
-@@ -21,6 +21,7 @@
- #define _GNU_SOURCE
- #include <sys/types.h>
- #include <sys/stat.h>
-+#include <unistd.h>
- #include <fcntl.h>
- #include <errno.h>
- 
-@@ -32,7 +33,7 @@
- #endif
- 
- char *TCID = "open14";
--int TST_TOTAL = 1;
-+int TST_TOTAL = 3;
- static char *test_dir;
- static ssize_t size;
- static const ssize_t blocks_num = 4;
-@@ -79,28 +80,38 @@ static int dir_not_empty(void)
- 	return ret;
- }
- 
--void test01(void)
-+static void create_file(char *dir_name, int *fd, int mode)
- {
--	int fd, i;
--
--	char path[PATH_MAX], tmp[PATH_MAX];
--
--	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
--
--	TEST(open(test_dir, O_TMPFILE | O_WRONLY | O_SYNC));
--	fd = TEST_RETURN;
--	if (fd == -1) {
-+	TEST(open(dir_name, O_TMPFILE | O_RDWR, mode));
-+	*fd = TEST_RETURN;
-+	if (*fd == -1) {
- 		if (TEST_ERRNO == EISDIR) {
- 			tst_brkm(TCONF, cleanup,
- 				"O_TMPFILE not supported");
- 		}
--		tst_resm(TFAIL | TERRNO, "open() failed");
-+		tst_brkm(TFAIL | TERRNO, cleanup, "open() failed");
- 		return;
- 	}
-+}
-+
-+static void write_file(int fd)
-+{
-+	int i;
- 
--	tst_resm(TINFO, "writing data to the file");
- 	for (i = 0; i < blocks_num; ++i)
- 		SAFE_WRITE(cleanup, 0, fd, buf, size);
-+}
-+
-+void test01(void)
-+{
-+	int fd;
-+	char path[PATH_MAX], tmp[PATH_MAX];
-+
-+	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
-+	create_file(test_dir, &fd, 0600);
-+
-+	tst_resm(TINFO, "writing data to the file");
-+	write_file(fd);
- 
- 	SAFE_FSTAT(cleanup, fd, &st);
- 	tst_resm(TINFO, "file size is '%zu'", st.st_size);
-@@ -135,6 +146,126 @@ void test01(void)
- 	tst_resm(TPASS, "test succeeded");
- }
- 
-+static void read_file(int fd)
-+{
-+	int i;
-+	char tmp[size];
-+
-+	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
-+
-+	for (i = 0; i < blocks_num; ++i) {
-+		SAFE_READ(cleanup, 0, fd, tmp, size);
-+		if (strncmp(buf, tmp, size))
-+			tst_brkm(TBROK, cleanup, "got unexepected data");
-+	}
-+}
-+
-+static void test02(void)
-+{
-+	const int files_num = 100;
-+	int i, fd[files_num];
-+	char path[PATH_MAX];
-+
-+	tst_resm(TINFO, "create files in multiple directories");
-+	for (i = 0; i < files_num; ++i) {
-+		snprintf(path, PATH_MAX, "tst02_%d", i);
-+		SAFE_MKDIR(cleanup, path, 0700);
-+		SAFE_CHDIR(cleanup, path);
-+		SAFE_GETCWD(cleanup, path, PATH_MAX);
-+		create_file(path, fd + i, 0600);
-+		write_file(fd[i]);
-+	}
-+
-+	tst_resm(TINFO, "removing test directories");
-+	for (i = files_num - 1; i >= 0; --i) {
-+		SAFE_CHDIR(cleanup, "../");
-+		snprintf(path, PATH_MAX, "tst02_%d", i);
-+		SAFE_RMDIR(cleanup, path);
-+	}
-+
-+	tst_resm(TINFO, "writing/reading temporary files");
-+	for (i = 0; i < files_num; ++i) {
-+		write_file(fd[i]);
-+		read_file(fd[i]);
-+	}
-+
-+	tst_resm(TINFO, "closing temporary files");
-+	for (i = 0; i < files_num; ++i)
-+		SAFE_CLOSE(cleanup, fd[i]);
-+
-+	tst_resm(TPASS, "test succeeded");
-+}
-+
-+static void link_tmp_file(int fd)
-+{
-+	char path1[PATH_MAX], path2[PATH_MAX];
-+
-+	snprintf(path1, PATH_MAX,  "/proc/self/fd/%d", fd);
-+	snprintf(path2, PATH_MAX,  "tmpfile_%d", fd);
-+
-+	if (linkat(AT_FDCWD, path1, AT_FDCWD, path2, AT_SYMLINK_FOLLOW))
-+		tst_brkm(TBROK | TERRNO, cleanup, "linkat() failed");
-+}
-+
-+static const int tst_perm[] = { 0, 07777, 001, 0755, 0644, 0440 };
-+
-+static void test03(void)
-+{
-+	const int files_num = 100;
-+	int i, fd[files_num];
-+	char path[PATH_MAX];
-+	struct stat st;
-+	unsigned int j;
-+	mode_t mask = umask(0);
-+
-+	umask(mask);
-+
-+	tst_resm(TINFO, "create multiple directories, link files into them");
-+	tst_resm(TINFO, "and check file permissions");
-+	for (i = 0, j = 0; i < files_num; ++i) {
-+
-+		snprintf(path, PATH_MAX, "tst03_%d", i);
-+		SAFE_MKDIR(cleanup, path, 0700);
-+		SAFE_CHDIR(cleanup, path);
-+		SAFE_GETCWD(cleanup, path, PATH_MAX);
-+
-+		create_file(path, fd + i, tst_perm[j]);
-+		write_file(fd[i]);
-+		read_file(fd[i]);
-+
-+		link_tmp_file(fd[i]);
-+
-+		snprintf(path, PATH_MAX, "tmpfile_%d", fd[i]);
-+
-+		SAFE_LSTAT(cleanup, path, &st);
-+
-+		mode_t exp_mode = tst_perm[j] & ~mask;
-+
-+		if ((st.st_mode & ~S_IFMT) != exp_mode) {
-+			tst_brkm(TFAIL, cleanup,
-+				"file mode read %o, but expected %o",
-+				st.st_mode & ~S_IFMT, exp_mode);
-+		}
-+
-+		if (++j >= ARRAY_SIZE(tst_perm))
-+			j = 0;
-+	}
-+
-+	tst_resm(TINFO, "remove files, directories");
-+	for (i = files_num - 1; i >= 0; --i) {
-+		snprintf(path, PATH_MAX, "tmpfile_%d", fd[i]);
-+		SAFE_UNLINK(cleanup, path);
-+		SAFE_CLOSE(cleanup, fd[i]);
-+
-+		SAFE_CHDIR(cleanup, "..");
-+
-+		snprintf(path, PATH_MAX, "tst03_%d", i);
-+		SAFE_RMDIR(cleanup, path);
-+	}
-+
-+	tst_resm(TPASS, "test passed");
-+}
-+
- int main(int ac, char *av[])
- {
- 	int lc;
-@@ -146,6 +277,8 @@ int main(int ac, char *av[])
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
- 		tst_count = 0;
- 		test01();
-+		test02();
-+		test03();
- 	}
- 
- 	cleanup();
-diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
-index d81989e..ec1aef7 100644
---- a/testcases/kernel/syscalls/openat/openat03.c
-+++ b/testcases/kernel/syscalls/openat/openat03.c
-@@ -21,19 +21,19 @@
- #define _GNU_SOURCE
- #include <sys/types.h>
- #include <sys/stat.h>
-+#include <unistd.h>
- #include <fcntl.h>
- #include <errno.h>
- 
- #include "test.h"
- #include "safe_macros.h"
--#include "openat.h"
- 
- #ifndef O_TMPFILE
- #define O_TMPFILE	(020000000 | O_DIRECTORY)
- #endif
- 
- char *TCID = "openat03";
--int TST_TOTAL = 1;
-+int TST_TOTAL = 3;
- static char *test_dir;
- static ssize_t size;
- static const ssize_t blocks_num = 4;
-@@ -80,28 +80,38 @@ static int dir_not_empty(void)
- 	return ret;
- }
- 
--void test01(void)
-+static void create_file(char *dir_name, int *fd, int mode)
- {
--	int fd, i;
--
--	char path[PATH_MAX], tmp[PATH_MAX];
--
--	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
--
--	TEST(openat(AT_FDCWD, test_dir, O_TMPFILE | O_WRONLY | O_SYNC));
--	fd = TEST_RETURN;
--	if (fd == -1) {
-+	TEST(openat(AT_FDCWD, dir_name, O_TMPFILE | O_RDWR, mode));
-+	*fd = TEST_RETURN;
-+	if (*fd == -1) {
- 		if (TEST_ERRNO == EISDIR) {
- 			tst_brkm(TCONF, cleanup,
- 				"O_TMPFILE not supported");
- 		}
--		tst_resm(TFAIL | TERRNO, "openat() failed");
-+		tst_brkm(TFAIL | TERRNO, cleanup, "open() failed");
- 		return;
- 	}
-+}
-+
-+static void write_file(int fd)
-+{
-+	int i;
- 
--	tst_resm(TINFO, "writing data to the file");
- 	for (i = 0; i < blocks_num; ++i)
- 		SAFE_WRITE(cleanup, 0, fd, buf, size);
-+}
-+
-+void test01(void)
-+{
-+	int fd;
-+	char path[PATH_MAX], tmp[PATH_MAX];
-+
-+	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
-+	create_file(test_dir, &fd, 0600);
-+
-+	tst_resm(TINFO, "writing data to the file");
-+	write_file(fd);
- 
- 	SAFE_FSTAT(cleanup, fd, &st);
- 	tst_resm(TINFO, "file size is '%zu'", st.st_size);
-@@ -136,6 +146,126 @@ void test01(void)
- 	tst_resm(TPASS, "test succeeded");
- }
- 
-+static void read_file(int fd)
-+{
-+	int i;
-+	char tmp[size];
-+
-+	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
-+
-+	for (i = 0; i < blocks_num; ++i) {
-+		SAFE_READ(cleanup, 0, fd, tmp, size);
-+		if (strncmp(buf, tmp, size))
-+			tst_brkm(TBROK, cleanup, "got unexepected data");
-+	}
-+}
-+
-+static void test02(void)
-+{
-+	const int files_num = 100;
-+	int i, fd[files_num];
-+	char path[PATH_MAX];
-+
-+	tst_resm(TINFO, "create files in multiple directories");
-+	for (i = 0; i < files_num; ++i) {
-+		snprintf(path, PATH_MAX, "tst02_%d", i);
-+		SAFE_MKDIR(cleanup, path, 0700);
-+		SAFE_CHDIR(cleanup, path);
-+		SAFE_GETCWD(cleanup, path, PATH_MAX);
-+		create_file(path, fd + i, 0600);
-+		write_file(fd[i]);
-+	}
-+
-+	tst_resm(TINFO, "removing test directories");
-+	for (i = files_num - 1; i >= 0; --i) {
-+		SAFE_CHDIR(cleanup, "../");
-+		snprintf(path, PATH_MAX, "tst02_%d", i);
-+		SAFE_RMDIR(cleanup, path);
-+	}
-+
-+	tst_resm(TINFO, "writing/reading temporary files");
-+	for (i = 0; i < files_num; ++i) {
-+		write_file(fd[i]);
-+		read_file(fd[i]);
-+	}
-+
-+	tst_resm(TINFO, "closing temporary files");
-+	for (i = 0; i < files_num; ++i)
-+		SAFE_CLOSE(cleanup, fd[i]);
-+
-+	tst_resm(TPASS, "test succeeded");
-+}
-+
-+static void link_tmp_file(int fd)
-+{
-+	char path1[PATH_MAX], path2[PATH_MAX];
-+
-+	snprintf(path1, PATH_MAX,  "/proc/self/fd/%d", fd);
-+	snprintf(path2, PATH_MAX,  "tmpfile_%d", fd);
-+
-+	if (linkat(AT_FDCWD, path1, AT_FDCWD, path2, AT_SYMLINK_FOLLOW))
-+		tst_brkm(TBROK | TERRNO, cleanup, "linkat() failed");
-+}
-+
-+static const int tst_perm[] = { 0, 07777, 001, 0755, 0644, 0440 };
-+
-+static void test03(void)
-+{
-+	const int files_num = 100;
-+	int i, fd[files_num];
-+	char path[PATH_MAX];
-+	struct stat st;
-+	unsigned int j;
-+	mode_t mask = umask(0);
-+
-+	umask(mask);
-+
-+	tst_resm(TINFO, "create multiple directories, link files into them");
-+	tst_resm(TINFO, "and check file permissions");
-+	for (i = 0, j = 0; i < files_num; ++i) {
-+
-+		snprintf(path, PATH_MAX, "tst03_%d", i);
-+		SAFE_MKDIR(cleanup, path, 0700);
-+		SAFE_CHDIR(cleanup, path);
-+		SAFE_GETCWD(cleanup, path, PATH_MAX);
-+
-+		create_file(path, fd + i, tst_perm[j]);
-+		write_file(fd[i]);
-+		read_file(fd[i]);
-+
-+		link_tmp_file(fd[i]);
-+
-+		snprintf(path, PATH_MAX, "tmpfile_%d", fd[i]);
-+
-+		SAFE_LSTAT(cleanup, path, &st);
-+
-+		mode_t exp_mode = tst_perm[j] & ~mask;
-+
-+		if ((st.st_mode & ~S_IFMT) != exp_mode) {
-+			tst_brkm(TFAIL, cleanup,
-+				"file mode read %o, but expected %o",
-+				st.st_mode & ~S_IFMT, exp_mode);
-+		}
-+
-+		if (++j >= ARRAY_SIZE(tst_perm))
-+			j = 0;
-+	}
-+
-+	tst_resm(TINFO, "remove files, directories");
-+	for (i = files_num - 1; i >= 0; --i) {
-+		snprintf(path, PATH_MAX, "tmpfile_%d", fd[i]);
-+		SAFE_UNLINK(cleanup, path);
-+		SAFE_CLOSE(cleanup, fd[i]);
-+
-+		SAFE_CHDIR(cleanup, "..");
-+
-+		snprintf(path, PATH_MAX, "tst03_%d", i);
-+		SAFE_RMDIR(cleanup, path);
-+	}
-+
-+	tst_resm(TPASS, "test passed");
-+}
-+
- int main(int ac, char *av[])
- {
- 	int lc;
-@@ -147,6 +277,8 @@ int main(int ac, char *av[])
- 	for (lc = 0; TEST_LOOPING(lc); ++lc) {
- 		tst_count = 0;
- 		test01();
-+		test02();
-+		test03();
- 	}
- 
- 	cleanup();
--- 
-1.7.1
+I noticed three strange things.
 
+(1) oom01 (22011 amd 22013) did not declare out of memory.
+
+    0x24280ca is ___GFP_KSWAPD_RECLAIM | ___GFP_DIRECT_RECLAIM | ___GFP_HARDWALL |
+    ___GFP_ZERO | ___GFP_FS | ___GFP_IO | ___GFP_MOVABLE | ___GFP_HIGHMEM. Thus, if
+    oom01 (22011 amd 22013) declares out of memory, the OOM killer will be invoked.
+
+    This time you did not hit first and second possibility, for 22011 and 22013
+    did not declare out of memory. I guess current vmscan logic prevented them
+    from declaring out of memory because one of zones was reclaimable.
+
+	/* Any of the zones still reclaimable?  Don't OOM. */
+	if (zones_reclaimable)
+		return 1;
+
+(Please ignore mlocked: field, for that value is bogus.)
+----------
+[ 6904.919732] Node 0 DMA free:15860kB min:16kB low:20kB high:24kB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
+present:15996kB managed:15908kB mlocked:0kB dirty:0kB writeback:0kB mapped:0kB shmem:0kB slab_reclaimable:0kB slab_unreclaimable:32kB kernel_stack:0kB pagetables:0kB unstable:0kB bounce:0kB
+free_pcp:0kB local_pcp:0kB free_cma:0kB writeback_tmp:0kB pages_scanned:0 all_unreclaimable? yes
+[ 6904.971210] Node 0 DMA32 free:56072kB min:1132kB low:1412kB high:1696kB active_anon:523468kB inactive_anon:524296kB active_file:8kB inactive_file:12kB unevictable:0kB isolated(anon):0kB
+isolated(file):0kB present:1214568kB managed:1117824kB mlocked:707844970119168kB dirty:0kB writeback:0kB mapped:24kB shmem:80kB slab_reclaimable:636kB slab_unreclaimable:4868kB kernel_stack:336kB
+pagetables:3776kB unstable:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB writeback_tmp:0kB pages_scanned:0 all_unreclaimable? no
+[ 6905.026961] Node 0 Normal free:13836kB min:14428kB low:18032kB high:21640kB active_anon:12764756kB inactive_anon:1161944kB active_file:52kB inactive_file:0kB unevictable:0kB isolated(anon):0kB
+isolated(file):0kB present:14426112kB managed:14145740kB mlocked:8627678764597248kB dirty:0kB writeback:0kB mapped:208kB shmem:144kB slab_reclaimable:27720kB slab_unreclaimable:60416kB
+kernel_stack:3408kB pagetables:44436kB unstable:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB writeback_tmp:0kB pages_scanned:14084 all_unreclaimable? yes
+
+[ 9648.814118] Node 0 DMA free:15860kB min:16kB low:20kB high:24kB active_anon:0kB inactive_anon:0kB active_file:0kB inactive_file:0kB unevictable:0kB isolated(anon):0kB isolated(file):0kB
+present:15996kB managed:15908kB mlocked:0kB dirty:0kB writeback:0kB mapped:0kB shmem:0kB slab_reclaimable:0kB slab_unreclaimable:32kB kernel_stack:0kB pagetables:0kB unstable:0kB bounce:0kB
+free_pcp:0kB local_pcp:0kB free_cma:0kB writeback_tmp:0kB pages_scanned:0 all_unreclaimable? yes
+[ 9648.865599] Node 0 DMA32 free:56072kB min:1132kB low:1412kB high:1696kB active_anon:523468kB inactive_anon:524296kB active_file:8kB inactive_file:12kB unevictable:0kB isolated(anon):0kB
+isolated(file):0kB present:1214568kB managed:1117824kB mlocked:707844970119168kB dirty:0kB writeback:0kB mapped:24kB shmem:80kB slab_reclaimable:636kB slab_unreclaimable:4868kB kernel_stack:336kB
+pagetables:3776kB unstable:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB writeback_tmp:0kB pages_scanned:0 all_unreclaimable? no
+[ 9648.921343] Node 0 Normal free:13260kB min:14428kB low:18032kB high:21640kB active_anon:12764756kB inactive_anon:1161944kB active_file:12kB inactive_file:0kB unevictable:0kB isolated(anon):0kB
+isolated(file):0kB present:14426112kB managed:14145740kB mlocked:8627678764597248kB dirty:0kB writeback:0kB mapped:208kB shmem:144kB slab_reclaimable:27720kB slab_unreclaimable:60416kB
+kernel_stack:3344kB pagetables:44436kB unstable:0kB bounce:0kB free_pcp:0kB local_pcp:0kB free_cma:0kB writeback_tmp:0kB pages_scanned:108547704 all_unreclaimable? yes
+----------
+
+(2) free: field of Normal zone remained smaller than min: field.
+
+    After oom01 which was killed at uptime = 6846 terminated, free: field
+    should have been recovered because there is no longer OOM victims or
+    dying tasks. Something (third possibility) is preventing it.
+
+(3) I/O for swap memory was effectively disabled by uptime = 6904.
+
+    I don't know the reason why the kernel cannot access swap memory.
+    To access swap memory, some memory allocation is needed which is
+    failing due to free: field of Normal zone smaller than min: field?
+    If accessing swap memory depends on workqueue items, are they
+    created with WQ_MEM_RECLAIM?
+
+Anyway, a help from MM people is needed.
