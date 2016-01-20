@@ -1,86 +1,202 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 20 Jan 2016 19:10:00 +0800
-Subject: [LTP] [PATCH 2/2] epoll_pwait/epoll_pwait02.c: add new testcase
-In-Reply-To: <1453288200-3990-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1453288200-3990-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <1453288200-3990-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 20 Jan 2016 19:09:59 +0800
+Subject: [LTP] [PATCH 1/2] epoll_pwait/epoll_pwait01.c: add new testcase
+Message-ID: <1453288200-3990-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Verify that:
- epoll_pwait(2) with NULL sigmask argument fails
- if interrupted by a signal handler.
-
-Expected result:
- epoll_pwait(2) should return -1 and set errno to EINTR.
+Check that epoll_pwait(2) with sigmask argument allows the caller
+to safely wait until either a file descriptor becomes ready or
+the timeout expires.
 
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- runtest/ltplite                                    |   1 +
- runtest/stress.part3                               |   1 +
+ configure.ac                                       |   1 +
+ m4/ltp-epoll_pwait.m4                              |  25 +++
+ runtest/ltplite                                    |   2 +
+ runtest/stress.part3                               |   2 +
  runtest/syscalls                                   |   1 +
  testcases/kernel/syscalls/.gitignore               |   1 +
- .../kernel/syscalls/epoll_pwait/epoll_pwait02.c    | 161 +++++++++++++++++++++
- 5 files changed, 165 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
+ testcases/kernel/syscalls/epoll_pwait/Makefile     |  23 +++
+ .../kernel/syscalls/epoll_pwait/epoll_pwait.h      |  35 +++++
+ .../kernel/syscalls/epoll_pwait/epoll_pwait01.c    | 174 +++++++++++++++++++++
+ 9 files changed, 264 insertions(+)
+ create mode 100644 m4/ltp-epoll_pwait.m4
+ create mode 100644 testcases/kernel/syscalls/epoll_pwait/Makefile
+ create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait.h
+ create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
 
+diff --git a/configure.ac b/configure.ac
+index cc50397..b065fe6 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -183,5 +183,6 @@ LTP_CHECK_KCMP
+ LTP_CHECK_KCMP_TYPE
+ LTP_CHECK_PREADV
+ LTP_CHECK_PWRITEV
++LTP_CHECK_EPOLL_PWAIT
+ 
+ AC_OUTPUT
+diff --git a/m4/ltp-epoll_pwait.m4 b/m4/ltp-epoll_pwait.m4
+new file mode 100644
+index 0000000..e918110
+--- /dev/null
++++ b/m4/ltp-epoll_pwait.m4
+@@ -0,0 +1,25 @@
++dnl
++dnl Copyright (c) 2016 Fujitsu Ltd.
++dnl Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++dnl
++dnl This program is free software; you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program.
++dnl
++
++dnl
++dnl LTP_CHECK_EPOLL_PWAIT
++dnl ----------------------------
++dnl
++AC_DEFUN([LTP_CHECK_EPOLL_PWAIT],[
++AC_CHECK_FUNCS(epoll_pwait,,)
++])
 diff --git a/runtest/ltplite b/runtest/ltplite
-index ac876a4..3daaac4 100644
+index 1aa93e6..ac876a4 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
-@@ -161,6 +161,7 @@ dup204 dup204
+@@ -160,6 +160,8 @@ dup203 dup203
+ dup204 dup204
  dup205 dup205
  
- epoll_pwait01 epoll_pwait01
-+epoll_pwait02 epoll_pwait02
- 
++epoll_pwait01 epoll_pwait01
++
  execl01 execl01
  execle01 execle01
+ execlp01 execlp01
 diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index c76e025..47809ea 100644
+index 87f42ea..c76e025 100644
 --- a/runtest/stress.part3
 +++ b/runtest/stress.part3
-@@ -102,6 +102,7 @@ dup204 dup204
+@@ -101,6 +101,8 @@ dup203 dup203
+ dup204 dup204
  dup205 dup205
  
- epoll_pwait01 epoll_pwait01
-+epoll_pwait02 epoll_pwait02
- 
++epoll_pwait01 epoll_pwait01
++
  execl01 execl01
  execle01 execle01
+ execlp01 execlp01
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 26cb48f..e20884a 100644
+index 7173f22..26cb48f 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -124,6 +124,7 @@ dup3_02 dup3_02
+@@ -123,6 +123,7 @@ dup3_02 dup3_02
+ 
  epoll_create1_01 epoll_create1_01
  epoll01 epoll-ltp
- epoll_pwait01 epoll_pwait01
-+epoll_pwait02 epoll_pwait02
++epoll_pwait01 epoll_pwait01
  
  eventfd01 eventfd01
  
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index c9d8aaa..4dd1103 100644
+index d5f21ef..c9d8aaa 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -99,6 +99,7 @@
+@@ -98,6 +98,7 @@
+ /dup3/dup3_02
  /epoll/epoll-ltp
  /epoll_create1/epoll_create1_01
- /epoll_pwait/epoll_pwait01
-+/epoll_pwait/epoll_pwait02
++/epoll_pwait/epoll_pwait01
  /eventfd/eventfd01
  /eventfd2/eventfd2_01
  /eventfd2/eventfd2_02
-diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
+diff --git a/testcases/kernel/syscalls/epoll_pwait/Makefile b/testcases/kernel/syscalls/epoll_pwait/Makefile
 new file mode 100644
-index 0000000..315e9c8
+index 0000000..289aaaf
 --- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait02.c
-@@ -0,0 +1,161 @@
++++ b/testcases/kernel/syscalls/epoll_pwait/Makefile
+@@ -0,0 +1,23 @@
++#
++#  Copyright (c) 2016 Fujitsu Ltd.
++#  Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++#
++#  This program is free software; you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program.
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait.h b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait.h
+new file mode 100644
+index 0000000..694cd46
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait.h
+@@ -0,0 +1,35 @@
++/*
++ * Copyright (c) 2016 Fujitsu Ltd.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.
++ */
++
++#ifndef EPOLL_PWAIT_H
++#define EPOLL_PWAIT_H
++
++#include <sys/types.h>
++#include "config.h"
++#include "linux_syscall_numbers.h"
++
++#if !defined(HAVE_EPOLL_PWAIT)
++int epoll_pwait(int epfd, struct epoll_event *events, int maxevents,
++	int timeout, const sigset_t *sigmask)
++{
++	return ltp_syscall(__NR_epoll_pwait, epfd, events, maxevents,
++		timeout, sigmask);
++}
++#endif
++
++#endif /* EPOLL_PWAIT_H */
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+new file mode 100644
+index 0000000..e3d5bfb
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+@@ -0,0 +1,174 @@
 +/*
 + * Copyright (c) 2016 Fujitsu Ltd.
 + * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
@@ -101,11 +217,10 @@ index 0000000..315e9c8
 +
 +/*
 + * Description:
-+ *  epoll_pwait(2) with NULL sigmask argument fails
-+ *  if interrupted by a signal handler.
-+ *
-+ * Expected Result:
-+ *  epoll_pwait(2) should return -1 and set errno to EINTR.
++ *  Basic test for epoll_pwait(2).
++ *  epoll_pwait(2) with sigmask argument allows the caller to
++ *  safely wait until either a file descriptor becomes ready
++ *  or the timeout expires.
 + */
 +
 +#include <sys/epoll.h>
@@ -118,10 +233,12 @@ index 0000000..315e9c8
 +#include "epoll_pwait.h"
 +#include "safe_macros.h"
 +
-+char *TCID = "epoll_pwait02";
++char *TCID = "epoll_pwait01";
 +int TST_TOTAL = 1;
 +
 +static int epfd, fds[2];
++static const char buf[] = "Testing";
++static sigset_t sigset;
 +static struct epoll_event epevs;
 +static struct sigaction sa;
 +
@@ -160,6 +277,12 @@ index 0000000..315e9c8
 +
 +	TEST_PAUSE;
 +
++	if (sigemptyset(&sigset) == -1)
++		tst_brkm(TFAIL | TERRNO, NULL, "sigemptyset() failed");
++
++	if (sigaddset(&sigset, SIGUSR1) == -1)
++		tst_brkm(TFAIL | TERRNO, NULL, "sigaddset() failed");
++
 +	sa.sa_flags = 0;
 +	sa.sa_handler = sighandler;
 +	if (sigemptyset(&sa.sa_mask) == -1)
@@ -192,6 +315,7 @@ index 0000000..315e9c8
 +
 +static void do_test(void)
 +{
++	char read_buf[sizeof(buf)];
 +	pid_t cpid;
 +
 +	cpid = tst_fork();
@@ -201,21 +325,24 @@ index 0000000..315e9c8
 +	if (cpid == 0)
 +		do_child();
 +
-+	TEST(epoll_wait(epfd, &epevs, 1, 1000));
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "epoll_wait() succeed unexpectedly");
-+	} else {
-+		if (TEST_ERRNO == EINTR) {
-+			tst_resm(TPASS | TTERRNO,
-+				 "epoll_wait() fails as expected");
-+		} else {
-+			tst_resm(TFAIL | TTERRNO,
-+				 "epoll_wait() fails unexpectedly, "
-+				 "expected errno is EINTR");
-+		}
++	TEST(epoll_pwait(epfd, &epevs, 1, -1, &sigset));
++
++	if (TEST_RETURN == -1) {
++		tst_resm(TFAIL | TTERRNO, "epoll_pwait() failed");
++		goto end;
 +	}
 +
++	if (TEST_RETURN != 1) {
++		tst_resm(TFAIL, "epoll_pwait() failed to get one fd ready");
++		goto end;
++	}
++
++	tst_resm(TPASS, "epoll_pwait() get one fd ready");
++
++end:
 +	tst_record_childstatus(cleanup, cpid);
++
++	SAFE_READ(cleanup, 1, fds[0], read_buf, sizeof(buf));
 +}
 +
 +static void do_child(void)
@@ -226,6 +353,8 @@ index 0000000..315e9c8
 +	}
 +
 +	SAFE_KILL(cleanup, getppid(), SIGUSR1);
++
++	SAFE_WRITE(cleanup, 1, fds[1], buf, sizeof(buf));
 +
 +	cleanup();
 +	tst_exit();
