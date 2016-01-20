@@ -1,80 +1,95 @@
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Date: Wed, 20 Jan 2016 22:17:23 +0900
-Subject: [LTP] [BUG] oom hangs the system,
-	NMI backtrace shows most CPUs in shrink_slab
-In-Reply-To: <201601201923.DCC48978.FSHLOQtOVJFFOM@I-love.SAKURA.ne.jp>
-References: <569D06F8.4040209@redhat.com>
- <569E1010.2070806@I-love.SAKURA.ne.jp>
- <569E5287.4080503@redhat.com>
- <201601201923.DCC48978.FSHLOQtOVJFFOM@I-love.SAKURA.ne.jp>
-Message-ID: <201601202217.BEF43262.QOLFHOOJFVFtMS@I-love.SAKURA.ne.jp>
+From: $rik@nth  <srikanth007m@gmail.com>
+Date: Wed, 20 Jan 2016 18:52:00 +0530
+Subject: [LTP] get_mempolicy failing to compile
+Message-ID: <CANKSX+ENW0PPUWmJ5EjOtCJX+4qGppBvw-uW4W6eEC3WRDiWrw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Tetsuo Handa wrote:
-> (3) I/O for swap memory was effectively disabled by uptime = 6904.
-> 
->     I don't know the reason why the kernel cannot access swap memory.
->     To access swap memory, some memory allocation is needed which is
->     failing due to free: field of Normal zone smaller than min: field?
->     If accessing swap memory depends on workqueue items, are they
->     created with WQ_MEM_RECLAIM?
-> 
+Hi All,
 
-Tejun, I have a question about system_freezable_power_efficient_wq.
+I am trying to compile latest snapshot from github [1] and getting below errors.
 
-        system_freezable_power_efficient_wq = alloc_workqueue("events_freezable_power_efficient",
-                                              WQ_FREEZABLE | WQ_POWER_EFFICIENT,
-                                              0);
+arm-linux-gnueabihf-gcc -static -g -O2 -fno-strict-aliasing -pipe
+-Wall -W -Wold-style-definition
+-I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/include
+-I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils
+ -I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/include
+-I../../../../include -I../../../../include -static -pthread
+-L/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/lib
+-L../../../../lib  get_mempolicy01.c   -lltp  -lkerntest -lltp -o
+get_mempolicy01
+In file included from get_mempolicy01.c:63:0:
+/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils/common_j_h.c:
+In function ?sigterm_handler?:
+/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils/common_j_h.c:111:33:
+warning: unused parameter ?sig? [-Wunused-parameter]
+ static void sigterm_handler(int sig)
+                                 ^
+get_mempolicy01.c: In function ?main?:
+get_mempolicy01.c:197:14: warning: unused parameter ?argc? [-Wunused-parameter]
+ int main(int argc, char **argv)
+              ^
+get_mempolicy01.c:197:27: warning: unused parameter ?argv? [-Wunused-parameter]
+ int main(int argc, char **argv)
+                           ^
+/tmp/cciaYvm7.o: In function `setup_uid':
+/home/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils/common_j_h.c:64:
+warning: Using 'getpwnam' in statically linked applications requires
+at runtime the shared libraries from the glibc version used for
+linking
+/tmp/cciaYvm7.o: In function `main':
+get_mempolicy01.c:(.text.startup+0x9c): undefined reference to
+`numa_allocate_nodemask'
+get_mempolicy01.c:(.text.startup+0xa2): undefined reference to
+`numa_allocate_nodemask'
+get_mempolicy01.c:(.text.startup+0xc2): undefined reference to
+`numa_bitmask_setbit'
+get_mempolicy01.c:(.text.startup+0x2ce): undefined reference to
+`numa_bitmask_clearall'
+get_mempolicy01.c:(.text.startup+0x2e8): undefined reference to
+`numa_bitmask_equal'
+/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `get_max_node':
+/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:53: undefined
+reference to `numa_max_possible_node'
+/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:53: undefined
+reference to `numa_max_possible_node'
+/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `get_nodemask_allnodes':
+/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:71: undefined
+reference to `nodemask_set'
+/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `get_allowed_nodes_arr':
+/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:191: undefined
+reference to `nodemask_isset'
+/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `filter_nodemask_cpu':
+/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:126: undefined
+reference to `nodemask_isset'
+/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:133: undefined
+reference to `nodemask_clr'
+/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `get_max_node':
+/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:53: undefined
+reference to `numa_max_possible_node'
+collect2: error: ld returned 1 exit status
+make[4]: *** [get_mempolicy01] Error 1
 
-This workqueue is used by cdrom driver for periodically checking status.
-----------
-[ 6916.734842] kworker/1:1     R  running task    12592 20708      2 0x00000080 
-[ 6916.742739] Workqueue: events_freezable_power_ disk_events_workfn 
-[ 6916.749541]  ffff8801cf5877f8 ffff8801cf5878e8 0000000000000000 0000000000000002 
-[ 6916.757840]  0000000000000000 ffff88045e822800 ffff88045a138000 ffff8801cf588000 
-[ 6916.766139]  ffff8801cf5879d0 0000000000000000 0000000000000000 0000000000000000 
-[ 6916.774440] Call Trace: 
-[ 6916.777169]  [<ffffffff8177e946>] ? _raw_spin_unlock_irqrestore+0x36/0x60 
-[ 6916.784746]  [<ffffffff811ecaaf>] ? shrink_zone+0x18f/0x330 
-[ 6916.790966]  [<ffffffff811ecff4>] ? do_try_to_free_pages+0x174/0x440 
-[ 6916.798058]  [<ffffffff811ed3c0>] ? try_to_free_pages+0x100/0x2c0 
-[ 6916.804860]  [<ffffffff81269102>] ? __alloc_pages_slowpath+0x278/0x78c 
-[ 6916.812147]  [<ffffffff811dcdb1>] ? __alloc_pages_nodemask+0x4a1/0x4d0 
-[ 6916.819426]  [<ffffffff810f51f4>] ? __lock_is_held+0x54/0x70 
-[ 6916.825742]  [<ffffffff81232387>] ? alloc_pages_current+0x97/0x1b0 
-[ 6916.832641]  [<ffffffff8137f389>] ? bio_copy_kern+0xc9/0x180 
-[ 6916.838957]  [<ffffffff8138e2c5>] ? blk_rq_map_kern+0x75/0x130 
-[ 6916.845469]  [<ffffffff81527192>] ? scsi_execute+0x132/0x160 
-[ 6916.851787]  [<ffffffff8152972e>] ? scsi_execute_req_flags+0x8e/0xf0 
-[ 6916.858880]  [<ffffffffa012d6e7>] ? sr_check_events+0xb7/0x2a0 [sr_mod] 
-[ 6916.866257]  [<ffffffffa0085058>] ? cdrom_check_events+0x18/0x30 [cdrom] 
-[ 6916.873736]  [<ffffffffa012db2a>] ? sr_block_check_events+0x2a/0x30 [sr_mod] 
-[ 6916.881603]  [<ffffffff8139a360>] ? disk_check_events+0x60/0x170 
-[ 6916.888308]  [<ffffffff8139a48c>] ? disk_events_workfn+0x1c/0x20 
-[ 6916.895013]  [<ffffffff810b7065>] ? process_one_work+0x215/0x650 
-[ 6916.901721]  [<ffffffff810b6fd1>] ? process_one_work+0x181/0x650 
-[ 6916.908428]  [<ffffffff810b75c5>] ? worker_thread+0x125/0x4a0 
-[ 6916.914840]  [<ffffffff810b74a0>] ? process_one_work+0x650/0x650 
-[ 6916.921544]  [<ffffffff810be1a1>] ? kthread+0x101/0x120 
-[ 6916.927377]  [<ffffffff810f8c29>] ? trace_hardirqs_on_caller+0xf9/0x1c0 
-[ 6916.934754]  [<ffffffff810be0a0>] ? kthread_create_on_node+0x250/0x250 
-[ 6916.942040]  [<ffffffff8177f75f>] ? ret_from_fork+0x3f/0x70 
-[ 6916.948260]  [<ffffffff810be0a0>] ? kthread_create_on_node+0x250/0x250 
-[ 6916.955546] 3 locks held by kworker/1:1/20708: 
-[ 6916.960504]  #0:  ("events_freezable_power_efficient"){.+.+.+}, at: [<ffffffff810b6fd1>] process_one_work+0x181/0x650 
-[ 6916.972402]  #1:  ((&(&ev->dwork)->work)){+.+.+.}, at: [<ffffffff810b6fd1>] process_one_work+0x181/0x650 
-[ 6916.983044]  #2:  (shrinker_rwsem){++++..}, at: [<ffffffff8125712f>] mem_cgroup_iter+0x14f/0x870 
-----------
+Attached is my config log for reference.
 
-What happens if memory allocation requests from items using this workqueue
-got stuck due to OOM livelock? Are pending items in this workqueue cannot
-be processed because this workqueue was created without WQ_MEM_RECLAIM?
 
-I don't know whether accessing swap memory depends on this workqueue.
-But if disk driver depends on this workqueue for accessing swap partition
-on the disk, some event is looping inside memory allocator will result in
-unable to process disk I/O request for accessing swap partition on the disk?
+[1] https://github.com/linux-test-project/ltp
+
+-- 
+Thanks & Regards,
+M.Srikanth Kumar.
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: config.log
+Type: application/octet-stream
+Size: 335900 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160120/1aafdca6/attachment-0001.obj>
