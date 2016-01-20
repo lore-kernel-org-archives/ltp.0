@@ -1,95 +1,36 @@
-From: $rik@nth  <srikanth007m@gmail.com>
-Date: Wed, 20 Jan 2016 18:52:00 +0530
-Subject: [LTP] get_mempolicy failing to compile
-Message-ID: <CANKSX+ENW0PPUWmJ5EjOtCJX+4qGppBvw-uW4W6eEC3WRDiWrw@mail.gmail.com>
+From: Tejun Heo <tj@kernel.org>
+Date: Wed, 20 Jan 2016 10:10:44 -0500
+Subject: [LTP] [BUG] oom hangs the system,
+ NMI backtrace shows most CPUs in shrink_slab
+In-Reply-To: <201601202217.BEF43262.QOLFHOOJFVFtMS@I-love.SAKURA.ne.jp>
+References: <569D06F8.4040209@redhat.com>
+ <569E1010.2070806@I-love.SAKURA.ne.jp>
+ <569E5287.4080503@redhat.com>
+ <201601201923.DCC48978.FSHLOQtOVJFFOM@I-love.SAKURA.ne.jp>
+ <201601202217.BEF43262.QOLFHOOJFVFtMS@I-love.SAKURA.ne.jp>
+Message-ID: <20160120151044.GA5157@mtj.duckdns.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All,
+On Wed, Jan 20, 2016 at 10:17:23PM +0900, Tetsuo Handa wrote:
+> What happens if memory allocation requests from items using this workqueue
+> got stuck due to OOM livelock? Are pending items in this workqueue cannot
+> be processed because this workqueue was created without WQ_MEM_RECLAIM?
 
-I am trying to compile latest snapshot from github [1] and getting below errors.
+If something gets stuck due to OOM livelock, anything which tries to
+allocate memory can hang.  That's why it's called a livelock.
+WQ_MEM_RECLAIM or not wouldn't make any difference.
 
-arm-linux-gnueabihf-gcc -static -g -O2 -fno-strict-aliasing -pipe
--Wall -W -Wold-style-definition
--I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/include
--I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils
- -I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/include
--I../../../../include -I../../../../include -static -pthread
--L/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/lib
--L../../../../lib  get_mempolicy01.c   -lltp  -lkerntest -lltp -o
-get_mempolicy01
-In file included from get_mempolicy01.c:63:0:
-/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils/common_j_h.c:
-In function ?sigterm_handler?:
-/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils/common_j_h.c:111:33:
-warning: unused parameter ?sig? [-Wunused-parameter]
- static void sigterm_handler(int sig)
-                                 ^
-get_mempolicy01.c: In function ?main?:
-get_mempolicy01.c:197:14: warning: unused parameter ?argc? [-Wunused-parameter]
- int main(int argc, char **argv)
-              ^
-get_mempolicy01.c:197:27: warning: unused parameter ?argv? [-Wunused-parameter]
- int main(int argc, char **argv)
-                           ^
-/tmp/cciaYvm7.o: In function `setup_uid':
-/home/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils/common_j_h.c:64:
-warning: Using 'getpwnam' in statically linked applications requires
-at runtime the shared libraries from the glibc version used for
-linking
-/tmp/cciaYvm7.o: In function `main':
-get_mempolicy01.c:(.text.startup+0x9c): undefined reference to
-`numa_allocate_nodemask'
-get_mempolicy01.c:(.text.startup+0xa2): undefined reference to
-`numa_allocate_nodemask'
-get_mempolicy01.c:(.text.startup+0xc2): undefined reference to
-`numa_bitmask_setbit'
-get_mempolicy01.c:(.text.startup+0x2ce): undefined reference to
-`numa_bitmask_clearall'
-get_mempolicy01.c:(.text.startup+0x2e8): undefined reference to
-`numa_bitmask_equal'
-/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-In function `get_max_node':
-/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:53: undefined
-reference to `numa_max_possible_node'
-/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:53: undefined
-reference to `numa_max_possible_node'
-/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-In function `get_nodemask_allnodes':
-/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:71: undefined
-reference to `nodemask_set'
-/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-In function `get_allowed_nodes_arr':
-/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:191: undefined
-reference to `nodemask_isset'
-/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-In function `filter_nodemask_cpu':
-/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:126: undefined
-reference to `nodemask_isset'
-/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:133: undefined
-reference to `nodemask_clr'
-/home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-In function `get_max_node':
-/home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:53: undefined
-reference to `numa_max_possible_node'
-collect2: error: ld returned 1 exit status
-make[4]: *** [get_mempolicy01] Error 1
+> I don't know whether accessing swap memory depends on this workqueue.
+> But if disk driver depends on this workqueue for accessing swap partition
+> on the disk, some event is looping inside memory allocator will result in
+> unable to process disk I/O request for accessing swap partition on the disk?
 
-Attached is my config log for reference.
-
-
-[1] https://github.com/linux-test-project/ltp
+What you're saying is too vauge for me to decipher exactly what you
+have on mind.  Can you please elaborate?
 
 -- 
-Thanks & Regards,
-M.Srikanth Kumar.
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: config.log
-Type: application/octet-stream
-Size: 335900 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160120/1aafdca6/attachment-0001.obj>
+tejun
