@@ -1,248 +1,36 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 21 Jan 2016 07:46:45 -0500 (EST)
-Subject: [LTP] get_mempolicy failing to compile
-In-Reply-To: <CANKSX+HPL_+G4YWYtS0K7hesk36H+3D=endwvQmzTK1bGqSaYg@mail.gmail.com>
-References: <CANKSX+ENW0PPUWmJ5EjOtCJX+4qGppBvw-uW4W6eEC3WRDiWrw@mail.gmail.com>
- <68157114.10446982.1453361771699.JavaMail.zimbra@redhat.com>
- <CANKSX+EYKTb9gRY_5OSZjj0JhzenjzE=9F4rN08uCHM10Nbz+Q@mail.gmail.com>
- <811903974.10514978.1453374406283.JavaMail.zimbra@redhat.com>
- <CANKSX+E228KPNQ7e20A8JDK3VY071AneN0ZNVxdiH3+uQUudkg@mail.gmail.com>
- <1328964111.10534362.1453378477201.JavaMail.zimbra@redhat.com>
- <CANKSX+HPL_+G4YWYtS0K7hesk36H+3D=endwvQmzTK1bGqSaYg@mail.gmail.com>
-Message-ID: <898714872.10545516.1453380405909.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 21 Jan 2016 14:51:50 +0100
+Subject: [LTP] test.sh and ROD redirection
+Message-ID: <20160121135150.GA18731@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+As I've been doing last minute fixes to shell testcases I've stambled
+upon this problem. We have a couple of places that do:
 
+ROD echo foo > bar
 
------ Original Message -----
-> From: "$rik@nth" <srikanth007m@gmail.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, 21 January, 2016 1:42:18 PM
-> Subject: Re: [LTP] get_mempolicy failing to compile
-> 
-> Yes it able to compile without any issues.
-> 
-> linaro@linaro-alip:~/Srikanth$ cat > numatest.c <<EOF
-> > #include <stdio.h>
-> > #include <numa.h>
-> > int main(void)
-> > {
-> >         printf("%d\n", numa_max_possible_node());
-> >         return 0;
-> > }
-> > EOF
-> linaro@linaro-alip:~/Srikanth$ gcc numatest.c -lnuma
-> linaro@linaro-alip:~/Srikanth$ ls -l
-> total 20
-> -rwxr-xr-x  1 linaro linaro 7920 Jan 21 12:26 a.out
-> -rw-r--r--  1 linaro linaro  124 Jan 21 12:26 numatest.c
+And while this works fine if the command executes successfully it writes
+the error message to the file bar on failure as well (since the part
+that gets to the ROD as $@ is the 'echo foo' while the '> bar' is parsed
+by the shell.
 
-And if you add -static can it still compile?
+One solution would be redirecting the messages from tst_* to stderr, so
+we would be able to at least see the error message, but this wouldn't
+catch errors when we cannot write to the 'bar' (since echo foo would
+executed successfully anyway).
 
-> 
-> 
-> On 1/21/16, Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> > ----- Original Message -----
-> >> From: "$rik@nth" <srikanth007m@gmail.com>
-> >> To: "Jan Stancek" <jstancek@redhat.com>
-> >> Cc: ltp@lists.linux.it
-> >> Sent: Thursday, 21 January, 2016 12:54:35 PM
-> >> Subject: Re: [LTP] get_mempolicy failing to compile
-> >>
-> >> My environment is ARM ubuntu and all my libs and packages are in AMR.
-> >
-> > I just noticed that config.log shows that -static is passed to gcc.
-> > Can you run "dpkg -L libnuma-dev" to check you have static library
-> > to link against?
-> >
-> > Can you link against -lnuma outside of LTP build?
-> >
-> > For example:
-> >
-> > cat > numatest.c <<EOF
-> > #include <stdio.h>
-> > #include <numa.h>
-> > int main(void)
-> > {
-> >         printf("%d\n", numa_max_possible_node());
-> >         return 0;
-> > }
-> > EOF
-> > gcc numatest.c -lnuma
-> >
-> >
-> >>
-> >> Yes still i am seeing the same issue even it is having arm libnuma-dev
-> >> packages and also numactl.
-> >>
-> >> On Thu, Jan 21, 2016 at 4:36 PM, Jan Stancek <jstancek@redhat.com> wrote:
-> >> >
-> >> >
-> >> >
-> >> >
-> >> > ----- Original Message -----
-> >> >> From: "$rik@nth" <srikanth007m@gmail.com>
-> >> >> To: "Jan Stancek" <jstancek@redhat.com>
-> >> >> Cc: ltp@lists.linux.it
-> >> >> Sent: Thursday, 21 January, 2016 11:18:17 AM
-> >> >> Subject: Re: [LTP] get_mempolicy failing to compile
-> >> >>
-> >> >> libnuma-dev is already installed on my system. Any reason why still it
-> >> >> is failing to link with libraries?
-> >> >
-> >> > It looks like you are cross-compiling, do you have it installed
-> >> > for target as well? (I'm assuming you're running on x86 and
-> >> > cross compiling for arm)
-> >> >
-> >> > Do you see the problem also if you compile for host (not
-> >> > cross-compile)?
-> >> >
-> >> >>
-> >> >> On Thu, Jan 21, 2016 at 1:06 PM, Jan Stancek <jstancek@redhat.com>
-> >> >> wrote:
-> >> >> >
-> >> >> >
-> >> >> >
-> >> >> >
-> >> >> > ----- Original Message -----
-> >> >> >> From: "$rik@nth" <srikanth007m@gmail.com>
-> >> >> >> To: ltp@lists.linux.it
-> >> >> >> Sent: Wednesday, 20 January, 2016 2:22:00 PM
-> >> >> >> Subject: [LTP] get_mempolicy failing to compile
-> >> >> >>
-> >> >> >> Hi All,
-> >> >> >>
-> >> >> >> I am trying to compile latest snapshot from github [1] and getting
-> >> >> >> below
-> >> >> >> errors.
-> >> >> >>
-> >> >> >> arm-linux-gnueabihf-gcc -static -g -O2 -fno-strict-aliasing -pipe
-> >> >> >> -Wall -W -Wold-style-definition
-> >> >> >> -I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/include
-> >> >> >> -I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils
-> >> >> >>  -I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/include
-> >> >> >> -I../../../../include -I../../../../include -static -pthread
-> >> >> >> -L/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/lib
-> >> >> >> -L../../../../lib  get_mempolicy01.c   -lltp  -lkerntest -lltp -o
-> >> >> >> get_mempolicy01
-> >> >> >> In file included from get_mempolicy01.c:63:0:
-> >> >> >> /home/hydlnxbld84/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils/common_j_h.c:
-> >> >> >> In function ?sigterm_handler?:
-> >> >> >> /home/hydlnxbld84/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils/common_j_h.c:111:33:
-> >> >> >> warning: unused parameter ?sig? [-Wunused-parameter]
-> >> >> >>  static void sigterm_handler(int sig)
-> >> >> >>                                  ^
-> >> >> >> get_mempolicy01.c: In function ?main?:
-> >> >> >> get_mempolicy01.c:197:14: warning: unused parameter ?argc?
-> >> >> >> [-Wunused-parameter]
-> >> >> >>  int main(int argc, char **argv)
-> >> >> >>               ^
-> >> >> >> get_mempolicy01.c:197:27: warning: unused parameter ?argv?
-> >> >> >> [-Wunused-parameter]
-> >> >> >>  int main(int argc, char **argv)
-> >> >> >>                            ^
-> >> >> >> /tmp/cciaYvm7.o: In function `setup_uid':
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/syscalls/get_mempolicy/../utils/common_j_h.c:64:
-> >> >> >> warning: Using 'getpwnam' in statically linked applications
-> >> >> >> requires
-> >> >> >> at runtime the shared libraries from the glibc version used for
-> >> >> >> linking
-> >> >> >> /tmp/cciaYvm7.o: In function `main':
-> >> >> >> get_mempolicy01.c:(.text.startup+0x9c): undefined reference to
-> >> >> >> `numa_allocate_nodemask'
-> >> >> >> get_mempolicy01.c:(.text.startup+0xa2): undefined reference to
-> >> >> >> `numa_allocate_nodemask'
-> >> >> >> get_mempolicy01.c:(.text.startup+0xc2): undefined reference to
-> >> >> >> `numa_bitmask_setbit'
-> >> >> >> get_mempolicy01.c:(.text.startup+0x2ce): undefined reference to
-> >> >> >> `numa_bitmask_clearall'
-> >> >> >> get_mempolicy01.c:(.text.startup+0x2e8): undefined reference to
-> >> >> >> `numa_bitmask_equal'
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-> >> >> >> In function `get_max_node':
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:53: undefined
-> >> >> >> reference to `numa_max_possible_node'
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:53: undefined
-> >> >> >> reference to `numa_max_possible_node'
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-> >> >> >> In function `get_nodemask_allnodes':
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:71: undefined
-> >> >> >> reference to `nodemask_set'
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-> >> >> >> In function `get_allowed_nodes_arr':
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:191:
-> >> >> >> undefined
-> >> >> >> reference to `nodemask_isset'
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-> >> >> >> In function `filter_nodemask_cpu':
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:126:
-> >> >> >> undefined
-> >> >> >> reference to `nodemask_isset'
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:133:
-> >> >> >> undefined
-> >> >> >> reference to `nodemask_clr'
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/libkerntest.a(numa_helper.o):
-> >> >> >> In function `get_max_node':
-> >> >> >> /home/Srikanth/ltp/testcases/kernel/lib/numa_helper.c:53: undefined
-> >> >> >> reference to `numa_max_possible_node'
-> >> >> >> collect2: error: ld returned 1 exit status
-> >> >> >> make[4]: *** [get_mempolicy01] Error 1
-> >> >> >>
-> >> >> >> Attached is my config log for reference.
-> >> >> >
-> >> >> > According to your log you have numa headers, but don't heave numa
-> >> >> > library
-> >> >> > to link against.
-> >> >> >
-> >> >> > #define HAVE_NUMA_H 1
-> >> >> > #define HAVE_NUMAIF_H 1
-> >> >> >
-> >> >> > NUMA_CPPFLAGS=''
-> >> >> > NUMA_LIBS=''
-> >> >> >
-> >> >> > Both should come from numactl devel package. To unblock compilation
-> >> >> > you can edit include/config.h and set any numa related options to 0.
-> >> >> > Then make clean && make should work.
-> >> >> >
-> >> >> > Regards,
-> >> >> > Jan
-> >> >> >
-> >> >> >>
-> >> >> >>
-> >> >> >> [1] https://github.com/linux-test-project/ltp
-> >> >> >>
-> >> >> >> --
-> >> >> >> Thanks & Regards,
-> >> >> >> M.Srikanth Kumar.
-> >> >> >>
-> >> >> >>
-> >> >> >> --
-> >> >> >> Mailing list info: http://lists.linux.it/listinfo/ltp
-> >> >> >>
-> >> >>
-> >> >>
-> >> >>
-> >> >> --
-> >> >> Thanks & Regards,
-> >> >> M.Srikanth Kumar.
-> >> >>
-> >>
-> >>
-> >>
-> >> --
-> >> Thanks & Regards,
-> >> M.Srikanth Kumar.
-> >>
-> >
-> 
-> 
-> --
-> Thanks & Regards,
-> M.Srikanth Kumar.
-> 
+Another solution would be to create ROD_ECHO and ROD_CAT and change ROD
+to abort if anybody tries to use it with these two. Which solves our
+usage pattern but this is clumsy and still broken as anyone can redirect
+output from ROD anyway.
+
+Is there a elegant solution to this problem that I'm missing?
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
