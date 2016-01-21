@@ -1,20 +1,30 @@
-From: $rik@nth  <srikanth007m@gmail.com>
-Date: Thu, 21 Jan 2016 07:36:39 +0530
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 21 Jan 2016 02:36:11 -0500 (EST)
 Subject: [LTP] get_mempolicy failing to compile
-Message-ID: <CANKSX+HBqkvHJQYwjP8SU=veGp-g95CvWcwrFX9dAMbgKSfWdA@mail.gmail.com>
+In-Reply-To: <CANKSX+ENW0PPUWmJ5EjOtCJX+4qGppBvw-uW4W6eEC3WRDiWrw@mail.gmail.com>
+References: <CANKSX+ENW0PPUWmJ5EjOtCJX+4qGppBvw-uW4W6eEC3WRDiWrw@mail.gmail.com>
+Message-ID: <68157114.10446982.1453361771699.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Any pointers to unblock compilation of LTP?
 
-On Wed, Jan 20, 2016 at 6:52 PM, $rik@nth <srikanth007m@gmail.com> wrote:
+
+
+
+----- Original Message -----
+> From: "$rik@nth" <srikanth007m@gmail.com>
+> To: ltp@lists.linux.it
+> Sent: Wednesday, 20 January, 2016 2:22:00 PM
+> Subject: [LTP] get_mempolicy failing to compile
+> 
 > Hi All,
->
-> I am trying to compile latest snapshot from github [1] and getting below errors.
->
+> 
+> I am trying to compile latest snapshot from github [1] and getting below
+> errors.
+> 
 > arm-linux-gnueabihf-gcc -static -g -O2 -fno-strict-aliasing -pipe
 > -Wall -W -Wold-style-definition
 > -I/home/hydlnxbld84/Srikanth/ltp/testcases/kernel/include
@@ -32,10 +42,12 @@ On Wed, Jan 20, 2016 at 6:52 PM, $rik@nth <srikanth007m@gmail.com> wrote:
 >  static void sigterm_handler(int sig)
 >                                  ^
 > get_mempolicy01.c: In function ?main?:
-> get_mempolicy01.c:197:14: warning: unused parameter ?argc? [-Wunused-parameter]
+> get_mempolicy01.c:197:14: warning: unused parameter ?argc?
+> [-Wunused-parameter]
 >  int main(int argc, char **argv)
 >               ^
-> get_mempolicy01.c:197:27: warning: unused parameter ?argv? [-Wunused-parameter]
+> get_mempolicy01.c:197:27: warning: unused parameter ?argv?
+> [-Wunused-parameter]
 >  int main(int argc, char **argv)
 >                            ^
 > /tmp/cciaYvm7.o: In function `setup_uid':
@@ -80,18 +92,34 @@ On Wed, Jan 20, 2016 at 6:52 PM, $rik@nth <srikanth007m@gmail.com> wrote:
 > reference to `numa_max_possible_node'
 > collect2: error: ld returned 1 exit status
 > make[4]: *** [get_mempolicy01] Error 1
->
+> 
 > Attached is my config log for reference.
->
->
+
+According to your log you have numa headers, but don't heave numa library
+to link against.
+
+#define HAVE_NUMA_H 1
+#define HAVE_NUMAIF_H 1
+
+NUMA_CPPFLAGS=''
+NUMA_LIBS=''
+
+Both should come from numactl devel package. To unblock compilation
+you can edit include/config.h and set any numa related options to 0.
+Then make clean && make should work.
+
+Regards,
+Jan
+
+> 
+> 
 > [1] https://github.com/linux-test-project/ltp
->
+> 
 > --
 > Thanks & Regards,
 > M.Srikanth Kumar.
-
-
-
--- 
-Thanks & Regards,
-M.Srikanth Kumar.
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
