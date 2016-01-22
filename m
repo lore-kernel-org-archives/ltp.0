@@ -1,9 +1,9 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 22 Jan 2016 12:15:38 +0300
-Subject: [LTP] test.sh and ROD redirection
-In-Reply-To: <20160121135150.GA18731@rei.lan>
-References: <20160121135150.GA18731@rei.lan>
-Message-ID: <56A1F33A.4000807@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 22 Jan 2016 06:16:28 -0500 (EST)
+Subject: [LTP] LTP release
+In-Reply-To: <20160121174101.GD19851@rei.lan>
+References: <20160121174101.GD19851@rei.lan>
+Message-ID: <1892563285.11092383.1453461388185.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,51 +11,53 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-Hi,
-On 01/21/2016 04:51 PM, Cyril Hrubis wrote:
+
+
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: ltp@lists.linux.it
+> Sent: Thursday, 21 January, 2016 6:41:02 PM
+> Subject: [LTP] LTP release
+> 
 > Hi!
-> As I've been doing last minute fixes to shell testcases I've stambled
-> upon this problem. We have a couple of places that do:
->
-> ROD echo foo > bar
->
-> And while this works fine if the command executes successfully it writes
-> the error message to the file bar on failure as well (since the part
-> that gets to the ROD as $@ is the 'echo foo' while the '> bar' is parsed
-> by the shell.
->
-> One solution would be redirecting the messages from tst_* to stderr, so
-> we would be able to at least see the error message, but this wouldn't
-> catch errors when we cannot write to the 'bar' (since echo foo would
-> executed successfully anyway).
-This won't work in case of simple file creation: ROD >file. Quotation 
-marks seem to
-help in this case with ROD.
+> Just now I'm testing last set of changes for cgroup_fj tests (in the end
+> these were too bugy so I've did a partial rewrite) and once that is done
+> and pushed the release is green from my side. Minus the ROD problem that
+> I've posted earlier but that can be workarounded for the release.
+> 
+> What is the status from the rest of you?
 
-./testcases/network/nfs/nfs_stress/nfs03:            ROD >file$j$k
+Hi,
 
-can be changed to ROD ">file$j$k"
+I did compile + run test (with subset of runtest files) on
+RHEL5.6/RHEL6.2/6.7/7.2 (i386/x86_64/ppc64/s390x), which worked
+OK with one exception below.
 
-> Another solution would be to create ROD_ECHO and ROD_CAT and change ROD
-> to abort if anybody tries to use it with these two. Which solves our
-> usage pattern but this is clumsy and still broken as anyone can redirect
-> output from ROD anyway.
+One issue I keep hitting is oom0X hang [1], but since it's there for
+months we don't need to hold release for that (I don't have any
+tested patch yet).
 
-Could be just one ROD_RED that accepts parameters in this way: 1st for 
-exec and
-the others to set after '>' redirection.
+What I'm thinking is to introduce a parameter to control how many threads
+we allow to race towards OOM. At the moment it's NCPU-1, which appears
+to be too stressful for regular runtest files. It hangs kernels from
+3.10 up to 4.4 and there's no fix atm.
 
-ROD_RED()
-{
-     $1 > ${@:2}
-     if [ $? -ne 0 ]; then
-     ....
-}
+[1] http://lists.linux.it/pipermail/ltp/2016-January/000807.html
 
-ROD_RED "echo 0" "file"
+> 
+> Can we do the release on Monday or Tuesday?
 
-Best regards,
-Alexey
+Fine by me.
 
->
-> Is there a elegant solution to this problem that I'm missing?
+Regards,
+Jan
+
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
