@@ -1,16 +1,9 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 22 Jan 2016 03:30:16 -0500 (EST)
-Subject: [LTP] get_mempolicy failing to compile
-In-Reply-To: <CANKSX+E608-qFt=-_vneFeBL+BH3zjZGsJXyjJ74rv3k507UYw@mail.gmail.com>
-References: <CANKSX+ENW0PPUWmJ5EjOtCJX+4qGppBvw-uW4W6eEC3WRDiWrw@mail.gmail.com>
- <CANKSX+EYKTb9gRY_5OSZjj0JhzenjzE=9F4rN08uCHM10Nbz+Q@mail.gmail.com>
- <811903974.10514978.1453374406283.JavaMail.zimbra@redhat.com>
- <CANKSX+E228KPNQ7e20A8JDK3VY071AneN0ZNVxdiH3+uQUudkg@mail.gmail.com>
- <1328964111.10534362.1453378477201.JavaMail.zimbra@redhat.com>
- <CANKSX+HPL_+G4YWYtS0K7hesk36H+3D=endwvQmzTK1bGqSaYg@mail.gmail.com>
- <898714872.10545516.1453380405909.JavaMail.zimbra@redhat.com>
- <CANKSX+E608-qFt=-_vneFeBL+BH3zjZGsJXyjJ74rv3k507UYw@mail.gmail.com>
-Message-ID: <13368452.10990988.1453451416635.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 22 Jan 2016 12:15:38 +0300
+Subject: [LTP] test.sh and ROD redirection
+In-Reply-To: <20160121135150.GA18731@rei.lan>
+References: <20160121135150.GA18731@rei.lan>
+Message-ID: <56A1F33A.4000807@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,22 +11,51 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
+Hi,
+On 01/21/2016 04:51 PM, Cyril Hrubis wrote:
+> Hi!
+> As I've been doing last minute fixes to shell testcases I've stambled
+> upon this problem. We have a couple of places that do:
+>
+> ROD echo foo > bar
+>
+> And while this works fine if the command executes successfully it writes
+> the error message to the file bar on failure as well (since the part
+> that gets to the ROD as $@ is the 'echo foo' while the '> bar' is parsed
+> by the shell.
+>
+> One solution would be redirecting the messages from tst_* to stderr, so
+> we would be able to at least see the error message, but this wouldn't
+> catch errors when we cannot write to the 'bar' (since echo foo would
+> executed successfully anyway).
+This won't work in case of simple file creation: ROD >file. Quotation 
+marks seem to
+help in this case with ROD.
 
------ Original Message -----
-> From: "$rik@nth" <srikanth007m@gmail.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Sent: Friday, 22 January, 2016 5:25:54 AM
-> Subject: Re: [LTP] get_mempolicy failing to compile
-> 
-> My environment is ARM ubuntu and all my libs and packages are in AMR.
+./testcases/network/nfs/nfs_stress/nfs03:            ROD >file$j$k
 
-config.log you gave us is from x86_64 system named "hyd-lnxbld84".
+can be changed to ROD ">file$j$k"
 
-> Yes able to compile the source  static as well
-> linaro@linaro-alip:~/Srikanth$ gcc -static numatest.c -lnuma
+> Another solution would be to create ROD_ECHO and ROD_CAT and change ROD
+> to abort if anybody tries to use it with these two. Which solves our
+> usage pattern but this is clumsy and still broken as anyone can redirect
+> output from ROD anyway.
 
-This is a different system, isn't it?
+Could be just one ROD_RED that accepts parameters in this way: 1st for 
+exec and
+the others to set after '>' redirection.
 
-What I meant was "hyd-lnxbld84" system and gcc you use to
-compile LTP:
-  arm-linux-gnueabihf-gcc -static numatest.c -lnuma
+ROD_RED()
+{
+     $1 > ${@:2}
+     if [ $? -ne 0 ]; then
+     ....
+}
+
+ROD_RED "echo 0" "file"
+
+Best regards,
+Alexey
+
+>
+> Is there a elegant solution to this problem that I'm missing?
