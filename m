@@ -1,63 +1,52 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 22 Jan 2016 06:16:28 -0500 (EST)
-Subject: [LTP] LTP release
-In-Reply-To: <20160121174101.GD19851@rei.lan>
-References: <20160121174101.GD19851@rei.lan>
-Message-ID: <1892563285.11092383.1453461388185.JavaMail.zimbra@redhat.com>
+From: $rik@nth  <srikanth007m@gmail.com>
+Date: Fri, 22 Jan 2016 17:40:07 +0530
+Subject: [LTP] get_mempolicy failing to compile
+In-Reply-To: <13368452.10990988.1453451416635.JavaMail.zimbra@redhat.com>
+References: <CANKSX+ENW0PPUWmJ5EjOtCJX+4qGppBvw-uW4W6eEC3WRDiWrw@mail.gmail.com>
+ <CANKSX+EYKTb9gRY_5OSZjj0JhzenjzE=9F4rN08uCHM10Nbz+Q@mail.gmail.com>
+ <811903974.10514978.1453374406283.JavaMail.zimbra@redhat.com>
+ <CANKSX+E228KPNQ7e20A8JDK3VY071AneN0ZNVxdiH3+uQUudkg@mail.gmail.com>
+ <1328964111.10534362.1453378477201.JavaMail.zimbra@redhat.com>
+ <CANKSX+HPL_+G4YWYtS0K7hesk36H+3D=endwvQmzTK1bGqSaYg@mail.gmail.com>
+ <898714872.10545516.1453380405909.JavaMail.zimbra@redhat.com>
+ <CANKSX+E608-qFt=-_vneFeBL+BH3zjZGsJXyjJ74rv3k507UYw@mail.gmail.com>
+ <13368452.10990988.1453451416635.JavaMail.zimbra@redhat.com>
+Message-ID: <CANKSX+Ega5EEVu5N_Zh2QAJRnBokoFy9mD85CjcBbL5=M4hP6g@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+I did an softlink to arm-linux gcc after my initial mail.. So on
+latest one you will be not seeing.
+
+I will try on another development board. This is my 3rd board having problem :(
+
+On Fri, Jan 22, 2016 at 2:00 PM, Jan Stancek <jstancek@redhat.com> wrote:
+>
+>
+> ----- Original Message -----
+>> From: "$rik@nth" <srikanth007m@gmail.com>
+>> To: "Jan Stancek" <jstancek@redhat.com>
+>> Sent: Friday, 22 January, 2016 5:25:54 AM
+>> Subject: Re: [LTP] get_mempolicy failing to compile
+>>
+>> My environment is ARM ubuntu and all my libs and packages are in AMR.
+>
+> config.log you gave us is from x86_64 system named "hyd-lnxbld84".
+>
+>> Yes able to compile the source  static as well
+>> linaro@linaro-alip:~/Srikanth$ gcc -static numatest.c -lnuma
+>
+> This is a different system, isn't it?
+>
+> What I meant was "hyd-lnxbld84" system and gcc you use to
+> compile LTP:
+>   arm-linux-gnueabihf-gcc -static numatest.c -lnuma
 
 
 
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: ltp@lists.linux.it
-> Sent: Thursday, 21 January, 2016 6:41:02 PM
-> Subject: [LTP] LTP release
-> 
-> Hi!
-> Just now I'm testing last set of changes for cgroup_fj tests (in the end
-> these were too bugy so I've did a partial rewrite) and once that is done
-> and pushed the release is green from my side. Minus the ROD problem that
-> I've posted earlier but that can be workarounded for the release.
-> 
-> What is the status from the rest of you?
-
-Hi,
-
-I did compile + run test (with subset of runtest files) on
-RHEL5.6/RHEL6.2/6.7/7.2 (i386/x86_64/ppc64/s390x), which worked
-OK with one exception below.
-
-One issue I keep hitting is oom0X hang [1], but since it's there for
-months we don't need to hold release for that (I don't have any
-tested patch yet).
-
-What I'm thinking is to introduce a parameter to control how many threads
-we allow to race towards OOM. At the moment it's NCPU-1, which appears
-to be too stressful for regular runtest files. It hangs kernels from
-3.10 up to 4.4 and there's no fix atm.
-
-[1] http://lists.linux.it/pipermail/ltp/2016-January/000807.html
-
-> 
-> Can we do the release on Monday or Tuesday?
-
-Fine by me.
-
-Regards,
-Jan
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
-> 
+-- 
+Thanks & Regards,
+M.Srikanth Kumar.
