@@ -1,36 +1,74 @@
 From: Raghavendra Kakarla <Raghavendra.Kakarla@inedasystems.com>
-Date: Mon, 25 Jan 2016 07:58:17 +0000
-Subject: [LTP] Some LTP Testcases issue
-Message-ID: <MA1PR01MB00560413FAFFAF6EFE69DBCA82C70@MA1PR01MB0056.INDPRD01.PROD.OUTLOOK.COM>
+Date: Mon, 25 Jan 2016 09:37:38 +0000
+Subject: [LTP] Some LTP testcases are getting failed
+In-Reply-To: <56A5E4EB.4050802@oracle.com>
+References: <MA1PR01MB00562DFACF1908498176882C82C70@MA1PR01MB0056.INDPRD01.PROD.OUTLOOK.COM>,
+ <56A5E4EB.4050802@oracle.com>
+Message-ID: <MA1PR01MB0056C6904C4A16BDB6646D2182C70@MA1PR01MB0056.INDPRD01.PROD.OUTLOOK.COM>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All,
+Hi Stanislav,
+Thnak you for your response.
 
-I built the LTP for the yocto and ran it on the My board which has the Mips interaptive CPU.
-
-After running all tests 42 test are getting failed.
-
-I have examine the each failed test case and noted down the issue.
-
-Following test cases are failed:
-
-1.bind02 - unable to open the socket to testuser
-2.chmod06 - Device busy error.
-3.getrusage03 - memory allocation failed
-4.Readahead02 - Page cache on our system is too small to hold whole testfile.
-5.rt_sigaction01 - Gives the buss error.
-
-Could you please help me to resolving this issues.
-
-Thanks in Advance.
+Following is the complete output of the rt_sigaction01 test case.
+rt_sigaction01    0  TINFO  :  signal: 34 
+rt_sigaction01    1  TPASS  :  rt_sigaction call succeeded: result = 0 
+rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
+Bus error
 
 Regards,
 Raghavendra K.
+________________________________________
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Sent: Monday, January 25, 2016 2:33 PM
+To: Raghavendra Kakarla; ltp@lists.linux.it
+Subject: Re: [LTP] Some LTP testcases are getting failed
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160125/a751e9f5/attachment.html>
+Hi!
+
+On 01/25/2016 11:02 AM, Raghavendra Kakarla wrote:
+> Hi All,
+>
+> I built the LTP for the yocto and ran it on the My board which has the
+> Mips interaptive CPU.
+>
+> After running all tests 42 test are getting failed.
+>
+> I have examine the each failed test case and noted down the issue.
+>
+> Following test cases are failed:
+>
+> 1.bind02 - unable to open the socket to testuser
+> 2.chmod06 - Device busy error.
+> 3.getrusage03 - memory allocation failed
+> 4.Readahead02 - Page cache on our system is too small to hold whole
+> testfile.
+> 5.rt_sigaction01 - Gives the buss error.
+
+Regarding rt_sigaction01. Just a wild guess. Maybe ltp_rt_sigaction() in
+include/lapi/rt_sigaction.h needs some MIPS-specific changes. Anyway, it
+would be better if you provided the test output.
+
+
+
+
+>
+> Could you please help me to resolving this issues.
+>
+> Thanks in Advance.
+>
+> Regards,
+> Raghavendra K.
+>
+>
+>
+>
+
+______________________________________________________________________
+This email has been scanned by the Symantec Email Security.cloud service.
+For more information please visit http://www.symanteccloud.com
+______________________________________________________________________
