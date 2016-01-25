@@ -1,17 +1,16 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 25 Jan 2016 12:48:42 +0300
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 25 Jan 2016 13:47:38 +0300
 Subject: [LTP] LTP release
 In-Reply-To: <20160121174101.GD19851@rei.lan>
 References: <20160121174101.GD19851@rei.lan>
-Message-ID: <56A5EF7A.6000708@oracle.com>
+Message-ID: <56A5FD4A.407@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-
+Hi,
 On 01/21/2016 08:41 PM, Cyril Hrubis wrote:
 > Hi!
 > Just now I'm testing last set of changes for cgroup_fj tests (in the end
@@ -20,13 +19,15 @@ On 01/21/2016 08:41 PM, Cyril Hrubis wrote:
 > I've posted earlier but that can be workarounded for the release.
 >
 > What is the status from the rest of you?
-
-I observe several failures in my environment (a sparc64 in-house 
-kernel), but they look like environmental/kernel issues and should not 
-be considered as blockers.
-
 >
 > Can we do the release on Monday or Tuesday?
->
 
-Fine by me.
+There is fallocate04 test that is failing on UEK1 (kernel 2.6.32).
+I think we need to apply Shuang's patch that fixes it:
+[PATCH] syscall/fallocate04:skip test02 before kernel 2.6.38
+
+fallocate() doesn't return EOPNOTSUPP errno there, but silently proceed with
+FALLOC_FL_PUNCH_HOLE flag.
+
+Thanks,
+Alexey
