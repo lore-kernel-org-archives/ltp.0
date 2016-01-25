@@ -1,239 +1,154 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 30 Dec 2015 18:44:17 +0800
-Subject: [LTP] [PATCH 3/3] epoll_wait/epoll_wait03.c: add new testcase
-In-Reply-To: <1451472257-29472-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1451472257-29472-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <1451472257-29472-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
-List-Id: <ltp.lists.linux.it>
+Return-Path: <ltp-list-bounces@lists.sourceforge.net>
+Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
+	helo=mx.sourceforge.net)
+	by sfs-ml-3.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
+	(envelope-from <Raghavendra.Kakarla@inedasystems.com>)
+	id 1aNbnB-0007OY-Op
+	for ltp-list@lists.sourceforge.net; Mon, 25 Jan 2016 07:42:29 +0000
+Received: from mail-ma1ind01on0087.outbound.protection.outlook.com
+	([104.47.100.87] helo=IND01-MA1-obe.outbound.protection.outlook.com)
+	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.76) id 1aNbn8-0007AZ-0P
+	for ltp-list@lists.sourceforge.net; Mon, 25 Jan 2016 07:42:29 +0000
+From: Raghavendra Kakarla <Raghavendra.Kakarla@inedasystems.com>
+Date: Mon, 25 Jan 2016 07:26:58 +0000
+Message-ID: <MA1PR01MB00563932790F3E6F261130F382C70@MA1PR01MB0056.INDPRD01.PROD.OUTLOOK.COM>
+Content-Language: en-US
 MIME-Version: 1.0
+Subject: [LTP] Some test cases are failed in LTP for Mips32 platform
+List-Id: Linux Test Project General Discussions
+	<ltp-list.lists.sourceforge.net>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
+	<mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
+List-Post: <mailto:ltp-list@lists.sourceforge.net>
+List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
+	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============8855548780428875896=="
+Errors-To: ltp-list-bounces@lists.sourceforge.net
+To: "ltp-list@lists.sourceforge.net" <ltp-list@lists.sourceforge.net>
+
+--===============8855548780428875896==
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_MA1PR01MB00563932790F3E6F261130F382C70MA1PR01MB0056INDP_"
+
+--_000_MA1PR01MB00563932790F3E6F261130F382C70MA1PR01MB0056INDP_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Hi All,
+
+
+I built the LTP for the yocto and ran it on the My board which has the Mips=
+ interaptive CPU.
+
+
+After running all tests 42 test are getting failed.
+
+
+I have examine the each failed test case and noted down the issue.
+
+
+Following test cases are failed:
+
+
+1.bind02 - unable to open the socket to testuser
+2.chmod06 - Device busy error.
+3.getrusage03 - memory allocation failed
+4.Readahead02 - Page cache on our system is too small to hold whole testfil=
+e.
+5.rt_sigaction01 - Gives the buss error.
+
+
+Could you please help me to resolving this issues.
+
+
+Thanks in Advance.
+
+
+Regards,
+
+Raghavendra K.
+
+--_000_MA1PR01MB00563932790F3E6F261130F382C70MA1PR01MB0056INDP_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<style type=3D"text/css" style=3D"display:none;"><!-- P {margin-top:0;margi=
+n-bottom:0;} --></style>
+</head>
+<body dir=3D"ltr">
+<div id=3D"divtagdefaultwrapper" style=3D"font-size:12pt;color:#000000;back=
+ground-color:#FFFFFF;font-family:Calibri,Arial,Helvetica,sans-serif;">
+<p>Hi All,</p>
+<p><br>
+</p>
+<p>I built the LTP for the yocto and ran it on the My board which has the M=
+ips interaptive CPU.</p>
+<p><br>
+</p>
+<p>After running all tests 42 test are getting failed.</p>
+<p><br>
+</p>
+<p>I have examine the each failed test case and noted down the issue.</p>
+<p><br>
+</p>
+<p>Following test cases are failed:</p>
+<p><br>
+</p>
+<p>1.bind02 - unable to open the socket to testuser<br>
+2.chmod06 - Device busy error.<br>
+3.getrusage03 - memory allocation failed<br>
+4.Readahead02 - Page cache on our system is too small to hold whole testfil=
+e.<br>
+5.rt_sigaction01 - Gives the buss error.</p>
+<p><br>
+</p>
+<p>Could you please help me to resolving this issues.</p>
+<p><br>
+</p>
+<p>Thanks in Advance.<br>
+</p>
+<p><br>
+</p>
+<p>Regards,</p>
+<p>Raghavendra K.<br>
+</p>
+</div>
+</body>
+</html>
+
+--_000_MA1PR01MB00563932790F3E6F261130F382C70MA1PR01MB0056INDP_--
+
+
+--===============8855548780428875896==
 Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-To: ltp@lists.linux.it
+Content-Disposition: inline
 
-Verify that:
- 1) epoll_wait(2) fails if epfd is not a valid file descriptor
- 2) epoll_wait(2) fails if epfd is not an epoll file descriptor
- 3) epoll_wait(2) fails if maxevents is less than zero
- 4) epoll_wait(2) fails if maxevents is equal to zero
+------------------------------------------------------------------------------
+Site24x7 APM Insight: Get Deep Visibility into Application Performance
+APM + Mobile APM + RUM: Monitor 3 App instances at just $35/Month
+Monitor end-to-end web transactions and take corrective actions now
+Troubleshoot faster and improve end-user experience. Signup Now!
+http://pubads.g.doubleclick.net/gampad/clk?id=267308311&iu=/4140
+--===============8855548780428875896==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Expected result:
- 1) epoll_wait(2) should return -1 and set errno to EBADF
- 2) epoll_wait(2) should return -1 and set errno to EINVAL
- 3) epoll_wait(2) should return -1 and set errno to EINVAL
- 4) epoll_wait(2) should return -1 and set errno to EINVAL
+_______________________________________________
+Ltp-list mailing list
+Ltp-list@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/ltp-list
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- runtest/ltplite                                    |   1 +
- runtest/stress.part3                               |   1 +
- runtest/syscalls                                   |   1 +
- testcases/kernel/syscalls/.gitignore               |   1 +
- .../kernel/syscalls/epoll_wait/epoll_wait03.c      | 146 +++++++++++++++++++++
- 5 files changed, 150 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
-
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 08bca9a..4686c08 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -162,6 +162,7 @@ dup205 dup205
- 
- epoll_wait01 epoll_wait01
- epoll_wait02 epoll_wait02
-+epoll_wait03 epoll_wait03
- 
- execl01 execl01
- execle01 execle01
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index fb6bc0e..e198fb4 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -103,6 +103,7 @@ dup205 dup205
- 
- epoll_wait01 epoll_wait01
- epoll_wait02 epoll_wait02
-+epoll_wait03 epoll_wait03
- 
- execl01 execl01
- execle01 execle01
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6c79584..88c748c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -125,6 +125,7 @@ epoll_create1_01 epoll_create1_01
- epoll01 epoll-ltp
- epoll_wait01 epoll_wait01
- epoll_wait02 epoll_wait02
-+epoll_wait03 epoll_wait03
- 
- eventfd01 eventfd01
- 
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 46258ba..f63077a 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -100,6 +100,7 @@
- /epoll_create1/epoll_create1_01
- /epoll_wait/epoll_wait01
- /epoll_wait/epoll_wait02
-+/epoll_wait/epoll_wait03
- /eventfd/eventfd01
- /eventfd2/eventfd2_01
- /eventfd2/eventfd2_02
-diff --git a/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c b/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
-new file mode 100644
-index 0000000..34009c5
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_wait/epoll_wait03.c
-@@ -0,0 +1,146 @@
-+/*
-+ * Copyright (c) 2015 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
-+ */
-+
-+/*
-+ * Description:
-+ *  1) epoll_wait(2) fails if epfd is not a valid file descriptor
-+ *  2) epoll_wait(2) fails if epfd is not an epoll file descriptor
-+ *  3) epoll_wait(2) fails if maxevents is less than zero
-+ *  4) epoll_wait(2) fails if maxevents is equal to zero
-+ *
-+ * Expected Result:
-+ *  1) epoll_wait(2) should return -1 and set errno to EBADF
-+ *  2) epoll_wait(2) should return -1 and set errno to EINVAL
-+ *  3) epoll_wait(2) should return -1 and set errno to EINVAL
-+ *  4) epoll_wait(2) should return -1 and set errno to EINVAL
-+ */
-+
-+#include <sys/epoll.h>
-+#include <string.h>
-+#include <errno.h>
-+
-+#include "test.h"
-+#include "safe_macros.h"
-+
-+static int epfd, fds[2];
-+static struct epoll_event epevs[1];
-+
-+static struct test_case_t {
-+	int epfd;
-+	int maxevents;
-+	int exp_errno;
-+} test_cases[] = {
-+	/* test1 */
-+	{-1, 1, EBADF},
-+	/* test2 */
-+	{0, 1, EINVAL},
-+	/*
-+	 * test3
-+	 * temporarily set epfd to 0
-+	 * will be set to an epoll instance later
-+	 */
-+	{0, -1, EINVAL},
-+	/*
-+	 * test4
-+	 * temporarily set epfd to 0
-+	 * will be set to an epoll instance later
-+	 */
-+	{0, 0, EINVAL},
-+};
-+
-+char *TCID = "epoll_wait03";
-+int TST_TOTAL = ARRAY_SIZE(test_cases);
-+
-+static void setup(void);
-+static void verify_epoll_wait(struct test_case_t *test_cases);
-+static void cleanup(void);
-+
-+int main(int ac, char **av)
-+{
-+	int lc, tc;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		for (tc = 0; tc < TST_TOTAL; tc++)
-+			verify_epoll_wait(&test_cases[tc]);
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	SAFE_PIPE(NULL, fds);
-+
-+	epfd = epoll_create(1);
-+	if (epfd == -1) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "failed to create epoll instance");
-+	}
-+
-+	test_cases[2].epfd = epfd;
-+	test_cases[3].epfd = epfd;
-+
-+	epevs[0].events = EPOLLOUT;
-+	epevs[0].data.fd = fds[1];
-+
-+	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[1], &epevs[0])) {
-+		tst_brkm(TBROK | TERRNO, cleanup,
-+			 "failed to register epoll target");
-+	}
-+}
-+
-+static void verify_epoll_wait(struct test_case_t *test_cases)
-+{
-+	TEST(epoll_wait(test_cases->epfd, epevs, test_cases->maxevents, -1));
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "epoll_wait() succeed unexpectedly");
-+	} else {
-+		if (TEST_ERRNO == test_cases->exp_errno) {
-+			tst_resm(TPASS | TTERRNO,
-+				 "epoll_wait() fails as expected");
-+		} else {
-+			tst_resm(TFAIL | TTERRNO,
-+				 "epoll_wait() fails unexpectedly, "
-+				 "expected %d: %s", test_cases->exp_errno,
-+				 strerror(test_cases->exp_errno));
-+		}
-+	}
-+}
-+
-+static void cleanup(void)
-+{
-+	if (epfd > 0 && close(epfd))
-+		tst_resm(TWARN | TERRNO, "failed to close epfd");
-+
-+	if (close(fds[0]))
-+		tst_resm(TWARN | TERRNO, "close(fds[0]) failed");
-+
-+	if (close(fds[1]))
-+		tst_resm(TWARN | TERRNO, "close(fds[1]) failed");
-+}
--- 
-1.8.4.2
-
-
+--===============8855548780428875896==--
 
