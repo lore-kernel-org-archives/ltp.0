@@ -1,74 +1,32 @@
-From: Raghavendra Kakarla <Raghavendra.Kakarla@inedasystems.com>
-Date: Mon, 25 Jan 2016 09:37:38 +0000
-Subject: [LTP] Some LTP testcases are getting failed
-In-Reply-To: <56A5E4EB.4050802@oracle.com>
-References: <MA1PR01MB00562DFACF1908498176882C82C70@MA1PR01MB0056.INDPRD01.PROD.OUTLOOK.COM>,
- <56A5E4EB.4050802@oracle.com>
-Message-ID: <MA1PR01MB0056C6904C4A16BDB6646D2182C70@MA1PR01MB0056.INDPRD01.PROD.OUTLOOK.COM>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 25 Jan 2016 12:48:42 +0300
+Subject: [LTP] LTP release
+In-Reply-To: <20160121174101.GD19851@rei.lan>
+References: <20160121174101.GD19851@rei.lan>
+Message-ID: <56A5EF7A.6000708@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Stanislav,
-Thnak you for your response.
-
-Following is the complete output of the rt_sigaction01 test case.
-rt_sigaction01    0  TINFO  :  signal: 34 
-rt_sigaction01    1  TPASS  :  rt_sigaction call succeeded: result = 0 
-rt_sigaction01    0  TINFO  :  sa.sa_flags = SA_RESETHAND|SA_SIGINFO 
-Bus error
-
-Regards,
-Raghavendra K.
-________________________________________
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Sent: Monday, January 25, 2016 2:33 PM
-To: Raghavendra Kakarla; ltp@lists.linux.it
-Subject: Re: [LTP] Some LTP testcases are getting failed
-
 Hi!
 
-On 01/25/2016 11:02 AM, Raghavendra Kakarla wrote:
-> Hi All,
+On 01/21/2016 08:41 PM, Cyril Hrubis wrote:
+> Hi!
+> Just now I'm testing last set of changes for cgroup_fj tests (in the end
+> these were too bugy so I've did a partial rewrite) and once that is done
+> and pushed the release is green from my side. Minus the ROD problem that
+> I've posted earlier but that can be workarounded for the release.
 >
-> I built the LTP for the yocto and ran it on the My board which has the
-> Mips interaptive CPU.
->
-> After running all tests 42 test are getting failed.
->
-> I have examine the each failed test case and noted down the issue.
->
-> Following test cases are failed:
->
-> 1.bind02 - unable to open the socket to testuser
-> 2.chmod06 - Device busy error.
-> 3.getrusage03 - memory allocation failed
-> 4.Readahead02 - Page cache on our system is too small to hold whole
-> testfile.
-> 5.rt_sigaction01 - Gives the buss error.
+> What is the status from the rest of you?
 
-Regarding rt_sigaction01. Just a wild guess. Maybe ltp_rt_sigaction() in
-include/lapi/rt_sigaction.h needs some MIPS-specific changes. Anyway, it
-would be better if you provided the test output.
-
-
-
+I observe several failures in my environment (a sparc64 in-house 
+kernel), but they look like environmental/kernel issues and should not 
+be considered as blockers.
 
 >
-> Could you please help me to resolving this issues.
->
-> Thanks in Advance.
->
-> Regards,
-> Raghavendra K.
->
->
->
+> Can we do the release on Monday or Tuesday?
 >
 
-______________________________________________________________________
-This email has been scanned by the Symantec Email Security.cloud service.
-For more information please visit http://www.symanteccloud.com
-______________________________________________________________________
+Fine by me.
