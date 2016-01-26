@@ -1,59 +1,49 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 26 Jan 2016 14:41:52 +0800
-Subject: [LTP] LTP release
-In-Reply-To: <20160125122804.GC30655@rei.lan>
-References: <20160121174101.GD19851@rei.lan> <20160125122804.GC30655@rei.lan>
-Message-ID: <CAEemH2c72Qv9GKqDhoXoYHJLA4aLky9K7vDB9kx56EN2TTTpWw@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 26 Jan 2016 08:48:01 +0100
+Subject: [LTP] [BUG] oom hangs the system,
+ NMI backtrace shows most CPUs in shrink_slab
+In-Reply-To: <56A24760.5020503@redhat.com>
+References: <569D06F8.4040209@redhat.com>
+ <569E1010.2070806@I-love.SAKURA.ne.jp> <56A24760.5020503@redhat.com>
+Message-ID: <56A724B1.3000407@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+On 01/22/2016 04:14 PM, Jan Stancek wrote:
+> On 01/19/2016 11:29 AM, Tetsuo Handa wrote:
+>> although I
+>> couldn't find evidence that mlock() and madvice() are related with this hangup,
+> 
+> I simplified reproducer by having only single thread allocating
+> memory when OOM triggers:
+>   http://jan.stancek.eu/tmp/oom_hangs/console.log.3-v4.4-8606-with-memalloc.txt
+> 
+> In this instance it was mmap + mlock, as you can see from oom call trace.
+> It made it to do_exit(), but couldn't complete it:
 
-On Mon, Jan 25, 2016 at 8:28 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+I have extracted test from LTP into standalone reproducer (attached),
+if you want to give a try. It usually hangs my system within ~30
+minutes. If it takes too long, you can try disabling swap. From my past
+experience this usually helped to reproduce it faster on small KVM guests.
 
-> Hi!
-> > Can we do the release on Monday or Tuesday?
->
-> I've just pushed the cgroup_fj fix. Please have a look at it and ideally
-> run cgroup_fj the tests today, it should take less than hour.
->
-> The only two outstanding issues should now be fallocate04 and ROD with
-> redirection. I will have a look at the fallocate04 patch now, then try
-> to do something about the ROD redirection.
->
+# gcc oom_mlock.c -pthread -O2
+# echo 1 > /proc/sys/vm/overcommit_memory
+(optionally) # swapoff -a
+# ./a.out
 
-I did a quick ltp/mem[sched] test on RHEL7.2 with upstream-v4.4 kernel, it
-works fine except one thp05.c fails.
+Also, it's interesting to note, that when I disabled mlock() calls
+test ran fine over night. I'll look into confirming this observation
+on more systems.
 
-looks like the issue exist so long time with any kernel on x86_64 numa
-system.I just post a simple patch try to fix that.
-
-
->
-> If nothing else shows up I will tag the git and do the release tomorrow.
->
-
-Fine.
-
-
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
->
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
->
-
-
-
--- 
 Regards,
-Li Wang
-Email: liwang@redhat.com
+Jan
 -------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160126/99982a58/attachment.html>
+A non-text attachment was scrubbed...
+Name: oom_mlock.c
+Type: text/x-csrc
+Size: 1974 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160126/f54f7c7b/attachment.c>
