@@ -1,32 +1,35 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 26 Jan 2016 12:57:24 +0300
-Subject: [LTP] LTP release
-In-Reply-To: <20160125122804.GC30655@rei.lan>
-References: <20160121174101.GD19851@rei.lan> <20160125122804.GC30655@rei.lan>
-Message-ID: <56A74304.8000404@oracle.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 26 Jan 2016 18:17:22 +0800
+Subject: [LTP] [PATCH] lib/mem.c: exit from test_transparent_hugepage()
+ if shortage of memory
+In-Reply-To: <CAEemH2fJQh_g2cTtEL7mHEvmy1aqnucysgy7bkvbJCX2KE+wTA@mail.gmail.com>
+References: <1453790132-2360-1-git-send-email-liwang@redhat.com>
+ <CAEemH2fJQh_g2cTtEL7mHEvmy1aqnucysgy7bkvbJCX2KE+wTA@mail.gmail.com>
+Message-ID: <CAEemH2dohcOBq7wHrr5XP+YN2Zsf+Ha=ARC54iiL73rDXtcGzg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
+
+I recall a similar testcase thp04.c which had been removed not long ago,
+    commit 19cdd120b43aa6a6a4993b61e6ef675d1cdf04b4
+
+after read the words written by Michal Ho, and I found these two (thp04/05)
+cases are facing with very similar issue.
+
+now I doubt if we can really trust thp05 result PASS/FAIL for LTP, remove
+it or keep using(just reducing the nr_thps value)?
+
+http://article.gmane.org/gmane.linux.ltp/23104
 
 
-On 01/25/2016 03:28 PM, Cyril Hrubis wrote:
-> Hi!
->> Can we do the release on Monday or Tuesday?
->
-> I've just pushed the cgroup_fj fix. Please have a look at it and ideally
-> run cgroup_fj the tests today, it should take less than hour.
-
-Executed cgroup_fj with an in-house sparc64 kernel - they all passed, 
-and the current 4.1-based kernel in Linux for SPARC - the stress tests 
-cause a panic (but it's a known not-yet-fixed issue in the kernel).
-
->
-> The only two outstanding issues should now be fallocate04 and ROD with
-> redirection. I will have a look at the fallocate04 patch now, then try
-> to do something about the ROD redirection.
->
-> If nothing else shows up I will tag the git and do the release tomorrow.
->
+-- 
+Regards,
+Li Wang
+Email: liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160126/524b144d/attachment.html>
