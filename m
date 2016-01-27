@@ -1,132 +1,193 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 27 Jan 2016 10:33:56 -0500 (EST)
-Subject: [LTP] get_mempolicy failing to compile
-In-Reply-To: <CANKSX+EDVxxf-KuV4kZmogfmT1m=1pcHgsQ1wtrQjHSjLcwp8A@mail.gmail.com>
-References: <CANKSX+ENW0PPUWmJ5EjOtCJX+4qGppBvw-uW4W6eEC3WRDiWrw@mail.gmail.com>
- <1328964111.10534362.1453378477201.JavaMail.zimbra@redhat.com>
- <CANKSX+HPL_+G4YWYtS0K7hesk36H+3D=endwvQmzTK1bGqSaYg@mail.gmail.com>
- <898714872.10545516.1453380405909.JavaMail.zimbra@redhat.com>
- <CANKSX+E608-qFt=-_vneFeBL+BH3zjZGsJXyjJ74rv3k507UYw@mail.gmail.com>
- <13368452.10990988.1453451416635.JavaMail.zimbra@redhat.com>
- <CANKSX+Ega5EEVu5N_Zh2QAJRnBokoFy9mD85CjcBbL5=M4hP6g@mail.gmail.com>
- <CANKSX+EDVxxf-KuV4kZmogfmT1m=1pcHgsQ1wtrQjHSjLcwp8A@mail.gmail.com>
-Message-ID: <86787612.13141304.1453908836303.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 27 Jan 2016 16:35:21 +0100
+Subject: [LTP] [PATCH 7/7] pi_test: use only available CPUs
+In-Reply-To: <1450449335-18223-8-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1450449335-18223-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1450449335-18223-8-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20160127153521.GB32032@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> +#ifndef CPU_ALLOC
+> +#define CPU_ALLOC(ncpus) malloc(sizeof(cpu_set_t)); \
+> +if (ncpus > CPU_SETSIZE) { \
+> +	EPRINTF("UNRESOLVED: Your libc does not support masks with %ld cpus", \
+> +		ncpus); \
+> +	exit(UNRESOLVED); \
+> +}
+> +#endif
+> +
+> +#ifndef CPU_FREE
+> +#define CPU_FREE(ptr) free(ptr)
+> +#endif
+> +
+> +#ifndef CPU_ALLOC_SIZE
+> +#define CPU_ALLOC_SIZE(size) sizeof(cpu_set_t)
+> +#endif
+> +
+> +#ifndef CPU_ZERO_S
+> +#define CPU_ZERO_S(size, mask) CPU_ZERO(mask)
+> +#endif
+> +
+> +#ifndef CPU_SET_S
+> +#define CPU_SET_S(cpu, size, mask) CPU_SET(cpu, mask)
+> +#endif
+> +
+>  struct thread_param {
+>  	int index;
+>  	volatile int stop;
+> @@ -52,7 +77,6 @@ struct sample_param {
+>  	int priority;
+>  };
+>  
+> -static int cpus;
+>  static volatile int ts_stop;
+>  static volatile double base_time;
+>  
+> @@ -141,21 +165,141 @@ static void do_work(unsigned granularity_top, volatile unsigned *progress)
+>  	}
+>  }
+>  
+> +static void *test_calloc(size_t nmemb, size_t size)
+> +{
+> +	void *r;
+> +
+> +	r = calloc(nmemb, size);
+> +	if (r == NULL) {
+> +		EPRINTF("UNRESOLVED: calloc failed");
+> +		exit(UNRESOLVED);
+> +	}
+> +
+> +	return r;
+> +}
+> +
+> +static int first_available_cpu(int ncpus_max, size_t mask_size, cpu_set_t *mask)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ncpus_max; i++) {
+> +		if (CPU_ISSET_S(i, mask_size, mask))
+> +			return i;
+> +	}
+> +	return -1;
+> +}
+> +
+> +/*
+> + * Allocates a new array of 'struct thread_param' with
+> + * the number of TF entries increased to 'online CPUs - 1'.
+> + * All non-TF entries are bind to the first available online CPU,
+> + * each TF-entry is bind to its own online CPU.
+> + */
+> +static void init_tparam(struct thread_param *tpbase, int len,
+> +		  struct thread_param **tpnew, int *newlen)
+> +{
+> +	struct thread_param *tp;
+> +	cpu_set_t *mask;
+> +	size_t mask_size;
+> +	int i, cpu, ncpus_max, ncpus_online;
+> +
+> +	ncpus_max = sysconf(_SC_NPROCESSORS_CONF);
+> +	ncpus_online = sysconf(_SC_NPROCESSORS_ONLN);
+> +
+> +	if (ncpus_online < 2) {
+> +		EPRINTF("UNRESOLVED: we need at least %d online CPUs, got %d",
+> +			2, ncpus_online);
+> +		exit(UNRESOLVED);
+> +	}
+> +
+> +	*newlen = len - 1 + (ncpus_online - 1);
+> +
+> +	mask_size = CPU_ALLOC_SIZE(ncpus_max);
+> +	mask = CPU_ALLOC(ncpus_max);
+> +	if (mask == NULL) {
+> +		EPRINTF("UNRESOLVED: failed to allocate a CPU mask");
+> +		exit(UNRESOLVED);
+> +	}
+> +
+> +	if (sched_getaffinity(0, mask_size, mask)) {
+> +		EPRINTF("UNRESOLVED: sched_getaffinity: %s", strerror(errno));
+> +		CPU_FREE(mask);
+> +		exit(UNRESOLVED);
+> +	}
+> +
+> +	/* This is the CPU where all non-TF threads will be running */
+> +	cpu = first_available_cpu(ncpus_max, mask_size, mask);
+> +	if (cpu == -1) {
+> +		EPRINTF("UNRESOLVED: first_available_cpu failed");
+> +		CPU_FREE(mask);
+> +		exit(UNRESOLVED);
+> +	}
+> +	CPU_CLR_S(cpu, mask_size, mask);
+> +
+> +	tp = calloc(*newlen, sizeof(struct thread_param));
+> +
+> +	for (i = 0; i < len - 1; i++) {
+> +		tp[i] = tpbase[i];
+> +		tp[i].cpu = cpu;
+> +	}
+> +	for (i = len - 1; i < *newlen; i++) {
+> +		tp[i] = tpbase[len - 1];
+> +
+> +		cpu = first_available_cpu(ncpus_max, mask_size, mask);
+> +		if (cpu == -1) {
+> +			EPRINTF("UNRESOLVED: first_available_cpu failed");
+> +			CPU_FREE(mask);
+> +			exit(UNRESOLVED);
+> +		}
+> +		tp[i].cpu = cpu;
+> +		CPU_CLR_S(cpu, mask_size, mask);
+> +	}
+> +
+> +	CPU_FREE(mask);
+> +
+> +	*tpnew = tp;
+> +}
+> +
+> +static void test_set_affinity(pid_t pid, int cpu)
+> +{
+> +	cpu_set_t *mask;
+> +	size_t mask_size;
+> +	int ncpus_max, ncpus_online;
+> +
+> +	ncpus_max = sysconf(_SC_NPROCESSORS_CONF);
+> +	ncpus_online = sysconf(_SC_NPROCESSORS_ONLN);
+> +
+> +	if (cpu >= ncpus_max) {
+> +		EPRINTF("UNRESOLVED: invalid CPU specified: %d", cpu);
+> +		exit(UNRESOLVED);
+> +	}
+> +
+> +	mask_size = CPU_ALLOC_SIZE(ncpus_max);
+> +	mask = CPU_ALLOC(ncpus_max);
+> +	if (mask == NULL) {
+> +		EPRINTF("UNRESOLVED: failed to allocate a CPU mask");
+> +		exit(UNRESOLVED);
+> +	}
+> +
+> +	CPU_ZERO_S(mask_size, mask);
+> +	CPU_SET_S(cpu, mask_size, mask);
+> +
+> +	if (sched_setaffinity(pid, mask_size, mask)) {
+> +		EPRINTF("UNRESOLVED: pid %d: sched_setaffinity failed: %s",
+> +			pid, strerror(errno));
+> +		CPU_FREE(mask);
+> +		exit(UNRESOLVED);
+> +	}
+> +	CPU_FREE(mask);
+> +}
 
+Technically we must not use linux specific calls in the open posix
+testsuite without #ifdefing them around.
 
+And we have most of this functionality allready in
+open_posix_testsuite/include/affinity.h you should really use or
+modify and use functions from there since that makes it the only place
+that needs to be ported to other POSIX compatible OSes.
 
-
------ Original Message -----
-> From: "$rik@nth" <srikanth007m@gmail.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Wednesday, 27 January, 2016 9:39:26 AM
-> Subject: Re: [LTP] get_mempolicy failing to compile
-> 
-> Now it is failing here.. on the same setup i am able to compile the
-> sample numa program statically.
-> 
-> make[4]: Leaving directory
-> '/home/linaro/Srikanth/ltp/testcases/kernel/include'
-> gcc -static -g -O2 -fno-strict-aliasing -pipe -Wall -W
-> -Wold-style-definition
-> -I/home/linaro/Srikanth/ltp/testcases/kernel/include -D_GNU_SOURCE
-> -DNUMA_VERSION1_COMPATIBILITY -I../../../include -I../../../include
-> -static -pthread  -L../../../lib  numa_node_size.c   -lltp -lnuma -o
-> numa_node_size
-> numa_node_size.c: In function ?fmt_mem?:
-> numa_node_size.c:44:10: warning: comparison between signed and
-> unsigned integer expressions [-Wsign-compare]
->   if (mem == -1L)
->           ^
-> /usr/lib/gcc/aarch64-linux-gnu/4.9/../../../aarch64-linux-gnu/libnuma.a(libnuma.o):(.bss+0x38):
-> multiple definition of `numa_exit_on_error'
-
-That's likely because "numa_exit_on_error" is supposed to be defined
-by libnuma library:
-  http://linux.die.net/man/3/numa_exit_on_error
-
-Test defines it too, which creates conflict. We should consider removing it,
-(and that it doesn't break older libnuma releases):
-
-diff --git a/testcases/kernel/numa/numa_node_size.c b/testcases/kernel/numa/numa_node_size.c
-index 6338bc7..1375193 100644
---- a/testcases/kernel/numa/numa_node_size.c
-+++ b/testcases/kernel/numa/numa_node_size.c
-@@ -38,7 +38,7 @@
- #include <numa.h>
- #endif
- 
--int numa_exit_on_error = 0;
- char *fmt_mem(unsigned long long mem, char *buf)
- {
-        if (mem == -1L)
-
-Regards,
-Jan
-
-> /tmp/ccRABETR.o:(.bss+0x0): first defined here
-> /usr/lib/gcc/aarch64-linux-gnu/4.9/../../../aarch64-linux-gnu/libnuma.a(affinity.o):
-> In function `affinity_ip':
-> (.text+0x6dc): warning: Using 'getaddrinfo' in statically linked
-> applications requires at runtime the shared libraries from the glibc
-> version used for linking
-> collect2: error: ld returned 1 exit status
-> <builtin>: recipe for target 'numa_node_size' failed
-> make[3]: *** [numa_node_size] Error 1
-> make[3]: Leaving directory '/home/linaro/Srikanth/ltp/testcases/kernel/numa'
-> ../../include/mk/generic_trunk_target.inc:93: recipe for target 'all' failed
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory '/home/linaro/Srikanth/ltp/testcases/kernel'
-> ../include/mk/generic_trunk_target.inc:93: recipe for target 'all' failed
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory '/home/linaro/Srikanth/ltp/testcases'
-> Makefile:114: recipe for target 'testcases-all' failed
-> make: *** [testcases-all] Error 2
-> 
-> On Fri, Jan 22, 2016 at 12:10 PM, $rik@nth <srikanth007m@gmail.com> wrote:
-> > I did an softlink to arm-linux gcc after my initial mail.. So on
-> > latest one you will be not seeing.
-> >
-> > I will try on another development board. This is my 3rd board having
-> > problem :(
-> >
-> > On Fri, Jan 22, 2016 at 2:00 PM, Jan Stancek <jstancek@redhat.com> wrote:
-> >>
-> >>
-> >> ----- Original Message -----
-> >>> From: "$rik@nth" <srikanth007m@gmail.com>
-> >>> To: "Jan Stancek" <jstancek@redhat.com>
-> >>> Sent: Friday, 22 January, 2016 5:25:54 AM
-> >>> Subject: Re: [LTP] get_mempolicy failing to compile
-> >>>
-> >>> My environment is ARM ubuntu and all my libs and packages are in AMR.
-> >>
-> >> config.log you gave us is from x86_64 system named "hyd-lnxbld84".
-> >>
-> >>> Yes able to compile the source  static as well
-> >>> linaro@linaro-alip:~/Srikanth$ gcc -static numatest.c -lnuma
-> >>
-> >> This is a different system, isn't it?
-> >>
-> >> What I meant was "hyd-lnxbld84" system and gcc you use to
-> >> compile LTP:
-> >>   arm-linux-gnueabihf-gcc -static numatest.c -lnuma
-> >
-> >
-> >
-> > --
-> > Thanks & Regards,
-> > M.Srikanth Kumar.
-> 
-> 
-> 
-> --
-> Thanks & Regards,
-> M.Srikanth Kumar.
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
