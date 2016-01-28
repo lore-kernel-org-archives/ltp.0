@@ -1,35 +1,40 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 28 Jan 2016 12:40:03 +0100
-Subject: [LTP] [PATCH] numa_node_size: drop definition of numa_exit_on_error
-Message-ID: <83f07ff547bd812f586777e944097bae0b410ca6.1453981115.git.jstancek@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 28 Jan 2016 15:28:46 +0300
+Subject: [LTP] [PATCH v2 0/6] add open/openat + O_TMPFILE tests
+Message-ID: <1453984132-6240-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-numa_exit_on_error is defined by numactl library in libnuma.c,
-at least since version 0.9. Re-defining it in test can cause
-compile problems.
+v2:
+* move dir_not_empty() -> tst_dir_is_empty() to a library,
+* add SAFE_LINKAT, SAFE_READLINK macros,
+* move O_TMPFILE definition to lapi/fcntl.h
+* use relative path for test_dir,
+* enable len_strict in SAFE_WRITE,
+* set constant buffer size.
 
-Reported-by: M.Srikanth Kumar <srikanth007m@gmail.com>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/numa/numa_node_size.c | 1 -
- 1 file changed, 1 deletion(-)
+Alexey Kodanev (6):
+  lib/tst_dir_is_empty: add a library function
+  include/lapi/fcntl.h: add O_TMPFILE definition
+  lib/safe_macros: add linkat()
+  lib/safe_macros: add readlink()
+  kernel/syscalls: add new test with 'open() + O_TMPFILE'
+  kernel/syscalls/open14: openat03: add new test-cases
 
-diff --git a/testcases/kernel/numa/numa_node_size.c b/testcases/kernel/numa/numa_node_size.c
-index 6338bc73c864..378a1d5d1e54 100644
---- a/testcases/kernel/numa/numa_node_size.c
-+++ b/testcases/kernel/numa/numa_node_size.c
-@@ -38,7 +38,6 @@
- #include <numa.h>
- #endif
- 
--int numa_exit_on_error = 0;
- char *fmt_mem(unsigned long long mem, char *buf)
- {
- 	if (mem == -1L)
--- 
-1.8.3.1
+ include/lapi/fcntl.h                        |    4 +
+ include/safe_macros.h                       |   13 ++
+ include/test.h                              |    8 +
+ lib/safe_macros.c                           |   35 ++++
+ lib/tst_dir_is_empty.c                      |   49 +++++
+ runtest/syscalls                            |    2 +
+ testcases/kernel/syscalls/.gitignore        |    2 +
+ testcases/kernel/syscalls/open/open14.c     |  253 +++++++++++++++++++++++++++
+ testcases/kernel/syscalls/openat/openat03.c |  252 ++++++++++++++++++++++++++
+ 9 files changed, 618 insertions(+), 0 deletions(-)
+ create mode 100644 lib/tst_dir_is_empty.c
+ create mode 100644 testcases/kernel/syscalls/open/open14.c
+ create mode 100644 testcases/kernel/syscalls/openat/openat03.c
 
