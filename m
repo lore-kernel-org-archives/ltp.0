@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 28 Jan 2016 14:41:42 +0100
-Subject: [LTP] [PATCH v2 5/6] kernel/syscalls: add new test with 'open()
- + O_TMPFILE'
-In-Reply-To: <1453984132-6240-6-git-send-email-alexey.kodanev@oracle.com>
+Date: Thu, 28 Jan 2016 15:01:09 +0100
+Subject: [LTP] [PATCH v2 6/6] kernel/syscalls/open14: openat03: add new
+ test-cases
+In-Reply-To: <1453984132-6240-7-git-send-email-alexey.kodanev@oracle.com>
 References: <1453984132-6240-1-git-send-email-alexey.kodanev@oracle.com>
- <1453984132-6240-6-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20160128134142.GA16175@rei.lan>
+ <1453984132-6240-7-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20160128140109.GB16175@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,258 +13,262 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +#define _GNU_SOURCE
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
-> +#include <errno.h>
+> * create multiple directories and related temporary files;
+> 
+> * create multiple directories and link files into them. Check
+>   that files permissions correspond to the ones specified with
+>   open()/openat().
+
+I would say that for newly added code it makes more sense to add new
+files in one patch. It's kind of strange to add more code to files you
+have added in previous one.
+
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>  testcases/kernel/syscalls/open/open14.c     |  163 ++++++++++++++++++++++++---
+>  testcases/kernel/syscalls/openat/openat03.c |  160 ++++++++++++++++++++++++---
+>  2 files changed, 294 insertions(+), 29 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/open/open14.c b/testcases/kernel/syscalls/open/open14.c
+> index 3784cb3..37a900a 100644
+> --- a/testcases/kernel/syscalls/open/open14.c
+> +++ b/testcases/kernel/syscalls/open/open14.c
+> @@ -21,6 +21,7 @@
+>  #define _GNU_SOURCE
+>  #include <sys/types.h>
+>  #include <sys/stat.h>
+> +#include <unistd.h>
+>  #include <fcntl.h>
+>  #include <errno.h>
+>  
+> @@ -29,7 +30,8 @@
+>  #include "lapi/fcntl.h"
+>  
+>  char *TCID = "open14";
+> -int TST_TOTAL = 1;
+> +int TST_TOTAL = 3;
 > +
-> +#include "test.h"
-> +#include "safe_macros.h"
-> +#include "lapi/fcntl.h"
-> +
-> +char *TCID = "open14";
-> +int TST_TOTAL = 1;
-> +static const char *test_dir = ".";
-> +static const ssize_t size = 1024;
-> +static char buf[1024];
-> +static const ssize_t blocks_num = 4;
-> +static struct stat st;
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
+>  static const char *test_dir = ".";
+>  static const ssize_t size = 1024;
+>  static char buf[1024];
+> @@ -48,27 +50,36 @@ static void setup(void)
+>  	memset(buf, 1, size);
+>  }
+>  
+> -void test01(void)
+> +static void create_file(const char *dir_name, int *fd, int mode)
+>  {
+> -	int fd, i;
+> +	*fd = open(dir_name, O_TMPFILE | O_RDWR, mode);
+> +	if (*fd != -1)
+> +		return;
+>  
+> -	char path[PATH_MAX], tmp[PATH_MAX];
+> +	if (errno == EISDIR)
+> +		tst_brkm(TCONF, cleanup, "O_TMPFILE not supported");
+>  
+> -	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
+> +	tst_brkm(TFAIL | TERRNO, cleanup, "open() failed");
 > +}
-> +
-> +static void setup(void)
+
+Maybe it would be easier to try to open dummy tmpfile in setup and check
+for EISDIR there. Then we can just do SAFE_OPEN() in the rest of the
+code.
+
+> -	fd = open(test_dir, O_TMPFILE | O_WRONLY | O_SYNC);
+> -	if (fd == -1) {
+> -		if (errno == EISDIR) {
+> -			tst_brkm(TCONF, cleanup,
+> -				"O_TMPFILE not supported");
+> -		}
+> -		tst_resm(TFAIL | TERRNO, "open() failed");
+> -		return;
+> -	}
+> +static void write_file(int fd)
 > +{
-> +	tst_tmpdir();
-> +
-> +	memset(buf, 1, size);
-                       ^
-		       sizeof(buf)
+> +	int i;
+>  
+> -	tst_resm(TINFO, "writing data to the file");
+>  	for (i = 0; i < blocks_num; ++i)
+>  		SAFE_WRITE(cleanup, 1, fd, buf, size);
 > +}
 > +
 > +void test01(void)
 > +{
-> +	int fd, i;
-> +
+> +	int fd;
 > +	char path[PATH_MAX], tmp[PATH_MAX];
 > +
 > +	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
-> +
-> +	fd = open(test_dir, O_TMPFILE | O_WRONLY | O_SYNC);
-> +	if (fd == -1) {
-> +		if (errno == EISDIR) {
-> +			tst_brkm(TCONF, cleanup,
-> +				"O_TMPFILE not supported");
-> +		}
-> +		tst_resm(TFAIL | TERRNO, "open() failed");
-> +		return;
-> +	}
+> +	create_file(test_dir, &fd, 0600);
 > +
 > +	tst_resm(TINFO, "writing data to the file");
-> +	for (i = 0; i < blocks_num; ++i)
-> +		SAFE_WRITE(cleanup, 1, fd, buf, size);
+> +	write_file(fd);
+>  
+>  	SAFE_FSTAT(cleanup, fd, &st);
+>  	tst_resm(TINFO, "file size is '%zu'", st.st_size);
+> @@ -102,6 +113,126 @@ void test01(void)
+>  	tst_resm(TPASS, "test succeeded");
+>  }
+>  
+> +static void read_file(int fd)
+> +{
+> +	int i;
+> +	char tmp[size];
 > +
-> +	SAFE_FSTAT(cleanup, fd, &st);
-> +	tst_resm(TINFO, "file size is '%zu'", st.st_size);
+> +	SAFE_LSEEK(cleanup, fd, 0, SEEK_SET);
 > +
-> +	if (st.st_size != blocks_num * size) {
-> +		tst_resm(TFAIL, "not expected size: '%zu' != '%zu'",
-> +			 st.st_size, blocks_num * size);
-> +		SAFE_CLOSE(cleanup, fd);
-> +		return;
+> +	for (i = 0; i < blocks_num; ++i) {
+> +		SAFE_READ(cleanup, 0, fd, tmp, size);
+> +		if (strncmp(buf, tmp, size))\
+
+Using memcmp() here would be a bit cleaner solution.
+
+> +			tst_brkm(TBROK, cleanup, "got unexepected data");
+
+Here again, I would say that this should rather be TFAIL.
+
+> +	}
+> +}
+> +
+> +static void test02(void)
+> +{
+> +	const int files_num = 100;
+> +	int i, fd[files_num];
+> +	char path[PATH_MAX];
+> +
+> +	tst_resm(TINFO, "create files in multiple directories");
+> +	for (i = 0; i < files_num; ++i) {
+> +		snprintf(path, PATH_MAX, "tst02_%d", i);
+> +		SAFE_MKDIR(cleanup, path, 0700);
+> +		SAFE_CHDIR(cleanup, path);
+> +		SAFE_GETCWD(cleanup, path, PATH_MAX);
+> +		create_file(path, fd + i, 0600);
+
+We can do just create_file(".", fd + 1, 0600) here as well.
+
+> +		write_file(fd[i]);
 > +	}
 > +
-> +	tst_resm(TINFO, "looking for the file in '%s'", test_dir);
-> +	if (!tst_dir_is_empty(cleanup, test_dir, 1))
-> +		tst_brkm(TBROK, cleanup, "found a file, this is not expected");
-                          ^
-                         Isn't this TFAIL rather than TBROK?
-
-I see the difference as:
-
-If some of the preparation steps has failed -> TBROK
-If some test assertion fails -> TFAIL
-
-> +	tst_resm(TINFO, "file not found, OK");
+> +	tst_resm(TINFO, "removing test directories");
+> +	for (i = files_num - 1; i >= 0; --i) {
+> +		SAFE_CHDIR(cleanup, "../");
+> +		snprintf(path, PATH_MAX, "tst02_%d", i);
+> +		SAFE_RMDIR(cleanup, path);
+> +	}
 > +
-> +	snprintf(path, PATH_MAX,  "/proc/self/fd/%d", fd);
-> +	SAFE_READLINK(cleanup, path, tmp, PATH_MAX);
+> +	tst_resm(TINFO, "writing/reading temporary files");
+> +	for (i = 0; i < files_num; ++i) {
+> +		write_file(fd[i]);
+> +		read_file(fd[i]);
+> +	}
 > +
-> +	tst_resm(TINFO, "renaming '%s' -> '%s/tmpfile'",
-> +		 tmp, test_dir);
-> +	SAFE_LINKAT(cleanup, AT_FDCWD, path, AT_FDCWD, "tmpfile",
-> +		    AT_SYMLINK_FOLLOW);
-> +
-> +	if (tst_dir_is_empty(cleanup, test_dir, 1))
-> +		tst_brkm(TBROK, cleanup, "file not found");
-
-Here as well.
-
-> +	SAFE_UNLINK(cleanup, "tmpfile");
-> +	SAFE_CLOSE(cleanup, fd);
+> +	tst_resm(TINFO, "closing temporary files");
+> +	for (i = 0; i < files_num; ++i)
+> +		SAFE_CLOSE(cleanup, fd[i]);
 > +
 > +	tst_resm(TPASS, "test succeeded");
 > +}
-> +
-> +int main(int ac, char *av[])
+>
+> +static void link_tmp_file(int fd)
 > +{
-> +	int lc;
+> +	char path1[PATH_MAX], path2[PATH_MAX];
 > +
-> +	tst_parse_opts(ac, av, NULL, NULL);
+> +	snprintf(path1, PATH_MAX,  "/proc/self/fd/%d", fd);
+> +	snprintf(path2, PATH_MAX,  "tmpfile_%d", fd);
 > +
-> +	setup();
+> +	SAFE_LINKAT(cleanup, AT_FDCWD, path1, AT_FDCWD, path2,
+> +		    AT_SYMLINK_FOLLOW);
+> +}
 > +
-> +	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-> +		tst_count = 0;
-> +		test01();
+> +static const int tst_perm[] = { 0, 07777, 001, 0755, 0644, 0440 };
+> +
+> +static void test03(void)
+> +{
+> +	const int files_num = 100;
+> +	int i, fd[files_num];
+> +	char path[PATH_MAX];
+> +	struct stat st;
+> +	unsigned int j;
+> +	mode_t mask = umask(0);
+> +
+> +	umask(mask);
+> +
+> +	tst_resm(TINFO, "create multiple directories, link files into them");
+> +	tst_resm(TINFO, "and check file permissions");
+> +	for (i = 0, j = 0; i < files_num; ++i) {
+> +
+> +		snprintf(path, PATH_MAX, "tst03_%d", i);
+> +		SAFE_MKDIR(cleanup, path, 0700);
+> +		SAFE_CHDIR(cleanup, path);
+> +		SAFE_GETCWD(cleanup, path, PATH_MAX);
+> +
+> +		create_file(path, fd + i, tst_perm[j]);
+
+And here as well.
+
+> +		write_file(fd[i]);
+> +		read_file(fd[i]);
+> +
+> +		link_tmp_file(fd[i]);
+> +
+> +		snprintf(path, PATH_MAX, "tmpfile_%d", fd[i]);
+> +
+> +		SAFE_LSTAT(cleanup, path, &st);
+> +
+> +		mode_t exp_mode = tst_perm[j] & ~mask;
+> +
+> +		if ((st.st_mode & ~S_IFMT) != exp_mode) {
+> +			tst_brkm(TFAIL, cleanup,
+> +				"file mode read %o, but expected %o",
+> +				st.st_mode & ~S_IFMT, exp_mode);
+> +		}
+> +
+> +		if (++j >= ARRAY_SIZE(tst_perm))
+> +			j = 0;
 > +	}
 > +
-> +	cleanup();
-> +	tst_exit();
+> +	tst_resm(TINFO, "remove files, directories");
+> +	for (i = files_num - 1; i >= 0; --i) {
+> +		snprintf(path, PATH_MAX, "tmpfile_%d", fd[i]);
+> +		SAFE_UNLINK(cleanup, path);
+> +		SAFE_CLOSE(cleanup, fd[i]);
+> +
+> +		SAFE_CHDIR(cleanup, "..");
+> +
+> +		snprintf(path, PATH_MAX, "tst03_%d", i);
+> +		SAFE_RMDIR(cleanup, path);
+> +	}
+> +
+> +	tst_resm(TPASS, "test passed");
+
+We should be a bit more informative here.
+
+What about "permission tests passed"
+
+And for test02 we should say somethign as: "unlink tests passed"
+
 > +}
+> +
+>  int main(int ac, char *av[])
+>  {
+>  	int lc;
+> @@ -113,6 +244,8 @@ int main(int ac, char *av[])
+>  	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+>  		tst_count = 0;
+>  		test01();
+> +		test02();
+> +		test03();
+>  	}
+>  
+>  	cleanup();
 > diff --git a/testcases/kernel/syscalls/openat/openat03.c b/testcases/kernel/syscalls/openat/openat03.c
-> new file mode 100644
-> index 0000000..3a0c2f1
-> --- /dev/null
+> index 3a0c2f1..743442c 100644
+> --- a/testcases/kernel/syscalls/openat/openat03.c
 > +++ b/testcases/kernel/syscalls/openat/openat03.c
-> @@ -0,0 +1,120 @@
-> +/*
-> + * Copyright (c) 2015-2016 Oracle and/or its affiliates. All Rights Reserved.
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License as
-> + * published by the Free Software Foundation; either version 2 of
-> + * the License, or (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it would be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + *
-> + * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-> + *
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <sys/types.h>
-> +#include <sys/stat.h>
-> +#include <fcntl.h>
-> +#include <errno.h>
-> +
-> +#include "test.h"
-> +#include "safe_macros.h"
-> +#include "lapi/fcntl.h"
-> +
-> +char *TCID = "openat03";
-> +int TST_TOTAL = 1;
-> +static const char *test_dir = ".";
-> +static const ssize_t size = 1024;
-> +static char buf[1024];
-> +static const ssize_t blocks_num = 4;
-> +static struct stat st;
-> +
-> +static void cleanup(void)
-> +{
-> +	tst_rmdir();
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	tst_tmpdir();
-> +
-> +	memset(buf, 1, size);
 
-Here as well.
+The same applies for openat03.
 
-> +}
-> +
-> +void test01(void)
-> +{
-> +	int fd, i;
-> +
-> +	char path[PATH_MAX], tmp[PATH_MAX];
-> +
-> +	tst_resm(TINFO, "creating a file with O_TMPFILE flag");
-> +
-> +	fd = openat(AT_FDCWD, test_dir, O_TMPFILE | O_WRONLY | O_SYNC);
-> +	if (fd == -1) {
-> +		if (errno == EISDIR) {
-> +			tst_brkm(TCONF, cleanup,
-> +				"O_TMPFILE not supported");
-> +		}
-> +		tst_resm(TFAIL | TERRNO, "openat() failed");
-> +		return;
-> +	}
-> +
-> +	tst_resm(TINFO, "writing data to the file");
-> +	for (i = 0; i < blocks_num; ++i)
-> +		SAFE_WRITE(cleanup, 1, fd, buf, size);
-> +
-> +	SAFE_FSTAT(cleanup, fd, &st);
-> +	tst_resm(TINFO, "file size is '%zu'", st.st_size);
-> +
-> +	if (st.st_size != blocks_num * size) {
-> +		tst_resm(TFAIL, "not expected size: '%zu' != '%zu'",
-> +			 st.st_size, blocks_num * size);
-> +		SAFE_CLOSE(cleanup, fd);
-> +		return;
-> +	}
-> +
-> +	tst_resm(TINFO, "looking for the file in '%s'", test_dir);
-> +	if (!tst_dir_is_empty(cleanup, test_dir, 1))
-> +		tst_brkm(TBROK, cleanup, "found a file, this is not expected");
-
-And here.
-
-> +	tst_resm(TINFO, "file not found, OK");
-> +
-> +	snprintf(path, PATH_MAX,  "/proc/self/fd/%d", fd);
-> +	SAFE_READLINK(cleanup, path, tmp, PATH_MAX);
-> +
-> +	tst_resm(TINFO, "renaming '%s' -> '%s/tmpfile'",
-> +		 tmp, test_dir);
-> +	SAFE_LINKAT(cleanup, AT_FDCWD, path, AT_FDCWD, "tmpfile",
-> +		    AT_SYMLINK_FOLLOW);
-> +
-> +	if (tst_dir_is_empty(cleanup, test_dir, 1))
-> +		tst_brkm(TBROK, cleanup, "file not found");
-
-And here.
-
-> +	SAFE_UNLINK(cleanup, "tmpfile");
-> +	SAFE_CLOSE(cleanup, fd);
-> +
-> +	tst_resm(TPASS, "test succeeded");
-> +}
-> +
-> +int main(int ac, char *av[])
-> +{
-> +	int lc;
-> +
-> +	tst_parse_opts(ac, av, NULL, NULL);
-> +
-> +	setup();
-> +
-> +	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-> +		tst_count = 0;
-> +		test01();
-> +	}
-> +
-> +	cleanup();
-> +	tst_exit();
-> +}
-> -- 
-> 1.7.1
-> 
-> 
-> -- 
-> Mailing list info: http://lists.linux.it/listinfo/ltp
+The rest of the patchset looks good.
 
 -- 
 Cyril Hrubis
