@@ -1,101 +1,72 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 29 Jan 2016 17:08:54 +0800
-Subject: [LTP] [PATCH 1/2] removexattr/removexattr01.c: add new testcase
-Message-ID: <1454058535-25666-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Fri, 29 Jan 2016 17:08:55 +0800
+Subject: [LTP] [PATCH 2/2] removexattr/removexattr02.c: add new testcase
+In-Reply-To: <1454058535-25666-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1454058535-25666-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1454058535-25666-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The testcase checks the basic functionality of the removexattr(2).
-removexattr(2) removes the extended attribute identified by
-name and associated with the given path in the filesystem.
+1) removexattr(2) fails if the named attribute does not exist set
+   errno to ENOATTR.
+2) removexattr(2) fails if path is an empty string set errno to ENOENT.
+3) removexattr(2) fails when attempted to read from a invalid address
+   and set errno to EFAULT.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- runtest/ltplite                                    |   2 +
- runtest/syscalls                                   |   2 +
+ runtest/ltplite                                    |   1 +
+ runtest/syscalls                                   |   1 +
  testcases/kernel/syscalls/.gitignore               |   1 +
- testcases/kernel/syscalls/removexattr/Makefile     |  23 ++++
- .../kernel/syscalls/removexattr/removexattr01.c    | 125 +++++++++++++++++++++
- 5 files changed, 153 insertions(+)
- create mode 100644 testcases/kernel/syscalls/removexattr/Makefile
- create mode 100644 testcases/kernel/syscalls/removexattr/removexattr01.c
+ .../kernel/syscalls/removexattr/removexattr02.c    | 138 +++++++++++++++++++++
+ 4 files changed, 141 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/removexattr/removexattr02.c
 
 diff --git a/runtest/ltplite b/runtest/ltplite
-index 6ca24c5..f1851d6 100644
+index f1851d6..9e5fbbb 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
-@@ -640,6 +640,8 @@ recvfrom01 recvfrom01
- 
+@@ -641,6 +641,7 @@ recvfrom01 recvfrom01
  recvmsg01 recvmsg01
  
-+removexattr01 removexattr01
-+
+ removexattr01 removexattr01
++removexattr02 removexattr02
+ 
  rename01 rename01
  rename01A symlink01 -T rename01
- rename02 rename02
 diff --git a/runtest/syscalls b/runtest/syscalls
-index d206831..2c6db8c 100644
+index 2c6db8c..fb4fde5 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -861,6 +861,8 @@ recvmsg01 recvmsg01
- remap_file_pages01 remap_file_pages01
+@@ -862,6 +862,7 @@ remap_file_pages01 remap_file_pages01
  remap_file_pages02 remap_file_pages02
  
-+removexattr01 removexattr01
-+
+ removexattr01 removexattr01
++removexattr02 removexattr02
+ 
  rename01 rename01
  rename01A symlink01 -T rename01
- rename02 rename02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 1e0a85f..69e2298 100644
+index 69e2298..d9350ef 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -712,6 +712,7 @@
- /recvmsg/recvmsg01
+@@ -713,6 +713,7 @@
  /remap_file_pages/remap_file_pages01
  /remap_file_pages/remap_file_pages02
-+/removexattr/removexattr01
+ /removexattr/removexattr01
++/removexattr/removexattr02
  /rename/rename01
  /rename/rename02
  /rename/rename03
-diff --git a/testcases/kernel/syscalls/removexattr/Makefile b/testcases/kernel/syscalls/removexattr/Makefile
+diff --git a/testcases/kernel/syscalls/removexattr/removexattr02.c b/testcases/kernel/syscalls/removexattr/removexattr02.c
 new file mode 100644
-index 0000000..ed05a48
+index 0000000..b9ca791
 --- /dev/null
-+++ b/testcases/kernel/syscalls/removexattr/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (c) 2016 Fujitsu Ltd.
-+#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program.
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/removexattr/removexattr01.c b/testcases/kernel/syscalls/removexattr/removexattr01.c
-new file mode 100644
-index 0000000..23ad250
---- /dev/null
-+++ b/testcases/kernel/syscalls/removexattr/removexattr01.c
-@@ -0,0 +1,125 @@
++++ b/testcases/kernel/syscalls/removexattr/removexattr02.c
+@@ -0,0 +1,138 @@
 +/*
 +* Copyright (c) 2016 Fujitsu Ltd.
 +* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
@@ -113,12 +84,17 @@ index 0000000..23ad250
 +*/
 +
 +/*
-+* Test Name: removexattr01
++* Test Name: removexattr02
 +*
 +* Description:
-+* The testcase checks the basic functionality of the removexattr(2).
-+* removexattr(2) removes the extended attribute identified by
-+* name and associated with the given path in the filesystem.
++* 1) removexattr(2) fails if the named attribute does not exist.
++* 2) removexattr(2) fails if path is an empty string.
++* 3) removexattr(2) fails when attempted to read from a invalid address.
++*
++* Expected Result:
++* 1) removexattr(2) should return -1 and set errno to ENOATTR.
++* 2) removcxattr(2) should return -1 and set errno to ENOENT.
++* 3) removexattr(2) should return -1 and set errno to EFAULT.
 +*/
 +
 +#include "config.h"
@@ -132,22 +108,36 @@ index 0000000..23ad250
 +#include "test.h"
 +#include "safe_file_ops.h"
 +
-+char *TCID = "removexattr01";
++char *TCID = "removexattr02";
 +
 +#ifdef HAVE_ATTR_XATTR_H
 +#define USER_KEY	"user.test"
 +#define VALUE	"test"
 +#define VALUE_SIZE	4
 +
-+static void verify_removexattr(void);
++static struct test_case {
++	const char *path;
++	char *name;
++	int exp_err;
++} tc[] = {
++	/* test1 */
++	{"testfile", "user.test1", ENOATTR},
++	/* test2 */
++	{"", USER_KEY, ENOENT},
++	/* test3 */
++	{NULL, USER_KEY, EFAULT}
++};
++
++static void verify_removexattr(struct test_case *tc);
 +static void setup(void);
 +static void cleanup(void);
 +
-+int TST_TOTAL = 1;
++int TST_TOTAL = ARRAY_SIZE(tc);
 +
 +int main(int ac, char **av)
 +{
 +	int lc;
++	int i;
 +
 +	tst_parse_opts(ac, av, NULL, NULL);
 +
@@ -155,36 +145,30 @@ index 0000000..23ad250
 +
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
-+
-+		verify_removexattr();
++		for (i = 0; i < TST_TOTAL; i++)
++			verify_removexattr(&tc[i]);
 +	}
 +
 +	cleanup();
 +	tst_exit();
 +}
 +
-+static void verify_removexattr(void)
++static void verify_removexattr(struct test_case *tc)
 +{
-+	int n;
-+	int size = 64;
-+	char buf[size];
 +
-+	TEST(removexattr("testfile", USER_KEY));
-+	if (TEST_RETURN != 0) {
-+		tst_resm(TFAIL, "removexattr() failed");
-+		return;
++	TEST(removexattr(tc->path, tc->name));
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL, "removexattr() succeeded unexpectedly");
++	} else {
++		if (TEST_ERRNO != tc->exp_err) {
++			tst_resm(TFAIL | TTERRNO, "removexattr() failed "
++				 "unexpectedly, expected errno is %s",
++				 tst_strerrno(tc->exp_err));
++		} else {
++			tst_resm(TPASS | TTERRNO,
++				 "removexattr() failed as expected");
++		}
 +	}
-+
-+	n = getxattr("testfile", USER_KEY, buf, size);
-+	if (n != -1) {
-+		tst_resm(TFAIL, "getxattr() succeeded unexpectedly");
-+		return;
-+	}
-+
-+	if (errno != ENOATTR)
-+		tst_resm(TFAIL, "removexattr() failed");
-+	else
-+		tst_resm(TPASS, "removexattr() succeeded");
 +}
 +
 +static void setup(void)
