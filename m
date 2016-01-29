@@ -1,88 +1,110 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 29 Jan 2016 21:36:13 +0800
-Subject: [LTP] [PATCH] mem/oom: do cleanup work for oom0{3,4,5}
-Message-ID: <1454074573-5205-1-git-send-email-liwang@redhat.com>
+From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
+Date: Fri, 29 Jan 2016 23:56:25 +0800
+Subject: [LTP] [PATCH] commands/mkswap01: Update wait_for_file function
+Message-ID: <1454082985-3549-1-git-send-email-shuang.qiu@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-oom03 should not test on aarch64 system which does not support NUMA, so I add
-the function to make sure it could be skiped.
------
-  # ./oom03
-  oom03       0  TINFO  :  set overcommit_memory to 1
-  ...
-  oom03       0  TINFO  :  expected victim is 29154.
-  oom03       6  TPASS  :  victim signalled: (9) SIGKILL
-  oom03       7  TCONF  :  numa_helper.c:86: syscall(236) __NR_get_mempolicy not supported on your arch
-  oom03       8  TCONF  :  numa_helper.c:86: Remaining cases not appropriate for configuration
+From: Shuang Qiu <shuang.qiu@oracle.com>
 
-oom0{4,5} get fails on aarch64 system if run it in continuous twice(the
-first time skiped with TCONF, then the second time it will be failed).
------
-  # ./oom05
-  oom05       0  TINFO  :  set overcommit_memory to 1
-  oom05       1  TCONF  :  numa_helper.c:86: syscall(236) __NR_get_mempolicy not supported on your arch
-  oom05       2  TCONF  :  numa_helper.c:86: Remaining cases not appropriate for configuration
+In commit a76b72ad31fa7bb22a09f323dadd5db7c00c7f56,it depends on the files 
+under /dev/disk/by-* in wait_for_file function.But sometimes udev does not 
+refresh automatically during runtime and the symbolic links will not appear.
+Update the function to use blkid instead.
 
-  # ./oom05
-  oom05       0  TINFO  :  set overcommit_memory to 1
-  oom05       1  TBROK  :  mem.c:997: mkdir /dev/cgroup: errno=EEXIST(17): File exists
-  oom05       2  TBROK  :  mem.c:997: Remaining cases broken
-  oom05       0  TINFO  :  set overcommit_memory to 1
-
-the reason is that it doesn't pass the cleanup to the tst_brkm() there.
-
-Signed-off-by: Li Wang <liwang@redhat.com>
------
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
 ---
- testcases/kernel/mem/oom/oom03.c | 3 +++
- testcases/kernel/mem/oom/oom04.c | 2 +-
- testcases/kernel/mem/oom/oom05.c | 2 +-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ testcases/commands/mkswap/mkswap01.sh |   25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-diff --git a/testcases/kernel/mem/oom/oom03.c b/testcases/kernel/mem/oom/oom03.c
-index 3afc3de..eabaeb9 100644
---- a/testcases/kernel/mem/oom/oom03.c
-+++ b/testcases/kernel/mem/oom/oom03.c
-@@ -94,6 +94,9 @@ void setup(void)
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 	TEST_PAUSE;
+diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
+index ae4c98a..fdfc712 100755
+--- a/testcases/commands/mkswap/mkswap01.sh
++++ b/testcases/commands/mkswap/mkswap01.sh
+@@ -46,25 +46,26 @@ cleanup()
+ 	tst_rmdir
+ }
  
-+	if (!is_numa(NULL))
-+		tst_brkm(TCONF, NULL, "The case need a NUMA system.");
-+
- 	overcommit = get_sys_tune("overcommit_memory");
- 	set_sys_tune("overcommit_memory", 1, 1);
- 	mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
-diff --git a/testcases/kernel/mem/oom/oom04.c b/testcases/kernel/mem/oom/oom04.c
-index ffb5503..0a315e1 100644
---- a/testcases/kernel/mem/oom/oom04.c
-+++ b/testcases/kernel/mem/oom/oom04.c
-@@ -100,7 +100,7 @@ void setup(void)
- 	 */
- 	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
- 	if (ret < 0)
--		tst_brkm(TBROK, NULL, "Failed to get a memory node "
-+		tst_brkm(TBROK, cleanup, "Failed to get a memory node "
- 				      "using get_allowed_nodes()");
- 	write_cpusets(memnode);
+-wait_for_file()
++wait_for_device()
+ {
+-	local path="$1"
++	local token="$1"
+ 	local retries=10
+ 
+-	if [ -z "$path" ]; then
++	if [ -z "$token" ]; then
+ 		return
+ 	fi
+ 
+ 	while [ $retries -gt 0 ]; do
+-		if [ -e "$path" ]; then
++		blkid -t "$token" $TST_DEVICE >/dev/null
++		if [ $? -eq 0 ]; then
+ 			return
+ 		fi
+-		tst_resm TINFO "Waiting for $path to appear"
++		tst_resm TINFO "Waiting for device $token prepared"
+ 		retries=$((retries - 1))
+ 		tst_sleep 10ms
+ 	done
+ 
+-	tst_resm TWARN "The file $path haven't appeared"
++	tst_resm TWARN "The device $token haven't prepared"
  }
-diff --git a/testcases/kernel/mem/oom/oom05.c b/testcases/kernel/mem/oom/oom05.c
-index 9cd49a7..44a243e 100644
---- a/testcases/kernel/mem/oom/oom05.c
-+++ b/testcases/kernel/mem/oom/oom05.c
-@@ -125,7 +125,7 @@ void setup(void)
- 	 */
- 	ret = get_allowed_nodes(NH_MEMS, 1, &memnode);
- 	if (ret < 0)
--		tst_brkm(TBROK, NULL, "Failed to get a memory node "
-+		tst_brkm(TBROK, cleanup, "Failed to get a memory node "
- 				      "using get_allowed_nodes()");
- 	write_cpusets(memnode);
- }
+ 
+ mkswap_verify()
+@@ -72,7 +73,7 @@ mkswap_verify()
+ 	local mkswap_op="$1"
+ 	local op_arg="$2"
+ 	local swapfile="$3"
+-	local dev_file="$5"
++	local token="$5"
+ 
+ 	local before=`awk '/SwapTotal/ {print $2}' /proc/meminfo`
+ 
+@@ -84,7 +85,7 @@ mkswap_verify()
+ 		local pagesize=$PAGE_SIZE
+ 	fi
+ 
+-	wait_for_file "$dev_file"
++	wait_for_device "$token"
+ 
+ 	swapon $swapfile 2>/dev/null
+ 
+@@ -138,7 +139,7 @@ mkswap_test()
+ 	local op_arg="$2"
+ 	local device="$3"
+ 	local size="$4"
+-	local dev_file="$5"
++	local token="$5"
+ 
+ 	local mkswap_cmd="mkswap $mkswap_op $op_arg $TST_DEVICE $size"
+ 
+@@ -156,7 +157,7 @@ mkswap_test()
+ 	fi
+ 
+ 	if [ -n "$device" ]; then
+-		mkswap_verify "$mkswap_op" "$op_arg" "$device" "$size" "$dev_file"
++		mkswap_verify "$mkswap_op" "$op_arg" "$device" "$size" "$token"
+ 		if [ $? -ne 0 ]; then
+ 			tst_resm TFAIL "'${mkswap_cmd}' failed, not expected."
+ 			return
+@@ -173,9 +174,9 @@ mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-10000))"
+ mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+10000))"
+ mkswap_test "-c" "" "$TST_DEVICE"
+ mkswap_test "-p" "2048" "$TST_DEVICE"
+-mkswap_test "-L" "ltp_testswap" "-L ltp_testswap" "" "/dev/disk/by-label/ltp_testswap"
++mkswap_test "-L" "ltp_testswap" "-L ltp_testswap" "" "LABEL=ltp_testswap"
+ mkswap_test "-v1" "" "$TST_DEVICE"
+-mkswap_test "-U" "$UUID" "-U $UUID" "" "/dev/disk/by-uuid/$UUID"
++mkswap_test "-U" "$UUID" "-U $UUID" "" "UUID=$UUID"
+ mkswap_test "-V"
+ mkswap_test "-h"
+ 
 -- 
-1.9.3
+1.7.9.5
 
