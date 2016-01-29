@@ -1,98 +1,68 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 29 Jan 2016 15:05:46 +0300
-Subject: [LTP] [PATCH v3 1/5] lib/tst_dir_is_empty: add a library function
+Date: Fri, 29 Jan 2016 15:05:48 +0300
+Subject: [LTP] [PATCH v3 3/5] lib/safe_macros: add linkat()
 In-Reply-To: <1454069150-27889-1-git-send-email-alexey.kodanev@oracle.com>
 References: <1454069150-27889-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1454069150-27889-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1454069150-27889-4-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Checks if a given directory is empty.
-
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- include/test.h         |    8 +++++++
- lib/tst_dir_is_empty.c |   49 ++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 57 insertions(+), 0 deletions(-)
- create mode 100644 lib/tst_dir_is_empty.c
+ include/safe_macros.h |    7 +++++++
+ lib/safe_macros.c     |   18 ++++++++++++++++++
+ 2 files changed, 25 insertions(+), 0 deletions(-)
 
-diff --git a/include/test.h b/include/test.h
-index fc07dae..c364b75 100644
---- a/include/test.h
-+++ b/include/test.h
-@@ -441,6 +441,14 @@ int tst_fs_fill_hardlinks(void (*cleanup) (void), const char *dir);
- int tst_fs_fill_subdirs(void (*cleanup) (void), const char *dir);
+diff --git a/include/safe_macros.h b/include/safe_macros.h
+index ab09699..e4041d4 100644
+--- a/include/safe_macros.h
++++ b/include/safe_macros.h
+@@ -157,6 +157,13 @@ int	safe_link(const char *file, const int lineno,
+ #define SAFE_LINK(cleanup_fn, oldpath, newpath) \
+         safe_link(__FILE__, __LINE__, cleanup_fn, (oldpath), (newpath))
  
- /*
-+ * lib/tst_dir_is_empty.c
-+ *
-+ * Checks if a given directory contains any entities,
-+ * returns 1 if directory is empty, 0 otherwise
-+ */
-+int tst_dir_is_empty(void (*cleanup) (void), const char *name, int verbose);
++int	safe_linkat(const char *file, const int lineno,
++		    void (cleanup_fn)(void), int olddirfd, const char *oldpath,
++		    int newdirfd, const char *newpath, int flags);
++#define SAFE_LINKAT(cleanup_fn, olddirfd, oldpath, newdirfd, newpath, flags) \
++	safe_linkat(__FILE__, __LINE__, cleanup_fn, (olddirfd), (oldpath), \
++		    (newdirfd), (newpath), (flags))
 +
-+/*
-  * lib/tst_pid.c
-  *
-  * Get a pid value not used by the OS
-diff --git a/lib/tst_dir_is_empty.c b/lib/tst_dir_is_empty.c
-new file mode 100644
-index 0000000..75df50d
---- /dev/null
-+++ b/lib/tst_dir_is_empty.c
-@@ -0,0 +1,49 @@
-+/*
-+ * Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ *
-+ * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+ *
-+ */
-+
-+#include <string.h>
-+#include <sys/types.h>
-+#include <dirent.h>
-+
-+#include "test.h"
-+#include "safe_macros.h"
-+
-+int tst_dir_is_empty(void (cleanup_fn)(void), const char *name, int verbose)
+ int	safe_symlink(const char *file, const int lineno,
+                      void (cleanup_fn)(void), const char *oldpath,
+                      const char *newpath);
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index 173d72f..9fa6ac4 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -391,6 +391,24 @@ int safe_link(const char *file, const int lineno,
+ 	return rval;
+ }
+ 
++int safe_linkat(const char *file, const int lineno,
++		void (cleanup_fn)(void), int olddirfd, const char *oldpath,
++		int newdirfd, const char *newpath, int flags)
 +{
-+	struct dirent *entry;
-+	DIR *dir = SAFE_OPENDIR(cleanup_fn, name);
-+	int ret = 1;
++	int rval;
 +
-+	while ((entry = SAFE_READDIR(cleanup_fn, dir)) != NULL) {
-+		const char *file = entry->d_name;
++	rval = linkat(olddirfd, oldpath, newdirfd, newpath, flags);
 +
-+		if (!strcmp(file, "..") || !strcmp(file, "."))
-+			continue;
-+
-+		if (verbose)
-+			tst_resm(TINFO, "found a file: %s", file);
-+		ret = 0;
-+		break;
++	if (rval == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: linkat(%d,%s,%d,%s,%d) failed",
++			 file, lineno, olddirfd, oldpath, newdirfd,
++			 newpath, flags);
 +	}
 +
-+	SAFE_CLOSEDIR(cleanup_fn, dir);
-+
-+	return ret;
++	return rval;
 +}
++
+ int safe_symlink(const char *file, const int lineno,
+                  void (cleanup_fn)(void), const char *oldpath,
+                  const char *newpath)
 -- 
 1.7.1
 
