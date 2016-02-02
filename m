@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 2 Feb 2016 15:14:15 +0100
-Subject: [LTP] [PATCH] syscalls/fchmodat: fix test,
- don't use test current directory
-In-Reply-To: <1454408074-3149-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1454408074-3149-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20160202141415.GB19199@rei.lan>
+Date: Tue, 2 Feb 2016 15:35:25 +0100
+Subject: [LTP] [PATCH] commands/mkswap01: Update wait_for_file function
+In-Reply-To: <1454082985-3549-1-git-send-email-shuang.qiu@oracle.com>
+References: <1454082985-3549-1-git-send-email-shuang.qiu@oracle.com>
+Message-ID: <20160202143525.GC19199@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,30 +11,20 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> @@ -73,6 +73,7 @@ int main(int ac, char **av)
->  {
->  	int lc;
->  	int i;
-> +	size_t k;
->  
->  	/* Disable test if the version of the kernel is less than 2.6.16 */
->  	if ((tst_kvercmp(2, 6, 16)) < 0) {
-> @@ -104,6 +105,12 @@ int main(int ac, char **av)
->  			}
->  		}
->  
-> +		for (k = 0; k < ARRAY_SIZE(tst_fds); ++k)
-> +			SAFE_CLOSE(cleanup, tst_fds[k]);
-> +
-> +		SAFE_UNLINK(cleanup, testfile);
-> +		SAFE_UNLINK(cleanup, testfile3);
-> +		SAFE_RMDIR(cleanup, pathname);
+> In commit a76b72ad31fa7bb22a09f323dadd5db7c00c7f56,it depends on the files 
+> under /dev/disk/by-* in wait_for_file function.But sometimes udev does not 
+> refresh automatically during runtime and the symbolic links will not appear.
 
-Is there any reason why we call the setup_every_copy() for each
-iteration instead of doing it once in the setup()?
+Isn't that udev bug?
 
+> Update the function to use blkid instead.
 
-Otherwise the patch looks good.
+Does actually the swapon in the verify function work? Since as far as I
+can tell it actually opens the symlink in question in order to get the
+swap device.
+
+Have you tried stracing it in case that the code waiting for the device
+timeouted?
 
 -- 
 Cyril Hrubis
