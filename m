@@ -1,8 +1,8 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue,  2 Feb 2016 19:08:12 +0300
-Subject: [LTP] [PATCH v2] syscalls/fchmodat: fix test,
+Date: Tue,  2 Feb 2016 19:11:09 +0300
+Subject: [LTP] [PATCH v3] syscalls/fchmodat: fix test,
 	don't use test current directory
-Message-ID: <1454429292-4804-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1454429469-4915-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,12 +18,13 @@ To: ltp@lists.linux.it
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
 v2: move setup_every_copy() to setup()
+v3: remove setup_every_copy()
 
- testcases/kernel/syscalls/fchmodat/fchmodat01.c |   80 ++++++++---------------
- 1 files changed, 28 insertions(+), 52 deletions(-)
+ testcases/kernel/syscalls/fchmodat/fchmodat01.c |   78 +++++++---------------
+ 1 files changed, 25 insertions(+), 53 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/fchmodat/fchmodat01.c b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
-index 19e9ad5..4a72c6f 100644
+index 19e9ad5..0d63be6 100644
 --- a/testcases/kernel/syscalls/fchmodat/fchmodat01.c
 +++ b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
 @@ -43,6 +43,7 @@
@@ -59,7 +60,7 @@ index 19e9ad5..4a72c6f 100644
  		tst_count = 0;
  
  		for (i = 0; i < TST_TOTAL; i++) {
-@@ -103,7 +101,6 @@ int main(int ac, char **av)
+@@ -103,75 +101,49 @@ int main(int ac, char **av)
  					 TEST_ERRNO, strerror(TEST_ERRNO));
  			}
  		}
@@ -67,14 +68,12 @@ index 19e9ad5..4a72c6f 100644
  	}
  
  	cleanup();
-@@ -112,66 +109,45 @@ int main(int ac, char **av)
+ 	tst_exit();
+ }
  
- void setup_every_copy(void)
- {
-+}
-+
+-void setup_every_copy(void)
 +void setup(void)
-+{
+ {
 +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 +
 +	tst_tmpdir();
@@ -125,12 +124,12 @@ index 19e9ad5..4a72c6f 100644
 -	}
 +	fds[0] = SAFE_OPEN(cleanup, pathname, O_DIRECTORY);
 +	fds[1] = fds[4] = fds[0];
++
++	SAFE_OPEN(cleanup, testfile, O_CREAT | O_RDWR, 0600);
++	SAFE_OPEN(cleanup, testfile2, O_CREAT | O_RDWR, 0600);
  
 -	fds[0] = fds[1] = fds[4] = dirfd;
 -	fds[2] = fd;
-+	SAFE_OPEN(cleanup, testfile, O_CREAT | O_RDWR, 0600);
-+	SAFE_OPEN(cleanup, testfile2, O_CREAT | O_RDWR, 0600);
-+
 +	fds[2] = SAFE_OPEN(cleanup, testfile3, O_CREAT | O_RDWR, 0600);
  	fds[3] = 100;
  	fds[5] = AT_FDCWD;
