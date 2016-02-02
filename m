@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 2 Feb 2016 16:45:24 +0100
-Subject: [LTP] [PATCH V2 04/32] build: Add option to select libc
- implementation
-In-Reply-To: <1452302060-103643-4-git-send-email-raj.khem@gmail.com>
+Date: Tue, 2 Feb 2016 16:48:12 +0100
+Subject: [LTP] [PATCH V2 05/32] kernel/controllers: Link with libfts
+ explicitly on musl
+In-Reply-To: <1452302060-103643-5-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
- <1452302060-103643-4-git-send-email-raj.khem@gmail.com>
-Message-ID: <20160202154524.GE19199@rei.lan>
+ <1452302060-103643-5-git-send-email-raj.khem@gmail.com>
+Message-ID: <20160202154812.GF19199@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,18 +13,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> There are more than glibc for C library implementation available on
-> linux now a days, uclibc cloaked like glibc but musl e.g. is very
-> different and does not implement all GNU extentions
-> 
-> Disable tests specifically not building _yet_ on musl based systems
+> musl does not implement fts like glibc and therefore it depends on
+> external implementation for all fts APIs
 
-What should be done, instead of this musl specific hacks, is to add
-configure checks for the features that are not supported on musl and
-uses these as criteria for disabling the testcases. This will work
-correctly for any libc implementaion and the testcases will be enabled
-automatically if musl decides to actually implement anything that is not
-supported at the moment.
+DTTO, this should be configure test that would check if fts APIs needs
+-lfts. The test should export FTS_LIBS in config.mk which would be set
+to -lfts if needed and used in the corresponding Makefiles,
 
 -- 
 Cyril Hrubis
