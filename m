@@ -1,37 +1,51 @@
-From: Khem Raj <raj.khem@gmail.com>
-Date: Tue, 2 Feb 2016 10:43:56 -0800
-Subject: [LTP] [PATCH V2 01/32] ltp: Don't link against libfl
-In-Reply-To: <20160202180256.GT19199@rei.lan>
-References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
- <20160202180256.GT19199@rei.lan>
-Message-ID: <7027DA49-ED54-45A6-AE8B-A23542F5B266@gmail.com>
+From: Shuang Qiu <shuang.qiu@oracle.com>
+Date: Wed, 03 Feb 2016 09:28:59 +0800
+Subject: [LTP] [PATCH] commands/mkswap01: Update wait_for_file function
+In-Reply-To: <20160202143525.GC19199@rei.lan>
+References: <1454082985-3549-1-git-send-email-shuang.qiu@oracle.com>
+ <20160202143525.GC19199@rei.lan>
+Message-ID: <56B157DB.3010206@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-> On Feb 2, 2016, at 10:02 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> 
+Hi Cyril,
+Thanks for review.
+On 02/02/2016 10:35 PM, Cyril Hrubis wrote:
 > Hi!
-> I've pushed 11 patches from the patchset, thanks.
+>> In commit a76b72ad31fa7bb22a09f323dadd5db7c00c7f56,it depends on the files
+>> under /dev/disk/by-* in wait_for_file function.But sometimes udev does not
+>> refresh automatically during runtime and the symbolic links will not appear.
+> Isn't that udev bug?
+It does not look like a bug,restart udev(or run udevtrigger) or 
+partprobe will create the symbolic link.
+>
+>> Update the function to use blkid instead.
+> Does actually the swapon in the verify function work? Since as far as I
+> can tell it actually opens the symlink in question in order to get the
+> swap device.
+>
+> Have you tried stracing it in case that the code waiting for the device
+> timeouted?
+I tried it with UEK.Sometimes waiting for device timeout but swapon 
+works,i.e.:
 
-Thanks Cyril. I will rework the ones I have feedback on and publish another pull request
-soon.
+...
+...
 
-> 
-> There are still four that haven't been reviewed, I will finish them
-> tomorrow.
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+mkswap01 6 TINFO : Waiting for /dev/disk/by-label/ltp_testswap to appear
+mkswap01 6 TINFO : Waiting for /dev/disk/by-label/ltp_testswap to appear
+mkswap01 6 TINFO : Waiting for /dev/disk/by-label/ltp_testswap to appear
+mkswap01 6 TWARN : The file /dev/disk/by-label/ltp_testswap haven't appeared
+mkswap01 6 TPASS : 'mkswap -L ltp_testswap /dev/sda7 ' passed.
+...
 
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 204 bytes
-Desc: Message signed with OpenPGP using GPGMail
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160202/93ce9321/attachment-0001.sig>
+But we can find the label or UUID for device in blkid.
+Per my testing with blkid,swapon will not fail after checking blkid.
+
+Thanks
+Shuang
+>
+
