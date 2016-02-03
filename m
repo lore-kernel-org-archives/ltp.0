@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 3 Feb 2016 14:30:53 +0100
-Subject: [LTP] [PATCH V2 31/32] vma03: fix page size offset as per page
- size alignment
-In-Reply-To: <1452302060-103643-31-git-send-email-raj.khem@gmail.com>
+Date: Wed, 3 Feb 2016 15:14:02 +0100
+Subject: [LTP] [PATCH V2 02/32] Add knob to control whether numa support
+ should be checked
+In-Reply-To: <1452302060-103643-2-git-send-email-raj.khem@gmail.com>
 References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
- <1452302060-103643-31-git-send-email-raj.khem@gmail.com>
-Message-ID: <20160203133052.GD30788@rei.lan>
+ <1452302060-103643-2-git-send-email-raj.khem@gmail.com>
+Message-ID: <20160203141402.GF30788@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,35 +13,48 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> the offset the param of mmap2() doesn't align the page size, but,
-> this param allow must be a multiple of the page size as returned
-> by sysconf(_SC_PAGE_SIZE).meanwhile offset * 4096 must be a
-> multiple of the system page size, so modify the input param of offset
-> pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
-> 
-> Signed-off-by: Chuang Dong <Chuang.Dong@windriver.com>
+> signed-off-by: Roy.Li <rongqing.li@windriver.com>
 > Signed-off-by: Khem Raj <raj.khem@gmail.com>
 > ---
->  testcases/kernel/mem/vma/vma03.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  m4/ltp-numa.m4 | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
-> index ad8a7b4..a539233 100644
-> --- a/testcases/kernel/mem/vma/vma03.c
-> +++ b/testcases/kernel/mem/vma/vma03.c
-> @@ -85,7 +85,7 @@ int main(int argc, char *argv[])
->  		if (fd == -1)
->  			tst_brkm(TBROK | TERRNO, NULL, "open %s", TESTFILE);
->  
-> -		pgoff = ULONG_MAX - 1;
-> +		pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
->  		map = mmap2(NULL, pgsz, PROT_READ | PROT_WRITE, MAP_PRIVATE,
->  			    fd, pgoff);
+> diff --git a/m4/ltp-numa.m4 b/m4/ltp-numa.m4
+> index 60ae07b..ed7078d 100644
+> --- a/m4/ltp-numa.m4
+> +++ b/m4/ltp-numa.m4
+> @@ -24,7 +24,13 @@ dnl ----------------------------
+>  dnl
+>  AC_DEFUN([LTP_CHECK_SYSCALL_NUMA],
+>  [dnl
+> -AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
+> +AC_MSG_CHECKING([for numa])
 
-Presumbly your system has page size larger than 4096 right? And the
-mmap() fails with EINVAL since the pgoff * 4096 is not aligned. It would
-be good to add note about the specific arch that needs this fix to the
-commit message. Otherwise it looks good.
+This causes the output messages to be interleaved when configure is
+executed without the --without-numa parameter.
+
+> +AC_ARG_WITH(
+> +	[numa],
+> +	AC_HELP_STRING([--without-numa],
+> +	[without numa support]),
+> +	[],
+> +	[AC_CHECK_HEADERS([linux/mempolicy.h numa.h numaif.h],[
+>  	LTP_SYSCALL_NUMA_HEADERS=yes
+>  	AC_CHECK_LIB(numa,numa_alloc_onnode,[have_numa_alloc_onnode="yes"])
+>  	if  test "x$have_numa_alloc_onnode" = "xyes"; then
+> @@ -48,3 +54,5 @@ if test "x$have_mpol_constants" = "xyes"; then
+>  	AC_DEFINE(HAVE_MPOL_CONSTANTS,1,[define to 1 if you have all constants required to use mbind tests])
+>  fi
+>  )])
+> +AC_MSG_RESULT([$with_numa])
+
+And this genereates empty line in that case.
+
+> +])
+
+If you want to print "Checking for numa... disabled" or something
+similar in the output you should do it only in the case that the
+--without-numa flag was passed.
 
 -- 
 Cyril Hrubis
