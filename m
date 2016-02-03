@@ -1,51 +1,77 @@
-From: Shuang Qiu <shuang.qiu@oracle.com>
-Date: Wed, 03 Feb 2016 09:28:59 +0800
-Subject: [LTP] [PATCH] commands/mkswap01: Update wait_for_file function
-In-Reply-To: <20160202143525.GC19199@rei.lan>
-References: <1454082985-3549-1-git-send-email-shuang.qiu@oracle.com>
- <20160202143525.GC19199@rei.lan>
-Message-ID: <56B157DB.3010206@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 3 Feb 2016 13:42:02 +0100
+Subject: [LTP] [PATCH V2 08/32] Check if __GLIBC_PREREQ is defined
+ before using it
+In-Reply-To: <1452302060-103643-8-git-send-email-raj.khem@gmail.com>
+References: <1452302060-103643-1-git-send-email-raj.khem@gmail.com>
+ <1452302060-103643-8-git-send-email-raj.khem@gmail.com>
+Message-ID: <20160203124202.GA30788@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
-Thanks for review.
-On 02/02/2016 10:35 PM, Cyril Hrubis wrote:
-> Hi!
->> In commit a76b72ad31fa7bb22a09f323dadd5db7c00c7f56,it depends on the files
->> under /dev/disk/by-* in wait_for_file function.But sometimes udev does not
->> refresh automatically during runtime and the symbolic links will not appear.
-> Isn't that udev bug?
-It does not look like a bug,restart udev(or run udevtrigger) or 
-partprobe will create the symbolic link.
->
->> Update the function to use blkid instead.
-> Does actually the swapon in the verify function work? Since as far as I
-> can tell it actually opens the symlink in question in order to get the
-> swap device.
->
-> Have you tried stracing it in case that the code waiting for the device
-> timeouted?
-I tried it with UEK.Sometimes waiting for device timeout but swapon 
-works,i.e.:
+Hi!
+> diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
+> index 6072bfa..2b090cb 100644
+> --- a/testcases/kernel/syscalls/accept4/accept4_01.c
+> +++ b/testcases/kernel/syscalls/accept4/accept4_01.c
+> @@ -64,6 +64,7 @@ static void cleanup(void)
+>  	tst_rmdir();
+>  }
+>  
+> +#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+>  #if !(__GLIBC_PREREQ(2, 10))
+>  static int
+>  accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
+> @@ -82,7 +83,6 @@ accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
+>  	}
+>  	tst_resm(TINFO, "\n");
+>  #endif
+> -
+>  #if USE_SOCKETCALL
+>  	long args[6];
+>  
+> @@ -97,6 +97,7 @@ accept4_01(int fd, struct sockaddr *sockaddr, socklen_t *addrlen, int flags)
+>  #endif
+>  }
+>  #endif
+> +#endif
+>  
+>  static void
+>  do_test(int lfd, struct sockaddr_in *conn_addr,
+> @@ -119,9 +120,15 @@ do_test(int lfd, struct sockaddr_in *conn_addr,
+>  		die("Connect Error");
+>  
+>  	addrlen = sizeof(struct sockaddr_in);
+> +#if defined(__GLIBC__) && defined(__GLIBC_PREREQ)
+>  #if !(__GLIBC_PREREQ(2, 10))
+>  	acceptfd = accept4_01(lfd, (struct sockaddr *)&claddr, &addrlen,
+>  			      closeonexec_flag | nonblock_flag);
+> +
+> +#else
+> +	acceptfd = accept4(lfd, (struct sockaddr *)&claddr, &addrlen,
+> +			   closeonexec_flag | nonblock_flag);
+> +#endif
+>  #else
+>  	acceptfd = accept4(lfd, (struct sockaddr *)&claddr, &addrlen,
+>  			   closeonexec_flag | nonblock_flag);
 
-...
-...
+This should be ideally converted to configure check for accept4() rather
+than adding more #ifdefs around.
 
-mkswap01 6 TINFO : Waiting for /dev/disk/by-label/ltp_testswap to appear
-mkswap01 6 TINFO : Waiting for /dev/disk/by-label/ltp_testswap to appear
-mkswap01 6 TINFO : Waiting for /dev/disk/by-label/ltp_testswap to appear
-mkswap01 6 TWARN : The file /dev/disk/by-label/ltp_testswap haven't appeared
-mkswap01 6 TPASS : 'mkswap -L ltp_testswap /dev/sda7 ' passed.
-...
+> diff --git a/testcases/kernel/syscalls/getcpu/getcpu01.c b/testcases/kernel/syscalls/getcpu/getcpu01.c
+> index c927512..6de6362 100644
+> --- a/testcases/kernel/syscalls/getcpu/getcpu01.c
+> +++ b/testcases/kernel/syscalls/getcpu/getcpu01.c
 
-But we can find the label or UUID for device in blkid.
-Per my testing with blkid,swapon will not fail after checking blkid.
+We allready have fallback definitions for the CPU_SET* macros in
+testcases/kernel/syscalls/sched_setaffinity/sched_setaffinity.h the
+header should be moved to include/lapi/cpu_set.h and included in all
+the testcases so that we can drop most of these GLIBC_PREREQ() instead
+of adding more #ifdefs around.
 
-Thanks
-Shuang
->
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
