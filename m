@@ -1,39 +1,34 @@
-From: Steven Rostedt <srostedt@redhat.com>
-Date: Thu, 04 Feb 2016 10:06:07 -0500
-Subject: [LTP] [PATCH] ftrace_stress_test: check if tracing_enabled is
- supported
-In-Reply-To: <20160204142830.GA11527@rei.lan>
-References: <1450934523-69837-1-git-send-email-chuhu@redhat.com>
- <20160204142830.GA11527@rei.lan>
-Message-ID: <1454598367.1195.45.camel@fedora>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 4 Feb 2016 17:18:05 +0100
+Subject: [LTP] [PATCH] lib/mem.c: exit from test_transparent_hugepage()
+ if shortage of memory
+In-Reply-To: <CAEemH2dohcOBq7wHrr5XP+YN2Zsf+Ha=ARC54iiL73rDXtcGzg@mail.gmail.com>
+References: <1453790132-2360-1-git-send-email-liwang@redhat.com>
+ <CAEemH2fJQh_g2cTtEL7mHEvmy1aqnucysgy7bkvbJCX2KE+wTA@mail.gmail.com>
+ <CAEemH2dohcOBq7wHrr5XP+YN2Zsf+Ha=ARC54iiL73rDXtcGzg@mail.gmail.com>
+Message-ID: <20160204161805.GC29623@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2016-02-04 at 15:28 +0100, Cyril Hrubis wrote:
-> Hi!
-> > When running the tests on RHEL7, got message as below:
-> > ---------
-> > /mnt/testarea/ltp/testcases/bin/ftrace_stress/ftrace_tracing_enabled.sh: line 25: /mnt/testarea/ltp/testcases/bin/debugfs/tracing/tracing_enabled: Permission denied
-> > /mnt/testarea/ltp/testcases/bin/ftrace_stress/ftrace_tracing_enabled.sh: line 26: /mnt/testarea/ltp/testcases/bin/debugfs/tracing/tracing_enabled: Permission denied
-> > ---------
-> > 
-> > The reason is that the tracing_enabled file has been removed
-> > since kernel v3.8 by commits:
-> > 
-> > 02404ba tracing: Remove deprecated tracing_enabled file
-> > 0fb9656 tracing: Make tracing_enabled be equal to tracing_on
-> > 6752ab4 tracing: Deprecate tracing_enabled for tracing_on
+Hi!
+> I recall a similar testcase thp04.c which had been removed not long ago,
+>     commit 19cdd120b43aa6a6a4993b61e6ef675d1cdf04b4
 > 
-> Looking at the commits shouldn't we use tracing_on instead of
-> tracing_enabled on newer kernels?
+> after read the words written by Michal Ho, and I found these two (thp04/05)
+> cases are facing with very similar issue.
 > 
+> now I doubt if we can really trust thp05 result PASS/FAIL for LTP, remove
+> it or keep using(just reducing the nr_thps value)?
+> 
+> http://article.gmane.org/gmane.linux.ltp/23104
 
-Yes, and you should be using tracing_on even in older kernels.
-tracing_enabled has been deprecated for a long time now.
+The test is indeed nearly the same as thp04 and it suffers the same
+problem as thp04. Let's remove it (along with the functions from
+testcases/kernel/mem/lib/mem.c that would be unused after the removal.
 
--- Steve
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
