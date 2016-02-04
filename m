@@ -1,34 +1,40 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 4 Feb 2016 17:18:05 +0100
-Subject: [LTP] [PATCH] lib/mem.c: exit from test_transparent_hugepage()
- if shortage of memory
-In-Reply-To: <CAEemH2dohcOBq7wHrr5XP+YN2Zsf+Ha=ARC54iiL73rDXtcGzg@mail.gmail.com>
-References: <1453790132-2360-1-git-send-email-liwang@redhat.com>
- <CAEemH2fJQh_g2cTtEL7mHEvmy1aqnucysgy7bkvbJCX2KE+wTA@mail.gmail.com>
- <CAEemH2dohcOBq7wHrr5XP+YN2Zsf+Ha=ARC54iiL73rDXtcGzg@mail.gmail.com>
-Message-ID: <20160204161805.GC29623@rei>
+From: Steven Rostedt <srostedt@redhat.com>
+Date: Thu, 04 Feb 2016 11:23:08 -0500
+Subject: [LTP] [PATCH] ftrace_stress_test: check if tracing_enabled is
+ supported
+In-Reply-To: <20160204151100.GA15075@rei.suse.cz>
+References: <1450934523-69837-1-git-send-email-chuhu@redhat.com>
+ <20160204142830.GA11527@rei.lan> <1454598367.1195.45.camel@fedora>
+ <20160204151100.GA15075@rei.suse.cz>
+Message-ID: <1454602988.1195.56.camel@fedora>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I recall a similar testcase thp04.c which had been removed not long ago,
->     commit 19cdd120b43aa6a6a4993b61e6ef675d1cdf04b4
-> 
-> after read the words written by Michal Ho, and I found these two (thp04/05)
-> cases are facing with very similar issue.
-> 
-> now I doubt if we can really trust thp05 result PASS/FAIL for LTP, remove
-> it or keep using(just reducing the nr_thps value)?
-> 
-> http://article.gmane.org/gmane.linux.ltp/23104
+On Thu, 2016-02-04 at 16:11 +0100, Cyril Hrubis wrote:
 
-The test is indeed nearly the same as thp04 and it suffers the same
-problem as thp04. Let's remove it (along with the functions from
-testcases/kernel/mem/lib/mem.c that would be unused after the removal.
+> Also looking at the stress test all it does is writing to various files
+> (in several background loops) that store tracing parameters. Is that
+> even reasonable test? I guess that it can find out race conditions
+> between functions that handle the write for the options...
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I don't use the LTP tests for ftrace, so I wouldn't know.
+
+> 
+> And it uses the tracing_on file as well. So we can just skip starting
+> the loop writes to the ftrace_enabled file if it's not present.
+> 
+
+ftrace_enabled is completely different. It disables function tracing
+capabilities (and should be avoided
+if /sys/kernel/debug/tracing/options/function-trace is present. As that
+will only disable function hooks for tracing,
+where /proc/sys/kernel/ftrace_enabled disables *all* hooks (including
+those for live kernel patching). Which I need to make a patch to prevent
+that :-/
+
+-- Steve
+
+
