@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 9 Feb 2016 15:02:06 +0100
-Subject: [LTP] [PATCH 2/2] epoll_pwait/epoll_pwait02.c: add new testcase
-In-Reply-To: <1453288200-3990-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1453288200-3990-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1453288200-3990-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20160209140206.GB11823@rei.lan>
+Date: Tue, 9 Feb 2016 17:43:52 +0100
+Subject: [LTP] Test library API changes
+In-Reply-To: <20160208180211.GE9844@rei>
+References: <20160105111136.GA32659@rei.lan>
+ <1146864418.5284131.1452171696007.JavaMail.zimbra@redhat.com>
+ <20160204105638.GA4615@rei> <20160208180211.GE9844@rei>
+Message-ID: <20160209164352.GC11823@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,13 +13,24 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Verify that:
->  epoll_pwait(2) with NULL sigmask argument fails
->  if interrupted by a signal handler.
+This time I've added functionality to handle child processes:
 
-These two testcases are nearly identical, the difference is sinal mask
-for epoll_pwait() and function that child executes, right?. Why can't we
-implement both of them in one test?
+https://github.com/metan-ucw/ltp/blob/master/include/tst_test.h#L48
+
+This function forks a child, runs the function and propagates the
+results to the parent process via pipe.
+
+The function is implemented at:
+
+https://github.com/metan-ucw/ltp/blob/master/lib/tst_test.c#L129
+
+And used in newly converted test at:
+
+https://github.com/metan-ucw/ltp/blob/master/testcases/kernel/syscalls/creat/creat04.c
+
+Whith this the core test library API is more or less sketched.
+
+PS: I would appreciate any comments.
 
 -- 
 Cyril Hrubis
