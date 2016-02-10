@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 10 Feb 2016 15:26:41 +0100
-Subject: [LTP] [PATCH 1/2] removexattr/removexattr01.c: add new testcase
-In-Reply-To: <1454058535-25666-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Wed, 10 Feb 2016 15:37:35 +0100
+Subject: [LTP] [PATCH 2/2] removexattr/removexattr02.c: add new testcase
+In-Reply-To: <1454058535-25666-2-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1454058535-25666-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20160210142640.GB12894@rei.lan>
+ <1454058535-25666-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160210143734.GC12894@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,9 +12,50 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
+> +#include "config.h"
+> +#include <errno.h>
+> +#include <sys/types.h>
+> +
+> +#ifdef HAVE_ATTR_XATTR_H
+> +#include <attr/xattr.h>
+> +#endif
+> +
+> +#include "test.h"
+> +#include "safe_file_ops.h"
+> +
+> +char *TCID = "removexattr02";
+> +
+> +#ifdef HAVE_ATTR_XATTR_H
+> +#define USER_KEY	"user.test"
+> +#define VALUE	"test"
+> +#define VALUE_SIZE	4
+> +
+> +static struct test_case {
+> +	const char *path;
+> +	char *name;
+> +	int exp_err;
+> +} tc[] = {
+> +	/* test1 */
+> +	{"testfile", "user.test1", ENOATTR},
+> +	/* test2 */
+> +	{"", USER_KEY, ENOENT},
+> +	/* test3 */
+> +	{NULL, USER_KEY, EFAULT}
+
+Here as well use (char*)-1 instead of the NULL.
+
+> +};
+> +
+> +static void verify_removexattr(struct test_case *tc);
+> +static void setup(void);
+> +static void cleanup(void);
+> +
+> +int TST_TOTAL = ARRAY_SIZE(tc);
+> +
 > +int main(int ac, char **av)
 > +{
 > +	int lc;
+> +	int i;
 > +
 > +	tst_parse_opts(ac, av, NULL, NULL);
 > +
@@ -21,43 +63,37 @@ Hi!
 > +
 > +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 > +		tst_count = 0;
-> +
-> +		verify_removexattr();
+> +		for (i = 0; i < TST_TOTAL; i++)
+> +			verify_removexattr(&tc[i]);
 > +	}
 > +
 > +	cleanup();
 > +	tst_exit();
 > +}
 > +
-> +static void verify_removexattr(void)
+> +static void verify_removexattr(struct test_case *tc)
 > +{
-> +	int n;
-> +	int size = 64;
-> +	char buf[size];
 > +
-> +	TEST(removexattr("testfile", USER_KEY));
-> +	if (TEST_RETURN != 0) {
-> +		tst_resm(TFAIL, "removexattr() failed");
-> +		return;
+> +	TEST(removexattr(tc->path, tc->name));
+> +	if (TEST_RETURN != -1) {
+> +		tst_resm(TFAIL, "removexattr() succeeded unexpectedly");
+> +	} else {
+> +		if (TEST_ERRNO != tc->exp_err) {
+> +			tst_resm(TFAIL | TTERRNO, "removexattr() failed "
+> +				 "unexpectedly, expected errno is %s",
+                                                  ^
+						  this may be just:
+						  "expected %s"
+
+						  to keep the messages
+						  short and to the point
+
+> +				 tst_strerrno(tc->exp_err));
+> +		} else {
+> +			tst_resm(TPASS | TTERRNO,
+> +				 "removexattr() failed as expected");
+> +		}
 > +	}
-> +
-> +	n = getxattr("testfile", USER_KEY, buf, size);
-> +	if (n != -1) {
-> +		tst_resm(TFAIL, "getxattr() succeeded unexpectedly");
-> +		return;
-> +	}
-> +
-> +	if (errno != ENOATTR)
-> +		tst_resm(TFAIL, "removexattr() failed");
-                          ^
-			  TFAIL | TERRNO
-> +	else
-> +		tst_resm(TPASS, "removexattr() succeeded");
-
-
-You should add the attribute here otherwise the test would break on
-second iteration with -i N parameter.
-
 > +}
 > +
 > +static void setup(void)
