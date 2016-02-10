@@ -1,27 +1,24 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 9 Feb 2016 18:46:18 +0100
-Subject: [LTP] Test library API changes
-In-Reply-To: <20160209165703.GA5441@rei.lan>
-References: <20160105111136.GA32659@rei.lan>
- <1146864418.5284131.1452171696007.JavaMail.zimbra@redhat.com>
- <20160204105638.GA4615@rei> <20160208180211.GE9844@rei>
- <20160209164352.GC11823@rei.lan> <20160209165703.GA5441@rei.lan>
-Message-ID: <20160209174618.GB5441@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 10 Feb 2016 11:36:42 +0300
+Subject: [LTP] [PATCH v3 5/5] kernel/syscalls: add new test with 'open()
+ + O_TMPFILE'
+In-Reply-To: <20160209133232.GA11823@rei.lan>
+References: <1454069150-27889-1-git-send-email-alexey.kodanev@oracle.com>
+ <1454069150-27889-6-git-send-email-alexey.kodanev@oracle.com>
+ <20160209133232.GA11823@rei.lan>
+Message-ID: <56BAF69A.2010606@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> And I was writing faster than thinking. We will need another one where
-> starting and reaping child is split between two functions. I will work
-> on that tomorrow.
+Hi,
+On 02/09/2016 04:32 PM, Cyril Hrubis wrote:
+> The rest of the patchset looks good.
+> Acked with the minor issues I pointed out fixed. 
 
-And I've split the function into two now:
+Thank you for review, fixed patch-set applied.
 
-https://github.com/metan-ucw/ltp/blob/master/include/tst_test.h#L50
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Best regards,
+Alexey
