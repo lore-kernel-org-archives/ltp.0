@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 10 Feb 2016 13:31:24 +0100
-Subject: [LTP] [PATCH v2] Clean up hugemmap02 testcase
-In-Reply-To: <1452659578-3706-1-git-send-email-shuang.qiu@oracle.com>
-References: <1452659578-3706-1-git-send-email-shuang.qiu@oracle.com>
-Message-ID: <20160210123124.GB10106@rei.lan>
+Date: Wed, 10 Feb 2016 14:41:48 +0100
+Subject: [LTP] [PATCH 2/3] llistxattr/llistxattr02.c: add new testcase
+In-Reply-To: <1454058489-25625-2-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1454058489-25625-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1454058489-25625-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160210134147.GC10106@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,36 +12,24 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
->  #if __WORDSIZE == 64		/* 64-bit process */
-> -		if (addr2 == MAP_FAILED) {
-> +		if (addr2 == MAP_FAILED)
->  			tst_resm(TFAIL | TERRNO, "huge mmap failed unexpectedly"
->  				 " with %s (64-bit)", TEMPFILE);
-> -			close(fildes);
-> -			continue;
-> -		} else {
-> +		else {
->  			tst_resm(TPASS, "huge mmap succeeded (64-bit)");
->  		}
->  #else /* 32-bit process */
->  		if (addr2 == MAP_FAILED)
->  			tst_resm(TFAIL | TERRNO, "huge mmap failed unexpectedly"
->  				 " with %s (32-bit)", TEMPFILE);
-> -		else if (addr2 > 0) {
-> +		else if (addr2 > 0)
->  			tst_resm(TCONF,
->  				 "huge mmap failed to test the scenario");
-> -			close(fildes);
-> -			continue;
-> -		} else if (addr == 0)
-> +		else if (addr == 0)
->  			tst_resm(TPASS, "huge mmap succeeded (32-bit)");
+> +static struct test_case {
+> +	const char *path;
+> +	size_t size;
+> +	int exp_err;
+> +} tc[] = {
+> +	/* test1 */
+> +	{"symlink", 1, ERANGE},
+> +	/* test2 */
+> +	{"", 20, ENOENT},
+> +	/* test3 */
+> +	{NULL, 20, EFAULT}
 
-The LKML coding style says that we should add curly braces to both else
-branches if they are around one of them. Or if the function call after
-if spans across more lines. So please do not remove them.
+You should use (char *)-1 instead of NULL. AFAIK on sparc there is some
+system mapping at NULL and the call will overwrite it.
 
-Otherwise the change looks good.
+> +};
+
+Otherwise it looks good.
 
 -- 
 Cyril Hrubis
