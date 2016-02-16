@@ -1,100 +1,43 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 16 Feb 2016 13:08:03 +0300
-Subject: [LTP] [PATCH] df01: use the POSIX output format
-Message-ID: <1455617283-3636-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 16 Feb 2016 22:19:58 +0100
+Subject: [LTP] Test library API changes
+In-Reply-To: <20160212175308.GA30723@rei.suse.cz>
+References: <20160105111136.GA32659@rei.lan> <20160208180211.GE9844@rei>
+ <20160209164352.GC11823@rei.lan> <20160209165703.GA5441@rei.lan>
+ <20160209174618.GB5441@rei.lan>
+ <1670220208.19308377.1455100978449.JavaMail.zimbra@redhat.com>
+ <20160210114134.GA10106@rei.lan> <20160211160313.GA22877@rei.lan>
+ <116630920.20260383.1455280426104.JavaMail.zimbra@redhat.com>
+ <20160212175308.GA30723@rei.suse.cz>
+Message-ID: <20160216211958.GC2515@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If the test block device has a long name, then 'df' will output
-its statistics in multiple strings. For example:
+Hi!
+The up to date code is at the same place as usual.
+(https://github.com/metan-ucw/ltp)
 
-/dev/mapper/vg-averylongnameyes
-                         99150      1550     92480   2% /tmp/mntpoint
+Apart from added support of acquiring a device, checkpoints and
+resource files the IPC was rewritten to shared memory.
 
-Therefore, grepping for the device name will not give desired results.
+Now the library, before the test is started, mmaps a page backed by a
+file on /dev/shm/. The first few bytes are used for shared struct
+results, the rest is used by checkpoints if checkpoints are needed. The
+struct result values are incremented by gcc atomic operations (which is
+thread safe as well), the open question is if we need a fallback to
+inline assembler if these are not supported. Then there is a special
+function to open checkpoint shm file from a process started by a exec (a
+few of the testcases does so) since it must open the shm rather than a
+file in a temporary directory.
 
-We could format the output before grepping, but 'df' already provides
-option '-P' to ease parsing, so let's use it.
+There are still some rough edges and the code should be reviewed, but at
+least 90% of the functionality is there and working.
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- testcases/commands/df/df01.sh |   26 +++++++++++++++-----------
- 1 files changed, 15 insertions(+), 11 deletions(-)
+As usuall comments are welcome :)
 
-diff --git a/testcases/commands/df/df01.sh b/testcases/commands/df/df01.sh
-index f03c9ce..4505aec 100755
---- a/testcases/commands/df/df01.sh
-+++ b/testcases/commands/df/df01.sh
-@@ -75,26 +75,28 @@ EOF
- 
- df_test()
- {
--	df_verify $1
-+	cmd="$1 -P"
-+
-+	df_verify $cmd
- 	if [ $? -ne 0 ]; then
- 		return
- 	fi
- 
--	df_check $1
-+	df_check $cmd
- 	if [ $? -ne 0 ]; then
--		tst_resm TFAIL "'$1' failed, not expected."
-+		tst_resm TFAIL "'$cmd' failed, not expected."
- 		return
- 	fi
- 
- 	ROD_SILENT dd if=/dev/zero of=mntpoint/testimg bs=1024 count=1024
- 
--	df_verify $1
-+	df_verify $cmd
- 
--	df_check $1
-+	df_check $cmd
- 	if [ $? -eq 0 ]; then
--		tst_resm TPASS "'$1' passed."
-+		tst_resm TPASS "'$cmd' passed."
- 	else
--		tst_resm TFAIL "'$1' failed."
-+		tst_resm TFAIL "'$cmd' failed."
- 	fi
- 
- 	ROD_SILENT rm -rf mntpoint/testimg
-@@ -121,7 +123,7 @@ df_verify()
- 
- df_check()
- {
--	if [ "$(echo $@)" = "df -i" ]; then
-+	if [ "$(echo $@)" = "df -i -P" ]; then
- 		local total=$(stat -f mntpoint --printf=%c)
- 		local free=$(stat -f mntpoint --printf=%d)
- 		local used=$((total-free))
-@@ -209,16 +211,18 @@ test11()
- 
- test12()
- {
--	df_verify "df -x ${DF_FS_TYPE}"
-+	cmd="df -x ${DF_FS_TYPE} -P"
-+
-+	df_verify $cmd
- 	if [ $? -ne 0 ]; then
- 		return
- 	fi
- 
- 	grep ${TST_DEVICE} output | grep -q mntpoint
- 	if [ $? -ne 0 ]; then
--		tst_resm TPASS "'df -x ${FS_TYPE}' passed."
-+		tst_resm TPASS "'$cmd' passed."
- 	else
--		tst_resm TFAIL "'df -x ${FS_TYPE}' failed."
-+		tst_resm TFAIL "'$cmd' failed."
- 	fi
- }
- 
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
