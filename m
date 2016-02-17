@@ -1,51 +1,63 @@
-From: Shuang Qiu <shuang.qiu@oracle.com>
-Date: Wed, 17 Feb 2016 16:20:50 +0800
-Subject: [LTP] [PATCH v2] Clean up hugemmap02 testcase
-In-Reply-To: <20160210123124.GB10106@rei.lan>
-References: <1452659578-3706-1-git-send-email-shuang.qiu@oracle.com>
- <20160210123124.GB10106@rei.lan>
-Message-ID: <56C42D62.7050303@oracle.com>
+From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
+Date: Wed, 17 Feb 2016 16:22:36 +0800
+Subject: [LTP] [PATCH v3] Clean up hugemmap02 testcase
+Message-ID: <1455697356-4839-1-git-send-email-shuang.qiu@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 02/10/2016 08:31 PM, Cyril Hrubis wrote:
-> Hi!
->>   #if __WORDSIZE == 64		/* 64-bit process */
->> -		if (addr2 == MAP_FAILED) {
->> +		if (addr2 == MAP_FAILED)
->>   			tst_resm(TFAIL | TERRNO, "huge mmap failed unexpectedly"
->>   				 " with %s (64-bit)", TEMPFILE);
->> -			close(fildes);
->> -			continue;
->> -		} else {
->> +		else {
->>   			tst_resm(TPASS, "huge mmap succeeded (64-bit)");
->>   		}
->>   #else /* 32-bit process */
->>   		if (addr2 == MAP_FAILED)
->>   			tst_resm(TFAIL | TERRNO, "huge mmap failed unexpectedly"
->>   				 " with %s (32-bit)", TEMPFILE);
->> -		else if (addr2 > 0) {
->> +		else if (addr2 > 0)
->>   			tst_resm(TCONF,
->>   				 "huge mmap failed to test the scenario");
->> -			close(fildes);
->> -			continue;
->> -		} else if (addr == 0)
->> +		else if (addr == 0)
->>   			tst_resm(TPASS, "huge mmap succeeded (32-bit)");
-> The LKML coding style says that we should add curly braces to both else
-> branches if they are around one of them. Or if the function call after
-> if spans across more lines. So please do not remove them.
-Thanks for review and correct me it.
-Will send a new one.
+From: Shuang Qiu <shuang.qiu@oracle.com>
 
-Thanks
-Shuang
->
-> Otherwise the change looks good.
->
+* Remove continue in the loop because it skips the cleanup
+
+* munmap() addr2 for 32-bit
+
+* close nfildes fd in the end of loop
+
+Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+---
+ testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c |    7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+index 1a44993..d31609d 100644
+--- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
++++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap02.c
+@@ -158,8 +158,6 @@ int main(int ac, char **av)
+ 		if (addr2 == MAP_FAILED) {
+ 			tst_resm(TFAIL | TERRNO, "huge mmap failed unexpectedly"
+ 				 " with %s (64-bit)", TEMPFILE);
+-			close(fildes);
+-			continue;
+ 		} else {
+ 			tst_resm(TPASS, "huge mmap succeeded (64-bit)");
+ 		}
+@@ -170,8 +168,6 @@ int main(int ac, char **av)
+ 		else if (addr2 > 0) {
+ 			tst_resm(TCONF,
+ 				 "huge mmap failed to test the scenario");
+-			close(fildes);
+-			continue;
+ 		} else if (addr == 0)
+ 			tst_resm(TPASS, "huge mmap succeeded (32-bit)");
+ #endif
+@@ -183,13 +179,12 @@ int main(int ac, char **av)
+ 					 "munmap of addrlist[%d] failed", i);
+ 		}
+ 
+-#if __WORDSIZE == 64
+ 		if (munmap(addr2, map_sz) == -1)
+ 			tst_brkm(TFAIL | TERRNO, NULL, "huge munmap failed");
+-#endif
+ 		if (munmap(addr, page_sz) == -1)
+ 			tst_brkm(TFAIL | TERRNO, NULL, "munmap failed");
+ 
++		close(nfildes);
+ 		close(fildes);
+ 	}
+ 
+-- 
+1.7.9.5
 
