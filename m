@@ -1,61 +1,135 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 18 Feb 2016 12:14:41 +0300
-Subject: [LTP] Test library API changes
-In-Reply-To: <20160217155406.GA12574@rei>
-References: <20160105111136.GA32659@rei.lan> <20160209174618.GB5441@rei.lan>
- <1670220208.19308377.1455100978449.JavaMail.zimbra@redhat.com>
- <20160210114134.GA10106@rei.lan> <20160211160313.GA22877@rei.lan>
- <116630920.20260383.1455280426104.JavaMail.zimbra@redhat.com>
- <20160212175308.GA30723@rei.suse.cz> <20160216211958.GC2515@rei.lan>
- <1799339064.21851637.1455719961718.JavaMail.zimbra@redhat.com>
- <20160217155406.GA12574@rei>
-Message-ID: <56C58B81.3080006@oracle.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 18 Feb 2016 18:02:03 +0800
+Subject: [LTP] [PATCH 1/3] llistxattr/llistxattr01.c: add new testcase
+In-Reply-To: <20160210140414.GD10106@rei.lan>
+References: <1454058489-25625-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20160210140414.GD10106@rei.lan>
+Message-ID: <56C5969B.4080107@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 02/17/2016 06:54 PM, Cyril Hrubis wrote:
+? 2016/02/10 22:04, Cyril Hrubis ??:
 > Hi!
->> Here are some comments/questions/ideas:
->>
->> 1. acnt appears to be unused now
-> I haven't removed it yet... I'm still thinking how we can generate
-> things like TAP output that expects us to print exact number of tests on
-> the first line followed by exact number of result lines and make as
-> little rules for result reporting as possible.
+>> +#ifdef HAVE_ATTR_XATTR_H
+>> +#define SECURITY_KEY   "security.symtest"
+>                                       ^
 >
-> Maybe we can just say that testcases that define test_all do one just
-> one test and produce one result per such test and do more detailed
-> reporting only for testcases that define tcnt.
+> 			   Why symtest, I would preffere to have 'ltp'
+>                             substring in everything that testcases create
+>                             so that is clear where it came from
 >
-> Or we can turn on the detailed reporting only if acnt has been set.
+>> +#define SECURITY_KEY_INIT      "security.selinux"
+>> +#define VALUE  "test"
+>> +#define VALUE_SIZE     4
+>> +#define KEY_SIZE    17
+>
+>> +static void verify_llistxattr(void)
+>> +{
+>> +	int n;
+>> +	int se = 1;
+>> +	int size = 64;
+>> +	char buf[size];
+>> +	char cmp_buf1[size];
+>> +	char cmp_buf2[size];
+>> +
+>> +	/* check selinux initialized attr */
+>> +	n = lgetxattr("symlink", SECURITY_KEY_INIT, NULL, 0);
+>> +	if (n == -1) {
+>> +		if (errno == ENOATTR) {
+>> +			se = 0;
+>> +		} else {
+>> +			tst_brkm(TFAIL | TERRNO, cleanup,
+>> +				 "lgetxattr() failed");
+>> +		}
+>> +	}
+> I do not like the special case for seliux here. What we should do
+> instead is to:
+>
+> * Create file/symlink and store it's attribute list
+>
+> * Add an attribute
+>
+> * Check that the list has exactly one more attribute
+>
+> * Remove the file/symlink
+>
+>
+If we don't check that selinux adds default attribute to symlinks, What 
+about the return value.
 
-Not sure, but if I read TAP spec correctly, it doesn't strictly define
-that it should beon the first line, rather appear only once at the start
-or at the end (if the number of test points is not known).
+We're not going to judge the size of  the extended attribute name list. 
+That's OK?
 
-So if tcnt for the test plan, what is 'acnt' for? ... I didn't find the
-analogy in the TAP spec.
+> And there should be a comment that selinux adds default attribute to
+> newly created files/symlinks.
+>
+>
+>> +	TEST(llistxattr("symlink", buf, size));
+>> +	if (TEST_RETURN == -1) {
+>> +		tst_resm(TFAIL | TTERRNO, "llistxattr() failed");
+>> +		return;
+>> +	}
+>> +
+>> +	if (TEST_RETURN != KEY_SIZE*(1 + se)) {
+>> +		tst_resm(TFAIL, "llistxattr() retrieved %li bytes, "
+>> +			 "expected %i", TEST_RETURN, KEY_SIZE*2);
+>> +		return;
+>> +	}
+>> +
+>> +	/*
+>> +	* The list of names is returned as an unordered array of
+>> +	* NULL-terminated character strings.
+>> +	*/
+>> +	if (se == 1) {
+>> +		memcpy(cmp_buf1, SECURITY_KEY, KEY_SIZE);
+>> +		memcpy(cmp_buf1+KEY_SIZE, SECURITY_KEY_INIT, KEY_SIZE);
+>> +		memcpy(cmp_buf2, SECURITY_KEY_INIT, KEY_SIZE);
+>> +		memcpy(cmp_buf2+KEY_SIZE, SECURITY_KEY, KEY_SIZE);
+>> +
+>> +		if (memcmp(buf, cmp_buf1, KEY_SIZE*(1 + se))&&  memcmp(buf, cmp_buf2, KEY_SIZE*(1 + se))) {
+>> +			tst_resm(TFAIL, "name list mismatched");
+>> +			return;
+>> +		}
+>> +	} else {
+>> +		if (memcmp(buf, SECURITY_KEY, KEY_SIZE*(1 + se))) {
+>> +			tst_resm(TFAIL, "name list mismatched");
+>> +			return;
+>> +		}
+>> +	}
+> If you have actually checked that the list has 2 attributes all you
+> need to do here is to check that it includes both attributes.
+>
+> All you need is a function that takes attribute list and checks that
+> there is attribute included, i.e.
+>
+> int has_attribute(const char *list, unsigned int llen, const char *attr)
+> {
+> 	unsigned int i;
+>
+> 	for (i = 0; i<  llen; i += strlen(list + i) + 1) {
+> 		if (!strcmp(list+i, attr))
+> 			return 1;
+> 	}
+>
+> 	return 0;
+> }
+>
+> ...
+> 	if (!has_attribute(buf, size, attr_1)) {
+> 		tst_resm(TFAIL, "Missing attribute %s", attr_1);
+> 		return;
+> 	}
+>
+> 	if (!has_attribute(buf, size, attr_2)) {
+> ...
+>
+>
 
-Looking at the 'struct tst_test',
 
-* the names like 'tcnt' and 'acnt' seem not clear. May be we should name 
-'tcnt' as
-test_planor test_count?
 
-* also, why bitfields in the struct tst_test have different number of 
-storage bits?
-
-   int needs_tmpdir:1;
-   int needs_root:2;
-   int forks_child:3;
-   int needs_device:4;
-   int needs_checkpoints:5;
-
-if their value is just '0' or '1', ':1' - should be instead.
-
-Best regards,
-Alexey
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160218/30c84406/attachment.html>
