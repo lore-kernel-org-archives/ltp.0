@@ -1,17 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 18 Feb 2016 12:53:53 +0100
-Subject: [LTP] Test library API changes
-In-Reply-To: <1610317133.22142649.1455794774969.JavaMail.zimbra@redhat.com>
-References: <20160105111136.GA32659@rei.lan>
- <116630920.20260383.1455280426104.JavaMail.zimbra@redhat.com>
- <20160212175308.GA30723@rei.suse.cz>
- <20160216211958.GC2515@rei.lan>
- <1799339064.21851637.1455719961718.JavaMail.zimbra@redhat.com>
- <20160217155406.GA12574@rei>
- <1752902661.22105327.1455786359593.JavaMail.zimbra@redhat.com>
- <20160218110752.GB19157@rei.lan>
- <1610317133.22142649.1455794774969.JavaMail.zimbra@redhat.com>
-Message-ID: <20160218115353.GD19157@rei.lan>
+Date: Thu, 18 Feb 2016 13:03:05 +0100
+Subject: [LTP] [PATCH 1/3] llistxattr/llistxattr01.c: add new testcase
+In-Reply-To: <56C5969B.4080107@cn.fujitsu.com>
+References: <1454058489-25625-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20160210140414.GD10106@rei.lan> <56C5969B.4080107@cn.fujitsu.com>
+Message-ID: <20160218120305.GE19157@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,23 +12,28 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > I think that disabling the possibility just to make writing the test
-> > library a bit easier is pretty bad idea. Most of the testcases we have
-> > can run in parallel just fine. There are only a few that stress the
-> > system to the limit or use global resources (devices, IPC, change system
-> > time, ...) and if we anotate these tests we can easily speed up the test
-> > run five times just by running most of the testcases in parallel.
+> > I do not like the special case for seliux here. What we should do
+> > instead is to:
+> >
+> > * Create file/symlink and store it's attribute list
+> >
+> > * Add an attribute
+> >
+> > * Check that the list has exactly one more attribute
+> >
+> > * Remove the file/symlink
+> >
+> >
+> If we don't check that selinux adds default attribute to symlinks, What 
+> about the return value.
 > 
-> I wasn't suggesting we do that. I was thinking about making ipc filename
-> more unique for each instance, in case we wouldn't have /proc and test
-> cleanup doesn't run for whatever reason. That of course would make
-> ipc file names less predictable.
+> We're not going to judge the size of  the extended attribute name list. 
+> That's OK?
 
-If we decide to pass the filename around we can just add arbitrarily
-large random string to the name. But the more I think about it the more
-it looks like classical chicken egg problem. We cannot pass it without
-IPC but we cannot do that easily before IPC is initialized and the
-environment variable is probably the best bet.
+By "Check that the list has exactly one more attribute" I meant that we
+compare the result to the previous state. If we store the attribute list
+right after the symlink was created we can check if the increase in list
+size is as expected. Or is there a reason why we can't do this?
 
 -- 
 Cyril Hrubis
