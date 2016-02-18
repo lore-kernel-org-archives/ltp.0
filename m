@@ -1,122 +1,94 @@
 From: Eryu Guan <eguan@redhat.com>
-Date: Thu, 18 Feb 2016 20:52:13 +0800
-Subject: [LTP] [PATCH] syscalls/renameat202: initialize str with zero
-In-Reply-To: <20160218114722.GC19157@rei.lan>
+Date: Thu, 18 Feb 2016 22:12:15 +0800
+Subject: [LTP] [PATCH v2] syscalls/renameat202: improve renameat2_verify()
+In-Reply-To: <1455713810-21842-1-git-send-email-eguan@redhat.com>
 References: <1455713810-21842-1-git-send-email-eguan@redhat.com>
- <20160218114722.GC19157@rei.lan>
-Message-ID: <20160218125213.GR11419@eguan.usersys.redhat.com>
+Message-ID: <1455804735-20998-1-git-send-email-eguan@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Feb 18, 2016 at 12:47:22PM +0100, Cyril Hrubis wrote:
-> Hi!
-> > In renameat2_verify(), str is allocated on stack with size 8 (sizeof
-> > content) and filled with random data. Then file content (7 bytes) is
-> > read into str and the last byte in str is left unchanged with garbage,
-> > and test fails if that last byte is not zero.
-> 
-> Good catch.
-> 
-> > Fix it by initializing the str with zeros, make sure str is null
-> > terminated as long as correct data has been read in.
-> 
-> Looking at the code it may be easier to use write() to write the string
-> including the null byte in the setup. But either one is fine.
-> 
-> > Also remove the "str[strlen(content)] == '\0'" check, which is not
-> > necessary, because strcmp will catch the failure anyway.
-> 
-> This has been added there on purpose so that we are sure the test
-> wouldn't segfault in case that the str is not null terminated which is
-> unlikely but still possible. And it's still possible even when you zero
-> the str buffer since the read may overwrite whole str and passing
-> non-null terminated buffer to strcmp() is still undefined operation.
+In renameat2_verify(), str is allocated on stack with size 8 (sizeof
+content) and filled with random data. Then file content (7 bytes) is
+read into str and the last byte in str is left unchanged with garbage,
+and test fails if that last byte is not zero.
 
-Makes sense, I'll add it back in v2.
+Another problem is, as Cyril Hrubis pointed out, the str buffer is too
+small, so there's chance to overrun the str buffer, as read(2) is
+reading strlen(content) + 10 bytes.
 
-> 
-> Maybe it would be much better to try to read a buffer larger than the
-> expected content, check that the value from read was size of the data
-> and then do memcmp() with explicit size.
+Fix them by extending str buffer size and initializing str with zeros.
+Also improved the checking logic, do strncmp only if expected number of
+bytes is read from file. And improved the failure messages too.
 
-Agreed, do memcmp only if read(2) returned the expected size.
+Suggested-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Eryu Guan <eguan@redhat.com>
+---
 
-> 
-> BTW: The size of the str should be increased anyway since the read gets
->      strlen(content) + 10 as a size parameter which is larger than
->      sizeof(str). We should just change it to some arbitrary large value
->      like 128.
+v2:
+- update commit summary and log
+- enlarge str buffer to BUFSIZ
+- check return value of read(2) and do other checks only if the value is correct
+- return early on failure
+- merge two tst_resm into one on failure
 
-Agreed.
+ testcases/kernel/syscalls/renameat2/renameat202.c | 28 +++++++++++++++--------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
-> 
-> > Also improve the failure message to print more useful debug message.
-> > 
-> > Signed-off-by: Eryu Guan <eguan@redhat.com>
-> > ---
-> >  testcases/kernel/syscalls/renameat2/renameat202.c | 17 +++++++++--------
-> >  1 file changed, 9 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/renameat2/renameat202.c b/testcases/kernel/syscalls/renameat2/renameat202.c
-> > index 3761391..9e2d12e 100644
-> > --- a/testcases/kernel/syscalls/renameat2/renameat202.c
-> > +++ b/testcases/kernel/syscalls/renameat2/renameat202.c
-> > @@ -118,7 +118,7 @@ static void cleanup(void)
-> >  
-> >  static void renameat2_verify(void)
-> >  {
-> > -	char str[sizeof(content)];
-> > +	char str[sizeof(content)] = { 0 };
-> >  	struct stat st;
-> >  	char *emptyfile;
-> >  	char *contentfile;
-> > @@ -152,11 +152,12 @@ static void renameat2_verify(void)
-> >  		tst_brkm(TERRNO | TFAIL, cleanup, "close fd failed");
-> >  	fd = 0;
-> >  
-> > -	if (str[strlen(content)] == '\0' && !strcmp(content, str)
-> > -		&& !st.st_size)
-> > -		tst_resm(TPASS,
-> > -			"renameat2() swapped the content of the two files");
-> > -	else
-> > -		tst_resm(TFAIL,
-> > -			"renameat2() didn't swap the content of the two files");
-> > +	if (strcmp(content, str)) {
-> > +		tst_resm(TFAIL, "file content changed after renameat2()");
-> > +		tst_resm(TFAIL, "expect \"%s\", got \"%s\"", content, str);
-> 
-> This adds two FAIL statements in the output for one failure. Either
-> print the message in one tst_resm() statement or change the second one
-> to TINFO.
+diff --git a/testcases/kernel/syscalls/renameat2/renameat202.c b/testcases/kernel/syscalls/renameat2/renameat202.c
+index 3761391..491a310 100644
+--- a/testcases/kernel/syscalls/renameat2/renameat202.c
++++ b/testcases/kernel/syscalls/renameat2/renameat202.c
+@@ -118,10 +118,11 @@ static void cleanup(void)
+ 
+ static void renameat2_verify(void)
+ {
+-	char str[sizeof(content)];
++	char str[BUFSIZ] = { 0 };
+ 	struct stat st;
+ 	char *emptyfile;
+ 	char *contentfile;
++	int readn, data_len;
+ 
+ 	if (TEST_ERRNO == EINVAL && TST_BTRFS_MAGIC == fs_type) {
+ 		tst_brkm(TCONF, cleanup,
+@@ -146,17 +147,26 @@ static void renameat2_verify(void)
+ 
+ 	SAFE_STAT(cleanup, emptyfile, &st);
+ 
+-	SAFE_READ(cleanup, 0, fd, str, strlen(content) + 10);
++	readn = SAFE_READ(cleanup, 0, fd, str, BUFSIZ);
+ 
+ 	if (close(fd) < 0)
+ 		tst_brkm(TERRNO | TFAIL, cleanup, "close fd failed");
+ 	fd = 0;
+ 
+-	if (str[strlen(content)] == '\0' && !strcmp(content, str)
+-		&& !st.st_size)
+-		tst_resm(TPASS,
+-			"renameat2() swapped the content of the two files");
+-	else
+-		tst_resm(TFAIL,
+-			"renameat2() didn't swap the content of the two files");
++	data_len = strlen(content);
++	if (readn != data_len) {
++		tst_resm(TFAIL, "Wrong number of bytes read after renameat2(). "
++				"Expect %d, got %d", data_len, readn);
++		return;
++	}
++	if (strncmp(content, str, data_len)) {
++		tst_resm(TFAIL, "File content changed after renameat2(). "
++				"Expect \"%s\", got \"%s\"", content, str);
++		return;
++	}
++	if (st.st_size) {
++		tst_resm(TFAIL, "emptyfile has non-zero file size");
++		return;
++	}
++	tst_resm(TPASS, "renameat2() test passed");
+ }
+-- 
+2.5.0
 
-I used TINFO at first, but thought TFAIL might be more clearer. I'll
-change it back.
-
-> 
-> > +	} else if (st.st_size) {
-> > +		tst_resm(TFAIL, "emptyfile has non-zero file size");
-> 
-> You should do return in the previous if() so that you don't have to do
-> the else if () spagetthi code here.
-> 
-> And if you do return here the TPASS message does not have to be in the
-> else block as well.
-
-Fair enough.
-
-Thanks for the review!
-
-Eryu
-
-> 
-> > +	} else {
-> > +		tst_resm(TPASS, "renameat2() test passed");
-> > +	}
-> >  }
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
