@@ -1,73 +1,71 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 19 Feb 2016 12:55:45 +0800
-Subject: [LTP] [PATCH v2 2/3] llistxattr/llistxattr02.c: add new testcase
+Date: Fri, 19 Feb 2016 12:55:46 +0800
+Subject: [LTP] [PATCH v2 3/3] llistxattr/llistxattr03.c: add new testcase
 In-Reply-To: <1455857746-25721-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20160218120305.GE19157@rei.lan>
  <1455857746-25721-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1455857746-25721-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1455857746-25721-3-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) llistxattr(2) fails if the size of the list buffer is too small to
-   hold the result and set errno to ERANGE.
-2) llistxattr(2) fails if path is an empty string and set errno to ENOENT.
-3) llistxattr(2) fails when attempted to read from a invalid address and
-   set set errno to EFAULT.
+llistxattr() is identical to listxattr(), we call llistxattr() with
+zero size and check that it returns value which is suitable size of
+buffer to hold the name list.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
  runtest/ltplite                                    |   1 +
  runtest/syscalls                                   |   1 +
  testcases/kernel/syscalls/.gitignore               |   1 +
- .../kernel/syscalls/llistxattr/llistxattr02.c      | 143 +++++++++++++++++++++
- 4 files changed, 146 insertions(+)
- create mode 100644 testcases/kernel/syscalls/llistxattr/llistxattr02.c
+ .../kernel/syscalls/llistxattr/llistxattr03.c      | 114 +++++++++++++++++++++
+ 4 files changed, 117 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/llistxattr/llistxattr03.c
 
 diff --git a/runtest/ltplite b/runtest/ltplite
-index de7cecb..ea18c22 100644
+index ea18c22..d9a362d 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
-@@ -388,6 +388,7 @@ link08 link08
- listen01 listen01
+@@ -389,6 +389,7 @@ listen01 listen01
  
  llistxattr01 llistxattr01
-+llistxattr02 llistxattr02
+ llistxattr02 llistxattr02
++llistxattr03 llistxattr03
  
  llseek01 llseek01
  llseek02 llseek02
 diff --git a/runtest/syscalls b/runtest/syscalls
-index c48dd92..a986a4e 100644
+index a986a4e..d1abf16 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -514,6 +514,7 @@ linkat02 linkat02
- listen01 listen01
+@@ -515,6 +515,7 @@ listen01 listen01
  
  llistxattr01 llistxattr01
-+llistxattr02 llistxattr02
+ llistxattr02 llistxattr02
++llistxattr03 llistxattr03
  
  llseek01 llseek01
  llseek02 llseek02
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 47f2fc8..1762c14 100644
+index 1762c14..f5ea349 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -474,6 +474,7 @@
- /linkat/linkat02
+@@ -475,6 +475,7 @@
  /listen/listen01
  /llistxattr/llistxattr01
-+/llistxattr/llistxattr02
+ /llistxattr/llistxattr02
++/llistxattr/llistxattr03
  /llseek/llseek01
  /llseek/llseek02
  /llseek/llseek03
-diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr02.c b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
+diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr03.c b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
 new file mode 100644
-index 0000000..cf53275
+index 0000000..2c5792f
 --- /dev/null
-+++ b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
-@@ -0,0 +1,143 @@
++++ b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
+@@ -0,0 +1,114 @@
 +/*
 +* Copyright (c) 2016 Fujitsu Ltd.
 +* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
@@ -85,18 +83,12 @@ index 0000000..cf53275
 +*/
 +
 +/*
-+* Test Name: llistxattr02
++* Test Name: llistxattr03
 +*
 +* Description:
-+* 1) llistxattr(2) fails if the size of the list buffer is too small
-+* to hold the result.
-+* 2) llistxattr(2) fails if path is an empty string.
-+* 3) llistxattr(2) fails when attempted to read from a invalid address.
-+*
-+* Expected Result:
-+* 1) llistxattr(2) should return -1 and set errno to ERANGE.
-+* 2) llistxattr(2) should return -1 and set errno to ENOENT.
-+* 3) llistxattr(2) should return -1 and set errno to EFAULT.
++* llistxattr is identical to listxattr. an empty buffer of size zero
++* can return the current size of the list of extended attribute names,
++* which can be used to estimate a suitable buffer.
 +*/
 +
 +#include "config.h"
@@ -111,36 +103,20 @@ index 0000000..cf53275
 +#include "safe_macros.h"
 +#include "safe_file_ops.h"
 +
-+char *TCID = "llistxattr02";
++char *TCID = "llistxattr03";
 +
 +#ifdef HAVE_ATTR_XATTR_H
-+#define SECURITY_KEY	"security.ltptest"
-+#define VALUE	"test"
-+#define VALUE_SIZE	4
 +
-+static struct test_case {
-+	const char *path;
-+	size_t size;
-+	int exp_err;
-+} tc[] = {
-+	/* test1 */
-+	{"symlink", 1, ERANGE},
-+	/* test2 */
-+	{"", 20, ENOENT},
-+	/* test3 */
-+	{(char *)-1, 20, EFAULT}
-+};
-+
-+static void verify_llistxattr(struct test_case *tc);
++static void verify_llistxattr(void);
 +static void setup(void);
++static int check_suitable_buf(long);
 +static void cleanup(void);
 +
-+int TST_TOTAL = ARRAY_SIZE(tc);
++int TST_TOTAL = 1;
 +
 +int main(int ac, char **av)
 +{
 +	int lc;
-+	int i;
 +
 +	tst_parse_opts(ac, av, NULL, NULL);
 +
@@ -148,37 +124,30 @@ index 0000000..cf53275
 +
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
-+		for (i = 0; i < TST_TOTAL; i++)
-+			verify_llistxattr(&tc[i]);
++
++		verify_llistxattr();
 +	}
 +
 +	cleanup();
 +	tst_exit();
 +}
 +
-+static void verify_llistxattr(struct test_case *tc)
++static void verify_llistxattr(void)
 +{
-+	char buf[tc->size];
-+
-+	TEST(llistxattr(tc->path, buf, tc->size));
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "llistxattr() succeeded unexpectedly");
-+	} else {
-+		if (TEST_ERRNO != tc->exp_err) {
-+			tst_resm(TFAIL | TTERRNO, "llistxattr() failed "
-+				 "unexpectedlly, expected %s",
-+				 tst_strerrno(tc->exp_err));
-+		} else {
-+			tst_resm(TPASS | TTERRNO,
-+				 "llistxattr() failed as expected");
-+		}
++	TEST(llistxattr("testfile", NULL, 0));
++	if (TEST_RETURN == -1) {
++		tst_resm(TFAIL | TERRNO, "llistxattr() failed");
++		return;
 +	}
++
++	if (check_suitable_buf(TEST_RETURN))
++		tst_resm(TPASS, "llistxattr() succeed with suitable buffer");
++	else
++		tst_resm(TFAIL, "llistxattr() failed with small buffer");
 +}
 +
 +static void setup(void)
 +{
-+	int n;
-+
 +	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 +
 +	TEST_PAUSE;
@@ -186,18 +155,18 @@ index 0000000..cf53275
 +	tst_tmpdir();
 +
 +	SAFE_TOUCH(cleanup, "testfile", 0644, NULL);
++}
 +
-+	SAFE_SYMLINK(cleanup, "testfile", "symlink");
++static int check_suitable_buf(long size)
++{
++	int n;
++	char buf[size];
 +
-+	n = lsetxattr("symlink", SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
-+	if (n == -1) {
-+		if (errno == ENOTSUP) {
-+			tst_brkm(TCONF, cleanup, "no xattr support in fs or "
-+				 "mounted without user_xattr option");
-+		} else {
-+			tst_brkm(TFAIL | TERRNO, cleanup, "lsetxattr() failed");
-+		}
-+	}
++	n = llistxattr("testfile", buf, size);
++	if (n == -1)
++		return 0;
++	else
++		return 1;
 +}
 +
 +static void cleanup(void)
