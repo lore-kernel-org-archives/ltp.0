@@ -1,59 +1,45 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 19 Feb 2016 17:38:45 +0800
-Subject: [LTP] [PATCH] input: add kernel version check
-Message-ID: <1455874725-31499-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 19 Feb 2016 11:03:33 +0100
+Subject: [LTP] [PATCH 1/5] open_posix: add SAFE_PFUNC macro
+Message-ID: <eb9862205b7122243cfba5ecae0a9293f7d95c21.1455875648.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-In this test case, the functionality of input has been improved by
-following patch:
-'commit 4369c64c79a2 ("Input: Send events one packet at a time")'.
-So it's not appropriate for testing on kernels that are lower than
-3.7.0 anymore.
+Simple macro to exit test and print error if a pthread_* function
+returned non-zero.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/input/input04.c | 5 +++++
- testcases/kernel/input/input05.c | 5 +++++
- 2 files changed, 10 insertions(+)
+ testcases/open_posix_testsuite/include/safe_helpers.h | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+ create mode 100644 testcases/open_posix_testsuite/include/safe_helpers.h
 
-diff --git a/testcases/kernel/input/input04.c b/testcases/kernel/input/input04.c
-index 4b16ca7..153a47f 100644
---- a/testcases/kernel/input/input04.c
-+++ b/testcases/kernel/input/input04.c
-@@ -75,6 +75,11 @@ int main(int ac, char **av)
- 
- static void setup(void)
- {
-+	if ((tst_kvercmp(3, 7, 0)) < 0) {
-+		tst_brkm(TCONF, NULL, "This test can run successfully on "
-+			 "kernels that are 3.7.0 and higher");
-+	}
+diff --git a/testcases/open_posix_testsuite/include/safe_helpers.h b/testcases/open_posix_testsuite/include/safe_helpers.h
+new file mode 100644
+index 000000000000..655e158f65d0
+--- /dev/null
++++ b/testcases/open_posix_testsuite/include/safe_helpers.h
+@@ -0,0 +1,17 @@
++#ifndef __SAFE_MACROS_H__
++#define __SAFE_MACROS_H__
 +
- 	tst_require_root();
- 
- 	fd = open_uinput();
-diff --git a/testcases/kernel/input/input05.c b/testcases/kernel/input/input05.c
-index 5ca01d8..6769e95 100644
---- a/testcases/kernel/input/input05.c
-+++ b/testcases/kernel/input/input05.c
-@@ -79,6 +79,11 @@ int main(int ac, char **av)
- 
- static void setup(void)
- {
-+	if ((tst_kvercmp(3, 7, 0)) < 0) {
-+		tst_brkm(TCONF, NULL, "This test can run successfully on "
-+			 "kernels that are 3.7.0 and higher");
-+	}
++#include <string.h>
 +
- 	tst_require_root();
- 
- 	fd = open_uinput();
++#define SAFE_PFUNC(op) \
++do {\
++	int ret = (op); \
++	if (ret != 0) { \
++		printf("Test %s unresolved: got %i (%s) on line %i\n  %s\n", \
++			__FILE__, ret, strerror(ret), __LINE__, #op); \
++		fflush(stdout); \
++		exit(PTS_UNRESOLVED); \
++	} \
++} while (0)
++
++#endif
 -- 
 1.8.3.1
-
-
 
