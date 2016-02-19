@@ -1,86 +1,150 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 19 Feb 2016 12:55:44 +0800
-Subject: [LTP] [PATCH v2 1/3] llistxattr/llistxattr01.c: add new testcase
-In-Reply-To: <20160218120305.GE19157@rei.lan>
-References: <20160218120305.GE19157@rei.lan>
-Message-ID: <1455857746-25721-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Fri, 19 Feb 2016 16:33:24 +0800
+Subject: [LTP] [PATCH v2] epoll_pwait/epoll_pwait01.c: add new testcase
+In-Reply-To: <20160209140206.GB11823@rei.lan>
+References: <20160209140206.GB11823@rei.lan>
+Message-ID: <1455870804-11471-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The testcase checks the basic functionality of the llistxattr(2).
-llistxattr(2) retrieves the list of extended attribute names
-associated with the link itself in the filesystem.
+Check that:
+ 1) epoll_pwait(2) with sigmask argument allows the caller
+    to safely wait until either a file descriptor becomes
+    ready or the timeout expires.
+ 2) epoll_pwait(2) with NULL sigmask argument fails if
+    interrupted by a signal handler, epoll_pwait(2) should
+    return -1 and set errno to EINTR.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
+ configure.ac                                       |   1 +
+ m4/ltp-epoll_pwait.m4                              |  25 +++
  runtest/ltplite                                    |   2 +
- runtest/syscalls                                   |   2 +
+ runtest/stress.part3                               |   2 +
+ runtest/syscalls                                   |   1 +
  testcases/kernel/syscalls/.gitignore               |   1 +
- testcases/kernel/syscalls/llistxattr/Makefile      |  23 +++
- .../kernel/syscalls/llistxattr/llistxattr01.c      | 159 +++++++++++++++++++++
- 5 files changed, 187 insertions(+)
- create mode 100644 testcases/kernel/syscalls/llistxattr/Makefile
- create mode 100644 testcases/kernel/syscalls/llistxattr/llistxattr01.c
+ testcases/kernel/syscalls/epoll_pwait/Makefile     |  23 +++
+ .../kernel/syscalls/epoll_pwait/epoll_pwait.h      |  35 ++++
+ .../kernel/syscalls/epoll_pwait/epoll_pwait01.c    | 191 +++++++++++++++++++++
+ 9 files changed, 281 insertions(+)
+ create mode 100644 m4/ltp-epoll_pwait.m4
+ create mode 100644 testcases/kernel/syscalls/epoll_pwait/Makefile
+ create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait.h
+ create mode 100644 testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
 
+diff --git a/configure.ac b/configure.ac
+index cc50397..b065fe6 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -183,5 +183,6 @@ LTP_CHECK_KCMP
+ LTP_CHECK_KCMP_TYPE
+ LTP_CHECK_PREADV
+ LTP_CHECK_PWRITEV
++LTP_CHECK_EPOLL_PWAIT
+ 
+ AC_OUTPUT
+diff --git a/m4/ltp-epoll_pwait.m4 b/m4/ltp-epoll_pwait.m4
+new file mode 100644
+index 0000000..e918110
+--- /dev/null
++++ b/m4/ltp-epoll_pwait.m4
+@@ -0,0 +1,25 @@
++dnl
++dnl Copyright (c) 2016 Fujitsu Ltd.
++dnl Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++dnl
++dnl This program is free software; you can redistribute it and/or modify
++dnl it under the terms of the GNU General Public License as published by
++dnl the Free Software Foundation; either version 2 of the License, or
++dnl (at your option) any later version.
++dnl
++dnl This program is distributed in the hope that it will be useful,
++dnl but WITHOUT ANY WARRANTY; without even the implied warranty of
++dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++dnl the GNU General Public License for more details.
++dnl
++dnl You should have received a copy of the GNU General Public License
++dnl along with this program.
++dnl
++
++dnl
++dnl LTP_CHECK_EPOLL_PWAIT
++dnl ----------------------------
++dnl
++AC_DEFUN([LTP_CHECK_EPOLL_PWAIT],[
++AC_CHECK_FUNCS(epoll_pwait,,)
++])
 diff --git a/runtest/ltplite b/runtest/ltplite
-index 89accc4..de7cecb 100644
+index 89accc4..fd496cd 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
-@@ -387,6 +387,8 @@ link08 link08
+@@ -159,6 +159,8 @@ dup203 dup203
+ dup204 dup204
+ dup205 dup205
  
- listen01 listen01
- 
-+llistxattr01 llistxattr01
++epoll_pwait01 epoll_pwait01
 +
- llseek01 llseek01
- llseek02 llseek02
- llseek03 llseek03
+ execl01 execl01
+ execle01 execle01
+ execlp01 execlp01
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 85950bf..f371f9f 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -100,6 +100,8 @@ dup203 dup203
+ dup204 dup204
+ dup205 dup205
+ 
++epoll_pwait01 epoll_pwait01
++
+ execl01 execl01
+ execle01 execle01
+ execlp01 execlp01
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 5f169a3..c48dd92 100644
+index 5f169a3..23ace15 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -513,6 +513,8 @@ linkat02 linkat02
+@@ -122,6 +122,7 @@ dup3_02 dup3_02
  
- listen01 listen01
+ epoll_create1_01 epoll_create1_01
+ epoll01 epoll-ltp
++epoll_pwait01 epoll_pwait01
  
-+llistxattr01 llistxattr01
-+
- llseek01 llseek01
- llseek02 llseek02
- llseek03 llseek03
+ eventfd01 eventfd01
+ 
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index de403e4..47f2fc8 100644
+index de403e4..d9f2889 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -473,6 +473,7 @@
- /linkat/linkat01
- /linkat/linkat02
- /listen/listen01
-+/llistxattr/llistxattr01
- /llseek/llseek01
- /llseek/llseek02
- /llseek/llseek03
-diff --git a/testcases/kernel/syscalls/llistxattr/Makefile b/testcases/kernel/syscalls/llistxattr/Makefile
+@@ -97,6 +97,7 @@
+ /dup3/dup3_02
+ /epoll/epoll-ltp
+ /epoll_create1/epoll_create1_01
++/epoll_pwait/epoll_pwait01
+ /eventfd/eventfd01
+ /eventfd2/eventfd2_01
+ /eventfd2/eventfd2_02
+diff --git a/testcases/kernel/syscalls/epoll_pwait/Makefile b/testcases/kernel/syscalls/epoll_pwait/Makefile
 new file mode 100644
-index 0000000..ed05a48
+index 0000000..289aaaf
 --- /dev/null
-+++ b/testcases/kernel/syscalls/llistxattr/Makefile
++++ b/testcases/kernel/syscalls/epoll_pwait/Makefile
 @@ -0,0 +1,23 @@
 +#
 +#  Copyright (c) 2016 Fujitsu Ltd.
-+#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++#  Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 +#
-+#  This program is free software;  you can redistribute it and/or modify
++#  This program is free software; you can redistribute it and/or modify
 +#  it under the terms of the GNU General Public License as published by
 +#  the Free Software Foundation; either version 2 of the License, or
 +#  (at your option) any later version.
 +#
 +#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  but WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
 +#  the GNU General Public License for more details.
 +#
 +#  You should have received a copy of the GNU General Public License
@@ -92,67 +156,106 @@ index 0000000..ed05a48
 +include $(top_srcdir)/include/mk/testcases.mk
 +
 +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr01.c b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait.h b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait.h
 new file mode 100644
-index 0000000..0bf6f25
+index 0000000..694cd46
 --- /dev/null
-+++ b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
-@@ -0,0 +1,159 @@
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait.h
+@@ -0,0 +1,35 @@
 +/*
-+* Copyright (c) 2016 Fujitsu Ltd.
-+* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+*
-+* This program is free software; you can redistribute it and/or modify it
-+* under the terms of version 2 of the GNU General Public License as
-+* published by the Free Software Foundation.
-+*
-+* This program is distributed in the hope that it would be useful, but
-+* WITHOUT ANY WARRANTY; without even the implied warranty of
-+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+*
-+* You should have received a copy of the GNU General Public License
-+* alone with this program.
-+*/
++ * Copyright (c) 2016 Fujitsu Ltd.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.
++ */
 +
-+/*
-+* Test Name: llistxattr01
-+*
-+* Description:
-+* The testcase checks the basic functionality of the llistxattr(2).
-+* llistxattr(2) retrieves the list of extended attribute names
-+* associated with the link itself in the filesystem.
-+*
-+*/
++#ifndef EPOLL_PWAIT_H
++#define EPOLL_PWAIT_H
 +
-+#include "config.h"
-+#include <errno.h>
 +#include <sys/types.h>
-+#include <string.h>
++#include "config.h"
++#include "linux_syscall_numbers.h"
 +
-+#ifdef HAVE_ATTR_XATTR_H
-+#include <attr/xattr.h>
++#if !defined(HAVE_EPOLL_PWAIT)
++int epoll_pwait(int epfd, struct epoll_event *events, int maxevents,
++	int timeout, const sigset_t *sigmask)
++{
++	return ltp_syscall(__NR_epoll_pwait, epfd, events, maxevents,
++		timeout, sigmask);
++}
 +#endif
 +
++#endif /* EPOLL_PWAIT_H */
+diff --git a/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+new file mode 100644
+index 0000000..6a290dd
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_pwait/epoll_pwait01.c
+@@ -0,0 +1,191 @@
++/*
++ * Copyright (c) 2016 Fujitsu Ltd.
++ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.
++ */
++
++/*
++ * Description:
++ *  Basic test for epoll_pwait(2).
++ *  1) epoll_pwait(2) with sigmask argument allows the caller to
++ *     safely wait until either a file descriptor becomes ready
++ *     or the timeout expires.
++ *  2) epoll_pwait(2) with NULL sigmask argument fails if
++ *     interrupted by a signal handler, epoll_pwait(2) should
++ *     return -1 and set errno to EINTR.
++ */
++
++#include <sys/epoll.h>
++#include <sys/types.h>
++#include <unistd.h>
++#include <string.h>
++#include <errno.h>
++
 +#include "test.h"
++#include "epoll_pwait.h"
 +#include "safe_macros.h"
-+#include "safe_file_ops.h"
 +
-+char *TCID = "llistxattr01";
++char *TCID = "epoll_pwait01";
++int TST_TOTAL = 2;
 +
-+#ifdef HAVE_ATTR_XATTR_H
-+#define SECURITY_KEY1	"security.ltptest1"
-+#define SECURITY_KEY2	"security.ltptest2"
-+#define VALUE	"test"
-+#define VALUE_SIZE	4
-+#define KEY_SIZE    17
++static int epfd, fds[2];
++static const char buf[] = "Testing";
++static sigset_t sigset;
++static struct epoll_event epevs;
++static struct sigaction sa;
 +
-+static void verify_llistxattr(void);
 +static void setup(void);
-+static void set_xattr(const char *, const char *);
-+static int has_attribute(const char *, int, const char *);
++static void sighandler(int sig LTP_ATTRIBUTE_UNUSED);
++static void do_test(sigset_t *);
++static void do_child(void);
 +static void cleanup(void);
-+
-+int TST_TOTAL = 1;
 +
 +int main(int ac, char **av)
 +{
@@ -165,100 +268,134 @@ index 0000000..0bf6f25
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
 +
-+		verify_llistxattr();
++		do_test(&sigset);
++		do_test(NULL);
 +	}
 +
 +	cleanup();
 +	tst_exit();
 +}
 +
-+static void verify_llistxattr(void)
-+{
-+	int size = 64;
-+	char buf[size];
-+
-+	TEST(llistxattr("symlink", buf, size));
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TERRNO, "llistxattr() failed");
-+		return;
-+	}
-+
-+	if (has_attribute(buf, size, SECURITY_KEY1)) {
-+		tst_resm(TFAIL, "get file attribute %s unexpectlly",
-+			 SECURITY_KEY1);
-+		return;
-+	}
-+
-+	if (!has_attribute(buf, size, SECURITY_KEY2)) {
-+		tst_resm(TFAIL, "missing attribute %s", SECURITY_KEY2);
-+		return;
-+	}
-+
-+	tst_resm(TPASS, "llistxattr() succeeded");
-+}
-+
 +static void setup(void)
 +{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	if ((tst_kvercmp(2, 6, 19)) < 0) {
++		tst_brkm(TCONF, NULL, "This test can only run on kernels "
++			 "that are 2.6.19 or higher");
++	}
++
++	tst_sig(FORK, DEF_HANDLER, cleanup);
 +
 +	TEST_PAUSE;
 +
-+	tst_tmpdir();
++	if (sigemptyset(&sigset) == -1)
++		tst_brkm(TFAIL | TERRNO, NULL, "sigemptyset() failed");
 +
-+	SAFE_TOUCH(cleanup, "testfile", 0644, NULL);
++	if (sigaddset(&sigset, SIGUSR1) == -1)
++		tst_brkm(TFAIL | TERRNO, NULL, "sigaddset() failed");
 +
-+	SAFE_SYMLINK(cleanup, "testfile", "symlink");
++	sa.sa_flags = 0;
++	sa.sa_handler = sighandler;
++	if (sigemptyset(&sa.sa_mask) == -1)
++		tst_brkm(TFAIL | TERRNO, NULL, "sigemptyset() failed");
 +
-+	set_xattr("testfile", SECURITY_KEY1);
++	if (sigaction(SIGUSR1, &sa, NULL) == -1)
++		tst_brkm(TFAIL | TERRNO, NULL, "sigaction() failed");
 +
-+	set_xattr("symlink", SECURITY_KEY2);
++	SAFE_PIPE(NULL, fds);
++
++	epfd = epoll_create(1);
++	if (epfd == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "failed to create epoll instance");
++	}
++
++	epevs.events = EPOLLIN;
++	epevs.data.fd = fds[0];
++
++	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &epevs) == -1) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "failed to register epoll target");
++	}
 +}
 +
-+static void set_xattr(const char *path, const char *key)
++static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
 +{
-+	int n;
 +
-+	n = lsetxattr(path, key, VALUE, VALUE_SIZE, XATTR_CREATE);
-+	if (n == -1) {
-+		if (errno == ENOTSUP) {
-+			tst_brkm(TCONF, cleanup,
-+				 "no xattr support in fs or mounted "
-+				 "without user_xattr option");
-+		}
++}
 +
-+		if (errno == EEXIST) {
-+			tst_brkm(TFAIL, cleanup, "exist attribute %s", key);
++static void do_test(sigset_t *sigmask)
++{
++	char read_buf[sizeof(buf)];
++	pid_t cpid;
++
++	cpid = tst_fork();
++	if (cpid < 0)
++		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
++
++	if (cpid == 0)
++		do_child();
++
++	TEST(epoll_pwait(epfd, &epevs, 1, -1, sigmask));
++
++	if (sigmask != NULL) {
++		if (TEST_RETURN == -1) {
++			tst_resm(TFAIL | TTERRNO, "epoll_pwait() failed");
++		} else if (TEST_RETURN != 1) {
++			tst_resm(TFAIL, "epoll_pwait() returned %li, "
++				 "expected 1", TEST_RETURN);
 +		} else {
-+			tst_brkm(TFAIL | TERRNO, cleanup,
-+				 "lsetxattr() failed");
++			tst_resm(TPASS, "epoll_pwait(sigmask) blocked signal");
++		}
++	} else {
++		if (TEST_RETURN != -1) {
++			tst_resm(TFAIL, "epoll_wait() succeeded unexpectedly");
++		} else {
++			if (TEST_ERRNO == EINTR) {
++				tst_resm(TPASS | TTERRNO,
++					 "epoll_wait() failed as expected");
++			} else {
++				tst_resm(TFAIL | TTERRNO,
++					 "epoll_wait() failed unexpectedly, "
++					 "expected errno is EINTR");
++			}
 +		}
 +	}
++
++	tst_record_childstatus(cleanup, cpid);
++
++	SAFE_READ(cleanup, 1, fds[0], read_buf, sizeof(buf));
 +}
 +
-+static int has_attribute(const char *list, int llen, const char *attr)
++static void do_child(void)
 +{
-+	int i;
-+
-+	for (i = 0; i < llen; i += strlen(list + i) + 1) {
-+		if (!strcmp(list + i, attr))
-+			return 1;
++	if (tst_process_state_wait2(getppid(), 'S') != 0) {
++		tst_brkm(TBROK | TERRNO, cleanup,
++			 "failed to wait for parent process's state");
 +	}
-+	return 0;
++
++	SAFE_KILL(cleanup, getppid(), SIGUSR1);
++
++	sleep(1);
++
++	SAFE_WRITE(cleanup, 1, fds[1], buf, sizeof(buf));
++
++	cleanup();
++	tst_exit();
 +}
 +
 +static void cleanup(void)
 +{
-+	tst_rmdir();
-+}
++	if (epfd > 0 && close(epfd))
++		tst_resm(TWARN | TERRNO, "failed to close epfd");
 +
-+#else /* HAVE_ATTR_XATTR_H */
-+int main(int ac, char **av)
-+{
-+	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
++	if (close(fds[0]))
++		tst_resm(TWARN | TERRNO, "close(fds[0]) failed");
++
++	if (close(fds[1]))
++		tst_resm(TWARN | TERRNO, "close(fds[1]) failed");
 +}
-+#endif
 -- 
-1.8.3.1
+1.8.4.2
 
 
 
