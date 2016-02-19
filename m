@@ -1,201 +1,157 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 19 Feb 2016 11:03:35 +0100
-Subject: [LTP] [PATCH 3/5] open_posix: condvar/schedule: remove useless
-	waiting
+Date: Fri, 19 Feb 2016 11:03:37 +0100
+Subject: [LTP] [PATCH 5/5] open_posix: condvar/schedule: mask SIGALRM in
+	SCHED_OTHER threads
 In-Reply-To: <eb9862205b7122243cfba5ecae0a9293f7d95c21.1455875648.git.jstancek@redhat.com>
 References: <eb9862205b7122243cfba5ecae0a9293f7d95c21.1455875648.git.jstancek@redhat.com>
-Message-ID: <e33f0c95db65876824502f08c6e994dad29f4de8.1455875648.git.jstancek@redhat.com>
+Message-ID: <8f6acea2f6a6b01ebe1749926cbcdbbfd635787a.1455875648.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If high prio thread wakes up, test is done, there's no point waiting
-another 3 seconds for low prio thread to end its busy loop.
+Kernel can deliver signal to any thread (usually it's the main).
+If these tests run on single CPU and signal gets delivered to main
+thread with SCHED_OTHER scheduling class then signal handler won't
+run until RT thread occupying CPU completes. Which happens after
+5 seconds and test fails.
 
-If test PASS-es, we save 3 seconds per test.
+Mask SIGLARM from SCHED_OTHER (main) thread. Kernel will deliver
+signal to any of RT threads that can handle it.
+
+Before patch:
+  # time taskset -c 0 ./condvar_pthread_cond_wait_1.run-test
+  Test FAILED: high priority was not woken up
+
+  real    0m5.003s
+  user    0m4.046s
+  sys     0m0.007s
+
+After patch:
+  # time taskset -c 0 ./condvar_pthread_cond_wait_1.run-test
+  Test PASSED
+
+  real    0m2.002s
+  user    0m1.967s
+  sys     0m0.004s
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .../functional/threads/condvar/pthread_cond_wait_1.c         | 12 ++++++------
- .../functional/threads/condvar/pthread_cond_wait_2.c         | 12 ++++++------
- .../open_posix_testsuite/functional/threads/schedule/1-1.c   | 10 +++++-----
- .../open_posix_testsuite/functional/threads/schedule/1-2.c   | 10 +++++-----
- 4 files changed, 22 insertions(+), 22 deletions(-)
+ .../functional/threads/condvar/pthread_cond_wait_1.c         |  4 ++++
+ .../functional/threads/condvar/pthread_cond_wait_2.c         |  4 ++++
+ .../open_posix_testsuite/functional/threads/schedule/1-1.c   |  4 ++++
+ testcases/open_posix_testsuite/include/safe_helpers.h        | 12 ++++++++++++
+ 4 files changed, 24 insertions(+)
 
 diff --git a/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_1.c b/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_1.c
-index 5b36fc24a3b8..dfbf44bdefd7 100644
+index a674efc406ef..9c92bf79eb7a 100644
 --- a/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_1.c
 +++ b/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_1.c
-@@ -39,8 +39,8 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
- pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+@@ -61,6 +61,7 @@ void *hi_prio_thread(void *tmp)
+ 	int policy;
  
- /* Flags that the threads use to indicate events */
--int woken_up = -1;
--int low_done = -1;
-+static volatile int woken_up;
-+static volatile int low_done;
+ 	(void) tmp;
++	safe_adjust_sigmask(SIGALRM, 0);
  
- void signal_handler(int sig)
- {
-@@ -85,7 +85,7 @@ void *hi_prio_thread(void *tmp)
- 	/* This variable is unprotected because the scheduling removes
- 	 * the contention
- 	 */
--	if (low_done != 1)
-+	if (!low_done)
- 		woken_up = 1;
+ 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
+ 	if ((policy != POLICY) || (param.sched_priority != HIGH_PRIORITY)) {
+@@ -97,6 +98,7 @@ void *low_prio_thread(void *tmp)
+ 	int policy;
  
- 	SAFE_PFUNC(pthread_mutex_unlock(&mutex));
-@@ -109,7 +109,7 @@ void *low_prio_thread(void *tmp)
- 	}
+ 	(void) tmp;
++	safe_adjust_sigmask(SIGALRM, 0);
  
- 	clock_gettime(CLOCK_REALTIME, &start_time);
--	while (1) {
-+	while (!woken_up) {
- 		clock_gettime(CLOCK_REALTIME, &current_time);
- 		if (timediff(current_time, start_time) > RUNTIME)
- 			break;
-@@ -142,8 +142,8 @@ int main()
- 	SAFE_PFUNC(pthread_join(high_id, NULL));
- 	SAFE_PFUNC(pthread_join(low_id, NULL));
+ 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
+ 	if ((policy != POLICY) || (param.sched_priority != LOW_PRIORITY)) {
+@@ -120,6 +122,8 @@ int main()
+ 	pthread_attr_t high_attr, low_attr;
+ 	struct sched_param param;
  
--	if (woken_up == -1) {
--		printf("Test FAILED: high priority was not woken up\\n");
-+	if (!woken_up) {
-+		printf("Test FAILED: high priority was not woken up\n");
- 		exit(PTS_FAIL);
- 	}
- 
++	safe_adjust_sigmask(SIGALRM, 1);
++
+ 	/* Create the higher priority thread */
+ 	SAFE_PFUNC(pthread_attr_init(&high_attr));
+ 	SAFE_PFUNC(pthread_attr_setinheritsched(&high_attr, PTHREAD_EXPLICIT_SCHED));
 diff --git a/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_2.c b/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_2.c
-index 7308bd6b98d1..c5670f8e26fd 100644
+index 398b8db5448e..009e51eeb41b 100644
 --- a/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_2.c
 +++ b/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_2.c
-@@ -39,8 +39,8 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
- pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
+@@ -61,6 +61,7 @@ void *hi_prio_thread(void *tmp)
+ 	int policy;
  
- /* Flags that the threads use to indicate events */
--int woken_up = -1;
--int low_done = -1;
-+static volatile int woken_up;
-+static volatile int low_done;
+ 	(void) tmp;
++	safe_adjust_sigmask(SIGALRM, 0);
  
- void signal_handler(int sig)
- {
-@@ -85,7 +85,7 @@ void *hi_prio_thread(void *tmp)
- 	/* This variable is unprotected because the scheduling removes
- 	 * the contention
- 	 */
--	if (low_done != 1)
-+	if (!low_done)
- 		woken_up = 1;
+ 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
+ 	if ((policy != POLICY) || (param.sched_priority != HIGH_PRIORITY)) {
+@@ -97,6 +98,7 @@ void *low_prio_thread(void *tmp)
+ 	int policy;
  
- 	SAFE_PFUNC(pthread_mutex_unlock(&mutex));
-@@ -109,7 +109,7 @@ void *low_prio_thread(void *tmp)
- 	}
+ 	(void) tmp;
++	safe_adjust_sigmask(SIGALRM, 0);
  
- 	clock_gettime(CLOCK_REALTIME, &start_time);
--	while (1) {
-+	while (!woken_up) {
- 		clock_gettime(CLOCK_REALTIME, &current_time);
- 		if (timediff(current_time, start_time) > RUNTIME)
- 			break;
-@@ -142,8 +142,8 @@ int main()
- 	SAFE_PFUNC(pthread_join(high_id, NULL));
- 	SAFE_PFUNC(pthread_join(low_id, NULL));
+ 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
+ 	if ((policy != POLICY) || (param.sched_priority != LOW_PRIORITY)) {
+@@ -120,6 +122,8 @@ int main()
+ 	pthread_attr_t high_attr, low_attr;
+ 	struct sched_param param;
  
--	if (woken_up == -1) {
--		printf("Test FAILED: high priority was not woken up\\n");
-+	if (!woken_up) {
-+		printf("Test FAILED: high priority was not woken up\n");
- 		exit(PTS_FAIL);
- 	}
- 
++	safe_adjust_sigmask(SIGALRM, 1);
++
+ 	/* Create the higher priority thread */
+ 	SAFE_PFUNC(pthread_attr_init(&high_attr));
+ 	SAFE_PFUNC(pthread_attr_setinheritsched(&high_attr, PTHREAD_EXPLICIT_SCHED));
 diff --git a/testcases/open_posix_testsuite/functional/threads/schedule/1-1.c b/testcases/open_posix_testsuite/functional/threads/schedule/1-1.c
-index f1bf37292b53..a6b634c7c59d 100644
+index c65e127bdf5b..00ce577f5c16 100644
 --- a/testcases/open_posix_testsuite/functional/threads/schedule/1-1.c
 +++ b/testcases/open_posix_testsuite/functional/threads/schedule/1-1.c
-@@ -37,8 +37,8 @@
- #define RUNTIME 5
+@@ -70,6 +70,7 @@ void *hi_prio_thread(void *tmp)
+ 	void *previous_signal;
  
- pthread_barrier_t barrier;
--volatile int woken_up = -1;
--volatile int low_done = -1;
-+static volatile int woken_up;
-+static volatile int low_done;
+ 	(void) tmp;
++	safe_adjust_sigmask(SIGALRM, 0);
  
- float timediff(struct timespec t2, struct timespec t1)
- {
-@@ -91,7 +91,7 @@ void *hi_prio_thread(void *tmp)
- 	/* This variable is unprotected because the scheduling removes
- 	 * the contention
- 	 */
--	if (low_done != 1)
-+	if (!low_done)
- 		woken_up = 1;
+ 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
+ 	if (policy != SCHED_RR || param.sched_priority != HIGH_PRIORITY) {
+@@ -103,6 +104,7 @@ void *low_prio_thread(void *tmp)
+ 	int policy;
  
- 	pthread_exit(NULL);
-@@ -113,7 +113,7 @@ void *low_prio_thread(void *tmp)
- 	}
+ 	(void) tmp;
++	safe_adjust_sigmask(SIGALRM, 0);
  
- 	clock_gettime(CLOCK_REALTIME, &start_timespec);
--	while (1) {
-+	while (!woken_up) {
- 		clock_gettime(CLOCK_REALTIME, &current_timespec);
- 		if (timediff(current_timespec, start_timespec) > RUNTIME)
- 			break;
-@@ -149,7 +149,7 @@ int main()
- 	SAFE_PFUNC(pthread_join(high_id, NULL));
- 	SAFE_PFUNC(pthread_join(low_id, NULL));
+ 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
+ 	if (policy != SCHED_RR || param.sched_priority != LOW_PRIORITY) {
+@@ -127,6 +129,8 @@ int main()
+ 	pthread_attr_t low_attr, high_attr;
+ 	struct sched_param param;
  
--	if (woken_up == -1) {
-+	if (!woken_up) {
- 		printf("High priority was not woken up. Test FAILED\n");
- 		exit(PTS_FAIL);
- 	}
-diff --git a/testcases/open_posix_testsuite/functional/threads/schedule/1-2.c b/testcases/open_posix_testsuite/functional/threads/schedule/1-2.c
-index 3d3427b8ec4b..f7b0bd89e081 100644
---- a/testcases/open_posix_testsuite/functional/threads/schedule/1-2.c
-+++ b/testcases/open_posix_testsuite/functional/threads/schedule/1-2.c
-@@ -39,8 +39,8 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
- pthread_mutex_t cond_mutex = PTHREAD_MUTEX_INITIALIZER;
- pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
++	safe_adjust_sigmask(SIGALRM, 1);
++
+ 	SAFE_PFUNC(pthread_barrier_init(&barrier, NULL, 2));
  
--volatile int woken_up = -1;
--volatile int low_done = -1;
-+static volatile int woken_up;
-+static volatile int low_done;
+ 	/* Create the higher priority */
+diff --git a/testcases/open_posix_testsuite/include/safe_helpers.h b/testcases/open_posix_testsuite/include/safe_helpers.h
+index 655e158f65d0..78ca208ad23e 100644
+--- a/testcases/open_posix_testsuite/include/safe_helpers.h
++++ b/testcases/open_posix_testsuite/include/safe_helpers.h
+@@ -14,4 +14,16 @@ do {\
+ 	} \
+ } while (0)
  
- float timediff(struct timespec t2, struct timespec t1)
- {
-@@ -78,7 +78,7 @@ void *hi_prio_thread(void *tmp)
- 	/* This variable is unprotected because the scheduling removes
- 	 * the contention
- 	 */
--	if (low_done != 1)
-+	if (!low_done)
- 		woken_up = 1;
- 
- 	SAFE_PFUNC(pthread_mutex_unlock(&mutex));
-@@ -105,7 +105,7 @@ void *low_prio_thread(void *tmp)
- 	}
- 
- 	clock_gettime(CLOCK_REALTIME, &start_time);
--	while (1) {
-+	while (!woken_up) {
- 		clock_gettime(CLOCK_REALTIME, &current_time);
- 		if (timediff(current_time, start_time) > RUNTIME)
- 			break;
-@@ -168,7 +168,7 @@ int main()
- 	SAFE_PFUNC(pthread_join(high_id, NULL));
- 	SAFE_PFUNC(pthread_join(low_id, NULL));
- 
--	if (woken_up == -1) {
-+	if (!woken_up) {
- 		printf("High priority was not woken up. Test FAILED.\n");
- 		exit(PTS_FAIL);
- 	}
++void safe_adjust_sigmask(int signal, int block)
++{
++	sigset_t set;
++
++	SAFE_PFUNC(pthread_sigmask(SIG_SETMASK, NULL, &set));
++	if (block)
++		sigaddset(&set, signal);
++	else
++		sigdelset(&set, signal);
++	SAFE_PFUNC(pthread_sigmask(SIG_SETMASK, &set, NULL));
++}
++
+ #endif
 -- 
 1.8.3.1
 
