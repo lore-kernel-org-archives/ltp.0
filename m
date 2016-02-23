@@ -1,462 +1,71 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 23 Feb 2016 13:43:27 +0100
-Subject: [LTP] [PATCH] open_posix: condvar/schedule: remove signal handlers
-Message-ID: <d633d86a54fe0eb0ba6c1557fc58fcb927a45a6a.1456231192.git.jstancek@redhat.com>
+Date: Tue, 23 Feb 2016 07:44:31 -0500 (EST)
+Subject: [LTP] [PATCH 5/5] open_posix: condvar/schedule: mask SIGALRM in
+ SCHED_OTHER threads
+In-Reply-To: <20160223100027.GA1526@rei.lan>
+References: <eb9862205b7122243cfba5ecae0a9293f7d95c21.1455875648.git.jstancek@redhat.com>
+ <8f6acea2f6a6b01ebe1749926cbcdbbfd635787a.1455875648.git.jstancek@redhat.com>
+ <20160222160903.GD7406@rei>
+ <1602365858.25927894.1456212883119.JavaMail.zimbra@redhat.com>
+ <20160223100027.GA1526@rei.lan>
+Message-ID: <1026711348.26150712.1456231471652.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-POSIX states:
-"It is not safe to use the pthread_cond_signal() function in a signal
-handler that is invoked asynchronously. Even if it were safe, there
-would still be a race between the test of the Boolean pthread_cond_wait()
-that could not be efficiently eliminated."
 
-Further, this test could hang on single CPU, if signal gets delivered
-to main thread, because there is low prio thread busy looping with
-higher priority than main.
 
-This patch removes signal handlers and instead uses main to
-signal/unlock condition/barrier/mutex that high prio thread is
-blocked on.
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Tuesday, 23 February, 2016 11:00:27 AM
+> Subject: Re: [LTP] [PATCH 5/5] open_posix: condvar/schedule: mask SIGALRM in SCHED_OTHER threads
+> 
+> Hi!
+> > > I guess that the test could be changed to:
+> > > 
+> > > * Lock one high priority thread on cond variable
+> > > * Run one low priority thread that does sleep(1) then
+> > >   calls pthread_cond_signal()
+> > > * Run one bussy loop low priority thread
+> > > 
+> > > That way we would avoid the signal handlers entirely. What do you think?
+> > 
+> > Would it be enough to:
+> > - call set_affinity_single() to have it all run on single CPU
+> > - spawn high prio thread and wait for it to block on condition
+> > - spawn low prio thread and singal condition, then busy loop for couple
+> > seconds
+> >
+> > And we can be also sure that high prio thread preempted low prio thread
+> > regardless of number of CPUs on system.
+> >
+> 
+> Good idea. I would use affinity on the bussy thread and the high
+> priority thread and let the low priority thread that calls the signal
+> function without any affinity.
+> 
+> That way the condition signaling would be trully asynchronous on SMP
+> system (and the test will work on single CPU as well since SCHED_RR will
+> wake up the signaling thread sooner or later since it has the same
+> priority as the bussy loop one).
+> 
+> > Also, any objections if we split the series? If I fix 1/5 and skip 5/5
+> > for now, those 4 could go in now and then next series would be series
+> > that removes signal handlers from all.
+> 
+> Sure. I've acked these patches allready :)
 
-High and low prio threads are set to run on same CPU to check that
-high prio thread really preempted low prio thread regarless of number
-of CPUs on system. Main thread's priority is at least the same as
-low prio thread, therefore it should eventually run even if there
-is only single CPU on system.
+1/5 through 4/5 are pushed. I posted new version of 5/5 separately.
 
-Suggested-by: Cyril Hrubis <chrubis@suse.cz>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .../threads/condvar/pthread_cond_wait_1.c          | 41 ++++++++-------------
- .../threads/condvar/pthread_cond_wait_2.c          | 41 ++++++++-------------
- .../functional/threads/schedule/1-1.c              | 43 ++++++++--------------
- .../functional/threads/schedule/1-2.c              | 32 +++++-----------
- 4 files changed, 57 insertions(+), 100 deletions(-)
+Regards,
+Jan
 
-diff --git a/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_1.c b/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_1.c
-index a674efc406ef..b2ad5463ff13 100644
---- a/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_1.c
-+++ b/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_1.c
-@@ -13,14 +13,15 @@
-  * 1. Create a condition variable
-  * 2. Create a high priority thread and make it wait on the cond
-  * 3. Create a low priority thread and let it busy-loop
-- * 4. Signal the cond in a signal handler and check that high
-- *    priority thread got woken up
-+ * 4. Both low and high prio threads run on same CPU
-+ * 5. Signal the cond from main and check that high priority thread
-+ *    got woken up and preempted low priority thread
-  */
- 
-+#include "affinity.h"
- #include <pthread.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include <signal.h>
- #include <unistd.h>
- #include <time.h>
- #include "posixtest.h"
-@@ -42,12 +43,6 @@ pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
- static volatile int woken_up;
- static volatile int low_done;
- 
--void signal_handler(int sig)
--{
--	(void) sig;
--	SAFE_PFUNC(pthread_cond_signal(&cond));
--}
--
- float timediff(struct timespec t2, struct timespec t1)
- {
- 	float diff = t2.tv_sec - t1.tv_sec;
-@@ -61,6 +56,7 @@ void *hi_prio_thread(void *tmp)
- 	int policy;
- 
- 	(void) tmp;
-+	set_affinity_single();
- 
- 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
- 	if ((policy != POLICY) || (param.sched_priority != HIGH_PRIORITY)) {
-@@ -68,15 +64,8 @@ void *hi_prio_thread(void *tmp)
- 		exit(PTS_UNRESOLVED);
- 	}
- 
--	if (signal(SIGALRM, signal_handler) != 0) {
--		perror(ERROR_PREFIX "signal:");
--		exit(PTS_UNRESOLVED);
--	}
--
- 	SAFE_PFUNC(pthread_mutex_lock(&mutex));
- 
--	alarm(2);
--
- 	/* Block, to be woken up by the signal handler */
- 	SAFE_PFUNC(pthread_cond_wait(&cond, &mutex));
- 
-@@ -97,6 +86,7 @@ void *low_prio_thread(void *tmp)
- 	int policy;
- 
- 	(void) tmp;
-+	set_affinity_single();
- 
- 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
- 	if ((policy != POLICY) || (param.sched_priority != LOW_PRIORITY)) {
-@@ -117,7 +107,7 @@ void *low_prio_thread(void *tmp)
- int main()
- {
- 	pthread_t high_id, low_id;
--	pthread_attr_t high_attr, low_attr;
-+	pthread_attr_t high_attr;
- 	struct sched_param param;
- 
- 	/* Create the higher priority thread */
-@@ -128,22 +118,23 @@ int main()
- 	SAFE_PFUNC(pthread_attr_setschedparam(&high_attr, &param));
- 	SAFE_PFUNC(pthread_create(&high_id, &high_attr, hi_prio_thread, NULL));
- 
--	/* Create the low priority thread */
--	SAFE_PFUNC(pthread_attr_init(&low_attr));
--	SAFE_PFUNC(pthread_attr_setinheritsched(&low_attr, PTHREAD_EXPLICIT_SCHED));
--	SAFE_PFUNC(pthread_attr_setschedpolicy(&low_attr, POLICY));
-+	/* run main with same priority as low prio thread */
- 	param.sched_priority = LOW_PRIORITY;
--	SAFE_PFUNC(pthread_attr_setschedparam(&low_attr, &param));
--	SAFE_PFUNC(pthread_create(&low_id, &low_attr, low_prio_thread, NULL));
-+	SAFE_PFUNC(pthread_setschedparam(pthread_self(), POLICY, &param));
-+
-+	/* Create the low priority thread (inherits sched policy from main) */
-+	SAFE_PFUNC(pthread_create(&low_id, NULL, low_prio_thread, NULL));
-+
-+	sleep(1);
-+	SAFE_PFUNC(pthread_cond_signal(&cond));
- 
- 	/* Wait for the threads to exit */
--	SAFE_PFUNC(pthread_join(high_id, NULL));
- 	SAFE_PFUNC(pthread_join(low_id, NULL));
--
- 	if (!woken_up) {
- 		printf("Test FAILED: high priority was not woken up\n");
- 		exit(PTS_FAIL);
- 	}
-+	SAFE_PFUNC(pthread_join(high_id, NULL));
- 
- 	printf("Test PASSED\n");
- 	exit(PTS_PASS);
-diff --git a/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_2.c b/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_2.c
-index 398b8db5448e..a7826cd04dfd 100644
---- a/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_2.c
-+++ b/testcases/open_posix_testsuite/functional/threads/condvar/pthread_cond_wait_2.c
-@@ -13,14 +13,15 @@
-  * 1. Create a condition variable
-  * 2. Create a high priority thread and make it wait on the cond
-  * 3. Create a low priority thread and let it busy-loop
-- * 4. Broadcast the cond in a signal handler and check that high
-- *    priority thread got woken up
-+ * 4. Both low and high prio threads run on same CPU
-+ * 5. Signal the cond from main and check that high priority thread
-+ *    got woken up and preempted low priority thread
-  */
- 
-+#include "affinity.h"
- #include <pthread.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include <signal.h>
- #include <unistd.h>
- #include <time.h>
- #include "posixtest.h"
-@@ -42,12 +43,6 @@ pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
- static volatile int woken_up;
- static volatile int low_done;
- 
--void signal_handler(int sig)
--{
--	(void) sig;
--	SAFE_PFUNC(pthread_cond_broadcast(&cond));
--}
--
- float timediff(struct timespec t2, struct timespec t1)
- {
- 	float diff = t2.tv_sec - t1.tv_sec;
-@@ -61,6 +56,7 @@ void *hi_prio_thread(void *tmp)
- 	int policy;
- 
- 	(void) tmp;
-+	set_affinity_single();
- 
- 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
- 	if ((policy != POLICY) || (param.sched_priority != HIGH_PRIORITY)) {
-@@ -68,15 +64,8 @@ void *hi_prio_thread(void *tmp)
- 		exit(PTS_UNRESOLVED);
- 	}
- 
--	if (signal(SIGALRM, signal_handler) != 0) {
--		perror(ERROR_PREFIX "signal:");
--		exit(PTS_UNRESOLVED);
--	}
--
- 	SAFE_PFUNC(pthread_mutex_lock(&mutex));
- 
--	alarm(2);
--
- 	/* Block, to be woken up by the signal handler */
- 	SAFE_PFUNC(pthread_cond_wait(&cond, &mutex));
- 
-@@ -97,6 +86,7 @@ void *low_prio_thread(void *tmp)
- 	int policy;
- 
- 	(void) tmp;
-+	set_affinity_single();
- 
- 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
- 	if ((policy != POLICY) || (param.sched_priority != LOW_PRIORITY)) {
-@@ -117,7 +107,7 @@ void *low_prio_thread(void *tmp)
- int main()
- {
- 	pthread_t high_id, low_id;
--	pthread_attr_t high_attr, low_attr;
-+	pthread_attr_t high_attr;
- 	struct sched_param param;
- 
- 	/* Create the higher priority thread */
-@@ -128,22 +118,23 @@ int main()
- 	SAFE_PFUNC(pthread_attr_setschedparam(&high_attr, &param));
- 	SAFE_PFUNC(pthread_create(&high_id, &high_attr, hi_prio_thread, NULL));
- 
--	/* Create the low priority thread */
--	SAFE_PFUNC(pthread_attr_init(&low_attr));
--	SAFE_PFUNC(pthread_attr_setinheritsched(&low_attr, PTHREAD_EXPLICIT_SCHED));
--	SAFE_PFUNC(pthread_attr_setschedpolicy(&low_attr, POLICY));
-+	/* run main with same priority as low prio thread */
- 	param.sched_priority = LOW_PRIORITY;
--	SAFE_PFUNC(pthread_attr_setschedparam(&low_attr, &param));
--	SAFE_PFUNC(pthread_create(&low_id, &low_attr, low_prio_thread, NULL));
-+	SAFE_PFUNC(pthread_setschedparam(pthread_self(), POLICY, &param));
-+
-+	/* Create the low priority thread (inherits sched policy from main) */
-+	SAFE_PFUNC(pthread_create(&low_id, NULL, low_prio_thread, NULL));
-+
-+	sleep(1);
-+	SAFE_PFUNC(pthread_cond_broadcast(&cond));
- 
- 	/* Wait for the threads to exit */
--	SAFE_PFUNC(pthread_join(high_id, NULL));
- 	SAFE_PFUNC(pthread_join(low_id, NULL));
--
- 	if (!woken_up) {
- 		printf("Test FAILED: high priority was not woken up\n");
- 		exit(PTS_FAIL);
- 	}
-+	SAFE_PFUNC(pthread_join(high_id, NULL));
- 
- 	printf("Test PASSED\n");
- 	exit(PTS_PASS);
-diff --git a/testcases/open_posix_testsuite/functional/threads/schedule/1-1.c b/testcases/open_posix_testsuite/functional/threads/schedule/1-1.c
-index c65e127bdf5b..d92680154138 100644
---- a/testcases/open_posix_testsuite/functional/threads/schedule/1-1.c
-+++ b/testcases/open_posix_testsuite/functional/threads/schedule/1-1.c
-@@ -13,16 +13,17 @@
-  * 1. Create a barrier object
-  * 2. Create a high priority thread and make it wait on the barrier
-  * 3. Create a low priority thread and let it busy-loop
-- * 4. Setup a signal handler for ALRM
-- * 5. Call the final barrier_wait in the signal handler
-+ * 4. Both low and high prio threads run on same CPU
-+ * 5. Call the final barrier_wait from main
-  * 6. Check that the higher priority thread got woken up
-+ *    and preempted low priority thread
-  */
- 
- #define _XOPEN_SOURCE 600
-+#include "affinity.h"
- #include <pthread.h>
- #include <stdlib.h>
- #include <stdio.h>
--#include <signal.h>
- #include <unistd.h>
- #include <sys/time.h>
- #include "posixtest.h"
-@@ -57,19 +58,13 @@ int my_pthread_barrier_wait(pthread_barrier_t *p)
- 	return rc;
- }
- 
--void signal_handler(int sig)
--{
--	(void) sig;
--	SAFE_PFUNC(my_pthread_barrier_wait(&barrier));
--}
--
- void *hi_prio_thread(void *tmp)
- {
- 	struct sched_param param;
- 	int policy;
--	void *previous_signal;
- 
- 	(void) tmp;
-+	set_affinity_single();
- 
- 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
- 	if (policy != SCHED_RR || param.sched_priority != HIGH_PRIORITY) {
-@@ -77,14 +72,6 @@ void *hi_prio_thread(void *tmp)
- 		exit(PTS_UNRESOLVED);
- 	}
- 
--	previous_signal = signal(SIGALRM, signal_handler);
--	if (previous_signal == SIG_ERR) {
--		perror(ERROR_PREFIX "signal");
--		exit(PTS_UNRESOLVED);
--	}
--
--	alarm(2);
--
- 	SAFE_PFUNC(my_pthread_barrier_wait(&barrier));
- 
- 	/* This variable is unprotected because the scheduling removes
-@@ -103,6 +90,7 @@ void *low_prio_thread(void *tmp)
- 	int policy;
- 
- 	(void) tmp;
-+	set_affinity_single();
- 
- 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
- 	if (policy != SCHED_RR || param.sched_priority != LOW_PRIORITY) {
-@@ -124,7 +112,7 @@ void *low_prio_thread(void *tmp)
- int main()
- {
- 	pthread_t high_id, low_id;
--	pthread_attr_t low_attr, high_attr;
-+	pthread_attr_t high_attr;
- 	struct sched_param param;
- 
- 	SAFE_PFUNC(pthread_barrier_init(&barrier, NULL, 2));
-@@ -137,22 +125,23 @@ int main()
- 	SAFE_PFUNC(pthread_attr_setschedparam(&high_attr, &param));
- 	SAFE_PFUNC(pthread_create(&high_id, &high_attr, hi_prio_thread, NULL));
- 
--	/* Create the low priority thread */
--	SAFE_PFUNC(pthread_attr_init(&low_attr));
--	SAFE_PFUNC(pthread_attr_setinheritsched(&low_attr, PTHREAD_EXPLICIT_SCHED));
--	SAFE_PFUNC(pthread_attr_setschedpolicy(&low_attr, SCHED_RR));
-+	/* run main with same priority as low prio thread */
- 	param.sched_priority = LOW_PRIORITY;
--	SAFE_PFUNC(pthread_attr_setschedparam(&low_attr, &param));
--	SAFE_PFUNC(pthread_create(&low_id, &low_attr, low_prio_thread, NULL));
-+	SAFE_PFUNC(pthread_setschedparam(pthread_self(), SCHED_RR, &param));
-+
-+	/* Create the low priority thread (inherits sched policy from main) */
-+	SAFE_PFUNC(pthread_create(&low_id, NULL, low_prio_thread, NULL));
-+
-+	sleep(1);
-+	SAFE_PFUNC(my_pthread_barrier_wait(&barrier));
- 
- 	/* Wait for the threads to exit */
--	SAFE_PFUNC(pthread_join(high_id, NULL));
- 	SAFE_PFUNC(pthread_join(low_id, NULL));
--
- 	if (!woken_up) {
- 		printf("High priority was not woken up. Test FAILED\n");
- 		exit(PTS_FAIL);
- 	}
-+	SAFE_PFUNC(pthread_join(high_id, NULL));
- 
- 	printf("Test PASSED\n");
- 	exit(PTS_PASS);
-diff --git a/testcases/open_posix_testsuite/functional/threads/schedule/1-2.c b/testcases/open_posix_testsuite/functional/threads/schedule/1-2.c
-index c85460e7cf89..92e3ef153d9d 100644
---- a/testcases/open_posix_testsuite/functional/threads/schedule/1-2.c
-+++ b/testcases/open_posix_testsuite/functional/threads/schedule/1-2.c
-@@ -13,14 +13,15 @@
-  * 1. Create a mutex and lock
-  * 2. Create a high priority thread and make it wait on the mutex
-  * 3. Create a low priority thread and let it busy-loop
-- * 4. Unlock the mutex and make sure that the higher priority thread
-- *    got woken up
-+ * 4. Both low and high prio threads run on same CPU
-+ * 5. Unlock the mutex and make sure that the higher priority thread
-+ *    got woken up and preempted low priority thread
-  */
- 
-+#include "affinity.h"
- #include <pthread.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include <signal.h>
- #include <unistd.h>
- #include <sys/time.h>
- #include "posixtest.h"
-@@ -36,8 +37,6 @@
- #define RUNTIME 5
- 
- pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
--pthread_mutex_t cond_mutex = PTHREAD_MUTEX_INITIALIZER;
--pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
- 
- static volatile int woken_up;
- static volatile int low_done;
-@@ -49,18 +48,13 @@ float timediff(struct timespec t2, struct timespec t1)
- 	return diff;
- }
- 
--void signal_handler(int sig)
--{
--	(void) sig;
--	SAFE_PFUNC(pthread_cond_signal(&cond));
--}
--
- void *hi_prio_thread(void *tmp)
- {
- 	struct sched_param param;
- 	int policy;
- 
- 	(void) tmp;
-+	set_affinity_single();
- 
- 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
- 	if (policy != SCHED_RR) {
-@@ -91,6 +85,7 @@ void *low_prio_thread(void *tmp)
- 	int policy;
- 
- 	(void) tmp;
-+	set_affinity_single();
- 
- 	SAFE_PFUNC(pthread_getschedparam(pthread_self(), &policy, &param));
- 	if (policy != SCHED_RR) {
-@@ -149,28 +144,19 @@ int main()
- 	SAFE_PFUNC(pthread_attr_setschedparam(&low_attr, &param));
- 	SAFE_PFUNC(pthread_create(&low_id, &low_attr, low_prio_thread, NULL));
- 
--	/* setup a signal handler which will wakeup main later */
--	if (signal(SIGALRM, signal_handler) == SIG_ERR) {
--		perror(ERROR_PREFIX "signal");
--		exit(PTS_UNRESOLVED);
--	}
--
--	SAFE_PFUNC(pthread_mutex_lock(&cond_mutex));
--	alarm(2);
--	SAFE_PFUNC(pthread_cond_wait(&cond, &cond_mutex));
--	SAFE_PFUNC(pthread_mutex_unlock(&cond_mutex));
-+	sleep(1);
- 
- 	/* Wake the other high priority thread up */
- 	SAFE_PFUNC(pthread_mutex_unlock(&mutex));
- 
- 	/* Wait for the threads to exit */
--	SAFE_PFUNC(pthread_join(high_id, NULL));
- 	SAFE_PFUNC(pthread_join(low_id, NULL));
--
- 	if (!woken_up) {
- 		printf("High priority was not woken up. Test FAILED.\n");
- 		exit(PTS_FAIL);
- 	}
-+	SAFE_PFUNC(pthread_join(high_id, NULL));
-+
- 	printf("Test PASSED\n");
- 	exit(PTS_PASS);
- }
--- 
-1.8.3.1
-
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
