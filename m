@@ -1,46 +1,23 @@
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Date: Mon, 29 Feb 2016 14:34:40 +0530
-Subject: [LTP] [PATCH] run-posix-option-group-test: replace CWD qith PWD
-Message-ID: <1456736680-8968-1-git-send-email-vgupta@synopsys.com>
+From: Verma, PankajX <pankajx.verma@intel.com>
+Date: Mon, 29 Feb 2016 10:24:36 +0000
+Subject: [LTP] FW: LTP test coverage ?
+In-Reply-To: <A5742185B24D384D94B12AC758A6D91701BF3EA7@BGSMSX101.gar.corp.intel.com>
+References: <A5742185B24D384D94B12AC758A6D91701BF3EA7@BGSMSX101.gar.corp.intel.com>
+Message-ID: <A5742185B24D384D94B12AC758A6D91701BF3F15@BGSMSX101.gar.corp.intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When running LTP on a mininal Busybox + uClibc env, see lot of prints like
-this:
+Hi,
 
-| Usage: basename FILE [SUFFIX]
-|
-| Strip directory path and .SUFFIX from FILE
-|
-| *******************
-| Testing
-| *******************
+Does LTP covers Ethernet and NAND components on Yocto Linux.
 
-This is because $CDW env variable is not provided by Busybox shell.
+Thanks in Advance.
 
-I understand PWD is not same as CWD, but should suffice here !
-
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
----
- testcases/open_posix_testsuite/bin/run-tests.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/testcases/open_posix_testsuite/bin/run-tests.sh b/testcases/open_posix_testsuite/bin/run-tests.sh
-index d4bd9884efbf..5ee568775a44 100755
---- a/testcases/open_posix_testsuite/bin/run-tests.sh
-+++ b/testcases/open_posix_testsuite/bin/run-tests.sh
-@@ -29,7 +29,7 @@ run_test_loop() {
- 
- 	cat <<EOF
- *******************
--Testing $(basename $CWD)
-+Testing $(basename $PWD)
- *******************
- $(printf "PASS\t\t%3d" $NUM_PASS)
- $(printf "FAIL\t\t%3d" $NUM_FAIL)
--- 
-2.5.0
-
+Thanks,
+Pankaj Verma
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160229/15f69277/attachment.html>
