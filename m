@@ -1,23 +1,25 @@
-From: Verma, PankajX <pankajx.verma@intel.com>
-Date: Mon, 29 Feb 2016 10:24:36 +0000
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 29 Feb 2016 12:00:42 +0100
 Subject: [LTP] FW: LTP test coverage ?
-In-Reply-To: <A5742185B24D384D94B12AC758A6D91701BF3EA7@BGSMSX101.gar.corp.intel.com>
+In-Reply-To: <A5742185B24D384D94B12AC758A6D91701BF3F15@BGSMSX101.gar.corp.intel.com>
 References: <A5742185B24D384D94B12AC758A6D91701BF3EA7@BGSMSX101.gar.corp.intel.com>
-Message-ID: <A5742185B24D384D94B12AC758A6D91701BF3F15@BGSMSX101.gar.corp.intel.com>
+ <A5742185B24D384D94B12AC758A6D91701BF3F15@BGSMSX101.gar.corp.intel.com>
+Message-ID: <20160229110042.GA8422@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> Does LTP covers Ethernet and NAND components on Yocto Linux.
 
-Does LTP covers Ethernet and NAND components on Yocto Linux.
+What exactly do you mean by "covers" here?
 
-Thanks in Advance.
+There are network testcases in LTP and there are filesystem tests that
+will utilize both. But you are looking for something that would test the
+device drivers directly then the answer is no.
 
-Thanks,
-Pankaj Verma
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160229/15f69277/attachment.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
