@@ -1,17 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 2 Mar 2016 15:44:21 +0100
-Subject: [LTP] Test library API changes
-In-Reply-To: <1610317133.22142649.1455794774969.JavaMail.zimbra@redhat.com>
-References: <20160105111136.GA32659@rei.lan>
- <116630920.20260383.1455280426104.JavaMail.zimbra@redhat.com>
- <20160212175308.GA30723@rei.suse.cz>
- <20160216211958.GC2515@rei.lan>
- <1799339064.21851637.1455719961718.JavaMail.zimbra@redhat.com>
- <20160217155406.GA12574@rei>
- <1752902661.22105327.1455786359593.JavaMail.zimbra@redhat.com>
- <20160218110752.GB19157@rei.lan>
- <1610317133.22142649.1455794774969.JavaMail.zimbra@redhat.com>
-Message-ID: <20160302144421.GC25763@rei>
+Date: Wed, 2 Mar 2016 16:32:23 +0100
+Subject: [LTP] [PATCH v2] epoll_pwait/epoll_pwait01.c: add new testcase
+In-Reply-To: <1455870804-11471-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <20160209140206.GB11823@rei.lan>
+ <1455870804-11471-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20160302153222.GD25763@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,57 +12,180 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-The up to date version is at usuall place at:
+> +/*
+> + * Description:
+> + *  Basic test for epoll_pwait(2).
+> + *  1) epoll_pwait(2) with sigmask argument allows the caller to
+> + *     safely wait until either a file descriptor becomes ready
+> + *     or the timeout expires.
+> + *  2) epoll_pwait(2) with NULL sigmask argument fails if
+> + *     interrupted by a signal handler, epoll_pwait(2) should
+> + *     return -1 and set errno to EINTR.
+> + */
+> +
+> +#include <sys/epoll.h>
+> +#include <sys/types.h>
+> +#include <unistd.h>
+> +#include <string.h>
+> +#include <errno.h>
+> +
+> +#include "test.h"
+> +#include "epoll_pwait.h"
+> +#include "safe_macros.h"
+> +
+> +char *TCID = "epoll_pwait01";
+> +int TST_TOTAL = 2;
+> +
+> +static int epfd, fds[2];
+> +static const char buf[] = "Testing";
+> +static sigset_t sigset;
+> +static struct epoll_event epevs;
+> +static struct sigaction sa;
+> +
+> +static void setup(void);
+> +static void sighandler(int sig LTP_ATTRIBUTE_UNUSED);
+> +static void do_test(sigset_t *);
+> +static void do_child(void);
+> +static void cleanup(void);
+> +
+> +int main(int ac, char **av)
+> +{
+> +	int lc;
+> +
+> +	tst_parse_opts(ac, av, NULL, NULL);
+> +
+> +	setup();
+> +
+> +	for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +		tst_count = 0;
+> +
+> +		do_test(&sigset);
+> +		do_test(NULL);
+> +	}
+> +
+> +	cleanup();
+> +	tst_exit();
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	if ((tst_kvercmp(2, 6, 19)) < 0) {
+> +		tst_brkm(TCONF, NULL, "This test can only run on kernels "
+> +			 "that are 2.6.19 or higher");
+> +	}
+> +
+> +	tst_sig(FORK, DEF_HANDLER, cleanup);
+> +
+> +	TEST_PAUSE;
+> +
+> +	if (sigemptyset(&sigset) == -1)
+> +		tst_brkm(TFAIL | TERRNO, NULL, "sigemptyset() failed");
+> +
+> +	if (sigaddset(&sigset, SIGUSR1) == -1)
+> +		tst_brkm(TFAIL | TERRNO, NULL, "sigaddset() failed");
+> +
+> +	sa.sa_flags = 0;
+> +	sa.sa_handler = sighandler;
+> +	if (sigemptyset(&sa.sa_mask) == -1)
+> +		tst_brkm(TFAIL | TERRNO, NULL, "sigemptyset() failed");
+> +
+> +	if (sigaction(SIGUSR1, &sa, NULL) == -1)
+> +		tst_brkm(TFAIL | TERRNO, NULL, "sigaction() failed");
+> +
+> +	SAFE_PIPE(NULL, fds);
+> +
+> +	epfd = epoll_create(1);
+> +	if (epfd == -1) {
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			 "failed to create epoll instance");
+> +	}
+> +
+> +	epevs.events = EPOLLIN;
+> +	epevs.data.fd = fds[0];
+> +
+> +	if (epoll_ctl(epfd, EPOLL_CTL_ADD, fds[0], &epevs) == -1) {
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			 "failed to register epoll target");
+> +	}
+> +}
+> +
+> +static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+> +{
+> +
+> +}
+> +
+> +static void do_test(sigset_t *sigmask)
+> +{
+> +	char read_buf[sizeof(buf)];
+> +	pid_t cpid;
+> +
+> +	cpid = tst_fork();
+> +	if (cpid < 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
+> +
+> +	if (cpid == 0)
+> +		do_child();
+> +
+> +	TEST(epoll_pwait(epfd, &epevs, 1, -1, sigmask));
+> +
+> +	if (sigmask != NULL) {
+> +		if (TEST_RETURN == -1) {
+> +			tst_resm(TFAIL | TTERRNO, "epoll_pwait() failed");
+> +		} else if (TEST_RETURN != 1) {
+> +			tst_resm(TFAIL, "epoll_pwait() returned %li, "
+> +				 "expected 1", TEST_RETURN);
+> +		} else {
+> +			tst_resm(TPASS, "epoll_pwait(sigmask) blocked signal");
+> +		}
+> +	} else {
+> +		if (TEST_RETURN != -1) {
+> +			tst_resm(TFAIL, "epoll_wait() succeeded unexpectedly");
+> +		} else {
+> +			if (TEST_ERRNO == EINTR) {
+> +				tst_resm(TPASS | TTERRNO,
+> +					 "epoll_wait() failed as expected");
+> +			} else {
+> +				tst_resm(TFAIL | TTERRNO,
+> +					 "epoll_wait() failed unexpectedly, "
+> +					 "expected errno is EINTR");
+> +			}
+> +		}
+> +	}
 
-https://github.com/metan-ucw/ltp
 
+Can we put the checks in a separate functions and call them from here?
 
-The changes are:
+> +	tst_record_childstatus(cleanup, cpid);
+> +
+> +	SAFE_READ(cleanup, 1, fds[0], read_buf, sizeof(buf));
+> +}
+> +
+> +static void do_child(void)
+> +{
+> +	if (tst_process_state_wait2(getppid(), 'S') != 0) {
+> +		tst_brkm(TBROK | TERRNO, cleanup,
+> +			 "failed to wait for parent process's state");
+> +	}
+> +
+> +	SAFE_KILL(cleanup, getppid(), SIGUSR1);
+> +
+> +	sleep(1);
 
-* acnt was removed completly
+One second is too much, 0.1 second should be more than enough for the
+test.
 
-* the bitflags in struct tst_test were fixed to be 1 bit wide
+> +	SAFE_WRITE(cleanup, 1, fds[1], buf, sizeof(buf));
 
-* the headers were changed so that most of the old headers starts with
-  old_ prefix
+Technically we don't have to write anything here (and we could exit the
+child without sleeping as well) if we passed a timeout to the
+epoll_pwait() instead in the parent (we would have to check for timeout
+instead of success but that shouldn't matter in this test).
 
-  The safe_macros.h and test.h were left intact at the moment since
-  these are included in numerous testcases. We can rename them in a
-  separate patch if needed.
+> +	cleanup();
+> +	tst_exit();
+> +}
 
-* Added macro TST_TEST_TCONF() to ease writing testcases that are
-  guarded by #ifdefs, see newly converted llistxattr testcases
-
-* Few more converted testcases
-
-* Started to update Test-Writing-Guidelines for new API
-
-
-The open issues:
-
-* The SHM base file path propagation
-  - we will probably go with the env variable
-
-* Finishing rewrite of Test Writing Guidelines
-  - needs just a bit more work
-
-* Should we allow SAFE_MACROS() in cleanup?
-
-  - we can easily do that since cleanup is executed from the test
-    library and we can change tst_brk() to return to the caller
-    if cleanup was entered
-
-  - plus point is that writing cleanup is bit easier
-
-  - minus point is that tst_brk() can now return and as a side effect
-    tst_brkm() has to return as well (since tst_brkm() from safe macros
-    is redirected to tst_brk()) and because of that we have to drop
-    the __attribute__((noreturn)) since that causes gcc to optimize out
-    return statements from the function which generates compilation
-    warnings in some cases
-
-
-Is there anything else?
+Otherwise it looks good.
 
 -- 
 Cyril Hrubis
