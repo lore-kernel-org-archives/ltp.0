@@ -1,115 +1,155 @@
-Return-Path: <ltp-list-bounces@lists.sourceforge.net>
-Received: from sog-mx-2.v43.ch3.sourceforge.com ([172.29.43.192]
-	helo=mx.sourceforge.net)
-	by sfs-ml-1.v29.ch3.sourceforge.com with esmtp (Exim 4.76)
-	(envelope-from <alexey.kodanev@oracle.com>) id 1adcpe-0007AJ-6T
-	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2016 12:03:14 +0000
-Received: from aserp1040.oracle.com ([141.146.126.69])
-	by sog-mx-2.v43.ch3.sourceforge.com with esmtps (TLSv1:AES256-SHA:256)
-	(Exim 4.76) id 1adcpY-0005Xn-Ev
-	for ltp-list@lists.sourceforge.net; Wed, 09 Mar 2016 12:03:14 +0000
-Message-ID: <56E01222.6020909@oracle.com>
-Date: Wed, 09 Mar 2016 15:08:02 +0300
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
+From: Shuang Qiu <shuang.qiu@oracle.com>
+Date: Wed, 02 Mar 2016 14:20:47 +0800
+Subject: [LTP] [PATCH] commands/mkswap01: Update wait_for_file function
+In-Reply-To: <56D05659.4060205@oracle.com>
+References: <1454082985-3549-1-git-send-email-shuang.qiu@oracle.com>
+ <56D05659.4060205@oracle.com>
+Message-ID: <56D6863F.9080700@oracle.com>
+List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-References: <1457334114-10461-1-git-send-email-haliu@redhat.com>
-	<1457334114-10461-2-git-send-email-haliu@redhat.com>
-In-Reply-To: <1457334114-10461-2-git-send-email-haliu@redhat.com>
-Subject: Re: [LTP] [PATCH 1/3] lib/test_net.sh: add tst_ping() to check icmp
- connectivity
-List-Id: Linux Test Project General Discussions
-	<ltp-list.lists.sourceforge.net>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=ltp-list>
-List-Post: <mailto:ltp-list@lists.sourceforge.net>
-List-Help: <mailto:ltp-list-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/ltp-list>,
-	<mailto:ltp-list-request@lists.sourceforge.net?subject=subscribe>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Errors-To: ltp-list-bounces@lists.sourceforge.net
-To: Hangbin Liu <haliu@redhat.com>
-Cc: LTP List <ltp-list@lists.sourceforge.net>
+To: ltp@lists.linux.it
 
-Hi,
-On 03/07/2016 10:01 AM, Hangbin Liu wrote:
-> Signed-off-by: Hangbin Liu <haliu@redhat.com>
-> ---
->   testcases/lib/test_net.sh | 37 +++++++++++++++++++++++++++++++++++++
->   1 file changed, 37 insertions(+)
+Hi Stanislav,
+
+Thanks for review.
+I agree your comments and will submit another patch.
+
+Thanks
+Shuang
+On 02/26/2016 09:42 PM, Stanislav Kholmanskikh wrote:
+> Hi!
 >
-> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-> index 418fed3..f75e78e 100644
-> --- a/testcases/lib/test_net.sh
-> +++ b/testcases/lib/test_net.sh
-> @@ -314,3 +314,40 @@ tst_netload()
->   
->   	return $ret
->   }
-> +
-> +# tst_ping IFACE ADDR [SIZE]
-> +# Check icmp connectivity
-> +# IFACE: source interface name
-> +# ADDR: destination IPv4 or IPv6 address
-> +# SIZE: message size
-> +tst_ping()
-> +{
-> +	# The max number of ICMP echo request
-> +	PING_MAX=${PING_MAX:-"10"}
-> +
-> +	# Check the arguments
-> +	if [ $# -lt 2 ]; then
-> +		tst_resm TBROK "tst_ping src_iface dest_ipv4/6_addr [msg_size]"
-> +		return 1
-> +	fi
-> +
-> +	local src_iface=$1
-> +	local dst_addr=$2
+> Sorry for my spam in [1], [2]. My brain barely functioned on 
+> yesterday's evening. Now I understand that calling blkid is the right 
+> choice to check whether a block device exists. :-[
+>
+> Both blkid, mkswap, swapon use libblkd (and take into account settings 
+> in blkid.conf), so if blkid finds the device, then mkswap, swapon will 
+> find it as well.
+>
+>
+> On 01/29/2016 06:56 PM, shuang.qiu@oracle.com wrote:
+>> From: Shuang Qiu <shuang.qiu@oracle.com>
+>>
+>> In commit a76b72ad31fa7bb22a09f323dadd5db7c00c7f56,it depends on the 
+>> files
+>> under /dev/disk/by-* in wait_for_file function.But sometimes udev 
+>> does not
+>> refresh automatically during runtime and the symbolic links will not 
+>> appear.
+>> Update the function to use blkid instead.
+>
+> checkpatch.pl warns about the style of the commit reference.
+>
+> Maybe add here that blkid (since it uses libblkid as mkswap, swapon 
+> does) is sufficient to check the availability of block devices, 
+> whereas explicit checking of /dev/disk/by-* should be avoided where 
+> possible (man 8 blkid) ?
+>
+> Plus one more comment below.
+>
+>>
+>> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+>> ---
+>>   testcases/commands/mkswap/mkswap01.sh |   25 +++++++++++++------------
+>>   1 file changed, 13 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/testcases/commands/mkswap/mkswap01.sh 
+>> b/testcases/commands/mkswap/mkswap01.sh
+>> index ae4c98a..fdfc712 100755
+>> --- a/testcases/commands/mkswap/mkswap01.sh
+>> +++ b/testcases/commands/mkswap/mkswap01.sh
+>> @@ -46,25 +46,26 @@ cleanup()
+>>       tst_rmdir
+>>   }
+>>
+>> -wait_for_file()
+>> +wait_for_device()
+>>   {
+>> -    local path="$1"
+>> +    local token="$1"
+>>       local retries=10
+>>
+>> -    if [ -z "$path" ]; then
+>> +    if [ -z "$token" ]; then
+>>           return
+>>       fi
+>>
+>>       while [ $retries -gt 0 ]; do
+>> -        if [ -e "$path" ]; then
+>> +        blkid -t "$token" $TST_DEVICE >/dev/null
+>> +        if [ $? -eq 0 ]; then
+>>               return
+>>           fi
+>> -        tst_resm TINFO "Waiting for $path to appear"
+>> +        tst_resm TINFO "Waiting for device $token prepared"
+>>           retries=$((retries - 1))
+>>           tst_sleep 10ms
+>>       done
+>>
+>> -    tst_resm TWARN "The file $path haven't appeared"
+>> +    tst_resm TWARN "The device $token haven't prepared"
+>
+> Since we rely on blkid for device availability checking, maybe change 
+> TWARN to TBROK here?
+>
+>
+>>   }
+>>
+>>   mkswap_verify()
+>> @@ -72,7 +73,7 @@ mkswap_verify()
+>>       local mkswap_op="$1"
+>>       local op_arg="$2"
+>>       local swapfile="$3"
+>> -    local dev_file="$5"
+>> +    local token="$5"
+>>
+>>       local before=`awk '/SwapTotal/ {print $2}' /proc/meminfo`
+>>
+>> @@ -84,7 +85,7 @@ mkswap_verify()
+>>           local pagesize=$PAGE_SIZE
+>>       fi
+>>
+>> -    wait_for_file "$dev_file"
+>> +    wait_for_device "$token"
+>>
+>>       swapon $swapfile 2>/dev/null
+>>
+>> @@ -138,7 +139,7 @@ mkswap_test()
+>>       local op_arg="$2"
+>>       local device="$3"
+>>       local size="$4"
+>> -    local dev_file="$5"
+>> +    local token="$5"
+>>
+>>       local mkswap_cmd="mkswap $mkswap_op $op_arg $TST_DEVICE $size"
+>>
+>> @@ -156,7 +157,7 @@ mkswap_test()
+>>       fi
+>>
+>>       if [ -n "$device" ]; then
+>> -        mkswap_verify "$mkswap_op" "$op_arg" "$device" "$size" 
+>> "$dev_file"
+>> +        mkswap_verify "$mkswap_op" "$op_arg" "$device" "$size" "$token"
+>>           if [ $? -ne 0 ]; then
+>>               tst_resm TFAIL "'${mkswap_cmd}' failed, not expected."
+>>               return
+>> @@ -173,9 +174,9 @@ mkswap_test "" "" "$TST_DEVICE" 
+>> "$((DEVICE_SIZE-10000))"
+>>   mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+10000))"
+>>   mkswap_test "-c" "" "$TST_DEVICE"
+>>   mkswap_test "-p" "2048" "$TST_DEVICE"
+>> -mkswap_test "-L" "ltp_testswap" "-L ltp_testswap" "" 
+>> "/dev/disk/by-label/ltp_testswap"
+>> +mkswap_test "-L" "ltp_testswap" "-L ltp_testswap" "" 
+>> "LABEL=ltp_testswap"
+>>   mkswap_test "-v1" "" "$TST_DEVICE"
+>> -mkswap_test "-U" "$UUID" "-U $UUID" "" "/dev/disk/by-uuid/$UUID"
+>> +mkswap_test "-U" "$UUID" "-U $UUID" "" "UUID=$UUID"
+>>   mkswap_test "-V"
+>>   mkswap_test "-h"
+>>
+>>
 
-They could be defaulted to $(tst_iface) and $(tst_ipaddr rhost) accordingly.
-Then, we don't have to check the number of arguments and it fits for the 
-most cases.
-
-> +	# ping cmd use 56 as default message size
-> +	local msg_size=${3:-"56"}
-> +
-> +	if echo $dst_addr | grep ":"; then
-> +		local PING="ping6"
-> +		TST_IPV6=6
-> +	else
-> +		local PING="ping"
-> +	fi
-> +
-
-if test runs with -6 option, TST_IPV6 will be defined as 6, otherwise is "".
-We can use it inside test_net.sh and tests. So here, we could call ping 
-command
-as follows: "ping$TST_IPV6 ..."
-
-
-> +	if [ "$dst_addr" == "$(tst_ipaddr)" ]; then
-> +		tst_rhost_run -c "$PING -I $src_iface -c $PING_MAX $dst_addr \
-> +			-s $msg_size > /dev/null 2>&1"
-> +	else
-> +		$PING -I $src_iface -c $PING_MAX $dst_addr -s $msg_size > \
-> +			/dev/null 2>&1
-> +	fi
-> +}
-
-Do we actually need to run this command from remote host?
-
-Best regards,
-Alexey
-
-
-------------------------------------------------------------------------------
-Transform Data into Opportunity.
-Accelerate data analysis in your applications with
-Intel Data Analytics Acceleration Library.
-Click to learn more.
-http://pubads.g.doubleclick.net/gampad/clk?id=278785111&iu=/4140
-_______________________________________________
-Ltp-list mailing list
-Ltp-list@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/ltp-list
