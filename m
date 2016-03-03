@@ -1,70 +1,61 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 3 Mar 2016 09:59:14 -0500 (EST)
-Subject: [LTP] [PATCH v2 2/2] numa_helper: add min_nodes parameter to
- is_numa()
-In-Reply-To: <153067601.4724228.1457014221497.JavaMail.zimbra@redhat.com>
-References: <83c57fb26e06f81d4b71cb89dfcd36706bf28093.1456220777.git.jstancek@redhat.com>
- <11305bbeff8a3b83ee9da6c4a17fc1cd9c37b9f5.1456220777.git.jstancek@redhat.com>
- <20160303133548.GA3055@rei.lan>
- <153067601.4724228.1457014221497.JavaMail.zimbra@redhat.com>
-Message-ID: <1176359993.4752712.1457017154468.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 3 Mar 2016 16:13:15 +0100
+Subject: [LTP] [PATCH v3] epoll_pwait/epoll_pwait01.c: add new testcase
+In-Reply-To: <1456993485-2849-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <56D7E9A0.4060701@cn.fujitsu.com>
+ <1456993485-2849-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20160303151315.GC3055@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+Pushed with two changes, thanks.
 
+> +#ifndef EPOLL_PWAIT_H
+> +#define EPOLL_PWAIT_H
+> +
+> +#include <sys/types.h>
+> +#include "config.h"
+> +#include "linux_syscall_numbers.h"
+> +
+> +#if !defined(HAVE_EPOLL_PWAIT)
+> +int epoll_pwait(int epfd, struct epoll_event *events, int maxevents,
+> +	int timeout, const sigset_t *sigmask)
+> +{
+> +	return ltp_syscall(__NR_epoll_pwait, epfd, events, maxevents,
+> +		timeout, sigmask);
 
+The syscall takes one more parameter than the glibc wrapper. I had to
+add the size of the sigmask i.e. _NSIG/8 here otherwise we will get
+EINVAL from kernel.
 
+> +}
+> +#endif
 
------ Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
-> To: "Cyril Hrubis" <chrubis@suse.cz>
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, 3 March, 2016 3:10:21 PM
-> Subject: Re: [LTP] [PATCH v2 2/2] numa_helper: add min_nodes parameter to is_numa()
-> 
-> 
-> 
-> ----- Original Message -----
-> > From: "Cyril Hrubis" <chrubis@suse.cz>
-> > To: "Jan Stancek" <jstancek@redhat.com>
-> > Cc: ltp@lists.linux.it, liwang@redhat.com
-> > Sent: Thursday, 3 March, 2016 2:35:48 PM
-> > Subject: Re: [PATCH v2 2/2] numa_helper: add min_nodes parameter to
-> > is_numa()
-> > 
-> > Hi!
-> > > get_allowed_nodes() can fail if callers request more nodes than
-> > > are available. This patch changes is_numa() by adding a parameter
-> > > to it, which allows to easily check that system supports NUMA and
-> > > has at least certain number of nodes and it also updates tests
-> > > that used get_allowed_nodes() without checking node count first.
-> > 
-> > Shouldn't we pass the NH_MEMS/NH_CPUS flags to the is_numa() as well?
-> 
-> We probably should, we have maybe 1 or 2 tests that care about cpus,
-> not just mem. I'll add it.
+...
 
-Pushed with added flag parameter.
+> +static void verify_nonsigmask(void)
+> +{
+> +	if (TEST_RETURN != -1) {
+> +		tst_resm(TFAIL, "epoll_wait() succeeded unexpectedly");
+> +	} else {
+> +		if (TEST_ERRNO == EINTR) {
+> +			tst_resm(TPASS | TTERRNO,
+> +				 "epoll_wait() failed as expected");
+> +		} else {
+> +			tst_resm(TFAIL | TTERRNO,
+> +				 "epoll_wait() failed unexpectedly, "
+> +				 "expected errno is EINTR");
+> +		}
+> +	}
+> +}
 
-Regards,
-Jan
+And changed these two verify function to use return after tst_resm() so
+that we don't have to do the else-if spagetti code.
 
-> 
-> > 
-> > Otherwise the patchset looks good to me.
-> 
-> Thanks for review,
-> Jan
-> 
-> > 
-> > --
-> > Cyril Hrubis
-> > chrubis@suse.cz
-> > 
-> 
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
