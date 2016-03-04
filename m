@@ -1,232 +1,40 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 4 Mar 2016 10:47:07 +0800
-Subject: [LTP] [PATCH v3 1/2] removexattr/removexattr01.c: add new testcase
-In-Reply-To: <20160303181230.GB14084@rei.lan>
-References: <20160303181230.GB14084@rei.lan>
-Message-ID: <1457059628-26560-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri,  4 Mar 2016 16:24:49 +0800
+Subject: [LTP] [PATCH RFC 0/9] tracing: make ftrace tests to be extended
+Message-ID: <1457079898-9449-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The testcase checks the basic functionality of the removexattr(2).
-removexattr(2) removes the extended attribute identified by
-name and associated with the given path in the filesystem.
+For the purpose of extending these ftrace cases, We rewrite some of them to
+partition testcase into new structure.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- runtest/ltplite                                    |   2 +
- runtest/syscalls                                   |   2 +
- testcases/kernel/syscalls/.gitignore               |   1 +
- testcases/kernel/syscalls/removexattr/Makefile     |  23 ++++
- .../kernel/syscalls/removexattr/removexattr01.c    | 127 +++++++++++++++++++++
- 5 files changed, 155 insertions(+)
- create mode 100644 testcases/kernel/syscalls/removexattr/Makefile
- create mode 100644 testcases/kernel/syscalls/removexattr/removexattr01.c
+ 1, Reorganize the stress tests to ftrace general test, then that woule be
+    easy to introduce new function/regression testcases in the next step.
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index d762ac2..3c4cd05 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -649,6 +649,8 @@ recvfrom01 recvfrom01
- 
- recvmsg01 recvmsg01
- 
-+removexattr01 removexattr01
-+
- rename01 rename01
- rename01A symlink01 -T rename01
- rename02 rename02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 2d981ed..8078137 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -871,6 +871,8 @@ recvmsg02 recvmsg02
- remap_file_pages01 remap_file_pages01
- remap_file_pages02 remap_file_pages02
- 
-+removexattr01 removexattr01
-+
- rename01 rename01
- rename01A symlink01 -T rename01
- rename02 rename02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index f54e065..4392cbe 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -721,6 +721,7 @@
- /recvmsg/recvmsg02
- /remap_file_pages/remap_file_pages01
- /remap_file_pages/remap_file_pages02
-+/removexattr/removexattr01
- /rename/rename01
- /rename/rename02
- /rename/rename03
-diff --git a/testcases/kernel/syscalls/removexattr/Makefile b/testcases/kernel/syscalls/removexattr/Makefile
-new file mode 100644
-index 0000000..ed05a48
---- /dev/null
-+++ b/testcases/kernel/syscalls/removexattr/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (c) 2016 Fujitsu Ltd.
-+#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program.
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/removexattr/removexattr01.c b/testcases/kernel/syscalls/removexattr/removexattr01.c
-new file mode 100644
-index 0000000..82867b7
---- /dev/null
-+++ b/testcases/kernel/syscalls/removexattr/removexattr01.c
-@@ -0,0 +1,127 @@
-+/*
-+* Copyright (c) 2016 Fujitsu Ltd.
-+* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+*
-+* This program is free software; you can redistribute it and/or modify it
-+* under the terms of version 2 of the GNU General Public License as
-+* published by the Free Software Foundation.
-+*
-+* This program is distributed in the hope that it would be useful, but
-+* WITHOUT ANY WARRANTY; without even the implied warranty of
-+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+*
-+* You should have received a copy of the GNU General Public License
-+* alone with this program.
-+*/
-+
-+/*
-+* Test Name: removexattr01
-+*
-+* Description:
-+* The testcase checks the basic functionality of the removexattr(2).
-+* removexattr(2) removes the extended attribute identified by
-+* name and associated with the given path in the filesystem.
-+*/
-+
-+#include "config.h"
-+#include <errno.h>
-+#include <sys/types.h>
-+
-+#ifdef HAVE_ATTR_XATTR_H
-+#include <attr/xattr.h>
-+#endif
-+
-+#include "test.h"
-+#include "safe_file_ops.h"
-+
-+char *TCID = "removexattr01";
-+
-+#ifdef HAVE_ATTR_XATTR_H
-+#define USER_KEY	"user.test"
-+#define VALUE	"test"
-+#define VALUE_SIZE	(sizeof(VALUE) - 1)
-+
-+static void verify_removexattr(void);
-+static void setup(void);
-+static void cleanup(void);
-+
-+int TST_TOTAL = 1;
-+
-+int main(int ac, char **av)
-+{
-+	int lc;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		verify_removexattr();
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void verify_removexattr(void)
-+{
-+	int n;
-+	int size = 64;
-+	char buf[size];
-+
-+	n = setxattr("testfile", USER_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
-+	if (n == -1) {
-+		if (errno == ENOTSUP) {
-+			tst_brkm(TCONF, cleanup, "no xattr support in fs or "
-+				 "mounted without user_xattr option");
-+		} else {
-+			tst_brkm(TFAIL | TERRNO, cleanup, "setxattr() failed");
-+		}
-+	}
-+
-+	TEST(removexattr("testfile", USER_KEY));
-+	if (TEST_RETURN != 0) {
-+		tst_resm(TFAIL | TTERRNO, "removexattr() failed");
-+		return;
-+	}
-+
-+	n = getxattr("testfile", USER_KEY, buf, size);
-+	if (n != -1) {
-+		tst_resm(TFAIL, "getxattr() succeeded for deleted key");
-+		return;
-+	}
-+
-+	if (errno != ENOATTR) {
-+		tst_resm(TFAIL | TTERRNO, "getxattr() failed"
-+			 "as unexpected error");
-+	} else {
-+		tst_resm(TPASS, "removexattr() succeeded");
-+	}
-+}
-+
-+static void setup(void)
-+{
-+	tst_require_root();
-+
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	tst_tmpdir();
-+
-+	SAFE_TOUCH(cleanup, "testfile", 0644, NULL);
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
-+}
-+
-+#else /* HAVE_ATTR_XATTR_H */
-+int main(int ac, char **av)
-+{
-+	tst_brkm(TCONF, NULL, "<attr/xattr.h> does not exist.");
-+}
-+#endif
+ 2, Adding two regression testcases as an example, We will roll out some more later.
+
+ 3, Enhance the ftrace-stress test coverage.
+
+ 4, Do some cleanup and bug fix work.
+
+At last, test PASS all the new testcases on kernel-4.4.0.
+
+Chunyu Hu (4):
+  ftrace_stress: skip unsupported tests
+  ftrace_stress: keep the name of testscipt in sync with tracing file
+  ftrace_stress: update the trace_options test
+  ftrace_stress: add two new tests
+
+Li Wang (5):
+  ftrace_stress: remove the useless file ftrace_get_page_size.c
+  tracing[1]: reorganize ftrace-stress tests to general tests
+  tracing[2]: reorganize ftrace stress tests to general tests
+  ftrace_regression: add new case to ftrace_regression/ dir
+  ftrace_regression: add a new testcase
+
 -- 
 1.8.3.1
-
-
 
