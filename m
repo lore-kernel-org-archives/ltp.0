@@ -1,254 +1,68 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri,  4 Mar 2016 16:24:56 +0800
-Subject: [LTP] [PATCH RFC 7/9] ftrace_stress: keep the name of testscipt in
-	sync with tracing file
-In-Reply-To: <1457079898-9449-7-git-send-email-liwang@redhat.com>
-References: <1457079898-9449-1-git-send-email-liwang@redhat.com>
- <1457079898-9449-2-git-send-email-liwang@redhat.com>
- <1457079898-9449-3-git-send-email-liwang@redhat.com>
- <1457079898-9449-4-git-send-email-liwang@redhat.com>
- <1457079898-9449-5-git-send-email-liwang@redhat.com>
- <1457079898-9449-6-git-send-email-liwang@redhat.com>
- <1457079898-9449-7-git-send-email-liwang@redhat.com>
-Message-ID: <1457079898-9449-8-git-send-email-liwang@redhat.com>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Date: Fri, 4 Mar 2016 16:52:17 +0530
+Subject: [LTP] [PATCH] rt_sigaction.h: adjust for ARC
+Message-ID: <1457090537-23825-1-git-send-email-vgupta@synopsys.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Chunyu Hu <chuhu@redhat.com>
+ARC uses the no-legacy syscall ABI where there is no need for
+kernel_sigaction interworking.
 
-The test scripts under ftrace_stress/ are all named after the tracing
-file with a 'ftrace_' prefix, except the ftrace_buffer_size.sh and
-ftrace_profile_enabled.sh. Here just rename them.
+Further we rely on default SA_RESTORER in libc for sigreturn.
 
-Signed-off-by: Chunyu Hu <chuhu@redhat.com>
+To me all the song-and-dance in ltp_rt_sigaction() doesn't make sense.
+The intent it to test whatever platform libc + kernel combination
+provides and to that end any fixups in LTP seem odd to me.
+So for ARC just call what libc provides and don't claim to support
+more/less.
+
+e.g. rt_sigaction02 fails for ARC, since libc sigaction does following
+
+| int __libc_sigaction (int sig, const struct sigaction *act, struct sigaction *oact)
+| {
+|	struct sigaction kact;
+|
+|	if (act && !(act->sa_flags & SA_RESTORER)) {
+|		kact.sa_restorer = __default_rt_sa_restorer;
+
+So we don't get the EFAULT for @act == -1 which kernel would provide.
+Instead we get a segv rightawat. But that's fine, that is how our system
+works.
+
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
 ---
- .../ftrace_stress/ftrace_buffer_size.sh            | 45 -------------------
- .../ftrace_stress/ftrace_buffer_size_kb.sh         | 45 +++++++++++++++++++
- .../ftrace_function_profile_enabled.sh             | 50 ++++++++++++++++++++++
- .../ftrace_stress/ftrace_profile_enabled.sh        | 50 ----------------------
- 4 files changed, 95 insertions(+), 95 deletions(-)
- delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size.sh
- create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh
- create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_function_profile_enabled.sh
- delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_profile_enabled.sh
+ include/lapi/rt_sigaction.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size.sh
-deleted file mode 100755
-index bd7dcc4..0000000
---- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size.sh
-+++ /dev/null
-@@ -1,45 +0,0 @@
--#! /bin/sh
--
--###############################################################################
--#                                                                             #
--# Copyright (c) 2010 FUJITSU LIMITED                                          #
--#                                                                             #
--# This program is free software; you can redistribute it and/or modify it     #
--# under the terms of the GNU General Public License as published by the Free  #
--# Software Foundation; either version 2 of the License, or (at your option)   #
--# any later version.                                                          #
--#                                                                             #
--# Author: Li Zefan <lizf@cn.fujitsu.com>                                      #
--#                                                                             #
--###############################################################################
--
--LOOP=200
--
--# Use up to 10% of free memory
--free_mem=`cat /proc/meminfo | grep '^MemFree' | awk '{ print $2 }'`
--cpus=`tst_ncpus`
--
--step=$(( $free_mem / 10 / $LOOP / $cpus ))
--
--if [ $step -eq 0 ]; then
--	step=1
--	LOOP=50
--fi
--
--for ((; ;))
--{
--	new_size=1
--	for ((i = 0; i < $LOOP; i++))
--	{
--		echo $new_size > "$TRACING_PATH"/buffer_size_kb
--		new_size=$(( $new_size + $step ))
--	}
--
--	for ((i = 0; i < $LOOP; i++))
--	{
--		new_size=$(( $new_size - $step ))
--		echo $new_size > "$TRACING_PATH"/buffer_size_kb
--	}
--
--	sleep 1
--}
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh
-new file mode 100755
-index 0000000..bd7dcc4
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh
-@@ -0,0 +1,45 @@
-+#! /bin/sh
-+
-+###############################################################################
-+#                                                                             #
-+# Copyright (c) 2010 FUJITSU LIMITED                                          #
-+#                                                                             #
-+# This program is free software; you can redistribute it and/or modify it     #
-+# under the terms of the GNU General Public License as published by the Free  #
-+# Software Foundation; either version 2 of the License, or (at your option)   #
-+# any later version.                                                          #
-+#                                                                             #
-+# Author: Li Zefan <lizf@cn.fujitsu.com>                                      #
-+#                                                                             #
-+###############################################################################
-+
-+LOOP=200
-+
-+# Use up to 10% of free memory
-+free_mem=`cat /proc/meminfo | grep '^MemFree' | awk '{ print $2 }'`
-+cpus=`tst_ncpus`
-+
-+step=$(( $free_mem / 10 / $LOOP / $cpus ))
-+
-+if [ $step -eq 0 ]; then
-+	step=1
-+	LOOP=50
-+fi
-+
-+for ((; ;))
-+{
-+	new_size=1
-+	for ((i = 0; i < $LOOP; i++))
-+	{
-+		echo $new_size > "$TRACING_PATH"/buffer_size_kb
-+		new_size=$(( $new_size + $step ))
-+	}
-+
-+	for ((i = 0; i < $LOOP; i++))
-+	{
-+		new_size=$(( $new_size - $step ))
-+		echo $new_size > "$TRACING_PATH"/buffer_size_kb
-+	}
-+
-+	sleep 1
-+}
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_function_profile_enabled.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_function_profile_enabled.sh
-new file mode 100755
-index 0000000..9c6162a
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_function_profile_enabled.sh
-@@ -0,0 +1,50 @@
-+#! /bin/sh
-+
-+###############################################################################
-+#                                                                             #
-+# Copyright (c) 2010 FUJITSU LIMITED                                          #
-+#                                                                             #
-+# This program is free software; you can redistribute it and/or modify it     #
-+# under the terms of the GNU General Public License as published by the Free  #
-+# Software Foundation; either version 2 of the License, or (at your option)   #
-+# any later version.                                                          #
-+#                                                                             #
-+# Author: Li Zefan <lizf@cn.fujitsu.com>                                      #
-+#                                                                             #
-+###############################################################################
-+
-+MAX_LOOP=1500
-+count=0
-+
-+if [ ! -e "$TRACING_PATH"/function_profile_enabled ]; then
-+	should_skip=1
-+else
-+	should_skip=0
-+fi
-+
-+for ((; ;))
-+{
-+	if [ $should_skip -eq 1 ]; then
-+		sleep 2
-+		continue
-+	fi
-+
-+	count=$(( $count + 1 ))
-+
-+	for ((i = 0; i < $MAX_LOOP; i++))
-+	{
-+		echo 0 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
-+		echo 1 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
-+	}
-+
-+	enable=$(( $count % 3 ))
-+
-+	if [ $enable -eq 0 ]; then
-+		echo 1 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
-+	else
-+		echo 0 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
-+	fi
-+
-+	sleep 1
-+}
-+
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_profile_enabled.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_profile_enabled.sh
-deleted file mode 100755
-index 9c6162a..0000000
---- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_profile_enabled.sh
-+++ /dev/null
-@@ -1,50 +0,0 @@
--#! /bin/sh
--
--###############################################################################
--#                                                                             #
--# Copyright (c) 2010 FUJITSU LIMITED                                          #
--#                                                                             #
--# This program is free software; you can redistribute it and/or modify it     #
--# under the terms of the GNU General Public License as published by the Free  #
--# Software Foundation; either version 2 of the License, or (at your option)   #
--# any later version.                                                          #
--#                                                                             #
--# Author: Li Zefan <lizf@cn.fujitsu.com>                                      #
--#                                                                             #
--###############################################################################
--
--MAX_LOOP=1500
--count=0
--
--if [ ! -e "$TRACING_PATH"/function_profile_enabled ]; then
--	should_skip=1
--else
--	should_skip=0
--fi
--
--for ((; ;))
--{
--	if [ $should_skip -eq 1 ]; then
--		sleep 2
--		continue
--	fi
--
--	count=$(( $count + 1 ))
--
--	for ((i = 0; i < $MAX_LOOP; i++))
--	{
--		echo 0 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
--		echo 1 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
--	}
--
--	enable=$(( $count % 3 ))
--
--	if [ $enable -eq 0 ]; then
--		echo 1 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
--	else
--		echo 0 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
--	fi
--
--	sleep 1
--}
--
+diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
+index 3a5a763ce094..12af3c3b7b27 100644
+--- a/include/lapi/rt_sigaction.h
++++ b/include/lapi/rt_sigaction.h
+@@ -155,6 +155,13 @@ static void __attribute__((used)) __sigreturn_stub(void)
+ static int ltp_rt_sigaction(int signum, const struct sigaction *act,
+ 			struct sigaction *oact, size_t sigsetsize)
+ {
++#ifdef __arc__
++	/*
++	 * No playing games with various internals of sigaction / fields
++	 * just use whatever libc + kernel provide
++	 */
++	return sigaction(signum, act, oact);
++#else
+ 	int ret;
+ 	struct kernel_sigaction kact, koact;
+ 	struct kernel_sigaction *kact_p = NULL;
+@@ -218,6 +225,7 @@ static int ltp_rt_sigaction(int signum, const struct sigaction *act,
+ 	}
+ 
+ 	return ret;
++#endif
+ }
+ 
+ #endif /* LTP_RT_SIGACTION_H */
 -- 
-1.8.3.1
+2.5.0
 
