@@ -1,37 +1,43 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri,  4 Mar 2016 16:24:54 +0800
-Subject: [LTP] [PATCH RFC 5/9] ftrace_regression: add a new testcase
-In-Reply-To: <1457079898-9449-5-git-send-email-liwang@redhat.com>
+Date: Fri,  4 Mar 2016 16:24:53 +0800
+Subject: [LTP] [PATCH RFC 4/9] ftrace_regression: add new case to
+	ftrace_regression/ dir
+In-Reply-To: <1457079898-9449-4-git-send-email-liwang@redhat.com>
 References: <1457079898-9449-1-git-send-email-liwang@redhat.com>
  <1457079898-9449-2-git-send-email-liwang@redhat.com>
  <1457079898-9449-3-git-send-email-liwang@redhat.com>
  <1457079898-9449-4-git-send-email-liwang@redhat.com>
- <1457079898-9449-5-git-send-email-liwang@redhat.com>
-Message-ID: <1457079898-9449-6-git-send-email-liwang@redhat.com>
+Message-ID: <1457079898-9449-5-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-PURPOSE: check signal:signal_generate gives 2 more fields: grp res
+This case is the reproducer of ftrace userstacktrace bug.
 
-This testcase is writing for signal events change:
-       6c303d3 tracing: let trace_signal_generate() report more info...
-       163566f tracing: send_sigqueue() needs trace_signal_generate() too
+BUG: unable to handle kernel paging request at 00000000417683c0
+IP: [<ffffffff8105c834>] update_curr+0x124/0x1e0
+PGD 41a796067 PUD 0
+Thread overran stack, or stack corrupted
+Oops: 0000 [#1] SMP
+last sysfs file: /sys/devices/system/cpu/cpu15/cache/index2/shared_cpu_map
+
+The bug was fixed by:
+      1dbd195 (tracing: Fix preempt count leak)
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- .../ftrace_enhanced_signal_tracepoint.sh           | 35 ++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
- create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression/ftrace_enhanced_signal_tracepoint.sh
+ .../ftrace_panic_with_userstacktrace.sh            | 52 ++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+ create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression/ftrace_panic_with_userstacktrace.sh
 
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression/ftrace_enhanced_signal_tracepoint.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression/ftrace_enhanced_signal_tracepoint.sh
+diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression/ftrace_panic_with_userstacktrace.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression/ftrace_panic_with_userstacktrace.sh
 new file mode 100755
-index 0000000..36fc2ba
+index 0000000..10ed16a
 --- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression/ftrace_enhanced_signal_tracepoint.sh
-@@ -0,0 +1,35 @@
++++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression/ftrace_panic_with_userstacktrace.sh
+@@ -0,0 +1,52 @@
 +#!/bin/sh
 +
 +###############################################################################
@@ -43,30 +49,47 @@ index 0000000..36fc2ba
 +# Software Foundation; either version 2 of the License, or (at your option)   #
 +# any later version.                                                          #
 +#                                                                             #
-+# PURPOSE: check signal:signal_generate gives 2 more fields: grp res          #
++# Summary:                                                                    #
++#      panic while using userstacktrace                                       #
 +#                                                                             #
-+# This testcase is verifing signal events change:                             #
-+#        6c303d3 tracing: let trace_signal_generate() report more info...     #
-+#        163566f tracing: send_sigqueue() needs trace_signal_generate() too   #
-+#                                                                             #
++# This is a regression case for commit:                                       #
++#      1dbd195 tracing: Fix preempt count leak                                #
 +###############################################################################
 +
++LOOP=10
 +
-+# Set envent
-+echo 'signal:signal_generate' > $TRACING_PATH/set_event
++TSTACK_TRACE_PATH=/proc/sys/kernel/stack_tracer_enabled
 +
-+echo 1 > $TRACING_PATH/tracing_on
++cd $TRACING_PATH
 +
-+echo > $TRACING_PATH/trace
-+
-+sleep 10
-+
-+grep -q 'grp=[0-9] res=[0-9]' $TRACING_PATH/trace
-+if [ $? -eq 0 ]; then
-+	exit 0
++grep -q CONFIG_STACK_TRACER=y /boot/config-`uname -r`
++if [ $? -ne 0 ];then
++	echo "Stack Tracer is not cofigured in This kernel. Skip the test"
 +else
-+	exit 1
++	for ((i = 0; i < $LOOP; i++))
++	{
++		echo 1 >  $TSTACK_TRACE_PATH
++		echo userstacktrace > trace_options
++		grep -q "^userstacktrace"  trace_options
++
++		if [ -f "events/exceptions/page_fault_kernel/enable" ]; then
++			PAGE_FAULT_KERNEL_ENABLE=`cat events/exceptions/page_fault_kernel/enable`
++			echo 1 > events/exceptions/page_fault_kernel/enable
++		else
++			MM_KERNEL_PAGEFAULT_ENABLE=`cat events/kmem/mm_kernel_pagefault/enable`
++			echo 1 > events/kmem/mm_kernel_pagefault/enable
++		fi
++	}
++
++	if [ -f "events/exceptions/page_fault_kernel/enable" ]; then
++		echo "$PAGE_FAULT_KERNEL_ENABLE" > events/exceptions/page_fault_kernel/enable
++	else
++		echo "$MM_KERNEL_PAGEFAULT_ENABLE" > events/kmem/mm_kernel_pagefault/enable
++	fi
++	# echo "No panic, Still alive."
 +fi
++
++cd - > /dev/null
 -- 
 1.8.3.1
 
