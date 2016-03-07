@@ -1,48 +1,74 @@
 From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Date: Mon, 7 Mar 2016 11:50:52 +0000
-Subject: [LTP] [PATCH] rt_sigaction.h: adjust for ARC
-References: <1457090537-23825-1-git-send-email-vgupta@synopsys.com>
- <20160307101319.GB3559@rei.suse.cz>
- <C2D7FE5348E1B147BCA15975FBA23075F4E8E55A@us01wembx1.internal.synopsys.com>
- <20160307105747.GC3559@rei.suse.cz>
-Message-ID: <C2D7FE5348E1B147BCA15975FBA23075F4E8E5B7@us01wembx1.internal.synopsys.com>
+Date: Mon, 7 Mar 2016 17:21:53 +0530
+Subject: [LTP] [PATCH] rt_sigaction.h: ARC: Provide default sa_restorer
+Message-ID: <1457351513-8310-1-git-send-email-vgupta@synopsys.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Monday 07 March 2016 04:29 PM, Cyril Hrubis wrote:
-> We also check that we got EINVAL if the sigsetsize is wrong, which
-> cannot be done with the libc wrapper.
->
-> And we several testscases for the libc wrapper as well. Two in
-> testcases/syscalls/sigaction/ directory and much more in
-> testcases/open_posix_testsuite/conformance/interfaces/sigaction/.
->
-> So both raw syscall and libc call are covered in LTP.
+LTP tests the raw (non libc) sigaction ABI to kernel such as validation
+of various params.
 
-Fair enough - so LTP was a "Linux" test project - testing the raw kernel ABI makes
-sense to check for correctness.
-Although users will complain that sigaction(n, -1, 0) doesn't return with -EFAULT
-but crashes. Oh well !
+sigaction on ARC relies on default userspace sa restorer to invoke a
+sigreturn syscall when returning from a signal handler. Thus libc provides
+a default sa restorer.
 
->>>> So for ARC just call what libc provides and don't claim to support
->>>> more/less.
-> I do not understand, looking at:
->
-> https://github.com/foss-for-synopsys-dwc-arc-processors/uClibc/blob/314dd3440686d6225ef1b93b5c5bdce852747a6b/libc/sysdeps/linux/arc/sigaction.c
->
-> All you have to do in sa_restorer for arc is to call __NR_rt_sigreturn.
->
-> Looking at the INTERNAL_SYSCALL_NCS it's just a few lines of inline
-> assembler. So all you have to do to support this properly in LTP is to
-> create restorer function taking the assembler and passing NR_sigreturn
-> as syscall number to it.
+LTP tests the raw sigaction syscall ABI (w/o libc) hence needs the
+restorer userspace infrastructure, which this patch provides for ARC.
 
-Will do in next patch !
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ include/lapi/rt_sigaction.h | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-Thx,
--Vineet
-
+diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
+index 3a5a763ce094..c7fb04fc25be 100644
+--- a/include/lapi/rt_sigaction.h
++++ b/include/lapi/rt_sigaction.h
+@@ -145,6 +145,30 @@ static void __attribute__((used)) __sigreturn_stub(void)
+ # endif
+ #endif /* __sparc__ */
+ 
++#ifdef __arc__
++
++#undef SA_RESTORER
++#define SA_RESTORER     0x04000000
++
++/*
++ * based on uClibc/libc/sysdeps/linux/arc/sigaction.c
++ */
++static void
++__attribute__ ((optimize("Os"))) __attribute__((used)) restore_rt(void)
++{
++	__asm__ (
++		"mov r8, %0	\n\t"
++#ifdef __ARCHS__
++		"trap_s	0	\n\t"
++#else
++		"trap0	\n\t"
++#endif
++		: /* no outputs */
++		: "i" (__NR_rt_sigreturn)
++		: "r8");
++}
++#endif
++
+ /* This is a wrapper for __NR_rt_sigaction syscall.
+  * act/oact values of INVAL_SA_PTR is used to pass
+  * an invalid pointer to syscall(__NR_rt_sigaction)
+@@ -176,8 +200,10 @@ static int ltp_rt_sigaction(int signum, const struct sigaction *act,
+ 	else if (oact)
+ 		koact_p = &koact;
+ 
++#if defined __x86_64__ || defined __arc__
+ #ifdef __x86_64__
+ 	sig_initial(signum);
++#endif
+ 	kact.sa_flags |= SA_RESTORER;
+ 	kact.sa_restorer = restore_rt;
+ #endif
+-- 
+2.5.0
 
