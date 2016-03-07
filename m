@@ -1,200 +1,154 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Mon,  7 Mar 2016 15:14:42 +0800
-Subject: [LTP]  [PATCH 2/3] network/stress: add ipsec lib
+Date: Mon,  7 Mar 2016 15:14:43 +0800
+Subject: [LTP] [PATCH 3/3] network/stress/icmp: use ip xfrm for
+	icmp4-uni-basic01 ipsec testing
 In-Reply-To: <1457334883-11086-1-git-send-email-haliu@redhat.com>
 References: <1457334883-11086-1-git-send-email-haliu@redhat.com>
-Message-ID: <1457334883-11086-3-git-send-email-haliu@redhat.com>
+Message-ID: <1457334883-11086-4-git-send-email-haliu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Also check each msg_size in $ICMP_SIZE_ARRAY to make sure the connectvity.
+
 Signed-off-by: Hangbin Liu <haliu@redhat.com>
 ---
- testcases/network/stress/ipsec/Makefile     |  31 +++++++
- testcases/network/stress/ipsec/ipsec_lib.sh | 134 ++++++++++++++++++++++++++++
- 2 files changed, 165 insertions(+)
- create mode 100644 testcases/network/stress/ipsec/Makefile
- create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
+ .../stress/icmp/uni-basic/icmp4-uni-basic01        | 66 ++++++++--------------
+ 1 file changed, 22 insertions(+), 44 deletions(-)
 
-diff --git a/testcases/network/stress/ipsec/Makefile b/testcases/network/stress/ipsec/Makefile
-new file mode 100644
-index 0000000..b3a1657
---- /dev/null
-+++ b/testcases/network/stress/ipsec/Makefile
-@@ -0,0 +1,31 @@
-+#!/bin/sh
-+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+# Author: Hangbin Liu <haliu@redhat.com>
-+#
-+#######################################################################
+diff --git a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01 b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
+index b78ac8f..55ddff5 100644
+--- a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
++++ b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
+@@ -50,10 +50,13 @@ $trace_logic
+ TCID=${TCID:-icmp4-uni-basic01}
+ TST_TOTAL=1
+ TST_COUNT=1
++TST_CLEANUP="do_cleanup"
+ export TCID
+ export TST_COUNT
+ export TST_TOTAL
+ 
++. ipsec_lib.sh
 +
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= *.sh
-+
-+MAKE_TARGETS		:=
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-new file mode 100644
-index 0000000..feeecf9
---- /dev/null
-+++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-@@ -0,0 +1,134 @@
-+#!/bin/sh
-+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, write the Free Software Foundation,
-+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+#
-+# Author: Hangbin Liu <haliu@redhat.com>
-+#
-+#######################################################################
-+
-+#Uncomment line below for debug output.
-+#trace_logic=${trace_logic:-"set -x"}
-+$trace_logic
-+
-+# Make sure the value of LTPROOT
-+LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
-+export LTPROOT
-+
-+. test_net.sh
-+
-+# c2x: convert charactor to hex
-+c2x()
-+{
-+	for str in $@; do
-+		for (( i=0; i<${#str}; i++ )); do
-+			c=${str:$i:1}
-+			printf '%x' "'$c"
-+		done
-+	done
-+}
-+
-+# tst_ipsec flush: flush the ipsec state and policy
-+# tst_ipsec target protocol mode first_spi src_addr dst_addr: config ipsec
-+#
-+# target: target of the configuration file ( src / dst )
-+# protocol: ah / esp / ipcomp
-+# mode: transport / tunnel
-+# first_spi: the first spi value
-+# src_addr: source IP address
-+# dst_addr: destination IP address
-+tst_ipsec()
-+{
-+	if [ x$1 = x"flush" ]; then
-+		ip xfrm state flush && ip xfrm policy flush
-+		tst_rhost_run -c "ip xfrm state flush && ip xfrm policy flush"
-+		return 0
-+	fi
-+	if [ $# -ne 6 ]; then
-+		tst_resm TINFO "tst_ipsec parameter mismatch"
-+		return 1
-+	fi
-+
-+	target=$1
-+	protocol=$2
-+	mode=$3
-+	first_spi=$4
-+	src_ipaddr=$5
-+	dst_ipaddr=$6
-+
-+	# Encryption algorithm
-+	EALGO="des3_ede"
-+	EALGO_KEY="0x$(c2x _I_want_to_have_chicken_)"
-+
-+	# Authentication algorithm
-+	AALGO="sha1"
-+	AALGO_KEY="0x$(c2x beef_fish_pork_salad)"
-+
-+	# Compression algorithm
-+	CALGO="deflate"
-+	# Algorithm options for each protocol
-+	case $protocol in
-+		ah)
-+			algo_line="auth $AALGO $AALGO_KEY"
-+			proto="ah"
-+			;;
-+		esp)
-+			algo_line="enc $EALGO $EALGO_KEY auth $AALGO $AALGO_KEY"
-+			proto="esp"
-+			;;
-+		ipcomp)
-+			algo_line="comp $CALGO"
-+			proto="comp"
-+			;;
-+		*)
-+			tst_resm TINFO "tst_ipsec protocol mismatch"
-+			return 1
-+			;;
-+	esac
-+
-+	if [ $target = src ]; then
-+		src=$src_ipaddr
-+		dst=$dst_ipaddr
-+		spi_1="0x$first_spi"
-+		spi_2="0x$(( $first_spi + 1 ))"
-+		ip xfrm state add src $src dst $dst spi $spi_1 proto $proto \
-+			$algo_line mode $mode sel src $src dst $dst
-+		ip xfrm policy add src $src dst $dst dir out tmpl src $src \
-+			dst $dst proto $proto mode $mode
-+
-+		ip xfrm state add src $dst dst $src spi $spi_2 proto $proto \
-+			$algo_line mode $mode sel src $dst dst $src
-+		ip xfrm policy add src $dst dst $src dir in tmpl src $dst \
-+			dst $src proto $proto mode $mode
-+		ip xfrm state
-+		ip xfrm policy
-+	elif [ $target = dst ]; then
-+		src=$dst_ipaddr
-+		dst=$src_ipaddr
-+		spi_1="0x$(( $first_spi + 1 ))"
-+		spi_2="0x$first_spi"
-+		tst_rhost_run -c "ip xfrm state add src $src dst $dst spi $spi_1 \
-+			proto $proto $algo_line mode $mode sel src $src dst $dst"
-+		tst_rhost_run -c "ip xfrm policy add src $src dst $dst dir out \
-+			tmpl src $src dst $dst proto $proto mode $mode"
-+
-+		tst_rhost_run -c "ip xfrm state add src $dst dst $src spi $spi_2 \
-+			proto $proto $algo_line mode $mode sel src $dst dst $src"
-+		tst_rhost_run -c "ip xfrm policy add src $dst dst $src dir in \
-+			tmpl src $dst dst $src proto $proto mode $mode"
-+		tst_rhost_run -c "ip xfrm state"
-+		tst_rhost_run -c "ip xfrm policy"
-+	fi
-+}
+ # Test description
+ tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
+ 
+@@ -104,12 +107,11 @@ do_cleanup()
+     killall_icmp_traffic
+ 
+     # Unset SAD/SPD
+-    output_ipsec_conf flush | setkey -c >/dev/null 2>&1
+-    $LTP_RSH $RHOST ${LTPROOT}/'testcases/bin/output_ipsec_conf flush | PATH=/sbin:/usr/sbin:$PATH setkey -c' >/dev/null 2>&1
++    tst_ipsec flush
+ 
+     # Clean up each interface
+-    initialize_if lhost ${LINK_NUM}
+-    initialize_if rhost ${LINK_NUM}
++    tst_init_iface lhost ${LINK_NUM}
++    tst_init_iface rhost ${LINK_NUM}
+ }
+ 
+ 
+@@ -127,7 +129,7 @@ tst_resm TINFO "- Version of IP is IPv${IP_VER}"
+ tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
+ 
+ if $DO_IPSEC ; then
+-    message=`check_setkey`
++    message=`ip xfrm state`
+     if [ $? -ne 0 ]; then
+ 	tst_resm TBROK "$message"
+ 	exit 1
+@@ -147,13 +149,13 @@ if $DO_IPSEC ; then
+ fi
+ 
+ # name of interface of the local/remote host
+-lhost_ifname=`get_ifname lhost $LINK_NUM`
++lhost_ifname=`tst_iface lhost $LINK_NUM`
+ if [ $? -ne 0 ]; then
+     tst_resm TBROK "Failed to get the interface name at the local host"
+     exit $TST_TOTAL
+ fi
+ 
+-rhost_ifname=`get_ifname rhost $LINK_NUM`
++rhost_ifname=`tst_iface rhost $LINK_NUM`
+ if [ $? -ne 0 ]; then
+     tst_resm TBROK "Failed to get the interface name at the remote host"
+     exit $TST_TOTAL
+@@ -232,58 +234,34 @@ esac
+ 
+ # Configure SAD/SPD
+ if $DO_IPSEC ; then
+-    ipsec_log=`mktemp -p $TMPDIR`
+-
+-    output_ipsec_conf src \
+-	$IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr \
+-	    |  setkey -c 2>&1 | tee $ipsec_log
+-    if [ $? -ne 0 -o -s $ipsec_log ]; then
++    tst_ipsec src $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
++    if [ $? -ne 0 ]; then
+ 	tst_resm TBROK "Failed to configure SAD/SPD on the local host."
+-	rm -f $ipsec_log
+ 	exit 1
+     fi
+ 
+-    $LTP_RSH $RHOST ${LTPROOT}/testcases/bin/output_ipsec_conf dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr' | PATH=/sbin:/usr/sbin:$PATH setkey -c' 2>&1 | tee $ipsec_log
+-    if [ $? -ne 0 -o -s $ipsec_log ]; then
++    tst_ipsec dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
++    if [ $? -ne 0 ]; then
+ 	tst_resm TBROK "Failed to configure SAD/SPD on the remote host."
+-	rm -f $ipsec_log
+ 	exit 1
+     fi
+-    rm -f $ipsec_log
+ fi
+ 
+-# Make sure the connectvity
+-case $IP_VER in
+-    4)
+-    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	tst_resm TBROK "There is no IPv4 connectivity."
+-	exit 1
+-    fi
+-    ;;
+-
+-    6)
+-    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv6_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
+-    if [ $ret -ne 0 ]; then
+-	tst_resm TBROK "There is no IPv6 connectivity."
+-	exit 1
+-    fi
+-    ;;
+-esac
+-
+-
+ #-----------------------------------------------------------------------
+ #
+ # Main
+ #
+ #
+ 
+-# Run a client
+-$LTP_RSH $RHOST "${LTPROOT}/testcases/bin/ns-echoclient -S $lhost_addr -f $IP_VER -s \"$ICMP_SIZE_ARRAY\"" &
+-
+-sleep $NS_DURATION
+-killall_icmp_traffic
+-wait
++# Make sure the connectvity
++for msg_size in $ICMP_SIZE_ARRAY; do
++    tst_ping $rhost_ifname $lhost_addr $msg_size
++    if [ $? -ne 0 ]; then
++        tst_brkm TBROK "There is no IPv$IP_VER connectivity with msg_size $msg_size"
++    else
++        tst_resm TPASS "There has IPv$IP_VER connectivity with msg_size $msg_size"
++    fi
++done
+ 
+ #-----------------------------------------------------------------------
+ #
 -- 
 2.5.0
 
