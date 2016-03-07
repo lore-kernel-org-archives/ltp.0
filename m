@@ -1,154 +1,141 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Mon,  7 Mar 2016 15:14:43 +0800
-Subject: [LTP] [PATCH 3/3] network/stress/icmp: use ip xfrm for
-	icmp4-uni-basic01 ipsec testing
-In-Reply-To: <1457334883-11086-1-git-send-email-haliu@redhat.com>
-References: <1457334883-11086-1-git-send-email-haliu@redhat.com>
-Message-ID: <1457334883-11086-4-git-send-email-haliu@redhat.com>
+Date: Mon,  7 Mar 2016 15:20:57 +0800
+Subject: [LTP]  [PATCH 0/3] networking/stress: add ip xfrm ipsec support
+Message-ID: <1457335260-11455-1-git-send-email-haliu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also check each msg_size in $ICMP_SIZE_ARRAY to make sure the connectvity.
+Hi Alexey and Cyril,
 
-Signed-off-by: Hangbin Liu <haliu@redhat.com>
----
- .../stress/icmp/uni-basic/icmp4-uni-basic01        | 66 ++++++++--------------
- 1 file changed, 22 insertions(+), 44 deletions(-)
+Sorry for the late patches. I was bussy with other stuff durning previous
+months. Here I only add an ipsec lib and add ip xfrm support for
+icmp4-uni-basic01. I will fix other tests when you feel these patches are
+OK.
 
-diff --git a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01 b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
-index b78ac8f..55ddff5 100644
---- a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
-+++ b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
-@@ -50,10 +50,13 @@ $trace_logic
- TCID=${TCID:-icmp4-uni-basic01}
- TST_TOTAL=1
- TST_COUNT=1
-+TST_CLEANUP="do_cleanup"
- export TCID
- export TST_COUNT
- export TST_TOTAL
- 
-+. ipsec_lib.sh
-+
- # Test description
- tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
- 
-@@ -104,12 +107,11 @@ do_cleanup()
-     killall_icmp_traffic
- 
-     # Unset SAD/SPD
--    output_ipsec_conf flush | setkey -c >/dev/null 2>&1
--    $LTP_RSH $RHOST ${LTPROOT}/'testcases/bin/output_ipsec_conf flush | PATH=/sbin:/usr/sbin:$PATH setkey -c' >/dev/null 2>&1
-+    tst_ipsec flush
- 
-     # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
-+    tst_init_iface lhost ${LINK_NUM}
-+    tst_init_iface rhost ${LINK_NUM}
- }
- 
- 
-@@ -127,7 +129,7 @@ tst_resm TINFO "- Version of IP is IPv${IP_VER}"
- tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
- 
- if $DO_IPSEC ; then
--    message=`check_setkey`
-+    message=`ip xfrm state`
-     if [ $? -ne 0 ]; then
- 	tst_resm TBROK "$message"
- 	exit 1
-@@ -147,13 +149,13 @@ if $DO_IPSEC ; then
- fi
- 
- # name of interface of the local/remote host
--lhost_ifname=`get_ifname lhost $LINK_NUM`
-+lhost_ifname=`tst_iface lhost $LINK_NUM`
- if [ $? -ne 0 ]; then
-     tst_resm TBROK "Failed to get the interface name at the local host"
-     exit $TST_TOTAL
- fi
- 
--rhost_ifname=`get_ifname rhost $LINK_NUM`
-+rhost_ifname=`tst_iface rhost $LINK_NUM`
- if [ $? -ne 0 ]; then
-     tst_resm TBROK "Failed to get the interface name at the remote host"
-     exit $TST_TOTAL
-@@ -232,58 +234,34 @@ esac
- 
- # Configure SAD/SPD
- if $DO_IPSEC ; then
--    ipsec_log=`mktemp -p $TMPDIR`
--
--    output_ipsec_conf src \
--	$IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr \
--	    |  setkey -c 2>&1 | tee $ipsec_log
--    if [ $? -ne 0 -o -s $ipsec_log ]; then
-+    tst_ipsec src $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
-+    if [ $? -ne 0 ]; then
- 	tst_resm TBROK "Failed to configure SAD/SPD on the local host."
--	rm -f $ipsec_log
- 	exit 1
-     fi
- 
--    $LTP_RSH $RHOST ${LTPROOT}/testcases/bin/output_ipsec_conf dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr' | PATH=/sbin:/usr/sbin:$PATH setkey -c' 2>&1 | tee $ipsec_log
--    if [ $? -ne 0 -o -s $ipsec_log ]; then
-+    tst_ipsec dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
-+    if [ $? -ne 0 ]; then
- 	tst_resm TBROK "Failed to configure SAD/SPD on the remote host."
--	rm -f $ipsec_log
- 	exit 1
-     fi
--    rm -f $ipsec_log
- fi
- 
--# Make sure the connectvity
--case $IP_VER in
--    4)
--    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
--    if [ $ret -ne 0 ]; then
--	tst_resm TBROK "There is no IPv4 connectivity."
--	exit 1
--    fi
--    ;;
--
--    6)
--    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv6_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
--    if [ $ret -ne 0 ]; then
--	tst_resm TBROK "There is no IPv6 connectivity."
--	exit 1
--    fi
--    ;;
--esac
--
--
- #-----------------------------------------------------------------------
- #
- # Main
- #
- #
- 
--# Run a client
--$LTP_RSH $RHOST "${LTPROOT}/testcases/bin/ns-echoclient -S $lhost_addr -f $IP_VER -s \"$ICMP_SIZE_ARRAY\"" &
--
--sleep $NS_DURATION
--killall_icmp_traffic
--wait
-+# Make sure the connectvity
-+for msg_size in $ICMP_SIZE_ARRAY; do
-+    tst_ping $rhost_ifname $lhost_addr $msg_size
-+    if [ $? -ne 0 ]; then
-+        tst_brkm TBROK "There is no IPv$IP_VER connectivity with msg_size $msg_size"
-+    else
-+        tst_resm TPASS "There has IPv$IP_VER connectivity with msg_size $msg_size"
-+    fi
-+done
- 
- #-----------------------------------------------------------------------
- #
+As we know, most of the network stress tests have IPsec testing, and we use
+setkey for configuration. But setkey[1] hasn't updated for a long time. And
+some distros, RHEL7 for example, even don't have ipset-tools package. On
+other hand, iproute2 is recommend for network configuration. And ip xfrm is
+more powerful than setkey. So let's use ip xfrm for ipsec testing.
+
+For c2x function in ipsec_lib.sh. It's only a convert function and do not
+print any info. So I kept it with the old style.
+
+[1] http://ipsec-tools.sourceforge.net/
+
+Here is the test result:
+# ./networkstress.sh -i
+<<<test_start>>>
+tag=icmp4-uni-basic01 stime=1457331713
+cmdline="icmp4-uni-basic01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+icmp4-uni-basic01 1 TINFO : Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions
+icmp4-uni-basic01 1 TINFO : - Test duration is 3600 [sec]
+icmp4-uni-basic01 1 TINFO : - Version of IP is IPv4
+icmp4-uni-basic01 1 TINFO : - Size of packets are ( 10 100 1000 10000 65507 )
+icmp4-uni-basic01 1 TINFO : initialize 'lhost' 'eth1' interface
+icmp4-uni-basic01 1 TINFO : initialize 'rhost' 'eth1' interface
+icmp4-uni-basic01 1 TPASS : There has IPv4 connectivity with msg_size 10
+icmp4-uni-basic01 2 TPASS : There has IPv4 connectivity with msg_size 100
+icmp4-uni-basic01 3 TPASS : There has IPv4 connectivity with msg_size 1000
+icmp4-uni-basic01 4 TPASS : There has IPv4 connectivity with msg_size 10000
+icmp4-uni-basic01 5 TPASS : There has IPv4 connectivity with msg_size 65507
+icmp4-uni-basic01 6 TPASS : Test is finished successfully.
+icmp4-uni-basic01 7 TINFO : initialize 'lhost' 'eth1' interface
+icmp4-uni-basic01 7 TINFO : initialize 'rhost' 'eth1' interface
+<<<execution_status>>>
+initiation_status="ok"
+duration=49 termination_type=exited termination_id=0 corefile=no
+cutime=48 cstime=10
+<<<test_end>>>
+<<<test_start>>>
+tag=icmp4-uni-basic02 stime=1457331762
+cmdline="icmp4-uni-basic02"
+contacts=""
+analysis=exit
+<<<test_output>>>
+incrementing stop
+icmp4-uni-basic02 1 TINFO : Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions
+icmp4-uni-basic02 1 TINFO : - Test duration is 3600 [sec]
+icmp4-uni-basic02 1 TINFO : - Version of IP is IPv4
+icmp4-uni-basic02 1 TINFO : - Size of packets are ( 10 100 1000 10000 65507 )
+icmp4-uni-basic02 1 TINFO : - IPsec [ AH / transport ]
+icmp4-uni-basic02 1 TINFO : initialize 'lhost' 'eth1' interface
+icmp4-uni-basic02 1 TINFO : initialize 'rhost' 'eth1' interface
+src 10.0.0.1 dst 10.0.0.2
+        proto ah spi 0x00001001 reqid 0 mode transport
+        replay-window 0
+        auth hmac(sha1) 0x626565665f666973685f706f726b5f73616c6164
+        sel src 10.0.0.1/32 dst 10.0.0.2/32
+src 10.0.0.2 dst 10.0.0.1
+        proto ah spi 0x00001000 reqid 0 mode transport
+        replay-window 0
+        auth hmac(sha1) 0x626565665f666973685f706f726b5f73616c6164
+        sel src 10.0.0.2/32 dst 10.0.0.1/32
+src 10.0.0.1/32 dst 10.0.0.2/32
+        dir in priority 0 ptype main
+        tmpl src 10.0.0.1 dst 10.0.0.2
+                proto ah reqid 0 mode transport
+src 10.0.0.2/32 dst 10.0.0.1/32
+        dir out priority 0 ptype main
+        tmpl src 10.0.0.2 dst 10.0.0.1
+                proto ah reqid 0 mode transport
+src 10.0.0.2 dst 10.0.0.1
+        proto ah spi 0x00001000 reqid 0 mode transport
+        replay-window 0
+        auth-trunc hmac(sha1) 0x626565665f666973685f706f726b5f73616c6164 96
+        sel src 10.0.0.2/32 dst 10.0.0.1/32
+src 10.0.0.1 dst 10.0.0.2
+        proto ah spi 0x00001001 reqid 0 mode transport
+        replay-window 0
+        auth-trunc hmac(sha1) 0x626565665f666973685f706f726b5f73616c6164 96
+        sel src 10.0.0.1/32 dst 10.0.0.2/32
+src 10.0.0.2/32 dst 10.0.0.1/32
+        dir in priority 0 ptype main
+        tmpl src 10.0.0.2 dst 10.0.0.1
+                proto ah reqid 0 mode transport
+src 10.0.0.1/32 dst 10.0.0.2/32
+        dir out priority 0 ptype main
+        tmpl src 10.0.0.1 dst 10.0.0.2
+                proto ah reqid 0 mode transport
+icmp4-uni-basic02 1 TPASS : There has IPv4 connectivity with msg_size 10
+icmp4-uni-basic02 2 TPASS : There has IPv4 connectivity with msg_size 100
+icmp4-uni-basic02 3 TPASS : There has IPv4 connectivity with msg_size 1000
+icmp4-uni-basic02 4 TPASS : There has IPv4 connectivity with msg_size 10000
+icmp4-uni-basic02 5 TBROK : There is no IPv4 connectivity with msg_size 65507
+
+       ^^ here is a TBROK in icmp4-uni-basic02, I will fix it in next patch
+
+icmp4-uni-basic02 5 TINFO : initialize 'lhost' 'eth1' interface
+icmp4-uni-basic02 5 TINFO : initialize 'rhost' 'eth1' interface
+icmp4-uni-basic02 5 TINFO : initialize 'lhost' 'eth1' interface
+icmp4-uni-basic02 5 TINFO : initialize 'rhost' 'eth1' interface
+<<<execution_status>>>
+initiation_status="ok"
+duration=62 termination_type=exited termination_id=2 corefile=no
+cutime=78 cstime=17
+<<<test_end>>>
+ltp-pan reported FAIL
+
+
+Hangbin Liu (3):
+  lib/test_net.sh: add tst_ping() to check icmp connectivity
+  network/stress: add ipsec lib
+  network/stress/icmp: use ip xfrm for icmp4-uni-basic01 ipsec testing
+
+ testcases/lib/test_net.sh                          |  37 ++++++
+ .../stress/icmp/uni-basic/icmp4-uni-basic01        |  66 ++++------
+ testcases/network/stress/ipsec/Makefile            |  31 +++++
+ testcases/network/stress/ipsec/ipsec_lib.sh        | 134 +++++++++++++++++++++
+ 4 files changed, 224 insertions(+), 44 deletions(-)
+ create mode 100644 testcases/network/stress/ipsec/Makefile
+ create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
+
 -- 
 2.5.0
 
