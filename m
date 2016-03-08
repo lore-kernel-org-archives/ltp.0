@@ -1,372 +1,209 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 8 Mar 2016 20:07:54 +0800
-Subject: [LTP] [PATCH] mm/ksm: extend 'max_page_sharing' before ksm
-	testing
-In-Reply-To: <1456390092-1428-1-git-send-email-liwang@redhat.com>
-References: <1456390092-1428-1-git-send-email-liwang@redhat.com>
-Message-ID: <CAEemH2dFwSDuNm9euwRErRWL4kdgUG_3w+wo-BzG0WMJoBqCwA@mail.gmail.com>
+From: Zorro Lang <zlang@redhat.com>
+Date: Tue,  8 Mar 2016 21:35:32 +0800
+Subject: [LTP] [PATCH 1/2] lib/tst_mkfs: new tst_mkfs_sized function for
+	create appointed size fs
+Message-ID: <1457444133-5671-1-git-send-email-zlang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+If the device which pointed by -b or -z options is too large, mkfs on
+it will cost lots of time, some cases even return ETIMEDOUT error(e.g.
+mmap16). So I do below change:
 
-After thinking over this change, I feel that do `echo 100000
->'/sys/kernel/mm/ksm/max_page_sharing` as hard-code is a bad idea. Since
-the case ksm0[1-6].c could also accept different "num" via parameter, it
-will be failed if we do `./ksm01 -n num` (eg. num >= 6, the pages >=
-196608).
+Change tst_mkfs() function to tst_mkfs_sized(), add two new parameters:
+fssize and blocksize. tst_mkfs_sized() can create an appointed size fs
+with appointed block size, or just point block size.
 
--------------------
-# ./ksm02 -n 6
-ksm02       0  TINFO  :  get node0.
-ksm02       0  TINFO  :  child 0 stops.
-ksm02       0  TINFO  :  child 1 stops.
-ksm02       0  TINFO  :  wait for all children to stop.
-ksm02       0  TINFO  :  child 3 stops.
-ksm02       0  TINFO  :  child 2 stops.
-ksm02       0  TINFO  :  child 4 stops.
-....
-ksm02       0  TINFO  :  check!
-ksm02       0  TINFO  :  run is 1.
-ksm02       0  TINFO  :  pages_shared is 3.
-ksm02       1  TFAIL  :  mem.c:238: pages_shared is not 2.
-ksm02       0  TINFO  :  pages_sharing is 196605.
-ksm02       2  TFAIL  :  mem.c:238: pages_sharing is not 196606.
-ksm02       0  TINFO  :  pages_volatile is 0.
-ksm02       0  TINFO  :  pages_unshared is 0.
-ksm02       0  TINFO  :  sleep_millisecs is 0.
-ksm02       0  TINFO  :  pages_to_scan is 196608.
-...
+tst_mkfs() still can be used. It's defined as tst_mkfs_sized(..., NULL,
+NULL).
 
+Until now tst_mkfs_sized() only support extX, xfs and btrfs, if we
+point fs size or block size parameters.
 
-Sorry for my careless, I just use the default value 'num=3' to test my
-patchV1 and get pass before. A better way to solve the problem is setting
-the 'max_page_sharing' dynamically in test program.
+Signed-off-by: Zorro Lang <zlang@redhat.com>
+---
+ include/test.h |  10 ++++--
+ lib/tst_mkfs.c | 109 +++++++++++++++++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 106 insertions(+), 13 deletions(-)
 
-
-Patch V2:
----------------
-diff --git a/testcases/kernel/mem/include/mem.h
-b/testcases/kernel/mem/include/mem.h
-index 43988fe..019eb46 100644
---- a/testcases/kernel/mem/include/mem.h
-+++ b/testcases/kernel/mem/include/mem.h
-@@ -43,7 +43,7 @@ void testoom(int mempolicy, int lite, int retcode, int
-allow_sigkill);
- /* KSM */
-
- #define PATH_KSM               "/sys/kernel/mm/ksm/"
--
-+int max_page_sharing;
- void test_ksm_merge_across_nodes(unsigned long nr_pages);
-
- /* THP */
-diff --git a/testcases/kernel/mem/ksm/ksm01.c
-b/testcases/kernel/mem/ksm/ksm01.c
-index b62df06..a352abd 100644
---- a/testcases/kernel/mem/ksm/ksm01.c
-+++ b/testcases/kernel/mem/ksm/ksm01.c
-@@ -105,6 +105,9 @@ void setup(void)
-                tst_brkm(TCONF, NULL, "2.6.32 or greater kernel required");
-        if (access(PATH_KSM, F_OK) == -1)
-                tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
-+       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-+               SAFE_FILE_SCANF(NULL, PATH_KSM "max_page_sharing",
-+                               "%d", &max_page_sharing);
-
-        /*
-         * kernel commit 90bd6fd introduced a new KSM sysfs knob
-@@ -128,4 +131,8 @@ void cleanup(void)
-        if (access(PATH_KSM "merge_across_nodes", F_OK) == 0)
-                FILE_PRINTF(PATH_KSM "merge_across_nodes",
-                                 "%d", merge_across_nodes);
+diff --git a/include/test.h b/include/test.h
+index 5c78b1d..25d14d9 100644
+--- a/include/test.h
++++ b/include/test.h
+@@ -317,9 +317,15 @@ int tst_system(const char *command);
+  * @dev: path to a device
+  * @fs_type: filesystem type
+  * @fs_opts: NULL or NULL terminated array of extra mkfs options
++ * @fssize: fs size, can use k,m,g,t,p,e as unit. NULL can be accepted
++ * @blocksize: fs block size, can use k,m as unit. NULL can be accepted
+  */
+-void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+-	      const char *fs_type, const char *const fs_opts[]);
++void tst_mkfs_sized(void (cleanup_fn)(void), const char *dev,
++                    const char *fs_type, const char *const fs_opts[],
++                    const char *fssize, const char *blocksize);
 +
-+       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-+               FILE_PRINTF(PATH_KSM "max_page_sharing",
-+                                "%d", max_page_sharing);
++#define tst_mkfs(cleanup_fn, dev, fs_type, fs_opts) \
++	tst_mkfs_sized(cleanup_fn, dev, fs_type, fs_opts, NULL, NULL)
+ 
+ /*
+  * Returns filesystem type to be used for the testing. Unless your test is
+diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+index 5f959a4..94135c2 100644
+--- a/lib/tst_mkfs.c
++++ b/lib/tst_mkfs.c
+@@ -16,32 +16,84 @@
+  * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  */
+ 
++#include <stdlib.h>
+ #include "test.h"
+ #include "ltp_priv.h"
+ 
+ #define OPTS_MAX 32
+ 
+-void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+-	      const char *fs_type, const char *const fs_opts[])
++long long cvtnum(const char *s)
++{
++	long long i;
++	char *sp = NULL;
++
++	i = strtoll(s, &sp, 0);
++	if (i == 0 && sp == s)
++		return -1LL;
++	if (*sp == '\0')
++		return i;
++
++	if (*sp == 'k' && sp[1] == '\0')
++		return 1024LL * i;
++	if (*sp == 'm' && sp[1] == '\0')
++		return 1024LL * 1024LL * i;
++	if (*sp == 'g' && sp[1] == '\0')
++		return 1024LL * 1024LL * 1024LL * i;
++	if (*sp == 't' && sp[1] == '\0')
++		return 1024LL * 1024LL * 1024LL * 1024LL * i;
++	if (*sp == 'p' && sp[1] == '\0')
++		return 1024LL * 1024LL * 1024LL * 1024LL * 1024LL * i;
++	if (*sp == 'e' && sp[1] == '\0')
++		return 1024LL * 1024LL * 1024LL * 1024LL * 1024LL * 1024LL * i;
++	return -1LL;
++}
++
++void tst_mkfs_sized(void (cleanup_fn)(void), const char *dev,
++                    const char *fs_type, const char *const fs_opts[],
++                    const char *fssize, const char *blocksize)
+ {
+ 	int i, pos = 3;
+ 	const char *argv[OPTS_MAX] = {"mkfs", "-t", fs_type};
+ 	char fs_opts_str[1024] = "";
++	char blk_size_str[256] = "";
++	char fs_size_str[256] = "";
++	long long fssz = 0;
++	unsigned int blsz= 0;
+ 
+ 	if (!fs_type)
+ 		tst_brkm(TBROK, cleanup_fn, "No fs_type specified");
+ 
+-	/*
+-	 * mkfs.xfs and mkfs.btrfs aborts if it finds a filesystem
+-	 * superblock on the device, which is the case here as we
+-	 * reuse one device for all tests.
+-	 */
+ 	if (!strcmp(fs_type, "xfs")) {
++		/*
++		 * mkfs.xfs and mkfs.btrfs aborts if it finds a filesystem
++		 * superblock on the device, which is the case here as we
++		 * reuse one device for all tests.
++		 */
+ 		tst_resm(TINFO, "Appending '-f' flag to mkfs.%s", fs_type);
+ 		argv[pos++] = "-f";
+-	}
++		if (blocksize) {
++			argv[pos++] = "-b";
++			strcat(blk_size_str, "size=");
++			strcat(blk_size_str, blocksize);
++			argv[pos++] = blk_size_str;
++		}
+ 
+-	if (!strcmp(fs_type, "btrfs")) {
++		if (!fssize) {
++			argv[pos++] = "-d";
++			strcat(fs_size_str, "size=");
++			strcat(fs_size_str, fssize);
++			argv[pos++] = fs_size_str;
++		}
++	} else if (!strncmp(fs_type, "ext", 3)) {
++		if (blocksize) {
++			argv[pos++] = "-b";
++			argv[pos++] = blocksize;
++		}
++		/*
++		 * If fs is extX, the fs_size should be set behind device name.
++		 * Not set at here.
++		 */
++	} else if (!strcmp(fs_type, "btrfs")) {
+ 		/*
+ 		 * The -f option was added to btrfs-progs v3.12
+ 		 */
+@@ -50,6 +102,21 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+ 				fs_type);
+ 			argv[pos++] = "-f";
+ 		}
++		if (fssize) {
++			/*
++			 * The recommended size for the mixed mode is for filesystems less than 1GiB
++			 */
++			if (cvtnum(fssize) < 1024 * 1024 * 1024)
++				argv[pos++] = "--mixed";
++			argv[pos++] = "-b";
++			argv[pos++] = fssize;
++		}
++	} else if (fssize || blocksize) {
++		/*
++		 * Can't set fs size or block size for others fs,
++		 * except add new fs support as above.
++		 */
++		tst_brkm(TBROK, cleanup_fn, "tst_mkfs_sized don't support '%s' fs, please add this fs as a new feature", fs_type);
+ 	}
+ 
+ 	if (fs_opts) {
+@@ -68,10 +135,30 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+ 	}
+ 
+ 	argv[pos++] = dev;
++
++	/*
++	 * According to mke2fs(8) manual, fs-size need be behind the device
++	 * parameter. So add fs size into argv[pos++] after dev name.
++	 */
++	if (!strncmp(fs_type, "ext", 3) && fssize && blocksize) {
++		fssz = cvtnum(fssize);
++		blsz = cvtnum(blocksize);
++		if (fssz > 0 && blsz > 0){
++			sprintf(fs_size_str, "%llu", fssz / blsz);
++		} else {
++			tst_brkm(TBROK, cleanup_fn, "No suitable filesystem/block size specified");
++		}
++		argv[pos++] = fs_size_str;
++	}
++
+ 	argv[pos] = NULL;
+ 
+-	tst_resm(TINFO, "Formatting %s with %s extra opts='%s'",
+-		 dev, fs_type, fs_opts_str);
++	if (!fssize)
++		fssize = "Default";
++	if (!blocksize)
++		blocksize = "Default";
++	tst_resm(TINFO, "Formatting %s with %s extra opts='%s', blocksize is %s, fs size is %s",
++	         dev, fs_type, fs_opts_str, blocksize, fssize);
+ 	tst_run_cmd(cleanup_fn, argv, "/dev/null", NULL, 0);
  }
+ 
+-- 
+2.5.0
 
-...
-
-diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-index 7b5bb35..ec25ce3 100644
---- a/testcases/kernel/mem/lib/mem.c
-+++ b/testcases/kernel/mem/lib/mem.c
-@@ -502,6 +502,9 @@ void create_same_memory(int size, int num, int unit)
-        stop_ksm_children(child, num);
-
-        tst_resm(TINFO, "KSM merging...");
-+       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-+               SAFE_FILE_PRINTF(NULL, PATH_KSM "max_page_sharing",
-+                               "%ld", size * pages * num);
-        SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
-        SAFE_FILE_PRINTF(cleanup, PATH_KSM "pages_to_scan", "%ld",
-                         size * pages *num);
-
-
-Patch V2 result PASS:
-------------------------------
-# ./ksm01 -n 30
-ksm01       0  TINFO  :  child 0 stops.
-ksm01       0  TINFO  :  child 1 stops.
-ksm01       0  TINFO  :  child 2 stops.
-ksm01       0  TINFO  :  child 3 stops.
-ksm01       0  TINFO  :  child 4 stops.
-ksm01       0  TINFO  :  child 5 stops.
-ksm01       0  TINFO  :  child 6 stops.
-...
-ksm01       0  TINFO  :  check!
-ksm01       0  TINFO  :  run is 1.
-ksm01       0  TINFO  :  pages_shared is 2.
-ksm01       0  TINFO  :  pages_sharing is 983038.
-ksm01       0  TINFO  :  pages_volatile is 0.
-ksm01       0  TINFO  :  pages_unshared is 0.
-ksm01       0  TINFO  :  sleep_millisecs is 0.
-ksm01       0  TINFO  :  pages_to_scan is 983040.
-....
-
-Comments welcome, if no objection, I will send PATCH V2 tomorrow.
-
-Regards,
-Li Wang
-
-
-On Thu, Feb 25, 2016 at 4:48 PM, Li Wang <liwang@redhat.com> wrote:
-
-> This kernel commit (de39e60a6, ksm: introduce ksm_max_page_sharing per
-> page...)
-> introduced a new KSM sysfs knob '/sys/kernel/mm/ksm/max_page_sharing' in
-> linux-next.
->
-> The runtime value of 'max_page_sharing' will affect
-> pages_shared/pages_sharing,
-> because this enforces a deduplication limit to avoid the virtual memory
-> rmap lists
-> to grow too large.
->
-> ltp/ksm0* tests can easily get failures on that kernel like:
-> -----
-> ksm01       0  TINFO  :  wait for all children to stop.
-> ksm01       0  TINFO  :  KSM merging...
-> ksm01       0  TINFO  :  resume all children.
-> ksm01       0  TINFO  :  child 2 stops.
-> ...
-> ksm01       0  TINFO  :  run is 1.
-> ksm01       0  TINFO  :  pages_shared is 384.
-> ksm01       1  TFAIL  :  mem.c:238: pages_shared is not 2.
-> ksm01       0  TINFO  :  pages_sharing is 97920.
-> ksm01       2  TFAIL  :  mem.c:238: pages_sharing is not 98302.
-> ksm01       0  TINFO  :  pages_volatile is 0.
-> ksm01       0  TINFO  :  pages_unshared is 0.
-> ksm01       0  TINFO  :  sleep_millisecs is 0.
-> ksm01       0  TINFO  :  pages_to_scan is 98304.
->
-> So, I composed this patch to extend the 'max_page_sharing' value to make
-> tests pass.
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/mem/ksm/ksm01.c | 10 ++++++++++
->  testcases/kernel/mem/ksm/ksm02.c | 10 ++++++++++
->  testcases/kernel/mem/ksm/ksm03.c | 11 +++++++++++
->  testcases/kernel/mem/ksm/ksm04.c | 11 +++++++++++
->  testcases/kernel/mem/ksm/ksm06.c | 10 ++++++++++
->  5 files changed, 52 insertions(+)
->
-> diff --git a/testcases/kernel/mem/ksm/ksm01.c
-> b/testcases/kernel/mem/ksm/ksm01.c
-> index b62df06..fccae1c 100644
-> --- a/testcases/kernel/mem/ksm/ksm01.c
-> +++ b/testcases/kernel/mem/ksm/ksm01.c
-> @@ -73,6 +73,7 @@ char *TCID = "ksm01";
->  int TST_TOTAL = 1;
->
->  static int merge_across_nodes;
-> +static int max_page_sharing;
->
->  option_t ksm_options[] = {
->         {"n:", &opt_num, &opt_numstr},
-> @@ -105,6 +106,11 @@ void setup(void)
->                 tst_brkm(TCONF, NULL, "2.6.32 or greater kernel required");
->         if (access(PATH_KSM, F_OK) == -1)
->                 tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0) {
-> +               SAFE_FILE_SCANF(NULL, PATH_KSM "max_page_sharing",
-> +                               "%d", &max_page_sharing);
-> +               SAFE_FILE_PRINTF(NULL, PATH_KSM "max_page_sharing",
-> "100000");
-> +       }
->
->         /*
->          * kernel commit 90bd6fd introduced a new KSM sysfs knob
-> @@ -128,4 +134,8 @@ void cleanup(void)
->         if (access(PATH_KSM "merge_across_nodes", F_OK) == 0)
->                 FILE_PRINTF(PATH_KSM "merge_across_nodes",
->                                  "%d", merge_across_nodes);
-> +
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-> +               FILE_PRINTF(PATH_KSM "max_page_sharing",
-> +                                "%d", max_page_sharing);
->  }
-> diff --git a/testcases/kernel/mem/ksm/ksm02.c
-> b/testcases/kernel/mem/ksm/ksm02.c
-> index 537ec01..8ca397a 100644
-> --- a/testcases/kernel/mem/ksm/ksm02.c
-> +++ b/testcases/kernel/mem/ksm/ksm02.c
-> @@ -73,6 +73,7 @@ char *TCID = "ksm02";
->  int TST_TOTAL = 1;
->
->  static int merge_across_nodes;
-> +static int max_page_sharing;
->
->  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
->         && HAVE_MPOL_CONSTANTS
-> @@ -125,6 +126,10 @@ void cleanup(void)
->                 FILE_PRINTF(PATH_KSM "merge_across_nodes",
->                                  "%d", merge_across_nodes);
->
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-> +               FILE_PRINTF(PATH_KSM "max_page_sharing",
-> +                               "%d", max_page_sharing);
-> +
->         umount_mem(CPATH, CPATH_NEW);
->  }
->
-> @@ -136,6 +141,11 @@ void setup(void)
->                 tst_brkm(TCONF, NULL, "2.6.32 or greater kernel required");
->         if (access(PATH_KSM, F_OK) == -1)
->                 tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0) {
-> +               SAFE_FILE_SCANF(NULL, PATH_KSM "max_page_sharing",
-> +                               "%d", &max_page_sharing);
-> +               SAFE_FILE_PRINTF(NULL, PATH_KSM "max_page_sharing",
-> "100000");
-> +       }
->
->         if (access(PATH_KSM "merge_across_nodes", F_OK) == 0) {
->                 SAFE_FILE_SCANF(NULL, PATH_KSM "merge_across_nodes",
-> diff --git a/testcases/kernel/mem/ksm/ksm03.c
-> b/testcases/kernel/mem/ksm/ksm03.c
-> index b73e023..8670ed8 100644
-> --- a/testcases/kernel/mem/ksm/ksm03.c
-> +++ b/testcases/kernel/mem/ksm/ksm03.c
-> @@ -73,6 +73,7 @@ char *TCID = "ksm03";
->  int TST_TOTAL = 1;
->
->  static int merge_across_nodes;
-> +static int max_page_sharing;
->
->  option_t ksm_options[] = {
->         {"n:", &opt_num, &opt_numstr},
-> @@ -113,6 +114,12 @@ void setup(void)
->                 SAFE_FILE_PRINTF(NULL, PATH_KSM "merge_across_nodes", "1");
->         }
->
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0) {
-> +               SAFE_FILE_SCANF(NULL, PATH_KSM "max_page_sharing",
-> +                               "%d", &max_page_sharing);
-> +               SAFE_FILE_PRINTF(NULL, PATH_KSM "max_page_sharing",
-> "100000");
-> +       }
-> +
->         mount_mem("memcg", "cgroup", "memory", MEMCG_PATH, MEMCG_PATH_NEW);
->         tst_sig(FORK, DEF_HANDLER, NULL);
->         TEST_PAUSE;
-> @@ -124,5 +131,9 @@ void cleanup(void)
->                 FILE_PRINTF(PATH_KSM "merge_across_nodes",
->                                  "%d", merge_across_nodes);
->
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-> +               FILE_PRINTF(PATH_KSM "max_page_sharing",
-> +                               "%d", max_page_sharing);
-> +
->         umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
->  }
-> diff --git a/testcases/kernel/mem/ksm/ksm04.c
-> b/testcases/kernel/mem/ksm/ksm04.c
-> index 0c1d4e0..15988f7 100644
-> --- a/testcases/kernel/mem/ksm/ksm04.c
-> +++ b/testcases/kernel/mem/ksm/ksm04.c
-> @@ -73,6 +73,7 @@ char *TCID = "ksm04";
->  int TST_TOTAL = 1;
->
->  static int merge_across_nodes;
-> +static int max_page_sharing;
->
->  #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
->         && HAVE_MPOL_CONSTANTS
-> @@ -127,6 +128,10 @@ void cleanup(void)
->                 FILE_PRINTF(PATH_KSM "merge_across_nodes",
->                                  "%d", merge_across_nodes);
->
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-> +               FILE_PRINTF(PATH_KSM "max_page_sharing",
-> +                               "%d", max_page_sharing);
-> +
->         umount_mem(CPATH, CPATH_NEW);
->         umount_mem(MEMCG_PATH, MEMCG_PATH_NEW);
->  }
-> @@ -146,6 +151,12 @@ void setup(void)
->                 SAFE_FILE_PRINTF(NULL, PATH_KSM "merge_across_nodes", "1");
->         }
->
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0) {
-> +               SAFE_FILE_SCANF(NULL, PATH_KSM "max_page_sharing",
-> +                               "%d", &max_page_sharing);
-> +               SAFE_FILE_PRINTF(NULL, PATH_KSM "max_page_sharing",
-> "100000");
-> +       }
-> +
->         tst_sig(FORK, DEF_HANDLER, cleanup);
->         TEST_PAUSE;
->         mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
-> diff --git a/testcases/kernel/mem/ksm/ksm06.c
-> b/testcases/kernel/mem/ksm/ksm06.c
-> index 1cda01f..3d12419 100644
-> --- a/testcases/kernel/mem/ksm/ksm06.c
-> +++ b/testcases/kernel/mem/ksm/ksm06.c
-> @@ -57,6 +57,7 @@ int TST_TOTAL = 1;
->  static int run;
->  static int sleep_millisecs;
->  static int merge_across_nodes;
-> +static int max_page_sharing;
->  static int n_flag;
->  static unsigned long nr_pages;
->
-> @@ -104,6 +105,11 @@ void setup(void)
->                         "%d", &merge_across_nodes);
->         SAFE_FILE_SCANF(NULL, PATH_KSM "sleep_millisecs",
->                         "%d", &sleep_millisecs);
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0) {
-> +               SAFE_FILE_SCANF(NULL, PATH_KSM "max_page_sharing",
-> +                               "%d", &max_page_sharing);
-> +               SAFE_FILE_PRINTF(NULL, PATH_KSM "max_page_sharing",
-> "100000");
-> +       }
->
->         tst_sig(FORK, DEF_HANDLER, cleanup);
->         TEST_PAUSE;
-> @@ -116,6 +122,10 @@ void cleanup(void)
->         FILE_PRINTF(PATH_KSM "sleep_millisecs",
->                          "%d", sleep_millisecs);
->         FILE_PRINTF(PATH_KSM "run", "%d", run);
-> +
-> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
-> +               FILE_PRINTF(PATH_KSM "max_page_sharing",
-> +                               "%d", max_page_sharing);
->  }
->
->  static void usage(void)
-> --
-> 1.8.3.1
->
->
-> --
-> Mailing list info: http://lists.linux.it/listinfo/ltp
->
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160308/f38397a6/attachment-0001.html>
