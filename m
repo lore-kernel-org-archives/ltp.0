@@ -1,125 +1,59 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 09 Mar 2016 13:14:08 +0300
-Subject: [LTP] [PATCH] syscalls/fstatat01: fix test on x86_64 arch
-In-Reply-To: <475199963.7200678.1457516997100.JavaMail.zimbra@redhat.com>
-References: <1457511825-29960-1-git-send-email-alexey.kodanev@oracle.com>
- <166755113.7189444.1457515127024.JavaMail.zimbra@redhat.com>
- <56DFF11F.9080505@oracle.com>
- <475199963.7200678.1457516997100.JavaMail.zimbra@redhat.com>
-Message-ID: <56DFF770.9030105@oracle.com>
+From: Julio Cruz Barroso <julio.cruz@smartmatic.com>
+Date: Wed, 9 Mar 2016 10:40:59 +0000
+Subject: [LTP] Question about perf_event_open/Cap_bounds/su01 test cases
+Message-ID: <AF04265A3FC2B144B9892F621A394E13EA3DB009@tethys>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+Hi,
 
-On 03/09/2016 12:49 PM, Jan Stancek wrote:
->
-> ----- Original Message -----
->> From: "Alexey Kodanev" <alexey.kodanev@oracle.com>
->> To: "Jan Stancek" <jstancek@redhat.com>
->> Cc: ltp@lists.linux.it, "vasily isaenko" <vasily.isaenko@oracle.com>
->> Sent: Wednesday, 9 March, 2016 10:47:11 AM
->> Subject: Re: [LTP] [PATCH] syscalls/fstatat01: fix test on x86_64 arch
->>
->> Hi,
->> On 03/09/2016 12:18 PM, Jan Stancek wrote:
->>> ...
->>> -/* TODO (garrcoop): properly port to fstatat64. */
->>> -#if (defined __NR_fstatat64) && (__NR_fstatat64 != 0)
->>> -struct stat64 statbuf;
->>> -#else
->>> -struct stat statbuf;
->>> -#endif
->>> -
->>> -/*
->>> - * XXX (garrcoop): NO NO NO NO NO NO NO NO NO ... use
->>> linux_syscall_numbers.h!
->>> - */
->>> -/* __NR_fstatat64 and __NR_fstatat64 if not defined are ALWAYS stubbed by
->>> - *  linux_syscall_numbers.h Need to check for 0 to avoid testing with
->>> stubs
->>> */
->>> -#if (defined __NR_fstatat64) && (__NR_fstatat64 != 0)
->>> -int myfstatat(int dirfd, const char *filename, struct stat64 *statbuf,
->>> -	      int flags)
->>> +#if !defined(HAVE_FSTATAT)
->>> +#if (defined __NR_fstatat64) && (__NR_fstatat64 > 0)
->>> +static struct stat64 statbuf;
->>> +int fstatat(int dirfd, const char *filename, struct stat64 *statbuf, int
->>> flags)
->>>    {
->>>    	return ltp_syscall(__NR_fstatat64, dirfd, filename, statbuf, flags);
->>>    }
->>> -#elif (defined __NR_newfstatat) && (__NR_newfstatat != 0)
->>> -int myfstatat(int dirfd, const char *filename, struct stat *statbuf, int
->>> flags)
->>> +#else
->>> Shouldn't we check that __NR_newfstatat is defined? There seem to be
->>> architectures,
->>> that don't define both fstatat64 and newfstatat.
->> It seems unnecessary... it should be defined in linux_syscall_numbers.h
->> whether
->> it is supported or not. In the last case __NR_newfstatat is defined as
->> __LTP_NR_INVALID_SYSCALL,eventually we'll get TCONF for ltp_syscall(-1,
->> ...).
-> You're right, regen.sh will add common stub as long as at least one arch
-> defines it (which we do).
+I’m trying to perform a testing based on LTP version 20150420 on a Linux 3.14.61 (using iMX6 SOC series).
 
-Looking at aarch64, it only defines "fstatat 79" and it neither has 
-fstatat64
-nor newfstatat, so may be we should additionally check _NR_newfstatat in 
-the same
-way we do for fstatat64. And if both < 0 invoke ltp_syscall with 
-__NR_fstatat.
+Basically, I perform the same test in four (4) different SOC (Solo, DualLite, Dual and Quad) including different RAM (512, 512, 1024, 2048MB respectively). The same kernel (with different Device Tree) is used on the four boards.
 
-Thanks,
-Alexey
+The test is run as below:
 
-> Regards,
-> Jan
->
->> Thanks,
->> Alexey
->>
->>> Regards,
->>> Jan
->>>
->>>> +static struct stat statbuf;
->>>> +int fstatat(int dirfd, const char *filename, struct stat *statbuf, int
->>>> flags)
->>>>    {
->>>>    	return ltp_syscall(__NR_newfstatat, dirfd, filename, statbuf, flags);
->>>>    }
->>>> +#endif
->>>>    #else
->>>> -/* stub - will never run */
->>>> -int myfstatat(int dirfd, const char *filename, struct stat *statbuf, int
->>>> flags)
->>>> -{
->>>> -	return ltp_syscall(0, dirfd, filename, statbuf, flags);
->>>> -}
->>>> +static struct stat statbuf;
->>>>    #endif
->>>>    
->>>>    int main(int ac, char **av)
->>>> @@ -104,8 +92,7 @@ int main(int ac, char **av)
->>>>    		tst_count = 0;
->>>>    
->>>>    		for (i = 0; i < TST_TOTAL; i++) {
->>>> -			TEST(myfstatat
->>>> -			     (fds[i], filenames[i], &statbuf, flags[i]));
->>>> +			TEST(fstatat(fds[i], filenames[i], &statbuf, flags[i]));
->>>>    
->>>>    			if (TEST_ERRNO == expected_errno[i]) {
->>>>    				tst_resm(TPASS | TTERRNO,
->>>> --
->>>> 1.7.1
->>>>
->>>>
->>>> --
->>>> Mailing list info: http://lists.linux.it/listinfo/ltp
->>>>
->>
+------------------
+hostname emad-machine ; 
+cd /opt/ltp ; 
+rm -r tmp ; 
+mkdir tmp ; 
+chmod 777 tmp ; 
+rm -r results ; 
+rm result.fulllog ; 
+rm -r output ; 
+./runltp -p -l result.log -C result.fail -d /opt/ltp/tmp -g results.html -o result.fulllog
+------------------
+
+The results show around 66 test cases fail from a total of 1519. I focused on the fails trying to:
+
+------------------
+1) Change the kernel configuration (rebuild) to include any missing option
+2) Review the test cases code and try to figure out any false negative
+------------------
+
+After perform this analysis, 63 test cases were mark as false negatives, but 4 test cases have unknown conclusion, as show below:
+
+------------------
+1. perf_event_open01 failed with < TEST_ERRNO=EOPNOTSUPP(95): Operation not supported. >
+   a. I assume the test fail because the HW doesn’t support it. Could be wrong? [more details, please refer to https://justpaste.it/s315]
+2. perf_event_open02 cause < WARNING: CPU: 2 PID: 24@kernel/events/core.c:764 perf_cpu_hrtimer_handler+0x1f0/0x20c() >. This warning pass multiples times until /dev/kmsg buffer overrun [more details, please refer to https://justpaste.it/s315]
+   a. This test fail because the 01 test already fail, or can I run both independently?
+   b. Any advice about the WARNING?  
+3. Cap_bounds fail with “cap_bounds_r.c:55: prctl(PR_CAPBSET_READ, 37) returned -1”. The numerical value of the highest capability supported by the running kernel is 36 [cat /proc/sys/kernel/cap_last_cap, http://man7.org/linux/man-pages/man7/capabilities.7.html]. 
+   a. Can I assume this as a false negative?
+4. su01 fail with < /bin/su -l root with correct password ( FAILED ) > [more details, please refer to https://justpaste.it/s329]. 
+   a. Could be an test issue?
+------------------
+
+The whole analysis can be refer on https://justpaste.it/s32h. 
+
+Appreciate any suggestion or feedback. I just started using LTP some days ago, please, forgive any huge mistake ☺
+
+Thanks, Julio
+
+
 
