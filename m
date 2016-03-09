@@ -1,186 +1,223 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed,  9 Mar 2016 11:23:45 +0300
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 9 Mar 2016 04:18:47 -0500 (EST)
 Subject: [LTP] [PATCH] syscalls/fstatat01: fix test on x86_64 arch
-Message-ID: <1457511825-29960-1-git-send-email-alexey.kodanev@oracle.com>
+In-Reply-To: <1457511825-29960-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1457511825-29960-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <166755113.7189444.1457515127024.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test returns TCONF for x86_64 arch as it tries to invoke a syscall
-with __NR_fstatat64 which the arch doesn't have. Test macro checks
-that it != 0, then proceed inside the if block. But it skips the
-case when it's defined as a stub (-1) for x86_64.
 
-So here are fixes:
 
-* checking that __NR_fstatat64 > 0;
 
-* use glibc wrapper only if it's supported (add 'configure' check);
 
-* remove building *_64 test ('utils/newer_64.mk' include);
-  TST_USE_NEWER64_SYSCALL seems redundant and build process makes
-  the same binary in the end;
+----- Original Message -----
+> From: "Alexey Kodanev" <alexey.kodanev@oracle.com>
+> To: ltp@lists.linux.it
+> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
+> Sent: Wednesday, 9 March, 2016 9:23:45 AM
+> Subject: [LTP] [PATCH] syscalls/fstatat01: fix test on x86_64 arch
 
-* Remove test 'fstatat01_64' from .gitignore and runtest/syscalls.
+Hi,
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- configure.ac                                  |    1 +
- m4/ltp-fstatat.m4                             |   26 ++++++++++++++++++
- runtest/syscalls                              |    1 -
- testcases/kernel/syscalls/.gitignore          |    1 -
- testcases/kernel/syscalls/fstatat/Makefile    |    1 -
- testcases/kernel/syscalls/fstatat/fstatat01.c |   35 ++++++++-----------------
- 6 files changed, 38 insertions(+), 27 deletions(-)
- create mode 100644 m4/ltp-fstatat.m4
+> 
+> Test returns TCONF for x86_64 arch as it tries to invoke a syscall
+> with __NR_fstatat64 which the arch doesn't have. Test macro checks
+> that it != 0, then proceed inside the if block. But it skips the
+> case when it's defined as a stub (-1) for x86_64.
+> 
+> So here are fixes:
+> 
+> * checking that __NR_fstatat64 > 0;
+> 
+> * use glibc wrapper only if it's supported (add 'configure' check);
+> 
+> * remove building *_64 test ('utils/newer_64.mk' include);
+>   TST_USE_NEWER64_SYSCALL seems redundant and build process makes
+>   the same binary in the end;
+> 
+> * Remove test 'fstatat01_64' from .gitignore and runtest/syscalls.
+> 
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+> ---
+>  configure.ac                                  |    1 +
+>  m4/ltp-fstatat.m4                             |   26 ++++++++++++++++++
+>  runtest/syscalls                              |    1 -
+>  testcases/kernel/syscalls/.gitignore          |    1 -
+>  testcases/kernel/syscalls/fstatat/Makefile    |    1 -
+>  testcases/kernel/syscalls/fstatat/fstatat01.c |   35
+>  ++++++++-----------------
+>  6 files changed, 38 insertions(+), 27 deletions(-)
+>  create mode 100644 m4/ltp-fstatat.m4
+> 
+> diff --git a/configure.ac b/configure.ac
+> index b065fe6..2fb1ebc 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -161,6 +161,7 @@ LTP_CHECK_XFS_QUOTACTL
+>  LTP_CHECK_CLONE_SUPPORTS_7_ARGS
+>  LTP_CHECK_MKDIRAT
+>  LTP_CHECK_FCHOWNAT
+> +LTP_CHECK_FSTATAT
+>  LTP_CHECK_MKNODAT
+>  LTP_CHECK_READLINKAT
+>  LTP_CHECK_OPENAT
+> diff --git a/m4/ltp-fstatat.m4 b/m4/ltp-fstatat.m4
+> new file mode 100644
+> index 0000000..8814ade
+> --- /dev/null
+> +++ b/m4/ltp-fstatat.m4
+> @@ -0,0 +1,26 @@
+> +dnl
+> +dnl Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
+> +dnl
+> +dnl This program is free software;  you can redistribute it and/or modify
+> +dnl it under the terms of the GNU General Public License as published by
+> +dnl the Free Software Foundation; either version 2 of the License, or
+> +dnl (at your option) any later version.
+> +dnl
+> +dnl This program is distributed in the hope that it will be useful,
+> +dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +dnl the GNU General Public License for more details.
+> +dnl
+> +dnl You should have received a copy of the GNU General Public License
+> +dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
+> +dnl
+> +dnl Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+> +dnl
+> +
+> +dnl
+> +dnl LTP_CHECK_FSTATAT
+> +dnl -----------------
+> +dnl
+> +AC_DEFUN([LTP_CHECK_FSTATAT],[
+> +AC_CHECK_FUNCS(fstatat,,)
+> +])
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index b41c927..51334d7 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -305,7 +305,6 @@ fstat05_64 fstat05_64
+>  
+>  #fstatat64/newfstatat test cases
+>  fstatat01 fstatat01
+> -fstatat01_64 fstatat01_64
+>  
+>  fstatfs01 fstatfs01
+>  fstatfs01_64 fstatfs01_64
+> diff --git a/testcases/kernel/syscalls/.gitignore
+> b/testcases/kernel/syscalls/.gitignore
+> index 0540928..8538057 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -261,7 +261,6 @@
+>  /fstat/fstat05
+>  /fstat/fstat05_64
+>  /fstatat/fstatat01
+> -/fstatat/fstatat01_64
+>  /fstatfs/fstatfs01
+>  /fstatfs/fstatfs01_64
+>  /fstatfs/fstatfs02
+> diff --git a/testcases/kernel/syscalls/fstatat/Makefile
+> b/testcases/kernel/syscalls/fstatat/Makefile
+> index 048f8ce..7a1a87a 100644
+> --- a/testcases/kernel/syscalls/fstatat/Makefile
+> +++ b/testcases/kernel/syscalls/fstatat/Makefile
+> @@ -19,5 +19,4 @@
+>  top_srcdir		?= ../../../..
+>  
+>  include $(top_srcdir)/include/mk/testcases.mk
+> -include $(abs_srcdir)/../utils/newer_64.mk
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/fstatat/fstatat01.c
+> b/testcases/kernel/syscalls/fstatat/fstatat01.c
+> index c92a714..b07891f 100644
+> --- a/testcases/kernel/syscalls/fstatat/fstatat01.c
+> +++ b/testcases/kernel/syscalls/fstatat/fstatat01.c
+> @@ -33,6 +33,7 @@
+>  #include <errno.h>
+>  #include <string.h>
+>  #include <signal.h>
+> +#include "config.h"
+>  #include "test.h"
+>  #include "safe_macros.h"
+>  #include "linux_syscall_numbers.h"
+> @@ -58,35 +59,22 @@ static const char *filenames[TEST_CASES];
+>  static const int expected_errno[] = { 0, 0, ENOTDIR, EBADF, EINVAL, 0 };
+>  static const int flags[] = { 0, 0, 0, 0, 9999, 0 };
+>  
+> -/* TODO (garrcoop): properly port to fstatat64. */
+> -#if (defined __NR_fstatat64) && (__NR_fstatat64 != 0)
+> -struct stat64 statbuf;
+> -#else
+> -struct stat statbuf;
+> -#endif
+> -
+> -/*
+> - * XXX (garrcoop): NO NO NO NO NO NO NO NO NO ... use
+> linux_syscall_numbers.h!
+> - */
+> -/* __NR_fstatat64 and __NR_fstatat64 if not defined are ALWAYS stubbed by
+> - *  linux_syscall_numbers.h Need to check for 0 to avoid testing with stubs
+> */
+> -#if (defined __NR_fstatat64) && (__NR_fstatat64 != 0)
+> -int myfstatat(int dirfd, const char *filename, struct stat64 *statbuf,
+> -	      int flags)
+> +#if !defined(HAVE_FSTATAT)
+> +#if (defined __NR_fstatat64) && (__NR_fstatat64 > 0)
+> +static struct stat64 statbuf;
+> +int fstatat(int dirfd, const char *filename, struct stat64 *statbuf, int
+> flags)
+>  {
+>  	return ltp_syscall(__NR_fstatat64, dirfd, filename, statbuf, flags);
+>  }
+> -#elif (defined __NR_newfstatat) && (__NR_newfstatat != 0)
+> -int myfstatat(int dirfd, const char *filename, struct stat *statbuf, int
+> flags)
+> +#else
 
-diff --git a/configure.ac b/configure.ac
-index b065fe6..2fb1ebc 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -161,6 +161,7 @@ LTP_CHECK_XFS_QUOTACTL
- LTP_CHECK_CLONE_SUPPORTS_7_ARGS
- LTP_CHECK_MKDIRAT
- LTP_CHECK_FCHOWNAT
-+LTP_CHECK_FSTATAT
- LTP_CHECK_MKNODAT
- LTP_CHECK_READLINKAT
- LTP_CHECK_OPENAT
-diff --git a/m4/ltp-fstatat.m4 b/m4/ltp-fstatat.m4
-new file mode 100644
-index 0000000..8814ade
---- /dev/null
-+++ b/m4/ltp-fstatat.m4
-@@ -0,0 +1,26 @@
-+dnl
-+dnl Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
-+dnl
-+dnl This program is free software;  you can redistribute it and/or modify
-+dnl it under the terms of the GNU General Public License as published by
-+dnl the Free Software Foundation; either version 2 of the License, or
-+dnl (at your option) any later version.
-+dnl
-+dnl This program is distributed in the hope that it will be useful,
-+dnl but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+dnl the GNU General Public License for more details.
-+dnl
-+dnl You should have received a copy of the GNU General Public License
-+dnl along with this program. If not, see <http://www.gnu.org/licenses/>.
-+dnl
-+dnl Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+dnl
-+
-+dnl
-+dnl LTP_CHECK_FSTATAT
-+dnl -----------------
-+dnl
-+AC_DEFUN([LTP_CHECK_FSTATAT],[
-+AC_CHECK_FUNCS(fstatat,,)
-+])
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b41c927..51334d7 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -305,7 +305,6 @@ fstat05_64 fstat05_64
- 
- #fstatat64/newfstatat test cases
- fstatat01 fstatat01
--fstatat01_64 fstatat01_64
- 
- fstatfs01 fstatfs01
- fstatfs01_64 fstatfs01_64
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 0540928..8538057 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -261,7 +261,6 @@
- /fstat/fstat05
- /fstat/fstat05_64
- /fstatat/fstatat01
--/fstatat/fstatat01_64
- /fstatfs/fstatfs01
- /fstatfs/fstatfs01_64
- /fstatfs/fstatfs02
-diff --git a/testcases/kernel/syscalls/fstatat/Makefile b/testcases/kernel/syscalls/fstatat/Makefile
-index 048f8ce..7a1a87a 100644
---- a/testcases/kernel/syscalls/fstatat/Makefile
-+++ b/testcases/kernel/syscalls/fstatat/Makefile
-@@ -19,5 +19,4 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
--include $(abs_srcdir)/../utils/newer_64.mk
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/fstatat/fstatat01.c b/testcases/kernel/syscalls/fstatat/fstatat01.c
-index c92a714..b07891f 100644
---- a/testcases/kernel/syscalls/fstatat/fstatat01.c
-+++ b/testcases/kernel/syscalls/fstatat/fstatat01.c
-@@ -33,6 +33,7 @@
- #include <errno.h>
- #include <string.h>
- #include <signal.h>
-+#include "config.h"
- #include "test.h"
- #include "safe_macros.h"
- #include "linux_syscall_numbers.h"
-@@ -58,35 +59,22 @@ static const char *filenames[TEST_CASES];
- static const int expected_errno[] = { 0, 0, ENOTDIR, EBADF, EINVAL, 0 };
- static const int flags[] = { 0, 0, 0, 0, 9999, 0 };
- 
--/* TODO (garrcoop): properly port to fstatat64. */
--#if (defined __NR_fstatat64) && (__NR_fstatat64 != 0)
--struct stat64 statbuf;
--#else
--struct stat statbuf;
--#endif
--
--/*
-- * XXX (garrcoop): NO NO NO NO NO NO NO NO NO ... use linux_syscall_numbers.h!
-- */
--/* __NR_fstatat64 and __NR_fstatat64 if not defined are ALWAYS stubbed by
-- *  linux_syscall_numbers.h Need to check for 0 to avoid testing with stubs */
--#if (defined __NR_fstatat64) && (__NR_fstatat64 != 0)
--int myfstatat(int dirfd, const char *filename, struct stat64 *statbuf,
--	      int flags)
-+#if !defined(HAVE_FSTATAT)
-+#if (defined __NR_fstatat64) && (__NR_fstatat64 > 0)
-+static struct stat64 statbuf;
-+int fstatat(int dirfd, const char *filename, struct stat64 *statbuf, int flags)
- {
- 	return ltp_syscall(__NR_fstatat64, dirfd, filename, statbuf, flags);
- }
--#elif (defined __NR_newfstatat) && (__NR_newfstatat != 0)
--int myfstatat(int dirfd, const char *filename, struct stat *statbuf, int flags)
-+#else
-+static struct stat statbuf;
-+int fstatat(int dirfd, const char *filename, struct stat *statbuf, int flags)
- {
- 	return ltp_syscall(__NR_newfstatat, dirfd, filename, statbuf, flags);
- }
-+#endif
- #else
--/* stub - will never run */
--int myfstatat(int dirfd, const char *filename, struct stat *statbuf, int flags)
--{
--	return ltp_syscall(0, dirfd, filename, statbuf, flags);
--}
-+static struct stat statbuf;
- #endif
- 
- int main(int ac, char **av)
-@@ -104,8 +92,7 @@ int main(int ac, char **av)
- 		tst_count = 0;
- 
- 		for (i = 0; i < TST_TOTAL; i++) {
--			TEST(myfstatat
--			     (fds[i], filenames[i], &statbuf, flags[i]));
-+			TEST(fstatat(fds[i], filenames[i], &statbuf, flags[i]));
- 
- 			if (TEST_ERRNO == expected_errno[i]) {
- 				tst_resm(TPASS | TTERRNO,
--- 
-1.7.1
+Shouldn't we check that __NR_newfstatat is defined? There seem to be architectures,
+that don't define both fstatat64 and newfstatat.
 
+Regards,
+Jan
+
+> +static struct stat statbuf;
+> +int fstatat(int dirfd, const char *filename, struct stat *statbuf, int
+> flags)
+>  {
+>  	return ltp_syscall(__NR_newfstatat, dirfd, filename, statbuf, flags);
+>  }
+> +#endif
+>  #else
+> -/* stub - will never run */
+> -int myfstatat(int dirfd, const char *filename, struct stat *statbuf, int
+> flags)
+> -{
+> -	return ltp_syscall(0, dirfd, filename, statbuf, flags);
+> -}
+> +static struct stat statbuf;
+>  #endif
+>  
+>  int main(int ac, char **av)
+> @@ -104,8 +92,7 @@ int main(int ac, char **av)
+>  		tst_count = 0;
+>  
+>  		for (i = 0; i < TST_TOTAL; i++) {
+> -			TEST(myfstatat
+> -			     (fds[i], filenames[i], &statbuf, flags[i]));
+> +			TEST(fstatat(fds[i], filenames[i], &statbuf, flags[i]));
+>  
+>  			if (TEST_ERRNO == expected_errno[i]) {
+>  				tst_resm(TPASS | TTERRNO,
+> --
+> 1.7.1
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
