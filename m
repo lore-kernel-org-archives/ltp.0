@@ -1,90 +1,127 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 09 Mar 2016 15:11:36 +0300
-Subject: [LTP] [PATCH 1/3] lib/test_net.sh: add tst_ping() to check icmp
- connectivity
-In-Reply-To: <56E01222.6020909@oracle.com>
-References: <1457334114-10461-1-git-send-email-haliu@redhat.com>
- <1457334114-10461-2-git-send-email-haliu@redhat.com>
- <56E01222.6020909@oracle.com>
-Message-ID: <56E012F8.7020504@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 9 Mar 2016 07:08:33 -0500 (EST)
+Subject: [LTP] Question about perf_event_open/Cap_bounds/su01 test cases
+In-Reply-To: <AF04265A3FC2B144B9892F621A394E13EA3DB009@tethys>
+References: <AF04265A3FC2B144B9892F621A394E13EA3DB009@tethys>
+Message-ID: <250374796.7297169.1457525313432.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-re-sending to the new ltp list...
 
-On 03/09/2016 03:08 PM, Alexey Kodanev wrote:
+
+
+
+----- Original Message -----
+> From: "Julio Cruz Barroso" <julio.cruz@smartmatic.com>
+> To: ltp@lists.linux.it
+> Sent: Wednesday, 9 March, 2016 11:40:59 AM
+> Subject: [LTP] Question about perf_event_open/Cap_bounds/su01 test cases
+> 
 > Hi,
-> On 03/07/2016 10:01 AM, Hangbin Liu wrote:
->> Signed-off-by: Hangbin Liu <haliu@redhat.com>
->> ---
->>   testcases/lib/test_net.sh | 37 +++++++++++++++++++++++++++++++++++++
->>   1 file changed, 37 insertions(+)
->>
->> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
->> index 418fed3..f75e78e 100644
->> --- a/testcases/lib/test_net.sh
->> +++ b/testcases/lib/test_net.sh
->> @@ -314,3 +314,40 @@ tst_netload()
->>         return $ret
->>   }
->> +
->> +# tst_ping IFACE ADDR [SIZE]
->> +# Check icmp connectivity
->> +# IFACE: source interface name
->> +# ADDR: destination IPv4 or IPv6 address
->> +# SIZE: message size
->> +tst_ping()
->> +{
->> +    # The max number of ICMP echo request
->> +    PING_MAX=${PING_MAX:-"10"}
->> +
->> +    # Check the arguments
->> +    if [ $# -lt 2 ]; then
->> +        tst_resm TBROK "tst_ping src_iface dest_ipv4/6_addr [msg_size]"
->> +        return 1
->> +    fi
->> +
->> +    local src_iface=$1
->> +    local dst_addr=$2
->
-> They could be defaulted to $(tst_iface) and $(tst_ipaddr rhost) 
-> accordingly.
-> Then, we don't have to check the number of arguments and it fits for 
-> the most cases.
->
->> +    # ping cmd use 56 as default message size
->> +    local msg_size=${3:-"56"}
->> +
->> +    if echo $dst_addr | grep ":"; then
->> +        local PING="ping6"
->> +        TST_IPV6=6
->> +    else
->> +        local PING="ping"
->> +    fi
->> +
->
-> if test runs with -6 option, TST_IPV6 will be defined as 6, otherwise 
-> is "".
-> We can use it inside test_net.sh and tests. So here, we could call 
-> ping command
-> as follows: "ping$TST_IPV6 ..."
->
->
->> +    if [ "$dst_addr" == "$(tst_ipaddr)" ]; then
->> +        tst_rhost_run -c "$PING -I $src_iface -c $PING_MAX $dst_addr \
->> +            -s $msg_size > /dev/null 2>&1"
->> +    else
->> +        $PING -I $src_iface -c $PING_MAX $dst_addr -s $msg_size > \
->> +            /dev/null 2>&1
->> +    fi
->> +}
->
-> Do we actually need to run this command from remote host?
->
-> Best regards,
-> Alexey
->
+> 
+> I’m trying to perform a testing based on LTP version 20150420 on a Linux
+> 3.14.61 (using iMX6 SOC series).
+> 
+> Basically, I perform the same test in four (4) different SOC (Solo, DualLite,
+> Dual and Quad) including different RAM (512, 512, 1024, 2048MB
+> respectively). The same kernel (with different Device Tree) is used on the
+> four boards.
+> 
+> The test is run as below:
+> 
+> ------------------
+> hostname emad-machine ;
+> cd /opt/ltp ;
+> rm -r tmp ;
+> mkdir tmp ;
+> chmod 777 tmp ;
+> rm -r results ;
+> rm result.fulllog ;
+> rm -r output ;
+> ./runltp -p -l result.log -C result.fail -d /opt/ltp/tmp -g results.html -o
+> result.fulllog
+> ------------------
+> 
+> The results show around 66 test cases fail from a total of 1519. I focused on
+> the fails trying to:
+> 
+> ------------------
+> 1) Change the kernel configuration (rebuild) to include any missing option
+> 2) Review the test cases code and try to figure out any false negative
+> ------------------
+> 
+> After perform this analysis, 63 test cases were mark as false negatives, but
+> 4 test cases have unknown conclusion, as show below:
 
+Hi,
+
+> 
+> ------------------
+> 1. perf_event_open01 failed with < TEST_ERRNO=EOPNOTSUPP(95): Operation not
+> supported. >
+>    a. I assume the test fail because the HW doesn’t support it. Could be
+>    wrong? [more details, please refer to https://justpaste.it/s315]
+
+Agreed, this looks like test should be fixed to handle EOPNOTSUPP too:
+EOPNOTSUPP
+  Returned if an event requiring a specific hardware feature is requested but there is no hardware support.  This includes requesting low-skid  events  if  not  sup‐
+  ported, branch tracing if it is not available, sampling if no PMU interrupt is available, and branch stacks for software events.
+
+> 2. perf_event_open02 cause < WARNING: CPU: 2 PID: 24 at
+> kernel/events/core.c:764 perf_cpu_hrtimer_handler+0x1f0/0x20c() >. This
+> warning pass multiples times until /dev/kmsg buffer overrun [more details,
+> please refer to https://justpaste.it/s315]
+>    a. This test fail because the 01 test already fail, or can I run both
+>    independently?
+
+They should be independent.
+
+>    b. Any advice about the WARNING?
+
+I'm assuming that is "WARN_ON(!irqs_disabled());", I'd guess a kernel bug.
+Do you have a chance to try perf record/stat and see if that triggers it too.
+
+> 3. Cap_bounds fail with “cap_bounds_r.c:55: prctl(PR_CAPBSET_READ, 37)
+> returned -1”. The numerical value of the highest capability supported by the
+> running kernel is 36 [cat /proc/sys/kernel/cap_last_cap,
+> http://man7.org/linux/man-pages/man7/capabilities.7.html].
+>    a. Can I assume this as a false negative?
+
+Yes. On first look maybe we should change test to go only up to
+min(CAP_LAST_CAP, /proc/sys/kernel/cap_last_cap).
+
+> 4. su01 fail with < /bin/su -l root with correct password ( FAILED ) > [more
+> details, please refer to https://justpaste.it/s329].
+>    a. Could be an test issue?
+
+Don't have much experience with this test, but it looks like
+it relies on group 'wheel' or 'trusted' to be present, and
+in your case it's not:
+  usermod: group 'trusted' does not exist
+
+> ------------------
+> 
+> The whole analysis can be refer on https://justpaste.it/s32h.
+
+(Some of) those huge test failures should be TCONF in latest LTP,
+I recall a patch added last year that introduced a check if hugepages
+are supported.
+
+Regards,
+Jan
+
+> 
+> Appreciate any suggestion or feedback. I just started using LTP some days
+> ago, please, forgive any huge mistake ☺
+> 
+> Thanks, Julio
+> 
+> 
+> 
+> 
+> --
+> Mailing list info: http://lists.linux.it/listinfo/ltp
+> 
