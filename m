@@ -1,167 +1,159 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 09 Mar 2016 15:53:50 +0300
-Subject: [LTP] [PATCH 3/3] network/stress/icmp: use ip xfrm for
- icmp4-uni-basic01 ipsec testing
-In-Reply-To: <1457334883-11086-4-git-send-email-haliu@redhat.com>
-References: <1457334883-11086-1-git-send-email-haliu@redhat.com>
- <1457334883-11086-4-git-send-email-haliu@redhat.com>
-Message-ID: <56E01CDE.9090101@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 9 Mar 2016 14:07:10 +0100
+Subject: [LTP] [PATCH 1/2] lib/tst_mkfs: new tst_mkfs_sized function for
+ create appointed size fs
+In-Reply-To: <1457444133-5671-1-git-send-email-zlang@redhat.com>
+References: <1457444133-5671-1-git-send-email-zlang@redhat.com>
+Message-ID: <20160309130709.GA28171@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-On 03/07/2016 10:14 AM, Hangbin Liu wrote:
-> Also check each msg_size in $ICMP_SIZE_ARRAY to make sure the connectvity.
->
-> Signed-off-by: Hangbin Liu <haliu@redhat.com>
-> ---
->   .../stress/icmp/uni-basic/icmp4-uni-basic01        | 66 ++++++++--------------
->   1 file changed, 22 insertions(+), 44 deletions(-)
->
-> diff --git a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01 b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
-> index b78ac8f..55ddff5 100644
-> --- a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
-> +++ b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
-> @@ -50,10 +50,13 @@ $trace_logic
->   TCID=${TCID:-icmp4-uni-basic01}
->   TST_TOTAL=1
->   TST_COUNT=1
-> +TST_CLEANUP="do_cleanup"
->   export TCID
->   export TST_COUNT
->   export TST_TOTAL
->   
-> +. ipsec_lib.sh
+Hi!
+>  #include "test.h"
+>  #include "ltp_priv.h"
+>  
+>  #define OPTS_MAX 32
+>  
+> -void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+> -	      const char *fs_type, const char *const fs_opts[])
+> +long long cvtnum(const char *s)
+> +{
+> +	long long i;
+> +	char *sp = NULL;
 > +
->   # Test description
->   tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
->   
-> @@ -104,12 +107,11 @@ do_cleanup()
->       killall_icmp_traffic
+> +	i = strtoll(s, &sp, 0);
+> +	if (i == 0 && sp == s)
+> +		return -1LL;
+> +	if (*sp == '\0')
+> +		return i;
+> +
+> +	if (*sp == 'k' && sp[1] == '\0')
+> +		return 1024LL * i;
+> +	if (*sp == 'm' && sp[1] == '\0')
+> +		return 1024LL * 1024LL * i;
+> +	if (*sp == 'g' && sp[1] == '\0')
+> +		return 1024LL * 1024LL * 1024LL * i;
+> +	if (*sp == 't' && sp[1] == '\0')
+> +		return 1024LL * 1024LL * 1024LL * 1024LL * i;
+> +	if (*sp == 'p' && sp[1] == '\0')
+> +		return 1024LL * 1024LL * 1024LL * 1024LL * 1024LL * i;
+> +	if (*sp == 'e' && sp[1] == '\0')
+> +		return 1024LL * 1024LL * 1024LL * 1024LL * 1024LL * 1024LL * i;
+> +	return -1LL;
+> +}
 
-should we remove it, is it ping traffic?
+We allready have bytes_by_prefix() in LTP library.
 
->   
->       # Unset SAD/SPD
-> -    output_ipsec_conf flush | setkey -c >/dev/null 2>&1
-> -    $LTP_RSH $RHOST ${LTPROOT}/'testcases/bin/output_ipsec_conf flush | PATH=/sbin:/usr/sbin:$PATH setkey -c' >/dev/null 2>&1
-> +    tst_ipsec flush
->   
->       # Clean up each interface
-> -    initialize_if lhost ${LINK_NUM}
-> -    initialize_if rhost ${LINK_NUM}
-> +    tst_init_iface lhost ${LINK_NUM}
-> +    tst_init_iface rhost ${LINK_NUM}
+> +void tst_mkfs_sized(void (cleanup_fn)(void), const char *dev,
+> +                    const char *fs_type, const char *const fs_opts[],
+> +                    const char *fssize, const char *blocksize)
 
-Can we remove them instead? Most tests expect that they are already 
-initialized.
+What about passing the size parameter as we do in tst_fs_has_free()?
 
+I.e. with two paramters where one is size and the second is units?
 
->   }
->   
->   
-> @@ -127,7 +129,7 @@ tst_resm TINFO "- Version of IP is IPv${IP_VER}"
->   tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
->   
->   if $DO_IPSEC ; then
-> -    message=`check_setkey`
-> +    message=`ip xfrm state`
->       if [ $? -ne 0 ]; then
->   	tst_resm TBROK "$message"
->   	exit 1
-> @@ -147,13 +149,13 @@ if $DO_IPSEC ; then
->   fi
->   
->   # name of interface of the local/remote host
-> -lhost_ifname=`get_ifname lhost $LINK_NUM`
-> +lhost_ifname=`tst_iface lhost $LINK_NUM`
->   if [ $? -ne 0 ]; then
->       tst_resm TBROK "Failed to get the interface name at the local host"
->       exit $TST_TOTAL
->   fi
->   
-> -rhost_ifname=`get_ifname rhost $LINK_NUM`
-> +rhost_ifname=`tst_iface rhost $LINK_NUM`
->   if [ $? -ne 0 ]; then
->       tst_resm TBROK "Failed to get the interface name at the remote host"
->       exit $TST_TOTAL
-> @@ -232,58 +234,34 @@ esac
->   
->   # Configure SAD/SPD
->   if $DO_IPSEC ; then
-> -    ipsec_log=`mktemp -p $TMPDIR`
-> -
-> -    output_ipsec_conf src \
-> -	$IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr \
-> -	    |  setkey -c 2>&1 | tee $ipsec_log
-> -    if [ $? -ne 0 -o -s $ipsec_log ]; then
-> +    tst_ipsec src $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
-> +    if [ $? -ne 0 ]; then
->   	tst_resm TBROK "Failed to configure SAD/SPD on the local host."
-> -	rm -f $ipsec_log
->   	exit 1
+Also why have you added the blocksize parameter as well? The block size
+is needed only for the mmap16 test while limiting filesystem size seems
+like good addition to the library?
 
-tst_brkm TBROK does what tst_resm & exit do. Additionally, it returns
-a correct exit number.
+>  {
+>  	int i, pos = 3;
+>  	const char *argv[OPTS_MAX] = {"mkfs", "-t", fs_type};
+>  	char fs_opts_str[1024] = "";
+> +	char blk_size_str[256] = "";
+> +	char fs_size_str[256] = "";
+> +	long long fssz = 0;
+> +	unsigned int blsz= 0;
+>  
+>  	if (!fs_type)
+>  		tst_brkm(TBROK, cleanup_fn, "No fs_type specified");
+>  
+> -	/*
+> -	 * mkfs.xfs and mkfs.btrfs aborts if it finds a filesystem
+> -	 * superblock on the device, which is the case here as we
+> -	 * reuse one device for all tests.
+> -	 */
+>  	if (!strcmp(fs_type, "xfs")) {
+> +		/*
+> +		 * mkfs.xfs and mkfs.btrfs aborts if it finds a filesystem
+> +		 * superblock on the device, which is the case here as we
+> +		 * reuse one device for all tests.
+> +		 */
+>  		tst_resm(TINFO, "Appending '-f' flag to mkfs.%s", fs_type);
+>  		argv[pos++] = "-f";
+> -	}
+> +		if (blocksize) {
+> +			argv[pos++] = "-b";
+> +			strcat(blk_size_str, "size=");
+> +			strcat(blk_size_str, blocksize);
+> +			argv[pos++] = blk_size_str;
+> +		}
+>  
+> -	if (!strcmp(fs_type, "btrfs")) {
+> +		if (!fssize) {
+> +			argv[pos++] = "-d";
+> +			strcat(fs_size_str, "size=");
+> +			strcat(fs_size_str, fssize);
+> +			argv[pos++] = fs_size_str;
+> +		}
+> +	} else if (!strncmp(fs_type, "ext", 3)) {
+> +		if (blocksize) {
+> +			argv[pos++] = "-b";
+> +			argv[pos++] = blocksize;
+> +		}
+> +		/*
+> +		 * If fs is extX, the fs_size should be set behind device name.
+> +		 * Not set at here.
+> +		 */
+> +	} else if (!strcmp(fs_type, "btrfs")) {
+>  		/*
+>  		 * The -f option was added to btrfs-progs v3.12
+>  		 */
+> @@ -50,6 +102,21 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+>  				fs_type);
+>  			argv[pos++] = "-f";
+>  		}
+> +		if (fssize) {
+> +			/*
+> +			 * The recommended size for the mixed mode is for filesystems less than 1GiB
+> +			 */
+> +			if (cvtnum(fssize) < 1024 * 1024 * 1024)
+> +				argv[pos++] = "--mixed";
+> +			argv[pos++] = "-b";
+> +			argv[pos++] = fssize;
+> +		}
+> +	} else if (fssize || blocksize) {
+> +		/*
+> +		 * Can't set fs size or block size for others fs,
+> +		 * except add new fs support as above.
+> +		 */
+> +		tst_brkm(TBROK, cleanup_fn, "tst_mkfs_sized don't support '%s' fs, please add this fs as a new feature", fs_type);
+>  	}
+>  
+>  	if (fs_opts) {
+> @@ -68,10 +135,30 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+>  	}
+>  
+>  	argv[pos++] = dev;
+> +
+> +	/*
+> +	 * According to mke2fs(8) manual, fs-size need be behind the device
+> +	 * parameter. So add fs size into argv[pos++] after dev name.
+> +	 */
+> +	if (!strncmp(fs_type, "ext", 3) && fssize && blocksize) {
+> +		fssz = cvtnum(fssize);
+> +		blsz = cvtnum(blocksize);
+> +		if (fssz > 0 && blsz > 0){
+> +			sprintf(fs_size_str, "%llu", fssz / blsz);
+> +		} else {
+> +			tst_brkm(TBROK, cleanup_fn, "No suitable filesystem/block size specified");
+> +		}
+> +		argv[pos++] = fs_size_str;
+> +	}
 
->       fi
->   
-> -    $LTP_RSH $RHOST ${LTPROOT}/testcases/bin/output_ipsec_conf dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr' | PATH=/sbin:/usr/sbin:$PATH setkey -c' 2>&1 | tee $ipsec_log
-> -    if [ $? -ne 0 -o -s $ipsec_log ]; then
-> +    tst_ipsec dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
-> +    if [ $? -ne 0 ]; then
->   	tst_resm TBROK "Failed to configure SAD/SPD on the remote host."
-> -	rm -f $ipsec_log
->   	exit 1
->       fi
-> -    rm -f $ipsec_log
->   fi
->   
-> -# Make sure the connectvity
-> -case $IP_VER in
-> -    4)
-> -    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
-> -    if [ $ret -ne 0 ]; then
-> -	tst_resm TBROK "There is no IPv4 connectivity."
-> -	exit 1
-> -    fi
-> -    ;;
-> -
-> -    6)
-> -    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv6_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
-> -    if [ $ret -ne 0 ]; then
-> -	tst_resm TBROK "There is no IPv6 connectivity."
-> -	exit 1
-> -    fi
-> -    ;;
-> -esac
-> -
-> -
->   #-----------------------------------------------------------------------
->   #
->   # Main
->   #
->   #
->   
-> -# Run a client
-> -$LTP_RSH $RHOST "${LTPROOT}/testcases/bin/ns-echoclient -S $lhost_addr -f $IP_VER -s \"$ICMP_SIZE_ARRAY\"" &
-> -
-> -sleep $NS_DURATION
-> -killall_icmp_traffic
-> -wait
-> +# Make sure the connectvity
-> +for msg_size in $ICMP_SIZE_ARRAY; do
-> +    tst_ping $rhost_ifname $lhost_addr $msg_size
-> +    if [ $? -ne 0 ]; then
-> +        tst_brkm TBROK "There is no IPv$IP_VER connectivity with msg_size $msg_size"
-> +    else
-> +        tst_resm TPASS "There has IPv$IP_VER connectivity with msg_size $msg_size"
-> +    fi
-> +done
->   
->   #-----------------------------------------------------------------------
->   #
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
