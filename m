@@ -1,79 +1,106 @@
-From: Zirong Lang <zlang@redhat.com>
-Date: Wed, 9 Mar 2016 20:45:23 -0500 (EST)
-Subject: [LTP] [PATCH 1/2] lib/tst_mkfs: new tst_mkfs_sized function for
- create appointed size fs
-In-Reply-To: <20160309174337.GA32758@rei>
-References: <1457444133-5671-1-git-send-email-zlang@redhat.com>
- <20160309130709.GA28171@rei.lan>
- <1202691488.27788761.1457537492316.JavaMail.zimbra@redhat.com>
- <20160309155258.GA32248@rei.lan>
- <617741409.27804234.1457539512488.JavaMail.zimbra@redhat.com>
- <20160309160924.GA28234@rei.lan>
- <2053304118.27813474.1457541005041.JavaMail.zimbra@redhat.com>
- <20160309174337.GA32758@rei>
-Message-ID: <740680606.28013439.1457574323142.JavaMail.zimbra@redhat.com>
+From: Hangbin Liu <haliu@redhat.com>
+Date: Thu, 10 Mar 2016 14:22:09 +0800
+Subject: [LTP] [PATCH 1/3] lib/test_net.sh: add tst_ping() to check icmp
+ connectivity
+In-Reply-To: <56E012F8.7020504@oracle.com>
+References: <1457334114-10461-1-git-send-email-haliu@redhat.com>
+ <1457334114-10461-2-git-send-email-haliu@redhat.com>
+ <56E01222.6020909@oracle.com> <56E012F8.7020504@oracle.com>
+Message-ID: <20160310062208.GK2649@Leo.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Alexey,
 
+Thanks for the reply, please see comments in the mail.
 
------ 原始邮件 -----
-> 发件人: "Cyril Hrubis" <chrubis@suse.cz>
-> 收件人: "Zirong Lang" <zlang@redhat.com>
-> 抄送: ltp@lists.linux.it
-> 发送时间: 星期四, 2016年 3 月 10日 上午 1:43:37
-> 主题: Re: [PATCH 1/2] lib/tst_mkfs: new tst_mkfs_sized function for create appointed size fs
+On Wed, Mar 09, 2016 at 03:11:36PM +0300, Alexey Kodanev wrote:
+> re-sending to the new ltp list...
 > 
-> Hi!
-> > Sure, it's OK for me. And I think if we call it *fs_size, maybe make the
-> > user
-> > feel confused. The truth is it's the count of blocks, and only used for
-> > some
-> > fs. So maybe we can call it *extra_opts, means used after device name?
-> 
-> That is true, well the 'man mkfs' is confusing as well since it looks
-> like the size argument is supported generally by mkfs binaries...
-> 
-> And we should call it extra_opt, since it's just one option.
-> 
-> > So I will do this patch:
-> > 
-> > 1. change tst_mkfs to
-> > void safe_mkfs(const int lineno, const char *fname, const char *dev,
-> >                const char *fs_type, const char *const fs_opts[],
-> >                const char *extra_opts)
-> > 
-> > 2. add tst_mkfs into test.h:
-> > static inline void tst_mkfs(const int lineno, const char *fname, const char
-> > *dev,
-> >                              const char *fs_type, const char *const
-> >                              fs_opts[])
-> > {
-> >     safe_mkfs(lineno, fname, dev, fs_type, fs_opts, NULL);
-> > }
-> > 
-> > Does this you want?
-> 
-> Having two nearly identical *_mkfs() functions would be confusing as
-> well. I would have just changed the function prototype and fixed all the
-> testcases that use it (36 testcases if I'm counting right).
+> On 03/09/2016 03:08 PM, Alexey Kodanev wrote:
+> >Hi,
+> >On 03/07/2016 10:01 AM, Hangbin Liu wrote:
+> >>Signed-off-by: Hangbin Liu <haliu@redhat.com>
+> >>---
+> >>  testcases/lib/test_net.sh | 37 +++++++++++++++++++++++++++++++++++++
+> >>  1 file changed, 37 insertions(+)
+> >>
+> >>diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+> >>index 418fed3..f75e78e 100644
+> >>--- a/testcases/lib/test_net.sh
+> >>+++ b/testcases/lib/test_net.sh
+> >>@@ -314,3 +314,40 @@ tst_netload()
+> >>        return $ret
+> >>  }
+> >>+
+> >>+# tst_ping IFACE ADDR [SIZE]
+> >>+# Check icmp connectivity
+> >>+# IFACE: source interface name
+> >>+# ADDR: destination IPv4 or IPv6 address
+> >>+# SIZE: message size
+> >>+tst_ping()
+> >>+{
+> >>+    # The max number of ICMP echo request
+> >>+    PING_MAX=${PING_MAX:-"10"}
+> >>+
+> >>+    # Check the arguments
+> >>+    if [ $# -lt 2 ]; then
+> >>+        tst_resm TBROK "tst_ping src_iface dest_ipv4/6_addr [msg_size]"
+> >>+        return 1
+> >>+    fi
+> >>+
+> >>+    local src_iface=$1
+> >>+    local dst_addr=$2
+> >
+> >They could be defaulted to $(tst_iface) and $(tst_ipaddr rhost)
+> >accordingly.
+> >Then, we don't have to check the number of arguments and it fits for the
+> >most cases.
 
-OK...
+ok, I will fix it.
 
-But actually I want to check all testcases which use tst_mkfs(), and give them a
-fs_size limit if big device will effect them in my 2nd patch, after
-the new "fs size" parameter be accepted. I think it looks clearly.
+> >
+> >>+    # ping cmd use 56 as default message size
+> >>+    local msg_size=${3:-"56"}
+> >>+
+> >>+    if echo $dst_addr | grep ":"; then
+> >>+        local PING="ping6"
+> >>+        TST_IPV6=6
+> >>+    else
+> >>+        local PING="ping"
+> >>+    fi
+> >>+
+> >
+> >if test runs with -6 option, TST_IPV6 will be defined as 6, otherwise is
+> >"".
+> >We can use it inside test_net.sh and tests. So here, we could call ping
+> >command
+> >as follows: "ping$TST_IPV6 ..."
 
-Anyway, if you think it's OK, I can do them in one patch:)
+Good idea.
 
-Thanks,
-Zorro
+> >
+> >
+> >>+    if [ "$dst_addr" == "$(tst_ipaddr)" ]; then
+> >>+        tst_rhost_run -c "$PING -I $src_iface -c $PING_MAX $dst_addr \
+> >>+            -s $msg_size > /dev/null 2>&1"
+> >>+    else
+> >>+        $PING -I $src_iface -c $PING_MAX $dst_addr -s $msg_size > \
+> >>+            /dev/null 2>&1
+> >>+    fi
+> >>+}
+> >
+> >Do we actually need to run this command from remote host?
 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+I'm OK with both side. but the previous test run check_icmp_connectivity from
+remote.
+
+$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity
+
+So how do you think.
+
+Thanks & Best Regards
+Hangbin
