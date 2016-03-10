@@ -1,12 +1,11 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Thu, 10 Mar 2016 14:22:09 +0800
-Subject: [LTP] [PATCH 1/3] lib/test_net.sh: add tst_ping() to check icmp
- connectivity
-In-Reply-To: <56E012F8.7020504@oracle.com>
-References: <1457334114-10461-1-git-send-email-haliu@redhat.com>
- <1457334114-10461-2-git-send-email-haliu@redhat.com>
- <56E01222.6020909@oracle.com> <56E012F8.7020504@oracle.com>
-Message-ID: <20160310062208.GK2649@Leo.nay.redhat.com>
+Date: Thu, 10 Mar 2016 14:43:11 +0800
+Subject: [LTP] [PATCH 2/3] network/stress: add ipsec lib
+In-Reply-To: <56E01A1E.4070401@oracle.com>
+References: <1457334883-11086-1-git-send-email-haliu@redhat.com>
+ <1457334883-11086-3-git-send-email-haliu@redhat.com>
+ <56E01A1E.4070401@oracle.com>
+Message-ID: <20160310064311.GL2649@Leo.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,92 +14,154 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-Thanks for the reply, please see comments in the mail.
+Thanks for all the comments. I will fix these issues.
 
-On Wed, Mar 09, 2016 at 03:11:36PM +0300, Alexey Kodanev wrote:
-> re-sending to the new ltp list...
+Regards
+Hangbin
+On Wed, Mar 09, 2016 at 03:42:06PM +0300, Alexey Kodanev wrote:
 > 
-> On 03/09/2016 03:08 PM, Alexey Kodanev wrote:
-> >Hi,
-> >On 03/07/2016 10:01 AM, Hangbin Liu wrote:
-> >>Signed-off-by: Hangbin Liu <haliu@redhat.com>
-> >>---
-> >>  testcases/lib/test_net.sh | 37 +++++++++++++++++++++++++++++++++++++
-> >>  1 file changed, 37 insertions(+)
-> >>
-> >>diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-> >>index 418fed3..f75e78e 100644
-> >>--- a/testcases/lib/test_net.sh
-> >>+++ b/testcases/lib/test_net.sh
-> >>@@ -314,3 +314,40 @@ tst_netload()
-> >>        return $ret
-> >>  }
-> >>+
-> >>+# tst_ping IFACE ADDR [SIZE]
-> >>+# Check icmp connectivity
-> >>+# IFACE: source interface name
-> >>+# ADDR: destination IPv4 or IPv6 address
-> >>+# SIZE: message size
-> >>+tst_ping()
-> >>+{
-> >>+    # The max number of ICMP echo request
-> >>+    PING_MAX=${PING_MAX:-"10"}
-> >>+
-> >>+    # Check the arguments
-> >>+    if [ $# -lt 2 ]; then
-> >>+        tst_resm TBROK "tst_ping src_iface dest_ipv4/6_addr [msg_size]"
-> >>+        return 1
-> >>+    fi
-> >>+
-> >>+    local src_iface=$1
-> >>+    local dst_addr=$2
+> On 03/07/2016 10:14 AM, Hangbin Liu wrote:
+> >Signed-off-by: Hangbin Liu <haliu@redhat.com>
+> >---
+> >  testcases/network/stress/ipsec/Makefile     |  31 +++++++
+> >  testcases/network/stress/ipsec/ipsec_lib.sh | 134 ++++++++++++++++++++++++++++
+> >  2 files changed, 165 insertions(+)
+> >  create mode 100644 testcases/network/stress/ipsec/Makefile
+> >  create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
 > >
-> >They could be defaulted to $(tst_iface) and $(tst_ipaddr rhost)
-> >accordingly.
-> >Then, we don't have to check the number of arguments and it fits for the
-> >most cases.
+> >diff --git a/testcases/network/stress/ipsec/Makefile b/testcases/network/stress/ipsec/Makefile
+> >new file mode 100644
+> >index 0000000..b3a1657
+> >--- /dev/null
+> >+++ b/testcases/network/stress/ipsec/Makefile
+> >@@ -0,0 +1,31 @@
+> >+#!/bin/sh
+> >+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
+> >+#
+> >+# This program is free software; you can redistribute it and/or
+> >+# modify it under the terms of the GNU General Public License as
+> >+# published by the Free Software Foundation; either version 2 of
+> >+# the License, or (at your option) any later version.
+> >+#
+> >+# This program is distributed in the hope that it would be useful,
+> >+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> >+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> >+# GNU General Public License for more details.
+> >+#
+> >+# You should have received a copy of the GNU General Public License
+> >+# along with this program; if not, write the Free Software Foundation,
+> >+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> >+#
+> >+# Author: Hangbin Liu <haliu@redhat.com>
+> >+#
+> >+#######################################################################
+> >+
+> >+
+> >+top_srcdir		?= ../../../..
+> >+
+> >+include $(top_srcdir)/include/mk/env_pre.mk
+> >+
+> >+INSTALL_TARGETS		:= *.sh
+> >+
+> >+MAKE_TARGETS		:=
+> 
+> It can be removed.
+> 
+> >+
+> >+include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> >diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
+> >new file mode 100644
+> >index 0000000..feeecf9
+> >--- /dev/null
+> >+++ b/testcases/network/stress/ipsec/ipsec_lib.sh
+> >@@ -0,0 +1,134 @@
+> >+#!/bin/sh
+> >+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
+> >+#
+> >+# This program is free software; you can redistribute it and/or
+> >+# modify it under the terms of the GNU General Public License as
+> >+# published by the Free Software Foundation; either version 2 of
+> >+# the License, or (at your option) any later version.
+> >+#
+> >+# This program is distributed in the hope that it would be useful,
+> >+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> >+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> >+# GNU General Public License for more details.
+> >+#
+> >+# You should have received a copy of the GNU General Public License
+> >+# along with this program; if not, write the Free Software Foundation,
+> >+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> >+#
+> >+# Author: Hangbin Liu <haliu@redhat.com>
+> >+#
+> >+#######################################################################
+> >+
+> >+#Uncomment line below for debug output.
+> >+#trace_logic=${trace_logic:-"set -x"}
+> >+$trace_logic
+> >+
+> 
+> Not used anymore, can be removed.
+> 
+> >+# Make sure the value of LTPROOT
+> >+LTPROOT=${LTPROOT:-`(cd ../../../../ ; pwd)`}
+> >+export LTPROOT
+> 
+> It's not needed, test.sh (which included by test_net.sh) has all checksfor
+> LTPROOT
+> 
+> >+. test_net.sh
+> >+
+> >+# c2x: convert charactor to hex
+> >+c2x()
+> >+{
+> >+	for str in $@; do
+> >+		for (( i=0; i<${#str}; i++ )); do
+> 
+> Not portable "for (());", could be changed to "for i in $(seq 0 ${#str});
+> do.
+> 
+> >+			c=${str:$i:1}
+> >+			printf '%x' "'$c"
+> 
+> c var is redundant, we can substitute "$c" with "${str:$i:1}"
+> 
+> >+		done
+> >+	done
+> >+}
+> >+
+> >+# tst_ipsec flush: flush the ipsec state and policy
+> >+# tst_ipsec target protocol mode first_spi src_addr dst_addr: config ipsec
+> >+#
+> >+# target: target of the configuration file ( src / dst )
+> >+# protocol: ah / esp / ipcomp
+> >+# mode: transport / tunnel
+> >+# first_spi: the first spi value
+> >+# src_addr: source IP address
+> >+# dst_addr: destination IP address
+> >+tst_ipsec()
+> >+{
+> >+	if [ x$1 = x"flush" ]; then
+> 
+> if [ "$1" = "flush"]; then
+> 
+> >+		ip xfrm state flush && ip xfrm policy flush
+> >+		tst_rhost_run -c "ip xfrm state flush && ip xfrm policy flush"
+> >+		return 0
+> 
+> 
+> I would run each ip commands with ROD "ip ..." and tst_rhost_run with -s
+> option.
+> In that way, if command fails, test will exit with TBROK.
+> 
+> Thanks,
+> Alexey
+> 
+> -- 
+> Mailing list info: http://lists.linux.it/listinfo/ltp
 
-ok, I will fix it.
-
-> >
-> >>+    # ping cmd use 56 as default message size
-> >>+    local msg_size=${3:-"56"}
-> >>+
-> >>+    if echo $dst_addr | grep ":"; then
-> >>+        local PING="ping6"
-> >>+        TST_IPV6=6
-> >>+    else
-> >>+        local PING="ping"
-> >>+    fi
-> >>+
-> >
-> >if test runs with -6 option, TST_IPV6 will be defined as 6, otherwise is
-> >"".
-> >We can use it inside test_net.sh and tests. So here, we could call ping
-> >command
-> >as follows: "ping$TST_IPV6 ..."
-
-Good idea.
-
-> >
-> >
-> >>+    if [ "$dst_addr" == "$(tst_ipaddr)" ]; then
-> >>+        tst_rhost_run -c "$PING -I $src_iface -c $PING_MAX $dst_addr \
-> >>+            -s $msg_size > /dev/null 2>&1"
-> >>+    else
-> >>+        $PING -I $src_iface -c $PING_MAX $dst_addr -s $msg_size > \
-> >>+            /dev/null 2>&1
-> >>+    fi
-> >>+}
-> >
-> >Do we actually need to run this command from remote host?
-
-I'm OK with both side. but the previous test run check_icmp_connectivity from
-remote.
-
-$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity
-
-So how do you think.
+-- 
 
 Thanks & Best Regards
-Hangbin
+Hangbin Liu <haliu@redhat.com>
+Leo on #kernel-qe, #kernel, #eng-china
