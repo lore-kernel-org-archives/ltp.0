@@ -1,40 +1,43 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 10 Mar 2016 10:23:14 +0300
-Subject: [LTP] [PATCH 1/3] lib/test_net.sh: add tst_ping() to check icmp
- connectivity
-In-Reply-To: <20160310062208.GK2649@Leo.nay.redhat.com>
-References: <1457334114-10461-1-git-send-email-haliu@redhat.com>
- <1457334114-10461-2-git-send-email-haliu@redhat.com>
- <56E01222.6020909@oracle.com> <56E012F8.7020504@oracle.com>
- <20160310062208.GK2649@Leo.nay.redhat.com>
-Message-ID: <56E120E2.8050107@oracle.com>
+Date: Thu, 10 Mar 2016 10:32:06 +0300
+Subject: [LTP] [PATCH 3/3] network/stress/icmp: use ip xfrm for
+ icmp4-uni-basic01 ipsec testing
+In-Reply-To: <20160310065045.GM2649@Leo.nay.redhat.com>
+References: <1457334883-11086-1-git-send-email-haliu@redhat.com>
+ <1457334883-11086-4-git-send-email-haliu@redhat.com>
+ <56E01CDE.9090101@oracle.com> <20160310065045.GM2649@Leo.nay.redhat.com>
+Message-ID: <56E122F6.9060504@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 03/10/2016 09:22 AM, Hangbin Liu wrote:
->>>
->>>> +    if [ "$dst_addr" == "$(tst_ipaddr)" ]; then
->>>> +        tst_rhost_run -c "$PING -I $src_iface -c $PING_MAX $dst_addr \
->>>> +            -s $msg_size > /dev/null 2>&1"
->>>> +    else
->>>> +        $PING -I $src_iface -c $PING_MAX $dst_addr -s $msg_size > \
->>>> +            /dev/null 2>&1
->>>> +    fi
->>>> +}
->>> Do we actually need to run this command from remote host?
-> I'm OK with both side. but the previous test run check_icmp_connectivity from
-> remote.
->
-> $LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity
->
-> So how do you think.
+On 03/10/2016 09:50 AM, Hangbin Liu wrote:
+>>>       # Unset SAD/SPD
+>>> -    output_ipsec_conf flush | setkey -c >/dev/null 2>&1
+>>> -    $LTP_RSH $RHOST ${LTPROOT}/'testcases/bin/output_ipsec_conf flush | PATH=/sbin:/usr/sbin:$PATH setkey -c' >/dev/null 2>&1
+>>> +    tst_ipsec flush
+>>>       # Clean up each interface
+>>> -    initialize_if lhost ${LINK_NUM}
+>>> -    initialize_if rhost ${LINK_NUM}
+>>> +    tst_init_iface lhost ${LINK_NUM}
+>>> +    tst_init_iface rhost ${LINK_NUM}
+>> Can we remove them instead? Most tests expect that they are already
+>> initialized.
+> I think we'd better not remove them. uni-basic is still OK. But multi-diffip
+> tests will add multi ip addresses. We need clean the env after each test.
 
-If we're checking connectivity... it doesn't really matter,
-but running it from remote host is not so convenient.
+OK, let's keep it only in tests which add/remove IP addresses.
+
+By the way, if you are going to fix such tests please use IP range
+that is defined with the following env vars:
+
+export IPV4_NET16_UNUSED=${IPV4_NET16_UNUSED:-"10.23"}
+export IPV6_NET32_UNUSED=${IPV6_NET32_UNUSED:-"fd00:23"}
+
+it's from testscripts/network.sh.
+
 
 Thanks,
 Alexey
