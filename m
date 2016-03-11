@@ -1,109 +1,55 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 11 Mar 2016 08:57:08 -0500 (EST)
-Subject: [LTP] Test library API changes
-In-Reply-To: <20160310165721.GA6142@rei>
-References: <20160105111136.GA32659@rei.lan>
- <1752902661.22105327.1455786359593.JavaMail.zimbra@redhat.com>
- <20160218110752.GB19157@rei.lan>
- <1610317133.22142649.1455794774969.JavaMail.zimbra@redhat.com>
- <20160302144421.GC25763@rei>
- <322891927.4705109.1457010820487.JavaMail.zimbra@redhat.com>
- <20160303140054.GB3055@rei.lan> <20160310165721.GA6142@rei>
-Message-ID: <1172303351.8592023.1457704628083.JavaMail.zimbra@redhat.com>
+From: Hangbin Liu <haliu@redhat.com>
+Date: Fri, 11 Mar 2016 22:10:41 +0800
+Subject: [LTP] [PATCH 2/3] network/stress: add ipsec lib
+In-Reply-To: <56E2AA00.90902@oracle.com>
+References: <1457334883-11086-1-git-send-email-haliu@redhat.com>
+ <1457334883-11086-3-git-send-email-haliu@redhat.com>
+ <56E01A1E.4070401@oracle.com>
+ <20160311053414.GQ2649@Leo.nay.redhat.com>
+ <56E2AA00.90902@oracle.com>
+Message-ID: <20160311141040.GS2649@Leo.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, 10 March, 2016 5:57:21 PM
-> Subject: Re: [LTP] Test library API changes
+On Fri, Mar 11, 2016 at 02:20:32PM +0300, Alexey Kodanev wrote:
+> Hi,
+> On 03/11/2016 08:34 AM, Hangbin Liu wrote:
+> >On Wed, Mar 09, 2016 at 03:42:06PM +0300, Alexey Kodanev wrote:
+> >>>+# c2x: convert charactor to hex
+> >>>+c2x()
+> >>>+{
+> >>>+	for str in $@; do
+> >>>+		for (( i=0; i<${#str}; i++ )); do
+> >>Not portable "for (());", could be changed to "for i in $(seq 0 ${#str});
+> >>do.
+> >Hi Alexey,
+> >
+> >Since we need to use the number from 0 to str_len - 1. I think it's also
+> >not portable if we use like "for i in $(seq 0 $((${#str} - 1))); do". So I
+> >will keep the format. Please tell me if you have any other suggestion.
 > 
-> Hi!
-> Up to date version is at usuall place:
+> No, double parentheses for arithmetic is fine, at least bash, dash and
+> ash support it.
 > 
-> https://github.com/metan-ucw/ltp
+> Also, we could use hexdump, xxd, etc...
 > 
-> 
-> Changes are:
-> 
-> * Now we use env variable for SHM path
-> 
->   - I was thinking about setting it to the /proc path if proc is mounted
->     but that way we would have to keep the fd open (and it would occupy
->     fd=3) and I think that the less resources the library occupy the
->     better
-> 
-> * The rest of the default test options -I and -C are now working
-> 
-> * I've given up on SAFE_MACROS in cleaup for now
-> 
->   - We may add them later, but I would like to get this merged ideally
->     before we do another release and doing this would take some time
+> c2x()
+> {
+>     printf "$@" | hexdump  -e '/1 "%x"'
+> }
 
-I think we have this problem already. tst_brk() will call tst_vbrk_(),
-which calls cleanup_ipc(), which is using SAFE_* macros. It looks like
-we'll get infinite loop if any of those fail.
+Thanks for this tip. I tested but there seems some different with the old one.
+I will look into it.
 
-> 
-> * All relevant parts of test-writing-guidelines should be now rewritten
-> 
->   - There are couple of functions that still take cleanup as fist
->     parameter and that are not exported to the new library but that
->     should be all that is missing
+BTW. I tried to use ROD to run cmds like ROD ip xfrm state flush. But it failed
+with error like
 
-"Child processes started via exec*, or any other processes must initialize the
-checkpoint by calling 'TST_CHECKPOINT_INIT()' before usage."
-This doesn't sound correct for newlib. We now have "tst_checkpoint_open()".
+/opt/ltp/testcases/bin/test.sh: line 232: flag: unbound variable
 
----
+Do you know why?
 
-'To make sure cleanup() was called only once LTP has a helper
-"TST_DECLARE_ONCE_FN"'
-TST_DECLARE_ONCE_FN is declared in test.h, it doesn't look like newlib
-can use it at the moment.
-
----
-
-I'm not sure it is enough to make cleanup() call only once. It looks like
-we still can get into situation where we call "do_cleanup();cleanup_ipc();"
-more than once (if we hit tst_brk in multiple threads with newlib)
-
----
-
-Can we remove "SAFE_CLOSE(ipc_fd);" from cleanup_ipc()? This fd
-is already closed in setup_ipc().
-
----
-
-Should "struct tst_test *tst_test" be initialized to NULL?
-Some tst_res.c oldlib functions are using it, but it is initialized only
-if you use newlib, at tst_run_tcases().
-
-> 
-> 
-> Anything else that should be done before we can merge it?
-
-I only made a compile test on some old/recent RHEL distros
-and ran some newlib testcases by hand. This worked OK.
-
-Have you tried running all of the (oldlib) tests on
-various arches/releases to see if we haven't regressed?
-
-I could run it against various RHEL majors, it
-would take couple days.
-
-Regards,
-Jan
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+Thanks
+Hangbin
