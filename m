@@ -1,54 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Mar 2016 17:57:21 +0100
-Subject: [LTP] Test library API changes
-In-Reply-To: <20160303140054.GB3055@rei.lan>
-References: <20160105111136.GA32659@rei.lan> <20160216211958.GC2515@rei.lan>
- <1799339064.21851637.1455719961718.JavaMail.zimbra@redhat.com>
- <20160217155406.GA12574@rei>
- <1752902661.22105327.1455786359593.JavaMail.zimbra@redhat.com>
- <20160218110752.GB19157@rei.lan>
- <1610317133.22142649.1455794774969.JavaMail.zimbra@redhat.com>
- <20160302144421.GC25763@rei>
- <322891927.4705109.1457010820487.JavaMail.zimbra@redhat.com>
- <20160303140054.GB3055@rei.lan>
-Message-ID: <20160310165721.GA6142@rei>
+From: Hangbin Liu <haliu@redhat.com>
+Date: Fri, 11 Mar 2016 11:00:00 +0800
+Subject: [LTP] [PATCH 1/3] lib/test_net.sh: add tst_ping() to check icmp
+ connectivity
+In-Reply-To: <56E120E2.8050107@oracle.com>
+References: <1457334114-10461-1-git-send-email-haliu@redhat.com>
+ <1457334114-10461-2-git-send-email-haliu@redhat.com>
+ <56E01222.6020909@oracle.com> <56E012F8.7020504@oracle.com>
+ <20160310062208.GK2649@Leo.nay.redhat.com>
+ <56E120E2.8050107@oracle.com>
+Message-ID: <20160311030000.GO2649@Leo.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Up to date version is at usuall place:
+On Thu, Mar 10, 2016 at 10:23:14AM +0300, Alexey Kodanev wrote:
+> Hi,
+> On 03/10/2016 09:22 AM, Hangbin Liu wrote:
+> >>>
+> >>>>+    if [ "$dst_addr" == "$(tst_ipaddr)" ]; then
+> >>>>+        tst_rhost_run -c "$PING -I $src_iface -c $PING_MAX $dst_addr \
+> >>>>+            -s $msg_size > /dev/null 2>&1"
+> >>>>+    else
+> >>>>+        $PING -I $src_iface -c $PING_MAX $dst_addr -s $msg_size > \
+> >>>>+            /dev/null 2>&1
+> >>>>+    fi
+> >>>>+}
+> >>>Do we actually need to run this command from remote host?
+> >I'm OK with both side. but the previous test run check_icmp_connectivity from
+> >remote.
+> >
+> >$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity
+> >
+> >So how do you think.
+> 
+> If we're checking connectivity... it doesn't really matter,
+> but running it from remote host is not so convenient.
 
-https://github.com/metan-ucw/ltp
+That's also I think :) Will do it on local side.
 
-
-Changes are:
-
-* Now we use env variable for SHM path
-
-  - I was thinking about setting it to the /proc path if proc is mounted
-    but that way we would have to keep the fd open (and it would occupy
-    fd=3) and I think that the less resources the library occupy the
-    better
-
-* The rest of the default test options -I and -C are now working
-
-* I've given up on SAFE_MACROS in cleaup for now
-
-  - We may add them later, but I would like to get this merged ideally
-    before we do another release and doing this would take some time
-
-* All relevant parts of test-writing-guidelines should be now rewritten
-
-  - There are couple of functions that still take cleanup as fist
-    parameter and that are not exported to the new library but that
-    should be all that is missing
-
-
-Anything else that should be done before we can merge it?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks
+Hangbin
