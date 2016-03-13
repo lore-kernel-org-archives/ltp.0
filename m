@@ -1,322 +1,143 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Sat, 12 Mar 2016 08:45:52 -0500 (EST)
+From: Julio Cruz Barroso <julio.cruz@smartmatic.com>
+Date: Sun, 13 Mar 2016 11:39:35 +0000
 Subject: [LTP] Question about perf_event_open/Cap_bounds/su01 test cases
-In-Reply-To: <AF04265A3FC2B144B9892F621A394E13EA3E463C@tethys>
+In-Reply-To: <1590944740.8814844.1457790352389.JavaMail.zimbra@redhat.com>
 References: <AF04265A3FC2B144B9892F621A394E13EA3DB009@tethys>
  <20160309140859.GD28171@rei.lan>
  <AF04265A3FC2B144B9892F621A394E13EA3E2813@tethys>
  <1530717335.8635366.1457710519514.JavaMail.zimbra@redhat.com>
  <AF04265A3FC2B144B9892F621A394E13EA3E463C@tethys>
-Message-ID: <1590944740.8814844.1457790352389.JavaMail.zimbra@redhat.com>
+ <1590944740.8814844.1457790352389.JavaMail.zimbra@redhat.com>
+Message-ID: <AF04265A3FC2B144B9892F621A394E13EA3E5105@tethys>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Jan,
 
+Below, the answers to your questions/comments:
+ 
+> The command above should also tell us if they can be brought offline.
 
+Below the results of suggested command:
 
+ls /sys/devices/system/cpu/*/online -l
 
------ Original Message -----
-> From: "Julio Cruz Barroso" <julio.cruz@smartmatic.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "Cyril Hrubis" <chrubis@suse.cz>, ltp@lists.linux.it
-> Sent: Saturday, 12 March, 2016 1:01:33 PM
-> Subject: RE: [LTP] Question about perf_event_open/Cap_bounds/su01 test cases
-> 
-> Hi Jan,
-> 
-> Thanks again for the valuable suggestions. Some tests were fixed!
-> 
-> Please, find below answers to your questions:
-> 
-> > Is it only pwritev01_64 that fails? Is pwritev01 passing?
-> > I don't see anything suspicious in testcase and it works fine on > x86_64.
-> > My first guess would be some alignment problem, because first 2 > tests
-> > with offset 0 PASSed. I'd try different values for > "CHUNK", e.g. 512,
-> > 1024, 4096, 8192.
-> > Also running testcase via strace could bring some additional > data.
-> 
-> Yes, only pwritev01_64 fail. The log show pwrite01, pwrite02, pwrite04,
-> pwrite01_64, pwrite02_64, pwrite04_64 and pwritev01 as PASS.
-> Trying with CHUNK=512 the result show FAIL [https://justpaste.it/s61j]
-> Trying with CHUNK=1024 the result show FAIL [https://justpaste.it/s61p]
-> Trying with 1024, 2048, 4096 and 8192 show FAIL.
-> Running the test with strace show this results: https://justpaste.it/s61q
-> strace show offset equal to zero (0). This is a bug?
+-rw-r--r-- 1 root root 4096 Jan  1 01:09 /sys/devices/system/cpu/cpu0/online
+-rw-r--r-- 1 root root 4096 Jan  1 01:09 /sys/devices/system/cpu/cpu1/online
 
-Yes, it looks like that if off_t is 64-bit, it's not passed correctly.
-You could look at dissassembled code and check that it matches 
-description in ABI doc (if you have it).
+After checking the device tree, it seems that the default definition include two CPU (file: imx6dl.dtsi), because the same file is used for Solo and DualLite devices (the second have two cores).
 
-> 
-> > readahead doesn't seem to have any effect on your system.
-> > max readahead size has been changed recently, but I think your > kernel is
-> > older:  https://lkml.org/lkml/2015/8/24/344
-> 
-> I update to read ahead in chunks of 2M, 1M and 512K. But same results: FAIL
-> If the test is run as "root@emad:/opt/ltp# ./testcases/bin/readahead02", the
-> test always fail and run very fast
-> If the test is run as "cd / ; cd /opt/ltp ; rm -r tmp ; rm -r output ; mkdir
-> tmp ; chmod 777 tmp ; ./runltp -p -d /opt/ltp/tmp -s readahead02", the test
-> take more time and PASS
-> What is your suggestion when the test show differences results (running as:
-> 1) XX, 2) runltp -s XX, 3) runltp)?
+It's a false negative and the solution is to change the device tree or check if the CPU can be online.
 
-Can't think of anything that would cause different results. I wonder
-if readahead works at all on your system.
+> You could patch ltp-pan to do that for you. But if you have option to collect serial console logs, then don't bother with this.
 
-> 
-> > /opt/ltp/testcases/bin/file_test.sh: line 556: rpmbuild: command > not
-> > found test assumes that if you have "rpm", you have also > "rpmbuild",
-> > which doesn't seem to be true in your case
-> 
-> I remove "RPM" and the issue is gone.
-> There is still an issue, but is related with busybox format (with 'unzip'
-> test)
-> 
-> > How many CPUs do you have? Can you run:
-> > ls /sys/devices/system/cpu/*/online
-> 
-> I have four (4) different machines, as below (please, refer to picture at
-> http://i68.tinypic.com/33ej1jr.jpg):
+OK. Finally, I save all the details in the serial console. To do that, I need to disable HTML report because this option, doesn't show the details in the serial console. Maybe something to check at runltp.
 
-The command above should also tell us if they can be brought offline.
+The following test cases were fixed (attached patches for revision):
 
-> 
-> Machine 1: 1 CPU
-> Machine 2: 2 CPU
-> Machine 3: 2 CPU
-> Machine 4: 4 CPU
-> 
-> > Try adding same hostname also for "::1".
-> 
-> That solve the issue! [https://justpaste.it/s64l]. For others reference, the
-> "::1"  is the ipv6 notation of 127.0.0.1.
-> 
-> > Attach serial console, so you can get more data from kernel messages.
-> > If it also crashes, then kdump would work too, but I'm not sure your system
-> > supports it.
-> > Other than that, maybe add sync to your runtest file after each > test.
-> > If you have suspicion about specific test, remove it from > runtest file
-> > and see if it still hangs.
-> 
-> For next test, I will save the console in a file for post-review
-> About adding 'sync' after each test, you mean this:
-> 
-> >>>>
-> #DESCRIPTION:Kernel system calls
-> abort01 abort01 sync
-> accept01 accept01 sync
-> accept4_01 accept4_01 sync
-> ....
-> >>>>
+- Cap_bounds: Change test to go only up to min(CAP_LAST_CAP, /proc/sys/kernel/cap_last_cap)
+- getrusage03: Check available memory to run grandchild_maxrss, zombie and sig_ign
+- mtest06_2: The default test case want to use 1G or more. Change GB to MB for embedded devices (in mmap2.c).
 
-That wouldn't work. You need semicolon or "&&", or something like this:
+Others test cases were skipped, because don't have solution yet or are BUG:
 
-abort01 abort01
-sync sync
-accept01 accept01
-sync sync
-...
+- ar: It's seem the command not recognize flag 'u' After run './testcases/bin/ar01 ' the test PASS
+- cpio: Busybox doesn't support "o" option
+- cpuhotplug02: The system cannot boot the CPU (it's not available) This issue is on iMX6 Solo only, because the Device Tree is wrong (imx6dl.dtsi) including two CPU
+- cpuhotplug03: The system cannot boot the CPU (it's not available) This issue is on iMX6 Solo only, because the Device Tree is wrong (imx6dl.dtsi) including two CPU
+- cpuhotplug04: The test seems to affect the first core and the system is running on it
+- cpuhotplug06: The system cannot boot the CPU (it's not available) This issue is on iMX6 Solo only, because the Device Tree is wrong (imx6dl.dtsi) including two CPU
+- cron: No crontab command 
+- cron_allow01: No crontab command
+- cron_deny01: No crontab command
+- cron_dirs_checks01: Lack of necessary directories
+- cron02: No crontab command
+- dma_thread_diotest1: "It's a know issue. The solution is "Don't do that"  http://www.spinics.net/lists/linux-mm/msg75367.html"
+- dma_thread_diotest2: "It's a know issue. The solution is "Don't do that" http://www.spinics.net/lists/linux-mm/msg75367.html"
+- dma_thread_diotest3: "It's a know issue. The solution is "Don't do that" http://www.spinics.net/lists/linux-mm/msg75367.html"
+- dma_thread_diotest4: "It's a know issue. The solution is "Don't do that" http://www.spinics.net/lists/linux-mm/msg75367.html"
+- dma_thread_diotest5: "It's a know issue. The solution is "Don't do that" http://www.spinics.net/lists/linux-mm/msg75367.html"
+- dma_thread_diotest6: "It's a know issue. The solution is "Don't do that" http://www.spinics.net/lists/linux-mm/msg75367.html"
+- dma_thread_diotest7: "It's a know issue. The solution is "Don't do that" http://www.spinics.net/lists/linux-mm/msg75367.html"
+- fanotify01: Fanotify is not configured in this kernel.
+- fanotify02: Fanotify is not configured in this kernel.
+- fanotify04: Fanotify is not configured in this kernel.
+- file: Remove "RPM" and the issue is gone There is still an issue, but is related with busybox format (with 'unzip' test)
+- getaddrinfo_01: Updating /etc/hosts with "127.0.0.1  emad" solve first issue.  Updating /etc/hosts with "::1 emad" solve second issue.
+- gzip01: Busybox doesn't support "r" option
+- in6_02: The environmental variable LHOST_IFACES is not defined (WARN) and use the eth0. The rest of the test not FAIL. The results is the same with connected cable or without
+- ioctl03: System doesn't support
+- isofs: No mkisofs command
+- logrotate: No logrotate  command
+- netns_breakns_ip_ipv4_ioctl: Busybox doesn't support "-V" option
+- netns_breakns_ip_ipv4_netlink: Busybox doesn't support "-V" option
+- netns_breakns_ip_ipv6_ioctl: Busybox doesn't support "-V" option
+- netns_breakns_ip_ipv6_netlink: Busybox doesn't support "-V" option
+- netns_breakns_ns_exec_ipv4_ioc: Need to fix test case or bad parameters
+- netns_breakns_ns_exec_ipv4_ioc: Need to fix test case or bad parameters
+- netns_breakns_ns_exec_ipv4_net: Need to fix test case or bad parameters
+- netns_breakns_ns_exec_ipv4_net: Need to fix test case or bad parameters
+- netns_breakns_ns_exec_ipv6_ioc: Need to fix test case or bad parameters
+- netns_breakns_ns_exec_ipv6_ioc: Need to fix test case or bad parameters
+- netns_breakns_ns_exec_ipv6_net: Need to fix test case or bad parameters
+- netns_breakns_ns_exec_ipv6_net: Need to fix test case or bad parameters
+- netns_comm_ip_ipv4_ioctl: Busybox doesn't support "-V" option
+- netns_comm_ip_ipv4_netlink: Busybox doesn't support "-V" option
+- netns_comm_ip_ipv6_ioctl: Busybox doesn't support "-V" option
+- netns_comm_ip_ipv6_netlink: Busybox doesn't support "-V" option
+- netns_comm_ns_exec_ipv4_ioctl: Need to fix test case or bad parameters
+- netns_comm_ns_exec_ipv4_netlin: Need to fix test case or bad parameters
+- netns_comm_ns_exec_ipv4_netlin: Need to fix test case or bad parameters
+- netns_comm_ns_exec_ipv6_ioctl: Need to fix test case or bad parameters
+- netns_comm_ns_exec_ipv6_netlin: Need to fix test case or bad parameters
+- netns_comm_ns_exec_ipv6_netlin: Need to fix test case or bad parameters
+- netns_sysfs: Need to fix test case or bad parameters
+- Numa-testcases: No numactl command
+- perf_event_open01: System doesn't support. As you said, this looks like test should be fixed to handle EOPNOTSUPP too: EOPNOTSUPP"
+- perf_event_open02: WARNING: CPU: 0 PID: 3 at kernel/events/core.c:764 perf_cpu_hrtimer_handler+0x1f0/0x20c()
+- pwritev01_64: Random results
+- quota_remount_test01: No quotacheck command
+- readahead02:  The system doesn't have /proc/pid/io, unable to determine read bytes during test
+- su01: It's a false negative. As you said, it relies on group 'wheel' or 'trusted' to be present, and in this case it 'trusted' is not present.
+- syslog01: The system doesn't have /var/log/maillog
+- syslog02: The system doesn't have /var/log/maillog
+- syslog03: The system doesn't have /var/log/message
+- syslog04: The system doesn't have /var/log/message
+- syslog05: The system doesn't have /var/log/message
+- syslog07: The system doesn't have /var/log/message
+- syslog08: The system doesn't have /var/log/message
+- syslog09: The system doesn't have /var/log/message
+- syslog10: The system doesn't have /var/log/message
+- unzip01: Busybox has a different output format
+- utimensat01: No sudo command
+- which01: Busybox not support many options used in this test
 
-> 
-> May we have another approach about the 'sync' command? There is too many test
-> cases to add this command.
+For now, after the fixes in the kernel (config), fs, 3 test cases and skip others (previous list), there is not results with TFAIL and TBROK in the four SOC (solo, duallite, dual, quad). I will continue debugging this list and let you know any news.
 
-You could patch ltp-pan to do that for you. But if you have option
-to collect serial console logs, then don't bother with this.
+Thanks!
 
-Regards,
-Jan
-
-> 
-> > Ideal would be to fix those tests, so they can run and terminate > with
-> > TCONF.
-> > If you can fix some, feel free to send a patch to this list.
-> 
-> Yes, that will be better. Once I get a solution for these issues, I will send
-> a patch!
-> 
-> Thanks and regards,
-> 
-> Julio
-> 
-> 
-> -----Original Message-----
-> From: Jan Stancek [mailto:jstancek@redhat.com]
-> Sent: Friday, March 11, 2016 11:35 PM
-> To: Julio Cruz Barroso
-> Cc: Cyril Hrubis; ltp@lists.linux.it
-> Subject: Re: [LTP] Question about perf_event_open/Cap_bounds/su01 test cases
-> 
-> ----- Original Message -----
-> > From: "Julio Cruz Barroso" <julio.cruz@smartmatic.com>
-> > To: "Cyril Hrubis" <chrubis@suse.cz>, "Jan Stancek"
-> > <jstancek@redhat.com>
-> > Cc: ltp@lists.linux.it
-> > Sent: Friday, 11 March, 2016 2:35:25 PM
-> > Subject: RE: [LTP] Question about perf_event_open/Cap_bounds/su01 test
-> > cases
-> > 
-> > Hi Jan, Cyril,
-> > 
-> > I will comment below separately.
-> > 
-> > I follow your suggestion to use the latest LTP (20160126) and after
-> > testing in the four platform, the results are better. In fact, the
-> > results show 373 cases more and 537 with configuration error versus 192 in
-> > previous release.
-> > 
-> > -----------------
-> > Specifically, to Jan comments:
-> > 
-> > > I'm assuming that is "WARN_ON(!irqs_disabled());", I'd guess a kernel
-> > > bug.
-> > > Do you have a chance to try perf record/stat and see if that
-> > > triggers it too.
-> > 
-> > Yes, you are right. Is "WARN_ON(!irqs_disabled());". By default, the
-> > system not contain 'perf' command but after installing it, I tried as
-> > below:
-> > 
-> > $ perf record -a -F 1000 sleep 5
-> > $ perf stat sleep 5
-> > $ perf report
-> > 
-> > Those commands not trigger the WARNING. I'm not a user of perf (yet)
-> > and I'm not sure is this is what you suggested to check. Please, can you
-> > confirm?
-> 
-> Yes, I was suggesting to try something like that.
-> 
-> > 
-> > BTW, in the latest 4.4, this function is not in 'core.c' anymore.
-> > 
-> > > Don't have much experience with this test, but it looks like it
-> > > relies on group 'wheel' or 'trusted' to be present, and in your case it's
-> > > not:
-> > >  usermod: group 'trusted' does not exist
-> > 
-> > Yes, the user 'trusted' is not defined in '/etc/group'. I assume this
-> > is a false negative. Again, thanks to confirm also the others issues
-> > and take a look at the details results.
-> > 
-> > -----------------
-> > Specifically, to Cyril comments:
-> > 
-> > > The fanotify06 failure is likely kernel bug fixed in:
-> > 
-> > After to use the latest LTP, this error disappear. The test is marked
-> > as PASS with TCONF. But the others test cases: fanotify01, fanotify02
-> > and fanotify04 are marked as FAIL with the message "Fanotify is not
-> > configured in this kernel.". I don't understand why with this message, is
-> > still marked as fail?
-> > [please, refer details to https://justpaste.it/s5c3]. Thanks for
-> > looking at this issue and give the details of bug solution. Appreciated.
-> > 
-> > -----------------
-> > All,
-> > 
-> > Some new issues show up with the latest LTP (20160126) in the 3.14.61
-> > kernel in iMX6 SOC (Solo, DualLite, Dual and Quad), as below:
-> > 
-> > - pwritev01_64. "TFAIL  :  pwritev01.c:114: Buffer wrong at 0 have 00
-> > expected 61". Fail in the four architectures. Any suggestion? [please,
-> > refer details to https://justpaste.it/s59m]
-> 
-> Is it only pwritev01_64 that fails? Is pwritev01 passing?
-> I don't see anything suspicious in testcase and it works fine on x86_64.
-> My first guess would be some alignment problem, because first 2 tests with
-> offset 0 PASSed. I'd try different values for "CHUNK", e.g. 512, 1024, 4096,
-> 8192.
-> Also running testcase via strace could bring some additional data.
-> 
-> > - readahead02. Sometimes PASS and sometimes FAIL. When fail, show a
-> > TCONF and later TWARM. [https://justpaste.it/s4zk]
-> 
-> readahead doesn't seem to have any effect on your system.
-> max readahead size has been changed recently, but I think your kernel is
-> older: https://lkml.org/lkml/2015/8/24/344
-> 
-> > - ar. When is executed alone, the test PASS. But when is performed
-> > with the others, the results show FAIL. [PASS alone:
-> > https://justpaste.it/s50x FAIL with all: https://justpaste.it/s510]
-> > - file. The log show many things and one is "file09 9 TBROK :
-> > ltpapicmd.c:138: rpm command broke.". Not sure if this is really a
-> > FAIL [https://justpaste.it/s51w]
-> 
-> /opt/ltp/testcases/bin/file_test.sh: line 556: rpmbuild: command not found
-> test assumes that if you have "rpm", you have also "rpmbuild", which doesn't
-> seem to be true in your case
-> 
-> > - which01. Its seems Busybox not support many options used in this test.
-> > - cpuhotplug04. This test try to affect the first core and the system
-> > is running on it. That's is possible? [https://justpaste.it/s52s]
-> 
-> How many CPUs do you have? Can you run:
-> ls /sys/devices/system/cpu/*/online
-> 
-> > - getaddrinfo_01. Adding "127.0.0.1  machine" to '/etc/hosts' solved one
-> > issue but still present another: "getaddrinfo_01    2  TFAIL  :
-> > getaddrinfo_01.c:577: getaddrinfo IPv6 basic lookup ("emad") returns
-> > -2 ("Name or service not known")"
-> 
-> Try adding same hostname also for "::1".
-> 
-> > 
-> > Two thing that catches my attention, has to do with: 1) the results in
-> > HTML and 2) the machine hang during the testing.
-> > 
-> > 1) results in HTML. The file "results.log" said (for example) 'cron_deny01'
-> > FAIL, but the file "results.html" show green color. This apply for
-> > others test cases also. This could be a known issue or I'm missing
-> > something?
-> > 2) machine hang. I saw this many times, but is the first time I take
-> > attention. The latest test case according with the file 'results.fulllog'
-> > show the  'dma_thread_diotest7' as failure. After that, the file is
-> > corrupted with 'NUL NUL...'. The second time show similar results. In
-> > different board occurred this issue. However, if the same test is
-> > performed alone (after reboot the machine) there is not hang and the
-> > results show FAIL. Any suggestion to affront this kind of problems (hang)?
-> 
-> Attach serial console, so you can get more data from kernel messages.
-> If it also crashes, then kdump would work too, but I'm not sure your system
-> supports it.
-> 
-> Other than that, maybe add sync to your runtest file after each test.
-> If you have suspicion about specific test, remove it from runtest file and
-> see if it still hangs.
-> 
-> > 
-> > Others general questions are:
-> > 
-> > - About setup of the test set. Once all the NAB (not a bug) are
-> > defined, can I omit those test cases from the test set?
-> 
-> Ideal would be to fix those tests, so they can run and terminate with TCONF.
-> If you can fix some, feel free to send a patch to this list.
-> 
-> Regards,
-> Jan
-> 
-> > - Reliability. For now, I run the test without stress (i.e. -m, -D
-> > options), but I would like to use those option once the 'hang' problem
-> > is solved. Any other suggestion to add 'confidence' to the results?
-> > Basically, to certify the system is OK.
-> > 
-> > For your reference, the test results (including the FAIL) are at
-> > https://justpaste.it/s5bf. The test was performed using the following
-> > configurations:
-> > 
-> > - iMX6 Solo; 1x ARM Cortex-A9, 512MB RAM (2x256MB)
-> > - iMX6 DualLite; 2x ARM Cortex-A9, 512MB RAM (2x256MB)
-> > - iMX6 Dual; 2x ARM Cortex-A9, 1G RAM (4x256MB)
-> > - iMX6 Quad; 4x ARM Cortex-A9, 2G RAM (4x512MB)
-> > 
-> > Thanks again for your feedback,
-> > 
-> > Julio
-> > 
-> 
+Julio
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Change-test-to-go-only-up-to-min-CAP_LAST_CAP-proc-s.patch
+Type: application/octet-stream
+Size: 2509 bytes
+Desc: 0001-Change-test-to-go-only-up-to-min-CAP_LAST_CAP-proc-s.patch
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160313/770e4b97/attachment.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Check-available-memory-to-run-grandchild_maxrss-zomb.patch
+Type: application/octet-stream
+Size: 2300 bytes
+Desc: 0001-Check-available-memory-to-run-grandchild_maxrss-zomb.patch
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160313/770e4b97/attachment-0001.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Change-GB-to-MB-for-embedded-devices.patch
+Type: application/octet-stream
+Size: 2783 bytes
+Desc: 0001-Change-GB-to-MB-for-embedded-devices.patch
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160313/770e4b97/attachment-0002.obj>
