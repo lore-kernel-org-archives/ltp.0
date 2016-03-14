@@ -1,55 +1,35 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 14 Mar 2016 19:24:15 +0300
-Subject: [LTP] [PATCH 2/2] tst_mkfs: check the arguments for passed device
-	and fs_type
-In-Reply-To: <1457972655-8326-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1457972655-8326-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <1457972655-8326-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 14 Mar 2016 17:40:23 +0100
+Subject: [LTP] Test library API changes
+In-Reply-To: <1172303351.8592023.1457704628083.JavaMail.zimbra@redhat.com>
+References: <20160105111136.GA32659@rei.lan>
+ <1752902661.22105327.1455786359593.JavaMail.zimbra@redhat.com>
+ <20160218110752.GB19157@rei.lan>
+ <1610317133.22142649.1455794774969.JavaMail.zimbra@redhat.com>
+ <20160302144421.GC25763@rei>
+ <322891927.4705109.1457010820487.JavaMail.zimbra@redhat.com>
+ <20160303140054.GB3055@rei.lan> <20160310165721.GA6142@rei>
+ <1172303351.8592023.1457704628083.JavaMail.zimbra@redhat.com>
+Message-ID: <20160314164023.GA3364@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- lib/tst_mkfs.c        |    3 +++
- testcases/lib/test.sh |    8 ++++++++
- 2 files changed, 11 insertions(+), 0 deletions(-)
+Hi!
+> > * I've given up on SAFE_MACROS in cleaup for now
+> > 
+> >   - We may add them later, but I would like to get this merged ideally
+> >     before we do another release and doing this would take some time
+> 
+> I think we have this problem already. tst_brk() will call tst_vbrk_(),
+> which calls cleanup_ipc(), which is using SAFE_* macros. It looks like
+> we'll get infinite loop if any of those fail.
 
-diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
-index 5cd8565..7a0992c 100644
---- a/lib/tst_mkfs.c
-+++ b/lib/tst_mkfs.c
-@@ -28,6 +28,9 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
- 	const char *argv[OPTS_MAX] = {"mkfs", "-t", fs_type};
- 	char fs_opts_str[1024] = "";
- 
-+	if (!dev)
-+		tst_brkm(TBROK, cleanup_fn, "No device specified");
-+
- 	if (!fs_type)
- 		tst_brkm(TBROK, cleanup_fn, "No fs_type specified");
- 
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index 1d603b6..458bbca 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -303,6 +303,14 @@ tst_mkfs()
- 	shift 2
- 	local fs_opts="$@"
- 
-+	if [ -z "$fs_type" ]; then
-+		tst_brkm TBROK "No fs_type specified"
-+	fi
-+
-+	if [ -z "$device" ]; then
-+		tst_brkm TBROK "No device specified"
-+	fi
-+
- 	tst_resm TINFO "Formatting $device with $fs_type extra opts='$fs_opts'"
- 
- 	ROD_SILENT mkfs.$fs_type $fs_opts $device
+This part has been fixed. Now as far as I can see tst_brk() is no longer
+called from the test library cleanup code.
+
 -- 
-1.7.1
-
+Cyril Hrubis
+chrubis@suse.cz
