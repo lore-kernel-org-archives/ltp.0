@@ -1,16 +1,18 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 14 Mar 2016 17:40:23 +0100
-Subject: [LTP] Test library API changes
-In-Reply-To: <1172303351.8592023.1457704628083.JavaMail.zimbra@redhat.com>
-References: <20160105111136.GA32659@rei.lan>
- <1752902661.22105327.1455786359593.JavaMail.zimbra@redhat.com>
- <20160218110752.GB19157@rei.lan>
- <1610317133.22142649.1455794774969.JavaMail.zimbra@redhat.com>
- <20160302144421.GC25763@rei>
- <322891927.4705109.1457010820487.JavaMail.zimbra@redhat.com>
- <20160303140054.GB3055@rei.lan> <20160310165721.GA6142@rei>
- <1172303351.8592023.1457704628083.JavaMail.zimbra@redhat.com>
-Message-ID: <20160314164023.GA3364@rei.lan>
+Date: Mon, 14 Mar 2016 18:15:58 +0100
+Subject: [LTP] [PATCH 1/2] lib/tst_mkfs: new tst_mkfs_sized function for
+ create appointed size fs
+In-Reply-To: <1050034192.28240408.1457627067176.JavaMail.zimbra@redhat.com>
+References: <1457444133-5671-1-git-send-email-zlang@redhat.com>
+ <20160309174337.GA32758@rei>
+ <740680606.28013439.1457574323142.JavaMail.zimbra@redhat.com>
+ <20160310100425.GA18650@rei.lan>
+ <149857450.28159183.1457611239055.JavaMail.zimbra@redhat.com>
+ <20160310121914.GA18922@rei.lan>
+ <762780060.28180858.1457616611675.JavaMail.zimbra@redhat.com>
+ <20160310140653.GA19672@rei.lan>
+ <1050034192.28240408.1457627067176.JavaMail.zimbra@redhat.com>
+Message-ID: <20160314171557.GB3364@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,17 +20,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > * I've given up on SAFE_MACROS in cleaup for now
-> > 
-> >   - We may add them later, but I would like to get this merged ideally
-> >     before we do another release and doing this would take some time
-> 
-> I think we have this problem already. tst_brk() will call tst_vbrk_(),
-> which calls cleanup_ipc(), which is using SAFE_* macros. It looks like
-> we'll get infinite loop if any of those fail.
+> Oh, if you want to mkfs.btrfs on a device less than 100MB, you can use --mixed
+> option. I know it can support small device less than 100MB, but I haven't try
+> the smallest size.
 
-This part has been fixed. Now as far as I can see tst_brk() is no longer
-called from the test library cleanup code.
+I would rather use the default options since that is what most of the
+users will use anyway and since 100Mb is not that much either.
 
 -- 
 Cyril Hrubis
