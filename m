@@ -1,203 +1,72 @@
-From: Hangbin Liu <haliu@redhat.com>
-Date: Tue, 15 Mar 2016 17:50:39 +0800
-Subject: [LTP] [PATCHv2 3/3] network/stress/icmp: use ip xfrm for
-	icmp4-uni-basic01 ipsec testing
-In-Reply-To: <1458035439-9143-1-git-send-email-haliu@redhat.com>
-References: <1458035439-9143-1-git-send-email-haliu@redhat.com>
-Message-ID: <1458035439-9143-4-git-send-email-haliu@redhat.com>
+From: Julio Cruz Barroso <julio.cruz@smartmatic.com>
+Date: Tue, 15 Mar 2016 10:35:20 +0000
+Subject: [LTP] Question about perf_event_open/Cap_bounds/su01 test cases
+In-Reply-To: <1284145136.9339833.1457957439775.JavaMail.zimbra@redhat.com>
+References: <AF04265A3FC2B144B9892F621A394E13EA3DB009@tethys>
+ <20160309140859.GD28171@rei.lan>
+ <AF04265A3FC2B144B9892F621A394E13EA3E2813@tethys>
+ <1530717335.8635366.1457710519514.JavaMail.zimbra@redhat.com>
+ <AF04265A3FC2B144B9892F621A394E13EA3E463C@tethys>
+ <1590944740.8814844.1457790352389.JavaMail.zimbra@redhat.com>
+ <AF04265A3FC2B144B9892F621A394E13EA3E5105@tethys>
+ <1284145136.9339833.1457957439775.JavaMail.zimbra@redhat.com>
+Message-ID: <AF04265A3FC2B144B9892F621A394E13EA3E8909@tethys>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Also check each msg_size in $ICMP_SIZE_ARRAY to make sure the connectvity.
+Hi Jan,
 
-Signed-off-by: Hangbin Liu <haliu@redhat.com>
----
- .../stress/icmp/uni-basic/icmp4-uni-basic01        | 96 +++++++---------------
- 1 file changed, 31 insertions(+), 65 deletions(-)
+Thanks for your suggestion. 
 
-diff --git a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01 b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
-index b78ac8f..93ddbbb 100644
---- a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
-+++ b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
-@@ -50,10 +50,13 @@ $trace_logic
- TCID=${TCID:-icmp4-uni-basic01}
- TST_TOTAL=1
- TST_COUNT=1
-+TST_CLEANUP="do_cleanup"
- export TCID
- export TST_COUNT
- export TST_TOTAL
- 
-+. ipsec_lib.sh
-+
- # Test description
- tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
- 
-@@ -100,16 +103,12 @@ ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65507"}
- #-----------------------------------------------------------------------
- do_cleanup()
- {
--    # Kill the icmp traffic server
--    killall_icmp_traffic
--
-     # Unset SAD/SPD
--    output_ipsec_conf flush | setkey -c >/dev/null 2>&1
--    $LTP_RSH $RHOST ${LTPROOT}/'testcases/bin/output_ipsec_conf flush | PATH=/sbin:/usr/sbin:$PATH setkey -c' >/dev/null 2>&1
-+    tst_ipsec flush
- 
-     # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
-+    tst_init_iface lhost ${LINK_NUM}
-+    tst_init_iface rhost ${LINK_NUM}
- }
- 
- 
-@@ -127,10 +126,9 @@ tst_resm TINFO "- Version of IP is IPv${IP_VER}"
- tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
- 
- if $DO_IPSEC ; then
--    message=`check_setkey`
-+    message=`ip xfrm state`
-     if [ $? -ne 0 ]; then
--	tst_resm TBROK "$message"
--	exit 1
-+	tst_brkm TBROK "$message"
-     fi
- 
-     case $IPSEC_PROTO in
-@@ -147,16 +145,14 @@ if $DO_IPSEC ; then
- fi
- 
- # name of interface of the local/remote host
--lhost_ifname=`get_ifname lhost $LINK_NUM`
-+lhost_ifname=`tst_iface lhost $LINK_NUM`
- if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to get the interface name at the local host"
--    exit $TST_TOTAL
-+    tst_brkm TBROK "Failed to get the interface name at the local host"
- fi
- 
--rhost_ifname=`get_ifname rhost $LINK_NUM`
-+rhost_ifname=`tst_iface rhost $LINK_NUM`
- if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to get the interface name at the remote host"
--    exit $TST_TOTAL
-+    tst_brkm TBROK "Failed to get the interface name at the remote host"
- fi
- 
- # Initialize the system configuration
-@@ -181,14 +177,12 @@ case $IP_VER in
-     # Set IPv4 addresses to the interfaces
-     set_ipv4addr lhost $LINK_NUM $network_part $lhost_host_part
-     if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
-+	tst_brkm TBROK "Failed to add any IP address at the local host"
-     fi
- 
-     set_ipv4addr rhost $LINK_NUM $network_part $rhost_host_part
-     if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
-+	tst_brkm TBROK "Failed to add any IP address at the remote host"
-     fi
- 
-     # IPv4 address of the local/remote host
-@@ -210,14 +204,12 @@ case $IP_VER in
-     # Set IPv6 addresses to the interfaces
-     add_ipv6addr lhost $LINK_NUM $network_part $lhost_host_part
-     if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the local host"
--	exit 1
-+	tst_brkm TBROK "Failed to add any IP address at the local host"
-     fi
- 
-     add_ipv6addr rhost $LINK_NUM $network_part $rhost_host_part
-     if [ $? -ne 0 ]; then
--	tst_resm TBROK "Failed to add any IP address at the remote host"
--	exit 1
-+	tst_brkm TBROK "Failed to add any IP address at the remote host"
-     fi
- 
-     # IPv6 address of the local/remote host
-@@ -232,58 +224,32 @@ esac
- 
- # Configure SAD/SPD
- if $DO_IPSEC ; then
--    ipsec_log=`mktemp -p $TMPDIR`
--
--    output_ipsec_conf src \
--	$IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr \
--	    |  setkey -c 2>&1 | tee $ipsec_log
--    if [ $? -ne 0 -o -s $ipsec_log ]; then
--	tst_resm TBROK "Failed to configure SAD/SPD on the local host."
--	rm -f $ipsec_log
--	exit 1
-+    tst_ipsec src $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
-+    if [ $? -ne 0 ]; then
-+	tst_brkm TBROK "Failed to configure SAD/SPD on the local host."
-     fi
- 
--    $LTP_RSH $RHOST ${LTPROOT}/testcases/bin/output_ipsec_conf dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr' | PATH=/sbin:/usr/sbin:$PATH setkey -c' 2>&1 | tee $ipsec_log
--    if [ $? -ne 0 -o -s $ipsec_log ]; then
--	tst_resm TBROK "Failed to configure SAD/SPD on the remote host."
--	rm -f $ipsec_log
--	exit 1
-+    tst_ipsec dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
-+    if [ $? -ne 0 ]; then
-+	tst_brkm TBROK "Failed to configure SAD/SPD on the remote host."
-     fi
--    rm -f $ipsec_log
- fi
- 
--# Make sure the connectvity
--case $IP_VER in
--    4)
--    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
--    if [ $ret -ne 0 ]; then
--	tst_resm TBROK "There is no IPv4 connectivity."
--	exit 1
--    fi
--    ;;
--
--    6)
--    ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv6_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
--    if [ $ret -ne 0 ]; then
--	tst_resm TBROK "There is no IPv6 connectivity."
--	exit 1
--    fi
--    ;;
--esac
--
--
- #-----------------------------------------------------------------------
- #
- # Main
- #
- #
- 
--# Run a client
--$LTP_RSH $RHOST "${LTPROOT}/testcases/bin/ns-echoclient -S $lhost_addr -f $IP_VER -s \"$ICMP_SIZE_ARRAY\"" &
--
--sleep $NS_DURATION
--killall_icmp_traffic
--wait
-+# Make sure the connectvity
-+for msg_size in $ICMP_SIZE_ARRAY; do
-+    tst_ping $lhost_ifname $rhost_addr $msg_size
-+    if [ $? -ne 0 ]; then
-+        tst_brkm TBROK "There is no IPv$IP_VER connectivity with msg_size $msg_size"
-+    else
-+        tst_resm TPASS "There has IPv$IP_VER connectivity with msg_size $msg_size"
-+    fi
-+done
- 
- #-----------------------------------------------------------------------
- #
--- 
-2.5.0
+I check the first patch (you already applied). Thanks for the changes. 
 
+About the others two, I will send in separately.
+
+Regards
+
+Julio
+
+-----Original Message-----
+From: Jan Stancek [mailto:jstancek@redhat.com] 
+Sent: Monday, March 14, 2016 8:11 PM
+To: Julio Cruz Barroso
+Cc: Cyril Hrubis; ltp@lists.linux.it
+Subject: Re: [LTP] Question about perf_event_open/Cap_bounds/su01 test cases
+
+
+
+----- Original Message -----
+> From: "Julio Cruz Barroso" <julio.cruz@smartmatic.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: "Cyril Hrubis" <chrubis@suse.cz>, ltp@lists.linux.it
+> Sent: Sunday, 13 March, 2016 12:39:35 PM
+> Subject: RE: [LTP] Question about perf_event_open/Cap_bounds/su01 test 
+> cases The following test cases were fixed (attached patches for revision):
+
+Hi,
+
+Please post each patch separately. You're missing Signed-off-by in each and some introduce white-space errors. You can check your patches with ./scripts/checkpatch.pl in linux kernel tree. Also description could be a bit more verbose to explain "why" a patch is proposed.
+
+> 
+> - Cap_bounds: Change test to go only up to min(CAP_LAST_CAP,
+> /proc/sys/kernel/cap_last_cap)
+
+I made some tweaks here, fixed white-space errors, added check for proc file (older kernels don't have it), fixed an error, where CAP_LAST_CAP was used outside "#ifdef HAVE_LIBCAP"
+and pushed.
+
+> - getrusage03: Check available memory to run grandchild_maxrss, zombie 
+> and sig_ign
+
+"unsigned long availMem" should be fine if you first divide pagesize by 1024.
+The "100" you picked as a threshold should be a define. Also it would be better if you moved it to other side of comparison. If someone has less than 100MB available memory then subtraction will underflow unsigned long.
+
+> - mtest06_2: The default test case want to use 1G or more. Change GB 
+> to MB for embedded devices (in mmap2.c).
+
+This needs an explanation and also to answer if this testcase will still be valid for non-embedded devices.
+
+Regards,
+Jan
