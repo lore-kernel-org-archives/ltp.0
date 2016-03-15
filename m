@@ -1,42 +1,46 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 14 Mar 2016 19:18:03 +0100
-Subject: [LTP] Question about perf_event_open/Cap_bounds/su01 test cases
-In-Reply-To: <AF04265A3FC2B144B9892F621A394E13EA3E2813@tethys>
-References: <AF04265A3FC2B144B9892F621A394E13EA3DB009@tethys>
- <20160309140859.GD28171@rei.lan>
- <AF04265A3FC2B144B9892F621A394E13EA3E2813@tethys>
-Message-ID: <20160314181803.GE3364@rei.lan>
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Tue, 15 Mar 2016 09:28:20 +0800
+Subject: [LTP] question about signal handling in tst_sig()
+In-Reply-To: <20160314134321.GD600@rei.lan>
+References: <20160314081907.GA3579@localhost.localdomain>
+ <20160314132827.GC600@rei.lan> <20160314134321.GD600@rei.lan>
+Message-ID: <20160315012820.GB3579@localhost.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Specifically, to Cyril comments:
+On Mon, Mar 14, 2016 at 02:43:21PM +0100, Cyril Hrubis wrote:
+> Hi!
+> > > Looks like in tst_sig(), if _SC_SIGRT_MIN defined, all realtime signals
+> > > won't be set an handler:
+> > > 
+> > > 125 #ifdef _SC_SIGRT_MIN
+> > > 126                 if (sig >= sigrtmin && sig <= sigrtmax)
+> > > 127                         continue;
+> > > 128 #endif
+> > > 
+> > > but, if it wasn't defined, then all realtime signals will be set an
+> > > handler:
+> > > 
+> > > 134 #if !defined(_SC_SIGRT_MIN) && defined(__SIGRTMIN) &&
+> > > defined(__SIGRTMAX)
+> > > 135                         /* Ignore all real-time signals */
+> > > 136                 case __SIGRTMIN:
+> > > 137                 case __SIGRTMIN + 1:
+> > > ...
 > 
-> > The fanotify06 failure is likely kernel bug fixed in:
+> And also there is a break down after the long list of cases.
 > 
-> After to use the latest LTP, this error disappear. The test is marked as PASS with TCONF. But the others test cases: fanotify01, fanotify02 and fanotify04 are marked as FAIL with the message "Fanotify is not configured in this kernel.". I don't understand why with this message, is still marked as fail? [please, refer details to https://justpaste.it/s5c3]. Thanks for looking at this issue and give the details of bug solution. Appreciated.
+> 
+> So it looks like:
+> 
+> * if _SC_SIGRT_MIN is defined we have a POSIX compilant system
+>   and we skip realtime signals in the if at line 125.
+> 
+> * Otherwise if system is not POSIX compilant but __SIGRTMIN and
+>   __SIGRTMAX is defined, we skip them in the hack in the switch()
+> 
+Thanks so much, I just noticed that there is a "break;" at line 206 ...
 
-Ah that is because the test cleanup closes the fd_notify file descriptor
-unconditionally while it should be only closed if it's greater than
-zero.
-
-This should fix the WARNING that causes the test to fail if fanotify is not
-compiled in kernel:
-
- static void cleanup(void)
- {
--       if (close(fd_notify) == -1)
-+       if (fd_notify > 0 && close(fd_notify) == -1)
-                tst_resm(TWARN, "close(%d) failed", fd_notify);
- 
-        tst_rmdir();
-
-I will push a patch with fixes for the testcasee tomorrow. Thanks for reporting
-it.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
