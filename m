@@ -1,63 +1,43 @@
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Tue, 15 Mar 2016 17:30:30 +0800
-Subject: [LTP] [PATCH] device-drivers/uaccess: add a workaround for
- Intel's SMAP feature
-In-Reply-To: <1458033917-13891-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-References: <1458033917-13891-1-git-send-email-wangxg.fnst@cn.fujitsu.com>
-Message-ID: <56E7D636.9040804@cn.fujitsu.com>
+From: Hangbin Liu <haliu@redhat.com>
+Date: Tue, 15 Mar 2016 17:50:36 +0800
+Subject: [LTP]  [PATCHv2 0/3] networking/stress: add ip xfrm ipsec support
+Message-ID: <1458035439-9143-1-git-send-email-haliu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-hello,
+As we know, most of the network stress tests have IPsec testing, and we use
+setkey for configuration. But setkey[1] hasn't updated for a long time. And
+some distros, RHEL7 for example, even don't have ipset-tools package. On
+other hand, iproute2 is recommend for network configuration. And ip xfrm is
+more powerful than setkey. So let's use ip xfrm for ipsec testing.
 
-Sorry, I do not have a machine with this SMAP feature, anybody can
-help to test this patch, thanks very much.
+[1] http://ipsec-tools.sourceforge.net/
 
-Regards,
-Xiaoguang Wang
-
-On 03/15/2016 05:25 PM, Xiaoguang Wang wrote:
-> When Intel's new "Supervisor Mode Access Prevention" (SMAP) feature is
-> enabled, kernel will be forbidden to visit user space memory, please
-> see url: https://lwn.net/Articles/517475/ for detailed infomation.
-> 
-> Here, we explicitly call stac()/clac() to enable/disable SMAP feature.
-> 
-> Signed-off-by: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-> ---
->  testcases/kernel/device-drivers/uaccess/ltp_uaccess.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/testcases/kernel/device-drivers/uaccess/ltp_uaccess.c b/testcases/kernel/device-drivers/uaccess/ltp_uaccess.c
-> index a9a06e9..35a9aa0 100644
-> --- a/testcases/kernel/device-drivers/uaccess/ltp_uaccess.c
-> +++ b/testcases/kernel/device-drivers/uaccess/ltp_uaccess.c
-> @@ -68,6 +68,9 @@ static ssize_t sys_tcase(struct device *dev,
->  	str = (char *) ptr;
->  	test_result = 0;
->  
-> +#ifdef CONFIG_X86_SMAP
-> +	stac();
-> +#endif
->  	switch (tc) {
->  	case TC_READ_USER:
->  		if (copy_from_user(buffer, str, str_size))
-> @@ -90,6 +93,11 @@ static ssize_t sys_tcase(struct device *dev,
->  	break;
->  	}
->  
-> +#ifdef CONFIG_X86_SMAP
-> +	clac();
-> +#endif
-> +
-> +
->  	return count;
->  }
->  static DEVICE_ATTR(tcase, S_IWUSR, NULL, sys_tcase);
-> 
+Change from V1:
+1. update tst_ping() to use default iface and addr. make ping from local side.
+2. remove unused variables. add -s option when use tst_rhost_run. Use ROD
+   before normal commands.
+3. change all "tst_resm TBROK && exit" to "tst_brkm TBROK"
+3. still keep tst_init_iface in test icmp4-uni-basic01 because we will
+   set_ipv4/6addr each time.
 
 
+Hangbin Liu (3):
+  lib/test_net.sh: add tst_ping() to check icmp connectivity
+  network/stress: add ipsec lib
+  network/stress/icmp: use ip xfrm for icmp4-uni-basic01 ipsec testing
+
+ testcases/lib/test_net.sh                          |  21 ++++
+ .../stress/icmp/uni-basic/icmp4-uni-basic01        |  96 +++++-----------
+ testcases/network/stress/ipsec/Makefile            |  29 +++++
+ testcases/network/stress/ipsec/ipsec_lib.sh        | 126 +++++++++++++++++++++
+ 4 files changed, 207 insertions(+), 65 deletions(-)
+ create mode 100644 testcases/network/stress/ipsec/Makefile
+ create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
+
+-- 
+2.5.0
 
