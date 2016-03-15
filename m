@@ -1,239 +1,93 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 15 Mar 2016 16:03:25 +0800
-Subject: [LTP] [PATCH v2] commands/insmod: add new testcase to test insmod(8)
-In-Reply-To: <56A9E27E.5070102@cn.fujitsu.com>
-References: <56A9E27E.5070102@cn.fujitsu.com>
-Message-ID: <1458029005-8807-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 15 Mar 2016 04:58:35 -0400 (EDT)
+Subject: [LTP] Test library API changes
+In-Reply-To: <20160314160036.GA2511@rei.lan>
+References: <20160105111136.GA32659@rei.lan> <20160302144421.GC25763@rei>
+ <322891927.4705109.1457010820487.JavaMail.zimbra@redhat.com>
+ <20160303140054.GB3055@rei.lan> <20160310165721.GA6142@rei>
+ <1172303351.8592023.1457704628083.JavaMail.zimbra@redhat.com>
+ <20160314125153.GB600@rei.lan> <20160314160036.GA2511@rei.lan>
+Message-ID: <870463953.9758877.1458032315296.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test the basic functionality of insmod(8) command.
-
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- runtest/commands                         |  1 +
- testcases/commands/insmod/Makefile       | 36 ++++++++++++++++
- testcases/commands/insmod/insmod01.sh    | 71 ++++++++++++++++++++++++++++++++
- testcases/commands/insmod/ltp_insmod01.c | 35 ++++++++++++++++
- testcases/lib/test.sh                    | 28 +++++++++++++
- 5 files changed, 171 insertions(+)
- create mode 100644 testcases/commands/insmod/Makefile
- create mode 100755 testcases/commands/insmod/insmod01.sh
- create mode 100644 testcases/commands/insmod/ltp_insmod01.c
-
-diff --git a/runtest/commands b/runtest/commands
-index db89424..abbbd96 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -41,3 +41,4 @@ mkfs01_ntfs mkfs01.sh -f ntfs
- mkswap01 mkswap01.sh
- which01 which01.sh
- lsmod01 lsmod01.sh
-+insmod01 insmod01.sh
-diff --git a/testcases/commands/insmod/Makefile b/testcases/commands/insmod/Makefile
-new file mode 100644
-index 0000000..e5e68b6
---- /dev/null
-+++ b/testcases/commands/insmod/Makefile
-@@ -0,0 +1,36 @@
-+#
-+#    Copyright (c) 2016 Fujitsu Ltd.
-+#    Author:Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+
-+ifneq ($(KERNELRELEASE),)
-+
-+obj-m := ltp_insmod01.o
-+
-+else
-+
-+top_srcdir		?= ../../..
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+REQ_VERSION_MAJOR       := 2
-+REQ_VERSION_PATCH       := 6
-+MAKE_TARGETS            := ltp_insmod01.ko
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= insmod01.sh
-+
-+include $(top_srcdir)/include/mk/module.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+endif
-diff --git a/testcases/commands/insmod/insmod01.sh b/testcases/commands/insmod/insmod01.sh
-new file mode 100755
-index 0000000..f19c068
---- /dev/null
-+++ b/testcases/commands/insmod/insmod01.sh
-@@ -0,0 +1,71 @@
-+#!/bin/sh
-+#
-+# Copyright (c) 2016 Fujitsu Ltd.
-+# Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+# This program is free software; you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+# the GNU General Public License for more details.
-+#
-+# Test the basic functionality of insmod command.
-+#
-+
-+TCID=insmod01
-+TST_TOTAL=1
-+. test.sh
-+
-+setup()
-+{
-+	tst_require_root
-+
-+	tst_check_cmds rmmod insmod
-+
-+	tst_module_exists ltp_insmod01.ko
-+
-+	inserted=0
-+
-+	TST_CLEANUP="cleanup"
-+}
-+
-+cleanup()
-+{
-+	if [ $inserted -ne 0 ]; then
-+		echo "about to rmmod ltp_insmod01"
-+		rmmod ltp_insmod01
-+		if [ $? -ne 0 ]; then
-+			echo "failed to rmmod ltp_insmod01"
-+		fi
-+	fi
-+}
-+
-+insmod_test()
-+{
-+	insmod "$TST_MODPATH"
-+	if [ $? -ne 0 ]; then
-+		tst_resm TFAIL "'insmod' failed."
-+		return
-+	fi
-+	inserted=1
-+
-+	grep -q ltp_insmod01 /proc/modules
-+
-+	if [ $? -ne 0 ]; then
-+		tst_resm TINFO "ltp_insmod01 not found in /proc/modules"
-+		tst_resm TFAIL "'insmod' failed, not expected."
-+		return
-+	fi
-+
-+	tst_resm TPASS "'insmod' passed."
-+}
-+
-+setup
-+
-+insmod_test
-+
-+tst_exit
-diff --git a/testcases/commands/insmod/ltp_insmod01.c b/testcases/commands/insmod/ltp_insmod01.c
-new file mode 100644
-index 0000000..398714e
---- /dev/null
-+++ b/testcases/commands/insmod/ltp_insmod01.c
-@@ -0,0 +1,35 @@
-+/*
-+ * Copyright (c) 2016 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * Description:
-+ *  This is a kernel loadable module programme used by insmod01.sh
-+ *  testcase which inserts this module for test of insmod command.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+
-+static int test_init(void)
-+{
-+	return 0;
-+}
-+
-+static void test_exit(void)
-+{
-+
-+}
-+
-+module_init(test_init);
-+module_exit(test_exit);
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index 9b652c0..56e1c60 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -352,6 +352,34 @@ tst_umount()
- 	tst_resm TWARN "Failed to umount($device) after 50 retries"
- }
- 
-+# Check a module file existence
-+# Should be called after tst_tmpdir()
-+tst_module_exists()
-+{
-+	local mod_name="$1"
-+
-+	if [ -f "$mod_name" ]; then
-+		TST_MODPATH="$mod_name"
-+		return
-+	fi
-+
-+	local mod_path="$LTPROOT/testcases/bin/$mod_name"
-+	if [ -f "$mod_path" ]; then
-+		TST_MODPATH="$mod_path"
-+		return
-+	fi
-+
-+	if [ -n "$TST_TMPDIR" ]; then
-+		mod_path="$TST_TMPDIR/$mod_name"
-+		if [ -f "$mod_path" ]; then
-+			TST_MODPATH="$mod_path"
-+			return
-+		fi
-+	fi
-+
-+	tst_brkm TCONF "Failed to find module '$mod_name'"
-+}
-+
- # Check that test name is set
- if [ -z "$TCID" ]; then
- 	tst_brkm TBROK "TCID is not defined"
--- 
-1.8.4.2
 
 
 
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Monday, 14 March, 2016 5:00:37 PM
+> Subject: Re: [LTP] Test library API changes
+> 
+> Hi!
+> > > I'm not sure it is enough to make cleanup() call only once. It looks like
+> > > we still can get into situation where we call
+> > > "do_cleanup();cleanup_ipc();"
+> > > more than once (if we hit tst_brk in multiple threads with newlib)
+> > 
+> > Right this macro is purely for guarding the user supplied callback.
+> > 
+> > Unfortunately the pthread_once() does not compile to a stub without
+> > -pthread, otherwise we could just use it on the do_cleanup() in library
+> > and get rid of that part in the testcase.
+> > 
+> > I guess that we can emulate it with mutexes as well and guard the
+> > library cleanup hence the user supplied cleanup would end up thread safe
+> > as well without any additional work.
+> 
+> Thinking of thread safe callback it gets more complicated than that.
+> 
+> We should not execute the cleanup while other threads are still running
+> as well since the cleanup may remove resources these threads are using
+> and we may end up segfaulting.
+> 
+> The ideal solution would be killing/stopping rest of the threads at this
+> point. I guess that we can kill them looping over /proc/self/task/
+> directory.
+> 
+> I.e.:
+> 
+> mutex_lock()
+> 
+> for tid in /proc/self/task/* {
+> 	if tid != mytid
+> 		tgkill(pid, tid, 9);
+> }
+> 
+> mutex_unlock()
+> 
+> do_cleanup()
+> do_exit();
+> 
+> 
+> What do you think?
+
+That it will only cause signal to be delivered to that thread,
+but handler will still kill entire process.
+
+We could use different signal and define a signal handler,
+that would just loop, but that still doesn't guarantee
+when pending signal is delivered. Also threads could mask
+the signal.
+
+Then I was thinking about blocking threads using affinity,
+but if test changed priority we could lock ourselves out.
+
+We do say in style guide, that cleanup can be called at any
+time. Should we leave it up to test author? We had the same
+problem with oldlib, right?
+
+Regards,
+Jan
+
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
