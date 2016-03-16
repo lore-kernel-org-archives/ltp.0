@@ -1,184 +1,59 @@
-From: Julio Cruz <jcsistemas2001@gmail.com>
-Date: Wed, 16 Mar 2016 11:01:15 +0800
-Subject: [LTP] [PATCH] Check available memory to support embedded devices
-Message-ID: <1458097275-2769-1-git-send-email-jcsistemas2001@gmail.com>
+From: Hangbin Liu <haliu@redhat.com>
+Date: Wed, 16 Mar 2016 22:10:26 +0800
+Subject: [LTP] [PATCHv2 3/3] network/stress/icmp: use ip xfrm for
+ icmp4-uni-basic01 ipsec testing
+In-Reply-To: <56E91B20.3040107@oracle.com>
+References: <1458035439-9143-1-git-send-email-haliu@redhat.com>
+ <1458035439-9143-4-git-send-email-haliu@redhat.com>
+ <56E91B20.3040107@oracle.com>
+Message-ID: <20160316141026.GD29634@Leo.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch check the available memory before to perform the 
-different test cases. If the memory is not enough (according with
-each test case), the test finish as TCONF.
-This could be usefull when you are testing on embedded devices
-with RAM memory limitation (i.e. 512MB)
-This patch no changed the test case procedure and is still valid 
-for non-embedded devices. It just verify the available memory.
+On Wed, Mar 16, 2016 at 11:36:48AM +0300, Alexey Kodanev wrote:
+> >+. ipsec_lib.sh
+> >+
+> >  # Test description
+> >  tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
+> >@@ -100,16 +103,12 @@ ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65507"}
+> >  #-----------------------------------------------------------------------
+> >  do_cleanup()
+> >  {
+> >-    # Kill the icmp traffic server
+> >-    killall_icmp_traffic
+> >-
+> >      # Unset SAD/SPD
+> >-    output_ipsec_conf flush | setkey -c >/dev/null 2>&1
+> >-    $LTP_RSH $RHOST ${LTPROOT}/'testcases/bin/output_ipsec_conf flush | PATH=/sbin:/usr/sbin:$PATH setkey -c' >/dev/null 2>&1
+> >+    tst_ipsec flush
+> >      # Clean up each interface
+> >-    initialize_if lhost ${LINK_NUM}
+> >-    initialize_if rhost ${LINK_NUM}
+> >+    tst_init_iface lhost ${LINK_NUM}
+> >+    tst_init_iface rhost ${LINK_NUM}
+> 
+> Again, we don't need it here.
 
-Signed-off-by: Julio Cruz <jcsistemas2001@gmail.com>
----
- testcases/kernel/syscalls/getrusage/getrusage03.c | 80 +++++++++++++++++------
- 1 file changed, 61 insertions(+), 19 deletions(-)
+Hi Alexey,
 
-diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
-index 54cdc83..8967c8e 100644
---- a/testcases/kernel/syscalls/getrusage/getrusage03.c
-+++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
-@@ -45,7 +45,10 @@
- char *TCID = "getrusage03";
- int TST_TOTAL = 1;
- 
--#define DELTA_MAX	10240
-+#define DELTA_MAX	        10240
-+#define DEFAULT_ALLOCATION_MB	100
-+
-+unsigned long avail_memory_mb;
- 
- static struct rusage ru;
- static long maxrss_init;
-@@ -65,6 +68,14 @@ static void consume(int mega);
- static void setup(void);
- static void cleanup(void);
- 
-+unsigned long get_available_memory_mb(void)
-+{
-+	unsigned long long ps, pn;
-+	ps = sysconf(_SC_PAGESIZE);
-+	pn = sysconf(_SC_AVPHYS_PAGES);
-+	return ps * pn / (1024*1024);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int lc;
-@@ -73,19 +84,26 @@ int main(int argc, char *argv[])
- 
- 	setup();
- 
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		tst_resm(TINFO, "allocate 100MB");
--		consume(100);
--
--		inherit_fork();
--		inherit_fork2();
--		fork_malloc();
--		grandchild_maxrss();
--		zombie();
--		sig_ign();
--		exec_without_fork();
-+	avail_memory_mb = get_available_memory_mb();
-+
-+	tst_resm(TINFO, "Available memory: %ldMB\n", avail_memory_mb);
-+	if (avail_memory_mb < DEFAULT_ALLOCATION_MB) {
-+		tst_resm(TCONF, "Not enough memory to run this case\n");
-+	} else {
-+		for (lc = 0; TEST_LOOPING(lc); lc++) {
-+			tst_count = 0;
-+
-+			tst_resm(TINFO, "allocate %dMB", DEFAULT_ALLOCATION_MB);
-+			consume(DEFAULT_ALLOCATION_MB);
-+
-+			inherit_fork();
-+			inherit_fork2();
-+			fork_malloc();
-+			grandchild_maxrss();
-+			zombie();
-+			sig_ign();
-+			exec_without_fork();
-+		}
- 	}
- 	cleanup();
- 	tst_exit();
-@@ -95,11 +113,15 @@ int main(int argc, char *argv[])
-  * expect: initial.self ~= child.self */
- static void inherit_fork(void)
- {
--	tst_resm(TINFO, "Testcase #01: fork inherit");
--
- 	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
- 	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
- 
-+	tst_resm(TINFO, "Testcase #01: fork inherit");
-+	if (avail_memory_mb < DEFAULT_ALLOCATION_MB*2) {
-+		tst_resm(TCONF, "Not enough memory to run this case\n");
-+		return;
-+	}
-+
- 	switch (pid = fork()) {
- 	case -1:
- 		tst_brkm(TBROK | TERRNO, cleanup, "fork #1");
-@@ -119,17 +141,21 @@ static void inherit_fork(void)
- }
- 
- /* Testcase #02: fork inherit (cont.)
-- * expect: initial.children ~= 100MB, child.children = 0 */
-+ * expect: initial.children ~= DEFAULT_ALLOCATION_MB, child.children = 0 */
- static void inherit_fork2(void)
- {
- 	tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
-+	if (avail_memory_mb < DEFAULT_ALLOCATION_MB*2) {
-+		tst_resm(TCONF, "Not enough memory to run this case\n");
-+		return;
-+	}
- 
- 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
- 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
- 	if (is_in_delta(ru.ru_maxrss - 102400))
--		tst_resm(TPASS, "initial.children ~= 100MB");
-+		tst_resm(TPASS, "initial.children ~= %dMB", DEFAULT_ALLOCATION_MB);
- 	else
--		tst_resm(TFAIL, "initial.children !~= 100MB");
-+		tst_resm(TFAIL, "initial.children !~= %dMB", DEFAULT_ALLOCATION_MB);
- 
- 	switch (pid = fork()) {
- 	case -1:
-@@ -153,6 +179,10 @@ static void inherit_fork2(void)
- static void fork_malloc(void)
- {
- 	tst_resm(TINFO, "Testcase #03: fork + malloc");
-+	if (avail_memory_mb < (DEFAULT_ALLOCATION_MB*2+50)) {
-+		tst_resm(TCONF, "Not enough memory to run this case\n");
-+		return;
-+	}
- 
- 	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
- 	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
-@@ -182,6 +212,10 @@ static void fork_malloc(void)
- static void grandchild_maxrss(void)
- {
- 	tst_resm(TINFO, "Testcase #04: grandchild maxrss");
-+	if (avail_memory_mb <= (DEFAULT_ALLOCATION_MB+300)) {
-+		tst_resm(TCONF, "Not enough memory to run this case\n");
-+		return;
-+	}
- 
- 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
- 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-@@ -216,6 +250,10 @@ static void grandchild_maxrss(void)
- static void zombie(void)
- {
- 	tst_resm(TINFO, "Testcase #05: zombie");
-+	if (avail_memory_mb <= (DEFAULT_ALLOCATION_MB+400)) {
-+		tst_resm(TCONF, "Not enough memory to run this case\n");
-+		return;
-+	}
- 
- 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
- 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-@@ -259,6 +297,10 @@ static void zombie(void)
- static void sig_ign(void)
- {
- 	tst_resm(TINFO, "Testcase #06: SIG_IGN");
-+	if (avail_memory_mb <= (DEFAULT_ALLOCATION_MB+500)) {
-+		tst_resm(TCONF, "Not enough memory to run test case");
-+		return;
-+	}
- 
- 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
- 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
--- 
-1.9.1
+Thanks for your patient review. I will correct all the other problems you
+mentioned. There only one thing. We will add the ip address before each test.
+e.g.
 
+tst_add_ipaddr lhost $LINK_NUM
+if [ $? -ne 0 ]; then
+    tst_brkm TBROK "Failed to add any IP address at the local host"
+fi
+
+If we do not remove the address after test. the next time we will get TBROK
+when add address since there already have one.
+
+I saw you use lhost_addr=$(tst_ipaddr) directly after source test_net.sh in
+broken_ip4_lib.sh. But I didn't find when you init the iface addr. Could you
+tell me the secret?
+
+Thanks
+Hangbin
