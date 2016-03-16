@@ -1,151 +1,143 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 16 Mar 2016 11:27:25 +0300
-Subject: [LTP] [PATCHv2 2/3] network/stress: add ipsec lib
-In-Reply-To: <1458035439-9143-3-git-send-email-haliu@redhat.com>
+Date: Wed, 16 Mar 2016 11:36:48 +0300
+Subject: [LTP] [PATCHv2 3/3] network/stress/icmp: use ip xfrm for
+ icmp4-uni-basic01 ipsec testing
+In-Reply-To: <1458035439-9143-4-git-send-email-haliu@redhat.com>
 References: <1458035439-9143-1-git-send-email-haliu@redhat.com>
- <1458035439-9143-3-git-send-email-haliu@redhat.com>
-Message-ID: <56E918ED.7040709@oracle.com>
+ <1458035439-9143-4-git-send-email-haliu@redhat.com>
+Message-ID: <56E91B20.3040107@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
 On 03/15/2016 12:50 PM, Hangbin Liu wrote:
+> Also check each msg_size in $ICMP_SIZE_ARRAY to make sure the connectvity.
+>
 > Signed-off-by: Hangbin Liu <haliu@redhat.com>
 > ---
->   testcases/network/stress/ipsec/Makefile     |  29 +++++++
->   testcases/network/stress/ipsec/ipsec_lib.sh | 126 ++++++++++++++++++++++++++++
->   2 files changed, 155 insertions(+)
->   create mode 100644 testcases/network/stress/ipsec/Makefile
->   create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
+>   .../stress/icmp/uni-basic/icmp4-uni-basic01        | 96 +++++++---------------
+>   1 file changed, 31 insertions(+), 65 deletions(-)
 >
-> diff --git a/testcases/network/stress/ipsec/Makefile b/testcases/network/stress/ipsec/Makefile
-> new file mode 100644
-> index 0000000..0d7f1b6
-> --- /dev/null
-> +++ b/testcases/network/stress/ipsec/Makefile
-> @@ -0,0 +1,29 @@
-> +#!/bin/sh
-> +# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
-> +#
-> +# This program is free software; you can redistribute it and/or
-> +# modify it under the terms of the GNU General Public License as
-> +# published by the Free Software Foundation; either version 2 of
-> +# the License, or (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it would be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program; if not, write the Free Software Foundation,
-> +# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> diff --git a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01 b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
+> index b78ac8f..93ddbbb 100644
+> --- a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
+> +++ b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
+> @@ -50,10 +50,13 @@ $trace_logic
+>   TCID=${TCID:-icmp4-uni-basic01}
+>   TST_TOTAL=1
+>   TST_COUNT=1
+> +TST_CLEANUP="do_cleanup"
+>   export TCID
+>   export TST_COUNT
+>   export TST_TOTAL
 
-Could be just "...program; If not, see <http://www.gnu.org/licenses/>."
+Please remove exports... they are useless here.
 
-> +#
-> +# Author: Hangbin Liu <haliu@redhat.com>
-> +#
-> +#######################################################################
+>   
+> +. ipsec_lib.sh
 > +
-> +
-> +top_srcdir		?= ../../../..
-> +
-> +include $(top_srcdir)/include/mk/env_pre.mk
-> +
-> +INSTALL_TARGETS		:= *.sh
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-> new file mode 100644
-> index 0000000..94b7a43
-> --- /dev/null
-> +++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-> @@ -0,0 +1,126 @@
-> +#!/bin/sh
-> +# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
-> +#
-> +# This program is free software; you can redistribute it and/or
-> +# modify it under the terms of the GNU General Public License as
-> +# published by the Free Software Foundation; either version 2 of
-> +# the License, or (at your option) any later version.
-> +#
-> +# This program is distributed in the hope that it would be useful,
-> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> +# GNU General Public License for more details.
-> +#
-> +# You should have received a copy of the GNU General Public License
-> +# along with this program; if not, write the Free Software Foundation,
-> +# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> +#
-> +# Author: Hangbin Liu <haliu@redhat.com>
-> +#
-> +#######################################################################
-> +
-> +. test_net.sh
-> +
-> +# c2x: convert charactor to hex
-> +c2x()
-> +{
-> +	for str in $@; do
-> +		for (( i=0; i<${#str}; i++ )); do
-> +			printf '%x' "'${str:$i:1}"
+>   # Test description
+>   tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
+>   
+> @@ -100,16 +103,12 @@ ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65507"}
+>   #-----------------------------------------------------------------------
+>   do_cleanup()
+>   {
+> -    # Kill the icmp traffic server
+> -    killall_icmp_traffic
+> -
+>       # Unset SAD/SPD
+> -    output_ipsec_conf flush | setkey -c >/dev/null 2>&1
+> -    $LTP_RSH $RHOST ${LTPROOT}/'testcases/bin/output_ipsec_conf flush | PATH=/sbin:/usr/sbin:$PATH setkey -c' >/dev/null 2>&1
+> +    tst_ipsec flush
+>   
+>       # Clean up each interface
+> -    initialize_if lhost ${LINK_NUM}
+> -    initialize_if rhost ${LINK_NUM}
+> +    tst_init_iface lhost ${LINK_NUM}
+> +    tst_init_iface rhost ${LINK_NUM}
 
-Again, C-style 'for' not supported by dash. Please change according to
-the previous comments.
+Again, we don't need it here.
 
-> +		done
-> +	done
-> +}
-> +
-> +# tst_ipsec flush: flush the ipsec state and policy
-> +# tst_ipsec target protocol mode first_spi src_addr dst_addr: config ipsec
-> +#
-> +# target: target of the configuration file ( src / dst )
-> +# protocol: ah / esp / ipcomp
-> +# mode: transport / tunnel
-> +# first_spi: the first spi value
-> +# src_addr: source IP address
-> +# dst_addr: destination IP address
-> +tst_ipsec()
-> +{
-> +	if [ "$1" = "flush" ]; then
-> +		ROD ip xfrm state flush
-> +		ROD ip xfrm policy flush
-> +		tst_rhost_run -s -c "ip xfrm state flush && ip xfrm policy flush"
-> +		return 0
-> +	fi
-> +	if [ $# -ne 6 ]; then
-> +		tst_resm TINFO "tst_ipsec parameter mismatch"
-> +		return 1
-> +	fi
-> +
-> +	target=$1
-> +	protocol=$2
-> +	mode=$3
-> +	first_spi=$4
-> +	src_ipaddr=$5
-> +	dst_ipaddr=$6
-> +
-> +	# Encryption algorithm
-> +	EALGO="des3_ede"
-> +	EALGO_KEY="0x$(c2x _I_want_to_have_chicken_)"
-> +
-> +	# Authentication algorithm
-> +	AALGO="sha1"
-> +	AALGO_KEY="0x$(c2x beef_fish_pork_salad)"
-> +
-> +	# Compression algorithm
-> +	CALGO="deflate"
-> +	# Algorithm options for each protocol
-> +	case $protocol in
-> +		ah)
+>   }
+>   
+>   
+> @@ -127,10 +126,9 @@ tst_resm TINFO "- Version of IP is IPv${IP_VER}"
+>   tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
+>   
+>   if $DO_IPSEC ; then
+> -    message=`check_setkey`
+> +    message=`ip xfrm state`
+>       if [ $? -ne 0 ]; then
+> -	tst_resm TBROK "$message"
+> -	exit 1
+> +	tst_brkm TBROK "$message"
+>       fi
+>   
+>       case $IPSEC_PROTO in
+> @@ -147,16 +145,14 @@ if $DO_IPSEC ; then
+>   fi
+>   
+>   # name of interface of the local/remote host
+> -lhost_ifname=`get_ifname lhost $LINK_NUM`
+> +lhost_ifname=`tst_iface lhost $LINK_NUM`
+>   if [ $? -ne 0 ]; then
+> -    tst_resm TBROK "Failed to get the interface name at the local host"
+> -    exit $TST_TOTAL
+> +    tst_brkm TBROK "Failed to get the interface name at the local host"
+>   fi
+>   
+> -rhost_ifname=`get_ifname rhost $LINK_NUM`
+> +rhost_ifname=`tst_iface rhost $LINK_NUM`
+>   if [ $? -ne 0 ]; then
+> -    tst_resm TBROK "Failed to get the interface name at the remote host"
+> -    exit $TST_TOTAL
+> +    tst_brkm TBROK "Failed to get the interface name at the remote host"
+>   fi
+>   
+>   # Initialize the system configuration
+> @@ -181,14 +177,12 @@ case $IP_VER in
+>       # Set IPv4 addresses to the interfaces
+>       set_ipv4addr lhost $LINK_NUM $network_part $lhost_host_part
+>       if [ $? -ne 0 ]; then
+> -	tst_resm TBROK "Failed to add any IP address at the local host"
+> -	exit 1
+> +	tst_brkm TBROK "Failed to add any IP address at the local host"
+>       fi
+>   
+>       set_ipv4addr rhost $LINK_NUM $network_part $rhost_host_part
+>       if [ $? -ne 0 ]; then
+> -	tst_resm TBROK "Failed to add any IP address at the remote host"
+> -	exit 1
+> +	tst_brkm TBROK "Failed to add any IP address at the remote host"
+>       fi
+>   
+>       # IPv4 address of the local/remote host
+> @@ -210,14 +204,12 @@ case $IP_VER in
+>       # Set IPv6 addresses to the interfaces
+>       add_ipv6addr lhost $LINK_NUM $network_part $lhost_host_part
+>       if [ $? -ne 0 ]; then
+> -	tst_resm TBROK "Failed to add any IP address at the local host"
+> -	exit 1
+> +	tst_brkm TBROK "Failed to add any IP address at the local host"
+>       fi
+>   
+>       add_ipv6addr rhost $LINK_NUM $network_part $rhost_host_part
+>       if [ $? -ne 0 ]; then
+> -	tst_resm TBROK "Failed to add any IP address at the remote host"
+> -	exit 1
+> +	tst_brkm TBROK "Failed to add any IP address at the remote host"
+>       fi
+>   
+>       # IPv6 address of the local/remote host
+> @@ -232,58 +224,32 @@ esac
+>   
 
-Please don't use indent for 'ah)' and in all other cases.
+Please remove this part altogether. We only need configuration of ipsec
+in setup. Then do the test (ping).
+
 
 Thanks,
 Alexey
