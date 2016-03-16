@@ -1,74 +1,121 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 16 Mar 2016 15:28:34 +0800
-Subject: [LTP] [PATCH v2 2/2] request_key/request_key02.c: add new testcase
-In-Reply-To: <1458113314-29731-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Wed, 16 Mar 2016 15:28:33 +0800
+Subject: [LTP] [PATCH v2 1/2] request_key/request_key01.c: add new testcase
+In-Reply-To: <20160309145331.GG28171@rei.lan>
 References: <20160309145331.GG28171@rei.lan>
- <1458113314-29731-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1458113314-29731-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1458113314-29731-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) request_key(2) fails if no matching key was found and
-   set errno to ENOKEY.
-2) request_key(2) fails if a revoked key was found and
-   set errno to EKEYREVOKED.
-3) request_key(2) fails if an expired key was found and
-   set errno to EKEYEXPIRED.
+The testcase checks basic functionality of the request_key(2).
+request_key(2) asks the kernel to find a key which matches the
+specified description. If successful, it attaches it to the
+nominated keyring and returns its serial number.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- runtest/ltplite                                    |   1 +
- runtest/syscalls                                   |   1 +
+ configure.ac                                       |   1 +
+ runtest/ltplite                                    |   2 +
+ runtest/syscalls                                   |   2 +
  testcases/kernel/syscalls/.gitignore               |   1 +
- .../kernel/syscalls/request_key/request_key02.c    | 150 +++++++++++++++++++++
- 4 files changed, 153 insertions(+)
- create mode 100644 testcases/kernel/syscalls/request_key/request_key02.c
+ testcases/kernel/syscalls/request_key/Makefile     |  27 ++++++
+ .../kernel/syscalls/request_key/request_key01.c    | 103 +++++++++++++++++++++
+ 6 files changed, 136 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/request_key/Makefile
+ create mode 100644 testcases/kernel/syscalls/request_key/request_key01.c
 
+diff --git a/configure.ac b/configure.ac
+index b065fe6..96f9a0b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -45,6 +45,7 @@ AC_CHECK_HEADERS([ \
+     sys/fanotify.h \
+     sys/jfsdmapi.h \
+     sys/prctl.h \
++    keyutils.h \
+ ])
+ 
+ # Tools knobs
 diff --git a/runtest/ltplite b/runtest/ltplite
-index e3dd403..f0deac0 100644
+index fa52588..e3dd403 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
-@@ -669,6 +669,7 @@ rename13 rename13
+@@ -668,6 +668,8 @@ rename12 rename12
+ rename13 rename13
  rename14 rename14
  
- request_key01 request_key01
-+request_key02 request_key02
- 
++request_key01 request_key01
++
  rmdir01 rmdir01
  rmdir02 rmdir02
+ rmdir03 rmdir03
 diff --git a/runtest/syscalls b/runtest/syscalls
-index e442297..b67d524 100644
+index b41c927..e442297 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -897,6 +897,7 @@ renameat201 renameat201
+@@ -896,6 +896,8 @@ renameat01 renameat01
+ renameat201 renameat201
  renameat202 renameat202 -i 10
  
- request_key01 request_key01
-+request_key02 request_key02
- 
++request_key01 request_key01
++
  rmdir01 rmdir01
  rmdir02 rmdir02
+ rmdir03 rmdir03
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 92dbda4..2a4cb33 100644
+index 0540928..92dbda4 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -741,6 +741,7 @@
+@@ -740,6 +740,7 @@
+ /renameat/renameat01
  /renameat2/renameat201
  /renameat2/renameat202
- /request_key/request_key01
-+/request_key/request_key02
++/request_key/request_key01
  /rmdir/rmdir01
  /rmdir/rmdir02
  /rmdir/rmdir03
-diff --git a/testcases/kernel/syscalls/request_key/request_key02.c b/testcases/kernel/syscalls/request_key/request_key02.c
+diff --git a/testcases/kernel/syscalls/request_key/Makefile b/testcases/kernel/syscalls/request_key/Makefile
 new file mode 100644
-index 0000000..b40b934
+index 0000000..2ee14a9
 --- /dev/null
-+++ b/testcases/kernel/syscalls/request_key/request_key02.c
-@@ -0,0 +1,150 @@
++++ b/testcases/kernel/syscalls/request_key/Makefile
+@@ -0,0 +1,27 @@
++#  Copyright (c) 2016 Fujitsu Ltd.
++#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++#
++#  This program is free software;  you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program.
++#
++
++top_srcdir		?= ../../../..
++have_keyutil		?= /usr/include/keyutils.h
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++ifeq ($(have_keyutil), $(wildcard $(have_keyutil)))
++LDLIBS		+= -lkeyutils
++endif
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/request_key/request_key01.c b/testcases/kernel/syscalls/request_key/request_key01.c
+new file mode 100644
+index 0000000..9d99e85
+--- /dev/null
++++ b/testcases/kernel/syscalls/request_key/request_key01.c
+@@ -0,0 +1,103 @@
 +/*
 +* Copyright (c) 2016 Fujitsu Ltd.
 +* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
@@ -86,17 +133,13 @@ index 0000000..b40b934
 +*/
 +
 +/*
-+* Test Name: request_key02
++* Test Name: request_key01
 +*
 +* Description:
-+* 1) request_key(2) fails if no matching key was found.
-+* 2) request_key(2) fails if A revoked key was found.
-+* 3) request_key(2) fails if An expired key was found.
-+*
-+* Expected Result:
-+* 1) request_key(2) should return -1 and set errno to ENOKEY.
-+* 2) request_key(2) should return -1 and set errno to EKEYREVOKED.
-+* 3) request_key(2) should return -1 and set errno to EKEYEXPIRED.
++* The testcase checks basic functionality of the request_key(2).
++* request_key(2) asks the kernel to find a key which matches the
++* specified description. If successful, it attaches it to the
++* nominated keyring and returns its serial number.
 +*
 +*/
 +
@@ -106,35 +149,23 @@ index 0000000..b40b934
 +#ifdef HAVE_KEYUTILS_H
 +#include <keyutils.h>
 +#endif
++
 +#include "test.h"
 +
-+char *TCID = "request_key02";
++char *TCID = "request_key01";
 +
-+static struct test_case {
-+	const char *des;
-+	int exp_err;
-+	int id;
-+} tc[] = {
-+	/* test1 */
-+	{"ltp1", ENOKEY, 0},
-+	/* test2 */
-+	{"ltp2", EKEYREVOKED, 0},
-+	/* test3 */
-+	{"ltp3", EKEYEXPIRED, 0}
-+};
++static int res;
 +
-+static void verify_request_key(struct test_case *);
++static void verify_request_key(void);
 +static void setup(void);
-+static int init_key(char *, int);
 +static void cleanup(void);
 +
-+int TST_TOTAL = ARRAY_SIZE(tc);
++int TST_TOTAL = 1;
 +
 +#ifdef HAVE_KEYUTILS_H
 +int main(int ac, char **av)
 +{
 +	int lc;
-+	int i;
 +
 +	tst_parse_opts(ac, av, NULL, NULL);
 +
@@ -143,26 +174,25 @@ index 0000000..b40b934
 +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +		tst_count = 0;
 +
-+		for (i = 0; i < TST_TOTAL; i++)
-+			verify_request_key(&tc[i]);
++		verify_request_key();
 +	}
 +
 +	cleanup();
 +	tst_exit();
 +}
 +
-+static void verify_request_key(struct test_case *tc)
++static void verify_request_key(void)
 +{
-+	TEST(request_key("keyring", tc->des, NULL, tc->id));
-+	if (TEST_RETURN != -1) {
-+		tst_resm(TFAIL, "request_key() succeed unexpectly");
++	TEST(request_key("keyring", "ltp", NULL, KEY_REQKEY_DEFL_DEFAULT));
++	if (TEST_RETURN == -1) {
++		tst_resm(TFAIL | TERRNO, "request_key() failed");
 +		return;
 +	}
 +
-+	if (TEST_ERRNO == tc->exp_err)
-+		tst_resm(TPASS | TTERRNO, "request_key() failed expectly");
++	if (TEST_RETURN != res)
++		tst_resm(TFAIL, "serial number mismatched");
 +	else
-+		tst_resm(TFAIL | TTERRNO, "request_key() failed unexpectly");
++		tst_resm(TPASS, "request_key() succeed");
 +}
 +
 +static void setup(void)
@@ -173,39 +203,9 @@ index 0000000..b40b934
 +
 +	tst_tmpdir();
 +
-+	tc[0].id = KEY_REQKEY_DEFL_DEFAULT;
-+
-+	tc[1].id = init_key("ltp2", KEYCTL_REVOKE);
-+
-+	tc[2].id = init_key("ltp3", KEYCTL_SET_TIMEOUT);
-+}
-+
-+static int init_key(char *name, int cmd)
-+{
-+	int n;
-+	int sec = 1;
-+
-+	n = add_key("keyring", name, NULL, 0, KEY_SPEC_THREAD_KEYRING);
-+	if (n == -1)
++	res = add_key("keyring", "ltp", NULL, 0, KEY_SPEC_THREAD_KEYRING);
++	if (res == -1)
 +		tst_brkm(TBROK | TERRNO, cleanup, "add_key() failed");
-+
-+	if (cmd == KEYCTL_REVOKE) {
-+		if (keyctl(cmd, n) == -1) {
-+			tst_brkm(TBROK | TERRNO, cleanup,
-+				 "failed to revoke a key");
-+		}
-+	}
-+
-+	if (cmd == KEYCTL_SET_TIMEOUT) {
-+		if (keyctl(cmd, n, sec) == -1) {
-+			tst_brkm(TBROK | TERRNO, cleanup,
-+				 "failed to set timeout for a key");
-+		}
-+
-+		sleep(sec + 1);
-+	}
-+
-+	return n;
 +}
 +
 +static void cleanup(void)
