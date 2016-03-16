@@ -1,226 +1,75 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 16 Mar 2016 15:28:33 +0800
-Subject: [LTP] [PATCH v2 1/2] request_key/request_key01.c: add new testcase
-In-Reply-To: <20160309145331.GG28171@rei.lan>
-References: <20160309145331.GG28171@rei.lan>
-Message-ID: <1458113314-29731-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 16 Mar 2016 11:16:26 +0300
+Subject: [LTP] [PATCHv2 1/3] lib/test_net.sh: add tst_ping() to check
+ icmp connectivity
+In-Reply-To: <20160315124131.GC29634@Leo.nay.redhat.com>
+References: <1458035439-9143-1-git-send-email-haliu@redhat.com>
+ <1458035439-9143-2-git-send-email-haliu@redhat.com>
+ <56E7F95E.8030009@oracle.com> <20160315124131.GC29634@Leo.nay.redhat.com>
+Message-ID: <56E9165A.3060800@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The testcase checks basic functionality of the request_key(2).
-request_key(2) asks the kernel to find a key which matches the
-specified description. If successful, it attaches it to the
-nominated keyring and returns its serial number.
+Hi,
+On 03/15/2016 03:41 PM, Hangbin Liu wrote:
+> On Tue, Mar 15, 2016 at 03:00:30PM +0300, Alexey Kodanev wrote:
+>> Hi,
+>> On 03/15/2016 12:50 PM, Hangbin Liu wrote:
+>>> Signed-off-by: Hangbin Liu <haliu@redhat.com>
+>>> ---
+>>>   testcases/lib/test_net.sh | 21 +++++++++++++++++++++
+>>>   1 file changed, 21 insertions(+)
+>>>
+>>> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+>>> index 418fed3..8517cb9 100644
+>>> --- a/testcases/lib/test_net.sh
+>>> +++ b/testcases/lib/test_net.sh
+>>> @@ -314,3 +314,24 @@ tst_netload()
+>>>   	return $ret
+>>>   }
+>>> +
+>>> +# tst_ping [IFACE] [ADDR] [SIZE]
+>>> +# Check icmp connectivity
+>>> +# IFACE: source interface name
+>>> +# ADDR: destination IPv4 or IPv6 address
+>>> +# SIZE: message size
+>>> +tst_ping()
+>>> +{
+>>> +	# The max number of ICMP echo request
+>>> +	PING_MAX=${PING_MAX:-"10"}
+>>> +
+>>> +	local src_iface=${1:-"$(tst_iface)"}
+>>> +	local dst_addr=${2:-"$(tst_ipaddr rhost)"}
+>>> +	# ping cmd use 56 as default message size
+>>> +	local msg_size=${3:-"56"}
+>>> +
+>>> +	echo $dst_addr | grep -q ":" && TST_IPV6=6
+>> You shouldn't have this check here because TST_IPV6 should be
+>> set before test runs. Either test starts with '-6' parameter (that way
+>> it is automatically set in test_net.sh) or manually defined as
+>> TST_IPV6=6 in ipv6 specific test.
+>>
+>> Note, tst_ipaddr function returns IPv4 or IPv6 address depending on
+>> TST_IPV6, so it is quite strange to check the returned address by this
+>> function and set TST_IPV6.
+> Hi Alexey:
+>
+> icmp4-uni-basic01 use IP_VER to check ip version. So I did this check before
+> ping. But as you said, I will remove the check and add TST_IPV6 in uni-basic
+> tests.
+>
+> BTW, Would you like to help apply the patches and check the ROD issue? I
+> always got the following error when use ROD to run cmds.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- configure.ac                                       |   1 +
- runtest/ltplite                                    |   2 +
- runtest/syscalls                                   |   2 +
- testcases/kernel/syscalls/.gitignore               |   1 +
- testcases/kernel/syscalls/request_key/Makefile     |  27 ++++++
- .../kernel/syscalls/request_key/request_key01.c    | 103 +++++++++++++++++++++
- 6 files changed, 136 insertions(+)
- create mode 100644 testcases/kernel/syscalls/request_key/Makefile
- create mode 100644 testcases/kernel/syscalls/request_key/request_key01.c
+ROD works fine for me. I would remove the old scripts first and cleanup 
+the test.
+It still includes the old scripts like check_env, check_cmds that I 
+wouldn't use
+anymore.
 
-diff --git a/configure.ac b/configure.ac
-index b065fe6..96f9a0b 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -45,6 +45,7 @@ AC_CHECK_HEADERS([ \
-     sys/fanotify.h \
-     sys/jfsdmapi.h \
-     sys/prctl.h \
-+    keyutils.h \
- ])
- 
- # Tools knobs
-diff --git a/runtest/ltplite b/runtest/ltplite
-index fa52588..e3dd403 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -668,6 +668,8 @@ rename12 rename12
- rename13 rename13
- rename14 rename14
- 
-+request_key01 request_key01
-+
- rmdir01 rmdir01
- rmdir02 rmdir02
- rmdir03 rmdir03
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b41c927..e442297 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -896,6 +896,8 @@ renameat01 renameat01
- renameat201 renameat201
- renameat202 renameat202 -i 10
- 
-+request_key01 request_key01
-+
- rmdir01 rmdir01
- rmdir02 rmdir02
- rmdir03 rmdir03
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 0540928..92dbda4 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -740,6 +740,7 @@
- /renameat/renameat01
- /renameat2/renameat201
- /renameat2/renameat202
-+/request_key/request_key01
- /rmdir/rmdir01
- /rmdir/rmdir02
- /rmdir/rmdir03
-diff --git a/testcases/kernel/syscalls/request_key/Makefile b/testcases/kernel/syscalls/request_key/Makefile
-new file mode 100644
-index 0000000..2ee14a9
---- /dev/null
-+++ b/testcases/kernel/syscalls/request_key/Makefile
-@@ -0,0 +1,27 @@
-+#  Copyright (c) 2016 Fujitsu Ltd.
-+#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program.
-+#
-+
-+top_srcdir		?= ../../../..
-+have_keyutil		?= /usr/include/keyutils.h
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+ifeq ($(have_keyutil), $(wildcard $(have_keyutil)))
-+LDLIBS		+= -lkeyutils
-+endif
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/request_key/request_key01.c b/testcases/kernel/syscalls/request_key/request_key01.c
-new file mode 100644
-index 0000000..9d99e85
---- /dev/null
-+++ b/testcases/kernel/syscalls/request_key/request_key01.c
-@@ -0,0 +1,103 @@
-+/*
-+* Copyright (c) 2016 Fujitsu Ltd.
-+* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+*
-+* This program is free software; you can redistribute it and/or modify it
-+* under the terms of version 2 of the GNU General Public License as
-+* published by the Free Software Foundation.
-+*
-+* This program is distributed in the hope that it would be useful, but
-+* WITHOUT ANY WARRANTY; without even the implied warranty of
-+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+*
-+* You should have received a copy of the GNU General Public License
-+* alone with this program.
-+*/
-+
-+/*
-+* Test Name: request_key01
-+*
-+* Description:
-+* The testcase checks basic functionality of the request_key(2).
-+* request_key(2) asks the kernel to find a key which matches the
-+* specified description. If successful, it attaches it to the
-+* nominated keyring and returns its serial number.
-+*
-+*/
-+
-+#include "config.h"
-+#include <errno.h>
-+#include <sys/types.h>
-+#ifdef HAVE_KEYUTILS_H
-+#include <keyutils.h>
-+#endif
-+
-+#include "test.h"
-+
-+char *TCID = "request_key01";
-+
-+static int res;
-+
-+static void verify_request_key(void);
-+static void setup(void);
-+static void cleanup(void);
-+
-+int TST_TOTAL = 1;
-+
-+#ifdef HAVE_KEYUTILS_H
-+int main(int ac, char **av)
-+{
-+	int lc;
-+
-+	tst_parse_opts(ac, av, NULL, NULL);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+		tst_count = 0;
-+
-+		verify_request_key();
-+	}
-+
-+	cleanup();
-+	tst_exit();
-+}
-+
-+static void verify_request_key(void)
-+{
-+	TEST(request_key("keyring", "ltp", NULL, KEY_REQKEY_DEFL_DEFAULT));
-+	if (TEST_RETURN == -1) {
-+		tst_resm(TFAIL | TERRNO, "request_key() failed");
-+		return;
-+	}
-+
-+	if (TEST_RETURN != res)
-+		tst_resm(TFAIL, "serial number mismatched");
-+	else
-+		tst_resm(TPASS, "request_key() succeed");
-+}
-+
-+static void setup(void)
-+{
-+	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+
-+	TEST_PAUSE;
-+
-+	tst_tmpdir();
-+
-+	res = add_key("keyring", "ltp", NULL, 0, KEY_SPEC_THREAD_KEYRING);
-+	if (res == -1)
-+		tst_brkm(TBROK | TERRNO, cleanup, "add_key() failed");
-+}
-+
-+static void cleanup(void)
-+{
-+	tst_rmdir();
-+}
-+
-+#else
-+int main(void)
-+{
-+	tst_brkm(TCONF, NULL, "compilation failed without keyutils.h");
-+}
-+#endif /* HAVE_LINUX_KEYCTL_H */
--- 
-1.8.3.1
-
-
+Thanks,
+Alexey
 
