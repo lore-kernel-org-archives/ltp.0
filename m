@@ -1,40 +1,54 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 17 Mar 2016 17:17:36 -0400 (EDT)
+From: Kshitij Malik <Kshitij.Malik@mitel.com>
+Date: Thu, 17 Mar 2016 22:03:23 +0000
 Subject: [LTP] readahead02 failure on PPC
-In-Reply-To: <SN1PR12MB078260DD2BC3C2091E1D9893EE8B0@SN1PR12MB0782.namprd12.prod.outlook.com>
-References: <SN1PR12MB078260DD2BC3C2091E1D9893EE8B0@SN1PR12MB0782.namprd12.prod.outlook.com>
-Message-ID: <1136739411.10804114.1458249456113.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1136739411.10804114.1458249456113.JavaMail.zimbra@redhat.com>
+References: <SN1PR12MB078260DD2BC3C2091E1D9893EE8B0@SN1PR12MB0782.namprd12.prod.outlook.com>,
+ <1136739411.10804114.1458249456113.JavaMail.zimbra@redhat.com>
+Message-ID: <SN1PR12MB0782C6FC545C11345F3A0B5EEE8B0@SN1PR12MB0782.namprd12.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Jan,
 
+Sorry for the html mails. I will move to the desktop outlook tomorrow to avoid this.
 
+You were right, the issue is because of the 64 bit data being passed in syscall. With your patch, I don't see the issue anymore. I ran the test again and again (7-8 times) and it is not failing anymore.
 
+we are a 32 bit ppc system and do we really need this test. Can this test be modified such that syscall is called for PPC 64 architecture and readahead for 32 bit?
+
+Thanks
+KK
+________________________________________
+From: Jan Stancek <jstancek@redhat.com>
+Sent: Thursday, March 17, 2016 17:17
+To: Kshitij Malik
+Cc: ltp@lists.linux.it
+Subject: Re: [LTP] readahead02 failure on PPC
 
 ----- Original Message -----
 > From: "Kshitij Malik" <Kshitij.Malik@mitel.com>
 > To: ltp@lists.linux.it
 > Sent: Thursday, 17 March, 2016 6:40:58 PM
 > Subject: [LTP] readahead02 failure on PPC
-> 
-> 
-> 
+>
+>
+>
 > Hi,
 
 Hi,
 
 we prefer plain text over html emails on this list.
 
-> 
+>
 > I'm working on PowerPc based board MPC8360 and we are running 4.1.13 kernel.
 
 and from previous issue you reported, I recall this is 32bit environment.
 
 > During our LTP run, we saw the following failure with readahead02 test.
-> 
+>
 > readahead02 0 TWARN : readahead02.c:353: using less cache than expected
 > The log file is attached to this mail.
 
@@ -42,7 +56,7 @@ readahead has no effect. It's supposed to read file into cache, so we
 expect change in used cache and that subsequent reads will be faster
 (because data is already in memory).
 
-> 
+>
 > Please note that I'm running the latest LTP code and has the latest
 > readahead02.c patch checked in yesterday.
 > Can you please help me in finding out the solution for this issue?
@@ -79,3 +93,5 @@ patch already:
 
 Regards,
 Jan
+________________________________
+NOTE: This e-mail (including any attachments) is for the sole use of the intended recipient(s) and may contain information that is confidential and/or protected by legal privilege. Any unauthorized review, use, copy, disclosure or distribution of this e-mail is strictly prohibited. If you are not the intended recipient, please notify Mitel immediately and destroy all copies of this e-mail. Mitel does not accept any liability for breach of security, error or virus that may result from the transmission of this message.
