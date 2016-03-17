@@ -1,12 +1,24 @@
 From: Kshitij Malik <Kshitij.Malik@mitel.com>
-Date: Thu, 17 Mar 2016 17:40:58 +0000
+Date: Thu, 17 Mar 2016 19:57:15 +0000
 Subject: [LTP] readahead02 failure on PPC
-Message-ID: <SN1PR12MB078260DD2BC3C2091E1D9893EE8B0@SN1PR12MB0782.namprd12.prod.outlook.com>
+In-Reply-To: <SN1PR12MB078260DD2BC3C2091E1D9893EE8B0@SN1PR12MB0782.namprd12.prod.outlook.com>
+References: <SN1PR12MB078260DD2BC3C2091E1D9893EE8B0@SN1PR12MB0782.namprd12.prod.outlook.com>
+Message-ID: <SN1PR12MB0782B14311655329951EC6D5EE8B0@SN1PR12MB0782.namprd12.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
+
+
+copying Jan..
+
+________________________________
+From: Kshitij Malik
+Sent: Thursday, March 17, 2016 13:40
+To: ltp@lists.linux.it
+Subject: readahead02 failure on PPC
+
 
 Hi,
 
@@ -37,11 +49,4 @@ ________________________________
 NOTE: This e-mail (including any attachments) is for the sole use of the intended recipient(s) and may contain information that is confidential and/or protected by legal privilege. Any unauthorized review, use, copy, disclosure or distribution of this e-mail is strictly prohibited. If you are not the intended recipient, please notify Mitel immediately and destroy all copies of this e-mail. Mitel does not accept any liability for breach of security, error or virus that may result from the transmission of this message.
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160317/342f8372/attachment-0001.html>
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: Ltp_console_output.log
-Type: application/octet-stream
-Size: 3497 bytes
-Desc: Ltp_console_output.log
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160317/342f8372/attachment-0001.obj>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160317/83320c12/attachment.html>
