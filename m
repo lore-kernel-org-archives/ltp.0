@@ -1,50 +1,175 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Thu, 17 Mar 2016 18:04:13 +0800
-Subject: [LTP]  [PATCHv3 0/3] networking/stress: add ip xfrm ipsec support
-Message-ID: <1458209056-18829-1-git-send-email-haliu@redhat.com>
+Date: Thu, 17 Mar 2016 18:04:15 +0800
+Subject: [LTP]  [PATCHv3 2/3] network/stress: add ipsec lib
+In-Reply-To: <1458209056-18829-1-git-send-email-haliu@redhat.com>
+References: <1458209056-18829-1-git-send-email-haliu@redhat.com>
+Message-ID: <1458209056-18829-3-git-send-email-haliu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-As we know, most of the network stress tests have IPsec testing, and we use
-setkey for configuration. But setkey[1] hasn't updated for a long time. And
-some distros, RHEL7 for example, even don't have ipset-tools package. On
-other hand, iproute2 is recommend for network configuration. And ip xfrm is
-more powerful than setkey. So let's use ip xfrm for ipsec testing.
-
-[1] http://ipsec-tools.sourceforge.net/
-
-Change from V2:
-1. remove c2x and use hexdump directly.
-2. remove indent after "case".
-3. remove useless export and old scripts like check_env.
-4. remove tst_init_iface.
-5. remove return value check after setup ipsec env.
-6. remove addr config as Alexey said, we assume the address already added.
-
-Change from V1:
-1. update tst_ping() to use default iface and addr. make ping from local side.
-2. remove unused variables. add -s option when use tst_rhost_run. Use ROD
-   before normal commands.
-3. change all "tst_resm TBROK && exit" to "tst_brkm TBROK"
-3. still keep tst_init_iface in test icmp4-uni-basic01 because we will
-   set_ipv4/6addr each time.
-
-Hangbin Liu (3):
-  lib/test_net.sh: add tst_ping() to check icmp connectivity
-  network/stress: add ipsec lib
-  network/stress/icmp: use ip xfrm for icmp4-uni-basic01 ipsec testing
-
- testcases/lib/test_net.sh                          |  19 +++
- .../stress/icmp/uni-basic/icmp4-uni-basic01        | 160 ++++-----------------
- testcases/network/stress/ipsec/Makefile            |  29 ++++
- testcases/network/stress/ipsec/ipsec_lib.sh        | 111 ++++++++++++++
- 4 files changed, 183 insertions(+), 136 deletions(-)
+Signed-off-by: Hangbin Liu <haliu@redhat.com>
+---
+ testcases/network/stress/ipsec/Makefile     |  29 ++++++++
+ testcases/network/stress/ipsec/ipsec_lib.sh | 111 ++++++++++++++++++++++++++++
+ 2 files changed, 140 insertions(+)
  create mode 100644 testcases/network/stress/ipsec/Makefile
  create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
 
+diff --git a/testcases/network/stress/ipsec/Makefile b/testcases/network/stress/ipsec/Makefile
+new file mode 100644
+index 0000000..0d7f1b6
+--- /dev/null
++++ b/testcases/network/stress/ipsec/Makefile
+@@ -0,0 +1,29 @@
++#!/bin/sh
++# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write the Free Software Foundation,
++# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++#
++# Author: Hangbin Liu <haliu@redhat.com>
++#
++#######################################################################
++
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS		:= *.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
+new file mode 100644
+index 0000000..33716ce
+--- /dev/null
++++ b/testcases/network/stress/ipsec/ipsec_lib.sh
+@@ -0,0 +1,111 @@
++#!/bin/sh
++# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, see <http://www.gnu.org/licenses/>.
++#
++# Author: Hangbin Liu <haliu@redhat.com>
++#
++#######################################################################
++
++. test_net.sh
++
++# tst_ipsec flush: flush the ipsec state and policy
++# tst_ipsec target protocol mode spi src_addr dst_addr: config ipsec
++#
++# target: target of the configuration file ( src / dst )
++# protocol: ah / esp / ipcomp
++# mode: transport / tunnel
++# spi: the first spi value
++# src_addr: source IP address
++# dst_addr: destination IP address
++tst_ipsec()
++{
++	if [ "$1" = "flush" ]; then
++		ROD ip xfrm state flush
++		ROD ip xfrm policy flush
++		tst_rhost_run -s -c "ip xfrm state flush && ip xfrm policy flush"
++		return 0
++	fi
++	if [ $# -ne 6 ]; then
++		tst_resm TINFO "tst_ipsec parameter mismatch"
++		return 1
++	fi
++
++	target=$1
++	protocol=$2
++	mode=$3
++	spi=$4
++	src=$5
++	dst=$6
++
++	# Encryption algorithm
++	EALGO="des3_ede"
++	EALGO_KEY=0x$(printf _I_want_to_have_chicken_ | hexdump -ve '/1 "%x"')
++
++	# Authentication algorithm
++	AALGO="sha1"
++	AALGO_KEY=0x$(printf beef_fish_pork_salad | hexdump -ve '/1 "%x"')
++
++	# Compression algorithm
++	CALGO="deflate"
++	# Algorithm options for each protocol
++	case $protocol in
++	ah)
++		algo_line="auth $AALGO $AALGO_KEY"
++		proto="ah"
++		;;
++	esp)
++		algo_line="enc $EALGO $EALGO_KEY auth $AALGO $AALGO_KEY"
++		proto="esp"
++		;;
++	ipcomp)
++		algo_line="comp $CALGO"
++		proto="comp"
++		;;
++	*)
++		tst_resm TINFO "tst_ipsec protocol mismatch"
++		return 1
++		;;
++	esac
++
++	if [ $target = src ]; then
++		spi_1="0x$spi"
++		spi_2="0x$(( $spi + 1 ))"
++		ROD ip xfrm state add src $src dst $dst spi $spi_1 proto $proto \
++			$algo_line mode $mode sel src $src dst $dst
++		ROD ip xfrm policy add src $src dst $dst dir out tmpl src $src \
++			dst $dst proto $proto mode $mode
++
++		ROD ip xfrm state add src $dst dst $src spi $spi_2 proto $proto \
++			$algo_line mode $mode sel src $dst dst $src
++		ROD ip xfrm policy add src $dst dst $src dir in tmpl src $dst \
++			dst $src proto $proto mode $mode level use
++		ROD ip xfrm state
++		ROD ip xfrm policy
++	elif [ $target = dst ]; then
++		spi_1="0x$(( $spi + 1 ))"
++		spi_2="0x$spi"
++		tst_rhost_run -s -c "ip xfrm state add src $src dst $dst spi $spi_1 \
++			proto $proto $algo_line mode $mode sel src $src dst $dst"
++		tst_rhost_run -s -c "ip xfrm policy add src $src dst $dst dir out \
++			tmpl src $src dst $dst proto $proto mode $mode"
++
++		tst_rhost_run -s -c "ip xfrm state add src $dst dst $src spi $spi_2 \
++			proto $proto $algo_line mode $mode sel src $dst dst $src"
++		tst_rhost_run -s -c "ip xfrm policy add src $dst dst $src dir in \
++			tmpl src $dst dst $src proto $proto mode $mode level use"
++		tst_rhost_run -s -c "ip xfrm state"
++		tst_rhost_run -s -c "ip xfrm policy"
++	fi
++}
 -- 
 2.5.0
 
