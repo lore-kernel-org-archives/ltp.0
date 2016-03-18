@@ -1,58 +1,111 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 18 Mar 2016 05:44:42 -0400 (EDT)
-Subject: [LTP] Test library API changes
-In-Reply-To: <20160317160606.GA31815@rei.lan>
-References: <20160105111136.GA32659@rei.lan> <20160310165721.GA6142@rei>
- <1172303351.8592023.1457704628083.JavaMail.zimbra@redhat.com>
- <20160314125153.GB600@rei.lan> <20160314160036.GA2511@rei.lan>
- <870463953.9758877.1458032315296.JavaMail.zimbra@redhat.com>
- <20160315092226.GA26279@rei.lan> <20160317160606.GA31815@rei.lan>
-Message-ID: <457777222.10886512.1458294282223.JavaMail.zimbra@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri, 18 Mar 2016 18:42:17 +0800
+Subject: [LTP] [PATCH RFC 3/9] tracing[2]: reorganize ftrace stress
+ tests to general tests
+In-Reply-To: <20160317163918.GD31815@rei.lan>
+References: <1457079898-9449-1-git-send-email-liwang@redhat.com>
+ <1457079898-9449-2-git-send-email-liwang@redhat.com>
+ <1457079898-9449-3-git-send-email-liwang@redhat.com>
+ <1457079898-9449-4-git-send-email-liwang@redhat.com>
+ <20160317163918.GD31815@rei.lan>
+Message-ID: <CAEemH2duh-a3yw-2y0xx9VBe0Sor8imJJeotcC-Q-t-w8J2fCw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Cyril,
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, 17 March, 2016 5:06:06 PM
-> Subject: Re: [LTP] Test library API changes
-> 
+On Fri, Mar 18, 2016 at 12:39 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
+
 > Hi!
-> I've rethinked the thread safety and LTP library and rewrote the
-> documentation, there are no changes to the library as the ideal place to
-> deal with thread safety is the user supplied cleanup.
-> 
-> Can you please review:
-> 
-> https://github.com/metan-ucw/ltp/blob/master/doc/test-writing-guidelines.txt#L732
+> ...
+>
+> Adding a script that runs all testcases is frowned upon in LTP. What you
+> should do instead is to make it possible to run individual testcases and
+> add the tests one test per line to a runtest file.
+>
+>
+Seems like these regression cases are petty and simple. I fear that would
+be too dispersed to read. How about taking use of the cgroup tests
+code-style to organise them?
 
-Looks good to me.
+which will be like:
+---------------------
+$ cat ftrace_regression_test.sh
+#! /bin/sh
+...
 
-"Only the main thread must return from the 'test()' function to the test
-library"
+export TCID="ftrace-regression-test"
+export TST_TOTAL=N ( N depends on how many test_$cur)
+export TST_COUNT=1
 
-We could also use an atomic flag in library to detect that
-more threads escaped.
-- in run_tests() after test_all() / test()
-- in do_cleanup() after cleanup()
+. ftrace_lib.sh
 
-If flag is more then 1 then we know something is wrong,
-e.g. more than 1 thread escaped cleanup() or test().
+test_success=false
 
+test_check()
+{
+    if $test_success; then
+        tst_resm TPASS "finished running the test."
+    else
+        tst_resm TFAIL "running the test failed, please check log message."
+    fi
+
+    test_success=false
+}
+
+#comments the test_1 info blablabla....
+test_1()
+{
+   ...
+   set test_success 'true' or 'false' base on the test result
+   ...
+   test_check;
+}
+
+test_2()
+{
+   ...
+   test_check;
+}
+
+test_3()
+{
+   ...
+   test_check;
+}
+
+test_regression()
+{
+    for cur in $(seq $TST_TOTAL); do
+        test_$cur
+    done
+}
+
+#----------------------------------
+echo "Ftrace Regression Test Begin"
+
+save_old_setting
+
+test_regression
+
+clean_up
+
+echo "Ftrace Regression Test End"
+
+
+
+> Also newly added test should use test.sh library.
+>
+
+sure, this no problem!
+
+-- 
 Regards,
-Jan
-
-> 
-> There is also a new test at:
-> 
-> https://github.com/metan-ucw/ltp/blob/master/lib/newlib_tests/test08.c
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+Li Wang
+Email: liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160318/1bbe9eee/attachment-0001.html>
