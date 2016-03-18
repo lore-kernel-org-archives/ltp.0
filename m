@@ -1,50 +1,58 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 18 Mar 2016 17:18:34 +0800
-Subject: [LTP] [PATCH] input: add kernel version check
-In-Reply-To: <20160222111826.GA5704@rei.lan>
-References: <1455874725-31499-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20160222111826.GA5704@rei.lan>
-Message-ID: <56EBC7EA.1000703@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 18 Mar 2016 05:44:42 -0400 (EDT)
+Subject: [LTP] Test library API changes
+In-Reply-To: <20160317160606.GA31815@rei.lan>
+References: <20160105111136.GA32659@rei.lan> <20160310165721.GA6142@rei>
+ <1172303351.8592023.1457704628083.JavaMail.zimbra@redhat.com>
+ <20160314125153.GB600@rei.lan> <20160314160036.GA2511@rei.lan>
+ <870463953.9758877.1458032315296.JavaMail.zimbra@redhat.com>
+ <20160315092226.GA26279@rei.lan> <20160317160606.GA31815@rei.lan>
+Message-ID: <457777222.10886512.1458294282223.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-于 2016/02/22 19:18, Cyril Hrubis 写道:
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Thursday, 17 March, 2016 5:06:06 PM
+> Subject: Re: [LTP] Test library API changes
+> 
 > Hi!
->> In this test case, the functionality of input has been improved by
->> following patch:
->> 'commit 4369c64c79a2 ("Input: Send events one packet at a time")'.
->> So it's not appropriate for testing on kernels that are lower than
->> 3.7.0 anymore.
-> Are you sure that you have pointed out right commit? The commit
-> description does not seem relevant.
->
-> Also can you please describe why the testcases fail before 3.7.0 and
-> how? Does kernel send empty sync events?
->
-Hi!
-When we run input04 on RHEL 5.11GA and 6.7GA, it still fails. It gives 
-error message like this:
+> I've rethinked the thread safety and LTP library and rewrote the
+> documentation, there are no changes to the library as the ideal place to
+> deal with thread safety is the user supplied cleanup.
+> 
+> Can you please review:
+> 
+> https://github.com/metan-ucw/ltp/blob/master/doc/test-writing-guidelines.txt#L732
 
-input04 0 TINFO : Found uinput dev at /dev/uinput
-input04 0 TINFO : Unexpected ev type=0 code=0 value=0
-input04 1 TFAIL : input04.c:65: Data received /dev/inputX
+Looks good to me.
 
-This failure is because kernel sends empty events. i.e
-If we only send EV_SYN to input device, nothing should be received in 
-/dev/input/eventX.
-Actually, data is received in /dev/input/eventX. This investigation 
-shows that it may be
-improved by following patch:
-'commit 4369c64c79a2 ("Input: Send events one packet at a time")'.
+"Only the main thread must return from the 'test()' function to the test
+library"
 
-Do you think so ?
+We could also use an atomic flag in library to detect that
+more threads escaped.
+- in run_tests() after test_all() / test()
+- in do_cleanup() after cleanup()
+
+If flag is more then 1 then we know something is wrong,
+e.g. more than 1 thread escaped cleanup() or test().
 
 Regards,
-Xiao Yang
+Jan
 
-
-
-
+> 
+> There is also a new test at:
+> 
+> https://github.com/metan-ucw/ltp/blob/master/lib/newlib_tests/test08.c
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
