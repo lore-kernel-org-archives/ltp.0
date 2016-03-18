@@ -1,58 +1,155 @@
-From: Chunyu Hu <chuhu@redhat.com>
-Date: Fri, 18 Mar 2016 09:24:23 -0400 (EDT)
-Subject: [LTP] [PATCH RFC 8/9] ftrace_stress: update the trace_options
- test
-In-Reply-To: <20160317172851.GI31815@rei.lan>
-References: <1457079898-9449-1-git-send-email-liwang@redhat.com>
- <1457079898-9449-5-git-send-email-liwang@redhat.com>
- <1457079898-9449-6-git-send-email-liwang@redhat.com>
- <1457079898-9449-7-git-send-email-liwang@redhat.com>
- <1457079898-9449-8-git-send-email-liwang@redhat.com>
- <1457079898-9449-9-git-send-email-liwang@redhat.com>
- <20160317171859.GH31815@rei.lan> <20160317172851.GI31815@rei.lan>
-Message-ID: <658905562.29659743.1458307463377.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 18 Mar 2016 16:57:08 +0300
+Subject: [LTP] [PATCH] syscalls: close open files in cleanup
+Message-ID: <1458309428-16300-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+NFS creates special .nfs* files when test file was removed and
+left open. In that case, tst_rmdir() fails to remove test dirs.
 
+Close left open files in cleanup and replace some of safe_open()
+calls with safe_file_printf() ones for test files which fd won't
+be used in a test.
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Li Wang" <liwang@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Friday, March 18, 2016 1:28:51 AM
-> Subject: Re: [LTP] [PATCH RFC 8/9] ftrace_stress: update the trace_options test
-> 
-> Hi!
-> > > +# enable the nop_test_refuse can cause an
-> > > +# 'write error: Invalid argument'. So don't
-> > > +# test it.
-> > > +option_files=${option_files/test_nop_refuse/}
-> > > +trace_options=( $option_files )
-> > > +
-> > > +NR_TRACE_OPTIONS=${#trace_options[*]}
-> > 
-> > This does not work even in bash because the trace_options is never
-> > casted to array so it just returns 0.
-> 
-> My bad, it is converted by the ().
-> 
-> But the point is the same, use portable code.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/kernel/syscalls/faccessat/faccessat01.c |    8 +++++---
+ testcases/kernel/syscalls/fchmodat/fchmodat01.c   |    7 +++++--
+ testcases/kernel/syscalls/fstatat/fstatat01.c     |    8 +++++---
+ testcases/kernel/syscalls/futimesat/futimesat01.c |    7 +++++--
+ testcases/kernel/syscalls/unlinkat/unlinkat01.c   |    8 +++++---
+ 5 files changed, 25 insertions(+), 13 deletions(-)
 
-Thanks for suggestion! Will make it a string in V2. 
-
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-
+diff --git a/testcases/kernel/syscalls/faccessat/faccessat01.c b/testcases/kernel/syscalls/faccessat/faccessat01.c
+index 72827ad..6f276fc 100644
+--- a/testcases/kernel/syscalls/faccessat/faccessat01.c
++++ b/testcases/kernel/syscalls/faccessat/faccessat01.c
+@@ -130,9 +130,8 @@ void setup(void)
+ 	fds[0] = SAFE_OPEN(cleanup, pathname, O_DIRECTORY);
+ 	fds[1] = fds[4] = fds[0];
+ 
+-
+-	SAFE_OPEN(cleanup, testfile, O_CREAT | O_RDWR, 0600);
+-	SAFE_OPEN(cleanup, testfile2, O_CREAT | O_RDWR, 0600);
++	SAFE_FILE_PRINTF(cleanup, testfile, testfile);
++	SAFE_FILE_PRINTF(cleanup, testfile2, testfile2);
+ 
+ 	fds[2] = SAFE_OPEN(cleanup, testfile3, O_CREAT | O_RDWR, 0600);
+ 
+@@ -148,5 +147,8 @@ void setup(void)
+ 
+ void cleanup(void)
+ {
++	close(fds[0]);
++	close(fds[2]);
++
+ 	tst_rmdir();
+ }
+diff --git a/testcases/kernel/syscalls/fchmodat/fchmodat01.c b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
+index ea08665..d4f7093 100644
+--- a/testcases/kernel/syscalls/fchmodat/fchmodat01.c
++++ b/testcases/kernel/syscalls/fchmodat/fchmodat01.c
+@@ -128,8 +128,8 @@ void setup(void)
+ 	fds[0] = SAFE_OPEN(cleanup, pathname, O_DIRECTORY);
+ 	fds[1] = fds[4] = fds[0];
+ 
+-	SAFE_OPEN(cleanup, testfile, O_CREAT | O_RDWR, 0600);
+-	SAFE_OPEN(cleanup, testfile2, O_CREAT | O_RDWR, 0600);
++	SAFE_FILE_PRINTF(cleanup, testfile, testfile);
++	SAFE_FILE_PRINTF(cleanup, testfile2, testfile2);
+ 
+ 	fds[2] = SAFE_OPEN(cleanup, testfile3, O_CREAT | O_RDWR, 0600);
+ 	fds[3] = 100;
+@@ -144,5 +144,8 @@ void setup(void)
+ 
+ void cleanup(void)
+ {
++	close(fds[0]);
++	close(fds[2]);
++
+ 	tst_rmdir();
+ }
+diff --git a/testcases/kernel/syscalls/fstatat/fstatat01.c b/testcases/kernel/syscalls/fstatat/fstatat01.c
+index 8b279fa..c210968 100644
+--- a/testcases/kernel/syscalls/fstatat/fstatat01.c
++++ b/testcases/kernel/syscalls/fstatat/fstatat01.c
+@@ -129,8 +129,8 @@ void setup(void)
+ 	fds[0] = SAFE_OPEN(cleanup, pathname, O_DIRECTORY);
+ 	fds[1] = fds[4] = fds[0];
+ 
+-	SAFE_OPEN(cleanup, testfile, O_CREAT | O_RDWR, 0600);
+-	SAFE_OPEN(cleanup, testfile2, O_CREAT | O_RDWR, 0600);
++	SAFE_FILE_PRINTF(cleanup, testfile, testfile);
++	SAFE_FILE_PRINTF(cleanup, testfile2, testfile2);
+ 
+ 	fds[2] =  SAFE_OPEN(cleanup, testfile3, O_CREAT | O_RDWR, 0600);
+ 
+@@ -146,7 +146,9 @@ void setup(void)
+ 
+ void cleanup(void)
+ {
++	close(fds[0]);
++	close(fds[2]);
++
+ 	free(testfile3);
+ 	tst_rmdir();
+ }
+-
+diff --git a/testcases/kernel/syscalls/futimesat/futimesat01.c b/testcases/kernel/syscalls/futimesat/futimesat01.c
+index 5c16dd8..f5e90b8 100644
+--- a/testcases/kernel/syscalls/futimesat/futimesat01.c
++++ b/testcases/kernel/syscalls/futimesat/futimesat01.c
+@@ -112,8 +112,8 @@ void setup(void)
+ 	fds[0] = SAFE_OPEN(cleanup, pathname, O_DIRECTORY);
+ 	fds[1] = fds[0];
+ 
+-	SAFE_OPEN(cleanup, testfile, O_CREAT | O_RDWR, 0600);
+-	SAFE_OPEN(cleanup, testfile2, O_CREAT | O_RDWR, 0600);
++	SAFE_FILE_PRINTF(cleanup, testfile, testfile);
++	SAFE_FILE_PRINTF(cleanup, testfile2, testfile2);
+ 
+ 	fds[2] = SAFE_OPEN(cleanup, testfile3, O_CREAT | O_RDWR, 0600);
+ 
+@@ -128,6 +128,9 @@ void setup(void)
+ 
+ void cleanup(void)
+ {
++	close(fds[0]);
++	close(fds[2]);
++
+ 	free(testfile3);
+ 	tst_rmdir();
+ }
+diff --git a/testcases/kernel/syscalls/unlinkat/unlinkat01.c b/testcases/kernel/syscalls/unlinkat/unlinkat01.c
+index 47cba25..0abede6 100644
+--- a/testcases/kernel/syscalls/unlinkat/unlinkat01.c
++++ b/testcases/kernel/syscalls/unlinkat/unlinkat01.c
+@@ -119,9 +119,8 @@ void setup(void)
+ 	fds[0] = SAFE_OPEN(cleanup, pathname, O_DIRECTORY);
+ 	fds[1] = fds[4] = fds[6] = fds[0];
+ 
+-	SAFE_OPEN(cleanup, testfile, O_CREAT | O_RDWR, 0600);
+-
+-	SAFE_OPEN(cleanup, testfile2, O_CREAT | O_RDWR, 0600);
++	SAFE_FILE_PRINTF(cleanup, testfile, testfile);
++	SAFE_FILE_PRINTF(cleanup, testfile2, testfile2);
+ 
+ 	fds[2] = SAFE_OPEN(cleanup, testfile3, O_CREAT | O_RDWR, 0600);
+ 
+@@ -138,6 +137,9 @@ void setup(void)
+ 
+ void cleanup(void)
+ {
++	close(fds[0]);
++	close(fds[2]);
++
+ 	free(testfile3);
+ 	tst_rmdir();
+ }
 -- 
-Regards,
-Chunyu Hu
+1.7.1
 
