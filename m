@@ -1,98 +1,81 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 18 Mar 2016 15:57:39 +0800
-Subject: [LTP] [PATCH RFC 5/9] ftrace_regression: add a new testcase
-In-Reply-To: <20160317165020.GF31815@rei.lan>
-References: <1457079898-9449-1-git-send-email-liwang@redhat.com>
- <1457079898-9449-2-git-send-email-liwang@redhat.com>
- <1457079898-9449-3-git-send-email-liwang@redhat.com>
- <1457079898-9449-4-git-send-email-liwang@redhat.com>
- <1457079898-9449-5-git-send-email-liwang@redhat.com>
- <1457079898-9449-6-git-send-email-liwang@redhat.com>
- <20160317165020.GF31815@rei.lan>
-Message-ID: <CAEemH2ekX2w0NiZj5V6Q1vjPxwPEdJFwGOMaQOx4YKJFNaBm7A@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 18 Mar 2016 09:36:30 +0100
+Subject: [LTP] [PATCH] mprotect04: invalidate icache on powerpc
+Message-ID: <2ee2ff0eb9e3c133005f9e938a2c7d4c5bde26d0.1458290113.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Kshitij Malik reported that this testcase is crashing on his
+PowerPc based board MPC8360 with SIGILL on PROT_EXEC test
+when it tried to execute copy of exec_func.
 
-Thanks for reviewing. Comments in follows:
+Coherency and Synchronization Requirements for PowerQUICC III, 2.2 says:
+"Instruction cache coherency must be handled separately from data cache
+coherency. Whereas there is hardware support for data cache coherency,
+instruction cache coherency must be maintained in software. Even if
+stores are performed to pages marked as coherence required, icbi
+instructions are required to ensure the instruction cache is coherent."
 
-On Fri, Mar 18, 2016 at 12:50 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
+And indeed, we were able to confirm, that invalidating icache resolved
+the problem. Without patch, it was highly reproducible, with patch it
+ran fine for minutes in a loop. Presumably mmap() mapped an area that
+was previously a code, that was still in icache.
 
-> Hi!
-> >
-> +###############################################################################
-> > +#
->        #
-> > +# Copyright (c) 2015, Red Hat Inc.
->       #
-> > +#
->        #
-> > +# This program is free software; you can redistribute it and/or modify
-> it     #
-> > +# under the terms of the GNU General Public License as published by the
-> Free  #
-> > +# Software Foundation; either version 2 of the License, or (at your
-> option)   #
-> > +# any later version.
->       #
-> > +#
->        #
-> > +# PURPOSE: check signal:signal_generate gives 2 more fields: grp res
->       #
-> > +#
->        #
-> > +# This testcase is verifing signal events change:
->        #
-> > +#        6c303d3 tracing: let trace_signal_generate() report more
-> info...     #
-> > +#        163566f tracing: send_sigqueue() needs trace_signal_generate()
-> too   #
-> > +#
->        #
-> >
-> +###############################################################################
-> > +
-> > +
-> > +# Set envent
-> > +echo 'signal:signal_generate' > $TRACING_PATH/set_event
-> > +
-> > +echo 1 > $TRACING_PATH/tracing_on
-> > +
-> > +echo > $TRACING_PATH/trace
-> > +
-> > +sleep 10
->
-> Why sleep 10 here?
->
+The patch is a powerpc assembly, but it should be safe, because we
+already do this in different testcase since:
+commit 038e4bc450d1 ("POWER5 has coherent icache, but POWER4,
+PPC970 and some other processors lack it.")
 
-It's waiting for ftrace capture the system trace. There probably no any
-trace be recorded if we check it at once.
+This patch has some extra syncs, I updated it according to current
+kernel version from:
+  https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/arch/powerpc/lib/code-patching.c#n19
 
+Reported-and-tested-by: Kshitij.Malik@mitel.com
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/mprotect/mprotect04.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-> > +grep -q 'grp=[0-9] res=[0-9]' $TRACING_PATH/trace
-> > +if [ $? -eq 0 ]; then
-> > +     exit 0
-> > +else
-> > +     exit 1
-> > +fi
->
-> Use test.sh and tst_resm instead.
->
-
-Sure, I'd like to make change of the patches(2/9  -- 5/9) as your suggested.
-
-CC' chuhu@ here. Since the patches(6/9  -- 9/9) were signed off by him.
-
-
-
+diff --git a/testcases/kernel/syscalls/mprotect/mprotect04.c b/testcases/kernel/syscalls/mprotect/mprotect04.c
+index 23aecbd856f4..c94e25c59e06 100644
+--- a/testcases/kernel/syscalls/mprotect/mprotect04.c
++++ b/testcases/kernel/syscalls/mprotect/mprotect04.c
+@@ -54,7 +54,7 @@ int TST_TOTAL = ARRAY_SIZE(testfunc);
+ 
+ static volatile int sig_caught;
+ static sigjmp_buf env;
+-static int copy_sz;
++static unsigned int copy_sz;
+ 
+ int main(int ac, char **av)
+ {
+@@ -189,6 +189,10 @@ static void *get_func(void *mem)
+ 	uintptr_t func_page_offset = (uintptr_t)&exec_func & (page_sz - 1);
+ 	void *func_copy_start = mem + func_page_offset;
+ 	void *page_to_copy = (void *)((uintptr_t)&exec_func & page_mask);
++#ifdef __powerpc__
++	void *mem_start = mem;
++	uintptr_t i;
++#endif
+ 
+ 	/* copy 1st page, if it's not present something is wrong */
+ 	if (!page_present(page_to_copy)) {
+@@ -206,6 +210,12 @@ static void *get_func(void *mem)
+ 	else
+ 		memset(mem, 0, page_sz);
+ 
++#ifdef __powerpc__
++	for (i = 0; i < copy_sz; i += 4)
++		__asm__ __volatile__("dcbst 0,%0; sync; icbi 0,%0; sync; isync"
++			:: "r"(mem_start + i));
++#endif
++
+ 	/* return pointer to area where copy of exec_func resides */
+ 	return func_copy_start;
+ }
 -- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160318/2cd9dac2/attachment.html>
+1.8.3.1
+
