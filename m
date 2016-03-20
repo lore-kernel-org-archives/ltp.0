@@ -1,20 +1,20 @@
 From: Julio Cruz <jcsistemas2001@gmail.com>
-Date: Sun, 20 Mar 2016 21:58:35 +0800
-Subject: [LTP] [PATCH] Check available memory to support embedded devices
-In-Reply-To: <1423281604.10539234.1458206400762.JavaMail.zimbra@redhat.com>
-References: <1458097275-2769-1-git-send-email-jcsistemas2001@gmail.com>
- <1423281604.10539234.1458206400762.JavaMail.zimbra@redhat.com>
-Message-ID: <2FBA1145-19A4-4A85-8DD9-169F227E4E19@gmail.com>
+Date: Sun, 20 Mar 2016 21:59:12 +0800
+Subject: [LTP] [PATCH] Change memory units to MB to support embedded
+	devices
+In-Reply-To: <1059278052.10541669.1458207337814.JavaMail.zimbra@redhat.com>
+References: <1458097251-2708-1-git-send-email-jcsistemas2001@gmail.com>
+ <1059278052.10541669.1458207337814.JavaMail.zimbra@redhat.com>
+Message-ID: <C6D5F8CE-29D8-4EC9-A490-80C175C6F749@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+Agree. I will send a new version later.
 
-
-On Mar 17, 2016, at 5:20 PM, Jan Stancek <jstancek@redhat.com> wrote:
+On Mar 17, 2016, at 5:35 PM, Jan Stancek <jstancek@redhat.com> wrote:
 
 
 
@@ -24,229 +24,161 @@ On Mar 17, 2016, at 5:20 PM, Jan Stancek <jstancek@redhat.com> wrote:
 > From: "Julio Cruz" <jcsistemas2001@gmail.com>
 > To: "julio cruz" <julio.cruz@smartmatic.com>, ltp@lists.linux.it, chrubis@suse.cz, jstancek@redhat.com
 > Cc: "Julio Cruz" <jcsistemas2001@gmail.com>
-> Sent: Wednesday, 16 March, 2016 4:01:15 AM
-> Subject: [PATCH] Check available memory to support embedded devices
+> Sent: Wednesday, 16 March, 2016 4:00:51 AM
+> Subject: [PATCH] Change memory units to MB to support embedded devices
 > 
-> This patch check the available memory before to perform the
-> different test cases. If the memory is not enough (according with
-> each test case), the test finish as TCONF.
-> This could be usefull when you are testing on embedded devices
+> This patch made two changes: 1) check the available memory
+> before to perform the test case, and 2) change the memory units
+> from GB to MB.
+> Both changes are needed during testing on embedded devices
 > with RAM memory limitation (i.e. 512MB)
-> This patch no changed the test case procedure and is still valid
-> for non-embedded devices. It just verify the available memory.
+> This patch no changed the test case procedure and the default
+> memory size is the same (1GB=1000MB).
+> To use this test case in embedded devices, I suggest to change
+> the testrun 'mm' as below from: "mtest06_2 mmap2 -x 0.002 -a -p"
+> to "mtest06_2 mmap2 -x 0.002 -a -p -s 100"
+
+I think we can make default a smaller value without any impact
+on what this test is doing. Test doesn't say why 1GB was chosen.
+
+I'd go with 128M, that still covers most scenarios where we'd
+use at least 2 consecutive huge pages (of most common sizes).
+
+Regards,
+Jan
+
 > 
 > Signed-off-by: Julio Cruz <jcsistemas2001@gmail.com>
 > ---
-> testcases/kernel/syscalls/getrusage/getrusage03.c | 80
-> +++++++++++++++++------
-> 1 file changed, 61 insertions(+), 19 deletions(-)
-
-Hi,
-
+> testcases/kernel/mem/mtest06/mmap2.c | 40
+> +++++++++++++++++++++++++-----------
+> 1 file changed, 28 insertions(+), 12 deletions(-)
 > 
-> diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c
-> b/testcases/kernel/syscalls/getrusage/getrusage03.c
-> index 54cdc83..8967c8e 100644
-> --- a/testcases/kernel/syscalls/getrusage/getrusage03.c
-> +++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
-> @@ -45,7 +45,10 @@
-> char *TCID = "getrusage03";
-> int TST_TOTAL = 1;
+> diff --git a/testcases/kernel/mem/mtest06/mmap2.c
+> b/testcases/kernel/mem/mtest06/mmap2.c
+> index ad81dbe..ebeebe5 100644
+> --- a/testcases/kernel/mem/mtest06/mmap2.c
+> +++ b/testcases/kernel/mem/mtest06/mmap2.c
+> @@ -48,9 +48,9 @@
+> /*                                          */
+> /* Description: Test the LINUX memory manager. The program is aimed at
+> */
+> /*              stressing the memory manager by repeaded map/write/unmap of
+> a */
+> -/*        of a large gb size file.                      */
+> +/*        large mb size file.                              */
+> /*                                          */
+> -/*        Create a file of the specified size in gb, map the file,      */
+> +/*        Create a file of the specified size in mb, map the file,      */
+> /*        change the contents of the file and unmap it. This is repeated*/
+> /*        several times for the specified number of hours.          */
+> /*                                          */
+> @@ -73,7 +73,7 @@
+> #include <getopt.h>
+> #include "test.h"
 > 
-> -#define DELTA_MAX    10240
-> +#define DELTA_MAX            10240
-> +#define DEFAULT_ALLOCATION_MB    100
-> +
-> +unsigned long avail_memory_mb;
+> -#define GB 1000000000
+> +#define MB 1048576
+> #ifndef TRUE
+> #define TRUE 1
+> #endif
+> @@ -99,7 +99,7 @@ static int mkfile(int size)
+>        fprintf(stdout, "creating tmp file and writing 'a' to it ");
+>    }
 > 
-> static struct rusage ru;
-> static long maxrss_init;
-> @@ -65,6 +68,14 @@ static void consume(int mega);
-> static void setup(void);
-> static void cleanup(void);
+> -    while (index < (size * GB)) {
+> +    while (index < (size * MB)) {
+>        index += 4096;
+>        if (write(fd, buff, 4096) == -1) {
+>            perror("mkfile(): write()");
+> @@ -136,16 +136,24 @@ static void usage(char *progname)
+>        "\t -p set map_flag to MAP_PRIVATE.\tdefault:"
+>        "MAP_SHARED\n"
+>        "\t -s size of the file/memory to be mmaped.\tdefault:"
+> -        "1GB\n"
+> +        "1000MB\n"
+>        "\t -x time for which test is to be run.\tdefault:"
+>        "24 Hrs\n", progname);
+>    exit(-1);
+> }
 > 
-> +unsigned long get_available_memory_mb(void)
+> +long get_available_memory_mb(void)
 > +{
 > +    unsigned long long ps, pn;
 > +    ps = sysconf(_SC_PAGESIZE);
 > +    pn = sysconf(_SC_AVPHYS_PAGES);
 > +    return ps * pn / (1024*1024);
-
-What I was suggesting was:
- return (ps / 1024) * pn / 1024;
-
-All of the page sizes are at least 4k (grep "define PAGE_SHIFT" -r linux/arch/).
-This way "unsigned long" should do just fine for all variables.
-
-Ok!
-
 > +}
 > +
-> int main(int argc, char *argv[])
+> int main(int argc, char **argv)
 > {
->    int lc;
-> @@ -73,19 +84,26 @@ int main(int argc, char *argv[])
+>    int fd;
+> -    int fsize = 1;
+> +    int fsize = 1000;
+>    float exec_time = 24;
+>    int c;
+>    int sig_ndx;
+> @@ -153,6 +161,7 @@ int main(int argc, char **argv)
+>    int map_anon = FALSE;
+>    int run_once = TRUE;
+>    char *memptr;
+> +    long avail_memory_mb;
+>    struct sigaction sigptr;
 > 
->    setup();
+>    static struct signal_info {
+> @@ -188,7 +197,7 @@ int main(int argc, char **argv)
+>            fsize = atoi(optarg);
+>            if (fsize == 0)
+>                fprintf(stderr, "Using default "
+> -                    "fsize %d GB\n", fsize = 1);
+> +                    "fsize %d MB\n", fsize = 1000);
+>            break;
+>        case 'x':
+>            exec_time = atof(optarg);
+> @@ -205,7 +214,14 @@ int main(int argc, char **argv)
 > 
-> -    for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -        tst_count = 0;
-> -
-> -        tst_resm(TINFO, "allocate 100MB");
-> -        consume(100);
-> -
-> -        inherit_fork();
-> -        inherit_fork2();
-> -        fork_malloc();
-> -        grandchild_maxrss();
-> -        zombie();
-> -        sig_ign();
-> -        exec_without_fork();
+>    fprintf(stdout, "MM Stress test, map/write/unmap large file\n"
+>        "\tTest scheduled to run for:       %f\n"
+> -        "\tSize of temp file in GB:         %d\n", exec_time, fsize);
+> +        "\tSize of temp file in MB:         %d\n", exec_time, fsize);
+> +
 > +    avail_memory_mb = get_available_memory_mb();
-> +
-> +    tst_resm(TINFO, "Available memory: %ldMB\n", avail_memory_mb);
-> +    if (avail_memory_mb < DEFAULT_ALLOCATION_MB) {
-> +        tst_resm(TCONF, "Not enough memory to run this case\n");
-
-We have tst_brkm(TCONF, cleanup, "...");, which will print message,
-run cleanup and exit testcase.
-
-Much better!
-
-> +    } else {
-> +        for (lc = 0; TEST_LOOPING(lc); lc++) {
-> +            tst_count = 0;
-> +
-> +            tst_resm(TINFO, "allocate %dMB", DEFAULT_ALLOCATION_MB);
-> +            consume(DEFAULT_ALLOCATION_MB);
-
-This consume() is within loop, and it doesn't look like
-same loop frees any memory. I suggest you move it before loop.
-You can try running the testcase with "-i 20".
-
-You are right. I didn't see this because my test run one time. I will fix.
-
-
-> +
-> +            inherit_fork();
-> +            inherit_fork2();
-> +            fork_malloc();
-> +            grandchild_maxrss();
-> +            zombie();
-> +            sig_ign();
-> +            exec_without_fork();
-> +        }
->    }
->    cleanup();
->    tst_exit();
-> @@ -95,11 +113,15 @@ int main(int argc, char *argv[])
->  * expect: initial.self ~= child.self */
-> static void inherit_fork(void)
-> {
-> -    tst_resm(TINFO, "Testcase #01: fork inherit");
-> -
->    SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
->    tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
-> 
-> +    tst_resm(TINFO, "Testcase #01: fork inherit");
-> +    if (avail_memory_mb < DEFAULT_ALLOCATION_MB*2) {
-
-Is this needed? Child is not allocating anything, and fork
-should use copy-on-write.
-
-During my testing, if the memory available is not the double, the test had problem. I will recheck.
-
-> +        tst_resm(TCONF, "Not enough memory to run this case\n");
-> +        return;
-> +    }
-> +
->    switch (pid = fork()) {
->    case -1:
->        tst_brkm(TBROK | TERRNO, cleanup, "fork #1");
-> @@ -119,17 +141,21 @@ static void inherit_fork(void)
-> }
-> 
-> /* Testcase #02: fork inherit (cont.)
-> - * expect: initial.children ~= 100MB, child.children = 0 */
-> + * expect: initial.children ~= DEFAULT_ALLOCATION_MB, child.children = 0 */
-> static void inherit_fork2(void)
-> {
->    tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
-> +    if (avail_memory_mb < DEFAULT_ALLOCATION_MB*2) {
-
-Same as above.
-
-Similar to previous problem
-
-> +        tst_resm(TCONF, "Not enough memory to run this case\n");
-> +        return;
+> +    fprintf(stdout, "Available memory: %ldMB\n", avail_memory_mb);
+> +    if (fsize > avail_memory_mb) {
+> +        fprintf(stdout, "Not enough memory to run this case\n");
+> +        exit(0);
 > +    }
 > 
->    SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
->    tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
->    if (is_in_delta(ru.ru_maxrss - 102400))
-> -        tst_resm(TPASS, "initial.children ~= 100MB");
-> +        tst_resm(TPASS, "initial.children ~= %dMB", DEFAULT_ALLOCATION_MB);
->    else
-> -        tst_resm(TFAIL, "initial.children !~= 100MB");
-> +        tst_resm(TFAIL, "initial.children !~= %dMB", DEFAULT_ALLOCATION_MB);
+>    alarm(exec_time * 3600.00);
 > 
->    switch (pid = fork()) {
->    case -1:
-> @@ -153,6 +179,10 @@ static void inherit_fork2(void)
-> static void fork_malloc(void)
-> {
->    tst_resm(TINFO, "Testcase #03: fork + malloc");
-> +    if (avail_memory_mb < (DEFAULT_ALLOCATION_MB*2+50)) {
-
-Same as above, isn't "50" going to be enough?
-
-Again, similar.
-
-Thanks for your review. I will send another patch.
-
-Regards,
-Jan
-
-> +        tst_resm(TCONF, "Not enough memory to run this case\n");
-> +        return;
-> +    }
+> @@ -235,7 +251,7 @@ int main(int argc, char **argv)
+>            fd = -1;
+>            map_flags = map_flags | MAP_ANONYMOUS;
+>        }
+> -        memptr = mmap(0, (fsize * GB), PROT_READ | PROT_WRITE,
+> +        memptr = mmap(0, (fsize * MB), PROT_READ | PROT_WRITE,
+>                  map_flags, fd, 0);
+>        if (memptr == MAP_FAILED) {
+>            perror("main(): mmap()");
+> @@ -244,15 +260,15 @@ int main(int argc, char **argv)
+>            fprintf(stdout, "file mapped at %p\n"
+>                "changing file content to 'A'\n", memptr);
 > 
->    SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
->    tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
-> @@ -182,6 +212,10 @@ static void fork_malloc(void)
-> static void grandchild_maxrss(void)
-> {
->    tst_resm(TINFO, "Testcase #04: grandchild maxrss");
-> +    if (avail_memory_mb <= (DEFAULT_ALLOCATION_MB+300)) {
-> +        tst_resm(TCONF, "Not enough memory to run this case\n");
-> +        return;
-> +    }
+> -        memset(memptr, 'A', ((fsize * GB) / sizeof(char)));
+> +        memset(memptr, 'A', ((fsize * MB) / sizeof(char)));
 > 
->    SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
->    tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-> @@ -216,6 +250,10 @@ static void grandchild_maxrss(void)
-> static void zombie(void)
-> {
->    tst_resm(TINFO, "Testcase #05: zombie");
-> +    if (avail_memory_mb <= (DEFAULT_ALLOCATION_MB+400)) {
-> +        tst_resm(TCONF, "Not enough memory to run this case\n");
-> +        return;
-> +    }
+> -        if (msync(memptr, ((fsize * GB) / sizeof(char)),
+> +        if (msync(memptr, ((fsize * MB) / sizeof(char)),
+>              MS_SYNC | MS_INVALIDATE) == -1) {
+>            perror("main(): msync()");
+>            exit(-1);
+>        }
 > 
->    SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
->    tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-> @@ -259,6 +297,10 @@ static void zombie(void)
-> static void sig_ign(void)
-> {
->    tst_resm(TINFO, "Testcase #06: SIG_IGN");
-> +    if (avail_memory_mb <= (DEFAULT_ALLOCATION_MB+500)) {
-> +        tst_resm(TCONF, "Not enough memory to run test case");
-> +        return;
-> +    }
-> 
->    SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
->    tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+> -        if (munmap(memptr, (fsize * GB) / sizeof(char)) == -1) {
+> +        if (munmap(memptr, (fsize * MB) / sizeof(char)) == -1) {
+>            perror("main(): munmap()");
+>            exit(-1);
+>        } else
 > --
 > 1.9.1
 > 
