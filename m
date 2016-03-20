@@ -1,424 +1,253 @@
-From: Chunyu Hu <chuhu@redhat.com>
-Date: Fri, 18 Mar 2016 10:08:24 -0400 (EDT)
-Subject: [LTP] [PATCH RFC 9/9] ftrace_stress: add two new tests
-In-Reply-To: <20160317180833.GJ31815@rei.lan>
-References: <1457079898-9449-1-git-send-email-liwang@redhat.com>
- <1457079898-9449-5-git-send-email-liwang@redhat.com>
- <1457079898-9449-6-git-send-email-liwang@redhat.com>
- <1457079898-9449-7-git-send-email-liwang@redhat.com>
- <1457079898-9449-8-git-send-email-liwang@redhat.com>
- <1457079898-9449-9-git-send-email-liwang@redhat.com>
- <1457079898-9449-10-git-send-email-liwang@redhat.com>
- <20160317180833.GJ31815@rei.lan>
-Message-ID: <1617631867.29672478.1458310104811.JavaMail.zimbra@redhat.com>
+From: Julio Cruz <jcsistemas2001@gmail.com>
+Date: Sun, 20 Mar 2016 21:58:35 +0800
+Subject: [LTP] [PATCH] Check available memory to support embedded devices
+In-Reply-To: <1423281604.10539234.1458206400762.JavaMail.zimbra@redhat.com>
+References: <1458097275-2769-1-git-send-email-jcsistemas2001@gmail.com>
+ <1423281604.10539234.1458206400762.JavaMail.zimbra@redhat.com>
+Message-ID: <2FBA1145-19A4-4A85-8DD9-169F227E4E19@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Jan,
 
-Hi Cyril,
 
-Thanks for the review. Seems some Bash styles needs to be fixed in all subcase.
-I replied the issues you pointed out below. You mean I need to write a c bin 
-to generate random? Or you will make it in lib?
+On Mar 17, 2016, at 5:20 PM, Jan Stancek <jstancek@redhat.com> wrote:
+
+
+
+
 
 ----- Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Li Wang" <liwang@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Friday, March 18, 2016 2:08:33 AM
-> Subject: Re: [LTP] [PATCH RFC 9/9] ftrace_stress: add two new tests
+> From: "Julio Cruz" <jcsistemas2001@gmail.com>
+> To: "julio cruz" <julio.cruz@smartmatic.com>, ltp@lists.linux.it, chrubis@suse.cz, jstancek@redhat.com
+> Cc: "Julio Cruz" <jcsistemas2001@gmail.com>
+> Sent: Wednesday, 16 March, 2016 4:01:15 AM
+> Subject: [PATCH] Check available memory to support embedded devices
 > 
-> Hi!
-> > +###########################################################################
-> > +##
-> > ##
-> > +## Copyright (c) 2015, Red Hat Inc.
-> > ##
-> > +##
-> > ##
-> > +## This program is free software: you can redistribute it and/or modify
-> > ##
-> > +## it under the terms of the GNU General Public License as published by
-> > ##
-> > +## the Free Software Foundation, either version 3 of the License, or
-> > ##
-> > +## (at your option) any later version.
-> > ##
-> > +##
-> > ##
-> > +## This program is distributed in the hope that it will be useful,
-> > ##
-> > +## but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > ##
-> > +## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-> > ##
-> > +## GNU General Public License for more details.
-> > ##
-> > +##
-> > ##
-> > +## You should have received a copy of the GNU General Public License
-> > ##
-> > +## along with this program. If not, see <http://www.gnu.org/licenses/>.
-> > ##
-> > +##
-> > ##
-> > +## Author: Chunyu Hu <chuhu@redhat.com>
-> > ##
-> > +##
-> > ##
-> > +###########################################################################
-> > +
-> > +triggers=( traceon traceoff enable_event disable_event snapshot\
-> > +	 dump cpudump stacktrace module function )
-> > +n_triggers=${#triggers}
+> This patch check the available memory before to perform the
+> different test cases. If the memory is not enough (according with
+> each test case), the test finish as TCONF.
+> This could be usefull when you are testing on embedded devices
+> with RAM memory limitation (i.e. 512MB)
+> This patch no changed the test case procedure and is still valid
+> for non-embedded devices. It just verify the available memory.
 > 
-> Bashism again.
+> Signed-off-by: Julio Cruz <jcsistemas2001@gmail.com>
+> ---
+> testcases/kernel/syscalls/getrusage/getrusage03.c | 80
+> +++++++++++++++++------
+> 1 file changed, 61 insertions(+), 19 deletions(-)
 
-Hi Cyril,
-
-I have to ask a question about the portable.Can we use an array here? You
-mean we can't use array or just can't use the ${#array_name} to get the 
-number of elements? If array can be used, I guess I can use something like
-
-echo ${triggers[*]} | wc -w , If not accepted by some shells. Then I need to
-change it to string, and use the way you mentioned echo "$string" | wc -w
-
-Thanks!
-
-> > +module_pick()
-> > +{
-> > +	nr_module=$(lsmod | wc -l)
-> > +	pick_one=$(( (RANDOM % nr_module) +1 ))
-> > +	picked_module=$(lsmod | sed -n ''$pick_one'p')
-> 
-> Unfortunately there is no portable way to get random numbers in shell.
-
-Agree, I really worried that this RANDOME value may not work in some case,
-you confirmed my concern, but i didn't come up with a good solution.
+Hi,
 
 > 
-> So the best we can do is to write a small helper tst_random to take a
-> range and produce random number in that range. I would have just added a
-> simple C program to testcases/lib/ the same way we did for portable
-> sleep shorted than 1s in tst_sleep.c.
-
-Thanks ! If we have that interface, that will be great! Hope I can use it in V2.
-
-
-> > +}
-> > +
-> > +nr_functions=$(cat $TRACING_PATH/available_filter_functions|wc -l)
+> diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c
+> b/testcases/kernel/syscalls/getrusage/getrusage03.c
+> index 54cdc83..8967c8e 100644
+> --- a/testcases/kernel/syscalls/getrusage/getrusage03.c
+> +++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+> @@ -45,7 +45,10 @@
+> char *TCID = "getrusage03";
+> int TST_TOTAL = 1;
 > 
-> You can do just 'wc -l $TRACING_PATH/available_filter_functions'
-
-Agree, really my bad habit of using a pipe. Thanks for the suggestion.
-
-> > +function_pick()
-> > +{
-> 	local AVAILABLE_FUNCTIONS="$TRACING_PATH/available_filter_functions"
-> > +	if [ -f $TRACING_PATH/available_filter_functions ]; then
-> > +		local pick_one=$(( (RANDOM % nr_functions) + 1 ))
-> > +		picked_function=$(cat $TRACING_PATH/available_filter_functions |\
-> > +				 sed -n ''$pick_one'p'|awk '{print $1}')
-> > +		echo $picked_function
+> -#define DELTA_MAX    10240
+> +#define DELTA_MAX            10240
+> +#define DEFAULT_ALLOCATION_MB    100
+> +
+> +unsigned long avail_memory_mb;
 > 
-> You can just do:
+> static struct rusage ru;
+> static long maxrss_init;
+> @@ -65,6 +68,14 @@ static void consume(int mega);
+> static void setup(void);
+> static void cleanup(void);
 > 
-> 		awk "{if (NR==$pick_one) {print \$1}}" $AVAILABLE_FUNCTIONS
+> +unsigned long get_available_memory_mb(void)
+> +{
+> +    unsigned long long ps, pn;
+> +    ps = sysconf(_SC_PAGESIZE);
+> +    pn = sysconf(_SC_AVPHYS_PAGES);
+> +    return ps * pn / (1024*1024);
+
+What I was suggesting was:
+ return (ps / 1024) * pn / 1024;
+
+All of the page sizes are at least 4k (grep "define PAGE_SHIFT" -r linux/arch/).
+This way "unsigned long" should do just fine for all variables.
+
+Ok!
+
+> +}
+> +
+> int main(int argc, char *argv[])
+> {
+>    int lc;
+> @@ -73,19 +84,26 @@ int main(int argc, char *argv[])
 > 
-> instead of cat, sed and echo.
-
-Oh, that's amazing, I learned a new method.  Thanks for the good suggestion.
-Will update it in V2.
-
-> > +	else
-> > +		echo "\*sched\*"
-> > +	fi
-> > +}
-> > +
-> > +event_pick()
-> > +{
-> > +	if [ -f $TRACING_PATH/available_events ]; then
-> > +		nr_events=$(cat $TRACING_PATH/available_events | wc -l)
-> > +		local pick_one=$(( (RANDOM % nr_events) + 1 ))
-> > +		picked_event=$(cat $TRACING_PATH/available_events | sed -n
-> > ''$pick_one'p')
-> > +
-> > +		echo "$picked_event"
+>    setup();
 > 
-> Here as well no need to use echo and cat:
+> -    for (lc = 0; TEST_LOOPING(lc); lc++) {
+> -        tst_count = 0;
+> -
+> -        tst_resm(TINFO, "allocate 100MB");
+> -        consume(100);
+> -
+> -        inherit_fork();
+> -        inherit_fork2();
+> -        fork_malloc();
+> -        grandchild_maxrss();
+> -        zombie();
+> -        sig_ign();
+> -        exec_without_fork();
+> +    avail_memory_mb = get_available_memory_mb();
+> +
+> +    tst_resm(TINFO, "Available memory: %ldMB\n", avail_memory_mb);
+> +    if (avail_memory_mb < DEFAULT_ALLOCATION_MB) {
+> +        tst_resm(TCONF, "Not enough memory to run this case\n");
+
+We have tst_brkm(TCONF, cleanup, "...");, which will print message,
+run cleanup and exit testcase.
+
+Much better!
+
+> +    } else {
+> +        for (lc = 0; TEST_LOOPING(lc); lc++) {
+> +            tst_count = 0;
+> +
+> +            tst_resm(TINFO, "allocate %dMB", DEFAULT_ALLOCATION_MB);
+> +            consume(DEFAULT_ALLOCATION_MB);
+
+This consume() is within loop, and it doesn't look like
+same loop frees any memory. I suggest you move it before loop.
+You can try running the testcase with "-i 20".
+
+You are right. I didn't see this because my test run one time. I will fix.
+
+
+> +
+> +            inherit_fork();
+> +            inherit_fork2();
+> +            fork_malloc();
+> +            grandchild_maxrss();
+> +            zombie();
+> +            sig_ign();
+> +            exec_without_fork();
+> +        }
+>    }
+>    cleanup();
+>    tst_exit();
+> @@ -95,11 +113,15 @@ int main(int argc, char *argv[])
+>  * expect: initial.self ~= child.self */
+> static void inherit_fork(void)
+> {
+> -    tst_resm(TINFO, "Testcase #01: fork inherit");
+> -
+>    SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+>    tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
 > 
-> sed -n ''$pick_one'p' $AVAILABLE_EVENTS
+> +    tst_resm(TINFO, "Testcase #01: fork inherit");
+> +    if (avail_memory_mb < DEFAULT_ALLOCATION_MB*2) {
 
-Will update it V2. Thanks!
+Is this needed? Child is not allocating anything, and fork
+should use copy-on-write.
 
+During my testing, if the memory available is not the double, the test had problem. I will recheck.
 
-> > +	else
-> > +		echo "sched:sched_switch"
-> > +	fi
-> > +}
-> > +
-> > +filter_formatter()
-> > +{
-> > +	local count=$(( (RANDOM % 5) + 1 ))
-> > +	function_name=$(function_pick)
-> > +	case $1 in
-> > +	traceon|traceoff|snapshot|dump|cpudump|stacktrace|module|function)
-> > +		format=$1
-> > +		;;
-> > +	enable_event|disable_event)
-> > +		event_sys_name=$(event_pick)
-> > +		format=$1:$event_sys_name
-> > +		;;
-> > +	module)
-> > +		module_pick
-> > +		echo "$picked_module:\*"
-> > +		return
-> > +		;;
-> > +	function)
-> > +		echo "$picked_function"
-> > +		return
-> > +		;;
-> > +	*)
-> > +		format=$1
-> > +		;;
-> > +	esac
-> > +	((count)) && format=$format:$count
+> +        tst_resm(TCONF, "Not enough memory to run this case\n");
+> +        return;
+> +    }
+> +
+>    switch (pid = fork()) {
+>    case -1:
+>        tst_brkm(TBROK | TERRNO, cleanup, "fork #1");
+> @@ -119,17 +141,21 @@ static void inherit_fork(void)
+> }
 > 
-> Bahsism. Also the count is non-zero since it's RANDOM % 5 + 1.
+> /* Testcase #02: fork inherit (cont.)
+> - * expect: initial.children ~= 100MB, child.children = 0 */
+> + * expect: initial.children ~= DEFAULT_ALLOCATION_MB, child.children = 0 */
+> static void inherit_fork2(void)
+> {
+>    tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
+> +    if (avail_memory_mb < DEFAULT_ALLOCATION_MB*2) {
 
-Will modify it in V2. Something like:
+Same as above.
 
-if [ $count -gt 0 ]; then
-     .....
-fi
+Similar to previous problem
 
-And will correct the random issue in V2. Thanks.
-
-
-> > +	echo $function_name:$format
-> > +}
-> > +
-> > +for ((; ;))
-> > +{
+> +        tst_resm(TCONF, "Not enough memory to run this case\n");
+> +        return;
+> +    }
 > 
-> Bash style loop. Use while true; do ... done
-
-Will make it while []; do in V2.
-
-
-> > +	cat $TRACING_PATH/set_ftrace_filter > /dev/null
+>    SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+>    tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+>    if (is_in_delta(ru.ru_maxrss - 102400))
+> -        tst_resm(TPASS, "initial.children ~= 100MB");
+> +        tst_resm(TPASS, "initial.children ~= %dMB", DEFAULT_ALLOCATION_MB);
+>    else
+> -        tst_resm(TFAIL, "initial.children !~= 100MB");
+> +        tst_resm(TFAIL, "initial.children !~= %dMB", DEFAULT_ALLOCATION_MB);
 > 
-> Why do we cat the file to /dev/null?
+>    switch (pid = fork()) {
+>    case -1:
+> @@ -153,6 +179,10 @@ static void inherit_fork2(void)
+> static void fork_malloc(void)
+> {
+>    tst_resm(TINFO, "Testcase #03: fork + malloc");
+> +    if (avail_memory_mb < (DEFAULT_ALLOCATION_MB*2+50)) {
 
-since the set_ftrace_filter can use reg match and support mod.
-such as if I:
+Same as above, isn't "50" going to be enough?
 
-echo :mod:kvm > /sys/kernel/debug/tracing/set_ftrace_filter 
+Again, similar.
 
-cat /sys/kernel/debug/tracing/set_ftrace_filter  | head -n 10
-ack_flush [kvm]
-kvm_get_kvm [kvm]
-kvm_disable_largepages [kvm]
-kvm_vcpu_mmap [kvm]
-kvm_io_bus_sort_cmp [kvm]
-mark_page_dirty_in_slot [kvm]
-kvm_sched_out [kvm]
-kvm_vcpu_init [kvm]
-kvm_vcpu_uninit [kvm]
+Thanks for your review. I will send another patch.
 
-The log will be rather long, I just concern it will make the log
-too large. You suggest make it show ?
-
-
-> > +	trigger_index=$((RANDOM % n_triggers))
-> > +	trigger_name=${triggers[$trigger_index]}
-> > +	filter_format=$(filter_formatter $trigger_name)
-> > +
-> > +	echo "$filter_format" > $TRACING_PATH/set_ftrace_filter
-> > +	[ $? -ne 0 ] && echo "setup filter <$filter_format> failed"
-> 
-> Shouldn't we report a failure here?
-
-Yes, agree. I should call some ltp interface to report a fail, Will do it in V2, thx.
-
-> > +	sleep 1
-> > +
-> > +	echo "!$filter_format" > $TRACING_PATH/set_ftrace_filter
-> > +	[ $? -ne 0 ] && echo "remove filter <$filter_format> failed"
-> 
-> Here as well.
-
-Will make it report ltp test failure on V2.
-
-> > +}
-> > diff --git
-> > a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_cpumask.sh
-> > b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_cpumask.sh
-> > new file mode 100755
-> > index 0000000..28bbc27
-> > --- /dev/null
-> > +++
-> > b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_cpumask.sh
-> > @@ -0,0 +1,51 @@
-> > +#! /bin/sh
-> > +
-> > +###########################################################################
-> > +##
-> > ##
-> > +## Copyright (c) 2015, Red Hat Inc.
-> > ##
-> > +##
-> > ##
-> > +## This program is free software: you can redistribute it and/or modify
-> > ##
-> > +## it under the terms of the GNU General Public License as published by
-> > ##
-> > +## the Free Software Foundation, either version 3 of the License, or
-> > ##
-> > +## (at your option) any later version.
-> > ##
-> > +##
-> > ##
-> > +## This program is distributed in the hope that it will be useful,
-> > ##
-> > +## but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > ##
-> > +## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-> > ##
-> > +## GNU General Public License for more details.
-> > ##
-> > +##
-> > ##
-> > +## You should have received a copy of the GNU General Public License
-> > ##
-> > +## along with this program. If not, see <http://www.gnu.org/licenses/>.
-> > ##
-> > +##
-> > ##
-> > +## Author: Chunyu Hu <chuhu@redhat.com>
-> > ##
-> > +##
-> > ##
-> > +###########################################################################
-> > +
-> > +nr_cpus=`tst_ncpus`
-> > +
-> > +get_random_value()
-> > +{
-> > +	local max=$1
-> > +	local min=${2:-0}
-> > +	local random=${RANDOM:-$(date +%N)}
-> > +	echo $(( random % max  ))
-> > +}
-> 
-> Well looks like you have implemented portable random function after all
-> although the range does not work at all.
-
-Hmm, it's not working, agree. So the only portable way is using the
-glibc interfaces. You mean I need to write this with c lib, or you mean
-you will do this? Thanks !
- 
-> it should really be:
-> 
-> echo $((min + (random % (max - min + 1))))
-
-Good algorithm. I just didn't realize this way. 
- 
-> Which would cover range [min, max] including both min and max.
-> 
-> And the function should be in a library used by all the testcases.
-> 
-> > +get_test_cpumask()
-> > +{
-> > +	local random=${RANDOM:-$(date +%N)}
-> 
-> Unused variable.
-
-Ah, will remove that in V2.
-
-
-> > +	local set_cnt=$(get_random_value $nr_cpus);
-> > +	mask=0
-> > +	for ((c=0; c<set_cnt; c++));do
-> 
-> Bashism.
-
-Will fix this in V2.
-
-> > +		local cpuid=$(get_random_value $nr_cpus)
-> > +		mask=$(( mask| (1<<$cpuid) ))
-> > +	done
-> > +	mask=`echo $mask | awk '{printf "%x",$0}'`
-> 
-> Why can't we echo the mask here and do:
-> 
-> get_test_cpumask > $TRACING_PATH/tracing_cpumask
-> 
-> in the main loop?
-
-Thanks for the suggestion, will use this way in V2.
-
-
-
-> > +}
-> > +
-> > +for ((; ;))
-> > +{
-> 
-> Bashism.
-
-Will fix in V2. Thanks.
-
-
-> > +	get_test_cpumask
-> > +	echo $mask > $TRACING_PATH/tracing_cpumask
-> > +	sleep 5
-> 
-> Why sleep 5?
-
-When I was testing the code, I found sometimes it can hit an softlockup issue.I
-doubt it was caused by this setup. But maybe not, it may be the func_stack_trace
-under the option dir causing the issue, if set_ftrace_filter is not setup, then
-alll kernel functions will be traced with every stack frame be scanned, I asked
-this  issue to the ftrace maintainer Steve, I guess i can remove this in V2, to
-handle the func_stack_trace instead. 
-
-> > +}
-> > diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress_test.sh
-> > b/testcases/kernel/tracing/ftrace_test/ftrace_stress_test.sh
-> > index d1be49a..49cae86 100755
-> > --- a/testcases/kernel/tracing/ftrace_test/ftrace_stress_test.sh
-> > +++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress_test.sh
-> > @@ -31,7 +31,8 @@ test_targets=" \
-> >  trace_pipe current_tracer ftrace_enabled function_profile_enabled \
-> >  set_event set_ftrace_pid stack_max_size stack_trace trace trace_clock \
-> >  trace_options trace_stat tracing_enabled tracing_max_latency \
-> > -tracing_on function_profile_enabled buffer_size_kb"
-> > +tracing_on function_profile_enabled buffer_size_kb tracing_cpumask \
-> > +set_ftrace_filter"
-> >  
-> >  get_skip_targets()
-> >  {
-> > --
-> > 1.8.3.1
-> > 
-> > 
-> > --
-> > Mailing list info: http://lists.linux.it/listinfo/ltp
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-
--- 
 Regards,
-Chunyu Hu
+Jan
 
+> +        tst_resm(TCONF, "Not enough memory to run this case\n");
+> +        return;
+> +    }
+> 
+>    SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+>    tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
+> @@ -182,6 +212,10 @@ static void fork_malloc(void)
+> static void grandchild_maxrss(void)
+> {
+>    tst_resm(TINFO, "Testcase #04: grandchild maxrss");
+> +    if (avail_memory_mb <= (DEFAULT_ALLOCATION_MB+300)) {
+> +        tst_resm(TCONF, "Not enough memory to run this case\n");
+> +        return;
+> +    }
+> 
+>    SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+>    tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+> @@ -216,6 +250,10 @@ static void grandchild_maxrss(void)
+> static void zombie(void)
+> {
+>    tst_resm(TINFO, "Testcase #05: zombie");
+> +    if (avail_memory_mb <= (DEFAULT_ALLOCATION_MB+400)) {
+> +        tst_resm(TCONF, "Not enough memory to run this case\n");
+> +        return;
+> +    }
+> 
+>    SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+>    tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+> @@ -259,6 +297,10 @@ static void zombie(void)
+> static void sig_ign(void)
+> {
+>    tst_resm(TINFO, "Testcase #06: SIG_IGN");
+> +    if (avail_memory_mb <= (DEFAULT_ALLOCATION_MB+500)) {
+> +        tst_resm(TCONF, "Not enough memory to run test case");
+> +        return;
+> +    }
+> 
+>    SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+>    tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+> --
+> 1.9.1
+> 
+> 
