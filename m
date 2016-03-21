@@ -1,185 +1,146 @@
-From: Julio Cruz <jcsistemas2001@gmail.com>
-Date: Sun, 20 Mar 2016 21:59:12 +0800
-Subject: [LTP] [PATCH] Change memory units to MB to support embedded
-	devices
-In-Reply-To: <1059278052.10541669.1458207337814.JavaMail.zimbra@redhat.com>
-References: <1458097251-2708-1-git-send-email-jcsistemas2001@gmail.com>
- <1059278052.10541669.1458207337814.JavaMail.zimbra@redhat.com>
-Message-ID: <C6D5F8CE-29D8-4EC9-A490-80C175C6F749@gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 21 Mar 2016 13:09:40 +0100
+Subject: [LTP] [PATCH RFC 9/9] ftrace_stress: add two new tests
+In-Reply-To: <1617631867.29672478.1458310104811.JavaMail.zimbra@redhat.com>
+References: <1457079898-9449-1-git-send-email-liwang@redhat.com>
+ <1457079898-9449-5-git-send-email-liwang@redhat.com>
+ <1457079898-9449-6-git-send-email-liwang@redhat.com>
+ <1457079898-9449-7-git-send-email-liwang@redhat.com>
+ <1457079898-9449-8-git-send-email-liwang@redhat.com>
+ <1457079898-9449-9-git-send-email-liwang@redhat.com>
+ <1457079898-9449-10-git-send-email-liwang@redhat.com>
+ <20160317180833.GJ31815@rei.lan>
+ <1617631867.29672478.1458310104811.JavaMail.zimbra@redhat.com>
+Message-ID: <20160321120939.GA32294@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Agree. I will send a new version later.
+Hi!
+> Thanks for the review. Seems some Bash styles needs to be fixed in all subcase.
+> I replied the issues you pointed out below. You mean I need to write a c bin 
+> to generate random? Or you will make it in lib?
 
-On Mar 17, 2016, at 5:35 PM, Jan Stancek <jstancek@redhat.com> wrote:
+I think easiest solution would be to add tst_random that takes min and
+max parameters to the test.sh and use date to implement it. Just do it
+in a separate patch, or if needed I can add it for you.
 
+> I have to ask a question about the portable.Can we use an array here? You
+> mean we can't use array or just can't use the ${#array_name} to get the 
+> number of elements? If array can be used, I guess I can use something like
 
+Arrays are bash specific feature.
 
+> echo ${triggers[*]} | wc -w , If not accepted by some shells. Then I need to
+> change it to string, and use the way you mentioned echo "$string" | wc -w
 
+That would be the best solution.
 
------ Original Message -----
-> From: "Julio Cruz" <jcsistemas2001@gmail.com>
-> To: "julio cruz" <julio.cruz@smartmatic.com>, ltp@lists.linux.it, chrubis@suse.cz, jstancek@redhat.com
-> Cc: "Julio Cruz" <jcsistemas2001@gmail.com>
-> Sent: Wednesday, 16 March, 2016 4:00:51 AM
-> Subject: [PATCH] Change memory units to MB to support embedded devices
-> 
-> This patch made two changes: 1) check the available memory
-> before to perform the test case, and 2) change the memory units
-> from GB to MB.
-> Both changes are needed during testing on embedded devices
-> with RAM memory limitation (i.e. 512MB)
-> This patch no changed the test case procedure and the default
-> memory size is the same (1GB=1000MB).
-> To use this test case in embedded devices, I suggest to change
-> the testrun 'mm' as below from: "mtest06_2 mmap2 -x 0.002 -a -p"
-> to "mtest06_2 mmap2 -x 0.002 -a -p -s 100"
+FYI you can install dash on most of the distributions and try to run the
+scripts with it. That will catch most of the portability issues.
 
-I think we can make default a smaller value without any impact
-on what this test is doing. Test doesn't say why 1GB was chosen.
+...
 
-I'd go with 128M, that still covers most scenarios where we'd
-use at least 2 consecutive huge pages (of most common sizes).
+> > > +	cat $TRACING_PATH/set_ftrace_filter > /dev/null
+> > 
+> > Why do we cat the file to /dev/null?
+> 
+> since the set_ftrace_filter can use reg match and support mod.
+> such as if I:
+> 
+> echo :mod:kvm > /sys/kernel/debug/tracing/set_ftrace_filter 
+> 
+> cat /sys/kernel/debug/tracing/set_ftrace_filter  | head -n 10
+> ack_flush [kvm]
+> kvm_get_kvm [kvm]
+> kvm_disable_largepages [kvm]
+> kvm_vcpu_mmap [kvm]
+> kvm_io_bus_sort_cmp [kvm]
+> mark_page_dirty_in_slot [kvm]
+> kvm_sched_out [kvm]
+> kvm_vcpu_init [kvm]
+> kvm_vcpu_uninit [kvm]
+> 
+> The log will be rather long, I just concern it will make the log
+> too large. You suggest make it show ?
 
-Regards,
-Jan
+I'm just asking since it looks to me like this statement has no effect
+at all. Or are we trying to test that kernel does not break if we read
+the file? In that case we should add a short comment with explanation.
 
+> > > +}
+> > > diff --git
+> > > a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_cpumask.sh
+> > > b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_cpumask.sh
+> > > new file mode 100755
+> > > index 0000000..28bbc27
+> > > --- /dev/null
+> > > +++
+> > > b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_cpumask.sh
+> > > @@ -0,0 +1,51 @@
+> > > +#! /bin/sh
+> > > +
+> > > +###########################################################################
+> > > +##
+> > > ##
+> > > +## Copyright (c) 2015, Red Hat Inc.
+> > > ##
+> > > +##
+> > > ##
+> > > +## This program is free software: you can redistribute it and/or modify
+> > > ##
+> > > +## it under the terms of the GNU General Public License as published by
+> > > ##
+> > > +## the Free Software Foundation, either version 3 of the License, or
+> > > ##
+> > > +## (at your option) any later version.
+> > > ##
+> > > +##
+> > > ##
+> > > +## This program is distributed in the hope that it will be useful,
+> > > ##
+> > > +## but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > > ##
+> > > +## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+> > > ##
+> > > +## GNU General Public License for more details.
+> > > ##
+> > > +##
+> > > ##
+> > > +## You should have received a copy of the GNU General Public License
+> > > ##
+> > > +## along with this program. If not, see <http://www.gnu.org/licenses/>.
+> > > ##
+> > > +##
+> > > ##
+> > > +## Author: Chunyu Hu <chuhu@redhat.com>
+> > > ##
+> > > +##
+> > > ##
+> > > +###########################################################################
+> > > +
+> > > +nr_cpus=`tst_ncpus`
+> > > +
+> > > +get_random_value()
+> > > +{
+> > > +	local max=$1
+> > > +	local min=${2:-0}
+> > > +	local random=${RANDOM:-$(date +%N)}
+> > > +	echo $(( random % max  ))
+> > > +}
+> > 
+> > Well looks like you have implemented portable random function after all
+> > although the range does not work at all.
 > 
-> Signed-off-by: Julio Cruz <jcsistemas2001@gmail.com>
-> ---
-> testcases/kernel/mem/mtest06/mmap2.c | 40
-> +++++++++++++++++++++++++-----------
-> 1 file changed, 28 insertions(+), 12 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/mtest06/mmap2.c
-> b/testcases/kernel/mem/mtest06/mmap2.c
-> index ad81dbe..ebeebe5 100644
-> --- a/testcases/kernel/mem/mtest06/mmap2.c
-> +++ b/testcases/kernel/mem/mtest06/mmap2.c
-> @@ -48,9 +48,9 @@
-> /*                                          */
-> /* Description: Test the LINUX memory manager. The program is aimed at
-> */
-> /*              stressing the memory manager by repeaded map/write/unmap of
-> a */
-> -/*        of a large gb size file.                      */
-> +/*        large mb size file.                              */
-> /*                                          */
-> -/*        Create a file of the specified size in gb, map the file,      */
-> +/*        Create a file of the specified size in mb, map the file,      */
-> /*        change the contents of the file and unmap it. This is repeated*/
-> /*        several times for the specified number of hours.          */
-> /*                                          */
-> @@ -73,7 +73,7 @@
-> #include <getopt.h>
-> #include "test.h"
-> 
-> -#define GB 1000000000
-> +#define MB 1048576
-> #ifndef TRUE
-> #define TRUE 1
-> #endif
-> @@ -99,7 +99,7 @@ static int mkfile(int size)
->        fprintf(stdout, "creating tmp file and writing 'a' to it ");
->    }
-> 
-> -    while (index < (size * GB)) {
-> +    while (index < (size * MB)) {
->        index += 4096;
->        if (write(fd, buff, 4096) == -1) {
->            perror("mkfile(): write()");
-> @@ -136,16 +136,24 @@ static void usage(char *progname)
->        "\t -p set map_flag to MAP_PRIVATE.\tdefault:"
->        "MAP_SHARED\n"
->        "\t -s size of the file/memory to be mmaped.\tdefault:"
-> -        "1GB\n"
-> +        "1000MB\n"
->        "\t -x time for which test is to be run.\tdefault:"
->        "24 Hrs\n", progname);
->    exit(-1);
-> }
-> 
-> +long get_available_memory_mb(void)
-> +{
-> +    unsigned long long ps, pn;
-> +    ps = sysconf(_SC_PAGESIZE);
-> +    pn = sysconf(_SC_AVPHYS_PAGES);
-> +    return ps * pn / (1024*1024);
-> +}
-> +
-> int main(int argc, char **argv)
-> {
->    int fd;
-> -    int fsize = 1;
-> +    int fsize = 1000;
->    float exec_time = 24;
->    int c;
->    int sig_ndx;
-> @@ -153,6 +161,7 @@ int main(int argc, char **argv)
->    int map_anon = FALSE;
->    int run_once = TRUE;
->    char *memptr;
-> +    long avail_memory_mb;
->    struct sigaction sigptr;
-> 
->    static struct signal_info {
-> @@ -188,7 +197,7 @@ int main(int argc, char **argv)
->            fsize = atoi(optarg);
->            if (fsize == 0)
->                fprintf(stderr, "Using default "
-> -                    "fsize %d GB\n", fsize = 1);
-> +                    "fsize %d MB\n", fsize = 1000);
->            break;
->        case 'x':
->            exec_time = atof(optarg);
-> @@ -205,7 +214,14 @@ int main(int argc, char **argv)
-> 
->    fprintf(stdout, "MM Stress test, map/write/unmap large file\n"
->        "\tTest scheduled to run for:       %f\n"
-> -        "\tSize of temp file in GB:         %d\n", exec_time, fsize);
-> +        "\tSize of temp file in MB:         %d\n", exec_time, fsize);
-> +
-> +    avail_memory_mb = get_available_memory_mb();
-> +    fprintf(stdout, "Available memory: %ldMB\n", avail_memory_mb);
-> +    if (fsize > avail_memory_mb) {
-> +        fprintf(stdout, "Not enough memory to run this case\n");
-> +        exit(0);
-> +    }
-> 
->    alarm(exec_time * 3600.00);
-> 
-> @@ -235,7 +251,7 @@ int main(int argc, char **argv)
->            fd = -1;
->            map_flags = map_flags | MAP_ANONYMOUS;
->        }
-> -        memptr = mmap(0, (fsize * GB), PROT_READ | PROT_WRITE,
-> +        memptr = mmap(0, (fsize * MB), PROT_READ | PROT_WRITE,
->                  map_flags, fd, 0);
->        if (memptr == MAP_FAILED) {
->            perror("main(): mmap()");
-> @@ -244,15 +260,15 @@ int main(int argc, char **argv)
->            fprintf(stdout, "file mapped at %p\n"
->                "changing file content to 'A'\n", memptr);
-> 
-> -        memset(memptr, 'A', ((fsize * GB) / sizeof(char)));
-> +        memset(memptr, 'A', ((fsize * MB) / sizeof(char)));
-> 
-> -        if (msync(memptr, ((fsize * GB) / sizeof(char)),
-> +        if (msync(memptr, ((fsize * MB) / sizeof(char)),
->              MS_SYNC | MS_INVALIDATE) == -1) {
->            perror("main(): msync()");
->            exit(-1);
->        }
-> 
-> -        if (munmap(memptr, (fsize * GB) / sizeof(char)) == -1) {
-> +        if (munmap(memptr, (fsize * MB) / sizeof(char)) == -1) {
->            perror("main(): munmap()");
->            exit(-1);
->        } else
-> --
-> 1.9.1
-> 
-> 
+> Hmm, it's not working, agree. So the only portable way is using the
+> glibc interfaces. You mean I need to write this with c lib, or you mean
+> you will do this? Thanks !
+
+Not really the date +%N would work fine in this case as we do not need
+too complicated random generator after all.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
