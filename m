@@ -1,101 +1,142 @@
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Tue, 22 Mar 2016 21:49:13 +0800
-Subject: [LTP] max_map_count fail in arm64 system which support lib32
-In-Reply-To: <20160322102943.GA10195@rei.suse.cz>
-References: <56DD6138.9060109@huawei.com> <20160322102943.GA10195@rei.suse.cz>
-Message-ID: <56F14D59.1040701@huawei.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 22 Mar 2016 22:01:42 +0800
+Subject: [LTP] [PATCH 2/4] mm/ksm: extend 'max_page_sharing' before ksm
+	testing
+In-Reply-To: <CAEemH2ewrJmmYOuEcR8QfKsVgyi7aGpwAp8POWnzoORB8BMr-Q@mail.gmail.com>
+References: <1457602468-24268-1-git-send-email-liwang@redhat.com>
+ <1457602468-24268-2-git-send-email-liwang@redhat.com>
+ <20160322131422.GA10905@rei.suse.cz>
+ <CAEemH2ewrJmmYOuEcR8QfKsVgyi7aGpwAp8POWnzoORB8BMr-Q@mail.gmail.com>
+Message-ID: <CAEemH2dOqgg_90dwoy2NZBXqzGFq8cGtDufJGP10VaAaAZF7SA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2016/3/22 18:29, Cyril Hrubis wrote:
-> Hi!
->> ./max_map_count_32
->> max_map_count    0  TINFO  :  set overcommit_memory to 2
->> max_map_count    0  TINFO  :  set max_map_count to 64
->> max_map_count    1  TFAIL  :  max_map_count.c:233: 64 map entries in total, but expected 64 entries
->> max_map_count    0  TINFO  :  set max_map_count to 256
->> max_map_count    2  TFAIL  :  max_map_count.c:233: 256 map entries in total, but expected 256 entries
->> max_map_count    0  TINFO  :  set max_map_count to 1024
->> max_map_count    3  TFAIL  :  max_map_count.c:233: 1024 map entries in total, but expected 1024 entries
->> max_map_count    0  TINFO  :  set max_map_count to 4096
->> max_map_count    4  TFAIL  :  max_map_count.c:233: 4096 map entries in total, but expected 4096 entries
->> max_map_count    0  TINFO  :  set max_map_count to 16384
->> max_map_count    5  TFAIL  :  max_map_count.c:233: 16384 map entries in total, but expected 16384 entries
->> max_map_count    0  TINFO  :  set max_map_count to 65536
->> max_map_count    6  TFAIL  :  max_map_count.c:233: 65536 map entries in total, but expected 65536 entries
->> max_map_count    0  TINFO  :  set overcommit_memory to 0
->> max_map_count    0  TINFO  :  set max_map_count to 65530
+On Tue, Mar 22, 2016 at 9:42 PM, Li Wang <liwang@redhat.com> wrote:
+
+> Hi Cyril,
+>
+> On Tue, Mar 22, 2016 at 9:14 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+>
+>> > diff --git a/testcases/kernel/mem/include/mem.h
+>> b/testcases/kernel/mem/include/mem.h
+>> > index 43988fe..fbb11b2 100644
+>> > --- a/testcases/kernel/mem/include/mem.h
+>> > +++ b/testcases/kernel/mem/include/mem.h
+>> > @@ -43,6 +43,7 @@ void testoom(int mempolicy, int lite, int retcode,
+>> int allow_sigkill);
+>> >  /* KSM */
+>> >
+>> >  #define PATH_KSM             "/sys/kernel/mm/ksm/"
+>> > +int max_page_sharing;
 >>
->>     When I use 32-bit SDK, it will compile at:
+>> This variable is not used in the library. It does not make sense to
+>> declare it in the header file.
 >>
->> 	#elif defined(__arm__)
->>         	/* Older arm kernels didn't label their vdso maps */
->>         	if (!strncmp(line, "ffff0000-ffff1000", 17))
->>                 	return true;
-> 
-> So you compile 32bit binary and run it on 64bit arm kernel and it
-> wrongly skips one mapping?
-> 
->>     and not:
->> 	#elif defined(__ia64__)
->>         	/* On ia64, the vdso is not a proper mapping */
->>         	if (!strcmp(buf, "[vdso]"))
->>                 	return true;
-> 
-> __ia64__ is itanium, I guess that the function always returns false when
-> compiled for 64bit arm.
-> 
-> The solution may be runtime detection for 32bit/64bit kernel on arm. We
-> can look at the machine string in the struct utsname returned from
-> uname(2) to get that information.
-Hi,
-I add a print:
+>
+> no, it has been used in mem.c file.
+>
 
-#elif defined(__arm__)
-if (!strncmp(line, "ffff0000-ffff1000", 17))
-        {
-                printf("%s\n", line);  // I add
-                return true;
-        }
-
-and then run it(32bit SDK):
-
-./max_map_count
-max_map_count    0  TINFO  :  set overcommit_memory to 2
-max_map_count    0  TINFO  :  set max_map_count to 64
-ffff0000-ffff1000 r-xp 00000000 00:00 0                                  [vectors]
-max_map_count    1  TFAIL  :  max_map_count.c:242: 64 map entries in total, but expected 64 entries
-
-So we know why it failed:
-It skip 'ffff0000-ffff1000' in arm64 kernel when we use 32bit SDK, but it doesn't skip when use 64bit SDK.
-Maybe the error is caused by the different sdk.
+Oops! you are right, I didn't noticed that it just a string(not the value)
+in the mem.c codes. sorry for making noise here. I will re-write the
+patches.
 
 
-And I do this test for arm32 system:
-arma9el:/tmp# ./max_map_count
-max_map_count    0  TINFO  :  set overcommit_memory to 2
-max_map_count    0  TINFO  :  set max_map_count to 64
-ffff0000-ffff1000 r-xp 00000000 00:00 0          [vectors]
-max_map_count    1  TPASS  :  max_maps:64 map_count:65  map entries in total as expected.
+>
+> see here:
+> ------------
+> diff --git a/testcases/kernel/mem/lib/
+> mem.c b/testcases/kernel/mem/lib/mem.c
+> index 7b5bb35..d37d6a4 100644
+> --- a/testcases/kernel/mem/lib/mem.c
+> +++ b/testcases/kernel/mem/lib/mem.c
+> @@ -502,9 +502,12 @@ void create_same_memory(int size, int num, int unit)
+>         stop_ksm_children(child, num);
+>
+>         tst_resm(TINFO, "KSM merging...");
+> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
+> +               SAFE_FILE_PRINTF(cleanup, PATH_KSM "max_page_sharing",
+> +                               "%ld", size * pages * num);
+>         SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
+>         SAFE_FILE_PRINTF(cleanup, PATH_KSM "pages_to_scan", "%ld",
+> -                        size * pages *num);
+> +                        size * pages * num);
+>         SAFE_FILE_PRINTF(cleanup, PATH_KSM "sleep_millisecs", "0");
+>
+>         resume_ksm_children(child, num);
+> @@ -595,6 +598,9 @@ void test_ksm_merge_across_nodes(unsigned long
+> nr_pages)
+>         SAFE_FILE_PRINTF(cleanup, PATH_KSM "sleep_millisecs", "0");
+>         SAFE_FILE_PRINTF(cleanup, PATH_KSM "pages_to_scan", "%ld",
+>                          nr_pages * num_nodes);
+> +       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
+> +               SAFE_FILE_PRINTF(cleanup, PATH_KSM "max_page_sharing",
+> +                       "%ld", nr_pages * num_nodes);
+>
+>
+>
+>> >  void test_ksm_merge_across_nodes(unsigned long nr_pages);
+>> >
+>> > diff --git a/testcases/kernel/mem/ksm/ksm01.c
+>> b/testcases/kernel/mem/ksm/ksm01.c
+>> > index b62df06..a352abd 100644
+>> > --- a/testcases/kernel/mem/ksm/ksm01.c
+>> > +++ b/testcases/kernel/mem/ksm/ksm01.c
+>> > @@ -105,6 +105,9 @@ void setup(void)
+>> >               tst_brkm(TCONF, NULL, "2.6.32 or greater kernel
+>> required");
+>> >       if (access(PATH_KSM, F_OK) == -1)
+>> >               tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+>> > +     if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
+>> > +             SAFE_FILE_SCANF(NULL, PATH_KSM "max_page_sharing",
+>> > +                             "%d", &max_page_sharing);
+>> >
+>> >       /*
+>> >        * kernel commit 90bd6fd introduced a new KSM sysfs knob
+>> > @@ -128,4 +131,8 @@ void cleanup(void)
+>> >       if (access(PATH_KSM "merge_across_nodes", F_OK) == 0)
+>> >               FILE_PRINTF(PATH_KSM "merge_across_nodes",
+>> >                                "%d", merge_across_nodes);
+>> > +
+>> > +     if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
+>> > +             FILE_PRINTF(PATH_KSM "max_page_sharing",
+>> > +                              "%d", max_page_sharing);
+>> >  }
+>>
+>> You are saving and restoring the file in each test. Why can't you just
+>> add two functions to save and restore it the library instead and call
+>> them from test setup and cleanup?
+>>
+>
+> ok, that's a better way.
+>
+>
+>>
+>> It's also quite confusing that the test saves and restores a value while
+>> it's not modifying it at all. It will be less confusing if it's all done
+>> in the library.
+>>
+>> --
+>> Cyril Hrubis
+>> chrubis@suse.cz
+>>
+>
+>
+>
+> --
+> Regards,
+> Li Wang
+> Email: liwang@redhat.com
+>
 
-It skip 'ffff0000-ffff1000' in arm32 but passed.
 
-Look at max_map_count.c:
- * Note: On some architectures there is a special vma VSYSCALL, which
- * is allocated without incrementing mm->map_count variable. On these
- * architectures each /proc/<pid>/maps has at the end:
-...
 
-So I think:
-* arm 64bit kernel doesn't have 'special vma VSYSCALL' so no need to skip(32bit binary skip so fail);
-* arm 32bit kernel have 'special vma VSYSCALL';
-
-Is it right :-D?
-
-Thanks
-Cui Bixuan
-> 
-
+-- 
+Regards,
+Li Wang
+Email: liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160322/f174172d/attachment-0001.html>
