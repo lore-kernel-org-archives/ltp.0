@@ -1,47 +1,51 @@
-From: Kshitij Malik <Kshitij.Malik@mitel.com>
-Date: Mon, 21 Mar 2016 21:23:43 +0000
-Subject: [LTP] poll02 threshold overruns
-Message-ID: <SN1PR12MB07827ABE2B50365F2C528A03EE8F0@SN1PR12MB0782.namprd12.prod.outlook.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 22 Mar 2016 16:27:24 +0800
+Subject: [LTP] [PATCH RFC 3/9] tracing[2]: reorganize ftrace stress
+ tests to general tests
+In-Reply-To: <20160321122107.GB32294@rei.lan>
+References: <1457079898-9449-1-git-send-email-liwang@redhat.com>
+ <1457079898-9449-2-git-send-email-liwang@redhat.com>
+ <1457079898-9449-3-git-send-email-liwang@redhat.com>
+ <1457079898-9449-4-git-send-email-liwang@redhat.com>
+ <20160317163918.GD31815@rei.lan>
+ <CAEemH2duh-a3yw-2y0xx9VBe0Sor8imJJeotcC-Q-t-w8J2fCw@mail.gmail.com>
+ <20160321122107.GB32294@rei.lan>
+Message-ID: <CAEemH2fjFsmo=RnnDweiO61Dnk=wL2Y6ozKZM88gfqJ0ciV-DQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi Cyril,
 
-I'm working on PowerPc based board MPC8360 and we are running 4.1.13 kernel. During our LTP run, we saw the following failure with poll02 test.
+On Mon, Mar 21, 2016 at 8:21 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
 
-poll02      1  TFAIL  :  poll02.c:92: poll() slept too long 115ms, expected 100ms, threshold 12
+> Hi!
+> > Seems like these regression cases are petty and simple. I fear that would
+> > be too dispersed to read. How about taking use of the cgroup tests
+> > code-style to organise them?
+>
+> I do not think so. The problem with running to many testcases as one
+> test is that we get wrong idea about the overall result. Even if one
+> regression test fails the test will return failure and instead of 90%
+> green we end up with 100% red in the results.
+>
 
-The log file is attached to this mail.
-
-Please note that I'm running the latest LTP code.
-
-I understand that threshold value overruns the relax limit. I try changing the threshold value to 20 as below (to give more relaxing time)
-
-testcases/kernel/syscalls/poll/poll02.c, line 61
-
-- treshold = sleep_ms / 100 + 10;
-+treshold = sleep_ms / 10 + 10;
-
-I ran the test in a loop until it fails and the test failed after 3 mins at attempt number 240 with the timer value 121ms. Error as below:
-
-poll02      1  TFAIL  :  poll02.c:92: poll() slept too long 121ms, expected 100ms, threshold 20
+ok, I have got the point, will separate the regression case in each.
 
 
-Can you please look into this and explain the behaviour and a possible solution? Is it a architecture constraint?
+>
+> And also the cgroup_regression_test.sh does not use the test.sh library
+> do not take the test as example please.
+>
+>
+thanks!
 
-Please let me know if you need any other information.
-
-Thanks
-KK
-________________________________
-NOTE: This e-mail (including any attachments) is for the sole use of the intended recipient(s) and may contain information that is confidential and/or protected by legal privilege. Any unauthorized review, use, copy, disclosure or distribution of this e-mail is strictly prohibited. If you are not the intended recipient, please notify Mitel immediately and destroy all copies of this e-mail. Mitel does not accept any liability for breach of security, error or virus that may result from the transmission of this message.
+-- 
+Regards,
+Li Wang
+Email: liwang@redhat.com
 -------------- next part --------------
-A non-text attachment was scrubbed...
-Name: Ltp_console_output_poll02.log
-Type: application/octet-stream
-Size: 2709 bytes
-Desc: Ltp_console_output_poll02.log
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160321/6ae4596f/attachment-0001.obj>
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160322/d063e72e/attachment.html>
