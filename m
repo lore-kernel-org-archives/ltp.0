@@ -1,56 +1,202 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Mar 2016 11:29:43 +0100
-Subject: [LTP] max_map_count fail in arm64 system which support lib32
-In-Reply-To: <56DD6138.9060109@huawei.com>
-References: <56DD6138.9060109@huawei.com>
-Message-ID: <20160322102943.GA10195@rei.suse.cz>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 22 Mar 2016 15:51:58 +0300
+Subject: [LTP] [PATCHv3 2/3] network/stress: add ipsec lib
+In-Reply-To: <1458209056-18829-3-git-send-email-haliu@redhat.com>
+References: <1458209056-18829-1-git-send-email-haliu@redhat.com>
+ <1458209056-18829-3-git-send-email-haliu@redhat.com>
+Message-ID: <56F13FEE.2070201@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> ./max_map_count_32
-> max_map_count    0  TINFO  :  set overcommit_memory to 2
-> max_map_count    0  TINFO  :  set max_map_count to 64
-> max_map_count    1  TFAIL  :  max_map_count.c:233: 64 map entries in total, but expected 64 entries
-> max_map_count    0  TINFO  :  set max_map_count to 256
-> max_map_count    2  TFAIL  :  max_map_count.c:233: 256 map entries in total, but expected 256 entries
-> max_map_count    0  TINFO  :  set max_map_count to 1024
-> max_map_count    3  TFAIL  :  max_map_count.c:233: 1024 map entries in total, but expected 1024 entries
-> max_map_count    0  TINFO  :  set max_map_count to 4096
-> max_map_count    4  TFAIL  :  max_map_count.c:233: 4096 map entries in total, but expected 4096 entries
-> max_map_count    0  TINFO  :  set max_map_count to 16384
-> max_map_count    5  TFAIL  :  max_map_count.c:233: 16384 map entries in total, but expected 16384 entries
-> max_map_count    0  TINFO  :  set max_map_count to 65536
-> max_map_count    6  TFAIL  :  max_map_count.c:233: 65536 map entries in total, but expected 65536 entries
-> max_map_count    0  TINFO  :  set overcommit_memory to 0
-> max_map_count    0  TINFO  :  set max_map_count to 65530
-> 
->     When I use 32-bit SDK, it will compile at:
-> 
-> 	#elif defined(__arm__)
->         	/* Older arm kernels didn't label their vdso maps */
->         	if (!strncmp(line, "ffff0000-ffff1000", 17))
->                 	return true;
+Hi,
+On 03/17/2016 01:04 PM, Hangbin Liu wrote:
+> Signed-off-by: Hangbin Liu <haliu@redhat.com>
+> ---
+>   testcases/network/stress/ipsec/Makefile     |  29 ++++++++
+>   testcases/network/stress/ipsec/ipsec_lib.sh | 111 ++++++++++++++++++++++++++++
+>   2 files changed, 140 insertions(+)
+>   create mode 100644 testcases/network/stress/ipsec/Makefile
+>   create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
+>
+> diff --git a/testcases/network/stress/ipsec/Makefile b/testcases/network/stress/ipsec/Makefile
+> new file mode 100644
+> index 0000000..0d7f1b6
+> --- /dev/null
+> +++ b/testcases/network/stress/ipsec/Makefile
+> @@ -0,0 +1,29 @@
+> +#!/bin/sh
+> +# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program; if not, write the Free Software Foundation,
+> +# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +#
 
-So you compile 32bit binary and run it on 64bit arm kernel and it
-wrongly skips one mapping?
+Forgot to change it here?
 
->     and not:
-> 	#elif defined(__ia64__)
->         	/* On ia64, the vdso is not a proper mapping */
->         	if (!strcmp(buf, "[vdso]"))
->                 	return true;
+> +# Author: Hangbin Liu <haliu@redhat.com>
+> +#
+> +#######################################################################
+> +
+> +
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/env_pre.mk
+> +
+> +INSTALL_TARGETS		:= *.sh
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
+> new file mode 100644
+> index 0000000..33716ce
+> --- /dev/null
+> +++ b/testcases/network/stress/ipsec/ipsec_lib.sh
+> @@ -0,0 +1,111 @@
+> +#!/bin/sh
+> +# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
+> +#
+> +# This program is free software; you can redistribute it and/or
+> +# modify it under the terms of the GNU General Public License as
+> +# published by the Free Software Foundation; either version 2 of
+> +# the License, or (at your option) any later version.
+> +#
+> +# This program is distributed in the hope that it would be useful,
+> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> +# GNU General Public License for more details.
+> +#
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program; if not, see <http://www.gnu.org/licenses/>.
+> +#
+> +# Author: Hangbin Liu <haliu@redhat.com>
+> +#
+> +#######################################################################
+> +
+> +. test_net.sh
+> +
+> +# tst_ipsec flush: flush the ipsec state and policy
+> +# tst_ipsec target protocol mode spi src_addr dst_addr: config ipsec
+> +#
+> +# target: target of the configuration file ( src / dst )
+> +# protocol: ah / esp / ipcomp
+> +# mode: transport / tunnel
+> +# spi: the first spi value
+> +# src_addr: source IP address
+> +# dst_addr: destination IP address
+> +tst_ipsec()
+> +{
+> +	if [ "$1" = "flush" ]; then
+> +		ROD ip xfrm state flush
+> +		ROD ip xfrm policy flush
+> +		tst_rhost_run -s -c "ip xfrm state flush && ip xfrm policy flush"
+> +		return 0
+> +	fi
 
-__ia64__ is itanium, I guess that the function always returns false when
-compiled for 64bit arm.
+I'd move it to another function, we could name ittst_ipsec_cleanup().
+And tst_ipsec() needs some general description like what it actually does.
 
-The solution may be runtime detection for 32bit/64bit kernel on arm. We
-can look at the machine string in the struct utsname returned from
-uname(2) to get that information.
+> +	if [ $# -ne 6 ]; then
+> +		tst_resm TINFO "tst_ipsec parameter mismatch"
+> +		return 1
+> +	fi
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Why not just tst_brkm() here?
+
+> +
+> +	target=$1
+> +	protocol=$2
+> +	mode=$3
+> +	spi=$4
+> +	src=$5
+> +	dst=$6
+
+It's better to make these variables to be defined in function scope
+(as local) and other variables which used only inside the function.
+
+> +
+> +	# Encryption algorithm
+> +	EALGO="des3_ede"
+> +	EALGO_KEY=0x$(printf _I_want_to_have_chicken_ | hexdump -ve '/1 "%x"')
+> +
+> +	# Authentication algorithm
+> +	AALGO="sha1"
+> +	AALGO_KEY=0x$(printf beef_fish_pork_salad | hexdump -ve '/1 "%x"')
+
+if we use hexdump, we should verify it with tst_check_cmds()
+(e.g. when we source the library).
+
+> +
+> +	# Compression algorithm
+> +	CALGO="deflate"
+> +	# Algorithm options for each protocol
+> +	case $protocol in
+> +	ah)
+> +		algo_line="auth $AALGO $AALGO_KEY"
+> +		proto="ah"
+> +		;;
+> +	esp)
+> +		algo_line="enc $EALGO $EALGO_KEY auth $AALGO $AALGO_KEY"
+> +		proto="esp"
+> +		;;
+> +	ipcomp)
+> +		algo_line="comp $CALGO"
+> +		proto="comp"
+> +		;;
+> +	*)
+> +		tst_resm TINFO "tst_ipsec protocol mismatch"
+> +		return 1
+> +		;;
+> +	esac
+
+I would add tst_brkm() here as well.
+
+> +
+> +	if [ $target = src ]; then
+> +		spi_1="0x$spi"
+> +		spi_2="0x$(( $spi + 1 ))"
+> +		ROD ip xfrm state add src $src dst $dst spi $spi_1 proto $proto \
+> +			$algo_line mode $mode sel src $src dst $dst
+> +		ROD ip xfrm policy add src $src dst $dst dir out tmpl src $src \
+> +			dst $dst proto $proto mode $mode
+> +
+> +		ROD ip xfrm state add src $dst dst $src spi $spi_2 proto $proto \
+> +			$algo_line mode $mode sel src $dst dst $src
+> +		ROD ip xfrm policy add src $dst dst $src dir in tmpl src $dst \
+> +			dst $src proto $proto mode $mode level use
+> +		ROD ip xfrm state
+> +		ROD ip xfrm policy
+> +	elif [ $target = dst ]; then
+> +		spi_1="0x$(( $spi + 1 ))"
+> +		spi_2="0x$spi"
+> +		tst_rhost_run -s -c "ip xfrm state add src $src dst $dst spi $spi_1 \
+> +			proto $proto $algo_line mode $mode sel src $src dst $dst"
+> +		tst_rhost_run -s -c "ip xfrm policy add src $src dst $dst dir out \
+> +			tmpl src $src dst $dst proto $proto mode $mode"
+> +
+> +		tst_rhost_run -s -c "ip xfrm state add src $dst dst $src spi $spi_2 \
+> +			proto $proto $algo_line mode $mode sel src $dst dst $src"
+> +		tst_rhost_run -s -c "ip xfrm policy add src $dst dst $src dir in \
+> +			tmpl src $dst dst $src proto $proto mode $mode level use"
+> +		tst_rhost_run -s -c "ip xfrm state"
+> +		tst_rhost_run -s -c "ip xfrm policy"
+> +	fi
+> +}
+
+Can we stick with lhost/rhost naming, and lhost to be default value?
+So it would be similar to test_net.sh...
+
+Best regards,
+Alexey
