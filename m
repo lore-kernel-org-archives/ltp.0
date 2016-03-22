@@ -1,219 +1,122 @@
-From: Hangbin Liu <haliu@redhat.com>
-Date: Tue, 22 Mar 2016 21:36:31 +0800
-Subject: [LTP] [PATCHv3 2/3] network/stress: add ipsec lib
-In-Reply-To: <56F13FEE.2070201@oracle.com>
-References: <1458209056-18829-1-git-send-email-haliu@redhat.com>
- <1458209056-18829-3-git-send-email-haliu@redhat.com>
- <56F13FEE.2070201@oracle.com>
-Message-ID: <20160322133631.GA8609@Leo.nay.redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 22 Mar 2016 21:42:55 +0800
+Subject: [LTP] [PATCH 2/4] mm/ksm: extend 'max_page_sharing' before ksm
+	testing
+In-Reply-To: <20160322131422.GA10905@rei.suse.cz>
+References: <1457602468-24268-1-git-send-email-liwang@redhat.com>
+ <1457602468-24268-2-git-send-email-liwang@redhat.com>
+ <20160322131422.GA10905@rei.suse.cz>
+Message-ID: <CAEemH2ewrJmmYOuEcR8QfKsVgyi7aGpwAp8POWnzoORB8BMr-Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Hi Cyril,
 
-Thanks for all the advise. I will fix them soon.
+On Tue, Mar 22, 2016 at 9:14 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
 
-Regards
-Hangbin
-On Tue, Mar 22, 2016 at 03:51:58PM +0300, Alexey Kodanev wrote:
-> Hi,
-> On 03/17/2016 01:04 PM, Hangbin Liu wrote:
-> >Signed-off-by: Hangbin Liu <haliu@redhat.com>
-> >---
-> >  testcases/network/stress/ipsec/Makefile     |  29 ++++++++
-> >  testcases/network/stress/ipsec/ipsec_lib.sh | 111 ++++++++++++++++++++++++++++
-> >  2 files changed, 140 insertions(+)
-> >  create mode 100644 testcases/network/stress/ipsec/Makefile
-> >  create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
+> > diff --git a/testcases/kernel/mem/include/mem.h
+> b/testcases/kernel/mem/include/mem.h
+> > index 43988fe..fbb11b2 100644
+> > --- a/testcases/kernel/mem/include/mem.h
+> > +++ b/testcases/kernel/mem/include/mem.h
+> > @@ -43,6 +43,7 @@ void testoom(int mempolicy, int lite, int retcode, int
+> allow_sigkill);
+> >  /* KSM */
 > >
-> >diff --git a/testcases/network/stress/ipsec/Makefile b/testcases/network/stress/ipsec/Makefile
-> >new file mode 100644
-> >index 0000000..0d7f1b6
-> >--- /dev/null
-> >+++ b/testcases/network/stress/ipsec/Makefile
-> >@@ -0,0 +1,29 @@
-> >+#!/bin/sh
-> >+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
-> >+#
-> >+# This program is free software; you can redistribute it and/or
-> >+# modify it under the terms of the GNU General Public License as
-> >+# published by the Free Software Foundation; either version 2 of
-> >+# the License, or (at your option) any later version.
-> >+#
-> >+# This program is distributed in the hope that it would be useful,
-> >+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> >+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> >+# GNU General Public License for more details.
-> >+#
-> >+# You should have received a copy of the GNU General Public License
-> >+# along with this program; if not, write the Free Software Foundation,
-> >+# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-> >+#
-> 
-> Forgot to change it here?
-> 
-> >+# Author: Hangbin Liu <haliu@redhat.com>
-> >+#
-> >+#######################################################################
-> >+
-> >+
-> >+top_srcdir		?= ../../../..
-> >+
-> >+include $(top_srcdir)/include/mk/env_pre.mk
-> >+
-> >+INSTALL_TARGETS		:= *.sh
-> >+
-> >+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> >diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-> >new file mode 100644
-> >index 0000000..33716ce
-> >--- /dev/null
-> >+++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-> >@@ -0,0 +1,111 @@
-> >+#!/bin/sh
-> >+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
-> >+#
-> >+# This program is free software; you can redistribute it and/or
-> >+# modify it under the terms of the GNU General Public License as
-> >+# published by the Free Software Foundation; either version 2 of
-> >+# the License, or (at your option) any later version.
-> >+#
-> >+# This program is distributed in the hope that it would be useful,
-> >+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> >+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> >+# GNU General Public License for more details.
-> >+#
-> >+# You should have received a copy of the GNU General Public License
-> >+# along with this program; if not, see <http://www.gnu.org/licenses/>.
-> >+#
-> >+# Author: Hangbin Liu <haliu@redhat.com>
-> >+#
-> >+#######################################################################
-> >+
-> >+. test_net.sh
-> >+
-> >+# tst_ipsec flush: flush the ipsec state and policy
-> >+# tst_ipsec target protocol mode spi src_addr dst_addr: config ipsec
-> >+#
-> >+# target: target of the configuration file ( src / dst )
-> >+# protocol: ah / esp / ipcomp
-> >+# mode: transport / tunnel
-> >+# spi: the first spi value
-> >+# src_addr: source IP address
-> >+# dst_addr: destination IP address
-> >+tst_ipsec()
-> >+{
-> >+	if [ "$1" = "flush" ]; then
-> >+		ROD ip xfrm state flush
-> >+		ROD ip xfrm policy flush
-> >+		tst_rhost_run -s -c "ip xfrm state flush && ip xfrm policy flush"
-> >+		return 0
-> >+	fi
-> 
-> I'd move it to another function, we could name ittst_ipsec_cleanup().
-> And tst_ipsec() needs some general description like what it actually does.
-> 
-> >+	if [ $# -ne 6 ]; then
-> >+		tst_resm TINFO "tst_ipsec parameter mismatch"
-> >+		return 1
-> >+	fi
-> 
-> Why not just tst_brkm() here?
-> 
-> >+
-> >+	target=$1
-> >+	protocol=$2
-> >+	mode=$3
-> >+	spi=$4
-> >+	src=$5
-> >+	dst=$6
-> 
-> It's better to make these variables to be defined in function scope
-> (as local) and other variables which used only inside the function.
-> 
-> >+
-> >+	# Encryption algorithm
-> >+	EALGO="des3_ede"
-> >+	EALGO_KEY=0x$(printf _I_want_to_have_chicken_ | hexdump -ve '/1 "%x"')
-> >+
-> >+	# Authentication algorithm
-> >+	AALGO="sha1"
-> >+	AALGO_KEY=0x$(printf beef_fish_pork_salad | hexdump -ve '/1 "%x"')
-> 
-> if we use hexdump, we should verify it with tst_check_cmds()
-> (e.g. when we source the library).
-> 
-> >+
-> >+	# Compression algorithm
-> >+	CALGO="deflate"
-> >+	# Algorithm options for each protocol
-> >+	case $protocol in
-> >+	ah)
-> >+		algo_line="auth $AALGO $AALGO_KEY"
-> >+		proto="ah"
-> >+		;;
-> >+	esp)
-> >+		algo_line="enc $EALGO $EALGO_KEY auth $AALGO $AALGO_KEY"
-> >+		proto="esp"
-> >+		;;
-> >+	ipcomp)
-> >+		algo_line="comp $CALGO"
-> >+		proto="comp"
-> >+		;;
-> >+	*)
-> >+		tst_resm TINFO "tst_ipsec protocol mismatch"
-> >+		return 1
-> >+		;;
-> >+	esac
-> 
-> I would add tst_brkm() here as well.
-> 
-> >+
-> >+	if [ $target = src ]; then
-> >+		spi_1="0x$spi"
-> >+		spi_2="0x$(( $spi + 1 ))"
-> >+		ROD ip xfrm state add src $src dst $dst spi $spi_1 proto $proto \
-> >+			$algo_line mode $mode sel src $src dst $dst
-> >+		ROD ip xfrm policy add src $src dst $dst dir out tmpl src $src \
-> >+			dst $dst proto $proto mode $mode
-> >+
-> >+		ROD ip xfrm state add src $dst dst $src spi $spi_2 proto $proto \
-> >+			$algo_line mode $mode sel src $dst dst $src
-> >+		ROD ip xfrm policy add src $dst dst $src dir in tmpl src $dst \
-> >+			dst $src proto $proto mode $mode level use
-> >+		ROD ip xfrm state
-> >+		ROD ip xfrm policy
-> >+	elif [ $target = dst ]; then
-> >+		spi_1="0x$(( $spi + 1 ))"
-> >+		spi_2="0x$spi"
-> >+		tst_rhost_run -s -c "ip xfrm state add src $src dst $dst spi $spi_1 \
-> >+			proto $proto $algo_line mode $mode sel src $src dst $dst"
-> >+		tst_rhost_run -s -c "ip xfrm policy add src $src dst $dst dir out \
-> >+			tmpl src $src dst $dst proto $proto mode $mode"
-> >+
-> >+		tst_rhost_run -s -c "ip xfrm state add src $dst dst $src spi $spi_2 \
-> >+			proto $proto $algo_line mode $mode sel src $dst dst $src"
-> >+		tst_rhost_run -s -c "ip xfrm policy add src $dst dst $src dir in \
-> >+			tmpl src $dst dst $src proto $proto mode $mode level use"
-> >+		tst_rhost_run -s -c "ip xfrm state"
-> >+		tst_rhost_run -s -c "ip xfrm policy"
-> >+	fi
-> >+}
-> 
-> Can we stick with lhost/rhost naming, and lhost to be default value?
-> So it would be similar to test_net.sh...
-> 
-> Best regards,
-> Alexey
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> >  #define PATH_KSM             "/sys/kernel/mm/ksm/"
+> > +int max_page_sharing;
+>
+> This variable is not used in the library. It does not make sense to
+> declare it in the header file.
+>
+
+no, it has been used in mem.c file.
+
+see here:
+------------
+diff --git a/testcases/kernel/mem/lib/
+mem.c b/testcases/kernel/mem/lib/mem.c
+index 7b5bb35..d37d6a4 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -502,9 +502,12 @@ void create_same_memory(int size, int num, int unit)
+        stop_ksm_children(child, num);
+
+        tst_resm(TINFO, "KSM merging...");
++       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
++               SAFE_FILE_PRINTF(cleanup, PATH_KSM "max_page_sharing",
++                               "%ld", size * pages * num);
+        SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
+        SAFE_FILE_PRINTF(cleanup, PATH_KSM "pages_to_scan", "%ld",
+-                        size * pages *num);
++                        size * pages * num);
+        SAFE_FILE_PRINTF(cleanup, PATH_KSM "sleep_millisecs", "0");
+
+        resume_ksm_children(child, num);
+@@ -595,6 +598,9 @@ void test_ksm_merge_across_nodes(unsigned long nr_pages)
+        SAFE_FILE_PRINTF(cleanup, PATH_KSM "sleep_millisecs", "0");
+        SAFE_FILE_PRINTF(cleanup, PATH_KSM "pages_to_scan", "%ld",
+                         nr_pages * num_nodes);
++       if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
++               SAFE_FILE_PRINTF(cleanup, PATH_KSM "max_page_sharing",
++                       "%ld", nr_pages * num_nodes);
+
+
+
+> >  void test_ksm_merge_across_nodes(unsigned long nr_pages);
+> >
+> > diff --git a/testcases/kernel/mem/ksm/ksm01.c
+> b/testcases/kernel/mem/ksm/ksm01.c
+> > index b62df06..a352abd 100644
+> > --- a/testcases/kernel/mem/ksm/ksm01.c
+> > +++ b/testcases/kernel/mem/ksm/ksm01.c
+> > @@ -105,6 +105,9 @@ void setup(void)
+> >               tst_brkm(TCONF, NULL, "2.6.32 or greater kernel required");
+> >       if (access(PATH_KSM, F_OK) == -1)
+> >               tst_brkm(TCONF, NULL, "KSM configuration is not enabled");
+> > +     if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
+> > +             SAFE_FILE_SCANF(NULL, PATH_KSM "max_page_sharing",
+> > +                             "%d", &max_page_sharing);
+> >
+> >       /*
+> >        * kernel commit 90bd6fd introduced a new KSM sysfs knob
+> > @@ -128,4 +131,8 @@ void cleanup(void)
+> >       if (access(PATH_KSM "merge_across_nodes", F_OK) == 0)
+> >               FILE_PRINTF(PATH_KSM "merge_across_nodes",
+> >                                "%d", merge_across_nodes);
+> > +
+> > +     if (access(PATH_KSM "max_page_sharing", F_OK) == 0)
+> > +             FILE_PRINTF(PATH_KSM "max_page_sharing",
+> > +                              "%d", max_page_sharing);
+> >  }
+>
+> You are saving and restoring the file in each test. Why can't you just
+> add two functions to save and restore it the library instead and call
+> them from test setup and cleanup?
+>
+
+ok, that's a better way.
+
+
+>
+> It's also quite confusing that the test saves and restores a value while
+> it's not modifying it at all. It will be less confusing if it's all done
+> in the library.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+>
+
+
 
 -- 
-
-Thanks & Best Regards
-Hangbin Liu <haliu@redhat.com>
-Leo on #kernel-qe, #kernel, #eng-china
+Regards,
+Li Wang
+Email: liwang@redhat.com
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160322/b998aff0/attachment.html>
