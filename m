@@ -1,154 +1,128 @@
-From: Julio Cruz <jcsistemas2001@gmail.com>
-Date: Wed, 23 Mar 2016 12:45:00 +0800
-Subject: [LTP] [PATCH] mmap2: change memory units and default size
-Message-ID: <1458708300-14960-1-git-send-email-jcsistemas2001@gmail.com>
+From: Julio Cruz Barroso <julio.cruz@smartmatic.com>
+Date: Wed, 23 Mar 2016 05:46:30 +0000
+Subject: [LTP] readahead02 failure on PPC
+In-Reply-To: <f688d3da-69f3-4199-b3a4-e603130414d1@email.android.com>
+References: <f688d3da-69f3-4199-b3a4-e603130414d1@email.android.com>
+Message-ID: <AF04265A3FC2B144B9892F621A394E13EA3F898B@tethys>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-This patch made three changes: 1) check the available memory 
-before to perform the test case, 2) change the memory units
-from GB to MB, and 3)  make default file size to 128M.
+Hi again,
 
-These changes are needed during testing on embedded devices
-with RAM memory limitation (i.e. 512MB).
+Additionally, to previous comments, I try the patch in a 32bits system (wit=
+h Kernel 3.14) and the TWARN is gone.=20
 
-This patch no changed the test case procedure.
+I perform the test 10 times in two boards: 1) 32 bits with one core and 512=
+MB RAM and 2) 32 bits with two cores and same RAM:
 
-To use this test case in embedded devices, I suggest to change 
-the testrun 'mm' as below from: "mtest06_2 mmap2 -x 0.002 -a -p" 
-to "mtest06_2 mmap2 -x 0.002 -a -p -s 100" according with 
-your system memory available
+- With patch: 5 times show PASS in both boards
+- Without patch: 5 times show FAIL in both boards
 
-Signed-off-by: Julio Cruz <jcsistemas2001@gmail.com>
----
- testcases/kernel/mem/mtest06/mmap2.c | 40 +++++++++++++++++++++++++-----------
- 1 file changed, 28 insertions(+), 12 deletions(-)
+This time, I don=E2=80=99t get inconsistent results.=20
 
-diff --git a/testcases/kernel/mem/mtest06/mmap2.c b/testcases/kernel/mem/mtest06/mmap2.c
-index ad81dbe..ebeebe5 100644
---- a/testcases/kernel/mem/mtest06/mmap2.c
-+++ b/testcases/kernel/mem/mtest06/mmap2.c
-@@ -48,9 +48,9 @@
- /*									      */
- /* Description: Test the LINUX memory manager. The program is aimed at        */
- /*              stressing the memory manager by repeaded map/write/unmap of a */
--/*		of a large gb size file.				      */
-+/*		large mb size file.				              */
- /*									      */
--/*		Create a file of the specified size in gb, map the file,      */
-+/*		Create a file of the specified size in mb, map the file,      */
- /*		change the contents of the file and unmap it. This is repeated*/
- /*		several times for the specified number of hours.	      */
- /*									      */
-@@ -73,7 +73,7 @@
- #include <getopt.h>
- #include "test.h"
- 
--#define GB 1000000000
-+#define MB 1048576
- #ifndef TRUE
- #define TRUE 1
- #endif
-@@ -99,7 +99,7 @@ static int mkfile(int size)
- 		fprintf(stdout, "creating tmp file and writing 'a' to it ");
- 	}
- 
--	while (index < (size * GB)) {
-+	while (index < (size * MB)) {
- 		index += 4096;
- 		if (write(fd, buff, 4096) == -1) {
- 			perror("mkfile(): write()");
-@@ -136,16 +136,24 @@ static void usage(char *progname)
- 		"\t -p set map_flag to MAP_PRIVATE.\tdefault:"
- 		"MAP_SHARED\n"
- 		"\t -s size of the file/memory to be mmaped.\tdefault:"
--		"1GB\n"
-+		"128MB\n"
- 		"\t -x time for which test is to be run.\tdefault:"
- 		"24 Hrs\n", progname);
- 	exit(-1);
- }
- 
-+long get_available_memory_mb(void)
-+{
-+	unsigned long long ps, pn;
-+	ps = sysconf(_SC_PAGESIZE);
-+	pn = sysconf(_SC_AVPHYS_PAGES);
-+	return ps * pn / (1024*1024);
-+}
-+
- int main(int argc, char **argv)
- {
- 	int fd;
--	int fsize = 1;
-+	int fsize = 128;
- 	float exec_time = 24;
- 	int c;
- 	int sig_ndx;
-@@ -153,6 +161,7 @@ int main(int argc, char **argv)
- 	int map_anon = FALSE;
- 	int run_once = TRUE;
- 	char *memptr;
-+	long avail_memory_mb;
- 	struct sigaction sigptr;
- 
- 	static struct signal_info {
-@@ -188,7 +197,7 @@ int main(int argc, char **argv)
- 			fsize = atoi(optarg);
- 			if (fsize == 0)
- 				fprintf(stderr, "Using default "
--					"fsize %d GB\n", fsize = 1);
-+					"fsize %d MB\n", fsize = 128);
- 			break;
- 		case 'x':
- 			exec_time = atof(optarg);
-@@ -205,7 +214,14 @@ int main(int argc, char **argv)
- 
- 	fprintf(stdout, "MM Stress test, map/write/unmap large file\n"
- 		"\tTest scheduled to run for:       %f\n"
--		"\tSize of temp file in GB:         %d\n", exec_time, fsize);
-+		"\tSize of temp file in MB:         %d\n", exec_time, fsize);
-+
-+	avail_memory_mb = get_available_memory_mb();
-+	fprintf(stdout, "Available memory: %ldMB\n", avail_memory_mb);
-+	if (fsize > avail_memory_mb) {
-+		fprintf(stdout, "Not enough memory to run this case\n");
-+		exit(0);
-+	}
- 
- 	alarm(exec_time * 3600.00);
- 
-@@ -235,7 +251,7 @@ int main(int argc, char **argv)
- 			fd = -1;
- 			map_flags = map_flags | MAP_ANONYMOUS;
- 		}
--		memptr = mmap(0, (fsize * GB), PROT_READ | PROT_WRITE,
-+		memptr = mmap(0, (fsize * MB), PROT_READ | PROT_WRITE,
- 			      map_flags, fd, 0);
- 		if (memptr == MAP_FAILED) {
- 			perror("main(): mmap()");
-@@ -244,15 +260,15 @@ int main(int argc, char **argv)
- 			fprintf(stdout, "file mapped at %p\n"
- 				"changing file content to 'A'\n", memptr);
- 
--		memset(memptr, 'A', ((fsize * GB) / sizeof(char)));
-+		memset(memptr, 'A', ((fsize * MB) / sizeof(char)));
- 
--		if (msync(memptr, ((fsize * GB) / sizeof(char)),
-+		if (msync(memptr, ((fsize * MB) / sizeof(char)),
- 			  MS_SYNC | MS_INVALIDATE) == -1) {
- 			perror("main(): msync()");
- 			exit(-1);
- 		}
- 
--		if (munmap(memptr, (fsize * GB) / sizeof(char)) == -1) {
-+		if (munmap(memptr, (fsize * MB) / sizeof(char)) == -1) {
- 			perror("main(): munmap()");
- 			exit(-1);
- 		} else
--- 
-1.9.1
+Regards
 
+Julio
+
+> -----Original Message-----
+> From: Kshitij Malik [mailto:Kshitij.Malik@mitel.com]
+> Sent: Wednesday, March 23, 2016 10:55 AM
+> To: Julio Cruz Barroso
+> Cc: Jan Stancek; ltp@lists.linux.it
+> Subject: RE: [LTP] readahead02 failure on PPC
+>=20
+> Hi Julio,
+>=20
+> Thank you for the update.
+>=20
+> I was also getting the /proc/pid/io error to start with and I fixed it by
+> enabling kernel configurations CONFIG_TASKSTATS,
+> CONFIG_TASK_IO_ACCOUNTING and other related configs.
+>=20
+> These configs creates the io directory for a thread in proc.
+>=20
+> Jan,
+>=20
+> Do you think your fix can be used as an official patch?
+>=20
+> Thanks
+> KK
+>=20
+> On Mar 22, 2016 22:39, Julio Cruz Barroso <julio.cruz@smartmatic.com>
+> wrote:
+> >
+> > Hi Jan, Kshitij,
+> >
+> > Checking my logs (imx6 32bits based platform) the error is similar [1]:
+> >
+> > readahead02 0 TWARN : readahead02.c:324: using less cache than
+> expected
+> >
+> > However, the results were not consistent, because, once time PASS and
+> another FAIL (with previous TWARN).
+> >
+> > Another thing different was (in my case):
+> >
+> > readahead02 3 TCONF : readahead02.c:309: Your system doesn't have
+> /proc/pid/io, unable to determine read bytes during test
+> >
+> > This last one, is the part 1 of the test case (read bytes during test).=
+ The part
+> 2 (verify the cache) is the same TWARN.
+> >
+> > At the end, I skipped this test case because the results were not consi=
+stent
+> and need further analysis.
+> >
+> > Regards,
+> > Julio
+> >
+> >
+> > [1] logs for imx6: https://justpaste.it/s4zk
+> >
+> > -----Original Message-----
+> > From: ltp [mailto:ltp-bounces+julio.cruz=3Dsmartmatic.com@lists.linux.i=
+t] On
+> Behalf Of Julio Cruz Barroso
+> > Sent: Tuesday, March 22, 2016 11:19 PM
+> > To: Jan Stancek
+> > Cc: Julio Cruz; Kshitij Malik; ltp@lists.linux.it
+> > Subject: Re: [LTP] readahead02 failure on PPC
+> >
+> > Hi Jan, Kshitij,
+> >
+> > I just saw this email!
+> >
+> > I will review the issue because I cannot remember the result details an=
+d let
+> you know tomorrow (CST).
+> >
+> > I expect also to upload the others patchs reviewed.
+> >
+> > Regards
+> >
+> > Julio
+> >
+> >
+> > > On Mar 22, 2016, at 5:50 PM, Jan Stancek <jstancek@redhat.com> wrote:
+> > >
+> > > Kshitij
+> >
+> > --
+> > Mailing list info: https://lists.linux.it/listinfo/ltp
+> ________________________________
+> NOTE: This e-mail (including any attachments) is for the sole use of the
+> intended recipient(s) and may contain information that is confidential an=
+d/or
+> protected by legal privilege. Any unauthorized review, use, copy, disclos=
+ure
+> or distribution of this e-mail is strictly prohibited. If you are not the=
+ intended
+> recipient, please notify Mitel immediately and destroy all copies of this=
+ e-
+> mail. Mitel does not accept any liability for breach of security, error o=
+r virus
+> that may result from the transmission of this message.
