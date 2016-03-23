@@ -1,128 +1,145 @@
-From: Julio Cruz Barroso <julio.cruz@smartmatic.com>
-Date: Wed, 23 Mar 2016 05:46:30 +0000
-Subject: [LTP] readahead02 failure on PPC
-In-Reply-To: <f688d3da-69f3-4199-b3a4-e603130414d1@email.android.com>
-References: <f688d3da-69f3-4199-b3a4-e603130414d1@email.android.com>
-Message-ID: <AF04265A3FC2B144B9892F621A394E13EA3F898B@tethys>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 23 Mar 2016 11:21:37 +0300
+Subject: [LTP] [PATCHv3 3/3] network/stress/icmp: use ip xfrm for
+ icmp4-uni-basic01 ipsec testing
+In-Reply-To: <20160323020243.GB8609@Leo.nay.redhat.com>
+References: <1458209056-18829-1-git-send-email-haliu@redhat.com>
+ <1458209056-18829-4-git-send-email-haliu@redhat.com>
+ <56F149FC.4030604@oracle.com> <20160323020243.GB8609@Leo.nay.redhat.com>
+Message-ID: <56F25211.5090902@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi again,
+Hi,
+On 03/23/2016 05:02 AM, Hangbin Liu wrote:
+> Hi,
+>
+> On Tue, Mar 22, 2016 at 04:34:52PM +0300, Alexey Kodanev wrote:
+>> On 03/17/2016 01:04 PM, Hangbin Liu wrote:
+>>> Also check each msg_size in $ICMP_SIZE_ARRAY to make sure the connectvity.
+>>>
+>>> Signed-off-by: Hangbin Liu <haliu@redhat.com>
+>>> ---
+>>>   .../stress/icmp/uni-basic/icmp4-uni-basic01        | 160 ++++-----------------
+>>>   1 file changed, 24 insertions(+), 136 deletions(-)
+>>>
+>>> diff --git a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01 b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
+>>> index b78ac8f..7c23cc7 100644
+>>> --- a/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
+>>> +++ b/testcases/network/stress/icmp/uni-basic/icmp4-uni-basic01
+>>> @@ -42,17 +42,13 @@
+>>>   #	Oct 19 2005 - Created (Mitsuru Chinen)
+>>>   #
+>>>   #-----------------------------------------------------------------------
+>>> -# Uncomment line below for debug output.
+>>> -#trace_logic=${trace_logic:-"set -x"}
+>>> -$trace_logic
+>>> -
+>>>   # The test case ID, the test case count and the total number of test case
+>>>   TCID=${TCID:-icmp4-uni-basic01}
+>>>   TST_TOTAL=1
+>>>   TST_COUNT=1
+>>> -export TCID
+>>> -export TST_COUNT
+>>> -export TST_TOTAL
+>>> +TST_CLEANUP="do_cleanup"
+>>> +
+>>> +. ipsec_lib.sh
+>>>   # Test description
+>>>   tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
+>>> @@ -61,9 +57,6 @@ tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending
+>>>   LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
+>>>   export LTPROOT
+>>> -# Check the environmanet variable
+>>> -. check_envval || exit $TST_TOTAL
+>>> -
+>>>   # Dulation of the test [sec]
+>>>   NS_DURATION=${NS_DURATION:-3600}      # 1 hour
+>> I'd remove defining these variables here... in the test. Weshouldhave them
+>> already
+>> defined in network.sh or it could be done in test_net.sh in case we're not
+>> going to
+>> runnetwork.sh.
+> OK, I will remove this
+>>> @@ -72,6 +65,7 @@ LINK_NUM=${LINK_NUM:-0}
+>>>   # The version of IP
+>>>   IP_VER=${IP_VER:-4}
+>>> +[ $IP_VER -eq 6 ] && TST_IPV6=6
+>> just "ipv=${TST_IPV6:-4}" instead of two lines.
+> This is not work. Because test_net.sh will set TST_IPV6= , and icmp4-uni-basic01
+> need source it before test. The relation looks like
+>
+> icmp6-uni-basic01
+>    . icmp4-uni-basic01
+>      . ipsec_lib.sh
+>        . test_net.sh
+>
+> If we want to use like ipv=${TST_IPV6:-4}, we need source test_net.sh in all
+> sub-testcases instead of in ipsec_lib.sh. Which will like
+>
+> icmp6-uni-basic01
+>    . test_net.sh
+>    . icmp4-uni-basic01
+>      . ipsec_lib.sh
 
-Additionally, to previous comments, I try the patch in a 32bits system (wit=
-h Kernel 3.14) and the TWARN is gone.=20
+Could you add "ipv=..." to ipsec_lib.sh and we wouldn't set it in every 
+test-case?
 
-I perform the test 10 times in two boards: 1) 32 bits with one core and 512=
-MB RAM and 2) 32 bits with two cores and same RAM:
+BTW, does the attached patch help in the first case (added export to 
+TST_IPV6)?
 
-- With patch: 5 times show PASS in both boards
-- Without patch: 5 times show FAIL in both boards
 
-This time, I don=E2=80=99t get inconsistent results.=20
+>> -# Run a client
+>> -$LTP_RSH $RHOST "${LTPROOT}/testcases/bin/ns-echoclient -S $lhost_addr -f $IP_VER -s \"$ICMP_SIZE_ARRAY\"" &
+>> -
+>> -sleep $NS_DURATION
+>> -killall_icmp_traffic
+>> -wait
+>> +# Make sure the connectvity
+>> +for msg_size in $ICMP_SIZE_ARRAY; do
+>> +    tst_ping $lhost_ifname $rhost_addr $msg_size
+>> +    if [ $? -ne 0 ]; then
+>> +        tst_brkm TBROK "There is no IPv$IP_VER connectivity with msg_size $msg_size"
+>> +    else
+>> +        tst_resm TPASS "There has IPv$IP_VER connectivity with msg_size $msg_size"
+>> +    fi
+>> +done
+>>
+>> Is it really needed to ping with different message sizes? if yes, we
+>> couldadd this
+>> functionality to tst_ping().
+> Yes, we need to make sure ipsec can handle all kinds of message size. But we
+> could not make it in tst_ping because ah/esp and tunnel/transport have
+> different header length. e.g. when there is no ipsec, the max playload is
+> 65507. If we test ah + transport, the max playload is 65483. etc. It's hard to
+> make tst_ping to handle all these scenarios.
 
-Regards
+I thought we could add variable length parameters, something like this
 
-Julio
+tst_ping p1 ... pN $ICMP_SIZE_ARRAY
 
-> -----Original Message-----
-> From: Kshitij Malik [mailto:Kshitij.Malik@mitel.com]
-> Sent: Wednesday, March 23, 2016 10:55 AM
-> To: Julio Cruz Barroso
-> Cc: Jan Stancek; ltp@lists.linux.it
-> Subject: RE: [LTP] readahead02 failure on PPC
->=20
-> Hi Julio,
->=20
-> Thank you for the update.
->=20
-> I was also getting the /proc/pid/io error to start with and I fixed it by
-> enabling kernel configurations CONFIG_TASKSTATS,
-> CONFIG_TASK_IO_ACCOUNTING and other related configs.
->=20
-> These configs creates the io directory for a thread in proc.
->=20
-> Jan,
->=20
-> Do you think your fix can be used as an official patch?
->=20
+tst_ping()
+{
+     local msg_sizes=${@:N+1}
+
+     for size in msg_sizes; do
+     ...
+}
+
+
+Best regards,
+Alexey
+
 > Thanks
-> KK
->=20
-> On Mar 22, 2016 22:39, Julio Cruz Barroso <julio.cruz@smartmatic.com>
-> wrote:
-> >
-> > Hi Jan, Kshitij,
-> >
-> > Checking my logs (imx6 32bits based platform) the error is similar [1]:
-> >
-> > readahead02 0 TWARN : readahead02.c:324: using less cache than
-> expected
-> >
-> > However, the results were not consistent, because, once time PASS and
-> another FAIL (with previous TWARN).
-> >
-> > Another thing different was (in my case):
-> >
-> > readahead02 3 TCONF : readahead02.c:309: Your system doesn't have
-> /proc/pid/io, unable to determine read bytes during test
-> >
-> > This last one, is the part 1 of the test case (read bytes during test).=
- The part
-> 2 (verify the cache) is the same TWARN.
-> >
-> > At the end, I skipped this test case because the results were not consi=
-stent
-> and need further analysis.
-> >
-> > Regards,
-> > Julio
-> >
-> >
-> > [1] logs for imx6: https://justpaste.it/s4zk
-> >
-> > -----Original Message-----
-> > From: ltp [mailto:ltp-bounces+julio.cruz=3Dsmartmatic.com@lists.linux.i=
-t] On
-> Behalf Of Julio Cruz Barroso
-> > Sent: Tuesday, March 22, 2016 11:19 PM
-> > To: Jan Stancek
-> > Cc: Julio Cruz; Kshitij Malik; ltp@lists.linux.it
-> > Subject: Re: [LTP] readahead02 failure on PPC
-> >
-> > Hi Jan, Kshitij,
-> >
-> > I just saw this email!
-> >
-> > I will review the issue because I cannot remember the result details an=
-d let
-> you know tomorrow (CST).
-> >
-> > I expect also to upload the others patchs reviewed.
-> >
-> > Regards
-> >
-> > Julio
-> >
-> >
-> > > On Mar 22, 2016, at 5:50 PM, Jan Stancek <jstancek@redhat.com> wrote:
-> > >
-> > > Kshitij
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> ________________________________
-> NOTE: This e-mail (including any attachments) is for the sole use of the
-> intended recipient(s) and may contain information that is confidential an=
-d/or
-> protected by legal privilege. Any unauthorized review, use, copy, disclos=
-ure
-> or distribution of this e-mail is strictly prohibited. If you are not the=
- intended
-> recipient, please notify Mitel immediately and destroy all copies of this=
- e-
-> mail. Mitel does not accept any liability for breach of security, error o=
-r virus
-> that may result from the transmission of this message.
+> Hangbin
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-testcases-lib-test_net.sh-export-TST_IPV6-var.patch
+Type: text/x-patch
+Size: 702 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160323/29814bb0/attachment-0001.bin>
