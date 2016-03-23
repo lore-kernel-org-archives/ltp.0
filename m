@@ -1,116 +1,77 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 23 Mar 2016 06:22:39 -0400 (EDT)
-Subject: [LTP] [PATCH] max_map_count: fix error by using runtime check
-In-Reply-To: <56F259A7.1080908@huawei.com>
-References: <56DD6138.9060109@huawei.com> <20160322102943.GA10195@rei.suse.cz>
- <56F14D59.1040701@huawei.com> <20160322142842.GE10905@rei.suse.cz>
- <56F259A7.1080908@huawei.com>
-Message-ID: <1242994016.13404335.1458728559657.JavaMail.zimbra@redhat.com>
+From: $rik@nth  <srikanth007m@gmail.com>
+Date: Wed, 23 Mar 2016 11:45:23 +0000
+Subject: [LTP]  ld failed to link numa while compiling migrate_pages01
+Message-ID: <CANKSX+GSJ2c+1wyrEELkYvWDhYrxCthwJujAV=M-NwqsA+0wrw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Cyril/LTP Devs,
+
+Today i pulled few fixes from master branch [1] on top of last LTP
+release. While compiling i am getting below exception at
+migrate_pages01. Can you help in look into the issue once?
+
+make[4]: Entering directory
+'/home/linaro/ltp-master/testcases/kernel/syscalls/migrate_pages'
+gcc -static -g -O2 -fno-strict-aliasing -pipe -Wall -W
+-Wold-style-definition -static
+-I/home/linaro/ltp-master/testcases/kernel/include
+-I/home/linaro/ltp-master/testcases/kernel/syscalls/migrate_pages/../utils/
+-DNUMA_VERSION1_COMPATIBILITY
+-I/home/linaro/ltp-master/testcases/kernel/include
+-I../../../../include -I../../../../include  -c -o migrate_pages01.o
+migrate_pages01.c
+gcc -static -g -O2 -fno-strict-aliasing -pipe -Wall -W
+-Wold-style-definition -static
+-I/home/linaro/ltp-master/testcases/kernel/include
+-I/home/linaro/ltp-master/testcases/kernel/syscalls/migrate_pages/../utils/
+-DNUMA_VERSION1_COMPATIBILITY
+-I/home/linaro/ltp-master/testcases/kernel/include
+-I../../../../include -I../../../../include  -c -o
+migrate_pages_common.o migrate_pages_common.c
+make -C "/home/linaro/Srikanth/ltp-master/testcases/kernel/include" -f
+"/home/linaro/ltp-master/testcases/kernel/include/Makefile" all
+make[5]: Entering directory '/home/linaro/ltp-master/testcases/kernel/include'
+make[5]: Nothing to be done for 'all'.
+make[5]: Leaving directory '/home/linaro/ltp-master/testcases/kernel/include'
+gcc -static -pthread  -L/home/linaro/ltp-master/testcases/kernel/lib
+-L../../../../lib  migrate_pages01.o migrate_pages_common.o   -lltp
+-lnuma -lkerntest -lltp -o migrate_pages01
+migrate_pages01.o: In function `test_invalid_perm':
+/home/linaro/ltp-master/testcases/kernel/syscalls/migrate_pages/migrate_pages01.c:183:
+warning: Using 'getpwnam' in statically linked applications requires
+at runtime the shared libraries from the glibc version used for
+linking
+/home/linaro/ltp-master/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `get_max_node':
+/home/linaro/ltp-master/testcases/kernel/lib/numa_helper.c:53:
+undefined reference to `numa_max_possible_node'
+/home/linaro/ltp-master/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `get_allowed_nodes_arr':
+/home/linaro/ltp-master/testcases/kernel/lib/numa_helper.c:177:
+undefined reference to `numa_available'
+/home/linaro/ltp-master/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `get_max_node':
+/home/linaro/ltp-master/testcases/kernel/lib/numa_helper.c:53:
+undefined reference to `numa_max_possible_node'
+/home/linaro/ltp-master/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `get_allowed_nodes_arr':
+/home/linaro/ltp-master/testcases/kernel/lib/numa_helper.c:177:
+undefined reference to `numa_available'
+/home/linaro/ltp-master/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+In function `get_max_node':
+/home/linaro/ltp-master/testcases/kernel/lib/numa_helper.c:53:
+undefined reference to `numa_max_possible_node'
+collect2: error: ld returned 1 exit status
+<builtin>: recipe for target 'migrate_pages01' failed
+make[4]: *** [migrate_pages01] Error 1
 
 
+[1] https://github.com/linux-test-project/ltp.git
 
-
------ Original Message -----
-> From: "Cui Bixuan" <cuibixuan@huawei.com>
-> To: "Cyril Hrubis" <chrubis@suse.cz>
-> Cc: zhuyanpeng@huawei.com, zhanyongming@huawei.com, ltp@lists.linux.it
-> Sent: Wednesday, 23 March, 2016 9:53:59 AM
-> Subject: [LTP]  [PATCH] max_map_count: fix error by using runtime check
-> 
-> There is a error when compile the case to 32bit binary and
-> run it on 64bit arm kernel, which will wrongly skip one mapping.
-> 
-> Do runtimg check using the machine from uname(2) to fix it.
-> 
-> Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  testcases/kernel/mem/tunable/max_map_count.c | 32
->  +++++++++++++++++-----------
->  1 file changed, 19 insertions(+), 13 deletions(-)
-> 
-> diff --git a/testcases/kernel/mem/tunable/max_map_count.c
-> b/testcases/kernel/mem/tunable/max_map_count.c
-> index 295a47b..a69e560 100644
-> --- a/testcases/kernel/mem/tunable/max_map_count.c
-> +++ b/testcases/kernel/mem/tunable/max_map_count.c
-> @@ -59,6 +59,7 @@
->  #include <stdbool.h>
->  #include <stdio.h>
->  #include <stdlib.h>
-> +#include <sys/utsname.h>
->  #include "test.h"
->  #include "mem.h"
-> 
-> @@ -70,6 +71,7 @@ int TST_TOTAL = 1;
-> 
->  static long old_max_map_count;
->  static long old_overcommit;
-> +struct utsname un;
-> 
->  static long count_maps(pid_t pid);
->  static void max_map_count_test(void);
-> @@ -104,6 +106,9 @@ void setup(void)
->  	old_max_map_count = get_sys_tune("max_map_count");
->  	old_overcommit = get_sys_tune("overcommit_memory");
->  	set_sys_tune("overcommit_memory", 2, 1);
-> +
-> +	if (uname(&un) != 0)
-> +		tst_brkm(TBROK | TERRNO, NULL, "uname error");
->  }
-> 
->  void cleanup(void)
-> @@ -124,19 +129,20 @@ static bool filter_map(const char *line)
->  	if (ret != 1)
->  		return false;
-> 
-> -#if defined(__x86_64__) || defined(__x86__)
-> -	/* On x86, there's an old compat vsyscall page */
-> -	if (!strcmp(buf, "[vsyscall]"))
-> -		return true;
-> -#elif defined(__ia64__)
-> -	/* On ia64, the vdso is not a proper mapping */
-> -	if (!strcmp(buf, "[vdso]"))
-> -		return true;
-> -#elif defined(__arm__)
-> -	/* Older arm kernels didn't label their vdso maps */
-> -	if (!strncmp(line, "ffff0000-ffff1000", 17))
-> -		return true;
-> -#endif
-> +	if (strstr(un.machine, "x86") != NULL)
-
-What if uname contains i386?
-
-Can we relax the pass condition to allow map_count to be
-within some tolerance? Then we wouldn't have to worry so much about
-all arch specifics.
-
-
-> +		/* On x86, there's an old compat vsyscall page */
-> +		if (!strcmp(buf, "[vsyscall]"))
-> +			return true;
-> +
-> +	if (strstr(un.machine, "ia64") != NULL)
-> +		/* On ia64, the vdso is not a proper mapping */
-> +		if (!strcmp(buf, "[vdso]"))
-> +			return true;
-> +
-> +	if (strstr(un.machine, "armv") != NULL)
-> +		/* Older arm kernels didn't label their vdso maps */
-> +		if (!strncmp(line, "ffff0000-ffff1000", 17))
-> +			return true;
-> 
->  	return false;
->  }
-> --
-> 1.8.3.4
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+-- 
+Thanks & Regards,
+M.Srikanth Kumar.
