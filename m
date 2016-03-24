@@ -1,177 +1,103 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 24 Mar 2016 11:38:17 -0400 (EDT)
-Subject: [LTP] readahead02 failure on PPC
-In-Reply-To: <SN1PR12MB07827F3DA5BDF10860ED7DC4EE820@SN1PR12MB0782.namprd12.prod.outlook.com>
-References: <f688d3da-69f3-4199-b3a4-e603130414d1@email.android.com>
- <AF04265A3FC2B144B9892F621A394E13EA3F898B@tethys>
- <SN1PR12MB07827F3DA5BDF10860ED7DC4EE820@SN1PR12MB0782.namprd12.prod.outlook.com>
-Message-ID: <978771477.14173505.1458833897194.JavaMail.zimbra@redhat.com>
+Date: Thu, 24 Mar 2016 16:38:52 +0100
+Subject: [LTP] [PATCH] readahead: use glibc wrapper function
+Message-ID: <27e9eeb52d71394f8df405f98e66ffccec83803c.1458833602.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+We have had reports of this testcase not functioning
+properly on 32bit powerpc systems, because syscall()
+is not passing 64bit parameters correctly.
 
+This patch is using glibc wrapper, which should be available
+for a long time now (since glibc 2.3).
 
+Reported-and-tested-by: Julio Cruz Barroso <julio.cruz@smartmatic.com>
+Reported-and-tested-by: Kshitij Malik <Kshitij.Malik@mitel.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/readahead/readahead01.c | 18 ++++++++++--------
+ testcases/kernel/syscalls/readahead/readahead02.c |  3 +--
+ 2 files changed, 11 insertions(+), 10 deletions(-)
 
+diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
+index f579174b8c8a..5f829bd838f4 100644
+--- a/testcases/kernel/syscalls/readahead/readahead01.c
++++ b/testcases/kernel/syscalls/readahead/readahead01.c
+@@ -25,14 +25,16 @@
+ /*
+  * errno tests for readahead() syscall
+  */
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/syscall.h>
+-#include <sys/socket.h>
++#define _GNU_SOURCE
+ #include <errno.h>
++#include <fcntl.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
++#include <sys/socket.h>
++#include <sys/stat.h>
++#include <sys/syscall.h>
++#include <sys/types.h>
+ #include "config.h"
+ #include "test.h"
+ #include "safe_macros.h"
+@@ -84,7 +86,7 @@ static void test_bad_fd(void)
+ 	int fd;
+ 
+ 	tst_resm(TINFO, "test_bad_fd -1");
+-	TEST(ltp_syscall(__NR_readahead, -1, 0, getpagesize()));
++	TEST(readahead(-1, 0, getpagesize()));
+ 	check_ret(-1);
+ 	check_errno(EBADF);
+ 
+@@ -96,7 +98,7 @@ static void test_bad_fd(void)
+ 	fd = open(tempname, O_WRONLY);
+ 	if (fd == -1)
+ 		tst_resm(TBROK | TERRNO, "Failed to open testfile");
+-	TEST(ltp_syscall(__NR_readahead, fd, 0, getpagesize()));
++	TEST(readahead(fd, 0, getpagesize()));
+ 	check_ret(-1);
+ 	check_errno(EBADF);
+ 	close(fd);
+@@ -110,7 +112,7 @@ static void test_invalid_fd(void)
+ 	tst_resm(TINFO, "test_invalid_fd pipe");
+ 	if (pipe(fd) < 0)
+ 		tst_resm(TBROK | TERRNO, "Failed to create pipe");
+-	TEST(ltp_syscall(__NR_readahead, fd[0], 0, getpagesize()));
++	TEST(readahead(fd[0], 0, getpagesize()));
+ 	check_ret(-1);
+ 	check_errno(EINVAL);
+ 	close(fd[0]);
+@@ -120,7 +122,7 @@ static void test_invalid_fd(void)
+ 	fd[0] = socket(AF_INET, SOCK_STREAM, 0);
+ 	if (fd[0] < 0)
+ 		tst_resm(TBROK | TERRNO, "Failed to create socket");
+-	TEST(ltp_syscall(__NR_readahead, fd[0], 0, getpagesize()));
++	TEST(readahead(fd[0], 0, getpagesize()));
+ 	check_ret(-1);
+ 	check_errno(EINVAL);
+ 	close(fd[0]);
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index 7dc308c03e5d..53278be7d84c 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -236,8 +236,7 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
+ 
+ 	if (do_readahead) {
+ 		for (i = 0; i < fsize; i += readahead_size) {
+-			TEST(ltp_syscall(__NR_readahead, fd,
+-				(off64_t) i, readahead_size));
++			TEST(readahead(fd, (off64_t) i, readahead_size));
+ 			if (TEST_RETURN != 0)
+ 				break;
+ 		}
+-- 
+1.8.3.1
 
------ Original Message -----
-> From: "Kshitij Malik" <Kshitij.Malik@mitel.com>
-> To: "Julio Cruz Barroso" <julio.cruz@smartmatic.com>, "Jan Stancek" <jsta=
-ncek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, 24 March, 2016 3:40:21 PM
-> Subject: Re: [LTP] readahead02 failure on PPC
->=20
-> Thank you Julio for the update.
->=20
-> Jan,
->=20
-> Can we take the changes shared by you as an official fix?
-
-I'm on the fence whether we should also add configure check for it.
-Wrapper is in glibc since 2.3, which is quite old. Let's try posting
-it as is and see if anyone objects.
-
-Regards,
-Jan
-
->=20
-> Thanks
-> KK
-> ________________________________________
-> From: Julio Cruz Barroso <julio.cruz@smartmatic.com>
-> Sent: Wednesday, March 23, 2016 01:46
-> To: Kshitij Malik
-> Cc: Jan Stancek; ltp@lists.linux.it
-> Subject: RE: [LTP] readahead02 failure on PPC
->=20
-> Hi again,
->=20
-> Additionally, to previous comments, I try the patch in a 32bits system (w=
-ith
-> Kernel 3.14) and the TWARN is gone.
->=20
-> I perform the test 10 times in two boards: 1) 32 bits with one core and 5=
-12MB
-> RAM and 2) 32 bits with two cores and same RAM:
->=20
-> - With patch: 5 times show PASS in both boards
-> - Without patch: 5 times show FAIL in both boards
->=20
-> This time, I don=E2=80=99t get inconsistent results.
->=20
-> Regards
->=20
-> Julio
->=20
-> > -----Original Message-----
-> > From: Kshitij Malik [mailto:Kshitij.Malik@mitel.com]
-> > Sent: Wednesday, March 23, 2016 10:55 AM
-> > To: Julio Cruz Barroso
-> > Cc: Jan Stancek; ltp@lists.linux.it
-> > Subject: RE: [LTP] readahead02 failure on PPC
-> >
-> > Hi Julio,
-> >
-> > Thank you for the update.
-> >
-> > I was also getting the /proc/pid/io error to start with and I fixed it =
-by
-> > enabling kernel configurations CONFIG_TASKSTATS,
-> > CONFIG_TASK_IO_ACCOUNTING and other related configs.
-> >
-> > These configs creates the io directory for a thread in proc.
-> >
-> > Jan,
-> >
-> > Do you think your fix can be used as an official patch?
-> >
-> > Thanks
-> > KK
-> >
-> > On Mar 22, 2016 22:39, Julio Cruz Barroso <julio.cruz@smartmatic.com>
-> > wrote:
-> > >
-> > > Hi Jan, Kshitij,
-> > >
-> > > Checking my logs (imx6 32bits based platform) the error is similar [1=
-]:
-> > >
-> > > readahead02 0 TWARN : readahead02.c:324: using less cache than
-> > expected
-> > >
-> > > However, the results were not consistent, because, once time PASS and
-> > another FAIL (with previous TWARN).
-> > >
-> > > Another thing different was (in my case):
-> > >
-> > > readahead02 3 TCONF : readahead02.c:309: Your system doesn't have
-> > /proc/pid/io, unable to determine read bytes during test
-> > >
-> > > This last one, is the part 1 of the test case (read bytes during test=
-).
-> > > The part
-> > 2 (verify the cache) is the same TWARN.
-> > >
-> > > At the end, I skipped this test case because the results were not
-> > > consistent
-> > and need further analysis.
-> > >
-> > > Regards,
-> > > Julio
-> > >
-> > >
-> > > [1] logs for imx6: https://justpaste.it/s4zk
-> > >
-> > > -----Original Message-----
-> > > From: ltp [mailto:ltp-bounces+julio.cruz=3Dsmartmatic.com@lists.linux=
-.it]
-> > > On
-> > Behalf Of Julio Cruz Barroso
-> > > Sent: Tuesday, March 22, 2016 11:19 PM
-> > > To: Jan Stancek
-> > > Cc: Julio Cruz; Kshitij Malik; ltp@lists.linux.it
-> > > Subject: Re: [LTP] readahead02 failure on PPC
-> > >
-> > > Hi Jan, Kshitij,
-> > >
-> > > I just saw this email!
-> > >
-> > > I will review the issue because I cannot remember the result details =
-and
-> > > let
-> > you know tomorrow (CST).
-> > >
-> > > I expect also to upload the others patchs reviewed.
-> > >
-> > > Regards
-> > >
-> > > Julio
-> > >
-> > >
-> > > > On Mar 22, 2016, at 5:50 PM, Jan Stancek <jstancek@redhat.com> wrot=
-e:
-> > > >
-> > > > Kshitij
-> > >
-> > > --
-> > > Mailing list info: https://lists.linux.it/listinfo/ltp
-> > ________________________________
-> > NOTE: This e-mail (including any attachments) is for the sole use of the
-> > intended recipient(s) and may contain information that is confidential
-> > and/or
-> > protected by legal privilege. Any unauthorized review, use, copy,
-> > disclosure
-> > or distribution of this e-mail is strictly prohibited. If you are not t=
-he
-> > intended
-> > recipient, please notify Mitel immediately and destroy all copies of th=
-is
-> > e-
-> > mail. Mitel does not accept any liability for breach of security, error=
- or
-> > virus
-> > that may result from the transmission of this message.
->=20
