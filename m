@@ -1,103 +1,172 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 24 Mar 2016 16:38:52 +0100
-Subject: [LTP] [PATCH] readahead: use glibc wrapper function
-Message-ID: <27e9eeb52d71394f8df405f98e66ffccec83803c.1458833602.git.jstancek@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 25 Mar 2016 10:08:42 +0800
+Subject: [LTP] [PATCH 1/2] preadv/preadv02.c: add specific error for preadv()
+Message-ID: <1458871723-5524-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We have had reports of this testcase not functioning
-properly on 32bit powerpc systems, because syscall()
-is not passing 64bit parameters correctly.
+1) preadv(2) fails when attempts to read into a invalid address
+   and set errno to EFAULT.
+2) preadv(2) fails if file descriptor is invalid and set errno
+   to EBADF.
+3) preadv(2) fails if file descriptor is not open for reading
+   and set errno to EBADF.
 
-This patch is using glibc wrapper, which should be available
-for a long time now (since glibc 2.3).
-
-Reported-and-tested-by: Julio Cruz Barroso <julio.cruz@smartmatic.com>
-Reported-and-tested-by: Kshitij Malik <Kshitij.Malik@mitel.com>
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/readahead/readahead01.c | 18 ++++++++++--------
- testcases/kernel/syscalls/readahead/readahead02.c |  3 +--
- 2 files changed, 11 insertions(+), 10 deletions(-)
+ testcases/kernel/syscalls/preadv/preadv02.c | 69 +++++++++++++++++++++--------
+ 1 file changed, 50 insertions(+), 19 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/readahead/readahead01.c b/testcases/kernel/syscalls/readahead/readahead01.c
-index f579174b8c8a..5f829bd838f4 100644
---- a/testcases/kernel/syscalls/readahead/readahead01.c
-+++ b/testcases/kernel/syscalls/readahead/readahead01.c
-@@ -25,14 +25,16 @@
+diff --git a/testcases/kernel/syscalls/preadv/preadv02.c b/testcases/kernel/syscalls/preadv/preadv02.c
+index 1fcaa3c..40d5f9e 100644
+--- a/testcases/kernel/syscalls/preadv/preadv02.c
++++ b/testcases/kernel/syscalls/preadv/preadv02.c
+@@ -1,5 +1,5 @@
  /*
-  * errno tests for readahead() syscall
-  */
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/syscall.h>
--#include <sys/socket.h>
-+#define _GNU_SOURCE
+-* Copyright (c) 2015 Fujitsu Ltd.
++* Copyright (c) 2016 Fujitsu Ltd.
+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+@@ -21,14 +21,21 @@
+ * 1) preadv(2) fails if iov_len is invalid.
+ * 2) preadv(2) fails if the vector count iovcnt is less than zero.
+ * 3) preadv(2) fails if offset is negative.
++* 4) preadv(2) fails when attempts to read into a invalid address.
++* 5) preadv(2) fails if file descriptor is invalid.
++* 6) preadv(2) fails if file descriptor is not open for reading.
+ *
+ * Expected Result:
+ * 1) preadv(2) should return -1 and set errno to EINVAL.
+ * 2) preadv(2) should return -1 and set errno to EINVAL.
+ * 3) preadv(2) should return -1 and set errno to EINVAL.
++* 4) preadv(2) should return -1 and set errno to EFAULT.
++* 5) preadv(2) should return -1 and set errno to EBADF.
++* 6) preadv(2) should return -1 and set errno to EBADF.
+ */
+ 
  #include <errno.h>
-+#include <fcntl.h>
- #include <stdio.h>
- #include <stdlib.h>
- #include <unistd.h>
-+#include <sys/socket.h>
-+#include <sys/stat.h>
-+#include <sys/syscall.h>
-+#include <sys/types.h>
- #include "config.h"
++#include <sys/uio.h>
+ 
  #include "test.h"
- #include "safe_macros.h"
-@@ -84,7 +86,7 @@ static void test_bad_fd(void)
- 	int fd;
+ #include "preadv.h"
+@@ -36,7 +43,8 @@
  
- 	tst_resm(TINFO, "test_bad_fd -1");
--	TEST(ltp_syscall(__NR_readahead, -1, 0, getpagesize()));
-+	TEST(readahead(-1, 0, getpagesize()));
- 	check_ret(-1);
- 	check_errno(EBADF);
+ #define CHUNK           64
  
-@@ -96,7 +98,7 @@ static void test_bad_fd(void)
- 	fd = open(tempname, O_WRONLY);
- 	if (fd == -1)
- 		tst_resm(TBROK | TERRNO, "Failed to open testfile");
--	TEST(ltp_syscall(__NR_readahead, fd, 0, getpagesize()));
-+	TEST(readahead(fd, 0, getpagesize()));
- 	check_ret(-1);
- 	check_errno(EBADF);
- 	close(fd);
-@@ -110,7 +112,7 @@ static void test_invalid_fd(void)
- 	tst_resm(TINFO, "test_invalid_fd pipe");
- 	if (pipe(fd) < 0)
- 		tst_resm(TBROK | TERRNO, "Failed to create pipe");
--	TEST(ltp_syscall(__NR_readahead, fd[0], 0, getpagesize()));
-+	TEST(readahead(fd[0], 0, getpagesize()));
- 	check_ret(-1);
- 	check_errno(EINVAL);
- 	close(fd[0]);
-@@ -120,7 +122,7 @@ static void test_invalid_fd(void)
- 	fd[0] = socket(AF_INET, SOCK_STREAM, 0);
- 	if (fd[0] < 0)
- 		tst_resm(TBROK | TERRNO, "Failed to create socket");
--	TEST(ltp_syscall(__NR_readahead, fd[0], 0, getpagesize()));
-+	TEST(readahead(fd[0], 0, getpagesize()));
- 	check_ret(-1);
- 	check_errno(EINVAL);
- 	close(fd[0]);
-diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
-index 7dc308c03e5d..53278be7d84c 100644
---- a/testcases/kernel/syscalls/readahead/readahead02.c
-+++ b/testcases/kernel/syscalls/readahead/readahead02.c
-@@ -236,8 +236,7 @@ static void read_testfile(int do_readahead, const char *fname, size_t fsize,
+-static int fd;
++static int fd1;
++static int fd2;
+ static char buf[CHUNK];
  
- 	if (do_readahead) {
- 		for (i = 0; i < fsize; i += readahead_size) {
--			TEST(ltp_syscall(__NR_readahead, fd,
--				(off64_t) i, readahead_size));
-+			TEST(readahead(fd, (off64_t) i, readahead_size));
- 			if (TEST_RETURN != 0)
- 				break;
+ static struct iovec rd_iovec1[] = {
+@@ -45,24 +53,33 @@ static struct iovec rd_iovec1[] = {
+ 
+ static struct iovec rd_iovec2[] = {
+ 	{buf, CHUNK},
++	{(char *)-1, CHUNK},
+ };
+ 
+ static struct test_case_t {
++	int des;
+ 	struct iovec *name;
+ 	int count;
+ 	off_t offset;
++	int exp_err;
+ } tc[] = {
+ 	/* test1 */
+-	{rd_iovec1, 1, 0},
++	{0, rd_iovec1, 1, 0, EINVAL},
+ 	/* test2 */
+-	{rd_iovec2, -1, 0},
++	{0, rd_iovec2, -1, 0, EINVAL},
+ 	/* test3 */
+-	{rd_iovec2, 1, -1}
++	{0, rd_iovec2, 1, -1, EINVAL},
++	/* test4 */
++	{0, rd_iovec2, 2, 0, EFAULT},
++	/* test5 */
++	{-1, rd_iovec2, 1, 0, EBADF},
++	/* test6 */
++	{0, rd_iovec2, 1, 0, EBADF}
+ };
+ 
+-void verify_preadv(struct test_case_t *tc);
+-void setup(void);
+-void cleanup(void);
++static void verify_preadv(struct test_case_t *tc);
++static void setup(void);
++static void cleanup(void);
+ 
+ char *TCID = "preadv02";
+ int TST_TOTAL = ARRAY_SIZE(tc);
+@@ -86,23 +103,27 @@ int main(int ac, char **av)
+ 	tst_exit();
+ }
+ 
+-void verify_preadv(struct test_case_t *tc)
++static void verify_preadv(struct test_case_t *tc)
+ {
+-	TEST(preadv(fd, tc->name, tc->count, tc->offset));
++	TEST(preadv(tc->des, tc->name, tc->count, tc->offset));
+ 	if (TEST_RETURN == 0) {
+-		tst_resm(TFAIL, "preadv(2) succeed unexpectedly");
++		tst_resm(TFAIL, "preadv() succeeded unexpectedly");
+ 	} else {
+-		if (TEST_ERRNO == EINVAL) {
+-			tst_resm(TPASS | TTERRNO, "preadv(2) fails as expected");
++		if (TEST_ERRNO == tc->exp_err) {
++			tst_resm(TPASS | TTERRNO,
++				 "preadv() failed as expected");
+ 		} else {
+-			tst_resm(TFAIL | TTERRNO, "preadv(2) fails unexpectedly,"
+-				 " expected errno is EINVAL");
++			tst_resm(TFAIL | TTERRNO,
++				 "preadv() failed unexpectedly, expected"
++				 " errno is %s", tst_strerrno(tc->exp_err));
  		}
+ 	}
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
++	int i;
++
+ 	if ((tst_kvercmp(2, 6, 30)) < 0) {
+ 		tst_brkm(TCONF, NULL, "This test can only run on kernels"
+ 			 " that are 2.6.30 or higher.");
+@@ -114,12 +135,22 @@ void setup(void)
+ 
+ 	tst_tmpdir();
+ 
+-	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
++	fd1 = SAFE_OPEN(cleanup, "file1", O_RDWR | O_CREAT, 0644);
++
++	fd2 = SAFE_OPEN(cleanup, "file2", O_WRONLY | O_CREAT, 0644);
++
++	for (i = 0; i < 4; i++)
++		tc[i].des = fd1;
++
++	tc[5].des = fd2;
+ }
+ 
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	if (fd > 0 && close(fd))
++	if (fd1 > 0 && close(fd1))
++		tst_resm(TWARN | TERRNO, "failed to close file");
++
++	if (fd2 > 0 && close(fd2))
+ 		tst_resm(TWARN | TERRNO, "failed to close file");
+ 
+ 	tst_rmdir();
 -- 
 1.8.3.1
+
+
 
