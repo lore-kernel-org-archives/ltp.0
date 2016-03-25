@@ -1,175 +1,40 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 25 Mar 2016 10:08:43 +0800
-Subject: [LTP] [PATCH 2/2] pwritev/pwritev02.c: add specific error for
-	pwritev()
-In-Reply-To: <1458871723-5524-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1458871723-5524-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1458871723-5524-2-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Mason <slash.tmp@free.fr>
+Date: Fri, 25 Mar 2016 15:53:44 +0100
+Subject: [LTP] [PATCH] delete_module: export license information
+Message-ID: <56F550F8.3000609@free.fr>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) pwritev(2) fails when attempts to write from a invalid address
-   and set errno to EFAULT.
-2) pwritev(2) fails if file descriptor is invalid and set errno
-   to EBADF.
-3) pwritev(2) fails if file descriptor is not open for writing
-   and set errno to EBADF.
+Export license information to avoid kernel taint.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+	dummy_del_mod: module license 'unspecified' taints kernel.
+	Disabling lock debugging due to kernel taint
 ---
- testcases/kernel/syscalls/pwritev/pwritev02.c | 69 +++++++++++++++++++--------
- 1 file changed, 50 insertions(+), 19 deletions(-)
+ testcases/kernel/module/delete_module/dummy_del_mod.c     | 1 +
+ testcases/kernel/module/delete_module/dummy_del_mod_dep.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/pwritev/pwritev02.c b/testcases/kernel/syscalls/pwritev/pwritev02.c
-index 0c8e436..0e77c5e 100644
---- a/testcases/kernel/syscalls/pwritev/pwritev02.c
-+++ b/testcases/kernel/syscalls/pwritev/pwritev02.c
-@@ -1,5 +1,5 @@
- /*
--* Copyright (c) 2015 Fujitsu Ltd.
-+* Copyright (c) 2016 Fujitsu Ltd.
- * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
- *
- * This program is free software; you can redistribute it and/or modify it
-@@ -21,14 +21,21 @@
- * 1) pwritev(2) fails if iov_len is invalid.
- * 2) pwritev(2) fails if the vector count iovcnt is less than zero.
- * 3) pwritev(2) fails if offset is negative.
-+* 4) pwritev(2) fails when attempts to write from a invalid address
-+* 5) pwritev(2) fails if file descriptor is invalid.
-+* 6) pwritev(2) fails if file descriptor is not open for writing.
- *
- * Expected Result:
- * 1) pwritev(2) should return -1 and set errno to EINVAL.
- * 2) pwritev(2) should return -1 and set errno to EINVAL.
- * 3) pwritev(2) should return -1 and set errno to EINVAL.
-+* 4) pwritev(2) should return -1 and set errno to EFAULT.
-+* 5) pwritev(2) should return -1 and set errno to EBADF.
-+* 6) pwritev(2) should return -1 and set errno to EBADF.
- */
+diff --git a/testcases/kernel/module/delete_module/dummy_del_mod.c b/testcases/kernel/module/delete_module/dummy_del_mod.c
+index dfda0e333f46..10932d0aa959 100644
+--- a/testcases/kernel/module/delete_module/dummy_del_mod.c
++++ b/testcases/kernel/module/delete_module/dummy_del_mod.c
+@@ -61,3 +61,4 @@ static void __exit dummy_exit(void)
+ module_init(dummy_init);
+ module_exit(dummy_exit);
+ EXPORT_SYMBOL(dummy_func_test);
++MODULE_LICENSE("GPL");
+diff --git a/testcases/kernel/module/delete_module/dummy_del_mod_dep.c b/testcases/kernel/module/delete_module/dummy_del_mod_dep.c
+index a15b2ea5d7c0..c9f60e3cde9e 100644
+--- a/testcases/kernel/module/delete_module/dummy_del_mod_dep.c
++++ b/testcases/kernel/module/delete_module/dummy_del_mod_dep.c
+@@ -53,3 +53,4 @@ static void __exit dummy_exit(void)
  
- #include <errno.h>
-+#include <sys/uio.h>
- 
- #include "test.h"
- #include "pwritev.h"
-@@ -36,7 +43,8 @@
- 
- #define CHUNK           64
- 
--static int fd;
-+static int fd1;
-+static int fd2;
- static char buf[CHUNK];
- 
- static struct iovec wr_iovec1[] = {
-@@ -45,24 +53,33 @@ static struct iovec wr_iovec1[] = {
- 
- static struct iovec wr_iovec2[] = {
- 	{buf, CHUNK},
-+	{(char *)-1, CHUNK},
- };
- 
- static struct test_case_t {
-+	int des;
- 	struct iovec *name;
- 	int count;
- 	off_t offset;
-+	int exp_err;
- } tc[] = {
- 	/* test1 */
--	{wr_iovec1, 1, 0},
-+	{0, wr_iovec1, 1, 0, EINVAL},
- 	/* test2 */
--	{wr_iovec2, -1, 0},
-+	{0, wr_iovec2, -1, 0, EINVAL},
- 	/* test3 */
--	{wr_iovec2, 1, -1}
-+	{0, wr_iovec2, 1, -1, EINVAL},
-+	/* test4 */
-+	{0, wr_iovec2, 2, 0, EFAULT},
-+	/* test5 */
-+	{-1, wr_iovec2, 1, 0, EBADF},
-+	/* test6 */
-+	{0, wr_iovec2, 1, 0, EBADF}
- };
- 
--void verify_pwritev(struct test_case_t *tc);
--void setup(void);
--void cleanup(void);
-+static void verify_pwritev(struct test_case_t *tc);
-+static void setup(void);
-+static void cleanup(void);
- 
- char *TCID = "pwritev02";
- int TST_TOTAL = ARRAY_SIZE(tc);
-@@ -86,23 +103,27 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
--void verify_pwritev(struct test_case_t *tc)
-+static void verify_pwritev(struct test_case_t *tc)
- {
--	TEST(pwritev(fd, tc->name, tc->count, tc->offset));
-+	TEST(pwritev(tc->des, tc->name, tc->count, tc->offset));
- 	if (TEST_RETURN == 0) {
--		tst_resm(TFAIL, "pwritev(2) succeed unexpectedly");
-+		tst_resm(TFAIL, "pwritev() succeeded unexpectedly");
- 	} else {
--		if (TEST_ERRNO == EINVAL) {
--			tst_resm(TPASS | TTERRNO, "pwritev(2) fails as expected");
-+		if (TEST_ERRNO == tc->exp_err) {
-+			tst_resm(TPASS | TTERRNO,
-+				 "pwritev() failed as expected");
- 		} else {
--			tst_resm(TFAIL | TTERRNO, "pwritev(2) fails unexpectedly,"
--				 " expected errno is EINVAL");
-+			tst_resm(TFAIL | TTERRNO,
-+				 "pwritev() failed unexpectedly, expected"
-+				 " errno is %s", tst_strerrno(tc->exp_err));
- 		}
- 	}
- }
- 
--void setup(void)
-+static void setup(void)
- {
-+	int i;
-+
- 	if ((tst_kvercmp(2, 6, 30)) < 0) {
- 		tst_brkm(TCONF, NULL, "This test can only run on kernels"
- 			 " that are 2.6.30 or higher.");
-@@ -114,12 +135,22 @@ void setup(void)
- 
- 	tst_tmpdir();
- 
--	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
-+	fd1 = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
-+
-+	fd2 = SAFE_OPEN(cleanup, "file", O_RDONLY | O_CREAT, 0644);
-+
-+	for (i = 0; i < 4; i++)
-+		tc[i].des = fd1;
-+
-+	tc[5].des = fd2;
- }
- 
--void cleanup(void)
-+static void cleanup(void)
- {
--	if (fd > 0 && close(fd))
-+	if (fd1 > 0 && close(fd1))
-+		tst_resm(TWARN | TERRNO, "failed to close file");
-+
-+	if (fd2 > 0 && close(fd2))
- 		tst_resm(TWARN | TERRNO, "failed to close file");
- 
- 	tst_rmdir();
+ module_init(dummy_init);
+ module_exit(dummy_exit);
++MODULE_LICENSE("GPL");
 -- 
-1.8.3.1
-
-
+2.7.0
 
