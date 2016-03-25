@@ -1,29 +1,32 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 25 Mar 2016 10:08:42 +0800
-Subject: [LTP] [PATCH 1/2] preadv/preadv02.c: add specific error for preadv()
-Message-ID: <1458871723-5524-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Fri, 25 Mar 2016 10:08:43 +0800
+Subject: [LTP] [PATCH 2/2] pwritev/pwritev02.c: add specific error for
+	pwritev()
+In-Reply-To: <1458871723-5524-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1458871723-5524-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1458871723-5524-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) preadv(2) fails when attempts to read into a invalid address
+1) pwritev(2) fails when attempts to write from a invalid address
    and set errno to EFAULT.
-2) preadv(2) fails if file descriptor is invalid and set errno
+2) pwritev(2) fails if file descriptor is invalid and set errno
    to EBADF.
-3) preadv(2) fails if file descriptor is not open for reading
+3) pwritev(2) fails if file descriptor is not open for writing
    and set errno to EBADF.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/preadv/preadv02.c | 69 +++++++++++++++++++++--------
+ testcases/kernel/syscalls/pwritev/pwritev02.c | 69 +++++++++++++++++++--------
  1 file changed, 50 insertions(+), 19 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/preadv/preadv02.c b/testcases/kernel/syscalls/preadv/preadv02.c
-index 1fcaa3c..40d5f9e 100644
---- a/testcases/kernel/syscalls/preadv/preadv02.c
-+++ b/testcases/kernel/syscalls/preadv/preadv02.c
+diff --git a/testcases/kernel/syscalls/pwritev/pwritev02.c b/testcases/kernel/syscalls/pwritev/pwritev02.c
+index 0c8e436..0e77c5e 100644
+--- a/testcases/kernel/syscalls/pwritev/pwritev02.c
++++ b/testcases/kernel/syscalls/pwritev/pwritev02.c
 @@ -1,5 +1,5 @@
  /*
 -* Copyright (c) 2015 Fujitsu Ltd.
@@ -32,27 +35,27 @@ index 1fcaa3c..40d5f9e 100644
  *
  * This program is free software; you can redistribute it and/or modify it
 @@ -21,14 +21,21 @@
- * 1) preadv(2) fails if iov_len is invalid.
- * 2) preadv(2) fails if the vector count iovcnt is less than zero.
- * 3) preadv(2) fails if offset is negative.
-+* 4) preadv(2) fails when attempts to read into a invalid address.
-+* 5) preadv(2) fails if file descriptor is invalid.
-+* 6) preadv(2) fails if file descriptor is not open for reading.
+ * 1) pwritev(2) fails if iov_len is invalid.
+ * 2) pwritev(2) fails if the vector count iovcnt is less than zero.
+ * 3) pwritev(2) fails if offset is negative.
++* 4) pwritev(2) fails when attempts to write from a invalid address
++* 5) pwritev(2) fails if file descriptor is invalid.
++* 6) pwritev(2) fails if file descriptor is not open for writing.
  *
  * Expected Result:
- * 1) preadv(2) should return -1 and set errno to EINVAL.
- * 2) preadv(2) should return -1 and set errno to EINVAL.
- * 3) preadv(2) should return -1 and set errno to EINVAL.
-+* 4) preadv(2) should return -1 and set errno to EFAULT.
-+* 5) preadv(2) should return -1 and set errno to EBADF.
-+* 6) preadv(2) should return -1 and set errno to EBADF.
+ * 1) pwritev(2) should return -1 and set errno to EINVAL.
+ * 2) pwritev(2) should return -1 and set errno to EINVAL.
+ * 3) pwritev(2) should return -1 and set errno to EINVAL.
++* 4) pwritev(2) should return -1 and set errno to EFAULT.
++* 5) pwritev(2) should return -1 and set errno to EBADF.
++* 6) pwritev(2) should return -1 and set errno to EBADF.
  */
  
  #include <errno.h>
 +#include <sys/uio.h>
  
  #include "test.h"
- #include "preadv.h"
+ #include "pwritev.h"
 @@ -36,7 +43,8 @@
  
  #define CHUNK           64
@@ -62,10 +65,10 @@ index 1fcaa3c..40d5f9e 100644
 +static int fd2;
  static char buf[CHUNK];
  
- static struct iovec rd_iovec1[] = {
-@@ -45,24 +53,33 @@ static struct iovec rd_iovec1[] = {
+ static struct iovec wr_iovec1[] = {
+@@ -45,24 +53,33 @@ static struct iovec wr_iovec1[] = {
  
- static struct iovec rd_iovec2[] = {
+ static struct iovec wr_iovec2[] = {
  	{buf, CHUNK},
 +	{(char *)-1, CHUNK},
  };
@@ -78,54 +81,54 @@ index 1fcaa3c..40d5f9e 100644
 +	int exp_err;
  } tc[] = {
  	/* test1 */
--	{rd_iovec1, 1, 0},
-+	{0, rd_iovec1, 1, 0, EINVAL},
+-	{wr_iovec1, 1, 0},
++	{0, wr_iovec1, 1, 0, EINVAL},
  	/* test2 */
--	{rd_iovec2, -1, 0},
-+	{0, rd_iovec2, -1, 0, EINVAL},
+-	{wr_iovec2, -1, 0},
++	{0, wr_iovec2, -1, 0, EINVAL},
  	/* test3 */
--	{rd_iovec2, 1, -1}
-+	{0, rd_iovec2, 1, -1, EINVAL},
+-	{wr_iovec2, 1, -1}
++	{0, wr_iovec2, 1, -1, EINVAL},
 +	/* test4 */
-+	{0, rd_iovec2, 2, 0, EFAULT},
++	{0, wr_iovec2, 2, 0, EFAULT},
 +	/* test5 */
-+	{-1, rd_iovec2, 1, 0, EBADF},
++	{-1, wr_iovec2, 1, 0, EBADF},
 +	/* test6 */
-+	{0, rd_iovec2, 1, 0, EBADF}
++	{0, wr_iovec2, 1, 0, EBADF}
  };
  
--void verify_preadv(struct test_case_t *tc);
+-void verify_pwritev(struct test_case_t *tc);
 -void setup(void);
 -void cleanup(void);
-+static void verify_preadv(struct test_case_t *tc);
++static void verify_pwritev(struct test_case_t *tc);
 +static void setup(void);
 +static void cleanup(void);
  
- char *TCID = "preadv02";
+ char *TCID = "pwritev02";
  int TST_TOTAL = ARRAY_SIZE(tc);
 @@ -86,23 +103,27 @@ int main(int ac, char **av)
  	tst_exit();
  }
  
--void verify_preadv(struct test_case_t *tc)
-+static void verify_preadv(struct test_case_t *tc)
+-void verify_pwritev(struct test_case_t *tc)
++static void verify_pwritev(struct test_case_t *tc)
  {
--	TEST(preadv(fd, tc->name, tc->count, tc->offset));
-+	TEST(preadv(tc->des, tc->name, tc->count, tc->offset));
+-	TEST(pwritev(fd, tc->name, tc->count, tc->offset));
++	TEST(pwritev(tc->des, tc->name, tc->count, tc->offset));
  	if (TEST_RETURN == 0) {
--		tst_resm(TFAIL, "preadv(2) succeed unexpectedly");
-+		tst_resm(TFAIL, "preadv() succeeded unexpectedly");
+-		tst_resm(TFAIL, "pwritev(2) succeed unexpectedly");
++		tst_resm(TFAIL, "pwritev() succeeded unexpectedly");
  	} else {
 -		if (TEST_ERRNO == EINVAL) {
--			tst_resm(TPASS | TTERRNO, "preadv(2) fails as expected");
+-			tst_resm(TPASS | TTERRNO, "pwritev(2) fails as expected");
 +		if (TEST_ERRNO == tc->exp_err) {
 +			tst_resm(TPASS | TTERRNO,
-+				 "preadv() failed as expected");
++				 "pwritev() failed as expected");
  		} else {
--			tst_resm(TFAIL | TTERRNO, "preadv(2) fails unexpectedly,"
+-			tst_resm(TFAIL | TTERRNO, "pwritev(2) fails unexpectedly,"
 -				 " expected errno is EINVAL");
 +			tst_resm(TFAIL | TTERRNO,
-+				 "preadv() failed unexpectedly, expected"
++				 "pwritev() failed unexpectedly, expected"
 +				 " errno is %s", tst_strerrno(tc->exp_err));
  		}
  	}
@@ -144,9 +147,9 @@ index 1fcaa3c..40d5f9e 100644
  	tst_tmpdir();
  
 -	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
-+	fd1 = SAFE_OPEN(cleanup, "file1", O_RDWR | O_CREAT, 0644);
++	fd1 = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
 +
-+	fd2 = SAFE_OPEN(cleanup, "file2", O_WRONLY | O_CREAT, 0644);
++	fd2 = SAFE_OPEN(cleanup, "file", O_RDONLY | O_CREAT, 0644);
 +
 +	for (i = 0; i < 4; i++)
 +		tc[i].des = fd1;
