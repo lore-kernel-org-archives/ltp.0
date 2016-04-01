@@ -1,169 +1,216 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 1 Apr 2016 13:14:40 +0800
-Subject: [LTP] [PATCH v2 2/2] pwritev/pwritev02.c: add specific error for
-	pwritev()
-In-Reply-To: <1459487680-5153-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20160331141343.GF21298@rei.lan>
- <1459487680-5153-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1459487680-5153-2-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Fri,  1 Apr 2016 13:24:41 +0800
+Subject: [LTP] [PATCH V3] madvice: new case for madvise(WILLNEED)
+Message-ID: <1459488281-23882-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) pwritev(2) fails when attempts to write from a invalid address
-   and set errno to EFAULT.
-2) pwritev(2) fails if file descriptor is invalid and set errno
-   to EBADF.
-3) pwritev(2) fails if file descriptor is not open for writing
-   and set errno to EBADF.
+Page fault occurs in spite that madvise(WILLNEED) system call is called
+to prefetch the page. This issue is reproduced by running a program
+which sequentially accesses to a shared memory and calls madvise(WILLNEED)
+to the next page on a page fault.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Fixed by commit:
+	55231e5c898 mm: madvise: fix MADV_WILLNEED on shmem swapouts
+
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/syscalls/pwritev/pwritev02.c | 63 +++++++++++++++++++--------
- 1 file changed, 44 insertions(+), 19 deletions(-)
+ runtest/syscalls                              |   1 +
+ testcases/kernel/syscalls/.gitignore          |   1 +
+ testcases/kernel/syscalls/madvise/madvise06.c | 157 ++++++++++++++++++++++++++
+ 3 files changed, 159 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/madvise/madvise06.c
 
-diff --git a/testcases/kernel/syscalls/pwritev/pwritev02.c b/testcases/kernel/syscalls/pwritev/pwritev02.c
-index 0c8e436..6e8b7ea 100644
---- a/testcases/kernel/syscalls/pwritev/pwritev02.c
-+++ b/testcases/kernel/syscalls/pwritev/pwritev02.c
-@@ -1,5 +1,5 @@
- /*
--* Copyright (c) 2015 Fujitsu Ltd.
-+* Copyright (c) 2015-2016 Fujitsu Ltd.
- * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
- *
- * This program is free software; you can redistribute it and/or modify it
-@@ -21,14 +21,21 @@
- * 1) pwritev(2) fails if iov_len is invalid.
- * 2) pwritev(2) fails if the vector count iovcnt is less than zero.
- * 3) pwritev(2) fails if offset is negative.
-+* 4) pwritev(2) fails when attempts to write from a invalid address
-+* 5) pwritev(2) fails if file descriptor is invalid.
-+* 6) pwritev(2) fails if file descriptor is not open for writing.
- *
- * Expected Result:
- * 1) pwritev(2) should return -1 and set errno to EINVAL.
- * 2) pwritev(2) should return -1 and set errno to EINVAL.
- * 3) pwritev(2) should return -1 and set errno to EINVAL.
-+* 4) pwritev(2) should return -1 and set errno to EFAULT.
-+* 5) pwritev(2) should return -1 and set errno to EBADF.
-+* 6) pwritev(2) should return -1 and set errno to EBADF.
- */
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b41c927..732c2ca 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -743,6 +743,7 @@ madvise02 madvise02
+ madvise03 madvise03
+ madvise04 madvise04
+ madvise05 madvise05
++madvise06 madvise06
  
- #include <errno.h>
-+#include <sys/uio.h>
+ newuname01 newuname01
  
- #include "test.h"
- #include "pwritev.h"
-@@ -36,7 +43,9 @@
- 
- #define CHUNK           64
- 
--static int fd;
-+static int fd1;
-+static int fd2;
-+static int fd3 = -1;
- static char buf[CHUNK];
- 
- static struct iovec wr_iovec1[] = {
-@@ -45,24 +54,33 @@ static struct iovec wr_iovec1[] = {
- 
- static struct iovec wr_iovec2[] = {
- 	{buf, CHUNK},
-+	{(char *)-1, CHUNK},
- };
- 
- static struct test_case_t {
-+	int *fd;
- 	struct iovec *name;
- 	int count;
- 	off_t offset;
-+	int exp_err;
- } tc[] = {
- 	/* test1 */
--	{wr_iovec1, 1, 0},
-+	{&fd1, wr_iovec1, 1, 0, EINVAL},
- 	/* test2 */
--	{wr_iovec2, -1, 0},
-+	{&fd1, wr_iovec2, -1, 0, EINVAL},
- 	/* test3 */
--	{wr_iovec2, 1, -1}
-+	{&fd1, wr_iovec2, 1, -1, EINVAL},
-+	/* test4 */
-+	{&fd1, wr_iovec2, 2, 0, EFAULT},
-+	/* test5 */
-+	{&fd3, wr_iovec2, 1, 0, EBADF},
-+	/* test6 */
-+	{&fd2, wr_iovec2, 1, 0, EBADF}
- };
- 
--void verify_pwritev(struct test_case_t *tc);
--void setup(void);
--void cleanup(void);
-+static void verify_pwritev(struct test_case_t *tc);
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 0540928..ffa5db1 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -504,6 +504,7 @@
+ /madvise/madvise03
+ /madvise/madvise04
+ /madvise/madvise05
++/madvise/madvise06
+ /mallopt/mallopt01
+ /mbind/mbind01
+ /memcmp/memcmp01
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+new file mode 100644
+index 0000000..44a40ba
+--- /dev/null
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -0,0 +1,157 @@
++/*
++ * Copyright (c) 2016 Red Hat, Inc.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 3 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++/*
++ * DESCRIPTION
++ *
++ *   Page fault occurs in spite that madvise(WILLNEED) system call is called
++ *   to prefetch the page. This issue is reproduced by running a program
++ *   which sequentially accesses to a shared memory and calls madvise(WILLNEED)
++ *   to the next page on a page fault.
++ *
++ *   This bug is present in all RHEL7 versions. It looks like this was fixed in
++ *   mainline kernel > v3.15 by the following patch:
++ *
++ *   commit 55231e5c898c5c03c14194001e349f40f59bd300
++ *   Author: Johannes Weiner <hannes@cmpxchg.org>
++ *   Date:   Thu May 22 11:54:17 2014 -0700
++ *
++ *       mm: madvise: fix MADV_WILLNEED on shmem swapouts
++ */
++
++#include <stdio.h>
++#include <errno.h>
++#include <sys/sysinfo.h>
++
++#include "test.h"
++#include "safe_macros.h"
++
++char *TCID = "madvise06";
++int TST_TOTAL = 1;
++
++#ifdef __x86_64__
++
++#define GB_SZ  (1024*1024*1024)
++#define PG_SZ  (4*1024)
++
++static long dst_max;
++
 +static void setup(void);
-+static void cleanup(void);
- 
- char *TCID = "pwritev02";
- int TST_TOTAL = ARRAY_SIZE(tc);
-@@ -86,22 +104,24 @@ int main(int ac, char **av)
- 	tst_exit();
- }
- 
--void verify_pwritev(struct test_case_t *tc)
-+static void verify_pwritev(struct test_case_t *tc)
- {
--	TEST(pwritev(fd, tc->name, tc->count, tc->offset));
-+	TEST(pwritev(*tc->fd, tc->name, tc->count, tc->offset));
- 	if (TEST_RETURN == 0) {
--		tst_resm(TFAIL, "pwritev(2) succeed unexpectedly");
-+		tst_resm(TFAIL, "pwritev() succeeded unexpectedly");
- 	} else {
--		if (TEST_ERRNO == EINVAL) {
--			tst_resm(TPASS | TTERRNO, "pwritev(2) fails as expected");
-+		if (TEST_ERRNO == tc->exp_err) {
-+			tst_resm(TPASS | TTERRNO,
-+				 "pwritev() failed as expected");
- 		} else {
--			tst_resm(TFAIL | TTERRNO, "pwritev(2) fails unexpectedly,"
--				 " expected errno is EINVAL");
-+			tst_resm(TFAIL | TTERRNO,
-+				 "pwritev() failed unexpectedly, expected"
-+				 " errno is %s", tst_strerrno(tc->exp_err));
- 		}
- 	}
- }
- 
--void setup(void)
++static int  get_page_fault_num(void);
++static void test_advice_willneed(void);
++
++int main(int argc, char *argv[])
++{
++	int lc;
++
++	tst_parse_opts(argc, argv, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++)
++		test_advice_willneed();
++
++	tst_exit();
++}
++
 +static void setup(void)
- {
- 	if ((tst_kvercmp(2, 6, 30)) < 0) {
- 		tst_brkm(TCONF, NULL, "This test can only run on kernels"
-@@ -114,12 +134,17 @@ void setup(void)
- 
- 	tst_tmpdir();
- 
--	fd = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
-+	fd1 = SAFE_OPEN(cleanup, "file", O_RDWR | O_CREAT, 0644);
++{
++	struct sysinfo sys_buf;
 +
-+	fd2 = SAFE_OPEN(cleanup, "file", O_RDONLY | O_CREAT, 0644);
- }
- 
--void cleanup(void)
-+static void cleanup(void)
- {
--	if (fd > 0 && close(fd))
-+	if (fd1 > 0 && close(fd1))
-+		tst_resm(TWARN | TERRNO, "failed to close file");
++	sysinfo(&sys_buf);
 +
-+	if (fd2 > 0 && close(fd2))
- 		tst_resm(TWARN | TERRNO, "failed to close file");
- 
- 	tst_rmdir();
++	if (sys_buf.totalram < 2L * GB_SZ)
++		tst_brkm(TCONF, NULL, "Test requires more than 2GB of RAM");
++	if (sys_buf.totalram > 100L * GB_SZ)
++		tst_brkm(TCONF, NULL, "System RAM is too large, skip test");
++
++	dst_max = sys_buf.totalram / GB_SZ;
++	tst_resm(TINFO, "dst_max = %ld", dst_max);
++
++	tst_sig(NOFORK, DEF_HANDLER, NULL);
++
++	TEST_PAUSE;
++}
++
++static int get_page_fault_num(void)
++{
++	int pg;
++
++	SAFE_FILE_SCANF(NULL, "/proc/self/stat",
++			"%*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %d",
++			&pg);
++
++	return pg;
++}
++
++static void test_advice_willneed(void)
++{
++	int i;
++	char *src;
++	char *dst[100];
++	int page_fault_num_1;
++	int page_fault_num_2;
++
++	/* allocate source memory (1GB only) */
++	src = SAFE_MMAP(NULL, NULL, 1 * GB_SZ, PROT_READ | PROT_WRITE,
++			MAP_SHARED | MAP_ANONYMOUS,
++			-1, 0);
++
++	/* allocate destination memory (array) */
++	for (i = 0; i < dst_max; ++i)
++		dst[i] = SAFE_MMAP(NULL, NULL, 1 * GB_SZ,
++				PROT_READ | PROT_WRITE,
++				MAP_SHARED | MAP_ANONYMOUS,
++				-1, 0);
++
++	/* memmove source to each destination memories (for SWAP-OUT) */
++	for (i = 0; i < dst_max; ++i)
++		memmove(dst[i], src, 1 * GB_SZ);
++
++	tst_resm(TINFO, "PageFault(no madvice): %d", get_page_fault_num());
++
++	/* Do madvice() to dst[0] */
++	TEST(madvise(dst[0], PG_SZ, MADV_WILLNEED));
++	if (TEST_RETURN == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "madvise failed");
++
++	page_fault_num_1 = get_page_fault_num();
++	tst_resm(TINFO, "PageFault(madvice / no mem access): %d",
++			page_fault_num_1);
++
++	*dst[0] = 'a';
++	page_fault_num_2 = get_page_fault_num();
++	tst_resm(TINFO, "PageFault(madvice / mem access): %d",
++			page_fault_num_2);
++
++	if (page_fault_num_1 != page_fault_num_2)
++		tst_resm(TFAIL, "Bug has been reproduced");
++	else
++		tst_resm(TPASS, "Regression test pass");
++
++	SAFE_MUNMAP(NULL, src, 1 * GB_SZ);
++	for (i = 0; i < dst_max; ++i)
++		SAFE_MUNMAP(NULL, dst[i], 1 * GB_SZ);
++}
++
++
++#else
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "Only test on x86_64.");
++}
++#endif
 -- 
 1.8.3.1
-
-
 
