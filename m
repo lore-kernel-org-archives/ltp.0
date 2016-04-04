@@ -1,43 +1,55 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 4 Apr 2016 04:05:56 -0400 (EDT)
-Subject: [LTP] [PATCH] mmap2: change memory units and default size
-In-Reply-To: <1458708300-14960-1-git-send-email-jcsistemas2001@gmail.com>
-References: <1458708300-14960-1-git-send-email-jcsistemas2001@gmail.com>
-Message-ID: <1558521674.17901489.1459757156206.JavaMail.zimbra@redhat.com>
+Date: Mon,  4 Apr 2016 10:26:27 +0200
+Subject: [LTP] [PATCH] testcases/kernel/include/lib.mk: re-order library
+	link order
+Message-ID: <0d998706a0a9c4c353f3aa31f2c1544007611714.1459758277.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+M.Srikanth Kumar reported a -static build failure:
+  gcc -static -pthread
+  -L/home/linaro/ltp-master/testcases/kernel/lib
+  -L../../../../lib  migrate_pages01.o migrate_pages_common.o
+  -lltp
+  -lnuma -lkerntest -lltp -o migrate_pages01
+  migrate_pages01.o: In function `test_invalid_perm':
 
+  /home/linaro/ltp-master/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+  In function `get_max_node':
+  /home/linaro/ltp-master/testcases/kernel/lib/numa_helper.c:53:
+  undefined reference to `numa_max_possible_node'
 
------ Original Message -----
-> From: "Julio Cruz" <jcsistemas2001@gmail.com>
-> To: "julio cruz" <julio.cruz@smartmatic.com>, ltp@lists.linux.it, chrubis@suse.cz, jstancek@redhat.com
-> Cc: "Julio Cruz" <jcsistemas2001@gmail.com>
-> Sent: Wednesday, 23 March, 2016 5:45:00 AM
-> Subject: [LTP][PATCH] mmap2: change memory units and default size
-> 
-> This patch made three changes: 1) check the available memory
-> before to perform the test case, 2) change the memory units
-> from GB to MB, and 3)  make default file size to 128M.
-> 
-> These changes are needed during testing on embedded devices
-> with RAM memory limitation (i.e. 512MB).
-> 
-> This patch no changed the test case procedure.
+  /home/linaro/ltp-master/testcases/kernel/lib/libkerntest.a(numa_helper.o):
+  In function `get_allowed_nodes_arr':
+  /home/linaro/ltp-master/testcases/kernel/lib/numa_helper.c:177:
+  undefined reference to `numa_available'
+  ...
 
-I have pushed this with some small changes, plus I dropped paragraph
-below, because patch now changes also default size to 128M.
+Re-order libraries, moving libnuma to the end, to fix linking of
+unresolved libnuma symbols.
 
-Regards,
-Jan
+Reported-and-tested-by: "M.Srikanth Kumar" <srikanth007m@gmail.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/include/lib.mk | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> To use this test case in embedded devices, I suggest to change
-> the testrun 'mm' as below from: "mtest06_2 mmap2 -x 0.002 -a -p"
-> to "mtest06_2 mmap2 -x 0.002 -a -p -s 100" according with
-> your system memory available
-> 
-> Signed-off-by: Julio Cruz <jcsistemas2001@gmail.com>
+diff --git a/testcases/kernel/include/lib.mk b/testcases/kernel/include/lib.mk
+index f79a1c0197e3..5c97ae2c9edf 100644
+--- a/testcases/kernel/include/lib.mk
++++ b/testcases/kernel/include/lib.mk
+@@ -23,7 +23,7 @@ KERNEL_DIR		:= $(abs_top_builddir)/testcases/kernel
+ LIBKERNTEST_DIR		:= $(KERNEL_DIR)/lib
+ LIBKERNTEST		:= $(LIBKERNTEST_DIR)/libkerntest.a
+ CPPFLAGS		+= $(NUMA_CPPFLAGS) -I$(KERNEL_SRCDIR)/include
+-LDLIBS			+= $(NUMA_LIBS) -lkerntest -lltp
++LDLIBS			+= -lkerntest -lltp $(NUMA_LIBS)
+ LDFLAGS			+= -L$(LIBKERNTEST_DIR)
+ 
+ $(LIBKERNTEST_DIR):
+-- 
+1.8.3.1
+
