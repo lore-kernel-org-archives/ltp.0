@@ -1,10 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 4 Apr 2016 03:47:13 -0400 (EDT)
-Subject: [LTP] [PATCH] mprotect04: invalidate icache on powerpc
-In-Reply-To: <20160331140425.GE21298@rei.lan>
-References: <2ee2ff0eb9e3c133005f9e938a2c7d4c5bde26d0.1458290113.git.jstancek@redhat.com>
- <20160331140425.GE21298@rei.lan>
-Message-ID: <1126379523.17885654.1459756033970.JavaMail.zimbra@redhat.com>
+Date: Mon, 4 Apr 2016 04:05:56 -0400 (EDT)
+Subject: [LTP] [PATCH] mmap2: change memory units and default size
+In-Reply-To: <1458708300-14960-1-git-send-email-jcsistemas2001@gmail.com>
+References: <1458708300-14960-1-git-send-email-jcsistemas2001@gmail.com>
+Message-ID: <1558521674.17901489.1459757156206.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,25 +12,32 @@ To: ltp@lists.linux.it
 
 
 
-
-
 ----- Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it, "Kshitij Malik" <Kshitij.Malik@mitel.com>
-> Sent: Thursday, 31 March, 2016 4:04:25 PM
-> Subject: Re: [LTP] [PATCH] mprotect04: invalidate icache on powerpc
+> From: "Julio Cruz" <jcsistemas2001@gmail.com>
+> To: "julio cruz" <julio.cruz@smartmatic.com>, ltp@lists.linux.it, chrubis@suse.cz, jstancek@redhat.com
+> Cc: "Julio Cruz" <jcsistemas2001@gmail.com>
+> Sent: Wednesday, 23 March, 2016 5:45:00 AM
+> Subject: [LTP][PATCH] mmap2: change memory units and default size
 > 
-> Hi!
-> Looks good.
+> This patch made three changes: 1) check the available memory
+> before to perform the test case, 2) change the memory units
+> from GB to MB, and 3)  make default file size to 128M.
+> 
+> These changes are needed during testing on embedded devices
+> with RAM memory limitation (i.e. 512MB).
+> 
+> This patch no changed the test case procedure.
 
-Pushed.
+I have pushed this with some small changes, plus I dropped paragraph
+below, because patch now changes also default size to 128M.
 
 Regards,
 Jan
 
 > 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
+> To use this test case in embedded devices, I suggest to change
+> the testrun 'mm' as below from: "mtest06_2 mmap2 -x 0.002 -a -p"
+> to "mtest06_2 mmap2 -x 0.002 -a -p -s 100" according with
+> your system memory available
 > 
+> Signed-off-by: Julio Cruz <jcsistemas2001@gmail.com>
