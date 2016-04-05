@@ -1,213 +1,144 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue,  5 Apr 2016 15:04:57 +0800
-Subject: [LTP] [PATCH V4] madvice: new case for madvise(WILLNEED)
-Message-ID: <1459839897-12848-1-git-send-email-liwang@redhat.com>
+From: Mason <slash.tmp@free.fr>
+Date: Tue, 5 Apr 2016 13:22:09 +0200
+Subject: [LTP] ltp_tbio kernel module fails to build with recent kernel
+Message-ID: <57039FE1.6080401@free.fr>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Page fault occurs in spite that madvise(WILLNEED) system call is called
-to prefetch the page. This issue is reproduced by running a program
-which sequentially accesses to a shared memory and calls madvise(WILLNEED)
-to the next page on a page fault.
+Hello,
 
-Fixed by commit:
-	55231e5c898 mm: madvise: fix MADV_WILLNEED on shmem swapouts
+I noticed that the ltp_tbio.c kernel module fails to build for an ARM platform.
+(I tried building for Linux 4.5)
+Note: I was using buildroot, but I think the issue is not with buildroot.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
+make[6]: Entering directory '/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel'
+Building modules: ltp_tbio.c
+/usr/bin/make -C /linux-4.5 M=/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel
+make[7]: Entering directory '/linux-4.5'
+  LD      /ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/built-in.o
+  CC [M]  /ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.o
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c: In function ‘send_request’:
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:103:20: error: ‘struct bio’ has no member named ‘bi_sector’
+  rq->__sector = bio->bi_sector;
+                    ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c: In function ‘tbio_io’:
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:150:9: error: implicit declaration of function ‘bio_map_user’ [-Werror=implicit-function-declaration]
+   bio = bio_map_user(q, bdev, (unsigned long)inter.data,
+         ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:150:7: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+   bio = bio_map_user(q, bdev, (unsigned long)inter.data,
+       ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c: In function ‘test_bio_alloc’:
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:278:7: error: ‘struct bio’ has no member named ‘bi_sector’
+  tbiop->bi_sector = 0;
+       ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c: In function ‘test_bio_split’:
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:324:7: warning: assignment makes pointer from integer without a cast [-Wint-conversion]
+   bio = bio_map_user(q, bdev, (unsigned long)inter.data,
+       ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:340:16: error: too few arguments to function ‘bio_split’
+    bio_pairp = bio_split(bio, 2);
+                ^
+In file included from include/linux/blkdev.h:19:0,
+                 from /ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:47:
+include/linux/bio.h:408:20: note: declared here
+ extern struct bio *bio_split(struct bio *bio, int sectors,
+                    ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:351:29: error: dereferencing pointer to incomplete type ‘struct bio_pair’
+  send_request(q, &(bio_pairp->bio1), bdev, &inter, writing);
+                             ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:356:3: error: implicit declaration of function ‘bio_pair_release’ [-Werror=implicit-function-declaration]
+   bio_pair_release(bio_pairp);
+   ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c: In function ‘test_bio_get_nr_vecs’:
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:368:11: error: implicit declaration of function ‘bio_get_nr_vecs’ [-Werror=implicit-function-declaration]
+  number = bio_get_nr_vecs(tbio_dev.bdev);
+           ^
+In file included from include/linux/blkdev.h:19:0,
+                 from /ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:47:
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c: In function ‘tbio_transfer’:
+include/linux/bio.h:237:9: error: incompatible types when assigning to type ‘struct bio_vec *’ from type ‘struct bio_vec’
+   ((bvl = bio_iter_iovec((bio), (iter))), 1);  \
+         ^
+include/linux/bio.h:241:2: note: in expansion of macro ‘__bio_for_each_segment’
+  __bio_for_each_segment(bvl, bio, iter, (bio)->bi_iter)
+  ^
+include/linux/blkdev.h:752:3: note: in expansion of macro ‘bio_for_each_segment’
+   bio_for_each_segment(bvl, _iter.bio, _iter.iter)
+   ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:434:2: note: in expansion of macro ‘rq_for_each_segment’
+  rq_for_each_segment(bv, req, iter) {
+  ^
+include/linux/bio.h:237:41: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+   ((bvl = bio_iter_iovec((bio), (iter))), 1);  \
+                                         ^
+include/linux/bio.h:241:2: note: in expansion of macro ‘__bio_for_each_segment’
+  __bio_for_each_segment(bvl, bio, iter, (bio)->bi_iter)
+  ^
+include/linux/blkdev.h:752:3: note: in expansion of macro ‘bio_for_each_segment’
+   bio_for_each_segment(bvl, _iter.bio, _iter.iter)
+   ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:434:2: note: in expansion of macro ‘rq_for_each_segment’
+  rq_for_each_segment(bv, req, iter) {
+  ^
+include/linux/bio.h:238:45: error: request for member ‘bv_len’ in something not a structure or union
+       bio_advance_iter((bio), &(iter), (bvl).bv_len))
+                                             ^
+include/linux/bio.h:241:2: note: in expansion of macro ‘__bio_for_each_segment’
+  __bio_for_each_segment(bvl, bio, iter, (bio)->bi_iter)
+  ^
+include/linux/blkdev.h:752:3: note: in expansion of macro ‘bio_for_each_segment’
+   bio_for_each_segment(bvl, _iter.bio, _iter.iter)
+   ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:434:2: note: in expansion of macro ‘rq_for_each_segment’
+  rq_for_each_segment(bv, req, iter) {
+  ^
+In file included from include/linux/kernel.h:13:0,
+                 from include/linux/list.h:8,
+                 from include/linux/module.h:9,
+                 from /ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:38:
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:439:12: error: ‘struct bio’ has no member named ‘bi_sector’
+    iter.bio->bi_sector, offset);
+            ^
+include/linux/printk.h:259:34: note: in definition of macro ‘pr_info’
+  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+                                  ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:436:3: note: in expansion of macro ‘prk_info’
+   prk_info("%s bio(%u), segs(%u) sect(%u) pos(%lu) off(%u)",
+   ^
+In file included from include/linux/printk.h:6:0,
+                 from include/linux/kernel.h:13,
+                 from include/linux/list.h:8,
+                 from include/linux/module.h:9,
+                 from /ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:38:
+include/linux/kern_levels.h:4:18: warning: format ‘%zu’ expects argument of type ‘size_t’, but argument 2 has type ‘sector_t {aka long long unsigned int}’ [-Wformat=]
+ #define KERN_SOH "\001"  /* ASCII Start Of Header */
+                  ^
+include/linux/kern_levels.h:13:19: note: in expansion of macro ‘KERN_SOH’
+ #define KERN_INFO KERN_SOH "6" /* informational */
+                   ^
+include/linux/printk.h:259:9: note: in expansion of macro ‘KERN_INFO’
+  printk(KERN_INFO pr_fmt(fmt), ##__VA_ARGS__)
+         ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:60:2: note: in expansion of macro ‘pr_info’
+  pr_info(TBIO_DEVICE_NAME ": " fmt "\n", ##__VA_ARGS__)
+  ^
+/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.c:442:4: note: in expansion of macro ‘prk_info’
+    prk_info("Error, small capacity %zu, offset %u",
+    ^
+cc1: some warnings being treated as errors
+scripts/Makefile.build:264: recipe for target '/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.o' failed
+make[8]: *** [/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel/ltp_tbio.o] Error 1
+Makefile:1391: recipe for target '_module_/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel' failed
+make[7]: *** [_module_/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel] Error 2
+make[7]: Leaving directory '/linux-4.5'
+../../../../../include/mk/module.mk:59: recipe for target '.dep_modules' failed
+make[6]: [.dep_modules] Error 2 (ignored)
+rm -rf *.mod.c *.o *.ko.unsigned modules.order .tmp* .*.ko .*.cmd Module.symvers
+make[6]: Leaving directory '/ltp-testsuite-20160126/testcases/kernel/device-drivers/tbio/tbio_kernel'
 
-Notes:
-    V3 --> V4
-    * cancel the limitaion of architecture
-      (test good on x86_64, ppc64 and s390x)
 
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/.gitignore          |   1 +
- testcases/kernel/syscalls/madvise/madvise06.c | 148 ++++++++++++++++++++++++++
- 3 files changed, 150 insertions(+)
- create mode 100644 testcases/kernel/syscalls/madvise/madvise06.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b41c927..732c2ca 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -743,6 +743,7 @@ madvise02 madvise02
- madvise03 madvise03
- madvise04 madvise04
- madvise05 madvise05
-+madvise06 madvise06
- 
- newuname01 newuname01
- 
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 0540928..ffa5db1 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -504,6 +504,7 @@
- /madvise/madvise03
- /madvise/madvise04
- /madvise/madvise05
-+/madvise/madvise06
- /mallopt/mallopt01
- /mbind/mbind01
- /memcmp/memcmp01
-diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
-new file mode 100644
-index 0000000..24cb15c
---- /dev/null
-+++ b/testcases/kernel/syscalls/madvise/madvise06.c
-@@ -0,0 +1,148 @@
-+/*
-+ * Copyright (c) 2016 Red Hat, Inc.
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 3 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * DESCRIPTION
-+ *
-+ *   Page fault occurs in spite that madvise(WILLNEED) system call is called
-+ *   to prefetch the page. This issue is reproduced by running a program
-+ *   which sequentially accesses to a shared memory and calls madvise(WILLNEED)
-+ *   to the next page on a page fault.
-+ *
-+ *   This bug is present in all RHEL7 versions. It looks like this was fixed in
-+ *   mainline kernel > v3.15 by the following patch:
-+ *
-+ *   commit 55231e5c898c5c03c14194001e349f40f59bd300
-+ *   Author: Johannes Weiner <hannes@cmpxchg.org>
-+ *   Date:   Thu May 22 11:54:17 2014 -0700
-+ *
-+ *       mm: madvise: fix MADV_WILLNEED on shmem swapouts
-+ */
-+
-+#include <stdio.h>
-+#include <errno.h>
-+#include <sys/sysinfo.h>
-+
-+#include "test.h"
-+#include "safe_macros.h"
-+
-+char *TCID = "madvise06";
-+int TST_TOTAL = 1;
-+
-+#define GB_SZ  (1024*1024*1024)
-+
-+static long dst_max;
-+
-+static void setup(void);
-+static int  get_page_fault_num(void);
-+static void test_advice_willneed(void);
-+
-+int main(int argc, char *argv[])
-+{
-+	int lc;
-+
-+	tst_parse_opts(argc, argv, NULL, NULL);
-+
-+	setup();
-+
-+	for (lc = 0; TEST_LOOPING(lc); lc++)
-+		test_advice_willneed();
-+
-+	tst_exit();
-+}
-+
-+static void setup(void)
-+{
-+	struct sysinfo sys_buf;
-+
-+	sysinfo(&sys_buf);
-+
-+	if (sys_buf.totalram < 2L * GB_SZ)
-+		tst_brkm(TCONF, NULL, "Test requires more than 2GB of RAM");
-+	if (sys_buf.totalram > 100L * GB_SZ)
-+		tst_brkm(TCONF, NULL, "System RAM is too large, skip test");
-+
-+	dst_max = sys_buf.totalram / GB_SZ;
-+	tst_resm(TINFO, "dst_max = %ld", dst_max);
-+
-+	tst_sig(NOFORK, DEF_HANDLER, NULL);
-+
-+	TEST_PAUSE;
-+}
-+
-+static int get_page_fault_num(void)
-+{
-+	int pg;
-+
-+	SAFE_FILE_SCANF(NULL, "/proc/self/stat",
-+			"%*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %d",
-+			&pg);
-+
-+	return pg;
-+}
-+
-+static void test_advice_willneed(void)
-+{
-+	int i, pg_sz;
-+	char *src;
-+	char *dst[100];
-+	int page_fault_num_1;
-+	int page_fault_num_2;
-+
-+	/* allocate source memory (1GB only) */
-+	src = SAFE_MMAP(NULL, NULL, 1 * GB_SZ, PROT_READ | PROT_WRITE,
-+			MAP_SHARED | MAP_ANONYMOUS,
-+			-1, 0);
-+
-+	/* allocate destination memory (array) */
-+	for (i = 0; i < dst_max; ++i)
-+		dst[i] = SAFE_MMAP(NULL, NULL, 1 * GB_SZ,
-+				PROT_READ | PROT_WRITE,
-+				MAP_SHARED | MAP_ANONYMOUS,
-+				-1, 0);
-+
-+	/* memmove source to each destination memories (for SWAP-OUT) */
-+	for (i = 0; i < dst_max; ++i)
-+		memmove(dst[i], src, 1 * GB_SZ);
-+
-+	tst_resm(TINFO, "PageFault(no madvice): %d", get_page_fault_num());
-+
-+	pg_sz = getpagesize();
-+
-+	/* Do madvice() to dst[0] */
-+	TEST(madvise(dst[0], pg_sz, MADV_WILLNEED));
-+	if (TEST_RETURN == -1)
-+		tst_brkm(TBROK | TERRNO, NULL, "madvise failed");
-+
-+	page_fault_num_1 = get_page_fault_num();
-+	tst_resm(TINFO, "PageFault(madvice / no mem access): %d",
-+			page_fault_num_1);
-+
-+	*dst[0] = 'a';
-+	page_fault_num_2 = get_page_fault_num();
-+	tst_resm(TINFO, "PageFault(madvice / mem access): %d",
-+			page_fault_num_2);
-+
-+	if (page_fault_num_1 != page_fault_num_2)
-+		tst_resm(TFAIL, "Bug has been reproduced");
-+	else
-+		tst_resm(TPASS, "Regression test pass");
-+
-+	SAFE_MUNMAP(NULL, src, 1 * GB_SZ);
-+	for (i = 0; i < dst_max; ++i)
-+		SAFE_MUNMAP(NULL, dst[i], 1 * GB_SZ);
-+}
--- 
-1.8.3.1
-
+Regards.
