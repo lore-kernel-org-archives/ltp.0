@@ -1,35 +1,42 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 7 Apr 2016 13:43:21 +0300
-Subject: [LTP] [PATCH] syscalls/fcntl: add new test for open file
- description locks
-In-Reply-To: <20160407082603.GA15786@rei.lan>
-References: <1458033988-15881-1-git-send-email-alexey.kodanev@oracle.com>
- <20160406160733.GC10599@rei.suse.cz> <5706104A.70307@oracle.com>
- <20160407082603.GA15786@rei.lan>
-Message-ID: <570639C9.9040602@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 7 Apr 2016 13:35:31 +0200
+Subject: [LTP] [PATCH v2 1/2] lib: add safe_pthread_create() &
+ safe_pthread_join()
+In-Reply-To: <1460016651-24181-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1460016651-24181-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20160407113531.GA16682@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> +int safe_pthread_join(const char *file, const int lineno,
+> +		      pthread_t thread_id, void **retval)
+> +{
+> +	int rval;
+> +
+> +	rval = pthread_join(thread_id, retval);
+> +
+> +	if (rval) {
+> +		tst_brk_(file, lineno, TBROK,
+> +			 "pthread_join(%lu,%p) failed: %s", thread_id, retval,
+> +			 tst_strerrno(rval));
 
-Hi,
-On 04/07/2016 11:26 AM, Cyril Hrubis wrote:
-> Hi!
->>>> +		++res[(int)buf[0]];
->>>                            ^
->>> 			Do we really need to cast it to int here?
->>
->> Otherwise gcc would complain  "warning: array subscript has type ?char?"
-> Hmm, perhaps the compiler tries to warn you that char may be signed or
-> unsigned depending on a architecture and compiler implementation. Does
-> the warning goes away if you declare the buf as a unsigned char?
+Technically the thread_id does not need to be numeric type, POSIX
+defines it as a opaque, may be structure as well.
 
-Correct, it went away with unsigned char... more safe this way.
+But on the other hand I doubt that there is a Linux libc implementation
+that actually defines it to be anything else than long int.
 
-Thanks,
-Alexey
+> +	}
+> +
+> +	return rval;
+> +}
 
->
+Otherwise this looks fine.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
