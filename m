@@ -1,33 +1,112 @@
-From: TAKAHASHI Tetsuya <takahashi.tetsuya.cis@canon-is.co.jp>
-Date: Thu, 7 Apr 2016 12:08:40 +0000
-Subject: [LTP] [PATCH] runtest/scsi_debug.part1: gf701 test does not work.
-Message-ID: <330BE2030BD7834286495D8B7FCF1FB71DC52EBF@mbx01.itr.canon-is.co.jp>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 7 Apr 2016 14:38:16 +0200
+Subject: [LTP] [PATCH v2 2/2] syscalls/fcntl: add new test for open file
+ description locks
+In-Reply-To: <1460016651-24181-2-git-send-email-alexey.kodanev@oracle.com>
+References: <1460016651-24181-1-git-send-email-alexey.kodanev@oracle.com>
+ <1460016651-24181-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20160407123816.GB16682@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello.
+Hi!
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +#include <unistd.h>
+> +#include <fcntl.h>
+> +#include <pthread.h>
+> +
+> +#include "lapi/fcntl.h"
+> +#include "tst_test.h"
+> +
+> +static int thread_cnt;
+> +static const int max_thread_cnt = 32;
+> +static const char fname[] = "tst_ofd_locks";
+> +const int writes_num = 100;
+> +const int write_size = 4096;
+> +
+> +static void setup(void)
+> +{
+> +	thread_cnt = tst_ncpus_conf() * 3;
+> +	if (thread_cnt > max_thread_cnt)
+> +		thread_cnt = max_thread_cnt;
+> +}
+> +
+> +static void spawn_threads(pthread_t *id, void *(*thread_fn)(void *))
+> +{
+> +	intptr_t i;
+> +
+> +	tst_res(TINFO, "spawning '%d' threads", thread_cnt);
+> +	for (i = 0; i < thread_cnt; ++i)
+> +		SAFE_PTHREAD_CREATE(id + i, NULL, thread_fn, (void *)i);
+> +}
+> +
+> +static void wait_threads(pthread_t *id)
+> +{
+> +	int i;
+> +
+> +	tst_res(TINFO, "waiting for '%d' threads", thread_cnt);
+> +	for (i = 0; i < thread_cnt; ++i)
+> +		SAFE_PTHREAD_JOIN(id[i], NULL);
+> +}
+> +
+> +void *thread_fn_01(void *arg)
+> +{
+> +	int i;
+> +	char buf[write_size];
+> +	int fd = SAFE_OPEN(fname, O_RDWR);
+> +
+> +	memset(buf, (intptr_t)arg, write_size);
+> +
+> +	struct flock lck = {
+> +		.l_whence = SEEK_SET,
+> +		.l_start  = 0,
+> +		.l_len    = 1,
+> +	};
+> +
+> +	for (i = 0; i < writes_num; ++i) {
+> +		lck.l_type = F_WRLCK;
+> +		if (fcntl(fd, F_OFD_SETLKW, &lck) == -1)
+> +			tst_brk(TBROK | TERRNO, "fcntl() failed");
+> +
+> +		SAFE_LSEEK(fd, 0, SEEK_END);
+> +		SAFE_WRITE(1, fd, buf, write_size);
+> +
+> +		lck.l_type = F_UNLCK;
+> +		if (fcntl(fd, F_OFD_SETLKW, &lck) == -1)
+> +			tst_brk(TBROK | TERRNO, "fcntl() failed");
+> +
+> +		pthread_yield();
+> +	}
+> +
+> +	SAFE_CLOSE(fd);
+> +
+> +	return NULL;
+> +}
+> +
+> +static void test01(void)
+> +{
+> +	intptr_t i;
+> +	int k;
+> +	pthread_t id[thread_cnt];
+> +	int res[thread_cnt];
+> +	char buf[write_size];
+> +
+> +	tst_res(TINFO, "write to a file inside threads with OFD locks");
+> +
+> +	int fd = SAFE_OPEN(fname, O_CREAT | O_TRUNC | O_RDONLY, 0600);
 
-I think that a line feed code is necessary between gf701 test and gf702 test.
-In this case, the gf701 test does not work.
+I'm not sure that O_TRUNC | O_RDONLY would work. The manual says that
+the result is unspecified.
 
-------
---- a/runtest/scsi_debug.part1  2016-03-22 18:01:02.000000000 +0900
-+++ b/runtest/scsi_debug.part1  2016-03-31 18:23:35.877219900 +0900
-@@ -73,7 +73,8 @@
- rwtest04 export LTPROOT; rwtest -N rwtest04 -c -q -i 60s -n 2  -f sync -s mmread,mmwrite -m random -Dv 10%25000:mm-sync-$$ 500b:/test/growfiles/ext2/rwtest14%f
- rwtest05 export LTPROOT; rwtest -N rwtest05 -c -q -i 50 -T 64b 500b:/test/growfiles/ext2/rwtest15%f
- # Check the EXT3 filesystem
--gf701 growfiles -W gf701 -d /test/growfiles/ext3 -b -e 1 -u -i 0 -L 20 -w -C 1 -l -I r -T 10 glseek20 glseek20.2gf702 growfiles -W gf702 -d /test/growfiles/ext3 -b -e 1 -L 10 -i 100 -I p -S 2 -u -f gf03_
-+gf701 growfiles -W gf701 -d /test/growfiles/ext3 -b -e 1 -u -i 0 -L 20 -w -C 1 -l -I r -T 10 glseek20 glseek20.2
-+gf702 growfiles -W gf702 -d /test/growfiles/ext3 -b -e 1 -L 10 -i 100 -I p -S 2 -u -f gf03_
- gf703 growfiles -W gf703 -d /test/growfiles/ext3 -b -e 1 -g 1 -i 1 -S 150 -u -f gf05_
- gf704 growfiles -W gf704 -d /test/growfiles/ext3 -b -e 1 -g 4090 -i 500 -t 39000 -u -f gf06_
- gf705 growfiles -W gf705 -d /test/growfiles/ext3 -b -e 1 -g 5000 -i 500 -t 49900 -T10 -c9 -I p -u -f gf07_
-------
+We should either change the O_RDONLY for O_RDWR or simply unlink() the
+file before we open it.
 
-Best regards.
+Otherwise (with the unsigned char buffer) it looks fine.
 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
