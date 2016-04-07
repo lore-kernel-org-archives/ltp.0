@@ -1,61 +1,133 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 7 Apr 2016 10:46:18 +0300
-Subject: [LTP] [PATCH] syscalls/fcntl: add new test for open file
- description locks
-In-Reply-To: <20160406160733.GC10599@rei.suse.cz>
-References: <1458033988-15881-1-git-send-email-alexey.kodanev@oracle.com>
- <20160406160733.GC10599@rei.suse.cz>
-Message-ID: <5706104A.70307@oracle.com>
+Date: Thu,  7 Apr 2016 11:10:50 +0300
+Subject: [LTP] [PATCH v2 1/2] lib: add safe_pthread_create() &
+	safe_pthread_join()
+Message-ID: <1460016651-24181-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 04/06/2016 07:07 PM, Cyril Hrubis wrote:
-> Hi!
->> +#ifndef F_OFD_GETLK
->> +	intptr_t i;
->> +
->> +	tst_resm(TINFO, "spawning '%d' threads", size);
->> +	for (i = 0; i < size; ++i) {
->> +		if (pthread_create(id + i, NULL, thread_fn, (void *)i)) {
->> +			tst_brkm(TBROK | TERRNO, cleanup,
->> +				 "pthread_create() failed");
-> Using TERRNO is wrong here. The error value is returned by the
-> pthread_create() instead.
->
-> You should do:
->
-> 	ret = pthread_create(...);
-> 	if (ret) {
-> 		tst_brkm(TBROK, cleanup, "pthread_create(): %s",
-> 		         tst_strerrno(ret));
-> 	}
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ include/tst_safe_pthread.h |   32 ++++++++++++++++++++++++++
+ include/tst_test.h         |    1 +
+ lib/safe_pthread.c         |   54 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 87 insertions(+), 0 deletions(-)
+ create mode 100644 include/tst_safe_pthread.h
+ create mode 100644 lib/safe_pthread.c
 
-Oh, that wasn't obvious, I should have read man-page more carefully. Thanks.
-
->> +		++res[(int)buf[0]];
->                           ^
-> 			Do we really need to cast it to int here?
-
-
-Otherwise gcc would complain  "warning: array subscript has type ‘char’"
-
->> +
->> +	cleanup();
->> +	tst_exit();
->> +}
-> Otherwise it looks good.
->
-> I would be happier if the code would get converted to the new test
-> library but given that I've managed to ignore it for quite some time I'm
-> in no position to force it.
-
-I'll send a new patch with new API usage and the one for safe_pthread.
-
-Thanks,
-Alexey
-
+diff --git a/include/tst_safe_pthread.h b/include/tst_safe_pthread.h
+new file mode 100644
+index 0000000..810ddcb
+--- /dev/null
++++ b/include/tst_safe_pthread.h
+@@ -0,0 +1,32 @@
++/*
++ * Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#ifndef TST_SAFE_PTHREAD_H__
++#define TST_SAFE_PTHREAD_H__
++
++int safe_pthread_create(const char *file, const int lineno,
++			pthread_t *thread_id, const pthread_attr_t *attr,
++			void *(*thread_fn)(void *), void *arg);
++#define SAFE_PTHREAD_CREATE(thread_id, attr, thread_fn, arg) \
++	safe_pthread_create(__FILE__, __LINE__, thread_id, attr, thread_fn, arg)
++
++int safe_pthread_join(const char *file, const int lineno,
++		      pthread_t thread_id, void **retval);
++#define SAFE_PTHREAD_JOIN(thread_id, retval) \
++	safe_pthread_join(__FILE__, __LINE__, thread_id, retval)
++
++#endif /* TST_SAFE_PTHREAD_H__ */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 2c35dbd..88b46d6 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -60,6 +60,7 @@ pid_t safe_fork(const char *filename, unsigned int lineno);
+ #include "tst_safe_macros.h"
+ #include "tst_safe_file_ops.h"
+ #include "tst_safe_net.h"
++#include "tst_safe_pthread.h"
+ 
+ struct tst_option {
+ 	char *optstr;
+diff --git a/lib/safe_pthread.c b/lib/safe_pthread.c
+new file mode 100644
+index 0000000..415ef2b
+--- /dev/null
++++ b/lib/safe_pthread.c
+@@ -0,0 +1,54 @@
++/*
++ * Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <pthread.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++int safe_pthread_create(const char *file, const int lineno,
++			pthread_t *thread_id, const pthread_attr_t *attr,
++			void *(*thread_fn)(void *), void *arg)
++{
++	int rval;
++
++	rval = pthread_create(thread_id, attr, thread_fn, arg);
++
++	if (rval) {
++		tst_brk_(file, lineno, TBROK,
++			 "pthread_create(%p,%p,%p,%p) failed: %s", thread_id,
++			 attr, thread_fn, arg, tst_strerrno(rval));
++	}
++
++	return rval;
++}
++
++int safe_pthread_join(const char *file, const int lineno,
++		      pthread_t thread_id, void **retval)
++{
++	int rval;
++
++	rval = pthread_join(thread_id, retval);
++
++	if (rval) {
++		tst_brk_(file, lineno, TBROK,
++			 "pthread_join(%lu,%p) failed: %s", thread_id, retval,
++			 tst_strerrno(rval));
++	}
++
++	return rval;
++}
+-- 
+1.7.1
 
