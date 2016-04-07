@@ -1,44 +1,66 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 7 Apr 2016 17:31:05 +0200
-Subject: [LTP] [PATCH] cpuset: change default cpuset mount value
-In-Reply-To: <57062A03.70705@linux.vnet.ibm.com>
-References: <57062A03.70705@linux.vnet.ibm.com>
-Message-ID: <20160407153105.GA8287@rei.suse.cz>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 7 Apr 2016 19:42:53 +0300
+Subject: [LTP] [PATCH v2 1/2] lib: add safe_pthread_create() &
+ safe_pthread_join()
+In-Reply-To: <20160407113531.GA16682@rei>
+References: <1460016651-24181-1-git-send-email-alexey.kodanev@oracle.com>
+ <20160407113531.GA16682@rei>
+Message-ID: <57068E0D.4090809@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh 
-> b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> index cd7000e..4c5a17b 100755
-> --- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
-> @@ -35,7 +35,7 @@ fi
->   N_NODES=${N_NODES#*-*}
->   N_NODES=$(($N_NODES + 1))
-> 
-> -CPUSET="/dev/cpuset"
-> +CPUSET="/sys/fs/cgroup/cpuset"
->   CPUSET_TMP="/tmp/cpuset_tmp"
+Hi,
+On 04/07/2016 02:35 PM, Cyril Hrubis wrote:
+> Hi!
+>> +int safe_pthread_join(const char *file, const int lineno,
+>> +		      pthread_t thread_id, void **retval)
+>> +{
+>> +	int rval;
+>> +
+>> +	rval = pthread_join(thread_id, retval);
+>> +
+>> +	if (rval) {
+>> +		tst_brk_(file, lineno, TBROK,
+>> +			 "pthread_join(%lu,%p) failed: %s", thread_id, retval,
+>> +			 tst_strerrno(rval));
+> Technically the thread_id does not need to be numeric type, POSIX
+> defines it as a opaque, may be structure as well.
 
-This does not seem like a good solution for two reasons. The first is
-that LTP should be backward compatible with older distributions and the
-second is that the testcase umounts and removes the directory at the end
-of the test which will break the system since the /sys/fs/cgroup/cpuset
-directory is mounted (and possibly used) by default on newer
-distributions.
+We could print in hex like this:
 
-So the test should be changed to:
+if (rval) {
+     unsigned int i;
+     unsigned char *ptr = (unsigned char *)&thread_id;
+     size_t tid_size = sizeof(thread_id);
+     char buf[tid_size * 2 + 1];
 
-* Create and mount cpuset on older distros
+     for (i = 0; i < tid_size; ++i)
+         sprintf(buf + i * 2, "%02x", ptr[i]);
 
-* Make use of allready moutned cpuset on newer distros
+     tst_brk_(file, lineno, TBROK,
+              "pthread_join(%s,%p) failed: %s", buf, retval, ...);
+}
 
-The cgroup_fj/cgroup_fj_common.sh was allready fixed to work this way.
+But bytes might be in different order due to endianness,
+supposing we compare this value with "%lx", e.g. on x86_64
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+00971fe3257f0000 vs 7f25e31f9700 (%lx)
+
+What do you think?
+
+Thanks,
+Alexey
+
+>
+> But on the other hand I doubt that there is a Linux libc implementation
+> that actually defines it to be anything else than long int.
+>> +	}
+>> +
+>> +	return rval;
+>> +}
+> Otherwise this looks fine.
+>
+
