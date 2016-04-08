@@ -1,66 +1,62 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 7 Apr 2016 19:42:53 +0300
-Subject: [LTP] [PATCH v2 1/2] lib: add safe_pthread_create() &
- safe_pthread_join()
-In-Reply-To: <20160407113531.GA16682@rei>
-References: <1460016651-24181-1-git-send-email-alexey.kodanev@oracle.com>
- <20160407113531.GA16682@rei>
-Message-ID: <57068E0D.4090809@oracle.com>
+From: Hangbin Liu <haliu@redhat.com>
+Date: Fri,  8 Apr 2016 18:12:46 +0800
+Subject: [LTP]  [PATCHv4 0/3] networking/stress: add ip xfrm ipsec support
+Message-ID: <1460110369-30134-1-git-send-email-haliu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 04/07/2016 02:35 PM, Cyril Hrubis wrote:
-> Hi!
->> +int safe_pthread_join(const char *file, const int lineno,
->> +		      pthread_t thread_id, void **retval)
->> +{
->> +	int rval;
->> +
->> +	rval = pthread_join(thread_id, retval);
->> +
->> +	if (rval) {
->> +		tst_brk_(file, lineno, TBROK,
->> +			 "pthread_join(%lu,%p) failed: %s", thread_id, retval,
->> +			 tst_strerrno(rval));
-> Technically the thread_id does not need to be numeric type, POSIX
-> defines it as a opaque, may be structure as well.
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-We could print in hex like this:
+As we know, most of the network stress tests have IPsec testing, and we use
+setkey for configuration. But setkey[1] hasn't updated for a long time. And
+some distros, RHEL7 for example, even don't have ipset-tools package. On
+other hand, iproute2 is recommend for network configuration. And ip xfrm is
+more powerful than setkey. So let's use ip xfrm for ipsec testing.
 
-if (rval) {
-     unsigned int i;
-     unsigned char *ptr = (unsigned char *)&thread_id;
-     size_t tid_size = sizeof(thread_id);
-     char buf[tid_size * 2 + 1];
+[1] http://ipsec-tools.sourceforge.net/
 
-     for (i = 0; i < tid_size; ++i)
-         sprintf(buf + i * 2, "%02x", ptr[i]);
+Change from V3:
+1. use message size array in tst_ping
+2. add tst_ipsec_cleanup in ipsec_lib
+3. use lhost/rhost naming in ipsec_lib
+4. add icmp-uni-basic in the upper icmp directory
+5. some other small fixs.
 
-     tst_brk_(file, lineno, TBROK,
-              "pthread_join(%s,%p) failed: %s", buf, retval, ...);
-}
+Change from V2:
+1. remove c2x and use hexdump directly.
+2. remove indent after "case".
+3. remove useless export and old scripts like check_env.
+4. remove tst_init_iface.
+5. remove return value check after setup ipsec env.
+6. remove addr config as Alexey said, we assume the address already added.
 
-But bytes might be in different order due to endianness,
-supposing we compare this value with "%lx", e.g. on x86_64
+Change from V1:
+1. update tst_ping() to use default iface and addr. make ping from local side.
+2. remove unused variables. add -s option when use tst_rhost_run. Use ROD
+   before normal commands.
+3. change all "tst_resm TBROK && exit" to "tst_brkm TBROK"
+3. still keep tst_init_iface in test icmp4-uni-basic01 because we will
+   set_ipv4/6addr each time.
 
-00971fe3257f0000 vs 7f25e31f9700 (%lx)
+Hangbin Liu (3):
+  lib/test_net.sh: add tst_ping() to check icmp connectivity
+  network/stress: add ipsec lib
+  network/stress/icmp: use ip xfrm for icmp uni-basic ipsec testing
 
-What do you think?
+ runtest/network_stress.icmp                  |  28 +++---
+ testcases/lib/test_net.sh                    |  31 +++++++
+ testcases/network/stress/icmp/Makefile       |   3 +
+ testcases/network/stress/icmp/icmp-uni-basic | 132 +++++++++++++++++++++++++++
+ testcases/network/stress/ipsec/Makefile      |  28 ++++++
+ testcases/network/stress/ipsec/ipsec_lib.sh  | 114 +++++++++++++++++++++++
+ 6 files changed, 322 insertions(+), 14 deletions(-)
+ create mode 100755 testcases/network/stress/icmp/icmp-uni-basic
+ create mode 100644 testcases/network/stress/ipsec/Makefile
+ create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
 
-Thanks,
-Alexey
-
->
-> But on the other hand I doubt that there is a Linux libc implementation
-> that actually defines it to be anything else than long int.
->> +	}
->> +
->> +	return rval;
->> +}
-> Otherwise this looks fine.
->
+-- 
+2.5.0
 
