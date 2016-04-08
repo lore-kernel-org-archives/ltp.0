@@ -1,9 +1,10 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Fri,  8 Apr 2016 18:12:48 +0800
-Subject: [LTP]  [PATCHv4 2/3] network/stress: add ipsec lib
+Date: Fri,  8 Apr 2016 18:12:49 +0800
+Subject: [LTP] [PATCHv4 3/3] network/stress/icmp: use ip xfrm for icmp
+	uni-basic ipsec testing
 In-Reply-To: <1460110369-30134-1-git-send-email-haliu@redhat.com>
 References: <1460110369-30134-1-git-send-email-haliu@redhat.com>
-Message-ID: <1460110369-30134-3-git-send-email-haliu@redhat.com>
+Message-ID: <1460110369-30134-4-git-send-email-haliu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,20 +13,76 @@ To: ltp@lists.linux.it
 
 From: Hangbin Liu <liuhangbin@gmail.com>
 
+Add icmp-uni-basic to implements the test case and define each test case in
+"runtests/" and use parameters. Also use ip xfrm instead of setkey for ipsec
+testing.
+
 Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
 ---
- testcases/network/stress/ipsec/Makefile     |  28 +++++++
- testcases/network/stress/ipsec/ipsec_lib.sh | 114 ++++++++++++++++++++++++++++
- 2 files changed, 142 insertions(+)
- create mode 100644 testcases/network/stress/ipsec/Makefile
- create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
+ runtest/network_stress.icmp                  |  28 +++---
+ testcases/network/stress/icmp/Makefile       |   3 +
+ testcases/network/stress/icmp/icmp-uni-basic | 132 +++++++++++++++++++++++++++
+ 3 files changed, 149 insertions(+), 14 deletions(-)
+ create mode 100755 testcases/network/stress/icmp/icmp-uni-basic
 
-diff --git a/testcases/network/stress/ipsec/Makefile b/testcases/network/stress/ipsec/Makefile
-new file mode 100644
-index 0000000..43352cc
+diff --git a/runtest/network_stress.icmp b/runtest/network_stress.icmp
+index 29b52d1..1803b21 100644
+--- a/runtest/network_stress.icmp
++++ b/runtest/network_stress.icmp
+@@ -2,21 +2,21 @@
+ # Stress test for TCP/IP protocol stack (ICMP)
+ #
+ 
+-icmp4-uni-basic01 icmp4-uni-basic01
+-icmp4-uni-basic02 icmp4-uni-basic02
+-icmp4-uni-basic03 icmp4-uni-basic03
+-icmp4-uni-basic04 icmp4-uni-basic04
+-icmp4-uni-basic05 icmp4-uni-basic05
+-icmp4-uni-basic06 icmp4-uni-basic06
+-icmp4-uni-basic07 icmp4-uni-basic07
++icmp4-uni-basic01 icmp-uni-basic -s "10 100 1000 10000 65503"
++icmp4-uni-basic02 icmp-uni-basic -p ah -m transport -s "10 100 1000 10000 65483"
++icmp4-uni-basic03 icmp-uni-basic -p ah -m tunnel -s "10 100 1000 10000 65463"
++icmp4-uni-basic04 icmp-uni-basic -p esp -m transport -s "10 100 1000 10000 65470"
++icmp4-uni-basic05 icmp-uni-basic -p esp -m tunnel -s "10 100 1000 10000 65450"
++icmp4-uni-basic06 icmp-uni-basic -p ipcomp -m transport -s "1000 10000 65000"
++icmp4-uni-basic07 icmp-uni-basic -p ipcomp -m tunnel -s "1000 10000 65000"
+ 
+-icmp6-uni-basic01 icmp6-uni-basic01
+-icmp6-uni-basic02 icmp6-uni-basic02
+-icmp6-uni-basic03 icmp6-uni-basic03
+-icmp6-uni-basic04 icmp6-uni-basic04
+-icmp6-uni-basic05 icmp6-uni-basic05
+-icmp6-uni-basic06 icmp6-uni-basic06
+-icmp6-uni-basic07 icmp6-uni-basic07
++icmp6-uni-basic01 icmp-uni-basic -6 -s "10 100 1000 10000 65527"
++icmp6-uni-basic02 icmp-uni-basic -6 -p ah -m transport -s "10 100 1000 10000 65503"
++icmp6-uni-basic03 icmp-uni-basic -6 -p ah -m tunnel -s "10 100 1000 10000 65527"
++icmp6-uni-basic04 icmp-uni-basic -6 -p esp -m transport -s "10 100 1000 10000 65494"
++icmp6-uni-basic05 icmp-uni-basic -6 -p esp -m tunnel -s "10 100 1000 10000 65495"
++icmp6-uni-basic06 icmp-uni-basic -6 -p ipcomp -m transport -s "1000 10000 65000"
++icmp6-uni-basic07 icmp-uni-basic -6 -p ipcomp -m tunnel -s "1000 10000 65000"
+ 
+ icmp4-multi-diffip01 icmp4-multi-diffip01
+ icmp4-multi-diffip02 icmp4-multi-diffip02
+diff --git a/testcases/network/stress/icmp/Makefile b/testcases/network/stress/icmp/Makefile
+index 0dad1d1..9310aa1 100644
+--- a/testcases/network/stress/icmp/Makefile
++++ b/testcases/network/stress/icmp/Makefile
+@@ -23,4 +23,7 @@
+ top_srcdir		?= ../../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS		:= icmp*
++
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/network/stress/icmp/icmp-uni-basic b/testcases/network/stress/icmp/icmp-uni-basic
+new file mode 100755
+index 0000000..de586d6
 --- /dev/null
-+++ b/testcases/network/stress/ipsec/Makefile
-@@ -0,0 +1,28 @@
++++ b/testcases/network/stress/icmp/icmp-uni-basic
+@@ -0,0 +1,132 @@
 +#!/bin/sh
 +# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
 +#
@@ -44,136 +101,120 @@ index 0000000..43352cc
 +#
 +# Author: Hangbin Liu <haliu@redhat.com>
 +#
-+#######################################################################
-+
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= *.sh
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/stress/ipsec/ipsec_lib.sh b/testcases/network/stress/ipsec/ipsec_lib.sh
-new file mode 100644
-index 0000000..0802375
---- /dev/null
-+++ b/testcases/network/stress/ipsec/ipsec_lib.sh
-@@ -0,0 +1,114 @@
-+#!/bin/sh
-+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
++################################################################################
 +#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
++# File:
++#   icmp-uni-basic.sh
 +#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
++# Description:
++#   Verify that the kernel is not crashed with receiving and sending various
++#   size of ICMP message
 +#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, see <http://www.gnu.org/licenses/>.
++#   *) This script may be read by the other test case
 +#
-+# Author: Hangbin Liu <haliu@redhat.com>
++# Setup:
++#   See ltp-yyyymmdd/testcases/network/stress/README
 +#
-+#######################################################################
++#-----------------------------------------------------------------------
++# The test case ID, the test case count and the total number of test case
++TCID=${TCID:-icmp-uni-basic}
++TST_TOTAL=1
++TST_COUNT=1
++TST_CLEANUP="tst_ipsec_cleanup"
 +
-+. test_net.sh
++. ipsec_lib.sh
 +
-+# tst_ipsec_cleanup: flush ipsec state and policy rules
-+tst_ipsec_cleanup()
-+{
-+	ROD ip xfrm state flush
-+	ROD ip xfrm policy flush
-+	tst_rhost_run -s -c "ip xfrm state flush && ip xfrm policy flush"
-+}
-+
-+# tst_ipsec target protocol mode spi src_addr dst_addr: config ipsec with
-+# supplied protocol and mode.
-+#
-+# target: target of the configuration host ( lhost / rhost )
-+# protocol: ah / esp / ipcomp
-+# mode: transport / tunnel
-+# spi: the first spi value
-+# src_addr: source IP address
-+# dst_addr: destination IP address
-+tst_ipsec()
-+{
-+	if [ $# -ne 6 ]; then
-+		tst_brkm TCONF "tst_ipsec parameter mismatch"
-+	fi
-+	tst_check_cmds hexdump
-+
-+	local target=$1
-+	local protocol=$2
-+	local mode=$3
-+	local spi=$4
-+	local src=$5
-+	local dst=$6
-+
-+	# Encryption algorithm
-+	local EALGO="des3_ede"
-+	local EALGO_KEY=0x$(printf _I_want_to_have_chicken_ | hexdump -ve '/1 "%x"')
-+
-+	# Authentication algorithm
-+	local AALGO="sha1"
-+	local AALGO_KEY=0x$(printf beef_fish_pork_salad | hexdump -ve '/1 "%x"')
-+
-+	# Compression algorithm
-+	local CALGO="deflate"
-+	# Algorithm options for each protocol
-+	local algo_line=
-+	local proto=
-+	case $protocol in
-+	ah)
-+		algo_line="auth $AALGO $AALGO_KEY"
-+		proto="ah"
-+		;;
-+	esp)
-+		algo_line="enc $EALGO $EALGO_KEY auth $AALGO $AALGO_KEY"
-+		proto="esp"
-+		;;
-+	ipcomp)
-+		algo_line="comp $CALGO"
-+		proto="comp"
-+		;;
-+	*)
-+		tst_brkm TCONF "tst_ipsec protocol mismatch"
-+		;;
++while getopts "hl:m:p:s:S:6" opt; do
++	case "$opt" in
++	h)
++		echo "Usage:"
++		echo "h        help"
++		echo "l n      n is the number of test link when tests run"
++		echo "m x      x is ipsec mode, could be transport / tunnel"
++		echo "p x      x is ipsec protcol, could be ah / esp / ipcomp"
++		echo "s x      x is icmp messge size array"
++		echo "S n      n is IPsec SPI value"
++		echo "6        run over IPv6"
++		exit 0
++	;;
++	l) LINK_NUM=$OPTARG ;;
++	m) IPSEC_MODE=$OPTARG ;;
++	p) IPSEC_PROTO=$OPTARG ;;
++	s) ICMP_SIZE_ARRAY=$OPTARG ;;
++	S) SPI=$OPTARG ;;
++	6) # skip, test_net library already processed it
++	;;
++	*) tst_brkm TBROK "unknown option: $opt" ;;
 +	esac
++done
 +
-+	if [ $target = lhost ]; then
-+		local spi_1="0x$spi"
-+		local spi_2="0x$(( $spi + 1 ))"
-+		ROD ip xfrm state add src $src dst $dst spi $spi_1 proto $proto \
-+			$algo_line mode $mode sel src $src dst $dst
-+		ROD ip xfrm state add src $dst dst $src spi $spi_2 proto $proto \
-+			$algo_line mode $mode sel src $dst dst $src
-+		ROD ip xfrm state
++SPI=${SPI:-1000}
++LINK_NUM=${LINK_NUM:-0}
++DO_IPSEC=${DO_IPSEC:-false}
++ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65507"}
++[ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ] && DO_IPSEC=true || DO_IPSEC=false
 +
-+		ROD ip xfrm policy add src $src dst $dst dir out tmpl src $src \
-+			dst $dst proto $proto mode $mode
-+		ROD ip xfrm policy add src $dst dst $src dir in tmpl src $dst \
-+			dst $src proto $proto mode $mode level use
-+		ROD ip xfrm policy
-+	elif [ $target = rhost ]; then
-+		local spi_1="0x$(( $spi + 1 ))"
-+		local spi_2="0x$spi"
-+		tst_rhost_run -s -c "ip xfrm state add src $src dst $dst spi $spi_1 \
-+			proto $proto $algo_line mode $mode sel src $src dst $dst"
-+		tst_rhost_run -s -c "ip xfrm state add src $dst dst $src spi $spi_2 \
-+			proto $proto $algo_line mode $mode sel src $dst dst $src"
-+		tst_rhost_run -s -c "ip xfrm state"
++#-----------------------------------------------------------------------
++#
++# Setup
++#
 +
-+		tst_rhost_run -s -c "ip xfrm policy add src $src dst $dst dir out \
-+			tmpl src $src dst $dst proto $proto mode $mode"
-+		tst_rhost_run -s -c "ip xfrm policy add src $dst dst $src dir in \
-+			tmpl src $dst dst $src proto $proto mode $mode level use"
-+		tst_rhost_run -s -c "ip xfrm policy"
-+	fi
-+}
++# Unset the maximum number of processes
++ulimit -u unlimited
++
++# Test description
++tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
++tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
++tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
++
++if $DO_IPSEC; then
++	case $IPSEC_PROTO in
++	ah)	tst_resm TINFO "- IPsec [ AH / $IPSEC_MODE ]" ;;
++	esp)	tst_resm TINFO "- IPsec [ ESP / $IPSEC_MODE ]" ;;
++	ipcomp)	tst_resm TINFO "- IPcomp [ $IPSEC_MODE ]" ;;
++	esac
++fi
++
++# name of interface of the local/remote host
++lhost_ifname=`tst_iface lhost $LINK_NUM`
++rhost_ifname=`tst_iface rhost $LINK_NUM`
++
++# Initialize the system configuration
++tst_ipsec_cleanup
++
++# Call cleanup function before exit
++trap tst_ipsec_cleanup 0
++
++lhost_addr=$(tst_ipaddr)
++rhost_addr=$(tst_ipaddr rhost)
++
++# Configure SAD/SPD
++if $DO_IPSEC ; then
++	tst_ipsec lhost $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
++	tst_ipsec rhost $IPSEC_PROTO $IPSEC_MODE $SPI $rhost_addr $lhost_addr
++fi
++
++#-----------------------------------------------------------------------
++#
++# Main
++#
++#
++
++# Make sure the connectvity
++tst_ping $lhost_ifname $rhost_addr $ICMP_SIZE_ARRAY
++if [ $? -ne 0 ]; then
++	tst_brkm TBROK "IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE connectivity"
++else
++	tst_resm TPASS "IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE connectivity"
++fi
++
++#-----------------------------------------------------------------------
++#
++# Clean up
++#
++
++tst_resm TPASS "Test is finished successfully."
++exit 0
 -- 
 2.5.0
 
