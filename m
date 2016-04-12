@@ -1,14 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 12 Apr 2016 16:24:50 +0200
-Subject: [LTP] Pre-release LTP build
-In-Reply-To: <1314010537.480730.1460468377766.JavaMail.zimbra@redhat.com>
-References: <20160411172305.GC3466@rei.lan>
- <1944071328.394698.1460449773165.JavaMail.zimbra@redhat.com>
- <20160412084049.GA24915@rei.lan>
- <1180846583.442810.1460462279148.JavaMail.zimbra@redhat.com>
- <20160412122307.GA2562@rei.suse.cz>
- <1314010537.480730.1460468377766.JavaMail.zimbra@redhat.com>
-Message-ID: <20160412142449.GC2875@rei.suse.cz>
+Date: Tue, 12 Apr 2016 17:42:45 +0200
+Subject: [LTP] [PATCH] ptrace/ptrace05: preventing kill other processes
+ if fork failed
+In-Reply-To: <20160412131905.GD17476@localhost.localdomain>
+References: <20160412030734.GA11627@localhost.localdomain>
+ <20160412100858.GC24915@rei.lan>
+ <20160412131905.GD17476@localhost.localdomain>
+Message-ID: <20160412154245.GA2917@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,28 +14,10 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > > +++ b/lib/tst_atomic.c
-> > > @@ -0,0 +1,8 @@
-> > > +#if defined(__i386__)
-> > > +unsigned int __sync_add_and_fetch_4(unsigned int *v, unsigned value)
-> > > +{
-> > > +       register int val = value;
-> > > +       __asm__ __volatile__ ( "lock xadd %1,%0" : "=m" (*v), "=r" (val) :
-> > > "1" (val) : "memory");
-> > > +       return val + value;
-> > > +}
-> > > +#endif
-> > > 
-> > > According to gcc docs it should only make external call to above function,
-> > > when it's not provided natively, so it works as fallback.
+> If fork failed, we should try next signum. Or the kill(-1, 9) on line
+> 196 will kill a lot of processes.
 
-This does not work with gcc-3.3 where no redirection from
-__sync_add_and_fetch -> __sync_add_and_fetch_4 happens. I would say that
-if we are adding fallback definition it should work with 3.3 as well. So
-I guess we should go with configure check and defining
-sync_add_and_fetch() directly. We can also print nice #error message in
-case that there is no fallback implementation if we decide to go this
-way.
+I've shortened the error message a bit and pushed, thanks.
 
 -- 
 Cyril Hrubis
