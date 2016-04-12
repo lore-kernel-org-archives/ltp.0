@@ -1,29 +1,27 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 12 Apr 2016 13:01:25 +0300
-Subject: [LTP] [PATCH v2 2/2] syscalls/fcntl: add new test for open file
- description locks
-In-Reply-To: <1460016651-24181-2-git-send-email-alexey.kodanev@oracle.com>
-References: <1460016651-24181-1-git-send-email-alexey.kodanev@oracle.com>
- <1460016651-24181-2-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <570CC775.5030403@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 12 Apr 2016 12:05:36 +0200
+Subject: [LTP] [PATCH] waitpid/waitpid02: check if fork failed
+In-Reply-To: <20160412030310.GA10416@localhost.localdomain>
+References: <20160412030310.GA10416@localhost.localdomain>
+Message-ID: <20160412100536.GB24915@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 04/07/2016 11:10 AM, Alexey Kodanev wrote:
-> OFD lock is available since Linux 3.15 and new F_OFD_* macros
-> added to lapi/fcntl.h
->
-> Test is based on [1] article and checks that OFD locks can
-> syncronise access to a file between multiple threads.
->
-> [1] https://lwn.net/Articles/586904
+Hi!
+>  		} else {
+> +			if (pid < 0) {
+> +				tst_brkm(TBROK|TERRNO, cleanup, "fork failed");
+> +			}
 
-Patch-set applied.
+The check should be done right after the fork() and not in the else
+branch. Also there shoudln't be the curly braces around the tst_brkm()
+since it's just a signle line.
 
-Best regards,
-Alexey
+Otherwise it's fine.
 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
