@@ -1,12 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 12 Apr 2016 17:42:45 +0200
-Subject: [LTP] [PATCH] ptrace/ptrace05: preventing kill other processes
- if fork failed
-In-Reply-To: <20160412131905.GD17476@localhost.localdomain>
-References: <20160412030734.GA11627@localhost.localdomain>
- <20160412100858.GC24915@rei.lan>
- <20160412131905.GD17476@localhost.localdomain>
-Message-ID: <20160412154245.GA2917@rei.suse.cz>
+Date: Tue, 12 Apr 2016 17:52:41 +0200
+Subject: [LTP] [PATCH] waitpid/waitpid03: break test if fork failed
+In-Reply-To: <20160412132256.GA7441@localhost.localdomain>
+References: <20160412132256.GA7441@localhost.localdomain>
+Message-ID: <20160412155230.GB2917@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,10 +11,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> If fork failed, we should try next signum. Or the kill(-1, 9) on line
-> 196 will kill a lot of processes.
+> -				tst_resm(TFAIL, "cannot open fork #%d", ikids);
+> +				tst_brkm(TBROK|TERRNO, cleanup,
+> +					 "cannot open fork #%d", ikids);
 
-I've shortened the error message a bit and pushed, thanks.
+I guess that we should kill any of the allready sleeping children at this point.
+
+If we move the pid[] array to be global we can create a kill_children()
+function to send a signal to all pids in pid[] that are > 0 and call it
+if fork fails with SIGKILL as well as from the main loop with the
+SIGTERM as well.
 
 -- 
 Cyril Hrubis
