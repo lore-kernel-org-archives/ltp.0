@@ -1,25 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 11 Apr 2016 19:23:05 +0200
-Subject: [LTP] Pre-release LTP build
-Message-ID: <20160411172305.GC3466@rei.lan>
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Tue, 12 Apr 2016 11:03:10 +0800
+Subject: [LTP] [PATCH] waitpid/waitpid02: check if fork failed
+Message-ID: <20160412030310.GA10416@localhost.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I've tried to build LTP source for several distributions and as I
-expected the support for compiler atomic operations is missing in old
-compilers. Particulary gcc-4.1 on x86 (32bit RHEL5) and gcc-3.4 (SLES9)
-and older which were released in 2007 and 2006.
+Break the test if fork failed. Or this test case will kill a lot of
+processes on the system.
 
-The questions is: do we care enough to provide fallback inline assembler?
+Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+---
+ testcases/kernel/syscalls/waitpid/waitpid02.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I would be inclined to say that we don't. So does anybody out there
-still uses LTP with a compiler old enough that it does not support
-atomic builtins?
-
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid02.c b/testcases/kernel/syscalls/waitpid/waitpid02.c
+index e5d7957..73cdb83 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid02.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid02.c
+@@ -96,6 +96,10 @@ int main(int argc, char **argv)
+ 			do_child();
+ #endif
+ 		} else {
++			if (pid < 0) {
++				tst_brkm(TBROK|TERRNO, cleanup, "fork failed");
++			}
++
+ 			kill(pid, sig);
+ 			errno = 0;
+ 			while (((npid = waitpid(pid, &status, 0)) != -1) ||
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.3
+
