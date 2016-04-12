@@ -1,93 +1,70 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 12 Apr 2016 12:53:07 +0800
-Subject: [LTP] [PATCH 1/3] syscalls/preadv02.c: add specific error
-Message-ID: <1460436789-11969-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Cui Bixuan <cuibixuan@huawei.com>
+Date: Tue, 12 Apr 2016 15:15:58 +0800
+Subject: [LTP]  [PATCH v2] max_map_count: fix error by using runtime check
+In-Reply-To: <20160411170358.GB3466@rei.lan>
+References: <56DD6138.9060109@huawei.com> <20160322102943.GA10195@rei.suse.cz>
+ <56F14D59.1040701@huawei.com> <20160322142842.GE10905@rei.suse.cz>
+ <56F259A7.1080908@huawei.com>
+ <1242994016.13404335.1458728559657.JavaMail.zimbra@redhat.com>
+ <20160331120726.GB21298@rei.lan> <5703A5C6.3000102@huawei.com>
+ <20160411170358.GB3466@rei.lan>
+Message-ID: <570CA0AE.6020804@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) preadv(2) fails when fd refers to a directory and
-   set errno to EISDIR.
-2) preadv(2) fails if fd is associated with a pipe and
-   set errno to ESPIPE.
+There is a error when compile the case to 32bit binary and
+run it on 64bit arm kernel, which will wrongly skip one mapping.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Add runtimg check by using the machine from uname(2) to fix it.
+
+Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
 ---
- testcases/kernel/syscalls/preadv/preadv02.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ testcases/kernel/mem/tunable/max_map_count.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/preadv/preadv02.c b/testcases/kernel/syscalls/preadv/preadv02.c
-index f2f3af7..ae9fa6e 100644
---- a/testcases/kernel/syscalls/preadv/preadv02.c
-+++ b/testcases/kernel/syscalls/preadv/preadv02.c
-@@ -24,6 +24,8 @@
- * 4) preadv(2) fails when attempts to read into a invalid address.
- * 5) preadv(2) fails if file descriptor is invalid.
- * 6) preadv(2) fails if file descriptor is not open for reading.
-+* 7) preadv(2) fails when fd refers to a directory.
-+* 8) preadv(2) fails if fd is associated with a pipe.
- *
- * Expected Result:
- * 1) preadv(2) should return -1 and set errno to EINVAL.
-@@ -32,6 +34,8 @@
- * 4) preadv(2) should return -1 and set errno to EFAULT.
- * 5) preadv(2) should return -1 and set errno to EBADF.
- * 6) preadv(2) should return -1 and set errno to EBADF.
-+* 7) preadv(2) should return -1 and set errno to EISDIR.
-+* 8) preadv(2) should return -1 and set errno to ESPIPE.
- */
- 
- #include <sys/uio.h>
-@@ -43,6 +47,9 @@
- static int fd1;
- static int fd2;
- static int fd3 = -1;
-+static int fd4;
-+static int fd5[2];
+diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
+index 295a47b..cc7a4e1 100644
+--- a/testcases/kernel/mem/tunable/max_map_count.c
++++ b/testcases/kernel/mem/tunable/max_map_count.c
+@@ -59,6 +59,7 @@
+ #include <stdbool.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <sys/utsname.h>
+ #include "test.h"
+ #include "mem.h"
+
+@@ -70,6 +71,7 @@ int TST_TOTAL = 1;
+
+ static long old_max_map_count;
+ static long old_overcommit;
++static struct utsname un;
+
+ static long count_maps(pid_t pid);
+ static void max_map_count_test(void);
+@@ -104,6 +106,9 @@ void setup(void)
+ 	old_max_map_count = get_sys_tune("max_map_count");
+ 	old_overcommit = get_sys_tune("overcommit_memory");
+ 	set_sys_tune("overcommit_memory", 2, 1);
 +
- static char buf[CHUNK];
- 
- static struct iovec rd_iovec1[] = {
-@@ -66,7 +73,9 @@ static struct tcase {
- 	{&fd1, rd_iovec2, 1, -1, EINVAL},
- 	{&fd1, rd_iovec2, 2, 0, EFAULT},
- 	{&fd3, rd_iovec2, 1, 0, EBADF},
--	{&fd2, rd_iovec2, 1, 0, EBADF}
-+	{&fd2, rd_iovec2, 1, 0, EBADF},
-+	{&fd4, rd_iovec2, 1, 0, EISDIR},
-+	{&fd5[0], rd_iovec2, 1, 0, ESPIPE}
- };
- 
- static void verify_preadv(unsigned int n)
-@@ -93,6 +102,8 @@ static void setup(void)
- {
- 	fd1 = SAFE_OPEN("file1", O_RDWR | O_CREAT, 0644);
- 	fd2 = SAFE_OPEN("file2", O_WRONLY | O_CREAT, 0644);
-+	fd4 = SAFE_OPEN(".", O_RDONLY);
-+	SAFE_PIPE(fd5);
++	if (uname(&un) != 0)
++		tst_brkm(TBROK | TERRNO, NULL, "uname error");
  }
- 
- static void cleanup(void)
-@@ -102,6 +113,15 @@ static void cleanup(void)
- 
- 	if (fd2 > 0 && close(fd2))
- 		tst_res(TWARN | TERRNO, "failed to close file");
+
+ void cleanup(void)
+@@ -133,6 +138,10 @@ static bool filter_map(const char *line)
+ 	if (!strcmp(buf, "[vdso]"))
+ 		return true;
+ #elif defined(__arm__)
++	/* Skip it when run it in aarch64 */
++	if (strcmp(un.machine, "aarch64"))
++		return false;
 +
-+	if (fd4 > 0 && close(fd4))
-+		tst_res(TWARN | TERRNO, "failed to close file");
-+
-+	if (fd5[0] > 0 && close(fd5[0]))
-+		tst_res(TWARN | TERRNO, "failed to close file");
-+
-+	if (fd5[1] > 0 && close(fd5[1]))
-+		tst_res(TWARN | TERRNO, "failed to close file");
- }
- 
- static struct tst_test test = {
+ 	/* Older arm kernels didn't label their vdso maps */
+ 	if (!strncmp(line, "ffff0000-ffff1000", 17))
+ 		return true;
 -- 
-1.8.3.1
-
-
-
+1.8.3.4
