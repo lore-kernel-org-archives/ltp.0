@@ -1,12 +1,14 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 12 Apr 2016 14:23:07 +0200
-Subject: [LTP] Pre-release LTP build
-In-Reply-To: <1180846583.442810.1460462279148.JavaMail.zimbra@redhat.com>
-References: <20160411172305.GC3466@rei.lan>
- <1944071328.394698.1460449773165.JavaMail.zimbra@redhat.com>
- <20160412084049.GA24915@rei.lan>
- <1180846583.442810.1460462279148.JavaMail.zimbra@redhat.com>
-Message-ID: <20160412122307.GA2562@rei.suse.cz>
+Date: Tue, 12 Apr 2016 15:07:58 +0200
+Subject: [LTP] [PATCH v2] max_map_count: fix error by using runtime check
+In-Reply-To: <570CA0AE.6020804@huawei.com>
+References: <56DD6138.9060109@huawei.com> <20160322102943.GA10195@rei.suse.cz>
+ <56F14D59.1040701@huawei.com> <20160322142842.GE10905@rei.suse.cz>
+ <56F259A7.1080908@huawei.com>
+ <1242994016.13404335.1458728559657.JavaMail.zimbra@redhat.com>
+ <20160331120726.GB21298@rei.lan> <5703A5C6.3000102@huawei.com>
+ <20160411170358.GB3466@rei.lan> <570CA0AE.6020804@huawei.com>
+Message-ID: <20160412130757.GA2875@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,40 +16,10 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> As for RHEL5.6 it's only i386. I was able to compile x86_64, ia64, ppc/ppc64
-> and s390/s390x with no changes.
-> 
-> Any of these two allow it to compile on x86:
-> 1. -march=i486 (or higher)
-> 2.
-> diff --git a/lib/tst_atomic.c b/lib/tst_atomic.c
-> new file mode 100644
-> index 0000000..601fd6c
-> --- /dev/null
-> +++ b/lib/tst_atomic.c
-> @@ -0,0 +1,8 @@
-> +#if defined(__i386__)
-> +unsigned int __sync_add_and_fetch_4(unsigned int *v, unsigned value)
-> +{
-> +       register int val = value;
-> +       __asm__ __volatile__ ( "lock xadd %1,%0" : "=m" (*v), "=r" (val) : "1" (val) : "memory");
-> +       return val + value;
-> +}
-> +#endif
-> 
-> According to gcc docs it should only make external call to above function,
-> when it's not provided natively, so it works as fallback.
+> There is a error when compile the case to 32bit binary and
+> run it on 64bit arm kernel, which will wrongly skip one mapping.
 
-Accordingly to:
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=34115
-
-It does not work with gcc 4.1 when the builtin is returned directly at
-the end of the function.
-
-So storing the return value to a variable may fix that as well.
-
-But I would prefer having fallback definition over working around
-compiler bugs.
+Pushed with fixed typo in the patch description, thanks.
 
 -- 
 Cyril Hrubis
