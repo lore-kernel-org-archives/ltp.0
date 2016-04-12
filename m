@@ -1,59 +1,73 @@
 From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Tue, 12 Apr 2016 21:13:24 +0800
-Subject: [LTP] [PATCH] waitpid/waitpid02: check if fork failed
-In-Reply-To: <20160412100536.GB24915@rei.lan>
-References: <20160412030310.GA10416@localhost.localdomain>
- <20160412100536.GB24915@rei.lan>
-Message-ID: <20160412131324.GC17476@localhost.localdomain>
+Date: Tue, 12 Apr 2016 21:19:05 +0800
+Subject: [LTP] [PATCH] ptrace/ptrace05: preventing kill other processes
+ if fork failed
+In-Reply-To: <20160412100858.GC24915@rei.lan>
+References: <20160412030734.GA11627@localhost.localdomain>
+ <20160412100858.GC24915@rei.lan>
+Message-ID: <20160412131905.GD17476@localhost.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, Apr 12, 2016 at 12:05:36PM +0200, Cyril Hrubis wrote:
+On Tue, Apr 12, 2016 at 12:08:59PM +0200, Cyril Hrubis wrote:
 > Hi!
-> >  		} else {
-> > +			if (pid < 0) {
-> > +				tst_brkm(TBROK|TERRNO, cleanup, "fork failed");
-> > +			}
+> > If fork failed, we should try next signum. Or the kill(-1, 9) on line
+> > 196 will kill a lot of processes.
+> > 
+> > Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+> > ---
+> >  testcases/kernel/syscalls/ptrace/ptrace05.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/testcases/kernel/syscalls/ptrace/ptrace05.c b/testcases/kernel/syscalls/ptrace/ptrace05.c
+> > index d610cc0..e717319 100644
+> > --- a/testcases/kernel/syscalls/ptrace/ptrace05.c
+> > +++ b/testcases/kernel/syscalls/ptrace/ptrace05.c
+> > @@ -99,7 +99,7 @@ int main(int argc, char **argv)
+> >  		switch (child = fork()) {
+> >  		case -1:
+> >  			tst_resm(TBROK | TERRNO, "Failed to fork properly.");
+> > -			break;
+> > +			continue;
 > 
-> The check should be done right after the fork() and not in the else
-> branch. Also there shoudln't be the curly braces around the tst_brkm()
-> since it's just a signle line.
+> I would just change this to tst_brkm(). There is no point in continuing
+> the test if fork() starts failing.
 > 
-> Otherwise it's fine.
-> 
-Thanks. This is the new patch.
+Please review the new patch. Thanks.
 
 
-From 9785b11acc164725a5e93766ec08d199831fd7e5 Mon Sep 17 00:00:00 2001
+From ee7ba40a79644a9039d0cc581f78e8708aef8b06 Mon Sep 17 00:00:00 2001
 From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Mon, 11 Apr 2016 23:46:34 +0800
-Subject: [PATCH] waitpid/waitpid02: check if fork failed
+Date: Tue, 12 Apr 2016 09:13:57 +0800
+Subject: [PATCH] ptrace/ptrace05: preventing kill other processes if fork
+ failed
 
-Break the test if fork failed. Or this test case will kill a lot of
-processes on the system.
+If fork failed, we should try next signum. Or the kill(-1, 9) on line
+196 will kill a lot of processes.
 
 Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
 ---
- testcases/kernel/syscalls/waitpid/waitpid02.c | 3 +++
- 1 file changed, 3 insertions(+)
+ testcases/kernel/syscalls/ptrace/ptrace05.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/waitpid/waitpid02.c b/testcases/kernel/syscalls/waitpid/waitpid02.c
-index e5d7957..7d3a65c 100644
---- a/testcases/kernel/syscalls/waitpid/waitpid02.c
-+++ b/testcases/kernel/syscalls/waitpid/waitpid02.c
-@@ -88,6 +88,9 @@ int main(int argc, char **argv)
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace05.c b/testcases/kernel/syscalls/ptrace/ptrace05.c
+index d610cc0..db611e7 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace05.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace05.c
+@@ -98,8 +98,8 @@ int main(int argc, char **argv)
  
- 		pid = FORK_OR_VFORK();
+ 		switch (child = fork()) {
+ 		case -1:
+-			tst_resm(TBROK | TERRNO, "Failed to fork properly.");
+-			break;
++			tst_brkm(TBROK | TERRNO, NULL, 
++				 "Failed to fork properly.");
+ 		case 0:
  
-+		if (pid < 0)
-+			tst_brkm(TBROK|TERRNO, cleanup, "fork failed");
-+
- 		if (pid == 0) {
- #ifdef UCLINUX
- 			self_exec(argv[0], "");
+ 			if (ptrace(PTRACE_TRACEME, 0, NULL, NULL) != -1) {
 -- 
 1.9.3
 
