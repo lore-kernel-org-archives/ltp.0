@@ -1,39 +1,29 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 12 Apr 2016 04:29:33 -0400 (EDT)
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 12 Apr 2016 10:40:49 +0200
 Subject: [LTP] Pre-release LTP build
-In-Reply-To: <20160411172305.GC3466@rei.lan>
+In-Reply-To: <1944071328.394698.1460449773165.JavaMail.zimbra@redhat.com>
 References: <20160411172305.GC3466@rei.lan>
-Message-ID: <1944071328.394698.1460449773165.JavaMail.zimbra@redhat.com>
+ <1944071328.394698.1460449773165.JavaMail.zimbra@redhat.com>
+Message-ID: <20160412084049.GA24915@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: ltp@lists.linux.it
-> Sent: Monday, 11 April, 2016 7:23:05 PM
-> Subject: [LTP] Pre-release LTP build
+Hi!
+> I do. At least RHEL5.6 is going to be around for another year.
 > 
-> Hi!
-> I've tried to build LTP source for several distributions and as I
-> expected the support for compiler atomic operations is missing in old
-> compilers. Particulary gcc-4.1 on x86 (32bit RHEL5) and gcc-3.4 (SLES9)
-> and older which were released in 2007 and 2006.
+> I have repeatedly built your patch-series on RHEL5.6 x86_64, which works
+> fine. But as you pointed out 32bit version fails, other arches possibly too.
 > 
-> The questions is: do we care enough to provide fallback inline assembler?
-> 
-> I would be inclined to say that we don't. So does anybody out there
-> still uses LTP with a compiler old enough that it does not support
-> atomic builtins?
+> My first thought was some kind of lock, so we don't have to care
+> about each architecture separately.
 
-I do. At least RHEL5.6 is going to be around for another year.
+I think that easiest solution would be copying the assembler the builtin
+produces and using it as a fallback. That would have to be done per
+arch, but the rest of the code could be left untouched.
 
-I have repeatedly built your patch-series on RHEL5.6 x86_64, which works
-fine. But as you pointed out 32bit version fails, other arches possibly too.
-
-My first thought was some kind of lock, so we don't have to care
-about each architecture separately.
+-- 
+Cyril Hrubis
+chrubis@suse.cz
