@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 13 Apr 2016 16:07:02 +0200
-Subject: [LTP] [PATCH 1/4] tst_atomic: make tst_atomic_inc take a signed
- integer
-In-Reply-To: <82bcc056edc64dee3a13275a2b4bdbec958f60eb.1460552890.git.jstancek@redhat.com>
+Date: Wed, 13 Apr 2016 16:15:51 +0200
+Subject: [LTP] [PATCH 4/4] tst_atomic: add test for tst_atomic_inc
+In-Reply-To: <c7a40e44c496051bedb3c8af46d16d42c50c49af.1460552890.git.jstancek@redhat.com>
 References: <82bcc056edc64dee3a13275a2b4bdbec958f60eb.1460552890.git.jstancek@redhat.com>
-Message-ID: <20160413140702.GC11529@rei.lan>
+ <c7a40e44c496051bedb3c8af46d16d42c50c49af.1460552890.git.jstancek@redhat.com>
+Message-ID: <20160413141551.GD11529@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,89 +12,75 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> This is a preparation for upcoming patches, which add atomic_add_return(),
-> that takes signed integer.
+This is nice to have ;)
 
-What is the problem with unsigned integer?
+> +/*
+> + * Copyright (c) 2016 Linux Test Project
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License as
+> + * published by the Free Software Foundation; either version 2 of
+> + * the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + */
+> +
+> +/*
+> + * Test that tst_atomic_inc works as expected.
+> + */
+> +
+> +#include <pthread.h>
+> +#include "tst_test.h"
+> +
+> +#define THREADS 64
+> +#define ITERATIONS 100000
+> +
+> +static int atomic;
+> +
+> +static void *worker(void *id)
+> +{
+> +	int i;
+> +
+> +	(void) id;
+> +	for (i = 0; i < ITERATIONS; i++)
+> +		tst_atomic_inc(&atomic);
+> +
+> +	return NULL;
+> +}
+> +
+> +static void do_test(void)
+> +{
+> +	long i;
+> +	pthread_t threads[THREADS];
+> +
+> +	for (i = 0; i < THREADS; i++)
+> +		pthread_create(threads+i, NULL, worker, (void *)i);
+> +
+> +	for (i = 0; i < THREADS; i++) {
+> +		tst_res(TINFO, "Joining thread %li", i);
+> +		pthread_join(threads[i], NULL);
+> +	}
+> +
+> +	if (atomic == THREADS * ITERATIONS)
+> +		tst_res(TPASS, "Atomic working as expected");
+> +	else
+> +		tst_res(TFAIL, "Atomic does not have expected value");
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tid = "test09",
+> +	.test_all = do_test,
+> +	.forks_child = 1
 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  doc/test-writing-guidelines.txt | 2 +-
->  include/tst_atomic.h            | 2 +-
->  lib/newlib_tests/test08.c       | 2 +-
->  lib/tst_test.c                  | 8 ++++----
->  4 files changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-> index d0b14084c90b..c0ef33afd5bb 100644
-> --- a/doc/test-writing-guidelines.txt
-> +++ b/doc/test-writing-guidelines.txt
-> @@ -780,7 +780,7 @@ the user supplied cleanup to the test library.
->  
->  static void cleanup(void)
->  {
-> -	static unsigned int flag;
-> +	static int flag;
->  
->  	if (tst_atomic_inc(&flag) != 1)
->  		pthread_exit(NULL);
-> diff --git a/include/tst_atomic.h b/include/tst_atomic.h
-> index 75c713d38d2a..40b2c581f19d 100644
-> --- a/include/tst_atomic.h
-> +++ b/include/tst_atomic.h
-> @@ -18,7 +18,7 @@
->  #ifndef TST_ATOMIC_H__
->  #define TST_ATOMIC_H__
->  
-> -static inline unsigned int tst_atomic_inc(unsigned int *v)
-> +static inline unsigned int tst_atomic_inc(int *v)
-                    ^
-		 This should be removed as well, right?
-
->  {
->  	return __sync_add_and_fetch(v, 1);
->  }
-> diff --git a/lib/newlib_tests/test08.c b/lib/newlib_tests/test08.c
-> index 8fefc182650d..0a2023119a71 100644
-> --- a/lib/newlib_tests/test08.c
-> +++ b/lib/newlib_tests/test08.c
-> @@ -35,7 +35,7 @@ static void setup(void)
->  
->  static void cleanup(void)
->  {
-> -	static unsigned int flag;
-> +	static int flag;
->  
->  	/* Avoid subsequent threads to enter the cleanup */
->  	if (tst_atomic_inc(&flag) != 1)
-> diff --git a/lib/tst_test.c b/lib/tst_test.c
-> index 37265fe50951..66c0bc67127f 100644
-> --- a/lib/tst_test.c
-> +++ b/lib/tst_test.c
-> @@ -43,10 +43,10 @@ static float duration = -1;
->  static pid_t main_pid;
->  
->  struct results {
-> -	unsigned int passed;
-> -	unsigned int skipped;
-> -	unsigned int failed;
-> -	unsigned int warnings;
-> +	int passed;
-> +	int skipped;
-> +	int failed;
-> +	int warnings;
->  };
-
-We print these values with %u in do_exit(), that should be updated as
-well.
-
->  static struct results *results;
-> -- 
-> 1.8.3.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+Looks like the forks_child is copy&pasted from test08 which was
+copy&pasted test07 which really forks a child. I will fix test08.c and
+you should remove it from this one as well.
+`
+> +};
 
 -- 
 Cyril Hrubis
