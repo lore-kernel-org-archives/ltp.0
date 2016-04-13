@@ -1,59 +1,83 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 13 Apr 2016 09:07:49 -0400 (EDT)
-Subject: [LTP] Pre-release LTP build
-In-Reply-To: <20160412142449.GC2875@rei.suse.cz>
-References: <20160411172305.GC3466@rei.lan>
- <1944071328.394698.1460449773165.JavaMail.zimbra@redhat.com>
- <20160412084049.GA24915@rei.lan>
- <1180846583.442810.1460462279148.JavaMail.zimbra@redhat.com>
- <20160412122307.GA2562@rei.suse.cz>
- <1314010537.480730.1460468377766.JavaMail.zimbra@redhat.com>
- <20160412142449.GC2875@rei.suse.cz>
-Message-ID: <166413638.832919.1460552869855.JavaMail.zimbra@redhat.com>
+Date: Wed, 13 Apr 2016 15:10:43 +0200
+Subject: [LTP] [PATCH 1/4] tst_atomic: make tst_atomic_inc take a signed
+	integer
+Message-ID: <82bcc056edc64dee3a13275a2b4bdbec958f60eb.1460552890.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+This is a preparation for upcoming patches, which add atomic_add_return(),
+that takes signed integer.
 
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ doc/test-writing-guidelines.txt | 2 +-
+ include/tst_atomic.h            | 2 +-
+ lib/newlib_tests/test08.c       | 2 +-
+ lib/tst_test.c                  | 8 ++++----
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Tuesday, 12 April, 2016 4:24:50 PM
-> Subject: Re: [LTP] Pre-release LTP build
-> 
-> Hi!
-> > > > +++ b/lib/tst_atomic.c
-> > > > @@ -0,0 +1,8 @@
-> > > > +#if defined(__i386__)
-> > > > +unsigned int __sync_add_and_fetch_4(unsigned int *v, unsigned value)
-> > > > +{
-> > > > +       register int val = value;
-> > > > +       __asm__ __volatile__ ( "lock xadd %1,%0" : "=m" (*v), "=r"
-> > > > (val) :
-> > > > "1" (val) : "memory");
-> > > > +       return val + value;
-> > > > +}
-> > > > +#endif
-> > > > 
-> > > > According to gcc docs it should only make external call to above
-> > > > function,
-> > > > when it's not provided natively, so it works as fallback.
-> 
-> This does not work with gcc-3.3 where no redirection from
-> __sync_add_and_fetch -> __sync_add_and_fetch_4 happens. I would say that
-> if we are adding fallback definition it should work with 3.3 as well. So
-> I guess we should go with configure check and defining
-> sync_add_and_fetch() directly. We can also print nice #error message in
-> case that there is no fallback implementation if we decide to go this
-> way.
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index d0b14084c90b..c0ef33afd5bb 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -780,7 +780,7 @@ the user supplied cleanup to the test library.
+ 
+ static void cleanup(void)
+ {
+-	static unsigned int flag;
++	static int flag;
+ 
+ 	if (tst_atomic_inc(&flag) != 1)
+ 		pthread_exit(NULL);
+diff --git a/include/tst_atomic.h b/include/tst_atomic.h
+index 75c713d38d2a..40b2c581f19d 100644
+--- a/include/tst_atomic.h
++++ b/include/tst_atomic.h
+@@ -18,7 +18,7 @@
+ #ifndef TST_ATOMIC_H__
+ #define TST_ATOMIC_H__
+ 
+-static inline unsigned int tst_atomic_inc(unsigned int *v)
++static inline unsigned int tst_atomic_inc(int *v)
+ {
+ 	return __sync_add_and_fetch(v, 1);
+ }
+diff --git a/lib/newlib_tests/test08.c b/lib/newlib_tests/test08.c
+index 8fefc182650d..0a2023119a71 100644
+--- a/lib/newlib_tests/test08.c
++++ b/lib/newlib_tests/test08.c
+@@ -35,7 +35,7 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	static unsigned int flag;
++	static int flag;
+ 
+ 	/* Avoid subsequent threads to enter the cleanup */
+ 	if (tst_atomic_inc(&flag) != 1)
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 37265fe50951..66c0bc67127f 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -43,10 +43,10 @@ static float duration = -1;
+ static pid_t main_pid;
+ 
+ struct results {
+-	unsigned int passed;
+-	unsigned int skipped;
+-	unsigned int failed;
+-	unsigned int warnings;
++	int passed;
++	int skipped;
++	int failed;
++	int warnings;
+ };
+ 
+ static struct results *results;
+-- 
+1.8.3.1
 
-I'll post a series that goes this way shortly. I've based it on kernel
-atomic_add_return for architectures that are accessible for me. I tested
-it only on RHEL5.6 (gcc 4.1.2), which I think is the oldest active
-RHEL release at the moment.
-
-What arches do you care about, that have gcc-3.3?
