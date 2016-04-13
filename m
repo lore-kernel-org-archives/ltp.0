@@ -1,11 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 13 Apr 2016 17:56:57 +0200
-Subject: [LTP] [PATCH v2 1/2] request_key/request_key01.c: add new
+Date: Wed, 13 Apr 2016 18:03:02 +0200
+Subject: [LTP] [PATCH v2 2/2] request_key/request_key02.c: add new
 	testcase
-In-Reply-To: <1458113314-29731-1-git-send-email-yangx.jy@cn.fujitsu.com>
+In-Reply-To: <1458113314-29731-2-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20160309145331.GG28171@rei.lan>
  <1458113314-29731-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20160413155657.GF11529@rei.lan>
+ <1458113314-29731-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160413160302.GG11529@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,71 +14,18 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> @@ -0,0 +1,27 @@
-> +#  Copyright (c) 2016 Fujitsu Ltd.
-> +#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> +#
-> +#  This program is free software;  you can redistribute it and/or modify
-> +#  it under the terms of the GNU General Public License as published by
-> +#  the Free Software Foundation; either version 2 of the License, or
-> +#  (at your option) any later version.
-> +#
-> +#  This program is distributed in the hope that it will be useful,
-> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> +#  the GNU General Public License for more details.
-> +#
-> +#  You should have received a copy of the GNU General Public License
-> +#  along with this program.
-> +#
-> +
-> +top_srcdir		?= ../../../..
-> +have_keyutil		?= /usr/include/keyutils.h
-> +
-> +include $(top_srcdir)/include/mk/testcases.mk
-> +
-> +ifeq ($(have_keyutil), $(wildcard $(have_keyutil)))
-
-This is ugly hack. The header does not need to be in the standard path
-at all. What you should do instead is to call
-AC_SUBST([KEYUTIL_LIBS, ...) in the configure part and do
-LDLIBS+=$(KEYUTILS_LIBS) here. Have a look at the m4/ltp-acl.m4 or
-m4/ltp-cap.m4 for instance.
-
-> +LDLIBS		+= -lkeyutils
-> +endif
-> +
-> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
-> diff --git a/testcases/kernel/syscalls/request_key/request_key01.c b/testcases/kernel/syscalls/request_key/request_key01.c
-> new file mode 100644
-> index 0000000..9d99e85
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/request_key/request_key01.c
-> @@ -0,0 +1,103 @@
 > +/*
-> +* Copyright (c) 2016 Fujitsu Ltd.
-> +* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> +*
-> +* This program is free software; you can redistribute it and/or modify it
-> +* under the terms of version 2 of the GNU General Public License as
-> +* published by the Free Software Foundation.
-> +*
-> +* This program is distributed in the hope that it would be useful, but
-> +* WITHOUT ANY WARRANTY; without even the implied warranty of
-> +* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-> +*
-> +* You should have received a copy of the GNU General Public License
-> +* alone with this program.
-> +*/
-> +
-> +/*
-> +* Test Name: request_key01
+> +* Test Name: request_key02
 > +*
 > +* Description:
-> +* The testcase checks basic functionality of the request_key(2).
-> +* request_key(2) asks the kernel to find a key which matches the
-> +* specified description. If successful, it attaches it to the
-> +* nominated keyring and returns its serial number.
+> +* 1) request_key(2) fails if no matching key was found.
+> +* 2) request_key(2) fails if A revoked key was found.
+> +* 3) request_key(2) fails if An expired key was found.
+> +*
+> +* Expected Result:
+> +* 1) request_key(2) should return -1 and set errno to ENOKEY.
+> +* 2) request_key(2) should return -1 and set errno to EKEYREVOKED.
+> +* 3) request_key(2) should return -1 and set errno to EKEYEXPIRED.
 > +*
 > +*/
 > +
@@ -87,23 +35,35 @@ m4/ltp-cap.m4 for instance.
 > +#ifdef HAVE_KEYUTILS_H
 > +#include <keyutils.h>
 > +#endif
-> +
 > +#include "test.h"
 > +
-> +char *TCID = "request_key01";
+> +char *TCID = "request_key02";
 > +
-> +static int res;
+> +static struct test_case {
+> +	const char *des;
+> +	int exp_err;
+> +	int id;
+> +} tc[] = {
+> +	/* test1 */
+> +	{"ltp1", ENOKEY, 0},
+> +	/* test2 */
+> +	{"ltp2", EKEYREVOKED, 0},
+> +	/* test3 */
+> +	{"ltp3", EKEYEXPIRED, 0}
+> +};
 > +
-> +static void verify_request_key(void);
+> +static void verify_request_key(struct test_case *);
 > +static void setup(void);
+> +static int init_key(char *, int);
 > +static void cleanup(void);
 > +
-> +int TST_TOTAL = 1;
+> +int TST_TOTAL = ARRAY_SIZE(tc);
 > +
 > +#ifdef HAVE_KEYUTILS_H
 > +int main(int ac, char **av)
 > +{
 > +	int lc;
+> +	int i;
 > +
 > +	tst_parse_opts(ac, av, NULL, NULL);
 > +
@@ -112,25 +72,29 @@ m4/ltp-cap.m4 for instance.
 > +	for (lc = 0; TEST_LOOPING(lc); lc++) {
 > +		tst_count = 0;
 > +
-> +		verify_request_key();
+> +		for (i = 0; i < TST_TOTAL; i++)
+> +			verify_request_key(&tc[i]);
 > +	}
 > +
 > +	cleanup();
 > +	tst_exit();
 > +}
 > +
-> +static void verify_request_key(void)
+> +static void verify_request_key(struct test_case *tc)
 > +{
-> +	TEST(request_key("keyring", "ltp", NULL, KEY_REQKEY_DEFL_DEFAULT));
-> +	if (TEST_RETURN == -1) {
-> +		tst_resm(TFAIL | TERRNO, "request_key() failed");
+> +	TEST(request_key("keyring", tc->des, NULL, tc->id));
+> +	if (TEST_RETURN != -1) {
+> +		tst_resm(TFAIL, "request_key() succeed unexpectly");
 > +		return;
 > +	}
 > +
-> +	if (TEST_RETURN != res)
-> +		tst_resm(TFAIL, "serial number mismatched");
+> +	if (TEST_ERRNO == tc->exp_err)
+> +		tst_resm(TPASS | TTERRNO, "request_key() failed expectly");
 > +	else
-> +		tst_resm(TPASS, "request_key() succeed");
+> +		tst_resm(TFAIL | TTERRNO, "request_key() failed unexpectly");
+
+Ideally the error message should contain the expected errno as well.
+
 > +}
 > +
 > +static void setup(void)
@@ -141,12 +105,46 @@ m4/ltp-cap.m4 for instance.
 > +
 > +	tst_tmpdir();
 
-What do we create the temporary directory for? The test does not seem to
-work with files at all.
+Here as well.
 
-> +	res = add_key("keyring", "ltp", NULL, 0, KEY_SPEC_THREAD_KEYRING);
-> +	if (res == -1)
+> +	tc[0].id = KEY_REQKEY_DEFL_DEFAULT;
+> +
+> +	tc[1].id = init_key("ltp2", KEYCTL_REVOKE);
+> +
+> +	tc[2].id = init_key("ltp3", KEYCTL_SET_TIMEOUT);
+
+This is ugly. What you should do instead is to declare the id in the
+test structure as a pointer and initialize it to a pointer to a variable
+that is initialized in the setup.
+
+> +}
+> +
+> +static int init_key(char *name, int cmd)
+> +{
+> +	int n;
+> +	int sec = 1;
+> +
+> +	n = add_key("keyring", name, NULL, 0, KEY_SPEC_THREAD_KEYRING);
+> +	if (n == -1)
 > +		tst_brkm(TBROK | TERRNO, cleanup, "add_key() failed");
+> +
+> +	if (cmd == KEYCTL_REVOKE) {
+> +		if (keyctl(cmd, n) == -1) {
+> +			tst_brkm(TBROK | TERRNO, cleanup,
+> +				 "failed to revoke a key");
+> +		}
+> +	}
+> +
+> +	if (cmd == KEYCTL_SET_TIMEOUT) {
+> +		if (keyctl(cmd, n, sec) == -1) {
+> +			tst_brkm(TBROK | TERRNO, cleanup,
+> +				 "failed to set timeout for a key");
+> +		}
+> +
+> +		sleep(sec + 1);
+> +	}
+> +
+> +	return n;
 > +}
 > +
 > +static void cleanup(void)
@@ -158,23 +156,12 @@ work with files at all.
 > +int main(void)
 > +{
 > +	tst_brkm(TCONF, NULL, "compilation failed without keyutils.h");
-                                            ^
 
-				Technically it didn't fail, but only
-				stub was compiled due to missing
-				library.
 
-It should say something as:
-
-	"keyutils.h was missing at compilation"
+Here as well.
 
 > +}
 > +#endif /* HAVE_LINUX_KEYCTL_H */
-> -- 
-> 1.8.3.1
-> 
-> 
-> 
 
 -- 
 Cyril Hrubis
