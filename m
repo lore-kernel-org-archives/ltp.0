@@ -1,54 +1,122 @@
-From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-Date: Thu, 14 Apr 2016 10:06:59 +0800
-Subject: [LTP] [PATCH v2] inotify: Add test for inotify mark destruction
- race
-In-Reply-To: <20150825112920.GB20082@rei.suse.de>
-References: <1439215460-15670-1-git-send-email-jack@suse.com>
- <20150811141432.GA21861@rei.suse.de> <20150811142035.GD2659@quack.suse.cz>
- <20150825092925.GA19905@rei.suse.de> <20150825103803.GA15280@quack.suse.cz>
- <20150825112920.GB20082@rei.suse.de>
-Message-ID: <570EFB43.3020704@cn.fujitsu.com>
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Thu, 14 Apr 2016 11:09:28 +0800
+Subject: [LTP] [PATCH] waitpid/waitpid03: break test if fork failed
+In-Reply-To: <20160413125535.GF10941@rei.lan>
+References: <20160412132256.GA7441@localhost.localdomain>
+ <20160412155230.GB2917@rei.suse.cz>
+ <20160413065818.GF17476@localhost.localdomain>
+ <20160413125535.GF10941@rei.lan>
+Message-ID: <20160414030928.GG17476@localhost.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-hello,
-
-On 08/25/2015 07:29 PM, Cyril Hrubis wrote:
+On Wed, Apr 13, 2016 at 02:55:35PM +0200, Cyril Hrubis wrote:
 > Hi!
->> Interesting, probably SRCU is much slower with this older kernel. From my
->> experiments 100 iterations isn't quite reliable to trigger the oops in my
->> testing instance. But 400 seem to be good enough.
+> > Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+> > ---
+> >  testcases/kernel/syscalls/waitpid/waitpid03.c | 11 ++++++++++-
+> >  1 file changed, 10 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/testcases/kernel/syscalls/waitpid/waitpid03.c b/testcases/kernel/syscalls/waitpid/waitpid03.c
+> > index 2599a92..7e9d45c 100644
+> > --- a/testcases/kernel/syscalls/waitpid/waitpid03.c
+> > +++ b/testcases/kernel/syscalls/waitpid/waitpid03.c
+> > @@ -106,7 +106,16 @@ int main(int argc, char **argv)
+> >  				if (DEBUG)
+> >  					tst_resm(TINFO, "child # %d", ikids);
+> >  			} else if (pid[ikids] == -1) {
+> > -				tst_resm(TFAIL, "cannot open fork #%d", ikids);
+> > +				int i;
+> > +
+> > +				tst_resm(TBROK|TERRNO, "cannot open fork #%d",
+> > +					 ikids);
+> > +
+> > +				for (i = 1; i < ikids; i++)
+> > +					kill(pid[i], 9);
+> > +
+> > +				cleanup();
+> > +				tst_exit();
 > 
-> I've changed the nuber of iterations to 400 and pushed it to git,
-> thanks.
+> This one is ugly. Why don't we kill the children in the test cleanup()
+> here as well. This should be easy, just store the number of allready
+> forked kids in a global variable and reset it to zero right after they
+> were killed in the main loop.
 > 
-
-In upstream kernel v4.6-rc3-17-g1c74a7f and RHEL7.2GA, I sometimes get such
-error:
----------------------------------------------------------------------------
-inotify06    1  TBROK  :  inotify06.c:104: inotify_init failed: errno=EMFILE(24): Too many open files
-inotify06    2  TBROK  :  inotify06.c:104: Remaining cases broken
----------------------------------------------------------------------------
-But look at the inotify06.c, inotify_fd is closed every iteration.
-For normal file descriptors, "close(fd) succeeds" does not mean related kernel
-resources have been released immediately(processes may still reference fd).
-
-Then inotify_fd  also has similar behavior? Even close(inotify_fd) returns,
-that does not mean the number of current inotify instances have decreased one
-immediately, then later inotify_init() calls may exceeds the /proc/sys/fs/inotify/max_user_instances and
-return EMFILE error?  I had added some debug code in kernel, it seems that close(inotify_fd)
-does not make sure current inotify instances decreases one immediately.
-
-So I'd like to know this is expected behavior for inotify? If yes, we can
-echo 400 > /proc/sys/fs/inotify/max_user_instances to avoid EMFILE error.
-If not, this is a kernel bug?
+Thanks. Please reveiw this new patch.
 
 
-Regards,
-Xiaoguang Wang
+From 8b7c289ac51ec2e169bbe0147d4c1c3d1f08aa0b Mon Sep 17 00:00:00 2001
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Tue, 12 Apr 2016 11:12:28 +0800
+Subject: [PATCH] waitpid/waitpid03: break test if fork failed
 
+If continue after the fork failure, a lot of processes may be killed by
+the kill() on line 125.
 
+Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+---
+ testcases/kernel/syscalls/waitpid/waitpid03.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid03.c b/testcases/kernel/syscalls/waitpid/waitpid03.c
+index 2599a92..4b3f7a7 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid03.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid03.c
+@@ -64,6 +64,8 @@ int TST_TOTAL = 1;
+ 
+ #define	MAXUPRC	25
+ 
++static int ikids;
++static int pid[MAXUPRC];
+ static int condition_number;
+ 
+ #ifdef UCLINUX
+@@ -75,7 +77,7 @@ int main(int argc, char **argv)
+ {
+ 	int lc;
+ 
+-	int status, pid[25], ret;
++	int status, ret;
+ 
+ 	tst_parse_opts(argc, argv, NULL, NULL);
+ #ifdef UCLINUX
+@@ -87,7 +89,6 @@ int main(int argc, char **argv)
+ 	/* check for looping state if -i option is given */
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		/* reset tst_count in case we are looping */
+-		int ikids = 0;
+ 		tst_count = 0;
+ 
+ 		/*
+@@ -106,7 +107,9 @@ int main(int argc, char **argv)
+ 				if (DEBUG)
+ 					tst_resm(TINFO, "child # %d", ikids);
+ 			} else if (pid[ikids] == -1) {
+-				tst_resm(TFAIL, "cannot open fork #%d", ikids);
++				tst_brkm(TBROK|TERRNO, cleanup, "cannot open "
++					"fork #%d", ikids);
++
+ 			} else {
+ #ifdef UCLINUX
+ 				if (self_exec(argv[0], "d", ikids) < 0) {
+@@ -125,6 +128,7 @@ int main(int argc, char **argv)
+ 			kill(pid[ikids], 15);
+ 		}
+ 
++		ikids = 0;
+ 		condition_number = 1;
+ 
+ 		/* Wait on one specific child */
+@@ -185,4 +189,6 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
++	while (ikids-- > 1)
++		kill(pid[ikids], 9);
+ }
+-- 
+1.9.3
 
