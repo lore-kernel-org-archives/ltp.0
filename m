@@ -1,122 +1,212 @@
 From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Thu, 14 Apr 2016 11:09:28 +0800
-Subject: [LTP] [PATCH] waitpid/waitpid03: break test if fork failed
-In-Reply-To: <20160413125535.GF10941@rei.lan>
-References: <20160412132256.GA7441@localhost.localdomain>
- <20160412155230.GB2917@rei.suse.cz>
- <20160413065818.GF17476@localhost.localdomain>
- <20160413125535.GF10941@rei.lan>
-Message-ID: <20160414030928.GG17476@localhost.localdomain>
+Date: Thu, 14 Apr 2016 13:39:23 +0800
+Subject: [LTP] [PATCH] waitpid/waitpid10: break test if fork failed
+In-Reply-To: <20160413123625.GD10941@rei.lan>
+References: <20160413071111.GA26897@localhost.localdomain>
+ <20160413123625.GD10941@rei.lan>
+Message-ID: <20160414053923.GH17476@localhost.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Apr 13, 2016 at 02:55:35PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
-> > ---
-> >  testcases/kernel/syscalls/waitpid/waitpid03.c | 11 ++++++++++-
-> >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/testcases/kernel/syscalls/waitpid/waitpid03.c b/testcases/kernel/syscalls/waitpid/waitpid03.c
-> > index 2599a92..7e9d45c 100644
-> > --- a/testcases/kernel/syscalls/waitpid/waitpid03.c
-> > +++ b/testcases/kernel/syscalls/waitpid/waitpid03.c
-> > @@ -106,7 +106,16 @@ int main(int argc, char **argv)
-> >  				if (DEBUG)
-> >  					tst_resm(TINFO, "child # %d", ikids);
-> >  			} else if (pid[ikids] == -1) {
-> > -				tst_resm(TFAIL, "cannot open fork #%d", ikids);
-> > +				int i;
-> > +
-> > +				tst_resm(TBROK|TERRNO, "cannot open fork #%d",
-> > +					 ikids);
-> > +
-> > +				for (i = 1; i < ikids; i++)
-> > +					kill(pid[i], 9);
-> > +
+On Wed, Apr 13, 2016 at 02:36:25PM +0200, Cyril Hrubis wrote:
+> > +static void kill_children();
+>                            ^
+> 			   missing void
+> >  static int fail;
+> > +static int fork_kid_pid[MAXKIDS] = { 0 };
+>                                         ^
+> 					global variables are
+> 					initialized to 0 automatically,
+> 					no need for explicit
+> 					initialization.
+> 
+> >  #ifdef UCLINUX
+> >  static char *argv0;
+> > @@ -92,7 +94,7 @@ int main(int ac, char **av)
+> >  {
+> >  	int kid_count, ret_val, status, nkids;
+> >  	int i, j, k, found;
+> > -	int fork_kid_pid[MAXKIDS], wait_kid_pid[MAXKIDS];
+> > +	int wait_kid_pid[MAXKIDS];
+> >  	int runtime;		/* time(sec) to run this process */
+> >  
+> >  	int lc;
+> > @@ -178,7 +180,8 @@ int main(int ac, char **av)
+> >  #endif
+> >  			}
+> >  			if (ret_val < 0) {
+> > -				tst_resm(TFAIL, "Fork kid 0 failed. errno = "
+> > +				tst_brkm(TBROK|TERRNO, cleanup,
+> > +					 "Fork kid 0 failed. errno = "
+> >  					 "%d", errno);
+> >  
+> >  			}
+> > @@ -196,8 +199,10 @@ int main(int ac, char **av)
+> >  #endif
+> >  			}
+> >  			if (ret_val < 0) {
+> > -				tst_resm(TFAIL, "Fork kid 1 failed. errno = "
+> > -					 "%d", errno);
+> > +				tst_resm(TBROK|TERRNO, "Fork kid 1 failed");
+> > +				kill_children();
 > > +				cleanup();
 > > +				tst_exit();
 > 
-> This one is ugly. Why don't we kill the children in the test cleanup()
-> here as well. This should be easy, just store the number of allready
-> forked kids in a global variable and reset it to zero right after they
-> were killed in the main loop.
+> This is too ugly. What about killing the children in the test cleanup()
+> instead and zeroing the array that stores the pids at end of the test
+> iteration. We have to zero it anyway so that this works correctly when
+> test is executed with -i or -I. Then we could simply do
+> tst_brkm(TBROK|TERRNO, cleanup, "fork() failed"); here instead.
 > 
-Thanks. Please reveiw this new patch.
 
+Thanks. Please review this new patch.
 
-From 8b7c289ac51ec2e169bbe0147d4c1c3d1f08aa0b Mon Sep 17 00:00:00 2001
+From 2614c4011a194cbb1c48461a5691905c072a08b8 Mon Sep 17 00:00:00 2001
 From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Tue, 12 Apr 2016 11:12:28 +0800
-Subject: [PATCH] waitpid/waitpid03: break test if fork failed
+Date: Wed, 13 Apr 2016 11:25:20 +0800
+Subject: [PATCH] waitpid/waitpid10: break test if fork failed
 
-If continue after the fork failure, a lot of processes may be killed by
-the kill() on line 125.
+Or a lot of processes will be killed when -1 passed as pid to kill()
 
 Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
 ---
- testcases/kernel/syscalls/waitpid/waitpid03.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ testcases/kernel/syscalls/waitpid/waitpid10.c | 43 ++++++++++++++++-----------
+ 1 file changed, 26 insertions(+), 17 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/waitpid/waitpid03.c b/testcases/kernel/syscalls/waitpid/waitpid03.c
-index 2599a92..4b3f7a7 100644
---- a/testcases/kernel/syscalls/waitpid/waitpid03.c
-+++ b/testcases/kernel/syscalls/waitpid/waitpid03.c
-@@ -64,6 +64,8 @@ int TST_TOTAL = 1;
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid10.c b/testcases/kernel/syscalls/waitpid/waitpid10.c
+index 6378ab9..2725aaf 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid10.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid10.c
+@@ -83,6 +83,7 @@ static void do_sleep(void);
+ static void do_mkdir(void);
  
- #define	MAXUPRC	25
- 
-+static int ikids;
-+static int pid[MAXUPRC];
- static int condition_number;
+ static int fail;
++static int fork_kid_pid[MAXKIDS];
  
  #ifdef UCLINUX
-@@ -75,7 +77,7 @@ int main(int argc, char **argv)
+ static char *argv0;
+@@ -92,7 +93,7 @@ int main(int ac, char **av)
  {
+ 	int kid_count, ret_val, status, nkids;
+ 	int i, j, k, found;
+-	int fork_kid_pid[MAXKIDS], wait_kid_pid[MAXKIDS];
++	int wait_kid_pid[MAXKIDS];
+ 	int runtime;		/* time(sec) to run this process */
+ 
  	int lc;
+@@ -178,8 +179,8 @@ int main(int ac, char **av)
+ #endif
+ 			}
+ 			if (ret_val < 0) {
+-				tst_resm(TFAIL, "Fork kid 0 failed. errno = "
+-					 "%d", errno);
++				tst_brkm(TBROK|TERRNO, cleanup,
++					 "Fork kid 0 failed.");
  
--	int status, pid[25], ret;
-+	int status, ret;
+ 			}
  
- 	tst_parse_opts(argc, argv, NULL, NULL);
- #ifdef UCLINUX
-@@ -87,7 +89,6 @@ int main(int argc, char **argv)
- 	/* check for looping state if -i option is given */
- 	for (lc = 0; TEST_LOOPING(lc); lc++) {
- 		/* reset tst_count in case we are looping */
--		int ikids = 0;
- 		tst_count = 0;
+@@ -196,8 +197,8 @@ int main(int ac, char **av)
+ #endif
+ 			}
+ 			if (ret_val < 0) {
+-				tst_resm(TFAIL, "Fork kid 1 failed. errno = "
+-					 "%d", errno);
++				tst_brkm(TBROK|TERRNO, cleanup,
++					 "Fork kid 1 failed.");
  
- 		/*
-@@ -106,7 +107,9 @@ int main(int argc, char **argv)
- 				if (DEBUG)
- 					tst_resm(TINFO, "child # %d", ikids);
- 			} else if (pid[ikids] == -1) {
--				tst_resm(TFAIL, "cannot open fork #%d", ikids);
-+				tst_brkm(TBROK|TERRNO, cleanup, "cannot open "
-+					"fork #%d", ikids);
+ 			}
+ 
+@@ -214,8 +215,8 @@ int main(int ac, char **av)
+ #endif
+ 			}
+ 			if (ret_val < 0) {
+-				tst_resm(TFAIL, "Fork kid 2 failed. errno = "
+-					 "%d", errno);
++				tst_brkm(TBROK|TERRNO, cleanup,
++					 "Fork kid 2 failed.");
+ 
+ 			}
+ 
+@@ -232,8 +233,8 @@ int main(int ac, char **av)
+ #endif
+ 			}
+ 			if (ret_val < 0) {
+-				tst_resm(TFAIL, "Fork kid 3 failed. errno = "
+-					 "%d", errno);
++				tst_brkm(TBROK|TERRNO, cleanup,
++					 "Fork kid 3 failed.");
+ 
+ 			}
+ 
+@@ -250,8 +251,8 @@ int main(int ac, char **av)
+ #endif
+ 			}
+ 			if (ret_val < 0) {
+-				tst_resm(TFAIL, "Fork kid 4 failed. errno = "
+-					 "%d", errno);
++				tst_brkm(TBROK|TERRNO, cleanup,
++					 "Fork kid 4 failed.");
+ 
+ 			}
+ 
+@@ -268,8 +269,8 @@ int main(int ac, char **av)
+ #endif
+ 			}
+ 			if (ret_val < 0) {
+-				tst_resm(TFAIL, "Fork kid 5 failed. errno = "
+-					 "%d", errno);
++				tst_brkm(TBROK|TERRNO, cleanup,
++					 "Fork kid 5 failed.");
+ 
+ 			}
+ 
+@@ -286,8 +287,8 @@ int main(int ac, char **av)
+ #endif
+ 			}
+ 			if (ret_val < 0) {
+-				tst_resm(TFAIL, "Fork kid 6 failed. errno = "
+-					 "%d", errno);
++				tst_brkm(TBROK|TERRNO, cleanup,
++					 "Fork kid 6 failed.");
+ 
+ 			}
+ 
+@@ -304,8 +305,8 @@ int main(int ac, char **av)
+ #endif
+ 			}
+ 			if (ret_val < 0) {
+-				tst_resm(TFAIL, "Fork kid 7 failed. errno = "
+-					 "%d", errno);
++				tst_brkm(TBROK|TERRNO, cleanup,
++					 "Fork kid 7 failed.");
+ 
+ 			}
+ 
+@@ -330,6 +331,8 @@ int main(int ac, char **av)
+ 				}
+ 			}
+ 
++			memset(fork_kid_pid, 0, sizeof(fork_kid_pid));
 +
- 			} else {
- #ifdef UCLINUX
- 				if (self_exec(argv[0], "d", ikids) < 0) {
-@@ -125,6 +128,7 @@ int main(int argc, char **argv)
- 			kill(pid[ikids], 15);
- 		}
- 
-+		ikids = 0;
- 		condition_number = 1;
- 
- 		/* Wait on one specific child */
-@@ -185,4 +189,6 @@ static void setup(void)
+ 			/* Wait till all kids have terminated. */
+ 			kid_count = 0;
+ 			errno = 0;
+@@ -401,6 +404,12 @@ static void setup(void)
  
  static void cleanup(void)
  {
-+	while (ikids-- > 1)
-+		kill(pid[ikids], 9);
++	int i;
++
++	for (i = 0; i < MAXKIDS; i++) {
++		if (fork_kid_pid[i] > 0)
++			kill(fork_kid_pid[i], 9);
++	}
  }
+ 
+ static void alrmhandlr(void)
 -- 
 1.9.3
 
