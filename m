@@ -1,72 +1,222 @@
-From: Jan Kara <jack@suse.cz>
-Date: Thu, 14 Apr 2016 10:46:11 +0200
-Subject: [LTP] [PATCH v2] inotify: Add test for inotify mark destruction
- race
-In-Reply-To: <570F5161.7060806@cn.fujitsu.com>
-References: <1439215460-15670-1-git-send-email-jack@suse.com>
- <20150811141432.GA21861@rei.suse.de>
- <20150811142035.GD2659@quack.suse.cz>
- <20150825092925.GA19905@rei.suse.de>
- <20150825103803.GA15280@quack.suse.cz>
- <20150825112920.GB20082@rei.suse.de>
- <570EFB43.3020704@cn.fujitsu.com>
- <20160414081516.GA2753@quack2.suse.cz>
- <570F5161.7060806@cn.fujitsu.com>
-Message-ID: <20160414084611.GC2753@quack2.suse.cz>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 14 Apr 2016 17:22:06 +0800
+Subject: [LTP] [PATCH v3 2/2] request_key/request_key02.c: add new testcase
+In-Reply-To: <1460625726-3659-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20160413160302.GG11529@rei.lan>
+ <1460625726-3659-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1460625726-3659-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu 14-04-16 16:14:25, Xiaoguang Wang wrote:
-> On 04/14/2016 04:15 PM, Jan Kara wrote:
-> > Hello,
-> > 
-> > On Thu 14-04-16 10:06:59, Xiaoguang Wang wrote:
-> >> On 08/25/2015 07:29 PM, Cyril Hrubis wrote:
-> >>> Hi!
-> >>>> Interesting, probably SRCU is much slower with this older kernel. From my
-> >>>> experiments 100 iterations isn't quite reliable to trigger the oops in my
-> >>>> testing instance. But 400 seem to be good enough.
-> >>>
-> >>> I've changed the nuber of iterations to 400 and pushed it to git,
-> >>> thanks.
-> >>>
-> >>
-> >> In upstream kernel v4.6-rc3-17-g1c74a7f and RHEL7.2GA, I sometimes get such
-> >> error:
-> >> ---------------------------------------------------------------------------
-> >> inotify06    1  TBROK  :  inotify06.c:104: inotify_init failed: errno=EMFILE(24): Too many open files
-> >> inotify06    2  TBROK  :  inotify06.c:104: Remaining cases broken
-> >> ---------------------------------------------------------------------------
-> >> But look at the inotify06.c, inotify_fd is closed every iteration.
-> >> For normal file descriptors, "close(fd) succeeds" does not mean related kernel
-> >> resources have been released immediately(processes may still reference fd).
-> >>
-> >> Then inotify_fd  also has similar behavior? Even close(inotify_fd) returns,
-> >> that does not mean the number of current inotify instances have decreased one
-> >> immediately, then later inotify_init() calls may exceeds the /proc/sys/fs/inotify/max_user_instances and
-> >> return EMFILE error?  I had added some debug code in kernel, it seems that close(inotify_fd)
-> >> does not make sure current inotify instances decreases one immediately.
-> >>
-> >> So I'd like to know this is expected behavior for inotify? If yes, we can
-> >> echo 400 > /proc/sys/fs/inotify/max_user_instances to avoid EMFILE error.
-> >> If not, this is a kernel bug?
-> > 
-> > Interesting, I've never seen this. Number of inotify instances is maintaned
-> > immediately - i.e., it is dropped as soon as the last descriptor pointing to
-> > the instance is closed. So I'm not sure how what you describe can happen.
-> > How do you reproduce the issue?
-> I just call ./inotify06 directly, and about 50% chance, it'll fail(return EMFILE).
+1) request_key(2) fails if no matching key was found and
+   set errno to ENOKEY.
+2) request_key(2) fails if a revoked key was found and
+   set errno to EKEYREVOKED.
+3) request_key(2) fails if an expired key was found and
+   set errno to EKEYEXPIRED.
 
-Hum, I've just tried 4.6-rc1 which I have running on one test machine and
-it survives hundreds of inotify06 calls in a loop without issues. I have
-max_user_instances set to 128 on that machine... So I suspect the problem
-is somewhere in your exact userspace setup. Aren't there other processes
-using inotify heavily for that user?
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ runtest/ltplite                                    |   1 +
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/syscalls/.gitignore               |   1 +
+ .../kernel/syscalls/request_key/request_key02.c    | 146 +++++++++++++++++++++
+ 4 files changed, 149 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/request_key/request_key02.c
 
-								Honza
+diff --git a/runtest/ltplite b/runtest/ltplite
+index ebd5e77..8b8121d 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -665,6 +665,7 @@ rename13 rename13
+ rename14 rename14
+ 
+ request_key01 request_key01
++request_key02 request_key02
+ 
+ rmdir01 rmdir01
+ rmdir02 rmdir02
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 8c87161..edf70eb 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -896,6 +896,7 @@ renameat201 renameat201
+ renameat202 renameat202 -i 10
+ 
+ request_key01 request_key01
++request_key02 request_key02
+ 
+ rmdir01 rmdir01
+ rmdir02 rmdir02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 21130d2..63fc261 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -743,6 +743,7 @@
+ /renameat2/renameat201
+ /renameat2/renameat202
+ /request_key/request_key01
++/request_key/request_key02
+ /rmdir/rmdir01
+ /rmdir/rmdir02
+ /rmdir/rmdir03
+diff --git a/testcases/kernel/syscalls/request_key/request_key02.c b/testcases/kernel/syscalls/request_key/request_key02.c
+new file mode 100644
+index 0000000..94cad28
+--- /dev/null
++++ b/testcases/kernel/syscalls/request_key/request_key02.c
+@@ -0,0 +1,146 @@
++/*
++* Copyright (c) 2016 Fujitsu Ltd.
++* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++*
++* This program is free software; you can redistribute it and/or modify it
++* under the terms of version 2 of the GNU General Public License as
++* published by the Free Software Foundation.
++*
++* This program is distributed in the hope that it would be useful, but
++* WITHOUT ANY WARRANTY; without even the implied warranty of
++* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++*
++* You should have received a copy of the GNU General Public License
++* alone with this program.
++*/
++
++/*
++* Test Name: request_key02
++*
++* Description:
++* 1) request_key(2) fails if no matching key was found.
++* 2) request_key(2) fails if A revoked key was found.
++* 3) request_key(2) fails if An expired key was found.
++*
++* Expected Result:
++* 1) request_key(2) should return -1 and set errno to ENOKEY.
++* 2) request_key(2) should return -1 and set errno to EKEYREVOKED.
++* 3) request_key(2) should return -1 and set errno to EKEYEXPIRED.
++*
++*/
++
++#include "config.h"
++#include <errno.h>
++#include <sys/types.h>
++#ifdef HAVE_KEYUTILS_H
++#include <keyutils.h>
++#endif
++#include "test.h"
++
++char *TCID = "request_key02";
++
++#ifdef HAVE_KEYUTILS_H
++
++static int res1;
++static int res2;
++static int res3;
++
++static struct test_case {
++	const char *des;
++	int exp_err;
++	int *id;
++} tc[] = {
++	{"ltp1", ENOKEY, &res1},
++	{"ltp2", EKEYREVOKED, &res2},
++	{"ltp3", EKEYEXPIRED, &res3}
++};
++
++static void verify_request_key(struct test_case *);
++static void setup(void);
++static int init_key(char *, int);
++
++int TST_TOTAL = ARRAY_SIZE(tc);
++
++int main(int ac, char **av)
++{
++	int lc;
++	int i;
++
++	tst_parse_opts(ac, av, NULL, NULL);
++
++	setup();
++
++	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		tst_count = 0;
++
++		for (i = 0; i < TST_TOTAL; i++)
++			verify_request_key(&tc[i]);
++	}
++
++	tst_exit();
++}
++
++static void verify_request_key(struct test_case *tc)
++{
++	TEST(request_key("keyring", tc->des, NULL, *tc->id));
++	if (TEST_RETURN != -1) {
++		tst_resm(TFAIL, "request_key() succeed unexpectly");
++		return;
++	}
++
++	if (TEST_ERRNO == tc->exp_err) {
++		tst_resm(TPASS | TTERRNO, "request_key() failed expectly");
++		return;
++	}
++
++	tst_resm(TFAIL | TTERRNO, "request_key() failed unexpectly, "
++		 "expected %s", tst_strerrno(tc->exp_err));
++}
++
++static void setup(void)
++{
++	tst_sig(NOFORK, DEF_HANDLER, NULL);
++
++	TEST_PAUSE;
++
++	res1 = KEY_REQKEY_DEFL_DEFAULT;
++
++	res2 = init_key("ltp2", KEYCTL_REVOKE);
++
++	res3 = init_key("ltp3", KEYCTL_SET_TIMEOUT);
++}
++
++static int init_key(char *name, int cmd)
++{
++	int n;
++	int sec = 1;
++
++	n = add_key("keyring", name, NULL, 0, KEY_SPEC_THREAD_KEYRING);
++	if (n == -1)
++		tst_brkm(TBROK | TERRNO, NULL, "add_key() failed");
++
++	if (cmd == KEYCTL_REVOKE) {
++		if (keyctl(cmd, n) == -1) {
++			tst_brkm(TBROK | TERRNO, NULL,
++				 "failed to revoke a key");
++		}
++	}
++
++	if (cmd == KEYCTL_SET_TIMEOUT) {
++		if (keyctl(cmd, n, sec) == -1) {
++			tst_brkm(TBROK | TERRNO, NULL,
++				 "failed to set timeout for a key");
++		}
++
++		sleep(sec + 1);
++	}
++
++	return n;
++}
++
++#else
++int main(void)
++{
++	tst_brkm(TCONF, NULL, "keyutils.h was missing at compilation");
++}
++#endif /* HAVE_LINUX_KEYCTL_H */
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+1.8.3.1
+
+
+
