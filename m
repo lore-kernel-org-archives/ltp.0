@@ -1,10 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 14 Apr 2016 16:43:46 +0200
-Subject: [LTP] [PATCH v2 4/4] tst_atomic: add test for tst_atomic_inc
-In-Reply-To: <ef05a76cdd26cf838e25a397a8fc8d4e02c74f4c.1460622188.git.jstancek@redhat.com>
-References: <7260589f891c8c60ada465b5086215c4eba8d346.1460622188.git.jstancek@redhat.com>
- <ef05a76cdd26cf838e25a397a8fc8d4e02c74f4c.1460622188.git.jstancek@redhat.com>
-Message-ID: <20160414144346.GE22998@rei.suse.cz>
+Date: Thu, 14 Apr 2016 21:37:18 +0200
+Subject: [LTP] [PATCH v3 2/2] request_key/request_key02.c: add new
+	testcase
+In-Reply-To: <1460625726-3659-2-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20160413160302.GG11529@rei.lan>
+ <1460625726-3659-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1460625726-3659-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160414193717.GA24160@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +14,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Acked.
+I've rewrote the tests for the new test library and pushed, thanks.
 
 -- 
 Cyril Hrubis
