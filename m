@@ -1,45 +1,103 @@
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Thu, 14 Apr 2016 16:46:33 +0800
-Subject: [LTP] [PATCH] clone/clone07: only kill child if clone() succeeded
-Message-ID: <20160414084633.GA16717@localhost.localdomain>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 14 Apr 2016 10:59:21 +0200
+Subject: [LTP] [PATCH v2 1/4] tst_atomic: make tst_atomic_inc take a signed
+	integer
+Message-ID: <7260589f891c8c60ada465b5086215c4eba8d346.1460622188.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Or when -1 passed as pid to kill(), a lot of processes will be killed.
+This is a preparation for upcoming patches, which add atomic_add_return(),
+based on kernel function of same name. Kernel's atomic_t is int based,
+so let's match that.
 
-Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/kernel/syscalls/clone/clone07.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ doc/test-writing-guidelines.txt |  2 +-
+ include/tst_atomic.h            |  2 +-
+ lib/newlib_tests/test08.c       |  2 +-
+ lib/tst_test.c                  | 16 ++++++++--------
+ 4 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/clone/clone07.c b/testcases/kernel/syscalls/clone/clone07.c
-index 8c723de..ed59670 100644
---- a/testcases/kernel/syscalls/clone/clone07.c
-+++ b/testcases/kernel/syscalls/clone/clone07.c
-@@ -64,6 +64,10 @@ int main(int ac, char **av)
- 
- 		child_pid = ltp_clone(SIGCHLD, do_child, NULL,
- 				      CHILD_STACK_SIZE, child_stack);
-+
-+		if (child_pid < 0)
-+			tst_brkm(TBROK | TERRNO, cleanup, "clone failed");
-+
- 		if ((wait(&status)) == -1)
- 			tst_brkm(TBROK | TERRNO, cleanup,
- 				 "wait failed, status: %d", status);
-@@ -107,7 +111,8 @@ static void setup(void)
+Changes in v2:
+- fixed tst_atomic_inc return type
+- fixed tst_exit printf flags
+
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index d0b14084c90b..c0ef33afd5bb 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -780,7 +780,7 @@ the user supplied cleanup to the test library.
  
  static void cleanup(void)
  {
--	kill(child_pid, SIGKILL);
-+	if (child_pid > 0)
-+		kill(child_pid, SIGKILL);
- }
+-	static unsigned int flag;
++	static int flag;
  
- static int do_child(void)
+ 	if (tst_atomic_inc(&flag) != 1)
+ 		pthread_exit(NULL);
+diff --git a/include/tst_atomic.h b/include/tst_atomic.h
+index 75c713d38d2a..2ec9f91318ea 100644
+--- a/include/tst_atomic.h
++++ b/include/tst_atomic.h
+@@ -18,7 +18,7 @@
+ #ifndef TST_ATOMIC_H__
+ #define TST_ATOMIC_H__
+ 
+-static inline unsigned int tst_atomic_inc(unsigned int *v)
++static inline int tst_atomic_inc(int *v)
+ {
+ 	return __sync_add_and_fetch(v, 1);
+ }
+diff --git a/lib/newlib_tests/test08.c b/lib/newlib_tests/test08.c
+index 8fefc182650d..0a2023119a71 100644
+--- a/lib/newlib_tests/test08.c
++++ b/lib/newlib_tests/test08.c
+@@ -35,7 +35,7 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	static unsigned int flag;
++	static int flag;
+ 
+ 	/* Avoid subsequent threads to enter the cleanup */
+ 	if (tst_atomic_inc(&flag) != 1)
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 37265fe50951..b8ec246414d1 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -43,10 +43,10 @@ static float duration = -1;
+ static pid_t main_pid;
+ 
+ struct results {
+-	unsigned int passed;
+-	unsigned int skipped;
+-	unsigned int failed;
+-	unsigned int warnings;
++	int passed;
++	int skipped;
++	int failed;
++	int warnings;
+ };
+ 
+ static struct results *results;
+@@ -442,10 +442,10 @@ static void do_exit(void)
+ 	int ret = 0;
+ 
+ 	printf("\nSummary:\n");
+-	printf("passed   %u\n", results->passed);
+-	printf("failed   %u\n", results->failed);
+-	printf("skipped  %u\n", results->skipped);
+-	printf("warnings %u\n", results->warnings);
++	printf("passed   %d\n", results->passed);
++	printf("failed   %d\n", results->failed);
++	printf("skipped  %d\n", results->skipped);
++	printf("warnings %d\n", results->warnings);
+ 
+ 	if (results->failed)
+ 		ret |= TFAIL;
 -- 
-1.9.3
+1.8.3.1
 
