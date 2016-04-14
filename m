@@ -1,109 +1,68 @@
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Thu, 14 Apr 2016 16:06:55 +0800
-Subject: [LTP] [PATCH] fcntl/fcntl17: break test if fork failed
-Message-ID: <20160414080655.GA10922@localhost.localdomain>
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Thu, 14 Apr 2016 16:14:25 +0800
+Subject: [LTP] [PATCH v2] inotify: Add test for inotify mark destruction
+ race
+In-Reply-To: <20160414081516.GA2753@quack2.suse.cz>
+References: <1439215460-15670-1-git-send-email-jack@suse.com>
+ <20150811141432.GA21861@rei.suse.de> <20150811142035.GD2659@quack.suse.cz>
+ <20150825092925.GA19905@rei.suse.de> <20150825103803.GA15280@quack.suse.cz>
+ <20150825112920.GB20082@rei.suse.de> <570EFB43.3020704@cn.fujitsu.com>
+ <20160414081516.GA2753@quack2.suse.cz>
+Message-ID: <570F5161.7060806@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Or the kill() in catch_alarm() will use -1 as pid and kill a lot of
-processes.
+hello,
 
-Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
----
- testcases/kernel/syscalls/fcntl/fcntl17.c | 42 ++++++++++++++-----------------
- 1 file changed, 19 insertions(+), 23 deletions(-)
+On 04/14/2016 04:15 PM, Jan Kara wrote:
+> Hello,
+> 
+> On Thu 14-04-16 10:06:59, Xiaoguang Wang wrote:
+>> On 08/25/2015 07:29 PM, Cyril Hrubis wrote:
+>>> Hi!
+>>>> Interesting, probably SRCU is much slower with this older kernel. From my
+>>>> experiments 100 iterations isn't quite reliable to trigger the oops in my
+>>>> testing instance. But 400 seem to be good enough.
+>>>
+>>> I've changed the nuber of iterations to 400 and pushed it to git,
+>>> thanks.
+>>>
+>>
+>> In upstream kernel v4.6-rc3-17-g1c74a7f and RHEL7.2GA, I sometimes get such
+>> error:
+>> ---------------------------------------------------------------------------
+>> inotify06    1  TBROK  :  inotify06.c:104: inotify_init failed: errno=EMFILE(24): Too many open files
+>> inotify06    2  TBROK  :  inotify06.c:104: Remaining cases broken
+>> ---------------------------------------------------------------------------
+>> But look at the inotify06.c, inotify_fd is closed every iteration.
+>> For normal file descriptors, "close(fd) succeeds" does not mean related kernel
+>> resources have been released immediately(processes may still reference fd).
+>>
+>> Then inotify_fd  also has similar behavior? Even close(inotify_fd) returns,
+>> that does not mean the number of current inotify instances have decreased one
+>> immediately, then later inotify_init() calls may exceeds the /proc/sys/fs/inotify/max_user_instances and
+>> return EMFILE error?  I had added some debug code in kernel, it seems that close(inotify_fd)
+>> does not make sure current inotify instances decreases one immediately.
+>>
+>> So I'd like to know this is expected behavior for inotify? If yes, we can
+>> echo 400 > /proc/sys/fs/inotify/max_user_instances to avoid EMFILE error.
+>> If not, this is a kernel bug?
+> 
+> Interesting, I've never seen this. Number of inotify instances is maintaned
+> immediately - i.e., it is dropped as soon as the last descriptor pointing to
+> the instance is closed. So I'm not sure how what you describe can happen.
+> How do you reproduce the issue?
+I just call ./inotify06 directly, and about 50% chance, it'll fail(return EMFILE).
 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl17.c b/testcases/kernel/syscalls/fcntl/fcntl17.c
-index 5b03e39..6211ce2 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl17.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl17.c
-@@ -160,6 +160,15 @@ int setup(void)
- 
- void cleanup(void)
- {
-+	if (child_pid1 > 0)
-+		kill(child_pid1, 9);
-+
-+	if (child_pid2 > 0)
-+		kill(child_pid2, 9);
-+
-+	if (child_pid3 > 0)
-+		kill(child_pid3, 9);
-+
- 	close(file_fd);
- 	tst_rmdir();
- 
-@@ -466,10 +475,8 @@ int main(int ac, char **av)
- #else
- 			do_child1();
- #endif
--		} else if (child_pid1 < 0) {
--			perror("Fork failed: child 1");
--			cleanup();
--		}
-+		} else if (child_pid1 < 0)
-+			tst_brkm(TBROK|TERRNO, cleanup, "Fork failed: child 1");
- 
- 		/* parent */
- 
-@@ -487,12 +494,7 @@ int main(int ac, char **av)
- 			do_child2();
- #endif
- 		} else if (child_pid2 < 0) {
--			perror("Fork failed: child 2");
--			if ((kill(child_pid1, SIGKILL)) < 0) {
--				tst_resm(TFAIL, "Attempt to signal child "
--					 "1 failed");
--			}
--			cleanup();
-+			tst_brkm(TBROK|TERRNO, cleanup, "Fork failed: child 2");
- 		}
- 
- 		/* parent */
-@@ -512,16 +514,7 @@ int main(int ac, char **av)
- #endif
- 			do_child3();
- 		} else if (child_pid3 < 0) {
--			perror("Fork failed: child 3");
--			if ((kill(child_pid1, SIGKILL)) < 0) {
--				tst_resm(TFAIL, "Attempt to signal child "
--					 "1 failed");
--			}
--			if ((kill(child_pid2, SIGKILL)) < 0) {
--				tst_resm(TFAIL, "Attempt to signal child 2 "
--					 "failed");
--			}
--			cleanup();
-+			tst_brkm(TBROK|TERRNO, cleanup, "Fork failed: child 3");
- 		}
- 		/* parent */
- 
-@@ -616,6 +609,12 @@ int main(int ac, char **av)
- 		do_test(&lock3, child_pid3);
- 
- 		stop_children();
-+		waitpid(child_pid1, &child_stat, 0);
-+		waitpid(child_pid2, &child_stat, 0);
-+		waitpid(child_pid3, &child_stat, 0);
-+		child_pid1 = 0;
-+		child_pid2 = 0;
-+		child_pid3 = 0;
- 		if (fail) {
- 			tst_resm(TINFO, "Block 1 FAILED");
- 		} else {
-@@ -623,9 +622,6 @@ int main(int ac, char **av)
- 		}
- 		tst_resm(TINFO, "Exit block 1");
- 	}
--	waitpid(child_pid1, &child_stat, 0);
--	waitpid(child_pid2, &child_stat, 0);
--	waitpid(child_pid3, &child_stat, 0);
- 	cleanup();
- 	tst_exit();
- }
--- 
-1.9.3
+Regards,
+Xiaoguang Wang
+
+> 
+> 								Honza
+> 
+
+
 
