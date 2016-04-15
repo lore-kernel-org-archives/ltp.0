@@ -1,121 +1,116 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 15 Apr 2016 14:09:15 +0200
-Subject: [LTP] [PATCH v3 3/4] tst_atomic: add atomic_add_return for x86/64,
-	ppc/64 and s390/x
+Date: Fri, 15 Apr 2016 14:09:16 +0200
+Subject: [LTP] [PATCH v3 4/4] tst_atomic: add test for tst_atomic_inc
 In-Reply-To: <9daf43fcf4de400240ca0fea83d0a63d2473a046.1460721164.git.jstancek@redhat.com>
 References: <9daf43fcf4de400240ca0fea83d0a63d2473a046.1460721164.git.jstancek@redhat.com>
-Message-ID: <06b31639b037b98f6b34a25f518a3d8ba6b3550f.1460721164.git.jstancek@redhat.com>
+Message-ID: <c2f270a4a933e89c624b7d5a90d33c5634dca183.1460721164.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-In case __sync_add_and_fetch is not provided by compiler, we
-try to supply our own implementation.
-
-It has been taken from kernel 4.5 sources, by compiling a small
-piece of code (atomic_add_return()) with "gcc -E" and applying
-some formatting to make it more readable/pretty.
+Spawn a lot of threads and run tst_atomic_inc in a loop.
+At the end we expect value to be THREADS * ITERATIONS.
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- include/tst_atomic.h | 78 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 77 insertions(+), 1 deletion(-)
+ lib/newlib_tests/.gitignore |  1 +
+ lib/newlib_tests/Makefile   |  1 +
+ lib/newlib_tests/test09.c   | 61 +++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 63 insertions(+)
+ create mode 100644 lib/newlib_tests/test09.c
 
 Changes in v3:
-- eliminated some preprocessor nesting by using #elif
-- dropped HAVE_ATOMIC_ADD_RETURN define
+- added test09 to .gitignore
 
-diff --git a/include/tst_atomic.h b/include/tst_atomic.h
-index 420c53bdfed5..b2edcadfd4db 100644
---- a/include/tst_atomic.h
-+++ b/include/tst_atomic.h
-@@ -25,7 +25,83 @@ static inline int tst_atomic_add_return(int i, int *v)
- {
- 	return __sync_add_and_fetch(v, i);
- }
--#else
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index 9ea1769f5a0a..e3ec6aa3758d 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -6,3 +6,4 @@ test05
+ test06
+ test07
+ test08
++test09
+diff --git a/lib/newlib_tests/Makefile b/lib/newlib_tests/Makefile
+index 5771712fab10..0e4eeb83b6d4 100644
+--- a/lib/newlib_tests/Makefile
++++ b/lib/newlib_tests/Makefile
+@@ -6,5 +6,6 @@ CFLAGS			+= -W -Wall
+ LDLIBS			+= -lltp
+ 
+ test08: CFLAGS+=-pthread
++test09: CFLAGS+=-pthread
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/lib/newlib_tests/test09.c b/lib/newlib_tests/test09.c
+new file mode 100644
+index 000000000000..0674754f3770
+--- /dev/null
++++ b/lib/newlib_tests/test09.c
+@@ -0,0 +1,61 @@
++/*
++ * Copyright (c) 2016 Linux Test Project
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
 +
-+#elif defined(__i386__) || defined(__x86_64__)
-+static inline int tst_atomic_add_return(int i, int *v)
++/*
++ * Test that tst_atomic_inc works as expected.
++ */
++
++#include <pthread.h>
++#include "tst_test.h"
++
++#define THREADS 64
++#define ITERATIONS 100000
++
++static int atomic;
++
++static void *worker(void *id)
 +{
-+	int __ret = i;
++	int i;
 +
-+	/*
-+	 * taken from arch/x86/include/asm/cmpxchg.h
-+	 * Since we always pass int sized parameter, we can simplify it
-+	 * and cherry-pick only that specific case.
-+	 *
-+	switch (sizeof(*v)) {
-+	case 1:
-+		asm volatile ("lock; xaddb %b0, %1\n"
-+			: "+q" (__ret), "+m" (*v) : : "memory", "cc");
-+		break;
-+	case 2:
-+		asm volatile ("lock; xaddw %w0, %1\n"
-+			: "+r" (__ret), "+m" (*v) : : "memory", "cc");
-+		break;
-+	case 4:
-+		asm volatile ("lock; xaddl %0, %1\n"
-+			: "+r" (__ret), "+m" (*v) : : "memory", "cc");
-+		break;
-+	case 8:
-+		asm volatile ("lock; xaddq %q0, %1\n"
-+			: "+r" (__ret), "+m" (*v) : : "memory", "cc");
-+		break;
-+	default:
-+		__xadd_wrong_size();
++	(void) id;
++	for (i = 0; i < ITERATIONS; i++)
++		tst_atomic_inc(&atomic);
++
++	return NULL;
++}
++
++static void do_test(void)
++{
++	long i;
++	pthread_t threads[THREADS];
++
++	for (i = 0; i < THREADS; i++)
++		pthread_create(threads+i, NULL, worker, (void *)i);
++
++	for (i = 0; i < THREADS; i++) {
++		tst_res(TINFO, "Joining thread %li", i);
++		pthread_join(threads[i], NULL);
 +	}
-+	*/
-+	asm volatile ("lock; xaddl %0, %1\n"
-+		: "+r" (__ret), "+m" (*v) : : "memory", "cc");
 +
-+	return i + __ret;
++	if (atomic == THREADS * ITERATIONS)
++		tst_res(TPASS, "Atomic working as expected");
++	else
++		tst_res(TFAIL, "Atomic does not have expected value");
 +}
 +
-+#elif defined(__powerpc__) || defined(__powerpc64__)
-+static inline int tst_atomic_add_return(int i, int *v)
-+{
-+	int t;
-+
-+	/* taken from arch/powerpc/include/asm/atomic.h */
-+	asm volatile(
-+		"	sync\n"
-+		"1:	lwarx	%0,0,%2		# atomic_add_return\n"
-+		"	add %0,%1,%0\n"
-+		"	stwcx.	%0,0,%2 \n"
-+		"	bne-	1b\n"
-+		"	sync\n"
-+		: "=&r" (t)
-+		: "r" (i), "r" (v)
-+		: "cc", "memory");
-+
-+	return t;
-+}
-+
-+#elif defined(__s390__) || defined(__s390x__)
-+static inline int tst_atomic_add_return(int i, int *v)
-+{
-+	int old_val, new_val;
-+
-+	/* taken from arch/s390/include/asm/atomic.h */
-+	asm volatile(
-+		"	l	%0,%2\n"
-+		"0:	lr	%1,%0\n"
-+		"	ar	%1,%3\n"
-+		"	cs	%0,%1,%2\n"
-+		"	jl	0b"
-+		: "=&d" (old_val), "=&d" (new_val), "+Q" (*v)
-+		: "d" (i)
-+		: "cc", "memory");
-+
-+	return old_val + i;
-+}
-+#else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
- # error Your compiler does not provide __sync_add_and_fetch and LTP\
- 	implementation is missing for your architecture.
- #endif
++static struct tst_test test = {
++	.tid = "test09",
++	.test_all = do_test,
++};
 -- 
 1.8.3.1
 
