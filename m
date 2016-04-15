@@ -1,126 +1,48 @@
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Fri, 15 Apr 2016 16:09:42 +0800
-Subject: [LTP] [PATCH] mtest01/mtest01: break test if fork failed
-Message-ID: <20160415080942.GA26368@localhost.localdomain>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 15 Apr 2016 18:02:48 +0800
+Subject: [LTP] question about running input testcase
+In-Reply-To: <20160413094000.GA10941@rei.lan>
+References: <570DEFC7.4080300@cn.fujitsu.com> <20160413094000.GA10941@rei.lan>
+Message-ID: <5710BC48.9070106@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Please review this patch. Thanks.
+Hi Cyril
+
+to 2016/04/13 17:40, Cyril Hrubis wrote:
+> Hi!
+> I'm afraid that cedric@suse.com no longer works as Cedric was here only
+> for his internship. I can try to ask our kernel developers that he
+> worked on these testcases with though.
+>
+I have runned these test cases in RHEL5.11GA and RHEL6.8Beta.
+When above patch is not applied, input/04 and input/05 failed with the following messages.
+-----------------------------------------------------------------------------------------
+[root@linux6 input]# ./input04
+input04     0  TINFO  :  Found uinput dev at /dev/uinput
+input04     0  TINFO  :  Unexpected ev type=0 code=0 value=0
+input04     1  TFAIL  :  input04.c:65: Data received /dev/inputX
+[root@linux6 input]# ./input05
+input05     0  TINFO  :  Found uinput dev at /dev/uinput
+input05     0  TINFO  :  Unexpected ev type=0 code=0 value=0
+input05     1  TFAIL  :  input05.c:69: Data received in eventX
+
+When above patch is applied, input/04 and input/05 passed with the following messages.
+-----------------------------------------------------------------------------------------
+[root@linux6 input]# ./input04
+input04     0  TINFO  :  Found uinput dev at /dev/uinput
+input04     1  TPASS  :  No data received in /dev/inputX
+[root@linux6 input]# ./input05
+input05     0  TINFO  :  Found uinput dev at /dev/uinput
+input05     1  TPASS  :  No data received in eventX
+
+So, i think the above patch fixes this bug.
+
+Regards,
+Xiao Yang
 
 
-Or a lot of processes will be killed when -1 being passed as pid to
-kill().
-
-Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
----
- testcases/kernel/mem/mtest01/mtest01.c | 35 +++++++++++++++++++++++++---------
- 1 file changed, 26 insertions(+), 9 deletions(-)
-
-diff --git a/testcases/kernel/mem/mtest01/mtest01.c b/testcases/kernel/mem/mtest01/mtest01.c
-index 5fe4adc..61e3db9 100644
---- a/testcases/kernel/mem/mtest01/mtest01.c
-+++ b/testcases/kernel/mem/mtest01/mtest01.c
-@@ -52,6 +52,7 @@ char *TCID = "mtest01";
- int TST_TOTAL = 1;
- static sig_atomic_t pid_count;
- static sig_atomic_t sigchld_count;
-+static pid_t *pid_list;
- 
- static void handler(int signo)
- {
-@@ -60,6 +61,18 @@ static void handler(int signo)
- 	pid_count++;
- }
- 
-+static void cleanup(void)
-+{
-+	int i = 0;
-+
-+	while (pid_list[i] > 0) {
-+		kill(pid_list[i], 9);
-+		i++;
-+	}
-+
-+	free(pid_list);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	int c;
-@@ -73,7 +86,7 @@ int main(int argc, char *argv[])
- 	int chunksize = 1024 * 1024;	/* one meg at a time by default */
- 	struct sysinfo sstats;
- 	int i, pid_cntr;
--	pid_t pid, *pid_list;
-+	pid_t pid;
- 	struct sigaction act;
- 
- 	act.sa_handler = handler;
-@@ -177,15 +190,20 @@ int main(int argc, char *argv[])
- 	i = 0;
- 	pid_cntr = 0;
- 	pid = fork();
--	if (pid != 0)
-+	if (pid < 0)
-+		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
-+	if (pid != 0) {
- 		pid_cntr++;
--	pid_list[i] = pid;
-+		pid_list[i] = pid;
-+	}
- 
- #if defined (_s390_)		/* s390's 31bit addressing requires smaller chunks */
- 	while (pid != 0 && maxbytes > FIVE_HUNDRED_MB) {
- 		i++;
- 		maxbytes -= FIVE_HUNDRED_MB;
- 		pid = fork();
-+		if (pid < 0)
-+			tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
- 		if (pid != 0) {
- 			pid_cntr++;
- 			pid_list[i] = pid;
-@@ -201,6 +219,8 @@ int main(int argc, char *argv[])
- 		i++;
- 		maxbytes -= ONE_GB;
- 		pid = fork();
-+		if (pid < 0)
-+		    tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
- 		if (pid != 0) {
- 			pid_cntr++;
- 			pid_list[i] = pid;
-@@ -216,6 +236,8 @@ int main(int argc, char *argv[])
- 		i++;
- 		maxbytes -= THREE_GB;
- 		pid = fork();
-+		if (pid < 0)
-+			tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
- 		if (pid != 0) {
- 			pid_cntr++;
- 			pid_list[i] = pid;
-@@ -257,7 +279,6 @@ int main(int argc, char *argv[])
- 		while (1)
- 			sleep(1);
- 	} else {
--		i = 0;
- 		sysinfo(&sstats);
- 
- 		if (dowrite) {
-@@ -295,11 +316,7 @@ int main(int argc, char *argv[])
- 				 original_maxbytes / 1024);
- 		}
- 
--		while (pid_list[i] != 0) {
--			kill(pid_list[i], SIGKILL);
--			i++;
--		}
- 	}
--	free(pid_list);
-+	cleanup();
- 	tst_exit();
- }
--- 
-1.9.3
 
