@@ -1,48 +1,61 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 15 Apr 2016 18:02:48 +0800
-Subject: [LTP] question about running input testcase
-In-Reply-To: <20160413094000.GA10941@rei.lan>
-References: <570DEFC7.4080300@cn.fujitsu.com> <20160413094000.GA10941@rei.lan>
-Message-ID: <5710BC48.9070106@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 15 Apr 2016 08:08:44 -0400 (EDT)
+Subject: [LTP] [PATCH v2 3/4] tst_atomic: add atomic_add_return for
+ x86/64, ppc/64 and s390/x
+In-Reply-To: <20160414143622.GC22998@rei.suse.cz>
+References: <7260589f891c8c60ada465b5086215c4eba8d346.1460622188.git.jstancek@redhat.com>
+ <99010bd0c03b38684433361a65ebc345de98b63a.1460622188.git.jstancek@redhat.com>
+ <20160414143622.GC22998@rei.suse.cz>
+Message-ID: <2021746918.1819347.1460722124804.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
 
-to 2016/04/13 17:40, Cyril Hrubis wrote:
+
+
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Thursday, 14 April, 2016 4:36:23 PM
+> Subject: Re: [LTP] [PATCH v2 3/4] tst_atomic: add atomic_add_return for x86/64, ppc/64 and s390/x
+> 
 > Hi!
-> I'm afraid that cedric@suse.com no longer works as Cedric was here only
-> for his internship. I can try to ask our kernel developers that he
-> worked on these testcases with though.
->
-I have runned these test cases in RHEL5.11GA and RHEL6.8Beta.
-When above patch is not applied, input/04 and input/05 failed with the following messages.
------------------------------------------------------------------------------------------
-[root@linux6 input]# ./input04
-input04     0  TINFO  :  Found uinput dev at /dev/uinput
-input04     0  TINFO  :  Unexpected ev type=0 code=0 value=0
-input04     1  TFAIL  :  input04.c:65: Data received /dev/inputX
-[root@linux6 input]# ./input05
-input05     0  TINFO  :  Found uinput dev at /dev/uinput
-input05     0  TINFO  :  Unexpected ev type=0 code=0 value=0
-input05     1  TFAIL  :  input05.c:69: Data received in eventX
+> >  #if HAVE_SYNC_ADD_AND_FETCH == 1
+> > +#define HAVE_ATOMIC_ADD_RETURN 1
+> >  static inline __attribute__((always_inline)) int atomic_add_return(int i,
+> >  int *v)
+> >  {
+> >  	return __sync_add_and_fetch(v, i);
+> >  }
+> > -#else
+> > +
+> > +#else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
+> > +
+> > +#if defined(__i386__) || defined(__x86_64__)
+> > +#define HAVE_ATOMIC_ADD_RETURN 1
+> > +static inline __attribute__((always_inline)) int atomic_add_return(int i,
+> > int *v)
+> > +{
+> 
+> Maybe we can make the ifdefs a bit more readable by indenting them with
+> spaces after the hash.
+> 
+> #else
+> # if defined(__i386__) || defined(__x86_64__)
+> #  define HAVE_ATOMIC_ADD_RETURN 1
+> 
+> ...
+> 
+> # endif
 
-When above patch is applied, input/04 and input/05 passed with the following messages.
------------------------------------------------------------------------------------------
-[root@linux6 input]# ./input04
-input04     0  TINFO  :  Found uinput dev at /dev/uinput
-input04     1  TPASS  :  No data received in /dev/inputX
-[root@linux6 input]# ./input05
-input05     0  TINFO  :  Found uinput dev at /dev/uinput
-input05     1  TPASS  :  No data received in eventX
+I have re-arranged this in v3, so that there is less nesting,
+and also dropped HAVE_ATOMIC_ADD_RETURN.
 
-So, i think the above patch fixes this bug.
-
-Regards,
-Xiao Yang
-
-
+I also made some other small tweaks, changes are described
+in each patch.
 
