@@ -1,48 +1,138 @@
 From: Chunyu Hu <chuhu@redhat.com>
-Date: Mon, 18 Apr 2016 16:04:07 +0800
-Subject: [LTP] [PATCH V2 0/9] tracing: make ftrace tests to be extended
-Message-ID: <1460966656-28328-1-git-send-email-chuhu@redhat.com>
+Date: Mon, 18 Apr 2016 16:04:09 +0800
+Subject: [LTP] [PATCH V2 2/9] tracing/ftrace: add new case for ftrace
+	userstacktrace
+In-Reply-To: <1460966656-28328-2-git-send-email-chuhu@redhat.com>
+References: <1460966656-28328-1-git-send-email-chuhu@redhat.com>
+ <1460966656-28328-2-git-send-email-chuhu@redhat.com>
+Message-ID: <1460966656-28328-3-git-send-email-chuhu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-For the purpose of extending these ftrace cases, We rewrite some of them
-to partition testcase into new structure.
+From: Li Wang <liwang@redhat.com>
 
- - Reorganize the stress tests to ftrace general test, then that woule
-   be easy to introduce new function/regression testcases in the next
-   step.
+This case is the reproducer of ftrace userstacktrace bug.
 
- - Adding two regression testcases as an example, We will roll
-   out some more later.
+BUG: unable to handle kernel paging request at 00000000417683c0
+     IP: [<ffffffff8105c834>] update_curr+0x124/0x1e0
+     PGD 41a796067 PUD 0
+     Thread overran stack, or stack corrupted
+     Oops: 0000 [#1] SMP
+     last sysfs file: /sys/devices/system/cpu/cpu15/cache/index2/shared_cpu_map
 
- - Enhance the ftrace-stress test coverage.
+The bug was fixed by:
+     1dbd195 (tracing: Fix preempt count leak)
 
- - Do some cleanup and bug fix work.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ runtest/tracing                                    |  1 +
+ .../tracing/ftrace_test/ftrace_regression01.sh     | 86 ++++++++++++++++++++++
+ 2 files changed, 87 insertions(+)
+ create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
 
-At last, test PASS all the new testcases on kernel-4.5.0.
-
-Changes from V1:
-1. Use ltp lib api.
-2. Fix bashism issues.
-3. ftrace_regression_test: make the two sub tests as two independent tests.
-4. ftrace_stress: Wait for pid after execing a killing of sub test.
-5. ftrace_stress: Fix tracing_cpumask test for case nr_cpu > 32.
-6. ftrace_stress: Fix set_ftrace_filter test for module filter.
-7. ftrace_stress: Fix small issue for trace_options test.
-
-Chunyu Hu (6):
-  ftrace_stress: skip unsupported tests
-  ftrace_stress: keep the name of testscipt in sync with tracing file
-  testcases/lib: Add tst_random decmical integer generator
-  ftrace_stress: update the trace_options test
-  ftrace_stress: add two new tests
-  ftrace_stress: cleanup and use ltp API
-
-Li Wang (3):
-  tracing: reorganize ftrace-stress tests to general tests
-  tracing/ftrace: add new case for ftrace userstacktrace
-  tracing/ftrace: add a new case for signal_generate
+diff --git a/runtest/tracing b/runtest/tracing
+index ef3a048..fb82515 100644
+--- a/runtest/tracing
++++ b/runtest/tracing
+@@ -1,2 +1,3 @@
+ #DESCRIPTION:Tracing testing
++ftrace_regression01	ftrace_regression01.sh
+ ftrace-stress-test	ftrace_stress_test.sh 90
+diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
+new file mode 100755
+index 0000000..1453f5d
+--- /dev/null
++++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
+@@ -0,0 +1,86 @@
++#! /bin/sh
++
++###########################################################################
++##                                                                       ##
++## Copyright (c) 2015, Red Hat Inc.                                      ##
++##                                                                       ##
++## This program is free software: you can redistribute it and/or modify  ##
++## it under the terms of the GNU General Public License as published by  ##
++## the Free Software Foundation, either version 3 of the License, or     ##
++## (at your option) any later version.                                   ##
++##                                                                       ##
++## This program is distributed in the hope that it will be useful,       ##
++## but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
++## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          ##
++## GNU General Public License for more details.                          ##
++##                                                                       ##
++## You should have received a copy of the GNU General Public License     ##
++## along with this program. If not, see <http://www.gnu.org/licenses/>.  ##
++##                                                                       ##
++## Author: Li Wang <liwang@redhat.com>                                   ##
++##                                                                       ##
++###########################################################################
++##                                                                       ##
++## Summary:  panic while using userstacktrace                            ##
++##                                                                       ##
++## BUG: unable to handle kernel paging request at 00000000417683c0       ##
++##      IP: [<ffffffff8105c834>] update_curr+0x124/0x1e0                 ##
++##      PGD 41a796067 PUD 0                                              ##
++##      Thread overran stack, or stack corrupted                         ##
++##      Oops: 0000 [#1] SMP                                              ##
++##      last sysfs file: ../system/cpu/cpu15/cache/index2/shared_cpu_map ##
++##                                                                       ##
++## The bug was fixed by:                                                 ##
++##      1dbd195 (tracing: Fix preempt count leak)                        ##
++##                                                                       ##
++###########################################################################
++
++export TCID="ftrace_regression01"
++export TST_TOTAL=1
++
++. ftrace_lib.sh
++
++LOOP=10
++
++TSTACK_TRACE_PATH="/proc/sys/kernel/stack_tracer_enabled"
++EXC_PAGE_FAULT_ENABLE="$TRACING_PATH/events/exceptions/page_fault_kernel/enable"
++MM_PAGE_FAULT_ENABLE="$TRACING_PATH/events/kmem/mm_kernel_pagefault/enable"
++
++ftrace_userstacktrace_test()
++{
++	if [ ! -e "$TSTACK_TRACE_PATH" ]; then
++		tst_brkm TCONF ignored "Stack Tracer is not cofigured in This kernel"
++	fi
++
++	for i in $(seq $LOOP); do
++		echo 1 >  $TSTACK_TRACE_PATH
++		echo userstacktrace > $TRACING_PATH/trace_options
++		grep -q "^userstacktrace"  $TRACING_PATH/trace_options
++		if [ $? -ne 0 ]; then
++			tst_brkm TBROK "Failed to set userstacktrace"
++		fi
++
++		if [ -f "$EXC_PAGE_FAULT_ENABLE" ]; then
++			exc_page_fault_enable=`cat $EXC_PAGE_FAULT_ENABLE`
++			echo 1 > $EXC_PAGE_FAULT_ENABLE
++		else
++			mm_page_fault_enable=`cat MM_PAGE_FAULT_ENABLE`
++			echo 1 > $MM_PAGE_FAULT_ENABLE
++		fi
++	done
++
++	if [ -f "$EXC_PAGE_FAULT_ENABLE" ]; then
++		echo "$exc_page_fault_enable" > $EXC_PAGE_FAULT_ENABLE
++	else
++		echo "$mm_page_fault_enable" > $MM_PAGE_FAULT_ENABLE
++	fi
++
++	tst_resm TPASS "Finished running the test"
++}
++
++#--------Test Start--------------
++save_old_setting
++
++ftrace_userstacktrace_test
++
++clean_up
+-- 
+1.8.3.1
 
