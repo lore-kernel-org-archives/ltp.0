@@ -1,68 +1,63 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 19 Apr 2016 20:01:52 +0200
-Subject: [LTP] [PATCH] syscall/fcntl33.c: fix test on FUSE fs
-In-Reply-To: <1461086247-23235-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1461086247-23235-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20160419180151.GE21282@rei.lan>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 20 Apr 2016 15:10:51 +0800
+Subject: [LTP] Question about patch "jbd2: Fix oops in
+	jbd2_journal_remove_journal_head()"
+Message-ID: <57172B7B.2020503@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Even though a child process is waiting for a parent to be in 'S'
-> state before triggering SIGIO, the signal might come earlier than
-> sigtimedwait() being invoked in the parent process. As a result the
-> parent waited for the event that had already happened.
-> 
-> I can only think about that the parent process may be in a sleep state
-> somehow while executing open() syscall on which it might sleep while
-> running it on FUSE FS:
-> vfs -> fuse kernel driver -> userspace implementation.
+hello,
 
-That sounds plausible to me. Depending on the actuall FUSE filesystem it
-may do basically anything.
+For this patch:
+-------------------------------------------------------------------
+jbd2: Fix oops in jbd2_journal_remove_journal_head()
 
-> It can be fixed if we move open() before fork.
-> 
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->  testcases/kernel/syscalls/fcntl/fcntl33.c |   11 ++++++-----
->  1 files changed, 6 insertions(+), 5 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/fcntl/fcntl33.c b/testcases/kernel/syscalls/fcntl/fcntl33.c
-> index 2d69866..13616c6 100644
-> --- a/testcases/kernel/syscalls/fcntl/fcntl33.c
-> +++ b/testcases/kernel/syscalls/fcntl/fcntl33.c
-> @@ -146,16 +146,17 @@ static void setup(void)
->  
->  static void do_test(int i)
->  {
-> -	pid_t cpid;
-> +	fd = SAFE_OPEN(cleanup, "file", O_RDONLY);
-> +
-> +	pid_t cpid = tst_fork();
->  
-> -	cpid = tst_fork();
->  	if (cpid < 0)
->  		tst_brkm(TBROK | TERRNO, cleanup, "fork() failed");
->  
-> -	if (cpid == 0)
-> +	if (cpid == 0) {
-> +		SAFE_CLOSE(NULL, fd);
->  		do_child(i);
-> -
-> -	fd = SAFE_OPEN(cleanup, "file", O_RDONLY);
-> +	}
+jbd2_journal_remove_journal_head() can oops when trying to access
+journal_head returned by bh2jh(). This is caused for example by the
+following race:
 
-Looks good.
+	TASK1					TASK2
+  jbd2_journal_commit_transaction()
+    ...
+    processing t_forget list
+      __jbd2_journal_refile_buffer(jh);
+      if (!jh->b_transaction) {
+        jbd_unlock_bh_state(bh);
+					jbd2_journal_try_to_free_buffers()
+					  jbd2_journal_grab_journal_head(bh)
+					  jbd_lock_bh_state(bh)
+					  __journal_try_to_free_buffer()
+					  jbd2_journal_put_journal_head(jh)
+        jbd2_journal_remove_journal_head(bh);
 
-Another possible solution would be to use checkpoints and wait in the
-child before we call tst_process_state_wait() and wake it up from parent
-just before we call the fcntl(). But that would be more complicated than
-this.
+jbd2_journal_put_journal_head() in TASK2 sees that b_jcount == 0 and
+buffer is not part of any transaction and thus frees journal_head
+before TASK1 gets to doing so. Note that even buffer_head can be
+released by try_to_free_buffers() after
+jbd2_journal_put_journal_head() which adds even larger opportunity for
+oops (but I didn't see this happen in reality).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Fix the problem by making transactions hold their own journal_head
+reference (in b_jcount). That way we don't have to remove journal_head
+explicitely via jbd2_journal_remove_journal_head() and instead just
+remove journal_head when b_jcount drops to zero. The result of this is
+that [__]jbd2_journal_refile_buffer(),
+[__]jbd2_journal_unfile_buffer(), and
+__jdb2_journal_remove_checkpoint() can free journal_head which needs
+modification of a few callers. Also we have to be careful because once
+journal_head is removed, buffer_head might be freed as well. So we
+have to get our own buffer_head reference where it matters.
+
+-------------------------------------------------------------------
+This patch maybe somewhat old... Currently we're trying to write regrsesion
+test for this patch, do you still remember any steps to reproduce this bug?
+Thank you very much.
+
+Regards,
+Xiao Yang
+
+
+
