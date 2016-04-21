@@ -1,47 +1,33 @@
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Thu, 21 Apr 2016 10:03:27 +0800
-Subject: [LTP] [PATCH] waitpid/waitpid11: correct error message
-Message-ID: <20160421020327.GA2818@localhost.localdomain>
+From: Michael Kasprowicz <booomerangg@gmail.com>
+Date: Thu, 21 Apr 2016 09:11:51 +0200
+Subject: [LTP] fs test failure on quad core
+Message-ID: <CAL+DEf0BCVUfdtK0wC9w-tfHAXaeJfhvPhfH6Q__5bjihh5B2A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-According to code, the message should be "did not find a fork_kid_pid
-for the wait_kid_pid of %d".
+Greetings everyone,
+I am using ltp-full-20150903 to test some eMMCs on an Intel platform. I
+slightly modify the script 'fs' and keep only iogen and rwtests. The tests
+always results in I/O errors when I am using 4 cores, if I limit my system
+to 2 cores the Test passes (no errors for over 6 hours). I have confirmed
+this on at least 10 different types of eMMCs.
+The errors are mostly I/O errors that appear after 5-10 minutes of running
+the test mostly with test type iogen01. They consists of Buffer I/O errors
+followed by interrupt timeouts and ADMA errors. After this point the eMMC
+becomes useless i.e. cannot be read, written, mounted or unmounted till a
+system reboot.
 
-Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
----
- testcases/kernel/syscalls/waitpid/waitpid11.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+With the above results I can point my finger straight at the four cores and
+the fact that several threads work simultaneously to generate the stress.
+Are you aware of any particular parameter which one must set when running
+the tests on quad core systems ? or has such an issue been previously
+reported ?
 
-diff --git a/testcases/kernel/syscalls/waitpid/waitpid11.c b/testcases/kernel/syscalls/waitpid/waitpid11.c
-index 72ee3f6..135ec56 100644
---- a/testcases/kernel/syscalls/waitpid/waitpid11.c
-+++ b/testcases/kernel/syscalls/waitpid/waitpid11.c
-@@ -189,8 +189,8 @@ int main(int ac, char **av)
- 			}
- 		}
- 		if (!found) {
--			tst_resm(TFAIL, "Did not find a wait_kid_pid "
--				 "for the fork_kid_pid of %d", wait_kid_pid[i]);
-+			tst_resm(TFAIL, "Did not find a fork_kid_pid "
-+				 "for the wait_kid_pid of %d", wait_kid_pid[i]);
- 			for (k = 0; k < MAXKIDS; k++) {
- 				tst_resm(TFAIL, "fork_kid_pid[%d] = "
- 					 "%d", k, fork_kid_pid[k]);
-@@ -248,8 +248,8 @@ int main(int ac, char **av)
- 			}
- 		}
- 		if (!found) {
--			tst_resm(TFAIL, "Did not find a wait_kid_pid "
--				 "for the fork_kid_pid of %d", fork_kid_pid[j]);
-+			tst_resm(TFAIL, "Did not find a fork_kid_pid "
-+				 "for the wait_kid_pid of %d", wait_kid_pid[i]);
- 			for (k = 0; k < MAXKIDS; k++)
- 				tst_resm(TFAIL, "fork_kid_pid[%d] = "
- 					 "%d", k, fork_kid_pid[k]);
--- 
-1.9.3
-
+best regards
+michael
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160421/d57e03cf/attachment.html>
