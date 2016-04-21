@@ -1,42 +1,53 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 21 Apr 2016 10:58:29 +0200
-Subject: [LTP] fs test failure on quad core
-In-Reply-To: <CAL+DEf0BCVUfdtK0wC9w-tfHAXaeJfhvPhfH6Q__5bjihh5B2A@mail.gmail.com>
-References: <CAL+DEf0BCVUfdtK0wC9w-tfHAXaeJfhvPhfH6Q__5bjihh5B2A@mail.gmail.com>
-Message-ID: <20160421085829.GB20949@rei.suse.cz>
+From: Mason <slash.tmp@free.fr>
+Date: Thu, 21 Apr 2016 15:25:30 +0200
+Subject: [LTP] Issue with the reporting of failed tests
+Message-ID: <5718D4CA.5010607@free.fr>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> I am using ltp-full-20150903 to test some eMMCs on an Intel platform. I
-> slightly modify the script 'fs' and keep only iogen and rwtests. The tests
-> always results in I/O errors when I am using 4 cores, if I limit my system
-> to 2 cores the Test passes (no errors for over 6 hours). I have confirmed
-> this on at least 10 different types of eMMCs.
-> The errors are mostly I/O errors that appear after 5-10 minutes of running
-> the test mostly with test type iogen01. They consists of Buffer I/O errors
-> followed by interrupt timeouts and ADMA errors. After this point the eMMC
-> becomes useless i.e. cannot be read, written, mounted or unmounted till a
-> system reboot.
+Hello,
 
-This pretty much sounds like a hardware/kernel bug.
+For a particular LTP run, I had 97 reported failures.
 
-> With the above results I can point my finger straight at the four cores and
-> the fact that several threads work simultaneously to generate the stress.
-> Are you aware of any particular parameter which one must set when running
-> the tests on quad core systems ? or has such an issue been previously
-> reported ?
+$ grep -c FAIL result-log.987
+97
 
-No parameters needed. If a device driver stops working after stressing
-it with reads/writes it's likely not a problem with the test or test
-setup but hardware/kernel bug.
+However, FAILCMDFILE contained 804 lines (with many duplicates).
 
-I would check, for a start, that the system does not overheat during the
-test (or under load) and also run a memtest on it over night.
+$ wc -l result-failed.987
+804 result-failed.987
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+$ sort result-failed.987 | uniq | wc -l
+85
+
+It seems some failures did not get recorded in FAILCMDFILE at all,
+or were recorded, but later overwritten:
+aio01, aio02, cgroup, controllers, ext4*, fs_racer, Numa-testcases
+and some of the cron tests.
+
+
+As discussed with metan on IRC, this has all the symptoms of a
+FILE buffer shared between parent and child process. I am now
+running LTP again with the following patch applied:
+
+diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
+index cee71aa3b587..44c026e88a47 100644
+--- a/pan/ltp-pan.c
++++ b/pan/ltp-pan.c
+@@ -535,6 +535,7 @@ int main(int argc, char **argv)
+                                break;
+                        }
+ 
++                       fflush(failcmdfile);
+                        cpid =
+                            run_child(coll->ary[c], running + i, quiet_mode,
+                                      &failcnt, fmt_print, logfile);
+
+
+When the run finishes, I will be able to tell if the issue
+remains.
+
+Regards.
