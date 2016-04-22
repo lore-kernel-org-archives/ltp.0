@@ -1,249 +1,90 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Fri, 22 Apr 2016 14:28:29 +0800
-Subject: [LTP] [PATCH v3] commands/insmod: add new testcase to test insmod(8)
-In-Reply-To: <20160418154419.GA11649@rei.lan>
-References: <20160418154419.GA11649@rei.lan>
-Message-ID: <1461306509-4945-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 22 Apr 2016 15:04:49 +0300
+Subject: [LTP] [PATCH v5 0/3] networking/stress/icmp: add ip xfrm ipsec
+ support
+In-Reply-To: <1460517625-25960-1-git-send-email-haliu@redhat.com>
+References: <1460517625-25960-1-git-send-email-haliu@redhat.com>
+Message-ID: <571A1361.4060909@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test the basic functionality of insmod(8) command.
+Hi Hangbin,
+On 13.04.2016 6:20, Hangbin Liu wrote:
+> As we know, most of the network stress tests have IPsec testing, and we use
+> setkey for configuration. But setkey[1] hasn't updated for a long time. And
+> some distros, RHEL7 for example, even don't have ipset-tools package. On
+> other hand, iproute2 is recommend for network configuration. And ip xfrm is
+> more powerful than setkey. So let's use ip xfrm for ipsec testing.
+>
+> [1] http://ipsec-tools.sourceforge.net/
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- runtest/commands                         |  1 +
- testcases/commands/insmod/Makefile       | 36 ++++++++++++++++
- testcases/commands/insmod/insmod01.sh    | 71 ++++++++++++++++++++++++++++++++
- testcases/commands/insmod/ltp_insmod01.c | 35 ++++++++++++++++
- testcases/lib/test.sh                    | 31 ++++++++++++++
- 5 files changed, 174 insertions(+)
- create mode 100644 testcases/commands/insmod/Makefile
- create mode 100755 testcases/commands/insmod/insmod01.sh
- create mode 100644 testcases/commands/insmod/ltp_insmod01.c
+When running the tests with this patch-set on OL6 I've encountered with 
+failed tests
+due to not supported ip options:
 
-diff --git a/runtest/commands b/runtest/commands
-index db89424..abbbd96 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -41,3 +41,4 @@ mkfs01_ntfs mkfs01.sh -f ntfs
- mkswap01 mkswap01.sh
- which01 which01.sh
- lsmod01 lsmod01.sh
-+insmod01 insmod01.sh
-diff --git a/testcases/commands/insmod/Makefile b/testcases/commands/insmod/Makefile
-new file mode 100644
-index 0000000..e5e68b6
---- /dev/null
-+++ b/testcases/commands/insmod/Makefile
-@@ -0,0 +1,36 @@
-+#
-+#    Copyright (c) 2016 Fujitsu Ltd.
-+#    Author:Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
-+
-+ifneq ($(KERNELRELEASE),)
-+
-+obj-m := ltp_insmod01.o
-+
-+else
-+
-+top_srcdir		?= ../../..
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+REQ_VERSION_MAJOR       := 2
-+REQ_VERSION_PATCH       := 6
-+MAKE_TARGETS            := ltp_insmod01.ko
-+
-+include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= insmod01.sh
-+
-+include $(top_srcdir)/include/mk/module.mk
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-+
-+endif
-diff --git a/testcases/commands/insmod/insmod01.sh b/testcases/commands/insmod/insmod01.sh
-new file mode 100755
-index 0000000..f19c068
---- /dev/null
-+++ b/testcases/commands/insmod/insmod01.sh
-@@ -0,0 +1,71 @@
-+#!/bin/sh
-+#
-+# Copyright (c) 2016 Fujitsu Ltd.
-+# Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+# This program is free software; you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+# the GNU General Public License for more details.
-+#
-+# Test the basic functionality of insmod command.
-+#
-+
-+TCID=insmod01
-+TST_TOTAL=1
-+. test.sh
-+
-+setup()
-+{
-+	tst_require_root
-+
-+	tst_check_cmds rmmod insmod
-+
-+	tst_module_exists ltp_insmod01.ko
-+
-+	inserted=0
-+
-+	TST_CLEANUP="cleanup"
-+}
-+
-+cleanup()
-+{
-+	if [ $inserted -ne 0 ]; then
-+		echo "about to rmmod ltp_insmod01"
-+		rmmod ltp_insmod01
-+		if [ $? -ne 0 ]; then
-+			echo "failed to rmmod ltp_insmod01"
-+		fi
-+	fi
-+}
-+
-+insmod_test()
-+{
-+	insmod "$TST_MODPATH"
-+	if [ $? -ne 0 ]; then
-+		tst_resm TFAIL "'insmod' failed."
-+		return
-+	fi
-+	inserted=1
-+
-+	grep -q ltp_insmod01 /proc/modules
-+
-+	if [ $? -ne 0 ]; then
-+		tst_resm TINFO "ltp_insmod01 not found in /proc/modules"
-+		tst_resm TFAIL "'insmod' failed, not expected."
-+		return
-+	fi
-+
-+	tst_resm TPASS "'insmod' passed."
-+}
-+
-+setup
-+
-+insmod_test
-+
-+tst_exit
-diff --git a/testcases/commands/insmod/ltp_insmod01.c b/testcases/commands/insmod/ltp_insmod01.c
-new file mode 100644
-index 0000000..398714e
---- /dev/null
-+++ b/testcases/commands/insmod/ltp_insmod01.c
-@@ -0,0 +1,35 @@
-+/*
-+ * Copyright (c) 2016 Fujitsu Ltd.
-+ * Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
-+ * the GNU General Public License for more details.
-+ *
-+ * Description:
-+ *  This is a kernel loadable module programme used by insmod01.sh
-+ *  testcase which inserts this module for test of insmod command.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+
-+static int test_init(void)
-+{
-+	return 0;
-+}
-+
-+static void test_exit(void)
-+{
-+
-+}
-+
-+module_init(test_init);
-+module_exit(test_exit);
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index 458bbca..70345e5 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -113,6 +113,9 @@ tst_tmpdir()
- 	TST_TMPDIR=$(mktemp -d "$TMPDIR/$TCID.XXXXXXXXXX")
- 
- 	chmod 777 "$TST_TMPDIR"
-+
-+	TST_STARTWD=$(pwd)
-+
- 	cd "$TST_TMPDIR"
- }
- 
-@@ -343,6 +346,34 @@ tst_umount()
- 	tst_resm TWARN "Failed to umount($device) after 50 retries"
- }
- 
-+# Check a module file existence
-+# Should be called after tst_tmpdir()
-+tst_module_exists()
-+{
-+	local mod_name="$1"
-+
-+	if [ -f "$mod_name" ]; then
-+		TST_MODPATH="$mod_name"
-+		return
-+	fi
-+
-+	local mod_path="$LTPROOT/testcases/bin/$mod_name"
-+	if [ -f "$mod_path" ]; then
-+		TST_MODPATH="$mod_path"
-+		return
-+	fi
-+
-+	if [ -n "$TST_TMPDIR" ]; then
-+		mod_path="$TST_STARTWD/$mod_name"
-+		if [ -f "$mod_path" ]; then
-+			TST_MODPATH="$mod_path"
-+			return
-+		fi
-+	fi
-+
-+	tst_brkm TCONF "Failed to find module '$mod_name'"
-+}
-+
- # Check that test name is set
- if [ -z "$TCID" ]; then
- 	tst_brkm TBROK "TCID is not defined"
--- 
-1.8.4.2
+icmp-uni-basic 1 TINFO : - IPcomp [ transport ]
+Error: argument "transport" is wrong: unknown
 
+icmp-uni-basic 1 TINFO : - IPcomp [ tunnel ]
+Error: argument "tunnel" is wrong: unknown
 
+Have you tried running them on RHEL6?
+
+It seems that iproute there requires some value passed after "... comp 
+deflate ??? mode ..."
+
+> Change from V4:
+> 1. minimise icmp-uni-basic, remove some useless comment.
+> 2. use tst_exit instead of exit 0
+> 3. Fix max message size and add comment in network_stress.icmp to describe how
+>     we calculate them.
+> 4. fix some typo
+> TODO: For icmp-uni-basic test, we test each message size to make sure the
+> connectivity. In icmp-multi-diffip/nic test, we will do ping flood test with
+> multi ip/nic for stress testing since we have already make sure the connectivity.
+>
+>
+> Change from V3:
+> 1. use message size array in tst_ping
+> 2. add tst_ipsec_cleanup in ipsec_lib
+> 3. use lhost/rhost naming in ipsec_lib
+> 4. add icmp-uni-basic in the upper icmp directory
+> 5. some other small fixs.
+>
+> Change from V2:
+> 1. remove c2x and use hexdump directly.
+> 2. remove indent after "case".
+> 3. remove useless export and old scripts like check_env.
+> 4. remove tst_init_iface.
+> 5. remove return value check after setup ipsec env.
+> 6. remove addr config as Alexey said, we assume the address already added.
+>
+> Change from V1:
+> 1. update tst_ping() to use default iface and addr. make ping from local side.
+> 2. remove unused variables. add -s option when use tst_rhost_run. Use ROD
+>     before normal commands.
+> 3. change all "tst_resm TBROK && exit" to "tst_brkm TBROK"
+> 3. still keep tst_init_iface in test icmp4-uni-basic01 because we will
+>     set_ipv4/6addr each time.
+>
+> Hangbin Liu (3):
+>    lib/test_net.sh: add tst_ping() to check icmp connectivity
+>    network/stress: add ipsec lib
+>    network/stress/icmp: add icmp-uni-basic to implement all icmp basic
+>      stress test
+>
+>   runtest/network_stress.icmp                  |  46 +++++++----
+>   testcases/lib/test_net.sh                    |  30 ++++++++
+>   testcases/network/stress/icmp/Makefile       |   3 +
+>   testcases/network/stress/icmp/icmp-uni-basic | 105 +++++++++++++++++++++++++
+>   testcases/network/stress/ipsec/Makefile      |  28 +++++++
+>   testcases/network/stress/ipsec/ipsec_lib.sh  | 110 +++++++++++++++++++++++++++
+>   6 files changed, 308 insertions(+), 14 deletions(-)
+>   create mode 100755 testcases/network/stress/icmp/icmp-uni-basic
+>   create mode 100644 testcases/network/stress/ipsec/Makefile
+>   create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
+>
 
