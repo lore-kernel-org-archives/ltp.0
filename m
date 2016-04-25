@@ -1,40 +1,87 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 25 Apr 2016 04:49:37 -0400 (EDT)
-Subject: [LTP] [PATCH] open_posix_testsuite: Propagate configure params
-In-Reply-To: <20160420162353.GA28307@rei>
-References: <20160420162353.GA28307@rei>
-Message-ID: <1332064676.4709185.1461574177645.JavaMail.zimbra@redhat.com>
+From: Mason <slash.tmp@free.fr>
+Date: Mon, 25 Apr 2016 13:40:22 +0200
+Subject: [LTP] Issue with the reporting of failed tests
+In-Reply-To: <571DCF8D.30306@free.fr>
+References: <5718D4CA.5010607@free.fr> <5718E81B.6060101@free.fr>
+ <20160421153041.GA25307@rei> <5718F4EE.2060009@free.fr>
+ <571907A2.10208@free.fr> <571A274A.60707@free.fr> <571DCF8D.30306@free.fr>
+Message-ID: <571E0226.3020104@free.fr>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: ltp@lists.linux.it
-> Sent: Wednesday, 20 April, 2016 6:23:53 PM
-> Subject: [LTP] [PATCH] open_posix_testsuite: Propagate configure params
+On 25/04/2016 10:04, Mason wrote:
+> On 22/04/2016 15:29, Mason wrote:
+>> On 21/04/2016 19:02, Mason wrote:
+>>> On 21/04/2016 17:42, Mason wrote:
+>>>> On 21/04/2016 17:30, Cyril Hrubis wrote:
+>>>>> Hi!
+>>>>>> Calling fflush does appear to solve the problem:
+>>>>>>
+>>>>>> # grep -c FAIL result-log.5160
+>>>>>> 38
+>>>>>>
+>>>>>> # wc -l result-failed.5160
+>>>>>> 38 result-failed.5160
+>>>>>>
+>>>>>> Does this mean no one ever reads FAILCMDFILE?!
+>>>>>
+>>>>> Just to have complete image here. I've discussed this a bit more at #ltp
+>>>>> irc channel and the reason why we do not see this bug often is that the
+>>>>> exec() that is done by the child after pan forks must fail (for example
+>>>>> since bash is missing) then the code proceeds to exit(errno) line which
+>>>>> flushes the buffers on open files...
+>>>>
+>>>> Note: in my latest LTP run, I disabled memory overcommit, and pan
+>>>> failed to launch several tests:
+>>>>
+>>>> pan(5163): fork failed (tag proc01).  errno:12  Cannot allocate memory
+>>>> pan(5163): fork failed (tag fs_racer).  errno:12  Cannot allocate memory
+>>>> pan(5163): fork failed (tag quota_remount_test01).  errno:12  Cannot allocate memory
+>>>> pan(5163): fork failed (tag isofs).  errno:12  Cannot allocate memory
+>>>> pan(5163): fork failed (tag fs_perms01).  errno:12  Cannot allocate memory
+>>>> [747 similar lines]
+>>>>
+>>>> /tmp is a ramfs. Maybe something fills it up...
+>>>
+>>> With overcommit enabled, all tests complete, but some problems remain:
+>>>
+>>> $ grep -c FAIL result-log.24583 
+>>> 85
+>>>
+>>> $ wc -l result-failed.24583
+>>> 157 result-failed.24583
+>>>
+>>> $ sort result-failed.24583 | uniq | wc -l
+>>> 83
+>>>
+>>> I'm confused as to what else is causing this...
+>>
+>> I am now testing yet another LTP run with the following patch applied.
 > 
-> The open_posix_testsuite can be enabled to build from the top level
-> configure but none of the parameters passed to it are propagated which
-> confuses users and has been discussed a few times on the LTP ML.
+> There still is an inconsistency between result-log and result-failed.
 > 
-> This commit propagates CC, CFLAGS and LDFLAGS. If config-openposix.mk
-> was created by the top level configure script the generate-makefiles.sh
-> script includes its content in the generated Makefiles.
+> $ grep -c FAIL result-log.30032
+> 119
 > 
-> This fixes issue #54.
+> $ wc -l result-failed.30032
+> 319 result-failed.30032
 > 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> $ sort result-failed.30032 | uniq | wc -l
+> 117
+> 
+> Either I didn't use the modified ltp-pan binary, or the change has no effect.
+> (I will print something to stderr to make sure.)
 
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
+I do see an improvement now: no more duplicates. However, it seems
+2 tests are missing from result-failed: aio01, aio02.
 
-Looks good to me.
+$ grep -c FAIL result-log.1125
+27
 
-Regards,
-Jan
+$ wc -l result-failed.1125
+25 result-failed.1125
+
+Regards.
