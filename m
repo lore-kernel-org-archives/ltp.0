@@ -1,124 +1,231 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Mon, 25 Apr 2016 09:51:57 +0800
-Subject: [LTP] [PATCH v5 0/3] networking/stress/icmp: add ip xfrm ipsec
- support
-In-Reply-To: <571A1361.4060909@oracle.com>
+Date: Mon, 25 Apr 2016 09:57:29 +0800
+Subject: [LTP] [PATCH v5 3/3] network/stress/icmp: add icmp-uni-basic to
+ implement all icmp basic stress test
+In-Reply-To: <571A209C.2030603@oracle.com>
 References: <1460517625-25960-1-git-send-email-haliu@redhat.com>
- <571A1361.4060909@oracle.com>
-Message-ID: <20160425015157.GE10443@Leo.nay.redhat.com>
+ <1460517625-25960-4-git-send-email-haliu@redhat.com>
+ <571A209C.2030603@oracle.com>
+Message-ID: <20160425015729.GF10443@Leo.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Apr 22, 2016 at 03:04:49PM +0300, Alexey Kodanev wrote:
-> Hi Hangbin,
+Hi,
+
+On Fri, Apr 22, 2016 at 04:01:16PM +0300, Alexey Kodanev wrote:
 > On 13.04.2016 6:20, Hangbin Liu wrote:
-> >As we know, most of the network stress tests have IPsec testing, and we use
-> >setkey for configuration. But setkey[1] hasn't updated for a long time. And
-> >some distros, RHEL7 for example, even don't have ipset-tools package. On
-> >other hand, iproute2 is recommend for network configuration. And ip xfrm is
-> >more powerful than setkey. So let's use ip xfrm for ipsec testing.
+> >Add icmp-uni-basic to implement the test case and define each test case in
+> >"runtest/" and use parameters. Also use ip xfrm instead of setkey for ipsec
+> >testing.
 > >
-> >[1] http://ipsec-tools.sourceforge.net/
+> >Signed-off-by: Hangbin Liu <haliu@redhat.com>
+> >---
+> >  runtest/network_stress.icmp                  |  46 ++++++++----
+> >  testcases/network/stress/icmp/Makefile       |   3 +
+> >  testcases/network/stress/icmp/icmp-uni-basic | 105 +++++++++++++++++++++++++++
+> >  3 files changed, 140 insertions(+), 14 deletions(-)
+> >  create mode 100755 testcases/network/stress/icmp/icmp-uni-basic
+> >
+> >diff --git a/runtest/network_stress.icmp b/runtest/network_stress.icmp
+> >index 29b52d1..ba30200 100644
+> >--- a/runtest/network_stress.icmp
+> >+++ b/runtest/network_stress.icmp
+> >@@ -2,21 +2,39 @@
+> >  # Stress test for TCP/IP protocol stack (ICMP)
+> >  #
+> >-icmp4-uni-basic01 icmp4-uni-basic01
+> >-icmp4-uni-basic02 icmp4-uni-basic02
+> >-icmp4-uni-basic03 icmp4-uni-basic03
+> >-icmp4-uni-basic04 icmp4-uni-basic04
+> >-icmp4-uni-basic05 icmp4-uni-basic05
+> >-icmp4-uni-basic06 icmp4-uni-basic06
+> >-icmp4-uni-basic07 icmp4-uni-basic07
+> >+# MAX_LENGTH(65535) - IP(20) - ICMP(8) = MAX_SIZE(65507)
+> >+icmp4-uni-basic01 icmp-uni-basic -s "10 100 1000 10000 65507"
+> >+# MAX_LENGTH(65535) - IP(20) - AH(24) - ICMP(8) = MAX_SIZE(65483)
+> >+icmp4-uni-basic02 icmp-uni-basic -p ah -m transport -s "10 100 1000 10000 65483"
+> >+# MAX_LENGTH(65535) - IP(20) - AH(24) - Tunnel(IPv4 20) - ICMP(8) = MAX_SIZE(65463)
+> >+icmp4-uni-basic03 icmp-uni-basic -p ah -m tunnel -s "10 100 1000 10000 65463"
+> >+# MAX_LENGTH(65535) - IP(20) - ESP (37) - ICMP(8) = MAX_SIZE(65470)
+> >+# ESP Header has pad payload, so the ESP length is variable
+> >+icmp4-uni-basic04 icmp-uni-basic -p esp -m transport -s "10 100 1000 10000 65470"
+> >+# MAX_LENGTH(65535) - IP(20) - ESP (37) - Tunnel(20) - ICMP(8) = MAX_SIZE(65450)
+> >+icmp4-uni-basic05 icmp-uni-basic -p esp -m tunnel -s "10 100 1000 10000 65450"
+> >+# Same message size but different content will result in different data size
+> >+# after compression. So we just use a large enough message size(65000) for testing
+> >+icmp4-uni-basic06 icmp-uni-basic -p ipcomp -m transport -s "10 100 1000 10000 65000"
+> >+icmp4-uni-basic07 icmp-uni-basic -p ipcomp -m tunnel -s "10 100 1000 10000 65000"
+> >-icmp6-uni-basic01 icmp6-uni-basic01
+> >-icmp6-uni-basic02 icmp6-uni-basic02
+> >-icmp6-uni-basic03 icmp6-uni-basic03
+> >-icmp6-uni-basic04 icmp6-uni-basic04
+> >-icmp6-uni-basic05 icmp6-uni-basic05
+> >-icmp6-uni-basic06 icmp6-uni-basic06
+> >-icmp6-uni-basic07 icmp6-uni-basic07
+> >+# MAX_LENGTH(65535) - ICMP(8) = MAX_SIZE(65527)
+> >+icmp6-uni-basic01 icmp-uni-basic -6 -s "10 100 1000 10000 65527"
+> >+# MAX_LENGTH(65535) - AH(24) - ICMP(8) = MAX_SIZE(65503)
+> >+icmp6-uni-basic02 icmp-uni-basic -6 -p ah -m transport -s "10 100 1000 10000 65503"
+> >+# MAX_LENGTH(65535) - ICMP(8) = MAX_SIZE(65527)
+> >+# When receive, we drop the tunnel header first and only leave the inside IPv6
+> >+# Header and icmp message. That's why we can have so large message size.
+> >+icmp6-uni-basic03 icmp-uni-basic -6 -p ah -m tunnel -s "10 100 1000 10000 65527"
+> >+# MAX_LENGTH(65535) - ESP (33) - ICMP(8) = MAX_SIZE(65494)
+> >+# ESP Header has pad payload, so the ESP length is variable
+> >+icmp6-uni-basic04 icmp-uni-basic -6 -p esp -m transport -s "10 100 1000 10000 65494"
+> >+# MAX_LENGTH(65535) - ICMP(8) = MAX_SIZE(65527)
+> >+icmp6-uni-basic05 icmp-uni-basic -6 -p esp -m tunnel -s "10 100 1000 10000 65527"
+> >+# Same message size but different content will result in different data size
+> >+# after compression. So we just use a large enough message size(65000) for testing
+> >+icmp6-uni-basic06 icmp-uni-basic -6 -p ipcomp -m transport -s "10 100 1000 10000 65000"
+> >+icmp6-uni-basic07 icmp-uni-basic -6 -p ipcomp -m tunnel -s "10 100 1000 10000 65000"
+> >  icmp4-multi-diffip01 icmp4-multi-diffip01
+> >  icmp4-multi-diffip02 icmp4-multi-diffip02
+> >diff --git a/testcases/network/stress/icmp/Makefile b/testcases/network/stress/icmp/Makefile
+> >index 0dad1d1..9310aa1 100644
+> >--- a/testcases/network/stress/icmp/Makefile
+> >+++ b/testcases/network/stress/icmp/Makefile
+> >@@ -23,4 +23,7 @@
+> >  top_srcdir		?= ../../../..
+> >  include $(top_srcdir)/include/mk/env_pre.mk
+> >+
+> >+INSTALL_TARGETS		:= icmp*
+> >+
+> >  include $(top_srcdir)/include/mk/generic_trunk_target.mk
+> >diff --git a/testcases/network/stress/icmp/icmp-uni-basic b/testcases/network/stress/icmp/icmp-uni-basic
+> >new file mode 100755
+> >index 0000000..007c5c4
+> >--- /dev/null
+> >+++ b/testcases/network/stress/icmp/icmp-uni-basic
+> >@@ -0,0 +1,105 @@
+> >+#!/bin/sh
+> >+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
+> >+#
+> >+# This program is free software; you can redistribute it and/or
+> >+# modify it under the terms of the GNU General Public License as
+> >+# published by the Free Software Foundation; either version 2 of
+> >+# the License, or (at your option) any later version.
+> >+#
+> >+# This program is distributed in the hope that it would be useful,
+> >+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+> >+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> >+# GNU General Public License for more details.
+> >+#
+> >+# You should have received a copy of the GNU General Public License
+> >+# along with this program; if not, see <http://www.gnu.org/licenses/>.
+> >+#
+> >+# Author: Hangbin Liu <haliu@redhat.com>
+> >+#
+> >+################################################################################
+> >+#
+> >+# File:
+> >+#   icmp-uni-basic
+> >+#
+> >+# Description:
+> >+#   Verify that the kernel is not crashed with receiving and sending various
+> >+#   size of ICMP message
+> >+#
+> >+#   *) This script may be read by the other test case
+> >+#
+> >+# Setup:
+> >+#   See ltp-yyyymmdd/testcases/network/stress/README
+> >+#
+> >+#-----------------------------------------------------------------------
+> >+# The test case ID, the test case count and the total number of test case
 > 
-> When running the tests with this patch-set on OL6 I've encountered with
-> failed tests
-> due to not supported ip options:
+> The above description is not quite useful.
+
+OK, will remove it.
+
 > 
-> icmp-uni-basic 1 TINFO : - IPcomp [ transport ]
-> Error: argument "transport" is wrong: unknown
+> >+TCID=${TCID:-icmp-uni-basic}
+> >+TST_TOTAL=1
+> >+TST_COUNT=1
+> >+TST_CLEANUP="tst_ipsec_cleanup"
+> >+
+> >+. ipsec_lib.sh
+> >+
+> >+while getopts "hl:m:p:s:S:6" opt; do
+> >+	case "$opt" in
+> >+	h)
+> >+		echo "Usage:"
+> >+		echo "h        help"
+> >+		echo "l n      n is the number of test link when tests run"
+> >+		echo "m x      x is ipsec mode, could be transport / tunnel"
+> >+		echo "p x      x is ipsec protocol, could be ah / esp / ipcomp"
+> >+		echo "s x      x is icmp messge size array"
+> >+		echo "S n      n is IPsec SPI value"
+> >+		echo "6        run over IPv6"
+> >+		exit 0
+> >+	;;
+> >+	l) LINK_NUM=$OPTARG ;;
+> >+	m) IPSEC_MODE=$OPTARG ;;
+> >+	p) IPSEC_PROTO=$OPTARG ;;
+> >+	s) ICMP_SIZE_ARRAY=$OPTARG ;;
+> >+	S) SPI=$OPTARG ;;
+> >+	6) # skip, test_net library already processed it
+> >+	;;
+> >+	*) tst_brkm TBROK "unknown option: $opt" ;;
+> >+	esac
+> >+done
+> >+
+> >+SPI=${SPI:-1000}
+> >+LINK_NUM=${LINK_NUM:-0}
+> >+DO_IPSEC=${DO_IPSEC:-false}
+> >+ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65507"}
+> >+[ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ] && DO_IPSEC=true || DO_IPSEC=false
+> >+
+> >+# Test description
+> >+tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
+> >+tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
+> >+tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
+> >+
+> >+if $DO_IPSEC; then
+> >+	case $IPSEC_PROTO in
+> >+	ah)	tst_resm TINFO "- IPsec [ AH / $IPSEC_MODE ]" ;;
+> >+	esp)	tst_resm TINFO "- IPsec [ ESP / $IPSEC_MODE ]" ;;
+> >+	ipcomp)	tst_resm TINFO "- IPcomp [ $IPSEC_MODE ]" ;;
+> >+	esac
+> >+fi
+> >+
+> >+# name of interface of the local/remote host
+> >+lhost_ifname=`tst_iface lhost $LINK_NUM`
+> >+rhost_ifname=`tst_iface rhost $LINK_NUM`
+> >+
 > 
-> icmp-uni-basic 1 TINFO : - IPcomp [ tunnel ]
-> Error: argument "tunnel" is wrong: unknown
+> It would be better to have the same command substitution syntax in the
+> script.
+
+OK, will use $()
+
 > 
-> Have you tried running them on RHEL6?
+> >+lhost_addr=$(tst_ipaddr)
+> >+rhost_addr=$(tst_ipaddr rhost)
+> >+
+> >+# Configure SAD/SPD
+> >+if $DO_IPSEC ; then
+> >+	tst_ipsec lhost $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
+> >+	tst_ipsec rhost $IPSEC_PROTO $IPSEC_MODE $SPI $rhost_addr $lhost_addr
+> >+fi
+> >+
+> >+tst_ping $lhost_ifname $rhost_addr $ICMP_SIZE_ARRAY
+> >+if [ $? -ne 0 ]; then
+> >+	tst_brkm TBROK "Check IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE connectivity "
 > 
-> It seems that iproute there requires some value passed after "... comp
-> deflate ??? mode ..."
+> No need for tst_brkm here, should be either TFAIL or TPASS in the end.
+> 
+> Besides that, the patch looks good.
 
-Yes, there is a iproute2 bug on RHEL6 with comp. We need to add a fake key after
-compression. e.g.
-ip xfrm state add src 1.1.1.1 dst 2.2.2.2 proto comp spi 1 mode tunnel comp deflate 0x
-
-And the following patch fixed this issue.
-
-commit f3b9aa3df848e6ce7f61a54f0f05aef3bdff24ca
-Author: David Ward <david.ward@ll.mit.edu>
-Date:   Mon Mar 25 04:23:17 2013 +0000
-
-    ip/xfrm: Command syntax should not expect a key for compression
-
-    Compression algorithms do not use a key.
-
-    Signed-off-by: David Ward <david.ward@ll.mit.edu>
-
-I opened a bug 1315927[1] for this issue. RHEL7 works OK.
-
-[1] https://bugzilla.redhat.com/show_bug.cgi?id=1315927
+OK
 
 Thanks
 Hangbin
 > 
-> >Change from V4:
-> >1. minimise icmp-uni-basic, remove some useless comment.
-> >2. use tst_exit instead of exit 0
-> >3. Fix max message size and add comment in network_stress.icmp to describe how
-> >    we calculate them.
-> >4. fix some typo
-> >TODO: For icmp-uni-basic test, we test each message size to make sure the
-> >connectivity. In icmp-multi-diffip/nic test, we will do ping flood test with
-> >multi ip/nic for stress testing since we have already make sure the connectivity.
-> >
-> >
-> >Change from V3:
-> >1. use message size array in tst_ping
-> >2. add tst_ipsec_cleanup in ipsec_lib
-> >3. use lhost/rhost naming in ipsec_lib
-> >4. add icmp-uni-basic in the upper icmp directory
-> >5. some other small fixs.
-> >
-> >Change from V2:
-> >1. remove c2x and use hexdump directly.
-> >2. remove indent after "case".
-> >3. remove useless export and old scripts like check_env.
-> >4. remove tst_init_iface.
-> >5. remove return value check after setup ipsec env.
-> >6. remove addr config as Alexey said, we assume the address already added.
-> >
-> >Change from V1:
-> >1. update tst_ping() to use default iface and addr. make ping from local side.
-> >2. remove unused variables. add -s option when use tst_rhost_run. Use ROD
-> >    before normal commands.
-> >3. change all "tst_resm TBROK && exit" to "tst_brkm TBROK"
-> >3. still keep tst_init_iface in test icmp4-uni-basic01 because we will
-> >    set_ipv4/6addr each time.
-> >
-> >Hangbin Liu (3):
-> >   lib/test_net.sh: add tst_ping() to check icmp connectivity
-> >   network/stress: add ipsec lib
-> >   network/stress/icmp: add icmp-uni-basic to implement all icmp basic
-> >     stress test
-> >
-> >  runtest/network_stress.icmp                  |  46 +++++++----
-> >  testcases/lib/test_net.sh                    |  30 ++++++++
-> >  testcases/network/stress/icmp/Makefile       |   3 +
-> >  testcases/network/stress/icmp/icmp-uni-basic | 105 +++++++++++++++++++++++++
-> >  testcases/network/stress/ipsec/Makefile      |  28 +++++++
-> >  testcases/network/stress/ipsec/ipsec_lib.sh  | 110 +++++++++++++++++++++++++++
-> >  6 files changed, 308 insertions(+), 14 deletions(-)
-> >  create mode 100755 testcases/network/stress/icmp/icmp-uni-basic
-> >  create mode 100644 testcases/network/stress/ipsec/Makefile
-> >  create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
-> >
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-
-Thanks & Best Regards
-Hangbin Liu <haliu@redhat.com>
-Leo on #kernel-qe, #kernel, #eng-china
+> >+else
+> >+	tst_resm TPASS "Check IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE connectivity"
+> >+fi
+> >+
+> >+tst_exit
