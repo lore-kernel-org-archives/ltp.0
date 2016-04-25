@@ -1,32 +1,30 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 26 Apr 2016 02:36:44 -0400 (EDT)
-Subject: [LTP] [PATCH v2] preadv02/pwritev02: fix EFAULT testcase on
- s390/x
-In-Reply-To: <20160425170440.GG20158@rei.lan>
-References: <e3a027710941487473caf6153595a71306f2fca3.1461603235.git.jstancek@redhat.com>
- <20160425170440.GG20158@rei.lan>
-Message-ID: <2015140466.236217.1461652604378.JavaMail.zimbra@redhat.com>
+From: Philip Li <philip.li@intel.com>
+Date: Mon, 25 Apr 2016 12:25:51 +0800
+Subject: [LTP] CCing LTP ML on LTP test failures
+In-Reply-To: <20160425034815.GA107465@bee>
+References: <20160421162138.GB25307@rei>
+ <20160425034815.GA107465@bee>
+Message-ID: <20160425042551.GC9043@intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Mon, Apr 25, 2016 at 11:48:15AM +0800, Linux Kernel Performance wrote:
+> CC Philip.
+Sure, we will add LTP ML to cc when reporting related issues. Xiaolong/Ying, pls help config this.
 
-
-
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Monday, 25 April, 2016 7:04:40 PM
-> Subject: Re: [LTP] [PATCH v2] preadv02/pwritev02: fix EFAULT testcase on s390/x
 > 
-> Hi!
-> Looks good, acked.
-
-Pushed.
-
-Regards,
-Jan
+> On Thu, Apr 21, 2016 at 06:21:38PM +0200, Cyril Hrubis wrote:
+> > Hi!
+> > Maybe it would be a good idea to CC the LTP ML (ltp@lists.linux.it) when
+> > LTP test failure is found. For instance I stumbled upon this message
+> > by a chance when I was googling for the particular problem:
+> > 
+> > https://lkml.org/lkml/2016/1/24/367
+> > https://lkml.org/lkml/2016/1/25/586
+> > 
+> > -- 
+> > Cyril Hrubis
+> > chrubis@suse.cz
