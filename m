@@ -1,97 +1,85 @@
-From: Jan Kara <jack@suse.cz>
-Date: Tue, 26 Apr 2016 12:42:52 +0200
-Subject: [LTP] [PATCH v2] inotify: Add test for inotify mark destruction
- race
-In-Reply-To: <20160419130543.GA22413@quack2.suse.cz>
-References: <20150811142035.GD2659@quack.suse.cz>
- <20150825092925.GA19905@rei.suse.de>
- <20150825103803.GA15280@quack.suse.cz>
- <20150825112920.GB20082@rei.suse.de>
- <570EFB43.3020704@cn.fujitsu.com>
- <20160414081516.GA2753@quack2.suse.cz>
- <570F5161.7060806@cn.fujitsu.com>
- <20160414084611.GC2753@quack2.suse.cz>
- <57145692.6070205@cn.fujitsu.com>
- <20160419130543.GA22413@quack2.suse.cz>
-Message-ID: <20160426104252.GC27612@quack2.suse.cz>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 26 Apr 2016 13:00:35 +0200
+Subject: [LTP] [RFC] [PATCH] lib/tst_mkfs: Exit with TCONF on missing
+	mkfs.foo
+Message-ID: <20160426110035.GA6780@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue 19-04-16 15:05:43, Jan Kara wrote:
-> Hello!
-> 
-> On Mon 18-04-16 11:37:54, Xiaoguang Wang wrote:
-> > On 04/14/2016 04:46 PM, Jan Kara wrote:
-> > > On Thu 14-04-16 16:14:25, Xiaoguang Wang wrote:
-> > >> On 04/14/2016 04:15 PM, Jan Kara wrote:
-> > >>> Hello,
-> > >>>
-> > >>> On Thu 14-04-16 10:06:59, Xiaoguang Wang wrote:
-> > >>>> On 08/25/2015 07:29 PM, Cyril Hrubis wrote:
-> > >>>>> Hi!
-> > >>>>>> Interesting, probably SRCU is much slower with this older kernel. From my
-> > >>>>>> experiments 100 iterations isn't quite reliable to trigger the oops in my
-> > >>>>>> testing instance. But 400 seem to be good enough.
-> > >>>>>
-> > >>>>> I've changed the nuber of iterations to 400 and pushed it to git,
-> > >>>>> thanks.
-> > >>>>>
-> > >>>>
-> > >>>> In upstream kernel v4.6-rc3-17-g1c74a7f and RHEL7.2GA, I sometimes get such
-> > >>>> error:
-> > >>>> ---------------------------------------------------------------------------
-> > >>>> inotify06    1  TBROK  :  inotify06.c:104: inotify_init failed: errno=EMFILE(24): Too many open files
-> > >>>> inotify06    2  TBROK  :  inotify06.c:104: Remaining cases broken
-> > >>>> ---------------------------------------------------------------------------
-> > >>>> But look at the inotify06.c, inotify_fd is closed every iteration.
-> > >>>> For normal file descriptors, "close(fd) succeeds" does not mean related kernel
-> > >>>> resources have been released immediately(processes may still reference fd).
-> > >>>>
-> > >>>> Then inotify_fd  also has similar behavior? Even close(inotify_fd) returns,
-> > >>>> that does not mean the number of current inotify instances have decreased one
-> > >>>> immediately, then later inotify_init() calls may exceeds the /proc/sys/fs/inotify/max_user_instances and
-> > >>>> return EMFILE error?  I had added some debug code in kernel, it seems that close(inotify_fd)
-> > >>>> does not make sure current inotify instances decreases one immediately.
-> > >>>>
-> > >>>> So I'd like to know this is expected behavior for inotify? If yes, we can
-> > >>>> echo 400 > /proc/sys/fs/inotify/max_user_instances to avoid EMFILE error.
-> > >>>> If not, this is a kernel bug?
-> > >>>
-> > >>> Interesting, I've never seen this. Number of inotify instances is maintaned
-> > >>> immediately - i.e., it is dropped as soon as the last descriptor pointing to
-> > >>> the instance is closed. So I'm not sure how what you describe can happen.
-> > >>> How do you reproduce the issue?
-> > >> I just call ./inotify06 directly, and about 50% chance, it'll fail(return EMFILE).
-> > > 
-> > > Hum, I've just tried 4.6-rc1 which I have running on one test machine and
-> > > it survives hundreds of inotify06 calls in a loop without issues. I have
-> > > max_user_instances set to 128 on that machine... So I suspect the problem
-> > > is somewhere in your exact userspace setup. Aren't there other processes
-> > > using inotify heavily for that user?
-> > I doubted so, but please see my debug results in my virtual machine, it still
-> > seems that it's a kernel issue...
-> > I add some simple debug code to kernel and ltp test case inotify06, and switched
-> > to a normal user "lege" to have a test.
-> 
-> Thanks for the debugging! So I was looking more into the code and I now see
-> what is likely going on. The group references from fsnotify marks are
-> dropped only after srcu period expires and inotify instance count is
-> decreased only after group reference count drops to zero. I will think what
-> we can do about this.
+When mkfs.foo is not installed the tst_mkfs() exits the test with TBROK
+which is not correct as the return should be TCONF instead.
 
-So attached patch should fix the issue. Can you please test it? Thanks!
+To make it exit with TCONF we have to:
 
-								Honza
+* Use mkfs.foo directly instead of the deprecated mkfs wrapper
+  - since the wrapper always exits with 1 in case of any failure
+  - we do that in the shell test.sh already anyway
+
+* Check for the return value from tst_run_cmd()
+  - when execvp() fails the child does _exit(-1)
+    which sets the exit value to 255
+  - this is not ideal as we should examine errno for ENOENT
+    as well, but that would complicate the code since we would
+    have to propagate the reason of the execvp() failure to the
+    parent somehow
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_mkfs.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/lib/tst_mkfs.c b/lib/tst_mkfs.c
+index 7d9c924..c08b09e 100644
+--- a/lib/tst_mkfs.c
++++ b/lib/tst_mkfs.c
+@@ -25,8 +25,9 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+               const char *fs_type, const char *const fs_opts[],
+               const char *extra_opt)
+ {
+-	int i, pos = 3;
+-	const char *argv[OPTS_MAX] = {"mkfs", "-t", fs_type};
++	int i, pos = 1, ret;
++	char mkfs[64];
++	const char *argv[OPTS_MAX] = {mkfs};
+ 	char fs_opts_str[1024] = "";
+ 
+ 	if (!dev)
+@@ -35,6 +36,8 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+ 	if (!fs_type)
+ 		tst_brkm(TBROK, cleanup_fn, "No fs_type specified");
+ 
++	snprintf(mkfs, sizeof(mkfs), "mkfs.%s", mkfs);
++
+ 	if (fs_opts) {
+ 		for (i = 0; fs_opts[i]; i++) {
+ 			argv[pos++] = fs_opts[i];
+@@ -65,7 +68,18 @@ void tst_mkfs(void (cleanup_fn)(void), const char *dev,
+ 
+ 	tst_resm(TINFO, "Formatting %s with %s opts='%s' extra opts='%s'",
+ 	         dev, fs_type, fs_opts_str, extra_opt ? extra_opt : "");
+-	tst_run_cmd(cleanup_fn, argv, "/dev/null", NULL, 0);
++	ret = tst_run_cmd(cleanup_fn, argv, "/dev/null", NULL, 1);
++
++	switch (ret) {
++	case 0:
++	break;
++	case 255:
++		tst_brkm(TCONF, cleanup_fn,
++			 "%s not found in $PATH", mkfs);
++	default:
++		tst_brkm(TBROK, cleanup_fn,
++			 "%s failed with %i", mkfs, ret);
++	}
+ }
+ 
+ const char *tst_dev_fs_type(void)
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-fsnotify-Avoid-spurious-EMFILE-errors-from-inotify_i.patch
-Type: text/x-patch
-Size: 8947 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160426/cfb17d9a/attachment.bin>
+2.7.3
+
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
