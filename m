@@ -1,58 +1,39 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 26 Apr 2016 12:23:33 -0400 (EDT)
-Subject: [LTP] [RFC] [PATCH] lib/tst_mkfs: Exit with TCONF on missing
- mkfs.foo
-In-Reply-To: <20160426122824.GB6766@rei.lan>
-References: <20160426110035.GA6780@rei.lan>
- <781652551.335143.1461671230875.JavaMail.zimbra@redhat.com>
- <20160426122824.GB6766@rei.lan>
-Message-ID: <2047893553.473657.1461687813294.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 26 Apr 2016 20:07:09 +0300
+Subject: [LTP] [PATCH v6 3/3] network/stress/icmp: add icmp-uni-basic to
+ implement all icmp basic stress test
+In-Reply-To: <1461550866-21003-4-git-send-email-haliu@redhat.com>
+References: <1461550866-21003-1-git-send-email-haliu@redhat.com>
+ <1461550866-21003-4-git-send-email-haliu@redhat.com>
+Message-ID: <571FA03D.7000906@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hangbin,
+On 04/25/2016 05:21 AM, Hangbin Liu wrote:
+> ...
+> +# The test case ID, the test case count and the total number of test case
+I meant this particular line above :)
+> ...
+> +tst_ping $lhost_ifname $rhost_addr $ICMP_SIZE_ARRAY
+> +if [ $? -ne 0 ]; then
+> +	tst_brkm TFAIL "Check IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE connectivity "
 
+tst_brkm not needed here as well
 
+> +else
+> +	tst_resm TPASS "Check IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE connectivity"
+> +fi
+> +
+> +tst_exit
 
+Cyril,
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Tuesday, 26 April, 2016 2:28:25 PM
-> Subject: Re: [LTP] [RFC] [PATCH] lib/tst_mkfs: Exit with TCONF on missing mkfs.foo
-> 
-> Hi!
-> > diff --git a/lib/tst_run_cmd.c b/lib/tst_run_cmd.c
-> > index a54d46878940..e58b639e94af 100644
-> > --- a/lib/tst_run_cmd.c
-> > +++ b/lib/tst_run_cmd.c
-> > @@ -71,7 +71,12 @@ int tst_run_cmd_fds_(void (cleanup_fn)(void),
-> >                         dup2(stderr_fd, STDERR_FILENO);
-> >                 }
-> >  
-> > -               _exit(execvp(argv[0], (char *const *)argv));
-> > +               if (execvp(argv[0], (char *const *)argv) == -1) {
-> > +                       if (errno == ENOENT)
-> > +                               _exit(255);
-> > +                       else
-> > +                               _exit(errno);
-> 
-> I'm not 100% sure if we want to set the errno as an exit value since for
-> instance EPERM == 1 which would be indistinguishable from most of the
-> command failures.
-> 
-> Maybe we can exit with 255 on ENOENT and with 254 otherwise.
+Do you have any objections to pushing the patch-set before release?
 
-Fine by me, I just wanted to avoid hiding every error under TCONF.
+Thanks,
+Alexey
 
-Regards,
-Jan
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
