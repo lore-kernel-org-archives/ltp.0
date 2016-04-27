@@ -1,194 +1,96 @@
-From: Hangbin Liu <haliu@redhat.com>
-Date: Wed, 27 Apr 2016 10:29:30 +0800
-Subject: [LTP] [PATCH v7 3/3] network/stress/icmp: add icmp-uni-basic to
-	implement all icmp basic stress test
-In-Reply-To: <1461724170-19580-1-git-send-email-haliu@redhat.com>
-References: <1461724170-19580-1-git-send-email-haliu@redhat.com>
-Message-ID: <1461724170-19580-4-git-send-email-haliu@redhat.com>
+From: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
+Date: Wed, 27 Apr 2016 12:48:54 +0800
+Subject: [LTP] [PATCH v2] inotify: Add test for inotify mark destruction
+ race
+In-Reply-To: <20160426104252.GC27612@quack2.suse.cz>
+References: <20150811142035.GD2659@quack.suse.cz>
+ <20150825092925.GA19905@rei.suse.de> <20150825103803.GA15280@quack.suse.cz>
+ <20150825112920.GB20082@rei.suse.de> <570EFB43.3020704@cn.fujitsu.com>
+ <20160414081516.GA2753@quack2.suse.cz> <570F5161.7060806@cn.fujitsu.com>
+ <20160414084611.GC2753@quack2.suse.cz> <57145692.6070205@cn.fujitsu.com>
+ <20160419130543.GA22413@quack2.suse.cz>
+ <20160426104252.GC27612@quack2.suse.cz>
+Message-ID: <572044B6.5040503@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add icmp-uni-basic to implement the test case and define each test case in
-"runtest/" and use parameters. Also use ip xfrm instead of setkey for ipsec
-testing.
+hello,
 
-Signed-off-by: Hangbin Liu <haliu@redhat.com>
----
- runtest/network_stress.icmp                  | 46 +++++++++-----
- testcases/network/stress/icmp/Makefile       |  3 +
- testcases/network/stress/icmp/icmp-uni-basic | 90 ++++++++++++++++++++++++++++
- 3 files changed, 125 insertions(+), 14 deletions(-)
- create mode 100755 testcases/network/stress/icmp/icmp-uni-basic
+On 04/26/2016 06:42 PM, Jan Kara wrote:
+> On Tue 19-04-16 15:05:43, Jan Kara wrote:
+>> Hello!
+>>
+>> On Mon 18-04-16 11:37:54, Xiaoguang Wang wrote:
+>>> On 04/14/2016 04:46 PM, Jan Kara wrote:
+>>>> On Thu 14-04-16 16:14:25, Xiaoguang Wang wrote:
+>>>>> On 04/14/2016 04:15 PM, Jan Kara wrote:
+>>>>>> Hello,
+>>>>>>
+>>>>>> On Thu 14-04-16 10:06:59, Xiaoguang Wang wrote:
+>>>>>>> On 08/25/2015 07:29 PM, Cyril Hrubis wrote:
+>>>>>>>> Hi!
+>>>>>>>>> Interesting, probably SRCU is much slower with this older kernel. From my
+>>>>>>>>> experiments 100 iterations isn't quite reliable to trigger the oops in my
+>>>>>>>>> testing instance. But 400 seem to be good enough.
+>>>>>>>>
+>>>>>>>> I've changed the nuber of iterations to 400 and pushed it to git,
+>>>>>>>> thanks.
+>>>>>>>>
+>>>>>>>
+>>>>>>> In upstream kernel v4.6-rc3-17-g1c74a7f and RHEL7.2GA, I sometimes get such
+>>>>>>> error:
+>>>>>>> ---------------------------------------------------------------------------
+>>>>>>> inotify06    1  TBROK  :  inotify06.c:104: inotify_init failed: errno=EMFILE(24): Too many open files
+>>>>>>> inotify06    2  TBROK  :  inotify06.c:104: Remaining cases broken
+>>>>>>> ---------------------------------------------------------------------------
+>>>>>>> But look at the inotify06.c, inotify_fd is closed every iteration.
+>>>>>>> For normal file descriptors, "close(fd) succeeds" does not mean related kernel
+>>>>>>> resources have been released immediately(processes may still reference fd).
+>>>>>>>
+>>>>>>> Then inotify_fd  also has similar behavior? Even close(inotify_fd) returns,
+>>>>>>> that does not mean the number of current inotify instances have decreased one
+>>>>>>> immediately, then later inotify_init() calls may exceeds the /proc/sys/fs/inotify/max_user_instances and
+>>>>>>> return EMFILE error?  I had added some debug code in kernel, it seems that close(inotify_fd)
+>>>>>>> does not make sure current inotify instances decreases one immediately.
+>>>>>>>
+>>>>>>> So I'd like to know this is expected behavior for inotify? If yes, we can
+>>>>>>> echo 400 > /proc/sys/fs/inotify/max_user_instances to avoid EMFILE error.
+>>>>>>> If not, this is a kernel bug?
+>>>>>>
+>>>>>> Interesting, I've never seen this. Number of inotify instances is maintaned
+>>>>>> immediately - i.e., it is dropped as soon as the last descriptor pointing to
+>>>>>> the instance is closed. So I'm not sure how what you describe can happen.
+>>>>>> How do you reproduce the issue?
+>>>>> I just call ./inotify06 directly, and about 50% chance, it'll fail(return EMFILE).
+>>>>
+>>>> Hum, I've just tried 4.6-rc1 which I have running on one test machine and
+>>>> it survives hundreds of inotify06 calls in a loop without issues. I have
+>>>> max_user_instances set to 128 on that machine... So I suspect the problem
+>>>> is somewhere in your exact userspace setup. Aren't there other processes
+>>>> using inotify heavily for that user?
+>>> I doubted so, but please see my debug results in my virtual machine, it still
+>>> seems that it's a kernel issue...
+>>> I add some simple debug code to kernel and ltp test case inotify06, and switched
+>>> to a normal user "lege" to have a test.
+>>
+>> Thanks for the debugging! So I was looking more into the code and I now see
+>> what is likely going on. The group references from fsnotify marks are
+>> dropped only after srcu period expires and inotify instance count is
+>> decreased only after group reference count drops to zero. I will think what
+>> we can do about this.
+> 
+> So attached patch should fix the issue. Can you please test it? Thanks!
+Yes, it works, now inotify06 will always pass in my test machine, thanks very much!
 
-diff --git a/runtest/network_stress.icmp b/runtest/network_stress.icmp
-index 29b52d1..ba30200 100644
---- a/runtest/network_stress.icmp
-+++ b/runtest/network_stress.icmp
-@@ -2,21 +2,39 @@
- # Stress test for TCP/IP protocol stack (ICMP)
- #
- 
--icmp4-uni-basic01 icmp4-uni-basic01
--icmp4-uni-basic02 icmp4-uni-basic02
--icmp4-uni-basic03 icmp4-uni-basic03
--icmp4-uni-basic04 icmp4-uni-basic04
--icmp4-uni-basic05 icmp4-uni-basic05
--icmp4-uni-basic06 icmp4-uni-basic06
--icmp4-uni-basic07 icmp4-uni-basic07
-+# MAX_LENGTH(65535) - IP(20) - ICMP(8) = MAX_SIZE(65507)
-+icmp4-uni-basic01 icmp-uni-basic -s "10 100 1000 10000 65507"
-+# MAX_LENGTH(65535) - IP(20) - AH(24) - ICMP(8) = MAX_SIZE(65483)
-+icmp4-uni-basic02 icmp-uni-basic -p ah -m transport -s "10 100 1000 10000 65483"
-+# MAX_LENGTH(65535) - IP(20) - AH(24) - Tunnel(IPv4 20) - ICMP(8) = MAX_SIZE(65463)
-+icmp4-uni-basic03 icmp-uni-basic -p ah -m tunnel -s "10 100 1000 10000 65463"
-+# MAX_LENGTH(65535) - IP(20) - ESP (37) - ICMP(8) = MAX_SIZE(65470)
-+# ESP Header has pad payload, so the ESP length is variable
-+icmp4-uni-basic04 icmp-uni-basic -p esp -m transport -s "10 100 1000 10000 65470"
-+# MAX_LENGTH(65535) - IP(20) - ESP (37) - Tunnel(20) - ICMP(8) = MAX_SIZE(65450)
-+icmp4-uni-basic05 icmp-uni-basic -p esp -m tunnel -s "10 100 1000 10000 65450"
-+# Same message size but different content will result in different data size
-+# after compression. So we just use a large enough message size(65000) for testing
-+icmp4-uni-basic06 icmp-uni-basic -p ipcomp -m transport -s "10 100 1000 10000 65000"
-+icmp4-uni-basic07 icmp-uni-basic -p ipcomp -m tunnel -s "10 100 1000 10000 65000"
- 
--icmp6-uni-basic01 icmp6-uni-basic01
--icmp6-uni-basic02 icmp6-uni-basic02
--icmp6-uni-basic03 icmp6-uni-basic03
--icmp6-uni-basic04 icmp6-uni-basic04
--icmp6-uni-basic05 icmp6-uni-basic05
--icmp6-uni-basic06 icmp6-uni-basic06
--icmp6-uni-basic07 icmp6-uni-basic07
-+# MAX_LENGTH(65535) - ICMP(8) = MAX_SIZE(65527)
-+icmp6-uni-basic01 icmp-uni-basic -6 -s "10 100 1000 10000 65527"
-+# MAX_LENGTH(65535) - AH(24) - ICMP(8) = MAX_SIZE(65503)
-+icmp6-uni-basic02 icmp-uni-basic -6 -p ah -m transport -s "10 100 1000 10000 65503"
-+# MAX_LENGTH(65535) - ICMP(8) = MAX_SIZE(65527)
-+# When receive, we drop the tunnel header first and only leave the inside IPv6
-+# Header and icmp message. That's why we can have so large message size.
-+icmp6-uni-basic03 icmp-uni-basic -6 -p ah -m tunnel -s "10 100 1000 10000 65527"
-+# MAX_LENGTH(65535) - ESP (33) - ICMP(8) = MAX_SIZE(65494)
-+# ESP Header has pad payload, so the ESP length is variable
-+icmp6-uni-basic04 icmp-uni-basic -6 -p esp -m transport -s "10 100 1000 10000 65494"
-+# MAX_LENGTH(65535) - ICMP(8) = MAX_SIZE(65527)
-+icmp6-uni-basic05 icmp-uni-basic -6 -p esp -m tunnel -s "10 100 1000 10000 65527"
-+# Same message size but different content will result in different data size
-+# after compression. So we just use a large enough message size(65000) for testing
-+icmp6-uni-basic06 icmp-uni-basic -6 -p ipcomp -m transport -s "10 100 1000 10000 65000"
-+icmp6-uni-basic07 icmp-uni-basic -6 -p ipcomp -m tunnel -s "10 100 1000 10000 65000"
- 
- icmp4-multi-diffip01 icmp4-multi-diffip01
- icmp4-multi-diffip02 icmp4-multi-diffip02
-diff --git a/testcases/network/stress/icmp/Makefile b/testcases/network/stress/icmp/Makefile
-index 0dad1d1..9310aa1 100644
---- a/testcases/network/stress/icmp/Makefile
-+++ b/testcases/network/stress/icmp/Makefile
-@@ -23,4 +23,7 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
-+
-+INSTALL_TARGETS		:= icmp*
-+
- include $(top_srcdir)/include/mk/generic_trunk_target.mk
-diff --git a/testcases/network/stress/icmp/icmp-uni-basic b/testcases/network/stress/icmp/icmp-uni-basic
-new file mode 100755
-index 0000000..cbb1fa9
---- /dev/null
-+++ b/testcases/network/stress/icmp/icmp-uni-basic
-@@ -0,0 +1,90 @@
-+#!/bin/sh
-+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, see <http://www.gnu.org/licenses/>.
-+#
-+# Author: Hangbin Liu <haliu@redhat.com>
-+#
-+################################################################################
-+TCID=${TCID:-icmp-uni-basic}
-+TST_TOTAL=1
-+TST_COUNT=1
-+TST_CLEANUP="tst_ipsec_cleanup"
-+
-+. ipsec_lib.sh
-+
-+while getopts "hl:m:p:s:S:6" opt; do
-+	case "$opt" in
-+	h)
-+		echo "Usage:"
-+		echo "h        help"
-+		echo "l n      n is the number of test link when tests run"
-+		echo "m x      x is ipsec mode, could be transport / tunnel"
-+		echo "p x      x is ipsec protocol, could be ah / esp / ipcomp"
-+		echo "s x      x is icmp messge size array"
-+		echo "S n      n is IPsec SPI value"
-+		echo "6        run over IPv6"
-+		exit 0
-+	;;
-+	l) LINK_NUM=$OPTARG ;;
-+	m) IPSEC_MODE=$OPTARG ;;
-+	p) IPSEC_PROTO=$OPTARG ;;
-+	s) ICMP_SIZE_ARRAY=$OPTARG ;;
-+	S) SPI=$OPTARG ;;
-+	6) # skip, test_net library already processed it
-+	;;
-+	*) tst_brkm TBROK "unknown option: $opt" ;;
-+	esac
-+done
-+
-+SPI=${SPI:-1000}
-+LINK_NUM=${LINK_NUM:-0}
-+DO_IPSEC=${DO_IPSEC:-false}
-+ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65507"}
-+[ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ] && DO_IPSEC=true || DO_IPSEC=false
-+
-+# Test description
-+tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message with the following conditions"
-+tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
-+tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
-+
-+if $DO_IPSEC; then
-+	case $IPSEC_PROTO in
-+	ah)	tst_resm TINFO "- IPsec [ AH / $IPSEC_MODE ]" ;;
-+	esp)	tst_resm TINFO "- IPsec [ ESP / $IPSEC_MODE ]" ;;
-+	ipcomp)	tst_resm TINFO "- IPcomp [ $IPSEC_MODE ]" ;;
-+	esac
-+fi
-+
-+# name of interface of the local/remote host
-+lhost_ifname=$(tst_iface lhost $LINK_NUM)
-+rhost_ifname=$(tst_iface rhost $LINK_NUM)
-+
-+lhost_addr=$(tst_ipaddr)
-+rhost_addr=$(tst_ipaddr rhost)
-+
-+# Configure SAD/SPD
-+if $DO_IPSEC ; then
-+	tst_ipsec lhost $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
-+	tst_ipsec rhost $IPSEC_PROTO $IPSEC_MODE $SPI $rhost_addr $lhost_addr
-+fi
-+
-+tst_ping $lhost_ifname $rhost_addr $ICMP_SIZE_ARRAY
-+if [ $? -ne 0 ]; then
-+	tst_resm TFAIL "Check IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE connectivity"
-+else
-+	tst_resm TPASS "Check IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE connectivity"
-+fi
-+
-+tst_exit
--- 
-2.5.5
+Regards,
+Xiaoguang Wang
+
+> 
+> 								Honza
+> 
+
+
 
