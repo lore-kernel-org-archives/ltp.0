@@ -1,43 +1,59 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Wed, 27 Apr 2016 10:29:27 +0800
-Subject: [LTP] [PATCH v7 0/3] networking/stress/icmp: add ip xfrm ipsec
-	support
-Message-ID: <1461724170-19580-1-git-send-email-haliu@redhat.com>
+Date: Wed, 27 Apr 2016 10:29:28 +0800
+Subject: [LTP] [PATCH v7 1/3] lib/test_net.sh: add tst_ping() to check icmp
+	connectivity
+In-Reply-To: <1461724170-19580-1-git-send-email-haliu@redhat.com>
+References: <1461724170-19580-1-git-send-email-haliu@redhat.com>
+Message-ID: <1461724170-19580-2-git-send-email-haliu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-As we know, most of the network stress tests have IPsec testing, and we use
-setkey for configuration. But setkey[1] hasn't updated for a long time. And
-some distros, RHEL7 for example, even don't have ipset-tools package. On
-other hand, iproute2 is recommend for network configuration. And ip xfrm is
-more powerful than setkey. So let's use ip xfrm for ipsec testing.
+Signed-off-by: Hangbin Liu <haliu@redhat.com>
+---
+ testcases/lib/test_net.sh | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
 
-[1] http://ipsec-tools.sourceforge.net/
-
-Change from V6:
-1. remove useless description
-2. use tst_resm instead of tst_brkm after tst_ping
-
-Hangbin Liu (3):
-  lib/test_net.sh: add tst_ping() to check icmp connectivity
-  network/stress: add ipsec lib
-  network/stress/icmp: add icmp-uni-basic to implement all icmp basic
-    stress test
-
- runtest/network_stress.icmp                  |  46 +++++++----
- testcases/lib/test_net.sh                    |  30 ++++++++
- testcases/network/stress/icmp/Makefile       |   3 +
- testcases/network/stress/icmp/icmp-uni-basic |  90 ++++++++++++++++++++++
- testcases/network/stress/ipsec/Makefile      |  28 +++++++
- testcases/network/stress/ipsec/ipsec_lib.sh  | 110 +++++++++++++++++++++++++++
- 6 files changed, 293 insertions(+), 14 deletions(-)
- create mode 100755 testcases/network/stress/icmp/icmp-uni-basic
- create mode 100644 testcases/network/stress/ipsec/Makefile
- create mode 100644 testcases/network/stress/ipsec/ipsec_lib.sh
-
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 418fed3..57728c9 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -314,3 +314,33 @@ tst_netload()
+ 
+ 	return $ret
+ }
++
++# tst_ping [IFACE] [DST ADDR] [MESSAGE SIZE ARREY]
++# Check icmp connectivity
++# IFACE: source interface name
++# DST ADDR: destination IPv4 or IPv6 address
++# MESSAGE SIZE ARREY: message size arrey
++tst_ping()
++{
++	# The max number of ICMP echo request
++	PING_MAX=${PING_MAX:-"10"}
++
++	local src_iface=${1:-"$(tst_iface)"}
++	local dst_addr=${2:-"$(tst_ipaddr rhost)"}
++	local msg_sizes=${@:3}
++	local ret=0
++
++	# ping cmd use 56 as default message size
++	for size in ${msg_sizes:-"56"}; do
++		ping$TST_IPV6 -I $src_iface -c $PING_MAX $dst_addr \
++			-s $size > /dev/null 2>&1
++		ret=$?
++		if [ $ret -eq 0 ]; then
++			tst_resm TINFO "tst_ping IPv${TST_IPV6:-4} msg_size $size pass"
++		else
++			tst_resm TINFO "tst_ping IPv${TST_IPV6:-4} msg_size $size fail"
++			break
++		fi
++	done
++	return $ret
++}
 -- 
 2.5.5
 
