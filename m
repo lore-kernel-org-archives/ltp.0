@@ -1,282 +1,214 @@
-From: Julio Cruz Barroso <julio.cruz@smartmatic.com>
-Date: Thu, 28 Apr 2016 03:43:00 +0000
-Subject: [LTP] [PATCH-v2] getrusage03: check available memory and move
- initial allocation out test loop
-In-Reply-To: <211948720.2646203.1460970666834.JavaMail.zimbra@redhat.com>
-References: <1460023301-25626-1-git-send-email-jcsistemas2001@gmail.com>
- <211948720.2646203.1460970666834.JavaMail.zimbra@redhat.com>
-Message-ID: <AF04265A3FC2B144B9892F621A394E13EA46103E@tethys>
+From: Julio Cruz <jcsistemas2001@gmail.com>
+Date: Thu, 28 Apr 2016 12:31:03 +0800
+Subject: [LTP]  [PATCH-v4] getrusage03: check available memory
+Message-ID: <1461817863-6962-1-git-send-email-jcsistemas2001@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+From: Julio Cruz <julio.cruz@smartmatic.com>
 
-Thanks for show this point. For me the results are similar, getting different values with _SC_AVPHYS_PAGES and MemAvailable:
+This patch check the available memory before to perform the different test cases. If the memory is not enough (according with each test case), the test finish as TCONF.
+This could be usefull when you are testing on embedded devices with RAM memory limitation (i.e. 512MB) This patch no changed the test case procedure and is still valid for non-embedded devices. It just verify the available memory.
+The patch also solve an issue with the initial allocation moving the call 'consume' before the test loop.
+During testing to obtain available memory, _SC_AVPHYS_PAGES and MemAvailable get different results. sysconf(_SC_AVPHYS_PAGES) was replaced by MemAvailable (if present) or MemFree+Cached from /proc/meminfo.
 
-- Using _SC_AVPHYS_PAGES Available memory is 610MB
+The patch was tested with different board configurations (512MB and 1GB) including various DEFAULT_ALLOC_MB constants
 
-$free -m
-              total        used        free      shared  buff/cache   available
-Mem:           1005         150         631           6         223         828
-Swap:             0           0           0
+checkpatch.pl return total: 0 errors, 0 warnings, 168 lines checked
 
+Signed-off-by: Julio Cruz <jcsistemas2001@gmail.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>; 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-- Using MemAvailable available memory is 827MB
+---
+ testcases/kernel/syscalls/getrusage/getrusage03.c | 95 ++++++++++++++++++++---
+ 1 file changed, 85 insertions(+), 10 deletions(-)
 
-$free -m
-              total        used        free      shared  buff/cache   available
-Mem:           1005         150         631           6         223         828
-Swap:             0           0           0
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
+index 54cdc83..7176321 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage03.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+@@ -37,6 +37,7 @@
+ #include <signal.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <stdbool.h>
+ #include <string.h>
+ 
+ #include "test.h"
+@@ -45,7 +46,8 @@
+ char *TCID = "getrusage03";
+ int TST_TOTAL = 1;
+ 
+-#define DELTA_MAX	10240
++#define DELTA_MAX	        10240
++#define DEFAULT_ALLOC_MB	100
+ 
+ static struct rusage ru;
+ static long maxrss_init;
+@@ -65,6 +67,62 @@ static void consume(int mega);
+ static void setup(void);
+ static void cleanup(void);
+ 
++#define PATH_MEMINFO		"/proc/meminfo"
++#define KB			(1UL<<10)
++
++/* Based on read_meminfo() from kernel/mem/lib/mem.c */
++long read_meminfo(char *item, bool check)
++{
++	FILE *fp;
++	char line[BUFSIZ], buf[BUFSIZ];
++	long val;
++
++	fp = fopen(PATH_MEMINFO, "r");
++	if (fp == NULL && !check)
++		tst_brkm(TBROK | TERRNO, cleanup, "fopen %s", PATH_MEMINFO);
++
++	while (fgets(line, BUFSIZ, fp) != NULL) {
++		if (sscanf(line, "%64s %ld", buf, &val) == 2)
++			if (strcmp(buf, item) == 0) {
++				fclose(fp);
++				return val;
++			}
++		continue;
++	}
++	fclose(fp);
++
++	if (!check)
++		tst_brkm(TBROK, cleanup, "cannot find \"%s\" in %s",
++			 item, PATH_MEMINFO);
++
++	return -1;
++}
++
++unsigned long get_available_memory_mb(void)
++{
++	unsigned long available_mem = 0;
++	long mem_free, mem_cached, mem_available;
++
++	/* If MemAvailable is present, used it */
++	mem_available = read_meminfo("MemAvailable:", false);
++	if (mem_available >= 0) {
++		tst_resm(TINFO, "Using MemAvailable (%luMB)",
++			mem_available / KB);
++		return mem_available / KB;
++	}
++
++	/* Otherwise use MemFree+Cached */
++	mem_free = read_meminfo("MemFree:", false);
++	if (mem_free >= 0)
++		available_mem += mem_free / KB;
++	mem_cached = read_meminfo("Cached:", false);
++	if (mem_cached >= 0)
++		available_mem += mem_cached / KB;
++	tst_resm(TINFO, "The current MemFree+Cached (%lu+%luMB)",
++		mem_free / KB, mem_cached / KB);
++	return available_mem;
++}
++
+ int main(int argc, char *argv[])
+ {
+ 	int lc;
+@@ -73,12 +131,16 @@ int main(int argc, char *argv[])
+ 
+ 	setup();
+ 
++	tst_resm(TINFO, "Available memory: %luMB", get_available_memory_mb());
++	if (get_available_memory_mb() < DEFAULT_ALLOC_MB)
++		tst_brkm(TCONF, cleanup, "Not enough memory");
++
++	tst_resm(TINFO, "allocate %dMB", DEFAULT_ALLOC_MB);
++	consume(DEFAULT_ALLOC_MB);
++
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+ 		tst_count = 0;
+ 
+-		tst_resm(TINFO, "allocate 100MB");
+-		consume(100);
+-
+ 		inherit_fork();
+ 		inherit_fork2();
+ 		fork_malloc();
+@@ -95,11 +157,13 @@ int main(int argc, char *argv[])
+  * expect: initial.self ~= child.self */
+ static void inherit_fork(void)
+ {
+-	tst_resm(TINFO, "Testcase #01: fork inherit");
+-
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+ 	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
+ 
++	tst_resm(TINFO, "Testcase #01: fork inherit");
++	if (get_available_memory_mb() < DEFAULT_ALLOC_MB)
++		tst_brkm(TCONF, cleanup, "Not enough memory");
++
+ 	switch (pid = fork()) {
+ 	case -1:
+ 		tst_brkm(TBROK | TERRNO, cleanup, "fork #1");
+@@ -119,17 +183,19 @@ static void inherit_fork(void)
+ }
+ 
+ /* Testcase #02: fork inherit (cont.)
+- * expect: initial.children ~= 100MB, child.children = 0 */
++ * expect: initial.children ~= DEFAULT_ALLOC_MB, child.children = 0 */
+ static void inherit_fork2(void)
+ {
+-	tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
++	tst_resm(TINFO, "Testcase #02: fork inherit cont.");
++	if (get_available_memory_mb() < DEFAULT_ALLOC_MB)
++		tst_brkm(TCONF, cleanup, "Not enough memory");
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+ 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+ 	if (is_in_delta(ru.ru_maxrss - 102400))
+-		tst_resm(TPASS, "initial.children ~= 100MB");
++		tst_resm(TPASS, "initial.children ~= %dMB", DEFAULT_ALLOC_MB);
+ 	else
+-		tst_resm(TFAIL, "initial.children !~= 100MB");
++		tst_resm(TFAIL, "initial.children !~= %dMB", DEFAULT_ALLOC_MB);
+ 
+ 	switch (pid = fork()) {
+ 	case -1:
+@@ -153,6 +219,8 @@ static void inherit_fork2(void)
+ static void fork_malloc(void)
+ {
+ 	tst_resm(TINFO, "Testcase #03: fork + malloc");
++	if (get_available_memory_mb() < (DEFAULT_ALLOC_MB+50))
++		tst_brkm(TCONF, cleanup, "Not enough memory");
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
+ 	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
+@@ -182,6 +250,9 @@ static void fork_malloc(void)
+ static void grandchild_maxrss(void)
+ {
+ 	tst_resm(TINFO, "Testcase #04: grandchild maxrss");
++	if (get_available_memory_mb() <= (DEFAULT_ALLOC_MB+300))
++		tst_brkm(TCONF, cleanup, "Not enough memory");
++
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+ 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+@@ -216,6 +287,8 @@ static void grandchild_maxrss(void)
+ static void zombie(void)
+ {
+ 	tst_resm(TINFO, "Testcase #05: zombie");
++	if (get_available_memory_mb() <= (DEFAULT_ALLOC_MB+400))
++		tst_brkm(TCONF, cleanup, "Not enough memory");
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+ 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+@@ -259,6 +332,8 @@ static void zombie(void)
+ static void sig_ign(void)
+ {
+ 	tst_resm(TINFO, "Testcase #06: SIG_IGN");
++	if (get_available_memory_mb() <= (DEFAULT_ALLOC_MB+500))
++		tst_brkm(TCONF, cleanup, "Not enough memory to run test case");
+ 
+ 	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
+ 	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
+-- 
+1.9.1
 
-I created read_meminfo(char *item, bool check) based on read_meminfo() from kernel/mem/lib/mem.c as you suggested. The function will check MemAvailable and if not exist, it will use MemFree+Cached.
-
-For now, I place the function on the same test case (I know could be code duplication!). I will appreciated if you could arrange it on a better place. 
-
-I send another version in some minutes, so you could recheck.
-
-Regards
-
-Julio
-
-> -----Original Message-----
-> From: Jan Stancek [mailto:jstancek@redhat.com]
-> Sent: Monday, April 18, 2016 5:11 PM
-> To: Julio Cruz
-> Cc: Julio Cruz Barroso; ltp@lists.linux.it
-> Subject: Re: [LTP] [PATCH-v2] getrusage03: check available memory and
-> move initial allocation out test loop
-> 
-> 
-> 
-> 
-> 
-> ----- Original Message -----
-> > From: "Julio Cruz" <jcsistemas2001@gmail.com>
-> > To: "julio cruz" <julio.cruz@smartmatic.com>, ltp@lists.linux.it, "Jan
-> > Stancek" <jstancek@redhat.com>
-> > Cc: "Julio Cruz" <jcsistemas2001@gmail.com>
-> > Sent: Thursday, 7 April, 2016 12:01:41 PM
-> > Subject: [LTP] [PATCH-v2] getrusage03: check available memory and move
-> > initial allocation out test loop
-> >
-> > From: Julio Cruz <julio.cruz@smartmatic.com>
-> >
-> > This patch check the available memory before to perform the different
-> > test cases. If the memory is not enough (according with each test
-> > case), the test finish as TCONF.
-> > This could be usefull when you are testing on embedded devices with
-> > RAM memory limitation (i.e. 512MB) This patch no changed the test case
-> > procedure and is still valid for non-embedded devices. It just verify
-> > the available memory.
-> > The patch also solve an issue with the initial allocation moving the
-> > call 'consume' before the test loop.
-> >
-> > The patch was tested with different board configurations (512MB and
-> > 1GB) including various DEFAULT_ALLOC_MB constants
-> >
-> > checkpatch.pl return total: 0 errors, 0 warnings, 129 lines checked
-> >
-> > Signed-off-by: Julio Cruz <jcsistemas2001@gmail.com>
-> >
-> > ---
-> >  testcases/kernel/syscalls/getrusage/getrusage03.c | 56
-> >  +++++++++++++++++------
-> >  1 file changed, 41 insertions(+), 15 deletions(-)
-> >
-> > diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c
-> > b/testcases/kernel/syscalls/getrusage/getrusage03.c
-> > index 54cdc83..f3d048f 100644
-> > --- a/testcases/kernel/syscalls/getrusage/getrusage03.c
-> > +++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
-> > @@ -45,7 +45,8 @@
-> >  char *TCID = "getrusage03";
-> >  int TST_TOTAL = 1;
-> >
-> > -#define DELTA_MAX	10240
-> > +#define DELTA_MAX	        10240
-> > +#define DEFAULT_ALLOC_MB	100
-> >
-> >  static struct rusage ru;
-> >  static long maxrss_init;
-> > @@ -65,6 +66,14 @@ static void consume(int mega);  static void
-> > setup(void);  static void cleanup(void);
-> >
-> > +unsigned long get_available_memory_mb(void) {
-> > +	unsigned long long ps, pn;
-> > +	ps = sysconf(_SC_PAGESIZE);
-> > +	pn = sysconf(_SC_AVPHYS_PAGES);
-> > +	return (ps / 1024) * pn / 1024;
-> > +}
-> 
-> Hi,
-> 
-> sorry for late response.
-> 
-> I'm thinking we should replace this with MemFree+Cached or MemAvailable
-> (if present) from /proc/meminfo because _SC_AVPHYS_PAGES is hitting
-> TCONF even on my laptop with 8GB RAM:
-> 
-> $ ./getrusage03
-> getrusage03    0  TINFO  :  Available mem: 474 MB
-> getrusage03    0  TINFO  :  allocate 100 MB
-> getrusage03    0  TINFO  :  initial.self = 103016
-> getrusage03    0  TINFO  :  Testcase #01: fork inherit
-> getrusage03    0  TINFO  :  child.self = 102544
-> getrusage03    1  TPASS  :  initial.self ~= child.self
-> getrusage03    0  TINFO  :  Testcase #02: fork inherit cont.
-> getrusage03    0  TINFO  :  initial.children = 102856
-> getrusage03    2  TPASS  :  initial.children ~= 100MB
-> getrusage03    0  TINFO  :  child.children = 0
-> getrusage03    3  TPASS  :  child.children == 0
-> getrusage03    0  TINFO  :  Testcase #03: fork + malloc
-> getrusage03    0  TINFO  :  initial.self = 103264
-> getrusage03    0  TINFO  :  child allocate +50MB
-> getrusage03    0  TINFO  :  child.self = 153700
-> getrusage03    4  TPASS  :  initial.self + 50MB ~= child.self
-> getrusage03    0  TINFO  :  Testcase #04: grandchild maxrss
-> getrusage03    5  TCONF  :  getrusage03.c:206: Not enough memory
-> getrusage03    6  TCONF  :  getrusage03.c:206: Remaining cases not
-> appropriate for configuration
-> 
-> $ free -m
->               total        used        free      shared  buff/cache   available
-> Mem:           7524        3921         479         926        3123        2236
-> Swap:          8191        1140        7051
-> 
-> We should probably move read_meminfo() from kernel/mem/lib/mem.c to
-> lib/ somewhere, maybe with a new parameter that would allow us to skip
-> TBROK.
-> 
-> > +
-> >  int main(int argc, char *argv[])
-> >  {
-> >  	int lc;
-> > @@ -73,12 +82,16 @@ int main(int argc, char *argv[])
-> >
-> >  	setup();
-> >
-> > +	tst_resm(TINFO, "Available memory: %ldMB\n",
-> > +get_available_memory_mb());
-> 
-> %lu
-> 
-> > +	if (get_available_memory_mb() < DEFAULT_ALLOC_MB)
-> > +		tst_brkm(TCONF, cleanup, "Not enough memory\n");
-> 
-> Newline is not necessary.
-> 
-> Regards,
-> Jan
-> 
-> > +
-> > +	tst_resm(TINFO, "allocate %dMB", DEFAULT_ALLOC_MB);
-> > +	consume(DEFAULT_ALLOC_MB);
-> > +
-> >  	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> >  		tst_count = 0;
-> >
-> > -		tst_resm(TINFO, "allocate 100MB");
-> > -		consume(100);
-> > -
-> >  		inherit_fork();
-> >  		inherit_fork2();
-> >  		fork_malloc();
-> > @@ -95,11 +108,13 @@ int main(int argc, char *argv[])
-> >   * expect: initial.self ~= child.self */  static void
-> > inherit_fork(void)  {
-> > -	tst_resm(TINFO, "Testcase #01: fork inherit");
-> > -
-> >  	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
-> >  	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss);
-> >
-> > +	tst_resm(TINFO, "Testcase #01: fork inherit");
-> > +	if (get_available_memory_mb() < DEFAULT_ALLOC_MB)
-> > +		tst_brkm(TCONF, cleanup, "Not enough memory\n");
-> > +
-> >  	switch (pid = fork()) {
-> >  	case -1:
-> >  		tst_brkm(TBROK | TERRNO, cleanup, "fork #1"); @@ -119,17
-> +134,19 @@
-> > static void inherit_fork(void)  }
-> >
-> >  /* Testcase #02: fork inherit (cont.)
-> > - * expect: initial.children ~= 100MB, child.children = 0 */
-> > + * expect: initial.children ~= DEFAULT_ALLOC_MB, child.children = 0
-> > + */
-> >  static void inherit_fork2(void)
-> >  {
-> > -	tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
-> > +	tst_resm(TINFO, "Testcase #02: fork inherit cont.");
-> > +	if (get_available_memory_mb() < DEFAULT_ALLOC_MB)
-> > +		tst_brkm(TCONF, cleanup, "Not enough memory\n");
-> >
-> >  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
-> >  	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss);
-> >  	if (is_in_delta(ru.ru_maxrss - 102400))
-> > -		tst_resm(TPASS, "initial.children ~= 100MB");
-> > +		tst_resm(TPASS, "initial.children ~= %dMB",
-> DEFAULT_ALLOC_MB);
-> >  	else
-> > -		tst_resm(TFAIL, "initial.children !~= 100MB");
-> > +		tst_resm(TFAIL, "initial.children !~= %dMB",
-> DEFAULT_ALLOC_MB);
-> >
-> >  	switch (pid = fork()) {
-> >  	case -1:
-> > @@ -152,7 +169,9 @@ static void inherit_fork2(void)
-> >   * expect: initial.self + 50MB ~= child.self */  static void
-> > fork_malloc(void)  {
-> > -	tst_resm(TINFO, "Testcase #03: fork + malloc");
-> > +	tst_resm(TINFO, "Testcase #03: fork + malloc");
-> > +	if (get_available_memory_mb() < (DEFAULT_ALLOC_MB+50))
-> > +		tst_brkm(TCONF, cleanup, "Not enough memory\n");
-> >
-> >  	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
-> >  	tst_resm(TINFO, "initial.self = %ld", ru.ru_maxrss); @@ -181,7
-> > +200,10 @@ static void fork_malloc(void)
-> >   * expect: post_wait.children ~= 300MB */  static void
-> > grandchild_maxrss(void)  {
-> > -	tst_resm(TINFO, "Testcase #04: grandchild maxrss");
-> > +	tst_resm(TINFO, "Testcase #04: grandchild maxrss");
-> > +	if (get_available_memory_mb() <= (DEFAULT_ALLOC_MB+300))
-> > +		tst_brkm(TCONF, cleanup, "Not enough memory\n");
-> > +
-> >
-> >  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
-> >  	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss); @@ -215,7
-> > +237,9 @@ static void grandchild_maxrss(void)
-> >   * expect: initial ~= pre_wait, post_wait ~= 400MB */  static void
-> > zombie(void)  {
-> > -	tst_resm(TINFO, "Testcase #05: zombie");
-> > +	tst_resm(TINFO, "Testcase #05: zombie");
-> > +	if (get_available_memory_mb() <= (DEFAULT_ALLOC_MB+400))
-> > +		tst_brkm(TCONF, cleanup, "Not enough memory\n");
-> >
-> >  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
-> >  	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss); @@ -258,7
-> > +282,9 @@ static void zombie(void)
-> >   * expect: initial ~= after_zombie */  static void sig_ign(void)  {
-> > -	tst_resm(TINFO, "Testcase #06: SIG_IGN");
-> > +	tst_resm(TINFO, "Testcase #06: SIG_IGN");
-> > +	if (get_available_memory_mb() <= (DEFAULT_ALLOC_MB+500))
-> > +		tst_brkm(TCONF, cleanup, "Not enough memory to run test
-> case");
-> >
-> >  	SAFE_GETRUSAGE(cleanup, RUSAGE_CHILDREN, &ru);
-> >  	tst_resm(TINFO, "initial.children = %ld", ru.ru_maxrss); @@ -294,7
-> > +320,7 @@ static void exec_without_fork(void)
-> >  	char str_maxrss_self[BUFSIZ], str_maxrss_child[BUFSIZ];
-> >  	long maxrss_self, maxrss_child;
-> >
-> > -	tst_resm(TINFO, "Testcase #07: exec without fork");
-> > +	tst_resm(TINFO, "Testcase #07: exec without fork");
-> >
-> >  	SAFE_GETRUSAGE(cleanup, RUSAGE_SELF, &ru);
-> >  	maxrss_self = ru.ru_maxrss;
-> > --
-> > 1.9.1
-> >
-> >
