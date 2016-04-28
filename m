@@ -1,74 +1,95 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 28 Apr 2016 06:25:13 -0400 (EDT)
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 28 Apr 2016 14:26:25 +0200
 Subject: [LTP] LTP pre-release testing and freeze
-In-Reply-To: <20160420143031.GB4004@rei>
+In-Reply-To: <1728203866.1199576.1461839113790.JavaMail.zimbra@redhat.com>
 References: <20160420143031.GB4004@rei>
-Message-ID: <1728203866.1199576.1461839113790.JavaMail.zimbra@redhat.com>
+ <1728203866.1199576.1461839113790.JavaMail.zimbra@redhat.com>
+Message-ID: <20160428122625.GA25587@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: ltp@lists.linux.it
-> Sent: Wednesday, 20 April, 2016 4:30:31 PM
-> Subject: [LTP] LTP pre-release testing and freeze
+Hi!
+> Looks good from my side. I ran the usual set we use as smoke test
+> (syscalls, selection of mem/io/etc.) on
+>   RHEL6.2 through RHEL6.8 (i386, x86_64, ppc64, s390x)
+>   RHEL7.0 through RHEL7.2 (x86_64, ppc64, ppc64le, s390x, aarch64)
+> and ran mostly into known bugs in kernel / glibc.
 > 
-> Hi!
-> Are we ready for the git repository freeze and pre-release testing?
+> Other than known issues, there were couple failures to note:
 > 
-> Are there any patches that were not reviewed/pushed yet that should be
-> part of the next release?
+> epoll_wait02
+> There is a tolerance, but it goes only one way (oversleep).
+> I occasionally see it waking up a ms earlier and then testcase
+> reports it as failure. This was new addition, so there are
+> no historical data for comparison.
+
+That may be bug, since AFAIC all POSIX timers are not allowed to wake up
+earlier. The epoll_wait() is Linux specific, but the manual talks only
+about possible overrun as well.
+
+> personality01
+> PER_LINUX32 is masked on powerpc as PER_LINUX, so this
+> always fails.
 > 
-> Ideally I would like to proceed with the freeze at the end of this week
-> then have at least a week for running the tests and if everything goes
-> well the release would be carried on end of April or beginning of May.
-> Does that sound reasonable?
+> arch/powerpc/kernel/syscalls.c:
+> long ppc64_personality(unsigned long personality)
+> {
+>         long ret;
+> 
+>         if (personality(current->personality) == PER_LINUX32
+>             && personality(personality) == PER_LINUX)
+>                 personality = (personality & ~PER_MASK) | PER_LINUX32;
+>         ret = sys_personality(personality);
+>         if (personality(ret) == PER_LINUX32)
+>                 ret = (ret & ~PER_MASK) | PER_LINUX;
+>         return ret;
+> }
 
-Looks good from my side. I ran the usual set we use as smoke test
-(syscalls, selection of mem/io/etc.) on
-  RHEL6.2 through RHEL6.8 (i386, x86_64, ppc64, s390x)
-  RHEL7.0 through RHEL7.2 (x86_64, ppc64, ppc64le, s390x, aarch64)
-and ran mostly into known bugs in kernel / glibc.
+So the fist if () makes sure that process cannot excape PER_LINUX32
+while the second hides PER_LINUX32 completly. I've missed the second
+part when I was rewriting the testcase. Looking at kernel sources
+sparc64 and s390 seems to do the same but the code assumes that
+PER_LINUX == 0.
 
-Other than known issues, there were couple failures to note:
-
-epoll_wait02
-There is a tolerance, but it goes only one way (oversleep).
-I occasionally see it waking up a ms earlier and then testcase
-reports it as failure. This was new addition, so there are
-no historical data for comparison.
-
-personality01
-PER_LINUX32 is masked on powerpc as PER_LINUX, so this
-always fails.
-
-arch/powerpc/kernel/syscalls.c:
-long ppc64_personality(unsigned long personality)
+SYSCALL_DEFINE1(s390_personality, unsigned int, personality)
 {
-        long ret;
+        unsigned int ret;
 
-        if (personality(current->personality) == PER_LINUX32
-            && personality(personality) == PER_LINUX)
-                personality = (personality & ~PER_MASK) | PER_LINUX32;
+        if (personality(current->personality) == PER_LINUX32 &&
+            personality(personality) == PER_LINUX)
+                personality |= PER_LINUX32;
         ret = sys_personality(personality);
         if (personality(ret) == PER_LINUX32)
-                ret = (ret & ~PER_MASK) | PER_LINUX;
+                ret &= ~PER_LINUX32;
+
         return ret;
 }
 
-Regards,
-Jan
+Does the test fail on s390x as well?
 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+It seems that mapping PER_LINUX32 to PER_LINUX is a common practice on
+64 bit, maybe we should just skip that personality on anything than
+x86_64.
+
+
+
+
+I'm currently working on few more fixes:
+
+* The umount2() tests still fails with EBUSY rarely,
+  I will have to fix the TEST(umount2()) to retry on
+  EBUSY as well
+
+* Another diotest fix for Btrfs
+
+And I would like to get the isofs fix I've send to the list in before
+the release as well. Can you please have a look at that one?
+
+Apart from these, the rest looks fine.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
