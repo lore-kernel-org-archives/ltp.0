@@ -1,139 +1,48 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 28 Apr 2016 18:39:54 +0200
-Subject: [LTP] [PATCH] syscalls/umount2_{02,03}: Retry umount2() on EBUSY
-Message-ID: <20160428163954.GA29437@rei>
+From: Hangbin Liu <haliu@redhat.com>
+Date: Fri, 29 Apr 2016 10:05:13 +0800
+Subject: [LTP] [PATCH v8 0/3] networking/stress/icmp: add ip xfrm ipsec
+ support
+In-Reply-To: <57221552.8050507@oracle.com>
+References: <1461761676-28599-1-git-send-email-haliu@redhat.com>
+ <57221552.8050507@oracle.com>
+Message-ID: <20160429020513.GH4308@Leo.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This should be last fix for umount2() testcases failing with unexpected
-EBUSY.
+Hi Alexey,
 
-This patch adds umount2.h header that defined inline umount2_retry()
-function that retries umount2() only in case of EBUSY.
+Thanks for your patient reviews and cosmetic changes.
 
-The umount2_01 does not need to be fixed since it uses MNT_DETACH that
-does lazy umount and hence it does not race with background probing.
+Best Regards
+Hangbin
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
-
- This is last patch needed to fix rare failures (the two obvious ones
- were commited already). After applying this the failures couldn't be
- reproduced, instead there were a few lines as:
-
- umount2_03    0  TINFO  :  umount('mntpoint', 8) failed with EBUSY, try 0...
-
- In the log created by running the testcase 100 times in a loop.
-
- Can somebody ack this so that it can go in before the release?
-
- testcases/kernel/syscalls/umount2/umount2.h    | 44 ++++++++++++++++++++++++++
- testcases/kernel/syscalls/umount2/umount2_02.c |  4 ++-
- testcases/kernel/syscalls/umount2/umount2_03.c |  4 ++-
- 3 files changed, 50 insertions(+), 2 deletions(-)
- create mode 100644 testcases/kernel/syscalls/umount2/umount2.h
-
-diff --git a/testcases/kernel/syscalls/umount2/umount2.h b/testcases/kernel/syscalls/umount2/umount2.h
-new file mode 100644
-index 0000000..65e4c24
---- /dev/null
-+++ b/testcases/kernel/syscalls/umount2/umount2.h
-@@ -0,0 +1,44 @@
-+/*
-+ * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef UMOUNT2_H__
-+#define UMOUNT2_H__
-+
-+static inline int umount2_retry(const char *target, int flags)
-+{
-+	int i, ret;
-+
-+	for (i = 0; i < 50; i++) {
-+		ret = umount2(target, flags);
-+
-+		if (ret == 0 || errno != EBUSY)
-+			return ret;
-+
-+		tst_resm(TINFO, "umount('%s', %i) failed with EBUSY, try %2i...",
-+			 target, flags, i);
-+
-+		usleep(100000);
-+	}
-+
-+	tst_resm(TWARN, "Failed to umount('%s', %i) after 50 retries",
-+	         target, flags);
-+
-+	errno = EBUSY;
-+	return -1;
-+}
-+
-+#endif	/* UMOUNT2_H__ */
-diff --git a/testcases/kernel/syscalls/umount2/umount2_02.c b/testcases/kernel/syscalls/umount2/umount2_02.c
-index 33ea21d..7d558fa 100644
---- a/testcases/kernel/syscalls/umount2/umount2_02.c
-+++ b/testcases/kernel/syscalls/umount2/umount2_02.c
-@@ -33,6 +33,8 @@
- #include "safe_macros.h"
- #include "lapi/mount.h"
- 
-+#include "umount2.h"
-+
- #define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
- #define MNTPOINT	"mntpoint"
- 
-@@ -131,7 +133,7 @@ static void test_umount2(int i)
- 			tst_brkm(TBROK | TERRNO, cleanup, "access(2) failed");
- 	}
- 
--	TEST(umount2(MNTPOINT, test_cases[i].flag));
-+	TEST(umount2_retry(MNTPOINT, test_cases[i].flag));
- 
- 	if (test_cases[i].exp_errno != 0)
- 		verify_failure(i);
-diff --git a/testcases/kernel/syscalls/umount2/umount2_03.c b/testcases/kernel/syscalls/umount2/umount2_03.c
-index f2027cc..a8fddf6 100644
---- a/testcases/kernel/syscalls/umount2/umount2_03.c
-+++ b/testcases/kernel/syscalls/umount2/umount2_03.c
-@@ -28,6 +28,8 @@
- #include "safe_macros.h"
- #include "lapi/mount.h"
- 
-+#include "umount2.h"
-+
- #define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
- #define MNTPOINT	"mntpoint"
- #define SYMLINK	"symlink"
-@@ -110,7 +112,7 @@ static void test_umount2(int i)
- 	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
- 	mount_flag = 1;
- 
--	TEST(umount2(test_cases[i].mntpoint, UMOUNT_NOFOLLOW));
-+	TEST(umount2_retry(test_cases[i].mntpoint, UMOUNT_NOFOLLOW));
- 
- 	if (test_cases[i].exp_errno != 0)
- 		verify_failure(i);
--- 
-2.7.3
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+On Thu, Apr 28, 2016 at 04:51:14PM +0300, Alexey Kodanev wrote:
+> Hi,
+> On 04/27/2016 03:54 PM, Hangbin Liu wrote:
+> >As we know, most of the network stress tests have IPsec testing, and we use
+> >setkey for configuration. But setkey[1] hasn't updated for a long time. And
+> >some distros, RHEL7 for example, even don't have ipset-tools package. On
+> >other hand, iproute2 is recommend for network configuration. And ip xfrm is
+> >more powerful than setkey. So let's use ip xfrm for ipsec testing.
+> >
+> >[1] http://ipsec-tools.sourceforge.net/
+> >
+> >Change from V7:
+> >1. correct array typo
+> >2. use shift instead of bashism
+> Patch-set applied, thank you.
+> 
+> Also made some cosmetic changes:
+> 
+> * reworded that really lengthy message with "Verify that kernel ...." in
+> icmp-basic-uni,
+> * added suffix ".sh" to icmp-uni-basic,
+> * some lines were over 80 chars, changed them too where possible,
+> * added copyright line from the previous version of uni-basic tests,
+> * removed old uni-basic directory.
+> 
+> Thanks,
+> Alexey
