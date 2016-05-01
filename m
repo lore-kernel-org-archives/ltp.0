@@ -1,53 +1,46 @@
-From: Hangbin Liu <haliu@redhat.com>
-Date: Fri, 29 Apr 2016 21:45:40 +0800
-Subject: [LTP] [PATCH 2/2] network/xinetd: tst_xinetd.exp.2 want get both
-	standard and error output
-In-Reply-To: <1461937540-568-1-git-send-email-haliu@redhat.com>
-References: <1461937540-568-1-git-send-email-haliu@redhat.com>
-Message-ID: <1461937540-568-2-git-send-email-haliu@redhat.com>
+From: Nicolas Joly <njoly@pasteur.fr>
+Date: Sun, 1 May 2016 09:24:23 +0200
+Subject: [LTP] [PATCH] Fix typo in clock_nanosleep01
+Message-ID: <20160501072423.GA14891@issan.sis.pasteur.fr>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-tst_xinetd.exp.2 want get both standard and error output, like
-Trying 127.0.0.1...
-Connected to 127.0.0.1.
-Escape character is '^]'.
-Connection closed by foreign host.
 
-We will get nothing if use like 2>log 2>&1, fix this by use &>log.
+Hi,
 
-Also fix a tst_retry typo.
+Please find a small patch that fix a typo in clock_nanosleep01 error
+message.
 
-Signed-off-by: Hangbin Liu <haliu@redhat.com>
----
- testcases/network/xinetd/xinetd_tests.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Regards.
 
-diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
-index 58fb98e..0bf3bec 100755
---- a/testcases/network/xinetd/xinetd_tests.sh
-+++ b/testcases/network/xinetd/xinetd_tests.sh
-@@ -388,7 +388,7 @@ test01()
-     # not terminated by the test gracefully.
-     if [ $IPV6_ENABLED -eq 1 ]
-     then
--        tst_retry "echo '' | $TELNET_COMM ::1 2>$LTPTMP/tst_xinetd.out.ipv6 2>&1"
-+        tst_retry "echo '' | $TELNET_COMM ::1 &> $LTPTMP/tst_xinetd.out.ipv6"
-         diff -iwB $LTPTMP/tst_xinetd.out.ipv6  $LTPTMP/tst_xinetd.exp.2.ipv6 \
-             > $LTPTMP/tst_xinetd.err.ipv6 2>&1
-         RC=$?
-@@ -403,7 +403,7 @@ test01()
-         fi
-     fi
- 
--    test_retry "echo '' | $TELNET_COMM 127.0.0.1 2>$LTPTMP/tst_xinetd.out 2>&1"
-+    tst_retry "echo '' | $TELNET_COMM 127.0.0.1 &> $LTPTMP/tst_xinetd.out"
- 
-     diff -iwB $LTPTMP/tst_xinetd.out  $LTPTMP/tst_xinetd.exp.2 \
-         > $LTPTMP/tst_xinetd.err 2>&1
 -- 
-2.5.5
+Nicolas Joly
 
+Cluster & Computing Group
+Biology IT Center
+Institut Pasteur, Paris.
+-------------- next part --------------
+commit 01a19b7a3a09b0481be03664344485b45a7679f4
+Author: Nicolas Joly <njoly@pasteur.fr>
+Date:   Mon Apr 18 09:50:44 2016 +0200
+
+    clock_nanosleep/clock_nanosleep01: Small typo in error message.
+    
+    Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
+
+diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+index 312b695..08c1fbd 100644
+--- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
++++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
+@@ -291,7 +291,7 @@ static int do_test(struct test_case *tc)
+ 	 */
+ 	TEST(rc = clock_gettime(tc->clk_id, &beftp));
+ 	if (rc < 0) {
+-		tst_resm(TFAIL | TTERRNO, "iclock_gettime failed");
++		tst_resm(TFAIL | TTERRNO, "clock_gettime failed");
+ 		result = 1;
+ 		goto EXIT;
+ 	}
