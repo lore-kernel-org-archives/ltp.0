@@ -1,10 +1,11 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 2 May 2016 04:35:44 -0400 (EDT)
-Subject: [LTP] [PATCH] syscalls/umount2_{02,
- 03}: Retry umount2() on EBUSY
-In-Reply-To: <20160428163954.GA29437@rei>
-References: <20160428163954.GA29437@rei>
-Message-ID: <796579473.1980137.1462178144845.JavaMail.zimbra@redhat.com>
+Date: Mon, 2 May 2016 05:10:08 -0400 (EDT)
+Subject: [LTP] LTP pre-release testing and freeze
+In-Reply-To: <20160428122625.GA25587@rei>
+References: <20160420143031.GB4004@rei>
+ <1728203866.1199576.1461839113790.JavaMail.zimbra@redhat.com>
+ <20160428122625.GA25587@rei>
+Message-ID: <1274865023.2004095.1462180208523.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,150 +18,87 @@ To: ltp@lists.linux.it
 
 ----- Original Message -----
 > From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: ltp@lists.linux.it
-> Sent: Thursday, 28 April, 2016 6:39:54 PM
-> Subject: [LTP] [PATCH] syscalls/umount2_{02,03}: Retry umount2() on EBUSY
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Thursday, 28 April, 2016 2:26:25 PM
+> Subject: Re: [LTP] LTP pre-release testing and freeze
 > 
-> This should be last fix for umount2() testcases failing with unexpected
-> EBUSY.
+> Hi!
+> > Looks good from my side. I ran the usual set we use as smoke test
+> > (syscalls, selection of mem/io/etc.) on
+> >   RHEL6.2 through RHEL6.8 (i386, x86_64, ppc64, s390x)
+> >   RHEL7.0 through RHEL7.2 (x86_64, ppc64, ppc64le, s390x, aarch64)
+> > and ran mostly into known bugs in kernel / glibc.
+> > 
+> > Other than known issues, there were couple failures to note:
+> > 
+> > epoll_wait02
+> > There is a tolerance, but it goes only one way (oversleep).
+> > I occasionally see it waking up a ms earlier and then testcase
+> > reports it as failure. This was new addition, so there are
+> > no historical data for comparison.
 > 
-> This patch adds umount2.h header that defined inline umount2_retry()
-> function that retries umount2() only in case of EBUSY.
-> 
-> The umount2_01 does not need to be fixed since it uses MNT_DETACH that
-> does lazy umount and hence it does not race with background probing.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> That may be bug, since AFAIC all POSIX timers are not allowed to wake up
+> earlier. The epoll_wait() is Linux specific, but the manual talks only
+> about possible overrun as well.
 
-Is the culprit here also some background daemons? If so, ACK.
+I think it happened so far only on ppc/s390 guests, so my suspicion was
+that high steal time could be a factor. I'll look into how much reproducible
+this is with RHEL.
+
+> 
+> > personality01
+> > PER_LINUX32 is masked on powerpc as PER_LINUX, so this
+> > always fails.
+> > 
+> > arch/powerpc/kernel/syscalls.c:
+> > long ppc64_personality(unsigned long personality)
+> > {
+> >         long ret;
+> > 
+> >         if (personality(current->personality) == PER_LINUX32
+> >             && personality(personality) == PER_LINUX)
+> >                 personality = (personality & ~PER_MASK) | PER_LINUX32;
+> >         ret = sys_personality(personality);
+> >         if (personality(ret) == PER_LINUX32)
+> >                 ret = (ret & ~PER_MASK) | PER_LINUX;
+> >         return ret;
+> > }
+> 
+> So the fist if () makes sure that process cannot excape PER_LINUX32
+> while the second hides PER_LINUX32 completly. I've missed the second
+> part when I was rewriting the testcase. Looking at kernel sources
+> sparc64 and s390 seems to do the same but the code assumes that
+> PER_LINUX == 0.
+> 
+> SYSCALL_DEFINE1(s390_personality, unsigned int, personality)
+> {
+>         unsigned int ret;
+> 
+>         if (personality(current->personality) == PER_LINUX32 &&
+>             personality(personality) == PER_LINUX)
+>                 personality |= PER_LINUX32;
+>         ret = sys_personality(personality);
+>         if (personality(ret) == PER_LINUX32)
+>                 ret &= ~PER_LINUX32;
+> 
+>         return ret;
+> }
+> 
+> Does the test fail on s390x as well?
+
+Yes, it does.
+
+personality01    0  TINFO  :  Child process returned TPASS
+personality01    1  TFAIL  :  personality01.c:80: PER_LINUX32: wrong personality read back 0 expected 8
+
+> 
+> It seems that mapping PER_LINUX32 to PER_LINUX is a common practice on
+> 64 bit, maybe we should just skip that personality on anything than
+> x86_64.
+
+Agreed. I can send a patch.
 
 Regards,
 Jan
 
-> ---
-> 
->  This is last patch needed to fix rare failures (the two obvious ones
->  were commited already). After applying this the failures couldn't be
->  reproduced, instead there were a few lines as:
-> 
->  umount2_03    0  TINFO  :  umount('mntpoint', 8) failed with EBUSY, try 0...
-> 
->  In the log created by running the testcase 100 times in a loop.
-> 
->  Can somebody ack this so that it can go in before the release?
-> 
->  testcases/kernel/syscalls/umount2/umount2.h    | 44
->  ++++++++++++++++++++++++++
->  testcases/kernel/syscalls/umount2/umount2_02.c |  4 ++-
->  testcases/kernel/syscalls/umount2/umount2_03.c |  4 ++-
->  3 files changed, 50 insertions(+), 2 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/umount2/umount2.h
-> 
-> diff --git a/testcases/kernel/syscalls/umount2/umount2.h
-> b/testcases/kernel/syscalls/umount2/umount2.h
-> new file mode 100644
-> index 0000000..65e4c24
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/umount2/umount2.h
-> @@ -0,0 +1,44 @@
-> +/*
-> + * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +
-> +#ifndef UMOUNT2_H__
-> +#define UMOUNT2_H__
-> +
-> +static inline int umount2_retry(const char *target, int flags)
-> +{
-> +	int i, ret;
-> +
-> +	for (i = 0; i < 50; i++) {
-> +		ret = umount2(target, flags);
-> +
-> +		if (ret == 0 || errno != EBUSY)
-> +			return ret;
-> +
-> +		tst_resm(TINFO, "umount('%s', %i) failed with EBUSY, try %2i...",
-> +			 target, flags, i);
-> +
-> +		usleep(100000);
-> +	}
-> +
-> +	tst_resm(TWARN, "Failed to umount('%s', %i) after 50 retries",
-> +	         target, flags);
-> +
-> +	errno = EBUSY;
-> +	return -1;
-> +}
-> +
-> +#endif	/* UMOUNT2_H__ */
-> diff --git a/testcases/kernel/syscalls/umount2/umount2_02.c
-> b/testcases/kernel/syscalls/umount2/umount2_02.c
-> index 33ea21d..7d558fa 100644
-> --- a/testcases/kernel/syscalls/umount2/umount2_02.c
-> +++ b/testcases/kernel/syscalls/umount2/umount2_02.c
-> @@ -33,6 +33,8 @@
->  #include "safe_macros.h"
->  #include "lapi/mount.h"
->  
-> +#include "umount2.h"
-> +
->  #define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
->  #define MNTPOINT	"mntpoint"
->  
-> @@ -131,7 +133,7 @@ static void test_umount2(int i)
->  			tst_brkm(TBROK | TERRNO, cleanup, "access(2) failed");
->  	}
->  
-> -	TEST(umount2(MNTPOINT, test_cases[i].flag));
-> +	TEST(umount2_retry(MNTPOINT, test_cases[i].flag));
->  
->  	if (test_cases[i].exp_errno != 0)
->  		verify_failure(i);
-> diff --git a/testcases/kernel/syscalls/umount2/umount2_03.c
-> b/testcases/kernel/syscalls/umount2/umount2_03.c
-> index f2027cc..a8fddf6 100644
-> --- a/testcases/kernel/syscalls/umount2/umount2_03.c
-> +++ b/testcases/kernel/syscalls/umount2/umount2_03.c
-> @@ -28,6 +28,8 @@
->  #include "safe_macros.h"
->  #include "lapi/mount.h"
->  
-> +#include "umount2.h"
-> +
->  #define DIR_MODE	(S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)
->  #define MNTPOINT	"mntpoint"
->  #define SYMLINK	"symlink"
-> @@ -110,7 +112,7 @@ static void test_umount2(int i)
->  	SAFE_MOUNT(cleanup, device, MNTPOINT, fs_type, 0, NULL);
->  	mount_flag = 1;
->  
-> -	TEST(umount2(test_cases[i].mntpoint, UMOUNT_NOFOLLOW));
-> +	TEST(umount2_retry(test_cases[i].mntpoint, UMOUNT_NOFOLLOW));
->  
->  	if (test_cases[i].exp_errno != 0)
->  		verify_failure(i);
-> --
-> 2.7.3
-> 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
