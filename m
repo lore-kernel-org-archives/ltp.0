@@ -1,47 +1,61 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 2 May 2016 06:06:05 -0400 (EDT)
-Subject: [LTP] LTP pre-release testing and freeze
-In-Reply-To: <20160502094552.GB11884@rei.lan>
-References: <20160420143031.GB4004@rei>
- <1728203866.1199576.1461839113790.JavaMail.zimbra@redhat.com>
- <20160428122625.GA25587@rei>
- <1274865023.2004095.1462180208523.JavaMail.zimbra@redhat.com>
- <20160502094552.GB11884@rei.lan>
-Message-ID: <662877346.2024597.1462183565734.JavaMail.zimbra@redhat.com>
+From: Eryu Guan <eguan@redhat.com>
+Date: Tue,  3 May 2016 17:33:49 +0800
+Subject: [LTP] [PATCH 1/2] ltp-aiodio: sleep less time when waiting for
+	target file creation
+Message-ID: <1462268030-21958-1-git-send-email-eguan@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+dio_sparse calls read_sparse() to check the content of sparse file,
+which is direct written by another process. It waits for the file to be
+existent in a loop and sleeps 0.1s in each loop if the file isn't there
+yet.
 
+But the sleep time is too long, if the target file doesn't exist in the
+first loop, the reading process might never read the file before it gets
+killed. e.g. Running ADSP045 on extN I got:
 
+dio_sparse    0  TINFO  :  Dirtying free blocks
+dio_sparse    0  TINFO  :  Starting I/O tests
+Child 4554 waits for 'dio_sparse' to appear
+dio_sparse    0  TINFO  :  Killing childrens(s)
+dio_sparse    1  TPASS  :  Test passed)
 
+The child for reading got killed before it read anything.
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Monday, 2 May, 2016 11:45:52 AM
-> Subject: Re: [LTP] LTP pre-release testing and freeze
-> 
-> Hi!
-> > > It seems that mapping PER_LINUX32 to PER_LINUX is a common practice on
-> > > 64 bit, maybe we should just skip that personality on anything than
-> > > x86_64.
-> > 
-> > Agreed. I can send a patch.
-> 
-> That would be just one ifdef, you can push that directly to the git
-> repo.
+So shorten the sleep time, give the child a chance to read the file and
+really do the test.
 
-Tested (on s390) and pushed.
+dio_sparse    0  TINFO  :  Dirtying free blocks
+dio_sparse    0  TINFO  :  Starting I/O tests
+Child 4767 waits for 'dio_sparse' to appear
+Child 4767 has opened 'dio_sparse' for reading
+Child 4767 loop 0
+Child 4767 loop 1
+dio_sparse    0  TINFO  :  Killing childrens(s)
+dio_sparse    1  TPASS  :  Test passed)
 
-Regards,
-Jan
+Signed-off-by: Eryu Guan <eguan@redhat.com>
+---
+ testcases/kernel/io/ltp-aiodio/common_sparse.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+index f7f4ef4..a7f5035 100644
+--- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
++++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+@@ -123,7 +123,7 @@ static void read_sparse(char *filename, int filesize)
+ 			fprintf(stderr, "Child %i waits for '%s' to appear\n",
+ 			        getpid(), filename);
+ 
+-		usleep(100000);
++		usleep(10);
+ 	}
+ 
+ 	if (fd == -1) {
+-- 
+2.5.5
+
