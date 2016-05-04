@@ -1,7 +1,8 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 4 May 2016 16:56:30 +0200
-Subject: [LTP] [PATCH V2 9/9] ftrace_stress: cleanup and use ltp API
-In-Reply-To: <1460966656-28328-10-git-send-email-chuhu@redhat.com>
+From: Chunyu Hu <chuhu@redhat.com>
+Date: Wed, 4 May 2016 11:04:10 -0400 (EDT)
+Subject: [LTP] [PATCH V2 6/9] testcases/lib: Add tst_random decmical
+ integer generator
+In-Reply-To: <20160504133453.GD12244@rei.lan>
 References: <1460966656-28328-1-git-send-email-chuhu@redhat.com>
  <1460966656-28328-2-git-send-email-chuhu@redhat.com>
  <1460966656-28328-3-git-send-email-chuhu@redhat.com>
@@ -9,221 +10,198 @@ References: <1460966656-28328-1-git-send-email-chuhu@redhat.com>
  <1460966656-28328-5-git-send-email-chuhu@redhat.com>
  <1460966656-28328-6-git-send-email-chuhu@redhat.com>
  <1460966656-28328-7-git-send-email-chuhu@redhat.com>
- <1460966656-28328-8-git-send-email-chuhu@redhat.com>
- <1460966656-28328-9-git-send-email-chuhu@redhat.com>
- <1460966656-28328-10-git-send-email-chuhu@redhat.com>
-Message-ID: <20160504145630.GE12244@rei.lan>
+ <20160504133453.GD12244@rei.lan>
+Message-ID: <107593102.43362349.1462374250852.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> --- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh
-> @@ -26,20 +26,20 @@ if [ $step -eq 0 ]; then
->  	LOOP=50
->  fi
->  
-> -for ((; ;))
-> -{
-> +while true; do
->  	new_size=1
-> -	for ((i = 0; i < $LOOP; i++))
-> -	{
-> +	i=0;
 
-The semicolon after i=0 is useless (and in all i=0; lines in this
-patch).
+Hi,
 
-...
+Thank you for the quick review, will submit a new version soon,
 
-> diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_clock.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_clock.sh
-> index de6bbea..70135c1 100755
-> --- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_clock.sh
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_clock.sh
-> @@ -13,6 +13,9 @@
->  #                                                                             #
->  ###############################################################################
->  
-> +. test.sh
+Other tests indeed referenced this helper. Also added some comment
 
-No need to source test.sh for the tst_kvercmp which is a separate
-binary.
+below.
 
-> +TRACING_PATH=/sys/kernel/debug/tracing/
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Chunyu Hu" <chuhu@redhat.com>
+> Cc: ltp@lists.linux.it, liwan@redhat.com
+> Sent: Wednesday, May 4, 2016 9:34:53 PM
+> Subject: Re: [LTP] [PATCH V2 6/9] testcases/lib: Add tst_random decmical integer generator
+> 
+> Hi!
+> >  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> > diff --git a/testcases/lib/tst_random.c b/testcases/lib/tst_random.c
+> > new file mode 100644
+> > index 0000000..91a5247
+> > --- /dev/null
+> > +++ b/testcases/lib/tst_random.c
+> > @@ -0,0 +1,104 @@
+> > +/*
+> > + * Copyright (c) 2016 Red Hat Inc.
+> > + *
+> > + * This program is free software; you can redistribute it and/or
+> > + * modify it under the terms of the GNU General Public License as
+> > + * published by the Free Software Foundation; either version 2 of
+> > + * the License, or (at your option) any later version.
+> > + *
+> > + * This program is distributed in the hope that it would be useful,
+> > + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> > + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> > + * GNU General Public License for more details.
+> > + *
+> > + * You should have received a copy of the GNU General Public License
+> > + * along with this program; if not, write the Free Software Foundation,
+> > + * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> > + *
+> > + * Author: Chunyu Hu <chuhu@redhat.com>
+> > + *
+> > + */
+> > +
+> > +#include <stdio.h>
+> > +#include <unistd.h>
+> > +#include <stdlib.h>
+> > +#include <string.h>
+> > +#include <sys/time.h>
+> > +
+> > +static void print_help(void)
+> > +{
+> > +	printf("Usage: tst_random <value1> [value2]\n");
+> > +	printf("       Generated random will be between value1 and value2.\n");
+> > +	printf("       If only value1 is specified, value2 will treated as
+> > 0.\n");
+> > +}
+> > +
+> > +static int get_seed(void)
+> > +{
+> > +	struct timeval tv;
+> > +	gettimeofday(&tv, NULL);
+> > +	return tv.tv_usec;
+> > +}
+> > +
+> > +static long rand_range(long min, long max)
+> > +{
+> > +	return rand() % (max - min + 1) + min;
+> > +}
+> > +
+> > +int main(int argc, char *argv[])
+> > +{
+> > +	int opt;
+> > +	long min = 0, max = 0, tmp = 0;
+> > +	long rval = 0;
+> > +	char *end;
+> > +
+> > +	while ((opt = getopt(argc, argv, ":h")) != -1) {
+> > +		switch (opt) {
+> > +		case 'h':
+> > +			print_help();
+> > +			return 0;
+> > +		default:
+> > +			print_help();
+> > +			return 1;
+> > +		}
+> > +	}
+> > +
+> > +	if (argc < 2 || argc > 3) {
+> > +		print_help();
+> > +		return 1;
+> > +	}
+> > +
+> > +	if (optind >= argc) {
+> > +		fprintf(stderr, "ERROR: Expected one or two range_val arguments\n\n");
+> > +		print_help();
+> > +		return 1;
+> > +	}
+> 
+> We exit if getopt() finds any options in argv[] so optind == 1 here and
+> since we check for argc < 2 before this this if is never true.
 
-Shouldn't this be propagated from the main script? What's the point of
-redefining it here?
+Good analysis, so this should be removed in next step.
 
->  LOOP=400
->  
->  # In kernel which is older than 2.6.32, we set global clock
-> @@ -24,23 +27,23 @@ else
->          old_kernel=0
->  fi
->  
-> -for ((; ;))
-> -{
-> -	if [ $old_kernel -eq 1 ];
-> -	then
-> -		for ((i = 0; i < $LOOP; i++))
-> -		{
-> +while true; do
-> +	i=0;
-> +	if [ $old_kernel -eq 1 ]; then
-> +		while [ $i -lt $LOOP ]; do
->  			echo 1 > "$TRACING_PATH"/options/global-clock
->  			echo 0 > "$TRACING_PATH"/options/global-clock
-> -		}
-> +			i=$((i + 1))
-> +		done
->  	else
-> -		for ((i = 0; i < $LOOP; i++))
-> -		{
-> +		while [ $i -lt $LOOP ]; do
->  			echo local > "$TRACING_PATH"/trace_clock
->  			echo global > "$TRACING_PATH"/trace_clock
-> -		}
-> +			i=$((i + 1))
-> +		done
-> +
->  	fi
->  
->  	sleep 1
-> -}
-> +done
->  
-> diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_pipe.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_pipe.sh
-> index 47d42bc..a24008a 100755
-> --- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_pipe.sh
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_pipe.sh
-> @@ -13,10 +13,11 @@
->  #                                                                             #
->  ###############################################################################
->  
-> +. test.sh
+> 
+> > +	max = strtol(argv[optind], &end, 10);
+> 
+> Here as well optind == 1 by definition.
 
-You don't have to add test.sh for tst_sleep.
+Ok, will use 1 directly next step.
 
->  ftrace_sleep()
->  {
-> -	# usleep is not a standard command?
-> -	usleep 200000 2> /dev/null
-> +	tst_sleep 200000us
->  	if [ $? -ne 0 ]; then
->  		sleep 1
->  	fi
+> 
+> > +	if (argv[optind] == end) {
+> > +		fprintf(stderr, "ERROR: Invalid range value1 '%s'\n\n",
+> > +			argv[optind]);
+> > +		print_help();
+> > +		return 1;
+> > +	}
+> 
+> Well if we bother with strtol() we may check that argv[1] != '\0' and
+> end == '\0' which will ensure that whole parameter was a valid string.
 
-You should remove the fallback to sleep 1 if the usleep wasn't found.
-Ideally the whole function ftrace_sleep should be removed and you should
-just call tst_sleep from the main loop.
+Looks like we just need to compare with ( *end != '\0' ), as argv[1] or 
+argv[2] can't be '\0' (NULL) as it has been filtered by (argc <2 || argc > 3).
 
-> @@ -33,10 +34,9 @@ trap kill_this_pid SIGUSR1
->  
->  LOOP=20
->  
-> -for ((; ;))
-> -{
-> -	for ((i = 0; i < $LOOP; i++))
-> -	{
-> +while true; do
-> +	i=0;
-> +	while [ $i -lt $LOOP ]; do
->  		cat "$TRACING_PATH"/trace_pipe > /dev/null &
->  
->  		this_pid=$!
-> @@ -45,8 +45,7 @@ for ((; ;))
->  		wait $this_pid
->  		this_pid=0
->  		ftrace_sleep
-> -	}
-> -
-> +		i=$((i + 1))
-> +	done
->  	sleep 2
-> -}
-> -
-> +done
+And i just verified this with this debug line: 
 
-And you should also fix the kill called by the full path in this script.
-It should really be just kill not /bin/kill.
+   printf("end = %p, *end = %c\n", end, *end);
 
-> diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_stat.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_stat.sh
-> index d7e6fd3..2691991 100755
-> --- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_stat.sh
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_stat.sh
-> @@ -16,6 +16,8 @@
->  LOOP=200
->  
->  should_skip=0
-> +rand_gen=tst_random
 
-What's the point of assigning tst_random into a variable instead of
-using it directly?
+> > +	if (argc == 3) {
+> > +		min = strtol(argv[optind+1], &end, 10);
+> 
+> Here as well use just 2 instead of optind + 1.
 
-> +nr_cpus=`tst_ncpus`
->  
->  if [ ! -e "$TRACING_PATH"/function_profile_enabled ]; then
->          should_skip=1
-> @@ -28,18 +30,17 @@ if [ $? -eq 0 ]; then
->  	should_skip=1
->  fi
->  
-> -for ((; ;))
-> -{
-> +while true; do
->  	if [ $should_skip -eq 1 ]; then
->  		sleep 2
->  		continue
->  	fi
-> -
-> -	for ((i = 0; i < $LOOP; i++))
-> -	{
-> -		cat "$TRACING_PATH"/trace_stat/function0 > /dev/null 2>&1
-> -	}
-> +	cpu=$($rand_gen 0 $((nr_cpus - 1)))
-> +	i=0;
-> +	while [ $i -lt $LOOP ]; do
-> +		cat "$TRACING_PATH"/trace_stat/function${cpu} > /dev/null 2>&1
-> +		i=$((i + 1))
-> +	done
->  
->  	sleep 1
-> -}
-> -
-> +done
+OK. Agree.
 
-...
+> 
+> > +		if (argv[optind+1] == end) {
+> > +			fprintf(stderr, "ERROR: Invalid range value2 '%s'\n\n",
+> > +				argv[optind+1]);
+> > +			print_help();
+> > +			return 1;
+> > +		}
+> > +		if (min > max) {
+> > +			tmp = min;
+> > +			min = max;
+> > +			max = tmp;
+> > +		}
+> 
+> Well we may also do:
+> 
+> 	rval = (min > max) ? rand_range(max, min) : rand_range(min, max);
 
-> diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_max_latency.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_max_latency.sh
-> index fbaceb8..6090a91 100755
-> --- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_max_latency.sh
-> +++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_tracing_max_latency.sh
-> @@ -15,12 +15,13 @@
->  
->  MAX_LATENCY=100000
->  
-> -for ((; ;))
-> -{
-> -	for ((i = 0; i < $MAX_LATENCY; i += 400))
-> -	{
-> +while true; do
-> +	i=0;
-> +	while [ $i -lt $MAX_LATENCY ]; do
->  		echo $i > "$TRACING_PATH"/tracing_max_latency
-> -	}
-> +		i=$((i + 400))
-> +	done
->  
->  	sleep 1
-> -}
-> +
-> +Vdone
-   ^
-   Typo?
+
+Thanks for this good advise, i really like this style.
+
+> In the code below instead, but that is merely cosmetic.
+
+Thanks.
+
+> 
+> > +	}
+> > +
+> > +	srand(get_seed());
+> > +	rval = rand_range(min, max);
+> > +	printf("%ld\n", rval);
+> > +
+> > +	return rval;
+> 
+> We should just return 0 here since the return value is limited to one
+> byte. Exporting interface that works only in certain cases is a recipe
+> for a disaster.
+
+Thanks for catching this, can't agree more. Will fix this line in next 
+step.
+
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Chunyu Hu
+
