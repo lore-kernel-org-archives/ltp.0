@@ -1,219 +1,1470 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Mon,  9 May 2016 15:57:02 +0800
-Subject: [LTP] [PATCH 3/4] network/stress/icmp: add icmp-multi-diffnic.sh to
-	implement diffnic stress test
+Date: Mon,  9 May 2016 15:57:01 +0800
+Subject: [LTP] [PATCH 2/4] network/stress/icmp: remove old multi-diffip/*
+	tests
 In-Reply-To: <1462780623-26778-1-git-send-email-haliu@redhat.com>
 References: <1462780623-26778-1-git-send-email-haliu@redhat.com>
-Message-ID: <1462780623-26778-3-git-send-email-haliu@redhat.com>
+Message-ID: <1462780623-26778-2-git-send-email-haliu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+multi-diffip/* tests have been rewritten and the new version
+can be found in icmp/icmp-multi-diffip.sh.
+
 Signed-off-by: Hangbin Liu <haliu@redhat.com>
 ---
- runtest/network_stress.icmp                        |  28 ++--
- .../network/stress/icmp/icmp-multi-diffnic.sh      | 153 +++++++++++++++++++++
- 2 files changed, 167 insertions(+), 14 deletions(-)
- create mode 100755 testcases/network/stress/icmp/icmp-multi-diffnic.sh
+ .../stress/icmp/multi-diffip/00_Descriptions.txt   |  56 ---
+ .../network/stress/icmp/multi-diffip/Makefile      |  31 --
+ .../stress/icmp/multi-diffip/icmp4-multi-diffip01  | 378 ---------------------
+ .../stress/icmp/multi-diffip/icmp4-multi-diffip02  |  66 ----
+ .../stress/icmp/multi-diffip/icmp4-multi-diffip03  |  67 ----
+ .../stress/icmp/multi-diffip/icmp4-multi-diffip04  |  66 ----
+ .../stress/icmp/multi-diffip/icmp4-multi-diffip05  |  67 ----
+ .../stress/icmp/multi-diffip/icmp4-multi-diffip06  |  67 ----
+ .../stress/icmp/multi-diffip/icmp4-multi-diffip07  |  66 ----
+ .../stress/icmp/multi-diffip/icmp6-multi-diffip01  |  56 ---
+ .../stress/icmp/multi-diffip/icmp6-multi-diffip02  |  66 ----
+ .../stress/icmp/multi-diffip/icmp6-multi-diffip03  |  67 ----
+ .../stress/icmp/multi-diffip/icmp6-multi-diffip04  |  66 ----
+ .../stress/icmp/multi-diffip/icmp6-multi-diffip05  |  67 ----
+ .../stress/icmp/multi-diffip/icmp6-multi-diffip06  |  67 ----
+ .../stress/icmp/multi-diffip/icmp6-multi-diffip07  |  66 ----
+ 16 files changed, 1319 deletions(-)
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/00_Descriptions.txt
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/Makefile
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip01
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip02
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip03
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip04
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip05
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip06
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip07
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip01
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip02
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip03
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip04
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip05
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip06
+ delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip07
 
-diff --git a/runtest/network_stress.icmp b/runtest/network_stress.icmp
-index 87feb74..58d1dd8 100644
---- a/runtest/network_stress.icmp
-+++ b/runtest/network_stress.icmp
-@@ -53,18 +53,18 @@ icmp6-multi-diffip05 icmp-multi-diffip.sh -6 -n 100 -p esp -m tunnel
- icmp6-multi-diffip06 icmp-multi-diffip.sh -6 -n 100 -p ipcomp -m transport
- icmp6-multi-diffip07 icmp-multi-diffip.sh -6 -n 100 -p ipcomp -m tunnel
- 
--icmp4-multi-diffnic01 icmp4-multi-diffnic01
--icmp4-multi-diffnic02 icmp4-multi-diffnic02
--icmp4-multi-diffnic03 icmp4-multi-diffnic03
--icmp4-multi-diffnic04 icmp4-multi-diffnic04
--icmp4-multi-diffnic05 icmp4-multi-diffnic05
--icmp4-multi-diffnic06 icmp4-multi-diffnic06
--icmp4-multi-diffnic07 icmp4-multi-diffnic07
-+icmp4-multi-diffnic01 icmp-multi-diffnic.sh
-+icmp4-multi-diffnic02 icmp-multi-diffnic.sh -p ah -m transport
-+icmp4-multi-diffnic03 icmp-multi-diffnic.sh -p ah -m tunnel
-+icmp4-multi-diffnic04 icmp-multi-diffnic.sh -p esp -m transport
-+icmp4-multi-diffnic05 icmp-multi-diffnic.sh -p esp -m tunnel
-+icmp4-multi-diffnic06 icmp-multi-diffnic.sh -p ipcomp -m transport
-+icmp4-multi-diffnic07 icmp-multi-diffnic.sh -p ipcomp -m tunnel
- 
--icmp6-multi-diffnic01 icmp6-multi-diffnic01
--icmp6-multi-diffnic02 icmp6-multi-diffnic02
--icmp6-multi-diffnic03 icmp6-multi-diffnic03
--icmp6-multi-diffnic04 icmp6-multi-diffnic04
--icmp6-multi-diffnic05 icmp6-multi-diffnic05
--icmp6-multi-diffnic06 icmp6-multi-diffnic06
--icmp6-multi-diffnic07 icmp6-multi-diffnic07
-+icmp6-multi-diffnic01 icmp-multi-diffnic.sh -6
-+icmp6-multi-diffnic02 icmp-multi-diffnic.sh -6 -p ah -m transport
-+icmp6-multi-diffnic03 icmp-multi-diffnic.sh -6 -p ah -m tunnel
-+icmp6-multi-diffnic04 icmp-multi-diffnic.sh -6 -p esp -m transport
-+icmp6-multi-diffnic05 icmp-multi-diffnic.sh -6 -p esp -m tunnel
-+icmp6-multi-diffnic06 icmp-multi-diffnic.sh -6 -p ipcomp -m transport
-+icmp6-multi-diffnic07 icmp-multi-diffnic.sh -6 -p ipcomp -m tunnel
-diff --git a/testcases/network/stress/icmp/icmp-multi-diffnic.sh b/testcases/network/stress/icmp/icmp-multi-diffnic.sh
-new file mode 100755
-index 0000000..c149ca4
---- /dev/null
-+++ b/testcases/network/stress/icmp/icmp-multi-diffnic.sh
-@@ -0,0 +1,153 @@
-+#!/bin/sh
-+# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
-+# Copyright (c) International Business Machines  Corp., 2005
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program; if not, see <http://www.gnu.org/licenses/>.
-+#
-+# Author: Hangbin Liu <haliu@redhat.com>
-+#
-+################################################################################
-+TCID=${TCID:-icmp-multi-diffnic}
-+TST_TOTAL=1
-+TST_COUNT=1
-+TST_CLEANUP="do_cleanup"
-+
-+. ipsec_lib.sh
-+
-+while getopts "hl:m:n:N:p:s:S:6" opt; do
-+	case "$opt" in
-+	h)
-+		echo "Usage:"
-+		echo "h        help"
-+		echo "l n      n is the number of test link when tests run"
-+		echo "m x      x is ipsec mode, could be transport / tunnel"
-+		echo "N n      n is seconds of the network stress duration time"
-+		echo "p x      x is ipsec protocol, could be ah / esp / ipcomp"
-+		echo "s x      x is icmp messge size array"
-+		echo "S n      n is IPsec SPI value"
-+		echo "6        run over IPv6"
-+		exit 0
-+	;;
-+	l) LINK_NUM=$OPTARG ;;
-+	m) IPSEC_MODE=$OPTARG ;;
-+	N) NS_DURATION=$OPTARG ;;
-+	p) IPSEC_PROTO=$OPTARG ;;
-+	s) ICMP_SIZE_ARRAY=$OPTARG ;;
-+	S) SPI=$OPTARG ;;
-+	6) # skip, test_net library already processed it
-+	;;
-+	*) tst_brkm TBROK "unknown option: $opt" ;;
-+	esac
-+done
-+
-+SPI=${SPI:-1000}
-+LINK_NUM=${LINK_NUM:-0}
-+DO_IPSEC=${DO_IPSEC:-false}
-+NS_DURATION=${NS_DURATION:-"3600"}
-+# Use large enough pkt size(65000) to fix each encapsulation
-+ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65000"}
-+[ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ] && DO_IPSEC=true || DO_IPSEC=false
-+
-+link_total=`echo $LHOST_HWADDRS | wc -w`
-+rhost_link_total=`echo $RHOST_HWADDRS | wc -w`
-+if [ $link_total -ne $rhost_link_total ]; then
-+	tst_brkm TBROK "The number of element in LHOST_HWADDRS differs from RHOST_HWADDRS"
-+elif [ $link_total -lt 2 ]; then
-+	tst_brkm TBROK "This test case requires plural NICs."
-+fi
-+
-+do_cleanup()
-+{
-+	pkill -9 ping$TST_IPV6 &> /dev/null
-+	tst_ipsec_cleanup
-+	# Clean up each interface
-+	link_num=0
-+	while [ $link_num -lt $link_total ]; do
-+		tst_init_iface lhost ${link_num}
-+		tst_init_iface rhost ${link_num}
-+		link_num=`expr $link_num + 1`
-+	done
-+	tst_restore_ipaddr lhost
-+	tst_restore_ipaddr rhost
-+}
-+
-+# Test description
-+tst_resm TINFO "Sending ICMP messages with the following conditions"
-+tst_resm TINFO "- Target number of interfaces is $link_total"
-+tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
-+tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
-+
-+if $DO_IPSEC; then
-+	case $IPSEC_PROTO in
-+	ah)	tst_resm TINFO "- IPsec [ AH / $IPSEC_MODE ]" ;;
-+	esp)	tst_resm TINFO "- IPsec [ ESP / $IPSEC_MODE ]" ;;
-+	ipcomp)	tst_resm TINFO "- IPcomp [ $IPSEC_MODE ]" ;;
-+	esac
-+fi
-+
-+# name of interface of the local/remote host
-+lhost_iface=`tst_iface lhost $LINK_NUM`
-+rhost_iface=`tst_iface rhost $LINK_NUM`
-+
-+# Loop for NIC configuration
-+[ "$TST_IPV6" ] && netmask=64 || netmask=24
-+for link_num in `seq 0 $((link_total - 1))`; do
-+	# name of interface of the local/remote host
-+	lhost_iface=`tst_iface lhost $link_num`
-+	rhost_iface=`tst_iface rhost $link_num`
-+
-+	if [ "$TST_IPV6" ]; then
-+		lhost_addr=${IPV6_NET32_UNUSED}:${link_num}:${LHOST_IPV6_HOST}
-+		rhost_addr=${IPV6_NET32_UNUSED}:${link_num}:${RHOST_IPV6_HOST}
-+	else
-+		lhost_addr=${IPV4_NET16_UNUSED}.${link_num}.${LHOST_IPV4_HOST}
-+		rhost_addr=${IPV4_NET16_UNUSED}.${link_num}.${RHOST_IPV4_HOST}
-+	fi
-+	ROD ip addr add $lhost_addr/$netmask dev $lhost_iface
-+	tst_rhost_run -s -c "ip addr add $rhost_addr/$netmask dev $rhost_iface"
-+
-+	# Configure SAD/SPD
-+	if $DO_IPSEC ; then
-+		tst_ipsec lhost $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr
-+		tst_ipsec rhost $IPSEC_PROTO $IPSEC_MODE $SPI $rhost_addr $lhost_addr
-+	fi
-+
-+	# Make sure the connectvity
-+	if [ "$IPSEC_PROTO" == ipcomp ]; then
-+		tst_ping $lhost_iface $rhost_addr 2000
-+	else
-+		tst_ping $lhost_iface $rhost_addr
-+	fi
-+	if [ $? -ne 0 ]; then
-+		tst_resm TFAIL "IPv${TST_IPV6:-4} $lhost_addr/$netmask -- $rhost_addr/$netmask $IPSEC_PROTO $IPSEC_MODE connectivity"
-+	else
-+		tst_resm TPASS "IPv${TST_IPV6:-4} $lhost_addr/$netmask -- $rhost_addr/$netmask $IPSEC_PROTO $IPSEC_MODE connectivity"
-+	fi
-+
-+	lhost_iface_array[$link_num]=$lhost_iface
-+	rhost_addr_array[$link_num]=$rhost_addr
-+done
-+
-+# Do Stress testing, ping flood
-+tst_resm TINFO "start ping flood stress testing"
-+for link_num in `seq 0 $((link_total - 1))`; do
-+	for size in ${ICMP_SIZE_ARRAY}; do
-+		ping$TST_IPV6 -f -q -I ${lhost_iface_array[$link_num]} \
-+			${rhost_addr_array[$link_num]} -s $size &> /dev/null &
-+	done
-+done
-+
-+sleep ${NS_DURATION}
-+
-+tst_exit
+diff --git a/testcases/network/stress/icmp/multi-diffip/00_Descriptions.txt b/testcases/network/stress/icmp/multi-diffip/00_Descriptions.txt
+deleted file mode 100644
+index 4ac83b5..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/00_Descriptions.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-Verify that the kernel is not crashed with receiving and sending various
+-size of ICMP message at the different IP address(alias) simultaneously
+-
+-icmp4-multi-diffip01
+-	IPv4
+-
+-icmp4-multi-diffip02
+-	IPv4
+-	IPsec [ AH / transport ]
+-
+-icmp4-multi-diffip03
+-	IPv4
+-	IPsec [ AH / tunnel ]
+-
+-icmp4-multi-diffip04
+-	IPv4
+-	IPsec [ ESP / transport ]
+-
+-icmp4-multi-diffip05
+-	IPv4
+-	IPsec [ ESP / tunnel ]
+-
+-icmp4-multi-diffip06
+-	IPv4
+-	IPcomp [ transport ]
+-
+-icmp4-multi-diffip07
+-	IPv4
+-	IPcomp [ tunnel ]
+-
+-icmp6-multi-diffip01
+-	IPv6
+-
+-icmp6-multi-diffip02
+-	IPv6
+-	IPsec [ AH / transport ]
+-
+-icmp6-multi-diffip03
+-	IPv6
+-	IPsec [ AH / tunnel ]
+-
+-icmp6-multi-diffip04
+-	IPv6
+-	IPsec [ ESP / transport ]
+-
+-icmp6-multi-diffip05
+-	IPv6
+-	IPsec [ ESP / tunnel ]
+-
+-icmp6-multi-diffip06
+-	IPv6
+-	IPcomp [ transport ]
+-
+-icmp6-multi-diffip07
+-	IPv6
+-	IPcomp [ tunnel ]
+diff --git a/testcases/network/stress/icmp/multi-diffip/Makefile b/testcases/network/stress/icmp/multi-diffip/Makefile
+deleted file mode 100644
+index d114c45..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/Makefile
++++ /dev/null
+@@ -1,31 +0,0 @@
+-#
+-#    network/stress/icmp/multi-diffip testcases Makefile.
+-#
+-#    Copyright (C) 2009, Cisco Systems Inc.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Garrett Cooper, October 2009
+-#
+-
+-top_srcdir		?= ../../../../..
+-
+-include $(top_srcdir)/include/mk/env_pre.mk
+-
+-INSTALL_TARGETS		:= icmp*
+-
+-MAKE_TARGETS		:=
+-
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip01 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip01
+deleted file mode 100644
+index ad2da16..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip01
++++ /dev/null
+@@ -1,378 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp4-multi-diffip01
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#     - The version of IP is IPv4
+-#     - IPsec is not used
+-#
+-#   *) This script may be read by the other test case
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-# The test case ID, the test case count and the total number of test case
+-TCID=${TCID:-icmp4-multi-diffip01}
+-TST_TOTAL=1
+-TST_COUNT=1
+-export TCID
+-export TST_COUNT
+-export TST_TOTAL
+-
+-# Test description
+-tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message at the different IP address(alias) simultaneously with the following conditions"
+-
+-# Make sure the value of LTPROOT
+-LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
+-export LTPROOT
+-
+-# Check the environmanet variable
+-. check_envval || exit $TST_TOTAL
+-
+-# Dulation of the test [sec]
+-NS_DURATION=${NS_DURATION:-3600}      # 1 hour
+-
+-# The number of IP address (alias)
+-IP_TOTAL_FOR_TCPIP=${IP_TOTAL_FOR_TCPIP:-100}
+-
+-# The number of the test link where tests run
+-LINK_NUM=${LINK_NUM:-0}
+-
+-# The version of IP
+-IP_VER=${IP_VER:-4}
+-
+-# true, if ipsec is used
+-DO_IPSEC=${DO_IPSEC:-false}
+-
+-# The value of SPI
+-SPI=${SPI:-1000}
+-
+-# IPsec Protocol ( ah / esp / ipcomp )
+-IPSEC_PROTO=${IPSEC_PROTO:-ah}
+-
+-# IPsec Mode ( transport / tunnel )
+-IPSEC_MODE=${IPSEC_MODE:-transport}
+-
+-# Array of the echo request packet size
+-ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65507"}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Function: do_cleanup
+-#
+-# Description:
+-#   Recover the system configuration
+-#
+-#-----------------------------------------------------------------------
+-do_cleanup()
+-{
+-    # Kill the icmp traffic server
+-    killall_icmp_traffic
+-
+-    # Unset SAD/SPD
+-    output_ipsec_conf flush | setkey -c >/dev/null 2>&1
+-    $LTP_RSH $RHOST ${LTPROOT}/'testcases/bin/output_ipsec_conf flush | PATH=/sbin:/usr/sbin:$PATH setkey -c' >/dev/null 2>&1
+-
+-    # Clean up each interface
+-    initialize_if lhost ${LINK_NUM}
+-    initialize_if rhost ${LINK_NUM}
+-}
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Setup
+-#
+-
+-# Unset the maximum number of processes
+-ulimit -u unlimited
+-
+-# Output the informaion
+-tst_resm TINFO "- Test duration is $NS_DURATION [sec]"
+-tst_resm TINFO "- Target number of the connection is $IP_TOTAL_FOR_TCPIP"
+-tst_resm TINFO "- Version of IP is IPv${IP_VER}"
+-tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
+-
+-if $DO_IPSEC ; then
+-    message=`check_setkey`
+-    if [ $? -ne 0 ]; then
+-	tst_resm TBROK "$message"
+-	exit 1
+-    fi
+-
+-    case $IPSEC_PROTO in
+-	ah)
+-	tst_resm TINFO "- IPsec [ AH / $IPSEC_MODE ]"
+-	;;
+-	esp)
+-	tst_resm TINFO "- IPsec [ ESP / $IPSEC_MODE ]"
+-	;;
+-	ipcomp)
+-	tst_resm TINFO "- IPcomp [ $IPSEC_MODE ]"
+-	;;
+-    esac
+-fi
+-
+-
+-# name of interface of the local/remote host
+-lhost_ifname=`get_ifname lhost $LINK_NUM`
+-if [ $? -ne 0 ]; then
+-    tst_resm TBROK "Failed to get the interface name at the local host"
+-    exit $TST_TOTAL
+-fi
+-
+-rhost_ifname=`get_ifname rhost $LINK_NUM`
+-if [ $? -ne 0 ]; then
+-    tst_resm TBROK "Failed to get the interface name at the remote host"
+-    exit $TST_TOTAL
+-fi
+-
+-
+-# Initialize the system configuration
+-do_cleanup
+-
+-# Call do_cleanup function before exit
+-trap do_cleanup 0
+-
+-# Loop to assign IP addresses
+-ipaddr_pair_num=0
+-while [ $ipaddr_pair_num -lt $IP_TOTAL_FOR_TCPIP ]; do
+-    # Add new IP addresses
+-    x=`expr $ipaddr_pair_num \/ 255 % 255`
+-    y=`expr $ipaddr_pair_num % 255`
+-    if [ $x -ge 255 ]; then
+-	tst_info TINFO "This script cannot add more than $ipaddr_pair_num addresses"
+-	break
+-    fi
+-
+-    case $IP_VER in
+-	4)
+-	network_part="10.${x}.${y}"
+-	network_broadcast=${network_part}.255
+-	network_mask=24
+-	lhost_addr="${network_part}.2"
+-	rhost_addr="${network_part}.1"
+-
+-	# Set IPv4 addresses to the interfaces
+-	ip addr add ${lhost_addr}/${network_mask} broadcast $network_broadcast dev $lhost_ifname
+-
+-        ### delete before setting
+-        if [ $? -eq 2 ]; then
+-		ip addr del ${lhost_addr}/${network_mask} broadcast $network_broadcast dev $lhost_ifname 2>&1
+-		ip addr add ${lhost_addr}/${network_mask} broadcast $network_broadcast dev $lhost_ifname
+-        fi
+-
+-	if [ $? -ne 0 ]; then
+-	    if [ $ipaddr_pair_num -eq 0 ]; then
+-		tst_resm TBROK "Failed to add any IP address at the local"
+-		exit 1
+-	    else
+-		tst_resm TINFO "The number of IP address at the local host seems to reach the maximum. The number is $ipaddr_pair_num"
+-	    fi
+-	    break
+-	fi
+-
+-	ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr add ${rhost_addr}/${network_mask} broadcast $network_broadcast dev $rhost_ifname' ; echo $?'`
+-
+-        if [ $ret -eq 2 ]; then
+-		$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr del ${rhost_addr}/${network_mask} broadcast $network_broadcast dev $rhost_ifname
+-		ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr add ${rhost_addr}/${network_mask} broadcast $network_broadcast dev $rhost_ifname' ; echo $?'`
+-        fi
+-
+-	if [ $ret -ne 0 ]; then
+-	    if [ $ipaddr_pair_num -eq 0 ]; then
+-		tst_resm TBROK "Failed to add any IP address at the remote"
+-		exit 1
+-	    else
+-		tst_resm TINFO "The number of IP address at the remote host seems to reach the maximum. The number is $ipaddr_pair_num"
+-	    fi
+-	    break
+-	fi
+-	;;
+-
+-	6)
+-	hex_x=`printf %x $x`
+-	hex_y=`printf %x $y`
+-
+-	network_part="fd00:1:${hex_x}:${hex_y}"
+-	network_mask=64
+-	lhost_addr="${network_part}::2"
+-	rhost_addr="${network_part}::1"
+-
+-	# Set IPv6 addresses to the interfaces
+-	ip addr add ${lhost_addr}/${network_mask} dev $lhost_ifname
+-
+-        if [ $? -eq 2 ]; then
+-		ip addr del ${lhost_addr}/${network_mask} dev $lhost_ifname 2>&1
+-		ip addr add ${lhost_addr}/${network_mask} dev $lhost_ifname
+-        fi
+-
+-	if [ $? -ne 0 ]; then
+-	    if [ $ipaddr_pair_num -eq 0 ]; then
+-		tst_resm TBROK "Failed to add any IP address at the local"
+-		exit 1
+-	    else
+-		tst_resm TINFO "The number of IP address at the local host seems to reach the maximum. The number is $ipaddr_pair_num"
+-	    fi
+-	    break
+-	fi
+-
+-	ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr add ${rhost_addr}/${network_mask} dev $rhost_ifname' ; echo $?'`
+-
+-	if [ $ret -eq 2 ]; then
+-		$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr del ${rhost_addr}/${network_mask} dev $rhost_ifname
+-		ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr add ${rhost_addr}/${network_mask} dev $rhost_ifname' ; echo $?'`
+-	fi
+-
+-	if [ $ret -ne 0 ]; then
+-	    if [ $ipaddr_pair_num -eq 0 ]; then
+-		tst_resm TBROK "Failed to add any IP address at the remote"
+-		exit 1
+-	    else
+-		tst_resm TINFO "The number of IP address at the remote host seems to reach the maximum. The number is $ipaddr_pair_num"
+-	    fi
+-	    break
+-	fi
+-	;;
+-    esac
+-
+-    # Set SAD/SPD
+-    if $DO_IPSEC ; then
+-	ipsec_log=`mktemp -p $TMPDIR`
+-	output_ipsec_conf src \
+-	    $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr \
+-		| setkey -c 2>&1 | tee $ipsec_log
+-	if [ $? -ne 0 -o -s $ipsec_log ]; then
+-	    rm -f $ipsec_log
+-	    if [ $ipaddr_pair_num -eq 0 ]; then
+-		tst_resm TBROK "Failed to add any SAD/SPD"
+-		exit 1
+-	    else
+-		tst_resm TINFO "The number of SAD/SPD seems to reach the maximum at the local host."
+-	    fi
+-	    break
+-	fi
+-	rm -f $ipsec_log
+-
+-	$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/output_ipsec_conf dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr' | PATH=/sbin:/usr/sbin:$PATH setkey -c' 2>&1 | tee $ipsec_log
+-	if [ -s $ipsec_log ]; then
+-	    rm -f $ipsec_log
+-	    if [ $ipaddr_pair_num -eq 0 ]; then
+-		tst_resm TBROK "Failed to add any SAD/SPD"
+-		exit 1
+-	    else
+-		tst_resm TINFO "The number of SAD/SPD seems to reach the maximum at the remote host."
+-	    fi
+-	    break
+-	fi
+-	rm -f $ipsec_log
+-    fi
+-
+-    # Check the connectivity
+-    case $IP_VER in
+-	4)
+-	ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
+-	if [ $ret -ne 0 ]; then
+-	    tst_resm TBROK "No IPv4 connectivity among ${ipaddr_pair_num}th IP address pair"
+-	    exit 1
+-	fi
+-	;;
+-
+-	6)
+-	ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv6_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
+-	if [ $ret -ne 0 ]; then
+-	    tst_resm TBROK "No IPv6 connectivity among ${ipaddr_pair_num}th IP address pair"
+-	    exit 1
+-	fi
+-	;;
+-    esac
+-
+-    if [ $? -ne 0 ]; then
+-	tst_resm TFAIL "There is no connectivity."
+-	exit 1
+-    fi
+-
+-    ipaddr_pair_num=`expr $ipaddr_pair_num + 1`
+-done
+-
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Main
+-#
+-#
+-
+-# Start to receiving/replying ICMP echo
+-connection_num=0
+-while [ $connection_num -lt $ipaddr_pair_num ]; do
+-    # IP addresses
+-    x=`expr $connection_num \/ 255 % 255`
+-    y=`expr $connection_num % 255`
+-
+-    case $IP_VER in
+-	4)
+-	lhost_addr="10.${x}.${y}.2"
+-	;;
+-
+-	6)
+-	hex_x=`printf %x $x`
+-	hex_y=`printf %x $y`
+-	lhost_addr="fd00:1:${hex_x}:${hex_y}::2"
+-	;;
+-    esac
+-
+-    # Run a client
+-    $LTP_RSH $RHOST "${LTPROOT}/testcases/bin/ns-echoclient -S $lhost_addr -f $IP_VER -s \"$ICMP_SIZE_ARRAY\"" &
+-    connection_num=`expr $connection_num + 1`
+-done
+-
+-
+-sleep $NS_DURATION
+-killall_icmp_traffic
+-wait
+-
+-
+-#-----------------------------------------------------------------------
+-#
+-# Clean up
+-#
+-
+-tst_resm TPASS "Test is finished successfully."
+-exit 0
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip02 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip02
+deleted file mode 100644
+index bd4553e..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip02
++++ /dev/null
+@@ -1,66 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp4-multi-diffip02
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#     - The version of IP is IPv4
+-#     - IPsec(AH), transport mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp4-multi-diffip02
+-
+-# The version of IP
+-IP_VER=4
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=ah
+-
+-# IPsec Mode
+-IPSEC_MODE=transport
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip03 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip03
+deleted file mode 100644
+index 78879e6..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip03
++++ /dev/null
+@@ -1,67 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp4-multi-diffip03
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#
+-#     - The version of IP is IPv4
+-#     - IPsec(AH), tunnel mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp4-multi-diffip03
+-
+-# The version of IP
+-IP_VER=4
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=ah
+-
+-# IPsec Mode
+-IPSEC_MODE=tunnel
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip04 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip04
+deleted file mode 100644
+index 496d548..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip04
++++ /dev/null
+@@ -1,66 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp4-multi-diffip04
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#     - The version of IP is IPv4
+-#     - IPsec(ESP), transport mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp4-multi-diffip04
+-
+-# The version of IP
+-IP_VER=4
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=esp
+-
+-# IPsec Mode
+-IPSEC_MODE=transport
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip05 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip05
+deleted file mode 100644
+index bf7979b..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip05
++++ /dev/null
+@@ -1,67 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp4-multi-diffip05
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#
+-#     - The version of IP is IPv4
+-#     - IPsec(ESP), tunnel mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp4-multi-diffip05
+-
+-# The version of IP
+-IP_VER=4
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=esp
+-
+-# IPsec Mode
+-IPSEC_MODE=tunnel
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip06 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip06
+deleted file mode 100644
+index fe4baaa..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip06
++++ /dev/null
+@@ -1,67 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp4-multi-diffip06
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#
+-#     - The version of IP is IPv4
+-#     - IPcomp, transport mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp4-multi-diffip06
+-
+-# The version of IP
+-IP_VER=4
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=ipcomp
+-
+-# IPsec Mode
+-IPSEC_MODE=transport
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip07 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip07
+deleted file mode 100644
+index 164d616..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip07
++++ /dev/null
+@@ -1,66 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp4-multi-diffip07
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#     - The version of IP is IPv4
+-#     - IPcomp, tunnel mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp4-multi-diffip07
+-
+-# The version of IP
+-IP_VER=4
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=ipcomp
+-
+-# IPsec Mode
+-IPSEC_MODE=tunnel
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip01 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip01
+deleted file mode 100644
+index 84b2844..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip01
++++ /dev/null
+@@ -1,56 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp6-multi-diffip01
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#     - The version of IP is IPv6
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp6-multi-diffip01
+-
+-# The version of IP
+-IP_VER=6
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip02 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip02
+deleted file mode 100644
+index cba23c1..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip02
++++ /dev/null
+@@ -1,66 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp6-multi-diffip02
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#     - The version of IP is IPv6
+-#     - IPsec(AH), transport mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp6-multi-diffip02
+-
+-# The version of IP
+-IP_VER=6
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=ah
+-
+-# IPsec Mode
+-IPSEC_MODE=transport
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip03 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip03
+deleted file mode 100644
+index ea632c9..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip03
++++ /dev/null
+@@ -1,67 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp6-multi-diffip03
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#
+-#     - The version of IP is IPv6
+-#     - IPsec(AH), tunnel mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp6-multi-diffip03
+-
+-# The version of IP
+-IP_VER=6
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=ah
+-
+-# IPsec Mode
+-IPSEC_MODE=tunnel
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip04 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip04
+deleted file mode 100644
+index ab6834e..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip04
++++ /dev/null
+@@ -1,66 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp6-multi-diffip04
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#     - The version of IP is IPv6
+-#     - IPsec(ESP), transport mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp6-multi-diffip04
+-
+-# The version of IP
+-IP_VER=6
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=esp
+-
+-# IPsec Mode
+-IPSEC_MODE=transport
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip05 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip05
+deleted file mode 100644
+index e85493e..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip05
++++ /dev/null
+@@ -1,67 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp6-multi-diffip05
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#
+-#     - The version of IP is IPv6
+-#     - IPsec(ESP), tunnel mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp6-multi-diffip05
+-
+-# The version of IP
+-IP_VER=6
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=esp
+-
+-# IPsec Mode
+-IPSEC_MODE=tunnel
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip06 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip06
+deleted file mode 100644
+index a055c28..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip06
++++ /dev/null
+@@ -1,67 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp6-multi-diffip06
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#
+-#     - The version of IP is IPv6
+-#     - IPcomp, transport mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp6-multi-diffip06
+-
+-# The version of IP
+-IP_VER=6
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=ipcomp
+-
+-# IPsec Mode
+-IPSEC_MODE=transport
+-
+-. icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip07 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip07
+deleted file mode 100644
+index 6aa2985..0000000
+--- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip07
++++ /dev/null
+@@ -1,66 +0,0 @@
+-#!/bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2005                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File:
+-#   icmp6-multi-diffip07
+-#
+-# Description:
+-#   Verify that the kernel is not crashed with receiving and sending ICMP
+-#   message at different IP address(alias) with the following conditions
+-#     - The version of IP is IPv6
+-#     - IPcomp, tunnel mode
+-#
+-# Setup:
+-#   See ltp-yyyymmdd/testcases/network/stress/README
+-#
+-# Author:
+-#   Mitsuru Chinen <mitch@jp.ibm.com>
+-#
+-# History:
+-#	Oct 19 2005 - Created (Mitsuru Chinen)
+-#
+-#-----------------------------------------------------------------------
+-# Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-$trace_logic
+-
+-#
+-# Variables -- Changed by each multi-diffip testcase
+-#
+-
+-# The test case ID
+-TCID=icmp6-multi-diffip07
+-
+-# The version of IP
+-IP_VER=6
+-
+-# true, if ipsec is used
+-DO_IPSEC=true
+-
+-# IPsec Protocol
+-IPSEC_PROTO=ipcomp
+-
+-# IPsec Mode
+-IPSEC_MODE=tunnel
+-
+-. icmp4-multi-diffip01
 -- 
 2.5.5
 
