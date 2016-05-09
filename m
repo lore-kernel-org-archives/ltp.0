@@ -1,115 +1,179 @@
 From: Chunyu Hu <chuhu@redhat.com>
-Date: Mon,  9 May 2016 19:03:32 +0800
-Subject: [LTP] [PATCH v3 3/9] tracing/ftrace: add a new case for
-	signal_generate
-In-Reply-To: <1462791818-4184-3-git-send-email-chuhu@redhat.com>
+Date: Mon,  9 May 2016 19:03:35 +0800
+Subject: [LTP] [PATCH v3 6/9] testcases/lib: Add tst_random decmical integer
+	generator
+In-Reply-To: <1462791818-4184-6-git-send-email-chuhu@redhat.com>
 References: <1462791818-4184-1-git-send-email-chuhu@redhat.com>
  <1462791818-4184-2-git-send-email-chuhu@redhat.com>
  <1462791818-4184-3-git-send-email-chuhu@redhat.com>
-Message-ID: <1462791818-4184-4-git-send-email-chuhu@redhat.com>
+ <1462791818-4184-4-git-send-email-chuhu@redhat.com>
+ <1462791818-4184-5-git-send-email-chuhu@redhat.com>
+ <1462791818-4184-6-git-send-email-chuhu@redhat.com>
+Message-ID: <1462791818-4184-7-git-send-email-chuhu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Li Wang <liwang@redhat.com>
+It parse the input range and get one decimical integer in the range.
+Tests can use it to determin a random action.
 
-PURPOSE: check signal:signal_generate gives 2 more fields: grp res
++ documentation in the test-writing-guidelines
 
-This testcase is writing for signal events change:
-       6c303d3 tracing: let trace_signal_generate() report more info...
-       163566f tracing: send_sigqueue() needs trace_signal_generate() too
-
-Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Chunyu Hu <chuhu@redhat.com>
 ---
- runtest/tracing                                    |  1 +
- .../tracing/ftrace_test/ftrace_regression02.sh     | 67 ++++++++++++++++++++++
- 2 files changed, 68 insertions(+)
- create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
+ doc/test-writing-guidelines.txt | 12 ++++++
+ testcases/lib/.gitignore        |  1 +
+ testcases/lib/Makefile          |  4 +-
+ testcases/lib/tst_random.c      | 93 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 108 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/lib/tst_random.c
 
-diff --git a/runtest/tracing b/runtest/tracing
-index fb82515..9f8d5c8 100644
---- a/runtest/tracing
-+++ b/runtest/tracing
-@@ -1,3 +1,4 @@
- #DESCRIPTION:Tracing testing
- ftrace_regression01	ftrace_regression01.sh
-+ftrace_regression02	ftrace_regression02.sh
- ftrace-stress-test	ftrace_stress_test.sh 90
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
-new file mode 100755
-index 0000000..c30bf29
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index d0b1408..a6b4c2d 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1203,6 +1203,18 @@ that can sleep for defined amount of seconds, milliseconds or microseconds.
+ tst_sleep 100ms
+ -------------------------------------------------------------------------------
+ 
++tst_random
+++++++++++
++
++There may be test such as ftrace_test using random integer to determin the test action.
++here includes 'tst_random' to support it, avoid the `date+%N` action.
++
++[source,sh]
++-------------------------------------------------------------------------------
++# get random integer between 0 and 1000 (include 0 and 1000)
++tst_random 0 1000
++-------------------------------------------------------------------------------
++
+ ROD and ROD_SILENT
+ ++++++++++++++++++
+ 
+diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+index 8886b34..15a04df 100644
+--- a/testcases/lib/.gitignore
++++ b/testcases/lib/.gitignore
+@@ -1 +1,2 @@
+ tst_sleep
++tst_random
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index 0bfb149..be3a720 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -24,8 +24,8 @@ top_srcdir		?= ../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-INSTALL_TARGETS		:= *.sh tst_sleep
++INSTALL_TARGETS		:= *.sh tst_sleep tst_random
+ 
+-MAKE_TARGETS		:= tst_sleep
++MAKE_TARGETS		:= tst_sleep tst_random
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/lib/tst_random.c b/testcases/lib/tst_random.c
+new file mode 100644
+index 0000000..5a72b1e
 --- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
-@@ -0,0 +1,67 @@
-+#! /bin/sh
++++ b/testcases/lib/tst_random.c
+@@ -0,0 +1,93 @@
++/*
++ * Copyright (c) 2016 Red Hat Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * Author: Chunyu Hu <chuhu@redhat.com>
++ *
++ */
 +
-+###########################################################################
-+##                                                                       ##
-+## Copyright (c) 2015, Red Hat Inc.                                      ##
-+##                                                                       ##
-+## This program is free software: you can redistribute it and/or modify  ##
-+## it under the terms of the GNU General Public License as published by  ##
-+## the Free Software Foundation, either version 3 of the License, or     ##
-+## (at your option) any later version.                                   ##
-+##                                                                       ##
-+## This program is distributed in the hope that it will be useful,       ##
-+## but WITHOUT ANY WARRANTY; without even the implied warranty of        ##
-+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the          ##
-+## GNU General Public License for more details.                          ##
-+##                                                                       ##
-+## You should have received a copy of the GNU General Public License     ##
-+## along with this program. If not, see <http://www.gnu.org/licenses/>.  ##
-+##                                                                       ##
-+## Author: Li Wang <liwang@redhat.com>                                   ##
-+##                                                                       ##
-+###########################################################################
-+##                                                                       ##
-+## Summary: check signal:signal_generate gives 2 more fields: grp res    ##
-+##                                                                       ##
-+## This testcase is writing for signal events change:                    ##
-+##       6c303d3 tracing: let trace_signal_generate() report more info...##
-+##       163566f tracing: send_sigqueue() needs trace_signal_generate()  ##
-+##                                                                       ##
-+###########################################################################
++#include <stdio.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/time.h>
 +
-+export TCID="ftrace_regression02"
-+export TST_TOTAL=1
-+
-+. ftrace_lib.sh
-+
-+ftrace_signal_test()
++static void print_help(void)
 +{
-+	# Set envent
-+	echo 'signal:signal_generate' > $TRACING_PATH/set_event
-+	echo 1 > $TRACING_PATH/tracing_on
-+	echo > $TRACING_PATH/trace
-+
-+	# just to generate trace
-+	for i in $(seq 100); do
-+		ls -l /proc > /dev/null 2>&1
-+	done
-+
-+	grep -q 'grp=[0-9] res=[0-9]' $TRACING_PATH/trace
-+	if [ $? -eq 0 ]; then
-+		tst_resm TPASS "finished running the test."
-+	else
-+		tst_resm TFAIL "running the test failed, please check log message."
-+	fi
++	printf("Usage: tst_random <value1> [value2]\n");
++	printf("       Generated random will be between value1 and value2.\n");
++	printf("       If only value1 is specified, value2 will treated as 0.\n");
 +}
 +
-+#-----Test Start--------
-+tst_kvercmp 3 2 0
-+if [ $? -eq 0 ]; then
-+	tst_brkm TCONF ignored "The test should be run in kernels >= 3.2.0 Skip the test..."
-+fi
++static int get_seed(void)
++{
++	struct timeval tv;
++	gettimeofday(&tv, NULL);
++	return tv.tv_usec;
++}
 +
-+save_old_setting
++static long rand_range(long min, long max)
++{
++	return rand() % (max - min + 1) + min;
++}
 +
-+ftrace_signal_test
++int main(int argc, char *argv[])
++{
++	int opt;
++	long min = 0, max = 0, tmp = 0;
++	long rval = 0;
++	char *end;
 +
-+clean_up
++	while ((opt = getopt(argc, argv, ":h")) != -1) {
++		switch (opt) {
++		case 'h':
++			print_help();
++			return 0;
++		default:
++			print_help();
++			return 1;
++		}
++	}
++
++	if (argc != 2 && argc != 3) {
++		print_help();
++		return 1;
++	}
++
++	max = strtol(argv[1], &end, 10);
++	if (!(argv[1][0] != '\0' && *end == '\0')) {
++		fprintf(stderr, "ERROR: Invalid range value1 '%s'\n\n",
++			argv[optind]);
++		print_help();
++		return 1;
++	}
++
++	if (argc == 3) {
++		min = strtol(argv[2], &end, 10);
++		if (!(argv[2][0] != '\0' && *end == '\0')) {
++			fprintf(stderr, "ERROR: Invalid range value2 '%s'\n\n",
++				argv[optind+1]);
++			print_help();
++			return 1;
++		}
++	}
++
++	srand(get_seed());
++	rval = (min > max) ? rand_range(max, min) : rand_range(min, max);
++	printf("%ld\n", rval);
++
++	return 0;
++}
 -- 
 1.8.3.1
 
