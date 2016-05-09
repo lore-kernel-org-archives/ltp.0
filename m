@@ -1,125 +1,125 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Mon,  9 May 2016 15:57:01 +0800
-Subject: [LTP] [PATCH 2/4] network/stress/icmp: remove old multi-diffip/*
+Date: Mon,  9 May 2016 15:57:03 +0800
+Subject: [LTP] [PATCH 4/4] network/stress/icmp: remove old multi-diffnic/*
 	tests
 In-Reply-To: <1462780623-26778-1-git-send-email-haliu@redhat.com>
 References: <1462780623-26778-1-git-send-email-haliu@redhat.com>
-Message-ID: <1462780623-26778-2-git-send-email-haliu@redhat.com>
+Message-ID: <1462780623-26778-4-git-send-email-haliu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-multi-diffip/* tests have been rewritten and the new version
-can be found in icmp/icmp-multi-diffip.sh.
+multi-diffnic/* tests have been rewritten and the new version
+can be found in icmp/icmp-multi-diffnic.sh.
 
 Signed-off-by: Hangbin Liu <haliu@redhat.com>
 ---
- .../stress/icmp/multi-diffip/00_Descriptions.txt   |  56 ---
- .../network/stress/icmp/multi-diffip/Makefile      |  31 --
- .../stress/icmp/multi-diffip/icmp4-multi-diffip01  | 378 ---------------------
- .../stress/icmp/multi-diffip/icmp4-multi-diffip02  |  66 ----
- .../stress/icmp/multi-diffip/icmp4-multi-diffip03  |  67 ----
- .../stress/icmp/multi-diffip/icmp4-multi-diffip04  |  66 ----
- .../stress/icmp/multi-diffip/icmp4-multi-diffip05  |  67 ----
- .../stress/icmp/multi-diffip/icmp4-multi-diffip06  |  67 ----
- .../stress/icmp/multi-diffip/icmp4-multi-diffip07  |  66 ----
- .../stress/icmp/multi-diffip/icmp6-multi-diffip01  |  56 ---
- .../stress/icmp/multi-diffip/icmp6-multi-diffip02  |  66 ----
- .../stress/icmp/multi-diffip/icmp6-multi-diffip03  |  67 ----
- .../stress/icmp/multi-diffip/icmp6-multi-diffip04  |  66 ----
- .../stress/icmp/multi-diffip/icmp6-multi-diffip05  |  67 ----
- .../stress/icmp/multi-diffip/icmp6-multi-diffip06  |  67 ----
- .../stress/icmp/multi-diffip/icmp6-multi-diffip07  |  66 ----
- 16 files changed, 1319 deletions(-)
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/00_Descriptions.txt
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/Makefile
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip01
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip02
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip03
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip04
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip05
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip06
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip07
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip01
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip02
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip03
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip04
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip05
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip06
- delete mode 100644 testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip07
+ .../stress/icmp/multi-diffnic/00_Descriptions.txt  |  56 ----
+ .../network/stress/icmp/multi-diffnic/Makefile     |  31 ---
+ .../icmp/multi-diffnic/icmp4-multi-diffnic01       | 301 ---------------------
+ .../icmp/multi-diffnic/icmp4-multi-diffnic02       |  66 -----
+ .../icmp/multi-diffnic/icmp4-multi-diffnic03       |  67 -----
+ .../icmp/multi-diffnic/icmp4-multi-diffnic04       |  66 -----
+ .../icmp/multi-diffnic/icmp4-multi-diffnic05       |  67 -----
+ .../icmp/multi-diffnic/icmp4-multi-diffnic06       |  67 -----
+ .../icmp/multi-diffnic/icmp4-multi-diffnic07       |  66 -----
+ .../icmp/multi-diffnic/icmp6-multi-diffnic01       |  56 ----
+ .../icmp/multi-diffnic/icmp6-multi-diffnic02       |  66 -----
+ .../icmp/multi-diffnic/icmp6-multi-diffnic03       |  67 -----
+ .../icmp/multi-diffnic/icmp6-multi-diffnic04       |  66 -----
+ .../icmp/multi-diffnic/icmp6-multi-diffnic05       |  67 -----
+ .../icmp/multi-diffnic/icmp6-multi-diffnic06       |  67 -----
+ .../icmp/multi-diffnic/icmp6-multi-diffnic07       |  66 -----
+ 16 files changed, 1242 deletions(-)
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/00_Descriptions.txt
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/Makefile
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic01
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic02
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic03
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic04
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic05
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic06
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic07
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic01
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic02
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic03
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic04
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic05
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic06
+ delete mode 100644 testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic07
 
-diff --git a/testcases/network/stress/icmp/multi-diffip/00_Descriptions.txt b/testcases/network/stress/icmp/multi-diffip/00_Descriptions.txt
+diff --git a/testcases/network/stress/icmp/multi-diffnic/00_Descriptions.txt b/testcases/network/stress/icmp/multi-diffnic/00_Descriptions.txt
 deleted file mode 100644
-index 4ac83b5..0000000
---- a/testcases/network/stress/icmp/multi-diffip/00_Descriptions.txt
+index 32da9d0..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/00_Descriptions.txt
 +++ /dev/null
 @@ -1,56 +0,0 @@
 -Verify that the kernel is not crashed with receiving and sending various
--size of ICMP message at the different IP address(alias) simultaneously
+-size of ICMP message at differnt NIC simultaneously
 -
--icmp4-multi-diffip01
+-icmp4-multi-diffnic01
 -	IPv4
 -
--icmp4-multi-diffip02
+-icmp4-multi-diffnic02
 -	IPv4
 -	IPsec [ AH / transport ]
 -
--icmp4-multi-diffip03
+-icmp4-multi-diffnic03
 -	IPv4
 -	IPsec [ AH / tunnel ]
 -
--icmp4-multi-diffip04
+-icmp4-multi-diffnic04
 -	IPv4
 -	IPsec [ ESP / transport ]
 -
--icmp4-multi-diffip05
+-icmp4-multi-diffnic05
 -	IPv4
 -	IPsec [ ESP / tunnel ]
 -
--icmp4-multi-diffip06
+-icmp4-multi-diffnic06
 -	IPv4
 -	IPcomp [ transport ]
 -
--icmp4-multi-diffip07
+-icmp4-multi-diffnic07
 -	IPv4
 -	IPcomp [ tunnel ]
 -
--icmp6-multi-diffip01
+-icmp6-multi-diffnic01
 -	IPv6
 -
--icmp6-multi-diffip02
+-icmp6-multi-diffnic02
 -	IPv6
 -	IPsec [ AH / transport ]
 -
--icmp6-multi-diffip03
+-icmp6-multi-diffnic03
 -	IPv6
 -	IPsec [ AH / tunnel ]
 -
--icmp6-multi-diffip04
+-icmp6-multi-diffnic04
 -	IPv6
 -	IPsec [ ESP / transport ]
 -
--icmp6-multi-diffip05
+-icmp6-multi-diffnic05
 -	IPv6
 -	IPsec [ ESP / tunnel ]
 -
--icmp6-multi-diffip06
+-icmp6-multi-diffnic06
 -	IPv6
 -	IPcomp [ transport ]
 -
--icmp6-multi-diffip07
+-icmp6-multi-diffnic07
 -	IPv6
 -	IPcomp [ tunnel ]
-diff --git a/testcases/network/stress/icmp/multi-diffip/Makefile b/testcases/network/stress/icmp/multi-diffip/Makefile
+diff --git a/testcases/network/stress/icmp/multi-diffnic/Makefile b/testcases/network/stress/icmp/multi-diffnic/Makefile
 deleted file mode 100644
-index d114c45..0000000
---- a/testcases/network/stress/icmp/multi-diffip/Makefile
+index 4746e87..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/Makefile
 +++ /dev/null
 @@ -1,31 +0,0 @@
 -#
--#    network/stress/icmp/multi-diffip testcases Makefile.
+-#    network/stress/icmp/multi-diffnic testcases Makefile.
 -#
 -#    Copyright (C) 2009, Cisco Systems Inc.
 -#
@@ -149,12 +149,12 @@ index d114c45..0000000
 -MAKE_TARGETS		:=
 -
 -include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip01 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic01 b/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic01
 deleted file mode 100644
-index ad2da16..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip01
+index c2103f2..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic01
 +++ /dev/null
-@@ -1,378 +0,0 @@
+@@ -1,301 +0,0 @@
 -#!/bin/sh
 -
 -################################################################################
@@ -179,11 +179,11 @@ index ad2da16..0000000
 -################################################################################
 -#
 -# File:
--#   icmp4-multi-diffip01
+-#   icmp4-multi-diffnic01
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#     - The version of IP is IPv4
 -#     - IPsec is not used
 -#
@@ -204,7 +204,7 @@ index ad2da16..0000000
 -$trace_logic
 -
 -# The test case ID, the test case count and the total number of test case
--TCID=${TCID:-icmp4-multi-diffip01}
+-TCID=${TCID:-icmp4-multi-diffnic01}
 -TST_TOTAL=1
 -TST_COUNT=1
 -export TCID
@@ -212,7 +212,7 @@ index ad2da16..0000000
 -export TST_TOTAL
 -
 -# Test description
--tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message at the different IP address(alias) simultaneously with the following conditions"
+-tst_resm TINFO "Verify that the kernel is not crashed with receiving and sending various size of ICMP message at differnt NIC simultaneously with the following conditions"
 -
 -# Make sure the value of LTPROOT
 -LTPROOT=${LTPROOT:-`(cd ../../../../.. ; pwd)`}
@@ -223,12 +223,6 @@ index ad2da16..0000000
 -
 -# Dulation of the test [sec]
 -NS_DURATION=${NS_DURATION:-3600}      # 1 hour
--
--# The number of IP address (alias)
--IP_TOTAL_FOR_TCPIP=${IP_TOTAL_FOR_TCPIP:-100}
--
--# The number of the test link where tests run
--LINK_NUM=${LINK_NUM:-0}
 -
 -# The version of IP
 -IP_VER=${IP_VER:-4}
@@ -249,6 +243,7 @@ index ad2da16..0000000
 -ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65507"}
 -
 -
+-
 -#-----------------------------------------------------------------------
 -#
 -# Function: do_cleanup
@@ -267,8 +262,12 @@ index ad2da16..0000000
 -    $LTP_RSH $RHOST ${LTPROOT}/'testcases/bin/output_ipsec_conf flush | PATH=/sbin:/usr/sbin:$PATH setkey -c' >/dev/null 2>&1
 -
 -    # Clean up each interface
--    initialize_if lhost ${LINK_NUM}
--    initialize_if rhost ${LINK_NUM}
+-    link_num=0
+-    while [ $link_num -lt $link_total ]; do
+-	initialize_if lhost ${link_num}
+-	initialize_if rhost ${link_num}
+-	link_num=`expr $link_num + 1`
+-    done
 -}
 -
 -
@@ -282,7 +281,19 @@ index ad2da16..0000000
 -
 -# Output the informaion
 -tst_resm TINFO "- Test duration is $NS_DURATION [sec]"
--tst_resm TINFO "- Target number of the connection is $IP_TOTAL_FOR_TCPIP"
+-
+-link_total=`echo $LHOST_HWADDRS | wc -w`
+-rhost_link_total=`echo $RHOST_HWADDRS | wc -w`
+-if [ $link_total -ne $rhost_link_total ]; then
+-    tst_resm TBROK "The number of element in LHOST_HWADDRS differs from RHOST_HWADDRS"
+-    exit 1
+-fi
+-if [ $link_total -lt 2 ]; then
+-    tst_resm TBROK "This test case requires plural NICs."
+-    exit 1
+-fi
+-tst_resm TINFO "- Target number of the connection is $link_total"
+-
 -tst_resm TINFO "- Version of IP is IPv${IP_VER}"
 -tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
 -
@@ -306,167 +317,98 @@ index ad2da16..0000000
 -    esac
 -fi
 -
--
--# name of interface of the local/remote host
--lhost_ifname=`get_ifname lhost $LINK_NUM`
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to get the interface name at the local host"
--    exit $TST_TOTAL
--fi
--
--rhost_ifname=`get_ifname rhost $LINK_NUM`
--if [ $? -ne 0 ]; then
--    tst_resm TBROK "Failed to get the interface name at the remote host"
--    exit $TST_TOTAL
--fi
--
--
 -# Initialize the system configuration
 -do_cleanup
 -
 -# Call do_cleanup function before exit
 -trap do_cleanup 0
 -
--# Loop to assign IP addresses
--ipaddr_pair_num=0
--while [ $ipaddr_pair_num -lt $IP_TOTAL_FOR_TCPIP ]; do
--    # Add new IP addresses
--    x=`expr $ipaddr_pair_num \/ 255 % 255`
--    y=`expr $ipaddr_pair_num % 255`
--    if [ $x -ge 255 ]; then
--	tst_info TINFO "This script cannot add more than $ipaddr_pair_num addresses"
--	break
--    fi
+-# Loop for NIC configuration
+-link_num=0
+-lhost_addrs=""
+-while [ $link_num -lt $link_total ]; do
+-    # name of interface of the local/remote host
+-    lhost_ifname=`get_ifname lhost $link_num`
+-    rhost_ifname=`get_ifname rhost $link_num`
 -
+-    # Set the IP address to each interface
 -    case $IP_VER in
 -	4)
--	network_part="10.${x}.${y}"
--	network_broadcast=${network_part}.255
+-	network_part="10.0.${link_num}"
 -	network_mask=24
--	lhost_addr="${network_part}.2"
--	rhost_addr="${network_part}.1"
--
--	# Set IPv4 addresses to the interfaces
--	ip addr add ${lhost_addr}/${network_mask} broadcast $network_broadcast dev $lhost_ifname
--
--        ### delete before setting
--        if [ $? -eq 2 ]; then
--		ip addr del ${lhost_addr}/${network_mask} broadcast $network_broadcast dev $lhost_ifname 2>&1
--		ip addr add ${lhost_addr}/${network_mask} broadcast $network_broadcast dev $lhost_ifname
--        fi
--
+-	lhost_host_part="2"     # local host
+-	rhost_host_part="1"     # remote host
+-	set_ipv4addr lhost $link_num $network_part $lhost_host_part
 -	if [ $? -ne 0 ]; then
--	    if [ $ipaddr_pair_num -eq 0 ]; then
--		tst_resm TBROK "Failed to add any IP address at the local"
--		exit 1
--	    else
--		tst_resm TINFO "The number of IP address at the local host seems to reach the maximum. The number is $ipaddr_pair_num"
--	    fi
--	    break
+-	    tst_resm TBROK "Failed to set IPv4 address at the local host"
+-	    exit 1
+-	fi
+-	set_ipv4addr rhost $link_num $network_part $rhost_host_part
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to set IPv4 address at the remote host"
+-	    exit 1
 -	fi
 -
--	ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr add ${rhost_addr}/${network_mask} broadcast $network_broadcast dev $rhost_ifname' ; echo $?'`
--
--        if [ $ret -eq 2 ]; then
--		$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr del ${rhost_addr}/${network_mask} broadcast $network_broadcast dev $rhost_ifname
--		ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr add ${rhost_addr}/${network_mask} broadcast $network_broadcast dev $rhost_ifname' ; echo $?'`
--        fi
--
--	if [ $ret -ne 0 ]; then
--	    if [ $ipaddr_pair_num -eq 0 ]; then
--		tst_resm TBROK "Failed to add any IP address at the remote"
--		exit 1
--	    else
--		tst_resm TINFO "The number of IP address at the remote host seems to reach the maximum. The number is $ipaddr_pair_num"
--	    fi
--	    break
--	fi
+-	# IPv4 address of the local/remote host
+-	lhost_addr="${network_part}.${lhost_host_part}"
+-	rhost_addr="${network_part}.${rhost_host_part}"
+-	lhost_addrs="${lhost_addrs} ${lhost_addr}"
 -	;;
 -
 -	6)
--	hex_x=`printf %x $x`
--	hex_y=`printf %x $y`
--
--	network_part="fd00:1:${hex_x}:${hex_y}"
+-	network_part="fd00:1:0:`printf %x ${link_num}`"
 -	network_mask=64
--	lhost_addr="${network_part}::2"
--	rhost_addr="${network_part}::1"
--
--	# Set IPv6 addresses to the interfaces
--	ip addr add ${lhost_addr}/${network_mask} dev $lhost_ifname
--
--        if [ $? -eq 2 ]; then
--		ip addr del ${lhost_addr}/${network_mask} dev $lhost_ifname 2>&1
--		ip addr add ${lhost_addr}/${network_mask} dev $lhost_ifname
--        fi
--
+-	lhost_host_part=":2"     # local host
+-	rhost_host_part=":1"     # remote host
+-	add_ipv6addr lhost $link_num $network_part $lhost_host_part
 -	if [ $? -ne 0 ]; then
--	    if [ $ipaddr_pair_num -eq 0 ]; then
--		tst_resm TBROK "Failed to add any IP address at the local"
--		exit 1
--	    else
--		tst_resm TINFO "The number of IP address at the local host seems to reach the maximum. The number is $ipaddr_pair_num"
--	    fi
--	    break
+-	    tst_resm TBROK "Failed to set IPv6 address at the local host"
+-	    exit 1
 -	fi
--
--	ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr add ${rhost_addr}/${network_mask} dev $rhost_ifname' ; echo $?'`
--
--	if [ $ret -eq 2 ]; then
--		$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr del ${rhost_addr}/${network_mask} dev $rhost_ifname
--		ret=`$LTP_RSH $RHOST 'PATH=/sbin:/usr/sbin:$PATH ip' addr add ${rhost_addr}/${network_mask} dev $rhost_ifname' ; echo $?'`
+-	add_ipv6addr rhost $link_num $network_part $rhost_host_part
+-	if [ $? -ne 0 ]; then
+-	    tst_resm TBROK "Failed to set IPv6 address at the remote host"
+-	    exit 1
 -	fi
+-	lhost_addr="${network_part}:${lhost_host_part}"
+-	rhost_addr="${network_part}:${rhost_host_part}"
+-	lhost_addrs="${lhost_addrs} ${lhost_addr}"
+-	;;
 -
--	if [ $ret -ne 0 ]; then
--	    if [ $ipaddr_pair_num -eq 0 ]; then
--		tst_resm TBROK "Failed to add any IP address at the remote"
--		exit 1
--	    else
--		tst_resm TINFO "The number of IP address at the remote host seems to reach the maximum. The number is $ipaddr_pair_num"
--	    fi
--	    break
--	fi
+-	*)
+-	tst_resm TBROK "Unknown IP version"
 -	;;
 -    esac
 -
--    # Set SAD/SPD
+-    # Configure SAD/SPD
 -    if $DO_IPSEC ; then
 -	ipsec_log=`mktemp -p $TMPDIR`
+-
+-	# Set SAD/SPD according to the variables
 -	output_ipsec_conf src \
 -	    $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr \
 -		| setkey -c 2>&1 | tee $ipsec_log
 -	if [ $? -ne 0 -o -s $ipsec_log ]; then
 -	    rm -f $ipsec_log
--	    if [ $ipaddr_pair_num -eq 0 ]; then
--		tst_resm TBROK "Failed to add any SAD/SPD"
--		exit 1
--	    else
--		tst_resm TINFO "The number of SAD/SPD seems to reach the maximum at the local host."
--	    fi
--	    break
+-	    tst_resm TBROK "Failed to configure SAD/SPD on the local host."
+-	    exit 1
 -	fi
--	rm -f $ipsec_log
 -
 -	$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/output_ipsec_conf dst $IPSEC_PROTO $IPSEC_MODE $SPI $lhost_addr $rhost_addr' | PATH=/sbin:/usr/sbin:$PATH setkey -c' 2>&1 | tee $ipsec_log
--	if [ -s $ipsec_log ]; then
+-	if [ $? -ne 0 -o -s $ipsec_log ]; then
 -	    rm -f $ipsec_log
--	    if [ $ipaddr_pair_num -eq 0 ]; then
--		tst_resm TBROK "Failed to add any SAD/SPD"
--		exit 1
--	    else
--		tst_resm TINFO "The number of SAD/SPD seems to reach the maximum at the remote host."
--	    fi
--	    break
+-	    tst_resm TBROK "Failed to configure SAD/SPD on the remote host."
+-	    exit 1
 -	fi
 -	rm -f $ipsec_log
 -    fi
 -
--    # Check the connectivity
+-    # Make sure the connectivity
 -    case $IP_VER in
 -	4)
 -	ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv4_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
 -	if [ $ret -ne 0 ]; then
--	    tst_resm TBROK "No IPv4 connectivity among ${ipaddr_pair_num}th IP address pair"
+-	    tst_resm TBROK "There is no IPv4 connectivity on Link${link_num}"
 -	    exit 1
 -	fi
 -	;;
@@ -474,20 +416,14 @@ index ad2da16..0000000
 -	6)
 -	ret=`$LTP_RSH $RHOST ${LTPROOT}/testcases/bin/check_icmpv6_connectivity $rhost_ifname $lhost_addr' ; echo $?'`
 -	if [ $ret -ne 0 ]; then
--	    tst_resm TBROK "No IPv6 connectivity among ${ipaddr_pair_num}th IP address pair"
+-	    tst_resm TBROK "There is no IPv6 connectivity on Link${link_num}"
 -	    exit 1
 -	fi
 -	;;
 -    esac
 -
--    if [ $? -ne 0 ]; then
--	tst_resm TFAIL "There is no connectivity."
--	exit 1
--    fi
--
--    ipaddr_pair_num=`expr $ipaddr_pair_num + 1`
+-    link_num=`expr $link_num + 1`
 -done
--
 -
 -
 -#-----------------------------------------------------------------------
@@ -496,35 +432,22 @@ index ad2da16..0000000
 -#
 -#
 -
--# Start to receiving/replying ICMP echo
 -connection_num=0
--while [ $connection_num -lt $ipaddr_pair_num ]; do
--    # IP addresses
--    x=`expr $connection_num \/ 255 % 255`
--    y=`expr $connection_num % 255`
+-while [ $connection_num -lt $link_total ]; do
+-    field=`expr $connection_num + 1`
+-    lhost_addr=`echo $lhost_addrs | cut -d ' ' -f $field`
 -
--    case $IP_VER in
--	4)
--	lhost_addr="10.${x}.${y}.2"
--	;;
--
--	6)
--	hex_x=`printf %x $x`
--	hex_y=`printf %x $y`
--	lhost_addr="fd00:1:${hex_x}:${hex_y}::2"
--	;;
--    esac
+-    lhost_ifname=`get_ifname lhost $connection_num`
+-    rhost_ifname=`get_ifname rhost $connection_num`
 -
 -    # Run a client
 -    $LTP_RSH $RHOST "${LTPROOT}/testcases/bin/ns-echoclient -S $lhost_addr -f $IP_VER -s \"$ICMP_SIZE_ARRAY\"" &
 -    connection_num=`expr $connection_num + 1`
 -done
 -
--
 -sleep $NS_DURATION
 -killall_icmp_traffic
 -wait
--
 -
 -#-----------------------------------------------------------------------
 -#
@@ -533,10 +456,10 @@ index ad2da16..0000000
 -
 -tst_resm TPASS "Test is finished successfully."
 -exit 0
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip02 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip02
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic02 b/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic02
 deleted file mode 100644
-index bd4553e..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip02
+index edddce3..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic02
 +++ /dev/null
 @@ -1,66 +0,0 @@
 -#!/bin/sh
@@ -563,11 +486,11 @@ index bd4553e..0000000
 -################################################################################
 -#
 -# File:
--#   icmp4-multi-diffip02
+-#   icmp4-multi-diffnic02
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#     - The version of IP is IPv4
 -#     - IPsec(AH), transport mode
 -#
@@ -586,11 +509,11 @@ index bd4553e..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp4-multi-diffip02
+-TCID=icmp4-multi-diffnic02
 -
 -# The version of IP
 -IP_VER=4
@@ -604,11 +527,11 @@ index bd4553e..0000000
 -# IPsec Mode
 -IPSEC_MODE=transport
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip03 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip03
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic03 b/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic03
 deleted file mode 100644
-index 78879e6..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip03
+index 40350f1..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic03
 +++ /dev/null
 @@ -1,67 +0,0 @@
 -#!/bin/sh
@@ -635,11 +558,11 @@ index 78879e6..0000000
 -################################################################################
 -#
 -# File:
--#   icmp4-multi-diffip03
+-#   icmp4-multi-diffnic03
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#
 -#     - The version of IP is IPv4
 -#     - IPsec(AH), tunnel mode
@@ -659,11 +582,11 @@ index 78879e6..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp4-multi-diffip03
+-TCID=icmp4-multi-diffnic03
 -
 -# The version of IP
 -IP_VER=4
@@ -677,11 +600,11 @@ index 78879e6..0000000
 -# IPsec Mode
 -IPSEC_MODE=tunnel
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip04 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip04
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic04 b/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic04
 deleted file mode 100644
-index 496d548..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip04
+index df23cc6..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic04
 +++ /dev/null
 @@ -1,66 +0,0 @@
 -#!/bin/sh
@@ -708,11 +631,11 @@ index 496d548..0000000
 -################################################################################
 -#
 -# File:
--#   icmp4-multi-diffip04
+-#   icmp4-multi-diffnic04
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#     - The version of IP is IPv4
 -#     - IPsec(ESP), transport mode
 -#
@@ -731,11 +654,11 @@ index 496d548..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp4-multi-diffip04
+-TCID=icmp4-multi-diffnic04
 -
 -# The version of IP
 -IP_VER=4
@@ -749,11 +672,11 @@ index 496d548..0000000
 -# IPsec Mode
 -IPSEC_MODE=transport
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip05 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip05
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic05 b/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic05
 deleted file mode 100644
-index bf7979b..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip05
+index 328183c..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic05
 +++ /dev/null
 @@ -1,67 +0,0 @@
 -#!/bin/sh
@@ -780,11 +703,11 @@ index bf7979b..0000000
 -################################################################################
 -#
 -# File:
--#   icmp4-multi-diffip05
+-#   icmp4-multi-diffnic05
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#
 -#     - The version of IP is IPv4
 -#     - IPsec(ESP), tunnel mode
@@ -804,11 +727,11 @@ index bf7979b..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp4-multi-diffip05
+-TCID=icmp4-multi-diffnic05
 -
 -# The version of IP
 -IP_VER=4
@@ -822,11 +745,11 @@ index bf7979b..0000000
 -# IPsec Mode
 -IPSEC_MODE=tunnel
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip06 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip06
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic06 b/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic06
 deleted file mode 100644
-index fe4baaa..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip06
+index 1f6a33b..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic06
 +++ /dev/null
 @@ -1,67 +0,0 @@
 -#!/bin/sh
@@ -853,11 +776,11 @@ index fe4baaa..0000000
 -################################################################################
 -#
 -# File:
--#   icmp4-multi-diffip06
+-#   icmp4-multi-diffnic06
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#
 -#     - The version of IP is IPv4
 -#     - IPcomp, transport mode
@@ -877,11 +800,11 @@ index fe4baaa..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp4-multi-diffip06
+-TCID=icmp4-multi-diffnic06
 -
 -# The version of IP
 -IP_VER=4
@@ -895,11 +818,11 @@ index fe4baaa..0000000
 -# IPsec Mode
 -IPSEC_MODE=transport
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip07 b/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip07
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic07 b/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic07
 deleted file mode 100644
-index 164d616..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp4-multi-diffip07
+index 89190ae..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp4-multi-diffnic07
 +++ /dev/null
 @@ -1,66 +0,0 @@
 -#!/bin/sh
@@ -926,11 +849,11 @@ index 164d616..0000000
 -################################################################################
 -#
 -# File:
--#   icmp4-multi-diffip07
+-#   icmp4-multi-diffnic07
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#     - The version of IP is IPv4
 -#     - IPcomp, tunnel mode
 -#
@@ -949,11 +872,11 @@ index 164d616..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp4-multi-diffip07
+-TCID=icmp4-multi-diffnic07
 -
 -# The version of IP
 -IP_VER=4
@@ -967,11 +890,11 @@ index 164d616..0000000
 -# IPsec Mode
 -IPSEC_MODE=tunnel
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip01 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip01
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic01 b/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic01
 deleted file mode 100644
-index 84b2844..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip01
+index 7b9b104..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic01
 +++ /dev/null
 @@ -1,56 +0,0 @@
 -#!/bin/sh
@@ -998,11 +921,11 @@ index 84b2844..0000000
 -################################################################################
 -#
 -# File:
--#   icmp6-multi-diffip01
+-#   icmp6-multi-diffnic01
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#     - The version of IP is IPv6
 -#
 -# Setup:
@@ -1020,20 +943,20 @@ index 84b2844..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp6-multi-diffip01
+-TCID=icmp6-multi-diffnic01
 -
 -# The version of IP
 -IP_VER=6
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip02 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip02
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic02 b/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic02
 deleted file mode 100644
-index cba23c1..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip02
+index ffd74c3..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic02
 +++ /dev/null
 @@ -1,66 +0,0 @@
 -#!/bin/sh
@@ -1060,11 +983,11 @@ index cba23c1..0000000
 -################################################################################
 -#
 -# File:
--#   icmp6-multi-diffip02
+-#   icmp6-multi-diffnic02
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#     - The version of IP is IPv6
 -#     - IPsec(AH), transport mode
 -#
@@ -1083,11 +1006,11 @@ index cba23c1..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp6-multi-diffip02
+-TCID=icmp6-multi-diffnic02
 -
 -# The version of IP
 -IP_VER=6
@@ -1101,11 +1024,11 @@ index cba23c1..0000000
 -# IPsec Mode
 -IPSEC_MODE=transport
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip03 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip03
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic03 b/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic03
 deleted file mode 100644
-index ea632c9..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip03
+index 84a31e8..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic03
 +++ /dev/null
 @@ -1,67 +0,0 @@
 -#!/bin/sh
@@ -1132,11 +1055,11 @@ index ea632c9..0000000
 -################################################################################
 -#
 -# File:
--#   icmp6-multi-diffip03
+-#   icmp6-multi-diffnic03
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#
 -#     - The version of IP is IPv6
 -#     - IPsec(AH), tunnel mode
@@ -1156,11 +1079,11 @@ index ea632c9..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp6-multi-diffip03
+-TCID=icmp6-multi-diffnic03
 -
 -# The version of IP
 -IP_VER=6
@@ -1174,11 +1097,11 @@ index ea632c9..0000000
 -# IPsec Mode
 -IPSEC_MODE=tunnel
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip04 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip04
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic04 b/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic04
 deleted file mode 100644
-index ab6834e..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip04
+index 836142b..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic04
 +++ /dev/null
 @@ -1,66 +0,0 @@
 -#!/bin/sh
@@ -1205,11 +1128,11 @@ index ab6834e..0000000
 -################################################################################
 -#
 -# File:
--#   icmp6-multi-diffip04
+-#   icmp6-multi-diffnic04
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#     - The version of IP is IPv6
 -#     - IPsec(ESP), transport mode
 -#
@@ -1228,11 +1151,11 @@ index ab6834e..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp6-multi-diffip04
+-TCID=icmp6-multi-diffnic04
 -
 -# The version of IP
 -IP_VER=6
@@ -1246,11 +1169,11 @@ index ab6834e..0000000
 -# IPsec Mode
 -IPSEC_MODE=transport
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip05 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip05
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic05 b/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic05
 deleted file mode 100644
-index e85493e..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip05
+index 58eb616..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic05
 +++ /dev/null
 @@ -1,67 +0,0 @@
 -#!/bin/sh
@@ -1277,11 +1200,11 @@ index e85493e..0000000
 -################################################################################
 -#
 -# File:
--#   icmp6-multi-diffip05
+-#   icmp6-multi-diffnic05
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#
 -#     - The version of IP is IPv6
 -#     - IPsec(ESP), tunnel mode
@@ -1301,11 +1224,11 @@ index e85493e..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp6-multi-diffip05
+-TCID=icmp6-multi-diffnic05
 -
 -# The version of IP
 -IP_VER=6
@@ -1319,11 +1242,11 @@ index e85493e..0000000
 -# IPsec Mode
 -IPSEC_MODE=tunnel
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip06 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip06
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic06 b/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic06
 deleted file mode 100644
-index a055c28..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip06
+index cee918a..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic06
 +++ /dev/null
 @@ -1,67 +0,0 @@
 -#!/bin/sh
@@ -1350,11 +1273,11 @@ index a055c28..0000000
 -################################################################################
 -#
 -# File:
--#   icmp6-multi-diffip06
+-#   icmp6-multi-diffnic06
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#
 -#     - The version of IP is IPv6
 -#     - IPcomp, transport mode
@@ -1374,11 +1297,11 @@ index a055c28..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp6-multi-diffip06
+-TCID=icmp6-multi-diffnic06
 -
 -# The version of IP
 -IP_VER=6
@@ -1392,11 +1315,11 @@ index a055c28..0000000
 -# IPsec Mode
 -IPSEC_MODE=transport
 -
--. icmp4-multi-diffip01
-diff --git a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip07 b/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip07
+-. icmp4-multi-diffnic01
+diff --git a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic07 b/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic07
 deleted file mode 100644
-index 6aa2985..0000000
---- a/testcases/network/stress/icmp/multi-diffip/icmp6-multi-diffip07
+index 7b46609..0000000
+--- a/testcases/network/stress/icmp/multi-diffnic/icmp6-multi-diffnic07
 +++ /dev/null
 @@ -1,66 +0,0 @@
 -#!/bin/sh
@@ -1423,11 +1346,11 @@ index 6aa2985..0000000
 -################################################################################
 -#
 -# File:
--#   icmp6-multi-diffip07
+-#   icmp6-multi-diffnic07
 -#
 -# Description:
 -#   Verify that the kernel is not crashed with receiving and sending ICMP
--#   message at different IP address(alias) with the following conditions
+-#   message at differnt NIC with the following conditions
 -#     - The version of IP is IPv6
 -#     - IPcomp, tunnel mode
 -#
@@ -1446,11 +1369,11 @@ index 6aa2985..0000000
 -$trace_logic
 -
 -#
--# Variables -- Changed by each multi-diffip testcase
+-# Variables -- Changed by each multi-diffnic testcase
 -#
 -
 -# The test case ID
--TCID=icmp6-multi-diffip07
+-TCID=icmp6-multi-diffnic07
 -
 -# The version of IP
 -IP_VER=6
@@ -1464,7 +1387,7 @@ index 6aa2985..0000000
 -# IPsec Mode
 -IPSEC_MODE=tunnel
 -
--. icmp4-multi-diffip01
+-. icmp4-multi-diffnic01
 -- 
 2.5.5
 
