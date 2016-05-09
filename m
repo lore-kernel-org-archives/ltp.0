@@ -1,11 +1,12 @@
 From: Chunyu Hu <chuhu@redhat.com>
-Date: Mon,  9 May 2016 19:03:31 +0800
-Subject: [LTP] [PATCH v3 2/9] tracing/ftrace: add new case for ftrace
-	userstacktrace
-In-Reply-To: <1462791818-4184-2-git-send-email-chuhu@redhat.com>
+Date: Mon,  9 May 2016 19:03:32 +0800
+Subject: [LTP] [PATCH v3 3/9] tracing/ftrace: add a new case for
+	signal_generate
+In-Reply-To: <1462791818-4184-3-git-send-email-chuhu@redhat.com>
 References: <1462791818-4184-1-git-send-email-chuhu@redhat.com>
  <1462791818-4184-2-git-send-email-chuhu@redhat.com>
-Message-ID: <1462791818-4184-3-git-send-email-chuhu@redhat.com>
+ <1462791818-4184-3-git-send-email-chuhu@redhat.com>
+Message-ID: <1462791818-4184-4-git-send-email-chuhu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,39 +15,34 @@ To: ltp@lists.linux.it
 
 From: Li Wang <liwang@redhat.com>
 
-This case is the reproducer of ftrace userstacktrace bug.
+PURPOSE: check signal:signal_generate gives 2 more fields: grp res
 
-BUG: unable to handle kernel paging request at 00000000417683c0
-     IP: [<ffffffff8105c834>] update_curr+0x124/0x1e0
-     PGD 41a796067 PUD 0
-     Thread overran stack, or stack corrupted
-     Oops: 0000 [#1] SMP
-     last sysfs file: /sys/devices/system/cpu/cpu15/cache/index2/shared_cpu_map
-
-The bug was fixed by:
-     1dbd195 (tracing: Fix preempt count leak)
+This testcase is writing for signal events change:
+       6c303d3 tracing: let trace_signal_generate() report more info...
+       163566f tracing: send_sigqueue() needs trace_signal_generate() too
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
  runtest/tracing                                    |  1 +
- .../tracing/ftrace_test/ftrace_regression01.sh     | 86 ++++++++++++++++++++++
- 2 files changed, 87 insertions(+)
- create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
+ .../tracing/ftrace_test/ftrace_regression02.sh     | 67 ++++++++++++++++++++++
+ 2 files changed, 68 insertions(+)
+ create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
 
 diff --git a/runtest/tracing b/runtest/tracing
-index ef3a048..fb82515 100644
+index fb82515..9f8d5c8 100644
 --- a/runtest/tracing
 +++ b/runtest/tracing
-@@ -1,2 +1,3 @@
+@@ -1,3 +1,4 @@
  #DESCRIPTION:Tracing testing
-+ftrace_regression01	ftrace_regression01.sh
+ ftrace_regression01	ftrace_regression01.sh
++ftrace_regression02	ftrace_regression02.sh
  ftrace-stress-test	ftrace_stress_test.sh 90
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
+diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
 new file mode 100755
-index 0000000..b25111a
+index 0000000..c30bf29
 --- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression01.sh
-@@ -0,0 +1,86 @@
++++ b/testcases/kernel/tracing/ftrace_test/ftrace_regression02.sh
+@@ -0,0 +1,67 @@
 +#! /bin/sh
 +
 +###########################################################################
@@ -70,67 +66,48 @@ index 0000000..b25111a
 +##                                                                       ##
 +###########################################################################
 +##                                                                       ##
-+## Summary:  panic while using userstacktrace                            ##
++## Summary: check signal:signal_generate gives 2 more fields: grp res    ##
 +##                                                                       ##
-+## BUG: unable to handle kernel paging request at 00000000417683c0       ##
-+##      IP: [<ffffffff8105c834>] update_curr+0x124/0x1e0                 ##
-+##      PGD 41a796067 PUD 0                                              ##
-+##      Thread overran stack, or stack corrupted                         ##
-+##      Oops: 0000 [#1] SMP                                              ##
-+##      last sysfs file: ../system/cpu/cpu15/cache/index2/shared_cpu_map ##
-+##                                                                       ##
-+## The bug was fixed by:                                                 ##
-+##      1dbd195 (tracing: Fix preempt count leak)                        ##
++## This testcase is writing for signal events change:                    ##
++##       6c303d3 tracing: let trace_signal_generate() report more info...##
++##       163566f tracing: send_sigqueue() needs trace_signal_generate()  ##
 +##                                                                       ##
 +###########################################################################
 +
-+export TCID="ftrace_regression01"
++export TCID="ftrace_regression02"
 +export TST_TOTAL=1
 +
 +. ftrace_lib.sh
 +
-+LOOP=10
-+
-+TSTACK_TRACE_PATH="/proc/sys/kernel/stack_tracer_enabled"
-+EXC_PAGE_FAULT_ENABLE="$TRACING_PATH/events/exceptions/page_fault_kernel/enable"
-+MM_PAGE_FAULT_ENABLE="$TRACING_PATH/events/kmem/mm_kernel_pagefault/enable"
-+
-+ftrace_userstacktrace_test()
++ftrace_signal_test()
 +{
-+	if [ ! -e "$TSTACK_TRACE_PATH" ]; then
-+		tst_brkm TCONF "Stack Tracer is not cofigured in This kernel"
-+	fi
++	# Set envent
++	echo 'signal:signal_generate' > $TRACING_PATH/set_event
++	echo 1 > $TRACING_PATH/tracing_on
++	echo > $TRACING_PATH/trace
 +
-+	for i in $(seq $LOOP); do
-+		echo 1 >  $TSTACK_TRACE_PATH
-+		echo userstacktrace > $TRACING_PATH/trace_options
-+		grep -q "^userstacktrace"  $TRACING_PATH/trace_options
-+		if [ $? -ne 0 ]; then
-+			tst_brkm TBROK "Failed to set userstacktrace"
-+		fi
-+
-+		if [ -f "$EXC_PAGE_FAULT_ENABLE" ]; then
-+			exc_page_fault_enable=`cat $EXC_PAGE_FAULT_ENABLE`
-+			echo 1 > $EXC_PAGE_FAULT_ENABLE
-+		else
-+			mm_page_fault_enable=`cat MM_PAGE_FAULT_ENABLE`
-+			echo 1 > $MM_PAGE_FAULT_ENABLE
-+		fi
++	# just to generate trace
++	for i in $(seq 100); do
++		ls -l /proc > /dev/null 2>&1
 +	done
 +
-+	if [ -f "$EXC_PAGE_FAULT_ENABLE" ]; then
-+		echo "$exc_page_fault_enable" > $EXC_PAGE_FAULT_ENABLE
++	grep -q 'grp=[0-9] res=[0-9]' $TRACING_PATH/trace
++	if [ $? -eq 0 ]; then
++		tst_resm TPASS "finished running the test."
 +	else
-+		echo "$mm_page_fault_enable" > $MM_PAGE_FAULT_ENABLE
++		tst_resm TFAIL "running the test failed, please check log message."
 +	fi
-+
-+	tst_resm TPASS "Finished running the test"
 +}
 +
-+#--------Test Start--------------
++#-----Test Start--------
++tst_kvercmp 3 2 0
++if [ $? -eq 0 ]; then
++	tst_brkm TCONF ignored "The test should be run in kernels >= 3.2.0 Skip the test..."
++fi
++
 +save_old_setting
 +
-+ftrace_userstacktrace_test
++ftrace_signal_test
 +
 +clean_up
 -- 
