@@ -1,17 +1,15 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 May 2016 16:13:00 +0200
-Subject: [LTP] [PATCH V2 9/9] ftrace_stress: cleanup and use ltp API
-In-Reply-To: <1504573593.43522272.1462434296013.JavaMail.zimbra@redhat.com>
+Date: Tue, 10 May 2016 16:25:04 +0200
+Subject: [LTP] [PATCH V2 4/9] ftrace_stress: skip unsupported tests
+In-Reply-To: <1084312754.43475067.1462409602628.JavaMail.zimbra@redhat.com>
 References: <1460966656-28328-1-git-send-email-chuhu@redhat.com>
- <1460966656-28328-6-git-send-email-chuhu@redhat.com>
- <1460966656-28328-7-git-send-email-chuhu@redhat.com>
- <1460966656-28328-8-git-send-email-chuhu@redhat.com>
- <1460966656-28328-9-git-send-email-chuhu@redhat.com>
- <1460966656-28328-10-git-send-email-chuhu@redhat.com>
- <20160504145630.GE12244@rei.lan>
- <1857309330.43401385.1462376568052.JavaMail.zimbra@redhat.com>
- <1504573593.43522272.1462434296013.JavaMail.zimbra@redhat.com>
-Message-ID: <20160510141300.GB20387@rei>
+ <1460966656-28328-2-git-send-email-chuhu@redhat.com>
+ <1460966656-28328-3-git-send-email-chuhu@redhat.com>
+ <1460966656-28328-4-git-send-email-chuhu@redhat.com>
+ <1460966656-28328-5-git-send-email-chuhu@redhat.com>
+ <20160504165050.GC22563@rei>
+ <1084312754.43475067.1462409602628.JavaMail.zimbra@redhat.com>
+Message-ID: <20160510142504.GC20387@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,14 +17,64 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> After i changing it to kill directly and retest it, i hit err message:
+> > > +	local p=1;
+> > > +	while [ $p -lt $NR_PIDS ]; do
+> > > +                local kill_pid=pid${p}
+> > > +                kill -KILL ${!kill_pid}
+> >                                 ^
+> > 				Bashism.
 > 
-> ftrace_trace_pipe.sh: line 18: kill: SIGKILL: invalid signal specification
+> I am trying to change to use this way
+> 
+>     local pid_var=pid${p}
+>                 eval local kill_pid=\$${pid_var}
+>                 tst_resm TINFO "killing ${kill_pid}"
+>                 eval kill -KILL $kill_pid
+>                 wait ${kill_pid}
+> 
+> maybe i'm still using bashism?  thanks. if it's ok
+> then i will use this way.
+> 
+> Ideally i should find a dash to try. but i have not
+> found the package in rhel.
 
-That is because POSIX only accepts symbolic names without the SIG prefix
-while kill from procps works with both.
+You can always compile it from source:
 
-The correct way to send SIGKILL is 'kill -KILL $pid'.
+http://gondor.apana.org.au/~herbert/dash/files/
+
+And there also seems to be debian devel perl script that can check for
+bashism, maybe we can start using it to check shell scripts:
+
+https://anonscm.debian.org/cgit/collab-maint/devscripts.git/tree/scripts/checkbashisms.pl
+
+> > > +export_pids()
+> > > +{
+> > > +	local p=0
+> > > +	while [ $p -lt $NR_PIDS ]; do
+> > > +		export pid${p}
+> > > +		p=$((p + 1))
+> > > +	done
+> > > +}
+> > >  
+> > > +cd ftrace_stress/
+> > 
+> > Why the cd? It does not seem to be needed.
+> 
+> as currently we are in ftrace_test/, but sub stresses
+> cases are in ftrace_test/ftrace_stress/
+> 
+> in test_stress(), i start the sub script using
+> 
+>   sh ftrace_${target}.sh &
+> 
+> This make the path shorter. If you don't have objection,
+> I will move the cd ftrace_stress/ into test_stress(). 
+> What do you think of this? 
+
+The stress tests are installed into $DESTDIR/testcases/bin/ aren't they?
+
+If that is the case these scripts are in $PATH and could be executed
+without fiddling with full path.
 
 -- 
 Cyril Hrubis
