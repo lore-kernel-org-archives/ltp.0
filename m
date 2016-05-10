@@ -1,141 +1,1025 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 10 May 2016 11:46:03 +0300
-Subject: [LTP] [RFC][PATCH 1/3] network: run network tests from network.sh
-Message-ID: <1462869965-25841-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Tue, 10 May 2016 11:46:04 +0300
+Subject: [LTP] [RFC][PATCH 2/3] network: remove outdated network runtests
+	and scripts
+In-Reply-To: <1462869965-25841-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1462869965-25841-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1462869965-25841-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* include network options from both networktests.sh and networkstress.sh
-* invoke ltp-pan inside network.sh
-* merge tcp_cmds_additions to tcp_cmds
-* remove not used tcp_cmds_(no)expect runtest files
-
-All network tests can be run from a single script:
-e.g. to run 'tcp_cmds' test group
-
-ENV_VARS ./network.sh -t
-
-Also it is possible to define your own runtest file with '-f' option:
-
-ENV_VARS ./network.sh -f runtest_file
-
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/tcp_cmds       |    3 ++
- testscripts/network.sh |   82 ++++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 79 insertions(+), 6 deletions(-)
+ runtest/network_stress.selected |  133 ---------
+ runtest/network_stress.whole    |  563 ---------------------------------------
+ runtest/tcp_cmds_addition       |    7 -
+ runtest/tcp_cmds_expect         |    8 -
+ runtest/tcp_cmds_noexpect       |   18 --
+ testscripts/networkstress.sh    |  104 -------
+ testscripts/networktests.sh     |  116 --------
+ 7 files changed, 0 insertions(+), 949 deletions(-)
+ delete mode 100644 runtest/network_stress.selected
+ delete mode 100644 runtest/network_stress.whole
+ delete mode 100644 runtest/tcp_cmds_addition
+ delete mode 100644 runtest/tcp_cmds_expect
+ delete mode 100644 runtest/tcp_cmds_noexpect
+ delete mode 100755 testscripts/networkstress.sh
+ delete mode 100755 testscripts/networktests.sh
 
-diff --git a/runtest/tcp_cmds b/runtest/tcp_cmds
-index 6c3ace1..466718b 100644
---- a/runtest/tcp_cmds
-+++ b/runtest/tcp_cmds
-@@ -21,3 +21,6 @@ telnet telnet01
- iptables iptables_tests.sh
- dhcpd dhcpd_tests.sh
- dnsmasq dnsmasq_tests.sh
-+iproute ip_tests.sh
-+traceroute traceroute_tests.sh
-+xinetd xinetd_tests.sh
-diff --git a/testscripts/network.sh b/testscripts/network.sh
-index 7c7e60a..f7f4f93 100755
---- a/testscripts/network.sh
-+++ b/testscripts/network.sh
-@@ -12,12 +12,13 @@ TCID="network_settings"
- export RHOST=${RHOST:-""}
- export PASSWD=${PASSWD:-""}
- 
--# Warning:
--# Make sure to set valid interface names and IP addresses below.
--# 'networktests.sh' expects that IP addresses are already added to interface.
+diff --git a/runtest/network_stress.selected b/runtest/network_stress.selected
+deleted file mode 100644
+index 1445ec1..0000000
+--- a/runtest/network_stress.selected
++++ /dev/null
+@@ -1,133 +0,0 @@
 -#
--# Please note, that for 'networktests.sh' tests, management link and
--# test link can be the same.
-+if [ -z $RHOST ]; then
-+	echo "Error: pay attention to configure"
-+	echo "  network paramaters before running tests."
-+	exit 1
-+fi
-+
-+# Warning: make sure to set valid interface names and IP addresses below.
- 
- # Test Links
- # Set names for test interfaces, e.g. "eth0 eth1"
-@@ -84,3 +85,72 @@ export PATH="${PATH}:${LTPROOT}/testcases/bin"
- # Don't break the tests which are using 'testcases/lib/cmdlib.sh'
- export TCID=
- export TST_LIB_LOADED=
-+
-+# network/stress tests require additional parameters
-+export NS_DURATION=${NS_DURATION:-"3600"}
-+export NS_TIMES=${NS_TIMES:-"10000"}
-+export CONNECTION_TOTAL=${CONNECTION_TOTAL:-"4000"}
-+export IP_TOTAL=${IP_TOTAL:-"10000"}
-+export IP_TOTAL_FOR_TCPIP=${IP_TOTAL_FOR_TCPIP:-"100"}
-+export ROUTE_TOTAL=${ROUTE_TOTAL:-"10000"}
-+export MTU_CHANGE_TIMES=${MTU_CHANGE_TIMES:-"1000"}
-+export IF_UPDOWN_TIMES=${IF_UPDOWN_TIMES:-"10000"}
-+export DOWNLOAD_BIGFILESIZE=${DOWNLOAD_BIGFILESIZE:-"2147483647"}
-+export DOWNLOAD_REGFILESIZE=${DOWNLOAD_REGFILESIZE:-"1048576"}
-+export UPLOAD_BIGFILESIZE=${UPLOAD_BIGFILESIZE:-"2147483647"}
-+export UPLOAD_REGFILESIZE=${UPLOAD_REGFILESIZE:-"1024"}
-+export MCASTNUM_NORMAL=${MCASTNUM_NORMAL:-"20"}
-+export MCASTNUM_HEAVY=${MCASTNUM_HEAVY:-"40000"}
-+
-+TEST_CASES=
-+
-+while getopts 6mnrstaebiTURMFf:Vv OPTION
-+do
-+	case $OPTION in
-+	6) TEST_CASES="$TEST_CASES ipv6 ipv6_lib";;
-+	m) TEST_CASES="$TEST_CASES multicast" ;;
-+	n) TEST_CASES="$TEST_CASES nfs" ;;
-+	r) TEST_CASES="$TEST_CASES rpc" ;;
-+	s) TEST_CASES="$TEST_CASES sctp" ;;
-+	t) TEST_CASES="$TEST_CASES tcp_cmds" ;;
-+	a) TEST_CASES="$TEST_CASES network_stress.appl";;
-+	e) TEST_CASES="$TEST_CASES network_stress.interface";;
-+	b) TEST_CASES="$TEST_CASES network_stress.broken_ip";;
-+	i) TEST_CASES="$TEST_CASES network_stress.icmp";;
-+	T) TEST_CASES="$TEST_CASES network_stress.tcp";;
-+	U) TEST_CASES="$TEST_CASES network_stress.udp";;
-+	R) TEST_CASES="$TEST_CASES network_stress.route";;
-+	M) TEST_CASES="$TEST_CASES network_stress.multicast";;
-+	F) TEST_CASES="$TEST_CASES network_stress.features";;
-+	f) TEST_CASES=${OPTARG} ;;
-+	V|v) VERBOSE="yes";;
-+	*) echo "Error: invalid option..."; exit 1 ;;
-+	esac
-+done
-+
-+rm -f $CMDFILE
-+
-+for t in $TEST_CASES; do
-+	cat  ${LTPROOT}/runtest/$t >> $CMDFILE
-+done
-+
-+cd $TMPDIR
-+
-+if [ ${VERBOSE} = "yes" ]; then
-+	echo "Network parameters:"
-+	echo " - ${LHOST_IFACES} local interface (MAC address: ${LHOST_HWADDRS})"
-+	echo " - ${RHOST_IFACES} remote interface (MAC address: ${RHOST_HWADDRS})"
-+
-+	cat $TMPDIR/network_stress.tests
-+	${LTPROOT}/ver_linux
-+	echo ""
-+	echo ${LTPROOT}/bin/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $CMDFILE
-+fi
-+
-+${LTPROOT}/bin/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $CMDFILE
-+
-+if [ $? -eq "0" ]; then
-+	echo ltp-pan reported PASS
-+else
-+	echo ltp-pan reported FAIL
-+fi
+-# This command list is the selected network stress testcases
+-# `network_stress.whole' has the whole list of network stress testcasses
+-#
+-
+-#
+-# Stress test for interface
+-#
+-
+-if4-updown  if4-updown
+-if4-addr-change if4-addr-change
+-if4-alias-adddel  if4-alias-adddel
+-if4-alias-addlarge  if4-alias-addlarge
+-if4-route-adddel  if4-route-adddel
+-if4-route-addlarge  if4-route-addlarge
+-if4-mtu-change	if4-mtu-change
+-
+-if6-updown  if6-updown
+-if6-addr-adddel	if6-addr-adddel
+-if6-addr-addlarge if6-addr-addlarge
+-if6-route-adddel  if6-route-adddel
+-if6-route-addlarge if6-route-addlarge
+-if6-mtu-change	if6-mtu-change
+-
+-
+-#
+-# Stress test for TCP/IP protocol stack (icmp, udp, tcp)
+-#
+-
+-# ICMP
+-icmp4-uni-basic01 icmp4-uni-basic01
+-icmp4-uni-basic02 icmp4-uni-basic02
+-icmp4-uni-basic03 icmp4-uni-basic03
+-icmp4-uni-basic04 icmp4-uni-basic04
+-icmp4-uni-basic05 icmp4-uni-basic05
+-icmp4-uni-basic06 icmp4-uni-basic06
+-icmp4-uni-basic07 icmp4-uni-basic07
+-
+-icmp6-uni-basic01 icmp6-uni-basic01
+-icmp6-uni-basic02 icmp6-uni-basic02
+-icmp6-uni-basic03 icmp6-uni-basic03
+-icmp6-uni-basic04 icmp6-uni-basic04
+-icmp6-uni-basic05 icmp6-uni-basic05
+-icmp6-uni-basic06 icmp6-uni-basic06
+-icmp6-uni-basic07 icmp6-uni-basic07
+-
+-# UDP
+-udp4-uni-basic01 udp4-uni-basic01
+-
+-udp6-uni-basic01 udp6-uni-basic01
+-
+-udp4-multi-diffport01 udp4-multi-diffport01
+-
+-udp6-multi-diffport01 udp6-multi-diffport01
+-
+-# TCP
+-tcp4-uni-basic01 tcp4-uni-basic01
+-tcp4-uni-basic08 tcp4-uni-basic08
+-
+-tcp6-uni-basic01 tcp6-uni-basic01
+-tcp6-uni-basic08 tcp6-uni-basic08
+-
+-tcp4-uni-smallsend01 tcp4-uni-smallsend01
+-tcp4-uni-smallsend08 tcp4-uni-smallsend08
+-
+-tcp6-uni-smallsend01 tcp6-uni-smallsend01
+-tcp6-uni-smallsend08 tcp6-uni-smallsend08
+-
+-tcp4-uni-winscale01 tcp4-uni-winscale01
+-tcp4-uni-winscale08 tcp4-uni-winscale08
+-
+-tcp6-uni-winscale01 tcp6-uni-winscale01
+-tcp6-uni-winscale08 tcp6-uni-winscale08
+-
+-tcp4-uni-tso01 tcp4-uni-tso01
+-tcp4-uni-tso08 tcp4-uni-tso08
+-
+-tcp6-uni-tso01 tcp6-uni-tso01
+-tcp6-uni-tso08 tcp6-uni-tso08
+-
+-tcp4-uni-pktlossdup01 tcp4-uni-pktlossdup01
+-tcp4-uni-pktlossdup08 tcp4-uni-pktlossdup08
+-
+-tcp6-uni-pktlossdup01 tcp6-uni-pktlossdup01
+-tcp6-uni-pktlossdup08 tcp6-uni-pktlossdup08
+-
+-tcp4-uni-dsackoff01 tcp4-uni-dsackoff01
+-tcp4-uni-dsackoff08 tcp4-uni-dsackoff08
+-
+-tcp6-uni-dsackoff01 tcp6-uni-dsackoff01
+-tcp6-uni-dsackoff08 tcp6-uni-dsackoff08
+-
+-tcp4-uni-sackoff01 tcp4-uni-sackoff01
+-tcp4-uni-sackoff08 tcp4-uni-sackoff08
+-
+-tcp6-uni-sackoff01 tcp6-uni-sackoff01
+-tcp6-uni-sackoff08 tcp6-uni-sackoff08
+-
+-tcp4-multi-sameport01 tcp4-multi-sameport01
+-tcp4-multi-sameport08 tcp4-multi-sameport08
+-
+-tcp6-multi-sameport01 tcp6-multi-sameport01
+-tcp6-multi-sameport08 tcp6-multi-sameport08
+-
+-tcp4-multi-diffport01 tcp4-multi-diffport01
+-tcp4-multi-diffport08 tcp4-multi-diffport08
+-
+-tcp6-multi-diffport01 tcp6-multi-diffport01
+-tcp6-multi-diffport08 tcp6-multi-diffport08
+-
+-
+-#
+-# Stress test for major application protocol (ssh, dns, http, ftp)
+-#
+-
+-# ssh
+-ssh4-stress ssh4-stress
+-ssh6-stress ssh6-stress
+-
+-# dns
+-dns4-stress dns4-stress
+-dns6-stress dns6-stress
+-
+-# http
+-http4-stress http4-stress
+-http6-stress http6-stress
+-
+-# ftp
+-ftp4-download-stress ftp4-download-stress
+-ftp6-download-stress ftp6-download-stress
+-
+-ftp4-upload-stress ftp4-upload-stress
+-ftp6-upload-stress ftp6-upload-stress
+diff --git a/runtest/network_stress.whole b/runtest/network_stress.whole
+deleted file mode 100644
+index 7b0dfa3..0000000
+--- a/runtest/network_stress.whole
++++ /dev/null
+@@ -1,563 +0,0 @@
+-#
+-# Stress test for interface
+-#
+-
+-if4-updown  if4-updown
+-if4-addr-change if4-addr-change
+-if4-alias-adddel  if4-alias-adddel
+-if4-alias-addlarge  if4-alias-addlarge
+-if4-route-adddel  if4-route-adddel
+-if4-route-addlarge  if4-route-addlarge
+-if4-mtu-change	if4-mtu-change
+-
+-if6-updown  if6-updown
+-if6-addr-adddel	if6-addr-adddel
+-if6-addr-addlarge if6-addr-addlarge
+-if6-route-adddel  if6-route-adddel
+-if6-route-addlarge if6-route-addlarge
+-if6-mtu-change	if6-mtu-change
+-
+-
+-#
+-# Stress test for routing table
+-#
+-
+-route4-change-dst route4-change-dst
+-route4-change-gw route4-change-gw
+-route4-change-if route4-change-if
+-route4-redirect route4-redirect
+-route4-ifdown route4-ifdown
+-route4-rmmod route4-rmmod
+-
+-route6-change-dst route6-change-dst
+-route6-change-gw route6-change-gw
+-route6-change-if route6-change-if
+-route6-redirect route6-redirect
+-route6-ifdown route6-ifdown
+-route6-rmmod route6-rmmod
+-
+-
+-#
+-# Stress test for TCP/IP protocol stack
+-#
+-
+-# Broken IP packet
+-broken_ip4-version broken_ip4-version
+-broken_ip4-ihl broken_ip4-ihl
+-broken_ip4-totlen broken_ip4-totlen
+-broken_ip4-fragment broken_ip4-fragment
+-broken_ip4-protcol broken_ip4-protcol
+-broken_ip4-checksum broken_ip4-checksum
+-broken_ip4-dstaddr broken_ip4-dstaddr
+-
+-broken_ip6-dstaddr broken_ip6-dstaddr
+-broken_ip6-nexthdr broken_ip6-nexthdr
+-broken_ip6-plen broken_ip6-plen
+-broken_ip6-version broken_ip6-version
+-
+-# ICMP
+-icmp4-uni-basic01 icmp4-uni-basic01
+-icmp4-uni-basic02 icmp4-uni-basic02
+-icmp4-uni-basic03 icmp4-uni-basic03
+-icmp4-uni-basic04 icmp4-uni-basic04
+-icmp4-uni-basic05 icmp4-uni-basic05
+-icmp4-uni-basic06 icmp4-uni-basic06
+-icmp4-uni-basic07 icmp4-uni-basic07
+-
+-icmp6-uni-basic01 icmp6-uni-basic01
+-icmp6-uni-basic02 icmp6-uni-basic02
+-icmp6-uni-basic03 icmp6-uni-basic03
+-icmp6-uni-basic04 icmp6-uni-basic04
+-icmp6-uni-basic05 icmp6-uni-basic05
+-icmp6-uni-basic06 icmp6-uni-basic06
+-icmp6-uni-basic07 icmp6-uni-basic07
+-
+-icmp4-multi-diffip01 icmp4-multi-diffip01
+-icmp4-multi-diffip02 icmp4-multi-diffip02
+-icmp4-multi-diffip03 icmp4-multi-diffip03
+-icmp4-multi-diffip04 icmp4-multi-diffip04
+-icmp4-multi-diffip05 icmp4-multi-diffip05
+-icmp4-multi-diffip06 icmp4-multi-diffip06
+-icmp4-multi-diffip07 icmp4-multi-diffip07
+-
+-icmp6-multi-diffip01 icmp6-multi-diffip01
+-icmp6-multi-diffip02 icmp6-multi-diffip02
+-icmp6-multi-diffip03 icmp6-multi-diffip03
+-icmp6-multi-diffip04 icmp6-multi-diffip04
+-icmp6-multi-diffip05 icmp6-multi-diffip05
+-icmp6-multi-diffip06 icmp6-multi-diffip06
+-icmp6-multi-diffip07 icmp6-multi-diffip07
+-
+-icmp4-multi-diffnic01 icmp4-multi-diffnic01
+-icmp4-multi-diffnic02 icmp4-multi-diffnic02
+-icmp4-multi-diffnic03 icmp4-multi-diffnic03
+-icmp4-multi-diffnic04 icmp4-multi-diffnic04
+-icmp4-multi-diffnic05 icmp4-multi-diffnic05
+-icmp4-multi-diffnic06 icmp4-multi-diffnic06
+-icmp4-multi-diffnic07 icmp4-multi-diffnic07
+-
+-icmp6-multi-diffnic01 icmp6-multi-diffnic01
+-icmp6-multi-diffnic02 icmp6-multi-diffnic02
+-icmp6-multi-diffnic03 icmp6-multi-diffnic03
+-icmp6-multi-diffnic04 icmp6-multi-diffnic04
+-icmp6-multi-diffnic05 icmp6-multi-diffnic05
+-icmp6-multi-diffnic06 icmp6-multi-diffnic06
+-icmp6-multi-diffnic07 icmp6-multi-diffnic07
+-
+-# UDP
+-udp4-uni-basic01 udp4-uni-basic01
+-udp4-uni-basic02 udp4-uni-basic02
+-udp4-uni-basic03 udp4-uni-basic03
+-udp4-uni-basic04 udp4-uni-basic04
+-udp4-uni-basic05 udp4-uni-basic05
+-udp4-uni-basic06 udp4-uni-basic06
+-udp4-uni-basic07 udp4-uni-basic07
+-
+-udp6-uni-basic01 udp6-uni-basic01
+-udp6-uni-basic02 udp6-uni-basic02
+-udp6-uni-basic03 udp6-uni-basic03
+-udp6-uni-basic04 udp6-uni-basic04
+-udp6-uni-basic05 udp6-uni-basic05
+-udp6-uni-basic06 udp6-uni-basic06
+-udp6-uni-basic07 udp6-uni-basic07
+-
+-udp4-multi-diffport01 udp4-multi-diffport01
+-udp4-multi-diffport02 udp4-multi-diffport02
+-udp4-multi-diffport03 udp4-multi-diffport03
+-udp4-multi-diffport04 udp4-multi-diffport04
+-udp4-multi-diffport05 udp4-multi-diffport05
+-udp4-multi-diffport06 udp4-multi-diffport06
+-udp4-multi-diffport07 udp4-multi-diffport07
+-
+-udp6-multi-diffport01 udp6-multi-diffport01
+-udp6-multi-diffport02 udp6-multi-diffport02
+-udp6-multi-diffport03 udp6-multi-diffport03
+-udp6-multi-diffport04 udp6-multi-diffport04
+-udp6-multi-diffport05 udp6-multi-diffport05
+-udp6-multi-diffport06 udp6-multi-diffport06
+-udp6-multi-diffport07 udp6-multi-diffport07
+-
+-udp4-multi-diffip01 udp4-multi-diffip01
+-udp4-multi-diffip02 udp4-multi-diffip02
+-udp4-multi-diffip03 udp4-multi-diffip03
+-udp4-multi-diffip04 udp4-multi-diffip04
+-udp4-multi-diffip05 udp4-multi-diffip05
+-udp4-multi-diffip06 udp4-multi-diffip06
+-udp4-multi-diffip07 udp4-multi-diffip07
+-
+-udp6-multi-diffip01 udp6-multi-diffip01
+-udp6-multi-diffip02 udp6-multi-diffip02
+-udp6-multi-diffip03 udp6-multi-diffip03
+-udp6-multi-diffip04 udp6-multi-diffip04
+-udp6-multi-diffip05 udp6-multi-diffip05
+-udp6-multi-diffip06 udp6-multi-diffip06
+-udp6-multi-diffip07 udp6-multi-diffip07
+-
+-udp4-multi-diffnic01 udp4-multi-diffnic01
+-udp4-multi-diffnic02 udp4-multi-diffnic02
+-udp4-multi-diffnic03 udp4-multi-diffnic03
+-udp4-multi-diffnic04 udp4-multi-diffnic04
+-udp4-multi-diffnic05 udp4-multi-diffnic05
+-udp4-multi-diffnic06 udp4-multi-diffnic06
+-udp4-multi-diffnic07 udp4-multi-diffnic07
+-
+-udp6-multi-diffnic01 udp6-multi-diffnic01
+-udp6-multi-diffnic02 udp6-multi-diffnic02
+-udp6-multi-diffnic03 udp6-multi-diffnic03
+-udp6-multi-diffnic04 udp6-multi-diffnic04
+-udp6-multi-diffnic05 udp6-multi-diffnic05
+-udp6-multi-diffnic06 udp6-multi-diffnic06
+-udp6-multi-diffnic07 udp6-multi-diffnic07
+-
+-# TCP
+-tcp4-uni-basic01 tcp4-uni-basic01
+-tcp4-uni-basic02 tcp4-uni-basic02
+-tcp4-uni-basic03 tcp4-uni-basic03
+-tcp4-uni-basic04 tcp4-uni-basic04
+-tcp4-uni-basic05 tcp4-uni-basic05
+-tcp4-uni-basic06 tcp4-uni-basic06
+-tcp4-uni-basic07 tcp4-uni-basic07
+-tcp4-uni-basic08 tcp4-uni-basic08
+-tcp4-uni-basic09 tcp4-uni-basic09
+-tcp4-uni-basic10 tcp4-uni-basic10
+-tcp4-uni-basic11 tcp4-uni-basic11
+-tcp4-uni-basic12 tcp4-uni-basic12
+-tcp4-uni-basic13 tcp4-uni-basic13
+-tcp4-uni-basic14 tcp4-uni-basic14
+-
+-tcp6-uni-basic01 tcp6-uni-basic01
+-tcp6-uni-basic02 tcp6-uni-basic02
+-tcp6-uni-basic03 tcp6-uni-basic03
+-tcp6-uni-basic04 tcp6-uni-basic04
+-tcp6-uni-basic05 tcp6-uni-basic05
+-tcp6-uni-basic06 tcp6-uni-basic06
+-tcp6-uni-basic07 tcp6-uni-basic07
+-tcp6-uni-basic08 tcp6-uni-basic08
+-tcp6-uni-basic09 tcp6-uni-basic09
+-tcp6-uni-basic10 tcp6-uni-basic10
+-tcp6-uni-basic11 tcp6-uni-basic11
+-tcp6-uni-basic12 tcp6-uni-basic12
+-tcp6-uni-basic13 tcp6-uni-basic13
+-tcp6-uni-basic14 tcp6-uni-basic14
+-
+-tcp4-uni-smallsend01 tcp4-uni-smallsend01
+-tcp4-uni-smallsend02 tcp4-uni-smallsend02
+-tcp4-uni-smallsend03 tcp4-uni-smallsend03
+-tcp4-uni-smallsend04 tcp4-uni-smallsend04
+-tcp4-uni-smallsend05 tcp4-uni-smallsend05
+-tcp4-uni-smallsend06 tcp4-uni-smallsend06
+-tcp4-uni-smallsend07 tcp4-uni-smallsend07
+-tcp4-uni-smallsend08 tcp4-uni-smallsend08
+-tcp4-uni-smallsend09 tcp4-uni-smallsend09
+-tcp4-uni-smallsend10 tcp4-uni-smallsend10
+-tcp4-uni-smallsend11 tcp4-uni-smallsend11
+-tcp4-uni-smallsend12 tcp4-uni-smallsend12
+-tcp4-uni-smallsend13 tcp4-uni-smallsend13
+-tcp4-uni-smallsend14 tcp4-uni-smallsend14
+-
+-tcp6-uni-smallsend01 tcp6-uni-smallsend01
+-tcp6-uni-smallsend02 tcp6-uni-smallsend02
+-tcp6-uni-smallsend03 tcp6-uni-smallsend03
+-tcp6-uni-smallsend04 tcp6-uni-smallsend04
+-tcp6-uni-smallsend05 tcp6-uni-smallsend05
+-tcp6-uni-smallsend06 tcp6-uni-smallsend06
+-tcp6-uni-smallsend07 tcp6-uni-smallsend07
+-tcp6-uni-smallsend08 tcp6-uni-smallsend08
+-tcp6-uni-smallsend09 tcp6-uni-smallsend09
+-tcp6-uni-smallsend10 tcp6-uni-smallsend10
+-tcp6-uni-smallsend11 tcp6-uni-smallsend11
+-tcp6-uni-smallsend12 tcp6-uni-smallsend12
+-tcp6-uni-smallsend13 tcp6-uni-smallsend13
+-tcp6-uni-smallsend14 tcp6-uni-smallsend14
+-
+-tcp4-uni-winscale01 tcp4-uni-winscale01
+-tcp4-uni-winscale02 tcp4-uni-winscale02
+-tcp4-uni-winscale03 tcp4-uni-winscale03
+-tcp4-uni-winscale04 tcp4-uni-winscale04
+-tcp4-uni-winscale05 tcp4-uni-winscale05
+-tcp4-uni-winscale06 tcp4-uni-winscale06
+-tcp4-uni-winscale07 tcp4-uni-winscale07
+-tcp4-uni-winscale08 tcp4-uni-winscale08
+-tcp4-uni-winscale09 tcp4-uni-winscale09
+-tcp4-uni-winscale10 tcp4-uni-winscale10
+-tcp4-uni-winscale11 tcp4-uni-winscale11
+-tcp4-uni-winscale12 tcp4-uni-winscale12
+-tcp4-uni-winscale13 tcp4-uni-winscale13
+-tcp4-uni-winscale14 tcp4-uni-winscale14
+-
+-tcp6-uni-winscale01 tcp6-uni-winscale01
+-tcp6-uni-winscale02 tcp6-uni-winscale02
+-tcp6-uni-winscale03 tcp6-uni-winscale03
+-tcp6-uni-winscale04 tcp6-uni-winscale04
+-tcp6-uni-winscale05 tcp6-uni-winscale05
+-tcp6-uni-winscale06 tcp6-uni-winscale06
+-tcp6-uni-winscale07 tcp6-uni-winscale07
+-tcp6-uni-winscale08 tcp6-uni-winscale08
+-tcp6-uni-winscale09 tcp6-uni-winscale09
+-tcp6-uni-winscale10 tcp6-uni-winscale10
+-tcp6-uni-winscale11 tcp6-uni-winscale11
+-tcp6-uni-winscale12 tcp6-uni-winscale12
+-tcp6-uni-winscale13 tcp6-uni-winscale13
+-tcp6-uni-winscale14 tcp6-uni-winscale14
+-
+-tcp4-uni-tso01 tcp4-uni-tso01
+-tcp4-uni-tso02 tcp4-uni-tso02
+-tcp4-uni-tso03 tcp4-uni-tso03
+-tcp4-uni-tso04 tcp4-uni-tso04
+-tcp4-uni-tso05 tcp4-uni-tso05
+-tcp4-uni-tso06 tcp4-uni-tso06
+-tcp4-uni-tso07 tcp4-uni-tso07
+-tcp4-uni-tso08 tcp4-uni-tso08
+-tcp4-uni-tso09 tcp4-uni-tso09
+-tcp4-uni-tso10 tcp4-uni-tso10
+-tcp4-uni-tso11 tcp4-uni-tso11
+-tcp4-uni-tso12 tcp4-uni-tso12
+-tcp4-uni-tso13 tcp4-uni-tso13
+-tcp4-uni-tso14 tcp4-uni-tso14
+-
+-tcp6-uni-tso01 tcp6-uni-tso01
+-tcp6-uni-tso02 tcp6-uni-tso02
+-tcp6-uni-tso03 tcp6-uni-tso03
+-tcp6-uni-tso04 tcp6-uni-tso04
+-tcp6-uni-tso05 tcp6-uni-tso05
+-tcp6-uni-tso06 tcp6-uni-tso06
+-tcp6-uni-tso07 tcp6-uni-tso07
+-tcp6-uni-tso08 tcp6-uni-tso08
+-tcp6-uni-tso09 tcp6-uni-tso09
+-tcp6-uni-tso10 tcp6-uni-tso10
+-tcp6-uni-tso11 tcp6-uni-tso11
+-tcp6-uni-tso12 tcp6-uni-tso12
+-tcp6-uni-tso13 tcp6-uni-tso13
+-tcp6-uni-tso14 tcp6-uni-tso14
+-
+-tcp4-uni-pktlossdup01 tcp4-uni-pktlossdup01
+-tcp4-uni-pktlossdup02 tcp4-uni-pktlossdup02
+-tcp4-uni-pktlossdup03 tcp4-uni-pktlossdup03
+-tcp4-uni-pktlossdup04 tcp4-uni-pktlossdup04
+-tcp4-uni-pktlossdup05 tcp4-uni-pktlossdup05
+-tcp4-uni-pktlossdup06 tcp4-uni-pktlossdup06
+-tcp4-uni-pktlossdup07 tcp4-uni-pktlossdup07
+-tcp4-uni-pktlossdup08 tcp4-uni-pktlossdup08
+-tcp4-uni-pktlossdup09 tcp4-uni-pktlossdup09
+-tcp4-uni-pktlossdup10 tcp4-uni-pktlossdup10
+-tcp4-uni-pktlossdup11 tcp4-uni-pktlossdup11
+-tcp4-uni-pktlossdup12 tcp4-uni-pktlossdup12
+-tcp4-uni-pktlossdup13 tcp4-uni-pktlossdup13
+-tcp4-uni-pktlossdup14 tcp4-uni-pktlossdup14
+-
+-tcp6-uni-pktlossdup01 tcp6-uni-pktlossdup01
+-tcp6-uni-pktlossdup02 tcp6-uni-pktlossdup02
+-tcp6-uni-pktlossdup03 tcp6-uni-pktlossdup03
+-tcp6-uni-pktlossdup04 tcp6-uni-pktlossdup04
+-tcp6-uni-pktlossdup05 tcp6-uni-pktlossdup05
+-tcp6-uni-pktlossdup06 tcp6-uni-pktlossdup06
+-tcp6-uni-pktlossdup07 tcp6-uni-pktlossdup07
+-tcp6-uni-pktlossdup08 tcp6-uni-pktlossdup08
+-tcp6-uni-pktlossdup09 tcp6-uni-pktlossdup09
+-tcp6-uni-pktlossdup10 tcp6-uni-pktlossdup10
+-tcp6-uni-pktlossdup11 tcp6-uni-pktlossdup11
+-tcp6-uni-pktlossdup12 tcp6-uni-pktlossdup12
+-tcp6-uni-pktlossdup13 tcp6-uni-pktlossdup13
+-tcp6-uni-pktlossdup14 tcp6-uni-pktlossdup14
+-
+-tcp4-uni-dsackoff01 tcp4-uni-dsackoff01
+-tcp4-uni-dsackoff02 tcp4-uni-dsackoff02
+-tcp4-uni-dsackoff03 tcp4-uni-dsackoff03
+-tcp4-uni-dsackoff04 tcp4-uni-dsackoff04
+-tcp4-uni-dsackoff05 tcp4-uni-dsackoff05
+-tcp4-uni-dsackoff06 tcp4-uni-dsackoff06
+-tcp4-uni-dsackoff07 tcp4-uni-dsackoff07
+-tcp4-uni-dsackoff08 tcp4-uni-dsackoff08
+-tcp4-uni-dsackoff09 tcp4-uni-dsackoff09
+-tcp4-uni-dsackoff10 tcp4-uni-dsackoff10
+-tcp4-uni-dsackoff11 tcp4-uni-dsackoff11
+-tcp4-uni-dsackoff12 tcp4-uni-dsackoff12
+-tcp4-uni-dsackoff13 tcp4-uni-dsackoff13
+-tcp4-uni-dsackoff14 tcp4-uni-dsackoff14
+-
+-tcp6-uni-dsackoff01 tcp6-uni-dsackoff01
+-tcp6-uni-dsackoff02 tcp6-uni-dsackoff02
+-tcp6-uni-dsackoff03 tcp6-uni-dsackoff03
+-tcp6-uni-dsackoff04 tcp6-uni-dsackoff04
+-tcp6-uni-dsackoff05 tcp6-uni-dsackoff05
+-tcp6-uni-dsackoff06 tcp6-uni-dsackoff06
+-tcp6-uni-dsackoff07 tcp6-uni-dsackoff07
+-tcp6-uni-dsackoff08 tcp6-uni-dsackoff08
+-tcp6-uni-dsackoff09 tcp6-uni-dsackoff09
+-tcp6-uni-dsackoff10 tcp6-uni-dsackoff10
+-tcp6-uni-dsackoff11 tcp6-uni-dsackoff11
+-tcp6-uni-dsackoff12 tcp6-uni-dsackoff12
+-tcp6-uni-dsackoff13 tcp6-uni-dsackoff13
+-tcp6-uni-dsackoff14 tcp6-uni-dsackoff14
+-
+-tcp4-uni-sackoff01 tcp4-uni-sackoff01
+-tcp4-uni-sackoff02 tcp4-uni-sackoff02
+-tcp4-uni-sackoff03 tcp4-uni-sackoff03
+-tcp4-uni-sackoff04 tcp4-uni-sackoff04
+-tcp4-uni-sackoff05 tcp4-uni-sackoff05
+-tcp4-uni-sackoff06 tcp4-uni-sackoff06
+-tcp4-uni-sackoff07 tcp4-uni-sackoff07
+-tcp4-uni-sackoff08 tcp4-uni-sackoff08
+-tcp4-uni-sackoff09 tcp4-uni-sackoff09
+-tcp4-uni-sackoff10 tcp4-uni-sackoff10
+-tcp4-uni-sackoff11 tcp4-uni-sackoff11
+-tcp4-uni-sackoff12 tcp4-uni-sackoff12
+-tcp4-uni-sackoff13 tcp4-uni-sackoff13
+-tcp4-uni-sackoff14 tcp4-uni-sackoff14
+-
+-tcp6-uni-sackoff01 tcp6-uni-sackoff01
+-tcp6-uni-sackoff02 tcp6-uni-sackoff02
+-tcp6-uni-sackoff03 tcp6-uni-sackoff03
+-tcp6-uni-sackoff04 tcp6-uni-sackoff04
+-tcp6-uni-sackoff05 tcp6-uni-sackoff05
+-tcp6-uni-sackoff06 tcp6-uni-sackoff06
+-tcp6-uni-sackoff07 tcp6-uni-sackoff07
+-tcp6-uni-sackoff08 tcp6-uni-sackoff08
+-tcp6-uni-sackoff09 tcp6-uni-sackoff09
+-tcp6-uni-sackoff10 tcp6-uni-sackoff10
+-tcp6-uni-sackoff11 tcp6-uni-sackoff11
+-tcp6-uni-sackoff12 tcp6-uni-sackoff12
+-tcp6-uni-sackoff13 tcp6-uni-sackoff13
+-tcp6-uni-sackoff14 tcp6-uni-sackoff14
+-
+-tcp4-multi-sameport01 tcp4-multi-sameport01
+-tcp4-multi-sameport02 tcp4-multi-sameport02
+-tcp4-multi-sameport03 tcp4-multi-sameport03
+-tcp4-multi-sameport04 tcp4-multi-sameport04
+-tcp4-multi-sameport05 tcp4-multi-sameport05
+-tcp4-multi-sameport06 tcp4-multi-sameport06
+-tcp4-multi-sameport07 tcp4-multi-sameport07
+-tcp4-multi-sameport08 tcp4-multi-sameport08
+-tcp4-multi-sameport09 tcp4-multi-sameport09
+-tcp4-multi-sameport10 tcp4-multi-sameport10
+-tcp4-multi-sameport11 tcp4-multi-sameport11
+-tcp4-multi-sameport12 tcp4-multi-sameport12
+-tcp4-multi-sameport13 tcp4-multi-sameport13
+-tcp4-multi-sameport14 tcp4-multi-sameport14
+-
+-tcp6-multi-sameport01 tcp6-multi-sameport01
+-tcp6-multi-sameport02 tcp6-multi-sameport02
+-tcp6-multi-sameport03 tcp6-multi-sameport03
+-tcp6-multi-sameport04 tcp6-multi-sameport04
+-tcp6-multi-sameport05 tcp6-multi-sameport05
+-tcp6-multi-sameport06 tcp6-multi-sameport06
+-tcp6-multi-sameport07 tcp6-multi-sameport07
+-tcp6-multi-sameport08 tcp6-multi-sameport08
+-tcp6-multi-sameport09 tcp6-multi-sameport09
+-tcp6-multi-sameport10 tcp6-multi-sameport10
+-tcp6-multi-sameport11 tcp6-multi-sameport11
+-tcp6-multi-sameport12 tcp6-multi-sameport12
+-tcp6-multi-sameport13 tcp6-multi-sameport13
+-tcp6-multi-sameport14 tcp6-multi-sameport14
+-
+-tcp4-multi-diffport01 tcp4-multi-diffport01
+-tcp4-multi-diffport02 tcp4-multi-diffport02
+-tcp4-multi-diffport03 tcp4-multi-diffport03
+-tcp4-multi-diffport04 tcp4-multi-diffport04
+-tcp4-multi-diffport05 tcp4-multi-diffport05
+-tcp4-multi-diffport06 tcp4-multi-diffport06
+-tcp4-multi-diffport07 tcp4-multi-diffport07
+-tcp4-multi-diffport08 tcp4-multi-diffport08
+-tcp4-multi-diffport09 tcp4-multi-diffport09
+-tcp4-multi-diffport10 tcp4-multi-diffport10
+-tcp4-multi-diffport11 tcp4-multi-diffport11
+-tcp4-multi-diffport12 tcp4-multi-diffport12
+-tcp4-multi-diffport13 tcp4-multi-diffport13
+-tcp4-multi-diffport14 tcp4-multi-diffport14
+-
+-tcp6-multi-diffport01 tcp6-multi-diffport01
+-tcp6-multi-diffport02 tcp6-multi-diffport02
+-tcp6-multi-diffport03 tcp6-multi-diffport03
+-tcp6-multi-diffport04 tcp6-multi-diffport04
+-tcp6-multi-diffport05 tcp6-multi-diffport05
+-tcp6-multi-diffport06 tcp6-multi-diffport06
+-tcp6-multi-diffport07 tcp6-multi-diffport07
+-tcp6-multi-diffport08 tcp6-multi-diffport08
+-tcp6-multi-diffport09 tcp6-multi-diffport09
+-tcp6-multi-diffport10 tcp6-multi-diffport10
+-tcp6-multi-diffport11 tcp6-multi-diffport11
+-tcp6-multi-diffport12 tcp6-multi-diffport12
+-tcp6-multi-diffport13 tcp6-multi-diffport13
+-tcp6-multi-diffport14 tcp6-multi-diffport14
+-
+-tcp4-multi-diffip01 tcp4-multi-diffip01
+-tcp4-multi-diffip02 tcp4-multi-diffip02
+-tcp4-multi-diffip03 tcp4-multi-diffip03
+-tcp4-multi-diffip04 tcp4-multi-diffip04
+-tcp4-multi-diffip05 tcp4-multi-diffip05
+-tcp4-multi-diffip06 tcp4-multi-diffip06
+-tcp4-multi-diffip07 tcp4-multi-diffip07
+-tcp4-multi-diffip08 tcp4-multi-diffip08
+-tcp4-multi-diffip09 tcp4-multi-diffip09
+-tcp4-multi-diffip10 tcp4-multi-diffip10
+-tcp4-multi-diffip11 tcp4-multi-diffip11
+-tcp4-multi-diffip12 tcp4-multi-diffip12
+-tcp4-multi-diffip13 tcp4-multi-diffip13
+-tcp4-multi-diffip14 tcp4-multi-diffip14
+-
+-tcp6-multi-diffip01 tcp6-multi-diffip01
+-tcp6-multi-diffip02 tcp6-multi-diffip02
+-tcp6-multi-diffip03 tcp6-multi-diffip03
+-tcp6-multi-diffip04 tcp6-multi-diffip04
+-tcp6-multi-diffip05 tcp6-multi-diffip05
+-tcp6-multi-diffip06 tcp6-multi-diffip06
+-tcp6-multi-diffip07 tcp6-multi-diffip07
+-tcp6-multi-diffip08 tcp6-multi-diffip08
+-tcp6-multi-diffip09 tcp6-multi-diffip09
+-tcp6-multi-diffip10 tcp6-multi-diffip10
+-tcp6-multi-diffip11 tcp6-multi-diffip11
+-tcp6-multi-diffip12 tcp6-multi-diffip12
+-tcp6-multi-diffip13 tcp6-multi-diffip13
+-tcp6-multi-diffip14 tcp6-multi-diffip14
+-
+-tcp4-multi-diffnic01 tcp4-multi-diffnic01
+-tcp4-multi-diffnic02 tcp4-multi-diffnic02
+-tcp4-multi-diffnic03 tcp4-multi-diffnic03
+-tcp4-multi-diffnic04 tcp4-multi-diffnic04
+-tcp4-multi-diffnic05 tcp4-multi-diffnic05
+-tcp4-multi-diffnic06 tcp4-multi-diffnic06
+-tcp4-multi-diffnic07 tcp4-multi-diffnic07
+-tcp4-multi-diffnic08 tcp4-multi-diffnic08
+-tcp4-multi-diffnic09 tcp4-multi-diffnic09
+-tcp4-multi-diffnic10 tcp4-multi-diffnic10
+-tcp4-multi-diffnic11 tcp4-multi-diffnic11
+-tcp4-multi-diffnic12 tcp4-multi-diffnic12
+-tcp4-multi-diffnic13 tcp4-multi-diffnic13
+-tcp4-multi-diffnic14 tcp4-multi-diffnic14
+-
+-tcp6-multi-diffnic01 tcp6-multi-diffnic01
+-tcp6-multi-diffnic02 tcp6-multi-diffnic02
+-tcp6-multi-diffnic03 tcp6-multi-diffnic03
+-tcp6-multi-diffnic04 tcp6-multi-diffnic04
+-tcp6-multi-diffnic05 tcp6-multi-diffnic05
+-tcp6-multi-diffnic06 tcp6-multi-diffnic06
+-tcp6-multi-diffnic07 tcp6-multi-diffnic07
+-tcp6-multi-diffnic08 tcp6-multi-diffnic08
+-tcp6-multi-diffnic09 tcp6-multi-diffnic09
+-tcp6-multi-diffnic10 tcp6-multi-diffnic10
+-tcp6-multi-diffnic11 tcp6-multi-diffnic11
+-tcp6-multi-diffnic12 tcp6-multi-diffnic12
+-tcp6-multi-diffnic13 tcp6-multi-diffnic13
+-tcp6-multi-diffnic14 tcp6-multi-diffnic14
+-
+-
+-# multicast
+-mcast4-grpope01 mcast4-grpope01
+-mcast4-grpope02 mcast4-grpope02
+-mcast4-grpope03 mcast4-grpope03
+-mcast4-grpope04 mcast4-grpope04
+-mcast4-pktfld01 mcast4-pktfld01
+-mcast4-pktfld02 mcast4-pktfld02
+-mcast4-queryfld01 mcast4-queryfld01
+-mcast4-queryfld02 mcast4-queryfld02
+-mcast4-queryfld03 mcast4-queryfld03
+-mcast4-queryfld04 mcast4-queryfld04
+-mcast4-queryfld05 mcast4-queryfld05
+-mcast4-queryfld06 mcast4-queryfld06
+-
+-mcast6-grpope01 mcast6-grpope01
+-mcast6-grpope02 mcast6-grpope02
+-mcast6-grpope03 mcast6-grpope03
+-mcast6-grpope04 mcast6-grpope04
+-mcast6-pktfld01 mcast6-pktfld01
+-mcast6-pktfld02 mcast6-pktfld02
+-mcast6-queryfld01 mcast6-queryfld01
+-mcast6-queryfld02 mcast6-queryfld02
+-mcast6-queryfld03 mcast6-queryfld03
+-mcast6-queryfld04 mcast6-queryfld04
+-mcast6-queryfld05 mcast6-queryfld05
+-mcast6-queryfld06 mcast6-queryfld06
+-
+-
+-#
+-# Stress test for major application protocol (ssh, dns, http, ftp)
+-#
+-
+-# ssh
+-ssh4-stress ssh4-stress
+-ssh6-stress ssh6-stress
+-
+-# dns
+-dns4-stress dns4-stress
+-dns6-stress dns6-stress
+-
+-# http
+-http4-stress http4-stress
+-http6-stress http6-stress
+-
+-# ftp
+-ftp4-download-stress ftp4-download-stress
+-ftp6-download-stress ftp6-download-stress
+-
+-ftp4-upload-stress ftp4-upload-stress
+-ftp6-upload-stress ftp6-upload-stress
+-
+-#
+-# Stress tests for various network features
+-#
+-
+-tcp_fastopen tcp_fastopen_run.sh
+-
+-vxlan01 vxlan01.sh
+-vxlan02 vxlan02.sh
+-vxlan03 vxlan03.sh
+diff --git a/runtest/tcp_cmds_addition b/runtest/tcp_cmds_addition
+deleted file mode 100644
+index 432cfca..0000000
+--- a/runtest/tcp_cmds_addition
++++ /dev/null
+@@ -1,7 +0,0 @@
+-#DESCRIPTION: addtional TCP/IP commands tests
+-# The tests described in tcp_cmds are being in the default tests long time
+-# New tests for TCP/IP should be in this command file
+-#
+-iproute ip_tests.sh
+-traceroute traceroute_tests.sh
+-xinetd xinetd_tests.sh
+diff --git a/runtest/tcp_cmds_expect b/runtest/tcp_cmds_expect
+deleted file mode 100644
+index 760cdb8..0000000
+--- a/runtest/tcp_cmds_expect
++++ /dev/null
+@@ -1,8 +0,0 @@
+-#DESCRIPTION:TCP/IP commands tests that require expect
+-#
+-# PLEASE READ THE README FILE IN /tcp_cmds BEFORE RUNNING THESE.
+-#
+-rlogin rlogin01
+-telnet telnet01
+-iptables iptables_tests.sh
+-dhcpd dhcpd_tests.sh
+diff --git a/runtest/tcp_cmds_noexpect b/runtest/tcp_cmds_noexpect
+deleted file mode 100644
+index 8e47217..0000000
+--- a/runtest/tcp_cmds_noexpect
++++ /dev/null
+@@ -1,18 +0,0 @@
+-#DESCRIPTION:TCP/IP commands tests that do not require expect
+-#
+-# PLEASE READ THE README FILE IN /tcp_cmds BEFORE RUNNING THESE.
+-#
+-arp arp01
+-echo echo01
+-finger finger01
+-ftp ftp01
+-host host01
+-netstat netstat01
+-perf_lan perf_lan
+-ping ping01
+-rcp rcp01
+-rdist rdist01
+-rsh rsh01
+-rwho rwho01
+-sendfile sendfile01
+-tcpdump tcpdump01
+diff --git a/testscripts/networkstress.sh b/testscripts/networkstress.sh
+deleted file mode 100755
+index 9527e47..0000000
+--- a/testscripts/networkstress.sh
++++ /dev/null
+@@ -1,104 +0,0 @@
+-#!/bin/sh
+-# This will run all the network stress tests, with the status logged in
+-# /tmp/netpan.log
+-#
+-# Please read ltp-yyyymmdd/testcases/network/stress/README before running
+-
+-cd $(dirname $0)
+-. ./network.sh
+-
+-# Test Settings
+-export NS_DURATION=${NS_DURATION:-"3600"}
+-export NS_TIMES=${NS_TIMES:-"10000"}
+-export CONNECTION_TOTAL=${CONNECTION_TOTAL:-"4000"}
+-export IP_TOTAL=${IP_TOTAL:-"10000"}
+-export IP_TOTAL_FOR_TCPIP=${IP_TOTAL_FOR_TCPIP:-"100"}
+-export ROUTE_TOTAL=${ROUTE_TOTAL:-"10000"}
+-export MTU_CHANGE_TIMES=${MTU_CHANGE_TIMES:-"1000"}
+-export IF_UPDOWN_TIMES=${IF_UPDOWN_TIMES:-"10000"}
+-export DOWNLOAD_BIGFILESIZE=${DOWNLOAD_BIGFILESIZE:-"2147483647"}
+-export DOWNLOAD_REGFILESIZE=${DOWNLOAD_REGFILESIZE:-"1048576"}
+-export UPLOAD_BIGFILESIZE=${UPLOAD_BIGFILESIZE:-"2147483647"}
+-export UPLOAD_REGFILESIZE=${UPLOAD_REGFILESIZE:-"1024"}
+-export MCASTNUM_NORMAL=${MCASTNUM_NORMAL:-"20"}
+-export MCASTNUM_HEAVY=${MCASTNUM_HEAVY:-"40000"}
+-
+-usage () {
+-    echo ""
+-    echo "---------------------------------------------------------"
+-    echo -e "\033[31m $0 [options] \033[0m "
+-    echo "---------------------------------------------------------"
+-    echo " -A|a: Stress test for appl"
+-    echo " -E|e: Stress test for interface"
+-    echo " -I|i: Stress test for ICMP protocol"
+-    echo " -T|t: Stress test for TCP/IP"
+-    echo " -U|u: Stress test for UDP/IP"
+-    echo " -R|r: Stress test for routing table"
+-    echo " -B|b: Stress Broken IP packets"
+-    echo " -M|m: Multicast stress tests"
+-    echo " -F|f: Stress test for network features"
+-    echo " -S|s: Run selected tests"
+-    echo " -W|w: Run whole network stress tests"
+-    echo " -D|d: Test duration (default ${NS_DURATION} sec)"
+-    echo " -V|v: Enable verbose"
+-    echo " -H|h: This Usage"
+-    echo ""
+-    exit 1
+-}
+-
+-while getopts AaEeTtIiUuRrMmFfSsWwBbVvD:d: OPTION
+-do
+-    case $OPTION in
+-	A|a) TEST_CASE="network_stress.appl";;
+-	E|e) TEST_CASE="network_stress.interface";;
+-	B|b) TEST_CASE="network_stress.broken_ip";;
+-	I|i) TEST_CASE="network_stress.icmp";;
+-	T|t) TEST_CASE="network_stress.tcp";;
+-	U|u) TEST_CASE="network_stress.udp";;
+-	R|r) TEST_CASE="network_stress.route";;
+-	M|m) TEST_CASE="network_stress.multicast";;
+-	F|f) TEST_CASE="network_stress.features";;
+-	S|s) TEST_CASE="network_stress.selected";;
+-	W|w) TEST_CASE="network_stress.whole";;
+-	V|v) VERBOSE="yes";;
+-	D|d) NS_DURATION=${OPTARG};;
+-	H|h) usage;;
+-	*) echo "Error: invalid option..."; usage; exit 1 ;;
+-    esac
+-done
+-
+-if [ -z ${TEST_CASE} ]; then
+-	usage
+-fi
+-
+-if [ -z ${RHOST} ]; then
+-	## Just a silly check
+-	echo "Error: pay attention to configure"
+-	echo "  network paramaters before running tests."
+-	exit 1
+-fi
+-
+-cat ${LTPROOT}/runtest/${TEST_CASE} > $TMPDIR/network_stress.tests
+-
+-cd $TMPDIR
+-
+-if [ ${VERBOSE} = "yes" ]; then
+-	echo "Network parameters:"
+-	echo " - ${LHOST_IFACES} local interface (MAC address: ${LHOST_HWADDRS})"
+-	echo " - ${RHOST_IFACES} remote interface (MAC address: ${RHOST_HWADDRS})"
+-
+-	cat $TMPDIR/network_stress.tests
+-	${LTPROOT}/ver_linux
+-	echo ""
+-	echo ${LTPROOT}/bin/ltp-pan -e -l /tmp/netstress.log -S -a netstress -n netstress -f ${TMPDIR}/network_stress.tests
+-fi
+-
+-${LTPROOT}/bin/ltp-pan -e -l /tmp/netstress.log -S -a netstress -n netstress -f ${TMPDIR}/network_stress.tests
+-
+-if [ $? -eq "0" ]; then
+-  echo ltp-pan reported PASS
+-else
+-  echo ltp-pan reported FAIL
+-fi
+-
+-rm -rf ${TMPDIR}
+diff --git a/testscripts/networktests.sh b/testscripts/networktests.sh
+deleted file mode 100755
+index 308bd9a..0000000
+--- a/testscripts/networktests.sh
++++ /dev/null
+@@ -1,116 +0,0 @@
+-#!/bin/sh
+-# This will run all the network tests, with the status logged in /tmp/netpan.log
+-
+-cd $(dirname $0)
+-. ./network.sh
+-
+-# For bitwise operation to determine which testsets run
+-CMD_IPV6=1		# 0x0001
+-CMD_IPV6_LIB=2		# 0x0002
+-CMD_MULTICAST=4		# 0x0004
+-CMD_NFS=8		# 0x0008
+-CMD_RPC=16		# 0x0010
+-CMD_SCTP=32		# 0x0020
+-CMD_TCPCMDS=64		# 0x0040
+-CMD_TCPCMDS_ADD=128	# 0x0080
+-CMD_WHOLE=65535		# 0xFFFF
+-CMD_DEFAULT=$(($CMD_MULTICAST|$CMD_NFS|$CMD_RPC|$CMD_TCPCMDS))
+-
+-# ---***** NFS OPTIONAL SETTINGS *****---
+-# DEFAULTS
+-# export VERSION=2
+-# export SOCKET_TYPE=udp
+-# ---*********************************---
+-
+-usage() {
+-    echo ""
+-    echo "---------------------------------------------------------"
+-    echo -e "\033[31m $0 [options] \033[0m "
+-    echo "---------------------------------------------------------"
+-    echo " -W|w: whole network tests"
+-    echo " -D|d: default network tests"
+-    echo " -6:   IPv6 tests"
+-    echo " -L|l: IPv6 library tests"
+-    echo " -M|m: multicast tests"
+-    echo " -N|n: nfs tests"
+-    echo " -R|r: rpc tests"
+-    echo " -S|s: sctp tests"
+-    echo " -T|t: TCP/IP command tests"
+-    echo " -V|v: Enable verbose"
+-    echo " -H|h: This Usage"
+-    echo "*) 'default' runs multicast, rpc, nfs and some of TCP/IP command"
+-    echo "   It is interpreted as 'default' if no test sets are specified"
+-    echo ""
+-}
+-
+-# Parse options
+-CMD=0
+-while getopts WwDd6LlMmNnRrSsTtVvHh OPTION
+-do
+-    case $OPTION in
+-	W|w) CMD=$CMD_WHOLE;;
+-	D|d) CMD=$(($CMD|$CMD_DEFAULT));;
+-	6)   CMD=$(($CMD|$CMD_IPV6));;
+-	L|l) CMD=$(($CMD|$CMD_IPV6_LIB));;
+-	M|m) CMD=$(($CMD|$CMD_MULTICAST));;
+-	N|n) CMD=$(($CMD|$CMD_NFS));;
+-	R|r) CMD=$(($CMD|$CMD_RPC));;
+-	S|s) CMD=$(($CMD|$CMD_SCTP));;
+-	T|t) CMD=$(($CMD|$CMD_TCPCMDS|$CMD_TCPCMDS_ADD));;
+-	V|v) VERBOSE="yes";;
+-	H|h) usage; exit 0 ;;
+-	*) echo "Error: invalid option..."; usage; exit 1 ;;
+-    esac
+-done
+-if [ $CMD -eq 0 ]; then
+-    CMD=$CMD_DEFAULT
+-fi
+-
+-# Determine which test set will run
+-rm -f $CMDFILE
+-if [ $(($CMD&$CMD_IPV6)) -ne 0 ]; then
+-    cat  ${LTPROOT}/runtest/ipv6 >> $CMDFILE
+-fi
+-if [ $(($CMD&$CMD_IPV6_LIB)) -ne 0 ]; then
+-    cat  ${LTPROOT}/runtest/ipv6_lib >> $CMDFILE
+-fi
+-if [ $(($CMD&$CMD_MULTICAST)) -ne 0 ]; then
+-    cat  ${LTPROOT}/runtest/multicast >> $CMDFILE
+-fi
+-if [ $(($CMD&$CMD_NFS)) -ne 0 ]; then
+-    cat  ${LTPROOT}/runtest/nfs >> $CMDFILE
+-fi
+-if [ $(($CMD&$CMD_RPC)) -ne 0 ]; then
+-    cat  ${LTPROOT}/runtest/rpc >> $CMDFILE
+-fi
+-if [ $(($CMD&$CMD_SCTP)) -ne 0 ]; then
+-    cat  ${LTPROOT}/runtest/sctp >> $CMDFILE
+-fi
+-if [ $(($CMD&$CMD_TCPCMDS)) -ne 0 ]; then
+-    cat  ${LTPROOT}/runtest/tcp_cmds >> $CMDFILE
+-fi
+-if [ $(($CMD&$CMD_TCPCMDS_ADD)) -ne 0 ]; then
+-    cat  ${LTPROOT}/runtest/tcp_cmds_addition >> $CMDFILE
+-fi
+-
+-cd $TMPDIR
+-
+-if [ ${VERBOSE} = "yes" ]; then
+-    echo "Network parameters:"
+-    echo " - Remote Host: ${RHOST}"
+-
+-    cat $CMDFILE
+-    ${LTPROOT}/ver_linux
+-    echo ""
+-    echo ${LTPROOT}/bin/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $CMDFILE
+-fi
+-
+-${LTPROOT}/bin/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $CMDFILE
+-
+-if [ $? -eq "0" ]; then
+-  echo ltp-pan reported PASS
+-else
+-  echo ltp-pan reported FAIL
+-fi
+-
+-rm -rf ${TMPDIR}
 -- 
 1.7.1
 
