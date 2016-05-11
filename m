@@ -1,112 +1,179 @@
 From: Chunyu Hu <chuhu@redhat.com>
-Date: Wed, 11 May 2016 19:36:29 +0800
-Subject: [LTP] [PATCH V3-2 7/9] ftrace_stress: update the trace_options test
-In-Reply-To: <1462966591-3895-7-git-send-email-chuhu@redhat.com>
+Date: Wed, 11 May 2016 19:36:28 +0800
+Subject: [LTP] [PATCH V3-2 6/9] testcases/lib: Add tst_random decmical
+	integer generator
+In-Reply-To: <1462966591-3895-6-git-send-email-chuhu@redhat.com>
 References: <1462966591-3895-1-git-send-email-chuhu@redhat.com>
  <1462966591-3895-2-git-send-email-chuhu@redhat.com>
  <1462966591-3895-3-git-send-email-chuhu@redhat.com>
  <1462966591-3895-4-git-send-email-chuhu@redhat.com>
  <1462966591-3895-5-git-send-email-chuhu@redhat.com>
  <1462966591-3895-6-git-send-email-chuhu@redhat.com>
- <1462966591-3895-7-git-send-email-chuhu@redhat.com>
-Message-ID: <1462966591-3895-8-git-send-email-chuhu@redhat.com>
+Message-ID: <1462966591-3895-7-git-send-email-chuhu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The ftrace_trace_options.sh is using hard coced trace options, including
-the outdated 'branch', so let's get the trace_options dynamicly from the
-trace_options file.
+It parse the input range and get one decimical integer in the range.
+Tests can use it to determin a random action.
 
-V2:
-    Use tst_random.
-    Fix bashism code style.
-    Use ltp lib.
-    Check the existence before setting.
-
-V3:
-   Remove the unneeded code comment.
-   use tst_random directly.
++ documentation in the test-writing-guidelines
 
 Signed-off-by: Chunyu Hu <chuhu@redhat.com>
 ---
- .../ftrace_stress/ftrace_trace_options.sh          | 58 ++++++++++++++--------
- 1 file changed, 37 insertions(+), 21 deletions(-)
+ doc/test-writing-guidelines.txt | 12 ++++++
+ testcases/lib/.gitignore        |  1 +
+ testcases/lib/Makefile          |  4 +-
+ testcases/lib/tst_random.c      | 93 +++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 108 insertions(+), 2 deletions(-)
+ create mode 100644 testcases/lib/tst_random.c
 
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_options.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_options.sh
-index 47d2a62..253568c 100755
---- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_options.sh
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_options.sh
-@@ -13,30 +13,46 @@
- #                                                                             #
- ###############################################################################
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index d0b1408..a6b4c2d 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1203,6 +1203,18 @@ that can sleep for defined amount of seconds, milliseconds or microseconds.
+ tst_sleep 100ms
+ -------------------------------------------------------------------------------
  
--LOOP=200
--
--trace_options=(print-parent sym-offset sym-addr verbose raw hex bin block trace_printk ftrace_preempt branch annotate userstacktrace sym-userobj printk-msg-only context-info latency-format sleep-time graph-time)
-+. test.sh
- 
--NR_TRACE_OPTIONS=19
--
--for ((; ; ))
--{
--	for ((j = 0; j < $LOOP; j++))
--	{
--		num=`date +%N`
--		num=`printf 1%s $num`
-+LOOP=200
- 
--		for ((i = 0; i < $NR_TRACE_OPTIONS; i++))
--		{
--			n=$(( ( $num >> $i ) % 2 ))
-+while true; do
-+	j=0;
-+	while [ $j -lt $LOOP ]; do
-+		trace_options="$(ls $TRACING_PATH/options/)"
-+		# enable the nop_test_refuse can cause an
-+		# 'write error: Invalid argument'. So don't test it.
-+		trace_options="$(echo $trace_options | sed 's/test_nop_refuse//')"
-+		nr_trace_options=$(echo "${trace_options}" | wc -w)
++tst_random
+++++++++++
 +
-+		option_index=$(tst_random 1 $nr_trace_options)
-+		option=$(echo "$trace_options" | awk "{print \$$option_index}")
-+		i=0
-+		while [ $i -lt $nr_trace_options ]; do
-+			n=$(tst_random 0 1)
-+			opt_f="$TRACING_PATH"/options/$option
-+			ret_val=0
- 			if [ $n -eq 0 ]; then
--				echo 0 > "$TRACING_PATH"/options/${trace_options[$i]}
-+				operation="setup"
- 			else
--				echo 1 > "$TRACING_PATH"/options/${trace_options[$i]}
-+				operation="clear"
-+			fi
-+			# On old kernel, some trace option dirs
-+			# won't be made if the option has nothing
-+			# to do with the current tracer. But on newer
-+			# kernel(4.4-rc1), all option dirs will be made.
-+			# So here check it to avoid 'Permision denied'
-+			if [ -f $opt_f ]; then
-+				echo $n > $opt_f
-+				ret_val=$?
- 			fi
--		}
--	}
--
--	sleep 1
--}
++There may be test such as ftrace_test using random integer to determin the test action.
++here includes 'tst_random' to support it, avoid the `date+%N` action.
++
++[source,sh]
++-------------------------------------------------------------------------------
++# get random integer between 0 and 1000 (include 0 and 1000)
++tst_random 0 1000
++-------------------------------------------------------------------------------
++
+ ROD and ROD_SILENT
+ ++++++++++++++++++
  
-+			if [ $ret_val -ne 0 ]; then
-+				tst_resm TFAIL "$0: $operation trace option $option failed"
-+			fi
-+			i=$((i + 1))
-+		done
-+		j=$((j + 1))
-+	done
-+done
+diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+index 8886b34..15a04df 100644
+--- a/testcases/lib/.gitignore
++++ b/testcases/lib/.gitignore
+@@ -1 +1,2 @@
+ tst_sleep
++tst_random
+diff --git a/testcases/lib/Makefile b/testcases/lib/Makefile
+index 0bfb149..be3a720 100644
+--- a/testcases/lib/Makefile
++++ b/testcases/lib/Makefile
+@@ -24,8 +24,8 @@ top_srcdir		?= ../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-INSTALL_TARGETS		:= *.sh tst_sleep
++INSTALL_TARGETS		:= *.sh tst_sleep tst_random
+ 
+-MAKE_TARGETS		:= tst_sleep
++MAKE_TARGETS		:= tst_sleep tst_random
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/lib/tst_random.c b/testcases/lib/tst_random.c
+new file mode 100644
+index 0000000..5a72b1e
+--- /dev/null
++++ b/testcases/lib/tst_random.c
+@@ -0,0 +1,93 @@
++/*
++ * Copyright (c) 2016 Red Hat Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * Author: Chunyu Hu <chuhu@redhat.com>
++ *
++ */
++
++#include <stdio.h>
++#include <unistd.h>
++#include <stdlib.h>
++#include <string.h>
++#include <sys/time.h>
++
++static void print_help(void)
++{
++	printf("Usage: tst_random <value1> [value2]\n");
++	printf("       Generated random will be between value1 and value2.\n");
++	printf("       If only value1 is specified, value2 will treated as 0.\n");
++}
++
++static int get_seed(void)
++{
++	struct timeval tv;
++	gettimeofday(&tv, NULL);
++	return tv.tv_usec;
++}
++
++static long rand_range(long min, long max)
++{
++	return rand() % (max - min + 1) + min;
++}
++
++int main(int argc, char *argv[])
++{
++	int opt;
++	long min = 0, max = 0, tmp = 0;
++	long rval = 0;
++	char *end;
++
++	while ((opt = getopt(argc, argv, ":h")) != -1) {
++		switch (opt) {
++		case 'h':
++			print_help();
++			return 0;
++		default:
++			print_help();
++			return 1;
++		}
++	}
++
++	if (argc != 2 && argc != 3) {
++		print_help();
++		return 1;
++	}
++
++	max = strtol(argv[1], &end, 10);
++	if (!(argv[1][0] != '\0' && *end == '\0')) {
++		fprintf(stderr, "ERROR: Invalid range value1 '%s'\n\n",
++			argv[optind]);
++		print_help();
++		return 1;
++	}
++
++	if (argc == 3) {
++		min = strtol(argv[2], &end, 10);
++		if (!(argv[2][0] != '\0' && *end == '\0')) {
++			fprintf(stderr, "ERROR: Invalid range value2 '%s'\n\n",
++				argv[optind+1]);
++			print_help();
++			return 1;
++		}
++	}
++
++	srand(get_seed());
++	rval = (min > max) ? rand_range(max, min) : rand_range(min, max);
++	printf("%ld\n", rval);
++
++	return 0;
++}
 -- 
 1.8.3.1
 
