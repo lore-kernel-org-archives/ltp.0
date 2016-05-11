@@ -1,22 +1,23 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 10 May 2016 18:28:21 +0200
-Subject: [LTP] [PATCH v3] commands/insmod: add new testcase to test
-	insmod(8)
-In-Reply-To: <1461306509-4945-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <20160418154419.GA11649@rei.lan>
- <1461306509-4945-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20160510162821.GD20387@rei>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 11 May 2016 12:42:37 +0300
+Subject: [LTP] [PATCH] direct_io/diotest1.c: fix gcc warning and use
+ test temp directory
+In-Reply-To: <20160510135443.GA20387@rei>
+References: <1462367534-12224-1-git-send-email-alexey.kodanev@oracle.com>
+ <20160510135443.GA20387@rei>
+Message-ID: <5732FE8D.7000905@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I've changed the commit description so that it says that
-tst_module_exists function was added to the shell library and pushed,
-thanks.
+Hi,
+On 05/10/2016 04:54 PM, Cyril Hrubis wrote:
+> Hi!
+> Looks good, acked.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Patch applied.
+
+Thanks,
+Alexey
