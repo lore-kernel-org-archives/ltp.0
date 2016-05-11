@@ -1,250 +1,112 @@
 From: Chunyu Hu <chuhu@redhat.com>
-Date: Wed, 11 May 2016 19:36:27 +0800
-Subject: [LTP] [PATCH V3-2 5/9] ftrace_stress: keep the name of testscipt in
-	sync with tracing file
-In-Reply-To: <1462966591-3895-5-git-send-email-chuhu@redhat.com>
+Date: Wed, 11 May 2016 19:36:29 +0800
+Subject: [LTP] [PATCH V3-2 7/9] ftrace_stress: update the trace_options test
+In-Reply-To: <1462966591-3895-7-git-send-email-chuhu@redhat.com>
 References: <1462966591-3895-1-git-send-email-chuhu@redhat.com>
  <1462966591-3895-2-git-send-email-chuhu@redhat.com>
  <1462966591-3895-3-git-send-email-chuhu@redhat.com>
  <1462966591-3895-4-git-send-email-chuhu@redhat.com>
  <1462966591-3895-5-git-send-email-chuhu@redhat.com>
-Message-ID: <1462966591-3895-6-git-send-email-chuhu@redhat.com>
+ <1462966591-3895-6-git-send-email-chuhu@redhat.com>
+ <1462966591-3895-7-git-send-email-chuhu@redhat.com>
+Message-ID: <1462966591-3895-8-git-send-email-chuhu@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The test scripts under ftrace_stress/ are all named after the tracing
-file with a 'ftrace_' prefix, except the ftrace_buffer_size.sh and
-ftrace_profile_enabled.sh. Here just rename them.
+The ftrace_trace_options.sh is using hard coced trace options, including
+the outdated 'branch', so let's get the trace_options dynamicly from the
+trace_options file.
+
+V2:
+    Use tst_random.
+    Fix bashism code style.
+    Use ltp lib.
+    Check the existence before setting.
+
+V3:
+   Remove the unneeded code comment.
+   use tst_random directly.
 
 Signed-off-by: Chunyu Hu <chuhu@redhat.com>
 ---
- .../ftrace_stress/ftrace_buffer_size.sh            | 45 -------------------
- .../ftrace_stress/ftrace_buffer_size_kb.sh         | 45 +++++++++++++++++++
- .../ftrace_function_profile_enabled.sh             | 50 ++++++++++++++++++++++
- .../ftrace_stress/ftrace_profile_enabled.sh        | 50 ----------------------
- 4 files changed, 95 insertions(+), 95 deletions(-)
- delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size.sh
- create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh
- create mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_function_profile_enabled.sh
- delete mode 100755 testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_profile_enabled.sh
+ .../ftrace_stress/ftrace_trace_options.sh          | 58 ++++++++++++++--------
+ 1 file changed, 37 insertions(+), 21 deletions(-)
 
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size.sh
-deleted file mode 100755
-index bd7dcc4..0000000
---- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size.sh
-+++ /dev/null
-@@ -1,45 +0,0 @@
--#! /bin/sh
--
--###############################################################################
--#                                                                             #
--# Copyright (c) 2010 FUJITSU LIMITED                                          #
--#                                                                             #
--# This program is free software; you can redistribute it and/or modify it     #
--# under the terms of the GNU General Public License as published by the Free  #
--# Software Foundation; either version 2 of the License, or (at your option)   #
--# any later version.                                                          #
--#                                                                             #
--# Author: Li Zefan <lizf@cn.fujitsu.com>                                      #
--#                                                                             #
--###############################################################################
--
+diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_options.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_options.sh
+index 47d2a62..253568c 100755
+--- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_options.sh
++++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_trace_options.sh
+@@ -13,30 +13,46 @@
+ #                                                                             #
+ ###############################################################################
+ 
 -LOOP=200
 -
--# Use up to 10% of free memory
--free_mem=`cat /proc/meminfo | grep '^MemFree' | awk '{ print $2 }'`
--cpus=`tst_ncpus`
+-trace_options=(print-parent sym-offset sym-addr verbose raw hex bin block trace_printk ftrace_preempt branch annotate userstacktrace sym-userobj printk-msg-only context-info latency-format sleep-time graph-time)
++. test.sh
+ 
+-NR_TRACE_OPTIONS=19
 -
--step=$(( $free_mem / 10 / $LOOP / $cpus ))
--
--if [ $step -eq 0 ]; then
--	step=1
--	LOOP=50
--fi
--
--for ((; ;))
+-for ((; ; ))
 -{
--	new_size=1
--	for ((i = 0; i < $LOOP; i++))
+-	for ((j = 0; j < $LOOP; j++))
 -	{
--		echo $new_size > "$TRACING_PATH"/buffer_size_kb
--		new_size=$(( $new_size + $step ))
--	}
--
--	for ((i = 0; i < $LOOP; i++))
--	{
--		new_size=$(( $new_size - $step ))
--		echo $new_size > "$TRACING_PATH"/buffer_size_kb
--	}
--
--	sleep 1
--}
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh
-new file mode 100755
-index 0000000..bd7dcc4
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_buffer_size_kb.sh
-@@ -0,0 +1,45 @@
-+#! /bin/sh
-+
-+###############################################################################
-+#                                                                             #
-+# Copyright (c) 2010 FUJITSU LIMITED                                          #
-+#                                                                             #
-+# This program is free software; you can redistribute it and/or modify it     #
-+# under the terms of the GNU General Public License as published by the Free  #
-+# Software Foundation; either version 2 of the License, or (at your option)   #
-+# any later version.                                                          #
-+#                                                                             #
-+# Author: Li Zefan <lizf@cn.fujitsu.com>                                      #
-+#                                                                             #
-+###############################################################################
-+
+-		num=`date +%N`
+-		num=`printf 1%s $num`
 +LOOP=200
+ 
+-		for ((i = 0; i < $NR_TRACE_OPTIONS; i++))
+-		{
+-			n=$(( ( $num >> $i ) % 2 ))
++while true; do
++	j=0;
++	while [ $j -lt $LOOP ]; do
++		trace_options="$(ls $TRACING_PATH/options/)"
++		# enable the nop_test_refuse can cause an
++		# 'write error: Invalid argument'. So don't test it.
++		trace_options="$(echo $trace_options | sed 's/test_nop_refuse//')"
++		nr_trace_options=$(echo "${trace_options}" | wc -w)
 +
-+# Use up to 10% of free memory
-+free_mem=`cat /proc/meminfo | grep '^MemFree' | awk '{ print $2 }'`
-+cpus=`tst_ncpus`
-+
-+step=$(( $free_mem / 10 / $LOOP / $cpus ))
-+
-+if [ $step -eq 0 ]; then
-+	step=1
-+	LOOP=50
-+fi
-+
-+for ((; ;))
-+{
-+	new_size=1
-+	for ((i = 0; i < $LOOP; i++))
-+	{
-+		echo $new_size > "$TRACING_PATH"/buffer_size_kb
-+		new_size=$(( $new_size + $step ))
-+	}
-+
-+	for ((i = 0; i < $LOOP; i++))
-+	{
-+		new_size=$(( $new_size - $step ))
-+		echo $new_size > "$TRACING_PATH"/buffer_size_kb
-+	}
-+
-+	sleep 1
-+}
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_function_profile_enabled.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_function_profile_enabled.sh
-new file mode 100755
-index 0000000..9c6162a
---- /dev/null
-+++ b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_function_profile_enabled.sh
-@@ -0,0 +1,50 @@
-+#! /bin/sh
-+
-+###############################################################################
-+#                                                                             #
-+# Copyright (c) 2010 FUJITSU LIMITED                                          #
-+#                                                                             #
-+# This program is free software; you can redistribute it and/or modify it     #
-+# under the terms of the GNU General Public License as published by the Free  #
-+# Software Foundation; either version 2 of the License, or (at your option)   #
-+# any later version.                                                          #
-+#                                                                             #
-+# Author: Li Zefan <lizf@cn.fujitsu.com>                                      #
-+#                                                                             #
-+###############################################################################
-+
-+MAX_LOOP=1500
-+count=0
-+
-+if [ ! -e "$TRACING_PATH"/function_profile_enabled ]; then
-+	should_skip=1
-+else
-+	should_skip=0
-+fi
-+
-+for ((; ;))
-+{
-+	if [ $should_skip -eq 1 ]; then
-+		sleep 2
-+		continue
-+	fi
-+
-+	count=$(( $count + 1 ))
-+
-+	for ((i = 0; i < $MAX_LOOP; i++))
-+	{
-+		echo 0 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
-+		echo 1 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
-+	}
-+
-+	enable=$(( $count % 3 ))
-+
-+	if [ $enable -eq 0 ]; then
-+		echo 1 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
-+	else
-+		echo 0 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
-+	fi
-+
-+	sleep 1
-+}
-+
-diff --git a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_profile_enabled.sh b/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_profile_enabled.sh
-deleted file mode 100755
-index 9c6162a..0000000
---- a/testcases/kernel/tracing/ftrace_test/ftrace_stress/ftrace_profile_enabled.sh
-+++ /dev/null
-@@ -1,50 +0,0 @@
--#! /bin/sh
--
--###############################################################################
--#                                                                             #
--# Copyright (c) 2010 FUJITSU LIMITED                                          #
--#                                                                             #
--# This program is free software; you can redistribute it and/or modify it     #
--# under the terms of the GNU General Public License as published by the Free  #
--# Software Foundation; either version 2 of the License, or (at your option)   #
--# any later version.                                                          #
--#                                                                             #
--# Author: Li Zefan <lizf@cn.fujitsu.com>                                      #
--#                                                                             #
--###############################################################################
--
--MAX_LOOP=1500
--count=0
--
--if [ ! -e "$TRACING_PATH"/function_profile_enabled ]; then
--	should_skip=1
--else
--	should_skip=0
--fi
--
--for ((; ;))
--{
--	if [ $should_skip -eq 1 ]; then
--		sleep 2
--		continue
--	fi
--
--	count=$(( $count + 1 ))
--
--	for ((i = 0; i < $MAX_LOOP; i++))
--	{
--		echo 0 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
--		echo 1 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
++		option_index=$(tst_random 1 $nr_trace_options)
++		option=$(echo "$trace_options" | awk "{print \$$option_index}")
++		i=0
++		while [ $i -lt $nr_trace_options ]; do
++			n=$(tst_random 0 1)
++			opt_f="$TRACING_PATH"/options/$option
++			ret_val=0
+ 			if [ $n -eq 0 ]; then
+-				echo 0 > "$TRACING_PATH"/options/${trace_options[$i]}
++				operation="setup"
+ 			else
+-				echo 1 > "$TRACING_PATH"/options/${trace_options[$i]}
++				operation="clear"
++			fi
++			# On old kernel, some trace option dirs
++			# won't be made if the option has nothing
++			# to do with the current tracer. But on newer
++			# kernel(4.4-rc1), all option dirs will be made.
++			# So here check it to avoid 'Permision denied'
++			if [ -f $opt_f ]; then
++				echo $n > $opt_f
++				ret_val=$?
+ 			fi
+-		}
 -	}
--
--	enable=$(( $count % 3 ))
--
--	if [ $enable -eq 0 ]; then
--		echo 1 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
--	else
--		echo 0 > "$TRACING_PATH"/function_profile_enabled 2> /dev/null
--	fi
 -
 -	sleep 1
 -}
--
+ 
++			if [ $ret_val -ne 0 ]; then
++				tst_resm TFAIL "$0: $operation trace option $option failed"
++			fi
++			i=$((i + 1))
++		done
++		j=$((j + 1))
++	done
++done
 -- 
 1.8.3.1
 
