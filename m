@@ -1,12 +1,12 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 May 2016 11:14:57 +0200
-Subject: [LTP] [PATCH 2/2] pause01: rewrite testcase
-In-Reply-To: <1517175101.1991600.1463044297830.JavaMail.zimbra@redhat.com>
-References: <b1cd0d1691b4d5416fdc34dd6b35dee1b7909a7c.1462968075.git.jstancek@redhat.com>
- <95ff9c04f7d84a25fc19697a20e96b870f3c65ca.1462968075.git.jstancek@redhat.com>
- <20160511132136.GE24701@rei.lan>
- <1517175101.1991600.1463044297830.JavaMail.zimbra@redhat.com>
-Message-ID: <20160512091456.GA31561@rei.lan>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 12 May 2016 14:09:50 +0300
+Subject: [LTP] [PATCH 2/4] memcg_process_stress: allocate memory not in
+ the signal handler
+In-Reply-To: <20160511143913.GH24701@rei.lan>
+References: <1461338590-1309-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1461338590-1309-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160511143913.GH24701@rei.lan>
+Message-ID: <5734647E.2040801@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,31 +14,84 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > > -static void go(int sig)
-> > > -{
-> > > -	(void)sig;
-> > > +	/*
-> > > +	 * TST_CHECKPOINT_WAIT has built-in timeout, if pause() doesn't return,
-> > > +	 * this checkpoint call will reliably end the test.
-> > > +	 */
-> > > +	TST_CHECKPOINT_WAIT(0);
-> > > +	SAFE_WAIT(&status);
-> > 
-> > Hmm, maybe it would be better if we add timeout logic to the new test
-> > library instead of adding it to selected few testcases.
-> 
-> I pushed it with all your suggestions, except for the timeout logic.
-> 
-> Did you have something specific in mind how to implement this?
-> My first thought was a new field to tst_test struct, and forking
-> a watchdog process.
 
-I was thinking of forking watchdog process for every test since you
-cannot really tell which testcases will block. Then have defined default
-timeout in the test library with possible override in the tst_test
-structure. But perhaps this is too heavy approach, I will have to
-measure how much will this slow down the test execution.
+On 05/11/2016 05:39 PM, Cyril Hrubis wrote:
+> Hi!
+>> -static void sigusr_handler(int __attribute__ ((unused)) signo)
+>> +static void alloc_memory(void)
+>>   {
+>>   	int i;
+>>   	int pagesize;
+>>
+>>   	pagesize = sysconf(_SC_PAGE_SIZE);
+>>
+>> -	nr_page = ceil((double)memsize / pagesize);
+>> +	nr_page = memsize / pagesize;
+>
+> This will cause to allocate one less page than the previous code in case
+> that memsize % pagesize != 0.
+>
+> ceil((double)memsize/pagesize) == (memsize + pagesize - 1)/pagesize
+>
+> In case that you want to avoid floating point.
+>
+>>   	pages = calloc(nr_page, sizeof(char *));
+>>   	if (pages == NULL)
+>> @@ -62,7 +54,18 @@ static void sigusr_handler(int __attribute__ ((unused)) signo)
+>>   		if (pages[i] == MAP_FAILED)
+>>   			err(1, "mmap");
+>>   	}
+>> +}
+>>
+>> +static void touch_memory(void)
+>> +{
+>> +	int i;
+>> +
+>> +	for (i = 0; i < nr_page; i++)
+>> +		pages[i][0] = 0xef;
+>> +}
+>> +
+>> +static void sigusr_handler(int __attribute__ ((unused)) signo)
+>> +{
+>>   	flag_ready = 1;
+>>   }
+>>
+>> @@ -76,6 +79,7 @@ int main(int argc, char *argv[])
+>>   	char *end;
+>>   	struct sigaction sigint_action;
+>>   	struct sigaction sigusr_action;
+>> +	int allocated = 0;
+>>
+>>   	if (argc != 3)
+>>   		errx(1, "wrong argument num");
+>> @@ -102,8 +106,14 @@ int main(int argc, char *argv[])
+>>   	while (!flag_exit) {
+>>   		sleep(interval);
+>>
+>> -		if (flag_ready)
+>> +		if (flag_ready) {
+>> +			if (!allocated) {
+>> +				alloc_memory();
+>> +				allocated = 1;
+>> +			}
+>> +
+>>   			touch_memory();
+>> +		}
+>>   	}
+>
+>
+> We can do even better if we change the sleep() for pause().
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thank you for the review. I agree with all other comments to this 
+series, except this one.
+
+I'd keep sleep() here, because it allows the process to perform a series 
+of touch_memory() invocations before it receives the final SIGINT signal.
+
+
+
+>
+>>   	return 0;
+>
+> Otherwise it looks good.
+>
