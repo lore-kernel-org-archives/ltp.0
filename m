@@ -1,7 +1,10 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 12 May 2016 15:18:13 +0800
-Subject: [LTP] [PATCH 1/2] syscalls/pipe01: Cleanup && convert to new API.
-Message-ID: <1463037494-7284-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Thu, 12 May 2016 15:18:14 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/fanotify*: Cleanup && fix compiler
+	warnings
+In-Reply-To: <1463037494-7284-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1463037494-7284-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1463037494-7284-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,215 +13,188 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/pipe/pipe01.c | 170 +++++++++++---------------------
- 1 file changed, 56 insertions(+), 114 deletions(-)
+ testcases/kernel/syscalls/fanotify/fanotify.h   | 57 -------------------------
+ testcases/kernel/syscalls/fanotify/fanotify01.c |  4 +-
+ testcases/kernel/syscalls/fanotify/fanotify02.c |  1 -
+ testcases/kernel/syscalls/fanotify/fanotify03.c |  3 +-
+ testcases/kernel/syscalls/fanotify/fanotify04.c |  5 +--
+ testcases/kernel/syscalls/fanotify/fanotify05.c |  1 -
+ testcases/kernel/syscalls/fanotify/fanotify06.c |  1 -
+ 7 files changed, 5 insertions(+), 67 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/fanotify/fanotify.h
 
-diff --git a/testcases/kernel/syscalls/pipe/pipe01.c b/testcases/kernel/syscalls/pipe/pipe01.c
-index 18cda6f..36902be 100644
---- a/testcases/kernel/syscalls/pipe/pipe01.c
-+++ b/testcases/kernel/syscalls/pipe/pipe01.c
-@@ -1,145 +1,87 @@
- /*
-+ * Copyright (c) International Business Machines Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-+ * General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify.h b/testcases/kernel/syscalls/fanotify/fanotify.h
+deleted file mode 100644
+index 518d05e..0000000
+--- a/testcases/kernel/syscalls/fanotify/fanotify.h
++++ /dev/null
+@@ -1,57 +0,0 @@
+-/*
+- * fanotify testcase common definitions.
 - *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
-  */
- 
- /*
-- * NAME
-- *	pipe01.c
+- * Copyright (c) 2012 Linux Test Project.  All Rights Reserved.
 - *
-- * DESCRIPTION
-- *	Testcase to check the basic functionality of the pipe(2) syscall:
-- *	Check that both ends of the pipe (both file descriptors) are
-- *	available to a process opening the pipe.
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms of version 2 of the GNU General Public License as
+- * published by the Free Software Foundation.
 - *
-- * ALGORITHM
-- *	Write a string of characters down a pipe; read the string from the
-- *	other file descriptor. Test passes if both can be done, as reported
-- *	by the number of characters written and read.
+- * This program is distributed in the hope that it would be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 - *
-- * USAGE:  <for command-line>
-- *  pipe01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
+- * Further, this software is distributed without any warranty that it is
+- * free of the rightful claim of any third person regarding infringement
+- * or the like.  Any license provided herein, whether implied or
+- * otherwise, applies only to this software file.  Patent licenses, if
+- * any, provided herein do not apply to combinations of this program with
+- * other software, or any other product whatsoever.
 - *
-- * RESTRICITONS
-- *	NONE
-+ * Basic test for pipe().
-  */
--#include <unistd.h>
-+
- #include <errno.h>
- #include <string.h>
--#include "test.h"
+- * You should have received a copy of the GNU General Public License along
+- * with this program; if not, write the Free Software Foundation, Inc.,
+- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+- *
+- * Jan Kara, November 2013
+- */
 -
--char *TCID = "pipe01";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
--void setup(void);
--void cleanup(void);
-+#define SIZE	27
- 
--ssize_t do_read(int fd, void *buf, size_t count)
+-#ifndef	__FANOTIFY_H__
+-#define	__FANOTIFY_H__
+-
+-#include "config.h"
+-
+-#if defined(HAVE_SYS_FANOTIFY_H)
+-
+-#include <sys/fanotify.h>
+-
+-#else /* HAVE_SYS_FANOTIFY_H */
+-
+-/* fanotify(7) wrappers */
+-
+-#include <stdint.h>
+-#include "linux_syscall_numbers.h"
+-
+-static int fanotify_init(unsigned int flags, unsigned int event_f_flags)
 -{
--	ssize_t n;
--
--	do {
--		n = read(fd, buf, count);
--	} while (n < 0 && errno == EINTR);
--
--	return n;
+-	return syscall(__NR_fanotify_init, flags, event_f_flags);
 -}
-+static int fildes[2];
-+static char wrbuf[SIZE], rebuf[SIZE];
- 
--int main(int ac, char **av)
-+static void verify_pipe(void)
- {
--	int lc;
 -
--	int fildes[2];		/* fds for pipe read and write */
--	char wrbuf[BUFSIZ], rebuf[BUFSIZ];
--	int red, written;	/* no. of chars read/written to pipe */
--	int greater, length;
+-static long fanotify_mark(int fd, unsigned int flags, uint64_t mask,
+-                     int dfd, const char *pathname)
+-{
+-	return syscall(__NR_fanotify_mark, fd, flags, mask, dfd, pathname);
+-}
 -
--	tst_parse_opts(ac, av, NULL, NULL);
+-#endif /* HAVE_SYS_FANOTIFY_H */
 -
--	setup();
-+	int red, written;
+-#endif /* __FANOTIFY_H__ */
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify01.c b/testcases/kernel/syscalls/fanotify/fanotify01.c
+index fb0f6eb..24e702a 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify01.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify01.c
+@@ -37,7 +37,6 @@
+ #include <sys/syscall.h>
+ #include "test.h"
+ #include "linux_syscall_numbers.h"
+-#include "fanotify.h"
+ #include "safe_macros.h"
  
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
-+	strcpy(rebuf, "00000000000000000000000000");
+ char *TCID = "fanotify01";
+@@ -73,7 +72,8 @@ int main(int ac, char **av)
+ 	setup();
  
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
-+	TEST(pipe(fildes));
+ 	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		int ret, len, i = 0, test_num = 0;
++		int len, i = 0, test_num = 0;
++		unsigned int ret;
  
--		TEST(pipe(fildes));
--
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "pipe() failed unexpectedly - errno %d",
--				 TEST_ERRNO);
--			continue;
--		}
--
--		strcpy(wrbuf, "abcdefghijklmnopqrstuvwxyz");
--		length = strlen(wrbuf);
-+	if (TEST_RETURN == -1) {
-+		tst_res(TFAIL, "pipe() failed unexpectedly - errno %d",
-+			 TEST_ERRNO);
-+		return;
-+	}
+ 		tst_count = 0;
  
--		if ((written = write(fildes[1], wrbuf, length)) == -1) {
--			tst_brkm(TBROK, cleanup, "write() failed");
--		}
-+	written = SAFE_WRITE(1, fildes[1], wrbuf, strlen(wrbuf));
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify02.c b/testcases/kernel/syscalls/fanotify/fanotify02.c
+index 5de49f2..997d806 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify02.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify02.c
+@@ -37,7 +37,6 @@
+ #include <sys/syscall.h>
+ #include "test.h"
+ #include "linux_syscall_numbers.h"
+-#include "fanotify.h"
+ #include "safe_macros.h"
  
--		if (written < 0 || written > 26) {
--			tst_resm(TFAIL, "Condition #1 test failed");
--			continue;
--		}
-+	if (written < 0 || written > 26) {
-+		tst_res(TFAIL, "Condition #1 test failed");
-+		return;
-+	}
+ char *TCID = "fanotify02";
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify03.c b/testcases/kernel/syscalls/fanotify/fanotify03.c
+index 8310198..ab26ed5 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify03.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify03.c
+@@ -40,7 +40,6 @@
+ #include <sys/syscall.h>
+ #include "test.h"
+ #include "linux_syscall_numbers.h"
+-#include "fanotify.h"
+ #include "safe_macros.h"
  
--		if ((red = do_read(fildes[0], rebuf, written)) == -1) {
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "read() failed");
--		}
-+	red = SAFE_READ(1, fildes[0], rebuf, written);
- 
--		if (red < 0 || red > written) {
--			tst_resm(TFAIL, "Condition #2 test failed");
--			continue;
--		}
-+	if (red < 0 || red > written) {
-+		tst_res(TFAIL, "Condition #2 test failed");
-+		return;
-+	}
- 
--		/* are the strings written and read equal */
--		if ((greater = strncmp(rebuf, wrbuf, red)) != 0) {
--			tst_resm(TFAIL, "Condition #3 test failed");
--			continue;
--		}
--		tst_resm(TPASS, "pipe() functionality is correct");
-+	if ((strncmp(rebuf, wrbuf, red)) != 0) {
-+		tst_res(TFAIL, "Condition #3 test failed");
-+		return;
- 	}
- 
--	cleanup();
--	tst_exit();
-+	tst_res(TPASS, "pipe() functionality is correct");
+ char *TCID = "fanotify03";
+@@ -90,7 +89,7 @@ static void generate_events(void)
+ 		exit(4);
  }
  
--/*
-- * setup() - performs all ONE TIME setup for this test.
-- */
--void setup(void)
-+static void setup(void)
+-static void child_handler(int tmp)
++static void child_handler(int tmp LTP_ATTRIBUTE_UNUSED)
  {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
-+	strcpy(wrbuf, "abcdefghijklmnopqrstuvwxyz");
+ 	/*
+ 	 * Close notification fd so that we cannot block while reading
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify04.c b/testcases/kernel/syscalls/fanotify/fanotify04.c
+index 9451be3..c92718d 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify04.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify04.c
+@@ -38,7 +38,6 @@
+ #include <sys/syscall.h>
+ #include "test.h"
+ #include "linux_syscall_numbers.h"
+-#include "fanotify.h"
+ #include "safe_macros.h"
+ 
+ char *TCID = "fanotify04";
+@@ -111,7 +110,7 @@ static void check_mark(char *file, unsigned long long flag, char *flagstr,
+ 
+ #define CHECK_MARK(file, flag, expect, func) check_mark(file, flag, #flag, expect, func)
+ 
+-static void do_open(char *file, int flag, char *flagstr)
++static void do_open(char *file, int flag, char *flagstr LTP_ATTRIBUTE_UNUSED)
+ {
+ 	int fd;
+ 
+@@ -131,7 +130,7 @@ static void open_dir(char *file)
+ 	DO_OPEN(file, O_DIRECTORY);
  }
  
--/*
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *	       completion or premature exit.
-- */
--void cleanup(void)
-+static void cleanup(void)
+-static void verify_event(int mask)
++static void verify_event(unsigned int mask)
  {
-+	if (fildes[0] > 0 && close(fildes[0]))
-+		tst_res(TWARN | TERRNO, "Failed to close file");
-+
-+	if (fildes[1] > 0 && close(fildes[1]))
-+		tst_res(TWARN | TERRNO, "Failed to close file");
- }
-+
-+static struct tst_test test = {
-+	.tid = "pipe01",
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_pipe,
-+	.needs_tmpdir = 1,
-+};
+ 	int ret;
+ 	struct fanotify_event_metadata *event;
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify05.c b/testcases/kernel/syscalls/fanotify/fanotify05.c
+index 517bd26..4cd162c 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify05.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify05.c
+@@ -36,7 +36,6 @@
+ #include <sys/syscall.h>
+ #include "test.h"
+ #include "linux_syscall_numbers.h"
+-#include "fanotify.h"
+ #include "safe_macros.h"
+ 
+ char *TCID = "fanotify05";
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanotify/fanotify06.c
+index 93c9602..e8b1652 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify06.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
+@@ -45,7 +45,6 @@
+ #include <sys/syscall.h>
+ #include "test.h"
+ #include "linux_syscall_numbers.h"
+-#include "fanotify.h"
+ #include "safe_macros.h"
+ 
+ char *TCID = "fanotify06";
 -- 
 1.8.3.1
 
