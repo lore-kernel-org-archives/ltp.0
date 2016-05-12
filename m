@@ -1,13 +1,7 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 May 2016 17:07:29 +0200
-Subject: [LTP] [PATCH] waitpid/waitpid10: break test if fork failed
-In-Reply-To: <20160425074146.GK17476@localhost.localdomain>
-References: <20160413071111.GA26897@localhost.localdomain>
- <20160413123625.GD10941@rei.lan>
- <20160414053923.GH17476@localhost.localdomain>
- <20160419130712.GA21282@rei.lan>
- <20160425074146.GK17476@localhost.localdomain>
-Message-ID: <20160512150729.GA1372@rei>
+Date: Thu, 12 May 2016 18:36:35 +0200
+Subject: [LTP] LTP uClinux support
+Message-ID: <20160512163634.GB1372@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,17 +9,36 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Thanks. Please have a look at this new patch. Thanks in advance.
+I've started to investigate how to wire up the UCLINUX support to the
+new test library however instead I've found that LTP support for UCLINUX
+has been broken for some time without anybody noticing.
 
-I've did a few more changes to the test and pushed, thanks.
+First of all LTP fails to compile with ./configure CFLAGS=-DUCLINUX
+which has been firstly introduced about two years ago while cleaning up
+testcases. There are 6 testcases that break compilation and while the
+problems are easy to fix nobody has reported them so far.
 
-For instance I've removed the timing parameter since without the alarm
-interrupting the test prematurely the test runs for at lest 15 seconds
-anyway so the 5 seconds parameter is ignored. And I did that for all
-runtest files not just syscalls, etc.
+And even if I skip testcases that does not compile the rest that does
+FORK_OR_VFORK() fails in self_exec.c which seems to be due to:
 
-I will also follow up with changing the test to use chekpoints instead
-of sleeping for 15 seconds fruitlessly.
+commit c414040fa5f53e353f25c6d5d550dc42a62d32f7
+Author: Manjeet Pawar <manjeet.p@samsung.com>
+Date:   Thu May 28 04:41:36 2015 +0000
+
+    lib/self_exec.c: Fix leaks and remove redundant code
+
+    This patch free args before returning from function to avoid
+    memory leaks and remove redundant code in self_exec().
+
+
+That frees allocated pointer just before part of it is used (since the
+string is parsed with strtok()).
+
+So unless somebody stands up to regulary test and fix/report bugs for
+-DUCLINUX I would wote for removing the support from LTP.
+
+So is there anybody interested in continued uClinux support in LTP,
+especially somebody from the uClinux mailing list?
 
 -- 
 Cyril Hrubis
