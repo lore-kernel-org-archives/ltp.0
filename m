@@ -1,13 +1,10 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 12 May 2016 16:49:53 +0800
-Subject: [LTP] [PATCH 6/6] syscalls/madvise06: Convert to new test API
-In-Reply-To: <1463042993-398-5-git-send-email-liwang@redhat.com>
+Date: Thu, 12 May 2016 16:49:50 +0800
+Subject: [LTP] [PATCH 3/6] syscalls/madvise03: Convert to new test API
+In-Reply-To: <1463042993-398-2-git-send-email-liwang@redhat.com>
 References: <1463042993-398-1-git-send-email-liwang@redhat.com>
  <1463042993-398-2-git-send-email-liwang@redhat.com>
- <1463042993-398-3-git-send-email-liwang@redhat.com>
- <1463042993-398-4-git-send-email-liwang@redhat.com>
- <1463042993-398-5-git-send-email-liwang@redhat.com>
-Message-ID: <1463042993-398-6-git-send-email-liwang@redhat.com>
+Message-ID: <1463042993-398-3-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,143 +13,243 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/syscalls/madvise/madvise06.c | 64 +++++++++------------------
- 1 file changed, 21 insertions(+), 43 deletions(-)
+ testcases/kernel/syscalls/madvise/madvise03.c | 186 +++++++++++---------------
+ 1 file changed, 78 insertions(+), 108 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
-index 366827c..6b081fd 100644
---- a/testcases/kernel/syscalls/madvise/madvise06.c
-+++ b/testcases/kernel/syscalls/madvise/madvise06.c
-@@ -33,39 +33,15 @@
-  *       mm: madvise: fix MADV_WILLNEED on shmem swapouts
-  */
+diff --git a/testcases/kernel/syscalls/madvise/madvise03.c b/testcases/kernel/syscalls/madvise/madvise03.c
+index 3da2bb2..b414e89 100644
+--- a/testcases/kernel/syscalls/madvise/madvise03.c
++++ b/testcases/kernel/syscalls/madvise/madvise03.c
+@@ -32,151 +32,121 @@
+ #include <string.h>
+ #include <unistd.h>
  
--#include <stdio.h>
- #include <errno.h>
- #include <sys/sysinfo.h>
--
 -#include "test.h"
--#include "safe_macros.h"
 -
--char *TCID = "madvise06";
--int TST_TOTAL = 1;
+-char *TCID = "madvise03";
 +#include "tst_test.h"
  
- #define GB_SZ  (1024*1024*1024)
+ #ifdef MADV_REMOVE
  
- static long dst_max;
- static int pg_sz;
- 
+-int TST_TOTAL = 3;
+-
 -static void setup(void);
--static int  get_page_fault_num(void);
--static void test_advice_willneed(void);
--
+-static void cleanup(void);
+-static void check_and_print(char *advice);
+-static long get_shmmax(void);
+ 
++static char filename[64];
+ static int shmid1;
+ 
 -int main(int argc, char *argv[])
--{
--	int lc;
--
++static void setup(void)
++{
++	sprintf(filename, "madvise03.%d", getpid());
++}
++
++static void check_and_print(char *advice)
++{
++	if (TEST_RETURN == -1) {
++		if (TEST_ERRNO == ENOTSUP && !strcmp(advice, "MADV_REMOVE")) {
++			tst_res(TCONF, "madvise MADV_REMOVE returned ENOTSUP"
++				 " CONFIG_TMPFS=y not in kernel .config?");
++			return;
++		}
++		tst_res(TFAIL,
++			 "madvise test for %s failed with "
++			 "return = %ld, errno = %d : %s",
++			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
++	} else {
++		tst_res(TPASS, "madvise test for %s PASSED", advice);
++	}
++}
++
++static long get_shmmax(void)
++{
++	long maxsize;
++
++	SAFE_FILE_SCANF("/proc/sys/kernel/shmmax", "%ld", &maxsize);
++
++	return maxsize;
++}
++
++static void verify_madvise(void)
+ {
+-	int lc, fd;
+-	int i;
++	int i, fd;
+ 	char *file = NULL;
+ 	struct stat stat;
+ 	void *addr1;
+ 	long shm_size = 0;
+-	char filename[64];
+-	char *progname = NULL;
+ 	char *str_for_file = "abcdefghijklmnopqrstuvwxyz12345\n";
+ 
 -	tst_parse_opts(argc, argv, NULL, NULL);
 -
 -	setup();
 -
--	for (lc = 0; TEST_LOOPING(lc); lc++)
--		test_advice_willneed();
+-	progname = *argv;
+-	sprintf(filename, "%s-out.%d", progname, getpid());
 -
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		fd = open(filename, O_RDWR | O_CREAT, 0664);
+-		if (fd < 0)
+-			tst_brkm(TBROK, cleanup, "open failed");
++	fd = open(filename, O_RDWR | O_CREAT, 0664);
++	if (fd < 0)
++		tst_brk(TBROK, "open failed");
+ #ifdef DEBUG
+-		tst_resm(TINFO, "filename = %s opened successfully", filename);
++	tst_res(TINFO, "filename = %s opened successfully", filename);
+ #endif
+ 
+-		/* Writing 40 KB of random data into this file
+-		   [32 * 1280 = 40960] */
+-		for (i = 0; i < 1280; i++)
+-			if (write(fd, str_for_file, strlen(str_for_file)) == -1)
+-				tst_brkm(TBROK | TERRNO, cleanup,
+-					 "write failed");
++	/* Writing 40 KB of random data into this file
++	   [32 * 1280 = 40960] */
++	for (i = 0; i < 1280; i++)
++		if (write(fd, str_for_file, strlen(str_for_file)) == -1)
++			tst_brk(TBROK | TERRNO, "write failed");
+ 
+-		if (fstat(fd, &stat) == -1)
+-			tst_brkm(TBROK, cleanup, "fstat failed");
++	if (fstat(fd, &stat) == -1)
++		tst_brk(TBROK, "fstat failed");
+ 
+-		file = mmap(NULL, stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
+-		if (file == MAP_FAILED)
+-			tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
++	file = SAFE_MMAP(NULL, stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
+ 
+-		/* Allocate shared memory segment */
+-		shm_size = get_shmmax();
++	/* Allocate shared memory segment */
++	shm_size = get_shmmax();
+ 
+ #define min(a, b) ((a) < (b) ? @ : (b))
+-		shmid1 = shmget(IPC_PRIVATE, min(1024 * 1024, shm_size),
+-				IPC_CREAT | IPC_EXCL | 0701);
+-		if (shmid1 == -1)
+-			tst_brkm(TBROK, cleanup, "shmget failed");
++	shmid1 = shmget(IPC_PRIVATE, min(1024 * 1024, shm_size),
++			IPC_CREAT | IPC_EXCL | 0701);
++	if (shmid1 == -1)
++		tst_brk(TBROK, "shmget failed");
+ 
+-		/* Attach shared memory segment to an address selected by the system */
+-		addr1 = shmat(shmid1, NULL, 0);
+-		if (addr1 == (void *)-1)
+-			tst_brkm(TBROK, cleanup, "shmat error");
++	/* Attach shared memory segment to an address selected by the system */
++	addr1 = shmat(shmid1, NULL, 0);
++	if (addr1 == (void *)-1)
++		tst_brk(TBROK, "shmat error");
+ 
+-		/* (1) Test case for MADV_REMOVE */
+-		TEST(madvise(addr1, 4096, MADV_REMOVE));
+-		check_and_print("MADV_REMOVE");
++	/* (1) Test case for MADV_REMOVE */
++	TEST(madvise(addr1, 4096, MADV_REMOVE));
++	check_and_print("MADV_REMOVE");
+ 
+-		/* (2) Test case for MADV_DONTFORK */
+-		TEST(madvise(file, (stat.st_size / 2), MADV_DONTFORK));
+-		check_and_print("MADV_DONTFORK");
++	/* (2) Test case for MADV_DONTFORK */
++	TEST(madvise(file, (stat.st_size / 2), MADV_DONTFORK));
++	check_and_print("MADV_DONTFORK");
+ 
+-		/* (3) Test case for MADV_DOFORK */
+-		TEST(madvise(file, (stat.st_size / 2), MADV_DOFORK));
+-		check_and_print("MADV_DOFORK");
++	/* (3) Test case for MADV_DOFORK */
++	TEST(madvise(file, (stat.st_size / 2), MADV_DOFORK));
++	check_and_print("MADV_DOFORK");
+ 
+-		/* Finally Unmapping the whole file */
+-		if (munmap(file, stat.st_size) < 0)
+-			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
++	/* Finally Unmapping the whole file */
++	SAFE_MUNMAP(file, stat.st_size);
+ 
+-		close(fd);
+-	}
+-
+-	cleanup();
 -	tst_exit();
 -}
 -
- static void setup(void)
- {
- 	struct sysinfo sys_buf;
-@@ -73,25 +49,21 @@ static void setup(void)
- 	sysinfo(&sys_buf);
- 
- 	if (sys_buf.totalram < 2L * GB_SZ)
--		tst_brkm(TCONF, NULL, "Test requires more than 2GB of RAM");
-+		tst_brk(TCONF, "Test requires more than 2GB of RAM");
- 	if (sys_buf.totalram > 100L * GB_SZ)
--		tst_brkm(TCONF, NULL, "System RAM is too large, skip test");
-+		tst_brk(TCONF, "System RAM is too large, skip test");
- 
- 	dst_max = sys_buf.totalram / GB_SZ;
--	tst_resm(TINFO, "dst_max = %ld", dst_max);
-+	tst_res(TINFO, "dst_max = %ld", dst_max);
- 
- 	pg_sz = getpagesize();
+-static void setup(void)
+-{
 -
--	tst_sig(NOFORK, DEF_HANDLER, NULL);
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
+-
+-	tst_tmpdir();
++	close(fd);
  }
  
- static int get_page_fault_num(void)
+ static void cleanup(void)
  {
- 	int pg;
- 
--	SAFE_FILE_SCANF(NULL, "/proc/self/stat",
-+	SAFE_FILE_SCANF("/proc/self/stat",
- 			"%*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %*s %d",
- 			&pg);
- 
-@@ -107,13 +79,13 @@ static void test_advice_willneed(void)
- 	int page_fault_num_2;
- 
- 	/* allocate source memory (1GB only) */
--	src = SAFE_MMAP(NULL, NULL, 1 * GB_SZ, PROT_READ | PROT_WRITE,
-+	src = SAFE_MMAP(NULL, 1 * GB_SZ, PROT_READ | PROT_WRITE,
- 			MAP_SHARED | MAP_ANONYMOUS,
- 			-1, 0);
- 
- 	/* allocate destination memory (array) */
- 	for (i = 0; i < dst_max; ++i)
--		dst[i] = SAFE_MMAP(NULL, NULL, 1 * GB_SZ,
-+		dst[i] = SAFE_MMAP(NULL, 1 * GB_SZ,
- 				PROT_READ | PROT_WRITE,
- 				MAP_SHARED | MAP_ANONYMOUS,
- 				-1, 0);
-@@ -122,28 +94,34 @@ static void test_advice_willneed(void)
- 	for (i = 0; i < dst_max; ++i)
- 		memmove(dst[i], src, 1 * GB_SZ);
- 
--	tst_resm(TINFO, "PageFault(no madvice): %d", get_page_fault_num());
-+	tst_res(TINFO, "PageFault(no madvice): %d", get_page_fault_num());
- 
- 	/* Do madvice() to dst[0] */
- 	TEST(madvise(dst[0], pg_sz, MADV_WILLNEED));
- 	if (TEST_RETURN == -1)
--		tst_brkm(TBROK | TERRNO, NULL, "madvise failed");
-+		tst_brk(TBROK | TERRNO, "madvise failed");
- 
- 	page_fault_num_1 = get_page_fault_num();
--	tst_resm(TINFO, "PageFault(madvice / no mem access): %d",
-+	tst_res(TINFO, "PageFault(madvice / no mem access): %d",
- 			page_fault_num_1);
- 
- 	*dst[0] = 'a';
- 	page_fault_num_2 = get_page_fault_num();
--	tst_resm(TINFO, "PageFault(madvice / mem access): %d",
-+	tst_res(TINFO, "PageFault(madvice / mem access): %d",
- 			page_fault_num_2);
- 
- 	if (page_fault_num_1 != page_fault_num_2)
--		tst_resm(TFAIL, "Bug has been reproduced");
-+		tst_res(TFAIL, "Bug has been reproduced");
- 	else
--		tst_resm(TPASS, "Regression test pass");
-+		tst_res(TPASS, "Regression test pass");
- 
--	SAFE_MUNMAP(NULL, src, 1 * GB_SZ);
-+	SAFE_MUNMAP(src, 1 * GB_SZ);
- 	for (i = 0; i < dst_max; ++i)
--		SAFE_MUNMAP(NULL, dst[i], 1 * GB_SZ);
-+		SAFE_MUNMAP(dst[i], 1 * GB_SZ);
+ 	if (shmid1 != -1)
+ 		if (shmctl(shmid1, IPC_RMID, 0) < 0)
+-			tst_resm(TBROK | TERRNO,
++			tst_res(TBROK | TERRNO,
+ 				 "shmctl(.., IPC_RMID, ..) failed");
+-
+-	tst_rmdir();
+-}
+-
+-static void check_and_print(char *advice)
+-{
+-	if (TEST_RETURN == -1) {
+-		if (TEST_ERRNO == ENOTSUP && !strcmp(advice, "MADV_REMOVE")) {
+-			tst_resm(TCONF, "madvise MADV_REMOVE returned ENOTSUP"
+-				 " CONFIG_TMPFS=y not in kernel .config?");
+-			return;
+-		}
+-		tst_resm(TFAIL,
+-			 "madvise test for %s failed with "
+-			 "return = %ld, errno = %d : %s",
+-			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
+-	} else {
+-		tst_resm(TPASS, "madvise test for %s PASSED", advice);
+-	}
  }
-+
+ 
+-static long get_shmmax(void)
+-{
+-	long maxsize;
+-
+-	SAFE_FILE_SCANF(cleanup, "/proc/sys/kernel/shmmax", "%ld", &maxsize);
 +static struct tst_test test = {
-+	.tid = "madvice06",
-+	.test_all = test_advice_willneed,
++	.tid = "madvise03",
++	.test_all = verify_madvise,
++	.needs_tmpdir = 1,
 +	.setup = setup,
++	.cleanup = cleanup,
 +};
+ 
+-	return maxsize;
+-}
+ #else
+-int main(void)
+-{
+ 	/* "Requires 2.6.16+" were the original comments */
+-	tst_brkm(TCONF, NULL,
+-		 "this system doesn't have required madvise support");
+-}
++	TST_TEST_TCONF("this system doesn't have required madvise support");
+ #endif
 -- 
 1.8.3.1
 
