@@ -1,47 +1,144 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 16 May 2016 16:57:31 +0300
-Subject: [LTP] [RFC][PATCH 1/3] network: run network tests from
-	network.sh
-In-Reply-To: <20160516124711.GD6454@rei.lan>
-References: <1462869965-25841-1-git-send-email-alexey.kodanev@oracle.com>
- <20160516123103.GC6454@rei.lan> <20160516124711.GD6454@rei.lan>
-Message-ID: <5739D1CB.6010500@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 16 May 2016 16:05:25 +0200
+Subject: [LTP] [PATCH 2/2] commands/passwd: Added new testcase to test
+ passwd
+In-Reply-To: <1462875541-7474-2-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1462875541-7474-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1462875541-7474-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160516140525.GB6959@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 05/16/2016 03:47 PM, Cyril Hrubis wrote:
-> Hi!
->> This does not say what is the reason for this change.
->>
->> How is this better than runing runtest files from runltp?
->>
->> You supposedly define a few variables in the script that starts the
->> testcases rather than having a common script that is sourced at the
->> start of the network testcases. Is there any other thing I'm missing?
-> Looking into the networkstress.sh and networktest.sh it starts ltp-pan
-> itself as well. So this more or less copies the functionality from there
-> to network.sh.
+Hi!
+> +passwd_test()
+> +{
+> +	local opt=`echo "$2" | awk -F ' ' '{print $1}'`
+> +	local value=`echo "$2" | awk -F ' ' '{print $2}'`
 
-Yeah, just making the one as I don't see the point of having two,
-almost equal, scripts.
+This is ugly, why don't you just pass the option and value separately?
 
->
-> I would say that the defaults for variables should not be defined in the
-> script that runs selected (subset of) tests. That is because it should
-> be possible to run just the test script and expect it to have the same
-> defaults as when it's executed via the script. Why don't we stick the
-> defaults to test_net.sh and keep just the code that selects testcases
-> to run and start ltp-pan in the network.sh?
->
+I.e.
 
-Agree, we can do that, there will be no difference when running them from
-network.sh, and it will be possible to run tests individually with already
-pre-defined default variables.
+...
+passwd_test "passwd" "-n" "1" "ltp_test"
+...
+passwd_test "passwd" "-d" "" "ltp_test"
 
-Thanks,
-Alexey
+> +	local name=$3
+> +	local pw_cmd="$1 $2 $3"
+> +
+> +	eval $pw_cmd > temp 2>&1
+> +	if [ $? -ne 0 ]; then
+> +		grep -q -E "unrecognized option|invalid option|unknown option" temp
+> +		if [ $? -eq 0 ]; then
+> +			tst_resm TCONF "$pw_cmd not supported"
+> +		else
+> +			tst_resm TFAIL "$pw_cmd failed"
+> +		fi
+> +		return
+> +	fi
+> +
+> +	if [ "$name" != "" ]; then
+> +		local pw=`grep "$name" /etc/shadow | awk -F ':' '{print $2}'`
+> +		local mod=`grep "$name" /etc/shadow | awk -F ':' '{print $3}'`
+> +		local min=`grep "$name" /etc/shadow | awk -F ':' '{print $4}'`
+> +		local max=`grep "$name" /etc/shadow | awk -F ':' '{print $5}'`
+> +		local war=`grep "$name" /etc/shadow | awk -F ':' '{print $6}'`
+> +		local ina=`grep "$name" /etc/shadow | awk -F ':' '{print $7}'`
+> +	fi
 
+Hmm, I do not think that parsing /etc/shadow here is a good idea. As
+this only asserts that the configuration file was changed rather than
+testing if the system does what it should do.
+
+For instance we should rather check that we can login without password
+after password was deleted with -d.
+
+We should check that password we cannot login at all if account was
+locked, etc.
+
+> +	case $opt in
+> +		-d|--delete)
+> +			if [ "$pw" != "" ]; then
+> +				tst_resm TFAIL "passwd failed with $opt option."
+> +				return
+> +			fi
+> +			;;
+> +		-l|--lock)
+> +			echo "$pw" | grep -q "!!" > temp 2>&1
+> +			if [ $? -ne 0 ]; then
+> +				tst_resm TFAIL "passwd failed with $opt option."
+> +				return
+> +			fi
+> +			;;
+> +		-u|--unlock)
+> +			echo "$pw" | grep -q "!!" > temp 2>&1
+> +			if [ $? -eq 0 ]; then
+> +				tst_resm TFAIL "passwd failed with $opt option."
+> +				return
+> +			fi
+> +			;;
+> +		-n|--minimum)
+> +			if [ $min -ne $value ]; then
+> +				tst_resm TFAIL "passwd failed with $opt option."
+> +				return
+> +			fi
+> +			;;
+> +		-x|--maximum)
+> +			if [ $max -ne $value ]; then
+> +				tst_resm TFAIL "passwd failed with $opt option."
+> +				return
+> +			fi
+> +			;;
+> +		-w|--warning)
+> +			if [ $war -ne $value ]; then
+> +				tst_resm TFAIL "passwd failed with $opt option."
+> +				return
+> +			fi
+> +			;;
+> +		-i|--inactive)
+> +			if [ $ina -ne $value ]; then
+> +				tst_resm TFAIL "passwd failed with $opt option."
+> +				return
+> +			fi
+> +			;;
+> +		-e|--expire)
+> +			if [ $mod -ne 0 ]; then
+> +				tst_resm TFAIL "passwd failed with $opt option."
+> +				return
+> +			fi
+> +			;;
+> +	esac
+
+This is ugly, why don't we rather write a function for each check and
+pass it as a parameter to the passwd_test.
+
+i.e.
+
+check_passwordless()
+{
+	...
+}
+
+passwd_test "passwd" "-d" "" ltp_test check_passwordless
+
+and call it from the passwd_test as:
+
+...
+	local check="$4"
+
+...
+
+	if [ -n "$check" ]; then
+		$check
+	else
+		tst_resm TPASS "passwd passed with $opt option."
+	fi
+}
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
