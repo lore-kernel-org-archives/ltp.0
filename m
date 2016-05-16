@@ -1,45 +1,61 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 May 2016 18:36:35 +0200
-Subject: [LTP] LTP uClinux support
-Message-ID: <20160512163634.GB1372@rei>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 16 May 2016 11:19:49 +0800
+Subject: [LTP] [PATCH] syscalls/access01: Fix the test to run both under
+	nobody and root
+Message-ID: <1463368789-1403-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I've started to investigate how to wire up the UCLINUX support to the
-new test library however instead I've found that LTP support for UCLINUX
-has been broken for some time without anybody noticing.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/access/access01.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-First of all LTP fails to compile with ./configure CFLAGS=-DUCLINUX
-which has been firstly introduced about two years ago while cleaning up
-testcases. There are 6 testcases that break compilation and while the
-problems are easy to fix nobody has reported them so far.
-
-And even if I skip testcases that does not compile the rest that does
-FORK_OR_VFORK() fails in self_exec.c which seems to be due to:
-
-commit c414040fa5f53e353f25c6d5d550dc42a62d32f7
-Author: Manjeet Pawar <manjeet.p@samsung.com>
-Date:   Thu May 28 04:41:36 2015 +0000
-
-    lib/self_exec.c: Fix leaks and remove redundant code
-
-    This patch free args before returning from function to avoid
-    memory leaks and remove redundant code in self_exec().
-
-
-That frees allocated pointer just before part of it is used (since the
-string is parsed with strtok()).
-
-So unless somebody stands up to regulary test and fix/report bugs for
--DUCLINUX I would wote for removing the support from LTP.
-
-So is there anybody interested in continued uClinux support in LTP,
-especially somebody from the uClinux mailing list?
-
+diff --git a/testcases/kernel/syscalls/access/access01.c b/testcases/kernel/syscalls/access/access01.c
+index 7d19d08..a447607 100644
+--- a/testcases/kernel/syscalls/access/access01.c
++++ b/testcases/kernel/syscalls/access/access01.c
+@@ -27,6 +27,8 @@
+  */
+ #include <errno.h>
+ #include <unistd.h>
++#include <sys/types.h>
++#include <string.h>
+ #include "tst_test.h"
+ 
+ #define FNAME_RWX "accessfile_rwx"
+@@ -117,8 +119,26 @@ static void verify_access(unsigned int n)
+ 		verify_success(tc);
+ }
+ 
++static void verify_root(struct tcase *tc)
++{
++	if (!strcmp(tc->fname, FNAME_X))
++		tc->exp_errno = 0;
++
++	if (!strcmp(tc->fname, FNAME_R) || !strcmp(tc->fname, FNAME_W)) {
++		if (strstr(tc->name, "X_OK") == NULL)
++			tc->exp_errno = 0;
++	}
++}
++
+ static void setup(void)
+ {
++	unsigned int i;
++
++	if (geteuid() == 0) {
++		for (i = 0; i < ARRAY_SIZE(tcases); i++)
++			verify_root(&tcases[i]);
++	}
++
+ 	SAFE_TOUCH(FNAME_RWX, 0777, NULL);
+ 	SAFE_TOUCH(FNAME_R, 0444, NULL);
+ 	SAFE_TOUCH(FNAME_W, 0222, NULL);
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
