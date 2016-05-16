@@ -1,61 +1,24 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 16 May 2016 11:19:49 +0800
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 16 May 2016 14:23:26 +0200
 Subject: [LTP] [PATCH] syscalls/access01: Fix the test to run both under
-	nobody and root
-Message-ID: <1463368789-1403-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ nobody and root
+In-Reply-To: <1463368789-1403-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1463368789-1403-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160516122326.GB6454@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/access/access01.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+Hi!
+This is workaround rather than a complete solution.
 
-diff --git a/testcases/kernel/syscalls/access/access01.c b/testcases/kernel/syscalls/access/access01.c
-index 7d19d08..a447607 100644
---- a/testcases/kernel/syscalls/access/access01.c
-+++ b/testcases/kernel/syscalls/access/access01.c
-@@ -27,6 +27,8 @@
-  */
- #include <errno.h>
- #include <unistd.h>
-+#include <sys/types.h>
-+#include <string.h>
- #include "tst_test.h"
- 
- #define FNAME_RWX "accessfile_rwx"
-@@ -117,8 +119,26 @@ static void verify_access(unsigned int n)
- 		verify_success(tc);
- }
- 
-+static void verify_root(struct tcase *tc)
-+{
-+	if (!strcmp(tc->fname, FNAME_X))
-+		tc->exp_errno = 0;
-+
-+	if (!strcmp(tc->fname, FNAME_R) || !strcmp(tc->fname, FNAME_W)) {
-+		if (strstr(tc->name, "X_OK") == NULL)
-+			tc->exp_errno = 0;
-+	}
-+}
-+
- static void setup(void)
- {
-+	unsigned int i;
-+
-+	if (geteuid() == 0) {
-+		for (i = 0; i < ARRAY_SIZE(tcases); i++)
-+			verify_root(&tcases[i]);
-+	}
-+
- 	SAFE_TOUCH(FNAME_RWX, 0777, NULL);
- 	SAFE_TOUCH(FNAME_R, 0444, NULL);
- 	SAFE_TOUCH(FNAME_W, 0222, NULL);
+What I have in mind for the testcase is to add field to the test
+structure that describes if the particular testcase is expected to run
+under root or not. Then we can add a few testcases that tests that R and
+W flags are ignored for root.
+
 -- 
-1.8.3.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
