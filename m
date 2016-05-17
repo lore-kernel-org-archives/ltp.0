@@ -1,11 +1,10 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 17 May 2016 14:18:48 +0300
-Subject: [LTP] [PATCH 3/4] network/stress/icmp: add
- icmp-multi-diffnic.sh to implement diffnic stress test
-In-Reply-To: <1462780623-26778-3-git-send-email-haliu@redhat.com>
+Date: Tue, 17 May 2016 14:46:33 +0300
+Subject: [LTP] [PATCH 1/4] network/stress/icmp: add icmp-multi-diffip.sh
+ to implement diffip stress test
+In-Reply-To: <1462780623-26778-1-git-send-email-haliu@redhat.com>
 References: <1462780623-26778-1-git-send-email-haliu@redhat.com>
- <1462780623-26778-3-git-send-email-haliu@redhat.com>
-Message-ID: <573AFE18.2080009@oracle.com>
+Message-ID: <573B0499.9020308@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,54 +15,62 @@ Hi,
 On 05/09/2016 10:57 AM, Hangbin Liu wrote:
 > Signed-off-by: Hangbin Liu <haliu@redhat.com>
 > ---
->   runtest/network_stress.icmp                        |  28 ++--
->   .../network/stress/icmp/icmp-multi-diffnic.sh      | 153 +++++++++++++++++++++
->   2 files changed, 167 insertions(+), 14 deletions(-)
->   create mode 100755 testcases/network/stress/icmp/icmp-multi-diffnic.sh
+>   runtest/network_stress.icmp                        |  29 ++---
+>   testcases/network/stress/icmp/icmp-multi-diffip.sh | 138 +++++++++++++++++++++
+>   2 files changed, 153 insertions(+), 14 deletions(-)
+>   create mode 100755 testcases/network/stress/icmp/icmp-multi-diffip.sh
 >
 > diff --git a/runtest/network_stress.icmp b/runtest/network_stress.icmp
-> index 87feb74..58d1dd8 100644
+> index 2b989b1..87feb74 100644
 > --- a/runtest/network_stress.icmp
 > +++ b/runtest/network_stress.icmp
-> @@ -53,18 +53,18 @@ icmp6-multi-diffip05 icmp-multi-diffip.sh -6 -n 100 -p esp -m tunnel
->   icmp6-multi-diffip06 icmp-multi-diffip.sh -6 -n 100 -p ipcomp -m transport
->   icmp6-multi-diffip07 icmp-multi-diffip.sh -6 -n 100 -p ipcomp -m tunnel
+> @@ -36,21 +36,22 @@ icmp6-uni-basic05 icmp-uni-basic.sh -6 -p esp -m tunnel -s "10 100 1000 10000 65
+>   icmp6-uni-basic06 icmp-uni-basic.sh -6 -p ipcomp -m transport -s "10 100 1000 10000 65000"
+>   icmp6-uni-basic07 icmp-uni-basic.sh -6 -p ipcomp -m tunnel -s "10 100 1000 10000 65000"
 >   
-> -icmp4-multi-diffnic01 icmp4-multi-diffnic01
-> -icmp4-multi-diffnic02 icmp4-multi-diffnic02
-> -icmp4-multi-diffnic03 icmp4-multi-diffnic03
-> -icmp4-multi-diffnic04 icmp4-multi-diffnic04
-> -icmp4-multi-diffnic05 icmp4-multi-diffnic05
-> -icmp4-multi-diffnic06 icmp4-multi-diffnic06
-> -icmp4-multi-diffnic07 icmp4-multi-diffnic07
-> +icmp4-multi-diffnic01 icmp-multi-diffnic.sh
-> +icmp4-multi-diffnic02 icmp-multi-diffnic.sh -p ah -m transport
-> +icmp4-multi-diffnic03 icmp-multi-diffnic.sh -p ah -m tunnel
-> +icmp4-multi-diffnic04 icmp-multi-diffnic.sh -p esp -m transport
-> +icmp4-multi-diffnic05 icmp-multi-diffnic.sh -p esp -m tunnel
-> +icmp4-multi-diffnic06 icmp-multi-diffnic.sh -p ipcomp -m transport
-> +icmp4-multi-diffnic07 icmp-multi-diffnic.sh -p ipcomp -m tunnel
+> -icmp4-multi-diffip01 icmp4-multi-diffip01
+> -icmp4-multi-diffip02 icmp4-multi-diffip02
+> -icmp4-multi-diffip03 icmp4-multi-diffip03
+> -icmp4-multi-diffip04 icmp4-multi-diffip04
+> -icmp4-multi-diffip05 icmp4-multi-diffip05
+> -icmp4-multi-diffip06 icmp4-multi-diffip06
+> -icmp4-multi-diffip07 icmp4-multi-diffip07
+> +# networkstress.sh set IP_TOTAL=10000 by default, which is too much for these tests
+
+if it is too much, I would rather check it in the script and set to the 
+appropriate maximum.
+
+> +icmp4-multi-diffip01 icmp-multi-diffip.sh -n 100
+> +icmp4-multi-diffip02 icmp-multi-diffip.sh -n 100 -p ah -m transport
+> +icmp4-multi-diffip03 icmp-multi-diffip.sh -n 100 -p ah -m tunnel
+> +icmp4-multi-diffip04 icmp-multi-diffip.sh -n 100 -p esp -m transport
+> +icmp4-multi-diffip05 icmp-multi-diffip.sh -n 100 -p esp -m tunnel
+> +icmp4-multi-diffip06 icmp-multi-diffip.sh -n 100 -p ipcomp -m transport
+> +icmp4-multi-diffip07 icmp-multi-diffip.sh -n 100 -p ipcomp -m tunnel
 >   
-> -icmp6-multi-diffnic01 icmp6-multi-diffnic01
-> -icmp6-multi-diffnic02 icmp6-multi-diffnic02
-> -icmp6-multi-diffnic03 icmp6-multi-diffnic03
-> -icmp6-multi-diffnic04 icmp6-multi-diffnic04
-> -icmp6-multi-diffnic05 icmp6-multi-diffnic05
-> -icmp6-multi-diffnic06 icmp6-multi-diffnic06
-> -icmp6-multi-diffnic07 icmp6-multi-diffnic07
-> +icmp6-multi-diffnic01 icmp-multi-diffnic.sh -6
-> +icmp6-multi-diffnic02 icmp-multi-diffnic.sh -6 -p ah -m transport
-> +icmp6-multi-diffnic03 icmp-multi-diffnic.sh -6 -p ah -m tunnel
-> +icmp6-multi-diffnic04 icmp-multi-diffnic.sh -6 -p esp -m transport
-> +icmp6-multi-diffnic05 icmp-multi-diffnic.sh -6 -p esp -m tunnel
-> +icmp6-multi-diffnic06 icmp-multi-diffnic.sh -6 -p ipcomp -m transport
-> +icmp6-multi-diffnic07 icmp-multi-diffnic.sh -6 -p ipcomp -m tunnel
-> diff --git a/testcases/network/stress/icmp/icmp-multi-diffnic.sh b/testcases/network/stress/icmp/icmp-multi-diffnic.sh
+> -icmp6-multi-diffip01 icmp6-multi-diffip01
+> -icmp6-multi-diffip02 icmp6-multi-diffip02
+> -icmp6-multi-diffip03 icmp6-multi-diffip03
+> -icmp6-multi-diffip04 icmp6-multi-diffip04
+> -icmp6-multi-diffip05 icmp6-multi-diffip05
+> -icmp6-multi-diffip06 icmp6-multi-diffip06
+> -icmp6-multi-diffip07 icmp6-multi-diffip07
+> +icmp6-multi-diffip01 icmp-multi-diffip.sh -6 -n 100
+> +icmp6-multi-diffip02 icmp-multi-diffip.sh -6 -n 100 -p ah -m transport
+> +icmp6-multi-diffip03 icmp-multi-diffip.sh -6 -n 100 -p ah -m tunnel
+> +icmp6-multi-diffip04 icmp-multi-diffip.sh -6 -n 100 -p esp -m transport
+> +icmp6-multi-diffip05 icmp-multi-diffip.sh -6 -n 100 -p esp -m tunnel
+> +icmp6-multi-diffip06 icmp-multi-diffip.sh -6 -n 100 -p ipcomp -m transport
+> +icmp6-multi-diffip07 icmp-multi-diffip.sh -6 -n 100 -p ipcomp -m tunnel
+>   
+>   icmp4-multi-diffnic01 icmp4-multi-diffnic01
+>   icmp4-multi-diffnic02 icmp4-multi-diffnic02
+> diff --git a/testcases/network/stress/icmp/icmp-multi-diffip.sh b/testcases/network/stress/icmp/icmp-multi-diffip.sh
 > new file mode 100755
-> index 0000000..c149ca4
+> index 0000000..f6f5f4b
 > --- /dev/null
-> +++ b/testcases/network/stress/icmp/icmp-multi-diffnic.sh
-> @@ -0,0 +1,153 @@
+> +++ b/testcases/network/stress/icmp/icmp-multi-diffip.sh
+> @@ -0,0 +1,138 @@
 > +#!/bin/sh
 > +# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
 > +# Copyright (c) International Business Machines  Corp., 2005
@@ -84,7 +91,7 @@ On 05/09/2016 10:57 AM, Hangbin Liu wrote:
 > +# Author: Hangbin Liu <haliu@redhat.com>
 > +#
 > +################################################################################
-> +TCID=${TCID:-icmp-multi-diffnic}
+> +TCID=${TCID:-icmp-multi-diffip}
 > +TST_TOTAL=1
 > +TST_COUNT=1
 > +TST_CLEANUP="do_cleanup"
@@ -92,13 +99,13 @@ On 05/09/2016 10:57 AM, Hangbin Liu wrote:
 > +. ipsec_lib.sh
 > +
 > +while getopts "hl:m:n:N:p:s:S:6" opt; do
-there is no option 'n'
 > +	case "$opt" in
 > +	h)
 > +		echo "Usage:"
 > +		echo "h        help"
 > +		echo "l n      n is the number of test link when tests run"
 > +		echo "m x      x is ipsec mode, could be transport / tunnel"
+> +		echo "n n      n is number of total ip addresses for testing"
 > +		echo "N n      n is seconds of the network stress duration time"
 > +		echo "p x      x is ipsec protocol, could be ah / esp / ipcomp"
 > +		echo "s x      x is icmp messge size array"
@@ -108,6 +115,7 @@ there is no option 'n'
 > +	;;
 > +	l) LINK_NUM=$OPTARG ;;
 > +	m) IPSEC_MODE=$OPTARG ;;
+> +	n) IP_TOTAL=$OPTARG ;;
 > +	N) NS_DURATION=$OPTARG ;;
 > +	p) IPSEC_PROTO=$OPTARG ;;
 > +	s) ICMP_SIZE_ARRAY=$OPTARG ;;
@@ -120,54 +128,25 @@ there is no option 'n'
 > +
 > +SPI=${SPI:-1000}
 > +LINK_NUM=${LINK_NUM:-0}
+> +IP_TOTAL=${IP_TOTAL:-100}
 > +DO_IPSEC=${DO_IPSEC:-false}
 > +NS_DURATION=${NS_DURATION:-"3600"}
 > +# Use large enough pkt size(65000) to fix each encapsulation
 > +ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65000"}
 > +[ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ] && DO_IPSEC=true || DO_IPSEC=false
 > +
-> +link_total=`echo $LHOST_HWADDRS | wc -w`
-> +rhost_link_total=`echo $RHOST_HWADDRS | wc -w`
-> +if [ $link_total -ne $rhost_link_total ]; then
-> +	tst_brkm TBROK "The number of element in LHOST_HWADDRS differs from RHOST_HWADDRS"
-> +elif [ $link_total -lt 2 ]; then
-> +	tst_brkm TBROK "This test case requires plural NICs."
-> +fi
-> +
-
-Should we check that the number of interfaces more then 1, otherwise 
-exit with TCONF?
-.. not TBROK
-
-Hmm, what is the difference between running those tests
-
-LHOST_IFACE=eth1 ... ./icmp_uni_basic.sh &
-LHOST_IFACE=eth2 ... ./icmp_uni_basic.sh &
-...
-
-and running multinic script?
-
-Thanks,
-Alexey
-
 > +do_cleanup()
 > +{
 > +	pkill -9 ping$TST_IPV6 &> /dev/null
 > +	tst_ipsec_cleanup
 > +	# Clean up each interface
-> +	link_num=0
-> +	while [ $link_num -lt $link_total ]; do
-> +		tst_init_iface lhost ${link_num}
-> +		tst_init_iface rhost ${link_num}
-> +		link_num=`expr $link_num + 1`
-> +	done
-> +	tst_restore_ipaddr lhost
-> +	tst_restore_ipaddr rhost
+> +	tst_restore_ipaddr lhost ${LINK_NUM}
+> +	tst_restore_ipaddr rhost ${LINK_NUM}
 > +}
 > +
 > +# Test description
 > +tst_resm TINFO "Sending ICMP messages with the following conditions"
-> +tst_resm TINFO "- Target number of interfaces is $link_total"
+> +tst_resm TINFO "- Target number of the connection is $IP_TOTAL"
 > +tst_resm TINFO "- Version of IP is IPv${TST_IPV6:-4}"
 > +tst_resm TINFO "- Size of packets are ( $ICMP_SIZE_ARRAY )"
 > +
@@ -180,22 +159,23 @@ Alexey
 > +fi
 > +
 > +# name of interface of the local/remote host
-> +lhost_iface=`tst_iface lhost $LINK_NUM`
-> +rhost_iface=`tst_iface rhost $LINK_NUM`
+> +lhost_iface=$(tst_iface lhost $LINK_NUM)
+> +rhost_iface=$(tst_iface rhost $LINK_NUM)
 > +
-> +# Loop for NIC configuration
-> +[ "$TST_IPV6" ] && netmask=64 || netmask=24
-> +for link_num in `seq 0 $((link_total - 1))`; do
-> +	# name of interface of the local/remote host
-> +	lhost_iface=`tst_iface lhost $link_num`
-> +	rhost_iface=`tst_iface rhost $link_num`
-> +
+> +[ "$TST_IPV6" ] && netmask=64 || netmask=30
+> +for cnt in $(seq $IP_TOTAL); do
+> +	x=`expr $cnt \/ 64 % 255`
+> +	y=`expr $cnt % 64 \* 4 + 1`
+> +	if [ $x -ge 255 ]; then
+> +		tst_resm TCONF "This script cannot add more than $cnt addresses"
+> +		break
+> +	fi
 > +	if [ "$TST_IPV6" ]; then
-> +		lhost_addr=${IPV6_NET32_UNUSED}:${link_num}:${LHOST_IPV6_HOST}
-> +		rhost_addr=${IPV6_NET32_UNUSED}:${link_num}:${RHOST_IPV6_HOST}
+> +		lhost_addr=${IPV6_NET32_UNUSED}:$x:$y:${LHOST_IPV6_HOST}
+> +		rhost_addr=${IPV6_NET32_UNUSED}:$x:$y:${RHOST_IPV6_HOST}
 > +	else
-> +		lhost_addr=${IPV4_NET16_UNUSED}.${link_num}.${LHOST_IPV4_HOST}
-> +		rhost_addr=${IPV4_NET16_UNUSED}.${link_num}.${RHOST_IPV4_HOST}
+> +		lhost_addr=${IPV4_NET16_UNUSED}.$x.$y
+> +		rhost_addr=${IPV4_NET16_UNUSED}.$x.$(($y + 1))
 > +	fi
 > +	ROD ip addr add $lhost_addr/$netmask dev $lhost_iface
 > +	tst_rhost_run -s -c "ip addr add $rhost_addr/$netmask dev $rhost_iface"
@@ -207,31 +187,43 @@ Alexey
 > +	fi
 > +
 > +	# Make sure the connectvity
-> +	if [ "$IPSEC_PROTO" == ipcomp ]; then
-> +		tst_ping $lhost_iface $rhost_addr 2000
-> +	else
-> +		tst_ping $lhost_iface $rhost_addr
-> +	fi
+> +	tst_ping $lhost_iface $rhost_addr
 > +	if [ $? -ne 0 ]; then
 > +		tst_resm TFAIL "IPv${TST_IPV6:-4} $lhost_addr/$netmask -- $rhost_addr/$netmask $IPSEC_PROTO $IPSEC_MODE connectivity"
+
+proto/mode were printed in the beginning of the test so it seems 
+redundant to print it again and again during the test.
+
 > +	else
 > +		tst_resm TPASS "IPv${TST_IPV6:-4} $lhost_addr/$netmask -- $rhost_addr/$netmask $IPSEC_PROTO $IPSEC_MODE connectivity"
 > +	fi
-> +
-> +	lhost_iface_array[$link_num]=$lhost_iface
-> +	rhost_addr_array[$link_num]=$rhost_addr
+
+TST_TOTAL doesn't match TPASS/TFAIL assertions.
+
+> +	rhost_addr_array[$cnt]=$rhost_addr
+
+Please don't use arrays, it's a bash extension.
+
 > +done
 > +
 > +# Do Stress testing, ping flood
 > +tst_resm TINFO "start ping flood stress testing"
-> +for link_num in `seq 0 $((link_total - 1))`; do
+> +for rhost_addr in ${rhost_addr_array[@]}; do
 > +	for size in ${ICMP_SIZE_ARRAY}; do
-> +		ping$TST_IPV6 -f -q -I ${lhost_iface_array[$link_num]} \
-> +			${rhost_addr_array[$link_num]} -s $size &> /dev/null &
+> +		ping$TST_IPV6 -f -q -I $lhost_iface $rhost_addr -s $size &> /dev/null &
 > +	done
 > +done
 > +
 > +sleep ${NS_DURATION}
 > +
+> +tst_resm TPASS "$TCID IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE stress test"
+
+Is the test always passing here with no checks?
+
+Why we need to print $TCID?
+
 > +tst_exit
+
+Thanks,
+Alexey
 
