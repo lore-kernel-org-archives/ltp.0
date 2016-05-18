@@ -1,107 +1,65 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 18 May 2016 08:34:57 -0400 (EDT)
-Subject: [LTP] ltp-full-20160510 compile failed
-In-Reply-To: <20160518082726.GA3920@localhost.localdomain>
-References: <20160518082726.GA3920@localhost.localdomain>
-Message-ID: <1923642895.3898894.1463574897794.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 18 May 2016 16:39:18 +0200
+Subject: [LTP] [RFC PATCH 4/4] memcg_stress_test.sh: allocate less than
+ CommitLimit bytes
+In-Reply-To: <573B140B.8080500@oracle.com>
+References: <1461338590-1309-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1461338590-1309-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1461338590-1309-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1461338590-1309-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160512134217.GB32457@rei.lan> <573B140B.8080500@oracle.com>
+Message-ID: <20160518143918.GB17880@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> There is an idea. If we set memory.limit_in_bytes of a cgroup to a value 
+> less than the amount of memory.usage_in_bytes, then activities of 
+> processes of this cgroup will involve swapping.
+> 
+> So what do you think about this scheme:
+> 
+> mem = RAM * overcommit_ratio - Committed_AS
+> overcommit_memory = 1
 
+I do not understand why we choose exactly this number.
 
+RAM * overcommit_ratio is something as half of RAM on usuall system,
+right?  Then we substract Committed_AS, which is amount of memory system
+would have needed to back up all allocations so we may easily end up
+with a negative number if more than half of the RAM was requested by
+running programs.
 
+On my notebook I have 6.6Gb Commited_AS and RAM * overcommit_ratio = 2Gb
+the CommitLimit is 10Gb since I have 4GB RAM and 8GB Swap.
 
------ Original Message -----
-> From: "Han Pingtian" <hanpt@linux.vnet.ibm.com>
-> To: ltp@lists.linux.it
-> Sent: Wednesday, 18 May, 2016 10:27:26 AM
-> Subject: [LTP] ltp-full-20160510 compile failed
-> 
-> Hi,
-> 
-> When I try to compile the latest LTP, it failed:
-> 
->     % ./configure --with-open-posix-testsuite --prefix=`pwd`
->     % make -j 64 all
-> ... ...
-> functional/mqueues/send_rev_1 compile PASSED
-> make[4]: Leaving directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/mqueues'
-> make[4]: Entering directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/semaphores'
-> make[4]: *** No rule to make target 'all'.  Stop.
-> make[4]: Leaving directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/semaphores'
-> make[4]: Entering directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/threads'
-> make[5]: Entering directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/threads/condva
-> r'
-> make[5]: *** No rule to make target 'all'.  Stop.
-> make[5]: Leaving directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/threads/condvar
-> '
-> make[5]: Entering directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/threads/pi_tes
-> t'
-> make[5]: *** No rule to make target 'all'.  Stop.
-> make[5]: Leaving directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/threads/pi_test
-> '
-> make[5]: Entering directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/threads/schedule'
-> make[5]: *** No rule to make target 'all'.  Stop.
-> make[5]: Leaving directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/threads/schedule'
-> Makefile:8: recipe for target 'all' failed
-> make[4]: *** [all] Error 2
-> make[4]: Leaving directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/threads'
-> Makefile:8: recipe for target 'all' failed
-> make[3]: *** [all] Error 2
-> make[3]: Leaving directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional'
-> /home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/Makefile:82:
-> recipe for target 'functional-all' failed
-> make[2]: *** [functional-all] Error 2
-> make[2]: Leaving directory
-> '/home/hpt/ltp-full-20160510/testcases/open_posix_testsuite'
-> ../include/mk/generic_trunk_target.inc:93: recipe for target 'all' failed
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory '/home/hpt/ltp-full-20160510/testcases'
-> Makefile:114: recipe for target 'testcases-all' failed
-> make: *** [testcases-all] Error 2
-> 
-> The Makefile in
-> 
->     /home/hpt/ltp-full-20160510/testcases/open_posix_testsuite/functional/semaphores
-> 
-> is empty.  And if I compile the package like this:
+I guess that when we decide to create the pressure inside of the memory
+cgroup, instead of stressing the whole system, we may as well choose
+small enough amount of memory, something as (RAM - 250Mb)/10 and be done
+with it.
 
-This looks like an issue that was brought up a while back:
-  [LTP] [PATCH] Makefile: Disable parallel build for $(CRITICAL_MAKEFILES)
-  https://www.mail-archive.com/ltp-list@lists.sourceforge.net/msg15795.html
+[CCing Michal Hocko]
 
-So I think you need to stick with non-parallel builds open_posix_testsuite
-for now.
+Michal is there a way to figure out how much memory should be allocated
+and faulted on a system in order to cause some amount of pages to be
+swapped back and forth?
 
-Regards,
-Jan
+What this testcase does it to create a process(es) that allocate memory
+and read/write it concurently to stress the system a bit but the
+estimate on how much memory it should use is wrong and it causes OOM
+when the amount of swap is much less than amount of RAM.
 
-> 
->     % ./configure --with-open-posix-testsuite --prefix=`pwd`
->     % cd testcases/open_posix_testsuite
->     % make -j 64
->     % cd -
->     % make -j 64 all
-> 
-> Then it will succeed. Not sure if it is usable when compiling like this?
-> Please advise. Thanks in advance!
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+The original testcase[1] drops caches then runs child(s) to allocate
+(in sum) MemFree + SwapFree/2 memory. Each child runs in its own memory
+cgroup but the amount of memory was choosen so that the whole system
+would be under memory pressure. Does such test even make sense to you?
+
+[1]:
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
