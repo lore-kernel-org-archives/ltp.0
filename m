@@ -1,314 +1,109 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 May 2016 17:17:47 +0200
-Subject: [LTP] [RFC] [PATCH] lib/tst_test.c: Run test in child process
-Message-ID: <20160519151746.GA2772@rei>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 19 May 2016 19:01:30 +0300
+Subject: [LTP] [PATCH 1/4] network/stress/icmp: add icmp-multi-diffip.sh
+ to implement diffip stress test
+In-Reply-To: <20160519142900.GG19992@Leo.nay.redhat.com>
+References: <1462780623-26778-1-git-send-email-haliu@redhat.com>
+ <573B0499.9020308@oracle.com> <20160519142900.GG19992@Leo.nay.redhat.com>
+Message-ID: <573DE35A.7060106@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This commit moves the actuall test to a child process. The parent
-process now serves two purposes. It sets up an alarm timer that kills
-the test on a timeout and also does the library setup and cleanup which
-means that the test temporary directory is removed even if the test
-crased in one of the functions exported in tst_test structure.
+Hi,
+On 05/19/2016 05:29 PM, Hangbin Liu wrote:
+> On Tue, May 17, 2016 at 02:46:33PM +0300, Alexey Kodanev wrote:
+>> Hi,
+>> On 05/09/2016 10:57 AM, Hangbin Liu wrote:
+>>> Signed-off-by: Hangbin Liu <haliu@redhat.com>
+>>> ---
+>>>   runtest/network_stress.icmp                        |  29 ++---
+>>>   testcases/network/stress/icmp/icmp-multi-diffip.sh | 138 +++++++++++++++++++++
+>>>   2 files changed, 153 insertions(+), 14 deletions(-)
+>>>   create mode 100755 testcases/network/stress/icmp/icmp-multi-diffip.sh
+>>>
+>>> diff --git a/runtest/network_stress.icmp b/runtest/network_stress.icmp
+>>> index 2b989b1..87feb74 100644
+>>> --- a/runtest/network_stress.icmp
+>>> +++ b/runtest/network_stress.icmp
+>>> @@ -36,21 +36,22 @@ icmp6-uni-basic05 icmp-uni-basic.sh -6 -p esp -m tunnel -s "10 100 1000 10000 65
+>>>   icmp6-uni-basic06 icmp-uni-basic.sh -6 -p ipcomp -m transport -s "10 100 1000 10000 65000"
+>>>   icmp6-uni-basic07 icmp-uni-basic.sh -6 -p ipcomp -m tunnel -s "10 100 1000 10000 65000"
+>>> -icmp4-multi-diffip01 icmp4-multi-diffip01
+>>> -icmp4-multi-diffip02 icmp4-multi-diffip02
+>>> -icmp4-multi-diffip03 icmp4-multi-diffip03
+>>> -icmp4-multi-diffip04 icmp4-multi-diffip04
+>>> -icmp4-multi-diffip05 icmp4-multi-diffip05
+>>> -icmp4-multi-diffip06 icmp4-multi-diffip06
+>>> -icmp4-multi-diffip07 icmp4-multi-diffip07
+>>> +# networkstress.sh set IP_TOTAL=10000 by default, which is too much for these tests
+>> if it is too much, I would rather check it in the script and set to the
+>> appropriate maximum.
+> OK, I will do it in the script.
+>
+>>> +
+>>> +	# Make sure the connectvity
+>>> +	tst_ping $lhost_iface $rhost_addr
+>>> +	if [ $? -ne 0 ]; then
+>>> +		tst_resm TFAIL "IPv${TST_IPV6:-4} $lhost_addr/$netmask -- $rhost_addr/$netmask $IPSEC_PROTO $IPSEC_MODE connectivity"
+>> proto/mode were printed in the beginning of the test so it seems redundant
+>> to print it again and again during the test.
+> Ah, yes, exactly. I will simplify it.
+>
+>>> +	else
+>>> +		tst_resm TPASS "IPv${TST_IPV6:-4} $lhost_addr/$netmask -- $rhost_addr/$netmask $IPSEC_PROTO $IPSEC_MODE connectivity"
+>>> +	fi
+>> TST_TOTAL doesn't match TPASS/TFAIL assertions.
+> Hmm...I didn't notice about this. We should to make sure the connectivity. But
+> the checking times is based on $IP_TOTAL.
+>
+> OK, I will use tst_brkm TCONF instead of tst_resm TFAIL. Which report you feel
+> is better,
+>
+> tst_brkm TCONF "IPv${TST_IPV6:-4} connectivity after add $cnt addresses" or
+>
+> tst_brkm TCONF "$cnt addr: IPv${TST_IPV6:-4} $lhost_addr/$netmask -- $rhost_addr/$netmask connectivity"
+>
+>
+>>> +	rhost_addr_array[$cnt]=$rhost_addr
+>> Please don't use arrays, it's a bash extension.
+> Is there a better way to store the addresses? Use a temp file?
 
-The timeout is defined per test run, which is either one execution of
-test_all() function or single loop over the test() function. The default
-timeout is 1 second and can be overrided by tst_test->timeout variable.
+We can easily calculate them again, why store them... number might be 
+quite big.
 
-The overhead of the fork() + wait() does not seem to be measurable.
+>>> +done
+>>> +
+>>> +# Do Stress testing, ping flood
+>>> +tst_resm TINFO "start ping flood stress testing"
+>>> +for rhost_addr in ${rhost_addr_array[@]}; do
+>>> +	for size in ${ICMP_SIZE_ARRAY}; do
+>>> +		ping$TST_IPV6 -f -q -I $lhost_iface $rhost_addr -s $size &> /dev/null &
+>>> +	done
+>>> +done
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/tst_test.h          |  3 ++
- lib/newlib_tests/.gitignore |  3 ++
- lib/newlib_tests/test10.c   | 32 ++++++++++++++++++
- lib/newlib_tests/test11.c   | 34 +++++++++++++++++++
- lib/newlib_tests/test12.c   | 32 ++++++++++++++++++
- lib/tst_test.c              | 80 +++++++++++++++++++++++++++++++++++++--------
- 6 files changed, 171 insertions(+), 13 deletions(-)
- create mode 100644 lib/newlib_tests/test10.c
- create mode 100644 lib/newlib_tests/test11.c
- create mode 100644 lib/newlib_tests/test12.c
-
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 88b46d6..ddd9060 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -84,6 +84,9 @@ struct tst_test {
- 	int needs_device:1;
- 	int needs_checkpoints:1;
- 
-+	/* override default timeout per test run */
-+	unsigned int timeout;
-+
- 	void (*setup)(void);
- 	void (*cleanup)(void);
- 
-diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
-index e3ec6aa..dccf4c8 100644
---- a/lib/newlib_tests/.gitignore
-+++ b/lib/newlib_tests/.gitignore
-@@ -7,3 +7,6 @@ test06
- test07
- test08
- test09
-+test10
-+test11
-+test12
-diff --git a/lib/newlib_tests/test10.c b/lib/newlib_tests/test10.c
-new file mode 100644
-index 0000000..0b2d3ac
---- /dev/null
-+++ b/lib/newlib_tests/test10.c
-@@ -0,0 +1,32 @@
-+/*
-+ * Copyright (c) 2016 Linux Test Project
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
-+
-+/*
-+ * Test for watchdog timeout.
-+ */
-+
-+#include "tst_test.h"
-+
-+
-+static void do_test(void)
-+{
-+	sleep(10);
-+	tst_res(TPASS, "Not reached");
-+}
-+
-+static struct tst_test test = {
-+	.tid = "test10",
-+	.test_all = do_test,
-+};
-diff --git a/lib/newlib_tests/test11.c b/lib/newlib_tests/test11.c
-new file mode 100644
-index 0000000..1354f52
---- /dev/null
-+++ b/lib/newlib_tests/test11.c
-@@ -0,0 +1,34 @@
-+/*
-+ * Copyright (c) 2016 Linux Test Project
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
-+
-+/*
-+ * Test for segfault.
-+ */
-+
-+#include "tst_test.h"
-+
-+static void do_test(void)
-+{
-+	volatile char *ptr = NULL;
-+
-+	*ptr = 0;
-+
-+	tst_res(TPASS, "Not reached");
-+}
-+
-+static struct tst_test test = {
-+	.tid = "test11",
-+	.test_all = do_test,
-+};
-diff --git a/lib/newlib_tests/test12.c b/lib/newlib_tests/test12.c
-new file mode 100644
-index 0000000..7bacf9f
---- /dev/null
-+++ b/lib/newlib_tests/test12.c
-@@ -0,0 +1,32 @@
-+/*
-+ * Copyright (c) 2016 Linux Test Project
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ */
-+
-+/*
-+ * Test for timeout override.
-+ */
-+
-+#include "tst_test.h"
-+
-+static void do_test(void)
-+{
-+	sleep(2);
-+	tst_res(TPASS, "Passed!");
-+}
-+
-+static struct tst_test test = {
-+	.tid = "test12",
-+	.timeout = 3,
-+	.test_all = do_test,
-+};
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index b8ec246..3b3dc0d 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -220,17 +220,19 @@ void tst_vres_(const char *file, const int lineno, int ttype,
- void tst_vbrk_(const char *file, const int lineno, int ttype,
-                const char *fmt, va_list va) __attribute__((noreturn));
- 
--static void do_cleanup(void);
-+static void do_test_cleanup(void)
-+{
-+	if (tst_test->cleanup)
-+		tst_test->cleanup();
-+}
- 
- void tst_vbrk_(const char *file, const int lineno, int ttype,
-                const char *fmt, va_list va)
- {
- 	print_result(file, lineno, ttype, fmt, va);
- 
--	if (getpid() == main_pid) {
--		do_cleanup();
--		cleanup_ipc();
--	}
-+	if (getpid() == main_pid)
-+		do_test_cleanup();
- 
- 	exit(TTYPE_RESULT(ttype));
- }
-@@ -550,7 +552,10 @@ static void do_setup(int argc, char *argv[])
- 
- 	if (tst_test->resource_files)
- 		copy_resources();
-+}
- 
-+static void do_test_setup(void)
-+{
- 	main_pid = getpid();
- 
- 	if (tst_test->setup)
-@@ -562,9 +567,6 @@ static void do_setup(int argc, char *argv[])
- 
- static void do_cleanup(void)
- {
--	if (tst_test->cleanup)
--		tst_test->cleanup();
--
- 	if (tst_test->needs_device && tdev.dev)
- 		tst_release_device(tdev.dev);
- 
-@@ -619,16 +621,13 @@ static unsigned long long get_time_ms(void)
- 	return tv.tv_sec * 1000 + tv.tv_usec / 1000;
- }
- 
--void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
-+static void testrun(void)
- {
- 	unsigned int i = 0;
- 	unsigned long long stop_time = 0;
- 	int cont = 1;
- 
--	tst_test = self;
--	TCID = tst_test->tid;
--
--	do_setup(argc, argv);
-+	do_test_setup();
- 
- 	if (duration > 0)
- 		stop_time = get_time_ms() + (unsigned long long)(duration * 1000);
-@@ -650,6 +649,61 @@ void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
- 		run_tests();
- 	}
- 
-+	do_test_cleanup();
-+	exit(0);
-+}
-+
-+static pid_t test_pid;
-+
-+static void alarm_handler(int sig LTP_ATTRIBUTE_UNUSED)
-+{
-+	kill(test_pid, SIGKILL);
-+}
-+
-+#define MAX(a,b) ((a) > (b) ? (a) : (b))
-+
-+void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
-+{
-+	int status;
-+	unsigned int timeout, timeout_per_run = 1;
-+
-+	tst_test = self;
-+	TCID = tst_test->tid;
-+
-+	do_setup(argc, argv);
-+
-+	if (tst_test->timeout)
-+		timeout_per_run = tst_test->timeout;
-+
-+	timeout = timeout_per_run * iterations;
-+
-+	if (duration > 0)
-+		timeout = MAX(timeout, duration + 2 * timeout_per_run);
-+
-+	tst_res(TINFO, "Timeout is %us", timeout);
-+
-+	SAFE_SIGNAL(SIGALRM, alarm_handler);
-+	alarm(timeout);
-+
-+	test_pid = fork();
-+	if (test_pid < 0)
-+		tst_brk(TBROK | TERRNO, "fork()");
-+
-+	if (!test_pid)
-+		testrun();
-+
-+	SAFE_WAITPID(test_pid, &status, 0);
-+
- 	do_cleanup();
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status))
-+		exit(WEXITSTATUS(status));
-+
-+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
-+		tst_brk(TBROK, "Test killed! (timeout?)");
-+
-+	if (WIFSIGNALED(status))
-+		tst_brk(TBROK, "Test killed by %s!", tst_strsig(WTERMSIG(status)));
-+
- 	do_exit();
- }
--- 
-2.7.3
+Can we start ping test in background after adding each IP, i.e. after 
+tst_ping finished?
 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+>>> +
+>>> +sleep ${NS_DURATION}
+>>> +
+>>> +tst_resm TPASS "$TCID IPv${TST_IPV6:-4} $IPSEC_PROTO $IPSEC_MODE stress test"
+>> Is the test always passing here with no checks?
+> Yes, if the system under test do not crash with ping flood after ${NS_DURATION}
+> seconds, we can pass the test.
+
+What if remote host crashed somehow, and local not... test would pass in 
+that case.
+
+May be we should kill ping processes (or add -w deadline) and check 
+connectivity again,
+what do you think?
+
+Thanks,
+Alexey
+
