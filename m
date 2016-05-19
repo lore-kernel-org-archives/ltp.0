@@ -1,48 +1,98 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 May 2016 15:38:54 +0200
-Subject: [LTP] [RFC PATCH 4/4] memcg_stress_test.sh: allocate less than
- CommitLimit bytes
-In-Reply-To: <573CA66F.9000900@oracle.com>
-References: <1461338590-1309-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1461338590-1309-2-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1461338590-1309-3-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1461338590-1309-4-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160512134217.GB32457@rei.lan> <573B140B.8080500@oracle.com>
- <20160518143918.GB17880@rei.lan> <573CA66F.9000900@oracle.com>
-Message-ID: <20160519133854.GC29601@rei.lan>
+From: Hangbin Liu <haliu@redhat.com>
+Date: Thu, 19 May 2016 21:55:15 +0800
+Subject: [LTP] [PATCH 3/4] network/stress/icmp: add
+ icmp-multi-diffnic.sh to implement diffnic stress test
+In-Reply-To: <573AFE18.2080009@oracle.com>
+References: <1462780623-26778-1-git-send-email-haliu@redhat.com>
+ <1462780623-26778-3-git-send-email-haliu@redhat.com>
+ <573AFE18.2080009@oracle.com>
+Message-ID: <20160519135515.GF19992@Leo.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I guess that when we decide to create the pressure inside of the memory
-> > cgroup, instead of stressing the whole system, we may as well choose
-> > small enough amount of memory, something as (RAM - 250Mb)/10 and be done
-> > with it.
-> 
-> Yes, this should work as well.
-> 
-> I don't know how we could stress the whole system without the risk of 
-> hitting an OOM. One idea which comes to my mind is about using a 
-> top-level control group with a significant amount of memory assigned to 
-> it (like mem_free / 2).
-> 
-> Could you, please, have a look at the attachment? I was playing with 
-> this patch today and was able to stress my system without OOM.
-> 
-> However, this scheme may result in a very intensive swapping if mem_free 
-> is large (given that there is enough swap).
+Hi,
 
-Then we should place upper limit on the amount of used swap as well.
+On Tue, May 17, 2016 at 02:18:48PM +0300, Alexey Kodanev wrote:
+> >+TCID=${TCID:-icmp-multi-diffnic}
+> >+TST_TOTAL=1
+> >+TST_COUNT=1
+> >+TST_CLEANUP="do_cleanup"
+> >+
+> >+. ipsec_lib.sh
+> >+
+> >+while getopts "hl:m:n:N:p:s:S:6" opt; do
+> there is no option 'n'
 
-Something as MIN(MemFree/2, SwapFree, 1GB) to be used for the limit and
-abort the test if this number is to small?
+Ah, yes, thanks, will fix it.
 
-Apart from that the root memory cgroup should be better named something
-as ltp_stres_root so that it's clear where it came from...
+> >+	case "$opt" in
+> >+	h)
+> >+		echo "Usage:"
+> >+		echo "h        help"
+> >+		echo "l n      n is the number of test link when tests run"
+> >+		echo "m x      x is ipsec mode, could be transport / tunnel"
+> >+		echo "N n      n is seconds of the network stress duration time"
+> >+		echo "p x      x is ipsec protocol, could be ah / esp / ipcomp"
+> >+		echo "s x      x is icmp messge size array"
+> >+		echo "S n      n is IPsec SPI value"
+> >+		echo "6        run over IPv6"
+> >+		exit 0
+> >+	;;
+> >+	l) LINK_NUM=$OPTARG ;;
+> >+	m) IPSEC_MODE=$OPTARG ;;
+> >+	N) NS_DURATION=$OPTARG ;;
+> >+	p) IPSEC_PROTO=$OPTARG ;;
+> >+	s) ICMP_SIZE_ARRAY=$OPTARG ;;
+> >+	S) SPI=$OPTARG ;;
+> >+	6) # skip, test_net library already processed it
+> >+	;;
+> >+	*) tst_brkm TBROK "unknown option: $opt" ;;
+> >+	esac
+> >+done
+> >+
+> >+SPI=${SPI:-1000}
+> >+LINK_NUM=${LINK_NUM:-0}
+> >+DO_IPSEC=${DO_IPSEC:-false}
+> >+NS_DURATION=${NS_DURATION:-"3600"}
+> >+# Use large enough pkt size(65000) to fix each encapsulation
+> >+ICMP_SIZE_ARRAY=${ICMP_SIZE_ARRAY:-"10 100 1000 10000 65000"}
+> >+[ -n "$IPSEC_MODE" -a -n "$IPSEC_PROTO" ] && DO_IPSEC=true || DO_IPSEC=false
+> >+
+> >+link_total=`echo $LHOST_HWADDRS | wc -w`
+> >+rhost_link_total=`echo $RHOST_HWADDRS | wc -w`
+> >+if [ $link_total -ne $rhost_link_total ]; then
+> >+	tst_brkm TBROK "The number of element in LHOST_HWADDRS differs from RHOST_HWADDRS"
+> >+elif [ $link_total -lt 2 ]; then
+> >+	tst_brkm TBROK "This test case requires plural NICs."
+> >+fi
+> >+
+> 
+> Should we check that the number of interfaces more then 1, otherwise exit
+> with TCONF?
+> .. not TBROK
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Yeah, that make sense.
+
+> 
+> Hmm, what is the difference between running those tests
+> 
+> LHOST_IFACE=eth1 ... ./icmp_uni_basic.sh &
+> LHOST_IFACE=eth2 ... ./icmp_uni_basic.sh &
+> ...
+> 
+> and running multinic script?
+
+The uni_basic test is a basic, functional test, to verify we can handle all
+kinds of message size with different configures. There is no much stress
+actually.
+
+And multi-diffnic will only check basic connectvity to make sure the
+configuration is right. The main purpose of the test is to make sure system do
+not break/crash under ping flood with various of messages. The same with
+multi-diffip test.
+
+Thanks
+Hangbin
