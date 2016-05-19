@@ -1,55 +1,41 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 19 May 2016 17:55:24 +0300
-Subject: [LTP] [PATCH] memcg/functional: check several times if the process
-	is killed
-Message-ID: <1463669724-7193-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 19 May 2016 16:58:45 +0200
+Subject: [LTP] [PATCH] mem/oom: fork may fail before test
+Message-ID: <9e8fc1797bd3bf0fe725a4b589e4fabda09ea0b8.1463669846.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On some systems it may take slightly more than one second
-to kill the memcg_process. So let's check several times if the
-process is alive.
+On systems with small RAM and vm.overcommit_memory == 2,
+the system may already be in state where Committed_AS is
+larger than CommitLimit due to various backround daemons
+(NM, tuned, polkitd,...) asking for big allocations.
 
-Also removed sleep() before moving the process to the memory cgroup,
-since this looks reduntant.
+In such instances oom testcases report TBROK on very first fork.
+This patch allows this to be a valid outcome (TPASS).
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- .../controllers/memcg/functional/memcg_lib.sh      |   14 ++++++++++----
- 1 files changed, 10 insertions(+), 4 deletions(-)
+ testcases/kernel/mem/lib/mem.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index 9b9b0fd..93c61a1 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -220,14 +220,20 @@ test_proc_kill()
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index c55a55d57915..3d853a393d28 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -127,6 +127,10 @@ void oom(int testcase, int lite, int retcode, int allow_sigkill)
  
- 	$TEST_PATH/memcg_process $2 -s $3 &
- 	pid=$!
--	sleep 1
- 	echo $pid > tasks
- 
- 	kill -s USR1 $pid 2> /dev/null
--	sleep 1
- 
--	ps -p $pid > /dev/null 2> /dev/null
--	if [ $? -ne 0 ]; then
-+	pid_exists=1
-+	for tpk_iter in $(seq 5); do
-+	    if ! kill $pid 2> /dev/null; then
-+		pid_exists=0
-+		break
-+	    fi
-+	    sleep 1
-+	done
-+
-+	if [ $pid_exists -eq 0 ]; then
- 		wait $pid
- 		if [ $? -eq 1 ]; then
- 			result $FAIL "process $pid is killed by error"
+ 	switch (pid = fork()) {
+ 	case -1:
++		if (errno == retcode) {
++			tst_resm(TPASS | TERRNO, "fork");
++			return;
++		}
+ 		tst_brkm(TBROK | TERRNO, cleanup, "fork");
+ 	case 0:
+ 		threads = MAX(1, tst_ncpus() - 1);
 -- 
-1.7.1
+1.8.3.1
 
