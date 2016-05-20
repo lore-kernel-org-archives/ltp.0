@@ -1,35 +1,47 @@
 From: Hangbin Liu <haliu@redhat.com>
-Date: Fri, 20 May 2016 10:38:21 +0800
-Subject: [LTP] [PATCH 1/4] network/stress/icmp: add icmp-multi-diffip.sh
- to implement diffip stress test
-In-Reply-To: <20160520012919.GH19992@Leo.nay.redhat.com>
-References: <1462780623-26778-1-git-send-email-haliu@redhat.com>
- <573B0499.9020308@oracle.com>
- <20160519142900.GG19992@Leo.nay.redhat.com>
- <573DE35A.7060106@oracle.com>
- <20160520012919.GH19992@Leo.nay.redhat.com>
-Message-ID: <20160520023821.GI19992@Leo.nay.redhat.com>
+Date: Fri, 20 May 2016 10:41:57 +0800
+Subject: [LTP] [PATCH 1/2] network/xinetd: source test_net.sh for
+ tst_retry
+In-Reply-To: <1461937540-568-1-git-send-email-haliu@redhat.com>
+References: <1461937540-568-1-git-send-email-haliu@redhat.com>
+Message-ID: <20160520024157.GJ19992@Leo.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, May 20, 2016 at 10:16:33AM +0800, Hangbin Liu wrote:
-> > >>>+# Do Stress testing, ping flood
-> > >>>+tst_resm TINFO "start ping flood stress testing"
-> > >>>+for rhost_addr in ${rhost_addr_array[@]}; do
-> > >>>+	for size in ${ICMP_SIZE_ARRAY}; do
-> > >>>+		ping$TST_IPV6 -f -q -I $lhost_iface $rhost_addr -s $size &> /dev/null &
-> > >>>+	done
-> > >>>+done
-> > 
-> > Can we start ping test in background after adding each IP, i.e. after
-> > tst_ping finished?
+Hi Alexey,
 
-Ah, suddenly come in mind, If we start ping flood just after adding each IP,
-there will have packets loose when we test later added IP address, which may
-cause tst_ping failed. What do you think?
+Would you like to help review this patch set?
 
 Thanks
 Hangbin
+On Fri, Apr 29, 2016 at 09:45:39PM +0800, Hangbin Liu wrote:
+> Fix error: xinetd_tests.sh: line 323: tst_retry: command not found.
+> tst_retry was defined in test.sh. Since this is a network test, source
+> test_net.sh directly.
+> 
+> Signed-off-by: Hangbin Liu <haliu@redhat.com>
+> ---
+>  testcases/network/xinetd/xinetd_tests.sh | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/testcases/network/xinetd/xinetd_tests.sh b/testcases/network/xinetd/xinetd_tests.sh
+> index e50a511..58fb98e 100755
+> --- a/testcases/network/xinetd/xinetd_tests.sh
+> +++ b/testcases/network/xinetd/xinetd_tests.sh
+> @@ -63,6 +63,7 @@ init()
+>      export TST_TOTAL=2
+>      export TCID="xinetd"
+>      export TST_COUNT=0
+> +    . test_net.sh
+>      . daemonlib.sh
+>  
+>      if [ -f "/usr/lib/systemd/system/telnet.socket" ]; then
+> -- 
+> 2.5.5
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
