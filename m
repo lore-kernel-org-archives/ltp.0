@@ -1,114 +1,103 @@
-From: Mike Marshall <hubcap@omnibond.com>
-Date: Fri, 20 May 2016 22:07:41 -0400
-Subject: [LTP] Fwd: pwrite04 ltp bug?
-In-Reply-To: <CADVQ27q119e2Oqg0tVGDjc_8yjoXvQHbg=Tqd9n4jxu8tedRVg@mail.gmail.com>
-References: <CAOg9mSSjfxiZ960tpADgVmndxXQpC7ag9QZSz68NbdeGn+yW9g@mail.gmail.com>
- <CADVQ27oBdCxfuVmknYa16RTXpnYgncn94VnutMgn2+9VD-9bcg@mail.gmail.com>
- <CADVQ27q119e2Oqg0tVGDjc_8yjoXvQHbg=Tqd9n4jxu8tedRVg@mail.gmail.com>
-Message-ID: <CAOg9mSScVopGsoQeoESWAnD2YFrsr2qzQksC8A8T8m8dncFdAg@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 23 May 2016 12:06:50 +0200
+Subject: [LTP] [RFC] [PATCH] lib/tst_test.c: Run test in child process
+In-Reply-To: <1671077356.4707701.1463736355683.JavaMail.zimbra@redhat.com>
+References: <20160519151746.GA2772@rei>
+ <1671077356.4707701.1463736355683.JavaMail.zimbra@redhat.com>
+Message-ID: <20160523100650.GB22559@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi...
+Hi!
+> > +#define MAX(a,b) ((a) > (b) ? (a) : (b))
+> > +
+> > +void tst_run_tcases(int argc, char *argv[], struct tst_test *self)
+> > +{
+> > +	int status;
+> > +	unsigned int timeout, timeout_per_run = 1;
+> 
+> 1s seems very low to me as default. ~18% of (mostly syscall) testcases 
+> I run on s390 have duration >= 1 reported. 
 
-I think I found a bug in pwrite04.c. I mentioned it on the linux
-filesystem mailing list and it was suggested that I mention it to
-you...
+I just stuck 1s there without much thinking about it...
 
--Mike
+> If our goal is to not hang indefinitely, then even a timeout of 5 minutes
+> doesn't look as bad to me. And it also gives kernel time to report a potential
+> soft lockup before we kill the test.
 
-Forwarded conversation
-Subject: pwrite04 ltp bug?
-------------------------
+Having 5 minutes by default sounds too much to me since we have to
+multiply it by the number of iterations below, which would make it 50
+minutes for -i 10. I would be inclined to change it to 10s or something
+similar so that it does not grow indefinitly with the number of
+iterations.
 
-From: *Mike Marshall* <hubcap@omnibond.com>
-Date: Fri, May 20, 2016 at 4:51 PM
-To: linux-fsdevel <linux-fsdevel@vger.kernel.org>, Mike Marshall <
-hubcap@omnibond.com>
+Another soulution would be to restart the timer for each test iteration,
+we could stick to arbitrarily large timeout in that case. But then we
+would have to synchronize the parent and child process somehow.
 
+Well we could make it so the child process sends a heartbeat signal
+after each iteration of test is done. And since we can call alarm() in
+the signal context, we can do that just with child sending SIGUSR1 to
+parent with parent SIGUSR1 handler doing just alarm(timeout); Then we
+can get rid of the timeout computation as well. What do you think about
+this?
 
-Hi everyone...
+> > +
+> > +	tst_test = self;
+> > +	TCID = tst_test->tid;
+> > +
+> > +	do_setup(argc, argv);
+> > +
+> > +	if (tst_test->timeout)
+> > +		timeout_per_run = tst_test->timeout;
+> > +
+> > +	timeout = timeout_per_run * iterations;
+> > +
+> > +	if (duration > 0)
+> > +		timeout = MAX(timeout, duration + 2 * timeout_per_run);
+> > +
+> > +	tst_res(TINFO, "Timeout is %us", timeout);
+> > +
+> > +	SAFE_SIGNAL(SIGALRM, alarm_handler);
+> > +	alarm(timeout);
+> > +
+> > +	test_pid = fork();
+> 
+> Should we care about child processes too? We could make new process group
+> and then send signal to entire process group.
 
-While fixing a couple of LTP regressions in the out-of-tree Orangefs
-kernel module, I think I found a problem with the pwrite04 test,
-here's what I think was meant:
+I'm planning of adding that support on the top of this later. And I'm
+also pondering a possibility to produce more structured logs as well.
 
-# git diff testcases/kernel/syscalls/pwrite/pwrite04.c
-diff --git a/testcases/kernel/syscalls/pwrite/pwrite04.c
-b/testcases/kernel/syscalls/pwrite/pwrite04.c
-index b297682..4ca7dc1 100644
---- a/testcases/kernel/syscalls/pwrite/pwrite04.c
-+++ b/testcases/kernel/syscalls/pwrite/pwrite04.c
-@@ -196,9 +196,9 @@ int main(int ac, char *av[])
+> > +	if (test_pid < 0)
+> > +		tst_brk(TBROK | TERRNO, "fork()");
+> > +
+> > +	if (!test_pid)
+> > +		testrun();
+> > +
+> > +	SAFE_WAITPID(test_pid, &status, 0);
 
-                }
-                if (statbuf.st_size != K5) {
--                       tst_resm(TFAIL, "file size is %ld != K4",
-+                       tst_resm(TFAIL, "file size is %ld != K5",
-                                 statbuf.st_size);
--
-+                       cleanup();
-                }
-                tst_resm(TPASS, "O_APPEND test passed.");
+And it occured to me that we should disharm the alarm here. Since it may
+send a signal to a wrong process since the test pid was freed by the
+waitpid() above.
 
-Should I even be talking about this here, or should I go find
-the github maintainers of LTP and ask them about it?
+> >  	do_cleanup();
+> > +
+> > +	if (WIFEXITED(status) && WEXITSTATUS(status))
+> > +		exit(WEXITSTATUS(status));
+> > +
+> > +	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL)
+> > +		tst_brk(TBROK, "Test killed! (timeout?)");
+> > +
+> > +	if (WIFSIGNALED(status))
+> > +		tst_brk(TBROK, "Test killed by %s!", tst_strsig(WTERMSIG(status)));
+> > +
+> >  	do_exit();
+> >  }
 
--Mike
-
-----------
-From: *Zorro Lang* <zorro.lang@gmail.com>
-Date: Fri, May 20, 2016 at 8:56 PM
-To: Mike Marshall <hubcap@omnibond.com>
-
-
-
-2016年5月21日 04:52，"Mike Marshall" <hubcap@omnibond.com>写道：
->
-> Hi everyone...
->
-> While fixing a couple of LTP regressions in the out-of-tree Orangefs
-> kernel module, I think I found a problem with the pwrite04 test,
-> here's what I think was meant:
->
-> # git diff testcases/kernel/syscalls/pwrite/pwrite04.c
-> diff --git a/testcases/kernel/syscalls/pwrite/pwrite04.c
-> b/testcases/kernel/syscalls/pwrite/pwrite04.c
-> index b297682..4ca7dc1 100644
-> --- a/testcases/kernel/syscalls/pwrite/pwrite04.c
-> +++ b/testcases/kernel/syscalls/pwrite/pwrite04.c
-> @@ -196,9 +196,9 @@ int main(int ac, char *av[])
->
->                 }
->                 if (statbuf.st_size != K5) {
-> -                       tst_resm(TFAIL, "file size is %ld != K4",
-> +                       tst_resm(TFAIL, "file size is %ld != K5",
->                                  statbuf.st_size);
-> -
-> +                       cleanup();
->                 }
->                 tst_resm(TPASS, "O_APPEND test passed.");
->
-> Should I even be talking about this here, or should I go find
-> the github maintainers of LTP and ask them about it?
-
-Hi Mike,
-
-Generally, we send LTP related patches to: ltp@lists.linux.it
-
-Thanks,
-Zorro
-
->
-> -Mike
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-fsdevel"
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160520/a1d8e5d4/attachment.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
