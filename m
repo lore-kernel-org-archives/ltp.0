@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 23 May 2016 15:32:26 +0200
-Subject: [LTP] [PATCH v2 2/3] syscalls/madvise01: reconstruct and
+Date: Mon, 23 May 2016 16:14:18 +0200
+Subject: [LTP] [PATCH v2 3/3] syscalls/madvise02: reconstruct and
  convert to new API
-In-Reply-To: <1463979548-21374-1-git-send-email-liwang@redhat.com>
-References: <1463979548-21374-1-git-send-email-liwang@redhat.com>
-Message-ID: <20160523133226.GA25488@rei.lan>
+In-Reply-To: <1463979557-21421-1-git-send-email-liwang@redhat.com>
+References: <1463979557-21421-1-git-send-email-liwang@redhat.com>
+Message-ID: <20160523141418.GB25488@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,271 +12,351 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +#include "tst_test.h"
-> +#include "tst_kvercmp.h"
-> +#include "lapi/mmap.h"
-> +
-> +#define KSM_SYS_DIR "/sys/kernel/mm/ksm"
-> +#define STR "abcdefghijklmnopqrstuvwxyz12345\n"
-> +
-> +static struct stat st;
-> +static char *sfile;
-> +static char *pfile;
-> +static char  filename[64];
+> +#define SAFE_FREE(p) { if (p) { free(p); (p) = NULL; } }
+
+Just call plain free() in the cleanup it can handle NULL pointers just
+fine.
+
+>  static int fd;
+>  static struct stat st;
+>  static int pagesize;
+> +static char *file;
+> +static char *ptr_memory_allocated;
+> +static char *tmp_memory_allocated;
 > +
 > +static struct {
 > +	int advice;
 > +	char *name;
 > +	char *addr;
+> +	int expect;
 > +	int   flag;
 > +} advice_opt[] = {
-> +	{MADV_NORMAL,      "MADV_NORMAL",      NULL, 1},
-> +	{MADV_RANDOM,      "MADV_RANDOM",      NULL, 1},
-> +	{MADV_SEQUENTIAL,  "MADV_SEQUENTIAL",  NULL, 1},
-> +	{MADV_WILLNEED,    "MADV_WILLNEED",    NULL, 1},
-> +	{MADV_DONTNEED,    "MADV_DONTNEED",    NULL, 1},
-> +	{MADV_REMOVE,      "MADV_REMOVE",      NULL, 1}, /* since Linux 2.6.16 */
-> +	{MADV_DONTFORK,    "MADV_DONTFORK",    NULL, 1}, /* since Linux 2.6.16 */
-> +	{MADV_DOFORK,      "MADV_DOFORK",      NULL, 1}, /* since Linux 2.6.16 */
-> +	{MADV_HWPOISON,    "MADV_HWPOISON",    NULL, 1}, /* since Linux 2.6.32 */
-> +	{MADV_MERGEABLE,   "MADV_MERGEABLE",   NULL, 1}, /* since Linux 2.6.32 */
-> +	{MADV_UNMERGEABLE, "MADV_UNMERGEABLE", NULL, 1}, /* since Linux 2.6.32 */
-> +	{MADV_HUGEPAGE,    "MADV_HUGEPAGE",    NULL, 1}, /* since Linux 2.6.38 */
-> +	{MADV_NOHUGEPAGE,  "MADV_NOHUGEPAGE",  NULL, 1}, /* since Linux 2.6.38 */
-> +	{MADV_DONTDUMP,    "MADV_DONTDUMP",    NULL, 1}, /* since Linux 3.4 */
-> +	{MADV_DODUMP,      "MADV_DODUMP",      NULL, 1}  /* since Linux 3.4 */
+> +	{MADV_NORMAL,      "MADV_NORMAL",      NULL, EINVAL, 1}, /* (1) */
+> +	{MADV_NORMAL,      "MADV_NORMAL",      NULL, EINVAL, 1}, /* (2) */
+> +	{MADV_DONTNEED,    "MADV_DONTNEED",    NULL, EINVAL, 0}, /* (3) */
+> +	{MADV_MERGEABLE,   "MADV_MERGEABLE",   NULL, EINVAL, 1}, /* (4) since Linux 2.6.32 */
+> +	{MADV_UNMERGEABLE, "MADV_UNMERGEABLE", NULL, EINVAL, 1}, /* (5) since Linux 2.6.32 */
+> +	{MADV_WILLNEED,    "MADV_WILLNEED,",   NULL,  EBADF, 1}, /* (6) */
+> +	{MADV_NORMAL,      "MADV_NORMAL",      NULL, ENOMEM, 1}  /* (7) */
 > +};
-> +
-> +static void advice_filter(void)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(advice_opt); i++) {
-> +		advice_opt[i].addr = sfile;
-> +
-> +		switch (advice_opt[i].advice) {
-> +		case MADV_REMOVE:
-> +		case MADV_DONTFORK:
-> +		case MADV_DOFORK:
-> +			if ((tst_kvercmp(2, 6, 16)) < 0)
-> +				advice_opt[i].flag = 0;
-> +			break;
-> +
-> +		case MADV_HWPOISON:
-> +			if ((tst_kvercmp(2, 6, 32)) < 0)
-> +				advice_opt[i].flag = 0;
-> +			break;
-> +
-> +		case MADV_MERGEABLE:
-> +		case MADV_UNMERGEABLE:
-> +			if ((tst_kvercmp(2, 6, 32)) < 0)
-> +				advice_opt[i].flag = 0;
-> +			/* kernel not configured with CONFIG_KSM, skip
-> +			 * test for MADV_MERGEABLE, MADV_UNMERGEABLE */
-> +			if (access(KSM_SYS_DIR, F_OK) != 0)
-> +				advice_opt[i].flag = 0;
-> +			break;
-> +
-> +		case MADV_HUGEPAGE:
-> +		case MADV_NOHUGEPAGE:
-> +			/* MADV_HUGEPAGE only works with private
-> +			 * anonymous pages */
-> +			advice_opt[i].addr = pfile;
-> +			if ((tst_kvercmp(2, 6, 38)) < 0)
-> +				advice_opt[i].flag = 0;
-> +			break;
-> +
-> +		case MADV_DONTDUMP:
-> +		case MADV_DODUMP:
-> +			if ((tst_kvercmp(3, 4, 0)) < 0)
-> +				advice_opt[i].flag = 0;
-> +			break;
-> +
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +}
-
-We should get EINVAL in case that the particular madvice() flag is not
-supported. It should be far easier to check for EINVAL in the test
-function instead of having a filter function.
-
+>  
 > -int main(int argc, char *argv[])
-> +static void setup(void)
+> +static void advice_prepare(void)
 >  {
-> -	int lc, fd;
->  	int i = 0;
-> -	char *file = NULL;
-> -	struct stat stat;
-> -	char filename[64];
-> -	char *progname = NULL;
-> -	char *str_for_file = "abcdefghijklmnopqrstuvwxyz12345\n";
-> -
+> -	int lc;
+>  	int i;
+>  
 > -	tst_parse_opts(argc, argv, NULL, NULL);
-> -
+> +	/* (1) Test for addr EINVAL */
+> +	advice_opt[0].addr = file + 100;
+>  
 > -	setup();
-> -
-> -	progname = *argv;
-> -	sprintf(filename, "%s-out.%d", progname, getpid());
-> -
+> +	/* (2) Test for advice EINVAL */
+> +	advice_opt[1].advice = 1212;
+> +	advice_opt[1].addr = file;
+>  
 > -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 > -		tst_count = 0;
-> -
-> -		fd = open(filename, O_RDWR | O_CREAT, 0664);
-> -		if (fd < 0)
-> -			tst_brkm(TBROK | TERRNO, cleanup, "open failed");
-> -#ifdef DEBUG
-> -		tst_resm(TINFO, "filename = %s opened successfully", filename);
-> -#endif
-> -
-> -		/* Writing 40 KB of random data into this file
-> -		   [32 * 1280 = 40960] */
-> -		for (i = 0; i < 1280; i++)
-> -			if (write(fd, str_for_file, strlen(str_for_file)) == -1)
-> -				tst_brkm(TBROK | TERRNO, cleanup,
-> -					 "write failed");
-> -
-> -		if (fstat(fd, &stat) == -1)
-> -			tst_brkm(TBROK, cleanup, "fstat failed");
-> +	int fd;
+> +	/* (3) Test for lock EINVAL */
+> +#if !defined(UCLINUX)
+> +	if (mlock(file, st.st_size) < 0)
+> +		tst_brk(TBROK | TERRNO, "mlock failed");
+> +	advice_opt[2].flag = 1;
+> +	advice_opt[2].addr = file;
+> +#endif /* if !defined(UCLINUX) */
 >  
-> -		/* Map the input file into memory */
-> -		file = mmap(NULL, stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
-> -		if (file == MAP_FAILED)
-> -			tst_brkm(TBROK, cleanup, "mmap failed");
-> +	SAFE_MKDIR("/mnt/tmp_madvise", 0664);
-> +	SAFE_MOUNT("tmp_madvise", "/mnt/tmp_madvise", "tmpfs", 0, NULL);
+> -		for (i = 0; i < TST_TOTAL; i++)
+> -			(*test_func[i])();
+> +	/* (4,5) Test for MADV_MERGEABLE EINVAL */
+> +	if ((tst_kvercmp(2, 6, 32)) < 0)
+> +		for (i = 3; i < 5; i++) {
+> +			advice_opt[i].flag = 0;
+> +			advice_opt[i].addr = file;
+> +		}
+> +
+> +	if (access(KSM_SYS_DIR, F_OK) == 0) {
+> +		/* kernel configured with CONFIG_KSM,
+> +		 * skip EINVAL test for MADV_MERGEABLE. */
+> +		for (i = 3; i < 5; i++) {
+> +			advice_opt[i].flag = 0;
+> +			advice_opt[i].addr = file;
+> +		}
+>  	}
 
-The test must not create files outside its test directory and so it
-should mount the tmpfs with a relative path (so that it's mounted inside
-of the test directory).
+This whole part is a mess. You should not change the content of the
+structure in this way. If there are values that has to be changed on the
+runtime the structure members should be initialized with a pointers to a
+variable and that variable should be set up in the setup().
 
-> -		/* (1) Test case for MADV_NORMAL */
-> -		TEST(madvise(file, stat.st_size, MADV_NORMAL));
-> -		check_and_print("MADV_NORMAL");
-> +	sprintf(filename, "/mnt/tmp_madvise/madvise01.%d", getpid());
-> +	fd = SAFE_OPEN(filename, O_RDWR | O_CREAT, 0664);
 
-And once the test works with the files only in it's temporary directory
-there is no need to create unique file names, the directory filename is
-unique allready.
+I.e.
 
-> -		/* (2) Test case for MADV_RANDOM */
-> -		TEST(madvise(file, stat.st_size, MADV_RANDOM));
-> -		check_and_print("MADV_RANDOM");
-> +	/* Writing 40 KB of random data into this file [32 * 1280 = 40960] */
-> +	for (i = 0; i < 1280; i++)
-> +		SAFE_WRITE(1, fd, STR, strlen(STR));
->  
-> -		/* (3) Test case for MADV_SEQUENTIAL */
-> -		TEST(madvise(file, stat.st_size, MADV_SEQUENTIAL));
-> -		check_and_print("MADV_SEQUENTIAL");
-> +	SAFE_FSTAT(fd, &st);
->  
-> -		/* (4) Test case for MADV_WILLNEED */
-> -		TEST(madvise(file, stat.st_size, MADV_WILLNEED));
-> -		check_and_print("MADV_WILLNEED");
-> +	/* Map the input file into shared memory */
-> +	sfile = SAFE_MMAP(NULL, st.st_size,
-> +			PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
->  
-> -		/* (5) Test case for MADV_DONTNEED */
-> -		TEST(madvise(file, stat.st_size, MADV_DONTNEED));
-> -		check_and_print("MADV_DONTNEED");
-> +	/* Map the input file into private memory */
-> +	pfile = SAFE_MMAP(NULL, st.st_size,
-> +			PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, fd, 0);
-> +	close(fd);
+static char *mmaped_file;
 
-SAFE_CLOSE(fd);
+static struct tcase {
+	...
+	char **addr;
+	...
+} tcases[] = {
+	{..., .addr = &mmaped_file, ...}
+};
 
-> -		if (munmap(file, stat.st_size) == -1)
-> -			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
-> -
-> -		close(fd);
-> -	}
-> -
+static void setup(void)
+{
+	mmaped_file = SAFE_MMAP(...);
+}
+
 > -	cleanup();
 > -	tst_exit();
-> +	advice_filter();
+> +	/* (6) Test for MADV_WILLNEED EBADF */
+> +	ptr_memory_allocated = SAFE_MALLOC(st.st_size);
+> +	/* Take temporary pointer for later use, freeing up the
+> +	 * original one. */
+> +	tmp_memory_allocated = ptr_memory_allocated;
+> +	tmp_memory_allocated =
+> +		(char *)(((unsigned long)tmp_memory_allocated
+> +					+ pagesize - 1) & ~(pagesize - 1));
+> +	advice_opt[5].addr = tmp_memory_allocated;
+> +
+> +	if ((tst_kvercmp(3, 9, 0)) > 0)
+> +		/* In kernel commit 1998cc0, madvise(MADV_WILLNEED) to
+> +		 * anon mem doesn't return -EBADF now, as now we support
+> +		 * swap prefretch. */
+> +		advice_opt[5].flag = 0;
+> +
+> +	/* (7) Test for MADV_NORMAL ENOMEM */
+> +	SAFE_MUNMAP(file + st.st_size - pagesize, pagesize);
+> +	advice_opt[6].addr = file;
 >  }
 >  
-> -static void setup(void)
-> +static void cleanup(void)
+>  static void setup(void)
 >  {
-> -
+>  	int i;
+>  
 > -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 > -
 > -	TEST_PAUSE;
 > -
 > -	tst_tmpdir();
-> +	SAFE_MUNMAP(sfile, st.st_size);
-> +	SAFE_MUNMAP(pfile, st.st_size);
-> +	SAFE_UMOUNT("/mnt/tmp_madvise");
-> +	SAFE_RMDIR("/mnt/tmp_madvise");
-
-You are using SAFE_MACROS in the setup therefore the cleanup may be
-invoked at any point of the initialization and because of that the
-cleanup should only cleanup what has been initalized (only if pointers
-are non-NULL, etc.).
-
-Also using SAFE_MACROS() in cleanup is not allowed since failure will
-exit the cleanup prematurely.
-
->  }
+> -
+> -	fd = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0664);
+> +	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
+>  
+>  	pagesize = getpagesize();
+>  
+>  	/* Writing 16 pages of random data into this file */
+>  	for (i = 0; i < (pagesize / 2); i++)
+> -		SAFE_WRITE(cleanup, 1, fd, STR, sizeof(STR) - 1);
+> +		SAFE_WRITE(1, fd, STR, sizeof(STR) - 1);
+>  
+> -	SAFE_FSTAT(cleanup, fd, &st);
+> -}
+> +	SAFE_FSTAT(fd, &st);
 >  
 > -static void cleanup(void)
-> +static void check_and_print(char *advice)
->  {
+> -{
+> -	if (fd && close(fd) < 0)
+> -		tst_resm(TWARN | TERRNO, "close failed");
+> +	file = SAFE_MMAP(0, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+>  
 > -	tst_rmdir();
-> -
-> +	if (TEST_RETURN == -1) {
-> +		tst_res(TFAIL, "madvise test for %s failed with "
-> +				"return = %ld, errno = %d : %s",
-> +				advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
-
-No strerror() in the testcases, use tst_strerrno() instead. Also
-TEST_ERRNO should be printed as TFAIL | TTERRNO.
-
-> +	} else
-> +		tst_res(TPASS, "madvise test for %s PASSED", advice);
+> +	advice_prepare();
 >  }
-
-Now that the test function is only one and only a few lines long there
-is absolutely no reason to have separate check_and_print() function.
-Just put this code into the madvise_test() function directly.
-
-> -static void check_and_print(char *advice)
-> +static void madvise_test(unsigned int nr)
+>  
+>  static void check_and_print(int expected_errno)
 >  {
-> -	if (TEST_RETURN == -1)
-> -		tst_resm(TFAIL | TTERRNO, "madvise test for %s failed", advice);
-> -	else
-> -		tst_resm(TPASS, "madvise test for %s PASSED", advice);
+>  	if (TEST_RETURN == -1) {
+>  		if (TEST_ERRNO == expected_errno)
+> -			tst_resm(TPASS | TTERRNO, "failed as expected");
+> +			tst_res(TPASS | TTERRNO, "failed as expected");
+>  		else
+> -			tst_resm(TFAIL | TTERRNO,
+> +			tst_res(TFAIL | TTERRNO,
+>  				 "failed unexpectedly; expected - %d : %s",
+>  				 expected_errno, strerror(expected_errno));
+>  	} else {
+> -		tst_resm(TFAIL, "madvise succeeded unexpectedly");
+> -	}
+> -}
+
+Here as well, it does not make sense to have separate check_and_print()
+function anymore.
+
+> -static void test_addr_einval(void)
+> -{
+> -	char *file;
+> -
+> -	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+> -					 MAP_SHARED, fd, 0);
+> -
+> -	TEST(madvise(file + 100, st.st_size, MADV_NORMAL));
+> -	check_and_print(EINVAL);
+> -
+> -	SAFE_MUNMAP(cleanup, file, st.st_size);
+> -}
+> -
+> -static void test_advice_einval(void)
+> -{
+> -	char *file;
+> -
+> -	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+> -					 MAP_SHARED, fd, 0);
+> -
+> -	TEST(madvise(file, st.st_size, 1212));
+> -	check_and_print(EINVAL);
+> -
+> -	SAFE_MUNMAP(cleanup, file, st.st_size);
+> -}
+> -
+> -#if !defined(UCLINUX)
+> -static void test_lock_einval(void)
+> -{
+> -	char *file;
+> -
+> -	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+> -					 MAP_SHARED, fd, 0);
+> -
+> -	if (mlock(file, st.st_size) < 0)
+> -		tst_brkm(TBROK | TERRNO, cleanup, "mlock failed");
+> -
+> -	TEST(madvise(file, st.st_size, MADV_DONTNEED));
+> -	check_and_print(EINVAL);
+> -
+> -	SAFE_MUNMAP(cleanup, file, st.st_size);
+> -}
+> -#endif /* if !defined(UCLINUX) */
+> -
+> -#if defined(MADV_MERGEABLE)
+> -static void test_mergeable_einval(void)
+> -{
+> -	char *file;
+> -
+> -	if (access(KSM_SYS_DIR, F_OK) >= 0) {
+> -		tst_resm(TCONF, "kernel configured with CONFIG_KSM, "
+> -				 "skip EINVAL test for MADV_MERGEABLE.");
+> -		return;
+> +		tst_res(TFAIL, "madvise succeeded unexpectedly");
+>  	}
+> -
+> -	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+> -					 MAP_SHARED, fd, 0);
+> -
+> -	TEST(madvise(file, st.st_size, MADV_MERGEABLE));
+> -	check_and_print(EINVAL);
+> -
+> -	SAFE_MUNMAP(cleanup, file, st.st_size);
+>  }
+> -#endif
+>  
+> -#if defined(MADV_UNMERGEABLE)
+> -static void test_unmergeable_einval(void)
+> +static void advice_test(unsigned int nr)
+>  {
+> -	char *file;
+> -
+> -	if (access(KSM_SYS_DIR, F_OK) >= 0) {
+> -		tst_resm(TCONF, "kernel configured with CONFIG_KSM, "
+> -				 "skip EINVAL test for MADV_UNMERGEABLE.");
+> -		return;
+> -	}
+> -
+> -	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+> -					 MAP_SHARED, fd, 0);
+> -
+> -	TEST(madvise(file, st.st_size, MADV_UNMERGEABLE));
+> -	check_and_print(EINVAL);
+> -
+> -	SAFE_MUNMAP(cleanup, file, st.st_size);
 > +	if (advice_opt[nr].flag == 1) {
 > +		TEST(madvise(advice_opt[nr].addr, st.st_size, advice_opt[nr].advice));
-> +		check_and_print(advice_opt[nr].name);
-
-It's much easier to get a pointer to the particular test structure
-instead of using an index to the array all the time, i.e.:
-
-struct tcase *tc = &tcases[i];
-
-TEST(madvise(tc->addr, st.st_size, tc->advice));
-
+> +		check_and_print(advice_opt[nr].expect);
 > +	} else
-> +		tst_res(TCONF, "%s is not supported", advice_opt[nr].name);
+> +		tst_res(TCONF, "%s is skipped", advice_opt[nr].name);
 >  }
-> +
+> -#endif
+>  
+> -static void test_enomem(void)
+> +static void cleanup(void)
+>  {
+> -	char *low;
+> -	char *high;
+> -	unsigned long len;
+> -
+> -	low = SAFE_MMAP(cleanup, 0, st.st_size / 2, PROT_READ,
+> -					MAP_SHARED, fd, 0);
+> -
+> -	high = SAFE_MMAP(cleanup, 0, st.st_size / 2, PROT_READ,
+> -					 MAP_SHARED, fd, st.st_size / 2);
+> -
+> -	/* Swap if necessary to make low < high */
+> -	if (low > high) {
+> -		char *tmp;
+> -		tmp = high;
+> -		high = low;
+> -		low = tmp;
+> -	}
+> -
+> -	len = (high - low) + pagesize;
+> -
+> -	SAFE_MUNMAP(cleanup, high, st.st_size / 2);
+> -
+> -	TEST(madvise(low, len, MADV_NORMAL));
+> -	check_and_print(ENOMEM);
+> +	if (fd && close(fd) < 0)
+> +		tst_res(TWARN | TERRNO, "close failed");
+
+It's better to check if fd > 0 since otherwise you may attempt to call
+close with fd = -1 if open() has failed.
+
+> -	SAFE_MUNMAP(cleanup, low, st.st_size / 2);
+> +	SAFE_FREE(ptr_memory_allocated);
+> +	SAFE_MUNMAP(file, st.st_size);
+>  }
+
+Here as well no SAFE_MACROS() in cleanup and make sure to unmap only
+memory that has been mmaped.
+
+> -static void test_ebadf(void)
+> -{
+> -	char *ptr_memory_allocated = NULL;
+> -	char *tmp_memory_allocated = NULL;
+> -
+> -	/* Create one memory segment using malloc */
+> -	ptr_memory_allocated = malloc(5 * pagesize);
+> -	/*
+> -	 * Take temporary pointer for later use, freeing up the
+> -	 * original one.
+> -	 */
+> -	tmp_memory_allocated = ptr_memory_allocated;
+> -	tmp_memory_allocated =
+> -		(char *)(((unsigned long)tmp_memory_allocated +
+> -			pagesize - 1) & ~(pagesize - 1));
+> -
+> -	TEST(madvise(tmp_memory_allocated, 5 * pagesize, MADV_WILLNEED));
+> -	if (tst_kvercmp(3, 9, 0) < 0) {
+> -		check_and_print(EBADF);
+> -	/* in kernel commit 1998cc0, madvise(MADV_WILLNEED) to anon
+> -	 * mem doesn't return -EBADF now, as now we support swap
+> -	 * prefretch.
+> -	 */
+> -	} else {
+> -		tst_resm(TPASS, "madvise succeeded as expected, see "
+> -				"kernel commit 1998cc0 for details.");
+> -	}
+> -
+> -	free(ptr_memory_allocated);
+> -}
 > +static struct tst_test test = {
-> +	.tid = "madvise01",
+> +	.tid = "madvise02",
 > +	.tcnt = ARRAY_SIZE(advice_opt),
-> +	.test = madvise_test,
+> +	.test = advice_test,
 > +	.needs_tmpdir = 1,
 > +	.setup = setup,
 > +	.cleanup = cleanup,
 > +};
+> -- 
+> 1.8.3.1
+> 
 
 -- 
 Cyril Hrubis
