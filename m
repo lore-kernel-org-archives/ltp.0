@@ -1,14 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 23 May 2016 17:43:53 +0200
-Subject: [LTP] Fwd: pwrite04 ltp bug?
-In-Reply-To: <CAOg9mSQJF9gShs0m8osa7=idydmsacV1og78XCq=zitNH6aR9Q@mail.gmail.com>
-References: <CAOg9mSSjfxiZ960tpADgVmndxXQpC7ag9QZSz68NbdeGn+yW9g@mail.gmail.com>
- <CADVQ27oBdCxfuVmknYa16RTXpnYgncn94VnutMgn2+9VD-9bcg@mail.gmail.com>
- <CADVQ27q119e2Oqg0tVGDjc_8yjoXvQHbg=Tqd9n4jxu8tedRVg@mail.gmail.com>
- <CAOg9mSScVopGsoQeoESWAnD2YFrsr2qzQksC8A8T8m8dncFdAg@mail.gmail.com>
- <20160523123928.GE22559@rei.lan>
- <CAOg9mSQJF9gShs0m8osa7=idydmsacV1og78XCq=zitNH6aR9Q@mail.gmail.com>
-Message-ID: <20160523154353.GE25488@rei.lan>
+Date: Mon, 23 May 2016 18:02:57 +0200
+Subject: [LTP] [PATCH] memcg/functional: check several times if the
+ process is killed
+In-Reply-To: <1463669724-7193-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1463669724-7193-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20160523160257.GF25488@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,20 +12,66 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
->  > This does not look right...
+> On some systems it may take slightly more than one second
+> to kill the memcg_process. So let's check several times if the
+> process is alive.
 > 
-> OK, I was just copying the file size test
-> loop above the "Finally" comment, I assumed
-> that cleanup exited. As it is, if you fail the
-> file size loop I edited,  you'll get both a FAIL
-> and a PASS...
+> Also removed sleep() before moving the process to the memory cgroup,
+> since this looks reduntant.
 > 
-> Maybe in all the cases that resolve to FAIL
-> we should goto some kind of out-fail: ?
+> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+> ---
+>  .../controllers/memcg/functional/memcg_lib.sh      |   14 ++++++++++----
+>  1 files changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> index 9b9b0fd..93c61a1 100755
+> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+> @@ -220,14 +220,20 @@ test_proc_kill()
+>  
+>  	$TEST_PATH/memcg_process $2 -s $3 &
+>  	pid=$!
+> -	sleep 1
 
-The best solution would to move the actual test to a separate function
-called from the for() loop in main(), then we can just do return in case
-of failure.
+This sleep sure is useless.
+
+>  	echo $pid > tasks
+>  
+>  	kill -s USR1 $pid 2> /dev/null
+> -	sleep 1
+> -
+> -	ps -p $pid > /dev/null 2> /dev/null
+> -	if [ $? -ne 0 ]; then
+> +	pid_exists=1
+> +	for tpk_iter in $(seq 5); do
+> +	    if ! kill $pid 2> /dev/null; then
+> +		pid_exists=0
+> +		break
+> +	    fi
+> +	    sleep 1
+> +	done
+
+This does no seem right to me. The original code send a SIGUSR1 signal
+to the memcg_process which caused it to allocate memory which supposedly
+provokes OOM to kill it. Hence the sleep 1 after the kill -s USR $pid.
+
+Now this code hammers the memcg_process with SIGKILL instead.
+
+As far as I can tell the right thing to do here is to wait with
+reasonable timeout for the memcg_process to become zombie and only kill
+it if that hasn't happened. Or did I miss something?
+
+> +	if [ $pid_exists -eq 0 ]; then
+>  		wait $pid
+>  		if [ $? -eq 1 ]; then
+>  			result $FAIL "process $pid is killed by error"
+> -- 
+> 1.7.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
