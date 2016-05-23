@@ -1,8 +1,8 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 23 May 2016 12:59:08 +0800
-Subject: [LTP] [PATCH v2 2/3] syscalls/madvise01: reconstruct and convert to
+Date: Mon, 23 May 2016 12:59:16 +0800
+Subject: [LTP] [PATCH v2 3/3] syscalls/madvise02: reconstruct and convert to
 	new API
-Message-ID: <1463979548-21374-1-git-send-email-liwang@redhat.com>
+Message-ID: <1463979557-21421-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,609 +11,379 @@ To: ltp@lists.linux.it
 
 * take use of some SAFE Marcos
 * move the intialization operations to setup()
-* merge madvise0[3|4] into madvise01
-* create the test file on tmpfs
-* create new array madvise_opt[]
-* add "MADV_HWPOISON, MADV_HUGEPAGE, MADV_NOHUGEPAGE
-  MADV_MERGEABLE, MADV_UNMERGEABLE" in test option
+* create new struct array madvise_opt[]
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- runtest/syscalls                              |   2 -
- testcases/kernel/syscalls/madvise/madvise01.c | 214 ++++++++++++++++----------
- testcases/kernel/syscalls/madvise/madvise03.c | 182 ----------------------
- testcases/kernel/syscalls/madvise/madvise04.c | 138 -----------------
- 4 files changed, 130 insertions(+), 406 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/madvise/madvise03.c
- delete mode 100644 testcases/kernel/syscalls/madvise/madvise04.c
+ testcases/kernel/syscalls/madvise/madvise02.c | 305 +++++++++-----------------
+ 1 file changed, 98 insertions(+), 207 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 6af3dad..96f398d 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -741,8 +741,6 @@ mincore02 mincore02
- 
- madvise01 madvise01
- madvise02 madvise02
--madvise03 madvise03
--madvise04 madvise04
- madvise05 madvise05
- madvise06 madvise06
- 
-diff --git a/testcases/kernel/syscalls/madvise/madvise01.c b/testcases/kernel/syscalls/madvise/madvise01.c
-index 4b1286d..07a8e24 100644
---- a/testcases/kernel/syscalls/madvise/madvise01.c
-+++ b/testcases/kernel/syscalls/madvise/madvise01.c
-@@ -32,107 +32,153 @@
+diff --git a/testcases/kernel/syscalls/madvise/madvise02.c b/testcases/kernel/syscalls/madvise/madvise02.c
+index b9eb77d..abefa07 100644
+--- a/testcases/kernel/syscalls/madvise/madvise02.c
++++ b/testcases/kernel/syscalls/madvise/madvise02.c
+@@ -48,263 +48,154 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <stdio.h>
++#include <stdlib.h>
  #include <string.h>
  #include <unistd.h>
- 
 -#include "test.h"
+-#include "safe_macros.h"
++
++#include "tst_kvercmp.h"
++#include "tst_test.h"
++#include "lapi/mmap.h"
+ 
+ #define TEST_FILE "testfile"
+ #define STR "abcdefghijklmnopqrstuvwxyz12345\n"
+-
+ #define KSM_SYS_DIR	"/sys/kernel/mm/ksm"
 -
 -static void setup(void);
 -static void cleanup(void);
--static void check_and_print(char *advice);
+-static void check_and_print(int expected_errno);
 -
--char *TCID = "madvise01";
--int TST_TOTAL = 5;
-+#include "tst_test.h"
-+#include "tst_kvercmp.h"
-+#include "lapi/mmap.h"
-+
-+#define KSM_SYS_DIR "/sys/kernel/mm/ksm"
-+#define STR "abcdefghijklmnopqrstuvwxyz12345\n"
-+
-+static struct stat st;
-+static char *sfile;
-+static char *pfile;
-+static char  filename[64];
+-static void test_addr_einval(void);
+-static void test_advice_einval(void);
+-#if !defined(UCLINUX)
+-static void test_lock_einval(void);
+-#endif /* if !defined(UCLINUX) */
+-#if defined(MADV_MERGEABLE)
+-static void test_mergeable_einval(void);
+-#endif
+-#if defined(MADV_UNMERGEABLE)
+-static void test_unmergeable_einval(void);
+-#endif
+-static void test_enomem(void);
+-static void test_ebadf(void);
+-
+-static void (*test_func[])(void) = {
+-	test_addr_einval,
+-	test_advice_einval,
+-#if !defined(UCLINUX)
+-	test_lock_einval,
+-#endif /* if !defined(UCLINUX) */
+-#if defined(MADV_MERGEABLE)
+-	test_mergeable_einval,
+-#endif
+-#if defined(MADV_UNMERGEABLE)
+-	test_unmergeable_einval,
+-#endif
+-	test_enomem,
+-	test_ebadf,
+-};
+-
+-char *TCID = "madvise02";
+-int TST_TOTAL = ARRAY_SIZE(test_func);
++#define SAFE_FREE(p) { if (p) { free(p); (p) = NULL; } }
+ 
+ static int fd;
+ static struct stat st;
+ static int pagesize;
++static char *file;
++static char *ptr_memory_allocated;
++static char *tmp_memory_allocated;
 +
 +static struct {
 +	int advice;
 +	char *name;
 +	char *addr;
++	int expect;
 +	int   flag;
 +} advice_opt[] = {
-+	{MADV_NORMAL,      "MADV_NORMAL",      NULL, 1},
-+	{MADV_RANDOM,      "MADV_RANDOM",      NULL, 1},
-+	{MADV_SEQUENTIAL,  "MADV_SEQUENTIAL",  NULL, 1},
-+	{MADV_WILLNEED,    "MADV_WILLNEED",    NULL, 1},
-+	{MADV_DONTNEED,    "MADV_DONTNEED",    NULL, 1},
-+	{MADV_REMOVE,      "MADV_REMOVE",      NULL, 1}, /* since Linux 2.6.16 */
-+	{MADV_DONTFORK,    "MADV_DONTFORK",    NULL, 1}, /* since Linux 2.6.16 */
-+	{MADV_DOFORK,      "MADV_DOFORK",      NULL, 1}, /* since Linux 2.6.16 */
-+	{MADV_HWPOISON,    "MADV_HWPOISON",    NULL, 1}, /* since Linux 2.6.32 */
-+	{MADV_MERGEABLE,   "MADV_MERGEABLE",   NULL, 1}, /* since Linux 2.6.32 */
-+	{MADV_UNMERGEABLE, "MADV_UNMERGEABLE", NULL, 1}, /* since Linux 2.6.32 */
-+	{MADV_HUGEPAGE,    "MADV_HUGEPAGE",    NULL, 1}, /* since Linux 2.6.38 */
-+	{MADV_NOHUGEPAGE,  "MADV_NOHUGEPAGE",  NULL, 1}, /* since Linux 2.6.38 */
-+	{MADV_DONTDUMP,    "MADV_DONTDUMP",    NULL, 1}, /* since Linux 3.4 */
-+	{MADV_DODUMP,      "MADV_DODUMP",      NULL, 1}  /* since Linux 3.4 */
++	{MADV_NORMAL,      "MADV_NORMAL",      NULL, EINVAL, 1}, /* (1) */
++	{MADV_NORMAL,      "MADV_NORMAL",      NULL, EINVAL, 1}, /* (2) */
++	{MADV_DONTNEED,    "MADV_DONTNEED",    NULL, EINVAL, 0}, /* (3) */
++	{MADV_MERGEABLE,   "MADV_MERGEABLE",   NULL, EINVAL, 1}, /* (4) since Linux 2.6.32 */
++	{MADV_UNMERGEABLE, "MADV_UNMERGEABLE", NULL, EINVAL, 1}, /* (5) since Linux 2.6.32 */
++	{MADV_WILLNEED,    "MADV_WILLNEED,",   NULL,  EBADF, 1}, /* (6) */
++	{MADV_NORMAL,      "MADV_NORMAL",      NULL, ENOMEM, 1}  /* (7) */
 +};
-+
-+static void advice_filter(void)
-+{
-+	unsigned int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(advice_opt); i++) {
-+		advice_opt[i].addr = sfile;
-+
-+		switch (advice_opt[i].advice) {
-+		case MADV_REMOVE:
-+		case MADV_DONTFORK:
-+		case MADV_DOFORK:
-+			if ((tst_kvercmp(2, 6, 16)) < 0)
-+				advice_opt[i].flag = 0;
-+			break;
-+
-+		case MADV_HWPOISON:
-+			if ((tst_kvercmp(2, 6, 32)) < 0)
-+				advice_opt[i].flag = 0;
-+			break;
-+
-+		case MADV_MERGEABLE:
-+		case MADV_UNMERGEABLE:
-+			if ((tst_kvercmp(2, 6, 32)) < 0)
-+				advice_opt[i].flag = 0;
-+			/* kernel not configured with CONFIG_KSM, skip
-+			 * test for MADV_MERGEABLE, MADV_UNMERGEABLE */
-+			if (access(KSM_SYS_DIR, F_OK) != 0)
-+				advice_opt[i].flag = 0;
-+			break;
-+
-+		case MADV_HUGEPAGE:
-+		case MADV_NOHUGEPAGE:
-+			/* MADV_HUGEPAGE only works with private
-+			 * anonymous pages */
-+			advice_opt[i].addr = pfile;
-+			if ((tst_kvercmp(2, 6, 38)) < 0)
-+				advice_opt[i].flag = 0;
-+			break;
-+
-+		case MADV_DONTDUMP:
-+		case MADV_DODUMP:
-+			if ((tst_kvercmp(3, 4, 0)) < 0)
-+				advice_opt[i].flag = 0;
-+			break;
-+
-+		default:
-+			break;
-+		}
-+	}
-+}
  
 -int main(int argc, char *argv[])
-+static void setup(void)
++static void advice_prepare(void)
  {
--	int lc, fd;
- 	int i = 0;
--	char *file = NULL;
--	struct stat stat;
--	char filename[64];
--	char *progname = NULL;
--	char *str_for_file = "abcdefghijklmnopqrstuvwxyz12345\n";
--
+-	int lc;
+ 	int i;
+ 
 -	tst_parse_opts(argc, argv, NULL, NULL);
--
++	/* (1) Test for addr EINVAL */
++	advice_opt[0].addr = file + 100;
+ 
 -	setup();
--
--	progname = *argv;
--	sprintf(filename, "%s-out.%d", progname, getpid());
--
++	/* (2) Test for advice EINVAL */
++	advice_opt[1].advice = 1212;
++	advice_opt[1].addr = file;
+ 
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
--
--		fd = open(filename, O_RDWR | O_CREAT, 0664);
--		if (fd < 0)
--			tst_brkm(TBROK | TERRNO, cleanup, "open failed");
--#ifdef DEBUG
--		tst_resm(TINFO, "filename = %s opened successfully", filename);
--#endif
--
--		/* Writing 40 KB of random data into this file
--		   [32 * 1280 = 40960] */
--		for (i = 0; i < 1280; i++)
--			if (write(fd, str_for_file, strlen(str_for_file)) == -1)
--				tst_brkm(TBROK | TERRNO, cleanup,
--					 "write failed");
--
--		if (fstat(fd, &stat) == -1)
--			tst_brkm(TBROK, cleanup, "fstat failed");
-+	int fd;
++	/* (3) Test for lock EINVAL */
++#if !defined(UCLINUX)
++	if (mlock(file, st.st_size) < 0)
++		tst_brk(TBROK | TERRNO, "mlock failed");
++	advice_opt[2].flag = 1;
++	advice_opt[2].addr = file;
++#endif /* if !defined(UCLINUX) */
  
--		/* Map the input file into memory */
--		file = mmap(NULL, stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
--		if (file == MAP_FAILED)
--			tst_brkm(TBROK, cleanup, "mmap failed");
-+	SAFE_MKDIR("/mnt/tmp_madvise", 0664);
-+	SAFE_MOUNT("tmp_madvise", "/mnt/tmp_madvise", "tmpfs", 0, NULL);
+-		for (i = 0; i < TST_TOTAL; i++)
+-			(*test_func[i])();
++	/* (4,5) Test for MADV_MERGEABLE EINVAL */
++	if ((tst_kvercmp(2, 6, 32)) < 0)
++		for (i = 3; i < 5; i++) {
++			advice_opt[i].flag = 0;
++			advice_opt[i].addr = file;
++		}
++
++	if (access(KSM_SYS_DIR, F_OK) == 0) {
++		/* kernel configured with CONFIG_KSM,
++		 * skip EINVAL test for MADV_MERGEABLE. */
++		for (i = 3; i < 5; i++) {
++			advice_opt[i].flag = 0;
++			advice_opt[i].addr = file;
++		}
+ 	}
  
--		/* (1) Test case for MADV_NORMAL */
--		TEST(madvise(file, stat.st_size, MADV_NORMAL));
--		check_and_print("MADV_NORMAL");
-+	sprintf(filename, "/mnt/tmp_madvise/madvise01.%d", getpid());
-+	fd = SAFE_OPEN(filename, O_RDWR | O_CREAT, 0664);
- 
--		/* (2) Test case for MADV_RANDOM */
--		TEST(madvise(file, stat.st_size, MADV_RANDOM));
--		check_and_print("MADV_RANDOM");
-+	/* Writing 40 KB of random data into this file [32 * 1280 = 40960] */
-+	for (i = 0; i < 1280; i++)
-+		SAFE_WRITE(1, fd, STR, strlen(STR));
- 
--		/* (3) Test case for MADV_SEQUENTIAL */
--		TEST(madvise(file, stat.st_size, MADV_SEQUENTIAL));
--		check_and_print("MADV_SEQUENTIAL");
-+	SAFE_FSTAT(fd, &st);
- 
--		/* (4) Test case for MADV_WILLNEED */
--		TEST(madvise(file, stat.st_size, MADV_WILLNEED));
--		check_and_print("MADV_WILLNEED");
-+	/* Map the input file into shared memory */
-+	sfile = SAFE_MMAP(NULL, st.st_size,
-+			PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
- 
--		/* (5) Test case for MADV_DONTNEED */
--		TEST(madvise(file, stat.st_size, MADV_DONTNEED));
--		check_and_print("MADV_DONTNEED");
-+	/* Map the input file into private memory */
-+	pfile = SAFE_MMAP(NULL, st.st_size,
-+			PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, fd, 0);
-+	close(fd);
- 
--		if (munmap(file, stat.st_size) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
--
--		close(fd);
--	}
--
 -	cleanup();
 -	tst_exit();
-+	advice_filter();
++	/* (6) Test for MADV_WILLNEED EBADF */
++	ptr_memory_allocated = SAFE_MALLOC(st.st_size);
++	/* Take temporary pointer for later use, freeing up the
++	 * original one. */
++	tmp_memory_allocated = ptr_memory_allocated;
++	tmp_memory_allocated =
++		(char *)(((unsigned long)tmp_memory_allocated
++					+ pagesize - 1) & ~(pagesize - 1));
++	advice_opt[5].addr = tmp_memory_allocated;
++
++	if ((tst_kvercmp(3, 9, 0)) > 0)
++		/* In kernel commit 1998cc0, madvise(MADV_WILLNEED) to
++		 * anon mem doesn't return -EBADF now, as now we support
++		 * swap prefretch. */
++		advice_opt[5].flag = 0;
++
++	/* (7) Test for MADV_NORMAL ENOMEM */
++	SAFE_MUNMAP(file + st.st_size - pagesize, pagesize);
++	advice_opt[6].addr = file;
  }
  
--static void setup(void)
-+static void cleanup(void)
+ static void setup(void)
  {
--
+ 	int i;
+ 
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
 -	tst_tmpdir();
-+	SAFE_MUNMAP(sfile, st.st_size);
-+	SAFE_MUNMAP(pfile, st.st_size);
-+	SAFE_UMOUNT("/mnt/tmp_madvise");
-+	SAFE_RMDIR("/mnt/tmp_madvise");
- }
+-
+-	fd = SAFE_OPEN(cleanup, TEST_FILE, O_RDWR | O_CREAT, 0664);
++	fd = SAFE_OPEN(TEST_FILE, O_RDWR | O_CREAT, 0664);
+ 
+ 	pagesize = getpagesize();
+ 
+ 	/* Writing 16 pages of random data into this file */
+ 	for (i = 0; i < (pagesize / 2); i++)
+-		SAFE_WRITE(cleanup, 1, fd, STR, sizeof(STR) - 1);
++		SAFE_WRITE(1, fd, STR, sizeof(STR) - 1);
+ 
+-	SAFE_FSTAT(cleanup, fd, &st);
+-}
++	SAFE_FSTAT(fd, &st);
  
 -static void cleanup(void)
-+static void check_and_print(char *advice)
- {
+-{
+-	if (fd && close(fd) < 0)
+-		tst_resm(TWARN | TERRNO, "close failed");
++	file = SAFE_MMAP(0, st.st_size, PROT_READ, MAP_SHARED, fd, 0);
+ 
 -	tst_rmdir();
--
-+	if (TEST_RETURN == -1) {
-+		tst_res(TFAIL, "madvise test for %s failed with "
-+				"return = %ld, errno = %d : %s",
-+				advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
-+	} else
-+		tst_res(TPASS, "madvise test for %s PASSED", advice);
++	advice_prepare();
  }
  
--static void check_and_print(char *advice)
-+static void madvise_test(unsigned int nr)
+ static void check_and_print(int expected_errno)
  {
--	if (TEST_RETURN == -1)
--		tst_resm(TFAIL | TTERRNO, "madvise test for %s failed", advice);
--	else
--		tst_resm(TPASS, "madvise test for %s PASSED", advice);
+ 	if (TEST_RETURN == -1) {
+ 		if (TEST_ERRNO == expected_errno)
+-			tst_resm(TPASS | TTERRNO, "failed as expected");
++			tst_res(TPASS | TTERRNO, "failed as expected");
+ 		else
+-			tst_resm(TFAIL | TTERRNO,
++			tst_res(TFAIL | TTERRNO,
+ 				 "failed unexpectedly; expected - %d : %s",
+ 				 expected_errno, strerror(expected_errno));
+ 	} else {
+-		tst_resm(TFAIL, "madvise succeeded unexpectedly");
+-	}
+-}
+-
+-static void test_addr_einval(void)
+-{
+-	char *file;
+-
+-	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+-					 MAP_SHARED, fd, 0);
+-
+-	TEST(madvise(file + 100, st.st_size, MADV_NORMAL));
+-	check_and_print(EINVAL);
+-
+-	SAFE_MUNMAP(cleanup, file, st.st_size);
+-}
+-
+-static void test_advice_einval(void)
+-{
+-	char *file;
+-
+-	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+-					 MAP_SHARED, fd, 0);
+-
+-	TEST(madvise(file, st.st_size, 1212));
+-	check_and_print(EINVAL);
+-
+-	SAFE_MUNMAP(cleanup, file, st.st_size);
+-}
+-
+-#if !defined(UCLINUX)
+-static void test_lock_einval(void)
+-{
+-	char *file;
+-
+-	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+-					 MAP_SHARED, fd, 0);
+-
+-	if (mlock(file, st.st_size) < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "mlock failed");
+-
+-	TEST(madvise(file, st.st_size, MADV_DONTNEED));
+-	check_and_print(EINVAL);
+-
+-	SAFE_MUNMAP(cleanup, file, st.st_size);
+-}
+-#endif /* if !defined(UCLINUX) */
+-
+-#if defined(MADV_MERGEABLE)
+-static void test_mergeable_einval(void)
+-{
+-	char *file;
+-
+-	if (access(KSM_SYS_DIR, F_OK) >= 0) {
+-		tst_resm(TCONF, "kernel configured with CONFIG_KSM, "
+-				 "skip EINVAL test for MADV_MERGEABLE.");
+-		return;
++		tst_res(TFAIL, "madvise succeeded unexpectedly");
+ 	}
+-
+-	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+-					 MAP_SHARED, fd, 0);
+-
+-	TEST(madvise(file, st.st_size, MADV_MERGEABLE));
+-	check_and_print(EINVAL);
+-
+-	SAFE_MUNMAP(cleanup, file, st.st_size);
+ }
+-#endif
+ 
+-#if defined(MADV_UNMERGEABLE)
+-static void test_unmergeable_einval(void)
++static void advice_test(unsigned int nr)
+ {
+-	char *file;
+-
+-	if (access(KSM_SYS_DIR, F_OK) >= 0) {
+-		tst_resm(TCONF, "kernel configured with CONFIG_KSM, "
+-				 "skip EINVAL test for MADV_UNMERGEABLE.");
+-		return;
+-	}
+-
+-	file = SAFE_MMAP(cleanup, 0, st.st_size, PROT_READ,
+-					 MAP_SHARED, fd, 0);
+-
+-	TEST(madvise(file, st.st_size, MADV_UNMERGEABLE));
+-	check_and_print(EINVAL);
+-
+-	SAFE_MUNMAP(cleanup, file, st.st_size);
 +	if (advice_opt[nr].flag == 1) {
 +		TEST(madvise(advice_opt[nr].addr, st.st_size, advice_opt[nr].advice));
-+		check_and_print(advice_opt[nr].name);
++		check_and_print(advice_opt[nr].expect);
 +	} else
-+		tst_res(TCONF, "%s is not supported", advice_opt[nr].name);
++		tst_res(TCONF, "%s is skipped", advice_opt[nr].name);
  }
-+
+-#endif
+ 
+-static void test_enomem(void)
++static void cleanup(void)
+ {
+-	char *low;
+-	char *high;
+-	unsigned long len;
+-
+-	low = SAFE_MMAP(cleanup, 0, st.st_size / 2, PROT_READ,
+-					MAP_SHARED, fd, 0);
+-
+-	high = SAFE_MMAP(cleanup, 0, st.st_size / 2, PROT_READ,
+-					 MAP_SHARED, fd, st.st_size / 2);
+-
+-	/* Swap if necessary to make low < high */
+-	if (low > high) {
+-		char *tmp;
+-		tmp = high;
+-		high = low;
+-		low = tmp;
+-	}
+-
+-	len = (high - low) + pagesize;
+-
+-	SAFE_MUNMAP(cleanup, high, st.st_size / 2);
+-
+-	TEST(madvise(low, len, MADV_NORMAL));
+-	check_and_print(ENOMEM);
++	if (fd && close(fd) < 0)
++		tst_res(TWARN | TERRNO, "close failed");
+ 
+-	SAFE_MUNMAP(cleanup, low, st.st_size / 2);
++	SAFE_FREE(ptr_memory_allocated);
++	SAFE_MUNMAP(file, st.st_size);
+ }
+ 
+-static void test_ebadf(void)
+-{
+-	char *ptr_memory_allocated = NULL;
+-	char *tmp_memory_allocated = NULL;
+-
+-	/* Create one memory segment using malloc */
+-	ptr_memory_allocated = malloc(5 * pagesize);
+-	/*
+-	 * Take temporary pointer for later use, freeing up the
+-	 * original one.
+-	 */
+-	tmp_memory_allocated = ptr_memory_allocated;
+-	tmp_memory_allocated =
+-		(char *)(((unsigned long)tmp_memory_allocated +
+-			pagesize - 1) & ~(pagesize - 1));
+-
+-	TEST(madvise(tmp_memory_allocated, 5 * pagesize, MADV_WILLNEED));
+-	if (tst_kvercmp(3, 9, 0) < 0) {
+-		check_and_print(EBADF);
+-	/* in kernel commit 1998cc0, madvise(MADV_WILLNEED) to anon
+-	 * mem doesn't return -EBADF now, as now we support swap
+-	 * prefretch.
+-	 */
+-	} else {
+-		tst_resm(TPASS, "madvise succeeded as expected, see "
+-				"kernel commit 1998cc0 for details.");
+-	}
+-
+-	free(ptr_memory_allocated);
+-}
 +static struct tst_test test = {
-+	.tid = "madvise01",
++	.tid = "madvise02",
 +	.tcnt = ARRAY_SIZE(advice_opt),
-+	.test = madvise_test,
++	.test = advice_test,
 +	.needs_tmpdir = 1,
 +	.setup = setup,
 +	.cleanup = cleanup,
 +};
-diff --git a/testcases/kernel/syscalls/madvise/madvise03.c b/testcases/kernel/syscalls/madvise/madvise03.c
-deleted file mode 100644
-index 3da2bb2..0000000
---- a/testcases/kernel/syscalls/madvise/madvise03.c
-+++ /dev/null
-@@ -1,182 +0,0 @@
--/*
-- *  Copyright (c) International Business Machines  Corp., 2004
-- *  Copyright (c) 2012 Cyril Hrubis <chrubis@suse.cz>
-- *
-- *  This program is free software; you can redistribute it and/or modify
-- *  it under the terms of the GNU General Public License as published by
-- *  the Free Software Foundation; either version 2 of the License, or
-- *  (at your option) any later version.
-- *
-- *  This program is distributed in the hope that it will be useful,
-- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- *  GNU Library General Public License for more details.
-- *
-- *  You should have received a copy of the GNU General Public License
-- *  along with this program; if not, write to the Free Software
-- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-- */
--
--/*
-- * This is a test case for madvise(2) system call. No error should be returned.
-- */
--
--#include <sys/types.h>
--#include <sys/mman.h>
--#include <sys/shm.h>
--#include <sys/stat.h>
--#include <errno.h>
--#include <fcntl.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <unistd.h>
--
--#include "test.h"
--
--char *TCID = "madvise03";
--
--#ifdef MADV_REMOVE
--
--int TST_TOTAL = 3;
--
--static void setup(void);
--static void cleanup(void);
--static void check_and_print(char *advice);
--static long get_shmmax(void);
--
--static int shmid1;
--
--int main(int argc, char *argv[])
--{
--	int lc, fd;
--	int i;
--	char *file = NULL;
--	struct stat stat;
--	void *addr1;
--	long shm_size = 0;
--	char filename[64];
--	char *progname = NULL;
--	char *str_for_file = "abcdefghijklmnopqrstuvwxyz12345\n";
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	progname = *argv;
--	sprintf(filename, "%s-out.%d", progname, getpid());
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		fd = open(filename, O_RDWR | O_CREAT, 0664);
--		if (fd < 0)
--			tst_brkm(TBROK, cleanup, "open failed");
--#ifdef DEBUG
--		tst_resm(TINFO, "filename = %s opened successfully", filename);
--#endif
--
--		/* Writing 40 KB of random data into this file
--		   [32 * 1280 = 40960] */
--		for (i = 0; i < 1280; i++)
--			if (write(fd, str_for_file, strlen(str_for_file)) == -1)
--				tst_brkm(TBROK | TERRNO, cleanup,
--					 "write failed");
--
--		if (fstat(fd, &stat) == -1)
--			tst_brkm(TBROK, cleanup, "fstat failed");
--
--		file = mmap(NULL, stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
--		if (file == MAP_FAILED)
--			tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
--
--		/* Allocate shared memory segment */
--		shm_size = get_shmmax();
--
--#define min(a, b) ((a) < (b) ? @ : (b))
--		shmid1 = shmget(IPC_PRIVATE, min(1024 * 1024, shm_size),
--				IPC_CREAT | IPC_EXCL | 0701);
--		if (shmid1 == -1)
--			tst_brkm(TBROK, cleanup, "shmget failed");
--
--		/* Attach shared memory segment to an address selected by the system */
--		addr1 = shmat(shmid1, NULL, 0);
--		if (addr1 == (void *)-1)
--			tst_brkm(TBROK, cleanup, "shmat error");
--
--		/* (1) Test case for MADV_REMOVE */
--		TEST(madvise(addr1, 4096, MADV_REMOVE));
--		check_and_print("MADV_REMOVE");
--
--		/* (2) Test case for MADV_DONTFORK */
--		TEST(madvise(file, (stat.st_size / 2), MADV_DONTFORK));
--		check_and_print("MADV_DONTFORK");
--
--		/* (3) Test case for MADV_DOFORK */
--		TEST(madvise(file, (stat.st_size / 2), MADV_DOFORK));
--		check_and_print("MADV_DOFORK");
--
--		/* Finally Unmapping the whole file */
--		if (munmap(file, stat.st_size) < 0)
--			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
--
--		close(fd);
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--}
--
--static void cleanup(void)
--{
--	if (shmid1 != -1)
--		if (shmctl(shmid1, IPC_RMID, 0) < 0)
--			tst_resm(TBROK | TERRNO,
--				 "shmctl(.., IPC_RMID, ..) failed");
--
--	tst_rmdir();
--}
--
--static void check_and_print(char *advice)
--{
--	if (TEST_RETURN == -1) {
--		if (TEST_ERRNO == ENOTSUP && !strcmp(advice, "MADV_REMOVE")) {
--			tst_resm(TCONF, "madvise MADV_REMOVE returned ENOTSUP"
--				 " CONFIG_TMPFS=y not in kernel .config?");
--			return;
--		}
--		tst_resm(TFAIL,
--			 "madvise test for %s failed with "
--			 "return = %ld, errno = %d : %s",
--			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
--	} else {
--		tst_resm(TPASS, "madvise test for %s PASSED", advice);
--	}
--}
--
--static long get_shmmax(void)
--{
--	long maxsize;
--
--	SAFE_FILE_SCANF(cleanup, "/proc/sys/kernel/shmmax", "%ld", &maxsize);
--
--	return maxsize;
--}
--#else
--int main(void)
--{
--	/* "Requires 2.6.16+" were the original comments */
--	tst_brkm(TCONF, NULL,
--		 "this system doesn't have required madvise support");
--}
--#endif
-diff --git a/testcases/kernel/syscalls/madvise/madvise04.c b/testcases/kernel/syscalls/madvise/madvise04.c
-deleted file mode 100644
-index e89babc..0000000
---- a/testcases/kernel/syscalls/madvise/madvise04.c
-+++ /dev/null
-@@ -1,138 +0,0 @@
--/*
-- *  Copyright (C) 2012 FUJITSU LIMITED.
-- *
-- *  This program is free software; you can redistribute it and/or modify
-- *  it under the terms of the GNU General Public License as published by
-- *  the Free Software Foundation; either version 2 of the License, or
-- *  (at your option) any later version.
-- *
-- *  This program is distributed in the hope that it will be useful,
-- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- *  GNU Library General Public License for more details.
-- *
-- *  You should have received a copy of the GNU General Public License
-- *  along with this program; if not, write to the Free Software
-- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-- */
--
--#include <stdio.h>
--#include <stdlib.h>
--#include <string.h>
--#include <errno.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <unistd.h>
--#include <sys/shm.h>
--#include <sys/mman.h>
--#include <fcntl.h>
--
--#include "test.h"
--
--char *TCID = "madvise04";
--
--#ifdef MADV_DONTDUMP
--
--int TST_TOTAL = 2;
--
--#define BUFFER_SIZE  256
--
--static void setup(void);
--static void cleanup(void);
--static void check_and_print(char *advice);
--
--int main(int argc, char *argv[])
--{
--	int lc, fd;
--	int i;
--	char *file = NULL;
--	struct stat stat;
--	char filename[64];
--	char *progname = NULL;
--	char *str_for_file = "abcdefghijklmnopqrstuvwxyz12345\n";
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	progname = *argv;
--	sprintf(filename, "%s-out.%d", progname, getpid());
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		fd = open(filename, O_RDWR | O_CREAT, 0664);
--		if (fd < 0)
--			tst_brkm(TBROK, cleanup, "open failed");
--#ifdef DEBUG
--		tst_resm(TINFO, "filename = %s opened successfully", filename);
--#endif
--
--		/* Writing 40 KB of random data into this file
--		   [32 * 1280 = 40960] */
--		for (i = 0; i < 1280; i++)
--			if (write(fd, str_for_file, strlen(str_for_file)) == -1)
--				tst_brkm(TBROK | TERRNO, cleanup,
--					 "write failed");
--
--		if (fstat(fd, &stat) == -1)
--			tst_brkm(TBROK, cleanup, "fstat failed");
--
--		file = mmap(NULL, stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
--		if (file == MAP_FAILED)
--			tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
--
--		/* (1) Test case for MADV_DONTDUMP */
--		TEST(madvise(file, stat.st_size, MADV_DONTDUMP));
--		check_and_print("MADV_DONTDUMP");
--
--		/* (2) Test case for MADV_DODUMP */
--		TEST(madvise(file, stat.st_size, MADV_DODUMP));
--		check_and_print("MADV_DODUMP");
--
--		/* Finally Unmapping the whole file */
--		if (munmap(file, stat.st_size) < 0)
--			tst_brkm(TBROK | TERRNO, cleanup, "munmap failed");
--
--		close(fd);
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void setup(void)
--{
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
--	tst_tmpdir();
--}
--
--static void cleanup(void)
--{
--	tst_rmdir();
--}
--
--static void check_and_print(char *advice)
--{
--	if (TEST_RETURN == -1) {
--		tst_resm(TFAIL,
--			 "madvise test for %s failed with "
--			 "return = %ld, errno = %d : %s",
--			 advice, TEST_RETURN, TEST_ERRNO, strerror(TEST_ERRNO));
--	} else {
--		tst_resm(TPASS, "madvise test for %s PASSED", advice);
--	}
--}
--
--#else
--int main(void)
--{
--	/* Requires kernel version >= 3.4 */
--	tst_brkm(TCONF, NULL,
--		 "This system doesn't have required madvise support, "
--		 "MADV_DONTDUMP and MADV_DODUMP were added from 3.4. "
--		 "If your kernel version >= 3.4, maybe you need updating "
--		 "your glibc-headers");
--}
--#endif
 -- 
 1.8.3.1
 
