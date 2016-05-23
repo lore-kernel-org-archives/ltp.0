@@ -1,72 +1,55 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 23 May 2016 14:12:50 +0300
-Subject: [LTP] [RFC PATCH 4/4] memcg_stress_test.sh: allocate less than
- CommitLimit bytes
-In-Reply-To: <20160519133854.GC29601@rei.lan>
-References: <1461338590-1309-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1461338590-1309-2-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1461338590-1309-3-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1461338590-1309-4-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160512134217.GB32457@rei.lan> <573B140B.8080500@oracle.com>
- <20160518143918.GB17880@rei.lan> <573CA66F.9000900@oracle.com>
- <20160519133854.GC29601@rei.lan>
-Message-ID: <5742E5B2.1030607@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 23 May 2016 14:39:28 +0200
+Subject: [LTP] Fwd: pwrite04 ltp bug?
+In-Reply-To: <CAOg9mSScVopGsoQeoESWAnD2YFrsr2qzQksC8A8T8m8dncFdAg@mail.gmail.com>
+References: <CAOg9mSSjfxiZ960tpADgVmndxXQpC7ag9QZSz68NbdeGn+yW9g@mail.gmail.com>
+ <CADVQ27oBdCxfuVmknYa16RTXpnYgncn94VnutMgn2+9VD-9bcg@mail.gmail.com>
+ <CADVQ27q119e2Oqg0tVGDjc_8yjoXvQHbg=Tqd9n4jxu8tedRVg@mail.gmail.com>
+ <CAOg9mSScVopGsoQeoESWAnD2YFrsr2qzQksC8A8T8m8dncFdAg@mail.gmail.com>
+Message-ID: <20160523123928.GE22559@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> While fixing a couple of LTP regressions in the out-of-tree Orangefs
+> kernel module, I think I found a problem with the pwrite04 test,
+> here's what I think was meant:
+> 
+> # git diff testcases/kernel/syscalls/pwrite/pwrite04.c
+> diff --git a/testcases/kernel/syscalls/pwrite/pwrite04.c
+> b/testcases/kernel/syscalls/pwrite/pwrite04.c
+> index b297682..4ca7dc1 100644
+> --- a/testcases/kernel/syscalls/pwrite/pwrite04.c
+> +++ b/testcases/kernel/syscalls/pwrite/pwrite04.c
+> @@ -196,9 +196,9 @@ int main(int ac, char *av[])
+> 
+>                 }
+>                 if (statbuf.st_size != K5) {
+> -                       tst_resm(TFAIL, "file size is %ld != K4",
+> +                       tst_resm(TFAIL, "file size is %ld != K5",
+>                                  statbuf.st_size);
 
+This is obvious typo fix.
 
-On 05/19/2016 04:38 PM, Cyril Hrubis wrote:
-> Hi!
->>> I guess that when we decide to create the pressure inside of the memory
->>> cgroup, instead of stressing the whole system, we may as well choose
->>> small enough amount of memory, something as (RAM - 250Mb)/10 and be done
->>> with it.
->>
->> Yes, this should work as well.
->>
->> I don't know how we could stress the whole system without the risk of
->> hitting an OOM. One idea which comes to my mind is about using a
->> top-level control group with a significant amount of memory assigned to
->> it (like mem_free / 2).
->>
->> Could you, please, have a look at the attachment? I was playing with
->> this patch today and was able to stress my system without OOM.
->>
->> However, this scheme may result in a very intensive swapping if mem_free
->> is large (given that there is enough swap).
->
-> Then we should place upper limit on the amount of used swap as well.
->
-> Something as MIN(MemFree/2, SwapFree, 1GB) to be used for the limit and
-> abort the test if this number is to small?
+> -
+> +                       cleanup();
 
-Now, after weekends are gone, I believe that there is no need in an 
-extra control group, if we let the tests allocate MemTotal bytes of 
-memory. There will always be swapping, and its intensity will not depend 
-on the amount of swap space configured, and it will not be "too much" 
-unless there are some mm-using processes running on the system.
+This does not look right. Looking at the test source the rest of the ifs
+has the cleanup right after tst_resm() but the cleanup() fuction is
+supposed to be called exactly once at the end of the test at the end of
+the main.
 
-I believe the attached patch introduces the minimal set of changes to 
-the original test case idea (as we understand it), but lets the test 
-case runs in different environments.
+If it's called in the testing loop the test will fail when cleanup() is
+invoked second time at the test exit since it will attempt to remove
+allready deleted test temporary directory. So the correct solution to
+this problem would rather be to remove the cleanup() from the test loop.
 
-What do you think about it? Did I miss something?
+>                 }
+>                 tst_resm(TPASS, "O_APPEND test passed.");
 
-Thanks.
-
-
->
-> Apart from that the root memory cgroup should be better named something
-> as ltp_stres_root so that it's clear where it came from...
->
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-memcg_stress_test.sh-allocate-MemTotal.patch
-Type: text/x-patch
-Size: 2386 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160523/004c8d30/attachment.bin>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
