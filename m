@@ -1,9 +1,9 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 24 May 2016 10:55:55 +0800
-Subject: [LTP] [PATCH 2/3] syscalls/pipe02: Cleanup && convert to new API
+Date: Tue, 24 May 2016 10:55:56 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/pipe03: Cleanup && convert to new API
 In-Reply-To: <1464058556-7675-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1464058556-7675-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1464058556-7675-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1464058556-7675-3-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,14 +12,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/pipe/pipe02.c | 225 +++++++++++---------------------
- 1 file changed, 75 insertions(+), 150 deletions(-)
+ testcases/kernel/syscalls/pipe/pipe03.c | 148 ++++++++++----------------------
+ 1 file changed, 45 insertions(+), 103 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/pipe/pipe02.c b/testcases/kernel/syscalls/pipe/pipe02.c
-index 7eceacf..119f4fe 100644
---- a/testcases/kernel/syscalls/pipe/pipe02.c
-+++ b/testcases/kernel/syscalls/pipe/pipe02.c
-@@ -1,20 +1,18 @@
+diff --git a/testcases/kernel/syscalls/pipe/pipe03.c b/testcases/kernel/syscalls/pipe/pipe03.c
+index 8aa281d..290511f 100644
+--- a/testcases/kernel/syscalls/pipe/pipe03.c
++++ b/testcases/kernel/syscalls/pipe/pipe03.c
+@@ -1,127 +1,69 @@
  /*
 + * Copyright (c) International Business Machines  Corp., 2002
   *
@@ -51,217 +51,105 @@ index 7eceacf..119f4fe 100644
   */
  
  /*
-@@ -24,173 +22,100 @@
+  * NAME
+- *	pipe03.c
++ * pipe03.c
+  *
   * DESCRIPTION
-  *	Check that if a child has a "broken pipe", this information
-  *	is transmitted to the waiting parent.
+- * 	Make sure that writing to the read end of a pipe and reading from
+- * 	the write end of a pipe both fail.
 - *
 - * ALGORITHM
-- * 	1. Create a pipe, fork child
-- * 	2. Child writes to pipe, parent reads to verify the pipe is working
-- * 	3. Parent closes the read end of the pipe, child writes to it
-- * 	4. Parent checks to see that child was terminated with SIGPIPE
-- *
+- * 	1. Open a pipe
+- * 	2. Attempt to write to the [0] descriptor (expect -1)
+- * 	3. Attempt to read from the [1] descriptor (expect -1)
++ * Make sure that writing to the read end of a pipe and reading from
++ * the write end of a pipe both fail.
+  *
 - * USAGE:  <for command-line>
-- *  pipe02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  pipe03 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
+- *             -f   : Turn off functionality Testing.
 - *             -i n : Execute test n times.
 - *             -I x : Execute test for x seconds.
 - *             -P x : Pause for x seconds between iterations.
 - *             -t   : Turn on syscall timing.
 - *
 - * HISTORY
-- *	12/2002 Ported by Paul Larson
-- *
-- * RESTRICTIONS
-- *	None
+- *	11/2002 Ported by Paul Larson
   */
--#include <signal.h>
--#include <fcntl.h>
 +
+ #include <unistd.h>
  #include <errno.h>
- #include <string.h>
-+#include <unistd.h>
-+#include <stdlib.h>
- #include <sys/wait.h>
--#include <sys/types.h>
 -#include "test.h"
 +#include "tst_test.h"
  
--char *TCID = "pipe02";
+-char *TCID = "pipe03";
 -int TST_TOTAL = 1;
-+#define SIZE	5
- 
--int usrsig;
-+static int count;
 +static int fd[2];
-+static char rdbuf[SIZE];
-+static char wrbuf[SIZE];
  
--void do_child(void);
 -void setup(void);
 -void cleanup(void);
--void catch_usr2(int);
-+static void catch_usr2(int sig LTP_ATTRIBUTE_UNUSED)
-+{
-+	count = 1;
-+}
- 
+-
 -ssize_t do_read(int fd, void *buf, size_t count)
-+static void do_child(void)
++static void verify_pipe(void)
  {
 -	ssize_t n;
-+	SAFE_SIGNAL(SIGUSR2, catch_usr2);
-+	SAFE_SIGNAL(SIGPIPE, SIG_DFL);
-+	SAFE_CLOSE(fd[0]);
-+	SAFE_WRITE(1, fd[1], wrbuf, SIZE);
- 
+-
 -	do {
 -		n = read(fd, buf, count);
 -	} while (n < 0 && errno == EINTR);
-+	while (!count)
-+		sleep(1);
- 
+-
 -	return n;
-+	SAFE_WRITE(1, fd[1], wrbuf, SIZE);
- }
- 
--int pp[2];			/* pipe descriptor */
+-}
 -
 -int main(int ac, char **av)
-+static void verify_pipe(void)
- {
+-{
 -	int lc;
--	char rbuf[BUFSIZ], wbuf[BUFSIZ];
--	int pid, ret, len, rlen, status;
-+	int status;
- 	int sig = 0;
-+	pid_t pid;
- 
--	usrsig = 0;
-+	count = 0;
-+	memset(wrbuf, 'a', SIZE);
- 
+-
+-	int fildes[2];		/* fds for pipe read and write */
+-	char rbuf[BUFSIZ];
+-
 -	tst_parse_opts(ac, av, NULL, NULL);
- #ifdef UCLINUX
--	maybe_run_child(&do_child, "dd", &pp[0], &pp[1]);
-+	maybe_run_child(&do_child, "dd", &fd[0], &fd[1]);
- #endif
- 
+-
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		/* reset tst_count in case we are looping */
 -		tst_count = 0;
++	char buf[2];
+ 
+-		TEST(pipe(fildes));
 -
--		ret = pipe(pp);
--		if (ret == -1)
--			tst_brkm(TFAIL, cleanup, "pipe() failed, errno %d",
--				 errno);
+-		if (TEST_RETURN == -1)
+-			tst_brkm(TBROK | TTERRNO, cleanup,
+-				 "pipe() failed unexpectedly");
+-
+-		TEST(write(fildes[0], "A", 1));
+-		if (TEST_RETURN == -1 && TEST_ERRNO == EBADF)
+-			tst_resm(TPASS, "expected failure writing to "
+-				 "read end of pipe");
+-		else
+-			tst_resm(TFAIL | TTERRNO,
+-				 "success when writing to read "
+-				 "end of pipe ret=%ld", TEST_RETURN);
+-
+-		TEST(do_read(fildes[1], rbuf, 1));
+-		if (TEST_RETURN == -1 && TEST_ERRNO == EBADF)
+-			tst_resm(TPASS, "expected failure reading from "
+-				 "write end of pipe");
+-		else
+-			tst_resm(TFAIL | TTERRNO, "success when reading from "
+-				 "write end of pipe ret=%ld", TEST_RETURN);
 +	TEST(pipe(fd));
 +	if (TEST_RETURN == -1) {
-+		tst_res(TFAIL|TERRNO, "pipe() failed");
++		tst_res(TFAIL | TTERRNO, "pipe() failed unexpectedly");
 +		return;
-+	}
- 
--		strcpy(wbuf, "abcd\0");
--		len = strlen(wbuf);
-+	pid = SAFE_FORK();
-+	if (pid < 0) {
-+		tst_brk(TBROK, "fork() failed");
-+	} else if (pid == 0) {
- 
--		pid = FORK_OR_VFORK();
--		if (pid < 0)
--			tst_brkm(TFAIL, cleanup, "fork() failed, errno %d",
--				 errno);
--		if (pid == 0) {
--			/* CHILD */
- #ifdef UCLINUX
--			if (self_exec(av[0], "dd", pp[0], pp[1]) < 0) {
--				tst_brkm(TBROK, cleanup, "self_exec failed");
--			}
-+		if (self_exec(av[0], "dd", fd[0], fd[1]) < 0)
-+			tst_brk(TBROK, "self_exec failed");
- #else
--			do_child();
-+		do_child();
- #endif
--		} else {
--			/* PARENT */
--			close(pp[1]);	/* close write end of pipe */
--			memset(rbuf, 0, sizeof(rbuf));
--			rlen = do_read(pp[0], rbuf, len);
--			if (memcmp(wbuf, rbuf, len) != 0)
--				tst_resm(TFAIL, "pipe read data and pipe "
--					 "write data didn't match");
--			close(pp[0]);	/* close read end of pipe */
--			kill(pid, SIGUSR2);
--			wait(&status);
--
--			if (WIFSIGNALED(status))
--				sig = WTERMSIG(status);
-+
-+	} else {
-+		memset(rdbuf, 0, SIZE);
-+		SAFE_CLOSE(fd[1]);
-+		SAFE_READ(1, fd[0], rdbuf, SIZE);
-+
-+		if (memcmp(wrbuf, rdbuf, SIZE) != 0) {
-+			tst_res(TFAIL, "pipe read data and pipe "
-+				"write data didn't match");
-+			return;
-+		}
-+
-+		SAFE_CLOSE(fd[0]);
-+		SAFE_KILL(pid, SIGUSR2);
-+		SAFE_WAIT(&status);
-+
-+		if (WIFSIGNALED(status)) {
-+			sig = WTERMSIG(status);
- 			if (sig != SIGPIPE)
--				tst_resm(TFAIL, "SIGPIPE not returned by "
-+				tst_res(TFAIL, "SIGPIPE not returned by "
- 					 "child process");
- 			else
--				tst_resm(TPASS, "child process returned "
-+				tst_res(TPASS, "child process returned "
- 					 "expected SIGPIPE");
- 		}
  	}
 -	cleanup();
--
--	tst_exit();
--}
--
--void catch_usr2(int sig)
--{
--	usrsig = 1;
- }
  
--/*
-- * do_child()
-- */
--void do_child(void)
--{
--	char wbuf[BUFSIZ];
--	int len;
--
--	strcpy(wbuf, "abcd\0");
--	len = strlen(wbuf);
--
--	if (signal(SIGUSR2, catch_usr2) == SIG_ERR)
--		tst_resm(TWARN, "signal setup for SIGUSR2 " "failed");
--	if (signal(SIGPIPE, SIG_DFL) == SIG_ERR)
--		tst_resm(TWARN, "signal setup for SIGPIPE " "failed");
--	close(pp[0]);		/* close read end of pipe */
--	write(pp[1], wbuf, len);
--	while (!usrsig)
--		sleep(1);
--	write(pp[1], wbuf, len);
--	exit(1);
+-	tst_exit();
 -}
 -
 -/*
@@ -269,24 +157,39 @@ index 7eceacf..119f4fe 100644
 - */
 -void setup(void)
 -{
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
++	TEST(write(fd[0], "A", 1));
++	if (TEST_RETURN == -1 && errno == EBADF) {
++		tst_res(TPASS | TTERRNO, "expected failure writing "
++			"to read end of pipe");
++	} else {
++		tst_res(TFAIL | TTERRNO, "unexpected failure writing "
++			"to read end of pipe");
++	}
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	TEST(read(fd[1], buf, 1));
++	if (TEST_RETURN == -1 && errno == EBADF) {
++		tst_res(TPASS | TTERRNO, "expected failure reading "
++			"from write end of pipe");
++	} else {
++		tst_res(TFAIL | TTERRNO, "unexpected failure reading "
++			"from write end of pipe");
++	}
+ 
 -	TEST_PAUSE;
--
--}
--
++	SAFE_CLOSE(fd[0]);
++	SAFE_CLOSE(fd[1]);
+ }
+ 
 -/*
 - * cleanup() - performs all ONE TIME cleanup for this test at
 - *	       completion or premature exit.
 - */
 -void cleanup(void)
 -{
--
 -}
 +static struct tst_test test = {
-+	.tid = "pipe02",
-+	.forks_child = 1,
++	.tid = "pipe03",
 +	.test_all = verify_pipe,
 +};
 -- 
