@@ -1,35 +1,59 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 25 May 2016 14:17:40 +0800
-Subject: [LTP] [PATCH v2 3/3] syscalls/madvise02: reconstruct and
- convert to new API
-In-Reply-To: <20160523141418.GB25488@rei.lan>
-References: <1463979557-21421-1-git-send-email-liwang@redhat.com>
- <20160523141418.GB25488@rei.lan>
-Message-ID: <20160525061740.GB32546@gmail.com>
+Date: Wed, 25 May 2016 14:29:37 +0800
+Subject: [LTP] [PATCH V3 1/3] ltp/lapi: add some madvices definition
+Message-ID: <1464157779-6883-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, May 23, 2016 at 04:14:18PM +0200, Cyril Hrubis wrote:
-> 
-> This whole part is a mess. You should not change the content of the
-> structure in this way. If there are values that has to be changed on the
-> runtime the structure members should be initialized with a pointers to a
-> variable and that variable should be set up in the setup().
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ include/lapi/mmap.h | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-Good proposals, but this situation are a little bit different.
+diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
+index e8e5917..b121e43 100644
+--- a/include/lapi/mmap.h
++++ b/include/lapi/mmap.h
+@@ -23,4 +23,36 @@
+ #define MAP_HUGETLB 0x40000
+ #endif
+ 
++#ifndef MADV_REMOVE
++#define MADV_REMOVE 9
++#endif
++
++#ifndef MADV_DONTFORK
++#define MADV_DONTFORK 10
++#define MADV_DOFORK   11
++#endif
++
++#ifndef MADV_HWPOISON
++#define MADV_HWPOISON 100
++#endif
++
++#ifndef MADV_SOFT_OFFLINE
++#define MADV_SOFT_OFFLINE 101
++#endif
++
++#ifndef MADV_MERGEABLE
++#define MADV_MERGEABLE   12
++#define MADV_UNMERGEABLE 13
++#endif
++
++#ifndef MADV_HUGEPAGE
++#define MADV_HUGEPAGE   14
++#define MADV_NOHUGEPAGE 15
++#endif
++
++#ifndef MADV_DONTDUMP
++#define MADV_DONTDUMP 16
++#define MADV_DODUMP   17
++#endif
++
+ #endif /* __LAPI_MMAP_H__ */
+-- 
+1.8.3.1
 
-I failed to decrease the lines of this part. Since madvise02 catch
-failures on purpose. It is very hard to divide 'Not Support' with
-'Expected Errno' when getting EINVAL msg.
-
-So, I'd like to keep calling a tcases_filter() in test function to
-make the testcase working correctly. And move an enable flag as a
-global variable.
-
-Patch V3 is coming...
-
-Regards,
-Li Wang
