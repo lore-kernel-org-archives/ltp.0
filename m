@@ -1,41 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 24 May 2016 18:46:54 +0200
-Subject: [LTP] [RFC PATCH 4/4] memcg_stress_test.sh: allocate less than
- CommitLimit bytes
-In-Reply-To: <5742E5B2.1030607@oracle.com>
-References: <1461338590-1309-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1461338590-1309-2-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1461338590-1309-3-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1461338590-1309-4-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160512134217.GB32457@rei.lan> <573B140B.8080500@oracle.com>
- <20160518143918.GB17880@rei.lan> <573CA66F.9000900@oracle.com>
- <20160519133854.GC29601@rei.lan> <5742E5B2.1030607@oracle.com>
-Message-ID: <20160524164654.GB13095@rei.suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 25 May 2016 14:17:40 +0800
+Subject: [LTP] [PATCH v2 3/3] syscalls/madvise02: reconstruct and
+ convert to new API
+In-Reply-To: <20160523141418.GB25488@rei.lan>
+References: <1463979557-21421-1-git-send-email-liwang@redhat.com>
+ <20160523141418.GB25488@rei.lan>
+Message-ID: <20160525061740.GB32546@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Now, after weekends are gone, I believe that there is no need in an 
-> extra control group, if we let the tests allocate MemTotal bytes of 
-> memory. There will always be swapping, and its intensity will not depend 
-> on the amount of swap space configured, and it will not be "too much" 
-> unless there are some mm-using processes running on the system.
+On Mon, May 23, 2016 at 04:14:18PM +0200, Cyril Hrubis wrote:
 > 
-> I believe the attached patch introduces the minimal set of changes to 
-> the original test case idea (as we understand it), but lets the test 
-> case runs in different environments.
-> 
-> What do you think about it? Did I miss something?
+> This whole part is a mess. You should not change the content of the
+> structure in this way. If there are values that has to be changed on the
+> runtime the structure members should be initialized with a pointers to a
+> variable and that variable should be set up in the setup().
 
-This sounds reasonable enough to me.
+Good proposals, but this situation are a little bit different.
 
-I wonder if the test has anything to do with memory cgroups though,
-maybe we should rename it to memory_stress and get rid of the cgroup
-bits in it.
+I failed to decrease the lines of this part. Since madvise02 catch
+failures on purpose. It is very hard to divide 'Not Support' with
+'Expected Errno' when getting EINVAL msg.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+So, I'd like to keep calling a tcases_filter() in test function to
+make the testcase working correctly. And move an enable flag as a
+global variable.
+
+Patch V3 is coming...
+
+Regards,
+Li Wang
