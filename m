@@ -1,38 +1,37 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 30 May 2016 06:20:01 -0400 (EDT)
+From: Dong ZHu <bluezhudong@gmail.com>
+Date: Thu, 26 May 2016 17:24:07 +0800
 Subject: [LTP] cgroup_regression_test failed in CentOS 7.2
-In-Reply-To: <CAAUgArA4ON_uT+nTEPqret4o51CaaXehopnoh+HdmMUdN_RKQw@mail.gmail.com>
-References: <CAAUgArA3oBMmf4YJebREKXYyE_XfQnsw3_eO1gV-K_b8FaKnFg@mail.gmail.com>
- <2095793802.2123498.1464345325799.JavaMail.zimbra@redhat.com>
- <CAAUgArA4ON_uT+nTEPqret4o51CaaXehopnoh+HdmMUdN_RKQw@mail.gmail.com>
-Message-ID: <1645453180.4039769.1464603601845.JavaMail.zimbra@redhat.com>
+Message-ID: <CAAUgArBjpTGDx-pb+b9xjGhUEBycbf77RK5GZwkg26DEoMZAxw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Zefan,
 
+I ran LTP test suite in CentOS 7.2 with kernel 3.10.0-327, test named
+"cgroup_regression_test" Test 3 and Test 5 always failed as below:
+http://pastebin.ubuntu.com/16703246/
 
+Test 3 failed when execute "mount -t cgroup -o cpu xxx cgroup/"
+Test 5 failed when execute "mount -t cgroup -o $subsys1,$subsys2 xxx
+cgroup/"
 
+cpu, hugetlb and perf_event has already been mounted in sys as below:
+http://pastebin.ubuntu.com/16703384/
 
------ Original Message -----
-> From: "Dong ZHu" <bluezhudong@gmail.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Friday, 27 May, 2016 4:08:49 PM
-> Subject: Re: [LTP] cgroup_regression_test failed in CentOS 7.2
-> 
-> Hi Jan,
-> 
-> Thanks for your info, Is there any effective way (any options or
-> workaround) for making the test passing on systemd distros ?
+So the mount operation will definitely fail in the test.
 
-I think you could configure systemd to mount cpu and cpuacct
-separately, but that may break other cgroup tests that mount 2+
-subsystems together. Test should be fixed to expect that some
-subsystems are mounted already or at least skip the parts
-(as TCONF) where we know mount can't succeed.
+I just want to know whether it is the test program issue, and whether it
+can be waived ?
+Thanks !
 
-Regards,
-Jan
+-- 
+Best Regards,
+Dong Zhu
+
+My Site: http://bluezd.info
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160526/0d5600b8/attachment.html>
