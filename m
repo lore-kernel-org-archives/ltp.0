@@ -1,93 +1,43 @@
 From: Eryu Guan <eguan@redhat.com>
-Date: Fri, 27 May 2016 20:15:03 +0800
-Subject: [LTP] [PATCH 2/3] ltp-aiodio/dio_sparse: add offset support
+Date: Fri, 27 May 2016 20:15:04 +0800
+Subject: [LTP] [PATCH 3/3] ltp-aiodio: new dio_sparse tests specifying offset
 In-Reply-To: <1464351304-31405-1-git-send-email-eguan@redhat.com>
 References: <1464351304-31405-1-git-send-email-eguan@redhat.com>
-Message-ID: <1464351304-31405-2-git-send-email-eguan@redhat.com>
+Message-ID: <1464351304-31405-3-git-send-email-eguan@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Introduce a new option "-o" to specify the write offset.
+The first 4 tests are to cover the second issue described in this patch
+
+direct-io: fix direct write stale data exposure from concurrent buffered read
+https://patchwork.ozlabs.org/patch/622065/
+
+Other tests are added to test various offsets.
 
 Signed-off-by: Eryu Guan <eguan@redhat.com>
 ---
- testcases/kernel/io/ltp-aiodio/dio_sparse.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+ runtest/ltp-aiodio.part2 | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-index 12e478e..33fda94 100644
---- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-+++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-@@ -53,11 +53,11 @@ int TST_TOTAL = 1;
- /*
-  * Write zeroes using O_DIRECT into sparse file.
-  */
--int dio_sparse(char *filename, int align, int writesize, int filesize)
-+int dio_sparse(char *filename, int align, int writesize, int filesize, int offset)
- {
- 	int fd, ret;
- 	void *bufptr;
--	int i, w;
-+	int w;
- 
- 	fd = open(filename, O_DIRECT | O_WRONLY | O_CREAT | O_EXCL, 0600);
- 
-@@ -76,7 +76,8 @@ int dio_sparse(char *filename, int align, int writesize, int filesize)
- 	}
- 
- 	memset(bufptr, 0, writesize);
--	for (i = 0; i < filesize;) {
-+	lseek(fd, offset, SEEK_SET);
-+	for (i = offset; i < filesize;) {
- 		if ((w = write(fd, bufptr, writesize)) != writesize) {
- 			tst_resm(TBROK | TERRNO, "write() returned %d", w);
- 			close(fd);
-@@ -95,7 +96,7 @@ int dio_sparse(char *filename, int align, int writesize, int filesize)
- void usage(void)
- {
- 	fprintf(stderr, "usage: dio_sparse [-d] [-n children] [-s filesize]"
--		" [-w writesize]\n");
-+		" [-w writesize] [-o offset]]\n");
- 	exit(1);
- }
- 
-@@ -108,11 +109,12 @@ int main(int argc, char **argv)
- 	long alignment = 512;
- 	int writesize = 65536;
- 	int filesize = 100 * 1024 * 1024;
-+	int offset = 0;
- 	int c;
- 	int children_errors = 0;
- 	int ret;
- 
--	while ((c = getopt(argc, argv, "dw:n:a:s:")) != -1) {
-+	while ((c = getopt(argc, argv, "dw:n:a:s:o:")) != -1) {
- 		char *endp;
- 		switch (c) {
- 		case 'd':
-@@ -130,6 +132,10 @@ int main(int argc, char **argv)
- 			filesize = strtol(optarg, &endp, 0);
- 			filesize = scale_by_kmg(filesize, *endp);
- 			break;
-+		case 'o':
-+			offset = strtol(optarg, &endp, 0);
-+			offset = scale_by_kmg(offset, *endp);
-+			break;
- 		case 'n':
- 			num_children = atoi(optarg);
- 			if (num_children > NUM_CHILDREN) {
-@@ -167,7 +173,7 @@ int main(int argc, char **argv)
- 	}
- 	tst_sig(FORK, DEF_HANDLER, cleanup);
- 
--	ret = dio_sparse(filename, alignment, writesize, filesize);
-+	ret = dio_sparse(filename, alignment, writesize, filesize, offset);
- 
- 	tst_resm(TINFO, "Killing childrens(s)");
- 
+diff --git a/runtest/ltp-aiodio.part2 b/runtest/ltp-aiodio.part2
+index 28a84ac..00b9abf 100644
+--- a/runtest/ltp-aiodio.part2
++++ b/runtest/ltp-aiodio.part2
+@@ -78,3 +78,11 @@ ADSP076 dio_sparse  -a 8k -w 8192k -s 8192k -n 64
+ ADSP077 dio_sparse  -a 8k -w 518192k -s 18192k -n 128
+ ADSP078 dio_sparse  -a 8k -w 518192k -s 518192k -n 512
+ ADSP079 dio_sparse  -a 8k -w 518192k -s 518192k -n 1000
++ADSP080 dio_sparse  -a 4k -w 4k -s 2k -o 2k -n 2
++ADSP081 dio_sparse  -a 2k -w 2k -s 1k -o 1k -n 2
++ADSP082 dio_sparse  -a 1k -w 1k -s 512 -o 512 -n 2
++ADSP083 dio_sparse  -a 4k -w 4k -s 2k -o 3k -n 2
++ADSP084 dio_sparse  -a 4k -w 4k -s 4k -o 4k -n 2
++ADSP085 dio_sparse  -a 4k -w 4k -s 4k -o 6k -n 2
++ADSP086 dio_sparse  -a 4k -w 4k -s 4k -o 8k -n 2
++ADSP087 dio_sparse  -a 4k -w 16k -s 8k -o 8k -n 2
 -- 
 2.5.5
 
