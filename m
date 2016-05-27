@@ -1,38 +1,51 @@
-From: Dong ZHu <bluezhudong@gmail.com>
-Date: Fri, 27 May 2016 17:36:23 +0800
-Subject: [LTP] memcg_memsw_limit_in_bytes_test mlock failed: Resource
-	temporarily unavailable
-Message-ID: <CAAUgArDNuD89q3dFLxqwjMi-6opiggZhWo_oEL9qUNUxcxCkrA@mail.gmail.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 27 May 2016 06:35:25 -0400 (EDT)
+Subject: [LTP] cgroup_regression_test failed in CentOS 7.2
+In-Reply-To: <CAAUgArA3oBMmf4YJebREKXYyE_XfQnsw3_eO1gV-K_b8FaKnFg@mail.gmail.com>
+References: <CAAUgArA3oBMmf4YJebREKXYyE_XfQnsw3_eO1gV-K_b8FaKnFg@mail.gmail.com>
+Message-ID: <2095793802.2123498.1464345325799.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-I ran LTP test "memcg_memsw_limit_in_bytes_test" with kernel 3.10.0-327.el7
-always reported the below error:
 
-memcg_memsw_limit_in_bytes_test 2 TFAIL : ltpapicmd.c:193: process 3769 is
-killed by error /opt/ltp/testcases/bin/memcg_lib.sh: line 210: 3784 Killed
-$TEST_PATH/memcg_process $2 -s $3
 
-In function mmap_lock2() mlock failed just return 1, not the oom killer
-kill the process.
-And base on the this:
-http://marc.info/?l=linux-mm&m=142122902313315&w=2
 
-I think mlock failed it is a expect behavior, so why mask the test as
-Failed ?
+----- Original Message -----
+> From: "Dong ZHu" <bluezhudong@gmail.com>
+> To: ltp@lists.linux.it
+> Sent: Friday, 27 May, 2016 4:25:41 AM
+> Subject: [LTP] cgroup_regression_test failed in CentOS 7.2
+> 
+> Hi All,
+> 
+> I ran LTP test suite in CentOS 7.2 with kernel 3.10.0-327, test named
+> "cgroup_regression_test" Test 3 and Test 5 always failed as below:
+> http://pastebin.ubuntu.com/16703246/
+> 
+> Test 3 failed when execute "mount -t cgroup -o cpu xxx cgroup/"
+> Test 5 failed when execute "mount -t cgroup -o $subsys1,$subsys2 xxx cgroup/"
+> 
+> cpu, hugetlb and perf_event has already been mounted in sys as below:
+> http://pastebin.ubuntu.com/16703384/
+> 
+> So the mount operation will definitely fail in the test.
+> 
+> I just want to know whether it is the test program issue, and whether it can
+> be waived ?
 
-Thanks !
+This is known to happen on systemd distros, where systemd mounts specific
+subsystems together and LTP test wants to mount just one.
 
--- 
-Best Regards,
-Dong Zhu
+In those cases you should get -EBUSY as described in Documentation/cgroup-v1/cgroups.txt:
+"If an active hierarchy with exactly the same set of subsystems already
+exists, it will be reused for the new mount. If no existing hierarchy
+matches, and any of the requested subsystems are in use in an existing
+hierarchy, the mount will fail with -EBUSY. Otherwise, a new hierarchy
+is activated, associated with the requested subsystems."
 
-My Site: http://bluezd.info
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160527/bd8c874b/attachment.html>
+Regards,
+Jan
