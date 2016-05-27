@@ -1,43 +1,74 @@
-From: Eryu Guan <eguan@redhat.com>
-Date: Fri, 27 May 2016 20:15:04 +0800
-Subject: [LTP] [PATCH 3/3] ltp-aiodio: new dio_sparse tests specifying offset
-In-Reply-To: <1464351304-31405-1-git-send-email-eguan@redhat.com>
-References: <1464351304-31405-1-git-send-email-eguan@redhat.com>
-Message-ID: <1464351304-31405-3-git-send-email-eguan@redhat.com>
+From: Dong ZHu <bluezhudong@gmail.com>
+Date: Fri, 27 May 2016 22:08:49 +0800
+Subject: [LTP] cgroup_regression_test failed in CentOS 7.2
+In-Reply-To: <2095793802.2123498.1464345325799.JavaMail.zimbra@redhat.com>
+References: <CAAUgArA3oBMmf4YJebREKXYyE_XfQnsw3_eO1gV-K_b8FaKnFg@mail.gmail.com>
+ <2095793802.2123498.1464345325799.JavaMail.zimbra@redhat.com>
+Message-ID: <CAAUgArA4ON_uT+nTEPqret4o51CaaXehopnoh+HdmMUdN_RKQw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The first 4 tests are to cover the second issue described in this patch
+Hi Jan,
 
-direct-io: fix direct write stale data exposure from concurrent buffered read
-https://patchwork.ozlabs.org/patch/622065/
+Thanks for your info, Is there any effective way (any options or
+workaround) for making the test passing on systemd distros ?
 
-Other tests are added to test various offsets.
+On Fri, May 27, 2016 at 6:35 PM, Jan Stancek <jstancek@redhat.com> wrote:
 
-Signed-off-by: Eryu Guan <eguan@redhat.com>
----
- runtest/ltp-aiodio.part2 | 8 ++++++++
- 1 file changed, 8 insertions(+)
+>
+>
+>
+>
+> ----- Original Message -----
+> > From: "Dong ZHu" <bluezhudong@gmail.com>
+> > To: ltp@lists.linux.it
+> > Sent: Friday, 27 May, 2016 4:25:41 AM
+> > Subject: [LTP] cgroup_regression_test failed in CentOS 7.2
+> >
+> > Hi All,
+> >
+> > I ran LTP test suite in CentOS 7.2 with kernel 3.10.0-327, test named
+> > "cgroup_regression_test" Test 3 and Test 5 always failed as below:
+> > http://pastebin.ubuntu.com/16703246/
+> >
+> > Test 3 failed when execute "mount -t cgroup -o cpu xxx cgroup/"
+> > Test 5 failed when execute "mount -t cgroup -o $subsys1,$subsys2 xxx
+> cgroup/"
+> >
+> > cpu, hugetlb and perf_event has already been mounted in sys as below:
+> > http://pastebin.ubuntu.com/16703384/
+> >
+> > So the mount operation will definitely fail in the test.
+> >
+> > I just want to know whether it is the test program issue, and whether it
+> can
+> > be waived ?
+>
+> This is known to happen on systemd distros, where systemd mounts specific
+> subsystems together and LTP test wants to mount just one.
+>
+> In those cases you should get -EBUSY as described in
+> Documentation/cgroup-v1/cgroups.txt:
+> "If an active hierarchy with exactly the same set of subsystems already
+> exists, it will be reused for the new mount. If no existing hierarchy
+> matches, and any of the requested subsystems are in use in an existing
+> hierarchy, the mount will fail with -EBUSY. Otherwise, a new hierarchy
+> is activated, associated with the requested subsystems."
+>
+> Regards,
+> Jan
+>
 
-diff --git a/runtest/ltp-aiodio.part2 b/runtest/ltp-aiodio.part2
-index 28a84ac..00b9abf 100644
---- a/runtest/ltp-aiodio.part2
-+++ b/runtest/ltp-aiodio.part2
-@@ -78,3 +78,11 @@ ADSP076 dio_sparse  -a 8k -w 8192k -s 8192k -n 64
- ADSP077 dio_sparse  -a 8k -w 518192k -s 18192k -n 128
- ADSP078 dio_sparse  -a 8k -w 518192k -s 518192k -n 512
- ADSP079 dio_sparse  -a 8k -w 518192k -s 518192k -n 1000
-+ADSP080 dio_sparse  -a 4k -w 4k -s 2k -o 2k -n 2
-+ADSP081 dio_sparse  -a 2k -w 2k -s 1k -o 1k -n 2
-+ADSP082 dio_sparse  -a 1k -w 1k -s 512 -o 512 -n 2
-+ADSP083 dio_sparse  -a 4k -w 4k -s 2k -o 3k -n 2
-+ADSP084 dio_sparse  -a 4k -w 4k -s 4k -o 4k -n 2
-+ADSP085 dio_sparse  -a 4k -w 4k -s 4k -o 6k -n 2
-+ADSP086 dio_sparse  -a 4k -w 4k -s 4k -o 8k -n 2
-+ADSP087 dio_sparse  -a 4k -w 16k -s 8k -o 8k -n 2
+
+
 -- 
-2.5.5
+Best Regards,
+Dong Zhu
 
+My Site: http://bluezd.info
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160527/8db8d357/attachment-0001.html>
