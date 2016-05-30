@@ -1,37 +1,38 @@
-From: Dong ZHu <bluezhudong@gmail.com>
-Date: Thu, 26 May 2016 17:24:07 +0800
-Subject: [LTP] cgroup_regression_test failed in CentOS 7.2
-Message-ID: <CAAUgArBjpTGDx-pb+b9xjGhUEBycbf77RK5GZwkg26DEoMZAxw@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 30 May 2016 13:39:23 +0200
+Subject: [LTP] memcg_memsw_limit_in_bytes_test mlock failed: Resource
+ temporarily unavailable
+In-Reply-To: <CAAUgArDNuD89q3dFLxqwjMi-6opiggZhWo_oEL9qUNUxcxCkrA@mail.gmail.com>
+References: <CAAUgArDNuD89q3dFLxqwjMi-6opiggZhWo_oEL9qUNUxcxCkrA@mail.gmail.com>
+Message-ID: <20160530113923.GA6079@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Zefan,
+Hi!
+> I ran LTP test "memcg_memsw_limit_in_bytes_test" with kernel 3.10.0-327.el7
+> always reported the below error:
+> 
+> memcg_memsw_limit_in_bytes_test 2 TFAIL : ltpapicmd.c:193: process 3769 is
+> killed by error /opt/ltp/testcases/bin/memcg_lib.sh: line 210: 3784 Killed
+> $TEST_PATH/memcg_process $2 -s $3
+> 
+> In function mmap_lock2() mlock failed just return 1, not the oom killer
+> kill the process.
+> And base on the this:
+> http://marc.info/?l=linux-mm&m=142122902313315&w=2
+> 
+> I think mlock failed it is a expect behavior, so why mask the test as
+> Failed ?
 
-I ran LTP test suite in CentOS 7.2 with kernel 3.10.0-327, test named
-"cgroup_regression_test" Test 3 and Test 5 always failed as below:
-http://pastebin.ubuntu.com/16703246/
-
-Test 3 failed when execute "mount -t cgroup -o cpu xxx cgroup/"
-Test 5 failed when execute "mount -t cgroup -o $subsys1,$subsys2 xxx
-cgroup/"
-
-cpu, hugetlb and perf_event has already been mounted in sys as below:
-http://pastebin.ubuntu.com/16703384/
-
-So the mount operation will definitely fail in the test.
-
-I just want to know whether it is the test program issue, and whether it
-can be waived ?
-Thanks !
+So the test fails in mlock() and the mlock() supposedly returns with
+ENOMEM right? This is indeed valid outcome and the test should report
+pass. I guess that we have to return something different from 1 from the
+test process if some of the calls has failed with ENOMEM and change the
+test library to report that as success as well.
 
 -- 
-Best Regards,
-Dong Zhu
-
-My Site: http://bluezd.info
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160526/0d5600b8/attachment.html>
+Cyril Hrubis
+chrubis@suse.cz
