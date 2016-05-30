@@ -1,62 +1,65 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 30 May 2016 16:21:31 +0200
-Subject: [LTP] [LTP-20160510] acl_test01: 44: .: test.sh: not found
-In-Reply-To: <CA+icZUWdzSCUCPM_91Rg3vk1LNGQ7iuAWVqxbPRcjs5ijKSFaw@mail.gmail.com>
-References: <CA+icZUWdzSCUCPM_91Rg3vk1LNGQ7iuAWVqxbPRcjs5ijKSFaw@mail.gmail.com>
-Message-ID: <20160530142131.GA7416@rei>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Mon, 30 May 2016 17:50:39 +0300
+Subject: [LTP] [PATCH] memcg/functional: check several times if the
+ process is killed
+In-Reply-To: <20160524104806.GC10029@rei.lan>
+References: <1463669724-7193-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160523160257.GF25488@rei.lan>
+ <1653845167.258778.1464080543100.JavaMail.zimbra@redhat.com>
+ <20160524091819.GA10029@rei.lan> <57442727.3000600@oracle.com>
+ <20160524101528.GB10029@rei.lan>
+ <812583643.272236.1464085966204.JavaMail.zimbra@redhat.com>
+ <20160524104806.GC10029@rei.lan>
+Message-ID: <574C533F.9000000@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> The 1st issue I tried to hack by...
-> 
-> # diff -uprN testcases/bin/acl_test01.orig testcases/bin/acl_test01
-> --- testcases/bin/acl_test01.orig       2016-05-30 15:11:10.771931080 +0200
-> +++ testcases/bin/acl_test01    2016-05-30 15:22:31.627909726 +0200
-> @@ -41,8 +41,6 @@ export TCID=acltest01
->  export TST_TOTAL=5
->  export TST_COUNT=1
-> 
-> -. test.sh
-> -
->  TMP=${TMP:=/tmp}
-> 
->  TEST_USER1="acltest1"
-> @@ -54,6 +52,8 @@ FILE_ACL="$TMP/tacl/mount-ext3/test_file
->  FILE_ACL_LINK="$TMP/tacl/mount-ext3/test_file_link"
->  TCbin=`pwd`
-> 
-> +. $TCbin/test.sh
-> +
->  COMMAND=$(command -v "getenforce" "setenforce" |wc -l)
->  if [ $COMMAND -eq 2 ]; then
->         SELINUX=$(getenforce)
-> 
-> Not sure if this correct.
 
-No it's not. You have to have path to testcases/bin/ directory in $PATH
-in order to run a LTP testcase (and it's even written in
-documentation...).
 
-Strangely enough the $PATH should be set correctly when you run
-testcases via runltp. That is one of the first things done in setup() in
-that script. And it works fine for me.
+On 05/24/2016 01:48 PM, Cyril Hrubis wrote:
+> Hi!
+>>>>> We should better change this for something more robust. Given that the
+>>>>> memgc_progcess does while (!flag_exit) sleep(1); in the main loop we may
+>>>>> as well wait till the process gets into the sleep state.
+>>>>>
+>>>>
+>>>> I don't understand why it's more robust. For example, a process can get
+>>>> into the sleep state (interruptible sleep) due to a call to a syscall, no?
+>>>
+>>> Generally yes, but in this case it's unlikely that opening /dev/zero or
+>>> calling sigaction() would block.
+>>
+>> There's also some ld setup going on before that. Opening/mapping/reading
+>> various config and .so files.
+>
+> Ah right, I tend to forgot that part.
+>
+>>>> So maybe keep this sleep() as is?
+>>>
+>>> I'm Ok with that one as well. But we should rethink and fix it later.
+>>
+>> My immediate idea was to let memcg_process open "/tmp/memcg_process_ready"
+>> and shell script would monitor /proc/$pid/fd/ until sees that or hits timeout.
+>
+> Or we can reuse the checkpoint library, given that the memory is now
+> backed by tmpfs and path to the file si passed in environment it should
+> be relatively easy to write a helper binary so that we can use it from
+> the shell as well.
+>
 
-The TCbin should be removed from the test entirely.
+memcg_lib.sh has 22 instances of 'sleep 1', which are used in scenarios:
+  * it starts memcg_process_stress and 'sleep 1' (presumably) until the 
+process finishes setting up signal signal handlers
+  * it does 'sleep 1' after it sends USR1 to the memcg_process_stress. I 
+believe it's just to make sure that the sigusr handler finished its job
 
-> For the 2nd issue - dunno what's going on.
+It seems that both the scenarios could modified to use a different form 
+of communication not involving 'sleep'.
 
-Looks like the do_cleanup is executed twice. Once via trap do_cleanup
-EXIT and once at the end of the script. This should be fixed.
+Let my try the proposed checkpoint library here. I think I'll come up 
+with something later this week.
 
-> Beyond all this, how can I test the work of Andreas with LTP?
-> Any help appreciated.
-
-I guess that kernel/syscalls/*xattr* should be relevant.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks.
