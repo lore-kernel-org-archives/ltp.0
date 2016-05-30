@@ -1,250 +1,71 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 31 May 2016 13:27:15 +0800
-Subject: [LTP] [PATCH] syscalls/epoll_create1: Cleanup && Convert to new API
-Message-ID: <1464672435-8917-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Sedat Dilek <sedat.dilek@gmail.com>
+Date: Mon, 30 May 2016 21:28:54 +0200
+Subject: [LTP] [LTP-20160510] acl_test01: 44: .: test.sh: not found
+In-Reply-To: <20160530153220.GB8207@rei.lan>
+References: <CA+icZUWdzSCUCPM_91Rg3vk1LNGQ7iuAWVqxbPRcjs5ijKSFaw@mail.gmail.com>
+ <20160530142131.GA7416@rei>
+ <CA+icZUWRAiAx6bJKNC=Ci6bjR8+jk61ea+xBLcD1Rchu6u7GYg@mail.gmail.com>
+ <20160530151115.GA8207@rei.lan>
+ <CA+icZUVDvU2JK8AbPn2hVE8QHRUAxmk0k1QHeFgw+Ncsb2V9FA@mail.gmail.com>
+ <20160530153220.GB8207@rei.lan>
+Message-ID: <CA+icZUXd0TC36TgYjMDg-6+f-M555C0yu3Pz4R410wutPDNi-A@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- .../syscalls/epoll_create1/epoll_create1_01.c      | 210 ++++++---------------
- 1 file changed, 62 insertions(+), 148 deletions(-)
+[...]
+>> Is there a testcase around - runnable via "runltp -s $testcase_script".
+>
+> These are executed as a part of syscall tests.
+>
+> You can simply do ./runltp -s xattr to execute all testcases that have
+> xattr in their name.
+>
 
-diff --git a/testcases/kernel/syscalls/epoll_create1/epoll_create1_01.c b/testcases/kernel/syscalls/epoll_create1/epoll_create1_01.c
-index f79b907..0e3dcba 100644
---- a/testcases/kernel/syscalls/epoll_create1/epoll_create1_01.c
-+++ b/testcases/kernel/syscalls/epoll_create1/epoll_create1_01.c
-@@ -1,163 +1,77 @@
--/******************************************************************************/
--/*                                                                            */
--/* Copyright (c) Ulrich Drepper <drepper@redhat.com>                          */
--/* Copyright (c) International Business Machines  Corp., 2009                 */
--/*                                                                            */
--/* This program is free software;  you can redistribute it and/or modify      */
--/* it under the terms of the GNU General Public License as published by       */
--/* the Free Software Foundation; either version 2 of the License, or          */
--/* (at your option) any later version.                                        */
--/*                                                                            */
--/* This program is distributed in the hope that it will be useful,            */
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
--/* the GNU General Public License for more details.                           */
--/*                                                                            */
--/* You should have received a copy of the GNU General Public License          */
--/* along with this program;  if not, write to the Free Software               */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
--/*                                                                            */
--/******************************************************************************/
--/******************************************************************************/
--/*                                                                            */
--/* File:        epoll_create1_01.c                                            */
--/*                                                                            */
--/* Description: This Program tests the new system call introduced in 2.6.27.  */
--/*              Ulrich´s comment as in:                                       */
--/* http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=a0998b50c3f0b8fdd265c63e0032f86ebe377dbf */
--/*              says:                                                         */
--/* This patch adds the new epoll_create1 syscall.  It extends the old         */
--/* epoll_create syscall by one parameter which is meant to hold a flag value. */
--/* In this patch the only flag support is EPOLL_CLOEXEC which causes the      */
--/* close-on-exec flag for the returned file descriptor to be set. A new name  */
--/* EPOLL_CLOEXEC is introduced which in this implementation must have the same*/
--/* value as O_CLOEXEC. The following test must be adjusted for architectures  */
--/* other than x86 and x86-64 and in case the syscall numbers changed.         */
--/*                                                                            */
--/* Usage:  <for command-line>                                                 */
--/* epoll_create1_01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                      */
--/*      where,  -c n : Run n copies concurrently.                             */
--/*              -e   : Turn on errno logging.                                 */
--/*              -i n : Execute test n times.                                  */
--/*              -I x : Execute test for x seconds.                            */
--/*              -P x : Pause for x seconds between iterations.                */
--/*              -t   : Turn on syscall timing.                                */
--/*                                                                            */
--/* Total Tests: 1                                                             */
--/*                                                                            */
--/* Test Name:   epoll_create1_01                                              */
--/*                                                                            */
--/* Author:      Ulrich Drepper <drepper@redhat.com>                           */
--/*                                                                            */
--/* History:     Created - Jan 12 2009 - Ulrich Drepper <drepper@redhat.com>   */
--/*              Ported to LTP                                                 */
--/*                      - Jan 12 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
--/******************************************************************************/
--#include <fcntl.h>
--#include <stdio.h>
--#include <time.h>
--#include <unistd.h>
--#include <sys/syscall.h>
-+/*
-+ * Copyright (c) Ulrich Drepper <drepper@redhat.com>
-+ * Copyright (c) International Business Machines  Corp., 2009
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program;
-+ *
-+ * Test:        epoll_create1_01.c
-+ *
-+ * Description: This Program tests the new system call introduced in 2.6.27.
-+ *              Ulrich´s comment as in:
-+ * http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=a0998b50c3f0b8fdd265c63e0032f86ebe377dbf
-+ *
-+ * This patch adds the new epoll_create1 syscall.  It extends the old
-+ * epoll_create syscall by one parameter which is meant to hold a flag value.
-+ * In this patch the only flag support is EPOLL_CLOEXEC which causes the
-+ * close-on-exec flag for the returned file descriptor to be set. A new name
-+ * EPOLL_CLOEXEC is introduced which in this implementation must have the same
-+ * value as O_CLOEXEC. The following test must be adjusted for architectures
-+ * other than x86 and x86-64 and in case the syscall numbers changed.
-+ *
-+ */
- #include <errno.h>
--
--#include "test.h"
--#include "lapi/fcntl.h"
-+#include <sys/epoll.h>
-+#include "tst_test.h"
- #include "linux_syscall_numbers.h"
- 
--#define EPOLL_CLOEXEC O_CLOEXEC
--
--char *TCID = "epoll_create1_01";
--int TST_TOTAL = 1;
--
--/* Extern Global Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    cleanup                                                       */
--/*                                                                            */
--/* Description: Performs all one time clean up for this test on successful    */
--/*              completion,  premature exit or  failure. Closes all temporary */
--/*              files, removes all temporary directories exits the test with  */
--/*              appropriate return code by calling tst_exit() function.       */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*              On success - Exits calling tst_exit(). With '0' return code.  */
--/*                                                                            */
--/******************************************************************************/
--void cleanup(void)
--{
--
--	tst_rmdir();
--}
-+#ifndef EPOLL_CLOEXEC
-+#define EPOLL_CLOEXEC 02000000
+Running xattr testcase has shown a different issue.
+In [1] Andreas explains why cgroup_xattr tests fails...
+
+"The test seems to try getting/setting an xattr named "trusted." (no
+suffix). That's an invalid name; such invalid names are rejected since
+commit 98e9cb571 "vfs: Distinguish between full xattr names and proper
+prefixes" (v4.5-rc1).
+
+Could you try removing that from the LTP test and rerun it?"
+
+I followed the advice and the attached diff fixes the problem here.
+Xattr testcase runs successfully,
+
+See attached logs for details.
+
+- Sedat -
+
+[1] http://marc.info/?l=linux-fsdevel&m=146463254520809&w=2
+-------------- next part --------------
+--- ltp-full-20160510.orig/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
++++ ltp-full-20160510/testcases/kernel/controllers/cgroup_xattr/cgroup_xattr.c
+@@ -66,7 +66,9 @@ struct tst_key {
+ static struct tst_key tkeys[] = {
+ 	{ .name = "security.",		.good = 1,	},
+ 	{ .name = "trusted.test",	.good = 1,	},
++#if 0
+ 	{ .name = "trusted.",		.good = 1,	},
 +#endif
- 
--/* Local  Functions */
--/******************************************************************************/
--/*                                                                            */
--/* Function:    setup                                                         */
--/*                                                                            */
--/* Description: Performs all one time setup for this test. This function is   */
--/*              typically used to capture signals, create temporary dirs      */
--/*              and temporary files that may be used in the course of this    */
--/*              test.                                                         */
--/*                                                                            */
--/* Input:       None.                                                         */
--/*                                                                            */
--/* Output:      None.                                                         */
--/*                                                                            */
--/* Return:      On failure - Exits by calling cleanup().                      */
--/*              On success - returns 0.                                       */
--/*                                                                            */
--/******************************************************************************/
--void setup(void)
--{
--	/* Capture signals if any */
--	/* Create temporary directories */
--	TEST_PAUSE;
--	tst_tmpdir();
--}
--
--int main(int argc, char *argv[])
-+static void verify_epoll_create1(void)
- {
- 	int fd, coe;
- 
--	if ((tst_kvercmp(2, 6, 27)) < 0)
--		tst_brkm(TCONF, NULL,
--			 "This test can only run on kernels that are 2.6.27 and "
--			 "higher");
--
--	setup();
--
--	fd = ltp_syscall(__NR_epoll_create1, 0);
-+	fd = tst_syscall(__NR_epoll_create1, 0);
- 	if (fd == -1) {
--		tst_brkm(TFAIL, cleanup, "epoll_create1(0) failed");
--	}
--	coe = fcntl(fd, F_GETFD);
--	if (coe == -1) {
--		tst_brkm(TBROK, cleanup, "fcntl failed");
--	}
--	if (coe & FD_CLOEXEC) {
--		tst_brkm(TFAIL, cleanup,
--			 "epoll_create1(0) set close-on-exec flag");
-+		tst_brk(TFAIL, "epoll_create1(0) failed");
- 	}
--	close(fd);
--	fd = ltp_syscall(__NR_epoll_create1, EPOLL_CLOEXEC);
-+
-+	coe = SAFE_FCNTL(fd, F_GETFD);
-+	if (coe & FD_CLOEXEC)
-+		tst_brk(TFAIL, "epoll_create1(0) set close-on-exec flag");
-+
-+	SAFE_CLOSE(fd);
-+
-+	fd = tst_syscall(__NR_epoll_create1, EPOLL_CLOEXEC);
- 	if (fd == -1) {
--		tst_brkm(TFAIL, cleanup, "epoll_create1(EPOLL_CLOEXEC) failed");
--	}
--	coe = fcntl(fd, F_GETFD);
--	if (coe == -1) {
--		tst_brkm(TBROK, cleanup, "fcntl failed");
-+		tst_brk(TFAIL, "epoll_create1(EPOLL_CLOEXEC) failed");
- 	}
-+
-+	coe = SAFE_FCNTL(fd, F_GETFD);
- 	if ((coe & FD_CLOEXEC) == 0) {
--		tst_brkm(TFAIL, cleanup,
--			 "epoll_create1(EPOLL_CLOEXEC) set close-on-exec flag");
-+		tst_brk(TFAIL,
-+			"epoll_create1(EPOLL_CLOEXEC) set close-on-exec flag");
- 	}
--	close(fd);
--	tst_resm(TPASS, "epoll_create1(EPOLL_CLOEXEC) PASSED");
- 
--	cleanup();
--	tst_exit();
-+	SAFE_CLOSE(fd);
-+
-+	tst_res(TPASS, "epoll_create1(EPOLL_CLOEXEC) PASSED");
- }
-+
-+static struct tst_test test = {
-+	.tid = "epoll_create1_01",
-+	.min_kver = "2.6.27",
-+	.test_all = verify_epoll_create1,
-+	.needs_tmpdir = 1,
-+};
--- 
-1.8.3.1
-
-
-
+ 	{ .name = "user.",		.good = 0,	},
+ 	{ .name = "system.",		.good = 0,	},
+ };
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: LTP_RUN_ON-2016_05_30-21h_15m_19s.log
+Type: application/octet-stream
+Size: 959 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160530/d5e0f9df/attachment-0002.obj>
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: xattr.log
+Type: application/octet-stream
+Size: 163378 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160530/d5e0f9df/attachment-0003.obj>
