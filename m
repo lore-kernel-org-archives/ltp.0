@@ -1,67 +1,48 @@
 From: Dong ZHu <bluezhudong@gmail.com>
-Date: Fri, 27 May 2016 22:08:49 +0800
-Subject: [LTP] cgroup_regression_test failed in CentOS 7.2
-In-Reply-To: <2095793802.2123498.1464345325799.JavaMail.zimbra@redhat.com>
-References: <CAAUgArA3oBMmf4YJebREKXYyE_XfQnsw3_eO1gV-K_b8FaKnFg@mail.gmail.com>
- <2095793802.2123498.1464345325799.JavaMail.zimbra@redhat.com>
-Message-ID: <CAAUgArA4ON_uT+nTEPqret4o51CaaXehopnoh+HdmMUdN_RKQw@mail.gmail.com>
+Date: Mon, 30 May 2016 17:56:19 +0800
+Subject: [LTP] [PATCH] kernel/numa: sleep 2s in test01 for waiting numastat
+	updating
+Message-ID: <CAAUgArBQ_D+wY+48YO6VYPWYM70hxr98YshcRRkXDYSoz2VZQg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+From 98db5da4ec362e4f8e64b119a8d32245ca06bf36 Mon Sep 17 00:00:00 2001
+        From: Dong Zhu <bluezhudong@gmail.com>
+Date: Mon, 30 May 2016 17:40:05 +0800
+Subject: [PATCH] kernel/numa: sleep 2s in test01 for waiting numastat updating
 
-Thanks for your info, Is there any effective way (any options or
-workaround) for making the test passing on systemd distros ?
+Without this patch always get the below error with kernel 4.6.0:
+"ltpapicmd.c:193: Test #1: NUMA hit and localnode increase in node0 is
+less than expected"
 
-On Fri, May 27, 2016 at 6:35 PM, Jan Stancek <jstancek@redhat.com> wrote:
+numastat's "local_node" might take some to update even though we malloc
+the local memory for each node.
 
->
->
->
->
-> ----- Original Message -----
-> > From: "Dong ZHu" <bluezhudong@gmail.com>
-> > To: ltp@lists.linux.it
-> > Sent: Friday, 27 May, 2016 4:25:41 AM
-> > Subject: [LTP] cgroup_regression_test failed in CentOS 7.2
-> >
-> > Hi All,
-> >
-> > I ran LTP test suite in CentOS 7.2 with kernel 3.10.0-327, test named
-> > "cgroup_regression_test" Test 3 and Test 5 always failed as below:
-> > http://pastebin.ubuntu.com/16703246/
-> >
-> > Test 3 failed when execute "mount -t cgroup -o cpu xxx cgroup/"
-> > Test 5 failed when execute "mount -t cgroup -o $subsys1,$subsys2 xxx
-> cgroup/"
-> >
-> > cpu, hugetlb and perf_event has already been mounted in sys as below:
-> > http://pastebin.ubuntu.com/16703384/
-> >
-> > So the mount operation will definitely fail in the test.
-> >
-> > I just want to know whether it is the test program issue, and whether it
-> can
-> > be waived ?
->
-> This is known to happen on systemd distros, where systemd mounts specific
-> subsystems together and LTP test wants to mount just one.
->
-> In those cases you should get -EBUSY as described in
-> Documentation/cgroup-v1/cgroups.txt:
-> "If an active hierarchy with exactly the same set of subsystems already
-> exists, it will be reused for the new mount. If no existing hierarchy
-> matches, and any of the requested subsystems are in use in an existing
-> hierarchy, the mount will fail with -EBUSY. Otherwise, a new hierarchy
-> is activated, associated with the requested subsystems."
->
-> Regards,
-> Jan
->
+So this patch in targets to sleep for 2 seconds until "local_node" get
+updated.
 
+Signed-off-by: Dong Zhu <bluezhudong@gmail.com>
+---
+ testcases/kernel/numa/numa01.sh | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+index 9c5f49a..d3c7606 100755
+--- a/testcases/kernel/numa/numa01.sh
++++ b/testcases/kernel/numa/numa01.sh
+@@ -247,6 +247,7 @@ test01()
+         extract_numastat local_node $local_node $col || return 1
+         Prev_value=$RC
+         numactl --cpunodebind=$node --membind=$node support_numa $ALLOC_1MB
++       sleep 2s
+         numastat > $LTPTMP/numalog
+         extract_numastat local_node $local_node $col || return 1
+         Curr_value=$RC
+-- 
+2.1.0
 
 
 -- 
@@ -69,6 +50,3 @@ Best Regards,
 Dong Zhu
 
 My Site: http://bluezd.info
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160527/8db8d357/attachment-0001.html>
