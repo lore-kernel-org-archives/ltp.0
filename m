@@ -1,76 +1,48 @@
-From: Dong ZHu <bluezhudong@gmail.com>
-Date: Wed, 1 Jun 2016 11:00:50 +0800
-Subject: [LTP] [PATCH] controllers/memcg: Mark testcase_2 as pass when mlock
-	failed
-Message-ID: <CAAUgArC7-C7tc2W5gpwt9=U_=gcU98uiLJci3xnjHDXjk8mUxg@mail.gmail.com>
+From: Andreas Gruenbacher <agruenba@redhat.com>
+Date: Wed, 1 Jun 2016 01:46:25 +0200
+Subject: [LTP] [LTP-20160510] acl_test01: 44: .: test.sh: not found
+In-Reply-To: <20160531152139.GB14283@rei.lan>
+References: <CA+icZUWdzSCUCPM_91Rg3vk1LNGQ7iuAWVqxbPRcjs5ijKSFaw@mail.gmail.com>
+ <20160530142131.GA7416@rei>
+ <CA+icZUWRAiAx6bJKNC=Ci6bjR8+jk61ea+xBLcD1Rchu6u7GYg@mail.gmail.com>
+ <20160530151115.GA8207@rei.lan>
+ <CA+icZUVDvU2JK8AbPn2hVE8QHRUAxmk0k1QHeFgw+Ncsb2V9FA@mail.gmail.com>
+ <20160530153220.GB8207@rei.lan>
+ <CA+icZUXd0TC36TgYjMDg-6+f-M555C0yu3Pz4R410wutPDNi-A@mail.gmail.com>
+ <CA+icZUUm8-L1FDBMZiGdv0CL4Y=4zxj9si-pxtfkne3nG4eqHQ@mail.gmail.com>
+ <20160531152139.GB14283@rei.lan>
+Message-ID: <CAHc6FU45ra6zxEp6NdBC1M4pKOoJYJ16-iRoubXEp1S9QevDhQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-While running "memcg_memsw_limit_in_bytes_test" always reported below error:
-"memcg_memsw_limit_in_bytes_test 2 TFAIL : ltpapicmd.c:193: process 3769
-is killed by error"
+Cyril,
 
-In function mmap_lock2() mlock failed to lock pages with errno EAGAIN,
-the "memcg_process" process exit not the oom killer kill it.
+On Tue, May 31, 2016 at 5:21 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Andreas, please at least CC ltp ML (ltp@lists.linux.it) with patches for
+> LTP testcases, otherwise I cannot apply them.
 
-Base on the this:
-http://marc.info/?l=linux-mm&m=142122902313315&w=2
+here's the fix again; it at least makes the test work on 4.5 and later kernels.
 
-So mlock failed it is a expect behavior, in this case test should return
-PASS.
+> And if you think that testcase is useless or plain wrong just provide
+> reasoning why and I will get rid of it.
 
-Signed-off-by: Dong Zhu <bluezhudong@gmail.com>
----
- testcases/kernel/controllers/memcg/functional/memcg_lib.sh    | 3 +++
- testcases/kernel/controllers/memcg/functional/memcg_process.c | 8 ++++++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
+The test seems rather weird. Tu check for (the lack of) "user.*"
+support, it should at least use a "user.*" xattr name that would be
+valid on ther filesystems (any non-empty suffix would do). Likewise
+for system; it could check for "system.posix_acl_access" support, for
+example, but only checking if invalid names are properly rejected
+isn't all that helpful. I don't know what the real idea behind this
+test case was though; the documentation doesn't say much.
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index 9b9b0fd..2f889ab 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -229,8 +229,11 @@ test_proc_kill()
-     ps -p $pid > /dev/null 2> /dev/null
-     if [ $? -ne 0 ]; then
-         wait $pid
-+        ret=$?
-         if [ $? -eq 1 ]; then
-             result $FAIL "process $pid is killed by error"
-+        elif [[ $2 == "--mmap-lock2" ]] && [[ $ret -eq 0 ]]; then
-+            result $PASS "process $pid exit, mlock failed to lock
-page return with errno EAGAIN"
-         else
-             result $PASS "process $pid is killed"
-         fi
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c
-b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-index 3d34394..dc33567 100644
---- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-@@ -203,8 +203,12 @@ void mmap_lock2()
-         if (p == MAP_FAILED)
-             err(1, "mmap failed");
-
--        if (mlock(p, memsize) == -1)
--            err(1, "mlock failed");
-+                if (mlock(p, memsize) == -1) {
-+                        if (errno == EAGAIN)
-+                flag_exit = 1;
-+                        else
-+                err(1, "mlock failed");
-+                }
-     } else {
-         if (munmap(p, memsize) == -1)
-             err(1, "munmap failed");
--- 
-2.1.0
-
--- 
-Best Regards,
-Dong Zhu
-
-My Site: http://bluezd.info
+Thanks,
+Andreas
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: ltp-xattr.patch
+Type: text/x-patch
+Size: 1629 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160601/1932a180/attachment.bin>
