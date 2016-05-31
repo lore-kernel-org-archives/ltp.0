@@ -1,16 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 31 May 2016 17:21:40 +0200
-Subject: [LTP] [LTP-20160510] acl_test01: 44: .: test.sh: not found
-In-Reply-To: <CA+icZUUm8-L1FDBMZiGdv0CL4Y=4zxj9si-pxtfkne3nG4eqHQ@mail.gmail.com>
-References: <CA+icZUWdzSCUCPM_91Rg3vk1LNGQ7iuAWVqxbPRcjs5ijKSFaw@mail.gmail.com>
- <20160530142131.GA7416@rei>
- <CA+icZUWRAiAx6bJKNC=Ci6bjR8+jk61ea+xBLcD1Rchu6u7GYg@mail.gmail.com>
- <20160530151115.GA8207@rei.lan>
- <CA+icZUVDvU2JK8AbPn2hVE8QHRUAxmk0k1QHeFgw+Ncsb2V9FA@mail.gmail.com>
- <20160530153220.GB8207@rei.lan>
- <CA+icZUXd0TC36TgYjMDg-6+f-M555C0yu3Pz4R410wutPDNi-A@mail.gmail.com>
- <CA+icZUUm8-L1FDBMZiGdv0CL4Y=4zxj9si-pxtfkne3nG4eqHQ@mail.gmail.com>
-Message-ID: <20160531152139.GB14283@rei.lan>
+Date: Tue, 31 May 2016 18:45:05 +0200
+Subject: [LTP] [PATCH] kernel/numa: sleep 2s in test01 for waiting
+ numastat updating
+In-Reply-To: <CAAUgArD-x-1w9GOg1gaExOiAGoFYwiRChMjB3GkNT+ZJh8Z+Tg@mail.gmail.com>
+References: <CAAUgArBQ_D+wY+48YO6VYPWYM70hxr98YshcRRkXDYSoz2VZQg@mail.gmail.com>
+ <20160530115554.GB6079@rei>
+ <CAAUgArD-x-1w9GOg1gaExOiAGoFYwiRChMjB3GkNT+ZJh8Z+Tg@mail.gmail.com>
+Message-ID: <20160531164504.GE14283@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,17 +14,28 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Andreas send a patch [1] which works fine.
+> > What we should do instead is to get the new stastistic in loop with a
+> > short (~0.1s) sleep util we get the expected value or until timeout has
+> > been reached (~10s). And this should be done ideally as a function
+> > called from each of the numa tests.
+> >
 > 
-> - Sedat -
-> 
-> [1] http://marc.info/?l=linux-fsdevel&m=146463658521851&w=2
+> I think we should not wait for 10s, it is a bit longer, the test will
+> pass no matter we
+> add "numactl --cpunodebind=$node --membind=$node support_numa
+> $ALLOC_1MB" or not.
 
-Andreas, please at least CC ltp ML (ltp@lists.linux.it) with patches for
-LTP testcases, otherwise I cannot apply them.
+Hmm, we are looking at accumulated statistics. So some of the tests will
+just pass as other processes allocate memory as well.
 
-And if you think that testcase is useless or plain wrong just provide
-reasoning why and I will get rid of it.
+> I suppose maybe we could refine the support_numa  to make it allocate
+> a bigger memory and run for a while rather than return immediately.
+
+I wonder if there is a file in /proc/ that could be used to determine on
+which numa node is the page allocated on. There is /proc/$pid/pagemap
+that could be used to map address to someting that could used to seek in
+/proc/kpageflags that can be used to get quite a lot of information
+about the page state but not on which numa node it is allocated on...
 
 -- 
 Cyril Hrubis
