@@ -1,53 +1,35 @@
-From: Sedat Dilek <sedat.dilek@gmail.com>
-Date: Mon, 30 May 2016 21:56:58 +0200
-Subject: [LTP] [LTP-20160510] acl_test01: 44: .: test.sh: not found
-In-Reply-To: <CA+icZUXd0TC36TgYjMDg-6+f-M555C0yu3Pz4R410wutPDNi-A@mail.gmail.com>
-References: <CA+icZUWdzSCUCPM_91Rg3vk1LNGQ7iuAWVqxbPRcjs5ijKSFaw@mail.gmail.com>
- <20160530142131.GA7416@rei>
- <CA+icZUWRAiAx6bJKNC=Ci6bjR8+jk61ea+xBLcD1Rchu6u7GYg@mail.gmail.com>
- <20160530151115.GA8207@rei.lan>
- <CA+icZUVDvU2JK8AbPn2hVE8QHRUAxmk0k1QHeFgw+Ncsb2V9FA@mail.gmail.com>
- <20160530153220.GB8207@rei.lan>
- <CA+icZUXd0TC36TgYjMDg-6+f-M555C0yu3Pz4R410wutPDNi-A@mail.gmail.com>
-Message-ID: <CA+icZUUm8-L1FDBMZiGdv0CL4Y=4zxj9si-pxtfkne3nG4eqHQ@mail.gmail.com>
+From: Dong ZHu <bluezhudong@gmail.com>
+Date: Tue, 31 May 2016 08:59:22 +0800
+Subject: [LTP] memcg_memsw_limit_in_bytes_test mlock failed: Resource
+ temporarily unavailable
+In-Reply-To: <20160530113923.GA6079@rei>
+References: <CAAUgArDNuD89q3dFLxqwjMi-6opiggZhWo_oEL9qUNUxcxCkrA@mail.gmail.com>
+ <20160530113923.GA6079@rei>
+Message-ID: <CAAUgArD93+SMQUcNDSpAK=R+Sv__BAxc6agL6ZNRamxBLX23xA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 5/30/16, Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> [...]
->>> Is there a testcase around - runnable via "runltp -s $testcase_script".
->>
->> These are executed as a part of syscall tests.
->>
->> You can simply do ./runltp -s xattr to execute all testcases that have
->> xattr in their name.
->>
+>> I think mlock failed it is a expect behavior, so why mask the test as
+>> Failed ?
 >
-> Running xattr testcase has shown a different issue.
-> In [1] Andreas explains why cgroup_xattr tests fails...
->
-> "The test seems to try getting/setting an xattr named "trusted." (no
-> suffix). That's an invalid name; such invalid names are rejected since
-> commit 98e9cb571 "vfs: Distinguish between full xattr names and proper
-> prefixes" (v4.5-rc1).
->
-> Could you try removing that from the LTP test and rerun it?"
->
-> I followed the advice and the attached diff fixes the problem here.
-> Xattr testcase runs successfully,
->
-> See attached logs for details.
->
-> - Sedat -
->
-> [1] http://marc.info/?l=linux-fsdevel&m=146463254520809&w=2
+> So the test fails in mlock() and the mlock() supposedly returns with
+> ENOMEM right?
+
+Yes.
+
+> This is indeed valid outcome and the test should report
+> pass. I guess that we have to return something different from 1 from the
+> test process if some of the calls has failed with ENOMEM and change the
+> test library to report that as success as well.
 >
 
-Andreas send a patch [1] which works fine.
+I agree with that, I will develop a patch for fixing this issue.
 
-- Sedat -
+-- 
+Best Regards,
+Dong Zhu
 
-[1] http://marc.info/?l=linux-fsdevel&m=146463658521851&w=2
+My Site: http://bluezd.info
