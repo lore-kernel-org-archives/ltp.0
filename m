@@ -1,55 +1,250 @@
-From: Dong ZHu <bluezhudong@gmail.com>
-Date: Tue, 31 May 2016 09:08:10 +0800
-Subject: [LTP] [PATCH] kernel/numa: sleep 2s in test01 for waiting
- numastat updating
-In-Reply-To: <20160530115554.GB6079@rei>
-References: <CAAUgArBQ_D+wY+48YO6VYPWYM70hxr98YshcRRkXDYSoz2VZQg@mail.gmail.com>
- <20160530115554.GB6079@rei>
-Message-ID: <CAAUgArD-x-1w9GOg1gaExOiAGoFYwiRChMjB3GkNT+ZJh8Z+Tg@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 31 May 2016 13:27:15 +0800
+Subject: [LTP] [PATCH] syscalls/epoll_create1: Cleanup && Convert to new API
+Message-ID: <1464672435-8917-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On Mon, May 30, 2016 at 7:55 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> Without this patch always get the below error with kernel 4.6.0:
->> "ltpapicmd.c:193: Test #1: NUMA hit and localnode increase in node0 is
->> less than expected"
->>
->> numastat's "local_node" might take some to update even though we malloc
->> the local memory for each node.
->>
->> So this patch in targets to sleep for 2 seconds until "local_node" get
->> updated.
->
-> I've seen this failure as well and also the test 3, test 5 and test 6
-> two of them have sleep 2s already, hence adding sleep 2 is not good
-> enough it only makes the race condition less probable.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ .../syscalls/epoll_create1/epoll_create1_01.c      | 210 ++++++---------------
+ 1 file changed, 62 insertions(+), 148 deletions(-)
 
-I didn't see this failure in test 3, test 4 and test 6.
-
-When I add sleep 2 seconds test 1 work properly.
-
->
-> What we should do instead is to get the new stastistic in loop with a
-> short (~0.1s) sleep util we get the expected value or until timeout has
-> been reached (~10s). And this should be done ideally as a function
-> called from each of the numa tests.
->
-
-I think we should not wait for 10s, it is a bit longer, the test will
-pass no matter we
-add "numactl --cpunodebind=$node --membind=$node support_numa
-$ALLOC_1MB" or not.
-
-I suppose maybe we could refine the support_numa  to make it allocate
-a bigger memory and run
-for a while rather than return immediately.
-
+diff --git a/testcases/kernel/syscalls/epoll_create1/epoll_create1_01.c b/testcases/kernel/syscalls/epoll_create1/epoll_create1_01.c
+index f79b907..0e3dcba 100644
+--- a/testcases/kernel/syscalls/epoll_create1/epoll_create1_01.c
++++ b/testcases/kernel/syscalls/epoll_create1/epoll_create1_01.c
+@@ -1,163 +1,77 @@
+-/******************************************************************************/
+-/*                                                                            */
+-/* Copyright (c) Ulrich Drepper <drepper@redhat.com>                          */
+-/* Copyright (c) International Business Machines  Corp., 2009                 */
+-/*                                                                            */
+-/* This program is free software;  you can redistribute it and/or modify      */
+-/* it under the terms of the GNU General Public License as published by       */
+-/* the Free Software Foundation; either version 2 of the License, or          */
+-/* (at your option) any later version.                                        */
+-/*                                                                            */
+-/* This program is distributed in the hope that it will be useful,            */
+-/* but WITHOUT ANY WARRANTY;  without even the implied warranty of            */
+-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See                  */
+-/* the GNU General Public License for more details.                           */
+-/*                                                                            */
+-/* You should have received a copy of the GNU General Public License          */
+-/* along with this program;  if not, write to the Free Software               */
+-/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
+-/*                                                                            */
+-/******************************************************************************/
+-/******************************************************************************/
+-/*                                                                            */
+-/* File:        epoll_create1_01.c                                            */
+-/*                                                                            */
+-/* Description: This Program tests the new system call introduced in 2.6.27.  */
+-/*              Ulrich´s comment as in:                                       */
+-/* http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=a0998b50c3f0b8fdd265c63e0032f86ebe377dbf */
+-/*              says:                                                         */
+-/* This patch adds the new epoll_create1 syscall.  It extends the old         */
+-/* epoll_create syscall by one parameter which is meant to hold a flag value. */
+-/* In this patch the only flag support is EPOLL_CLOEXEC which causes the      */
+-/* close-on-exec flag for the returned file descriptor to be set. A new name  */
+-/* EPOLL_CLOEXEC is introduced which in this implementation must have the same*/
+-/* value as O_CLOEXEC. The following test must be adjusted for architectures  */
+-/* other than x86 and x86-64 and in case the syscall numbers changed.         */
+-/*                                                                            */
+-/* Usage:  <for command-line>                                                 */
+-/* epoll_create1_01 [-c n] [-e][-i n] [-I x] [-p x] [-t]                      */
+-/*      where,  -c n : Run n copies concurrently.                             */
+-/*              -e   : Turn on errno logging.                                 */
+-/*              -i n : Execute test n times.                                  */
+-/*              -I x : Execute test for x seconds.                            */
+-/*              -P x : Pause for x seconds between iterations.                */
+-/*              -t   : Turn on syscall timing.                                */
+-/*                                                                            */
+-/* Total Tests: 1                                                             */
+-/*                                                                            */
+-/* Test Name:   epoll_create1_01                                              */
+-/*                                                                            */
+-/* Author:      Ulrich Drepper <drepper@redhat.com>                           */
+-/*                                                                            */
+-/* History:     Created - Jan 12 2009 - Ulrich Drepper <drepper@redhat.com>   */
+-/*              Ported to LTP                                                 */
+-/*                      - Jan 12 2009 - Subrata <subrata@linux.vnet.ibm.com>  */
+-/******************************************************************************/
+-#include <fcntl.h>
+-#include <stdio.h>
+-#include <time.h>
+-#include <unistd.h>
+-#include <sys/syscall.h>
++/*
++ * Copyright (c) Ulrich Drepper <drepper@redhat.com>
++ * Copyright (c) International Business Machines  Corp., 2009
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program;
++ *
++ * Test:        epoll_create1_01.c
++ *
++ * Description: This Program tests the new system call introduced in 2.6.27.
++ *              Ulrich´s comment as in:
++ * http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commit;h=a0998b50c3f0b8fdd265c63e0032f86ebe377dbf
++ *
++ * This patch adds the new epoll_create1 syscall.  It extends the old
++ * epoll_create syscall by one parameter which is meant to hold a flag value.
++ * In this patch the only flag support is EPOLL_CLOEXEC which causes the
++ * close-on-exec flag for the returned file descriptor to be set. A new name
++ * EPOLL_CLOEXEC is introduced which in this implementation must have the same
++ * value as O_CLOEXEC. The following test must be adjusted for architectures
++ * other than x86 and x86-64 and in case the syscall numbers changed.
++ *
++ */
+ #include <errno.h>
+-
+-#include "test.h"
+-#include "lapi/fcntl.h"
++#include <sys/epoll.h>
++#include "tst_test.h"
+ #include "linux_syscall_numbers.h"
+ 
+-#define EPOLL_CLOEXEC O_CLOEXEC
+-
+-char *TCID = "epoll_create1_01";
+-int TST_TOTAL = 1;
+-
+-/* Extern Global Functions */
+-/******************************************************************************/
+-/*                                                                            */
+-/* Function:    cleanup                                                       */
+-/*                                                                            */
+-/* Description: Performs all one time clean up for this test on successful    */
+-/*              completion,  premature exit or  failure. Closes all temporary */
+-/*              files, removes all temporary directories exits the test with  */
+-/*              appropriate return code by calling tst_exit() function.       */
+-/*                                                                            */
+-/* Input:       None.                                                         */
+-/*                                                                            */
+-/* Output:      None.                                                         */
+-/*                                                                            */
+-/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
+-/*              On success - Exits calling tst_exit(). With '0' return code.  */
+-/*                                                                            */
+-/******************************************************************************/
+-void cleanup(void)
+-{
+-
+-	tst_rmdir();
+-}
++#ifndef EPOLL_CLOEXEC
++#define EPOLL_CLOEXEC 02000000
++#endif
+ 
+-/* Local  Functions */
+-/******************************************************************************/
+-/*                                                                            */
+-/* Function:    setup                                                         */
+-/*                                                                            */
+-/* Description: Performs all one time setup for this test. This function is   */
+-/*              typically used to capture signals, create temporary dirs      */
+-/*              and temporary files that may be used in the course of this    */
+-/*              test.                                                         */
+-/*                                                                            */
+-/* Input:       None.                                                         */
+-/*                                                                            */
+-/* Output:      None.                                                         */
+-/*                                                                            */
+-/* Return:      On failure - Exits by calling cleanup().                      */
+-/*              On success - returns 0.                                       */
+-/*                                                                            */
+-/******************************************************************************/
+-void setup(void)
+-{
+-	/* Capture signals if any */
+-	/* Create temporary directories */
+-	TEST_PAUSE;
+-	tst_tmpdir();
+-}
+-
+-int main(int argc, char *argv[])
++static void verify_epoll_create1(void)
+ {
+ 	int fd, coe;
+ 
+-	if ((tst_kvercmp(2, 6, 27)) < 0)
+-		tst_brkm(TCONF, NULL,
+-			 "This test can only run on kernels that are 2.6.27 and "
+-			 "higher");
+-
+-	setup();
+-
+-	fd = ltp_syscall(__NR_epoll_create1, 0);
++	fd = tst_syscall(__NR_epoll_create1, 0);
+ 	if (fd == -1) {
+-		tst_brkm(TFAIL, cleanup, "epoll_create1(0) failed");
+-	}
+-	coe = fcntl(fd, F_GETFD);
+-	if (coe == -1) {
+-		tst_brkm(TBROK, cleanup, "fcntl failed");
+-	}
+-	if (coe & FD_CLOEXEC) {
+-		tst_brkm(TFAIL, cleanup,
+-			 "epoll_create1(0) set close-on-exec flag");
++		tst_brk(TFAIL, "epoll_create1(0) failed");
+ 	}
+-	close(fd);
+-	fd = ltp_syscall(__NR_epoll_create1, EPOLL_CLOEXEC);
++
++	coe = SAFE_FCNTL(fd, F_GETFD);
++	if (coe & FD_CLOEXEC)
++		tst_brk(TFAIL, "epoll_create1(0) set close-on-exec flag");
++
++	SAFE_CLOSE(fd);
++
++	fd = tst_syscall(__NR_epoll_create1, EPOLL_CLOEXEC);
+ 	if (fd == -1) {
+-		tst_brkm(TFAIL, cleanup, "epoll_create1(EPOLL_CLOEXEC) failed");
+-	}
+-	coe = fcntl(fd, F_GETFD);
+-	if (coe == -1) {
+-		tst_brkm(TBROK, cleanup, "fcntl failed");
++		tst_brk(TFAIL, "epoll_create1(EPOLL_CLOEXEC) failed");
+ 	}
++
++	coe = SAFE_FCNTL(fd, F_GETFD);
+ 	if ((coe & FD_CLOEXEC) == 0) {
+-		tst_brkm(TFAIL, cleanup,
+-			 "epoll_create1(EPOLL_CLOEXEC) set close-on-exec flag");
++		tst_brk(TFAIL,
++			"epoll_create1(EPOLL_CLOEXEC) set close-on-exec flag");
+ 	}
+-	close(fd);
+-	tst_resm(TPASS, "epoll_create1(EPOLL_CLOEXEC) PASSED");
+ 
+-	cleanup();
+-	tst_exit();
++	SAFE_CLOSE(fd);
++
++	tst_res(TPASS, "epoll_create1(EPOLL_CLOEXEC) PASSED");
+ }
++
++static struct tst_test test = {
++	.tid = "epoll_create1_01",
++	.min_kver = "2.6.27",
++	.test_all = verify_epoll_create1,
++	.needs_tmpdir = 1,
++};
 -- 
-Best Regards,
-Dong Zhu
+1.8.3.1
 
-My Site: http://bluezd.info
+
+
