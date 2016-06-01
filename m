@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 1 Jun 2016 17:03:45 +0200
-Subject: [LTP] [RFC] shell wrappers for tst_checkpoint
-In-Reply-To: <1464791693-10249-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Date: Wed, 1 Jun 2016 17:12:30 +0200
+Subject: [LTP] [RFC PATCH 2/2] An example of usage of tst_checkpoint
+ shell wrappers
+In-Reply-To: <1464791693-10249-3-git-send-email-stanislav.kholmanskikh@oracle.com>
 References: <1464791693-10249-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20160601150345.GA23934@rei.lan>
+ <1464791693-10249-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20160601151229.GB23934@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,48 +13,8 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> There is a need to use the tst_checkpoint interface from shell, but
-> we don't have wrappers for it (yet).
-> 
-> Patch 1 of the series contains one possible implementation for that,
-> patch 2 - an example of usage in the context of the memcg_functional test case.
-> 
-> I'd like to get some feedback from LTP users.
-> 
-> My primary concern is about two issues:
-> 
-> 1. The new test API for C is cool and takes the responsibility on
->    maintaining the infrastructure for tst_checkpoint. However, I couldn't find
->    a way to implement something similar in shell, so I switched back to using
->    two separate functions for that - TST_CHECKPOINT_SETUP, TST_CHECKPOINT_CLEANUP.
-> 
->    There may be a better way...
-
-Well we can always put the cleanup into the tst_exit() which is executed
-both on clean and unclean exit (tst_brkm). And the setup could be done
-right after the checks for TCID and TST_TOTAL. Both supposedly if
-something as TST_NEEDS_CHECKPOINTS=1 has been set before sourcing
-test.sh.
-
-Also nothing stops us from bringing the shell API closer to what we have
-for C :).
-
-We would have to source the test library script after we had defined all
-the setup() cleanup() and test() functions and after setting the
-corresponding TST_ID=foo, TST_NEEDS_CHECKPOINTS=1, etc. But as far as I
-can tell it seems doable.
-
-And it would be really cool if we managed to use the shared memory for
-test results as well so that result from child processes (subshells)
-would be propagated automatically as well.
-
-> 2. What is the best location for the new supplemental binaries (tst_checkpoint_wait,
-> tst_checkpoint_wake)? tools/apicmds/ltpapicmd.c or separate source files in
-> testcases/lib/ (similar to tst_sleep)?
-
-I would go for separate binary in testcases/lib/ rather than adding to
-the ltpapicmd.c which should really be removed at some point in future,
-once there are no users for the binary tst_resm.
+I really like how we can mix the checkpoints between the C and shell
+source now ;).
 
 -- 
 Cyril Hrubis
