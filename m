@@ -1,77 +1,66 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 2 Jun 2016 11:20:28 +0300
-Subject: [LTP] [RFC] shell wrappers for tst_checkpoint
-In-Reply-To: <904217705.1759877.1464854305705.JavaMail.zimbra@redhat.com>
-References: <1464791693-10249-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <904217705.1759877.1464854305705.JavaMail.zimbra@redhat.com>
-Message-ID: <574FEC4C.2000507@oracle.com>
+From: Dong Zhu <bluezhudong@gmail.com>
+Date: Thu, 2 Jun 2016 21:58:31 +0800
+Subject: [LTP] [PATCH] dma_thread_diotest: Correct the number of running
+ workers
+Message-ID: <20160602135831.GA31858@localhost.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+This test will cause Segmentation fault (core dumped) in a
+system with 20 CPUs and memory PAGESIZE is 64KB.
+Because for a 1MB buffer which could admit 1MB/PAGESIZE
+workers at most.
+
+So the purpose of this patch is correcting the number
+of running workers in terms of actual PAGESIZE.
+
+Signed-off-by: Dong Zhu <bluezhudong@gmail.com>
+---
+ testcases/kernel/io/direct_io/dma_thread_diotest.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/io/direct_io/dma_thread_diotest.c b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+index 39cf658..5f52dcc 100644
+--- a/testcases/kernel/io/direct_io/dma_thread_diotest.c
++++ b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+@@ -113,10 +113,10 @@
+ #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
+ 			 S_IXGRP|S_IROTH|S_IXOTH)
+ #define FILECOUNT	100
+-#define MIN_WORKERS	2
+-#define MAX_WORKERS	256
+ #define PATTERN		(0xfa)
+ #define PAGE_SIZE	getpagesize()
++#define MIN_WORKERS	2
++#define MAX_WORKERS	(READSIZE/PAGE_SIZE)
+ 
+ char *TCID = "dma_thread_diotest";
+ int TST_TOTAL = 1;
+@@ -229,6 +229,8 @@ int main(int argc, char *argv[])
+ 	int i, lc;
+ 
+ 	workers = sysconf(_SC_NPROCESSORS_ONLN);
++	if (workers > MAX_WORKERS)
++		workers = MAX_WORKERS;
+ 	tst_parse_opts(argc, argv, options, help);
+ 
+ 	setup();
+@@ -439,6 +441,6 @@ static void cleanup(void)
+ static void help(void)
+ {
+ 	printf("-a align read buffer to offset <alignment>.\n");
+-	printf("-w number of worker threads, 2 (default) to 256,"
+-	       " defaults to number of cores.\n");
++	printf("-w number of worker threads, 2 (default) to %d,"
++	       " defaults to number of cores.\n", MAX_WORKERS);
+ }
+-- 
+2.1.0
 
 
-On 06/02/2016 10:58 AM, Jan Stancek wrote:
->
->
->
->
-> ----- Original Message -----
->> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
->> To: ltp@lists.linux.it
->> Cc: "vasily isaenko" <vasily.isaenko@oracle.com>
->> Sent: Wednesday, 1 June, 2016 4:34:51 PM
->> Subject: [LTP] [RFC] shell wrappers for tst_checkpoint
->>
->> Hi!
->>
->> There is a need to use the tst_checkpoint interface from shell, but
->> we don't have wrappers for it (yet).
->>
->> Patch 1 of the series contains one possible implementation for that,
->> patch 2 - an example of usage in the context of the memcg_functional test
->> case.
->>
->> I'd like to get some feedback from LTP users.
->
-> If we don't plan to support oldlib, we should document that shell
-> checkpoints will work only with newlib C testcases, since oldlib
-> currently doesn't use LTP_IPC_PATH and file has different layout
-> (there is no results struct).
-
-I'd better remove the old checkpoint api from LTP. There are ~20 C test 
-cases using TST_CHECKPOINT_INIT(). It should be doable to convert them 
-to using the new api, since it's likely that they are not "legacy" and 
-don't require additional cleanup. :)
-
-Per my understanding, all new C test cases are expected to be written 
-with the new api, so the only downside of this approach is that removing 
-TST_CHECKPOINT_INIT() may require more time.
-
-
->
->>
->> My primary concern is about two issues:
->>
->> 1. The new test API for C is cool and takes the responsibility on
->>     maintaining the infrastructure for tst_checkpoint. However, I couldn't
->>     find
->>     a way to implement something similar in shell, so I switched back to using
->>     two separate functions for that - TST_CHECKPOINT_SETUP,
->>     TST_CHECKPOINT_CLEANUP.
->>
->>     There may be a better way...
->>
->> 2. What is the best location for the new supplemental binaries
->> (tst_checkpoint_wait,
->> tst_checkpoint_wake)? tools/apicmds/ltpapicmd.c or separate source files in
->> testcases/lib/ (similar to tst_sleep)?
->>
->> Thanks.
->>
->>
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->>
+-- 
+Best Regards,
+Dong Zhu
