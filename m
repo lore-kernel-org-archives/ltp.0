@@ -1,216 +1,89 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 3 Jun 2016 16:03:45 +0800
-Subject: [LTP] [PATCH 2/2] epoll_ctl/epoll_ctl02.c: add new testcase
-In-Reply-To: <1464941025-21494-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1464941025-21494-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1464941025-21494-2-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 3 Jun 2016 05:24:34 -0400 (EDT)
+Subject: [LTP] [PATCH] dma_thread_diotest: Correct the number of running
+ workers
+In-Reply-To: <20160602135831.GA31858@localhost.localdomain>
+References: <20160602135831.GA31858@localhost.localdomain>
+Message-ID: <2014219793.2541042.1464945874769.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) epoll_ctl(2) fails if epfd is a invalid file descriptor
-   and set errno to EBADF.
-2) epoll_ctl(2) fails if fd is a invalid file descriptor
-   and set errno to EBADF.
-3) epoll_ctl(2) fails if op is not supported by this interface
-   and set errno to EINVAL.
-4) epoll_ctl(2) fails if fd is the same as epfd and set errno
-   to EINVAL.
-5) epoll_ctl(2) fails with EPOLL_CTL_DEL if fd is not registered
-   with this epoll instance and set errno to ENOENT.
-6) epoll_ctl(2) fails with EPOLL_CTL_MOD if fd is not registered
-   with this epoll instance and set errno to ENOENT.
-7) epoll_ctl(2) fails with EPOLL_CTL_ADD if fd is already registered
-   with this epoll instance and set errno to EEXIST.
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- runtest/ltplite                                   |   1 +
- runtest/stress.part3                              |   1 +
- runtest/syscalls                                  |   1 +
- testcases/kernel/syscalls/.gitignore              |   1 +
- testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c | 120 ++++++++++++++++++++++
- 5 files changed, 124 insertions(+)
- create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
-
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 0f7f249..9e1f201 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -160,6 +160,7 @@ dup204 dup204
- dup205 dup205
- 
- epoll_ctl01 epoll_ctl01
-+epoll_ctl02 epoll_ctl02
- 
- epoll_wait01 epoll_wait01
- epoll_wait02 epoll_wait02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 64c0a89..9f9d674 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -101,6 +101,7 @@ dup204 dup204
- dup205 dup205
- 
- epoll_ctl01 epoll_ctl01
-+epoll_ctl02 epoll_ctl02
- 
- epoll_wait01 epoll_wait01
- epoll_wait02 epoll_wait02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 41412de..428b774 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -123,6 +123,7 @@ dup3_02 dup3_02
- epoll_create1_01 epoll_create1_01
- epoll01 epoll-ltp
- epoll_ctl01 epoll_ctl01
-+epoll_ctl02 epoll_ctl02
- epoll_wait01 epoll_wait01
- epoll_wait02 epoll_wait02
- epoll_wait03 epoll_wait03
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 3d38557..81f4890 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -98,6 +98,7 @@
- /epoll/epoll-ltp
- /epoll_create1/epoll_create1_01
- /epoll_ctl/epoll_ctl01
-+/epoll_ctl/epoll_ctl02
- /epoll_wait/epoll_wait01
- /epoll_wait/epoll_wait02
- /epoll_wait/epoll_wait03
-diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
-new file mode 100644
-index 0000000..3f11a3f
---- /dev/null
-+++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
-@@ -0,0 +1,120 @@
-+/*
-+ * Copyright (c) 2016 Fujitsu Ltd.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * alone with this program.
-+ */
-+
-+/*
-+ * Test Name: epoll_ctl02.c
-+ *
-+ * Description:
-+ * 1) epoll_ctl(2) fails if epfd is a invalid file descriptor.
-+ * 2) epoll_ctl(2) fails if fd is a invalid file descriptor.
-+ * 3) epoll_ctl(2) fails if op is not supported by this interface.
-+ * 4) epoll_ctl(2) fails if fd is the same as epfd.
-+ * 5) epoll_ctl(2) fails with EPOLL_CTL_DEL if fd is not registered
-+ *    with this epoll instance.
-+ * 6) epoll_ctl(2) fails with EPOLL_CTL_MOD if fd is not registered
-+ *    with this epoll instance.
-+ * 7) epoll_ctl(2) fails with EPOLL_CTL_ADD if fd is already registered
-+ *    with this epoll instance.
-+ *
-+ * Expected Result:
-+ * 1) epoll_ctl(2) should return -1 and set errno to EBADF.
-+ * 2) epoll_ctl(2) should return -1 and set errno to EBADF.
-+ * 3) epoll_ctl(2) should return -1 and set errno to EINVAL.
-+ * 4) epoll_ctl(2) should return -1 and set errno to EINVAL.
-+ * 5) epoll_ctl(2) should return -1 and set errno to ENOENT.
-+ * 6) epoll_ctl(2) should return -1 and set errno to ENOENT.
-+ * 7) epoll_ctl(2) should return -1 and set errno to EEXIST.
-+ *
-+ */
-+#include <sys/epoll.h>
-+#include <poll.h>
-+#include <errno.h>
-+#include "tst_test.h"
-+
-+static int epfd;
-+static int fd[2];
-+static int inv = -1;
-+
-+static struct epoll_event events[2] = {
-+	{.events = EPOLLIN},
-+	{.events = EPOLLOUT},
-+};
-+
-+static struct testcase {
-+	int *epfds;
-+	int opt;
-+	int *fds;
-+	struct epoll_event *ts_event;
-+	int exp_err;
-+} tcases[] = {
-+	{&inv, EPOLL_CTL_ADD, &fd[1], &events[1], EBADF},
-+	{&epfd, EPOLL_CTL_ADD, &inv, &events[1], EBADF},
-+	{&epfd, -1, &fd[1], &events[1], EINVAL},
-+	{&epfd, EPOLL_CTL_ADD, &epfd, &events[1], EINVAL},
-+	{&epfd, EPOLL_CTL_DEL, &fd[1], &events[1], ENOENT},
-+	{&epfd, EPOLL_CTL_MOD, &fd[1], &events[1], ENOENT},
-+	{&epfd, EPOLL_CTL_ADD, &fd[0], &events[0], EEXIST}
-+};
-+
-+static void setup(void)
-+{
-+	epfd = epoll_create(2);
-+	if (epfd == -1)
-+		tst_brk(TBROK | TERRNO, "fail to create epoll instance");
-+
-+	SAFE_PIPE(fd);
-+
-+	events[0].data.fd = fd[0];
-+	events[1].data.fd = fd[1];
-+
-+	TEST(epoll_ctl(epfd, EPOLL_CTL_ADD, fd[0], &events[0]));
-+	if (TEST_RETURN == -1)
-+		tst_brk(TFAIL | TTERRNO, "epoll_ctl() fails to init");
-+}
-+
-+static void cleanup(void)
-+{
-+	SAFE_CLOSE(epfd);
-+	SAFE_CLOSE(fd[0]);
-+	SAFE_CLOSE(fd[1]);
-+}
-+
-+static void verify_epoll_ctl(unsigned int n)
-+{
-+	struct testcase *tc = &tcases[n];
-+
-+	TEST(epoll_ctl(*tc->epfds, tc->opt, *tc->fds,  tc->ts_event));
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "epoll_ctl() succeeds unexpectedly");
-+		return;
-+	}
-+
-+	if (tc->exp_err == TEST_ERRNO) {
-+		tst_res(TPASS | TTERRNO, "epoll_ctl() fails as expected");
-+	} else {
-+		tst_res(TFAIL | TTERRNO,
-+			"epoll_ctl() fails unexpectedly, expected %i: %s",
-+			tc->exp_err, tst_strerrno(tc->exp_err));
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.tid = "epoll_ctl02",
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = verify_epoll_ctl,
-+};
--- 
-1.8.3.1
 
 
 
+
+----- Original Message -----
+> From: "Dong Zhu" <bluezhudong@gmail.com>
+> To: ltp@lists.linux.it
+> Sent: Thursday, 2 June, 2016 3:58:31 PM
+> Subject: [LTP] [PATCH] dma_thread_diotest: Correct the number of running workers
+> 
+> This test will cause Segmentation fault (core dumped) in a
+> system with 20 CPUs and memory PAGESIZE is 64KB.
+> Because for a 1MB buffer which could admit 1MB/PAGESIZE
+> workers at most.
+> 
+> So the purpose of this patch is correcting the number
+> of running workers in terms of actual PAGESIZE.
+> 
+> Signed-off-by: Dong Zhu <bluezhudong@gmail.com>
+
+I have slightly modified commit log and pushed.
+
+Thanks,
+Jan
+
+> ---
+>  testcases/kernel/io/direct_io/dma_thread_diotest.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/io/direct_io/dma_thread_diotest.c
+> b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+> index 39cf658..5f52dcc 100644
+> --- a/testcases/kernel/io/direct_io/dma_thread_diotest.c
+> +++ b/testcases/kernel/io/direct_io/dma_thread_diotest.c
+> @@ -113,10 +113,10 @@
+>  #define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
+>  			 S_IXGRP|S_IROTH|S_IXOTH)
+>  #define FILECOUNT	100
+> -#define MIN_WORKERS	2
+> -#define MAX_WORKERS	256
+>  #define PATTERN		(0xfa)
+>  #define PAGE_SIZE	getpagesize()
+> +#define MIN_WORKERS	2
+> +#define MAX_WORKERS	(READSIZE/PAGE_SIZE)
+>  
+>  char *TCID = "dma_thread_diotest";
+>  int TST_TOTAL = 1;
+> @@ -229,6 +229,8 @@ int main(int argc, char *argv[])
+>  	int i, lc;
+>  
+>  	workers = sysconf(_SC_NPROCESSORS_ONLN);
+> +	if (workers > MAX_WORKERS)
+> +		workers = MAX_WORKERS;
+>  	tst_parse_opts(argc, argv, options, help);
+>  
+>  	setup();
+> @@ -439,6 +441,6 @@ static void cleanup(void)
+>  static void help(void)
+>  {
+>  	printf("-a align read buffer to offset <alignment>.\n");
+> -	printf("-w number of worker threads, 2 (default) to 256,"
+> -	       " defaults to number of cores.\n");
+> +	printf("-w number of worker threads, 2 (default) to %d,"
+> +	       " defaults to number of cores.\n", MAX_WORKERS);
+>  }
+> --
+> 2.1.0
+> 
+> 
+> --
+> Best Regards,
+> Dong Zhu
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
