@@ -1,91 +1,274 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 2 Jun 2016 17:58:11 +0300
-Subject: [LTP] [RFC] shell wrappers for tst_checkpoint
-In-Reply-To: <20160601150345.GA23934@rei.lan>
-References: <1464791693-10249-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160601150345.GA23934@rei.lan>
-Message-ID: <57504983.5010106@oracle.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 3 Jun 2016 16:03:44 +0800
+Subject: [LTP] [PATCH 1/2] epoll_ctl/epoll_ctl01.c: add new testcase
+Message-ID: <1464941025-21494-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Testcase to check the basic functionality of the epoll_ctl(2).
+1) when epoll_ctl(2) succeeds to register fd on the epoll instance and
+   associates event with fd, epoll_wait(2) will get registered fd and
+   event correctly.
+2) when epoll_ctl(2) succeeds to chage event which is related to fd,
+   epoll_wait(2) will get chaged event correctly.
+3) when epoll_ctl(2) succeeds to deregister fd from the epoll instance
+   epoll_wait(2) won't get deregistered fd and event.
 
-On 06/01/2016 06:03 PM, Cyril Hrubis wrote:
-> Hi!
->> There is a need to use the tst_checkpoint interface from shell, but
->> we don't have wrappers for it (yet).
->>
->> Patch 1 of the series contains one possible implementation for that,
->> patch 2 - an example of usage in the context of the memcg_functional test case.
->>
->> I'd like to get some feedback from LTP users.
->>
->> My primary concern is about two issues:
->>
->> 1. The new test API for C is cool and takes the responsibility on
->>     maintaining the infrastructure for tst_checkpoint. However, I couldn't find
->>     a way to implement something similar in shell, so I switched back to using
->>     two separate functions for that - TST_CHECKPOINT_SETUP, TST_CHECKPOINT_CLEANUP.
->>
->>     There may be a better way...
->
-> Well we can always put the cleanup into the tst_exit() which is executed
-> both on clean and unclean exit (tst_brkm). And the setup could be done
-> right after the checks for TCID and TST_TOTAL. Both supposedly if
-> something as TST_NEEDS_CHECKPOINTS=1 has been set before sourcing
-> test.sh.
->
-> Also nothing stops us from bringing the shell API closer to what we have
-> for C :).
->
-> We would have to source the test library script after we had defined all
-> the setup() cleanup() and test() functions and after setting the
-> corresponding TST_ID=foo, TST_NEEDS_CHECKPOINTS=1, etc. But as far as I
-> can tell it seems doable.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ runtest/ltplite                                   |   2 +
+ runtest/stress.part3                              |   2 +
+ runtest/syscalls                                  |   1 +
+ testcases/kernel/syscalls/.gitignore              |   1 +
+ testcases/kernel/syscalls/epoll_ctl/Makefile      |  24 ++++
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c | 152 ++++++++++++++++++++++
+ 6 files changed, 182 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/epoll_ctl/Makefile
+ create mode 100644 testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
 
-Could, you, please, have a look at the attached series. I suppose it 
-addresses your proposal. In particular, the changes are:
-  * tst_checkpoint_* binaries were moved to testcases/lib/
-  * logic from TST_CHECKPOINT_CLEANUP was moved to tst_exit()
-  * logic from TST_CHECKPOINT_SETUP was moved right into tst_test.sh 
-(now it depends on TST_NEEDS_CHECKPOINTS flag)
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 54df7e0..0f7f249 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -159,6 +159,8 @@ dup203 dup203
+ dup204 dup204
+ dup205 dup205
+ 
++epoll_ctl01 epoll_ctl01
++
+ epoll_wait01 epoll_wait01
+ epoll_wait02 epoll_wait02
+ epoll_wait03 epoll_wait03
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index c5da547..64c0a89 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -100,6 +100,8 @@ dup203 dup203
+ dup204 dup204
+ dup205 dup205
+ 
++epoll_ctl01 epoll_ctl01
++
+ epoll_wait01 epoll_wait01
+ epoll_wait02 epoll_wait02
+ epoll_wait03 epoll_wait03
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 96f398d..41412de 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -122,6 +122,7 @@ dup3_02 dup3_02
+ 
+ epoll_create1_01 epoll_create1_01
+ epoll01 epoll-ltp
++epoll_ctl01 epoll_ctl01
+ epoll_wait01 epoll_wait01
+ epoll_wait02 epoll_wait02
+ epoll_wait03 epoll_wait03
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 63fc261..3d38557 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -97,6 +97,7 @@
+ /dup3/dup3_02
+ /epoll/epoll-ltp
+ /epoll_create1/epoll_create1_01
++/epoll_ctl/epoll_ctl01
+ /epoll_wait/epoll_wait01
+ /epoll_wait/epoll_wait02
+ /epoll_wait/epoll_wait03
+diff --git a/testcases/kernel/syscalls/epoll_ctl/Makefile b/testcases/kernel/syscalls/epoll_ctl/Makefile
+new file mode 100644
+index 0000000..2666822
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_ctl/Makefile
+@@ -0,0 +1,24 @@
++#
++#  Copyright (c) 2016 Fujitsu Ltd.
++#  Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++#
++#  This program is free software; you can redistribute it and/or modify
++#  it under the terms of the GNU General Public License as published by
++#  the Free Software Foundation; either version 2 of the License, or
++#  (at your option) any later version.
++#
++#  This program is distributed in the hope that it will be useful,
++#  but WITHOUT ANY WARRANTY; without even the implied warranty of
++#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
++#  the GNU General Public License for more details.
++#
++#  You should have received a copy of the GNU General Public License
++#  along with this program.
++#
++#
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+new file mode 100644
+index 0000000..c6233e5
+--- /dev/null
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+@@ -0,0 +1,152 @@
++/*
++ * Copyright (c) 2016 Fujitsu Ltd.
++ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of version 2 of the GNU General Public License as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * You should have received a copy of the GNU General Public License
++ * alone with this program.
++ */
++
++/*
++ * Test Name: epoll_ctl01.c
++ *
++ * Description:
++ *    Testcase to check the basic functionality of the epoll_ctl(2).
++ * 1) when epoll_ctl(2) succeeds to register fd on the epoll instance and
++ *    associates event with fd, epoll_wait(2) will get registered fd and
++ *    event correctly.
++ * 2) when epoll_ctl(2) succeeds to chage event which is related to fd,
++ *    epoll_wait(2) will get chaged event correctly.
++ * 3) when epoll_ctl(2) succeeds to deregister fd from the epoll instance
++ *    epoll_wait(2) won't get deregistered fd and event.
++ *
++ */
++
++#include <sys/epoll.h>
++#include <poll.h>
++#include <string.h>
++#include <errno.h>
++#include "tst_test.h"
++
++static int epfd;
++static int fd[2];
++
++static struct epoll_event events[3] = {
++	{.events = EPOLLIN},
++	{.events = EPOLLOUT},
++	{.events = EPOLLIN}
++};
++
++static void setup(void)
++{
++	epfd = epoll_create(2);
++	if (epfd == -1)
++		tst_brk(TBROK | TERRNO, "fail to create epoll instance");
++
++	SAFE_PIPE(fd);
++
++	events[0].data.fd = fd[0];
++	events[1].data.fd = fd[1];
++	events[2].data.fd = fd[1];
++}
++
++static void cleanup(void)
++{
++	SAFE_CLOSE(epfd);
++	SAFE_CLOSE(fd[0]);
++	SAFE_CLOSE(fd[1]);
++}
++
++static int has_event(struct epoll_event *epvs, int len,
++	int fd, unsigned int events)
++{
++	int i;
++
++	for (i = 0; i < len; i++) {
++		if ((epvs[i].data.fd == fd) && (epvs[i].events == events))
++			return 1;
++	}
++
++	return 0;
++}
++
++static void check_epoll_ctl(int opt, int exp_num)
++{
++	int res;
++
++	char write_buf[] = "test";
++	char read_buf[sizeof(write_buf)];
++
++	struct epoll_event res_evs[2] = {
++	{.events = 0, .data.fd = 0},
++	{.events = 0, .data.fd = 0}
++	};
++
++	SAFE_WRITE(1, fd[1], write_buf, sizeof(write_buf));
++
++	res = epoll_wait(epfd, res_evs, 2, -1);
++	if (res == -1)
++		tst_brk(TBROK | TERRNO, "epoll_wait() fails");
++
++	if (res != exp_num) {
++		tst_res(TFAIL, "epoll_wait() returns %i, expected %i",
++			res, exp_num);
++		goto end;
++	}
++
++	if (exp_num == 1) {
++		if (!has_event(res_evs, 2, fd[0], EPOLLIN) ||
++		    !has_event(res_evs, 2, 0, 0)) {
++			tst_res(TFAIL, "epoll_wait() fails to "
++				"get expected fd and event");
++			goto end;
++		}
++	}
++
++	if (exp_num == 2) {
++		if (!has_event(res_evs, 2, fd[0], EPOLLIN) ||
++		    !has_event(res_evs, 2, fd[1], EPOLLOUT)) {
++			tst_res(TFAIL, "epoll_wait() fails to "
++				"get expected fd and event");
++			goto end;
++		}
++	}
++
++	tst_res(TPASS, "epoll_ctl() succeeds with op %i", opt);
++
++end:
++	SAFE_READ(1, fd[0], read_buf, sizeof(write_buf));
++}
++
++static void opera_epoll_ctl(int opt, int fd, struct epoll_event *epvs)
++{
++	TEST(epoll_ctl(epfd, opt, fd, epvs));
++	if (TEST_RETURN == -1)
++		tst_brk(TBROK | TTERRNO, "epoll_ctl() fails with op %i", opt);
++}
++
++static void verify_epoll_ctl(void)
++{
++	opera_epoll_ctl(EPOLL_CTL_ADD, fd[0], &events[0]);
++	opera_epoll_ctl(EPOLL_CTL_ADD, fd[1], &events[2]);
++	check_epoll_ctl(EPOLL_CTL_ADD, 1);
++	opera_epoll_ctl(EPOLL_CTL_MOD, fd[1], &events[1]);
++	check_epoll_ctl(EPOLL_CTL_MOD, 2);
++	opera_epoll_ctl(EPOLL_CTL_DEL, fd[1], &events[1]);
++	check_epoll_ctl(EPOLL_CTL_DEL, 1);
++	opera_epoll_ctl(EPOLL_CTL_DEL, fd[0], &events[0]);
++}
++
++static struct tst_test test = {
++	.tid = "epoll_ctl01",
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_epoll_ctl,
++};
+-- 
+1.8.3.1
 
-Existent test cases should not be affected by this change.
-
-If checkpoints are needed, TST_NEEDS_CHECKPOINTS must be defined before 
-'.test.sh'. I think this fact could be documented.
-
->
-> And it would be really cool if we managed to use the shared memory for
-> test results as well so that result from child processes (subshells)
-> would be propagated automatically as well.
-
-Yes, but may this be addressed sometimes later :)
 
 
->
->> 2. What is the best location for the new supplemental binaries (tst_checkpoint_wait,
->> tst_checkpoint_wake)? tools/apicmds/ltpapicmd.c or separate source files in
->> testcases/lib/ (similar to tst_sleep)?
->
-> I would go for separate binary in testcases/lib/ rather than adding to
-> the ltpapicmd.c which should really be removed at some point in future,
-> once there are no users for the binary tst_resm.
->
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-shell-wrapper-for-tst_checkpoint.patch
-Type: text/x-patch
-Size: 4897 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160602/7b15e917/attachment.bin>
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0002-an-example-of-usage.patch
-Type: text/x-patch
-Size: 4677 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160602/7b15e917/attachment-0001.bin>
