@@ -1,110 +1,78 @@
-From: Dong ZHu <bluezhudong@gmail.com>
-Date: Mon, 6 Jun 2016 09:20:24 +0800
-Subject: [LTP] [PATCH V2] controllers/memcg: Mark testcase_2 as pass
- when mlock failed
-In-Reply-To: <20160602013657.GA8737@localhost.localdomain>
-References: <CAAUgArC7-C7tc2W5gpwt9=U_=gcU98uiLJci3xnjHDXjk8mUxg@mail.gmail.com>
- <20160601090728.GA25827@localhost.localdomain>
- <20160601093652.GB19762@rei.lan>
- <20160602013657.GA8737@localhost.localdomain>
-Message-ID: <20160606012024.GA4416@localhost.localdomain>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 6 Jun 2016 10:40:43 +0200
+Subject: [LTP] [RFC] shell wrappers for tst_checkpoint
+In-Reply-To: <57504983.5010106@oracle.com>
+References: <1464791693-10249-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160601150345.GA23934@rei.lan> <57504983.5010106@oracle.com>
+Message-ID: <20160606084043.GA11753@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril Hrubis,
-
-How about this version of patch ? whether it could be appceted ?
-
-
-On Thu, Jun 02, 2016 at 09:36:57AM +0800, Dong ZHu wrote:
-> On Wed, Jun 01, 2016 at 11:36:52AM +0200, Cyril Hrubis wrote:
-> > Hi!
-> > This one is much better but not yet 100% right. Comments below.
-> 
-> Thanks for your suggestion.
-> 
-> > Please use tabs only for the indentation. This code mixes tabs and
-> > spaces.
-> 
-> Fixed it.
-> 
-> > 
-> > Also I think that it would be far better if we do just exit(2) here and
-> > print somehing as "Failed to allocate/lock/populate memory" from
-> > memcg_lib.sh if the memcg_process.c exits with 2 in the test_proc_kill().
-> 
-> I think we should make a judgment of the return value of mlock, because
-> only EAGAIN is expected. 
-> 
-> Below is the patch:
-> 
-> --8<--
-> 
-> While running "memcg_memsw_limit_in_bytes_test" always reported below error:
-> "memcg_memsw_limit_in_bytes_test 2 TFAIL : ltpapicmd.c:193: process 3769
-> is killed by error"
-> 
-> In function mmap_lock2() mlock failed to lock pages with errno EAGAIN,
-> the "memcg_process" process exit not the oom killer kill it.
-> 
-> Base on the this:
-> http://marc.info/?l=linux-mm&m=142122902313315&w=2
-> 
-> So mlock failed it is a expect behavior, in this case test should return
-> PASS.
-> 
-> Signed-off-by: Dong Zhu <bluezhudong@gmail.com>
-> ---
->  testcases/kernel/controllers/memcg/functional/memcg_lib.sh    | 5 ++++-
->  testcases/kernel/controllers/memcg/functional/memcg_process.c | 8 ++++++--
->  2 files changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> index 9b9b0fd..b0dfce0 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> @@ -229,8 +229,11 @@ test_proc_kill()
->  	ps -p $pid > /dev/null 2> /dev/null
->  	if [ $? -ne 0 ]; then
->  		wait $pid
-> -		if [ $? -eq 1 ]; then
-> +		ret=$?
-> +		if [ $ret -eq 1 ]; then
->  			result $FAIL "process $pid is killed by error"
-> +		elif [[ $ret -eq 2 ]]; then
-> +			result $PASS "Failed to lock memory"
->  		else
->  			result $PASS "process $pid is killed"
->  		fi
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-> index 3d34394..40c677b 100644
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-> @@ -203,8 +203,12 @@ void mmap_lock2()
->  		if (p == MAP_FAILED)
->  			err(1, "mmap failed");
+Hi!
+>  include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+> index 70345e5..00eeeae 100644
+> --- a/testcases/lib/test.sh
+> +++ b/testcases/lib/test.sh
+> @@ -100,6 +100,10 @@ tst_exit()
+>  		$TST_CLEANUP
+>  	fi
 >  
-> -		if (mlock(p, memsize) == -1)
-> -			err(1, "mlock failed");
-> +		if (mlock(p, memsize) == -1) {
-> +			if (errno == EAGAIN)
-> +				exit(2);
-> +                        else
-> +				err(1, "mlock failed");
-> +                }
->  	} else {
->  		if (munmap(p, memsize) == -1)
->  			err(1, "munmap failed");
-> -- 
-> 2.1.0
-> 
-> -- 
-> Best Regards,
-> Dong Zhu
+> +	if [ -n "$LTP_IPC_PATH" -a -f "$LTP_IPC_PATH" ]; then
+> +		rm -f "$LTP_IPC_PATH"
+> +	fi
+> +
+>  	# Mask out TINFO
+>  	exit $((LTP_RET_VAL & ~16))
+>  }
+> @@ -374,6 +378,16 @@ tst_module_exists()
+>  	tst_brkm TCONF "Failed to find module '$mod_name'"
+>  }
+>  
+> +TST_CHECKPOINT_WAIT()
+> +{
+> +	ROD tst_checkpoint_wait "$1" 10000
+> +}
+> +
+> +TST_CHECKPOINT_WAKE()
+> +{
+> +	ROD tst_checkpoint_wake "$1" 10000
+> +}
+
+Given that we have wrappers for the checkpoint programs anyway, we can
+build just one binary called tst_checkpoint and pass the wait/wake as
+first parameter. That way we can spare us the special rules in Makefile
+and ifdefs in the checkpoint C source.
+
+>  # Check that test name is set
+>  if [ -z "$TCID" ]; then
+>  	tst_brkm TBROK "TCID is not defined"
+> @@ -393,3 +407,16 @@ if [ -z "$LTPROOT" ]; then
+>  else
+>  	export LTP_DATAROOT="$LTPROOT/testcases/data/$TCID"
+>  fi
+> +
+> +if [ "$TST_NEEDS_CHECKPOINTS" = "1" ]; then
+> +	LTP_IPC_PATH="/dev/shm/ltp_$$"
+
+We may also include the $TCID in the filename, since that would make
+identifying which tests possibly failed to cleanup easier...
+
+> +	LTP_IPC_SIZE=$(getconf PAGESIZE)
+> +	if [ $? -ne 0 ]; then
+> +		tst_brkm TBROK "getconf PAGESIZE failed"
+> +	fi
+> +
+> +	ROD_SILENT dd if=/dev/zero of="$LTP_IPC_PATH" bs="$LTP_IPC_SIZE" count=1
+> +	ROD_SILENT chmod 600 "$LTP_IPC_PATH"
+> +	export LTP_IPC_PATH
+> +fi
+
+Otherwise this looks good.
 
 -- 
-Best Regards,
-Dong Zhu
+Cyril Hrubis
+chrubis@suse.cz
