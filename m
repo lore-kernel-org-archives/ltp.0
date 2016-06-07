@@ -1,85 +1,38 @@
-From: Dong ZHu <bluezhudong@gmail.com>
-Date: Tue, 7 Jun 2016 09:44:32 +0800
-Subject: [LTP] [PATCH V3] controllers/memcg: Mark testcase_2 as pass when
- mlock failed
-In-Reply-To: <20160606131653.GA21264@rei>
-References: <CAAUgArC7-C7tc2W5gpwt9=U_=gcU98uiLJci3xnjHDXjk8mUxg@mail.gmail.com>
- <20160601090728.GA25827@localhost.localdomain>
- <20160601093652.GB19762@rei.lan>
- <20160602013657.GA8737@localhost.localdomain>
- <20160606131653.GA21264@rei>
-Message-ID: <20160607014432.GA9918@localhost.localdomain>
+From: Chunyu Hu <chuhu@redhat.com>
+Date: Mon, 6 Jun 2016 23:38:23 -0400 (EDT)
+Subject: [LTP] [PATCH V3-2 0/9] tracing: make ftrace tests to be extended
+In-Reply-To: <20160606154513.GC21264@rei>
+References: <1462966591-3895-1-git-send-email-chuhu@redhat.com>
+ <20160606154513.GC21264@rei>
+Message-ID: <1629088162.56102032.1465270703540.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-I refined the patch followed by your suggestion, below is the latest
-version:
 
----8<---
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Chunyu Hu" <chuhu@redhat.com>
+> Cc: ltp@lists.linux.it, liwang@redhat.com
+> Sent: Monday, June 6, 2016 11:45:13 PM
+> Subject: Re: [PATCH V3-2 0/9] tracing: make ftrace tests to be extended
+> 
+> Hi!
+> I've reorganized the patchset so that fixes are before new testcases and
+> pushed, thanks.
 
-While running "memcg_memsw_limit_in_bytes_test" always reported below error:
-"memcg_memsw_limit_in_bytes_test 2 TFAIL : ltpapicmd.c:193: process 3769
-is killed by error"
+Thanks for the patience on reviewing the patch and the excellent ideas!
 
-In function mmap_lock2() mlock failed to lock pages with errno EAGAIN,
-the "memcg_process" process exit not the oom killer kill it.
+I really like your two proposed tool to verify bashism code, paste it here
+again and hope it can help others too.
 
-And base on this:
-http://marc.info/?l=linux-mm&m=142122902313315&w=2
+1) Check bashism issue through dash, compile it from source:
+    http://gondor.apana.org.au/~herbert/dash/files/
 
-So mlock failed it is a expect behavior, in this case test should return
-PASS.
+2) debian devel perl script that can check for bashism,
+    https://anonscm.debian.org/cgit/collab-maint/devscripts.git/tree/scripts/checkbashisms.pl
 
-Signed-off-by: Dong Zhu <bluezhudong@gmail.com>
----
- testcases/kernel/controllers/memcg/functional/memcg_lib.sh    | 5 ++++-
- testcases/kernel/controllers/memcg/functional/memcg_process.c | 8 ++++++--
- 2 files changed, 10 insertions(+), 3 deletions(-)
-
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index 9b9b0fd..c90d0a2 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -229,8 +229,11 @@ test_proc_kill()
- 	ps -p $pid > /dev/null 2> /dev/null
- 	if [ $? -ne 0 ]; then
- 		wait $pid
--		if [ $? -eq 1 ]; then
-+		ret=$?
-+		if [ $ret -eq 1 ]; then
- 			result $FAIL "process $pid is killed by error"
-+		elif [ $ret -eq 2 ]; then
-+			result $PASS "Failed to lock memory"
- 		else
- 			result $PASS "process $pid is killed"
- 		fi
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-index 3d34394..c12fae1 100644
---- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-@@ -203,8 +203,12 @@ void mmap_lock2()
- 		if (p == MAP_FAILED)
- 			err(1, "mmap failed");
  
--		if (mlock(p, memsize) == -1)
--			err(1, "mlock failed");
-+		if (mlock(p, memsize) == -1) {
-+			if (errno == EAGAIN)
-+				exit(2);
-+			else
-+				err(1, "mlock failed");
-+		}
- 	} else {
- 		if (munmap(p, memsize) == -1)
- 			err(1, "munmap failed");
--- 
-2.1.0
-
--- 
-Best Regards,
-Dong Zhu
