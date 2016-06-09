@@ -1,10 +1,10 @@
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 9 Jun 2016 14:49:17 +0300
-Subject: [LTP] [PATCH] Shell wrappers for the checkpoint interface
-In-Reply-To: <20160608142344.GD27367@rei.lan>
-References: <1465379944-21713-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160608142344.GD27367@rei.lan>
-Message-ID: <575957BD.3000206@oracle.com>
+Date: Thu, 9 Jun 2016 15:06:25 +0300
+Subject: [LTP] [PATCH] tst_test.h: include tst_kvercmp.h
+In-Reply-To: <20160606132216.GB21264@rei>
+References: <1464956996-26578-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160606132216.GB21264@rei>
+Message-ID: <57595BC1.4070803@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,21 +13,17 @@ To: ltp@lists.linux.it
 
 Hi!
 
-On 06/08/2016 05:23 PM, Cyril Hrubis wrote:
+On 06/06/2016 04:22 PM, Cyril Hrubis wrote:
 > Hi!
->> +	if (!type)
->> +		ret = tst_checkpoint_wait(id, timeout);
->> +	else
->> +		ret = tst_checkpoint_wake(id, nr_wake, timeout);
+>> tst_kvercmp.h is included in test.h, but is not included in tst_test.h.
+>> Fixed it.
 >
-> I find it silly that you do negate the flag here. You could have set it
-> the other way, or swap the wait and wake in the if and else branch...
-
-I swapped the wait and wake and pushed it.
-
-Thanks!
-
-
+> We should remove the include from lib/tst_test.c in this patch as well.
 >
-> Anyway the rest looks good to me, ackend.
+> Other than that acked.
 >
+
+Li, Cyril, the patch was updated to remove all explicit includes of 
+tst_kvercmp.h in .c files and pushed.
+
+Thank you for your feedback.
