@@ -1,61 +1,20 @@
 From: Jiri Jaburek <jjaburek@redhat.com>
-Date: Fri, 10 Jun 2016 15:15:47 +0200
-Subject: [LTP] [PATCH] containers/userns05: use unsigned int for ns id
-Message-ID: <1465564547-12817-1-git-send-email-jjaburek@redhat.com>
+Date: Fri, 10 Jun 2016 16:04:35 +0200
+Subject: [LTP] [PATCH] syscalls/fcntl34: use struct flock64 on 32bit
+In-Reply-To: <1465562609-11947-1-git-send-email-jjaburek@redhat.com>
+References: <1465562609-11947-1-git-send-email-jjaburek@redhat.com>
+Message-ID: <575AC8F3.8090301@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The kernel defines it as 'unsigned int' in 'struct ns_common'
-and formats it as
+On a second thought, the patched code isn't very nice on 64bit systems
+(even though the sizes work out correctly). Also, the same codepath
+is tested (on 32bit) via the _64 build, so it would perhaps make more
+sense to disable the non-FILE_OFFSET_BITS=64 test on 32bit.
 
-  snprintf(buf, size, "%s:[%u]", ns_ops->name, ns->inum);
+I'll send a new patch.
 
-This change makes the test work on 32bit systems where LONG_MAX
-is smaller than UINT_MAX.
-
-Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
----
- testcases/kernel/containers/userns/userns05.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/kernel/containers/userns/userns05.c b/testcases/kernel/containers/userns/userns05.c
-index 8d8c40a..8eac729 100644
---- a/testcases/kernel/containers/userns/userns05.c
-+++ b/testcases/kernel/containers/userns/userns05.c
-@@ -49,18 +49,18 @@ static int child_fn1(void)
- 	return 0;
- }
- 
--static long getusernsidbypid(int pid)
-+static unsigned int getusernsidbypid(int pid)
- {
- 	char path[BUFSIZ];
- 	char userid[BUFSIZ];
--	long id = 0;
-+	unsigned int id = 0;
- 
- 	sprintf(path, "/proc/%d/ns/user", pid);
- 
- 	if (readlink(path, userid, BUFSIZ) == -1)
- 		tst_resm(TFAIL | TERRNO, "readlink failure.");
- 
--	if (sscanf(userid, "user:[%ld]", &id) != 1)
-+	if (sscanf(userid, "user:[%u]", &id) != 1)
- 		tst_resm(TFAIL, "sscanf failure.");
- 	return id;
- }
-@@ -68,7 +68,7 @@ static long getusernsidbypid(int pid)
- static void test_userns_id(void)
- {
- 	int cpid1, cpid2, cpid3;
--	long parentuserns, cpid1userns, cpid2userns, newparentuserns;
-+	unsigned int parentuserns, cpid1userns, cpid2userns, newparentuserns;
- 
- 	parentuserns = getusernsidbypid(getpid());
- 	cpid1 = ltp_clone_quick(SIGCHLD, (void *)child_fn1,
--- 
-2.4.3
-
+Thanks.
