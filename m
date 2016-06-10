@@ -1,73 +1,952 @@
-From: Jiri Jaburek <jjaburek@redhat.com>
-Date: Fri, 10 Jun 2016 16:50:02 +0200
-Subject: [LTP] [PATCH v2] syscalls/fcntl34: disable on 32bit without
-	_FILE_OFFSET_BITS==64
-In-Reply-To: <575AC8F3.8090301@redhat.com>
-References: <575AC8F3.8090301@redhat.com>
-Message-ID: <1465570202-15504-1-git-send-email-jjaburek@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 10 Jun 2016 18:05:38 +0300
+Subject: [LTP] [PATCH] network/perf_lan: remove the test
+Message-ID: <1465571138-28420-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On x86, compiled as 32bit:
+There are several reasons to remove it:
 
-fcntl34.c:113: INFO: write to a file inside threads with OFD locks
-fcntl34.c:47: INFO: spawning '3' threads
-fcntl34.c:56: INFO: waiting for '3' threads
-fcntl34.c:88: BROK: fcntl() failed: EINVAL
+* Test does what 'ping -p' command can do (can be added to tcp_cmds/ping);
+* It needs cleanup/fixing and IPv6 version is disabled right now;
+* ck_packet() is wrongly setting data buffer pointer, assuming that
+  the sender added timestamp but it didn't. Actually timestamp was
+  removed in the packet sending code but not in the receiving one
+  (patch ef77253);
+* Also test always passes, even if packet data is not correct, because
+  ck_packet() always returns 0, so it doesn't really check packets.
 
-This is because glibc translates fcntl() to sys_fcntl64,
-
-[pid 19656] fcntl64(4, F_OFD_SETLKW, {l_type=F_WRLCK, l_whence=SEEK_SET,
-l_start=4294967296, l_len=-695062700769673216}) = -1 EINVAL
-(Invalid argument)
-
-as advised by the kernel,
-
-	/* 32-bit arches must use fcntl64() */
-	case F_OFD_SETLK:
-	case F_OFD_SETLKW:
-
-but the struct passed uses 32bit values, which are read as 64bit by
-the kernel,
-
-SYSCALL_DEFINE3(fcntl64, unsigned int, fd, unsigned int, cmd,
-                unsigned long, arg)
-{
-	...
-	case F_OFD_SETLKW:
-		err = fcntl_setlk64(fd, f.file, cmd,
-				(struct flock64 __user *) arg);
-
-causing the garbage in upper 32bit of at least l_start and l_len to be
-treated as offsets, resulting in EINVAL.
-
-This patch therefore disables the test when using the 32bit struct
-members. The functionality is tested by fcntl34_64, which defines
-_FILE_OFFSET_BITS=64.
-
-Signed-off-by: Jiri Jaburek <jjaburek@redhat.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/kernel/syscalls/fcntl/fcntl34.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ runtest/net.tcp_cmds                            |    1 -
+ runtest/stress.part3                            |    2 -
+ testcases/network/.gitignore                    |    2 -
+ testcases/network/tcp_cmds/perf_lan/Makefile    |   45 ---
+ testcases/network/tcp_cmds/perf_lan/perf_lan    |  122 -------
+ testcases/network/tcp_cmds/perf_lan/pingpong.c  |  396 -----------------------
+ testcases/network/tcp_cmds/perf_lan/pingpong6.c |  291 -----------------
+ 7 files changed, 0 insertions(+), 859 deletions(-)
+ delete mode 100644 testcases/network/tcp_cmds/perf_lan/Makefile
+ delete mode 100755 testcases/network/tcp_cmds/perf_lan/perf_lan
+ delete mode 100644 testcases/network/tcp_cmds/perf_lan/pingpong.c
+ delete mode 100644 testcases/network/tcp_cmds/perf_lan/pingpong6.c
 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl34.c b/testcases/kernel/syscalls/fcntl/fcntl34.c
-index c72951e..e2c8bf7 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl34.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl34.c
-@@ -102,6 +102,10 @@ static void test01(void)
- 
- 	tst_res(TINFO, "write to a file inside threads with OFD locks");
- 
-+#if __WORDSIZE == 32 && _FILE_OFFSET_BITS != 64
-+	tst_brk(TCONF, "test not supported on 32bit");
-+#endif
-+
- 	int fd = SAFE_OPEN(fname, O_CREAT | O_TRUNC | O_RDWR, 0600);
- 
- 	memset(res, 0, sizeof(res));
+diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
+index 466718b..de58b35 100644
+--- a/runtest/net.tcp_cmds
++++ b/runtest/net.tcp_cmds
+@@ -8,7 +8,6 @@ finger finger01
+ ftp export TCbin=$LTPROOT/testcases/network/tcp_cmds/ftp; ftp01
+ host host01
+ netstat netstat01
+-perf_lan export TCbin=$LTPROOT/testcases/network/tcp_cmds/perf_lan; perf_lan
+ ping export LTPROOT; ping01
+ rcp export TCbin=$LTPROOT/testcases/network/tcp_cmds/rcp; rcp01
+ rdist export TCbin=$LTPROOT/testcases/network/tcp_cmds/rdist; rdist01
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index c5da547..350a2c3 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -913,5 +913,3 @@ hangup01 hangup01
+ mc_cmds mc_cmds
+ mc_opts export TCsrc=$LTPROOT/testcases/network/multicast/mc_opts; mc_opts
+ rpc01 rpc01
+-perf_lan perf_lan
+-
+diff --git a/testcases/network/.gitignore b/testcases/network/.gitignore
+index ca4e0f3..63d6361 100644
+--- a/testcases/network/.gitignore
++++ b/testcases/network/.gitignore
+@@ -40,8 +40,6 @@
+ /tcp_cmds/echo/createfile
+ /tcp_cmds/echo/echoes
+ /tcp_cmds/echo/echoes6
+-/tcp_cmds/perf_lan/pingpong
+-/tcp_cmds/perf_lan/pingpong6
+ /tcp_cmds/sendfile/testsf_c
+ /tcp_cmds/sendfile/testsf_c6
+ /tcp_cmds/sendfile/testsf_s
+diff --git a/testcases/network/tcp_cmds/perf_lan/Makefile b/testcases/network/tcp_cmds/perf_lan/Makefile
+deleted file mode 100644
+index 7ef4d13..0000000
+--- a/testcases/network/tcp_cmds/perf_lan/Makefile
++++ /dev/null
+@@ -1,45 +0,0 @@
+-#
+-#    network/tcp_cmds/perf_lan testcases Makefile.
+-#
+-#    Copyright (C) 2009, Cisco Systems Inc.
+-#
+-#    This program is free software; you can redistribute it and/or modify
+-#    it under the terms of the GNU General Public License as published by
+-#    the Free Software Foundation; either version 2 of the License, or
+-#    (at your option) any later version.
+-#
+-#    This program is distributed in the hope that it will be useful,
+-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-#    GNU General Public License for more details.
+-#
+-#    You should have received a copy of the GNU General Public License along
+-#    with this program; if not, write to the Free Software Foundation, Inc.,
+-#    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-#
+-# Garrett Cooper, July 2009
+-#
+-
+-top_srcdir		?= ../../../..
+-
+-include $(top_srcdir)/include/mk/testcases.mk
+-
+-CPPFLAGS		+= -D_GNU_SOURCE -I$(abs_srcdir)/../include
+-
+-# XXX (garrcoop): alias casting problems.
+-CPPFLAGS		+= -Wno-error
+-
+-INSTALL_TARGETS		:= perf_lan
+-
+-# NOTE (garrcoop): Once everything compiles with the same sources using
+-# pingpong.c, then the following commented code should be uncommented and
+-# pingpong6.c should be nuked. Unfortunately that isn't quite yet...
+-#
+-#MAKE_TARGETS		:= pingpong pingpong6
+-#
+-#%6: CPPFLAGS += -DINET6
+-#
+-#%6.o: %.c
+-#	$(COMPILE.c) $(OUTPUT_OPTION) $<
+-
+-include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/tcp_cmds/perf_lan/perf_lan b/testcases/network/tcp_cmds/perf_lan/perf_lan
+deleted file mode 100755
+index 595a091..0000000
+--- a/testcases/network/tcp_cmds/perf_lan/perf_lan
++++ /dev/null
+@@ -1,122 +0,0 @@
+-#! /bin/sh
+-unset LIBPATH
+-#
+-#   Copyright (c) International Business Machines  Corp., 2000
+-#
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
+-#
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
+-#
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+-#
+-#
+-#
+-#  FILE   : perf_lan
+-#
+-#  PURPOSE: Generates LAN traffic using ICMP echo packets.
+-#
+-#
+-#  SETUP: The home directory of root on the machine exported as "RHOST"
+-#         MUST have a ".rhosts" file with the hostname of the client
+-#         machine, where the test is executed.
+-#
+-#  HISTORY:
+-#    06/06/03 Manoj Iyer manjo@mail.utexas.edu
+-#      - Modified testcase to use Test API and fixed bugs.
+-#    03/01 Robbie Williamson (robbiew@us.ibm.com)
+-#      -Ported
+-#
+-#
+-#***********************************************************************
+-
+-do_setup()
+-{
+-    RHOST=${RHOST:-`hostname`}
+-    TCtmp=${TCtmp:-$LTPROOT/testcases/bin/${TC}$$}
+-
+-    PACKETSIZE=${PACKETSIZE:-512}
+-    NUMPACKETS=${NUMPACKETS:-1}
+-    NUMLOOPS=${NUMLOOPS:-10}
+-    PINGPONG="pingpong${EXEC_SUFFIX}"
+-
+-    tst_setup
+-
+-    trap interrupt_testcase INT TERM URG USR1
+-}
+-
+-#-----------------------------------------------------------------------
+-#
+-# FUNCTION:  do_test
+-# INPUT:     None.
+-# OUTPUT:    Informational messages are logged into the run log.
+-#
+-#-----------------------------------------------------------------------
+-
+-do_test()
+-{
+-    tst_resm TINFO "Executing $0"
+-
+-    while [ $TST_COUNT -le $NUMLOOPS ]; do
+-
+-        $PINGPONG $RHOST $PACKETSIZE $NUMPACKETS
+-
+-        RETVALUE=$?
+-
+-        case "$RETVALUE" in
+-            0)  tst_resm TINFO "Successful execution for loop $TST_COUNT";;
+-            1)  end_testcase "Error trying to send to host";;
+-            2)  end_testcase "Error - Data length is too long";;
+-            3)  end_testcase "Usage error ";;
+-            5)  end_testcase "Error - Socket setting";;
+-            6)  end_testcase "Error - Pipe broken";;
+-            7)  end_testcase "Error - Fork fail";;
+-            10) end_testcase "Error - wrong Protocol";;
+-            *)  end_testcase "Unexpected exit code from $PINGPONG: $RETVALUE";;
+-       esac
+-       incr_tst_count
+-
+-    done
+-
+-}
+-
+-#-----------------------------------------------------------------------
+-#
+-# FUNCTION:     interrupt_testcase
+-# PURPOSE:      Finish up the testcase - called when the time has expired
+-# INPUT:        None.
+-# OUTPUT:       None.
+-#
+-#-----------------------------------------------------------------------
+-
+-interrupt_testcase()
+-{
+-    tst_resm TINFO "Testcase interrupted - cleaning up"
+-    tst_resm TINFO "Killing background process if it is still running"
+-    kill -9 $CHILDPID
+-    end_testcase
+-}
+-
+-#-----------------------------------------------------------------------
+-#
+-# FUNCTION:  MAIN
+-# PURPOSE:   To invoke functions that perform the tasks as described in
+-#	     the design in the prolog above.
+-# INPUT:     See SETUP in the prolog above.
+-# OUTPUT:    Logged run results written to testcase run log
+-#
+-#-----------------------------------------------------------------------
+-. net_cmdlib.sh
+-
+-read_opts $*
+-
+-do_setup
+-do_test
+-end_testcase
+diff --git a/testcases/network/tcp_cmds/perf_lan/pingpong.c b/testcases/network/tcp_cmds/perf_lan/pingpong.c
+deleted file mode 100644
+index 1196312..0000000
+--- a/testcases/network/tcp_cmds/perf_lan/pingpong.c
++++ /dev/null
+@@ -1,396 +0,0 @@
+-/*
+-#
+-#
+-#						      Task Subprogram
+-#
+-#  SUBPROGRAM NAME: PINGPONG.C
+-#
+-#  REQUIRED PARAMETERS:
+-#    Calling Procedure: pingpong HOST SIZE PACKETS
+-#       HOST - Current host
+-#       SIZE  - Size of each packet
+-#       PACKETS  - the number of packets across the network
+-#
+-#  SETUP REQUIRED:
+-#       o  This task must be run as root.
+-#       o  TCP/IP must be configured before executing this task.
+-#
+-#  DESCRIPTION:
+-# 	Purpose:To generate lan traffic with ICMP echo packet
+-# 	Command: None
+-# 	Subcommand:None
+-# 	Design:
+-#		Create raw socket
+-#		spawn child process to send echo ICMP packet
+-#		the child process build echo packet and send to network
+-#		repeat n times
+-#		the parent goes on to receive the reply
+-#		when finish print # of packets sent & # pf packets received
+-#
+-#
+-#===========================================================================
+-*/
+-
+-#define PS2
+-#include <stdio.h>
+-#include <errno.h>
+-#include <stdint.h>
+-#include <string.h>
+-#include <sys/time.h>
+-#include <sys/types.h>
+-#include <sys/param.h>
+-#include <sys/socket.h>
+-#include <sys/file.h>
+-#include <sys/signal.h>
+-#include <arpa/inet.h>
+-#include <netinet/in_systm.h>
+-#include <netinet/in.h>
+-#include <netdb.h>
+-#include "test.h"
+-#include "netdefs.h"
+-
+-#define	MAXPACKET	4096	/* max packet size */
+-#ifndef MAXHOSTNAMELEN
+-#define MAXHOSTNAMELEN	64
+-#endif
+-
+-#if INET6
+-char *TCID = "perf_lan6";
+-#else
+-char *TCID = "perf_lan";
+-#endif
+-
+-int TST_TOTAL = 1;
+-
+-int pfd[2];
+-int fdstr[10];
+-int verbose;
+-int count;
+-uint8_t packet[MAXPACKET];
+-int options;
+-int s;				/* Socket file descriptor */
+-struct hostent *hp;		/* Pointer to host info */
+-struct timezone tz;		/* leftover */
+-
+-sai_t whereto;			/* Who to pingpong */
+-int datalen;			/* How much data */
+-
+-char *hostname;
+-char hnamebuf[MAXHOSTNAMELEN];
+-
+-int npackets = 1;
+-int ntransmitted = 0;		/* sequence number for outbound
+-				 * packets => amount sent */
+-int ident;
+-int nwrite;
+-
+-int nreceived = 0;		/* # of packets we got back */
+-int timing = 0;
+-
+-void finish(int);
+-uint16_t in_cksum(uint16_t *, int);
+-int ck_packet(uint8_t *, size_t, sai_t *);
+-int echopkt(int, int);
+-
+-/*
+- * 			M A I N
+- */
+-int main(int argc, char *argv[])
+-{
+-	sai_t from;
+-	int rc = 0;
+-	struct protoent *proto;
+-
+-	tst_resm(TINFO, "Starting pingpong - to send / receive packets from "
+-		 "host");
+-
+-	/* Get Host net address */
+-	tst_resm(TINFO, "Get host net address for sending packets");
+-	memset((char *)&whereto, 0, sizeof(sa_t));
+-#if INET6
+-	whereto.sin6_family = AFI;
+-	whereto.sin6_addr.s6_addr = inet_addr(argv[1]);
+-	if (whereto.sin6_addr.s6_addr != -1) {
+-#else
+-	whereto.sin_family = AFI;
+-	whereto.sin_addr.s_addr = inet_addr(argv[1]);
+-	if (whereto.sin_addr.s_addr != -1) {
+-#endif
+-		strcpy(hnamebuf, argv[1]);
+-		hostname = hnamebuf;
+-	} else {
+-
+-		if ((hp = gethostbyname(argv[1])) != NULL) {
+-#if INET6
+-			whereto.sin6_family = hp->h_addrtype;
+-			memcpy((caddr_t) & whereto.sin6_addr, hp->h_addr,
+-			       hp->h_length);
+-#else
+-			whereto.sin_family = hp->h_addrtype;
+-			memcpy((caddr_t) & whereto.sin_addr, hp->h_addr,
+-			       hp->h_length);
+-#endif
+-			hostname = hp->h_name;
+-		} else {
+-			tst_brkm(TBROK, NULL, "%s: unknown host, couldn't get "
+-				 "address", argv[0]);
+-		}
+-
+-	}
+-
+-	/*  Determine Packet Size - either use what was passed in or the default */
+-	tst_resm(TINFO, "Determining packet size");
+-
+-	if (argc >= 3)
+-		datalen = atoi(argv[2]);
+-	if (datalen < 0) {
+-		tst_brkm(TBROK, NULL, "datalen must be an integer.");
+-	} else
+-		datalen = 64;
+-
+-	datalen -= 8;
+-
+-	if (datalen > MAXPACKET) {
+-		tst_brkm(TBROK, NULL, "packet size too large");
+-	}
+-	if (datalen >= sizeof(struct timeval))
+-		timing = 1;
+-
+-	/* Set number of packets to be sent */
+-	tst_resm(TINFO, "Determining number of packets to send");
+-	if (argc >= 4)
+-		npackets = atoi(argv[3]);
+-
+-	/* Get PID of current process */
+-	ident = getpid() & 0xFFFF;
+-
+-	/* Get network protocol to use (check /etc/protocol) */
+-	if ((proto = getprotobyname(ICMP_PROTO)) == NULL) {
+-		tst_resm(TINFO, "unknown protocol: %s", ICMP_PROTO);
+-		tst_exit();
+-	}
+-
+-	/* Create a socket endpoint for communications - returns a descriptor */
+-	if ((s = socket(AFI, SOCK_RAW, proto->p_proto)) < 0) {
+-		tst_resm(TINFO, "socket - could not create link");
+-		tst_exit();
+-	}
+-
+-	tst_resm(TINFO, "echoing %s: %d data bytes", hostname, datalen);
+-
+-	setlinebuf(stdout);
+-
+-	/* Setup traps */
+-	signal(SIGINT, finish);
+-	signal(SIGCLD, finish);
+-
+-	/* Fork a child process to continue sending packets */
+-	tst_resm(TINFO, "Create a child process to continue to send packets");
+-	switch (fork()) {
+-	case -1:
+-		tst_resm(TINFO, "ERROR when forking a new process");
+-		tst_exit();
+-	case 0:
+-		/* Child's work */
+-		ntransmitted = echopkt(datalen, npackets);
+-		tst_resm(TINFO, "%d packets transmitted", ntransmitted);
+-		sleep(10);
+-		break;
+-	default:
+-
+-		tst_resm(TINFO, "Parent started - to  receive packets");
+-		/* Parent's work - receive packets back from child */
+-
+-		size_t len;
+-
+-		while (1) {
+-
+-			len = sizeof(packet);
+-			ssize_t cc;
+-			socklen_t fromlen;
+-
+-			/* Receive packet from socket */
+-			tst_resm(TINFO, "Receiving packet");
+-			if ((cc =
+-			     recvfrom(s, packet, len, 0, (sa_t *) & from,
+-				      &fromlen)) < 0) {
+-				tst_resm(TINFO, "ERROR - recvfrom");
+-			}
+-			/* Verify contents of packet */
+-			if ((rc = ck_packet(packet, cc, &from)) != 0) {
+-				tst_resm(TINFO,
+-					 "ERROR - network garbled packet");
+-			} else {
+-				nreceived++;
+-			}
+-
+-		}
+-
+-	}
+-
+-	tst_exit();
+-
+-}
+-
+-int echopkt(int datalen, int npackets)
+-{
+-	int count = 0;
+-	static uint8_t outpack[MAXPACKET];
+-	register icmp_t *icp = (icmp_t *) outpack;
+-	int i;
+-	ssize_t cc;
+-
+-	register u_char *datap = &outpack[8];
+-
+-	/* Setup the packet structure */
+-	tst_resm(TINFO, "Setting up ICMP packet structure to send to host");
+-
+-#if INET6
+-	icp->icmp6_type = IERQ;
+-	icp->icmp6_code = 0;
+-	icp->icmp6_id = ident;	/* ID */
+-#else
+-	icp->icmp_type = IERQ;
+-	icp->icmp_code = 0;
+-	icp->icmp_id = ident;	/* ID */
+-#endif
+-
+-	cc = datalen + 8;	/* skips ICMP portion */
+-
+-	for (i = 8; i < datalen; i++) {	/* skip 8 for time */
+-		*datap++ = i;
+-	}
+-
+-	/* Compute ICMP checksum here */
+-#if INET6
+-	icp->icmp6_cksum = in_cksum((uint16_t *) icp, cc);
+-#else
+-	icp->icmp_cksum = in_cksum((uint16_t *) icp, cc);
+-#endif
+-
+-	/* cc = sendto(s, msg, len, flags, to, tolen) */
+-	ntransmitted = 0;
+-
+-	while (count < npackets) {
+-		count++;
+-		/* Send packet through socket created */
+-		tst_resm(TINFO, "Sending packet through created socket");
+-		i = sendto(s, outpack, cc, 0, (const sa_t *)&whereto,
+-			   sizeof(whereto));
+-
+-		if (i < 0 || i != cc) {
+-			if (i < 0)
+-				perror("sendto");
+-			tst_resm(TINFO, "wrote %s %zd chars, ret=%d",
+-				 hostname, cc, i);
+-			fflush(stdout);
+-		}
+-	}
+-	/* sleep(30); */
+-	return (count);
+-
+-}
+-
+-/*
+- *			I N _ C K S U M
+- *
+- * Checksum routine for Internet Protocol family headers (C Version)
+- *
+- */
+-uint16_t in_cksum(uint16_t * addr, int len)
+-{
+-	register int nleft = len;
+-	register uint16_t *w = addr, tmp;
+-	register int sum = 0;
+-	register uint16_t answer = 0;
+-
+-	/*
+-	 * Our algorithm is simple, using a 32 bit accumulator (sum), we add
+-	 * sequential 16 bit words to it, and@the end, fold back all the
+-	 * carry bits from the top 16 bits into the lower 16 bits.
+-	 */
+-	while (nleft > 1) {
+-		sum += *w++;
+-		nleft -= 2;
+-	}
+-
+-	/* mop up an odd byte, if necessary */
+-	if (nleft == 1) {
+-		tmp = *(u_char *) w;
+-		sum += (tmp << 8);
+-	}
+-	/* add back carry outs from top 16 bits to low 16 bits */
+-	sum = (sum >> 16) + (sum & 0xffff);	/* add hi 16 to low 16 */
+-	sum += (sum >> 16);	/* add carry */
+-	answer = ~sum;		/* truncate to 16 bits */
+-
+-	return answer;
+-
+-}
+-
+-/*
+- *			F I N I S H
+- *
+- * Outputs packet information to confirm transmission and reception.
+- */
+-void finish(int n)
+-{
+-	tst_resm(TINFO, "%d packets received", nreceived);
+-	exit(0);
+-}
+-
+-/*
+- *			C K _ P A C K E T
+- *
+- * Checks contents of packet to verify information did not get destroyed
+- */
+-
+-/*
+- * buf	- pointer to start of IP header
+- * cc	- total size of received packet
+- * from - address of sender
+- */
+-int ck_packet(uint8_t * buf, size_t cc, sai_t * from)
+-{
+-	u_char i;
+-	int iphdrlen;
+-	struct ip *ip = (struct ip *)buf;	/* pointer to IP header */
+-	register icmp_t *icp;	/* ptr to ICMP */
+-	u_char *datap;
+-
+-#if INET6
+-	from->sin6_addr.s6_addr = ntohl(from->sin6_addr.s6_addr);
+-#else
+-	from->sin_addr.s_addr = ntohl(from->sin_addr.s_addr);
+-#endif
+-
+-	iphdrlen = ip->ip_hl << 2;	/* Convert # 16-bit words to
+-					 * number of bytes */
+-	cc -= iphdrlen;
+-	icp = (icmp_t *) (buf + iphdrlen);
+-	datap = (u_char *) icp + sizeof(struct timeval) + 8;
+-	if (icp->icmp_type != IERP) {
+-		return 0;	/* Not your packet because it's
+-				 * not an echo */
+-	}
+-	if (icp->icmp_id != ident) {
+-		return 0;	/* Sent to us by someone
+-				 * else */
+-	}
+-
+-	/* Verify data in packet */
+-	tst_resm(TINFO, "Verify data in packet after returned from sender");
+-	if (datalen > 118) {
+-		datalen = 118;
+-	}
+-	tst_resm(TINFO, "Checking Data.");
+-	for (i = 8; i < datalen; i++) {	/* skip 8 for time */
+-		if (i != (*datap)) {
+-			tst_resm(TINFO, "Data cannot be validated.");
+-		}
+-		datap++;
+-	}
+-
+-	return 0;
+-
+-}
+diff --git a/testcases/network/tcp_cmds/perf_lan/pingpong6.c b/testcases/network/tcp_cmds/perf_lan/pingpong6.c
+deleted file mode 100644
+index 9747f58..0000000
+--- a/testcases/network/tcp_cmds/perf_lan/pingpong6.c
++++ /dev/null
+@@ -1,291 +0,0 @@
+-/*
+-#
+-#
+-#                              Task Subprogram
+-#
+-#  SUBPROGRAM NAME: PINGPONG6.C
+-#
+-#  REQUIRED PARAMETERS:
+-#    Calling Procedure: pingpong6 HOST SIZE PACKETS
+-#       HOST - Current host
+-#       SIZE  - Size of each packet
+-#       PACKETS  - the number of packets across the network
+-#
+-#  SETUP REQUIRED:
+-#       o  This task must be run as root.
+-#       o  TCP/IP must be configured before executing this task.
+-#
+-#  DESCRIPTION:
+-# 	Purpose:To generate lan traffic with ICMP6 echo packet
+-# 	Command: None
+-# 	Subcommand:None
+-# 	Design:
+-#		Create raw socket
+-#		spawn child process to send echo ICMP6 packet
+-#		the child process build echo packet and send to network
+-#		repeat n times
+-#		the parent goes on to receive the reply
+-#		when finish print # of packets sent & # pf packets received
+-#
+-#
+-#===========================================================================
+-*/
+-
+-#define PS2
+-#include <stdio.h>
+-#include <errno.h>
+-#include <string.h>
+-#include <sys/time.h>
+-#include <sys/types.h>
+-
+-#include <sys/param.h>
+-#include <sys/socket.h>
+-#include <sys/file.h>
+-#include <sys/signal.h>
+-#include <stdlib.h>
+-#include <unistd.h>
+-
+-#include <netinet/in_systm.h>
+-#include <netinet/in.h>
+-#include <netinet/ip6.h>
+-#include <netinet/icmp6.h>
+-#include <netdb.h>
+-
+-#define	MAXPACKET	4096	/* max packet size */
+-#ifndef MAXHOSTNAMELEN
+-#define MAXHOSTNAMELEN	64
+-#endif
+-
+-int pfd[2];
+-int fdstr[10];
+-int verbose;
+-int count;
+-u_char packet[MAXPACKET];
+-int options;
+-int s;				/* Socket file descriptor */
+-struct addrinfo *hp;		/* Pointer to host info */
+-struct addrinfo hints;
+-
+-struct sockaddr_in6 whereto;	/* Who to pingpong */
+-int datalen;			/* How much data */
+-
+-char *hostname;
+-char hnamebuf[MAXHOSTNAMELEN];
+-
+-int npackets = 1;
+-int ntransmitted = 0;		/* sequence # for outbound packets = #sent */
+-int ident;
+-
+-int nreceived = 0;		/* # of packets we got back */
+-int timing = 0;
+-void finish(int);
+-int nwrite;
+-/*
+- * 			M A I N
+- */
+-int main(argc, argv)
+-char *argv[];
+-{
+-	struct sockaddr_in6 from;
+-	char **av = argv;
+-	int nrcv;
+-	int on = 1;
+-	int rc = 0;
+-	struct protoent *proto;
+-	int gai;
+-
+-	printf("Starting pingpong - to send / receive packets from host \n");
+-
+-	/* Get Host net address */
+-	printf("Get host net address for sending packets \n");
+-	memset(&hints, 0, sizeof(hints));
+-	hints.ai_family = PF_INET6;
+-
+-	if ((gai = getaddrinfo(av[1], NULL, &hints, &hp)) != 0) {
+-		fprintf(stderr, "Unknown subject address %s: %s\n", av[1],
+-			gai_strerror(gai));
+-		exit(1);
+-	}
+-	if (!hp->ai_addr || hp->ai_addr->sa_family != AF_INET6) {
+-		fprintf(stderr, "getaddrinfo failed");
+-		exit(1);
+-	}
+-	strcpy(hnamebuf, av[1]);
+-	hostname = hnamebuf;
+-	memset((char *)&whereto, 0x00, sizeof(struct sockaddr));
+-	memcpy(&whereto, hp->ai_addr, hp->ai_addrlen);
+-
+-	/*  Determine Packet Size - either use what was passed in or default */
+-	printf("Determine packet size \n");
+-	if (argc >= 3)
+-		datalen = atoi(av[2]) - 8;
+-	else
+-		datalen = 64 - 8;
+-	if (datalen > MAXPACKET) {
+-		printf("Pingpong: packet size too large\n");
+-		exit(1);
+-	}
+-
+-	/* Set number of packets to be sent */
+-	printf("Determine number of packets to send \n");
+-	if (argc >= 4)
+-		npackets = atoi(av[3]);
+-
+-	/* Get PID of current process */
+-	ident = getpid() & 0xFFFF;
+-
+-	/* Get network protocol to use (check /etc/protocol) */
+-	if ((proto = getprotobyname("ipv6-icmp")) == NULL) {
+-		printf("ICMP6: unknown protocol\n");
+-		exit(1);
+-	}
+-
+-	/* Create a socket endpoint for communications - returns a descriptor */
+-	if ((s = socket(AF_INET6, SOCK_RAW, proto->p_proto)) < 0) {
+-		printf("Pingpong: socket - could not create link \n");
+-		exit(1);
+-	}
+-
+-	printf("echoing %s: %d data bytes\n", hostname, datalen);
+-	printf("Total packet size is %d bytes\n", datalen + 8);
+-
+-	setlinebuf(stdout);
+-
+-	/* Setup traps */
+-	signal(SIGINT, finish);
+-	signal(SIGCLD, finish);
+-
+-	/* Fork a child process to continue sending packets */
+-	printf("Create a child process to continue to send packets \n");
+-	switch (fork()) {
+-	case -1:
+-		printf("ERROR when forking a new process\n");
+-		exit(1);
+-	case 0:
+-		/* Child's work */
+-		ntransmitted = echopkt(datalen, npackets);
+-		printf("%d packets transmitted, ", ntransmitted);
+-		sleep(10);
+-		break;
+-	default:
+-		printf("Parent started - to  receive packets \n");
+-		/* Parent's work - receive packets back from child */
+-		for (;;) {
+-			int len = sizeof(packet);
+-			unsigned int fromlen = sizeof(from);
+-#ifdef __64BIT__
+-			long cc;
+-#else
+-			int cc;
+-#endif
+-
+-			/* Receive packet from socket */
+-			fromlen = sizeof(from);
+-			if ((cc =
+-			     recvfrom(s, packet, len, 0,
+-				      (struct sockaddr *)&from,
+-				      &fromlen)) < 0) {
+-				printf("ERROR in recvfrom\n");
+-			}
+-			/* Verify contents of packet */
+-			if ((rc = ck_packet(packet, cc, &from)) == 0)
+-				nreceived++;
+-		}
+-	}
+-	return 0;
+-}
+-
+-echopkt(datalen, npackets)
+-int datalen;
+-int npackets;
+-{
+-	int count = 0;
+-	static u_char outpack[MAXPACKET];
+-	register struct icmp6_hdr *icp = (struct icmp6_hdr *)outpack;
+-	int i;
+-#ifdef __64BIT__
+-	long cc;
+-#else
+-	int cc;
+-#endif
+-
+-	register u_char *datap = &outpack[8];
+-
+-	/* Setup the packet structure */
+-	printf("Setup ICMP packet structure to send to host \n");
+-	icp->icmp6_type = ICMP6_ECHO_REQUEST;
+-	icp->icmp6_code = 0;
+-	icp->icmp6_cksum = 0;
+-	icp->icmp6_id = ident;	/* ID */
+-
+-	cc = datalen + 8;	/* skips ICMP portion */
+-
+-	for (i = 0; i < datalen; i++) {
+-		*datap++ = 6;
+-	}
+-	ntransmitted = 0;
+-	while (count < npackets) {
+-		count++;
+-		/* Send packet through socket created */
+-		printf("Sending packet through created socket \n");
+-		i = sendto(s, outpack, cc, 0, &whereto, sizeof(whereto));
+-
+-		if (i < 0 || i != cc) {
+-			if (i < 0)
+-				perror("sendto");
+-			printf("pingpong6: wrote %s %d chars, ret=%d\n",
+-			       hostname, cc, i);
+-			fflush(stdout);
+-		}
+-	}
+-	/* sleep(30); */
+-	return (count);
+-}
+-
+-/*
+- *			F I N I S H
+- *
+- * Outputs packet information to confirm transmission and reception.
+- */
+-void finish(int n)
+-{
+-	printf("%d packets received, \n", nreceived);
+-	exit(0);
+-}
+-
+-/*
+- *			C K _ P A C K E T
+- *
+- * Checks contents of packet to verify information did not get destroyed
+- */
+-
+-ck_packet(buf, cc, from)
+-u_char *buf;			/* pointer to start of IP header */
+-int cc;				/* total size of received packet */
+-struct sockaddr_in6 *from;	/* address of sender */
+-{
+-	int i;
+-	struct icmp6_hdr icp_hdr;
+-	struct icmp6_hdr *icp = (struct ip6_hdr *)buf;	/* pointer to IP header */
+-	u_char *datap;
+-
+-	datap = (u_char *) icp + sizeof(icp_hdr);
+-	if (icp->icmp6_type != ICMP6_ECHO_REPLY) {
+-		return (1);	/* Not your packet 'cause not an echo */
+-	}
+-	if (icp->icmp6_id != ident) {
+-		return (1);	/* Sent to us by someone else */
+-	}
+-	printf("Receiving packet \n");
+-	/* Verify data in packet */
+-
+-	printf("Checking Data.\n");
+-	for (i = 0; i < datalen; i++) {
+-		if ((*datap) != 6) {
+-			printf("RVW: Data in [%d] is %d\n", i, (*datap));
+-			printf("Data cannot be validated. \n");
+-		}
+-		datap++;
+-	}
+-	return (0);
+-}
 -- 
-2.4.3
+1.7.1
 
