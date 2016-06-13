@@ -1,9 +1,18 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 13 Jun 2016 16:22:10 +0200
-Subject: [LTP] [PATCH] syscalls/fcntl34: use struct flock64 on 32bit
-In-Reply-To: <1465562609-11947-1-git-send-email-jjaburek@redhat.com>
-References: <1465562609-11947-1-git-send-email-jjaburek@redhat.com>
-Message-ID: <20160613142210.GA354@rei.lan>
+Date: Mon, 13 Jun 2016 17:46:32 +0200
+Subject: [LTP] [LTP-20160510] acl_test01: 44: .: test.sh: not found
+In-Reply-To: <CAHc6FU45ra6zxEp6NdBC1M4pKOoJYJ16-iRoubXEp1S9QevDhQ@mail.gmail.com>
+References: <CA+icZUWdzSCUCPM_91Rg3vk1LNGQ7iuAWVqxbPRcjs5ijKSFaw@mail.gmail.com>
+ <20160530142131.GA7416@rei>
+ <CA+icZUWRAiAx6bJKNC=Ci6bjR8+jk61ea+xBLcD1Rchu6u7GYg@mail.gmail.com>
+ <20160530151115.GA8207@rei.lan>
+ <CA+icZUVDvU2JK8AbPn2hVE8QHRUAxmk0k1QHeFgw+Ncsb2V9FA@mail.gmail.com>
+ <20160530153220.GB8207@rei.lan>
+ <CA+icZUXd0TC36TgYjMDg-6+f-M555C0yu3Pz4R410wutPDNi-A@mail.gmail.com>
+ <CA+icZUUm8-L1FDBMZiGdv0CL4Y=4zxj9si-pxtfkne3nG4eqHQ@mail.gmail.com>
+ <20160531152139.GB14283@rei.lan>
+ <CAHc6FU45ra6zxEp6NdBC1M4pKOoJYJ16-iRoubXEp1S9QevDhQ@mail.gmail.com>
+Message-ID: <20160613154632.GB354@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,54 +20,29 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> On x86, compiled as 32bit:
+> > Andreas, please at least CC ltp ML (ltp@lists.linux.it) with patches for
+> > LTP testcases, otherwise I cannot apply them.
 > 
-> fcntl34.c:113: INFO: write to a file inside threads with OFD locks
-> fcntl34.c:47: INFO: spawning '3' threads
-> fcntl34.c:56: INFO: waiting for '3' threads
-> fcntl34.c:88: BROK: fcntl() failed: EINVAL
-> 
-> This is because glibc translates fcntl() to sys_fcntl64,
-> 
-> [pid 19656] fcntl64(4, F_OFD_SETLKW, {l_type=F_WRLCK, l_whence=SEEK_SET,
-> l_start=4294967296, l_len=-695062700769673216}) = -1 EINVAL
-> (Invalid argument)
-> 
-> as advised by the kernel,
-> 
-> 	/* 32-bit arches must use fcntl64() */
-> 	case F_OFD_SETLK:
-> 	case F_OFD_SETLKW:
-> 
-> but the struct passed uses 32bit values,
-> 
-> struct flock lck = {
-> 	.l_whence = SEEK_SET,
-> 	.l_start = 0,
-> 	.l_len = 1,
-> };
-> 
-> which are read as 64bit by the kernel,
-> 
-> int fcntl_setlk64(unsigned int fd, struct file *filp, unsigned int cmd,
-> struct flock64 __user *l)
-> 
-> causing the garbage in upper 32bit of at least l_start and l_len to be
-> treated as offsets, resulting in EINVAL.
-> 
-> This patch makes the test use struct flock64 when _FILE_OFFSET_BITS
-> is unset.
+> here's the fix again; it at least makes the test work on 4.5 and later kernels.
 
-Since both manual and glibc examples use struct flock with OFD locks in
-examples and if I compile glibc example for OFD locks[1] on 32bit system
-garbage is passed to kernel syscalls and the program hangs, so I would
-call this glibc/kernel bug.
+Applied with your signed-of-by.
 
-I would expect glibc to convert the flock structure to 64 bit one
-silently in this case.
+> > And if you think that testcase is useless or plain wrong just provide
+> > reasoning why and I will get rid of it.
+> 
+> The test seems rather weird. Tu check for (the lack of) "user.*"
+> support, it should at least use a "user.*" xattr name that would be
+> valid on ther filesystems (any non-empty suffix would do). Likewise
+> for system; it could check for "system.posix_acl_access" support, for
+> example, but only checking if invalid names are properly rejected
+> isn't all that helpful. I don't know what the real idea behind this
+> test case was though; the documentation doesn't say much.
 
-[1] manual/examples/ofdlocks.c
-    https://sourceware.org/git/?p=glibc.git;a=blob;f=manual/examples/ofdlocks.c;h=ba4f0ef4d237e95b8f1e0f37b9c1befd4afda0d4;hb=HEAD
+Sounds reasonably to me. Feel free to submit a patch that would change
+the attrbutes to a valid values.
+
+Also CCing Alexey who seems to be the original author of the test (at
+least git log says so).
 
 -- 
 Cyril Hrubis
