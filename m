@@ -1,38 +1,36 @@
-From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-Date: Mon, 13 Jun 2016 13:04:28 -0300
-Subject: [LTP] [lkp] [sctp] d46e416c11: WARNING: CPU: 2 PID: 727 at
- net/ipv4/af_inet.c:685 inet_accept+0x10d/0x110
-In-Reply-To: <20160612015854.GC20879@yexl-desktop>
-References: <20160612015854.GC20879@yexl-desktop>
-Message-ID: <8b8cdc03-da9d-48d0-7c9e-72c72a2235c9@gmail.com>
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Mon, 13 Jun 2016 19:58:25 +0200
+Subject: [LTP] [PATCH] syscalls/fcntl34: use struct flock64 on 32bit
+In-Reply-To: <20160613142210.GA354@rei.lan>
+References: <1465562609-11947-1-git-send-email-jjaburek@redhat.com>
+ <20160613142210.GA354@rei.lan>
+Message-ID: <575EF441.5020506@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Em 11-06-2016 22:58, kernel test robot escreveu:
->
->
-> FYI, we noticed the following commit:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/bluetooth/bluetooth-next.git master
-> commit d46e416c11c88ef1deb5c7f19271806a5be597fe ("sctp: sctp should change socket state when shutdown is received")
->
-> in testcase: ltp
-> with following parameters: test=sctp
->
-> on test machine: nhm-white2: 8 threads Nehalem with 4G memory
->
-> caused below changes:
+On 06/13/16 16:22, Cyril Hrubis wrote:
+> Since both manual and glibc examples use struct flock with OFD locks in
+> examples and if I compile glibc example for OFD locks[1] on 32bit system
+> garbage is passed to kernel syscalls and the program hangs, so I would
+> call this glibc/kernel bug.
+> 
+> I would expect glibc to convert the flock structure to 64 bit one
+> silently in this case.
 
-Hi,
+That might not be possible as such "silent" conversion could break
+a lot of existing programs that rely on hardcoded 32bit struct flock
+size.
 
-Xin and I are working on a fix for this. Using SCTP_SS_CLOSING for 
-sctp_sock_migrate() wasn't a good move. That's what is causing this.
-Probably should have just moved to SCTP_SS_CLOSED already as the asoc is 
-already closed.
+However I double-tested it with systemtap and filed the bug anyway,
+https://sourceware.org/bugzilla/show_bug.cgi?id=20251
 
-Thanks,
-Marcelo
+Thanks for pointing out the glibc example.
+
+> 
+> [1] manual/examples/ofdlocks.c
+>     https://sourceware.org/git/?p=glibc.git;a=blob;f=manual/examples/ofdlocks.c;h=ba4f0ef4d237e95b8f1e0f37b9c1befd4afda0d4;hb=HEAD
+> 
 
