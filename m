@@ -1,86 +1,150 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 14 Jun 2016 22:37:29 +0800
-Subject: [LTP] [PATCH] lib: add tst_read_meminfo / tst_get_avail_mem
-In-Reply-To: <cad01181438a055f45b32fc28b33a8b8da74b768.1465903335.git.jstancek@redhat.com>
-References: <cad01181438a055f45b32fc28b33a8b8da74b768.1465903335.git.jstancek@redhat.com>
-Message-ID: <CAEemH2fGEGXftvF_HttR18KSbp8YRL_zaMhb38MQ4cpXqr-fMg@mail.gmail.com>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Tue, 14 Jun 2016 18:24:52 +0300
+Subject: [LTP] [PATCH 3/4] memcg/functional: use checkpoints
+In-Reply-To: <1465917893-32074-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1465917893-32074-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1465917893-32074-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <1465917893-32074-3-git-send-email-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Jan,
+This patch implements the idea proposed in [1], [2], that
+we use the checkpoint interface to let memcg_process inform
+the parent process that it's ready.
 
-On Tue, Jun 14, 2016 at 7:27 PM, Jan Stancek <jstancek@redhat.com> wrote:
-> This patch adds 2 new functions that both parse data
-> from /proc/meminfo.
+In my enviroment it saves ~50 secs of time.
 
-It is a good proposal, but the achieved function seems a little bit
-narrow for ltp-lib. Can we
-rename the tst_mem.h to tst_proc.h, and makes the whole items of
-procfs could be readable via the same interfaces? And the strict
-parameter is not necessary for the function i think.
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ .../memcg/functional/memcg_function_test.sh        |    4 ++--
+ .../controllers/memcg/functional/memcg_lib.sh      |   15 ++++++++-------
+ .../controllers/memcg/functional/memcg_process.c   |    6 ++++++
+ 3 files changed, 16 insertions(+), 9 deletions(-)
 
-How about something like this?
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+index 38fb311..b94e940 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+@@ -214,7 +214,7 @@ testcase_29()
+ {
+ 	memcg_process --mmap-anon -s $PAGESIZE &
+ 	pid=$!
+-	sleep 1
++	TST_CHECKPOINT_WAIT 0
+ 	echo $pid > tasks
+ 	kill -s USR1 $pid 2> /dev/null
+ 	sleep 1
+@@ -235,7 +235,7 @@ testcase_30()
+ {
+ 	memcg_process --mmap-lock2 -s $PAGESIZE &
+ 	pid=$!
+-	sleep 1
++	TST_CHECKPOINT_WAIT 0
+ 	echo $pid > tasks
+ 	kill -s USR1 $pid 2> /dev/null
+ 	sleep 1
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+index 5e42fac..b191ea6 100755
+--- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
++++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
+@@ -22,6 +22,7 @@
+ ##                                                                            ##
+ ################################################################################
+ 
++TST_NEEDS_CHECKPOINTS=1
+ . test.sh
+ 
+ if [ "x$(grep -w memory /proc/cgroups | cut -f4)" != "x1" ]; then
+@@ -137,7 +138,7 @@ test_mem_stat()
+ {
+ 	tst_resm TINFO "Running memcg_process $1 -s $2"
+ 	memcg_process $1 -s $2 &
+-	sleep 1
++	TST_CHECKPOINT_WAIT 0
+ 
+ 	warmup $!
+ 	if [ $? -ne 0 ]; then
+@@ -170,7 +171,7 @@ test_max_usage_in_bytes()
+ {
+ 	tst_resm TINFO "Running memcg_process $1 -s $2"
+ 	memcg_process $1 -s $2 &
+-	sleep 1
++	TST_CHECKPOINT_WAIT 0
+ 
+ 	warmup $!
+ 	if [ $? -ne 0 ]; then
+@@ -201,7 +202,7 @@ malloc_free_memory()
+ {
+ 	tst_resm TINFO "Running memcg_process $1 -s $2"
+ 	memcg_process $1 -s $2 &
+-	sleep 1
++	TST_CHECKPOINT_WAIT 0
+ 
+ 	echo $! > tasks
+ 	kill -s USR1 $! 2> /dev/null
+@@ -246,7 +247,7 @@ test_proc_kill()
+ 
+ 	memcg_process $2 -s $3 &
+ 	pid=$!
+-	sleep 1
++	TST_CHECKPOINT_WAIT 0
+ 	echo $pid > tasks
+ 
+ 	kill -s USR1 $pid 2> /dev/null
+@@ -315,7 +316,7 @@ test_hugepage()
+ 	echo $1 > /proc/sys/vm/nr_hugepages
+ 
+ 	memcg_process $2 --hugepage -s $3 > $TMP_FILE 2>&1 &
+-	sleep 1
++	TST_CHECKPOINT_WAIT 0
+ 
+ 	kill -s USR1 $! 2> /dev/null
+ 	sleep 1
+@@ -363,7 +364,7 @@ test_subgroup()
+ 
+ 	tst_resm TINFO "Running memcg_process --mmap-anon -s $PAGESIZE"
+ 	memcg_process --mmap-anon -s $PAGESIZE &
+-	sleep 1
++	TST_CHECKPOINT_WAIT 0
+ 
+ 	warmup $!
+ 	if [ $? -ne 0 ]; then
+@@ -399,7 +400,7 @@ test_move_charge()
+ 
+ 	tst_resm TINFO "Running memcg_process $1 -s $2"
+ 	memcg_process $1 -s $2 &
+-	sleep 1
++	TST_CHECKPOINT_WAIT 0
+ 	warmup $!
+ 	if [ $? -ne 0 ]; then
+ 		rmdir subgroup_a
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c b/testcases/kernel/controllers/memcg/functional/memcg_process.c
+index 4ad2d6f..fbb76e2 100644
+--- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
++++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
+@@ -34,6 +34,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
+ 
+ static int fd;
+ 
+@@ -315,6 +317,10 @@ int main(int argc, char *argv[])
+ 
+ 	process_options(argc, argv);
+ 
++	tst_reinit();
++
++	TST_CHECKPOINT_WAKE(0);
++
+ 	while (!flag_exit)
+ 		sleep(1);
+ 
+-- 
+1.7.1
 
------------------------------------------
-long read_proc(char *path, char *item)
-{
-    FILE *fp;
-    char line[BUFSIZ], buf[BUFSIZ];
-    long val;
-
-    fp = fopen(path, "r");
-    if (fp == NULL)
-        tst_brkm(TBROK | TERRNO, cleanup, "fopen %s", path);
-
-    while (fgets(line, BUFSIZ, fp) != NULL) {
-        if (sscanf(line, "%64s %ld", buf, &val) == 2)
-            if (strcmp(buf, item) == 0) {
-                fclose(fp);
-                return val;
-            }
-        continue;
-    }
-    fclose(fp);
-
-    tst_res(TINFO, "cannot find \"%s\" in %s", item, path);
-
-    return -1;
-}
-
-long tst_read_meminfo(char *item)
-{
-
-    return read_proc("/proc/meminfo", item);
-}
-
-long tst_read_self_status(char *item)
-{
-    return read_proc("/proc/self/status", item);
-}
-
-// we can extend this interface easily by uniform prototype
-long tst_read_blablabla(char *item)
-{
-    return read_proc("/proc/blablabla...", item);
-}
-...
-
-long tst_get_avail_mem(void)
-{
-       long mem_available;
-
-       mem_available = tst_read_meminfo("memavailable:");
-       if (mem_available == -1) {
-               mem_available = tst_read_meminfo("memfree:");
-               mem_available += tst_read_meminfo("cached:");
-       }
-
-       return mem_available;
-}
-
-
-Regards,
-Li Wang
