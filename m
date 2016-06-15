@@ -1,165 +1,47 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 14 Jun 2016 18:24:51 +0300
-Subject: [LTP] [PATCH 2/4] memcg/functional/memcg_process: cleanup
-In-Reply-To: <1465917893-32074-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1465917893-32074-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <1465917893-32074-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 15 Jun 2016 03:34:35 -0400 (EDT)
+Subject: [LTP] [PATCH] lib: add tst_read_meminfo / tst_get_avail_mem
+In-Reply-To: <CAEemH2fGEGXftvF_HttR18KSbp8YRL_zaMhb38MQ4cpXqr-fMg@mail.gmail.com>
+References: <cad01181438a055f45b32fc28b33a8b8da74b768.1465903335.git.jstancek@redhat.com>
+ <CAEemH2fGEGXftvF_HttR18KSbp8YRL_zaMhb38MQ4cpXqr-fMg@mail.gmail.com>
+Message-ID: <1589618283.6491776.1465976075619.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- .../controllers/memcg/functional/memcg_process.c   |   49 ++++++++++----------
- 1 files changed, 25 insertions(+), 24 deletions(-)
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-index c12fae1..4ad2d6f 100644
---- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-@@ -35,20 +35,20 @@
- #include <string.h>
- #include <unistd.h>
- 
--int fd;
-+static int fd;
- 
--int flag_exit;
--int flag_allocated;
-+static volatile int flag_exit;
-+static volatile int flag_allocated;
- 
--int opt_mmap_anon;
--int opt_mmap_file;
--int opt_mmap_lock1;
--int opt_mmap_lock2;
--int opt_shm;
--int opt_hugepage;
-+static int opt_mmap_anon;
-+static int opt_mmap_file;
-+static int opt_mmap_lock1;
-+static int opt_mmap_lock2;
-+static int opt_shm;
-+static int opt_hugepage;
- 
--int key_id;			/* used with opt_shm */
--unsigned long memsize;
-+static int key_id;			/* used with opt_shm */
-+static unsigned long memsize;
- 
- #define FILE_HUGEPAGE	"/hugetlb/hugepagefile"
- 
-@@ -59,7 +59,7 @@ unsigned long memsize;
- #define SHM		(SCHAR_MAX + 5)
- #define HUGEPAGE	(SCHAR_MAX + 6)
- 
--const struct option long_opts[] = {
-+static const struct option long_opts[] = {
- 	{"mmap-anon", 0, NULL, MMAP_ANON},
- 	{"mmap-file", 0, NULL, MMAP_FILE},
- 	{"mmap-lock1", 0, NULL, MMAP_LOCK1},
-@@ -74,7 +74,7 @@ const struct option long_opts[] = {
- /*
-  * process_options: read options from user input
-  */
--void process_options(int argc, char *argv[])
-+static void process_options(int argc, char *argv[])
- {
- 	int c;
- 	char *end;
-@@ -117,7 +117,7 @@ void process_options(int argc, char *argv[])
- /*
-  * touch_memory: force allocating phy memory
-  */
--void touch_memory(char *p, int size)
-+static void touch_memory(char *p, int size)
- {
- 	int i;
- 	int pagesize = getpagesize();
-@@ -126,7 +126,7 @@ void touch_memory(char *p, int size)
- 		p[i] = 0xef;
- }
- 
--void mmap_anon()
-+static void mmap_anon(void)
- {
- 	static char *p;
- 
-@@ -142,7 +142,7 @@ void mmap_anon()
- 	}
- }
- 
--void mmap_file()
-+static void mmap_file(void)
- {
- 	static char *p;
- 	static int fd_hugepage;
-@@ -177,7 +177,7 @@ void mmap_file()
- 	}
- }
- 
--void mmap_lock1()
-+static void mmap_lock1(void)
- {
- 	static char *p;
- 
-@@ -193,7 +193,7 @@ void mmap_lock1()
- 	}
- }
- 
--void mmap_lock2()
-+static void mmap_lock2(void)
- {
- 	static char *p;
- 
-@@ -215,7 +215,7 @@ void mmap_lock2()
- 	}
- }
- 
--void shm()
-+static void shm(void)
- {
- 	static char *p;
- 	static int shmid;
-@@ -258,7 +258,7 @@ void shm()
- /*
-  * sigint_handler: handle SIGINT by set the exit flag.
-  */
--void sigint_handler(int __attribute__ ((unused)) signo)
-+static void sigint_handler(int __attribute__ ((unused)) signo)
- {
- 	flag_exit = 1;
- }
-@@ -272,7 +272,7 @@ void sigint_handler(int __attribute__ ((unused)) signo)
-  * When we receive SIGUSR again, we will free all the allocated
-  * memory.
-  */
--void sigusr_handler(int __attribute__ ((unused)) signo)
-+static void sigusr_handler(int __attribute__ ((unused)) signo)
- {
- 	if (opt_mmap_anon)
- 		mmap_anon();
-@@ -303,14 +303,15 @@ int main(int argc, char *argv[])
- 	memset(&sigint_action, 0, sizeof(sigint_action));
- 	memset(&sigusr_action, 0, sizeof(sigusr_action));
- 
--	/* TODO: add error handling below. */
- 	sigemptyset(&sigint_action.sa_mask);
- 	sigint_action.sa_handler = &sigint_handler;
--	sigaction(SIGINT, &sigint_action, NULL);
-+	if (sigaction(SIGINT, &sigint_action, NULL))
-+		err(1, "sigaction(SIGINT)");
- 
- 	sigemptyset(&sigusr_action.sa_mask);
- 	sigusr_action.sa_handler = &sigusr_handler;
--	sigaction(SIGUSR1, &sigusr_action, NULL);
-+	if (sigaction(SIGUSR1, &sigusr_action, NULL))
-+		err(1, "sigaction(SIGUSR1)");
- 
- 	process_options(argc, argv);
- 
--- 
-1.7.1
 
+
+----- Original Message -----
+> From: "Li Wang" <liwang@redhat.com>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Tuesday, 14 June, 2016 4:37:29 PM
+> Subject: Re: [LTP] [PATCH] lib: add tst_read_meminfo / tst_get_avail_mem
+> 
+> Hi Jan,
+> 
+> On Tue, Jun 14, 2016 at 7:27 PM, Jan Stancek <jstancek@redhat.com> wrote:
+> > This patch adds 2 new functions that both parse data
+> > from /proc/meminfo.
+> 
+> It is a good proposal, but the achieved function seems a little bit
+> narrow for ltp-lib.
+
+OK, let me try to come up with something more generic.
+
+> Can we
+> rename the tst_mem.h to tst_proc.h, and makes the whole items of
+> procfs could be readable via the same interfaces?
+
+They don't all share same format, so there have to be some limitations.
+
+> And the strict
+> parameter is not necessary for the function i think.
+
+We could leave that up to caller.
+
+Regards,
+Jan
