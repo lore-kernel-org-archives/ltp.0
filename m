@@ -1,34 +1,66 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 16 Jun 2016 04:49:09 -0400 (EDT)
-Subject: [LTP] [PATCH] lib/tst_test.c: fix Segmentation fault in
- tst_vbrk_
-In-Reply-To: <1466063524-13140-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1466063524-13140-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <547888132.6984380.1466066949440.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 16 Jun 2016 14:27:04 +0300
+Subject: [LTP] [PATCH 1/2] lib: add safe_gethostname()
+Message-ID: <1466076425-12790-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ include/safe_net_fn.h  |    3 +++
+ include/tst_safe_net.h |    3 +++
+ lib/safe_net.c         |   14 ++++++++++++++
+ 3 files changed, 20 insertions(+), 0 deletions(-)
 
-
-
-
------ Original Message -----
-> From: "Xiao Yang" <yangx.jy@cn.fujitsu.com>
-> To: ltp@lists.linux.it
-> Sent: Thursday, 16 June, 2016 9:52:04 AM
-> Subject: [LTP] [PATCH] lib/tst_test.c: fix Segmentation fault in tst_vbrk_
-> 
-> We can't allocate resources to results pointer before checking
-> kernel version, so do_exit() will fail if we print results pointer.
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-
-Thanks, I pushed a patch that fixes do_exit() instead. So we
-preserve do_exit as a single place for library process to exit.
-
-Regards,
-Jan
+diff --git a/include/safe_net_fn.h b/include/safe_net_fn.h
+index e85842b..14609b8 100644
+--- a/include/safe_net_fn.h
++++ b/include/safe_net_fn.h
+@@ -45,4 +45,7 @@ int safe_getsockname(const char *file, const int lineno,
+ 		     void (cleanup_fn)(void), int sockfd, struct sockaddr *addr,
+ 		     socklen_t *addrlen);
+ 
++int safe_gethostname(const char *file, const int lineno,
++		     void (cleanup_fn)(void), char *name, size_t size);
++
+ #endif /* SAFE_NET_FN_H__ */
+diff --git a/include/tst_safe_net.h b/include/tst_safe_net.h
+index 98dcfa5..3bfc052 100644
+--- a/include/tst_safe_net.h
++++ b/include/tst_safe_net.h
+@@ -43,4 +43,7 @@
+ 	safe_getsockname(__FILE__, __LINE__, NULL, sockfd, addr, \
+ 			 addrlen)
+ 
++#define SAFE_GETHOSTNAME(name, size) \
++	safe_gethostname(__FILE__, __LINE__, NULL, name, size)
++
+ #endif /* TST_SAFE_NET_H__ */
+diff --git a/lib/safe_net.c b/lib/safe_net.c
+index 98a79cf..1ee447d 100644
+--- a/lib/safe_net.c
++++ b/lib/safe_net.c
+@@ -183,3 +183,17 @@ int safe_getsockname(const char *file, const int lineno,
+ 
+ 	return rval;
+ }
++
++int safe_gethostname(const char *file, const int lineno,
++		     void (cleanup_fn)(void), char *name, size_t size)
++{
++	int rval = gethostname(name, size);
++
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, cleanup_fn,
++			 "%s:%d: gethostname(%p, %zu) failed",
++			 file, lineno, name, size);
++	}
++
++	return rval;
++}
+-- 
+1.7.1
 
