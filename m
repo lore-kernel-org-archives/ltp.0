@@ -1,29 +1,36 @@
-From: Li Wang <liwang@redhat.com>
-Date: Thu, 16 Jun 2016 15:32:10 +0800
-Subject: [LTP] [PATCH] lib: add tst_read_meminfo / tst_get_avail_mem
-In-Reply-To: <1809783770.6955910.1466060898915.JavaMail.zimbra@redhat.com>
-References: <cad01181438a055f45b32fc28b33a8b8da74b768.1465903335.git.jstancek@redhat.com>
- <CAEemH2fGEGXftvF_HttR18KSbp8YRL_zaMhb38MQ4cpXqr-fMg@mail.gmail.com>
- <1589618283.6491776.1465976075619.JavaMail.zimbra@redhat.com>
- <57614F55.9090407@redhat.com> <20160616052544.GA18852@gmail.com>
- <1809783770.6955910.1466060898915.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2cQoP+zWq9w_Vgs6b-JhJziadcuLK-VU=M1rMwKr5z1yg@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 16 Jun 2016 15:52:04 +0800
+Subject: [LTP] [PATCH] lib/tst_test.c: fix Segmentation fault in tst_vbrk_
+Message-ID: <1466063524-13140-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jun 16, 2016 at 3:08 PM, Jan Stancek <jstancek@redhat.com> wrote:
->
-> I'm now considering exposing just a parse function, I'd like to
-> avoid having separate function for each proc file. And possibly
-> more than one since those 2 proc files you mentioned don't have
-> uniform format for all content.
+We can't allocate resources to results pointer before checking
+kernel version, so do_exit() will fail if we print results pointer.
 
-Yes, achieve one parse function for whole proc files is unpractical.
-IMO, we could take more consideration for the files frequently opened
-in ltp general test.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ lib/tst_test.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Li Wang
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index c560727..68791cb 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -237,7 +237,7 @@ void tst_vbrk_(const char *file, const int lineno, int ttype,
+ 		do_test_cleanup();
+ 
+ 	if (getpid() == lib_pid)
+-		do_exit(TTYPE_RESULT(ttype));
++		do_cleanup();
+ 
+ 	exit(TTYPE_RESULT(ttype));
+ }
+-- 
+1.8.3.1
+
+
+
