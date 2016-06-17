@@ -1,101 +1,72 @@
 From: Huang Jin Bao <huangjb.jy@cn.fujitsu.com>
-Date: Fri, 17 Jun 2016 15:43:23 +0800
-Subject: [LTP] [PATCH 1/2] lgetxattr/lgetxattr01.c: add new testcase
-Message-ID: <1466149404-22555-1-git-send-email-huangjb.jy@cn.fujitsu.com>
+Date: Fri, 17 Jun 2016 15:43:24 +0800
+Subject: [LTP] [PATCH 2/2] lgetxattr/lgetxattr02.c: add new testcase
+In-Reply-To: <1466149404-22555-1-git-send-email-huangjb.jy@cn.fujitsu.com>
+References: <1466149404-22555-1-git-send-email-huangjb.jy@cn.fujitsu.com>
+Message-ID: <1466149404-22555-2-git-send-email-huangjb.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The testcase checks the basic functionality of the lgetxattr(2).
-In the case of a symbolic link, we only get the value of the
-extended attribute related to the link itself by name.
+1) lgetxattr(2) fails if the named attribute does not exist
+   or the process has no access to this attribute.
+2) lgetxattr(2) fails if the size of the value buffer is too small
+   to hold the result.
+3) lgetxattr(2) fails when attemptes to read from a invalid address.
 
 Signed-off-by: Huang Jin Bao <huangjb.jy@cn.fujitsu.com>
 ---
- runtest/ltplite                                   |   2 +
- runtest/syscalls                                  |   2 +
+ runtest/ltplite                                   |   1 +
+ runtest/syscalls                                  |   1 +
  testcases/kernel/syscalls/.gitignore              |   1 +
- testcases/kernel/syscalls/lgetxattr/Makefile      |  23 +++++
- testcases/kernel/syscalls/lgetxattr/lgetxattr01.c | 119 ++++++++++++++++++++++
- 5 files changed, 147 insertions(+)
- create mode 100644 testcases/kernel/syscalls/lgetxattr/Makefile
- create mode 100644 testcases/kernel/syscalls/lgetxattr/lgetxattr01.c
+ testcases/kernel/syscalls/lgetxattr/lgetxattr02.c | 110 ++++++++++++++++++++++
+ 4 files changed, 113 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/lgetxattr/lgetxattr02.c
 
 diff --git a/runtest/ltplite b/runtest/ltplite
-index 9e1f201..9d10af2 100644
+index 9d10af2..a08e147 100644
 --- a/runtest/ltplite
 +++ b/runtest/ltplite
-@@ -385,6 +385,8 @@ lchown01 lchown01
- lchown02 lchown02
+@@ -386,6 +386,7 @@ lchown02 lchown02
  lchown03 lchown03
  
-+lgetxattr01 lgetxattr01
-+
+ lgetxattr01 lgetxattr01
++lgetxattr02 lgetxattr02
+ 
  link01 symlink01 -T link01
  link02 link02
- link03 link03
 diff --git a/runtest/syscalls b/runtest/syscalls
-index 428b774..e66fa87 100644
+index e66fa87..a838a5d 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -505,6 +505,8 @@ lchown03  lchown03
- lchown02_16 lchown02_16
+@@ -506,6 +506,7 @@ lchown02_16 lchown02_16
  lchown03_16 lchown03_16
  
-+lgetxattr01 lgetxattr01
-+
+ lgetxattr01 lgetxattr01
++lgetxattr02 lgetxattr02
+ 
  link01 symlink01 -T link01
  link02 link02
- link03 link03
 diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 81f4890..4b3aa9d 100644
+index 4b3aa9d..5474795 100644
 --- a/testcases/kernel/syscalls/.gitignore
 +++ b/testcases/kernel/syscalls/.gitignore
-@@ -470,6 +470,7 @@
- /lchown/lchown02_16
+@@ -471,6 +471,7 @@
  /lchown/lchown03
  /lchown/lchown03_16
-+/lgetxattr/lgetxattr01
+ /lgetxattr/lgetxattr01
++/lgetxattr/lgetxattr02
  /link/link02
  /link/link03
  /link/link04
-diff --git a/testcases/kernel/syscalls/lgetxattr/Makefile b/testcases/kernel/syscalls/lgetxattr/Makefile
+diff --git a/testcases/kernel/syscalls/lgetxattr/lgetxattr02.c b/testcases/kernel/syscalls/lgetxattr/lgetxattr02.c
 new file mode 100644
-index 0000000..10d4499
+index 0000000..c911658
 --- /dev/null
-+++ b/testcases/kernel/syscalls/lgetxattr/Makefile
-@@ -0,0 +1,23 @@
-+#
-+#  Copyright (c) 2016 Fujitsu Ltd.
-+#  Author: Jinbao Huang <huangjb.jy@cn.fujitsu.com>
-+#
-+#  This program is free software;  you can redistribute it and/or modify
-+#  it under the terms of the GNU General Public License as published by
-+#  the Free Software Foundation; either version 2 of the License, or
-+#  (at your option) any later version.
-+#
-+#  This program is distributed in the hope that it will be useful,
-+#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+#  the GNU General Public License for more details.
-+#
-+#  You should have received a copy of the GNU General Public License
-+#  along with this program.
-+#
-+
-+top_srcdir		?= ../../../..
-+
-+include $(top_srcdir)/include/mk/testcases.mk
-+
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/kernel/syscalls/lgetxattr/lgetxattr01.c b/testcases/kernel/syscalls/lgetxattr/lgetxattr01.c
-new file mode 100644
-index 0000000..d96ba8e
---- /dev/null
-+++ b/testcases/kernel/syscalls/lgetxattr/lgetxattr01.c
-@@ -0,0 +1,119 @@
++++ b/testcases/kernel/syscalls/lgetxattr/lgetxattr02.c
+@@ -0,0 +1,110 @@
 +/*
 +* Copyright (c) 2016 Fujitsu Ltd.
 +* Author: Jinbao Huang <huangjb.jy@cn.fujitsu.com>
@@ -110,21 +81,28 @@ index 0000000..d96ba8e
 +*
 +* You should have received a copy of the GNU General Public License
 +* alone with this program.
++*
 +*/
 +
 +/*
-+* Test Name: lgetxattr01
++* Test Name: lgetxattr02
 +*
 +* Description:
-+* The testcase checks the basic functionality of the lgetxattr(2).
-+* In the case of a symbolic link, we only get the value of the
-+* extended attribute related to the link itself by name.
++* 1) lgetxattr(2) fails if the named attribute does not exist
++*    or the process has no access to this attribute.
++* 2) lgetxattr(2) fails if the size of the value buffer is too small
++*    to hold the result.
++* 3) lgetxattr(2) fails when attemptes to read from a invalid address.
++*
++* Expected Result:
++* 1) lgetxattr(2) should return -1 and set errno to ENOATTR.
++* 2) lgetxattr(2) should return -1 and set errno to ERANGE.
++* 3) lgetxattr(2) should return -1 and set errno to EFAULT.
 +*/
 +
 +#include "config.h"
 +#include <errno.h>
 +#include <sys/types.h>
-+#include <string.h>
 +
 +#ifdef HAVE_ATTR_XATTR_H
 +#include <attr/xattr.h>
@@ -133,88 +111,72 @@ index 0000000..d96ba8e
 +#include "tst_test.h"
 +
 +#ifdef HAVE_ATTR_XATTR_H
-+#define SECURITY_KEY1   "security.ltptest1"
-+#define SECURITY_KEY2   "security.ltptest2"
-+#define VALUE1   "test1"
-+#define VALUE2   "test2"
-+#define VALUE_SIZE      5
 +
-+static void set_xattr(char *path, char *key, void *value)
++#define SECURITY_KEY	"security.ltptest"
++#define VALUE	"this is a test value"
++#define VALUE_SIZE	20
++
++static struct test_case {
++	const char *path;
++	size_t size;
++	int exp_err;
++} tc[] = {
++	{"testfile", 19, ENOATTR},
++	{"symlink", 1, ERANGE},
++	{(char *)-1, 20, EFAULT}
++};
++
++static void verify_lgetxattr(unsigned int n)
 +{
-+	int res;
++	struct test_case *t = tc + n;
++	char buf[t->size];
 +
-+	res = lsetxattr(path, key, value, VALUE_SIZE, XATTR_CREATE);
-+	if (res == -1) {
-+		if (errno == ENOTSUP) {
-+			tst_brk(TCONF,
-+				"no xattr support in fs or mounted "
-+				"without user_xattr option");
++	TEST(lgetxattr(t->path, SECURITY_KEY, buf, tc->size));
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "lgetxattr() succeeded unexpectedly");
++	} else {
++		if (TEST_ERRNO != t->exp_err) {
++			tst_res(TFAIL | TTERRNO, "lgetxattr() failed "
++				"unexpectedlly, expected %s",
++				tst_strerrno(t->exp_err));
++		} else {
++			tst_res(TPASS | TTERRNO,
++				"lgetxattr() failed as expected");
 +		}
-+
-+		if (errno == EEXIST)
-+			tst_brk(TBROK, "exist attribute %s", key);
-+		else
-+			tst_brk(TBROK | TERRNO, "lsetxattr() failed");
 +	}
 +}
 +
 +static void setup(void)
 +{
++	int n;
++
 +	SAFE_TOUCH("testfile", 0644, NULL);
++
 +	SAFE_SYMLINK("testfile", "symlink");
 +
-+	set_xattr("testfile", SECURITY_KEY1, VALUE1);
-+	set_xattr("symlink", SECURITY_KEY2, VALUE2);
-+}
-+
-+static void verify_lgetxattr(void)
-+{
-+	int size = 64;
-+	char buf[size];
-+
-+	TEST(lgetxattr("symlink", SECURITY_KEY2, buf, size));
-+	if (TEST_RETURN == -1) {
-+		tst_res(TFAIL | TTERRNO, "lgetxattr() failed");
-+		return;
-+	}
-+
-+	if (TEST_RETURN != VALUE_SIZE) {
-+		tst_res(TFAIL, "lgetxattr() got unexpected value size");
-+		return;
-+	}
-+
-+	if (!strncmp(buf, VALUE2, TEST_RETURN))
-+		tst_res(TPASS, "lgetxattr() get expect value");
-+	else
-+		tst_res(TFAIL, "lgetxattr() got unexpected value");
-+
-+	TEST(lgetxattr("symlink", SECURITY_KEY1, buf, size));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "lgetxattr() succeeded unexpectedly");
-+		return;
-+	}
-+
-+	if (TEST_ERRNO == ENODATA) {
-+		tst_res(TPASS | TTERRNO, "lgetxattr() failed as expected");
-+	} else {
-+		tst_res(TFAIL | TTERRNO,
-+			"lgetxattr() failed unexpectedly,"
-+			"expected %s", tst_strerrno(ENODATA));
++	n = lsetxattr("symlink", SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
++	if (n == -1) {
++		if (errno == ENOTSUP) {
++			tst_brk(TCONF, "no xattr support in fs or "
++				"mounted without user_xattr option");
++		} else {
++			tst_brk(TBROK | TERRNO, "lsetxattr() failed");
++		}
 +	}
 +}
 +
 +static struct tst_test test = {
-+	.tid = "lgetxattr01",
++	.tid = "lgetxattr02",
 +	.needs_tmpdir = 1,
 +	.needs_root = 1,
-+	.test_all = verify_lgetxattr,
++	.test = verify_lgetxattr,
++	.tcnt = ARRAY_SIZE(tc),
 +	.setup = setup,
 +};
 +
-+#else
++#else /* HAVE_ATTR_XATTR_H */
 +	TST_TEST_TCONF("<attr/xattr.h> does not exist.");
-+#endif /* HAVE_ATTR_XATTR_H */
++#endif
 -- 
 1.8.3.1
 
