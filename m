@@ -1,150 +1,403 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 20 Jun 2016 17:28:51 +0300
-Subject: [LTP] [PATCH 3/8] network/nfs_lib.sh: add options,
-	socket type and NFS ver
+Date: Mon, 20 Jun 2016 17:28:53 +0300
+Subject: [LTP] [PATCH 5/8] network/nfs/nfsstat: cleanup test,
+	use test_net.sh library
 In-Reply-To: <1466432936-3099-1-git-send-email-alexey.kodanev@oracle.com>
 References: <1466432936-3099-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1466432936-3099-4-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1466432936-3099-6-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Additionally, add more configurations including NFSv4.2.
-
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/net.nfs                             |   62 ++++++++++++++++++---------
- testcases/network/nfs/nfs_stress/nfs_lib.sh |   32 ++++++++++++--
- 2 files changed, 68 insertions(+), 26 deletions(-)
+ runtest/net.nfs                           |    2 +-
+ testcases/network/nfs/nfsstat01/nfsstat01 |  343 +++++++++--------------------
+ 2 files changed, 103 insertions(+), 242 deletions(-)
 
 diff --git a/runtest/net.nfs b/runtest/net.nfs
-index 43cf504..7208a3b 100644
+index 5853573..81d75aa 100644
 --- a/runtest/net.nfs
 +++ b/runtest/net.nfs
-@@ -1,31 +1,51 @@
- #DESCRIPTION:Network filesystem stress
- #
--# PLEASE READ THE README FILE IN /nfs BEFORE RUNNING THESE.
-+# PLEASE READ THE README FILE network/README.md BEFORE RUNNING THESE.
- #
--nfs3_01 export VERSION=3 SOCKET_TYPE=udp; nfs01
--nfs4_01 export VERSION=4 SOCKET_TYPE=tcp; nfs01
--nfs3_ipv6_01 export VERSION=3 SOCKET_TYPE=udp; nfs01 -6
--nfs4_ipv6_01 export VERSION=4 SOCKET_TYPE=tcp; nfs01 -6
-+nfs3_01 nfs01 -v 3 -t udp
-+nfs4_01 nfs01 -v 3 -t tcp
-+nfs41_01 nfs01 -v 4.1 -t tcp
-+nfs42_01 nfs01 -v 4.2 -t tcp
-+nfs3_ipv6_01 nfs01 -6 -v 3 -t udp
-+nfs4_ipv6_01 nfs01 -6 -v 4 -t tcp
-+nfs41_ipv6_01 nfs01 -6 -v 4.1 -t tcp
-+nfs42_ipv6_01 nfs01 -6 -v 4.2 -t tcp
- 
--nfs3_02 export VERSION=3 SOCKET_TYPE=udp; nfs02
--nfs4_02 export VERSION=4 SOCKET_TYPE=tcp; nfs02
--nfs3_ipv6_02 export VERSION=3 SOCKET_TYPE=udp; nfs02 -6
--nfs4_ipv6_02 export VERSION=4 SOCKET_TYPE=tcp; nfs02 -6
-+nfs3_02 nfs02 -v 3 -t udp
-+nfs4_02 nfs02 -v 3 -t tcp
-+nfs41_02 nfs02 -v 4.1 -t tcp
-+nfs42_02 nfs02 -v 4.2 -t tcp
-+nfs3_ipv6_02 nfs02 -6 -v 3 -t udp
-+nfs4_ipv6_02 nfs02 -6 -v 4 -t tcp
-+nfs41_ipv6_02 nfs02 -6 -v 4.1 -t tcp
-+nfs42_ipv6_02 nfs02 -6 -v 4.2 -t tcp
- 
--nfs3_03 export VERSION=3 SOCKET_TYPE=udp; nfs03
--nfs4_03 export VERSION=4 SOCKET_TYPE=tcp; nfs03
--nfs3_ipv6_03 export VERSION=3 SOCKET_TYPE=udp; nfs03 -6
--nfs4_ipv6_03 export VERSION=4 SOCKET_TYPE=tcp; nfs03 -6
-+nfs3_03 nfs03 -v 3 -t udp
-+nfs4_03 nfs03 -v 3 -t tcp
-+nfs41_03 nfs03 -v 4.1 -t tcp
-+nfs42_03 nfs03 -v 4.2 -t tcp
-+nfs3_ipv6_03 nfs03 -6 -v 3 -t udp
-+nfs4_ipv6_03 nfs03 -6 -v 4 -t tcp
-+nfs41_ipv6_03 nfs03 -6 -v 4.1 -t tcp
-+nfs42_ipv6_03 nfs03 -6 -v 4.2 -t tcp
- 
--nfs3_04 export VERSION=3 SOCKET_TYPE=udp; nfs04
--nfs4_04 export VERSION=4 SOCKET_TYPE=tcp; nfs04
--nfs3_ipv6_04 export VERSION=3 SOCKET_TYPE=udp; nfs04 -6
--nfs4_ipv6_04 export VERSION=4 SOCKET_TYPE=tcp; nfs04 -6
-+nfs3_04 nfs04 -v 3 -t udp
-+nfs4_04 nfs04 -v 3 -t tcp
-+nfs41_04 nfs04 -v 4.1 -t tcp
-+nfs42_04 nfs04 -v 4.2 -t tcp
-+nfs3_ipv6_04 nfs04 -6 -v 3 -t udp
-+nfs4_ipv6_04 nfs04 -6 -v 4 -t tcp
-+nfs41_ipv6_04 nfs04 -6 -v 4.1 -t tcp
-+nfs42_ipv6_04 nfs04 -6 -v 4.2 -t tcp
- 
--nfs3_05 export VERSION=3 SOCKET_TYPE=udp; nfs05
--nfs4_05 export VERSION=4 SOCKET_TYPE=tcp; nfs05
--nfs3_ipv6_05 export VERSION=3 SOCKET_TYPE=udp; nfs05 -6
--nfs4_ipv6_05 export VERSION=4 SOCKET_TYPE=tcp; nfs05 -6
-+nfs3_05 nfs05 -v 3 -t udp
-+nfs4_05 nfs05 -v 4 -t tcp
-+nfs41_05 nfs05 -v 4.1 -t tcp
-+nfs42_05 nfs05 -v 4.2 -t tcp
-+nfs3_ipv6_05 nfs05 -6 -v 3 -t udp
-+nfs4_ipv6_05 nfs05 -6 -v 4 -t tcp
-+nfs41_ipv6_05 nfs05 -6 -v 4.1 -t tcp
-+nfs42_ipv6_05 nfs05 -6 -v 4.2 -t tcp
+@@ -49,7 +49,7 @@ nfs42_ipv6_05 nfs05 -6 -v 4.2 -t tcp
  
  nfslock01 export VERSION; TCbin=$LTPROOT/testcases/bin nfslock01
  
-diff --git a/testcases/network/nfs/nfs_stress/nfs_lib.sh b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-index 38fec05..aca150d 100644
---- a/testcases/network/nfs/nfs_stress/nfs_lib.sh
-+++ b/testcases/network/nfs/nfs_stress/nfs_lib.sh
-@@ -1,4 +1,4 @@
--# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+# Copyright (c) 2015-2016 Oracle and/or its affiliates. All Rights Reserved.
- # Copyright (c) International Business Machines  Corp., 2001
- #
- # This program is free software; you can redistribute it and/or
-@@ -14,12 +14,34 @@
- # You should have received a copy of the GNU General Public License
- # along with this program. If not, see <http://www.gnu.org/licenses/>.
+-nfsstat01 export VERSION; TCbin=$LTPROOT/testcases/bin nfsstat01
++nfsstat3_01 nfsstat01
  
-+VERSION=${VERSION:=3}
-+NFILES=${NFILES:=1000}
-+SOCKET_TYPE="${SOCKET_TYPE:-udp}"
-+NFS_TYPE=${NFS_TYPE:=nfs}
+ nfsx3 fsx.sh -v 3 -t udp
+ nfsx4 fsx.sh -v 4 -t tcp
+diff --git a/testcases/network/nfs/nfsstat01/nfsstat01 b/testcases/network/nfs/nfsstat01/nfsstat01
+index 4a34d93..256fe60 100755
+--- a/testcases/network/nfs/nfsstat01/nfsstat01
++++ b/testcases/network/nfs/nfsstat01/nfsstat01
+@@ -1,261 +1,122 @@
+-#! /bin/sh
++#!/bin/sh
++# Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) International Business Machines  Corp., 2001
+ #
+-#   Copyright (c) International Business Machines  Corp., 2001
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
+ #
+-#   This program is free software;  you can redistribute it and/or modify
+-#   it under the terms of the GNU General Public License as published by
+-#   the Free Software Foundation; either version 2 of the License, or
+-#   (at your option) any later version.
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
+ #
+-#   This program is distributed in the hope that it will be useful,
+-#   but WITHOUT ANY WARRANTY;  without even the implie; warranty of
+-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#   the GNU General Public License for more details.
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
+ #
+-#   You should have received a copy of the GNU General Public License
+-#   along with this program;  if not, write to the Free Software
+-#   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ #
+-#  FILE   : nfsstat
+-#
+-#  PURPOSE: Tests the 'nfsstat' command.  This test runs locally, so no
+-#           actual network connection is needed.
+-#
+-#  SETUP: The nfs server/client daemons must be active.
+-#
+-#
+-#  HISTORY:
+-#    07/30/01 Robbie Williamson (robbiew@us.ibm.com)
+-#      -Written
+-#
+-#**********************************************************************
+-
+-#Uncomment line below for debug output.
+-#trace_logic=${trace_logic:-"set -x"}
+-
+-$trace_logic
+ 
+-#-----------------------------------------------------------------------
+-# Initialize local variables
+-#-----------------------------------------------------------------------
++TCID=nfsstat01
++TST_TOTAL=4
++TST_CLEANUP="nfs_cleanup"
+ 
+-PID=$$
++. nfs_lib.sh
++. test_net.sh
+ 
+-TC=nfsstat01
+-TCbin=${TCbin:=`pwd`}
+-EXPORTDIR=${EXPORTDIR:=/tmp/$TC$PID}
+-HOST=`hostname`
+-CLEANUP=${CLEANUP:="ON"}
+-VERSION=${VERSION:=3}
+-TESTDIR=${TESTDIR:=/tmp/$TC$PID.testdir}
+-NFS_TYPE=${NFS_TYPE:=nfs}
+-export TCID=$TC
+-export TST_TOTAL=1
+-export TST_COUNT=1
+-
+-if [ "x$NFS_TYPE" != "xnfs4" ]; then
+-    OPTS=${OPTS:="-o vers=$VERSION "}
+-fi
+-
+-#---------------------------------------------------------------------#
+-# FUNCTION: do_setup
+-# PURPOSE:  To create the necessary files to carry out the test
+-# INPUT:    None.
+-# OUTPUT:   None.
+-#---------------------------------------------------------------------#
+-do_setup()
++setup()
+ {
+-$trace_logic
+-
+-   echo "do_setup $TC"
+-
+-   echo "This test runs LOCALLY."
+-
+-   IAM=${IAM:=`whoami`}
+-   [ $IAM = "root" ] || end_testcase "Must be root user"
+-
+-   #Check for mountd.
+-   rpcinfo -p | grep mountd
+-   [ $? -eq 0 ] || end_testcase "Mountd is NOT running"
+-
+-   #Check for nfsd.
+-   rpcinfo -p | grep nfs
+-   [ $? -eq 0 ] || end_testcase "NFS server daemon (nfsd) is NOT running"
+-
+-   #Create export directory
+-   mkdir -p $EXPORTDIR
+-   [ $? -eq 0 ] || end_testcase "Could not create $EXPORTDIR"
+-
+-   #Export the data directory on HOST
+-   if [ "x$NFS_TYPE" = "xnfs4" ]; then
+-        mkdir -p /export$EXPORTDIR
+-        [ $? = 0 ] || end_testcase "Could not create /export$EXPORTDIR locally"
+-        mount --bind $EXPORTDIR /export$EXPORTDIR
+-        [ $? = 0 ] || end_testcase "Could not bind $EXPORTDIR to /export"
+-        /usr/sbin/exportfs -o no_root_squash,rw,nohide,insecure,no_subtree_check $HOST:$EXPORTDIR > /dev/null
+-        [ $? = 0 ] || end_testcase "Could not export $EXPORTDIR on $HOST"
+-    else
+-       /usr/sbin/exportfs -i -o rw,no_root_squash $HOST:/$EXPORTDIR > /dev/null
+-       [ $? -eq 0 ] || end_testcase "Could not export $EXPORTDIR on $HOST"
+-   fi
+-
+-   #Verify export
+-   showmount -e $HOST | grep $EXPORTDIR > /dev/null
+-   [ $? -eq 0 ] || end_testcase "$EXPORTDIR not exported"
+-
+-   #Create mount point
+-   mkdir -p $TESTDIR
+-   [ $? -eq 0 ] || end_testcase "Could not create $TESTDIR"
+-
+-   #Mount from HOST.
+-   mount -t $NFS_TYPE $OPTS $HOST:$EXPORTDIR $TESTDIR
+-   [ $? -eq 0 ] || end_testcase "Could not mount from $HOST"
+-
++	tst_check_cmds nfsstat
++	nfs_setup
+ }
+ 
++get_calls()
++{
++	local name=$1
++	local field=$2
++	local nfs_f=$3
++	local calls=
++	local opt=
++	[ "$name" = "rpc" ] && opt="r" || opt="n"
 +
-+while getopts :ht:v:6 opt; do
-+	case "$opt" in
-+	h)
-+		echo "Usage:"
-+		echo "h        help"
-+		echo "t x      socket type, tcp or udp, default is udp"
-+		echo "v x      NFS version, default is '3'"
-+		echo "6        run over IPv6"
-+		exit 0
++	if [ "$nfs_f" = "nfs" ]; then
++		calls="$(grep $name /proc/net/rpc/$nfs_f | cut -d' ' -f$field)"
++		ROD nfsstat -c$opt | grep -q "$calls"
++		echo "$calls"
++		return
++	fi
++
++	calls=$(tst_rhost_run -c "grep $name /proc/net/rpc/$nfs_f" | \
++		cut -d' ' -f$field)
++	tst_rhost_run -s -c "nfsstat -s$opt" | grep -q "$calls"
++	echo "$calls"
++}
+ 
+-#---------------------------------------------------------------------#
+-# FUNCTION: do_test
+ # PURPOSE:  Performs simple copies and removes to verify statistic
+ #           tracking using the 'nfsstat' command and /proc/net/rpc
+-#---------------------------------------------------------------------#
+ do_test()
+ {
+-$trace_logic
+-  echo "do_test $TC"
+-
+-  echo "Checking RPC calls for server and client"
+-
+-  # Server
+-  SERVER_CALLS=`cat /proc/net/rpc/nfsd | grep rpc | awk '{print $2}'`
+-  nfsstat -sr | grep $SERVER_CALLS
+-  [ $? -eq 0 ] || end_testcase "Check of server RPC calls failed"
+-
+-  # Client
+-  CLIENT_CALLS=`cat /proc/net/rpc/nfs | grep rpc | awk '{print $2}'`
+-  nfsstat -cr | grep $CLIENT_CALLS
+-  [ $? -eq 0 ] || end_testcase "Check of client RPC calls failed"
+-
+-
+-  echo "Checking for tracking of RPC calls for server and client"
+-  cat /proc/cpuinfo > $TESTDIR/nfsstat01.tmp
+-  NEW_SERVER_CALLS=`cat /proc/net/rpc/nfsd | grep rpc | awk '{print $2}'`
+-  [ $NEW_SERVER_CALLS -gt $SERVER_CALLS ] || end_testcase "Server RPC calls not increased"
+-  NEW_CLIENT_CALLS=`cat /proc/net/rpc/nfs | grep rpc | awk '{print $2}'`
+-  [ $NEW_CLIENT_CALLS -gt $CLIENT_CALLS ] || end_testcase "Client RPC calls not increased"
+-
+-  nfsstat -sr | grep $NEW_SERVER_CALLS
+-  [ $? -eq 0 ] || end_testcase "nfsstat not reporting change in server RPC calls"
+-  nfsstat -cr | grep $NEW_CLIENT_CALLS
+-  [ $? -eq 0 ] || end_testcase "nfsstat not reporting change in client RPC calls"
+-
+-
+-  echo "Checking NFS calls for server and client"
+-
+-  # Server
+-  if [ "$VERSION" = "2" ]; then
+-   SERVER_CALLS=`cat /proc/net/rpc/nfsd | grep proc2 | awk '{print $13}'`
+-  else
+-   SERVER_CALLS=`cat /proc/net/rpc/nfsd | grep proc3 | awk '{print $15}'`
+-  fi
+-  nfsstat -sn | grep $SERVER_CALLS
+-  [ $? -eq 0 ] || end_testcase "Check of server NFS calls failed"
+-
+-  # Client
+-  if [ "$VERSION" = "2" ]; then
+-    CLIENT_CALLS=`cat /proc/net/rpc/nfs | grep proc2 | awk '{print $13}'`
+-  else
+-    CLIENT_CALLS=`cat /proc/net/rpc/nfs | grep proc3 | awk '{print $15}'`
+-  fi
+-  nfsstat -cn | grep $CLIENT_CALLS
+-  [ $? -eq 0 ] || end_testcase "Check of client NFS calls failed"
+-
+-
+-  echo "Checking for tracking of NFS calls for server and client"
+-
+-  rm -f $TESTDIR/nfsstat01.tmp
+-  if [ "$VERSION" = "2" ]; then
+-   NEW_SERVER_CALLS=`cat /proc/net/rpc/nfsd | grep proc2 | awk '{print $13}'`
+-  else
+-   NEW_SERVER_CALLS=`cat /proc/net/rpc/nfsd | grep proc3 | awk '{print $15}'`
+-  fi
+-  [ $NEW_SERVER_CALLS -gt $SERVER_CALLS ] || end_testcase "Server NFS calls not increased"
+-
+-  if [ "$VERSION" = "2" ]; then
+-    NEW_CLIENT_CALLS=`cat /proc/net/rpc/nfs | grep proc2 | awk '{print $13}'`
+-  else
+-    NEW_CLIENT_CALLS=`cat /proc/net/rpc/nfs | grep proc3 | awk '{print $15}'`
+-  fi
+-  [ $NEW_CLIENT_CALLS -gt $CLIENT_CALLS ] || end_testcase "Client NFS calls not increased"
+-
+-  nfsstat -sn | grep $NEW_SERVER_CALLS
+-  [ $? -eq 0 ] || end_testcase "nfsstat not reporting change in server NFS calls"
+-  nfsstat -cn | grep $NEW_CLIENT_CALLS
+-  [ $? -eq 0 ] || end_testcase "nfsstat not reporting change in client NFS calls"
+-
+-
+-}
+-
+-#---------------------------------------------------------------------#
+-# FUNCTION: do_cleanup
+-# PURPOSE:  To delete all the files created to run this test.
+-# INPUT:    None.
+-# OUTPUT:   None.
+-#---------------------------------------------------------------------#
+-do_cleanup()
+-{
+-$trace_logic
+-   echo "do_cleanup $TC "
+-
+-   echo "Unmounting TESTDIR"
+-   umount $TESTDIR
+-   sleep 3
+-   rm -rf $TESTDIR
+-   sleep 3
+-
+-   echo "Unmounting EXPORTDIR"
+-   /usr/sbin/exportfs -u $HOST:$EXPORTDIR
+-
+-   if [ "x$NFS_TYPE" = "xnfs4" ]; then
+-       umount $EXPORTDIR
+-       sleep 3
+-       rm -rf /export$EXPORTDIR
+-   fi
+-
+-   rm -rf $EXPORTDIR
+-
++	tst_resm TINFO "checking RPC calls for server/client"
++
++	local server_calls="$(get_calls rpc 2 nfsd)"
++	local client_calls="$(get_calls rpc 2 nfs)"
++
++	tst_resm TINFO "calls $server_calls/$client_calls"
++
++	tst_resm TINFO "Checking for tracking of RPC calls for server/client"
++	cat /proc/cpuinfo > nfsstat01.tmp
++
++	local new_server_calls="$(get_calls rpc 2 nfsd)"
++	local new_client_calls="$(get_calls rpc 2 nfs)"
++	tst_resm TINFO "new calls $new_server_calls/$new_client_calls"
++
++	if [ "$new_server_calls" -le "$server_calls" ]; then
++		tst_resm TFAIL "server RPC calls not increased"
++	else
++		tst_resm TPASS "server RPC calls increased"
++	fi
++
++	if [ "$new_client_calls" -le "$client_calls" ]; then
++		tst_resm TFAIL "client RPC calls not increased"
++	else
++		tst_resm TPASS "client RPC calls increased"
++	fi
++
++	tst_resm TINFO "checking NFS calls for server/client"
++	local field=
++	case $VERSION in
++	2) field=13
 +	;;
-+	v) VERSION=$OPTARG ;;
-+	t) SOCKET_TYPE=$OPTARG ;;
-+	6) # skip, test_net library already processed it
-+	;;
-+	*)
-+		tst_brkm TBROK "unknown option: $opt"
++	*) field=15
 +	;;
 +	esac
-+done
 +
- nfs_setup()
- {
--	VERSION=${VERSION:=3}
--	NFILES=${NFILES:=1000}
--	SOCKET_TYPE="${SOCKET_TYPE:=udp}${TST_IPV6}"
--	NFS_TYPE=${NFS_TYPE:=nfs}
-+	SOCKET_TYPE="${SOCKET_TYPE}${TST_IPV6}"
++	server_calls="$(get_calls proc$VERSION $field nfsd)"
++	client_calls="$(get_calls proc$VERSION $field nfs)"
++	tst_resm TINFO "calls $server_calls/$client_calls"
++
++	tst_resm TINFO "Checking for tracking of NFS calls for server/client"
++	rm -f nfsstat01.tmp
++
++	new_server_calls="$(get_calls proc$VERSION $field nfsd)"
++	new_client_calls="$(get_calls proc$VERSION $field nfs)"
++	tst_resm TINFO "new calls $new_server_calls/$new_client_calls"
++
++	if [ "$new_server_calls" -le "$server_calls" ]; then
++		tst_resm TFAIL "server NFS calls not increased"
++	else
++		tst_resm TPASS "server NFS calls increased"
++	fi
++
++	if [ "$new_client_calls" -le "$client_calls" ]; then
++		tst_resm TFAIL "client NFS calls not increased"
++	else
++		tst_resm TPASS "client NFS calls increased"
++	fi
+ }
  
- 	tst_check_cmds mount exportfs
+-#=============================================================================
+-# FUNCTION NAME:        end_testcase
+-#
+-# FUNCTION DESCRIPTION: Clean up
+-#
+-# PARAMETERS:           None.
+-#
+-# RETURNS:              None.
+-#=============================================================================
+-end_testcase()
+-{
+-$trace_logic
+-    if [ "$CLEANUP" = "ON" ]; then
+-       do_cleanup
+-    fi
++setup
  
+-    [ $# = 0 ] && { tst_resm TPASS "Test Successful"; exit 0; }
+-    tst_resm TFAIL "Test Failed: $@"
+-    exit 1
+-}
+-
+-#=============================================================================
+-#---------------------------------------------------------------------#
+-# FUNCTION: MAIN
+-# PURPOSE:  To invoke the functions to perform the tasks described in
+-#           the prologue.
+-# INPUT:    None.
+-# OUTPUT:   A testcase run log with the results of the execution of this
+-#           test.
+-#---------------------------------------------------------------------#
+-do_setup
+ do_test
+-end_testcase
++
++tst_exit
 -- 
 1.7.1
 
