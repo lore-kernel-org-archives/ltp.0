@@ -1,60 +1,47 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 21 Jun 2016 11:26:17 +0800
-Subject: [LTP] [PATCH] mem/lib: keep allocating memory until get an
- error in single process
-In-Reply-To: <214135224.352328.1466427831586.JavaMail.zimbra@redhat.com>
-References: <1466416385-20603-1-git-send-email-liwang@redhat.com>
- <1007336481.302642.1466419398150.JavaMail.zimbra@redhat.com>
- <20160620113454.GA21624@gmail.com>
- <214135224.352328.1466427831586.JavaMail.zimbra@redhat.com>
-Message-ID: <20160621031245.GA24636@gmail.com>
+Date: Tue, 21 Jun 2016 11:39:52 +0800
+Subject: [LTP] [PATCH] mem/lib: Keep KSM off when child_alloc() allocate
+	memory in single thread
+Message-ID: <1466480392-25837-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jun 20, 2016 at 09:03:51AM -0400, Jan Stancek wrote:
-> > 
-> > 2. The child_alloc() probably should also do memory allocation with an
-> > infinite loop
-> 
-> At the time 'lite' was introduced, everything was single threaded,
-> the only difference was that lite == 0 would keep allocating in
-> infinite loop.
-> 
-> Your patch is effectively eliminating lite == 1, which means that
-> oom03 will pass even if cgroup limits are broken.
+We occasionally catch errors like:
+oom03       0  TINFO  :  start OOM testing for KSM pages.
+oom03       0  TINFO  :  expected victim is 3490.
+oom03       6  TFAIL  :  mem.c:163: victim unexpectedly ended with retcode: 0, expected: 12
+oom03       0  TINFO  :  set overcommit_memory to 0
 
-You're right! My previous meothod didn't solve the essential problem.
+It cames from the caller testoom(0, 1, ENOMEM, 1). The issue was occurred
+because child_alloc() go into single(lite == 1) thread mode but successfully
+finish the memory allocation and return 0. A probably reason is that KSM
+scan merged same pages and disturbed the OOM test in cgroup.
 
-> 
-> > in single process mode. Because if someone has a caller testoom(0, 1, ENOMEM,
-> > 1) at other
-> > place in future, that'll be easily get fauilures.
-> 
-> Likely because author is expecting behaviour other than what
-> we have now:
-> 
->  * @lite: if non-zero, child makes only single TESTMEM+MB allocation
->  *        if zero, child keeps allocating memory until it gets killed
->  *        or some operation fails
+In this patch, keep KSM scan off to prevent OOM test in cgroup distrubing.
 
-Okay, now just keep it this way.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/mem/lib/mem.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-> 
-> > Or, can we solve them in one method?
-> 
-> We could skip oom(KSM) if lite == 1 in testoom(), since limit_in_bytes
-> may vary from run to run, which isn't reliable for oom03 cgroup test.
-> 
-> Or we could change alloc_mem for lite == 1 && testcase == KSM,
-> such that each page would have unique content (to prevent merging).
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 3d853a3..b43b7f8 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -230,7 +230,9 @@ void testoom(int mempolicy, int lite, int retcode, int allow_sigkill)
+ 	} else {
+ 		tst_resm(TINFO, "start OOM testing for KSM pages.");
+ 		SAFE_FILE_SCANF(cleanup, PATH_KSM "run", "%d", &ksm_run_orig);
+-		SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
++		/* Let KSM off if lite == 1, since limit_in_bytes may vary from
++		 * run to run, which isn't reliable for oom03 cgroup test.*/
++		if (!lite) SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
+ 		oom(KSM, lite, retcode, allow_sigkill);
+ 		SAFE_FILE_PRINTF(cleanup,PATH_KSM "run", "%d", ksm_run_orig);
+ 	}
+-- 
+1.8.3.1
 
-Yes, and we clould also keep the KSM scan off while lite == 1.
-	if (lite != 1) SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
-
-Let me format a new patch for this.
-
-Regards,
-Li WANG
