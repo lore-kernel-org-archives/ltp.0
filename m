@@ -1,70 +1,65 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 21 Jun 2016 03:00:29 -0400 (EDT)
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 21 Jun 2016 15:56:13 +0800
 Subject: [LTP] [PATCH] mem/lib: Keep KSM off when child_alloc() allocate
  memory in single thread
-In-Reply-To: <1466480392-25837-1-git-send-email-liwang@redhat.com>
+In-Reply-To: <1793371138.555301.1466492429338.JavaMail.zimbra@redhat.com>
 References: <1466480392-25837-1-git-send-email-liwang@redhat.com>
-Message-ID: <1793371138.555301.1466492429338.JavaMail.zimbra@redhat.com>
+ <1793371138.555301.1466492429338.JavaMail.zimbra@redhat.com>
+Message-ID: <20160621075613.GB24636@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On Tue, Jun 21, 2016 at 03:00:29AM -0400, Jan Stancek wrote:
+> 
+> The single thread is not important here, it's how much that allocation
+> contributes to limit_in_bytes. oom01 on 2 CPU system will do all
+> allocations in single thread and KSM won't be turned off.
 
+Ah, I forgot that situation. yes, it's not about the single thread,
+it depends on the parameter 'lite' equal 1 or 0. I'd like to rewrite
+these description.
 
------ Original Message -----
-> From: "Li Wang" <liwang@redhat.com>
-> To: jstancek@redhat.com
-> Cc: ltp@lists.linux.it
-> Sent: Tuesday, 21 June, 2016 5:39:52 AM
-> Subject: [PATCH] mem/lib: Keep KSM off when child_alloc() allocate memory in single thread
+> >  		SAFE_FILE_SCANF(cleanup, PATH_KSM "run", "%d", &ksm_run_orig);
+> > -		SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
+> > +		/* Let KSM off if lite == 1, since limit_in_bytes may vary from
+> > +		 * run to run, which isn't reliable for oom03 cgroup test.*/
+> > +		if (!lite) SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
+> >  		oom(KSM, lite, retcode, allow_sigkill);
+> >  		SAFE_FILE_PRINTF(cleanup,PATH_KSM "run", "%d", ksm_run_orig);
+> >  	}
+> 
+> What if KSM was enabled before test started?
 
-The single thread is not important here, it's how much that allocation
-contributes to limit_in_bytes. oom01 on 2 CPU system will do all
-allocations in single thread and KSM won't be turned off.
+From what I know about KSM, if a memory area affected by function
+madvise(..., MADV_MERGEABLE), the samepages located in that merory will be
+easily merged by ksmd as long as we turn it on (echo 1 >/sys/kernel/mm/ksm/run).
+
+And the ".../ksm/run" default value is 0, it means if we just affect
+the memory area by madvise() function but with ksmd off, there won't
+have any samepages be merged.
+
+So, I add a conditional jugement as 'if (!lite)' before starting the ksmd.
+There will be only enable the ksmd while lite == 0, the memory allocated
+function go into infinite loop with so many parallel threads. And ksmd
+doing samepages merge work but cann't stop OOM occur at the moment.
+
+Am I right in thinking above?
 
 > 
-> We occasionally catch errors like:
-> oom03       0  TINFO  :  start OOM testing for KSM pages.
-> oom03       0  TINFO  :  expected victim is 3490.
-> oom03       6  TFAIL  :  mem.c:163: victim unexpectedly ended with retcode:
-> 0, expected: 12
-> oom03       0  TINFO  :  set overcommit_memory to 0
-> 
-> It cames from the caller testoom(0, 1, ENOMEM, 1). The issue was occurred
-> because child_alloc() go into single(lite == 1) thread mode but successfully
-> finish the memory allocation and return 0. A probably reason is that KSM
-> scan merged same pages and disturbed the OOM test in cgroup.
-> 
-> In this patch, keep KSM scan off to prevent OOM test in cgroup distrubing.
-> 
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->  testcases/kernel/mem/lib/mem.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
-> index 3d853a3..b43b7f8 100644
-> --- a/testcases/kernel/mem/lib/mem.c
-> +++ b/testcases/kernel/mem/lib/mem.c
-> @@ -230,7 +230,9 @@ void testoom(int mempolicy, int lite, int retcode, int
-> allow_sigkill)
->  	} else {
->  		tst_resm(TINFO, "start OOM testing for KSM pages.");
->  		SAFE_FILE_SCANF(cleanup, PATH_KSM "run", "%d", &ksm_run_orig);
-> -		SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
-> +		/* Let KSM off if lite == 1, since limit_in_bytes may vary from
-> +		 * run to run, which isn't reliable for oom03 cgroup test.*/
-> +		if (!lite) SAFE_FILE_PRINTF(cleanup, PATH_KSM "run", "1");
->  		oom(KSM, lite, retcode, allow_sigkill);
->  		SAFE_FILE_PRINTF(cleanup,PATH_KSM "run", "%d", ksm_run_orig);
->  	}
+> I'd skip this entire else block if lite == 1. With KSM off, it's nearly
+> identical to oom(NORMAL).
 
-What if KSM was enabled before test started?
+Hmm, actually there still have a little bit difference from oom(NORMALNORMAL).
 
-I'd skip this entire else block if lite == 1. With KSM off, it's nearly
-identical to oom(NORMAL).
+In alloc_mem() function, if testcase == KSM, the memory area will do
+madvise operation like:
+	madvise(s, length, MADV_MERGEABLE)
+
+That's the reason why I did not skip KSM but just keep it off.
+
 
 Regards,
-Jan
+Li WANG
