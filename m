@@ -1,72 +1,51 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Tue, 21 Jun 2016 13:51:07 +0300
-Subject: [LTP] [PATCH v1 1/1] test_robind: add "-f" mkfs option for xfs
- and btrfs
-In-Reply-To: <20160617042825.GJ5140@eguan.usersys.redhat.com>
-References: <20160524074936.11253-1-bxue@redhat.com>
- <882847003.325886.1464098472012.JavaMail.zimbra@redhat.com>
- <20160524152621.GB12920@rei.suse.cz>
- <977252429.1084123.1464157861719.JavaMail.zimbra@redhat.com>
- <57454EC5.7050700@oracle.com>
- <20160617042825.GJ5140@eguan.usersys.redhat.com>
-Message-ID: <57691C1B.7040309@oracle.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 21 Jun 2016 18:54:43 +0800
+Subject: [LTP] [PATCH] mem/lib: Skip oom(KSM) if child_alloc() makes single
+	TESTMEM+MB allocation
+Message-ID: <1466506483-30209-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi
+We occasionally catch errors like:
+oom03       0  TINFO  :  start OOM testing for KSM pages.
+oom03       0  TINFO  :  expected victim is 3490.
+oom03       6  TFAIL  :  mem.c:163: victim unexpectedly ended with retcode: 0, expected: 12
+oom03       0  TINFO  :  set overcommit_memory to 0
 
-On 06/17/2016 07:28 AM, Eryu Guan wrote:
-> Hi,
->
-> On Wed, May 25, 2016 at 10:05:41AM +0300, Stanislav Kholmanskikh wrote:
->>
->>
->> On 05/25/2016 09:31 AM, Jan Stancek wrote:
->>>
->>>
->>>
->>>
->>> ----- Original Message -----
->>>> From: "Cyril Hrubis" <chrubis@suse.cz>
->>>> To: "Jan Stancek" <jstancek@redhat.com>
->>>> Cc: "Boyang Xue" <bxue@redhat.com>, "stanislav kholmanskikh" <stanislav.kholmanskikh@oracle.com>, ltp@lists.linux.it
->>>> Sent: Tuesday, 24 May, 2016 5:26:22 PM
->>>> Subject: Re: [LTP] [PATCH v1 1/1] test_robind: add "-f" mkfs option for xfs and	btrfs
->>>>
->>>> Hi!
->>>>> Alternative would be to zero-erase first blocks of LTP_BIG_DEV
->>>>> in runltp, but I'm not sure we want to assume that all tests
->>>>> are going to write over it.
->>>>>
->>>>> I found only 3 tests using LTP_BIG_DEV, this is the only
->>>>> one that is using xfs/btrfs, the other two are ext3/4.
->>>>
->>>> Or we can move the dd that erases first blocks from tst_acquire_device()
->>>> to tst_mkfs().
->>>
->>> I went to re-read why we are avoiding -f, and this does sound better
->>> than adding -f back.
->>
->> If we move 'dd' to tst_mkfs(), then tst_acquire_device will return
->> "uncleared" devices, and mkfs_ext* test cases from runtest/commands will
->> start failing in our environment, i.e. we revert f79021c5d168256.
->>
->> I'd ack the patch, since it affects only one test case.
->
-> Any decision made on this patch?
->
-> I agreed with acking this patch, it's a targeted fix and only only
-> affects robind tests and is the easiest way to fix the failure at this
-> moment :)
+It cames from the caller testoom(0, 1, ENOMEM, 1). The issue was occurred
+since child_alloc() go into single(lite == 1) thread mode but successfully
+finish the memory(TESTMEM+MB) allocation and return 0. That's not what we
+expected because oom03 has already set 'limit_in_byte = TESTMEM' in cgroup.
+A probably reason is that KSM scan merged samepages and disturbed the OOM
+test.
 
-Sorry for my late response.
+By this patch, Let's skip the oom(KSM) test in cgroup.
 
-I pushed the patch.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/mem/lib/mem.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
->
-> Thanks,
-> Eryu
->
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 3d853a3..10eb0f7 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -224,8 +224,10 @@ void testoom(int mempolicy, int lite, int retcode, int allow_sigkill)
+ 	tst_resm(TINFO, "start OOM testing for mlocked pages.");
+ 	oom(MLOCK, lite, retcode, allow_sigkill);
+ 
+-	if (access(PATH_KSM, F_OK) == -1) {
+-		tst_resm(TINFO, "KSM configuration is not enabled, "
++	/* Skip oom(KSM) if lite == 1, since limit_in_bytes may vary from
++	 * run to run, which isn't reliable for oom03 cgroup test.*/
++	if (access(PATH_KSM, F_OK) == -1 || lite == 1) {
++		tst_resm(TINFO, "KSM is not configed or lite == 1, "
+ 			 "skip OOM test for KSM pags");
+ 	} else {
+ 		tst_resm(TINFO, "start OOM testing for KSM pages.");
+-- 
+1.8.3.1
+
