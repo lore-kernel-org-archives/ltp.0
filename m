@@ -1,52 +1,79 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Thu, 23 Jun 2016 10:27:06 +0200 (CEST)
-Subject: [LTP] [patch V2 00/20] timer: Refactor the timer wheel
-In-Reply-To: <20160622102858.GA13962@rei.lan>
-References: <20160617121134.417319325@linutronix.de>
- <1466581044.3188.34.camel@gmail.com>
- <alpine.DEB.2.11.1606221037310.5839@nanos> <20160622102858.GA13962@rei.lan>
-Message-ID: <alpine.DEB.2.11.1606231024220.5839@nanos>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Thu, 23 Jun 2016 16:56:47 +0800
+Subject: [LTP] [PATCH] syscalls/epoll_ctl*: Fix cleanup()
+Message-ID: <1466672207-24238-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 22 Jun 2016, Cyril Hrubis wrote:
-> Hi!
-> > > rtbox:~ # /usr/local/ltp/conformance/interfaces/sigtimedwait/sigtimedwait_1-1.run-test
-> > > Test FAILED: sigtimedwait() did not return in the required time
-> > > time_elapsed: 1.197057
-> > > ...come on, you can do it...
-> > > rtbox:~ # /usr/local/ltp/conformance/interfaces/sigtimedwait/sigtimedwait_1-1.run-test
-> > > Test PASSED
-> > > 
-> > > #define ERRORMARGIN 0.1
-> > > ...
-> > >         if ((time_elapsed > SIGTIMEDWAITSEC + ERRORMARGIN)
-> > >             || (time_elapsed < SIGTIMEDWAITSEC - ERRORMARGIN)) {
-> > >                 printf("Test FAILED: sigtimedwait() did not return in "
-> > >                         "the required time\n");
-> > >                 printf("time_elapsed: %lf\n", time_elapsed);
-> > >                 return PTS_FAIL;
-> > >         }
-> > > 
-> > > Looks hohum to me, but gripe did arrive with patch set, so you get a note.
-> > 
-> > hohum is a euphemism. That's completely bogus.
-> > 
-> > The only guarantee a syscall with timers has is: timer does not fire early.
-> 
-> While this is true, checking with reasonable error margin works just
-> fine 99% of the time. You cannot really test that timer expires, without
-> setting arbitrary margin.
+Although process will be killed when timeout, but using
+SAFE_CLOSE in cleanup may lead to infinite loop.
 
-Err. You know that the timer expired because sigtimedwait() returns
-EAGAIN. And the only thing you can reliably check for is that the timer did
-not expired to early. Anything else is guesswork and voodoo programming.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c | 15 ++++++++++-----
+ testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c | 11 ++++++++---
+ 2 files changed, 18 insertions(+), 8 deletions(-)
 
-Thanks,
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+index c6233e5..2ecadf7 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl01.c
+@@ -59,9 +59,14 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	SAFE_CLOSE(epfd);
+-	SAFE_CLOSE(fd[0]);
+-	SAFE_CLOSE(fd[1]);
++	if (epfd > 0 && close(epfd))
++		tst_res(TWARN | TERRNO, "failed to close epoll instance");
++
++	if (fd[0] > 0 && close(fd[0]))
++		tst_res(TWARN | TERRNO, "failed to close pipe");
++
++	if (fd[1] > 0 && close(fd[1]))
++		tst_res(TWARN | TERRNO, "failed to close pipe");
+ }
+ 
+ static int has_event(struct epoll_event *epvs, int len,
+@@ -85,8 +90,8 @@ static void check_epoll_ctl(int opt, int exp_num)
+ 	char read_buf[sizeof(write_buf)];
+ 
+ 	struct epoll_event res_evs[2] = {
+-	{.events = 0, .data.fd = 0},
+-	{.events = 0, .data.fd = 0}
++		{.events = 0, .data.fd = 0},
++		{.events = 0, .data.fd = 0}
+ 	};
+ 
+ 	SAFE_WRITE(1, fd[1], write_buf, sizeof(write_buf));
+diff --git a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+index 3f11a3f..ae2465c 100644
+--- a/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
++++ b/testcases/kernel/syscalls/epoll_ctl/epoll_ctl02.c
+@@ -87,9 +87,14 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	SAFE_CLOSE(epfd);
+-	SAFE_CLOSE(fd[0]);
+-	SAFE_CLOSE(fd[1]);
++	if (epfd > 0 && close(epfd))
++		tst_res(TWARN | TERRNO, "failed to close epoll instance");
++
++	if (fd[0] > 0 && close(fd[0]))
++		tst_res(TWARN | TERRNO, "failed to close pipe");
++
++	if (fd[1] > 0 && close(fd[1]))
++		tst_res(TWARN | TERRNO, "failed to close pipe");
+ }
+ 
+ static void verify_epoll_ctl(unsigned int n)
+-- 
+1.8.3.1
 
-	tglx
 
 
