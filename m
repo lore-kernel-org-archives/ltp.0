@@ -1,72 +1,40 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 23 Jun 2016 14:56:55 +0300
-Subject: [LTP] [PATCH 2/2] nfs05: rewrite the test,
- make use of new library
-In-Reply-To: <20160622123017.GC13962@rei.lan>
+Date: Thu, 23 Jun 2016 14:58:45 +0300
+Subject: [LTP] [PATCH 1/2] lib: add safe_gethostname()
+In-Reply-To: <20160622120535.GB13962@rei.lan>
 References: <1466076425-12790-1-git-send-email-alexey.kodanev@oracle.com>
- <1466076425-12790-2-git-send-email-alexey.kodanev@oracle.com>
- <20160622123017.GC13962@rei.lan>
-Message-ID: <576BCE87.5070403@oracle.com>
+ <20160622120535.GB13962@rei.lan>
+Message-ID: <576BCEF5.3090509@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 06/22/2016 03:30 PM, Cyril Hrubis wrote:
+On 06/22/2016 03:05 PM, Cyril Hrubis wrote:
 > Hi!
->> --- a/testcases/network/nfs/nfs_stress/Makefile
->> +++ b/testcases/network/nfs/nfs_stress/Makefile
->> @@ -19,7 +19,7 @@ top_srcdir		?= ../../../..
->>   include $(top_srcdir)/include/mk/env_pre.mk
+>> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+>> ---
+>>   include/safe_net_fn.h  |    3 +++
+>>   include/tst_safe_net.h |    3 +++
+>>   lib/safe_net.c         |   14 ++++++++++++++
+>>   3 files changed, 20 insertions(+), 0 deletions(-)
+>>
+>> diff --git a/include/safe_net_fn.h b/include/safe_net_fn.h
+>> index e85842b..14609b8 100644
+>> --- a/include/safe_net_fn.h
+>> +++ b/include/safe_net_fn.h
+>> @@ -45,4 +45,7 @@ int safe_getsockname(const char *file, const int lineno,
+>>   		     void (cleanup_fn)(void), int sockfd, struct sockaddr *addr,
+>>   		     socklen_t *addrlen);
 >>   
->>   nfs04_create_file: CPPFLAGS += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
->> -nfs05_make_tree: LDLIBS += -lpthread
->> +nfs05_make_tree: LDLIBS += -I../../../kernel/include -lltp -lpthread
-> Hmm, shouldn't we rather include testcase.mk to get the -lltp and
-> the include path?
->
-> And even if we don't the -I directive should go to CPPFLAGS instead.
-Agree.
+>> +int safe_gethostname(const char *file, const int lineno,
+>> +		     void (cleanup_fn)(void), char *name, size_t size);
+>> +
+> What about not including the cleanup_fn parameter, since the function is
+> exported only to new library?
 
->>   INSTALL_TARGETS		:= nfs_lib.sh \
->>   			   nfs01 \
->> diff --git a/testcases/network/nfs/nfs_stress/nfs05 b/testcases/network/nfs/nfs_stress/nfs05
->> index 0e15c8c..26977ab 100755
->> --- a/testcases/network/nfs/nfs_stress/nfs05
->> +++ b/testcases/network/nfs/nfs_stress/nfs05
->> @@ -34,8 +34,12 @@ THREAD_NUM=${THREAD_NUM:-"8"}
->>   nfs_setup
-> Shouldn't we check that make and gcc is installed at this point?
-
-I'll add a check to make sure they are available.
-
->
->> ...
->> -			}
->> +static void *thread_fn(LTP_ATTRIBUTE_UNUSED void *args)
->> +{
->> +	const char prog_buf[] = "main()\n{\n\t printf(\"hello world\");\n}\n";
->> +	const size_t prog_buf_size = strlen(prog_buf);
->                                       ^
-> 				     sizeof(prog_buf) - 1
-
-Right, we can calculate the size at compile-time.
-
->> +	
->>   
->> -			dprt("pid[%d]: init_compile(): status = %d\n",
->> -			     gettid(), status);
->> -			dprt("we are here %d\n", __LINE__);
->> -			return status;
->> +			SAFE_WRITE(1, fd, prog_buf, prog_buf_size);
->> +			fsync(fd);
-> Why do we fsync(fd) here? Isn't the whole point of this test to find a
-> race conditions?
-
-And given the fact that we have close(fd) thereafter, should make it 
-useless...
+Yes, in newlib it's not used, I'll remove it.
 
 Thanks,
 Alexey
