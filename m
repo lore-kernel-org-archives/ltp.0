@@ -1,40 +1,36 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 23 Jun 2016 14:58:45 +0300
-Subject: [LTP] [PATCH 1/2] lib: add safe_gethostname()
-In-Reply-To: <20160622120535.GB13962@rei.lan>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 23 Jun 2016 13:54:39 +0200
+Subject: [LTP] [PATCH 2/2] nfs05: rewrite the test,
+ make use of new library
+In-Reply-To: <576BCE87.5070403@oracle.com>
 References: <1466076425-12790-1-git-send-email-alexey.kodanev@oracle.com>
- <20160622120535.GB13962@rei.lan>
-Message-ID: <576BCEF5.3090509@oracle.com>
+ <1466076425-12790-2-git-send-email-alexey.kodanev@oracle.com>
+ <20160622123017.GC13962@rei.lan> <576BCE87.5070403@oracle.com>
+Message-ID: <20160623115438.GB19250@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 06/22/2016 03:05 PM, Cyril Hrubis wrote:
-> Hi!
->> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
->> ---
->>   include/safe_net_fn.h  |    3 +++
->>   include/tst_safe_net.h |    3 +++
->>   lib/safe_net.c         |   14 ++++++++++++++
->>   3 files changed, 20 insertions(+), 0 deletions(-)
->>
->> diff --git a/include/safe_net_fn.h b/include/safe_net_fn.h
->> index e85842b..14609b8 100644
->> --- a/include/safe_net_fn.h
->> +++ b/include/safe_net_fn.h
->> @@ -45,4 +45,7 @@ int safe_getsockname(const char *file, const int lineno,
->>   		     void (cleanup_fn)(void), int sockfd, struct sockaddr *addr,
->>   		     socklen_t *addrlen);
->>   
->> +int safe_gethostname(const char *file, const int lineno,
->> +		     void (cleanup_fn)(void), char *name, size_t size);
->> +
-> What about not including the cleanup_fn parameter, since the function is
-> exported only to new library?
+Hi!
+> >>   
+> >> -			dprt("pid[%d]: init_compile(): status = %d\n",
+> >> -			     gettid(), status);
+> >> -			dprt("we are here %d\n", __LINE__);
+> >> -			return status;
+> >> +			SAFE_WRITE(1, fd, prog_buf, prog_buf_size);
+> >> +			fsync(fd);
+> > Why do we fsync(fd) here? Isn't the whole point of this test to find a
+> > race conditions?
+> 
+> And given the fact that we have close(fd) thereafter, should make it 
+> useless...
 
-Yes, in newlib it's not used, I'll remove it.
+fsync() should cause the page caches to be written to the disk, close()
+just frees the associated file descriptor and page caches are written on
+background.
 
-Thanks,
-Alexey
+-- 
+Cyril Hrubis
+chrubis@suse.cz
