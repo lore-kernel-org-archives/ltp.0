@@ -1,39 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 23 Jun 2016 13:47:59 +0200
-Subject: [LTP] [patch V2 00/20] timer: Refactor the timer wheel
-In-Reply-To: <alpine.DEB.2.11.1606231024220.5839@nanos>
-References: <20160617121134.417319325@linutronix.de>
- <1466581044.3188.34.camel@gmail.com>
- <alpine.DEB.2.11.1606221037310.5839@nanos>
- <20160622102858.GA13962@rei.lan>
- <alpine.DEB.2.11.1606231024220.5839@nanos>
-Message-ID: <20160623114759.GA19250@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 23 Jun 2016 15:38:11 +0300
+Subject: [LTP] [PATCH 2/2] nfs05: rewrite the test,
+ make use of new library
+In-Reply-To: <20160623115438.GB19250@rei.lan>
+References: <1466076425-12790-1-git-send-email-alexey.kodanev@oracle.com>
+ <1466076425-12790-2-git-send-email-alexey.kodanev@oracle.com>
+ <20160622123017.GC13962@rei.lan> <576BCE87.5070403@oracle.com>
+ <20160623115438.GB19250@rei.lan>
+Message-ID: <576BD833.7020502@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > While this is true, checking with reasonable error margin works just
-> > fine 99% of the time. You cannot really test that timer expires, without
-> > setting arbitrary margin.
-> 
-> Err. You know that the timer expired because sigtimedwait() returns
-> EAGAIN. And the only thing you can reliably check for is that the timer did
-> not expired to early. Anything else is guesswork and voodoo programming.
+On 06/23/2016 02:54 PM, Cyril Hrubis wrote:
+> Hi!
+>>>>    
+>>>> -			dprt("pid[%d]: init_compile(): status = %d\n",
+>>>> -			     gettid(), status);
+>>>> -			dprt("we are here %d\n", __LINE__);
+>>>> -			return status;
+>>>> +			SAFE_WRITE(1, fd, prog_buf, prog_buf_size);
+>>>> +			fsync(fd);
+>>> Why do we fsync(fd) here? Isn't the whole point of this test to find a
+>>> race conditions?
+>> And given the fact that we have close(fd) thereafter, should make it
+>> useless...
+> fsync() should cause the page caches to be written to the disk, close()
+> just frees the associated file descriptor and page caches are written on
+> background.
+In case of NFS?
 
-There is quite a lot of things that can happen on mutitasking OS and
-there are even NMIs in hardware, etc. But seriously is there a reason
-why OS that is not under heavy load cannot expire timers with reasonable
-overruns? I.e. if I ask for a second of sleep and expect it to be woken
-up not much more than half of a second later?
-
-If we stick only to guarantees that are defined in POSIX playing music
-with mplayer would not be possible since it sleeps in futex() and if it
-wakes too late it will fail to fill buffers. In practice this worked
-fine for me for years.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
