@@ -1,40 +1,88 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 23 Jun 2016 18:31:42 +0200
-Subject: [LTP] [patch V2 00/20] timer: Refactor the timer wheel
-In-Reply-To: <alpine.DEB.2.11.1606231720080.5839@nanos>
-References: <20160623114759.GA19250@rei.lan>
- <20160623135803.636.qmail@ns.sciencehorizons.net>
- <20160623151127.GA20808@rei.lan>
- <alpine.DEB.2.11.1606231720080.5839@nanos>
-Message-ID: <20160623163142.GB20808@rei.lan>
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Fri, 24 Jun 2016 09:35:34 +0800
+Subject: [LTP]  [PATCH v2] syscalls/waitpid12: break test if fork() failed
+In-Reply-To: <20160623024144.GA29032@localhost.localdomain>
+References: <20160623024144.GA29032@localhost.localdomain>
+Message-ID: <20160624013534.GA3363@localhost.localdomain>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > That is likely POSIX conformance bug, since POSIX explicitly states that
-> > sigtimedwait() shall use CLOCK_MONOTONIC to measure the timeout.
-> > 
-> > "If the Monotonic Clock option is supported, the CLOCK_MONOTONIC clock
-> > shall be used to measure the time interval specified by the timeout
-> > argument."
-> 
-> That's fine because jiffies is a less granular form of CLOCK_MONOTONIC.
+Please take a look at this new version of the patch. Thanks in advance.
 
-Looking into POSIX Realtime Clock and Timers it seems to allow that time
-service based on CLOCK_* clocks to have different resolution if it's
-less or equal than 20ms and if this fact is documented. If we wanted to
-be pedantic about this the man page shoud be patched...
+From 19db3543e66256b1d41bc5f58cdeb8c5d3428f01 Mon Sep 17 00:00:00 2001
+From: Han Pingtian <hanpt@linux.vnet.ibm.com>
+Date: Thu, 23 Jun 2016 10:11:37 +0800
+Subject: [PATCH] syscalls/waitpid12: break test if fork() failed
 
-Also this gives us reasonably safe upper bound on timer expiration to be
-something as:
+Or this test case will kill a lot of processes on the system (when -1 ends up
+passed as a pid to kill()).
 
-sleep_time * 1.125 + 20ms
+Signed-off-by: Han Pingtian <hanpt@linux.vnet.ibm.com>
+---
+ testcases/kernel/syscalls/waitpid/waitpid12.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-Does this sounds reasonable now?
-
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid12.c b/testcases/kernel/syscalls/waitpid/waitpid12.c
+index bf64662..ba23a39 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid12.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid12.c
+@@ -54,6 +54,7 @@ char *TCID = "waitpid12";
+ int TST_TOTAL = 1;
+ 
+ volatile int intintr;
++static int fork_kid_pid[MAXKIDS];
+ static void setup(void);
+ static void cleanup(void);
+ static void inthandlr();
+@@ -71,7 +72,7 @@ int main(int argc, char **argv)
+ 	int kid_count, ret_val, status;
+ 	int i, j, k, found;
+ 	int group1, group2;
+-	int fork_kid_pid[MAXKIDS], wait_kid_pid[MAXKIDS];
++	int wait_kid_pid[MAXKIDS];
+ 	int pid;
+ 
+ 	tst_parse_opts(argc, argv, NULL, NULL);
+@@ -132,7 +133,7 @@ int main(int argc, char **argv)
+ 		}
+ 
+ 		if (ret_val < 0)
+-			tst_resm(TFAIL | TERRNO, "forking kid %d failed",
++			tst_brkm(TFAIL | TERRNO, cleanup, "forking kid %d failed",
+ 				 kid_count);
+ 
+ 		/* parent */
+@@ -269,6 +270,9 @@ int main(int argc, char **argv)
+ 			fail = 1;
+ 		}
+ 	}
++
++	memset(fork_kid_pid, 0, sizeof(fork_kid_pid));
++
+ 	if (kid_count != (MAXKIDS / 2)) {
+ 		tst_resm(TFAIL, "Wrong number of children waited on "
+ 			 "for pid = 0");
+@@ -299,6 +303,14 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
++	int i;
++
++	for (i = 0; i < MAXKIDS; i++) {
++		if (fork_kid_pid[i] > 0) {
++			kill(fork_kid_pid[i], SIGKILL);
++			fork_kid_pid[i] = 0;
++		}
++	}
+ }
+ 
+ static void inthandlr(void)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.5.5
+
+
+
+
