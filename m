@@ -1,10 +1,10 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 29 Jun 2016 16:47:11 +0300
-Subject: [LTP] [PATCH] network/busy_poll: make test results more stable
-In-Reply-To: <35755633.671473.1467198066896.JavaMail.zimbra@redhat.com>
-References: <1467045057-19618-1-git-send-email-alexey.kodanev@oracle.com>
- <35755633.671473.1467198066896.JavaMail.zimbra@redhat.com>
-Message-ID: <5773D15F.9060606@oracle.com>
+Date: Wed, 29 Jun 2016 16:49:27 +0300
+Subject: [LTP] [PATCH v2] network/ip_route.sh: fix test,
+ use dummy/lo interfaces in test-cases
+In-Reply-To: <1466098320-14604-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1466098320-14604-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <5773D1E7.1060502@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,22 +12,20 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi,
-On 06/29/2016 02:01 PM, Jan Stancek wrote:
-> ...
-> With patch:
-> busy_poll01 1 TINFO : set low latency busy poll to 50
-> busy_poll01 1 TINFO : run tcp_fastopen with 'localhost', port '30109'
-> busy_poll01 1 TINFO : time spent is '3874' ms
-> busy_poll01 1 TINFO : set low latency busy poll to 0
-> busy_poll01 1 TINFO : run tcp_fastopen with 'localhost', port '10440'
-> busy_poll01 1 TINFO : time spent is '12561' ms
-> busy_poll01 1 TPASS : busy poll increased performance by '70' %
->
-> real    0m19.006s
-> user    0m0.749s
-> sys     0m16.408s
+On 06/16/2016 08:32 PM, Alexey Kodanev wrote:
+> Fixes:
+> * 'ip neigh replace' will require lladdr, if the same entry exists, fix it;
+> * don't add/del neighbour with 127.0.0.1, as it might affect other tests
+>    (this address won't be reachable);
+> * don't set mtu to 300, IPv6 requires 1280 bytes as a minimum, so setting
+>    less can cause removing of already added IPv6 addresses. Though it's not
+>    so important right now as the patch use dummy interface for mtu setting;
+> * use ROD library functions;
+> * replace 'ifconfig' command with 'ip';
+> * adding new route from not used address range.
 
-Thank you for verifying it,  patch applied.
+Applied patch.
 
-Best regards,
+Thanks,
 Alexey
+
