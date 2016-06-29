@@ -1,215 +1,87 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 29 Jun 2016 10:53:41 +0800
-Subject: [LTP] [PATCH] syscalls/access03: reconstruct and convert to new API
-Message-ID: <1467168821-14045-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 29 Jun 2016 10:49:11 +0200
+Subject: [LTP] [PATCH] fanotify06: create a mount for test
+Message-ID: <7ef37bcfb79c3fa81182e6530e5a0f3a35aacdad.1467190006.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* take use of some SAFE Marcos
-* add test as root and nobody respectively
+This testcase can rarely fail, when there is a background process
+modifying files on same mountpoint as is LTP's tmpdir:
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+fanotify06    1  TFAIL  :  fanotify06.c:212: group 0 got more than one event (48 > 24)
+fanotify06    2  TFAIL  :  fanotify06.c:212: group 1 got more than one event (48 > 24)
+fanotify06    3  TFAIL  :  fanotify06.c:212: group 2 got more than one event (48 > 24)
+fanotify06    4  TFAIL  :  fanotify06.c:222: group 3 got event
+fanotify06    5  TFAIL  :  fanotify06.c:222: group 4 got event
+fanotify06    6  TPASS  :  group 5 got no event
+fanotify06    7  TPASS  :  group 6 got no event
+fanotify06    8  TPASS  :  group 7 got no event
+fanotify06    9  TPASS  :  group 8 got no event
+
+This patch creates a mount, which should be only used by this
+test to limit interference from rest of OS. It also adds missing
+tst_require_root().
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- include/tst_test.h                          |   3 +
- testcases/kernel/syscalls/access/access03.c | 142 ++++++++++++++--------------
- 2 files changed, 74 insertions(+), 71 deletions(-)
+ testcases/kernel/syscalls/fanotify/fanotify06.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 7d0cff8..265e84a 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -33,6 +33,9 @@
- #include "tst_atomic.h"
- #include "tst_kvercmp.h"
- 
-+/* lib/get_high_address.c */
-+char *get_high_address(void);
-+
- /*
-  * Reports testcase result.
-  */
-diff --git a/testcases/kernel/syscalls/access/access03.c b/testcases/kernel/syscalls/access/access03.c
-index 6f5fa70..ff93fe2 100644
---- a/testcases/kernel/syscalls/access/access03.c
-+++ b/testcases/kernel/syscalls/access/access03.c
-@@ -23,101 +23,101 @@
-  */
- 
- /*
-- * access(2) test for errno(s) EFAULT.
-+ * access(2) test for errno(s) EFAULT as root and nobody respectively.
-  */
- 
+diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanotify/fanotify06.c
+index 93c960268b57..cdbc7a16c0d7 100644
+--- a/testcases/kernel/syscalls/fanotify/fanotify06.c
++++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
+@@ -42,6 +42,7 @@
+ #include <sys/fcntl.h>
  #include <errno.h>
--#include <string.h>
--#include <signal.h>
--
- #include <unistd.h>
--#include <sys/mman.h>
--#include "test.h"
--
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "access03";
--int TST_TOTAL = 8;
-+#include <sys/types.h>
-+#include <pwd.h>
-+#include "tst_test.h"
+ #include <string.h>
++#include <sys/mount.h>
+ #include <sys/syscall.h>
+ #include "test.h"
+ #include "linux_syscall_numbers.h"
+@@ -80,6 +81,9 @@ static int fd_notify[FANOTIFY_PRIORITIES][GROUPS_PER_PRIO];
  
-+#ifndef UCLINUX
-+static uid_t uid;
- /* XXX (garrcoop): uh, this isn't a bad address yo. */
- static void *low_addr;
- static void *high_addr;
+ static char event_buf[EVENT_BUF_LEN];
  
--#if !defined(UCLINUX)
--
--int main(int ac, char **av)
-+static struct tcase {
-+	void **addr;
-+	int mode;
-+	char *name;
-+} tcases[] = {
-+	{&low_addr, F_OK, "F_OK"},
-+	{&low_addr, R_OK, "R_OK"},
-+	{&low_addr, W_OK, "W_OK"},
-+	{&low_addr, X_OK, "X_OK"},
-+	{&high_addr, F_OK, "F_OK"},
-+	{&high_addr, R_OK, "R_OK"},
-+	{&high_addr, W_OK, "W_OK"},
-+	{&high_addr, X_OK, "X_OK"}
-+};
++#define MOUNT_NAME "mntpoint"
++static int mount_created;
 +
-+static void access_test(struct tcase *tc, const char *user)
+ static void create_fanotify_groups(void)
  {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--#define TEST_ACCESS(addr, mode) \
--{ \
--	if (access(low_addr, mode) == -1) { \
--		if (errno == EFAULT) { \
--			tst_resm(TPASS, \
--			    "access(%p, %s) failed as expected with EFAULT", \
--			    addr, #mode); \
--		} else { \
--			tst_resm(TFAIL|TERRNO, \
--			    "access(%p, %s) failed unexpectedly; " \
--			    "expected (EFAULT)", addr, #mode); \
--		} \
--	} else { \
--		tst_resm(TFAIL, \
--		    "access(%p, %s) succeeded unexpectedly", addr, #mode); \
--	} \
--}
-+	TEST(access(*tc->addr, tc->mode));
+ 	unsigned int p, i;
+@@ -245,8 +249,15 @@ static void setup(void)
  
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		TEST_ACCESS(low_addr, R_OK);
--		TEST_ACCESS(low_addr, W_OK);
--		TEST_ACCESS(low_addr, X_OK);
--		TEST_ACCESS(low_addr, F_OK);
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "access(%p, %s) as %s succeeded unexpectedly",
-+			*tc->addr, tc->name, user);
-+		return;
-+	}
+ 	TEST_PAUSE;
  
--		TEST_ACCESS(high_addr, R_OK);
--		TEST_ACCESS(high_addr, W_OK);
--		TEST_ACCESS(high_addr, X_OK);
--		TEST_ACCESS(high_addr, F_OK);
-+	if (TEST_ERRNO != EFAULT) {
-+		tst_res(TFAIL | TTERRNO,
-+			"access(%p, %s) as %s should fail with EFAULT",
-+			*tc->addr, tc->name, user);
-+		return;
- 	}
++	tst_require_root();
+ 	tst_tmpdir();
  
--	cleanup();
--	tst_exit();
-+	tst_res(TPASS | TTERRNO, "access(%p, %s) as %s",
-+		*tc->addr, tc->name, user);
-+}
++	SAFE_MKDIR(cleanup, MOUNT_NAME, 0755);
++	if (mount(MOUNT_NAME, MOUNT_NAME, NULL, MS_BIND, NULL) < 0)
++		tst_brkm(TBROK | TERRNO, cleanup, "bind mount failed");
++	mount_created = 1;
++	SAFE_CHDIR(cleanup, MOUNT_NAME);
 +
-+static void verify_access(unsigned int n)
-+{
-+	struct tcase *tc = &tcases[n];
-+	pid_t pid;
+ 	sprintf(fname, "tfile_%d", getpid());
+ 	fd = SAFE_OPEN(cleanup, fname, O_RDWR | O_CREAT, 0700);
+ 	SAFE_WRITE(cleanup, 1, fd, fname, 1);
+@@ -258,6 +269,13 @@ static void setup(void)
+ static void cleanup(void)
+ {
+ 	cleanup_fanotify_groups();
 +
-+	/* test as root */
-+	access_test(tc, "root");
++	if (chdir(tst_get_tmpdir()) < 0)
++		tst_brkm(TBROK, NULL, "chdir(tmpdir) failed");
 +
-+	/* test as nobody */
-+	pid = SAFE_FORK();
-+	if (pid) {
-+		SAFE_WAITPID(pid, NULL, 0);
-+	} else {
-+		SAFE_SETUID(uid);
-+		access_test(tc, "nobody");
-+	}
++	if (mount_created && tst_umount(MOUNT_NAME) < 0)
++		tst_brkm(TBROK | TERRNO, NULL, "umount failed");
++
+ 	tst_rmdir();
  }
  
- static void setup(void)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
-+	struct passwd *pw;
-+
-+	pw = SAFE_GETPWNAM("nobody");
-+
-+	uid = pw->pw_uid;
- 
--	low_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (low_addr == MAP_FAILED)
--		tst_brkm(TBROK | TERRNO, NULL, "mmap failed");
-+	low_addr = SAFE_MMAP(0, 1, PROT_NONE,
-+		MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
- 
- 	high_addr = get_high_address();
- 	if (high_addr == NULL)
--		tst_brkm(TBROK | TERRNO, NULL, "get_high_address failed");
-+		tst_brk(TBROK | TERRNO, "get_high_address failed");
- 	high_addr++;
--
--	tst_tmpdir();
- }
- 
--static void cleanup(void)
--{
--	tst_rmdir();
--}
-+static struct tst_test test = {
-+	.tid = "access03",
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.setup = setup,
-+	.test = verify_access,
-+};
- 
- #else
--
--int main(void)
--{
--	tst_brkm(TCONF, NULL, "test not available on UCLINUX");
--}
--
--#endif /* if !defined(UCLINUX) */
-+	TST_TEST_TCONF("test not available on UCLINUX");
-+#endif /* UCLINUX */
 -- 
-1.8.4.2
-
-
+1.8.3.1
 
