@@ -1,82 +1,100 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Wed, 29 Jun 2016 21:11:40 +0200 (CEST)
-Subject: [LTP] [lkp] [signal] 98ea270c46: ltp.float_exp_log.fail
-In-Reply-To: <alpine.DEB.2.11.1606292100510.3707@nanos>
-References: <20160628030304.GJ19084@yexl-desktop>
- <20160628085608.GA31668@rei.suse.de>
- <alpine.DEB.2.11.1606292100510.3707@nanos>
-Message-ID: <alpine.DEB.2.11.1606292110520.3707@nanos>
+From: Jan Kara <jack@suse.cz>
+Date: Wed, 29 Jun 2016 21:50:40 +0200
+Subject: [LTP] [PATCH] fanotify06: create a mount for test
+In-Reply-To: <7ef37bcfb79c3fa81182e6530e5a0f3a35aacdad.1467190006.git.jstancek@redhat.com>
+References: <7ef37bcfb79c3fa81182e6530e5a0f3a35aacdad.1467190006.git.jstancek@redhat.com>
+Message-ID: <20160629195040.GA16831@quack2.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-On Wed, 29 Jun 2016, Thomas Gleixner wrote:
-
-> On Tue, 28 Jun 2016, Cyril Hrubis wrote:
-> > Looking at the test it creates a separate thread to handle signals which
-> > sleeps in sigwait() which is implemented in glibc via the sigtimedwait
-> > syscall with NULL timeout.
-> > 
-> > Looking at the patch the ktime_t timeout is initialized to 0 instead of
-> > MAX_SCHEDULE_TIMEOUT now so I guess that the call with NULL timeout does
-> > poll instead of sleeping in kernel waiting for signals to arrive. That
-> > should be fixed.
+On Wed 29-06-16 10:49:11, Jan Stancek wrote:
+> This testcase can rarely fail, when there is a background process
+> modifying files on same mountpoint as is LTP's tmpdir:
 > 
-> You're right. I misread the code...
+> fanotify06    1  TFAIL  :  fanotify06.c:212: group 0 got more than one event (48 > 24)
+> fanotify06    2  TFAIL  :  fanotify06.c:212: group 1 got more than one event (48 > 24)
+> fanotify06    3  TFAIL  :  fanotify06.c:212: group 2 got more than one event (48 > 24)
+> fanotify06    4  TFAIL  :  fanotify06.c:222: group 3 got event
+> fanotify06    5  TFAIL  :  fanotify06.c:222: group 4 got event
+> fanotify06    6  TPASS  :  group 5 got no event
+> fanotify06    7  TPASS  :  group 6 got no event
+> fanotify06    8  TPASS  :  group 7 got no event
+> fanotify06    9  TPASS  :  group 8 got no event
 > 
+> This patch creates a mount, which should be only used by this
+> test to limit interference from rest of OS. It also adds missing
+> tst_require_root().
+> 
+> Signed-off-by: Jan Stancek <jstancek@redhat.com>
 
-Fix below. I pushed it also out to the WIP.timers branch
+Yeah, that is a good idea. The patch looks good to me so feel free to add:
 
-Thanks,
+Acked-by: Jan Kara <jack@suse.cz>
 
-	tglx
+								Honza
 
-8<-------
-
-commit 503d9c9ac9f98f403da0acbc9ba6e42185b952e2
-Author: Thomas Gleixner <tglx@linutronix.de>
-Date:   Wed Jun 29 21:03:58 2016 +0200
-
-    signal: Handle the case where no timeout is handed in
-    
-    Needs to be folded back.
-    
-    Fixes: 98ea270c46b4: "signal: Use hrtimer for sigtimedwait"
-    Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 50fdf540d035..af21afc00d08 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2753,8 +2753,8 @@ int copy_siginfo_to_user(siginfo_t __user *to, const siginfo_t *from)
- int do_sigtimedwait(const sigset_t *which, siginfo_t *info,
- 		    const struct timespec *ts)
- {
-+	ktime_t *to = NULL, timeout = { .tv64 = KTIME_MAX };
- 	struct task_struct *tsk = current;
--	ktime_t timeout = { .tv64 = 0 };
- 	sigset_t mask = *which;
- 	int sig, ret = 0;
- 
-@@ -2762,6 +2762,7 @@ int do_sigtimedwait(const sigset_t *which, siginfo_t *info,
- 		if (!timespec_valid(ts))
- 			return -EINVAL;
- 		timeout = timespec_to_ktime(*ts);
-+		to = &timeout;
- 	}
- 
- 	/*
-@@ -2785,8 +2786,7 @@ int do_sigtimedwait(const sigset_t *which, siginfo_t *info,
- 		spin_unlock_irq(&tsk->sighand->siglock);
- 
- 		__set_current_state(TASK_INTERRUPTIBLE);
--		ret = freezable_schedule_hrtimeout_range(&timeout,
--							 tsk->timer_slack_ns,
-+		ret = freezable_schedule_hrtimeout_range(to, tsk->timer_slack_ns,
- 							 HRTIMER_MODE_REL);
- 		spin_lock_irq(&tsk->sighand->siglock);
- 		__set_task_blocked(tsk, &tsk->real_blocked);
+> ---
+>  testcases/kernel/syscalls/fanotify/fanotify06.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanotify/fanotify06.c
+> index 93c960268b57..cdbc7a16c0d7 100644
+> --- a/testcases/kernel/syscalls/fanotify/fanotify06.c
+> +++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
+> @@ -42,6 +42,7 @@
+>  #include <sys/fcntl.h>
+>  #include <errno.h>
+>  #include <string.h>
+> +#include <sys/mount.h>
+>  #include <sys/syscall.h>
+>  #include "test.h"
+>  #include "linux_syscall_numbers.h"
+> @@ -80,6 +81,9 @@ static int fd_notify[FANOTIFY_PRIORITIES][GROUPS_PER_PRIO];
+>  
+>  static char event_buf[EVENT_BUF_LEN];
+>  
+> +#define MOUNT_NAME "mntpoint"
+> +static int mount_created;
+> +
+>  static void create_fanotify_groups(void)
+>  {
+>  	unsigned int p, i;
+> @@ -245,8 +249,15 @@ static void setup(void)
+>  
+>  	TEST_PAUSE;
+>  
+> +	tst_require_root();
+>  	tst_tmpdir();
+>  
+> +	SAFE_MKDIR(cleanup, MOUNT_NAME, 0755);
+> +	if (mount(MOUNT_NAME, MOUNT_NAME, NULL, MS_BIND, NULL) < 0)
+> +		tst_brkm(TBROK | TERRNO, cleanup, "bind mount failed");
+> +	mount_created = 1;
+> +	SAFE_CHDIR(cleanup, MOUNT_NAME);
+> +
+>  	sprintf(fname, "tfile_%d", getpid());
+>  	fd = SAFE_OPEN(cleanup, fname, O_RDWR | O_CREAT, 0700);
+>  	SAFE_WRITE(cleanup, 1, fd, fname, 1);
+> @@ -258,6 +269,13 @@ static void setup(void)
+>  static void cleanup(void)
+>  {
+>  	cleanup_fanotify_groups();
+> +
+> +	if (chdir(tst_get_tmpdir()) < 0)
+> +		tst_brkm(TBROK, NULL, "chdir(tmpdir) failed");
+> +
+> +	if (mount_created && tst_umount(MOUNT_NAME) < 0)
+> +		tst_brkm(TBROK | TERRNO, NULL, "umount failed");
+> +
+>  	tst_rmdir();
+>  }
+>  
+> -- 
+> 1.8.3.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
