@@ -1,154 +1,400 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu, 30 Jun 2016 19:03:01 +0300
-Subject: [LTP] [PATCH 2/2] network/busy_poll: test UDP socket
-In-Reply-To: <1467302581-24491-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1467302581-24491-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1467302581-24491-2-git-send-email-alexey.kodanev@oracle.com>
+Date: Thu, 30 Jun 2016 19:03:00 +0300
+Subject: [LTP] [PATCH 1/2] network/tcp_fastopen: use UDP optionally
+Message-ID: <1467302581-24491-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+With minor changes the test can be run over UDP.
+'-U' parameter should be provided to tcp_fastopen.
+
+Changes in server:
+* recv() changed to recvfrom() to get client address and port,
+* server creates only one thread that manages requests from clients,
+  and sends replies with sendto().
+* increase default timeout, 10s -> 60s (waiting for requests).
+
+Also rename some variables and test messages to more general form.
+
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/net.features                       |    3 +
- testcases/lib/test_net.sh                  |    2 +-
- testcases/network/busy_poll/Makefile       |    5 +-
- testcases/network/busy_poll/busy_poll03.sh |   78 ++++++++++++++++++++++++++++
- 4 files changed, 85 insertions(+), 3 deletions(-)
- create mode 100755 testcases/network/busy_poll/busy_poll03.sh
+ testcases/network/tcp_fastopen/tcp_fastopen.c |  162 +++++++++++++++----------
+ 1 files changed, 100 insertions(+), 62 deletions(-)
 
-diff --git a/runtest/net.features b/runtest/net.features
-index bb907e5..a64028b 100644
---- a/runtest/net.features
-+++ b/runtest/net.features
-@@ -8,6 +8,9 @@ busy_poll01_ipv6 busy_poll01.sh -6
- busy_poll02 busy_poll02.sh
- busy_poll02_ipv6 busy_poll02.sh -6
+diff --git a/testcases/network/tcp_fastopen/tcp_fastopen.c b/testcases/network/tcp_fastopen/tcp_fastopen.c
+index c63e7f0..c219e71 100644
+--- a/testcases/network/tcp_fastopen/tcp_fastopen.c
++++ b/testcases/network/tcp_fastopen/tcp_fastopen.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright (c) 2014 Oracle and/or its affiliates. All Rights Reserved.
++ * Copyright (c) 2014-2016 Oracle and/or its affiliates. All Rights Reserved.
+  *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License as
+@@ -12,8 +12,7 @@
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software Foundation,
+- * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+  *
+  * Author: Alexey Kodanev <alexey.kodanev@oracle.com>
+  *
+@@ -54,10 +53,10 @@ static const int max_msg_len = 1500;
+ #endif
  
-+busy_poll03 busy_poll03.sh
-+busy_poll03_ipv6 busy_poll03.sh -6
-+
- tcp_fastopen tcp_fastopen_run.sh
- tcp_fastopen6 tcp_fastopen_run.sh -6
+ enum {
+-	TCP_SERVER = 0,
+-	TCP_CLIENT,
++	SERVER_HOST = 0,
++	CLIENT_HOST,
+ };
+-static int tcp_mode;
++static int net_mode;
  
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 2e34626..5b79076 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -291,7 +291,7 @@ tst_netload()
- 		# check that tcp_fastopen on rhost in 'Listening' state
- 		local sec_waited=
- 		for sec_waited in $(seq 1 60); do
--			tst_rhost_run -c "ss -ltn | grep -q $port" && break
-+			tst_rhost_run -c "ss -lutn | grep -q $port" && break
- 			if [ $sec_waited -eq 60 ]; then
- 				tst_resm TINFO "rhost not in LISTEN state"
- 				return 1
-diff --git a/testcases/network/busy_poll/Makefile b/testcases/network/busy_poll/Makefile
-index 4fad061..79aaf30 100644
---- a/testcases/network/busy_poll/Makefile
-+++ b/testcases/network/busy_poll/Makefile
-@@ -1,4 +1,4 @@
--# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+# Copyright (c) 2015-2016 Oracle and/or its affiliates. All Rights Reserved.
- #
- # This program is free software; you can redistribute it and/or
- # modify it under the terms of the GNU General Public License as
-@@ -18,6 +18,7 @@ top_srcdir		?= ../../..
- include $(top_srcdir)/include/mk/testcases.mk
+ enum {
+ 	TFO_ENABLED = 0,
+@@ -94,11 +93,12 @@ static int clients_num		= 2;
+ static char *tcp_port		= "61000";
+ static char *server_addr	= "localhost";
+ static int busy_poll		= -1;
++static int use_udp;
+ /* server socket */
+ static int sfd;
  
- INSTALL_TARGETS		:= busy_poll01.sh \
--			   busy_poll02.sh
-+			   busy_poll02.sh \
-+			   busy_poll03.sh
+ /* how long a client must wait for the server's reply, microsec */
+-static long wait_timeout = 10000000;
++static long wait_timeout = 60000000;
  
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/network/busy_poll/busy_poll03.sh b/testcases/network/busy_poll/busy_poll03.sh
-new file mode 100755
-index 0000000..6102e98
---- /dev/null
-+++ b/testcases/network/busy_poll/busy_poll03.sh
-@@ -0,0 +1,78 @@
-+#!/bin/sh
+ /* in the end test will save time result in this file */
+ static char *rpath		= "./tfo_result";
+@@ -125,8 +125,9 @@ static const option_t options[] = {
+ 	/* common */
+ 	{"g:", NULL, &tcp_port},
+ 	{"b:", NULL, &barg},
++	{"U", &use_udp, NULL},
+ 	{"F", &force_run, NULL},
+-	{"l", &tcp_mode, NULL},
++	{"l", &net_mode, NULL},
+ 	{"o", &fastopen_api, NULL},
+ 	{"O", &tfo_support, NULL},
+ 	{"v", &verbose, NULL},
+@@ -142,6 +143,7 @@ static void help(void)
+ 	printf("  -l      Become TCP Client, default is TCP server\n");
+ 	printf("  -g x    x - server port, default is %s\n", tcp_port);
+ 	printf("  -b x    x - low latency busy poll timeout\n");
++	printf("  -U      use UDP\n");
+ 
+ 	printf("\n          Client:\n");
+ 	printf("  -H x    x - server name or ip address, default is '%s'\n",
+@@ -161,13 +163,13 @@ static void help(void)
+ 	printf("  -q x    x - server's limit on the queue of TFO requests\n");
+ }
+ 
+-/* common structure for TCP server and TCP client */
+-struct tcp_func {
++/* common structure for TCP/UDP server and TCP/UDP client */
++struct net_func {
+ 	void (*init)(void);
+ 	void (*run)(void);
+ 	void (*cleanup)(void);
+ };
+-static struct tcp_func tcp;
++static struct net_func net;
+ 
+ #define MAX_THREADS	10000
+ static pthread_attr_t attr;
+@@ -175,6 +177,9 @@ static pthread_t *thread_ids;
+ 
+ static struct addrinfo *remote_addrinfo;
+ static struct addrinfo *local_addrinfo;
++static struct sockaddr_storage remote_addr;
++static socklen_t remote_addr_len;
 +
-+# Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
-+#
+ static const struct linger clo = { 1, 3 };
+ 
+ static void do_cleanup(void)
+@@ -182,7 +187,8 @@ static void do_cleanup(void)
+ 	free(client_msg);
+ 	free(server_msg);
+ 
+-	tcp.cleanup();
++	if (net.cleanup)
++		net.cleanup();
+ 
+ 	if (tfo_cfg_changed) {
+ 		SAFE_FILE_SCANF(NULL, tfo_cfg, "%d", &tfo_cfg_value);
+@@ -206,6 +212,7 @@ static int sock_recv_poll(int fd, char *buf, int buf_size, int offset)
+ 	pfd.fd = fd;
+ 	pfd.events = POLLIN;
+ 	int len = -1;
 +
-+TST_TOTAL=1
-+TCID="busy_poll03"
+ 	while (1) {
+ 		errno = 0;
+ 		int ret = poll(&pfd, 1, wait_timeout / 1000);
+@@ -224,8 +231,9 @@ static int sock_recv_poll(int fd, char *buf, int buf_size, int offset)
+ 			break;
+ 
+ 		errno = 0;
+-		len = recv(fd, buf + offset,
+-			buf_size - offset, MSG_DONTWAIT);
++		len = recvfrom(fd, buf + offset, buf_size - offset,
++			       MSG_DONTWAIT, (struct sockaddr *)&remote_addr,
++			       &remote_addr_len);
+ 
+ 		if (len == -1 && errno == EINTR)
+ 			continue;
+@@ -274,7 +282,8 @@ static int client_recv(int *fd, char *buf)
+ 
+ static int client_connect_send(const char *msg, int size)
+ {
+-	int cfd = socket(remote_addrinfo->ai_family, SOCK_STREAM, 0);
++	int cfd = socket(remote_addrinfo->ai_family,
++			 remote_addrinfo->ai_socktype, 0);
+ 	const int flag = 1;
+ 
+ 	if (cfd == -1)
+@@ -330,6 +339,8 @@ void *client_fn(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	}
+ 
+ 	for (i = 1; i < client_max_requests; ++i) {
++		if (use_udp)
++			goto send;
+ 
+ 		/* check connection, it can be closed */
+ 		int ret = 0;
+@@ -359,6 +370,7 @@ void *client_fn(LTP_ATTRIBUTE_UNUSED void *arg)
+ 			break;
+ 		}
+ 
++send:
+ 		if (verbose) {
+ 			tst_resm_hexd(TINFO, client_msg, client_msg_size,
+ 				"try to send msg[%d]", i);
+@@ -432,14 +444,18 @@ static void client_init(void)
+ 
+ 	struct addrinfo hints;
+ 	memset(&hints, 0, sizeof(struct addrinfo));
+-	hints.ai_socktype = SOCK_STREAM;
++	hints.ai_family = AF_UNSPEC;
++	hints.ai_socktype = (use_udp) ? SOCK_DGRAM : SOCK_STREAM;
++	hints.ai_flags = 0;
++	hints.ai_protocol = 0;
 +
-+. test_net.sh
+ 	int err = getaddrinfo(server_addr, tcp_port, &hints, &remote_addrinfo);
+ 	if (err) {
+ 		tst_brkm(TBROK, cleanup, "getaddrinfo of '%s' failed, %s",
+ 			server_addr, gai_strerror(err));
+ 	}
+ 
+-	tst_resm(TINFO, "TCP Fast Open over IPv%s",
++	tst_resm(TINFO, "Running the test over IPv%s",
+ 		(remote_addrinfo->ai_family == AF_INET6) ? "6" : "4");
+ 
+ 	clock_gettime(CLOCK_MONOTONIC_RAW, &tv_client_start);
+@@ -560,22 +576,23 @@ void *server_fn(void *cfd)
+ 			send_msg = make_server_reply(send_msg_size);
+ 		}
+ 
++		offset = 0;
 +
-+cleanup()
+ 		/*
+ 		 * It will tell client that server is going
+ 		 * to close this connection.
+ 		 */
+-		if (++num_requests >= server_max_requests)
++		if (!use_udp && ++num_requests >= server_max_requests)
+ 			send_msg[0] = start_fin_byte;
+ 
+-		if (send(client_fd, send_msg, send_msg_size,
+-		    MSG_NOSIGNAL) == -1) {
+-			tst_resm(TFAIL | TERRNO, "send failed");
++		if (sendto(client_fd, send_msg, send_msg_size,
++		    MSG_NOSIGNAL, (struct sockaddr *)&remote_addr,
++		    remote_addr_len) < 0) {
++			tst_resm(TFAIL | TERRNO, "sendto failed");
+ 			goto out;
+ 		}
+ 
+-		offset = 0;
+-
+-		if (num_requests >= server_max_requests) {
++		if (!use_udp && num_requests >= server_max_requests) {
+ 			/* max reqs, close socket */
+ 			shutdown(client_fd, SHUT_WR);
+ 			break;
+@@ -593,13 +610,14 @@ out:
+ 	tst_exit();
+ }
+ 
+-static void server_thread_add(intptr_t client_fd)
++static pthread_t server_thread_add(intptr_t client_fd)
+ {
+ 	pthread_t id;
+ 	if (pthread_create(&id, &attr, server_fn, (void *) client_fd)) {
+ 		tst_brkm(TBROK | TERRNO, cleanup,
+ 			"pthread_create failed at %s:%d", __FILE__, __LINE__);
+ 	}
++	return id;
+ }
+ 
+ static void server_init(void)
+@@ -607,23 +625,27 @@ static void server_init(void)
+ 	struct addrinfo hints;
+ 	memset(&hints, 0, sizeof(struct addrinfo));
+ 	hints.ai_family = AF_INET6;
+-	hints.ai_socktype = SOCK_STREAM;
++	hints.ai_socktype = (use_udp) ? SOCK_DGRAM : SOCK_STREAM;
+ 	hints.ai_flags = AI_PASSIVE;
++
+ 	if (getaddrinfo(NULL, tcp_port, &hints, &local_addrinfo) != 0)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "getaddrinfo failed");
+ 
+-	/* IPv6 socket is also able to access IPv4 protocol stack */
+-	sfd = SAFE_SOCKET(cleanup, AF_INET6, SOCK_STREAM, 0);
+-
+-	tst_resm(TINFO, "assigning a name to the server socket...");
+ 	if (!local_addrinfo)
+ 		tst_brkm(TBROK, cleanup, "failed to get the address");
+ 
++	/* IPv6 socket is also able to access IPv4 protocol stack */
++	sfd = SAFE_SOCKET(cleanup, AF_INET6, local_addrinfo->ai_socktype, 0);
++
++	tst_resm(TINFO, "assigning a name to the server socket...");
+ 	SAFE_BIND(cleanup, sfd, local_addrinfo->ai_addr,
+ 		local_addrinfo->ai_addrlen);
+ 
+ 	freeaddrinfo(local_addrinfo);
+ 
++	if (use_udp)
++		return;
++
+ 	const int flag = 1;
+ 	setsockopt(sfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+ 
+@@ -642,6 +664,14 @@ static void server_cleanup(void)
+ 	SAFE_CLOSE(NULL, sfd);
+ }
+ 
++static void server_run_udp(void)
 +{
-+	tst_rhost_run -c "pkill -9 tcp_fastopen\$"
-+	tst_rmdir
++	pthread_t p_id = server_thread_add(sfd);
 +
-+	sysctl -q -w net.core.busy_poll=$busy_poll_old
-+	tst_rhost_run -c "sysctl -q -w net.core.busy_poll=$rbusy_poll_old"
++	if (!pthread_join(p_id, NULL))
++		tst_brkm(TBROK | TERRNO, cleanup, "pthread_join() failed");
 +}
 +
-+tst_require_root
+ static void server_run(void)
+ {
+ 	/* IPv4 source address will be mapped to IPv6 address */
+@@ -739,20 +769,16 @@ static void setup(int argc, char *argv[])
+ 
+ 	tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
+-	tst_resm(TINFO, "TCP %s is using %s TCP API.",
+-		(tcp_mode == TCP_SERVER) ? "server" : "client",
+-		(fastopen_api == TFO_ENABLED) ? "Fastopen" : "old");
+-
+-	switch (tcp_mode) {
+-	case TCP_SERVER:
++	switch (net_mode) {
++	case SERVER_HOST:
+ 		tst_resm(TINFO, "max requests '%d'",
+ 			server_max_requests);
+-		tcp.init	= server_init;
+-		tcp.run		= server_run;
+-		tcp.cleanup	= server_cleanup;
++		net.init	= server_init;
++		net.run		= (use_udp) ? server_run_udp : server_run;
++		net.cleanup	= (use_udp) ? NULL : server_cleanup;
+ 		tfo_bit_num = 2;
+ 	break;
+-	case TCP_CLIENT:
++	case CLIENT_HOST:
+ 		tst_resm(TINFO, "connection: addr '%s', port '%s'",
+ 			server_addr, tcp_port);
+ 		tst_resm(TINFO, "client max req: %d", client_max_requests);
+@@ -760,41 +786,53 @@ static void setup(int argc, char *argv[])
+ 		tst_resm(TINFO, "client msg size: %d", client_msg_size);
+ 		tst_resm(TINFO, "server msg size: %d", server_msg_size);
+ 
+-		tcp.init	= client_init;
+-		tcp.run		= client_run;
+-		tcp.cleanup	= client_cleanup;
++		net.init	= client_init;
++		net.run		= client_run;
++		net.cleanup	= client_cleanup;
+ 		tfo_bit_num = 1;
+ 	break;
+ 	}
+ 
+-	tfo_support = TFO_ENABLED == tfo_support;
+-	if (((tfo_cfg_value & tfo_bit_num) == tfo_bit_num) != tfo_support) {
+-		int value = (tfo_cfg_value & ~tfo_bit_num)
+-			| (tfo_support << (tfo_bit_num - 1));
+-		tst_resm(TINFO, "set '%s' to '%d'", tfo_cfg, value);
+-		SAFE_FILE_PRINTF(cleanup, tfo_cfg, "%d", value);
+-		tfo_cfg_changed = 1;
+-	}
++	remote_addr_len = sizeof(struct sockaddr_storage);
+ 
+-	int reuse_value = 0;
+-	SAFE_FILE_SCANF(cleanup, tcp_tw_reuse, "%d", &reuse_value);
+-	if (!reuse_value) {
+-		SAFE_FILE_PRINTF(cleanup, tcp_tw_reuse, "1");
+-		tw_reuse_changed = 1;
+-		tst_resm(TINFO, "set '%s' to '1'", tcp_tw_reuse);
+-	}
++	if (use_udp) {
++		tst_resm(TINFO, "using UDP");
++		fastopen_api = TFO_DISABLED;
++	} else {
++		tst_resm(TINFO, "TCP %s is using %s TCP API.",
++			(net_mode == SERVER_HOST) ? "server" : "client",
++			(fastopen_api == TFO_ENABLED) ? "Fastopen" : "old");
 +
-+tst_kvercmp 3 11 0
-+[ $? -eq 0 ] && tst_brkm TCONF "test must be run with kernel 3.11 or newer"
++		tfo_support = TFO_ENABLED == tfo_support;
++		if (((tfo_cfg_value & tfo_bit_num) == tfo_bit_num)
++		      != tfo_support) {
++			int value = (tfo_cfg_value & ~tfo_bit_num)
++				| (tfo_support << (tfo_bit_num - 1));
++			tst_resm(TINFO, "set '%s' to '%d'", tfo_cfg, value);
++			SAFE_FILE_PRINTF(cleanup, tfo_cfg, "%d", value);
++			tfo_cfg_changed = 1;
++		}
+ 
+-	tst_resm(TINFO, "TFO support %s",
+-		(tfo_support) ? "enabled" : "disabled");
++		int reuse_value = 0;
++		SAFE_FILE_SCANF(cleanup, tcp_tw_reuse, "%d", &reuse_value);
++		if (!reuse_value) {
++			SAFE_FILE_PRINTF(cleanup, tcp_tw_reuse, "1");
++			tw_reuse_changed = 1;
++			tst_resm(TINFO, "set '%s' to '1'", tcp_tw_reuse);
++		}
 +
-+if [ ! -f "/proc/sys/net/core/busy_read" -a \
-+     ! -f "/proc/sys/net/core/busy_poll" ]; then
-+	tst_brkm TCONF "busy poll not configured, CONFIG_NET_RX_BUSY_POLL"
-+fi
-+
-+set_busy_poll()
-+{
-+	local value=${1:-"0"}
-+	ROD_SILENT sysctl -q -w net.core.busy_poll=$value
-+	tst_rhost_run -s -c "sysctl -q -w net.core.busy_poll=$value"
-+}
-+
-+tst_check_cmds pkill sysctl
-+
-+tst_tmpdir
-+
-+busy_poll_old="$(cat /proc/sys/net/core/busy_poll)"
-+rbusy_poll_old=$(tst_rhost_run -c 'cat /proc/sys/net/core/busy_poll')
-+
-+TST_CLEANUP="cleanup"
-+trap "tst_brkm TBROK 'test interrupted'" INT
-+
-+for x in 50 0; do
-+	tst_resm TINFO "set low latency busy poll to $x per socket"
-+	set_busy_poll $x
-+	tst_netload $(tst_ipaddr rhost) res_$x TFO -b $x -U || \
-+		tst_brkm TBROK "netload() failed"
-+	tst_resm TINFO "time spent is '$(cat res_$x)' ms"
-+done
-+
-+poll_cmp=$(( 100 - ($(cat res_50) * 100) / $(cat res_0) ))
-+
-+if [ "$poll_cmp" -lt 1 ]; then
-+	tst_resm TFAIL "busy poll result is '$poll_cmp' %"
-+else
-+	tst_resm TPASS "busy poll increased performance by '$poll_cmp' %"
-+fi
-+
-+tst_exit
++		tst_resm(TINFO, "TFO support %s",
++			(tfo_support) ? "enabled" : "disabled");
++	}
+ 
+-	tcp.init();
++	net.init();
+ }
+ 
+ int main(int argc, char *argv[])
+ {
+ 	setup(argc, argv);
+ 
+-	tcp.run();
++	net.run();
+ 
+ 	cleanup();
+ 
 -- 
 1.7.1
 
