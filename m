@@ -1,100 +1,69 @@
-From: Jan Kara <jack@suse.cz>
-Date: Wed, 29 Jun 2016 21:50:40 +0200
-Subject: [LTP] [PATCH] fanotify06: create a mount for test
-In-Reply-To: <7ef37bcfb79c3fa81182e6530e5a0f3a35aacdad.1467190006.git.jstancek@redhat.com>
-References: <7ef37bcfb79c3fa81182e6530e5a0f3a35aacdad.1467190006.git.jstancek@redhat.com>
-Message-ID: <20160629195040.GA16831@quack2.suse.cz>
+From: Peter Maydell <peter.maydell@linaro.org>
+Date: Thu, 30 Jun 2016 10:47:26 +0100
+Subject: [LTP] [PATCH] syscalls/mount03: Don't read() with an invalid buffer
+	argument
+Message-ID: <1467280046-19191-1-git-send-email-peter.maydell@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed 29-06-16 10:49:11, Jan Stancek wrote:
-> This testcase can rarely fail, when there is a background process
-> modifying files on same mountpoint as is LTP's tmpdir:
-> 
-> fanotify06    1  TFAIL  :  fanotify06.c:212: group 0 got more than one event (48 > 24)
-> fanotify06    2  TFAIL  :  fanotify06.c:212: group 1 got more than one event (48 > 24)
-> fanotify06    3  TFAIL  :  fanotify06.c:212: group 2 got more than one event (48 > 24)
-> fanotify06    4  TFAIL  :  fanotify06.c:222: group 3 got event
-> fanotify06    5  TFAIL  :  fanotify06.c:222: group 4 got event
-> fanotify06    6  TPASS  :  group 5 got no event
-> fanotify06    7  TPASS  :  group 6 got no event
-> fanotify06    8  TPASS  :  group 7 got no event
-> fanotify06    9  TPASS  :  group 8 got no event
-> 
-> This patch creates a mount, which should be only used by this
-> test to limit interference from rest of OS. It also adds missing
-> tst_require_root().
-> 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
+The syscall test mount03 includes a code path to test the MS_NOATIME
+mount flag. This code checks that an attempted read of a file
+does not update the atime, but the read() it uses is passed
+a NULL buffer pointer, which isn't valid. The test passes on the
+kernel because the kernel happens to check for "is this file at
+EOF?" before "is the buffer argument valid?", and so it returns 0
+rather than -1/EFAULT. However the test fails when run under QEMU,
+because QEMU checks for a valid buffer before EOF.
 
-Yeah, that is a good idea. The patch looks good to me so feel free to add:
+POSIX and the Linux documentation make no guarantees about what order
+error cases are checked in; pass in a valid buffer so that we aren't
+relying on incidental behaviour of the implementation of read
+in a test for a different syscall.
 
-Acked-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Peter Maydell <peter.maydell@linaro.org>
+---
+This is my first LTP patch, so please let me know if I got
+anything wrong stylistically or submission-wise...
 
-								Honza
+This test also has a bug in its error handling code paths:
+if for instance this read() fails then we return from
+test_rwflag() without doing a close() on the filedescriptor.
+This then causes the umount() performed by tst_release_device()
+to fail with EBUSY, and then the loopback device is left
+mounted. Later, other test cases that try to use the loopback
+device then fail unnecessarily. I'm not sure what the best
+way to fix this is -- just call close() in all the error
+handling paths, or is there some kind of automatic cleanup
+on failure arrangement that could be used? In any case,
+that's a matter for a different patch I think.
 
-> ---
->  testcases/kernel/syscalls/fanotify/fanotify06.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/fanotify/fanotify06.c b/testcases/kernel/syscalls/fanotify/fanotify06.c
-> index 93c960268b57..cdbc7a16c0d7 100644
-> --- a/testcases/kernel/syscalls/fanotify/fanotify06.c
-> +++ b/testcases/kernel/syscalls/fanotify/fanotify06.c
-> @@ -42,6 +42,7 @@
->  #include <sys/fcntl.h>
->  #include <errno.h>
->  #include <string.h>
-> +#include <sys/mount.h>
->  #include <sys/syscall.h>
->  #include "test.h"
->  #include "linux_syscall_numbers.h"
-> @@ -80,6 +81,9 @@ static int fd_notify[FANOTIFY_PRIORITIES][GROUPS_PER_PRIO];
->  
->  static char event_buf[EVENT_BUF_LEN];
->  
-> +#define MOUNT_NAME "mntpoint"
-> +static int mount_created;
-> +
->  static void create_fanotify_groups(void)
->  {
->  	unsigned int p, i;
-> @@ -245,8 +249,15 @@ static void setup(void)
->  
->  	TEST_PAUSE;
->  
-> +	tst_require_root();
->  	tst_tmpdir();
->  
-> +	SAFE_MKDIR(cleanup, MOUNT_NAME, 0755);
-> +	if (mount(MOUNT_NAME, MOUNT_NAME, NULL, MS_BIND, NULL) < 0)
-> +		tst_brkm(TBROK | TERRNO, cleanup, "bind mount failed");
-> +	mount_created = 1;
-> +	SAFE_CHDIR(cleanup, MOUNT_NAME);
-> +
->  	sprintf(fname, "tfile_%d", getpid());
->  	fd = SAFE_OPEN(cleanup, fname, O_RDWR | O_CREAT, 0700);
->  	SAFE_WRITE(cleanup, 1, fd, fname, 1);
-> @@ -258,6 +269,13 @@ static void setup(void)
->  static void cleanup(void)
->  {
->  	cleanup_fanotify_groups();
-> +
-> +	if (chdir(tst_get_tmpdir()) < 0)
-> +		tst_brkm(TBROK, NULL, "chdir(tmpdir) failed");
-> +
-> +	if (mount_created && tst_umount(MOUNT_NAME) < 0)
-> +		tst_brkm(TBROK | TERRNO, NULL, "umount failed");
-> +
->  	tst_rmdir();
->  }
->  
-> -- 
-> 1.8.3.1
-> 
+ testcases/kernel/syscalls/mount/mount03.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/mount/mount03.c b/testcases/kernel/syscalls/mount/mount03.c
+index 1568c50..1873f0f 100644
+--- a/testcases/kernel/syscalls/mount/mount03.c
++++ b/testcases/kernel/syscalls/mount/mount03.c
+@@ -132,6 +132,7 @@ int test_rwflag(int i, int cnt)
+ 	time_t atime;
+ 	struct passwd *ltpuser;
+ 	struct stat file_stat;
++	char readbuf[20];
+ 
+ 	switch (i) {
+ 	case 0:
+@@ -319,7 +320,7 @@ int test_rwflag(int i, int cnt)
+ 
+ 		sleep(1);
+ 
+-		if (read(fd, NULL, 20) == -1) {
++		if (read(fd, readbuf, sizeof(readbuf)) == -1) {
+ 			tst_resm(TWARN | TERRNO, "read %s failed", file);
+ 			return 1;
+ 		}
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+1.9.1
+
