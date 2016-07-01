@@ -1,10 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 1 Jul 2016 07:16:04 -0400 (EDT)
-Subject: [LTP] [PATCH] fanotify06: create a mount for test
-In-Reply-To: <20160629195040.GA16831@quack2.suse.cz>
-References: <7ef37bcfb79c3fa81182e6530e5a0f3a35aacdad.1467190006.git.jstancek@redhat.com>
- <20160629195040.GA16831@quack2.suse.cz>
-Message-ID: <1567220971.1417138.1467371764182.JavaMail.zimbra@redhat.com>
+Date: Fri, 1 Jul 2016 07:32:07 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls/mount03: Don't read() with an invalid
+ buffer	argument
+In-Reply-To: <1467280046-19191-1-git-send-email-peter.maydell@linaro.org>
+References: <1467280046-19191-1-git-send-email-peter.maydell@linaro.org>
+Message-ID: <225204264.1418846.1467372727590.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,42 +14,83 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> From: "Jan Kara" <jack@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it, jack@suse.cz
-> Sent: Wednesday, 29 June, 2016 9:50:40 PM
-> Subject: Re: [PATCH] fanotify06: create a mount for test
+> From: "Peter Maydell" <peter.maydell@linaro.org>
+> To: ltp@lists.linux.it
+> Cc: patches@linaro.org
+> Sent: Thursday, 30 June, 2016 11:47:26 AM
+> Subject: [LTP] [PATCH] syscalls/mount03: Don't read() with an invalid buffer	argument
 > 
-> On Wed 29-06-16 10:49:11, Jan Stancek wrote:
-> > This testcase can rarely fail, when there is a background process
-> > modifying files on same mountpoint as is LTP's tmpdir:
-> > 
-> > fanotify06    1  TFAIL  :  fanotify06.c:212: group 0 got more than one
-> > event (48 > 24)
-> > fanotify06    2  TFAIL  :  fanotify06.c:212: group 1 got more than one
-> > event (48 > 24)
-> > fanotify06    3  TFAIL  :  fanotify06.c:212: group 2 got more than one
-> > event (48 > 24)
-> > fanotify06    4  TFAIL  :  fanotify06.c:222: group 3 got event
-> > fanotify06    5  TFAIL  :  fanotify06.c:222: group 4 got event
-> > fanotify06    6  TPASS  :  group 5 got no event
-> > fanotify06    7  TPASS  :  group 6 got no event
-> > fanotify06    8  TPASS  :  group 7 got no event
-> > fanotify06    9  TPASS  :  group 8 got no event
-> > 
-> > This patch creates a mount, which should be only used by this
-> > test to limit interference from rest of OS. It also adds missing
-> > tst_require_root().
-> > 
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
+> The syscall test mount03 includes a code path to test the MS_NOATIME
+> mount flag. This code checks that an attempted read of a file
+> does not update the atime, but the read() it uses is passed
+> a NULL buffer pointer, which isn't valid. The test passes on the
+> kernel because the kernel happens to check for "is this file at
+> EOF?" before "is the buffer argument valid?", and so it returns 0
+> rather than -1/EFAULT. However the test fails when run under QEMU,
+> because QEMU checks for a valid buffer before EOF.
 > 
-> Yeah, that is a good idea. The patch looks good to me so feel free to add:
+> POSIX and the Linux documentation make no guarantees about what order
+> error cases are checked in; pass in a valid buffer so that we aren't
+> relying on incidental behaviour of the implementation of read
+> in a test for a different syscall.
 > 
-> Acked-by: Jan Kara <jack@suse.cz>
-> 
-> 								Honza
+> Signed-off-by: Peter Maydell <peter.maydell@linaro.org>
 
 Pushed.
 
-Regards,
+> ---
+> This is my first LTP patch, so please let me know if I got
+> anything wrong stylistically or submission-wise...
+> 
+> This test also has a bug in its error handling code paths:
+> if for instance this read() fails then we return from
+> test_rwflag() without doing a close() on the filedescriptor.
+> This then causes the umount() performed by tst_release_device()
+> to fail with EBUSY, and then the loopback device is left
+> mounted. Later, other test cases that try to use the loopback
+> device then fail unnecessarily. I'm not sure what the best
+> way to fix this is -- just call close() in all the error
+> handling paths, or is there some kind of automatic cleanup
+> on failure arrangement that could be used? In any case,
+> that's a matter for a different patch I think.
+
+Yes, a separate patch would be preffered. cleanup() will get
+called at the end of test, but since fd is local variable
+I think we are left only with close() in error paths.
+
+Thanks,
 Jan
+
+> 
+>  testcases/kernel/syscalls/mount/mount03.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/kernel/syscalls/mount/mount03.c
+> b/testcases/kernel/syscalls/mount/mount03.c
+> index 1568c50..1873f0f 100644
+> --- a/testcases/kernel/syscalls/mount/mount03.c
+> +++ b/testcases/kernel/syscalls/mount/mount03.c
+> @@ -132,6 +132,7 @@ int test_rwflag(int i, int cnt)
+>  	time_t atime;
+>  	struct passwd *ltpuser;
+>  	struct stat file_stat;
+> +	char readbuf[20];
+>  
+>  	switch (i) {
+>  	case 0:
+> @@ -319,7 +320,7 @@ int test_rwflag(int i, int cnt)
+>  
+>  		sleep(1);
+>  
+> -		if (read(fd, NULL, 20) == -1) {
+> +		if (read(fd, readbuf, sizeof(readbuf)) == -1) {
+>  			tst_resm(TWARN | TERRNO, "read %s failed", file);
+>  			return 1;
+>  		}
+> --
+> 1.9.1
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
