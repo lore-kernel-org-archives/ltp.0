@@ -1,166 +1,334 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 6 Jul 2016 19:10:50 +0800
-Subject: [LTP] [PATCH 3/3] syscalls/kcmp03.c: Add new testcase
-In-Reply-To: <1467803450-11622-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1467803450-11622-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1467803450-11622-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Wed, 6 Jul 2016 19:10:48 +0800
+Subject: [LTP] [PATCH 1/3] syscall/kcmp*: Convert to new API
+Message-ID: <1467803450-11622-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) kcmp() returns 0 if the processes share the same file system
-   information.
-2) kcmp() returns 0 if the processes share I/O context.
-3) kcmp() returns 0 if the processes share the same list of
-   System V semaphore undo operations.
-4) kcmp() returns 0 if the processes share the same address space.
-
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- runtest/syscalls                        |   1 +
- testcases/kernel/syscalls/.gitignore    |   1 +
- testcases/kernel/syscalls/kcmp/kcmp03.c | 107 ++++++++++++++++++++++++++++++++
- 3 files changed, 109 insertions(+)
- create mode 100644 testcases/kernel/syscalls/kcmp/kcmp03.c
+ testcases/kernel/syscalls/kcmp/kcmp.h   |   2 +-
+ testcases/kernel/syscalls/kcmp/kcmp01.c | 119 ++++++++++++++------------------
+ testcases/kernel/syscalls/kcmp/kcmp02.c |  85 ++++++++---------------
+ 3 files changed, 82 insertions(+), 124 deletions(-)
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index ed63358..a76df9a 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -484,6 +484,7 @@ keyctl01 keyctl01
+diff --git a/testcases/kernel/syscalls/kcmp/kcmp.h b/testcases/kernel/syscalls/kcmp/kcmp.h
+index 513af39..ab50d4b 100644
+--- a/testcases/kernel/syscalls/kcmp/kcmp.h
++++ b/testcases/kernel/syscalls/kcmp/kcmp.h
+@@ -46,7 +46,7 @@ enum kcmp_type {
  
- kcmp01 kcmp01
- kcmp02 kcmp02
-+kcmp03 kcmp03
+ int kcmp(int pid1, int pid2, int type, int fd1, int fd2)
+ {
+-	return ltp_syscall(__NR_kcmp, pid1, pid2, type, fd1, fd2);
++	return tst_syscall(__NR_kcmp, pid1, pid2, type, fd1, fd2);
+ }
  
- kill01 kill01
- kill02 kill02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 0512f8a..0c16830 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -452,6 +452,7 @@
- /keyctl/keyctl01
- /kcmp/kcmp01
- /kcmp/kcmp02
-+/kcmp/kcmp03
- /kill/kill01
- /kill/kill02
- /kill/kill03
-diff --git a/testcases/kernel/syscalls/kcmp/kcmp03.c b/testcases/kernel/syscalls/kcmp/kcmp03.c
-new file mode 100644
-index 0000000..e144609
---- /dev/null
-+++ b/testcases/kernel/syscalls/kcmp/kcmp03.c
-@@ -0,0 +1,107 @@
-+/*
-+ * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
-+ */
-+
-+ /*
-+ * Testname: kcmp03.c
-+ *
-+ * Description:
-+ * 1) kcmp() returns 0 if the processes share the same file system information.
-+ * 2) kcmp() returns 0 if the processes share I/O context.
-+ * 3) kcmp() returns 0 if the processes share the same list of System V
-+ *    semaphore undo operations.
-+ * 4) kcmp() returns 0 if the processes share the same address space.
-+ */
-+
-+#define _GNU_SOURCE
-+
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <sched.h>
-+#include <sys/wait.h>
+ #endif
+diff --git a/testcases/kernel/syscalls/kcmp/kcmp01.c b/testcases/kernel/syscalls/kcmp/kcmp01.c
+index 96d6b07..3be3948 100644
+--- a/testcases/kernel/syscalls/kcmp/kcmp01.c
++++ b/testcases/kernel/syscalls/kcmp/kcmp01.c
+@@ -26,23 +26,19 @@
+ 
+ #define _GNU_SOURCE
+ 
+-#include "test.h"
+-#include "safe_macros.h"
 +#include "tst_test.h"
-+#include "kcmp.h"
-+
-+#ifndef CLONE_SYSVSEM
-+#define CLONE_SYSVSEM	0x00040000
-+#endif
-+
-+#ifndef CLONE_IO
-+#define CLONE_IO	0x80000000
-+#endif
-+
-+#define STACK_SIZE	(1024*1024)
-+
-+static int pid1;
-+static int pid2;
-+
-+static struct tcase {
-+	int clone_type;
-+	int kcmp_type;
-+} tcases[] = {
-+	{CLONE_VM, KCMP_VM},
-+	{CLONE_FS, KCMP_FS},
-+	{CLONE_IO, KCMP_IO},
-+	{CLONE_SYSVSEM, KCMP_SYSVSEM}
-+};
-+
-+static int do_child(void *arg)
+ #include "lapi/fcntl.h"
+ #include "kcmp.h"
+ 
+ #define TEST_FILE "test_file"
+ #define TEST_FILE2 "test_file2"
+ 
+-
+ static int fd1;
+ static int fd2;
+ static int fd3;
+ static int pid1;
+ static int pid2;
+ 
+-char *TCID = "kcmp01";
+-
+ static struct test_case {
+ 	int *pid1;
+ 	int *pid2;
+@@ -58,92 +54,79 @@ static struct test_case {
+ 	{&pid1, &pid2, KCMP_FILE, &fd1, &fd3, 1},
+ };
+ 
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-
+-static void cleanup(void);
+-static void setup(void);
+-static void do_child(const struct test_case *test);
+-static void cleanup_child(void);
+-
+-int main(int ac, char **av)
++static void cleanup(void)
+ {
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; ++i) {
+-			pid2 = tst_fork();
+-
+-			if (pid2 == -1)
+-				tst_brkm(TBROK, cleanup, "fork failed");
++	if (fd1 > 0 && close(fd1) < 0)
++		tst_res(TWARN | TERRNO, "close fd1 failed");
++}
+ 
+-			if (!pid2)
+-				do_child(&test_cases[i]);
+-			else
+-				tst_record_childstatus(cleanup, pid2);
+-			tst_count++;
+-		}
+-	}
++static void cleanup_child(void)
 +{
-+	pid2 = getpid();
++	if (fd2 > 0 && close(fd2) < 0)
++		tst_res(TWARN | TERRNO, "close fd2 failed");
++	fd2 = 0;
+ 
+-	cleanup();
+-	tst_exit();
++	if (fd3 > 0 && close(fd3) < 0)
++		tst_res(TWARN | TERRNO, "close fd3 failed");
++	fd3 = 0;
+ }
+ 
+ static void do_child(const struct test_case *test)
+ {
+ 	pid2 = getpid();
 +
-+	TEST(kcmp(pid1, pid2, *(int *)arg, 0, 0));
++	fd3 = SAFE_OPEN(TEST_FILE2, O_CREAT | O_RDWR, 0666);
++
+ 	fd2 = dup(fd1);
+-	fd3 = SAFE_OPEN(cleanup_child, TEST_FILE2, O_CREAT | O_RDWR, 0666);
++	if (fd2 == -1) {
++		tst_res(TFAIL | TERRNO, "dup() failed unexpectedly");
++		goto end;
++	}
+ 
+ 	TEST(kcmp(*(test->pid1), *(test->pid2), test->type,
+-			  *(test->fd1), *(test->fd2)));
++		  *(test->fd1), *(test->fd2)));
+ 
+-	if (TEST_RETURN == -1)
+-		tst_resm(TFAIL | TTERRNO, "kcmp() failed unexpectedly");
 +	if (TEST_RETURN == -1) {
 +		tst_res(TFAIL | TTERRNO, "kcmp() failed unexpectedly");
-+		return 1;
++		goto end;
 +	}
-+
-+	if (TEST_RETURN == 0) {
+ 
+ 	if ((test->exp_different && TEST_RETURN == 0)
+-		|| (test->exp_different == 0 && TEST_RETURN))
+-		tst_resm(TFAIL, "kcmp() returned %lu instead of %d",
+-				TEST_RETURN, test->exp_different);
++		|| (test->exp_different == 0 && TEST_RETURN)) {
++		tst_res(TFAIL, "kcmp() returned %lu instead of %d",
++			TEST_RETURN, test->exp_different);
++		goto end;
++	}
+ 
+ 	if ((test->exp_different == 0 && TEST_RETURN == 0)
+ 		|| (test->exp_different && TEST_RETURN))
+-		tst_resm(TPASS, "kcmp() returned the expected value");
 +		tst_res(TPASS, "kcmp() returned the expected value");
-+	} else {
-+		tst_res(TFAIL, "kcmp() returned the unexpected value");
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
+ 
+-	tst_exit();
++end:
++	cleanup_child();
+ }
+ 
+-static void cleanup_child(void)
 +static void verify_kcmp(unsigned int n)
-+{
-+	int res;
-+	void *stack;
-+
-+	struct tcase *tc = &tcases[n];
-+
+ {
+-	if (fd2 > 0 && close(fd2) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd2 failed");
+-	fd2 = 0;
+-	if (fd3 > 0 && close(fd3) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd3 failed");
+-	fd3 = 0;
+-}
++	struct test_case *tc = &test_cases[n];
+ 
+-static void setup(void)
+-{
+-	if ((tst_kvercmp(3, 5, 0)) < 0) {
+-		tst_brkm(TCONF, NULL,
+-			"This test can only run on kernels that are 3.5. and higher");
+-	}
 +	pid1 = getpid();
-+
-+	stack = SAFE_MALLOC(STACK_SIZE);
-+
-+	res = ltp_clone(tc->clone_type | SIGCHLD, do_child, &tc->kcmp_type,
-+			STACK_SIZE, stack);
-+	if (res == -1)
-+		tst_res(TFAIL | TERRNO, "clone() Failed");
-+
-+	SAFE_WAIT(NULL);
-+
-+	free(stack);
-+}
-+
+ 
+-	tst_tmpdir();
++	fd1 = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
+ 
+-	pid1 = getpid();
+-	fd1 = SAFE_OPEN(cleanup, TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
++	pid2 = SAFE_FORK();
++	if (!pid2)
++		do_child(tc);
++	else
++		SAFE_WAITPID(pid2, NULL, 0);
+ }
+ 
+-static void cleanup(void)
+-{
+-	if (fd1 > 0 && close(fd1) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd1 failed");
+-	tst_rmdir();
+-}
 +static struct tst_test test = {
-+	.tid = "kcmp03",
-+	.tcnt = ARRAY_SIZE(tcases),
++	.tid = "kcmp01",
++	.tcnt = ARRAY_SIZE(test_cases),
++	.cleanup = cleanup,
++	.forks_child = 1,
 +	.test = verify_kcmp,
-+	.min_kver = "3.5.0"
++	.min_kver = "3.5.0",
++	.needs_tmpdir = 1,
++};
+diff --git a/testcases/kernel/syscalls/kcmp/kcmp02.c b/testcases/kernel/syscalls/kcmp/kcmp02.c
+index fb651d0..943c084 100644
+--- a/testcases/kernel/syscalls/kcmp/kcmp02.c
++++ b/testcases/kernel/syscalls/kcmp/kcmp02.c
+@@ -28,8 +28,7 @@
+ 
+ #define _GNU_SOURCE
+ 
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
+ #include "lapi/fcntl.h"
+ #include "kcmp.h"
+ 
+@@ -43,10 +42,9 @@ static int pid1;
+ static int pid_unused;
+ static int fd_fake = -1;
+ 
+-char *TCID = "kcmp02";
+-
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <limits.h>
+ 
+ static struct test_case {
+ 	int *pid1;
+@@ -64,75 +62,52 @@ static struct test_case {
+ 	{&pid1, &pid1, KCMP_FILE, &fd1, &fd_fake, EBADF}
+ };
+ 
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-
+-static void cleanup(void);
+-static void setup(void);
+-static void kcmp_verify(const struct test_case *test);
+-
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++	pid1 = getpid();
++	pid_unused = tst_get_unused_pid();
+ 
+-		for (i = 0; i < TST_TOTAL; i++)
+-			kcmp_verify(&test_cases[i]);
++	fd1 = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
++	fd2 = SAFE_OPEN(TEST_FILE2, O_CREAT | O_RDWR | O_TRUNC);
++}
+ 
+-	}
++static void cleanup(void)
++{
++	if (fd1 > 0 && close(fd1) < 0)
++		tst_res(TWARN | TERRNO, "close fd1 failed");
+ 
+-	cleanup();
+-	tst_exit();
++	if (fd2 > 0 && close(fd2) < 0)
++		tst_res(TWARN | TERRNO, "close fd2 failed");
+ }
+ 
+-static void kcmp_verify(const struct test_case *test)
++static void verify_kcmp(unsigned int n)
+ {
++	struct test_case *test =  &test_cases[n];
++
+ 	TEST(kcmp(*(test->pid1), *(test->pid2), test->type,
+-			  *(test->fd1), *(test->fd2)));
++		  *(test->fd1), *(test->fd2)));
+ 
+ 	if (TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "kcmp() succeeded unexpectedly");
++		tst_res(TFAIL, "kcmp() succeeded unexpectedly");
+ 		return;
+ 	}
+ 
+ 	if (test->exp_errno == TEST_ERRNO) {
+-		tst_resm(TPASS | TTERRNO, "kcmp() returned the expected value");
++		tst_res(TPASS | TTERRNO, "kcmp() returned the expected value");
+ 		return;
+ 	}
+ 
+-	tst_resm(TFAIL | TTERRNO,
++	tst_res(TFAIL | TTERRNO,
+ 		"kcmp() got unexpected return value: expected: %d - %s",
+ 			test->exp_errno, tst_strerrno(test->exp_errno));
+ }
+ 
+-static void setup(void)
+-{
+-	if ((tst_kvercmp(3, 5, 0)) < 0) {
+-		tst_brkm(TCONF, NULL,
+-			"This test can only run on kernels that are 3.5. and higher");
+-	}
+-
+-	tst_tmpdir();
+-
+-	pid1 = getpid();
+-	pid_unused = tst_get_unused_pid(cleanup);
+-	fd1 = SAFE_OPEN(cleanup, TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
+-	fd2 = SAFE_OPEN(cleanup, TEST_FILE2, O_CREAT | O_RDWR | O_TRUNC);
+-
+-}
+-
+-static void cleanup(void)
+-{
+-	if (fd1 > 0 && close(fd1) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd1 failed");
+-
+-	if (fd2 > 0 && close(fd2) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd2 failed");
+-	tst_rmdir();
+-
+-}
++static struct tst_test test = {
++	.tid = "kcmp02",
++	.tcnt = ARRAY_SIZE(test_cases),
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = verify_kcmp,
++	.min_kver = "3.5.0",
++	.needs_tmpdir = 1
 +};
 -- 
 1.8.3.1
