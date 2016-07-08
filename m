@@ -1,43 +1,119 @@
-From: shuang.qiu@oracle.com <shuang.qiu@oracle.com>
-Date: Fri,  8 Jul 2016 14:49:02 +0800
-Subject: [LTP]  [PATCH] cgroup_fj/cgroup_fj_common.sh:cpuset prefix issue
-Message-ID: <1467960542-5177-1-git-send-email-shuang.qiu@oracle.com>
+From: FIXED-TERM Rempel Oleksij (CM/ESO3) <fixed-term.Oleksij.Rempel@de.bosch.com>
+Date: Fri, 8 Jul 2016 10:57:16 +0000
+Subject: [LTP] updating message_queue_test_02_*
+In-Reply-To: <c5da00d5b67d484d9c8b23ede1b3746f@SGPMBX1022.APAC.bosch.com>
+References: <577E4340.4060208@de.bosch.com> <577E535F.2040606@de.bosch.com>
+ <c5da00d5b67d484d9c8b23ede1b3746f@SGPMBX1022.APAC.bosch.com>
+Message-ID: <f63310d9c63440bbb1c3372a459d3582@FE-MBX1024.de.bosch.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-From: Shuang Qiu <shuang.qiu@oracle.com>
+Hi  Nga,
 
-Sometimes there is no cpuset. prefix for cpuset subsystem.
-Try either $mount_point/XXXX or $mount_point/cpuset.XXXX.
+thank you.
+Since this tests depend on each other, it makes sense to merge them to one.
+For example create:
+./testcases/bin/message_queue_test_02.sh
 
-Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
----
- .../controllers/cgroup_fj/cgroup_fj_common.sh      |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+And use message_queue_test_02.sh instead of message_queue_test_02_* in the test list.
+This will still not fix the issue with custom tmp folder, but will not block testing on reset or random test execution.
 
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-index df2cbfc..13e2938 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
-@@ -69,8 +69,13 @@ create_subgroup()
-     # cpuset.cpus and cpuset.mems must be initialized with suitable value
-     # before any pids are attached
-     if [ "$subsystem" == "cpuset" ]; then
--        ROD cat "$mount_point/cpuset.cpus" \> "$path/cpuset.cpus"
--        ROD cat "$mount_point/cpuset.mems" \> "$path/cpuset.mems"
-+        if [ -e "$mount_point/cpus" ]; then
-+            ROD cat "$mount_point/cpus" \> "$path/cpus"
-+            ROD cat "$mount_point/mems" \> "$path/mems"
-+        else
-+            ROD cat "$mount_point/cpuset.cpus" \> "$path/cpuset.cpus"
-+            ROD cat "$mount_point/cpuset.mems" \> "$path/cpuset.mems"
-+        fi
-     fi
- }
- 
--- 
-1.7.9.5
+LTP devs, any objections here?
+If no, Nga, can you please provide a patch for it?
 
+
+     _____________________________________________
+     From: Hoang Thi Thuy Nga (RBVH/ENG2)
+     Sent: Friday, July 08, 2016 11:25 AM
+     To: FIXED-TERM Rempel Oleksij (CM/ESO3) <fixed-term.Oleksij.Rempel@de.bosch.com>; ltp@lists.linux.it; Le Cong Binh (RBVH/ENG2) <Binh.LeCong@vn.bosch.com>
+     Cc: Tran Thanh Lam (RBVH/ENG2) <Lam.TranThanh2@vn.bosch.com>
+     Subject: RE: [LTP] updating message_queue_test_02_*
+
+
+     Hi Oleksij,
+
+     Some observations from our side:
+-       In other to run message_queue_test_02_snd, message_queue_test_02_rcv, message_queue_test_02_ctl successfully, we need to run message_queue_test_02_get before.
+      Because message_queue_test_02_get will create file /tmp/message_queue_test as well as create generate message queue identifier which will be used in the other three.
+-       message_queue_test_02_snd, message_queue_test_02_rcv, message_queue_test_02_ctl doesn’t work with –f to specify another location for project name in case the message queue identifier not yet generated along with the file
+
+     message_queue_test_02_get.c
+
+         int main(int argc, char **argv),
+     {
+        key_t key;              /* Unique key */
+        int msqid;              /* Message queue identifier */
+        int fd;                 /* Temp file descriptor */
+        mode_t mode = 0777;     /* Default mode bits */
+
+        /*
+         * Parse command line options
+         */
+        parse_args(argc, argv);
+
+        if ((fd = open(project_name, O_CREAT | O_RDWR, mode)) < 0)
+                sys_error("open failed", __LINE__);
+
+        if (close(fd) < 0)
+                sys_error("close failed", __LINE__);
+
+        if ((key = ftok(project_name, project_id)) < 0)
+                sys_error("ftok failed", __LINE__);
+
+        if ((msqid = msgget(key, IPC_CREAT | S_IRUSR | S_IWUSR)) < 0)
+                sys_error("msgget failed", __LINE__);
+
+        printf("%d\n", msqid);
+
+        return (0);
+     }
+
+
+     Trân trọng / Best regards
+
+     Nga Hoang Thi Thuy
+     RBVH/ENG2
+
+     Tel. +49(711)8113624527
+
+
+
+     -----Original Message-----
+     From: FIXED-TERM Rempel Oleksij (CM/ESO3)
+     Sent: Thursday, July 07, 2016 8:05 PM
+     To: ltp@lists.linux.it<mailto:ltp@lists.linux.it>; Le Cong Binh (RBVH/ENG2) <Binh.LeCong@vn.bosch.com<mailto:Binh.LeCong@vn.bosch.com>>; Hoang Thi Thuy Nga (RBVH/ENG2) <Nga.HoangThiThuy@vn.bosch.com<mailto:Nga.HoangThiThuy@vn.bosch.com>>
+     Subject: Re: [LTP] updating message_queue_test_02_*
+
+     On 07.07.2016 13:55, fixed-term.Oleksij.Rempel wrote:
+     > Hallo all,
+     >
+     > it is kind of a duplication of this case:
+     > https://github.com/linux-test-project/ltp/issues/75
+     >
+     > some of message_queue_test_02_* are fail on our configuration, it looks
+     > like the reason is hardcoded tmp path, which is different in our test setup.
+     >
+     > Looks like this tests should be updated to use current ltp bindings..
+     > which should also fix this issue.  Do any one already working on it? If
+     > not, me or some of us will try to do it.
+     >
+
+     hm...
+     to execute *message_queue_test_02_rcv* properly, first should be
+     *message_queue_test_02_snd* executed. And most important, target should
+     not be reseted after message_queue_test_02_snd. If this happens,
+     message_queue_test_02_rcv will hang forever.
+     It is not looks like proper behaviour (it is not theoretical assumption.).
+
+     May be message_queue_test_02_rcv should be wrapped by a script which
+     will start rcv in background and then send after short sleep?
+     And some how make sure that message_queue_test_02_rcv wont wait forever?
+
+     Any comments?
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160708/1633b955/attachment-0001.html>
