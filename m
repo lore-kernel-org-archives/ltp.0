@@ -1,49 +1,37 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 11 Jul 2016 19:57:25 +0800
-Subject: [LTP] [PATCH] zram: extend the zram3 disksize to 40MB
-Message-ID: <1468238245-25535-1-git-send-email-liwang@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 11 Jul 2016 08:19:30 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls/mmap16: close open files in cleanup path
+In-Reply-To: <1467384925-24792-1-git-send-email-peter.maydell@linaro.org>
+References: <1467384925-24792-1-git-send-email-peter.maydell@linaro.org>
+Message-ID: <1194994844.3639216.1468239570693.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-It failed to format btrfs on /dev/zram3 device since the
-disk size is too small (btrfs-progs is v4.4.1).
 
-The error msg we catched:
+----- Original Message -----
+> From: "Peter Maydell" <peter.maydell@linaro.org>
+> To: ltp@lists.linux.it
+> Cc: patches@linaro.org
+> Sent: Friday, 1 July, 2016 4:55:25 PM
+> Subject: [LTP] [PATCH] syscalls/mmap16: close open files in cleanup path
+> 
+> If the mmap16 test fails while the do_test() function
+> still has its filedescriptor open, the cleanup function's
+> attempt to unmount will fail with EBUSY, resulting in a
+> lot of noise in the test log, a leaked mounted filesystem
+> and unnecessary test failures later in the run.
+> 
+> Make the do_test() file descriptor global so we can
+> close it in the cleanup function if necessary.
+> 
+> Signed-off-by: Peter Maydell <peter.maydell@linaro.org>
 
-zram01 3 TINFO : make ext3 filesystem on /dev/zram0
-zram01 3 TINFO : make ext4 filesystem on /dev/zram1
-zram01 3 TINFO : make xfs filesystem on /dev/zram2
-zram01 3 TINFO : make btrfs filesystem on /dev/zram3
-'/dev/zram3' is too small to make a usable filesystem
-Minimum size for each btrfs device is 41943040.
-btrfs-progs v4.4.1
-See http://btrfs.wiki.kernel.org for more information.
-zram01 3 TFAIL : failed to make btrfs on /dev/zram3
-zram01 4 TINFO : zram cleanup
+Hi,
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/device-drivers/zram/zram01.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+pushed with small change, which treats uninitialized fd as -1, not 0.
 
-diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
-index 26dae90..caa0e05 100755
---- a/testcases/kernel/device-drivers/zram/zram01.sh
-+++ b/testcases/kernel/device-drivers/zram/zram01.sh
-@@ -39,8 +39,8 @@ zram_max_streams="2 3 5 8"
- # not support mem suffixes, in some newer kernels, they use
- # memparse() which supports mem suffixes. So here we just use
- # bytes to make sure everything works correctly.
--zram_sizes="26214400 26214400 26214400 26214400" # 25MB
--zram_mem_limits="25M 25M 25M 25M"
-+zram_sizes="26214400 26214400 26214400 41943040" # 25MB, 40MB for btrfs
-+zram_mem_limits="25M 25M 25M 40M"
- zram_filesystems="ext3 ext4 xfs btrfs"
- zram_algs="lzo lzo lzo lzo"
- 
--- 
-1.8.3.1
-
+Regards,
+Jan
