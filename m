@@ -1,77 +1,49 @@
-From: Ye Xiaolong <xiaolong.ye@intel.com>
-Date: Mon, 11 Jul 2016 13:08:55 +0800
-Subject: [LTP] [lkp] [ext4]  5405511e1a: ltp.acl_test01.fail]
-In-Reply-To: <20160711031553.GP26097@thunk.org>
-References: <20160711015954.GA15084@yexl-desktop>
- <20160711031553.GP26097@thunk.org>
-Message-ID: <20160711050855.GA17071@yexl-desktop>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 11 Jul 2016 19:57:25 +0800
+Subject: [LTP] [PATCH] zram: extend the zram3 disksize to 40MB
+Message-ID: <1468238245-25535-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi, Theodore
+It failed to format btrfs on /dev/zram3 device since the
+disk size is too small (btrfs-progs is v4.4.1).
 
-On Sun, Jul 10, 2016 at 11:15:53PM -0400, Theodore Ts'o wrote:
->On Mon, Jul 11, 2016 at 09:59:54AM +0800, kernel test robot wrote:
->> 
->> FYI, we noticed the following commit:
->> 
->> https://github.com/0day-ci/linux Vegard-Nossum/ext4-validate-number-of-clusters-in-group/20160708-041426
->> commit 5405511e1a984ab644fa9e29a0d3d958b835ab75 ("ext4: validate number of meta clusters in group")
->
->Hi, many thanks for the report.  One question -- is there some way the
->reporting could be speeded up?  Vegard's patch was sent late on the
->7th, and it looks like it hit the 0day-ci git repo a few hours later
->on the 8th, and was run early in the morning Chinese time.  Was the
->delay until the 11th due to the weekend and the desire to have a human
->sanity check the result?  Is that because there was a concern that
->there would be too many false positives?
+The error msg we catched:
 
-Yes, you're right, although we have auto report feature (which has much
-less delay) for high confidence errors/regressions detected, we still need
-human sanity check for other cases to avoid too many false positives, it
-will introduce some delays especially in weekend, sorry for that. We'll
-improve our auto report part to cover more sensible cases.
+zram01 3 TINFO : make ext3 filesystem on /dev/zram0
+zram01 3 TINFO : make ext4 filesystem on /dev/zram1
+zram01 3 TINFO : make xfs filesystem on /dev/zram2
+zram01 3 TINFO : make btrfs filesystem on /dev/zram3
+'/dev/zram3' is too small to make a usable filesystem
+Minimum size for each btrfs device is 41943040.
+btrfs-progs v4.4.1
+See http://btrfs.wiki.kernel.org for more information.
+zram01 3 TFAIL : failed to make btrfs on /dev/zram3
+zram01 4 TINFO : zram cleanup
 
->
->Also, if there was some way the 0day robot report could include a
->In-Reply-To: header to the patch being sent to the mailing list (in
->this case: <577EB740.10502@oracle.com>), it would make this even
->*more* useful.
->
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/kernel/device-drivers/zram/zram01.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Good point! We'll add this feature later.
+diff --git a/testcases/kernel/device-drivers/zram/zram01.sh b/testcases/kernel/device-drivers/zram/zram01.sh
+index 26dae90..caa0e05 100755
+--- a/testcases/kernel/device-drivers/zram/zram01.sh
++++ b/testcases/kernel/device-drivers/zram/zram01.sh
+@@ -39,8 +39,8 @@ zram_max_streams="2 3 5 8"
+ # not support mem suffixes, in some newer kernels, they use
+ # memparse() which supports mem suffixes. So here we just use
+ # bytes to make sure everything works correctly.
+-zram_sizes="26214400 26214400 26214400 26214400" # 25MB
+-zram_mem_limits="25M 25M 25M 25M"
++zram_sizes="26214400 26214400 26214400 41943040" # 25MB, 40MB for btrfs
++zram_mem_limits="25M 25M 25M 40M"
+ zram_filesystems="ext3 ext4 xfs btrfs"
+ zram_algs="lzo lzo lzo lzo"
+ 
+-- 
+1.8.3.1
 
-Thanks,
-Xiaolong
-
->
->Vegard, I'm guessing you didn't have a chance to test your patch
->before you sent it to the list?
->
->		bit_max = ext4_num_clusters_in_group(sb, i);
->		if ((bit_max >> 3) >= sb->s_blocksize) {
->			ext4_msg(sb, KERN_WARNING, "clusters in "
->	  			  "group %u exceeds block size", i);
->			goto failed_mount;
->		}
->
->
->This is the test which is failing, but it will fail by default on
->pretty much all ext4 file systems, since by default there will be
->32768 blocks (clusters) per group, with a 4k block size (and 32768 >>
->3 == 4096).  And in the test that failed, this was a 1k block size
->with 8192 blocks per blocks (and 8192 >> 3 == 1024).
->
->Anyway, as I mentioned before, I'd much rather do very specific sanity
->checking on superblock fields, instead of sanity checking calculated
->values such as ext4_num_clusters_in_group().
->
->Perhaps the easist thing to do is to run e2fsck -n on those file
->systems that are causing problems?
->
->Cheers,
->
->						- Ted
