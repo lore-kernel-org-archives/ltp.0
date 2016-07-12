@@ -1,34 +1,56 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 12 Jul 2016 17:22:37 +0800
-Subject: [LTP] [PATCH] swapping: replace mem_free by mem_available
-In-Reply-To: <1468302679-29651-1-git-send-email-liwang@redhat.com>
-References: <1468302679-29651-1-git-send-email-liwang@redhat.com>
-Message-ID: <CAEemH2ePcGqVajks4x7LRVBoz88kN386XY3Yb3YwdpyGuccyew@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 12 Jul 2016 15:38:24 +0200
+Subject: [LTP] [PATCH] syscalls/mmap16: close open files in cleanup path
+In-Reply-To: <1497887326.3689343.1468245872467.JavaMail.zimbra@redhat.com>
+References: <1467384925-24792-1-git-send-email-peter.maydell@linaro.org>
+ <1194994844.3639216.1468239570693.JavaMail.zimbra@redhat.com>
+ <CAFEAcA_5+0TQMr4iQSD2ogCRXyB9Jii6x-5xO8-j1M7zRStWFQ@mail.gmail.com>
+ <1497887326.3689343.1468245872467.JavaMail.zimbra@redhat.com>
+Message-ID: <20160712133824.GB2651@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Sorry, there is one more thing I forgot to take care, the
-"MemAvailable:" I invovled is not exist in all kernels
-(e.g. kernel < 3.14). So this patch is not applicable to
-all distributions, such as Fedora 19. :(
+Hi!
+> > after the SAFE_CLOSE() line? doc/test-writing-guidelines.txt
+> > says "The SAFE_CLOSE() function also sets the passed file
+> > descriptor to -1 after it's successfully closed.", so if
+> > that's not correct we should fix the docs.
+> 
+> It's true for newlib, but not for oldlib. I think we should
+> rather fix oldlib SAFE_CLOSE to match the docs, so I dropped
+> the line:
+> 
+> include/old/safe_macros.h:
+> #define SAFE_CLOSE(cleanup_fn, fildes)  \
+>         safe_close(__FILE__, __LINE__, (cleanup_fn), (fildes))
+> 
+> I'll send a patch for oldlib SAFE_CLOSE.
 
-$ cat /etc/redhat-release
-Fedora release 19 (Schrödinger’s Cat)
+I avoided changing the oldlib in order not to introduce any regressions.
+There may be code that depends on the fd > 0 even after the close, it's
+unlikely but possible.
 
-$ cat /proc/meminfo
-MemTotal:        7654500 kB
-MemFree:          507388 kB
-Buffers:           87280 kB
-Cached:          1145736 kB
-...
+I'm OK with changing it, I just avoided to do so in the patch that added
+the new library API.
 
-I will compose a new patch to solve the limitation.
+> > That doc also gives an example (in section 2.2.1) that
+> > says "Since global variables are initialized to zero we can
+> > just check that fd > 0 before we attempt to close it.",
+> > which is why I used 0 rather than -1. If current preferred
+> > test style has changed it would be nice to update the
+> > example code.
+> 
+> Hmm. Cyril, can we guarantee that testcase won't open fd 0?
+> Would that apply for both newlib and oldlib?
 
+Well the fd 0 always points to STDIN, so unless the test actively closes
+it this will work. There may be testcases that does that, and would
+require special treatement, but I'm pretty sure that these are in single
+numbers.
 
-Li Wang
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160712/9dbe0af0/attachment.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
