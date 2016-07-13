@@ -1,13 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 13 Jul 2016 09:20:01 -0400 (EDT)
-Subject: [LTP] [PATCH] safe_macros: match oldlib SAFE_CLOSE with docs
-In-Reply-To: <20160713125117.GC2232@rei.scz.novell.com>
-References: <c173ae5fd35390cdf47c0fed09577c0c0edab814.1468247097.git.jstancek@redhat.com>
- <20160712135542.GD2651@rei.suse.cz>
- <1283099046.4208400.1468339858052.JavaMail.zimbra@redhat.com>
- <442527119.4450656.1468414366190.JavaMail.zimbra@redhat.com>
- <20160713125117.GC2232@rei.scz.novell.com>
-Message-ID: <316514866.4459432.1468416001390.JavaMail.zimbra@redhat.com>
+Date: Wed, 13 Jul 2016 09:31:40 -0400 (EDT)
+Subject: [LTP] [PATCH] cgroup_fj/cgroup_fj_common.sh:cpuset prefix issue
+In-Reply-To: <1468338221-4074-1-git-send-email-shuang.qiu@oracle.com>
+References: <1468338221-4074-1-git-send-email-shuang.qiu@oracle.com>
+Message-ID: <2080549983.4465369.1468416700370.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,41 +13,25 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Wednesday, 13 July, 2016 2:51:17 PM
-> Subject: Re: [LTP] [PATCH] safe_macros: match oldlib SAFE_CLOSE with docs
+> From: "shuang qiu" <shuang.qiu@oracle.com>
+> To: ltp@lists.linux.it
+> Sent: Tuesday, 12 July, 2016 5:43:41 PM
+> Subject: [LTP]  [PATCH] cgroup_fj/cgroup_fj_common.sh:cpuset prefix issue
 > 
-> Hi!
-> > > That was the plan, but I didn't get to that today.
-> > > 
-> > > I was thinking syscalls as well, since most common failure seems
-> > > to be errno tests, trying to trigger EBADF, etc.
-> > > 
-> > > I'll reply once I have results.
-> > > 
-> > > Regards,
-> > > Jan
-> > > 
-> > > > 
-> > > > I do not expect that this will break anything, but there it's a
-> > > > possibility.
-> > 
-> > I ran syscalls (+small selection of other tests) on x86_64, ppc64le
-> > and s390x. Only failure was inotify06, but it turned out, that kernel
-> > didn't have a patch for this specific failure [1]. It failed with or
-> > without oldlib SAFE_CLOSE patch. inotify06 passed with 4.7.0-rc7+.
+> From: Shuang Qiu <shuang.qiu@oracle.com>
 > 
-> Thanks for the testing. Patch is acked.
+> As the legacy of:
+>   commit 8793d854edbc2774943a4b0de3304dc73991159a
+>   Author: Paul Menage <menage@google.com>
+>   Date:   Thu Oct 18 23:39:39 2007 -0700
+>   Task Control Groups: make cpusets a client of cgroups
+> there is no cpuset. prefix for cpuset subsystem if ever mount it as cpuset
+> type.
+> So try either $mount_point/XXXX or $mount_point/cpuset.XXXX.
+> 
+> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
 
-Pushed.
+Pushed with small tweaks to commit message.
 
 Regards,
 Jan
-
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
