@@ -1,48 +1,57 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 13 Jul 2016 15:12:08 +0200
-Subject: [LTP] [PATCH] lib: add tst_read_meminfo / tst_get_avail_mem
-In-Reply-To: <20160713093505.GA6033@gmail.com>
-References: <cad01181438a055f45b32fc28b33a8b8da74b768.1465903335.git.jstancek@redhat.com>
- <CAEemH2fGEGXftvF_HttR18KSbp8YRL_zaMhb38MQ4cpXqr-fMg@mail.gmail.com>
- <1589618283.6491776.1465976075619.JavaMail.zimbra@redhat.com>
- <57614F55.9090407@redhat.com> <20160616052544.GA18852@gmail.com>
- <1809783770.6955910.1466060898915.JavaMail.zimbra@redhat.com>
- <20160713093505.GA6033@gmail.com>
-Message-ID: <57863E28.7020309@redhat.com>
+Date: Wed, 13 Jul 2016 09:20:01 -0400 (EDT)
+Subject: [LTP] [PATCH] safe_macros: match oldlib SAFE_CLOSE with docs
+In-Reply-To: <20160713125117.GC2232@rei.scz.novell.com>
+References: <c173ae5fd35390cdf47c0fed09577c0c0edab814.1468247097.git.jstancek@redhat.com>
+ <20160712135542.GD2651@rei.suse.cz>
+ <1283099046.4208400.1468339858052.JavaMail.zimbra@redhat.com>
+ <442527119.4450656.1468414366190.JavaMail.zimbra@redhat.com>
+ <20160713125117.GC2232@rei.scz.novell.com>
+Message-ID: <316514866.4459432.1468416001390.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 07/13/2016 11:35 AM, Li Wang wrote:
-> Jan,
+
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Wednesday, 13 July, 2016 2:51:17 PM
+> Subject: Re: [LTP] [PATCH] safe_macros: match oldlib SAFE_CLOSE with docs
 > 
-> On Thu, Jun 16, 2016 at 03:08:18AM -0400, Jan Stancek wrote:
->>
->> I'm now considering exposing just a parse function, I'd like to
->> avoid having separate function for each proc file. And possibly
->> more than one since those 2 proc files you mentioned don't have
->> uniform format for all content.
+> Hi!
+> > > That was the plan, but I didn't get to that today.
+> > > 
+> > > I was thinking syscalls as well, since most common failure seems
+> > > to be errno tests, trying to trigger EBADF, etc.
+> > > 
+> > > I'll reply once I have results.
+> > > 
+> > > Regards,
+> > > Jan
+> > > 
+> > > > 
+> > > > I do not expect that this will break anything, but there it's a
+> > > > possibility.
+> > 
+> > I ran syscalls (+small selection of other tests) on x86_64, ppc64le
+> > and s390x. Only failure was inotify06, but it turned out, that kernel
+> > didn't have a patch for this specific failure [1]. It failed with or
+> > without oldlib SAFE_CLOSE patch. inotify06 passed with 4.7.0-rc7+.
 > 
-> How is the parse function going?
+> Thanks for the testing. Patch is acked.
 
-Latest idea attached.
-
-It's similar to SAFE_FILE_SCANF, but it scanfs each line and first
-matching all scanf directives wins and terminates search, otherwise
-you get non-zero ret code. For example:
-
-if (SAFE_FILE_LINES_SCANF("/proc/meminfo", "MemFree: %ld", &free))
-        tst_brk(TBROK, "Could not parse MemFree");
+Pushed.
 
 Regards,
 Jan
 
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-lib-add-SAFE_FILE_LINES_SCANF.patch
-Type: text/x-patch
-Size: 5623 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160713/54918c2b/attachment.bin>
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
