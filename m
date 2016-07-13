@@ -1,39 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 13 Jul 2016 10:59:01 +0200
-Subject: [LTP] [PATCH] zram: extend the zram3 disksize to 40MB
-In-Reply-To: <1468238245-25535-1-git-send-email-liwang@redhat.com>
-References: <1468238245-25535-1-git-send-email-liwang@redhat.com>
-Message-ID: <20160713085901.GA2448@rei.scz.novell.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 13 Jul 2016 17:35:05 +0800
+Subject: [LTP] [PATCH] lib: add tst_read_meminfo / tst_get_avail_mem
+In-Reply-To: <1809783770.6955910.1466060898915.JavaMail.zimbra@redhat.com>
+References: <cad01181438a055f45b32fc28b33a8b8da74b768.1465903335.git.jstancek@redhat.com>
+ <CAEemH2fGEGXftvF_HttR18KSbp8YRL_zaMhb38MQ4cpXqr-fMg@mail.gmail.com>
+ <1589618283.6491776.1465976075619.JavaMail.zimbra@redhat.com>
+ <57614F55.9090407@redhat.com> <20160616052544.GA18852@gmail.com>
+ <1809783770.6955910.1466060898915.JavaMail.zimbra@redhat.com>
+Message-ID: <20160713093505.GA6033@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> It failed to format btrfs on /dev/zram3 device since the
-> disk size is too small (btrfs-progs is v4.4.1).
+Jan,
+
+On Thu, Jun 16, 2016 at 03:08:18AM -0400, Jan Stancek wrote:
 > 
-> The error msg we catched:
-> 
-> zram01 3 TINFO : make ext3 filesystem on /dev/zram0
-> zram01 3 TINFO : make ext4 filesystem on /dev/zram1
-> zram01 3 TINFO : make xfs filesystem on /dev/zram2
-> zram01 3 TINFO : make btrfs filesystem on /dev/zram3
-> '/dev/zram3' is too small to make a usable filesystem
-> Minimum size for each btrfs device is 41943040.
-> btrfs-progs v4.4.1
-> See http://btrfs.wiki.kernel.org for more information.
-> zram01 3 TFAIL : failed to make btrfs on /dev/zram3
-> zram01 4 TINFO : zram cleanup
+> I'm now considering exposing just a parse function, I'd like to
+> avoid having separate function for each proc file. And possibly
+> more than one since those 2 proc files you mentioned don't have
+> uniform format for all content.
 
-I've got the exact same failure with btrfs-progs 4.5.1 just recently,
-the fix looks good to me.
+How is the parse function going?
 
-And btw it looks like we need to increase the default loop device size
-again since btrfs-progs 4.5.1 seems to request at least 136MB for mkfs01
-test...
+As there comes more and more places need get_mem_avaliable(), my opinion
+is that we can apply your walk_file_lines() patch first, and let the
+/proc/meminfo could be read by this lib. Then if we need more proc/files info
+in future, adding new separate function is also accepted.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+After all, we had discussed that one parse function for each proc file
+is very hard to achive.
+
+Regards,
+Li Wang
