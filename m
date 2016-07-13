@@ -1,126 +1,74 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 13 Jul 2016 14:28:14 +0200
-Subject: [LTP] [PATCH 2/2] lgetxattr/lgetxattr02.c: add new testcase
-In-Reply-To: <1466149404-22555-2-git-send-email-huangjb.jy@cn.fujitsu.com>
-References: <1466149404-22555-1-git-send-email-huangjb.jy@cn.fujitsu.com>
- <1466149404-22555-2-git-send-email-huangjb.jy@cn.fujitsu.com>
-Message-ID: <20160713122814.GB2232@rei.scz.novell.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 13 Jul 2016 08:52:46 -0400 (EDT)
+Subject: [LTP] [PATCH] safe_macros: match oldlib SAFE_CLOSE with docs
+In-Reply-To: <1283099046.4208400.1468339858052.JavaMail.zimbra@redhat.com>
+References: <c173ae5fd35390cdf47c0fed09577c0c0edab814.1468247097.git.jstancek@redhat.com>
+ <20160712135542.GD2651@rei.suse.cz>
+ <1283099046.4208400.1468339858052.JavaMail.zimbra@redhat.com>
+Message-ID: <442527119.4450656.1468414366190.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +* Description:
-> +* 1) lgetxattr(2) fails if the named attribute does not exist
-> +*    or the process has no access to this attribute.
-> +* 2) lgetxattr(2) fails if the size of the value buffer is too small
-> +*    to hold the result.
-> +* 3) lgetxattr(2) fails when attemptes to read from a invalid address.
-> +*
-> +* Expected Result:
-> +* 1) lgetxattr(2) should return -1 and set errno to ENOATTR.
-> +* 2) lgetxattr(2) should return -1 and set errno to ERANGE.
-> +* 3) lgetxattr(2) should return -1 and set errno to EFAULT.
-> +*/
-> +
-> +#include "config.h"
-> +#include <errno.h>
-> +#include <sys/types.h>
-> +
-> +#ifdef HAVE_ATTR_XATTR_H
-> +#include <attr/xattr.h>
-> +#endif
-> +
-> +#include "tst_test.h"
-> +
-> +#ifdef HAVE_ATTR_XATTR_H
-> +
-> +#define SECURITY_KEY	"security.ltptest"
-> +#define VALUE	"this is a test value"
-> +#define VALUE_SIZE	20
 
-Here again, define the VALUE_SIZE to sizeof(VALUE) or (sizeof(VALUE)-1)
-if you want to avoid the terminating null character.
 
-> +static struct test_case {
-> +	const char *path;
-> +	size_t size;
-> +	int exp_err;
-> +} tc[] = {
-> +	{"testfile", 19, ENOATTR},
-                      ^
-		      Shouldn't this be VALUE_SIZE?
-> +	{"symlink", 1, ERANGE},
-> +	{(char *)-1, 20, EFAULT}
-                     ^
-                     And this as well?
-> +};
-> +
-> +static void verify_lgetxattr(unsigned int n)
-> +{
-> +	struct test_case *t = tc + n;
-> +	char buf[t->size];
-> +
-> +	TEST(lgetxattr(t->path, SECURITY_KEY, buf, tc->size));
-                                                   ^
-						   t->size ?
+----- Original Message -----
+> From: "Jan Stancek" <jstancek@redhat.com>
+> To: "Cyril Hrubis" <chrubis@suse.cz>
+> Cc: ltp@lists.linux.it
+> Sent: Tuesday, 12 July, 2016 6:10:58 PM
+> Subject: Re: [LTP] [PATCH] safe_macros: match oldlib SAFE_CLOSE with docs
+> 
+> 
+> 
+> 
+> 
+> ----- Original Message -----
+> > From: "Cyril Hrubis" <chrubis@suse.cz>
+> > To: "Jan Stancek" <jstancek@redhat.com>
+> > Cc: ltp@lists.linux.it
+> > Sent: Tuesday, 12 July, 2016 3:55:43 PM
+> > Subject: Re: [LTP] [PATCH] safe_macros: match oldlib SAFE_CLOSE with docs
+> > 
+> > Hi!
+> > > Docs say that SAFE_CLOSE() sets the passed file descriptor to -1
+> > > after it's successfully closed, but oldlib SAFE_CLOSE doesn't
+> > > do that.
+> > 
+> > Have you tried to run at least syscalls testsuite after this change?
+> 
+> That was the plan, but I didn't get to that today.
+> 
+> I was thinking syscalls as well, since most common failure seems
+> to be errno tests, trying to trigger EBADF, etc.
+> 
+> I'll reply once I have results.
+> 
+> Regards,
+> Jan
+> 
+> > 
+> > I do not expect that this will break anything, but there it's a
+> > possibility.
 
-						   or even better
-						   sizeof(buf)
-> +	if (TEST_RETURN != -1) {
-> +		tst_res(TFAIL, "lgetxattr() succeeded unexpectedly");
+I ran syscalls (+small selection of other tests) on x86_64, ppc64le
+and s390x. Only failure was inotify06, but it turned out, that kernel
+didn't have a patch for this specific failure [1]. It failed with or
+without oldlib SAFE_CLOSE patch. inotify06 passed with 4.7.0-rc7+.
 
-Ff you do return here would be no need for else branch and the code
-below would be intended only by one tab.
+Regards,
+Jan
 
-> +	} else {
-> +		if (TEST_ERRNO != t->exp_err) {
-> +			tst_res(TFAIL | TTERRNO, "lgetxattr() failed "
-> +				"unexpectedlly, expected %s",
-> +				tst_strerrno(t->exp_err));
-> +		} else {
-> +			tst_res(TPASS | TTERRNO,
-> +				"lgetxattr() failed as expected");
-> +		}
-> +	}
-> +}
-> +
-> +static void setup(void)
-> +{
-> +	int n;
-> +
-> +	SAFE_TOUCH("testfile", 0644, NULL);
-> +
-> +	SAFE_SYMLINK("testfile", "symlink");
-> +
-> +	n = lsetxattr("symlink", SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
-> +	if (n == -1) {
-> +		if (errno == ENOTSUP) {
-> +			tst_brk(TCONF, "no xattr support in fs or "
-> +				"mounted without user_xattr option");
-> +		} else {
-> +			tst_brk(TBROK | TERRNO, "lsetxattr() failed");
-> +		}
-> +	}
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tid = "lgetxattr02",
-> +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-> +	.test = verify_lgetxattr,
-> +	.tcnt = ARRAY_SIZE(tc),
-> +	.setup = setup,
-> +};
-> +
-> +#else /* HAVE_ATTR_XATTR_H */
-> +	TST_TEST_TCONF("<attr/xattr.h> does not exist.");
-> +#endif
+[1] https://patchwork.kernel.org/patch/8953231/
 
-Otherwise this looks good.
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> > 
+> > --
+> > Cyril Hrubis
+> > chrubis@suse.cz
+> > 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
