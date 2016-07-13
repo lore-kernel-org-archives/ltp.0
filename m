@@ -1,48 +1,186 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 12 Jul 2016 12:10:58 -0400 (EDT)
-Subject: [LTP] [PATCH] safe_macros: match oldlib SAFE_CLOSE with docs
-In-Reply-To: <20160712135542.GD2651@rei.suse.cz>
-References: <c173ae5fd35390cdf47c0fed09577c0c0edab814.1468247097.git.jstancek@redhat.com>
- <20160712135542.GD2651@rei.suse.cz>
-Message-ID: <1283099046.4208400.1468339858052.JavaMail.zimbra@redhat.com>
+From: fixed-term.Oleksij.Rempel <fixed-term.Oleksij.Rempel@de.bosch.com>
+Date: Wed, 13 Jul 2016 06:52:24 +0200
+Subject: [LTP] updating message_queue_test_02_*
+In-Reply-To: <1468384528972.33794@vn.bosch.com>
+References: <577E4340.4060208@de.bosch.com> <577E535F.2040606@de.bosch.com>
+ <c5da00d5b67d484d9c8b23ede1b3746f@SGPMBX1022.APAC.bosch.com>
+ <f63310d9c63440bbb1c3372a459d3582@FE-MBX1024.de.bosch.com>
+ <ce7e60e37813403a98b3594aec354d06@SGPMBX1022.APAC.bosch.com>
+ <57835D54.2020803@de.bosch.com> <1468384528972.33794@vn.bosch.com>
+Message-ID: <5785C908.7040908@de.bosch.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+Hi Nga,
+
+i'll paste the patch here for review, next time it need to be send with
+git send-mail...
+
++#!/bin/sh
++
+
+if i see it correctly, message_queue_test_02_get will block execution so
+message_queue_test_02_snd should be done first with error checking.
+
++./message_queue_test_02_get
++./message_queue_test_02_snd
+
+something like:
+
+message_queue_test_02_snd || exit $?
+message_queue_test_02_get || exit $?
+
+since this tests depend on each other, probably each of them should be
+checked for return value.
 
 
++./message_queue_test_02_rcv
++./message_queue_test_02_ctl -r
 
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Tuesday, 12 July, 2016 3:55:43 PM
-> Subject: Re: [LTP] [PATCH] safe_macros: match oldlib SAFE_CLOSE with docs
+On 13.07.2016 06:35, Hoang Thi Thuy Nga (RBVH/ENG2) wrote:
+> Hi Oleksij and all, 
 > 
-> Hi!
-> > Docs say that SAFE_CLOSE() sets the passed file descriptor to -1
-> > after it's successfully closed, but oldlib SAFE_CLOSE doesn't
-> > do that.
+> Attachment is the patch file for adding message_queue_test_02.sh
+> Please help me check 
 > 
-> Have you tried to run at least syscalls testsuite after this change?
-
-That was the plan, but I didn't get to that today.
-
-I was thinking syscalls as well, since most common failure seems
-to be errno tests, trying to trigger EBADF, etc.
-
-I'll reply once I have results.
-
-Regards,
-Jan
-
-> 
-> I do not expect that this will break anything, but there it's a possibility.
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+> Regards,
+> Nga Hoang
+>  _____________________________________________
+>> *From:* FIXED-TERM Rempel Oleksij (CM/ESO3)
+>> *Sent:* Friday, July 08, 2016 5:57 PM
+>> *To:* Hoang Thi Thuy Nga (RBVH/ENG2) <Nga.HoangThiThuy@vn.bosch.com>;
+>> ltp@lists.linux.it; Le Cong Binh (RBVH/ENG2) <Binh.LeCong@vn.bosch.com>
+>> *Cc:* Tran Thanh Lam (RBVH/ENG2) <Lam.TranThanh2@vn.bosch.com>; Cyril
+>> Hrubis <chrubis@suse.cz>
+>> *Subject:* RE: [LTP] updating message_queue_test_02_*
+>>
+>>
+>> Hi  Nga,
+>>
+>> thank you.
+>> Since this tests depend on each other, it makes sense to merge them to one.
+>> For example create:
+>> ./testcases/bin/message_queue_test_02.sh
+>>
+>> And use message_queue_test_02.sh instead of message_queue_test_02_* in
+>> the test list.
+>> This will still not fix the issue with custom tmp folder, but will not
+>> block testing on reset or random test execution.
+>>
+>> LTP devs, any objections here?
+>> If no, Nga, can you please provide a patch for it?
+>>
+>>
+>> _____________________________________________
+>> *From:* Hoang Thi Thuy Nga (RBVH/ENG2)
+>> *Sent:* Friday, July 08, 2016 11:25 AM
+>> *To:* FIXED-TERM Rempel Oleksij (CM/ESO3)
+>> <_fixed-term.Oleksij.Rempel@de.bosch.com_
+>> <mailto:fixed-term.Oleksij.Rempel@de.bosch.com>>; _ltp@lists.linux.it_
+>> <mailto:ltp@lists.linux.it>; Le Cong Binh (RBVH/ENG2)
+>> <_Binh.LeCong@vn.bosch.com_ <mailto:Binh.LeCong@vn.bosch.com>>
+>> *Cc:* Tran Thanh Lam (RBVH/ENG2) <_Lam.TranThanh2@vn.bosch.com_
+>> <mailto:Lam.TranThanh2@vn.bosch.com>>
+>> *Subject:* RE: [LTP] updating message_queue_test_02_*
+>>
+>>
+>> Hi Oleksij,
+>>
+>> Some observations from our side:
+>>
+>>   * In other to run *message_queue_test_02_snd*,
+>>     *message_queue_test_02_rcv*, *message_queue_test_02_ctl*
+>>     successfully, we need to run *message_queue_test_02_get***before.
+>>
+>> Because *message_queue_test_02_get***will create file
+>> */tmp/message_queue_test *as well as**create *generate message queue
+>> identifier* which will be used in the other three.
+>>
+>>   * *message_queue_test_02_snd*, *message_queue_test_02_rcv*,
+>>     *message_queue_test_02_ctl* doesn’t work with –f to specify another
+>>     location for project name *in case* the message queue identifier not
+>>     yet generated along with the file
+>>
+>>
+>> *message_queue_test_02_get.c*
+>>
+>>         *int**main*(*int*argc, *char***argv),
+>> {
+>>         _key_t_key;              /* Unique key */
+>>         *int*msqid;              /* Message queue identifier */
+>>         *int*fd;                 /* _Temp_file descriptor */
+>>         _mode_t_mode = 0777;     /* Default mode bits */
+>>
+>>         /*
+>>         * Parse command line options
+>>         */
+>>         parse_args(argc, argv);
+>>
+>>         *i**f**((fd = open(**project_name**, **_O_CREAT_**|
+>> **_O_RDWR_**, mode)) < 0)*
+>>                 *sys_error("open failed", __LINE__);*
+>>
+>>         *if*(close(fd) < 0)
+>>                 sys_error("close failed", __LINE__);
+>>
+>>         *if*((key = ftok(project_name, project_id)) < 0)
+>>                 sys_error("_ftok_failed", __LINE__);
+>>
+>>         *if**((msqid = msgget(key, **_IPC_CREAT_**| **_S_IRUSR_**|
+>> **_S_IWUSR_**)) < 0)*
+>>                 *sys_error("**_msgget_**failed", __LINE__);*
+>>
+>>         printf("%d\n", msqid);
+>>
+>>         *return*(0);
+>> }
+>>
+>>
+>> Trân trọng / Best regards
+>>
+>> Nga Hoang Thi Thuy
+>> RBVH/ENG2
+>>
+>> Tel. +49(711)8113624527
+>>
+>>
+>>
+>> -----Original Message-----
+>> From: FIXED-TERM Rempel Oleksij (CM/ESO3)
+>> Sent: Thursday, July 07, 2016 8:05 PM
+>> To: _ltp@lists.linux.it_ <mailto:ltp@lists.linux.it>; Le Cong Binh
+>> (RBVH/ENG2) <_Binh.LeCong@vn.bosch.com_
+>> <mailto:Binh.LeCong@vn.bosch.com>>; Hoang Thi Thuy Nga (RBVH/ENG2)
+>> <_Nga.HoangThiThuy@vn.bosch.com_ <mailto:Nga.HoangThiThuy@vn.bosch.com>>
+>> Subject: Re: [LTP] updating message_queue_test_02_*
+>>
+>> On 07.07.2016 13:55, fixed-term.Oleksij.Rempel wrote:
+>>> Hallo all,
+>>>
+>>> it is kind of a duplication of this case:
+>>> https://github.com/linux-test-project/ltp/issues/75
+>>>
+>>> some of message_queue_test_02_* are fail on our configuration, it looks
+>>> like the reason is hardcoded tmp path, which is different in our test setup.
+>>>
+>>> Looks like this tests should be updated to use current ltp bindings..
+>>> which should also fix this issue.  Do any one already working on it? If
+>>> not, me or some of us will try to do it.
+>>>
+>>
+>> hm...
+>> to execute *message_queue_test_02_rcv* properly, first should be
+>> *message_queue_test_02_snd* executed. And most important, target should
+>> not be reseted after message_queue_test_02_snd. If this happens,
+>> message_queue_test_02_rcv will hang forever.
+>> It is not looks like proper behaviour (it is not theoretical assumption.).
+>>
+>> May be message_queue_test_02_rcv should be wrapped by a script which
+>> will start rcv in background and then send after short sleep?
+>> And some how make sure that message_queue_test_02_rcv wont wait forever?
+>>
+>> Any comments?
+>>
