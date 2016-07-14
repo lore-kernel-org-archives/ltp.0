@@ -1,204 +1,53 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 14 Jul 2016 12:35:22 +0200
-Subject: [LTP] [PATCH] lib: add [SAFE_]FILE_LINES_SCANF
-Message-ID: <ae355058af800fd8fbc410b839ce25a128ab4339.1468492135.git.jstancek@redhat.com>
+From: nousi <bnousilal@gmail.com>
+Date: Thu, 14 Jul 2016 19:09:45 +0530
+Subject: [LTP] Fwd: chmod06 is failing
+In-Reply-To: <CAJ5vXcQiXyc8dJkeh0K77HCmaFe5Ts-Yw+WHuK28b3iLhbKBkA@mail.gmail.com>
+References: <CAJ5vXcQiXyc8dJkeh0K77HCmaFe5Ts-Yw+WHuK28b3iLhbKBkA@mail.gmail.com>
+Message-ID: <CAJ5vXcRKx-Qhh5fZyUHVXx96ejiOSbrN2eKSgM=i28Rp4=Abew@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This patch adds 2 macros that try to parse each line from
-a file according to user-supplied (scanf) format. First line
-that matches all format directives ends the search. If EOF
-is reached, SAFE_ version triggers TBROK, non-SAFE_ returns
-non-zero retcode to user.
+Hi All,
 
-Main motivation is parsing various /proc files, for example:
-  if (FILE_LINES_SCANF("/proc/meminfo", "MemFree: %ld", &free))
-      do_something();
+please help me analyzing the below issue.
 
-  SAFE_FILE_LINES_SCANF("/proc/meminfo", "MemFree: %ld", &free);
-      // automatically calls TBROK if all directives can't be matched
+root@nousi:/opt/ltp# ./testcases/bin/chmod06
+chmod06     0  TINFO  :  No free devices found
+chmod06     1  TCONF  :  chmod06.c:194: Failed to obtain block device
+chmod06     2  TCONF  :  chmod06.c:194: Remaining cases not appropriate for
+configuration
+chmod06     3  TBROK  :  chmod06.c:230: chmod(testdir_1) failed:
+errno=ENOENT(2): No such file or directory
+root@nousi:/opt/ltp#
+root@nousi:/opt/ltp#
+root@nousi:/opt/ltp# mknod /dev/loop-control b 7 10
+root@nousi:/opt/ltp#
+root@nousi:/opt/ltp#
+root@nousi:/opt/ltp# ./testcases/bin/chmod06
+chmod06     1  TBROK  :  tst_device.c:89: Failed to open /dev/loop-control:
+errno=ENXIO(6): No such device or address
+chmod06     0  TINFO  :  No free devices found
+chmod06     2  TCONF  :  chmod06.c:194: Failed to obtain block device
+chmod06     3  TCONF  :  chmod06.c:194: Remaining cases not appropriate for
+configuration
+chmod06     4  TBROK  :  chmod06.c:230: chmod(testdir_1) failed:
+errno=ENOENT(2): No such file or directory
+root@nousi:/opt/ltp#
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- .gitignore                      |  1 +
- include/old/old_safe_file_ops.h |  8 +++++++
- include/safe_file_ops_fn.h      |  5 +++++
- include/tst_safe_file_ops.h     |  8 +++++++
- lib/safe_file_ops.c             | 47 +++++++++++++++++++++++++++++++++++++++++
- lib/tests/tst_safe_fileops.c    | 40 +++++++++++++++++++++++++++++++++++
- 6 files changed, 109 insertions(+)
- create mode 100644 lib/tests/tst_safe_fileops.c
-
-diff --git a/.gitignore b/.gitignore
-index 1b4ac3e46249..2775c2a656e5 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -73,3 +73,4 @@ logfile.*
- /lib/tests/tst_dataroot01
- /lib/tests/tst_dataroot02
- /lib/tests/tst_dataroot03
-+/lib/tests/tst_safe_fileops
-diff --git a/include/old/old_safe_file_ops.h b/include/old/old_safe_file_ops.h
-index d656823e46fa..d6e2d29a9690 100644
---- a/include/old/old_safe_file_ops.h
-+++ b/include/old/old_safe_file_ops.h
-@@ -38,6 +38,14 @@
- 	safe_file_scanf(__FILE__, __LINE__, (cleanup_fn), \
- 	                (path), (fmt), ## __VA_ARGS__)
- 
-+#define FILE_LINES_SCANF(cleanup_fn, path, fmt, ...) \
-+	file_lines_scanf(__FILE__, __LINE__, (cleanup_fn), 0, \
-+			(path), (fmt), ## __VA_ARGS__)
-+
-+#define SAFE_FILE_LINES_SCANF(cleanup_fn, path, fmt, ...) \
-+	file_lines_scanf(__FILE__, __LINE__, (cleanup_fn), 1, \
-+			(path), (fmt), ## __VA_ARGS__)
-+
- #define FILE_PRINTF(path, fmt, ...) \
- 	file_printf(__FILE__, __LINE__, \
- 	            (path), (fmt), ## __VA_ARGS__)
-diff --git a/include/safe_file_ops_fn.h b/include/safe_file_ops_fn.h
-index cdb0f7436909..35ec4fb1f8ee 100644
---- a/include/safe_file_ops_fn.h
-+++ b/include/safe_file_ops_fn.h
-@@ -35,6 +35,11 @@ void safe_file_scanf(const char *file, const int lineno,
- 		     const char *path, const char *fmt, ...)
- 		     __attribute__ ((format (scanf, 5, 6)));
- 
-+int file_lines_scanf(const char *file, const int lineno,
-+		     void (*cleanup_fn)(void), int strict,
-+		     const char *path, const char *fmt, ...)
-+		     __attribute__ ((format (scanf, 6, 7)));
-+
- /*
-  * All-in-one function that lets you printf directly into a file.
-  */
-diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
-index 74e679153d8a..2e4067ca15fd 100644
---- a/include/tst_safe_file_ops.h
-+++ b/include/tst_safe_file_ops.h
-@@ -30,6 +30,14 @@
- 	safe_file_scanf(__FILE__, __LINE__, NULL, \
- 	                (path), (fmt), ## __VA_ARGS__)
- 
-+#define FILE_LINES_SCANF(path, fmt, ...) \
-+	file_lines_scanf(__FILE__, __LINE__, NULL, 0,\
-+			(path), (fmt), ## __VA_ARGS__)
-+
-+#define SAFE_FILE_LINES_SCANF(path, fmt, ...) \
-+	file_lines_scanf(__FILE__, __LINE__, NULL, 1,\
-+			(path), (fmt), ## __VA_ARGS__)
-+
- #define SAFE_FILE_PRINTF(path, fmt, ...) \
- 	safe_file_printf(__FILE__, __LINE__, NULL, \
- 	                 (path), (fmt), ## __VA_ARGS__)
-diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
-index dff85cd83fec..01f64ed3251b 100644
---- a/lib/safe_file_ops.c
-+++ b/lib/safe_file_ops.c
-@@ -169,6 +169,53 @@ void safe_file_scanf(const char *file, const int lineno,
- 	}
- }
- 
-+
-+/*
-+ * Try to parse each line from file specified by 'path' according
-+ * to scanf format 'fmt'. If all fields could be parsed, stop and
-+ * return 0, otherwise continue or return 1 if EOF is reached.
-+ */
-+int file_lines_scanf(const char *file, const int lineno,
-+		     void (*cleanup_fn)(void), int strict,
-+		     const char *path, const char *fmt, ...)
-+{
-+	FILE *fp;
-+	int ret = 0;
-+	int arg_count = 0;
-+	char line[BUFSIZ];
-+	va_list ap;
-+
-+	if (!fmt) {
-+		tst_brkm(TBROK, cleanup_fn, "pattern is NULL, %s:%d",
-+			file, lineno);
-+	}
-+
-+	fp = fopen(path, "r");
-+	if (fp == NULL) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			"Failed to open FILE '%s' for reading at %s:%d",
-+			path, file, lineno);
-+	}
-+
-+	arg_count = count_scanf_conversions(fmt);
-+
-+	while (fgets(line, BUFSIZ, fp) != NULL) {
-+		va_start(ap, fmt);
-+		ret = vsscanf(line, fmt, ap);
-+		va_end(ap);
-+
-+		if (ret == arg_count)
-+			break;
-+	}
-+	fclose(fp);
-+
-+	if (strict && ret != arg_count)
-+		tst_brkm(TBROK, cleanup_fn, "Expected %i conversions got %i"
-+			" at %s:%d", arg_count, ret, file, lineno);
-+
-+	return !(ret == arg_count);
-+}
-+
- int file_printf(const char *file, const int lineno,
- 		      const char *path, const char *fmt, ...)
- {
-diff --git a/lib/tests/tst_safe_fileops.c b/lib/tests/tst_safe_fileops.c
-new file mode 100644
-index 000000000000..bdf4e9d07027
---- /dev/null
-+++ b/lib/tests/tst_safe_fileops.c
-@@ -0,0 +1,40 @@
-+/*
-+ * Copyright (c) 2016 Linux Test Project
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <stdio.h>
-+#include "tst_test.h"
-+
-+static void do_test(void)
-+{
-+	long free;
-+	long nproc;
-+	long dummy;
-+
-+	SAFE_FILE_LINES_SCANF("/proc/meminfo", "MemFree: %ld", &free);
-+	if (FILE_LINES_SCANF("/proc/stat", "processes %ld", &nproc))
-+		tst_brk(TBROK, "Could not parse processes");
-+	tst_res(TPASS, "Free: %ld, nproc: %ld", free, nproc);
-+
-+	if (FILE_LINES_SCANF("/proc/stat", "non-existent %ld", &dummy))
-+		tst_res(TPASS, "non-existent not found");
-+	SAFE_FILE_LINES_SCANF("/proc/stat", "non-existent %ld", &dummy);
-+}
-+
-+static struct tst_test test = {
-+	.tid = "tst_safe_fileops",
-+	.test_all = do_test,
-+};
 -- 
-1.8.3.1
 
+
+*Thanks & Regards,B.Nousilal,*
+
+
+
+-- 
+
+
+*Thanks & Regards,B.Nousilal,*
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160714/704a2ef6/attachment.html>
