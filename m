@@ -1,33 +1,25 @@
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri, 15 Jul 2016 17:39:43 +0300
-Subject: [LTP] [PATCH 2/8] waitpid06: use the new API
+Date: Fri, 15 Jul 2016 17:39:45 +0300
+Subject: [LTP] [PATCH 4/8] waitpid09: use the new API
 In-Reply-To: <1468593589-30545-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 References: <1468593589-30545-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <1468593589-30545-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <1468593589-30545-5-git-send-email-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
- * Use the new LTP API
- * Use the checkpoint interface instead of wait_for_parent()
- * Drop UCLINUX support
-
-Common items were moved to a header file.
-
 Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
 ---
- testcases/kernel/syscalls/waitpid/waitpid06.c      |  264 ++++----------------
- testcases/kernel/syscalls/waitpid/waitpid_common.h |   78 ++++++
- 2 files changed, 121 insertions(+), 221 deletions(-)
- create mode 100644 testcases/kernel/syscalls/waitpid/waitpid_common.h
+ testcases/kernel/syscalls/waitpid/waitpid09.c |  375 +++++++++----------------
+ 1 files changed, 140 insertions(+), 235 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/waitpid/waitpid06.c b/testcases/kernel/syscalls/waitpid/waitpid06.c
-index dbbc104..be3d8e2 100644
---- a/testcases/kernel/syscalls/waitpid/waitpid06.c
-+++ b/testcases/kernel/syscalls/waitpid/waitpid06.c
-@@ -1,204 +1,60 @@
+diff --git a/testcases/kernel/syscalls/waitpid/waitpid09.c b/testcases/kernel/syscalls/waitpid/waitpid09.c
+index 1339c82..fad3810 100644
+--- a/testcases/kernel/syscalls/waitpid/waitpid09.c
++++ b/testcases/kernel/syscalls/waitpid/waitpid09.c
+@@ -1,26 +1,26 @@
  /*
 + * Copyright (c) International Business Machines  Corp., 2001
   *
@@ -64,17 +56,17 @@ index dbbc104..be3d8e2 100644
  
  /*
 - * NAME
-- *	waitpid06.c
+- *	waitpid09.c
 - *
   * DESCRIPTION
-- *	Tests to see if pid's returned from fork and waitpid are same.
-+ *	Tests to see if pids returned from fork and waitpid are same.
+  *	Check ability of parent to wait until child returns, and that the
+  *	child's process id is returned through the waitpid. Check that
+@@ -36,22 +36,6 @@
+  *		Parent calls a waitpid with no children waiting. Waitpid
+  *		should return a -1 since there are no children to wait for.
   *
-  * ALGORITHM
-  *	Check proper functioning of waitpid with pid = -1 and arg = 0
-- *
 - * USAGE:  <for command-line>
-- *      waitpid06 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *      waitpid09 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *      where,  -c n : Run n copies concurrently.
 - *              -e   : Turn on errno logging.
 - *              -i n : Execute test n times.
@@ -91,357 +83,376 @@ index dbbc104..be3d8e2 100644
 - *	None
   */
  
--#include <sys/types.h>
--#include <signal.h>
--#include <errno.h>
--#include <sys/wait.h>
+ #define _GNU_SOURCE 1
+@@ -60,243 +44,164 @@
+ #include <errno.h>
+ #include <sys/wait.h>
+ #include <stdlib.h>
++#include "tst_test.h"
+ 
 -#include "test.h"
--
--static void setup_sigint(void);
--static void do_child_1(void);
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "waitpid06";
++static pid_t pid;
+ 
+-char *TCID = "waitpid09";
 -int TST_TOTAL = 1;
 -volatile int intintr;
+-
+-static void setup(void);
+-static void cleanup(void);
 -static void inthandlr();
--static void do_exit(void);
--static int flag;
--
--#define	FAILED	1
--#define	MAXKIDS	8
--
+ static void do_exit(void);
+-static void setup_sigint(void);
 -#ifdef UCLINUX
--static char *argv0;
--static void do_child_2_uclinux(void);
+-static void do_exit_uclinux(void);
 -#endif
--
+ 
 -int main(int argc, char **argv)
--{
++static void cleanup(void)
+ {
 -	int lc;
--	int fail = 0;
--	int pid;
--	int status;
+-
+-	int fail, pid, status, ret;
 -
 -	tst_parse_opts(argc, argv, NULL, NULL);
 -
 -#ifdef UCLINUX
--	argv0 = argv[0];
--
--	maybe_run_child(&do_child_1, "n", 1);
--	maybe_run_child(&do_child_2_uclinux, "n", 2);
+-	maybe_run_child(&do_exit_uclinux, "");
 -#endif
 -
 -	setup();
 -
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
+-	pid = FORK_OR_VFORK();
+-	if (pid < 0) {
+-		tst_brkm(TFAIL, cleanup, "Fork Failed");
+-	} else if (pid == 0) {
+-		/*
+-		 * Child:
+-		 * Set up to catch SIGINT.  The kids will wait till a
+-		 * SIGINT has been received before they proceed.
+-		 */
+-		setup_sigint();
 -
--		pid = FORK_OR_VFORK();
--		if (pid < 0) {
--			tst_resm(TINFO, "Fork Failed, may be OK under stress");
--			exit(pid);
--		} else if (pid == 0) {
--			/*
--			 * Child:
--			 * Set up to catch SIGINT.  The kids will wait till a
--			 * SIGINT has been received before they proceed.
--			 */
--#ifdef UCLINUX
--			if (self_exec(argv[0], "n", 1) < 0) {
--				tst_resm(TINFO, "self_exec failed");
--				exit(pid);
--			}
--#else
--			do_child_1();
--#endif
--		} else {	/* parent */
+-		/* check for looping state if -i option is given */
+-		for (lc = 0; TEST_LOOPING(lc); lc++) {
+-			/* reset tst_count in case we are looping */
+-			tst_count = 0;
+-
+-			intintr = 0;
+-
 -			fail = 0;
--			waitpid(pid, &status, 0);
--			if (WEXITSTATUS(status) != 0) {
--				tst_resm(TFAIL, "child returned bad status");
+-			pid = FORK_OR_VFORK();
+-			if (pid < 0) {
+-				tst_brkm(TFAIL, cleanup, "Fork failed.");
+-			} else if (pid == 0) {	/* child */
+-#ifdef UCLINUX
+-				if (self_exec(argv[0], "") < 0) {
+-					tst_brkm(TFAIL, cleanup,
+-						 "self_exec failed");
+-				}
+-#else
+-				do_exit();
+-#endif
+-			} else {	/* parent */
+-
+-				/*
+-				 *Check that waitpid with WNOHANG returns zero
+-				 */
+-				while (((ret = waitpid(pid, &status, WNOHANG))
+-					!= 0) || (errno == EINTR)) {
+-					if (ret == -1)
+-						continue;
+-
+-					tst_resm(TFAIL, "return value for "
+-						 "WNOHANG expected 0 got %d",
+-						 ret);
+-					fail = 1;
+-				}
+-#ifdef UCLINUX
+-				/* Give the kids a chance to setup SIGINT again, since
+-				 * this is cleared by exec().
+-				 */
+-				sleep(3);
+-#endif
+-
+-				/* send SIGINT to child to tell it to proceed */
+-				if (kill(pid, SIGINT) < 0) {
+-					tst_resm(TFAIL, "Kill of child failed, "
+-						 "errno = %d", errno);
+-					fail = 1;
+-				}
+-
+-				while (((ret = waitpid(pid, &status, 0)) != -1)
+-				       || (errno == EINTR)) {
+-					if (ret == -1)
+-						continue;
+-
+-					if (ret != pid) {
+-						tst_resm(TFAIL, "Expected %d "
+-							 "got %d as proc id of "
+-							 "child", pid, ret);
+-						fail = 1;
+-					}
+-
+-					if (status != 0) {
+-						tst_resm(TFAIL, "status value "
+-							 "got %d expected 0",
+-							 status);
+-						fail = 1;
+-					}
+-				}
+-			}
++	if (pid > 0) {
++		kill(pid, SIGKILL);
++		waitpid(pid, NULL, 0);
++	}
++}
+ 
+-			pid = FORK_OR_VFORK();
+-			if (pid < 0) {
+-				tst_brkm(TFAIL, cleanup, "Second fork failed.");
+-			} else if (pid == 0) {	/* child */
+-				exit(0);
+-			} else {	/* parent */
+-				/* Give the child time to startup and exit */
+-				sleep(2);
++static void case0(void)
++{
++	pid_t ret;
++	int status;
++	int fail = 0;
++
++	pid = SAFE_FORK();
++	if (pid == 0)
++		do_exit();
++
++	/*
++	 *Check that waitpid with WNOHANG returns zero
++	 */
++	while (((ret = waitpid(pid, &status, WNOHANG))
++		!= 0) || (errno == EINTR)) {
++		if (ret == -1)
++			continue;
++
++		tst_res(TFAIL, "return value for "
++			 "WNOHANG expected 0 got %d",
++			 ret);
++		fail = 1;
++	}
+ 
+-				while (((ret = waitpid(pid, &status, WNOHANG))
+-					!= -1) || (errno == EINTR)) {
+-					if (ret == -1)
+-						continue;
++	TST_CHECKPOINT_WAKE(0);
+ 
+-					if (ret != pid) {
+-						tst_resm(TFAIL, "proc id %d "
+-							 "and retval %d do not "
+-							 "match", pid, ret);
+-						fail = 1;
+-					}
++	while (((ret = waitpid(pid, &status, 0)) != -1)
++	       || (errno == EINTR)) {
++		if (ret == -1)
++			continue;
+ 
+-					if (status != 0) {
+-						tst_resm(TFAIL, "non zero "
+-							 "status received %d",
+-							 status);
+-						fail = 1;
+-					}
+-				}
+-			}
++		if (ret != pid) {
++			tst_res(TFAIL, "Expected %d "
++				 "got %d as proc id of "
++				 "child", pid, ret);
++			fail = 1;
++		}
+ 
+-			if (fail)
+-				tst_resm(TFAIL, "case 1 FAILED");
+-			else
+-				tst_resm(TPASS, "case 1 PASSED");
++		if (status != 0) {
++			tst_res(TFAIL, "status value "
++				 "got %d expected 0",
++				 status);
++			fail = 1;
++		}
++	}
+ 
+-			fail = 0;
+-			ret = waitpid(pid, &status, 0);
++	pid = 0;
+ 
+-			if (ret != -1) {
+-				tst_resm(TFAIL, "Expected -1 got %d", ret);
 -				fail = 1;
 -			}
+-			if (errno != ECHILD) {
+-				tst_resm(TFAIL, "Expected ECHILD got %d",
+-					 errno);
+-				fail = 1;
+-			}
++	pid = SAFE_FORK();
++	if (pid == 0)
++		exit(0);
+ 
+-			ret = waitpid(pid, &status, WNOHANG);
+-			if (ret != -1) {
+-				tst_resm(TFAIL, "WNOHANG: Expected -1 got %d",
+-					 ret);
+-				fail = 1;
+-			}
+-			if (errno != ECHILD) {
+-				tst_resm(TFAIL, "WNOHANG: Expected ECHILD got "
+-					 "%d", errno);
+-				fail = 1;
+-			}
++	while (((ret = waitpid(pid, &status, WNOHANG))
++		!= -1) || (errno == EINTR)) {
++		if (ret == -1)
++			continue;
++		if (ret == 0)
++			continue;
+ 
 -			if (fail)
--				tst_resm(TFAIL, "%s FAILED", TCID);
+-				tst_resm(TFAIL, "case 2 FAILED");
 -			else
--				tst_resm(TPASS, "%s PASSED", TCID);
--		}
--	}
--
--	cleanup();
+-				tst_resm(TPASS, "case 2 PASSED");
++		if (ret != pid) {
++			tst_res(TFAIL, "proc id %d "
++				 "and retval %d do not "
++				 "match", pid, ret);
++			fail = 1;
+ 		}
+ 
+-		cleanup();
+-	} else {
+-		/* wait for the child to return */
+-		waitpid(pid, &status, 0);
+-		if (WEXITSTATUS(status) != 0) {
+-			tst_brkm(TBROK, cleanup, "child returned bad "
+-				 "status");
++		if (status != 0) {
++			tst_res(TFAIL, "non zero "
++				 "status received %d",
++				 status);
++			fail = 1;
+ 		}
+ 	}
+ 
 -	tst_exit();
--}
--
++	pid = 0;
++
++	if (fail)
++		tst_res(TFAIL, "case 0 FAILED");
++	else
++		tst_res(TPASS, "case 0 PASSED");
+ }
+ 
 -/*
 - * setup_sigint()
-- *	Sets up a SIGINT handler
+- *	sets up a SIGINT handler
 - */
 -static void setup_sigint(void)
--{
--	if ((sig_t) signal(SIGINT, inthandlr) == SIG_ERR) {
--		tst_resm(TFAIL, "signal SIGINT failed. " "errno = %d", errno);
--		exit(-1);
--	}
--}
-+#include "waitpid_common.h"
- 
- static void do_child_1(void)
++static void case1(void)
  {
--	int kid_count, fork_kid_pid[MAXKIDS];
--	int ret_val;
-+	int kid_count;
-+	pid_t ret_val;
- 	int i, j, k, found;
--	int group1, group2;
--	int wait_kid_pid[MAXKIDS], status;
--
--	setup_sigint();
-+	pid_t wait_kid_pid[MAXKIDS];
+-	if ((sig_t) signal(SIGINT, inthandlr) == SIG_ERR) {
+-		tst_brkm(TFAIL, cleanup, "signal SIGINT failed, errno = %d",
++	pid_t ret;
 +	int status;
-+	int flag = 0;
- 
--	group1 = getpgrp();
- 	for (kid_count = 0; kid_count < MAXKIDS; kid_count++) {
- 		if (kid_count == (MAXKIDS / 2))
--			group2 = setpgrp();
-+			SAFE_SETPGID(0, 0);
- 
--		intintr = 0;
--		ret_val = FORK_OR_VFORK();
--		if (ret_val == 0) {	/* child */
--#ifdef UCLINUX
--			if (self_exec(argv0, "n", 2) < 0) {
--				tst_resm(TFAIL, "Fork kid %d failed. "
--					 "errno = %d", kid_count, errno);
--				exit(ret_val);
--			}
--#else
--			do_exit();
--#endif
--		} else if (ret_val < 0) {
--			tst_resm(TFAIL, "Fork kid %d failed. "
--				 "errno = %d", kid_count, errno);
--			exit(ret_val);
--		}
-+		ret_val = SAFE_FORK();
-+		if (ret_val == 0)
-+			do_exit(0);
- 
--		/* parent */
- 		fork_kid_pid[kid_count] = ret_val;
++	int fail = 0;
++
++	ret = waitpid(-1, &status, 0);
++
++	if (ret != -1) {
++		tst_res(TFAIL, "Expected -1 got %d", ret);
++		fail = 1;
++	}
++	if (errno != ECHILD) {
++		tst_res(TFAIL, "Expected ECHILD got %d",
+ 			 errno);
++		fail = 1;
  	}
- 
--#ifdef UCLINUX
--	/* Give the kids a chance to setup SIGINT again, since this is
--	 * cleared by exec().
--	 */
--	sleep(3);
--#endif
--
--	/* Now send all the kids a SIGINT to tell them to
--	 * proceed
--	 */
--	for (i = 0; i < MAXKIDS; i++) {
--		if (kill(fork_kid_pid[i], SIGINT) < 0) {
--			tst_resm(TFAIL, "Kill of child %d "
--				 "failed, errno = %d", i, errno);
--			exit(-1);
--		}
--	}
-+	TST_CHECKPOINT_WAKE2(0, MAXKIDS);
- 
- 	/*
- 	 * Wait till all kids have terminated.  Stash away their
--	 * pid's in an array.
-+	 * pids in an array.
- 	 */
- 	kid_count = 0;
- 	errno = 0;
-@@ -207,16 +63,15 @@ static void do_child_1(void)
- 			continue;
- 
- 		if (!WIFEXITED(status)) {
--			tst_resm(TFAIL, "Child %d did not exit "
-+			tst_res(TFAIL, "Child %d did not exit "
- 				 "normally", ret_val);
- 			flag = FAILED;
--			printf("status: %d\n", status);
- 		} else {
- 			if (WEXITSTATUS(status) != 3) {
--				tst_resm(TFAIL, "Child %d"
-+				tst_res(TFAIL, "Child %d "
- 					 "exited with wrong "
- 					 "status", ret_val);
--				tst_resm(TFAIL, "Expected 3 "
-+				tst_res(TFAIL, "Expected 3 "
- 					 "got %d ", WEXITSTATUS(status));
- 				flag = FAILED;
- 			}
-@@ -239,16 +94,16 @@ static void do_child_1(void)
- 		}
- 
- 		if (!found) {
--			tst_resm(TFAIL, "Did not find a "
-+			tst_res(TFAIL, "Did not find a "
- 				 "wait_kid_pid for the "
- 				 "fork_kid_pid of %d", wait_kid_pid[i]);
- 			for (k = 0; k < MAXKIDS; k++) {
--				tst_resm(TFAIL,
-+				tst_res(TFAIL,
- 					 "fork_kid_pid[%d] = "
- 					 "%d", k, fork_kid_pid[k]);
- 			}
- 			for (k = 0; k < kid_count; k++) {
--				tst_resm(TFAIL,
-+				tst_res(TFAIL,
- 					 "wait_kid_pid[%d] = "
- 					 "%d", k, wait_kid_pid[k]);
- 			}
-@@ -256,48 +111,15 @@ static void do_child_1(void)
- 		}
- 	}
- 
--	if (flag)
--		exit(1);
--	else
--		exit(0);
 -}
--
--#ifdef UCLINUX
--/*
-- * do_child_2_uclinux()
-- *	sets up sigint handler again, then calls the normal child 2 function
-- */
--static void do_child_2_uclinux(void)
--{
--	setup_sigint();
--	do_exit();
--}
--#endif
 -
 -static void setup(void)
 -{
 -	TEST_PAUSE;
 -}
--
+ 
 -static void cleanup(void)
 -{
 -}
--
++	ret = waitpid(-1, &status, WNOHANG);
++	if (ret != -1) {
++		tst_res(TFAIL, "WNOHANG: Expected -1 got %d",
++			 ret);
++		fail = 1;
++	}
++	if (errno != ECHILD) {
++		tst_res(TFAIL, "WNOHANG: Expected ECHILD got "
++			 "%d", errno);
++		fail = 1;
++	}
+ 
 -static void inthandlr(void)
 -{
 -	intintr++;
--}
--
--static void wait_for_parent(void)
--{
--	int testvar;
-+	memset(fork_kid_pid, 0, sizeof(*fork_kid_pid) * MAXKIDS);
- 
--	while (!intintr)
--		testvar = 0;
-+	exit(flag);
++	if (fail)
++		tst_res(TFAIL, "case 1 FAILED");
++	else
++		tst_res(TPASS, "case 1 PASSED");
  }
  
--static void do_exit(void)
--{
+-static void wait_for_parent(void)
++static void waitpid09_test(unsigned int id)
+ {
+-	int testvar;
+-	while (!intintr)
+-		testvar = 0;
++	switch (id) {
++	case 0:
++		case0();
++		break;
++	case 1:
++		case1();
++		break;
++	default:
++		tst_brk(TBROK, "Unknown %d", id);
++	}
+ }
+ 
+ static void do_exit(void)
+ {
 -	wait_for_parent();
--	exit(3);
++	TST_CHECKPOINT_WAIT(0);
++
+ 	exit(0);
+ }
+ 
+-#ifdef UCLINUX
+-/*
+- * do_exit_uclinux()
+- *	Sets up SIGINT handler again, then calls do_exit
+- */
+-static void do_exit_uclinux(void)
+-{
+-	setup_sigint();
+-	do_exit();
 -}
+-#endif
 +static struct tst_test test = {
-+	.tid = "waitpid06",
++	.tid = "waitpid09",
 +	.forks_child = 1,
 +	.needs_checkpoints = 1,
 +	.cleanup = cleanup,
-+	.test_all = waitpid_test,
++	.test = waitpid09_test,
++	.tcnt = 2,
 +};
-diff --git a/testcases/kernel/syscalls/waitpid/waitpid_common.h b/testcases/kernel/syscalls/waitpid/waitpid_common.h
-new file mode 100644
-index 0000000..909468a
---- /dev/null
-+++ b/testcases/kernel/syscalls/waitpid/waitpid_common.h
-@@ -0,0 +1,78 @@
-+/*
-+ * Copyright (c) 2016 Linux Test Project
-+ *
-+ * Licensed under the GNU GPLv2 or later.
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
-+ */
-+
-+#ifndef WAITPID_COMMON_H__
-+#define WAITPID_COMMON_H__
-+
-+#include <sys/types.h>
-+#include <errno.h>
-+#include <sys/wait.h>
-+#include <stdlib.h>
-+#include "tst_test.h"
-+
-+#define	FAILED	1
-+#define	MAXKIDS	8
-+
-+static pid_t *fork_kid_pid;
-+
-+static void do_child_1(void);
-+
-+static void cleanup(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < MAXKIDS; i++) {
-+		if (fork_kid_pid[i] > 0) {
-+			kill(fork_kid_pid[i], SIGKILL);
-+			waitpid(fork_kid_pid[i], NULL, 0);
-+		}
-+	}
-+}
-+
-+static void waitpid_test(void)
-+{
-+	pid_t pid;
-+	int status;
-+
-+	fork_kid_pid = SAFE_MMAP(NULL, sizeof(*fork_kid_pid) * MAXKIDS,
-+				 PROT_READ | PROT_WRITE,
-+				 MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-+
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		do_child_1();
-+	} else {
-+		SAFE_WAITPID(pid, &status, 0);
-+		if (WEXITSTATUS(status) != 0)
-+			tst_res(TFAIL, "Child returned bad status");
-+		else
-+			tst_res(TPASS, "Child returned good status");
-+	}
-+}
-+
-+static void do_exit(int stop)
-+{
-+	TST_CHECKPOINT_WAIT(0);
-+
-+	if (stop)
-+		kill(getpid(), SIGSTOP);
-+
-+	exit(3);
-+}
-+
-+#endif /* WAITPID_COMMON_H__ */
 -- 
 1.7.1
 
