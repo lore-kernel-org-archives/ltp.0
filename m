@@ -1,27 +1,38 @@
-From: Nga Hoang <nga.hoangthithuy@vn.bosch.com>
-Date: Fri, 15 Jul 2016 16:47:03 +0700
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 15 Jul 2016 11:55:31 +0200
 Subject: [LTP] [PATCH] consolidate 4 TCs message_queue_test_02_* into
-	message_queue_test_02.sh to avoid fail in case of random execution
-Message-ID: <1468576023-32754-1-git-send-email-nga.hoangthithuy@vn.bosch.com>
+ message_queue_test_02.sh to avoid fail in case of random execution
+In-Reply-To: <1468576023-32754-1-git-send-email-nga.hoangthithuy@vn.bosch.com>
+References: <1468576023-32754-1-git-send-email-nga.hoangthithuy@vn.bosch.com>
+Message-ID: <20160715095531.GA3268@rei.scz.novell.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> diff --git a/runtest/ipc b/runtest/ipc
+> index 50f072a..7c6fed5 100644
+> --- a/runtest/ipc
+> +++ b/runtest/ipc
+> @@ -32,10 +32,7 @@ sem01 sem01
+>  sem02 sem02
+>  
+>  message_queue_test_01		message_queue_test_01
+> -message_queue_test_02_get	message_queue_test_02_get
+> -message_queue_test_02_snd	message_queue_test_02_snd
+> -message_queue_test_02_rcv	message_queue_test_02_rcv
+> -message_queue_test_02_ctl	message_queue_test_02_ctl -r
+> +message_queue_test_02		message_queue_test_02.sh
+>  message_queue_test_04		message_queue_test_04
+>  message_queue_test_05		message_queue_test_05
+>  pipe_test_01			pipe_test_01
 
-Signed-off-by: Hoang Thi Thuy Nga (RBVH/ENG2) <ngh1hc@HCUT2832C.hc.apac.bosch.com>
----
- runtest/ipc                                              | 5 +----
- testcases/kernel/ipc/ipc_stress/Makefile                 | 2 +-
- testcases/kernel/ipc/ipc_stress/message_queue_test_02.sh | 6 ++++++
- 3 files changed, 8 insertions(+), 5 deletions(-)
- create mode 100644 testcases/kernel/ipc/ipc_stress/message_queue_test_02.sh
+This is exactly against our guidelines, see:
 
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-consolidate-4-TCs-message_queue_test_02_-into-messag.patch
-Type: text/x-patch
-Size: 1534 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160715/edef22ab/attachment.bin>
+https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#211-runtest-files
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
