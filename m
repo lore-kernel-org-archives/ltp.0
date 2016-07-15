@@ -1,58 +1,44 @@
-From: FIXED-TERM Rempel Oleksij (CM/ESO3) <fixed-term.Oleksij.Rempel@de.bosch.com>
-Date: Fri, 15 Jul 2016 10:26:39 +0000
-Subject: [LTP] [PATCH] consolidate 4 TCs message_queue_test_02_* into
- message_queue_test_02.sh to avoid fail in case of random execution
-In-Reply-To: <20160715095531.GA3268@rei.scz.novell.com>
-References: <1468576023-32754-1-git-send-email-nga.hoangthithuy@vn.bosch.com>
- <20160715095531.GA3268@rei.scz.novell.com>
-Message-ID: <4ab8990043b24c1786a12b9dc8dfff3c@FE-MBX1024.de.bosch.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 15 Jul 2016 06:38:53 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls/read02: Don't pass invalid buffer to
+ read	when testing for bad fds
+In-Reply-To: <1468578250-26463-1-git-send-email-peter.maydell@linaro.org>
+References: <1468578250-26463-1-git-send-email-peter.maydell@linaro.org>
+Message-ID: <854542372.5188570.1468579133841.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
 
-> -----Original Message-----
-> From: ltp [mailto:ltp-bounces+fixed-
-> term.oleksij.rempel=de.bosch.com@lists.linux.it] On Behalf Of Cyril Hrubis
-> Sent: Friday, July 15, 2016 11:56 AM
-> To: Hoang Thi Thuy Nga (RBVH/ENG2) <Nga.HoangThiThuy@vn.bosch.com>
-> Cc: Hoang Thi Thuy Nga (RBVH/ENG2)
-> <ngh1hc@HCUT2832C.hc.apac.bosch.com>; ltp@lists.linux.it
-> Subject: Re: [LTP] [PATCH] consolidate 4 TCs message_queue_test_02_* into
-> message_queue_test_02.sh to avoid fail in case of random execution
+
+----- Original Message -----
+> From: "Peter Maydell" <peter.maydell@linaro.org>
+> To: ltp@lists.linux.it
+> Cc: patches@linaro.org
+> Sent: Friday, 15 July, 2016 12:24:10 PM
+> Subject: [LTP] [PATCH] syscalls/read02: Don't pass invalid buffer to read	when testing for bad fds
 > 
-> Hi!
-> > diff --git a/runtest/ipc b/runtest/ipc index 50f072a..7c6fed5 100644
-> > --- a/runtest/ipc
-> > +++ b/runtest/ipc
-> > @@ -32,10 +32,7 @@ sem01 sem01
-> >  sem02 sem02
-> >
-> >  message_queue_test_01		message_queue_test_01
-> > -message_queue_test_02_get	message_queue_test_02_get
-> > -message_queue_test_02_snd	message_queue_test_02_snd
-> > -message_queue_test_02_rcv	message_queue_test_02_rcv
-> > -message_queue_test_02_ctl	message_queue_test_02_ctl -r
-> > +message_queue_test_02		message_queue_test_02.sh
-> >  message_queue_test_04		message_queue_test_04
-> >  message_queue_test_05		message_queue_test_05
-> >  pipe_test_01			pipe_test_01
+> The read02 testcases 1 and 2 are intended to check the handling
+> of the read syscall with an invalid fd (should fail EBADF) and
+> an fd which is a directory (should fail EISDIR). However a bug
+> in the test code meant that it also passed a NULL pointer as
+> the buffer argument, and so the test only succeeded because of
+> the implementation detail that the kernel happens to check for
+> the EBADF and EISDIR errors before it checks the buffer pointer
+> validity for an EFAULT error.
 > 
-> This is exactly against our guidelines, see:
+> The 'buf' field in the test_case_t structure is supposed to be
+> a pointer to the address of the buffer, but it was being
+> initialised with the address of the buffer itself; fix this by
+> adding the extra indirection via a new 'bufaddr' variable, so
+> that the test is checking the condition it intends to and nothing
+> more.
 > 
-> https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#211-runtest-
-> files
+> Signed-off-by: Peter Maydell <peter.maydell@linaro.org>
 
-What exactly do you mean?
+I shortened subject a bit and pushed.
 
-To avoid confusions I need to explain background of this patch:
-We working on remote execution of LTPs on the target. It means, some script is taking test list and execute each of entry over ssh.
-In this case we are able to track resets and continue testing after it.
-
-So, now we found that some resets are not actially triggered by some specific test. So we decided to randomize test order.
-This allowed us to find some more bugs on the system, but introduced issues with tests which depend on each other. For example message_queue_test_02_* can be executed only in some specific order.
-
-What would be the proper way to solve this issue?
+Thanks,
+Jan
