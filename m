@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 18 Jul 2016 17:01:14 +0200
-Subject: [LTP] [PATCH 5/8] waitpid11: use the new API
-In-Reply-To: <1468593589-30545-6-git-send-email-stanislav.kholmanskikh@oracle.com>
+Date: Mon, 18 Jul 2016 17:07:41 +0200
+Subject: [LTP] [PATCH 6/8] waitpid12: use the new API
+In-Reply-To: <1468593589-30545-7-git-send-email-stanislav.kholmanskikh@oracle.com>
 References: <1468593589-30545-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1468593589-30545-6-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20160718150113.GE18221@rei.suse.cz>
+ <1468593589-30545-7-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20160718150740.GF18221@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,15 +12,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-This test does nearly the same as waitpid06, but here we pick up the
-children by the process group instead of getting them all with -1 as a
-pid.
+And I guess that this test can be simplified quite a lot, there is no
+reason for checking that pids could be waited for by process group etc.
+We only care about the WNOHANG here (since the rest of the code is
+nearly identical to waitpid11.c).
 
-I guess that we could create a function that would take an array of
-pids, it's lenght and waitpid pid parameter and would assert that all
-children pids in the array could be waited for. Then we could reuse the
-function in waitpid06 passing whole array and -1 and here passing first
-half of the array and 0 then second half of the array and -group...
+All that needs to be done here is to fork some number of children in a
+test setup and let them sleep (I would use pause() for simplicity). Then
+the whole test would be just a call to waitpid() with WNOHANG and the
+test cleanup would send a signal to the test childrens and then wait for
+them.
 
 -- 
 Cyril Hrubis
