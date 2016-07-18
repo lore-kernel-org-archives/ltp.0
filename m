@@ -1,43 +1,33 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 18 Jul 2016 09:52:25 -0400 (EDT)
-Subject: [LTP] [PATCH] lib: add [SAFE_]FILE_LINES_SCANF
-In-Reply-To: <20160718113644.GA18221@rei.suse.cz>
-References: <ae355058af800fd8fbc410b839ce25a128ab4339.1468492135.git.jstancek@redhat.com>
- <20160718113644.GA18221@rei.suse.cz>
-Message-ID: <2011593494.6050854.1468849945006.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 18 Jul 2016 16:03:19 +0200
+Subject: [LTP] [PATCH] madvise06: wait a bit after madvise() call
+In-Reply-To: <8eb6f485a46b9d9fb62eec232bf7bcb2d4cf4215.1468848169.git.jstancek@redhat.com>
+References: <8eb6f485a46b9d9fb62eec232bf7bcb2d4cf4215.1468848169.git.jstancek@redhat.com>
+Message-ID: <20160718140319.GA19087@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Monday, 18 July, 2016 1:36:44 PM
-> Subject: Re: [LTP] [PATCH] lib: add [SAFE_]FILE_LINES_SCANF
+Hi!
+> madvise_willneed() only schedules I/O and does not
+> wait for completion, so there is possibility for this
+> testcase to fail occasionally.
 > 
-> Hi!
-> >  lib/tests/tst_safe_fileops.c    | 40 +++++++++++++++++++++++++++++++++++
-> 
-> The last minor nitpick is that the lib/tests/ directory is full of
-> oldlib tests and this is a newlib test. It may be better to add this
-> file to the lib/newlib_tests/.
+> This patch is introducing a small delay and checks the
+> effect of madvise on more pages.
 
-Moved and pushed.
+Looks good.
 
-Regards,
-Jan
+What is the reason for using more than one page? Does that increase the
+likehood of triggering the issue?
 
-> 
-> Anyway this version looks fine, acked.
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+Another idea may be to utilize bitflags from /proc/self/pagemap which
+would be non-destructive way to get the present/swapped information.
+Then we can do a short loop that polls these flags with much shorter
+sleep, but the code would likely end up more complicated than this...
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
