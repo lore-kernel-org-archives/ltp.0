@@ -1,93 +1,68 @@
-From: nousi <bnousilal@gmail.com>
-Date: Mon, 18 Jul 2016 17:23:14 +0530
-Subject: [LTP] sendmsg01 failure
-In-Reply-To: <764436440.5908995.1468841520559.JavaMail.zimbra@redhat.com>
-References: <CAJ5vXcT-k95n1DqmZjcPo=y+K=ZMb=MHwWNX7_P9pV9Rsh2s5g@mail.gmail.com>
- <764436440.5908995.1468841520559.JavaMail.zimbra@redhat.com>
-Message-ID: <CAJ5vXcTZnnpmGpOqjtTb-j+8ZJiUUjVp5XFqYmhrDf77ei8BNQ@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 18 Jul 2016 13:59:33 +0200
+Subject: [LTP] [PATCH] consolidate 4 TCs message_queue_test_02_* into
+ message_queue_test_02.sh to avoid fail in case of random execution
+In-Reply-To: <4ab8990043b24c1786a12b9dc8dfff3c@FE-MBX1024.de.bosch.com>
+References: <1468576023-32754-1-git-send-email-nga.hoangthithuy@vn.bosch.com>
+ <20160715095531.GA3268@rei.scz.novell.com>
+ <4ab8990043b24c1786a12b9dc8dfff3c@FE-MBX1024.de.bosch.com>
+Message-ID: <20160718115932.GB18221@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi All,
+Hi!
+> > >  sem02 sem02
+> > >
+> > >  message_queue_test_01		message_queue_test_01
+> > > -message_queue_test_02_get	message_queue_test_02_get
+> > > -message_queue_test_02_snd	message_queue_test_02_snd
+> > > -message_queue_test_02_rcv	message_queue_test_02_rcv
+> > > -message_queue_test_02_ctl	message_queue_test_02_ctl -r
+> > > +message_queue_test_02		message_queue_test_02.sh
+> > >  message_queue_test_04		message_queue_test_04
+> > >  message_queue_test_05		message_queue_test_05
+> > >  pipe_test_01			pipe_test_01
+> > 
+> > This is exactly against our guidelines, see:
+> > 
+> > https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines#211-runtest-
+> > files
+> 
+> What exactly do you mean?
 
-Please, have a look at the versions below.
-Please, let me know if you need any further information.
+What I mean and is written in the guidelines is:
 
-Kernel: Linux 3.14.65
-Archtecture: aarch64 GNU/Linux
-LTP version : 20150119
+The runtest files should have one entry per a test. Creating a wrapper
+that runs all your tests and adding it as a single test into runtest
+file is strongly discouraged.
 
+> To avoid confusions I need to explain background of this patch: We
+> working on remote execution of LTPs on the target. It means, some
+> script is taking test list and execute each of entry over ssh.  In
+> this case we are able to track resets and continue testing after it.
+>
+> So, now we found that some resets are not actially triggered by some
+> specific test. So we decided to randomize test order.  This allowed us
+> to find some more bugs on the system, but introduced issues with tests
+> which depend on each other. For example message_queue_test_02_* can be
+> executed only in some specific order.
 
-On Mon, Jul 18, 2016 at 5:02 PM, Jan Stancek <jstancek@redhat.com> wrote:
+Ah, so they depend on each other. That is a valid reason for executing
+them in a defined order.
 
->
->
-> ----- Original Message -----
-> > From: "nousi" <bnousilal@gmail.com>
-> > To: ltp@lists.linux.it
-> > Sent: Friday, 15 July, 2016 2:47:36 PM
-> > Subject: [LTP] sendmsg01 failure
-> >
-> > Hi,
-> >
-> > what could be the reason for the below the error?
-> > Please let me know if I need to enable something in the kernel.
-> >
-> > sendmsg01 13 TFAIL : sendmsg01.c:437: invalid flags set w/ control ;
-> returned
-> > -1 (expected -1), errno 22 (expected 95)
->
-> That specific flag combination has been removed from test in February:
->
-> https://github.com/linux-test-project/ltp/commit/44861ca152cbe5ffff890e055a304d3b74f8bf21
->
-> In future it would be handy to include your LTP version, kernel version,
-> architecture and distro you are running.
->
-> Regards,
-> Jan
->
-> >
-> > root@nousi:/opt/ltp# ./testcases/bin/sendmsg01
-> > sendmsg01 1 TPASS : bad file descriptor successful
-> > sendmsg01 2 TPASS : invalid socket successful
-> > sendmsg01 3 TPASS : invalid send buffer successful
-> > sendmsg01 4 TPASS : connected TCP successful
-> > sendmsg01 5 TPASS : not connected TCP successful
-> > sendmsg01 6 TPASS : invalid to buffer length successful
-> > sendmsg01 7 TPASS : invalid to buffer successful
-> > sendmsg01 8 TPASS : UDP message too big successful
-> > sendmsg01 9 TPASS : local endpoint shutdown successful
-> > sendmsg01 10 TPASS : invalid iovec pointer successful
-> > sendmsg01 11 TPASS : invalid msghdr pointer successful
-> > sendmsg01 12 TPASS : rights passing successful
-> > sendmsg01 13 TFAIL : sendmsg01.c:437: invalid flags set w/ control ;
-> returned
-> > -1 (expected -1), errno 22 (expected 95)
-> > sendmsg01 14 TPASS : invalid flags set successful
-> > sendmsg01 15 TPASS : invalid cmsg length successful
-> > sendmsg01 16 TPASS : invalid cmsg pointer successful
-> >
-> > --
-> > Thanks & Regards,
-> > B.Nousilal,
-> >
-> >
-> >
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> >
->
+You should have written better patch description since this is not
+exactly clear.
 
+> What would be the proper way to solve this issue?
 
+Looking at the code we should probably avoid running these testcasese in
+ipc runtest file, since they were designed to be executed in a loop to
+stress the target system. They does not seem very useful when they are
+executed just once as from the runtest file.
 
 -- 
-
-
-*Thanks & Regards,B.Nousilal,*
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160718/eb4c445f/attachment.html>
+Cyril Hrubis
+chrubis@suse.cz
