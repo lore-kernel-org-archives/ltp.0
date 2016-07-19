@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 19 Jul 2016 15:53:49 +0200
-Subject: [LTP] [PATCH 1/3] syscall/kcmp*: Convert to new API
-In-Reply-To: <1467803450-11622-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Tue, 19 Jul 2016 16:09:39 +0200
+Subject: [LTP] [PATCH 2/3] lib/cloner.c: Add tst_clone.h for new API
+In-Reply-To: <1467803450-11622-2-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1467803450-11622-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20160719135349.GE6409@rei.lan>
+ <1467803450-11622-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160719140938.GF6409@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,34 +12,44 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +static void verify_kcmp(unsigned int n)
->  {
-> -	if (fd2 > 0 && close(fd2) < 0)
-> -		tst_resm(TWARN | TERRNO, "close fd2 failed");
-> -	fd2 = 0;
-> -	if (fd3 > 0 && close(fd3) < 0)
-> -		tst_resm(TWARN | TERRNO, "close fd3 failed");
-> -	fd3 = 0;
-> -}
-> +	struct test_case *tc = &test_cases[n];
->  
-> -static void setup(void)
-> -{
-> -	if ((tst_kvercmp(3, 5, 0)) < 0) {
-> -		tst_brkm(TCONF, NULL,
-> -			"This test can only run on kernels that are 3.5. and higher");
-> -	}
-> +	pid1 = getpid();
->  
-> -	tst_tmpdir();
-> +	fd1 = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
+> +/*
+> + * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it is
+> + * free of the rightful claim of any third person regarding infringement
+> + * or the like.  Any license provided herein, whether implied or
+> + * otherwise, applies only to this software file.  Patent licenses, if
+> + * any, provided herein do not apply to combinations of this program with
+> + * other software, or any other product whatsoever.
+> + *
+> + * You should have received a copy of the GNU General Public License along
+> + * with this program.
+> + *
+> + */
+> +
+> +#ifndef TST_CLONE_H__
+> +#define TST_CLONE_H__
+> +
+> +/* Functions from lib/cloner.c */
+> +int ltp_clone(unsigned long flags, int (*fn)(void *arg), void *arg,
+> +		size_t stack_size, void *stack);
+> +int ltp_clone7(unsigned long flags, int (*fn)(void *arg), void *arg,
+> +		size_t stack_size, void *stack, ...);
+> +int ltp_clone_malloc(unsigned long clone_flags, int (*fn)(void *arg),
+> +		void *arg, size_t stacksize);
+> +int ltp_clone_quick(unsigned long clone_flags, int (*fn)(void *arg),
+> +		void *arg);
 
-This SAFE_OPEN() has to be done in the test setup, otherwise it will
-start to fail with large enough iteration (-i) parameter once the
-maximal number of open files is reached.
-
-
-The rest looks good.
+I'm undecided if we should rename these to start with tst_ in the new
+library. Apart from that it's fine.
 
 -- 
 Cyril Hrubis
