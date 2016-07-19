@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 19 Jul 2016 14:41:25 +0200
-Subject: [LTP] [PATCH V2 4/8] waitpid09: use the new API
-In-Reply-To: <1468924444-924-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <20160718141844.GD18221@rei.suse.cz>
- <1468924444-924-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20160719124125.GD6409@rei.lan>
+Date: Tue, 19 Jul 2016 15:53:49 +0200
+Subject: [LTP] [PATCH 1/3] syscall/kcmp*: Convert to new API
+In-Reply-To: <1467803450-11622-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1467803450-11622-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160719135349.GE6409@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,70 +11,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> This patch addresses all your comments, except the one about do_exit(),
-> because do_exit() is required for case 0.
-
-What I meant was to move the two lines that are in do_exit() to the if
-in the case0(). Previously the function was called from two places (one
-was the uclinux maybe_run_child and another one was after the fork) but
-now it does not make any sense to keep it as a separate function if it's
-called only from one place in the code.
-
-Or is there another reason to keep it in a fucntion I don't see?
-
-> +static void case2(void)
+> +static void verify_kcmp(unsigned int n)
 >  {
-> +	pid_t ret;
-> +	int status;
-> +
-> +	ret = waitpid(-1, &status, 0);
-> +
-> +	if (ret != -1) {
-> +		tst_res(TFAIL, "Expected -1 got %d", ret);
-> +		return;
-> +	}
-> +	if (errno != ECHILD) {
-> +		tst_res(TFAIL, "Expected ECHILD got %d",
-> +			 errno);
-                        ^
-			You should print the human-readable string
-			returned by tst_strerrno() here as well or
-			use TERRNO to have it printed by the library.
-
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS, "Case 2 PASSED");
->  }
+> -	if (fd2 > 0 && close(fd2) < 0)
+> -		tst_resm(TWARN | TERRNO, "close fd2 failed");
+> -	fd2 = 0;
+> -	if (fd3 > 0 && close(fd3) < 0)
+> -		tst_resm(TWARN | TERRNO, "close fd3 failed");
+> -	fd3 = 0;
+> -}
+> +	struct test_case *tc = &test_cases[n];
 >  
-> -static void inthandlr(void)
-> +static void case3(void)
->  {
-> -	intintr++;
-> +	pid_t ret;
-> +	int status;
-> +
-> +	ret = waitpid(-1, &status, WNOHANG);
-> +	if (ret != -1) {
-> +		tst_res(TFAIL, "WNOHANG: Expected -1 got %d",
-> +			 ret);
-> +		return;
-> +	}
-> +	if (errno != ECHILD) {
-> +		tst_res(TFAIL, "WNOHANG: Expected ECHILD got "
-> +			 "%d", errno);
-
-                        Here as well.
-
-> +		return;
-> +	}
-> +
-> +	tst_res(TPASS, "Case 3 PASSED");
->  }
+> -static void setup(void)
+> -{
+> -	if ((tst_kvercmp(3, 5, 0)) < 0) {
+> -		tst_brkm(TCONF, NULL,
+> -			"This test can only run on kernels that are 3.5. and higher");
+> -	}
+> +	pid1 = getpid();
 >  
-> -static void wait_for_parent(void)
+> -	tst_tmpdir();
+> +	fd1 = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
 
-Otherwise it looks good. Acked with the minor changes fixed.
+This SAFE_OPEN() has to be done in the test setup, otherwise it will
+start to fail with large enough iteration (-i) parameter once the
+maximal number of open files is reached.
+
+
+The rest looks good.
 
 -- 
 Cyril Hrubis
