@@ -1,99 +1,341 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 20 Jul 2016 15:48:16 +0800
-Subject: [LTP] [PATCH] swapping: replace mem_free by mem_available
-Message-ID: <1469000896-6122-1-git-send-email-liwang@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 20 Jul 2016 16:21:12 +0800
+Subject: [LTP] [PATCH v2 1/3] syscalls/kcmp*: Convert to new API
+In-Reply-To: <20160719135349.GE6409@rei.lan>
+References: <20160719135349.GE6409@rei.lan>
+Message-ID: <1469002874-18630-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On some ppc64 systems, there free memory are larger than available memory, and
-swap size is very small. Then this swapping01 easily get failures like:
-
-swapping01    0  TINFO  :  free physical memory: 14651 MB
-swapping01    0  TINFO  :  try to allocate: 19046 MB
-swapping01    1  TBROK  :  swapping01.c:134: malloc: errno=ENOMEM(12): Cannot allocate memory
-swapping01    2  TBROK  :  swapping01.c:134: Remaining cases broken
-swapping01    1  TBROK  :  swapping01.c:151: child was not stopped.
-swapping01    2  TBROK  :  swapping01.c:151: Remaining cases broken
-
- # free -m
-               total        used        free      shared  buff/cache   available
- Mem:          15316         238       14651           0         427       14478
- Swap:          4607         202        4405
-
-That's because 14478(available_mem) + 4405(swap_free) < 19046(expected: 14651(free_mem) * 1.3),
-so we get malloc ENOMEM errors.
-
-This patch replaces the free memory by available, and clean up some code.
-
-Signed-off-by: Li Wang <liwang@redhat.com>
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/mem/swapping/swapping01.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ testcases/kernel/syscalls/kcmp/kcmp.h   |   2 +-
+ testcases/kernel/syscalls/kcmp/kcmp01.c | 121 ++++++++++++++------------------
+ testcases/kernel/syscalls/kcmp/kcmp02.c |  85 ++++++++--------------
+ 3 files changed, 84 insertions(+), 124 deletions(-)
 
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index b530ee2..caadb19 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -68,7 +68,7 @@ static void init_meminfo(void);
- static void do_alloc(void);
- static void check_swapping(void);
+diff --git a/testcases/kernel/syscalls/kcmp/kcmp.h b/testcases/kernel/syscalls/kcmp/kcmp.h
+index 513af39..ab50d4b 100644
+--- a/testcases/kernel/syscalls/kcmp/kcmp.h
++++ b/testcases/kernel/syscalls/kcmp/kcmp.h
+@@ -46,7 +46,7 @@ enum kcmp_type {
  
--static long mem_free_init;
-+static long mem_available_init;
- static long swap_free_init;
- static long mem_over;
- static long mem_over_max;
-@@ -108,17 +108,17 @@ int main(int argc, char *argv[])
- static void init_meminfo(void)
+ int kcmp(int pid1, int pid2, int type, int fd1, int fd2)
  {
- 	swap_free_init = read_meminfo("SwapFree:");
--	mem_free_init = read_meminfo("MemFree:");
--	mem_over = mem_free_init * COE_SLIGHT_OVER;
--	mem_over_max = mem_free_init * COE_DELTA;
--
--	/* at least 10MB free physical memory needed */
--	if (mem_free_init < 10240) {
--		sleep(5);
--		if (mem_free_init < 10240)
-+	if (!FILE_LINES_SCANF(cleanup, "/proc/meminfo", "MemAvailable: %ld",
-+				&mem_available_init))
-+		mem_available_init = read_meminfo("MemFree:") + read_meminfo("Cached:");
-+	mem_over = mem_available_init * COE_SLIGHT_OVER;
-+	mem_over_max = mem_available_init * COE_DELTA;
-+
-+	/*@least 10MB available physical memory needed */
-+	if (mem_available_init < 10240)
- 			tst_brkm(TCONF, cleanup,
--				 "Not enough free memory to test.");
--	}
-+				 "Not enough avalable memory to test.");
-+
- 	if (swap_free_init < mem_over)
- 		tst_brkm(TCONF, cleanup, "Not enough swap space to test.");
+-	return ltp_syscall(__NR_kcmp, pid1, pid2, type, fd1, fd2);
++	return tst_syscall(__NR_kcmp, pid1, pid2, type, fd1, fd2);
  }
-@@ -128,8 +128,8 @@ static void do_alloc(void)
- 	long mem_count;
- 	void *s;
  
--	tst_resm(TINFO, "free physical memory: %ld MB", mem_free_init / 1024);
--	mem_count = mem_free_init + mem_over;
-+	tst_resm(TINFO, "available physical memory: %ld MB", mem_available_init / 1024);
-+	mem_count = mem_available_init + mem_over;
- 	tst_resm(TINFO, "try to allocate: %ld MB", mem_count / 1024);
- 	s = malloc(mem_count * 1024);
- 	if (s == NULL)
-@@ -160,7 +160,7 @@ static void check_swapping(void)
- 			tst_brkm(TFAIL, cleanup, "heavy swapping detected: "
- 				 "%ld MB swapped.", swapped / 1024);
- 		}
--		sleep(1);
-+		usleep(100000);
+ #endif
+diff --git a/testcases/kernel/syscalls/kcmp/kcmp01.c b/testcases/kernel/syscalls/kcmp/kcmp01.c
+index 96d6b07..a8b43d4 100644
+--- a/testcases/kernel/syscalls/kcmp/kcmp01.c
++++ b/testcases/kernel/syscalls/kcmp/kcmp01.c
+@@ -26,23 +26,19 @@
+ 
+ #define _GNU_SOURCE
+ 
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
+ #include "lapi/fcntl.h"
+ #include "kcmp.h"
+ 
+ #define TEST_FILE "test_file"
+ #define TEST_FILE2 "test_file2"
+ 
+-
+ static int fd1;
+ static int fd2;
+ static int fd3;
+ static int pid1;
+ static int pid2;
+ 
+-char *TCID = "kcmp01";
+-
+ static struct test_case {
+ 	int *pid1;
+ 	int *pid2;
+@@ -58,92 +54,81 @@ static struct test_case {
+ 	{&pid1, &pid2, KCMP_FILE, &fd1, &fd3, 1},
+ };
+ 
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-
+-static void cleanup(void);
+-static void setup(void);
+-static void do_child(const struct test_case *test);
+-static void cleanup_child(void);
+-
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; ++i) {
+-			pid2 = tst_fork();
++	fd1 = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
++}
+ 
+-			if (pid2 == -1)
+-				tst_brkm(TBROK, cleanup, "fork failed");
++static void cleanup(void)
++{
++	if (fd1 > 0 && close(fd1) < 0)
++		tst_res(TWARN | TERRNO, "close fd1 failed");
++}
+ 
+-			if (!pid2)
+-				do_child(&test_cases[i]);
+-			else
+-				tst_record_childstatus(cleanup, pid2);
+-			tst_count++;
+-		}
+-	}
++static void cleanup_child(void)
++{
++	if (fd2 > 0 && close(fd2) < 0)
++		tst_res(TWARN | TERRNO, "close fd2 failed");
++	fd2 = 0;
+ 
+-	cleanup();
+-	tst_exit();
++	if (fd3 > 0 && close(fd3) < 0)
++		tst_res(TWARN | TERRNO, "close fd3 failed");
++	fd3 = 0;
+ }
+ 
+ static void do_child(const struct test_case *test)
+ {
+ 	pid2 = getpid();
++
++	fd3 = SAFE_OPEN(TEST_FILE2, O_CREAT | O_RDWR, 0666);
++
+ 	fd2 = dup(fd1);
+-	fd3 = SAFE_OPEN(cleanup_child, TEST_FILE2, O_CREAT | O_RDWR, 0666);
++	if (fd2 == -1) {
++		tst_res(TFAIL | TERRNO, "dup() failed unexpectedly");
++		goto end;
++	}
+ 
+ 	TEST(kcmp(*(test->pid1), *(test->pid2), test->type,
+-			  *(test->fd1), *(test->fd2)));
++		  *(test->fd1), *(test->fd2)));
+ 
+-	if (TEST_RETURN == -1)
+-		tst_resm(TFAIL | TTERRNO, "kcmp() failed unexpectedly");
++	if (TEST_RETURN == -1) {
++		tst_res(TFAIL | TTERRNO, "kcmp() failed unexpectedly");
++		goto end;
++	}
+ 
+ 	if ((test->exp_different && TEST_RETURN == 0)
+-		|| (test->exp_different == 0 && TEST_RETURN))
+-		tst_resm(TFAIL, "kcmp() returned %lu instead of %d",
+-				TEST_RETURN, test->exp_different);
++		|| (test->exp_different == 0 && TEST_RETURN)) {
++		tst_res(TFAIL, "kcmp() returned %lu instead of %d",
++			TEST_RETURN, test->exp_different);
++		goto end;
++	}
+ 
+ 	if ((test->exp_different == 0 && TEST_RETURN == 0)
+ 		|| (test->exp_different && TEST_RETURN))
+-		tst_resm(TPASS, "kcmp() returned the expected value");
++		tst_res(TPASS, "kcmp() returned the expected value");
+ 
+-	tst_exit();
++end:
++	cleanup_child();
+ }
+ 
+-static void cleanup_child(void)
++static void verify_kcmp(unsigned int n)
+ {
+-	if (fd2 > 0 && close(fd2) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd2 failed");
+-	fd2 = 0;
+-	if (fd3 > 0 && close(fd3) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd3 failed");
+-	fd3 = 0;
+-}
+-
+-static void setup(void)
+-{
+-	if ((tst_kvercmp(3, 5, 0)) < 0) {
+-		tst_brkm(TCONF, NULL,
+-			"This test can only run on kernels that are 3.5. and higher");
+-	}
+-
+-	tst_tmpdir();
++	struct test_case *tc = &test_cases[n];
+ 
+ 	pid1 = getpid();
+-	fd1 = SAFE_OPEN(cleanup, TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
+-}
+ 
+-static void cleanup(void)
+-{
+-	if (fd1 > 0 && close(fd1) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd1 failed");
+-	tst_rmdir();
++	pid2 = SAFE_FORK();
++	if (!pid2)
++		do_child(tc);
+ }
++
++static struct tst_test test = {
++	.tid = "kcmp01",
++	.tcnt = ARRAY_SIZE(test_cases),
++	.setup = setup,
++	.cleanup = cleanup,
++	.forks_child = 1,
++	.test = verify_kcmp,
++	.min_kver = "3.5.0",
++	.needs_tmpdir = 1,
++};
+diff --git a/testcases/kernel/syscalls/kcmp/kcmp02.c b/testcases/kernel/syscalls/kcmp/kcmp02.c
+index fb651d0..943c084 100644
+--- a/testcases/kernel/syscalls/kcmp/kcmp02.c
++++ b/testcases/kernel/syscalls/kcmp/kcmp02.c
+@@ -28,8 +28,7 @@
+ 
+ #define _GNU_SOURCE
+ 
+-#include "test.h"
+-#include "safe_macros.h"
++#include "tst_test.h"
+ #include "lapi/fcntl.h"
+ #include "kcmp.h"
+ 
+@@ -43,10 +42,9 @@ static int pid1;
+ static int pid_unused;
+ static int fd_fake = -1;
+ 
+-char *TCID = "kcmp02";
+-
+ #include <sys/types.h>
+ #include <sys/wait.h>
++#include <limits.h>
+ 
+ static struct test_case {
+ 	int *pid1;
+@@ -64,75 +62,52 @@ static struct test_case {
+ 	{&pid1, &pid1, KCMP_FILE, &fd1, &fd_fake, EBADF}
+ };
+ 
+-int TST_TOTAL = ARRAY_SIZE(test_cases);
+-
+-static void cleanup(void);
+-static void setup(void);
+-static void kcmp_verify(const struct test_case *test);
+-
+-int main(int ac, char **av)
++static void setup(void)
+ {
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
++	pid1 = getpid();
++	pid_unused = tst_get_unused_pid();
+ 
+-		for (i = 0; i < TST_TOTAL; i++)
+-			kcmp_verify(&test_cases[i]);
++	fd1 = SAFE_OPEN(TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
++	fd2 = SAFE_OPEN(TEST_FILE2, O_CREAT | O_RDWR | O_TRUNC);
++}
+ 
+-	}
++static void cleanup(void)
++{
++	if (fd1 > 0 && close(fd1) < 0)
++		tst_res(TWARN | TERRNO, "close fd1 failed");
+ 
+-	cleanup();
+-	tst_exit();
++	if (fd2 > 0 && close(fd2) < 0)
++		tst_res(TWARN | TERRNO, "close fd2 failed");
+ }
+ 
+-static void kcmp_verify(const struct test_case *test)
++static void verify_kcmp(unsigned int n)
+ {
++	struct test_case *test =  &test_cases[n];
++
+ 	TEST(kcmp(*(test->pid1), *(test->pid2), test->type,
+-			  *(test->fd1), *(test->fd2)));
++		  *(test->fd1), *(test->fd2)));
+ 
+ 	if (TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "kcmp() succeeded unexpectedly");
++		tst_res(TFAIL, "kcmp() succeeded unexpectedly");
+ 		return;
  	}
- 	tst_resm(TPASS, "no heavy swapping detected, %ld MB swapped.",
- 		 swapped / 1024);
+ 
+ 	if (test->exp_errno == TEST_ERRNO) {
+-		tst_resm(TPASS | TTERRNO, "kcmp() returned the expected value");
++		tst_res(TPASS | TTERRNO, "kcmp() returned the expected value");
+ 		return;
+ 	}
+ 
+-	tst_resm(TFAIL | TTERRNO,
++	tst_res(TFAIL | TTERRNO,
+ 		"kcmp() got unexpected return value: expected: %d - %s",
+ 			test->exp_errno, tst_strerrno(test->exp_errno));
+ }
+ 
+-static void setup(void)
+-{
+-	if ((tst_kvercmp(3, 5, 0)) < 0) {
+-		tst_brkm(TCONF, NULL,
+-			"This test can only run on kernels that are 3.5. and higher");
+-	}
+-
+-	tst_tmpdir();
+-
+-	pid1 = getpid();
+-	pid_unused = tst_get_unused_pid(cleanup);
+-	fd1 = SAFE_OPEN(cleanup, TEST_FILE, O_CREAT | O_RDWR | O_TRUNC);
+-	fd2 = SAFE_OPEN(cleanup, TEST_FILE2, O_CREAT | O_RDWR | O_TRUNC);
+-
+-}
+-
+-static void cleanup(void)
+-{
+-	if (fd1 > 0 && close(fd1) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd1 failed");
+-
+-	if (fd2 > 0 && close(fd2) < 0)
+-		tst_resm(TWARN | TERRNO, "close fd2 failed");
+-	tst_rmdir();
+-
+-}
++static struct tst_test test = {
++	.tid = "kcmp02",
++	.tcnt = ARRAY_SIZE(test_cases),
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = verify_kcmp,
++	.min_kver = "3.5.0",
++	.needs_tmpdir = 1
++};
 -- 
 1.8.3.1
+
+
 
