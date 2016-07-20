@@ -1,32 +1,99 @@
-From: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
-Date: Tue, 19 Jul 2016 19:54:24 +0300
-Subject: [LTP]  [PATCH v2 2/2] syscalls/perf_event_open{01,
-	02}: Reduce size of idle loop
-In-Reply-To: <1468947264-5812-1-git-send-email-yuriy.kolerov@synopsys.com>
-References: <1468947264-5812-1-git-send-email-yuriy.kolerov@synopsys.com>
-Message-ID: <1468947264-5812-2-git-send-email-yuriy.kolerov@synopsys.com>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 20 Jul 2016 15:48:16 +0800
+Subject: [LTP] [PATCH] swapping: replace mem_free by mem_available
+Message-ID: <1469000896-6122-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+On some ppc64 systems, there free memory are larger than available memory, and
+swap size is very small. Then this swapping01 easily get failures like:
 
-By default do_work() iterates 1000000000 times. However such loop may
-take a long time to finish for all available performance counters on
-some slow FPGA-based development boards. Thus a number of iterations
-is divided by 10 in this patch.
+swapping01    0  TINFO  :  free physical memory: 14651 MB
+swapping01    0  TINFO  :  try to allocate: 19046 MB
+swapping01    1  TBROK  :  swapping01.c:134: malloc: errno=ENOMEM(12): Cannot allocate memory
+swapping01    2  TBROK  :  swapping01.c:134: Remaining cases broken
+swapping01    1  TBROK  :  swapping01.c:151: child was not stopped.
+swapping01    2  TBROK  :  swapping01.c:151: Remaining cases broken
 
-Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+ # free -m
+               total        used        free      shared  buff/cache   available
+ Mem:          15316         238       14651           0         427       14478
+ Swap:          4607         202        4405
+
+That's because 14478(available_mem) + 4405(swap_free) < 19046(expected: 14651(free_mem) * 1.3),
+so we get malloc ENOMEM errors.
+
+This patch replaces the free memory by available, and clean up some code.
+
+Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/syscalls/perf_event_open/perf_event_open01.c | 2 +-
- testcases/kernel/syscalls/perf_event_open/perf_event_open02.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/mem/swapping/swapping01.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0002-syscalls-perf_event_open-01-02-Reduce-size-of-idle-l.patch
-Type: text/x-patch
-Size: 1058 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160719/44c4cd97/attachment.bin>
+diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
+index b530ee2..caadb19 100644
+--- a/testcases/kernel/mem/swapping/swapping01.c
++++ b/testcases/kernel/mem/swapping/swapping01.c
+@@ -68,7 +68,7 @@ static void init_meminfo(void);
+ static void do_alloc(void);
+ static void check_swapping(void);
+ 
+-static long mem_free_init;
++static long mem_available_init;
+ static long swap_free_init;
+ static long mem_over;
+ static long mem_over_max;
+@@ -108,17 +108,17 @@ int main(int argc, char *argv[])
+ static void init_meminfo(void)
+ {
+ 	swap_free_init = read_meminfo("SwapFree:");
+-	mem_free_init = read_meminfo("MemFree:");
+-	mem_over = mem_free_init * COE_SLIGHT_OVER;
+-	mem_over_max = mem_free_init * COE_DELTA;
+-
+-	/* at least 10MB free physical memory needed */
+-	if (mem_free_init < 10240) {
+-		sleep(5);
+-		if (mem_free_init < 10240)
++	if (!FILE_LINES_SCANF(cleanup, "/proc/meminfo", "MemAvailable: %ld",
++				&mem_available_init))
++		mem_available_init = read_meminfo("MemFree:") + read_meminfo("Cached:");
++	mem_over = mem_available_init * COE_SLIGHT_OVER;
++	mem_over_max = mem_available_init * COE_DELTA;
++
++	/*@least 10MB available physical memory needed */
++	if (mem_available_init < 10240)
+ 			tst_brkm(TCONF, cleanup,
+-				 "Not enough free memory to test.");
+-	}
++				 "Not enough avalable memory to test.");
++
+ 	if (swap_free_init < mem_over)
+ 		tst_brkm(TCONF, cleanup, "Not enough swap space to test.");
+ }
+@@ -128,8 +128,8 @@ static void do_alloc(void)
+ 	long mem_count;
+ 	void *s;
+ 
+-	tst_resm(TINFO, "free physical memory: %ld MB", mem_free_init / 1024);
+-	mem_count = mem_free_init + mem_over;
++	tst_resm(TINFO, "available physical memory: %ld MB", mem_available_init / 1024);
++	mem_count = mem_available_init + mem_over;
+ 	tst_resm(TINFO, "try to allocate: %ld MB", mem_count / 1024);
+ 	s = malloc(mem_count * 1024);
+ 	if (s == NULL)
+@@ -160,7 +160,7 @@ static void check_swapping(void)
+ 			tst_brkm(TFAIL, cleanup, "heavy swapping detected: "
+ 				 "%ld MB swapped.", swapped / 1024);
+ 		}
+-		sleep(1);
++		usleep(100000);
+ 	}
+ 	tst_resm(TPASS, "no heavy swapping detected, %ld MB swapped.",
+ 		 swapped / 1024);
+-- 
+1.8.3.1
+
