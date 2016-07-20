@@ -1,205 +1,171 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 20 Jul 2016 18:45:35 +0800
-Subject: [LTP] [PATCH v2 2/2] syscalls/access03: reconstruct and convert to
-	new API
-In-Reply-To: <20160719105118.GB6409@rei.lan>
-References: <20160719105118.GB6409@rei.lan>
-Message-ID: <1469011535-950-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 20 Jul 2016 16:37:42 +0200
+Subject: [LTP] [PATCH] madvise06: wait a bit after madvise() call
+In-Reply-To: <20160719085756.GB31704@gmail.com>
+References: <8eb6f485a46b9d9fb62eec232bf7bcb2d4cf4215.1468848169.git.jstancek@redhat.com>
+ <20160719055844.GA31704@gmail.com>
+ <1822250385.6269456.1468911402613.JavaMail.zimbra@redhat.com>
+ <20160719085756.GB31704@gmail.com>
+Message-ID: <578F8CB6.2020602@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* take use of some SAFE Marcos
-* add test as root and nobody respectively
+On 07/19/2016 10:57 AM, Li Wang wrote:
+>>
+>> My impression was that kernel bug was consistently reproducible,
+>> if not then let's replace the loop with one bigger sleep.
+> 
+> Sorry, I remember it's not, from what I test on an bad (unfix) kernel.
+> it always report PASS with this patch.
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- testcases/kernel/syscalls/access/Makefile   |   2 +-
- testcases/kernel/syscalls/access/access03.c | 138 ++++++++++++----------------
- 2 files changed, 60 insertions(+), 80 deletions(-)
+Attached is a different approach, that watches progress of SwapCached
+from /proc/meminfo and as soon as it sees 128M increase it takes that
+as PASS or gives up after 5 seconds with FAIL.
 
-diff --git a/testcases/kernel/syscalls/access/Makefile b/testcases/kernel/syscalls/access/Makefile
-index 3954429..06aaf9f 100644
---- a/testcases/kernel/syscalls/access/Makefile
-+++ b/testcases/kernel/syscalls/access/Makefile
-@@ -19,7 +19,7 @@
- top_srcdir		?= ../../../..
- 
- ifeq ($(UCLINUX),1)
--FILTER_OUT_MAKE_TARGETS += access02
-+FILTER_OUT_MAKE_TARGETS += access02 access03
- endif
- 
- include $(top_srcdir)/include/mk/testcases.mk
-diff --git a/testcases/kernel/syscalls/access/access03.c b/testcases/kernel/syscalls/access/access03.c
-index 6f5fa70..b9a96a0 100644
---- a/testcases/kernel/syscalls/access/access03.c
-+++ b/testcases/kernel/syscalls/access/access03.c
-@@ -23,101 +23,81 @@
-  */
- 
- /*
-- * access(2) test for errno(s) EFAULT.
-+ * access(2) test for errno(s) EFAULT as root and nobody respectively.
-  */
- 
- #include <errno.h>
--#include <string.h>
--#include <signal.h>
--
- #include <unistd.h>
--#include <sys/mman.h>
--#include "test.h"
--
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "access03";
--int TST_TOTAL = 8;
--
--/* XXX (garrcoop): uh, this isn't a bad address yo. */
--static void *low_addr;
--static void *high_addr;
--
--#if !defined(UCLINUX)
--
--int main(int ac, char **av)
-+#include <sys/types.h>
-+#include <pwd.h>
-+#include "tst_test.h"
-+
-+static uid_t uid;
-+
-+static struct tcase {
-+	void *addr;
-+	int mode;
-+	char *name;
-+} tcases[] = {
-+	{(void *)-1, F_OK, "F_OK"},
-+	{(void *)-1, R_OK, "R_OK"},
-+	{(void *)-1, W_OK, "W_OK"},
-+	{(void *)-1, X_OK, "X_OK"},
-+};
-+
-+static void access_test(struct tcase *tc, const char *user)
- {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--#define TEST_ACCESS(addr, mode) \
--{ \
--	if (access(low_addr, mode) == -1) { \
--		if (errno == EFAULT) { \
--			tst_resm(TPASS, \
--			    "access(%p, %s) failed as expected with EFAULT", \
--			    addr, #mode); \
--		} else { \
--			tst_resm(TFAIL|TERRNO, \
--			    "access(%p, %s) failed unexpectedly; " \
--			    "expected (EFAULT)", addr, #mode); \
--		} \
--	} else { \
--		tst_resm(TFAIL, \
--		    "access(%p, %s) succeeded unexpectedly", addr, #mode); \
--	} \
--}
-+	TEST(access(tc->addr, tc->mode));
- 
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		TEST_ACCESS(low_addr, R_OK);
--		TEST_ACCESS(low_addr, W_OK);
--		TEST_ACCESS(low_addr, X_OK);
--		TEST_ACCESS(low_addr, F_OK);
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "access(%p, %s) as %s succeeded unexpectedly",
-+			tc->addr, tc->name, user);
-+		return;
-+	}
- 
--		TEST_ACCESS(high_addr, R_OK);
--		TEST_ACCESS(high_addr, W_OK);
--		TEST_ACCESS(high_addr, X_OK);
--		TEST_ACCESS(high_addr, F_OK);
-+	if (TEST_ERRNO != EFAULT) {
-+		tst_res(TFAIL | TTERRNO,
-+			"access(%p, %s) as %s should fail with EFAULT",
-+			tc->addr, tc->name, user);
-+		return;
- 	}
- 
--	cleanup();
--	tst_exit();
-+	tst_res(TPASS | TTERRNO, "access(%p, %s) as %s",
-+		tc->addr, tc->name, user);
- }
- 
--static void setup(void)
-+static void verify_access(unsigned int n)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
--
--	low_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (low_addr == MAP_FAILED)
--		tst_brkm(TBROK | TERRNO, NULL, "mmap failed");
--
--	high_addr = get_high_address();
--	if (high_addr == NULL)
--		tst_brkm(TBROK | TERRNO, NULL, "get_high_address failed");
--	high_addr++;
--
--	tst_tmpdir();
-+	struct tcase *tc = &tcases[n];
-+	pid_t pid;
-+
-+	/* test as root */
-+	access_test(tc, "root");
-+
-+	/* test as nobody */
-+	pid = SAFE_FORK();
-+	if (pid) {
-+		SAFE_WAITPID(pid, NULL, 0);
-+	} else {
-+		SAFE_SETUID(uid);
-+		access_test(tc, "nobody");
-+	}
- }
- 
--static void cleanup(void)
-+static void setup(void)
- {
--	tst_rmdir();
--}
-+	struct passwd *pw;
- 
--#else
-+	pw = SAFE_GETPWNAM("nobody");
- 
--int main(void)
--{
--	tst_brkm(TCONF, NULL, "test not available on UCLINUX");
-+	uid = pw->pw_uid;
- }
- 
--#endif /* if !defined(UCLINUX) */
-+static struct tst_test test = {
-+	.tid = "access03",
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.setup = setup,
-+	.test = verify_access,
-+};
--- 
-1.8.4.2
+GOOD kernel:
+tst_test.c:701: INFO: Timeout per run is 300s
+madvise06.c:98: INFO: SwapCached (before madvise): 53576
+madvise06.c:113: INFO: SwapCached (after madvise): 568080
+madvise06.c:115: PASS: Regression test pass
+
+BAD kernel:
+# ./madvise06
+tst_test.c:701: INFO: Timeout per run is 300s
+madvise06.c:98: INFO: SwapCached (before madvise): 43712
+madvise06.c:113: INFO: SwapCached (after madvise): 45636
+madvise06.c:117: FAIL: Bug has been reproduced
+
+If you still have the setup, can you try how reliable is this approach?
+
+Regards,
+Jan
+-------------- next part --------------
+/*
+ * Copyright (c) 2016 Red Hat, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * DESCRIPTION
+ *
+ *   Page fault occurs in spite that madvise(WILLNEED) system call is called
+ *   to prefetch the page. This issue is reproduced by running a program
+ *   which sequentially accesses to a shared memory and calls madvise(WILLNEED)
+ *   to the next page on a page fault.
+ *
+ *   This bug is present in all RHEL7 versions. It looks like this was fixed in
+ *   mainline kernel > v3.15 by the following patch:
+ *
+ *   commit 55231e5c898c5c03c14194001e349f40f59bd300
+ *   Author: Johannes Weiner <hannes@cmpxchg.org>
+ *   Date:   Thu May 22 11:54:17 2014 -0700
+ *
+ *       mm: madvise: fix MADV_WILLNEED on shmem swapouts
+ */
+
+#include <errno.h>
+#include <stdio.h>
+#include <sys/sysinfo.h>
+#include "tst_test.h"
+
+#define CHUNK_SZ  (512*1024*1024L)
+#define MAX_ALLOC_CHUNKS 200L
+#define PASS_THRESHOLD_KB (CHUNK_SZ / 1024 / 4)
+
+static int pg_sz;
+struct sysinfo sys_buf_start;
+
+static void setup(void)
+{
+	sysinfo(&sys_buf_start);
+
+	if (sys_buf_start.totalram > (MAX_ALLOC_CHUNKS - 1) * CHUNK_SZ)
+		tst_brk(TCONF, "System RAM is too large, skip test");
+	if (sys_buf_start.freeswap < 2 * CHUNK_SZ)
+		tst_brk(TCONF, "System swap is too small");
+
+	pg_sz = getpagesize();
+}
 
 
+static void test_advice_willneed(void)
+{
+	int i;
+	char *src;
+	char *dst[MAX_ALLOC_CHUNKS];
+	long swapcached_start, swapcached;
+	struct sysinfo sys_buf;
 
+	/* allocate source memory */
+	src = SAFE_MMAP(NULL, CHUNK_SZ, PROT_READ | PROT_WRITE,
+			MAP_SHARED | MAP_ANONYMOUS,
+			-1, 0);
+
+	/* allocate destination memory (array) */
+	for (i = 0; i < MAX_ALLOC_CHUNKS; ++i)
+		dst[i] = SAFE_MMAP(NULL, CHUNK_SZ,
+				PROT_READ | PROT_WRITE,
+				MAP_SHARED | MAP_ANONYMOUS,
+				-1, 0);
+
+	/* memmove source to each destination memories (for SWAP-OUT) */
+	i = 0;
+	while (i < MAX_ALLOC_CHUNKS) {
+		memmove(dst[i], src, CHUNK_SZ);
+		i++;
+
+		sysinfo(&sys_buf);
+		if (sys_buf.freeswap + CHUNK_SZ < sys_buf_start.freeswap)
+			break;
+	}
+
+	SAFE_MUNMAP(src, CHUNK_SZ);
+	sync();
+
+	SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld",
+		&swapcached_start);
+	tst_res(TINFO, "SwapCached (before madvise): %ld", swapcached_start);
+
+	/* Do madvise() to dst[0] */
+	TEST(madvise(dst[0], CHUNK_SZ, MADV_WILLNEED));
+	if (TEST_RETURN == -1)
+		tst_brk(TBROK | TERRNO, "madvise failed");
+
+	i = 0;
+	do {
+		i++;
+		usleep(100000);
+		SAFE_FILE_LINES_SCANF("/proc/meminfo", "SwapCached: %ld",
+			&swapcached);
+	} while (i < 50 && swapcached < swapcached_start + PASS_THRESHOLD_KB);
+
+	tst_res(TINFO, "SwapCached (after madvise): %ld", swapcached);
+	if (swapcached > swapcached_start + PASS_THRESHOLD_KB)
+		tst_res(TPASS, "Regression test pass");
+	else
+		tst_res(TFAIL, "Bug has been reproduced");
+
+	for (i = 0; i < MAX_ALLOC_CHUNKS; ++i)
+		SAFE_MUNMAP(dst[i], CHUNK_SZ);
+}
+
+static struct tst_test test = {
+	.tid = "madvise06",
+	.test_all = test_advice_willneed,
+	.setup = setup,
+};
