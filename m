@@ -1,132 +1,49 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 22 Jul 2016 11:46:03 +0800
-Subject: [LTP] [PATCH] madvise06: wait a bit after madvise() call
-In-Reply-To: <5790DADF.8000506@redhat.com>
-References: <8eb6f485a46b9d9fb62eec232bf7bcb2d4cf4215.1468848169.git.jstancek@redhat.com>
- <20160719055844.GA31704@gmail.com>
- <1822250385.6269456.1468911402613.JavaMail.zimbra@redhat.com>
- <20160719085756.GB31704@gmail.com> <578F8CB6.2020602@redhat.com>
- <597691787.18542977.1469097118207.JavaMail.zimbra@redhat.com>
- <20160721110159.GA13274@gmail.com> <5790DADF.8000506@redhat.com>
-Message-ID: <20160722034603.GA15996@gmail.com>
+From: Khem Raj <raj.khem@gmail.com>
+Date: Thu, 21 Jul 2016 20:49:44 -0700
+Subject: [LTP] [PATCH] trace_shed: Adapt to glibc 2.24 removal of union
+	wait type
+In-Reply-To: <20160721045812.10914-1-raj.khem@gmail.com>
+References: <20160721045812.10914-1-raj.khem@gmail.com>
+Message-ID: <CAMKF1spDqxx1jjDaaaX4fiQ7qw2i48S5e75oMstcd+_=XvEMMw@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Jul 21, 2016 at 04:23:27PM +0200, Jan Stancek wrote:
-> 
-> I'm starting to run out of ideas how we can test this somewhat reliably.
-> 
-> Attached is approach v3, which sets up memory cgroup:
-> - memory.limit_in_bytes is 128M
-> - we allocate 512M
-> - as consequence ~384M should be swapped while system should still have
->   plenty of free memory, which should be available for cache
+ignore this. I have a better one to follow
 
-Drop caches before testing is really good, we think the same!
-
-And setting cgroup shorten the test time, if there could guarantee
-cgroup OOM is off and swappiness is a little larger, that would
-be more reliable I think.
-
-One question is that you wrote function count_swapped_pages() but
-didn't using it, seems forgot to put somewhere?
-
-Anyway, V3 is strong enough expecially it combines the two method
-together.
-
-
-> #include <errno.h>
-> #include <stdio.h>
-> #include <sys/mount.h>
-> #include <sys/sysinfo.h>
-> #include "tst_test.h"
-> 
-> #define CHUNK_SZ (512*1024*1024L)
-> #define CHUNK_PAGES (CHUNK_SZ / pg_sz)
-> #define PASS_THRESHOLD (CHUNK_SZ / 4)
-> 
-> static const char drop_caches_fname[] = "/proc/sys/vm/drop_caches";
-> static int pg_sz;
-> 
-> static void drop_caches(void)
-> {
-> 	int ret;
-> 	FILE *f;
-> 
-> 	f = fopen(drop_caches_fname, "w");
-> 	if (f) {
-> 		ret = fprintf(f, "1");
-> 		fclose(f);
-> 		if (ret < 1)
-> 			tst_brk(TBROK, "Failed to drop caches");
-> 	} else {
-> 		tst_brk(TBROK, "Failed to open drop_caches");
-> 	}
-> }
-> 
-> static void setup(void)
-> {
-> 	struct sysinfo sys_buf_start;
-> 
-> 	pg_sz = getpagesize();
-> 
-> 	if (access(drop_caches_fname, R_OK | W_OK))
-> 		tst_brk(TCONF, "needed: %s\n", drop_caches_fname);
-> 	tst_res(TINFO, "dropping caches");
-> 	drop_caches();
-
-save this function by oneline:
-
- /* drop caches*/
- SAFE_FILE_PRINTF("/proc/sys/vm/drop_caches", "1");
-
-> 
-> 	sysinfo(&sys_buf_start);
-> 	if (sys_buf_start.freeram < 2 * CHUNK_SZ)
-> 		tst_brk(TCONF, "System RAM is too small, skip test");
-> 	if (sys_buf_start.freeswap < 2 * CHUNK_SZ)
-> 		tst_brk(TCONF, "System swap is too small");
-> 
-> 	SAFE_MKDIR("memory", 0700);
-> 	SAFE_MOUNT("memory", "memory", "cgroup", 0, "memory");
-> 	if (access("memory/memory.limit_in_bytes", R_OK | W_OK))
-> 		tst_brk(TCONF, "cgroup memory.limit_in_bytes needed");
-> 
-> 	SAFE_MKDIR("memory/madvise06", 0700);
-> 	SAFE_FILE_PRINTF("memory/madvise06/memory.limit_in_bytes", "%ld\n",
-> 		PASS_THRESHOLD);
-
-Turn off oom, enlarge swappiness
-
- SAFE_FILE_PRINTF("memory/madvise06/memory.oom_control", "0");
- SAFE_FILE_PRINTF("memory/madvise06/memory.swappiness", "60");
-
-> 	SAFE_FILE_PRINTF("memory/madvise06/tasks", "%d\n", getpid());
-> }
-> 
-> static void cleanup(void)
-> {
-> 	FILE *f = fopen("memory/tasks", "w");
-> 
-> 	if (f) {
-> 		fprintf(f, "%d\n", getpid());
-> 		fclose(f);
-> 	}
-> 	rmdir("memory/madvise06");
-> 	umount("memory");
-> }
-> 
-> static long count_swapped_pages(void *ptr, long pg_count)
-
-A compile Warnning:
-
-madvise06.c:94:13: warning: ‘count_swapped_pages’ defined but not used
-[-Wunused-function]
-static long count_swapped_pages(void *ptr, long pg_count)
-
-
-Regards,
-Li Wang
+On Wed, Jul 20, 2016 at 9:58 PM, Khem Raj <raj.khem@gmail.com> wrote:
+> This is now needed since glibc commit
+> https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=b49ab5f4503f36dcbf43f821f817da66b2931fe6;hp=5f5682b9654101ccaf375c2814cbddbe6033a725
+>
+> WEXITSTATUS macro does not do the enum translation anymore and expects
+> the applications to pass int type fro status
+>
+> fixes below error
+>
+> trace_sched.c:425:16: error: invalid operands to binary & (have
+> 'thread_sched_t * {aka struct <anonymous> *}' and 'int')
+>       thrd_ndx, WEXITSTATUS(status));
+>
+> Signed-off-by: Khem Raj <raj.khem@gmail.com>
+> ---
+>  testcases/kernel/sched/tool/trace_sched.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/testcases/kernel/sched/tool/trace_sched.c b/testcases/kernel/sched/tool/trace_sched.c
+> index 7815686..30dca5f 100644
+> --- a/testcases/kernel/sched/tool/trace_sched.c
+> +++ b/testcases/kernel/sched/tool/trace_sched.c
+> @@ -422,7 +422,7 @@ int main(int argc,          /* number of input parameters.                        */
+>                         if (status == (thread_sched_t *) - 1) {
+>                                 fprintf(stderr,
+>                                         "thread [%d] - process exited with errors %d\n",
+> -                                       thrd_ndx, WEXITSTATUS(status));
+> +                                       thrd_ndx, WEXITSTATUS((int)status));
+>                                 exit(-1);
+>                         } else {
+>                                 exp_prio[thrd_ndx] = status->exp_prio;
+> --
+> 2.9.0
+>
