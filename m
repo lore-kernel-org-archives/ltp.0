@@ -1,46 +1,47 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Thu, 21 Jul 2016 21:26:44 -0700
-Subject: [LTP] [PATCH V3 11/23] lapi: Use sig_t instead of sighandler_t
+Date: Thu, 21 Jul 2016 21:26:47 -0700
+Subject: [LTP] [PATCH V3 14/23] shmat1: Cover GNU specific code under
+	__USE_GNU
 In-Reply-To: <20160722042656.22346-1-raj.khem@gmail.com>
 References: <20160722042656.22346-1-raj.khem@gmail.com>
-Message-ID: <20160722042656.22346-11-raj.khem@gmail.com>
+Message-ID: <20160722042656.22346-14-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-sighandler_t is GNU specific
+on x86, we use uc_mcontext element from sigcontext
+which is marked gnu-specific in glibc, this patch
+adds this condition around the code
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- include/lapi/rt_sigaction.h                      | 2 +-
- testcases/kernel/syscalls/rt_sigsuspend/Makefile | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ testcases/kernel/mem/mtest06/shmat1.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/lapi/rt_sigaction.h b/include/lapi/rt_sigaction.h
-index a107786..7efee33 100644
---- a/include/lapi/rt_sigaction.h
-+++ b/include/lapi/rt_sigaction.h
-@@ -34,7 +34,7 @@
- #define INVAL_SA_PTR ((void *)-1)
- 
- struct kernel_sigaction {
--	__sighandler_t k_sa_handler;
-+	sig_t k_sa_handler;
- 	unsigned long sa_flags;
- 	void (*sa_restorer) (void);
- 	sigset_t sa_mask;
-diff --git a/testcases/kernel/syscalls/rt_sigsuspend/Makefile b/testcases/kernel/syscalls/rt_sigsuspend/Makefile
-index 37bc3a9..2ef86f0 100644
---- a/testcases/kernel/syscalls/rt_sigsuspend/Makefile
-+++ b/testcases/kernel/syscalls/rt_sigsuspend/Makefile
-@@ -19,4 +19,5 @@
- top_srcdir		?= ../../../..
- 
- include $(top_srcdir)/include/mk/testcases.mk
-+
- include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/mem/mtest06/shmat1.c b/testcases/kernel/mem/mtest06/shmat1.c
+index 0d6d7a4..bee69f6 100644
+--- a/testcases/kernel/mem/mtest06/shmat1.c
++++ b/testcases/kernel/mem/mtest06/shmat1.c
+@@ -111,7 +111,7 @@ int done_shmat = 0;		/* disallow read and writes before shmat      */
+ static void sig_handler(int signal,	/* signal number, set to handle SIGALRM       */
+ 			int code, struct ucontext *ut)
+ {				/* contains pointer to sigcontext structure   */
+-#ifdef __i386__
++#if defined(__i386__) && defined(__USE_GNU)
+ 	unsigned long except;	/* exception type.                            */
+ 	int ret = 0;		/* exit code from signal handler.             */
+ 	struct sigcontext *scp =	/* pointer to sigcontext structure            */
+@@ -122,7 +122,7 @@ static void sig_handler(int signal,	/* signal number, set to handle SIGALRM
+ 		fprintf(stdout, "Test ended, success\n");
+ 		exit(0);
+ 	}
+-#ifdef __i386__
++#if defined(__i386__) && defined(__USE_GNU)
+ 	else {
+ 		except = scp->trapno;
+ 		fprintf(stderr, "signal caught - [%d] ", signal);
 -- 
 2.9.0
 
