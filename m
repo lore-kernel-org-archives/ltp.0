@@ -1,47 +1,43 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Thu, 21 Jul 2016 21:26:47 -0700
-Subject: [LTP] [PATCH V3 14/23] shmat1: Cover GNU specific code under
-	__USE_GNU
+Date: Thu, 21 Jul 2016 21:26:46 -0700
+Subject: [LTP] [PATCH V3 13/23] vma03: fix page size offset as per page size
+	alignment
 In-Reply-To: <20160722042656.22346-1-raj.khem@gmail.com>
 References: <20160722042656.22346-1-raj.khem@gmail.com>
-Message-ID: <20160722042656.22346-14-raj.khem@gmail.com>
+Message-ID: <20160722042656.22346-13-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-on x86, we use uc_mcontext element from sigcontext
-which is marked gnu-specific in glibc, this patch
-adds this condition around the code
+the offset the param of mmap2() doesn't align the page size, but,
+this param allow must be a multiple of the page size as returned
+by sysconf(_SC_PAGE_SIZE).meanwhile offset * 4096 must be a
+multiple of the system page size, so modify the input param of offset
+pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
 
+needed on ppc64 with 64K pagesize
+
+Signed-off-by: Chuang Dong <Chuang.Dong@windriver.com>
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- testcases/kernel/mem/mtest06/shmat1.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ testcases/kernel/mem/vma/vma03.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/mem/mtest06/shmat1.c b/testcases/kernel/mem/mtest06/shmat1.c
-index 0d6d7a4..bee69f6 100644
---- a/testcases/kernel/mem/mtest06/shmat1.c
-+++ b/testcases/kernel/mem/mtest06/shmat1.c
-@@ -111,7 +111,7 @@ int done_shmat = 0;		/* disallow read and writes before shmat      */
- static void sig_handler(int signal,	/* signal number, set to handle SIGALRM       */
- 			int code, struct ucontext *ut)
- {				/* contains pointer to sigcontext structure   */
--#ifdef __i386__
-+#if defined(__i386__) && defined(__USE_GNU)
- 	unsigned long except;	/* exception type.                            */
- 	int ret = 0;		/* exit code from signal handler.             */
- 	struct sigcontext *scp =	/* pointer to sigcontext structure            */
-@@ -122,7 +122,7 @@ static void sig_handler(int signal,	/* signal number, set to handle SIGALRM
- 		fprintf(stdout, "Test ended, success\n");
- 		exit(0);
- 	}
--#ifdef __i386__
-+#if defined(__i386__) && defined(__USE_GNU)
- 	else {
- 		except = scp->trapno;
- 		fprintf(stderr, "signal caught - [%d] ", signal);
+diff --git a/testcases/kernel/mem/vma/vma03.c b/testcases/kernel/mem/vma/vma03.c
+index ad8a7b4..a539233 100644
+--- a/testcases/kernel/mem/vma/vma03.c
++++ b/testcases/kernel/mem/vma/vma03.c
+@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
+ 		if (fd == -1)
+ 			tst_brkm(TBROK | TERRNO, NULL, "open %s", TESTFILE);
+ 
+-		pgoff = ULONG_MAX - 1;
++		pgoff = (ULONG_MAX - 1)&(~((pgsz-1)>>12));
+ 		map = mmap2(NULL, pgsz, PROT_READ | PROT_WRITE, MAP_PRIVATE,
+ 			    fd, pgoff);
+ 		if (map == MAP_FAILED)
 -- 
 2.9.0
 
