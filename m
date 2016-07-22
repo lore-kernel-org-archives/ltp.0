@@ -1,41 +1,46 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Thu, 21 Jul 2016 21:26:38 -0700
-Subject: [LTP] [PATCH V3 05/23] guard mallocopt() with __GLIBC__
+Date: Thu, 21 Jul 2016 21:26:39 -0700
+Subject: [LTP] [PATCH V3 06/23] Use unsigned int instead of uint
 In-Reply-To: <20160722042656.22346-1-raj.khem@gmail.com>
 References: <20160722042656.22346-1-raj.khem@gmail.com>
-Message-ID: <20160722042656.22346-5-raj.khem@gmail.com>
+Message-ID: <20160722042656.22346-6-raj.khem@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-mallocopt is not available on non glibc implementations
+Fixes
+
+error: unknown type name 'uint'
 
 Signed-off-by: Khem Raj <raj.khem@gmail.com>
 ---
- utils/benchmark/ebizzy-0.3/ebizzy.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ testcases/kernel/ipc/ipc_stress/shmem_test_04.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/utils/benchmark/ebizzy-0.3/ebizzy.c b/utils/benchmark/ebizzy-0.3/ebizzy.c
-index 5bb8eff..f9ccc8b 100644
---- a/utils/benchmark/ebizzy-0.3/ebizzy.c
-+++ b/utils/benchmark/ebizzy-0.3/ebizzy.c
-@@ -215,10 +215,12 @@ static void read_options(int argc, char *argv[])
- 			"\"never mmap\" option specified\n");
- 		usage();
- 	}
--
-+#ifdef __GLIBC__
- 	if (never_mmap)
- 		mallopt(M_MMAP_MAX, 0);
--
-+#else
-+	fprintf(stderr, "Platform does not support mallopt() API\n");
-+#endif
- 	if (chunk_size < record_size) {
- 		fprintf(stderr, "Chunk size %u smaller than record size %u\n",
- 			chunk_size, record_size);
+diff --git a/testcases/kernel/ipc/ipc_stress/shmem_test_04.c b/testcases/kernel/ipc/ipc_stress/shmem_test_04.c
+index 72c2e60..41aa3f4 100644
+--- a/testcases/kernel/ipc/ipc_stress/shmem_test_04.c
++++ b/testcases/kernel/ipc/ipc_stress/shmem_test_04.c
+@@ -116,7 +116,7 @@ typedef unsigned long ulong_t;
+  * sys_error (): System error message function
+  * error (): Error message function
+  */
+-static int mkemptyfile(uint);
++static int mkemptyfile(unsigned int);
+ static void parse_args(int, char **);
+ static void cleanup(int);
+ static void setup_signal_handlers();
+@@ -476,7 +476,7 @@ static void int_handler(int sig)
+  *
+  * Make an empty temporary file of a given size and return its descriptor.
+  */
+-static int mkemptyfile(uint size)
++static int mkemptyfile(unsigned int size)
+ {
+ #ifdef _LINUX_
+ 
 -- 
 2.9.0
 
