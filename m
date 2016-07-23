@@ -1,12 +1,11 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 22 Jul 2016 11:16:47 -0400 (EDT)
-Subject: [LTP] [PATCH] trace_shed: Adapt to glibc 2.24 removal of union
- wait type
-In-Reply-To: <CAMKF1spUf1yU8_-hymV6+aDMjZ6u_i4jeqqYoYrz368aLjFMVg@mail.gmail.com>
-References: <20160721045812.10914-1-raj.khem@gmail.com>
- <912075363.7376146.1469194846479.JavaMail.zimbra@redhat.com>
- <CAMKF1spUf1yU8_-hymV6+aDMjZ6u_i4jeqqYoYrz368aLjFMVg@mail.gmail.com>
-Message-ID: <164470764.7459223.1469200607039.JavaMail.zimbra@redhat.com>
+From: Shuang Qiu <shuang.qiu@oracle.com>
+Date: Sun, 24 Jul 2016 07:34:08 +0800
+Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status
+ and	prefix
+In-Reply-To: <757741255.7369133.1469193307743.JavaMail.zimbra@redhat.com>
+References: <1468479240-4975-1-git-send-email-shuang.qiu@oracle.com>
+ <757741255.7369133.1469193307743.JavaMail.zimbra@redhat.com>
+Message-ID: <5793FEF0.7090203@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,87 +13,57 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
+On 07/22/2016 09:15 PM, Jan Stancek wrote:
+>
+>
+>
+> ----- Original Message -----
+>> From: "shuang qiu" <shuang.qiu@oracle.com>
+>> To: ltp@lists.linux.it
+>> Sent: Thursday, 14 July, 2016 8:54:00 AM
+>> Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status and	prefix
+>>
+>> From: Shuang Qiu <shuang.qiu@oracle.com>
+>>
+>> * Update to handle the env that cpuset subsystem is already mounted
+> I'm assuming motivation here are systemd distros, that have memory
+> cgroup already mounted.
+Yes,such like RHEL7 or OL7,it is mounted by default.
+But also another scenario that on RHEL6 or OL6 with cgconfig service 
+running.
+>
+>> * Similar with commit 6ce94db5bbff0be40813f3fdfe61a55b3186c49a,need to check
+>> for cpuset prefix
+>>
+>> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+>> ---
+>>   .../cpuset_base_ops_testset.sh                     |   28 +-
+>>   .../cpuset_exclusive_test/cpuset_exclusive_test.sh |  168 ++++----
+>>   .../kernel/controllers/cpuset/cpuset_funcs.sh      |   39 +-
+>>   .../cpuset_hierarchy_test/cpuset_hierarchy_test.sh |  416
+>>   ++++++++++----------
+>>   .../cpuset_hotplug_test/cpuset_hotplug_test.sh     |    4 +-
+>>   .../cpuset_inherit_test/cpuset_inherit_testset.sh  |   12 +-
+>>   .../cpuset_memory_pressure_testset.sh              |   32 +-
+>>   .../cpuset_memory_spread_testset.sh                |    2 +-
+>>   .../cpuset_memory_test/cpuset_memory_testset.sh    |   22 +-
+>>   .../cpuset_syscall_test/cpuset_syscall_testset.sh  |    8 +-
+>>   10 files changed, 369 insertions(+), 362 deletions(-)
+> Looks OK to me. The changes look straight-forward, there's just
+> lot of them.
+>
+> I've ran it on RHEL7.3 and these passed. I tried also upstream
+> 4.7-rc7 and there were some failures, but that seems to be
+> because some input validation has changed on some files.
+>
+> Can you also mention where/how you tested this change?
+I just tested on OL7.2 and OL6.8 with cgconfig service start or stop.
+There were also some failures but not related with mount or prefix,I'm 
+still checking them.
 
+Thanks for review
+Shuang
+>
+> Thanks,
+> Jan
 
-
------ Original Message -----
-> From: "Khem Raj" <raj.khem@gmail.com>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Friday, 22 July, 2016 3:54:16 PM
-> Subject: Re: [LTP] [PATCH] trace_shed: Adapt to glibc 2.24 removal of union wait type
-> 
-> Hi Jan
-> 
-> On Fri, Jul 22, 2016 at 6:40 AM, Jan Stancek <jstancek@redhat.com> wrote:
-> >
-> >
-> > ----- Original Message -----
-> >> From: "Khem Raj" <raj.khem@gmail.com>
-> >> To: ltp@lists.linux.it
-> >> Sent: Thursday, 21 July, 2016 6:58:12 AM
-> >> Subject: [LTP] [PATCH] trace_shed: Adapt to glibc 2.24 removal of union
-> >> wait  type
-> >>
-> >> This is now needed since glibc commit
-> >> https://sourceware.org/git/?p=glibc.git;a=commitdiff;h=b49ab5f4503f36dcbf43f821f817da66b2931fe6;hp=5f5682b9654101ccaf375c2814cbddbe6033a725
-> >>
-> >> WEXITSTATUS macro does not do the enum translation anymore and expects
-> >> the applications to pass int type fro status
-> >>
-> >> fixes below error
-> >>
-> >> trace_sched.c:425:16: error: invalid operands to binary & (have
-> >> 'thread_sched_t * {aka struct <anonymous> *}' and 'int')
-> >>       thrd_ndx, WEXITSTATUS(status));
-> >>
-> >> Signed-off-by: Khem Raj <raj.khem@gmail.com>
-> >> ---
-> >>  testcases/kernel/sched/tool/trace_sched.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/testcases/kernel/sched/tool/trace_sched.c
-> >> b/testcases/kernel/sched/tool/trace_sched.c
-> >> index 7815686..30dca5f 100644
-> >> --- a/testcases/kernel/sched/tool/trace_sched.c
-> >> +++ b/testcases/kernel/sched/tool/trace_sched.c
-> >> @@ -422,7 +422,7 @@ int main(int argc,                /* number of input
-> >> parameters.
-> >> */
-> >>                       if (status == (thread_sched_t *) - 1) {
-> >>                               fprintf(stderr,
-> >>                                       "thread [%d] - process exited with
-> >>                                       errors %d\n",
-> >> -                                     thrd_ndx, WEXITSTATUS(status));
-> >> +                                     thrd_ndx, WEXITSTATUS((int)status));
-> >
-> >
-> > Can we just drop WEXITSTATUS() from this fprintf? It's a pointer
-> > to some struct, and on top of that it's always -1 here. It doesn't
-> > look like this ever provided anything useful.
-> 
-> Yes, I have sent a series of patches which includes such a fix for
-> this. This one
-> should be ignored.
-
-I see, sorry I haven't caught up with all mail yet.
-
-Regards,
-Jan
-
-> 
-> >
-> > Regards,
-> > Jan
-> >
-> >>                               exit(-1);
-> >>                       } else {
-> >>                               exp_prio[thrd_ndx] = status->exp_prio;
-> >> --
-> >> 2.9.0
-> >>
-> >>
-> >> --
-> >> Mailing list info: https://lists.linux.it/listinfo/ltp
-> >>
-> 
