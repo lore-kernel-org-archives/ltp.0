@@ -1,11 +1,7 @@
-From: Shuang Qiu <shuang.qiu@oracle.com>
-Date: Sun, 24 Jul 2016 07:34:08 +0800
-Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status
- and	prefix
-In-Reply-To: <757741255.7369133.1469193307743.JavaMail.zimbra@redhat.com>
-References: <1468479240-4975-1-git-send-email-shuang.qiu@oracle.com>
- <757741255.7369133.1469193307743.JavaMail.zimbra@redhat.com>
-Message-ID: <5793FEF0.7090203@oracle.com>
+From: Nicolas Joly <njoly@pasteur.fr>
+Date: Sun, 24 Jul 2016 11:48:09 +0200
+Subject: [LTP] [PATCH] Fix a small typo in comments
+Message-ID: <20160724094809.GA4303@issan.sis.pasteur.fr>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,57 +9,116 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-On 07/22/2016 09:15 PM, Jan Stancek wrote:
->
->
->
-> ----- Original Message -----
->> From: "shuang qiu" <shuang.qiu@oracle.com>
->> To: ltp@lists.linux.it
->> Sent: Thursday, 14 July, 2016 8:54:00 AM
->> Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status and	prefix
->>
->> From: Shuang Qiu <shuang.qiu@oracle.com>
->>
->> * Update to handle the env that cpuset subsystem is already mounted
-> I'm assuming motivation here are systemd distros, that have memory
-> cgroup already mounted.
-Yes,such like RHEL7 or OL7,it is mounted by default.
-But also another scenario that on RHEL6 or OL6 with cgconfig service 
-running.
->
->> * Similar with commit 6ce94db5bbff0be40813f3fdfe61a55b3186c49a,need to check
->> for cpuset prefix
->>
->> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
->> ---
->>   .../cpuset_base_ops_testset.sh                     |   28 +-
->>   .../cpuset_exclusive_test/cpuset_exclusive_test.sh |  168 ++++----
->>   .../kernel/controllers/cpuset/cpuset_funcs.sh      |   39 +-
->>   .../cpuset_hierarchy_test/cpuset_hierarchy_test.sh |  416
->>   ++++++++++----------
->>   .../cpuset_hotplug_test/cpuset_hotplug_test.sh     |    4 +-
->>   .../cpuset_inherit_test/cpuset_inherit_testset.sh  |   12 +-
->>   .../cpuset_memory_pressure_testset.sh              |   32 +-
->>   .../cpuset_memory_spread_testset.sh                |    2 +-
->>   .../cpuset_memory_test/cpuset_memory_testset.sh    |   22 +-
->>   .../cpuset_syscall_test/cpuset_syscall_testset.sh  |    8 +-
->>   10 files changed, 369 insertions(+), 362 deletions(-)
-> Looks OK to me. The changes look straight-forward, there's just
-> lot of them.
->
-> I've ran it on RHEL7.3 and these passed. I tried also upstream
-> 4.7-rc7 and there were some failures, but that seems to be
-> because some input validation has changed on some files.
->
-> Can you also mention where/how you tested this change?
-I just tested on OL7.2 and OL6.8 with cgconfig service start or stop.
-There were also some failures but not related with mount or prefix,I'm 
-still checking them.
+Hi,
 
-Thanks for review
-Shuang
->
-> Thanks,
-> Jan
+Please find a tiny patch that fix a typo "discriptor" instead of
+"descriptor" found in comments.
 
+Thanks.
+
+-- 
+Nicolas Joly
+
+Cluster & Computing Group
+Biology IT Center
+Institut Pasteur, Paris.
+-------------- next part --------------
+commit cf102e6b4e2bdb5dfe10dba2c885838c5a05b0b6
+Author: Nicolas Joly <njoly@pasteur.fr>
+Date:   Sun Jul 24 11:44:50 2016 +0200
+
+    Fix a small typo in comments.
+    
+    Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
+
+diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify01.c b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+index 5c7846c..1f1d4f6 100644
+--- a/testcases/kernel/syscalls/mq_notify/mq_notify01.c
++++ b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+@@ -177,7 +177,7 @@ static int do_test(struct test_case *tc)
+ 	abs_timeout.tv_nsec = 0;
+ 
+ 	/*
+-	 * When test ended with SIGTERM etc, mq discriptor is left remains.
++	 * When test ended with SIGTERM etc, mq descriptor is left remains.
+ 	 * So we delete it first.
+ 	 */
+ 	mq_unlink(QUEUE_NAME);
+diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
+index f53b4bc..1ab8185 100644
+--- a/testcases/kernel/syscalls/mq_open/mq_open01.c
++++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
+@@ -270,7 +270,7 @@ static int do_test(struct test_case *tc)
+ 	struct mq_attr new, old, *p_attr;
+ 
+ 	/*
+-	 * When test ended with SIGTERM etc, mq discriptor is left remains.
++	 * When test ended with SIGTERM etc, mq descriptor is left remains.
+ 	 * So we delete it first.
+ 	 */
+ 	TEST(mq_unlink(QUEUE_NAME));
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index b524e45..d3d4977 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -304,7 +304,7 @@ static int do_test(struct test_case *tc)
+ 	size_t msg_len;
+ 
+ 	/*
+-	 * When test ended with SIGTERM etc, mq discriptor is left remains.
++	 * When test ended with SIGTERM etc, mq descriptor is left remains.
+ 	 * So we delete it first.
+ 	 */
+ 	TEST(mq_unlink(QUEUE_NAME));
+diff --git a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
+index 53190d7..77198ce 100644
+--- a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
++++ b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
+@@ -307,7 +307,7 @@ static int do_test(struct test_case *tc)
+ 	unsigned prio;
+ 
+ 	/*
+-	 * When test ended with SIGTERM etc, mq discriptor is left remains.
++	 * When test ended with SIGTERM etc, mq descriptor is left remains.
+ 	 * So we delete it first.
+ 	 */
+ 	TEST(mq_unlink(QUEUE_NAME));
+diff --git a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
+index 9ac0868..6306efc 100644
+--- a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
++++ b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
+@@ -208,7 +208,7 @@ static int do_test(struct test_case *tc)
+ 	uid_t old_uid = -1;
+ 
+ 	/*
+-	 * When test ended with SIGTERM etc, mq discriptor is left remains.
++	 * When test ended with SIGTERM etc, mq descriptor is left remains.
+ 	 * So we delete it first.
+ 	 */
+ 	TEST(mq_unlink(QUEUE_NAME));
+diff --git a/testcases/kernel/syscalls/writev/writev01.c b/testcases/kernel/syscalls/writev/writev01.c
+index bfa5bba..8e4f756 100644
+--- a/testcases/kernel/syscalls/writev/writev01.c
++++ b/testcases/kernel/syscalls/writev/writev01.c
+@@ -226,7 +226,7 @@ int main(int argc, char **argv)
+ 
+ 		tst_resm(TINFO, "Exit block 3");
+ 
+-//block4: /* given bad file discriptor, writev return EBADF. */
++//block4: /* given bad file descriptor, writev return EBADF. */
+ 		tst_resm(TPASS, "Enter block 4");
+ 
+ 		TEST(writev(fd[1], (wr_iovec + 9), 1));
+diff --git a/testcases/network/nfs/nfs_stress/nfs05_make_tree.c b/testcases/network/nfs/nfs_stress/nfs05_make_tree.c
+index 4163988..ebb10c9 100644
+--- a/testcases/network/nfs/nfs_stress/nfs05_make_tree.c
++++ b/testcases/network/nfs/nfs_stress/nfs05_make_tree.c
+@@ -477,7 +477,7 @@ static int rm_file_dir(int numsdir,	/* how many subdirs to remove         */
+ static void *crte_mk_rm(void *args)
+ {
+ 	int dircnt;		/* index to the number of subdirectories      */
+-	int fd;			/* file discriptor of the files genetated     */
++	int fd;			/* file descriptor of the files genetated     */
+ 	int filecnt;		/* index to the number of ".c" files created  */
+ 	int numchar[2];		/* number of characters written to buffer     */
+ 	char *dirname;		/* name of the directory/idirectory tree      */
