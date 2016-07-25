@@ -1,76 +1,44 @@
-From: Nicolas Joly <njoly@pasteur.fr>
-Date: Mon, 25 Jul 2016 09:17:37 +0200
-Subject: [LTP] [PATCH] Fix clock_nanosleep01 overall test status
-Message-ID: <20160725071737.GA22484@issan.sis.pasteur.fr>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 25 Jul 2016 14:15:48 +0300
+Subject: [LTP] [PATCH] zram: extend the zram3 disksize to 40MB
+In-Reply-To: <20160713085901.GA2448@rei.scz.novell.com>
+References: <1468238245-25535-1-git-send-email-liwang@redhat.com>
+ <20160713085901.GA2448@rei.scz.novell.com>
+Message-ID: <5795F4E4.20005@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
 Hi,
+On 07/13/2016 11:59 AM, Cyril Hrubis wrote:
+> Hi!
+>> It failed to format btrfs on /dev/zram3 device since the
+>> disk size is too small (btrfs-progs is v4.4.1).
+>>
+>> The error msg we catched:
+>>
+>> zram01 3 TINFO : make ext3 filesystem on /dev/zram0
+>> zram01 3 TINFO : make ext4 filesystem on /dev/zram1
+>> zram01 3 TINFO : make xfs filesystem on /dev/zram2
+>> zram01 3 TINFO : make btrfs filesystem on /dev/zram3
+>> '/dev/zram3' is too small to make a usable filesystem
+>> Minimum size for each btrfs device is 41943040.
+>> btrfs-progs v4.4.1
+>> See http://btrfs.wiki.kernel.org for more information.
+>> zram01 3 TFAIL : failed to make btrfs on /dev/zram3
+>> zram01 4 TINFO : zram cleanup
+> I've got the exact same failure with btrfs-progs 4.5.1 just recently,
+> the fix looks good to me.
 
-Please find a small patch that fix the clock_nanosleep01 overall test
-status. It removes the TERRNO flag which will wrongly report the last
-test error ...
+Looks good to me too. Patch applied.
 
-before:
+Best regards,
+Alexey
 
-[...]
-clock_nanosleep01    0  TINFO  :  (case04) START
-clock_nanosleep01    1  TFAIL  :  clock_nanosleep01.c:294: clock_gettime failed: TEST_ERRNO=EINVAL(22): Invalid argument
-clock_nanosleep01    0  TINFO  :  (case04) END => NG
-clock_nanosleep01    0  TINFO  :  (case05) START
-clock_nanosleep01    0  TINFO  :  remain time: 9 489917345
-EXPECT: return value(ret)=4 errno=0 (Success)
-RESULT: return value(ret)=4 errno=0 (Success)
-clock_nanosleep01    0  TINFO  :  (case05) END => OK
-clock_nanosleep01    2  TFAIL  :  clock_nanosleep01.c:394: clock_nanosleep failed: errno=SUCCESS(0): Success
+> And btw it looks like we need to increase the default loop device size
+> again since btrfs-progs 4.5.1 seems to request at least 136MB for mkfs01
+> test...
+>
 
-after:
-
-[...]
-clock_nanosleep01    0  TINFO  :  (case04) START
-clock_nanosleep01    1  TFAIL  :  clock_nanosleep01.c:294: clock_gettime failed: TEST_ERRNO=EINVAL(22): Invalid argument
-clock_nanosleep01    0  TINFO  :  (case04) END => NG
-clock_nanosleep01    0  TINFO  :  (case05) START
-clock_nanosleep01    0  TINFO  :  remain time: 9 489936483
-EXPECT: return value(ret)=4 errno=0 (Success)
-RESULT: return value(ret)=4 errno=0 (Success)
-clock_nanosleep01    0  TINFO  :  (case05) END => OK
-clock_nanosleep01    2  TFAIL  :  clock_nanosleep01.c:394: clock_nanosleep failed
-
-Thanks.
-
--- 
-Nicolas Joly
-
-Cluster & Computing Group
-Biology IT Center
-Institut Pasteur, Paris.
--------------- next part --------------
-commit aec40955112ac88c62b5982418e612c1fb7a480d
-Author: Nicolas Joly <njoly@pasteur.fr>
-Date:   Mon Jul 25 09:09:28 2016 +0200
-
-    clock_nanosleep/clock_nanosleep01: Fix overall result from tests.
-    
-    Remove TERRNO flag when printing overall test status. On failure, the
-    value will wrongly output the status of the last test.
-    
-    Signed-off-by: Nicolas Joly <njoly@pasteur.fr>
-
-diff --git a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-index 08c1fbd..9114d09 100644
---- a/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-+++ b/testcases/kernel/syscalls/clock_nanosleep/clock_nanosleep01.c
-@@ -390,7 +390,7 @@ int main(int ac, char **av)
- 				break;
- 
- 			default:
--				tst_brkm(TFAIL | TERRNO, cleanup,
-+				tst_brkm(TFAIL, cleanup,
- 					 "clock_nanosleep failed");
- 				break;
- 			}
