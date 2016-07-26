@@ -1,80 +1,38 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 26 Jul 2016 14:45:22 +0200
-Subject: [LTP] [PATCH] syscalls/fallocate04: add
- 'FALLOC_FL_INSERT_RANGE' test-case
-In-Reply-To: <1466612145-13233-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1466612145-13233-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20160726124522.GD11679@rei.lan>
+From: Peter Maydell <peter.maydell@linaro.org>
+Date: Tue, 26 Jul 2016 14:08:36 +0100
+Subject: [LTP] Can we assume at least GCC 4.1 for building LTP tests?
+	(__builtin___clear_cache())
+Message-ID: <CAFEAcA-w1oQiWSHtm-fXUMStFJdwyXyJr+4E8=4ObtJ8jcZVkA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->  	fill_tst_buf(tmp_buf);
->  
->  	memcpy(exp_buf, tmp_buf, block_size);
-> -	memcpy(exp_buf + block_size, tmp_buf + size, block_size);
-> +	memcpy(exp_buf + block_size, tmp_buf + 2 * block_size,
-> +	       buf_size - block_size * 2);
+Hi; is there a minimum GCC version we can assume for LTP tests,
+and is it GCC 4.1 or better?
 
-Looks OK to me.
+I ask because the mprotect04.c test case currently does this:
 
->  	exp_buf[block_size - 1] = exp_buf[block_size] = '\0';
->  	check_file_data(exp_buf, size);
-> @@ -274,6 +275,50 @@ static void test04(void)
->  	tst_resm(TPASS, "test-case succeeded");
->  }
->  
-> +static void test05(void)
-> +{
-> +	tst_resm(TINFO, "inserting space with FALLOC_FL_INSERT_RANGE");
-> +
-> +	size_t alloc_size0 = get_allocsize();
-> +
-> +	tst_resm(TINFO, "read current allocated file size '%zu'", alloc_size0);
-> +
-> +	if (fallocate(fd, FALLOC_FL_INSERT_RANGE, block_size,
-> +	    block_size) == -1) {
-> +		if (errno == EOPNOTSUPP) {
-> +			tst_brkm(TCONF, cleanup,
-> +			         "FALLOC_FL_INSERT_RANGE not supported");
-> +		}
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
-> +	}
-> +
-> +	/* allocate space and ensure that it filled with zeroes */
-> +	if (fallocate(fd, FALLOC_FL_ZERO_RANGE, block_size, block_size) == -1)
-> +		tst_brkm(TFAIL | TERRNO, cleanup, "fallocate failed");
-> +
-> +	size_t alloc_size1 = get_allocsize();
-> +
-> +	tst_resm(TINFO, "allocated file size before '%zu' and after '%zu'",
-> +		 alloc_size0, alloc_size1);
-> +	if ((alloc_size0 + block_size) != alloc_size1)
-> +		tst_brkm(TFAIL, cleanup, "not expected allocated size");
-> +
-> +	size_t size = buf_size;
-> +	char tmp_buf[buf_size];
-> +	char exp_buf[size];
-> +
-> +	fill_tst_buf(tmp_buf);
-> +
-> +	memcpy(exp_buf, tmp_buf, block_size);
-> +	memcpy(exp_buf +  2 * block_size, tmp_buf + 2 * block_size,
-> +	       buf_size - block_size * 2);
-> +	memset(exp_buf + block_size - 1, 0, block_size + 2);
-> +
-> +	check_file_data(exp_buf, size);
+#ifdef __powerpc__
+    for (i = 0; i < copy_sz; i += 4)
+        __asm__ __volatile__("dcbst 0,%0; sync; icbi 0,%0; sync; isync"
+            :: "r"(mem_start + i));
+#endif
 
-Why not just:
+to synchronize the icache and dcache following copying some code,
+but this only works on PPC, not on other architectures which
+require explicit cache maintenance (like ARM). The easy way to
+do this portably is:
 
-        fill_tst_buf(exp_buf);
-	memset(exp_buf + block_size - 1, 0, block_size + 2);
+    __builtin___clear_cache(mem_start, mem_start + copy_sz);
 
-Otherwise it looks fine.
+which uses the GCC (and clang) builtin which should work on any
+architecture (and do nothing on ones like x86 which don't need
+special handling). However it doesn't exist prior to GCC 4.1
+(which was released a decade ago), so if LTP still has to
+support ancient compilers it gets a bit more awkward. (Perhaps
+the easiest thing would be to TCONF the test on ancient gcc.)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+thanks
+-- PMM
