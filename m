@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 26 Jul 2016 13:40:34 +0200
-Subject: [LTP] [PATCH 2/4] syscalls/socket02: reconstruct and convert to
- new API
-In-Reply-To: <1466759093-15755-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Tue, 26 Jul 2016 13:57:14 +0200
+Subject: [LTP] [PATCH 3/4] syscalls/socketpair01: convert to new API
+In-Reply-To: <1466759093-15755-3-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1466759093-15755-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1466759093-15755-2-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20160726114033.GA11679@rei.lan>
+ <1466759093-15755-3-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160726115714.GB11679@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,17 +12,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> -/* For Linux these must be the same.  */
->  #ifndef SOCK_CLOEXEC
->  #define SOCK_CLOEXEC O_CLOEXEC
->  #endif
->
-> +#ifndef SOCK_NONBLOCK
-> +#define SOCK_NONBLOCK O_NONBLOCK
-> +#endif
+I've did the same changes as for the socket01.c, i.e. expecting exact
+errno based on kernel version and also fixed the socketpair() return
+value handling. It returns 0 on success, so for instance the file
+descriptors were not closed in the verify function at all.
 
-I've moved these definitions to lapi/fcntl.h (so that we have only one
-place that defines these) and pushed, thanks.
+Pushed, thanks.
 
 -- 
 Cyril Hrubis
