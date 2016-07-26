@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 26 Jul 2016 11:32:06 +0200
-Subject: [LTP] [PATCH] Fix clock_nanosleep01 overall test status
-In-Reply-To: <20160725071737.GA22484@issan.sis.pasteur.fr>
-References: <20160725071737.GA22484@issan.sis.pasteur.fr>
-Message-ID: <20160726093206.GA12226@rei.lan>
+Date: Tue, 26 Jul 2016 13:40:34 +0200
+Subject: [LTP] [PATCH 2/4] syscalls/socket02: reconstruct and convert to
+ new API
+In-Reply-To: <1466759093-15755-2-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1466759093-15755-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1466759093-15755-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20160726114033.GA11679@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,15 +13,17 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Please find a small patch that fix the clock_nanosleep01 overall test
-> status. It removes the TERRNO flag which will wrongly report the last
-> test error ...
+> -/* For Linux these must be the same.  */
+>  #ifndef SOCK_CLOEXEC
+>  #define SOCK_CLOEXEC O_CLOEXEC
+>  #endif
+>
+> +#ifndef SOCK_NONBLOCK
+> +#define SOCK_NONBLOCK O_NONBLOCK
+> +#endif
 
-Not that this is wrong but I would rather see the test print one
-PASS/FAIL per each do_test() call.
-
-And ideally get rid of the excessive and obvious comments (in a separate
-patch) as well.
+I've moved these definitions to lapi/fcntl.h (so that we have only one
+place that defines these) and pushed, thanks.
 
 -- 
 Cyril Hrubis
