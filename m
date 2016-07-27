@@ -1,25 +1,46 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Jul 2016 11:25:08 +0200
-Subject: [LTP] [PATCH 2/2] mkfs01: extend the loop device size to 256M
-In-Reply-To: <20160727092210.GB10645@rei.lan>
-References: <1469598247-23993-1-git-send-email-liwang@redhat.com>
- <1469598247-23993-2-git-send-email-liwang@redhat.com>
- <20160727092210.GB10645@rei.lan>
-Message-ID: <20160727092508.GC10645@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Wed, 27 Jul 2016 17:58:39 +0800
+Subject: [LTP] [PATCH] mkswap: make the test device size is aligned to
+	pagesize
+Message-ID: <1469613519-27167-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> As far as I can tell 150MB should suffice as well, at least for me the
-> btrfs-progs v4.3.1+ requests at least 136MB. Or did they increase the
-               ^
-	       Should have been v4.5.1+
+We get failures like below because of 'DEVICE_SIZE-10000' makes the
+loop device size is not aligned to system PAGE_SIZE any more.
 
-The v4.3.1+ increased the minimal size to 100MB.
+-----
+mkswap01 1 TINFO : Found free device '/dev/loop1'
+mkswap01 1 TPASS : 'mkswap   /dev/loop1 ' passed.
+mkswap01 2 TFAIL : 'mkswap -f  /dev/loop1 92400' failed, not expected.
+mkswap01 3 TINFO : Can not do swapon on /dev/loop1.
+mkswap01 3 TINFO : Device size specified by 'mkswap' greater than real size.
+mkswap01 3 TINFO : Swapon failed expectedly.
+mkswap01 3 TPASS : 'mkswap -f  /dev/loop1 112400' passed.
 
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ testcases/commands/mkswap/mkswap01.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
+index 9727b0f..e89c720 100755
+--- a/testcases/commands/mkswap/mkswap01.sh
++++ b/testcases/commands/mkswap/mkswap01.sh
+@@ -169,8 +169,8 @@ mkswap_test()
+ setup
+ 
+ mkswap_test "" "" "$TST_DEVICE"
+-mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-10000))"
+-mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+10000))"
++mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-PAGE_SIZE/1024))"
++mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+PAGE_SIZE/1024))"
+ mkswap_test "-c" "" "$TST_DEVICE"
+ mkswap_test "-p" "2048" "$TST_DEVICE"
+ mkswap_test "-L" "ltp_testswap" "-L ltp_testswap" "" "/dev/disk/by-label/ltp_testswap"
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
