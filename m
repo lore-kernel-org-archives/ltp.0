@@ -1,10 +1,11 @@
 From: Khem Raj <raj.khem@gmail.com>
-Date: Wed, 27 Jul 2016 08:15:14 -0700
-Subject: [LTP] [PATCH V3 11/23] lapi: Use sig_t instead of sighandler_t
-In-Reply-To: <20160727102218.GC10903@rei.lan>
+Date: Wed, 27 Jul 2016 08:20:42 -0700
+Subject: [LTP] [PATCH V3 14/23] shmat1: Cover GNU specific code under
+	__USE_GNU
+In-Reply-To: <20160727141725.GC11986@rei.lan>
 References: <20160722042656.22346-1-raj.khem@gmail.com>
- <20160722042656.22346-11-raj.khem@gmail.com> <20160727102218.GC10903@rei.lan>
-Message-ID: <46510D01-1510-4C0E-BD03-7B8896652B55@gmail.com>
+ <20160722042656.22346-14-raj.khem@gmail.com> <20160727141725.GC11986@rei.lan>
+Message-ID: <FEF592A7-39E2-4BA1-BDBC-A5CCA84D5CAA@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,23 +13,17 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-> On Jul 27, 2016, at 3:22 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> On Jul 27, 2016, at 7:17 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
 > 
 > Hi!
->> --- a/testcases/kernel/syscalls/rt_sigsuspend/Makefile
->> +++ b/testcases/kernel/syscalls/rt_sigsuspend/Makefile
->> @@ -19,4 +19,5 @@
->> top_srcdir		?= ../../../..
->> 
->> include $(top_srcdir)/include/mk/testcases.mk
->> +
->> include $(top_srcdir)/include/mk/generic_leaf_target.mk
+>> +#if defined(__i386__) && defined(__USE_GNU)
 > 
-> Again this added newline is unintended change that should not have been
-> part of this patch.
+> Hmm, shouldn't this rather be defined(__GLIBC__) ?
+> 
+> As far as I can tell __USE_GNU is enabled if _GNU_SOURCE is defined
+> while __GLIBC__ is defined in glibc unconditionally.
 
-overusing from my side. Do you want me to send a v4 ?
-
+Probably, yes
 
 > 
 > --
@@ -41,4 +36,4 @@ Name: signature.asc
 Type: application/pgp-signature
 Size: 204 bytes
 Desc: Message signed with OpenPGP using GPGMail
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160727/39e052df/attachment.sig>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160727/30dae79a/attachment.sig>
