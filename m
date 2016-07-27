@@ -1,42 +1,40 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 27 Jul 2016 13:45:54 +0300
-Subject: [LTP] [PATCH] syscalls/fallocate04: add
- 'FALLOC_FL_INSERT_RANGE' test-case
-In-Reply-To: <20160726124522.GD11679@rei.lan>
-References: <1466612145-13233-1-git-send-email-alexey.kodanev@oracle.com>
- <20160726124522.GD11679@rei.lan>
-Message-ID: <579890E2.5010006@oracle.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 27 Jul 2016 18:41:21 +0800
+Subject: [LTP] [PATCH] syscalls/sched_getparam03.c: Fix order of included
+	headers
+Message-ID: <1469616081-517-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Compilation failed on RHEL5.11GA and RHEL6.8GA because definition of clone()
+function in sched.h will be replaced by the test.h defined clone(...) macro.
 
-On 07/26/2016 03:45 PM, Cyril Hrubis wrote:
-> ...
-> +
-> +	size_t size = buf_size;
-> +	char tmp_buf[buf_size];
-> +	char exp_buf[size];
-> +
-> +	fill_tst_buf(tmp_buf);
-> +
-> +	memcpy(exp_buf, tmp_buf, block_size);
-> +	memcpy(exp_buf +  2 * block_size, tmp_buf + 2 * block_size,
-> +	       buf_size - block_size * 2);
-> +	memset(exp_buf + block_size - 1, 0, block_size + 2);
-> +
-> +	check_file_data(exp_buf, size);
-> Why not just:
->
->          fill_tst_buf(exp_buf);
-> 	memset(exp_buf + block_size - 1, 0, block_size + 2);
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/sched_getparam/sched_getparam03.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Correct, we returned to the state that was after test-case 3.
+diff --git a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+index dec6e41..ceec4c3 100644
+--- a/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
++++ b/testcases/kernel/syscalls/sched_getparam/sched_getparam03.c
+@@ -70,10 +70,9 @@
+  *
+  *********************************************************************/
+ 
+-#include "test.h"
+-
+ #include <errno.h>
+ #include <sched.h>
++#include "test.h"
+ 
+ #define LARGE_PID 999999
+ 
+-- 
+1.8.3.1
 
 
-Thanks,
-Alexey
 
