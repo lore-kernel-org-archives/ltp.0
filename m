@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Jul 2016 11:17:53 +0200
-Subject: [LTP] [PATCH 1/2] test.sh: make the loop device size can be
-	customized
-In-Reply-To: <1469598247-23993-1-git-send-email-liwang@redhat.com>
+Date: Wed, 27 Jul 2016 11:22:10 +0200
+Subject: [LTP] [PATCH 2/2] mkfs01: extend the loop device size to 256M
+In-Reply-To: <1469598247-23993-2-git-send-email-liwang@redhat.com>
 References: <1469598247-23993-1-git-send-email-liwang@redhat.com>
-Message-ID: <20160727091753.GA10645@rei.lan>
+ <1469598247-23993-2-git-send-email-liwang@redhat.com>
+Message-ID: <20160727092210.GB10645@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,26 +12,28 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
->  tst_acquire_device()
->  {
-> +	local dev_size=${1:-100}
-> +
->  	if [ -z ${TST_TMPDIR} ]; then
->  		tst_brkm "Use 'tst_tmpdir' before 'tst_acquire_device'"
->  	fi
-> @@ -274,7 +276,7 @@ tst_acquire_device()
->  		return
->  	fi
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/commands/mkfs/mkfs01.sh | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/testcases/commands/mkfs/mkfs01.sh b/testcases/commands/mkfs/mkfs01.sh
+> index eda9829..9a26899 100755
+> --- a/testcases/commands/mkfs/mkfs01.sh
+> +++ b/testcases/commands/mkfs/mkfs01.sh
+> @@ -32,7 +32,8 @@ setup()
 >  
-> -	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=102400
-> +	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=$(($dev_size*1024))
+>  	tst_tmpdir
+>  
+> -	tst_acquire_device
+> +	# set test_dev.img size
+> +	tst_acquire_device 256
 
-This is unfortunately not a complete solution. If we want to add
-parameter(s) to tst_acquire_device() to specify minimal (and possibly
-maximal) device size we have to check the $LTP_DEV device size and fall
-back to loopback device if it's not in between the bounds, otherwise the
-test will still fail if smaller than requested device was created in
-runltp (which is the case at the moment).
+As far as I can tell 150MB should suffice as well, at least for me the
+btrfs-progs v4.3.1+ requests at least 136MB. Or did they increase the
+minimal size again?
+
+And I guess that we should bump the size in runltp script as well.
 
 -- 
 Cyril Hrubis
