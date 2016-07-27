@@ -1,36 +1,41 @@
 From: Li Wang <liwang@redhat.com>
-Date: Wed, 27 Jul 2016 13:44:07 +0800
-Subject: [LTP] [PATCH 2/2] mkfs01: extend the loop device size to 256M
-In-Reply-To: <1469598247-23993-1-git-send-email-liwang@redhat.com>
-References: <1469598247-23993-1-git-send-email-liwang@redhat.com>
-Message-ID: <1469598247-23993-2-git-send-email-liwang@redhat.com>
+Date: Wed, 27 Jul 2016 13:44:06 +0800
+Subject: [LTP] [PATCH 1/2] test.sh: make the loop device size can be
+	customized
+Message-ID: <1469598247-23993-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Increase TST_DEVICE size to make btrfs-progs happy.
-
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/commands/mkfs/mkfs01.sh | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ testcases/lib/test.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/commands/mkfs/mkfs01.sh b/testcases/commands/mkfs/mkfs01.sh
-index eda9829..9a26899 100755
---- a/testcases/commands/mkfs/mkfs01.sh
-+++ b/testcases/commands/mkfs/mkfs01.sh
-@@ -32,7 +32,8 @@ setup()
+diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+index 23d68c6..10a3ea7 100644
+--- a/testcases/lib/test.sh
++++ b/testcases/lib/test.sh
+@@ -257,6 +257,8 @@ ROD()
  
- 	tst_tmpdir
+ tst_acquire_device()
+ {
++	local dev_size=${1:-100}
++
+ 	if [ -z ${TST_TMPDIR} ]; then
+ 		tst_brkm "Use 'tst_tmpdir' before 'tst_acquire_device'"
+ 	fi
+@@ -274,7 +276,7 @@ tst_acquire_device()
+ 		return
+ 	fi
  
--	tst_acquire_device
-+	# set test_dev.img size
-+	tst_acquire_device 256
+-	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=102400
++	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=$(($dev_size*1024))
  
- 	TST_CLEANUP="cleanup"
- 
+ 	TST_DEVICE=$(losetup -f)
+ 	if [ $? -ne 0 ]; then
 -- 
 1.8.3.1
 
