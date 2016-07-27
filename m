@@ -1,49 +1,79 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Jul 2016 16:46:22 +0200
-Subject: [LTP] [PATCH V3 16/23] Fix test_proc_kill hanging
-In-Reply-To: <20160722042656.22346-16-raj.khem@gmail.com>
+From: Khem Raj <raj.khem@gmail.com>
+Date: Wed, 27 Jul 2016 08:14:26 -0700
+Subject: [LTP] [PATCH V3 08/23] rt_sigaction/rt_sigprocmark: Replace
+	SA_NOMASK with SA_NODEFER
+In-Reply-To: <20160727101433.GA10903@rei.lan>
 References: <20160722042656.22346-1-raj.khem@gmail.com>
- <20160722042656.22346-16-raj.khem@gmail.com>
-Message-ID: <20160727144622.GE11986@rei.lan>
+ <20160722042656.22346-8-raj.khem@gmail.com> <20160727101433.GA10903@rei.lan>
+Message-ID: <4862EF4A-FCBC-476A-AD17-F5B7388E643F@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> index c90d0a2..331e75b 100755
-> --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-> @@ -220,8 +220,8 @@ test_proc_kill()
->  
->  	$TEST_PATH/memcg_process $2 -s $3 &
->  	pid=$!
-> -	sleep 1
->  	echo $pid > tasks
-> +	sleep 1
 
-Hmm are you sure that this fixes race condition where the test is not
-attached to the group while the signal is send?
-
-I would say that the kernel should guarantee that once the echo returns
-back to userspace the processes is attached. Anything else would be
-terribly racy.
-
-There is different race condition as well, and this one is between the
-memcg_process setting up the signal handler and the stress test testing
-the signal that may be the cause for a random failures as well.
-
->  	kill -s USR1 $pid 2> /dev/null
->  	sleep 1
-> -- 
-> 2.9.0
+> On Jul 27, 2016, at 3:14 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
 > 
+> Hi!
+>> --- a/testcases/misc/crash/crash01.c
+>> +++ b/testcases/misc/crash/crash01.c
+>> @@ -49,7 +49,7 @@ stress test at the same time you run other tests, like a multi-user
+>> benchmark.
+>> 
+>> */
+>> -
+>> +#define _GNU_SOURCE
+>> #include <stdio.h>
+>> #include <stdlib.h>
+>> #include <string.h>
+>> @@ -409,7 +409,7 @@ void my_signal(int sig, void (*func) ())
+>> 
+>> 	act.sa_handler = func;
+>> 	memset(&act.sa_mask, 0x00, sizeof(sigset_t));
+>> -	act.sa_flags = SA_NOMASK | SA_RESTART;
+>> +	act.sa_flags = SA_NODEFER | SA_RESTART;
+>> 	sigaction(sig, &act, 0);
+>> }
+>> 
+>> diff --git a/testcases/misc/crash/crash02.c b/testcases/misc/crash/crash02.c
+>> index 00fee34..1aba3b9 100644
+>> --- a/testcases/misc/crash/crash02.c
+>> +++ b/testcases/misc/crash/crash02.c
+>> @@ -49,7 +49,6 @@ TODO:
+>> 	* Does a syscall is supposed to send SIGSEGV?
+>> */
+>> 
+>> -#define _GNU_SOURCE
+>> #include <sys/syscall.h>
+>> #include <stdio.h>
+>> #include <stdlib.h>
+>> @@ -358,7 +357,7 @@ void my_signal(int sig, void (*func) ())
+>> 
+>> 	act.sa_handler = func;
+>> 	memset(&act.sa_mask, 0x00, sizeof(sigset_t));
+>> -	act.sa_flags = SA_NOMASK | SA_RESTART;
+>> +	act.sa_flags = SA_NODEFER | SA_RESTART;
+>> 	sigaction(sig, &act, 0);
+>> }
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> What is the reason to add #define _GNU_SOURCE to crash01 and to remove
+> it from crash02? That looks like unintended change to me.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+The define was needed only for these SA_* symbols which are removed
+so I removed the define as well.
+
+> 
+> The rest is obviously OK.
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 204 bytes
+Desc: Message signed with OpenPGP using GPGMail
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160727/f531c8de/attachment.sig>
