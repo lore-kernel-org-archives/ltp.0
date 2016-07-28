@@ -1,47 +1,48 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 27 Jul 2016 18:24:31 +0200
-Subject: [LTP] [PATCH V3 18/23] replace SIGCLD with SIGCHLD
-In-Reply-To: <20160722042656.22346-18-raj.khem@gmail.com>
-References: <20160722042656.22346-1-raj.khem@gmail.com>
- <20160722042656.22346-18-raj.khem@gmail.com>
-Message-ID: <20160727162431.GA13160@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 28 Jul 2016 13:17:26 +0800
+Subject: [LTP] [PATCH v2 1/2] runltp: extend the default loop device size to
+	150MB
+Message-ID: <1469683046-6271-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> -	#ifdef SIGCLD
-> -		/* SIGCLD same as SIGCHLD */
-> -		STRPAIR(SIGCHLD, "SIGCHLD/SIGCLD")
-> +	#ifdef SIGCHLD
-> +		/* SIGCHLD same as SIGCHLD */
-> +		STRPAIR(SIGCHLD, "SIGCHLD/SIGCHLD")
->  	#else
->  		PAIR(SIGCHLD)
->  	#endif
+Increase TST_DEVICE size to make btrfs-progs happy.
 
-I had to fix this part, since obviously it does not make sense anymore
-and all of it needed to be replaced by just PAIR(SIGCHLD);
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ runltp                | 2 +-
+ testcases/lib/test.sh | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-> --- a/testcases/kernel/ipc/ipc_stress/signals.h
-> +++ b/testcases/kernel/ipc/ipc_stress/signals.h
-> @@ -38,7 +38,7 @@ char * signames [] =
->   "SIGALRM", //         14      // Alarm clock (POSIX).
->   "SIGTERM", //         15      // Termination (ANSI).
->   "SIGSTKFLT", //       16      // Stack fault.
-> - "SIGCLD/SIGCHLD", //  SIGCHLD // Same as SIGCHLD (System V).
-> + "SIGCHLD/SIGCHLD", //  SIGCHLD // Same as SIGCHLD (System V).
->   //"SIGCHLD", //       17      // Child status has changed (POSIX).
->   "SIGCONT", //         18      // Continue (POSIX).
->   "SIGSTOP", //         19      // Stop, unblockable (POSIX).
-
-And here as well.
-
-
-And pushed, thanks.
-
+diff --git a/runltp b/runltp
+index 29f43a0..3a46765 100755
+--- a/runltp
++++ b/runltp
+@@ -978,7 +978,7 @@ main()
+ create_block()
+ {
+     #create a block device
+-    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=102400 >/dev/null 2>&1
++    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=153600 >/dev/null 2>&1
+     if [ $? -ne 0 ]; then
+         echo "Failed to create loopback device image, please check disk space and re-run"
+         return 1
+diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+index 23d68c6..4fe2773 100644
+--- a/testcases/lib/test.sh
++++ b/testcases/lib/test.sh
+@@ -274,7 +274,7 @@ tst_acquire_device()
+ 		return
+ 	fi
+ 
+-	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=102400
++	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=153600
+ 
+ 	TST_DEVICE=$(losetup -f)
+ 	if [ $? -ne 0 ]; then
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
