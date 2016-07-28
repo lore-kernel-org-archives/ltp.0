@@ -1,45 +1,51 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 28 Jul 2016 13:17:26 +0800
-Subject: [LTP] [PATCH v2 1/2] runltp: extend the default loop device size to
-	150MB
-Message-ID: <1469683046-6271-1-git-send-email-liwang@redhat.com>
+Date: Thu, 28 Jul 2016 13:17:39 +0800
+Subject: [LTP] [PATCH v2 2/2] test.sh: make the loop device size can be
+	customized
+Message-ID: <1469683059-6318-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Increase TST_DEVICE size to make btrfs-progs happy.
+The LTP_DEV default size is 150MB, but sometimes we need different
+(larger or smaller) size of test block device.
+
+For the purpose of satisfying specific requirements, here adding
+parameters to tst_acquire_device() to make the loop device can be
+customized according to real needed.
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- runltp                | 2 +-
- testcases/lib/test.sh | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ testcases/lib/test.sh | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/runltp b/runltp
-index 29f43a0..3a46765 100755
---- a/runltp
-+++ b/runltp
-@@ -978,7 +978,7 @@ main()
- create_block()
- {
-     #create a block device
--    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=102400 >/dev/null 2>&1
-+    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=153600 >/dev/null 2>&1
-     if [ $? -ne 0 ]; then
-         echo "Failed to create loopback device image, please check disk space and re-run"
-         return 1
 diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index 23d68c6..4fe2773 100644
+index 4fe2773..835ea39 100644
 --- a/testcases/lib/test.sh
 +++ b/testcases/lib/test.sh
-@@ -274,7 +274,7 @@ tst_acquire_device()
+@@ -257,11 +257,13 @@ ROD()
+ 
+ tst_acquire_device()
+ {
++	local acq_dev_size=${1:-150}
++
+ 	if [ -z ${TST_TMPDIR} ]; then
+ 		tst_brkm "Use 'tst_tmpdir' before 'tst_acquire_device'"
+ 	fi
+ 
+-	if [ -n "${LTP_DEV}" ]; then
++	if [ -n "${LTP_DEV}" ] && [ ${acq_dev_size} -eq 150 ]; then
+ 		tst_resm TINFO "Using test device LTP_DEV='${LTP_DEV}'"
+ 		if [ ! -b ${LTP_DEV} ]; then
+ 			tst_brkm TBROK "${LTP_DEV} is not a block device"
+@@ -274,7 +276,7 @@ tst_acquire_device()
  		return
  	fi
  
--	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=102400
-+	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=153600
+-	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=153600
++	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=$((1024*$acq_dev_size))
  
  	TST_DEVICE=$(losetup -f)
  	if [ $? -ne 0 ]; then
