@@ -1,9 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 1 Aug 2016 06:12:33 -0400 (EDT)
-Subject: [LTP] [PATCH] madvise06: make bug detection more reliable
-In-Reply-To: <3b5c21485cf55776374b37327f39f5daa29f94da.1469184742.git.jstancek@redhat.com>
-References: <3b5c21485cf55776374b37327f39f5daa29f94da.1469184742.git.jstancek@redhat.com>
-Message-ID: <1077319971.10228993.1470046353126.JavaMail.zimbra@redhat.com>
+Date: Mon, 1 Aug 2016 06:29:59 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls/mprotect04: Use
+ __builtin___clear_cache() to sync caches
+In-Reply-To: <1469550665-12918-1-git-send-email-peter.maydell@linaro.org>
+References: <1469550665-12918-1-git-send-email-peter.maydell@linaro.org>
+Message-ID: <1476945951.10231924.1470047399416.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,31 +16,34 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
+> From: "Peter Maydell" <peter.maydell@linaro.org>
 > To: ltp@lists.linux.it
-> Cc: liwan@redhat.com
-> Sent: Friday, 22 July, 2016 12:56:41 PM
-> Subject: [LTP] [PATCH] madvise06: make bug detection more reliable
+> Cc: patches@linaro.org, "Cyril Hrubis" <chrubis@suse.cz>, "Jan Stancek" <jstancek@redhat.com>, "Mark Rutland"
+> <mark.rutland@arm.com>
+> Sent: Tuesday, 26 July, 2016 6:31:05 PM
+> Subject: [PATCH] syscalls/mprotect04: Use __builtin___clear_cache() to sync caches
 > 
-> 1. set up memory cgroup
-> This allows us to get swapped memory faster, and also
-> eliminates problems with running testcase on big systems.
+> In commit cf9a0800cd0 code was added to mprotect04 to synchronize
+> the instruction and data caches on PowerPC before executing
+> the copied code. This is also necessary on other architectures
+> which have split instruction and data caches and need explicit
+> cache maintenance operations, like ARM.
 > 
-> 2. check for expected effects in a loop
-> madvise_willneed() reads memory asynchronously, so we check
-> multiple times with delay in-between. Because we can't
-> distinguish between bad kernel and slow I/O, bad kernel
-> will make test check for 5 seconds before giving up.
-> As last resort we check presence of first page.
+> The GCC builtin __builtin___clear_cache() will correctly handle
+> this for all architectures, so switch to using it. The builtin
+> was only implemented at around GCC 4.1, so use a configure
+> check so that we will skip the test with TCONF if the compiler
+> doesn't support the builtin.
 > 
-> Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> ---
->  testcases/kernel/syscalls/madvise/madvise06.c | 142
->  ++++++++++++++++++--------
->  1 file changed, 101 insertions(+), 41 deletions(-)
-> 
+> Signed-off-by: Peter Maydell <peter.maydell@linaro.org>
 
-I tested this on 4.7-rc7 and pushed.
+Looks good to me.
+
+> ---
+> Disclaimer: untested on PPC.
+
+I don't have such HW available at the moment, but I tested this
+on RHEL5.6/6.0/7.2 x86_64. RHEL5.6 exits with TCONF as expected.
 
 Regards,
 Jan
