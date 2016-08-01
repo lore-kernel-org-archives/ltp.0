@@ -1,11 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 1 Aug 2016 17:36:40 +0200
-Subject: [LTP] [PATCH V3 10/23] sysconf01: Use _SC_2_C_VERSION
- conditionally
-In-Reply-To: <20160722042656.22346-10-raj.khem@gmail.com>
-References: <20160722042656.22346-1-raj.khem@gmail.com>
- <20160722042656.22346-10-raj.khem@gmail.com>
-Message-ID: <20160801153640.GE8568@rei.lan>
+Date: Mon, 1 Aug 2016 18:17:28 +0200
+Subject: [LTP] [PATCH] syscalls/mprotect04: Use
+ __builtin___clear_cache() to sync caches
+In-Reply-To: <CAFEAcA9fPp-Hemq5E6q7udfh-5jDHdiTstfNr6M7wn8JGfzbeA@mail.gmail.com>
+References: <1469550665-12918-1-git-send-email-peter.maydell@linaro.org>
+ <20160801113157.GD6899@rei.lan>
+ <CAFEAcA9fPp-Hemq5E6q7udfh-5jDHdiTstfNr6M7wn8JGfzbeA@mail.gmail.com>
+Message-ID: <20160801161727.GA13333@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,29 +14,15 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> _SC_2_C_VERSION is not available on musl
+> I considered that, but I felt it was not worth having
+> an architecture-specific ifdef in the code purely to support
+> running this test case with compilers that are a decade
+> old (and will only be getting rarer in the future) on one
+> specific architecture...
 
-Looks like it has been removed from minimal required set of system
-variables in newer POSIXes.
-
-> ---
->  testcases/kernel/syscalls/sysconf/sysconf01.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/testcases/kernel/syscalls/sysconf/sysconf01.c b/testcases/kernel/syscalls/sysconf/sysconf01.c
-> index 8542e77..7ebae23 100644
-> --- a/testcases/kernel/syscalls/sysconf/sysconf01.c
-> +++ b/testcases/kernel/syscalls/sysconf/sysconf01.c
-> @@ -102,7 +102,9 @@ int main(void)
->  	test_sysconf(_SC_ATEXIT_MAX);
->  	test_sysconf(_SC_2_C_BIND);
->  	test_sysconf(_SC_2_C_DEV);
-> +#ifdef _SC_2_C_VERSION
->  	test_sysconf(_SC_2_C_VERSION);
-> +#endif
-
-I've added an else branch that prints TCONF so that the number of tests
-is always the same and pushed, thanks.
+Well I would be slightly inclined not to introduce false regressions
+with newer LTP versions. But given that this affects only really old
+compilers we may as well get with your version.
 
 -- 
 Cyril Hrubis
