@@ -1,33 +1,39 @@
-From: Peter Maydell <peter.maydell@linaro.org>
-Date: Fri, 5 Aug 2016 11:08:43 +0100
-Subject: [LTP] [PATCH] syscalls/mprotect04: Use
- __builtin___clear_cache() to sync caches
-In-Reply-To: <20160801161727.GA13333@rei>
-References: <1469550665-12918-1-git-send-email-peter.maydell@linaro.org>
- <20160801113157.GD6899@rei.lan>
- <CAFEAcA9fPp-Hemq5E6q7udfh-5jDHdiTstfNr6M7wn8JGfzbeA@mail.gmail.com>
- <20160801161727.GA13333@rei>
-Message-ID: <CAFEAcA96pwQxTR9Heu5jLm+0nKB9ODD7XaEmZwcZSiE_Rx3O0g@mail.gmail.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 3 Aug 2016 05:23:22 +0800
+Subject: [LTP] [PATCH] syscalls/madvise06: Exclude other factor that leading
+	to failure
+Message-ID: <1470173002-19754-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 1 August 2016 at 17:17, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> I considered that, but I felt it was not worth having
->> an architecture-specific ifdef in the code purely to support
->> running this test case with compilers that are a decade
->> old (and will only be getting rarer in the future) on one
->> specific architecture...
->
-> Well I would be slightly inclined not to introduce false regressions
-> with newer LTP versions. But given that this affects only really old
-> compilers we may as well get with your version.
+Make sure that madvise(MADV_WILLNEED) supports swap prefetch. We
+can't distinguish between kernel bug and unsupported swap, because
+the same error happens on RHEL6.8GA which madvise(MADV_WILLNEED)
+doesn't support swap prefetch. This feature has been pushed since
+kernel 3.10.0.
 
-Hi -- are you planning to commit this version of the patch
-or would you prefer me to spin a v2 with the i386 ifdeffery ?
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/madvise/madvise06.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-thanks
--- PMM
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index ddd1814..e040b6f 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -182,6 +182,7 @@ static struct tst_test test = {
+ 	.test_all = test_advice_willneed,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
++	.min_kver = "3.10.0",
+ 	.needs_tmpdir = 1,
+ 	.needs_root = 1,
+ };
+-- 
+1.8.3.1
+
+
+
