@@ -1,51 +1,54 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 3 Aug 2016 11:44:31 -0400 (EDT)
-Subject: [LTP] [PATCH] tst_test: Allow to set timeout from test setup()
-In-Reply-To: <20160803153419.GC25589@rei>
-References: <20160803135355.GA30335@rei.lan>
- <1896180212.843449.1470235129619.JavaMail.zimbra@redhat.com>
- <20160803150655.GB25589@rei>
- <1951597278.861795.1470238415053.JavaMail.zimbra@redhat.com>
- <20160803153419.GC25589@rei>
-Message-ID: <456027902.863199.1470239071534.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 3 Aug 2016 18:01:36 +0200
+Subject: [LTP] [PATCH V2 1/4] waitpid06: use the new API
+In-Reply-To: <1468940141-4342-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <20160718130536.GC18221@rei.suse.cz>
+ <1468940141-4342-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20160803160136.GD25589@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+This version looks very good, a few minor comment below.
 
+> +	if (reap_children(-1, 0, fork_kid_pid, MAXKIDS)) {
+> +		tst_res(TFAIL, "reap_children() failed");
+> +		return;
+>  	}
 
+We already failed the test in the reap_children(), so this message is
+redundand and we can just return here.
 
+> +static void waitpid_test(void)
+> +{
+> +	int status;
+> +
+> +	child_1_pid = SAFE_FORK();
+> +	if (child_1_pid == 0) {
+> +		do_child_1();
+> +	} else {
+> +		SAFE_WAITPID(child_1_pid, &status, 0);
+> +
+> +		child_1_pid = 0;
+> +
+> +		if (!WIFEXITED(status))
+> +			tst_brk(TBROK, "Child 1 exited abnormally");
+> +
+> +		if (WEXITSTATUS(status) != 0)
+> +			tst_res(TFAIL, "Child 1 returned bad status");
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Wednesday, 3 August, 2016 5:34:19 PM
-> Subject: Re: [PATCH] tst_test: Allow to set timeout from test setup()
-> 
-> Hi!
-> > > I think that it will be safer to have it run with either with a default
-> > > timeout or with a test->timeout. And that is the whole point of setting
-> > > the timeout twice in case that we call tst_set_timeout() in the test
-> > > setup().
-> > 
-> > Good point, so setting timeout twice seems unavoidable.
-> > But I'm still thinking about actions needed to set timeout
-> > that are now not part of tst_set_timeout(). Would it make sense
-> > to bring those in?
-> 
-> Looks good to me. I will merge your changes into my patch, add your
-> Signed-off-by and push it, OK?
+This does not correctly propagate TBROK.
 
-Fine by me.
+What we should do here is similar to the check_child_status() in the
+tst_test.c.
 
-Regards,
-Jan
+I guess that the best course of action would be renaming reap_children()
+to tst_reap_children() and remove static so that we can use it in the
+tests as well.
 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
