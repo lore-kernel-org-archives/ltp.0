@@ -1,28 +1,23 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 2 Aug 2016 09:47:17 -0400 (EDT)
-Subject: [LTP] [PATCH v3] swapping: replace mem_free by mem_available
-In-Reply-To: <1470109642-30701-1-git-send-email-liwang@redhat.com>
-References: <1470109642-30701-1-git-send-email-liwang@redhat.com>
-Message-ID: <1684795984.474742.1470145637545.JavaMail.zimbra@redhat.com>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 3 Aug 2016 13:19:54 +0300
+Subject: [LTP] [PATCH 2/8] waitpid06: use the new API
+In-Reply-To: <20160718130536.GC18221@rei.suse.cz>
+References: <1468593589-30545-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1468593589-30545-3-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160718130536.GC18221@rei.suse.cz>
+Message-ID: <57A1C54A.1030003@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi, Cyril!
 
+Did you get a chance to look at V2 series:
 
+http://lists.linux.it/pipermail/ltp/2016-July/002235.html
 
+?
 
------ Original Message -----
-> From: "Li Wang" <liwang@redhat.com>
-> To: ltp@lists.linux.it
-> Cc: jstancek@redhat.com
-> Sent: Tuesday, 2 August, 2016 5:47:22 AM
-> Subject: [PATCH v3] swapping: replace mem_free by mem_available
-> 
-
-I fixed couple lines checkpatch complained about and pushed.
-
-Regards,
-Jan
+Thanks.
