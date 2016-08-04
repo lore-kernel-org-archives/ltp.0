@@ -1,50 +1,29 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 4 Aug 2016 03:37:40 -0400 (EDT)
-Subject: [LTP] [PATCH] tst_test: Add option parsing helpers.
-In-Reply-To: <20160803145925.GA31921@rei.lan>
-References: <20160803145925.GA31921@rei.lan>
-Message-ID: <261930823.1019774.1470296260665.JavaMail.zimbra@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 4 Aug 2016 13:13:51 +0300
+Subject: [LTP] [PATCH 0/8] network/nfs: fix/cleanup tests
+In-Reply-To: <1466432936-3099-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1466432936-3099-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <57A3155F.9030804@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi,
+On 06/20/2016 05:28 PM, Alexey Kodanev wrote:
+> Alexey Kodanev (8):
+>    lib: add safe_gethostname()
+>    network/nfs05: rewrite the test, make use of new library
+>    network/nfs_lib.sh: add options, socket type and NFS ver
+>    network/nfs/fsx: cleanup test, use test_net library
+>    network/nfs/nfsstat: cleanup test, use test_net.sh library
+>    network/nfs/nfsflock: clenaup & use test_net library
+>    network/nfs/nfs_fsstress: remove fsstress test
+>    network/nfs: remove README
 
+Patch-set applied except first two patches that were sent separately as v2.
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: ltp@lists.linux.it
-> Cc: "Jan Stancek" <jstancek@redhat.com>
-> Sent: Wednesday, 3 August, 2016 4:59:25 PM
-> Subject: [PATCH] tst_test: Add option parsing helpers.
-> 
-> Add two helpers for parsing integers and floags, these are intended to
-> be used in the test setup to parse options from struct tst_option.
-> 
-> static char *str_threads;
-> static int threads;
-> ...
-> 
-> static struct tst_options[] = {
-> 	{"t:", &str_threads, "Number of threads"},
-> 	...
-> 	{NULL, NULL, NULL}
-> };
-> 
-> static void setup(void)
-> {
-> 	if (tst_parse_int(str_threads, &threads, 1, INT_MAX))
-> 		tst_brk(TBROK, "Invalid number of threads '%s'", str_threads);
-> 
-> 	...
-> }
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Thanks,
+Alexey
 
-Reviewed-by: Jan Stancek <jstancek@redhat.com>
-
-Looks good to me.
-
-Regards,
-Jan
