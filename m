@@ -1,62 +1,41 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri, 5 Aug 2016 11:56:49 +0300
-Subject: [LTP] [PATCH V3 2/6] tst_test: make reap_children() part of the
- test API
-In-Reply-To: <20160804161323.GC3367@rei.lan>
-References: <1470320195-22145-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470320195-22145-2-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160804161323.GC3367@rei.lan>
-Message-ID: <57A454D1.5040501@oracle.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Fri, 5 Aug 2016 18:08:35 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/access04: reconstruct and convert to
+ new API
+In-Reply-To: <20160804165028.GD3367@rei.lan>
+References: <1469698729-5860-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20160804165028.GD3367@rei.lan>
+Message-ID: <57A465A3.8020306@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
 
+Thanks for your comments!
 
-On 08/04/2016 07:13 PM, Cyril Hrubis wrote:
+On 08/05/2016 12:50 AM, Cyril Hrubis wrote:
 > Hi!
->> +[source,c]
->> +-------------------------------------------------------------------------------
->> +#include "tst_test.h"
->> +
->> +void tst_reap_children(void);
->> +-------------------------------------------------------------------------------
->> +
->> +The 'tst_reap_children()' function makes the process wait for all of its
->> +children and exits with 'tst_brk(TBROK, ...)' if any of them returned
->> +a non zero exit code. This function may be called only from the main
->> +test process.
-> 
-> There is no reason to limit the function to the main test process only.
-> All it does it to reap all children and call tst_brk() in case that
-> someting went wrong.
-> 
-> We can for instance do:
-> 
-> [main test pid]
->       fork()              --> [child]
->       tst_reap_children()     fork()              -->[child]
->                               tst_reap_children()    tst_brk(TBROK, ...)
-> 
-> In this case the second level child will simply call exit(TBROK), the
-> first level child will wait it and call exit(TBROK) because the second
-> level child exitted uncleanly. And finally the main test pid will exit
-> with TBROK, after a it's cleanup is called (if set).
-> 
-> And it's nearly the same in case of tst_brk(TCONF, ...) but the exit
-> value will be 0 and the TCONF is instead stored in the result structure
-> in the shared memory.
-> 
-> Maybe we should include this ascii art diagram in the documentation as
-> well.
-> 
-> 
-> The rest of the patchset is good, acked.
-> 
-> Let's commit it without the sentence that limits this function to the
-> main test process. I will do something about the documentation later.
+> Once we remote the directory the accessfile is in this is just the same
+> as access01.c.
 > 
 
-Thank you! Committed the series without the sentence.
+Sorry, do you mean once we "remote" the directory? or "remove" the directory?
+And I think access04 does a little more: checks if the file exists actually
+via stat(), maybe I should add this part(check existence) to access02?
+
+> Looks like the whole point of the test was to put the file into a
+> directory and pass the path to the syscall.
+> 
+> What about we remote this test and add a few more cases with a file in
+> subdirectory to the access01 test instead?
+> 
+
+OK, I will put this part into access01 and add a few more cases instead, thanks.
+
+Regards,
+Guangwen Feng
+
+
