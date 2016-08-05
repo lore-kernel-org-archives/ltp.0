@@ -1,26 +1,109 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 4 Aug 2016 18:50:29 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/access04: reconstruct and convert to
- new API
-In-Reply-To: <1469698729-5860-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1469698729-5860-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20160804165028.GD3367@rei.lan>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Fri, 5 Aug 2016 14:58:01 +0800
+Subject: [LTP] [PATCH] syscalls/signal06: fix test for regression with
+	earlier version of gcc and kernel
+Message-ID: <1470380281-20334-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Once we remote the directory the accessfile is in this is just the same
-as access01.c.
+1. Currently, following code is incorrect on some releases with
+   earlier version of gcc(tested on RHEL5.11GA):
 
-Looks like the whole point of the test was to put the file into a
-directory and pass the path to the syscall.
+	while (D == d && loop < LOOPS) {
 
-What about we remote this test and add a few more cases with a file in
-subdirectory to the access01 test instead?
+   Because the argument in function test(double d) is used via (%rsp),
+   but here we actually need a xmm register to trigger the fpu bug.
+   So use global value instead to make sure to take use of xmm.
 
+2. Although this regression test is designed to trigger SIGSEGV
+   intentionally, on some releases with old kernel(tested on RHEL5.11GA),
+   this will still lead to segmentation fault that terminate the program
+   and break the test even though compiling with -O2.  So slightly adjust
+   the weight of the codes in child thread to depress SIGSEGV trigger's
+   chance while increase LOOPS to ensure reproducible.
+
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/signal/signal06.c | 29 +++++++++++++++++------------
+ 1 file changed, 17 insertions(+), 12 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel/syscalls/signal/signal06.c
+index 75ef733..81fd138 100644
+--- a/testcases/kernel/syscalls/signal/signal06.c
++++ b/testcases/kernel/syscalls/signal/signal06.c
+@@ -31,8 +31,8 @@
+  * 		Date:   Tue Sep 2 19:57:17 2014 +0200
+  *
+  *      commit 66463db4fc5605d51c7bb81d009d5bf30a783a2c
+- *               Author: Oleg Nesterov <oleg@redhat.com>
+- *               Date:   Tue Sep 2 19:57:13 2014 +0200
++ *              Author: Oleg Nesterov <oleg@redhat.com>
++ *              Date:   Tue Sep 2 19:57:13 2014 +0200
+  *
+  * Reproduce:
+  *	Test-case (needs -O2).
+@@ -55,20 +55,21 @@ int TST_TOTAL = 5;
+ 
+ #if __x86_64__
+ 
+-#define LOOPS 10000
++#define LOOPS 100000
++#define VALUE 123.456
+ 
+ volatile double D;
+ volatile int FLAGE;
+ 
+ char altstack[4096 * 10] __attribute__((aligned(4096)));
+ 
+-void test(double d)
++void test(void)
+ {
+ 	int loop = 0;
+ 	int pid = getpid();
+ 
+-	D = d;
+-	while (D == d && loop < LOOPS) {
++	D = VALUE;
++	while (D == VALUE && loop < LOOPS) {
+ 		/* sys_tkill(pid, SIGHUP); asm to avoid save/reload
+ 		 * fp regs around c call */
+ 		asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
+@@ -94,12 +95,16 @@ void sigh(int sig LTP_ATTRIBUTE_UNUSED)
+ 
+ void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
+ {
+-	for (; ;) {
+-		TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
+-		if (TEST_RETURN == -1)
+-			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
++	int i;
++
++	for (i = -1; ; i *= -1) {
++		if (i == -1) {
++			TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
++			if (TEST_RETURN == -1)
++				tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
++		}
+ 
+-		TEST(mprotect(altstack, sizeof(altstack), PROT_READ|PROT_WRITE));
++		TEST(mprotect(altstack, sizeof(altstack), PROT_READ | PROT_WRITE));
+ 		if (TEST_RETURN == -1)
+ 			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+ 
+@@ -148,7 +153,7 @@ int main(int ac, char **av)
+ 				tst_brkm(TBROK | TRERRNO, NULL,
+ 						"pthread_create failed");
+ 
+-			test(123.456);
++			test();
+ 
+ 			TEST(pthread_join(pt, NULL));
+ 			if (TEST_RETURN)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
+
+
