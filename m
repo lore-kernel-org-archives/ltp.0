@@ -1,10 +1,7 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 9 Aug 2016 18:41:18 +0200
-Subject: [LTP] [PATCH] mkswap: make the test device size is aligned to
- pagesize
-In-Reply-To: <1469613519-27167-1-git-send-email-liwang@redhat.com>
-References: <1469613519-27167-1-git-send-email-liwang@redhat.com>
-Message-ID: <20160809164118.GA27028@rei.lan>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 10 Aug 2016 11:40:58 +0300
+Subject: [LTP] waitpid: new API (part 2)
+Message-ID: <1470818466-28109-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,18 +9,33 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> We get failures like below because of 'DEVICE_SIZE-10000' makes the
-> loop device size is not aligned to system PAGE_SIZE any more.
 
-What version of mkswap.c you have?
+This is the second (and last) part of changes to syscalls/waitpid test cases
+with the final aim to substitute wait_for_parent() with the checkpoint interface.
 
-Looking into util-linux-2.26.2 all it does with user specified number of
-blocks is:
+waitpid09 was updated in accordance with
 
-ctl.npages = blks / (ctl.pagesize / 1024);
+http://lists.linux.it/pipermail/ltp/2016-July/002238.html
 
-There is no check that blks is divideable by pagesize/1024.
+In particular:
+ * the code from do_exit() was moved to the 'if' block
+ * used tst_strerrno() to print set and expected errno values
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+As for waitpid12. In contrast with
+
+http://lists.linux.it/pipermail/ltp/2016-July/002218.html
+
+I decided to keep the process group logic in order to have uniform coverage:
+
+waitpid06: waitpid(-1, , 0)
+waitpid07: waitpid(-1, , WNOHANG)
+waitpid08: waitpid(-1, , WUNTRACED)
+waitpid11: waitpid(0, , 0), waitpid(-group, , 0)
+waitpid12: waitpid(0, , WNOHANG), waitpid(-group, , WNOHANG)
+waitpid13: waitpid(0, , WUNTRACED), waitpid(-group, , WUNTRACED)
+
+All other patches are new.
+
+Thanks.
+ 
+
