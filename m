@@ -1,271 +1,77 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 15 Aug 2016 09:27:40 +0800
-Subject: [LTP] [PATCH] commands/passwd: Added new testcase to test passwd
-In-Reply-To: <20160809145536.GC31315@rei.suse.cz>
-References: <1468476664-16364-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20160809145536.GC31315@rei.suse.cz>
-Message-ID: <57B11A8C.8090301@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 15 Aug 2016 17:25:08 +0800
+Subject: [LTP] [PATCH] mkswap: make the test device size is aligned to
+ pagesize
+In-Reply-To: <20160809164118.GA27028@rei.lan>
+References: <1469613519-27167-1-git-send-email-liwang@redhat.com>
+ <20160809164118.GA27028@rei.lan>
+Message-ID: <20160815092508.GB22440@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi !
+On Tue, Aug 09, 2016 at 06:41:18PM +0200, Cyril Hrubis wrote:
+> Hi!
+> > We get failures like below because of 'DEVICE_SIZE-10000' makes the
+> > loop device size is not aligned to system PAGE_SIZE any more.
+> 
+> What version of mkswap.c you have?
 
-Thanks for your review, i will rewrite it as what you suggested.
+My version is:
+
+# rpm -qf /sbin/mkswap 
+util-linux-2.23.2-33.el7.ppc64
+
+
+if (block_count) {
+	/* this silly user specified the number of blocks explicitly */
+		uint64_t blks = strtou64_or_err(block_count,
+					_("invalid block count argument"));
+		PAGES = blks / (pagesize / 1024);
+	}
+	sz = get_size(device_name);
+
+
+> 
+> Looking into util-linux-2.26.2 all it does with user specified number of
+> blocks is:
+> 
+> ctl.npages = blks / (ctl.pagesize / 1024);
+> 
+> There is no check that blks is divideable by pagesize/1024.
+
+I build util-linux-2.28 from upstrem source and also get the errors.
+
+# mkswap -V
+mkswap from util-linux 2.28.237-47bd89
+
+# ./runltp -f commands
+mkswap01 1 TINFO : Using test device LTP_DEV='/dev/loop0'
+mkswap01 1 TFAIL : 'mkswap   /dev/loop0 ' failed, not expected.
+mkswap01 2 TFAIL : 'mkswap   /dev/loop0 90000' failed, not expected.
+mkswap01 3 TINFO : Can not do swapon on /dev/loop0.
+mkswap01 3 TINFO : Device size specified by 'mkswap' greater than real size.
+mkswap01 3 TINFO : Swapon failed expectedly.
+mkswap01 3 TPASS : 'mkswap -f  /dev/loop0 110000' passed.
+
+-----------------
+
+Additionally, we'd better change the bs=1kB to bs=1024 in runltp file,
+since it will get page aligned block device for all arches.
+
+The original LTP_DEV size is 102400000 bytes:
+
+# grep 'bs=' runltp  -n
+981:    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=102400
+
+
+From dd manual:
+N and BYTES may be followed by the following multiplicative suffixes:
+c =1, w =2, b =512, kB  =1000,  K  =1024,  MB =1000*1000,  M  =1024*1024,
+xM  =M  GB  =1000*1000*1000,  G =1024*1024*1024, and so on for T, P, E, Z, Y.
+
 
 Regards,
-Xiao Yang
-
-On 2016/08/09 22:55, Cyril Hrubis wrote:
-> Hi!
->> +top_srcdir		?= ../../..
->> +
->> +include $(top_srcdir)/include/mk/env_pre.mk
->> +
->> +INSTALL_TARGETS		:= passwd01.sh check_passwd
->                                                   ^
-> 						 This should better be
-> 						 passwd01_check so that
-> 						 it's clear what test
-> 						 uses this expect
-> 						 script
->
-> And maybe we can use .exp suffix for expect script (there does not seems
-> to be any well defined suffix for expect though).
->
->> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
->> diff --git a/testcases/commands/passwd/check_passwd b/testcases/commands/passwd/check_passwd
->> new file mode 100755
->> index 0000000..1d27c7e
->> --- /dev/null
->> +++ b/testcases/commands/passwd/check_passwd
->> @@ -0,0 +1,67 @@
->> +#!/usr/bin/expect -f
->> +#
->> +# Copyright (c) 2016 Fujitsu Ltd.
->> +# Author: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> +#
->> +# This program is free software; you can redistribute it and/or modify
->> +# it under the terms of the GNU General Public License as published by
->> +# the Free Software Foundation; either version 2 of the License, or
->> +# (at your option) any later version.
->> +#
->> +# This program is distributed in the hope that it will be useful,
->> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
->> +# the GNU General Public License for more details.
->> +#
->> +# Test passwd command with some basic options.
->> +#
->> +
->> +set test_res 0
->> +set user_init [ lindex $argv 0 ]
->> +set cmd [ lindex $argv 1 ]
->> +set user_test [ lindex $argv 2 ]
->> +set passwd_test [ lindex $argv 3 ]
->> +
->> +set who_bf [ exec whoami ]
->> +if { $who_bf!=$user_init } {
->> +	send_user "ERROR: You must be not a root user before testing\n"
-> This message is misleading, the code tesets for whoami != $argv[0] and
-> not for $whoami != root.
->
->> +	exit 1
->> +}
->> +
->> +if { $cmd==2 } {
->> +        spawn /bin/su $user_test
->> +        expect "Password:" {
->> +                send "$passwd_test\n"
->> +                expect {
->> +			"su: Authentication failure" { set test_res 1 }
->> +			"su: incorrect password" { set test_res 1 }
-> This is very fragile approach. This test will pass for instance when
-> LC_ALL is set to something else than english.
->
-> Looking at su manual page it should return 1 on autentication failure.
->
-> We can instead just do:
->
-> spawn su $test_usr -c true
->
-> And fail the test if return value was not 0.
->
-> We can avoid the whole expect script that way...
->
->> +		}
->> +        }
->> +}
->> +
->> +if { $cmd==1 } {
->> +	spawn /bin/su $user_test
->> +	expect "Password:" {
->> +		send "$passwd_test\n"
->> +		expect "$user_test" { set test_res 1 }
-> So we fail the test if we get shell user@hostname: ?
->
-> That is quite fragile as well.
->
-> We should rather do the -c true here as well and fail the test if exit
-> value was not 1.
->
->> +	}
->> +}
->> +
->> +if { $cmd==0 } {
->> +	spawn /bin/su $user_test
->> +	expect "$user_test" { set test_res 1 }
-> Here as well.
->
->> +}
-> This is whole if { $cmd == foo} is messy.
->
-> Why can't we just create separate script for each test scenario?
->
->> +set who_af [ exec whoami ]
->> +if { $who_af!=$user_init } {
->> +        send_user "ERROR: You must be not a root user after testing\n"
->> +        exit 1
->> +}
-> This is rather FAILURE than ERROR, right?
->
->> +if { $test_res==1 } {
->> +	send_user "test passes as expected\n"
->> +	exit 0
->> +} else {
->> +	send_user "test fails unexpectedly\n"
->> +	exit 1
->> +}
-> The FAIL/PASS should rather be printed in the shell script using the
-> tst_res API.
->
->> diff --git a/testcases/commands/passwd/passwd01.sh b/testcases/commands/passwd/passwd01.sh
->> new file mode 100755
->> index 0000000..8a304ce
->> --- /dev/null
->> +++ b/testcases/commands/passwd/passwd01.sh
->> @@ -0,0 +1,107 @@
->> +#!/bin/sh
->> +#
->> +# Copyright (c) 2016 Fujitsu Ltd.
->> +# Author: Xiao Yang<yangx.jy@cn.fujitsu.com>
->> +#
->> +# This program is free software; you can redistribute it and/or modify
->> +# it under the terms of the GNU General Public License as published by
->> +# the Free Software Foundation; either version 2 of the License, or
->> +# (at your option) any later version.
->> +#
->> +# This program is distributed in the hope that it will be useful,
->> +# but WITHOUT ANY WARRANTY; without even the implied warranty of
->> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See
->> +# the GNU General Public License for more details.
->> +#
->> +# Test passwd command with some basic options.
->> +#
->> +
->> +TCID=passwd01.sh
->> +TST_TOTAL=11
->> +. test.sh
->> +
->> +setup()
->> +{
->> +	tst_require_root
->> +
->> +	tst_check_cmds useradd userdel passwd su expect
->> +
->> +	tst_tmpdir
->> +
->> +	TST_CLEANUP="cleanup"
->> +
->> +	useradd ltp_init
->> +	if [ $? -ne 0 ]&&  [ ! -d /home/ltp_test ]; then
->> +		tst_brkm TBROK "useradd failed"
->> +	fi
->> +
->> +	useradd ltp_test
->> +	if [ $? -ne 0 ]&&  [ ! -d /home/ltp_test ]; then
->> +		tst_brkm TBROK "useradd failed"
->> +	fi
->> +}
->> +
->> +cleanup()
->> +{
->> +	userdel -r ltp_init
->> +	if [ $? -ne 0 ]&&  [ -d /home/ltp_test ]; then
->> +		tst_brkm TBROK "userdel -r failed"
->> +	fi
->> +
->> +	userdel -r ltp_test
->> +	if [ $? -ne 0 ]&&  [ -d /home/ltp_test ]; then
->> +		tst_brkm TBROK "userdel -r failed"
->> +	fi
->> +
->> +	tst_rmdir
->> +}
->> +
->> +passwd_test()
->> +{
->> +	local pw_cmd="$1 $2 $3"
->> +	local opt="$2"
->> +	local check_opt="$4 $3 $5"
->> +
->> +	eval $pw_cmd>  temp1 2>&1
->> +	if [ $? -ne 0 ]; then
->> +		grep -q -E "unrecognized option|invalid option|unknown option" temp1
->> +		if [ $? -eq 0 ]; then
->> +			tst_resm TCONF "$pw_cmd not supported"
->> +		else
->> +			tst_resm TFAIL "$pw_cmd failed"
->> +		fi
->> +		return
->> +	fi
->> +
->> +	if [ $# -ge 4 ]; then
->> +		su ltp_init -c "check_passwd ltp_init $check_opt">  temp2 2>&1
->> +
->> +		if [ $? -eq 0 ]; then
->> +			grep -q "test passes as expected" temp2
->> +			if [ $? -ne 0 ]; then
->> +				tst_resm TFAIL "passwd failed with $opt option."
->> +				return
->> +			fi
->> +		else
->> +			tst_resm TFAIL "passwd failed with $opt option."
->> +			return
->> +		fi
-> Why can't we just trust the exit value here and fail the test when it
-> was anything else than 0?
->
->> +	fi
->> +
->> +	tst_resm TPASS "passwd passed with $opt option."
->> +}
->> +
->> +setup
->> +
->> +passwd_test "passwd" "-d" "ltp_test" "0"
->> +passwd_test "echo test | passwd" "--stdin" "ltp_test" "1" "test"
->> +passwd_test "passwd" "-l" "ltp_test" "2" "test"
->> +passwd_test "passwd" "-u" "ltp_test" "1" "test"
->> +passwd_test "passwd" "--lock" "ltp_test" "2" "test"
->> +passwd_test "passwd" "--unlock" "ltp_test" "1" "test"
->> +passwd_test "passwd" "--delete" "ltp_test" "0"
->> +passwd_test "passwd" "-S" "ltp_test"
->> +passwd_test "passwd" "--status" "ltp_test"
->> +passwd_test "passwd" "--help"
->> +passwd_test "passwd" "--usage"
->> +
->> +tst_exit
->> -- 
->> 1.8.3.1
->>
->>
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
-
-
-
+Li Wang
