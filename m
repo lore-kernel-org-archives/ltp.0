@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Aug 2016 16:36:14 +0200
-Subject: [LTP] [PATCH v2] syscalls/fcntl34: Use flock64 instead of flock
-In-Reply-To: <1471351741-20639-1-git-send-email-yuriy.kolerov@synopsys.com>
-References: <1471351741-20639-1-git-send-email-yuriy.kolerov@synopsys.com>
-Message-ID: <20160816143614.GB26323@rei.lan>
+Date: Tue, 16 Aug 2016 17:34:18 +0200
+Subject: [LTP] [PATCH v2 2/2] network/nfs05: rewrite the test,
+ make use of new library
+In-Reply-To: <1467129655-9110-2-git-send-email-alexey.kodanev@oracle.com>
+References: <1467129655-9110-1-git-send-email-alexey.kodanev@oracle.com>
+ <1467129655-9110-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20160816153417.GF25540@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,13 +13,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> This test uses OFD locks which are supported only by 64-bit ABI.
-> Thus OFD locks must be used with flock64 structure for sure in this
-> test. It is necessary because on some 32-bit targets (e.g. 32-bit
-> uClibc) flock is not mapped to flock64 when _FILE_OFFSET_BITS is not
-> set to 64.
+>  tst_resm TINFO "start nfs05_make_tree -d $DIR_NUM -f $FILE_NUM -t $THREAD_NUM"
+> -ROD nfs05_make_tree -d $DIR_NUM -f $FILE_NUM -t $THREAD_NUM
+> +TMPDIR=$(pwd) nfs05_make_tree -d $DIR_NUM -f $FILE_NUM -t $THREAD_NUM
 
-Applied, thanks.
+Hmm, the tst_tmpdir is created and mounted in the nfs_setup right?
+
+Why can't we just let the nfs05_make_tree work with current
+directory and omit the needs_tmpdir = 1 from it's source? It's not like
+the nfs05_make_tree binary is supposed to be executed directly, so it's
+OK if it starts to create files in PWD.
 
 -- 
 Cyril Hrubis
