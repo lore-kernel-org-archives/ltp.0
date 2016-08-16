@@ -1,62 +1,48 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 16 Aug 2016 11:35:15 +0800
-Subject: [LTP] [PATCH V2] mkswap: make the test device size is aligned to
-	pagesize
-Message-ID: <1471318515-29836-1-git-send-email-liwang@redhat.com>
+From: Yuriy Kolerov <Yuriy.Kolerov@synopsys.com>
+Date: Tue, 16 Aug 2016 09:46:13 +0000
+Subject: [LTP] [PATCH] syscalls/fcntl34: Use -D_FILE_OFFSET_BITS=64 for
+ all cases
+In-Reply-To: <20160815120810.GC20680@rei.lan>
+References: <1471021912-29886-1-git-send-email-yuriy.kolerov@synopsys.com>
+ <20160815120810.GC20680@rei.lan>
+Message-ID: <3ABF60118B9B784CA5BF7C841D2F00EC01000AF3@de02wembxa.internal.synopsys.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We get failures like below because of 'DEVICE_SIZE-10000' makes the
-test device size is not aligned to system PAGE_SIZE any more.
+Hi Cyril,
 
-   mkswap01 1 TINFO : Found free device '/dev/loop1'
-   mkswap01 1 TPASS : 'mkswap   /dev/loop1 ' passed.
-   mkswap01 2 TFAIL : 'mkswap -f  /dev/loop1 92400' failed, not expected.
-   mkswap01 3 TINFO : Can not do swapon on /dev/loop1.
-   mkswap01 3 TINFO : Device size specified by 'mkswap' greater than real size.
-   mkswap01 3 TINFO : Swapon failed expectedly.
-   mkswap01 3 TPASS : 'mkswap -f  /dev/loop1 112400' passed.
+As far as I know it fails in this case because fcntl always expects flock64 for OFD locks but gets 32-bit flock structure with non-zero l_pid field (OFD expects that this field contains zero otherwise returns EINVAL). The problem is that there are no 32-bit OFD locks in the kernel. So there are 2 options:
 
-But the way, the orignal test-device(LTP_DEV) size is also not aligned with
-PAGE_SIZE on all arches. Here fix it as well.
+1. Set -D_FILE_OFFSET_BITS=64 to use flock64 by default.
+2. Use flock64 and fcntl64 everywhere explicitly.
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- runltp                                | 2 +-
- testcases/commands/mkswap/mkswap01.sh | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/runltp b/runltp
-index 3a46765..bb2e5d8 100755
---- a/runltp
-+++ b/runltp
-@@ -978,7 +978,7 @@ main()
- create_block()
- {
-     #create a block device
--    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=153600 >/dev/null 2>&1
-+    dd if=/dev/zero of=${TMP}/test.img bs=1024 count=153600 >/dev/null 2>&1
-     if [ $? -ne 0 ]; then
-         echo "Failed to create loopback device image, please check disk space and re-run"
-         return 1
-diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
-index 9727b0f..e89c720 100755
---- a/testcases/commands/mkswap/mkswap01.sh
-+++ b/testcases/commands/mkswap/mkswap01.sh
-@@ -169,8 +169,8 @@ mkswap_test()
- setup
- 
- mkswap_test "" "" "$TST_DEVICE"
--mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-10000))"
--mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+10000))"
-+mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-PAGE_SIZE/1024))"
-+mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+PAGE_SIZE/1024))"
- mkswap_test "-c" "" "$TST_DEVICE"
- mkswap_test "-p" "2048" "$TST_DEVICE"
- mkswap_test "-L" "ltp_testswap" "-L ltp_testswap" "" "/dev/disk/by-label/ltp_testswap"
--- 
-1.8.3.1
-
+> -----Original Message-----
+> From: Cyril Hrubis [mailto:chrubis@suse.cz]
+> Sent: Monday, August 15, 2016 3:08 PM
+> To: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+> Cc: ltp@lists.linux.it; Vineet.Gupta1@synopsys.com;
+> Alexey.Brodkin@synopsys.com
+> Subject: Re: [LTP] [PATCH] syscalls/fcntl34: Use -D_FILE_OFFSET_BITS=64 for
+> all cases
+> 
+> Hi!
+> > This test uses OFD locks which are supported only by 64-bit ABI.
+> > Thus OFD locks must be used with flock64 structure for sure in this
+> > test. It is necessary because on some 32-bit targets (e.g. 32-bit
+> > uClibc) flock is not mapped to flock64 when _FILE_OFFSET_BITS is not
+> > set to 64. Thus fcntl34 and fcntl34_64 must be identical. It is an
+> > ugly but the easiest solution.
+> 
+> Indeed the test fails on 32bit platform without the _FILE_OFFSET_BITS=64.
+> But it fails correctly with EINVAL in this case since the ioctl() in question is not
+> implemented.
+> 
+> So better solution would be to try the ioctl() in the test setup and report
+> TCONF if we got EINVAL.
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
