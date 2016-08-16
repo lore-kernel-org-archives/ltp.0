@@ -1,116 +1,138 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 16 Aug 2016 11:08:52 +0800
-Subject: [LTP] [PATCH] syscalls/signal06: fix test for regression with
- earlier version of gcc and kernel
-In-Reply-To: <CAE1O6mgTj1WsRg1-UHpq32onixeKpo3xTbU6FiqDTK=jdE=uRw@mail.gmail.com>
-References: <1470380281-20334-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <CAE1O6mgTj1WsRg1-UHpq32onixeKpo3xTbU6FiqDTK=jdE=uRw@mail.gmail.com>
-Message-ID: <57B283C4.5020903@cn.fujitsu.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 16 Aug 2016 11:24:16 +0800
+Subject: [LTP] [PATCH] mkswap: make the test device size is aligned to
+ pagesize
+In-Reply-To: <20160815123959.GD20680@rei.lan>
+References: <1469613519-27167-1-git-send-email-liwang@redhat.com>
+ <20160809164118.GA27028@rei.lan> <20160815092508.GB22440@gmail.com>
+ <20160815123959.GD20680@rei.lan>
+Message-ID: <20160816032416.GA28657@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+On Mon, Aug 15, 2016 at 02:39:59PM +0200, Cyril Hrubis wrote:
+> Hi!
+> > My version is:
+> > 
+> > # rpm -qf /sbin/mkswap 
+> > util-linux-2.23.2-33.el7.ppc64
+> > 
+> > 
+> > if (block_count) {
+> > 	/* this silly user specified the number of blocks explicitly */
+> > 		uint64_t blks = strtou64_or_err(block_count,
+> > 					_("invalid block count argument"));
+> > 		PAGES = blks / (pagesize / 1024);
+> > 	}
+> > 	sz = get_size(device_name);
+> 
+> There is no check here as well. The strtou64_or_err() just converts
+> string to number, that's all it does. Then we do integer division, no
+> checks at all.
+> 
+> > > Looking into util-linux-2.26.2 all it does with user specified number of
+> > > blocks is:
+> > > 
+> > > ctl.npages = blks / (ctl.pagesize / 1024);
+> > > 
+> > > There is no check that blks is divideable by pagesize/1024.
+> > 
+> > I build util-linux-2.28 from upstrem source and also get the errors.
+> > 
+> > # mkswap -V
+> > mkswap from util-linux 2.28.237-47bd89
+> > 
+> > # ./runltp -f commands
+> > mkswap01 1 TINFO : Using test device LTP_DEV='/dev/loop0'
+> > mkswap01 1 TFAIL : 'mkswap   /dev/loop0 ' failed, not expected.
+> > mkswap01 2 TFAIL : 'mkswap   /dev/loop0 90000' failed, not expected.
+> > mkswap01 3 TINFO : Can not do swapon on /dev/loop0.
+> > mkswap01 3 TINFO : Device size specified by 'mkswap' greater than real size.
+> > mkswap01 3 TINFO : Swapon failed expectedly.
+> > mkswap01 3 TPASS : 'mkswap -f  /dev/loop0 110000' passed.
+> 
+> Hmm, what is the exact error message from mkfs here?
+> 
+> I guess that it would be a good idea to cat the temp file if mkswap
+> failed unexpectedly so that we can see the mkswap error message.
 
-Thanks for your review and confirmation!
+Sorry for the vague description. To be honest, mkswap.c(util-linux) is innocent
+here. The error maker is mkswap_verify() in mkswap01.sh(ltp) testcase.
+
+The key point of problem is not only mkswap01.sh (ltp) doesn't guarantee
+test-device(LTP_DEV) size is aligned to PAGE_SIZE on all arches, but also
+it increse/decrease test-device size not aligned too.
+
+# tail -15 mkswap01.sh
+mkswap_test "" "" "$TST_DEVICE"
+mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-10000))"     <---
+mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+10000))"   <---
+...
+
+
+As we know that mkswap.c(util-linux) format test-device to aligned with its local
+PAGE_SIZE by force. Therefore, the real 'filesize' of formated test-device will
+be decreased in that phase. But final, the testcase just compare orignal 'filesize'
+to 'diff'(swaptotal-after - swaptotal-before) and make conclusion to get PASS/FAIL.
+That makes this test result is not reliable.
+
+I temporally add some debug sentences in testcase to show the prblem:
+
+mkswap01 1 TINFO : Using test device LTP_DEV='/dev/loop1'
+mkswap01 1 TINFO : DEVICE_SIZE = 100000                  <--- should always give an aligned size here 
+mkswap01 1 TINFO : ********DEBUG MSG: swapsize = 100000
+mkswap01 1 TINFO : ********DEBUG MSG: diff = 99904
+mkswap01 1 TINFO : ********DEBUG MSG: filesize = 99936
+mkswap01 1 TFAIL : 'mkswap   /dev/loop1 ' failed, not expected.
+mkswap01 2 TINFO : ********DEBUG MSG: swapsize = 90000   <--- here as well
+mkswap01 2 TINFO : ********DEBUG MSG: diff = 89920
+mkswap01 2 TINFO : ********DEBUG MSG: filesize = 89936
+mkswap01 2 TFAIL : 'mkswap   /dev/loop1 90000' failed, not expected.
+mkswap01 3 TINFO : ********DEBUG MSG: swapsize = 110000
+mkswap01 3 TINFO : Can not do swapon on /dev/loop1.
+mkswap01 3 TINFO : Device size specified by 'mkswap' greater than real size.
+mkswap01 3 TINFO : Swapon failed expectedly.
+mkswap01 3 TPASS : 'mkswap -f  /dev/loop1 110000' passed.
+
+
+After fixing abvoe issues, we get test PASS correctly:
+
+mkswap01 1 TINFO : Using test device LTP_DEV='/dev/loop1'
+mkswap01 1 TINFO : DEVICE_SIZE = 102400
+mkswap01 1 TINFO : ********DEBUG MSG: swapsize = 102400
+mkswap01 1 TINFO : ********DEBUG MSG: diff = 102336
+mkswap01 1 TINFO : ********DEBUG MSG: filesize = 102336
+mkswap01 1 TPASS : 'mkswap   /dev/loop1 ' passed.
+mkswap01 2 TINFO : ********DEBUG MSG: swapsize = 102336
+mkswap01 2 TINFO : ********DEBUG MSG: diff = 102272
+mkswap01 2 TINFO : ********DEBUG MSG: filesize = 102272
+mkswap01 2 TPASS : 'mkswap   /dev/loop1 102336' passed.
+mkswap01 3 TINFO : ********DEBUG MSG: swapsize = 102464
+mkswap01 3 TINFO : Can not do swapon on /dev/loop1.
+mkswap01 3 TINFO : Device size specified by 'mkswap' greater than real size.
+mkswap01 3 TINFO : Swapon failed expectedly.
+mkswap01 3 TPASS : 'mkswap -f  /dev/loop1 102464' passed.
+
+> > Additionally, we'd better change the bs=1kB to bs=1024 in runltp file,
+> > since it will get page aligned block device for all arches.
+> > 
+> > The original LTP_DEV size is 102400000 bytes:
+> > 
+> > # grep 'bs=' runltp  -n
+> > 981:    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=102400
+> > 
+> > 
+> > From dd manual:
+> > N and BYTES may be followed by the following multiplicative suffixes:
+> > c =1, w =2, b =512, kB  =1000,  K  =1024,  MB =1000*1000,  M  =1024*1024,
+> > xM  =M  GB  =1000*1000*1000,  G =1024*1024*1024, and so on for T, P, E, Z, Y.
+> 
+> Or change it to uppercase KB. Sounds good, feel free to send a patch.
+
+Ok, thanks for reviewing.
 
 Regards,
-Guangwen Feng
-
-On 08/08/2016 04:44 PM, Li Wang wrote:
-> On 5 August 2016 at 14:58, Guangwen Feng <fenggw-fnst@cn.fujitsu.com> wrote:
->> 1. Currently, following code is incorrect on some releases with
->>    earlier version of gcc(tested on RHEL5.11GA):
->>
->>         while (D == d && loop < LOOPS) {
->>
->>    Because the argument in function test(double d) is used via (%rsp),
->>    but here we actually need a xmm register to trigger the fpu bug.
->>    So use global value instead to make sure to take use of xmm.
-> 
-> Sounds reasonable! To verify that I did disassemble work of the
-> pre/post signal06 for comparison:
-> 
-> signal06 old version
-> -------------------------
-> void test(double d)
-> {
->         int loop = 0;
->         int pid = getpid();
->   402846:       89 c7                   mov    %eax,%edi
-> 
->         D = d;
->   402848:       f2 0f 11 05 b0 27 21    movsd  %xmm0,0x2127b0(%rip)
->     # 615000 <D>
->   40284f:       00
->         while (D == d && loop < LOOPS) {
->   402850:       f2 0f 10 05 a8 27 21    movsd  0x2127a8(%rip),%xmm0
->     # 615000 <D>
->   402857:       00
->   402858:       66 0f 2e 44 24 08       ucomisd 0x8(%rsp),%xmm0
->   40285e:       0f 85 b8 00 00 00       jne    40291c <test+0xec>
->   402864:       0f 8a b2 00 00 00       jp     40291c <test+0xec>
->   40286a:       31 db                   xor    %ebx,%ebx
->   40286c:       ba c8 00 00 00          mov    $0xc8,%edx
->   402871:       be 01 00 00 00          mov    $0x1,%esi
->   402876:       eb 0a                   jmp    402882 <test+0x52>
->   402878:       81 fb 10 27 00 00       cmp    $0x2710,%ebx
->   40287e:       66 90                   xchg   %ax,%ax
->   402880:       74 6d                   je     4028ef <test+0xbf>
-> 
-> 
-> after applying this patch
-> ------------------------------
-> void test(void)
-> {
->         int loop = 0;
->   402c58:       bb 00 00 00 00          mov    $0x0,%ebx
->         int pid = getpid();
-> 
->         D = VALUE;
->         while (D == VALUE && loop < LOOPS) {
->   402c5d:       0f 85 b5 00 00 00       jne    402d18 <test+0xe8>
->   402c63:       89 c7                   mov    %eax,%edi
->                 /* sys_tkill(pid, SIGHUP); asm to avoid save/reload
->                  * fp regs around c call */
->                 asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
->   402c65:       ba c8 00 00 00          mov    $0xc8,%edx
->   402c6a:       be 01 00 00 00          mov    $0x1,%esi
-> {
->         int loop = 0;
->         int pid = getpid();
-> 
->         D = VALUE;
->         while (D == VALUE && loop < LOOPS) {
->   402c6f:       66 0f 28 d1             movapd %xmm1,%xmm2
->   402c73:       eb 11                   jmp    402c86 <test+0x56>
->   402c75:       0f 1f 00                nopl   (%rax)
->   402c78:       66 0f 2e c2             ucomisd %xmm2,%xmm0
->   402c7c:       75 1d                   jne    402c9b <test+0x6b>
->   402c7e:       81 fb a0 86 01 00       cmp    $0x186a0,%ebx
->   402c84:       74 65                   je     402ceb <test+0xbb>
-> 
-> 
->>
->> 2. Although this regression test is designed to trigger SIGSEGV
->>    intentionally, on some releases with old kernel(tested on RHEL5.11GA),
->>    this will still lead to segmentation fault that terminate the program
->>    and break the test even though compiling with -O2.  So slightly adjust
->>    the weight of the codes in child thread to depress SIGSEGV trigger's
->>    chance while increase LOOPS to ensure reproducible.
-> 
-> This is also acceptable, seems too many signals more than one kenel
-> can handled that easily cause segmental fault at the moment.
-> 
-> I test this patch on RHEL5.11(reproduced) and RHEL7.2(pass), it works fine.
-> 
-> Regards,
-> Li Wang
-> 
-> 
-> .
-> 
-
-
+Li Wang
