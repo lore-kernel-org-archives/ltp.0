@@ -1,77 +1,31 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 16 Aug 2016 18:58:57 +0800
-Subject: [LTP] [PATCH v2 2/2] test.sh: make the loop device size can be
- customized
-In-Reply-To: <20160815114054.GB20680@rei.lan>
-References: <1469683059-6318-1-git-send-email-liwang@redhat.com>
- <20160815114054.GB20680@rei.lan>
-Message-ID: <20160816105857.GB28657@gmail.com>
+From: Peter Maydell <peter.maydell@linaro.org>
+Date: Tue, 16 Aug 2016 12:02:31 +0100
+Subject: [LTP] [PATCH] syscalls/fcntl34: Use -D_FILE_OFFSET_BITS=64 for
+ all cases
+In-Reply-To: <3ABF60118B9B784CA5BF7C841D2F00EC01000B69@de02wembxa.internal.synopsys.com>
+References: <1471021912-29886-1-git-send-email-yuriy.kolerov@synopsys.com>
+ <20160815120810.GC20680@rei.lan>
+ <3ABF60118B9B784CA5BF7C841D2F00EC01000AF3@de02wembxa.internal.synopsys.com>
+ <20160816100223.GA24312@rei.lan>
+ <3ABF60118B9B784CA5BF7C841D2F00EC01000B69@de02wembxa.internal.synopsys.com>
+Message-ID: <CAFEAcA9DiMn=YE25Jk_MoQYHa_B3FxcdLWycAjoxH8neyzEvMA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Aug 15, 2016 at 01:40:54PM +0200, Cyril Hrubis wrote:
-> Hi!
-> >  tst_acquire_device()
-> >  {
-> > +	local acq_dev_size=${1:-150}
-> > +
-> >  	if [ -z ${TST_TMPDIR} ]; then
-> >  		tst_brkm "Use 'tst_tmpdir' before 'tst_acquire_device'"
-> >  	fi
-> >  
-> > -	if [ -n "${LTP_DEV}" ]; then
-> > +	if [ -n "${LTP_DEV}" ] && [ ${acq_dev_size} -eq 150 ]; then
-> 
-> This is, unfortunately, not as simple as this either.
-> 
-> The $LTP_DEV could be passed to runltp as a command line parameter and
-> could point to a real block device backed up by a disk. So there is no
-> guarantee that it will be 150MB in size.
+On 16 August 2016 at 11:47, Yuriy Kolerov <Yuriy.Kolerov@synopsys.com> wrote:
+> Actually both glibc and uClibc use fcntl64 by default and usually
+> fail when you try to pass 32-bit flock structure to it when you
+> use OFD locks. Then fcntl64 fails in fcntl_setlk64 routing while
+> checking l_pid field.
 
-Thanks for reminding me, I didn't think of that.
+Given the cleverness glibc applies to flock(), it might be more
+useful for the LTP syscall tests to directly test the system calls
+avoiding the libc wrappers. That way you could know that you've
+definitely tested both flock and flock64 syscalls on platforms
+where they exist.
 
-> 
-> What we have to do is to get the size of whatever is in $LTP_DEV here
-> and return it if it has at least the requested size.
-
-Good proposal.
-
-How about make the patch like:
-
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index bd66109..60f8836 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -258,11 +258,15 @@ ROD()
-
- tst_acquire_device()
- {
-+       local acq_dev_size=${1:-150}
-+
-        if [ -z ${TST_TMPDIR} ]; then
-                tst_brkm "Use 'tst_tmpdir' before 'tst_acquire_device'"
-        fi
-
--       if [ -n "${LTP_DEV}" ]; then
-+       ltp_dev_size=$((`blockdev --getsize64 $LTP_DEV`/1024/1024))
-+
-+       if [ -n "${LTP_DEV}" ] && [ ${acq_dev_size} -le ${ltp_dev_size} ]; then
-                tst_resm TINFO "Using test device LTP_DEV='${LTP_DEV}'"
-                if [ ! -b ${LTP_DEV} ]; then
-                        tst_brkm TBROK "${LTP_DEV} is not a block device"
-@@ -275,7 +279,7 @@ tst_acquire_device()
-                return
-        fi
- 
--       ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=153600
-+       ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=$((1024*$acq_dev_size))
-  
-        TST_DEVICE=$(losetup -f)
-        if [ $? -ne 0 ]; then
-
-
-Regards,
-Li Wang
+thanks
+-- PMM
