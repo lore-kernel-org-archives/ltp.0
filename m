@@ -1,34 +1,43 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 16 Aug 2016 19:01:46 +0300
-Subject: [LTP] [PATCH v2 2/2] network/nfs05: rewrite the test,
- make use of new library
-In-Reply-To: <20160816153417.GF25540@rei.lan>
-References: <1467129655-9110-1-git-send-email-alexey.kodanev@oracle.com>
- <1467129655-9110-2-git-send-email-alexey.kodanev@oracle.com>
- <20160816153417.GF25540@rei.lan>
-Message-ID: <57B338EA.1000707@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 16 Aug 2016 17:57:13 +0200
+Subject: [LTP] [PATCH] du01: create the temp file outside of the working
+ directory
+In-Reply-To: <1469451123-9296-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1469451123-9296-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20160816155713.GG25540@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 08/16/2016 06:34 PM, Cyril Hrubis wrote:
-> Hi!
->>   tst_resm TINFO "start nfs05_make_tree -d $DIR_NUM -f $FILE_NUM -t $THREAD_NUM"
->> -ROD nfs05_make_tree -d $DIR_NUM -f $FILE_NUM -t $THREAD_NUM
->> +TMPDIR=$(pwd) nfs05_make_tree -d $DIR_NUM -f $FILE_NUM -t $THREAD_NUM
-> Hmm, the tst_tmpdir is created and mounted in the nfs_setup right?
->
-> Why can't we just let the nfs05_make_tree work with current
-> directory and omit the needs_tmpdir = 1 from it's source? It's not like
-> the nfs05_make_tree binary is supposed to be executed directly, so it's
-> OK if it starts to create files in PWD.
+Hi!
+> I noticed that with older kernels and with XFS the 'du -B 512'
+> scenario of this test case may fail:
+> 
+> [root@kholmanskikh du01]# uname -r
+> 3.8.13-98.2.2.el6uek.x86_64
+> [root@kholmanskikh du01]# ls -l
+> total 10240
+> drwxr-xr-x 2 root root       24 Jul 25 14:48 testdir
+> -rw-r--r-- 1 root root 10485760 Jul 25 14:48 testfile
+> [root@kholmanskikh du01]# du -B 512
+> 0		   ./testdir
+> 20480		   .
+> [root@kholmanskikh du01]# du -B 512 > temp; cat temp
+> 0		   ./testdir
+> 20608		   .
+> [root@kholmanskikh du01]#
+> 
+> This happens because we create 'temp' file in the working directory,
+> i.e. 'temp' may already contain some data at the moment 'du' tries
+> to 'fstat' it.
+> 
+> So let's keep the working directory clean and create any extra
+> files outside of it.
 
-You are right, it's not used other than inside nfs05 script so the flag 
-can be
-safely removed along with "TMPDIR=$(pwd)".
+Looks good to me, acked.
 
-Thanks,
-Alexey
+-- 
+Cyril Hrubis
+chrubis@suse.cz
