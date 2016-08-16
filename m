@@ -1,16 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 16 Aug 2016 15:24:50 +0200
-Subject: [LTP] [PATCH 7/8] waitpid13: use the new API
-In-Reply-To: <1470818466-28109-8-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1470818466-28109-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-2-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-3-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-4-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-5-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-6-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-7-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-8-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20160816132449.GC25540@rei.lan>
+Date: Tue, 16 Aug 2016 16:13:29 +0200
+Subject: [LTP] [PATCH v2] syscalls/waitpid12: break test if fork() failed
+In-Reply-To: <20160624013534.GA3363@localhost.localdomain>
+References: <20160623024144.GA29032@localhost.localdomain>
+ <20160624013534.GA3363@localhost.localdomain>
+Message-ID: <20160816141329.GD25540@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,7 +12,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Looks good as well.
+> Please take a look at this new version of the patch. Thanks in advance.
+
+This is will be no longer needed once the rewrite for the waitpid
+testcases from Stanislav is merged. So I will not apply this one.
+
+Thanks for the patch anyway.
 
 -- 
 Cyril Hrubis
