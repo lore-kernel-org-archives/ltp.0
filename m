@@ -1,19 +1,23 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 17 Aug 2016 14:32:20 +0200
-Subject: [LTP] [PATCH] du01: create the temp file outside of the working
- directory
-In-Reply-To: <1469451123-9296-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1469451123-9296-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20160817123220.GD10343@rei.lan>
+From: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+Date: Wed, 17 Aug 2016 15:42:26 +0300
+Subject: [LTP]  [PATCH] mtest07/mallocstress: Fix usage message
+Message-ID: <1471437746-20030-1-git-send-email-yuriy.kolerov@synopsys.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-FYI: I've reproduced this on ppc64le with Btrfs as well.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+---
+ testcases/kernel/mem/mtest07/mallocstress.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-mtest07-mallocstress-Fix-usage-message.patch
+Type: text/x-patch
+Size: 780 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160817/8c760a9e/attachment.bin>
