@@ -1,26 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 17 Aug 2016 16:46:05 +0200
-Subject: [LTP] Removal of ipc_stress testcases
-Message-ID: <20160817144604.GA11954@rei>
+From: Peter Maydell <peter.maydell@linaro.org>
+Date: Wed, 17 Aug 2016 16:07:25 +0100
+Subject: [LTP] [PATCH] remap_file_pages: Remove since corresponding
+ syscall is depricated
+In-Reply-To: <248280847.496370.1471442572726.JavaMail.zimbra@redhat.com>
+References: <1471442189-29937-1-git-send-email-yuriy.kolerov@synopsys.com>
+ <248280847.496370.1471442572726.JavaMail.zimbra@redhat.com>
+Message-ID: <CAFEAcA_065KQ2BWQkeQg8Bgdx6ZVdmVopOvwX_EP5=FTt0mGnA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-As recently discussed here the testcases/kernel/ipc/ipc_stress/ were not
-meant to be executed as a single testcases (as it's done in the ipc
-runtest file) but were designed to be executed from a single stress
-script. These testcases depends on each other and fail if the order of
-tests is randomized. They do not cleanup the System V resources at the
-end of the test, etc.
+On 17 August 2016 at 15:02, Jan Stancek <jstancek@redhat.com> wrote:
+> From: "Yuriy Kolerov" <yuriy.kolerov@synopsys.com>
+>> This system call is deprecated since Linux 3.16 and will
+>> eventually be replaced by a slower in-kernel emulation. See:
+>
+> It already is replaced by emulation in latest upstream:
+>   commit c8d78c1823f46519473949d33f0d1d33fe21ea16
+>   Author: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>   Date:   Tue Feb 10 14:09:46 2015 -0800
+>     mm: replace remap_file_pages() syscall with emulation
+>
+> But as long as interface is same, why not keep the test?
+> What about testing older kernels from various distros?
 
-The code quality of these is quite low and the System V IPC is covered
-by the testcases in syscalls.
+For that matter, it's presumably useful to test
+the in-kernel emulation itself...
 
-So I would like to get rid of these. Does anybody opposes the removal?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+thanks
+-- PMM
