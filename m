@@ -1,47 +1,38 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 17 Aug 2016 15:34:06 +0200
-Subject: [LTP] [PATCH] fcntl.2: F_OFD_XXX needs flock64
-In-Reply-To: <1471440855.3196.26.camel@poochiereds.net>
-References: <20160816115506.GA25201@rei.lan>
- <2c79788f-c74a-49e8-fa81-0e9cf4e2d75f@gmail.com>
- <1471390910.2680.20.camel@poochiereds.net>
- <20160817081001.GB5817@rei.lan>
- <1471434254.3254.23.camel@poochiereds.net>
- <20160817115318.GB10343@rei.lan>
- <1471439675.3196.8.camel@poochiereds.net>
- <20160817131920.GE10343@rei.lan>
- <1471440855.3196.26.camel@poochiereds.net>
-Message-ID: <20160817133406.GF10343@rei.lan>
+From: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+Date: Wed, 17 Aug 2016 16:56:29 +0300
+Subject: [LTP] [PATCH] remap_file_pages: Remove since corresponding syscall
+	is depricated
+Message-ID: <1471442189-29937-1-git-send-email-yuriy.kolerov@synopsys.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > You probably misunderstand what I was trying to say. If you look at the
-> > > sources out there (for instance at https://codesearch.debian.net/) most
-> > of it has fallback definitions for F_OFD_* constants included in its own
-> > header files since these flags are relatively new. Not defining these
-> > would not accomplish anything.
-> > 
-> > One option would be to define them to something invalid such as INT_MAX
-> > so that it's rejected by kernel on runtime. But I do not think this is
-> > very good idea either.
-> > 
-> 
-> Yeah, not much we can do about people that define them on their own. If
-> you do that, then you're basically saying "I know what I'm doing".
-> 
-> Still, I think it's worthwhile to do this in glibc since we _can_
-> prevent this problem for folks who aren't doing that.
 
-Ok.
+This system call is deprecated since Linux 3.16 and will
+eventually be replaced by a slower in-kernel emulation. See:
 
-Then this should be also paired with patch for the manual page that
-explains that these locks are only available with the
-_FILE_OFFSET_BITS=64.
+    https://lwn.net/Articles/597632/
+    http://man7.org/linux/man-pages/man2/remap_file_pages.2.html
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Signed-off-by: Alexey Brodkin <abrodkin@synopsys.com>
+Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+---
+ runtest/syscalls                                   |   3 -
+ testcases/kernel/syscalls/Makefile                 |   2 +-
+ .../kernel/syscalls/remap_file_pages/Makefile      |  23 --
+ .../syscalls/remap_file_pages/remap_file_pages01.c | 278 -----------------
+ .../syscalls/remap_file_pages/remap_file_pages02.c | 334 ---------------------
+ 5 files changed, 1 insertion(+), 639 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/remap_file_pages/Makefile
+ delete mode 100644 testcases/kernel/syscalls/remap_file_pages/remap_file_pages01.c
+ delete mode 100644 testcases/kernel/syscalls/remap_file_pages/remap_file_pages02.c
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-remap_file_pages-Remove-since-corresponding-syscall-.patch
+Type: text/x-patch
+Size: 19404 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20160817/907198ac/attachment-0001.bin>
