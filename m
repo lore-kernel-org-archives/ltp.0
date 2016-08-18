@@ -1,55 +1,42 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 18 Aug 2016 14:37:15 +0300
-Subject: [LTP] [PATCH 8/8] waitpid08: test stopped children
-In-Reply-To: <20160818104805.GB24254@rei.lan>
-References: <1470818466-28109-2-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-3-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-4-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-5-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-6-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-7-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-8-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1470818466-28109-9-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160816130316.GA25540@rei.lan> <57B58A00.7060707@oracle.com>
- <20160818104805.GB24254@rei.lan>
-Message-ID: <57B59DEB.8040600@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 18 Aug 2016 13:33:39 +0200
+Subject: [LTP] [PATCH] mkswap: make the test device size is aligned to
+ pagesize
+In-Reply-To: <20160818110822.GA12076@gmail.com>
+References: <1469613519-27167-1-git-send-email-liwang@redhat.com>
+ <20160809164118.GA27028@rei.lan> <20160815092508.GB22440@gmail.com>
+ <20160815123959.GD20680@rei.lan> <20160816032416.GA28657@gmail.com>
+ <20160816121552.GC25092@rei.lan> <20160817033946.GA6430@gmail.com>
+ <20160817111841.GA10343@rei.lan> <20160818110822.GA12076@gmail.com>
+Message-ID: <20160818113339.GD24254@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-On 08/18/2016 01:48 PM, Cyril Hrubis wrote:
-> Hi!
->> No-no, this should not happen, since reap_children() handles stopped
->> children this way:
->>
->> for (;;) {
->>   pid = waitpid();
->>
->>   if (pid is a pid of a stopped task) {
->>       kill(pid, SIGCONT);
->>       continue;
->>   }
->>
->>   <...>
->> }
->>
->> i.e. it makes all the stopped children continue.
->>
->> So there should not be any children in 'pgroup' after
->> reap_children(pgroup) has finished.
->>
->> This SIGSTOP-related code is added by the previous patch in the series
->> (waitpid13).
+Hi!
+> Ok, this sounds better. I misunderstand you point at first.
 > 
-> Ah, missed that, sorry.
+> As this we can get the right(aligned) size of the device by add:
 > 
-> It probably should have been in a separate patch.
+> # cat mkswap01.sh
+> ...
+> setup()
+> {
+> 	...
+> 
+> 	# Here get the size of the device and align it down to be the
+> 	# multiple of $PAGE_SIZE and use that as the size for testing.
+> 	device_real=`blockdev --getsize64 $TST_DEVICE`
+> 	device_resi=$((${device_real} % ${PAGE_SIZE}))
+> 
+> 	DEVICE_SIZE=$(((${device_real} - ${device_resi})/1024))
 
-Ok. I'll stplit the waitpid13 patch into two:
- * one is for the SIGSTOP changes in watipid_common.h
- * the other is for the actual update to waitpid13.c
-> 
+You can also use and integer division, which is a bit shorter:
+
+DEVICE_SIZE=$((($real_size/$PAGE_SIZE * $PAGE_SIZE)/1024))
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
