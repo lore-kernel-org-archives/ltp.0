@@ -1,13 +1,18 @@
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 18 Aug 2016 12:54:47 +0300
-Subject: [LTP] [PATCH 3/8] syscalls/waitpid: implement waitpid_ret_test()
-In-Reply-To: <20160815152739.GG20680@rei.lan>
+Date: Thu, 18 Aug 2016 13:12:16 +0300
+Subject: [LTP] [PATCH 8/8] waitpid08: test stopped children
+In-Reply-To: <20160816130316.GA25540@rei.lan>
 References: <1470818466-28109-1-git-send-email-stanislav.kholmanskikh@oracle.com>
  <1470818466-28109-2-git-send-email-stanislav.kholmanskikh@oracle.com>
  <1470818466-28109-3-git-send-email-stanislav.kholmanskikh@oracle.com>
  <1470818466-28109-4-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160815152739.GG20680@rei.lan>
-Message-ID: <57B585E7.9020000@oracle.com>
+ <1470818466-28109-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1470818466-28109-6-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1470818466-28109-7-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1470818466-28109-8-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <1470818466-28109-9-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160816130316.GA25540@rei.lan>
+Message-ID: <57B58A00.7060707@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -16,45 +21,63 @@ To: ltp@lists.linux.it
 
 Hi!
 
-On 08/15/2016 06:27 PM, Cyril Hrubis wrote:
+On 08/16/2016 04:03 PM, Cyril Hrubis wrote:
 > Hi!
->> Several test cases call waitpid() and then verify the returned
->> value and errno set. Moved this code into a function.
+>> The whole purpose of WUNTRACED is to help with handling of stopped
+>> children. Therefore, let's expand the scope of testing by making
+>> the children stop before we call waitpid() (similarly to waitpid13).
+>>
+>> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+>> ---
+>>  testcases/kernel/syscalls/waitpid/waitpid08.c |    2 +-
+>>  1 files changed, 1 insertions(+), 1 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/waitpid/waitpid08.c b/testcases/kernel/syscalls/waitpid/waitpid08.c
+>> index e17663f..c743c26 100644
+>> --- a/testcases/kernel/syscalls/waitpid/waitpid08.c
+>> +++ b/testcases/kernel/syscalls/waitpid/waitpid08.c
+>> @@ -43,7 +43,7 @@ static void do_child_1(void)
+>>  
+>>  		pid = SAFE_FORK();
+>>  		if (pid == 0)
+>> -			do_exit(0);
+>> +			do_exit(1);
+>>  
+>>  		fork_kid_pid[i] = pid;
 > 
-> One thing I do not like about this that this will report the file and
-> line from the waitpid_common.h in the test output rather than the
-> respective line where the check has failed.
+> Hmm, shouldn't we send SIGCONT and reap the children at the end of the
+> do_child_1() after this change?
 > 
-> We could decleare these as a macros that call the function with __FILE__
-> and __LINE__ and call the tst_res_() with these instead. But I'm not
-> sure that this is worth the added complexity...
+> Since if we pass the -i 100 parameter to the test the waitpid_test()
+> would continue to fork() children that will stay sigstopped in the
+> background even after the test exits since the fork_kid_pid[] is changed
+> in each iteration, half of the children has different process group and
+> the waitpid_cleanup() is called once at the end of the test. Or do I
+> miss something?
 > 
 
-So you mean something like the attached function. Right?
+No-no, this should not happen, since reap_children() handles stopped
+children this way:
 
-With this code a failure will be presented as:
+for (;;) {
+  pid = waitpid();
 
-[stas@kholmanskikh waitpid]$ ./waitpid07
-tst_test.c:756: INFO: Timeout per run is 0h 05m 00s
-waitpid07.c:51: FAIL: waitpid() returned 0, expected 666
+  if (pid is a pid of a stopped task) {
+      kill(pid, SIGCONT);
+      continue;
+  }
 
-whereas with the original code:
+  <...>
+}
 
-[stas@kholmanskikh waitpid]$ ./waitpid07
-tst_test.c:756: INFO: Timeout per run is 0h 05m 00s
-waitpid_common.h:97: FAIL: waitpid() returned 0, expected 666
+i.e. it makes all the stopped children continue.
 
-I.e. in the former case a user will be given the function which failed
-and will need to go to its code to find the corresponding tst_res(TFAIL)
-call, whereas with the original code he/she will be given the
-tst_res(TFAIL) call, but will need to manually find a corresponding
-function call in the test case sources. Yes, the former case is more
-user friendly, but, to be honest, I don't think it's worth the added
-complexity.
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: waitpid_ret_test.c
-Type: text/x-csrc
-Size: 752 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20160818/02c61051/attachment.c>
+So there should not be any children in 'pgroup' after
+reap_children(pgroup) has finished.
+
+This SIGSTOP-related code is added by the previous patch in the series
+(waitpid13).
+
+Thanks.
+
+
