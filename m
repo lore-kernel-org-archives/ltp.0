@@ -1,53 +1,84 @@
 From: Li Wang <liwang@redhat.com>
-Date: Thu, 18 Aug 2016 21:09:09 +0800
-Subject: [LTP] [PATCH v3 1/2] test.sh: make the loop device size can be
-	increased
-Message-ID: <1471525749-18509-1-git-send-email-liwang@redhat.com>
+Date: Thu, 18 Aug 2016 21:09:23 +0800
+Subject: [LTP] [PATCH v3 2/2] mkswap: make the test device size is aligned
+	to pagesize
+Message-ID: <1471525763-18553-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-For the purpose of satisfying specific requirements, here adding
-parameters to tst_acquire_device() to make the test device can be
-increased according to real need.
+We get failures like below because of 'DEVICE_SIZE-10000' makes the
+test device size is not aligned to system PAGE_SIZE any more.
+
+   mkswap01 1 TINFO : Found free device '/dev/loop1'
+   mkswap01 1 TPASS : 'mkswap   /dev/loop1 ' passed.
+   mkswap01 2 TFAIL : 'mkswap -f  /dev/loop1 92400' failed, not expected.
+   mkswap01 3 TINFO : Can not do swapon on /dev/loop1.
+   mkswap01 3 TINFO : Device size specified by 'mkswap' greater than real size.
+   mkswap01 3 TINFO : Swapon failed expectedly.
+   mkswap01 3 TPASS : 'mkswap -f  /dev/loop1 112400' passed.
+
+For the issue, we do some changes in this patch:
+
+1. The orignal test device(LTP_DEV) size is also not aligned to
+   PAGE_SIZE on all arches. Here fix it.
+
+2. Get the size of the device and align it down to be the multiple
+   of $PAGE_SIZE and use that as the size for testing.
+
+3. Increase/decrease the $DEVICE_SIZE according to system PAGE_SIZE
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/lib/test.sh | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ runltp                                |  2 +-
+ testcases/commands/mkswap/mkswap01.sh | 11 +++++++----
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index bd66109..60f8836 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -258,11 +258,15 @@ ROD()
- 
- tst_acquire_device()
+diff --git a/runltp b/runltp
+index 3a46765..bb2e5d8 100755
+--- a/runltp
++++ b/runltp
+@@ -978,7 +978,7 @@ main()
+ create_block()
  {
-+	local acq_dev_size=${1:-150}
+     #create a block device
+-    dd if=/dev/zero of=${TMP}/test.img bs=1kB count=153600 >/dev/null 2>&1
++    dd if=/dev/zero of=${TMP}/test.img bs=1024 count=153600 >/dev/null 2>&1
+     if [ $? -ne 0 ]; then
+         echo "Failed to create loopback device image, please check disk space and re-run"
+         return 1
+diff --git a/testcases/commands/mkswap/mkswap01.sh b/testcases/commands/mkswap/mkswap01.sh
+index 9727b0f..1948ff4 100755
+--- a/testcases/commands/mkswap/mkswap01.sh
++++ b/testcases/commands/mkswap/mkswap01.sh
+@@ -34,9 +34,12 @@ setup()
+ 
+ 	UUID=`uuidgen`
+ 
+-	DEVICE_SIZE=$((`blockdev --getsize64 $TST_DEVICE`/1024))
+-
+ 	PAGE_SIZE=`getconf PAGE_SIZE`
 +
- 	if [ -z ${TST_TMPDIR} ]; then
- 		tst_brkm "Use 'tst_tmpdir' before 'tst_acquire_device'"
- 	fi
++	# Here get the size of the device and align it down to be the
++	# multiple of $PAGE_SIZE and use that as the size for testing.
++	real_size=`blockdev --getsize64 $TST_DEVICE`
++	DEVICE_SIZE=$((($real_size/$PAGE_SIZE * $PAGE_SIZE)/1024))
+ }
  
--	if [ -n "${LTP_DEV}" ]; then
-+	ltp_dev_size=$((`blockdev --getsize64 $LTP_DEV`/1024/1024))
-+
-+	if [ -n "${LTP_DEV}" ] && [ ${acq_dev_size} -le ${ltp_dev_size} ]; then
- 		tst_resm TINFO "Using test device LTP_DEV='${LTP_DEV}'"
- 		if [ ! -b ${LTP_DEV} ]; then
- 			tst_brkm TBROK "${LTP_DEV} is not a block device"
-@@ -275,7 +279,7 @@ tst_acquire_device()
- 		return
- 	fi
+ cleanup()
+@@ -169,8 +172,8 @@ mkswap_test()
+ setup
  
--	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=153600
-+	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=$((1024*$acq_dev_size))
- 
- 	TST_DEVICE=$(losetup -f)
- 	if [ $? -ne 0 ]; then
+ mkswap_test "" "" "$TST_DEVICE"
+-mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-10000))"
+-mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+10000))"
++mkswap_test "" "" "$TST_DEVICE" "$((DEVICE_SIZE-PAGE_SIZE/1024))"
++mkswap_test "-f" "" "$TST_DEVICE" "$((DEVICE_SIZE+PAGE_SIZE/1024))"
+ mkswap_test "-c" "" "$TST_DEVICE"
+ mkswap_test "-p" "2048" "$TST_DEVICE"
+ mkswap_test "-L" "ltp_testswap" "-L ltp_testswap" "" "/dev/disk/by-label/ltp_testswap"
 -- 
 1.8.3.1
 
