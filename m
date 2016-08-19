@@ -1,113 +1,18 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri, 19 Aug 2016 17:43:36 +0300
-Subject: [LTP] [RFC PATCH] test.sh: add SHOULD_PASS, SHOULD_FAIL functions
-Message-ID: <1471617816-15339-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 19 Aug 2016 18:31:31 +0300
+Subject: [LTP] [PATCH v2] network/nfs05_make_tree: Define _GNU_SOURCE to
+ enable O_DIRECTORY
+In-Reply-To: <1471606223-28776-1-git-send-email-yuriy.kolerov@synopsys.com>
+References: <1471606223-28776-1-git-send-email-yuriy.kolerov@synopsys.com>
+Message-ID: <57B72653.4000907@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Sometimes we need to execute a command and call tst_resm TPASS/TFAIL
-based on the command's exit status.
+On 08/19/2016 02:30 PM, Yuriy Kolerov wrote:
+> This test uses O_DIRECTORY macro and in some standard libraries it
+> may be defined only if _GNU_SOURCE is enabled.
 
-The existing ROD() function can make 99% of the job, we just
-need to let it know how the command's exit code should be
-interpreted. This patch does it and introduce a couple of new
-functions to help with the described situation.
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
-This is to help with situations like:
-
-echo 1.0 > memory.limit_in_bytes 2> /dev/null
-if [ $? -ne 0 ]; then
-   tst_resm TPASS "return value is $?"
-else
-   tst_resm TFAIL "return value is 0"
-fi
-
-which could be transformed to:
-
-SHOULD_FAIL echo 1.0 \> memory.limit_in_bytes
-
-
- testcases/lib/test.sh |   50 +++++++++++++++++++++++++++++++++++++++++++++---
- 1 files changed, 46 insertions(+), 4 deletions(-)
-
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index bd66109..ca2c00b 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -220,12 +220,17 @@ ROD_SILENT()
- 	fi
- }
- 
--ROD()
-+ROD_DISPATCHER()
- {
-+	local act
- 	local cmd
- 	local arg
- 	local file
- 	local flag
-+	local ret
-+
-+	act="$1"
-+	shift
- 
- 	for arg; do
- 		file="${arg#\>}"
-@@ -251,9 +256,46 @@ ROD()
- 		$@
- 	fi
- 
--	if [ $? -ne 0 ]; then
--		tst_brkm TBROK "$@ failed"
--	fi
-+	ret=$?
-+
-+	case "$act" in
-+		0) # break on failure
-+		if [ $ret -ne 0 ]; then
-+			tst_brkm TBROK "$@ failed"
-+		fi;;
-+
-+		1) # the command should pass
-+		if [ $ret -eq 0 ]; then
-+			tst_resm TPASS "$@ passed as expected"
-+		else
-+			tst_resm TFAIL "$@ failed unexpectedly"
-+		fi;;
-+
-+		2) # the command should fail
-+		if [ $ret -ne 0 ]; then
-+			tst_resm TPASS "$@ failed as expected"
-+		else
-+			tst_resm TFAIL "$@ passed unexpectedly"
-+		fi;;
-+
-+		*) tst_brkm TBROK "unknown action '$act'";;
-+	esac
-+}
-+
-+ROD()
-+{
-+	ROD_DISPATCHER 0 $@
-+}
-+
-+SHOULD_PASS()
-+{
-+	ROD_DISPATCHER 1 $@
-+}
-+
-+SHOULD_FAIL()
-+{
-+	# redirect stderr since we expect the command to fail
-+	ROD_DISPATCHER 2 $@ 2> /dev/null
- }
- 
- tst_acquire_device()
--- 
-1.7.1
-
+Removed redundant #ifdef and applied. Thanks!
