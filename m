@@ -1,172 +1,79 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Mon, 22 Aug 2016 15:51:56 +0300
-Subject: [LTP] [RFC PATCH] test.sh: add SHOULD_PASS,
-	SHOULD_FAIL functions
-In-Reply-To: <20160822123140.GA18142@rei>
-References: <1471617816-15339-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160822123140.GA18142@rei>
-Message-ID: <57BAF56C.8070005@oracle.com>
+From: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+Date: Mon, 22 Aug 2016 16:38:40 +0300
+Subject: [LTP] [PATCH 2/2] syscalls/getrusage03: Reduce memory consumption
+In-Reply-To: <1471873120-4272-1-git-send-email-yuriy.kolerov@synopsys.com>
+References: <1471873120-4272-1-git-send-email-yuriy.kolerov@synopsys.com>
+Message-ID: <1471873120-4272-2-git-send-email-yuriy.kolerov@synopsys.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Some development platforms may lack of large amounts of memory (~500MB).
+It is possible to reduce memory consumption in this test without harm
+to functionality.
+
+Signed-off-by: Yuriy Kolerov <yuriy.kolerov@synopsys.com>
+---
+ testcases/kernel/syscalls/getrusage/getrusage03.c |  6 +++---
+ testcases/kernel/syscalls/getrusage/getrusage03.h | 10 +++++-----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.c b/testcases/kernel/syscalls/getrusage/getrusage03.c
+index 5214d36..9bc984d 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage03.c
++++ b/testcases/kernel/syscalls/getrusage/getrusage03.c
+@@ -118,7 +118,7 @@ static void inherit_fork(void)
+ }
+ 
+ /* Testcase #02: fork inherit (cont.)
+- * expect: initial.children ~= 100MB, child.children = 0 */
++ * expect: initial.children ~= 50MB, child.children = 0 */
+ static void inherit_fork2(void)
+ {
+ 	tst_resm(TINFO, "Testcase #02: fork inherit(cont.)");
+@@ -181,7 +181,7 @@ static void fork_malloc(void)
+ }
+ 
+ /* Testcase #04: grandchild maxrss
+- * expect: post_wait.children ~= 300MB */
++ * expect: post_wait.children ~= 150MB */
+ static void grandchild_maxrss(void)
+ {
+ 	tst_resm(TINFO, "Testcase #04: grandchild maxrss");
+@@ -216,7 +216,7 @@ static void grandchild_maxrss(void)
+ }
+ 
+ /* Testcase #05: zombie
+- * expect: initial ~= pre_wait, post_wait ~= 400MB */
++ * expect: initial ~= pre_wait, post_wait ~= 150MB */
+ static void zombie(void)
+ {
+ 	tst_resm(TINFO, "Testcase #05: zombie");
+diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.h b/testcases/kernel/syscalls/getrusage/getrusage03.h
+index 7dc6d0a..c7bc0af 100644
+--- a/testcases/kernel/syscalls/getrusage/getrusage03.h
++++ b/testcases/kernel/syscalls/getrusage/getrusage03.h
+@@ -18,12 +18,12 @@
+ #ifndef GETRUSAGE03_H
+ #define GETRUSAGE03_H
+ 
+-#define DELTA_MAX_KB		102400
+-#define CONSUME_INITIAL_MB	100
++#define DELTA_MAX_KB		51200
++#define CONSUME_INITIAL_MB	50
+ #define CONSUME_FORK_MALLOC_MB	50
+-#define CONSUME_GRANDCHILD_MB	300
+-#define CONSUME_ZOMBIE_MB	400
+-#define CONSUME_SIG_IGN_MB	500
++#define CONSUME_GRANDCHILD_MB	150
++#define CONSUME_ZOMBIE_MB	200
++#define CONSUME_SIG_IGN_MB	250
+ 
+ #define N_TO_STR(s) _N_TO_STR(s)
+ #define _N_TO_STR(s) #s
+-- 
+2.7.4
 
 
-On 08/22/2016 03:31 PM, Cyril Hrubis wrote:
-> Hi!
->> Sometimes we need to execute a command and call tst_resm TPASS/TFAIL
->> based on the command's exit status.
->>
->> The existing ROD() function can make 99% of the job, we just
->> need to let it know how the command's exit code should be
->> interpreted. This patch does it and introduce a couple of new
->> functions to help with the described situation.
->>
->> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
->> ---
->> This is to help with situations like:
->>
->> echo 1.0 > memory.limit_in_bytes 2> /dev/null
->> if [ $? -ne 0 ]; then
->>    tst_resm TPASS "return value is $?"
->> else
->>    tst_resm TFAIL "return value is 0"
->> fi
->>
->> which could be transformed to:
->>
->> SHOULD_FAIL echo 1.0 \> memory.limit_in_bytes
-> 
-> This is quite nice. Maybe it would better be named EXPECT_FAIL and
-> EXPECT_PASS or something but SHOULD_ prefix is fine as well.
-
-Ok, will rename to EXPECT_*.
-
-> 
-> We should include documentation for these in this commit as well.
-
-Ok.
-
-> 
-> A few comments to the implementation below.
-> 
->>  testcases/lib/test.sh |   50 +++++++++++++++++++++++++++++++++++++++++++++---
->>  1 files changed, 46 insertions(+), 4 deletions(-)
->>
->> diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
->> index bd66109..ca2c00b 100644
->> --- a/testcases/lib/test.sh
->> +++ b/testcases/lib/test.sh
->> @@ -220,12 +220,17 @@ ROD_SILENT()
->>  	fi
->>  }
->>  
->> -ROD()
->> +ROD_DISPATCHER()
->>  {
->> +	local act
->>  	local cmd
->>  	local arg
->>  	local file
->>  	local flag
->> +	local ret
->> +
->> +	act="$1"
->> +	shift
->>  
->>  	for arg; do
->>  		file="${arg#\>}"
->> @@ -251,9 +256,46 @@ ROD()
->>  		$@
->>  	fi
->>  
->> -	if [ $? -ne 0 ]; then
->> -		tst_brkm TBROK "$@ failed"
->> -	fi
->> +	ret=$?
-> 
-> Why don't we just return from this function here and let the caller
-> examine the $?
-
-No specific reason. Will put the handling of $? into the callers of
-ROD_DISPATCHER, and rename ROD_DISPATCHER to something like ROD_BASE,
-since now it doesn't "dispatch".
-
-> 
->> +	case "$act" in
->> +		0) # break on failure
->> +		if [ $ret -ne 0 ]; then
->> +			tst_brkm TBROK "$@ failed"
->> +		fi;;
->> +
->> +		1) # the command should pass
->> +		if [ $ret -eq 0 ]; then
->> +			tst_resm TPASS "$@ passed as expected"
->> +		else
->> +			tst_resm TFAIL "$@ failed unexpectedly"
->> +		fi;;
->> +
->> +		2) # the command should fail
->> +		if [ $ret -ne 0 ]; then
->> +			tst_resm TPASS "$@ failed as expected"
->> +		else
->> +			tst_resm TFAIL "$@ passed unexpectedly"
->> +		fi;;
->> +
->> +		*) tst_brkm TBROK "unknown action '$act'";;
->> +	esac
->> +}
->> +
->> +ROD()
->> +{
->> +	ROD_DISPATCHER 0 $@
->> +}
->> +
->> +SHOULD_PASS()
->> +{
->> +	ROD_DISPATCHER 1 $@
->> +}
->> +
->> +SHOULD_FAIL()
->> +{
->> +	# redirect stderr since we expect the command to fail
->> +	ROD_DISPATCHER 2 $@ 2> /dev/null
->>  }
-> 
-> I think that we should quote the $@ in these functions.
-> 
-> Try for yourself:
-> 
-> 8<------------------------------------
-> 
-> #!/bin/sh
-> 
-> d()
-> {
->         echo "-------------"
->         for i; do
->                 echo $i
->         done
->         echo "-------------"
-> }
-> 
-> dd()
-> {
->         d "$@"
-> }
-> 
-> 
-> d a b c
-> dd a b c
-> d "a b c"
-> dd "a b c"
-> 
-> 8<------------------------------------
-> 
-> If you unquote the $@ in dd() the "a b c" in the last call would be separated
-> on spaces.
-> 
-
-Got it. Thank you.
