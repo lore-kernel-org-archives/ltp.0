@@ -1,10 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 24 Aug 2016 16:28:19 +0200
-Subject: [LTP] [PATCH V2 2/4] memcg/functional/memcg_process: cleanup
-In-Reply-To: <1471951555-4230-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1471951555-4230-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1471951555-4230-2-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20160824142819.GC12443@rei.lan>
+Date: Wed, 24 Aug 2016 16:44:13 +0200
+Subject: [LTP] [PATCH 2/2] syscalls/access02: add behaviour check for
+	F_OK
+In-Reply-To: <1471598374-26908-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <20160804165028.GD3367@rei.lan>
+ <1471598374-26908-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <1471598374-26908-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20160824144413.GD12443@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,8 +14,13 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-The rest of the patchset was acked in V1 already (minus the missing
-links in patch commit message that are included now).
+> - *  As well as verify that, these test files can be read/written/executed
+> - *  indeed as root and nobody respectively.
+> + *  As well as verify that, these test files can be got status or
+> + *  read/written/executed indeed as root and nobody respectively.
+
+I've changed this sentence to be more clear on what we do for the check
+and pushed both patches. Thanks.
 
 -- 
 Cyril Hrubis
