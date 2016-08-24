@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 24 Aug 2016 14:50:23 +0200
-Subject: [LTP] Removal of ipc_stress testcases
-In-Reply-To: <1bb017f2-56aa-7cf5-17ef-6f6e1506a080@de.bosch.com>
-References: <20160817144604.GA11954@rei>
- <1bb017f2-56aa-7cf5-17ef-6f6e1506a080@de.bosch.com>
-Message-ID: <20160824125023.GA12443@rei.lan>
+Date: Wed, 24 Aug 2016 15:42:18 +0200
+Subject: [LTP] [PATCH V2 1/4] memcg/functional: rewrite
+In-Reply-To: <1471951555-4230-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+References: <1471951555-4230-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20160824134217.GB12443@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +11,14 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I've just pushed patch that removes these tests.
+>  shmmax=`cat /proc/sys/kernel/shmmax`
+>  if [ $shmmax -lt $HUGEPAGESIZE ]; then
+> -	echo $(($HUGEPAGESIZE)) > /proc/sys/kernel/shmmax
+> +	ROD "$HUGEPAGESIZE" \> /proc/sys/kernel/shmmax
+           ^
+	   Missing echo here?
+
+The rest looks fine.
 
 -- 
 Cyril Hrubis
