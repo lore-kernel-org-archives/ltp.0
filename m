@@ -1,12 +1,11 @@
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 25 Aug 2016 15:02:45 +0300
-Subject: [LTP] [PATCH V2 09/11] syscalls/waitpid: adapt reap_children()
- to test stopped children
-In-Reply-To: <20160825113904.GF10490@rei.lan>
+Date: Thu, 25 Aug 2016 15:09:22 +0300
+Subject: [LTP] [PATCH V2 03/11] Add TST_TRACE
+In-Reply-To: <20160825111517.GC10490@rei.lan>
 References: <1472041679-29759-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1472041679-29759-10-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160825113904.GF10490@rei.lan>
-Message-ID: <57BEDE65.5000403@oracle.com>
+ <1472041679-29759-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160825111517.GC10490@rei.lan>
+Message-ID: <57BEDFF2.9020309@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,57 +14,62 @@ To: ltp@lists.linux.it
 
 
 
-On 08/25/2016 02:39 PM, Cyril Hrubis wrote:
+On 08/25/2016 02:15 PM, Cyril Hrubis wrote:
 > Hi!
->> If the pid returned by waitpid() is the pid of a stopped child,
->> we send it the SIGCONT signal.
->>
->> Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
->> ---
->> This is a new patch in the series, extracted from V1 of waitpid13.c
->>
->>  testcases/kernel/syscalls/waitpid/waitpid_common.h |   17 +++++++++++++++++
->>  1 files changed, 17 insertions(+), 0 deletions(-)
->>
->> diff --git a/testcases/kernel/syscalls/waitpid/waitpid_common.h b/testcases/kernel/syscalls/waitpid/waitpid_common.h
->> index f724a17..7b67a06 100644
->> --- a/testcases/kernel/syscalls/waitpid/waitpid_common.h
->> +++ b/testcases/kernel/syscalls/waitpid/waitpid_common.h
->> @@ -131,6 +131,23 @@ static int reap_children(pid_t wp_pid, int wp_opts, pid_t *children, int len)
->>  			return -1;
->>  		}
->>  
->> +		if (WIFSTOPPED(status)) {
->> +			if (WSTOPSIG(status) != SIGSTOP) {
->> +				tst_res(TFAIL,
->> +					"Pid %d: expected SIGSTOP, got %d",
->> +					pid, WSTOPSIG(status));
->> +				return -1;
->> +			}
+>> +'TST_TRACE' can make the analysis of such situations easier. It's a macro which
+>> +inserts a call to 'tst_res(TINFO, ...)' in case its argument is not zero.
+>                                                          ^
+> 						"evaluates to non-zero"
 > 
-> Maybe we should print tst_res(TINFO, "Seding SIGCONT to %i", pid); here.
+> 						would be more clear in
+> 						this case
+> 
 
 Ok.
 
-> 
->> +			if (kill(pid, SIGCONT) < 0) {
->> +				tst_res(TFAIL | TERRNO,
->> +					"kill(%d, SIGCONT) failed", pid);
->> +				return -1;
->> +			}
+>> +In this call to 'tst_res(TINFO, ...)' the file and line will be expanded using
+>> +the actual location of 'TST_TRACE'.
 >> +
->> +			continue;
->> +		}
+>> +[source,c]
+>> +-------------------------------------------------------------------------------
+>> +#include "tst_test.h"
 >> +
->>  		for (i = 0; i < len; i++) {
->>  			if (pid == children[i]) {
->>  				children[i] = 0;
+>> +if (TST_TRACE(do_action())) {
+>> +	...
+>> +}
+>> +-------------------------------------------------------------------------------
 > 
-> Otherwise it looks good.
-> 
-> I guess that there is no real chance that some of the children in
-> testcases that use this function would be SIGSTOPed accidentally and
-> this code will make that bug disappear...
-> 
+> Maybe we should also include example test output here. Otherise the
+> description looks good to me.
 
-Yes. I agree.
+Ok. Will add one.
+
+
+> 
+>>  2.3.1 Basic shell test structure
+>>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>>  
+>> diff --git a/include/tst_test.h b/include/tst_test.h
+>> index 3e2ff5b..eb3f751 100644
+>> --- a/include/tst_test.h
+>> +++ b/include/tst_test.h
+>> @@ -59,6 +59,10 @@ pid_t safe_fork(const char *filename, unsigned int lineno);
+>>  #define SAFE_FORK() \
+>>  	safe_fork(__FILE__, __LINE__)
+>>  
+>> +#define TST_TRACE(expr)							\
+>> +	({int ret = expr;						\
+>> +		ret != 0 ? tst_res(TINFO, #expr " failed"), ret : ret; })
+>> +
+> 
+> I would format this to something as:
+> 
+> #define TST_TRACE(expr)	                                            \
+> 	({int ret = expr;                                           \
+> 	  ret != 0 ? tst_res(TINFO, #expr " failed"), ret : ret; }) \
+> 
+> But that is very minor.
+
+No problem, will do it.
+
+> 
