@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 25 Aug 2016 13:15:17 +0200
-Subject: [LTP] [PATCH V2 03/11] Add TST_TRACE
-In-Reply-To: <1472041679-29759-4-git-send-email-stanislav.kholmanskikh@oracle.com>
+Date: Thu, 25 Aug 2016 13:20:53 +0200
+Subject: [LTP] [PATCH V2 04/11] syscalls/waitpid: call reap_children()
+ via TST_TRACE()
+In-Reply-To: <1472041679-29759-5-git-send-email-stanislav.kholmanskikh@oracle.com>
 References: <1472041679-29759-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <1472041679-29759-4-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20160825111517.GC10490@rei.lan>
+ <1472041679-29759-5-git-send-email-stanislav.kholmanskikh@oracle.com>
+Message-ID: <20160825112052.GD10490@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,53 +13,26 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +'TST_TRACE' can make the analysis of such situations easier. It's a macro which
-> +inserts a call to 'tst_res(TINFO, ...)' in case its argument is not zero.
-                                                         ^
-						"evaluates to non-zero"
+This is obviously correct.
 
-						would be more clear in
-						this case
-
-> +In this call to 'tst_res(TINFO, ...)' the file and line will be expanded using
-> +the actual location of 'TST_TRACE'.
-> +
-> +[source,c]
-> +-------------------------------------------------------------------------------
-> +#include "tst_test.h"
-> +
-> +if (TST_TRACE(do_action())) {
-> +	...
-> +}
-> +-------------------------------------------------------------------------------
-
-Maybe we should also include example test output here. Otherise the
-description looks good to me.
-
->  2.3.1 Basic shell test structure
->  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> diff --git a/testcases/kernel/syscalls/waitpid/waitpid11.c b/testcases/kernel/syscalls/waitpid/waitpid11.c
+> index 9b51e04..1067bca 100644
+> --- a/testcases/kernel/syscalls/waitpid/waitpid11.c
+> +++ b/testcases/kernel/syscalls/waitpid/waitpid11.c
+> @@ -50,11 +50,12 @@ static void do_child_1(void)
 >  
-> diff --git a/include/tst_test.h b/include/tst_test.h
-> index 3e2ff5b..eb3f751 100644
-> --- a/include/tst_test.h
-> +++ b/include/tst_test.h
-> @@ -59,6 +59,10 @@ pid_t safe_fork(const char *filename, unsigned int lineno);
->  #define SAFE_FORK() \
->  	safe_fork(__FILE__, __LINE__)
+>  	TST_CHECKPOINT_WAKE2(0, MAXKIDS);
 >  
-> +#define TST_TRACE(expr)							\
-> +	({int ret = expr;						\
-> +		ret != 0 ? tst_res(TINFO, #expr " failed"), ret : ret; })
-> +
+> -	if (reap_children(0, 0, fork_kid_pid + (MAXKIDS / 2), MAXKIDS / 2))
+> +	if (TST_TRACE(reap_children(0, 0, fork_kid_pid + (MAXKIDS / 2),
+> +				    MAXKIDS / 2)))
+>  		return;
 
-I would format this to something as:
+Hmm, if we drop the useless parenthesis and spaces around / we will fit
+into 80 chars:
 
-#define TST_TRACE(expr)	                                            \
-	({int ret = expr;                                           \
-	  ret != 0 ? tst_res(TINFO, #expr " failed"), ret : ret; }) \
-
-But that is very minor.
-
+	if (TST_TRACE(reap_children(0, 0, fork_kid_pid + MAXKIDS/2, MAXKIDS/2)))
+		return;
 -- 
 Cyril Hrubis
 chrubis@suse.cz
