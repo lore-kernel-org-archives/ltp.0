@@ -1,27 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 24 Aug 2016 16:44:13 +0200
-Subject: [LTP] [PATCH 2/2] syscalls/access02: add behaviour check for
-	F_OK
-In-Reply-To: <1471598374-26908-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <20160804165028.GD3367@rei.lan>
- <1471598374-26908-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1471598374-26908-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20160824144413.GD12443@rei.lan>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Thu, 25 Aug 2016 08:21:41 +0300
+Subject: [LTP] [PATCH V2 1/4] memcg/functional: rewrite
+In-Reply-To: <20160824134217.GB12443@rei.lan>
+References: <1471951555-4230-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160824134217.GB12443@rei.lan>
+Message-ID: <57BE8065.7050100@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> - *  As well as verify that, these test files can be read/written/executed
-> - *  indeed as root and nobody respectively.
-> + *  As well as verify that, these test files can be got status or
-> + *  read/written/executed indeed as root and nobody respectively.
+Hi
 
-I've changed this sentence to be more clear on what we do for the check
-and pushed both patches. Thanks.
+On 08/24/2016 04:42 PM, Cyril Hrubis wrote:
+> Hi!
+>>  shmmax=`cat /proc/sys/kernel/shmmax`
+>>  if [ $shmmax -lt $HUGEPAGESIZE ]; then
+>> -	echo $(($HUGEPAGESIZE)) > /proc/sys/kernel/shmmax
+>> +	ROD "$HUGEPAGESIZE" \> /proc/sys/kernel/shmmax
+>            ^
+> 	   Missing echo here?
+> 
+> The rest looks fine.
+> 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Added the missing 'echo' and pushed the series.
+
+Thank you for review.
