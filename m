@@ -1,29 +1,63 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 26 Aug 2016 15:08:06 +0300
-Subject: [LTP] [PATCH] syscalls/fallocate04: Fix on Btrfs
-In-Reply-To: <57C02561.8000608@oracle.com>
-References: <20160825165354.GA13281@rei> <57C02561.8000608@oracle.com>
-Message-ID: <57C03126.1020609@oracle.com>
+From: naresh.kamboju@linaro.org <naresh.kamboju@linaro.org>
+Date: Sat, 27 Aug 2016 16:44:19 +0530
+Subject: [LTP] [PATCH] readahead02: fix read_ahead_kb file not found
+Message-ID: <1472296459-31507-1-git-send-email-naresh.kamboju@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
-On 08/26/2016 02:17 PM, Stanislav Kholmanskikh wrote:
-> Hi,
->
-> On 08/25/2016 07:53 PM, Cyril Hrubis wrote:
->> The size of a file can double on Btrfs temporarily even when we write
->> into a preallocated space because of internal Btrfs caches, at least
->> that is what I've been told by Btrfs devs. The internal caches are then
->> freed after some time, or can be force freed by syncing the file, which
->> is what this patch does.
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-So if we have available free space x Mb,  we can't allocate more than x 
-/ 2 Mb and it's not a bug?
+Test case is looking for read_ahead_kb file on a partition device (8:2) and
+not on block device (8:0). The appropriate block device that hold the
+partition can see the corrent queue/read_ahead_kb entry.
 
-Best regards,
-Alexey
+Before patch readahead02 test broken,
+readahead02    1  TBROK  :  safe_file_ops.c:144: Failed to open FILE
+'/sys/dev/block/8:2/queue/read_ahead_kb' for reading at
+readahead02.c:197: errno=ENOENT(2): No such file or directory
+
+After applying patch,
+readahead02    0  TINFO  :  creating test file of size: 67108864
+readahead02    0  TINFO  :  max readahead size is: 131072
+readahead02    0  TINFO  :  read_testfile(0)
+readahead02    0  TINFO  :  max readahead size is: 131072
+readahead02    0  TINFO  :  read_testfile(1)
+readahead02    0  TINFO  :  max readahead size is: 131072
+readahead02    1  TPASS  :  expected ret success - returned value = 0
+readahead02    2  TPASS  :  offset is still at 0 as expected
+readahead02    0  TINFO  :  read_testfile(0) took: 1437202 usec
+readahead02    0  TINFO  :  read_testfile(1) took: 1361915 usec
+readahead02    0  TINFO  :  read_testfile(0) read: 67108864 bytes
+readahead02    0  TINFO  :  read_testfile(1) read: 0 bytes
+readahead02    3  TPASS  :  readahead saved some I/O
+readahead02    0  TINFO  :  cache can hold at least: 157404 kB
+readahead02    0  TINFO  :  read_testfile(0) used cache: 65332 kB
+readahead02    0  TINFO  :  read_testfile(1) used cache: 65636 kB
+readahead02    4  TPASS  :  using cache as expected
+
+Patch tested on aarch64 and x86_64.
+
+Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+---
+ testcases/kernel/syscalls/readahead/readahead02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index 53278be..70d918d 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -193,7 +193,7 @@ static long get_device_readahead(const char *fname)
+ 	if (stat(fname, &st) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "stat");
+ 	snprintf(buf, sizeof(buf), "/sys/dev/block/%d:%d/queue/read_ahead_kb",
+-		 major(st.st_dev), minor(st.st_dev));
++		 major(st.st_dev), minor(st.st_dev) & ~31);
+ 	SAFE_FILE_SCANF(cleanup, buf, "%ld", &ra_kb);
+ 
+ 	return ra_kb * 1024;
+-- 
+1.9.1
 
