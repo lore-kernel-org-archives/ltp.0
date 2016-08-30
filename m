@@ -1,46 +1,34 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 30 Aug 2016 16:01:57 +0800
-Subject: [LTP] [PATCH] containers/netns/netns_sysfs.sh: add kernel version
-	check
-Message-ID: <1472544117-7584-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 30 Aug 2016 14:21:20 +0200
+Subject: [LTP] [PATCH] readahead02: fix read_ahead_kb file not found
+In-Reply-To: <1472296459-31507-1-git-send-email-naresh.kamboju@linaro.org>
+References: <1472296459-31507-1-git-send-email-naresh.kamboju@linaro.org>
+Message-ID: <20160830122119.GA23854@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Sysfs is not mount namespace aware until applying following kernel
-patches in mainline kernel v2.6.35:
+Hi!
+> @@ -193,7 +193,7 @@ static long get_device_readahead(const char *fname)
+>  	if (stat(fname, &st) == -1)
+>  		tst_brkm(TBROK | TERRNO, cleanup, "stat");
+>  	snprintf(buf, sizeof(buf), "/sys/dev/block/%d:%d/queue/read_ahead_kb",
+> -		 major(st.st_dev), minor(st.st_dev));
+> +		 major(st.st_dev), minor(st.st_dev) & ~31);
 
-a1b3f59 net: Expose all network devices in a namespaces in sysfs
-417daa1 hotplug: netns aware uevent_helper
-d6523dd net/sysfs: Fix the bitrot in network device kobject namespace support
-608b4b9 netns: Teach network device kobjects which namespace they are in
+So we clear lower five bits of the minor number here. Why exactly that amount?
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Tested-by: Matus Marhefka <mmarhefk@redhat.com>
----
- testcases/kernel/containers/netns/netns_sysfs.sh | 5 +++++
- 1 file changed, 5 insertions(+)
+Shouldn't we just pass zero as a minor number there anyway?
 
-diff --git a/testcases/kernel/containers/netns/netns_sysfs.sh b/testcases/kernel/containers/netns/netns_sysfs.sh
-index 290cef8..b3a87ed 100644
---- a/testcases/kernel/containers/netns/netns_sysfs.sh
-+++ b/testcases/kernel/containers/netns/netns_sysfs.sh
-@@ -29,6 +29,11 @@ DUMMYDEV_HOST="dummy_test0"
- DUMMYDEV="dummy_test1"
- . test.sh
- 
-+tst_kvercmp 2 6 35
-+if [ $? -eq 0 ]; then
-+	tst_brkm TCONF "sysfs is not mount namespace aware for kernels older than 2.6.35"
-+fi
-+
- setns_check
- if [ $? -eq 32 ]; then
- 	tst_brkm TCONF "setns not supported"
+>  	SAFE_FILE_SCANF(cleanup, buf, "%ld", &ra_kb);
+>  
+>  	return ra_kb * 1024;
+> -- 
+> 1.9.1
+> 
+
 -- 
-1.8.4.2
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
