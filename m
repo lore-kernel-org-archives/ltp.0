@@ -1,9 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 31 Aug 2016 15:55:45 +0200
-Subject: [LTP] [PATCH] lsmod01: parse a copy of /proc/modules
-In-Reply-To: <1472468916-13152-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <1472468916-13152-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20160831135545.GB7346@rei.lan>
+Date: Wed, 31 Aug 2016 16:07:46 +0200
+Subject: [LTP] [PATCH] syscalls/fallocate04: Fix on Btrfs
+In-Reply-To: <20160825165354.GA13281@rei>
+References: <20160825165354.GA13281@rei>
+Message-ID: <20160831140745.GC7346@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,8 +11,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Thinking of this again, why don't we just compare the first two fields
-of the output?
+Patch pushed.
 
 -- 
 Cyril Hrubis
