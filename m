@@ -1,453 +1,814 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  1 Sep 2016 19:18:34 +0200
-Subject: [LTP] [PATCH 3/4] memcg_lib.sh: Get rid of sleep 1 in
-	signal_memcg_process
+Date: Thu,  1 Sep 2016 19:18:35 +0200
+Subject: [LTP] [PATCH 4/4] memcg_function_test.sh: Split
 In-Reply-To: <1472750315-30848-1-git-send-email-chrubis@suse.cz>
 References: <1472750315-30848-1-git-send-email-chrubis@suse.cz>
-Message-ID: <1472750315-30848-3-git-send-email-chrubis@suse.cz>
+Message-ID: <1472750315-30848-4-git-send-email-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The signal_memcg_process function, if passed a size paramter, now polls
-the memory.usage_in_bytes file until it increases or decreases by a
-given amount (the amount the memcg_process is expected to allocate/free)
-or until the process is killed.
-
-We now sleep only in the warmup and only after we send second signal to
-the memcg_process.
-
-This further brings down the test runtime down by another minute, now
-the tests finish in about 30 second while we also assert that the
-usage_in_bytes gets incremented as process consumes memory.
+Split the memcg_function_test.sh into five tests based on what is tested.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- .../memcg/functional/memcg_function_test.sh        |  28 +++---
- .../controllers/memcg/functional/memcg_lib.sh      | 107 +++++++++++++--------
- .../memcg_move_charge_at_immigrate_test.sh         |  13 +--
- .../memcg/functional/memcg_stat_test.sh            |  11 ++-
- .../memcg/functional/memcg_usage_in_bytes_test.sh  |   4 +-
- 5 files changed, 95 insertions(+), 68 deletions(-)
+ runtest/controllers                                |   6 +-
+ .../controllers/memcg/functional/memcg_failcnt.sh  |  58 +++++
+ .../memcg/functional/memcg_force_empty.sh          |  90 +++++++
+ .../memcg/functional/memcg_function_test.sh        | 286 ---------------------
+ .../controllers/memcg/functional/memcg_lib.sh      |  15 ++
+ .../memcg/functional/memcg_limit_in_bytes.sh       | 127 +++++++++
+ .../controllers/memcg/functional/memcg_stat_rss.sh |  89 +++++++
+ .../memcg/functional/memcg_subgroup_charge.sh      |  50 ++++
+ 8 files changed, 434 insertions(+), 287 deletions(-)
+ create mode 100755 testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh
+ create mode 100755 testcases/kernel/controllers/memcg/functional/memcg_force_empty.sh
+ delete mode 100755 testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
+ create mode 100755 testcases/kernel/controllers/memcg/functional/memcg_limit_in_bytes.sh
+ create mode 100755 testcases/kernel/controllers/memcg/functional/memcg_stat_rss.sh
+ create mode 100755 testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
 
+diff --git a/runtest/controllers b/runtest/controllers
+index bec883b..d14d81e 100644
+--- a/runtest/controllers
++++ b/runtest/controllers
+@@ -1,7 +1,11 @@
+ #DESCRIPTION:Resource Management testing
+ cgroup		cgroup_regression_test.sh
+ memcg_regression	memcg_regression_test.sh
+-memcg_function		memcg_function_test.sh
++memcg_failcnt memcg_failcnt.sh
++memcg_force_empty memcg_force_empty.sh
++memcg_limit_in_bytes memcg_limit_in_bytes.sh
++memcg_stat_rss memcg_stat_rss.sh
++memcg_subgroup_charge memcg_subgroup_charge.sh
+ memcg_max_usage_in_bytes	memcg_max_usage_in_bytes_test.sh
+ memcg_move_charge_at_immigrate	memcg_move_charge_at_immigrate_test.sh
+ memcg_memsw_limit_in_bytes	memcg_memsw_limit_in_bytes_test.sh
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh b/testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh
+new file mode 100755
+index 0000000..d5034a5
+--- /dev/null
++++ b/testcases/kernel/controllers/memcg/functional/memcg_failcnt.sh
+@@ -0,0 +1,58 @@
++#!/bin/sh
++
++################################################################################
++##                                                                            ##
++## Copyright (c) 2009 FUJITSU LIMITED                                         ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
++##                                                                            ##
++## Author: Li Zefan <lizf@cn.fujitsu.com>                                     ##
++## Restructure for LTP: Shi Weihua <shiwh@cn.fujitsu.com>                     ##
++## Added memcg enable/disable functinality: Rishikesh K Rajak		      ##
++##						<risrajak@linux.vnet.ibm.com  ##
++##                                                                            ##
++################################################################################
++
++TCID="memcg_failcnt"
++TST_TOTAL=3
++
++. memcg_lib.sh
++
++# Test memory.failcnt
++testcase_1()
++{
++	echo $PAGESIZE > memory.limit_in_bytes
++	malloc_free_memory "--mmap-anon" $(($PAGESIZE*2))
++	test_failcnt "memory.failcnt"
++}
++
++testcase_2()
++{
++	echo $PAGESIZE > memory.limit_in_bytes
++	malloc_free_memory "--mmap-file" $(($PAGESIZE*2))
++	test_failcnt "memory.failcnt"
++}
++
++testcase_3()
++{
++	echo $PAGESIZE > memory.limit_in_bytes
++	malloc_free_memory "--shm" $(($PAGESIZE*2))
++	test_failcnt "memory.failcnt"
++}
++
++shmmax_setup
++LOCAL_CLEANUP=shmmax_cleanup
++run_tests
++tst_exit
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_force_empty.sh b/testcases/kernel/controllers/memcg/functional/memcg_force_empty.sh
+new file mode 100755
+index 0000000..59cb0b5
+--- /dev/null
++++ b/testcases/kernel/controllers/memcg/functional/memcg_force_empty.sh
+@@ -0,0 +1,90 @@
++#!/bin/sh
++
++################################################################################
++##                                                                            ##
++## Copyright (c) 2009 FUJITSU LIMITED                                         ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
++##                                                                            ##
++## Author: Li Zefan <lizf@cn.fujitsu.com>                                     ##
++## Restructure for LTP: Shi Weihua <shiwh@cn.fujitsu.com>                     ##
++## Added memcg enable/disable functinality: Rishikesh K Rajak		      ##
++##						<risrajak@linux.vnet.ibm.com  ##
++##                                                                            ##
++################################################################################
++
++TCID="memcg_force_empty"
++TST_TOTAL=6
++
++. memcg_lib.sh
++
++# Test memory.force_empty
++testcase_1()
++{
++	memcg_process --mmap-anon -s $PAGESIZE &
++	pid=$!
++	TST_CHECKPOINT_WAIT 0
++	echo $pid > tasks
++	signal_memcg_process $pid $PAGESIZE
++	echo $pid > ../tasks
++
++	# This expects that there is swap configured
++	EXPECT_PASS echo 1 \> memory.force_empty
++
++	stop_memcg_process $pid
++}
++
++testcase_2()
++{
++	memcg_process --mmap-lock2 -s $PAGESIZE &
++	pid=$!
++	TST_CHECKPOINT_WAIT 0
++	echo $pid > tasks
++	signal_memcg_process $pid $PAGESIZE
++
++	EXPECT_FAIL echo 1 \> memory.force_empty
++
++	stop_memcg_process $pid
++}
++
++testcase_3()
++{
++	EXPECT_PASS echo 0 \> memory.force_empty
++}
++
++testcase_4()
++{
++	EXPECT_PASS echo 1.0 \> memory.force_empty
++}
++
++testcase_4()
++{
++	EXPECT_PASS echo 1xx \> memory.force_empty
++}
++
++testcase_5()
++{
++	EXPECT_PASS echo xx \> memory.force_empty
++}
++
++testcase_6()
++{
++	# writing to non-empty top mem cgroup's force_empty
++	# should return failure
++	EXPECT_FAIL echo 1 \> /dev/memcg/memory.force_empty
++}
++
++run_tests
++tst_exit
 diff --git a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-index 1bb75d0..fadbcea 100755
+deleted file mode 100755
+index fadbcea..0000000
 --- a/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_function_test.sh
-@@ -41,54 +41,54 @@ LOCAL_CLEANUP=shmmax_cleanup
- # Case 1 - 10: Test the management and counting of memory
- testcase_1()
- {
--	test_mem_stat "--mmap-anon" $PAGESIZE "rss" $PAGESIZE 0
-+	test_mem_stat "--mmap-anon" $PAGESIZE $PAGESIZE "rss" $PAGESIZE false
- }
- 
- testcase_2()
- {
--	test_mem_stat "--mmap-file" $PAGESIZE "rss" 0 0
-+	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 false
- }
- 
- testcase_3()
- {
--	test_mem_stat "--shm -k 3" $PAGESIZE "rss" 0 0
-+	test_mem_stat "--shm -k 3" $PAGESIZE $PAGESIZE "rss" 0 false
- }
- 
- testcase_4()
- {
--	test_mem_stat "--mmap-anon --mmap-file --shm" $PAGESIZE "rss" \
--		$PAGESIZE 0
-+	test_mem_stat "--mmap-anon --mmap-file --shm" \
-+		$PAGESIZE $((PAGESIZE*3)) "rss" $PAGESIZE false
- }
- 
- testcase_5()
- {
--	test_mem_stat "--mmap-lock1" $PAGESIZE "rss" $PAGESIZE 0
-+	test_mem_stat "--mmap-lock1" $PAGESIZE $PAGESIZE "rss" $PAGESIZE false
- }
- 
- testcase_6()
- {
--	test_mem_stat "--mmap-anon" $PAGESIZE "rss" $PAGESIZE 1
-+	test_mem_stat "--mmap-anon" $PAGESIZE $PAGESIZE "rss" $PAGESIZE true
- }
- 
- testcase_7()
- {
--	test_mem_stat "--mmap-file" $PAGESIZE "rss" 0 1
-+	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 true
- }
- 
- testcase_8()
- {
--	test_mem_stat "--shm -k 8" $PAGESIZE "rss" 0 1
-+	test_mem_stat "--shm -k 8" $PAGESIZE $PAGESIZE "rss" 0 true
- }
- 
- testcase_9()
- {
--	test_mem_stat "--mmap-anon --mmap-file --shm" $PAGESIZE "rss" \
--		$PAGESIZE 1
-+	test_mem_stat "--mmap-anon --mmap-file --shm" \
-+		$PAGESIZE $((PAGESIZE*3)) "rss" $PAGESIZE true
- }
- 
- testcase_10()
- {
--	test_mem_stat "--mmap-lock1" $PAGESIZE "rss" $PAGESIZE 1
-+	test_mem_stat "--mmap-lock1" $PAGESIZE $PAGESIZE "rss" $PAGESIZE true
- }
- 
- # Case 11 - 13: Test memory.failcnt
-@@ -211,7 +211,7 @@ testcase_29()
- 	pid=$!
- 	TST_CHECKPOINT_WAIT 0
- 	echo $pid > tasks
--	signal_memcg_process $pid
-+	signal_memcg_process $pid $PAGESIZE
- 	echo $pid > ../tasks
- 
- 	# This expects that there is swap configured
-@@ -226,7 +226,7 @@ testcase_30()
- 	pid=$!
- 	TST_CHECKPOINT_WAIT 0
- 	echo $pid > tasks
--	signal_memcg_process $pid
-+	signal_memcg_process $pid $PAGESIZE
- 
- 	EXPECT_FAIL echo 1 \> memory.force_empty
- 
++++ /dev/null
+@@ -1,286 +0,0 @@
+-#! /bin/sh
+-
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) 2009 FUJITSU LIMITED                                         ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-## Author: Li Zefan <lizf@cn.fujitsu.com>                                     ##
+-## Restructure for LTP: Shi Weihua <shiwh@cn.fujitsu.com>                     ##
+-## Added memcg enable/disable functinality: Rishikesh K Rajak		      ##
+-##						<risrajak@linux.vnet.ibm.com  ##
+-##                                                                            ##
+-################################################################################
+-
+-TCID="memcg_function_test"
+-TST_TOTAL=38
+-
+-shmmax_cleanup()
+-{
+-	if [ -n "$shmmax" ]; then
+-		echo "$shmmax" > /proc/sys/kernel/shmmax
+-	fi
+-}
+-LOCAL_CLEANUP=shmmax_cleanup
+-
+-. memcg_lib.sh
+-
+-# Case 1 - 10: Test the management and counting of memory
+-testcase_1()
+-{
+-	test_mem_stat "--mmap-anon" $PAGESIZE $PAGESIZE "rss" $PAGESIZE false
+-}
+-
+-testcase_2()
+-{
+-	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 false
+-}
+-
+-testcase_3()
+-{
+-	test_mem_stat "--shm -k 3" $PAGESIZE $PAGESIZE "rss" 0 false
+-}
+-
+-testcase_4()
+-{
+-	test_mem_stat "--mmap-anon --mmap-file --shm" \
+-		$PAGESIZE $((PAGESIZE*3)) "rss" $PAGESIZE false
+-}
+-
+-testcase_5()
+-{
+-	test_mem_stat "--mmap-lock1" $PAGESIZE $PAGESIZE "rss" $PAGESIZE false
+-}
+-
+-testcase_6()
+-{
+-	test_mem_stat "--mmap-anon" $PAGESIZE $PAGESIZE "rss" $PAGESIZE true
+-}
+-
+-testcase_7()
+-{
+-	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 true
+-}
+-
+-testcase_8()
+-{
+-	test_mem_stat "--shm -k 8" $PAGESIZE $PAGESIZE "rss" 0 true
+-}
+-
+-testcase_9()
+-{
+-	test_mem_stat "--mmap-anon --mmap-file --shm" \
+-		$PAGESIZE $((PAGESIZE*3)) "rss" $PAGESIZE true
+-}
+-
+-testcase_10()
+-{
+-	test_mem_stat "--mmap-lock1" $PAGESIZE $PAGESIZE "rss" $PAGESIZE true
+-}
+-
+-# Case 11 - 13: Test memory.failcnt
+-testcase_11()
+-{
+-	echo $PAGESIZE > memory.limit_in_bytes
+-	malloc_free_memory "--mmap-anon" $(($PAGESIZE*2))
+-	test_failcnt "memory.failcnt"
+-}
+-
+-testcase_12()
+-{
+-	echo $PAGESIZE > memory.limit_in_bytes
+-	malloc_free_memory "--mmap-file" $(($PAGESIZE*2))
+-	test_failcnt "memory.failcnt"
+-}
+-
+-testcase_13()
+-{
+-	echo $PAGESIZE > memory.limit_in_bytes
+-	malloc_free_memory "--shm" $(($PAGESIZE*2))
+-	test_failcnt "memory.failcnt"
+-}
+-
+-# Case 14 - 15: Test mmap(locked) + alloc_mem > limit_in_bytes
+-testcase_14()
+-{
+-	test_proc_kill $PAGESIZE "--mmap-lock1" $((PAGESIZE*2)) 0
+-}
+-
+-testcase_15()
+-{
+-	test_proc_kill $PAGESIZE "--mmap-lock2" $((PAGESIZE*2)) 0
+-}
+-
+-# Case 16 - 18: Test swapoff + alloc_mem > limi_in_bytes
+-testcase_16()
+-{
+-	swapoff -a
+-	test_proc_kill $PAGESIZE "--mmap-anon" $((PAGESIZE*2)) 0
+-	swapon -a
+-}
+-
+-testcase_17()
+-{
+-	swapoff -a
+-	test_proc_kill $PAGESIZE "--mmap-file" $((PAGESIZE*2)) 0
+-	swapon -a
+-}
+-
+-testcase_18()
+-{
+-	swapoff -a
+-	test_proc_kill $PAGESIZE "--shm -k 18" $((PAGESIZE*2)) 0
+-	swapon -a
+-}
+-
+-# Case 19 - 21: Test limit_in_bytes == 0
+-testcase_19()
+-{
+-	test_proc_kill 0 "--mmap-anon" $PAGESIZE 0
+-}
+-
+-testcase_20()
+-{
+-	test_proc_kill 0 "--mmap-file" $PAGESIZE 0
+-}
+-
+-testcase_21()
+-{
+-	test_proc_kill 0 "--shm -k 21" $PAGESIZE 0
+-}
+-
+-# Case 22 - 24: Test limit_in_bytes will be aligned to PAGESIZE
+-testcase_22()
+-{
+-	test_limit_in_bytes $((PAGESIZE-1)) 0
+-}
+-
+-testcase_23()
+-{
+-	test_limit_in_bytes $((PAGESIZE+1)) 0
+-}
+-
+-testcase_24()
+-{
+-	test_limit_in_bytes 1 0
+-}
+-
+-# Case 25 - 28: Test invaild memory.limit_in_bytes
+-testcase_25()
+-{
+-	tst_kvercmp 2 6 31
+-	if [ $? -eq 0 ]; then
+-		EXPECT_FAIL echo -1 \> memory.limit_in_bytes
+-	else
+-		EXPECT_PASS echo -1 \> memory.limit_in_bytes
+-	fi
+-}
+-
+-testcase_26()
+-{
+-	EXPECT_FAIL echo 1.0 \> memory.limit_in_bytes
+-}
+-
+-testcase_27()
+-{
+-	EXPECT_FAIL echo 1xx \> memory.limit_in_bytes
+-}
+-
+-testcase_28()
+-{
+-	EXPECT_FAIL echo xx \> memory.limit_in_bytes
+-}
+-
+-# Case 29 - 35: Test memory.force_empty
+-testcase_29()
+-{
+-	memcg_process --mmap-anon -s $PAGESIZE &
+-	pid=$!
+-	TST_CHECKPOINT_WAIT 0
+-	echo $pid > tasks
+-	signal_memcg_process $pid $PAGESIZE
+-	echo $pid > ../tasks
+-
+-	# This expects that there is swap configured
+-	EXPECT_PASS echo 1 \> memory.force_empty
+-
+-	stop_memcg_process $pid
+-}
+-
+-testcase_30()
+-{
+-	memcg_process --mmap-lock2 -s $PAGESIZE &
+-	pid=$!
+-	TST_CHECKPOINT_WAIT 0
+-	echo $pid > tasks
+-	signal_memcg_process $pid $PAGESIZE
+-
+-	EXPECT_FAIL echo 1 \> memory.force_empty
+-
+-	stop_memcg_process $pid
+-}
+-
+-testcase_31()
+-{
+-	EXPECT_PASS echo 0 \> memory.force_empty
+-}
+-
+-testcase_32()
+-{
+-	EXPECT_PASS echo 1.0 \> memory.force_empty
+-}
+-
+-testcase_33()
+-{
+-	EXPECT_PASS echo 1xx \> memory.force_empty
+-}
+-
+-testcase_34()
+-{
+-	EXPECT_PASS echo xx \> memory.force_empty
+-}
+-
+-testcase_35()
+-{
+-	# writing to non-empty top mem cgroup's force_empty
+-	# should return failure
+-	EXPECT_FAIL echo 1 \> /dev/memcg/memory.force_empty
+-}
+-
+-# Case 36 - 38: Test that group and subgroup have no relationship
+-testcase_36()
+-{
+-	test_subgroup $PAGESIZE $((2*PAGESIZE))
+-}
+-
+-testcase_37()
+-{
+-	test_subgroup $PAGESIZE $PAGESIZE
+-}
+-
+-testcase_38()
+-{
+-	test_subgroup $PAGESIZE 0
+-}
+-
+-shmmax=`cat /proc/sys/kernel/shmmax`
+-if [ $shmmax -lt $HUGEPAGESIZE ]; then
+-	ROD echo "$HUGEPAGESIZE" \> /proc/sys/kernel/shmmax
+-fi
+-
+-run_tests
+-
+-tst_exit
 diff --git a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-index 26d2783..d9272cd 100755
+index d9272cd..fe8c94a 100755
 --- a/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
 +++ b/testcases/kernel/controllers/memcg/functional/memcg_lib.sh
-@@ -89,25 +89,45 @@ check_mem_stat()
+@@ -69,6 +69,21 @@ cleanup()
+ }
+ TST_CLEANUP=cleanup
  
- signal_memcg_process()
- {
--	pid=$1
-+	local pid=$1
-+	local size=$2
-+	local path=$3
-+	local usage_start=$(cat ${path}memory.usage_in_bytes)
-+
- 	kill -s USR1 $pid 2> /dev/null
--	sleep 1
-+
-+	if [ -z "$size" ]; then
-+		return
++shmmax_setup()
++{
++	shmmax=`cat /proc/sys/kernel/shmmax`
++	if [ $shmmax -lt $HUGEPAGESIZE ]; then
++		ROD echo "$HUGEPAGESIZE" \> /proc/sys/kernel/shmmax
 +	fi
++}
 +
-+	while kill -0 $pid 2> /dev/null; do
-+		local usage=$(cat ${path}memory.usage_in_bytes)
-+		local diff_a=$((usage_start - usage))
-+		local diff_b=$((usage - usage_start))
++shmmax_cleanup()
++{
++	if [ -n "$shmmax" ]; then
++		echo "$shmmax" > /proc/sys/kernel/shmmax
++	fi
++}
 +
-+		if [ "$diff_a" -ge "$size" -o "$diff_b" -ge "$size" ]; then
-+			return
-+		fi
+ # Check size in memcg
+ # $1 - Item name
+ # $2 - Expected size
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_limit_in_bytes.sh b/testcases/kernel/controllers/memcg/functional/memcg_limit_in_bytes.sh
+new file mode 100755
+index 0000000..478ad5c
+--- /dev/null
++++ b/testcases/kernel/controllers/memcg/functional/memcg_limit_in_bytes.sh
+@@ -0,0 +1,127 @@
++#!/bin/sh
 +
-+		tst_sleep 100ms
-+	done
- }
- 
- stop_memcg_process()
- {
--	pid=$1
-+	local pid=$1
- 	kill -s INT $pid 2> /dev/null
- 	wait $pid
- }
- 
- warmup()
- {
--	pid=$1
-+	local pid=$1
- 
- 	tst_resm TINFO "Warming up pid: $pid"
- 	signal_memcg_process $pid
- 	signal_memcg_process $pid
-+	sleep 1
- 
- 	kill -0 $pid
- 	if [ $? -ne 0 ]; then
-@@ -123,15 +143,17 @@ warmup()
- 
- # Run test cases which checks memory.stat after make
- # some memory allocation
--# $1 - the parameters of 'process', such as --shm
--# $2 - the -s parameter of 'process', such as 4096
--# $3 - item name in memory.stat
--# $4 - the expected size
--# $5 - check after free ?
- test_mem_stat()
- {
--	tst_resm TINFO "Running memcg_process $1 -s $2"
--	memcg_process $1 -s $2 &
-+	local memtypes="$1"
-+	local size=$2
-+	local total_size=$3
-+	local stat_name=$4
-+	local exp_stat_size=$5
-+	local check_after_free=$6
++################################################################################
++##                                                                            ##
++## Copyright (c) 2009 FUJITSU LIMITED                                         ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
++##                                                                            ##
++## Author: Li Zefan <lizf@cn.fujitsu.com>                                     ##
++## Restructure for LTP: Shi Weihua <shiwh@cn.fujitsu.com>                     ##
++## Added memcg enable/disable functinality: Rishikesh K Rajak		      ##
++##						<risrajak@linux.vnet.ibm.com  ##
++##                                                                            ##
++################################################################################
 +
-+	tst_resm TINFO "Running memcg_process $memtypes -s $size"
-+	memcg_process $memtypes -s $size &
- 	TST_CHECKPOINT_WAIT 0
- 
- 	warmup $!
-@@ -140,13 +162,13 @@ test_mem_stat()
- 	fi
- 
- 	echo $! > tasks
--	signal_memcg_process $!
-+	signal_memcg_process $! $size
- 
--	check_mem_stat $3 $4
-+	check_mem_stat $stat_name $exp_stat_size
- 
--	signal_memcg_process $!
--	if [ $5 -eq 1 ]; then
--		check_mem_stat $3 0
-+	signal_memcg_process $! $size
-+	if $check_after_free; then
-+		check_mem_stat $stat_name 0
- 	fi
- 
- 	stop_memcg_process $!
-@@ -171,8 +193,8 @@ test_max_usage_in_bytes()
- 	fi
- 
- 	echo $! > tasks
--	signal_memcg_process $!
--	signal_memcg_process $!
-+	signal_memcg_process $! $2
-+	signal_memcg_process $! $2
- 
- 	check_mem_stat $3 $4
- 
-@@ -194,8 +216,8 @@ malloc_free_memory()
- 	TST_CHECKPOINT_WAIT 0
- 
- 	echo $! > tasks
--	signal_memcg_process $!
--	signal_memcg_process $!
-+	signal_memcg_process $! $2
-+	signal_memcg_process $! $2
- 
- 	stop_memcg_process $!
- }
-@@ -234,7 +256,7 @@ test_proc_kill()
- 	TST_CHECKPOINT_WAIT 0
- 	echo $pid > tasks
- 
--	signal_memcg_process $pid
-+	signal_memcg_process $pid $3
- 
- 	tpk_pid_exists=1
- 	for tpk_iter in $(seq 20); do
-@@ -311,7 +333,7 @@ test_hugepage()
- 	memcg_process $2 --hugepage -s $3 > $TMP_FILE 2>&1 &
- 	TST_CHECKPOINT_WAIT 0
- 
--	signal_memcg_process $!
-+	signal_memcg_process $! $3
- 
- 	check_mem_stat "rss" 0
- 
-@@ -323,14 +345,14 @@ test_hugepage()
- 		if [ $? -eq 0 ]; then
- 			tst_resm TPASS "allocate hugepage failed as expected"
- 		else
--			signal_memcg_process $!
-+			signal_memcg_process $! $3
- 			stop_memcg_process $!
- 			tst_resm TFAIL "allocate hugepage should fail"
- 		fi
- 	else
- 		test ! -s $TMP_FILE
- 		if [ $? -eq 0 ]; then
--			signal_memcg_process $!
-+			signal_memcg_process $! $3
- 			stop_memcg_process $!
- 			tst_resm TPASS "allocate hugepage succeeded"
- 		else
-@@ -358,13 +380,13 @@ test_subgroup()
- 	memcg_process --mmap-anon -s $PAGESIZE &
- 	TST_CHECKPOINT_WAIT 0
- 
--	warmup $!
-+	warmup $! $PAGESIZE
- 	if [ $? -ne 0 ]; then
- 		return
- 	fi
- 
- 	echo $! > tasks
--	signal_memcg_process $!
-+	signal_memcg_process $! $PAGESIZE
- 	check_mem_stat "rss" $PAGESIZE
- 
- 	cd subgroup
-@@ -379,17 +401,21 @@ test_subgroup()
- }
- 
- # Run test cases which test memory.move_charge_at_immigrate
--# $1 - the parameters of 'process', such as --shm
--# $2 - the -s parameter of 'process', such as 4096
--# $3 - some positive value, such as 1
--# $4 - the expected size
--# $5 - the expected size
- test_move_charge()
- {
-+	local memtypes="$1"
-+	local size=$2
-+	local total_size=$3
-+	local move_charge_mask=$4
-+	local b_rss=$5
-+	local b_cache=$6
-+	local a_rss=$7
-+	local a_cache=$8
++TCID="memcg_limit_in_bytes"
++TST_TOTAL=15
 +
- 	mkdir subgroup_a
- 
--	tst_resm TINFO "Running memcg_process $1 -s $2"
--	memcg_process $1 -s $2 &
-+	tst_resm TINFO "Running memcg_process $memtypes -s $size"
-+	memcg_process $memtypes -s $size &
- 	TST_CHECKPOINT_WAIT 0
- 	warmup $!
- 	if [ $? -ne 0 ]; then
-@@ -398,22 +424,19 @@ test_move_charge()
- 	fi
- 
- 	echo $! > subgroup_a/tasks
--	signal_memcg_process $!
-+	signal_memcg_process $! $total_size "subgroup_a/"
- 
- 	mkdir subgroup_b
--	echo $3 > subgroup_b/memory.move_charge_at_immigrate
-+	echo $move_charge_mask > subgroup_b/memory.move_charge_at_immigrate
- 	echo $! > subgroup_b/tasks
- 
- 	cd subgroup_b
--	check_mem_stat "rss" $4
--	check_mem_stat "cache" $5
-+	check_mem_stat "rss" $b_rss
-+	check_mem_stat "cache" $b_cache
- 	cd ../subgroup_a
--	check_mem_stat "rss" $6
--	check_mem_stat "cache" $7
--
-+	check_mem_stat "rss" $a_rss
-+	check_mem_stat "cache" $a_cache
- 	cd ..
--	echo $! > tasks
--	signal_memcg_process $!
- 	stop_memcg_process $!
- 	rmdir subgroup_a subgroup_b
- }
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh
-index aeb7d0f..6cdc7ed 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_move_charge_at_immigrate_test.sh
-@@ -34,27 +34,28 @@ TST_TOTAL=4
- # Test disable moving charges
- testcase_1()
- {
--	test_move_charge "--mmap-anon" $PAGESIZE  0 0 0 $PAGESIZE 0
-+	test_move_charge "--mmap-anon" $PAGESIZE $PAGESIZE 0 0 0 $PAGESIZE 0
- }
- 
- # Test move anon
- testcase_2()
- {
--	test_move_charge "--mmap-anon --shm --mmap-file" $PAGESIZE 1 \
--		$PAGESIZE 0 0 $((PAGESIZE*2))
-+	test_move_charge "--mmap-anon --shm --mmap-file" $PAGESIZE \
-+		$((PAGESIZE*3)) 1 $PAGESIZE 0 0 $((PAGESIZE*2))
- }
- 
- # Test move file
- testcase_3()
- {
--	test_move_charge "--mmap-anon --shm --mmap-file" $PAGESIZE 2 \
--		0 $((PAGESIZE*2)) $PAGESIZE 0
-+	test_move_charge "--mmap-anon --shm --mmap-file" $PAGESIZE \
-+		$((PAGESIZE*3)) 2 0 $((PAGESIZE*2)) $PAGESIZE 0
- }
- 
- # Test move anon and file
- testcase_4()
- {
--	test_move_charge "--mmap-anon --shm" $PAGESIZE 3 $PAGESIZE $PAGESIZE 0 0
-+	test_move_charge "--mmap-anon --shm" $PAGESIZE \
-+		$((PAGESIZE*2)) 3 $PAGESIZE $PAGESIZE 0 0
- }
- 
- run_tests
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-index 1f28aa4..2c47a92 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_stat_test.sh
-@@ -34,25 +34,28 @@ TST_TOTAL=8
- # Test cache
- testcase_1()
- {
--	test_mem_stat "--shm -k 3" $PAGESIZE "cache" $PAGESIZE 0
-+	test_mem_stat "--shm -k 3" $PAGESIZE $PAGESIZE "cache" $PAGESIZE false
- }
- 
- # Test mapped_file
- testcase_2()
- {
--	test_mem_stat "--mmap-file" $PAGESIZE "mapped_file" $PAGESIZE 0
-+	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE \
-+		"mapped_file" $PAGESIZE false
- }
- 
- # Test unevictable with MAP_LOCKED
- testcase_3()
- {
--	test_mem_stat "--mmap-lock1" $PAGESIZE "unevictable" $PAGESIZE 0
-+	test_mem_stat "--mmap-lock1" $PAGESIZE $PAGESIZE \
-+		"unevictable" $PAGESIZE false
- }
- 
- # Test unevictable with mlock
- testcase_4()
- {
--	test_mem_stat "--mmap-lock2" $PAGESIZE "unevictable" $PAGESIZE 0
-+	test_mem_stat "--mmap-lock2" $PAGESIZE $PAGESIZE \
-+		"unevictable" $PAGESIZE false
- }
- 
- # Test hierarchical_memory_limit with enabling hierarchical accounting
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh b/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh
-index ab86318..69dc874 100755
---- a/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_usage_in_bytes_test.sh
-@@ -34,7 +34,7 @@ TST_TOTAL=2
- # Test memory.usage_in_bytes
- testcase_1()
- {
--	test_mem_stat "--mmap-anon" $((PAGESIZE*1024)) \
-+	test_mem_stat "--mmap-anon" $((PAGESIZE*1024)) $((PAGESIZE*1024)) \
- 		"memory.usage_in_bytes" $((PAGESIZE*1024)) 0
- }
- 
-@@ -48,7 +48,7 @@ testcase_2()
- 
- 	echo $((PAGESIZE*2048)) > memory.limit_in_bytes
- 	echo $((PAGESIZE*2048)) > memory.memsw.limit_in_bytes
--	test_mem_stat "--mmap-anon" $((PAGESIZE*1024)) \
-+	test_mem_stat "--mmap-anon" $((PAGESIZE*1024)) $((PAGESIZE*1024)) \
- 		"memory.memsw.usage_in_bytes" $((PAGESIZE*1024)) 0
- }
- 
++. memcg_lib.sh
++
++# Test mmap(locked) + alloc_mem > limit_in_bytes
++testcase_1()
++{
++	test_proc_kill $PAGESIZE "--mmap-lock1" $((PAGESIZE*2)) 0
++}
++
++testcase_2()
++{
++	test_proc_kill $PAGESIZE "--mmap-lock2" $((PAGESIZE*2)) 0
++}
++
++# Test swapoff + alloc_mem > limi_in_bytes
++testcase_3()
++{
++	swapoff -a
++	test_proc_kill $PAGESIZE "--mmap-anon" $((PAGESIZE*2)) 0
++	swapon -a
++}
++
++testcase_4()
++{
++	swapoff -a
++	test_proc_kill $PAGESIZE "--mmap-file" $((PAGESIZE*2)) 0
++	swapon -a
++}
++
++testcase_5()
++{
++	swapoff -a
++	test_proc_kill $PAGESIZE "--shm -k 18" $((PAGESIZE*2)) 0
++	swapon -a
++}
++
++# Test limit_in_bytes == 0
++testcase_6()
++{
++	test_proc_kill 0 "--mmap-anon" $PAGESIZE 0
++}
++
++testcase_7()
++{
++	test_proc_kill 0 "--mmap-file" $PAGESIZE 0
++}
++
++testcase_8()
++{
++	test_proc_kill 0 "--shm -k 21" $PAGESIZE 0
++}
++
++# Test limit_in_bytes will be aligned to PAGESIZE
++testcase_9()
++{
++	test_limit_in_bytes $((PAGESIZE-1)) 0
++}
++
++testcase_10()
++{
++	test_limit_in_bytes $((PAGESIZE+1)) 0
++}
++
++testcase_11()
++{
++	test_limit_in_bytes 1 0
++}
++
++# Test invalid memory.limit_in_bytes
++testcase_12()
++{
++	tst_kvercmp 2 6 31
++	if [ $? -eq 0 ]; then
++		EXPECT_FAIL echo -1 \> memory.limit_in_bytes
++	else
++		EXPECT_PASS echo -1 \> memory.limit_in_bytes
++	fi
++}
++
++testcase_13()
++{
++	EXPECT_FAIL echo 1.0 \> memory.limit_in_bytes
++}
++
++testcase_14()
++{
++	EXPECT_FAIL echo 1xx \> memory.limit_in_bytes
++}
++
++testcase_15()
++{
++	EXPECT_FAIL echo xx \> memory.limit_in_bytes
++}
++
++shmmax_setup
++LOCAL_CLEANUP=shmmax_cleanup
++run_tests
++tst_exit
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_stat_rss.sh b/testcases/kernel/controllers/memcg/functional/memcg_stat_rss.sh
+new file mode 100755
+index 0000000..a41e157
+--- /dev/null
++++ b/testcases/kernel/controllers/memcg/functional/memcg_stat_rss.sh
+@@ -0,0 +1,89 @@
++#!/bin/sh
++
++################################################################################
++##                                                                            ##
++## Copyright (c) 2009 FUJITSU LIMITED                                         ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
++##                                                                            ##
++## Author: Li Zefan <lizf@cn.fujitsu.com>                                     ##
++## Restructure for LTP: Shi Weihua <shiwh@cn.fujitsu.com>                     ##
++## Added memcg enable/disable functinality: Rishikesh K Rajak		      ##
++##						<risrajak@linux.vnet.ibm.com  ##
++##                                                                            ##
++################################################################################
++
++TCID="memcg_stat_rss"
++TST_TOTAL=10
++
++. memcg_lib.sh
++
++# Test the management and counting of memory
++testcase_1()
++{
++	test_mem_stat "--mmap-anon" $PAGESIZE $PAGESIZE "rss" $PAGESIZE false
++}
++
++testcase_2()
++{
++	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 false
++}
++
++testcase_3()
++{
++	test_mem_stat "--shm -k 3" $PAGESIZE $PAGESIZE "rss" 0 false
++}
++
++testcase_4()
++{
++	test_mem_stat "--mmap-anon --mmap-file --shm" \
++		$PAGESIZE $((PAGESIZE*3)) "rss" $PAGESIZE false
++}
++
++testcase_5()
++{
++	test_mem_stat "--mmap-lock1" $PAGESIZE $PAGESIZE "rss" $PAGESIZE false
++}
++
++testcase_6()
++{
++	test_mem_stat "--mmap-anon" $PAGESIZE $PAGESIZE "rss" $PAGESIZE true
++}
++
++testcase_7()
++{
++	test_mem_stat "--mmap-file" $PAGESIZE $PAGESIZE "rss" 0 true
++}
++
++testcase_8()
++{
++	test_mem_stat "--shm -k 8" $PAGESIZE $PAGESIZE "rss" 0 true
++}
++
++testcase_9()
++{
++	test_mem_stat "--mmap-anon --mmap-file --shm" \
++		$PAGESIZE $((PAGESIZE*3)) "rss" $PAGESIZE true
++}
++
++testcase_10()
++{
++	test_mem_stat "--mmap-lock1" $PAGESIZE $PAGESIZE "rss" $PAGESIZE true
++}
++
++shmmax_setup
++LOCAL_CLEANUP=shmmax_cleanup
++run_tests
++tst_exit
+diff --git a/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+new file mode 100755
+index 0000000..2efe291
+--- /dev/null
++++ b/testcases/kernel/controllers/memcg/functional/memcg_subgroup_charge.sh
+@@ -0,0 +1,50 @@
++#!/bin/sh
++
++################################################################################
++##                                                                            ##
++## Copyright (c) 2009 FUJITSU LIMITED                                         ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software Foundation,   ##
++## Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA           ##
++##                                                                            ##
++## Author: Li Zefan <lizf@cn.fujitsu.com>                                     ##
++## Restructure for LTP: Shi Weihua <shiwh@cn.fujitsu.com>                     ##
++## Added memcg enable/disable functinality: Rishikesh K Rajak		      ##
++##						<risrajak@linux.vnet.ibm.com  ##
++##                                                                            ##
++################################################################################
++
++TCID="memcg_subgroup_charge"
++TST_TOTAL=3
++
++. memcg_lib.sh
++
++# Case 36 - 38: Test that group and subgroup have no relationship
++testcase_36()
++{
++	test_subgroup $PAGESIZE $((2*PAGESIZE))
++}
++
++testcase_37()
++{
++	test_subgroup $PAGESIZE $PAGESIZE
++}
++
++testcase_38()
++{
++	test_subgroup $PAGESIZE 0
++}
++
++run_tests
++tst_exit
 -- 
 2.7.3
 
