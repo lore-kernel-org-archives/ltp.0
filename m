@@ -1,59 +1,70 @@
-From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Date: Wed, 31 Aug 2016 16:39:48 -0700
-Subject: [LTP]  tst_atomic: add atomic_add_return for ARC
-Message-ID: <1472686788-8992-1-git-send-email-vgupta@synopsys.com>
+From: Artem Savkov <asavkov@redhat.com>
+Date: Thu,  1 Sep 2016 11:06:13 +0200
+Subject: [LTP] [PATCH] utimensat: fix immutable file retcodes for 4.8.0 and
+	newer.
+Message-ID: <1472720773-9914-1-git-send-email-asavkov@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
----
- include/tst_atomic.h | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+Kernel 4.8.0 contains patch "337684a fs: return EPERM on immutable inode" that
+makes operations on immutable files return EPERM instead of EACCESS.
 
-diff --git a/include/tst_atomic.h b/include/tst_atomic.h
-index cfe9b4f4b4df..799d7356b97a 100644
---- a/include/tst_atomic.h
-+++ b/include/tst_atomic.h
-@@ -101,6 +101,36 @@ static inline int tst_atomic_add_return(int i, int *v)
+Adjust utimensat test to check new retcode for kernels 4.8.0 and newer.
+
+Signed-off-by: Artem Savkov <asavkov@redhat.com>
+---
+ testcases/kernel/syscalls/utimensat/utimensat_tests.sh | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+index 4ae8651..708d454 100755
+--- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
++++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
+@@ -30,6 +30,15 @@ if tst_kvercmp 2 6 22 ; then
+ 	tst_brkm TCONF "System kernel version is less than 2.6.22,cannot execute test"
+ fi
  
- 	return old_val + i;
- }
++# Starting with 4.8.0 operations on immutable files return EPERM instead of
++# EACCES.
++if tst_kvercmp 4 8 0; then
++	imaccess=EACCES
++else
++	imaccess=EPERM
++fi
 +
-+#elif defined(__arc__)
 +
-+/*ARCv2 defines the smp barriers */
-+#ifdef __ARC700__
-+#define smp_mb()
-+#else
-+#define smp_mb()	asm volatile("dmb 3\n" : : : "memory")
-+#endif
-+
-+static inline int tst_atomic_add_return(int i, int *v)
-+{
-+	unsigned int val;
-+
-+	smp_mb();
-+
-+	asm volatile(
-+		"1:	llock   %[val], [%[ctr]]	\n"
-+		"	add     %[val], %[val], %[i]	\n"
-+		"	scond   %[val], [%[ctr]]	\n"
-+		"	bnz     1b			\n"
-+		: [val]	"=&r"	(val)
-+		: [ctr]	"r"	(v),
-+		  [i]	"ir"	(i)
-+		: "cc", "memory");
-+
-+	smp_mb();
-+
-+	return val;
-+}
- #else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
- # error Your compiler does not provide __sync_add_and_fetch and LTP\
- 	implementation is missing for your architecture.
+ RESULT_FILE=$TMPDIR/utimensat.result
+ 
+ TEST_DIR=$TMPDIR/utimensat_tests
+@@ -415,10 +424,10 @@ echo "Testing immutable file, owned by self"
+ echo
+ 
+ echo "***** Testing times==NULL case *****"
+-run_test -W "" 600 "+i" "" EACCES
++run_test -W "" 600 "+i" "" $imaccess
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test -W "" 600 "+i" "0 n 0 n" EACCES
++run_test -W "" 600 "+i" "0 n 0 n" $imaccess
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+ run_test -W "" 600 "+i" "0 o 0 o" SUCCESS n n
+@@ -441,10 +450,10 @@ echo "Testing immutable append-only file, owned by self"
+ echo
+ 
+ echo "***** Testing times==NULL case *****"
+-run_test -W "" 600 "+ai" "" EACCES
++run_test -W "" 600 "+ai" "" $imaccess
+ 
+ echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
+-run_test -W "" 600 "+ai" "0 n 0 n" EACCES
++run_test -W "" 600 "+ai" "0 n 0 n" $imaccess
+ 
+ echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
+ run_test -W "" 600 "+ai" "0 o 0 o" SUCCESS n n
 -- 
 2.7.4
 
