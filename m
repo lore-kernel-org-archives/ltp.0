@@ -1,70 +1,70 @@
-From: Artem Savkov <asavkov@redhat.com>
-Date: Thu,  1 Sep 2016 11:06:13 +0200
-Subject: [LTP] [PATCH] utimensat: fix immutable file retcodes for 4.8.0 and
-	newer.
-Message-ID: <1472720773-9914-1-git-send-email-asavkov@redhat.com>
+From: naresh.kamboju@linaro.org <naresh.kamboju@linaro.org>
+Date: Thu,  1 Sep 2016 18:44:30 +0530
+Subject: [LTP] [PATCH] readahead02: fix read_ahead_kb file not found
+Message-ID: <1472735670-7688-1-git-send-email-naresh.kamboju@linaro.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Kernel 4.8.0 contains patch "337684a fs: return EPERM on immutable inode" that
-makes operations on immutable files return EPERM instead of EACCESS.
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-Adjust utimensat test to check new retcode for kernels 4.8.0 and newer.
+Test case is looking for read_ahead_kb file on a partition device (8:2) and
+not on block device (8:0/8:16/8:32/8:48). The appropriate block device that hold the
+partition can see the corrent queue/read_ahead_kb entry.
 
-Signed-off-by: Artem Savkov <asavkov@redhat.com>
+Before patch readahead02 test broken,
+readahead02    1  TBROK  :  safe_file_ops.c:144: Failed to open FILE
+'/sys/dev/block/8:2/queue/read_ahead_kb' for reading at
+readahead02.c:197: errno=ENOENT(2): No such file or directory
+
+After applying patch,
+readahead02    0  TINFO  :  creating test file of size: 67108864
+readahead02    0  TINFO  :  max readahead size is: 131072
+readahead02    0  TINFO  :  read_testfile(0)
+readahead02    0  TINFO  :  max readahead size is: 131072
+readahead02    0  TINFO  :  read_testfile(1)
+readahead02    0  TINFO  :  max readahead size is: 131072
+readahead02    1  TPASS  :  expected ret success - returned value = 0
+readahead02    2  TPASS  :  offset is still at 0 as expected
+readahead02    0  TINFO  :  read_testfile(0) took: 1437202 usec
+readahead02    0  TINFO  :  read_testfile(1) took: 1361915 usec
+readahead02    0  TINFO  :  read_testfile(0) read: 67108864 bytes
+readahead02    0  TINFO  :  read_testfile(1) read: 0 bytes
+readahead02    3  TPASS  :  readahead saved some I/O
+readahead02    0  TINFO  :  cache can hold at least: 157404 kB
+readahead02    0  TINFO  :  read_testfile(0) used cache: 65332 kB
+readahead02    0  TINFO  :  read_testfile(1) used cache: 65636 kB
+readahead02    4  TPASS  :  using cache as expected
+
+Patch tested on aarch64 and x86_64.
+
+Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 ---
- testcases/kernel/syscalls/utimensat/utimensat_tests.sh | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ testcases/kernel/syscalls/readahead/readahead02.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-index 4ae8651..708d454 100755
---- a/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-+++ b/testcases/kernel/syscalls/utimensat/utimensat_tests.sh
-@@ -30,6 +30,15 @@ if tst_kvercmp 2 6 22 ; then
- 	tst_brkm TCONF "System kernel version is less than 2.6.22,cannot execute test"
- fi
+diff --git a/testcases/kernel/syscalls/readahead/readahead02.c b/testcases/kernel/syscalls/readahead/readahead02.c
+index 53278be..97ab0a8 100644
+--- a/testcases/kernel/syscalls/readahead/readahead02.c
++++ b/testcases/kernel/syscalls/readahead/readahead02.c
+@@ -192,8 +192,13 @@ static long get_device_readahead(const char *fname)
  
-+# Starting with 4.8.0 operations on immutable files return EPERM instead of
-+# EACCES.
-+if tst_kvercmp 4 8 0; then
-+	imaccess=EACCES
-+else
-+	imaccess=EPERM
-+fi
-+
-+
- RESULT_FILE=$TMPDIR/utimensat.result
+ 	if (stat(fname, &st) == -1)
+ 		tst_brkm(TBROK | TERRNO, cleanup, "stat");
+-	snprintf(buf, sizeof(buf), "/sys/dev/block/%d:%d/queue/read_ahead_kb",
+-		 major(st.st_dev), minor(st.st_dev));
++	if (minor(st.st_dev)) {
++		snprintf(buf, sizeof(buf), "/sys/dev/block/%d:%d/../queue/read_ahead_kb",
++			major(st.st_dev), minor(st.st_dev));
++	} else {
++		snprintf(buf, sizeof(buf), "/sys/dev/block/%d:%d/queue/read_ahead_kb",
++			major(st.st_dev), minor(st.st_dev));
++	}
+ 	SAFE_FILE_SCANF(cleanup, buf, "%ld", &ra_kb);
  
- TEST_DIR=$TMPDIR/utimensat_tests
-@@ -415,10 +424,10 @@ echo "Testing immutable file, owned by self"
- echo
- 
- echo "***** Testing times==NULL case *****"
--run_test -W "" 600 "+i" "" EACCES
-+run_test -W "" 600 "+i" "" $imaccess
- 
- echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
--run_test -W "" 600 "+i" "0 n 0 n" EACCES
-+run_test -W "" 600 "+i" "0 n 0 n" $imaccess
- 
- echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
- run_test -W "" 600 "+i" "0 o 0 o" SUCCESS n n
-@@ -441,10 +450,10 @@ echo "Testing immutable append-only file, owned by self"
- echo
- 
- echo "***** Testing times==NULL case *****"
--run_test -W "" 600 "+ai" "" EACCES
-+run_test -W "" 600 "+ai" "" $imaccess
- 
- echo "***** Testing times=={ UTIME_NOW, UTIME_NOW } case *****"
--run_test -W "" 600 "+ai" "0 n 0 n" EACCES
-+run_test -W "" 600 "+ai" "0 n 0 n" $imaccess
- 
- echo "***** Testing times=={ UTIME_OMIT, UTIME_OMIT } case *****"
- run_test -W "" 600 "+ai" "0 o 0 o" SUCCESS n n
+ 	return ra_kb * 1024;
 -- 
-2.7.4
+1.9.1
 
