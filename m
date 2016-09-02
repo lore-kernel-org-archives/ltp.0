@@ -1,53 +1,23 @@
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri,  2 Sep 2016 15:24:02 +0300
-Subject: [LTP] [PATCH] memcg_process: cleanup the SHM segment
-Message-ID: <1472819042-25151-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+Date: Fri, 2 Sep 2016 17:12:32 +0300
+Subject: [LTP] [PATCH] lsmod01: parse a copy of /proc/modules
+In-Reply-To: <20160831135545.GB7346@rei.lan>
+References: <1472468916-13152-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20160831135545.GB7346@rei.lan>
+Message-ID: <57C988D0.5040202@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Let's mark the segment for removal right after we attach it.
-This way memcg* test cases will no longer leave unused
-segments after they finish.
+Hi,
 
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
----
- .../controllers/memcg/functional/memcg_process.c   |    9 ++++-----
- 1 files changed, 4 insertions(+), 5 deletions(-)
+On 08/31/2016 04:55 PM, Cyril Hrubis wrote:
+> Hi!
+> Thinking of this again, why don't we just compare the first two fields
+> of the output?
+> 
 
-diff --git a/testcases/kernel/controllers/memcg/functional/memcg_process.c b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-index fbb76e2..e2c60de 100644
---- a/testcases/kernel/controllers/memcg/functional/memcg_process.c
-+++ b/testcases/kernel/controllers/memcg/functional/memcg_process.c
-@@ -234,9 +234,6 @@ static void shm(void)
- 		if (key == -1)
- 			err(1, "ftok() failed");
- 
--		shmid = shmget(key, memsize, flag);
--		if (shmid == -1)
--			err(1, "shmget() failed");
- 		shmctl(shmid, IPC_RMID, NULL);
- 
- 		shmid = shmget(key, memsize, flag);
-@@ -248,12 +245,14 @@ static void shm(void)
- 			shmctl(shmid, IPC_RMID, NULL);
- 			err(1, "shmat() failed");
- 		}
-+
-+		if (shmctl(shmid, IPC_RMID, NULL) == -1)
-+			err(1, "shmctl() failed");
-+
- 		touch_memory(p, memsize);
- 	} else {
- 		if (shmdt(p) == -1)
- 			err(1, "shmdt() failed");
--		if (shmctl(shmid, IPC_RMID, NULL) == -1)
--			err(1, "shmctl() failed");
- 	}
- }
- 
--- 
-1.7.1
-
+I thought it would be an unnecessary narrowing of the test scope, i.e.
+why test 2 fields if we can test 3.
