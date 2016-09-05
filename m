@@ -1,12 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 5 Sep 2016 06:18:15 -0400 (EDT)
-Subject: [LTP] [PATCH 3/4] memcg_lib.sh: Get rid of sleep 1 in
- signal_memcg_process
-In-Reply-To: <57C94968.5070609@oracle.com>
-References: <1472750315-30848-1-git-send-email-chrubis@suse.cz>
- <1472750315-30848-3-git-send-email-chrubis@suse.cz>
- <57C94968.5070609@oracle.com>
-Message-ID: <1433899610.1780903.1473070695326.JavaMail.zimbra@redhat.com>
+Date: Mon, 5 Sep 2016 06:54:32 -0400 (EDT)
+Subject: [LTP] reason of pwritev01_64 failure on 32-bit arm
+In-Reply-To: <27af95c6-76ee-20f1-15e3-d84d729c1738@dev.rtsoft.ru>
+References: <27af95c6-76ee-20f1-15e3-d84d729c1738@dev.rtsoft.ru>
+Message-ID: <1364999776.1787180.1473072872777.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -18,37 +15,70 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> From: "Stanislav Kholmanskikh" <stanislav.kholmanskikh@oracle.com>
-> To: "Cyril Hrubis" <chrubis@suse.cz>, ltp@lists.linux.it
-> Sent: Friday, 2 September, 2016 11:42:00 AM
-> Subject: Re: [LTP] [PATCH 3/4] memcg_lib.sh: Get rid of sleep 1 in signal_memcg_process
+> From: "Nikita Yushchenko" <nyushchenko@dev.rtsoft.ru>
+> To: ltp@lists.linux.it
+> Cc: "arusalin" <arusalin@dev.rtsoft.ru>
+> Sent: Friday, 2 September, 2016 5:58:51 PM
+> Subject: [LTP] reason of pwritev01_64 failure on 32-bit arm
+> 
+> Hi,
+> 
+> I've reproduced and analyzed failure of pwritev01_64 described at [1]
+> 
+> [1] http://lists.linux.it/pipermail/ltp/2016-March/001201.html
 > 
 > 
-> > +
-> >  	kill -s USR1 $pid 2> /dev/null
-> > -	sleep 1
-> > +
-> > +	if [ -z "$size" ]; then
-> > +		return
-> > +	fi
-> > +
-> > +	while kill -0 $pid 2> /dev/null; do
-> > +		local usage=$(cat ${path}memory.usage_in_bytes)
-> > +		local diff_a=$((usage_start - usage))
-> > +		local diff_b=$((usage - usage_start))
-> > +
-> > +		if [ "$diff_a" -ge "$size" -o "$diff_b" -ge "$size" ]; then
-> > +			return
-> > +		fi
-> > +
-> > +		tst_sleep 100ms
-> > +	done
+> pwritev01_64 fail is an LTP issue
 > 
-> Maybe add some limit on the number of checks? In case the process
-> consumes less memory than in $size.
+> pwrite01 and pwrite01_64 are built from the same source, pwrite01.c
+> 64-bit version is built with additional define, -D_FILE_OFFSET_BITS=64,
+> which causes 'off_t' type defined by glibc to become 64-bit.
+> 
+> Problem is that both pwrite01.o and pwrite01_64.o link against the same
+> utility library, libltp
+> From this library, a routine called safe_pread() is used.
+> One of arguments of this routine has type off_t.
+> This means that ABI for this routine is different when built with
+> -D_FILE_OFFSET_BITS=64 and without it.
+> Library is built without -D_FILE_OFFSET_BITS=64, thus on 32-bit platform
+> safe_pread() inside library expects ABI with 32-bit 'off_t'. And
+> pwrite01_64.o, built with -D_FILE_OFFSET_BITS=64, uses different ABI.
+> 
+> If a copy of safe_pread() is injected inside pwrite01.c (and compile
+> issue is resolved), test passes.
+> 
+> In general, it is not safe to link together object files built with and
+> without -D_FILE_OFFSET_BITS=64, since that code is not always
+> binary-compatible.
+> 
+> 
+> On 64-bit platform, sizeof(off_t) is 8 both with and without
+> -D_FILE_OFFSET_BITS=64, this issue does not show.
 
-This was my concern as well, in unlikely case it won't get killed,
-we could loop here.
+Hi,
+
+Thanks for following up on this. Looks like we should do same thing for
+pread/pwrite as we already do for lseek, that is to move these
+from lib to headers as inline functions:
+
+$ grep -B2 off_t -r lib/*.c
+lib/safe_macros.c-ssize_t safe_pread(const char *file, const int lineno, void (*cleanup_fn)(void),
+lib/safe_macros.c-                 char len_strict, int fildes, void *buf, size_t nbyte,
+lib/safe_macros.c:                 off_t offset)
+--
+lib/safe_macros.c-ssize_t safe_pwrite(const char *file, const int lineno,
+lib/safe_macros.c-                  void (cleanup_fn) (void), char len_strict, int fildes,
+lib/safe_macros.c:                  const void *buf, size_t nbyte, off_t offset)
+
+Are you planning to submit a patch?
 
 Regards,
 Jan
+
+> 
+> WBR,
+> Nikita Yushchenko
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
