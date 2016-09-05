@@ -1,9 +1,9 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 5 Sep 2016 06:54:32 -0400 (EDT)
-Subject: [LTP] reason of pwritev01_64 failure on 32-bit arm
-In-Reply-To: <27af95c6-76ee-20f1-15e3-d84d729c1738@dev.rtsoft.ru>
-References: <27af95c6-76ee-20f1-15e3-d84d729c1738@dev.rtsoft.ru>
-Message-ID: <1364999776.1787180.1473072872777.JavaMail.zimbra@redhat.com>
+Date: Mon, 5 Sep 2016 07:01:36 -0400 (EDT)
+Subject: [LTP] [PATCH] overcommit_memory: Fix spelling mistake
+In-Reply-To: <1472781604-148934-1-git-send-email-cuibixuan@huawei.com>
+References: <1472781604-148934-1-git-send-email-cuibixuan@huawei.com>
+Message-ID: <1067513183.1787817.1473073296970.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,70 +15,19 @@ To: ltp@lists.linux.it
 
 
 ----- Original Message -----
-> From: "Nikita Yushchenko" <nyushchenko@dev.rtsoft.ru>
-> To: ltp@lists.linux.it
-> Cc: "arusalin" <arusalin@dev.rtsoft.ru>
-> Sent: Friday, 2 September, 2016 5:58:51 PM
-> Subject: [LTP] reason of pwritev01_64 failure on 32-bit arm
+> From: "Cui Bixuan" <cuibixuan@huawei.com>
+> To: ltp@lists.linux.it, lijinyue@huawei.com
+> Sent: Friday, 2 September, 2016 4:00:04 AM
+> Subject: [LTP]  [PATCH] overcommit_memory: Fix spelling mistake
 > 
-> Hi,
+> Fix spelling mistake for 'CommmitLimit'
 > 
-> I've reproduced and analyzed failure of pwritev01_64 described at [1]
-> 
-> [1] http://lists.linux.it/pipermail/ltp/2016-March/001201.html
-> 
-> 
-> pwritev01_64 fail is an LTP issue
-> 
-> pwrite01 and pwrite01_64 are built from the same source, pwrite01.c
-> 64-bit version is built with additional define, -D_FILE_OFFSET_BITS=64,
-> which causes 'off_t' type defined by glibc to become 64-bit.
-> 
-> Problem is that both pwrite01.o and pwrite01_64.o link against the same
-> utility library, libltp
-> From this library, a routine called safe_pread() is used.
-> One of arguments of this routine has type off_t.
-> This means that ABI for this routine is different when built with
-> -D_FILE_OFFSET_BITS=64 and without it.
-> Library is built without -D_FILE_OFFSET_BITS=64, thus on 32-bit platform
-> safe_pread() inside library expects ABI with 32-bit 'off_t'. And
-> pwrite01_64.o, built with -D_FILE_OFFSET_BITS=64, uses different ABI.
-> 
-> If a copy of safe_pread() is injected inside pwrite01.c (and compile
-> issue is resolved), test passes.
-> 
-> In general, it is not safe to link together object files built with and
-> without -D_FILE_OFFSET_BITS=64, since that code is not always
-> binary-compatible.
-> 
-> 
-> On 64-bit platform, sizeof(off_t) is 8 both with and without
-> -D_FILE_OFFSET_BITS=64, this issue does not show.
+> Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
+> ---
+>  testcases/kernel/mem/tunable/overcommit_memory.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Hi,
-
-Thanks for following up on this. Looks like we should do same thing for
-pread/pwrite as we already do for lseek, that is to move these
-from lib to headers as inline functions:
-
-$ grep -B2 off_t -r lib/*.c
-lib/safe_macros.c-ssize_t safe_pread(const char *file, const int lineno, void (*cleanup_fn)(void),
-lib/safe_macros.c-                 char len_strict, int fildes, void *buf, size_t nbyte,
-lib/safe_macros.c:                 off_t offset)
---
-lib/safe_macros.c-ssize_t safe_pwrite(const char *file, const int lineno,
-lib/safe_macros.c-                  void (cleanup_fn) (void), char len_strict, int fildes,
-lib/safe_macros.c:                  const void *buf, size_t nbyte, off_t offset)
-
-Are you planning to submit a patch?
+Pushed.
 
 Regards,
 Jan
-
-> 
-> WBR,
-> Nikita Yushchenko
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
