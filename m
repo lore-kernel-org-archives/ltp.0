@@ -1,75 +1,97 @@
 From: Zorro Lang <zlang@redhat.com>
-Date: Thu, 8 Sep 2016 22:08:14 +0800
-Subject: [LTP] [PATCH] runltp: add -R option for randomize test order
-In-Reply-To: <20160908131706.GA23863@rei>
-References: <1473339202-3047-1-git-send-email-zlang@redhat.com>
- <20160908131706.GA23863@rei>
-Message-ID: <20160908140814.GB12847@dhcp12-143.nay.redhat.com>
+Date: Thu,  8 Sep 2016 22:21:08 +0800
+Subject: [LTP] [PATCH v2] runltp: add -R option for randomize test order
+Message-ID: <1473344468-7835-1-git-send-email-zlang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-On Thu, Sep 08, 2016 at 03:17:06PM +0200, Cyril Hrubis wrote:
-> Hi!
-> > +#######################################################################
-> > +# Copyright (c) 2016 Red Hat Inc.,  All Rights Reserved.
-> > +#
-> > +# This program is free software; you can redistribute it and/or
-> > +# modify it under the terms of the GNU General Public License as
-> > +# published by the Free Software Foundation; either version 2 of
-> > +# the License, or (at your option) any later version.
-> > +#
-> > +# This program is distributed in the hope that it would be useful,
-> > +# but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > +# GNU General Public License for more details.
-> > +#
-> > +# You should have received a copy of the GNU General Public License
-> > +# along with this program; if not, see <http://www.gnu.org/licenses/>.
-> > +#
-> > +# Author: Zorro Lang <zlang@redhat.com>
-> > +#
-> > +#######################################################################
-> > +
-> > +# randomize all lines of stdin
-> > +
-> > +function randomize(array, N) {
-> > +	for(i = 0; i < N; i++) {
-> > +		j = int(rand()*N)
-> > +		if ( i != j) {
-> > +			tmp = array[i]
-> > +			array[i] = array[j]
-> > +			array[j] = tmp
-> > +		}
-> > +	}
-> > +	return
-> > +}
-> > +
-> > +{
-> > +	array[NR] = $0
-> > +}
-> > +
-> > +END {
-> > +	srand()
-> > +	randomize(array, NR)
-> > +	for(i = 0; i < NR; i++) printf("%s\n", array[i])
-> > +}
-> 
-> This is absurdly complicated for the task it does.
-> 
-> Newer GNU coreutils has shuf that does exactly what you want and there
-> is short -R as well, that more or less does what you want (the sort is
-> random unless there are duplicated lines in the input).
+Generally we write test entries into runtests/${testfile}, then
+runltp reads and runs lines sequentially everytime, nearly no one
+will change the test order.
 
-What stupid things I have done, I forgot 'sort' command o_O
-Thanks for point that, I'll send a V2 patch and go to bed...
+Recently we find bugs by change the test order=EF=BC=8Cdifferent test
+combination maybe find more bugs. So I add this new option -R to
+randomize test order.
+
+Signed-off-by: Zorro Lang <zlang@redhat.com>
+---
+
+Hi,
+
+V2 use 'sort -R' to instead of 'randlines.awk'.
 
 Thanks,
-Zorro
 
-> 
-> -- 
-> Cyril Hrubis
-> chrubis@suse.cz
+ runltp | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/runltp b/runltp
+index bb2e5d8..960b2c5 100755
+--- a/runltp
++++ b/runltp
+@@ -64,6 +64,8 @@
+ #               - Added capability for default Log file generation
+ #		Aug 17 2009 - Modified - Subrata Modak
+ #		- Added Fault Injection generation Capability through -F Option
++#		Sep 08 2016 - Modified - Zorro Lang
++#		- Added randomize test order capability through -R Option
+ #
+ ##########################################################################=
+#######
+=20
+@@ -153,6 +155,7 @@ usage()
+     -p              Human readable format logfiles.
+     -q              Print less verbose output to screen.
+     -r LTPROOT      Fully qualified path where testsuite is installed.
++    -R              Randomize test order.
+     -s PATTERN      Only run test cases which match PATTERN.
+     -S SKIPFILE     Skip tests specified in SKIPFILE
+     -t DURATION     Execute the testsuite for given duration. Examples:
+@@ -213,12 +216,13 @@ main()
+     local EMAIL_TO=3D""
+     local TAG_RESTRICT_STRING=3D""
+     local PAN_COMMAND=3D""
++    local RANDOMRUN=3D0
+     local DEFAULT_FILE_NAME_GENERATION_TIME=3D`date +"%Y_%m_%d-%Hh_%Mm_%Ss=
+"`
+     local scenfile=3D
+=20
+     version_date=3D$(cat "$LTPROOT/Version")
+=20
+-    while getopts a:c:C:T:d:D:f:F:ehi:I:K:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B:=
+z:Z: arg
++    while getopts a:c:C:T:d:D:f:F:ehi:I:K:g:l:m:M:Nno:pqr:Rs:S:t:T:w:x:b:B=
+:z:Z: arg
+     do  case $arg in
+         a)  EMAIL_TO=3D$OPTARG
+             ALT_EMAIL_OUT=3D1;;
+@@ -410,6 +414,8 @@ main()
+=20
+         r)  LTPROOT=3D$OPTARG;;
+=20
++        R)  RANDOMRUN=3D1;;
++
+         s)  TAG_RESTRICT_STRING=3D$OPTARG;;
+=20
+ 	S)  case $OPTARG in
+@@ -740,6 +746,12 @@ main()
+          done
+     fi
+=20
++    # randomize alltests
++    if [ "$RANDOMRUN" !=3D "0" ]; then
++        sort -R ${TMP}/alltests > ${TMP}/alltests.temp
++        cat ${TMP}/alltests.temp > ${TMP}/alltests
++    fi
++
+     [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test start time: $(date)" ; }
+     PAN_COMMAND=3D"${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES $DU=
+RATION -a $$ \
+     -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE=
+ $TCONFCMDFILE"
+--=20
+2.7.4
+
