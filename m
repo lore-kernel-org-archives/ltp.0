@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 19 Sep 2016 12:31:14 +0200
-Subject: [LTP] [PATCH 2/3] network/ping01: use ROD_SILENT and report
- test result
-In-Reply-To: <1473320058-13205-2-git-send-email-alexey.kodanev@oracle.com>
-References: <1473320058-13205-1-git-send-email-alexey.kodanev@oracle.com>
- <1473320058-13205-2-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20160919103113.GA7877@rei.lan>
+Date: Mon, 19 Sep 2016 14:00:28 +0200
+Subject: [LTP] [PATCH 2/2] network/nfs06: rewrite the test and change
+ test-cases
+In-Reply-To: <1470306799-10970-2-git-send-email-alexey.kodanev@oracle.com>
+References: <1470306799-10970-1-git-send-email-alexey.kodanev@oracle.com>
+ <1470306799-10970-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20160919120028.GB7877@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,23 +13,42 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> @@ -47,12 +46,10 @@ do_test()
->  	local ipaddr=$(tst_ipaddr rhost)
->  	for packetsize in $PACKETSIZES; do
->  		tst_resm TINFO "call $PING_CMD with packet size = $packetsize"
-> -		$PING_CMD -c $COUNT -s $packetsize $ipaddr > /dev/null 2>&1
-> -		if [ $? -ne 0 ]; then
-> -			tst_resm TFAIL "$PING_CMD -c $COUNT -s $packetsize $ipaddr"
-> -			return
-> -		fi
-> +		ROD_SILENT $PING_CMD -c $COUNT -s $packetsize $ipaddr
+> +TCID=nfs06
+> +TST_TOTAL=1
+> +TST_CLEANUP="nfs_cleanup"
+> +
+> +. nfs_lib.sh
+> +. test_net.sh
+> +
+> +do_test()
+> +{
+> +	tst_resm TINFO "Starting fsstress processes on NFS mounts"
+> +
+> +	local n=0
+> +	local pids
+> +	for i in $VERSION; do
+> +		fsstress -l 1 -d $TST_TMPDIR/$i/$n -n 1000 -p 50 -r -c > /dev/null &
+> +		pids="$pids $!"
+> +		n=$(( n + 1 ))
+> +	done
+> +
+> +	tst_resm TINFO "waiting for pids:$pids"
+> +	for p in $pids; do
+> +		wait $p
+> +		if [ $? -ne 0 ]; then
+> +			kill -9 $pids
+> +			tst_brkm TFAIL "fsstress process failed"
+> +		else
+> +			tst_resm TINFO "fsstress '$p' completed"
+> +		fi
+> +	done
+> +
+> +	tst_resm TPASS "all fsstress processes completed on '$n' NFS mounts"
+> +}
+> +
+> +tst_check_cmds sar
 
-What about we use the EXPECT_PASS here? The ROD_SILENT would produce
-TBROK instead of TFAIL in case of failure.
-
-I know that EXPECT_PASS wouldn't exit the test on first failure, do we
-really need that anyway? And it also wouldn't silence the ping output,
-which shouldn't be so much of a problem since the $COUNT is small.
+Do we still need this check?
 
 -- 
 Cyril Hrubis
