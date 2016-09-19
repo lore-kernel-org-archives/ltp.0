@@ -1,34 +1,31 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Fri, 16 Sep 2016 11:22:03 +0300
-Subject: [LTP] LTP Release
-In-Reply-To: <20160914112947.GA7366@rei>
-References: <20160914112947.GA7366@rei>
-Message-ID: <57DBABAB.2020702@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 19 Sep 2016 11:37:55 +0200
+Subject: [LTP] [PATCH] readahead02: fix path for read_ahead_kb on raw
+ partitions
+In-Reply-To: <dcf8a988ac73c339e05a9f3e326c596065ce5d02.1473860921.git.jstancek@redhat.com>
+References: <dcf8a988ac73c339e05a9f3e326c596065ce5d02.1473860921.git.jstancek@redhat.com>
+Message-ID: <20160919093755.GA6220@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-On 09/14/2016 02:29 PM, Cyril Hrubis wrote:
-> Hi!
-> I'm more or less finished with pre-release testing. What is the status
-> for the rest of you?
-
-Tried the latest master in my sparc setup. Didn't observe any unexpected
-failures/issues. Though I use a relatively old kernel, so many test
-cases finish with TCONF.
-
+Hi!
+> Path to read_ahead_kb is not consistent for all block devices,
+> for example for LVM it's:
+>   /sys/dev/block/$maj:$min/queue/read_ahead_kb
+> but for raw partitions "queue" is only in "parent" device:
+>   /sys/dev/block/$maj:$min/../queue/read_ahead_kb
 > 
-> I guess that we slould fix the lsmod test failing on NFS before the
-> release.
+> This patch checks both types and reads first one it can find.
+> Tested on LVM and raw partitions with 4.7.3.
 
-I will not be able to proceed with lsmod + NFSv4, since I'll be on
-vacation next week. If nobody objects, I'd not treat this as a blocker,
-and fix it sometimes after the release.
+Fixes the problem for me as well (minus the Btrfs anonymous block
+devices that has to be fixed).
 
-> 
-> Anything else? Can we proceed with the release later this week?
-> 
+Acked.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
