@@ -1,44 +1,50 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 19 Sep 2016 14:13:28 +0200
-Subject: [LTP] [PATCH 2/3] network/ping01: use ROD_SILENT and report
- test result
-In-Reply-To: <57DFD5B9.6090800@oracle.com>
-References: <1473320058-13205-1-git-send-email-alexey.kodanev@oracle.com>
- <1473320058-13205-2-git-send-email-alexey.kodanev@oracle.com>
- <20160919103113.GA7877@rei.lan> <57DFD5B9.6090800@oracle.com>
-Message-ID: <20160919121328.GC6220@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 19 Sep 2016 08:46:13 -0400 (EDT)
+Subject: [LTP] [PATCH] readahead02: fix path for read_ahead_kb on raw
+ partitions
+In-Reply-To: <20160919093755.GA6220@rei.lan>
+References: <dcf8a988ac73c339e05a9f3e326c596065ce5d02.1473860921.git.jstancek@redhat.com>
+ <20160919093755.GA6220@rei.lan>
+Message-ID: <1254607053.319678.1474289173812.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Yes, $COUNT is small but we should multiply it by $PACKETSIZES. Even 
-> with '-q' there will be a lot of output.
-> What about adding redirection to /dev/null and removing tst_resm() as below:
-> 
-> -TST_TOTAL=1
-> +TST_TOTAL=10
->   TCID="ping01"
-> 
->   . test_net.sh
-> @@ -45,11 +45,8 @@ do_test()
->          tst_resm TINFO "$PING_CMD with $PACKETSIZES ICMP packets"
->          local ipaddr=$(tst_ipaddr rhost)
->          for packetsize in $PACKETSIZES; do
-> -               tst_resm TINFO "call $PING_CMD with packet size = 
-> $packetsize"
-> -               ROD_SILENT $PING_CMD -c $COUNT -s $packetsize $ipaddr
-> +               EXPECT_PASS $PING_CMD -c $COUNT -s $packetsize $ipaddr 
-> \>/dev/null
->          done
-> -
-> -       tst_resm TPASS "$PING_CMD test completed"
->   }
 
-Looks good.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Monday, 19 September, 2016 11:37:55 AM
+> Subject: Re: [LTP] [PATCH] readahead02: fix path for read_ahead_kb on raw partitions
+> 
+> Hi!
+> > Path to read_ahead_kb is not consistent for all block devices,
+> > for example for LVM it's:
+> >   /sys/dev/block/$maj:$min/queue/read_ahead_kb
+> > but for raw partitions "queue" is only in "parent" device:
+> >   /sys/dev/block/$maj:$min/../queue/read_ahead_kb
+> > 
+> > This patch checks both types and reads first one it can find.
+> > Tested on LVM and raw partitions with 4.7.3.
+> 
+> Fixes the problem for me as well (minus the Btrfs anonymous block
+> devices that has to be fixed).
+> 
+> Acked.
+
+Pushed.
+
+Regards,
+Jan
+
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
