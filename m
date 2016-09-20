@@ -1,85 +1,118 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 20 Sep 2016 11:11:33 +0200
-Subject: [LTP] [ANNOUNCE] The Linux Test Project has been released for
- SEPTEMBER 2016
-Message-ID: <20160920091133.GA17956@rei.lan>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 20 Sep 2016 17:59:26 +0800
+Subject: [LTP] [PATCH] syscalls/signal06: fix test for regression with
+ earlier version of gcc and kernel
+In-Reply-To: <1470380281-20334-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1470380281-20334-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <57E1087E.4030506@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Good news everyone,
+Hi!
 
-the Linux Test Project test suite stable release for *September 2016*
-has been released.
+Ping, thanks!
 
-Since the last release 236 patches by 28 authors were merged.
 
-Notable changes are:
+Regards,
+Guangwen Feng
 
-o New testcases
-  - tracepath, clockdiff, arpping, ping, wc, insmod
-  - ftrace
-  - access()
-  - fallocate() FALLOC_FL_INSTERT_RANGE
-  - kcmp()
-  - lgetxattr()
-  - sched_setscheduler()
-  - epoll_ctl()
-  - sbrk() regression test
-  - dio_sparse added direct I/O regression test
-    (https://patchwork.ozlabs.org/patch/622065/)
+On 08/05/2016 02:58 PM, Guangwen Feng wrote:
+> 1. Currently, following code is incorrect on some releases with
+>    earlier version of gcc(tested on RHEL5.11GA):
+> 
+> 	while (D == d && loop < LOOPS) {
+> 
+>    Because the argument in function test(double d) is used via (%rsp),
+>    but here we actually need a xmm register to trigger the fpu bug.
+>    So use global value instead to make sure to take use of xmm.
+> 
+> 2. Although this regression test is designed to trigger SIGSEGV
+>    intentionally, on some releases with old kernel(tested on RHEL5.11GA),
+>    this will still lead to segmentation fault that terminate the program
+>    and break the test even though compiling with -O2.  So slightly adjust
+>    the weight of the codes in child thread to depress SIGSEGV trigger's
+>    chance while increase LOOPS to ensure reproducible.
+> 
+> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/signal/signal06.c | 29 +++++++++++++++++------------
+>  1 file changed, 17 insertions(+), 12 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel/syscalls/signal/signal06.c
+> index 75ef733..81fd138 100644
+> --- a/testcases/kernel/syscalls/signal/signal06.c
+> +++ b/testcases/kernel/syscalls/signal/signal06.c
+> @@ -31,8 +31,8 @@
+>   * 		Date:   Tue Sep 2 19:57:17 2014 +0200
+>   *
+>   *      commit 66463db4fc5605d51c7bb81d009d5bf30a783a2c
+> - *               Author: Oleg Nesterov <oleg@redhat.com>
+> - *               Date:   Tue Sep 2 19:57:13 2014 +0200
+> + *              Author: Oleg Nesterov <oleg@redhat.com>
+> + *              Date:   Tue Sep 2 19:57:13 2014 +0200
+>   *
+>   * Reproduce:
+>   *	Test-case (needs -O2).
+> @@ -55,20 +55,21 @@ int TST_TOTAL = 5;
+>  
+>  #if __x86_64__
+>  
+> -#define LOOPS 10000
+> +#define LOOPS 100000
+> +#define VALUE 123.456
+>  
+>  volatile double D;
+>  volatile int FLAGE;
+>  
+>  char altstack[4096 * 10] __attribute__((aligned(4096)));
+>  
+> -void test(double d)
+> +void test(void)
+>  {
+>  	int loop = 0;
+>  	int pid = getpid();
+>  
+> -	D = d;
+> -	while (D == d && loop < LOOPS) {
+> +	D = VALUE;
+> +	while (D == VALUE && loop < LOOPS) {
+>  		/* sys_tkill(pid, SIGHUP); asm to avoid save/reload
+>  		 * fp regs around c call */
+>  		asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
+> @@ -94,12 +95,16 @@ void sigh(int sig LTP_ATTRIBUTE_UNUSED)
+>  
+>  void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
+>  {
+> -	for (; ;) {
+> -		TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
+> -		if (TEST_RETURN == -1)
+> -			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+> +	int i;
+> +
+> +	for (i = -1; ; i *= -1) {
+> +		if (i == -1) {
+> +			TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
+> +			if (TEST_RETURN == -1)
+> +				tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+> +		}
+>  
+> -		TEST(mprotect(altstack, sizeof(altstack), PROT_READ|PROT_WRITE));
+> +		TEST(mprotect(altstack, sizeof(altstack), PROT_READ | PROT_WRITE));
+>  		if (TEST_RETURN == -1)
+>  			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+>  
+> @@ -148,7 +153,7 @@ int main(int ac, char **av)
+>  				tst_brkm(TBROK | TRERRNO, NULL,
+>  						"pthread_create failed");
+>  
+> -			test(123.456);
+> +			test();
+>  
+>  			TEST(pthread_join(pt, NULL));
+>  			if (TEST_RETURN)
+> 
 
-o Rewritten/cleaned up tests
-  - waitpid syscall testcases
-  - NFS tests
-  - ftrace tests
 
-o More work on memory cgroup testcases
-  - a lot of cleanups, big tests were split into smaller ones
-  - implemented proper synchronization primitives between processes
-    which saves a few minutes on the test execution time
-
-o More work on the new test API
-  - test is executed in child processes, parent process watches for timeout,
-    does cleanup, reports results, etc.
-  - Ctrl+C kills all subprocesses correctly and the parent process runs cleanup
-  - new command line option parsing helpers
-  - 25 testcases were cleaned up and rewritten to use the new test API
-
-o New EXPECT_PASS and EXPECT_FAIL helpers in shell library
-
-o New shell wrappers for checkpoint (futex based) synchronization primitives
-
-o New tst_su wrapper (that makes sure that path to LTP binaries is in $PATH)
-
-o Open Posix Testsuite changes
-  - parallel build has been fixed
-  - the build process now uses the top level configure parameters
-    (CC, CFLAGS, LDLIBS, LDFLAGS)
-
-+ The usuall amount of cleanups, fixes, and speedups.
-
-The latest version of the test-suite contains 3000+ tests for the Linux
-and can be downloaded at:
-
-https://github.com/linux-test-project/ltp/releases/tag/20160920
-
-The project pages as well as GIT repository are hosted on GitHub:
-
-https://github.com/linux-test-project/ltp
-http://linux-test-project.github.io/
-
-If you ever wondered how to write a LTP testcase, don't miss our
-(continuously updated) developer documentation at:
-
-https://github.com/linux-test-project/ltp/wiki/Test-Writing-Guidelines
-https://github.com/linux-test-project/ltp/wiki/BuildSystem
-
-Patches, new tests, bugs, comments or questions should go to to our
-mailing list at ltp-list@lists.linux.it
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
