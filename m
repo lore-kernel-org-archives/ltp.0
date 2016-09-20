@@ -1,10 +1,9 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 20 Sep 2016 17:59:26 +0800
-Subject: [LTP] [PATCH] syscalls/signal06: fix test for regression with
- earlier version of gcc and kernel
-In-Reply-To: <1470380281-20334-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1470380281-20334-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <57E1087E.4030506@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 20 Sep 2016 16:39:17 +0200
+Subject: [LTP] [PATCH v2] runltp: add -R option for randomize test order
+In-Reply-To: <1473344468-7835-1-git-send-email-zlang@redhat.com>
+References: <1473344468-7835-1-git-send-email-zlang@redhat.com>
+Message-ID: <20160920143916.GA4272@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,107 +11,74 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
+> @@ -64,6 +64,8 @@
+>  #               - Added capability for default Log file generation
+>  #		Aug 17 2009 - Modified - Subrata Modak
+>  #		- Added Fault Injection generation Capability through -F Option
+> +#		Sep 08 2016 - Modified - Zorro Lang
+> +#		- Added randomize test order capability through -R Option
 
-Ping, thanks!
+We do not update this changelog anymore since the information about the
+change is stored in the git commit messatge.
 
-
-Regards,
-Guangwen Feng
-
-On 08/05/2016 02:58 PM, Guangwen Feng wrote:
-> 1. Currently, following code is incorrect on some releases with
->    earlier version of gcc(tested on RHEL5.11GA):
-> 
-> 	while (D == d && loop < LOOPS) {
-> 
->    Because the argument in function test(double d) is used via (%rsp),
->    but here we actually need a xmm register to trigger the fpu bug.
->    So use global value instead to make sure to take use of xmm.
-> 
-> 2. Although this regression test is designed to trigger SIGSEGV
->    intentionally, on some releases with old kernel(tested on RHEL5.11GA),
->    this will still lead to segmentation fault that terminate the program
->    and break the test even though compiling with -O2.  So slightly adjust
->    the weight of the codes in child thread to depress SIGSEGV trigger's
->    chance while increase LOOPS to ensure reproducible.
-> 
-> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/signal/signal06.c | 29 +++++++++++++++++------------
->  1 file changed, 17 insertions(+), 12 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel/syscalls/signal/signal06.c
-> index 75ef733..81fd138 100644
-> --- a/testcases/kernel/syscalls/signal/signal06.c
-> +++ b/testcases/kernel/syscalls/signal/signal06.c
-> @@ -31,8 +31,8 @@
->   * 		Date:   Tue Sep 2 19:57:17 2014 +0200
->   *
->   *      commit 66463db4fc5605d51c7bb81d009d5bf30a783a2c
-> - *               Author: Oleg Nesterov <oleg@redhat.com>
-> - *               Date:   Tue Sep 2 19:57:13 2014 +0200
-> + *              Author: Oleg Nesterov <oleg@redhat.com>
-> + *              Date:   Tue Sep 2 19:57:13 2014 +0200
->   *
->   * Reproduce:
->   *	Test-case (needs -O2).
-> @@ -55,20 +55,21 @@ int TST_TOTAL = 5;
+>  #
+>  #################################################################################
 >  
->  #if __x86_64__
+> @@ -153,6 +155,7 @@ usage()
+>      -p              Human readable format logfiles.
+>      -q              Print less verbose output to screen.
+>      -r LTPROOT      Fully qualified path where testsuite is installed.
+> +    -R              Randomize test order.
+>      -s PATTERN      Only run test cases which match PATTERN.
+>      -S SKIPFILE     Skip tests specified in SKIPFILE
+>      -t DURATION     Execute the testsuite for given duration. Examples:
+> @@ -213,12 +216,13 @@ main()
+>      local EMAIL_TO=""
+>      local TAG_RESTRICT_STRING=""
+>      local PAN_COMMAND=""
+> +    local RANDOMRUN=0
+>      local DEFAULT_FILE_NAME_GENERATION_TIME=`date +"%Y_%m_%d-%Hh_%Mm_%Ss"`
+>      local scenfile=
 >  
-> -#define LOOPS 10000
-> +#define LOOPS 100000
-> +#define VALUE 123.456
+>      version_date=$(cat "$LTPROOT/Version")
 >  
->  volatile double D;
->  volatile int FLAGE;
+> -    while getopts a:c:C:T:d:D:f:F:ehi:I:K:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B:z:Z: arg
+> +    while getopts a:c:C:T:d:D:f:F:ehi:I:K:g:l:m:M:Nno:pqr:Rs:S:t:T:w:x:b:B:z:Z: arg
+>      do  case $arg in
+>          a)  EMAIL_TO=$OPTARG
+>              ALT_EMAIL_OUT=1;;
+> @@ -410,6 +414,8 @@ main()
 >  
->  char altstack[4096 * 10] __attribute__((aligned(4096)));
+>          r)  LTPROOT=$OPTARG;;
 >  
-> -void test(double d)
-> +void test(void)
->  {
->  	int loop = 0;
->  	int pid = getpid();
->  
-> -	D = d;
-> -	while (D == d && loop < LOOPS) {
-> +	D = VALUE;
-> +	while (D == VALUE && loop < LOOPS) {
->  		/* sys_tkill(pid, SIGHUP); asm to avoid save/reload
->  		 * fp regs around c call */
->  		asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
-> @@ -94,12 +95,16 @@ void sigh(int sig LTP_ATTRIBUTE_UNUSED)
->  
->  void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
->  {
-> -	for (; ;) {
-> -		TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
-> -		if (TEST_RETURN == -1)
-> -			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
-> +	int i;
+> +        R)  RANDOMRUN=1;;
 > +
-> +	for (i = -1; ; i *= -1) {
-> +		if (i == -1) {
-> +			TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
-> +			if (TEST_RETURN == -1)
-> +				tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
-> +		}
+>          s)  TAG_RESTRICT_STRING=$OPTARG;;
 >  
-> -		TEST(mprotect(altstack, sizeof(altstack), PROT_READ|PROT_WRITE));
-> +		TEST(mprotect(altstack, sizeof(altstack), PROT_READ | PROT_WRITE));
->  		if (TEST_RETURN == -1)
->  			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+>  	S)  case $OPTARG in
+> @@ -740,6 +746,12 @@ main()
+>           done
+>      fi
 >  
-> @@ -148,7 +153,7 @@ int main(int ac, char **av)
->  				tst_brkm(TBROK | TRERRNO, NULL,
->  						"pthread_create failed");
->  
-> -			test(123.456);
-> +			test();
->  
->  			TEST(pthread_join(pt, NULL));
->  			if (TEST_RETURN)
+> +    # randomize alltests
+
+This comment is useless, it's pretty obvious what the code does.
+
+> +    if [ "$RANDOMRUN" != "0" ]; then
+> +        sort -R ${TMP}/alltests > ${TMP}/alltests.temp
+> +        cat ${TMP}/alltests.temp > ${TMP}/alltests
+> +    fi
+> +
+>      [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test start time: $(date)" ; }
+>      PAN_COMMAND="${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES $DURATION -a $$ \
+>      -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE $TCONFCMDFILE"
+> -- 
+> 2.7.4
 > 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
