@@ -1,109 +1,18 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 21 Sep 2016 13:18:43 +0200
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 22 Sep 2016 13:30:35 +0200
 Subject: [LTP] [PATCH] rtc: Display errno where applicable
-Message-ID: <20160921131843.275df818@linux-v3j5>
+In-Reply-To: <20160921131843.275df818@linux-v3j5>
+References: <20160921131843.275df818@linux-v3j5>
+Message-ID: <20160922113035.GA2612@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-RTC_ALM_READ currently fails on ppc64 4.4.21 (SLES) and the errno is not
-displayed. There are not many values it is able to take, but displaying it
-could still reduce the time taken to understand the problem. By the same
-logic TERRNO has been added to all other test_resm calls where applicable.
+Hi!
+Pushed, thanks.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- testcases/kernel/device-drivers/rtc/rtc01.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
-
-diff --git a/testcases/kernel/device-drivers/rtc/rtc01.c b/testcases/kernel/device-drivers/rtc/rtc01.c
-index acfcd34..7f9bc07 100644
---- a/testcases/kernel/device-drivers/rtc/rtc01.c
-+++ b/testcases/kernel/device-drivers/rtc/rtc01.c
-@@ -69,7 +69,7 @@ void read_alarm_test(void)
- 	/*Read RTC Time */
- 	ret = ioctl(rtc_fd, RTC_RD_TIME, &rtc_tm);
- 	if (ret == -1) {
--		tst_resm(TFAIL, "RTC_RD_TIME ioctl failed");
-+		tst_resm(TFAIL | TERRNO, "RTC_RD_TIME ioctl failed");
- 		return;
- 	}
- 
-@@ -101,14 +101,14 @@ void read_alarm_test(void)
- 		if (errno == EINVAL)
- 			tst_resm(TCONF | TERRNO, "RTC_ALM_SET not supported");
- 		else
--			tst_resm(TFAIL | TERRNO , "RTC_ALM_SET ioctl failed");
-+			tst_resm(TFAIL | TERRNO, "RTC_ALM_SET ioctl failed");
- 		return;
- 	}
- 
- 	/*Read current alarm time */
- 	ret = ioctl(rtc_fd, RTC_ALM_READ, &rtc_tm);
- 	if (ret == -1) {
--		tst_resm(TFAIL, "RTC_ALM_READ ioctl failed");
-+		tst_resm(TFAIL | TERRNO, "RTC_ALM_READ ioctl failed");
- 		return;
- 	}
- 
-@@ -117,7 +117,7 @@ void read_alarm_test(void)
- 	/* Enable alarm interrupts */
- 	ret = ioctl(rtc_fd, RTC_AIE_ON, 0);
- 	if (ret == -1) {
--		tst_resm(TINFO, "RTC_AIE_ON ioctl failed");
-+		tst_resm(TINFO | TERRNO, "RTC_AIE_ON ioctl failed");
- 		return;
- 	}
- 
-@@ -132,12 +132,12 @@ void read_alarm_test(void)
- 	ret = select(rtc_fd + 1, &rfds, NULL, NULL, &tv);	/*wait for alarm */
- 
- 	if (ret == -1) {
--		tst_resm(TFAIL, "select failed");
-+		tst_resm(TFAIL | TERRNO, "select failed");
- 		return;
- 	} else if (ret) {
- 		ret = read(rtc_fd, &data, sizeof(unsigned long));
- 		if (ret == -1) {
--			tst_resm(TFAIL, "read failed");
-+			tst_resm(TFAIL | TERRNO, "read failed");
- 			return;
- 		}
- 		tst_resm(TINFO, "Alarm rang.");
-@@ -149,7 +149,7 @@ void read_alarm_test(void)
- 	/* Disable alarm interrupts */
- 	ret = ioctl(rtc_fd, RTC_AIE_OFF, 0);
- 	if (ret == -1) {
--		tst_resm(TFAIL, "RTC_AIE_OFF ioctl failed");
-+		tst_resm(TFAIL | TERRNO, "RTC_AIE_OFF ioctl failed");
- 		return;
- 	}
- 	tst_resm(TPASS, "RTC ALARM TEST Passed");
-@@ -189,12 +189,12 @@ void update_interrupts_test(void)
- 
- 		ret = select(rtc_fd + 1, &rfds, NULL, NULL, &tv);
- 		if (ret == -1) {
--			tst_resm(TFAIL, "select failed");
-+			tst_resm(TFAIL | TERRNO, "select failed");
- 			return;
- 		} else if (ret) {
- 			ret = read(rtc_fd, &data, sizeof(unsigned long));
- 			if (ret == -1) {
--				tst_resm(TFAIL, "read failed");
-+				tst_resm(TFAIL | TERRNO, "read failed");
- 				return;
- 			}
- 			tst_resm(TINFO, "Update interrupt %d", i);
-@@ -208,7 +208,7 @@ void update_interrupts_test(void)
- 	/* Turn off update interrupts */
- 	ret = ioctl(rtc_fd, RTC_UIE_OFF, 0);
- 	if (ret == -1) {
--		tst_resm(TFAIL, "RTC_UIE_OFF ioctl failed");
-+		tst_resm(TFAIL | TERRNO, "RTC_UIE_OFF ioctl failed");
- 		return;
- 	}
- 	tst_resm(TPASS, "RTC UPDATE INTERRUPTS TEST Passed");
 -- 
-2.10.0
+Cyril Hrubis
+chrubis@suse.cz
