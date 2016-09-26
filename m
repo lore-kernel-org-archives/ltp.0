@@ -1,44 +1,242 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 26 Sep 2016 10:25:01 +0200
-Subject: [LTP] [PATCH v3] runltp: add -R option for randomize test order
-In-Reply-To: <20160925134701.GD12847@dhcp12-143.nay.redhat.com>
-References: <1474720519-12067-1-git-send-email-zlang@redhat.com>
- <CAEemH2foVLCW=XTmR9a8qmAJQvjw8ZEsOrrAAmUPSCX45ob=Fw@mail.gmail.com>
- <20160925134701.GD12847@dhcp12-143.nay.redhat.com>
-Message-ID: <20160926082501.GA32494@rei>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 26 Sep 2016 18:12:04 +0800
+Subject: [LTP] [PATCH v5] lib: make the loop device size can be increased
+Message-ID: <1474884724-19972-1-git-send-email-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Hm, it works, even works for large file (>pagesize). I thought it maybe make
-> mistake if read and rewrite same file at same time when I sent this patch.
-> Now I just read the code of sort.c, it'll read the file into buffer and temp
-> file at first, then close the fopen(r) file and go to fopen(w) the file:
-> 
->           if (buf.eof && !nfiles && !ntemps && !buf.left)
->             {
->               xfclose (fp, file);
->               tfp = xfopen (output_file, "w");
-> 	      ...
-> 	      ...
-> 
-> So it looks safe to read and write the same file together ... But I don't know
-> if it worth changing this patch (the old way looks safer:). Can maintainers
-> choose a favorite way?
+For the purpose of satisfying specific requirements, here rename function
+tst_acqurire_device() to tst_acqurie_device_(), then add parameter '@size'
+to tst_acquire_device_() to make the test device can be increased according
+to real need.
 
-The POSIX specification for sort explicitly states:
+This change gives a flexibility to ltp test device, you can customize its
+size by passing 'tst_test->device_min_size' to your cases. But it's limited
+that at least 150MB for the device generation.
 
--o  output
-    Specify the name of an output file to be used instead of the
-    standard output. This file can be the same as one of the input
-    files.
+Also, add tst_device.c tests, updating test-writing-guidelines.txt documents.
 
-So I would say that using the same filename for input and output is
-pretty much safe.
+Signed-off-by: Li Wang <liwang@redhat.com>
+---
+ doc/test-writing-guidelines.txt | 12 ++++++----
+ include/old/old_device.h        |  2 ++
+ include/tst_test.h              |  2 ++
+ lib/newlib_tests/tst_device.c   | 49 +++++++++++++++++++++++++++++++++++++++++
+ lib/tst_device.c                | 30 ++++++++++++++++++++-----
+ lib/tst_test.c                  |  5 ++++-
+ testcases/lib/test.sh           |  8 +++++--
+ 7 files changed, 96 insertions(+), 12 deletions(-)
+ create mode 100644 lib/newlib_tests/tst_device.c
 
+diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
+index f927fc6..9c412be 100644
+--- a/doc/test-writing-guidelines.txt
++++ b/doc/test-writing-guidelines.txt
+@@ -1323,12 +1323,16 @@ Following functions similar to the LTP C interface are available.
+ * tst_rmdir()
+ * tst_fs_has_free()
+ * tst_mkfs()
+-* tst_acquire_device()
+ * tst_release_device()
+ 
+-There is one more function called 'tst_check_cmds()' that gets unspecified
+-number of parameters and asserts that each parameter is a name of an
+-executable in '$PATH' and exits the test with 'TCONF' on first missing.
++One more function called 'tst_check_cmds()' that gets unspecified number
++of parameters and asserts that each parameter is a name of an executable
++in '$PATH' and exits the test with 'TCONF' on first missing.
++
++Another one is 'tst_acquire_device()' that looks for LTP_DEV env variable
++first (which may be passed by the test driver or by a user) and returns while
++it's value greater than 150MB. It also does clear first sectors of $LTP_DEV
++and makes the block device size can be increased according to real need.
+ 
+ tst_sleep
+ +++++++++
+diff --git a/include/old/old_device.h b/include/old/old_device.h
+index 4dae05e..d028e77 100644
+--- a/include/old/old_device.h
++++ b/include/old/old_device.h
+@@ -44,6 +44,8 @@ const char *tst_dev_fs_type(void);
+  */
+ const char *tst_acquire_device(void (cleanup_fn)(void));
+ 
++const char *tst_acquire_device_(void (cleanup_fn)(void), unsigned int size);
++
+ /*
+  * @dev: device path returned by the tst_acquire_device()
+  */
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 4c30134..3f7123e 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -106,6 +106,8 @@ struct tst_test {
+ 	int needs_device:1;
+ 	int needs_checkpoints:1;
+ 
++	unsigned int device_min_size;
++
+ 	/* override default timeout per test run */
+ 	unsigned int timeout;
+ 
+diff --git a/lib/newlib_tests/tst_device.c b/lib/newlib_tests/tst_device.c
+new file mode 100644
+index 0000000..d656904
+--- /dev/null
++++ b/lib/newlib_tests/tst_device.c
+@@ -0,0 +1,49 @@
++/*
++ * Copyright (c) 2016 Linux Test Project
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <stdlib.h>
++#include <sys/mount.h>
++
++#include "tst_test.h"
++
++static void do_test(void)
++{
++	int fd;
++	const char *dev;
++	unsigned int ltp_dev_size;
++
++	dev = tst_device->dev;
++	if (!dev)
++		tst_brk(TCONF, "Failed to acquire test device");
++
++	SAFE_MKFS(dev, "ext2", NULL, NULL);
++
++	fd = SAFE_OPEN(dev, O_RDONLY);
++	SAFE_IOCTL(fd, BLKGETSIZE64, &ltp_dev_size);
++	SAFE_CLOSE(fd);
++
++	if (ltp_dev_size/1024/1024 == 160)
++		tst_res(TPASS, "PASSED LTP Device Test");
++}
++
++static struct tst_test test = {
++	.tid = "tst_device",
++	.needs_tmpdir = 1,
++	.needs_device = 1,
++	.device_min_size = 160,
++	.test_all = do_test,
++};
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 30b1be2..7effac8 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -184,8 +184,18 @@ static void detach_device(const char *dev)
+ 
+ const char *tst_acquire_device(void (cleanup_fn)(void))
+ {
++	return tst_acquire_device_(cleanup_fn, 0);
++}
++
++const char *tst_acquire_device_(void (cleanup_fn)(void), unsigned int size)
++{
++	int fd;
+ 	char *dev;
+ 	struct stat st;
++	unsigned int acq_dev_size;
++	unsigned int ltp_dev_size;
++
++	acq_dev_size = size > 150 ? size : 150;
+ 
+ 	if (device_acquired)
+ 		tst_brkm(TBROK, cleanup_fn, "Device allready acquired");
+@@ -207,15 +217,25 @@ const char *tst_acquire_device(void (cleanup_fn)(void))
+ 			         "%s is not a block device", dev);
+ 		}
+ 
+-		if (tst_fill_file(dev, 0, 1024, 512)) {
+-			tst_brkm(TBROK | TERRNO, cleanup_fn,
+-				 "Failed to clear the first 512k of %s", dev);
++		fd = SAFE_OPEN(cleanup_fn, dev, O_RDONLY);
++		SAFE_IOCTL(cleanup_fn, fd, BLKGETSIZE64, &ltp_dev_size);
++		SAFE_CLOSE(cleanup_fn, fd);
++		ltp_dev_size = ltp_dev_size/1024/1024;
++
++		if (acq_dev_size <= ltp_dev_size) {
++			if (tst_fill_file(dev, 0, 1024, 512)) {
++				tst_brkm(TBROK | TERRNO, cleanup_fn,
++					"Failed to clear the first 512k of %s", dev);
++			}
++
++			return dev;
+ 		}
+ 
+-		return dev;
++		tst_resm(TINFO, "Skipping $LTP_DEV size %luMB, requested size %luMB",
++				ltp_dev_size, acq_dev_size);
+ 	}
+ 
+-	if (tst_fill_file(DEV_FILE, 0, 1024, 153600)) {
++	if (tst_fill_file(DEV_FILE, 0, 1024, 1024 * acq_dev_size)) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+ 		         "Failed to create " DEV_FILE);
+ 
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index 12ca051..1c2995e 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -596,7 +596,10 @@ static void do_setup(int argc, char *argv[])
+ 	}
+ 
+ 	if (tst_test->needs_device) {
+-		tdev.dev = tst_acquire_device(NULL);
++		if(!tst_test->device_min_size)
++			tst_test->device_min_size = 150;
++
++		tdev.dev = tst_acquire_device_(NULL, tst_test->device_min_size);
+ 		tdev.fs_type = tst_dev_fs_type();
+ 
+ 		if (!tdev.dev)
+diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
+index a1fa2d9..76b7062 100644
+--- a/testcases/lib/test.sh
++++ b/testcases/lib/test.sh
+@@ -283,11 +283,15 @@ EXPECT_FAIL()
+ 
+ tst_acquire_device()
+ {
++	local acq_dev_size=${1:-150}
++
+ 	if [ -z ${TST_TMPDIR} ]; then
+ 		tst_brkm "Use 'tst_tmpdir' before 'tst_acquire_device'"
+ 	fi
+ 
+-	if [ -n "${LTP_DEV}" ]; then
++	ltp_dev_size=$((`blockdev --getsize64 $LTP_DEV`/1024/1024))
++
++	if [ -n "${LTP_DEV}" ] && [ ${acq_dev_size} -le ${ltp_dev_size} ]; then
+ 		tst_resm TINFO "Using test device LTP_DEV='${LTP_DEV}'"
+ 		if [ ! -b ${LTP_DEV} ]; then
+ 			tst_brkm TBROK "${LTP_DEV} is not a block device"
+@@ -300,7 +304,7 @@ tst_acquire_device()
+ 		return
+ 	fi
+ 
+-	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=153600
++	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=$((1024*$acq_dev_size))
+ 
+ 	TST_DEVICE=$(losetup -f)
+ 	if [ $? -ne 0 ]; then
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
