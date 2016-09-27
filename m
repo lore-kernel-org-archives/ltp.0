@@ -1,86 +1,60 @@
-From: Zorro Lang <zlang@redhat.com>
-Date: Mon, 26 Sep 2016 21:19:49 +0800
-Subject: [LTP] [PATCH v4] runltp: add -R option for randomize test order
-Message-ID: <1474895989-1117-1-git-send-email-zlang@redhat.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 27 Sep 2016 11:25:11 +0800
+Subject: [LTP] [PATCH v5] lib: make the loop device size can be increased
+In-Reply-To: <20160926130715.GB4164@rei.suse.cz>
+References: <1474884724-19972-1-git-send-email-liwang@redhat.com>
+ <20160926130715.GB4164@rei.suse.cz>
+Message-ID: <20160927032511.GA24779@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Generally we write test entries into runtests/${testfile}, then
-runltp reads and runs lines sequentially everytime, nearly no one
-will change the test order.
+On Mon, Sep 26, 2016 at 03:07:15PM +0200, Cyril Hrubis wrote:
+> Hi!
+> > diff --git a/lib/tst_device.c b/lib/tst_device.c
+> > index 30b1be2..7effac8 100644
+> > --- a/lib/tst_device.c
+> > +++ b/lib/tst_device.c
+> > @@ -184,8 +184,18 @@ static void detach_device(const char *dev)
+> >  
+> >  const char *tst_acquire_device(void (cleanup_fn)(void))
+> >  {
+> > +	return tst_acquire_device_(cleanup_fn, 0);
+> > +}
+> 
+> This can be implemented as static inline function inside the header
+> file.
 
-Recently we find bugs by change the test order=EF=BC=8Cdifferent test
-combination maybe find more bugs. So I add this new option -R to
-randomize test order.
+Great! no problem.
 
-Signed-off-by: Zorro Lang <zlang@redhat.com>
----
+> > -	if (tst_fill_file(DEV_FILE, 0, 1024, 153600)) {
+> > +	if (tst_fill_file(DEV_FILE, 0, 1024, 1024 * acq_dev_size)) {
+> >  		tst_brkm(TBROK | TERRNO, cleanup_fn,
+> >  		         "Failed to create " DEV_FILE);
+> >  
+> > diff --git a/lib/tst_test.c b/lib/tst_test.c
+> > index 12ca051..1c2995e 100644
+> > --- a/lib/tst_test.c
+> > +++ b/lib/tst_test.c
+> > @@ -596,7 +596,10 @@ static void do_setup(int argc, char *argv[])
+> >  	}
+> >  
+> >  	if (tst_test->needs_device) {
+> > -		tdev.dev = tst_acquire_device(NULL);
+> > +		if(!tst_test->device_min_size)
+> > +			tst_test->device_min_size = 150;
+> 
+> The tst_acquire_device_ will make sure that the size is at least 150MB
+> anyway. So this part is useless, isn't it?
 
-V2 use 'sort -R' to instead of 'randlines.awk'.
-V3 remove change log and someone useless comment
-V4 turn to "sort ... -o ${TMP}/alltests"
+Yes, it's useless! From what I test on removing them, tst_device.c also works fine.
 
-Thanks,
-Zorro
+> 
+> Otherwise it looks good.
 
- runltp | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Thanks for reviewing. Patch v6 is coming...
 
-diff --git a/runltp b/runltp
-index bb2e5d8..1037389 100755
---- a/runltp
-+++ b/runltp
-@@ -153,6 +153,7 @@ usage()
-     -p              Human readable format logfiles.
-     -q              Print less verbose output to screen.
-     -r LTPROOT      Fully qualified path where testsuite is installed.
-+    -R              Randomize test order.
-     -s PATTERN      Only run test cases which match PATTERN.
-     -S SKIPFILE     Skip tests specified in SKIPFILE
-     -t DURATION     Execute the testsuite for given duration. Examples:
-@@ -213,12 +214,13 @@ main()
-     local EMAIL_TO=3D""
-     local TAG_RESTRICT_STRING=3D""
-     local PAN_COMMAND=3D""
-+    local RANDOMRUN=3D0
-     local DEFAULT_FILE_NAME_GENERATION_TIME=3D`date +"%Y_%m_%d-%Hh_%Mm_%Ss=
-"`
-     local scenfile=3D
-=20
-     version_date=3D$(cat "$LTPROOT/Version")
-=20
--    while getopts a:c:C:T:d:D:f:F:ehi:I:K:g:l:m:M:Nno:pqr:s:S:t:T:w:x:b:B:=
-z:Z: arg
-+    while getopts a:c:C:T:d:D:f:F:ehi:I:K:g:l:m:M:Nno:pqr:Rs:S:t:T:w:x:b:B=
-:z:Z: arg
-     do  case $arg in
-         a)  EMAIL_TO=3D$OPTARG
-             ALT_EMAIL_OUT=3D1;;
-@@ -410,6 +412,8 @@ main()
-=20
-         r)  LTPROOT=3D$OPTARG;;
-=20
-+        R)  RANDOMRUN=3D1;;
-+
-         s)  TAG_RESTRICT_STRING=3D$OPTARG;;
-=20
- 	S)  case $OPTARG in
-@@ -740,6 +744,10 @@ main()
-          done
-     fi
-=20
-+    if [ "$RANDOMRUN" !=3D "0" ]; then
-+        sort -R ${TMP}/alltests -o ${TMP}/alltests
-+    fi
-+
-     [ ! -z "$QUIET_MODE" ] && { echo "INFO: Test start time: $(date)" ; }
-     PAN_COMMAND=3D"${LTPROOT}/bin/ltp-pan $QUIET_MODE -e -S $INSTANCES $DU=
-RATION -a $$ \
-     -n $$ $PRETTY_PRT -f ${TMP}/alltests $LOGFILE $OUTPUTFILE $FAILCMDFILE=
- $TCONFCMDFILE"
---=20
-2.7.4
 
+Li Wang
