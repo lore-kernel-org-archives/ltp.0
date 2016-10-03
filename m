@@ -1,34 +1,53 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 3 Oct 2016 07:29:56 -0400 (EDT)
-Subject: [LTP] [PATCH] utimensat: fix immutable file retcodes for 4.8.0
- and newer.
-In-Reply-To: <1472720773-9914-1-git-send-email-asavkov@redhat.com>
-References: <1472720773-9914-1-git-send-email-asavkov@redhat.com>
-Message-ID: <2100817752.101108.1475494196351.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 3 Oct 2016 13:56:31 +0200
+Subject: [LTP] [PATCH] Fix typos in assignments to the field tid
+In-Reply-To: <1475493391-9643-1-git-send-email-dejan.jovicevic@rt-rk.com>
+References: <1475493391-9643-1-git-send-email-dejan.jovicevic@rt-rk.com>
+Message-ID: <20161003115631.GB7583@rei.suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+> -#ifdef HAVE_ATTR_XATTR_H
+> -# include <attr/xattr.h>
+> +#ifdef HAVE_SYS_XATTR_H
+> +#include <sys/xattr.h>
+> +#elif HAVE_ATTR_XATTR_H
+> +#include <attr/xattr.h>
+>  #endif
+>  
+>  #include "tst_test.h"
+>  
+> -#ifdef HAVE_ATTR_XATTR_H
+> +#if defined(HAVE_SYS_XATTR_H) || defined(HAVE_ATTR_XATTR_H)
+>  
+>  #define SECURITY_KEY	"security.ltptest"
+>  #define VALUE	"test"
+> @@ -89,7 +91,7 @@ static void setup(void)
+>  }
+>  
+>  static struct tst_test test = {
+> -	.tid = "llistxattr02",
+> +	.tid = "llistxattr03",
+>  	.needs_tmpdir = 1,
+>  	.needs_root = 1,
+>  	.test = verify_llistxattr,
+> @@ -97,6 +99,6 @@ static struct tst_test test = {
+>  	.setup = setup,
+>  };
+>  
+> -#else /* HAVE_ATTR_XATTR_H */
+> -	TST_TEST_TCONF("<attr/xattr.h> does not exist.");
+> +#else /* HAVE_SYS_XATTR_H or HAVE_ATTR_XATTR_H */
+> +	TST_TEST_TCONF("neither <sys/xattr.h> nor <attr/xattr.h> does not exist.");
+>  #endif
 
+I guess that this part took the changes from your xattr patch by
+accident. Otherwise the patch is obviously OK.
 
------ Original Message -----
-> From: "Artem Savkov" <asavkov@redhat.com>
-> To: ltp@lists.linux.it
-> Cc: chrubis@suse.cz, jstancek@redhat.com, "Artem Savkov" <asavkov@redhat.com>
-> Sent: Thursday, 1 September, 2016 11:06:13 AM
-> Subject: [PATCH] utimensat: fix immutable file retcodes for 4.8.0 and newer.
-> 
-> Kernel 4.8.0 contains patch "337684a fs: return EPERM on immutable inode"
-> that
-> makes operations on immutable files return EPERM instead of EACCESS.
-> 
-> Adjust utimensat test to check new retcode for kernels 4.8.0 and newer.
-> 
-> Signed-off-by: Artem Savkov <asavkov@redhat.com>
-
-Pushed.
-
-Thanks,
-Jan
+-- 
+Cyril Hrubis
+chrubis@suse.cz
