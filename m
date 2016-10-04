@@ -1,66 +1,79 @@
-From: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
-Date: Tue,  4 Oct 2016 10:26:02 +0200
-Subject: [LTP]  [PATCH v2] Fix typos in assignments to the field tid
-Message-ID: <1475569562-8681-1-git-send-email-dejan.jovicevic@rt-rk.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 4 Oct 2016 10:45:32 +0200
+Subject: [LTP] new shell library
+In-Reply-To: <2007222752.190298.1475569383933.JavaMail.zimbra@redhat.com>
+References: <20161003145835.GD7583@rei.suse.cz>
+ <2007222752.190298.1475569383933.JavaMail.zimbra@redhat.com>
+Message-ID: <20161004084532.GA29418@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-v1 -> v2:
-	- mad a clean patch, without the unnecessary changes in llistxattr03.c
+Hi!
+> As a person who sees this first time, my immediate concern was,
+> how do I know what variables functions names are reserved
+> (without need to read entire tst_test.sh) and what happens if
+> I make a typo?
+>
+> It also forces me to use specific names as the names
+> of my functions (e.g. "test", which presumably shadows test(1)).
 
-llistxattr02 -> llistxattr03
-sokcetpair01 -> socketpair01
-madvice05 -> madvise05
+That is a valid concern. I guess that passing everyting
+(setup/cleanup/test/etc.) via TST_FOO variables would be much better.
 
-Signed-off-by: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
----
- testcases/kernel/syscalls/llistxattr/llistxattr03.c | 2 +-
- testcases/kernel/syscalls/madvise/madvise05.c       | 2 +-
- testcases/kernel/syscalls/socketpair/socketpair01.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+I was trying to reduce the number of lines per test as much as possible
+but this is perhaps too agressive and the end result is complicated
+automagic that is hard to understand.
 
-diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr03.c b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
-index 5513019..a371632 100644
---- a/testcases/kernel/syscalls/llistxattr/llistxattr03.c
-+++ b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
-@@ -89,7 +89,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
--	.tid = "llistxattr02",
-+	.tid = "llistxattr03",
- 	.needs_tmpdir = 1,
- 	.needs_root = 1,
- 	.test = verify_llistxattr,
-diff --git a/testcases/kernel/syscalls/madvise/madvise05.c b/testcases/kernel/syscalls/madvise/madvise05.c
-index 612c967..4f8718f 100644
---- a/testcases/kernel/syscalls/madvise/madvise05.c
-+++ b/testcases/kernel/syscalls/madvise/madvise05.c
-@@ -55,7 +55,7 @@ static void verify_madvise(void)
- }
- 
- static struct tst_test test = {
--	.tid = "madvice05",
-+	.tid = "madvise05",
- 	.min_kver = "3.9.0",
- 	.test_all = verify_madvise,
- };
-diff --git a/testcases/kernel/syscalls/socketpair/socketpair01.c b/testcases/kernel/syscalls/socketpair/socketpair01.c
-index 63c2030..f7833a4 100644
---- a/testcases/kernel/syscalls/socketpair/socketpair01.c
-+++ b/testcases/kernel/syscalls/socketpair/socketpair01.c
-@@ -102,7 +102,7 @@ static void setup(void)
- }
- 
- static struct tst_test test = {
--	.tid = "sokcetpair01",
-+	.tid = "socketpair01",
- 	.tcnt = ARRAY_SIZE(tdat),
- 	.setup = setup,
- 	.test = verify_socketpair
+> And there's now requirement on when you can include new library,
+> it has to be at the end of file, because there are side-effects
+> (it starts the test on inclusion).
+> 
+> So, I was thinking:
+> 
+> . tst_test.sh
+> 
+> ...
+> 
+> tst_def TID="du01"
+> tst_def TCNT=23
+> tst_def TST_SETUP mysetup
+> tst_def TST_CLEANUP mycleanup
+> tst_def TST_TESTFUNC mytest
+> tst_def TST_NEEDS_TMPDIR=1
+> tst_def TST_NEEDS_CMDS="dd du stat"
+> tst_start
+> 
+> tst_def - makes it clear that this variable defines something for tst_test,
+>           checks for potential typos, doesn't allow non-existent ones,
+>           is a single place in tst_test.sh where I can see all possible variables together
+
+Hmm, I do not like this indirection too much. This obscures what is
+happening in similar manner to my automagic.
+
+What about we do it as:
+
+TST_ID="du01"
+TST_CNT=23
+TST_SETUP=setup
+TST_CLEANUP=cleanup
+TST_TESTFUNC=du_test
+TST_NEEDS_TMPDIR=1
+TST_NEEDS_CMDS="dd du stat"
+. tst_test.sh
+
+# the actuall test code
+
+tst_run
+
+
+And if you are worried about typos in the TST_ variables we can write a
+really simple script that checks for these, something in the spirit of
+checkpatch.pl for shell code (bonus is that we can also teach it to look
+for common mistakes in shell code as well).
+
 -- 
-1.9.1
-
+Cyril Hrubis
+chrubis@suse.cz
