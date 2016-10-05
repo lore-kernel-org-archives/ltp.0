@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 5 Oct 2016 17:00:18 +0200
-Subject: [LTP] [PATCH 1/2] syscalls/getrusage03: Use constants instead
- of magic numbers
-In-Reply-To: <1471873120-4272-1-git-send-email-yuriy.kolerov@synopsys.com>
-References: <1471873120-4272-1-git-send-email-yuriy.kolerov@synopsys.com>
-Message-ID: <20161005150017.GB23476@rei.lan>
+Date: Wed, 5 Oct 2016 17:23:31 +0200
+Subject: [LTP] [PATCH 1/2] syscalls: new test writev07
+In-Reply-To: <c6be7469f0f59fa5c0d65e9466d0d9686a1251b3.1475670993.git.jstancek@redhat.com>
+References: <c6be7469f0f59fa5c0d65e9466d0d9686a1251b3.1475670993.git.jstancek@redhat.com>
+Message-ID: <20161005152331.GC23476@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,55 +11,143 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/testcases/kernel/syscalls/getrusage/getrusage03.h b/testcases/kernel/syscalls/getrusage/getrusage03.h
-> new file mode 100644
-> index 0000000..7dc6d0a
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/getrusage/getrusage03.h
-> @@ -0,0 +1,36 @@
-> +/*
-> + * Copyright (c) 2016 Synopsys, Inc. (www.synopsys.com)
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
+> +#define TESTFILE "testfile"
+> +#define CHUNK 64
+> +#define BUFSIZE (CHUNK * 8)
 > +
-> +#ifndef GETRUSAGE03_H
-> +#define GETRUSAGE03_H
+> +static void *bad_addr;
 > +
-> +#define DELTA_MAX_KB		102400
-> +#define CONSUME_INITIAL_MB	100
-> +#define CONSUME_FORK_MALLOC_MB	50
-> +#define CONSUME_GRANDCHILD_MB	300
-> +#define CONSUME_ZOMBIE_MB	400
-> +#define CONSUME_SIG_IGN_MB	500
-> +
-> +#define N_TO_STR(s) _N_TO_STR(s)
-> +#define _N_TO_STR(s) #s
-> +
-> +static int is_in_delta(long value)
+> +static void dump_buf(unsigned char *buf, int len)
 > +{
-> +	return (value >= -DELTA_MAX_KB && value <= DELTA_MAX_KB);
+> +	int i;
+> +
+> +	for (i = 0; i < len; i++) {
+> +		printf("0x%02x ", *(buf + i));
+> +		if (i % 16 == 15)
+> +			printf("\n");
+> +	}
+> +	printf("\n");
 > +}
 
-I do not like much that you are replacing the hardcoded values with
-macros. Why not integer variables instead? Then we can actually tune the
-values at test start automatically.
+Hmm, we have tst_resm_hexd() in the old library exactly for this purpose
+but it's not exported to the new library at this point. We should fix
+that and make use of it here.
 
-So what about making all these CONSUME_FOO macros integer varibles
-instead?
+> +static void test_partially_valid_iovec(int initial_file_offset)
+> +{
+> +	int i, fd;
+> +	unsigned char buffer[BUFSIZE], fpattern[BUFSIZE], tmp[BUFSIZE];
+> +	long off_after;
+> +	struct iovec wr_iovec[] = {
+> +		{ buffer + CHUNK, CHUNK * 2 },
+> +		{ bad_addr, CHUNK },
+> +		{ buffer + CHUNK * 3, CHUNK },
+> +		{ buffer + CHUNK * 2, CHUNK * 2 },
+> +	};
 
-Also sorry for the delay in review.
+Hmm, I fail to see the logic after the buffer and CHUNK here. Why don't
+we start from the start of the buffer for the first iovec record?
+
+Why is the BUFSIZE defined as CHUNK * 8 while the only CHUNK * 4 could
+be reached here?
+
+> +	tst_res(TINFO, "starting test with initial file offset: %d ",
+> +		initial_file_offset);
+> +
+> +	for (i = 0; i < BUFSIZE; i++)
+> +		buffer[i] = i % (CHUNK - 1);
+> +
+> +	memset(fpattern, 0xff, BUFSIZE);
+> +	tst_fill_file(TESTFILE, 0xff, CHUNK, BUFSIZE / CHUNK);
+> +
+> +	fd = SAFE_OPEN(TESTFILE, O_RDWR, 0644);
+> +	SAFE_LSEEK(fd, initial_file_offset, SEEK_SET);
+> +	TEST(writev(fd, wr_iovec, ARRAY_SIZE(wr_iovec)));
+> +	off_after = (long) SAFE_LSEEK(fd, 0, SEEK_CUR);
+> +
+> +	/* bad errno */
+> +	if (TEST_RETURN == -1 && TEST_ERRNO != EFAULT) {
+> +		tst_res(TFAIL | TTERRNO, "unexpected errno");
+> +		SAFE_CLOSE(fd);
+> +		return;
+> +	}
+> +
+> +	/* nothing has been written */
+> +	if (TEST_RETURN == -1 && TEST_ERRNO == EFAULT) {
+> +		tst_res(TINFO, "got EFAULT");
+> +		/* initial file content remains untouched */
+> +		SAFE_LSEEK(fd, 0, SEEK_SET);
+> +		SAFE_READ(1, fd, tmp, BUFSIZE);
+> +		if (memcmp(tmp, fpattern, BUFSIZE))
+> +			tst_res(TFAIL, "file was written to");
+> +		else
+> +			tst_res(TPASS, "file stayed untouched");
+> +
+> +		/* offset hasn't changed */
+> +		if (off_after == initial_file_offset)
+> +			tst_res(TPASS, "offset stayed unchanged");
+> +		else
+> +			tst_res(TFAIL, "offset changed to %ld",
+> +				off_after);
+> +
+> +		SAFE_CLOSE(fd);
+> +		return;
+> +	}
+> +
+> +	/* writev() wrote more bytes than bytes preceding invalid iovec */
+> +	tst_res(TINFO, "writev() has written %ld bytes", TEST_RETURN);
+> +	if (TEST_RETURN > (long) wr_iovec[0].iov_base) {
+> +		tst_res(TFAIL, "writev wrote more than expected");
+> +		SAFE_CLOSE(fd);
+> +		return;
+> +	}
+> +
+> +	/* file content matches written bytes */
+> +	SAFE_LSEEK(fd, initial_file_offset, SEEK_SET);
+> +	SAFE_READ(1, fd, tmp, TEST_RETURN);
+> +	if (memcmp(tmp, wr_iovec[0].iov_base, TEST_RETURN) == 0) {
+> +		tst_res(TPASS, "file has expected content");
+> +	} else {
+> +		tst_res(TFAIL, "file has unexpected content");
+> +		tst_res(TINFO, "expected:");
+> +		dump_buf(wr_iovec[0].iov_base, TEST_RETURN);
+> +		tst_res(TINFO, "actual file content:");
+> +		dump_buf(tmp, TEST_RETURN);
+> +	}
+> +
+> +	/* file offset has been updated according to written bytes */
+> +	if (off_after == initial_file_offset + TEST_RETURN)
+> +		tst_res(TPASS, "offset at %ld as expected", off_after);
+> +	else
+> +		tst_res(TFAIL, "offset unexpected %ld", off_after);
+> +
+> +	SAFE_CLOSE(fd);
+> +}
+> +
+> +static void test_writev(void)
+> +{
+> +	test_partially_valid_iovec(0);
+> +	test_partially_valid_iovec(CHUNK + 1);
+> +	test_partially_valid_iovec(getpagesize());
+> +	test_partially_valid_iovec(getpagesize() + 1);
+> +}
+> +
+> +static void setup(void)
+> +{
+> +	bad_addr = SAFE_MMAP(0, 1, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS,
+> +			0, 0);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tid = "access05",
+                  ^
+		  writev07
+> +	.needs_tmpdir = 1,
+> +	.setup = setup,
+> +	.test_all = test_writev,
+> +};
+
+Otherwise it looks good.
 
 -- 
 Cyril Hrubis
