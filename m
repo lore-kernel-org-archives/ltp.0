@@ -1,34 +1,76 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 5 Oct 2016 17:47:35 +0200
-Subject: [LTP] [PATCH] move_pages04: fix zero page status code for
- kernels >= 4.3
-In-Reply-To: <896d677024a4273f2d762aaef1a020c6b08e186b.1475501850.git.jstancek@redhat.com>
-References: <896d677024a4273f2d762aaef1a020c6b08e186b.1475501850.git.jstancek@redhat.com>
-Message-ID: <20161005154735.GE23476@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed, 5 Oct 2016 12:21:03 -0400 (EDT)
+Subject: [LTP] [PATCH 1/2] syscalls: new test writev07
+In-Reply-To: <20161005152331.GC23476@rei.lan>
+References: <c6be7469f0f59fa5c0d65e9466d0d9686a1251b3.1475670993.git.jstancek@redhat.com>
+ <20161005152331.GC23476@rei.lan>
+Message-ID: <1642663993.652860.1475684463479.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> -		if (status[UNTOUCHED_PAGE] == -ENOENT)
-> -			tst_resm(TPASS, "status[%d] set to expected -ENOENT",
-> +		if (status[UNTOUCHED_PAGE] == exp_status)
-> +			tst_resm(TPASS, "status[%d] has expected value",
->  				 UNTOUCHED_PAGE);
->  		else
-> -			tst_resm(TFAIL, "status[%d] is %d", UNTOUCHED_PAGE,
-> -				 status[UNTOUCHED_PAGE]);
-> +			tst_resm(TFAIL, "status[%d] is %d, expected %d",
-> +				UNTOUCHED_PAGE, status[UNTOUCHED_PAGE],
-> +				exp_status);
 
-It would be a bit better to print the errno with tst_strerrno() in both
-cases. I.e. tst_strerrno(-exp_status) and
-tst_strerrno(-status[UNTOUCHED_PAGE]) otherwise this looks obviously
-fine.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Wednesday, 5 October, 2016 5:23:31 PM
+> Subject: Re: [LTP] [PATCH 1/2] syscalls: new test writev07
+> 
+> Hi!
+> > +#define TESTFILE "testfile"
+> > +#define CHUNK 64
+> > +#define BUFSIZE (CHUNK * 8)
+> > +
+> > +static void *bad_addr;
+> > +
+> > +static void dump_buf(unsigned char *buf, int len)
+> > +{
+> > +	int i;
+> > +
+> > +	for (i = 0; i < len; i++) {
+> > +		printf("0x%02x ", *(buf + i));
+> > +		if (i % 16 == 15)
+> > +			printf("\n");
+> > +	}
+> > +	printf("\n");
+> > +}
+> 
+> Hmm, we have tst_resm_hexd() in the old library exactly for this purpose
+> but it's not exported to the new library at this point. We should fix
+> that and make use of it here.
+> 
+> > +static void test_partially_valid_iovec(int initial_file_offset)
+> > +{
+> > +	int i, fd;
+> > +	unsigned char buffer[BUFSIZE], fpattern[BUFSIZE], tmp[BUFSIZE];
+> > +	long off_after;
+> > +	struct iovec wr_iovec[] = {
+> > +		{ buffer + CHUNK, CHUNK * 2 },
+> > +		{ bad_addr, CHUNK },
+> > +		{ buffer + CHUNK * 3, CHUNK },
+> > +		{ buffer + CHUNK * 2, CHUNK * 2 },
+> > +	};
+> 
+> Hmm, I fail to see the logic after the buffer and CHUNK here. Why don't
+> we start from the start of the buffer for the first iovec record?
+
+We can, I picked random offset and lengths.
+
+> 
+> Why is the BUFSIZE defined as CHUNK * 8 while the only CHUNK * 4 could
+> be reached here?
+
+BUFSIZE should also be large enough to accomodate all writes combined,
+so in worst case (if bad_addr somehow worked) you need CHUNK * 6.
+I picked 8 to have some reserve. I can rework it just to CHUNK * 4 size.
+
+Regards,
+Jan
+
+
