@@ -1,20 +1,257 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 5 Oct 2016 11:46:33 +0200
-Subject: [LTP] [PATCH v2] Allow usage of <sys/xattr.h> header.
-In-Reply-To: <1475572440-24827-1-git-send-email-dejan.jovicevic@rt-rk.com>
-References: <1475572440-24827-1-git-send-email-dejan.jovicevic@rt-rk.com>
-Message-ID: <20161005094633.GA17034@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed,  5 Oct 2016 14:36:53 +0200
+Subject: [LTP] [PATCH 1/2] syscalls: new test writev07
+Message-ID: <c6be7469f0f59fa5c0d65e9466d0d9686a1251b3.1475670993.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with cosmetic changes and rewritten commit description, thanks.
+Verify writev() behaviour with partially valid iovec list.
+Kernel <4.8 used to shorten write up to first bad invalid
+iovec. Starting with 4.8, a writev with short data (under
+page size) is likely to get shorten to 0 bytes and return
+EFAULT.
 
-PS: Please try to write more descriptive commit message next time.
+This test doesn't make assumptions how much will write get
+shortened. It only tests that file content/offset after
+syscall corresponds to return value of writev().
 
+See: [RFC] writev() semantics with invalid iovec in the middle
+     https://marc.info/?l=linux-kernel&m=147388891614289&w=2
+
+This test is meant to be replacement for writev03/writev04
+and part of writev01, which all deal with partially invalid
+iovec lists, and all currently fail with 4.8 kernel.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ runtest/ltplite                             |   1 +
+ runtest/stress.part3                        |   1 +
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/.gitignore        |   1 +
+ testcases/kernel/syscalls/writev/writev07.c | 163 ++++++++++++++++++++++++++++
+ 5 files changed, 167 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/writev/writev07.c
+
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 42d9a039ad34..1b4c5f6ee279 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -1047,6 +1047,7 @@ writev03 writev03
+ writev04 writev04
+ writev05 writev05
+ writev06 writev06
++writev07 writev07
+ 
+ #DESCRIPTION:Memory Mgmt tests
+ mm01 mmap001 -m 10000
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index fa75b5c08526..effa5fd9b14e 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -908,6 +908,7 @@ writev03 writev03
+ writev04 writev04
+ writev05 writev05
+ writev06 writev06
++writev07 writev07
+ 
+ pty01 pty01
+ hangup01 hangup01
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 01839e83bf83..88f75971cb3d 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1426,6 +1426,7 @@ writev03 writev03
+ writev04 writev04
+ writev05 writev05
+ writev06 writev06
++writev07 writev07
+ 
+ perf_event_open01 perf_event_open01
+ perf_event_open02 perf_event_open02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index a13dbb3c5a99..f2aeab45e5bb 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -1104,6 +1104,7 @@
+ /writev/writev04
+ /writev/writev05
+ /writev/writev06
++/writev/writev07
+ /fanotify/fanotify01
+ /fanotify/fanotify02
+ /fanotify/fanotify03
+diff --git a/testcases/kernel/syscalls/writev/writev07.c b/testcases/kernel/syscalls/writev/writev07.c
+new file mode 100644
+index 000000000000..8677fc62a8b6
+--- /dev/null
++++ b/testcases/kernel/syscalls/writev/writev07.c
+@@ -0,0 +1,163 @@
++/*
++ *
++ *   Copyright (c) Linux Test Project, 2016
++ *
++ *   This program is free software;  you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ *   the GNU General Public License for more details.
++ */
++
++/*
++ * Test Description:
++ *   Verify writev() behaviour with partially valid iovec list.
++ *   Kernel <4.8 used to shorten write up to first bad invalid
++ *   iovec. Starting with 4.8, a writev with short data (under
++ *   page size) is likely to get shorten to 0 bytes and return
++ *   EFAULT.
++ *
++ *   This test doesn't make assumptions how much will write get
++ *   shortened. It only tests that file content/offset after
++ *   syscall corresponds to return value of writev().
++ *
++ *   See: [RFC] writev() semantics with invalid iovec in the middle
++ *        https://marc.info/?l=linux-kernel&m=147388891614289&w=2
++ */
++
++#include <errno.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/uio.h>
++#include "tst_test.h"
++
++#define TESTFILE "testfile"
++#define CHUNK 64
++#define BUFSIZE (CHUNK * 8)
++
++static void *bad_addr;
++
++static void dump_buf(unsigned char *buf, int len)
++{
++	int i;
++
++	for (i = 0; i < len; i++) {
++		printf("0x%02x ", *(buf + i));
++		if (i % 16 == 15)
++			printf("\n");
++	}
++	printf("\n");
++}
++
++static void test_partially_valid_iovec(int initial_file_offset)
++{
++	int i, fd;
++	unsigned char buffer[BUFSIZE], fpattern[BUFSIZE], tmp[BUFSIZE];
++	long off_after;
++	struct iovec wr_iovec[] = {
++		{ buffer + CHUNK, CHUNK * 2 },
++		{ bad_addr, CHUNK },
++		{ buffer + CHUNK * 3, CHUNK },
++		{ buffer + CHUNK * 2, CHUNK * 2 },
++	};
++
++	tst_res(TINFO, "starting test with initial file offset: %d ",
++		initial_file_offset);
++
++	for (i = 0; i < BUFSIZE; i++)
++		buffer[i] = i % (CHUNK - 1);
++
++	memset(fpattern, 0xff, BUFSIZE);
++	tst_fill_file(TESTFILE, 0xff, CHUNK, BUFSIZE / CHUNK);
++
++	fd = SAFE_OPEN(TESTFILE, O_RDWR, 0644);
++	SAFE_LSEEK(fd, initial_file_offset, SEEK_SET);
++	TEST(writev(fd, wr_iovec, ARRAY_SIZE(wr_iovec)));
++	off_after = (long) SAFE_LSEEK(fd, 0, SEEK_CUR);
++
++	/* bad errno */
++	if (TEST_RETURN == -1 && TEST_ERRNO != EFAULT) {
++		tst_res(TFAIL | TTERRNO, "unexpected errno");
++		SAFE_CLOSE(fd);
++		return;
++	}
++
++	/* nothing has been written */
++	if (TEST_RETURN == -1 && TEST_ERRNO == EFAULT) {
++		tst_res(TINFO, "got EFAULT");
++		/* initial file content remains untouched */
++		SAFE_LSEEK(fd, 0, SEEK_SET);
++		SAFE_READ(1, fd, tmp, BUFSIZE);
++		if (memcmp(tmp, fpattern, BUFSIZE))
++			tst_res(TFAIL, "file was written to");
++		else
++			tst_res(TPASS, "file stayed untouched");
++
++		/* offset hasn't changed */
++		if (off_after == initial_file_offset)
++			tst_res(TPASS, "offset stayed unchanged");
++		else
++			tst_res(TFAIL, "offset changed to %ld",
++				off_after);
++
++		SAFE_CLOSE(fd);
++		return;
++	}
++
++	/* writev() wrote more bytes than bytes preceding invalid iovec */
++	tst_res(TINFO, "writev() has written %ld bytes", TEST_RETURN);
++	if (TEST_RETURN > (long) wr_iovec[0].iov_base) {
++		tst_res(TFAIL, "writev wrote more than expected");
++		SAFE_CLOSE(fd);
++		return;
++	}
++
++	/* file content matches written bytes */
++	SAFE_LSEEK(fd, initial_file_offset, SEEK_SET);
++	SAFE_READ(1, fd, tmp, TEST_RETURN);
++	if (memcmp(tmp, wr_iovec[0].iov_base, TEST_RETURN) == 0) {
++		tst_res(TPASS, "file has expected content");
++	} else {
++		tst_res(TFAIL, "file has unexpected content");
++		tst_res(TINFO, "expected:");
++		dump_buf(wr_iovec[0].iov_base, TEST_RETURN);
++		tst_res(TINFO, "actual file content:");
++		dump_buf(tmp, TEST_RETURN);
++	}
++
++	/* file offset has been updated according to written bytes */
++	if (off_after == initial_file_offset + TEST_RETURN)
++		tst_res(TPASS, "offset at %ld as expected", off_after);
++	else
++		tst_res(TFAIL, "offset unexpected %ld", off_after);
++
++	SAFE_CLOSE(fd);
++}
++
++static void test_writev(void)
++{
++	test_partially_valid_iovec(0);
++	test_partially_valid_iovec(CHUNK + 1);
++	test_partially_valid_iovec(getpagesize());
++	test_partially_valid_iovec(getpagesize() + 1);
++}
++
++static void setup(void)
++{
++	bad_addr = SAFE_MMAP(0, 1, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS,
++			0, 0);
++}
++
++static struct tst_test test = {
++	.tid = "access05",
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.test_all = test_writev,
++};
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
