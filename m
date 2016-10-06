@@ -1,39 +1,63 @@
-From: Dejan Jovicevic <Dejan.Jovicevic@rt-rk.com>
-Date: Thu, 06 Oct 2016 14:59:27 +0200
-Subject: [LTP]
- =?utf-8?b?Pz09P3V0Zi04P3E/ID89PT91dGYtOD9xPyBbUEFUQ0ggMS8y?=
- =?utf-8?q?=5D=3F=3D=3D=3Futf-8=3Fq=3F_llistxattr=3A_added_a_new_testcase_?=
- =?utf-8?q?to_llistxattr02?=
-In-Reply-To: <20161006123804.GB10467@rei.lan>
-Message-ID: <7c79-57f64a80-9-42da9f80@146381614>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu,  6 Oct 2016 16:48:59 +0300
+Subject: [LTP] [PATCH] network/busy_poll: TCONF if driver doesn't support
+	busy-poll feature
+Message-ID: <1475761739-14380-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/network/busy_poll/busy_poll01.sh |    3 +++
+ testcases/network/busy_poll/busy_poll02.sh |    3 +++
+ testcases/network/busy_poll/busy_poll03.sh |    3 +++
+ 3 files changed, 9 insertions(+), 0 deletions(-)
 
-=C2=A0Hi!
-> +int longpath_setup(void)
-> +{
-> + int i;
-> +
-> + for (i =3D 0; i < PATH_MAX + 2; i++)
-> + longpathname[i] =3D 'a';
-> +
-> + return 0;
-> +}
+diff --git a/testcases/network/busy_poll/busy_poll01.sh b/testcases/network/busy_poll/busy_poll01.sh
+index 8faa569..985c11d 100755
+--- a/testcases/network/busy_poll/busy_poll01.sh
++++ b/testcases/network/busy_poll/busy_poll01.sh
+@@ -52,6 +52,9 @@ if [ ! -f "/proc/sys/net/core/busy_read" -a \
+ 	tst_brkm TCONF "busy poll not configured, CONFIG_NET_RX_BUSY_POLL"
+ fi
+ 
++ethtool --show-features $(tst_iface) | grep -q 'busy-poll.*on' || \
++	tst_brkm TCONF "busy poll not supported by driver"
++
+ set_busy_poll()
+ {
+ 	local value=${1:-"0"}
+diff --git a/testcases/network/busy_poll/busy_poll02.sh b/testcases/network/busy_poll/busy_poll02.sh
+index cd69ed2..28f476d 100755
+--- a/testcases/network/busy_poll/busy_poll02.sh
++++ b/testcases/network/busy_poll/busy_poll02.sh
+@@ -48,6 +48,9 @@ if [ ! -f "/proc/sys/net/core/busy_read" -a \
+ 	tst_brkm TCONF "busy poll not configured, CONFIG_NET_RX_BUSY_POLL"
+ fi
+ 
++ethtool --show-features $(tst_iface) | grep -q 'busy-poll.*on' || \
++	tst_brkm TCONF "busy poll not supported by driver"
++
+ set_busy_poll()
+ {
+ 	local value=${1:-"0"}
+diff --git a/testcases/network/busy_poll/busy_poll03.sh b/testcases/network/busy_poll/busy_poll03.sh
+index 7e405ee..cc0e0db 100755
+--- a/testcases/network/busy_poll/busy_poll03.sh
++++ b/testcases/network/busy_poll/busy_poll03.sh
+@@ -42,6 +42,9 @@ if [ ! -f "/proc/sys/net/core/busy_read" -a \
+ 	tst_brkm TCONF "busy poll not configured, CONFIG_NET_RX_BUSY_POLL"
+ fi
+ 
++ethtool --show-features $(tst_iface) | grep -q 'busy-poll.*on' || \
++	tst_brkm TCONF "busy poll not supported by driver"
++
+ set_busy_poll()
+ {
+ 	local value=${1:-"0"}
+-- 
+1.7.1
 
-Why don't we just do memset() in the setup()?
-
-memset(longpathname, 'a', sizeof(longpathname) - 1);
-
-Should do the same.
-
---
-Cyril Hrubis
-chrubis@suse.czYes, that's a very good point. I'll change it up in v2.
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20161006/4ec1afa1/att=
-achment.html>
