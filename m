@@ -1,39 +1,154 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 6 Oct 2016 13:16:38 +0200
-Subject: [LTP] [PATCH] [RFC] readahead02: Fix on Btrfs
-In-Reply-To: <414326668.771913.1475747794724.JavaMail.zimbra@redhat.com>
-References: <20161006081752.GA9210@rei>
- <966408417.764925.1475744970952.JavaMail.zimbra@redhat.com>
- <20161006093226.GB9427@rei>
- <414326668.771913.1475747794724.JavaMail.zimbra@redhat.com>
-Message-ID: <20161006111638.GB9711@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu,  6 Oct 2016 13:46:09 +0200
+Subject: [LTP] [PATCH] lib: add tst_res_hexd for newlib
+Message-ID: <77e055a73816d095647ced78f9444932845f370c.1475754253.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > If this patch goes through, then reading read_ahead_kb becomes
-> > > useless:
-> > >   https://lkml.org/lkml/2016/7/25/308
-> > > 
-> > > Perhaps, we should stop focusing on max size. We could change it to start
-> > > with size of entire file, and for subsequent calls update file offset as
-> > > max(MIN_SANE_READAHEAD, cache_increase_since_last_call), where
-> > > MIN_SANE_READAHEAD
-> > > would be some small arbitrary number. So there would be a guarantee
-> > > it can eventually finish and any smaller readahead than that number would
-> > > be considered a failure.
-> > 
-> > Sounds reasonable. Will you prepare a patch or should i work on it?
-> 
-> I want to finish writev patches first (very visible 4.8 syscall failure,
-> if I don't count scenario in this thread). If you need this ASAP then
-> go ahead, otherwise I can pick it up later.
+Locking mutex isn't necessary for oldlib, because
+we already lock at tst_res__ level.
 
-No rush, this test wasn't working on Btrfs for quite some time.
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ include/tst_test.h              |  8 ++++++++
+ lib/newlib_tests/.gitignore     |  3 ++-
+ lib/newlib_tests/tst_res_hexd.c | 31 +++++++++++++++++++++++++++++++
+ lib/tst_res.c                   | 26 ++++++++++++++------------
+ 4 files changed, 55 insertions(+), 13 deletions(-)
+ create mode 100644 lib/newlib_tests/tst_res_hexd.c
 
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 3f7123e3f633..1492ff5c41e8 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -44,6 +44,14 @@ void tst_res_(const char *file, const int lineno, int ttype,
+ #define tst_res(ttype, arg_fmt, ...) \
+ 	tst_res_(__FILE__, __LINE__, (ttype), (arg_fmt), ##__VA_ARGS__)
+ 
++void tst_resm_hexd_(const char *file, const int lineno, int ttype,
++	const void *buf, size_t size, const char *arg_fmt, ...)
++	__attribute__ ((format (printf, 6, 7)));
++
++#define tst_res_hexd(ttype, buf, size, arg_fmt, ...) \
++	tst_resm_hexd_(__FILE__, __LINE__, (ttype), (buf), (size), \
++			(arg_fmt), ##__VA_ARGS__)
++
+ /*
+  * Reports result and exits a test.
+  */
+diff --git a/lib/newlib_tests/.gitignore b/lib/newlib_tests/.gitignore
+index 1b83738fb8b9..bc2409c97ce7 100644
+--- a/lib/newlib_tests/.gitignore
++++ b/lib/newlib_tests/.gitignore
+@@ -11,5 +11,6 @@ test10
+ test11
+ test12
+ test13
+-tst_safe_fileops
+ tst_device
++tst_safe_fileops
++tst_res_hexd
+diff --git a/lib/newlib_tests/tst_res_hexd.c b/lib/newlib_tests/tst_res_hexd.c
+new file mode 100644
+index 000000000000..333ea56a93ad
+--- /dev/null
++++ b/lib/newlib_tests/tst_res_hexd.c
+@@ -0,0 +1,31 @@
++/*
++ * Copyright (c) 2016 Linux Test Project
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <stdio.h>
++#include "tst_test.h"
++
++static void do_test(void)
++{
++	char tmp[] = "Hello from tst_res_hexd";
++
++	tst_res_hexd(TPASS, tmp, sizeof(tmp), "%s%d", "dump", 1);
++}
++
++static struct tst_test test = {
++	.tid = "tst_res_hexd",
++	.test_all = do_test,
++};
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index b388d0d2e516..261dec0fbba8 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -500,29 +500,33 @@ void tst_resm_(const char *file, const int lineno, int ttype,
+ 		tst_res__(file, lineno, ttype, "%s", tmesg);
+ }
+ 
++typedef void (*tst_res_func_t)(const char *file, const int lineno,
++		int ttype, const char *fmt, ...);
++
+ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
+ 	const void *buf, size_t size, const char *arg_fmt, ...)
+ {
+-	NO_NEWLIB_ASSERT(file, lineno);
+-
+-	pthread_mutex_lock(&tmutex);
+-
+ 	char tmesg[USERMESG];
+-
+-	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
+-
+ 	static const size_t symb_num	= 2; /* xx */
+ 	static const size_t size_max	= 16;
+ 	size_t offset = strlen(tmesg);
++	size_t i;
+ 	char *pmesg = tmesg;
++	tst_res_func_t res_func;
++
++	if (tst_test)
++		res_func = tst_res_;
++	else
++		res_func = tst_res__;
++
++	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
+ 
+ 	if (size > size_max || size == 0 ||
+ 		(offset + size * (symb_num + 1)) >= USERMESG)
+-		tst_res__(file, lineno, ttype, "%s", tmesg);
++		res_func(file, lineno, ttype, "%s", tmesg);
+ 	else
+ 		pmesg += offset;
+ 
+-	size_t i;
+ 	for (i = 0; i < size; ++i) {
+ 		/* add space before byte except first one */
+ 		if (pmesg != tmesg)
+@@ -531,12 +535,10 @@ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
+ 		sprintf(pmesg, "%02x", ((unsigned char *)buf)[i]);
+ 		pmesg += symb_num;
+ 		if ((i + 1) % size_max == 0 || i + 1 == size) {
+-			tst_res__(file, lineno, ttype, "%s", tmesg);
++			res_func(file, lineno, ttype, "%s", tmesg);
+ 			pmesg = tmesg;
+ 		}
+ 	}
+-
+-	pthread_mutex_unlock(&tmutex);
+ }
+ 
+ void tst_brkm_(const char *file, const int lineno, int ttype,
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
