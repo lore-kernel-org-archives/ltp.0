@@ -1,57 +1,62 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Thu, 6 Oct 2016 05:56:34 -0400 (EDT)
-Subject: [LTP] [PATCH] [RFC] readahead02: Fix on Btrfs
-In-Reply-To: <20161006093226.GB9427@rei>
-References: <20161006081752.GA9210@rei>
- <966408417.764925.1475744970952.JavaMail.zimbra@redhat.com>
- <20161006093226.GB9427@rei>
-Message-ID: <414326668.771913.1475747794724.JavaMail.zimbra@redhat.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Thu, 6 Oct 2016 18:31:11 +0800
+Subject: [LTP] [PATCH] syscalls/signal06: fix test for regression with
+ earlier version of gcc and kernel
+In-Reply-To: <20161005134303.GA23476@rei.lan>
+References: <1470380281-20334-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20161005134303.GA23476@rei.lan>
+Message-ID: <57F627EF.7070605@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
 
+Thanks for your comments!
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, 6 October, 2016 11:32:26 AM
-> Subject: Re: [PATCH] [RFC] readahead02: Fix on Btrfs
-> 
+On 10/05/2016 09:43 PM, Cyril Hrubis wrote:
 > Hi!
-> > > Also this is getting absurdly compliated, maybe we should rethink the
-> > > test assertions so that we don't have to rely on reading the
-> > > read_ahead_kb file, perhaps we can just try to guess the maximal size by
-> > > calling the readahead in a loop with increasing size until it fails
-> > > instead.
-> > 
-> > Syscall itself won't fail, it will silently make shorter read.
+> First of all sorry for the delay.
 > 
-> Ah, it would have been much easier if we got EINVAL instead...
+>> 1. Currently, following code is incorrect on some releases with
+>>    earlier version of gcc(tested on RHEL5.11GA):
+>>
+>> 	while (D == d && loop < LOOPS) {
+>>
+>>    Because the argument in function test(double d) is used via (%rsp),
+>>    but here we actually need a xmm register to trigger the fpu bug.
+>>    So use global value instead to make sure to take use of xmm.
+> 
+> This looks OK.
+> 
+>> 2. Although this regression test is designed to trigger SIGSEGV
+>>    intentionally, on some releases with old kernel(tested on RHEL5.11GA),
+>>    this will still lead to segmentation fault that terminate the program
+>>    and break the test even though compiling with -O2.  So slightly adjust
+>>    the weight of the codes in child thread to depress SIGSEGV trigger's
+>>    chance while increase LOOPS to ensure reproducible.
+> 
+> Hmm, what is the exact problem here? Does the old kernel break if we
+> send the signal too fast?
 
-Or if readahead returned number of bytes read instead of 0.
+Yes, running signal06 reports segmentation fault and breaks the test
+if we send the signal too fast on the old kernel.
 
 > 
-> > If this patch goes through, then reading read_ahead_kb becomes
-> > useless:
-> >   https://lkml.org/lkml/2016/7/25/308
-> > 
-> > Perhaps, we should stop focusing on max size. We could change it to start
-> > with size of entire file, and for subsequent calls update file offset as
-> > max(MIN_SANE_READAHEAD, cache_increase_since_last_call), where
-> > MIN_SANE_READAHEAD
-> > would be some small arbitrary number. So there would be a guarantee
-> > it can eventually finish and any smaller readahead than that number would
-> > be considered a failure.
-> 
-> Sounds reasonable. Will you prepare a patch or should i work on it?
+> I do not like much that the test takes ten times more time to finish
+> now.
 
-I want to finish writev patches first (very visible 4.8 syscall failure,
-if I don't count scenario in this thread). If you need this ASAP then
-go ahead, otherwise I can pick it up later.
+Yes, it will take ten times more time than before, but it only takes
+3~4 seconds to finish...
 
-Regards,
-Jan
+By current LOOPS(10000), most of the time, the buggy kernel can be
+reproduced, but there is still a chance(about 0.5% in my environment)
+to miss.
+
+
+Best Regards,
+Guangwen Feng
+
+
