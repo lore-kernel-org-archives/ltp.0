@@ -1,47 +1,63 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Thu,  6 Oct 2016 16:50:14 +0300
-Subject: [LTP] [PATCH] test_net.sh: don't waste time waiting 1 sec in
-	tst_ping()
-Message-ID: <1475761814-14468-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Thu,  6 Oct 2016 16:54:52 +0300
+Subject: [LTP] [PATCH 1/4] runtest/net_stress.ipsec_icmp: disable multinic
+	tests
+Message-ID: <1475762095-14612-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The current user of this function is 'icmp-uni-basic.sh' ipsec test
-group that includes 17 tests. Usually, it takes about 50 seconds for
-each test run. This change allows to run the same test in ~5 seconds
-because interval is 0 and default number of packets transmitted for
-each size parameter increased from 10 to 500.
+These tests not fixed yet, disable for now. The file
+includes new ipsec tests and having broken tests together
+with the new ones can be unhandy.
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/lib/test_net.sh |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ runtest/net_stress.ipsec_icmp |   32 --------------------------------
+ 1 files changed, 0 insertions(+), 32 deletions(-)
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index ceb6d9d..dc52d95 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -323,7 +323,7 @@ tst_netload()
- tst_ping()
- {
- 	# The max number of ICMP echo request
--	PING_MAX=${PING_MAX:-"10"}
-+	PING_MAX=${PING_MAX:-"500"}
- 
- 	local src_iface=${1:-"$(tst_iface)"}
- 	local dst_addr=${2:-"$(tst_ipaddr rhost)"}; shift 2
-@@ -333,7 +333,7 @@ tst_ping()
- 	# ping cmd use 56 as default message size
- 	for size in ${msg_sizes:-"56"}; do
- 		ping$TST_IPV6 -I $src_iface -c $PING_MAX $dst_addr \
--			-s $size > /dev/null 2>&1
-+			-s $size -i 0 > /dev/null 2>&1
- 		ret=$?
- 		if [ $ret -eq 0 ]; then
- 			tst_resm TINFO "tst_ping IPv${TST_IPV6:-4} msg_size $size pass"
+diff --git a/runtest/net_stress.ipsec_icmp b/runtest/net_stress.ipsec_icmp
+index 2b989b1..071af7d 100644
+--- a/runtest/net_stress.ipsec_icmp
++++ b/runtest/net_stress.ipsec_icmp
+@@ -35,35 +35,3 @@ icmp6-uni-basic05 icmp-uni-basic.sh -6 -p esp -m tunnel -s "10 100 1000 10000 65
+ # after compression. So we just use a large enough message size(65000) for testing
+ icmp6-uni-basic06 icmp-uni-basic.sh -6 -p ipcomp -m transport -s "10 100 1000 10000 65000"
+ icmp6-uni-basic07 icmp-uni-basic.sh -6 -p ipcomp -m tunnel -s "10 100 1000 10000 65000"
+-
+-icmp4-multi-diffip01 icmp4-multi-diffip01
+-icmp4-multi-diffip02 icmp4-multi-diffip02
+-icmp4-multi-diffip03 icmp4-multi-diffip03
+-icmp4-multi-diffip04 icmp4-multi-diffip04
+-icmp4-multi-diffip05 icmp4-multi-diffip05
+-icmp4-multi-diffip06 icmp4-multi-diffip06
+-icmp4-multi-diffip07 icmp4-multi-diffip07
+-
+-icmp6-multi-diffip01 icmp6-multi-diffip01
+-icmp6-multi-diffip02 icmp6-multi-diffip02
+-icmp6-multi-diffip03 icmp6-multi-diffip03
+-icmp6-multi-diffip04 icmp6-multi-diffip04
+-icmp6-multi-diffip05 icmp6-multi-diffip05
+-icmp6-multi-diffip06 icmp6-multi-diffip06
+-icmp6-multi-diffip07 icmp6-multi-diffip07
+-
+-icmp4-multi-diffnic01 icmp4-multi-diffnic01
+-icmp4-multi-diffnic02 icmp4-multi-diffnic02
+-icmp4-multi-diffnic03 icmp4-multi-diffnic03
+-icmp4-multi-diffnic04 icmp4-multi-diffnic04
+-icmp4-multi-diffnic05 icmp4-multi-diffnic05
+-icmp4-multi-diffnic06 icmp4-multi-diffnic06
+-icmp4-multi-diffnic07 icmp4-multi-diffnic07
+-
+-icmp6-multi-diffnic01 icmp6-multi-diffnic01
+-icmp6-multi-diffnic02 icmp6-multi-diffnic02
+-icmp6-multi-diffnic03 icmp6-multi-diffnic03
+-icmp6-multi-diffnic04 icmp6-multi-diffnic04
+-icmp6-multi-diffnic05 icmp6-multi-diffnic05
+-icmp6-multi-diffnic06 icmp6-multi-diffnic06
+-icmp6-multi-diffnic07 icmp6-multi-diffnic07
 -- 
 1.7.1
 
