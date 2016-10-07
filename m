@@ -1,137 +1,31 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri,  7 Oct 2016 10:11:11 +0200
-Subject: [LTP] [PATCH v2 2/3] writev: remove writev03 and writev04
+Date: Fri,  7 Oct 2016 10:11:12 +0200
+Subject: [LTP] [PATCH v2 3/3] writev01: rewrite and drop partially valid
+	iovec tests
 In-Reply-To: <81176684cd5c6bf764a070b79783f03f0037658a.1475827191.git.jstancek@redhat.com>
 References: <81176684cd5c6bf764a070b79783f03f0037658a.1475827191.git.jstancek@redhat.com>
-Message-ID: <481d9099694f38dd1a0aeb9d20b359d3a42aaaf0.1475827191.git.jstancek@redhat.com>
+Message-ID: <d6b408e9dcb22db9c362377a2d35876fdb6d7096.1475827191.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Removed tests are almost identical, and there is now a new
-test: writev07, which is meant to be a replacement.
+Convert to newlib style, and drop tests for partially valid
+iovec lists, these are now tested in writev07.
 
 Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- doc/testcases/kernel.txt                    |  23 --
- runtest/ltplite                             |   2 -
- runtest/stress.part3                        |   2 -
- runtest/syscalls                            |   2 -
- testcases/kernel/syscalls/.gitignore        |   2 -
- testcases/kernel/syscalls/writev/Makefile   |   2 +-
- testcases/kernel/syscalls/writev/writev03.c | 271 ---------------------
- testcases/kernel/syscalls/writev/writev04.c | 353 ----------------------------
- 8 files changed, 1 insertion(+), 656 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/writev/writev03.c
- delete mode 100644 testcases/kernel/syscalls/writev/writev04.c
+ testcases/kernel/syscalls/writev/writev01.c | 550 ++++++++--------------------
+ 1 file changed, 152 insertions(+), 398 deletions(-)
+ rewrite testcases/kernel/syscalls/writev/writev01.c (90%)
 
-diff --git a/doc/testcases/kernel.txt b/doc/testcases/kernel.txt
-index fa5d686e525e..518ef87948da 100644
---- a/doc/testcases/kernel.txt
-+++ b/doc/testcases/kernel.txt
-@@ -6897,29 +6897,6 @@
- 		ltp/testcases/kernel/syscalls/writev/writev02.c
- 	<\test_location>
- <\testname>
--<testname=writev03>
--	<description>
--		The testcases are written calling writev() with partially valid data
--		to overwrite the contents, to write in the beginning and to write in
--		the end of the file.
--
--	<\description>
--	<test_location>
--		ltp/testcases/kernel/syscalls/writev/writev03.c
--	<\test_location>
--<\testname>
--<testname=writev04>
--	<description>
--		The testcases are written calling writev() with partially valid data
--		to overwrite the contents, to write in the beginning and to write in
--		the end of the file. This is same as writev03, but the length of
--		buffer used here is 8192 bytes.
--
--	<\description>
--	<test_location>
--		ltp/testcases/kernel/syscalls/writev/writev04.c
--	<\test_location>
--<\testname>
- <testname=writev05>
- 	<description>
- 		These testcases are written to test writev() on sparse files. This
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 1b4c5f6ee279..338d6ebc32bd 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -1043,8 +1043,6 @@ write05 write05
- 
- writev01 writev01
- writev02 writev02
--writev03 writev03
--writev04 writev04
- writev05 writev05
- writev06 writev06
- writev07 writev07
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index effa5fd9b14e..8abed95a0d0a 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -904,8 +904,6 @@ write05 write05
- 
- writev01 writev01
- writev02 writev02
--writev03 writev03
--writev04 writev04
- writev05 writev05
- writev06 writev06
- writev07 writev07
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 88f75971cb3d..b7812410a843 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1422,8 +1422,6 @@ write05 write05
- 
- writev01 writev01
- writev02 writev02
--writev03 writev03
--writev04 writev04
- writev05 writev05
- writev06 writev06
- writev07 writev07
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index f2aeab45e5bb..f53cc0513224 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -1100,8 +1100,6 @@
- /write/write05
- /writev/writev01
- /writev/writev02
--/writev/writev03
--/writev/writev04
- /writev/writev05
- /writev/writev06
- /writev/writev07
-diff --git a/testcases/kernel/syscalls/writev/Makefile b/testcases/kernel/syscalls/writev/Makefile
-index 4aa38befa598..85965e4cb17d 100644
---- a/testcases/kernel/syscalls/writev/Makefile
-+++ b/testcases/kernel/syscalls/writev/Makefile
-@@ -19,7 +19,7 @@
- top_srcdir		?= ../../../..
- 
- ifeq ($(UCLINUX),1)
--FILTER_OUT_MAKE_TARGETS	+= writev02 writev03
-+FILTER_OUT_MAKE_TARGETS	+= writev02
- endif
- 
- include $(top_srcdir)/include/mk/testcases.mk
-diff --git a/testcases/kernel/syscalls/writev/writev03.c b/testcases/kernel/syscalls/writev/writev03.c
-deleted file mode 100644
-index e5cdf4b96c9d..000000000000
---- a/testcases/kernel/syscalls/writev/writev03.c
-+++ /dev/null
-@@ -1,271 +0,0 @@
+diff --git a/testcases/kernel/syscalls/writev/writev01.c b/testcases/kernel/syscalls/writev/writev01.c
+dissimilarity index 90%
+index 8e4f756fee3a..843736a21852 100644
+--- a/testcases/kernel/syscalls/writev/writev01.c
++++ b/testcases/kernel/syscalls/writev/writev01.c
+@@ -1,398 +1,152 @@
 -/*
 - *
 - *   Copyright (c) International Business Machines  Corp., 2001
@@ -153,76 +47,115 @@ index e5cdf4b96c9d..000000000000
 -
 -/*
 - * NAME
-- *	writev03.c
+- *	writev01.c
 - *
 - * DESCRIPTION
-- *	The testcases are written calling writev() with partially valid data
-- *	to overwrite the contents, to write in the beginning and to write in
-- *	the end of the file.
+- *	Testcase to check the basic functionality of writev(2) system call.
+- *
+- * ALGORITHM
+- *	Create a IO vector, and attempt to writev various components of it.
 - *
 - * USAGE:  <for command-line>
-- *      writev03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *      where,  -c n : Run n copies concurrently.
-- *              -e   : Turn on errno logging.
-- *              -i n : Execute test n times.
-- *              -I x : Execute test for x seconds.
-- *              -P x : Pause for x seconds between iterations.
-- *              -t   : Turn on syscall timing.
+- *	writev01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *	where,	-c n : Run n copies concurrently.
+- *		-e   : Turn on errno logging.
+- *		-i n : Execute test n times.
+- *		-I x : Execute test for x seconds.
+- *		-P x : Pause for x seconds between iterations.
+- *		-t   : Turn on syscall timing.
 - *
 - * History
 - *	07/2001 John George
 - *		-Ported
 - *      04/2002 wjhuie sigset cleanups
+- *     06/2002 Shaobo Li
+- *             fix testcase 7, add each testcase comment.
 - *
 - * Restrictions
-- *	NONE
+- *	None
 - */
 -
+-#include <stdio.h>
 -#include <sys/types.h>
--#include <sys/uio.h>
--#include <sys/mman.h>
--#include <unistd.h>
 -#include <signal.h>
--#include <fcntl.h>
+-#include <sys/uio.h>
+-#include <sys/fcntl.h>
 -#include <memory.h>
 -#include <errno.h>
 -#include "test.h"
+-#include <sys/mman.h>
 -
 -#define	K_1	1024
+-#define	M_1	K_1 * K_1
+-#define	G_1	M_1 * K_1
 -
 -#define	NBUFS		4
 -#define	CHUNK		64	/* single chunk */
--#define	MAX_IOVEC	4
+-#define	MAX_IOVEC	16
 -#define	DATA_FILE	"writev_data_file"
 -
 -char buf1[K_1], buf2[K_1], buf3[K_1];
--char *bad_addr = 0;
 -
 -struct iovec wr_iovec[MAX_IOVEC] = {
--	/* testcase #1 */
--	{buf1 + (CHUNK * 6), CHUNK},
+-	/* iov_base *//* iov_len */
+-
+-	/* testcase# 1 */
+-	{buf1, -1},
+-	{(buf1 + CHUNK), CHUNK},
+-	{(buf1 + CHUNK * 2), CHUNK},
+-
+-	/* testcase# 2 */
+-	{(buf1 + CHUNK * 3), G_1},
+-	{(buf1 + CHUNK * 4), G_1},
+-	{(buf1 + CHUNK * 5), G_1},
+-
+-	/* testcase# 3 */
+-	{(buf1 + CHUNK * 6), CHUNK},
 -	{(caddr_t) - 1, CHUNK},
--	{buf1 + (CHUNK * 8), CHUNK},
+-	{(buf1 + CHUNK * 8), CHUNK},
+-
+-	/* testcase# 4 */
+-	{(buf1 + CHUNK * 9), CHUNK},
+-
+-	/* testcase# 5 */
+-	{(buf1 + CHUNK * 10), CHUNK},
+-
+-	/* testcase# 6 */
+-	{(buf1 + CHUNK * 11), CHUNK},
+-
+-	/* testcase# 7 */
+-	{(buf1 + CHUNK * 12), CHUNK},
+-
+-	/* testcase# 8 */
+-	{(buf1 + CHUNK * 13), 0},
+-
+-	/* testcase# 7 */
+-	{NULL, 0},
 -	{NULL, 0}
 -};
 -
 -char name[K_1], f_name[K_1];
--int fd[2], in_sighandler;
+-
+-char *bad_addr = 0;
+-
+-int fd[4], in_sighandler;
+-int pfd[2];			/* pipe fd's */
 -char *buf_list[NBUFS];
 -
--char *TCID = "writev03";
--int TST_TOTAL = 1;
--
 -void sighandler(int);
--void l_seek(int, off_t, int);
+-int fill_mem(char *, int, int);
+-void init_buffs(char *[]);
 -void setup(void);
 -void cleanup(void);
 -
+-char *TCID = "writev01";
+-int TST_TOTAL = 1;
+-
 -int main(int argc, char **argv)
 -{
--	int lc;
+-	int nbytes, ret;
 -
--	int nbytes;
+-	int lc;
 -
 -	tst_parse_opts(argc, argv, NULL, NULL);
 -
@@ -237,7 +170,7 @@ index e5cdf4b96c9d..000000000000
 -		buf_list[2] = buf3;
 -		buf_list[3] = NULL;
 -
--		fd[1] = -1;	/* Invalid file descriptor */
+-		fd[1] = -1;	/* Invalid file descriptor  */
 -
 -		if (signal(SIGTERM, sighandler) == SIG_ERR)
 -			tst_brkm(TBROK | TERRNO, cleanup,
@@ -247,521 +180,402 @@ index e5cdf4b96c9d..000000000000
 -			tst_brkm(TBROK | TERRNO, cleanup,
 -				 "signal(SIGPIPE, ..) failed");
 -
--		memset(buf_list[0], 0, K_1);
--		memset(buf_list[1], 0, K_1);
+-		init_buffs(buf_list);
 -
 -		if ((fd[0] = open(f_name, O_WRONLY | O_CREAT, 0666)) == -1)
 -			tst_brkm(TBROK | TERRNO, cleanup,
 -				 "open(.., O_WRONLY|O_CREAT, ..) failed");
--		else if ((nbytes = write(fd[0], buf_list[1], K_1)) != K_1)
--			tst_brkm(TFAIL | TERRNO, cleanup, "write failed");
+-		else if ((nbytes = write(fd[0], buf_list[2], K_1)) != K_1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "write failed");
 -
--		if (close(fd[0]) < 0)
+-		if (close(fd[0]) == -1)
 -			tst_brkm(TBROK | TERRNO, cleanup, "close failed");
 -
 -		if ((fd[0] = open(f_name, O_RDWR, 0666)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "open(.., O_RDWR, ..) failed");
--//block1:
--		tst_resm(TINFO, "Enter block 1");
+-			tst_brkm(TBROK | TERRNO, cleanup, "open failed");
+-//block1: /* given vector length -1, writev return EINVAL. */
+-		tst_resm(TPASS, "Enter Block 1");
 -
--		/*
--		 * In this block we are trying to call writev() with
--		 * partially valid data. This should return the valid number
--		 * of bytes written in the vector. If it returns EFAULT, it
--		 * is an error. And after returning the number of valid
--		 * bytes written, the check should be made to verify the
--		 * contents of the first valid write() scheduled.
--		 */
--
--		if (writev(fd[0], wr_iovec, 3) == -1) {
--			if (errno == EFAULT)
--				tst_resm(TFAIL, "Got EFAULT");
--		} else {
--			l_seek(fd[0], 0, 0);
--			read(fd[0], buf_list[0], CHUNK);
--			if (memcmp(buf_list[0], buf_list[1], CHUNK) != 0)
--				tst_resm(TFAIL, "writev overwrote the file");
--		}
+-		TEST(writev(fd[0], wr_iovec, 1));
+-		if (TEST_RETURN == -1) {
+-			if (TEST_ERRNO == EINVAL)
+-				tst_resm(TPASS, "Received EINVAL as expected");
+-			else
+-				tst_resm(TFAIL, "Expected errno = EINVAL, "
+-					 "got %d", TEST_ERRNO);
+-		} else
+-			tst_resm(TFAIL, "writev failed to fail");
 -		tst_resm(TINFO, "Exit block 1");
 -
 -//block2:
--		tst_resm(TINFO, "Enter block 2");
--
--		/*
--		 * In this block we are trying to over write the contents by
--		 * calling writev() with partially valid data. It should
--		 * return the valid number of bytes written but not EFAULT.
--		 * Also the check should be made whether the initial write()
--		 * scheduled is done correctly or not.
+-		/* This testcases doesn't look like what it intent to do
+-		 * 1. it is not using the wr_iovec initialized
+-		 * 2. read() and following message is not consistent
 -		 */
--		l_seek(fd[0], 0, 0);
--		if (writev(fd[0], wr_iovec, 3) == -1) {
--			if (errno == EFAULT)
--				tst_resm(TFAIL, "Got EFAULT");
--		} else {
--			l_seek(fd[0], 0, 0);
--			read(fd[0], buf_list[0], CHUNK);
--			if (memcmp(buf_list[0], buf_list[1], CHUNK) != 0)
--				tst_resm(TFAIL, "writev overwrote the file");
--		}
+-		tst_resm(TPASS, "Enter block 2");
+-
+-		if (lseek(fd[0], CHUNK * 6, 0) == -1)
+-			tst_resm(TBROK | TERRNO, "block2: 1st lseek failed");
+-
+-		if ((ret = writev(fd[0], (wr_iovec + 6), 3)) == CHUNK) {
+-			if (lseek(fd[0], CHUNK * 6, 0) == -1)
+-				tst_brkm(TBROK | TERRNO, cleanup,
+-					 "block2: 2nd lseek failed");
+-			if ((nbytes = read(fd[0], buf_list[0], CHUNK)) != CHUNK)
+-				tst_resm(TFAIL, "read failed; expected nbytes "
+-					 "= 1024, got = %d", nbytes);
+-			else if (memcmp((buf_list[0] + CHUNK * 6),
+-					(buf_list[2] + CHUNK * 6), CHUNK) != 0)
+-				tst_resm(TFAIL, "writev over "
+-					 "wrote %s", f_name);
+-		} else
+-			tst_resm(TFAIL | TERRNO, "writev failed unexpectedly");
 -		tst_resm(TINFO, "Exit block 2");
 -
--//block3:
--		tst_resm(TINFO, "Enter block 3");
+-//block3: /* given 1 bad vector buffer with good ones, writev success */
+-		tst_resm(TPASS, "Enter block 3");
 -
--		/*
--		 * In this block, we are trying to call writev() by going to
--		 * some end position of the file. Here writev() is called
--		 * with partially valid data, and this will return the
--		 * number of valid bytes written and not EFAULT. Also, the
--		 * check should be made whether the inital write() that is
--		 * scheduled with valid data is done correctly done or not.
--		 */
--
--		l_seek(fd[0], 8192, 0);
--		if (writev(fd[0], wr_iovec, 3) == -1) {
+-		if (lseek(fd[0], CHUNK * 6, 0) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup,
+-				 "block3: 1st lseek failed");
+-		if ((nbytes = writev(fd[0], (wr_iovec + 6), 3)) == -1) {
 -			if (errno == EFAULT)
 -				tst_resm(TFAIL, "Got EFAULT");
--		} else {
--			l_seek(fd[0], 0, 0);
--			read(fd[0], buf_list[0], CHUNK);
--			if (memcmp(buf_list[0], buf_list[1], CHUNK) != 0) {
--				tst_resm(TFAIL, "writev overwrote the file");
--			}
 -		}
+-		if (lseek(fd[0], 0, 0) == -1)
+-			tst_brkm(TBROK, cleanup, "block3: 2nd lseek failed");
+-		if ((nbytes = read(fd[0], buf_list[0], K_1)) != K_1) {
+-			tst_resm(TFAIL | TERRNO,
+-				 "read failed; expected nbytes = 1024, got = %d",
+-				 nbytes);
+-		} else if (memcmp((buf_list[0] + CHUNK * 6),
+-				  (buf_list[2] + CHUNK * 6), CHUNK * 3) != 0)
+-			tst_resm(TFAIL, "writev overwrote file");
 -
 -		tst_resm(TINFO, "Exit block 3");
+-
+-//block4: /* given bad file descriptor, writev return EBADF. */
+-		tst_resm(TPASS, "Enter block 4");
+-
+-		TEST(writev(fd[1], (wr_iovec + 9), 1));
+-		if (TEST_RETURN == -1) {
+-			if (TEST_ERRNO == EBADF)
+-				tst_resm(TPASS, "Received EBADF as expected");
+-			else
+-				tst_resm(TFAIL, "expected errno = EBADF, "
+-					 "got %d", TEST_ERRNO);
+-		} else
+-			tst_resm(TFAIL, "writev returned a " "positive value");
+-
+-		tst_resm(TINFO, "Exit block 4");
+-
+-//block5: /* given invalid vector count, writev return EINVAL */
+-		tst_resm(TPASS, "Enter block 5");
+-
+-		TEST(writev(fd[0], (wr_iovec + 10), -1));
+-		if (TEST_RETURN == -1) {
+-			if (TEST_ERRNO == EINVAL)
+-				tst_resm(TPASS, "Received EINVAL as expected");
+-			else
+-				tst_resm(TFAIL, "expected errno = EINVAL, "
+-					 "got %d", TEST_ERRNO);
+-		} else
+-			tst_resm(TFAIL, "writev returned a " "positive value");
+-
+-		tst_resm(TINFO, "Exit block 5");
+-
+-//block6: /* given no buffer vector, writev success */
+-		tst_resm(TPASS, "Enter block 6");
+-
+-		TEST(writev(fd[0], (wr_iovec + 11), 0));
+-		if (TEST_RETURN == -1)
+-			tst_resm(TFAIL | TTERRNO, "writev failed");
+-		else
+-			tst_resm(TPASS, "writev wrote 0 iovectors");
+-
+-		tst_resm(TINFO, "Exit block 6");
+-
+-//block7:
+-		/* given 4 vectors, 2 are NULL, 1 with 0 length and 1 with fixed length,
+-		 * writev success writing fixed length.
+-		 */
+-		tst_resm(TPASS, "Enter block 7");
+-
+-		if (lseek(fd[0], CHUNK * 12, 0) == -1)
+-			tst_resm(TBROK, "lseek failed");
+-		else if ((ret = writev(fd[0], (wr_iovec + 12), 4)) != CHUNK)
+-			tst_resm(TFAIL, "writev failed writing %d bytes, "
+-				 "followed by two NULL vectors", CHUNK);
+-		else
+-			tst_resm(TPASS, "writev passed writing %d bytes, "
+-				 "followed by two NULL vectors", CHUNK);
+-
+-		tst_resm(TINFO, "Exit block 7");
+-
+-//block8: /* try to write to a closed pipe, writev return EPIPE. */
+-		tst_resm(TPASS, "Enter block 8");
+-
+-		if (pipe(pfd) == -1)
+-			tst_resm(TFAIL | TERRNO, "pipe failed");
+-		else {
+-			if (close(pfd[0]) == -1)
+-				tst_resm(TFAIL | TERRNO, "close failed");
+-			else if (writev(pfd[1], (wr_iovec + 12), 1) == -1 &&
+-				 in_sighandler) {
+-				if (errno == EPIPE)
+-					tst_resm(TPASS, "Received EPIPE as "
+-						 "expected");
+-				else
+-					tst_resm(TFAIL | TERRNO,
+-						 "didn't get EPIPE");
+-			} else
+-				tst_resm(TFAIL, "writev returned a positive "
+-					 "value");
+-		}
+-		tst_resm(TINFO, "Exit block 8");
 -	}
 -	cleanup();
 -	tst_exit();
 -}
 -
--/*
-- * setup()
-- *	performs all ONE TIME setup for this test
-- */
 -void setup(void)
 -{
 -
--	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	tst_sig(FORK, sighandler, cleanup);
 -
--	/* Pause if that option was specified.
--	 * TEST_PAUSE contains the code to fork the test with the -i option.
--	 * You want to make sure you do this before you create your temporary
--	 * directory.
--	 */
 -	TEST_PAUSE;
+-
+-	tst_tmpdir();
 -
 -	strcpy(name, DATA_FILE);
 -	sprintf(f_name, "%s.%d", name, getpid());
 -
--	bad_addr = mmap(0, 1, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED) {
--		tst_brkm(TBROK, cleanup, "mmap failed");
--	}
--	wr_iovec[1].iov_base = bad_addr;
--	tst_tmpdir();
+-	bad_addr = mmap(0, 1, PROT_NONE,
+-			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
+-	if (bad_addr == MAP_FAILED)
+-		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
+-	wr_iovec[7].iov_base = bad_addr;
+-
 -}
 -
--/*
-- * cleanup()
-- *	performs all ONE TIME cleanup for this test at
-- *	completion or premature exit
-- */
 -void cleanup(void)
 -{
+-	if (munmap(bad_addr, 1) == -1)
+-		tst_resm(TBROK | TERRNO, "munmap failed");
+-
 -	close(fd[0]);
 -	close(fd[1]);
 -
 -	if (unlink(f_name) == -1)
--		tst_resm(TFAIL, "unlink failed");
+-		tst_resm(TBROK | TERRNO, "unlink failed");
+-
 -	tst_rmdir();
 -
 -}
 -
--void sighandler(int sig)
+-void init_buffs(char *pbufs[])
 -{
--	switch (sig) {
--	case SIGTERM:
--		break;
--	case SIGPIPE:
--		++in_sighandler;
--		return;
--	default:
--		tst_resm(TBROK, "sighandler received invalid signal : %d", sig);
--		break;
+-	int i;
+-
+-	for (i = 0; pbufs[i] != NULL; i++) {
+-		switch (i) {
+-		case 0:
+-
+-		case 1:
+-			fill_mem(pbufs[i], 0, 1);
+-			break;
+-
+-		case 2:
+-			fill_mem(pbufs[i], 1, 0);
+-			break;
+-
+-		default:
+-			tst_brkm(TBROK, cleanup, "error detected: init_buffs");
+-		}
 -	}
 -}
 -
--/*
-- * l_seek()
-- *	Wrap around for regular lseek function for giving error message
-- */
--void l_seek(int fdesc, off_t offset, int whence)
+-int fill_mem(char *c_ptr, int c1, int c2)
 -{
--	if (lseek(fdesc, offset, whence) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "lseek failed");
--}
-diff --git a/testcases/kernel/syscalls/writev/writev04.c b/testcases/kernel/syscalls/writev/writev04.c
-deleted file mode 100644
-index 954b1faa71f6..000000000000
---- a/testcases/kernel/syscalls/writev/writev04.c
-+++ /dev/null
-@@ -1,353 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
+-	int count;
 -
--/*
-- * NAME
-- *	writev04.c
-- *
-- * DESCRIPTION
-- *	The testcases are written calling writev() with partially valid data
-- *	to overwrite the contents, to write in the beginning and to write in
-- *	the end of the file. This is same as writev03.c, but the length of
-- *	buffer used here is 8192 bytes.
-- *
-- * USAGE:  <for command-line>
-- *      writev04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *      where,  -c n : Run n copies concurrently.
-- *              -e   : Turn on errno logging.
-- *              -i n : Execute test n times.
-- *              -I x : Execute test for x seconds.
-- *              -P x : Pause for x seconds between iterations.
-- *              -t   : Turn on syscall timing.
-- *
-- * History
-- *	07/2001 John George
-- *		-Ported
-- *      04/2002 wjhuie sigset cleanups
-- *
-- * Restrictions
-- *	NONE
-- */
--#include <sys/types.h>
--#include <sys/uio.h>
--#include <sys/mman.h>
--#include <unistd.h>
--#include <signal.h>
--#include <fcntl.h>
--#include <memory.h>
--#include <errno.h>
--#include "test.h"
--
--#define	K_1	8192
--
--#define	NBUFS		4
--#define	CHUNK		64	/* single chunk */
--#define	MAX_IOVEC	4
--#define	DATA_FILE	"writev_data_file"
--
--char buf1[K_1], buf2[K_1], buf3[K_1];
--char *bad_addr = 0;
--
--struct iovec wr_iovec[MAX_IOVEC] = {
--	/* testcase #1 */
--	{buf1 + (CHUNK * 6), CHUNK},
--	{(caddr_t) - 1, CHUNK},
--	{buf1 + (CHUNK * 8), CHUNK},
--	{NULL, 0}
--};
--
--char name[K_1], f_name[K_1];
--int fd[2], in_sighandler;
--char *buf_list[NBUFS];
--
--char *TCID = "writev04";
--int TST_TOTAL = 1;
--
--void sighandler(int);
--long l_seek(int, long, int);
--void setup(void);
--void cleanup(void);
--int fail;
--
--#if !defined(UCLINUX)
--
--int main(int argc, char **argv)
--{
--	int lc;
--
--	int nbytes;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();		/* set "tstdir", and "testfile" vars */
--
--	/* The following loop checks looping state if -i option given */
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		buf_list[0] = buf1;
--		buf_list[1] = buf2;
--		buf_list[2] = buf3;
--		buf_list[3] = NULL;
--
--		fd[1] = -1;	/* Invalid file descriptor */
--
--		if (signal(SIGTERM, sighandler) == SIG_ERR) {
--			perror("signal");
--			tst_resm(TFAIL, "signal() SIGTERM FAILED");
--			cleanup();
+-	for (count = 1; count <= K_1 / CHUNK; count++) {
+-		if (count & 0x01) {	/* if odd */
+-			memset(c_ptr, c1, CHUNK);
+-		} else {	/* if even */
+-			memset(c_ptr, c2, CHUNK);
 -		}
--
--		if (signal(SIGPIPE, sighandler) == SIG_ERR) {
--			perror("signal");
--			tst_resm(TFAIL, "signal() SIGPIPE FAILED");
--			cleanup();
--		}
--
--		memset(buf_list[0], 0, K_1);
--		memset(buf_list[1], 0, K_1);
--
--		if ((fd[0] = open(f_name, O_WRONLY | O_CREAT, 0666)) < 0) {
--			tst_resm(TFAIL, "open(2) failed: fname = %s, "
--				 "errno = %d", f_name, errno);
--			cleanup();
--		} else {
--			if ((nbytes = write(fd[0], buf_list[1], K_1)) != K_1) {
--				tst_resm(TFAIL, "write(2) failed: nbytes "
--					 "= %d, errno = %d", nbytes, errno);
--				cleanup();
--			}
--		}
--
--		if (close(fd[0]) < 0) {
--			tst_resm(TFAIL, "close failed: errno = %d", errno);
--			cleanup();
--		}
--
--		if ((fd[0] = open(f_name, O_RDWR, 0666)) < 0) {
--			tst_brkm(TFAIL, cleanup, "open failed: fname = %s, errno = %d",
--				 f_name, errno);
--		}
--//block1:
--		tst_resm(TINFO, "Enter block 1");
--		fail = 0;
--
--		/*
--		 * In this block we are trying to call writev() with
--		 * partially valid data. This should return the valid number
--		 * of bytes written in the vector. If it returns EFAULT, it
--		 * is an error. And after returning the number of valid
--		 * bytes written, the check should be made to verify the
--		 * contents of the first valid write() scheduled.
--		 */
--		if (writev(fd[0], wr_iovec, 3) < 0) {
--			fail = 1;
--			if (errno == EFAULT) {
--				tst_resm(TFAIL, "Got error EFAULT");
--			} else {
--				tst_resm(TFAIL, "Received unexpected error: %d",
--					 errno);
--			}
--		} else {
--			l_seek(fd[0], 0, 0);
--			read(fd[0], buf_list[0], CHUNK);
--			if (memcmp(buf_list[0], buf_list[1], CHUNK) != 0) {
--				tst_resm(TFAIL, "writev overwrote the file");
--				fail = 1;
--			}
--		}
--
--		if (fail) {
--			tst_resm(TINFO, "block 1 FAILED");
--		} else {
--			tst_resm(TINFO, "block 1 PASSED");
--		}
--		tst_resm(TINFO, "Exit block 1");
--
--//block2:
--		tst_resm(TINFO, "Enter block 2");
--		fail = 0;
--
--		/*
--		 * In this block we are trying to over write the contents by
--		 * calling writev() with partially valid data. It should
--		 * return the valid number of bytes written but not EFAULT.
--		 * Also the check should be made whether the initial write()
--		 * scheduled is done correctly or not.
--		 */
--		l_seek(fd[0], 0, 0);
--		if (writev(fd[0], wr_iovec, 3) < 0) {
--			fail = 1;
--			if (errno == EFAULT) {
--				tst_resm(TFAIL, "Got error EFAULT");
--			} else {
--				tst_resm(TFAIL, "Received unexpected error: %d",
--					 errno);
--			}
--		} else {
--			l_seek(fd[0], 0, 0);
--			read(fd[0], buf_list[0], CHUNK);
--			if (memcmp(buf_list[0], buf_list[1], CHUNK) != 0) {
--				tst_resm(TFAIL, "writev overwrote the file");
--				fail = 1;
--			}
--		}
--
--		if (fail) {
--			tst_resm(TINFO, "block 2 FAILED");
--		} else {
--			tst_resm(TINFO, "block 2 PASSED");
--		}
--		tst_resm(TINFO, "Exit block 2");
--
--//block3:
--		tst_resm(TINFO, "Enter block 3");
--		fail = 0;
--
--		/*
--		 * In this block, we are trying to call writev() by going to
--		 * some end position of the file. Here writev() is called
--		 * with partially valid data, and this will return the
--		 * number of valid bytes written and not EFAULT. Also, the
--		 * check should be made whether the inital write() that is
--		 * scheduled with valid data is done correctly.
--		 */
--
--		l_seek(fd[0], 8192, 0);
--		if (writev(fd[0], wr_iovec, 3) < 0) {
--			fail = 1;
--			if (errno == EFAULT) {
--				tst_resm(TFAIL, "Got error EFAULT");
--			} else {
--				tst_resm(TFAIL, "Received unexpected error: %d",
--					 errno);
--			}
--		} else {
--			l_seek(fd[0], 0, 0);
--			read(fd[0], buf_list[0], CHUNK);
--			if (memcmp(buf_list[0], buf_list[1], CHUNK) != 0) {
--				tst_resm(TFAIL, "writev overwrote the file");
--				fail = 1;
--			}
--		}
--
--		if (fail) {
--			tst_resm(TINFO, "block 3 FAILED");
--		} else {
--			tst_resm(TINFO, "block 3 PASSED");
--		}
--		tst_resm(TINFO, "Exit block 3");
--	}
--	close(fd[0]);
--	close(fd[1]);
--	cleanup();
--	tst_exit();
--}
--
--#else
--
--int main(void)
--{
--	tst_resm(TINFO, "test is not available on uClinux");
--	tst_exit();
--}
--
--#endif /* if !defined(UCLINUX) */
--
--/*
-- * setup()
-- *	performs all ONE TIME setup for this test
-- */
--void setup(void)
--{
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	/* Create a unique temporary directory and chdir() to it. */
--	tst_tmpdir();
--
--	strcpy(name, DATA_FILE);
--	sprintf(f_name, "%s.%d", name, getpid());
--
--	bad_addr = mmap(0, 1, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED) {
--		tst_brkm(TBROK, cleanup, "mmap failed");
--	}
--	wr_iovec[1].iov_base = bad_addr;
--
--}
--
--/*
-- * cleanup()
-- *	performs all ONE TIME cleanup for this test at
-- *	completion or premature exit
-- */
--void cleanup(void)
--{
--
--	if (unlink(f_name) < 0) {
--		tst_resm(TFAIL, "unlink Failed--file = %s, errno = %d",
--			 f_name, errno);
--	}
--	tst_rmdir();
--
--}
--
--/*
-- * sighandler()
-- *	Signal handler function for SIGTERM and SIGPIPE
-- */
--void sighandler(int sig)
--{
--	switch (sig) {
--	case SIGTERM:
--		break;
--	case SIGPIPE:
--		++in_sighandler;
--		return;
--	default:
--		tst_resm(TFAIL, "sighandler() received invalid signal "
--			 ": %d", sig);
--		break;
--	}
--
--	if ((unlink(f_name) < 0) && (errno != ENOENT)) {
--		tst_resm(TFAIL, "unlink Failed--file = %s, errno = %d",
--			 f_name, errno);
--		cleanup();
--	}
--	exit(sig);
--}
--
--/*
-- * l_seek()
-- *	Wrap around for regular lseek function for giving error message
-- */
--long l_seek(int fdesc, long offset, int whence)
--{
--	if (lseek(fdesc, offset, whence) < 0) {
--		tst_resm(TFAIL, "lseek Failed : errno = %d", errno);
--		fail = 1;
 -	}
 -	return 0;
 -}
+-
+-void sighandler(int sig)
+-{
+-	switch (sig) {
+-	case SIGTERM:
+-		break;
+-
+-	case SIGPIPE:
+-		in_sighandler++;
+-		return;
+-
+-	default:
+-		tst_resm(TFAIL, "sighandler received invalid signal:%d", sig);
+-		break;
+-	}
+-}
++/*
++ *   Copyright (c) International Business Machines  Corp., 2001
++ *                 Linux Test Project, 2016
++ *
++ *   This program is free software;  you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ *   the GNU General Public License for more details.
++ *
++ *   You should have received a copy of the GNU General Public License
++ *   along with this program;
++ */
++
++/*
++ * DESCRIPTION
++ *	Testcase to check the basic functionality of writev(2) system call.
++ *	Create IO vectors and attempt to writev various components of it.
++ */
++
++#include <errno.h>
++#include <signal.h>
++#include <sys/uio.h>
++#include "tst_test.h"
++
++#define	CHUNK		64
++#define	TESTFILE	"writev_data_file"
++
++static int valid_fd;
++static int invalid_fd = -1;
++static int pipe_fd[2];
++
++static char buf[CHUNK * 4];
++
++struct iovec iovec_badlen[] = {
++	{ buf, -1 },
++	{ buf + CHUNK, CHUNK },
++	{ buf + CHUNK * 2, CHUNK },
++};
++
++struct iovec iovec_simple[] = {
++	{ buf, CHUNK },
++};
++
++struct iovec iovec_zero_null[] = {
++	{ buf, CHUNK },
++	{ buf + CHUNK, 0 },
++	{ NULL, 0 },
++	{ NULL, 0 }
++};
++
++struct testcase_t {
++	const char *desc;
++	int *pfd;
++	struct iovec (*piovec)[];
++	int iovcnt;
++	int exp_ret;
++	int exp_errno;
++} testcases[] = {
++	{
++		.desc = "invalid iov_len",
++		.pfd = &valid_fd,
++		.piovec = &iovec_badlen,
++		.iovcnt = ARRAY_SIZE(iovec_badlen),
++		.exp_ret = -1,
++		.exp_errno = EINVAL
++	},
++	{
++		.desc = "invalid fd",
++		.pfd = &invalid_fd,
++		.piovec = &iovec_simple,
++		.iovcnt = ARRAY_SIZE(iovec_simple),
++		.exp_ret = -1,
++		.exp_errno = EBADF
++	},
++	{
++		.desc = "invalid iovcnt",
++		.pfd = &valid_fd,
++		.piovec = &iovec_simple,
++		.iovcnt = -1,
++		.exp_ret = -1,
++		.exp_errno = EINVAL
++	},
++	{
++		.desc = "zero iovcnt",
++		.pfd = &valid_fd,
++		.piovec = &iovec_simple,
++		.iovcnt = 0,
++		.exp_ret = 0,
++	},
++	{
++		.desc = "NULL and zero length iovec",
++		.pfd = &valid_fd,
++		.piovec = &iovec_zero_null,
++		.iovcnt = ARRAY_SIZE(iovec_zero_null),
++		.exp_ret = CHUNK,
++	},
++	{
++		.desc = "write to closed pipe",
++		.pfd = &(pipe_fd[1]),
++		.piovec = &iovec_simple,
++		.iovcnt = ARRAY_SIZE(iovec_simple),
++		.exp_ret = -1,
++		.exp_errno = EPIPE,
++	},
++};
++
++void setup(void)
++{
++	sigset_t block_mask;
++
++	sigemptyset(&block_mask);
++	sigaddset(&block_mask, SIGPIPE);
++	sigprocmask(SIG_BLOCK, &block_mask, NULL);
++
++	valid_fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
++
++	SAFE_PIPE(pipe_fd);
++	SAFE_CLOSE(pipe_fd[0]);
++}
++
++static void test_writev(unsigned int i)
++{
++	struct testcase_t *tcase = &testcases[i];
++	int ret;
++
++	TEST(writev(*(tcase->pfd), *(tcase->piovec), tcase->iovcnt));
++
++	ret = (TEST_RETURN == tcase->exp_ret);
++	if (TEST_RETURN < 0 || tcase->exp_ret < 0)
++		ret &= (TEST_ERRNO == tcase->exp_errno);
++
++	if (ret) {
++		tst_res(TPASS | TTERRNO, "%s, ret: %ld", tcase->desc,
++			TEST_RETURN);
++	} else {
++		tst_res(TPASS | TTERRNO, "%s, ret: %ld", tcase->desc,
++			TEST_RETURN);
++	}
++}
++
++static struct tst_test test = {
++	.tid = "writev01",
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.test = test_writev,
++	.tcnt = ARRAY_SIZE(testcases),
++};
 -- 
 1.8.3.1
 
