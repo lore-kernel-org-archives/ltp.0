@@ -1,182 +1,251 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri,  7 Oct 2016 10:56:45 +0300
-Subject: [LTP] [PATCH] network/geneve: add performance test for geneve tunnel
-Message-ID: <1475827005-32327-1-git-send-email-alexey.kodanev@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri,  7 Oct 2016 10:11:10 +0200
+Subject: [LTP] [PATCH v2 1/3] syscalls: new test writev07
+Message-ID: <81176684cd5c6bf764a070b79783f03f0037658a.1475827191.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Test is based on vxlan03 test and repeats the same steps,
-but without additional options.
+Verify writev() behaviour with partially valid iovec list.
+Kernel <4.8 used to shorten write up to first bad invalid
+iovec. Starting with 4.8, a writev with short data (under
+page size) is likely to get shorten to 0 bytes and return
+EFAULT.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+This test doesn't make assumptions how much will write get
+shortened. It only tests that file content/offset after
+syscall corresponds to return value of writev().
+
+See: [RFC] writev() semantics with invalid iovec in the middle
+     https://marc.info/?l=linux-kernel&m=147388891614289&w=2
+
+This test is meant to be replacement for writev03/writev04
+and part of writev01, which all deal with partially invalid
+iovec lists, and all currently fail with 4.8 kernel.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- runtest/net.features               |    3 ++
- testcases/network/virt/Makefile    |    1 +
- testcases/network/virt/geneve01.sh |   59 ++++++++++++++++++++++++++++++++++++
- testcases/network/virt/virt_lib.sh |   21 +++++++-----
- 4 files changed, 75 insertions(+), 9 deletions(-)
- create mode 100755 testcases/network/virt/geneve01.sh
+Changes in v2:
+- use tst_res_hexd
+- smaller iovec with less random offsets and sizes
+- fix tid
 
-diff --git a/runtest/net.features b/runtest/net.features
-index a64028b..963d8c5 100644
---- a/runtest/net.features
-+++ b/runtest/net.features
-@@ -37,3 +37,6 @@ gre_ipv6_01 gre01.sh -6
+ runtest/ltplite                             |   1 +
+ runtest/stress.part3                        |   1 +
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/.gitignore        |   1 +
+ testcases/kernel/syscalls/writev/writev07.c | 152 ++++++++++++++++++++++++++++
+ 5 files changed, 156 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/writev/writev07.c
+
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 42d9a039ad34..1b4c5f6ee279 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -1047,6 +1047,7 @@ writev03 writev03
+ writev04 writev04
+ writev05 writev05
+ writev06 writev06
++writev07 writev07
  
- dctcp_ipv4_01 dctcp01.sh
- dctcp_ipv6_01 dctcp01.sh -6
-+
-+geneve01 geneve01.sh
-+geneve01_ipv6 geneve01.sh -6
-diff --git a/testcases/network/virt/Makefile b/testcases/network/virt/Makefile
-index 54e374f..9a97a82 100644
---- a/testcases/network/virt/Makefile
-+++ b/testcases/network/virt/Makefile
-@@ -19,6 +19,7 @@ top_srcdir		?= ../../..
- include $(top_srcdir)/include/mk/env_pre.mk
+ #DESCRIPTION:Memory Mgmt tests
+ mm01 mmap001 -m 10000
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index fa75b5c08526..effa5fd9b14e 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -908,6 +908,7 @@ writev03 writev03
+ writev04 writev04
+ writev05 writev05
+ writev06 writev06
++writev07 writev07
  
- INSTALL_TARGETS		:= ipvlan01.sh \
-+			   geneve01.sh \
- 			   gre01.sh \
- 			   macvlan01.sh \
- 			   macvtap01.sh \
-diff --git a/testcases/network/virt/geneve01.sh b/testcases/network/virt/geneve01.sh
-new file mode 100755
-index 0000000..7d15098
+ pty01 pty01
+ hangup01 hangup01
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 01839e83bf83..88f75971cb3d 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1426,6 +1426,7 @@ writev03 writev03
+ writev04 writev04
+ writev05 writev05
+ writev06 writev06
++writev07 writev07
+ 
+ perf_event_open01 perf_event_open01
+ perf_event_open02 perf_event_open02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index a13dbb3c5a99..f2aeab45e5bb 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -1104,6 +1104,7 @@
+ /writev/writev04
+ /writev/writev05
+ /writev/writev06
++/writev/writev07
+ /fanotify/fanotify01
+ /fanotify/fanotify02
+ /fanotify/fanotify03
+diff --git a/testcases/kernel/syscalls/writev/writev07.c b/testcases/kernel/syscalls/writev/writev07.c
+new file mode 100644
+index 000000000000..69471d204811
 --- /dev/null
-+++ b/testcases/network/virt/geneve01.sh
-@@ -0,0 +1,59 @@
-+#!/bin/sh
-+# Copyright (c) 2016 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+#
-+# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++++ b/testcases/kernel/syscalls/writev/writev07.c
+@@ -0,0 +1,152 @@
++/*
++ *
++ *   Copyright (c) Linux Test Project, 2016
++ *
++ *   This program is free software;  you can redistribute it and/or modify
++ *   it under the terms of the GNU General Public License as published by
++ *   the Free Software Foundation; either version 2 of the License, or
++ *   (at your option) any later version.
++ *
++ *   This program is distributed in the hope that it will be useful,
++ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ *   the GNU General Public License for more details.
++ */
 +
-+TCID=geneve01
-+TST_TOTAL=1
++/*
++ * Test Description:
++ *   Verify writev() behaviour with partially valid iovec list.
++ *   Kernel <4.8 used to shorten write up to first bad invalid
++ *   iovec. Starting with 4.8, a writev with short data (under
++ *   page size) is likely to get shorten to 0 bytes and return
++ *   EFAULT.
++ *
++ *   This test doesn't make assumptions how much will write get
++ *   shortened. It only tests that file content/offset after
++ *   syscall corresponds to return value of writev().
++ *
++ *   See: [RFC] writev() semantics with invalid iovec in the middle
++ *        https://marc.info/?l=linux-kernel&m=147388891614289&w=2
++ */
 +
-+virt_type="geneve"
-+start_id=16700000
++#include <errno.h>
++#include <fcntl.h>
++#include <stdio.h>
++#include <sys/mman.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <sys/uio.h>
++#include "tst_test.h"
 +
-+# Setting GENEVE tunnel with 'ip' command is very similar to VxLAN
-+# that is why using here 'vxlan_*' library functions.
-+vxlan_dst_addr="uni"
++#define TESTFILE "testfile"
++#define CHUNK 64
++#define BUFSIZE (CHUNK * 4)
 +
-+. test_net.sh
-+. virt_lib.sh
++static void *bad_addr;
 +
-+VIRT_PERF_THRESHOLD=${VIRT_PERF_THRESHOLD:-160}
-+[ "$VIRT_PERF_THRESHOLD" -lt 160 ] && VIRT_PERF_THRESHOLD=160
-+
-+cleanup()
++static void test_partially_valid_iovec(int initial_file_offset)
 +{
-+	cleanup_vifaces
-+	tst_rhost_run -c "ip link delete ltp_v0 2>/dev/null"
-+	if [ "$net_load" = "TFO" ]; then
-+		tst_rhost_run -c "pkill -9 netstress\$"
-+		pkill -9 "netstress\$"
-+	fi
++	int i, fd;
++	unsigned char buffer[BUFSIZE], fpattern[BUFSIZE], tmp[BUFSIZE];
++	long off_after;
++	struct iovec wr_iovec[] = {
++		{ buffer, CHUNK },
++		{ bad_addr, CHUNK },
++		{ buffer + CHUNK, CHUNK },
++		{ buffer + CHUNK * 2, CHUNK },
++	};
++
++	tst_res(TINFO, "starting test with initial file offset: %d ",
++		initial_file_offset);
++
++	for (i = 0; i < BUFSIZE; i++)
++		buffer[i] = i % (CHUNK - 1);
++
++	memset(fpattern, 0xff, BUFSIZE);
++	tst_fill_file(TESTFILE, 0xff, CHUNK, BUFSIZE / CHUNK);
++
++	fd = SAFE_OPEN(TESTFILE, O_RDWR, 0644);
++	SAFE_LSEEK(fd, initial_file_offset, SEEK_SET);
++	TEST(writev(fd, wr_iovec, ARRAY_SIZE(wr_iovec)));
++	off_after = (long) SAFE_LSEEK(fd, 0, SEEK_CUR);
++
++	/* bad errno */
++	if (TEST_RETURN == -1 && TEST_ERRNO != EFAULT) {
++		tst_res(TFAIL | TTERRNO, "unexpected errno");
++		SAFE_CLOSE(fd);
++		return;
++	}
++
++	/* nothing has been written */
++	if (TEST_RETURN == -1 && TEST_ERRNO == EFAULT) {
++		tst_res(TINFO, "got EFAULT");
++		/* initial file content remains untouched */
++		SAFE_LSEEK(fd, 0, SEEK_SET);
++		SAFE_READ(1, fd, tmp, BUFSIZE);
++		if (memcmp(tmp, fpattern, BUFSIZE))
++			tst_res(TFAIL, "file was written to");
++		else
++			tst_res(TPASS, "file stayed untouched");
++
++		/* offset hasn't changed */
++		if (off_after == initial_file_offset)
++			tst_res(TPASS, "offset stayed unchanged");
++		else
++			tst_res(TFAIL, "offset changed to %ld",
++				off_after);
++
++		SAFE_CLOSE(fd);
++		return;
++	}
++
++	/* writev() wrote more bytes than bytes preceding invalid iovec */
++	tst_res(TINFO, "writev() has written %ld bytes", TEST_RETURN);
++	if (TEST_RETURN > (long) wr_iovec[0].iov_base) {
++		tst_res(TFAIL, "writev wrote more than expected");
++		SAFE_CLOSE(fd);
++		return;
++	}
++
++	/* file content matches written bytes */
++	SAFE_LSEEK(fd, initial_file_offset, SEEK_SET);
++	SAFE_READ(1, fd, tmp, TEST_RETURN);
++	if (memcmp(tmp, wr_iovec[0].iov_base, TEST_RETURN) == 0) {
++		tst_res(TPASS, "file has expected content");
++	} else {
++		tst_res(TFAIL, "file has unexpected content");
++		tst_res(TINFO, "expected:");
++		tst_res_hexd(TPASS, wr_iovec[0].iov_base, TEST_RETURN,
++				"expected:");
++		tst_res_hexd(TPASS, tmp, TEST_RETURN,
++				"actual file content:");
++	}
++
++	/* file offset has been updated according to written bytes */
++	if (off_after == initial_file_offset + TEST_RETURN)
++		tst_res(TPASS, "offset at %ld as expected", off_after);
++	else
++		tst_res(TFAIL, "offset unexpected %ld", off_after);
++
++	SAFE_CLOSE(fd);
 +}
-+TST_CLEANUP="cleanup"
 +
-+if [ -z $ip_local -o -z $ip_remote ]; then
-+	tst_brkm TBROK "you must specify IP address"
-+fi
++static void test_writev(void)
++{
++	test_partially_valid_iovec(0);
++	test_partially_valid_iovec(CHUNK + 1);
++	test_partially_valid_iovec(getpagesize());
++	test_partially_valid_iovec(getpagesize() + 1);
++}
 +
-+tst_resm TINFO "the same VNI must work"
-+# VNI is 24 bits long, so max value, which is not reserved, is 0xFFFFFE
-+vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE" "id 0xFFFFFE"
-+virt_compare_netperf
++static void setup(void)
++{
++	bad_addr = SAFE_MMAP(0, 1, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS,
++			0, 0);
++}
 +
-+tst_resm TINFO "different VNI shall not work together"
-+vxlan_setup_subnet_$vxlan_dst_addr "id 0xFFFFFE" "id 0xFFFFFD"
-+virt_compare_netperf "fail"
-+
-+tst_exit
-diff --git a/testcases/network/virt/virt_lib.sh b/testcases/network/virt/virt_lib.sh
-index 2a46076..1757698 100644
---- a/testcases/network/virt/virt_lib.sh
-+++ b/testcases/network/virt/virt_lib.sh
-@@ -110,6 +110,9 @@ virt_add()
- 		[ -z "$opt" ] && opt="id 4094"
- 		[ "$vxlan_dstport" -eq 1 ] && opt="dstport 0 $opt"
- 	;;
-+	geneve)
-+		[ -z "$opt" ] && opt="id 4094 remote $(tst_ipaddr rhost)"
-+	;;
- 	gre|ip6gre)
- 		[ -z "$opt" ] && \
- 			opt="remote $(tst_ipaddr rhost) dev $(tst_iface)"
-@@ -117,7 +120,7 @@ virt_add()
- 	esac
- 
- 	case $virt_type in
--	vxlan)
-+	vxlan|geneve)
- 		ip li add $vname type $virt_type $opt
- 	;;
- 	gre|ip6gre)
-@@ -133,7 +136,7 @@ virt_add_rhost()
- {
- 	local opt=""
- 	case $virt_type in
--	vxlan)
-+	vxlan|geneve)
- 		[ "$vxlan_dstport" -eq 1 ] && opt="dstport 0"
- 		tst_rhost_run -s -c "ip li add ltp_v0 type $virt_type $@ $opt"
- 	;;
-@@ -237,7 +240,7 @@ vxlan_setup_subnet_uni()
- 	tst_kvercmp 3 10 0 && \
- 		tst_brkm TCONF "test must be run with kernel 3.10 or newer"
- 
--	[ "$(ip li add type vxlan help 2>&1 | grep remote)" ] || \
-+	[ "$(ip li add type $virt_type help 2>&1 | grep remote)" ] || \
- 		tst_brkm TCONF "iproute doesn't support remote unicast address"
- 
- 	local opt="$1 remote $(tst_ipaddr rhost)"
-@@ -301,13 +304,13 @@ virt_compare_netperf()
- 	per6=$(( $vt6 * 100 / $lt - 100 ))
- 
- 	case "$virt_type" in
--	vxlan)
--		tst_resm TINFO "IPv4 VxLAN over IPv$ipver slower by $per %"
--		tst_resm TINFO "IPv6 VxLAN over IPv$ipver slower by $per6 %"
-+	vxlan|geneve)
-+		tst_resm TINFO "IP4 $virt_type over IP$ipver slower by $per %"
-+		tst_resm TINFO "IP6 $virt_type over IP$ipver slower by $per6 %"
- 	;;
- 	*)
--		tst_resm TINFO "IPv4 $virt_type slower by $per %"
--		tst_resm TINFO "IPv6 $virt_type slower by $per6 %"
-+		tst_resm TINFO "IP4 $virt_type slower by $per %"
-+		tst_resm TINFO "IP6 $virt_type slower by $per6 %"
- 	esac
- 
- 	if [ "$per" -ge "$VIRT_PERF_THRESHOLD" -o \
-@@ -388,7 +391,7 @@ virt_test_02()
- tst_require_root
- 
- case "$virt_type" in
--vxlan)
-+vxlan|geneve)
- 	tst_kvercmp 3 8 0 && \
- 		tst_brkm TCONF "test must be run with kernel 3.8 or newer"
- 
++static struct tst_test test = {
++	.tid = "writev07",
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.test_all = test_writev,
++};
 -- 
-1.7.1
+1.8.3.1
 
