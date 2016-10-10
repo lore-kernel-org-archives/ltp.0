@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 10 Oct 2016 17:11:01 +0200
-Subject: [LTP] [PATCH] network/busy_poll: TCONF if driver doesn't
- support busy-poll feature
-In-Reply-To: <1475761739-14380-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1475761739-14380-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20161010151059.GD1684@rei>
+Date: Mon, 10 Oct 2016 17:21:53 +0200
+Subject: [LTP] [PATCH] test_net.sh: don't waste time waiting 1 sec in
+ tst_ping()
+In-Reply-To: <1475761814-14468-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1475761814-14468-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20161010152152.GE1684@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,14 +12,13 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +ethtool --show-features $(tst_iface) | grep -q 'busy-poll.*on' || \
-> +	tst_brkm TCONF "busy poll not supported by driver"
-> +
+> The current user of this function is 'icmp-uni-basic.sh' ipsec test
+> group that includes 17 tests. Usually, it takes about 50 seconds for
+> each test run. This change allows to run the same test in ~5 seconds
+> because interval is 0 and default number of packets transmitted for
+> each size parameter increased from 10 to 500.
 
-Maybe it would be better to move all the TCONF checks into a common
-bussy_poll_lib.sh and source it in the scripts.
-
-And also we should check for ethtool command with the tst_check_cmds.
+Looks like a great speed up.
 
 -- 
 Cyril Hrubis
