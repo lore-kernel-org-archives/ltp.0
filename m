@@ -1,581 +1,189 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri,  7 Oct 2016 10:11:12 +0200
-Subject: [LTP] [PATCH v2 3/3] writev01: rewrite and drop partially valid
-	iovec tests
-In-Reply-To: <81176684cd5c6bf764a070b79783f03f0037658a.1475827191.git.jstancek@redhat.com>
-References: <81176684cd5c6bf764a070b79783f03f0037658a.1475827191.git.jstancek@redhat.com>
-Message-ID: <d6b408e9dcb22db9c362377a2d35876fdb6d7096.1475827191.git.jstancek@redhat.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Mon, 10 Oct 2016 15:05:54 +0800
+Subject: [LTP] [PATCH] syscalls/signal06: fix test for regression with
+ earlier version of gcc and kernel
+In-Reply-To: <20161006111548.GA9711@rei>
+References: <1470380281-20334-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20161005134303.GA23476@rei.lan> <57F627EF.7070605@cn.fujitsu.com>
+ <20161006111548.GA9711@rei>
+Message-ID: <57FB3DD2.1070809@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Convert to newlib style, and drop tests for partially valid
-iovec lists, these are now tested in writev07.
+Hi!
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- testcases/kernel/syscalls/writev/writev01.c | 550 ++++++++--------------------
- 1 file changed, 152 insertions(+), 398 deletions(-)
- rewrite testcases/kernel/syscalls/writev/writev01.c (90%)
+On 10/06/2016 07:15 PM, Cyril Hrubis wrote:
+> Hi!
+>>> Hmm, what is the exact problem here? Does the old kernel break if we
+>>> send the signal too fast?
+>>
+>> Yes, running signal06 reports segmentation fault and breaks the test
+>> if we send the signal too fast on the old kernel.
+> 
+> Hmm, that sounds like a bug itself since we set signal handler for the
+> SIGSEGV, it shouldn't kill the process while we try to write to the read
+> only memory. Can you try to run it in a debugger and send a trace?
 
-diff --git a/testcases/kernel/syscalls/writev/writev01.c b/testcases/kernel/syscalls/writev/writev01.c
-dissimilarity index 90%
-index 8e4f756fee3a..843736a21852 100644
---- a/testcases/kernel/syscalls/writev/writev01.c
-+++ b/testcases/kernel/syscalls/writev/writev01.c
-@@ -1,398 +1,152 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * NAME
-- *	writev01.c
-- *
-- * DESCRIPTION
-- *	Testcase to check the basic functionality of writev(2) system call.
-- *
-- * ALGORITHM
-- *	Create a IO vector, and attempt to writev various components of it.
-- *
-- * USAGE:  <for command-line>
-- *	writev01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *	where,	-c n : Run n copies concurrently.
-- *		-e   : Turn on errno logging.
-- *		-i n : Execute test n times.
-- *		-I x : Execute test for x seconds.
-- *		-P x : Pause for x seconds between iterations.
-- *		-t   : Turn on syscall timing.
-- *
-- * History
-- *	07/2001 John George
-- *		-Ported
-- *      04/2002 wjhuie sigset cleanups
-- *     06/2002 Shaobo Li
-- *             fix testcase 7, add each testcase comment.
-- *
-- * Restrictions
-- *	None
-- */
--
--#include <stdio.h>
--#include <sys/types.h>
--#include <signal.h>
--#include <sys/uio.h>
--#include <sys/fcntl.h>
--#include <memory.h>
--#include <errno.h>
--#include "test.h"
--#include <sys/mman.h>
--
--#define	K_1	1024
--#define	M_1	K_1 * K_1
--#define	G_1	M_1 * K_1
--
--#define	NBUFS		4
--#define	CHUNK		64	/* single chunk */
--#define	MAX_IOVEC	16
--#define	DATA_FILE	"writev_data_file"
--
--char buf1[K_1], buf2[K_1], buf3[K_1];
--
--struct iovec wr_iovec[MAX_IOVEC] = {
--	/* iov_base *//* iov_len */
--
--	/* testcase# 1 */
--	{buf1, -1},
--	{(buf1 + CHUNK), CHUNK},
--	{(buf1 + CHUNK * 2), CHUNK},
--
--	/* testcase# 2 */
--	{(buf1 + CHUNK * 3), G_1},
--	{(buf1 + CHUNK * 4), G_1},
--	{(buf1 + CHUNK * 5), G_1},
--
--	/* testcase# 3 */
--	{(buf1 + CHUNK * 6), CHUNK},
--	{(caddr_t) - 1, CHUNK},
--	{(buf1 + CHUNK * 8), CHUNK},
--
--	/* testcase# 4 */
--	{(buf1 + CHUNK * 9), CHUNK},
--
--	/* testcase# 5 */
--	{(buf1 + CHUNK * 10), CHUNK},
--
--	/* testcase# 6 */
--	{(buf1 + CHUNK * 11), CHUNK},
--
--	/* testcase# 7 */
--	{(buf1 + CHUNK * 12), CHUNK},
--
--	/* testcase# 8 */
--	{(buf1 + CHUNK * 13), 0},
--
--	/* testcase# 7 */
--	{NULL, 0},
--	{NULL, 0}
--};
--
--char name[K_1], f_name[K_1];
--
--char *bad_addr = 0;
--
--int fd[4], in_sighandler;
--int pfd[2];			/* pipe fd's */
--char *buf_list[NBUFS];
--
--void sighandler(int);
--int fill_mem(char *, int, int);
--void init_buffs(char *[]);
--void setup(void);
--void cleanup(void);
--
--char *TCID = "writev01";
--int TST_TOTAL = 1;
--
--int main(int argc, char **argv)
--{
--	int nbytes, ret;
--
--	int lc;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		buf_list[0] = buf1;
--		buf_list[1] = buf2;
--		buf_list[2] = buf3;
--		buf_list[3] = NULL;
--
--		fd[1] = -1;	/* Invalid file descriptor  */
--
--		if (signal(SIGTERM, sighandler) == SIG_ERR)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "signal(SIGTERM, ..) failed");
--
--		if (signal(SIGPIPE, sighandler) == SIG_ERR)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "signal(SIGPIPE, ..) failed");
--
--		init_buffs(buf_list);
--
--		if ((fd[0] = open(f_name, O_WRONLY | O_CREAT, 0666)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "open(.., O_WRONLY|O_CREAT, ..) failed");
--		else if ((nbytes = write(fd[0], buf_list[2], K_1)) != K_1)
--			tst_brkm(TBROK | TERRNO, cleanup, "write failed");
--
--		if (close(fd[0]) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "close failed");
--
--		if ((fd[0] = open(f_name, O_RDWR, 0666)) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "open failed");
--//block1: /* given vector length -1, writev return EINVAL. */
--		tst_resm(TPASS, "Enter Block 1");
--
--		TEST(writev(fd[0], wr_iovec, 1));
--		if (TEST_RETURN == -1) {
--			if (TEST_ERRNO == EINVAL)
--				tst_resm(TPASS, "Received EINVAL as expected");
--			else
--				tst_resm(TFAIL, "Expected errno = EINVAL, "
--					 "got %d", TEST_ERRNO);
--		} else
--			tst_resm(TFAIL, "writev failed to fail");
--		tst_resm(TINFO, "Exit block 1");
--
--//block2:
--		/* This testcases doesn't look like what it intent to do
--		 * 1. it is not using the wr_iovec initialized
--		 * 2. read() and following message is not consistent
--		 */
--		tst_resm(TPASS, "Enter block 2");
--
--		if (lseek(fd[0], CHUNK * 6, 0) == -1)
--			tst_resm(TBROK | TERRNO, "block2: 1st lseek failed");
--
--		if ((ret = writev(fd[0], (wr_iovec + 6), 3)) == CHUNK) {
--			if (lseek(fd[0], CHUNK * 6, 0) == -1)
--				tst_brkm(TBROK | TERRNO, cleanup,
--					 "block2: 2nd lseek failed");
--			if ((nbytes = read(fd[0], buf_list[0], CHUNK)) != CHUNK)
--				tst_resm(TFAIL, "read failed; expected nbytes "
--					 "= 1024, got = %d", nbytes);
--			else if (memcmp((buf_list[0] + CHUNK * 6),
--					(buf_list[2] + CHUNK * 6), CHUNK) != 0)
--				tst_resm(TFAIL, "writev over "
--					 "wrote %s", f_name);
--		} else
--			tst_resm(TFAIL | TERRNO, "writev failed unexpectedly");
--		tst_resm(TINFO, "Exit block 2");
--
--//block3: /* given 1 bad vector buffer with good ones, writev success */
--		tst_resm(TPASS, "Enter block 3");
--
--		if (lseek(fd[0], CHUNK * 6, 0) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup,
--				 "block3: 1st lseek failed");
--		if ((nbytes = writev(fd[0], (wr_iovec + 6), 3)) == -1) {
--			if (errno == EFAULT)
--				tst_resm(TFAIL, "Got EFAULT");
--		}
--		if (lseek(fd[0], 0, 0) == -1)
--			tst_brkm(TBROK, cleanup, "block3: 2nd lseek failed");
--		if ((nbytes = read(fd[0], buf_list[0], K_1)) != K_1) {
--			tst_resm(TFAIL | TERRNO,
--				 "read failed; expected nbytes = 1024, got = %d",
--				 nbytes);
--		} else if (memcmp((buf_list[0] + CHUNK * 6),
--				  (buf_list[2] + CHUNK * 6), CHUNK * 3) != 0)
--			tst_resm(TFAIL, "writev overwrote file");
--
--		tst_resm(TINFO, "Exit block 3");
--
--//block4: /* given bad file descriptor, writev return EBADF. */
--		tst_resm(TPASS, "Enter block 4");
--
--		TEST(writev(fd[1], (wr_iovec + 9), 1));
--		if (TEST_RETURN == -1) {
--			if (TEST_ERRNO == EBADF)
--				tst_resm(TPASS, "Received EBADF as expected");
--			else
--				tst_resm(TFAIL, "expected errno = EBADF, "
--					 "got %d", TEST_ERRNO);
--		} else
--			tst_resm(TFAIL, "writev returned a " "positive value");
--
--		tst_resm(TINFO, "Exit block 4");
--
--//block5: /* given invalid vector count, writev return EINVAL */
--		tst_resm(TPASS, "Enter block 5");
--
--		TEST(writev(fd[0], (wr_iovec + 10), -1));
--		if (TEST_RETURN == -1) {
--			if (TEST_ERRNO == EINVAL)
--				tst_resm(TPASS, "Received EINVAL as expected");
--			else
--				tst_resm(TFAIL, "expected errno = EINVAL, "
--					 "got %d", TEST_ERRNO);
--		} else
--			tst_resm(TFAIL, "writev returned a " "positive value");
--
--		tst_resm(TINFO, "Exit block 5");
--
--//block6: /* given no buffer vector, writev success */
--		tst_resm(TPASS, "Enter block 6");
--
--		TEST(writev(fd[0], (wr_iovec + 11), 0));
--		if (TEST_RETURN == -1)
--			tst_resm(TFAIL | TTERRNO, "writev failed");
--		else
--			tst_resm(TPASS, "writev wrote 0 iovectors");
--
--		tst_resm(TINFO, "Exit block 6");
--
--//block7:
--		/* given 4 vectors, 2 are NULL, 1 with 0 length and 1 with fixed length,
--		 * writev success writing fixed length.
--		 */
--		tst_resm(TPASS, "Enter block 7");
--
--		if (lseek(fd[0], CHUNK * 12, 0) == -1)
--			tst_resm(TBROK, "lseek failed");
--		else if ((ret = writev(fd[0], (wr_iovec + 12), 4)) != CHUNK)
--			tst_resm(TFAIL, "writev failed writing %d bytes, "
--				 "followed by two NULL vectors", CHUNK);
--		else
--			tst_resm(TPASS, "writev passed writing %d bytes, "
--				 "followed by two NULL vectors", CHUNK);
--
--		tst_resm(TINFO, "Exit block 7");
--
--//block8: /* try to write to a closed pipe, writev return EPIPE. */
--		tst_resm(TPASS, "Enter block 8");
--
--		if (pipe(pfd) == -1)
--			tst_resm(TFAIL | TERRNO, "pipe failed");
--		else {
--			if (close(pfd[0]) == -1)
--				tst_resm(TFAIL | TERRNO, "close failed");
--			else if (writev(pfd[1], (wr_iovec + 12), 1) == -1 &&
--				 in_sighandler) {
--				if (errno == EPIPE)
--					tst_resm(TPASS, "Received EPIPE as "
--						 "expected");
--				else
--					tst_resm(TFAIL | TERRNO,
--						 "didn't get EPIPE");
--			} else
--				tst_resm(TFAIL, "writev returned a positive "
--					 "value");
--		}
--		tst_resm(TINFO, "Exit block 8");
--	}
--	cleanup();
--	tst_exit();
--}
--
--void setup(void)
--{
--
--	tst_sig(FORK, sighandler, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	strcpy(name, DATA_FILE);
--	sprintf(f_name, "%s.%d", name, getpid());
--
--	bad_addr = mmap(0, 1, PROT_NONE,
--			MAP_PRIVATE_EXCEPT_UCLINUX | MAP_ANONYMOUS, 0, 0);
--	if (bad_addr == MAP_FAILED)
--		tst_brkm(TBROK | TERRNO, cleanup, "mmap failed");
--	wr_iovec[7].iov_base = bad_addr;
--
--}
--
--void cleanup(void)
--{
--	if (munmap(bad_addr, 1) == -1)
--		tst_resm(TBROK | TERRNO, "munmap failed");
--
--	close(fd[0]);
--	close(fd[1]);
--
--	if (unlink(f_name) == -1)
--		tst_resm(TBROK | TERRNO, "unlink failed");
--
--	tst_rmdir();
--
--}
--
--void init_buffs(char *pbufs[])
--{
--	int i;
--
--	for (i = 0; pbufs[i] != NULL; i++) {
--		switch (i) {
--		case 0:
--
--		case 1:
--			fill_mem(pbufs[i], 0, 1);
--			break;
--
--		case 2:
--			fill_mem(pbufs[i], 1, 0);
--			break;
--
--		default:
--			tst_brkm(TBROK, cleanup, "error detected: init_buffs");
--		}
--	}
--}
--
--int fill_mem(char *c_ptr, int c1, int c2)
--{
--	int count;
--
--	for (count = 1; count <= K_1 / CHUNK; count++) {
--		if (count & 0x01) {	/* if odd */
--			memset(c_ptr, c1, CHUNK);
--		} else {	/* if even */
--			memset(c_ptr, c2, CHUNK);
--		}
--	}
--	return 0;
--}
--
--void sighandler(int sig)
--{
--	switch (sig) {
--	case SIGTERM:
--		break;
--
--	case SIGPIPE:
--		in_sighandler++;
--		return;
--
--	default:
--		tst_resm(TFAIL, "sighandler received invalid signal:%d", sig);
--		break;
--	}
--}
-+/*
-+ *   Copyright (c) International Business Machines  Corp., 2001
-+ *                 Linux Test Project, 2016
-+ *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program;
-+ */
-+
-+/*
-+ * DESCRIPTION
-+ *	Testcase to check the basic functionality of writev(2) system call.
-+ *	Create IO vectors and attempt to writev various components of it.
-+ */
-+
-+#include <errno.h>
-+#include <signal.h>
-+#include <sys/uio.h>
-+#include "tst_test.h"
-+
-+#define	CHUNK		64
-+#define	TESTFILE	"writev_data_file"
-+
-+static int valid_fd;
-+static int invalid_fd = -1;
-+static int pipe_fd[2];
-+
-+static char buf[CHUNK * 4];
-+
-+struct iovec iovec_badlen[] = {
-+	{ buf, -1 },
-+	{ buf + CHUNK, CHUNK },
-+	{ buf + CHUNK * 2, CHUNK },
-+};
-+
-+struct iovec iovec_simple[] = {
-+	{ buf, CHUNK },
-+};
-+
-+struct iovec iovec_zero_null[] = {
-+	{ buf, CHUNK },
-+	{ buf + CHUNK, 0 },
-+	{ NULL, 0 },
-+	{ NULL, 0 }
-+};
-+
-+struct testcase_t {
-+	const char *desc;
-+	int *pfd;
-+	struct iovec (*piovec)[];
-+	int iovcnt;
-+	int exp_ret;
-+	int exp_errno;
-+} testcases[] = {
-+	{
-+		.desc = "invalid iov_len",
-+		.pfd = &valid_fd,
-+		.piovec = &iovec_badlen,
-+		.iovcnt = ARRAY_SIZE(iovec_badlen),
-+		.exp_ret = -1,
-+		.exp_errno = EINVAL
-+	},
-+	{
-+		.desc = "invalid fd",
-+		.pfd = &invalid_fd,
-+		.piovec = &iovec_simple,
-+		.iovcnt = ARRAY_SIZE(iovec_simple),
-+		.exp_ret = -1,
-+		.exp_errno = EBADF
-+	},
-+	{
-+		.desc = "invalid iovcnt",
-+		.pfd = &valid_fd,
-+		.piovec = &iovec_simple,
-+		.iovcnt = -1,
-+		.exp_ret = -1,
-+		.exp_errno = EINVAL
-+	},
-+	{
-+		.desc = "zero iovcnt",
-+		.pfd = &valid_fd,
-+		.piovec = &iovec_simple,
-+		.iovcnt = 0,
-+		.exp_ret = 0,
-+	},
-+	{
-+		.desc = "NULL and zero length iovec",
-+		.pfd = &valid_fd,
-+		.piovec = &iovec_zero_null,
-+		.iovcnt = ARRAY_SIZE(iovec_zero_null),
-+		.exp_ret = CHUNK,
-+	},
-+	{
-+		.desc = "write to closed pipe",
-+		.pfd = &(pipe_fd[1]),
-+		.piovec = &iovec_simple,
-+		.iovcnt = ARRAY_SIZE(iovec_simple),
-+		.exp_ret = -1,
-+		.exp_errno = EPIPE,
-+	},
-+};
-+
-+void setup(void)
-+{
-+	sigset_t block_mask;
-+
-+	sigemptyset(&block_mask);
-+	sigaddset(&block_mask, SIGPIPE);
-+	sigprocmask(SIG_BLOCK, &block_mask, NULL);
-+
-+	valid_fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
-+
-+	SAFE_PIPE(pipe_fd);
-+	SAFE_CLOSE(pipe_fd[0]);
-+}
-+
-+static void test_writev(unsigned int i)
-+{
-+	struct testcase_t *tcase = &testcases[i];
-+	int ret;
-+
-+	TEST(writev(*(tcase->pfd), *(tcase->piovec), tcase->iovcnt));
-+
-+	ret = (TEST_RETURN == tcase->exp_ret);
-+	if (TEST_RETURN < 0 || tcase->exp_ret < 0)
-+		ret &= (TEST_ERRNO == tcase->exp_errno);
-+
-+	if (ret) {
-+		tst_res(TPASS | TTERRNO, "%s, ret: %ld", tcase->desc,
-+			TEST_RETURN);
-+	} else {
-+		tst_res(TPASS | TTERRNO, "%s, ret: %ld", tcase->desc,
-+			TEST_RETURN);
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.tid = "writev01",
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.test = test_writev,
-+	.tcnt = ARRAY_SIZE(testcases),
-+};
--- 
-1.8.3.1
+Yes, I guess this is the kernel's bug, but sorry I didn't look into
+the real reason of the segfault issue much.
+
+[root@RHEL5U11ga_Intel64 signal]# gdb ./signal06 core.18623 
+GNU gdb (GDB) Red Hat Enterprise Linux (7.0.1-45.el5)
+Copyright (C) 2009 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-redhat-linux-gnu".
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>...
+Reading symbols from /root/ltp/testcases/kernel/syscalls/signal/signal06...done.
+[New Thread 18623]
+[New Thread 18625]
+Reading symbols from /lib64/libpthread.so.0...(no debugging symbols found)...done.
+[Thread debugging using libthread_db enabled]
+Loaded symbols for /lib64/libpthread.so.0
+Reading symbols from /lib64/libc.so.6...(no debugging symbols found)...done.
+Loaded symbols for /lib64/libc.so.6
+Reading symbols from /lib64/ld-linux-x86-64.so.2...(no debugging symbols found)...done.
+Loaded symbols for /lib64/ld-linux-x86-64.so.2
+
+warning: no loadable sections found in added symbol-file system-supplied DSO at 0x7fffe3384000
+Core was generated by `./signal06'.
+Program terminated with signal 11, Segmentation fault.
+#0  test (d=123.456) at signal06.c:71
+71		while (D == d && loop < LOOPS) {
+(gdb) bt
+#0  test (d=123.456)@signal06.c:71
+#1  0x0000000000402bb7 in main (ac=<value optimized out>, av=<value optimized out>) at signal06.c:151
+
+(gdb) disassemble 
+Dump of assembler code for function test:
+0x0000000000402910 <test+0>:	push   %rbx
+0x0000000000402911 <test+1>:	sub    $0x10,%rsp
+0x0000000000402915 <test+5>:	movsd  %xmm0,0x8(%rsp)
+0x000000000040291b <test+11>:	callq  0x402278 <getpid@plt>
+0x0000000000402920 <test+16>:	movsd  0x8(%rsp),%xmm0
+0x0000000000402926 <test+22>:	mov    %eax,%edi
+0x0000000000402928 <test+24>:	movsd  %xmm0,0x2136d0(%rip)        # 0x616000 <D>
+0x0000000000402930 <test+32>:	movsd  0x2136c8(%rip),%xmm0        # 0x616000 <D>
+0x0000000000402938 <test+40>:	ucomisd 0x8(%rsp),%xmm0
+0x000000000040293e <test+46>:	jne    0x4029fc <test+236>
+0x0000000000402944 <test+52>:	jp     0x4029fc <test+236>
+0x000000000040294a <test+58>:	xor    %ebx,%ebx
+0x000000000040294c <test+60>:	mov    $0xc8,%edx
+0x0000000000402951 <test+65>:	mov    $0x1,%esi
+0x0000000000402956 <test+70>:	jmp    0x402962 <test+82>
+0x0000000000402958 <test+72>:	cmp    $0x2710,%ebx
+0x000000000040295e <test+78>:	xchg   %ax,%ax
+0x0000000000402960 <test+80>:	je     0x4029cf <test+191>
+0x0000000000402962 <test+82>:	mov    %edx,%eax
+0x0000000000402964 <test+84>:	syscall 
+0x0000000000402966 <test+86>:	movsd  0x213692(%rip),%xmm0        # 0x616000 <D>
+0x000000000040296e <test+94>:	add    $0x1,%ebx
+0x0000000000402971 <test+97>:	ucomisd 0x8(%rsp),%xmm0
+0x0000000000402977 <test+103>:	jp     0x40297b <test+107>
+0x0000000000402979 <test+105>:	je     0x402958 <test+72>
+0x000000000040297b <test+107>:	xor    %eax,%eax
+0x000000000040297d <test+109>:	mov    %ebx,%r8d
+0x0000000000402980 <test+112>:	mov    $0x40b2cb,%ecx
+0x0000000000402985 <test+117>:	mov    $0x10,%edx
+0x000000000040298a <test+122>:	mov    $0x51,%esi
+0x000000000040298f <test+127>:	mov    $0x40b2c0,%edi
+0x0000000000402994 <test+132>:	movl   $0x1,0x21e662(%rip)        # 0x621000 <FLAGE>
+0x000000000040299e <test+142>:	callq  0x4043d0 <tst_resm_>
+0x00000000004029a3 <test+147>:	cmp    $0x2710,%ebx
+0x00000000004029a9 <test+153>:	jne    0x402a24 <test+276>
+0x00000000004029ab <test+155>:	mov    0x20ec16(%rip),%r8        # 0x6115c8 <TCID>
+0x00000000004029b2 <test+162>:	add    $0x10,%rsp
+0x00000000004029b6 <test+166>:	mov    $0x40b2d5,%ecx
+0x00000000004029bb <test+171>:	pop    %rbx
+0x00000000004029bc <test+172>:	xor    %edx,%edx
+0x00000000004029be <test+174>:	mov    $0x54,%esi
+0x00000000004029c3 <test+179>:	mov    $0x40b2c0,%edi
+0x00000000004029c8 <test+184>:	xor    %eax,%eax
+0x00000000004029ca <test+186>:	jmpq   0x4043d0 <tst_resm_>
+0x00000000004029cf <test+191>:	mov    $0x2710,%r8d
+0x00000000004029d5 <test+197>:	mov    $0x40b2cb,%ecx
+0x00000000004029da <test+202>:	mov    $0x10,%edx
+0x00000000004029df <test+207>:	mov    $0x51,%esi
+0x00000000004029e4 <test+212>:	mov    $0x40b2c0,%edi
+0x00000000004029e9 <test+217>:	xor    %eax,%eax
+0x00000000004029eb <test+219>:	movl   $0x1,0x21e60b(%rip)        # 0x621000 <FLAGE>
+0x00000000004029f5 <test+229>:	callq  0x4043d0 <tst_resm_>
+0x00000000004029fa <test+234>:	jmp    0x4029ab <test+155>
+0x00000000004029fc <test+236>:	xor    %r8d,%r8d
+0x00000000004029ff <test+239>:	mov    $0x40b2cb,%ecx
+0x0000000000402a04 <test+244>:	mov    $0x10,%edx
+0x0000000000402a09 <test+249>:	mov    $0x51,%esi
+0x0000000000402a0e <test+254>:	mov    $0x40b2c0,%edi
+0x0000000000402a13 <test+259>:	xor    %eax,%eax
+0x0000000000402a15 <test+261>:	movl   $0x1,0x21e5e1(%rip)        # 0x621000 <FLAGE>
+0x0000000000402a1f <test+271>:	callq  0x4043d0 <tst_resm_>
+0x0000000000402a24 <test+276>:	mov    $0x40b2e7,%ecx
+0x0000000000402a29 <test+281>:	mov    $0x1,%edx
+0x0000000000402a2e <test+286>:	mov    $0x56,%esi
+0x0000000000402a33 <test+291>:	mov    $0x40b2c0,%edi
+0x0000000000402a38 <test+296>:	xor    %eax,%eax
+0x0000000000402a3a <test+298>:	callq  0x4043d0 <tst_resm_>
+0x0000000000402a3f <test+303>:	callq  0x404670 <tst_exit>
+End of assembler dump.
+
+> 
+> Since what we do is disable/enable write access to the alternative while
+> simoutaneously hammer the process with SIGHUP in order to trigger
+> segfault inside of the sighup signal handler.
+> 
+> I wonder why we have to do that asynchronously in the first place, if
+> there is a need to hit a particular spot in the kernel while the signal
+> stack is being written.
+> 
+> Anyway on which systems is this bug reproducible? I can try to make it
+> both reliable and fast.
+
+Thanks very much.
+The segfault issue can be reproduced steadily in RHEL5.11GA(2.6.18-398.el5).
+
+> 
+>>> I do not like much that the test takes ten times more time to finish
+>>> now.
+>>
+>> Yes, it will take ten times more time than before, but it only takes
+>> 3~4 seconds to finish...
+> 
+> Let me put that in perspective. We have more than 3000 tests in LTP, if
+> each of these would take just a few seconds more, the test run would
+> take a few more hours to finish.
+> 
+> And there is a reason why we need the LTP run to be as fast as possible.
+> The longer the run takes the less people would use it and it would be
+> used less frequently which would make all the work put into these
+> testcases less valuable.
+> 
+> All in all I'm mildly opposed to each change that increses the runtime
+> if it's not absolutely necessary.
+> 
+
+OK, I understand, will know for next time, thanks.
+
+>> By current LOOPS(10000), most of the time, the buggy kernel can be
+>> reproduced, but there is still a chance(about 0.5% in my environment)
+>> to miss.
+> 
+> Hmm, what about increasing it twice or four times? What is the
+> probability of missing the bug then?
+> 
+
+2 times(20000 loops):	99.9% reproducible
+4 times(40000 loops):	100% reproducible
+
+Is it acceptable to increase it four times?
+
+
+Best Regards,
+Guangwen Feng
+
 
