@@ -1,11 +1,13 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 10 Oct 2016 18:03:46 +0200
-Subject: [LTP] [PATCH v2 3/3] writev01: rewrite and drop partially valid
- iovec tests
-In-Reply-To: <d6b408e9dcb22db9c362377a2d35876fdb6d7096.1475827191.git.jstancek@redhat.com>
-References: <81176684cd5c6bf764a070b79783f03f0037658a.1475827191.git.jstancek@redhat.com>
- <d6b408e9dcb22db9c362377a2d35876fdb6d7096.1475827191.git.jstancek@redhat.com>
-Message-ID: <20161010160346.GG1684@rei>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 11 Oct 2016 15:17:23 +0800
+Subject: [LTP] [PATCH] syscalls/signal06: fix test for regression with
+ earlier version of gcc and kernel
+In-Reply-To: <20161010131529.GA1684@rei>
+References: <1470380281-20334-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20161005134303.GA23476@rei.lan> <57F627EF.7070605@cn.fujitsu.com>
+ <20161006111548.GA9711@rei> <57FB3DD2.1070809@cn.fujitsu.com>
+ <20161010131529.GA1684@rei>
+Message-ID: <57FC9203.40804@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,159 +15,71 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +/*
-> + *   Copyright (c) International Business Machines  Corp., 2001
-> + *                 Linux Test Project, 2016
-> + *
-> + *   This program is free software;  you can redistribute it and/or modify
-> + *   it under the terms of the GNU General Public License as published by
-> + *   the Free Software Foundation; either version 2 of the License, or
-> + *   (at your option) any later version.
-> + *
-> + *   This program is distributed in the hope that it will be useful,
-> + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + *   the GNU General Public License for more details.
-> + *
-> + *   You should have received a copy of the GNU General Public License
-> + *   along with this program;
-> + */
-> +
-> +/*
-> + * DESCRIPTION
-> + *	Testcase to check the basic functionality of writev(2) system call.
-> + *	Create IO vectors and attempt to writev various components of it.
-> + */
-> +
-> +#include <errno.h>
-> +#include <signal.h>
-> +#include <sys/uio.h>
-> +#include "tst_test.h"
-> +
-> +#define	CHUNK		64
-> +#define	TESTFILE	"writev_data_file"
-> +
-> +static int valid_fd;
-> +static int invalid_fd = -1;
-> +static int pipe_fd[2];
-> +
-> +static char buf[CHUNK * 4];
-> +
-> +struct iovec iovec_badlen[] = {
-> +	{ buf, -1 },
-> +	{ buf + CHUNK, CHUNK },
-> +	{ buf + CHUNK * 2, CHUNK },
-> +};
-> +
-> +struct iovec iovec_simple[] = {
-> +	{ buf, CHUNK },
-> +};
-> +
-> +struct iovec iovec_zero_null[] = {
-> +	{ buf, CHUNK },
-> +	{ buf + CHUNK, 0 },
-> +	{ NULL, 0 },
-> +	{ NULL, 0 }
-> +};
-> +
-> +struct testcase_t {
-> +	const char *desc;
-> +	int *pfd;
-> +	struct iovec (*piovec)[];
-> +	int iovcnt;
-> +	int exp_ret;
-> +	int exp_errno;
-> +} testcases[] = {
-> +	{
-> +		.desc = "invalid iov_len",
-> +		.pfd = &valid_fd,
-> +		.piovec = &iovec_badlen,
-> +		.iovcnt = ARRAY_SIZE(iovec_badlen),
-> +		.exp_ret = -1,
-> +		.exp_errno = EINVAL
-> +	},
-> +	{
-> +		.desc = "invalid fd",
-> +		.pfd = &invalid_fd,
-> +		.piovec = &iovec_simple,
-> +		.iovcnt = ARRAY_SIZE(iovec_simple),
-> +		.exp_ret = -1,
-> +		.exp_errno = EBADF
-> +	},
-> +	{
-> +		.desc = "invalid iovcnt",
-> +		.pfd = &valid_fd,
-> +		.piovec = &iovec_simple,
-> +		.iovcnt = -1,
-> +		.exp_ret = -1,
-> +		.exp_errno = EINVAL
-> +	},
-> +	{
-> +		.desc = "zero iovcnt",
-> +		.pfd = &valid_fd,
-> +		.piovec = &iovec_simple,
-> +		.iovcnt = 0,
-> +		.exp_ret = 0,
-> +	},
-> +	{
-> +		.desc = "NULL and zero length iovec",
-> +		.pfd = &valid_fd,
-> +		.piovec = &iovec_zero_null,
-> +		.iovcnt = ARRAY_SIZE(iovec_zero_null),
-> +		.exp_ret = CHUNK,
-> +	},
-> +	{
-> +		.desc = "write to closed pipe",
-> +		.pfd = &(pipe_fd[1]),
-> +		.piovec = &iovec_simple,
-> +		.iovcnt = ARRAY_SIZE(iovec_simple),
-> +		.exp_ret = -1,
-> +		.exp_errno = EPIPE,
-> +	},
-> +};
-> +
-> +void setup(void)
-> +{
-> +	sigset_t block_mask;
-> +
-> +	sigemptyset(&block_mask);
-> +	sigaddset(&block_mask, SIGPIPE);
-> +	sigprocmask(SIG_BLOCK, &block_mask, NULL);
-> +
-> +	valid_fd = SAFE_OPEN(TESTFILE, O_RDWR | O_CREAT, 0644);
-> +
-> +	SAFE_PIPE(pipe_fd);
-> +	SAFE_CLOSE(pipe_fd[0]);
-> +}
-> +
-> +static void test_writev(unsigned int i)
-> +{
-> +	struct testcase_t *tcase = &testcases[i];
-> +	int ret;
-> +
-> +	TEST(writev(*(tcase->pfd), *(tcase->piovec), tcase->iovcnt));
-> +
-> +	ret = (TEST_RETURN == tcase->exp_ret);
-> +	if (TEST_RETURN < 0 || tcase->exp_ret < 0)
-> +		ret &= (TEST_ERRNO == tcase->exp_errno);
-> +
-> +	if (ret) {
-> +		tst_res(TPASS | TTERRNO, "%s, ret: %ld", tcase->desc,
-> +			TEST_RETURN);
-> +	} else {
-> +		tst_res(TPASS | TTERRNO, "%s, ret: %ld", tcase->desc,
-                         ^
-			 TFAIL?
 
-> +			TEST_RETURN);
-> +	}
+On 10/10/2016 09:15 PM, Cyril Hrubis wrote:
+> Hi!
+>> Yes, I guess this is the kernel's bug, but sorry I didn't look into
+>> the real reason of the segfault issue much.
+>>
+>> [root@RHEL5U11ga_Intel64 signal]# gdb ./signal06 core.18623 
+>> GNU gdb (GDB) Red Hat Enterprise Linux (7.0.1-45.el5)
+>> Copyright (C) 2009 Free Software Foundation, Inc.
+>> License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+>> This is free software: you are free to change and redistribute it.
+>> There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+>> and "show warranty" for details.
+>> This GDB was configured as "x86_64-redhat-linux-gnu".
+>> For bug reporting instructions, please see:
+>> <http://www.gnu.org/software/gdb/bugs/>...
+>> Reading symbols from /root/ltp/testcases/kernel/syscalls/signal/signal06...done.
+>> [New Thread 18623]
+>> [New Thread 18625]
+>> Reading symbols from /lib64/libpthread.so.0...(no debugging symbols found)...done.
+>> [Thread debugging using libthread_db enabled]
+>> Loaded symbols for /lib64/libpthread.so.0
+>> Reading symbols from /lib64/libc.so.6...(no debugging symbols found)...done.
+>> Loaded symbols for /lib64/libc.so.6
+>> Reading symbols from /lib64/ld-linux-x86-64.so.2...(no debugging symbols found)...done.
+>> Loaded symbols for /lib64/ld-linux-x86-64.so.2
+>>
+>> warning: no loadable sections found in added symbol-file system-supplied DSO at 0x7fffe3384000
+>> Core was generated by `./signal06'.
+>> Program terminated with signal 11, Segmentation fault.
+>> #0  test (d=123.456) at signal06.c:71
+>> 71		while (D == d && loop < LOOPS) {
+>> (gdb) bt
+>> #0  test (d=123.456) at signal06.c:71
+>> #1  0x0000000000402bb7 in main (ac=<value optimized out>, av=<value optimized out>) at signal06.c:151
+> 
+> So it segfaults in the test() function, we aren't doing anything wrong
+> there. So this really looks like a bug itself.
+> 
+> Supposedly this causes the test segfault on a system where the original
+> bug cannot be reproduced, right?
 
-Also I would have created separate functions for failure/success tests
-so that we can print more informative results, i.e. include the expected
-errno in the TFAIL result message.
+Yes, the original bug should be reproduced by signal06 on this system.
+but the segfault issue breaks the regression test.
 
-Apart from that this is much better than the original.
+> 
+>>>> By current LOOPS(10000), most of the time, the buggy kernel can be
+>>>> reproduced, but there is still a chance(about 0.5% in my environment)
+>>>> to miss.
+>>>
+>>> Hmm, what about increasing it twice or four times? What is the
+>>> probability of missing the bug then?
+>>>
+>>
+>> 2 times(20000 loops):	99.9% reproducible
+>> 4 times(40000 loops):	100% reproducible
+>>
+>> Is it acceptable to increase it four times?
+> 
+> That is 2.5 times better :)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+So, may I just increase it to 4 times and send a v2?
+
+
+Best Regards,
+Guangwen Feng
+
+
