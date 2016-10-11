@@ -1,42 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 11 Oct 2016 18:15:57 +0200
-Subject: [LTP] [PATCH] lsmod01: parse a copy of /proc/modules
-In-Reply-To: <57FD098C.4060102@oracle.com>
-References: <1472468916-13152-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20160829125050.GD30021@rei.lan> <57C43307.8000709@oracle.com>
- <8140813.24444.1472477694219.JavaMail.zimbra@redhat.com>
- <57C43FEF.50402@oracle.com> <57C440C0.5050307@oracle.com>
- <2063556369.71871.1472485781200.JavaMail.zimbra@redhat.com>
- <57FCD515.20202@oracle.com> <20161011133824.GA17083@rei.suse.cz>
- <57FD098C.4060102@oracle.com>
-Message-ID: <20161011161557.GD17083@rei.suse.cz>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 11 Oct 2016 09:52:09 +0800
+Subject: [LTP] [PATCH] m4/ltp-xfs_quota.m4: fix xfs quota check
+Message-ID: <1476150729-2128-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Isn't the original patch just workaround? Since we write to the nfs
-> > TMPDIR as well, just differently, there is always possibility that we
-> > only made the problem less probable and that it will fail in one of
-> > thousand runs. Have you tried to run the test in a loop for some time?
-> 
-> Yes, the original patch is a workaround.
-> 
-> On my system I met 1 failure of 20000 runs (~1 hour).
-> 
-> Maybe we need to follow your proposal and test only the first two fields
-> from lsmod.
+Current check doesn't work since xfsprogs v4.5.0.
+Undefined off64_t type leads to this issue, so we
+need to define _GNU_SOURCE to make off64_t defined.
 
-We may also try to store the output from lsmod and /proc/modules to
-shell variables. Something as:
+This has been broken by upstream xfsporgs-dev commmit
 
-a=$(awk '{print $1, $2, $3}' /proc/modules |sort)
-b=$(lsmod | awk '!/Module/{print $1, $2, $3}' |sort)
+commit cb898f157f8410a03cf5f3400baa1df9e5eecd33
+Author: Felix Janda <felix.janda@posteo.de>
+Date: Fri Feb 5 08:34:06 2016 +1100
 
-Then compare $a and $b.
+  linux.h: Use off64_t instead of loff_t
 
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ m4/ltp-xfs_quota.m4 | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/m4/ltp-xfs_quota.m4 b/m4/ltp-xfs_quota.m4
+index c9ee335..c23412a 100644
+--- a/m4/ltp-xfs_quota.m4
++++ b/m4/ltp-xfs_quota.m4
+@@ -24,6 +24,7 @@ dnl
+ AC_DEFUN([LTP_CHECK_XFS_QUOTACTL],[dnl
+ 	AC_MSG_CHECKING([for XFS quota (xfs/xqm.h)])
+ 	AC_LINK_IFELSE([AC_LANG_SOURCE([
++#define _GNU_SOURCE
+ #include <xfs/xqm.h>
+ #include <sys/quota.h>
+ int main(void) {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
