@@ -1,42 +1,27 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 11 Oct 2016 11:51:56 +0200
-Subject: [LTP] [PATCH v2 1/2] llistxattr: added a new test case to
- llistxattr02
-In-Reply-To: <1476114001-24856-2-git-send-email-dejan.jovicevic@rt-rk.com>
-References: <1476114001-24856-1-git-send-email-dejan.jovicevic@rt-rk.com>
- <1476114001-24856-2-git-send-email-dejan.jovicevic@rt-rk.com>
-Message-ID: <20161011095156.GB14295@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 11 Oct 2016 06:18:00 -0400 (EDT)
+Subject: [LTP] [PATCH v2 3/3] writev01: rewrite and drop partially valid
+ iovec tests
+In-Reply-To: <20161011084128.GA14295@rei.lan>
+References: <81176684cd5c6bf764a070b79783f03f0037658a.1475827191.git.jstancek@redhat.com>
+ <d6b408e9dcb22db9c362377a2d35876fdb6d7096.1475827191.git.jstancek@redhat.com>
+ <20161010160346.GG1684@rei> <57FC9729.7000107@redhat.com>
+ <20161011084128.GA14295@rei.lan>
+Message-ID: <2141815696.221639.1476181080599.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
->  static void verify_llistxattr(unsigned int n)
-> @@ -95,6 +101,9 @@ static void setup(void)
->  			tst_brk(TBROK | TERRNO, "lsetxattr() failed");
->  		}
->  	}
-> +
-> +	memset(&longpathname, 'a', sizeof(longpathname) - 1);
-> +	longpathname[sizeof(longpathname)] = '\0';
-
-This is off-by-one, the last array element is at sizeof(longpathname)-1.
-Also this is not needed since the array is global, hence initialized to
-0 and we fill first n-1 elements with the memset() leaving the last one
-to be the '\0'.
-
->  }
->  
->  static struct tst_test test = {
-> -- 
-> 1.9.1
 > 
+> Looks good.
 > 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks for review, I pushed the series with suggested changes and your ACK.
+
+Regards,
+Jan
