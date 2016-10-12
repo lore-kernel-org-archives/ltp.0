@@ -1,44 +1,36 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 11 Oct 2016 09:52:09 +0800
-Subject: [LTP] [PATCH] m4/ltp-xfs_quota.m4: fix xfs quota check
-Message-ID: <1476150729-2128-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 12 Oct 2016 12:08:06 +0200
+Subject: [LTP] new shell library
+In-Reply-To: <254451816.211402.1475574875165.JavaMail.zimbra@redhat.com>
+References: <20161003145835.GD7583@rei.suse.cz>
+ <2007222752.190298.1475569383933.JavaMail.zimbra@redhat.com>
+ <20161004084532.GA29418@rei.lan>
+ <1484818671.202716.1475571733691.JavaMail.zimbra@redhat.com>
+ <20161004093549.GC29418@rei.lan>
+ <254451816.211402.1475574875165.JavaMail.zimbra@redhat.com>
+Message-ID: <20161012100806.GA24231@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Current check doesn't work since xfsprogs v4.5.0.
-Undefined off64_t type leads to this issue, so we
-need to define _GNU_SOURCE to make off64_t defined.
+Hi!
+> Can't think of any. You (and old test.sh) convinced me to go with your
+> example. Let's give it couple days, if anyone else wants to weigh in.
 
-This has been broken by upstream xfsporgs-dev commmit
+I've started to document the new shell library (the changes to
+test-writing-guidelines are now included in [1]) and also tried to think
+of some library hardening, i.e. making sure to avoid common mistakes,
+the only thing I came up with is [2]. What do you think about this
+approach?
 
-commit cb898f157f8410a03cf5f3400baa1df9e5eecd33
-Author: Felix Janda <felix.janda@posteo.de>
-Date: Fri Feb 5 08:34:06 2016 +1100
+[1]
+https://github.com/metan-ucw/ltp/commit/fe94afe17bcdd05213d96c0cf014b1a3deec9659
 
-  linux.h: Use off64_t instead of loff_t
+[2]
+https://github.com/metan-ucw/ltp/commit/7ca6be805c9fa4083b7e4de7f28162fca6a4a090
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- m4/ltp-xfs_quota.m4 | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/m4/ltp-xfs_quota.m4 b/m4/ltp-xfs_quota.m4
-index c9ee335..c23412a 100644
---- a/m4/ltp-xfs_quota.m4
-+++ b/m4/ltp-xfs_quota.m4
-@@ -24,6 +24,7 @@ dnl
- AC_DEFUN([LTP_CHECK_XFS_QUOTACTL],[dnl
- 	AC_MSG_CHECKING([for XFS quota (xfs/xqm.h)])
- 	AC_LINK_IFELSE([AC_LANG_SOURCE([
-+#define _GNU_SOURCE
- #include <xfs/xqm.h>
- #include <sys/quota.h>
- int main(void) {
 -- 
-1.8.3.1
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
