@@ -1,41 +1,47 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 12 Oct 2016 17:06:15 +0200
-Subject: [LTP] new shell library
-In-Reply-To: <1527497475.514457.1476284084454.JavaMail.zimbra@redhat.com>
-References: <20161003145835.GD7583@rei.suse.cz>
- <1484818671.202716.1475571733691.JavaMail.zimbra@redhat.com>
- <20161004093549.GC29418@rei.lan>
- <254451816.211402.1475574875165.JavaMail.zimbra@redhat.com>
- <20161012100806.GA24231@rei.lan>
- <1175646125.448517.1476268354007.JavaMail.zimbra@redhat.com>
- <20161012123602.GB24231@rei.lan> <20161012131726.GC24231@rei.lan>
- <1527497475.514457.1476284084454.JavaMail.zimbra@redhat.com>
-Message-ID: <20161012150615.GA18860@rei.lan>
+From: shuwang@redhat.com <shuwang@redhat.com>
+Date: Thu, 13 Oct 2016 11:05:06 +0800
+Subject: [LTP] [PATCH 1/1] controllers/cgroup_fj: fix longtime wait
+	cgroup_fj_proc.
+Message-ID: <1476327906-8985-1-git-send-email-shuwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Looks OK, chances of someone making MYTST_VARIABLE is quite small,
-> and we can always improve that regex if needed.
+From: shuwang <shuwang@redhat.com>
 
-:)
+On some machines, when many cgroup_fj_proc created on the background,
+killall may failed to find and kill them all as the processes are
+just created and not ready. And that will cause the ltp testrun wait
+forever. So changed to use kill -9 instead.
 
-> Couple notes:
-> - these seem to be missing: TST_DEVICE, TST_MODPATH, TST_CHECKPOINT_*, TST_NEEDS_CHECKPOINTS
+Signed-off-by: shuwang <shuwang@redhat.com>
+---
+ testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Right, added the TST_DEVICE and TST_MODPATH and updated the git repo.
-The checkpoints are not implemented in the tst_test.sh yet, I will add
-them later on.
-
-> - doc page mentions "TST_NEEDS_CMD" and "TST_NEEDS_CMDS", the latter looks like typo.
-
-It's TST_NEEDS_CMDS since you can pass string of commands separated by
-whitespaces. I've fixed the typo, added an example to the documentation
-and updated the repo.
-
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
+index 698aa49..8c21d59 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_stress.sh
+@@ -107,6 +107,7 @@ attach_task()
+     if [ -z "$ppid" ]; then
+         cgroup_fj_proc&
+         pid=$!
++        pids+="$pid "
+     else
+         pid="$ppid"
+     fi
+@@ -148,7 +149,7 @@ case $attach_operation in
+ "each" )
+     tst_resm TINFO "Attaching task to each subgroup"
+     attach_task "$start_path" 0
+-    ROD killall -9 "cgroup_fj_proc"
++    ROD kill -9 "$pids"
+     # Wait for attached tasks to terminate
+     wait
+     ;;
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.5.0
+
