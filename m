@@ -1,55 +1,57 @@
-From: Shu Wang <shuwang@redhat.com>
-Date: Fri, 14 Oct 2016 04:07:13 -0400 (EDT)
-Subject: [LTP] [PATCH 1/1] controllers/cgroup_fj: fix longtime wait
- cgroup_fj_proc.
-In-Reply-To: <20161013142604.GA14300@rei>
-References: <1476327906-8985-1-git-send-email-shuwang@redhat.com>
- <20161013142604.GA14300@rei>
-Message-ID: <227857597.6660541.1476432433891.JavaMail.zimbra@redhat.com>
+From: Dave Chinner <david@fromorbit.com>
+Date: Fri, 14 Oct 2016 06:46:13 +1100
+Subject: [LTP] [PATCH] m4/ltp-xfs_quota.m4: fix xfs quota check
+In-Reply-To: <20161013141145.GA12204@rei.lan>
+References: <1476150729-2128-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20161013141145.GA12204@rei.lan>
+Message-ID: <20161013194613.GP23194@dastard>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: shuwang@redhat.com
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, October 13, 2016 10:26:04 PM
-> Subject: Re: [LTP] [PATCH 1/1] controllers/cgroup_fj: fix longtime wait cgroup_fj_proc.
-> 
+On Thu, Oct 13, 2016 at 04:11:45PM +0200, Cyril Hrubis wrote:
 > Hi!
-> > On some machines, when many cgroup_fj_proc created on the background,
-> > killall may failed to find and kill them all as the processes are
-> > just created and not ready. And that will cause the ltp testrun wait
-> > forever. So changed to use kill -9 instead.
+> > Current check doesn't work since xfsprogs v4.5.0.
+> > Undefined off64_t type leads to this issue, so we
+> > need to define _GNU_SOURCE to make off64_t defined.
+> > 
+> > This has been broken by upstream xfsporgs-dev commmit
+> > 
+> > commit cb898f157f8410a03cf5f3400baa1df9e5eecd33
+> > Author: Felix Janda <felix.janda@posteo.de>
+> > Date: Fri Feb 5 08:34:06 2016 +1100
+> > 
+> >   linux.h: Use off64_t instead of loff_t
 > 
-> What is the exact race here? What exactly "just created and not ready"
-> means here?
+> That kind of looks like a bug in xfs-progs, since off64_t is not exposed
+> from glibc unless we enable either largefile support or define
+> _GNU_SOURCE. As a matter of fact the _GNU_SOURCE enables
+> _LARGEFILE64_SOURCE which then enables the typedef that exposes the
+> off64_t typedef.
 
-The case cgroup_fj_stress.sh creates many cgroup subgroups according to
-$1 (subgroup_num) and $2 (subgroup_depth) parameters, and if $3 
-attach_operation is 'each', it creates cgroup_fj_proc on the background
-attached to each subgroup.
+Which is a bug in the application build - if you are doing anything
+with XFS, you need to define _LARGEFILE64_SOURCE. No ifs, buts or
+maybes - it's a 64 bit filesystem with 64 bit interfaces (e.g.
+ioctls) and so applications that include XFS headers to poke at XFS
+filesystems need to fully support 64 bit file offsets....
 
-The race here is to use 'killall -9 cgroup_fj_proc' right after background
-processes cgroup_fj_proc were created. And a few cgroup_fj_proc processes
-may not be killed, still running on the background, stalls the wait command.
+> So they are depending on a type that is not defined by default but since
+> the code has been part of at least three releases already we have to
+> apply the workaround for it anyway.
 
-reproducer:
-for i in `seq 10`
-do
- sleep 10000 &
-done;
-killall -9 sleep;
-wait;                  #stall here
+We're only going to get stricter on this - next cycle we're removing
+off64_t and replacing it with off_t, and then we'll be /explicitly/
+breaking the build of any application that hasn't set up it's build
+environment to define off_t as a 64 bit variable.  i.e.  specifying
+_LARGEFILE64_SOURCE before the inclusion of XFS headers will be a
+mandatory requirement - that's far better than ending up with clean
+builds and subtly broken applications...
 
+Cheers,
 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
