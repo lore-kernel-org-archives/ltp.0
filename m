@@ -1,7 +1,7 @@
 From: Hannes Reinecke <hare@suse.de>
-Date: Mon, 17 Oct 2016 16:00:14 +0200
+Date: Mon, 17 Oct 2016 16:01:46 +0200
 Subject: [LTP] MD-RAID: Use seq_putc() in three status functions?
-In-Reply-To: <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
+In-Reply-To: <97f31b70-e3ff-f194-c753-54da1fe3e664@users.sourceforge.net>
 References: <566ABCD9.1060404@users.sourceforge.net>
  <786843ef-4b6f-eb04-7326-2f6f5b408826@users.sourceforge.net>
  <92c52f1d-d151-cea6-e9ac-31378e6862d0@users.sourceforge.net>
@@ -15,77 +15,32 @@ References: <566ABCD9.1060404@users.sourceforge.net>
  <653e60ee-f862-8828-3e4f-498c7cc34bdc@users.sourceforge.net>
  <c2500336-5848-66c3-ecf0-1ade04decf75@suse.de>
  <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
-Message-ID: <f0cdb05a-a1b7-8962-fb9c-cc4739178e8b@suse.de>
+ <1476703920.2520.105.camel@petrovitsch.priv.at>
+ <97f31b70-e3ff-f194-c753-54da1fe3e664@users.sourceforge.net>
+Message-ID: <57299b72-8e6b-0b92-4374-1b7a0907e810@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On 10/17/2016 01:10 PM, SF Markus Elfring wrote:
->>> * Is a string pointer often longer than a byte?
+On 10/17/2016 01:43 PM, SF Markus Elfring wrote:
+>>>> See above. At the moment _any_ test result from your side would do.
 >>>
->> Always.
+>>> I imagine that another single result might not be representative.
+>>
+>> Publish not only results but also everything (complete!) so that anyone
+>> can *easily* follow it to check and reproduce the results - especially
+>> if you want people with knowledge of other architectures to comment
+>> (otherwise they probably won't bother).
 > 
-> I have got doubts for this specific information.
+> Am I the only software developer so far who would dare to reconsider
+> implementation details from three status functions?
 > 
-> 
->> (Which up to now I thought was basic programming knowledge...)
-> 
-> By the way:
-> Run time environments still exist where the size of a pointer can be also
-> just one byte, don't they?
-> 
-Really? Name one.
-You can only fit a point in one byte if you are on an 8-bit system.
-Which I don't think linux is running on.
-
->>> How many results would we like to clarify from various hardware
->>> and software combinations?
->>>
->> See above. At the moment _any_ test result from your side would do.
-> 
-> I imagine that another single result might not be representative.
-> How many lessons from test statistics will usually be also relevant here?
-> 
-> 
-As said above, _any_ statistic will do at this point.
-
->>> How important are the mentioned functions for you within the Linux
->>> programming interface so far?
->>>
->> Not very. The interface is only used in a slow path, and the execution
->> time doesn't affect I/O performance in any way.
-> 
-> Thanks for another interesting information.
-> 
-> 
->>>> Case in point: with your patch the x86_64 compiler generates nearly
->>>> identical code for driver/md/raid1.c, but with one instruction _more_
->>>> after your patch has been applied.
->>>
->>> Which software versions and command parameters did you try out
->>> for this information (from an unspecified run time environment)?
->>>
->> # gcc --version
->> gcc (SUSE Linux) 4.8.5
-> 
-> Thanks for this detail.
-> 
-> * Did you choose any special optimisation settings for your quick check?
-> 
-> * Will any compilation results matter if "optimisation" would be
->   switched off there?
-> 
-> 
-These were the results when calling 'make' in the kernel source tree.
-With all applicable options.
-
->> I'm still waiting from results from your side.
-> 
-> Would any other software developers or testers dare to add related information?
-> 
-No. It's your patch, _you_ have to do it.
+No.
+But we're waiting for you showing is that it is an improvement.
+Which at the moment we don't see.
+Hence we're waiting from a proof or validation from your side.
 
 Cheers,
 
