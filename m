@@ -1,48 +1,108 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 17 Oct 2016 11:16:14 +0200
-Subject: [LTP] [PATCH] m4/ltp-xfs_quota.m4: fix xfs quota check
-In-Reply-To: <20161013194613.GP23194@dastard>
-References: <1476150729-2128-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20161013141145.GA12204@rei.lan> <20161013194613.GP23194@dastard>
-Message-ID: <20161017091614.GA26999@rei.lan>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 17 Oct 2016 11:00:42 +0200
+Subject: [LTP] MD-RAID: Use seq_putc() in three status functions?
+In-Reply-To: <2cc42b2f-1f1a-e95c-91fa-54e1dd3b6d49@suse.de>
+References: <566ABCD9.1060404@users.sourceforge.net>
+ <786843ef-4b6f-eb04-7326-2f6f5b408826@users.sourceforge.net>
+ <92c52f1d-d151-cea6-e9ac-31378e6862d0@users.sourceforge.net>
+ <1475771699.1914.10.camel@perches.com>
+ <77fb6fdc-7480-8607-0af1-42f73c125b9d@users.sourceforge.net>
+ <688764a4-072d-2faf-37ba-a222b190a5d9@suse.de>
+ <59d71170-c48d-a084-c748-b6ab74a2bee4@users.sourceforge.net>
+ <1e151094-e228-5307-ae2f-b376b31f5628@suse.de>
+ <83e720c6-9037-a3c1-6e83-27505805f37f@users.sourceforge.net>
+ <2cc42b2f-1f1a-e95c-91fa-54e1dd3b6d49@suse.de>
+Message-ID: <653e60ee-f862-8828-3e4f-498c7cc34bdc@users.sourceforge.net>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-Hi!
-> > That kind of looks like a bug in xfs-progs, since off64_t is not exposed
-> > from glibc unless we enable either largefile support or define
-> > _GNU_SOURCE. As a matter of fact the _GNU_SOURCE enables
-> > _LARGEFILE64_SOURCE which then enables the typedef that exposes the
-> > off64_t typedef.
-> 
-> Which is a bug in the application build - if you are doing anything
-> with XFS, you need to define _LARGEFILE64_SOURCE. No ifs, buts or
-> maybes - it's a 64 bit filesystem with 64 bit interfaces (e.g.
-> ioctls) and so applications that include XFS headers to poke at XFS
-> filesystems need to fully support 64 bit file offsets....
+>> Calling the function "seq_putc" will be more efficient than "seq_printf"
+>> in this case because of the following reasons.
+>>
+>> 1. How does the distribution look like for supported processor architect=
+ures
+>>    where the data transfer for bytes (as a function call parameter)
+>>    is faster than for (string) pointers?
+>>
+> How would I know?
 
-Ok, so this was our fault.
+How many processor architecture characteristics do you know already?
 
-Is there somewhere bit fat warning that I've missed somewhere?
+* Is a string pointer often longer than a byte?
 
-> > So they are depending on a type that is not defined by default but since
-> > the code has been part of at least three releases already we have to
-> > apply the workaround for it anyway.
-> 
-> We're only going to get stricter on this - next cycle we're removing
-> off64_t and replacing it with off_t, and then we'll be /explicitly/
-> breaking the build of any application that hasn't set up it's build
-> environment to define off_t as a 64 bit variable.  i.e.  specifying
-> _LARGEFILE64_SOURCE before the inclusion of XFS headers will be a
-> mandatory requirement - that's far better than ending up with clean
-> builds and subtly broken applications...
+* I imagine that it can become also interesting to check byte level data ac=
+cess
+  under constraints of machine word sizes and alignment.
 
-Ending the build with clear #error or something similar sounds much
-better than failing with undefined type to me.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> I would assume that _you_ did some measurements here;
+
+How much would you trust in any concrete numbers I could present
+for this use case?
+
+Do you give more trust to a reference testing platform?
+
+
+> I could easily claim that seq_printf() is more efficient than
+> seq_putc(), and won't apply your patch.
+
+This is also possible in principle.
+
+
+> So _you_ have to prove that your patch is more efficient.
+
+How many results would we like to clarify from various hardware
+and software combinations?
+
+
+>> 2. Did anybody measure already how many the execution times can vary
+>>    for these functions?
+>>
+> Probably not.
+
+Thanks for this information.
+
+How important are the mentioned functions for you within the Linux
+programming interface so far?
+
+
+> Unless _you_ prove that _your_ patch is more efficient it won't get appli=
+ed.
+
+Which data would you accept as a "prove" in this case?
+
+
+>>    Where do you get doubts about its efficiency for the data processing
+>>    of a single character?
+>>
+> Because it's being called at the end of a function calling seq_printf() a=
+lready.
+
+Interesting view =E2=80=A6
+
+
+> So exchanging a single call is probably not helping anything,
+> as the compiler will optimize it anyway.
+
+How common is the discussed software transformation between implementations
+for optimising compilers?
+
+
+> Case in point: with your patch the x86_64 compiler generates nearly
+> identical code for driver/md/raid1.c, but with one instruction _more_
+> after your patch has been applied.
+
+Which software versions and command parameters did you try out
+for this information (from an unspecified run time environment)?
+
+
+> So it's not immediately obvious that your patch is an improvement.
+
+I agree that there are system properties and constraints which can be
+considered further.
+
+Regards,
+Markus
