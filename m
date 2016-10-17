@@ -1,57 +1,49 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 17 Oct 2016 16:04:33 +0200
-Subject: [LTP] [PATCH 1/1] controllers/cgroup_fj: fix longtime wait
- cgroup_fj_proc.
-In-Reply-To: <227857597.6660541.1476432433891.JavaMail.zimbra@redhat.com>
-References: <1476327906-8985-1-git-send-email-shuwang@redhat.com>
- <20161013142604.GA14300@rei>
- <227857597.6660541.1476432433891.JavaMail.zimbra@redhat.com>
-Message-ID: <20161017140433.GA28490@rei>
+From: SF Markus Elfring <elfring@users.sourceforge.net>
+Date: Mon, 17 Oct 2016 16:30:43 +0200
+Subject: [LTP] MD-RAID: Use seq_putc() in three status functions?
+In-Reply-To: <57299b72-8e6b-0b92-4374-1b7a0907e810@suse.de>
+References: <566ABCD9.1060404@users.sourceforge.net>
+ <786843ef-4b6f-eb04-7326-2f6f5b408826@users.sourceforge.net>
+ <92c52f1d-d151-cea6-e9ac-31378e6862d0@users.sourceforge.net>
+ <1475771699.1914.10.camel@perches.com>
+ <77fb6fdc-7480-8607-0af1-42f73c125b9d@users.sourceforge.net>
+ <688764a4-072d-2faf-37ba-a222b190a5d9@suse.de>
+ <59d71170-c48d-a084-c748-b6ab74a2bee4@users.sourceforge.net>
+ <1e151094-e228-5307-ae2f-b376b31f5628@suse.de>
+ <83e720c6-9037-a3c1-6e83-27505805f37f@users.sourceforge.net>
+ <2cc42b2f-1f1a-e95c-91fa-54e1dd3b6d49@suse.de>
+ <653e60ee-f862-8828-3e4f-498c7cc34bdc@users.sourceforge.net>
+ <c2500336-5848-66c3-ecf0-1ade04decf75@suse.de>
+ <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
+ <1476703920.2520.105.camel@petrovitsch.priv.at>
+ <97f31b70-e3ff-f194-c753-54da1fe3e664@users.sourceforge.net>
+ <57299b72-8e6b-0b92-4374-1b7a0907e810@suse.de>
+Message-ID: <cb9beadc-3ea2-c09c-f621-a54cd73e3647@users.sourceforge.net>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> The case cgroup_fj_stress.sh creates many cgroup subgroups according to
-> $1 (subgroup_num) and $2 (subgroup_depth) parameters, and if $3 
-> attach_operation is 'each', it creates cgroup_fj_proc on the background
-> attached to each subgroup.
-> 
-> The race here is to use 'killall -9 cgroup_fj_proc' right after background
-> processes cgroup_fj_proc were created. And a few cgroup_fj_proc processes
-> may not be killed, still running on the background, stalls the wait command.
-> 
-> reproducer:
-> for i in `seq 10`
-> do
->  sleep 10000 &
-> done;
-> killall -9 sleep;
-> wait;                  #stall here
+>> Am I the only software developer so far who would dare to reconsider
+>> implementation details from three status functions?
+>>
+> No.
 
-This reproducer should have been in the commit message. I've managed to
-hit the problem with this once redirected the output from this script
-into a file. Possibly printing output into stdout slowed it down enough
-so that the issue haven't shown.
-
-I was thinking if it's safe to use variable to store the pids, since in the
-each case we fork fair amount of pids (it tops at ~1000) and there is a
-limit on the command line argument lenght.
-
-For our case it should suffice, even when counting 10 characters to
-store pid and number we have string that is ~10000 chars long, that is
-still ~100x times less than usuall limit on the number of pids.
-
-It may still break if someone really wants to stress a machine with a
-large amount of memory though. If you pass a large enough parameters to
-the script, it will run probably for a day or two then may fail to kill
-the processes because the kill command line was too long. So maybe it
-would be better to store these into a file, but that may slow down the
-test significantly, which should be avoided as well.
+Thanks for this kind of promising feedback.
 
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> But we're waiting for you showing is that it is an improvement.
+
+Can this aspect also be clarified to some degree from a logical point of view?
+
+* Would you really like to know under which circumstances data processing
+  will be faster for a single character instead of using a string pointer
+  and corresponding two characters?
+
+* Do you care for a changed memory allocation characteristic?
+
+* Will it occasionally be useful to avoid the storage for another string literal?
+
+Regards,
+Markus
