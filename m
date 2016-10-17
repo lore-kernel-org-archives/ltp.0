@@ -1,48 +1,98 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 17 Oct 2016 15:34:39 +0200
-Subject: [LTP] [PATCH] cgroup_fj_function.sh: Wait for $pid before cleanup
-Message-ID: <20161017133439.GA29155@rei.lan>
+From: Hannes Reinecke <hare@suse.de>
+Date: Mon, 17 Oct 2016 16:00:14 +0200
+Subject: [LTP] MD-RAID: Use seq_putc() in three status functions?
+In-Reply-To: <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
+References: <566ABCD9.1060404@users.sourceforge.net>
+ <786843ef-4b6f-eb04-7326-2f6f5b408826@users.sourceforge.net>
+ <92c52f1d-d151-cea6-e9ac-31378e6862d0@users.sourceforge.net>
+ <1475771699.1914.10.camel@perches.com>
+ <77fb6fdc-7480-8607-0af1-42f73c125b9d@users.sourceforge.net>
+ <688764a4-072d-2faf-37ba-a222b190a5d9@suse.de>
+ <59d71170-c48d-a084-c748-b6ab74a2bee4@users.sourceforge.net>
+ <1e151094-e228-5307-ae2f-b376b31f5628@suse.de>
+ <83e720c6-9037-a3c1-6e83-27505805f37f@users.sourceforge.net>
+ <2cc42b2f-1f1a-e95c-91fa-54e1dd3b6d49@suse.de>
+ <653e60ee-f862-8828-3e4f-498c7cc34bdc@users.sourceforge.net>
+ <c2500336-5848-66c3-ecf0-1ade04decf75@suse.de>
+ <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
+Message-ID: <f0cdb05a-a1b7-8962-fb9c-cc4739178e8b@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-There seems to be rare race condition where the ltp subgroup created for
-the test cannot be removed:
+On 10/17/2016 01:10 PM, SF Markus Elfring wrote:
+>>> * Is a string pointer often longer than a byte?
+>>>
+>> Always.
+> 
+> I have got doubts for this specific information.
+> 
+> 
+>> (Which up to now I thought was basic programming knowledge...)
+> 
+> By the way:
+> Run time environments still exist where the size of a pointer can be also
+> just one byte, don't they?
+> 
+Really? Name one.
+You can only fit a point in one byte if you are on an 8-bit system.
+Which I don't think linux is running on.
 
-...
-cgroup_fj_function2_cpu 9 TPASS : Set /sys/fs/cgroup/cpu,cpuacct/ltp/ltp_1/notify_on_release to 1
-cgroup_fj_function2_cpu 10 TINFO : Removing all ltp subgroups...
-rmdir: failed to remove '/sys/fs/cgroup/cpu,cpuacct/ltp/': Device or resource busy
+>>> How many results would we like to clarify from various hardware
+>>> and software combinations?
+>>>
+>> See above. At the moment _any_ test result from your side would do.
+> 
+> I imagine that another single result might not be representative.
+> How many lessons from test statistics will usually be also relevant here?
+> 
+> 
+As said above, _any_ statistic will do at this point.
 
-The reason for the failure is likely the cgroup_fj_proc that ends up in
-tasks for the ltp/ subgroup after test5(). This patch simply adds a
-'wait $pid' after the 'kill -9 $pid' to avoid it.
+>>> How important are the mentioned functions for you within the Linux
+>>> programming interface so far?
+>>>
+>> Not very. The interface is only used in a slow path, and the execution
+>> time doesn't affect I/O performance in any way.
+> 
+> Thanks for another interesting information.
+> 
+> 
+>>>> Case in point: with your patch the x86_64 compiler generates nearly
+>>>> identical code for driver/md/raid1.c, but with one instruction _more_
+>>>> after your patch has been applied.
+>>>
+>>> Which software versions and command parameters did you try out
+>>> for this information (from an unspecified run time environment)?
+>>>
+>> # gcc --version
+>> gcc (SUSE Linux) 4.8.5
+> 
+> Thanks for this detail.
+> 
+> * Did you choose any special optimisation settings for your quick check?
+> 
+> * Will any compilation results matter if "optimisation" would be
+>   switched off there?
+> 
+> 
+These were the results when calling 'make' in the kernel source tree.
+With all applicable options.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>> I'm still waiting from results from your side.
+> 
+> Would any other software developers or testers dare to add related information?
+> 
+No. It's your patch, _you_ have to do it.
 
-diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
-index 006798a..633f256 100755
---- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
-+++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_function.sh
-@@ -207,7 +207,8 @@ test7
- test8
- test9
- 
--ROD rmdir "$start_path/ltp_1"
- ROD kill -9 $pid
-+wait $pid
-+ROD rmdir "$start_path/ltp_1"
- 
- tst_exit
+Cheers,
+
+Hannes
 -- 
-2.7.3
-
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Dr. Hannes Reinecke		   Teamlead Storage & Networking
+hare@suse.de			               +49 911 74053 688
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: F. Imendörffer, J. Smithard, J. Guild, D. Upmanyu, G. Norton
+HRB 21284 (AG Nürnberg)
