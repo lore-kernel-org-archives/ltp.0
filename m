@@ -1,7 +1,7 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 17 Oct 2016 13:43:14 +0200
+From: Bernd Petrovitsch <bernd@petrovitsch.priv.at>
+Date: Mon, 17 Oct 2016 13:32:00 +0200
 Subject: [LTP] MD-RAID: Use seq_putc() in three status functions?
-In-Reply-To: <1476703920.2520.105.camel@petrovitsch.priv.at>
+In-Reply-To: <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
 References: <566ABCD9.1060404@users.sourceforge.net>
  <786843ef-4b6f-eb04-7326-2f6f5b408826@users.sourceforge.net>
  <92c52f1d-d151-cea6-e9ac-31378e6862d0@users.sourceforge.net>
@@ -15,25 +15,41 @@ References: <566ABCD9.1060404@users.sourceforge.net>
  <653e60ee-f862-8828-3e4f-498c7cc34bdc@users.sourceforge.net>
  <c2500336-5848-66c3-ecf0-1ade04decf75@suse.de>
  <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
- <1476703920.2520.105.camel@petrovitsch.priv.at>
-Message-ID: <97f31b70-e3ff-f194-c753-54da1fe3e664@users.sourceforge.net>
+Message-ID: <1476703920.2520.105.camel@petrovitsch.priv.at>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
->>> See above. At the moment _any_ test result from your side would do.
->>
->> I imagine that another single result might not be representative.
+On Mon, 2016-10-17 at 13:10 +0200, SF Markus Elfring wrote:
+[...]
+> > (Which up to now I thought was basic programming knowledge...)
 > 
-> Publish not only results but also everything (complete!) so that anyone
-> can *easily* follow it to check and reproduce the results - especially
-> if you want people with knowledge of other architectures to comment
-> (otherwise they probably won't bother).
+> By the way:
+> Run time environments still exist where the size of a pointer can
+> be also just one byte, don't they?
 
-Am I the only software developer so far who would dare to reconsider
-implementation details from three status functions?
+In the context of the Linux kernel: No.
 
-Regards,
-Markus
+[ Side note: there might be some DSP out there with a running Linux
+kernel which cannot really address a "byte" (meaning 8bits) but only in
+register sized quantities (and also aligned for that). But no one cares
+here really deeply as that is a so fundamental difference that the C-
+compiler must cope with that anyways in the first place. ]
+
+[...]
+> > See above. At the moment _any_ test result from your side would do.
+> 
+> I imagine that another single result might not be representative.
+
+Publish not only results but also everything (complete!) so that anyone
+can *easily* follow it to check and reproduce the results - especially
+if you want people with knowledge of other architectures to comment
+(otherwise they probably won't bother).
+
+Kind regards,
+	Bernd
+-- 
+Bernd Petrovitsch                  Email : bernd@petrovitsch.priv.at
+                     LUGA : http://www.luga.at
