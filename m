@@ -1,7 +1,7 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Date: Mon, 17 Oct 2016 16:30:43 +0200
+From: Hannes Reinecke <hare@suse.de>
+Date: Mon, 17 Oct 2016 17:33:31 +0200
 Subject: [LTP] MD-RAID: Use seq_putc() in three status functions?
-In-Reply-To: <57299b72-8e6b-0b92-4374-1b7a0907e810@suse.de>
+In-Reply-To: <cb9beadc-3ea2-c09c-f621-a54cd73e3647@users.sourceforge.net>
 References: <566ABCD9.1060404@users.sourceforge.net>
  <786843ef-4b6f-eb04-7326-2f6f5b408826@users.sourceforge.net>
  <92c52f1d-d151-cea6-e9ac-31378e6862d0@users.sourceforge.net>
@@ -18,32 +18,53 @@ References: <566ABCD9.1060404@users.sourceforge.net>
  <1476703920.2520.105.camel@petrovitsch.priv.at>
  <97f31b70-e3ff-f194-c753-54da1fe3e664@users.sourceforge.net>
  <57299b72-8e6b-0b92-4374-1b7a0907e810@suse.de>
-Message-ID: <cb9beadc-3ea2-c09c-f621-a54cd73e3647@users.sourceforge.net>
+ <cb9beadc-3ea2-c09c-f621-a54cd73e3647@users.sourceforge.net>
+Message-ID: <05d0cade-7922-9d8a-a974-34b2cc9150fb@suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
->> Am I the only software developer so far who would dare to reconsider
->> implementation details from three status functions?
->>
-> No.
+On 10/17/2016 04:30 PM, SF Markus Elfring wrote:
+>>> Am I the only software developer so far who would dare to reconsider
+>>> implementation details from three status functions?
+>>>
+>> No.
+>
+> Thanks for this kind of promising feedback.
+>
+>
+>> But we're waiting for you showing is that it is an improvement.
+>
+> Can this aspect also be clarified to some degree from a logical point of view?
+>
+I sincerely doubt that.
+We've discussed the logical implications already, and failed to come to 
+a consensus. So we need some proof (as in: on this architecture I'm 
+seeing this and that performance improvements).
+Which you have to deliver.
 
-Thanks for this kind of promising feedback.
+> * Would you really like to know under which circumstances data processing
+>   will be faster for a single character instead of using a string pointer
+>   and corresponding two characters?
+>
+It's not a problem of the interface, it's a problem of the resulting 
+code (ie assembler output). We can discuss all we like, if the compiler 
+decides to throw in an optimisation none of the arguments even apply.
 
+> * Do you care for a changed memory allocation characteristic?
+>
+> * Will it occasionally be useful to avoid the storage for another string literal?
+>
+Occasionally: yes.
+In this particular case: hardly.
 
-> But we're waiting for you showing is that it is an improvement.
+Cheers,
 
-Can this aspect also be clarified to some degree from a logical point of view?
-
-* Would you really like to know under which circumstances data processing
-  will be faster for a single character instead of using a string pointer
-  and corresponding two characters?
-
-* Do you care for a changed memory allocation characteristic?
-
-* Will it occasionally be useful to avoid the storage for another string literal?
-
-Regards,
-Markus
+Hannes
+-- 
+Dr. Hannes Reinecke		      zSeries & Storage
+hare@suse.de			      +49 911 74053 688
+SUSE LINUX Products GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: J. Hawn, J. Guild, F. Imendörffer, HRB 16746 (AG Nürnberg)
