@@ -1,74 +1,77 @@
-From: Hannes Reinecke <hare@suse.de>
-Date: Mon, 17 Oct 2016 19:18:35 +0200
-Subject: [LTP] MD-RAID: Use seq_putc() in three status functions?
-In-Reply-To: <bf6c54f1-7af4-747c-a58b-be13ab74563e@users.sourceforge.net>
-References: <566ABCD9.1060404@users.sourceforge.net>
- <92c52f1d-d151-cea6-e9ac-31378e6862d0@users.sourceforge.net>
- <1475771699.1914.10.camel@perches.com>
- <77fb6fdc-7480-8607-0af1-42f73c125b9d@users.sourceforge.net>
- <688764a4-072d-2faf-37ba-a222b190a5d9@suse.de>
- <59d71170-c48d-a084-c748-b6ab74a2bee4@users.sourceforge.net>
- <1e151094-e228-5307-ae2f-b376b31f5628@suse.de>
- <83e720c6-9037-a3c1-6e83-27505805f37f@users.sourceforge.net>
- <2cc42b2f-1f1a-e95c-91fa-54e1dd3b6d49@suse.de>
- <653e60ee-f862-8828-3e4f-498c7cc34bdc@users.sourceforge.net>
- <c2500336-5848-66c3-ecf0-1ade04decf75@suse.de>
- <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
- <1476703920.2520.105.camel@petrovitsch.priv.at>
- <97f31b70-e3ff-f194-c753-54da1fe3e664@users.sourceforge.net>
- <57299b72-8e6b-0b92-4374-1b7a0907e810@suse.de>
- <cb9beadc-3ea2-c09c-f621-a54cd73e3647@users.sourceforge.net>
- <05d0cade-7922-9d8a-a974-34b2cc9150fb@suse.de>
- <bf6c54f1-7af4-747c-a58b-be13ab74563e@users.sourceforge.net>
-Message-ID: <665cd40a-4562-a015-78c6-12976c12b626@suse.de>
+From: Dave Chinner <david@fromorbit.com>
+Date: Tue, 18 Oct 2016 11:04:39 +1100
+Subject: [LTP] [PATCH] m4/ltp-xfs_quota.m4: fix xfs quota check
+In-Reply-To: <20161017091614.GA26999@rei.lan>
+References: <1476150729-2128-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20161013141145.GA12204@rei.lan> <20161013194613.GP23194@dastard>
+ <20161017091614.GA26999@rei.lan>
+Message-ID: <20161018000439.GZ23194@dastard>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10/17/2016 06:08 PM, SF Markus Elfring wrote:
->>> * Would you really like to know under which circumstances data processing
->>>   will be faster for a single character instead of using a string pointer
->>>   and corresponding two characters?
->>>
->> It's not a problem of the interface, it's a problem of the resulting code
->> (ie assembler output).
->
-> How do you think about to discuss concrete generated code any further?
->
-Sure. Show me the generated code and point out where the benefits are.
+On Mon, Oct 17, 2016 at 11:16:14AM +0200, Cyril Hrubis wrote:
+> Hi!
+> > > That kind of looks like a bug in xfs-progs, since off64_t is not exposed
+> > > from glibc unless we enable either largefile support or define
+> > > _GNU_SOURCE. As a matter of fact the _GNU_SOURCE enables
+> > > _LARGEFILE64_SOURCE which then enables the typedef that exposes the
+> > > off64_t typedef.
+> > 
+> > Which is a bug in the application build - if you are doing anything
+> > with XFS, you need to define _LARGEFILE64_SOURCE. No ifs, buts or
+> > maybes - it's a 64 bit filesystem with 64 bit interfaces (e.g.
+> > ioctls) and so applications that include XFS headers to poke at XFS
+> > filesystems need to fully support 64 bit file offsets....
+> 
+> Ok, so this was our fault.
 
->> We can discuss all we like, if the compiler decides to throw in
->> an optimisation none of the arguments even apply.
->
-> Would it make sense to clarify assembler output with optimisation switched off?
->
-> Do you eventually care for code from non-optimising compilers?
->
-No. This is the linux kernel. There is a very, _very_ limited benefit of 
-trying to use a non-standard compiler.
+No, not your fault - the XFS headers have never made this clear.  In
+the past we've tried to hide this requirement by using
+glibc-specific types and it wasn't until we changed stuff to support
+C libraries other than glibc for building xfsprogs that it became
+clear that we needed to be explicit about this requirement.
 
->
->>> * Will it occasionally be useful to avoid the storage for another string literal?
->>>
->> Occasionally: yes.
->> In this particular case: hardly.
->
-> I am curious when such a software design aspect can become more relevant.
-> Would it be nice to get rid of three questionable string terminators (null bytes)
-> for example?
->
-Again, all this does it trying to out-guess what the compiler might be 
-doing during compilation. For which the easiest method is checking.
-So back to the original task for you: Show me in the generated output 
-where the benefits are.
+> Is there somewhere bit fat warning that I've missed somewhere?
+
+This was an unintentional "first warning" that there may be bugs
+lurking in 32 bit application builds. It's when the first app build
+failure reports started coming that we realised there was a bigger
+problem we needed to fix.  :/
+
+> > > So they are depending on a type that is not defined by default but since
+> > > the code has been part of at least three releases already we have to
+> > > apply the workaround for it anyway.
+> > 
+> > We're only going to get stricter on this - next cycle we're removing
+> > off64_t and replacing it with off_t, and then we'll be /explicitly/
+> > breaking the build of any application that hasn't set up it's build
+> > environment to define off_t as a 64 bit variable.  i.e.  specifying
+> > _LARGEFILE64_SOURCE before the inclusion of XFS headers will be a
+> > mandatory requirement - that's far better than ending up with clean
+> > builds and subtly broken applications...
+> 
+> Ending the build with clear #error or something similar sounds much
+> better than failing with undefined type to me.
+
+Yup, that's exactly what it will do. It's part of a cleanup of
+xfsprogs to simply use LFS for ensuring everything is 64 bit clean
+when we build. last set of patches for this were posted here:
+
+http://oss.sgi.com/archives/xfs/2016-08/msg00390.html
+
+And this is the one that will break the build if off_t is not a
+64 bit size:
+
+http://oss.sgi.com/archives/xfs/2016-08/msg00402.html
+
+I'm hoping to get this in the next xfsprogs cycle....
 
 Cheers,
 
-Hannes
+Dave.
 -- 
-Dr. Hannes Reinecke		      zSeries & Storage
-hare@suse.de			      +49 911 74053 688
-SUSE LINUX Products GmbH, Maxfeldstr. 5, 90409 Nürnberg
-GF: J. Hawn, J. Guild, F. Imendörffer, HRB 16746 (AG Nürnberg)
+Dave Chinner
+david@fromorbit.com
