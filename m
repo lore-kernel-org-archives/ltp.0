@@ -1,77 +1,60 @@
-From: Dave Chinner <david@fromorbit.com>
-Date: Tue, 18 Oct 2016 11:04:39 +1100
-Subject: [LTP] [PATCH] m4/ltp-xfs_quota.m4: fix xfs quota check
-In-Reply-To: <20161017091614.GA26999@rei.lan>
-References: <1476150729-2128-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20161013141145.GA12204@rei.lan> <20161013194613.GP23194@dastard>
- <20161017091614.GA26999@rei.lan>
-Message-ID: <20161018000439.GZ23194@dastard>
+From: James Morse <james.morse@arm.com>
+Date: Tue, 18 Oct 2016 12:09:36 +0100
+Subject: [LTP] [PATCH] cpuhotplug_hotplug.sh: dash's 'local' only accepts
+	the first token
+Message-ID: <1476788976-24585-1-git-send-email-james.morse@arm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Oct 17, 2016 at 11:16:14AM +0200, Cyril Hrubis wrote:
-> Hi!
-> > > That kind of looks like a bug in xfs-progs, since off64_t is not exposed
-> > > from glibc unless we enable either largefile support or define
-> > > _GNU_SOURCE. As a matter of fact the _GNU_SOURCE enables
-> > > _LARGEFILE64_SOURCE which then enables the typedef that exposes the
-> > > off64_t typedef.
-> > 
-> > Which is a bug in the application build - if you are doing anything
-> > with XFS, you need to define _LARGEFILE64_SOURCE. No ifs, buts or
-> > maybes - it's a 64 bit filesystem with 64 bit interfaces (e.g.
-> > ioctls) and so applications that include XFS headers to poke at XFS
-> > filesystems need to fully support 64 bit file offsets....
-> 
-> Ok, so this was our fault.
+dash's 'local' only accepts the first token, the line:
+> local present_cpus=$(get_present_cpus)
 
-No, not your fault - the XFS headers have never made this clear.  In
-the past we've tried to hide this requirement by using
-glibc-specific types and it wasn't until we changed stuff to support
-C libraries other than glibc for building xfsprogs that it became
-clear that we needed to be explicit about this requirement.
+causes a world of problems on systems where /bin/sh is dash:
+> root@juno-r1:~# /bin/sh
+> # get_hotplug_cpus
+> /bin/sh: 1: get_hotplug_cpus: not found
+> # . /opt/ltp/testcases/bin/cpuhotplug_hotplug.sh
+> # get_hotplug_cpus
+> cpu0
 
-> Is there somewhere bit fat warning that I've missed somewhere?
+when compared with bash:
+> root@juno-r1:~# get_hotplug_cpus
+> get_hotplug_cpus: command not found
+> root@juno-r1:~# . /opt/ltp/testcases/bin/cpuhotplug_hotplug.sh
+> root@juno-r1:~# get_hotplug_cpus
+> cpu0 cpu1 cpu2 cpu3 cpu4 cpu5
 
-This was an unintentional "first warning" that there may be bugs
-lurking in 32 bit application builds. It's when the first app build
-failure reports started coming that we realised there was a bigger
-problem we needed to fix.  :/
+This causes the cpuhotplug tests to behave really strangely....
 
-> > > So they are depending on a type that is not defined by default but since
-> > > the code has been part of at least three releases already we have to
-> > > apply the workaround for it anyway.
-> > 
-> > We're only going to get stricter on this - next cycle we're removing
-> > off64_t and replacing it with off_t, and then we'll be /explicitly/
-> > breaking the build of any application that hasn't set up it's build
-> > environment to define off_t as a 64 bit variable.  i.e.  specifying
-> > _LARGEFILE64_SOURCE before the inclusion of XFS headers will be a
-> > mandatory requirement - that's far better than ending up with clean
-> > builds and subtly broken applications...
-> 
-> Ending the build with clear #error or something similar sounds much
-> better than failing with undefined type to me.
+Quoting the assignment fixes the issue:
+root@juno-r1:~# /bin/sh
+> # get_hotplug_cpus
+> /bin/sh: 1: get_hotplug_cpus: not found
+> # . /opt/ltp/testcases/bin/cpuhotplug_hotplug.sh
+> # get_hotplug_cpus
+> cpu0 cpu1 cpu2 cpu3 cpu4 cpu5
 
-Yup, that's exactly what it will do. It's part of a cleanup of
-xfsprogs to simply use LFS for ensuring everything is 64 bit clean
-when we build. last set of patches for this were posted here:
+Signed-off-by: James Morse <james.morse@arm.com>
+---
+ testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-http://oss.sgi.com/archives/xfs/2016-08/msg00390.html
-
-And this is the one that will break the build if off_t is not a
-64 bit size:
-
-http://oss.sgi.com/archives/xfs/2016-08/msg00402.html
-
-I'm hoping to get this in the next xfsprogs cycle....
-
-Cheers,
-
-Dave.
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+index 3967937..9165d3c 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+@@ -214,7 +214,7 @@ get_present_cpus_num()
+ #
+ get_hotplug_cpus()
+ {
+-    local present_cpus=$(get_present_cpus)
++    local present_cpus="$(get_present_cpus)"
+     local hotplug_cpus=""
+ 
+     for cpu in $present_cpus; do
 -- 
-Dave Chinner
-david@fromorbit.com
+2.8.0.rc3
+
