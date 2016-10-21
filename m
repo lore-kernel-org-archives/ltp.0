@@ -1,343 +1,503 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 21 Oct 2016 14:53:55 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/quotactl02.c: Reconstruct and Convert to
-	new API
-In-Reply-To: <1477032835-11570-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1477032835-11570-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1477032835-11570-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Fri, 21 Oct 2016 14:53:54 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/quotatcl01.c: Rewrite && Convert to new
+	API
+Message-ID: <1477032835-11570-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) take use of some SAFE Marcos
-2) remove some unnecessary function
-3) use quotactl instead of ltp_syscall
+1) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for user.
+2) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
+   for user.
+3) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
+   for user.
+4) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
+   flag for user.
+5) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
+   flag for user.
+6) quotactl(2) succeeds to get quota format with Q_GETFMT flag for user.
+7) quotactl(2) succeeds to update quota usages with Q_SYNC flag for user.
+8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for user.
+9) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for group.
+10) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
+    for group.
+11) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
+    for group.
+12) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
+    flag for group.
+13) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
+    flag for group.
+14) quotactl(2) succeeds to get quota format with Q_GETFMT flag for group.
+15) quotactl(2) succeeds to update quota usages with Q_SYNC flag for group.
+16) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for group.
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/quotactl/quotactl02.c | 257 +++++++++---------------
- 1 file changed, 97 insertions(+), 160 deletions(-)
+ testcases/kernel/syscalls/quotactl/quotactl01.c | 412 +++++++++++-------------
+ 1 file changed, 195 insertions(+), 217 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl02.c b/testcases/kernel/syscalls/quotactl/quotactl02.c
-index 486ea93..2226edd 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl02.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl02.c
-@@ -16,217 +16,154 @@
-  */
- 
- /*
-+ * Test Name: quotactl02
-+ *
-  * Description:
-- *	This tests basic flags of quotactl() syscall:
-- *	1) Q_XQUOTAOFF - Turn off quotas for an XFS file system.
-- *	2) Q_XQUOTAON - Turn on quotas for an XFS file system.
-- *	3) Q_XGETQUOTA - Get disk quota limits and current usage for user id.
-- *	4) Q_XSETQLIM - Set disk quota limits for user id.
-- *	5) Q_XGETQSTAT - Get XFS file system specific quota information.
-+ * This testcase checks basic flags of quotactl(2) for an XFS file system:
-+ * 1) quotactl(2) succeeds to turn off quotas with Q_XQUOTAOFF for an XFS
-+ *    file system.
-+ * 2) quotactl(2) succeeds to turn on quotas with Q_XQUOTAON for an XFS file
-+ *    system.
-+ * 3) quotactl(2) succeeds to get quota on/off status with Q_XGETQSTAT for an
-+ *    XFS file system.
-+ * 4) quotactl(2) succeeds to set disk quota limits with Q_XSETQLIM for user
-+ *    id.
-+ * 5) quotactl(2) succeeds to get disk quota limits with Q_XGETQUOTA for user
-+ *    id.
-  */
--
- #define _GNU_SOURCE
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
+index fcac469..cfd1c35 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl01.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
+@@ -1,260 +1,238 @@
+-/******************************************************************************/
+-/* Copyright (c) Crackerjack Project., 2007				      */
+-/*									      */
+-/* This program is free software;  you can redistribute it and/or modify      */
+-/* it under the terms of the GNU General Public License as published by	      */
+-/* the Free Software Foundation; either version 2 of the License, or	      */
+-/* (at your option) any later version.					      */
+-/*									      */
+-/* This program is distributed in the hope that it will be useful,	      */
+-/* but WITHOUT ANY WARRANTY;  without even the implied warranty of	      */
+-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See		      */
+-/* the GNU General Public License for more details.			      */
+-/*									      */
+-/* You should have received a copy of the GNU General Public License	      */
+-/* along with this program;  if not, write to the Free Software		      */
+-/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
+-/*									      */
+-/******************************************************************************/
+-/******************************************************************************/
+-/*									      */
+-/* File:		quotactl01.c					      */
+-/*									      */
+-/* Description: This tests the quotactl() syscall			      */
+-/*									      */
+-/* Usage:  <for command-line>						      */
+-/* quotactl01 [-c n] [-e][-i n] [-I x] [-p x] [-t]			      */
+-/*	  where,  -c n : Run n copies concurrently.			      */
+-/*			  -e   : Turn on errno logging.			      */
+-/*			  -i n : Execute test n times.			      */
+-/*			  -I x : Execute test for x seconds.		      */
+-/*			  -P x : Pause for x seconds between iterations.      */
+-/*			  -t   : Turn on syscall timing.		      */
+-/*									      */
+-/* Total Tests: 1							      */
+-/*									      */
+-/* Test Name:   quotactl01						      */
+-/* History:	 Porting from Crackerjack to LTP is done by		      */
+-/*			  Manas Kumar Nayak maknayak@in.ibm.com>	      */
+-/******************************************************************************/
+-#ifndef _GNU_SOURCE
+-#define _GNU_SOURCE
+-#endif
 -#include <fcntl.h>
++/*
++* Copyright (c) Crackerjack Project., 2007
++* Copyright (c) 2016 Fujitsu Ltd.
++* Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
++*
++* This program is free software;  you can redistribute it and/or modify
++* it under the terms of the GNU General Public License as published by
++* the Free Software Foundation; either version 2 of the License, or
++* (at your option) any later version.
++*
++* This program is distributed in the hope that it will be useful,
++* but WITHOUT ANY WARRANTY;  without even the implied warranty of
++* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++* the GNU General Public License for more details.
++*
++* You should have received a copy of the GNU General Public License
++* along with this program.
++*
++* Test Name: quotactl01
++*
++* Description:
++* This testcase checks the basic flag of quotactl(2) for non-XFS filesystems:
++* 1) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for user.
++* 2) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
++*    for user.
++* 3) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
++*    for user.
++* 4) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
++*    flag for user.
++* 5) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
++*    flag for user.
++* 6) quotactl(2) succeeds to get quota format with Q_GETFMT flag for user.
++* 7) quotactl(2) succeeds to update quota usages with Q_SYNC flag for user.
++* 8) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for user.
++* 9) quotactl(2) succeeds to turn on quota with Q_QUOTAON flag for group.
++* 10) quotactl(2) succeeds to set disk quota limits with Q_SETQUOTA flag
++*     for group.
++* 11) quotactl(2) succeeds to get disk quota limits with Q_GETQUOTA flag
++*     for group.
++* 12) quotactl(2) succeeds to set information about quotafile with Q_SETINFO
++*     flag for group.
++* 13) quotactl(2) succeeds to get information about quotafile with Q_GETINFO
++*     flag for group.
++* 14) quotactl(2) succeeds to get quota format with Q_GETFMT flag for group.
++* 15) quotactl(2) succeeds to update quota usages with Q_SYNC flag for group.
++* 16) quotactl(2) succeeds to turn off quota with Q_QUOTAOFF flag for group.
++*
++*/
++
 +#include <errno.h>
++#include <string.h>
  #include <unistd.h>
 -#include <sys/syscall.h>
  #include <stdio.h>
 -#include <errno.h>
--#include <sys/mount.h>
 -#include <linux/fs.h>
 -#include <sys/types.h>
--
-+#include <sys/quota.h>
  #include "config.h"
 +
-+#if defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1)
-+#include <sys/quota.h>
-+#endif
- #if defined(HAVE_XFS_QUOTA)
--# include <xfs/xqm.h>
-+#include <xfs/xqm.h>
++#include "tst_test.h"
++
+ #if defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1)
+ #if defined(HAVE_QUOTAV2)
+-#define _LINUX_QUOTA_VERSION 2
++#define _LINUX_QUOTA_VERSION	2
+ #else /* HAVE_QUOTAV1 */
+-#define _LINUX_QUOTA_VERSION 1
++#define _LINUX_QUOTA_VERSION	1
  #endif
++
+ #include <sys/quota.h>
+-#else /* ! (HAVE_QUOTAV2 || HAVE_QUOTAV1) */
+-/* Not HAVE_QUOTAV2 */
+-#define BROKEN_QUOTACTL 1
+-#endif
+ 
 -#include "test.h"
 -#include "linux_syscall_numbers.h"
--#include "safe_macros.h"
++#define SIZE	1024
  
--#define USRQCMD(cmd)	((cmd) << 8)
--#define RTBLIMIT	2000
-+#include "tst_test.h"
- 
--char *TCID = "quotactl02";
--int TST_TOTAL = 5;
-+#if defined(HAVE_XFS_QUOTA) && (defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1))
-+static void check_qoff(char *);
-+static void check_qon(char *);
-+static void check_getqlim(char *);
- 
--#if defined(HAVE_XFS_QUOTA)
--static void check_qoff(void);
--static void check_qon(void);
--static void check_getq(void);
--static void setup_setqlim(void), check_setqlim(void);
--static void check_getqstat(void);
--
--static void setup(void);
--static void cleanup(void);
--
--static int i;
--static int uid;
--static const char *block_dev;
-+static int test_id;
- static int mount_flag;
--static struct fs_disk_quota dquota;
--static struct fs_quota_stat qstat;
--static unsigned int qflag = XFS_QUOTA_UDQ_ENFD;
-+static struct fs_disk_quota set_dquota = {
-+	.d_rtb_softlimit = 1000,
-+	.d_fieldmask = FS_DQ_RTBSOFT
+-char *TCID = "quotactl01";
+-int testno;
+-int TST_TOTAL = 1;
++static int mount_flag;
++static const char mntpoint[] = "mnt_point";
++static struct dqblk set_dq = {
++	.dqb_bsoftlimit = 100,
++	.dqb_valid = QIF_BLIMITS
 +};
-+static struct fs_disk_quota res_dquota;
-+static struct fs_quota_stat res_qstat;
-+static unsigned short qflag = XFS_QUOTA_UDQ_ENFD;
- static const char mntpoint[] = "mnt_point";
++static struct dqblk res_dq;
  
--static struct test_case_t {
-+static struct t_case {
- 	int cmd;
-+	int *id;
- 	void *addr;
--	void (*func_test) ();
--	void (*func_setup) ();
--} TC[] = {
--	{Q_XQUOTAOFF, &qflag, check_qoff, NULL},
--	{Q_XQUOTAON, &qflag, check_qon, NULL},
--	{Q_XGETQUOTA, &dquota, check_getq, NULL},
--	{Q_XSETQLIM, &dquota, check_setqlim, setup_setqlim},
--	{Q_XGETQSTAT, &qstat, check_getqstat, NULL},
-+	void (*func_check)();
+-#define QUOTACTL(cmd, addr) \
+-	ltp_syscall(__NR_quotactl, QCMD(cmd, USRQUOTA), block_dev, id, \
+-					(caddr_t) addr)
+-#ifndef BROKEN_QUOTACTL
++#if defined(HAVE_QUOTAV2)
++static struct dqinfo set_qf = {
++	.dqi_bgrace = 80,
++	.dqi_valid = IIF_BGRACE
++};
++static struct dqinfo res_qf;
++static unsigned long fmt_buf[SIZE/32];
++#endif
+ 
+-#ifndef QUOTAFILE
+-/* Default name of the quota file in Fedora 12. */
+-#define QUOTAFILE "aquota.user"
++static unsigned long format_id;
++static unsigned long test_id;
++static unsigned long data;
++static char *usr_qf, *grp_qf;
++static char usr_path[SIZE], grp_path[SIZE];
++
++static struct tcase {
++	int cmd;
++	unsigned long *id;
++	void *addr;
++	unsigned long *set_data;
++	unsigned long *res_data;
 +	char *des;
 +} tcases[] = {
-+	{QCMD(Q_XQUOTAOFF, USRQUOTA), &test_id, &qflag, NULL,
-+	"turn off xfs quota"},
-+	{QCMD(Q_XGETQSTAT, USRQUOTA), &test_id, &res_qstat, check_qoff,
-+	"get xfs quota off status"},
-+	{QCMD(Q_XQUOTAON, USRQUOTA), &test_id, &qflag, NULL,
-+	"turn on xfs quota"},
-+	{QCMD(Q_XGETQSTAT, USRQUOTA), &test_id, &res_qstat, check_qon,
-+	"get xfs quota on status"},
-+	{QCMD(Q_XSETQLIM, USRQUOTA), &test_id, &set_dquota, NULL,
-+	"set xfs disk quota limits"},
-+	{QCMD(Q_XGETQUOTA, USRQUOTA), &test_id, &res_dquota, check_getqlim,
-+	"get xfs disk quota limits"}
- };
++	{QCMD(Q_QUOTAON, USRQUOTA), &format_id, usr_path, &data, &data,
++	"turn on quota for user"},
++	{QCMD(Q_SETQUOTA, USRQUOTA), &test_id, &set_dq, &data, &data,
++	"set disk quota limit for user"},
++	{QCMD(Q_GETQUOTA, USRQUOTA), &test_id, &res_dq, &set_dq.dqb_bsoftlimit,
++	&res_dq.dqb_bsoftlimit, "get disk quota limit for user"},
++#if defined(HAVE_QUOTAV2)
++	{QCMD(Q_SETINFO, USRQUOTA), &test_id, &set_qf, &data, &data,
++	"set information about quotafile for user"},
++	{QCMD(Q_GETINFO, USRQUOTA), &test_id, &res_qf, &set_qf.dqi_bgrace,
++	&res_qf.dqi_bgrace, "get information about quotafile for user"},
++	{QCMD(Q_GETFMT, USRQUOTA), &test_id, fmt_buf, &format_id, fmt_buf,
++	"get quota format for user"},
++#endif
++	{QCMD(Q_SYNC, USRQUOTA), &test_id, &res_dq, &data, &data,
++	"update quota usages for user"},
++	{QCMD(Q_QUOTAOFF, USRQUOTA), &test_id, usr_path, &data, &data,
++	"turn off quota for user"},
++	{QCMD(Q_QUOTAON, GRPQUOTA), &format_id, grp_path, &data, &data,
++	"turn on quota for group"},
++	{QCMD(Q_SETQUOTA, GRPQUOTA), &test_id, &set_dq, &data, &data,
++	"set disk quota limit for group"},
++	{QCMD(Q_GETQUOTA, GRPQUOTA), &test_id, &res_dq, &set_dq.dqb_bsoftlimit,
++	&res_dq.dqb_bsoftlimit, "set disk quota limit for group"},
++#if defined(HAVE_QUOTAV2)
++	{QCMD(Q_SETINFO, GRPQUOTA), &test_id, &set_qf, &data, &data,
++	"set information about quotafile for group"},
++	{QCMD(Q_GETINFO, GRPQUOTA), &test_id, &res_qf, &set_qf.dqi_bgrace,
++	&res_qf.dqi_bgrace, "get information about quotafile for group"},
++	{QCMD(Q_GETFMT, GRPQUOTA), &test_id, fmt_buf, &format_id, fmt_buf,
++	"get quota format for group"},
+ #endif
++	{QCMD(Q_SYNC, GRPQUOTA), &test_id, &res_dq, &data, &data,
++	"update quota usages for group"},
++	{QCMD(Q_QUOTAOFF, GRPQUOTA), &test_id, grp_path, &data, &data,
++	"turn off quota for group"}
++};
  
--int main(int argc, char *argv[])
--{
--	int lc;
+-char quota_started = 0;
+-static char *block_dev, *mountpoint, *quota_file, *quota_loc = NULL;
+-int id;
+-struct dqblk dq;
 -
--	tst_parse_opts(argc, argv, NULL, NULL);
+-/* Extern Global Functions */
+-/******************************************************************************/
+-/*									      */
+-/* Function:	cleanup							      */
+-/*									      */
+-/* Description: Performs all one time clean up for this test on successful    */
+-/*		completion,  premature exit or  failure. Closes all temporary */
+-/*		files, removes all temporary directories exits the test with  */
+-/*		appropriate return code by calling tst_exit() function.	      */
+-/*									      */
+-/* Input:	None.							      */
+-/*									      */
+-/* Output:	None.							      */
+-/*									      */
+-/* Return:	On failure - Exits calling tst_exit(). Non '0' return code.   */
+-/*		On success - Exits calling tst_exit(). With '0' return code.  */
+-/*									      */
+-/******************************************************************************/
+-void cleanup(void)
++static void create_qf(void)
+ {
++	int res;
+ 
+-	tst_rmdir();
 -
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			if (TC[i].func_setup != NULL)
--				(*TC[i].func_setup) ();
--
--			TEST(ltp_syscall(__NR_quotactl,
--					 USRQCMD(TC[i].cmd), block_dev,
--					 uid, TC[i].addr));
--
--			if (TEST_RETURN != 0)
--				tst_resm(TFAIL | TERRNO,
--					 "cmd=0x%x failed", TC[i].cmd);
--
--			(*TC[i].func_test) ();
+-	if (block_dev) {
+-		if (quota_started == 1 && QUOTACTL(Q_QUOTAOFF, &dq)) {
+-			tst_brkm(TBROK | TERRNO, NULL,
+-				 "failed to disable the quota on %s",
+-				 block_dev);
 -		}
 -	}
--	cleanup();
--	tst_exit();
--}
 -
--static void check_qoff(void)
--{
--	int ret;
--
--	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
--			  block_dev, uid, &qstat);
--	if (ret != 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "fail to get quota stat");
--
--	if (qstat.qs_flags & XFS_QUOTA_UDQ_ENFD) {
--		tst_resm(TFAIL, "enforcement is not off");
--		return;
--	}
--
--	tst_resm(TPASS, "enforcement is off");
--}
--
--static void check_qon(void)
-+static void check_qoff(char *desp)
- {
--	int ret;
--	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
--			  block_dev, uid, &qstat);
--	if (ret != 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "fail to get quota stat");
--
--	if (!(qstat.qs_flags & XFS_QUOTA_UDQ_ENFD)) {
--		tst_resm(TFAIL, "enforcement is off");
-+	if (res_qstat.qs_flags & XFS_QUOTA_UDQ_ENFD) {
-+		tst_res(TFAIL, "enforcement was on unexpectedly");
- 		return;
- 	}
- 
--	tst_resm(TPASS, "enforcement is on");
--}
-+	tst_res(TPASS, "quoactl succeeded to %s", desp);
- 
--static void check_getq(void)
--{
--	if (!(dquota.d_flags & XFS_USER_QUOTA)) {
--		tst_resm(TFAIL, "get incorrect quota type");
--		return;
--	}
--
--	tst_resm(TPASS, "get the right quota type");
--}
--
--static void setup_setqlim(void)
--{
--	dquota.d_rtb_hardlimit = RTBLIMIT;
--	dquota.d_fieldmask = FS_DQ_LIMIT_MASK;
++	res = execlp("quotacheck", "quotacheck", "-ug", mntpoint, NULL);
++	if (res == -1)
++		tst_brk(TFAIL | TERRNO, "failed to execute quotacheck");
  }
  
--static void check_setqlim(void)
-+static void check_qon(char *desp)
+-/* Local  Functions */
+-/******************************************************************************/
+-/*									      */
+-/* Function:	setup							      */
+-/*									      */
+-/* Description: Performs all one time setup for this test. This function is   */
+-/*		typically used to capture signals, create temporary dirs      */
+-/*		and temporary files that may be used in the course of this    */
+-/*		test.							      */
+-/*									      */
+-/* Input:	None.							      */
+-/*									      */
+-/* Output:	None.							      */
+-/*									      */
+-/* Return:	On failure - Exits by calling cleanup().		      */
+-/*		On success - returns 0.					      */
+-/*									      */
+-/******************************************************************************/
+-void setup(void)
++static void setup(void)
  {
--	int ret;
--	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQUOTA),
--			  block_dev, uid, &dquota);
--	if (ret != 0)
--		tst_brkm(TFAIL | TERRNO, NULL,
--			 "fail to get quota information");
--
--	if (dquota.d_rtb_hardlimit != RTBLIMIT) {
--		tst_resm(TFAIL, "limit on RTB, except %lu get %lu",
--			 (uint64_t)RTBLIMIT,
--			 (uint64_t)dquota.d_rtb_hardlimit);
-+	if (!(res_qstat.qs_flags & XFS_QUOTA_UDQ_ENFD)) {
-+		tst_res(TFAIL, "enforcement was off unexpectedly");
- 		return;
- 	}
- 
--	tst_resm(TPASS, "quotactl works fine with Q_XSETQLIM");
-+	tst_res(TPASS, "quoactl succeeded to %s", desp);
- }
- 
--static void check_getqstat(void)
-+static void check_getqlim(char *desp)
- {
--	if (qstat.qs_version != FS_QSTAT_VERSION) {
--		tst_resm(TFAIL, "get incorrect qstat version");
-+	if (res_dquota.d_rtb_hardlimit != set_dquota.d_rtb_hardlimit) {
-+		tst_res(TFAIL, "quotactl got unexpected rtb soft limit %llu,"
-+			" expected %llu", res_dquota.d_rtb_hardlimit,
-+			set_dquota.d_rtb_hardlimit);
- 		return;
- 	}
- 
--	tst_resm(TPASS, "get correct qstat version");
-+	tst_res(TPASS, "quoactl succeeded to %s", desp);
- }
- 
- static void setup(void)
- {
-+	SAFE_MKDIR(mntpoint, 0755);
++	pid_t pid;
  
 -	tst_require_root();
 -
+-	/* Capture signals if any */
+-	/* Create temporary directories */
++	SAFE_MKDIR(mntpoint, 0755);
+ 
+-	if ((quota_loc = malloc(FILENAME_MAX)) == NULL) {
+-		tst_brkm(TCONF | TERRNO, NULL,
+-			 "couldn't allocate memory for the quota loc buffer");
+-	}
++	SAFE_MKFS(tst_device->dev, "ext4", NULL, NULL);
+ 
 -	TEST_PAUSE;
-+	SAFE_MKFS(tst_device->dev, "xfs", NULL, NULL);
- 
 -	tst_tmpdir();
-+	SAFE_MOUNT(tst_device->dev, mntpoint, "xfs", 0, "usrquota");
+-
+-	snprintf(quota_loc, FILENAME_MAX, "%s/%s", mountpoint, quota_file);
+-
+-	if (QUOTACTL(Q_QUOTAON, quota_loc) != 0) {
+-
+-		if (errno == ENOENT) {
+-			tst_brkm(TCONF, cleanup,
+-				 "quota file - %s - doesn't exist (is the name "
+-				 "correct?)", quota_loc);
+-		} else {
+-			/* Provide a terse explanation for why the command
+-			 * failed.. */
+-			tst_brkm(TCONF | TERRNO, cleanup,
+-				 "failed to enable quotas on block device: %s; "
+-				 "1. Ensure that the device is mounted with the "
+-				 "quota option. 2. Check the filesystem status "
+-				 "with `quotacheck %s'", block_dev, block_dev);
+-		}
+-	} else {
+-		quota_started = 1;
+-	}
++	SAFE_MOUNT(tst_device->dev, mntpoint, "ext4", 0, "usrquota,grpquota");
  
--	SAFE_MKDIR(cleanup, mntpoint, 0755);
+-}
+-#endif
+-
+-/*
+-*  WARNING!! This test may cause the potential harm to the system, we DO NOT
+-*  provide any warranty for the safety!!
+-*/
+-/*
+-* To use this testcase, the quota function must be turned on and the user must
+-* be the super user.
+-*/
+-
+-#ifdef BROKEN_QUOTACTL
+-int main(void)
+-{
+-	tst_brkm(TBROK, NULL, "This system doesn't support quota v2");
+-}
+-#else
+-int cmd[] = {
+-	Q_GETQUOTA,
+-	Q_SETQUOTA,
+-/* Only available in quota v2 */
+ #if defined(HAVE_QUOTAV2)
+-	Q_GETINFO,
+-	Q_SETINFO,
+-	Q_GETFMT,
++#ifndef QFMT_VFS_V0
++#define QFMT_VFS_V0	2
++#endif
++	format_id = QFMT_VFS_V0;
++	usr_qf = "aquota.user";
++	grp_qf = "aquota.group";
+ #endif
+-	Q_SYNC
+-};
+-
+-int main(int ac, char **av)
+-{
+-
+-	static int block_dev_FLAG = 0, mountpoint_FLAG = 0, quota_file_FLAG = 0;
+-	option_t opts[] = {
+-		{.option = "b:",.flag = &block_dev_FLAG,.arg = &block_dev},
+-		{.option = "m:",.flag = &mountpoint_FLAG,.arg = &mountpoint},
+-		{.option = "q:",.flag = &quota_file_FLAG,.arg = &quota_file},
+-		{.option = '\0'}
+-	};
+ 
+-	int newtid = -1;
+-	int ret;
+-	int i;
+-	int lc;
++#if defined(HAVE_QUOTAV1)
++#ifndef QFMT_VFS_OLD
++#define QFMT_VFS_OLD	1
++#endif
++	format_id = QFMT_VFS_OLD;
++	usr_qf = "quota.user";
++	grp_qf = "quota.group";
++#endif
+ 
+-	tst_parse_opts(ac, av, (option_t *) opts, NULL);
++	pid = SAFE_FORK();
++	if (!pid)
++		create_qf();
+ 
+-	setup();
++	SAFE_WAITPID(pid, NULL, 0);
+ 
+-	for (lc = 0; TEST_LOOPING(lc); ++lc) {
 +	test_id = geteuid();
  
--	block_dev = tst_acquire_device(cleanup);
--
--	if (!block_dev)
--		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
--
--	tst_mkfs(cleanup, block_dev, "xfs", NULL, NULL);
--
--	if (mount(block_dev, mntpoint, "xfs", 0, "uquota") < 0)
--		tst_brkm(TFAIL | TERRNO, NULL, "mount(2) fail");
- 	mount_flag = 1;
- }
+-		tst_count = 0;
++	sprintf(usr_path, "%s/%s", mntpoint, usr_qf);
++	sprintf(grp_path, "%s/%s", mntpoint, grp_qf);
  
- static void cleanup(void)
- {
- 	if (mount_flag && tst_umount(mntpoint) < 0)
--		tst_resm(TWARN | TERRNO, "umount(2) failed");
+-		for (testno = 0; testno < TST_TOTAL; ++testno) {
++	if (access(usr_path, F_OK) == -1)
++		tst_brk(TFAIL | TERRNO, "user quotafile didn't exist");
+ 
+-			for (i = 0; i <= sizeof(cmd) / sizeof(cmd[0]); i++) {
++	if (access(grp_path, F_OK) == -1)
++		tst_brk(TFAIL | TERRNO, "group quotafile didn't exist");
+ 
+-				ret = QUOTACTL(cmd[i], &dq);
+-				if (ret != 0) {
+-					tst_resm(TFAIL | TERRNO,
+-						 "cmd=0x%x failed", cmd[i]);
+-				} else {
+-					tst_resm(TPASS,
+-						 "quotactl call succeeded");
+-				}
++	mount_flag = 1;
++}
+ 
+-			}
++static void cleanup(void)
++{
++	if (mount_flag && tst_umount(mntpoint) < 0)
 +		tst_res(TWARN | TERRNO, "umount(2) failed");
 +}
  
--	if (block_dev)
--		tst_release_device(block_dev);
+-			TEST(ltp_syscall(__NR_set_tid_address, &newtid));
 +static void verify_quota(unsigned int n)
 +{
-+	struct t_case *tc = &tcases[n];
-+
-+	res_dquota.d_rtb_softlimit = 0;
++	struct tcase *tc = &tcases[n];
  
--	tst_rmdir();
+-			if (TEST_RETURN == getpid()) {
+-				cleanup();
+-			} else {
+-				cleanup();
+-				tst_exit();
+-			}
++	res_dq.dqb_bsoftlimit = 0;
++	res_qf.dqi_igrace = 0;
++	memset(fmt_buf, 0, sizeof(fmt_buf));
+ 
+-		}
 +	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, (caddr_t) tc->addr));
 +	if (TEST_RETURN == -1) {
 +		tst_res(TFAIL | TERRNO, "quotactl failed to %s", tc->des);
 +		return;
 +	}
-+
-+	if (tc->func_check != NULL)
-+		tc->func_check(tc->des);
-+	else
-+		tst_res(TPASS, "quotactl succeeded to %s", tc->des);
- }
-+
+ 
++	if (*tc->set_data != *tc->res_data) {
++		tst_res(TFAIL | TERRNO, "quotactl got unexpected info %lu, "
++			"expected %lu", *tc->res_data, *tc->set_data);
++		return;
+ 	}
+ 
+-	cleanup();
++	tst_res(TPASS, "quotactl secceeded to %s", tc->des);
++}
+ 
+-	tst_exit();
 +static struct tst_test test = {
-+	.tid = "quotactl02",
++	.tid = "quotactl01",
 +	.needs_tmpdir = 1,
 +	.needs_root = 1,
 +	.test = verify_quota,
 +	.tcnt = ARRAY_SIZE(tcases),
 +	.needs_device = 1,
++	.forks_child = 1,
 +	.setup = setup,
 +	.cleanup = cleanup
 +};
- #else
--int main(void)
--{
--	tst_brkm(TCONF, NULL, "This system doesn't support xfs quota");
+ 
 -}
-+	TST_TEST_TCONF("This system didn't support quota or xfs quota");
++#else
++	TST_TEST_TCONF("This system didn't support quota");
  #endif
 -- 
 1.8.3.1
