@@ -1,65 +1,346 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Date: Thu, 20 Oct 2016 14:24:50 +0200
-Subject: [LTP] MD-RAID: Use seq_putc() in three status functions?
-In-Reply-To: <cc24736e-2227-2a49-e131-386775c942d9@users.sourceforge.net>
-References: <566ABCD9.1060404@users.sourceforge.net>
- <77fb6fdc-7480-8607-0af1-42f73c125b9d@users.sourceforge.net>
- <688764a4-072d-2faf-37ba-a222b190a5d9@suse.de>
- <59d71170-c48d-a084-c748-b6ab74a2bee4@users.sourceforge.net>
- <1e151094-e228-5307-ae2f-b376b31f5628@suse.de>
- <83e720c6-9037-a3c1-6e83-27505805f37f@users.sourceforge.net>
- <2cc42b2f-1f1a-e95c-91fa-54e1dd3b6d49@suse.de>
- <653e60ee-f862-8828-3e4f-498c7cc34bdc@users.sourceforge.net>
- <c2500336-5848-66c3-ecf0-1ade04decf75@suse.de>
- <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
- <1476703920.2520.105.camel@petrovitsch.priv.at>
- <97f31b70-e3ff-f194-c753-54da1fe3e664@users.sourceforge.net>
- <57299b72-8e6b-0b92-4374-1b7a0907e810@suse.de>
- <cb9beadc-3ea2-c09c-f621-a54cd73e3647@users.sourceforge.net>
- <05d0cade-7922-9d8a-a974-34b2cc9150fb@suse.de>
- <bf6c54f1-7af4-747c-a58b-be13ab74563e@users.sourceforge.net>
- <665cd40a-4562-a015-78c6-12976c12b626@suse.de>
- <cc24736e-2227-2a49-e131-386775c942d9@users.sourceforge.net>
-Message-ID: <e264883f-d1b9-4bf3-aa9f-45fce5dab18e@users.sourceforge.net>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 21 Oct 2016 14:53:55 +0800
+Subject: [LTP] [PATCH 2/2] syscalls/quotactl02.c: Reconstruct and Convert to
+	new API
+In-Reply-To: <1477032835-11570-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1477032835-11570-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1477032835-11570-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
->> So back to the original task for you: Show me in the generated output where the benefits are.
+1) take use of some SAFE Marcos
+2) remove some unnecessary function
+3) use quotactl instead of ltp_syscall
 
-I can offer another bit of information for this software development discussion.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/quotactl/quotactl02.c | 257 +++++++++---------------
+ 1 file changed, 97 insertions(+), 160 deletions(-)
 
-The following build settings were active in my "Makefile" for this Linux test case.
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl02.c b/testcases/kernel/syscalls/quotactl/quotactl02.c
+index 486ea93..2226edd 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl02.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl02.c
+@@ -16,217 +16,154 @@
+  */
+ 
+ /*
++ * Test Name: quotactl02
++ *
+  * Description:
+- *	This tests basic flags of quotactl() syscall:
+- *	1) Q_XQUOTAOFF - Turn off quotas for an XFS file system.
+- *	2) Q_XQUOTAON - Turn on quotas for an XFS file system.
+- *	3) Q_XGETQUOTA - Get disk quota limits and current usage for user id.
+- *	4) Q_XSETQLIM - Set disk quota limits for user id.
+- *	5) Q_XGETQSTAT - Get XFS file system specific quota information.
++ * This testcase checks basic flags of quotactl(2) for an XFS file system:
++ * 1) quotactl(2) succeeds to turn off quotas with Q_XQUOTAOFF for an XFS
++ *    file system.
++ * 2) quotactl(2) succeeds to turn on quotas with Q_XQUOTAON for an XFS file
++ *    system.
++ * 3) quotactl(2) succeeds to get quota on/off status with Q_XGETQSTAT for an
++ *    XFS file system.
++ * 4) quotactl(2) succeeds to set disk quota limits with Q_XSETQLIM for user
++ *    id.
++ * 5) quotactl(2) succeeds to get disk quota limits with Q_XGETQUOTA for user
++ *    id.
+  */
+-
+ #define _GNU_SOURCE
+-#include <fcntl.h>
++#include <errno.h>
+ #include <unistd.h>
+-#include <sys/syscall.h>
+ #include <stdio.h>
+-#include <errno.h>
+-#include <sys/mount.h>
+-#include <linux/fs.h>
+-#include <sys/types.h>
+-
++#include <sys/quota.h>
+ #include "config.h"
++
++#if defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1)
++#include <sys/quota.h>
++#endif
+ #if defined(HAVE_XFS_QUOTA)
+-# include <xfs/xqm.h>
++#include <xfs/xqm.h>
+ #endif
+-#include "test.h"
+-#include "linux_syscall_numbers.h"
+-#include "safe_macros.h"
+ 
+-#define USRQCMD(cmd)	((cmd) << 8)
+-#define RTBLIMIT	2000
++#include "tst_test.h"
+ 
+-char *TCID = "quotactl02";
+-int TST_TOTAL = 5;
++#if defined(HAVE_XFS_QUOTA) && (defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1))
++static void check_qoff(char *);
++static void check_qon(char *);
++static void check_getqlim(char *);
+ 
+-#if defined(HAVE_XFS_QUOTA)
+-static void check_qoff(void);
+-static void check_qon(void);
+-static void check_getq(void);
+-static void setup_setqlim(void), check_setqlim(void);
+-static void check_getqstat(void);
+-
+-static void setup(void);
+-static void cleanup(void);
+-
+-static int i;
+-static int uid;
+-static const char *block_dev;
++static int test_id;
+ static int mount_flag;
+-static struct fs_disk_quota dquota;
+-static struct fs_quota_stat qstat;
+-static unsigned int qflag = XFS_QUOTA_UDQ_ENFD;
++static struct fs_disk_quota set_dquota = {
++	.d_rtb_softlimit = 1000,
++	.d_fieldmask = FS_DQ_RTBSOFT
++};
++static struct fs_disk_quota res_dquota;
++static struct fs_quota_stat res_qstat;
++static unsigned short qflag = XFS_QUOTA_UDQ_ENFD;
+ static const char mntpoint[] = "mnt_point";
+ 
+-static struct test_case_t {
++static struct t_case {
+ 	int cmd;
++	int *id;
+ 	void *addr;
+-	void (*func_test) ();
+-	void (*func_setup) ();
+-} TC[] = {
+-	{Q_XQUOTAOFF, &qflag, check_qoff, NULL},
+-	{Q_XQUOTAON, &qflag, check_qon, NULL},
+-	{Q_XGETQUOTA, &dquota, check_getq, NULL},
+-	{Q_XSETQLIM, &dquota, check_setqlim, setup_setqlim},
+-	{Q_XGETQSTAT, &qstat, check_getqstat, NULL},
++	void (*func_check)();
++	char *des;
++} tcases[] = {
++	{QCMD(Q_XQUOTAOFF, USRQUOTA), &test_id, &qflag, NULL,
++	"turn off xfs quota"},
++	{QCMD(Q_XGETQSTAT, USRQUOTA), &test_id, &res_qstat, check_qoff,
++	"get xfs quota off status"},
++	{QCMD(Q_XQUOTAON, USRQUOTA), &test_id, &qflag, NULL,
++	"turn on xfs quota"},
++	{QCMD(Q_XGETQSTAT, USRQUOTA), &test_id, &res_qstat, check_qon,
++	"get xfs quota on status"},
++	{QCMD(Q_XSETQLIM, USRQUOTA), &test_id, &set_dquota, NULL,
++	"set xfs disk quota limits"},
++	{QCMD(Q_XGETQUOTA, USRQUOTA), &test_id, &res_dquota, check_getqlim,
++	"get xfs disk quota limits"}
+ };
+ 
+-int main(int argc, char *argv[])
+-{
+-	int lc;
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+-
+-		tst_count = 0;
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-
+-			if (TC[i].func_setup != NULL)
+-				(*TC[i].func_setup) ();
+-
+-			TEST(ltp_syscall(__NR_quotactl,
+-					 USRQCMD(TC[i].cmd), block_dev,
+-					 uid, TC[i].addr));
+-
+-			if (TEST_RETURN != 0)
+-				tst_resm(TFAIL | TERRNO,
+-					 "cmd=0x%x failed", TC[i].cmd);
+-
+-			(*TC[i].func_test) ();
+-		}
+-	}
+-	cleanup();
+-	tst_exit();
+-}
+-
+-static void check_qoff(void)
+-{
+-	int ret;
+-
+-	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
+-			  block_dev, uid, &qstat);
+-	if (ret != 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "fail to get quota stat");
+-
+-	if (qstat.qs_flags & XFS_QUOTA_UDQ_ENFD) {
+-		tst_resm(TFAIL, "enforcement is not off");
+-		return;
+-	}
+-
+-	tst_resm(TPASS, "enforcement is off");
+-}
+-
+-static void check_qon(void)
++static void check_qoff(char *desp)
+ {
+-	int ret;
+-	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQSTAT),
+-			  block_dev, uid, &qstat);
+-	if (ret != 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "fail to get quota stat");
+-
+-	if (!(qstat.qs_flags & XFS_QUOTA_UDQ_ENFD)) {
+-		tst_resm(TFAIL, "enforcement is off");
++	if (res_qstat.qs_flags & XFS_QUOTA_UDQ_ENFD) {
++		tst_res(TFAIL, "enforcement was on unexpectedly");
+ 		return;
+ 	}
+ 
+-	tst_resm(TPASS, "enforcement is on");
+-}
++	tst_res(TPASS, "quoactl succeeded to %s", desp);
+ 
+-static void check_getq(void)
+-{
+-	if (!(dquota.d_flags & XFS_USER_QUOTA)) {
+-		tst_resm(TFAIL, "get incorrect quota type");
+-		return;
+-	}
+-
+-	tst_resm(TPASS, "get the right quota type");
+-}
+-
+-static void setup_setqlim(void)
+-{
+-	dquota.d_rtb_hardlimit = RTBLIMIT;
+-	dquota.d_fieldmask = FS_DQ_LIMIT_MASK;
+ }
+ 
+-static void check_setqlim(void)
++static void check_qon(char *desp)
+ {
+-	int ret;
+-	ret = ltp_syscall(__NR_quotactl, USRQCMD(Q_XGETQUOTA),
+-			  block_dev, uid, &dquota);
+-	if (ret != 0)
+-		tst_brkm(TFAIL | TERRNO, NULL,
+-			 "fail to get quota information");
+-
+-	if (dquota.d_rtb_hardlimit != RTBLIMIT) {
+-		tst_resm(TFAIL, "limit on RTB, except %lu get %lu",
+-			 (uint64_t)RTBLIMIT,
+-			 (uint64_t)dquota.d_rtb_hardlimit);
++	if (!(res_qstat.qs_flags & XFS_QUOTA_UDQ_ENFD)) {
++		tst_res(TFAIL, "enforcement was off unexpectedly");
+ 		return;
+ 	}
+ 
+-	tst_resm(TPASS, "quotactl works fine with Q_XSETQLIM");
++	tst_res(TPASS, "quoactl succeeded to %s", desp);
+ }
+ 
+-static void check_getqstat(void)
++static void check_getqlim(char *desp)
+ {
+-	if (qstat.qs_version != FS_QSTAT_VERSION) {
+-		tst_resm(TFAIL, "get incorrect qstat version");
++	if (res_dquota.d_rtb_hardlimit != set_dquota.d_rtb_hardlimit) {
++		tst_res(TFAIL, "quotactl got unexpected rtb soft limit %llu,"
++			" expected %llu", res_dquota.d_rtb_hardlimit,
++			set_dquota.d_rtb_hardlimit);
+ 		return;
+ 	}
+ 
+-	tst_resm(TPASS, "get correct qstat version");
++	tst_res(TPASS, "quoactl succeeded to %s", desp);
+ }
+ 
+ static void setup(void)
+ {
++	SAFE_MKDIR(mntpoint, 0755);
+ 
+-	tst_require_root();
+-
+-	TEST_PAUSE;
++	SAFE_MKFS(tst_device->dev, "xfs", NULL, NULL);
+ 
+-	tst_tmpdir();
++	SAFE_MOUNT(tst_device->dev, mntpoint, "xfs", 0, "usrquota");
+ 
+-	SAFE_MKDIR(cleanup, mntpoint, 0755);
++	test_id = geteuid();
+ 
+-	block_dev = tst_acquire_device(cleanup);
+-
+-	if (!block_dev)
+-		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
+-
+-	tst_mkfs(cleanup, block_dev, "xfs", NULL, NULL);
+-
+-	if (mount(block_dev, mntpoint, "xfs", 0, "uquota") < 0)
+-		tst_brkm(TFAIL | TERRNO, NULL, "mount(2) fail");
+ 	mount_flag = 1;
+ }
+ 
+ static void cleanup(void)
+ {
+ 	if (mount_flag && tst_umount(mntpoint) < 0)
+-		tst_resm(TWARN | TERRNO, "umount(2) failed");
++		tst_res(TWARN | TERRNO, "umount(2) failed");
++}
+ 
+-	if (block_dev)
+-		tst_release_device(block_dev);
++static void verify_quota(unsigned int n)
++{
++	struct t_case *tc = &tcases[n];
++
++	res_dquota.d_rtb_softlimit = 0;
+ 
+-	tst_rmdir();
++	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, (caddr_t) tc->addr));
++	if (TEST_RETURN == -1) {
++		tst_res(TFAIL | TERRNO, "quotactl failed to %s", tc->des);
++		return;
++	}
++
++	if (tc->func_check != NULL)
++		tc->func_check(tc->des);
++	else
++		tst_res(TPASS, "quotactl succeeded to %s", tc->des);
+ }
++
++static struct tst_test test = {
++	.tid = "quotactl02",
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.test = verify_quota,
++	.tcnt = ARRAY_SIZE(tcases),
++	.needs_device = 1,
++	.setup = setup,
++	.cleanup = cleanup
++};
+ #else
+-int main(void)
+-{
+-	tst_brkm(TCONF, NULL, "This system doesn't support xfs quota");
+-}
++	TST_TEST_TCONF("This system didn't support quota or xfs quota");
+ #endif
+-- 
+1.8.3.1
 
-…
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O0 -fomit-frame-pointer -std=gnu89
-…
 
-
-The afffected source files can be compiled for the processor architecture "x86_64"
-by a tool like "GCC 6.2.1+r239849-1.4" from the software distribution
-"openSUSE Tumbleweed" with the following command example.
-
-my_original=${my_build_dir}unchanged/test/ \
-&& my_fixing=${my_build_dir}patched/test/ \
-&& mkdir -p ${my_original} ${my_fixing} \
-&& my_cc=/usr/bin/gcc-6 \
-&& my_module=drivers/md/raid1.s \
-&& git checkout next-20161014 \
-&& make -j6 O="${my_original}" HOSTCC="${my_cc}" allmodconfig ${my_module} \
-&& git checkout next_usage_of_seq_putc_in_md_raid_1 \
-&& make -j6 O="${my_fixing}" HOSTCC="${my_cc}" allmodconfig ${my_module} \
-&& diff -u "${my_original}${my_module}" "${my_fixing}${my_module}" > "${my_build_dir}assembler_code_comparison_$(date -I)_1.diff"
-
-
-Unfortunately, the generated file got the size "311 KiB". I guess that
-this is too big to send such a file around on the Linux mailing list.
-
-Is this kind of assembler code comparison still useful to clarify relevant
-differences further?
-
-Regards,
-Markus
 
