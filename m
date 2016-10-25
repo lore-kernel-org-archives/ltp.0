@@ -1,19 +1,58 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 24 Oct 2016 13:52:29 +0200
-Subject: [LTP] [PATCH] cpuhotplug_hotplug.sh: dash's 'local' only
- accepts the first token
-In-Reply-To: <1476788976-24585-1-git-send-email-james.morse@arm.com>
-References: <1476788976-24585-1-git-send-email-james.morse@arm.com>
-Message-ID: <20161024115229.GB19167@rei.lan>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Tue, 25 Oct 2016 14:08:55 +0800
+Subject: [LTP] [PATCH 1/2] syscalls/quotatcl01.c: Rewrite && Convert to
+ new API
+In-Reply-To: <20161024104928.GA19167@rei.lan>
+References: <1477032835-11570-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20161024104928.GA19167@rei.lan>
+Message-ID: <580EF6F7.5090507@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed, thanks.
+On 2016/10/24 18:49, Cyril Hrubis wrote:
+> Hi!
+>> -	tst_parse_opts(ac, av, (option_t *) opts, NULL);
+>> +	pid = SAFE_FORK();
+>> +	if (!pid)
+>> +		create_qf();
+>>
+>> -	setup();
+>> +	SAFE_WAITPID(pid, NULL, 0);
+> Just use tst_run_cmd() instead of the fork(), execlp(), wait() combo and
+> remove the forks_child flag.
+>
+>> -	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+>> +	test_id = geteuid();
+>>
+>> -		tst_count = 0;
+>> +	sprintf(usr_path, "%s/%s", mntpoint, usr_qf);
+>> +	sprintf(grp_path, "%s/%s", mntpoint, grp_qf);
+> Well these strings could be compile time constants. If you do:
+>
+> #define MNTPOINT "mntpoint"
+>
+> #ifdef HAVE_QUOTAV2
+> # define USR_PATH MNTPOINT "aquota.user"
+> ...
+> #else
+> # define USR_PATH MNTPOINT "quota.user"
+> ...
+> #endif
+>
+> But that is a minor issue.
+>
+> And yes, the inner block of #ifdef should ideally be indented with
+> single space per block as in the example snipped above, but that is even
+> more minor.
+>
+Hi Cyril,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks for your review, I will rewrite it as you said.
+
+Thanks,
+Xiao Yang
+
+
