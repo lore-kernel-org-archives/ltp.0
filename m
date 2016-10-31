@@ -1,101 +1,101 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 31 Oct 2016 06:03:42 -0400 (EDT)
-Subject: [LTP] new shell library
-In-Reply-To: <20161027145806.GA25043@rei.lan>
-References: <20161003145835.GD7583@rei.suse.cz>
- <254451816.211402.1475574875165.JavaMail.zimbra@redhat.com>
- <20161012100806.GA24231@rei.lan>
- <1175646125.448517.1476268354007.JavaMail.zimbra@redhat.com>
- <20161012123602.GB24231@rei.lan> <20161012131726.GC24231@rei.lan>
- <1527497475.514457.1476284084454.JavaMail.zimbra@redhat.com>
- <20161027145806.GA25043@rei.lan>
-Message-ID: <827120068.2432301.1477908222614.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 31 Oct 2016 11:11:04 +0100
+Subject: [LTP] [PATCH v2] syscalls/quotatcl01.c: Rewrite && Convert to
+	new API
+In-Reply-To: <1477376138-578-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20161024104928.GA19167@rei.lan>
+ <1477376138-578-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20161031101104.GD30590@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+Pushed with follwing diff, thanks.
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Thursday, 27 October, 2016 4:58:06 PM
-> Subject: Re: [LTP] new shell library
-> 
-> Hi!
-> Up to date version is at usuall place[1]. I've managed to clean up most
-> of the tests in commands (four more to go) and I think that I ate enough
-> of my own dog food and, at this point, the tst_test.sh library should be
-> reasonably stable.
-> 
-> There is one change I'm not 100% sure of [2]. This is about ROD,
-> EXPECT_PASS and EXPECT_FAIL. These are all implemented using one common
-> funcntion and the $@ gets passed to it then gets parser in a loop in
-> order to implement redirection and that is where the paramteres are
-> expanded several times which breaks things horribly. As far as I can
-> tell this is impossible to implement correctly in shell. For instance
-> things like: ROD awk '{print $1}' wouldn't work with ROD_BASE as a shell
-> fuction. As a result I've reimplemented the ROD_BASE as tst_rod in C,
-> which works mostly fine. It's just stdin/stdout/stderr redirection +
-> execvp() (and fallback to "/bin/sh -s" for shell buildins). The only
-> thing that does not work are shell buildins that require to be executed
-> in the context of current shell, such as 'wait' or 'jobs'. I'm pondering
-> if it is worth of catching these two special cases in the tst_test.sh
-> shell library to fix that issue. Any kind of feedback to this is warmly
-> welcomed.
+Apart from cosmetic things like removing useless cast to caddrt_t I've
+changed it to handle missing quotacheck command gracefully. I.e. we have
+to set the mount flag right after we mount the device otherwise the test
+cleanup in library will fail when we call tst_brk() because the
+tst_run_cmd() has failed since the test haven't umounted it. And also
+tst_run_cmd returns 255 on ENOENT which should be mapped to TCONF
+instead of TBROK.
 
-I don't recall original ROD email thread, but did we consider eval and
-passing entire command as single argument? For most commands it would
-seem to be as simple as adding quotes around, awk though needs some
-escaping:
+Also can you pretty please resend the second patch? I cannot find it in
+my mailbox anymore (possibly accidentally deleted).
 
-#!/bin/sh
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
+index 9e1ff36..89b5dc2 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl01.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
+@@ -63,16 +63,16 @@
+ #  ifndef QFMT_VFS_V0
+ #   define QFMT_VFS_V0     2
+ #  endif
+-#  define USRPATH MNTPOINT "/" "aquota.user"
+-#  define GRPPATH MNTPOINT "/" "aquota.group"
++#  define USRPATH MNTPOINT "/aquota.user"
++#  define GRPPATH MNTPOINT "/aquota.group"
+ #  define FMTID	QFMT_VFS_V0
+ # else
+ #  define _LINUX_QUOTA_VERSION  1
+ #  ifndef QFMT_VFS_OLD
+ #   define QFMT_VFS_OLD    1
+ #  endif
+-#  define USRPATH MNTPOINT "/" "quota.user"
+-#  define GRPPATH MNTPOINT "/" "quota.group"
++#  define USRPATH MNTPOINT "/quota.user"
++#  define GRPPATH MNTPOINT "/quota.group"
+ #  define FMTID	QFMT_VFS_OLD
+ # endif
+ 
+@@ -145,14 +145,24 @@ static struct tcase {
+ static void setup(void)
+ {
+ 	const char *const cmd[] = {"quotacheck", "-ug", MNTPOINT, NULL};
++	int ret;
+ 
+ 	SAFE_MKDIR(MNTPOINT, 0755);
+ 
+ 	SAFE_MKFS(tst_device->dev, "ext4", NULL, NULL);
+ 
+ 	SAFE_MOUNT(tst_device->dev, MNTPOINT, "ext4", 0, "usrquota,grpquota");
++	mount_flag = 1;
+ 
+-	tst_run_cmd(cmd, NULL, NULL, 0);
++	ret = tst_run_cmd(cmd, NULL, NULL, 1);
++	switch (ret) {
++	case 255:
++		tst_brk(TCONF, "quotacheck binary not installed");
++	default:
++		tst_brk(TBROK, "quotacheck exited with %i", ret);
++	case 0:
++	break;
++	}
+ 
+ 	test_id = geteuid();
+ 
+@@ -161,8 +171,6 @@ static void setup(void)
+ 
+ 	if (access(GRPPATH, F_OK) == -1)
+ 		tst_brk(TFAIL | TERRNO, "group quotafile didn't exist");
+-
+-	mount_flag = 1;
+ }
+ 
+ static void cleanup(void)
+@@ -179,7 +187,7 @@ static void verify_quota(unsigned int n)
+ 	res_qf.dqi_igrace = 0;
+ 	memset(fmt_buf, 0, sizeof(fmt_buf));
+ 
+-	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, (caddr_t) tc->addr));
++	TEST(quotactl(tc->cmd, tst_device->dev, *tc->id, tc->addr));
+ 	if (TEST_RETURN == -1) {
+ 		tst_res(TFAIL | TERRNO, "quotactl failed to %s", tc->des);
+ 		return;
 
-ROD_BASE()
-{
-        eval $@
-}
-
-ROD()
-{
-        ROD_BASE "$@"
-        if [ $? -ne 0 ]; then
-                tst_brk TBROK "$@ failed"
-        fi
-}
-
-ROD_SILENT()
-{
-        ROD_BASE "$@" > /dev/null 2>&1
-        if [ $? -ne 0 ]; then
-                tst_brk TBROK "$@ failed"
-        fi
-}
-
-sleep 1 &
-ROD jobs
-ROD "ps | awk '{print \$1}' > tempfile"
-ROD_SILENT "whoami >> tempfile"
-ROD_SILENT ls
-ROD ls -la
-
-> 
-> The rest of the changes should be more or less fine. The shell testcases
-> now support looping parameter and have well defined way of adding test
-> specific ones. What is not yet implemented is support for timeouts, that
-> could be easily done later since that is more or less orthogonal to the
-> current work.
-> 
-> All in all I would love to have a second pair of eyes (or even more!) to
-> check the code now.
-> 
-> [1] https://github.com/metan-ucw/ltp/commits/master
-> [2]
-> https://github.com/metan-ucw/ltp/commit/61bebd11c6f956a7b9fcdf319ea6f4a47f5de35a
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
