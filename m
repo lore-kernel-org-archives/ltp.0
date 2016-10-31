@@ -1,96 +1,230 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Date: Fri, 28 Oct 2016 22:04:33 +0200
-Subject: [LTP] MD-RAID: Use seq_putc() in three status functions?
-In-Reply-To: <e264883f-d1b9-4bf3-aa9f-45fce5dab18e@users.sourceforge.net>
-References: <566ABCD9.1060404@users.sourceforge.net>
- <688764a4-072d-2faf-37ba-a222b190a5d9@suse.de>
- <59d71170-c48d-a084-c748-b6ab74a2bee4@users.sourceforge.net>
- <1e151094-e228-5307-ae2f-b376b31f5628@suse.de>
- <83e720c6-9037-a3c1-6e83-27505805f37f@users.sourceforge.net>
- <2cc42b2f-1f1a-e95c-91fa-54e1dd3b6d49@suse.de>
- <653e60ee-f862-8828-3e4f-498c7cc34bdc@users.sourceforge.net>
- <c2500336-5848-66c3-ecf0-1ade04decf75@suse.de>
- <a0f96e19-fa24-8507-2b77-344a342113aa@users.sourceforge.net>
- <1476703920.2520.105.camel@petrovitsch.priv.at>
- <97f31b70-e3ff-f194-c753-54da1fe3e664@users.sourceforge.net>
- <57299b72-8e6b-0b92-4374-1b7a0907e810@suse.de>
- <cb9beadc-3ea2-c09c-f621-a54cd73e3647@users.sourceforge.net>
- <05d0cade-7922-9d8a-a974-34b2cc9150fb@suse.de>
- <bf6c54f1-7af4-747c-a58b-be13ab74563e@users.sourceforge.net>
- <665cd40a-4562-a015-78c6-12976c12b626@suse.de>
- <cc24736e-2227-2a49-e131-386775c942d9@users.sourceforge.net>
- <e264883f-d1b9-4bf3-aa9f-45fce5dab18e@users.sourceforge.net>
-Message-ID: <69acd529-fc75-bd74-17ae-bedd8796e706@users.sourceforge.net>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Mon, 31 Oct 2016 10:54:38 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/umask03: Cleanup && Convert to new API
+In-Reply-To: <1477882478-30693-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1477882478-30693-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <1477882478-30693-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
->>> So back to the original task for you: Show me in the generated output where the benefits are.
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ testcases/kernel/syscalls/umask/umask03.c | 172 +++++++++---------------------
+ 1 file changed, 48 insertions(+), 124 deletions(-)
 
-I can offer another bit of information for this software development discussion.
+diff --git a/testcases/kernel/syscalls/umask/umask03.c b/testcases/kernel/syscalls/umask/umask03.c
+index e10009c..30c28ca 100644
+--- a/testcases/kernel/syscalls/umask/umask03.c
++++ b/testcases/kernel/syscalls/umask/umask03.c
+@@ -1,155 +1,79 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
++ *  07/2001 Ported by John George
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+  */
+ 
+ /*
+- * NAME
+- *	umask03.c
+- *
+- * DESCRIPTION
+- *	Check that umask changes the mask, and that the previous
+- *	value of the mask is returned correctly for each value.
+- *
+- * ALGORITHM
+- *	For each mask value (9 bits) set mask, and check that the return
+- *	corresponds to the previous value set.
+- *
+- * USAGE:  <for command-line>
+- *		umask03 [-c n] [-i n] [-I x] [-P x] [-t]
+- *		where,  -c n : Run n copies concurrently.
+- *			-i n : Execute test n times.
+- *			-I x : Execute test for x seconds.
+- *			-P x : Pause for x seconds between iterations.
+- *			-t   : Turn on syscall timing.
+- *
+- * History
+- *	07/2001 John George
+- *		-Ported
+- *
+- * Restrictions
+- *	None
++ * umask(2) sets the mask from 0000 to 0777 while we create files,
++ * then the file mode should be correct for each creation mask.
+  */
+ 
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <fcntl.h>
++#include <errno.h>
+ #include <stdio.h>
+-#include "test.h"
+ #include <sys/types.h>
+ #include <sys/stat.h>
++#include "tst_test.h"
+ 
+-char *TCID = "umask03";
+-int TST_TOTAL = 1;
+-
+-char filname[40];
+-
+-void setup(void);
+-void cleanup(void);
++static char filename[40];
+ 
+-int main(int argc, char **argv)
++static void verify_umask(void)
+ {
+-	int lc;
+-
+ 	struct stat statbuf;
+-	int mskval = 0000;
+-	int failcnt = 0;
+-	int fildes, i;
++	int mskval;
++	int fd;
++	int failflag = 0;
+ 	unsigned low9mode;
+ 
+-	tst_parse_opts(argc, argv, NULL, NULL);
++	for (mskval = 0000; mskval < 01000; mskval++) {
++		TEST(umask(mskval));
++		if (TEST_RETURN < 0) {
++			tst_res(TFAIL | TTERRNO,
++				"umask(%o) failed unexpectedly", mskval);
++			return;
++		}
+ 
+-	setup();		/* global setup */
++		fd = SAFE_CREAT(filename, 0777);
++		SAFE_CLOSE(fd);
+ 
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
++		SAFE_STAT(filename, &statbuf);
+ 
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
++		low9mode = statbuf.st_mode & 0777;
+ 
+-		for (umask(mskval = 0077), i = 1; mskval < 01000;
+-		     i++, umask(++mskval)) {
+-			unlink(filname);
+-			if ((fildes = creat(filname, 0777)) == -1) {
+-				tst_resm(TBROK, "cannot create "
+-					 "file with mskval 0%o %d",
+-					 mskval, mskval);
+-			} else {
+-				if (fstat(fildes, &statbuf) != 0) {
+-					tst_resm(TBROK, "cannot fstat file");
+-				} else {
+-					low9mode = statbuf.st_mode & 0777;
+-					if (low9mode != (~mskval & 0777)) {
+-						tst_resm(TFAIL,
+-							 "got %o expected %o"
+-							 "mask didnot take",
+-							 low9mode,
+-							 (~mskval & 0777));
+-					}
+-				}
+-			}
+-			close(fildes);
++		if (low9mode != (~mskval & 0777)) {
++			failflag = 1;
++			tst_res(TFAIL, "File mode got %o, expected %o",
++				low9mode, ~mskval & 0777);
+ 		}
+-		if (!failcnt)
+-			tst_resm(TPASS, "umask correctly returns the "
+-				 "previous value for all masks");
++
++		SAFE_UNLINK(filename);
+ 	}
+-	cleanup();
+-	tst_exit();
+ 
++	if (!failflag)
++		tst_res(TPASS, "All files' mode created correctly");
+ }
+ 
+-/*
+- * setup
+- *	performs all ONE TIME setup for this test
+- */
+ void setup(void)
+ {
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	/* Pause if that option was specified
+-	 * TEST_PAUSE contains the code to fork the test with the -i option.
+-	 * You want to make sure you do this before you create your temporary
+-	 * directory.
+-	 */
+-	TEST_PAUSE;
+-
+-	/* make temp dir and cd to it */
+-	tst_tmpdir();
+-
+-	sprintf(filname, "umask2.%d", getpid());
++	sprintf(filename, "umask03.%d", getpid());
+ }
+ 
+-/*
+- * cleanup
+- *	performs all ONE TIME cleanup for this test@completion or
+- *	premature exit
+- */
+-void cleanup(void)
+-{
+-
+-	/*
+-	 * cleanup the temporary files and the temporary directory
+-	 */
+-	unlink(filname);
+-	tst_rmdir();
+-
+-	/*
+-	 * exit with return code appropriate for results
+-	 */
+-
+-}
++static struct tst_test test = {
++	.tid = "umask03",
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.test_all = verify_umask,
++};
+-- 
+1.8.4.2
 
-The following build settings were active in my "Makefile" for this Linux test case.
 
-…
-HOSTCFLAGS   = -Wall -Wmissing-prototypes -Wstrict-prototypes -O0 -fomit-frame-pointer -std=gnu89
-…
-
-
-The afffected source files can be compiled for the processor architecture "x86_64"
-by a tool like "GCC 6.2.1+r239849-1.5" from the software distribution
-"openSUSE Tumbleweed" with the following command example.
-
-my_original=${my_build_dir}unchanged/test/ \
-&& my_fixing=${my_build_dir}patched/test/ \
-&& mkdir -p ${my_original} ${my_fixing} \
-&& my_cc=/usr/bin/gcc-6 \
-&& my_module=drivers/md/raid1.s \
-&& git checkout next-20161014 \
-&& make -j6 O="${my_original}" CC="${my_cc}" HOSTCC="${my_cc}" allmodconfig "${my_module}" \
-&& git checkout next_usage_of_seq_putc_in_md_raid_1 \
-&& make -j6 O="${my_fixing}" CC="${my_cc}" HOSTCC="${my_cc}" allmodconfig "${my_module}" \
-&& diff -u "${my_original}${my_module}" "${my_fixing}${my_module}" > "${my_build_dir}assembler_code_comparison_$(date -I)_3.diff"
-
-
-The generated file got the size "25.4 KiB" this time. I guess that only
-the following two diff hunks are interesting then to show desired effects
-for the suggested software refactoring around data output of a single character
-(instead of a similar string).
-
-
-…
-@@ -4402,10 +4402,6 @@
- .LC19:
- 	.string	"%s"
- 	.zero	61
--	.align 32
--.LC20:
--	.string	"]"
--	.zero	62
- 	.text
- 	.p2align 4,,15
- 	.type	raid1_status, @function
-@@ -4564,8 +4560,8 @@
- 	movq	$rcu_lock_map, %rdi	#,
- 	call	lock_release	#
- 	movq	%r14, %rdi	# seq,
--	movq	$.LC20, %rsi	#,
--	call	seq_printf	#
-+	movl	$93, %esi	#,
-+	call	seq_putc	#
- 	addq	$16, %rsp	#,
- 	popq	%rbx	#
- 	popq	%r12	#
-…
-
-
-* Is this kind of assembler code comparison useful to clarify relevant
-  differences further?
-
-* Are any software development concerns left over for such a transformation?
-
-Regards,
-Markus
 
