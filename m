@@ -1,13 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 1 Nov 2016 15:30:31 +0100
-Subject: [LTP] [PATCH] containers/netns/netns_sysfs.sh: add kernel
- version check
-In-Reply-To: <d15b075f-b777-c6fe-8861-74d5a30a3305@redhat.com>
-References: <1472544117-7584-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <ed067bc2-ab8e-3b7e-476c-d24e39560700@redhat.com>
- <20161031092825.GB30590@rei.lan>
- <d15b075f-b777-c6fe-8861-74d5a30a3305@redhat.com>
-Message-ID: <20161101143031.GA19327@rei.lan>
+Date: Tue, 1 Nov 2016 16:05:08 +0100
+Subject: [LTP] [PATCH 3/3] syscalls/umask03: Cleanup && Convert to new
+	API
+In-Reply-To: <58181967.9070700@cn.fujitsu.com>
+References: <1477882478-30693-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <1477882478-30693-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20161031114002.GI30590@rei.lan> <58181967.9070700@cn.fujitsu.com>
+Message-ID: <20161101150508.GA5787@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,20 +14,27 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> If you're going to use letters for this, I suggest re-using what the
-> 'test' a.k.a. '[' command has: -eq, -lt, -ge, -ne, etc.
+> > Hmm, so this test is just the same as umask02 but tries to create the
+> > file as well.
+> > 
+> > What about we remove umask01.c and umask02.c and rename umask03.c to
+> > umask01.c?
+> > 
+> > It's not like umask01.c or umask02.c adds any more value since umask03.c
+> > is superset of these.
+> > 
 > 
-> If multiple options (like in your example) are supported, re-using the
-> logic from 'test' could also be a good idea: -a (and), -o (or), although
-> shell-based && or || might be more obvious.
+> I think it's a little bit different between umask02 and umask03, manual page
+> says that umask(2) returns the previous value of the mask, and this is only
+> checked in umask02.
 > 
-> if tst_kvercmp -ge "2.6.35" -a -lt "3.8"; then ...
-> 
-> if tst_kvercmp -ge "2.6.35" && tst_kvercmp -lt "3.8"; then ...
+> So what about we just remove umask01.c and rename umask02.c and umask03.c to
+> umask01.c and umask02.c?
 
-FYI:
-
-https://github.com/metan-ucw/ltp/commit/f18331dd1e2ff0772c71abf4c444de6487dbce87
+Hmm, right, the umask03 is not checking the return value. But still,
+it's trivial enough to both check the return value and to try to create
+the file in one test. There is no real need to have two when thing could
+be easily done in just one.
 
 -- 
 Cyril Hrubis
