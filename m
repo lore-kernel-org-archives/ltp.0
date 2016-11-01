@@ -1,257 +1,253 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 1 Nov 2016 10:24:31 +0800
-Subject: [LTP] [PATCH v2] syscalls/recvmsg03.c: add new testcase
-In-Reply-To: <20161031133927.GB32461@rei>
-References: <20161031133927.GB32461@rei>
-Message-ID: <1477967071-12001-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 1 Nov 2016 12:26:15 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/umask03: Cleanup && Convert to new
+ API
+In-Reply-To: <20161031114002.GI30590@rei.lan>
+References: <1477882478-30693-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <1477882478-30693-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20161031114002.GI30590@rei.lan>
+Message-ID: <58181967.9070700@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-If the size of address for receiving data is set larger than actaul
-size, recvmsg() will set msg_namelen incorrectly and destroy sock_fd.
+Hi!
 
-This bug has been fixed by the following kernel patch:
-'commit 06b6a1cf6e77 ("rds: set correct msg_namelen")'
+Thanks for your review.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/.gitignore          |   1 +
- testcases/kernel/syscalls/recvmsg/recvmsg03.c | 196 ++++++++++++++++++++++++++
- 3 files changed, 198 insertions(+)
- create mode 100644 testcases/kernel/syscalls/recvmsg/recvmsg03.c
+On 10/31/2016 07:40 PM, Cyril Hrubis wrote:
+> On Mon, Oct 31, 2016 at 10:54:38AM +0800, Guangwen Feng wrote:
+>> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+>> ---
+>>  testcases/kernel/syscalls/umask/umask03.c | 172 +++++++++---------------------
+>>  1 file changed, 48 insertions(+), 124 deletions(-)
+>>
+>> diff --git a/testcases/kernel/syscalls/umask/umask03.c b/testcases/kernel/syscalls/umask/umask03.c
+>> index e10009c..30c28ca 100644
+>> --- a/testcases/kernel/syscalls/umask/umask03.c
+>> +++ b/testcases/kernel/syscalls/umask/umask03.c
+>> @@ -1,155 +1,79 @@
+>>  /*
+>> + * Copyright (c) International Business Machines  Corp., 2001
+>> + *  07/2001 Ported by John George
+>>   *
+>> - *   Copyright (c) International Business Machines  Corp., 2001
+>> + * This program is free software; you can redistribute it and/or modify
+>> + * it under the terms of the GNU General Public License as published by
+>> + * the Free Software Foundation; either version 2 of the License, or
+>> + * (at your option) any later version.
+>>   *
+>> - *   This program is free software;  you can redistribute it and/or modify
+>> - *   it under the terms of the GNU General Public License as published by
+>> - *   the Free Software Foundation; either version 2 of the License, or
+>> - *   (at your option) any later version.
+>> + * This program is distributed in the hope that it would be useful,
+>> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+>> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+>> + * the GNU General Public License for more details.
+>>   *
+>> - *   This program is distributed in the hope that it will be useful,
+>> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+>> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+>> - *   the GNU General Public License for more details.
+>> - *
+>> - *   You should have received a copy of the GNU General Public License
+>> - *   along with this program;  if not, write to the Free Software
+>> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+>> + * You should have received a copy of the GNU General Public License
+>> + * along with this program; if not, write the Free Software Foundation,
+>> + * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>>   */
+>>  
+>>  /*
+>> - * NAME
+>> - *	umask03.c
+>> - *
+>> - * DESCRIPTION
+>> - *	Check that umask changes the mask, and that the previous
+>> - *	value of the mask is returned correctly for each value.
+>> - *
+>> - * ALGORITHM
+>> - *	For each mask value (9 bits) set mask, and check that the return
+>> - *	corresponds to the previous value set.
+>> - *
+>> - * USAGE:  <for command-line>
+>> - *		umask03 [-c n] [-i n] [-I x] [-P x] [-t]
+>> - *		where,  -c n : Run n copies concurrently.
+>> - *			-i n : Execute test n times.
+>> - *			-I x : Execute test for x seconds.
+>> - *			-P x : Pause for x seconds between iterations.
+>> - *			-t   : Turn on syscall timing.
+>> - *
+>> - * History
+>> - *	07/2001 John George
+>> - *		-Ported
+>> - *
+>> - * Restrictions
+>> - *	None
+>> + * umask(2) sets the mask from 0000 to 0777 while we create files,
+>> + * then the file mode should be correct for each creation mask.
+>>   */
+>>  
+>> -#include <sys/types.h>
+>> -#include <sys/stat.h>
+>> -#include <fcntl.h>
+>> +#include <errno.h>
+>>  #include <stdio.h>
+>> -#include "test.h"
+>>  #include <sys/types.h>
+>>  #include <sys/stat.h>
+>> +#include "tst_test.h"
+>>  
+>> -char *TCID = "umask03";
+>> -int TST_TOTAL = 1;
+>> -
+>> -char filname[40];
+>> -
+>> -void setup(void);
+>> -void cleanup(void);
+>> +static char filename[40];
+>>  
+>> -int main(int argc, char **argv)
+>> +static void verify_umask(void)
+>>  {
+>> -	int lc;
+>> -
+>>  	struct stat statbuf;
+>> -	int mskval = 0000;
+>> -	int failcnt = 0;
+>> -	int fildes, i;
+>> +	int mskval;
+>> +	int fd;
+>> +	int failflag = 0;
+>>  	unsigned low9mode;
+>>  
+>> -	tst_parse_opts(argc, argv, NULL, NULL);
+>> +	for (mskval = 0000; mskval < 01000; mskval++) {
+>> +		TEST(umask(mskval));
+>> +		if (TEST_RETURN < 0) {
+>> +			tst_res(TFAIL | TTERRNO,
+>> +				"umask(%o) failed unexpectedly", mskval);
+>> +			return;
+>> +		}
+> 
+> Here as well.
+> 
+>> -	setup();		/* global setup */
+>> +		fd = SAFE_CREAT(filename, 0777);
+>> +		SAFE_CLOSE(fd);
+>>  
+>> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
+>> +		SAFE_STAT(filename, &statbuf);
+>>  
+>> -		/* reset tst_count in case we are looping */
+>> -		tst_count = 0;
+>> +		low9mode = statbuf.st_mode & 0777;
+>>  
+>> -		for (umask(mskval = 0077), i = 1; mskval < 01000;
+>> -		     i++, umask(++mskval)) {
+>> -			unlink(filname);
+>> -			if ((fildes = creat(filname, 0777)) == -1) {
+>> -				tst_resm(TBROK, "cannot create "
+>> -					 "file with mskval 0%o %d",
+>> -					 mskval, mskval);
+>> -			} else {
+>> -				if (fstat(fildes, &statbuf) != 0) {
+>> -					tst_resm(TBROK, "cannot fstat file");
+>> -				} else {
+>> -					low9mode = statbuf.st_mode & 0777;
+>> -					if (low9mode != (~mskval & 0777)) {
+>> -						tst_resm(TFAIL,
+>> -							 "got %o expected %o"
+>> -							 "mask didnot take",
+>> -							 low9mode,
+>> -							 (~mskval & 0777));
+>> -					}
+>> -				}
+> 
+> Hmm, so this test is just the same as umask02 but tries to create the
+> file as well.
+> 
+> What about we remove umask01.c and umask02.c and rename umask03.c to
+> umask01.c?
+> 
+> It's not like umask01.c or umask02.c adds any more value since umask03.c
+> is superset of these.
+> 
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index b781241..4c87f45 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -869,6 +869,7 @@ recvfrom01 recvfrom01
- 
- recvmsg01 recvmsg01
- recvmsg02 recvmsg02
-+recvmsg03 recvmsg03
- 
- remap_file_pages01 remap_file_pages01
- remap_file_pages02 remap_file_pages02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index f53cc05..1229720 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -725,6 +725,7 @@
- /recvfrom/recvfrom01
- /recvmsg/recvmsg01
- /recvmsg/recvmsg02
-+/recvmsg/recvmsg03
- /remap_file_pages/remap_file_pages01
- /remap_file_pages/remap_file_pages02
- /removexattr/removexattr01
-diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg03.c b/testcases/kernel/syscalls/recvmsg/recvmsg03.c
-new file mode 100644
-index 0000000..23ed23b
---- /dev/null
-+++ b/testcases/kernel/syscalls/recvmsg/recvmsg03.c
-@@ -0,0 +1,196 @@
-+/*
-+ * Copyright(c) 2016 Fujitsu Ltd.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * alone with this program.
-+ */
-+
-+/*
-+ * Test Name: recvmsg03
-+ *
-+ * This test needs that rds socket is supported by system.
-+ * If the size of address for receiving data is set larger than actaul size,
-+ * recvmsg() will set msg_namelen incorrectly and destroy sock_fd.
-+ *
-+ * Description:
-+ * This is a regression test and has been fixed by kernel commit:
-+ * 06b6a1cf6e776426766298d055bb3991957d90a7 (rds: set correct msg_namelen)
-+ */
-+
-+#include <errno.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <stdio.h>
-+
-+#include "tst_test.h"
-+
-+#ifndef AF_RDS
-+# define AF_RDS 21
-+#endif
-+
-+static int rds_flag;
-+
-+static void setup(void)
-+{
-+	int acc_res, load_res;
-+	const char *cmd[] = {"modprobe", "-i", "rds", NULL};
-+
-+	acc_res = access("/proc/sys/net/rds", F_OK);
-+	if (acc_res == -1 && errno != ENOENT)
-+		tst_brk(TFAIL | TERRNO, "failed to check rds module");
-+
-+	if (acc_res == -1 && errno == ENOENT) {
-+		load_res = tst_run_cmd(cmd, NULL, NULL, 1);
-+		if (load_res) {
-+			tst_brk(TCONF, "failed to loaded rds module, "
-+				"so rds modeule was not support by system");
-+		}
-+
-+		tst_res(TINFO, "succeeded to load rds module");
-+		rds_flag = 1;
-+	}
-+
-+	tst_res(TINFO, "rds module was supported by system");
-+}
-+
-+static void cleanup(void)
-+{
-+	int unload_res;
-+	const char *cmd[] = {"modprobe", "-r", "rds", NULL};
-+
-+	if (rds_flag == 1) {
-+		unload_res = tst_run_cmd(cmd, NULL, NULL, 1);
-+		if (unload_res)
-+			tst_res(TWARN | TERRNO, "failed to unload rds module");
-+		else
-+			tst_res(TINFO, "succeeded to unload rds modules");
-+	}
-+}
-+
-+static void client(void)
-+{
-+	int sock_fd1;
-+	char send_buf[128] = "hello world";
-+	struct sockaddr_in server_addr;
-+	struct sockaddr_in to_addr;
-+	struct msghdr msg;
-+	struct iovec iov;
-+
-+	sock_fd1 = SAFE_SOCKET(AF_RDS, SOCK_SEQPACKET, 0);
-+
-+	memset(&server_addr, 0, sizeof(server_addr));
-+	server_addr.sin_family = AF_INET;
-+	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-+	server_addr.sin_port = htons(4001);
-+
-+	SAFE_BIND(sock_fd1, (struct sockaddr *) &server_addr, sizeof(server_addr));
-+
-+	memset(&to_addr, 0, sizeof(to_addr));
-+
-+	to_addr.sin_family = AF_INET;
-+	to_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-+	to_addr.sin_port = htons(4000);
-+	msg.msg_name = &to_addr;
-+	msg.msg_namelen = sizeof(to_addr);
-+	msg.msg_iov = &iov;
-+	msg.msg_iovlen = 1;
-+	msg.msg_iov->iov_base = send_buf;
-+	msg.msg_iov->iov_len = strlen(send_buf) + 1;
-+	msg.msg_control = 0;
-+	msg.msg_controllen = 0;
-+	msg.msg_flags = 0;
-+
-+	if (sendmsg(sock_fd1, &msg, 0) == -1) {
-+		tst_brk(TFAIL | TERRNO,
-+			"sendmsg() failed to send data to server");
-+	}
-+
-+	SAFE_CLOSE(sock_fd1);
-+}
-+
-+static void server(void)
-+{
-+	int sock_fd, sock_fd2;
-+	static char recv_buf[128];
-+	struct sockaddr_in server_addr;
-+	struct sockaddr_in from_addr;
-+	struct msghdr msg;
-+	struct iovec iov;
-+
-+	sock_fd2 = SAFE_SOCKET(AF_RDS, SOCK_SEQPACKET, 0);
-+	sock_fd = sock_fd2;
-+
-+	memset(&server_addr, 0, sizeof(server_addr));
-+	server_addr.sin_family = AF_INET;
-+	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-+	server_addr.sin_port = htons(4000);
-+
-+	SAFE_BIND(sock_fd2, (struct sockaddr *) &server_addr, sizeof(server_addr));
-+
-+	msg.msg_name = &from_addr;
-+	msg.msg_namelen = sizeof(from_addr) + 16;
-+	msg.msg_iov = &iov;
-+	msg.msg_iovlen = 1;
-+	msg.msg_iov->iov_base = recv_buf;
-+	msg.msg_iov->iov_len = 128;
-+	msg.msg_control = 0;
-+	msg.msg_controllen = 0;
-+	msg.msg_flags = 0;
-+
-+	TST_CHECKPOINT_WAKE(0);
-+
-+	TEST(recvmsg(sock_fd2, &msg, 0));
-+	if (TEST_RETURN == -1) {
-+		tst_res(TFAIL | TERRNO,
-+		"recvmsg() failed to recvice data from client");
-+		goto end;
-+	}
-+
-+	if (msg.msg_namelen != sizeof(from_addr)) {
-+		tst_res(TFAIL, "msg_namelen was set to %u incorrectly, "
-+			"expected %lu", msg.msg_namelen, sizeof(from_addr));
-+		goto end;
-+	}
-+
-+	if (sock_fd2 != sock_fd) {
-+		tst_res(TFAIL, "sock_fd was destroyed");
-+		goto end;
-+	}
-+
-+	tst_res(TPASS, "msg_namelen was set to %u correctly and sock_fd was "
-+		"not destroyed", msg.msg_namelen);
-+
-+end:
-+	SAFE_CLOSE(sock_fd2);
-+}
-+
-+static void verify_recvmsg(void)
-+{
-+	pid_t pid;
-+
-+	pid = SAFE_FORK();
-+	if (pid == 0) {
-+		TST_CHECKPOINT_WAIT(0);
-+		client();
-+	} else {
-+		server();
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.tid = "recvmsg03",
-+	.forks_child = 1,
-+	.needs_checkpoints = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_recvmsg
-+};
--- 
-1.8.3.1
+I think it's a little bit different between umask02 and umask03, manual page
+says that umask(2) returns the previous value of the mask, and this is only
+checked in umask02.
 
+So what about we just remove umask01.c and rename umask02.c and umask03.c to
+umask01.c and umask02.c?
+
+Best Regards,
+Guangwen Feng
+
+>>  
+>> -/*
+>> - * setup
+>> - *	performs all ONE TIME setup for this test
+>> - */
+>>  void setup(void)
+>>  {
+>> -
+>> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+>> -
+>> -	/* Pause if that option was specified
+>> -	 * TEST_PAUSE contains the code to fork the test with the -i option.
+>> -	 * You want to make sure you do this before you create your temporary
+>> -	 * directory.
+>> -	 */
+>> -	TEST_PAUSE;
+>> -
+>> -	/* make temp dir and cd to it */
+>> -	tst_tmpdir();
+>> -
+>> -	sprintf(filname, "umask2.%d", getpid());
+>> +	sprintf(filename, "umask03.%d", getpid());
+> 
+> The test runs in unique temporary directory, there is no need for trying
+> to create unique filename.
+> 
+>>  }
+>>  
+>> -/*
+>> - * cleanup
+>> - *	performs all ONE TIME cleanup for this test at completion or
+>> - *	premature exit
+>> - */
+>> -void cleanup(void)
+>> -{
+>> -
+>> -	/*
+>> -	 * cleanup the temporary files and the temporary directory
+>> -	 */
+>> -	unlink(filname);
+>> -	tst_rmdir();
+>> -
+>> -	/*
+>> -	 * exit with return code appropriate for results
+>> -	 */
+>> -
+>> -}
+>> +static struct tst_test test = {
+>> +	.tid = "umask03",
+>> +	.needs_tmpdir = 1,
+>> +	.setup = setup,
+>> +	.test_all = verify_umask,
+>> +};
+>> -- 
+>> 1.8.4.2
+>>
+>>
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
 
 
