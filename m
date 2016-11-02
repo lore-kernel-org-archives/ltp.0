@@ -1,48 +1,181 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 2 Nov 2016 10:42:01 +0800
-Subject: [LTP] [PATCH 3/3] syscalls/umask03: Cleanup && Convert to new
- API
-In-Reply-To: <20161101150508.GA5787@rei.lan>
-References: <1477882478-30693-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1477882478-30693-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20161031114002.GI30590@rei.lan> <58181967.9070700@cn.fujitsu.com>
- <20161101150508.GA5787@rei.lan>
-Message-ID: <58195279.7030405@cn.fujitsu.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Wed, 2 Nov 2016 11:35:06 +0800
+Subject: [LTP] [PATCH] syscalls/sendto02.c: add new testcase
+In-Reply-To: <20161101162042.GB14966@rei.lan>
+References: <1477994467-18497-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20161101162042.GB14966@rei.lan>
+Message-ID: <58195EEA.2080404@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Hi cyril
 
-On 11/01/2016 11:05 PM, Cyril Hrubis wrote:
+I find that system would load sctp module when calling scoket(..., 
+IPPROTO_SCTP).
+If sctp module is not supported by system, it returns EPROTONOSUPPORT.
+I will remove loading/unloading code.
+
+Thanks,
+Xiao Yang
+
+On 2016/11/02 0:20, Cyril Hrubis wrote:
 > Hi!
->>> Hmm, so this test is just the same as umask02 but tries to create the
->>> file as well.
->>>
->>> What about we remove umask01.c and umask02.c and rename umask03.c to
->>> umask01.c?
->>>
->>> It's not like umask01.c or umask02.c adds any more value since umask03.c
->>> is superset of these.
->>>
+>> +#include<errno.h>
+>> +#include<sys/types.h>
+>> +#include<sys/socket.h>
+>> +
+>> +#include "tst_test.h"
+>> +
+>> +static int sockfd;
+>> +static int rds_flag;
+>> +static struct sockaddr_in sa;
+>> +
+>> +static void setup(void)
+>> +{
+>> +	int acc_res, load_res;
+>> +	const char *cmd[] = {"modprobe", "sctp", NULL};
+>> +
+>> +	acc_res = access("/proc/sys/net/sctp", F_OK);
+>> +	if (acc_res == -1&&  errno != ENOENT)
+>> +		tst_brk(TFAIL | TERRNO, "failed to check stcp module");
+>                                           ^
+> I would make the error message as specific as possible here, so I would
+> print what exactly has failed:
+>
+> tst_brk(TBROK | TERRNO, "access(/proc/sys/net/sctp, F_OK)");
+>
+>> +	if (acc_res == -1&&  errno == ENOENT) {
+>> +		load_res = tst_run_cmd(cmd, NULL, NULL, 1);
+>> +		if (load_res) {
+>> +			tst_brk(TCONF, "failed to loaded sctp module, "
+>                                                      ^
+> 						    load
+>> +				"so sctp modeule was not support by system");
+>                                             ^
+> 					  module
+>
+> Also I would say that all that needs to be printed here is the first
+> part of the string, i.e. "failed to load sctp module".
+>
+>> +		}
+>> +
+>> +		tst_res(TINFO, "succeeded to load sctp module");
+>> +		rds_flag = 1;
+>                   ^
+> 		 It would be a bit better to name it
+> 		 rds_module_loaded or just module_loaded
+>> +	}
+>> +
+>> +	tst_res(TINFO, "sctp module was supported by system");
+> Just omit this message, it's misleading anyway.
+>
+>> +	sockfd = SAFE_SOCKET(AF_INET, SOCK_STREAM, 132 /*IPPROTO_SCTP*/);
+>                                                      ^
+> 						    This is way too ugly.
+>
+> If IPPROTO_SCTP is not supported on you system you should add a fallback
+> definition such as:
+>
+> #ifndef IPPROTO_SCTP
+> # define IPPROTO_SCTP 132
+> #endif
+>
+> Also you didn't even try to include the<netinet/in.h>  header that
+> contains this definition, so it's quite likely that all you need to do
+> is to include this header as well.
+>
+>> +	memset(&sa, 0, sizeof(sa));
+>> +	sa.sin_family = AF_INET;
+>> +	sa.sin_addr.s_addr = inet_addr("127.0.0.1");
+>> +	sa.sin_port = htons(11111);
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	int unload_res;
+>> +	const char *cmd[] = {"modprobe", "-r", "sctp", NULL};
+>> +
+>> +	if (rds_flag == 1) {
+>> +		unload_res = tst_run_cmd(cmd, NULL, NULL, 1);
+>> +		if (unload_res) {
+>> +			/* We failed to unload sctp module(modprobe -r sctp)
+>> +			 * and the operation failed with "FATAL: Module sctp is
+>> +			 * in use." lsmod shows a reference count of 2 for sctp.
+>> +			 * If we rebuild kernel with CONFIG_MODULE_FORCE_UNLOAD
+>> +			 * enabled, we can succeed to unload sctp module
+>> +			 * (rmmod -f sctp).
+>> +			 */
+>> +			tst_res(TINFO, "failed to unload sctp module, you can"
+>> +				" reboot system to unload sctp after testing");
+> Isn't the problem here that you have to close the sctp socket *berofe*
+> you try to remove the module?
+>
+> It's pretty clear that the module would be in use at least until the
+> socked is closed.
+>
+>> +		} else {
+>> +			tst_res(TINFO, "succeeded to unload sctp modules");
+>> +		}
+>> +	}
+>> +
+>> +	if (sockfd>  0&&  close(sockfd))
+>> +		tst_res(TWARN | TERRNO, "failed to close file");
+>> +}
+>> +
+>> +static void verify_sendto(void)
+>> +{
+>> +	TEST(sendto(sockfd, NULL, 1, 0, (struct sockaddr *)&sa, sizeof(sa)));
+>> +	if (TEST_RETURN != -1) {
+>> +		tst_res(TFAIL, "sendto() succeeded unexpectedly");
+>> +		return;
+>> +	}
+>> +
+>> +	if (TEST_ERRNO == ENOMEM) {
+>> +		tst_res(TFAIL | TTERRNO, "sendto() got unrepaired errno with"
+>> +			" invalid buffer when sctp is selected in socket()");
+> This message is absurdly long as well. Be short and to the point.
+>
+> Something as:
+>
+> 	tst_res(TFAIL | TTERRNO, "sendto(fd, NULL, ...) failed unexpectedly");
+>
+>> +		return;
+>> +	}
+>> +
+>> +	if (TEST_ERRNO == EFAULT) {
+>> +		tst_res(TPASS | TTERRNO, "sendto() got repaired errno with"
+>> +			" invalid buffer when sctp is selected in socket()");
+> Here as well. Shorten the message to something more reasonable.
+>
+>> +		return;
+>> +	}
+>> +
+>> +	tst_res(TFAIL | TTERRNO, "sendto() got unexpected errno with invalid"
+>> +		" buffer when sctp is selected in socket(), expected ENOMEM "
+>> +		"or EFAULT");
+> Why do we have special case for errno != ENOMEM&&  errno != EFAULT. We
+> fail the testcase if the errno is not EFAULT anyway. There is no reason
+> to complicate the code like this.
+>
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.tid = "sendto02",
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>> +	.test_all = verify_sendto,
+>> +};
+>> -- 
+>> 1.8.3.1
 >>
->> I think it's a little bit different between umask02 and umask03, manual page
->> says that umask(2) returns the previous value of the mask, and this is only
->> checked in umask02.
 >>
->> So what about we just remove umask01.c and rename umask02.c and umask03.c to
->> umask01.c and umask02.c?
-> 
-> Hmm, right, the umask03 is not checking the return value. But still,
-> it's trivial enough to both check the return value and to try to create
-> the file in one test. There is no real need to have two when thing could
-> be easily done in just one.
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-OK, I see, I will rewrite the patch as you said, thanks.
-
-Best Regards,
-Guangwen Feng
 
 
