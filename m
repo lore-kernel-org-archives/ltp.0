@@ -1,44 +1,56 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 2 Nov 2016 16:47:31 +0100
-Subject: [LTP] [PATCH v3 4/5] llistxattr: new testcase for long path name
-In-Reply-To: <1478084391-30192-5-git-send-email-dejan.jovicevic@rt-rk.com>
+Date: Wed, 2 Nov 2016 17:13:52 +0100
+Subject: [LTP] [PATCH v3 5/5] flistxattr and listxattr: added tests
+In-Reply-To: <1478084391-30192-6-git-send-email-dejan.jovicevic@rt-rk.com>
 References: <1478084391-30192-1-git-send-email-dejan.jovicevic@rt-rk.com>
- <1478084391-30192-5-git-send-email-dejan.jovicevic@rt-rk.com>
-Message-ID: <20161102154731.GG28344@rei.lan>
+ <1478084391-30192-6-git-send-email-dejan.jovicevic@rt-rk.com>
+Message-ID: <20161102161351.GH28344@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> +char longpathname[PATH_MAX + 2];
-
-Should be static char.
-
->  static struct test_case {
->  	const char *path;
->  	size_t size;
-> @@ -54,7 +58,8 @@ static struct test_case {
->  } tc[] = {
->  	{SYMLINK, 1, ERANGE},
->  	{"", 20, ENOENT},
-> -	{(char *)-1, 20, EFAULT}
-> +	{(char *)-1, 20, EFAULT},
-> +	{longpathname, 20, ENAMETOOLONG}
->  };
->  
->  static void verify_llistxattr(unsigned int n)
-> @@ -85,6 +90,8 @@ static void setup(void)
->  	SAFE_SYMLINK(TESTFILE, SYMLINK);
->  
->  	SAFE_LSETXATTR(SYMLINK, SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
+Hi!
+> +#
+> +#  Copyright (c) 2016 RT-RK Institute for Computer Based Systems
+> +#  Author: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
+> +#
+> +#  This program is free software;  you can redistribute it and/or modify
+> +#  it under the terms of the GNU General Public License as published by
+> +#  the Free Software Foundation; either version 2 of the License, or
+> +#  (at your option) any later version.
+> +#
+> +#  This program is distributed in the hope that it will be useful,
+> +#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +#  the GNU General Public License for more details.
+> +#
+> +#  You should have received a copy of the GNU General Public License
+> +#  along with this program.
+> +#
 > +
-> +	memset(&longpathname, 'a', sizeof(longpathname) - 1);
+> +top_srcdir		?= ../../../..
+> +
+> +include $(top_srcdir)/include/mk/testcases.mk
+> +
+> +include $(top_srcdir)/include/mk/generic_leaf_target.mk
+> diff --git a/testcases/kernel/syscalls/flistxattr/flistxattr01.c b/testcases/kernel/syscalls/flistxattr/flistxattr01.c
+> new file mode 100644
+> index 0000000..5084f7d
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/flistxattr/flistxattr01.c
+> @@ -0,0 +1,102 @@
+> +/*
+> +* Copyright (c) 2016 RT-RK Institute for Computer Based Systems
+> +* Author: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
+> +*
+> +* This program is free software; you can redistribute it and/or modify it
+> +* under the terms of version 2 of the GNU General Public License as
+> +* published by the Free Software Foundation.
 
-No need for the & here (in C array is a pointer to a first member and
-&array == array).
-
-Otherwise it's fine.
+FYI the GPLv2+ (any later version) is slightly prefered (that is the one
+in the Makefile above).
 
 -- 
 Cyril Hrubis
