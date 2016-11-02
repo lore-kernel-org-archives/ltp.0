@@ -1,48 +1,44 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 2 Nov 2016 16:44:22 +0100
-Subject: [LTP] [PATCH v3 3/5] llistxattr: improved code readability and
-In-Reply-To: <1478084391-30192-4-git-send-email-dejan.jovicevic@rt-rk.com>
+Date: Wed, 2 Nov 2016 16:47:31 +0100
+Subject: [LTP] [PATCH v3 4/5] llistxattr: new testcase for long path name
+In-Reply-To: <1478084391-30192-5-git-send-email-dejan.jovicevic@rt-rk.com>
 References: <1478084391-30192-1-git-send-email-dejan.jovicevic@rt-rk.com>
- <1478084391-30192-4-git-send-email-dejan.jovicevic@rt-rk.com>
-Message-ID: <20161102154422.GF28344@rei.lan>
+ <1478084391-30192-5-git-send-email-dejan.jovicevic@rt-rk.com>
+Message-ID: <20161102154731.GG28344@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+> +char longpathname[PATH_MAX + 2];
+
+Should be static char.
+
+>  static struct test_case {
+>  	const char *path;
+>  	size_t size;
+> @@ -54,7 +58,8 @@ static struct test_case {
+>  } tc[] = {
+>  	{SYMLINK, 1, ERANGE},
+>  	{"", 20, ENOENT},
+> -	{(char *)-1, 20, EFAULT}
+> +	{(char *)-1, 20, EFAULT},
+> +	{longpathname, 20, ENAMETOOLONG}
+>  };
+>  
 >  static void verify_llistxattr(unsigned int n)
-> @@ -59,7 +57,7 @@ static void verify_llistxattr(unsigned int n)
+> @@ -85,6 +90,8 @@ static void setup(void)
+>  	SAFE_SYMLINK(TESTFILE, SYMLINK);
 >  
->  	TEST(llistxattr(name, NULL, 0));
->  	if (TEST_RETURN == -1) {
-> -		tst_res(TFAIL | TERRNO, "llistxattr() failed");
-> +		tst_res(TFAIL | TTERRNO, "llistxattr() failed");
+>  	SAFE_LSETXATTR(SYMLINK, SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
+> +
+> +	memset(&longpathname, 'a', sizeof(longpathname) - 1);
 
-The TERRNO -> TTERRNO has been fixed by:
+No need for the & here (in C array is a pointer to a first member and
+&array == array).
 
-https://github.com/linux-test-project/ltp/commit/00b4cdeed78d43e3f9dca769ef444f68cbb681c1
-
-Please rebase this patch.
-
->  		return;
->  	}
->  
-> @@ -71,8 +69,6 @@ static void verify_llistxattr(unsigned int n)
->  
->  static void setup(void)
->  {
-> -	int ret;
-> -
-
-This removal should have been part of the prevous patch, right?
-
->  	SAFE_TOUCH(filename[0], 0644, NULL);
->  
->  	SAFE_TOUCH(filename[1], 0644, NULL);
-
-Otherwise it looks good.
+Otherwise it's fine.
 
 -- 
 Cyril Hrubis
