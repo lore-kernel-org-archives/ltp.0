@@ -1,154 +1,271 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 2 Nov 2016 11:28:26 +0800
-Subject: [LTP] [PATCH v2] syscalls/sendto02.c: add new testcase
-In-Reply-To: <20161101162042.GB14966@rei.lan>
-References: <20161101162042.GB14966@rei.lan>
-Message-ID: <1478057306-15511-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Wed, 2 Nov 2016 13:34:51 +0800
+Subject: [LTP] [PATCH v2] syscalls/recvmsg03.c: add new testcase
+In-Reply-To: <1477967071-12001-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20161031133927.GB32461@rei>
+ <1477967071-12001-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <58197AFB.2090102@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 To: ltp@lists.linux.it
 
-When sctp protocol is selected in socket(2) and buffer is invalid,
-sendto(2) should fail and set errno to EFAULT, but it sets errno
-to ENOMEM.
+Hi Cyril
 
-This is a regression test and has been fixed by kernel patch:
-'commit 6e51fe757259 ("sctp: fix -ENOMEM result with invalid
-user space pointer in sendto() syscall")'
+Please ignore the v2 patch=EF=BC=8Ci will resend it.
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- runtest/syscalls                            |  1 +
- testcases/kernel/syscalls/.gitignore        |  1 +
- testcases/kernel/syscalls/sendto/sendto02.c | 91 +++++++++++++++++++++++++++++
- 3 files changed, 93 insertions(+)
- create mode 100644 testcases/kernel/syscalls/sendto/sendto02.c
-
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 7c84296..a9da8ca 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -1006,6 +1006,7 @@ sendmsg01 sendmsg01
- sendmsg02 sendmsg02
- 
- sendto01 sendto01
-+sendto02 sendto02
- 
- setdomainname01	setdomainname01
- setdomainname02	setdomainname02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index f53cc05..eb9bf5c 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -814,6 +814,7 @@
- /sendmsg/sendmsg01
- /sendmsg/sendmsg02
- /sendto/sendto01
-+/sendto/sendto02
- /set_robust_list/set_robust_list01
- /set_thread_area/set_thread_area01
- /set_thread_area/set_thread_area02
-diff --git a/testcases/kernel/syscalls/sendto/sendto02.c b/testcases/kernel/syscalls/sendto/sendto02.c
-new file mode 100644
-index 0000000..2d5887d
---- /dev/null
-+++ b/testcases/kernel/syscalls/sendto/sendto02.c
-@@ -0,0 +1,91 @@
-+/*
-+ * Copyright(c) 2016 Fujitsu Ltd.
-+ * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * alone with this program.
-+ */
-+
-+/*
-+ * Test Name: sendto02
-+ *
-+ * Description:
-+ * When sctp protocol is selected in socket(2) and buffer is invalid,
-+ * sendto(2) should fail and set errno to EFAULT, but it sets errno
-+ * to ENOMEM.
-+ *
-+ * This is a regression test and has been fixed by kernel commit:
-+ * 6e51fe7572590d8d86e93b547fab6693d305fd0d (sctp: fix -ENOMEM result
-+ * with invalid user space pointer in sendto() syscall)
-+ */
-+
-+#include <errno.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+
-+#include "tst_test.h"
-+
-+#ifndef IPPROTO_SCTP
-+# define IPPROTO_SCTP	132
-+#endif
-+
-+static int sockfd;
-+static struct sockaddr_in sa;
-+
-+static void setup(void)
-+{
-+	sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
-+	if (sockfd == -1) {
-+		if (errno == EPROTONOSUPPORT)
-+			tst_brk(TCONF, "sctp protocol was not supported");
-+		else
-+			tst_brk(TBROK | TERRNO, "socket() failed with sctp");
-+	}
-+
-+	memset(&sa, 0, sizeof(sa));
-+	sa.sin_family = AF_INET;
-+	sa.sin_addr.s_addr = inet_addr("127.0.0.1");
-+	sa.sin_port = htons(11111);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (sockfd > 0 && close(sockfd))
-+		tst_res(TWARN | TERRNO, "failed to close file");
-+}
-+
-+static void verify_sendto(void)
-+{
-+	TEST(sendto(sockfd, NULL, 1, 0, (struct sockaddr *) &sa, sizeof(sa)));
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "sendto(fd, NULL, ...) succeeded unexpectedly");
-+		return;
-+	}
-+
-+	if (TEST_ERRNO == EFAULT) {
-+		tst_res(TPASS | TTERRNO,
-+			"sendto(fd, NULL, ...) failed expectedly");
-+		return;
-+	}
-+
-+	tst_res(TFAIL | TTERRNO,
-+		"sendto(fd, NULL, ...) failed unexpectedly, expected EFAULT");
-+}
-+
-+static struct tst_test test = {
-+	.tid = "sendto02",
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_sendto,
-+};
--- 
-1.8.3.1
+Thanks,
+Xiao Yang
+On 2016/11/01 10:24, Xiao Yang wrote:
+> If the size of address for receiving data is set larger than actaul
+> size, recvmsg() will set msg_namelen incorrectly and destroy sock_fd.
+>
+> This bug has been fixed by the following kernel patch:
+> 'commit 06b6a1cf6e77 ("rds: set correct msg_namelen")'
+>
+> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> ---
+>  runtest/syscalls                              |   1 +
+>  testcases/kernel/syscalls/.gitignore          |   1 +
+>  testcases/kernel/syscalls/recvmsg/recvmsg03.c | 196 ++++++++++++++++++++=
+++++++
+>  3 files changed, 198 insertions(+)
+>  create mode 100644 testcases/kernel/syscalls/recvmsg/recvmsg03.c
+>
+> diff --git a/runtest/syscalls b/runtest/syscalls
+> index b781241..4c87f45 100644
+> --- a/runtest/syscalls
+> +++ b/runtest/syscalls
+> @@ -869,6 +869,7 @@ recvfrom01 recvfrom01
+> =20
+>  recvmsg01 recvmsg01
+>  recvmsg02 recvmsg02
+> +recvmsg03 recvmsg03
+> =20
+>  remap_file_pages01 remap_file_pages01
+>  remap_file_pages02 remap_file_pages02
+> diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/sysc=
+alls/.gitignore
+> index f53cc05..1229720 100644
+> --- a/testcases/kernel/syscalls/.gitignore
+> +++ b/testcases/kernel/syscalls/.gitignore
+> @@ -725,6 +725,7 @@
+>  /recvfrom/recvfrom01
+>  /recvmsg/recvmsg01
+>  /recvmsg/recvmsg02
+> +/recvmsg/recvmsg03
+>  /remap_file_pages/remap_file_pages01
+>  /remap_file_pages/remap_file_pages02
+>  /removexattr/removexattr01
+> diff --git a/testcases/kernel/syscalls/recvmsg/recvmsg03.c b/testcases/ke=
+rnel/syscalls/recvmsg/recvmsg03.c
+> new file mode 100644
+> index 0000000..23ed23b
+> --- /dev/null
+> +++ b/testcases/kernel/syscalls/recvmsg/recvmsg03.c
+> @@ -0,0 +1,196 @@
+> +/*
+> + * Copyright(c) 2016 Fujitsu Ltd.
+> + * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify =
+it
+> + * under the terms of version 2 of the GNU General Public License as
+> + * published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it would be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * alone with this program.
+> + */
+> +
+> +/*
+> + * Test Name: recvmsg03
+> + *
+> + * This test needs that rds socket is supported by system.
+> + * If the size of address for receiving data is set larger than actaul s=
+ize,
+> + * recvmsg() will set msg_namelen incorrectly and destroy sock_fd.
+> + *
+> + * Description:
+> + * This is a regression test and has been fixed by kernel commit:
+> + * 06b6a1cf6e776426766298d055bb3991957d90a7 (rds: set correct msg_namele=
+n)
+> + */
+> +
+> +#include <errno.h>
+> +#include <sys/types.h>
+> +#include <sys/socket.h>
+> +#include <stdio.h>
+> +
+> +#include "tst_test.h"
+> +
+> +#ifndef AF_RDS
+> +# define AF_RDS 21
+> +#endif
+> +
+> +static int rds_flag;
+> +
+> +static void setup(void)
+> +{
+> +	int acc_res, load_res;
+> +	const char *cmd[] =3D {"modprobe", "-i", "rds", NULL};
+> +
+> +	acc_res =3D access("/proc/sys/net/rds", F_OK);
+> +	if (acc_res =3D=3D -1 && errno !=3D ENOENT)
+> +		tst_brk(TFAIL | TERRNO, "failed to check rds module");
+> +
+> +	if (acc_res =3D=3D -1 && errno =3D=3D ENOENT) {
+> +		load_res =3D tst_run_cmd(cmd, NULL, NULL, 1);
+> +		if (load_res) {
+> +			tst_brk(TCONF, "failed to loaded rds module, "
+> +				"so rds modeule was not support by system");
+> +		}
+> +
+> +		tst_res(TINFO, "succeeded to load rds module");
+> +		rds_flag =3D 1;
+> +	}
+> +
+> +	tst_res(TINFO, "rds module was supported by system");
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	int unload_res;
+> +	const char *cmd[] =3D {"modprobe", "-r", "rds", NULL};
+> +
+> +	if (rds_flag =3D=3D 1) {
+> +		unload_res =3D tst_run_cmd(cmd, NULL, NULL, 1);
+> +		if (unload_res)
+> +			tst_res(TWARN | TERRNO, "failed to unload rds module");
+> +		else
+> +			tst_res(TINFO, "succeeded to unload rds modules");
+> +	}
+> +}
+> +
+> +static void client(void)
+> +{
+> +	int sock_fd1;
+> +	char send_buf[128] =3D "hello world";
+> +	struct sockaddr_in server_addr;
+> +	struct sockaddr_in to_addr;
+> +	struct msghdr msg;
+> +	struct iovec iov;
+> +
+> +	sock_fd1 =3D SAFE_SOCKET(AF_RDS, SOCK_SEQPACKET, 0);
+> +
+> +	memset(&server_addr, 0, sizeof(server_addr));
+> +	server_addr.sin_family =3D AF_INET;
+> +	server_addr.sin_addr.s_addr =3D inet_addr("127.0.0.1");
+> +	server_addr.sin_port =3D htons(4001);
+> +
+> +	SAFE_BIND(sock_fd1, (struct sockaddr *) &server_addr, sizeof(server_add=
+r));
+> +
+> +	memset(&to_addr, 0, sizeof(to_addr));
+> +
+> +	to_addr.sin_family =3D AF_INET;
+> +	to_addr.sin_addr.s_addr =3D inet_addr("127.0.0.1");
+> +	to_addr.sin_port =3D htons(4000);
+> +	msg.msg_name =3D &to_addr;
+> +	msg.msg_namelen =3D sizeof(to_addr);
+> +	msg.msg_iov =3D &iov;
+> +	msg.msg_iovlen =3D 1;
+> +	msg.msg_iov->iov_base =3D send_buf;
+> +	msg.msg_iov->iov_len =3D strlen(send_buf) + 1;
+> +	msg.msg_control =3D 0;
+> +	msg.msg_controllen =3D 0;
+> +	msg.msg_flags =3D 0;
+> +
+> +	if (sendmsg(sock_fd1, &msg, 0) =3D=3D -1) {
+> +		tst_brk(TFAIL | TERRNO,
+> +			"sendmsg() failed to send data to server");
+> +	}
+> +
+> +	SAFE_CLOSE(sock_fd1);
+> +}
+> +
+> +static void server(void)
+> +{
+> +	int sock_fd, sock_fd2;
+> +	static char recv_buf[128];
+> +	struct sockaddr_in server_addr;
+> +	struct sockaddr_in from_addr;
+> +	struct msghdr msg;
+> +	struct iovec iov;
+> +
+> +	sock_fd2 =3D SAFE_SOCKET(AF_RDS, SOCK_SEQPACKET, 0);
+> +	sock_fd =3D sock_fd2;
+> +
+> +	memset(&server_addr, 0, sizeof(server_addr));
+> +	server_addr.sin_family =3D AF_INET;
+> +	server_addr.sin_addr.s_addr =3D inet_addr("127.0.0.1");
+> +	server_addr.sin_port =3D htons(4000);
+> +
+> +	SAFE_BIND(sock_fd2, (struct sockaddr *) &server_addr, sizeof(server_add=
+r));
+> +
+> +	msg.msg_name =3D &from_addr;
+> +	msg.msg_namelen =3D sizeof(from_addr) + 16;
+> +	msg.msg_iov =3D &iov;
+> +	msg.msg_iovlen =3D 1;
+> +	msg.msg_iov->iov_base =3D recv_buf;
+> +	msg.msg_iov->iov_len =3D 128;
+> +	msg.msg_control =3D 0;
+> +	msg.msg_controllen =3D 0;
+> +	msg.msg_flags =3D 0;
+> +
+> +	TST_CHECKPOINT_WAKE(0);
+> +
+> +	TEST(recvmsg(sock_fd2, &msg, 0));
+> +	if (TEST_RETURN =3D=3D -1) {
+> +		tst_res(TFAIL | TERRNO,
+> +		"recvmsg() failed to recvice data from client");
+> +		goto end;
+> +	}
+> +
+> +	if (msg.msg_namelen !=3D sizeof(from_addr)) {
+> +		tst_res(TFAIL, "msg_namelen was set to %u incorrectly, "
+> +			"expected %lu", msg.msg_namelen, sizeof(from_addr));
+> +		goto end;
+> +	}
+> +
+> +	if (sock_fd2 !=3D sock_fd) {
+> +		tst_res(TFAIL, "sock_fd was destroyed");
+> +		goto end;
+> +	}
+> +
+> +	tst_res(TPASS, "msg_namelen was set to %u correctly and sock_fd was "
+> +		"not destroyed", msg.msg_namelen);
+> +
+> +end:
+> +	SAFE_CLOSE(sock_fd2);
+> +}
+> +
+> +static void verify_recvmsg(void)
+> +{
+> +	pid_t pid;
+> +
+> +	pid =3D SAFE_FORK();
+> +	if (pid =3D=3D 0) {
+> +		TST_CHECKPOINT_WAIT(0);
+> +		client();
+> +	} else {
+> +		server();
+> +	}
+> +}
+> +
+> +static struct tst_test test =3D {
+> +	.tid =3D "recvmsg03",
+> +	.forks_child =3D 1,
+> +	.needs_checkpoints =3D 1,
+> +	.setup =3D setup,
+> +	.cleanup =3D cleanup,
+> +	.test_all =3D verify_recvmsg
+> +};
 
 
 
