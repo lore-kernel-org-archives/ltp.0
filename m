@@ -1,122 +1,211 @@
 From: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
-Date: Wed,  2 Nov 2016 11:59:47 +0100
-Subject: [LTP]  [PATCH v3 1/5] safe_macros: add safe_setxattr(),
+Date: Wed,  2 Nov 2016 11:59:49 +0100
+Subject: [LTP]  [PATCH v3 3/5] llistxattr: improved code readability and
 In-Reply-To: <1478084391-30192-1-git-send-email-dejan.jovicevic@rt-rk.com>
 References: <1478084391-30192-1-git-send-email-dejan.jovicevic@rt-rk.com>
-Message-ID: <1478084391-30192-2-git-send-email-dejan.jovicevic@rt-rk.com>
+Message-ID: <1478084391-30192-4-git-send-email-dejan.jovicevic@rt-rk.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Added SAFE_SETXATTR(), SAFE_LSETXATTR() and SAFE_FSETXATTR()
-macros to simplify error checking in test preparation. Instead
-of calling the system function, checking for their return value
-and aborting the test if the operation has failed, just use
-corresponding safe macro.
+Changed bits of code, such as hardcoded magic constants,
+unnecessary else branches, way of passing array size to
+a function, removed unnecessary comments, moved to using
+macros instead of string literals where seemed to be fit.
+
+This was done to make the code easier to read and understand,
+and make it easier to maintain in case of changes
 
 Signed-off-by: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
 ---
- include/tst_safe_macros.h | 12 +++++++++
- lib/safe_macros.c         | 66 +++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 78 insertions(+)
+ .../kernel/syscalls/llistxattr/llistxattr01.c      | 25 +++++++-------
+ .../kernel/syscalls/llistxattr/llistxattr02.c      | 38 ++++++++++------------
+ .../kernel/syscalls/llistxattr/llistxattr03.c      | 14 +++-----
+ 3 files changed, 36 insertions(+), 41 deletions(-)
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index d1519f9..936f4dc 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -433,4 +433,16 @@ static inline sighandler_t safe_signal(const char *file, const int lineno,
- 	         "execlp(%s, %s, ...) failed", file, arg); \
- 	} while (0)
+diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr01.c b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
+index ef27991..9161b94 100644
+--- a/testcases/kernel/syscalls/llistxattr/llistxattr01.c
++++ b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
+@@ -40,8 +40,10 @@
+ #define SECURITY_KEY1	"security.ltptest1"
+ #define SECURITY_KEY2	"security.ltptest2"
+ #define VALUE	"test"
+-#define VALUE_SIZE	4
+-#define KEY_SIZE    17
++#define VALUE_SIZE	(sizeof(VALUE) - 1)
++#define KEY_SIZE    (sizeof(SECURITY_KEY1) - 1)
++#define TESTFILE    "testfile"
++#define SYMLINK    "symlink"
  
-+#define SAFE_SETXATTR(path, name, value, size, flags) \
-+	safe_setxattr(__FILE__, __LINE__, NULL, (path), (name), (value), (size), \
-+				(flags))
-+
-+#define SAFE_LSETXATTR(path, name, value, size, flags) \
-+	safe_lsetxattr(__FILE__, __LINE__, NULL, (path), (name), (value), (size), \
-+				(flags))
-+
-+#define SAFE_FSETXATTR(fd, name, value, size, flags) \
-+	safe_fsetxattr(__FILE__, __LINE__, NULL, (fd), (name), (value), (size), \
-+				(flags))
-+
- #endif /* SAFE_MACROS_H__ */
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 5a05c84..e1d01b9 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -794,3 +794,69 @@ struct dirent *safe_readdir(const char *file, const int lineno, void (cleanup_fn
- 	errno = err;
- 	return rval;
+ static int has_attribute(const char *list, int llen, const char *attr)
+ {
+@@ -56,22 +58,21 @@ static int has_attribute(const char *list, int llen, const char *attr)
+ 
+ static void verify_llistxattr(void)
+ {
+-	int size = 64;
+-	char buf[size];
++	char buf[64];
+ 
+-	TEST(llistxattr("symlink", buf, size));
++	TEST(llistxattr(SYMLINK, buf, sizeof(buf)));
+ 	if (TEST_RETURN == -1) {
+-		tst_res(TFAIL | TERRNO, "llistxattr() failed");
++		tst_res(TFAIL | TTERRNO, "llistxattr() failed");
+ 		return;
+ 	}
+ 
+-	if (has_attribute(buf, size, SECURITY_KEY1)) {
++	if (has_attribute(buf, sizeof(buf), SECURITY_KEY1)) {
+ 		tst_res(TFAIL, "get file attribute %s unexpectlly",
+ 			 SECURITY_KEY1);
+ 		return;
+ 	}
+ 
+-	if (!has_attribute(buf, size, SECURITY_KEY2)) {
++	if (!has_attribute(buf, sizeof(buf), SECURITY_KEY2)) {
+ 		tst_res(TFAIL, "missing attribute %s", SECURITY_KEY2);
+ 		return;
+ 	}
+@@ -81,13 +82,13 @@ static void verify_llistxattr(void)
+ 
+ static void setup(void)
+ {
+-	SAFE_TOUCH("testfile", 0644, NULL);
++	SAFE_TOUCH(TESTFILE, 0644, NULL);
+ 
+-	SAFE_SYMLINK("testfile", "symlink");
++	SAFE_SYMLINK(TESTFILE, SYMLINK);
+ 
+-	SAFE_LSETXATTR("testfile", SECURITY_KEY1, VALUE, VALUE_SIZE, XATTR_CREATE);
++	SAFE_LSETXATTR(TESTFILE, SECURITY_KEY1, VALUE, VALUE_SIZE, XATTR_CREATE);
+ 
+-	SAFE_LSETXATTR("symlink", SECURITY_KEY2, VALUE, VALUE_SIZE, XATTR_CREATE);
++	SAFE_LSETXATTR(SYMLINK, SECURITY_KEY2, VALUE, VALUE_SIZE, XATTR_CREATE);
  }
-+
-+int safe_setxattr(const char *file, const int lineno, void (cleanup_fn)(void),
-+				const char *path, const char *name, const void *value,
-+				size_t size, int flags)
-+{
-+	int rval;
-+
-+	rval = setxattr(path, name, value, size, flags);
-+
-+	if (rval) {
-+		if (errno == ENOTSUP) {
-+			tst_brkm(TCONF, cleanup_fn,
-+				 "%s:%d: no xattr support in fs or mounted "
-+				 "without user_xattr option", file, lineno);
-+		}
-+
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "%s:%d: setxattr() failed",
-+			     file, lineno);
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr02.c b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
+index 7c09b5b..191ec36 100644
+--- a/testcases/kernel/syscalls/llistxattr/llistxattr02.c
++++ b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
+@@ -43,18 +43,17 @@
+ 
+ #define SECURITY_KEY	"security.ltptest"
+ #define VALUE	"test"
+-#define VALUE_SIZE	4
++#define VALUE_SIZE	(sizeof(VALUE) - 1)
++#define TESTFILE   "testfile"
++#define SYMLINK    "symlink"
+ 
+ static struct test_case {
+ 	const char *path;
+ 	size_t size;
+ 	int exp_err;
+ } tc[] = {
+-	/* test1 */
+-	{"symlink", 1, ERANGE},
+-	/* test2 */
++	{SYMLINK, 1, ERANGE},
+ 	{"", 20, ENOENT},
+-	/* test3 */
+ 	{(char *)-1, 20, EFAULT}
+ };
+ 
+@@ -63,30 +62,29 @@ static void verify_llistxattr(unsigned int n)
+ 	struct test_case *t = tc + n;
+ 	char buf[t->size];
+ 
+-	TEST(llistxattr(t->path, buf, t->size));
+-	if (TEST_RETURN != -1) {
++	TEST(llistxattr(t->path, buf, sizeof(buf)));
++	if (TEST_RETURN == 0) {
+ 		tst_res(TFAIL, "llistxattr() succeeded unexpectedly");
++		return;
 +	}
 +
-+	return rval;
-+}
++	if (TEST_ERRNO != t->exp_err) {
++		tst_res(TFAIL | TTERRNO, "llistxattr() failed "
++			 "unexpectedlly, expected %s",
++			 tst_strerrno(t->exp_err));
+ 	} else {
+-		if (TEST_ERRNO != t->exp_err) {
+-			tst_res(TFAIL | TTERRNO, "llistxattr() failed "
+-				 "unexpectedlly, expected %s",
+-				 tst_strerrno(t->exp_err));
+-		} else {
+-			tst_res(TPASS | TTERRNO,
+-				 "llistxattr() failed as expected");
+-		}
++		tst_res(TPASS | TTERRNO,
++			 "llistxattr() failed as expected");
+ 	}
+ }
+ 
+ static void setup(void)
+ {
+-	int n;
+-
+-	SAFE_TOUCH("testfile", 0644, NULL);
++	SAFE_TOUCH(TESTFILE, 0644, NULL);
+ 
+-	SAFE_SYMLINK("testfile", "symlink");
++	SAFE_SYMLINK(TESTFILE, SYMLINK);
+ 
+-	SAFE_LSETXATTR("symlink", SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
++	SAFE_LSETXATTR(SYMLINK, SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
+ }
+ 
+ static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr03.c b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
+index da16048..e2c651e 100644
+--- a/testcases/kernel/syscalls/llistxattr/llistxattr03.c
++++ b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
+@@ -37,7 +37,7 @@
+ 
+ #define SECURITY_KEY	"security.ltptest"
+ #define VALUE	"test"
+-#define VALUE_SIZE	4
++#define VALUE_SIZE	(sizeof(VALUE) - 1)
+ 
+ static const char *filename[] = {"testfile1", "testfile2"};
+ 
+@@ -46,11 +46,9 @@ static int check_suitable_buf(const char *name, long size)
+ 	int n;
+ 	char buf[size];
+ 
+-	n = llistxattr(name, buf, size);
+-	if (n == -1)
+-		return 0;
+-	else
+-		return 1;
++	n = llistxattr(name, buf, sizeof(buf));
 +
-+int safe_lsetxattr(const char *file, const int lineno, void (cleanup_fn)(void),
-+				const char *path, const char *name, const void *value,
-+				size_t size, int flags)
-+{
-+	int rval;
-+
-+	rval = lsetxattr(path, name, value, size, flags);
-+
-+	if (rval) {
-+		if (errno == ENOTSUP) {
-+			tst_brkm(TCONF, cleanup_fn,
-+				 "%s:%d: no xattr support in fs or mounted "
-+				 "without user_xattr option", file, lineno);
-+		}
-+
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "%s:%d: lsetxattr() failed",
-+			     file, lineno);
-+	}
-+
-+	return rval;
-+}
-+
-+int safe_fsetxattr(const char *file, const int lineno, void (cleanup_fn)(void),
-+				int fd, const char *name, const void *value, size_t size,
-+				int flags)
-+{
-+	int rval;
-+
-+	rval = fsetxattr(fd, name, value, size, flags);
-+
-+	if (rval) {
-+		if (errno == ENOTSUP) {
-+			tst_brkm(TCONF, cleanup_fn,
-+				 "%s:%d: no xattr support in fs or mounted "
-+				 "without user_xattr option", file, lineno);
-+		}
-+
-+		tst_brkm(TBROK | TERRNO, cleanup_fn, "%s:%d: fsetxattr() failed",
-+			     file, lineno);
-+	}
-+
-+	return rval;
-+}
++	return n != -1;
+ }
+ 
+ static void verify_llistxattr(unsigned int n)
+@@ -59,7 +57,7 @@ static void verify_llistxattr(unsigned int n)
+ 
+ 	TEST(llistxattr(name, NULL, 0));
+ 	if (TEST_RETURN == -1) {
+-		tst_res(TFAIL | TERRNO, "llistxattr() failed");
++		tst_res(TFAIL | TTERRNO, "llistxattr() failed");
+ 		return;
+ 	}
+ 
+@@ -71,8 +69,6 @@ static void verify_llistxattr(unsigned int n)
+ 
+ static void setup(void)
+ {
+-	int ret;
+-
+ 	SAFE_TOUCH(filename[0], 0644, NULL);
+ 
+ 	SAFE_TOUCH(filename[1], 0644, NULL);
 -- 
 1.9.1
 
