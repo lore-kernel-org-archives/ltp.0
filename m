@@ -1,151 +1,99 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 3 Nov 2016 18:55:16 +0800
-Subject: [LTP] [PATCH 1/3] syscalls/umount01: Cleanup && Convert to new API
-Message-ID: <1478170518-5952-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 3 Nov 2016 12:00:26 +0100
+Subject: [LTP] [PATCH] memcg_control_test.sh:incorrect test result and a
+ pipe issue
+In-Reply-To: <1478166145-5177-1-git-send-email-shuang.qiu@oracle.com>
+References: <1478166145-5177-1-git-send-email-shuang.qiu@oracle.com>
+Message-ID: <20161103110026.GC27513@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- testcases/kernel/syscalls/umount/umount01.c | 104 +++++++++-------------------
- 1 file changed, 34 insertions(+), 70 deletions(-)
+Hi!
+> * The test result flag FAILED_CNT is handled in a sub-shell,which will
+> make the test result passed even the test actually failed,update the
+> scripts to not running in sub-shell.
+> * Sometimes the mem_process process is killed after more than 5
+> seconds,increase the sleep time to 15 sceconds.And if the mem_process
+> process is killed after 5 sceconds,the pipe may blocked while writing
+> it(echo m > $STATUS_PIPE;echo x > $STATUS_PIPE),then the whole LTP
+> testing will hang.Adding a sub-shell to handle to pipe.
+> 
+> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+> ---
+>  .../memcg/control/memcg_control_test.sh            |   15 +++++++++++----
+>  1 files changed, 11 insertions(+), 4 deletions(-)
+> 
+> diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+> index 1d15872..668e74d 100644
+> --- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+> +++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
+> @@ -64,11 +64,15 @@ test_proc_kill()
+>  
+>  	#Instruct the test process to start acquiring memory
+>  	echo m > $STATUS_PIPE
+> -	sleep 5
+> +	sleep 15
+>  
+>  	#Check if killed
+>  	ps -p $! > /dev/null 2> /dev/null
+>  	if [ $? -eq 0 ]; then
+> +		(sleep 30
+> +		ps -p $! > /dev/null 2> /dev/null
+> +		[ $? -ne 0 -a -e $STATUS_PIPE ] && cat $STATUS_PIPE && \
+> +		rm -f $STATUS_PIPE) &
+>  		echo m > $STATUS_PIPE
+>  		echo x > $STATUS_PIPE
+>  	else
 
-diff --git a/testcases/kernel/syscalls/umount/umount01.c b/testcases/kernel/syscalls/umount/umount01.c
-index 4597651..a8da4f4 100644
---- a/testcases/kernel/syscalls/umount/umount01.c
-+++ b/testcases/kernel/syscalls/umount/umount01.c
-@@ -22,92 +22,56 @@
- 
- #include <errno.h>
- #include <sys/mount.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include "test.h"
-+#include "tst_test.h"
- 
--static void setup(void);
--static void cleanup(void);
-+#define MNTPOINT	"mntpoint"
- 
--char *TCID = "umount01";
--int TST_TOTAL = 1;
-+static int mount_flag;
- 
--#define DEFAULT_FSTYPE	"ext2"
--#define DIR_MODE	S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
--
--static const char *mntpoint = "mntpoint";
--static const char *fs_type;
--static const char *device;
--
--int main(int ac, char **av)
-+static void verify_umount(void)
- {
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		TEST(mount(device, mntpoint, fs_type, 0, NULL));
-+	if (mount_flag != 1) {
-+		SAFE_MOUNT(tst_device->dev, MNTPOINT,
-+			tst_device->fs_type, 0, NULL);
-+		mount_flag = 1;
-+	}
- 
--		if (TEST_RETURN != 0) {
--			tst_brkm(TBROK, cleanup, "mount(2) Failed errno = %d :"
--				 "%s ", TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			TEST(umount(mntpoint));
-+	TEST(umount(MNTPOINT));
- 
--			if (TEST_RETURN != 0 && TEST_ERRNO == EBUSY) {
--				tst_resm(TINFO, "umount() failed with EBUSY "
--				         "possibly some daemon (gvfsd-trash) "
--				         "is probing newly mounted dirs");
--			}
-+	if (TEST_RETURN != 0 && TEST_ERRNO == EBUSY) {
-+		tst_res(TINFO, "umount() Failed with EBUSY "
-+			"possibly some daemon (gvfsd-trash) "
-+			"is probing newly mounted dirs");
-+	}
- 
--			if (TEST_RETURN != 0) {
--				tst_brkm(TFAIL, NULL, "umount(2) Failed while "
--					 " unmounting %s errno = %d : %s",
--					 mntpoint, TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--			} else {
--				tst_resm(TPASS, "umount(2) Passed ");
--			}
--		}
-+	if (TEST_RETURN != 0) {
-+		tst_res(TFAIL | TTERRNO, "umount() Failed");
-+		return;
- 	}
- 
--	cleanup();
--	tst_exit();
-+	tst_res(TPASS, "umount() Passed");
-+	mount_flag = 0;
- }
- 
- static void setup(void)
- {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	tst_require_root();
-+	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
- 
--	tst_tmpdir();
--
--	fs_type = tst_dev_fs_type();
--	device = tst_acquire_device(cleanup);
--
--	if (!device)
--		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
--
--	tst_mkfs(cleanup, device, fs_type, NULL, NULL);
--
--	if (mkdir(mntpoint, DIR_MODE) < 0) {
--		tst_brkm(TBROK, cleanup, "mkdir(%s, %#o) failed; "
--			 "errno = %d: %s", mntpoint, DIR_MODE, errno,
--			 strerror(errno));
--	}
--
--	TEST_PAUSE;
-+	SAFE_MKDIR(MNTPOINT, 0775);
- }
- 
- static void cleanup(void)
- {
--	if (device)
--		tst_release_device(device);
--
--	tst_rmdir();
-+	if (mount_flag)
-+		tst_umount(MNTPOINT);
- }
-+
-+static struct tst_test test = {
-+	.tid = "umount01",
-+	.needs_root = 1,
-+	.needs_tmpdir = 1,
-+	.needs_device = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_umount,
-+};
+This is plain wrong. Sparkling code with sleeps never solves anything
+and only slows down the testrun.
+
+What should have been done here instead is checking if the process was
+killed in a loop something as twice a second with some reasonable
+timeout, trying it 60 times would give it max 30 seconds to run.
+
+> @@ -86,7 +90,8 @@ testcase_1()
+>  	echo "$TOT_MEM_LIMIT" > $TST_PATH/mnt/$TST_NUM/memory.memsw.limit_in_bytes
+>  
+>  	mkdir sub
+> -	(cd sub
+> +	basedir=$PWD
+> +	cd sub
+>  	KILLED_CNT=0
+>  	test_proc_kill
+>  
+> @@ -94,7 +99,8 @@ testcase_1()
+>  		result $FAIL "Test #1: failed"
+>  	else
+>  		result $PASS "Test #1: passed"
+> -	fi)
+> +	fi
+> +	cd $basedir
+>  	rmdir sub
+>  }
+>  
+> @@ -145,7 +151,8 @@ FAILED_CNT=0
+>  TST_NUM=1
+>  while [ $TST_NUM -le $TST_TOTAL ]; do
+>  	mkdir $TST_PATH/mnt/$TST_NUM
+> -	(cd $TST_PATH/mnt/$TST_NUM && testcase_$TST_NUM)
+> +	cd $TST_PATH/mnt/$TST_NUM && testcase_$TST_NUM
+> +	cd $TMP 
+               ^
+	       trailing whitespace
+>  	rmdir $TST_PATH/mnt/$TST_NUM
+>  	: $((TST_NUM += 1))
+>  done
+
+Moreover I was looking at the test recently and I would say that the
+best solution would be to remove it completely, since the same function
+should be covered by the memcg functional testcases. So the best bet
+here would be to check that it's covered by functional tests, if not add
+missing pieces to functional tests and get rid of this mess.
+
 -- 
-1.8.4.2
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
