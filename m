@@ -1,9 +1,9 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 3 Nov 2016 18:55:17 +0800
-Subject: [LTP] [PATCH 2/3] syscalls/umount02: Cleanup && Convert to new API
+Date: Thu, 3 Nov 2016 18:55:18 +0800
+Subject: [LTP] [PATCH 3/3] syscalls/umount03: Cleanup && Convert to new API
 In-Reply-To: <1478170518-5952-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 References: <1478170518-5952-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <1478170518-5952-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <1478170518-5952-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,134 +12,112 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/umount/umount02.c | 128 ++++++++++------------------
- 1 file changed, 43 insertions(+), 85 deletions(-)
+ testcases/kernel/syscalls/umount/umount03.c | 105 +++++++++-------------------
+ 1 file changed, 32 insertions(+), 73 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/umount/umount02.c b/testcases/kernel/syscalls/umount/umount02.c
-index 7d469fd..7ff125a 100644
---- a/testcases/kernel/syscalls/umount/umount02.c
-+++ b/testcases/kernel/syscalls/umount/umount02.c
-@@ -29,119 +29,77 @@
-  *****************************************************************************/
+diff --git a/testcases/kernel/syscalls/umount/umount03.c b/testcases/kernel/syscalls/umount/umount03.c
+index 322005e..1ade141 100644
+--- a/testcases/kernel/syscalls/umount/umount03.c
++++ b/testcases/kernel/syscalls/umount/umount03.c
+@@ -20,107 +20,66 @@
+  *	is not the super-user.
+  *
+  * RESTRICTIONS
+- *	test must be run with the -D option
+  *	test doesn't support -c option to run it in parallel, as mount
+  *	syscall is not supposed to run in parallel.
+  */
  
  #include <errno.h>
-+#include <string.h>
++#include <pwd.h>
  #include <sys/mount.h>
--#include <sys/types.h>
+ #include <sys/types.h>
 -#include <sys/stat.h>
 -#include <sys/fcntl.h>
+-#include <sys/wait.h>
 -#include <pwd.h>
-+#include "tst_test.h"
- 
+-
 -#include "test.h"
 -#include "safe_macros.h"
--
++#include <unistd.h>
++#include "tst_test.h"
+ 
 -static void setup(void);
 -static void cleanup(void);
 -
--char *TCID = "umount02";
+-char *TCID = "umount03";
 -
+-#define FSTYPE_LEN	20
 -#define DIR_MODE	S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
--#define FILE_MODE	S_IRWXU | S_IRWXG | S_IRWXO
--#define MNTPOINT        "mntpoint"
-+#define MNTPOINT	"mntpoint"
- 
- static char long_path[PATH_MAX + 2];
- static int mount_flag;
- static int fd;
+ #define MNTPOINT	"mntpoint"
  
 -static const char *device;
--
--static struct test_case_t {
--	char *err_desc;
--	char *mntpoint;
-+static struct tcase {
-+	const char *err_desc;
-+	const char *mntpoint;
- 	int exp_errno;
--	char *exp_retval;
--} testcases[] = {
--	{"Already mounted/busy", MNTPOINT, EBUSY, "EBUSY"},
--	{"Invalid address space", NULL, EFAULT, "EFAULT"},
--	{"Directory not found", "nonexistent", ENOENT, "ENOENT"},
--	{"Invalid  device", "./", EINVAL, "EINVAL"},
--	{"Pathname too long", long_path, ENAMETOOLONG, "ENAMETOOLONG"}
-+} tcases[] = {
-+	{"Already mounted/busy", MNTPOINT, EBUSY},
-+	{"Invalid address space", NULL, EFAULT},
-+	{"Directory not found", "nonexistent", ENOENT},
-+	{"Invalid  device", "./", EINVAL},
-+	{"Pathname too long", long_path, ENAMETOOLONG}
- };
+ static int mount_flag;
  
--int TST_TOTAL = ARRAY_SIZE(testcases);
+-int TST_TOTAL = 1;
 -
 -int main(int ac, char **av)
-+static void verify_umount(unsigned int n)
++static void verify_umount(void)
  {
--	int lc, i;
--
+-	int lc;
++	TEST(umount(MNTPOINT));
+ 
 -	tst_parse_opts(ac, av, NULL, NULL);
-+	struct tcase *tc = &tcases[n];
- 
+-
 -	setup();
-+	TEST(umount(tc->mntpoint));
- 
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		for (i = 0; i < TST_TOTAL; ++i) {
--			TEST(umount(testcases[i].mntpoint));
+-		TEST(umount(MNTPOINT));
+-
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "umout() didn't fail (ret=%ld)",
+-				 TEST_RETURN);
+-			continue;
+-		}
 +	if (TEST_RETURN != -1) {
 +		tst_res(TFAIL, "umount() succeeds unexpectedly");
 +		return;
 +	}
  
--			if ((TEST_RETURN == -1) &&
--			    (TEST_ERRNO == testcases[i].exp_errno)) {
--				tst_resm(TPASS, "umount(2) expected failure; "
--					 "Got errno - %s : %s",
--					 testcases[i].exp_retval,
--					 testcases[i].err_desc);
--			} else {
--				tst_resm(TFAIL, "umount(2) failed to produce "
--					 "expected error; %d, errno:%s got %d",
--					 testcases[i].exp_errno,
--					 testcases[i].exp_retval, TEST_ERRNO);
--			}
+-		if (TEST_ERRNO == EPERM) {
+-			tst_resm(TPASS | TTERRNO, "umount() failed with EPERM");
+-		} else {
+-			tst_resm(TFAIL | TTERRNO,
+-			         "umount() did not fail with EPERM(%d)", EPERM);
 -		}
-+	if (tc->exp_errno != TEST_ERRNO) {
-+		tst_res(TFAIL | TTERRNO, "umount() should fail with %s",
-+			tst_strerrno(tc->exp_errno));
++	if (EPERM != TEST_ERRNO) {
++		tst_res(TFAIL | TTERRNO, "umount() should fail with EPERM");
 +		return;
  	}
  
 -	cleanup();
 -	tst_exit();
-+	tst_res(TPASS | TTERRNO, "umount() fails as expected: %s",
-+		tc->err_desc);
++	tst_res(TPASS | TTERRNO, "umount() fails as expected");
  }
  
  static void setup(void)
  {
 -	const char *fs_type;
--
+-	struct passwd *ltpuser;
++	struct passwd *pw;
+ 
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	tst_require_root();
+-
+-	ltpuser = SAFE_GETPWNAM(NULL, "nobody");
 -
 -	tst_tmpdir();
 -
 -	fs_type = tst_dev_fs_type();
 -	device = tst_acquire_device(cleanup);
--
 -	if (!device)
 -		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
 -
 -	tst_mkfs(cleanup, device, fs_type, NULL, NULL);
 -
- 	memset(long_path, 'a', PATH_MAX + 1);
- 
 -	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
 -
 -	if (mount(device, MNTPOINT, fs_type, 0, NULL))
@@ -149,38 +127,37 @@ index 7d469fd..7ff125a 100644
 +	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
  	mount_flag = 1;
  
--	fd = SAFE_OPEN(cleanup, MNTPOINT "/file", O_CREAT | O_RDWR);
--
+-	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
 -	TEST_PAUSE;
-+	fd = SAFE_CREAT(MNTPOINT "/file", 0777);
++	pw = SAFE_GETPWNAM("nobody");
++	SAFE_SETEUID(pw->pw_uid);
  }
  
  static void cleanup(void)
  {
- 	if (fd > 0 && close(fd))
--		tst_resm(TWARN | TERRNO, "Failed to close file");
+ 	if (seteuid(0))
+-		tst_resm(TWARN | TERRNO, "seteuid(0) failed");
 -
 -	if (mount_flag && tst_umount(MNTPOINT))
 -		tst_resm(TWARN | TERRNO, "umount() failed");
--
++		tst_res(TWARN | TERRNO, "seteuid(0) Failed");
+ 
 -	if (device)
 -		tst_release_device(device);
-+		tst_res(TWARN | TERRNO, "Failed to close file");
- 
+-
 -	tst_rmdir();
 +	if (mount_flag)
 +		tst_umount(MNTPOINT);
  }
 +
 +static struct tst_test test = {
-+	.tid = "umount02",
-+	.tcnt = ARRAY_SIZE(tcases),
++	.tid = "umount03",
 +	.needs_root = 1,
 +	.needs_tmpdir = 1,
 +	.needs_device = 1,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test = verify_umount,
++	.test_all = verify_umount,
 +};
 -- 
 1.8.4.2
