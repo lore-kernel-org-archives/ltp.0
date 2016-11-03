@@ -1,9 +1,7 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 3 Nov 2016 18:55:18 +0800
-Subject: [LTP] [PATCH 3/3] syscalls/umount03: Cleanup && Convert to new API
-In-Reply-To: <1478170518-5952-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1478170518-5952-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <1478170518-5952-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Date: Thu, 3 Nov 2016 18:55:16 +0800
+Subject: [LTP] [PATCH 1/3] syscalls/umount01: Cleanup && Convert to new API
+Message-ID: <1478170518-5952-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,56 +10,42 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/umount/umount03.c | 105 +++++++++-------------------
- 1 file changed, 32 insertions(+), 73 deletions(-)
+ testcases/kernel/syscalls/umount/umount01.c | 104 +++++++++-------------------
+ 1 file changed, 34 insertions(+), 70 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/umount/umount03.c b/testcases/kernel/syscalls/umount/umount03.c
-index 322005e..1ade141 100644
---- a/testcases/kernel/syscalls/umount/umount03.c
-+++ b/testcases/kernel/syscalls/umount/umount03.c
-@@ -20,107 +20,66 @@
-  *	is not the super-user.
-  *
-  * RESTRICTIONS
-- *	test must be run with the -D option
-  *	test doesn't support -c option to run it in parallel, as mount
-  *	syscall is not supposed to run in parallel.
-  */
+diff --git a/testcases/kernel/syscalls/umount/umount01.c b/testcases/kernel/syscalls/umount/umount01.c
+index 4597651..a8da4f4 100644
+--- a/testcases/kernel/syscalls/umount/umount01.c
++++ b/testcases/kernel/syscalls/umount/umount01.c
+@@ -22,92 +22,56 @@
  
  #include <errno.h>
-+#include <pwd.h>
  #include <sys/mount.h>
- #include <sys/types.h>
+-#include <sys/types.h>
 -#include <sys/stat.h>
--#include <sys/fcntl.h>
--#include <sys/wait.h>
--#include <pwd.h>
--
 -#include "test.h"
--#include "safe_macros.h"
-+#include <unistd.h>
 +#include "tst_test.h"
  
 -static void setup(void);
 -static void cleanup(void);
--
--char *TCID = "umount03";
--
--#define FSTYPE_LEN	20
--#define DIR_MODE	S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
- #define MNTPOINT	"mntpoint"
++#define MNTPOINT	"mntpoint"
  
--static const char *device;
- static int mount_flag;
- 
+-char *TCID = "umount01";
 -int TST_TOTAL = 1;
++static int mount_flag;
+ 
+-#define DEFAULT_FSTYPE	"ext2"
+-#define DIR_MODE	S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH
+-
+-static const char *mntpoint = "mntpoint";
+-static const char *fs_type;
+-static const char *device;
 -
 -int main(int ac, char **av)
 +static void verify_umount(void)
  {
 -	int lc;
-+	TEST(umount(MNTPOINT));
- 
+-
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
@@ -69,79 +53,80 @@ index 322005e..1ade141 100644
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		TEST(umount(MNTPOINT));
--
--		if (TEST_RETURN != -1) {
--			tst_resm(TFAIL, "umout() didn't fail (ret=%ld)",
--				 TEST_RETURN);
--			continue;
--		}
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "umount() succeeds unexpectedly");
-+		return;
+-		TEST(mount(device, mntpoint, fs_type, 0, NULL));
++	if (mount_flag != 1) {
++		SAFE_MOUNT(tst_device->dev, MNTPOINT,
++			tst_device->fs_type, 0, NULL);
++		mount_flag = 1;
 +	}
  
--		if (TEST_ERRNO == EPERM) {
--			tst_resm(TPASS | TTERRNO, "umount() failed with EPERM");
+-		if (TEST_RETURN != 0) {
+-			tst_brkm(TBROK, cleanup, "mount(2) Failed errno = %d :"
+-				 "%s ", TEST_ERRNO, strerror(TEST_ERRNO));
 -		} else {
--			tst_resm(TFAIL | TTERRNO,
--			         "umount() did not fail with EPERM(%d)", EPERM);
+-			TEST(umount(mntpoint));
++	TEST(umount(MNTPOINT));
+ 
+-			if (TEST_RETURN != 0 && TEST_ERRNO == EBUSY) {
+-				tst_resm(TINFO, "umount() failed with EBUSY "
+-				         "possibly some daemon (gvfsd-trash) "
+-				         "is probing newly mounted dirs");
+-			}
++	if (TEST_RETURN != 0 && TEST_ERRNO == EBUSY) {
++		tst_res(TINFO, "umount() Failed with EBUSY "
++			"possibly some daemon (gvfsd-trash) "
++			"is probing newly mounted dirs");
++	}
+ 
+-			if (TEST_RETURN != 0) {
+-				tst_brkm(TFAIL, NULL, "umount(2) Failed while "
+-					 " unmounting %s errno = %d : %s",
+-					 mntpoint, TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
+-			} else {
+-				tst_resm(TPASS, "umount(2) Passed ");
+-			}
 -		}
-+	if (EPERM != TEST_ERRNO) {
-+		tst_res(TFAIL | TTERRNO, "umount() should fail with EPERM");
++	if (TEST_RETURN != 0) {
++		tst_res(TFAIL | TTERRNO, "umount() Failed");
 +		return;
  	}
  
 -	cleanup();
 -	tst_exit();
-+	tst_res(TPASS | TTERRNO, "umount() fails as expected");
++	tst_res(TPASS, "umount() Passed");
++	mount_flag = 0;
  }
  
  static void setup(void)
  {
--	const char *fs_type;
--	struct passwd *ltpuser;
-+	struct passwd *pw;
- 
--	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
 -
 -	tst_require_root();
--
--	ltpuser = SAFE_GETPWNAM(NULL, "nobody");
--
++	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
+ 
 -	tst_tmpdir();
 -
 -	fs_type = tst_dev_fs_type();
 -	device = tst_acquire_device(cleanup);
+-
 -	if (!device)
 -		tst_brkm(TCONF, cleanup, "Failed to obtain block device");
 -
 -	tst_mkfs(cleanup, device, fs_type, NULL, NULL);
 -
--	SAFE_MKDIR(cleanup, MNTPOINT, DIR_MODE);
+-	if (mkdir(mntpoint, DIR_MODE) < 0) {
+-		tst_brkm(TBROK, cleanup, "mkdir(%s, %#o) failed; "
+-			 "errno = %d: %s", mntpoint, DIR_MODE, errno,
+-			 strerror(errno));
+-	}
 -
--	if (mount(device, MNTPOINT, fs_type, 0, NULL))
--		tst_brkm(TBROK | TERRNO, cleanup, "mount() failed");
-+	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
-+	SAFE_MKDIR(MNTPOINT, 0775);
-+	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
- 	mount_flag = 1;
- 
--	SAFE_SETEUID(cleanup, ltpuser->pw_uid);
 -	TEST_PAUSE;
-+	pw = SAFE_GETPWNAM("nobody");
-+	SAFE_SETEUID(pw->pw_uid);
++	SAFE_MKDIR(MNTPOINT, 0775);
  }
  
  static void cleanup(void)
  {
- 	if (seteuid(0))
--		tst_resm(TWARN | TERRNO, "seteuid(0) failed");
--
--	if (mount_flag && tst_umount(MNTPOINT))
--		tst_resm(TWARN | TERRNO, "umount() failed");
-+		tst_res(TWARN | TERRNO, "seteuid(0) Failed");
- 
 -	if (device)
 -		tst_release_device(device);
 -
@@ -151,7 +136,7 @@ index 322005e..1ade141 100644
  }
 +
 +static struct tst_test test = {
-+	.tid = "umount03",
++	.tid = "umount01",
 +	.needs_root = 1,
 +	.needs_tmpdir = 1,
 +	.needs_device = 1,
