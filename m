@@ -1,61 +1,87 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 9 Nov 2016 17:49:56 +0100
-Subject: [LTP] [PATCH] lsmod01: keep the output in variables
-In-Reply-To: <1478702093-15080-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <20161011161557.GD17083@rei.suse.cz>
- <1478702093-15080-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <20161109164956.GB9168@rei.lan>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 4 Nov 2016 09:56:20 +0800
+Subject: [LTP] [PATCH] syscalls/nice05: remove obsolete data
+Message-ID: <1478224580-22697-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
->  lsmod_test()
->  {
-> -	lsmod >temp 2>&1
-> -	if [ $? -ne 0 ]; then
-> -		tst_resm TFAIL "'lsmod' failed."
-> -		cat temp
-> +	lsmod_output=$(lsmod | awk '!/Module/{print $1, $2, $3}' | sort)
-> +	if [ -z "$lsmod_output" ]; then
-> +		tst_resm TFAIL "Failed to parse the output from lsmod"
->  		return
->  	fi
->  
-> -	awk '!/Module/{print $1, $2, $3}' temp |sort >temp1
-> -
-> -	awk '{print $1, $2, $3}' /proc/modules |sort >temp2
-> +	modules_output=$(awk '{print $1, $2, $3}' /proc/modules | sort)
-> +	if [ -z "$modules_output" ]; then
-> +		tst_resm TFAIL "Failed to parse /proc/modules"
-> +		return
-> +	fi
->  
-> -	diff temp1 temp2 >temp3
-> -	if [ $? -ne 0 ]; then
-> +	if [ "$lsmod_output" != "$modules_output" ]; then
->  		tst_resm TFAIL "lsmod output different from /proc/modules."
-> -		cat temp3
-> +
-> +		echo "$lsmod_output" > temp1
-> +		echo "$modules_output" > temp2
-> +		diff temp1 temp2
+Remove obsolete data since nice05 has been removed.
 
-Hmm since the foo=$() flattened the text into single line this diff
-would be pretty much useless.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ runtest/ltplite                      | 1 -
+ runtest/quickhit                     | 2 --
+ runtest/stress.part3                 | 1 -
+ runtest/syscalls                     | 1 -
+ testcases/kernel/syscalls/.gitignore | 1 -
+ 5 files changed, 6 deletions(-)
 
-So we can either just print these two lines, or split them again
-so that exactly three words/numbers are on each line before we do the
-diff.
-
->  		return
->  	fi
->  
-> -- 
-> 1.7.1
-> 
-
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 4ad77f3..c8d0ebf 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -547,7 +547,6 @@ nice01 nice01
+ nice02 nice02
+ nice03 nice03
+ nice04 nice04
+-nice05 nice05
+ 
+ open01 open01
+ open01A symlink01 -T open01
+diff --git a/runtest/quickhit b/runtest/quickhit
+index 282ad24..c286add 100644
+--- a/runtest/quickhit
++++ b/runtest/quickhit
+@@ -188,8 +188,6 @@ mkdir08 mkdir08
+ # Basic test for mkdir(2)
+ qmm01 mmap001 -m 1
+ # Basic mmap() test.
+-nice05 nice05
+-# Basic test for nice(2)
+ open03 open03
+ # Basic test for open(2)
+ pathconf01 pathconf01
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index 6b48316..aac1c00 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -461,7 +461,6 @@ nice01 nice01
+ nice02 nice02
+ nice03 nice03
+ nice04 nice04
+-nice05 nice05
+ 
+ open01 open01
+ open01A symlink01 -T open01
+diff --git a/runtest/syscalls b/runtest/syscalls
+index e6b36ae..64d09b2 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -718,7 +718,6 @@ nice01 nice01
+ nice02 nice02
+ nice03 nice03
+ nice04 nice04
+-nice05 nice05
+ 
+ open01 open01
+ open01A symlink01 -T open01
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 0807e17..506219d 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -621,7 +621,6 @@
+ /nice/nice02
+ /nice/nice03
+ /nice/nice04
+-/nice/nice05
+ /open/open01
+ /open/open02
+ /open/open03
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
+
+
