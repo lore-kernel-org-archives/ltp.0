@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon,  7 Nov 2016 14:19:10 +0100
-Subject: [LTP] [COMMITTED] [PATCH 2/6] syscalls/nice01: Convert to the new
+Date: Mon,  7 Nov 2016 14:19:11 +0100
+Subject: [LTP] [COMMITTED] [PATCH 3/6] syscalls/nice02: Convert to the new
 	library.
 In-Reply-To: <1478524754-15752-1-git-send-email-chrubis@suse.cz>
 References: <1478524754-15752-1-git-send-email-chrubis@suse.cz>
-Message-ID: <1478524754-15752-2-git-send-email-chrubis@suse.cz>
+Message-ID: <1478524754-15752-3-git-send-email-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,14 +13,14 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/nice/nice01.c | 176 ++++++++------------------------
- 1 file changed, 44 insertions(+), 132 deletions(-)
+ testcases/kernel/syscalls/nice/nice02.c | 174 ++++++++------------------------
+ 1 file changed, 42 insertions(+), 132 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/nice/nice01.c b/testcases/kernel/syscalls/nice/nice01.c
-index 29ab344..26aaa99 100644
---- a/testcases/kernel/syscalls/nice/nice01.c
-+++ b/testcases/kernel/syscalls/nice/nice01.c
-@@ -1,160 +1,72 @@
+diff --git a/testcases/kernel/syscalls/nice/nice02.c b/testcases/kernel/syscalls/nice/nice02.c
+index 248c30b..4c9ccae 100644
+--- a/testcases/kernel/syscalls/nice/nice02.c
++++ b/testcases/kernel/syscalls/nice/nice02.c
+@@ -1,159 +1,69 @@
  /*
 + * Copyright (c) International Business Machines  Corp., 2001
 + *  07/2001 Ported by Wayne Boyer
@@ -53,19 +53,18 @@ index 29ab344..26aaa99 100644
 + * along with this program;  if not, write to the Free Software Foundation,
 + * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
   */
- 
+-
  /*
-- * Test Name: nice01
+- * Test Name: nice02
 - *
 - * Test Description:
-- *  Verify that root can provide a negative value  to nice()
-+ *  Verify that root can provide a negative value to nice()
-  *  and hence root can decrease the nice value of the process
-  *  using nice() system call
+  *  Verify that any user can successfully increase the nice value of
+  *  the process by passing a higher increment value (> max. applicable limits)
+  *  to nice() system call.
 - *
 - * Expected Result:
-- *  nice() should return value 0 on success and root user should succeed
-- *  to decrease the nice value of test process.
+- *  nice() should return value 0 on success and root user should succeed to
+- *  increase the nice value of the test process.
 - *
 - * Algorithm:
 - *  Setup:
@@ -87,7 +86,7 @@ index 29ab344..26aaa99 100644
 - *   Print errno log and/or timing stats if options given
 - *
 - * Usage:  <for command-line>
-- *  nice01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *  nice02 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
 - *             -f   : Turn off functionality Testing.
 - *	       -i n : Execute test n times.
@@ -99,37 +98,34 @@ index 29ab344..26aaa99 100644
 - *	07/2001 Ported by Wayne Boyer
 - *
 - * RESTRICTIONS:
-- *  This test should be run by 'super-user' (root) only.
-- *
+- *  none
   */
  #include <unistd.h>
--#include <sys/types.h>
  #include <errno.h>
 -#include <fcntl.h>
 -#include <sys/time.h>
  #include <sys/resource.h>
--
--#include "test.h"
-+#include "tst_test.h"
  
- #define	NICEINC		-12
--#define TEMPFILE	"temp_file"
+-#include "test.h"
 -
--char *TCID = "nice01";
+-char *TCID = "nice02";
 -int TST_TOTAL = 1;
 -
--int Org_nice;			/* original priority of the test process */
--FILE *fp;
+-#define	NICEINC		50
++#include "tst_test.h"
  
 -void setup();			/* Main setup function of test */
 -void cleanup();			/* cleanup function for the test */
--
++#define	NICEINC 50
++#define MAX_PRIO 19
++#define DEFAULT_PRIO 0
+ 
 -int main(int ac, char **av)
 +static void verify_nice(void)
  {
 -	int lc;
 -	int New_nice;		/* priority of process after nice() */
--	int rval;
+-	int max_val;		/* Maximum nice value per OS. */
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
@@ -137,14 +133,13 @@ index 29ab344..26aaa99 100644
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 +	int new_nice;
-+	int orig_nice;
  
 -		tst_count = 0;
-+	orig_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
++	TEST(nice(NICEINC));
  
 -		/*
 -		 * Call nice(2) with an 'incr' parameter set
--		 * to a negative value.
+-		 * to a higher +ve value.
 -		 */
 -		TEST(nice(NICEINC));
 -
@@ -155,58 +150,61 @@ index 29ab344..26aaa99 100644
 -			continue;
 -		}
 -
+-		/*
+-		 * Get the current priority of the test process.
+-		 */
+-		errno = 0;
 -		New_nice = getpriority(PRIO_PROCESS, 0);
--
--		/* Validate functionality of the nice() */
--		if (New_nice != (Org_nice + NICEINC)) {
--			tst_resm(TFAIL, "nice() fails to modify the "
--				 "priority of process");
--		} else {
--			tst_resm(TPASS, "Functionality of nice(%d) "
--				 "successful", NICEINC);
+-		if (New_nice == -1 && errno != 0) {
+-			tst_brkm(TFAIL, cleanup, "Fail to get priority "
+-				 "of process after nice()");
 -		}
 -
--		/* return the process to the original priority */
--		rval = nice(-NICEINC);
-+	TEST(nice(NICEINC));
+-		/*
+-		 * Validate functionality of the nice().
+-		 *
+-		 * Default priority is 0, Max is 20.
+-		 */
+-		max_val = 20;
++	if (TEST_RETURN == -1) {
++		tst_res(TFAIL | TTERRNO, "nice(%d) returned -1", NICEINC);
++		return;
++	}
  
-+	if (TEST_RETURN != (orig_nice + NICEINC)) {
-+		tst_res(TFAIL | TTERRNO, "nice(%d) returned %li, expected %i",
-+		        NICEINC, TEST_RETURN, orig_nice + NICEINC);
+-		if (New_nice != (max_val - 1)) {
+-			tst_resm(TFAIL, "Priority of process : %d "
+-				 "doesn't match the expected:%d",
+-				 New_nice, (max_val - 1));
+-		} else {
+-			tst_resm(TPASS, "Functionality of nice(%d)"
+-				 " successful", NICEINC);
+-		}
++	if (TEST_ERRNO) {
++		tst_res(TFAIL | TTERRNO, "nice(%d) failed", NICEINC);
 +		return;
  	}
  
 -	cleanup();
 -	tst_exit();
 -}
--
++	new_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
+ 
 -/*
 - * setup() - performs all ONE TIME setup for this test.
-- *  	     Make sure the test process uid is super user.
-- *  	     Get the current priority value.
 - */
 -void setup(void)
 -{
-+	if (TEST_ERRNO) {
-+		tst_res(TFAIL | TTERRNO, "nice(%d) failed", NICEINC);
++	if (new_nice != MAX_PRIO) {
++		tst_res(TFAIL, "Process priority %i, expected %i",
++			new_nice, MAX_PRIO);
 +		return;
 +	}
- 
--	tst_require_root();
-+	new_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
  
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	if (new_nice != (orig_nice + NICEINC)) {
-+		tst_res(TFAIL, "Process priority %i, expected %i",
-+		        new_nice, orig_nice + NICEINC);
-+		return;
-+	}
- 
--	TEST_PAUSE;
 +	tst_res(TPASS, "nice(%d) passed", NICEINC);
  
--	Org_nice = getpriority(PRIO_PROCESS, 0);
-+	TEST(nice(-NICEINC));
+-	TEST_PAUSE;
++	TEST(nice(DEFAULT_PRIO));
 +	if (TEST_ERRNO)
 +		tst_brk(TBROK | TERRNO, "nice(-NICEINC) failed");
  }
@@ -214,16 +212,15 @@ index 29ab344..26aaa99 100644
 -/*
 - * cleanup() - performs all ONE TIME cleanup for this test at
 - *             completion or premature exit.
-- *  	       Remove the test directory and testfile created in the setup.
+- *  Remove the test directory and testfile created in the setup.
 - */
 -void cleanup(void)
 -{
 -
 -}
 +static struct tst_test test = {
-+	.tid = "nice01",
++	.tid = "nice02",
 +	.test_all = verify_nice,
-+	.needs_root = 1,
 +};
 -- 
 2.7.3
