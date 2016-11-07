@@ -1,219 +1,43 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon,  7 Nov 2016 14:19:14 +0100
-Subject: [LTP] [COMMITTED] [PATCH 6/6] syscalls/nice05: Remove.
-In-Reply-To: <1478524754-15752-1-git-send-email-chrubis@suse.cz>
-References: <1478524754-15752-1-git-send-email-chrubis@suse.cz>
-Message-ID: <1478524754-15752-6-git-send-email-chrubis@suse.cz>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Mon,  7 Nov 2016 13:19:52 +0100
+Subject: [LTP] [PATCH 1/1] network: load test_net.sh after getopts
+Message-ID: <20161107121952.24933-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The same test is covered by nice02 and nice03.
+We shouldn't ask rsh/ssh password or require having set ssh pub keys
+just for displaying help.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/kernel/syscalls/nice/nice05.c | 190 --------------------------------
- 1 file changed, 190 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/nice/nice05.c
+ testscripts/network.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/nice/nice05.c b/testcases/kernel/syscalls/nice/nice05.c
-deleted file mode 100644
-index 699ec25..0000000
---- a/testcases/kernel/syscalls/nice/nice05.c
-+++ /dev/null
-@@ -1,190 +0,0 @@
--/*
-- * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms of version 2 of the GNU General Public License as
-- * published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful, but
-- * WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it is
-- * free of the rightful claim of any third person regarding infringement
-- * or the like.  Any license provided herein, whether implied or
-- * otherwise, applies only to this software file.  Patent licenses, if
-- * any, provided herein do not apply to combinations of this program with
-- * other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License along
-- * with this program; if not, write the Free Software Foundation, Inc.,
-- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-- *
-- * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
-- * Mountain View, CA  94043, or:
-- *
-- * http://www.sgi.com
-- *
-- * For further information regarding this notice, see:
-- *
-- * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-- */
--/* $Id: nice05.c,v 1.5 2009/11/02 13:57:17 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: nice05
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for nice(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) nice(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *$
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the nice(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	nice(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+diff --git a/testscripts/network.sh b/testscripts/network.sh
+index 66bacef..fea2f68 100755
+--- a/testscripts/network.sh
++++ b/testscripts/network.sh
+@@ -11,8 +11,6 @@ if [ $? -eq 0 ]; then
+ 	export LTPROOT=${PWD}
+ fi
+ 
+-. test_net.sh
 -
--#include <unistd.h>
--#include <sys/types.h>
--#include <errno.h>
--#include <string.h>
--#include <signal.h>
--#include "test.h"
--
--void setup();
--void cleanup();
--
--char *TCID = "nice05";
--int TST_TOTAL = 1;
--
--int val;
--
--int main(int ac, char **av)
--{
--	int lc;
--
--    /***************************************************************
--     * parse standard options
--     ***************************************************************/
--	tst_parse_opts(ac, av, NULL, NULL);
--
--    /***************************************************************
--     * perform global setup for test
--     ***************************************************************/
--	setup();
--
--    /***************************************************************
--     * check looping state if -c option given
--     ***************************************************************/
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		val = lc % 39;
--		/*
--		 * Call nice(2)
--		 */
--		TEST(nice(val));
--
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "nice(%d) Failed, errno=%d : %s", val,
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			tst_resm(TPASS, "nice(%d) returned %ld", val,
--				 TEST_RETURN);
--		}
--	}
--
--    /***************************************************************
--     * cleanup and exit
--     ***************************************************************/
--	cleanup();
--	tst_exit();
--}
--
--/***************************************************************
-- * setup() - performs all ONE TIME setup for this test.
-- ***************************************************************/
--void setup(void)
--{
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--}
--
--/***************************************************************
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- ***************************************************************/
--void cleanup(void)
--{
--
--}
+ export TMPDIR=/tmp/netpan-$$
+ mkdir -p $TMPDIR
+ CMDFILE=${TMPDIR}/network.tests
+@@ -81,6 +79,8 @@ if [ "$OPTIND" -eq 1 ]; then
+ 	exit 1
+ fi
+ 
++. test_net.sh
++
+ rm -f $CMDFILE
+ 
+ for t in $TEST_CASES; do
 -- 
-2.7.3
+2.10.2
 
