@@ -1,107 +1,122 @@
-From: Shuang Qiu <shuang.qiu@oracle.com>
-Date: Thu, 03 Nov 2016 22:08:06 +0800
-Subject: [LTP] [PATCH] memcg_control_test.sh:incorrect test result and a
- pipe issue
-In-Reply-To: <20161103110026.GC27513@rei.lan>
-References: <1478166145-5177-1-git-send-email-shuang.qiu@oracle.com>
- <20161103110026.GC27513@rei.lan>
-Message-ID: <581B44C6.5090808@oracle.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 7 Nov 2016 18:52:40 +0800
+Subject: [LTP] [PATCH v2] syscalls/recvmsg03.c: add new testcase
+In-Reply-To: <20161102130647.GB22840@rei.lan>
+References: <20161031133927.GB32461@rei>
+ <1478064173-5704-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20161102130647.GB22840@rei.lan>
+Message-ID: <58205CF8.6000206@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
-Thanks for review.
-On 11/03/2016 07:00 PM, Cyril Hrubis wrote:
+On 2016/11/02 21:06, Cyril Hrubis wrote:
 > Hi!
->> * The test result flag FAILED_CNT is handled in a sub-shell,which will
->> make the test result passed even the test actually failed,update the
->> scripts to not running in sub-shell.
->> * Sometimes the mem_process process is killed after more than 5
->> seconds,increase the sleep time to 15 sceconds.And if the mem_process
->> process is killed after 5 sceconds,the pipe may blocked while writing
->> it(echo m > $STATUS_PIPE;echo x > $STATUS_PIPE),then the whole LTP
->> testing will hang.Adding a sub-shell to handle to pipe.
->>
->> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
->> ---
->>   .../memcg/control/memcg_control_test.sh            |   15 +++++++++++----
->>   1 files changed, 11 insertions(+), 4 deletions(-)
->>
->> diff --git a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
->> index 1d15872..668e74d 100644
->> --- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
->> +++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
->> @@ -64,11 +64,15 @@ test_proc_kill()
->>   
->>   	#Instruct the test process to start acquiring memory
->>   	echo m > $STATUS_PIPE
->> -	sleep 5
->> +	sleep 15
->>   
->>   	#Check if killed
->>   	ps -p $! > /dev/null 2> /dev/null
->>   	if [ $? -eq 0 ]; then
->> +		(sleep 30
->> +		ps -p $! > /dev/null 2> /dev/null
->> +		[ $? -ne 0 -a -e $STATUS_PIPE ] && cat $STATUS_PIPE && \
->> +		rm -f $STATUS_PIPE) &
->>   		echo m > $STATUS_PIPE
->>   		echo x > $STATUS_PIPE
->>   	else
-> This is plain wrong. Sparkling code with sleeps never solves anything
-> and only slows down the testrun.
+>> +static void server(void)
+>> +{
+>> +	int sock_fd, sock_fd2;
+>> +	static char recv_buf[128];
+>> +	struct sockaddr_in server_addr;
+>> +	struct sockaddr_in from_addr;
+>> +	struct msghdr msg;
+>> +	struct iovec iov;
+>> +
+>> +	sock_fd2 = SAFE_SOCKET(AF_RDS, SOCK_SEQPACKET, 0);
+>> +	sock_fd = sock_fd2;
+>> +
+>> +	memset(&server_addr, 0, sizeof(server_addr));
+>> +	server_addr.sin_family = AF_INET;
+>> +	server_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+>> +	server_addr.sin_port = htons(4000);
+>> +
+>> +	SAFE_BIND(sock_fd2, (struct sockaddr *)&server_addr, sizeof(server_addr));
+>> +
+>> +	msg.msg_name =&from_addr;
+>> +	msg.msg_namelen = sizeof(from_addr) + 16;
+>> +	msg.msg_iov =&iov;
+>> +	msg.msg_iovlen = 1;
+>> +	msg.msg_iov->iov_base = recv_buf;
+>> +	msg.msg_iov->iov_len = 128;
+>> +	msg.msg_control = 0;
+>> +	msg.msg_controllen = 0;
+>> +	msg.msg_flags = 0;
+>> +
+>> +	TST_CHECKPOINT_WAKE(0);
+>> +
+>> +	TEST(recvmsg(sock_fd2,&msg, 0));
+>> +	if (TEST_RETURN == -1) {
+>> +		tst_res(TFAIL | TERRNO,
+>> +		"recvmsg() failed to recvice data from client");
+>> +		goto end;
+>> +	}
+>> +
+>> +	if (msg.msg_namelen != sizeof(from_addr)) {
+>> +		tst_res(TFAIL, "msg_namelen was set to %u incorrectly, "
+>> +			"expected %lu", msg.msg_namelen, sizeof(from_addr));
+>> +		goto end;
+>> +	}
+>> +
+>> +	if (sock_fd2 != sock_fd) {
+>> +		tst_res(TFAIL, "sock_fd was destroyed");
+>> +		goto end;
+>> +	}
+>> +
+>> +	tst_res(TPASS, "msg_namelen was set to %u correctly and sock_fd was "
+>> +		"not destroyed", msg.msg_namelen);
+>> +
+>> +end:
+>> +	SAFE_CLOSE(sock_fd2);
+> I'm a bit confused here, which one of the sock_fd/sock_fd2 is destroyed?
 >
-> What should have been done here instead is checking if the process was
-> killed in a loop something as twice a second with some reasonable
-> timeout, trying it 60 times would give it max 30 seconds to run.
-The added code here is intent on read the pipe after sleeps to avoid the 
-parent process blocked here when writing the pipe.
-I agree that it is better to check if the process was killed in a loop 
-instead of just sleeping.
+> Looking at the original code in the kernel commit the sock_fd there is
+> stored on the stack directly after the sockaddr_in from_addr so I guess
+> that the kernel will actually write a few bytes after the end of
+> from_addr structure in this case, which will rewrite the msghrd msg in
+> your code. Does the test actually fail on kernel without the fix?
 >
->> @@ -86,7 +90,8 @@ testcase_1()
->>   	echo "$TOT_MEM_LIMIT" > $TST_PATH/mnt/$TST_NUM/memory.memsw.limit_in_bytes
->>   
->>   	mkdir sub
->> -	(cd sub
->> +	basedir=$PWD
->> +	cd sub
->>   	KILLED_CNT=0
->>   	test_proc_kill
->>   
->> @@ -94,7 +99,8 @@ testcase_1()
->>   		result $FAIL "Test #1: failed"
->>   	else
->>   		result $PASS "Test #1: passed"
->> -	fi)
->> +	fi
->> +	cd $basedir
->>   	rmdir sub
->>   }
->>   
->> @@ -145,7 +151,8 @@ FAILED_CNT=0
->>   TST_NUM=1
->>   while [ $TST_NUM -le $TST_TOTAL ]; do
->>   	mkdir $TST_PATH/mnt/$TST_NUM
->> -	(cd $TST_PATH/mnt/$TST_NUM && testcase_$TST_NUM)
->> +	cd $TST_PATH/mnt/$TST_NUM && testcase_$TST_NUM
->> +	cd $TMP
->                 ^
-> 	       trailing whitespace
->>   	rmdir $TST_PATH/mnt/$TST_NUM
->>   	: $((TST_NUM += 1))
->>   done
-> Moreover I was looking at the test recently and I would say that the
-> best solution would be to remove it completely, since the same function
-> should be covered by the memcg functional testcases. So the best bet
-> here would be to check that it's covered by functional tests, if not add
-> missing pieces to functional tests and get rid of this mess.
-Ok,I will also check the functional test.
+Hi Cyril
 
-Thanks
-Shuang
+I am sorry  for the late response.  the msghrd msg was rewritten but 
+sock_fd2 was not destroyed
+on v3.5 kernel without the fix patch, so i will remove the code about 
+checking sock_fd.
+
+Thanks,
+Xiao Yang
+>> +}
+>> +
+>> +static void verify_recvmsg(void)
+>> +{
+>> +	pid_t pid;
+>> +
+>> +	pid = SAFE_FORK();
+>> +	if (pid == 0) {
+>> +		TST_CHECKPOINT_WAIT(0);
+>> +		client();
+>> +	} else {
+>> +		server();
+>> +		SAFE_WAIT(NULL);
+> We should rather call tst_reap_children() in this case instead of the
+> WAIT since otherwise TBROK from the client() function will not get
+> propagated.
 >
+>> +	}
+>> +}
+>> +
+>> +static struct tst_test test = {
+>> +	.tid = "recvmsg03",
+>> +	.forks_child = 1,
+>> +	.needs_checkpoints = 1,
+>> +	.setup = setup,
+>> +	.test_all = verify_recvmsg
+>> +};
+>> -- 
+>> 1.8.3.1
+>>
+>>
+>>
+
+
 
