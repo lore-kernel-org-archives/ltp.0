@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon,  7 Nov 2016 14:19:12 +0100
-Subject: [LTP] [COMMITTED] [PATCH 4/6] syscalls/nice03: Convert to the new
+Date: Mon,  7 Nov 2016 14:19:13 +0100
+Subject: [LTP] [COMMITTED] [PATCH 5/6] syscalls/nice04: Convert to the new
 	library.
 In-Reply-To: <1478524754-15752-1-git-send-email-chrubis@suse.cz>
 References: <1478524754-15752-1-git-send-email-chrubis@suse.cz>
-Message-ID: <1478524754-15752-4-git-send-email-chrubis@suse.cz>
+Message-ID: <1478524754-15752-5-git-send-email-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,34 +13,23 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/nice/nice03.c | 173 +++++++++-----------------------
- 1 file changed, 47 insertions(+), 126 deletions(-)
+ testcases/kernel/syscalls/nice/nice04.c | 179 ++++++++------------------------
+ 1 file changed, 41 insertions(+), 138 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/nice/nice03.c b/testcases/kernel/syscalls/nice/nice03.c
-index 357de9e..6b90c2d 100644
---- a/testcases/kernel/syscalls/nice/nice03.c
-+++ b/testcases/kernel/syscalls/nice/nice03.c
-@@ -1,156 +1,77 @@
+diff --git a/testcases/kernel/syscalls/nice/nice04.c b/testcases/kernel/syscalls/nice/nice04.c
+index 9c043de..3d63f31 100644
+--- a/testcases/kernel/syscalls/nice/nice04.c
++++ b/testcases/kernel/syscalls/nice/nice04.c
+@@ -1,160 +1,63 @@
  /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ *  07/2001 Ported by Wayne Boyer
-+ * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-  *
+- *
 - *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
+- *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
 - *   the Free Software Foundation; either version 2 of the License, or
 - *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
+- *
 - *   This program is distributed in the hope that it will be useful,
 - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
 - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
@@ -49,22 +38,34 @@ index 357de9e..6b90c2d 100644
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ *  07/2001 Ported by Wayne Boyer
++ * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
 + * You should have received a copy of the GNU General Public License
 + * along with this program;  if not, write to the Free Software Foundation,
 + * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
   */
 -
  /*
-- * Test Name: nice03
+- * Test Name: nice04
 - *
 - * Test Description:
-  *  Verify that any user can successfully increase the nice value of
-  *  the process by passing an increment value (< max. applicable limits) to
-  *  nice() system call.
+  *  Verify that, nice(2) fails when, a non-root user attempts to increase
+  *  the priority of a process by specifying a negative increment value.
 - *
 - * Expected Result:
-- *  nice() should return value 0 on success and the user should succeed
-- *  to increase the nice value of test process.
+- *  nice() returns -1 and sets errno to EPERM.
 - *
 - * Algorithm:
 - *  Setup:
@@ -75,20 +76,22 @@ index 357de9e..6b90c2d 100644
 - *   Loop if the proper options are given.
 - *   Execute system call
 - *   Check return code, if system call failed (return=-1)
-- *   	Log the errno and Issue a FAIL message.
+- *   	if errno set == expected errno
+- *		PASS
+- *   		Issue sys call fails with expected return value and errno.
+- *   	Otherwise,
+- *		FAIL
+- *		Issue sys call fails with unexpected errno.
 - *   Otherwise,
-- *   	Verify the Functionality of system call
-- *      if successful,
-- *      	Issue Functionality-Pass message.
-- *      Otherwise,
-- *		Issue Functionality-Fail message.
+- *	Issue sys call returns unexpected value.
+- *
 - *  Cleanup:
 - *   Print errno log and/or timing stats if options given
 - *
 - * Usage:  <for command-line>
-- *  nice03 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *  nice04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -f   : Turn off functionality Testing.
+- *             -e   : Turn on errno logging.
 - *	       -i n : Execute test n times.
 - *	       -I x : Execute test for x seconds.
 - *	       -P x : Pause for x seconds between iterations.
@@ -98,131 +101,126 @@ index 357de9e..6b90c2d 100644
 - *	07/2001 Ported by Wayne Boyer
 - *
 - * RESTRICTIONS:
-- *  The maximum iterations with the -i option is 9
-- *
+- *  This test should be executed by 'non-super-user' only.
   */
--
--#include <stdio.h>
+ #include <pwd.h>
  #include <unistd.h>
-+#include <stdlib.h>
  #include <errno.h>
--#include <fcntl.h>
--#include <sys/time.h>
- #include <sys/resource.h>
 +#include "tst_test.h"
  
 -#include "test.h"
 -
--char *TCID = "nice03";
+-char *TCID = "nice04";
 -int TST_TOTAL = 1;
 -
--#define	NICEINC		2
--int Org_nice;			/* original priority of the test process */
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
+-
+-struct test_case_t {		/* test case struct. to hold ref. test cond's */
+-	int nice_val;
+-	char *desc;
+-	int exp_errno;
+-} Test_cases[] = {
+-	{
+-	-5, "Non-root cannot specify higher priority", EPERM}
+-};
 -
 -void setup();			/* Main setup function of test */
 -void cleanup();			/* cleanup function for the test */
-+#define	NICEINC	2
++#define NICEINC -10
  
 -int main(int ac, char **av)
-+static void nice_test(void)
++static void verify_nice(void)
  {
 -	int lc;
--	int New_nice;		/* priority of process after nice() */
-+	int new_nice;
-+	int orig_nice;
- 
--	tst_parse_opts(ac, av, NULL, NULL);
-+	orig_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
- 
--	setup();
+-	int i;
+-	int incr_val;		/* nice value for the process */
+-	char *test_desc;	/* test specific error message */
 +	TEST(nice(NICEINC));
  
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
 -
--		/*
--		 * Call nice(2) with an 'incr' parameter set
--		 * to a +ve value < max. applicable limit.
--		 * (Linux - 20)
--		 */
--		TEST(nice(NICEINC));
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			incr_val = Test_cases[i].nice_val;
+-			test_desc = Test_cases[i].desc;
 -
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL, "nice(%d) Failed, errno=%d : %s",
--				 NICEINC, TEST_ERRNO, strerror(TEST_ERRNO));
--			continue;
+-			/*
+-			 * Call nice(2) with different 'incr' parameter
+-			 * values and verify that it fails as expected.
+-			 */
+-			TEST(nice(incr_val));
+-
+-			/* check return code from nice(2) */
+-			if (TEST_RETURN == -1) {
+-				tst_resm(TPASS, "nice(2) returned %ld for %s",
+-					 TEST_RETURN, test_desc);
+-			} else {
+-				tst_resm(TFAIL | TTERRNO,
+-					 "nice() returned %ld for %s",
+-					 TEST_RETURN, test_desc);
+-			}
 -		}
--
--		New_nice = getpriority(PRIO_PROCESS, 0);
--
--		/* Validate functionality of the nice() */
--		if (New_nice != (Org_nice + NICEINC)) {
--			tst_resm(TFAIL, "nice() failed to modify the "
--				 "priority of process");
--		} else {
--			tst_resm(TPASS, "Functionality of nice(%d) is "
--				 "correct", NICEINC);
--		}
--		Org_nice = New_nice;
-+	if (TEST_RETURN == -1) {
-+		tst_res(TFAIL | TTERRNO, "nice(%d) returned -1", NICEINC);
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "nice(%i) succeded unexpectedly (returned %li)",
++			NICEINC, TEST_RETURN);
 +		return;
  	}
  
 -	cleanup();
 -	tst_exit();
+-
 -}
-+	if (TEST_ERRNO) {
-+		tst_res(TFAIL | TTERRNO, "nice(%d) failed", NICEINC);
-+		return;
-+	}
- 
+-
 -/*
-- * void
 - * setup() - performs all ONE TIME setup for this test.
-- *  Create a temporary directory and change directory to it.
-- *  Get the process id of test process.
-- *  Get the current nice value of test process and save it in a file.
-- *  Read the nice value from file into a variable.
+- *  Make sure the test process uid is non-root only.
 - */
 -void setup(void)
 -{
-+	new_nice = SAFE_GETPRIORITY(PRIO_PROCESS, 0);
- 
+-	tst_require_root();
+-
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	if (new_nice != (orig_nice + NICEINC)) {
-+		tst_res(TFAIL, "Process priority %i, expected %i",
-+		        new_nice, orig_nice + NICEINC);
+-
+-	/* Switch to nobody user for correct error code collection */
+-	ltpuser = getpwnam(nobody_uid);
+-	if (setuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "setuid failed to "
+-			 "to set the effective uid to %d", ltpuser->pw_uid);
+-		perror("setuid");
++	if (TEST_ERRNO != EPERM) {
++		tst_res(TFAIL | TTERRNO, "nice(%i) should fail with EPERM",
++			NICEINC);
 +		return;
-+	}
+ 	}
  
 -	TEST_PAUSE;
-+	tst_res(TPASS, "nice(%d) passed", NICEINC);
- 
--	Org_nice = getpriority(PRIO_PROCESS, 0);
-+	exit(0);
++	tst_res(TPASS, "nice(%i) failed with EPERM", NICEINC);
  }
  
 -/*
-- * void
 - * cleanup() - performs all ONE TIME cleanup for this test at
 - *             completion or premature exit.
 - */
 -void cleanup(void)
-+static void verify_nice(void)
++static void setup(void)
  {
-+	if (!SAFE_FORK())
-+		nice_test();
++	struct passwd *ltpuser;
  
-+	tst_reap_children();
++	ltpuser = SAFE_GETPWNAM("nobody");
++	SAFE_SETUID(ltpuser->pw_uid);
  }
 +
 +static struct tst_test test = {
-+	.tid = "nice03",
-+	.forks_child = 1,
++	.tid = "nice04",
++	.setup = setup,
 +	.test_all = verify_nice,
++	.needs_root = 1,
 +};
 -- 
 2.7.3
