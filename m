@@ -1,40 +1,52 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 8 Nov 2016 10:59:06 +0100
-Subject: [LTP] [PATCH 3/3] syscalls/umount03: Cleanup && Convert to new
- API
-In-Reply-To: <1478170518-5952-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1478170518-5952-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1478170518-5952-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20161108095905.GE30943@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue,  8 Nov 2016 17:13:51 +0100
+Subject: [LTP] [PATCH 1/1] network: portability: using tst_sleep instead of
+	usleep
+Message-ID: <20161108161351.16366-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> ---
->  testcases/kernel/syscalls/umount/umount03.c | 105 +++++++++-------------------
->  1 file changed, 32 insertions(+), 73 deletions(-)
-> 
-> diff --git a/testcases/kernel/syscalls/umount/umount03.c b/testcases/kernel/syscalls/umount/umount03.c
-> index 322005e..1ade141 100644
-> --- a/testcases/kernel/syscalls/umount/umount03.c
-> +++ b/testcases/kernel/syscalls/umount/umount03.c
-> @@ -20,107 +20,66 @@
->   *	is not the super-user.
->   *
->   * RESTRICTIONS
-> - *	test must be run with the -D option
->   *	test doesn't support -c option to run it in parallel, as mount
->   *	syscall is not supposed to run in parallel.
->   */
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/network/dhcp/dhcp_lib.sh              | 4 ++--
+ testcases/network/tcp_cmds/ipneigh/ipneigh01.sh | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-I've removed the whole RESTRICTIONS part of the comment since the -c
-option has been removed long time ago anyway.
-
-Pushed, thanks.
-
+diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
+index 140619d..85f9b88 100755
+--- a/testcases/network/dhcp/dhcp_lib.sh
++++ b/testcases/network/dhcp/dhcp_lib.sh
+@@ -26,12 +26,12 @@ stop_dhcp()
+ 	while [ $count -le 10 ]; do
+ 		pkill -x $dhcp_name
+ 		[ "$(pgrep -x $dhcp_name)" ] || return 0
+-		usleep 100000
++		tst_sleep 100ms
+ 		count=$((count + 1))
+ 	done
+ 
+ 	pkill -9 -x $dhcp_name
+-	usleep 100000
++	tst_sleep 100ms
+ 	[ "$(pgrep -x $dhcp_name)" ] && return 1 || return 0
+ }
+ 
+diff --git a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+index 736d149..31d6cc6 100755
+--- a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
++++ b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+@@ -52,7 +52,7 @@ do_test()
+ 				ret=0
+ 				break;
+ 			fi
+-			usleep 100
++			tst_sleep 100us
+ 		done
+ 
+ 		[ "$ret" -ne 0 ] && \
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.10.2
+
