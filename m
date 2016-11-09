@@ -1,9 +1,10 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 9 Nov 2016 14:26:38 +0300
-Subject: [LTP] [PATCH 1/1] network: load test_net.sh after getopts
-In-Reply-To: <20161107121952.24933-1-pvorel@suse.cz>
-References: <20161107121952.24933-1-pvorel@suse.cz>
-Message-ID: <582307EE.5060401@oracle.com>
+Date: Wed, 9 Nov 2016 14:43:02 +0300
+Subject: [LTP] [PATCH 1/1] network: portability: using tst_sleep instead
+ of usleep
+In-Reply-To: <20161108161351.16366-1-pvorel@suse.cz>
+References: <20161108161351.16366-1-pvorel@suse.cz>
+Message-ID: <58230BC6.8030608@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,60 +12,51 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi,
-
-On 11/07/2016 03:19 PM, Petr Vorel wrote:
-> We shouldn't ask rsh/ssh password or require having set ssh pub keys
-> just for displaying help.
->
+On 11/08/2016 07:13 PM, Petr Vorel wrote:
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->   testscripts/network.sh | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   testcases/network/dhcp/dhcp_lib.sh              | 4 ++--
+>   testcases/network/tcp_cmds/ipneigh/ipneigh01.sh | 2 +-
+>   2 files changed, 3 insertions(+), 3 deletions(-)
 >
-> diff --git a/testscripts/network.sh b/testscripts/network.sh
-> index 66bacef..fea2f68 100755
-> --- a/testscripts/network.sh
-> +++ b/testscripts/network.sh
-> @@ -11,8 +11,6 @@ if [ $? -eq 0 ]; then
->   	export LTPROOT=${PWD}
->   fi
+> diff --git a/testcases/network/dhcp/dhcp_lib.sh b/testcases/network/dhcp/dhcp_lib.sh
+> index 140619d..85f9b88 100755
+> --- a/testcases/network/dhcp/dhcp_lib.sh
+> +++ b/testcases/network/dhcp/dhcp_lib.sh
+> @@ -26,12 +26,12 @@ stop_dhcp()
+>   	while [ $count -le 10 ]; do
+>   		pkill -x $dhcp_name
+>   		[ "$(pgrep -x $dhcp_name)" ] || return 0
+> -		usleep 100000
+> +		tst_sleep 100ms
+>   		count=$((count + 1))
+>   	done
 >   
-> -. test_net.sh
-> -
->   export TMPDIR=/tmp/netpan-$$
->   mkdir -p $TMPDIR
->   CMDFILE=${TMPDIR}/network.tests
-> @@ -81,6 +79,8 @@ if [ "$OPTIND" -eq 1 ]; then
->   	exit 1
->   fi
+>   	pkill -9 -x $dhcp_name
+> -	usleep 100000
+> +	tst_sleep 100ms
+>   	[ "$(pgrep -x $dhcp_name)" ] && return 1 || return 0
+>   }
 >   
-> +. test_net.sh
-> +
+> diff --git a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+> index 736d149..31d6cc6 100755
+> --- a/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+> +++ b/testcases/network/tcp_cmds/ipneigh/ipneigh01.sh
+> @@ -52,7 +52,7 @@ do_test()
+>   				ret=0
+>   				break;
+>   			fi
+> -			usleep 100
+> +			tst_sleep 100us
 
-Agree, but we should reset TCID and TST_TOTAL after test_net.sh 
-inclusion (not before).
-May be something like this where they were moved close to each other:
+Patch applied. I've changed sleep time here to 'ms', it should have been 
+"usleep 100000", so the patch is fixing it as well,
+added comment about this in the patch.
 
-@@ -81,6 +79,8 @@ if [ "$OPTIND" -eq 1 ]; then
-         exit 1
-  fi
-
-+TST_TOTAL=1
-+TCID="network_settings"
-+
-+. test_net.sh
-+
-+# Reset variables.
-+# Don't break the tests which are using 'testcases/lib/cmdlib.sh'
-+export TCID=
-+export TST_LIB_LOADED=
-+
-  rm -f $CMDFILE
-
-Best regards,
+Thanks,
 Alexey
 
->   rm -f $CMDFILE
+>   		done
 >   
->   for t in $TEST_CASES; do
+>   		[ "$ret" -ne 0 ] && \
 
