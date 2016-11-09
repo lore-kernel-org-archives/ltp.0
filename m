@@ -1,76 +1,78 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed,  9 Nov 2016 17:34:53 +0300
-Subject: [LTP] [PATCH] lsmod01: keep the output in variables
-In-Reply-To: <20161011161557.GD17083@rei.suse.cz>
-References: <20161011161557.GD17083@rei.suse.cz>
-Message-ID: <1478702093-15080-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed,  9 Nov 2016 15:35:39 +0100
+Subject: [LTP] [PATCH 1/1] network: load test_net.sh after getopts
+Message-ID: <20161109143539.29310-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Operations with a file on NFS may increase the reference
-counter of the corresponding module.
+We shouldn't ask rsh/ssh password or require having set ssh pub keys
+just for displaying help.
 
-This test case creates temporary files in $TMPDIR, so if
-$TMPDIR is on NFS, it may fail with output similar to:
-
-  21c21
-  < sunrpc 207591 28
-  ---
-  > sunrpc 207591 29
-
-To overcome this problem it was proposed in [1] to keep the output
-in variables.
-
-[1] http://lists.linux.it/pipermail/ltp/2016-October/002803.html
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/commands/lsmod/lsmod01.sh |   24 ++++++++++++++----------
- 1 files changed, 14 insertions(+), 10 deletions(-)
+Alexey, thanks a lot for your point, I overlooked the comment in the
+code.
 
-diff --git a/testcases/commands/lsmod/lsmod01.sh b/testcases/commands/lsmod/lsmod01.sh
-index 5cf2fee..cd19ca4 100755
---- a/testcases/commands/lsmod/lsmod01.sh
-+++ b/testcases/commands/lsmod/lsmod01.sh
-@@ -36,21 +36,25 @@ cleanup()
+v2: reset TST_TOTAL and TCID variables after loading test_net.sh
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ testscripts/network.sh | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/testscripts/network.sh b/testscripts/network.sh
+index 66bacef..6b81823 100755
+--- a/testscripts/network.sh
++++ b/testscripts/network.sh
+@@ -1,8 +1,5 @@
+ #!/bin/sh
  
- lsmod_test()
- {
--	lsmod >temp 2>&1
--	if [ $? -ne 0 ]; then
--		tst_resm TFAIL "'lsmod' failed."
--		cat temp
-+	lsmod_output=$(lsmod | awk '!/Module/{print $1, $2, $3}' | sort)
-+	if [ -z "$lsmod_output" ]; then
-+		tst_resm TFAIL "Failed to parse the output from lsmod"
- 		return
- 	fi
- 
--	awk '!/Module/{print $1, $2, $3}' temp |sort >temp1
+-TST_TOTAL=1
+-TCID="network_settings"
 -
--	awk '{print $1, $2, $3}' /proc/modules |sort >temp2
-+	modules_output=$(awk '{print $1, $2, $3}' /proc/modules | sort)
-+	if [ -z "$modules_output" ]; then
-+		tst_resm TFAIL "Failed to parse /proc/modules"
-+		return
-+	fi
+ cd $(dirname $0)
+ export LTPROOT=${LTPROOT:-"$PWD"}
+ echo $LTPROOT | grep -q testscripts
+@@ -11,8 +8,6 @@ if [ $? -eq 0 ]; then
+ 	export LTPROOT=${PWD}
+ fi
  
--	diff temp1 temp2 >temp3
--	if [ $? -ne 0 ]; then
-+	if [ "$lsmod_output" != "$modules_output" ]; then
- 		tst_resm TFAIL "lsmod output different from /proc/modules."
--		cat temp3
-+
-+		echo "$lsmod_output" > temp1
-+		echo "$modules_output" > temp2
-+		diff temp1 temp2
-+
- 		return
- 	fi
+-. test_net.sh
+-
+ export TMPDIR=/tmp/netpan-$$
+ mkdir -p $TMPDIR
+ CMDFILE=${TMPDIR}/network.tests
+@@ -20,11 +15,6 @@ VERBOSE="no"
  
+ export PATH="${PATH}:${LTPROOT}/testcases/bin"
+ 
+-# Reset variables.
+-# Don't break the tests which are using 'testcases/lib/cmdlib.sh'
+-export TCID=
+-export TST_LIB_LOADED=
+-
+ usage()
+ {
+ 	echo "Usage: $0 OPTIONS"
+@@ -81,6 +71,16 @@ if [ "$OPTIND" -eq 1 ]; then
+ 	exit 1
+ fi
+ 
++TST_TOTAL=1
++TCID="network_settings"
++
++. test_net.sh
++
++# Reset variables.
++# Don't break the tests which are using 'testcases/lib/cmdlib.sh'
++export TCID=
++export TST_LIB_LOADED=
++
+ rm -f $CMDFILE
+ 
+ for t in $TEST_CASES; do
 -- 
-1.7.1
+2.10.2
 
