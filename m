@@ -1,25 +1,76 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 9 Nov 2016 14:44:05 +0300
-Subject: [LTP] [PATCH 1/1] network: fix bashisms + shebang
-In-Reply-To: <20161108180516.10498-1-pvorel@suse.cz>
-References: <20161108180516.10498-1-pvorel@suse.cz>
-Message-ID: <58230C05.3020201@oracle.com>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed,  9 Nov 2016 17:34:53 +0300
+Subject: [LTP] [PATCH] lsmod01: keep the output in variables
+In-Reply-To: <20161011161557.GD17083@rei.suse.cz>
+References: <20161011161557.GD17083@rei.suse.cz>
+Message-ID: <1478702093-15080-1-git-send-email-stanislav.kholmanskikh@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/08/2016 09:05 PM, Petr Vorel wrote:
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->   testcases/network/nfs/nfs_stress/nfs_lib.sh | 1 +
->   testcases/network/sockets/ltpSockets.sh     | 4 ++--
->   testcases/network/virt/virt_lib.sh          | 3 ++-
->   3 files changed, 5 insertions(+), 3 deletions(-)
+Operations with a file on NFS may increase the reference
+counter of the corresponding module.
 
-Patch applied. Thank you!
+This test case creates temporary files in $TMPDIR, so if
+$TMPDIR is on NFS, it may fail with output similar to:
 
-Best regards,
-Alexey
+  21c21
+  < sunrpc 207591 28
+  ---
+  > sunrpc 207591 29
+
+To overcome this problem it was proposed in [1] to keep the output
+in variables.
+
+[1] http://lists.linux.it/pipermail/ltp/2016-October/002803.html
+
+Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+---
+ testcases/commands/lsmod/lsmod01.sh |   24 ++++++++++++++----------
+ 1 files changed, 14 insertions(+), 10 deletions(-)
+
+diff --git a/testcases/commands/lsmod/lsmod01.sh b/testcases/commands/lsmod/lsmod01.sh
+index 5cf2fee..cd19ca4 100755
+--- a/testcases/commands/lsmod/lsmod01.sh
++++ b/testcases/commands/lsmod/lsmod01.sh
+@@ -36,21 +36,25 @@ cleanup()
+ 
+ lsmod_test()
+ {
+-	lsmod >temp 2>&1
+-	if [ $? -ne 0 ]; then
+-		tst_resm TFAIL "'lsmod' failed."
+-		cat temp
++	lsmod_output=$(lsmod | awk '!/Module/{print $1, $2, $3}' | sort)
++	if [ -z "$lsmod_output" ]; then
++		tst_resm TFAIL "Failed to parse the output from lsmod"
+ 		return
+ 	fi
+ 
+-	awk '!/Module/{print $1, $2, $3}' temp |sort >temp1
+-
+-	awk '{print $1, $2, $3}' /proc/modules |sort >temp2
++	modules_output=$(awk '{print $1, $2, $3}' /proc/modules | sort)
++	if [ -z "$modules_output" ]; then
++		tst_resm TFAIL "Failed to parse /proc/modules"
++		return
++	fi
+ 
+-	diff temp1 temp2 >temp3
+-	if [ $? -ne 0 ]; then
++	if [ "$lsmod_output" != "$modules_output" ]; then
+ 		tst_resm TFAIL "lsmod output different from /proc/modules."
+-		cat temp3
++
++		echo "$lsmod_output" > temp1
++		echo "$modules_output" > temp2
++		diff temp1 temp2
++
+ 		return
+ 	fi
+ 
+-- 
+1.7.1
 
