@@ -1,78 +1,58 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  9 Nov 2016 15:35:39 +0100
-Subject: [LTP] [PATCH 1/1] network: load test_net.sh after getopts
-Message-ID: <20161109143539.29310-1-pvorel@suse.cz>
+From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Date: Wed, 9 Nov 2016 18:29:22 +0300
+Subject: [LTP] du01 with btrfs on systems with > 4k page size
+Message-ID: <582340D2.6070502@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We shouldn't ask rsh/ssh password or require having set ssh pub keys
-just for displaying help.
+Hi!
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Alexey, thanks a lot for your point, I overlooked the comment in the
-code.
+On SPARC the default page size is 8k.
 
-v2: reset TST_TOTAL and TCID variables after loading test_net.sh
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
----
- testscripts/network.sh | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+And du01 fails with btrfs at check3:
 
-diff --git a/testscripts/network.sh b/testscripts/network.sh
-index 66bacef..6b81823 100755
---- a/testscripts/network.sh
-+++ b/testscripts/network.sh
-@@ -1,8 +1,5 @@
- #!/bin/sh
- 
--TST_TOTAL=1
--TCID="network_settings"
--
- cd $(dirname $0)
- export LTPROOT=${LTPROOT:-"$PWD"}
- echo $LTPROOT | grep -q testscripts
-@@ -11,8 +8,6 @@ if [ $? -eq 0 ]; then
- 	export LTPROOT=${PWD}
- fi
- 
--. test_net.sh
--
- export TMPDIR=/tmp/netpan-$$
- mkdir -p $TMPDIR
- CMDFILE=${TMPDIR}/network.tests
-@@ -20,11 +15,6 @@ VERBOSE="no"
- 
- export PATH="${PATH}:${LTPROOT}/testcases/bin"
- 
--# Reset variables.
--# Don't break the tests which are using 'testcases/lib/cmdlib.sh'
--export TCID=
--export TST_LIB_LOADED=
--
- usage()
- {
- 	echo "Usage: $0 OPTIONS"
-@@ -81,6 +71,16 @@ if [ "$OPTIND" -eq 1 ]; then
- 	exit 1
- fi
- 
-+TST_TOTAL=1
-+TCID="network_settings"
-+
-+. test_net.sh
-+
-+# Reset variables.
-+# Don't break the tests which are using 'testcases/lib/cmdlib.sh'
-+export TCID=
-+export TST_LIB_LOADED=
-+
- rm -f $CMDFILE
- 
- for t in $TEST_CASES; do
--- 
-2.10.2
+du01 3 TFAIL : 'du -a' failed
+du01 4 TINFO : Looking for '[0-4][[:space:]]\.\/testdir\/testsymlink' in:
+10240  ./testfile
+8      ./testdir/testsymlink
+8      ./testdir
+10248  .
+du01 4 TFAIL : 'du --all' failed
+du01 5 TINFO : Looking for '[0-4][[:space:]]\.\/testdir\/testsymlink' in:
+10240  ./testfile
+8      ./testdir/testsymlink
+8      ./testdir
+10248  .
 
+i.e. the testsymlink is 8k whereas at most 4k is expected by the test case.
+
+In commit bdd09b1c6f2c8ad ("du01.sh: Fix failures on Btrfs on ppc64le")
+a similar situation was fixed, but for check5 and check6. I'm curious
+why check3 doesn't fail on ppc64. It seems it should fail with the
+current code.
+
+Could, please, anybody with access to a ppc64 box run this test case
+with btrfs and/or provide the output from commands:
+
+[root@skholman-m7 du]# cd /mnt
+[root@skholman-m7 mnt]# mkdir basedir
+[root@skholman-m7 mnt]# cd basedir/
+[root@skholman-m7 basedir]# dd if=/dev/zero of=testfile bs=1M count=10
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB) copied, 0.00825522 s, 1.3 GB/s
+[root@skholman-m7 basedir]# mkdir -p testdir
+[root@skholman-m7 basedir]# ln -s ../testfile testdir/testsymlink
+[root@skholman-m7 basedir]# du -a
+10240	./testfile
+8	./testdir/testsymlink
+8	./testdir
+10248	.
+[root@skholman-m7 basedir]#
+
+?
+
+Thanks.
