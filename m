@@ -1,12 +1,9 @@
 From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Thu, 10 Nov 2016 17:15:24 +0300
-Subject: [LTP] [PATCH] lsmod01: keep the output in variables
-In-Reply-To: <20161110113902.GB11677@rei.lan>
-References: <20161011161557.GD17083@rei.suse.cz>
- <1478702093-15080-1-git-send-email-stanislav.kholmanskikh@oracle.com>
- <20161109164956.GB9168@rei.lan> <582446EB.2080206@oracle.com>
- <20161110113902.GB11677@rei.lan>
-Message-ID: <582480FC.70805@oracle.com>
+Date: Thu, 10 Nov 2016 17:39:38 +0300
+Subject: [LTP] du01 with btrfs on systems with > 4k page size
+In-Reply-To: <20161109161822.GA9168@rei.lan>
+References: <582340D2.6070502@oracle.com> <20161109161822.GA9168@rei.lan>
+Message-ID: <582486AA.6070701@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,44 +12,94 @@ To: ltp@lists.linux.it
 
 
 
-On 11/10/2016 02:39 PM, Cyril Hrubis wrote:
+On 11/09/2016 07:18 PM, Cyril Hrubis wrote:
 > Hi!
->>> Hmm since the foo=$() flattened the text into single line this diff
->>> would be pretty much useless.
+>> On SPARC the default page size is 8k.
 >>
->> Sorry, but are you sure about that?
+>> And du01 fails with btrfs at check3:
 >>
->> [stas@kholmanskikh ~]$ lsmod_output=$(lsmod | awk '!/Module/{print $1,
->> $2, $3}' | sort)
->> [stas@kholmanskikh ~]$ echo "$lsmod_output" > /tmp/gg
->> [stas@kholmanskikh ~]$ tail -n 2 /tmp/gg
->> xt_state 1370 3
->> zlib_deflate 21991 1
->> [stas@kholmanskikh ~]$ modules_output=$(awk '{print $1, $2, $3}'
->> /proc/modules | sort)
->> [stas@kholmanskikh ~]$ echo "$modules_output" > /tmp/zz
->> [stas@kholmanskikh ~]$ tail -n 2 /tmp/zz
->> xt_state 1370 3
->> zlib_deflate 21991 1
->> [stas@kholmanskikh ~]$
+>> du01 3 TFAIL : 'du -a' failed
+>> du01 4 TINFO : Looking for '[0-4][[:space:]]\.\/testdir\/testsymlink' in:
+>> 10240  ./testfile
+>> 8      ./testdir/testsymlink
+>> 8      ./testdir
+>> 10248  .
+>> du01 4 TFAIL : 'du --all' failed
+>> du01 5 TINFO : Looking for '[0-4][[:space:]]\.\/testdir\/testsymlink' in:
+>> 10240  ./testfile
+>> 8      ./testdir/testsymlink
+>> 8      ./testdir
+>> 10248  .
 >>
->> i.e. the content of /tmp/gg and /tmp/zz are in the form ready to be diff-ed.
+>> i.e. the testsymlink is 8k whereas at most 4k is expected by the test case.
+>>
+>> In commit bdd09b1c6f2c8ad ("du01.sh: Fix failures on Btrfs on ppc64le")
+>> a similar situation was fixed, but for check5 and check6. I'm curious
+>> why check3 doesn't fail on ppc64. It seems it should fail with the
+>> current code.
+>>
+>> Could, please, anybody with access to a ppc64 box run this test case
+>> with btrfs and/or provide the output from commands:
+>>
+>> [root@skholman-m7 du]# cd /mnt
+>> [root@skholman-m7 mnt]# mkdir basedir
+>> [root@skholman-m7 mnt]# cd basedir/
+>> [root@skholman-m7 basedir]# dd if=/dev/zero of=testfile bs=1M count=10
+>> 10+0 records in
+>> 10+0 records out
+>> 10485760 bytes (10 MB) copied, 0.00825522 s, 1.3 GB/s
+>> [root@skholman-m7 basedir]# mkdir -p testdir
+>> [root@skholman-m7 basedir]# ln -s ../testfile testdir/testsymlink
+>> [root@skholman-m7 basedir]# du -a
+>> 10240	./testfile
+>> 8	./testdir/testsymlink
+>> 8	./testdir
+>> 10248	.
+>> [root@skholman-m7 basedir]#
 > 
-> You are right, the double quotes makes the difference here.
+> It's really 64k for a symlink:
 > 
-> $ modules_output=$(awk '{print $1, $2, $3}' /proc/modules | sort)
+> du -a
+> 10240   ./testfile
+> 64      ./testdir/testsymlink
+> 64      ./testdir
+> 10304   .
 > 
-> $ echo $modules_output
-> bluetooth 320499 5 btbcm 5506 1 btintel 2739 1 ...
-> 
-> $ echo "$modules_output"
-> bluetooth 320499 5
-> btbcm 5506 1
-> btintel 2739 1
-> ...
-> 
-> 
-> Consider the patch acked then.
 
-Thank you. Pushed.
+Thank you.
+
+> And the reason that it works is:
 > 
+> commit 9712f3122a46c43fccd694ee7204ec8c19cfacdc
+> Author: Cyril Hrubis <chrubis@suse.cz>
+> Date:   Wed Jan 13 17:33:51 2016 +0100
+> 
+>     commands: du01.sh; Btrfs fix.
+> 
+>     Btrfs reports symlinks to be 4 blocks in size.
+> 
+>     Also rename the test symlink so that it's clear it's
+>     symlink.
+> 
+> 
+> Since the grep ignores the 6 at the start of the pattern and succeeds.
+> It's strange that logs I have in SUSE bugzilla says that it was 4k in
+> size, but that may have been true for some other kernel, since the
+> pagesize is configurable in kernel .config.
+> 
+> So I guess that we should fix the pattern to match anyhing that could be
+> pagesize. For PPC64 that should be one of 4K/16K/64K/256K, it's 8K for
+> sparc apparently so I guess that we should go for 2^n between 4 and
+> 256.
+
+Maybe determine the default page size at runtime (getconf PAGESIZE) and
+check if testsymlink is either 0 or the page size?
+
+
+> 
+> And we may also specify that the pattern should start matching at the
+> start of the line, otherwise the test will still pass if there was some
+> garbage before the correct string.
+> 
+
+Agreed. For all the checks.
