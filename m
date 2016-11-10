@@ -1,29 +1,28 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Nov 2016 11:09:24 +0100
-Subject: [LTP] [COMMITTED] [PATCH 4/5] testscripts/test_containers.sh:
-	Remove.
+Date: Thu, 10 Nov 2016 11:09:25 +0100
+Subject: [LTP] [COMMITTED] [PATCH 5/5] testscripts/test_filecaps.sh: Remove.
 In-Reply-To: <1478772565-12167-1-git-send-email-chrubis@suse.cz>
 References: <1478772565-12167-1-git-send-email-chrubis@suse.cz>
-Message-ID: <1478772565-12167-4-git-send-email-chrubis@suse.cz>
+Message-ID: <1478772565-12167-5-git-send-email-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The script just calls runltp -f containers and does not seem to be
-called from any other script inside LTP.
+The script just calls runltp -f filecaps and does not seem to be called
+from any other script inside LTP.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testscripts/test_containers.sh | 47 ------------------------------------------
+ testscripts/test_filecaps.sh | 47 --------------------------------------------
  1 file changed, 47 deletions(-)
- delete mode 100755 testscripts/test_containers.sh
+ delete mode 100755 testscripts/test_filecaps.sh
 
-diff --git a/testscripts/test_containers.sh b/testscripts/test_containers.sh
+diff --git a/testscripts/test_filecaps.sh b/testscripts/test_filecaps.sh
 deleted file mode 100755
-index 9183764..0000000
---- a/testscripts/test_containers.sh
+index ecb0691..0000000
+--- a/testscripts/test_filecaps.sh
 +++ /dev/null
 @@ -1,47 +0,0 @@
 -#!/bin/bash
@@ -35,7 +34,7 @@ index 9183764..0000000
 -# Software Foundation; either version 2 of the License, or (at your option)
 -# any later version.
 -#
--# test_containers.sh - Run the containers test suite.
+-# test_filecaps.sh - Run the file capabilities test suite.
 -
 -# Must be root to run the containers testsuite
 -if [ $UID != 0 ]
@@ -67,9 +66,9 @@ index 9183764..0000000
 -fi
 -
 -# Check the role and mode testsuite is being executed under.
--echo "Running the containers testsuite..."
+-echo "Running the file capabilities testsuite..."
 -
--$LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/containers -n ltp-containers -l $LTPROOT/results/containers.logfile -o $LTPROOT/results/containers.outfile -p -f $LTPROOT/runtest/containers
+-$LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/filecaps -n ltp-filecaps -l $LTPROOT/results/filecaps.logfile -o $LTPROOT/results/filecaps.outfile -p -f $LTPROOT/runtest/filecaps
 -
 -echo "Done."
 -exit 0
