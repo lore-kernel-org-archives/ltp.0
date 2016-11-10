@@ -1,7 +1,7 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 4 Nov 2016 09:56:20 +0800
+Date: Thu, 10 Nov 2016 09:37:45 +0800
 Subject: [LTP] [PATCH] syscalls/nice05: remove obsolete data
-Message-ID: <1478224580-22697-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1478741865-23646-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
