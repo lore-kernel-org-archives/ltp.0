@@ -1,77 +1,55 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 10 Nov 2016 11:09:25 +0100
-Subject: [LTP] [COMMITTED] [PATCH 5/5] testscripts/test_filecaps.sh: Remove.
-In-Reply-To: <1478772565-12167-1-git-send-email-chrubis@suse.cz>
-References: <1478772565-12167-1-git-send-email-chrubis@suse.cz>
-Message-ID: <1478772565-12167-5-git-send-email-chrubis@suse.cz>
+Date: Thu, 10 Nov 2016 12:39:02 +0100
+Subject: [LTP] [PATCH] lsmod01: keep the output in variables
+In-Reply-To: <582446EB.2080206@oracle.com>
+References: <20161011161557.GD17083@rei.suse.cz>
+ <1478702093-15080-1-git-send-email-stanislav.kholmanskikh@oracle.com>
+ <20161109164956.GB9168@rei.lan> <582446EB.2080206@oracle.com>
+Message-ID: <20161110113902.GB11677@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The script just calls runltp -f filecaps and does not seem to be called
-from any other script inside LTP.
+Hi!
+> > Hmm since the foo=$() flattened the text into single line this diff
+> > would be pretty much useless.
+> 
+> Sorry, but are you sure about that?
+> 
+> [stas@kholmanskikh ~]$ lsmod_output=$(lsmod | awk '!/Module/{print $1,
+> $2, $3}' | sort)
+> [stas@kholmanskikh ~]$ echo "$lsmod_output" > /tmp/gg
+> [stas@kholmanskikh ~]$ tail -n 2 /tmp/gg
+> xt_state 1370 3
+> zlib_deflate 21991 1
+> [stas@kholmanskikh ~]$ modules_output=$(awk '{print $1, $2, $3}'
+> /proc/modules | sort)
+> [stas@kholmanskikh ~]$ echo "$modules_output" > /tmp/zz
+> [stas@kholmanskikh ~]$ tail -n 2 /tmp/zz
+> xt_state 1370 3
+> zlib_deflate 21991 1
+> [stas@kholmanskikh ~]$
+> 
+> i.e. the content of /tmp/gg and /tmp/zz are in the form ready to be diff-ed.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testscripts/test_filecaps.sh | 47 --------------------------------------------
- 1 file changed, 47 deletions(-)
- delete mode 100755 testscripts/test_filecaps.sh
+You are right, the double quotes makes the difference here.
 
-diff --git a/testscripts/test_filecaps.sh b/testscripts/test_filecaps.sh
-deleted file mode 100755
-index ecb0691..0000000
---- a/testscripts/test_filecaps.sh
-+++ /dev/null
-@@ -1,47 +0,0 @@
--#!/bin/bash
--#
--# Copyright 2007 IBM
--#
--# This program is free software; you can redistribute it and/or modify it
--# under the terms of the GNU General Public License as published by the Free
--# Software Foundation; either version 2 of the License, or (at your option)
--# any later version.
--#
--# test_filecaps.sh - Run the file capabilities test suite.
--
--# Must be root to run the containers testsuite
--if [ $UID != 0 ]
--then
--        echo "FAILED: Must be root to execute this script"
--        exit 1
--fi
--
--# set the LTPROOT directory
--cd `dirname $0`
--LTPROOT=${PWD}
--echo $LTPROOT | grep testscripts > /dev/null 2>&1
--if [ $? -eq 0 ]
--then
--	cd ..
--	LTPROOT=${PWD}
--fi
--
--# set the PATH to include testcase/bin
--
--export PATH=$PATH:/usr/sbin:$LTPROOT/testcases/bin
--export LTPBIN=$LTPROOT/testcases/bin
--
--# We will store the logfiles in $LTPROOT/results, so make sure
--# it exists.
--if [ ! -d $LTPROOT/results ]
--then
--	mkdir $LTPROOT/results
--fi
--
--# Check the role and mode testsuite is being executed under.
--echo "Running the file capabilities testsuite..."
--
--$LTPROOT/bin/ltp-pan -S -a $LTPROOT/results/filecaps -n ltp-filecaps -l $LTPROOT/results/filecaps.logfile -o $LTPROOT/results/filecaps.outfile -p -f $LTPROOT/runtest/filecaps
--
--echo "Done."
--exit 0
+$ modules_output=$(awk '{print $1, $2, $3}' /proc/modules | sort)
+
+$ echo $modules_output
+bluetooth 320499 5 btbcm 5506 1 btintel 2739 1 ...
+
+$ echo "$modules_output"
+bluetooth 320499 5
+btbcm 5506 1
+btintel 2739 1
+...
+
+
+Consider the patch acked then.
+
 -- 
-2.7.3
-
+Cyril Hrubis
+chrubis@suse.cz
