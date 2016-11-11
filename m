@@ -1,34 +1,23 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 11 Nov 2016 11:59:18 +0300
-Subject: [LTP] [PATCH v2 1/3] doc: update networking related
-	documentation
-In-Reply-To: <20161110115441.17301-1-pvorel@suse.cz>
-References: <20161110115441.17301-1-pvorel@suse.cz>
-Message-ID: <58258866.1040801@oracle.com>
+Date: Fri, 11 Nov 2016 12:00:19 +0300
+Subject: [LTP] [PATCH 1/1] network: mc_cmds: fix error message
+In-Reply-To: <20161110140537.7339-1-pvorel@suse.cz>
+References: <20161110140537.7339-1-pvorel@suse.cz>
+Message-ID: <582588A3.3080207@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/10/2016 02:54 PM, Petr Vorel wrote:
-> networktests.sh was removed in fddb4f3.
->
+On 11/10/2016 05:05 PM, Petr Vorel wrote:
 > Signed-off-by: Petr Vorel <pvorel@suse.cz>
 > ---
->
-> -    iv) Finally, before running the networktests.sh script, two variables must
-> -	be set within the script file.  The "RHOST" variable should be set to
-> -	the hostname of the server.  The "PASSWD" variable should be set to
-> -	root's password on the server machine.  This is necessary for tests
-> -	such as telnet01 and ftp01.
-> +    iv) Finally, before running the network.sh script, two variables must be
-> +   set: The "RHOST" variable should be set to the hostname of the server.  The
-> +   "PASSWD" variable should be set to root's password on the server machine.
-> +   This is necessary for tests such as telnet01 and ftp01.
+>   testcases/network/multicast/mc_cmds/mc_cmds | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fixed indentation here and pushed the patch-set, thank you.
+Applied this one as well.
 
-Best regards,
+Thanks,
 Alexey
 
