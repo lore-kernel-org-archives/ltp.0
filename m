@@ -1,206 +1,114 @@
-From: Dejan Jovicevic <Dejan.Jovicevic@rt-rk.com>
-Date: Mon, 14 Nov 2016 14:23:20 +0100
-Subject: [LTP]
- =?utf-8?b?Pz09P3V0Zi04P3E/ID89PT91dGYtOD9xPyBbUEFUQ0ggdjQg?=
- =?utf-8?q?3/5=5D=3F=3D=3D=3Futf-8=3Fq=3F_llistxattr=3A_improved_code_read?=
- =?utf-8?q?ability_and_stability?=
-In-Reply-To: <1479125614-24731-4-git-send-email-dejan.jovicevic@rt-rk.com>
-Message-ID: <2fec-5829bb00-1-4537dc80@203438839>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 14 Nov 2016 16:33:24 +0300
+Subject: [LTP] [PATCH][RFC] network: test_net.sh: allow to run tests on a
+	single machine
+Message-ID: <1479130404-31787-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+When 'TST_USE_NETNS' environment variable is defined, test_net.sh
+will setup 'ltp_ns' netns and configure veth pair according to
+other LTP network variables. Then, each tst_rhost_run() call will
+be executed in the new netns on the same host.
 
-Ok, now I see I've missed a changes here.Need to rebase this.
+Usage:
+TST_USE_NETNS=1... ./network.sh -i
 
--------- Original Message --------
-Subject: [LTP] [PATCH v4 3/5] llistxattr: improved code readability and stability
-Date: Monday, November 14, 2016 13:13 CET
-From: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
-To: ltp@lists.linux.it
-References: <1479125614-24731-1-git-send-email-dejan.jovicevic@rt-rk.com>
-
-
- Changed bits of code, such as hardcoded magic constants,
-unnecessary else branches, way of passing array size to
-a function, removed unnecessary comments, moved to using
-macros instead of string literals where seemed to be fit.
-
-This was done to make the code easier to read and understand,
-and make it easier to maintain in case of changes
-
-Signed-off-by: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
-.../kernel/syscalls/llistxattr/llistxattr01.c | 30 ++++++++++++----------
-.../kernel/syscalls/llistxattr/llistxattr02.c | 23 ++++++++---------
-.../kernel/syscalls/llistxattr/llistxattr03.c | 12 ++++-----
-3 files changed, 32 insertions(+), 33 deletions(-)
+ testcases/lib/test_net.sh |   50 ++++++++++++++++++++++++++++++++++++---------
+ 1 files changed, 40 insertions(+), 10 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr01.c b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
-index f352032..0176893 100644
---- a/testcases/kernel/syscalls/llistxattr/llistxattr01.c
-+++ b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
-@@ -37,11 +37,14 @@
-
-#ifdef HAVE_SYS_XATTR_H
-
--#define SECURITY_KEY1 "security.ltptest1"
--#define SECURITY_KEY2 "security.ltptest2"
--#define VALUE "test"
--#define VALUE_SIZE 4
--#define KEY_SIZE 17
-+#define SECURITY_KEY1 "security.ltptest1"
-+#define SECURITY_KEY2 "security.ltptest2"
-+#define VALUE "test"
-+#define VALUE_SIZE (sizeof(VALUE) - 1)
-+#define KEY_SIZE (sizeof(SECURITY_KEY1) - 1)
-+#define TESTFILE "testfile"
-+#define SYMLINK "symlink"
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index dc52d95..67c702b 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -20,6 +20,31 @@
+ 
+ [ -z "$TST_LIB_LOADED" ] && . test.sh
+ 
++init_ltp_netspace()
++{
++	if [ ! -f /var/run/netns/ltp_ns ]; then
++		ROD ip net add ltp_ns
++		ROD ip li add name ltp_veth1 type veth peer name ltp_veth2
++		ROD ip li set dev ltp_veth1 netns ltp_ns
++	fi
 +
-
-static int has_attribute(const char *list, int llen, const char *attr)
-{
-@@ -56,22 +59,21 @@ static int has_attribute(const char *list, int llen, const char *attr)
-
-static void verify_llistxattr(void)
-{
-- int size = 64;
-- char buf[size];
-+ char buf[64];
-
-- TEST(llistxattr("symlink", buf, size));
-+ TEST(llistxattr(SYMLINK, buf, sizeof(buf)));
-if (TEST_RETURN == -1) {
-tst_res(TFAIL | TTERRNO, "llistxattr() failed");
-return;
-}
-
-- if (has_attribute(buf, size, SECURITY_KEY1)) {
-+ if (has_attribute(buf, sizeof(buf), SECURITY_KEY1)) {
-tst_res(TFAIL, "get file attribute %s unexpectlly",
-SECURITY_KEY1);
-return;
-}
-
-- if (!has_attribute(buf, size, SECURITY_KEY2)) {
-+ if (!has_attribute(buf, sizeof(buf), SECURITY_KEY2)) {
-tst_res(TFAIL, "missing attribute %s", SECURITY_KEY2);
-return;
-}
-@@ -81,13 +83,13 @@ static void verify_llistxattr(void)
-
-static void setup(void)
-{
-- SAFE_TOUCH("testfile", 0644, NULL);
-+ SAFE_TOUCH(TESTFILE, 0644, NULL);
-
-- SAFE_SYMLINK("testfile", "symlink");
-+ SAFE_SYMLINK(TESTFILE, SYMLINK);
-
-- SAFE_LSETXATTR("testfile", SECURITY_KEY1, VALUE, VALUE_SIZE, XATTR_CREATE);
-+ SAFE_LSETXATTR(TESTFILE, SECURITY_KEY1, VALUE, VALUE_SIZE, XATTR_CREATE);
-
-- SAFE_LSETXATTR("symlink", SECURITY_KEY2, VALUE, VALUE_SIZE, XATTR_CREATE);
-+ SAFE_LSETXATTR(SYMLINK, SECURITY_KEY2, VALUE, VALUE_SIZE, XATTR_CREATE);
-}
-
-static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr02.c b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
-index 2812838..ed3ace3 100644
---- a/testcases/kernel/syscalls/llistxattr/llistxattr02.c
-+++ b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
-@@ -41,20 +41,19 @@
-
-#ifdef HAVE_SYS_XATTR_H
-
--#define SECURITY_KEY "security.ltptest"
--#define VALUE "test"
--#define VALUE_SIZE 4
-+#define SECURITY_KEY "security.ltptest"
-+#define VALUE "test"
-+#define VALUE_SIZE (sizeof(VALUE) - 1)
-+#define TESTFILE "testfile"
-+#define SYMLINK "symlink"
-
-static struct test_case {
-const char *path;
-size_t size;
-int exp_err;
-} tc[] = {
-- /* test1 */
-- {"symlink", 1, ERANGE},
-- /* test2 */
-+ {SYMLINK, 1, ERANGE},
-{"", 20, ENOENT},
-- /* test3 */
-{(char *)-1, 20, EFAULT}
-};
-
-@@ -63,8 +62,8 @@ static void verify_llistxattr(unsigned int n)
-struct test_case *t = tc + n;
-char buf[t->size];
-
-- TEST(llistxattr(t->path, buf, t->size));
-- if (TEST_RETURN != -1) {
-+ TEST(llistxattr(t->path, buf, sizeof(buf)));
-+ if (TEST_RETURN == 0) {
-tst_res(TFAIL, "llistxattr() succeeded unexpectedly");
-} else {
-if (TEST_ERRNO != t->exp_err) {
-@@ -80,11 +79,11 @@ static void verify_llistxattr(unsigned int n)
-
-static void setup(void)
-{
-- SAFE_TOUCH("testfile", 0644, NULL);
-+ SAFE_TOUCH(TESTFILE, 0644, NULL);
-
-- SAFE_SYMLINK("testfile", "symlink");
-+ SAFE_SYMLINK(TESTFILE, SYMLINK);
-
-- SAFE_LSETXATTR("symlink", SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
-+ SAFE_LSETXATTR(SYMLINK, SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
-}
-
-static struct tst_test test = {
-diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr03.c b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
-index 475375e..6a1cb6b 100644
---- a/testcases/kernel/syscalls/llistxattr/llistxattr03.c
-+++ b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
-@@ -36,8 +36,8 @@
-#ifdef HAVE_SYS_XATTR_H
-
-#define SECURITY_KEY "security.ltptest"
--#define VALUE "test"
--#define VALUE_SIZE 4
-+#define VALUE "test"
-+#define VALUE_SIZE (sizeof(VALUE) - 1)
-
-static const char *filename[] = {"testfile1", "testfile2"};
-
-@@ -46,11 +46,9 @@ static int check_suitable_buf(const char *name, long size)
-int n;
-char buf[size];
-
-- n = llistxattr(name, buf, size);
-- if (n == -1)
-- return 0;
-- else
-- return 1;
-+ n = llistxattr(name, buf, sizeof(buf));
++	LHOST_IFACES=${LHOST_IFACES:-"ltp_ns_veth2"}
++	RHOST_IFACES=${RHOST_IFACES:-"ltp_ns_veth1"}
 +
-+ return n != -1;
-}
++	export TST_INIT_NETNS="no"
++	export LTP_NETNS=${LTP_NETNS:-"ip netns exec ltp_ns"}
++
++	tst_init_iface
++	tst_init_iface rhost
++
++	tst_add_ipaddr
++	tst_add_ipaddr rhost
++
++	TST_IPV6=6 tst_add_ipaddr
++	TST_IPV6=6 tst_add_ipaddr rhost
++
++}
++
+ # Run command on remote host.
+ # Options:
+ # -b run in background
+@@ -67,6 +92,9 @@ tst_rhost_run()
+ 	if [ -n "$TST_USE_SSH" ]; then
+ 		output=`ssh -n -q $user@$RHOST "sh -c \
+ 			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
++	elif [ -n "$TST_USE_NETNS" ]; then
++		output=`$LTP_NETNS sh -c \
++			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
+ 	else
+ 		output=`rsh -n -l $user $RHOST "sh -c \
+ 			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+@@ -346,22 +374,14 @@ tst_ping()
+ }
+ 
+ # Management Link
+-[ -z "$RHOST" ] && tst_brkm TBROK "RHOST variable not defined"
++[ -z "$RHOST" -a -z "$TST_USE_NETNS" ] && \
++	tst_brkm TBROK "RHOST variable not defined"
+ export RHOST="$RHOST"
+ export PASSWD=${PASSWD:-""}
+ # Don't use it in new tests, use tst_rhost_run() from test_net.sh instead.
+ export LTP_RSH=${LTP_RSH:-"rsh -n"}
+ 
+ # Test Links
+-# Warning: make sure to set valid interface names and IP addresses below.
+-# Set names for test interfaces, e.g. "eth0 eth1"
+-export LHOST_IFACES=${LHOST_IFACES:-"eth0"}
+-export RHOST_IFACES=${RHOST_IFACES:-"eth0"}
+-
+-# Set corresponding HW addresses, e.g. "00:00:00:00:00:01 00:00:00:00:00:02"
+-export LHOST_HWADDRS=${LHOST_HWADDRS:-"$(tst_get_hwaddrs lhost)"}
+-export RHOST_HWADDRS=${RHOST_HWADDRS:-"$(tst_get_hwaddrs rhost)"}
+-
+ # Set first three octets of the network address, default is '10.0.0'
+ export IPV4_NETWORK=${IPV4_NETWORK:-"10.0.0"}
+ # Set local host last octet, default is '2'
+@@ -408,5 +428,15 @@ export UPLOAD_REGFILESIZE=${UPLOAD_REGFILESIZE:-"1024"}
+ export MCASTNUM_NORMAL=${MCASTNUM_NORMAL:-"20"}
+ export MCASTNUM_HEAVY=${MCASTNUM_HEAVY:-"40000"}
+ 
++[ -n "$TST_USE_NETNS" -a "$TST_INIT_NETNS" != "no" ] && init_ltp_netspace
++
++# Warning: make sure to set valid interface names and IP addresses below.
++# Set names for test interfaces, e.g. "eth0 eth1"
++export LHOST_IFACES=${LHOST_IFACES:-"eth0"}
++export RHOST_IFACES=${RHOST_IFACES:-"eth0"}
++# Set corresponding HW addresses, e.g. "00:00:00:00:00:01 00:00:00:00:00:02"
++export LHOST_HWADDRS=${LHOST_HWADDRS:-"$(tst_get_hwaddrs lhost)"}
++export RHOST_HWADDRS=${RHOST_HWADDRS:-"$(tst_get_hwaddrs rhost)"}
++
+ # More information about network parameters can be found
+ # in the following document: testcases/network/stress/README
+-- 
+1.7.1
 
-static void verify_llistxattr(unsigned int n)
---
-1.9.1
-
-
---
-Mailing list info: https://lists.linux.it/listinfo/ltp
- 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20161114/527ce6c3/attachment.html>
