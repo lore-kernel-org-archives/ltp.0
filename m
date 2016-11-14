@@ -1,37 +1,206 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 14 Nov 2016 14:12:17 +0100
-Subject: [LTP] new shell library
-In-Reply-To: <827120068.2432301.1477908222614.JavaMail.zimbra@redhat.com>
-References: <20161003145835.GD7583@rei.suse.cz>
- <254451816.211402.1475574875165.JavaMail.zimbra@redhat.com>
- <20161012100806.GA24231@rei.lan>
- <1175646125.448517.1476268354007.JavaMail.zimbra@redhat.com>
- <20161012123602.GB24231@rei.lan> <20161012131726.GC24231@rei.lan>
- <1527497475.514457.1476284084454.JavaMail.zimbra@redhat.com>
- <20161027145806.GA25043@rei.lan>
- <827120068.2432301.1477908222614.JavaMail.zimbra@redhat.com>
-Message-ID: <20161114131216.GB25055@rei.lan>
+From: Dejan Jovicevic <Dejan.Jovicevic@rt-rk.com>
+Date: Mon, 14 Nov 2016 14:23:20 +0100
+Subject: [LTP]
+ =?utf-8?b?Pz09P3V0Zi04P3E/ID89PT91dGYtOD9xPyBbUEFUQ0ggdjQg?=
+ =?utf-8?q?3/5=5D=3F=3D=3D=3Futf-8=3Fq=3F_llistxattr=3A_improved_code_read?=
+ =?utf-8?q?ability_and_stability?=
+In-Reply-To: <1479125614-24731-4-git-send-email-dejan.jovicevic@rt-rk.com>
+Message-ID: <2fec-5829bb00-1-4537dc80@203438839>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-I've added a few patches that remove tst_kvercmp in favor of tst_kvcmp
-into the repository[1]. These are more or less trivial, the rest of the
-patchset is the same, I only converted one more test (ar01) and keep
-fixing conflicts so that it could be applied on the top of the latest
-git tree.
 
-Has anybody any feedback that would stop the inclusion of these patches?
+Ok, now I see I've missed a changes here.Need to rebase this.
 
-If not I would like to get them into the git once I test that these
-testcases can run fine from an installed tree so that we have enough
-time to test the changes out before the next release.
+-------- Original Message --------
+Subject: [LTP] [PATCH v4 3/5] llistxattr: improved code readability and stability
+Date: Monday, November 14, 2016 13:13 CET
+From: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
+To: ltp@lists.linux.it
+References: <1479125614-24731-1-git-send-email-dejan.jovicevic@rt-rk.com>
 
-[1] https://github.com/metan-ucw/ltp
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+ Changed bits of code, such as hardcoded magic constants,
+unnecessary else branches, way of passing array size to
+a function, removed unnecessary comments, moved to using
+macros instead of string literals where seemed to be fit.
+
+This was done to make the code easier to read and understand,
+and make it easier to maintain in case of changes
+
+Signed-off-by: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
+---
+.../kernel/syscalls/llistxattr/llistxattr01.c | 30 ++++++++++++----------
+.../kernel/syscalls/llistxattr/llistxattr02.c | 23 ++++++++---------
+.../kernel/syscalls/llistxattr/llistxattr03.c | 12 ++++-----
+3 files changed, 32 insertions(+), 33 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr01.c b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
+index f352032..0176893 100644
+--- a/testcases/kernel/syscalls/llistxattr/llistxattr01.c
++++ b/testcases/kernel/syscalls/llistxattr/llistxattr01.c
+@@ -37,11 +37,14 @@
+
+#ifdef HAVE_SYS_XATTR_H
+
+-#define SECURITY_KEY1 "security.ltptest1"
+-#define SECURITY_KEY2 "security.ltptest2"
+-#define VALUE "test"
+-#define VALUE_SIZE 4
+-#define KEY_SIZE 17
++#define SECURITY_KEY1 "security.ltptest1"
++#define SECURITY_KEY2 "security.ltptest2"
++#define VALUE "test"
++#define VALUE_SIZE (sizeof(VALUE) - 1)
++#define KEY_SIZE (sizeof(SECURITY_KEY1) - 1)
++#define TESTFILE "testfile"
++#define SYMLINK "symlink"
++
+
+static int has_attribute(const char *list, int llen, const char *attr)
+{
+@@ -56,22 +59,21 @@ static int has_attribute(const char *list, int llen, const char *attr)
+
+static void verify_llistxattr(void)
+{
+- int size = 64;
+- char buf[size];
++ char buf[64];
+
+- TEST(llistxattr("symlink", buf, size));
++ TEST(llistxattr(SYMLINK, buf, sizeof(buf)));
+if (TEST_RETURN == -1) {
+tst_res(TFAIL | TTERRNO, "llistxattr() failed");
+return;
+}
+
+- if (has_attribute(buf, size, SECURITY_KEY1)) {
++ if (has_attribute(buf, sizeof(buf), SECURITY_KEY1)) {
+tst_res(TFAIL, "get file attribute %s unexpectlly",
+SECURITY_KEY1);
+return;
+}
+
+- if (!has_attribute(buf, size, SECURITY_KEY2)) {
++ if (!has_attribute(buf, sizeof(buf), SECURITY_KEY2)) {
+tst_res(TFAIL, "missing attribute %s", SECURITY_KEY2);
+return;
+}
+@@ -81,13 +83,13 @@ static void verify_llistxattr(void)
+
+static void setup(void)
+{
+- SAFE_TOUCH("testfile", 0644, NULL);
++ SAFE_TOUCH(TESTFILE, 0644, NULL);
+
+- SAFE_SYMLINK("testfile", "symlink");
++ SAFE_SYMLINK(TESTFILE, SYMLINK);
+
+- SAFE_LSETXATTR("testfile", SECURITY_KEY1, VALUE, VALUE_SIZE, XATTR_CREATE);
++ SAFE_LSETXATTR(TESTFILE, SECURITY_KEY1, VALUE, VALUE_SIZE, XATTR_CREATE);
+
+- SAFE_LSETXATTR("symlink", SECURITY_KEY2, VALUE, VALUE_SIZE, XATTR_CREATE);
++ SAFE_LSETXATTR(SYMLINK, SECURITY_KEY2, VALUE, VALUE_SIZE, XATTR_CREATE);
+}
+
+static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr02.c b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
+index 2812838..ed3ace3 100644
+--- a/testcases/kernel/syscalls/llistxattr/llistxattr02.c
++++ b/testcases/kernel/syscalls/llistxattr/llistxattr02.c
+@@ -41,20 +41,19 @@
+
+#ifdef HAVE_SYS_XATTR_H
+
+-#define SECURITY_KEY "security.ltptest"
+-#define VALUE "test"
+-#define VALUE_SIZE 4
++#define SECURITY_KEY "security.ltptest"
++#define VALUE "test"
++#define VALUE_SIZE (sizeof(VALUE) - 1)
++#define TESTFILE "testfile"
++#define SYMLINK "symlink"
+
+static struct test_case {
+const char *path;
+size_t size;
+int exp_err;
+} tc[] = {
+- /* test1 */
+- {"symlink", 1, ERANGE},
+- /* test2 */
++ {SYMLINK, 1, ERANGE},
+{"", 20, ENOENT},
+- /* test3 */
+{(char *)-1, 20, EFAULT}
+};
+
+@@ -63,8 +62,8 @@ static void verify_llistxattr(unsigned int n)
+struct test_case *t = tc + n;
+char buf[t->size];
+
+- TEST(llistxattr(t->path, buf, t->size));
+- if (TEST_RETURN != -1) {
++ TEST(llistxattr(t->path, buf, sizeof(buf)));
++ if (TEST_RETURN == 0) {
+tst_res(TFAIL, "llistxattr() succeeded unexpectedly");
+} else {
+if (TEST_ERRNO != t->exp_err) {
+@@ -80,11 +79,11 @@ static void verify_llistxattr(unsigned int n)
+
+static void setup(void)
+{
+- SAFE_TOUCH("testfile", 0644, NULL);
++ SAFE_TOUCH(TESTFILE, 0644, NULL);
+
+- SAFE_SYMLINK("testfile", "symlink");
++ SAFE_SYMLINK(TESTFILE, SYMLINK);
+
+- SAFE_LSETXATTR("symlink", SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
++ SAFE_LSETXATTR(SYMLINK, SECURITY_KEY, VALUE, VALUE_SIZE, XATTR_CREATE);
+}
+
+static struct tst_test test = {
+diff --git a/testcases/kernel/syscalls/llistxattr/llistxattr03.c b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
+index 475375e..6a1cb6b 100644
+--- a/testcases/kernel/syscalls/llistxattr/llistxattr03.c
++++ b/testcases/kernel/syscalls/llistxattr/llistxattr03.c
+@@ -36,8 +36,8 @@
+#ifdef HAVE_SYS_XATTR_H
+
+#define SECURITY_KEY "security.ltptest"
+-#define VALUE "test"
+-#define VALUE_SIZE 4
++#define VALUE "test"
++#define VALUE_SIZE (sizeof(VALUE) - 1)
+
+static const char *filename[] = {"testfile1", "testfile2"};
+
+@@ -46,11 +46,9 @@ static int check_suitable_buf(const char *name, long size)
+int n;
+char buf[size];
+
+- n = llistxattr(name, buf, size);
+- if (n == -1)
+- return 0;
+- else
+- return 1;
++ n = llistxattr(name, buf, sizeof(buf));
++
++ return n != -1;
+}
+
+static void verify_llistxattr(unsigned int n)
+--
+1.9.1
+
+
+--
+Mailing list info: https://lists.linux.it/listinfo/ltp
+ 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20161114/527ce6c3/attachment.html>
