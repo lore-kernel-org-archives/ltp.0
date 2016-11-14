@@ -1,10 +1,8 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Mon, 14 Nov 2016 17:44:52 +0800
-Subject: [LTP] [PATCH 2/4] syscalls/getpriority02: Cleanup && Convert to new
+Date: Mon, 14 Nov 2016 17:44:51 +0800
+Subject: [LTP] [PATCH 1/4] syscalls/getpriority01: Cleanup && Convert to new
 	API
-In-Reply-To: <1479116694-23167-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1479116694-23167-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <1479116694-23167-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <1479116694-23167-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,34 +11,23 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- .../kernel/syscalls/getpriority/getpriority02.c    | 210 ++++++---------------
- 1 file changed, 53 insertions(+), 157 deletions(-)
+ .../kernel/syscalls/getpriority/getpriority01.c    | 171 +++++----------------
+ 1 file changed, 41 insertions(+), 130 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getpriority/getpriority02.c b/testcases/kernel/syscalls/getpriority/getpriority02.c
-index b253a00..30f8ea4 100644
---- a/testcases/kernel/syscalls/getpriority/getpriority02.c
-+++ b/testcases/kernel/syscalls/getpriority/getpriority02.c
-@@ -1,181 +1,77 @@
+diff --git a/testcases/kernel/syscalls/getpriority/getpriority01.c b/testcases/kernel/syscalls/getpriority/getpriority01.c
+index e9ff05b..442d644 100644
+--- a/testcases/kernel/syscalls/getpriority/getpriority01.c
++++ b/testcases/kernel/syscalls/getpriority/getpriority01.c
+@@ -1,147 +1,58 @@
  /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-+ *  07/2001 Ported by Wayne Boyer
-+ *  11/2016 Modified by Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-  *
+- *
 - *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
+- *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
 - *   the Free Software Foundation; either version 2 of the License, or
 - *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-  *
+- *
 - *   This program is distributed in the hope that it will be useful,
 - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
 - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
@@ -49,22 +36,33 @@ index b253a00..30f8ea4 100644
 - *   You should have received a copy of the GNU General Public License
 - *   along with this program;  if not, write to the Free Software
 - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * Copyright (c) International Business Machines  Corp., 2001
++ *  07/2001 Ported by Wayne Boyer
++ *  11/2016 Modified by Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
 + * You should have received a copy of the GNU General Public License
 + * along with this program; if not, see <http://www.gnu.org/licenses/>.
   */
  
  /*
-- * Test Name: getpriority02
+- * Test Name: getpriority01
 - *
 - * Test Description:
-- *  Verify that,
-- *   1) getpriority() sets errno to ESRCH  if no process was located
-- *	was located for 'which' and 'who' arguments.
-- *   2) getpriority() sets errno to EINVAL if 'which' argument was
-- *      not one of PRIO_PROCESS, PRIO_PGRP, or PRIO_USER.
+- *  Verify that getpriority() succeeds get the scheduling priority of
+- *  the current process, process group or user.
 - *
 - * Expected Result:
-- *  getpriority() should fail with return value -1 and set expected errno.
+- *  getpriority() should return the highest priority of the test process.
 - *
 - * Algorithm:
 - *  Setup:
@@ -75,20 +73,19 @@ index b253a00..30f8ea4 100644
 - *   Loop if the proper options are given.
 - *   Execute system call
 - *   Check return code, if system call failed (return=-1)
-- *   	if errno set == expected errno
-- *   		Issue sys call fails with expected return value and errno.
-- *   	Otherwise,
-- *		Issue sys call fails with unexpected errno.
+- *   	Log the errno and Issue a FAIL message.
 - *   Otherwise,
-- *	Issue sys call returns unexpected value.
-- *
+- *   	Verify the Functionality of system call
+- *      if successful,
+- *      	Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
 - *  Cleanup:
 - *   Print errno log and/or timing stats if options given
 - *
 - * Usage:  <for command-line>
-- *  getpriority02 [-c n] [-e] [-i n] [-I x] [-p x] [-t]
+- *  getpriority01 [-c n] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
 - *	       -i n : Execute test n times.
 - *	       -I x : Execute test for x seconds.
 - *	       -P x : Pause for x seconds between iterations.
@@ -99,11 +96,9 @@ index b253a00..30f8ea4 100644
 - *
 - * RESTRICTIONS:
 - *  None.
-+ * Verify that,
-+ *  1) getpriority(2) fails with -1 and sets errno to EINVAL if 'which'
-+ *     argument was not one of PRIO_PROCESS, PRIO_PGRP, or PRIO_USER.
-+ *  2) getpriority(2) fails with -1 and sets errno to ESRCH if no
-+ *     process was located for 'which' and 'who' arguments.
+- *
++ * Verify that getpriority(2) succeeds get the scheduling priority of
++ * the current process, process group or user.
   */
  
 -#include <stdio.h>
@@ -121,100 +116,63 @@ index b253a00..30f8ea4 100644
  
 -#include "test.h"
 -
--#define INVAL_PID	-1
--#define INVAL_FLAG      -1
+-char *TCID = "getpriority01";
+-int TST_TOTAL = 1;
 -
--char *TCID = "getpriority02";
--int TST_TOTAL = 4;
-+#define INVAL_FLAG	-1
-+#define INVAL_ID	-1
- 
--struct test_case_t {		/* test case struct. to hold ref. test cond's */
--	int pro_which;
--	uid_t pro_uid;
--	char *desc;
-+static struct tcase {
-+	int which;
-+	int who;
- 	int exp_errno;
--} Test_cases[] = {
--	{
--	INVAL_FLAG, 0, "Invalid 'which' value specified", EINVAL}, {
--	PRIO_PROCESS, INVAL_PID, "Invalid 'who' value specified", ESRCH}, {
--	PRIO_PGRP, INVAL_PID, "Invalid 'who' value specified", ESRCH}, {
--	PRIO_USER, INVAL_PID, "Invalid 'who' value specified", ESRCH}, {
--	0, 0, NULL, 0}
-+} tcases[] = {
-+	/* test 1 */
-+	{INVAL_FLAG, 0, EINVAL},
-+
-+	/* test 2 */
-+	{PRIO_PROCESS, INVAL_ID, ESRCH},
-+	{PRIO_PGRP, INVAL_ID, ESRCH},
-+	{PRIO_USER, INVAL_ID, ESRCH}
- };
- 
--void setup();			/* Main setup function of test */
+-void setup();			/* setup function for the test */
 -void cleanup();			/* cleanup function for the test */
 -
+-int prio_which[] = { PRIO_PROCESS, PRIO_PGRP, PRIO_USER };
++static struct tcase {
++	int which;
++} tcases[] = {
++	{PRIO_PROCESS},
++	{PRIO_PGRP},
++	{PRIO_USER}
++};
+ 
 -int main(int ac, char **av)
 +static void verify_getpriority(unsigned int n)
  {
 -	int lc;
--	int ind;		/* counter variable for test case looping */
--	char *test_desc;	/* test specific error message */
--	int which;		/* process priority category */
--	uid_t who;		/* process uid of the test process */
+-	int ind;
+-	int which;		/* scheduling priority category */
 -
+-	TST_TOTAL = sizeof(prio_which) / sizeof(int);
++	struct tcase *tc = &tcases[n];
+ 
 -	tst_parse_opts(ac, av, NULL, NULL);
--
++	TEST(getpriority(tc->which, 0));
+ 
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
-+	struct tcase *tc = &tcases[n];
- 
--		for (ind = 0; ind < TST_TOTAL; ind++) {
--			which = Test_cases[ind].pro_which;
--			who = Test_cases[ind].pro_uid;
--			test_desc = Test_cases[ind].desc;
 -
--			if (who == 0) {
--				/* Get the actual uid of the process */
--				who = getuid();
--			}
+-		for (ind = 0; ind < TST_TOTAL; ind++) {
+-			which = prio_which[ind];
 -
 -			/*
 -			 * Invoke getpriority with the specified
--			 * 'which' and 'who' arguments and verify
--			 * that it fails with expected errno.
+-			 * 'which' argument for the calling process.
 -			 */
--			TEST(getpriority(which, who));
+-			TEST(getpriority(which, 0));
 -
--			/* check return code from getpriority(2) */
--			if (TEST_RETURN < 0) {
--				if (TEST_ERRNO == Test_cases[ind].exp_errno) {
--					tst_resm(TPASS, "getpriority(2) fails, "
--						 "%s, errno:%d",
--						 test_desc, TEST_ERRNO);
--				} else {
--					tst_resm(TFAIL, "getpriority() fails, "
--						 "%s, errno:%d, expected errno:"
--						 "%d", test_desc, TEST_ERRNO,
--						 Test_cases[ind].exp_errno);
--				}
+-			if (TEST_RETURN < 0 && TEST_ERRNO != 0) {
+-				tst_resm(TFAIL, "getpriority(%d, 0) "
+-					 "Failed, errno=%d : %s",
+-					 which, TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
 -			} else {
--				tst_resm(TFAIL, "getpriority() returned %ld, "
--					 "expected -1, errno:%d", TEST_RETURN,
--					 Test_cases[ind].exp_errno);
+-				tst_resm(TPASS, "getpriority(%d, 0) returned "
+-					 "%ld priority value",
+-					 which, TEST_RETURN);
 -			}
 -		}
-+	TEST(getpriority(tc->which, tc->who));
- 
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "getpriority(%d, %d) succeeds unexpectedly",
-+			tc->which, tc->who);
++	if (TEST_RETURN < 0 && TEST_ERRNO != 0) {
++		tst_res(TFAIL | TTERRNO, "getpriority(%d, 0) returned %ld",
++			tc->which, TEST_RETURN);
 +		return;
  	}
  
@@ -230,16 +188,10 @@ index b253a00..30f8ea4 100644
 -{
 -
 -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
-+	if (tc->exp_errno != TEST_ERRNO) {
-+		tst_res(TFAIL | TTERRNO,
-+			"getpriority(%d, %d) should fail with %s",
-+			tc->which, tc->who, tst_strerrno(tc->exp_errno));
-+		return;
-+	}
- 
+-
 -	TEST_PAUSE;
-+	tst_res(TPASS | TTERRNO, "getpriority(%d, %d) fails as expected",
-+		tc->which, tc->who);
++	tst_res(TPASS, "getpriority(%d, 0) returned %ld",
++		tc->which, TEST_RETURN);
  }
  
 -/*
@@ -251,7 +203,7 @@ index b253a00..30f8ea4 100644
 -
 -}
 +static struct tst_test test = {
-+	.tid = "getpriority02",
++	.tid = "getpriority01",
 +	.tcnt = ARRAY_SIZE(tcases),
 +	.test = verify_getpriority,
 +};
