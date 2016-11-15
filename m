@@ -1,177 +1,180 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 15 Nov 2016 19:48:18 +0100
-Subject: [LTP] [PATCH v3 1/1] syscalls/clock_getres01: convert to use new
-	test library API
-Message-ID: <20161115184818.27662-1-pvorel@suse.cz>
+Date: Tue, 15 Nov 2016 23:41:23 +0100
+Subject: [LTP] [PATCH 1/1] testcases: bashisms: s/==/=/
+Message-ID: <20161115224123.30623-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-v3:
-* simplify if/else code flow
-* print string reprezentation of both expected and actual errno
-* changed output to function like: clock_getres(%s, ...), using colons
-* fixed indentation (you may still find some broken on tst_res())
+From: Petr Vorel <petr.vorel@gmail.com>
 
-v2:
-* use tst_test.test & tst_test.tcnt instead of loop
-* put back lapi/posix_clocks.h include
-* use pointer to timespec in struct test_case
----
- .../kernel/syscalls/clock_getres/clock_getres01.c  | 118 +++++++--------------
- 1 file changed, 36 insertions(+), 82 deletions(-)
+Fixed also for scripts with bash shebang
 
-diff --git a/testcases/kernel/syscalls/clock_getres/clock_getres01.c b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-index dff456c..91a30be 100644
---- a/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-+++ b/testcases/kernel/syscalls/clock_getres/clock_getres01.c
-@@ -27,106 +27,60 @@
-  * Description: This tests the clock_getres() syscall
-  */
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ testcases/commands/fileutils/mv/mv_tests.sh                    |  2 +-
+ testcases/kernel/controllers/cgroup/cgroup_regression_test.sh  |  2 +-
+ testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh     |  4 ++--
+ testcases/kernel/controllers/cpuset/cpuset_regression_test.sh  |  2 +-
+ testcases/kernel/fs/acl/tacl_xattr.sh                          | 10 +++++-----
+ .../ext4-inode-version/ext4_get_inode_version.sh               |  2 +-
+ .../ext4-journal-checksum/ext4_journal_checksum.sh             |  4 ++--
+ .../ext4-uninit-groups/ext4_uninit_groups_test.sh              |  2 +-
+ testcases/realtime/func/periodic_cpu_load/mixed_load.sh        |  2 +-
+ 9 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/testcases/commands/fileutils/mv/mv_tests.sh b/testcases/commands/fileutils/mv/mv_tests.sh
+index 66f4056..7b5ef46 100755
+--- a/testcases/commands/fileutils/mv/mv_tests.sh
++++ b/testcases/commands/fileutils/mv/mv_tests.sh
+@@ -169,7 +169,7 @@ test02()
+ 			       "backup file2."
+ 	fi
  
--#include <sys/syscall.h>
--#include <sys/types.h>
--#include <getopt.h>
--#include <string.h>
--#include <stdlib.h>
--#include <libgen.h>
- #include <errno.h>
--#include <stdio.h>
--#include <time.h>
--#include "config.h"
--#include "include_j_h.h"
+-	if [ "$MD5_old" == "$MD5_backup" -a -f "tmpfile2~" ]; then
++	if [ "$MD5_old" = "$MD5_backup" -a -f "tmpfile2~" ]; then
+ 		tst_resm TPASS "Test #2: mv -b success"
+ 	else
+ 		tst_resm TFAIL "Test #2: mv -b failed"
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+index abd780f..5856726 100755
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+@@ -277,7 +277,7 @@ test_5()
  
--#include "test.h"
-+#include "tst_test.h"
- #include "lapi/posix_clocks.h"
+ 	mkdir cgroup/0
+ 	# Otherwise we can't attach task
+-	if [ "$subsys1" == cpuset -o "$subsys2" == cpuset ]; then
++	if [ "$subsys1" = cpuset -o "$subsys2" = cpuset ]; then
+ 		echo 0 > cgroup/0/cpuset.cpus 2> /dev/null
+ 		echo 0 > cgroup/0/cpuset.mems 2> /dev/null
+ 	fi
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+index 13e2938..e30c65c 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+@@ -68,7 +68,7 @@ create_subgroup()
  
--#define NORMAL		1
--#define NULL_POINTER	0
-+static struct timespec res;
+     # cpuset.cpus and cpuset.mems must be initialized with suitable value
+     # before any pids are attached
+-    if [ "$subsystem" == "cpuset" ]; then
++    if [ "$subsystem" = "cpuset" ]; then
+         if [ -e "$mount_point/cpus" ]; then
+             ROD cat "$mount_point/cpus" \> "$path/cpus"
+             ROD cat "$mount_point/mems" \> "$path/mems"
+@@ -95,7 +95,7 @@ setup()
  
- static struct test_case {
- 	char *name;
- 	clockid_t clk_id;
--	int ttype;
-+	struct timespec *res;
- 	int ret;
- 	int err;
- } tcase[] = {
--	{"REALTIME", CLOCK_REALTIME, NORMAL, 0, 0},
--	{"MONOTONIC", CLOCK_MONOTONIC, NORMAL, 0, 0},
--	{"PROCESS_CPUTIME_ID", CLOCK_PROCESS_CPUTIME_ID, NORMAL, 0, 0},
--	{"THREAD_CPUTIME_ID", CLOCK_THREAD_CPUTIME_ID, NORMAL, 0, 0},
--	{"REALTIME", CLOCK_REALTIME, NULL_POINTER, 0, 0},
--	{"CLOCK_MONOTONIC_RAW", CLOCK_MONOTONIC_RAW, NORMAL, 0, 0,},
--	{"CLOCK_REALTIME_COARSE", CLOCK_REALTIME_COARSE, NORMAL, 0, 0,},
--	{"CLOCK_MONOTONIC_COARSE", CLOCK_MONOTONIC_COARSE, NORMAL, 0, 0,},
--	{"CLOCK_BOOTTIME", CLOCK_BOOTTIME, NORMAL, 0, 0,},
--	{"CLOCK_REALTIME_ALARM", CLOCK_REALTIME_ALARM, NORMAL, 0, 0,},
--	{"CLOCK_BOOTTIME_ALARM", CLOCK_BOOTTIME_ALARM, NORMAL, 0, 0,},
--	{"-1", -1, NORMAL, -1, EINVAL},
-+	{"REALTIME", CLOCK_REALTIME, &res, 0, 0},
-+	{"MONOTONIC", CLOCK_MONOTONIC, &res, 0, 0},
-+	{"PROCESS_CPUTIME_ID", CLOCK_PROCESS_CPUTIME_ID, &res, 0, 0},
-+	{"THREAD_CPUTIME_ID", CLOCK_THREAD_CPUTIME_ID, &res, 0, 0},
-+	{"REALTIME", CLOCK_REALTIME, NULL, 0, 0},
-+	{"CLOCK_MONOTONIC_RAW", CLOCK_MONOTONIC_RAW, &res, 0, 0,},
-+	{"CLOCK_REALTIME_COARSE", CLOCK_REALTIME_COARSE, &res, 0, 0,},
-+	{"CLOCK_MONOTONIC_COARSE", CLOCK_MONOTONIC_COARSE, &res, 0, 0,},
-+	{"CLOCK_BOOTTIME", CLOCK_BOOTTIME, &res, 0, 0,},
-+	{"CLOCK_REALTIME_ALARM", CLOCK_REALTIME_ALARM, &res, 0, 0,},
-+	{"CLOCK_BOOTTIME_ALARM", CLOCK_BOOTTIME_ALARM, &res, 0, 0,},
-+	{"-1", -1, &res, -1, EINVAL},
- };
+     mount_point=`grep -w $subsystem /proc/mounts | cut -f 2 | cut -d " " -f2`
  
--static void setup(void);
--static void cleanup(void);
--
--char *TCID = "clock_getres01";
--int TST_TOTAL = ARRAY_SIZE(tcase);
--
--int main(int ac, char **av)
-+static void do_test(unsigned int i)
- {
--	int i;
--	int lc;
--	struct timespec res;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--
--		tst_count = 0;
--
--		for (i = 0; i < TST_TOTAL; ++i) {
--			if (tcase[i].ttype == NULL_POINTER)
--				TEST(clock_getres(tcase[i].clk_id, NULL));
--			else
--				TEST(clock_getres(tcase[i].clk_id, &res));
--
--			if (TEST_RETURN != tcase[i].ret) {
--				if (TEST_ERRNO != EINVAL) {
--					tst_resm(TFAIL | TTERRNO,
--						 "clock_getres %s failed",
--						 tcase[i].name);
--				} else {
--					tst_resm(TCONF,
--						 "clock_getres %s NO SUPPORTED",
--						 tcase[i].name);
--				}
--			} else {
--				if (TEST_ERRNO != tcase[i].err) {
--					tst_resm(TFAIL,
--						 "clock_getres %s failed with "
--						 "unexpect errno: %d",
--						 tcase[i].name, TEST_ERRNO);
--				} else {
--					tst_resm(TPASS,
--						 "clock_getres %s succeeded",
--						 tcase[i].name);
--				}
--			}
-+	TEST(clock_getres(tcase[i].clk_id, tcase[i].res));
+-    if [ "$mount_point" == "" ]; then
++    if [ "$mount_point" = "" ]; then
+         try_umount=1
+         mount_point="/dev/cgroup"
+ 	tst_resm TINFO "Subsystem $subsystem is not mounted, mounting it at $mount_point"
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+index 0c7b6cf..5a8083f 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+@@ -96,7 +96,7 @@ cleanup()
+ 		     ${root_cpuset_dir}/${cpu_exclusive}
+ 	fi
  
-+	if (TEST_RETURN != tcase[i].ret) {
-+		if (TEST_ERRNO == EINVAL) {
-+			tst_res(TCONF, "clock_getres(%s, ...) NO SUPPORTED", tcase[i].name);
-+			return;
- 		}
-+
-+		tst_res(TFAIL | TTERRNO, "clock_getres(%s, ...) failed", tcase[i].name);
-+		return;
- 	}
+-	if [ "${mount_flag}" == "1" ]; then
++	if [ "${mount_flag}" = "1" ]; then
+ 		umount ${root_cpuset_dir}
+ 		if [ $? -ne 0 ]; then
+ 			tst_resm TWARN "'umount ${root_cpuset_dir}' failed"
+diff --git a/testcases/kernel/fs/acl/tacl_xattr.sh b/testcases/kernel/fs/acl/tacl_xattr.sh
+index b42b665..039bd17 100755
+--- a/testcases/kernel/fs/acl/tacl_xattr.sh
++++ b/testcases/kernel/fs/acl/tacl_xattr.sh
+@@ -667,11 +667,11 @@ USER_PERMISSION=`echo $CONTENT | awk '{print \$10}'`
+ GROUP_PERMISSION=`echo $CONTENT | awk '{print \$12}'`
+ OTHER_PERMISSION=`echo $CONTENT | awk '{print \$15}'`
  
--	cleanup();
--	tst_exit();
--}
-+	if (TEST_ERRNO != tcase[i].err) {
-+		tst_res(TFAIL,
-+			"clock_getres(%s, ...) failed unexpectedly: %s, expected: %s",
-+			tcase[i].name, tst_strerrno(TEST_ERRNO), tst_strerrno(tcase[i].err));
-+		return;
-+	}
+-if [ $USER_PERMISSION == "user::rwx" ]
++if [ $USER_PERMISSION = "user::rwx" ]
+ then
+-	if [ $GROUP_PERMISSION == "group::rwx" ]
++	if [ $GROUP_PERMISSION = "group::rwx" ]
+ 	then
+-		if [ $OTHER_PERMISSION == "other::rwx" ]
++		if [ $OTHER_PERMISSION = "other::rwx" ]
+ 		then
+ 			echo ""
+ 			echo "SUCCESS: Chmod with ACL_USER_OBJ ACL_GROUP_OBJ and ACL_OTHER are correct"
+@@ -702,9 +702,9 @@ CONTENT=`getfacl tacl/mount-ext2/shared/team1/newfile2`
+ ITEM_OWNER=`echo $CONTENT | awk '{print \$6}'`
+ ITEM_GROUP=`echo $CONTENT | awk '{print \$9}'`
  
--static void setup(void)
--{
--	TEST_PAUSE;
-+	tst_res(TPASS, "clock_getres(%s, ...) succeeded", tcase[i].name);
- }
+-if [ $ITEM_OWNER == "tacluser2" ]
++if [ $ITEM_OWNER = "tacluser2" ]
+ then
+-	if [ $ITEM_GROUP == "tacluser2" ]
++	if [ $ITEM_GROUP = "tacluser2" ]
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: Chown correct"
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
+index d45d6d3..5c89b23 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
+@@ -33,7 +33,7 @@ inode_version=`echo $inode_version | sed 's/://'`
  
--static void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.tid = "clock_getres01",
-+	.test = do_test,
-+	.tcnt = ARRAY_SIZE(tcase),
-+};
+ inode_version=$(( $inode_version ))
+ 
+-if [ "$2" == "1" ]; then
++if [ "$2" = "1" ]; then
+ 	exit $inode_version
+ else
+ 	echo $inode_version
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+index c776fc9..253480c 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+@@ -40,12 +40,12 @@ ext4_test_journal_checksum()
+ 	local checksum=
+ 	local async_commit=
+ 
+-	if [ "$3" == "" ]; then
++	if [ "$3" = "" ]; then
+ 		checksum="No use"
+ 	else
+ 		checksum="Used"
+ 	fi
+-	if [ "$4" == "" ]; then
++	if [ "$4" = "" ]; then
+ 		async_commit="No use"
+ 	else
+ 		async_commit="Used"
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+index c8de206..4db846a 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+@@ -72,7 +72,7 @@ ext4_test_uninit_groups()
+ 		return
+ 	fi
+ 
+-	if [ $3 == "no_flex_bg" ]; then
++	if [ "$3" = "no_flex_bg" ]; then
+ 		flag=""
+ 	else
+ 		flag=$3
+diff --git a/testcases/realtime/func/periodic_cpu_load/mixed_load.sh b/testcases/realtime/func/periodic_cpu_load/mixed_load.sh
+index 931d18f..3623427 100644
+--- a/testcases/realtime/func/periodic_cpu_load/mixed_load.sh
++++ b/testcases/realtime/func/periodic_cpu_load/mixed_load.sh
+@@ -124,7 +124,7 @@ function pass_criteria() {
+ # Parse args
+ JVM_ARG=""
+ JVM_STATUS="Disabled"
+-if [ "$1" == "-j" ]; then
++if [ "$1" = "-j" ]; then
+     JVM_ARG="-j"
+     JVM_STATUS="Enabled"
+ fi
 -- 
 2.10.2
 
