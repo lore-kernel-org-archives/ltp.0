@@ -1,153 +1,75 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 Nov 2016 11:38:24 +0100
-Subject: [LTP] [PATCH 1/1] syscalls/clock_getres01: convert to use new
- test library API
-In-Reply-To: <20161115095307.27985-1-pvorel@suse.cz>
-References: <20161115095307.27985-1-pvorel@suse.cz>
-Message-ID: <20161115103824.GB13947@rei.lan>
+From: Dejan Jovicevic <dejan.jovicevic@rt-rk.com>
+Date: Tue, 15 Nov 2016 13:19:32 +0100
+Subject: [LTP] [PATCH v5 0/5] listxattr related calls: new tests and test
+	case
+Message-ID: <1479212377-12830-1-git-send-email-dejan.jovicevic@rt-rk.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> -#include <sys/syscall.h>
-> -#include <sys/types.h>
-> -#include <getopt.h>
-> -#include <string.h>
-> -#include <stdlib.h>
-> -#include <libgen.h>
->  #include <errno.h>
-> -#include <stdio.h>
-> -#include <time.h>
-> -#include "config.h"
-> -#include "include_j_h.h"
->  
-> -#include "test.h"
-> -#include "lapi/posix_clocks.h"
+v4 -> v5:
+    - Minor changes in llistxattr02.c that were missing in previous version.
 
-You shouldn't remove this one, as it provides fallback definitions for
-CLOCK_FOO for distros with older glibc.
+v3 -> v4:
+    - Fixed code errors from previous series. Fixed merge conflict. Added the
+    safe_*setxattr() function prototypes in tst_safe_macros.h. Changed the 
+    licence for the new tests to GPLv2+.
 
-> +#include "tst_test.h"
->  
->  #define NORMAL		1
->  #define NULL_POINTER	0
+v2 -> v3:
+    - Removed the unnecessary string termination after the memset() call in
+    llistxattr02 and listxattr02.
+    - Modified the code to be more readable and maintainable,
+    this resulted in creating a new patch that pretty much does
+    the same thing for llistxattr() tests.
+    - Started usign corresponding safe macros in the setup of all
+    of the listxattr related tests. This resulted in a new patch
+    that implements these safe macros.
 
-I guess that it would be cleaner to include the pointer to the res in
-the structure describing the testcase as well instead of this hackery.
+v1 -> v2:
+    - Modified the setup for the new test case in llistxattr02 and 
+    a testcase in listxattr02.
+    - Modified commit messages.
 
-> @@ -66,67 +55,46 @@ static struct test_case {
->  	{"-1", -1, NORMAL, -1, EINVAL},
->  };
->  
-> -static void setup(void);
-> -static void cleanup(void);
-> -
-> -char *TCID = "clock_getres01";
->  int TST_TOTAL = ARRAY_SIZE(tcase);
->  
-> -int main(int ac, char **av)
-> +static void do_test(void)
->  {
->  	int i;
-> -	int lc;
->  	struct timespec res;
->  
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-> -
-> -		tst_count = 0;
-> -
-> -		for (i = 0; i < TST_TOTAL; ++i) {
-> -			if (tcase[i].ttype == NULL_POINTER)
-> -				TEST(clock_getres(tcase[i].clk_id, NULL));
-> -			else
-> -				TEST(clock_getres(tcase[i].clk_id, &res));
-> -
-> -			if (TEST_RETURN != tcase[i].ret) {
-> -				if (TEST_ERRNO != EINVAL) {
-> -					tst_resm(TFAIL | TTERRNO,
-> -						 "clock_getres %s failed",
-> -						 tcase[i].name);
-> -				} else {
-> -					tst_resm(TCONF,
-> -						 "clock_getres %s NO SUPPORTED",
-> -						 tcase[i].name);
-> -				}
-> +	for (i = 0; i < TST_TOTAL; ++i) {
-> +		if (tcase[i].ttype == NULL_POINTER)
-> +			TEST(clock_getres(tcase[i].clk_id, NULL));
-> +		else
-> +			TEST(clock_getres(tcase[i].clk_id, &res));
-> +
-> +		if (TEST_RETURN != tcase[i].ret) {
-> +			if (TEST_ERRNO != EINVAL) {
-> +					tst_res(TFAIL | TTERRNO,
-> +					 "clock_getres %s failed",
-> +					 tcase[i].name);
->  			} else {
-> -				if (TEST_ERRNO != tcase[i].err) {
-> -					tst_resm(TFAIL,
-> -						 "clock_getres %s failed with "
-> -						 "unexpect errno: %d",
-> -						 tcase[i].name, TEST_ERRNO);
-> -				} else {
-> -					tst_resm(TPASS,
-> -						 "clock_getres %s succeeded",
-> -						 tcase[i].name);
-> -				}
-> +					tst_res(TCONF,
-> +					 "clock_getres %s NO SUPPORTED",
-> +					 tcase[i].name);
-> +			}
-> +		} else {
-> +			if (TEST_ERRNO != tcase[i].err) {
-> +					tst_res(TFAIL,
-> +					 "clock_getres %s failed with "
-> +					 "unexpect errno: %d",
-> +					 tcase[i].name, TEST_ERRNO);
-> +			} else {
-> +					tst_res(TPASS,
-> +					 "clock_getres %s succeeded",
-> +					 tcase[i].name);
+In this series, there is a new test case added in the existing llistxattr02
+test. Also, we are moving to safe macros for *setxattr() syscalls.
+New tests are added for system calls flistxattr(), and listxattr()
+which are based on the existing tests for llistxattr.
 
-Can we get rid of the for () loop here as well and rather use the .test
-function and .tcnt in tst_test structure instead?
+Dejan Jovicevic (5):
+  safe_macros: add safe_setxattr(), safe_lsetxattr() and
+    safe_fsetxattr()
+  llistxattr: moved to using safe macros
+  llistxattr: improved code readability and stability
+  llistxattr: new testcase for long path name
+  flistxattr and listxattr: added tests
 
->  			}
-> -
->  		}
-> -	}
-> -
-> -	cleanup();
-> -	tst_exit();
-> -}
->  
-> -static void setup(void)
-> -{
-> -	TEST_PAUSE;
-> +	}
->  }
->  
-> -static void cleanup(void)
-> -{
-> -}
-> +static struct tst_test test = {
-> +	.tid = "clock_getres01",
-> +	.test_all = do_test,
-> +};
-> -- 
-> 2.10.2
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+ include/tst_safe_macros.h                          |  15 +++
+ lib/safe_macros.c                                  |  64 ++++++++++++
+ runtest/syscalls                                   |   8 ++
+ testcases/kernel/syscalls/.gitignore               |   6 ++
+ testcases/kernel/syscalls/flistxattr/Makefile      |  23 +++++
+ .../kernel/syscalls/flistxattr/flistxattr01.c      | 104 ++++++++++++++++++++
+ .../kernel/syscalls/flistxattr/flistxattr02.c      | 104 ++++++++++++++++++++
+ .../kernel/syscalls/flistxattr/flistxattr03.c      |  99 +++++++++++++++++++
+ testcases/kernel/syscalls/listxattr/Makefile       |  23 +++++
+ testcases/kernel/syscalls/listxattr/listxattr01.c  |  96 ++++++++++++++++++
+ testcases/kernel/syscalls/listxattr/listxattr02.c  | 107 +++++++++++++++++++++
+ testcases/kernel/syscalls/listxattr/listxattr03.c  |  91 ++++++++++++++++++
+ .../kernel/syscalls/llistxattr/llistxattr01.c      |  49 +++-------
+ .../kernel/syscalls/llistxattr/llistxattr02.c      |  57 ++++++-----
+ .../kernel/syscalls/llistxattr/llistxattr03.c      |  24 ++---
+ 15 files changed, 788 insertions(+), 82 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/flistxattr/Makefile
+ create mode 100644 testcases/kernel/syscalls/flistxattr/flistxattr01.c
+ create mode 100644 testcases/kernel/syscalls/flistxattr/flistxattr02.c
+ create mode 100644 testcases/kernel/syscalls/flistxattr/flistxattr03.c
+ create mode 100644 testcases/kernel/syscalls/listxattr/Makefile
+ create mode 100644 testcases/kernel/syscalls/listxattr/listxattr01.c
+ create mode 100644 testcases/kernel/syscalls/listxattr/listxattr02.c
+ create mode 100644 testcases/kernel/syscalls/listxattr/listxattr03.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.9.1
+
