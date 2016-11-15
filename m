@@ -1,11 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 Nov 2016 17:50:41 +0100
-Subject: [LTP] [PATCH 1/1] Tiny doc fixes
-In-Reply-To: <20161115164633.qromjokaqfw57jxr@dell5510>
-References: <20161115100614.29222-1-pvorel@suse.cz>
- <20161115162007.GD24751@rei.lan>
- <20161115164633.qromjokaqfw57jxr@dell5510>
-Message-ID: <20161115165040.GF24751@rei.lan>
+Date: Tue, 15 Nov 2016 18:07:03 +0100
+Subject: [LTP] Porting create_sig_proc() to new API
+In-Reply-To: <20161115161729.kncclfxux2pos3he@dell5510>
+References: <20161115161729.kncclfxux2pos3he@dell5510>
+Message-ID: <20161115170702.GA26642@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,28 +11,15 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > >  static struct tst_test test = {
-> > >  	.tid = "getenv01",
-> > > -	.test_all = test,
-> > > +	.test_all = do_test,
-> > >  	.setup = setup,
-> > >  };
-> 
-> > What is wrong with this one?
-> Name collision (function test and struct test). I know, it's just a doc...
+> few syscall related tests depends on create_sig_proc(unsigned long usec, int sig,
+> unsigned count) defined in testcases/kernel/syscalls/utils/common_j_h.c
+> and other things from the old API.
+> I suppose it's still waiting for porting, isn't it?
 
-Ah, right. I guess that we should to fix the example code to compile
-cleanly.
-
-> > And even if we decide to change the function name, we should fix it in
-> > the text as well:
-> 
-> > -The test itself is done in the 'test()' function. The test function must work
-> > +The test itself is done in the 'do_test()' function. The test function must work
-> Sorry, it seems I can't do search and replace :-(.
-
-Well the word test is used in the document so often that you have to
-actually read the paragraph to figure out what needs to be updated.
+Well, if it's used from several testcases it should be prefixed with
+tst_ and moved into a header in include/ and source file in lib/
+diretory. In this case I would have used the implementation from
+ppoll01.c.
 
 -- 
 Cyril Hrubis
