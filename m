@@ -1,11 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 15 Nov 2016 17:47:14 +0100
-Subject: [LTP] [PATCH v5 1/5] safe_macros: add safe_setxattr(),
- safe_lsetxattr() and safe_fsetxattr()
-In-Reply-To: <1479212377-12830-2-git-send-email-dejan.jovicevic@rt-rk.com>
-References: <1479212377-12830-1-git-send-email-dejan.jovicevic@rt-rk.com>
- <1479212377-12830-2-git-send-email-dejan.jovicevic@rt-rk.com>
-Message-ID: <20161115164713.GE24751@rei.lan>
+Date: Tue, 15 Nov 2016 17:50:41 +0100
+Subject: [LTP] [PATCH 1/1] Tiny doc fixes
+In-Reply-To: <20161115164633.qromjokaqfw57jxr@dell5510>
+References: <20161115100614.29222-1-pvorel@suse.cz>
+ <20161115162007.GD24751@rei.lan>
+ <20161115164633.qromjokaqfw57jxr@dell5510>
+Message-ID: <20161115165040.GF24751@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,44 +13,28 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +int safe_setxattr(const char *file, const int lineno, const char *path,
-> +				  const char *name, const void *value, size_t size, int flags)
-         ^
-	 This line is over 80 chars. It looks like you have tab lenght
-	 set to 4 spaces. You should set it to 8 when you are working on
-	 LTP, Linux kernel, etc.
+> > >  static struct tst_test test = {
+> > >  	.tid = "getenv01",
+> > > -	.test_all = test,
+> > > +	.test_all = do_test,
+> > >  	.setup = setup,
+> > >  };
+> 
+> > What is wrong with this one?
+> Name collision (function test and struct test). I know, it's just a doc...
 
-> +{
-> +	int rval;
-> +
-> +	rval = setxattr(path, name, value, size, flags);
-> +
-> +	if (rval) {
-> +		if (errno == ENOTSUP) {
-> +			tst_brkm(TCONF, NULL,
-> +				 "%s:%d: no xattr support in fs or mounted "
-> +				 "without user_xattr option", file, lineno);
-> +		}
-> +
-> +		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: setxattr() failed",
-                                                         ^
-							 I would have
-							 included the
-							 name in the
-							 message as
-							 well, i.e.:
+Ah, right. I guess that we should to fix the example code to compile
+cleanly.
 
-		tst_brkm(TBROK | TERRNO, NULL, "%s:%d" setxattr(%s, ...) failed"
-		         file, lineno, name);
-> +			     file, lineno);
-> +	}
-> +
-> +	return rval;
-> +}
+> > And even if we decide to change the function name, we should fix it in
+> > the text as well:
+> 
+> > -The test itself is done in the 'test()' function. The test function must work
+> > +The test itself is done in the 'do_test()' function. The test function must work
+> Sorry, it seems I can't do search and replace :-(.
 
-And the same for the rest of the functions.
-
-Otherwise it's fine.
+Well the word test is used in the document so often that you have to
+actually read the paragraph to figure out what needs to be updated.
 
 -- 
 Cyril Hrubis
