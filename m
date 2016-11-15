@@ -1,10 +1,11 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 15 Nov 2016 17:46:34 +0100
-Subject: [LTP] [PATCH 1/1] Tiny doc fixes
-In-Reply-To: <20161115162007.GD24751@rei.lan>
-References: <20161115100614.29222-1-pvorel@suse.cz>
- <20161115162007.GD24751@rei.lan>
-Message-ID: <20161115164633.qromjokaqfw57jxr@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 15 Nov 2016 17:47:14 +0100
+Subject: [LTP] [PATCH v5 1/5] safe_macros: add safe_setxattr(),
+ safe_lsetxattr() and safe_fsetxattr()
+In-Reply-To: <1479212377-12830-2-git-send-email-dejan.jovicevic@rt-rk.com>
+References: <1479212377-12830-1-git-send-email-dejan.jovicevic@rt-rk.com>
+ <1479212377-12830-2-git-send-email-dejan.jovicevic@rt-rk.com>
+Message-ID: <20161115164713.GE24751@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,78 +13,45 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
+> +int safe_setxattr(const char *file, const int lineno, const char *path,
+> +				  const char *name, const void *value, size_t size, int flags)
+         ^
+	 This line is over 80 chars. It looks like you have tab lenght
+	 set to 4 spaces. You should set it to 8 when you are working on
+	 LTP, Linux kernel, etc.
 
-> > --- a/doc/test-writing-guidelines.txt
-> > +++ b/doc/test-writing-guidelines.txt
-> > @@ -260,7 +260,7 @@ static void setup(void)
-> >  		tst_brk(TBROK | TERRNO, "setenv() failed");
-> >  }
+> +{
+> +	int rval;
+> +
+> +	rval = setxattr(path, name, value, size, flags);
+> +
+> +	if (rval) {
+> +		if (errno == ENOTSUP) {
+> +			tst_brkm(TCONF, NULL,
+> +				 "%s:%d: no xattr support in fs or mounted "
+> +				 "without user_xattr option", file, lineno);
+> +		}
+> +
+> +		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: setxattr() failed",
+                                                         ^
+							 I would have
+							 included the
+							 name in the
+							 message as
+							 well, i.e.:
 
-> > -static void test(void)
-> > +static void do_test(void)
-> >  {
-> >  	char *ret;
+		tst_brkm(TBROK | TERRNO, NULL, "%s:%d" setxattr(%s, ...) failed"
+		         file, lineno, name);
+> +			     file, lineno);
+> +	}
+> +
+> +	return rval;
+> +}
 
-> > @@ -289,7 +289,7 @@ next:
+And the same for the rest of the functions.
 
-> >  static struct tst_test test = {
-> >  	.tid = "getenv01",
-> > -	.test_all = test,
-> > +	.test_all = do_test,
-> >  	.setup = setup,
-> >  };
+Otherwise it's fine.
 
-> What is wrong with this one?
-Name collision (function test and struct test). I know, it's just a doc...
-
-> And even if we decide to change the function name, we should fix it in
-> the text as well:
-
-> -The test itself is done in the 'test()' function. The test function must work
-> +The test itself is done in the 'do_test()' function. The test function must work
-Sorry, it seems I can't do search and replace :-(.
-
-> >  -------------------------------------------------------------------------------
-> > diff --git a/lib/tst_test.c b/lib/tst_test.c
-> > index 06f0339..f592aa5 100644
-> > --- a/lib/tst_test.c
-> > +++ b/lib/tst_test.c
-> > @@ -333,7 +333,7 @@ static struct option {
-> >  } options[] = {
-> >  	{"h",  "-h       Prints this help"},
-> >  	{"i:", "-i n     Execute test n times"},
-> > -	{"I:", "-I x     Execute test for n seconds"},
-> > +	{"I:", "-I n     Execute test for n seconds"},
-> >  	{"C:", "-C ARG   Run child process with ARG arguments (used internally)"},
-> >  };
-
-> This one is OK.
-
-> > diff --git a/tools/netpipe-2.4/netpipe.sh b/tools/netpipe-2.4/netpipe.sh
-> > index f1445a3..9827e1e 100644
-> > --- a/tools/netpipe-2.4/netpipe.sh
-> > +++ b/tools/netpipe-2.4/netpipe.sh
-> > @@ -17,7 +17,7 @@
-> >  #    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-
-> >  #   FILE        : netpipe.sh
-> > -#   DESCRIPTION : a simple infinite loop of NPtcp for use in runalltests.sh
-> > +#   DESCRIPTION : a simple infinite loop of NPtcp
-> >  #   HISTORY     :
-> >  #       02/05/2003 Robbie Williamson (robbiew@austin.ibm.com)
-> >  #               written
-
-> This will likely get removed next week, see the:
-
-> "[RFC] Cleanup of tools/ directory" email I've send earlier, so I would
-> not bother with this one.
-OK. I'll read mailing list more carefully :-).
-
-Petr
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 801 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20161115/516b59c8/attachment-0001.sig>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
