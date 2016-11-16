@@ -1,50 +1,134 @@
-From: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
-Date: Wed, 16 Nov 2016 18:39:08 +0300
-Subject: [LTP] [PATCH 2/2] du01.sh: BTRFS fix for the symlink
-In-Reply-To: <1479310748-14359-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-References: <20161110151248.GA13022@rei.suse.cz>
- <1479310748-14359-1-git-send-email-stanislav.kholmanskikh@oracle.com>
-Message-ID: <1479310748-14359-2-git-send-email-stanislav.kholmanskikh@oracle.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 16 Nov 2016 17:18:32 +0100
+Subject: [LTP] [PATCH 1/2] lib: move create_sig_proc() into newlib
+Message-ID: <20161116161833.16910-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-By default, BTRFS reports symlinks to be of page size.
-
-Modify the corresponding check to verify if the symlink
-is either 0 or page size.
-
-Signed-off-by: Stanislav Kholmanskikh <stanislav.kholmanskikh@oracle.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/commands/du/du01.sh |    8 +++++++-
- 1 files changed, 7 insertions(+), 1 deletions(-)
+ include/tst_sig_proc.h                    | 23 ++++++++++++++++++
+ lib/tst_sig_proc.c                        | 39 +++++++++++++++++++++++++++++++
+ testcases/kernel/syscalls/ppoll/ppoll01.c | 20 +---------------
+ 3 files changed, 63 insertions(+), 19 deletions(-)
+ create mode 100644 include/tst_sig_proc.h
+ create mode 100644 lib/tst_sig_proc.c
 
-diff --git a/testcases/commands/du/du01.sh b/testcases/commands/du/du01.sh
-index 823c50a..7b17f6f 100755
---- a/testcases/commands/du/du01.sh
-+++ b/testcases/commands/du/du01.sh
-@@ -83,12 +83,18 @@ setup
- 
- block_size=512
- 
-+page_size=$(getconf PAGESIZE)
-+if [ "$page_size" -lt 1024 ]; then
-+	tst_brkm TBROK "Page size < 1024"
-+fi
-+page_size=$(( page_size / 1024 ))
+diff --git a/include/tst_sig_proc.h b/include/tst_sig_proc.h
+new file mode 100644
+index 0000000..bc918eb
+--- /dev/null
++++ b/include/tst_sig_proc.h
+@@ -0,0 +1,23 @@
++/*
++ * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ */
 +
- # The output could be different in some systems, if we use du to
- # estimate file space usage with the same filesystem and the same size.
- # So we use the approximate value to check.
- check1="^10[2-3][0-9][0-9][[:space:]]\."
- check2="^10[2-3][0-9][0-9][[:space:]]testfile"
--check3="^[0-4][[:space:]]\.\/testdir\/testsymlink"
-+check3="^\(0\|${page_size}\)[[:space:]]\.\/testdir\/testsymlink"
- check5="^20[4-6][0-9][0-9][[:space:]]\."
- check7="^10[4-5][0-9][0-9]\{4\}[[:space:]]\."
- check9="^10[2-3][0-9][0-9][[:space:]]total"
++#ifndef TST_SIG_PROC_H__
++#define TST_SIG_PROC_H__
++
++#include <sys/types.h>
++#include <unistd.h>
++
++pid_t create_sig_proc(int sig, int count, unsigned int usec);
++
++#endif	/* TST_SIG_PROC_H__ */
+diff --git a/lib/tst_sig_proc.c b/lib/tst_sig_proc.c
+new file mode 100644
+index 0000000..a5f6c54
+--- /dev/null
++++ b/lib/tst_sig_proc.c
+@@ -0,0 +1,39 @@
++/*
++ * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ */
++
++#include <sys/types.h>
++#include <unistd.h>
++#include <stdlib.h>
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++pid_t create_sig_proc(int sig, int count, unsigned int usec)
++{
++	pid_t pid, cpid;
++
++	pid = getpid();
++	cpid = SAFE_FORK();
++
++	if (cpid == 0) {
++		while (count-- > 0) {
++			usleep(usec);
++			if (kill(pid, sig) == -1)
++				break;
++		}
++		exit(0);
++	}
++
++	return cpid;
++}
+diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
+index a5815b3..8d6d7e7 100644
+--- a/testcases/kernel/syscalls/ppoll/ppoll01.c
++++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
+@@ -28,6 +28,7 @@
+ #include <sys/wait.h>
+ #include "linux_syscall_numbers.h"
+ #include "ltp_signal.h"
++#include "tst_sig_proc.h"
+ #include "tst_test.h"
+ 
+ /* Older versions of glibc don't publish this constant's value. */
+@@ -205,25 +206,6 @@ static void cleanup(void)
+ 		close(fd1);
+ }
+ 
+-static pid_t create_sig_proc(int sig, int count, unsigned int usec)
+-{
+-	pid_t pid, cpid;
+-
+-	pid = getpid();
+-	cpid = SAFE_FORK();
+-
+-	if (cpid == 0) {
+-		while (count-- > 0) {
+-			usleep(usec);
+-			if (kill(pid, sig) == -1)
+-				break;
+-		}
+-		exit(0);
+-	}
+-
+-	return cpid;
+-}
+-
+ static void do_test(unsigned int i)
+ {
+ 	pid_t pid = 0;
 -- 
-1.7.1
+2.10.2
 
