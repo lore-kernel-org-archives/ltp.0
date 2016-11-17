@@ -1,116 +1,150 @@
-From: Shuang Qiu <shuang.qiu@oracle.com>
-Date: Thu, 17 Nov 2016 17:04:09 +0800
-Subject: [LTP] [PATCH] memcg_control_test.sh:incorrect test result and a
- pipe issue
-In-Reply-To: <581B44C6.5090808@oracle.com>
-References: <1478166145-5177-1-git-send-email-shuang.qiu@oracle.com>
- <20161103110026.GC27513@rei.lan> <581B44C6.5090808@oracle.com>
-Message-ID: <582D7289.6090303@oracle.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Thu, 17 Nov 2016 17:36:22 +0800
+Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Add SAFE_SETPRIORITY() && Drop
+	redundant space
+Message-ID: <1479375382-28964-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 11/03/2016 10:08 PM, Shuang Qiu wrote:
-> Hi Cyril,
-> Thanks for review.
-> On 11/03/2016 07:00 PM, Cyril Hrubis wrote:
->> Hi!
->>> * The test result flag FAILED_CNT is handled in a sub-shell,which will
->>> make the test result passed even the test actually failed,update the
->>> scripts to not running in sub-shell.
->>> * Sometimes the mem_process process is killed after more than 5
->>> seconds,increase the sleep time to 15 sceconds.And if the mem_process
->>> process is killed after 5 sceconds,the pipe may blocked while writing
->>> it(echo m > $STATUS_PIPE;echo x > $STATUS_PIPE),then the whole LTP
->>> testing will hang.Adding a sub-shell to handle to pipe.
->>>
->>> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
->>> ---
->>>   .../memcg/control/memcg_control_test.sh            |   15 
->>> +++++++++++----
->>>   1 files changed, 11 insertions(+), 4 deletions(-)
->>>
->>> diff --git 
->>> a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh 
->>> b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
->>> index 1d15872..668e74d 100644
->>> --- a/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
->>> +++ b/testcases/kernel/controllers/memcg/control/memcg_control_test.sh
->>> @@ -64,11 +64,15 @@ test_proc_kill()
->>>         #Instruct the test process to start acquiring memory
->>>       echo m > $STATUS_PIPE
->>> -    sleep 5
->>> +    sleep 15
->>>         #Check if killed
->>>       ps -p $! > /dev/null 2> /dev/null
->>>       if [ $? -eq 0 ]; then
->>> +        (sleep 30
->>> +        ps -p $! > /dev/null 2> /dev/null
->>> +        [ $? -ne 0 -a -e $STATUS_PIPE ] && cat $STATUS_PIPE && \
->>> +        rm -f $STATUS_PIPE) &
->>>           echo m > $STATUS_PIPE
->>>           echo x > $STATUS_PIPE
->>>       else
->> This is plain wrong. Sparkling code with sleeps never solves anything
->> and only slows down the testrun.
->>
->> What should have been done here instead is checking if the process was
->> killed in a loop something as twice a second with some reasonable
->> timeout, trying it 60 times would give it max 30 seconds to run.
-> The added code here is intent on read the pipe after sleeps to avoid 
-> the parent process blocked here when writing the pipe.
-> I agree that it is better to check if the process was killed in a loop 
-> instead of just sleeping.
->>
->>> @@ -86,7 +90,8 @@ testcase_1()
->>>       echo "$TOT_MEM_LIMIT" > 
->>> $TST_PATH/mnt/$TST_NUM/memory.memsw.limit_in_bytes
->>>         mkdir sub
->>> -    (cd sub
->>> +    basedir=$PWD
->>> +    cd sub
->>>       KILLED_CNT=0
->>>       test_proc_kill
->>>   @@ -94,7 +99,8 @@ testcase_1()
->>>           result $FAIL "Test #1: failed"
->>>       else
->>>           result $PASS "Test #1: passed"
->>> -    fi)
->>> +    fi
->>> +    cd $basedir
->>>       rmdir sub
->>>   }
->>>   @@ -145,7 +151,8 @@ FAILED_CNT=0
->>>   TST_NUM=1
->>>   while [ $TST_NUM -le $TST_TOTAL ]; do
->>>       mkdir $TST_PATH/mnt/$TST_NUM
->>> -    (cd $TST_PATH/mnt/$TST_NUM && testcase_$TST_NUM)
->>> +    cd $TST_PATH/mnt/$TST_NUM && testcase_$TST_NUM
->>> +    cd $TMP
->>                 ^
->>            trailing whitespace
->>>       rmdir $TST_PATH/mnt/$TST_NUM
->>>       : $((TST_NUM += 1))
->>>   done
->> Moreover I was looking at the test recently and I would say that the
->> best solution would be to remove it completely, since the same function
->> should be covered by the memcg functional testcases. So the best bet
->> here would be to check that it's covered by functional tests, if not add
->> missing pieces to functional tests and get rid of this mess.
-> Ok,I will also check the functional test.
-I think this testcase can be covered by memcg_use_hierarchy in 
-functional testcases.
-Maybe we can add a sub case in memcg_use_hierarchy test that check the 
-parent limit for memsw.limit_in_bytes.
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ include/tst_safe_macros.h |  5 +++++
+ lib/safe_macros.c         | 37 ++++++++++++++++++++++++++-----------
+ 2 files changed, 31 insertions(+), 11 deletions(-)
 
-Thanks
-Shuang
->
-> Thanks
-> Shuang
->>
->
->
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 59cba1a..8e511d5 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -437,4 +437,9 @@ int safe_getpriority(const char *file, const int lineno, int which, id_t who);
+ #define SAFE_GETPRIORITY(which, who) \
+ 	safe_getpriority(__FILE__, __LINE__, (which), (who))
+ 
++int safe_setpriority(const char *file, const int lineno, int which, id_t who,
++	int prio);
++#define SAFE_SETPRIORITY(which, who, prio) \
++	safe_setpriority(__FILE__, __LINE__, (which), (who), (prio))
++
+ #endif /* SAFE_MACROS_H__ */
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index b97f43d..de7c1e1 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -384,7 +384,7 @@ int safe_link(const char *file, const int lineno,
+ 
+ 	if (rval == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-		         "%s:%d: link(%s,%s) failed",
++			 "%s:%d: link(%s,%s) failed",
+ 			 file, lineno, oldpath, newpath);
+ 	}
+ 
+@@ -436,7 +436,7 @@ int safe_symlink(const char *file, const int lineno,
+ 
+ 	if (rval == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-		         "%s:%d: symlink(%s,%s) failed",
++			 "%s:%d: symlink(%s,%s) failed",
+ 			 file, lineno, oldpath, newpath);
+ 	}
+ 
+@@ -452,7 +452,7 @@ ssize_t safe_write(const char *file, const int lineno, void (cleanup_fn) (void),
+ 	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+ 			 "%s:%d: write(%d,%p,%zu) failed",
+-		         file, lineno, fildes, buf, rval);
++			 file, lineno, fildes, buf, rval);
+ 	}
+ 
+ 	return rval;
+@@ -598,8 +598,8 @@ int safe_chown(const char *file, const int lineno, void (cleanup_fn)(void),
+ 
+ 	if (rval == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-			"%s:%d: chown(%s,%d,%d) failed",
+-			file, lineno, path, owner, group);
++			 "%s:%d: chown(%s,%d,%d) failed",
++			 file, lineno, path, owner, group);
+ 	}
+ 
+ 	return rval;
+@@ -614,7 +614,7 @@ int safe_fchown(const char *file, const int lineno, void (cleanup_fn)(void),
+ 
+ 	if (rval == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-		         "%s:%d: fchown(%d,%d,%d) failed",
++			 "%s:%d: fchown(%d,%d,%d) failed",
+ 			 file, lineno, fd, owner, group);
+ 	}
+ 
+@@ -689,7 +689,7 @@ int safe_mkfifo(const char *file, const int lineno,
+ 
+ 	if (rval == -1) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-		         "%s:%d: mkfifo(%s, 0%o) failed",
++			 "%s:%d: mkfifo(%s, 0%o) failed",
+ 			 file, lineno, pathname, mode);
+ 	}
+ 
+@@ -756,7 +756,7 @@ DIR* safe_opendir(const char *file, const int lineno, void (cleanup_fn)(void),
+ 
+ 	if (!rval) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-		         "%s:%d: opendir(%s) failed", file, lineno, name);
++			 "%s:%d: opendir(%s) failed", file, lineno, name);
+ 	}
+ 
+ 	return rval;
+@@ -771,7 +771,7 @@ int safe_closedir(const char *file, const int lineno, void (cleanup_fn)(void),
+ 
+ 	if (rval) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-		         "%s:%d: closedir(%p) failed", file, lineno, dirp);
++			 "%s:%d: closedir(%p) failed", file, lineno, dirp);
+ 	}
+ 
+ 	return rval;
+@@ -788,7 +788,7 @@ struct dirent *safe_readdir(const char *file, const int lineno, void (cleanup_fn
+ 
+ 	if (!rval && errno) {
+ 		tst_brkm(TBROK | TERRNO, cleanup_fn,
+-		         "%s:%d: readdir(%p) failed", file, lineno, dirp);
++			 "%s:%d: readdir(%p) failed", file, lineno, dirp);
+ 	}
+ 
+ 	errno = err;
+@@ -803,10 +803,25 @@ int safe_getpriority(const char *file, const int lineno, int which, id_t who)
+ 	rval = getpriority(which, who);
+ 	if (errno) {
+ 		tst_brkm(TBROK | TERRNO, NULL,
+-		         "%s:%d getpriority(%i, %i) failed",
++			 "%s:%d getpriority(%i, %i) failed",
+ 			 file, lineno, which, who);
+ 	}
+ 
+ 	errno = err;
+ 	return rval;
+ }
++
++int safe_setpriority(const char *file, const int lineno, int which, id_t who,
++	int prio)
++{
++	int rval;
++
++	rval = setpriority(which, who, prio);
++	if (rval) {
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d setpriority(%i, %i, %i) failed",
++			 file, lineno, which, who, prio);
++	}
++
++	return rval;
++}
+-- 
+1.8.4.2
+
+
 
