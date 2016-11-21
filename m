@@ -1,12 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 21 Nov 2016 12:39:03 +0100
-Subject: [LTP] [PATCH] memcg_control_test.sh:incorrect test result and a
- pipe issue
-In-Reply-To: <582D7289.6090303@oracle.com>
-References: <1478166145-5177-1-git-send-email-shuang.qiu@oracle.com>
- <20161103110026.GC27513@rei.lan> <581B44C6.5090808@oracle.com>
- <582D7289.6090303@oracle.com>
-Message-ID: <20161121113902.GA25334@rei.lan>
+Date: Mon, 21 Nov 2016 12:58:35 +0100
+Subject: [LTP] [PATCH 1/1] testcases: bashisms: s/==/=/
+In-Reply-To: <20161115224123.30623-1-pvorel@suse.cz>
+References: <20161115224123.30623-1-pvorel@suse.cz>
+Message-ID: <20161121115835.GB25334@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,18 +11,35 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> >> Moreover I was looking at the test recently and I would say that the
-> >> best solution would be to remove it completely, since the same function
-> >> should be covered by the memcg functional testcases. So the best bet
-> >> here would be to check that it's covered by functional tests, if not add
-> >> missing pieces to functional tests and get rid of this mess.
-> > Ok,I will also check the functional test.
-> I think this testcase can be covered by memcg_use_hierarchy in 
-> functional testcases.
-> Maybe we can add a sub case in memcg_use_hierarchy test that check the 
-> parent limit for memsw.limit_in_bytes.
+> -    if [ "$mount_point" == "" ]; then
+> +    if [ "$mount_point" = "" ]; then
 
-Both sounds good to me.
+These could be further fixed to [ -z "$mount_point" ].
+
+> diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+> index c776fc9..253480c 100755
+> --- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+> +++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+> @@ -40,12 +40,12 @@ ext4_test_journal_checksum()
+>  	local checksum=
+>  	local async_commit=
+>  
+> -	if [ "$3" == "" ]; then
+> +	if [ "$3" = "" ]; then
+>  		checksum="No use"
+>  	else
+>  		checksum="Used"
+>  	fi
+> -	if [ "$4" == "" ]; then
+> +	if [ "$4" = "" ]; then
+>  		async_commit="No use"
+>  	else
+>  		async_commit="Used"
+
+And these as well.
+
+
+Otherwise it looks good.
 
 -- 
 Cyril Hrubis
