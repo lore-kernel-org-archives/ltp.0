@@ -1,435 +1,189 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 21 Nov 2016 16:23:40 +0100
-Subject: [LTP] [PATCH 2/2] testcases/clock_nanosleep01: convert to use
- new test library API
-In-Reply-To: <20161116161833.16910-2-pvorel@suse.cz>
-References: <20161116161833.16910-1-pvorel@suse.cz>
- <20161116161833.16910-2-pvorel@suse.cz>
-Message-ID: <20161121152340.GA27353@rei.lan>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Mon, 21 Nov 2016 21:53:00 +0100
+Subject: [LTP] [PATCH v2 1/1] testcases: bashisms: s/==/=/
+Message-ID: <20161121205300.28375-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +#include "linux_syscall_numbers.h"
-> +#include "tst_sig_proc.h"
-> +#include "tst_test.h"
->  
-> -	tst_rmdir();
-> +int testno;
-          ^
-Is this used for anything?
+Fixed also for scripts with bash shebang
 
-> +static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
-> +{
->  }
->  
-> -/* Local  Functions */
-> -/******************************************************************************/
-> -/*									    */
-> -/* Function:    setup							 */
-> -/*									    */
-> -/* Description: Performs all one time setup for this test. This function is   */
-> -/*	      typically used to capture signals, create temporary dirs      */
-> -/*	      and temporary files that may be used in the course of this    */
-> -/*	      test.							 */
-> -/*									    */
-> -/* Input:       None.							 */
-> -/*									    */
-> -/* Output:      None.							 */
-> -/*									    */
-> -/* Return:      On failure - Exits by calling cleanup().		      */
-> -/*	      On success - returns 0.				       */
-> -/*									    */
-> -/******************************************************************************/
->  void setup(void)
->  {
-> -	/* Capture signals if any */
-> -	act.sa_handler = sighandler;
-> -	sigfillset(&act.sa_mask);
-> -	sigaction(SIGINT, &act, NULL);
-> -
-> -	/* Create temporary directories */
-> -	TEST_PAUSE;
-> -	tst_tmpdir();
-> +	SAFE_SIGNAL(SIGINT, sighandler);
->  }
->  
-> -/*
-> - * Macros
-> - */
-> -#define SYSCALL_NAME    "clock_nanosleep"
-> -
->  enum test_type {
->  	NORMAL,
-> -	NULL_POINTER,
->  	SEND_SIGINT,
->  };
->  
-> -/*
-> - * Data Structure
-> - */
-> +#define TYPE_NAME(x) .ttype = x, .desc = #x
-> +
->  struct test_case {
-> -	clockid_t clk_id;
-> -	int ttype;
-> -	int flags;
-> +	clockid_t clk_id;	   /* clock_* clock type parameter */
-> +	int ttype;		   /* test type (enum) */
-> +	const char *desc;	   /* test description (name) */
-> +	int flags;		   /* clock_nanosleep flags parameter */
->  	time_t sec;
->  	long nsec;
-> -	int ret;
-> -	int err;
-> +	int ret;		   /* expected ret code */
-> +	int err;		   /* expected errno code */
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+v2: using test -z comparator (portability)
+---
+ testcases/commands/fileutils/mv/mv_tests.sh                    |  2 +-
+ testcases/kernel/controllers/cgroup/cgroup_regression_test.sh  |  2 +-
+ testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh     |  6 +++---
+ testcases/kernel/controllers/cpuset/cpuset_regression_test.sh  |  2 +-
+ testcases/kernel/fs/acl/tacl_xattr.sh                          | 10 +++++-----
+ .../ext4-inode-version/ext4_get_inode_version.sh               |  2 +-
+ .../ext4-journal-checksum/ext4_journal_checksum.sh             |  4 ++--
+ .../ext4-uninit-groups/ext4_uninit_groups_test.sh              |  2 +-
+ testcases/realtime/func/periodic_cpu_load/mixed_load.sh        |  2 +-
+ 9 files changed, 16 insertions(+), 16 deletions(-)
 
-It's a bit better to name these variables so that the names are clear
-and avoid comments. Here exp_ret and exp_err should be descriptive
-enough so that we don't have to explain it.
-
-I tend to avoid comments unless necessary.
-
->  };
->  
->  /* Test cases
-> @@ -161,58 +57,57 @@ struct test_case {
->   *
->   *   EINTR	      v (function was interrupted by a signal)
->   *   EINVAL	     v (invalid tv_nsec, etc.)
-> - *   ENOTSUP	    can't check because not supported clk_id generates
-> - *		      EINVAL
-> + *   ENOTSUP	    can't check because not supported clk_id generates EINVAL
->   */
->  
->  static struct test_case tcase[] = {
-> -	{			// case00
-> +	{
->  	 .clk_id = CLOCK_REALTIME,
-> -	 .ttype = NORMAL,
-> +	 TYPE_NAME(NORMAL),
->  	 .flags = 0,
->  	 .sec = 0,
-> -	 .nsec = 500000000,	// 500msec
-> +	 .nsec = 500000000,
->  	 .ret = 0,
->  	 .err = 0,
->  	 },
-> -	{			// case01
-> +	{
->  	 .clk_id = CLOCK_MONOTONIC,
-> -	 .ttype = NORMAL,
-> +	 TYPE_NAME(NORMAL),
->  	 .flags = 0,
->  	 .sec = 0,
-> -	 .nsec = 500000000,	// 500msec
-> +	 .nsec = 500000000,
->  	 .ret = 0,
->  	 .err = 0,
->  	 },
-> -	{			// case02
-> -	 .ttype = NORMAL,
-> +	{
-> +	 TYPE_NAME(NORMAL),
->  	 .clk_id = CLOCK_REALTIME,
->  	 .flags = 0,
->  	 .sec = 0,
-> -	 .nsec = -1,		// invalid
-> +	 .nsec = -1,
->  	 .ret = EINVAL,
->  	 .err = 0,
->  	 },
-> -	{			// case03
-> -	 .ttype = NORMAL,
-> +	{
-> +	 TYPE_NAME(NORMAL),
->  	 .clk_id = CLOCK_REALTIME,
->  	 .flags = 0,
->  	 .sec = 0,
-> -	 .nsec = 1000000000,	// invalid
-> +	 .nsec = 1000000000,
->  	 .ret = EINVAL,
->  	 .err = 0,
->  	 },
-> -	{			// case04
-> -	 .ttype = NORMAL,
-> -	 .clk_id = CLOCK_THREAD_CPUTIME_ID,	// not supported
-> +	{
-> +	 TYPE_NAME(NORMAL),
-> +	 .clk_id = CLOCK_THREAD_CPUTIME_ID,
->  	 .flags = 0,
->  	 .sec = 0,
-> -	 .nsec = 500000000,	// 500msec
-> -	 .ret = EINVAL,		// RHEL4U1 + 2.6.18 returns EINVAL
-> +	 .nsec = 500000000,
-> +	 .ret = EINVAL,
->  	 .err = 0,
->  	 },
-> -	{			// case05
-> -	 .ttype = SEND_SIGINT,
-> +	{
-> +	 TYPE_NAME(SEND_SIGINT),
->  	 .clk_id = CLOCK_REALTIME,
->  	 .flags = 0,
->  	 .sec = 10,
-> @@ -220,23 +115,8 @@ static struct test_case tcase[] = {
->  	 .ret = EINTR,
->  	 .err = 0,
->  	 },
-> -#if 0				// glibc generates SEGV error (RHEL4U1 + 2.6.18)
-> -	{			// caseXX
-> -	 .ttype = NULL_POINTER,
-> -	 .clk_id = CLOCK_REALTIME,
-> -	 .flags = 0,
-> -	 .sec = 0,
-> -	 .nsec = 500000000,	// 500msec
-> -	 .ret = EFAULT,
-> -	 .err = 0,
-> -	 },
-> -#endif
->  };
->  
-> -/*
-> - * chk_difftime()
-> - *   Return : OK(0), NG(-1)
-> - */
->  #define MAX_MSEC_DIFF   20
->  
->  static int chk_difftime(struct timespec *bef, struct timespec *aft,
-> @@ -254,152 +134,83 @@ static int chk_difftime(struct timespec *bef, struct timespec *aft,
->  	}
->  	expect = (sec * 1000) + (nsec / 1000000);
->  	result = (t.tv_sec * 1000) + (t.tv_nsec / 1000000);
-> -	tst_resm(TINFO, "check sleep time: (min:%ld) < %ld < (max:%ld) (msec)",
-> +
-> +	tst_res(TINFO, "check sleep time: (min: %ld) < %ld < (max: %ld) (msec)",
->  		 expect - MAX_MSEC_DIFF, result, expect + MAX_MSEC_DIFF);
-> +
->  	if (result < expect - MAX_MSEC_DIFF || result > expect + MAX_MSEC_DIFF)
->  		return -1;
-> +
->  	return 0;
->  }
-
-We do have helper functions for measuring elapsed time in LTP. See
-2.2.21 Measuring elapsed time in test-writing-guidelines.
-
-> -/*
-> - * do_test()
-> - *
-> - *   Input  : TestCase Data
-> - *   Return : RESULT_OK(0), RESULT_NG(1)
-> - *
-> - */
-> -static int do_test(struct test_case *tc)
-> +static void do_test(unsigned int i)
->  {
-> -	int sys_ret;
-> -	int sys_errno;
-> -	int result = RESULT_OK;
-> +	int sys_ret, sys_errno, dummy;
->  	struct timespec beftp, afttp, rq, rm;
-> -	int rc, range_ok = 1, remain_ok = 1;
-> +	int rc;
->  	pid_t pid = 0;
-> +	struct test_case *tc = &tcase[i];
->  
-> -	/*
-> -	 * Check before sleep time
-> -	 */
-> +	tst_res(TINFO, "case %s", tc->desc);
-> +
-> +	/* setup */
->  	if (tc->ttype == SEND_SIGINT) {
-> -		pid = create_sig_proc(500000, SIGINT, UINT_MAX);
-> -		if (pid < 0)
-> -			return 1;
-> +		pid = create_sig_proc(SIGINT, 40, 500000);
->  	}
->  
-> -	/*
-> -	 * Check before sleep time
-> -	 */
->  	TEST(rc = clock_gettime(tc->clk_id, &beftp));
->  	if (rc < 0) {
-> -		tst_resm(TFAIL | TTERRNO, "clock_gettime failed");
-> -		result = 1;
-> -		goto EXIT;
-> +		tst_brk(TBROK, "clock_gettime failed");
->  	}
-> -	/*
-> -	 * Execute system call
-> -	 */
-> +
-> +	/* test */
->  	rq.tv_sec = tc->sec;
->  	rq.tv_nsec = tc->nsec;
-> -	// !!!CAUTION: 'clock_gettime' returns errno itself
->  	errno = 0;
-> -	if (tc->ttype == NULL_POINTER)
-> -		TEST(sys_ret =
-> -		     clock_nanosleep(tc->clk_id, tc->flags, NULL, &rm));
-> -	else
-> -		TEST(sys_ret =
-> -		     clock_nanosleep(tc->clk_id, tc->flags, &rq, &rm));
-> +	TEST(sys_ret = clock_nanosleep(tc->clk_id, tc->flags, &rq, &rm));
-
-If you use TEST macro, the errno is zeroed before the call and stored
-into TEST_ERRNO right after the call. There is no need to do anything
-else than examine TEST_RETURN after a call to clock_nanoslee().
-
->  	sys_errno = errno;
-> -	if (sys_ret != 0)
-> -		goto TEST_END;
-> -
-> -	/*
-> -	 * Check after sleep time
-> -	 */
-> -	TEST(rc = clock_gettime(tc->clk_id, &afttp));
-> -	if (TEST_RETURN < 0) {
-> -		EPRINTF("clock_gettime failed.\n");
-> -		result = 1;
-> -		goto EXIT;
-> -	}
-> -	range_ok = chk_difftime(&beftp, &afttp, tc->sec, tc->nsec) == 0;
-> -	/*
-> -	 * Check remaining time
-> -	 */
-> -TEST_END:
-> -	if (tc->ttype == NORMAL || tc->ttype == SEND_SIGINT) {
-> -		tst_resm(TINFO, "remain time: %ld %ld", rm.tv_sec, rm.tv_nsec);
-> -		if (tc->ttype == NORMAL)
-> -			remain_ok = 1;
-> -		else
-> -			remain_ok = rm.tv_sec != 0 || rm.tv_nsec != 0;
-> +	if (sys_ret == 0) {
-> +		TEST(rc = clock_gettime(tc->clk_id, &afttp));
-> +		if (TEST_RETURN < 0) {
-> +			tst_brk(TBROK, "clock_gettime failed");
-> +		}
->  	}
->  
-> -	/*
-> -	 * Check results
-> -	 */
-> -	result |= (sys_ret != tc->ret) || !range_ok || !remain_ok;
-> -	if (!range_ok)
-> -		PRINT_RESULT_EXTRA(0, tc->ret, tc->err, sys_ret, sys_errno,
-> -				   "time range check", range_ok);
-> -	else
-> -		PRINT_RESULT_EXTRA(0, tc->ret, tc->err, sys_ret, sys_errno,
-> -				   "remain time check", remain_ok);
-> -EXIT:
-> +	tst_res(TINFO, "remain time: %ld %ld", rm.tv_sec, rm.tv_nsec);
-> +
-> +	/* cleanup */
->  	if (pid > 0) {
-> -		int st;
-> -		TEST(kill(pid, SIGTERM));
-> -		TEST(wait(&st));
-> +		kill(pid, SIGTERM);
-> +		SAFE_WAIT(&dummy);
-
-You can pass NULL to wait() if you are not going to examine the status.
-
->  	}
-> -	return result;
-> -}
-> -
-> -/*
-> - * main()
-> - */
-> -
-> -int main(int ac, char **av)
-> -{
-> -	int result = RESULT_OK;
-> -	int i;
-> -	int lc;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); ++lc) {
-> -
-> -		tst_count = 0;
-> -
-> -		for (testno = 0; testno < TST_TOTAL; ++testno) {
-> -
-> -			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
-> -			     i++) {
-> -				int ret;
-> -				tst_resm(TINFO, "(case%02d) START", i);
-> -				ret = do_test(&tcase[i]);
-> -				tst_resm(TINFO, "(case%02d) END => %s",
-> -					 i, (ret == 0) ? "OK" : "NG");
-> -				result |= ret;
-> -			}
-> -
-> -			switch (result) {
-> -			case RESULT_OK:
-> -				tst_resm(TPASS,
-> -					 "clock_nanosleep call succeeded");
-> -				break;
-> -
-> -			default:
-> -				tst_brkm(TFAIL | TERRNO, cleanup,
-> -					 "clock_nanosleep failed");
-> -				break;
-> -			}
-> -
-> -		}
->  
-> +	/* result check */
-> +	if (sys_ret == 0 && chk_difftime(&beftp, &afttp, tc->sec, tc->nsec) != 0) {
-> +		tst_res(TFAIL, "time range check ret: %d, exp: %d, ret_errno: %s (%d),"
-> +			" exp_errno: %s (%d)", sys_ret, tc->ret,
-> +			tst_strerrno(sys_errno), sys_errno,
-> +			tst_strerrno(tc->err), tc->err);
-> +	} else if (tc->ttype == SEND_SIGINT && !rm.tv_sec && !rm.tv_nsec) {
-> +		tst_res(TFAIL, "remain time check ret: %d, exp: %d, ret_errno: %s (%d),"
-> +			" exp_errno: %s (%d)", sys_ret, tc->ret,
-> +			tst_strerrno(sys_errno), sys_errno,
-> +			tst_strerrno(tc->err), tc->err);
-> +	} else if (sys_ret != tc->ret) {
-> +		tst_res(TFAIL, "ret: %d, exp: %d, ret_errno: %s (%d),"
-> +			" exp_errno: %s (%d)", sys_ret, tc->ret,
-> +			tst_strerrno(sys_errno), sys_errno,
-> +			tst_strerrno(tc->err), tc->err);
-> +	} else {
-> +		tst_res(TPASS, "ret: %d", sys_ret);
->  	}
-
-
-Can we get rid of this else if spaghetti and use return instead?
-
-> -	cleanup();
-> -	tst_exit();
-> -
->  }
-> +
-> +static struct tst_test test = {
-> +	.tid = "clock_nanosleep01",
-> +	.tcnt = ARRAY_SIZE(tcase),
-> +	.test = do_test,
-> +	.setup = setup,
-> +	.forks_child = 1,
-> +	.needs_tmpdir = 1,
-
-Do we really need tmpdir here?
-
-> +};
-> -- 
-> 2.10.2
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/commands/fileutils/mv/mv_tests.sh b/testcases/commands/fileutils/mv/mv_tests.sh
+index 66f4056..7b5ef46 100755
+--- a/testcases/commands/fileutils/mv/mv_tests.sh
++++ b/testcases/commands/fileutils/mv/mv_tests.sh
+@@ -169,7 +169,7 @@ test02()
+ 			       "backup file2."
+ 	fi
+ 
+-	if [ "$MD5_old" == "$MD5_backup" -a -f "tmpfile2~" ]; then
++	if [ "$MD5_old" = "$MD5_backup" -a -f "tmpfile2~" ]; then
+ 		tst_resm TPASS "Test #2: mv -b success"
+ 	else
+ 		tst_resm TFAIL "Test #2: mv -b failed"
+diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+index abd780f..5856726 100755
+--- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
++++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+@@ -277,7 +277,7 @@ test_5()
+ 
+ 	mkdir cgroup/0
+ 	# Otherwise we can't attach task
+-	if [ "$subsys1" == cpuset -o "$subsys2" == cpuset ]; then
++	if [ "$subsys1" = cpuset -o "$subsys2" = cpuset ]; then
+ 		echo 0 > cgroup/0/cpuset.cpus 2> /dev/null
+ 		echo 0 > cgroup/0/cpuset.mems 2> /dev/null
+ 	fi
+diff --git a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+index 13e2938..2c8dfd3 100755
+--- a/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
++++ b/testcases/kernel/controllers/cgroup_fj/cgroup_fj_common.sh
+@@ -34,7 +34,7 @@ exist_subsystem()
+     local subsystem="$1"
+     local exist=`grep -w $subsystem /proc/cgroups | cut -f1`
+ 
+-    if [ "$exist" = "" ]; then
++    if [ -z "$exist" ]; then
+         tst_brkm TCONF "Subsystem $subsystem not supported"
+     fi
+ }
+@@ -68,7 +68,7 @@ create_subgroup()
+ 
+     # cpuset.cpus and cpuset.mems must be initialized with suitable value
+     # before any pids are attached
+-    if [ "$subsystem" == "cpuset" ]; then
++    if [ "$subsystem" = "cpuset" ]; then
+         if [ -e "$mount_point/cpus" ]; then
+             ROD cat "$mount_point/cpus" \> "$path/cpus"
+             ROD cat "$mount_point/mems" \> "$path/mems"
+@@ -95,7 +95,7 @@ setup()
+ 
+     mount_point=`grep -w $subsystem /proc/mounts | cut -f 2 | cut -d " " -f2`
+ 
+-    if [ "$mount_point" == "" ]; then
++    if [ -z "$mount_point" ]; then
+         try_umount=1
+         mount_point="/dev/cgroup"
+ 	tst_resm TINFO "Subsystem $subsystem is not mounted, mounting it at $mount_point"
+diff --git a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+index 0c7b6cf..5a8083f 100755
+--- a/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
++++ b/testcases/kernel/controllers/cpuset/cpuset_regression_test.sh
+@@ -96,7 +96,7 @@ cleanup()
+ 		     ${root_cpuset_dir}/${cpu_exclusive}
+ 	fi
+ 
+-	if [ "${mount_flag}" == "1" ]; then
++	if [ "${mount_flag}" = "1" ]; then
+ 		umount ${root_cpuset_dir}
+ 		if [ $? -ne 0 ]; then
+ 			tst_resm TWARN "'umount ${root_cpuset_dir}' failed"
+diff --git a/testcases/kernel/fs/acl/tacl_xattr.sh b/testcases/kernel/fs/acl/tacl_xattr.sh
+index b42b665..039bd17 100755
+--- a/testcases/kernel/fs/acl/tacl_xattr.sh
++++ b/testcases/kernel/fs/acl/tacl_xattr.sh
+@@ -667,11 +667,11 @@ USER_PERMISSION=`echo $CONTENT | awk '{print \$10}'`
+ GROUP_PERMISSION=`echo $CONTENT | awk '{print \$12}'`
+ OTHER_PERMISSION=`echo $CONTENT | awk '{print \$15}'`
+ 
+-if [ $USER_PERMISSION == "user::rwx" ]
++if [ $USER_PERMISSION = "user::rwx" ]
+ then
+-	if [ $GROUP_PERMISSION == "group::rwx" ]
++	if [ $GROUP_PERMISSION = "group::rwx" ]
+ 	then
+-		if [ $OTHER_PERMISSION == "other::rwx" ]
++		if [ $OTHER_PERMISSION = "other::rwx" ]
+ 		then
+ 			echo ""
+ 			echo "SUCCESS: Chmod with ACL_USER_OBJ ACL_GROUP_OBJ and ACL_OTHER are correct"
+@@ -702,9 +702,9 @@ CONTENT=`getfacl tacl/mount-ext2/shared/team1/newfile2`
+ ITEM_OWNER=`echo $CONTENT | awk '{print \$6}'`
+ ITEM_GROUP=`echo $CONTENT | awk '{print \$9}'`
+ 
+-if [ $ITEM_OWNER == "tacluser2" ]
++if [ $ITEM_OWNER = "tacluser2" ]
+ then
+-	if [ $ITEM_GROUP == "tacluser2" ]
++	if [ $ITEM_GROUP = "tacluser2" ]
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: Chown correct"
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
+index d45d6d3..5c89b23 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_get_inode_version.sh
+@@ -33,7 +33,7 @@ inode_version=`echo $inode_version | sed 's/://'`
+ 
+ inode_version=$(( $inode_version ))
+ 
+-if [ "$2" == "1" ]; then
++if [ "$2" = "1" ]; then
+ 	exit $inode_version
+ else
+ 	echo $inode_version
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+index c776fc9..87eb90b 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
+@@ -40,12 +40,12 @@ ext4_test_journal_checksum()
+ 	local checksum=
+ 	local async_commit=
+ 
+-	if [ "$3" == "" ]; then
++	if [ -z "$3" ]; then
+ 		checksum="No use"
+ 	else
+ 		checksum="Used"
+ 	fi
+-	if [ "$4" == "" ]; then
++	if [ -z "$4" ]; then
+ 		async_commit="No use"
+ 	else
+ 		async_commit="Used"
+diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+index c8de206..4db846a 100755
+--- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
++++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
+@@ -72,7 +72,7 @@ ext4_test_uninit_groups()
+ 		return
+ 	fi
+ 
+-	if [ $3 == "no_flex_bg" ]; then
++	if [ "$3" = "no_flex_bg" ]; then
+ 		flag=""
+ 	else
+ 		flag=$3
+diff --git a/testcases/realtime/func/periodic_cpu_load/mixed_load.sh b/testcases/realtime/func/periodic_cpu_load/mixed_load.sh
+index 931d18f..3623427 100644
+--- a/testcases/realtime/func/periodic_cpu_load/mixed_load.sh
++++ b/testcases/realtime/func/periodic_cpu_load/mixed_load.sh
+@@ -124,7 +124,7 @@ function pass_criteria() {
+ # Parse args
+ JVM_ARG=""
+ JVM_STATUS="Disabled"
+-if [ "$1" == "-j" ]; then
++if [ "$1" = "-j" ]; then
+     JVM_ARG="-j"
+     JVM_STATUS="Enabled"
+ fi
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.10.2
+
