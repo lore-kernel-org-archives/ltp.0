@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 21 Nov 2016 15:57:02 +0100
-Subject: [LTP] [PATCH 1/2] lib: move create_sig_proc() into newlib
-In-Reply-To: <20161116161833.16910-1-pvorel@suse.cz>
+Date: Mon, 21 Nov 2016 16:23:40 +0100
+Subject: [LTP] [PATCH 2/2] testcases/clock_nanosleep01: convert to use
+ new test library API
+In-Reply-To: <20161116161833.16910-2-pvorel@suse.cz>
 References: <20161116161833.16910-1-pvorel@suse.cz>
-Message-ID: <20161121145701.GF25334@rei.lan>
+ <20161116161833.16910-2-pvorel@suse.cz>
+Message-ID: <20161121152340.GA27353@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,131 +13,416 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> diff --git a/include/tst_sig_proc.h b/include/tst_sig_proc.h
-> new file mode 100644
-> index 0000000..bc918eb
-> --- /dev/null
-> +++ b/include/tst_sig_proc.h
-> @@ -0,0 +1,23 @@
-> +/*
-> + * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-                      ^
-		      This should be you, or Linux Test Project, as it
-		      is in several other files
-
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +#ifndef TST_SIG_PROC_H__
-> +#define TST_SIG_PROC_H__
-> +
-> +#include <sys/types.h>
-> +#include <unistd.h>
-
-The sys/types.h is enough to get the pid_t defined here.
-
-> +pid_t create_sig_proc(int sig, int count, unsigned int usec);
-> +
-> +#endif	/* TST_SIG_PROC_H__ */
-> diff --git a/lib/tst_sig_proc.c b/lib/tst_sig_proc.c
-> new file mode 100644
-> index 0000000..a5f6c54
-> --- /dev/null
-> +++ b/lib/tst_sig_proc.c
-> @@ -0,0 +1,39 @@
-> +/*
-> + * Copyright (c) 2016 Cyril Hrubis <chrubis@suse.cz>
-
-Here as well.
-
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + */
-> +
-> +#include <sys/types.h>
-> +#include <unistd.h>
-> +#include <stdlib.h>
-
-You should include the tst_sig_proc.h header here, if nothing else that
-will force that the function definitions in header and source are in
-sync.
-
-> +#define TST_NO_DEFAULT_MAIN
-> +#include "tst_test.h"
-
-Shouldn't be including tst_safe_macros.h here enough?
-
-> +pid_t create_sig_proc(int sig, int count, unsigned int usec)
-> +{
-> +	pid_t pid, cpid;
-> +
-> +	pid = getpid();
-> +	cpid = SAFE_FORK();
-> +
-> +	if (cpid == 0) {
-> +		while (count-- > 0) {
-> +			usleep(usec);
-> +			if (kill(pid, sig) == -1)
-> +				break;
-> +		}
-> +		exit(0);
-> +	}
-> +
-> +	return cpid;
-> +}
-> diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
-> index a5815b3..8d6d7e7 100644
-> --- a/testcases/kernel/syscalls/ppoll/ppoll01.c
-> +++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
-> @@ -28,6 +28,7 @@
->  #include <sys/wait.h>
->  #include "linux_syscall_numbers.h"
->  #include "ltp_signal.h"
+> +#include "linux_syscall_numbers.h"
 > +#include "tst_sig_proc.h"
->  #include "tst_test.h"
+> +#include "tst_test.h"
 >  
->  /* Older versions of glibc don't publish this constant's value. */
-> @@ -205,25 +206,6 @@ static void cleanup(void)
->  		close(fd1);
+> -	tst_rmdir();
+> +int testno;
+          ^
+Is this used for anything?
+
+> +static void sighandler(int sig LTP_ATTRIBUTE_UNUSED)
+> +{
 >  }
 >  
-> -static pid_t create_sig_proc(int sig, int count, unsigned int usec)
-> -{
-> -	pid_t pid, cpid;
+> -/* Local  Functions */
+> -/******************************************************************************/
+> -/*									    */
+> -/* Function:    setup							 */
+> -/*									    */
+> -/* Description: Performs all one time setup for this test. This function is   */
+> -/*	      typically used to capture signals, create temporary dirs      */
+> -/*	      and temporary files that may be used in the course of this    */
+> -/*	      test.							 */
+> -/*									    */
+> -/* Input:       None.							 */
+> -/*									    */
+> -/* Output:      None.							 */
+> -/*									    */
+> -/* Return:      On failure - Exits by calling cleanup().		      */
+> -/*	      On success - returns 0.				       */
+> -/*									    */
+> -/******************************************************************************/
+>  void setup(void)
+>  {
+> -	/* Capture signals if any */
+> -	act.sa_handler = sighandler;
+> -	sigfillset(&act.sa_mask);
+> -	sigaction(SIGINT, &act, NULL);
 > -
-> -	pid = getpid();
-> -	cpid = SAFE_FORK();
+> -	/* Create temporary directories */
+> -	TEST_PAUSE;
+> -	tst_tmpdir();
+> +	SAFE_SIGNAL(SIGINT, sighandler);
+>  }
+>  
+> -/*
+> - * Macros
+> - */
+> -#define SYSCALL_NAME    "clock_nanosleep"
 > -
-> -	if (cpid == 0) {
-> -		while (count-- > 0) {
-> -			usleep(usec);
-> -			if (kill(pid, sig) == -1)
-> -				break;
-> -		}
-> -		exit(0);
+>  enum test_type {
+>  	NORMAL,
+> -	NULL_POINTER,
+>  	SEND_SIGINT,
+>  };
+>  
+> -/*
+> - * Data Structure
+> - */
+> +#define TYPE_NAME(x) .ttype = x, .desc = #x
+> +
+>  struct test_case {
+> -	clockid_t clk_id;
+> -	int ttype;
+> -	int flags;
+> +	clockid_t clk_id;	   /* clock_* clock type parameter */
+> +	int ttype;		   /* test type (enum) */
+> +	const char *desc;	   /* test description (name) */
+> +	int flags;		   /* clock_nanosleep flags parameter */
+>  	time_t sec;
+>  	long nsec;
+> -	int ret;
+> -	int err;
+> +	int ret;		   /* expected ret code */
+> +	int err;		   /* expected errno code */
+
+It's a bit better to name these variables so that the names are clear
+and avoid comments. Here exp_ret and exp_err should be descriptive
+enough so that we don't have to explain it.
+
+I tend to avoid comments unless necessary.
+
+>  };
+>  
+>  /* Test cases
+> @@ -161,58 +57,57 @@ struct test_case {
+>   *
+>   *   EINTR	      v (function was interrupted by a signal)
+>   *   EINVAL	     v (invalid tv_nsec, etc.)
+> - *   ENOTSUP	    can't check because not supported clk_id generates
+> - *		      EINVAL
+> + *   ENOTSUP	    can't check because not supported clk_id generates EINVAL
+>   */
+>  
+>  static struct test_case tcase[] = {
+> -	{			// case00
+> +	{
+>  	 .clk_id = CLOCK_REALTIME,
+> -	 .ttype = NORMAL,
+> +	 TYPE_NAME(NORMAL),
+>  	 .flags = 0,
+>  	 .sec = 0,
+> -	 .nsec = 500000000,	// 500msec
+> +	 .nsec = 500000000,
+>  	 .ret = 0,
+>  	 .err = 0,
+>  	 },
+> -	{			// case01
+> +	{
+>  	 .clk_id = CLOCK_MONOTONIC,
+> -	 .ttype = NORMAL,
+> +	 TYPE_NAME(NORMAL),
+>  	 .flags = 0,
+>  	 .sec = 0,
+> -	 .nsec = 500000000,	// 500msec
+> +	 .nsec = 500000000,
+>  	 .ret = 0,
+>  	 .err = 0,
+>  	 },
+> -	{			// case02
+> -	 .ttype = NORMAL,
+> +	{
+> +	 TYPE_NAME(NORMAL),
+>  	 .clk_id = CLOCK_REALTIME,
+>  	 .flags = 0,
+>  	 .sec = 0,
+> -	 .nsec = -1,		// invalid
+> +	 .nsec = -1,
+>  	 .ret = EINVAL,
+>  	 .err = 0,
+>  	 },
+> -	{			// case03
+> -	 .ttype = NORMAL,
+> +	{
+> +	 TYPE_NAME(NORMAL),
+>  	 .clk_id = CLOCK_REALTIME,
+>  	 .flags = 0,
+>  	 .sec = 0,
+> -	 .nsec = 1000000000,	// invalid
+> +	 .nsec = 1000000000,
+>  	 .ret = EINVAL,
+>  	 .err = 0,
+>  	 },
+> -	{			// case04
+> -	 .ttype = NORMAL,
+> -	 .clk_id = CLOCK_THREAD_CPUTIME_ID,	// not supported
+> +	{
+> +	 TYPE_NAME(NORMAL),
+> +	 .clk_id = CLOCK_THREAD_CPUTIME_ID,
+>  	 .flags = 0,
+>  	 .sec = 0,
+> -	 .nsec = 500000000,	// 500msec
+> -	 .ret = EINVAL,		// RHEL4U1 + 2.6.18 returns EINVAL
+> +	 .nsec = 500000000,
+> +	 .ret = EINVAL,
+>  	 .err = 0,
+>  	 },
+> -	{			// case05
+> -	 .ttype = SEND_SIGINT,
+> +	{
+> +	 TYPE_NAME(SEND_SIGINT),
+>  	 .clk_id = CLOCK_REALTIME,
+>  	 .flags = 0,
+>  	 .sec = 10,
+> @@ -220,23 +115,8 @@ static struct test_case tcase[] = {
+>  	 .ret = EINTR,
+>  	 .err = 0,
+>  	 },
+> -#if 0				// glibc generates SEGV error (RHEL4U1 + 2.6.18)
+> -	{			// caseXX
+> -	 .ttype = NULL_POINTER,
+> -	 .clk_id = CLOCK_REALTIME,
+> -	 .flags = 0,
+> -	 .sec = 0,
+> -	 .nsec = 500000000,	// 500msec
+> -	 .ret = EFAULT,
+> -	 .err = 0,
+> -	 },
+> -#endif
+>  };
+>  
+> -/*
+> - * chk_difftime()
+> - *   Return : OK(0), NG(-1)
+> - */
+>  #define MAX_MSEC_DIFF   20
+>  
+>  static int chk_difftime(struct timespec *bef, struct timespec *aft,
+> @@ -254,152 +134,83 @@ static int chk_difftime(struct timespec *bef, struct timespec *aft,
+>  	}
+>  	expect = (sec * 1000) + (nsec / 1000000);
+>  	result = (t.tv_sec * 1000) + (t.tv_nsec / 1000000);
+> -	tst_resm(TINFO, "check sleep time: (min:%ld) < %ld < (max:%ld) (msec)",
+> +
+> +	tst_res(TINFO, "check sleep time: (min: %ld) < %ld < (max: %ld) (msec)",
+>  		 expect - MAX_MSEC_DIFF, result, expect + MAX_MSEC_DIFF);
+> +
+>  	if (result < expect - MAX_MSEC_DIFF || result > expect + MAX_MSEC_DIFF)
+>  		return -1;
+> +
+>  	return 0;
+>  }
+
+We do have helper functions for measuring elapsed time in LTP. See
+2.2.21 Measuring elapsed time in test-writing-guidelines.
+
+> -/*
+> - * do_test()
+> - *
+> - *   Input  : TestCase Data
+> - *   Return : RESULT_OK(0), RESULT_NG(1)
+> - *
+> - */
+> -static int do_test(struct test_case *tc)
+> +static void do_test(unsigned int i)
+>  {
+> -	int sys_ret;
+> -	int sys_errno;
+> -	int result = RESULT_OK;
+> +	int sys_ret, sys_errno, dummy;
+>  	struct timespec beftp, afttp, rq, rm;
+> -	int rc, range_ok = 1, remain_ok = 1;
+> +	int rc;
+>  	pid_t pid = 0;
+> +	struct test_case *tc = &tcase[i];
+>  
+> -	/*
+> -	 * Check before sleep time
+> -	 */
+> +	tst_res(TINFO, "case %s", tc->desc);
+> +
+> +	/* setup */
+>  	if (tc->ttype == SEND_SIGINT) {
+> -		pid = create_sig_proc(500000, SIGINT, UINT_MAX);
+> -		if (pid < 0)
+> -			return 1;
+> +		pid = create_sig_proc(SIGINT, 40, 500000);
+>  	}
+>  
+> -	/*
+> -	 * Check before sleep time
+> -	 */
+>  	TEST(rc = clock_gettime(tc->clk_id, &beftp));
+>  	if (rc < 0) {
+> -		tst_resm(TFAIL | TTERRNO, "clock_gettime failed");
+> -		result = 1;
+> -		goto EXIT;
+> +		tst_brk(TBROK, "clock_gettime failed");
+>  	}
+> -	/*
+> -	 * Execute system call
+> -	 */
+> +
+> +	/* test */
+>  	rq.tv_sec = tc->sec;
+>  	rq.tv_nsec = tc->nsec;
+> -	// !!!CAUTION: 'clock_gettime' returns errno itself
+>  	errno = 0;
+> -	if (tc->ttype == NULL_POINTER)
+> -		TEST(sys_ret =
+> -		     clock_nanosleep(tc->clk_id, tc->flags, NULL, &rm));
+> -	else
+> -		TEST(sys_ret =
+> -		     clock_nanosleep(tc->clk_id, tc->flags, &rq, &rm));
+> +	TEST(sys_ret = clock_nanosleep(tc->clk_id, tc->flags, &rq, &rm));
+
+If you use TEST macro, the errno is zeroed before the call and stored
+into TEST_ERRNO right after the call. There is no need to do anything
+else than examine TEST_RETURN after a call to clock_nanoslee().
+
+>  	sys_errno = errno;
+> -	if (sys_ret != 0)
+> -		goto TEST_END;
+> -
+> -	/*
+> -	 * Check after sleep time
+> -	 */
+> -	TEST(rc = clock_gettime(tc->clk_id, &afttp));
+> -	if (TEST_RETURN < 0) {
+> -		EPRINTF("clock_gettime failed.\n");
+> -		result = 1;
+> -		goto EXIT;
 > -	}
-> -
-> -	return cpid;
+> -	range_ok = chk_difftime(&beftp, &afttp, tc->sec, tc->nsec) == 0;
+> -	/*
+> -	 * Check remaining time
+> -	 */
+> -TEST_END:
+> -	if (tc->ttype == NORMAL || tc->ttype == SEND_SIGINT) {
+> -		tst_resm(TINFO, "remain time: %ld %ld", rm.tv_sec, rm.tv_nsec);
+> -		if (tc->ttype == NORMAL)
+> -			remain_ok = 1;
+> -		else
+> -			remain_ok = rm.tv_sec != 0 || rm.tv_nsec != 0;
+> +	if (sys_ret == 0) {
+> +		TEST(rc = clock_gettime(tc->clk_id, &afttp));
+> +		if (TEST_RETURN < 0) {
+> +			tst_brk(TBROK, "clock_gettime failed");
+> +		}
+>  	}
+>  
+> -	/*
+> -	 * Check results
+> -	 */
+> -	result |= (sys_ret != tc->ret) || !range_ok || !remain_ok;
+> -	if (!range_ok)
+> -		PRINT_RESULT_EXTRA(0, tc->ret, tc->err, sys_ret, sys_errno,
+> -				   "time range check", range_ok);
+> -	else
+> -		PRINT_RESULT_EXTRA(0, tc->ret, tc->err, sys_ret, sys_errno,
+> -				   "remain time check", remain_ok);
+> -EXIT:
+> +	tst_res(TINFO, "remain time: %ld %ld", rm.tv_sec, rm.tv_nsec);
+> +
+> +	/* cleanup */
+>  	if (pid > 0) {
+> -		int st;
+> -		TEST(kill(pid, SIGTERM));
+> -		TEST(wait(&st));
+> +		kill(pid, SIGTERM);
+> +		SAFE_WAIT(&dummy);
+
+You can pass NULL to wait() if you are not going to examine the status.
+
+>  	}
+> -	return result;
 > -}
 > -
->  static void do_test(unsigned int i)
->  {
->  	pid_t pid = 0;
+> -/*
+> - * main()
+> - */
+> -
+> -int main(int ac, char **av)
+> -{
+> -	int result = RESULT_OK;
+> -	int i;
+> -	int lc;
+> -
+> -	tst_parse_opts(ac, av, NULL, NULL);
+> -
+> -	setup();
+> -
+> -	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+> -
+> -		tst_count = 0;
+> -
+> -		for (testno = 0; testno < TST_TOTAL; ++testno) {
+> -
+> -			for (i = 0; i < (int)(sizeof(tcase) / sizeof(tcase[0]));
+> -			     i++) {
+> -				int ret;
+> -				tst_resm(TINFO, "(case%02d) START", i);
+> -				ret = do_test(&tcase[i]);
+> -				tst_resm(TINFO, "(case%02d) END => %s",
+> -					 i, (ret == 0) ? "OK" : "NG");
+> -				result |= ret;
+> -			}
+> -
+> -			switch (result) {
+> -			case RESULT_OK:
+> -				tst_resm(TPASS,
+> -					 "clock_nanosleep call succeeded");
+> -				break;
+> -
+> -			default:
+> -				tst_brkm(TFAIL | TERRNO, cleanup,
+> -					 "clock_nanosleep failed");
+> -				break;
+> -			}
+> -
+> -		}
+>  
+> +	/* result check */
+> +	if (sys_ret == 0 && chk_difftime(&beftp, &afttp, tc->sec, tc->nsec) != 0) {
+> +		tst_res(TFAIL, "time range check ret: %d, exp: %d, ret_errno: %s (%d),"
+> +			" exp_errno: %s (%d)", sys_ret, tc->ret,
+> +			tst_strerrno(sys_errno), sys_errno,
+> +			tst_strerrno(tc->err), tc->err);
+> +	} else if (tc->ttype == SEND_SIGINT && !rm.tv_sec && !rm.tv_nsec) {
+> +		tst_res(TFAIL, "remain time check ret: %d, exp: %d, ret_errno: %s (%d),"
+> +			" exp_errno: %s (%d)", sys_ret, tc->ret,
+> +			tst_strerrno(sys_errno), sys_errno,
+> +			tst_strerrno(tc->err), tc->err);
+> +	} else if (sys_ret != tc->ret) {
+> +		tst_res(TFAIL, "ret: %d, exp: %d, ret_errno: %s (%d),"
+> +			" exp_errno: %s (%d)", sys_ret, tc->ret,
+> +			tst_strerrno(sys_errno), sys_errno,
+> +			tst_strerrno(tc->err), tc->err);
+> +	} else {
+> +		tst_res(TPASS, "ret: %d", sys_ret);
+>  	}
+
+
+Can we get rid of this else if spaghetti and use return instead?
+
+> -	cleanup();
+> -	tst_exit();
+> -
+>  }
+> +
+> +static struct tst_test test = {
+> +	.tid = "clock_nanosleep01",
+> +	.tcnt = ARRAY_SIZE(tcase),
+> +	.test = do_test,
+> +	.setup = setup,
+> +	.forks_child = 1,
+> +	.needs_tmpdir = 1,
+
+Do we really need tmpdir here?
+
+> +};
 > -- 
 > 2.10.2
 > 
