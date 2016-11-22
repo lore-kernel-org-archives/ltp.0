@@ -1,11 +1,15 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Nov 2016 09:02:27 +0100
-Subject: [LTP] [PATCH 1/2] lib: move create_sig_proc() into newlib
-In-Reply-To: <20161122070953.za3jy6ww75dq2lj6@dell5510>
-References: <20161116161833.16910-1-pvorel@suse.cz>
- <20161121145701.GF25334@rei.lan>
- <20161122070953.za3jy6ww75dq2lj6@dell5510>
-Message-ID: <20161122080227.GC5620@rei.lan>
+Date: Tue, 22 Nov 2016 09:02:52 +0100
+Subject: [LTP] new shell library
+In-Reply-To: <1438742745.1396390.1479801272456.JavaMail.zimbra@redhat.com>
+References: <20161003145835.GD7583@rei.suse.cz>
+ <20161012123602.GB24231@rei.lan> <20161012131726.GC24231@rei.lan>
+ <1527497475.514457.1476284084454.JavaMail.zimbra@redhat.com>
+ <20161027145806.GA25043@rei.lan>
+ <827120068.2432301.1477908222614.JavaMail.zimbra@redhat.com>
+ <20161114131216.GB25055@rei.lan> <20161122065033.GA5620@rei.lan>
+ <1438742745.1396390.1479801272456.JavaMail.zimbra@redhat.com>
+Message-ID: <20161122080252.GD5620@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,14 +17,14 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > Shouldn't be including tst_safe_macros.h here enough?
-> Well, create_sig_proc() uses SAFE_FORK macro (defined in tst_test.h), which uses (via
-> safe_fork() function) tst_test structure (also defined in tst_test.h). That's probably the
-> reason, why SAFE_FORK isn't in tst_safe_macros.h among with other SAFE_* macros.
-> So I'd keep it as it is.
+> > I did a few runs of that ltp git repo on SLES and Debian and caught a
+> > few typos and problems. Anything else I should do before we merge it
+> > into main LTP git?
+> 
+> If you can wait a bit with merge, I'll run commands runtest on few RHEL
+> distros (from ancient to current) to double check.
 
-Ah, right, the SAFE_FORK() is special since we have do make sure stdio
-is flushed before we call fork, etc.
+Sounds good.
 
 -- 
 Cyril Hrubis
