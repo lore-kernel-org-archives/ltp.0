@@ -1,34 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Nov 2016 11:22:27 +0100
-Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Add SAFE_SETPRIORITY() && Drop
- redundant space
-In-Reply-To: <583412F7.5070403@cn.fujitsu.com>
-References: <1479375382-28964-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20161122080944.GE5620@rei.lan> <583412F7.5070403@cn.fujitsu.com>
-Message-ID: <20161122102226.GE7048@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 22 Nov 2016 13:35:39 +0300
+Subject: [LTP] [PATCH][RFC] network: test_net.sh: allow to run tests on
+ a single machine
+In-Reply-To: <20161122083841.GA7048@rei.lan>
+References: <1479130404-31787-1-git-send-email-alexey.kodanev@oracle.com>
+ <20161122083841.GA7048@rei.lan>
+Message-ID: <58341F7B.8040108@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > And also this is 1/2, shouldn't there be a second patch that uses this?
-> 
-> Yes, I should have sent the second patch that uses this, but I faced a problem
-> below and was still working on it.
-> 
-> I found that setpriority01 with PRIO_USER as root will change system environment,
-> set the priorities of all specified processes to 19.
+Hi,
 
-Well that is kind of expected, since it should operate on all processes
-whose user real id matches the who parameter. I guess that the only safe
-way how to test this flag is to:
+On 11/22/2016 11:38 AM, Cyril Hrubis wrote:
+> Hi!
+>> When 'TST_USE_NETNS' environment variable is defined, test_net.sh
+>> will setup 'ltp_ns' netns and configure veth pair according to
+>> other LTP network variables. Then, each tst_rhost_run() call will
+>> be executed in the new netns on the same host.
+>>
+>> Usage:
+>> TST_USE_NETNS=1... ./network.sh -i
+> Looks like a smart idea to me, the implementation looks ok as well. I
+> wonder if we should add these kind of network tests into default
+> scenario...
 
-* Pick unused user id and sets it as a real user id
-* Start a few processes there
-* One of them calls setpriority and checks that all of them got it
+Some test groups can be added and I guess we should default to netns 
+configuration
+if RHOST variable isn't defined. This way the tests won't require any 
+network
+environment variables set beforehand.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> The patch misses any documentation though, it should be described
+> properly somewhere.
+
+Right, will add it and send a new version.
+
+
+Thanks,
+Alexey
+
