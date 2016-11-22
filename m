@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Nov 2016 09:23:09 +0100
-Subject: [LTP] setregid04_16
-In-Reply-To: <CAJ5vXcT-GH08vsrmGFtSnB+jW=9vJbpC6Csw0AbG_otK5FJJpw@mail.gmail.com>
-References: <CAJ5vXcT-GH08vsrmGFtSnB+jW=9vJbpC6Csw0AbG_otK5FJJpw@mail.gmail.com>
-Message-ID: <20161122082110.GF5620@rei.lan>
+Date: Tue, 22 Nov 2016 09:38:41 +0100
+Subject: [LTP] [PATCH][RFC] network: test_net.sh: allow to run tests on
+ a single machine
+In-Reply-To: <1479130404-31787-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1479130404-31787-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20161122083841.GA7048@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,40 +12,20 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> please, help with the below error.
+> When 'TST_USE_NETNS' environment variable is defined, test_net.sh
+> will setup 'ltp_ns' netns and configure veth pair according to
+> other LTP network variables. Then, each tst_rhost_run() call will
+> be executed in the new netns on the same host.
+> 
+> Usage:
+> TST_USE_NETNS=1... ./network.sh -i
 
-What LTP version you have? What kernel version? What glibc version? What
-architecture? Have you tried to strace the testcase to check that
-correct syscall is called?
+Looks like a smart idea to me, the implementation looks ok as well. I
+wonder if we should add these kind of network tests into default
+scenario...
 
-> root@:/opt/ltp# ./testcases/bin/setregid04_16
-> setregid04_16    1  TPASS  :  real or effective gid was modified as expected
-> setregid04_16    2  TFAIL  :  setregid04.c:146: ERROR: After
-> setregid(users, -1) real gid = 100; effective gid = 65535
-> setregid04_16    0  TINFO  :  Expected: real gid = 100; effective gid = 0
-> setregid04_16    3  TFAIL  :  setregid04.c:146: ERROR: After
-> setregid(root,-1), real gid = 0; effective gid = 65535
-> setregid04_16    0  TINFO  :  Expected: real gid = 0; effective gid = 0
-> setregid04_16    4  TFAIL  :  setregid04.c:146: ERROR: After
-> setregid(-1, -1), real gid = 65535; effective gid = 65535
-> setregid04_16    0  TINFO  :  Expected: real gid = 0; effective gid = 0
-> setregid04_16    5  TFAIL  :  setregid04.c:146: ERROR: After
-> setregid(-1, root) real gid = 65535; effective gid = 0
-> setregid04_16    0  TINFO  :  Expected: real gid = 0; effective gid = 0
-> setregid04_16    6  TFAIL  :  setregid04.c:146: ERROR: After
-> setregid(root, -1), real gid = 0; effective gid = 65535
-> setregid04_16    0  TINFO  :  Expected: real gid = 0; effective gid = 0
-> setregid04_16    7  TPASS  :  real or effective gid was modified as expected
-> setregid04_16    8  TFAIL  :  setregid04.c:146: ERROR: After
-> setregid(-1, -1) real gid = 65535; effective gid = 65535
-> setregid04_16    0  TINFO  :  Expected: real gid = 1; effective gid = 100
-> setregid04_16    9  TFAIL  :  setregid04.c:146: ERROR: After
-> setregid(-1, users) real gid = 65535; effective gid = 100
-> setregid04_16    0  TINFO  :  Expected: real gid = 1; effective gid = 100
-
-Hmm, the gid set to -1 should not change the real/efective gid something
-is wrong here and the value -1 (65535 when printed as unsigned int) does
-change it. No idea what went wrong though.
+The patch misses any documentation though, it should be described
+properly somewhere.
 
 -- 
 Cyril Hrubis
