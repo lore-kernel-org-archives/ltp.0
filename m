@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 22 Nov 2016 09:56:17 +0100
-Subject: [LTP] [PATCH] syscalls/getpriority01: exclude default priority
- check for PRIO_USER.
-In-Reply-To: <1479362570-12526-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1479362570-12526-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20161122085616.GB7048@rei.lan>
+Date: Tue, 22 Nov 2016 10:29:37 +0100
+Subject: [LTP] syslog tests are failed.
+In-Reply-To: <CAJ5vXcS3s=BqxWNJo8PqWa-des8TREbJKdL4H7HP33Q3p=j6XA@mail.gmail.com>
+References: <CAJ5vXcQHixS8UOzeFDQ7TNNHzGN5QhWONhXYT67eWCwitynyyQ@mail.gmail.com>
+ <271210984.337776.1479474167503.JavaMail.zimbra@redhat.com>
+ <CAJ5vXcS3s=BqxWNJo8PqWa-des8TREbJKdL4H7HP33Q3p=j6XA@mail.gmail.com>
+Message-ID: <20161122092936.GC7048@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,14 +13,10 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> The current user priority is various when testing,
-> we should not check it as default value.
+> I have build it using yacto (Poky).
 
-What system does this happen on? It should probably be mentioned in the
-commit message.
-
-And we should probably as well just revert the change I've did and check
-only that errno wasn't set since the value may be set even to -1.
+Hmm, have you checked what the service command really does? My guess
+would be that it does something completely different in yocto.
 
 -- 
 Cyril Hrubis
