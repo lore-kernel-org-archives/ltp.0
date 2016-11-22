@@ -1,44 +1,48 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 22 Nov 2016 13:35:39 +0300
-Subject: [LTP] [PATCH][RFC] network: test_net.sh: allow to run tests on
- a single machine
-In-Reply-To: <20161122083841.GA7048@rei.lan>
-References: <1479130404-31787-1-git-send-email-alexey.kodanev@oracle.com>
- <20161122083841.GA7048@rei.lan>
-Message-ID: <58341F7B.8040108@oracle.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 22 Nov 2016 05:47:39 -0500 (EST)
+Subject: [LTP] new shell library
+In-Reply-To: <20161122080252.GD5620@rei.lan>
+References: <20161003145835.GD7583@rei.suse.cz>
+ <1527497475.514457.1476284084454.JavaMail.zimbra@redhat.com>
+ <20161027145806.GA25043@rei.lan>
+ <827120068.2432301.1477908222614.JavaMail.zimbra@redhat.com>
+ <20161114131216.GB25055@rei.lan> <20161122065033.GA5620@rei.lan>
+ <1438742745.1396390.1479801272456.JavaMail.zimbra@redhat.com>
+ <20161122080252.GD5620@rei.lan>
+Message-ID: <118984060.1453340.1479811659429.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
 
-On 11/22/2016 11:38 AM, Cyril Hrubis wrote:
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Tuesday, 22 November, 2016 9:02:52 AM
+> Subject: Re: [LTP] new shell library
+> 
 > Hi!
->> When 'TST_USE_NETNS' environment variable is defined, test_net.sh
->> will setup 'ltp_ns' netns and configure veth pair according to
->> other LTP network variables. Then, each tst_rhost_run() call will
->> be executed in the new netns on the same host.
->>
->> Usage:
->> TST_USE_NETNS=1... ./network.sh -i
-> Looks like a smart idea to me, the implementation looks ok as well. I
-> wonder if we should add these kind of network tests into default
-> scenario...
+> > > I did a few runs of that ltp git repo on SLES and Debian and caught a
+> > > few typos and problems. Anything else I should do before we merge it
+> > > into main LTP git?
+> > 
+> > If you can wait a bit with merge, I'll run commands runtest on few RHEL
+> > distros (from ancient to current) to double check.
+> 
+> Sounds good.
 
-Some test groups can be added and I guess we should default to netns 
-configuration
-if RHOST variable isn't defined. This way the tests won't require any 
-network
-environment variables set beforehand.
+Looks good. Only thing that failed was 'file' test on older distros,
+because output of 'file' is slightly different for certain file types.
 
-> The patch misses any documentation though, it should be described
-> properly somewhere.
+Regards,
+Jan
 
-Right, will add it and send a new version.
-
-
-Thanks,
-Alexey
-
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
