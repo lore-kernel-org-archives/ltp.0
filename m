@@ -1,245 +1,254 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 23 Nov 2016 15:18:28 +0800
-Subject: [LTP] [PATCH 1/4] ipc/lib: add header files for new API
-Message-ID: <1479885511-7414-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Wed, 23 Nov 2016 15:18:31 +0800
+Subject: [LTP] [PATCH 4/4] ipc/msgget03.c: cleanup && convert to new API
+In-Reply-To: <1479885511-7414-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1479885511-7414-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1479885511-7414-4-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
-
-1) add tst_ipcmsg.h for new API
-2) add tst_ipcsem.h for new API
-3=EF=BC=89add tst_ipcshm.h for new API
-4) fix libipc.c for new API
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/ipc/lib/libipc.c     |  6 +--
- testcases/kernel/syscalls/ipc/lib/tst_ipcmsg.h | 61 ++++++++++++++++++++++=
-++++
- testcases/kernel/syscalls/ipc/lib/tst_ipcsem.h | 52 ++++++++++++++++++++++
- testcases/kernel/syscalls/ipc/lib/tst_ipcshm.h | 47 ++++++++++++++++++++
- 4 files changed, 163 insertions(+), 3 deletions(-)
- create mode 100644 testcases/kernel/syscalls/ipc/lib/tst_ipcmsg.h
- create mode 100644 testcases/kernel/syscalls/ipc/lib/tst_ipcsem.h
- create mode 100644 testcases/kernel/syscalls/ipc/lib/tst_ipcshm.h
+ testcases/kernel/syscalls/ipc/msgget/msgget03.c | 192 ++++++++----------------
+ 1 file changed, 60 insertions(+), 132 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/lib/libipc.c b/testcases/kernel/=
-syscalls/ipc/lib/libipc.c
-index 4de7faa..856bfdb 100644
---- a/testcases/kernel/syscalls/ipc/lib/libipc.c
-+++ b/testcases/kernel/syscalls/ipc/lib/libipc.c
-@@ -58,7 +58,7 @@ key_t getipckey(void)
- 	static int count =3D 0;
-=20
- 	if (NULL =3D=3D (curdir =3D getcwd(curdir, size))) {
--		tst_brkm(TBROK, cleanup, "Can't get current directory "
-+		tst_brkm(TBROK, NULL, "Can't get current directory "
- 			 "in getipckey()");
- 	}
-=20
-@@ -72,7 +72,7 @@ key_t getipckey(void)
- 	count++;
-=20
- 	if ((ipc_key =3D ftok(curdir, proj_id)) =3D=3D -1) {
--		tst_brkm(TBROK, cleanup, "Can't get msgkey from ftok()");
-+		tst_brkm(TBROK, NULL, "Can't get msgkey from ftok()");
- 	}
-=20
- 	return (ipc_key);
-@@ -145,7 +145,7 @@ int getuserid(char *user)
-=20
- 	/* get the uid value for the user */
- 	if ((ent =3D getpwnam(user)) =3D=3D NULL) {
--		tst_brkm(TBROK, cleanup, "Couldn't get password entry for %s",
-+		tst_brkm(TBROK, NULL, "Couldn't get password entry for %s",
- 			 user);
- 	}
-=20
-diff --git a/testcases/kernel/syscalls/ipc/lib/tst_ipcmsg.h b/testcases/ker=
-nel/syscalls/ipc/lib/tst_ipcmsg.h
-new file mode 100644
-index 0000000..ec80e31
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/lib/tst_ipcmsg.h
-@@ -0,0 +1,61 @@
-+/*
-+ * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
+diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget03.c b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+index 2eda252..f096475 100644
+--- a/testcases/kernel/syscalls/ipc/msgget/msgget03.c
++++ b/testcases/kernel/syscalls/ipc/msgget/msgget03.c
+@@ -1,168 +1,96 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
 + * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
 + * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
-+ *
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
 + * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
 + * the GNU General Public License for more details.
-+ *
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 + * You should have received a copy of the GNU General Public License
 + * along with this program.
-+ */
-+
-+/*
-+ * ipcmsg.h - common definitions for the IPC message tests.
-+ */
-+
-+#ifndef __IPCMSG_H
-+#define __IPCMSG_H	1
-+
-+#include <errno.h>
+  */
+ 
+ /*
+- * NAME
+- *	msgget03.c
++ * NAME: msgget03.c
+  *
+  * DESCRIPTION
+- *	msgget03 - test for an ENOSPC error by using up all available
+- *		   message queues.
+- *
+- * ALGORITHM
+- *	Get all the message queues that can be allocated
+- *	loop if that option was specified
+- *	Try to get one more message queue
+- *	check the errno value
+- *	  issue a PASS message if we get ENOSPC
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	  break any remaining tests
+- *	  call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  msgget03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
++ * test for an ENOSPC error by using up all available
++ * message queues.
+  *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	none
+  */
+ 
+-#include "test.h"
+-
+-#include "ipcmsg.h"
+-
+-char *TCID = "msgget03";
+-int TST_TOTAL = 1;
++#include <sys/types.h>
 +#include <sys/ipc.h>
 +#include <sys/msg.h>
-+#include <sys/types.h>
++#include <stdlib.h>
+ 
+-int maxmsgs = 0;
++#include "tst_ipcmsg.h"
++#include "tst_test.h"
+ 
+-int *msg_q_arr = NULL;		/* hold the id's that we create */
+-int num_queue = 0;		/* count the queues created */
++static int maxmsgs;
++static int *msg_q_arr;
+ 
+-int main(int ac, char **av)
++static void verify_msgget(void)
+ {
+-	int lc;
+-	int msg_q;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		/*
+-		 * Use a while loop to create the maximum number of queues.
+-		 * When we get an error, check for ENOSPC.
+-		 */
+-		while ((msg_q =
+-			msgget(msgkey + num_queue,
+-			       IPC_CREAT | IPC_EXCL)) != -1) {
+-			msg_q_arr[num_queue] = msg_q;
+-			if (num_queue == maxmsgs) {
+-				tst_resm(TINFO, "The maximum number of message"
+-					 " queues (%d) has been reached",
+-					 maxmsgs);
+-				break;
+-			}
+-			num_queue++;
+-		}
+-
+-		switch (errno) {
+-		case ENOSPC:
+-			tst_resm(TPASS, "expected failure - errno = %d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			break;
+-		default:
+-			tst_resm(TFAIL, "call failed with an "
+-				 "unexpected error - %d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			break;
+-		}
+-	}
+-
+-	cleanup();
+-
+-	tst_exit();
++	TEST(msgget(msgkey + maxmsgs, IPC_CREAT | IPC_EXCL));
++	if (TEST_RETURN != -1)
++		tst_res(TFAIL, "msgget() succeeded unexpectedly");
 +
-+#define MSG_RD  0400            /* read permission for the queue */
-+#define MSG_WR  0200            /* write permission for the queue */
-+#define MSG_RW	(MSG_RD | MSG_WR)
++	if (TEST_ERRNO == ENOSPC)
++		tst_res(TPASS | TTERRNO, "msgget() failed as expected");
++	else
++		tst_res(TFAIL | TTERRNO, "msgget() failed unexpectedly,"
++			" expected %s", tst_strerrno(ENOSPC));
+ }
+ 
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
++static void setup(void)
+ {
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	/*
+-	 * Create a temporary directory and cd into it.
+-	 * This helps to ensure that a unique msgkey is created.
+-	 * See ../lib/libipc.c for more information.
+-	 */
+-	tst_tmpdir();
++	int res, num;
+ 
+ 	msgkey = getipckey();
+ 
+ 	maxmsgs = get_max_msgqueues();
+ 	if (maxmsgs < 0)
+-		tst_brkm(TBROK, cleanup, "get_max_msgqueues failed");
++		tst_brk(TBROK, "get_max_msgqueues failed");
+ 
+ 	msg_q_arr = (int *)calloc(maxmsgs, sizeof(int));
+-	if (msg_q_arr == NULL) {
+-		tst_brkm(TBROK, cleanup, "Couldn't allocate memory "
++	if (!msg_q_arr) {
++		tst_brk(TBROK, "Couldn't allocate memory "
+ 			 "for msg_q_arr: calloc() failed");
+ 	}
 +
-+#define MSGSIZE	1024		/* a resonable size for a message */
-+#define MSGTYPE 1		/* a type ID for a message */
++	for (num = 0; num < maxmsgs; num++) {
++		msg_q_arr[num] = -1;
 +
-+#define NR_MSGQUEUES	16	/* MSGMNI as defined in linux/msg.h */
++		res = msgget(msgkey + num, IPC_CREAT | IPC_EXCL);
++		if (res != -1)
++			msg_q_arr[num] = res;
++	}
 +
-+#define min(a, b)	(((a) < (b)) ? @ : (b))
++	tst_res(TINFO, "The maximum number of message queues (%d) has been reached", maxmsgs);
+ }
+ 
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test@completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	int i;
++	int num;
+ 
+-	/*
+-	 * remove the message queues if they were created
+-	 */
++	if (msg_q_arr) {
++		for (num = 0; num < maxmsgs; num++)
++			rm_queue(msg_q_arr[num]);
+ 
+-	if (msg_q_arr != NULL) {
+-		for (i = 0; i < num_queue; i++) {
+-			rm_queue(msg_q_arr[i]);
+-		}
+ 		(void)free(msg_q_arr);
+ 	}
+-
+-	tst_rmdir();
+-
+ }
 +
-+typedef struct mbuf {		/* a generic message structure */
-+	long mtype;
-+	char mtext[MSGSIZE + 1];  /* add 1 here so the message can be 1024   */
-+} MSGBUF;			  /* characters long with a '\0' termination */
-+
-+#ifdef LIBIPC
-+key_t msgkey;                   /* the ftok() generated message key */
-+#else
-+extern key_t msgkey;                   /* the ftok() generated message key=
- */
-+#endif
-+
-+void init_buf(MSGBUF *m_buf, int type, int size);
-+void rm_queue(int queue_id);
-+
-+key_t getipckey(void);
-+int getuserid(char *user);
-+
-+int get_max_msgqueues(void);
-+int get_used_msgqueues(void);
-+
-+#endif /* ipcmsg.h */
-diff --git a/testcases/kernel/syscalls/ipc/lib/tst_ipcsem.h b/testcases/ker=
-nel/syscalls/ipc/lib/tst_ipcsem.h
-new file mode 100644
-index 0000000..d9be9ab
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/lib/tst_ipcsem.h
-@@ -0,0 +1,52 @@
-+/*
-+ * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
-+ */
-+
-+/*
-+ * ipcsem.h - common definitions for the IPC semaphore tests
-+ */
-+
-+#ifndef __IPCSEM_H
-+#define __IPCSEM_H
-+
-+#include <errno.h>
-+#include <sys/ipc.h>
-+#include <sys/sem.h>
-+
-+#include "lapi/semun.h"
-+
-+#define SEM_RD	0400
-+#define SEM_ALT	0200
-+#define SEM_RA	(SEM_RD | SEM_ALT)
-+
-+/*
-+ * a reasonable value for the number of
-+ * "primitive semaphores" per ID
-+ */
-+#define PSEMS	10
-+
-+#ifdef LIBIPC
-+key_t semkey;			/* an IPC key generated by ftok() */
-+#else
-+extern key_t semkey;		/* an IPC key generated by ftok() */
-+#endif
-+
-+void rm_sema(int sem_id);
-+
-+int getipckey(void);
-+int getuserid(char *user);
-+
-+#endif /* ipcsem.h */
-diff --git a/testcases/kernel/syscalls/ipc/lib/tst_ipcshm.h b/testcases/ker=
-nel/syscalls/ipc/lib/tst_ipcshm.h
-new file mode 100644
-index 0000000..c5876d4
---- /dev/null
-+++ b/testcases/kernel/syscalls/ipc/lib/tst_ipcshm.h
-@@ -0,0 +1,47 @@
-+/*
-+ * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-+ *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
-+ */
-+
-+/*
-+ * ipcshm.h - common definitions for the IPC shared memory tests
-+ */
-+
-+#ifndef __IPCSHM_H
-+#define __IPCSHM_H
-+
-+#include <errno.h>
-+#include <wait.h>
-+#include <sys/ipc.h>
-+#include <sys/shm.h>
-+
-+#define SHM_RD	0400
-+#define SHM_WR	0200
-+#define SHM_RW	(SHM_RD | SHM_WR)
-+
-+#define SHM_SIZE	2048	/* a resonable size for a memory segment */
-+#define INT_SIZE	4	/* instead of sizeof(int) */
-+
-+#define MODE_MASK	0x01FF	/* to get the lower nine permission bits */
-+				/* from shmid_ds.ipc_perm.mode		 */
-+
-+key_t shmkey;			/* an IPC key generated by ftok() */
-+
-+void rm_shm(int shm_id);
-+
-+int getipckey(void);
-+int getuserid(char *user);
-+
-+#endif /* ipcshm.h */
---=20
++static struct tst_test test = {
++	.tid = "msgget03",
++	.needs_tmpdir = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_msgget
++};
+-- 
 1.8.3.1
 
 
