@@ -1,13 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 23 Nov 2016 12:02:58 +0100
-Subject: [LTP] syslog tests are failed.
-In-Reply-To: <CAJ5vXcSyYcArEmadiFDey57-XX-aVhj+pvr+x9feMoPF7jgmvA@mail.gmail.com>
-References: <CAJ5vXcQHixS8UOzeFDQ7TNNHzGN5QhWONhXYT67eWCwitynyyQ@mail.gmail.com>
- <271210984.337776.1479474167503.JavaMail.zimbra@redhat.com>
- <CAJ5vXcS3s=BqxWNJo8PqWa-des8TREbJKdL4H7HP33Q3p=j6XA@mail.gmail.com>
- <20161122092936.GC7048@rei.lan>
- <CAJ5vXcSyYcArEmadiFDey57-XX-aVhj+pvr+x9feMoPF7jgmvA@mail.gmail.com>
-Message-ID: <20161123110258.GA3346@rei.lan>
+Date: Wed, 23 Nov 2016 12:05:52 +0100
+Subject: [LTP] setregid04_16
+In-Reply-To: <CAJ5vXcRNEmDk-sbbvc_6yFACeB=z78T1_MdbjdMQ3kEhTV1+uA@mail.gmail.com>
+References: <CAJ5vXcT-GH08vsrmGFtSnB+jW=9vJbpC6Csw0AbG_otK5FJJpw@mail.gmail.com>
+ <20161122082110.GF5620@rei.lan>
+ <CAJ5vXcRNEmDk-sbbvc_6yFACeB=z78T1_MdbjdMQ3kEhTV1+uA@mail.gmail.com>
+Message-ID: <20161123110551.GB3346@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,16 +13,17 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> I do not have the support of the service command on my system.
-> please, let me know if I need to check any other information.
+> LTP ver: 20150119
+> Kernel Version: 3.14.65
+> glibc version 2.19
+> I am using ARM architecture.
 
-Then the code to restart the daemon should not try it at all.
+That is kind of icomplete, is that 32bit, 64bit or the strange mix
+between these two called x32?
 
-There is 'if command -v service' check befor the script tries to call
-it.
+> Do not have strace support on my system
 
-Anyway what init system does yocto have? How do you restart daemon on
-it?
+It's hard to debug any syscall tests without that.
 
 -- 
 Cyril Hrubis
