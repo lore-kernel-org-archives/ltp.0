@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 23 Nov 2016 14:55:13 +0100
-Subject: [LTP] [PATCH 1/4] ipc/lib: add header files for new API
-In-Reply-To: <1479885511-7414-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Wed, 23 Nov 2016 15:05:08 +0100
+Subject: [LTP] [PATCH 2/4] ipc/msgget01.c: cleanup && convert to new API
+In-Reply-To: <1479885511-7414-2-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <1479885511-7414-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20161123135513.GI3346@rei.lan>
+ <1479885511-7414-2-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20161123140507.GJ3346@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,246 +12,133 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> 1) add tst_ipcmsg.h for new API
-> 2) add tst_ipcsem.h for new API
-> 3???add tst_ipcshm.h for new API
+> +	msgkey = getipckey();
+> +
+> +	TEST(msgget(msgkey, IPC_CREAT | IPC_EXCL | MSG_RD | MSG_WR));
+> +
+> +	if (TEST_RETURN == -1) {
+> +		tst_res(TFAIL | TTERRNO, "msgget() failed");
 
-Hmm, why can't we add just one libipc.h?
+Just do return; here so that we can omit the else branch.
 
-Also I do not think that it's a good idea to prefix anything that is not
-in the top level library with tst_, that is kind of confusing.
+> +	} else {
+> +		msg_q_1 = TEST_RETURN;
+> +
+> +		check_functionality();
 
-> 4) fix libipc.c for new API
-> 
-> Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
-> ---
->  testcases/kernel/syscalls/ipc/lib/libipc.c     |  6 +--
->  testcases/kernel/syscalls/ipc/lib/tst_ipcmsg.h | 61 ++++++++++++++++++++++++++
->  testcases/kernel/syscalls/ipc/lib/tst_ipcsem.h | 52 ++++++++++++++++++++++
->  testcases/kernel/syscalls/ipc/lib/tst_ipcshm.h | 47 ++++++++++++++++++++
->  4 files changed, 163 insertions(+), 3 deletions(-)
->  create mode 100644 testcases/kernel/syscalls/ipc/lib/tst_ipcmsg.h
->  create mode 100644 testcases/kernel/syscalls/ipc/lib/tst_ipcsem.h
->  create mode 100644 testcases/kernel/syscalls/ipc/lib/tst_ipcshm.h
-> 
-> diff --git a/testcases/kernel/syscalls/ipc/lib/libipc.c b/testcases/kernel/syscalls/ipc/lib/libipc.c
-> index 4de7faa..856bfdb 100644
-> --- a/testcases/kernel/syscalls/ipc/lib/libipc.c
-> +++ b/testcases/kernel/syscalls/ipc/lib/libipc.c
-> @@ -58,7 +58,7 @@ key_t getipckey(void)
->  	static int count = 0;
->  
->  	if (NULL == (curdir = getcwd(curdir, size))) {
-> -		tst_brkm(TBROK, cleanup, "Can't get current directory "
-> +		tst_brkm(TBROK, NULL, "Can't get current directory "
->  			 "in getipckey()");
+There is no reason to keep the check in the separate funciton now, we
+can just do it here instead.
+
 >  	}
 >  
-> @@ -72,7 +72,7 @@ key_t getipckey(void)
->  	count++;
+> -	cleanup();
+> -	tst_exit();
+> +	rm_queue(msg_q_1);
+>  }
 >  
->  	if ((ipc_key = ftok(curdir, proj_id)) == -1) {
-> -		tst_brkm(TBROK, cleanup, "Can't get msgkey from ftok()");
-> +		tst_brkm(TBROK, NULL, "Can't get msgkey from ftok()");
+> -/*
+> - * check_functionality() - check the functionality of the tested system call.
+> - */
+> -void check_functionality(void)
+> +static void check_functionality(void)
+>  {
+> -	int i = 0;
+>  	MSGBUF snd_buf, rcv_buf;
+>  
+> -	/* EAGLE: Houston, Tranquility Base here. The Eagle has landed! */
+>  	char *queue_msg =
+>  	    "Qston, check_functionality here.  The message has queued!";
+>  
+> -	/*
+> -	 * copy our message into the buffer and then set the type.
+> -	 */
+> -	do {
+> -		snd_buf.mtext[i++] = *queue_msg;
+> -	} while (*queue_msg++ != '\0');
+> +	strcpy(snd_buf.mtext, queue_msg);
+>  
+>  	snd_buf.mtype = MSGTYPE;
+>  
+> -	/* send the message */
+>  	if (msgsnd(msg_q_1, &snd_buf, MSGSIZE, 0) == -1) {
+> -		tst_brkm(TBROK, cleanup, "Could not send a message in the "
+> +		tst_brk(TBROK, "Could not send a message in the "
+                        ^
+			TBROK | TERRNO
+>  			 "check_functionality() routine.");
+                           ^
+			   We shoud print something shorter and more to
+			   the point, such as:
+
+			   tst_brk(TBROK|TERRNO, "msgsnd() failed");
 >  	}
 >  
->  	return (ipc_key);
-> @@ -145,7 +145,7 @@ int getuserid(char *user)
->  
->  	/* get the uid value for the user */
->  	if ((ent = getpwnam(user)) == NULL) {
-> -		tst_brkm(TBROK, cleanup, "Couldn't get password entry for %s",
-> +		tst_brkm(TBROK, NULL, "Couldn't get password entry for %s",
->  			 user);
+> -	/* receive the message */
+>  	if (msgrcv(msg_q_1, &rcv_buf, MSGSIZE, MSGTYPE, IPC_NOWAIT) == -1) {
+> -		tst_brkm(TBROK, cleanup, "Could not read a messages in the "
+> +		tst_brk(TBROK, "Could not read a messages in the "
+>  			 "check_functionality() routine.");
+
+		here as well
+
 >  	}
+>  
+>  	if (strcmp(snd_buf.mtext, rcv_buf.mtext) == 0) {
+> -		tst_resm(TPASS, "message received = message sent");
+> +		tst_res(TPASS, "message received = message sent");
+>  	} else {
+> -		tst_resm(TFAIL, "message received != message sent");
+> +		tst_res(TFAIL, "message received != message sent");
+>  	}
+>  }
+>  
+> -/*
+> - * setup() - performs all the ONE TIME setup for this test.
+> - */
+> -void setup(void)
+> -{
+> -
+> -	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+> -
+> -	TEST_PAUSE;
+> -
+> -	/*
+> -	 * Create a temporary directory and cd into it.
+> -	 * This helps to ensure that a unique msgkey is created.
+> -	 * See ../lib/libipc.c for more information.
+> -	 */
+> -	tst_tmpdir();
+> -
+> -	msgkey = getipckey();
+> -}
+> -
+> -/*
+> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
+> - * 	       or premature exit.
+> - */
+> -void cleanup(void)
+> -{
+> -	/* if it exists, remove the message queue that was created */
+> -	rm_queue(msg_q_1);
+> -
+> -	tst_rmdir();
+> -
+> -}
 
-Hmm, so when we fail here the oldlib testcases that are using this will
-fail to cleanup and the test will leave directory and some IPC objects
-on the system.
+We should keep the rm_queue() in the cleanup function and add the
+cleanup to the test structure as well, so that the queue is removed if
+some part of the test called tst_brk().
 
-Maybe it would be better to copy the whole lib directory over to libipc,
-clean it and link converted testcases against the newly created libipc,
-then, once the last ipc testcase is converved finally remove the old
-lib.
+And we should also set the msg_q_1 to -1 after the rm_qeueue() in the
+verify_msgget() since otherwise we may attempt to remove already removed
+queue when the test is called with -i and the test function is called
+repeatedly.
 
-> diff --git a/testcases/kernel/syscalls/ipc/lib/tst_ipcmsg.h b/testcases/kernel/syscalls/ipc/lib/tst_ipcmsg.h
-> new file mode 100644
-> index 0000000..ec80e31
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ipc/lib/tst_ipcmsg.h
-> @@ -0,0 +1,61 @@
-> +/*
-> + * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-> + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.
-> + */
-> +
-> +/*
-> + * ipcmsg.h - common definitions for the IPC message tests.
-> + */
-> +
-> +#ifndef __IPCMSG_H
-> +#define __IPCMSG_H	1
-> +
-> +#include <errno.h>
-> +#include <sys/ipc.h>
-> +#include <sys/msg.h>
-> +#include <sys/types.h>
-> +
-> +#define MSG_RD  0400            /* read permission for the queue */
-> +#define MSG_WR  0200            /* write permission for the queue */
-> +#define MSG_RW	(MSG_RD | MSG_WR)
-> +
-> +#define MSGSIZE	1024		/* a resonable size for a message */
-> +#define MSGTYPE 1		/* a type ID for a message */
-> +
-> +#define NR_MSGQUEUES	16	/* MSGMNI as defined in linux/msg.h */
-> +
-> +#define min(a, b)	(((a) < (b)) ? @ : (b))
-> +
-> +typedef struct mbuf {		/* a generic message structure */
-> +	long mtype;
-> +	char mtext[MSGSIZE + 1];  /* add 1 here so the message can be 1024   */
-> +} MSGBUF;			  /* characters long with a '\0' termination */
-> +
-> +#ifdef LIBIPC
-> +key_t msgkey;                   /* the ftok() generated message key */
-> +#else
-> +extern key_t msgkey;                   /* the ftok() generated message key */
-> +#endif
-> +
-> +void init_buf(MSGBUF *m_buf, int type, int size);
-> +void rm_queue(int queue_id);
-> +
-> +key_t getipckey(void);
-> +int getuserid(char *user);
-> +
-> +int get_max_msgqueues(void);
-> +int get_used_msgqueues(void);
-> +
-> +#endif /* ipcmsg.h */
-> diff --git a/testcases/kernel/syscalls/ipc/lib/tst_ipcsem.h b/testcases/kernel/syscalls/ipc/lib/tst_ipcsem.h
-> new file mode 100644
-> index 0000000..d9be9ab
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ipc/lib/tst_ipcsem.h
-> @@ -0,0 +1,52 @@
-> +/*
-> + * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-> + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.
-> + */
-> +
-> +/*
-> + * ipcsem.h - common definitions for the IPC semaphore tests
-> + */
-> +
-> +#ifndef __IPCSEM_H
-> +#define __IPCSEM_H
-> +
-> +#include <errno.h>
-> +#include <sys/ipc.h>
-> +#include <sys/sem.h>
-> +
-> +#include "lapi/semun.h"
-> +
-> +#define SEM_RD	0400
-> +#define SEM_ALT	0200
-> +#define SEM_RA	(SEM_RD | SEM_ALT)
-> +
-> +/*
-> + * a reasonable value for the number of
-> + * "primitive semaphores" per ID
-> + */
-> +#define PSEMS	10
-> +
-> +#ifdef LIBIPC
-> +key_t semkey;			/* an IPC key generated by ftok() */
-> +#else
-> +extern key_t semkey;		/* an IPC key generated by ftok() */
-> +#endif
-> +
-> +void rm_sema(int sem_id);
-> +
-> +int getipckey(void);
-> +int getuserid(char *user);
-> +
-> +#endif /* ipcsem.h */
-> diff --git a/testcases/kernel/syscalls/ipc/lib/tst_ipcshm.h b/testcases/kernel/syscalls/ipc/lib/tst_ipcshm.h
-> new file mode 100644
-> index 0000000..c5876d4
-> --- /dev/null
-> +++ b/testcases/kernel/syscalls/ipc/lib/tst_ipcshm.h
-> @@ -0,0 +1,47 @@
-> +/*
-> + * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
-> + *
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.
-> + */
-> +
-> +/*
-> + * ipcshm.h - common definitions for the IPC shared memory tests
-> + */
-> +
-> +#ifndef __IPCSHM_H
-> +#define __IPCSHM_H
-> +
-> +#include <errno.h>
-> +#include <wait.h>
-> +#include <sys/ipc.h>
-> +#include <sys/shm.h>
-> +
-> +#define SHM_RD	0400
-> +#define SHM_WR	0200
-> +#define SHM_RW	(SHM_RD | SHM_WR)
-> +
-> +#define SHM_SIZE	2048	/* a resonable size for a memory segment */
-> +#define INT_SIZE	4	/* instead of sizeof(int) */
-> +
-> +#define MODE_MASK	0x01FF	/* to get the lower nine permission bits */
-> +				/* from shmid_ds.ipc_perm.mode		 */
-> +
-> +key_t shmkey;			/* an IPC key generated by ftok() */
-> +
-> +void rm_shm(int shm_id);
-> +
-> +int getipckey(void);
-> +int getuserid(char *user);
-> +
-> +#endif /* ipcshm.h */
+> +static struct tst_test test = {
+> +	.tid = "msgget01",
+> +	.test_all = verify_msgget,
+> +	.needs_tmpdir = 1
+> +};
 > -- 
 > 1.8.3.1
 > 
