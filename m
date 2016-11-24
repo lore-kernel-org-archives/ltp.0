@@ -1,46 +1,76 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 24 Nov 2016 15:02:29 +0800
-Subject: [LTP] [PATCH] syscalls/getpriority01: exclude default priority
- check for PRIO_USER.
-In-Reply-To: <20161123150439.GM3346@rei.lan>
-References: <1479362570-12526-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20161122085616.GB7048@rei.lan> <58341129.4000003@cn.fujitsu.com>
- <20161122093742.GD7048@rei.lan> <5835368B.1080502@cn.fujitsu.com>
- <20161123150439.GM3346@rei.lan>
-Message-ID: <58369085.1000109@cn.fujitsu.com>
+Date: Thu, 24 Nov 2016 16:19:09 +0800
+Subject: [LTP] [PATCH] syscalls/getpriority01: Check the returned prio
+	values in a range.
+Message-ID: <1479975549-17428-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Verify that the priority values returned by getpriority(2) are
+in the range of [0, 0], [0, 0] and [-20, 0] by default for the
+flags PRIO_PROCESS, PRIO_PGRP and PRIO_USER respectively.
 
-On 11/23/2016 11:04 PM, Cyril Hrubis wrote:
-> Hi!
->>>> It happens on Fedora20, RHEL5.11GA, RHEL6.8GA, RNEL7.3GA, testing returns
->>>> -20 and -11 for PRIO_USER as root and nobody respectively.
->>>
->>> Hmm, are you sure that this is not a bug? Since -20 is the highest
->>> priority for a process, it does not make much sense to run all root
->>> processes like that.
->>
->> Yes, not all root processes are -20 on my system, but sorry, I am afraid
->> it's not a bug, because man page says that the getpriority() call returns
->> the highest priority (lowest numerical value) enjoyed by any of the
->> specified processes, so if only there is one process is -20, the getpriority()
->> will return -20.
-> 
-> Ah, my bad, sure we can't really say if there is a process that belongs
-> to the same user with priority lower than 0.
-> 
-> So what about we define a range in which the return value should be and
-> set it to 0 .. 0 for PRIO_PROCESS and PRIO_PGRP and to -20 .. 0 for
-> PRIO_USER?
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ .../kernel/syscalls/getpriority/getpriority01.c    | 25 ++++++++++++++++------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-Sounds good, I will rewrite the patch, thanks.
+diff --git a/testcases/kernel/syscalls/getpriority/getpriority01.c b/testcases/kernel/syscalls/getpriority/getpriority01.c
+index cca88a7..6edf39d 100644
+--- a/testcases/kernel/syscalls/getpriority/getpriority01.c
++++ b/testcases/kernel/syscalls/getpriority/getpriority01.c
+@@ -19,7 +19,9 @@
+ 
+ /*
+  * Verify that getpriority(2) succeeds get the scheduling priority of
+- * the current process, process group or user.
++ * the current process, process group or user, and the priority values
++ * are in the ranges of [0, 0], [0, 0] and [-20, 0] by default for the
++ * flags PRIO_PROCESS, PRIO_PGRP and PRIO_USER respectively.
+  */
+ 
+ #include <errno.h>
+@@ -29,10 +31,12 @@
+ 
+ static struct tcase {
+ 	int which;
++	int min;
++	int max;
+ } tcases[] = {
+-	{PRIO_PROCESS},
+-	{PRIO_PGRP},
+-	{PRIO_USER}
++	{PRIO_PROCESS, 0, 0},
++	{PRIO_PGRP, 0, 0},
++	{PRIO_USER, -20, 0}
+ };
+ 
+ static void verify_getpriority(unsigned int n)
+@@ -41,9 +45,16 @@ static void verify_getpriority(unsigned int n)
+ 
+ 	TEST(getpriority(tc->which, 0));
+ 
+-	if (TEST_RETURN != 0 || TEST_ERRNO != 0) {
+-		tst_res(TFAIL | TTERRNO, "getpriority(%d, 0) returned %ld",
+-			tc->which, TEST_RETURN);
++	if (TEST_ERRNO != 0) {
++		tst_res(TFAIL | TTERRNO, "getpriority(%d, 0) failed",
++			tc->which);
++		return;
++	}
++
++	if (TEST_RETURN < tc->min || TEST_RETURN > tc->max) {
++		tst_res(TFAIL, "getpriority(%d, 0) returned %ld, "
++			"expected in the range of [%d, %d]",
++			tc->which, TEST_RETURN, tc->min, tc->max);
+ 		return;
+ 	}
+ 
+-- 
+1.8.4.2
 
-Best Regards,
-Guangwen Feng
 
 
