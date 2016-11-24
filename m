@@ -1,34 +1,46 @@
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Thu, 24 Nov 2016 09:11:22 +0800
-Subject: [LTP]  [PATCH v2] fs_racer: cleanup
-In-Reply-To: <20161123122138.GD3346@rei.lan>
-References: <1479902450-53501-1-git-send-email-cuibixuan@huawei.com>
- <20161123122138.GD3346@rei.lan>
-Message-ID: <58363E3A.5080403@huawei.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Thu, 24 Nov 2016 15:02:29 +0800
+Subject: [LTP] [PATCH] syscalls/getpriority01: exclude default priority
+ check for PRIO_USER.
+In-Reply-To: <20161123150439.GM3346@rei.lan>
+References: <1479362570-12526-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20161122085616.GB7048@rei.lan> <58341129.4000003@cn.fujitsu.com>
+ <20161122093742.GD7048@rei.lan> <5835368B.1080502@cn.fujitsu.com>
+ <20161123150439.GM3346@rei.lan>
+Message-ID: <58369085.1000109@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Remove the DIR at the end of test
+Hi!
 
-Signed-off-by: Cui Bixuan <cuibixuan@huawei.com>
----
- testcases/kernel/fs/racer/fs_racer.sh | 1 +
- 1 file changed, 1 insertion(+)
+On 11/23/2016 11:04 PM, Cyril Hrubis wrote:
+> Hi!
+>>>> It happens on Fedora20, RHEL5.11GA, RHEL6.8GA, RNEL7.3GA, testing returns
+>>>> -20 and -11 for PRIO_USER as root and nobody respectively.
+>>>
+>>> Hmm, are you sure that this is not a bug? Since -20 is the highest
+>>> priority for a process, it does not make much sense to run all root
+>>> processes like that.
+>>
+>> Yes, not all root processes are -20 on my system, but sorry, I am afraid
+>> it's not a bug, because man page says that the getpriority() call returns
+>> the highest priority (lowest numerical value) enjoyed by any of the
+>> specified processes, so if only there is one process is -20, the getpriority()
+>> will return -20.
+> 
+> Ah, my bad, sure we can't really say if there is a process that belongs
+> to the same user with priority lower than 0.
+> 
+> So what about we define a range in which the return value should be and
+> set it to 0 .. 0 for PRIO_PROCESS and PRIO_PGRP and to -20 .. 0 for
+> PRIO_USER?
 
-diff --git a/testcases/kernel/fs/racer/fs_racer.sh b/testcases/kernel/fs/racer/fs_racer.sh
-index 5c4dc69..aa38e86 100755
---- a/testcases/kernel/fs/racer/fs_racer.sh
-+++ b/testcases/kernel/fs/racer/fs_racer.sh
-@@ -86,6 +86,7 @@ call_exit()
-     killall fs_racer_file_symlink.sh
-     killall fs_racer_file_list.sh
-     killall fs_racer_file_concat.sh
-+    rm -rf $DIR
-     exit 0
- }
+Sounds good, I will rewrite the patch, thanks.
 
--- 
-1.8.3.4
+Best Regards,
+Guangwen Feng
+
+
