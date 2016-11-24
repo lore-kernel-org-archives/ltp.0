@@ -1,46 +1,66 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 24 Nov 2016 10:08:13 +0100
-Subject: [LTP] [PATCH 1/1] testcases/mq_notify01: convert to use new
- test library API
-In-Reply-To: <20161124001132.5w65c3djdh42fotu@dell5510>
-References: <20161121081327.8444-1-pvorel@suse.cz>
- <20161122080039.GB5620@rei.lan>
- <20161124001132.5w65c3djdh42fotu@dell5510>
-Message-ID: <20161124090813.GB14986@rei.lan>
+From: Li Wang <liwang@redhat.com>
+Date: Thu, 24 Nov 2016 18:08:55 +0800
+Subject: [LTP] [PATCH] cgroup: fix mount errors on cgroup subsys
+In-Reply-To: <20161123123521.GE3346@rei.lan>
+References: <1479899346-4261-1-git-send-email-liwang@redhat.com>
+ <20161123123521.GE3346@rei.lan>
+Message-ID: <CAEemH2eDEy+JHEyJ_NQwMmosXsBmrUYoPan1ACWwjAgzR_wy6Q@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > These fds can be opened only once in the test setup and passed in the
-> > testcase structure. We do it usually as:
-> 
-> > static int file_fd;
-> 
-> > struct testcase tcases[] = {
-> > ...
-> > 	TYPE_NAME(file);
-> > 	.fd = &file_fd;
-> > ...
-> > }
-> 
-> > static void setup(void)
-> > {
-> > 	file_fd = creat("file", 0644);
-> > 	...
-> > }
-> IMHO if I reuse message queue between tests I need to delete messages before each test,
-> otherwise I don't get signal for SIGEV_SIGNAL and SIGEV_THREAD. I can empty them with
-> mq_receive() but is it worth of doing it?
+On Wed, Nov 23, 2016 at 8:35 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hi!
+>> ---
+>>  .../controllers/cgroup/cgroup_regression_test.sh   | 46 +++++++++++++++++++++-
+>>  1 file changed, 44 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+>> index 30d0dbf..971243f 100755
+>> --- a/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+>> +++ b/testcases/kernel/controllers/cgroup/cgroup_regression_test.sh
+>> @@ -181,10 +181,17 @@ test_3()
+>>               return
+>>       fi
+>>
+>> +     local cpu=cpu
+>> +
+>> +     # For rhel7.3 or later, cpu is always binding with cpuacct subsys
+>> +     if grep -w cpu /proc/mounts ; then
+>> +             cpu=$(basename $(grep -w cpu /proc/mounts | cut -d ' ' -f 2))
+>> +     fi
+>> +
+>>       # Run the test for 30 secs
+>> -     mount -t cgroup -o cpu xxx cgroup/
+>> +     mount -t cgroup -o $cpu xxx cgroup/
+>>       if [ $? -ne 0 ]; then
+>> -             tst_resm TFAIL "Failed to mount cpu subsys"
+>> +             tst_resm TFAIL "Failed to mount $cpu subsys"
+>>               failed=1
+>>               return
+>>       fi
+>
+> Why can't we mount the cgroup only when it's not mounted yet and
+> use the path it's mounted on otherwise? We do that for the functional
+> tetscases already.
 
-You are right, the manual page explicitly says that the queue must be
-empty. Missed that.
+I thought that the original case including cgroup mounted test, so I
+unmount the system cgroup and do itself mount & testing there.
 
-Creating and destroying the queue on each iteration may work better
-then.
+>
+> And I do not think that umounting system cgroups is a good idea either.
+> I would say that the test should use whatever is mounted on the system
+> and if that is not possible I would rather produce TCONF than fiddle
+> with umounting cgroups from the standard system path.
+
+Using system cgroups is not a bad idea, I hesitated about doing that
+or just doing tiny fix. now you help me make a decision.
+
+Thanks for your comments, I will rewrite this PATCH.
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+Regards,
+Li Wang
+Email: liwang@redhat.com
