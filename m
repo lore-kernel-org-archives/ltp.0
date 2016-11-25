@@ -1,30 +1,28 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Fri, 25 Nov 2016 14:44:29 +0800
-Subject: [LTP] [PATCH] nm/datafiles: Add f1, f2 and f3 to .gitignore
-Message-ID: <1480056269-11421-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Fri, 25 Nov 2016 08:48:24 +0100
+Subject: [LTP] [PATCH v3 1/1] syscalls/mq_notify01: prevent deadlock,
+ cleanup
+In-Reply-To: <20161124145358.GE14986@rei.lan>
+References: <20161124113205.26581-1-pvorel@suse.cz>
+ <20161124145358.GE14986@rei.lan>
+Message-ID: <20161125074824.giiwsrwlq2mdpkch@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- testcases/commands/nm/datafiles/.gitignore | 3 +++
- 1 file changed, 3 insertions(+)
- create mode 100644 testcases/commands/nm/datafiles/.gitignore
+Hi Cyril,
 
-diff --git a/testcases/commands/nm/datafiles/.gitignore b/testcases/commands/nm/datafiles/.gitignore
-new file mode 100644
-index 0000000..efff51a
---- /dev/null
-+++ b/testcases/commands/nm/datafiles/.gitignore
-@@ -0,0 +1,3 @@
-+/f1
-+/f2
-+/f3
--- 
-1.8.4.2
+> Pushed with a few minor changes, thanks.
+Thanks for cleanup and patience!
 
-
-
+Kind regards,
+Petr
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20161125/030ec781/attachment.sig>
