@@ -1,52 +1,135 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 25 Nov 2016 10:05:22 +0100
-Subject: [LTP] [PATCH v3 2/2] testcases/clock_nanosleep01: convert to
- use new test library API
-In-Reply-To: <20161124164832.GH14986@rei.lan>
-References: <26cbebb57e3e9df7ed9f76b7ccc67d5f104ad376.1480002155.git-series.pvorel@suse.cz>
- <184a4d332234197dc9c1f61ca24f6f15aea4ee0b.1480002155.git-series.pvorel@suse.cz>
- <20161124164832.GH14986@rei.lan>
-Message-ID: <20161125090522.njhmnswdk4sm676b@dell5510>
+Date: Fri, 25 Nov 2016 13:09:47 +0100
+Subject: [LTP] [PATCH v4 1/2] lib: move create_sig_proc() into newlib
+Message-ID: <26cbebb57e3e9df7ed9f76b7ccc67d5f104ad376.1480075381.git-series.pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/tst_sig_proc.h                    | 22 +++++++++++++-
+ lib/tst_sig_proc.c                        | 40 ++++++++++++++++++++++++-
+ testcases/kernel/syscalls/ppoll/ppoll01.c | 20 +------------
+ 3 files changed, 63 insertions(+), 19 deletions(-)
+ create mode 100644 include/tst_sig_proc.h
+ create mode 100644 lib/tst_sig_proc.c
 
-again, thanks for your review!
+diff --git a/include/tst_sig_proc.h b/include/tst_sig_proc.h
+new file mode 100644
+index 0000000..fb7f93f
+--- /dev/null
++++ b/include/tst_sig_proc.h
+@@ -0,0 +1,22 @@
++/*
++ * Copyright (c) 2016 Linux Test Project
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ */
++
++#ifndef TST_SIG_PROC_H__
++#define TST_SIG_PROC_H__
++
++#include <sys/types.h>
++
++pid_t create_sig_proc(int sig, int count, unsigned int usec);
++
++#endif	/* TST_SIG_PROC_H__ */
+diff --git a/lib/tst_sig_proc.c b/lib/tst_sig_proc.c
+new file mode 100644
+index 0000000..579047a
+--- /dev/null
++++ b/lib/tst_sig_proc.c
+@@ -0,0 +1,40 @@
++/*
++ * Copyright (c) 2016 Linux Test Project
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ */
++
++#include <stdlib.h>
++#include <sys/types.h>
++
++#include "tst_sig_proc.h"
++
++#define TST_NO_DEFAULT_MAIN
++#include "tst_test.h"
++
++pid_t create_sig_proc(int sig, int count, unsigned int usec)
++{
++	pid_t pid, cpid;
++
++	pid = getpid();
++	cpid = SAFE_FORK();
++
++	if (cpid == 0) {
++		while (count-- > 0) {
++			usleep(usec);
++			if (kill(pid, sig) == -1)
++				break;
++		}
++		exit(0);
++	}
++
++	return cpid;
++}
+diff --git a/testcases/kernel/syscalls/ppoll/ppoll01.c b/testcases/kernel/syscalls/ppoll/ppoll01.c
+index a5815b3..8d6d7e7 100644
+--- a/testcases/kernel/syscalls/ppoll/ppoll01.c
++++ b/testcases/kernel/syscalls/ppoll/ppoll01.c
+@@ -28,6 +28,7 @@
+ #include <sys/wait.h>
+ #include "linux_syscall_numbers.h"
+ #include "ltp_signal.h"
++#include "tst_sig_proc.h"
+ #include "tst_test.h"
+ 
+ /* Older versions of glibc don't publish this constant's value. */
+@@ -205,25 +206,6 @@ static void cleanup(void)
+ 		close(fd1);
+ }
+ 
+-static pid_t create_sig_proc(int sig, int count, unsigned int usec)
+-{
+-	pid_t pid, cpid;
+-
+-	pid = getpid();
+-	cpid = SAFE_FORK();
+-
+-	if (cpid == 0) {
+-		while (count-- > 0) {
+-			usleep(usec);
+-			if (kill(pid, sig) == -1)
+-				break;
+-		}
+-		exit(0);
+-	}
+-
+-	return cpid;
+-}
+-
+ static void do_test(unsigned int i)
+ {
+ 	pid_t pid = 0;
 
-<snip>
-> Sorry that I missed that in the earlier patches. The actuall tst_res()
-> message should explain the reason for the failure here. So something as:
-
-> tst_res(TFAIL, "The clock_nanosleep() haven't slept correctly, "
->         "measured %ldms, expected %ldms +- %d", elapsed_ms, expect_ms,
-> 	MAX_MSEC_DIFF);
-This looks better :-). I consider too verbose output (return code, expected return code,
-expected errno etc). useless, but didn't dare to remove it.
-
-<snip>
-
-> Otherwise this version looks very good. Just keep in mind to keep the
-> lines under 80 characters.
-Right! I'm sorry about being relaxed on this so far.
-Just a question about strings: kernel formatting style [1] says about it:
-> However, never break user-visible strings such as
-> printk messages, because that breaks the ability to grep for them.
-And indeed my using plugin forcing kernel coding style [2] doesn't complain on strings
-So I hope string long up to 90 characters are still ok.
-
-Kind regards,
-Petr
-
-[1] https://www.kernel.org/doc/Documentation/CodingStyle
-[2] https://github.com/vivien/vim-linux-coding-style
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 801 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20161125/818ea698/attachment.sig>
+base-commit: 437cbaeee5dfafb8e371fb3b2731d4f2e720258f
+-- 
+git-series 0.9.1
