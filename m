@@ -1,7 +1,9 @@
 From: Petr Vorel <petr.vorel@gmail.com>
-Date: Fri, 25 Nov 2016 22:01:22 +0100
-Subject: [LTP] [PATCH v2 1/4] shell: fix bashisms: s/&>/>$1 2>&1/
-Message-ID: <20161125210125.7299-1-petr.vorel@gmail.com>
+Date: Fri, 25 Nov 2016 22:01:25 +0100
+Subject: [LTP] [PATCH v2 4/4] shell: fix echo -e bashisms, simplify code
+In-Reply-To: <20161125210125.7299-1-petr.vorel@gmail.com>
+References: <20161125210125.7299-1-petr.vorel@gmail.com>
+Message-ID: <20161125210125.7299-4-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,469 +12,596 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
 ---
- ltpmenu                                                        |  2 +-
- runltplite.sh                                                  |  2 +-
- testcases/commands/cron/cron_neg_tests.sh                      |  4 ++--
- testcases/commands/cron/cron_pos_tests.sh                      |  6 +++---
- .../ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh | 10 +++++-----
- .../ext4-inode-version/ext4_inode_version_test.sh              |  6 +++---
- .../ext4-journal-checksum/ext4_journal_checksum.sh             |  6 +++---
- .../ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh          |  6 +++---
- .../ext4-persist-prealloc/ext4_persist_prealloc_test.sh        |  4 ++--
- .../ext4-subdir-limit/ext4_subdir_limit_test.sh                |  6 +++---
- .../ext4-uninit-groups/ext4_uninit_groups_test.sh              |  8 ++++----
- testcases/kernel/fs/iso9660/isofs.sh                           |  2 +-
- .../kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh      |  4 ++--
- testcases/kernel/numa/numa01.sh                                |  4 ++--
- testcases/kernel/security/mmc_security/ask_password.sh         |  4 ++--
- testcases/kernel/security/mmc_security/assign_password.sh      |  4 ++--
- testcases/lib/daemonlib.sh                                     |  8 ++++----
- testcases/open_posix_testsuite/stress/threads/helper.c         |  2 +-
- 18 files changed, 44 insertions(+), 44 deletions(-)
+ testcases/commands/sssd/sssd-lib.sh                |   8 +-
+ testcases/kernel/fs/acl/tacl_xattr.sh              | 114 ++++++++++-----------
+ .../realtime/func/periodic_cpu_load/mixed_load.sh  |   2 +-
+ testcases/realtime/perf/latency/run_auto.sh        |  14 +--
+ testcases/realtime/run.sh                          |   6 +-
+ testscripts/test_realtime.sh                       |  37 +++----
+ tools/pounder21/test_scripts/statslogging          |  14 +--
+ tools/strace_test/slay                             |   2 +-
+ 8 files changed, 99 insertions(+), 98 deletions(-)
 
-diff --git a/ltpmenu b/ltpmenu
-index 6a2338b..38d38c0 100755
---- a/ltpmenu
-+++ b/ltpmenu
-@@ -112,7 +112,7 @@ compile_ltp()
-         0) \
-             for cmd in cc make lex ;
-             do \
--                which $cmd &>/tmp/runltp.err.$$ ;
-+                which $cmd >/tmp/runltp.err.$$ 2>&1 ;
-                 if [ $? -ne 0 ] ;
-                     then \
-                         display_info_msg "Compiling LTP testsuite" \
-diff --git a/runltplite.sh b/runltplite.sh
-index 00a1078..9313649 100755
---- a/runltplite.sh
-+++ b/runltplite.sh
-@@ -295,7 +295,7 @@ main()
-     }
+diff --git a/testcases/commands/sssd/sssd-lib.sh b/testcases/commands/sssd/sssd-lib.sh
+index ab16fd4..aa70856 100755
+--- a/testcases/commands/sssd/sssd-lib.sh
++++ b/testcases/commands/sssd/sssd-lib.sh
+@@ -161,10 +161,10 @@ restart_sssd_daemon()
+ #id_provider = local
+ make_config_file()
+ {
+-	echo -e "[sssd]\nconfig_file_version = 2" > $CONFIG_FILE
+-	echo -e "services = nss, pam\ndomains = LOCAL" >> $CONFIG_FILE
+-	echo -e "\n[nss]\n\n[pam]\n" >> $CONFIG_FILE
+-	echo -e "[domain/LOCAL]\nid_provider = local" >> $CONFIG_FILE
++	printf "[sssd]\nconfig_file_version = 2\n" > $CONFIG_FILE
++	printf "services = nss, pam\ndomains = LOCAL\n" >> $CONFIG_FILE
++	printf "\n[nss]\n\n[pam]\n\n" >> $CONFIG_FILE
++	printf "[domain/LOCAL]\nid_provider = local\n" >> $CONFIG_FILE
+ }
  
-     # check for required users and groups
--    ${LTPROOT}/IDcheck.sh &>/dev/null || \
-+    ${LTPROOT}/IDcheck.sh >/dev/null 2>&1 || \
-     {
-         echo "WARNING: required users and groups not present"
-         echo "WARNING: some test cases may fail"
-diff --git a/testcases/commands/cron/cron_neg_tests.sh b/testcases/commands/cron/cron_neg_tests.sh
-index 27f2137..9c3d6f6 100755
---- a/testcases/commands/cron/cron_neg_tests.sh
-+++ b/testcases/commands/cron/cron_neg_tests.sh
-@@ -87,7 +87,7 @@ echo setuid test
- echo
- 
- tmpscript=cron_neg01_test
--rm -rf $tmpscript.out &> /dev/null
-+rm -rf $tmpscript.out >/dev/null 2>&1
- 
- 
- cat > /tmp/$tmpscript << EOF
-@@ -127,7 +127,7 @@ else
+ . cmdlib.sh
+diff --git a/testcases/kernel/fs/acl/tacl_xattr.sh b/testcases/kernel/fs/acl/tacl_xattr.sh
+index 039bd17..3bc822a 100755
+--- a/testcases/kernel/fs/acl/tacl_xattr.sh
++++ b/testcases/kernel/fs/acl/tacl_xattr.sh
+@@ -85,7 +85,7 @@ if [ $? != 0 ]
+ then
+ 	echo ""
+ 	echo "FAILED:  [ losetup ] Must have loop device support by kernel"
+-	echo -e "\t to execute this script"
++	printf "\t to execute this script\n"
+ 	exit 1
  fi
- echo
  
--rm /tmp/$tmpscript* &> /dev/null
-+rm /tmp/$tmpscript* >/dev/null 2>&1
- crontab -r
- 
- # Restore crontab
-diff --git a/testcases/commands/cron/cron_pos_tests.sh b/testcases/commands/cron/cron_pos_tests.sh
-index 2dc4ecc..ece114c 100755
---- a/testcases/commands/cron/cron_pos_tests.sh
-+++ b/testcases/commands/cron/cron_pos_tests.sh
-@@ -22,10 +22,10 @@ if [ $iam = "root" ]; then
+@@ -99,8 +99,8 @@ then
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ mount ] Make sure that ACL (Access Control List)"
+-		echo -e "\t and Extended Attribute are built into the kernel"
+-		echo -e "\t Can not mount ext2 file system with acl and user_xattr options"
++		printf "\t and Extended Attribute are built into the kernel\n"
++		printf "\t Can not mount ext2 file system with acl and user_xattr options\n"
  		exit 1
  	fi
  
--	mv $CRON_ALLOW $CRON_ALLOW.old &> /dev/null
-+	mv $CRON_ALLOW $CRON_ALLOW.old >/dev/null 2>&1
- 	su $1 -c "$0 $*"
-         RC=$?
--	mv $CRON_ALLOW.old $CRON_ALLOW &> /dev/null
-+	mv $CRON_ALLOW.old $CRON_ALLOW >/dev/null 2>&1
- 	exit $RC
+@@ -112,8 +112,8 @@ else
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ mount ] Make sure that ACL (Access Control List)"
+-		echo -e "\t and Extended Attribute are built into the kernel"
+-		echo -e "\t Can not mount ext2 file system with acl and user_xattr options"
++		printf "\t and Extended Attribute are built into the kernel\n"
++		printf "\t Can not mount ext2 file system with acl and user_xattr options\n"
+ 		exit 1
+ 	fi
+ fi
+@@ -181,7 +181,7 @@ su - tacluser1 << TACL_USER1
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] Create file must be denied by file permission bits"
+-		echo -e "\t [ Physical Directory ]"
++		printf "\t [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: Create file denied by file permission bits [ Physical directory ]"
+@@ -192,7 +192,7 @@ su - tacluser1 << TACL_USER1
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] Create file must be denied by file permission bits"
+-		echo -e "\t [ Symlink Directory ]"
++		printf "\t [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: Create file denied by file permission bits [ Symlink directory ]"
+@@ -218,11 +218,11 @@ su - tacluser1 << TACL_USER1
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_USER_OBJ  entry already contains the owner execute"
+-		echo -e "\t permissions, but operation failed [ Physical Directory ]"
++		printf "\t permissions, but operation failed [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_USER_OBJ  entry contains the owner execute permissions, "
+-		echo -e "\t operation success [ Physical Directory ]"
++		printf "\t operation success [ Physical Directory ]\n"
+ 	fi
+ 
+ 	cd $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/ 2> /dev/null
+@@ -230,11 +230,11 @@ su - tacluser1 << TACL_USER1
+ 	then
+ 		echo ""
+ 		echo "FAILED: [ touch ] ACL_USER_OBJ  entry already contains the owner execute"
+-		echo -e "\t permissions, but operation failed [ Symlink Directory ]"
++		printf "\t permissions, but operation failed [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_USER_OBJ  entry contains the owner execute permissions,"
+-		echo -e "\t operation success [ Symlink Directory ]"
++		printf "\t operation success [ Symlink Directory ]\n"
+ 	fi
+ 
+ TACL_USER1
+@@ -248,11 +248,11 @@ su - tacluser1 << TACL_USER1
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_USER_OBJ  entry already contains the owner write "
+-		echo -e "\t permissions, but operation failed [ Physical Directory ]"
++		printf "\t permissions, but operation failed [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_USER_OBJ  entry contains the owner write permissions,"
+-		echo -e "\t operation success [ Physical Directory ]"
++		printf "\t operation success [ Physical Directory ]\n"
+ 	fi
+ 
+ 	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfil2 2> /dev/null
+@@ -260,11 +260,11 @@ su - tacluser1 << TACL_USER1
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_USER_OBJ  entry already contains the owner write "
+-		echo -e "\t permissions, but operation failed [ Symlink Directory ]"
++		printf "\t permissions, but operation failed [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_USER_OBJ  entry contains the owner write permissions,"
+-		echo -e "\t operation success [ Symlink Directory ]"
++		printf "\t operation success [ Symlink Directory ]\n"
+ 	fi
+ 
+ TACL_USER1
+@@ -288,11 +288,11 @@ su - tacluser3 << TACL_USER3
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: ACL_USER entry contains the user permissions, "
+-		echo -e "\t operation success [ Physical Directory ]"
++		printf "\t operation success [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "FAILED:  ACL_USER entry contains the user permissions,"
+-		echo -e "\t but operation denied [ Physical Directory ]"
++		printf "\t but operation denied [ Physical Directory ]\n"
+ 	fi
+ 
+ 	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile4 2> /dev/null
+@@ -300,11 +300,11 @@ su - tacluser3 << TACL_USER3
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: ACL_USER entry contains the user permissions, "
+-		echo -e "\t operation success [ Symlink Directory ]"
++		printf "\t operation success [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "FAILED:  ACL_USER entry contains the user permissions,"
+-		echo -e "\t but operation denied [ Symlink Directory ]"
++		printf "\t but operation denied [ Symlink Directory ]\n"
+ 	fi
+ 
+ TACL_USER3
+@@ -318,13 +318,13 @@ su - tacluser3 << TACL_USER3
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_USER entry contains the user permissions"
+-		echo -e "\t but ACL_MASK are set --- , "
+-		echo -e "\t operation must be denied [ Physical Directory ]"
++		printf "\t but ACL_MASK are set --- , \n"
++		printf "\t operation must be denied [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_USER entry contains the user permissions,"
+-		echo -e "\t but ACL_MASK are set ___ ,"
+-		echo -e "\t operation success [ Physical Directory ]"
++		printf "\t but ACL_MASK are set ___ ,\n"
++		printf "\t operation success [ Physical Directory ]\n"
+ 	fi
+ 
+ 	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile6 2> /dev/null
+@@ -332,13 +332,13 @@ su - tacluser3 << TACL_USER3
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_USER entry contains the user permissions"
+-		echo -e "\t but ACL_MASK are set --- ,"
+-		echo -e "\t operation must be denied [ Symlink Directory ]"
++		printf "\t but ACL_MASK are set --- ,\n"
++		printf "\t operation must be denied [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_USER entry contains the user permissions,"
+-		echo -e "\t but ACL_MASK are set ___ ,"
+-		echo -e "\t operation success [ Symlink Directory ]"
++		printf "\t but ACL_MASK are set ___ ,\n"
++		printf "\t operation success [ Symlink Directory ]\n"
+ 	fi
+ 
+ TACL_USER3
+@@ -372,11 +372,11 @@ su - tacluser2 << TACL_USER2
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: ACL_GROUP entry contains the group permissions,"
+-		echo -e "\t option success [ Physical Directory ]"
++		printf "\t option success [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_GROUP entry already contains the group permissions,"
+-		echo -e "\t but option success [ Physical Directory ]"
++		printf "\t but option success [ Physical Directory ]\n"
+ 	fi
+ 
+ 	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile8 2> /dev/null
+@@ -384,11 +384,11 @@ su - tacluser2 << TACL_USER2
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: ACL_GROUP entry contains the group permissions,"
+-		echo -e "\t option success [ Symlink Directory ]"
++		printf "\t option success [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_GROUP entry already contains the group permissions,"
+-		echo -e "\t but option success [ Symlink Directory ]"
++		printf "\t but option success [ Symlink Directory ]\n"
+ 	fi
+ 
+ TACL_USER2
+@@ -401,13 +401,13 @@ su - tacluser2 << TACL_USER2
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_GROUP entry contains the group permissions"
+-		echo -e "\t and ACL_MASK entry are set ---,"
+-		echo -e "\t option must no be success [ Physical Directory ]"
++		printf "\t and ACL_MASK entry are set ---,\n"
++		printf "\t option must no be success [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_GROUP entry already contains the group permissions"
+-		echo -e "\t and ACL_MASK entry are set ---,"
+-		echo -e "\t option success [ Physical Directory ]"
++		printf "\t and ACL_MASK entry are set ---,\n"
++		printf "\t option success [ Physical Directory ]\n"
+ 	fi
+ 
+ 	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile10 2> /dev/null
+@@ -415,13 +415,13 @@ su - tacluser2 << TACL_USER2
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_GROUP entry contains the group permissions"
+-		echo -e "\t and ACL_MASK entry are set ---, "
+-		echo -e "\t option must no be success [ Symlink Directory ]"
++		printf "\t and ACL_MASK entry are set ---, \n"
++		printf "\t option must no be success [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_GROUP entry already contains the group permissions"
+-		echo -e "\t and ACL_MASK entry are set ---,"
+-		echo -e "\t option success [ Symlink Directory ]"
++		printf "\t and ACL_MASK entry are set ---,\n"
++		printf "\t option success [ Symlink Directory ]\n"
+ 	fi
+ 
+ TACL_USER2
+@@ -436,11 +436,11 @@ su - tacluser2 << TACL_USER2
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: ACL_GROUP_OBJ entry contains the group owner permissions,"
+-		echo -e "\t option success [ Physical Directory ]"
++		printf "\t option success [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_GROUP_OBJ entry already contains the group owner,"
+-		echo -e "\t but option denied [ Physical Directory ]"
++		printf "\t but option denied [ Physical Directory ]\n"
+ 	fi
+ 
+ 	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile12 2> /dev/null
+@@ -448,11 +448,11 @@ su - tacluser2 << TACL_USER2
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: ACL_GROUP_OBJ entry contains the group owner permissions,"
+-		echo -e "\t option success [ Symlink Directory ]"
++		printf "\t option success [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_GROUP_OBJ entry already contains the group owner,"
+-		echo -e "\t but option denied [ Symlink Directory ]"
++		printf "\t but option denied [ Symlink Directory ]\n"
+ 	fi
+ 
+ TACL_USER2
+@@ -465,13 +465,13 @@ su - tacluser2 << TACL_USER2
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_GROUP_OBJ entry contains the group owner permissions"
+-		echo -e "\t and ACL_MASK entry are set ---,"
+-		echo -e "\t option must no be success [ Physical Directory ]"
++		printf "\t and ACL_MASK entry are set ---,\n"
++		printf "\t option must no be success [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_GROUP_OBJ entry already contains the group owner permissions"
+-		echo -e "\t and ACL_MASK entry are set ---,"
+-		echo -e "\t option success [ Physical Directory ]"
++		printf "\t and ACL_MASK entry are set ---,\n"
++		printf "\t option success [ Physical Directory ]\n"
+ 	fi
+ 
+ 	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile14 2> /dev/null
+@@ -479,13 +479,13 @@ su - tacluser2 << TACL_USER2
+ 	then
+ 		echo ""
+ 		echo "FAILED:  [ touch ] ACL_GROUP_OBJ entry contains the group owner permissions"
+-		echo -e "\t and ACL_MASK entry are set ---,"
+-		echo -e "\t option must no be success [ Symlink Directory ]"
++		printf "\t and ACL_MASK entry are set ---,\n"
++		printf "\t option must no be success [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "SUCCESS: ACL_GROUP_OBJ entry already contains the group owner permissions"
+-		echo -e "\t and ACL_MASK entry are set ---, "
+-		echo -e "\t option success [ Symlink Directory ]"
++		printf "\t and ACL_MASK entry are set ---, \n"
++		printf "\t option success [ Symlink Directory ]\n"
+ 	fi
+ 
+ TACL_USER2
+@@ -507,11 +507,11 @@ su - tacluser4 << TACL_USER4
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: ACL_OTHER entry contains the user permissions,"
+-		echo -e "\t operation success [ Physical Directory ]"
++		printf "\t operation success [ Physical Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "FAILED:  ACL_OTHER entry contains the user permissions,"
+-		echo -e "\t but operation denied [ Physical Directory ]"
++		printf "\t but operation denied [ Physical Directory ]\n"
+ 	fi
+ 
+ 	touch $CUR_PATH/tacl/mount-ext2/shared/symlinkdir1/newfile16 2> /dev/null
+@@ -519,11 +519,11 @@ su - tacluser4 << TACL_USER4
+ 	then
+ 		echo ""
+ 		echo "SUCCESS: ACL_OTHER entry contains the user permissions,"
+-		echo -e "\t operation success [ Symlink Directory ]"
++		printf "\t operation success [ Symlink Directory ]\n"
+ 	else
+ 		echo ""
+ 		echo "FAILED:  ACL_OTHER entry contains the user permissions,"
+-		echo -e "\t but operation denied [ Symlink Directory ]"
++		printf "\t but operation denied [ Symlink Directory ]\n"
+ 	fi
+ 
+ TACL_USER4
+@@ -737,7 +737,7 @@ else
  fi
  
-@@ -53,7 +53,7 @@ fi
+ echo ""
+-echo -e "\tEnd ACLs Test"
++printf "\tEnd ACLs Test\n"
  
- # 1. Add new job
+ #####################################################
+ #
+@@ -857,7 +857,7 @@ else
+ fi
  
--rm -rf /tmp/crontest &> /dev/null
-+rm -rf /tmp/crontest >/dev/null 2>&1
- mkdir -p /tmp/crontest
+ echo ""
+-echo -e "\tEnd EAs Test"
++printf "\tEnd EAs Test\n"
  
- cat > /tmp/crontest/testjob_cron01 << EOF
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-index 16f621f..a5215bd 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-delalloc-mballoc/ext4-alloc-test.sh
-@@ -28,7 +28,7 @@ export TST_TOTAL=17
- # Case 17: mount ext4 partition to ext3
- ext4_test_remount()
- {
--	mkfs.ext3 -I 256 -b 1024 $EXT4_DEV &> /dev/null
-+	mkfs.ext3 -I 256 -b 1024 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "failed to create ext4 filesystem"
- 		return
-@@ -60,7 +60,7 @@ ext4_test_remount()
- 	fi
- 	umount mnt_point
  
--	fsck -p $EXT4_DEV &> /dev/null
-+	fsck -p $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "fsck returned failure"
- 		return
-@@ -78,13 +78,13 @@ ext4_test_delalloc_mballoc()
- {
- 	tst_resm TINFO "isDelalloc: $1, isDirectIO: $2, Blocksize: $3, isAuto_da_alloc: $4"
  
--	mkfs.ext4 -I 256 -b $3 /$EXT4_DEV &> /dev/null
-+	mkfs.ext4 -I 256 -b $3 /$EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "failed to create ext4 filesystem"
- 		return
- 	fi
+diff --git a/testcases/realtime/func/periodic_cpu_load/mixed_load.sh b/testcases/realtime/func/periodic_cpu_load/mixed_load.sh
+index 931d18f..173c2c0 100644
+--- a/testcases/realtime/func/periodic_cpu_load/mixed_load.sh
++++ b/testcases/realtime/func/periodic_cpu_load/mixed_load.sh
+@@ -226,7 +226,7 @@ else
+     RET=1
+ fi
  
--	tune2fs -O extents $EXT4_DEV &> /dev/null
-+	tune2fs -O extents $EXT4_DEV >/dev/null 2>&1
+-echo -e "\nTest complete, see logs pcl-\$CONCURRENTx-t\$THREAD-\$NUM.log for detailed results."
++printf "\nTest complete, see logs pcl-\$CONCURRENTx-t\$THREAD-\$NUM.log for detailed results.\n"
+ echo "Criteria: < 10% Difference in average runs"
+ echo "Result: $RESULT"
  
- 	mount -t ext4 -o $1,$4 $EXT4_DEV mnt_point
- 	if [ $? -ne 0 ]; then
-@@ -105,7 +105,7 @@ ext4_test_delalloc_mballoc()
- 		return
- 	fi
+diff --git a/testcases/realtime/perf/latency/run_auto.sh b/testcases/realtime/perf/latency/run_auto.sh
+index 2c0d203..3311c1e 100755
+--- a/testcases/realtime/perf/latency/run_auto.sh
++++ b/testcases/realtime/perf/latency/run_auto.sh
+@@ -8,9 +8,9 @@ fi
+ source $SCRIPTS_DIR/setenv.sh
+ LOG_FILE="$LOG_DIR/$LOG_FORMAT-pthread_cond_many.log"
  
--	fsck -p $EXT4_DEV &> /dev/null
-+	fsck -p $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "fsck returned failure"
- 		return
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-index ac8f021..ef02cc0 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-inode-version/ext4_inode_version_test.sh
-@@ -33,13 +33,13 @@ ext4_test_128_inode_version()
- {
- 	tst_resm TINFO "Test inode version is 32 bits with 128 inode size"
+-echo -e "Logging to: " | tee -a $LOG_FILE
+-echo -e "$LOG_FILE " | tee -a $LOG_FILE
+-echo -e "and to local individual .out files " | tee -a $LOG_FILE
++echo "Logging to: " | tee -a $LOG_FILE
++echo "$LOG_FILE " | tee -a $LOG_FILE
++echo "and to local individual .out files " | tee -a $LOG_FILE
  
--	mkfs.ext4 -I 128 $EXT4_DEV &> /dev/null
-+	mkfs.ext4 -I 128 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "failed to create ext4 filesystem"
- 		return
- 	fi
+ #
+ # make will eventually go away from here, as will the above echoes
+@@ -26,10 +26,10 @@ nthread=5000
+ iter=400
+ nproc=5
  
--	tune2fs -O extents $EXT4_DEV &> /dev/null
-+	tune2fs -O extents $EXT4_DEV >/dev/null 2>&1
+-echo -e "pthread_cond_many configuration:" | tee -a $LOG_FILE
+-echo -e "number of threads = $nthread " | tee -a $LOG_FILE
+-echo -e "number of iterations = $iter " | tee -a $LOG_FILE
+-echo -e "number of processes = $nproc " | tee -a $LOG_FILE
++echo "pthread_cond_many configuration:" | tee -a $LOG_FILE
++echo "number of threads = $nthread " | tee -a $LOG_FILE
++echo "number of iterations = $iter " | tee -a $LOG_FILE
++echo "number of processes = $nproc " | tee -a $LOG_FILE
  
- 	mount -t ext4 -o i_version $EXT4_DEV mnt_point
- 	if [ $? -ne 0 ]; then
-@@ -83,7 +83,7 @@ ext4_test_128_inode_version()
- # $1: file operation
- test_inode_version()
- {
--	mkfs.ext3 -I 256 $EXT4_DEV &> /dev/null
-+	mkfs.ext3 -I 256 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "failed to create ext4 filesystem"
- 		return
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-index 87eb90b..2f357d8 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-journal-checksum/ext4_journal_checksum.sh
-@@ -55,13 +55,13 @@ ext4_test_journal_checksum()
- 		"journal_checksum: $checksum, " \
- 		"journal_async_commit: $async_commit, barrier: $5"
- 
--	mkfs.ext4 -I 256 $EXT4_DEV &> /dev/null
-+	mkfs.ext4 -I 256 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "failed to create ext4 filesystem"
- 		return
- 	fi
- 
--	tune2fs -O extents $EXT4_DEV &> /dev/null
-+	tune2fs -O extents $EXT4_DEV >/dev/null 2>&1
- 
- 	mount -t ext4 -o data=$1,commit=$2,$3,$4,barrier=$5 $EXT4_DEV mnt_point
- 	if [ $? -ne 0 ]; then
-@@ -82,7 +82,7 @@ ext4_test_journal_checksum()
- 		return
- 	fi
- 
--	e2fsck -p $EXT4_DEV &> /dev/null
-+	e2fsck -p $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "fsck returned failure"
- 		return
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-index ec1c6a3..c6ff7c2 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-nsec-timestamps/ext4_nsec_timestamps_test.sh
-@@ -33,13 +33,13 @@ ext4_test_sec_timestamps()
- {
- 	tst_resm TINFO "Test timestamps with 128 inode size"
- 
--	mkfs.ext4 -I 128 $EXT4_DEV &> /dev/null
-+	mkfs.ext4 -I 128 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "failed to create ext4 filesystem"
- 		return
- 	fi
- 
--	tune2fs -O extents $EXT4_DEV &> /dev/null
-+	tune2fs -O extents $EXT4_DEV >/dev/null 2>&1
- 
- 	mount -t ext4 $EXT4_DEV mnt_point
- 	if [ $? -ne 0 ]; then
-@@ -74,7 +74,7 @@ ext4_test_nsec_timestamps()
- {
- 	tst_resm TINFO "Test timestamps with 256 inode size"
- 
--	mkfs.ext3 -I 256 $EXT4_DEV &> /dev/null
-+	mkfs.ext3 -I 256 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "failed to create ext4 filesystem"
- 		return
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-index e2b81a2..2a4b699 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-persist-prealloc/ext4_persist_prealloc_test.sh
-@@ -32,7 +32,7 @@ export TST_TOTAL=2
- # $1: 1024 or 4096
- ext4_test_persist_prealloc()
- {
--	mkfs.ext4 -I 256 -b $1 $EXT4_DEV &> /dev/null
-+	mkfs.ext4 -I 256 -b $1 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "failed to create ext4 filesystem"
- 		return
-@@ -72,7 +72,7 @@ ext4_test_persist_prealloc()
- 		return
- 	fi
- 
--	e2fsck -p $EXT4_DEV &> /dev/null
-+	e2fsck -p $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "fsck returned failure"
- 		return
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-index 3162d67..5cc0523 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-subdir-limit/ext4_subdir_limit_test.sh
-@@ -59,14 +59,14 @@ ext4_run_case()
- 	# only mkfs if block size has been changed,
- 	# or previous case failed
- 	if [ $prev_result -ne $PASS -o $4 -ne $prev_block_size ]; then
--		mkfs.ext4 -b $4 -I 256 $EXT4_DEV &> /dev/null
-+		mkfs.ext4 -b $4 -I 256 $EXT4_DEV >/dev/null 2>&1
- 		if [ $? -ne 0 ]; then
- 			tst_resm TFAIL "failed to create ext4 filesystem"
- 			return
- 		fi
- 		prev_block_size=$4
- 
--		tune2fs -O extents $EXT4_DEV &> /dev/null
-+		tune2fs -O extents $EXT4_DEV >/dev/null 2>&1
- 	fi
- 
- 	prev_result=$FAIL
-@@ -113,7 +113,7 @@ ext4_run_case()
- 	fi
- 
- 	# run fsck to make sure the filesystem has no errors
--	e2fsck -p $EXT4_DEV &> /dev/null
-+	e2fsck -p $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "fsck: the filesystem has errors"
- 		return
-diff --git a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-index 4db846a..1b0e00b 100755
---- a/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-+++ b/testcases/kernel/fs/ext4-new-features/ext4-uninit-groups/ext4_uninit_groups_test.sh
-@@ -66,7 +66,7 @@ ext4_test_uninit_groups()
- {
- 	echo "Test $TST_COUNT" >> ext4_uninit_groups_result.txt
- 
--	mkfs.ext4 -I 256 -m 0 $EXT4_DEV &> /dev/null
-+	mkfs.ext4 -I 256 -m 0 $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "failed to create ext4 filesystem"
- 		return
-@@ -78,10 +78,10 @@ ext4_test_uninit_groups()
- 		flag=$3
- 	fi
- 
--	tune2fs -O extents,uninit_groups,$flag $EXT4_DEV &> /dev/null
-+	tune2fs -O extents,uninit_groups,$flag $EXT4_DEV >/dev/null 2>&1
- 
- 	# Must run fsck after setting uninit_groups
--	fsck -p $EXT4_DEV &> /dev/null
-+	fsck -p $EXT4_DEV >/dev/null 2>&1
- 
- 	mount -t ext4 -o $1,$2 $EXT4_DEV mnt_point
- 	if [ $? -ne 0 ]; then
-@@ -102,7 +102,7 @@ ext4_test_uninit_groups()
- 		return
- 	fi
- 
--	fsck -p $EXT4_DEV &> /dev/null
-+	fsck -p $EXT4_DEV >/dev/null 2>&1
- 	if [ $? -ne 0 ]; then
- 		tst_resm TFAIL "fsck returned failure"
- 		return
-diff --git a/testcases/kernel/fs/iso9660/isofs.sh b/testcases/kernel/fs/iso9660/isofs.sh
-index 3533e76..f59bbde 100755
---- a/testcases/kernel/fs/iso9660/isofs.sh
-+++ b/testcases/kernel/fs/iso9660/isofs.sh
-@@ -62,7 +62,7 @@ gen_fs_tree()
- 
- 		mkdir -p "$new_path"
- 
--		dd if=/dev/urandom of="$new_path/file" bs=1024 count=100 &> /dev/null
-+		dd if=/dev/urandom of="$new_path/file" bs=1024 count=100 >/dev/null 2>&1
- 
- 		gen_fs_tree "$new_path" $((cur_depth + 1))
+ # Remove any existing local log files
+ rm -f $nthread.$iter.$nproc.*.out
+diff --git a/testcases/realtime/run.sh b/testcases/realtime/run.sh
+index 07bdc83..174b36d 100755
+--- a/testcases/realtime/run.sh
++++ b/testcases/realtime/run.sh
+@@ -71,9 +71,9 @@ list_tests()
+ 	pushd $TESTS_DIR >/dev/null
+ 	for file in `find -name run_auto.sh`
+ 	do
+-		echo -e " `dirname  $file `"
++		echo " `dirname  $file `"
  	done
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-index 4be2123..32a35ad 100755
---- a/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/functional/cpuhotplug05.sh
-@@ -80,11 +80,11 @@ TST_CLEANUP=do_clean
- until [ $LOOP_COUNT -gt $HOTPLUG05_LOOPS ]; do
+-		echo -e " \n"
++		printf " \n\n"
+ }
  
- 	# Start up SAR and give it a couple cycles to run
--	sar 1 0 &>/dev/null &
-+	sar 1 0 >/dev/null 2>&1 &
- 	sleep 2
- 	# "sar 1 0" is supported before 'sysstat-8.1.4(include sar)',
- 	# after that use "sar 1" instead of. Use 'ps -C sar' to check.
--	if ps -C sar &>/dev/null; then
-+	if ps -C sar >/dev/null 2>&1; then
- 		pkill sar
- 		sar -P ALL 1 0 > $TMP/log_$$ &
- 	else
-diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-index 9c5f49a..0091f7c 100755
---- a/testcases/kernel/numa/numa01.sh
-+++ b/testcases/kernel/numa/numa01.sh
-@@ -60,7 +60,7 @@ chk_ifexists()
- {
-     RC=0
- 
--    which $2 &>$LTPTMP/tst_numa.err || RC=$?
-+    which $2 >$LTPTMP/tst_numa.err 2>&1 || RC=$?
-     if [ $RC -ne 0 ]
-     then
-         tst_brkm TBROK NULL "$1: command $2 not found."
-@@ -171,7 +171,7 @@ init()
-         LTPTMP=$TMP/tst_numa.$$
-     fi
- 
--    mkdir -p $LTPTMP &>/dev/null || RC=$?
-+    mkdir -p $LTPTMP >/dev/null 2>&1 || RC=$?
-     if [ $RC -ne 0 ]
-     then
-          tst_brkm TBROK NULL "INIT: Unable to create temporary directory"
-diff --git a/testcases/kernel/security/mmc_security/ask_password.sh b/testcases/kernel/security/mmc_security/ask_password.sh
-index 5136e13..e5b4357 100644
---- a/testcases/kernel/security/mmc_security/ask_password.sh
-+++ b/testcases/kernel/security/mmc_security/ask_password.sh
-@@ -52,14 +52,14 @@ ask_password()
- 		while [ -z "$passwd" ]; do
- 			read -s -p "MMC password: " passwd; echo
- 		done
--		if ! keyctl instantiate $1 "$passwd" $2 &>/dev/null; then
-+		if ! keyctl instantiate $1 "$passwd" $2 >/dev/null 2>&1; then
- 			echo "*** Wrong password! The card was not unlocked."
- 			exit 1
+ run_test()
+@@ -103,7 +103,7 @@ run_test()
  		fi
- 		echo "Password accepted."
- 
- 		exit 0
--	} &> $USER_CONSOLE < $USER_CONSOLE
-+	} >$USER_CONSOLE 2>&1 < $USER_CONSOLE
- }
- 
- ask_password || exit $RC
-diff --git a/testcases/kernel/security/mmc_security/assign_password.sh b/testcases/kernel/security/mmc_security/assign_password.sh
-index 442486c..5d1eec5 100644
---- a/testcases/kernel/security/mmc_security/assign_password.sh
-+++ b/testcases/kernel/security/mmc_security/assign_password.sh
-@@ -57,14 +57,14 @@ assign_password()
- 		echo "*** Passwords do not match."
+ 		pushd $TESTS_DIR >/dev/null
+ 	else
+-		echo -e "\n $test is not a valid test subdirectory "
++		printf "\n $test is not a valid test subdirectory \n"
+ 		usage
  		exit 1
  	fi
--	if ! keyctl instantiate $1 "$newpasswd" $2 &>/dev/null; then
-+	if ! keyctl instantiate $1 "$newpasswd" $2 >/dev/null 2>&1; then
- 		echo "*** Error while assigning new password"
- 		exit 1
- 	fi
- 	echo "Password assigned."
+diff --git a/testscripts/test_realtime.sh b/testscripts/test_realtime.sh
+index e741309..a50f479 100755
+--- a/testscripts/test_realtime.sh
++++ b/testscripts/test_realtime.sh
+@@ -41,38 +41,39 @@ fi
  
- 	exit 0
--	} &> $USER_CONSOLE < $USER_CONSOLE
-+	} >$USER_CONSOLE 2>&1 < $USER_CONSOLE
+ function usage()
+ {
+-	echo -e "\nUsage: test_realtime.sh  -t test-argument [-l loop num_of_iterations] [-t test-argument1 [-l loop ...]] ..."
+-	echo -e "\nWhere test-argument = func | stress | perf | all | list | clean | test_name"
+-	echo -e "\nand:\n"
+-	echo -e " func = 	all functional tests will be run "
+-	echo -e " stress = 	all stress tests will be run "
+-	echo -e " perf = 	all perf tests will be run "
+-	echo -e " all =		all tests will be run "
+-	echo -e " list = 	all available tests will be listed "
+-	echo -e " clean = 	all logs deleted, make clean performed "
+-	echo -e " test_name = 	only test_name subdir will be run (e.g: func/pi-tests) "
+-	echo -e "\n"
++	cat <<EOF
++Usage: test_realtime.sh  -t test-argument [-l loop num_of_iterations] [-t test-argument1 [-l loop ...]] ...
++
++ test-argument: func | stress | perf | all | list | clean | test_name
++ func:	 	all functional tests will be run
++ stress: 	all stress tests will be run
++ perf:		all perf tests will be run
++ all:		all tests will be run
++ list:	 	all available tests will be listed
++ clean: 	all logs deleted, make clean performed
++ test_name:	only test_name subdir will be run (e.g: func/pi-tests)
++EOF
+ 	exit 1;
  }
  
- assign_password || exit $RC
-diff --git a/testcases/lib/daemonlib.sh b/testcases/lib/daemonlib.sh
-index 3d67125..aa0a159 100644
---- a/testcases/lib/daemonlib.sh
-+++ b/testcases/lib/daemonlib.sh
-@@ -48,7 +48,7 @@ start_daemon()
+ function check_error()
  {
- 	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
- 		systemctl start $1.service > /dev/null 2>&1
--	elif command -v service &> /dev/null; then
-+	elif command -v service >/dev/null 2>&1; then
- 		service $1 start > /dev/null 2>&1
- 	else
- 		/etc/init.d/$1 start > /dev/null 2>&1
-@@ -59,7 +59,7 @@ stop_daemon()
- {
- 	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
- 		systemctl stop $1.service > /dev/null 2>&1
--	elif command -v service &> /dev/null; then
-+	elif command -v service >/dev/null 2>&1; then
- 		service $1 stop > /dev/null 2>&1
- 	else
- 		/etc/init.d/$1 stop > /dev/null 2>&1
-@@ -70,7 +70,7 @@ status_daemon()
- {
- 	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
- 		systemctl status $1.service > /dev/null 2>&1
--	elif command -v service &> /dev/null; then
-+	elif command -v service >/dev/null 2>&1; then
- 		service $1 status > /dev/null 2>&1
- 	else
- 		/etc/init.d/$1 status > /dev/null 2>&1
-@@ -81,7 +81,7 @@ restart_daemon()
- {
- 	if [ $HAVE_SYSTEMCTL -eq 1 ]; then
- 		systemctl restart $1.service > /dev/null 2>&1
--	elif command -v service &> /dev/null; then
-+	elif command -v service >/dev/null 2>&1; then
- 		service $1 restart > /dev/null 2>&1
- 	else
- 		/etc/init.d/$1 restart > /dev/null 2>&1
-diff --git a/testcases/open_posix_testsuite/stress/threads/helper.c b/testcases/open_posix_testsuite/stress/threads/helper.c
-index 9bcc4dd..d54a920 100644
---- a/testcases/open_posix_testsuite/stress/threads/helper.c
-+++ b/testcases/open_posix_testsuite/stress/threads/helper.c
-@@ -29,7 +29,7 @@
- #!/bin/sh
+         if [ $? -gt 0 ]; then
+-        echo -e "\n $1 Failed\n"
++        printf "\n $1 Failed\n\n"
+         exit 1
+         fi
+ }
  
- #monitor the system
--vmstat -n 120 180 &> monitor.txt &
-+vmstat -n 120 180 >monitor.txt 2>&1 &
+ list_tests()
+ {
+-	echo -e "\nAvailable tests are:\n"
++	printf "\nAvailable tests are:\n\n"
  
- #run the tests
- for TS in `ls -1 *.c`;
+ 	cd $TESTS_DIR
+ 	for file in `find -name run_auto.sh`
+ 	do
+-		echo -e " `dirname  $file `"
++		printf " `dirname  $file `\n"
+ 	done
+-		echo -e " \n"
++		printf " \n\n"
+ }
+ 
+ function run_test()
+@@ -97,11 +98,11 @@ function run_test()
+                 ./run_auto.sh
+                 done
+             else
+-                echo -e "\n Failed to find run script in $test \n"
++                printf "\n Failed to find run script in $test \n\n"
+             fi
+             pushd $TESTS_DIR >/dev/null
+         else
+-                echo -e "\n $test is not a valid test subdirectory "
++                printf "\n $test is not a valid test subdirectory \n"
+                 usage
+                 exit 1
+         fi
+@@ -156,7 +157,7 @@ find_test()
+             done
+                 pushd $TESTS_DIR >/dev/null
+         else
+-            echo -e "\n $subdir not found; check name/path with run.sh list "
++            printf "\n $subdir not found; check name/path with run.sh list \n"
+         fi
+     done
+ 
+diff --git a/tools/pounder21/test_scripts/statslogging b/tools/pounder21/test_scripts/statslogging
+index 5185054..f1774ec 100755
+--- a/tools/pounder21/test_scripts/statslogging
++++ b/tools/pounder21/test_scripts/statslogging
+@@ -38,13 +38,13 @@ INFOFILE=info
+ #generic system info
+ function sysinfo() {
+ 	uname -a >> $INFOFILE
+-	echo -e "\n[cpuinfo]=================" >>$INFOFILE
++	printf "\n[cpuinfo]=================\n" >>$INFOFILE
+ 	cat /proc/cpuinfo >> $INFOFILE
+-	echo -e "\n[meminfo]=================" >>$INFOFILE
++	printf "\n[meminfo]=================\n" >>$INFOFILE
+ 	cat /proc/meminfo >> $INFOFILE
+-	echo -e "\n[ifinfo]=================" >>$INFOFILE
++	printf "\n[ifinfo]=================\n" >>$INFOFILE
+ 	/sbin/ifconfig >> $INFOFILE
+-	echo -e "\n[sysctl]=================" >>$INFOFILE
++	printf "\n[sysctl]=================\n" >>$INFOFILE
+ 	sysctl -a >> $INFOFILE
+ }
+ 
+@@ -55,7 +55,7 @@ function procinfo() {
+ 	for i in $PROC_ENTRIES
+ 	do
+ 		logfile=`basename $i`
+-		echo -e "\n$NOW" >> $logfile.log
++		printf "\n$NOW\n" >> $logfile.log
+ 		cat /proc/$i >> $logfile.log
+ 		sleep 1
+ 	done
+@@ -73,7 +73,7 @@ function singleshots(){
+ 	while true; do
+ 		vmstat $DELAY $COUNT >> vmstat.log
+ 		NOW=`date`
+-		echo -e "\n$NOW\n" >> vmstat.log
++		printf "\n$NOW\n\n" >> vmstat.log
+ 	done &
+ 
+ 	IOSTAT=`which iostat 2> /dev/null`
+@@ -81,7 +81,7 @@ function singleshots(){
+ 		while true; do
+ 			iostat -x $DELAY $COUNT >> iostat.log
+ 			NOW=`date`
+-			echo -e "\n$NOW\n" >> iostat.log
++			printf "\n$NOW\n\n" >> iostat.log
+ 		done &
+ 	fi
+ }
+diff --git a/tools/strace_test/slay b/tools/strace_test/slay
+index a68e8c9..7c0fe07 100755
+--- a/tools/strace_test/slay
++++ b/tools/strace_test/slay
+@@ -119,7 +119,7 @@ do
+     echo -e "\\n\\n\\nI'm kicking your butt.\\n\\n\\n" | write $1 2>/dev/null
+   else
+     echo "${ME}: Sending $SIGSHOW signal to $1's process(es)..."
+-    echo -e "\\n\\n\\nYour current session has been terminated.\\n\\n\\n" | \
++    printf "\\n\\n\\nYour current session has been terminated.\\n\\n\\n\n" | \
+     	write $1 2>/dev/null
+   fi
+   if [ "$SIGNAL" = "-clean" ]
 -- 
 2.10.2
 
