@@ -1,95 +1,36 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 28 Nov 2016 11:45:00 +0800
-Subject: [LTP] [PATCH 2/3] ltp/numa: cleanup work for numa/*
-In-Reply-To: <20161123133445.GH3346@rei.lan>
-References: <1479872213-29969-1-git-send-email-liwang@redhat.com>
- <20161123132612.GG3346@rei.lan> <20161123133445.GH3346@rei.lan>
-Message-ID: <CAEemH2e3_x3Zt5UxkBX4et6JFQTSy8DbJfjZ-2en1_L3zfdVAA@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 28 Nov 2016 10:32:36 +0100
+Subject: [LTP] [PATCH v3 2/2] testcases/clock_nanosleep01: convert to
+ use new test library API
+In-Reply-To: <20161125090522.njhmnswdk4sm676b@dell5510>
+References: <26cbebb57e3e9df7ed9f76b7ccc67d5f104ad376.1480002155.git-series.pvorel@suse.cz>
+ <184a4d332234197dc9c1f61ca24f6f15aea4ee0b.1480002155.git-series.pvorel@suse.cz>
+ <20161124164832.GH14986@rei.lan>
+ <20161125090522.njhmnswdk4sm676b@dell5510>
+Message-ID: <20161128093236.GD32359@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-agree all these comments below. thanks!
+Hi!
+> > Otherwise this version looks very good. Just keep in mind to keep the
+> > lines under 80 characters.
+> Right! I'm sorry about being relaxed on this so far.
+> Just a question about strings: kernel formatting style [1] says about it:
+> > However, never break user-visible strings such as
+> > printk messages, because that breaks the ability to grep for them.
+> And indeed my using plugin forcing kernel coding style [2] doesn't complain on strings
+> So I hope string long up to 90 characters are still ok.
 
-On Wed, Nov 23, 2016 at 9:34 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> > +   if (argc != 2) {
->> > +           printf("Error: arguments not right.\n");
->>                         ^
->>                       This is pretty value and hence useless. You should
->                                        ^
->                                        vague
->
->>                       rather explain that the program takes exactly one
->>                       numeric parameter.
->>
->> > +           exit(-1);
->>
->> You should rather exit with 1 here.
->>
->> > +   }
->> > +
->> >     switch (atoi(argv[1])) {
->> >     case 1:
->> >             printf("%d", PAGE_SIZE);
->> > -           tst_exit();
->> > +           return 0;
->> >     case 2:
->> >             buf = malloc(MB);
->> >             if (!buf) {
->> > -                   tst_resm(TINFO, "#Memory is not available\n");
->> > -                   tst_exit();
->> > +                   printf("Memory is not available\n");
->>
->> It would be a bit better to print the error messages into the stderr
->> instead.
->>
->> >                     exit(2);
->> >             }
->> >             for (i = 0; i < MB; i += PAGE_SIZE) {
->> > -                   count++;
->> >                     buf[i] = 'a';
->> >                     barrier();
->> >             }
->> >             free(buf);
->> > -           tst_exit();
->> > +           return 0;
->> >     case 3:
->> >             /* Trap SIGINT */
->> >             sa.sa_handler = sigfunc;
->> >             sa.sa_flags = SA_RESTART;
->> >             sigemptyset(&sa.sa_mask);
->> >             if (sigaction(SIGINT, &sa, 0) < 0) {
->> > -                   tst_brkm(TBROK, NULL, "#Sigaction SIGINT failed\n");
->> > -                   tst_exit();
->> > -                   exit(1);
->> > +                   printf("Sigaction SIGINT failed\n");
->> > +                   exit(3);
->> >             }
->> >             /* wait for signat Int */
->> >             pause();
->> > -           tst_exit();
->> > +           return 0;
->> >     default:
->> >             exit(1);
->> >     }
->>
->> --
->> Cyril Hrubis
->> chrubis@suse.cz
->>
->> --
->> Mailing list info: https://lists.linux.it/listinfo/ltp
->
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-
-
+As far as I can tell we do not have any hard rules about this in LTP,
+some code splits up the strings, some does not. I personally am trying
+to keep things as short as possible while including all important bits
+and I'm also avoiding unnecessary levels of indentation which keeps
+things under 80 chars most of the time. I tend to split the string if
+the line goes too long, which seems to be more or less about 130 chars.
 
 -- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
+Cyril Hrubis
+chrubis@suse.cz
