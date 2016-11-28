@@ -1,219 +1,120 @@
-From: Nikita Yushchenko <nyushchenko@dev.rtsoft.ru>
-Date: Sat, 26 Nov 2016 11:30:01 +0300
-Subject: [LTP] [PATCH] safe_macros: make safe_pread() and safe_pwrite()
-	inline
-In-Reply-To: <20160927125625.GE12308@rei.suse.cz>
-References: <20160927125625.GE12308@rei.suse.cz>
-Message-ID: <1480149001-4844-1-git-send-email-nyushchenko@dev.rtsoft.ru>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 28 Nov 2016 11:40:15 +0800
+Subject: [LTP] [PATCH 1/3] ltp/numa: waiting for numastat refresh
+In-Reply-To: <20161123125727.GF3346@rei.lan>
+References: <1479872202-29920-1-git-send-email-liwang@redhat.com>
+ <20161123125727.GF3346@rei.lan>
+Message-ID: <CAEemH2fRor7ORDSzfDf8podzjXc5jAYWn+L6d3kcudkW7kcGmg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-These routines have an argument of type off_t, which has size dependent
-on compile options on 32-bit builds. Thus having there rotines compiled
-inside library cause ABI issues.
+On Wed, Nov 23, 2016 at 8:57 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hi!
+>> +wait_for_update()
+>> +{
+>> +    NUMASTAT_PATH="/sys/devices/system/node/node$1/numastat"
+>> +    local loop=0
+>>
+>> +    while [ $loop -lt 5 ]; do
+>> +        sum_value=0
+>> +
+>> +        for i in $(seq 200); do
+>> +            det_value=$(grep $2 ${NUMASTAT_PATH} | cut -d ' ' -f 2)
+>> +            sum_value=$((sum_value + det_value))
+>
+> I do not understand this part, here you are summing the accumated value
+> over and over. That is not making any sense.
 
-Signed-off-by: Nikita Yushchenko <nyushchenko@dev.rtsoft.ru>
----
- include/old/safe_macros.h | 39 +++++++++++++++++++++++++++++++++++++++
- include/safe_macros_fn.h  |  8 --------
- include/tst_safe_macros.h | 38 ++++++++++++++++++++++++++++++++++++--
- lib/safe_macros.c         | 32 --------------------------------
- 4 files changed, 75 insertions(+), 42 deletions(-)
+My purpose here is to get the average value of numastat in 2sec to
+compare with $det_value which was detected at beginning. If they are
+not equal, it means the statistic is on refreshing road, we should do
+wait for updating. Otherwise, we consider that refresh work completed
+and do return.
 
-diff --git a/include/old/safe_macros.h b/include/old/safe_macros.h
-index 8ed2eb4..e3be1f2 100644
---- a/include/old/safe_macros.h
-+++ b/include/old/safe_macros.h
-@@ -70,6 +70,26 @@
- 	safe_read(__FILE__, __LINE__, cleanup_fn, (len_strict), (fildes), \
- 	    (buf), (nbyte))
- 
-+/*
-+ * inline function that uses off_t since sizeof(off_t) depends on compile flags
-+ */
-+static inline ssize_t safe_pread(const char *file, const int lineno,
-+		void (*cleanup_fn)(void), char len_strict,
-+		int fildes, void *buf, size_t nbyte, off_t offset)
-+{
-+	ssize_t rval;
-+
-+	rval = pread(fildes, buf, nbyte, offset);
-+
-+	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "%s:%d: pread(%d,%p,%zu,%lld) failed, returned %zd",
-+			 file, lineno, fildes, buf, nbyte, (long long)offset,
-+			 rval);
-+	}
-+
-+	return rval;
-+}
- #define SAFE_PREAD(cleanup_fn, len_strict, fildes, buf, nbyte, offset)   \
- 	safe_pread(__FILE__, __LINE__, cleanup_fn, (len_strict), (fildes), \
- 	    (buf), (nbyte), (offset))
-@@ -112,6 +132,25 @@
- 	safe_write(__FILE__, __LINE__, cleanup_fn, (len_strict), (fildes), \
- 	    (buf), (nbyte))
- 
-+/*
-+ * inline function that uses off_t since sizeof(off_t) depends on compile flags
-+ */
-+static inline ssize_t safe_pwrite(const char *file, const int lineno,
-+		void (*cleanup_fn)(void), char len_strict,
-+		int fildes, const void *buf, size_t nbyte, off_t offset)
-+{
-+	ssize_t rval;
-+
-+	rval = pwrite(fildes, buf, nbyte, offset);
-+	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
-+		tst_brkm(TBROK | TERRNO, cleanup_fn,
-+			 "%s:%d: pwrite(%d,%p,%zu,%lld) failed, returned %zd",
-+			 file, lineno, fildes, buf, nbyte, (long long)offset,
-+			 rval);
-+	}
-+
-+	return rval;
-+}
- #define SAFE_PWRITE(cleanup_fn, len_strict, fildes, buf, nbyte, offset) \
- 	safe_pwrite(__FILE__, __LINE__, cleanup_fn, (len_strict), (fildes), \
- 	    (buf), (nbyte), (offset))
-diff --git a/include/safe_macros_fn.h b/include/safe_macros_fn.h
-index 121a8fb..dcea775 100644
---- a/include/safe_macros_fn.h
-+++ b/include/safe_macros_fn.h
-@@ -71,10 +71,6 @@ ssize_t	safe_read(const char *file, const int lineno,
-                   void (*cleanup_fn)(void), char len_strict, int fildes,
-                   void *buf, size_t nbyte);
- 
--ssize_t safe_pread(const char *file, const int lineno,
--                   void (*cleanup_fn)(void), char len_strict,
--                   int fildes, void *buf, size_t nbyte, off_t offset);
--
- int safe_setegid(const char *file, const int lineno,
-                  void (*cleanup_fn)(void), gid_t egid);
- 
-@@ -118,10 +114,6 @@ ssize_t	safe_write(const char *file, const int lineno,
-                    void (cleanup_fn)(void), char len_strict, int fildes,
-                    const void *buf, size_t nbyte);
- 
--ssize_t safe_pwrite(const char *file, const int lineno,
--                    void (cleanup_fn)(void), char len_strict, int fildes,
--		    const void *buf, size_t nbyte, off_t offset);
--
- long safe_strtol(const char *file, const int lineno,
-                  void (cleanup_fn)(void), char *str, long min, long max);
- 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 59cba1a..e91dbd2 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -97,8 +97,27 @@ static inline int safe_dup(const char *file, const int lineno,
- #define SAFE_READ(len_strict, fildes, buf, nbyte) \
- 	safe_read(__FILE__, __LINE__, NULL, (len_strict), (fildes), (buf), (nbyte))
- 
-+/*
-+ * inline function that uses off_t since sizeof(off_t) depends on compile flags
-+ */
-+static inline ssize_t safe_pread(const char *file, const int lineno,
-+		char len_strict, int fildes, void *buf, size_t nbyte,
-+		off_t offset)
-+{
-+	ssize_t rval;
-+
-+	rval = pread(fildes, buf, nbyte, offset);
-+
-+	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			 "pread(%d,%p,%zu,%lld) failed",
-+			 fildes, buf, nbyte, (long long)offset);
-+	}
-+
-+	return rval;
-+}
- #define SAFE_PREAD(len_strict, fildes, buf, nbyte, offset) \
--	safe_pread(__FILE__, __LINE__, NULL, (len_strict), (fildes), \
-+	safe_pread(__FILE__, __LINE__, (len_strict), (fildes), \
- 	           (buf), (nbyte), (offset))
- 
- #define SAFE_SETEGID(egid) \
-@@ -170,8 +189,23 @@ static inline pid_t safe_getpgid(const char *file, const int lineno,
- #define SAFE_WRITE(len_strict, fildes, buf, nbyte) \
- 	safe_write(__FILE__, __LINE__, NULL, (len_strict), (fildes), (buf), (nbyte))
- 
-+static inline ssize_t safe_pwrite(const char *file, const int lineno,
-+		char len_strict, int fildes, const void *buf, size_t nbyte,
-+		off_t offset)
-+{
-+	ssize_t rval;
-+
-+	rval = pwrite(fildes, buf, nbyte, offset);
-+	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
-+		tst_brk_(file, lineno, TBROK | TERRNO,
-+			 "pwrite(%d,%p,%zu,%lld) failed",
-+			 fildes, buf, nbyte, (long long)offset);
-+	}
-+
-+	return rval;
-+}
- #define SAFE_PWRITE(len_strict, fildes, buf, nbyte, offset) \
--	safe_pwrite(__FILE__, __LINE__, NULL, (len_strict), (fildes), \
-+	safe_pwrite(__FILE__, __LINE__, (len_strict), (fildes), \
- 	            (buf), (nbyte), (offset))
- 
- #define SAFE_STRTOL(str, min, max) \
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index b97f43d..31dc61c 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -252,22 +252,6 @@ ssize_t safe_read(const char *file, const int lineno, void (*cleanup_fn) (void),
- 	return rval;
- }
- 
--ssize_t safe_pread(const char *file, const int lineno, void (*cleanup_fn)(void),
--		   char len_strict, int fildes, void *buf, size_t nbyte,
--		   off_t offset)
--{
--	ssize_t rval;
--
--	rval = pread(fildes, buf, nbyte, offset);
--	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			 "%s:%d: read(%d,%p,%zu,%ld) failed, returned %zd",
--			 file, lineno, fildes, buf, nbyte, offset, rval);
--	}
--
--	return rval;
--}
--
- int safe_setegid(const char *file, const int lineno, void (*cleanup_fn) (void),
-                  gid_t egid)
- {
-@@ -458,22 +442,6 @@ ssize_t safe_write(const char *file, const int lineno, void (cleanup_fn) (void),
- 	return rval;
- }
- 
--ssize_t safe_pwrite(const char *file, const int lineno,
--		    void (cleanup_fn) (void), char len_strict, int fildes,
--		    const void *buf, size_t nbyte, off_t offset)
--{
--	ssize_t rval;
--
--	rval = pwrite(fildes, buf, nbyte, offset);
--	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
--		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			 "%s:%d: pwrite(%d,%p,%zu,%ld) failed",
--			 file, lineno, fildes, buf, rval, offset);
--	}
--
--	return rval;
--}
--
- long safe_strtol(const char *file, const int lineno,
- 		 void (cleanup_fn) (void), char *str, long min, long max)
- {
+>
+>> +            sync && tst_sleep 10ms
+>
+> Why the sync here?
+>
+>> +        done
+>> +
+>> +        if [ $((sum_value/200)) -eq $det_value ]; then
+>
+> Here as well. It's higly unlikely that the value would be exactly equal
+
+No, at least for 'other_node' and 'interleave_hit' are two exceptions.
+
+> since the number is increased by other things the system does as well.
+
+I understand your worries, but for function wait_for_update(), I hope
+only to take use of it for 'other_node/interleave_hit' detecting in
+codes. From what I observe, these two values do not increase until
+your give a rule for numa system.
+
+# cat /sys/devices/system/node/node1/numastat
+numa_hit 125820814
+numa_miss 0
+numa_foreign 0
+interleave_hit 50180  <------
+local_node 125779789
+other_node 41025    <------
+
+# sleep 300
+
+# cat /sys/devices/system/node/node1/numastat
+numa_hit 125821176
+numa_miss 0
+numa_foreign 0
+interleave_hit 50180   <---- no changes here
+local_node 125780151
+other_node 41025      <----no changes
+
+
+# numactl --cpunodebind=0 --preferred=1 ./support_numa 2
+
+# cat /sys/devices/system/node/node1/numastat
+numa_hit 125822847
+numa_miss 0
+numa_foreign 0
+interleave_hit 50180   <----no changes
+local_node 125781641
+other_node 41206     <---- here increase
+
+
+>> +    done
+>> +}
+>
+> This seems like a good idea generally but what would I do is something
+> as:
+>
+> * Read the statistic with some small sleep in between as you do
+> * Exit once the increase is at least the expected value
+> * Give up if there was no increase in some well defined time or
+>   if it generally took too much time, i.e. something as:
+
+Hmm,  I think our method is nearly the same, isn't it?
+
+>
+>   if the last increase of the number was more than second ago -> fail
+>   (this could be done easily by counting time since the last increase
+>    and resetting it if there was some)
+>
+>   if the number was increased steadily for more than ten seconds but
+>   hasn't reached at least the expected value -> fail
+>
+> The timing constants may need to be tuned, but AFAIC this is the best we
+> can do in this tests.
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+
+Thanks for you reviewing.
+
 -- 
-2.1.4
-
+Regards,
+Li Wang
+Email: liwang@redhat.com
