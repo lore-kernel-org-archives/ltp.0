@@ -1,128 +1,62 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 30 Nov 2016 20:12:35 +0800
-Subject: [LTP] [PATCH 5/5] syscalls/setpriority01: Use new user id to avoid
-	messing system environment
+Date: Wed, 30 Nov 2016 20:12:34 +0800
+Subject: [LTP] [PATCH 4/5] SAFE_MACROS: Add SAFE_PRCTL()
 In-Reply-To: <1480507955-12652-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 References: <1480507955-12652-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <1480507955-12652-5-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <1480507955-12652-4-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-setpriority(PRIO_USER, root_proc, prio) sets the priorities of
-all the root processes to the specified value, though this is
-kind of expected for the test, it impacts the system environment.
-
-Create a new user and set it privileged, then test with the temp
-user id to ensure the test safety.
-
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- .../kernel/syscalls/setpriority/setpriority01.c    | 68 +++++++++++++++++++++-
- 1 file changed, 66 insertions(+), 2 deletions(-)
+ include/tst_safe_macros.h |  4 ++++
+ lib/safe_macros.c         | 20 ++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/testcases/kernel/syscalls/setpriority/setpriority01.c b/testcases/kernel/syscalls/setpriority/setpriority01.c
-index e5111d7..0e53784 100644
---- a/testcases/kernel/syscalls/setpriority/setpriority01.c
-+++ b/testcases/kernel/syscalls/setpriority/setpriority01.c
-@@ -23,9 +23,23 @@
-  */
+diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
+index 2566079..bd60b40 100644
+--- a/include/tst_safe_macros.h
++++ b/include/tst_safe_macros.h
+@@ -480,4 +480,8 @@ int safe_system(const char *file, const int lineno, const char *cmd);
+ #define SAFE_SYSTEM(cmd) \
+ 	safe_system(__FILE__, __LINE__, (cmd))
  
- #include <errno.h>
-+#include <pwd.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <sys/capability.h>
-+#include <sys/prctl.h>
- #include <sys/resource.h>
- #include <sys/time.h>
-+#include <sys/types.h>
-+#include <unistd.h>
++int safe_prctl(const char *file, const int lineno, int opt, ...);
++#define SAFE_PRCTL(opt, ...) \
++	safe_prctl(__FILE__, __LINE__, (opt), ##__VA_ARGS__)
 +
- #include "tst_test.h"
-+#include "linux_syscall_numbers.h"
-+
-+static char username[32];
-+static uid_t uid;
-+static struct __user_cap_header_struct header;
-+static struct __user_cap_data_struct data;
+ #endif /* SAFE_MACROS_H__ */
+diff --git a/lib/safe_macros.c b/lib/safe_macros.c
+index 1c89b8c..c8c5383 100644
+--- a/lib/safe_macros.c
++++ b/lib/safe_macros.c
+@@ -807,3 +807,23 @@ int safe_system(const char *file, const int lineno, const char *cmd)
  
- static struct tcase {
- 	int which;
-@@ -35,9 +49,8 @@ static struct tcase {
- 	{PRIO_USER}
- };
- 
--static void verify_setpriority(unsigned int n)
-+static void setpriority_test(struct tcase *tc)
- {
--	struct tcase *tc = &tcases[n];
- 	int new_prio, cur_prio;
- 	int failflag = 0;
- 
-@@ -68,9 +81,60 @@ static void verify_setpriority(unsigned int n)
- 	}
+ 	return rval;
  }
- 
-+static void verify_setpriority(unsigned int n)
++
++int safe_prctl(const char *file, const int lineno, int opt, ...)
 +{
-+	struct tcase *tc = &tcases[n];
++	va_list ap;
++	int rval;
++	unsigned long arg;
 +
-+	if (!SAFE_FORK()) {
-+		SAFE_PRCTL(PR_SET_KEEPCAPS, 1);
++	va_start(ap, opt);
++	arg = va_arg(ap, unsigned long);
++	va_end(ap);
 +
-+		SAFE_SETUID(uid);
-+		SAFE_SETPGID(0, 0);
-+
-+		if (tst_syscall(__NR_capset, &header, &data) == -1)
-+			tst_brk(TBROK | TERRNO, "capset() failed");
-+
-+		setpriority_test(tc);
-+
-+		exit(0);
++	rval = prctl(opt, arg);
++	if (rval < 0) {
++		tst_brkm(TBROK | TERRNO, NULL,
++			 "%s:%d prctl(%i, %lu) failed",
++			 file, lineno, opt, arg);
 +	}
 +
-+	tst_reap_children();
++	return rval;
 +}
-+
-+static void setup(void)
-+{
-+	char cmd[64];
-+	struct passwd *ltpuser;
-+
-+	sprintf(username, "setpriority01.%d", getpid());
-+
-+	sprintf(cmd, "useradd %s", username);
-+	SAFE_SYSTEM(cmd);
-+
-+	ltpuser = SAFE_GETPWNAM(username);
-+	uid = ltpuser->pw_uid;
-+
-+	header.version = _LINUX_CAPABILITY_VERSION;
-+	header.pid = 0;
-+	if (tst_syscall(__NR_capget, &header, &data) == -1)
-+		tst_brk(TBROK | TERRNO, "capget() failed");
-+}
-+
-+static void cleanup(void)
-+{
-+	char cmd[64];
-+
-+	sprintf(cmd, "userdel -r %s", username);
-+	SAFE_SYSTEM(cmd);
-+}
-+
- static struct tst_test test = {
- 	.tid = "setpriority01",
- 	.tcnt = ARRAY_SIZE(tcases),
- 	.needs_root = 1,
-+	.forks_child = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
- 	.test = verify_setpriority,
- };
 -- 
 1.8.4.2
 
