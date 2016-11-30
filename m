@@ -1,9 +1,9 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 30 Nov 2016 20:12:34 +0800
-Subject: [LTP] [PATCH 4/5] SAFE_MACROS: Add SAFE_PRCTL()
+Date: Wed, 30 Nov 2016 20:12:33 +0800
+Subject: [LTP] [PATCH 3/5] SAFE_MACROS: Add SAFE_SYSTEM()
 In-Reply-To: <1480507955-12652-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 References: <1480507955-12652-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <1480507955-12652-4-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <1480507955-12652-3-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,46 +13,40 @@ To: ltp@lists.linux.it
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
  include/tst_safe_macros.h |  4 ++++
- lib/safe_macros.c         | 20 ++++++++++++++++++++
- 2 files changed, 24 insertions(+)
+ lib/safe_macros.c         | 14 ++++++++++++++
+ 2 files changed, 18 insertions(+)
 
 diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index 2566079..bd60b40 100644
+index 9fa0e17..2566079 100644
 --- a/include/tst_safe_macros.h
 +++ b/include/tst_safe_macros.h
-@@ -480,4 +480,8 @@ int safe_system(const char *file, const int lineno, const char *cmd);
- #define SAFE_SYSTEM(cmd) \
- 	safe_system(__FILE__, __LINE__, (cmd))
+@@ -476,4 +476,8 @@ int safe_setpriority(const char *file, const int lineno, int which, id_t who,
+ #define SAFE_SETPRIORITY(which, who, prio) \
+ 	safe_setpriority(__FILE__, __LINE__, (which), (who), (prio))
  
-+int safe_prctl(const char *file, const int lineno, int opt, ...);
-+#define SAFE_PRCTL(opt, ...) \
-+	safe_prctl(__FILE__, __LINE__, (opt), ##__VA_ARGS__)
++int safe_system(const char *file, const int lineno, const char *cmd);
++#define SAFE_SYSTEM(cmd) \
++	safe_system(__FILE__, __LINE__, (cmd))
 +
  #endif /* SAFE_MACROS_H__ */
 diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 1c89b8c..c8c5383 100644
+index a109270..1c89b8c 100644
 --- a/lib/safe_macros.c
 +++ b/lib/safe_macros.c
-@@ -807,3 +807,23 @@ int safe_system(const char *file, const int lineno, const char *cmd)
+@@ -793,3 +793,17 @@ int safe_setpriority(const char *file, const int lineno, int which, id_t who,
  
  	return rval;
  }
 +
-+int safe_prctl(const char *file, const int lineno, int opt, ...)
++int safe_system(const char *file, const int lineno, const char *cmd)
 +{
-+	va_list ap;
 +	int rval;
-+	unsigned long arg;
 +
-+	va_start(ap, opt);
-+	arg = va_arg(ap, unsigned long);
-+	va_end(ap);
-+
-+	rval = prctl(opt, arg);
-+	if (rval < 0) {
++	rval = system(cmd);
++	if (rval == -1 || !WIFEXITED(rval) || WEXITSTATUS(rval)) {
 +		tst_brkm(TBROK | TERRNO, NULL,
-+			 "%s:%d prctl(%i, %lu) failed",
-+			 file, lineno, opt, arg);
++			 "%s:%d system(%s) failed",
++			 file, lineno, cmd);
 +	}
 +
 +	return rval;
