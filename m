@@ -1,29 +1,38 @@
-From: Wenzhong Sun <wenzhong.sun@intel.com>
-Date: Thu,  1 Dec 2016 14:42:31 +0800
-Subject: [LTP] [PATCH] delete runtest/nw_under_ns
-Message-ID: <1480574551-27210-1-git-send-email-wenzhong.sun@intel.com>
+From: Han, NingX <ningx.han@intel.com>
+Date: Thu, 1 Dec 2016 06:57:01 +0000
+Subject: [LTP] [PATCH ltp] cpuhotplug_hotplug.sh: 'part' here is a variable
+Message-ID: <AAAF599D7BFC7245B4AE22D9263FF7FB36C977B4@shsmsx102.ccr.corp.intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-nw_under_ns.sh test was rewritten and moved to runtest/containers scenario file
+Here 'part' is not a command or a function, just a variable, should not  add ()
 
-Signed-off-by: Wenzhong Sun <wenzhong.sun@intel.com>
+Signed-off-by: Ning Han <ningx.han@intel.com<mailto:ningx.han@intel.com>>
 ---
- runtest/nw_under_ns | 2 --
- 1 file changed, 2 deletions(-)
- delete mode 100644 runtest/nw_under_ns
+testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh | 4 ++--
+1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/runtest/nw_under_ns b/runtest/nw_under_ns
-deleted file mode 100644
-index 54217a6..0000000
---- a/runtest/nw_under_ns
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# Network testcases under containers
--network_namespace	nw_under_ns.sh
--- 
+diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+index 91d2a19..9f856e5 100644
+--- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
++++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
+@@ -150,8 +150,8 @@ get_present_cpus()
+             range_low=$(echo $part | cut -d - -f 1)
+             range_high=$(echo $part | cut -d - -f 2)
+         else
+-            range_low=$(part)
+-            range_high=$(part)
++            range_low=$part
++            range_high=$part
+         fi
+         for cpu in $(seq $range_low $range_high); do
+             if [ -e /sys/devices/system/cpu/cpu$cpu ]; then
+--
 2.7.4
 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20161201/177382be/attachment-0001.html>
