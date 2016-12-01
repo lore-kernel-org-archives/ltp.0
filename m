@@ -1,43 +1,67 @@
-From: Peter Maydell <peter.maydell@linaro.org>
-Date: Thu, 1 Dec 2016 15:51:25 +0000
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 1 Dec 2016 17:56:47 +0100
 Subject: [LTP] [PATCH v3 4/4] shell: fix echo -e bashisms, simplify code
 In-Reply-To: <20161201152632.GA9941@rei.lan>
 References: <20161129082240.16473-1-petr.vorel@gmail.com>
  <20161129082240.16473-4-petr.vorel@gmail.com>
  <20161201152632.GA9941@rei.lan>
-Message-ID: <CAFEAcA9+OVKpPB0U4-fW3dC3xYarjsj1VLMMt0b_n6+nNvFc9w@mail.gmail.com>
+Message-ID: <20161201165647.weqoqclzzq6nppy2@x230>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 1 December 2016 at 15:26, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
->> -    echo "${ME}: Sending $SIGSHOW signal to $1's process(es)..."
->> -    echo -e "\\n\\n\\nYour current session has been terminated.\\n\\n\\n" | \
->> +    printf "${ME}: Sending $SIGSHOW signal to $1's process(es)...\n"
->> +    printf "\\n\\n\\nYour current session has been terminated.\\n\\n\\n\n" | \
->
+Hi Cyril,
+
+> The tacl_xattr.sh should be probably investigated and either fixed or
+> removed.
+
+> The statslogging script seems to be part of pounder21, there are some
+> tar archives that contain test screnarios with symlinks that may point
+> to the files in the test_scripts directory. So simple git grepping will
+> not help in this case.
+Good to know.
+
+> The mixed_load.sh seems to be unused, probably leftover.
+It would be great if you could do the cleanup.
+
+> > diff --git a/tools/strace_test/slay b/tools/strace_test/slay
+> > index a68e8c9..d3571c0 100755
+> > --- a/tools/strace_test/slay
+> > +++ b/tools/strace_test/slay
+> > @@ -115,11 +115,11 @@ do
+> >    COOL="1"
+> >    if [ "$SLAY_BUTTHEAD" = "on" ]
+> >    then
+> > -    echo "${ME}: $SIGSHOW is kicking $1's butt!"
+> > -    echo -e "\\n\\n\\nI'm kicking your butt.\\n\\n\\n" | write $1 2>/dev/null
+> > +    printf "${ME}: $SIGSHOW is kicking $1's butt!\n"
+> > +    printf "\\n\\n\\nI'm kicking your butt.\\n\\n\\n\n" | write $1 2>/dev/null
+> >    else
+> > -    echo "${ME}: Sending $SIGSHOW signal to $1's process(es)..."
+> > -    echo -e "\\n\\n\\nYour current session has been terminated.\\n\\n\\n" | \
+> > +    printf "${ME}: Sending $SIGSHOW signal to $1's process(es)...\n"
+> > +    printf "\\n\\n\\nYour current session has been terminated.\\n\\n\\n\n" | \
+
 > I'm a bit puzzled by the double backslashes here. I guess that the
 > double backslash is reduced by shell to a single backslash and then
-> echo/printf command gets just plain old \n in ARGV[].
+> echo/printf command gets just plain old \n in ARGV[]. But as this code
+> will likely get removed anyway I've applied this patch as it is.
+Eh, you (and Peter Maydell) are right. I'm sorry, I'll have to check it twice next time
+(especially when I replace with perl one liners).
 
-Yes. In shell double-quoted text backslashes function as an escape
-character when they precede any of $ ` " \ <newline>.
-So "Hello\\n" becomes "Hello\n" as the executed command
-sees it, and then printf/echo interpret \n as the newline.
-You could also write that as 'Hello\n', since single-quotes don't
-do backslash-escaping, or indeed as "Hello\n", since 'n' isn't
-one of the handful of punctuation characters that need backslash
-escapes inside double-quotes, and the shell is required not to
-give backslash any special meaning if it isn't followed by one
-of those. (This is why the first 'printf' in the bit I quote
-above works even though it's just "${ME} ...\n" rather than \\n.)
 
-Conclusion: those \\n could be tidied up to be just \n if you
-want, but they're harmless.
+> Whole series applied, thanks.
+Thanks a lot!
 
-thanks
--- PMM
+
+Kind regards,
+Petr
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 833 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20161201/089bc671/attachment.sig>
