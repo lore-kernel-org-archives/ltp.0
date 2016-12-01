@@ -1,38 +1,81 @@
-From: Han, NingX <ningx.han@intel.com>
-Date: Thu, 1 Dec 2016 06:57:01 +0000
-Subject: [LTP] [PATCH ltp] cpuhotplug_hotplug.sh: 'part' here is a variable
-Message-ID: <AAAF599D7BFC7245B4AE22D9263FF7FB36C977B4@shsmsx102.ccr.corp.intel.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 1 Dec 2016 02:36:14 -0500 (EST)
+Subject: [LTP] [PATCH v2 1/3] syscalls: new test writev07
+In-Reply-To: <583FC50A.3010605@huawei.com>
+References: <81176684cd5c6bf764a070b79783f03f0037658a.1475827191.git.jstancek@redhat.com>
+ <583FC50A.3010605@huawei.com>
+Message-ID: <2135008969.825419.1480577774249.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Here 'part' is not a command or a function, just a variable, should not  add ()
 
-Signed-off-by: Ning Han <ningx.han@intel.com<mailto:ningx.han@intel.com>>
----
-testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh | 4 ++--
-1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-index 91d2a19..9f856e5 100644
---- a/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-+++ b/testcases/kernel/hotplug/cpu_hotplug/include/cpuhotplug_hotplug.sh
-@@ -150,8 +150,8 @@ get_present_cpus()
-             range_low=$(echo $part | cut -d - -f 1)
-             range_high=$(echo $part | cut -d - -f 2)
-         else
--            range_low=$(part)
--            range_high=$(part)
-+            range_low=$part
-+            range_high=$part
-         fi
-         for cpu in $(seq $range_low $range_high); do
-             if [ -e /sys/devices/system/cpu/cpu$cpu ]; then
---
-2.7.4
+----- Original Message -----
+> From: "Cui Bixuan" <cuibixuan@huawei.com>
+> To: ltp@lists.linux.it
+> Sent: Thursday, 1 December, 2016 7:36:58 AM
+> Subject: Re: [LTP] [PATCH v2 1/3] syscalls: new test writev07
+> 
+> On 2016/10/7 16:11, Jan Stancek wrote:
+> > +				off_after);
+> > +
+> > +		SAFE_CLOSE(fd);
+> > +		return;
+> > +	}
+> > +
+> > +	/* writev() wrote more bytes than bytes preceding invalid iovec */
+> > +	tst_res(TINFO, "writev() has written %ld bytes", TEST_RETURN);
+> > +	if (TEST_RETURN > (long) wr_iovec[0].iov_base) {
+> Hi, why TEST_RETURN(the return of writev) compare with
+> wr_iovec[0].iov_base(the address) here?
 
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20161201/177382be/attachment-0001.html>
+Mistake on my part. That was obviously supposed to compare iovec length.
+I pushed a fix to change that.
+
+Thanks,
+Jan
+
+> 
+> I run it in armv7 (with printf("TEST_RETURN:%ld, wr_iovec[0].iov_base:%ld\n",
+> TEST_RETURN, (long) wr_iovec[0].iov_base) for debug):
+> 
+> # ./writev07
+> tst_test.c:760: INFO: Timeout per run is 0h 05m 00s
+> writev07.c:60: INFO: starting test with initial file offset: 0
+> writev07.c:104: INFO: writev() has written 64 bytes
+> writev07.c:106: FAIL: writev wrote more than expected
+> TEST_RETURN:64, wr_iovec[0].iov_base:-1092708152
+> writev07.c:60: INFO: starting test with initial file offset: 65
+> writev07.c:104: INFO: writev() has written 64 bytes
+> writev07.c:106: FAIL: writev wrote more than expected
+> TEST_RETURN:64, wr_iovec[0].iov_base:-1092708152
+> writev07.c:60: INFO: starting test with initial file offset: 4096
+> writev07.c:104: INFO: writev() has written 64 bytes
+> writev07.c:106: FAIL: writev wrote more than expected
+> TEST_RETURN:64, wr_iovec[0].iov_base:-1092708152
+> writev07.c:60: INFO: starting test with initial file offset: 4097
+> writev07.c:104: INFO: writev() has written 64 bytes
+> writev07.c:106: FAIL: writev wrote more than expected
+> TEST_RETURN:64, wr_iovec[0].iov_base:-1092708144
+> 
+> So the case fail at all time.
+> 
+> Thanks,
+> Cui Bixuan
+> 
+> > +		tst_res(TFAIL, "writev wrote more than expected");
+> > +		SAFE_CLOSE(fd);
+> > +		return;
+> > +	}
+> > +
+> > +	/* file content matches written bytes */
+> > +	SAFE_LSEEK(fd, initial_file_offset, SEEK_SET);
+> > +	SAFE_READ(1, fd, tmp, TEST_RETURN);
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
