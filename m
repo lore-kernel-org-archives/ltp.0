@@ -1,67 +1,63 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 1 Dec 2016 17:56:47 +0100
-Subject: [LTP] [PATCH v3 4/4] shell: fix echo -e bashisms, simplify code
-In-Reply-To: <20161201152632.GA9941@rei.lan>
-References: <20161129082240.16473-1-petr.vorel@gmail.com>
- <20161129082240.16473-4-petr.vorel@gmail.com>
- <20161201152632.GA9941@rei.lan>
-Message-ID: <20161201165647.weqoqclzzq6nppy2@x230>
+From: Han, NingX <ningx.han@intel.com>
+Date: Fri, 2 Dec 2016 03:03:19 +0000
+Subject: [LTP] [PATCH ltp] su01: do pre-checking to avoid annoying warnings
+Message-ID: <AAAF599D7BFC7245B4AE22D9263FF7FB36C97CA3@shsmsx102.ccr.corp.intel.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+do pre-checking of file/directory/user to avoid warnings like:
+mkdir: cannot create directory '/home/su_usr1': File exists
 
-> The tacl_xattr.sh should be probably investigated and either fixed or
-> removed.
+Signed-off-by: Ning Han <ningx.han@intel.com>
+---
+testcases/commands/su/su01 | 12 ++++++------
+1 file changed, 6 insertions(+), 6 deletions(-)
 
-> The statslogging script seems to be part of pounder21, there are some
-> tar archives that contain test screnarios with symlinks that may point
-> to the files in the test_scripts directory. So simple git grepping will
-> not help in this case.
-Good to know.
-
-> The mixed_load.sh seems to be unused, probably leftover.
-It would be great if you could do the cleanup.
-
-> > diff --git a/tools/strace_test/slay b/tools/strace_test/slay
-> > index a68e8c9..d3571c0 100755
-> > --- a/tools/strace_test/slay
-> > +++ b/tools/strace_test/slay
-> > @@ -115,11 +115,11 @@ do
-> >    COOL="1"
-> >    if [ "$SLAY_BUTTHEAD" = "on" ]
-> >    then
-> > -    echo "${ME}: $SIGSHOW is kicking $1's butt!"
-> > -    echo -e "\\n\\n\\nI'm kicking your butt.\\n\\n\\n" | write $1 2>/dev/null
-> > +    printf "${ME}: $SIGSHOW is kicking $1's butt!\n"
-> > +    printf "\\n\\n\\nI'm kicking your butt.\\n\\n\\n\n" | write $1 2>/dev/null
-> >    else
-> > -    echo "${ME}: Sending $SIGSHOW signal to $1's process(es)..."
-> > -    echo -e "\\n\\n\\nYour current session has been terminated.\\n\\n\\n" | \
-> > +    printf "${ME}: Sending $SIGSHOW signal to $1's process(es)...\n"
-> > +    printf "\\n\\n\\nYour current session has been terminated.\\n\\n\\n\n" | \
-
-> I'm a bit puzzled by the double backslashes here. I guess that the
-> double backslash is reduced by shell to a single backslash and then
-> echo/printf command gets just plain old \n in ARGV[]. But as this code
-> will likely get removed anyway I've applied this patch as it is.
-Eh, you (and Peter Maydell) are right. I'm sorry, I'll have to check it twice next time
-(especially when I replace with perl one liners).
-
-
-> Whole series applied, thanks.
-Thanks a lot!
-
-
-Kind regards,
-Petr
+diff --git a/testcases/commands/su/su01 b/testcases/commands/su/su01
+index dd1517f..9510f29 100755
+--- a/testcases/commands/su/su01
++++ b/testcases/commands/su/su01
+@@ -85,8 +85,8 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
+ #Create 1st test user
+     #erase user if he may exist , so we can have a clean en
+-        rm -rf /home/$TEST_USER1
+-        userdel $TEST_USER1
++        [ -e /home/$TEST_USER1 ] && rm -rf /home/$TEST_USER1
++        getent passwd $TEST_USER1 && userdel $TEST_USER1
+               sleep 1
+         useradd -m -g users $TEST_USER1
+@@ -105,7 +105,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
+               then {
+           USER_UID=`id -u $TEST_USER1`
+           USER_GID=`id -g $TEST_USER1`
+-          mkdir $TEST_USER1_HOMEDIR
++          [ -e $TEST_USER1_HOMEDIR ] || mkdir $TEST_USER1_HOMEDIR
+           chown -R $USER_UID.$USER_GID $TEST_USER1_HOMEDIR
+               }
+               fi
+@@ -120,8 +120,8 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
+ #Create 2nd test user
+               #erase user if he may exist , so we can have a clean en
+-        rm -rf /home/$TEST_USER2
+-        userdel $TEST_USER2
++        [ -e /home/$TEST_USER2 ] && rm -rf /home/$TEST_USER2
++        getent passwd $TEST_USER2 && userdel $TEST_USER2
+               sleep 1
+         useradd -m -g users $TEST_USER2
+@@ -141,7 +141,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
+         then {
+           USER_UID=`id -u $TEST_USER2`
+           USER_GID=`id -g $TEST_USER2`
+-          mkdir $TEST_USER2_HOMEDIR
++          [ -e $TEST_USER2_HOMEDIR ] || mkdir $TEST_USER2_HOMEDIR
+           chown -R $USER_UID.$USER_GID $TEST_USER2_HOMEDIR
+               }
+               fi
+--
+2.7.4
 -------------- next part --------------
-A non-text attachment was scrubbed...
-Name: signature.asc
-Type: application/pgp-signature
-Size: 833 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20161201/089bc671/attachment.sig>
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20161202/bbdfed0e/attachment.html>
