@@ -1,8 +1,8 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri,  2 Dec 2016 14:41:16 +0100
-Subject: [LTP] [PATCH v3 1/1] syscalls/mq_unlink: convert to use new test
+Date: Fri,  2 Dec 2016 15:12:51 +0100
+Subject: [LTP] [PATCH v4 1/1] syscalls/mq_unlink: convert to use new test
 	library API
-Message-ID: <20161202134116.17086-1-pvorel@suse.cz>
+Message-ID: <20161202141251.26121-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,22 +11,29 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
+Hope this is the last version :-).
+
+Changes v3->v4:
+* Cleanup variables (wrong in v3).
+* Cleanup includes.
+* Cleanup closing fd.
+
 Changes v2->v3:
 * Use tst_res() and goto instead of tst_brk() (can't use it that way as it
   exits) and remove cleanup() (now useless).
 
 Changes v1->v2:
-* close fd only when needed + print warning.
-* cleanup unnecessary comments.
+* Close fd only when needed + print warning.
+* Cleanup unnecessary comments.
 ---
- testcases/kernel/syscalls/mq_unlink/mq_unlink01.c | 356 +++++++---------------
- 1 file changed, 110 insertions(+), 246 deletions(-)
+ testcases/kernel/syscalls/mq_unlink/mq_unlink01.c | 354 +++++++---------------
+ 1 file changed, 107 insertions(+), 247 deletions(-)
 
 diff --git a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
-index 6306efc..1df3139 100644
+index 6306efc..9089d6f 100644
 --- a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
 +++ b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
-@@ -1,137 +1,41 @@
+@@ -1,137 +1,39 @@
 -/******************************************************************************/
 -/* Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd		*/
 -/*	  Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
@@ -97,12 +104,12 @@ index 6306efc..1df3139 100644
 + */
  
 -#include <sys/syscall.h>
- #include <sys/types.h>
+-#include <sys/types.h>
 -#include <sys/stat.h>
 -#include <sys/uio.h>
 -#include <getopt.h>
 -#include <stdlib.h>
--#include <errno.h>
+ #include <errno.h>
 -#include <stdio.h>
 -#include <unistd.h>
 -#include <string.h>
@@ -112,15 +119,15 @@ index 6306efc..1df3139 100644
 -
 -#include "../utils/include_j_h.h"
 -#include "../utils/common_j_h.c"
- 
+-
 -#include "test.h"
-+#include "tst_test.h"
- #include "linux_syscall_numbers.h"
+-#include "linux_syscall_numbers.h"
  
 -char *TCID = "mq_ulink01";
 -int testno;
 -int TST_TOTAL = 1;
--
++#include "tst_test.h"
+ 
 -/* Extern Global Functions */
 -/******************************************************************************/
 -/*									    */
@@ -141,7 +148,8 @@ index 6306efc..1df3139 100644
 -/******************************************************************************/
 -void cleanup(void)
 -{
--
++#define QUEUE_NAME	"/test_mqueue"
+ 
 -	tst_rmdir();
 -}
 -
@@ -171,14 +179,12 @@ index 6306efc..1df3139 100644
 -	TEST_PAUSE;
 -	tst_tmpdir();
 -}
-+#define QUEUE_NAME	"/test_mqueue"
- 
+-
 -/*
 - * Macros
 - */
 -#define SYSCALL_NAME    "mq_ulink"
 +static uid_t euid;
-+static mqd_t fd;
  
  enum test_type {
  	NORMAL,
@@ -190,7 +196,7 @@ index 6306efc..1df3139 100644
  struct test_case {
  	char *user;
  	char *qname;
-@@ -140,152 +44,112 @@ struct test_case {
+@@ -140,152 +42,110 @@ struct test_case {
  	int err;
  };
  
@@ -303,6 +309,8 @@ index 6306efc..1df3139 100644
 -	int rc, fd1 = -1, fd2 = -1;
 -	uid_t old_uid = -1;
 +	struct test_case *tc = &tcase[i];
++	mqd_t fd;
++	struct passwd *pw;
 +
 +	tst_res(TINFO, "queue name '%s'", tc->qname);
  
@@ -331,12 +339,10 @@ index 6306efc..1df3139 100644
 -	/*
 -	 * Change effective user id
 -	 */
-+
  	if (tc->user != NULL) {
 -		TEST(rc = setup_euid(tc->user, &old_uid));
 -		if (TEST_RETURN < 0) {
 -			result = 1;
-+		struct passwd *pw;
 +		pw = getpwnam(tc->user);
 +		if (!pw) {
 +			tst_res(TFAIL | TTERRNO, "getpwnam failed");
@@ -376,14 +382,12 @@ index 6306efc..1df3139 100644
  EXIT:
 -	if (tc->user != NULL && old_uid != -1)
 -		cleanup_euid(old_uid);
++	/* cleanup */
 +	if (tc->user != NULL && seteuid(euid) == -1)
 +		tst_res(TWARN | TTERRNO, "seteuid back to %d failed", euid);
 +
-+	if (fd > 0) {
-+		if (close(fd))
-+			tst_res(TWARN | TERRNO, "close(fd) failed");
-+		fd = -1;
-+	}
++	if (fd > 0 && close(fd))
++		tst_res(TWARN | TERRNO, "close(fd) failed");
  
 -	if (fd1 >= 0)
 -		close(fd1);
