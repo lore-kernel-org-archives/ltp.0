@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 5 Dec 2016 15:40:05 +0100
-Subject: [LTP] [PATCH 4/5] SAFE_MACROS: Add SAFE_PRCTL()
-In-Reply-To: <1480507955-12652-4-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Date: Mon, 5 Dec 2016 15:45:26 +0100
+Subject: [LTP] [PATCH 5/5] syscalls/setpriority01: Use new user id to
+ avoid messing system environment
+In-Reply-To: <1480507955-12652-5-git-send-email-fenggw-fnst@cn.fujitsu.com>
 References: <1480507955-12652-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1480507955-12652-4-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20161205144005.GG22344@rei.lan>
+ <1480507955-12652-5-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20161205144526.GH22344@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,54 +13,97 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> +int safe_prctl(const char *file, const int lineno, int opt, ...);
-> +#define SAFE_PRCTL(opt, ...) \
-> +	safe_prctl(__FILE__, __LINE__, (opt), ##__VA_ARGS__)
+>  #include "tst_test.h"
+> +#include "linux_syscall_numbers.h"
 > +
->  #endif /* SAFE_MACROS_H__ */
-> diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-> index 1c89b8c..c8c5383 100644
-> --- a/lib/safe_macros.c
-> +++ b/lib/safe_macros.c
-> @@ -807,3 +807,23 @@ int safe_system(const char *file, const int lineno, const char *cmd)
+> +static char username[32];
+> +static uid_t uid;
+> +static struct __user_cap_header_struct header;
+> +static struct __user_cap_data_struct data;
+
+Are you sure these are the right structure prototypes to use? The double
+underscore usually means "library internal, do not touch".
+
+>  	int which;
+> @@ -35,9 +49,8 @@ static struct tcase {
+>  	{PRIO_USER}
+>  };
 >  
->  	return rval;
+> -static void verify_setpriority(unsigned int n)
+> +static void setpriority_test(struct tcase *tc)
+>  {
+> -	struct tcase *tc = &tcases[n];
+>  	int new_prio, cur_prio;
+>  	int failflag = 0;
+>  
+> @@ -68,9 +81,60 @@ static void verify_setpriority(unsigned int n)
+>  	}
 >  }
-> +
-> +int safe_prctl(const char *file, const int lineno, int opt, ...)
+>  
+> +static void verify_setpriority(unsigned int n)
 > +{
-> +	va_list ap;
-> +	int rval;
-> +	unsigned long arg;
+> +	struct tcase *tc = &tcases[n];
 > +
-> +	va_start(ap, opt);
-> +	arg = va_arg(ap, unsigned long);
-> +	va_end(ap);
-
-This is broken by design. The prctl() can have up to four long arguments
-but here we use only the first one unconditionally.
-
-
-I'm not sure how we can fix this easily. Either we can count number of
-arguments passed to the SAFE_PRCTL() by hacky preprocessor counting[1]
-and pass it as a first agument.
-
-Or we can switch on the opt to figure out the number of expected arguments,
-which is ugly as well, but we can at least start small by adding only
-opts that we use.
-
-[1]
-https://groups.google.com/forum/?_escaped_fragment_=topic/comp.std.c/d-6Mj5Lko_s#!topic/comp.std.c/d-6Mj5Lko_s
-
-> +	rval = prctl(opt, arg);
-> +	if (rval < 0) {
-> +		tst_brkm(TBROK | TERRNO, NULL,
-> +			 "%s:%d prctl(%i, %lu) failed",
-> +			 file, lineno, opt, arg);
+> +	if (!SAFE_FORK()) {
+> +		SAFE_PRCTL(PR_SET_KEEPCAPS, 1);
+> +
+> +		SAFE_SETUID(uid);
+> +		SAFE_SETPGID(0, 0);
+> +
+> +		if (tst_syscall(__NR_capset, &header, &data) == -1)
+> +			tst_brk(TBROK | TERRNO, "capset() failed");
+> +
+> +		setpriority_test(tc);
+> +
+> +		exit(0);
 > +	}
 > +
-> +	return rval;
+> +	tst_reap_children();
+
+Hmm, why do we run the actuall testcase in the child here? That
+complicates the whole test far more than it should have.
+
+We can instead just run pause() in the child and run the setpriority()
+call in the parent with right pid/group/uid. Or did I miss something?
+
 > +}
+> +
+> +static void setup(void)
+> +{
+> +	char cmd[64];
+> +	struct passwd *ltpuser;
+> +
+> +	sprintf(username, "setpriority01.%d", getpid());
+> +
+> +	sprintf(cmd, "useradd %s", username);
+> +	SAFE_SYSTEM(cmd);
+> +
+> +	ltpuser = SAFE_GETPWNAM(username);
+> +	uid = ltpuser->pw_uid;
+> +
+> +	header.version = _LINUX_CAPABILITY_VERSION;
+> +	header.pid = 0;
+> +	if (tst_syscall(__NR_capget, &header, &data) == -1)
+> +		tst_brk(TBROK | TERRNO, "capget() failed");
+> +}
+> +
+> +static void cleanup(void)
+> +{
+> +	char cmd[64];
+> +
+> +	sprintf(cmd, "userdel -r %s", username);
+> +	SAFE_SYSTEM(cmd);
+> +}
+> +
+>  static struct tst_test test = {
+>  	.tid = "setpriority01",
+>  	.tcnt = ARRAY_SIZE(tcases),
+>  	.needs_root = 1,
+> +	.forks_child = 1,
+> +	.setup = setup,
+> +	.cleanup = cleanup,
+>  	.test = verify_setpriority,
+>  };
 > -- 
 > 1.8.4.2
 > 
