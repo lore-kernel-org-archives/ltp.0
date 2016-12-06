@@ -1,36 +1,55 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 6 Dec 2016 11:34:36 +0100
-Subject: [LTP] [PATCH 5/5] syscalls/setpriority01: Use new user id to
- avoid messing system environment
-In-Reply-To: <5846928B.2010805@cn.fujitsu.com>
-References: <1480507955-12652-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <1480507955-12652-5-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20161205144526.GH22344@rei.lan> <5846928B.2010805@cn.fujitsu.com>
-Message-ID: <20161206103436.GC17241@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 6 Dec 2016 13:53:14 +0300
+Subject: [LTP] [PATCH 1/1] network/echoes: fix endless loop on error
+In-Reply-To: <20161129160259.31058-1-pvorel@suse.cz>
+References: <20161129160259.31058-1-pvorel@suse.cz>
+Message-ID: <5846989A.2020104@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Hmm, why do we run the actuall testcase in the child here? That
-> > complicates the whole test far more than it should have.
-> > 
-> > We can instead just run pause() in the child and run the setpriority()
-> > call in the parent with right pid/group/uid. Or did I miss something?
-> > 
-> 
-> Sorry, if we do the actual test in the parent, we have to do the process
-> synchronization, because parent needs child to be ready (prctl, setuid...)
-> and after every test, child's pause() needs to be waken up by parent, so
-> I feel it's more complicated by comparison...
+Hi,
 
-Since we have the checkpoint synchronization in the test library this is
-just a matter of calling TST_CHECKPOINT_WAIT() in the parent and
-TST_CHECKPOINT_WAKE_AND_WAIT() in the child then finally
-TST_CHECKPOINT_WAKE() in the parent.
+On 11/29/2016 07:02 PM, Petr Vorel wrote:
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>   testcases/network/tcp_cmds/echo/echoes.c | 5 ++++-
+>   1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/testcases/network/tcp_cmds/echo/echoes.c b/testcases/network/tcp_cmds/echo/echoes.c
+> index 8138d28..d753d98 100644
+> --- a/testcases/network/tcp_cmds/echo/echoes.c
+> +++ b/testcases/network/tcp_cmds/echo/echoes.c
+> @@ -97,6 +97,7 @@ int main(int argc, char *argv[], char *env[])
+>   
+>   		if ((pid = wait(&wait_stat)) == -1)
+>   			tst_resm(TFAIL | TERRNO, "wait failed");
+> +
+>   		if (wait_stat == 0) {
+>   			for (j = 0; j < i; j++) {
+>   				if (echo_struc[j].pid == pid) {
+> @@ -105,7 +106,6 @@ int main(int argc, char *argv[], char *env[])
+>   				}
+>   			}
+>   		} else {
+> -
+>   			tst_resm(TFAIL, "wait(2) status was non-zero");
+>   
+>   			if (WIFEXITED(wait_stat)) {
+> @@ -120,6 +120,9 @@ int main(int argc, char *argv[], char *env[])
+>   				if (kill(echo_struc[k].pid, 0) == 0) {
+>   					kill(echo_struc[k].pid, 9);
+>   				}
+> +				if (echo_struc[k].pid == pid) {
+> +					finish--;
+> +				}
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+Good catch, looks like we could substitute the while loop here with
+tst_reap_children() library function and remove "echo_struc" as well?
+
+Thanks,
+Alexey
+
