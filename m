@@ -1,438 +1,133 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue,  6 Dec 2016 11:22:32 +0100
-Subject: [LTP] [PATCH v6 1/1] syscalls/mq_unlink: convert to use new test
-	library API
-Message-ID: <20161206102232.12224-1-pvorel@suse.cz>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 6 Dec 2016 18:27:23 +0800
+Subject: [LTP] [PATCH 5/5] syscalls/setpriority01: Use new user id to
+ avoid messing system environment
+In-Reply-To: <20161205144526.GH22344@rei.lan>
+References: <1480507955-12652-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <1480507955-12652-5-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20161205144526.GH22344@rei.lan>
+Message-ID: <5846928B.2010805@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
-Typos again, I'm sorry.
+Hi!
 
-Changes v5->v6:
-* More fixes of using ttype constants.
+On 12/05/2016 10:45 PM, Cyril Hrubis wrote:
+> Hi!
+>>  #include "tst_test.h"
+>> +#include "linux_syscall_numbers.h"
+>> +
+>> +static char username[32];
+>> +static uid_t uid;
+>> +static struct __user_cap_header_struct header;
+>> +static struct __user_cap_data_struct data;
+> 
+> Are you sure these are the right structure prototypes to use? The double
+> underscore usually means "library internal, do not touch".
+> 
 
-Changes v4->v5:
-* Fix using ttype constants.
-* Getting struct passwd with SAFE_GETPWNAM() in setup().
-* Using only single non-root user => have it as int flag in struct test_case.
-* Remove unused enum test_type.
+It's my mistake, thanks for review, I will correct this.
 
-Changes v3->v4:
-* Cleanup variables (wrong in v3).
-* Cleanup includes.
-* Cleanup closing fd.
+>>  	int which;
+>> @@ -35,9 +49,8 @@ static struct tcase {
+>>  	{PRIO_USER}
+>>  };
+>>  
+>> -static void verify_setpriority(unsigned int n)
+>> +static void setpriority_test(struct tcase *tc)
+>>  {
+>> -	struct tcase *tc = &tcases[n];
+>>  	int new_prio, cur_prio;
+>>  	int failflag = 0;
+>>  
+>> @@ -68,9 +81,60 @@ static void verify_setpriority(unsigned int n)
+>>  	}
+>>  }
+>>  
+>> +static void verify_setpriority(unsigned int n)
+>> +{
+>> +	struct tcase *tc = &tcases[n];
+>> +
+>> +	if (!SAFE_FORK()) {
+>> +		SAFE_PRCTL(PR_SET_KEEPCAPS, 1);
+>> +
+>> +		SAFE_SETUID(uid);
+>> +		SAFE_SETPGID(0, 0);
+>> +
+>> +		if (tst_syscall(__NR_capset, &header, &data) == -1)
+>> +			tst_brk(TBROK | TERRNO, "capset() failed");
+>> +
+>> +		setpriority_test(tc);
+>> +
+>> +		exit(0);
+>> +	}
+>> +
+>> +	tst_reap_children();
+> 
+> Hmm, why do we run the actuall testcase in the child here? That
+> complicates the whole test far more than it should have.
+> 
+> We can instead just run pause() in the child and run the setpriority()
+> call in the parent with right pid/group/uid. Or did I miss something?
+> 
 
-Changes v2->v3:
-* Use tst_res() and goto instead of tst_brk() (can't use it that way as it
-  exits) and remove cleanup() (now useless).
+Sorry, if we do the actual test in the parent, we have to do the process
+synchronization, because parent needs child to be ready (prctl, setuid...)
+and after every test, child's pause() needs to be waken up by parent, so
+I feel it's more complicated by comparison...
 
-Changes v1->v2:
-* Close fd only when needed + pri
----
- testcases/kernel/syscalls/mq_unlink/mq_unlink01.c | 356 ++++++----------------
- 1 file changed, 100 insertions(+), 256 deletions(-)
+Best Regards,
+Guangwen Feng
 
-diff --git a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
-index 6306efc9b..9e0a2a7e3 100644
---- a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
-+++ b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
-@@ -1,291 +1,135 @@
--/******************************************************************************/
--/* Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd		*/
--/*	  Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
--/*		       Yumiko Sugita <yumiko.sugita.yf@hitachi.com>, 	      */
--/*		       Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>	      */
--/*								  	      */
--/* This program is free software;  you can redistribute it and/or modify      */
--/* it under the terms of the GNU General Public License as published by       */
--/* the Free Software Foundation; either version 2 of the License, or	  */
--/* (at your option) any later version.					*/
--/*									    */
--/* This program is distributed in the hope that it will be useful,	    */
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of	    */
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See		  */
--/* the GNU General Public License for more details.			   */
--/*									    */
--/* You should have received a copy of the GNU General Public License	  */
--/* along with this program;  if not, write to the Free Software	       */
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
--/*									    */
--/******************************************************************************/
--/******************************************************************************/
--/*									    */
--/* File:	mq_ulink01.c						  */
--/*									    */
--/* Description: This tests the mq_ulink() syscall			     */
--/*									      */
--/* 									      */
--/*									      */
--/*									      */
--/*									      */
--/*									    */
--/* Usage:  <for command-line>						 */
--/* mq_ulink01 [-c n] [-e][-i n] [-I x] [-p x] [-t]			    */
--/*      where,  -c n : Run n copies concurrently.			     */
--/*	      -e   : Turn on errno logging.				 */
--/*	      -i n : Execute test n times.				  */
--/*	      -I x : Execute test for x seconds.			    */
--/*	      -P x : Pause for x seconds between iterations.		*/
--/*	      -t   : Turn on syscall timing.				*/
--/*									    */
--/* Total Tests: 1							     */
--/*									    */
--/* Test Name:   mq_ulink01					     */
--/* History:     Porting from Crackerjack to LTP is done by		    */
--/*	      Manas Kumar Nayak maknayak@in.ibm.com>			*/
--/******************************************************************************/
-+/*
-+ * Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd
-+ *          Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,
-+ *		       Yumiko Sugita <yumiko.sugita.yf@hitachi.com>,
-+ *		       Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>
-+ * Copyright (c) 2016 Linux Test Project
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write the Free Software Foundation,
-+ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
- 
--#include <sys/syscall.h>
--#include <sys/types.h>
--#include <sys/stat.h>
--#include <sys/uio.h>
--#include <getopt.h>
--#include <stdlib.h>
- #include <errno.h>
--#include <stdio.h>
--#include <unistd.h>
--#include <string.h>
-+#include <pwd.h>
- #include <mqueue.h>
--#include <limits.h>
--
--#include "../utils/include_j_h.h"
--#include "../utils/common_j_h.c"
--
--#include "test.h"
--#include "linux_syscall_numbers.h"
- 
--char *TCID = "mq_ulink01";
--int testno;
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
--/* Extern Global Functions */
--/******************************************************************************/
--/*									    */
--/* Function:    cleanup						       */
--/*									    */
--/* Description: Performs all one time clean up for this test on successful    */
--/*	      completion,  premature exit or  failure. Closes all temporary */
--/*	      files, removes all temporary directories exits the test with  */
--/*	      appropriate return code by calling tst_exit() function.       */
--/*									    */
--/* Input:       None.							 */
--/*									    */
--/* Output:      None.							 */
--/*									    */
--/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
--/*	      On success - Exits calling tst_exit(). With '0' return code.  */
--/*									    */
--/******************************************************************************/
--void cleanup(void)
--{
-+#define QUEUE_NAME	"/test_mqueue"
- 
--	tst_rmdir();
--}
-+static uid_t euid;
-+static struct passwd *pw;
- 
--/* Local  Functions */
--/******************************************************************************/
--/*									    */
--/* Function:    setup							 */
--/*									    */
--/* Description: Performs all one time setup for this test. This function is   */
--/*	      typically used to capture signals, create temporary dirs      */
--/*	      and temporary files that may be used in the course of this    */
--/*	      test.							 */
--/*									    */
--/* Input:       None.							 */
--/*									    */
--/* Output:      None.							 */
--/*									    */
--/* Return:      On failure - Exits by calling cleanup().		      */
--/*	      On success - returns 0.				       */
--/*									    */
--/******************************************************************************/
--void setup(void)
--{
--	tst_require_root();
--	/* Capture signals if any */
--	/* Create temporary directories */
--	TEST_PAUSE;
--	tst_tmpdir();
--}
--
--/*
-- * Macros
-- */
--#define SYSCALL_NAME    "mq_ulink"
--
--enum test_type {
--	NORMAL,
--};
--
--/*
-- * Data Structure
-- */
- struct test_case {
--	char *user;
-+	int as_nobody;
- 	char *qname;
--	int ttype;
- 	int ret;
- 	int err;
- };
- 
--/* Test cases
--*
--*   test status of errors on man page
--*
--*   EACCES	     v (permission is denied)
--*   ENAMETOOLONG       v (too long name length)
--*   ENOENT	     v (named message queue does not exist)
--*/
--
- static struct test_case tcase[] = {
--	{			// case00
--	 .ttype = NORMAL,
--	 .qname = QUEUE_NAME,
--	 .ret = 0,
--	 .err = 0,
--	 },
--	{			// case01
--	 .ttype = NORMAL,
--	 .user = "nobody",
--	 .qname = QUEUE_NAME,
--	 .ret = -1,
--	 .err = EACCES,
--	 },
--	{			// case02
--	 .ttype = NORMAL,
--	 //  0    1       2       3
--	 //  0123456789012345678901234567890123456789
--	 .qname = "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" "aaaaaaaaaaaaaaa",
--	 .ret = -1,
--	 .err = ENOENT,
--	 },
--	{			// case03
--	 .ttype = NORMAL,
--	 //  0    1       2       3
--	 //  0123456789012345678901234567890123456789
--	 .qname = "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
--	 "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" "aaaaaaaaaaaaaaaa",
--	 .ret = -1,
--	 .err = ENAMETOOLONG,
--	 },
-+	{
-+		.qname = QUEUE_NAME,
-+		.ret = 0,
-+		.err = 0,
-+	},
-+	{
-+		.as_nobody = 1,
-+		.qname = QUEUE_NAME,
-+		.ret = -1,
-+		.err = EACCES,
-+	},
-+	{
-+		.qname = "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaa",
-+		.ret = -1,
-+		.err = ENOENT,
-+	},
-+	{
-+		.qname = "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-+			"aaaaaaaaaaaaaaaa",
-+		.ret = -1,
-+		.err = ENAMETOOLONG,
-+	},
- };
- 
--/*
-- * do_test()
-- *
-- *   Input  : TestCase Data
-- *   Return : RESULT_OK(0), RESULT_NG(1)
-- *
-- */
-+void setup(void)
-+{
-+	euid = geteuid();
-+	pw = SAFE_GETPWNAM("nobody");
-+}
- 
--static int do_test(struct test_case *tc)
-+static void do_test(unsigned int i)
- {
--	int sys_ret;
--	int sys_errno;
--	int result = RESULT_OK;
--	int rc, fd1 = -1, fd2 = -1;
--	uid_t old_uid = -1;
-+	struct test_case *tc = &tcase[i];
-+	mqd_t fd;
-+
-+	tst_res(TINFO, "queue name %s", tc->qname);
- 
- 	/*
- 	 * When test ended with SIGTERM etc, mq descriptor is left remains.
- 	 * So we delete it first.
- 	 */
--	TEST(mq_unlink(QUEUE_NAME));
-+	mq_unlink(QUEUE_NAME);
- 
--	/*
--	 * Open message queue
--	 */
--	rc = mq_open(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
--	if (rc == -1) {
--		tst_resm(TFAIL | TTERRNO, "mq_open failed");
--		result = 1;
-+	/* prepare */
-+	fd = mq_open(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
-+	if (fd == -1) {
-+		tst_res(TBROK | TERRNO, "mq_open failed");
- 		goto EXIT;
- 	}
--	fd1 = rc;
- 
--	/*
--	 * Change effective user id
--	 */
--	if (tc->user != NULL) {
--		TEST(rc = setup_euid(tc->user, &old_uid));
--		if (TEST_RETURN < 0) {
--			result = 1;
--			goto EXIT;
--		}
-+	if (tc->as_nobody && seteuid(pw->pw_uid)) {
-+		tst_res(TBROK | TERRNO, "seteuid failed");
-+		goto EXIT;
- 	}
- 
--	/*
--	 * Execute system call
--	 */
--	errno = 0;
--	TEST(sys_ret = mq_unlink(tc->qname));
--	sys_errno = errno;
--	if (sys_ret >= 0)
--		fd2 = sys_ret;
--
--	/*
--	 * Check results
--	 */
--	result |= (sys_errno != tc->err);
--	PRINT_RESULT(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno);
-+	/* test */
-+	TEST(mq_unlink(tc->qname));
-+	if (TEST_ERRNO != tc->err || TEST_RETURN != tc->ret) {
-+		tst_res(TFAIL | TTERRNO, "mq_unlink returned %ld, expected %d,"
-+			" expected errno %s (%d)", TEST_RETURN,
-+			tc->ret, tst_strerrno(tc->err), tc->err);
-+	} else {
-+		tst_res(TPASS | TTERRNO, "mq_unlink returned %ld", TEST_RETURN);
-+	}
- 
- EXIT:
--	if (tc->user != NULL && old_uid != -1)
--		cleanup_euid(old_uid);
-+	/* cleanup */
-+	if (tc->as_nobody && seteuid(euid) == -1)
-+		tst_res(TWARN | TERRNO, "seteuid back to %d failed", euid);
-+
-+	if (fd > 0 && close(fd))
-+		tst_res(TWARN | TERRNO, "close(fd) failed");
- 
--	if (fd1 >= 0)
--		close(fd1);
--	if (fd2 >= 0)
--		close(fd2);
- 	mq_unlink(QUEUE_NAME);
--	return 0;
- }
- 
--int main(int ac, char **av)
--{
--	int i;
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); ++lc) {
--		tst_count = 0;
--		for (testno = 0; testno < TST_TOTAL; ++testno) {
--
--			int ret;
--
--			ret = 0;
--
--			for (i = 0; ret == 0 &&
--			     i < (int)ARRAY_SIZE(tcase); i++) {
--				ret = do_test(&tcase[i]);
--			}
--
--		}
--	}
--	cleanup();
--	tst_exit();
--}
-+static struct tst_test test = {
-+	.tid = "mq_ulink01",
-+	.tcnt = ARRAY_SIZE(tcase),
-+	.test = do_test,
-+	.needs_root = 1,
-+	.setup = setup,
-+};
--- 
-2.11.0
+>> +}
+>> +
+>> +static void setup(void)
+>> +{
+>> +	char cmd[64];
+>> +	struct passwd *ltpuser;
+>> +
+>> +	sprintf(username, "setpriority01.%d", getpid());
+>> +
+>> +	sprintf(cmd, "useradd %s", username);
+>> +	SAFE_SYSTEM(cmd);
+>> +
+>> +	ltpuser = SAFE_GETPWNAM(username);
+>> +	uid = ltpuser->pw_uid;
+>> +
+>> +	header.version = _LINUX_CAPABILITY_VERSION;
+>> +	header.pid = 0;
+>> +	if (tst_syscall(__NR_capget, &header, &data) == -1)
+>> +		tst_brk(TBROK | TERRNO, "capget() failed");
+>> +}
+>> +
+>> +static void cleanup(void)
+>> +{
+>> +	char cmd[64];
+>> +
+>> +	sprintf(cmd, "userdel -r %s", username);
+>> +	SAFE_SYSTEM(cmd);
+>> +}
+>> +
+>>  static struct tst_test test = {
+>>  	.tid = "setpriority01",
+>>  	.tcnt = ARRAY_SIZE(tcases),
+>>  	.needs_root = 1,
+>> +	.forks_child = 1,
+>> +	.setup = setup,
+>> +	.cleanup = cleanup,
+>>  	.test = verify_setpriority,
+>>  };
+>> -- 
+>> 1.8.4.2
+>>
+>>
+>>
+>>
+>> -- 
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
+
 
