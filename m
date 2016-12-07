@@ -1,538 +1,330 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 7 Dec 2016 13:16:39 +0800
-Subject: [LTP] [PATCH v2 4/5] ipc/msgget02.c: reconstruct && convert to new
-	API
+Date: Wed, 7 Dec 2016 13:16:37 +0800
+Subject: [LTP] [PATCH v2 2/5] syscalls/ipc: add newipc library for new API
 In-Reply-To: <1481087800-20639-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20161123135513.GI3346@rei.lan>
  <1481087800-20639-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1481087800-20639-4-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1481087800-20639-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-1) merge msgget04 into msgget02
-2) take use of some SAFE Marcos
-
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- runtest/ltplite                                 |   1 -
- runtest/stress.part3                            |   1 -
- runtest/syscalls                                |   1 -
- runtest/syscalls-ipc                            |   1 -
- testcases/kernel/syscalls/.gitignore            |   1 -
- testcases/kernel/syscalls/ipc/msgget/msgget02.c | 235 +++++++++---------------
- testcases/kernel/syscalls/ipc/msgget/msgget04.c | 169 -----------------
- 7 files changed, 90 insertions(+), 319 deletions(-)
- delete mode 100644 testcases/kernel/syscalls/ipc/msgget/msgget04.c
+ testcases/kernel/syscalls/ipc/Makefile             |  40 +++---
+ testcases/kernel/syscalls/ipc/libnewipc/Makefile   |  24 ++++
+ .../kernel/syscalls/ipc/libnewipc/libnewipc.c      | 145 +++++++++++++++++++++
+ .../kernel/syscalls/ipc/libnewipc/libnewipc.h      |  52 ++++++++
+ 4 files changed, 240 insertions(+), 21 deletions(-)
+ create mode 100644 testcases/kernel/syscalls/ipc/libnewipc/Makefile
+ create mode 100644 testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c
+ create mode 100644 testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index a05d3ed..53e5999 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -503,7 +503,6 @@ msgctl09 msgctl09
- msgget01 msgget01
- msgget02 msgget02
- msgget03 msgget03
--msgget04 msgget04
+diff --git a/testcases/kernel/syscalls/ipc/Makefile b/testcases/kernel/syscalls/ipc/Makefile
+index 42492db..ca49e49 100644
+--- a/testcases/kernel/syscalls/ipc/Makefile
++++ b/testcases/kernel/syscalls/ipc/Makefile
+@@ -1,19 +1,18 @@
+ #
+-#  Copyright (c) International Business Machines  Corp., 2001
++# Copyright (c) International Business Machines  Corp., 2001
+ #
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
++# This program is free software;  you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
+ #
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY;  without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++# the GNU General Public License for more details.
+ #
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++# You should have received a copy of the GNU General Public License
++# along with this program.
+ #
  
- msgrcv01 msgrcv01
- msgrcv02 msgrcv02
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 274c8a4..8ff228d 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -419,7 +419,6 @@ msgctl09 msgctl09
- msgget01 msgget01
- msgget02 msgget02
- msgget03 msgget03
--msgget04 msgget04
+ top_srcdir		?= ../../../..
+@@ -21,20 +20,19 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/env_pre.mk
  
- msgrcv01 msgrcv01
- msgrcv02 msgrcv02
-diff --git a/runtest/syscalls b/runtest/syscalls
-index e9d7401..feafa3e 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -682,7 +682,6 @@ msgctl13 msgctl13
- msgget01 msgget01
- msgget02 msgget02
- msgget03 msgget03
--msgget04 msgget04
+ LIBDIR			:= lib
+-FILTER_OUT_DIRS		:= $(LIBDIR)
+-LIB			:= $(LIBDIR)/libipc.a $(LIBDIR)/libmsgctl.a
++NEWLIBDIR		:= libnewipc
++LIB			:= $(LIBDIR)/libipc.a $(LIBDIR)/libmsgctl.a $(NEWLIBDIR)/libnewipc.a
  
- msgrcv01 msgrcv01
- msgrcv02 msgrcv02
-diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
-index 5592a00..8212222 100644
---- a/runtest/syscalls-ipc
-+++ b/runtest/syscalls-ipc
-@@ -15,7 +15,6 @@ msgctl13 msgctl13
- msgget01 msgget01
- msgget02 msgget02
- msgget03 msgget03
--msgget04 msgget04
+-$(LIBDIR):
+-	mkdir -p "$@"
+-
+-$(LIB): $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
++$(LIB): $(LIBDIR) $(NEWLIBDIR)
++	$(MAKE) -C $(LIBDIR) -f "$(abs_srcdir)/$(LIBDIR)/Makefile" all
++	$(MAKE) -C $(NEWLIBDIR) -f "$(abs_srcdir)/$(NEWLIBDIR)/Makefile" all
  
- msgrcv01 msgrcv01
- msgrcv02 msgrcv02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 63179fe..a490bf9 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -405,7 +405,6 @@
- /ipc/msgget/msgget01
- /ipc/msgget/msgget02
- /ipc/msgget/msgget03
--/ipc/msgget/msgget04
- /ipc/msgrcv/msgrcv01
- /ipc/msgrcv/msgrcv02
- /ipc/msgrcv/msgrcv03
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget02.c b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-index be9bc61..66484fc 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-@@ -1,176 +1,121 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
+ MAKE_DEPS		:= $(LIB)
+ 
+ trunk-clean:: | lib-clean
+ 
+-lib-clean:: $(LIBDIR)
+-	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
++lib-clean:: $(LIBDIR) $(NEWLIBDIR)
++	$(MAKE) -C $(LIBDIR) -f "$(abs_srcdir)/$(LIBDIR)/Makefile" clean
++	$(MAKE) -C $(NEWLIBDIR) -f "$(abs_srcdir)/$(NEWLIBDIR)/Makefile" clean
+ 
+ include $(top_srcdir)/include/mk/generic_trunk_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/libnewipc/Makefile b/testcases/kernel/syscalls/ipc/libnewipc/Makefile
+new file mode 100644
+index 0000000..e5190f9
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/libnewipc/Makefile
+@@ -0,0 +1,24 @@
++#
++# Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
++#
++# This program is free software;  you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY;  without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++# the GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program.
++#
++
++top_srcdir		?= ../../../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++LIB			:= libnewipc.a
++
++include $(top_srcdir)/include/mk/lib.mk
+diff --git a/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c
+new file mode 100644
+index 0000000..5e27662
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c
+@@ -0,0 +1,145 @@
++/*
++ * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
++ *
 + * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
 + * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
++ *
 + * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
 + * the GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *
 + * You should have received a copy of the GNU General Public License
 + * along with this program.
-  */
- 
- /*
-- * NAME
-- *	msgget02.c
-- *
-  * DESCRIPTION
-- *	msgget02 - test for EEXIST and ENOENT errors
-- *
-- * ALGORITHM
-- *	create a message queue
-- *	loop if that option was specified
-- *	try to recreate the same queue - test #1
-- *	try to access a queue that doesn't exist - tests #2 & #3
-- *	check the errno value
-- *	  issue a PASS message if we get EEXIST or ENOENT depening on test
-- *	otherwise, the tests fails
-- *	  issue a FAIL message
-- *	  break any remaining tests
-- *	  call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  msgget02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-+ * 1) msgget(2) fails if a message queue exists for key and msgflg
-+ *    specified both IPC_CREAT and IPC_EXCL.
-+ * 2) msgget(2) fails if no message queue exists for key and msgflg
-+ *    did not specify IPC_CREAT.
-+ * 3) msgget(2) fails if a message queue exists for key, but the
-+ *    calling process does not have permission to access the queue,
-+ *    and does not have the CAP_IPC_OWNER capability.
-  *
-- *      28/03/2008 Renaud Lottiaux (Renaud.Lottiaux@kerlabs.com)
-- *      - Fix concurrency issue. The second key used for this test was
-- *        sometime conflicting with the key from another task.
-- *        Generate a valid second key through getipckey to avoid conflicts.
-- *
-- * RESTRICTIONS
-- *	none
-  */
--
--#include "test.h"
--
--#include "ipcmsg.h"
--
--char *TCID = "msgget02";
--int TST_TOTAL = 3;
--
--struct test_case_t {
--	int error;
--	int msgkey;
-+#include <errno.h>
++ */
++
++/*
++ * DESCRIPTION
++ * common routines for the IPC system call tests.
++ *
++ * The library contains the following routines:
++ * getipckey()
++ * rm_queue()
++ * rm_sema()
++ * rm_shm()
++ * get_used_msgqueues()
++ * get_max_msgqueues()
++ */
++
++#define NEWLIBIPC
++
++#include <unistd.h>
++#include <stdio.h>
 +#include <stdlib.h>
++#include <stdlib.h>
++#include <pwd.h>
 +#include <sys/types.h>
 +#include <sys/ipc.h>
 +#include <sys/msg.h>
-+#include <pwd.h>
++#include <sys/shm.h>
++#include <sys/sem.h>
 +
 +#include "libnewipc.h"
-+#include "tst_test.h"
++#include "tst_res_flags.h"
++#include "tst_res.h"
++#include "tst_safe_macros.h"
++#include "lapi/semun.h"
 +
-+static key_t msgkey, msgkey1;
-+static int msg_q_1 = -1;
-+static struct passwd *pw;
++#define BUFSIZE 512
 +
-+static struct tcase {
-+	int *key;
- 	int flags;
--} TC[] = {
--	{
--	EEXIST, 0, IPC_CREAT | IPC_EXCL}, {
--	ENOENT, 1, IPC_PRIVATE}, {
--	ENOENT, 1, IPC_EXCL}
-+	int exp_err;
-+	/*1: nobody expected  0: root expected */
-+	int exp_user;
-+} tcases[] = {
-+	{&msgkey, IPC_CREAT | IPC_EXCL, EEXIST, 0},
-+	{&msgkey1, IPC_PRIVATE, ENOENT, 0},
-+	{&msgkey1, IPC_EXCL, ENOENT, 0},
-+	{&msgkey, MSG_RD, EACCES, 1},
-+	{&msgkey, MSG_WR, EACCES, 1},
-+	{&msgkey, MSG_RD | MSG_WR, EACCES, 1}
- };
- 
--key_t msgkey1;
--int msg_q_1 = -1;		/* The message queue id created in setup */
--
--int main(int ac, char **av)
-+static void verify_msgget(struct tcase *tc)
- {
--	int lc;
--	int i;
--	key_t key;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();		/* global setup */
--
--	/* The following loop checks looping state if -i option given */
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		/* loop through the test cases */
--
--		for (i = 0; i < TST_TOTAL; i++) {
--
--			if (TC[i].msgkey == 0)
--				key = msgkey;
--			else
--				key = msgkey1;
-+	TEST(msgget(*tc->key, tc->flags));
- 
--			TEST(msgget(key, TC[i].flags));
-+	if (TEST_RETURN != -1) {
-+		tst_res(TFAIL, "msgget() succeeded unexpectedly");
-+		return;
-+	}
- 
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "msgget() call succeeded "
--					 "on expected fail");
--				continue;
--			}
-+	if (TEST_ERRNO == tc->exp_err)
-+		tst_res(TPASS | TTERRNO, "msgget() failed as expected");
-+	else
-+		tst_res(TFAIL | TTERRNO, "msgget() failed unexpectedly,"
-+			" expected %s", tst_strerrno(tc->exp_err));
-+}
- 
--			switch (TEST_ERRNO) {
--			case ENOENT:
--			 /*FALLTHROUGH*/ case EEXIST:
--				if (TEST_ERRNO == TC[i].error) {
--					tst_resm(TPASS, "expected failure - "
--						 "errno = %d : %s", TEST_ERRNO,
--						 strerror(TEST_ERRNO));
--					break;
--				}
--			/*FALLTHROUGH*/ default:
--				tst_resm(TFAIL, "call failed with an "
--					 "unexpected error - %d : %s",
--					 TEST_ERRNO, strerror(TEST_ERRNO));
--				break;
--			}
-+static void do_test(unsigned int n)
++key_t getipckey(void)
 +{
-+	pid_t pid;
-+	struct tcase *tc = &tcases[n];
++	int ascii_a = (int) 'a';
++	char buf[BUFSIZE];
++	key_t key;
++	int id;
++	static int count;
 +
-+	if (tc->exp_user == 0) {
-+		verify_msgget(tc);
-+	} else {
-+		pid = SAFE_FORK();
-+		if (pid) {
-+			tst_reap_children();
-+		} else {
-+			SAFE_SETUID(pw->pw_uid);
-+			verify_msgget(tc);
-+			exit(0);
- 		}
- 	}
--
--	cleanup();
--
--	tst_exit();
- }
- 
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
--void setup(void)
-+static void setup(void)
- {
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	/*
--	 * Create a temporary directory and cd into it.
--	 * This helps to ensure that a unique msgkey is created.
--	 * See ../lib/libipc.c for more information.
--	 */
--	tst_tmpdir();
--
- 	msgkey = getipckey();
- 	msgkey1 = getipckey();
- 
--	/* now we have a key, so let's create a message queue */
--	if ((msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL)) == -1) {
--		system("ipcs > /tmp/toto");
--		system("ps -aux >> /tmp/toto");
--		tst_brkm(TBROK, cleanup, "Can't create message queue");
--	}
-+	msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL);
-+	if (msg_q_1 == -1)
-+		tst_brk(TBROK | TERRNO, "Can't create message queue");
++	SAFE_GETCWD(buf, BUFSIZE);
 +
-+	pw = SAFE_GETPWNAM("nobody");
- }
- 
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
--void cleanup(void)
-+static void cleanup(void)
- {
--	/* if it exists, remove the message queue that was created. */
- 	rm_queue(msg_q_1);
- 
--	tst_rmdir();
--
-+	msg_q_1 = -1;
- }
++	id = count % 26 + ascii_a;
++	count++;
 +
-+static struct tst_test test = {
-+	.tid = "msgget02",
-+	.needs_tmpdir = 1,
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test = do_test
-+};
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget04.c b/testcases/kernel/syscalls/ipc/msgget/msgget04.c
-deleted file mode 100644
-index 22f8b38..0000000
---- a/testcases/kernel/syscalls/ipc/msgget/msgget04.c
-+++ /dev/null
-@@ -1,169 +0,0 @@
--/*
-- *
-- *   Copyright (c) International Business Machines  Corp., 2001
-- *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-- */
--
--/*
-- * NAME
-- *	msgget04.c
-- *
-- * DESCRIPTION
-- *	msgget04 - test for an EACCES error by creating a message queue
-- *		   with no read or write permission and then attempting
-- *		   to access it with various permissions.
-- *
-- * ALGORITHM
-- *	Create a message queue with no read or write permission
-- *	loop if that option was specified
-- *	Try to access the message queue with various permissions
-- *	check the errno value
-- *	  issue a PASS message if we get EACCES
-- *	otherwise, the tests fails
-- *	  issue a FAIL message
-- *	  break any remaining tests
-- *	  call cleanup
-- *
-- * USAGE:  <for command-line>
-- *  msgget04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *	       -i n : Execute test n times.
-- *	       -I x : Execute test for x seconds.
-- *	       -P x : Pause for x seconds between iterations.
-- *	       -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	03/2001 - Written by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	none
-- */
--#include <pwd.h>
--#include "test.h"
--
--#include "ipcmsg.h"
--
--char *TCID = "msgget04";
--int TST_TOTAL = 3;
--
--char nobody_uid[] = "nobody";
--struct passwd *ltpuser;
--
--int msg_q_1 = -1;		/* to hold the message queue id */
--
--int test_flags[] = { MSG_RD, MSG_WR, MSG_RD | MSG_WR };
--
--int main(int ac, char **av)
--{
--	int lc;
--	int i;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();		/* global setup */
--
--	/* The following loop checks looping state if -i option given */
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		/* reset tst_count in case we are looping */
--		tst_count = 0;
--
--		/* loop through the test cases */
--
--		for (i = 0; i < TST_TOTAL; i++) {
--			/*
--			 * Try to access the message queue with specified
--			 * permissions.
--			 */
--
--			TEST(msgget(msgkey, test_flags[i]));
--
--			if (TEST_RETURN != -1) {
--				tst_resm(TFAIL, "call succeeded "
--					 "when EACCES error expected");
--				continue;
--			}
--
--			switch (TEST_ERRNO) {
--			case EACCES:
--				tst_resm(TPASS, "expected failure - errno = "
--					 "%d : %s", TEST_ERRNO,
--					 strerror(TEST_ERRNO));
--				break;
--			default:
--				tst_resm(TFAIL, "call failed with an "
--					 "unexpected error - %d : %s",
--					 TEST_ERRNO, strerror(TEST_ERRNO));
--				break;
--			}
--		}
--	}
--
--	cleanup();
--
--	tst_exit();
--}
--
--/*
-- * setup() - performs all the ONE TIME setup for this test.
-- */
--void setup(void)
--{
--	tst_require_root();
--
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	/* Switch to nobody user for correct error code collection */
--	ltpuser = getpwnam(nobody_uid);
--	if (setuid(ltpuser->pw_uid) == -1) {
--		tst_resm(TINFO, "setuid failed to "
--			 "to set the effective uid to %d", ltpuser->pw_uid);
--		perror("setuid");
--	}
--
--	/*
--	 * Create a temporary directory and cd into it.
--	 * This helps to ensure that a unique msgkey is created.
--	 * See ../lib/libipc.c for more information.
--	 */
--	tst_tmpdir();
--
--	msgkey = getipckey();
--
--	/*
--	 * Create the message queue without specifying permissions.
--	 */
--	if ((msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL)) == -1) {
--		tst_brkm(TBROK, cleanup, "Could not create message queue"
--			 " - errno = %d : %s", errno, strerror(errno));
--	}
--}
--
--/*
-- * cleanup() - performs all the ONE TIME cleanup for this test at completion
-- * 	       or premature exit.
-- */
--void cleanup(void)
--{
--	/* if it exists, remove the message queue */
--	rm_queue(msg_q_1);
--
--	tst_rmdir();
--
--}
++	key = ftok(buf, id);
++	if (key == -1)
++		tst_brk(TBROK | TERRNO, "ftok() failed");
++
++	return key;
++}
++
++void rm_queue(int queue_id)
++{
++	if (queue_id == -1)
++		return;
++
++	if (msgctl(queue_id, IPC_RMID, NULL) == -1) {
++		tst_res(TINFO, "WARNING: message queue deletion failed.");
++		tst_res(TINFO, "This could lead to IPC resource problems.");
++		tst_res(TINFO, "id = %d", queue_id);
++	}
++}
++
++void rm_sema(int sem_id)
++{
++	union semun arr;
++
++	if (sem_id == -1)
++		return;
++
++	if (semctl(sem_id, 0, IPC_RMID, arr) == -1) {
++		tst_res(TINFO, "WARNING: semaphore deletion failed.");
++		tst_res(TINFO, "This could lead to IPC resource problems.");
++		tst_res(TINFO, "id = %d", sem_id);
++	}
++}
++
++void rm_shm(int shm_id)
++{
++	if (shm_id == -1)
++		return;
++
++	if (shmctl(shm_id, IPC_RMID, NULL) == -1) {
++		tst_res(TINFO, "WARNING: shared memory deletion failed.");
++		tst_res(TINFO, "This could lead to IPC resource problems.");
++		tst_res(TINFO, "id = %d", shm_id);
++	}
++}
++
++int get_used_msgqueues(void)
++{
++	FILE *f;
++	int used_queues;
++	char buf[BUFSIZE];
++
++	f = popen("ipcs -q", "r");
++	if (!f)
++		tst_brk(TBROK | TERRNO, "pipe failed");
++
++	/* FIXME: Start at -4 because ipcs prints four lines of header */
++	for (used_queues = -4; fgets(buf, BUFSIZE, f); used_queues++);
++
++	pclose(f);
++
++	if (used_queues < 0) {
++		tst_brk(TBROK, "Could not read output of 'ipcs' to "
++			"calculate used message queues");
++	}
++
++	return used_queues;
++}
++
++int get_max_msgqueues(void)
++{
++	int fd;
++	char buf[BUFSIZE];
++
++	fd = SAFE_OPEN("/proc/sys/kernel/msgmni", O_RDONLY);
++
++	SAFE_READ(0, fd, buf, BUFSIZE);
++
++	SAFE_CLOSE(fd);
++
++	return atoi(buf);
++}
+diff --git a/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h
+new file mode 100644
+index 0000000..6a3064d
+--- /dev/null
++++ b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h
+@@ -0,0 +1,52 @@
++/*
++ * Copyright (c) 2016 Xiao Yang <yangx.jy@cn.fujitsu.com>
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.
++ */
++
++/*
++ * common definitions for the IPC system calls.
++ */
++
++#ifndef __NEWIPC_H
++#define __NEWIPC_H	1
++
++#define MSG_RD	0400
++#define MSG_WR	0200
++#define MSG_RW	(MSG_RD | MSG_WR)
++#define MSGSIZE	1024
++#define MSGTYPE	1
++#define NR_MSGQUEUES	16
++#define min(a, b)	(((a) < (b)) ? @ : (b))
++
++#define SEM_RD	0400
++#define SEM_ALT	0200
++#define SEM_RA	(SEM_RD | SEM_ALT)
++#define PSEMS	10
++
++#define SHM_RD	0400
++#define SHM_WR	0200
++#define SHM_RW	(SHM_RD | SHM_WR)
++#define SHM_SIZE	2048
++#define INT_SIZE	4
++#define MODE_MASK	0x01FF
++
++key_t getipckey(void);
++void rm_queue(int queue_id);
++void rm_sem(int sem_id);
++void rm_shm(int shm_id);
++int get_used_msgqueues(void);
++int get_max_msgqueues(void);
++
++#endif /* newlibipc.h */
 -- 
 1.8.3.1
 
