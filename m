@@ -1,33 +1,28 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  7 Dec 2016 09:54:17 +0100
-Subject: [LTP] [PATCH 1/1] network: fix printing commands in verbose mode
-Message-ID: <20161207085417.15753-1-pvorel@suse.cz>
+Date: Wed, 7 Dec 2016 15:18:55 +0100
+Subject: [LTP] Invoking networking tests
+Message-ID: <20161207141855.lvyrqs4cxhy4wr2c@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Copy & paste error from testscripts/networkstress.sh
+Hi Alexey,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testscripts/network.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+we're going to run LTP networking tests to against openSUSE and SUSE. Is there anything
+you'd like to change on invoking these tests? Anything deprecated?
 
-diff --git a/testscripts/network.sh b/testscripts/network.sh
-index 6b81823f9..2d2c6762c 100755
---- a/testscripts/network.sh
-+++ b/testscripts/network.sh
-@@ -94,7 +94,7 @@ if [ ${VERBOSE} = "yes" ]; then
- 	echo " - ${LHOST_IFACES} local interface (MAC address: ${LHOST_HWADDRS})"
- 	echo " - ${RHOST_IFACES} remote interface (MAC address: ${RHOST_HWADDRS})"
- 
--	cat $TMPDIR/network_stress.tests
-+	cat $CMDFILE
- 	${LTPROOT}/ver_linux
- 	echo ""
- 	echo ${LTPROOT}/bin/ltp-pan -e -l /tmp/netpan.log -S -a ltpnet -n ltpnet -f $CMDFILE
--- 
-2.11.0
+I see that scripts are run by ltp-pan (via. testscripts/network.sh wrapper), which is I
+suppose standard way how to run any test in LTP (as it is in runltp and half of
+testscripts/*.sh scripts).
 
+How about testcases/lib/test_net.sh and testcases/lib/test.sh scripts? Not deprecated?
+
+BTW: what is the purpose of testscripts/*.sh scripts, why it isn't everything integrated
+into runltp?
+
+Kind regards,
+Petr
+
+PS: sorry for duplicate mail, now sent with correct LTP mailing list address.
