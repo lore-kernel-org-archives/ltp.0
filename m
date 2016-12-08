@@ -1,27 +1,29 @@
-From: Hoang Nguyen <the_hoang0709@yahoo.com>
-Date: Wed, 7 Dec 2016 01:21:14 +0000 (UTC)
-Subject: [LTP]  [PATCH] Fix wrong checking of aarch64
-References: <676103620.849898.1481073674693.ref@mail.yahoo.com>
-Message-ID: <676103620.849898.1481073674693@mail.yahoo.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 8 Dec 2016 18:32:28 +0100
+Subject: [LTP] Invoking networking tests
+In-Reply-To: <58494350.80404@oracle.com>
+References: <20161207141855.lvyrqs4cxhy4wr2c@dell5510>
+ <58494350.80404@oracle.com>
+Message-ID: <20161208173228.jixqv2xd6jqptz5i@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi, 
+Hi Alexey,
 
-We found an issue of checking aarch64 in max_map_count.cSo I'd like to send a patch.Please help to review and merge it.
-If there's any issue, feel free to contact me.
-Thanks and regards,
-V.
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20161207/ce6725d8/attachment.html>
--------------- next part --------------
-A non-text attachment was scrubbed...
-Name: 0001-Fix-wrong-checking-of-aarch64.patch
-Type: text/x-patch
-Size: 1303 bytes
-Desc: not available
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20161207/ce6725d8/attachment.bin>
+thanks for info!
+
+> Please also see the recent patch:
+> 5f8ca6c ("network: test_net.sh: allow to run network tests on a single
+> machine")
+Noticed, I was waiting for pushing it to master :-). Looks interesting, I'll give it a try.
+
+Can it be "dangerous" to run tests "natively", i.e. without ltp-pan? It'd be run by
+automation (no cancel ctrl+c), so cleanup children is unlike. Or is it also for cleanup
+when some test misbehave and it's being killed by kernel?
+
+
+Kind regards,
+Petr
