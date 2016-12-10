@@ -1,29 +1,35 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 8 Dec 2016 18:32:28 +0100
-Subject: [LTP] Invoking networking tests
-In-Reply-To: <58494350.80404@oracle.com>
-References: <20161207141855.lvyrqs4cxhy4wr2c@dell5510>
- <58494350.80404@oracle.com>
-Message-ID: <20161208173228.jixqv2xd6jqptz5i@dell5510>
+Date: Sat, 10 Dec 2016 21:29:08 +0100
+Subject: [LTP] [PATCH v3 1/2] lib: add FILE_PRINTF
+Message-ID: <20161210202909.22260-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Using non-safe version is handy in cleanup.
 
-thanks for info!
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ include/tst_safe_file_ops.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> Please also see the recent patch:
-> 5f8ca6c ("network: test_net.sh: allow to run network tests on a single
-> machine")
-Noticed, I was waiting for pushing it to master :-). Looks interesting, I'll give it a try.
+diff --git a/include/tst_safe_file_ops.h b/include/tst_safe_file_ops.h
+index 2e4067ca1..cb8f25dcd 100644
+--- a/include/tst_safe_file_ops.h
++++ b/include/tst_safe_file_ops.h
+@@ -38,6 +38,10 @@
+ 	file_lines_scanf(__FILE__, __LINE__, NULL, 1,\
+ 			(path), (fmt), ## __VA_ARGS__)
+ 
++#define FILE_PRINTF(path, fmt, ...) \
++	file_printf(__FILE__, __LINE__, \
++	            (path), (fmt), ## __VA_ARGS__)
++
+ #define SAFE_FILE_PRINTF(path, fmt, ...) \
+ 	safe_file_printf(__FILE__, __LINE__, NULL, \
+ 	                 (path), (fmt), ## __VA_ARGS__)
+-- 
+2.11.0
 
-Can it be "dangerous" to run tests "natively", i.e. without ltp-pan? It'd be run by
-automation (no cancel ctrl+c), so cleanup children is unlike. Or is it also for cleanup
-when some test misbehave and it's being killed by kernel?
-
-
-Kind regards,
-Petr
