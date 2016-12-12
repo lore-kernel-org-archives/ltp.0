@@ -1,60 +1,47 @@
-From: Ning,Han <ningx.han@intel.com>
-Date: Mon, 12 Dec 2016 08:56:34 +0800
-Subject: [LTP] [PATCH ltp] su01: do pre-checking to avoid annoying warnings
-Message-ID: <1481504194-30726-1-git-send-email-ningx.han@intel.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Mon, 12 Dec 2016 14:52:20 +0300
+Subject: [LTP] Invoking networking tests
+In-Reply-To: <20161208173228.jixqv2xd6jqptz5i@dell5510>
+References: <20161207141855.lvyrqs4cxhy4wr2c@dell5510>
+ <58494350.80404@oracle.com> <20161208173228.jixqv2xd6jqptz5i@dell5510>
+Message-ID: <584E8F74.80308@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Ning Han <ningx.han@intel.com>
+Hi Petr,
 
-Signed-off-by: Ning Han <ningx.han@intel.com>
----
- testcases/commands/su/su01 | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+On 12/08/2016 08:32 PM, Petr Vorel wrote:
+> Hi Alexey,
+>
+> thanks for info!
+>
+>> Please also see the recent patch:
+>> 5f8ca6c ("network: test_net.sh: allow to run network tests on a single
+>> machine")
+> Noticed, I was waiting for pushing it to master :-). Looks interesting, I'll give it a try.
+>
+> Can it be "dangerous" to run tests "natively", i.e. without ltp-pan? It'd be run by
+> automation (no cancel ctrl+c), so cleanup children is unlike.
 
-diff --git a/testcases/commands/su/su01 b/testcases/commands/su/su01
-index dd1517f..5e59eff 100755
---- a/testcases/commands/su/su01
-+++ b/testcases/commands/su/su01
-@@ -86,7 +86,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
- #Create 1st test user
-     #erase user if he may exist , so we can have a clean en
-         rm -rf /home/$TEST_USER1
--        userdel $TEST_USER1
-+        getent passwd $TEST_USER1 && userdel $TEST_USER1
- 	sleep 1
- 
-         useradd -m -g users $TEST_USER1
-@@ -105,7 +105,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
- 	then {
-           USER_UID=`id -u $TEST_USER1`
-           USER_GID=`id -g $TEST_USER1`
--          mkdir $TEST_USER1_HOMEDIR
-+          mkdir -p $TEST_USER1_HOMEDIR
-           chown -R $USER_UID.$USER_GID $TEST_USER1_HOMEDIR
- 	}
- 	fi
-@@ -121,7 +121,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
- #Create 2nd test user
- 	#erase user if he may exist , so we can have a clean en
-         rm -rf /home/$TEST_USER2
--        userdel $TEST_USER2
-+        getent passwd $TEST_USER2 && userdel $TEST_USER2
- 	sleep 1
- 
-         useradd -m -g users $TEST_USER2
-@@ -141,7 +141,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
-         then {
-           USER_UID=`id -u $TEST_USER2`
-           USER_GID=`id -g $TEST_USER2`
--          mkdir $TEST_USER2_HOMEDIR
-+          mkdir -p $TEST_USER2_HOMEDIR
-           chown -R $USER_UID.$USER_GID $TEST_USER2_HOMEDIR
- 	}
- 	fi
--- 
-2.7.4
+I think it depends on automation and how far it controls started process.
+
+Besides, converted to latest LTP API tests much safer in terms of per 
+test lockups because
+they have a test timeout there. As far as I know there is no such 
+feature in new shell library
+yet (tst_test.sh). It seems that it would be a good thing to have a 
+timeout option in tst_rod() too.
+
+Thanks,
+Alexey
+
+> Or is it also for cleanup
+> when some test misbehave and it's being killed by kernel?
+>
+>
+> Kind regards,
+> Petr
 
