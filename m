@@ -1,7 +1,12 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 12 Dec 2016 14:22:05 +0100
-Subject: [LTP] LTP release && Christmas && New year
-Message-ID: <20161212132204.GA21779@rei.lan>
+Date: Mon, 12 Dec 2016 14:52:06 +0100
+Subject: [LTP] Invoking networking tests
+In-Reply-To: <584E8F74.80308@oracle.com>
+References: <20161207141855.lvyrqs4cxhy4wr2c@dell5510>
+ <58494350.80404@oracle.com>
+ <20161208173228.jixqv2xd6jqptz5i@dell5510>
+ <584E8F74.80308@oracle.com>
+Message-ID: <20161212135205.GA21828@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,14 +14,16 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Christmas and New Year is getting closer so it's time to start preparing
-another release...
+> As far as I know there is no such feature in new shell library yet
+> (tst_test.sh).
 
-I will be on a time off since the next week so I propose to work on
-merging as many patches as possible this week. Then we will follow up
-with pre-release testing and freeze. I will join the effort once I
-return back to the work which will be Monday 2. 1. 2017. then we will do
-the release a week or two after that. Does that sound OK to everyone?
+I will try to implement this until the next LTP release.
+
+> It seems that it would be a good thing to have a timeout option in
+> tst_rod() too.
+
+That may be a good idea as well. We could fork() and watch for a timeout
+in the tst_rod.c quite easily.
 
 -- 
 Cyril Hrubis
