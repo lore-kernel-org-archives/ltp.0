@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 13 Dec 2016 11:43:53 +0100
-Subject: [LTP] rt_sigtimedwait01 failed in armv7l
-In-Reply-To: <584FBAE7.2010100@huawei.com>
-References: <584FBAE7.2010100@huawei.com>
-Message-ID: <20161213104352.GA750@rei.lan>
+Date: Tue, 13 Dec 2016 14:52:33 +0100
+Subject: [LTP] [PATCH v3 1/4] syscalls/ipc: add newipc library for new
+	API
+In-Reply-To: <1481614745-27778-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20161212142847.GD21828@rei.lan>
+ <1481614745-27778-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20161213135233.GB750@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,57 +13,78 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Hi, These is a fail about rt_sigtimedwait01(armv7l GNU/Linux and linux 3.10):
-> root@arma9el:/tmp# ./rt_sigtimedwait01
-> rt_sigtimedwait01    0  TINFO  :  0x9fd0, 10
-> rt_sigtimedwait01    1  TPASS  :  Test passed
-> rt_sigtimedwait01    0  TINFO  :  0x9fd0, 10
-> rt_sigtimedwait01    2  TPASS  :  Test passed
-> ...
-> rt_sigtimedwait01    0  TINFO  :  0x9fd0, 12
-> rt_sigtimedwait01   11  TPASS  :  Test passed
-> rt_sigtimedwait01    0  TINFO  :  0x9fd0, 15
-> rt_sigtimedwait01   12  TPASS  :  Test passed
-> rt_sigtimedwait01   12  TPASS  :  sigwaitinfo restored the original mask
-> rt_sigtimedwait01    0  TINFO  :  0x9fd0, -1
-> 
-> rt_sigtimedwait01   13  TFAIL  :  /home/cuibixuan/ltp/testcases/kernel/syscalls/rt_sigtimedwait/../sigwaitinfo/sigwaitinfo01.c:56:
-> test_masked_matching_rt (/home/cuibixuan/ltp/testcases/kernel/syscalls/rt_sigtimedwait/../sigwaitinfo/sigwaitinfo01.c: 274): Unexpected return value; expected 35, got 36
-> rt_sigtimedwait01   13  TFAIL  :  /home/cuibixuan/ltp/testcases/kernel/syscalls/rt_sigtimedwait/../sigwaitinfo/sigwaitinfo01.c:56:
-> test_masked_matching_rt (/home/cuibixuan/ltp/testcases/kernel/syscalls/rt_sigtimedwait/../sigwaitinfo/sigwaitinfo01.c: 282): Unexpected return value; expected 36, got 35
-> rt_sigtimedwait01   13  TPASS  :  sigwaitinfo restored the original mask
-> 
-> 
-> I add 'sleep(1)' into test_masked_matching_rt() of ltp/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c:268
-> 
-> void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
-> ...
-> /* Run a child that will wake us up */
->         child[0] = create_sig_proc(0, signo, 1);
-> +       sleep(1);
->         child[1] = create_sig_proc(0, signo + 1, 1);
-> 
-> Then the case pass:
-> rt_sigtimedwait01   13  TPASS  :  Test passed
-> rt_sigtimedwait01   13  TPASS  :  Test passed
-> rt_sigtimedwait01   13  TPASS  :  sigwaitinfo restored the original mask
-> 
-> Or run it by 'chrt 10 ./rt_sigtimedwait01' then pass.
-> 
-> Why? Can someone give me a hand.
+> --- a/testcases/kernel/syscalls/ipc/Makefile
+> +++ b/testcases/kernel/syscalls/ipc/Makefile
+> @@ -1,19 +1,18 @@
+>  #
+> -#  Copyright (c) International Business Machines  Corp., 2001
+> +# Copyright (c) International Business Machines  Corp., 2001
+>  #
+> -#  This program is free software;  you can redistribute it and/or modify
+> -#  it under the terms of the GNU General Public License as published by
+> -#  the Free Software Foundation; either version 2 of the License, or
+> -#  (at your option) any later version.
+> +# This program is free software;  you can redistribute it and/or modify
+> +# it under the terms of the GNU General Public License as published by
+> +# the Free Software Foundation; either version 2 of the License, or
+> +# (at your option) any later version.
+>  #
+> -#  This program is distributed in the hope that it will be useful,
+> -#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> -#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> -#  the GNU General Public License for more details.
+> +# This program is distributed in the hope that it will be useful,
+> +# but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> +# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> +# the GNU General Public License for more details.
+>  #
+> -#  You should have received a copy of the GNU General Public License
+> -#  along with this program;  if not, write to the Free Software
+> -#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+> +# You should have received a copy of the GNU General Public License
+> +# along with this program.
+>  #
+>  
+>  top_srcdir		?= ../../../..
+> @@ -21,20 +20,19 @@ top_srcdir		?= ../../../..
+>  include $(top_srcdir)/include/mk/env_pre.mk
+>  
+>  LIBDIR			:= lib
+> -FILTER_OUT_DIRS		:= $(LIBDIR)
+> -LIB			:= $(LIBDIR)/libipc.a $(LIBDIR)/libmsgctl.a
+> +NEWLIBDIR		:= libnewipc
+> +LIB			:= $(LIBDIR)/libipc.a $(LIBDIR)/libmsgctl.a $(NEWLIBDIR)/libnewipc.a
+>  
+> -$(LIBDIR):
+> -	mkdir -p "$@"
+> -
+> -$(LIB): $(LIBDIR)
+> -	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" all
+> +$(LIB): $(LIBDIR) $(NEWLIBDIR)
+> +	$(MAKE) -C $(LIBDIR) -f "$(abs_srcdir)/$(LIBDIR)/Makefile" all
+> +	$(MAKE) -C $(NEWLIBDIR) -f "$(abs_srcdir)/$(NEWLIBDIR)/Makefile" all
+>  
+>  MAKE_DEPS		:= $(LIB)
+>  
+>  trunk-clean:: | lib-clean
+>  
+> -lib-clean:: $(LIBDIR)
+> -	$(MAKE) -C $^ -f "$(abs_srcdir)/$^/Makefile" clean
+> +lib-clean:: $(LIBDIR) $(NEWLIBDIR)
+> +	$(MAKE) -C $(LIBDIR) -f "$(abs_srcdir)/$(LIBDIR)/Makefile" clean
+> +	$(MAKE) -C $(NEWLIBDIR) -f "$(abs_srcdir)/$(NEWLIBDIR)/Makefile" clean
 
-I guess that the problem here is that the order in which the test
-children and parent are executed is undefined.
+I've just found that this whole Makefile has been broken for ages and
+that the old library was build only by the inclusion of the Makefile.inc
+in the test directories, I wonder why this wasn't breaking parallel
+build at all. The whole reason is that MAKE_DEPS is ignored when
+MAKE_TARGETS is empty so the $(LIB) targets are not rebuild and removing
+the $(LIBDIR) from FILTER_OUT_DIRS is not solution either since that
+will break parallel build for sure.
 
-The signals should be delivered starting from lowest numbered but that
-applies only when both signals are pending at the point we call
-sigwaitinfo(). If, by a chance, the first child haven't had chance to
-finish until we get to the sigwaitinfo() call we will get the signo+1
-signal first, since that is the only one pending at that point.
-
-So the fix here would be making sure that both children are finished
-before we call the sigwaitinfo(). Quite possibly doing waitpid() for
-both of them will suffice.
+I will do something about this. One solution may be to set the
+MAKE_TARGETS to some phony target if it's empty. Let's see if I can
+figure out something better.
 
 -- 
 Cyril Hrubis
