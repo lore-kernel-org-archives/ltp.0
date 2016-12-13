@@ -1,55 +1,45 @@
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Tue, 13 Dec 2016 17:09:59 +0800
-Subject: [LTP]  rt_sigtimedwait01 failed in armv7l
-Message-ID: <584FBAE7.2010100@huawei.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 13 Dec 2016 04:34:21 -0500 (EST)
+Subject: [LTP] LTP release && Christmas && New year
+In-Reply-To: <20161212132204.GA21779@rei.lan>
+References: <20161212132204.GA21779@rei.lan>
+Message-ID: <1969902627.4971070.1481621661306.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi, These is a fail about rt_sigtimedwait01(armv7l GNU/Linux and linux 3.10):
-root@arma9el:/tmp# ./rt_sigtimedwait01
-rt_sigtimedwait01    0  TINFO  :  0x9fd0, 10
-rt_sigtimedwait01    1  TPASS  :  Test passed
-rt_sigtimedwait01    0  TINFO  :  0x9fd0, 10
-rt_sigtimedwait01    2  TPASS  :  Test passed
-...
-rt_sigtimedwait01    0  TINFO  :  0x9fd0, 12
-rt_sigtimedwait01   11  TPASS  :  Test passed
-rt_sigtimedwait01    0  TINFO  :  0x9fd0, 15
-rt_sigtimedwait01   12  TPASS  :  Test passed
-rt_sigtimedwait01   12  TPASS  :  sigwaitinfo restored the original mask
-rt_sigtimedwait01    0  TINFO  :  0x9fd0, -1
-
-rt_sigtimedwait01   13  TFAIL  :  /home/cuibixuan/ltp/testcases/kernel/syscalls/rt_sigtimedwait/../sigwaitinfo/sigwaitinfo01.c:56:
-test_masked_matching_rt (/home/cuibixuan/ltp/testcases/kernel/syscalls/rt_sigtimedwait/../sigwaitinfo/sigwaitinfo01.c: 274): Unexpected return value; expected 35, got 36
-rt_sigtimedwait01   13  TFAIL  :  /home/cuibixuan/ltp/testcases/kernel/syscalls/rt_sigtimedwait/../sigwaitinfo/sigwaitinfo01.c:56:
-test_masked_matching_rt (/home/cuibixuan/ltp/testcases/kernel/syscalls/rt_sigtimedwait/../sigwaitinfo/sigwaitinfo01.c: 282): Unexpected return value; expected 36, got 35
-rt_sigtimedwait01   13  TPASS  :  sigwaitinfo restored the original mask
-
-
-I add 'sleep(1)' into test_masked_matching_rt() of ltp/testcases/kernel/syscalls/sigwaitinfo/sigwaitinfo01.c:268
-
-void test_masked_matching_rt(swi_func sigwaitinfo, int signo)
-...
-/* Run a child that will wake us up */
-        child[0] = create_sig_proc(0, signo, 1);
-+       sleep(1);
-        child[1] = create_sig_proc(0, signo + 1, 1);
-
-Then the case pass:
-rt_sigtimedwait01   13  TPASS  :  Test passed
-rt_sigtimedwait01   13  TPASS  :  Test passed
-rt_sigtimedwait01   13  TPASS  :  sigwaitinfo restored the original mask
-
-Or run it by 'chrt 10 ./rt_sigtimedwait01' then pass.
-
-Why? Can someone give me a hand.
-
-Thanks,
-Cui Bixuan
 
 
 
 
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: ltp@lists.linux.it
+> Sent: Monday, 12 December, 2016 2:22:05 PM
+> Subject: [LTP] LTP release && Christmas && New year
+> 
+> Hi!
+> Christmas and New Year is getting closer so it's time to start preparing
+> another release...
+> 
+> I will be on a time off since the next week so I propose to work on
+> merging as many patches as possible this week. Then we will follow up
+> with pre-release testing and freeze. I will join the effort once I
+> return back to the work which will be Monday 2. 1. 2017. then we will do
+> the release a week or two after that. Does that sound OK to everyone?
+
+Sounds good to me.
+
+Regards,
+Jan
+
+> 
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
