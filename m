@@ -1,7 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 14 Dec 2016 23:17:12 +0100
-Subject: [LTP] [PATCH 1/2] syscalls/mq_timedsend: convert to new API
-Message-ID: <20161214221713.4460-1-pvorel@suse.cz>
+Date: Wed, 14 Dec 2016 23:17:13 +0100
+Subject: [LTP] [PATCH 2/2] syscalls/mq_timedreceive: convert to new API
+In-Reply-To: <20161214221713.4460-1-pvorel@suse.cz>
+References: <20161214221713.4460-1-pvorel@suse.cz>
+Message-ID: <20161214221713.4460-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,66 +12,68 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- .../kernel/syscalls/mq_timedsend/mq_timedsend01.c  | 649 ++++++++-------------
- 1 file changed, 242 insertions(+), 407 deletions(-)
+ .../syscalls/mq_timedreceive/mq_timedreceive01.c   | 624 ++++++++-------------
+ 1 file changed, 219 insertions(+), 405 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-index 77198cea8..8b70cef09 100644
---- a/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-+++ b/testcases/kernel/syscalls/mq_timedsend/mq_timedsend01.c
-@@ -1,145 +1,35 @@
--/********************************************************************************/
--/* Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd			*/
--/*	  Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,		*/
--/*		       Yumiko Sugita <yumiko.sugita.yf@hitachi.com>,		*/
--/*		       Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>		*/
--/*										*/
--/* This program is free software;  you can redistribute it and/or modify	*/
--/* it under the terms of the GNU General Public License as published by		*/
--/* the Free Software Foundation; either version 2 of the License, or		*/
--/* (at your option) any later version.						*/
--/*										*/
--/* This program is distributed in the hope that it will be useful,		*/
--/* but WITHOUT ANY WARRANTY;  without even the implied warranty of		*/
--/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See			*/
--/* the GNU General Public License for more details.				*/
--/*										*/
--/* You should have received a copy of the GNU General Public License		*/
--/* along with this program;  if not, write to the Free Software			*/
--/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA	*/
--/* USA										*/
--/********************************************************************************/
--/************************************************************************/
--/*									*/
--/* File:	mq_timedsend01.c					*/
--/*									*/
--/* Description: This tests the mq_timedsend() syscall			*/
--/*									*/
--/* 									*/
--/*									*/
--/*									*/
--/*									*/
--/*									*/
--/* Usage:  <for command-line>						*/
--/* mq_timedsend01 [-c n] [-e][-i n] [-I x] [-p x] [-t]			*/
--/*      where,  -c n : Run n copies concurrently.			*/
--/*	      -e   : Turn on errno logging.				*/
--/*	      -i n : Execute test n times.				*/
--/*	      -I x : Execute test for x seconds.			*/
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index d3d49773d..6ffdb6a40 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -1,147 +1,35 @@
+-/******************************************************************************/
+-/* Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd		*/
+-/*	  Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
+-/*		       Yumiko Sugita <yumiko.sugita.yf@hitachi.com>, 	      */
+-/*		       Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>	      */
+-/*								  	      */
+-/* This program is free software;  you can redistribute it and/or modify      */
+-/* it under the terms of the GNU General Public License as published by       */
+-/* the Free Software Foundation; either version 2 of the License, or	  */
+-/* (at your option) any later version.					*/
+-/*									    */
+-/* This program is distributed in the hope that it will be useful,	    */
+-/* but WITHOUT ANY WARRANTY;  without even the implied warranty of	    */
+-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See		  */
+-/* the GNU General Public License for more details.			   */
+-/*									    */
+-/* You should have received a copy of the GNU General Public License	  */
+-/* along with this program;  if not, write to the Free Software	       */
+-/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
+-/*									    */
+-/******************************************************************************/
+-/******************************************************************************/
+-/*									    */
+-/* File:	mq_timedreceive01.c					   */
+-/*									    */
+-/* Description: This tests the mq_timedreceive() syscall		      */
+-/*									      */
+-/* 									      */
+-/*									      */
+-/*									      */
+-/*									      */
+-/*									    */
+-/* Usage:  <for command-line>						 */
+-/* mq_timedreceive01 [-c n] [-e][-i n] [-I x] [-p x] [-t]		     */
+-/*      where,  -c n : Run n copies concurrently.			     */
+-/*	      -e   : Turn on errno logging.				 */
+-/*	      -i n : Execute test n times.				  */
+-/*	      -I x : Execute test for x seconds.			    */
 -/*	      -P x : Pause for x seconds between iterations.		*/
 -/*	      -t   : Turn on syscall timing.				*/
--/*									*/
--/* Total Tests: 1							*/
--/*									*/
--/* Test Name:   mq_timedsend01						*/
--/* History:     Porting from Crackerjack to LTP is done by		*/
+-/*									    */
+-/* Total Tests: 1							     */
+-/*									    */
+-/* Test Name:   mq_timedreceive01					     */
+-/* History:     Porting from Crackerjack to LTP is done by		    */
 -/*	      Manas Kumar Nayak maknayak@in.ibm.com>			*/
--/************************************************************************/
+-/******************************************************************************/
+-#define _XOPEN_SOURCE 600
 -#include <sys/syscall.h>
 -#include <sys/types.h>
 -#include <sys/stat.h>
 -#include <sys/wait.h>
 -#include <getopt.h>
+-#include <libgen.h>
 -#include <stdlib.h>
 -#include <errno.h>
 -#include <stdio.h>
@@ -86,7 +90,7 @@ index 77198cea8..8b70cef09 100644
 -#include "test.h"
 -#include "linux_syscall_numbers.h"
 -
--char *TCID = "mq_timedsend01";
+-char *TCID = "mq_timedreceive01";
 -int testno;
 -int TST_TOTAL = 1;
 -struct sigaction act;
@@ -117,6 +121,7 @@ index 77198cea8..8b70cef09 100644
 -{
 -	if (sig == SIGINT)
 -		return;
+-
 -	return;
 -}
  
@@ -142,8 +147,12 @@ index 77198cea8..8b70cef09 100644
 -{
 -
 -	tst_rmdir();
--}
 -
+-}
++#include <errno.h>
++#include <limits.h>
++#include <mqueue.h>
+ 
 -/* Local  Functions */
 -/******************************************************************************/
 -/*									    */
@@ -164,14 +173,9 @@ index 77198cea8..8b70cef09 100644
 -/******************************************************************************/
 -void setup(void)
 -{
--
 -	/* Capture signals if any */
 -	act.sa_handler = sighandler;
 -	sigfillset(&act.sa_mask);
-+#include <errno.h>
-+#include <limits.h>
-+#include <mqueue.h>
- 
 -	sigaction(SIGINT, &act, NULL);
 -	/* Create temporary directories */
 -	TEST_PAUSE;
@@ -183,14 +187,14 @@ index 77198cea8..8b70cef09 100644
 -/*
 - * Macros
 - */
--#define SYSCALL_NAME    "mq_timedsend"
+-#define SYSCALL_NAME    "mq_timedreceive"
 +static struct sigaction act;
 +static pid_t pid;
 +static int fd;
  
  enum test_type {
  	NORMAL,
-@@ -150,162 +40,169 @@ enum test_type {
+@@ -153,156 +41,162 @@ enum test_type {
  	SEND_SIGINT,
  };
  
@@ -210,23 +214,22 @@ index 77198cea8..8b70cef09 100644
  	int err;
  };
  
- #define MAX_MSG	 10
+-#define MAX_MSG	 10
  #define MAX_MSGSIZE     8192
-+#define QUEUE_NAME	"/test_mqueue"
  
 -/* Test cases
--*
--*   test status of errors on man page
--*
--*   EAGAIN	     v (would block)
--*   EBADF	      v (not a valid descriptor)
--*   EINTR	      v (interrupted by a signal)
--*   EINVAL	     v (1. invalid 'msg_prio' or
--*			 2. would block but timeout exists)
--*   EMSGSIZE	   v ('msg_len' exceeds the message size of the queue)
--*   ETIMEDOUT	  v (not block and timeout occured)
--*/
--
+- *
+- *   test status of errors on man page
+- *
+- *   EAGAIN	     v (would block)
+- *   EBADF	      v (not a valid descriptor)
+- *   EINTR	      v (interrupted by a signal)
+- *   EINVAL	     v (invalid timeout value)
+- *   ETIMEDOUT	  v (not block and timeout occured)
+- *   EMSGSIZE	   v ('msg_len' is less than the message size of the queue)
+- *   EBADMSG	    can't check because this error never occur
+- */
++#define QUEUE_NAME	"/test_mqueue"
 +#define TYPE_NAME(x) .ttype = x, .desc = #x
  static struct test_case tcase[] = {
 -	{			// case00
@@ -255,8 +258,8 @@ index 77198cea8..8b70cef09 100644
 -	 .err = 0,
 -	 },
 -	{			// case04
--	 .ttype = NORMAL,
--	 .len = MAX_MSGSIZE + 1,
+-	 .ttype = INVALID_MSG_LEN,
+-	 .len = 0,
 -	 .ret = -1,
 -	 .err = EMSGSIZE,
 -	 },
@@ -279,57 +282,50 @@ index 77198cea8..8b70cef09 100644
 -	 .err = EBADF,
 -	 },
 -	{			// case08
--	 .ttype = FULL_QUEUE,
+-	 .ttype = EMPTY_QUEUE,
 -	 .non_block = 1,
 -	 .len = 16,
 -	 .ret = -1,
 -	 .err = EAGAIN,
 -	 },
 -	{			// case09
--	 .ttype = NORMAL,
--	 .len = 1,
--	 .prio = 32768,		// max priority + 1
--	 .ret = -1,
--	 .err = EINVAL,
--	 },
--	{			// case10
--	 .ttype = FULL_QUEUE,
+-	 .ttype = EMPTY_QUEUE,
 -	 .len = 16,
 -	 .sec = -1,
 -	 .nsec = 0,
 -	 .ret = -1,
 -	 .err = EINVAL,
 -	 },
--	{			// case11
--	 .ttype = FULL_QUEUE,
+-	{			// case10
+-	 .ttype = EMPTY_QUEUE,
 -	 .len = 16,
 -	 .sec = 0,
 -	 .nsec = -1,
 -	 .ret = -1,
 -	 .err = EINVAL,
 -	 },
--	{			// case12
--	 .ttype = FULL_QUEUE,
+-	{			// case11
+-	 .ttype = EMPTY_QUEUE,
 -	 .len = 16,
 -	 .sec = 0,
 -	 .nsec = 1000000000,
 -	 .ret = -1,
 -	 .err = EINVAL,
 -	 },
--	{			// case13
--	 .ttype = FULL_QUEUE,
+-	{			// case12
+-	 .ttype = EMPTY_QUEUE,
 -	 .len = 16,
 -	 .sec = 0,
 -	 .nsec = 999999999,
 -	 .ret = -1,
 -	 .err = ETIMEDOUT,
 -	 },
--	{			// case14
+-	{			// case13
 -	 .ttype = SEND_SIGINT,
 -	 .len = 16,
--	 .ret = -1,
 -	 .sec = 3,
 -	 .nsec = 0,
+-	 .ret = -1,
 -	 .err = EINTR,
 -	 },
 +	{
@@ -358,8 +354,8 @@ index 77198cea8..8b70cef09 100644
 +		.err = 0,
 +	},
 +	{
-+		TYPE_NAME(NORMAL),
-+		.len = MAX_MSGSIZE + 1,
++		TYPE_NAME(INVALID_MSG_LEN),
++		.len = 0,
 +		.ret = -1,
 +		.err = EMSGSIZE,
 +	},
@@ -382,42 +378,35 @@ index 77198cea8..8b70cef09 100644
 +		.err = EBADF,
 +	},
 +	{
-+		TYPE_NAME(FULL_QUEUE),
++		TYPE_NAME(EMPTY_QUEUE),
 +		.non_block = 1,
 +		.len = 16,
 +		.ret = -1,
 +		.err = EAGAIN,
 +	},
 +	{
-+		TYPE_NAME(NORMAL),
-+		.len = 1,
-+		.prio = 32768,	/* max priority + 1 */
-+		.ret = -1,
-+		.err = EINVAL,
-+	},
-+	{
-+		TYPE_NAME(FULL_QUEUE),
++		TYPE_NAME(EMPTY_QUEUE),
 +		.len = 16,
 +		.rq = (struct timespec) {.tv_sec = -1, .tv_nsec = 0},
 +		.ret = -1,
 +		.err = EINVAL,
 +	},
 +	{
-+		TYPE_NAME(FULL_QUEUE),
++		TYPE_NAME(EMPTY_QUEUE),
 +		.len = 16,
 +		.rq = (struct timespec) {.tv_sec = 0, .tv_nsec = -1},
 +		.ret = -1,
 +		.err = EINVAL,
 +	},
 +	{
-+		TYPE_NAME(FULL_QUEUE),
++		TYPE_NAME(EMPTY_QUEUE),
 +		.len = 16,
 +		.rq = (struct timespec) {.tv_sec = 0, .tv_nsec = 1000000000},
 +		.ret = -1,
 +		.err = EINVAL,
 +	},
 +	{
-+		TYPE_NAME(FULL_QUEUE),
++		TYPE_NAME(EMPTY_QUEUE),
 +		.len = 16,
 +		.rq = (struct timespec) {.tv_sec = 0, .tv_nsec = 999999999},
 +		.ret = -1,
@@ -426,12 +415,13 @@ index 77198cea8..8b70cef09 100644
 +	{
 +		TYPE_NAME(SEND_SIGINT),
 +		.len = 16,
-+		.ret = -1,
 +		.rq = (struct timespec) {.tv_sec = 3, .tv_nsec = 0},
++		.ret = -1,
 +		.err = EINTR,
 +	},
  };
  
+-#define MEM_LENGTH	      (4 * 1024 * 1024)
 -/*
 - * do_test()
 - *
@@ -486,6 +476,7 @@ index 77198cea8..8b70cef09 100644
 -	struct timespec ts = { 0, 0 };
 -	pid_t pid = 0;
  	unsigned prio;
+ 	size_t msg_len;
  
 +	fd = -1;
 +	pid = 0;
@@ -495,7 +486,7 @@ index 77198cea8..8b70cef09 100644
  	/*
  	 * When test ended with SIGTERM etc, mq descriptor is left remains.
  	 * So we delete it first.
-@@ -313,168 +210,106 @@ static int do_test(struct test_case *tc)
+@@ -310,169 +204,89 @@ static int do_test(struct test_case *tc)
  	TEST(mq_unlink(QUEUE_NAME));
  
  	switch (tc->ttype) {
@@ -508,12 +499,12 @@ index 77198cea8..8b70cef09 100644
  		break;
  	case FD_FILE:
 -		TEST(fd = open("/", O_RDONLY));
-+		fd = open("/", O_RDONLY);
- 		if (fd < 0) {
--			tst_resm(TFAIL, "can't open \"/\".- errno = %d : %s\n",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
+-		if (TEST_RETURN < 0) {
+-			tst_resm(TFAIL | TTERRNO, "can't open \"/\".");
 -			result = 1;
 -			goto EXIT;
++		fd = open("/", O_RDONLY);
++		if (fd < 0) {
 +			tst_res(TBROK | TERRNO, "can't open \"/\".");
 +			cleanup_n(i);
 +			return;
@@ -526,11 +517,10 @@ index 77198cea8..8b70cef09 100644
  		oflag = O_CREAT | O_EXCL | O_RDWR;
  		if (tc->non_block)
  			oflag |= O_NONBLOCK;
- 
+-
 -		TEST(fd = mq_open(QUEUE_NAME, oflag, S_IRWXU, NULL));
 -		if (TEST_RETURN < 0) {
--			tst_resm(TFAIL, "mq_open failed - errno = %d : %s\n",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			tst_resm(TFAIL | TTERRNO, "mq_open failed");
 -			result = 1;
 -			goto EXIT;
 +		fd = mq_open(QUEUE_NAME, oflag, S_IRWXU, NULL);
@@ -539,80 +529,78 @@ index 77198cea8..8b70cef09 100644
 +			cleanup_n(i);
 +			return;
  		}
-+
- 		if (tc->ttype == FULL_QUEUE || tc->ttype == SEND_SIGINT) {
--			for (i = 0; i < MAX_MSG; i++) {
--				TEST(rc =
--				     mq_timedsend(fd, smsg, tc->len, 0, &ts));
--				if (rc < 0) {
--					tst_resm(TFAIL,
--						 "mq_timedsend failed - errno = %d : %s\n",
--						 TEST_ERRNO,
--						 strerror(TEST_ERRNO));
--					result = 1;
--					goto EXIT;
-+			for (j = 0; j < MAX_MSG; j++) {
-+				if (mq_timedsend(fd, smsg, tc->len, 0,
-+							&((struct timespec){0})) < 0) {
-+					tst_res(TBROK | TERRNO, "mq_timedsend failed");
-+					cleanup_n(i);
-+					return;
- 				}
- 			}
- 			if (tc->ttype == SEND_SIGINT) {
--				pid = create_sig_proc(200000, SIGINT, UINT_MAX);
--				if (pid < 0) {
--					result = 1;
--					goto EXIT;
--				}
-+				pid = create_sig_proc(SIGINT, 4, 200000);
- 			}
- 		}
+ 
+-		if (tc->ttype == SEND_SIGINT) {
+-			pid = create_sig_proc(200000, SIGINT, UINT_MAX);
+-			if (pid < 0) {
+-				result = 1;
+-				goto EXIT;
+-			}
+-		}
 -		break;
++		if (tc->ttype == SEND_SIGINT)
++			pid = create_sig_proc(SIGINT, 40, 200000);
  	}
  
 -	/*
 -	 * Prepare send message
 -	 */
--	for (i = 0; i < tc->len && i < sizeof(smsg); i++)
+-	for (i = 0; i < tc->len; i++)
 -		smsg[i] = i;
-+	for (j = 0; j < tc->len && (unsigned)j < sizeof(smsg); j++)
++	for (j = 0; j < tc->len; j++)
 +		smsg[j] = j;
  
 -	/*
--	 * Set the timeout value
+-	 * Send message
 -	 */
+-	switch (tc->ttype) {
+-	case EMPTY_QUEUE:
+-	case SEND_SIGINT:
+-	case FD_NONE:
+-	case FD_NOT_EXIST:
+-	case FD_FILE:
+-		break;
+-	default:
+-		TEST(rc = mq_timedsend(fd, smsg, tc->len, tc->prio, &ts));
+-		if (TEST_RETURN < 0) {
+-			tst_resm(TFAIL | TTERRNO, "mq_timedsend failed");
+-			result = 1;
+-			goto EXIT;
++	/* send */
++	if (tc->ttype == NORMAL || tc->ttype == INVALID_MSG_LEN) {
++		if (mq_timedsend(fd, smsg, tc->len, tc->prio,
++			&((struct timespec){0})) < 0) {
++			tst_res(TFAIL | TERRNO, "mq_timedsend failed");
++			cleanup_n(i);
++			return;
+ 		}
+-		break;
+ 	}
+ 
+-	/*
+-	 * Set the message length and timeout value
+-	 */
+ 	msg_len = MAX_MSGSIZE;
+ 	if (tc->ttype == INVALID_MSG_LEN)
+ 		msg_len -= 1;
 -	ts.tv_sec = tc->sec;
 -	ts.tv_nsec = tc->nsec;
 -	if (tc->sec >= 0 || tc->nsec != 0)
 -		ts.tv_sec += time(NULL);
-+	if (tc->rq.tv_sec >= 0 || tc->rq.tv_nsec != 0)
-+		tc->rq.tv_sec += time(NULL);
  
 -	/*
--	 * Execut test system call
+-	 * Execute system call
 -	 */
 -	errno = 0;
--	TEST(sys_ret = mq_timedsend(fd, smsg, tc->len, tc->prio, &ts));
+-	TEST(sys_ret = mq_timedreceive(fd, rmsg, msg_len, &prio, &ts));
 -	sys_errno = errno;
 -	if (sys_ret < 0)
 -		goto TEST_END;
-+	/* send */
-+	TEST(mq_timedsend(fd, smsg, tc->len, tc->prio, &tc->rq));
- 
+-
 -	/*
--	 * Receive echoed message and compare
+-	 * Compare received message
 -	 */
--	ts.tv_sec = 0;
--	ts.tv_nsec = 0;
--	TEST(rc = mq_timedreceive(fd, rmsg, MAX_MSGSIZE, &prio, &ts));
--	if (rc < 0) {
--		tst_resm(TFAIL, "mq_timedreceive failed - errno = %d : %s\n",
--			 TEST_ERRNO, strerror(TEST_ERRNO));
--		result = 1;
--		goto EXIT;
--	}
--	if (rc != tc->len || tc->prio != prio)
+-	if (sys_ret != tc->len || tc->prio != prio)
 -		cmp_ok = 0;
 -	else {
 -		for (i = 0; i < tc->len; i++)
@@ -621,13 +609,14 @@ index 77198cea8..8b70cef09 100644
 -				break;
 -			}
 -	}
+-
 -TEST_END:
 -	/*
 -	 * Check results
 -	 */
 -	result |= (sys_errno != tc->err) || !cmp_ok;
--	PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno,
--			 cmp_ok);
+-	PRINT_RESULT_CMP(0, tc->ret == 0 ? tc->len : tc->ret, tc->err, sys_ret,
+-			 sys_errno, cmp_ok);
 -
 -EXIT:
 -	if (fd >= 0) {
@@ -636,22 +625,18 @@ index 77198cea8..8b70cef09 100644
 -	}
 -	if (pid > 0) {
 -		int st;
--		kill(pid, SIGTERM);
--		wait(&st);
+-		TEST(kill(pid, SIGTERM));
+-		TEST(wait(&st));
 -	}
 -	return result;
 -}
-+	if (TEST_RETURN != -1) {
-+		/* receive */
-+		tc->rq.tv_sec = 0;
-+		tc->rq.tv_nsec = 0;
-+		TEST(mq_timedreceive(fd, rmsg, MAX_MSGSIZE, &prio, &tc->rq));
++	if (tc->rq.tv_sec >= 0 || tc->rq.tv_nsec != 0)
++		tc->rq.tv_sec += time(NULL);
  
 -/*
 - * main()
 - */
-+		cleanup_n(i);
- 
+-
 -int main(int ac, char **av)
 -{
 -	int result = RESULT_OK;
@@ -661,11 +646,14 @@ index 77198cea8..8b70cef09 100644
 -	tst_parse_opts(ac, av, NULL, NULL);
 -
 -	setup();
--
++	/* test */
++	TEST(mq_timedreceive(fd, rmsg, msg_len, &prio, &tc->rq));
+ 
 -	for (lc = 0; TEST_LOOPING(lc); ++lc) {
 -		tst_count = 0;
 -		for (testno = 0; testno < TST_TOTAL; ++testno) {
--
++	cleanup_n(i);
+ 
 -			/*
 -			 * Execute test
 -			 */
@@ -673,48 +661,38 @@ index 77198cea8..8b70cef09 100644
 -				int ret;
 -				tst_resm(TINFO, "(case%02d) START", i);
 -				ret = do_test(&tcase[i]);
--				tst_resm(TINFO, "(case%02d) END => %s", i,
--					 (ret == 0) ? "OK" : "NG");
+-				tst_resm(TINFO, "(case%02d) END => %s",
+-					 i, (ret == 0) ? "OK" : "NG");
 -				result |= ret;
 -			}
+-
 -			/*
 -			 * Check results
 -			 */
 -			switch (result) {
 -			case RESULT_OK:
--				tst_resm(TPASS, "mq_timedsend call succeeded");
+-				tst_resm(TPASS,
+-					 "mq_timedreceive call succeeded");
 -				break;
--
--			default:
--				tst_brkm(TFAIL | TTERRNO, cleanup,
--					 "mq_timedsend failed");
--			}
-+		if (TEST_RETURN < 0) {
-+			tst_res(TFAIL | TTERRNO, "mq_timedreceive failed");
-+			return;
-+		}
-+
++	if (TEST_RETURN != -1) {
 +		if (TEST_RETURN != tc->len) {
-+			tst_res(TFAIL | TTERRNO, "mq_timedreceive msg_len returned %ld, expected %d",
++			tst_res(TFAIL | TTERRNO, "mq_timedreceive wrong msg_len returned %ld, expected %d",
 +				TEST_RETURN, tc->len);
 +			return;
 +		}
  
+-			default:
+-				tst_brkm(TFAIL | TTERRNO, cleanup,
+-					 "mq_timedreceive failed");
+-			}
 +		if (tc->prio != prio) {
-+			tst_res(TFAIL | TTERRNO, "mq_timedreceive msg_prio returned %d, expected %d",
++			tst_res(TFAIL | TTERRNO, "mq_timedreceive wrong prio returned %d, expected %d",
 +				prio, tc->prio);
 +			return;
  		}
-+
-+		for (j = 0; j < tc->len; j++) {
-+			if (rmsg[j] != smsg[j]) {
-+				tst_res(TFAIL | TTERRNO, "mq_timedreceive wrong returned message index: %d",
-+					j);
-+				return;
-+			}
-+		}
-+	} else
-+		cleanup_n(i);
+ 	}
+-	cleanup();
+-	tst_exit();
 +
 +	if (TEST_ERRNO != tc->err || (tc->ret < 0 && TEST_RETURN != tc->ret) ||
 +		(tc->ret >= 0 && TEST_RETURN < 0)) {
@@ -724,13 +702,11 @@ index 77198cea8..8b70cef09 100644
 +	} else {
 +		tst_res(TPASS | TTERRNO, "%s returned: %ld", tc->desc,
 +			TEST_RETURN);
- 	}
--	cleanup();
--	tst_exit();
++	}
  }
 +
 +static struct tst_test test = {
-+	.tid = "mq_timedsend",
++	.tid = "mq_timedreceive01",
 +	.tcnt = ARRAY_SIZE(tcase),
 +	.test = do_test,
 +	.setup = setup,
