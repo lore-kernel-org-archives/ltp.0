@@ -1,219 +1,170 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 15 Dec 2016 18:49:54 +0800
-Subject: [LTP] [PATCH v2 1/4] Cleanup && Drop redundant space in safe macros
-In-Reply-To: <20161215104356.GB29787@rei.suse.cz>
+Date: Thu, 15 Dec 2016 18:49:57 +0800
+Subject: [LTP] [PATCH v2 4/4] syscalls/setpriority01: Use new user id to
+	avoid messing system environment
+In-Reply-To: <1481798997-2320-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 References: <20161215104356.GB29787@rei.suse.cz>
-Message-ID: <1481798997-2320-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <1481798997-2320-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <1481798997-2320-4-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+setpriority(PRIO_USER, root_proc, prio) sets the priorities of
+all the root processes to the specified value, though this is
+kind of expected for the test, it impacts the system environment.
+
+Create a new user and set it privileged, then test with the temp
+user id to ensure the test safety.
+
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- include/tst_safe_macros.h | 22 +++++++++++-----------
- lib/safe_macros.c         | 28 ++++++++++++++--------------
- 2 files changed, 25 insertions(+), 25 deletions(-)
+ .../kernel/syscalls/setpriority/setpriority01.c    | 96 +++++++++++++++++++---
+ 1 file changed, 85 insertions(+), 11 deletions(-)
 
-diff --git a/include/tst_safe_macros.h b/include/tst_safe_macros.h
-index d352d5a3..32b2556 100644
---- a/include/tst_safe_macros.h
-+++ b/include/tst_safe_macros.h
-@@ -146,7 +146,7 @@ static inline int safe_setpgid(const char *file, const int lineno,
- 	rval = setpgid(pid, pgid);
- 	if (rval) {
- 		tst_brk_(file, lineno, TBROK | TERRNO,
--		         "setpgid(%i, %i) failed", pid, pgid);
-+			 "setpgid(%i, %i) failed", pid, pgid);
- 	}
+diff --git a/testcases/kernel/syscalls/setpriority/setpriority01.c b/testcases/kernel/syscalls/setpriority/setpriority01.c
+index e5111d7..83c9c1e 100644
+--- a/testcases/kernel/syscalls/setpriority/setpriority01.c
++++ b/testcases/kernel/syscalls/setpriority/setpriority01.c
+@@ -23,36 +23,50 @@
+  */
  
- 	return rval;
-@@ -292,8 +292,8 @@ static inline void *safe_mmap(const char *file, const int lineno,
- 	rval = mmap(addr, length, prot, flags, fd, offset);
- 	if (rval == MAP_FAILED) {
- 		tst_brk_(file, lineno, TBROK | TERRNO,
--			"mmap(%p,%zu,%d,%d,%d,%ld) failed",
--			addr, length, prot, flags, fd, (long) offset);
-+			 "mmap(%p,%zu,%d,%d,%d,%ld) failed",
-+			 addr, length, prot, flags, fd, (long) offset);
- 	}
+ #include <errno.h>
++#include <pwd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <sys/capability.h>
++#include <sys/prctl.h>
+ #include <sys/resource.h>
+ #include <sys/time.h>
++#include <sys/types.h>
++#include <unistd.h>
++
+ #include "tst_test.h"
++#include "linux_syscall_numbers.h"
++
++static const char *username = "ltp_setpriority01";
++static int pid, uid;
++static cap_user_header_t header;
++static cap_user_data_t data;
  
- 	return rval;
-@@ -362,7 +362,7 @@ static inline int safe_fstat(const char *file, const int lineno,
+ static struct tcase {
+ 	int which;
++	int *who;
+ } tcases[] = {
+-	{PRIO_PROCESS},
+-	{PRIO_PGRP},
+-	{PRIO_USER}
++	{PRIO_PROCESS, &pid},
++	{PRIO_PGRP, &pid},
++	{PRIO_USER, &uid}
+ };
  
- 	if (rval == -1) {
- 		tst_brk_(file, lineno, TBROK | TERRNO,
--			"fstat(%d,%p) failed", fd, buf);
-+			 "fstat(%d,%p) failed", fd, buf);
- 	}
+-static void verify_setpriority(unsigned int n)
++static void setpriority_test(struct tcase *tc)
+ {
+-	struct tcase *tc = &tcases[n];
+ 	int new_prio, cur_prio;
+ 	int failflag = 0;
  
- 	return rval;
-@@ -379,7 +379,7 @@ static inline int safe_lstat(const char *file, const int lineno,
+ 	for (new_prio = -20; new_prio < 20; new_prio++) {
+-		TEST(setpriority(tc->which, 0, new_prio));
++		TEST(setpriority(tc->which, *tc->who, new_prio));
  
- 	if (rval == -1) {
- 		tst_brk_(file, lineno, TBROK | TERRNO,
--			"lstat(%s,%p) failed", path, buf);
-+			 "lstat(%s,%p) failed", path, buf);
- 	}
- 
- 	return rval;
-@@ -396,8 +396,8 @@ static inline off_t safe_lseek(const char *file, const int lineno,
- 
- 	if (rval == (off_t) -1) {
- 		tst_brk_(file, lineno, TBROK | TERRNO,
--			"lseek(%d,%ld,%d) failed",
--			fd, (long)offset, whence);
-+			 "lseek(%d,%ld,%d) failed",
-+			 fd, (long)offset, whence);
- 	}
- 
- 	return rval;
-@@ -414,8 +414,8 @@ static inline int safe_getrlimit(const char *file, const int lineno,
- 
- 	if (rval == -1) {
- 		tst_brk_(file, lineno, TBROK | TERRNO,
--			"getrlimit(%d,%p) failed",
--			resource, rlim);
-+			 "getrlimit(%d,%p) failed",
-+			 resource, rlim);
- 	}
- 
- 	return rval;
-@@ -451,8 +451,8 @@ static inline sighandler_t safe_signal(const char *file, const int lineno,
- 
- 	if (rval == SIG_ERR) {
- 		tst_brk_(file, lineno, TBROK | TERRNO,
--			"signal(%d,%p) failed",
--			signum, handler);
-+			 "signal(%d,%p) failed",
-+			 signum, handler);
- 	}
- 
- 	return rval;
-diff --git a/lib/safe_macros.c b/lib/safe_macros.c
-index 094e5c7..d5c8753 100644
---- a/lib/safe_macros.c
-+++ b/lib/safe_macros.c
-@@ -369,7 +369,7 @@ int safe_link(const char *file, const int lineno,
- 
- 	if (rval == -1) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
--		         "%s:%d: link(%s,%s) failed",
-+			 "%s:%d: link(%s,%s) failed",
- 			 file, lineno, oldpath, newpath);
- 	}
- 
-@@ -421,7 +421,7 @@ int safe_symlink(const char *file, const int lineno,
- 
- 	if (rval == -1) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
--		         "%s:%d: symlink(%s,%s) failed",
-+			 "%s:%d: symlink(%s,%s) failed",
- 			 file, lineno, oldpath, newpath);
- 	}
- 
-@@ -437,7 +437,7 @@ ssize_t safe_write(const char *file, const int lineno, void (cleanup_fn) (void),
- 	if (rval == -1 || (len_strict && (size_t)rval != nbyte)) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
- 			 "%s:%d: write(%d,%p,%zu) failed",
--		         file, lineno, fildes, buf, rval);
-+			 file, lineno, fildes, buf, rval);
- 	}
- 
- 	return rval;
-@@ -567,8 +567,8 @@ int safe_chown(const char *file, const int lineno, void (cleanup_fn)(void),
- 
- 	if (rval == -1) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
--			"%s:%d: chown(%s,%d,%d) failed",
--			file, lineno, path, owner, group);
-+			 "%s:%d: chown(%s,%d,%d) failed",
-+			 file, lineno, path, owner, group);
- 	}
- 
- 	return rval;
-@@ -583,7 +583,7 @@ int safe_fchown(const char *file, const int lineno, void (cleanup_fn)(void),
- 
- 	if (rval == -1) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
--		         "%s:%d: fchown(%d,%d,%d) failed",
-+			 "%s:%d: fchown(%d,%d,%d) failed",
- 			 file, lineno, fd, owner, group);
- 	}
- 
-@@ -658,7 +658,7 @@ int safe_mkfifo(const char *file, const int lineno,
- 
- 	if (rval == -1) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
--		         "%s:%d: mkfifo(%s, 0%o) failed",
-+			 "%s:%d: mkfifo(%s, 0%o) failed",
- 			 file, lineno, pathname, mode);
- 	}
- 
-@@ -725,7 +725,7 @@ DIR* safe_opendir(const char *file, const int lineno, void (cleanup_fn)(void),
- 
- 	if (!rval) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
--		         "%s:%d: opendir(%s) failed", file, lineno, name);
-+			 "%s:%d: opendir(%s) failed", file, lineno, name);
- 	}
- 
- 	return rval;
-@@ -740,7 +740,7 @@ int safe_closedir(const char *file, const int lineno, void (cleanup_fn)(void),
- 
- 	if (rval) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
--		         "%s:%d: closedir(%p) failed", file, lineno, dirp);
-+			 "%s:%d: closedir(%p) failed", file, lineno, dirp);
- 	}
- 
- 	return rval;
-@@ -757,7 +757,7 @@ struct dirent *safe_readdir(const char *file, const int lineno, void (cleanup_fn
- 
- 	if (!rval && errno) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
--		         "%s:%d: readdir(%p) failed", file, lineno, dirp);
-+			 "%s:%d: readdir(%p) failed", file, lineno, dirp);
- 	}
- 
- 	errno = err;
-@@ -772,7 +772,7 @@ int safe_getpriority(const char *file, const int lineno, int which, id_t who)
- 	rval = getpriority(which, who);
- 	if (errno) {
- 		tst_brkm(TBROK | TERRNO, NULL,
--		         "%s:%d getpriority(%i, %i) failed",
-+			 "%s:%d getpriority(%i, %i) failed",
- 			 file, lineno, which, who);
- 	}
- 
-@@ -795,7 +795,7 @@ int safe_setxattr(const char *file, const int lineno, const char *path,
+ 		if (TEST_RETURN != 0) {
+ 			tst_res(TFAIL | TTERRNO,
+-				"setpriority(%d, 0, %d) failed",
+-				tc->which, new_prio);
++				"setpriority(%d, %d, %d) failed",
++				tc->which, *tc->who, new_prio);
+ 			failflag = 1;
+ 			continue;
  		}
  
- 		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: setxattr() failed",
--			     file, lineno);
-+			 file, lineno);
+-		cur_prio = SAFE_GETPRIORITY(tc->which, 0);
++		cur_prio = SAFE_GETPRIORITY(tc->which, *tc->who);
+ 
+ 		if (cur_prio != new_prio) {
+ 			tst_res(TFAIL, "current priority(%d) and "
+@@ -63,14 +77,74 @@ static void verify_setpriority(unsigned int n)
  	}
  
- 	return rval;
-@@ -816,7 +816,7 @@ int safe_lsetxattr(const char *file, const int lineno, const char *path,
- 		}
- 
- 		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: lsetxattr() failed",
--			     file, lineno);
-+			 file, lineno);
+ 	if (!failflag) {
+-		tst_res(TPASS, "setpriority(%d, 0, -20..19) succeeded",
+-			tc->which);
++		tst_res(TPASS, "setpriority(%d, %d, -20..19) succeeded",
++			tc->which, *tc->who);
++	}
++}
++
++static void verify_setpriority(unsigned int n)
++{
++	struct tcase *tc = &tcases[n];
++
++	pid = SAFE_FORK();
++	if (pid == 0) {
++		SAFE_PRCTL(PR_SET_KEEPCAPS, 1);
++
++		SAFE_SETUID(uid);
++		SAFE_SETPGID(0, 0);
++
++		if (tst_syscall(__NR_capset, header, data) == -1)
++			tst_brk(TBROK | TERRNO, "capset() failed");
++
++		TST_CHECKPOINT_WAKE_AND_WAIT(0);
++
++		exit(0);
  	}
++
++	TST_CHECKPOINT_WAIT(0);
++
++	setpriority_test(tc);
++
++	TST_CHECKPOINT_WAKE(0);
++
++	tst_reap_children();
++}
++
++static void setup(void)
++{
++	const char *const cmd_useradd[] = {"useradd", username, NULL};
++	struct passwd *ltpuser;
++
++	tst_run_cmd(cmd_useradd, NULL, NULL, 0);
++
++	ltpuser = SAFE_GETPWNAM(username);
++	uid = ltpuser->pw_uid;
++
++	header = SAFE_MALLOC(sizeof(cap_user_header_t));
++	data = SAFE_MALLOC(sizeof(cap_user_data_t));
++
++	header->version = _LINUX_CAPABILITY_VERSION;
++	header->pid = 0;
++
++	if (tst_syscall(__NR_capget, header, data) == -1)
++		tst_brk(TBROK | TERRNO, "capget() failed");
++}
++
++static void cleanup(void)
++{
++	const char *const cmd_userdel[] = {"userdel", "-r", username, NULL};
++
++	if (tst_run_cmd(cmd_userdel, NULL, NULL, 1))
++		tst_res(TWARN | TERRNO, "'userdel -r %s' failed", username);
+ }
  
- 	return rval;
-@@ -837,7 +837,7 @@ int safe_fsetxattr(const char *file, const int lineno, int fd, const char *name,
- 		}
- 
- 		tst_brkm(TBROK | TERRNO, NULL, "%s:%d: fsetxattr() failed",
--			     file, lineno);
-+			 file, lineno);
- 	}
- 
- 	return rval;
+ static struct tst_test test = {
+ 	.tid = "setpriority01",
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.needs_root = 1,
++	.forks_child = 1,
++	.needs_checkpoints = 1,
++	.setup = setup,
++	.cleanup = cleanup,
+ 	.test = verify_setpriority,
+ };
 -- 
 1.8.4.2
 
