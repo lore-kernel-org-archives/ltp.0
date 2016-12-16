@@ -1,78 +1,1613 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Fri, 16 Dec 2016 11:54:16 +0800
-Subject: [LTP] [PATCH 1/2] ipc/libnewipc.c: add CREATE_MSG to optimize
-	duplicate code
-Message-ID: <1481860457-23035-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Fri, 16 Dec 2016 11:54:17 +0800
+Subject: [LTP] [PATCH 2/2] ipc/msgsnd0*: cleanup && convert to new API
+In-Reply-To: <1481860457-23035-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1481860457-23035-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1481860457-23035-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
+
+1) The msgsnd03 was merged into msgsnd02
+2) The msgsnd04 was merged into msgsnd05
+3) take use of CREATE_MSG
 
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c | 14 ++++++++++++++
- testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h |  4 ++++
- testcases/kernel/syscalls/ipc/msgget/msgget02.c     |  4 +---
- 3 files changed, 19 insertions(+), 3 deletions(-)
+ runtest/ltplite                                 |   2 -
+ runtest/stress.part3                            |   2 -
+ runtest/syscalls                                |   2 -
+ runtest/syscalls-ipc                            |   2 -
+ testcases/kernel/syscalls/.gitignore            |   2 -
+ testcases/kernel/syscalls/ipc/msgsnd/Makefile   |  29 +--
+ testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c | 198 +++++-----------
+ testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c | 245 ++++++++------------
+ testcases/kernel/syscalls/ipc/msgsnd/msgsnd03.c | 178 ---------------
+ testcases/kernel/syscalls/ipc/msgsnd/msgsnd04.c | 155 -------------
+ testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c | 285 ++++++++----------------
+ testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c | 252 +++++----------------
+ 12 files changed, 318 insertions(+), 1034 deletions(-)
+ delete mode 100644 testcases/kernel/syscalls/ipc/msgsnd/msgsnd03.c
+ delete mode 100644 testcases/kernel/syscalls/ipc/msgsnd/msgsnd04.c
 
-diff --git a/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c
-index 8ea421f..9452309 100644
---- a/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c
-+++ b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.c
-@@ -26,6 +26,7 @@
- #include <stdlib.h>
- #include <sys/types.h>
- #include <sys/ipc.h>
+diff --git a/runtest/ltplite b/runtest/ltplite
+index 83141d1..d4580ad 100644
+--- a/runtest/ltplite
++++ b/runtest/ltplite
+@@ -514,8 +514,6 @@ msgrcv08 msgrcv08
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+-msgsnd03 msgsnd03
+-msgsnd04 msgsnd04
+ msgsnd05 msgsnd05
+ msgsnd06 msgsnd06
+ 
+diff --git a/runtest/stress.part3 b/runtest/stress.part3
+index fcf27d0..41f8b25 100644
+--- a/runtest/stress.part3
++++ b/runtest/stress.part3
+@@ -429,8 +429,6 @@ msgrcv07 msgrcv07
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+-msgsnd03 msgsnd03
+-msgsnd04 msgsnd04
+ msgsnd05 msgsnd05
+ msgsnd06 msgsnd06
+ 
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 884ab80..dd9f9a9 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -693,8 +693,6 @@ msgrcv08 msgrcv08
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+-msgsnd03 msgsnd03
+-msgsnd04 msgsnd04
+ msgsnd05 msgsnd05
+ msgsnd06 msgsnd06
+ 
+diff --git a/runtest/syscalls-ipc b/runtest/syscalls-ipc
+index 8212222..91060b9 100644
+--- a/runtest/syscalls-ipc
++++ b/runtest/syscalls-ipc
+@@ -27,8 +27,6 @@ msgrcv08 msgrcv08
+ 
+ msgsnd01 msgsnd01
+ msgsnd02 msgsnd02
+-msgsnd03 msgsnd03
+-msgsnd04 msgsnd04
+ msgsnd05 msgsnd05
+ msgsnd06 msgsnd06
+ 
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 3201fa9..84c7977 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -414,8 +414,6 @@
+ /ipc/msgrcv/msgrcv08
+ /ipc/msgsnd/msgsnd01
+ /ipc/msgsnd/msgsnd02
+-/ipc/msgsnd/msgsnd03
+-/ipc/msgsnd/msgsnd04
+ /ipc/msgsnd/msgsnd05
+ /ipc/msgsnd/msgsnd06
+ /ipc/semctl/semctl01
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/Makefile b/testcases/kernel/syscalls/ipc/msgsnd/Makefile
+index f467389..207fb16 100644
+--- a/testcases/kernel/syscalls/ipc/msgsnd/Makefile
++++ b/testcases/kernel/syscalls/ipc/msgsnd/Makefile
+@@ -1,23 +1,26 @@
+ #
+-#  Copyright (c) International Business Machines  Corp., 2001
++# Copyright (c) International Business Machines  Corp., 2001
+ #
+-#  This program is free software;  you can redistribute it and/or modify
+-#  it under the terms of the GNU General Public License as published by
+-#  the Free Software Foundation; either version 2 of the License, or
+-#  (at your option) any later version.
++# This program is free software;  you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
+ #
+-#  This program is distributed in the hope that it will be useful,
+-#  but WITHOUT ANY WARRANTY;  without even the implied warranty of
+-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+-#  the GNU General Public License for more details.
++# This program is distributed in the hope that it will be useful,
++# but WITHOUT ANY WARRANTY;  without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++# the GNU General Public License for more details.
+ #
+-#  You should have received a copy of the GNU General Public License
+-#  along with this program;  if not, write to the Free Software
+-#  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++# You should have received a copy of the GNU General Public License
++# along with this program.
+ #
+ 
+ top_srcdir              ?= ../../../../..
+ 
++ifeq ($(UCLINUX),1)
++FILTER_OUT_MAKE_TARGETS += msgsnd05 msgsnd06
++endif
++
+ include $(top_srcdir)/include/mk/testcases.mk
+-include $(abs_srcdir)/../Makefile.inc
++include $(abs_srcdir)/../Makefile2.inc
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
+index 0ca2be0..64fff40 100644
+--- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
++++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd01.c
+@@ -1,169 +1,81 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program.
+  */
+ 
+ /*
+- * NAME
+- *	msgsnd01.c
+- *
+  * DESCRIPTION
+- *	msgsnd01 - test that msgsnd() enqueues a message correctly
+- *
+- * ALGORITHM
+- *	create a message queue
+- *	initialize a message buffer with a known message and type
+- *	loop if that option was specified
+- *	enqueue the message
+- *	check the return code
+- *	  if failure, issue a FAIL message.
+- *	otherwise,
+- *	  if doing functionality testing
+- *		stat the message queue
+- *		check for # of bytes = MSGSIZE and # of messages = 1
+- *	  	if correct,
+- *			issue a PASS message
+- *		otherwise
+- *			issue a FAIL message
+- *	call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  msgsnd01 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	None
++ * test that msgsnd() enqueues a message correctly
+  */
+ 
+-#include "test.h"
+-
+-#include "ipcmsg.h"
+-
+-void cleanup(void);
+-void setup(void);
+-
+-char *TCID = "msgsnd01";
+-int TST_TOTAL = 1;
++#include <errno.h>
++#include <sys/types.h>
++#include <sys/ipc.h>
 +#include <sys/msg.h>
  
- #define	TST_NO_DEFAULT_MAIN
+-int msg_q_1;
+-MSGBUF msg_buf, rd_buf;
++#include "tst_test.h"
++#include "libnewipc.h"
  
-@@ -79,3 +80,16 @@ int get_used_queues(const char *file, const int lineno)
+-struct msqid_ds qs_buf;
++static key_t msgkey;
++static int queue_id;
++static struct buf {
++	long type;
++	char text[MSGSIZE];
++} rcv_buf, snd_buf = {MSGTYPE, "hello, world"};
  
- 	return used_queues;
- }
-+
-+int create_msg(const char *file, const int lineno, key_t key, int msgflg)
-+{
-+	int rval;
-+
-+	rval = msgget(key, msgflg);
-+	if (rval == -1) {
-+		tst_brk(TBROK | TERRNO, "Can't create message queue at %s:%d",
-+			file, lineno);
+-int main(int ac, char **av)
++static void verify_msgsnd(void)
+ {
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		/*
+-		 * Use TEST macro to make the call
+-		 */
+-
+-		TEST(msgsnd(msg_q_1, &msg_buf, MSGSIZE, 0));
+-
+-		if (TEST_RETURN == -1) {
+-			tst_resm(TFAIL, "%s call failed - errno = %d : %s",
+-				 TCID, TEST_ERRNO, strerror(TEST_ERRNO));
+-			continue;
+-		}
+-
+-		/* get the queue status */
+-		if (msgctl(msg_q_1, IPC_STAT, &qs_buf) == -1) {
+-			tst_brkm(TBROK, cleanup, "Could not "
+-				 "get queue status");
+-		}
++	struct msqid_ds qs_buf;
+ 
+-		if (qs_buf.msg_cbytes != MSGSIZE) {
+-			tst_resm(TFAIL, "queue bytes != MSGSIZE");
+-		}
+-
+-		if (qs_buf.msg_qnum != 1) {
+-			tst_resm(TFAIL, "queue message != 1");
+-		}
++	TEST(msgsnd(queue_id, &snd_buf, MSGSIZE, 0));
++	if (TEST_RETURN == -1) {
++		tst_res(TFAIL | TTERRNO, "msgsnd() failed");
++		return;
 +	}
-+
-+	return rval;
-+}
-diff --git a/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h
-index 39148be..3c313bd 100644
---- a/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h
-+++ b/testcases/kernel/syscalls/ipc/libnewipc/libnewipc.h
-@@ -50,4 +50,8 @@ int get_used_queues(const char *file, const int lineno);
- #define GET_USED_QUEUES() \
- 	get_used_queues(__FILE__, __LINE__)
  
-+int create_msg(const char *file, const int lineno, key_t key, int msgflg);
-+#define CREATE_MSG(key, msgflg) \
-+	create_msg(__FILE__, __LINE__, key, msgflg)
-+
- #endif /* newlibipc.h */
-diff --git a/testcases/kernel/syscalls/ipc/msgget/msgget02.c b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-index a3fcb38..1195cc9 100644
---- a/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-+++ b/testcases/kernel/syscalls/ipc/msgget/msgget02.c
-@@ -96,9 +96,7 @@ static void setup(void)
- 	msgkey = GETIPCKEY();
- 	msgkey1 = GETIPCKEY();
+-		tst_resm(TPASS, "queue bytes = MSGSIZE and "
+-			 "queue messages = 1");
++	if (msgctl(queue_id, IPC_STAT, &qs_buf) == -1)
++		tst_brk(TBROK | TERRNO, "msgctl() failed to get queue status");
  
--	queue_id = msgget(msgkey, IPC_CREAT | IPC_EXCL);
--	if (queue_id == -1)
--		tst_brk(TBROK | TERRNO, "can't create message queue");
-+	queue_id = CREATE_MSG(msgkey, IPC_CREAT | IPC_EXCL);
+-		/*
+-		 * remove the message by reading from the queue
+-		 */
+-		if (msgrcv(msg_q_1, &rd_buf, MSGSIZE, 1, 0) == -1) {
+-			tst_brkm(TBROK, cleanup, "Could not read from queue");
+-		}
+-	}
++	if (qs_buf.msg_cbytes == MSGSIZE && qs_buf.msg_qnum == 1)
++		tst_res(TPASS, "queue bytes and number of queues matched");
++	else
++		tst_res(TFAIL, "queue bytes or number of queues mismatched");
  
- 	pw = SAFE_GETPWNAM("nobody");
+-	cleanup();
+-	tst_exit();
++	if (msgrcv(queue_id, &rcv_buf, MSGSIZE, 1, 0) == -1)
++		tst_brk(TBROK | TERRNO, "msgrcv() failed");
  }
+ 
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
++static void setup(void)
+ {
++	msgkey = GETIPCKEY();
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	/*
+-	 * Create a temporary directory and cd into it.
+-	 * This helps to ensure that a unique msgkey is created.
+-	 * See ../lib/libipc.c for more information.
+-	 */
+-	tst_tmpdir();
+-
+-	msgkey = getipckey();
+-
+-	/* create a message queue with read/write permissions */
+-	if ((msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW)) == -1) {
+-		tst_brkm(TBROK, cleanup, "Can't create message queue");
+-	}
+-
+-	/* initialize the message buffer */
+-	init_buf(&msg_buf, MSGTYPE, MSGSIZE);
++	queue_id = CREATE_MSG(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
+ }
+ 
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	/* if it exists, remove the message queue if it exists */
+-	rm_queue(msg_q_1);
+-
+-	tst_rmdir();
+-
++	if (queue_id != -1 && msgctl(queue_id, IPC_RMID, NULL)) {
++		tst_res(TWARN | TERRNO, "failed to delete message queue %i",
++			queue_id);
++	}
+ }
++
++static struct tst_test test = {
++	.tid = "msgsnd01",
++	.setup = setup,
++	.cleanup = cleanup,
++	.test_all = verify_msgsnd,
++	.needs_tmpdir = 1
++};
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
+index 6547ab2..9367775 100644
+--- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
++++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
+@@ -1,175 +1,126 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program.
+  */
+ 
+ /*
+- * NAME
+- *	msgsnd02.c
+- *
+  * DESCRIPTION
+- *	msgsnd02 - test for EACCES and EFAULT errors
+- *
+- * ALGORITHM
+- *	create a message queue without write permission
+- *	create a trivial message buffer
+- *	loop if that option was specified
+- *	call msgsnd() using two different invalid cases
+- *	check the errno value
+- *	  issue a PASS message if we get EACCES or EFAULT
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  msgsnd02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	none
++ * 1) test for EACCES error
++ * 2) test for EFAULT error
++ * 3) test for EINVAL error
+  */
+-#include <pwd.h>
+-#include "test.h"
+-
+-#include "ipcmsg.h"
+-
+-void cleanup(void);
+-void setup(void);
+ 
+-char *TCID = "msgsnd02";
+-int TST_TOTAL = 2;
+-
+-char nobody_uid[] = "nobody";
+-struct passwd *ltpuser;
+-
+-int msg_q_1 = -1;		/* The message queue id created in setup */
+-MSGBUF msg_buf;			/* a buffer for the message to queue */
+-int bad_q = -1;			/* a value to use as a bad queue ID */
+-
+-struct test_case_t {
+-	int *queue_id;
+-	MSGBUF *buffer;
+-	int error;
+-} TC[] = {
+-	/* EACCES - there is no write permission for the queue */
+-	{
+-	&msg_q_1, &msg_buf, EACCES},
+-	    /* EFAULT - the message buffer address is invalid */
+-	{
+-&msg_q_1, NULL, EFAULT},};
++#include <errno.h>
++#include <string.h>
++#include <stdlib.h>
++#include <sys/types.h>
++#include <sys/ipc.h>
++#include <sys/msg.h>
++#include <pwd.h>
+ 
+-int main(int ac, char **av)
++#include "tst_test.h"
++#include "libnewipc.h"
++
++static key_t msgkey;
++static int queue_id = -1;
++static int bad_id = -1;
++static struct passwd *pw;
++static struct buf {
++	long type;
++	char text[MSGSIZE];
++} snd_buf = {1, "hello, world"};
++
++static struct tcase {
++	int *id;
++	struct buf *buffer;
++	long mtype;
++	int msgsz;
++	int exp_err;
++	/*1: nobody expected  0: root expected */
++	int exp_user;
++} tcases[] = {
++	{&queue_id, &snd_buf, 1, MSGSIZE, EACCES, 1},
++	{&queue_id, NULL, 1, MSGSIZE, EFAULT, 0},
++	{&bad_id, &snd_buf, 1, MSGSIZE, EINVAL, 0},
++	{&queue_id, &snd_buf, 0, MSGSIZE, EINVAL, 0},
++	{&queue_id, &snd_buf, -1, MSGSIZE, EINVAL, 0},
++	{&queue_id, &snd_buf, 1, -1, EINVAL, 0}
++};
++
++static void verify_msgsnd(struct tcase *tc)
+ {
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		/*
+-		 * loop through the test cases
+-		 */
++	snd_buf.type = tc->mtype;
+ 
+-		for (i = 0; i < TST_TOTAL; i++) {
+-			TEST(msgsnd(*(TC[i].queue_id), TC[i].buffer, 1, 0));
+-
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
+-				continue;
+-			}
+-
+-			if (TEST_ERRNO == TC[i].error) {
+-				tst_resm(TPASS, "expected failure - "
+-					 "errno = %d : %s", TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
+-			} else {
+-				tst_resm(TFAIL, "unexpected error - %d : %s",
+-					 TEST_ERRNO, strerror(TEST_ERRNO));
+-			}
+-		}
++	TEST(msgsnd(*tc->id, tc->buffer, tc->msgsz, 0));
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "smgsnd() succeeded unexpectedly");
++		return;
+ 	}
+ 
+-	cleanup();
+-
+-	tst_exit();
++	if (TEST_ERRNO == tc->exp_err) {
++		tst_res(TPASS | TTERRNO, "msgsnd() failed as expected");
++	} else {
++		tst_res(TFAIL | TTERRNO, "msgsnd() failed unexpectedly,"
++			" expected %s", tst_strerrno(tc->exp_err));
++	}
+ }
+ 
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
++static void do_test(unsigned int n)
+ {
+-	tst_require_root();
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	pid_t pid;
++	struct tcase *tc = &tcases[n];
+ 
+-	TEST_PAUSE;
+-
+-	/* Switch to nobody user for correct error code collection */
+-	ltpuser = getpwnam(nobody_uid);
+-	if (setuid(ltpuser->pw_uid) == -1) {
+-		tst_resm(TINFO, "setuid failed to "
+-			 "to set the effective uid to %d", ltpuser->pw_uid);
+-		perror("setuid");
++	if (tc->exp_user == 0) {
++		verify_msgsnd(tc);
++		return;
+ 	}
+ 
+-	/*
+-	 * Create a temporary directory and cd into it.
+-	 * This helps to ensure that a unique msgkey is created.
+-	 * See ../lib/libipc.c for more information.
+-	 */
+-	tst_tmpdir();
+-
+-	msgkey = getipckey();
+-
+-	/* create a message queue without write permission */
+-	if ((msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL | MSG_RD)) == -1) {
+-		tst_brkm(TBROK, cleanup, "Can't create message queue");
++	pid = SAFE_FORK();
++	if (pid) {
++		tst_reap_children();
++	} else {
++		SAFE_SETUID(pw->pw_uid);
++		verify_msgsnd(tc);
++		exit(0);
+ 	}
+-
+-	/* initialize the message buffer with something trivial */
+-	msg_buf.mtype = MSGTYPE;
+-	msg_buf.mtext[0] = 'a';
+ }
+ 
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
++static void setup(void)
+ {
+-	/* if it exists, remove the message queue that was created */
+-	rm_queue(msg_q_1);
++	msgkey = GETIPCKEY();
+ 
+-	tst_rmdir();
++	queue_id = CREATE_MSG(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
+ 
++	pw = SAFE_GETPWNAM("nobody");
+ }
++
++static void cleanup(void)
++{
++	if (queue_id != -1 && msgctl(queue_id, IPC_RMID, NULL)) {
++		tst_res(TWARN | TERRNO, "failed to delete message queue %i",
++			queue_id);
++	}
++}
++
++static struct tst_test test = {
++	.tid = "msgsnd02",
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.forks_child = 1,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = do_test
++};
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd03.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd03.c
+deleted file mode 100644
+index ef6e58e..0000000
+--- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd03.c
++++ /dev/null
+@@ -1,178 +0,0 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * NAME
+- *	msgsnd03.c
+- *
+- * DESCRIPTION
+- *	msgsnd03 - test for EINVAL error
+- *
+- * ALGORITHM
+- *	create a message queue with read/write permissions
+- *	create a trivial message buffer
+- *	loop if that option was specified
+- *	call msgsnd() using four different invalid cases
+- *	check the errno value
+- *	  issue a PASS message if we get EINVAL
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  msgsnd03 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	none
+- */
+-
+-#include "test.h"
+-
+-#include "ipcmsg.h"
+-
+-void cleanup(void);
+-void setup(void);
+-
+-char *TCID = "msgsnd03";
+-int TST_TOTAL = 4;
+-
+-int msg_q_1 = -1;		/* The message queue id created in setup */
+-MSGBUF msg_buf;			/* a buffer for the message to queue */
+-int bad_q = -1;			/* a value to use as a bad queue ID */
+-
+-struct test_case_t {
+-	int *queue_id;
+-	MSGBUF *buffer;
+-	long mtype;
+-	int msg_size;
+-	int error;
+-} TC[] = {
+-	/* EINVAL - the queue ID is invalid */
+-	{
+-	&bad_q, &msg_buf, 1, 1, EINVAL},
+-	    /* EINVAL - the message type is not positive (0) */
+-	{
+-	&msg_q_1, &msg_buf, 0, 1, EINVAL},
+-	    /* EINVAL - the message type is not positive (>0) */
+-	{
+-	&msg_q_1, &msg_buf, -1, 1, EINVAL},
+-	    /* EINVAL - the message size is less than zero */
+-	{
+-	&msg_q_1, &msg_buf, 1, -1, EINVAL}
+-};
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-	int i;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		/*
+-		 * loop through the test cases
+-		 */
+-
+-		for (i = 0; i < TST_TOTAL; i++) {
+-
+-			/* set the message type */
+-			msg_buf.mtype = TC[i].mtype;
+-
+-			/* make the call with the TEST macro */
+-			TEST(msgsnd(*(TC[i].queue_id), TC[i].buffer,
+-				    TC[i].msg_size, 0));
+-
+-			if (TEST_RETURN != -1) {
+-				tst_resm(TFAIL, "call succeeded unexpectedly");
+-				continue;
+-			}
+-
+-			if (TEST_ERRNO == TC[i].error) {
+-				tst_resm(TPASS, "expected failure - "
+-					 "errno = %d : %s", TEST_ERRNO,
+-					 strerror(TEST_ERRNO));
+-			} else {
+-				tst_resm(TFAIL, "unexpected error - %d : %s",
+-					 TEST_ERRNO, strerror(TEST_ERRNO));
+-			}
+-		}
+-	}
+-
+-	cleanup();
+-
+-	tst_exit();
+-}
+-
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
+-{
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	/*
+-	 * Create a temporary directory and cd into it.
+-	 * This helps to ensure that a unique msgkey is created.
+-	 * See ../lib/libipc.c for more information.
+-	 */
+-	tst_tmpdir();
+-
+-	msgkey = getipckey();
+-
+-	/* create a message queue with read/write permission */
+-	if ((msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW)) == -1) {
+-		tst_brkm(TBROK, cleanup, "Can't create message queue");
+-	}
+-
+-	/* initialize the message buffer with something trivial */
+-	msg_buf.mtype = MSGTYPE;
+-	msg_buf.mtext[0] = 'a';
+-}
+-
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test@completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
+-{
+-	/* if it exists, remove the message queue that was created */
+-	rm_queue(msg_q_1);
+-
+-	tst_rmdir();
+-
+-}
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd04.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd04.c
+deleted file mode 100644
+index 4432d67..0000000
+--- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd04.c
++++ /dev/null
+@@ -1,155 +0,0 @@
+-/*
+- *
+- *   Copyright (c) International Business Machines  Corp., 2001
+- *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
+- *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- */
+-
+-/*
+- * NAME
+- *	msgsnd04.c
+- *
+- * DESCRIPTION
+- *	msgsnd04 - test for EAGAIN error
+- *
+- * ALGORITHM
+- *	create a message queue with read/write permissions
+- *	initialize a message buffer with a known message and type
+- *	enqueue the message in a loop until the queue is full
+- *	loop if that option was specified
+- *	attempt to enqueue another message - msgsnd()
+- *	check the errno value
+- *	  issue a PASS message if we get EAGAIN
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  msgsnd04 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *
+- * RESTRICTIONS
+- *	none
+- */
+-
+-#include "test.h"
+-
+-#include "ipcmsg.h"
+-
+-void cleanup(void);
+-void setup(void);
+-
+-char *TCID = "msgsnd04";
+-int TST_TOTAL = 1;
+-
+-int msg_q_1 = -1;		/* The message queue id created in setup */
+-MSGBUF msg_buf;
+-
+-int main(int ac, char **av)
+-{
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		/*
+-		 * Attempt to write another message to the full queue.
+-		 */
+-
+-		TEST(msgsnd(msg_q_1, &msg_buf, MSGSIZE, IPC_NOWAIT));
+-
+-		if (TEST_RETURN != -1) {
+-			tst_resm(TFAIL, "call succeeded when error expected");
+-			continue;
+-		}
+-
+-		switch (TEST_ERRNO) {
+-		case EAGAIN:
+-			tst_resm(TPASS, "expected failure - errno = %d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			break;
+-		default:
+-			tst_resm(TFAIL, "call failed with an "
+-				 "unexpected error - %d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			break;
+-		}
+-	}
+-
+-	cleanup();
+-
+-	tst_exit();
+-}
+-
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
+-{
+-
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+-
+-	/*
+-	 * Create a temporary directory and cd into it.
+-	 * This helps to ensure that a unique msgkey is created.
+-	 * See ../lib/libipc.c for more information.
+-	 */
+-	tst_tmpdir();
+-
+-	msgkey = getipckey();
+-
+-	/* create a message queue with read/write permission */
+-	if ((msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW)) == -1) {
+-		tst_brkm(TBROK, cleanup, "Can't create message queue");
+-	}
+-
+-	/* initialize the message buffer */
+-	init_buf(&msg_buf, MSGTYPE, MSGSIZE);
+-
+-	/* write messages to the queue until it is full */
+-	while (msgsnd(msg_q_1, &msg_buf, MSGSIZE, IPC_NOWAIT) != -1) {
+-		msg_buf.mtype += 1;
+-	}
+-}
+-
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
+-{
+-	/* if it exists, remove the message queue that was created */
+-	rm_queue(msg_q_1);
+-
+-	tst_rmdir();
+-
+-}
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
+index 16d62f8..0d13065 100644
+--- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
++++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
+@@ -1,234 +1,125 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program.
+  */
+ 
+ /*
+- * NAME
+- *	msgsnd05.c
+- *
+  * DESCRIPTION
+- *	msgsnd05 - test for EINTR error
+- *
+- * ALGORITHM
+- *	create a message queue with read/write permissions
+- *	initialize a message buffer with a known message and type
+- *	enqueue the message in a loop until the queue is full
+- *	loop if that option was specified
+- *	fork a child process
+- *	child attempts to enqueue a message to the full queue and sleeps
+- *	parent sends a SIGHUP to the child then waits for the child to complete
+- *	child get a return from msgsnd()
+- *	check the errno value
+- *	  issue a PASS message if we get EINTR
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	child exits, parent calls cleanup
+- *
+- * USAGE:  <for command-line>
+- *  msgsnd05 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *      14/03/2008 Matthieu Fertré (Matthieu.Fertre@irisa.fr)
+- *      - Fix concurrency issue. Due to the use of usleep function to
+- *        synchronize processes, synchronization issues can occur on a loaded
+- *        system. Fix this by using pipes to synchronize processes.
+- *
+- * RESTRICTIONS
+- *	none
++ * 1) test for EAGAIN error
++ * 2) test for EINTR error
+  */
+ 
+-#include "test.h"
+-
+-#include "ipcmsg.h"
+-
++#include <errno.h>
++#include <stdlib.h>
+ #include <sys/types.h>
+-#include <sys/wait.h>
+-
+-void do_child(void);
+-void cleanup(void);
+-void setup(void);
+-#ifdef UCLINUX
+-#define PIPE_NAME	"msgsnd05"
+-void do_child_uclinux(void);
+-#endif
+-
+-char *TCID = "msgsnd05";
+-int TST_TOTAL = 1;
+-
+-int msg_q_1 = -1;		/* The message queue id created in setup */
+-
+-MSGBUF msg_buf;
+-
+-int main(int ac, char **av)
++#include <sys/ipc.h>
++#include <sys/msg.h>
++
++#include "tst_test.h"
++#include "libnewipc.h"
++
++static key_t msgkey;
++static int queue_id = -1;
++static struct buf {
++	long type;
++	char text[MSGSIZE];
++} snd_buf = {1, "hello, world"};
++
++static struct tcase {
++	int flag;
++	int exp_err;
++	/*1: nobody expected  0: root expected */
++	int exp_user;
++} tcases[] = {
++	{IPC_NOWAIT, EAGAIN, 0},
++	{0, EINTR, 1}
++};
++
++static void verify_msgsnd(struct tcase *tc)
+ {
+-	int lc;
+-	pid_t c_pid;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-#ifdef UCLINUX
+-	maybe_run_child(&do_child_uclinux, "d", &msg_q_1);
+-#endif
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		/*
+-		 * fork a child that will attempt to write a message
+-		 * to the queue without IPC_NOWAIT
+-		 */
+-		if ((c_pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup, "could not fork");
+-		}
+-
+-		if (c_pid == 0) {	/* child */
+-			/*
+-			 * Attempt to write another message to the full queue.
+-			 * Without the IPC_NOWAIT flag, the child sleeps
+-			 */
+-
+-#ifdef UCLINUX
+-			if (self_exec(av[0], "d", msg_q_1) < 0) {
+-				tst_brkm(TBROK, cleanup, "could not self_exec");
+-			}
+-#else
+-			do_child();
+-#endif
+-		} else {
+-			TST_PROCESS_STATE_WAIT(cleanup, c_pid, 'S');
+-
+-			/* send a signal that must be caught to the child */
+-			if (kill(c_pid, SIGHUP) == -1)
+-				tst_brkm(TBROK, cleanup, "kill failed");
+-
+-			waitpid(c_pid, NULL, 0);
+-		}
+-	}
+-
+-	cleanup();
+-
+-	tst_exit();
+-}
+-
+-/*
+- * do_child()
+- */
+-void do_child(void)
+-{
+-	TEST(msgsnd(msg_q_1, &msg_buf, MSGSIZE, 0));
+-
++	TEST(msgsnd(queue_id, &snd_buf, MSGSIZE, tc->flag));
+ 	if (TEST_RETURN != -1) {
+-		tst_resm(TFAIL, "call succeeded when error expected");
+-		exit(-1);
++		tst_res(TFAIL, "msgsnd() succeeded unexpectedly");
++		return;
+ 	}
+ 
+-	switch (TEST_ERRNO) {
+-	case EINTR:
+-		tst_resm(TPASS, "expected failure - errno = %d : %s",
+-			 TEST_ERRNO, strerror(TEST_ERRNO));
+-		break;
+-	default:
+-		tst_resm(TFAIL,
+-			 "call failed with an unexpected error - %d : %s",
+-			 TEST_ERRNO, strerror(TEST_ERRNO));
+-		break;
++	if (TEST_ERRNO == tc->exp_err) {
++		tst_res(TPASS | TTERRNO, "msgsnd() failed as expected");
++	} else {
++		tst_res(TFAIL | TTERRNO, "msgsnd() failed unexpectedly,"
++			" expected %s", tst_strerrno(tc->exp_err));
+ 	}
+-
+-	exit(0);
+ }
+ 
+-void sighandler(int sig)
++static void sighandler(int sig)
+ {
+ 	if (sig == SIGHUP)
+ 		return;
+ 	else
+-		tst_brkm(TBROK, NULL, "received unexpected signal %d", sig);
++		tst_brk(TBROK, "received unexpected signal %d", sig);
+ }
+ 
+-#ifdef UCLINUX
+-/*
+- * do_child_uclinux() - capture signals, initialize buffer, then run do_child()
+- */
+-void do_child_uclinux(void)
++static void do_test(unsigned int n)
+ {
+-	/* initialize the message buffer */
+-	init_buf(&msg_buf, MSGTYPE, MSGSIZE);
+-
+-	tst_sig(FORK, sighandler, cleanup);
++	pid_t pid;
++	struct tcase *tc = &tcases[n];
+ 
+-	do_child();
+-}
+-#endif
++	if (tc->exp_user == 0) {
++		verify_msgsnd(tc);
++		return;
++	}
+ 
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
+-{
+-	/* capture signals in our own handler */
+-	tst_sig(FORK, sighandler, cleanup);
++	pid = SAFE_FORK();
++	if (!pid) {
++		verify_msgsnd(tc);
++		exit(0);
++	}
+ 
+-	TEST_PAUSE;
++	TST_PROCESS_STATE_WAIT(pid, 'S');
+ 
+-	/*
+-	 * Create a temporary directory and cd into it.
+-	 * This helps to ensure that a unique msgkey is created.
+-	 * See ../lib/libipc.c for more information.
+-	 */
+-	tst_tmpdir();
++	SAFE_KILL(pid, SIGHUP);
++	tst_reap_children();
++}
+ 
+-	msgkey = getipckey();
++static void setup(void)
++{
++	SAFE_SIGNAL(SIGHUP, sighandler);
+ 
+-	/* create a message queue with read/write permission */
+-	if ((msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW)) == -1) {
+-		tst_brkm(TBROK, cleanup, "Can't create message queue");
+-	}
++	msgkey = GETIPCKEY();
+ 
+-	/* initialize the message buffer */
+-	init_buf(&msg_buf, MSGTYPE, MSGSIZE);
++	queue_id = CREATE_MSG(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
+ 
+-	/* write messages to the queue until it is full */
+-	while (msgsnd(msg_q_1, &msg_buf, MSGSIZE, IPC_NOWAIT) != -1) {
+-		msg_buf.mtype += 1;
+-	}
++	while (msgsnd(queue_id, &snd_buf, MSGSIZE, IPC_NOWAIT) != -1)
++		snd_buf.type += 1;
+ }
+ 
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
++static void cleanup(void)
+ {
+-	/* if it exists, remove the message queue that was created */
+-	rm_queue(msg_q_1);
+-
+-	tst_rmdir();
+-
++	if (queue_id != -1 && msgctl(queue_id, IPC_RMID, NULL)) {
++		tst_res(TWARN | TERRNO, "failed to delete message queue %i",
++			queue_id);
++	}
+ }
++
++static struct tst_test test = {
++	.tid = "msgsnd05",
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.forks_child = 1,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++	.cleanup = cleanup,
++	.test = do_test
++};
+diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
+index 42f6e79..737fc7f 100644
+--- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
++++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
+@@ -1,222 +1,92 @@
+ /*
++ * Copyright (c) International Business Machines  Corp., 2001
+  *
+- *   Copyright (c) International Business Machines  Corp., 2001
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ * You should have received a copy of the GNU General Public License
++ * along with this program.
+  */
+ 
+ /*
+- * NAME
+- *	msgsnd06.c
+- *
+  * DESCRIPTION
+- *	msgsnd06 - test for EIDRM error
+- *
+- * ALGORITHM
+- *	loop if that option was specified
+- *	create a message queue with read/write permissions
+- *	initialize a message buffer with a known message and type
+- *	enqueue messages in a loop until the queue is full
+- *	fork a child process
+- *	child attempts to enqueue a message to the full queue and sleeps
+- *	parent removes the queue and then exits
+- *	child get a return from msgsnd()
+- *	check the errno value
+- *	  issue a PASS message if we get EIDRM
+- *	otherwise, the tests fails
+- *	  issue a FAIL message
+- *	call cleanup
+- *
+- * USAGE:  <for command-line>
+- *  msgsnd06 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -e   : Turn on errno logging.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
+- *
+- * HISTORY
+- *	03/2001 - Written by Wayne Boyer
+- *      14/03/2008 Matthieu Fertré (Matthieu.Fertre@irisa.fr)
+- *      - Fix concurrency issue. Due to the use of usleep function to
+- *        synchronize processes, synchronization issues can occur on a loaded
+- *        system. Fix this by using pipes to synchronize processes.
+- *
+- * RESTRICTIONS
+- *	none
++ * test for EIDRM error
+  */
+ 
+-#include <sys/wait.h>
+-#include "test.h"
++#include <errno.h>
++#include <stdlib.h>
++#include <sys/types.h>
++#include <sys/ipc.h>
++#include <sys/msg.h>
+ 
+-#include "ipcmsg.h"
++#include "tst_test.h"
++#include "libnewipc.h"
+ 
+-void cleanup(void);
+-void setup(void);
+-void do_child(void);
++static key_t msgkey;
++static int queue_id = -1;
++static struct buf {
++	long type;
++	char text[MSGSIZE];
++} snd_buf = {1, "hello, world"};
+ 
+-char *TCID = "msgsnd06";
+-int TST_TOTAL = 1;
+-
+-int msg_q_1 = -1;		/* The message queue id created in setup */
+-
+-MSGBUF msg_buf;
+-
+-int main(int ac, char **av)
++static void verify_msgsnd(void)
+ {
+-	int lc;
+-	pid_t c_pid;
+-	int status, e_code;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-#ifdef UCLINUX
+-#define PIPE_NAME	"msgsnd06"
+-	maybe_run_child(&do_child, "d", &msg_q_1);
+-#endif
+-
+-	setup();		/* global setup */
+-
+-	/* The following loop checks looping state if -i option given */
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		/* reset tst_count in case we are looping */
+-		tst_count = 0;
+-
+-		msgkey = getipckey();
+-
+-		/* create a message queue with read/write permission */
+-		if ((msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW))
+-		    == -1) {
+-			tst_brkm(TBROK, cleanup, "Can't create message queue");
+-		}
+-
+-		/* initialize the message buffer */
+-		init_buf(&msg_buf, MSGTYPE, MSGSIZE);
+-
+-		/* write messages to the queue until it is full */
+-		while (msgsnd(msg_q_1, &msg_buf, MSGSIZE, IPC_NOWAIT) != -1) {
+-			msg_buf.mtype += 1;
+-		}
+-
+-		/*
+-		 * fork a child that will attempt to write a message
+-		 * to the queue without IPC_NOWAIT
+-		 */
+-		if ((c_pid = FORK_OR_VFORK()) == -1) {
+-			tst_brkm(TBROK, cleanup, "could not fork");
+-		}
+-
+-		if (c_pid == 0) {	/* child */
+-
+-#ifdef UCLINUX
+-			if (self_exec(av[0], "d", msg_q_1) < 0) {
+-				tst_brkm(TBROK, cleanup, "could not self_exec");
+-			}
+-#else
+-			do_child();
+-#endif
+-		} else {
+-			TST_PROCESS_STATE_WAIT(cleanup, c_pid, 'S');
+-
+-			/* remove the queue */
+-			rm_queue(msg_q_1);
+-
+-			/* wait for the child to finish */
+-			wait(&status);
+-			/* make sure the child returned a good exit status */
+-			e_code = status >> 8;
+-			if (e_code != 0) {
+-				tst_resm(TFAIL, "Failures reported above");
+-			}
+-		}
++	TEST(msgsnd(queue_id, &snd_buf, MSGSIZE, 0));
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "msgsnd() succeeded unexpectedly");
++		return;
+ 	}
+ 
+-	cleanup();
+-
+-	tst_exit();
++	if (TEST_ERRNO == EIDRM) {
++		tst_res(TPASS | TTERRNO, "msgsnd() failed as expected");
++	} else {
++		tst_res(TFAIL | TTERRNO,
++			"msgsnd() failed unexpectedly, expected EIDRM");
++	}
+ }
+ 
+-/*
+- * do_child()
+- */
+-void do_child(void)
++static void do_test(void)
+ {
+-	int retval = 0;
++	pid_t pid;
+ 
+-#ifdef UCLINUX
+-	/* initialize the message buffer */
+-	init_buf(&msg_buf, MSGTYPE, MSGSIZE);
++	queue_id = CREATE_MSG(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
+ 
+-#endif
+-	/*
+-	 * Attempt to write another message to the full queue.
+-	 * Without the IPC_NOWAIT flag, the child sleeps
+-	 */
+-	TEST(msgsnd(msg_q_1, &msg_buf, MSGSIZE, 0));
++	while (msgsnd(queue_id, &snd_buf, MSGSIZE, IPC_NOWAIT) != -1)
++		snd_buf.type += 1;
+ 
+-	if (TEST_RETURN != -1) {
+-		retval = 1;
+-		tst_resm(TFAIL, "call succeeded when error expected");
+-		exit(retval);
++	pid = SAFE_FORK();
++	if (!pid) {
++		verify_msgsnd();
++		exit(0);
+ 	}
+ 
+-	switch (TEST_ERRNO) {
+-	case EIDRM:
+-		tst_resm(TPASS, "expected failure - errno = %d : %s",
+-			 TEST_ERRNO, strerror(TEST_ERRNO));
++	TST_PROCESS_STATE_WAIT(pid, 'S');
+ 
+-		/* mark the queue as invalid as it was removed */
+-		msg_q_1 = -1;
+-		break;
+-	default:
+-		retval = 1;
+-		tst_resm(TFAIL,
+-			 "call failed with an unexpected error - %d : %s",
+-			 TEST_ERRNO, strerror(TEST_ERRNO));
+-		break;
++	if (queue_id != -1 && msgctl(queue_id, IPC_RMID, NULL)) {
++		tst_res(TWARN | TERRNO, "failed to delete message queue %i",
++				queue_id);
+ 	}
+-	exit(retval);
+-}
+-
+-/*
+- * setup() - performs all the ONE TIME setup for this test.
+- */
+-void setup(void)
+-{
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
+ 
+-	/*
+-	 * Create a temporary directory and cd into it.
+-	 * This helps to ensure that a unique msgkey is created.
+-	 * See ../lib/libipc.c for more information.
+-	 */
+-	tst_tmpdir();
++	tst_reap_children();
+ }
+ 
+-/*
+- * cleanup() - performs all the ONE TIME cleanup for this test at completion
+- * 	       or premature exit.
+- */
+-void cleanup(void)
++static void setup(void)
+ {
+-
+-	tst_rmdir();
+-
++	msgkey = GETIPCKEY();
+ }
++
++static struct tst_test test = {
++	.tid = "msgsnd06",
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.forks_child = 1,
++	.setup = setup,
++	.test_all = do_test
++};
 -- 
 1.8.3.1
 
