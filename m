@@ -1,60 +1,23 @@
-From: Ning,Han <ningx.han@intel.com>
-Date: Fri, 16 Dec 2016 08:53:42 +0800
-Subject: [LTP] [PATCH ltp] su01: do pre-checking to avoid annoying warning
-Message-ID: <1481849622-19704-1-git-send-email-ningx.han@intel.com>
+From: the_hoang0709@yahoo.com <the_hoang0709@yahoo.com>
+Date: Fri, 16 Dec 2016 08:00:48 +0700
+Subject: [LTP]  [PATCH] Fix wrong checking of aarch64
+Message-ID: <20161216010048.7820-1-the_hoang0709@yahoo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-From: Ning Han <ningx.han@intel.com>
 
-Signed-off-by: Ning Han <ningx.han@intel.com>
+Signed-off-by: Vertigo <the_hoang0709@yahoo.com>
 ---
- testcases/commands/su/su01 | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ testcases/kernel/mem/tunable/max_map_count.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/commands/su/su01 b/testcases/commands/su/su01
-index dd1517f..41441de 100755
---- a/testcases/commands/su/su01
-+++ b/testcases/commands/su/su01
-@@ -86,7 +86,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
- #Create 1st test user
-     #erase user if he may exist , so we can have a clean en
-         rm -rf /home/$TEST_USER1
--        userdel $TEST_USER1
-+        getent passwd $TEST_USER1 &> /dev/null && userdel $TEST_USER1
- 	sleep 1
- 
-         useradd -m -g users $TEST_USER1
-@@ -105,7 +105,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
- 	then {
-           USER_UID=`id -u $TEST_USER1`
-           USER_GID=`id -g $TEST_USER1`
--          mkdir $TEST_USER1_HOMEDIR
-+          mkdir -p $TEST_USER1_HOMEDIR
-           chown -R $USER_UID.$USER_GID $TEST_USER1_HOMEDIR
- 	}
- 	fi
-@@ -121,7 +121,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
- #Create 2nd test user
- 	#erase user if he may exist , so we can have a clean en
-         rm -rf /home/$TEST_USER2
--        userdel $TEST_USER2
-+        getent passwd $TEST_USER2 &> /dev/null && userdel $TEST_USER2
- 	sleep 1
- 
-         useradd -m -g users $TEST_USER2
-@@ -141,7 +141,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
-         then {
-           USER_UID=`id -u $TEST_USER2`
-           USER_GID=`id -g $TEST_USER2`
--          mkdir $TEST_USER2_HOMEDIR
-+          mkdir -p $TEST_USER2_HOMEDIR
-           chown -R $USER_UID.$USER_GID $TEST_USER2_HOMEDIR
- 	}
- 	fi
--- 
-2.7.4
-
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: 0001-Fix-wrong-checking-of-aarch64.patch
+Type: text/x-patch
+Size: 526 bytes
+Desc: not available
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20161216/a6feb5b5/attachment.bin>
