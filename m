@@ -1,70 +1,69 @@
-From: Hoang Nguyen <the_hoang0709@yahoo.com>
-Date: Sat, 17 Dec 2016 04:34:15 +0000 (UTC)
-Subject: [LTP] [PATCH v2] Fix mistake in strcmp() for skipping in
- aarch64. And there is the same error in aarch64be, so add it.
-In-Reply-To: <5854ABA4.9090007@huawei.com>
-References: <20161216125835.12024-1-the_hoang0709@yahoo.com>
- <5854ABA4.9090007@huawei.com>
-Message-ID: <389215298.4676169.1481949255172@mail.yahoo.com>
+From: Eric Chamberland <Eric.Chamberland@giref.ulaval.ca>
+Date: Sat, 17 Dec 2016 13:56:17 -0500
+Subject: [LTP] On the performance of lcov...
+Message-ID: <11e74d02-aec3-04c2-a001-39966d8d3430@giref.ulaval.ca>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi,
-I've added the commit message last time (same as your way), but not know why the patch is created, it's disappeared.(I may put the messages in the wrong way, a blank line need after the first line comment? )
-Sorry for did not check the patch file.
-I've sent it again.
-Thanks a lot for your help.
-Br,H
 
+We are running gcov+lcov analysis each night for our software.  It does 
+a really great job to help us manage our nightly tests database (~1100 
+runs) and to discover unused lines of code! :)
 
-      From: Cui Bixuan <cuibixuan@huawei.com>
- To: ltp@lists.linux.it 
- Sent: Saturday, 17 December 2016, 10:06
- Subject: Re: [LTP] [PATCH v2] Fix mistake in strcmp() for skipping in aarch64. And there is the same error in aarch64be, so add it.
-   
-On 2016/12/16 20:58, the_hoang0709@yahoo.com wrote:
-> 
-> Signed-off-by: Vertigo <the_hoang0709@yahoo.com>
-> ---
->  testcases/kernel/mem/tunable/max_map_count.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-It looks well, but there are no message and Signed-off-by in your patch;
+However running lcov+genthml is really time consuming (longer than the 
+tests or even compiling the code) and I would like to know if there is a 
+way to make lcov+genthml go a little faster...
 
-Maybe you can do:
-git add $file;
-git commit;
-and write it:
+Here is the timings for a complete analysis and html generation:
 
-[title](such as 'Fix mistake in strcmp() for skipping in aarch64')
+===========================
+  660s (1866 .gcno files):  lcov --rc lcov_branch_coverage=1 --capture 
+--initial -d $obj/dev -d $obj2/dev -o init.info
 
-You can write something for this commit, about the error.
+2113s (1662 .gcda files): lcov --rc lcov_branch_coverage=1 --capture -d 
+$obj/dev -d $obj2/dev -o cov.info
 
-Signed-off-by: Vertigo <the_hoang0709@yahoo.com>
-
-# Please enter the commit message for your changes. Lines starting
-# with '#' will be ignored, and an empty message aborts the commit.
-# On branch master
+3112s: lcov --rc lcov_branch_coverage=1 --remove init.info "/usr*" 
+"/opt*" "/pmi/Indus*" -o init.info && lcov --rc lcov_branch_coverage=1 
+--remove cov.info   "/usr*" "/opt*" "/pmi/Indus*" -o cov.info
 ...
+Deleted 255 files
+Writing data to cov.info
+Summary coverage rate:
+   lines......: 69.4% (357216 of 515067 lines)
+   functions..: 64.1% (61500 of 95942 functions)
+   branches...: 32.1% (717338 of 2232711 branches)
 
-Then 'git format-patch -1' can get your patch;
-git send-email --to ltp@lists.linux.it $your_patch  or as a attachment.
+2227s:  lcov --rc lcov_branch_coverage=1 -a init.info -a cov.info -o 
+total.info
+...
+Combining tracefiles.
+Reading tracefile init.info
+Reading tracefile cov.info
+Writing data to total.info
+Summary coverage rate:
+   lines......: 64.5% (357216 of 553958 lines)
+   functions..: 60.3% (61500 of 102006 functions)
+   branches...: 32.1% (717338 of 2232711 branches)
 
-Thanks,
-Cui Bixuan
-> 
-> 
-> 
+1391s:  genhtml  --show-details --legend --branch-coverage 
+--demangle-cpp -o $$pref_html/coverage_dev total.info
+Reading data file total.info
+Found 2854 entries.
+...
+===========================
 
+total time: 9503s => 2h38m
 
--- 
-Mailing list info: https://lists.linux.it/listinfo/ltp
+We would like to understand if we are doing something wrong... or if 
+someone is aware of this performance "problem" or willing to optimize 
+lcov/genthml code itself?
 
+anyway, thanks for this great tool! :)
 
-   
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20161217/a4574127/attachment-0001.html>
+Eric
+
