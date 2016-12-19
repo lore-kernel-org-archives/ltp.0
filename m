@@ -1,8 +1,7 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 19 Dec 2016 16:34:09 +0300
-Subject: [LTP] [PATCH] test_net.sh: don't set nohup in netns and show
-	netstress msgs
-Message-ID: <1482154449-4532-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Mon, 19 Dec 2016 16:36:33 +0300
+Subject: [LTP] [PATCH 1/3] tst_test: add tst_parse_long()
+Message-ID: <1482154595-4641-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,53 +10,57 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/lib/test_net.sh |   15 ++++++---------
- 1 files changed, 6 insertions(+), 9 deletions(-)
+ include/tst_test.h |    1 +
+ lib/tst_test.c     |   15 +++++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index f5321d7..f73296d 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -64,16 +64,14 @@ tst_rhost_run()
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 1492ff5..3c77a98 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -96,6 +96,7 @@ struct tst_option {
+  * On failure non-zero (errno) is returned.
+  */
+ int tst_parse_int(const char *str, int *val, int min, int max);
++int tst_parse_long(const char *str, long *val, long min, long max);
+ int tst_parse_float(const char *str, float *val, float min, float max);
  
- 	while getopts :bsc:u: opt; do
- 		case "$opt" in
--		b)
--			pre_cmd="nohup"
--			post_cmd=" > /dev/null 2>&1 &"
--			out="1> /dev/null"
-+		b) [ "$TST_USE_NETNS" ] && pre_cmd="" || pre_cmd="nohup"
-+		   post_cmd=" > /dev/null 2>&1 &"
-+		   out="1> /dev/null"
- 		;;
- 		s) safe=1 ;;
- 		c) cmd=$OPTARG ;;
- 		u) user=$OPTARG ;;
--		*)
--			tst_brkm TBROK "tst_rhost_run: unknown option: $OPTARG"
-+		*) tst_brkm TBROK "tst_rhost_run: unknown option: $OPTARG"
- 		;;
- 		esac
- 	done
-@@ -308,8 +306,7 @@ tst_netload()
- 		echo $res | sed -nE 's/.*time ([0-9]+)ms.*/\1/p' > $rfile
- 	;;
- 	TFO)
--		local port=
--		port=$(tst_rhost_run -c 'tst_get_unused_port ipv6 stream')
-+		local port=$(tst_rhost_run -c 'tst_get_unused_port ipv6 stream')
- 		[ $? -ne 0 ] && tst_brkm TBROK "failed to get unused port"
+ struct tst_test {
+diff --git a/lib/tst_test.c b/lib/tst_test.c
+index c48d718..cd22bb4 100644
+--- a/lib/tst_test.c
++++ b/lib/tst_test.c
+@@ -446,6 +446,17 @@ static void parse_opts(int argc, char *argv[])
+ int tst_parse_int(const char *str, int *val, int min, int max)
+ {
+ 	long rval;
++
++	int ret = tst_parse_long(str, &rval, min, max);
++
++	*val = (int)rval;
++
++	return ret;
++}
++
++int tst_parse_long(const char *str, long *val, long min, long max)
++{
++	long rval;
+ 	char *end;
  
- 		tst_resm TINFO "run netstress with '$ip_addr', port '$port'"
-@@ -329,7 +326,7 @@ tst_netload()
+ 	if (!str)
+@@ -460,10 +471,10 @@ int tst_parse_int(const char *str, int *val, int min, int max)
+ 	if (errno)
+ 		return errno;
  
- 		# run local tcp client
- 		netstress -a $clients_num -r $client_requests -l -H $ip_addr\
--			 -g $port -d $rfile $addopts > /dev/null || ret=1
-+			 -g $port -d $rfile $addopts || ret=1
+-	if (rval > (long)max || rval < (long)min)
++	if (rval > max || rval < min)
+ 		return ERANGE;
  
- 		if [ $ret -eq 0 -a ! -f $rfile ]; then
- 			tst_brkm TBROK "can't read $rfile"
+-	*val = (int)rval;
++	*val = rval;
+ 	return 0;
+ }
+ 
 -- 
 1.7.1
 
