@@ -1,46 +1,50 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 22 Dec 2016 00:04:21 +0100
-Subject: [LTP] [PATCH 2/3] test_net.sh: delete netns before testing
+Date: Thu, 22 Dec 2016 00:04:22 +0100
+Subject: [LTP] [PATCH 3/3] test_net.sh: netns as default in tst_rhost_run
 In-Reply-To: <20161221230422.26696-1-pvorel@suse.cz>
 References: <20161221230422.26696-1-pvorel@suse.cz>
-Message-ID: <20161221230422.26696-2-pvorel@suse.cz>
+Message-ID: <20161221230422.26696-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Tested with (second run breaks it):
-TST_USE_NETNS=1 ./testscripts/network.sh -6
+netns can be set by test_net.sh when RHOST is unset, but user wants to
+use ssh, so it should be first tested.
+
+Tested with:
+TST_USE_SSH=1 ./testscripts/network.sh -6
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
-It shouldn't be a problem as 'export TST_INIT_NETNS="no"' help us not to
-redefine each time test_net.sh is loaded.
+Even it's configuration error, we should handle it as before netns was user
+warned about config error.
 ---
- testcases/lib/test_net.sh | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ testcases/lib/test_net.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 7d82e8962..535a2abb3 100644
+index 535a2abb3..8fc14c588 100644
 --- a/testcases/lib/test_net.sh
 +++ b/testcases/lib/test_net.sh
-@@ -25,11 +25,10 @@ init_ltp_netspace()
- 	LHOST_IFACES=${LHOST_IFACES:-"ltp_ns_veth2"}
- 	RHOST_IFACES=${RHOST_IFACES:-"ltp_ns_veth1"}
+@@ -88,12 +88,12 @@ tst_rhost_run()
  
--	if [ ! -f /var/run/netns/ltp_ns ]; then
--		ROD ip net add ltp_ns
--		ROD ip li add name $RHOST_IFACES type veth peer name $LHOST_IFACES
--		ROD ip li set dev $RHOST_IFACES netns ltp_ns
--	fi
-+	ip netns del ltp_ns 2>/dev/null
-+	ROD ip net add ltp_ns
-+	ROD ip li add name $RHOST_IFACES type veth peer name $LHOST_IFACES
-+	ROD ip li set dev $RHOST_IFACES netns ltp_ns
- 
- 	export TST_INIT_NETNS="no"
- 	export LTP_NETNS=${LTP_NETNS:-"ip netns exec ltp_ns"}
+ 	local output=
+ 	local ret=0
+-	if [ -n "$TST_USE_SSH" ]; then
+-		output=`ssh -n -q $user@$RHOST "sh -c \
+-			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+-	elif [ -n "$TST_USE_NETNS" ]; then
++	if [ -n "$TST_USE_NETNS" ]; then
+ 		output=`$LTP_NETNS sh -c \
+ 			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
++	elif [ -n "$TST_USE_SSH" ]; then
++		output=`ssh -n -q $user@$RHOST "sh -c \
++			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+ 	else
+ 		output=`rsh -n -l $user $RHOST "sh -c \
+ 			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
 -- 
 2.11.0
 
