@@ -1,15 +1,11 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 23 Dec 2016 11:54:47 +0100
-Subject: [LTP] [PATCH 1/3] test_net.sh: fix netns when defined
- LHOST_IFACES or RHOST_IFACES
-In-Reply-To: <e06a35be-a03a-a984-759c-740e1d30c8a5@oracle.com>
+Date: Fri, 23 Dec 2016 12:04:34 +0100
+Subject: [LTP] [PATCH 2/3] test_net.sh: delete netns before testing
+In-Reply-To: <7d5f577f-1484-6655-8401-1a2c76b2c56e@oracle.com>
 References: <20161221230422.26696-1-pvorel@suse.cz>
- <f18cb5f0-e5d9-68e8-45c7-262c987aca28@oracle.com>
- <20161222130148.gn2j3vblabp4n446@dell5510>
- <a388a121-3402-e274-7b34-05257c56a98d@oracle.com>
- <20161222151725.vd76lhusgxm4iero@dell5510>
- <e06a35be-a03a-a984-759c-740e1d30c8a5@oracle.com>
-Message-ID: <20161223105447.5frfxa4c6uh5rvow@dell5510>
+ <20161221230422.26696-2-pvorel@suse.cz>
+ <7d5f577f-1484-6655-8401-1a2c76b2c56e@oracle.com>
+Message-ID: <20161223110434.a2qs3qlofj5l7bkd@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,19 +13,30 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi Alexey,
+> Hmm, could you describe the error you are getting?
+> I cannot reproduce it in my environment.
 
-> Basically, if we set '*_IFACES' variables before the test, we have to make
-> sure they contains the names of already existed interfaces. if someone moved
-> from rsh config and left eth0 interface names... LTP must setup veth pair
-> with this name? More likely the names will be the same and veth pair won't
-> be created.
-I'm sorry, you're right, I realized that afterwards. Forget about this patch.
+> ...or is it about setting IPv6 address for the second time on the interface,
+> because network.sh and test_net.sh are both using the same '-6' option?
+> network_settings 1 TINFO : set local addr fd00:1:1:1::2/64
+> RTNETLINK answers: File exists
+I don't know why (probably bad setup or something on my side), but sometimes it even it's
+ltp_ns setup (/var/run/netns/ltp_ns exists), ltp_ns_veth2 device is not available
+(directory /sys/class/net/ltp_ns_veth2/ doesn't exist):
 
-> With current configuration, we could create ltp_ns namespace and setup our
-> own interface(s) before the test (e.g. veth/br0 -> bond -> vxlan -> vlan ...
-> etc), then run the tests with new names set (skipping default setup).
-Sounds good, please do it.
+/opt/ltp/testscripts/network.sh -6
+...
+cmdline="ping01.sh -6"
+contacts=""
+analysis=exit
+<<<test_output>>>
+cat: /sys/class/net/ltp_ns_veth2/address: No such file or directory
+...
+ping01 1 TINFO : ping6 with 8 16 32 64 128 256 512 1024 2048 4064 ICMP packets
+ping01 1 TFAIL : ping6 -c 3 -s 8 fd00:1:1:1::1 >/dev/null failed unexpectedly
 
+> Moreover, it's not needed to set TST_USE_NETNS.
+OK, do I understand that for netns I don't need to setup any variable?
 
 Kind regards,
 Petr
