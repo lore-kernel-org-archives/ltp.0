@@ -1,44 +1,93 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 5 Jan 2017 13:41:01 +0100
-Subject: [LTP] [RFC PATCH 1/1] test.sh: colorize the output
-In-Reply-To: <20170105092457.GA15400@rei.lan>
-References: <20170105085711.8903-1-petr.vorel@gmail.com>
- <20170105092457.GA15400@rei.lan>
-Message-ID: <20170105124101.cci4qjjfpvwaartu@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu,  5 Jan 2017 14:16:14 +0100
+Subject: [LTP] [COMMITTED] [PATCH] commands/ld01: Fix test for LTP compiled
+	with -m32
+Message-ID: <1483622174-22581-1-git-send-email-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
+The test was pre-compiling the object files while LTP was build which
+leads to a problem when LTP is compiled with -m32 where the produced
+object files ended up incompatible with the 64bit ld command.
 
-thanks for your comments!
+So after this commit the only installed datafiles are the C sources and
+the object files are produced in the test setup.
 
-> I guess that we can add support for colors.
-Thanks! It might take some time as it's my private activity it has lower priority.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/commands/ld/datafiles/Makefile |  5 ++---
+ testcases/commands/ld/ld01               | 18 +++++++++++++-----
+ 2 files changed, 15 insertions(+), 8 deletions(-)
 
-> Adding more default options for testcases does not seem to be good idea
-> to me, environment variable sounds much better.
-Right, I also agree.
+diff --git a/testcases/commands/ld/datafiles/Makefile b/testcases/commands/ld/datafiles/Makefile
+index 7a46714..7b19207 100644
+--- a/testcases/commands/ld/datafiles/Makefile
++++ b/testcases/commands/ld/datafiles/Makefile
+@@ -16,8 +16,7 @@ top_srcdir		?= ../../../..
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+ INSTALL_DIR		:= testcases/data/ld01
+-
+-CPPFLAGS		+= -fPIC
+-MAKE_TARGETS		:= $(patsubst $(abs_srcdir)/%.c,%.o,$(wildcard $(abs_srcdir)/*.c))
++MAKE_TARGETS		:=
++INSTALL_TARGETS		:= $(wildcard *.c)
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/ld/ld01 b/testcases/commands/ld/ld01
+index b7b0993..3ff1d09 100755
+--- a/testcases/commands/ld/ld01
++++ b/testcases/commands/ld/ld01
+@@ -28,10 +28,18 @@ LD=${LD:=ld}
+ TST_ID="ld01"
+ TST_CNT=5
+ TST_TESTFUNC=test
++TST_SETUP=setup
+ TST_NEEDS_TMPDIR=1
+ TST_NEEDS_CMDS="$CC $LD"
+ . tst_test.sh
+ 
++setup()
++{
++	for i in rf1 f1 rd1 d1 main; do
++		ROD $CC -fPIC -c -o ${i}.o $TST_DATAROOT/${i}.c
++	done
++}
++
+ test1()
+ {
+ 	EXPECT_FAIL $LD x.o y.o 2\> ld.out
+@@ -58,7 +66,7 @@ test2()
+ 
+ test3()
+ {
+-	EXPECT_PASS $LD -shared $TST_DATAROOT/f1.o $TST_DATAROOT/d1.o -o test.so
++	EXPECT_PASS $LD -shared f1.o d1.o -o test.so
+ 
+ 	if file test.so |grep -q shared; then
+ 		tst_res TPASS "Shared library could be build"
+@@ -69,14 +77,14 @@ test3()
+ 
+ test4()
+ {
+-	EXPECT_PASS $LD -Bdynamic -shared $TST_DATAROOT/f1.o $TST_DATAROOT/d1.o -o test.so
+-	EXPECT_FAIL $LD -Bstatic -L. $TST_DATAROOT/main.o $TST_DATAROOT/rd1.o test.so -o a.out
++	EXPECT_PASS $LD -Bdynamic -shared f1.o d1.o -o test.so
++	EXPECT_FAIL $LD -Bstatic -L. main.o rd1.o test.so -o a.out
+ }
+ 
+ test5()
+ {
+-	EXPECT_PASS $LD -Bdynamic -shared $TST_DATAROOT/main.o $TST_DATAROOT/f1.o $TST_DATAROOT/rf1.o -o test.so -L/usr/lib/
+-	EXPECT_FAIL $LD -Bstatic -r $TST_DATAROOT/main.o $TST_DATAROOT/f1.o $TST_DATAROOT/rf1.o test.so -L/usr/lib/ 2\> ld.out
++	EXPECT_PASS $LD -Bdynamic -shared main.o f1.o rf1.o -o test.so -L/usr/lib/
++	EXPECT_FAIL $LD -Bstatic -r main.o f1.o rf1.o test.so -L/usr/lib/ 2\> ld.out
+ 	cat ld.out
+ 
+ 	if grep -q "$LD: attempted static link of dynamic object" ld.out; then
+-- 
+2.7.3
 
-> I would expect colorized output enabled by default, but the color output
-> would be produced only if we are writing to actual terminal. Utils such
-> as grep use stat() on stdout to check if it's char device and isatty()
-> as well.
-Oh yes, I meant this behaviour. Looking into grep and ls (coreutils) sources, they both
-use similar approach - using stat()/fstat() and isatty().
-
-> And we should also have some env variable, something as
-> LTP_COLORIZE_OUTPUT to override the decision.
-Good point. This comes instead of grep/ls --color= switch.
-
-> > * Allow user to define colors (overwrite with environment variables).
-> User defined colors does not sound that useful to me.
-I was for that as not sure as everyone uses different terminal settings, has different
-opinions about colors. And both ls and grep allow it. Although it has lowest priority
-(detecting with isatty() is much more important).
-
-
-Kind regards,
-Petr
