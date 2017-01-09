@@ -1,235 +1,173 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Mon, 9 Jan 2017 16:15:53 +0800
-Subject: [LTP] [PATCH 1/4] getcwd01.c: cleanup && convert to new API
-Message-ID: <1483949756-8685-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Date: Mon, 9 Jan 2017 16:15:56 +0800
+Subject: [LTP] [PATCH 4/4] getcwd04.c: cleanup && convert to new API
+In-Reply-To: <1483949756-8685-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <1483949756-8685-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1483949756-8685-4-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-add one test for ERANGE
-
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/getcwd/getcwd01.c | 181 +++++++++-------------------
- 1 file changed, 59 insertions(+), 122 deletions(-)
+ testcases/kernel/syscalls/getcwd/getcwd04.c | 81 +++++++++++------------------
+ 1 file changed, 30 insertions(+), 51 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getcwd/getcwd01.c b/testcases/kernel/syscalls/getcwd/getcwd01.c
-index 0d0ecdb..701823b 100644
---- a/testcases/kernel/syscalls/getcwd/getcwd01.c
-+++ b/testcases/kernel/syscalls/getcwd/getcwd01.c
-@@ -1,152 +1,89 @@
+diff --git a/testcases/kernel/syscalls/getcwd/getcwd04.c b/testcases/kernel/syscalls/getcwd/getcwd04.c
+index 1a5461c..7e2ca23 100644
+--- a/testcases/kernel/syscalls/getcwd/getcwd04.c
++++ b/testcases/kernel/syscalls/getcwd/getcwd04.c
+@@ -1,16 +1,16 @@
  /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
+- *   Copyright (c) 2014 Fujitsu Ltd.
+- *   Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
++ * Copyright (c) 2014 Fujitsu Ltd.
++ * Author: Xiaoguang Wang <wangxg.fnst@cn.fujitsu.com>
   *
 - *   This program is free software;  you can redistribute it and/or modify
 - *   it under the terms of the GNU General Public License as published by
 - *   the Free Software Foundation; either version 2 of the License, or
 - *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
   *
 - *   This program is distributed in the hope that it will be useful,
 - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
 - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
 - *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
   */
  
  /*
-- * NAME
-- *	getcwd01
-- *
-  * DESCRIPTION
-- *	Testcase to test that getcwd(2) sets errno correctly.
-- *
-- * ALGORITHM
-- *	Test 1: Call getcwd(2) with a buf pointing outside the address space of
-- *		 process, and a valid size, and expect EFAULT to be
-- *		 set in errno.
-- *	Test 2: Call getcwd(2) with buf = NULL, size = -1, and expect ENOMEM
-- *		 to be set in errno.
-- *	Test 3: Call getcwd(2) with a valid buf, and size = 0, and expect
-- *		 EINVAL to be set in errno.
-- *	Test 4: Call getcwd(2) on the root directory, and set size to 1, expect
-- *		 ERANGE to be set in errno.
-+ * Testcase to test that getcwd(2) sets errno correctly.
-+ * 1) getcwd(2) fails if buf points to a bad address.
-+ * 2) getcwd(2) fails if the size is invalid.
-+ * 3) getcwd(2) fails if the size is set to 0.
-+ * 4) getcwd(2) fails if the size is set to 1.
-+ * 5) getcwd(2) fails if buf points to NULL and the size is set to 1.
+@@ -30,7 +30,6 @@
   *
-- * USAGE:  <for command-line>
-- *  getcwd01 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-+ * Expected Result:
-+ * 1) getcwd(2) should return NULL and set errno to EFAULT.
-+ * 2) getcwd(2) should return NULL and set errno to ENOMEM.
-+ * 3) getcwd(2) should return NULL and set errno to EINVAL.
-+ * 4) getcwd(2) should return NULL and set errno to ERANGE.
-+ * 5) getcwd(2) should return NULL and set errno to ERANGE.
-  *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
+  * This test is to check whether this bug exists in the running kernel,
+  * or whether this bug has been fixed.
 - *
-- * RESTRICTIONS
-- *	NONE
   */
--#include <stdio.h>
--#include <string.h>
--#include <errno.h>
--#include "test.h"
  
--char *TCID = "getcwd01";
--char buf[100];
-+#include <errno.h>
-+#include <unistd.h>
+ #include <stdio.h>
+@@ -38,77 +37,54 @@
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <unistd.h>
+-#include "test.h"
+-#include "safe_macros.h"
 +#include "tst_test.h"
  
--void cleanup(void);
--void setup(void);
--void setup_test4(void);
-+static char buffer[5];
+ #define TIMEOUT	5
  
--struct test_case_t {
--	char *desc;
--	void (*setupfunc) ();
-+static struct t_case {
- 	char *buf;
- 	int size;
--	int exp_errno;
--	char *exp_retval;
--} testcases[] = {
-+	int exp_err;
-+} tcases[] = {
- #ifndef UCLINUX
- 	/* Skip since uClinux does not implement memory protection */
--	{
--	"Test for EFAULT", NULL, (void *)-1, BUFSIZ, EFAULT, NULL},
-+	{(void *)-1, sizeof(buffer), EFAULT},
- #endif
--	{
--	"Test for ENOMEM", NULL, NULL, -1, ENOMEM, NULL}, {
--	"Test for EINVAL", NULL, buf, 0, EINVAL, NULL}, {
--	"Test for ERANGE", (void *)setup_test4, buf, 1, ERANGE, NULL}
-+	{NULL, -1, ENOMEM},
-+	{buffer, 0, EINVAL},
-+	{buffer, 1, ERANGE},
-+	{NULL, 1, ERANGE}
- };
+-static void setup(void);
+-static void cleanup(void);
+ static void do_child(void);
+ static void sigproc(int sig);
+ static volatile sig_atomic_t end;
+ static char init_cwd[PATH_MAX];
  
--int TST_TOTAL = ARRAY_SIZE(testcases);
+-char *TCID = "getcwd04";
+-int TST_TOTAL = 1;
 -
 -int main(int ac, char **av)
-+static void verify_getcwd(unsigned int n)
++static void verify_getcwd(void)
  {
--	int i;
--	int lc;
--	char *test_erg;
--
+ 	int status;
+ 	char cur_cwd[PATH_MAX];
+ 	pid_t child;
+ 
 -	tst_parse_opts(ac, av, NULL, NULL);
+-
 -	setup();
 -
--	/*
--	 * The following loop checks looping state if -i option given
--	 */
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
+-	child = tst_fork();
+-	if (child < 0)
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork failed");
 -
--		for (i = 0; i < TST_TOTAL; ++i) {
--			tst_resm(TINFO, "%s", testcases[i].desc);
--
--			if (testcases[i].setupfunc != NULL) {
--				testcases[i].setupfunc();
--			}
--
--			errno = 0;
--			test_erg = getcwd(testcases[i].buf, testcases[i].size);
--			TEST_ERRNO = errno;
--
--			if (test_erg != testcases[i].exp_retval) {
--				tst_resm(TFAIL, "getcwd(2) failed to return"
--					 "expected value, expected: %p, "
--					 "got: %p", testcases[i].exp_retval,
--					 test_erg);
--				continue;
--			}
--			if (TEST_ERRNO != testcases[i].exp_errno) {
--				tst_resm(TFAIL, "getcwd returned unexpected "
--					 "errno, expected: %d, got: %d",
--					 testcases[i].exp_errno, TEST_ERRNO);
--				continue;
--			}
--			tst_resm(TPASS, "Test case %d PASSED", i + 1);
--		}
-+	struct t_case *tc = &tcases[n];
-+	char *res;
-+
-+	errno = 0;
-+	res = getcwd(tc->buf, tc->size);
-+	TEST_ERRNO = errno;
-+	if (res != NULL) {
-+		tst_res(TFAIL, "getcwd() succeeded unexpectedly");
-+		return;
++	child = SAFE_FORK();
+ 	if (child == 0)
+ 		do_child();
+ 
+ 	 while (1) {
+-		SAFE_GETCWD(cleanup, cur_cwd, PATH_MAX);
++		SAFE_GETCWD(cur_cwd, PATH_MAX);
+ 		if (strncmp(init_cwd, cur_cwd, PATH_MAX)) {
+-			tst_resm(TFAIL, "initial current work directory is "
++			tst_res(TFAIL, "initial current work directory is "
+ 				 "%s, now is %s. Bug is reproduced!",
+ 				 init_cwd, cur_cwd);
+ 			break;
+ 		}
+ 
+ 		if (end) {
+-			tst_resm(TPASS, "Bug is not reproduced!");
++			tst_res(TPASS, "Bug is not reproduced!");
+ 			break;
+ 		}
  	}
+ 
+-	SAFE_KILL(cleanup, child, SIGKILL);
+-	SAFE_WAITPID(cleanup, child, &status, 0);
+-
 -	cleanup();
- 
 -	tst_exit();
--}
-+	if (TEST_ERRNO != tc->exp_err) {
-+		tst_res(TFAIL | TTERRNO, "getcwd() failed unexpectedly, expected %s",
-+			tst_strerrno(tc->exp_err));
-+		return;
-+	}
- 
--void setup_test4(void)
--{
--	chdir("/");
-+	tst_res(TPASS | TTERRNO, "getcwd() failed as expected");
++	SAFE_KILL(child, SIGKILL);
++	SAFE_WAITPID(child, &status, 0);
  }
  
--void setup(void)
-+static void setup(void)
+ static void setup(void)
  {
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
 -
 -	TEST_PAUSE;
 -
--	/* create a test directory and cd into it */
+ 	if (tst_ncpus() == 1)
+-		tst_brkm(TCONF, NULL, "This test needs two cpus at least");
+-
 -	tst_tmpdir();
-+	SAFE_CHDIR("/tmp");
++		tst_brk(TCONF, "This test needs two cpus@least");
+ 
+-	if (signal(SIGALRM, sigproc) == SIG_ERR)
+-		tst_brkm(TBROK | TERRNO, cleanup, "signal(SIGALRM) failed");
++	SAFE_SIGNAL(SIGALRM, sigproc);
+ 
+ 	alarm(TIMEOUT);
+ 
+-	SAFE_GETCWD(cleanup, init_cwd, PATH_MAX);
++	SAFE_GETCWD(init_cwd, PATH_MAX);
  }
  
--void cleanup(void)
+ static void sigproc(int sig)
+@@ -121,16 +97,19 @@ static void do_child(void)
+ 	unsigned int i = 0;
+ 	char c_name[PATH_MAX] = "testfile", n_name[PATH_MAX];
+ 
+-	SAFE_TOUCH(NULL, c_name, 0644, NULL);
++	SAFE_TOUCH(c_name, 0644, NULL);
+ 
+ 	while (1) {
+ 		snprintf(n_name, PATH_MAX, "testfile%u", i++);
+-		SAFE_RENAME(NULL, c_name, n_name);
++		SAFE_RENAME(c_name, n_name);
+ 		strncpy(c_name, n_name, PATH_MAX);
+ 	}
+ }
+ 
+-static void cleanup(void)
 -{
--	/* remove the test directory */
 -	tst_rmdir();
 -}
 +static struct tst_test test = {
-+	.tid = "getcwd01",
++	.tid = "getcwd04",
 +	.setup = setup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_getcwd
++	.test_all = verify_getcwd,
++	.needs_tmpdir = 1,
++	.forks_child = 1
 +};
 -- 
 1.8.3.1
