@@ -1,26 +1,46 @@
-From: Cui Bixuan <cuibixuan@huawei.com>
-Date: Tue, 10 Jan 2017 09:43:28 +0800
-Subject: [LTP] LTP release && Christmas && New year
-In-Reply-To: <20170102123142.GD20636@rei.lan>
-References: <20161212132204.GA21779@rei.lan> <20170102123142.GD20636@rei.lan>
-Message-ID: <58743C40.3060809@huawei.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 10 Jan 2017 15:32:56 +0100
+Subject: [LTP] [PATCH] network: fix export for some non-bash shells
+In-Reply-To: <20161219125407.15954-1-pvorel@suse.cz>
+References: <20161219125407.15954-1-pvorel@suse.cz>
+Message-ID: <20170110143256.wkmfloz3xr3ob6lj@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2017/1/2 20:31, Cyril Hrubis wrote:
-> 
-> I guess that we should merge the fix for aarch64 check in max_map_count
-> test.
+Hi there,
 
-We could fix for aarch64 check in max_map_count by this patch:
-[LTP] [PATCH v3] Fix mistake in strcmp() for skipping in aarch64
+> exporting with fails in some non-bash shels (at least on dash),
+> export: -n: bad variable name
+> => quotation marks must be around whole expression.
 
-What's your opinion?
+> Signed-off-by: Petr Vorel <pvorel@suse.cz>
+> ---
+>  testcases/lib/test_net.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Cui Bixuan
-> 
+> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+> index f5321d73a..1d350fdd1 100644
+> --- a/testcases/lib/test_net.sh
+> +++ b/testcases/lib/test_net.sh
+> @@ -378,7 +378,7 @@ tst_ping()
+>  export RHOST="$RHOST"
+>  export PASSWD=${PASSWD:-""}
+>  # Don't use it in new tests, use tst_rhost_run() from test_net.sh instead.
+> -export LTP_RSH=${LTP_RSH:-"rsh -n"}
+> +export LTP_RSH="${LTP_RSH:-rsh -n}"
 
+>  # Test Links
+>  # Set first three octets of the network address, default is '10.0.0'
+
+Actually I'd be for replacing all exports, as nothing with spaces will not work in dash (I
+know we don't support spaces in paths):
+
+-export FOO=${FOO:-"foo with spaces"}
++export "FOO=${FOO:-foo with spaces}"
+
+
+Kind regards,
+Petr
