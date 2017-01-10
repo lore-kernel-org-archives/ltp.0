@@ -1,9 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Jan 2017 15:32:56 +0100
+Date: Tue, 10 Jan 2017 15:34:44 +0100
 Subject: [LTP] [PATCH] network: fix export for some non-bash shells
-In-Reply-To: <20161219125407.15954-1-pvorel@suse.cz>
+In-Reply-To: <20170110143256.wkmfloz3xr3ob6lj@dell5510>
 References: <20161219125407.15954-1-pvorel@suse.cz>
-Message-ID: <20170110143256.wkmfloz3xr3ob6lj@dell5510>
+ <20170110143256.wkmfloz3xr3ob6lj@dell5510>
+Message-ID: <20170110143444.6mljcmalfnsgf3hq@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,34 +13,10 @@ To: ltp@lists.linux.it
 
 Hi there,
 
-> exporting with fails in some non-bash shels (at least on dash),
-> export: -n: bad variable name
-> => quotation marks must be around whole expression.
-
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/lib/test_net.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-> diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-> index f5321d73a..1d350fdd1 100644
-> --- a/testcases/lib/test_net.sh
-> +++ b/testcases/lib/test_net.sh
-> @@ -378,7 +378,7 @@ tst_ping()
->  export RHOST="$RHOST"
->  export PASSWD=${PASSWD:-""}
->  # Don't use it in new tests, use tst_rhost_run() from test_net.sh instead.
-> -export LTP_RSH=${LTP_RSH:-"rsh -n"}
-> +export LTP_RSH="${LTP_RSH:-rsh -n}"
-
->  # Test Links
->  # Set first three octets of the network address, default is '10.0.0'
-
-Actually I'd be for replacing all exports, as nothing with spaces will not work in dash (I
-know we don't support spaces in paths):
-
--export FOO=${FOO:-"foo with spaces"}
-+export "FOO=${FOO:-foo with spaces}"
+> -export FOO=${FOO:-"foo with spaces"}
+> +export "FOO=${FOO:-foo with spaces}"
+Sorry I ment:
++export FOO="${FOO:-foo with spaces}"
 
 
 Kind regards,
