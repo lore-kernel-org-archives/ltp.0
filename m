@@ -1,19 +1,26 @@
-From: Shuang Qiu <shuang.qiu@oracle.com>
-Date: Mon, 09 Jan 2017 22:40:36 +0800
-Subject: [LTP] mce-test suite in LTP
-Message-ID: <5873A0E4.1050608@oracle.com>
+From: Cui Bixuan <cuibixuan@huawei.com>
+Date: Tue, 10 Jan 2017 09:43:28 +0800
+Subject: [LTP] LTP release && Christmas && New year
+In-Reply-To: <20170102123142.GD20636@rei.lan>
+References: <20161212132204.GA21779@rei.lan> <20170102123142.GD20636@rei.lan>
+Message-ID: <58743C40.3060809@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi experts,
+On 2017/1/2 20:31, Cyril Hrubis wrote:
+> 
+> I guess that we should merge the fix for aarch64 check in max_map_count
+> test.
 
-Does anyone have any experience about mce-test suite.
-What is the benefit to keep this suite as submodule of ltp git,I went 
-through the howto.txt file and feel  it is a separate test suite.
-Is it possible to drive such testsuite by ltp-pan.
+We could fix for aarch64 check in max_map_count by this patch:
+[LTP] [PATCH v3] Fix mistake in strcmp() for skipping in aarch64
 
-Thanks
-Shuang
+What's your opinion?
+
+Thanks,
+Cui Bixuan
+> 
+
