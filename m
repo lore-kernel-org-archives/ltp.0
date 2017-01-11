@@ -1,70 +1,43 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 11 Jan 2017 15:53:54 +0300
-Subject: [LTP] [PATCH] test_net.sh: add tst_wait_ipv6_dad()
-Message-ID: <1484139234-14043-1-git-send-email-alexey.kodanev@oracle.com>
+From: Petr Vorel <petr.vorel@gmail.com>
+Date: Wed, 11 Jan 2017 13:59:37 +0100
+Subject: [LTP] [PATCH v2 1/1] travis: initial configuration
+Message-ID: <20170111125937.19842-1-petr.vorel@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-New function is waiting for IPv6 DAD completion on the specified
-interfaces.
+Configuration: build with gcc only, install.
 
-Add it to netns setup to make sure previously configured
-IPv6 addresses are ready to be used by tests.
-
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/lib/test_net.sh |   28 ++++++++++++++++++++++++++++
- 1 files changed, 28 insertions(+), 0 deletions(-)
+Actually I decided to use default mail notification settings (mail sent to
+author and committer if they have push or admin permissions, see
+https://docs.travis-ci.com/user/notifications#Default-notification-settings).
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 71df6be..04d420c 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -44,6 +44,7 @@ init_ltp_netspace()
- 	TST_IPV6=6 tst_add_ipaddr
- 	TST_IPV6=6 tst_add_ipaddr rhost
- 
-+	tst_wait_ipv6_dad
- }
- 
- # Run command on remote host.
-@@ -278,6 +279,33 @@ tst_restore_ipaddr()
- 	return $ret
- }
- 
-+# tst_wait_ipv6_dad [LHOST_IFACE] [RHOST_IFACE]
-+# wait for IPv6 DAD completion
-+tst_wait_ipv6_dad()
-+{
-+	local ret=
-+	local i=
-+	local iface_loc=${1:-$(tst_iface)}
-+	local iface_rmt=${2:-$(tst_iface rhost)}
+The reason is that otherwise we'd get email notifications to mailing list also
+for forks (see https://github.com/travis-ci/travis-ci/issues/329
+https://github.com/travis-ci/travis-ci/issues/1094).
+---
+ .travis.yml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+ create mode 100644 .travis.yml
+
+diff --git a/.travis.yml b/.travis.yml
+new file mode 100644
+index 000000000..60d4aa3d6
+--- /dev/null
++++ b/.travis.yml
+@@ -0,0 +1,8 @@
++sudo: required
 +
-+	for i in $(seq 1 5); do
-+		ip a sh $iface_loc | grep -q tentative
-+		ret=$?
++language: c
 +
-+		tst_rhost_run -c "ip a sh $iface_rmt | grep -q tentative"
++notifications:
++    - email: true
 +
-+		[ $ret -ne 0 -a $? -ne 0 ] && return
-+
-+		if [ $i -ne 5 ]; then
-+			tst_resm TINFO "wait for IPv6 DAD completion $i/5 sec"
-+			tst_sleep 1s
-+			continue
-+		fi
-+
-+		tst_resm TWARN "Interface has tentative IP address(es)"
-+	done
-+}
-+
- # tst_netload ADDR [FILE] [TYPE] [OPTS]
- # Run network load test
- # ADDR: IP address
++script: make autotools && ./configure --with-open-posix-testsuite --with-realtime-testsuite && make -j$(getconf _NPROCESSORS_ONLN) && make -j$(getconf _NPROCESSORS_ONLN) install
 -- 
-1.7.1
+2.11.0
 
