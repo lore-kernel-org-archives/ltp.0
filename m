@@ -1,23 +1,87 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 10 Jan 2017 15:34:44 +0100
-Subject: [LTP] [PATCH] network: fix export for some non-bash shells
-In-Reply-To: <20170110143256.wkmfloz3xr3ob6lj@dell5510>
-References: <20161219125407.15954-1-pvorel@suse.cz>
- <20170110143256.wkmfloz3xr3ob6lj@dell5510>
-Message-ID: <20170110143444.6mljcmalfnsgf3hq@dell5510>
+From: charishma <charishm@linux.vnet.ibm.com>
+Date: Wed, 11 Jan 2017 12:07:32 +0530
+Subject: [LTP]  [PATCH] hugetlb: Fix tbrok issue in hugeshmat04
+Message-ID: <365ca34e-bc84-2c59-3829-6d8369c6d09c@linux.vnet.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi there,
+hugeshmat04 tests are broken when the number of hugepages are less that 
+expected.
 
-> -export FOO=${FOO:-"foo with spaces"}
-> +export "FOO=${FOO:-foo with spaces}"
-Sorry I ment:
-+export FOO="${FOO:-foo with spaces}"
+The check in set_sys_tune is causing the test execution to break,by 
+removing this check in set_sys_tune function the test works fine.
 
+hugeshmat04    0  TINFO  :  set nr_hugepages to 1024
+hugeshmat04    1  TBROK  :  mem.c:1053: nr_hugepages = 1003, but expect 1024
+hugeshmat04    2  TBROK  :  mem.c:1053: Remaining cases broken
+hugeshmat04    0  TINFO  :  set nr_hugepages to 0
 
-Kind regards,
-Petr
+Signed-off-by: Aneesh kumar<aneesh.kumar@in.ibm.com>
+Tested-by: Charishma M<charism2@in.ibm.com>  
+
+Patch :
+diff --git a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+index 7a717476f4c8..cbb18a25a4f4 100644
+--- a/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
++++ b/testcases/kernel/mem/hugetlb/hugeshmat/hugeshmat04.c
+@@ -143,7 +143,7 @@ void setup(void)
+  	hpage_size = read_meminfo("Hugepagesize:") * 1024;
+  
+  	hugepages = (orig_hugepages * hpage_size + SIZE) / hpage_size;
+-	set_sys_tune("nr_hugepages", hugepages, 1);
++	hugepages = set_sys_tune("nr_hugepages", hugepages, 0);
+  
+  	TEST_PAUSE;
+  }
+diff --git a/testcases/kernel/mem/include/mem.h b/testcases/kernel/mem/include/mem.h
+index f9522a52ba16..2f6eb7d7beca 100644
+--- a/testcases/kernel/mem/include/mem.h
++++ b/testcases/kernel/mem/include/mem.h
+@@ -87,7 +87,7 @@ void umount_mem(char *path, char *path_new);
+  unsigned int get_a_numa_node(void (*cleanup_fn)(void));
+  int  path_exist(const char *path, ...);
+  long read_meminfo(char *item);
+-void set_sys_tune(char *sys_file, long tune, int check);
++long set_sys_tune(char *sys_file, long tune, int check);
+  long get_sys_tune(char *sys_file);
+  void cleanup(void);
+  void setup(void);
+diff --git a/testcases/kernel/mem/lib/mem.c b/testcases/kernel/mem/lib/mem.c
+index 7e403b545228..6a9af0f2ea8c 100644
+--- a/testcases/kernel/mem/lib/mem.c
++++ b/testcases/kernel/mem/lib/mem.c
+@@ -927,7 +927,7 @@ long read_meminfo(char *item)
+  		 item, PATH_MEMINFO);
+  }
+  
+-void set_sys_tune(char *sys_file, long tune, int check)
++long set_sys_tune(char *sys_file, long tune, int check)
+  {
+  	long val;
+  	char path[BUFSIZ];
+@@ -936,13 +936,14 @@ void set_sys_tune(char *sys_file, long tune, int check)
+  
+  	snprintf(path, BUFSIZ, PATH_SYSVM "%s", sys_file);
+  	SAFE_FILE_PRINTF(NULL, path, "%ld", tune);
++	val = get_sys_tune(sys_file);
+  
+  	if (check) {
+-		val = get_sys_tune(sys_file);
+  		if (val != tune)
+  			tst_brkm(TBROK, cleanup, "%s = %ld, but expect %ld",
+  				 sys_file, val, tune);
+  	}
++	return val;
+  }
+  
+  long get_sys_tune(char *sys_file)
+
+Thanks,
+Charishma M.
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170111/229ff86e/attachment.html>
