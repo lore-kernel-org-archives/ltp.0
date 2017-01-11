@@ -1,25 +1,39 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 11 Jan 2017 16:49:58 +0100
-Subject: [LTP] [PATCH v2 1/1] travis: initial configuration
-In-Reply-To: <20170111125937.19842-1-petr.vorel@gmail.com>
-References: <20170111125937.19842-1-petr.vorel@gmail.com>
-Message-ID: <20170111154957.GA10729@rei.lan>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 11 Jan 2017 15:57:07 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#9 (master - 1ed5233)
+In-Reply-To: <linux-test-project/ltp+191000444+passed@travis-ci.org>
+Message-ID: <587655ff81ea6_43fdcc5ccad807573c4@de0cb8e8-4c47-416c-8f04-e5bfea375a97.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-I did some tests with email notifications and figured out that anything
-else than having the mailing list address hardcoded in the travis config
-is pretty much useless since neither the commited nor the patch author
-gets email unless they are registered in travis.
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-So I will commit the V1 patch that has the mailing list address in the
-config to see if that is a workable solution. Hopefully that will not
-spam the mailing list too much.
+Build: #9
+Status: Passed
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Duration: 5 minutes and 1 second
+Commit: 1ed5233 (master)
+Author: Petr Vorel
+Message: travis: initial configuration
+
+Configuration: build with gcc only, install, email to mailing list in
+case of error or change (previously broken build was just fixed).
+
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
+
+View the changeset: https://github.com/linux-test-project/ltp/compare/1141bbfc0a92...1ed523304e89
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/191000444
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170111/335ddeff/attachment.html>
