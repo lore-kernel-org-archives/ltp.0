@@ -1,33 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 12 Jan 2017 16:05:51 +0100
-Subject: [LTP] [PATCH 4/4] mmapstress03: Fix 32bit test on 64bit kernel
-In-Reply-To: <1342382447.1910370.1484232088575.JavaMail.zimbra@redhat.com>
-References: <1484227419-16955-1-git-send-email-chrubis@suse.cz>
- <1484227419-16955-4-git-send-email-chrubis@suse.cz>
- <1342382447.1910370.1484232088575.JavaMail.zimbra@redhat.com>
-Message-ID: <20170112150550.GA5381@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 12 Jan 2017 16:37:01 +0100
+Subject: [LTP] [PATCH 1/1] travis: use various gcc and clang versions +
+ using containers
+In-Reply-To: <20170112122635.GB17988@rei.suse.cz>
+References: <20170112110632.11906-1-pvorel@suse.cz>
+ <20170112122635.GB17988@rei.suse.cz>
+Message-ID: <20170112153701.umezavmleroldzxr@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >  	/* Ask for a ridiculously large mmap region at a high address */
-> > -	if (mmap((void*) (1UL << (POINTER_SIZE - 1)) - pagesize,
-> > -		 (size_t) ((1UL << (POINTER_SIZE - 1)) - pagesize),
-> > +	if (mmap((void*) (1UL << (kernel_bits - 1)) - pagesize,
-> 
-> Since this has same range as below, shouldn't it be also 1ULL?
-> Entire series looks OK to me.
+Hi Cyril,
 
-Hmm, that produces warnings in case that sizeof(void) == 4 and with
-64bit kernel since the value is truncated. I guess that the addres
-should be generated accordingly to the binary and not kernel after all
-because of address space limitations.
+> $ export COMPILER=clang-3.9
+> $ export CC=clang
 
-Something as (((uintptr_t)1) << ((sizeof(void*)<<3) - 1) - pagesize)
+> $ clang --version
+> clang version 3.4 (tags/RELEASE_34/final)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> Shouldn't we set the compiler: to clang-3.9 as well, export
+> CC=clang-3.9 or something?
+It's not like that, travis sets CC itself, so I'm setting COMPILER variable and pass it to
+make (see and of the patch).
+
+I just need fix it to v2 as I'm passing CXX - wrong variable, as we have C not, C++. Now
+it's really not working :-(.
+I'll explain it more in v2.
+
+
+Kind regards,
+Petr
