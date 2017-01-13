@@ -1,45 +1,33 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 13 Jan 2017 10:45:13 +0100
-Subject: [LTP] [PATCH] lib: fix offset in tst_resm_hexd
-Message-ID: <fa1847cc72ff0178bd6744a1822077674059af28.1484300599.git.jstancek@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 13 Jan 2017 14:08:36 +0300
+Subject: [LTP] LTP release status
+In-Reply-To: <20170112142828.GC1208@rei.lan>
+References: <20170112142828.GC1208@rei.lan>
+Message-ID: <5878B534.5020200@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Commit f72ca5b9c484 "lib: add tst_res_hexd for newlib"
-broke tst_resm_hexd when I moved "offset = strlen(tmesg)"
-before macro that expands varargs.
+Hi Cyril,
+On 12.01.2017 17:28, Cyril Hrubis wrote:
+> Hi!
+> I'm done with pre-release testing. The last thing I would like to
+> include are fixes for running 32bit LTP on 64bit kernel, particulary
+> [PATCH 1/4] lib: Add tst_kernel_bits() patchset and possibly fix the
+> issue https://github.com/linux-test-project/ltp/issues/124.
+>
+> Anything else?
+>
+> I would like to finally do the release at the start of the next week, is
+> that OK with everyone or do we need some more time for pre-release
+> testruns?
 
-Fix it by moving offset initialisation after EXPAND_VAR_ARGS.
+OK for me. There are NFS test group issues with netns setup, the same as 
+found by Petr with telnet test. Don't have working solution right now,  
+defer to the next release.
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
----
- lib/tst_res.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index 261dec0fbba8..61daaeb4944e 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -509,7 +509,7 @@ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
- 	char tmesg[USERMESG];
- 	static const size_t symb_num	= 2; /* xx */
- 	static const size_t size_max	= 16;
--	size_t offset = strlen(tmesg);
-+	size_t offset;
- 	size_t i;
- 	char *pmesg = tmesg;
- 	tst_res_func_t res_func;
-@@ -520,6 +520,7 @@ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
- 		res_func = tst_res__;
- 
- 	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
-+	offset = strlen(tmesg);
- 
- 	if (size > size_max || size == 0 ||
- 		(offset + size * (symb_num + 1)) >= USERMESG)
--- 
-1.8.3.1
+Thanks,
+Alexey
 
