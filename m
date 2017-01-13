@@ -1,113 +1,45 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 13 Jan 2017 10:07:05 +0100
-Subject: [LTP] [PATCH v2 1/2] travis: use various gcc and clang versions +
-	using containers
-Message-ID: <20170113090706.29130-1-pvorel@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 13 Jan 2017 10:45:13 +0100
+Subject: [LTP] [PATCH] lib: fix offset in tst_resm_hexd
+Message-ID: <fa1847cc72ff0178bd6744a1822077674059af28.1484300599.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Using containers is declared to be faster, but does not allow us to use
-sudo => install into $HOME.
+Commit f72ca5b9c484 "lib: add tst_res_hexd for newlib"
+broke tst_resm_hexd when I moved "offset = strlen(tmesg)"
+before macro that expands varargs.
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
+Fix it by moving offset initialisation after EXPAND_VAR_ARGS.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
-Used gcc: 4.6, 4.7, 4.8. 4.9, 5, 6
-Used clang: 3.5, 3.8, 3.9
+ lib/tst_res.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-I simplified patch. This way we cannot install clang-3.3, but I suppose it's ok.
-Which versions are you interested? We can have even more versions, but even this subset is IMHO quite a lot.
-
-Whole check takes about 12 min, see https://travis-ci.org/pevik-travis/ltp/builds/191565390
----
- .travis.yml | 72 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 69 insertions(+), 3 deletions(-)
-
-diff --git a/.travis.yml b/.travis.yml
-index 16c0cd477..86b96d630 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -1,9 +1,75 @@
--sudo: required
--
- language: c
+diff --git a/lib/tst_res.c b/lib/tst_res.c
+index 261dec0fbba8..61daaeb4944e 100644
+--- a/lib/tst_res.c
++++ b/lib/tst_res.c
+@@ -509,7 +509,7 @@ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
+ 	char tmesg[USERMESG];
+ 	static const size_t symb_num	= 2; /* xx */
+ 	static const size_t size_max	= 16;
+-	size_t offset = strlen(tmesg);
++	size_t offset;
+ 	size_t i;
+ 	char *pmesg = tmesg;
+ 	tst_res_func_t res_func;
+@@ -520,6 +520,7 @@ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
+ 		res_func = tst_res__;
  
-+matrix:
-+    include:
-+        - os: linux
-+          compiler: gcc-4.6
-+          addons:
-+              apt:
-+                  sources: ['ubuntu-toolchain-r-test']
-+                  packages: ['gcc-4.6']
-+
-+        - os: linux
-+          compiler: gcc-4.7
-+          addons:
-+              apt:
-+                  sources: ['ubuntu-toolchain-r-test']
-+                  packages: ['gcc-4.7']
-+
-+        - os: linux
-+          compiler: gcc-4.8
-+          addons:
-+              apt:
-+                  sources: ['ubuntu-toolchain-r-test']
-+                  packages: ['gcc-4.8']
-+
-+        - os: linux
-+          compiler: gcc-4.9
-+          addons:
-+              apt:
-+                  sources: ['ubuntu-toolchain-r-test']
-+                  packages: ['gcc-4.9']
-+
-+        - os: linux
-+          compiler: gcc-5
-+          addons:
-+              apt:
-+                  sources: ['ubuntu-toolchain-r-test']
-+                  packages: ['gcc-5']
-+
-+        - os: linux
-+          compiler: gcc-6
-+          addons:
-+              apt:
-+                  sources: ['ubuntu-toolchain-r-test']
-+                  packages: ['gcc-6']
-+
-+        - os: linux
-+          compiler: clang-3.5
-+          addons:
-+              apt:
-+                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
-+                  packages: ['clang-3.5']
-+
-+        - os: linux
-+          compiler: clang-3.8
-+          addons:
-+              apt:
-+                  sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
-+                  packages: ['clang-3.8']
-+
-+        - os: linux
-+          compiler: clang-3.9
-+          addons:
-+              apt:
-+                  sources:
-+                      - sourceline: "deb http://apt.llvm.org/trusty/ llvm-toolchain-trusty-3.9 main"
-+                        key_url: "http://apt.llvm.org/llvm-snapshot.gpg.key"
-+                      - 'ubuntu-toolchain-r-test'
-+                  packages: ['clang-3.9']
-+
- notifications:
-     email:
-         - ltp@lists.linux.it
+ 	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
++	offset = strlen(tmesg);
  
--script: make autotools && ./configure --with-open-posix-testsuite --with-realtime-testsuite && make -j$(getconf _NPROCESSORS_ONLN) && make -j$(getconf _NPROCESSORS_ONLN) install
-+script: make autotools && ./configure --prefix $HOME/ltp --with-open-posix-testsuite --with-realtime-testsuite && make -j$(getconf _NPROCESSORS_ONLN) && make -j$(getconf _NPROCESSORS_ONLN) install
+ 	if (size > size_max || size == 0 ||
+ 		(offset + size * (symb_num + 1)) >= USERMESG)
 -- 
-2.11.0
+1.8.3.1
 
