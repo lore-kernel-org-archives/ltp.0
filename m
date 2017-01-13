@@ -1,33 +1,23 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 13 Jan 2017 14:08:36 +0300
-Subject: [LTP] LTP release status
-In-Reply-To: <20170112142828.GC1208@rei.lan>
-References: <20170112142828.GC1208@rei.lan>
-Message-ID: <5878B534.5020200@oracle.com>
+Date: Fri, 13 Jan 2017 14:15:44 +0300
+Subject: [LTP] [PATCH 1/1] network: remove unnecessary check for rsh in
+ scripts
+In-Reply-To: <20161219132416.26987-1-pvorel@suse.cz>
+References: <20161219132416.26987-1-pvorel@suse.cz>
+Message-ID: <5878B6E0.9060801@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
-On 12.01.2017 17:28, Cyril Hrubis wrote:
-> Hi!
-> I'm done with pre-release testing. The last thing I would like to
-> include are fixes for running 32bit LTP on 64bit kernel, particulary
-> [PATCH 1/4] lib: Add tst_kernel_bits() patchset and possibly fix the
-> issue https://github.com/linux-test-project/ltp/issues/124.
->
-> Anything else?
->
-> I would like to finally do the release at the start of the next week, is
-> that OK with everyone or do we need some more time for pre-release
-> testruns?
+Hi,
+On 19.12.2016 16:24, Petr Vorel wrote:
+> scripts rlogin01 and telnet01 don't use rsh directly, but via
+> tst_rhost_run. This means that ssh or netns can be used instead of rsh.
 
-OK for me. There are NFS test group issues with netns setup, the same as 
-found by Petr with telnet test. Don't have working solution right now,  
-defer to the next release.
+Applied, thanks!
 
-Thanks,
+Best regards,
 Alexey
 
