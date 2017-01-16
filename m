@@ -1,29 +1,35 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 16 Jan 2017 16:31:19 +0100
-Subject: [LTP] LTP release status
-In-Reply-To: <20170116152532.GJ1859@eguan.usersys.redhat.com>
-References: <20170112142828.GC1208@rei.lan>
- <1124039564.1917107.1484233086635.JavaMail.zimbra@redhat.com>
- <20170112153917.GB5381@rei.lan>
- <1054431302.3375878.1484571069128.JavaMail.zimbra@redhat.com>
- <20170116130237.GA26610@rei.lan>
- <1116838376.3405880.1484572780617.JavaMail.zimbra@redhat.com>
- <20170116133023.GB26610@rei.lan>
- <329006128.105238.1484575796946.JavaMail.zimbra@redhat.com>
- <20170116152532.GJ1859@eguan.usersys.redhat.com>
-Message-ID: <20170116153118.GA27333@rei.lan>
+From: Travis CI <builds@travis-ci.org>
+Date: Mon, 16 Jan 2017 15:33:55 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#23 (20170116 - 2c8457b)
+In-Reply-To: <linux-test-project/ltp+192381584+passed@travis-ci.org>
+Message-ID: <587ce7ee46f25_43fbe2a5b7e44883669@51a96238-7341-416b-9b8b-098ad644d31b.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> OTOH, utimensat(2) manpage seems inconsistent/vague on immutable inode,
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-Read it once more, there are exact conditions specified where EACCES and
-where EPERM should be returned.
+Build: #23
+Status: Passed
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Duration: 22 minutes and 4 seconds
+Commit: 2c8457b (20170116)
+Author: Cyril Hrubis
+Message: LTP 20170116
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+
+View the changeset: https://github.com/linux-test-project/ltp/compare/20170116
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/192381584
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170116/2328694f/attachment.html>
