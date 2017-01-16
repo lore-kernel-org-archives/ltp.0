@@ -1,10 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 16 Jan 2017 08:33:05 -0500 (EST)
-Subject: [LTP] [PATCH] lib: fix offset in tst_resm_hexd
-In-Reply-To: <20170116092659.GA20956@rei.lan>
-References: <fa1847cc72ff0178bd6744a1822077674059af28.1484300599.git.jstancek@redhat.com>
- <20170116092659.GA20956@rei.lan>
-Message-ID: <1288631134.3438539.1484573585220.JavaMail.zimbra@redhat.com>
+Date: Mon, 16 Jan 2017 08:33:30 -0500 (EST)
+Subject: [LTP] [PATCH] quotactl01: replace int comparison with memcmp
+In-Reply-To: <20170116115056.GB23274@rei.lan>
+References: <74ba2553e066b29871bd1e16f00755eb57747fc8.1484307598.git.jstancek@redhat.com>
+ <20170116115056.GB23274@rei.lan>
+Message-ID: <736460527.3439715.1484573610899.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,53 +13,28 @@ To: ltp@lists.linux.it
 
 
 
+
+
 ----- Original Message -----
 > From: "Cyril Hrubis" <chrubis@suse.cz>
 > To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Monday, 16 January, 2017 10:26:59 AM
-> Subject: Re: [PATCH] lib: fix offset in tst_resm_hexd
+> Cc: ltp@lists.linux.it, "yangx jy" <yangx.jy@cn.fujitsu.com>
+> Sent: Monday, 16 January, 2017 12:50:57 PM
+> Subject: Re: [PATCH] quotactl01: replace int comparison with memcmp
 > 
 > Hi!
-> > Commit f72ca5b9c484 "lib: add tst_res_hexd for newlib"
-> > broke tst_resm_hexd when I moved "offset = strlen(tmesg)"
-> > before macro that expands varargs.
-> > 
-> > Fix it by moving offset initialisation after EXPAND_VAR_ARGS.
-> > 
-> > Signed-off-by: Jan Stancek <jstancek@redhat.com>
-> > ---
-> >  lib/tst_res.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/lib/tst_res.c b/lib/tst_res.c
-> > index 261dec0fbba8..61daaeb4944e 100644
-> > --- a/lib/tst_res.c
-> > +++ b/lib/tst_res.c
-> > @@ -509,7 +509,7 @@ void tst_resm_hexd_(const char *file, const int lineno,
-> > int ttype,
-> >  	char tmesg[USERMESG];
-> >  	static const size_t symb_num	= 2; /* xx */
-> >  	static const size_t size_max	= 16;
-> > -	size_t offset = strlen(tmesg);
-> > +	size_t offset;
-> >  	size_t i;
-> >  	char *pmesg = tmesg;
-> >  	tst_res_func_t res_func;
-> > @@ -520,6 +520,7 @@ void tst_resm_hexd_(const char *file, const int lineno,
-> > int ttype,
-> >  		res_func = tst_res__;
-> >  
-> >  	EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
-> > +	offset = strlen(tmesg);
-> >  
-> >  	if (size > size_max || size == 0 ||
-> >  		(offset + size * (symb_num + 1)) >= USERMESG)
+> > -	memset(fmt_buf, 0, sizeof(fmt_buf));
+> > +	memset(&fmt_buf, 0, sizeof(fmt_buf));
 > 
-> Good catch. Thanks for fixing this, acked.
+> Hmm, we can simply do fmt_buf = 0 here now, right?
 
-Pushed.
+Replaced with simple assignment and pushed.
 
+Regards,
+Jan
+
+> 
+> Otherwise this looks good, acked.
 > 
 > --
 > Cyril Hrubis
