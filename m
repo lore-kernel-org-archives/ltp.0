@@ -1,33 +1,44 @@
-From: Eryu Guan <eguan@redhat.com>
-Date: Mon, 16 Jan 2017 23:46:34 +0800
-Subject: [LTP] LTP release status
-In-Reply-To: <20170116153118.GA27333@rei.lan>
-References: <20170112142828.GC1208@rei.lan>
- <1124039564.1917107.1484233086635.JavaMail.zimbra@redhat.com>
- <20170112153917.GB5381@rei.lan>
- <1054431302.3375878.1484571069128.JavaMail.zimbra@redhat.com>
- <20170116130237.GA26610@rei.lan>
- <1116838376.3405880.1484572780617.JavaMail.zimbra@redhat.com>
- <20170116133023.GB26610@rei.lan>
- <329006128.105238.1484575796946.JavaMail.zimbra@redhat.com>
- <20170116152532.GJ1859@eguan.usersys.redhat.com>
- <20170116153118.GA27333@rei.lan>
-Message-ID: <20170116154634.GK1859@eguan.usersys.redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 16 Jan 2017 16:46:45 +0100
+Subject: [LTP] utimensat EACCES vs. EPERM in 4.8+
+Message-ID: <18a5b416-ad6a-e679-d993-af7ffa0dcc10@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Jan 16, 2017 at 04:31:19PM +0100, Cyril Hrubis wrote:
-> Hi!
-> > OTOH, utimensat(2) manpage seems inconsistent/vague on immutable inode,
-> 
-> Read it once more, there are exact conditions specified where EACCES and
-> where EPERM should be returned.
+Hi,
 
-Ah, you're right, I read it too quickly.. But still, returning a
-consistent errno makes more sense to me.
+we seem to have a conflict between kernel and man pages.
+From utimensat man page:
+
+EACCES times is NULL, or both tv_nsec values are UTIME_NOW, and either:
+       *  the effective user ID of the caller does not match the owner of the
+          file, the caller does not  have  write  access  to  the file, and the
+          caller is not privileged (Linux: does not have either the CAP_FOWNER
+          or the CAP_DAC_OVERRIDE capability); or,
+       *  the file is marked immutable (see chattr(1)).
+
+But following 2 commits gradually replaced EACCES with EPERM.
+
+commit 337684a1746f93ae107e05d90977b070bb7e39d8
+Author: Eryu Guan <guaneryu@gmail.com>
+Date:   Tue Aug 2 19:58:28 2016 +0800
+    fs: return EPERM on immutable inode
+
+commit f2b20f6ee842313a0d681dbbf7f87b70291a6a3b
+Author: Miklos Szeredi <mszeredi@redhat.com>
+Date:   Fri Sep 16 12:44:20 2016 +0200
+    vfs: move permission checking into notify_change() for utimes(NULL)
+
+4.9 kernel and simple touch on immutable file gives me:
+utimensat(AT_FDCWD, "afile", NULL, 0)   = -1 EPERM (Operation not permitted)
+
+while an older kernel it gives me:
+utimensat(AT_FDCWD, "afile", NULL, 0)   = -1 EACCES (Permission denied)
+
+Do we need to update man page or fix kernel back to return EACCES?
 
 Thanks,
-Eryu
+Jan
