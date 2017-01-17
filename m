@@ -1,32 +1,24 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 17 Jan 2017 16:43:13 +0100
-Subject: [LTP] utimensat EACCES vs. EPERM in 4.8+
-In-Reply-To: <CAOssrKd32K-e5794m9KOjrMm_E3VZ7P-bvZW2P8UpGFTOgi8JQ@mail.gmail.com>
-References: <18a5b416-ad6a-e679-d993-af7ffa0dcc10@redhat.com>
- <CAOssrKfb1-C8c=9bAPiairh+Lyf=w28r+RjSXTLQcQZ-=eWMRA@mail.gmail.com>
- <CAKgNAkjTkBMY0wrj3wsH39YF=bHp=8mbYrXkSPzn0X4ezfso1w@mail.gmail.com>
- <280513509.810300.1484639500985.JavaMail.zimbra@redhat.com>
- <20170117075702.GB10417@rei.lan>
- <CAOssrKd32K-e5794m9KOjrMm_E3VZ7P-bvZW2P8UpGFTOgi8JQ@mail.gmail.com>
-Message-ID: <20170117154312.GB28074@rei.lan>
+From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Date: Tue, 17 Jan 2017 11:24:59 -0800
+Subject: [LTP] Building LTP despite failures
+Message-ID: <ffddd703-ed2a-2d90-bdaa-829aa692646c@synopsys.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Actually credit goes to SUSE QAM that caught the change on kernel
-> > update :-).
-> 
-> And while this makes for a nice discussion, it is almost completely
-> irrelevant in real life, since the only thing broken by this change
-> will be test suites (in other words immutable files are rare as hen's
-> teeth).
+Hi,
 
-We do have documentation and code out of sync so this is a valid bug
-regardless of which one of them ends up fixed in the end...
+We use LTP regularly to check the health of ARC Linux. One the pain points have
+been out of tree patches to LTP to avoid building lot of stuff which are either
+not provided by C library (say uClibc) or not configured in uClibc etc. It seems
+we can't use make -k to keep ignoring errors and continue with whatever can be
+built. I'm not too bright with makefiles so perhaps there is something I'm missing.
+Do people have ideas or have solved this already with LTP.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thx,
+-Vineet
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170117/5cf93895/attachment.html>
