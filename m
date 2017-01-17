@@ -1,7 +1,7 @@
 From: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Date: Tue, 17 Jan 2017 11:24:59 -0800
+Date: Tue, 17 Jan 2017 11:25:14 -0800
 Subject: [LTP] Building LTP despite failures
-Message-ID: <ffddd703-ed2a-2d90-bdaa-829aa692646c@synopsys.com>
+Message-ID: <b375a149-eda4-7179-1e5e-99240494b321@synopsys.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -19,6 +19,3 @@ Do people have ideas or have solved this already with LTP.
 
 Thx,
 -Vineet
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170117/5cf93895/attachment.html>
