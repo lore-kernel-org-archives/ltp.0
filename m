@@ -1,351 +1,54 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 18 Jan 2017 14:03:27 +0800
-Subject: [LTP] [PATCH v2 2/3] syscalls/getcwd03.c: cleanup && convert to new
-	API
-In-Reply-To: <1484719408-28782-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20170117134335.GA28074@rei.lan>
- <1484719408-28782-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <1484719408-28782-2-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
+Date: Wed, 18 Jan 2017 21:17:00 +1300
+Subject: [LTP] utimensat EACCES vs. EPERM in 4.8+
+In-Reply-To: <20170117210403.spl6fpzegfmir6cy@thunk.org>
+References: <18a5b416-ad6a-e679-d993-af7ffa0dcc10@redhat.com>
+ <20170117044104.ktrtizpzhghqludn@thunk.org>
+ <20170117193557.GA17332@fieldses.org>
+ <20170117210403.spl6fpzegfmir6cy@thunk.org>
+Message-ID: <19d8cbe2-4209-0e25-42ea-380a55104f0e@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/getcwd/getcwd03.c | 289 ++++++++--------------------
- 1 file changed, 84 insertions(+), 205 deletions(-)
+On 01/18/2017 10:04 AM, Theodore Ts'o wrote:
+> On Tue, Jan 17, 2017 at 02:35:57PM -0500, J. Bruce Fields wrote:
+>> Where did this blog entry come from?  I've never seen the ACCES/PERM
+>> distinction made that way anywhere else.  Posix says:
+>>
+>> 	[EACCES]
+>> 	    Permission denied. An attempt was made to access a file in a
+>> 	    way forbidden by its file access permissions.
+>> 	[EPERM]
+>> 	    Operation not permitted. An attempt was made to perform an
+>> 	    operation limited to processes with appropriate privileges
+>> 	    or to the owner of a file or other resource.
+>> So EPERM is exactly for attempts to do things that are reserved for root
+>> (or process with appropriate capabilities or whatever).
 
-diff --git a/testcases/kernel/syscalls/getcwd/getcwd03.c b/testcases/kernel/syscalls/getcwd/getcwd03.c
-index 8ba5286..030dd7c 100644
---- a/testcases/kernel/syscalls/getcwd/getcwd03.c
-+++ b/testcases/kernel/syscalls/getcwd/getcwd03.c
-@@ -1,238 +1,117 @@
- /*
-+ * Copyright (c) International Business Machines  Corp., 2001
-  *
-- *   Copyright (c) International Business Machines  Corp., 2001
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-  *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.
-  */
- 
- /*
-- * NAME
-- *	getcwd03
-- *
-  * DESCRIPTION
-- *	Testcase to check the basic functionality of the getcwd(2) system call
-- *	for symbolically linked directories.
-+ * Testcase to check the basic functionality of the getcwd(2)
-+ * system call on a symbolic link.
-  *
-  * ALGORITHM
-- *	This testcase checks for the functionality of the getcwd(2) system call
-- *	on a symbolic link. First create a directory (dir1), and create a
-- *	symbolic link (dir2) to it at the same directory level. Then, chdir()
-- *	to dir1, and get the working directory (cwd1), and its pathname (pwd1).
-- *	Then, chdir() to dir2, and get the working directory (cwd2), its
-- *	pathname (pwd2), and its readlink info (link2).
-- *	Testcase succeeds if:
-- *	i.	pwd1 == pwd2
-- *	ii.	cwd1 == cwd2
-- *	iii.	link2 == basename(cwd1)
-- *
-- * USAGE:  <for command-line>
-- *  getcwd03 [-c n] [-i n] [-I x] [-P x] [-t]
-- *     where,  -c n : Run n copies concurrently.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-- *
-- * HISTORY
-- *	07/2001 Ported by Wayne Boyer
-- *
-- * RESTRICTIONS
-- *	NONE
-+ * 1) create a directory, and create a symbolic link to it at the
-+ *    same directory level.
-+ * 2) get the working directory of a directory, and its pathname.
-+ * 3) get the working directory of a symbolic link, and its pathname,
-+ *    and its readlink info.
-+ * 4) compare the working directories and link information.
-  */
-+
- #define _GNU_SOURCE 1
-+#include <errno.h>
- #include <stdio.h>
- #include <string.h>
--#include <errno.h>
--#include <libgen.h>
--#include "test.h"
- #include <stdlib.h>
- #include <sys/stat.h>
- #include <sys/types.h>
- #include <stdlib.h>
--#define FAILED 1
--
--int flag;
--char *TCID = "getcwd03";
--int TST_TOTAL = 1;
-+#include "tst_test.h"
- 
--void cleanup(void);
--void setup(void);
--char *getpwd(void);
-+static char dir1[BUFSIZ], dir2[BUFSIZ];
- 
--int main(int ac, char **av)
-+static void verify_getcwd(void)
- {
--	char dir1[BUFSIZ], dir2[BUFSIZ];
--	char cwd1[BUFSIZ], cwd2[BUFSIZ];
--	char *pwd1, *pwd2;
--	char link2[BUFSIZ];
--	int n;
--	int lc;
--
--	tst_parse_opts(ac, av, NULL, NULL);
--
--	setup();
--
--	/*
--	 * The following loop checks looping state if -i option given
--	 */
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		flag = 0;
--
--		/*
--		 * Create dir1, then chdir to dir1, and get the pwd,
--		 * and cwd informations
--		 */
--		sprintf(dir1, "getcwd1.%d", getpid());
--		if (mkdir(dir1, 00755) < 0) {
--			tst_brkm(TBROK, cleanup, "mkdir(2) failed");
--		}
--		if (chdir(dir1) != 0) {
--			tst_brkm(TBROK, cleanup, "chdir(2) failed");
--		}
--
--		pwd1 = getpwd();
--		if (getcwd(cwd1, sizeof cwd1) == NULL) {
--			tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly");
--			flag = FAILED;
--		}
--		if ((flag != FAILED) && (strcmp(pwd1, cwd1) != 0)) {
--			tst_brkm(TFAIL, cleanup, "getcwd() returned unexpected "
--				 "working directory: expected: %s, got: %s\n",
--				 pwd1, cwd1);
--		}
--
--		tst_resm(TINFO, "getcwd(2) succeeded in returning correct path "
--			 "for dir1");
--
--		/*
--		 * Now create dir2, then chdir to dir2, and get the pwd,
--		 * cwd, and link informations
--		 */
--		chdir("..");
--		flag = 0;
--
--		sprintf(dir2, "getcwd2.%d", getpid());
--		if (symlink(dir1, dir2) < 0) {
--			tst_brkm(TBROK, cleanup, "symlink(2) failed: errno: %d",
--				 errno);
--		}
--
--		if (chdir(dir2) != 0) {
--			tst_brkm(TBROK, cleanup, "chdir(2) failed: errno: %d",
--				 errno);
--		}
--
--		pwd2 = getpwd();
--		if (getcwd(cwd2, sizeof cwd2) == NULL) {
--			tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly");
--			flag = FAILED;
--		}
--
--		chdir("..");
--		if ((flag != FAILED) &&
--		    ((n = readlink(dir2, link2, sizeof(link2))) < 0)) {
--			tst_brkm(TBROK, cleanup, "readlink(2) failed: errno:%d",
--				 errno);
--		}
--
--		/*
--		 * Finally compare the pwd, cwd, link informations:
--		 * The test should pass iff all the following are true:
--		 * a.   pwd1 == pwd2
--		 * b.   cwd1 == cwd2
--		 * c.   link2 == basename(cwd1)
--		 */
--		if (flag != FAILED) {
--			if (strcmp(pwd1, pwd2) != 0) {
--				tst_resm(TFAIL, "pwd1: %s, pwd2: %s",
--					 pwd1, pwd2);
--				flag = FAILED;
--			}
--			if (strcmp(cwd1, cwd2) != 0) {
--				tst_resm(TFAIL, "cwd1: %s, cwd2: %s",
--					 cwd1, cwd2);
--				flag = FAILED;
--			}
--			if (memcmp(link2, (char *)basename(cwd1), n) != 0) {
--				tst_resm(TFAIL, "link2: %s, cwd1: %s",
--					 link2, cwd1);
--				flag = FAILED;
--			}
--			if (flag != FAILED) {
--				tst_resm(TINFO, "getcwd(2) succeeded in "
--					 "returning correct path for symbolic "
--					 "link dir2 -> dir1");
--			}
--		}
--
--		if (flag == FAILED) {
--			tst_resm(TFAIL, "Test FAILED");
--		} else {
--			tst_resm(TPASS, "Test PASSED");
--		}
--
--		/* clean up things in case we are looping */
--		if (unlink(dir2) == -1) {
--			tst_brkm(TBROK, cleanup, "couldnt remove dir2");
--		}
--		if (rmdir(dir1) == -1) {
--			tst_brkm(TBROK, cleanup, "couldnt remove dir1");
--		}
-+	char link[BUFSIZ];
-+	char *res1 = NULL;
-+	char *res2 = NULL;
-+
-+	SAFE_CHDIR(dir1);
-+
-+	errno = 0;
-+	res1 = getcwd(NULL, 0);
-+	TEST_ERRNO = errno;
-+	if (!res1) {
-+		tst_res(TFAIL | TTERRNO, "getcwd() failed to "
-+			"get working directory of a directory");
-+		goto end;
- 	}
--	cleanup();
- 
--	tst_exit();
--}
-+	SAFE_CHDIR("..");
-+	SAFE_CHDIR(dir2);
- 
--void setup(void)
--{
--	/* FORK is set here because of the popen() call below */
--	tst_sig(FORK, DEF_HANDLER, cleanup);
-+	errno = 0;
-+	res2 = getcwd(NULL, 0);
-+	TEST_ERRNO = errno;
-+	if (!res2) {
-+		tst_res(TFAIL | TTERRNO, "getcwd() failed to get "
-+			"working directory of a symbolic link");
-+		goto end;
-+	}
-+
-+	if (strcmp(res1, res2)) {
-+		tst_res(TFAIL, "getcwd() got mismatched working directories");
-+		goto end;
-+	}
-+
-+	SAFE_CHDIR("..");
-+	SAFE_READLINK(dir2, link, sizeof(link));
-+
-+	if (strcmp(link, SAFE_BASENAME(res1))) {
-+		tst_res(TFAIL,
-+			"link information didn't match the working directory");
-+		goto end;
-+	}
- 
--	TEST_PAUSE;
-+	tst_res(TPASS, "getcwd() succeeded on a symbolic link");
- 
--	/* create a test directory and cd into it */
--	tst_tmpdir();
-+end:
-+	free(res1);
-+	free(res2);
- }
- 
--void cleanup(void)
-+static void setup(void)
- {
--	/* remove the test directory */
--	tst_rmdir();
-+	sprintf(dir1, "getcwd1.%d", getpid());
-+	sprintf(dir2, "getcwd2.%d", getpid());
-+	SAFE_MKDIR(dir1, 0755);
-+	SAFE_SYMLINK(dir1, dir2);
- }
- 
--char *getpwd(void)
-+static void cleanup(void)
- {
--	FILE *fin;
--	char *pwd = "/bin/pwd";
--	char *cp;
--	char *buf;
--
--	buf = malloc(BUFSIZ);
--	if ((fin = popen(pwd, "r")) == NULL) {
--		tst_resm(TINFO, "%s: can't run %s", TCID, pwd);
--		tst_brkm(TBROK, cleanup, "%s FAILED", TCID);
--	}
--	while (fgets(buf, BUFSIZ, fin) != NULL) {
--		if ((cp = strchr(buf, '\n')) == NULL) {
--			tst_brkm(TBROK, cleanup, "pwd output too long");
--		}
--		*cp = 0;
--	}
--	pclose(fin);
--	return buf;
-+	if (unlink(dir2) == -1)
-+		tst_res(TWARN | TERRNO, "could not remove %s", dir2);
-+
-+	if (rmdir(dir1) == -1)
-+		tst_res(TWARN | TERRNO, "could not remove %s", dir1);
- }
-+
-+static struct tst_test test = {
-+	.tid = "getcwd03",
-+	.needs_tmpdir = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = verify_getcwd
-+};
+> (or process with appropriate capabilities or whatever).
+
+Yes. POSIX makes it pretty clear here, I think. EACCES is (generally) 
+about pathname permissions. (One can see this by perusing the various 
+EACCES cases in POSIX.) EPERM is (generally) about other kinds of
+permission denials (including Ted's "I'm sorry Dave, I can't let you
+do that" cases, which are a subset of these cases). And in both cases,
+superuser privilege may potentially bypass the restriction (except
+for the EPERM "Dave" cases).
+
+So, that suggests that EPERM would be the right error for denial of
+permission because of the inode immutable or append-only flag. 
+(Earlier, I thought EACCES would be right, but I changed my mind.) Or,
+roughly, the patch under discussion made things more "correct", but
+at a (small) risk of user-space breakage.
+
+Cheers,
+
+Michael
+
 -- 
-1.8.3.1
-
-
-
+Michael Kerrisk
+Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
+Linux/UNIX System Programming Training: http://man7.org/training/
