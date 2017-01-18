@@ -1,28 +1,28 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 18 Jan 2017 13:59:54 +0100
-Subject: [LTP] FYI: networking: broken multicast test due upstream bug
-In-Reply-To: <d244f109-d08e-d3d9-7a4c-79610a7cde33@oracle.com>
-References: <20170118083100.myaindbkf2nsoqp2@dell5510>
- <d244f109-d08e-d3d9-7a4c-79610a7cde33@oracle.com>
-Message-ID: <20170118125954.t2texsk36xjiorpk@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 18 Jan 2017 14:32:05 +0100
+Subject: [LTP] [PATCH v2 1/3] syscalls/getcwd02.c: cleanup && convert to
+	new API
+In-Reply-To: <1484719408-28782-1-git-send-email-yangx.jy@cn.fujitsu.com>
+References: <20170117134335.GA28074@rei.lan>
+ <1484719408-28782-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <20170118133204.GC29948@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> +	if (tc->buf != NULL && strcmp(exp_buf, tc->buf)) {
+> +		tst_res(TFAIL, "getcwd() returned unexpected directory: %s, "
+> +			"expected: %s", tc->buf, exp_buf);
+> +		goto end;
 
-> Thanks! May be we should workaround it as it will be skipped without doing
-> anything on most distros.
+I've removed this check because it was redundant. Unless tc->buf is NULL
+the tc->buf is the same as res.
 
-> I see two options:
-> * parse 'ip maddr show' without dev as a workaround if the first attempt
-> fails, or
-> * parse /proc/net/igmp, looking for 0x010000E0 (1.0.0.224).
+Pushed, thanks.
 
-Thanks for tips, posted implementation of parsing /proc/net/igmp.
-
-
-Kind regards,
-Petr
+-- 
+Cyril Hrubis
+chrubis@suse.cz
