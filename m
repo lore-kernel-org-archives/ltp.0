@@ -1,38 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 18 Jan 2017 11:26:33 +0100
-Subject: [LTP] [PATCH ltp] su01: do pre-checking to avoid annoying
-	warning
-In-Reply-To: <1481849622-19704-1-git-send-email-ningx.han@intel.com>
-References: <1481849622-19704-1-git-send-email-ningx.han@intel.com>
-Message-ID: <20170118102632.GA29948@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 18 Jan 2017 13:45:20 +0300
+Subject: [LTP] FYI: networking: broken multicast test due upstream bug
+In-Reply-To: <20170118083100.myaindbkf2nsoqp2@dell5510>
+References: <20170118083100.myaindbkf2nsoqp2@dell5510>
+Message-ID: <d244f109-d08e-d3d9-7a4c-79610a7cde33@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> ---
->  testcases/commands/su/su01 | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/testcases/commands/su/su01 b/testcases/commands/su/su01
-> index dd1517f..41441de 100755
-> --- a/testcases/commands/su/su01
-> +++ b/testcases/commands/su/su01
-> @@ -86,7 +86,7 @@ rm -f $TEST_ENV_FILE > /dev/null 2>&1
->  #Create 1st test user
->      #erase user if he may exist , so we can have a clean en
->          rm -rf /home/$TEST_USER1
-> -        userdel $TEST_USER1
-> +        getent passwd $TEST_USER1 &> /dev/null && userdel $TEST_USER1
-                                     ^
-	                      This is a bashism, portable way to
-			      redirect both streams is > /dev/null 2>&1
+Hi,
 
-Upon closer look I've found and fixed two cases of bashism and pushed,
-thanks.
+On 01/18/2017 11:31 AM, Petr Vorel wrote:
+> Hi,
+>
+> mc_cmds test (runtest net.multicast, LTP networking) is broken when running with network
+> namespaces due upstream bug in ip (see https://bugzilla.kernel.org/show_bug.cgi?id=192741).
+> In our case 'ip maddr show ltp_ns_veth2' does not return 'inet  224.0.0.1'.
+>
+> It has been fixed in master, but it will not work with old distros. I suppose we leave it as it is (don't fix it with any workaround).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Thanks! May be we should workaround it as it will be skipped without 
+doing anything on most distros.
+
+I see two options:
+* parse 'ip maddr show' without dev as a workaround if the first attempt 
+fails, or
+* parse /proc/net/igmp, looking for 0x010000E0 (1.0.0.224).
+
+Best regards,
+Alexey
+
