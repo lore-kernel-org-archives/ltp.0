@@ -1,73 +1,21 @@
-From: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
-Date: Wed, 18 Jan 2017 21:23:19 +1300
-Subject: [LTP] utimensat EACCES vs. EPERM in 4.8+
-In-Reply-To: <CAOssrKd32K-e5794m9KOjrMm_E3VZ7P-bvZW2P8UpGFTOgi8JQ@mail.gmail.com>
-References: <18a5b416-ad6a-e679-d993-af7ffa0dcc10@redhat.com>
- <CAOssrKfb1-C8c=9bAPiairh+Lyf=w28r+RjSXTLQcQZ-=eWMRA@mail.gmail.com>
- <CAKgNAkjTkBMY0wrj3wsH39YF=bHp=8mbYrXkSPzn0X4ezfso1w@mail.gmail.com>
- <280513509.810300.1484639500985.JavaMail.zimbra@redhat.com>
- <20170117075702.GB10417@rei.lan>
- <CAOssrKd32K-e5794m9KOjrMm_E3VZ7P-bvZW2P8UpGFTOgi8JQ@mail.gmail.com>
-Message-ID: <cb15e28d-8c5e-e3d7-441a-9165c4e57133@gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 18 Jan 2017 09:31:00 +0100
+Subject: [LTP] FYI: networking: broken multicast test due upstream bug
+Message-ID: <20170118083100.myaindbkf2nsoqp2@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Miklos,
+Hi,
 
-On 01/17/2017 10:39 PM, Miklos Szeredi wrote:
-> On Tue, Jan 17, 2017 at 8:57 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
->> Hi!
->>>> Jan, thanks for spotting this.
->>>
->>> Credit goes to Cyril. As for LTP-20170116 (released yesterday) we went
->>> with current documented behavior - few failures are expected on 4.8+.
->>
->> Actually credit goes to SUSE QAM that caught the change on kernel
->> update :-).
-> 
-> And while this makes for a nice discussion, it is almost completely
-> irrelevant in real life, since the only thing broken by this change
-> will be test suites (in other words immutable files are rare as hen's
-> teeth).
+mc_cmds test (runtest net.multicast, LTP networking) is broken when running with network
+namespaces due upstream bug in ip (see https://bugzilla.kernel.org/show_bug.cgi?id=192741).
+In our case 'ip maddr show ltp_ns_veth2' does not return 'inet  224.0.0.1'.
 
-While I agree that the chances of breakage may be quite small (though
-I certainly won't be so bold as to assert that only test suites
-will get broken), your comment misses the important metapoint:
-changes like this should not just be getting waved through the gate
-without some analysis along the lines of what I did. "Consistency"
-and an (incorrect) assertion that "In most cases, EPERM is returned
-on immutable inode" just don't cut it, when it comes to making
-changes of this sort.
+It has been fixed in master, but it will not work with old distros. I suppose we leave it as it is (don't fix it with any workaround).
 
-> If you find that this change actually breaks something other than a
-> test suite, then yes, please lets revert it.  
 
-No. That is not a strategy. I already said it, but I'll say it again:
-sometimes these reports only arrive many months or even years later.
-And then we can end up with fiascoes such as F_SETOWN/F_SETOWN_EX.
-(Essentially: F_SETOWN got subtly changed, and by the time people
-realized the breakage had occurred it was *years* late. Too late to
-revert... So, then we got F_SETOWN_EX to allow us what F_SETOWN
-used to do. See fcntl(2).)
-
-> Otherwise there's not
-> much point (distros can revert it for themselves if they want be
-> paranoid).
-
-Also not a strategy; distros don't want to carry such junk
-patches.
-
-All of this said, I still don't know whether reverting the patch
-is warranted...
-
-Cheers,
-
-Michael
-
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+Kind regards,
+Petr
