@@ -1,28 +1,27 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 18 Jan 2017 14:03:26 +0800
-Subject: [LTP] [PATCH v2 1/3] syscalls/getcwd02.c: cleanup && convert to new
+Date: Wed, 18 Jan 2017 14:03:27 +0800
+Subject: [LTP] [PATCH v2 2/3] syscalls/getcwd03.c: cleanup && convert to new
 	API
-In-Reply-To: <20170117134335.GA28074@rei.lan>
+In-Reply-To: <1484719408-28782-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20170117134335.GA28074@rei.lan>
-Message-ID: <1484719408-28782-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1484719408-28782-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1484719408-28782-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-remove some duplicated tests
-
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/getcwd/getcwd02.c | 318 ++++++----------------------
- 1 file changed, 59 insertions(+), 259 deletions(-)
+ testcases/kernel/syscalls/getcwd/getcwd03.c | 289 ++++++++--------------------
+ 1 file changed, 84 insertions(+), 205 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/getcwd/getcwd02.c b/testcases/kernel/syscalls/getcwd/getcwd02.c
-index 030474c..7785bb6 100644
---- a/testcases/kernel/syscalls/getcwd/getcwd02.c
-+++ b/testcases/kernel/syscalls/getcwd/getcwd02.c
-@@ -1,286 +1,86 @@
+diff --git a/testcases/kernel/syscalls/getcwd/getcwd03.c b/testcases/kernel/syscalls/getcwd/getcwd03.c
+index 8ba5286..030dd7c 100644
+--- a/testcases/kernel/syscalls/getcwd/getcwd03.c
++++ b/testcases/kernel/syscalls/getcwd/getcwd03.c
+@@ -1,238 +1,117 @@
  /*
 + * Copyright (c) International Business Machines  Corp., 2001
   *
@@ -55,80 +54,82 @@ index 030474c..7785bb6 100644
  
  /*
 - * NAME
-- *	getcwd02
+- *	getcwd03
 - *
   * DESCRIPTION
-- *	Testcase to check the basic functionality of the getcwd(2) system call.
+- *	Testcase to check the basic functionality of the getcwd(2) system call
+- *	for symbolically linked directories.
++ * Testcase to check the basic functionality of the getcwd(2)
++ * system call on a symbolic link.
+  *
+  * ALGORITHM
+- *	This testcase checks for the functionality of the getcwd(2) system call
+- *	on a symbolic link. First create a directory (dir1), and create a
+- *	symbolic link (dir2) to it at the same directory level. Then, chdir()
+- *	to dir1, and get the working directory (cwd1), and its pathname (pwd1).
+- *	Then, chdir() to dir2, and get the working directory (cwd2), its
+- *	pathname (pwd2), and its readlink info (link2).
+- *	Testcase succeeds if:
+- *	i.	pwd1 == pwd2
+- *	ii.	cwd1 == cwd2
+- *	iii.	link2 == basename(cwd1)
 - *
-- * ALGORITHM
-- *	Get the path name of the current working directory from the current
-- *	shell through a pipe, and compare it with what is returned by
-- *	getcwd(2) system call.
-- *
-- *  Blocks 1-4 are with char[], #4 is special case where address is -1
-- *
-- *	Block 1: Call getcwd(2) with valid cwd[]:
-- *              Should work fine
-- *	Block 2: Call getcwd(2) with valid cwd[], size = 0:
-- *              Should return NULL, errno = EINVAL
-- *	Block 3: Call getcwd(2) with valid cwd[], size <= strlen(path):
-- *              i.e. size = 1, Should return NULL, errno = ERANGE
-- *      Block 4: Call getcwd(2) with cwd address = -1, size > strlen(path):
-- *              Should return NULL, errno = EFAULT
-- *
-- *  Blocks 5-7 are with char*
-- *
-- *	Block 5: Call getcwd(2) with *buffer = NULL, size = 0:
-- * 		Should allocate buffer, and work fine
-- *	Block 6: Call getcwd(2) with *buffer = NULL, size <= strlen(path):
-- * 		i.e. size = 1, Should return NULL, errno = ERANGE
-- *      Block 7: Call getcwd(2) with *buffer = NULL, size > strlen(path):
-- *              Should work fine and allocate buffer
+- * USAGE:  <for command-line>
+- *  getcwd03 [-c n] [-i n] [-I x] [-P x] [-t]
+- *     where,  -c n : Run n copies concurrently.
+- *             -i n : Execute test n times.
+- *             -I x : Execute test for x seconds.
+- *             -P x : Pause for x seconds between iterations.
+- *             -t   : Turn on syscall timing.
 - *
 - * HISTORY
 - *	07/2001 Ported by Wayne Boyer
-- *      02/2002 Added more testcases, cleaned up by wjh
 - *
 - * RESTRICTIONS
 - *	NONE
-+ * Testcase to check the basic functionality of the getcwd(2) system call.
-+ * 1) getcwd(2) works fine if buf and size are valid.
-+ * 2) getcwd(2) works fine if buf points to NULL and size is set to 0.
-+ * 3) getcwd(2) works fine if buf points to NULL and size is greater than strlen(path).
++ * 1) create a directory, and create a symbolic link to it at the
++ *    same directory level.
++ * 2) get the working directory of a directory, and its pathname.
++ * 3) get the working directory of a symbolic link, and its pathname,
++ *    and its readlink info.
++ * 4) compare the working directories and link information.
   */
--#include <stdio.h>
--#include <string.h>
++
+ #define _GNU_SOURCE 1
++#include <errno.h>
+ #include <stdio.h>
+ #include <string.h>
 -#include <errno.h>
+-#include <libgen.h>
 -#include "test.h"
+ #include <stdlib.h>
+ #include <sys/stat.h>
+ #include <sys/types.h>
+ #include <stdlib.h>
 -#define FAILED 1
 -
--char *pwd = "/bin/pwd";
 -int flag;
--char *TCID = "getcwd02";
--int TST_TOTAL = 7;
--
+-char *TCID = "getcwd03";
+-int TST_TOTAL = 1;
++#include "tst_test.h"
+ 
 -void cleanup(void);
 -void setup(void);
--void do_block1(void);
--void do_block2(void);
--void do_block3(void);
--void do_block4(void);
--void do_block5(void);
--void do_block6(void);
--void do_block7(void);
--
--char pwd_buf[BUFSIZ];		//holds results of pwd pipe
--char cwd[BUFSIZ];		//used as our valid buffer
--char *buffer = NULL;		//catches the return value from getcwd when passing NULL
--char *cwd_ptr = NULL;		//catches the return value from getcwd() when passing cwd[]
--
+-char *getpwd(void);
++static char dir1[BUFSIZ], dir2[BUFSIZ];
+ 
 -int main(int ac, char **av)
--{
--	FILE *fin;
--	char *cp;
++static void verify_getcwd(void)
+ {
+-	char dir1[BUFSIZ], dir2[BUFSIZ];
+-	char cwd1[BUFSIZ], cwd2[BUFSIZ];
+-	char *pwd1, *pwd2;
+-	char link2[BUFSIZ];
+-	int n;
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
+-
 -	setup();
 -
 -	/*
@@ -137,236 +138,211 @@ index 030474c..7785bb6 100644
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		if ((fin = popen(pwd, "r")) == NULL) {
--			tst_resm(TINFO, "%s: can't run %s", TCID, pwd);
--			tst_brkm(TBROK, cleanup, "%s FAILED", TCID);
+-		flag = 0;
+-
+-		/*
+-		 * Create dir1, then chdir to dir1, and get the pwd,
+-		 * and cwd informations
+-		 */
+-		sprintf(dir1, "getcwd1.%d", getpid());
+-		if (mkdir(dir1, 00755) < 0) {
+-			tst_brkm(TBROK, cleanup, "mkdir(2) failed");
 -		}
--		while (fgets(pwd_buf, sizeof(pwd_buf), fin) != NULL) {
--			if ((cp = strchr(pwd_buf, '\n')) == NULL) {
--				tst_brkm(TBROK, cleanup, "pwd output too long");
+-		if (chdir(dir1) != 0) {
+-			tst_brkm(TBROK, cleanup, "chdir(2) failed");
+-		}
+-
+-		pwd1 = getpwd();
+-		if (getcwd(cwd1, sizeof cwd1) == NULL) {
+-			tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly");
+-			flag = FAILED;
+-		}
+-		if ((flag != FAILED) && (strcmp(pwd1, cwd1) != 0)) {
+-			tst_brkm(TFAIL, cleanup, "getcwd() returned unexpected "
+-				 "working directory: expected: %s, got: %s\n",
+-				 pwd1, cwd1);
+-		}
+-
+-		tst_resm(TINFO, "getcwd(2) succeeded in returning correct path "
+-			 "for dir1");
+-
+-		/*
+-		 * Now create dir2, then chdir to dir2, and get the pwd,
+-		 * cwd, and link informations
+-		 */
+-		chdir("..");
+-		flag = 0;
+-
+-		sprintf(dir2, "getcwd2.%d", getpid());
+-		if (symlink(dir1, dir2) < 0) {
+-			tst_brkm(TBROK, cleanup, "symlink(2) failed: errno: %d",
+-				 errno);
+-		}
+-
+-		if (chdir(dir2) != 0) {
+-			tst_brkm(TBROK, cleanup, "chdir(2) failed: errno: %d",
+-				 errno);
+-		}
+-
+-		pwd2 = getpwd();
+-		if (getcwd(cwd2, sizeof cwd2) == NULL) {
+-			tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly");
+-			flag = FAILED;
+-		}
+-
+-		chdir("..");
+-		if ((flag != FAILED) &&
+-		    ((n = readlink(dir2, link2, sizeof(link2))) < 0)) {
+-			tst_brkm(TBROK, cleanup, "readlink(2) failed: errno:%d",
+-				 errno);
+-		}
+-
+-		/*
+-		 * Finally compare the pwd, cwd, link informations:
+-		 * The test should pass iff all the following are true:
+-		 * a.   pwd1 == pwd2
+-		 * b.   cwd1 == cwd2
+-		 * c.   link2 == basename(cwd1)
+-		 */
+-		if (flag != FAILED) {
+-			if (strcmp(pwd1, pwd2) != 0) {
+-				tst_resm(TFAIL, "pwd1: %s, pwd2: %s",
+-					 pwd1, pwd2);
+-				flag = FAILED;
 -			}
--			*cp = 0;
+-			if (strcmp(cwd1, cwd2) != 0) {
+-				tst_resm(TFAIL, "cwd1: %s, cwd2: %s",
+-					 cwd1, cwd2);
+-				flag = FAILED;
+-			}
+-			if (memcmp(link2, (char *)basename(cwd1), n) != 0) {
+-				tst_resm(TFAIL, "link2: %s, cwd1: %s",
+-					 link2, cwd1);
+-				flag = FAILED;
+-			}
+-			if (flag != FAILED) {
+-				tst_resm(TINFO, "getcwd(2) succeeded in "
+-					 "returning correct path for symbolic "
+-					 "link dir2 -> dir1");
+-			}
 -		}
--		pclose(fin);
- 
--		do_block1();
--		do_block2();
--		do_block3();
--		do_block4();
--		do_block5();
--		do_block6();
--		do_block7();
--	}
+-
+-		if (flag == FAILED) {
+-			tst_resm(TFAIL, "Test FAILED");
+-		} else {
+-			tst_resm(TPASS, "Test PASSED");
+-		}
+-
+-		/* clean up things in case we are looping */
+-		if (unlink(dir2) == -1) {
+-			tst_brkm(TBROK, cleanup, "couldnt remove dir2");
+-		}
+-		if (rmdir(dir1) == -1) {
+-			tst_brkm(TBROK, cleanup, "couldnt remove dir1");
+-		}
++	char link[BUFSIZ];
++	char *res1 = NULL;
++	char *res2 = NULL;
++
++	SAFE_CHDIR(dir1);
++
++	errno = 0;
++	res1 = getcwd(NULL, 0);
++	TEST_ERRNO = errno;
++	if (!res1) {
++		tst_res(TFAIL | TTERRNO, "getcwd() failed to "
++			"get working directory of a directory");
++		goto end;
+ 	}
 -	cleanup();
+ 
 -	tst_exit();
 -}
--
--void do_block1(void)		//valid cwd[]: -> Should work fine
--{
--	int flag = 0;
--	tst_resm(TINFO, "Enter Block 1");
--
--	if ((cwd_ptr = getcwd(cwd, sizeof(cwd))) == NULL) {
--		tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly");
--		flag = FAILED;
--	}
--	if ((flag != FAILED) && (strcmp(pwd_buf, cwd) != 0)) {
--		tst_resm(TFAIL, "getcwd() returned unexpected working "
--			 "directory: expected: %s, got: %s\n", pwd_buf, cwd);
--		flag = FAILED;
--	}
--	tst_resm(TINFO, "Exit Block 1");
--	if (flag == FAILED) {
--		tst_resm(TFAIL, "Block 1 FAILED");
--	} else {
--		tst_resm(TPASS, "Block 1 PASSED");
--	}
--}
--
--void do_block2(void)		//valid cwd[], size = 0: -> Should return NULL, errno = EINVAL
--{
--	int flag = 0;
--	tst_resm(TINFO, "Enter Block 2");
-+#include <errno.h>
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include "tst_test.h"
- 
--	if (((cwd_ptr = getcwd(cwd, 0)) == NULL)
--	    && (errno != EINVAL)) {
--		tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly (wanted EINVAL)");
--		flag = FAILED;
--	}
--	tst_resm(TINFO, "Exit Block 2");
--	if (flag == FAILED) {
--		tst_resm(TFAIL, "Block 2 FAILED");
--	} else {
--		tst_resm(TPASS, "Block 2 PASSED");
--	}
--}
-+static char exp_buf[5] = "/tmp";
-+static char buffer[5];
- 
--void do_block3(void)		//valid cwd[], size = 1 -> Should return NULL, errno = ERANGE
--{
--	int flag = 0;
--	tst_resm(TINFO, "Enter Block 3");
-+static struct t_case {
-+	char *buf;
-+	size_t size;
-+} tcases[] = {
-+	{buffer, sizeof(buffer)},
-+	{NULL, 0},
-+	{NULL, sizeof(buffer)}
-+};
- 
--	if (((cwd_ptr = getcwd(cwd, 1)) != NULL)
--	    || (errno != ERANGE)) {
--		tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly (wanted ERANGE)");
--		flag = FAILED;
--	}
--	tst_resm(TINFO, "Exit Block 3");
--	if (flag == FAILED) {
--		tst_resm(TFAIL, "Block 3 FAILED");
--	} else {
--		tst_resm(TPASS, "Block 3 PASSED");
--	}
--}
--
--void do_block4(void)		//invalid cwd[] = -1, size = BUFSIZ: -> return NULL, errno = FAULT
-+static void verify_getcwd(unsigned int n)
- {
--/* Skip since uClinux does not implement memory protection */
--#ifndef UCLINUX
--	int flag = 0;
--	tst_resm(TINFO, "Enter Block 4");
-+	struct t_case *tc = &tcases[n];
-+	char *res = NULL;
- 
--	if (((cwd_ptr = getcwd((char *)-1, sizeof(cwd))) != NULL)
--	    || (errno != EFAULT)) {
--		tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly (wanted EFAULT)");
--		flag = FAILED;
-+	errno = 0;
-+	res  = getcwd(tc->buf, tc->size);
-+	TEST_ERRNO = errno;
-+	if (!res) {
-+		tst_res(TFAIL | TTERRNO, "getcwd() failed");
-+		goto end;
- 	}
--	tst_resm(TINFO, "Exit Block 4");
--	if (flag == FAILED) {
--		tst_resm(TFAIL, "Block 4 FAILED");
--	} else {
--		tst_resm(TPASS, "Block 4 PASSED");
--	}
--#else
--	tst_resm(TINFO, "Skipping Block 4 on uClinux");
--#endif
--}
- 
--void do_block5(void)		//buffer = NULL, and size = 0, should succeed
--{
--	int flag = 0;
--	tst_resm(TINFO, "Enter Block 5");
--
--	if ((buffer = getcwd(NULL, 0)) == NULL) {
--		tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly");
--		flag = FAILED;
--	}
--	if ((flag != FAILED) && (strcmp(pwd_buf, buffer) != 0)) {
--		tst_resm(TFAIL, "getcwd() returned unexpected working "
--			 "directory: expected: %s, got: %s\n", pwd_buf, buffer);
--		flag = FAILED;
-+	if (tc->buf != NULL && strcmp(exp_buf, tc->buf)) {
-+		tst_res(TFAIL, "getcwd() returned unexpected directory: %s, "
-+			"expected: %s", tc->buf, exp_buf);
-+		goto end;
- 	}
--	tst_resm(TINFO, "Exit Block 5");
--	if (flag == FAILED) {
--		tst_resm(TFAIL, "Block 5 FAILED");
--	} else {
--		tst_resm(TPASS, "Block 5 PASSED");
--	}
--	free(buffer);
--	buffer = NULL;
--}
--
--void do_block6(void)		//buffer = NULL, size = 1: -> return NULL, errno = ERANGE
--{
--	int flag = 0;
--	tst_resm(TINFO, "Enter Block 6");
- 
--	if (((buffer = getcwd(NULL, 1)) != NULL)
--	    || (errno != ERANGE)) {
--		tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly (wanted ERANGE)");
--		flag = FAILED;
-+	if (strcmp(exp_buf, res)) {
-+		tst_res(TFAIL, "getcwd() returned unexpected directory: %s, "
-+			"expected: %s", res, exp_buf);
-+		goto end;
- 	}
--	tst_resm(TINFO, "Exit Block 6");
--	if (flag == FAILED) {
--		tst_resm(TFAIL, "Block 6 FAILED");
--	} else {
--		tst_resm(TPASS, "Block 6 PASSED");
--	}
--}
- 
--void do_block7(void)		//buffer = NULL, size = BUFSIZ: -> work fine, allocate buffer
--{
--	int flag = 0;
--	tst_resm(TINFO, "Enter Block 7");
-+	tst_res(TPASS, "getcwd() returned expected directory: %s", res);
- 
--	if ((buffer = getcwd(NULL, sizeof(cwd))) == NULL) {
--		tst_resm(TFAIL|TERRNO, "getcwd() failed unexpectedly");
--		flag = FAILED;
--	}
--	if ((flag != FAILED) && (strcmp(pwd_buf, buffer) != 0)) {
--		tst_resm(TFAIL, "getcwd() returned unexpected working "
--			 "directory: expected: %s, got: %s\n", pwd_buf, buffer);
--		flag = FAILED;
--	}
--	tst_resm(TINFO, "Exit Block 7");
--	if (flag == FAILED) {
--		tst_resm(TFAIL, "Block 7 FAILED");
--	} else {
--		tst_resm(TPASS, "Block 7 PASSED");
--	}
--	free(buffer);
--	buffer = NULL;
-+end:
-+	if (!tc->buf)
-+		free(res);
- }
++	SAFE_CHDIR("..");
++	SAFE_CHDIR(dir2);
  
 -void setup(void)
-+static void setup(void)
- {
--	/* FORK is set here because of the popen() call above */
+-{
+-	/* FORK is set here because of the popen() call below */
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
--
++	errno = 0;
++	res2 = getcwd(NULL, 0);
++	TEST_ERRNO = errno;
++	if (!res2) {
++		tst_res(TFAIL | TTERRNO, "getcwd() failed to get "
++			"working directory of a symbolic link");
++		goto end;
++	}
++
++	if (strcmp(res1, res2)) {
++		tst_res(TFAIL, "getcwd() got mismatched working directories");
++		goto end;
++	}
++
++	SAFE_CHDIR("..");
++	SAFE_READLINK(dir2, link, sizeof(link));
++
++	if (strcmp(link, SAFE_BASENAME(res1))) {
++		tst_res(TFAIL,
++			"link information didn't match the working directory");
++		goto end;
++	}
+ 
 -	TEST_PAUSE;
--
++	tst_res(TPASS, "getcwd() succeeded on a symbolic link");
+ 
 -	/* create a test directory and cd into it */
 -	tst_tmpdir();
-+	SAFE_CHDIR("/tmp");
++end:
++	free(res1);
++	free(res2);
  }
  
 -void cleanup(void)
--{
++static void setup(void)
+ {
 -	/* remove the test directory */
 -	tst_rmdir();
--}
++	sprintf(dir1, "getcwd1.%d", getpid());
++	sprintf(dir2, "getcwd2.%d", getpid());
++	SAFE_MKDIR(dir1, 0755);
++	SAFE_SYMLINK(dir1, dir2);
+ }
+ 
+-char *getpwd(void)
++static void cleanup(void)
+ {
+-	FILE *fin;
+-	char *pwd = "/bin/pwd";
+-	char *cp;
+-	char *buf;
+-
+-	buf = malloc(BUFSIZ);
+-	if ((fin = popen(pwd, "r")) == NULL) {
+-		tst_resm(TINFO, "%s: can't run %s", TCID, pwd);
+-		tst_brkm(TBROK, cleanup, "%s FAILED", TCID);
+-	}
+-	while (fgets(buf, BUFSIZ, fin) != NULL) {
+-		if ((cp = strchr(buf, '\n')) == NULL) {
+-			tst_brkm(TBROK, cleanup, "pwd output too long");
+-		}
+-		*cp = 0;
+-	}
+-	pclose(fin);
+-	return buf;
++	if (unlink(dir2) == -1)
++		tst_res(TWARN | TERRNO, "could not remove %s", dir2);
++
++	if (rmdir(dir1) == -1)
++		tst_res(TWARN | TERRNO, "could not remove %s", dir1);
+ }
++
 +static struct tst_test test = {
-+	.tid = "getcwd02",
++	.tid = "getcwd03",
++	.needs_tmpdir = 1,
 +	.setup = setup,
-+	.tcnt = ARRAY_SIZE(tcases),
-+	.test = verify_getcwd
++	.cleanup = cleanup,
++	.test_all = verify_getcwd
 +};
 -- 
 1.8.3.1
