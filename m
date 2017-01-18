@@ -1,48 +1,67 @@
 From: Michael Kerrisk (man-pages) <mtk.manpages@gmail.com>
-Date: Wed, 18 Jan 2017 21:17:00 +1300
+Date: Wed, 18 Jan 2017 21:23:19 +1300
 Subject: [LTP] utimensat EACCES vs. EPERM in 4.8+
-In-Reply-To: <20170117210403.spl6fpzegfmir6cy@thunk.org>
+In-Reply-To: <CAOssrKd32K-e5794m9KOjrMm_E3VZ7P-bvZW2P8UpGFTOgi8JQ@mail.gmail.com>
 References: <18a5b416-ad6a-e679-d993-af7ffa0dcc10@redhat.com>
- <20170117044104.ktrtizpzhghqludn@thunk.org>
- <20170117193557.GA17332@fieldses.org>
- <20170117210403.spl6fpzegfmir6cy@thunk.org>
-Message-ID: <19d8cbe2-4209-0e25-42ea-380a55104f0e@gmail.com>
+ <CAOssrKfb1-C8c=9bAPiairh+Lyf=w28r+RjSXTLQcQZ-=eWMRA@mail.gmail.com>
+ <CAKgNAkjTkBMY0wrj3wsH39YF=bHp=8mbYrXkSPzn0X4ezfso1w@mail.gmail.com>
+ <280513509.810300.1484639500985.JavaMail.zimbra@redhat.com>
+ <20170117075702.GB10417@rei.lan>
+ <CAOssrKd32K-e5794m9KOjrMm_E3VZ7P-bvZW2P8UpGFTOgi8JQ@mail.gmail.com>
+Message-ID: <cb15e28d-8c5e-e3d7-441a-9165c4e57133@gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 01/18/2017 10:04 AM, Theodore Ts'o wrote:
-> On Tue, Jan 17, 2017 at 02:35:57PM -0500, J. Bruce Fields wrote:
->> Where did this blog entry come from?  I've never seen the ACCES/PERM
->> distinction made that way anywhere else.  Posix says:
+Hi Miklos,
+
+On 01/17/2017 10:39 PM, Miklos Szeredi wrote:
+> On Tue, Jan 17, 2017 at 8:57 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
+>> Hi!
+>>>> Jan, thanks for spotting this.
+>>>
+>>> Credit goes to Cyril. As for LTP-20170116 (released yesterday) we went
+>>> with current documented behavior - few failures are expected on 4.8+.
 >>
->> 	[EACCES]
->> 	    Permission denied. An attempt was made to access a file in a
->> 	    way forbidden by its file access permissions.
->> 	[EPERM]
->> 	    Operation not permitted. An attempt was made to perform an
->> 	    operation limited to processes with appropriate privileges
->> 	    or to the owner of a file or other resource.
->> So EPERM is exactly for attempts to do things that are reserved for root
->> (or process with appropriate capabilities or whatever).
+>> Actually credit goes to SUSE QAM that caught the change on kernel
+>> update :-).
+> 
+> And while this makes for a nice discussion, it is almost completely
+> irrelevant in real life, since the only thing broken by this change
+> will be test suites (in other words immutable files are rare as hen's
+> teeth).
 
-> (or process with appropriate capabilities or whatever).
+While I agree that the chances of breakage may be quite small (though
+I certainly won't be so bold as to assert that only test suites
+will get broken), your comment misses the important metapoint:
+changes like this should not just be getting waved through the gate
+without some analysis along the lines of what I did. "Consistency"
+and an (incorrect) assertion that "In most cases, EPERM is returned
+on immutable inode" just don't cut it, when it comes to making
+changes of this sort.
 
-Yes. POSIX makes it pretty clear here, I think. EACCES is (generally) 
-about pathname permissions. (One can see this by perusing the various 
-EACCES cases in POSIX.) EPERM is (generally) about other kinds of
-permission denials (including Ted's "I'm sorry Dave, I can't let you
-do that" cases, which are a subset of these cases). And in both cases,
-superuser privilege may potentially bypass the restriction (except
-for the EPERM "Dave" cases).
+> If you find that this change actually breaks something other than a
+> test suite, then yes, please lets revert it.  
 
-So, that suggests that EPERM would be the right error for denial of
-permission because of the inode immutable or append-only flag. 
-(Earlier, I thought EACCES would be right, but I changed my mind.) Or,
-roughly, the patch under discussion made things more "correct", but
-at a (small) risk of user-space breakage.
+No. That is not a strategy. I already said it, but I'll say it again:
+sometimes these reports only arrive many months or even years later.
+And then we can end up with fiascoes such as F_SETOWN/F_SETOWN_EX.
+(Essentially: F_SETOWN got subtly changed, and by the time people
+realized the breakage had occurred it was *years* late. Too late to
+revert... So, then we got F_SETOWN_EX to allow us what F_SETOWN
+used to do. See fcntl(2).)
+
+> Otherwise there's not
+> much point (distros can revert it for themselves if they want be
+> paranoid).
+
+Also not a strategy; distros don't want to carry such junk
+patches.
+
+All of this said, I still don't know whether reverting the patch
+is warranted...
 
 Cheers,
 
