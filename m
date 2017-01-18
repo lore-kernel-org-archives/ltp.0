@@ -1,28 +1,30 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 18 Jan 2017 14:32:05 +0100
-Subject: [LTP] [PATCH v2 1/3] syscalls/getcwd02.c: cleanup && convert to
-	new API
-In-Reply-To: <1484719408-28782-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <20170117134335.GA28074@rei.lan>
- <1484719408-28782-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20170118133204.GC29948@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 18 Jan 2017 16:52:01 +0300
+Subject: [LTP] [PATCH 1/1] network/mc_cmds: fix testing with iproute2 <=
+ ss161212
+In-Reply-To: <20170118125758.11479-1-pvorel@suse.cz>
+References: <20170118125758.11479-1-pvorel@suse.cz>
+Message-ID: <ea05d70f-e106-cec1-2537-0ced868056e1@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	if (tc->buf != NULL && strcmp(exp_buf, tc->buf)) {
-> +		tst_res(TFAIL, "getcwd() returned unexpected directory: %s, "
-> +			"expected: %s", tc->buf, exp_buf);
-> +		goto end;
+On 01/18/2017 03:57 PM, Petr Vorel wrote:
+> -	ip maddr show $(tst_iface) | grep -q '224.0.0.1' || \
+> -		tst_brkm TFAIL "all-host-group for $(tst_iface) not joined"
+> +	ip maddr show $(tst_iface) | grep -q '224.0.0.1'
+> +	if [ $? -ne 0 ]; then
+> +		tst_resm TINFO "ip failed to detect multicast, parsing /proc/net/igmp"
 
-I've removed this check because it was redundant. Unless tc->buf is NULL
-the tc->buf is the same as res.
+Would be better if we pass 'TWARN' flag here.
 
-Pushed, thanks.
+> +		grep "$(tst_iface)\s*:" -A 1 /proc/net/igmp | tail -1 |grep -q '\s010000E0\s' || \
+> +			tst_brkm TFAIL "all-host-group for $(tst_iface) not joined"
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+I think it's safe to omit 'tail -1'.
+
+Thanks,
+Alexey
+
