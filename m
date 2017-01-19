@@ -1,36 +1,37 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 19 Jan 2017 17:32:28 +0800
-Subject: [LTP] [PATCH 1/2] ltp-aiodio/dio_sparse: Fix write in dio_sparse()
-Message-ID: <1484818349-30539-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Date: Thu, 19 Jan 2017 17:32:29 +0800
+Subject: [LTP] [PATCH 2/2] ltp-aiodio/dio_sparse: Fix usleep in read_sparse()
+In-Reply-To: <1484818349-30539-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1484818349-30539-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <1484818349-30539-2-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Current code looks buggy because when the offset is greater than
-or equal to the filesize, it will never happen to do the write
-in the loop, as a result, ADSP080..ADSP087 do not work actually.
-Fix it by making sure that we do write writesize bytes.
+usleep(100000) sometimes leads to child process being too late
+to do the read before being killed by parent process, tune it
+to usleep(10) to make sure we do the real test in time.
 
 Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
 ---
- testcases/kernel/io/ltp-aiodio/dio_sparse.c | 2 +-
+ testcases/kernel/io/ltp-aiodio/common_sparse.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-index 41b9929..3828ed7 100644
---- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-+++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
-@@ -78,7 +78,7 @@ int dio_sparse(char *filename, int align, int writesize, int filesize, int offse
+diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+index f7f4ef4..a7f5035 100644
+--- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
++++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+@@ -123,7 +123,7 @@ static void read_sparse(char *filename, int filesize)
+ 			fprintf(stderr, "Child %i waits for '%s' to appear\n",
+ 			        getpid(), filename);
  
- 	memset(bufptr, 0, writesize);
- 	lseek(fd, offset, SEEK_SET);
--	for (i = offset; i < filesize;) {
-+	for (i = 0; i < filesize;) {
- 		if ((w = write(fd, bufptr, writesize)) != writesize) {
- 			tst_resm(TBROK | TERRNO, "write() returned %d", w);
- 			close(fd);
+-		usleep(100000);
++		usleep(10);
+ 	}
+ 
+ 	if (fd == -1) {
 -- 
 1.8.4.2
 
