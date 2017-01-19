@@ -1,651 +1,876 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 19 Jan 2017 16:21:37 +0100
-Subject: [LTP] [PATCH 2/2] ipc/msgsnd0*: cleanup && convert to new API
-In-Reply-To: <1481860457-23035-2-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1481860457-23035-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <1481860457-23035-2-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20170119152136.GD9193@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 19 Jan 2017 16:36:03 +0100
+Subject: [LTP] [PATCH v5 1/1] syscalls/mq_open: fix old tests + convert to
+	use new API
+Message-ID: <20170119153603.26881-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static void cleanup(void)
->  {
-> -	/* if it exists, remove the message queue if it exists */
-> -	rm_queue(msg_q_1);
-> -
-> -	tst_rmdir();
-> -
-> +	if (queue_id != -1 && msgctl(queue_id, IPC_RMID, NULL)) {
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+Note about parsing results, there are too many cases (well there are quite a
+lot of tests). I used your version (added missing TPASS at the end). I have to
+say, I'd still prefer more complicated if stacement and less duplicity),
+something like this:
 
-You should initialized the queue_id to -1, since otherwise you may
-attempt to remove queue id 0 if cleanup is executed before msgget()
-returns and queue_id is initialized.
+if (TEST_ERRNO != tc->err) {
+	tst_res(TFAIL | TTERRNO, "%s unexpectedly expected errno: %d", tc->desc,
+			TEST_ERRNO);
+	goto CLEANUP;
+}
 
-> +		tst_res(TWARN | TERRNO, "failed to delete message queue %i",
-> +			queue_id);
-> +	}
->  }
-> +
-> +static struct tst_test test = {
-> +	.tid = "msgsnd01",
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.test_all = verify_msgsnd,
-> +	.needs_tmpdir = 1
-> +}
+if ((tc->ret == 0 && TEST_RETURN < 0) ||
+	(tc->ret < 0 && TEST_RETURN != tc->ret))
+	tst_res(TFAIL | TTERRNO, "%s wrong return code: %ld", tc->desc,
+			TEST_RETURN);
+else
+	tst_res(TPASS | TTERRNO, "%s returned: %ld", tc->desc, TEST_RETURN);
 
-Otherwise it looks fine.
+Both versions expect that nobody sets tc-ret > 0, but I suppose it's obvious to
+anyone that it cannot be > 0.
+---
+ testcases/kernel/syscalls/mq_open/mq_open01.c | 652 ++++++++++----------------
+ testcases/kernel/syscalls/utils/common_j_h.c  | 107 -----
+ testcases/kernel/syscalls/utils/include_j_h.h |   6 -
+ 3 files changed, 257 insertions(+), 508 deletions(-)
 
-> diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd02.c
-> index 6547ab2..9367775 100644
-
-...
-
-> +static key_t msgkey;
-> +static int queue_id = -1;
-> +static int bad_id = -1;
-> +static struct passwd *pw;
-> +static struct buf {
-> +	long type;
-> +	char text[MSGSIZE];
-> +} snd_buf = {1, "hello, world"};
-> +
-> +static struct tcase {
-> +	int *id;
-> +	struct buf *buffer;
-> +	long mtype;
-> +	int msgsz;
-> +	int exp_err;
-> +	/*1: nobody expected  0: root expected */
-> +	int exp_user;
-> +} tcases[] = {
-> +	{&queue_id, &snd_buf, 1, MSGSIZE, EACCES, 1},
-> +	{&queue_id, NULL, 1, MSGSIZE, EFAULT, 0},
-> +	{&bad_id, &snd_buf, 1, MSGSIZE, EINVAL, 0},
-> +	{&queue_id, &snd_buf, 0, MSGSIZE, EINVAL, 0},
-> +	{&queue_id, &snd_buf, -1, MSGSIZE, EINVAL, 0},
-> +	{&queue_id, &snd_buf, 1, -1, EINVAL, 0}
-> +};
-> +
-> +static void verify_msgsnd(struct tcase *tc)
->  {
-> -	int lc;
-> -	int i;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -	setup();		/* global setup */
-> -
-> -	/* The following loop checks looping state if -i option given */
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		/* reset tst_count in case we are looping */
-> -		tst_count = 0;
-> -
-> -		/*
-> -		 * loop through the test cases
-> -		 */
-> +	snd_buf.type = tc->mtype;
-
-This is kind of hack. Why can't we create three struct buf variables and
-assign them to the tcases structure instead of modyfing it this way?
-
-
-Otherwise it looks fine.
-
-> diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-> index 16d62f8..0d13065 100644
-> --- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-> +++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd05.c
-> @@ -1,234 +1,125 @@
->  /*
-> + * Copyright (c) International Business Machines  Corp., 2001
->   *
-> - *   Copyright (c) International Business Machines  Corp., 2001
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
->   *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
->   *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.
->   */
->  
->  /*
-> - * NAME
-> - *	msgsnd05.c
-> - *
->   * DESCRIPTION
-> - *	msgsnd05 - test for EINTR error
-> - *
-> - * ALGORITHM
-> - *	create a message queue with read/write permissions
-> - *	initialize a message buffer with a known message and type
-> - *	enqueue the message in a loop until the queue is full
-> - *	loop if that option was specified
-> - *	fork a child process
-> - *	child attempts to enqueue a message to the full queue and sleeps
-> - *	parent sends a SIGHUP to the child then waits for the child to complete
-> - *	child get a return from msgsnd()
-> - *	check the errno value
-> - *	  issue a PASS message if we get EINTR
-> - *	otherwise, the tests fails
-> - *	  issue a FAIL message
-> - *	child exits, parent calls cleanup
-> - *
-> - * USAGE:  <for command-line>
-> - *  msgsnd05 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-> - *     where,  -c n : Run n copies concurrently.
-> - *             -e   : Turn on errno logging.
-> - *	       -i n : Execute test n times.
-> - *	       -I x : Execute test for x seconds.
-> - *	       -P x : Pause for x seconds between iterations.
-> - *	       -t   : Turn on syscall timing.
-> - *
-> - * HISTORY
-> - *	03/2001 - Written by Wayne Boyer
-> - *      14/03/2008 Matthieu Fertr?? (Matthieu.Fertre@irisa.fr)
-> - *      - Fix concurrency issue. Due to the use of usleep function to
-> - *        synchronize processes, synchronization issues can occur on a loaded
-> - *        system. Fix this by using pipes to synchronize processes.
-> - *
-> - * RESTRICTIONS
-> - *	none
-> + * 1) test for EAGAIN error
-> + * 2) test for EINTR error
->   */
->  
-> -#include "test.h"
-> -
-> -#include "ipcmsg.h"
-> -
-> +#include <errno.h>
-> +#include <stdlib.h>
->  #include <sys/types.h>
-> -#include <sys/wait.h>
-> -
-> -void do_child(void);
-> -void cleanup(void);
-> -void setup(void);
-> -#ifdef UCLINUX
-> -#define PIPE_NAME	"msgsnd05"
-> -void do_child_uclinux(void);
-> -#endif
-> -
-> -char *TCID = "msgsnd05";
-> -int TST_TOTAL = 1;
-> -
-> -int msg_q_1 = -1;		/* The message queue id created in setup */
-> -
-> -MSGBUF msg_buf;
-> -
-> -int main(int ac, char **av)
-> +#include <sys/ipc.h>
-> +#include <sys/msg.h>
-> +
-> +#include "tst_test.h"
-> +#include "libnewipc.h"
-> +
-> +static key_t msgkey;
-> +static int queue_id = -1;
-> +static struct buf {
-> +	long type;
-> +	char text[MSGSIZE];
-> +} snd_buf = {1, "hello, world"};
-> +
-> +static struct tcase {
-> +	int flag;
-> +	int exp_err;
-> +	/*1: nobody expected  0: root expected */
-> +	int exp_user;
-> +} tcases[] = {
-> +	{IPC_NOWAIT, EAGAIN, 0},
-> +	{0, EINTR, 1}
-> +};
-> +
-> +static void verify_msgsnd(struct tcase *tc)
->  {
-> -	int lc;
-> -	pid_t c_pid;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -#ifdef UCLINUX
-> -	maybe_run_child(&do_child_uclinux, "d", &msg_q_1);
-> -#endif
-> -
-> -	setup();		/* global setup */
-> -
-> -	/* The following loop checks looping state if -i option given */
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		/* reset tst_count in case we are looping */
-> -		tst_count = 0;
-> -
-> -		/*
-> -		 * fork a child that will attempt to write a message
-> -		 * to the queue without IPC_NOWAIT
-> -		 */
-> -		if ((c_pid = FORK_OR_VFORK()) == -1) {
-> -			tst_brkm(TBROK, cleanup, "could not fork");
-> -		}
-> -
-> -		if (c_pid == 0) {	/* child */
-> -			/*
-> -			 * Attempt to write another message to the full queue.
-> -			 * Without the IPC_NOWAIT flag, the child sleeps
-> -			 */
-> -
-> -#ifdef UCLINUX
-> -			if (self_exec(av[0], "d", msg_q_1) < 0) {
-> -				tst_brkm(TBROK, cleanup, "could not self_exec");
-> -			}
-> -#else
-> -			do_child();
-> -#endif
-> -		} else {
-> -			TST_PROCESS_STATE_WAIT(cleanup, c_pid, 'S');
-> -
-> -			/* send a signal that must be caught to the child */
-> -			if (kill(c_pid, SIGHUP) == -1)
-> -				tst_brkm(TBROK, cleanup, "kill failed");
-> -
-> -			waitpid(c_pid, NULL, 0);
-> -		}
-> -	}
-> -
-> -	cleanup();
-> -
-> -	tst_exit();
-> -}
-> -
-> -/*
-> - * do_child()
-> - */
-> -void do_child(void)
-> -{
-> -	TEST(msgsnd(msg_q_1, &msg_buf, MSGSIZE, 0));
-> -
-> +	TEST(msgsnd(queue_id, &snd_buf, MSGSIZE, tc->flag));
->  	if (TEST_RETURN != -1) {
-> -		tst_resm(TFAIL, "call succeeded when error expected");
-> -		exit(-1);
-> +		tst_res(TFAIL, "msgsnd() succeeded unexpectedly");
-> +		return;
->  	}
->  
-> -	switch (TEST_ERRNO) {
-> -	case EINTR:
-> -		tst_resm(TPASS, "expected failure - errno = %d : %s",
-> -			 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		break;
-> -	default:
-> -		tst_resm(TFAIL,
-> -			 "call failed with an unexpected error - %d : %s",
-> -			 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		break;
-> +	if (TEST_ERRNO == tc->exp_err) {
-> +		tst_res(TPASS | TTERRNO, "msgsnd() failed as expected");
-> +	} else {
-> +		tst_res(TFAIL | TTERRNO, "msgsnd() failed unexpectedly,"
-> +			" expected %s", tst_strerrno(tc->exp_err));
->  	}
-> -
-> -	exit(0);
->  }
->  
-> -void sighandler(int sig)
-> +static void sighandler(int sig)
->  {
->  	if (sig == SIGHUP)
->  		return;
->  	else
-> -		tst_brkm(TBROK, NULL, "received unexpected signal %d", sig);
-> +		tst_brk(TBROK, "received unexpected signal %d", sig);
-
-Using tst_brk() in signal handler is NOT safe.
-
-Looking at the code the best solution would be to just call
-_exit(TBROK); here instead, which is one of the things you can do safely
-in a signal handler.
-
-Otherwise it looks fine.
-
-> diff --git a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
-> index 42f6e79..737fc7f 100644
-> --- a/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
-> +++ b/testcases/kernel/syscalls/ipc/msgsnd/msgsnd06.c
-> @@ -1,222 +1,92 @@
->  /*
-> + * Copyright (c) International Business Machines  Corp., 2001
->   *
-> - *   Copyright (c) International Business Machines  Corp., 2001
-> + * This program is free software;  you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation; either version 2 of the License, or
-> + * (at your option) any later version.
->   *
-> - *   This program is free software;  you can redistribute it and/or modify
-> - *   it under the terms of the GNU General Public License as published by
-> - *   the Free Software Foundation; either version 2 of the License, or
-> - *   (at your option) any later version.
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> + * the GNU General Public License for more details.
->   *
-> - *   This program is distributed in the hope that it will be useful,
-> - *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-> - *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-> - *   the GNU General Public License for more details.
-> - *
-> - *   You should have received a copy of the GNU General Public License
-> - *   along with this program;  if not, write to the Free Software
-> - *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program.
->   */
->  
->  /*
-> - * NAME
-> - *	msgsnd06.c
-> - *
->   * DESCRIPTION
-> - *	msgsnd06 - test for EIDRM error
-> - *
-> - * ALGORITHM
-> - *	loop if that option was specified
-> - *	create a message queue with read/write permissions
-> - *	initialize a message buffer with a known message and type
-> - *	enqueue messages in a loop until the queue is full
-> - *	fork a child process
-> - *	child attempts to enqueue a message to the full queue and sleeps
-> - *	parent removes the queue and then exits
-> - *	child get a return from msgsnd()
-> - *	check the errno value
-> - *	  issue a PASS message if we get EIDRM
-> - *	otherwise, the tests fails
-> - *	  issue a FAIL message
-> - *	call cleanup
-> - *
-> - * USAGE:  <for command-line>
-> - *  msgsnd06 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
-> - *     where,  -c n : Run n copies concurrently.
-> - *             -e   : Turn on errno logging.
-> - *	       -i n : Execute test n times.
-> - *	       -I x : Execute test for x seconds.
-> - *	       -P x : Pause for x seconds between iterations.
-> - *	       -t   : Turn on syscall timing.
-> - *
-> - * HISTORY
-> - *	03/2001 - Written by Wayne Boyer
-> - *      14/03/2008 Matthieu Fertr?? (Matthieu.Fertre@irisa.fr)
-> - *      - Fix concurrency issue. Due to the use of usleep function to
-> - *        synchronize processes, synchronization issues can occur on a loaded
-> - *        system. Fix this by using pipes to synchronize processes.
-> - *
-> - * RESTRICTIONS
-> - *	none
-> + * test for EIDRM error
-
-This may be a bit more detailed, i.e. something as:
-
-Tests if EIDRM is returned when message queue was removed while msgsnd()
-was trying to send a message.
-
-> -#include <sys/wait.h>
-> -#include "test.h"
-> +#include <errno.h>
-> +#include <stdlib.h>
-> +#include <sys/types.h>
-> +#include <sys/ipc.h>
-> +#include <sys/msg.h>
->  
-> -#include "ipcmsg.h"
-> +#include "tst_test.h"
-> +#include "libnewipc.h"
->  
-> -void cleanup(void);
-> -void setup(void);
-> -void do_child(void);
-> +static key_t msgkey;
-> +static int queue_id = -1;
-> +static struct buf {
-> +	long type;
-> +	char text[MSGSIZE];
-> +} snd_buf = {1, "hello, world"};
->  
-> -char *TCID = "msgsnd06";
-> -int TST_TOTAL = 1;
-> -
-> -int msg_q_1 = -1;		/* The message queue id created in setup */
-> -
-> -MSGBUF msg_buf;
-> -
-> -int main(int ac, char **av)
-> +static void verify_msgsnd(void)
->  {
-> -	int lc;
-> -	pid_t c_pid;
-> -	int status, e_code;
-> -
-> -	tst_parse_opts(ac, av, NULL, NULL);
-> -
-> -#ifdef UCLINUX
-> -#define PIPE_NAME	"msgsnd06"
-> -	maybe_run_child(&do_child, "d", &msg_q_1);
-> -#endif
-> -
-> -	setup();		/* global setup */
-> -
-> -	/* The following loop checks looping state if -i option given */
-> -
-> -	for (lc = 0; TEST_LOOPING(lc); lc++) {
-> -		/* reset tst_count in case we are looping */
-> -		tst_count = 0;
-> -
-> -		msgkey = getipckey();
-> -
-> -		/* create a message queue with read/write permission */
-> -		if ((msg_q_1 = msgget(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW))
-> -		    == -1) {
-> -			tst_brkm(TBROK, cleanup, "Can't create message queue");
-> -		}
-> -
-> -		/* initialize the message buffer */
-> -		init_buf(&msg_buf, MSGTYPE, MSGSIZE);
-> -
-> -		/* write messages to the queue until it is full */
-> -		while (msgsnd(msg_q_1, &msg_buf, MSGSIZE, IPC_NOWAIT) != -1) {
-> -			msg_buf.mtype += 1;
-> -		}
-> -
-> -		/*
-> -		 * fork a child that will attempt to write a message
-> -		 * to the queue without IPC_NOWAIT
-> -		 */
-> -		if ((c_pid = FORK_OR_VFORK()) == -1) {
-> -			tst_brkm(TBROK, cleanup, "could not fork");
-> -		}
-> -
-> -		if (c_pid == 0) {	/* child */
-> -
-> -#ifdef UCLINUX
-> -			if (self_exec(av[0], "d", msg_q_1) < 0) {
-> -				tst_brkm(TBROK, cleanup, "could not self_exec");
-> -			}
-> -#else
-> -			do_child();
-> -#endif
-> -		} else {
-> -			TST_PROCESS_STATE_WAIT(cleanup, c_pid, 'S');
-> -
-> -			/* remove the queue */
-> -			rm_queue(msg_q_1);
-> -
-> -			/* wait for the child to finish */
-> -			wait(&status);
-> -			/* make sure the child returned a good exit status */
-> -			e_code = status >> 8;
-> -			if (e_code != 0) {
-> -				tst_resm(TFAIL, "Failures reported above");
-> -			}
-> -		}
-> +	TEST(msgsnd(queue_id, &snd_buf, MSGSIZE, 0));
-> +	if (TEST_RETURN != -1) {
-> +		tst_res(TFAIL, "msgsnd() succeeded unexpectedly");
-> +		return;
->  	}
->  
-> -	cleanup();
-> -
-> -	tst_exit();
-> +	if (TEST_ERRNO == EIDRM) {
-> +		tst_res(TPASS | TTERRNO, "msgsnd() failed as expected");
-> +	} else {
-> +		tst_res(TFAIL | TTERRNO,
-> +			"msgsnd() failed unexpectedly, expected EIDRM");
-> +	}
->  }
->  
-> -/*
-> - * do_child()
-> - */
-> -void do_child(void)
-> +static void do_test(void)
->  {
-> -	int retval = 0;
-> +	pid_t pid;
->  
-> -#ifdef UCLINUX
-> -	/* initialize the message buffer */
-> -	init_buf(&msg_buf, MSGTYPE, MSGSIZE);
-> +	queue_id = CREATE_MSG(msgkey, IPC_CREAT | IPC_EXCL | MSG_RW);
->  
-> -#endif
-> -	/*
-> -	 * Attempt to write another message to the full queue.
-> -	 * Without the IPC_NOWAIT flag, the child sleeps
-> -	 */
-> -	TEST(msgsnd(msg_q_1, &msg_buf, MSGSIZE, 0));
-> +	while (msgsnd(queue_id, &snd_buf, MSGSIZE, IPC_NOWAIT) != -1)
-> +		snd_buf.type += 1;
->  
-> -	if (TEST_RETURN != -1) {
-> -		retval = 1;
-> -		tst_resm(TFAIL, "call succeeded when error expected");
-> -		exit(retval);
-> +	pid = SAFE_FORK();
-> +	if (!pid) {
-> +		verify_msgsnd();
-> +		exit(0);
->  	}
->  
-> -	switch (TEST_ERRNO) {
-> -	case EIDRM:
-> -		tst_resm(TPASS, "expected failure - errno = %d : %s",
-> -			 TEST_ERRNO, strerror(TEST_ERRNO));
-> +	TST_PROCESS_STATE_WAIT(pid, 'S');
->  
-> -		/* mark the queue as invalid as it was removed */
-> -		msg_q_1 = -1;
-> -		break;
-> -	default:
-> -		retval = 1;
-> -		tst_resm(TFAIL,
-> -			 "call failed with an unexpected error - %d : %s",
-> -			 TEST_ERRNO, strerror(TEST_ERRNO));
-> -		break;
-> +	if (queue_id != -1 && msgctl(queue_id, IPC_RMID, NULL)) {
-> +		tst_res(TWARN | TERRNO, "failed to delete message queue %i",
-> +				queue_id);
-
-Uh, the queue_id canot be -1 here, right?
-
-Also this is tst_brk(TBROK | TERRNO, ...) not TWARN, we are not in
-cleanup here.
-
-And the queue_id should be reset to -1 right after it was removed
-succesfully and there should be a cleanup that removes the queue if
-queue_id is not set to -1, because the test may still call tst_brk()
-somewhere between the creation and removal of the queue. We have to be
-careful with System V queues since these are global persistent objects
-that can outlive the test easily.
-
->  	}
-> -	exit(retval);
-> -}
-> -
-> -/*
-> - * setup() - performs all the ONE TIME setup for this test.
-> - */
-> -void setup(void)
-> -{
-> -
-> -	tst_sig(FORK, DEF_HANDLER, cleanup);
-> -
-> -	TEST_PAUSE;
->  
-> -	/*
-> -	 * Create a temporary directory and cd into it.
-> -	 * This helps to ensure that a unique msgkey is created.
-> -	 * See ../lib/libipc.c for more information.
-> -	 */
-> -	tst_tmpdir();
-> +	tst_reap_children();
->  }
->  
-> -/*
-> - * cleanup() - performs all the ONE TIME cleanup for this test at completion
-> - * 	       or premature exit.
-> - */
-> -void cleanup(void)
-> +static void setup(void)
->  {
-> -
-> -	tst_rmdir();
-> -
-> +	msgkey = GETIPCKEY();
->  }
-> +
-> +static struct tst_test test = {
-> +	.tid = "msgsnd06",
-> +	.needs_tmpdir = 1,
-> +	.needs_root = 1,
-> +	.forks_child = 1,
-> +	.setup = setup,
-> +	.test_all = do_test
-> +};
-> -- 
-> 1.8.3.1
-> 
-> 
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
+diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
+index 1ab818535..062ce62ee 100644
+--- a/testcases/kernel/syscalls/mq_open/mq_open01.c
++++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
+@@ -1,129 +1,41 @@
+-/******************************************************************************/
+-/* Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd		*/
+-/*	  Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,	      */
+-/*		       Yumiko Sugita <yumiko.sugita.yf@hitachi.com>, 	      */
+-/*		       Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>	      */
+-/*								  	      */
+-/* This program is free software;  you can redistribute it and/or modify      */
+-/* it under the terms of the GNU General Public License as published by       */
+-/* the Free Software Foundation; either version 2 of the License, or	  */
+-/* (at your option) any later version.					*/
+-/*									    */
+-/* This program is distributed in the hope that it will be useful,	    */
+-/* but WITHOUT ANY WARRANTY;  without even the implied warranty of	    */
+-/* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See		  */
+-/* the GNU General Public License for more details.			   */
+-/*									    */
+-/* You should have received a copy of the GNU General Public License	  */
+-/* along with this program;  if not, write to the Free Software	       */
+-/* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    */
+-/*									    */
+-/******************************************************************************/
+-/******************************************************************************/
+-/*									    */
+-/* File:	mq_open01.c						   */
+-/*									    */
+-/* Description: This tests the mq_open() syscall			      */
+-/*									      */
+-/* 									      */
+-/*									      */
+-/*									      */
+-/*									      */
+-/*									    */
+-/* Usage:  <for command-line>						 */
+-/* mq_open01 [-c n] [-e][-i n] [-I x] [-p x] [-t]			     */
+-/*      where,  -c n : Run n copies concurrently.			     */
+-/*	      -e   : Turn on errno logging.				 */
+-/*	      -i n : Execute test n times.				  */
+-/*	      -I x : Execute test for x seconds.			    */
+-/*	      -P x : Pause for x seconds between iterations.		*/
+-/*	      -t   : Turn on syscall timing.				*/
+-/*									    */
+-/* Total Tests: 1							     */
+-/*									    */
+-/* Test Name:   mq_open01						     */
+-/* History:     Porting from Crackerjack to LTP is done by		    */
+-/*	      Manas Kumar Nayak maknayak@in.ibm.com>			*/
+-/******************************************************************************/
+-#include <sys/syscall.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-#include <sys/uio.h>
+-#include <getopt.h>
+-#include <stdlib.h>
++/*
++ * Copyright (c) Crackerjack Project., 2007-2008 ,Hitachi, Ltd
++ *          Author(s): Takahiro Yasui <takahiro.yasui.mp@hitachi.com>,
++ *		       Yumiko Sugita <yumiko.sugita.yf@hitachi.com>,
++ *		       Satoshi Fujiwara <sa-fuji@sdl.hitachi.co.jp>
++ * Copyright (c) 2016 Linux Test Project
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software Foundation,
++ * Inc.,  51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
+ #include <errno.h>
+-#include <stdio.h>
+-#include <unistd.h>
+-#include <string.h>
+ #include <mqueue.h>
+-#include <limits.h>
+-
+-#include "../utils/include_j_h.h"
+-#include "../utils/common_j_h.c"
+-
+-#include "test.h"
+-#include "linux_syscall_numbers.h"
+-
+-char *TCID = "mq_open01";
+-int testno;
+-int TST_TOTAL = 1;
+-
+-/* Extern Global Functions */
+-/******************************************************************************/
+-/*									    */
+-/* Function:    cleanup						       */
+-/*									    */
+-/* Description: Performs all one time clean up for this test on successful    */
+-/*	      completion,  premature exit or  failure. Closes all temporary */
+-/*	      files, removes all temporary directories exits the test with  */
+-/*	      appropriate return code by calling tst_exit() function.       */
+-/*									    */
+-/* Input:       None.							 */
+-/*									    */
+-/* Output:      None.							 */
+-/*									    */
+-/* Return:      On failure - Exits calling tst_exit(). Non '0' return code.   */
+-/*	      On success - Exits calling tst_exit(). With '0' return code.  */
+-/*									    */
+-/******************************************************************************/
+-void cleanup(void)
+-{
++#include <pwd.h>
+ 
+-	tst_rmdir();
+-}
++#include "tst_safe_file_ops.h"
++#include "tst_test.h"
+ 
+-/* Local  Functions */
+-/******************************************************************************/
+-/*									    */
+-/* Function:    setup							 */
+-/*									    */
+-/* Description: Performs all one time setup for this test. This function is   */
+-/*	      typically used to capture signals, create temporary dirs      */
+-/*	      and temporary files that may be used in the course of this    */
+-/*	      test.							 */
+-/*									    */
+-/* Input:       None.							 */
+-/*									    */
+-/* Output:      None.							 */
+-/*									    */
+-/* Return:      On failure - Exits by calling cleanup().		      */
+-/*	      On success - returns 0.				       */
+-/*									    */
+-/******************************************************************************/
+-void setup(void)
+-{
+-	tst_require_root();
++#define QUEUE_NAME	"/test_mqueue"
+ 
+-	/* Capture signals if any */
+-	/* Create temporary directories */
+-	TEST_PAUSE;
+-	tst_tmpdir();
+-}
++static uid_t euid;
++static struct passwd *pw;
++static char *qname;
++static struct rlimit rlim;
+ 
+-/*
+- * Macros
+- */
+-#define SYSCALL_NAME    "mq_open"
++static mqd_t fd, fd2;
++static int max_queues;
+ 
+ enum test_type {
+ 	NORMAL,
+@@ -131,307 +43,257 @@ enum test_type {
+ 	NO_SPACE,
+ };
+ 
+-/*
+- * Data Structure
+- */
+ struct test_case {
+-	int ttype;
+-	char *user;
++	const char *desc;
+ 	char *qname;
+ 	int oflag;
+-	long mq_maxmsg;		// Maximum numebr of messages.
+-	long mq_msgsize;	// Maximum message size.
++	struct mq_attr *rq;
+ 	int ret;
+ 	int err;
++	void (*setup)(void);
++	void (*cleanup)(void);
+ };
+ 
+-#define ULIMIT_FNUM     0
+ #define PROC_MAX_QUEUES "/proc/sys/fs/mqueue/queues_max"
+ 
+-/* Test cases
+- *
+- *   test status of errors on man page
+- *
+- *   EACCES	     v (permission is denied)
+- *   EEXIST	     v (named message queue already exists)
+- *   EINTR	      --- (interrupted by a signal)
+- *   EINVAL	     v (not supported for the given name, or invalid
+- *			 arguments)
+- *   EMFILE	     v (process file table overflow)
+- *   ENAMETOOLONG       v (too long name length)
+- *   ENFILE	     can't check because it's difficult to create no-fd
+- *   ENOENT	     v (O_CREAT is not set and the named message queue
+- *			 does not exist)
+- *   ENOSPC	     v (no space for the new message queue)
+- */
++static void create_queue(void);
++static void unlink_queue(void);
++static void set_rlimit(void);
++static void restore_rlimit(void);
++static void set_max_queues(void);
++static void restore_max_queues(void);
+ 
+ static struct test_case tcase[] = {
+-#if 1
+-	{			// case00
+-	 .ttype = NORMAL,
+-	 .qname = QUEUE_NAME,
+-	 .oflag = O_CREAT,
+-	 .mq_maxmsg = 20,
+-	 .mq_msgsize = 16384,
+-	 .ret = 0,
+-	 .err = 0,
+-	 },
+-#else
+-	{			// case00
+-	 .ttype = NORMAL,
+-	 .qname = QUEUE_NAME,
+-	 .oflag = O_CREAT,
+-	 .ret = 0,
+-	 .err = 0,
+-	 },
+-	{			// case01
+-	 .ttype = NORMAL,
+-	 //  0    1       2       3
+-	 //  0123456789012345678901234567890123456789
+-	 "aaaaaaaaaaaaaaa",
+-	 .oflag = O_CREAT,
+-	 .ret = 0,
+-	 .err = 0,
+-	 },
+-	{			// case02
+-	 .ttype = NORMAL,
+-	 //  0    1       2       3
+-	 //  0123456789012345678901234567890123456789
+-	 "aaaaaaaaaaaaaaaa",
+-	 .oflag = O_CREAT,
+-	 .ret = -1,
+-	 .err = ENAMETOOLONG,
+-	 },
+-
+-	{			// case03
+-	 .ttype = NORMAL,
+-	 .qname = "",
+-	 .oflag = O_CREAT,
+-	 .ret = -1,
+-	 .err = EINVAL,
+-	 },
+-	{			// case04
+-	 .ttype = NORMAL,
+-	 .user = "nobody",
+-	 .qname = QUEUE_NAME,
+-	 .ret = -1,
+-	 .err = EACCES,
+-	 },
+-	{			// case05
+-	 .ttype = NORMAL,
+-	 .qname = QUEUE_NAME,
+-	 .oflag = O_CREAT | O_EXCL,
+-	 .ret = -1,
+-	 .err = EEXIST,
+-	 },
+-	{			// case06
+-	 .ttype = NO_FILE,
+-	 .qname = QUEUE_NAME,
+-	 .oflag = O_CREAT,
+-	 .ret = -1,
+-	 .err = EMFILE,
+-	 },
+-	{			// case07
+-	 .ttype = NORMAL,
+-	 .qname = "/notexist",
+-	 .oflag = 0,
+-	 .ret = -1,
+-	 .err = ENOENT,
+-	 },
+-
+-	{			// case08
+-	 .ttype = NO_SPACE,
+-	 .user = "nobody",
+-	 .qname = QUEUE_NAME,
+-	 .oflag = O_CREAT,
+-	 .ret = -1,
+-	 .err = ENOSPC,
+-	 },
+-#endif
++	{
++		.desc = "NORMAL",
++		.qname = QUEUE_NAME,
++		.oflag = O_CREAT,
++		.rq = &(struct mq_attr){.mq_maxmsg = 20, .mq_msgsize = 16384},
++		.ret = 0,
++		.err = 0,
++	},
++	{
++		.desc = "NORMAL",
++		.qname = QUEUE_NAME,
++		.oflag = O_CREAT,
++		.ret = 0,
++		.err = 0,
++	},
++	{
++		.desc = "NORMAL",
++		.qname = "/caaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaa",
++		.oflag = O_CREAT,
++		.ret = 0,
++		.err = 0,
++	},
++	{
++		.desc = "NORMAL",
++		.qname = "/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			"aaaaaaaaaaaaaaaa",
++		.oflag = O_CREAT,
++		.ret = -1,
++		.err = ENAMETOOLONG,
++	},
++
++	{
++		.desc = "NORMAL",
++		.qname = "",
++		.oflag = O_CREAT,
++		.ret = -1,
++		.err = EINVAL,
++	},
++	{
++		.desc = "NORMAL",
++		.qname = QUEUE_NAME,
++		.ret = -1,
++		.err = EACCES,
++		.setup = create_queue,
++		.cleanup = unlink_queue,
++	},
++	{
++		.desc = "NORMAL",
++		.qname = QUEUE_NAME,
++		.oflag = O_CREAT | O_EXCL,
++		.ret = -1,
++		.err = EEXIST,
++		.setup = create_queue,
++		.cleanup = unlink_queue,
++	},
++	{
++		.desc = "NO_FILE",
++		.qname = QUEUE_NAME,
++		.oflag = O_CREAT,
++		.ret = -1,
++		.err = EMFILE,
++		.setup = set_rlimit,
++		.cleanup = restore_rlimit,
++	},
++	{
++		.desc = "NORMAL",
++		.qname = "/notexist",
++		.oflag = 0,
++		.ret = -1,
++		.err = ENOENT,
++	},
++	{
++		.desc = "NO_SPACE",
++		.qname = QUEUE_NAME,
++		.oflag = O_CREAT,
++		.ret = -1,
++		.err = ENOSPC,
++		.setup = set_max_queues,
++		.cleanup = restore_max_queues,
++	}
+ };
+ 
+-/*
+- * do_test()
+- *
+- *   Input  : TestCase Data
+- *   Return : RESULT_OK(0), RESULT_NG(1)
+- *
+- */
++static void create_queue(void)
++{
++	fd2 = mq_open(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
++	if (fd2 == -1)
++		tst_brk(TBROK | TERRNO, "mq_open(" QUEUE_NAME ") failed");
+ 
+-static int do_test(struct test_case *tc)
++	SAFE_SETEUID(pw->pw_uid);
++}
++
++static void unlink_queue(void)
+ {
+-	int sys_ret;
+-	int sys_errno;
+-	int result = RESULT_OK;
+-	int rc, fd1 = -1, fd2 = -1, cmp_ok = 1;
+-	uid_t old_uid = -1;
+-	rlim_t oldlim = -1;
+-	int oldval = -1;
+-	struct mq_attr new, old, *p_attr;
+-
+-	/*
+-	 * When test ended with SIGTERM etc, mq descriptor is left remains.
+-	 * So we delete it first.
+-	 */
+-	TEST(mq_unlink(QUEUE_NAME));
+-
+-	/*
+-	 * Execute system call
+-	 */
+-
+-	if (tc->ttype != NO_SPACE && !(tc->oflag & O_CREAT)) {
+-		errno = 0;
+-		TEST(sys_ret =
+-		     mq_open(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU,
+-			     NULL));
+-		sys_errno = errno;
+-		if (sys_ret < 0)
+-			goto TEST_END;
+-		fd1 = sys_ret;
+-	}
+-	if (tc->ttype == NO_FILE) {
+-		TEST(rc = setup_ulimit_fnum(ULIMIT_FNUM, &oldlim));
+-		if (rc < 0) {
+-			result = 1;
+-			goto EXIT;
+-		}
++	SAFE_SETEUID(euid);
++	if (fd2 > 0)
++		SAFE_CLOSE(fd2);
++
++	if (mq_unlink(QUEUE_NAME))
++		tst_brk(TBROK | TERRNO, "mq_close(" QUEUE_NAME ") failed");
++}
++
++
++static void set_max_queues(void)
++{
++	SAFE_FILE_SCANF(PROC_MAX_QUEUES, "%d", &max_queues);
++	SAFE_FILE_PRINTF(PROC_MAX_QUEUES, "%d", 0);
++
++	SAFE_SETEUID(pw->pw_uid);
++}
++
++static void restore_max_queues(void)
++{
++	SAFE_SETEUID(euid);
++	SAFE_FILE_PRINTF(PROC_MAX_QUEUES, "%d", max_queues);
++}
++
++static void set_rlimit(void)
++{
++	if (rlim.rlim_cur > 0) {
++		struct rlimit r;
++		r.rlim_cur = 0;
++		r.rlim_max = rlim.rlim_max;
++		SAFE_SETRLIMIT(RLIMIT_NOFILE, &r);
+ 	}
++}
++
++static void restore_rlimit(void)
++{
++	SAFE_SETRLIMIT(RLIMIT_NOFILE, &rlim);
++}
++
++static void setup(void)
++{
++	euid = geteuid();
++	pw = SAFE_GETPWNAM("nobody");
++	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlim);
++}
++
++static void cleanup(void)
++{
++	if (fd > 0)
++		mq_close(fd);
++
++	if (fd2 > 0)
++		mq_close(fd2);
++
++	mq_unlink(qname);
++}
++
++static void do_test(unsigned int i)
++{
++	struct test_case *tc = &tcase[i];
++	struct mq_attr oldattr;
++
++	qname = tc->qname;
++	fd = fd2 = -1;
+ 
+-	/*
+-	 * Change /proc/sys/fs/mqueue/queues_max
+-	 */
+-	if (tc->ttype == NO_SPACE) {
+-		TEST(rc = setup_proc_fs(PROC_MAX_QUEUES, 0, &oldval));
+-		if (rc < 0) {
+-			result = 1;
+-			goto EXIT;
++	tst_res(TINFO, "queue name \"%s\"", qname);
++
++	if (tc->setup)
++		tc->setup();
++
++	TEST(fd = mq_open(qname, tc->oflag, S_IRWXU, tc->rq));
++
++	if (fd > 0 && tc->rq) {
++		if (mq_getattr(fd, &oldattr) < 0) {
++			tst_res(TFAIL | TERRNO, "mq_getattr failed");
++			goto CLEANUP;
+ 		}
+-	}
+ 
+-	/*
+-	 * Change effective user id
+-	 */
+-	if (tc->user != NULL) {
+-		TEST(rc = setup_euid(tc->user, &old_uid));
+-		if (rc < 0) {
+-			result = 1;
+-			goto EXIT;
++		if (oldattr.mq_maxmsg != tc->rq->mq_maxmsg
++			|| oldattr.mq_msgsize != tc->rq->mq_msgsize) {
++			tst_res(TFAIL | TERRNO, "wrong mq_attr: "
++				"mq_maxmsg expected %ld return %ld, "
++				"mq_msgsize expected %ld return %ld",
++				tc->rq->mq_maxmsg, oldattr.mq_maxmsg, tc->rq->mq_msgsize,
++				oldattr.mq_msgsize);
++			goto CLEANUP;
+ 		}
+ 	}
+ 
+-	/*
+-	 * Execute system call
+-	 */
+-	//tst_resm(TINFO,"PATH_MAX: %d\n", PATH_MAX);
+-	//tst_resm(TINFO,"NAME_MAX: %d", NAME_MAX);
+-	p_attr = NULL;
+-	if (tc->mq_maxmsg || tc->mq_msgsize) {
+-		new.mq_maxmsg = tc->mq_maxmsg;
+-		new.mq_msgsize = tc->mq_msgsize;
+-		p_attr = &new;
+-	}
+-	errno = 0;
+-	if (tc->oflag & O_CREAT)
+-		TEST(sys_ret = mq_open(tc->qname, tc->oflag, S_IRWXU, p_attr));
+-	else
+-		TEST(sys_ret = mq_open(tc->qname, tc->oflag));
+-	sys_errno = errno;
+-	if (sys_ret < 0)
+-		goto TEST_END;
+-	fd2 = sys_ret;
+-
+-	if (p_attr) {
+-		TEST(rc = ltp_syscall(__NR_mq_getsetattr, fd2, NULL, &old));
+-		if (TEST_RETURN < 0) {
+-			tst_resm(TFAIL,
+-				 "mq_getsetattr failed - errno = %d : %s",
+-				 TEST_ERRNO, strerror(TEST_ERRNO));
+-			result = 1;
+-			goto EXIT;
+-		}
+-		tst_resm(TINFO, "mq_maxmsg E:%ld,\tR:%ld", new.mq_maxmsg,
+-			 old.mq_maxmsg);
+-		tst_resm(TINFO, "mq_msgsize E:%ld,\tR:%ld", new.mq_msgsize,
+-			 old.mq_msgsize);
+-		cmp_ok = old.mq_maxmsg == new.mq_maxmsg
+-		    && old.mq_msgsize == new.mq_msgsize;
++	if (tc->ret == 0) {
++		if (TEST_RETURN < 0)
++			tst_res(TFAIL | TTERRNO, "%s wrong return code: %ld", tc->desc,
++					TEST_RETURN);
++		else
++			tst_res(TPASS | TTERRNO, "%s returned: %ld", tc->desc, TEST_RETURN);
++
++		goto CLEANUP;
+ 	}
+ 
+-TEST_END:
+-	/*
+-	 * Check results
+-	 */
+-	result |= (sys_errno != tc->err) || !cmp_ok;
+-	PRINT_RESULT_CMP(sys_ret >= 0, tc->ret, tc->err, sys_ret, sys_errno,
+-			 cmp_ok);
+-
+-EXIT:
+-	if (tc->user != NULL && old_uid != -1)
+-		TEST(cleanup_euid(old_uid));
+-
+-	if (tc->ttype == NO_SPACE && oldval != -1)
+-		TEST(cleanup_proc_fs(PROC_MAX_QUEUES, oldval));
+-
+-	if (tc->ttype == NO_FILE && oldlim != -1)
+-		TEST(cleanup_ulimit_fnum(oldlim));
+-	if (fd1 >= 0)
+-		TEST(close(fd1));
+-	if (fd2 >= 0)
+-		TEST(close(fd2));
+-	if (fd1 >= 0)
+-		TEST(mq_unlink(QUEUE_NAME));
+-	if (fd2 >= 0 && strcmp(tc->qname, QUEUE_NAME) != 0)
+-		TEST(mq_unlink(tc->qname));
+-
+-	return result;
+-}
++	if (TEST_ERRNO != tc->err) {
++		tst_res(TFAIL | TTERRNO, "%s unexpectedly expected errno: %d", tc->desc,
++				TEST_ERRNO);
++		goto CLEANUP;
++	}
+ 
+-/*
+- * main()
+- */
++	if (TEST_RETURN != tc->ret)
++		tst_res(TFAIL | TTERRNO, "%s wrong return code: %ld", tc->desc,
++				TEST_RETURN);
++	else
++		tst_res(TPASS | TTERRNO, "%s returned: %ld", tc->desc, TEST_RETURN);
+ 
+-int main(int ac, char **av)
+-{
+-	int result = RESULT_OK;
+-	int i;
+-	int lc;
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); ++lc) {
+-		tst_count = 0;
+-		for (testno = 0; testno < TST_TOTAL; ++testno) {
+-
+-			/*
+-			 * Execute test
+-			 */
+-			for (i = 0; i < (int)ARRAY_SIZE(tcase); i++) {
+-				int ret;
+-				tst_resm(TINFO, "(case%02d) START", i);
+-				ret = do_test(&tcase[i]);
+-				tst_resm(TINFO, "(case%02d) END => %s", i,
+-					 (ret == 0) ? "OK" : "NG");
+-				result |= ret;
+-			}
+-
+-			/*
+-			 * Check results
+-			 */
+-			switch (result) {
+-			case RESULT_OK:
+-				tst_resm(TPASS, "mq_open call succeeded ");
+-				break;
+-
+-			default:
+-				tst_brkm(TFAIL | TTERRNO, cleanup,
+-					 "mq_open failed");
+-				break;
+-			}
++CLEANUP:
++	if (tc->cleanup)
++		tc->cleanup();
+ 
+-		}
++	if (TEST_RETURN != -1) {
++		if (fd > 0)
++			SAFE_CLOSE(fd);
++		mq_unlink(qname);
+ 	}
+-	cleanup();
+-	tst_exit();
+ }
++
++static struct tst_test test = {
++	.tid = "mq_open01",
++	.tcnt = ARRAY_SIZE(tcase),
++	.test = do_test,
++	.needs_root = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++};
+diff --git a/testcases/kernel/syscalls/utils/common_j_h.c b/testcases/kernel/syscalls/utils/common_j_h.c
+index 43165ca20..dbdbc117a 100644
+--- a/testcases/kernel/syscalls/utils/common_j_h.c
++++ b/testcases/kernel/syscalls/utils/common_j_h.c
+@@ -227,113 +227,6 @@ int cleanup_swapfile(char *path)
+ 	return 0;
+ }
+ 
+-/*
+- * Change user limit that the calling process can open
+- */
+-int setup_ulimit_fnum(rlim_t newlim, rlim_t * oldlim)
+-{
+-	int rc;
+-	struct rlimit rlim;
+-
+-	rc = getrlimit(RLIMIT_NOFILE, &rlim);
+-	if (rc < 0) {
+-		EPRINTF("getrlimit failed.\n");
+-		return -1;
+-	}
+-	*oldlim = rlim.rlim_cur;
+-	if (newlim > rlim.rlim_max) {
+-		EPRINTF("can't set ulimit value: %ld.\n", newlim);
+-		return -1;
+-	}
+-	rlim.rlim_cur = newlim;
+-	rc = setrlimit(RLIMIT_NOFILE, &rlim);
+-	if (rc < 0) {
+-		EPRINTF("setrlimit failed.\n");
+-		return -1;
+-	}
+-	return 0;
+-}
+-
+-int cleanup_ulimit_fnum(rlim_t oldlim)
+-{
+-	int rc;
+-	struct rlimit rlim;
+-
+-	rc = getrlimit(RLIMIT_NOFILE, &rlim);
+-	if (rc < 0) {
+-		EPRINTF("getrlimit failed.\n");
+-		return -1;
+-	}
+-	if (oldlim > rlim.rlim_max) {
+-		EPRINTF("can't set ulimit value: %ld.\n", oldlim);
+-		return -1;
+-	}
+-	rlim.rlim_cur = oldlim;
+-	rc = setrlimit(RLIMIT_NOFILE, &rlim);
+-	if (rc < 0) {
+-		EPRINTF("setrlimit failed.\n");
+-		return -1;
+-	}
+-	return 0;
+-}
+-
+-/*
+- * Change /proc or /sys setting
+- */
+-int setup_proc_fs(char *path, int newval, int *oldval)
+-{
+-	int fd = -1, rc, len;
+-	char buf[32];
+-
+-	fd = open(path, O_RDWR);
+-	if (fd < 0) {
+-		EPRINTF("open %s failed.\n", path);
+-		return -1;
+-	}
+-
+-	do {
+-		rc = read(fd, buf, 32);
+-	} while (rc < 0 && errno == EAGAIN);
+-	if (rc < 0) {
+-		EPRINTF("read failed.\n");
+-		close(fd);
+-		return -1;
+-	}
+-
+-	*oldval = atoi(buf);
+-	sprintf(buf, "%d\n", newval);
+-	len = strlen(buf);
+-	rc = write(fd, buf, len);
+-	close(fd);
+-	if (rc != len) {
+-		EPRINTF("write failed.\n");
+-		return -1;
+-	}
+-	return 0;
+-}
+-
+-int cleanup_proc_fs(char *path, int oldval)
+-{
+-	int fd = -1, rc, len;
+-	char buf[32];
+-
+-	fd = open(path, O_RDWR);
+-	if (fd < 0) {
+-		EPRINTF("open %s failed.\n", path);
+-		return -1;
+-	}
+-
+-	sprintf(buf, "%d\n", oldval);
+-	len = strlen(buf);
+-	rc = write(fd, buf, len);
+-	close(fd);
+-	if (rc != len) {
+-		EPRINTF("write failed.\n");
+-		return -1;
+-	}
+-	return 0;
+-}
+-
+ #if 0
+ /*
+  * Check max nodes from /sys/devices/system/node/node* files (for NUMA)
+diff --git a/testcases/kernel/syscalls/utils/include_j_h.h b/testcases/kernel/syscalls/utils/include_j_h.h
+index ff6aaf42d..742d96401 100644
+--- a/testcases/kernel/syscalls/utils/include_j_h.h
++++ b/testcases/kernel/syscalls/utils/include_j_h.h
+@@ -135,12 +135,6 @@ int cleanup_file(char *path);
+ int setup_swapfile(char *testdir, char *fname, char *path, size_t size);
+ int cleanup_swapfile(char *path);
+ 
+-int setup_ulimit_fnum(rlim_t newlim, rlim_t *oldlim);
+-int cleanup_ulimit_fnum(rlim_t oldlim);
+-
+-int setup_proc_fs(char *path, int newval, int *oldval);
+-int cleanup_proc_fs(char *path, int oldval);
+-
+ #define QUEUE_NAME	"/test_mqueue"
+ pid_t create_echo_msg_proc(void);
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.11.0
+
