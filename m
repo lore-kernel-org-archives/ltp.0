@@ -1,26 +1,40 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 20 Jan 2017 18:47:47 +0300
-Subject: [LTP] [PATCH] network: fix export for some non-bash shells
-In-Reply-To: <20170119174016.3jkpnexon6t4s2y5@x230>
-References: <20161219125407.15954-1-pvorel@suse.cz>
- <20170119174016.3jkpnexon6t4s2y5@x230>
-Message-ID: <61b75b72-7f77-f7cb-188c-822a01b22b73@oracle.com>
+Date: Fri, 20 Jan 2017 19:14:03 +0300
+Subject: [LTP] [PATCH 3/3] test_net.sh: netns as default in tst_rhost_run
+In-Reply-To: <20170119175049.de6ocki7ebyxnbpa@x230>
+References: <20161221230422.26696-1-pvorel@suse.cz>
+ <20161221230422.26696-3-pvorel@suse.cz>
+ <20170119175049.de6ocki7ebyxnbpa@x230>
+Message-ID: <5375d1aa-9d0c-884d-6c54-03019847bd6d@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 01/19/2017 08:40 PM, Petr Vorel wrote:
-> how about this one? It breaks system with dash as default shell (i.e. at least Debian,
-> Ubuntu and derivates).
->
-> Actually I'd be for replacing all exports, as nothing with spaces will not work in dash (I
-> know we don't support fixes for spaces in PATH, but this is something different):
-Hi Petr,
 
-Agree, please send a patch.
+On 01/19/2017 08:50 PM, Petr Vorel wrote:
+>>   	local output=
+>>   	local ret=0
+>> -	if [ -n "$TST_USE_SSH" ]; then
+>> -		output=`ssh -n -q $user@$RHOST "sh -c \
+>> -			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+>> -	elif [ -n "$TST_USE_NETNS" ]; then
+>> +	if [ -n "$TST_USE_NETNS" ]; then
+>>   		output=`$LTP_NETNS sh -c \
+>>   			"$pre_cmd $cmd $post_cmd" $out 2>&1 || echo 'RTERR'`
+>> +	elif [ -n "$TST_USE_SSH" ]; then
+>> +		output=`ssh -n -q $user@$RHOST "sh -c \
+>> +			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+>>   	else
+>>   		output=`rsh -n -l $user $RHOST "sh -c \
+>>   			'$pre_cmd $cmd $post_cmd'" $out 2>&1 || echo 'RTERR'`
+> How about this patch? (just this one, please ignore 1st and 2nd) NACK?
+
+With this patch, if user wants to use ssh (explicitly set this variable) 
+but forgot
+to set remote host variable, the test will continue with netns and the user
+might not even notice it.
 
 Thanks,
 Alexey
-
