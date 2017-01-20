@@ -1,188 +1,435 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 20 Jan 2017 15:56:06 +0800
-Subject: [LTP] [PATCH] ltp/numa: add new test11
-Message-ID: <1484898966-27753-1-git-send-email-liwang@redhat.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Fri, 20 Jan 2017 15:06:45 +0300
+Subject: [LTP] [PATCH v2 1/2] net: traceroute_test.sh: rename to
+	traceroute01.sh
+Message-ID: <1484914006-23396-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/numa/README         |  2 ++
- testcases/kernel/numa/numa01.sh      | 40 ++++++++++++++++++++++++++--
- testcases/kernel/numa/support_numa.c | 51 +++++++++++++++++++++++++++++++++---
- 3 files changed, 88 insertions(+), 5 deletions(-)
+Update runtest file. No functional changes.
 
-diff --git a/testcases/kernel/numa/README b/testcases/kernel/numa/README
-index 57b12f7..a5c3f1b 100644
---- a/testcases/kernel/numa/README
-+++ b/testcases/kernel/numa/README
-@@ -54,6 +54,8 @@ Verifies the numa_node_size api with hardware checking.
- TestCase10:
- Verifieds the NUMA migratepages policy.
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ runtest/net.tcp_cmds                             |    2 +-
+ testcases/network/traceroute/Makefile            |    2 +-
+ testcases/network/traceroute/traceroute01.sh     |  187 ++++++++++++++++++++++
+ testcases/network/traceroute/traceroute_tests.sh |  187 ----------------------
+ 4 files changed, 189 insertions(+), 189 deletions(-)
+ create mode 100755 testcases/network/traceroute/traceroute01.sh
+ delete mode 100755 testcases/network/traceroute/traceroute_tests.sh
+
+diff --git a/runtest/net.tcp_cmds b/runtest/net.tcp_cmds
+index 66262f8..b7daf9d 100644
+--- a/runtest/net.tcp_cmds
++++ b/runtest/net.tcp_cmds
+@@ -25,5 +25,5 @@ dhcpd dhcpd_tests.sh
+ dnsmasq dnsmasq_tests.sh
+ iproute ip_tests.sh
+ tracepath01 tracepath01.sh
+-traceroute traceroute_tests.sh
++traceroute01 traceroute01.sh
+ xinetd xinetd_tests.sh
+diff --git a/testcases/network/traceroute/Makefile b/testcases/network/traceroute/Makefile
+index eb5aefb..4a8c89f 100644
+--- a/testcases/network/traceroute/Makefile
++++ b/testcases/network/traceroute/Makefile
+@@ -24,6 +24,6 @@ top_srcdir		?= ../../..
  
-+TestCase11:
-+Verifies the hugepage memory allocated from the node we specify.
+ include $(top_srcdir)/include/mk/env_pre.mk
  
- Pre-requisites
- ====================================================================================================================
-diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-index f0f6139..8533c51 100755
---- a/testcases/kernel/numa/numa01.sh
-+++ b/testcases/kernel/numa/numa01.sh
-@@ -31,11 +31,12 @@
- #               Test #8: Verifies memhog                                     #
- #               Test #9: Verifies numa_node_size api                         #
- #               Test #10:Verifies Migratepages                               #
-+#               Test #11:Verifies hugepage alloacted on specified node       #
- #                                                                            #
- ##############################################################################
+-INSTALL_TARGETS		:= traceroute_tests.sh
++INSTALL_TARGETS		:= traceroute01.sh
  
- TST_ID="numa01"
--TST_CNT=10
-+TST_CNT=11
- TST_SETUP=setup
- TST_TESTFUNC=test
- TST_NEEDS_TMPDIR=1
-@@ -83,11 +84,13 @@ setup()
- {
- 	export MB=$((1024*1024))
- 	export PAGE_SIZE=$(getconf PAGE_SIZE)
-+	export HPAGE_SIZE=$(cat /proc/meminfo  |grep "Hugepagesize:" |awk '{print $2}')
- 
- 	# arguments to memory exercise program support_numa.c
- 	ALLOC_1MB=1
- 	SHARE_1MB=2
--	PAUSE=3
-+	HUGE_PAGE=3
-+	PAUSE=4
- 
- 	total_nodes=0
- 
-@@ -399,4 +402,37 @@ test10()
- 	tst_res TPASS "NUMA MIGRATEPAGES policy"
- }
- 
-+# Verification of hugepage memory allocated on a node
-+test11()
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/traceroute/traceroute01.sh b/testcases/network/traceroute/traceroute01.sh
+new file mode 100755
+index 0000000..ad65d37
+--- /dev/null
++++ b/testcases/network/traceroute/traceroute01.sh
+@@ -0,0 +1,187 @@
++#!/bin/sh
++################################################################################
++##                                                                            ##
++## Copyright (c) International Business Machines  Corp., 2001                 ##
++##                                                                            ##
++## This program is free software;  you can redistribute it and#or modify      ##
++## it under the terms of the GNU General Public License as published by       ##
++## the Free Software Foundation; either version 2 of the License, or          ##
++## (at your option) any later version.                                        ##
++##                                                                            ##
++## This program is distributed in the hope that it will be useful, but        ##
++## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
++## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
++## for more details.                                                          ##
++##                                                                            ##
++## You should have received a copy of the GNU General Public License          ##
++## along with this program;  if not, write to the Free Software               ##
++## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
++##                                                                            ##
++################################################################################
++#
++# File :         traceroute_tests.sh
++#
++# Description:   Test Basic functionality of traceroute command.
++#                Test #1: execute traceroute on hostname, expected number of
++#                hops is 1.
++#
++# Author:        Manoj Iyer, manjo@mail.utexas.edu
++#
++# History:       Mar 03 2003 - Created - Manoj Iyer.
++#
++# Function:     chk_ifexists
++#
++# Description:  - Check if command required for this test exits.
++#
++# Input:        - $1 - calling test case.
++#               - $2 - command that needs to be checked.
++#
++# Return:       - zero on success.
++#               - non-zero on failure.
++chk_ifexists()
 +{
-+	Mem_huge=0
++    RC=0
 +
-+	if [ ! -d "/sys/kernel/mm/hugepages/" ]; then
-+		tst_brk TCONF "hugepage is not supported"
-+	fi
-+
-+	for node in $nodes_list; do
-+		Ori_hpgs=$(cat /sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
-+		echo 1 >/sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+
-+		numactl --cpunodebind=$node --membind=$node support_numa $HUGE_PAGE &
-+		pid=$!
-+		wait_for_support_numa $pid
-+
-+		Mem_huge=$(echo $(numastat -p $pid |grep '^Huge' |awk '{print $'$((node+2))'}'))
-+		Mem_huge=$(echo "$Mem_huge * 1024" |bc)
-+
-+		if [ $(echo "$Mem_huge < $HPAGE_SIZE" | bc) -eq 1 ]; then
-+			tst_res TFAIL \
-+				"NUMA memory allocated in node$node is less than expected"
-+			return
-+		fi
-+
-+		kill -CONT $pid >/dev/null 2>&1
-+		echo $Ori_hpgs >/sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+	done
-+
-+	tst_res TPASS "NUMA local node hugepage memory allocated"
++    which $2 > $LTPTMP/tst_traceroute.err 2>&1 || RC=$?
++    if [ $RC -ne 0 ]
++    then
++        tst_brkm TBROK NULL "$1: command $2 not found."
++    fi
++    return $RC
 +}
 +
- tst_run
-diff --git a/testcases/kernel/numa/support_numa.c b/testcases/kernel/numa/support_numa.c
-index eaf63e3..0241a19 100644
---- a/testcases/kernel/numa/support_numa.c
-+++ b/testcases/kernel/numa/support_numa.c
-@@ -22,7 +22,7 @@
- /*                                                                            */
- /* File:        support_numa.c                                                */
- /*                                                                            */
--/* Description: Allocates 1MB of memory and touches it to verify numa         */
-+/* Description: Allocates memory and touches it to verify numa                */
- /*                                                                            */
- /* Author:      Sivakumar Chinnaiah  Sivakumar.C@in.ibm.com                   */
- /*                                                                            */
-@@ -52,16 +52,43 @@ static void help(void)
- 	printf("Input:	Describe input arguments to this program\n");
- 	printf("	argv[1] == 1 then allocate 1MB of memory\n");
- 	printf("	argv[1] == 2 then allocate 1MB of share memory\n");
--	printf("	argv[1] == 3 then pause the program to catch sigint\n");
-+	printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
-+	printf("        argv[1] == 4 then pause the program to catch sigint\n");
- 	printf("Exit:	On failure - Exits with non-zero value\n");
- 	printf("	On success - exits with 0 exit value\n");
- 
- 	exit(1);
- }
- 
-+static int read_hugepagesize(void)
++
++# Function: init
++#
++# Description:  - Check if command required for this test exits.
++#               - Create temporary directories required for this test.
++#               - Initialize global variables.
++#
++# Return:       - zero on success.
++#               - non-zero on failure.
++init()
 +{
-+       FILE *fp;
-+       char line[BUFSIZ], buf[BUFSIZ];
-+       int val;
++    # Initialize global variables.
++    export RC=0
++    export TST_TOTAL=2
++    export TCID="traceroute"
++    export TST_COUNT=0
 +
-+       fp = fopen("/proc/meminfo", "r");
-+       if (fp == NULL) {
-+               fprintf(stderr, "Failed to open /proc/meminfo");
-+               return 1;
-+       }
++    # Inititalize cleanup function.
++    trap "cleanup" 0
 +
-+       while (fgets(line, BUFSIZ, fp) != NULL) {
-+               if (sscanf(line, "%64s %d", buf, &val) == 2)
-+                       if (strcmp(buf, "Hugepagesize:") == 0) {
-+                               fclose(fp);
-+                               return 1024 * val;
-+                       }
-+       }
++    # create the temporary directory used by this testcase
++    if [ -z $TMP ]
++    then
++        LTPTMP=/tmp/tst_traceroute.$$
++    else
++        LTPTMP=$TMP/tst_traceroute.$$
++    fi
 +
-+       fclose(fp);
-+       fprintf(stderr, "can't find \"%s\" in %s", "Hugepagesize:", "/proc/meminfo");
++    mkdir -p $LTPTMP > /dev/null 2>&1 || RC=$?
++    if [ $RC -ne 0 ]
++    then
++         tst_brkm TBROK "INIT: Unable to create temporary directory"
++         return $RC
++    fi
 +
-+       return 1;
++    # check if commands tst_*, traceroute, awk exists.
++    chk_ifexists INIT tst_resm   || return $RC
++    chk_ifexists INIT traceroute || return $RC
++    chk_ifexists INIT awk        || return $RC
++    chk_ifexists INIT head       || return $RC
++    chk_ifexists INIT cat        || return $RC
++    chk_ifexists INIT diff       || return $RC
++
++    # Create expected file.
++    cat > $LTPTMP/tst_traceroute.exp <<-EOF || RC=$?
++    traceroute to $(hostname) ($(hostname -i)), 30 hops max, 38 byte packets
++	EOF
++
++    if [ $RC -ne 0 ]
++    then
++        tst_brkm TBROK  NULL \
++            "INIT: unable to create expected file $LTPTMP/tst_traceroute.exp"
++        return $RC
++    fi
++    return $RC
 +}
 +
- int main(int argc, char *argv[])
- {
--	int i, fd, rc;
-+	int i, fd, rc, hpsz;
- 	char *buf = NULL;
- 	struct stat sb;
- 
-@@ -114,6 +141,24 @@ int main(int argc, char *argv[])
- 		remove(TEST_SFILE);
- 		break;
- 	case 3:
-+		hpsz = read_hugepagesize();
 +
-+		buf = mmap(NULL, hpsz, PROT_READ | PROT_WRITE,
-+				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-+				-1, 0);
++# Function:     cleanup
++#
++# Description:  - remove temporaty files and directories.
++#
++# Return:       - zero on success.
++#               - non-zero on failure.
++cleanup()
++{
++    # remove all the temporary files created by this test.
++    tst_resm TINFO "CLEAN: removing $LTPTMP"
++    rm -fr $LTPTMP
++}
 +
-+		if (buf == MAP_FAILED){
-+			fprintf(stderr, "mmap failed\n");
-+			exit(1);
-+		}
 +
-+		memset(buf, 'a', hpsz);
++# Function:     test01
++#
++# Description:  - Test that traceroute hostname will trace route of an IP
++#                 packet to that host.
++#
++# Return:       - zero on success.
++#               - non-zero on failure.
++test01()
++{
++    TCID=traceroute01
++    TST_COUNT=1
++    nhops=0             # Number of hops required to get to host.
++    RC=0                # Return value from commands.
 +
-+		raise(SIGSTOP);
++    tst_resm TINFO "Test #1: Execute traceroute on hostname."
++    tst_resm TINFO "Test #1: traceroute returns the path taken by IP packet"
++    tst_resm TINFO "Test #1: to that host."
 +
-+		munmap(buf, hpsz);
-+		break;
-+	case 4:
- 		raise(SIGSTOP);
- 		break;
- 	default:
++    traceroute `hostname` 38 > $LTPTMP/tst_traceroute.out 2>&1 || RC=$?
++    if [ $RC -ne 0 ]
++    then
++        tst_res TFAIL $LTPTMP/tst_traceroute.out \
++            "Test #1: traceroute command failed: return = $RC. Details:"
++        return $RC
++    fi
++
++    cat $LTPTMP/tst_traceroute.out | head -n 1 > $LTPTMP/tst_traceroute.out.1 2>&1
++    diff -iwB $LTPTMP/tst_traceroute.out.1 $LTPTMP/tst_traceroute.exp \
++        > $LTPTMP/tst_traceroute.err 2>&1 || RC=$?
++    if [ $RC -ne 0 ]
++    then
++        tst_res TFAIL $LTPTMP/tst_traceroute.err \
++            "Test #1: unexpected output. Details:"
++        return $RC
++    else
++        # Only one hop is required to get to hostname.
++        nhops=$(cat $LTPTMP/tst_traceroute.out | tail -n 1 | awk '{print $1}')
++        if [ $nhops -ne 1 ]
++        then
++            tst_resm TFAIL "Test #1: $hops number of hops unexpected"
++        else
++            tst_resm TPASS \
++                "Test #1: traceroute $hostname traced route correctly"
++        fi
++    fi
++
++    return $RC
++}
++
++
++# Function:    main
++#
++# Description:    - Execute all tests and report results.
++#
++# Exit:            - zero on success
++#               - non-zero on failure.
++
++RC=0
++init || exit $?
++
++test01 || RC=$?
++
++exit $RC
+diff --git a/testcases/network/traceroute/traceroute_tests.sh b/testcases/network/traceroute/traceroute_tests.sh
+deleted file mode 100755
+index ad65d37..0000000
+--- a/testcases/network/traceroute/traceroute_tests.sh
++++ /dev/null
+@@ -1,187 +0,0 @@
+-#!/bin/sh
+-################################################################################
+-##                                                                            ##
+-## Copyright (c) International Business Machines  Corp., 2001                 ##
+-##                                                                            ##
+-## This program is free software;  you can redistribute it and#or modify      ##
+-## it under the terms of the GNU General Public License as published by       ##
+-## the Free Software Foundation; either version 2 of the License, or          ##
+-## (at your option) any later version.                                        ##
+-##                                                                            ##
+-## This program is distributed in the hope that it will be useful, but        ##
+-## WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY ##
+-## or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License   ##
+-## for more details.                                                          ##
+-##                                                                            ##
+-## You should have received a copy of the GNU General Public License          ##
+-## along with this program;  if not, write to the Free Software               ##
+-## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA    ##
+-##                                                                            ##
+-################################################################################
+-#
+-# File :         traceroute_tests.sh
+-#
+-# Description:   Test Basic functionality of traceroute command.
+-#                Test #1: execute traceroute on hostname, expected number of
+-#                hops is 1.
+-#
+-# Author:        Manoj Iyer, manjo@mail.utexas.edu
+-#
+-# History:       Mar 03 2003 - Created - Manoj Iyer.
+-#
+-# Function:     chk_ifexists
+-#
+-# Description:  - Check if command required for this test exits.
+-#
+-# Input:        - $1 - calling test case.
+-#               - $2 - command that needs to be checked.
+-#
+-# Return:       - zero on success.
+-#               - non-zero on failure.
+-chk_ifexists()
+-{
+-    RC=0
+-
+-    which $2 > $LTPTMP/tst_traceroute.err 2>&1 || RC=$?
+-    if [ $RC -ne 0 ]
+-    then
+-        tst_brkm TBROK NULL "$1: command $2 not found."
+-    fi
+-    return $RC
+-}
+-
+-
+-# Function: init
+-#
+-# Description:  - Check if command required for this test exits.
+-#               - Create temporary directories required for this test.
+-#               - Initialize global variables.
+-#
+-# Return:       - zero on success.
+-#               - non-zero on failure.
+-init()
+-{
+-    # Initialize global variables.
+-    export RC=0
+-    export TST_TOTAL=2
+-    export TCID="traceroute"
+-    export TST_COUNT=0
+-
+-    # Inititalize cleanup function.
+-    trap "cleanup" 0
+-
+-    # create the temporary directory used by this testcase
+-    if [ -z $TMP ]
+-    then
+-        LTPTMP=/tmp/tst_traceroute.$$
+-    else
+-        LTPTMP=$TMP/tst_traceroute.$$
+-    fi
+-
+-    mkdir -p $LTPTMP > /dev/null 2>&1 || RC=$?
+-    if [ $RC -ne 0 ]
+-    then
+-         tst_brkm TBROK "INIT: Unable to create temporary directory"
+-         return $RC
+-    fi
+-
+-    # check if commands tst_*, traceroute, awk exists.
+-    chk_ifexists INIT tst_resm   || return $RC
+-    chk_ifexists INIT traceroute || return $RC
+-    chk_ifexists INIT awk        || return $RC
+-    chk_ifexists INIT head       || return $RC
+-    chk_ifexists INIT cat        || return $RC
+-    chk_ifexists INIT diff       || return $RC
+-
+-    # Create expected file.
+-    cat > $LTPTMP/tst_traceroute.exp <<-EOF || RC=$?
+-    traceroute to $(hostname) ($(hostname -i)), 30 hops max, 38 byte packets
+-	EOF
+-
+-    if [ $RC -ne 0 ]
+-    then
+-        tst_brkm TBROK  NULL \
+-            "INIT: unable to create expected file $LTPTMP/tst_traceroute.exp"
+-        return $RC
+-    fi
+-    return $RC
+-}
+-
+-
+-# Function:     cleanup
+-#
+-# Description:  - remove temporaty files and directories.
+-#
+-# Return:       - zero on success.
+-#               - non-zero on failure.
+-cleanup()
+-{
+-    # remove all the temporary files created by this test.
+-    tst_resm TINFO "CLEAN: removing $LTPTMP"
+-    rm -fr $LTPTMP
+-}
+-
+-
+-# Function:     test01
+-#
+-# Description:  - Test that traceroute hostname will trace route of an IP
+-#                 packet to that host.
+-#
+-# Return:       - zero on success.
+-#               - non-zero on failure.
+-test01()
+-{
+-    TCID=traceroute01
+-    TST_COUNT=1
+-    nhops=0             # Number of hops required to get to host.
+-    RC=0                # Return value from commands.
+-
+-    tst_resm TINFO "Test #1: Execute traceroute on hostname."
+-    tst_resm TINFO "Test #1: traceroute returns the path taken by IP packet"
+-    tst_resm TINFO "Test #1: to that host."
+-
+-    traceroute `hostname` 38 > $LTPTMP/tst_traceroute.out 2>&1 || RC=$?
+-    if [ $RC -ne 0 ]
+-    then
+-        tst_res TFAIL $LTPTMP/tst_traceroute.out \
+-            "Test #1: traceroute command failed: return = $RC. Details:"
+-        return $RC
+-    fi
+-
+-    cat $LTPTMP/tst_traceroute.out | head -n 1 > $LTPTMP/tst_traceroute.out.1 2>&1
+-    diff -iwB $LTPTMP/tst_traceroute.out.1 $LTPTMP/tst_traceroute.exp \
+-        > $LTPTMP/tst_traceroute.err 2>&1 || RC=$?
+-    if [ $RC -ne 0 ]
+-    then
+-        tst_res TFAIL $LTPTMP/tst_traceroute.err \
+-            "Test #1: unexpected output. Details:"
+-        return $RC
+-    else
+-        # Only one hop is required to get to hostname.
+-        nhops=$(cat $LTPTMP/tst_traceroute.out | tail -n 1 | awk '{print $1}')
+-        if [ $nhops -ne 1 ]
+-        then
+-            tst_resm TFAIL "Test #1: $hops number of hops unexpected"
+-        else
+-            tst_resm TPASS \
+-                "Test #1: traceroute $hostname traced route correctly"
+-        fi
+-    fi
+-
+-    return $RC
+-}
+-
+-
+-# Function:    main
+-#
+-# Description:    - Execute all tests and report results.
+-#
+-# Exit:            - zero on success
+-#               - non-zero on failure.
+-
+-RC=0
+-init || exit $?
+-
+-test01 || RC=$?
+-
+-exit $RC
 -- 
-1.8.3.1
+1.7.1
 
