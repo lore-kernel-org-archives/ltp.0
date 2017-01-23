@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 23 Jan 2017 16:02:22 +0100
-Subject: [LTP] [PATCH v2 1/3] tst_test: add tst_parse_long()
-In-Reply-To: <1482255068-25771-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1482255068-25771-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20170123150221.GF25788@rei.lan>
+Date: Mon, 23 Jan 2017 17:07:50 +0100
+Subject: [LTP] [PATCH v5 1/1] syscalls/mq_open: fix old tests + convert
+ to use new API
+In-Reply-To: <20170119153603.26881-1-pvorel@suse.cz>
+References: <20170119153603.26881-1-pvorel@suse.cz>
+Message-ID: <20170123160750.GH25788@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,11 +12,33 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> v2: Fixes in tst_parse_int():
->     * return back checking 'str' for NULL
->     * set value in tst_parse_int() only if 'long' version returns 0.
+Pushed with cosmetic changes, removed the now unused enum and fixed a
+few over 80 character lines, thanks.
 
-Ah, these are good fixes, I missed these in the v1 too.
+> ---
+> Note about parsing results, there are too many cases (well there are quite a
+> lot of tests). I used your version (added missing TPASS at the end). I have to
+> say, I'd still prefer more complicated if stacement and less duplicity),
+> something like this:
+> 
+> if (TEST_ERRNO != tc->err) {
+> 	tst_res(TFAIL | TTERRNO, "%s unexpectedly expected errno: %d", tc->desc,
+> 			TEST_ERRNO);
+> 	goto CLEANUP;
+> }
+> 
+> if ((tc->ret == 0 && TEST_RETURN < 0) ||
+> 	(tc->ret < 0 && TEST_RETURN != tc->ret))
+> 	tst_res(TFAIL | TTERRNO, "%s wrong return code: %ld", tc->desc,
+> 			TEST_RETURN);
+> else
+> 	tst_res(TPASS | TTERRNO, "%s returned: %ld", tc->desc, TEST_RETURN);
+
+This one is not that bad, but I still prefer the more verbose one.
+
+As far as code readability goes I think that the best solution is to
+split the test into two, one for possitive cases and one (or a few more)
+for negative ones...
 
 -- 
 Cyril Hrubis
