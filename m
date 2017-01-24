@@ -1,35 +1,23 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 24 Jan 2017 10:35:26 +0100
-Subject: [LTP] [PATCH 1/1] lib: Remove reference to already deleted
-	mount_utils.c
-Message-ID: <20170124093526.3799-1-pvorel@suse.cz>
+From: Joseph Kishore Reddy <rayareddy17@gmail.com>
+Date: Tue, 24 Jan 2017 15:06:12 +0530
+Subject: [LTP] Need help on how to configure and run LTP on Yocto in SIMICS
+	Environment
+Message-ID: <CAMHFFqEQ3QjA_r30roC8VWy=DJKD_eAdPro_Ekg0VJR0hJpezA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-mount_utils.c was removed in
-da3f4ba60 lib: Remove unused mount_utils.c
+Hi All,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- lib/Makefile | 2 --
- 1 file changed, 2 deletions(-)
+I'm new to the LTP testing. Can anyone help me in how to merge, integrate
+the LTP with yocto image and execute the Test cases in SIMICS.
 
-diff --git a/lib/Makefile b/lib/Makefile
-index 24d1faa25..d27c2a66b 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -26,8 +26,6 @@ include $(top_srcdir)/include/mk/env_pre.mk
- 
- CFLAGS			+= -I.
- 
--FILTER_OUT_LIBSRCS	:= mount_utils.c
--
- LIB			:= libltp.a
- 
- pc_file			:= $(DESTDIR)/$(datarootdir)/pkgconfig/ltp.pc
 -- 
-2.11.0
+Thanks & Regards
 
+Joseph Kishore Reddy R
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170124/ab21e121/attachment.html>
