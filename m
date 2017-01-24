@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 24 Jan 2017 11:20:15 +0100
-Subject: [LTP] [PATCH v2 2/2] net: traceroute01: use latest net API and
- add IPv6 version
-In-Reply-To: <1484914006-23396-2-git-send-email-alexey.kodanev@oracle.com>
-References: <1484914006-23396-1-git-send-email-alexey.kodanev@oracle.com>
- <1484914006-23396-2-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20170124102014.GD27769@rei.lan>
+Date: Tue, 24 Jan 2017 11:28:06 +0100
+Subject: [LTP] [PATCH v2 1/1] network/mc_cmds: fix testing with iproute2
+ <= ss161212
+In-Reply-To: <20170118140056.15507-1-pvorel@suse.cz>
+References: <20170118140056.15507-1-pvorel@suse.cz>
+Message-ID: <20170124102805.GE27769@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,7 +12,12 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Boot looks good, acked.
+> Workaround for an upstream bug in ip:
+> https://bugzilla.kernel.org/show_bug.cgi?id=192741
+
+I wonder if we should write a regression test for the ip as well. I
+guess that some basic ip testsuite under testcases/commands/ wouldn't
+hurt either.
 
 -- 
 Cyril Hrubis
