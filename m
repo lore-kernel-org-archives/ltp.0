@@ -1,12 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 24 Jan 2017 14:00:26 +0100
-Subject: [LTP] [PATCH] fanotify: Add test for permission event
-	destruction
-In-Reply-To: <20170124121344.GD20153@quack2.suse.cz>
-References: <20170120132951.10312-1-jack@suse.cz>
- <20170123121947.GB22484@rei.lan>
- <20170124121344.GD20153@quack2.suse.cz>
-Message-ID: <20170124130025.GA29054@rei.lan>
+Date: Tue, 24 Jan 2017 14:40:57 +0100
+Subject: [LTP] [PATCH 1/2] ltp-aiodio/dio_sparse: Fix write in
+ dio_sparse()
+In-Reply-To: <1484818349-30539-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <1484818349-30539-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170124134057.GC29054@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,40 +12,34 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > Just FYI we have switched to a new test library for all new testcases
-> > quite some time ago, you can have a look at the documentation on our
-> > wiki[1], or look at a comparsion of the same test I've prepared for a
-> > lwn.net article[2].
+> Current code looks buggy because when the offset is greater than
+> or equal to the filesize, it will never happen to do the write
+> in the loop, as a result, ADSP080..ADSP087 do not work actually.
+> Fix it by making sure that we do write writesize bytes.
 > 
-> Ah, I didn't notice. Honestly, I've just copied some older fanotify test
-> and modified it ;).
-
-I assumed, we are slowly converting old testcases, but given the number
-of old tests the old library and new library will coexist alongside for
-a few years.
-
-> > I can convert the test if you want, it's not complicated, but please
-> > keep in mind to use the new library API next time you start writing a
-> > testcase.
+> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+> ---
+>  testcases/kernel/io/ltp-aiodio/dio_sparse.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> One thing that is not quite clear to me with the new API:
-> 
-> Should I use .test or .test_all callback? The test has two parts => we call
-> tst_resm() twice. That would indicate I should set .tcnt to 2 and use .test
-> callback however that is seriously impractical as the two tests are very
-> closely related and in fact the second test just verifies that the cleanup
-> of the first test went fine. So we need to propagate a lot of state between
-> the first and the second state.
+> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> index 41b9929..3828ed7 100644
+> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
+> @@ -78,7 +78,7 @@ int dio_sparse(char *filename, int align, int writesize, int filesize, int offse
+>  
+>  	memset(bufptr, 0, writesize);
+>  	lseek(fd, offset, SEEK_SET);
+> -	for (i = offset; i < filesize;) {
+> +	for (i = 0; i < filesize;) {
+>  		if ((w = write(fd, bufptr, writesize)) != writesize) {
+>  			tst_resm(TBROK | TERRNO, "write() returned %d", w);
+>  			close(fd);
 
-The conditioins are quite relaxed in the new library. The test_all
-function or each iteration test function has to report some results,
-anything else is up to you.
-
-We have quite a number of testcases where each step depends on previous
-one and because of that everyting is executed in a sequence in the
-test_all() function which in turn produces several TPASS messages. For
-instance the fallocate testcases that insert and then remove blocks in a
-middle of a file.
+Hmm, it looks to me like the code actually does what it should have.
+Since we pass a filesize and offset so the test should actually write
+filesize - offset bytes. As far as I can tell the bug here is that the
+test is not checking that filesize > offset before it starts.
 
 -- 
 Cyril Hrubis
