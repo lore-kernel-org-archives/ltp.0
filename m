@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 24 Jan 2017 11:05:53 +0100
-Subject: [LTP] [PATCH] commands/insmod: Add ltp_insmod01.ko to
- .gitignore and cleanup
-In-Reply-To: <1484895256-29665-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <1484895256-29665-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20170124100552.GB27769@rei.lan>
+Date: Tue, 24 Jan 2017 11:07:45 +0100
+Subject: [LTP] [PATCH 1/1] lib: Remove reference to already deleted
+ mount_utils.c
+In-Reply-To: <20170124093526.3799-1-pvorel@suse.cz>
+References: <20170124093526.3799-1-pvorel@suse.cz>
+Message-ID: <20170124100744.GC27769@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +12,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Pushed, thanks.
+Applied, thanks.
 
 -- 
 Cyril Hrubis
