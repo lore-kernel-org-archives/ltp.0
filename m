@@ -1,10 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 24 Jan 2017 11:07:45 +0100
-Subject: [LTP] [PATCH 1/1] lib: Remove reference to already deleted
- mount_utils.c
-In-Reply-To: <20170124093526.3799-1-pvorel@suse.cz>
-References: <20170124093526.3799-1-pvorel@suse.cz>
-Message-ID: <20170124100744.GC27769@rei.lan>
+Date: Tue, 24 Jan 2017 11:20:15 +0100
+Subject: [LTP] [PATCH v2 2/2] net: traceroute01: use latest net API and
+ add IPv6 version
+In-Reply-To: <1484914006-23396-2-git-send-email-alexey.kodanev@oracle.com>
+References: <1484914006-23396-1-git-send-email-alexey.kodanev@oracle.com>
+ <1484914006-23396-2-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20170124102014.GD27769@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,7 +13,7 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-Applied, thanks.
+Boot looks good, acked.
 
 -- 
 Cyril Hrubis
