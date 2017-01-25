@@ -1,52 +1,53 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 25 Jan 2017 17:21:40 +0300
-Subject: [LTP] [PATCH 2/2] net: dctcp01: apply tst_set_sysctl()
-In-Reply-To: <1485354100-24769-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1485354100-24769-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1485354100-24769-2-git-send-email-alexey.kodanev@oracle.com>
+From: Yury Norov <ynorov@caviumnetworks.com>
+Date: Thu, 26 Jan 2017 02:43:42 +0530
+Subject: [LTP] [PATCH] arm64: add tst_atomic_add_return
+Message-ID: <1485378822-6059-1-git-send-email-ynorov@caviumnetworks.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/dctcp/dctcp01.sh |    9 +++------
- 1 files changed, 3 insertions(+), 6 deletions(-)
+The patch fixes build of LTP, at least with gcc 5.3.
+The implementation is taken from kernel v4.9.
 
-diff --git a/testcases/network/dctcp/dctcp01.sh b/testcases/network/dctcp/dctcp01.sh
-index 5c401ce..ebb59f6 100755
---- a/testcases/network/dctcp/dctcp01.sh
-+++ b/testcases/network/dctcp/dctcp01.sh
-@@ -29,16 +29,13 @@ set_cong_alg()
- 	local alg=$1
- 	tst_resm TINFO "setting $alg"
+Signed-off-by: Yury Norov <ynorov@caviumnetworks.com>
+---
+ include/tst_atomic.h | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/include/tst_atomic.h b/include/tst_atomic.h
+index 799d735..35a3b34 100644
+--- a/include/tst_atomic.h
++++ b/include/tst_atomic.h
+@@ -131,6 +131,27 @@ static inline int tst_atomic_add_return(int i, int *v)
  
--	ROD sysctl -q -w net.ipv4.tcp_congestion_control=$alg
--	tst_rhost_run -s -c "sysctl -q -w net.ipv4.tcp_congestion_control=$alg"
-+	tst_set_sysctl net.ipv4.tcp_congestion_control $alg safe
+ 	return val;
  }
- 
- cleanup()
- {
- 	if [ "$prev_cong_ctl" ]; then
--		sysctl -q -w net.ipv4.tcp_congestion_control=$prev_alg
--		tst_rhost_run -c \
--			"sysctl -q -w net.ipv4.tcp_congestion_control=$prev_alg"
-+		tst_set_sysctl net.ipv4.tcp_congestion_control $prev_alg
- 	fi
- 	tst_rmdir
- 	tc qdisc del dev $(tst_iface) root netem loss 0.03% ecn
-@@ -61,7 +58,7 @@ setup()
- 
- 	tst_tmpdir
- 
--	prev_alg="$(cat /proc/sys/net/ipv4/tcp_congestion_control)"
-+	prev_alg="$(sysctl -n net.ipv4.tcp_congestion_control)"
- }
- 
- test_run()
++
++#elif defined (__aarch64__)
++static inline int tst_atomic_add_return(int i, int *v)
++{
++	unsigned long tmp;
++	int result;
++
++	__asm__ __volatile__(
++"       prfm    pstl1strm, %2	\n"
++"1:     ldxr 	%w0, %2		\n"
++"       add	%w0, %w0, %w3	\n"
++"       stlxr	%w1, %w0, %2	\n"
++"       cbnz	%w1, 1b		\n"
++"       dmb ish			\n"
++	: "=&r" (result), "=&r" (tmp), "+Q" (*v)
++	: "Ir" (i)
++	: "memory");
++
++	return result;
++}
++
+ #else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
+ # error Your compiler does not provide __sync_add_and_fetch and LTP\
+ 	implementation is missing for your architecture.
 -- 
-1.7.1
+2.7.4
 
