@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 26 Jan 2017 14:50:38 +0100
-Subject: [LTP] [COMMITTED] [PATCH 2/3] fcntl03: Cleanup && convert to new
+Date: Thu, 26 Jan 2017 14:50:39 +0100
+Subject: [LTP] [COMMITTED] [PATCH 3/3] fcntl04: Cleanup && convert to new
 	library.
 In-Reply-To: <1485438639-1201-1-git-send-email-chrubis@suse.cz>
 References: <1485438639-1201-1-git-send-email-chrubis@suse.cz>
-Message-ID: <1485438639-1201-2-git-send-email-chrubis@suse.cz>
+Message-ID: <1485438639-1201-3-git-send-email-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,13 +13,13 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/fcntl/fcntl03.c | 157 ++++++------------------------
- 1 file changed, 31 insertions(+), 126 deletions(-)
+ testcases/kernel/syscalls/fcntl/fcntl04.c | 161 +++++++-----------------------
+ 1 file changed, 37 insertions(+), 124 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/fcntl/fcntl03.c b/testcases/kernel/syscalls/fcntl/fcntl03.c
-index 2e9fd51..7471267 100644
---- a/testcases/kernel/syscalls/fcntl/fcntl03.c
-+++ b/testcases/kernel/syscalls/fcntl/fcntl03.c
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl04.c b/testcases/kernel/syscalls/fcntl/fcntl04.c
+index ed2c016..f92f8a0 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl04.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl04.c
 @@ -1,5 +1,6 @@
  /*
   * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
@@ -27,20 +27,20 @@ index 2e9fd51..7471267 100644
   *
   * This program is free software; you can redistribute it and/or modify it
   * under the terms of version 2 of the GNU General Public License as
-@@ -30,148 +31,52 @@
+@@ -30,146 +31,58 @@
   * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
   *
   */
--/* $Id: fcntl03.c,v 1.8 2009/11/02 13:57:16 subrata_modak Exp $ */
+-/* $Id: fcntl04.c,v 1.8 2009/11/02 13:57:16 subrata_modak Exp $ */
 -/**********************************************************
 - *
 - *    OS Test - Silicon Graphics, Inc.
 - *
-- *    TEST IDENTIFIER	: fcntl03
+- *    TEST IDENTIFIER	: fcntl04
 - *
 - *    EXECUTED BY	: anyone
 - *
-- *    TEST TITLE	: Basic test for fcntl(2) using F_GETFD argument.
+- *    TEST TITLE	: Basic test for fcntl(2) using F_GETFL argument.
 - *
 - *    PARENT DOCUMENT	: usctpl01
 - *
@@ -109,10 +109,10 @@ index 2e9fd51..7471267 100644
 - *
 - *
 - *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
+-
 + /*
-+  * Basic test for fcntl(2) using F_GETFD argument.
++  * Basic test for fcntl(2) using F_GETFL argument.
 +  */
- 
  #include <sys/types.h>
 +#include <sys/stat.h>
  #include <fcntl.h>
@@ -122,52 +122,55 @@ index 2e9fd51..7471267 100644
 -#include <string.h>
 -#include <signal.h>
 -#include "test.h"
--
--void setup();
--void cleanup();
 +#include <stdio.h>
  
--char *TCID = "fcntl03";
--int TST_TOTAL = 1;
+-void setup();
+-void cleanup();
 +#include "tst_test.h"
+ 
+-char *TCID = "fcntl04";
+-int TST_TOTAL = 1;
++static int fd;
++static char fname[255];
  
 -char fname[255];
 -int fd;
-+static char fname[255];
-+static int fd;
- 
+-
 -int main(int ac, char **av)
 +static void verify_fcntl(void)
  {
 -	int lc;
 -
 -	tst_parse_opts(ac, av, NULL, NULL);
--
++	TEST(fcntl(fd, F_GETFL, 0));
+ 
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -
 -		tst_count = 0;
 -
--		TEST(fcntl(fd, F_GETFD, 0));
--
+-		TEST(fcntl(fd, F_GETFL, 0));
++	if (TEST_RETURN == -1) {
++		tst_res(TFAIL | TTERRNO, "fcntl(%s, F_GETFL, 0) failed",
++			fname);
++		return;
++	}
+ 
 -		if (TEST_RETURN == -1)
 -			tst_resm(TFAIL | TTERRNO, "fcntl failed");
 -		else
--			tst_resm(TPASS,
--				 "fcntl(%s, F_GETFD, 0) returned %ld",
--				 fname, TEST_RETURN);
-+	TEST(fcntl(fd, F_GETFD, 0));
- 
-+	if (TEST_RETURN == -1) {
-+		tst_res(TFAIL | TTERRNO, "fcntl(%s, F_GETFD, 0) failed",
-+			fname);
+-			tst_resm(TPASS, "fcntl returned %ld", TEST_RETURN);
++	if ((TEST_RETURN & O_ACCMODE) != O_RDWR) {
++		tst_res(TFAIL, "fcntl(%s, F_GETFL, 0) returned wrong "
++			"access mode %li, expected %i", fname,
++			TEST_RETURN & O_ACCMODE, O_RDWR);
 +		return;
  	}
  
 -	cleanup();
 -	tst_exit();
-+	tst_res(TPASS, "fcntl(%s, F_GETFD, 0) returned %ld",
++	tst_res(TPASS, "fcntl(%s, F_GETFL, 0) returned %lx",
 +		fname, TEST_RETURN);
  }
  
@@ -184,7 +187,7 @@ index 2e9fd51..7471267 100644
 -	sprintf(fname, "tfile_%d", getpid());
 -	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1)
 -		tst_brkm(TBROK | TERRNO, cleanup, "open failed");
-+	sprintf(fname, "fcntl03_%d", getpid());
++	sprintf(fname, "fcntl04_%d", getpid());
 +	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0700);
  }
  
@@ -195,12 +198,13 @@ index 2e9fd51..7471267 100644
 -		tst_resm(TWARN | TERRNO, "close failed");
 -
 -	tst_rmdir();
+-
 +	if (fd > 0 && close(fd))
 +		tst_res(TWARN | TERRNO, "close(fd) failed");
  }
 +
 +static struct tst_test test = {
-+	.tid = "fcntl03",
++	.tid = "fcntl04",
 +	.needs_tmpdir = 1,
 +	.test_all = verify_fcntl,
 +	.setup = setup,
