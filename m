@@ -1,35 +1,69 @@
-From: Akshatha Gangadharaiah <agangadh@eng.ucsd.edu>
-Date: Fri, 27 Jan 2017 01:38:03 -0800
-Subject: [LTP] Running LTP on new filesystems
-Message-ID: <A8370F49-367D-4A04-BC93-A485ECFA42F7@eng.ucsd.edu>
+From: Milosz Wasilewski <milosz.wasilewski@linaro.org>
+Date: Fri, 27 Jan 2017 13:40:06 +0000
+Subject: [LTP] open14 and openat03 failed on arm64
+In-Reply-To: <746496870.1567645.1485523265470.JavaMail.zimbra@redhat.com>
+References: <CA+G9fYsrnhpUMa3VZ-q7qw8XHFycOuH6hUigZXAhjCcoaiNQHQ@mail.gmail.com>
+ <746496870.1567645.1485523265470.JavaMail.zimbra@redhat.com>
+Message-ID: <CAJrz+7L9WcMwK7CVQ_0E2OaU=TSETTNTmqu-q-Ox0Cwps3rgtA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi everyone,
+On 27 January 2017 at 13:21, Jan Stancek <jstancek@redhat.com> wrote:
+>
+>
+> ----- Original Message -----
+>> From: "Naresh Kamboju" <naresh.kamboju@linaro.org>
+>> To: ltp@lists.linux.it
+>> Cc: "Milosz Wasilewski" <milosz.wasilewski@linaro.org>
+>> Sent: Friday, 27 January, 2017 2:03:27 PM
+>> Subject: [LTP] open14 and openat03 failed on arm64
+>>
+>> Hi LTP Team,
+>>
+>> Test cases open14.c and openat03.c failed on arm64 on latest Linux kernel
+>> 4.9.x.
+>
+> There was a known glibc bug associated with these 2 tests, and also possible
 
-I am trying to run LTP on a new filesystem and am stuck in figuring out the=
- right way to do this.
+Do you mean this bug: https://sourceware.org/bugzilla/show_bug.cgi?id=17912 ?
+We tested with the patch applied.
 
-Specifically, if I have mounted my file system at /mnt/new-fs, I want to us=
-e this directory as mount point for all the filesystem tests.
-I tried running by specifying this as the  -d TMPDIR  option ( -d /mnt/new-=
-fs in runltp ) but I am not sure if this is the right way.
+Best Regards,
+milosz
 
-I don=E2=80=99t see any specific instructions on how to run LTP on new file=
-systems.
-It will be a great help if someone points out the right way to do this or a=
-ny documentation that might help.
-
-Thanks for your time and patience,
-
-Regards,
-Akshatha G
-
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170127/3427ad83/att=
-achment.html>
+> issue with tmpfs, see this for details:
+>   https://github.com/linux-test-project/ltp/issues/118
+>
+>>
+>> Have you noticed these failures on x86_64 and other architectures and
+>> which kernel version ?
+>>
+>> Test output:
+>> -----------------
+>> create multiple directories, link files into them
+>> and check file permissions
+>> file mode read 0, but expected
+>> file mode read 0, but expected 7755
+>> file mode read 0, but expected 1
+>> file mode read 0, but expected 755
+>> file mode read 0, but expected 644
+>> file mode read 0, but expected 440
+>>
+>> Linux version 4.9.0-rc6-00086-g3b404a5 (broonie@optimist) (gcc version
+>> 5.1.1 20150608 (Linaro GCC 5.1-2015.08) ) #1 SMP PREEMPT Tue Nov 22
+>> 04:14:54 GMT 2016
+>>
+>> Test case is trimmed version of LTP,
+>> you can find test case here in this link
+>> [1] http://people.linaro.org/~naresh.kamboju/open14-arm64-test.c
+>> [2] http://people.linaro.org/~naresh.kamboju/open14-x86-test.c
+>>
+>> Best regards
+>> Naresh Kamboju
+>>
+>> --
+>> Mailing list info: https://lists.linux.it/listinfo/ltp
+>>
