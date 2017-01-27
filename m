@@ -1,101 +1,39 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 27 Jan 2017 07:21:34 -0500 (EST)
-Subject: [LTP] [PATCH] arm64: add tst_atomic_add_return
-In-Reply-To: <1134437611.1525799.1485511323099.JavaMail.zimbra@redhat.com>
-References: <1485378822-6059-1-git-send-email-ynorov@caviumnetworks.com>
- <1134437611.1525799.1485511323099.JavaMail.zimbra@redhat.com>
-Message-ID: <374642680.1552390.1485519694431.JavaMail.zimbra@redhat.com>
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Fri, 27 Jan 2017 18:33:27 +0530
+Subject: [LTP] open14 and openat03 failed on arm64
+Message-ID: <CA+G9fYsrnhpUMa3VZ-q7qw8XHFycOuH6hUigZXAhjCcoaiNQHQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi LTP Team,
 
+Test cases open14.c and openat03.c failed on arm64 on latest Linux kernel 4.9.x.
 
------ Original Message -----
-> From: "Jan Stancek" <jstancek@redhat.com>
-> To: "Yury Norov" <ynorov@caviumnetworks.com>
-> Cc: ltp@lists.linux.it
-> Sent: Friday, 27 January, 2017 11:02:03 AM
-> Subject: Re: [LTP] [PATCH] arm64: add tst_atomic_add_return
-> 
-> 
-> 
-> 
-> 
-> ----- Original Message -----
-> > From: "Yury Norov" <ynorov@caviumnetworks.com>
-> > To: ltp@lists.linux.it
-> > Sent: Wednesday, 25 January, 2017 10:13:42 PM
-> > Subject: [LTP] [PATCH] arm64: add tst_atomic_add_return
-> > 
-> > The patch fixes build of LTP, at least with gcc 5.3.
-> > The implementation is taken from kernel v4.9.
-> > 
-> > Signed-off-by: Yury Norov <ynorov@caviumnetworks.com>
-> > ---
-> >  include/tst_atomic.h | 21 +++++++++++++++++++++
-> >  1 file changed, 21 insertions(+)
-> 
-> Hi,
-> 
-> looks good to me, I'm getting a system to test this as well.
+Have you noticed these failures on x86_64 and other architectures and
+which kernel version ?
 
-Forced my config to use new tst_atomic_return and ran few tests.
-There were no issues.
+Test output:
+-----------------
+create multiple directories, link files into them
+and check file permissions
+file mode read 0, but expected
+file mode read 0, but expected 7755
+file mode read 0, but expected 1
+file mode read 0, but expected 755
+file mode read 0, but expected 644
+file mode read 0, but expected 440
 
-@Cyril: would you like to try this too on some SuSe distros
-or can I go ahead and push it?
+Linux version 4.9.0-rc6-00086-g3b404a5 (broonie@optimist) (gcc version
+5.1.1 20150608 (Linaro GCC 5.1-2015.08) ) #1 SMP PREEMPT Tue Nov 22
+04:14:54 GMT 2016
 
-Regards,
-Jan
+Test case is trimmed version of LTP,
+you can find test case here in this link
+[1] http://people.linaro.org/~naresh.kamboju/open14-arm64-test.c
+[2] http://people.linaro.org/~naresh.kamboju/open14-x86-test.c
 
-> 
-> Regards,
-> Jan
-> 
-> > 
-> > diff --git a/include/tst_atomic.h b/include/tst_atomic.h
-> > index 799d735..35a3b34 100644
-> > --- a/include/tst_atomic.h
-> > +++ b/include/tst_atomic.h
-> > @@ -131,6 +131,27 @@ static inline int tst_atomic_add_return(int i, int *v)
-> >  
-> >  	return val;
-> >  }
-> > +
-> > +#elif defined (__aarch64__)
-> > +static inline int tst_atomic_add_return(int i, int *v)
-> > +{
-> > +	unsigned long tmp;
-> > +	int result;
-> > +
-> > +	__asm__ __volatile__(
-> > +"       prfm    pstl1strm, %2	\n"
-> > +"1:     ldxr 	%w0, %2		\n"
-> > +"       add	%w0, %w0, %w3	\n"
-> > +"       stlxr	%w1, %w0, %2	\n"
-> > +"       cbnz	%w1, 1b		\n"
-> > +"       dmb ish			\n"
-> > +	: "=&r" (result), "=&r" (tmp), "+Q" (*v)
-> > +	: "Ir" (i)
-> > +	: "memory");
-> > +
-> > +	return result;
-> > +}
-> > +
-> >  #else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
-> >  # error Your compiler does not provide __sync_add_and_fetch and LTP\
-> >  	implementation is missing for your architecture.
-> > --
-> > 2.7.4
-> > 
-> > 
-> > --
-> > Mailing list info: https://lists.linux.it/listinfo/ltp
-> > 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+Best regards
+Naresh Kamboju
