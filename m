@@ -1,47 +1,77 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 26 Jan 2017 15:09:44 +0100
-Subject: [LTP] [COMMITTED] [PATCH] madvise01: Add MADV_FREE + fallback in
-	lapi/mmap.h
-Message-ID: <1485439784-2893-1-git-send-email-chrubis@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Fri, 27 Jan 2017 05:02:03 -0500 (EST)
+Subject: [LTP] [PATCH] arm64: add tst_atomic_add_return
+In-Reply-To: <1485378822-6059-1-git-send-email-ynorov@caviumnetworks.com>
+References: <1485378822-6059-1-git-send-email-ynorov@caviumnetworks.com>
+Message-ID: <1134437611.1525799.1485511323099.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- include/lapi/mmap.h                           | 4 ++++
- testcases/kernel/syscalls/madvise/madvise01.c | 3 ++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/include/lapi/mmap.h b/include/lapi/mmap.h
-index fd136f6..10065a4 100644
---- a/include/lapi/mmap.h
-+++ b/include/lapi/mmap.h
-@@ -67,4 +67,8 @@
- # define MADV_DODUMP   17
- #endif
- 
-+#ifndef MADV_FREE
-+# define MADV_FREE	8
-+#endif
-+
- #endif /* LAPI_MMAP_H__ */
-diff --git a/testcases/kernel/syscalls/madvise/madvise01.c b/testcases/kernel/syscalls/madvise/madvise01.c
-index a8a974b..4b6a6ce 100644
---- a/testcases/kernel/syscalls/madvise/madvise01.c
-+++ b/testcases/kernel/syscalls/madvise/madvise01.c
-@@ -60,7 +60,8 @@ static struct tcase {
- 	{MADV_HUGEPAGE,    "MADV_HUGEPAGE",    &pfile}, /* since Linux 2.6.38 */
- 	{MADV_NOHUGEPAGE,  "MADV_NOHUGEPAGE",  &pfile}, /* since Linux 2.6.38 */
- 	{MADV_DONTDUMP,    "MADV_DONTDUMP",    &sfile}, /* since Linux 3.4 */
--	{MADV_DODUMP,      "MADV_DODUMP",      &sfile}  /* since Linux 3.4 */
-+	{MADV_DODUMP,      "MADV_DODUMP",      &sfile}, /* since Linux 3.4 */
-+	{MADV_FREE,        "MADV_FREE",        &sfile}, /* since Linux 4.5 */
- };
- 
- static void setup(void)
--- 
-2.7.3
 
+
+
+----- Original Message -----
+> From: "Yury Norov" <ynorov@caviumnetworks.com>
+> To: ltp@lists.linux.it
+> Sent: Wednesday, 25 January, 2017 10:13:42 PM
+> Subject: [LTP] [PATCH] arm64: add tst_atomic_add_return
+> 
+> The patch fixes build of LTP, at least with gcc 5.3.
+> The implementation is taken from kernel v4.9.
+> 
+> Signed-off-by: Yury Norov <ynorov@caviumnetworks.com>
+> ---
+>  include/tst_atomic.h | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+
+Hi,
+
+looks good to me, I'm getting a system to test this as well.
+
+Regards,
+Jan
+
+> 
+> diff --git a/include/tst_atomic.h b/include/tst_atomic.h
+> index 799d735..35a3b34 100644
+> --- a/include/tst_atomic.h
+> +++ b/include/tst_atomic.h
+> @@ -131,6 +131,27 @@ static inline int tst_atomic_add_return(int i, int *v)
+>  
+>  	return val;
+>  }
+> +
+> +#elif defined (__aarch64__)
+> +static inline int tst_atomic_add_return(int i, int *v)
+> +{
+> +	unsigned long tmp;
+> +	int result;
+> +
+> +	__asm__ __volatile__(
+> +"       prfm    pstl1strm, %2	\n"
+> +"1:     ldxr 	%w0, %2		\n"
+> +"       add	%w0, %w0, %w3	\n"
+> +"       stlxr	%w1, %w0, %2	\n"
+> +"       cbnz	%w1, 1b		\n"
+> +"       dmb ish			\n"
+> +	: "=&r" (result), "=&r" (tmp), "+Q" (*v)
+> +	: "Ir" (i)
+> +	: "memory");
+> +
+> +	return result;
+> +}
+> +
+>  #else /* HAVE_SYNC_ADD_AND_FETCH == 1 */
+>  # error Your compiler does not provide __sync_add_and_fetch and LTP\
+>  	implementation is missing for your architecture.
+> --
+> 2.7.4
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
