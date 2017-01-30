@@ -1,43 +1,35 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 30 Jan 2017 07:11:15 -0500 (EST)
-Subject: [LTP] [PATCH] arm64: add tst_atomic_add_return
-In-Reply-To: <20170130114302.GB29227@rei.lan>
-References: <1485378822-6059-1-git-send-email-ynorov@caviumnetworks.com>
- <1134437611.1525799.1485511323099.JavaMail.zimbra@redhat.com>
- <374642680.1552390.1485519694431.JavaMail.zimbra@redhat.com>
- <20170130114302.GB29227@rei.lan>
-Message-ID: <1424061123.2496173.1485778275095.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 30 Jan 2017 14:13:43 +0100
+Subject: [LTP] [PATCH 3/3] netstress.c: convert to new library API
+In-Reply-To: <837482ef-0ac4-0a3b-3c4e-598ed6ce96e1@oracle.com>
+References: <1482154595-4641-1-git-send-email-alexey.kodanev@oracle.com>
+ <1482154595-4641-3-git-send-email-alexey.kodanev@oracle.com>
+ <20170123145734.GC25788@rei.lan>
+ <837482ef-0ac4-0a3b-3c4e-598ed6ce96e1@oracle.com>
+Message-ID: <20170130131342.GC29227@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-
-
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: "Yury Norov" <ynorov@caviumnetworks.com>, ltp@lists.linux.it
-> Sent: Monday, 30 January, 2017 12:43:03 PM
-> Subject: Re: [LTP] [PATCH] arm64: add tst_atomic_add_return
+Hi!
+> >>   	shutdown(*fd, SHUT_WR);
+> >> -	SAFE_CLOSE(cleanup, *fd);
+> >> +	SAFE_CLOSE(*fd);
+> >>   	*fd = -1;
+> > FYI the SAFE_CLOSE() already sets fd to -1.
 > 
-> Hi!
-> > @Cyril: would you like to try this too on some SuSe distros
-> > or can I go ahead and push it?
-> 
-> I've tried it on SLES12 SP2 on aarch64, everything seems to work fine,
-> go ahead and push it.
+> Ah, it's not, 'fd' passed by value there... I've blindly removed it
+> from code but now I need to return it back.
 
-Pushed.
+Are you sure? SAFE_CLOSE() is a macro which expands to:
 
-Regards,
-Jan
+	do {
+		safe_close("foo", 42, NULL, (*fd));
+		(*fd) = -1;
+	} while (0)
 
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+-- 
+Cyril Hrubis
+chrubis@suse.cz
