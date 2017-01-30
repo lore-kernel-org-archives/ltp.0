@@ -1,38 +1,38 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 30 Jan 2017 15:26:22 +0100
-Subject: [LTP] [COMMITTED] [PATCH] aio-stress: Fix segfaults
-Message-ID: <1485786382-25722-1-git-send-email-chrubis@suse.cz>
+From: Travis CI <builds@travis-ci.org>
+Date: Mon, 30 Jan 2017 16:54:47 +0000
+Subject: [LTP] Passed: steven-jackson/ltp#8 (android-pass-1 - 7c0e938)
+In-Reply-To: <steven-jackson/ltp+196644651+passed@travis-ci.org>
+Message-ID: <588f6fd823dcf_43fe2709d1dbc8555fc@e91d3b4e-3cb8-417a-b933-323543deff34.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-When the memory returned from malloc() contains some garbage, the
-t[0].active_opers is not initialized to zero and the testcase segfaults
-in oper_list_add() while trying to insert into the linked list:
+Build Update for steven-jackson/ltp
+-------------------------------------
 
-Program received signal SIGSEGV, Segmentation fault.
-0x0000000000401807 in oper_list_add (oper=0x607220, list=0x6070a0) at aio-stress.c:315
-315             oper->prev = (*list)->prev;
+Build: #8
+Status: Passed
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/io/ltp-aiodio/aio-stress.c | 1 +
- 1 file changed, 1 insertion(+)
+Duration: 15 minutes and 33 seconds
+Commit: 7c0e938 (android-pass-1)
+Author: Steven Jackson
+Message: tst_test: simplify tmpdir creation and support memory mapped file ipc
 
-diff --git a/testcases/kernel/io/ltp-aiodio/aio-stress.c b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-index 67d8acb..d6d7b08 100644
---- a/testcases/kernel/io/ltp-aiodio/aio-stress.c
-+++ b/testcases/kernel/io/ltp-aiodio/aio-stress.c
-@@ -1453,6 +1453,7 @@ int main(int ac, char **av)
- 		perror("malloc");
- 		exit(1);
- 	}
-+	memset(t, 0, num_threads * sizeof(*t));
- 	global_thread_info = t;
- 
- 	/* by default, allow a huge number of iocbs to be sent towards
--- 
-2.7.3
+Android doesn't support shm and a memory mapped file is simpler than
+ashmem.
 
+Signed-off-by: Steven Jackson <sj@oscode.net>
+
+View the changeset: https://github.com/steven-jackson/ltp/compare/16a8c3c2980d...7c0e9383eb96
+
+View the full build log and details: https://travis-ci.org/steven-jackson/ltp/builds/196644651
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170130/4085cb86/attachment-0001.html>
