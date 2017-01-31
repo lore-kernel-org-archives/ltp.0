@@ -1,67 +1,32 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 31 Jan 2017 14:27:24 +0300
-Subject: [LTP] [PATCH 1/2] test_net.sh: add tst_set_sysctl()
-In-Reply-To: <20170131100744.GD29227@rei.lan>
-References: <1485354100-24769-1-git-send-email-alexey.kodanev@oracle.com>
- <20170131100744.GD29227@rei.lan>
-Message-ID: <4017cf9c-3957-0a91-4fa3-8bafdad2f4c4@oracle.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 31 Jan 2017 13:09:43 +0100
+Subject: [LTP] utimensat EACCES vs. EPERM in 4.8+
+In-Reply-To: <cb15e28d-8c5e-e3d7-441a-9165c4e57133@gmail.com>
+References: <18a5b416-ad6a-e679-d993-af7ffa0dcc10@redhat.com>
+ <CAOssrKfb1-C8c=9bAPiairh+Lyf=w28r+RjSXTLQcQZ-=eWMRA@mail.gmail.com>
+ <CAKgNAkjTkBMY0wrj3wsH39YF=bHp=8mbYrXkSPzn0X4ezfso1w@mail.gmail.com>
+ <280513509.810300.1484639500985.JavaMail.zimbra@redhat.com>
+ <20170117075702.GB10417@rei.lan>
+ <CAOssrKd32K-e5794m9KOjrMm_E3VZ7P-bvZW2P8UpGFTOgi8JQ@mail.gmail.com>
+ <cb15e28d-8c5e-e3d7-441a-9165c4e57133@gmail.com>
+Message-ID: <20170131120929.GE29227@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> All of this said, I still don't know whether reverting the patch
+> is warranted...
 
-On 01/31/2017 01:07 PM, Cyril Hrubis wrote:
+Ping.
 
-> Hi!
->> +# tst_set_sysctl NAME VALUE [safe]
->> +# It can handle netns case when sysctl not namespaceified.
->> +tst_set_sysctl()
->> +{
->> +	local name="$1"
->> +	local value="$2"
->> +	local safe=
->> +	[ "$3" = "safe" ] && safe="-s" || safe=""
-> Uh, this syntax is confusing, besides isn't safe set to empty string
-> anyway?
+What shall we do with the failing testcase?
 
-What if we set TST_NO_CLEANUP just before calling cleanup()
-or unset TST_CLEANUP... then we can use ROD, etc. in cleanup?
+I guess that since the discussion withered the patch will stay in kernel
+as it is and the manual needs to be updated...
 
-
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index c6a85f3..c1e75ec 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -35,6 +35,7 @@ tst_do_exit()
-
-         if [ -n "$TST_SETUP_STARTED" -a -n "$TST_CLEANUP" -a \
-              -z "$TST_NO_CLEANUP" ]; then
-+               export TST_NO_CLEANUP="yes"
-                 $TST_CLEANUP
-         fi
-
-
->
->> +	local add_opt=
->> +	[ "$TST_USE_NETNS" = "yes" ] && add_opt="-e"
->> +
->> +	if [ "$safe" ]; then
->> +		ROD sysctl -qw $name=$value
->> +	else
->> +		sysctl -qw $name=$value
->> +	fi
->> +
->> +	tst_rhost_run $safe -c "sysctl -qw $add_opt $name=$value"
->> +}
-> And maybe the function name should say that we are changing the
-> parameter both on local and remote machine. Maybe just rename the
-> function to tst_set_sysctls().
-
-OK
-
-Thanks,
-Alexey
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
