@@ -1,63 +1,47 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 31 Jan 2017 16:23:34 +0100
-Subject: [LTP] [PATCH 1/2] test_net.sh: add tst_set_sysctl()
-In-Reply-To: <22b74bd5-fb9d-83b5-d8c1-2934a23388b0@oracle.com>
-References: <1485354100-24769-1-git-send-email-alexey.kodanev@oracle.com>
- <20170131100744.GD29227@rei.lan>
- <4017cf9c-3957-0a91-4fa3-8bafdad2f4c4@oracle.com>
- <20170131124128.GF29227@rei.lan>
- <22b74bd5-fb9d-83b5-d8c1-2934a23388b0@oracle.com>
-Message-ID: <20170131152333.GA27085@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 31 Jan 2017 11:14:06 -0500 (EST)
+Subject: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
+In-Reply-To: <1485870273-26990-1-git-send-email-chrubis@suse.cz>
+References: <1485870273-26990-1-git-send-email-chrubis@suse.cz>
+Message-ID: <845142934.836828.1485879246140.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> >>>> +# tst_set_sysctl NAME VALUE [safe]
-> >>>> +# It can handle netns case when sysctl not namespaceified.
-> >>>> +tst_set_sysctl()
-> >>>> +{
-> >>>> +	local name="$1"
-> >>>> +	local value="$2"
-> >>>> +	local safe=
-> >>>> +	[ "$3" = "safe" ] && safe="-s" || safe=""
-> >>> Uh, this syntax is confusing, besides isn't safe set to empty string
-> >>> anyway?
-> >> What if we set TST_NO_CLEANUP just before calling cleanup()
-> >> or unset TST_CLEANUP... then we can use ROD, etc. in cleanup?
-> > You lost me here. How is this connected to the code I've commented?
-> 
-> In the 2nd patch, 'safe' option is used like this:
-> 
-> do_cleanup()
-> {
->     tst_set_sysctl net.ipv4.tcp_cong...
-> }
-> 
-> do_test()
-> {
->     tst_set_sysctl net.ipv4.tcp_cong... safe
-> }
-> 
-> So, the main reason for splitting the code with 'safe' option is to be
-> able to call this function inside cleanup. But if we handle cleanup
-> recursion inside the shell library, we can get rid of 'safe' option
-> and simplify tst_set_sysctls().
 
-Ah, I wasn't clear enough. I only meant that setting safe to empty
-string, i.e. || safe="" does not seem to have any effect at all, since
-it's empty anyway, or isn't it?
 
-Also we may be able to handle recursion in the shell library, but the
-main reason I avoided doing that is to keep the C library and shell
-library consistent. And the C library cannot be fixed until we get rid
-of last testcase using the old library (tst_res.c). Or at least I did
-not figured out how to do that. But maybe converting all oldlib
-testcases that use pthreads and getting rid of locking in tst_res.c
-would suffice...
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: ltp@lists.linux.it
+> Sent: Tuesday, 31 January, 2017 2:44:33 PM
+> Subject: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
+> 
+> The minimal size for Btrfs filesystem on ppc64le is around 139MB, most
+> likely because of larger page size, hence the test fails.
+> 
+> This commit adds tst_min_fs_size.sh library, that parses mkfs.btrfs
+> output which includes minimal filesystem size in case of a failure.
+> 
+> The code also falls back to 150MB if the mkfs.btrfs output wasn't parsed
+> correctly.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  testcases/kernel/device-drivers/zram/zram01.sh |  8 ++++--
+>  testcases/lib/tst_min_fs_size.sh               | 35
+>  ++++++++++++++++++++++++++
+>  2 files changed, 41 insertions(+), 2 deletions(-)
+>  create mode 100644 testcases/lib/tst_min_fs_size.sh
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+This is ~4 years old comment from Zach Brown, when I hit an issue on ppc,
+where I could alloc only 1/2 of the volume size:
+
+"That small volume mkfs warning is issued for devices less than a gig.  It indicates that btrfs has gone in to a weird degenerate allocation scheme.  We'd only support volumes much larger than that, though I have no quick rule to say how large starts to be reasonable.  Multiple gig, certainly."
+
+I'm running with 384M since then, so far successfully. If we don't allocate
+too much data on it, we might be OK, but still I'd go with minimum default of 256M.
+
+Regards,
+Jan
