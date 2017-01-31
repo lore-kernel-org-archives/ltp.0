@@ -1,15 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 31 Jan 2017 13:09:43 +0100
-Subject: [LTP] utimensat EACCES vs. EPERM in 4.8+
-In-Reply-To: <cb15e28d-8c5e-e3d7-441a-9165c4e57133@gmail.com>
-References: <18a5b416-ad6a-e679-d993-af7ffa0dcc10@redhat.com>
- <CAOssrKfb1-C8c=9bAPiairh+Lyf=w28r+RjSXTLQcQZ-=eWMRA@mail.gmail.com>
- <CAKgNAkjTkBMY0wrj3wsH39YF=bHp=8mbYrXkSPzn0X4ezfso1w@mail.gmail.com>
- <280513509.810300.1484639500985.JavaMail.zimbra@redhat.com>
- <20170117075702.GB10417@rei.lan>
- <CAOssrKd32K-e5794m9KOjrMm_E3VZ7P-bvZW2P8UpGFTOgi8JQ@mail.gmail.com>
- <cb15e28d-8c5e-e3d7-441a-9165c4e57133@gmail.com>
-Message-ID: <20170131120929.GE29227@rei.lan>
+Date: Tue, 31 Jan 2017 13:41:29 +0100
+Subject: [LTP] [PATCH 1/2] test_net.sh: add tst_set_sysctl()
+In-Reply-To: <4017cf9c-3957-0a91-4fa3-8bafdad2f4c4@oracle.com>
+References: <1485354100-24769-1-git-send-email-alexey.kodanev@oracle.com>
+ <20170131100744.GD29227@rei.lan>
+ <4017cf9c-3957-0a91-4fa3-8bafdad2f4c4@oracle.com>
+Message-ID: <20170131124128.GF29227@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,15 +13,21 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> All of this said, I still don't know whether reverting the patch
-> is warranted...
+> >> +# tst_set_sysctl NAME VALUE [safe]
+> >> +# It can handle netns case when sysctl not namespaceified.
+> >> +tst_set_sysctl()
+> >> +{
+> >> +	local name="$1"
+> >> +	local value="$2"
+> >> +	local safe=
+> >> +	[ "$3" = "safe" ] && safe="-s" || safe=""
+> > Uh, this syntax is confusing, besides isn't safe set to empty string
+> > anyway?
+> 
+> What if we set TST_NO_CLEANUP just before calling cleanup()
+> or unset TST_CLEANUP... then we can use ROD, etc. in cleanup?
 
-Ping.
-
-What shall we do with the failing testcase?
-
-I guess that since the discussion withered the patch will stay in kernel
-as it is and the manual needs to be updated...
+You lost me here. How is this connected to the code I've commented?
 
 -- 
 Cyril Hrubis
