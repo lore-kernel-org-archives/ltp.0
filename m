@@ -1,38 +1,54 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Mon, 30 Jan 2017 16:54:47 +0000
-Subject: [LTP] Passed: steven-jackson/ltp#8 (android-pass-1 - 7c0e938)
-In-Reply-To: <steven-jackson/ltp+196644651+passed@travis-ci.org>
-Message-ID: <588f6fd823dcf_43fe2709d1dbc8555fc@e91d3b4e-3cb8-417a-b933-323543deff34.mail>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 31 Jan 2017 11:07:45 +0100
+Subject: [LTP] [PATCH 1/2] test_net.sh: add tst_set_sysctl()
+In-Reply-To: <1485354100-24769-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1485354100-24769-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20170131100744.GD29227@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for steven-jackson/ltp
--------------------------------------
+Hi!
+> +# tst_set_sysctl NAME VALUE [safe]
+> +# It can handle netns case when sysctl not namespaceified.
+> +tst_set_sysctl()
+> +{
+> +	local name="$1"
+> +	local value="$2"
+> +	local safe=
+> +	[ "$3" = "safe" ] && safe="-s" || safe=""
 
-Build: #8
-Status: Passed
+Uh, this syntax is confusing, besides isn't safe set to empty string
+anyway?
 
-Duration: 15 minutes and 33 seconds
-Commit: 7c0e938 (android-pass-1)
-Author: Steven Jackson
-Message: tst_test: simplify tmpdir creation and support memory mapped file ipc
+> +	local add_opt=
+> +	[ "$TST_USE_NETNS" = "yes" ] && add_opt="-e"
+> +
+> +	if [ "$safe" ]; then
+> +		ROD sysctl -qw $name=$value
+> +	else
+> +		sysctl -qw $name=$value
+> +	fi
+> +
+> +	tst_rhost_run $safe -c "sysctl -qw $add_opt $name=$value"
+> +}
 
-Android doesn't support shm and a memory mapped file is simpler than
-ashmem.
+And maybe the function name should say that we are changing the
+parameter both on local and remote machine. Maybe just rename the
+function to tst_set_sysctls().
 
-Signed-off-by: Steven Jackson <sj@oscode.net>
+>  # Management Link
+>  [ -z "$RHOST" ] && TST_USE_NETNS="yes"
+>  export RHOST="$RHOST"
+> -- 
+> 1.7.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-View the changeset: https://github.com/steven-jackson/ltp/compare/16a8c3c2980d...7c0e9383eb96
-
-View the full build log and details: https://travis-ci.org/steven-jackson/ltp/builds/196644651
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170130/4085cb86/attachment-0001.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
