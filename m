@@ -1,47 +1,46 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 31 Jan 2017 11:14:06 -0500 (EST)
-Subject: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
-In-Reply-To: <1485870273-26990-1-git-send-email-chrubis@suse.cz>
-References: <1485870273-26990-1-git-send-email-chrubis@suse.cz>
-Message-ID: <845142934.836828.1485879246140.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 31 Jan 2017 19:35:43 +0100
+Subject: [LTP] [PATCH 1/4] network: Add 'net.' prefix to TI-RPC and TS-RPC
+	tests files
+Message-ID: <20170131183546.26993-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ runtest/{rpc_tests => net.rpc_tests}     | 0
+ runtest/{tirpc_tests => net.tirpc_tests} | 0
+ testcases/network/rpc/rpc-tirpc/README   | 4 ++--
+ 3 files changed, 2 insertions(+), 2 deletions(-)
+ rename runtest/{rpc_tests => net.rpc_tests} (100%)
+ rename runtest/{tirpc_tests => net.tirpc_tests} (100%)
 
+diff --git a/runtest/rpc_tests b/runtest/net.rpc_tests
+similarity index 100%
+rename from runtest/rpc_tests
+rename to runtest/net.rpc_tests
+diff --git a/runtest/tirpc_tests b/runtest/net.tirpc_tests
+similarity index 100%
+rename from runtest/tirpc_tests
+rename to runtest/net.tirpc_tests
+diff --git a/testcases/network/rpc/rpc-tirpc/README b/testcases/network/rpc/rpc-tirpc/README
+index d87024c41..139162751 100644
+--- a/testcases/network/rpc/rpc-tirpc/README
++++ b/testcases/network/rpc/rpc-tirpc/README
+@@ -44,8 +44,8 @@ The sources here are modified a bit to use the LTP wrapper - rpc_test.sh -
+ instead of a bunch of scripts from the above web page.
+ 
+ The basic group of test cases can be executed from
+- * runtest/rpc_tests - for TS-RPC testing
+- * runtest/tirpc_tests - for TI-RPC testing
++ * runtest/net.rpc_tests - for TS-RPC testing
++ * runtest/net.tirpc_tests - for TI-RPC testing
+ using the LTP framework (ltp-pan, runltp and etc).
+ 
+ Additional test cases (like stress, complex and etc) are to be integrated.
+-- 
+2.11.0
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: ltp@lists.linux.it
-> Sent: Tuesday, 31 January, 2017 2:44:33 PM
-> Subject: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
-> 
-> The minimal size for Btrfs filesystem on ppc64le is around 139MB, most
-> likely because of larger page size, hence the test fails.
-> 
-> This commit adds tst_min_fs_size.sh library, that parses mkfs.btrfs
-> output which includes minimal filesystem size in case of a failure.
-> 
-> The code also falls back to 150MB if the mkfs.btrfs output wasn't parsed
-> correctly.
-> 
-> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-> ---
->  testcases/kernel/device-drivers/zram/zram01.sh |  8 ++++--
->  testcases/lib/tst_min_fs_size.sh               | 35
->  ++++++++++++++++++++++++++
->  2 files changed, 41 insertions(+), 2 deletions(-)
->  create mode 100644 testcases/lib/tst_min_fs_size.sh
-
-This is ~4 years old comment from Zach Brown, when I hit an issue on ppc,
-where I could alloc only 1/2 of the volume size:
-
-"That small volume mkfs warning is issued for devices less than a gig.  It indicates that btrfs has gone in to a weird degenerate allocation scheme.  We'd only support volumes much larger than that, though I have no quick rule to say how large starts to be reasonable.  Multiple gig, certainly."
-
-I'm running with 384M since then, so far successfully. If we don't allocate
-too much data on it, we might be OK, but still I'd go with minimum default of 256M.
-
-Regards,
-Jan
