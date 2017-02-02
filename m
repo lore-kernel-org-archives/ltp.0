@@ -1,8 +1,8 @@
 From: Travis CI <builds@travis-ci.org>
-Date: Thu, 02 Feb 2017 09:50:13 +0000
-Subject: [LTP] Errored: pevik-travis/ltp#56 (test - 121dba5)
-In-Reply-To: <pevik-travis/ltp+197585558+errored@travis-ci.org>
-Message-ID: <589300f337df8_43fe5000ddc0068863b@98158b4c-e8b1-4cd9-b8ea-6c62f4d4596c.mail>
+Date: Thu, 02 Feb 2017 09:52:57 +0000
+Subject: [LTP] Passed: pevik-travis/ltp#55 (master - 121dba5)
+In-Reply-To: <pevik-travis/ltp+197584686+passed@travis-ci.org>
+Message-ID: <58930179aa29d_43fc5a34d84805099c2@b3bc1a9c-58dc-45a1-b3f8-b5d657cbdffa.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,11 +12,11 @@ To: ltp@lists.linux.it
 Build Update for pevik-travis/ltp
 -------------------------------------
 
-Build: #56
-Status: Errored
+Build: #55
+Status: Passed
 
-Duration: 3 minutes and 47 seconds
-Commit: 121dba5 (test)
+Duration: 13 minutes and 19 seconds
+Commit: 121dba5 (master)
 Author: Cyril Hrubis
 Message: madvise01: Fix MADV_FREE
 
@@ -29,9 +29,9 @@ called amem instead of pfile which was confusing as well.
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-View the changeset: https://github.com/pevik-travis/ltp/compare/test
+View the changeset: https://github.com/pevik-travis/ltp/compare/a002136ee3d0...121dba50c4bd
 
-View the full build log and details: https://travis-ci.org/pevik-travis/ltp/builds/197585558
+View the full build log and details: https://travis-ci.org/pevik-travis/ltp/builds/197584686
 
 --
 
@@ -39,4 +39,4 @@ You can configure recipients for build notifications in your .travis.yml file. S
 
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170202/31495ca9/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170202/27ae7f49/attachment.html>
