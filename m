@@ -1,63 +1,75 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 2 Feb 2017 16:22:42 +0100
-Subject: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
-In-Reply-To: <1372516698.1369615.1485946778720.JavaMail.zimbra@redhat.com>
-References: <1485870273-26990-1-git-send-email-chrubis@suse.cz>
- <845142934.836828.1485879246140.JavaMail.zimbra@redhat.com>
- <20170201094541.GA13898@rei.lan>
- <1372516698.1369615.1485946778720.JavaMail.zimbra@redhat.com>
-Message-ID: <20170202152242.GA11304@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 2 Feb 2017 10:40:40 -0500 (EST)
+Subject: [LTP] [PATCH] aio_suspend_4-1: Fix failures on s390x
+In-Reply-To: <20170202132226.32352-1-chrubis@suse.cz>
+References: <20170202132226.32352-1-chrubis@suse.cz>
+Message-ID: <93175945.2218188.1486050040647.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > This is ~4 years old comment from Zach Brown, when I hit an issue on ppc,
-> > > where I could alloc only 1/2 of the volume size:
-> > > 
-> > > "That small volume mkfs warning is issued for devices less than a gig.  It
-> > > indicates that btrfs has gone in to a weird degenerate allocation scheme.
-> > > We'd only support volumes much larger than that, though I have no quick
-> > > rule to say how large starts to be reasonable.  Multiple gig, certainly."
-> > > 
-> > > I'm running with 384M since then, so far successfully. If we don't allocate
-> > > too much data on it, we might be OK, but still I'd go with minimum default
-> > > of 256M.
-> > 
-> > What exactly do you have in mind? Using 256MB by default for any Btrfs
-> > filesystem or fallback to 256MB if mkfs.btrfs output cannot be parsed?
+
+
+
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: ltp@lists.linux.it
+> Cc: "Jan Stancek" <jstancek@redhat.com>
+> Sent: Thursday, 2 February, 2017 2:22:26 PM
+> Subject: [PATCH] aio_suspend_4-1: Fix failures on s390x
 > 
-> I meant default size.
-
-Then we should increase the default size for the LTP_DEV as well.
-Unfortunately it's defined at three different places at this point. We
-have it in runltp script, the C library and the shell library. I was
-thinking of exporting the C library as a binary for the shell tests to
-use in order to reduce the complexity. I will look into that and also
-bump the minimal size as well.
-
-> > I guess that for any other testcase it would be fine enough to bump the
-> > minimal device size to 256MB unconditionally, but in this case we create
-> > the data in RAM albeit compressed, and so I would like to keep it as
-> > small as possible, since otherwise it may fail on embedded hardware.
+> The testcase often fails on s390x due to fast I/O. The AIO request we
+> wanted to timeout on finishes too fast most of the time.
 > 
-> I didn't have a look at zram01, but can't we detect this and TCONF?
+> While this is not a complete fix it's good enough so that the test works
+> fine if executed 1000 times, previously the success ratio was between
+> 20% and 80%.
+> 
+> This patch changes:
+> 
+> * The file is written instead of read
+>   - this simplifies the code and also ensures that we are not just
+>     reading data from kernel caches
+> 
+> * The file is opened with O_SYNC
+>   - which increases chance that the buffers are not written too fast
+> 
+> * The timeout is decreased
+> 
+> * The buffer sizes are increased, especially for the AIO operation we
+>   want to timeout on
+> 
+> + Simplifications in error paths
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+> 
+> Jan: Have you seen this test failing on s390x as well?
 
-I guess that we can look at total amount of RAM and enable/disable the
-test with Btrfs filesystem if it's deemed too small.
+Yes, and I think also ppc. My notes say this is race-y testcase.
 
-> We can try with minimum and see how frequently it changes, I just
-> wanted to share Zach's quote and my experience with tiny btrfs volumes.
+>      Can you please test the patch on RHEL on s390x?
 
-I've been adjusting the minimal size (of the TST_DEVICE) two times
-already, we bumped it to 100MB then to 150MB. The first one was
-because mkfs.btrfs change, the second was because the size depends on
-PAGE_SIZE and 100MB wasn't enough for ppc64le. I guess that bumping it
-to 256MB is not unreasonable, and hopefully that would be enough for
-some time.
+I ran it for ~15 minutes on s390x in loop, no failures.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+SNIP
+
+Since this is write operation, skipping to "exit:" and free when we hit error,
+while requests are still in-flight should be OK.
+
+>  
+>  	/* Wait for list processing completion */
+>  	while (!received_all)
+> -		sleep(1);
+> +		usleep(50000);
+
+Should we limit this loop by some counter? If something goes wrong,
+this can loop forever.
+
+Other than nit above, it looks good to me, ACK.
+
+Regards,
+Jan
