@@ -1,61 +1,42 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 1 Feb 2017 05:59:38 -0500 (EST)
-Subject: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
-In-Reply-To: <20170201094541.GA13898@rei.lan>
-References: <1485870273-26990-1-git-send-email-chrubis@suse.cz>
- <845142934.836828.1485879246140.JavaMail.zimbra@redhat.com>
- <20170201094541.GA13898@rei.lan>
-Message-ID: <1372516698.1369615.1485946778720.JavaMail.zimbra@redhat.com>
+From: Travis CI <builds@travis-ci.org>
+Date: Thu, 02 Feb 2017 09:50:13 +0000
+Subject: [LTP] Errored: pevik-travis/ltp#56 (test - 121dba5)
+In-Reply-To: <pevik-travis/ltp+197585558+errored@travis-ci.org>
+Message-ID: <589300f337df8_43fe5000ddc0068863b@98158b4c-e8b1-4cd9-b8ea-6c62f4d4596c.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Build Update for pevik-travis/ltp
+-------------------------------------
 
------ Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: "Jan Stancek" <jstancek@redhat.com>
-> Cc: ltp@lists.linux.it
-> Sent: Wednesday, 1 February, 2017 10:45:41 AM
-> Subject: Re: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
-> 
-> Hi!
-> > This is ~4 years old comment from Zach Brown, when I hit an issue on ppc,
-> > where I could alloc only 1/2 of the volume size:
-> > 
-> > "That small volume mkfs warning is issued for devices less than a gig.  It
-> > indicates that btrfs has gone in to a weird degenerate allocation scheme.
-> > We'd only support volumes much larger than that, though I have no quick
-> > rule to say how large starts to be reasonable.  Multiple gig, certainly."
-> > 
-> > I'm running with 384M since then, so far successfully. If we don't allocate
-> > too much data on it, we might be OK, but still I'd go with minimum default
-> > of 256M.
-> 
-> What exactly do you have in mind? Using 256MB by default for any Btrfs
-> filesystem or fallback to 256MB if mkfs.btrfs output cannot be parsed?
+Build: #56
+Status: Errored
 
-I meant default size.
+Duration: 3 minutes and 47 seconds
+Commit: 121dba5 (test)
+Author: Cyril Hrubis
+Message: madvise01: Fix MADV_FREE
 
-> 
-> I guess that for any other testcase it would be fine enough to bump the
-> minimal device size to 256MB unconditionally, but in this case we create
-> the data in RAM albeit compressed, and so I would like to keep it as
-> small as possible, since otherwise it may fail on embedded hardware.
+Currently MADV_FREE works only on anonymous pages.
 
-I didn't have a look at zram01, but can't we detect this and TCONF?
-We can try with minimum and see how frequently it changes, I just
-wanted to share Zach's quote and my experience with tiny btrfs volumes.
+Also the test was passing a file descriptor to the MAP_ANONYMOUS mmap(),
+which is not wrong since the fd argument is ignored in that case, but it
+was mildly confusing. So now we pass -1 and the pointer variable is
+called amem instead of pfile which was confusing as well.
 
-Regards,
-Jan
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-> Maybe we should just remove Btrfs from the zram01.sh test so that we
-> don't have to keep bumping the minimal size each time the minimal Btrfs
-> size calculation changes...
-> 
-> --
-> Cyril Hrubis
-> chrubis@suse.cz
-> 
+View the changeset: https://github.com/pevik-travis/ltp/compare/test
+
+View the full build log and details: https://travis-ci.org/pevik-travis/ltp/builds/197585558
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170202/31495ca9/attachment.html>
