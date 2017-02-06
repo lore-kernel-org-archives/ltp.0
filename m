@@ -1,209 +1,107 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon,  6 Feb 2017 16:50:38 +0800
-Subject: [LTP] [PATCH v2] ltp/numa: add new test11
-Message-ID: <1486371038-24332-1-git-send-email-liwang@redhat.com>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon,  6 Feb 2017 13:13:44 +0100
+Subject: [LTP] [PATCH] getrandom02: relax check for returned data
+Message-ID: <e8ddadfad4495f90db68d5b714a570daa93b8a82.1486382998.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Li Wang <liwang@redhat.com>
+Current check function looks for frequency of returned
+bytes, which sometimes fail for small buffers, where
+one byte repeats.
+
+For example, when getrandom() returns 10 bytes, and one byte
+repeats we fail on this check:
+	if (max > 0 && table[i] > max)
+
+This patch is replacing it with more relaxed condition:
+if at least one byte is non-zero, we consider it a success.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
+ testcases/kernel/syscalls/getrandom/getrandom02.c | 46 ++++++-----------------
+ 1 file changed, 12 insertions(+), 34 deletions(-)
 
-Notes:
-    V1 --> V2
-    
-    * tst_brk --> tst_res, we just hope the testcase11 skip but exit
-    * allocate '$Ori_hpgs + 1' hugepages then check if allocation success
-    * simplify arithmetic operation
-    * make sure 'hpsz != 0' before mmap() funciton in main()
-    * fprintf() --> perror()
-    * coding style correction
-
- testcases/kernel/numa/README         |  2 ++
- testcases/kernel/numa/numa01.sh      | 48 ++++++++++++++++++++++++++++++--
- testcases/kernel/numa/support_numa.c | 53 ++++++++++++++++++++++++++++++++++--
- 3 files changed, 98 insertions(+), 5 deletions(-)
-
-diff --git a/testcases/kernel/numa/README b/testcases/kernel/numa/README
-index 57b12f7..a5c3f1b 100644
---- a/testcases/kernel/numa/README
-+++ b/testcases/kernel/numa/README
-@@ -54,6 +54,8 @@ Verifies the numa_node_size api with hardware checking.
- TestCase10:
- Verifieds the NUMA migratepages policy.
+diff --git a/testcases/kernel/syscalls/getrandom/getrandom02.c b/testcases/kernel/syscalls/getrandom/getrandom02.c
+index 0ac8bd28aed0..2b30c7f49f86 100644
+--- a/testcases/kernel/syscalls/getrandom/getrandom02.c
++++ b/testcases/kernel/syscalls/getrandom/getrandom02.c
+@@ -38,14 +38,11 @@ static int modes[] = { 0, GRND_RANDOM, GRND_NONBLOCK,
+ int TST_TOTAL = ARRAY_SIZE(modes);
  
-+TestCase11:
-+Verifies the hugepage memory allocated from the node we specify.
+ static unsigned char buf[256];
+-static size_t size = 256;
+-
+-static void fill(void);
+-static int check_content(int nb);
++int size = sizeof(buf);
  
- Pre-requisites
- ====================================================================================================================
-diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-index f0f6139..5793bf9 100755
---- a/testcases/kernel/numa/numa01.sh
-+++ b/testcases/kernel/numa/numa01.sh
-@@ -31,11 +31,12 @@
- #               Test #8: Verifies memhog                                     #
- #               Test #9: Verifies numa_node_size api                         #
- #               Test #10:Verifies Migratepages                               #
-+#               Test #11:Verifies hugepage alloacted on specified node       #
- #                                                                            #
- ##############################################################################
- 
- TST_ID="numa01"
--TST_CNT=10
-+TST_CNT=11
- TST_SETUP=setup
- TST_TESTFUNC=test
- TST_NEEDS_TMPDIR=1
-@@ -83,11 +84,13 @@ setup()
+ int main(int ac, char **av)
  {
- 	export MB=$((1024*1024))
- 	export PAGE_SIZE=$(getconf PAGE_SIZE)
-+	export HPAGE_SIZE=$(cat /proc/meminfo  |grep "Hugepagesize:" |awk '{print $2}')
+-	int lc, i;
++	int lc, i, j, tmp;
  
- 	# arguments to memory exercise program support_numa.c
- 	ALLOC_1MB=1
- 	SHARE_1MB=2
--	PAUSE=3
-+	HUGE_PAGE=3
-+	PAUSE=4
+ 	tst_parse_opts(ac, av, NULL, NULL);
  
- 	total_nodes=0
+@@ -53,7 +50,7 @@ int main(int ac, char **av)
+ 		tst_count = 0;
  
-@@ -399,4 +402,45 @@ test10()
- 	tst_res TPASS "NUMA MIGRATEPAGES policy"
- }
+ 		for (i = 0; i < TST_TOTAL; i++) {
+-			fill();
++			memset(buf, '\0', size);
  
-+# Verification of hugepage memory allocated on a node
-+test11()
-+{
-+	Mem_huge=0
-+
-+	if [ ! -d "/sys/kernel/mm/hugepages/" ]; then
-+		tst_res TCONF "hugepage is not supported"
-+		return
-+	fi
-+
-+	for node in $nodes_list; do
-+		Ori_hpgs=$(cat /sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
-+		New_hpgs=$((Ori_hpgs + 1))
-+		echo $New_hpgs >/sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+
-+		Chk_hpgs=$(cat /sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
-+		if [ "$Chk_hpgs" -ne "$New_hpgs" ]; then
-+			tst_res TCONF "hugepage is not enough to test"
-+			return
-+		fi
-+
-+		numactl --cpunodebind=$node --membind=$node support_numa $HUGE_PAGE &
-+		pid=$!
-+		wait_for_support_numa $pid
-+
-+		Mem_huge=$(echo $(numastat -p $pid |grep '^Huge' |awk '{print $'$((node+2))'}'))
-+		Mem_huge=$((${Mem_huge%.*} * 1024))
-+
-+		if [ "$Mem_huge" -lt "$HPAGE_SIZE" ]; then
-+			tst_res TFAIL \
-+				"NUMA memory allocated in node$node is less than expected"
-+			return
-+		fi
-+
-+		kill -CONT $pid >/dev/null 2>&1
-+		echo $Ori_hpgs >/sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+	done
-+
-+	tst_res TPASS "NUMA local node hugepage memory allocated"
-+}
-+
- tst_run
-diff --git a/testcases/kernel/numa/support_numa.c b/testcases/kernel/numa/support_numa.c
-index eaf63e3..97f3008 100644
---- a/testcases/kernel/numa/support_numa.c
-+++ b/testcases/kernel/numa/support_numa.c
-@@ -22,7 +22,7 @@
- /*                                                                            */
- /* File:        support_numa.c                                                */
- /*                                                                            */
--/* Description: Allocates 1MB of memory and touches it to verify numa         */
-+/* Description: Allocates memory and touches it to verify numa                */
- /*                                                                            */
- /* Author:      Sivakumar Chinnaiah  Sivakumar.C@in.ibm.com                   */
- /*                                                                            */
-@@ -52,16 +52,43 @@ static void help(void)
- 	printf("Input:	Describe input arguments to this program\n");
- 	printf("	argv[1] == 1 then allocate 1MB of memory\n");
- 	printf("	argv[1] == 2 then allocate 1MB of share memory\n");
--	printf("	argv[1] == 3 then pause the program to catch sigint\n");
-+	printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
-+	printf("        argv[1] == 4 then pause the program to catch sigint\n");
- 	printf("Exit:	On failure - Exits with non-zero value\n");
- 	printf("	On success - exits with 0 exit value\n");
+ 			do {
+ 				TEST(ltp_syscall(__NR_getrandom, buf, size,
+@@ -61,38 +58,19 @@ int main(int ac, char **av)
+ 			} while ((modes[i] & GRND_NONBLOCK) && TEST_RETURN == -1
+ 				&& TEST_ERRNO == EAGAIN);
  
- 	exit(1);
- }
- 
-+static int read_hugepagesize(void)
-+{
-+	FILE *fp;
-+	char line[BUFSIZ], buf[BUFSIZ];
-+	int val;
-+
-+	fp = fopen("/proc/meminfo", "r");
-+	if (fp == NULL) {
-+		fprintf(stderr, "Failed to open /proc/meminfo");
-+		return 0;
-+	}
-+
-+	while (fgets(line, BUFSIZ, fp) != NULL) {
-+		if (sscanf(line, "%64s %d", buf, &val) == 2)
-+			if (strcmp(buf, "Hugepagesize:") == 0) {
-+				fclose(fp);
-+				return 1024 * val;
+-			if (!check_content(TEST_RETURN))
++			if (TEST_RETURN == -1) {
+ 				tst_resm(TFAIL | TTERRNO, "getrandom failed");
+-			else
++			} else {
+ 				tst_resm(TPASS, "getrandom returned %ld",
+ 						TEST_RETURN);
++				tmp = 0;
++				for (j = 0; j < TEST_RETURN; j++)
++					tmp |= buf[j];
++				if (tmp == 0)
++					tst_resm(TWARN, "all bytes from random"
++						" buffer are zero?");
 +			}
-+	}
-+
-+	fclose(fp);
-+	fprintf(stderr, "can't find \"%s\" in %s", "Hugepagesize:", "/proc/meminfo");
-+
-+	return 0;
-+}
-+
- int main(int argc, char *argv[])
- {
--	int i, fd, rc;
-+	int i, fd, rc, hpsz;
- 	char *buf = NULL;
- 	struct stat sb;
- 
-@@ -114,6 +141,26 @@ int main(int argc, char *argv[])
- 		remove(TEST_SFILE);
- 		break;
- 	case 3:
-+		hpsz = read_hugepagesize();
-+		if (hpsz == 0)
-+			exit(1);
-+
-+		buf = mmap(NULL, hpsz, PROT_READ | PROT_WRITE,
-+				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-+				-1, 0);
-+
-+		if (buf == MAP_FAILED) {
-+			perror("mmap failed");
-+			exit(1);
-+		}
-+
-+		memset(buf, 'a', hpsz);
-+
-+		raise(SIGSTOP);
-+
-+		munmap(buf, hpsz);
-+		break;
-+	case 4:
- 		raise(SIGSTOP);
- 		break;
- 	default:
+ 		}
+ 	}
+ 	tst_exit();
+ }
+-
+-static void fill(void)
+-{
+-	memset(buf, '\0', sizeof(buf));
+-}
+-
+-static int check_content(int nb)
+-{
+-	int table[256];
+-	int i, index, max;
+-
+-	memset(table, 0, sizeof(table));
+-
+-	max = nb * 0.10;
+-
+-	for (i = 0; i < nb; i++) {
+-		index = buf[i];
+-		table[index]++;
+-	}
+-
+-	for (i = 0; i < nb; i++) {
+-		if (max > 0 && table[i] > max)
+-			return 0;
+-	}
+-	return 1;
+-}
 -- 
 1.8.3.1
 
