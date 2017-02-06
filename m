@@ -1,305 +1,193 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  2 Feb 2017 17:58:50 +0100
-Subject: [LTP] [PATCH] madvise09: Add MADV_FREE test
-Message-ID: <20170202165850.18436-1-chrubis@suse.cz>
+From: Li Wang <liwang@redhat.com>
+Date: Mon, 6 Feb 2017 14:40:19 +0800
+Subject: [LTP] [PATCH] ltp/numa: add new test11
+In-Reply-To: <20170124193307.GA780@rei>
+References: <1484898966-27753-1-git-send-email-liwang@redhat.com>
+ <20170124193307.GA780@rei>
+Message-ID: <CAEemH2fG_R9S=kzTDv30b+2LFokN0Jf4ZTjwztEPFHYkABJmqA@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-We test the madvise(MADV_FREE) by running a process in a memory cgroup
-with fairly small memory limits. The test process forks a child, moves
-it to the newly created cgroup. The child allocates memory, marks it
-MADV_FREE then forks a memory hungry child that allocates and faults
-memory in a loop. Due to undeterministic nature of the OOM (that kills
-the memory hungry child sooner or later) we have to retry at two levels.
-First problem is that rarely it gets too rogue and both processes in the
-cgroup gets killed. The second is that sometimes the memory hungry child
-is killed too fast (before the kernel has chance to free the pages), so
-we rerun it a (for a few times) if that happens.
+On Wed, Jan 25, 2017 at 3:33 AM, Cyril Hrubis <chrubis@suse.cz> wrote:
+> Hi!
+>> +# Verification of hugepage memory allocated on a node
+>> +test11()
+>> +{
+>> +     Mem_huge=0
+>> +
+>> +     if [ ! -d "/sys/kernel/mm/hugepages/" ]; then
+>> +             tst_brk TCONF "hugepage is not supported"
+>
+> This should be tst_res followed by a return on a next line. The
+> tst_brk will exit the whole test just because hugepages are not
+> supported.
 
-The test expects memory cgroup mounted in the standard /sys/fs/cgroup/
-path, which is OK since the functionality tested was added to kernel
-4.5 and the test would be skipped on older distros anyway.
+Good catch, that would probably happened when we have new testcase12 in next.
 
-Also the test expects that the MADV_FREE pages will not be freed
-immediatelly hence the test will fail if the whole system is under
-memory pressure.
+>
+>> +     fi
+>> +
+>> +     for node in $nodes_list; do
+>> +             Ori_hpgs=$(cat /sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
+>> +             echo 1 >/sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
+>
+> Uh, so this sysfs knob controlls how much hugepages can be allocated on
+> a node right? What if it was set to nonzero and some hugepages are
+> allocated already? Shouldn't we rather set it to current value + 1 ?
 
-The memory limits were choosen to be 2MB and 4MB for memsw limit. I've
-tried to use to base these on usage_in_bytes but that turned out to be
-source of random errors. It worked fine and produces stable numbers 99%
-of the time but then the numbers have changed and caused the test to
-fail in fork() with ENOMEM.
+Yes, we should consider that situation.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- runtest/syscalls                              |   1 +
- testcases/kernel/syscalls/.gitignore          |   1 +
- testcases/kernel/syscalls/madvise/madvise09.c | 229 ++++++++++++++++++++++++++
- 3 files changed, 231 insertions(+)
- create mode 100644 testcases/kernel/syscalls/madvise/madvise09.c
+   echo '$Ori_hpgs + 1' > /sys/...
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index dc03c4c..ec0b316 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -753,6 +753,7 @@ madvise05 madvise05
- madvise06 madvise06
- madvise07 madvise07
- madvise08 madvise08
-+madvise09 madvise09
- 
- newuname01 newuname01
- 
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index 91dccef..e5a6b47 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -514,6 +514,7 @@
- /madvise/madvise06
- /madvise/madvise07
- /madvise/madvise08
-+/madvise/madvise09
- /mallopt/mallopt01
- /mbind/mbind01
- /memcmp/memcmp01
-diff --git a/testcases/kernel/syscalls/madvise/madvise09.c b/testcases/kernel/syscalls/madvise/madvise09.c
-new file mode 100644
-index 0000000..a4bece8
---- /dev/null
-+++ b/testcases/kernel/syscalls/madvise/madvise09.c
-@@ -0,0 +1,229 @@
-+/*
-+ * Copyright (c) 2017 Cyril Hrubis <chrubis@suse.cz>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+/*
-+ * Check that memory marked with MADV_FREE is freed on memory pressure.
-+ *
-+ * o Fork a child and move it into a memory cgroup
-+ *
-+ * o Allocate pages and fill them with a pattern
-+ *
-+ * o Madvise pages with MADV_FREE
-+ *
-+ * o Check that madvised pages were not freed immediatelly
-+ *
-+ * o Write to some of the madvised pages again, these must not be freed
-+ *
-+ * o Set memory limits
-+ *   - limit_in_bytes = 2MB
-+ *   - memsw.limit_in_bytes = 4MB
-+ *
-+ *   The reason for doubling the limit_in_bytes is to have safe margin
-+ *   for forking the memory hungy child etc. And the reason to setting
-+ *   memsw.limit_in_bytes to twice of that is to give the system chance
-+ *   to try to free some memory before cgroup OOM kicks in and kills
-+ *   the memory hungry child.
-+ *
-+ * o Run a memory hungry child that allocates memory in loop until it's
-+ *   killed by cgroup OOM
-+ *
-+ * o Once the child is killed the MADV_FREE pages that were not written to
-+ *   should be freed, the test passes if there is at least one
-+ */
-+
-+#include <stdlib.h>
-+#include <sys/wait.h>
-+#include <fcntl.h>
-+#include <unistd.h>
-+#include <signal.h>
-+#include <errno.h>
-+#include <stdio.h>
-+
-+#include "tst_test.h"
-+#include "lapi/mmap.h"
-+
-+#define MEMCG_PATH "/sys/fs/cgroup/memory/"
-+
-+static char cgroup_path[PATH_MAX];
-+static char tasks_path[PATH_MAX];
-+static char limit_in_bytes_path[PATH_MAX];
-+static char memsw_limit_in_bytes_path[PATH_MAX];
-+
-+#define PAGES 32
-+
-+static void memory_pressure_child(void)
-+{
-+	size_t i, page_size = getpagesize();
-+	char *ptr;
-+
-+	for (;;) {
-+		ptr = mmap(NULL, 1000 * page_size, PROT_READ | PROT_WRITE,
-+			   MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+
-+		for (i = 0; i < 1000 * page_size; i++)
-+			ptr[i] = i % 100;
-+	}
-+
-+	abort();
-+}
-+
-+static void setup_cgroup_paths(int pid)
-+{
-+	snprintf(cgroup_path, sizeof(cgroup_path),
-+		 MEMCG_PATH "ltp_madvise09_%i/", pid);
-+	snprintf(tasks_path, sizeof(tasks_path), "%s/tasks", cgroup_path);
-+	snprintf(limit_in_bytes_path, sizeof(limit_in_bytes_path),
-+		 "%s/memory.limit_in_bytes", cgroup_path);
-+	snprintf(memsw_limit_in_bytes_path, sizeof(memsw_limit_in_bytes_path),
-+		 "%s/memory.memsw.limit_in_bytes", cgroup_path);
-+}
-+
-+static void child(void)
-+{
-+	size_t i, page_size = getpagesize();
-+	char *ptr;
-+	unsigned int usage, old_limit, old_memsw_limit;
-+	int status, pid, retries = 10;
-+
-+	SAFE_MKDIR(cgroup_path, 0777);
-+	SAFE_FILE_PRINTF(tasks_path, "%i", getpid());
-+
-+	ptr = SAFE_MMAP(NULL, PAGES * page_size, PROT_READ | PROT_WRITE,
-+	                 MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-+
-+	for (i = 0; i < PAGES * page_size; i++)
-+		ptr[i] = 'a';
-+
-+	if (madvise(ptr, PAGES * page_size, MADV_FREE)) {
-+		if (errno == EINVAL)
-+			tst_brk(TCONF | TERRNO, "MADV_FREE is not supported");
-+
-+		tst_brk(TBROK | TERRNO, "MADV_FREE failed");
-+	}
-+
-+	if (ptr[page_size] != 'a')
-+		tst_res(TFAIL, "MADV_FREE pages were freed immediatelly");
-+	else
-+		tst_res(TPASS, "MADV_FREE pages were not freed immediatelly");
-+
-+	ptr[0] = 'b';
-+	ptr[10 * page_size] = 'b';
-+
-+	usage = (1024 * 1024);
-+	tst_res(TINFO, "Setting memory limits to %u %u", 2 * usage, 4 * usage);
-+
-+	SAFE_FILE_SCANF(limit_in_bytes_path, "%u", &old_limit);
-+	SAFE_FILE_SCANF(memsw_limit_in_bytes_path, "%u", &old_memsw_limit);
-+	SAFE_FILE_PRINTF(limit_in_bytes_path, "%u", 2 * usage);
-+	SAFE_FILE_PRINTF(memsw_limit_in_bytes_path, "%u", 4 * usage);
-+
-+	do {
-+		pid = SAFE_FORK();
-+		if (!pid)
-+			memory_pressure_child();
-+
-+		tst_res(TINFO, "Memory hungry child %i started.", pid);
-+
-+		SAFE_WAIT(&status);
-+	} while (--retries > 0 && ptr[page_size]);
-+
-+	if (ptr[0] == 0 || ptr[10 * page_size] == 0)
-+		tst_res(TFAIL, "Page modified after MADV_FREE was freed");
-+	else
-+		tst_res(TPASS, "Page modified after MADV_FREE was not freed");
-+
-+	char map[PAGES+1];
-+	unsigned int freed = 0;
-+
-+	for (i = 0; i < PAGES; i++) {
-+		if (ptr[i * page_size]) {
-+			map[i] = 'p';
-+		} else {
-+			map[i] = '_';
-+			freed++;
-+		}
-+	}
-+	map[PAGES] = '\0';
-+
-+	tst_res(TINFO, "Memory map: %s", map);
-+
-+	if (freed)
-+		tst_res(TPASS, "Pages MADV_FREE were freed on low memory");
-+	else
-+		tst_res(TFAIL, "No MADV_FREE page was freed on low memory");
-+
-+	SAFE_FILE_PRINTF(memsw_limit_in_bytes_path, "%u", old_memsw_limit);
-+	SAFE_FILE_PRINTF(limit_in_bytes_path, "%u", old_limit);
-+
-+	SAFE_MUNMAP(ptr, PAGES);
-+
-+	exit(0);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (cgroup_path[0] && !access(cgroup_path, F_OK))
-+		rmdir(cgroup_path);
-+}
-+
-+static void run(void)
-+{
-+	pid_t pid;
-+	int status;
-+
-+retry:
-+	pid = SAFE_FORK();
-+
-+	if (!pid) {
-+		setup_cgroup_paths(getpid());
-+		child();
-+	}
-+
-+	setup_cgroup_paths(pid);
-+	SAFE_WAIT(&status);
-+	cleanup();
-+
-+	/*
-+	 * Rarely cgroup OOM kills both children not only the one that allocates
-+	 * memory in loop, hence we retry here if that happens.
-+	 */
-+	if (WIFSIGNALED(status)) {
-+		tst_res(TINFO, "Both children killed, retrying...");
-+		goto retry;
-+	}
-+
-+	if (WIFEXITED(status) && WEXITSTATUS(status))
-+		tst_brk(TBROK, "Child exitted unexpectedly");
-+}
-+
-+static void setup(void)
-+{
-+	if (access(MEMCG_PATH, F_OK)) {
-+		tst_brk(TCONF, "'" MEMCG_PATH
-+			"' not present, CONFIG_MEMCG missing?");
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.tid = "madvise09",
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.min_kver = "4.5",
-+	.needs_root = 1,
-+	.forks_child = 1,
-+};
+And, if it failed to allocate new hugepage, exit is necessary.
+
+>
+>> +             numactl --cpunodebind=$node --membind=$node support_numa $HUGE_PAGE &
+>> +             pid=$!
+>> +             wait_for_support_numa $pid
+>> +
+>> +             Mem_huge=$(echo $(numastat -p $pid |grep '^Huge' |awk '{print $'$((node+2))'}'))
+>> +             Mem_huge=$(echo "$Mem_huge * 1024" |bc)
+>
+> Eh, why not just $((Mem_huge * 1024)) ?
+>
+>> +             if [ $(echo "$Mem_huge < $HPAGE_SIZE" | bc) -eq 1 ]; then
+>
+> Here as well, why not just if [ "$Mem_huge" -lt "$HPAGE_SIZE" ]; then
+
+agree!
+
+>
+>> +                     tst_res TFAIL \
+>> +                             "NUMA memory allocated in node$node is less than expected"
+>> +                     return
+>> +             fi
+>> +
+>> +             kill -CONT $pid >/dev/null 2>&1
+>> +             echo $Ori_hpgs >/sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
+>> +     done
+>> +
+>> +     tst_res TPASS "NUMA local node hugepage memory allocated"
+>> +}
+>> +
+>>  tst_run
+>> diff --git a/testcases/kernel/numa/support_numa.c b/testcases/kernel/numa/support_numa.c
+>> index eaf63e3..0241a19 100644
+>> --- a/testcases/kernel/numa/support_numa.c
+>> +++ b/testcases/kernel/numa/support_numa.c
+>> @@ -22,7 +22,7 @@
+>>  /*                                                                            */
+>>  /* File:        support_numa.c                                                */
+>>  /*                                                                            */
+>> -/* Description: Allocates 1MB of memory and touches it to verify numa         */
+>> +/* Description: Allocates memory and touches it to verify numa                */
+>>  /*                                                                            */
+>>  /* Author:      Sivakumar Chinnaiah  Sivakumar.C@in.ibm.com                   */
+>>  /*                                                                            */
+>> @@ -52,16 +52,43 @@ static void help(void)
+>>       printf("Input:  Describe input arguments to this program\n");
+>>       printf("        argv[1] == 1 then allocate 1MB of memory\n");
+>>       printf("        argv[1] == 2 then allocate 1MB of share memory\n");
+>> -     printf("        argv[1] == 3 then pause the program to catch sigint\n");
+>> +     printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
+>> +     printf("        argv[1] == 4 then pause the program to catch sigint\n");
+>>       printf("Exit:   On failure - Exits with non-zero value\n");
+>>       printf("        On success - exits with 0 exit value\n");
+>>
+>>       exit(1);
+>>  }
+>>
+>> +static int read_hugepagesize(void)
+>> +{
+>> +       FILE *fp;
+>> +       char line[BUFSIZ], buf[BUFSIZ];
+>> +       int val;
+>> +
+>> +       fp = fopen("/proc/meminfo", "r");
+>> +       if (fp == NULL) {
+>> +               fprintf(stderr, "Failed to open /proc/meminfo");
+>> +               return 1;
+>> +       }
+>> +
+>> +       while (fgets(line, BUFSIZ, fp) != NULL) {
+>> +               if (sscanf(line, "%64s %d", buf, &val) == 2)
+>> +                       if (strcmp(buf, "Hugepagesize:") == 0) {
+>> +                               fclose(fp);
+>> +                               return 1024 * val;
+>> +                       }
+>> +       }
+>> +
+>> +       fclose(fp);
+>> +       fprintf(stderr, "can't find \"%s\" in %s", "Hugepagesize:", "/proc/meminfo");
+>> +
+>> +       return 1;
+>> +}
+>
+> We should rather return 0 on a failure so that we can easily check
+> hpsz != 0 in the main()
+
+Sure.
+
+>
+>>  int main(int argc, char *argv[])
+>>  {
+>> -     int i, fd, rc;
+>> +     int i, fd, rc, hpsz;
+>>       char *buf = NULL;
+>>       struct stat sb;
+>>
+>> @@ -114,6 +141,24 @@ int main(int argc, char *argv[])
+>>               remove(TEST_SFILE);
+>>               break;
+>>       case 3:
+>> +             hpsz = read_hugepagesize();
+>
+> Eh, we do not check for a failure and gracefully try to allocate 1 byte
+> here? That does not sound right.
+
+Yes, let me do that in next PATCH version.
+
+>
+>> +             buf = mmap(NULL, hpsz, PROT_READ | PROT_WRITE,
+>> +                             MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
+>> +                             -1, 0);
+>> +
+>> +             if (buf == MAP_FAILED){
+>> +                     fprintf(stderr, "mmap failed\n");
+>
+> What about errno? We should rather use perror() here. Also coding style
+> is wrong, you should use checkpatch.pl to check for common mistakes.
+
+sure, thanks!
+
+>
+>> +                     exit(1);
+>> +             }
+>> +
+>> +             memset(buf, 'a', hpsz);
+>> +
+>> +             raise(SIGSTOP);
+>> +
+>> +             munmap(buf, hpsz);
+>> +             break;
+>> +     case 4:
+>>               raise(SIGSTOP);
+>>               break;
+>>       default:
+>> --
+>> 1.8.3.1
+>>
+>
+> --
+> Cyril Hrubis
+> chrubis@suse.cz
+
+
+
 -- 
-2.10.2
-
+Regards,
+Li Wang
+Email: liwang@redhat.com
