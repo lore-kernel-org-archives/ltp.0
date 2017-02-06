@@ -1,107 +1,86 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon,  6 Feb 2017 13:13:44 +0100
-Subject: [LTP] [PATCH] getrandom02: relax check for returned data
-Message-ID: <e8ddadfad4495f90db68d5b714a570daa93b8a82.1486382998.git.jstancek@redhat.com>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Mon, 6 Feb 2017 20:42:10 +0800
+Subject: [LTP] [PATCH] syscalls/mq_open: fix limits for queues_max
+Message-ID: <1486384930-28588-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Current check function looks for frequency of returned
-bytes, which sometimes fail for small buffers, where
-one byte repeats.
+This case fails on RHEL6.8GA and RHEL6.9Beta, because setting
+queues_max to 0 is invalid.  the minimum value of queues_max
+has been limitted to 1 on some distributions, Please see the
+following kernel commit:
 
-For example, when getrandom() returns 10 bytes, and one byte
-repeats we fail on this check:
-	if (max > 0 && table[i] > max)
+commit 5b5c4d1a1440e94994c73dddbad7be0676cd8b9a
+Author: Doug Ledford <dledford@redhat.com>
+Date:   Thu May 31 16:26:30 2012 -0700
 
-This patch is replacing it with more relaxed condition:
-if at least one byte is non-zero, we consider it a success.
+	ipc/mqueue: update maximums for the mqueue subsystem
 
-Signed-off-by: Jan Stancek <jstancek@redhat.com>
+We set queues_max to 1 instead of 0, so this case can work on RHEL6.
+
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- testcases/kernel/syscalls/getrandom/getrandom02.c | 46 ++++++-----------------
- 1 file changed, 12 insertions(+), 34 deletions(-)
+ testcases/kernel/syscalls/mq_open/mq_open01.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/testcases/kernel/syscalls/getrandom/getrandom02.c b/testcases/kernel/syscalls/getrandom/getrandom02.c
-index 0ac8bd28aed0..2b30c7f49f86 100644
---- a/testcases/kernel/syscalls/getrandom/getrandom02.c
-+++ b/testcases/kernel/syscalls/getrandom/getrandom02.c
-@@ -38,14 +38,11 @@ static int modes[] = { 0, GRND_RANDOM, GRND_NONBLOCK,
- int TST_TOTAL = ARRAY_SIZE(modes);
+diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
+index d6f7196..caffaf5 100644
+--- a/testcases/kernel/syscalls/mq_open/mq_open01.c
++++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
+@@ -28,6 +28,7 @@
+ #include "tst_test.h"
  
- static unsigned char buf[256];
--static size_t size = 256;
--
--static void fill(void);
--static int check_content(int nb);
-+int size = sizeof(buf);
+ #define QUEUE_NAME	"/test_mqueue"
++#define QUEUE_INIT      "/init_mqueue"
  
- int main(int ac, char **av)
+ static uid_t euid;
+ static struct passwd *pw;
+@@ -35,6 +36,7 @@ static char *qname;
+ static struct rlimit rlim;
+ 
+ static mqd_t fd, fd2;
++static mqd_t fd3 = -1;
+ static int max_queues;
+ 
+ struct test_case {
+@@ -174,7 +176,7 @@ static void unlink_queue(void)
+ static void set_max_queues(void)
  {
--	int lc, i;
-+	int lc, i, j, tmp;
+ 	SAFE_FILE_SCANF(PROC_MAX_QUEUES, "%d", &max_queues);
+-	SAFE_FILE_PRINTF(PROC_MAX_QUEUES, "%d", 0);
++	SAFE_FILE_PRINTF(PROC_MAX_QUEUES, "%d", 1);
  
- 	tst_parse_opts(ac, av, NULL, NULL);
- 
-@@ -53,7 +50,7 @@ int main(int ac, char **av)
- 		tst_count = 0;
- 
- 		for (i = 0; i < TST_TOTAL; i++) {
--			fill();
-+			memset(buf, '\0', size);
- 
- 			do {
- 				TEST(ltp_syscall(__NR_getrandom, buf, size,
-@@ -61,38 +58,19 @@ int main(int ac, char **av)
- 			} while ((modes[i] & GRND_NONBLOCK) && TEST_RETURN == -1
- 				&& TEST_ERRNO == EAGAIN);
- 
--			if (!check_content(TEST_RETURN))
-+			if (TEST_RETURN == -1) {
- 				tst_resm(TFAIL | TTERRNO, "getrandom failed");
--			else
-+			} else {
- 				tst_resm(TPASS, "getrandom returned %ld",
- 						TEST_RETURN);
-+				tmp = 0;
-+				for (j = 0; j < TEST_RETURN; j++)
-+					tmp |= buf[j];
-+				if (tmp == 0)
-+					tst_resm(TWARN, "all bytes from random"
-+						" buffer are zero?");
-+			}
- 		}
- 	}
- 	tst_exit();
+ 	SAFE_SETEUID(pw->pw_uid);
  }
--
--static void fill(void)
--{
--	memset(buf, '\0', sizeof(buf));
--}
--
--static int check_content(int nb)
--{
--	int table[256];
--	int i, index, max;
--
--	memset(table, 0, sizeof(table));
--
--	max = nb * 0.10;
--
--	for (i = 0; i < nb; i++) {
--		index = buf[i];
--		table[index]++;
--	}
--
--	for (i = 0; i < nb; i++) {
--		if (max > 0 && table[i] > max)
--			return 0;
--	}
--	return 1;
--}
+@@ -206,6 +208,10 @@ static void setup(void)
+ 	euid = geteuid();
+ 	pw = SAFE_GETPWNAM("nobody");
+ 	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlim);
++
++	fd3 = mq_open(QUEUE_INIT, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
++	if (fd3 == -1)
++		tst_brk(TBROK | TERRNO, "mq_open(%s) failed", QUEUE_INIT);
+ }
+ 
+ static void cleanup(void)
+@@ -216,6 +222,12 @@ static void cleanup(void)
+ 	if (fd2 > 0)
+ 		mq_close(fd2);
+ 
++	if (fd3 > 0 && mq_close(fd3))
++		tst_res(TWARN | TERRNO, "mq_close(%s) failed", QUEUE_INIT);
++
++	if (mq_unlink(QUEUE_INIT))
++		tst_res(TWARN | TERRNO, "mq_unlink(%s) failed", QUEUE_INIT);
++
+ 	mq_unlink(qname);
+ }
+ 
 -- 
 1.8.3.1
+
+
 
