@@ -1,50 +1,40 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 8 Feb 2017 14:32:35 +0100
-Subject: [LTP] [PATCH] getrandom02: relax check for returned data
-In-Reply-To: <f07ab26f-b4b7-fafb-436b-b6c21f266557@redhat.com>
-References: <e8ddadfad4495f90db68d5b714a570daa93b8a82.1486382998.git.jstancek@redhat.com>
- <20170207153352.GB3595@rei.suse.cz>
- <1487036067.1086032.1486484128036.JavaMail.zimbra@redhat.com>
- <20170207173028.GC3595@rei.suse.cz>
- <f07ab26f-b4b7-fafb-436b-b6c21f266557@redhat.com>
-Message-ID: <20170208133235.GB16139@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Wed,  8 Feb 2017 15:04:40 +0100
+Subject: [LTP] [PATCH v2] getrandom02: relax check for returned data
+Message-ID: <886b49c2db9b9b6f65f7d92a2e91dbf3943e9607.1486562481.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > The probability of a failure, given that the distribution is random,
-> > would be:
-> > 
-> > 256 * {N \choose max} / (256 ^ max)
-> > 
-> <snip>
-> 
-> If you're interested in that level of randomness verification (although
-> I would suggest splitting it from the getrandom syscall, so it could
-> test ie. /dev/urandom output as well as both should be internally the
-> same), take a look at rng-tools implementation of some of FIPS-140 at
-> 
-> http://gkernel.cvs.sourceforge.net/viewvc/gkernel/rng-tools/
-> 
-> (fips.c / rngtest.c)
-> 
-> This would AFAIK cover most catastrophic failures of HW RNGs, although
-> on Linux, you're really testing just the CSPRNG,
-> http://lxr.free-electrons.com/source/drivers/char/random.c
+"nb * 0.1" can easily fail for nb < 20, since all we need
+are 2 identical bytes. Worst case (nb == 19) is almost
+identical to "birthday problem", but with smaller pool.
+Chance of hitting 2 identical bytes in pool of 19
+is close to 50%.
 
-All I strive for for the getrandom test is to have some reasonable
-verification that the buffer was filled with something that looks at
-least a bit like random data, so that we rule out cases where the buffer
-was only partially filled or not filled in at all. The hard part is
-where to draw the line between the complexity of the check and
-probability of a failure...
+Adjust formula to allow small repetitions in small pools.
+Chance we fail now should be pretty unlikely, ~10^-16.
 
-Adding real entropy tests to LTP sounds like a good excercise though,
-maybe I will have a look into that later :-).
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/getrandom/getrandom02.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/testcases/kernel/syscalls/getrandom/getrandom02.c b/testcases/kernel/syscalls/getrandom/getrandom02.c
+index 0ac8bd28aed0..ec19f0fb32c5 100644
+--- a/testcases/kernel/syscalls/getrandom/getrandom02.c
++++ b/testcases/kernel/syscalls/getrandom/getrandom02.c
+@@ -83,7 +83,7 @@ static int check_content(int nb)
+ 
+ 	memset(table, 0, sizeof(table));
+ 
+-	max = nb * 0.10;
++	max = 6 + nb * 0.2;
+ 
+ 	for (i = 0; i < nb; i++) {
+ 		index = buf[i];
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.3.1
+
