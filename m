@@ -1,56 +1,48 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed,  8 Feb 2017 12:02:55 +0100
-Subject: [LTP] [PATCH 6/6] runltp,
-	tst_device: Bump minimal device size to 256MB
-In-Reply-To: <20170208110255.443-1-chrubis@suse.cz>
-References: <20170208110255.443-1-chrubis@suse.cz>
-Message-ID: <20170208110255.443-6-chrubis@suse.cz>
+Date: Wed, 8 Feb 2017 12:10:56 +0100
+Subject: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
+In-Reply-To: <20170202152242.GA11304@rei.lan>
+References: <1485870273-26990-1-git-send-email-chrubis@suse.cz>
+ <845142934.836828.1485879246140.JavaMail.zimbra@redhat.com>
+ <20170201094541.GA13898@rei.lan>
+ <1372516698.1369615.1485946778720.JavaMail.zimbra@redhat.com>
+ <20170202152242.GA11304@rei.lan>
+Message-ID: <20170208111055.GA16139@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- lib/tst_device.c | 3 ++-
- runltp           | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+Hi!
+> > > What exactly do you have in mind? Using 256MB by default for any Btrfs
+> > > filesystem or fallback to 256MB if mkfs.btrfs output cannot be parsed?
+> > 
+> > I meant default size.
+> 
+> Then we should increase the default size for the LTP_DEV as well.
+> Unfortunately it's defined at three different places at this point. We
+> have it in runltp script, the C library and the shell library. I was
+> thinking of exporting the C library as a binary for the shell tests to
+> use in order to reduce the complexity. I will look into that and also
+> bump the minimal size as well.
 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 24e8c6f..4cefd60 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -41,6 +41,7 @@
- #define LOOP_CONTROL_FILE "/dev/loop-control"
- 
- #define DEV_FILE "test_dev.img"
-+#define DEV_SIZE_MB 256
- 
- static char dev_path[1024];
- static int device_acquired;
-@@ -204,7 +205,7 @@ const char *tst_acquire_device__(unsigned int size)
- 	unsigned int acq_dev_size;
- 	uint64_t ltp_dev_size;
- 
--	acq_dev_size = size > 150 ? size : 150;
-+	acq_dev_size = size > DEV_SIZE_MB ? size : DEV_SIZE_MB;
- 
- 	dev = getenv("LTP_DEV");
- 
-diff --git a/runltp b/runltp
-index f347f55..f081805 100755
---- a/runltp
-+++ b/runltp
-@@ -986,7 +986,7 @@ main()
- create_block()
- {
-     #create a block device
--    dd if=/dev/zero of=${TMP}/test.img bs=1024 count=153600 >/dev/null 2>&1
-+    dd if=/dev/zero of=${TMP}/test.img bs=1024 count=262144 >/dev/null 2>&1
-     if [ $? -ne 0 ]; then
-         echo "Failed to create loopback device image, please check disk space and re-run"
-         return 1
+And apparenlty it was defined in four different places, since we have two
+versions of shell library each with it's own code to acquire device.
+
+I've send a patchset that exports the acquire/release interface from C
+as a single binary and makes use of that in the tst_test.sh.
+
+There is still one unsolved problem since the TWARN messages from the
+tst_device.c will trigger TBROK in tst_test.c since the IPC is not
+initialized. I'm still unsure how to fix that, maybe we should allow to
+allocate non-shared structure for the results in the special case that
+the library code is being reused in shell helpers.
+
+Finally the last patch of the series bumps the minima size to 256MB and
+touched only two places, the runltp script and tst_device.c, which is
+way better than four...
+
 -- 
-2.10.2
-
+Cyril Hrubis
+chrubis@suse.cz
