@@ -1,8 +1,10 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  8 Feb 2017 15:44:57 +0100
-Subject: [LTP] [PATCH v2 1/4] network: Add 'net.' prefix to TI-RPC and
-	TS-RPC tests files
-Message-ID: <20170208144500.27340-1-pvorel@suse.cz>
+Date: Wed,  8 Feb 2017 15:44:58 +0100
+Subject: [LTP] [PATCH v2 2/4] network: Add TI-RPC and TS-RPC tests into
+	network.sh
+In-Reply-To: <20170208144500.27340-1-pvorel@suse.cz>
+References: <20170208144500.27340-1-pvorel@suse.cz>
+Message-ID: <20170208144500.27340-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,36 +13,40 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- runtest/{rpc_tests => net.rpc_tests}     | 0
- runtest/{tirpc_tests => net.tirpc_tests} | 0
- testcases/network/rpc/rpc-tirpc/README   | 4 ++--
- 3 files changed, 2 insertions(+), 2 deletions(-)
- rename runtest/{rpc_tests => net.rpc_tests} (100%)
- rename runtest/{tirpc_tests => net.tirpc_tests} (100%)
+ testscripts/network.sh | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/runtest/rpc_tests b/runtest/net.rpc_tests
-similarity index 100%
-rename from runtest/rpc_tests
-rename to runtest/net.rpc_tests
-diff --git a/runtest/tirpc_tests b/runtest/net.tirpc_tests
-similarity index 100%
-rename from runtest/tirpc_tests
-rename to runtest/net.tirpc_tests
-diff --git a/testcases/network/rpc/rpc-tirpc/README b/testcases/network/rpc/rpc-tirpc/README
-index d87024c41..139162751 100644
---- a/testcases/network/rpc/rpc-tirpc/README
-+++ b/testcases/network/rpc/rpc-tirpc/README
-@@ -44,8 +44,8 @@ The sources here are modified a bit to use the LTP wrapper - rpc_test.sh -
- instead of a bunch of scripts from the above web page.
+diff --git a/testscripts/network.sh b/testscripts/network.sh
+index 2d2c6762c..fce59f576 100755
+--- a/testscripts/network.sh
++++ b/testscripts/network.sh
+@@ -24,6 +24,8 @@ usage()
+ 	echo "  -r    RPC tests"
+ 	echo "  -s    SCTP tests"
+ 	echo "  -t    TCP/IP command tests"
++	echo "  -c    TI-RPC tests"
++	echo "  -s    TS-RPC tests"
+ 	echo "  -a    Application tests (HTTP, SSH, DNS)"
+ 	echo "  -e    Interface stress tests"
+ 	echo "  -b    Stress tests with malformed ICMP packets"
+@@ -40,7 +42,7 @@ usage()
  
- The basic group of test cases can be executed from
-- * runtest/rpc_tests - for TS-RPC testing
-- * runtest/tirpc_tests - for TI-RPC testing
-+ * runtest/net.rpc_tests - for TS-RPC testing
-+ * runtest/net.tirpc_tests - for TI-RPC testing
- using the LTP framework (ltp-pan, runltp and etc).
+ TEST_CASES=
  
- Additional test cases (like stress, complex and etc) are to be integrated.
+-while getopts 6mnrstaebiTURMFf:Vvh OPTION
++while getopts 6mnrstaebcsiTURMFf:Vvh OPTION
+ do
+ 	case $OPTION in
+ 	6) TEST_CASES="$TEST_CASES net.ipv6 net.ipv6_lib";;
+@@ -49,6 +51,8 @@ do
+ 	r) TEST_CASES="$TEST_CASES net.rpc" ;;
+ 	s) TEST_CASES="$TEST_CASES net.sctp" ;;
+ 	t) TEST_CASES="$TEST_CASES net.tcp_cmds" ;;
++	c) TEST_CASES="$TEST_CASES net.rpc_tests";;
++	s) TEST_CASES="$TEST_CASES net.tirpc_tests";;
+ 	a) TEST_CASES="$TEST_CASES net_stress.appl";;
+ 	e) TEST_CASES="$TEST_CASES net_stress.interface";;
+ 	b) TEST_CASES="$TEST_CASES net_stress.broken_ip";;
 -- 
 2.11.0
 
