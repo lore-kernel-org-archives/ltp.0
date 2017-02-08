@@ -1,48 +1,51 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 8 Feb 2017 12:10:56 +0100
-Subject: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
-In-Reply-To: <20170202152242.GA11304@rei.lan>
-References: <1485870273-26990-1-git-send-email-chrubis@suse.cz>
- <845142934.836828.1485879246140.JavaMail.zimbra@redhat.com>
- <20170201094541.GA13898@rei.lan>
- <1372516698.1369615.1485946778720.JavaMail.zimbra@redhat.com>
- <20170202152242.GA11304@rei.lan>
-Message-ID: <20170208111055.GA16139@rei.lan>
+From: Jiri Jaburek <jjaburek@redhat.com>
+Date: Wed, 8 Feb 2017 12:23:55 +0100
+Subject: [LTP] [PATCH] getrandom02: relax check for returned data
+In-Reply-To: <20170207173028.GC3595@rei.suse.cz>
+References: <e8ddadfad4495f90db68d5b714a570daa93b8a82.1486382998.git.jstancek@redhat.com>
+ <20170207153352.GB3595@rei.suse.cz>
+ <1487036067.1086032.1486484128036.JavaMail.zimbra@redhat.com>
+ <20170207173028.GC3595@rei.suse.cz>
+Message-ID: <f07ab26f-b4b7-fafb-436b-b6c21f266557@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > > What exactly do you have in mind? Using 256MB by default for any Btrfs
-> > > filesystem or fallback to 256MB if mkfs.btrfs output cannot be parsed?
-> > 
-> > I meant default size.
+On 02/07/17 18:30, Cyril Hrubis wrote:
+> Hi!
+>>> This wouldn't for instance when the random output is filled with
+>>> non-zero constant bytes...
+>>>
+>>> What about just fixing the max value to something as:
+>>>
+>>> max = 3 + nb * 0.2;
+>>>
+>>> The constat part should handle cases with small buffer and a few
+>>> repeating characters while for larger buffer it's neglectible.
+>>
+>> In that case we may as well skip the check for small buffers.
 > 
-> Then we should increase the default size for the LTP_DEV as well.
-> Unfortunately it's defined at three different places at this point. We
-> have it in runltp script, the C library and the shell library. I was
-> thinking of exporting the C library as a binary for the shell tests to
-> use in order to reduce the complexity. I will look into that and also
-> bump the minimal size as well.
+> The probability of a failure, given that the distribution is random,
+> would be:
+> 
+> 256 * {N \choose max} / (256 ^ max)
+> 
+<snip>
 
-And apparenlty it was defined in four different places, since we have two
-versions of shell library each with it's own code to acquire device.
+If you're interested in that level of randomness verification (although
+I would suggest splitting it from the getrandom syscall, so it could
+test ie. /dev/urandom output as well as both should be internally the
+same), take a look at rng-tools implementation of some of FIPS-140 at
 
-I've send a patchset that exports the acquire/release interface from C
-as a single binary and makes use of that in the tst_test.sh.
+http://gkernel.cvs.sourceforge.net/viewvc/gkernel/rng-tools/
 
-There is still one unsolved problem since the TWARN messages from the
-tst_device.c will trigger TBROK in tst_test.c since the IPC is not
-initialized. I'm still unsure how to fix that, maybe we should allow to
-allocate non-shared structure for the results in the special case that
-the library code is being reused in shell helpers.
+(fips.c / rngtest.c)
 
-Finally the last patch of the series bumps the minima size to 256MB and
-touched only two places, the runltp script and tst_device.c, which is
-way better than four...
+This would AFAIK cover most catastrophic failures of HW RNGs, although
+on Linux, you're really testing just the CSPRNG,
+http://lxr.free-electrons.com/source/drivers/char/random.c
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Jiri
+
