@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed,  8 Feb 2017 12:02:54 +0100
-Subject: [LTP] [PATCH 5/6] tst_test.sh: Make use of tst_device helper
+Date: Wed,  8 Feb 2017 12:02:55 +0100
+Subject: [LTP] [PATCH 6/6] runltp,
+	tst_device: Bump minimal device size to 256MB
 In-Reply-To: <20170208110255.443-1-chrubis@suse.cz>
 References: <20170208110255.443-1-chrubis@suse.cz>
-Message-ID: <20170208110255.443-5-chrubis@suse.cz>
+Message-ID: <20170208110255.443-6-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,61 +13,44 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/lib/tst_test.sh | 31 +++++--------------------------
- 1 file changed, 5 insertions(+), 26 deletions(-)
+ lib/tst_device.c | 3 ++-
+ runltp           | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
-index b9ac938..087adda 100644
---- a/testcases/lib/tst_test.sh
-+++ b/testcases/lib/tst_test.sh
-@@ -41,12 +41,8 @@ tst_do_exit()
- 	fi
+diff --git a/lib/tst_device.c b/lib/tst_device.c
+index 24e8c6f..4cefd60 100644
+--- a/lib/tst_device.c
++++ b/lib/tst_device.c
+@@ -41,6 +41,7 @@
+ #define LOOP_CONTROL_FILE "/dev/loop-control"
  
- 	if [ "$TST_NEEDS_DEVICE" = 1 -a "$TST_DEVICE_FLAG" = 1 ]; then
--		losetup -a | grep -q "$TST_DEVICE"
--		if [ $? -eq 0 ]; then
--			losetup -d "$TST_DEVICE"
--			if [ $? -ne 0 ]; then
--				tst_res TWARN "'losetup -d $TST_DEVICE' failed"
--			fi
-+		if ! tst_device release "$TST_DEVICE"; then
-+			tst_res TWARN "Failed to release device '$TST_DEVICE'"
- 		fi
- 	fi
+ #define DEV_FILE "test_dev.img"
++#define DEV_SIZE_MB 256
  
-@@ -309,29 +305,12 @@ tst_run()
- 			tst_brk "Use TST_NEEDS_TMPDIR must be set for TST_NEEDS_DEVICE"
- 		fi
+ static char dev_path[1024];
+ static int device_acquired;
+@@ -204,7 +205,7 @@ const char *tst_acquire_device__(unsigned int size)
+ 	unsigned int acq_dev_size;
+ 	uint64_t ltp_dev_size;
  
--		if [ -n "${LTP_DEV}" ]; then
--			tst_res TINFO "Using test device LTP_DEV='${LTP_DEV}'"
--			if [ ! -b ${LTP_DEV} ]; then
--				tst_brkm TBROK "${LTP_DEV} is not a block device"
--			fi
--
--			ROD_SILENT dd if=/dev/zero of="${LTP_DEV}" bs=1024 count=512
--
--			TST_DEVICE=${LTP_DEV}
--			TST_DEVICE_FLAG=0
--			return
--		fi
--
--		ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=153600
-+		TST_DEVICE=$(tst_device acquire)
+-	acq_dev_size = size > 150 ? size : 150;
++	acq_dev_size = size > DEV_SIZE_MB ? size : DEV_SIZE_MB;
  
--		TST_DEVICE=$(losetup -f)
--		if [ $? -ne 0 ]; then
--			tst_brk TBROK "Couldn't find free loop device"
-+		if [ -z "$TST_DEVICE" ]; then
-+			tst_brk "Failed to acquire device"
- 		fi
+ 	dev = getenv("LTP_DEV");
  
--		tst_res TINFO "Found free device '${TST_DEVICE}'"
--
--		ROD_SILENT losetup ${TST_DEVICE} test_dev.img
- 		TST_DEVICE_FLAG=1
- 	fi
- 
+diff --git a/runltp b/runltp
+index f347f55..f081805 100755
+--- a/runltp
++++ b/runltp
+@@ -986,7 +986,7 @@ main()
+ create_block()
+ {
+     #create a block device
+-    dd if=/dev/zero of=${TMP}/test.img bs=1024 count=153600 >/dev/null 2>&1
++    dd if=/dev/zero of=${TMP}/test.img bs=1024 count=262144 >/dev/null 2>&1
+     if [ $? -ne 0 ]; then
+         echo "Failed to create loopback device image, please check disk space and re-run"
+         return 1
 -- 
 2.10.2
 
