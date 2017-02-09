@@ -1,65 +1,73 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 9 Feb 2017 15:56:48 +0100
-Subject: [LTP] [PATCH] [RFC] zram01: Fix on ppc64le
-In-Reply-To: <116936368.2235095.1486651688068.JavaMail.zimbra@redhat.com>
-References: <1485870273-26990-1-git-send-email-chrubis@suse.cz>
- <20170201094541.GA13898@rei.lan>
- <1372516698.1369615.1485946778720.JavaMail.zimbra@redhat.com>
- <20170202152242.GA11304@rei.lan> <20170208111055.GA16139@rei.lan>
- <20170209120245.GD12673@rei.lan>
- <1788271290.2108729.1486646650050.JavaMail.zimbra@redhat.com>
- <20170209140042.GE12673@rei.lan>
- <116936368.2235095.1486651688068.JavaMail.zimbra@redhat.com>
-Message-ID: <20170209145648.GF12673@rei.lan>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Thu, 9 Feb 2017 10:56:46 -0500 (EST)
+Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Redirect to tst_brk_() early
+In-Reply-To: <20170209144445.22737-1-chrubis@suse.cz>
+References: <20170209144445.22737-1-chrubis@suse.cz>
+Message-ID: <1235532957.2260942.1486655806975.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > It's especially there for code that defines TST_NO_DEFAULT_MAIN but one
-> > can argue that this is special case and if you define that macro you
-> > should know what you are doing anyway...
-> > 
-> > But still I prefer to throw error message instead of segfaulting while
-> > trying to deference NULL pointer.
-> 
-> I was suggesting we skip update_results(), not to let it segfault.
 
-Sorry I was blind. That makes much more sense. Let's go with that one,
-instead of the:
 
-"[LTP] [PATCH 1/6] tst_test: Allow priting TINFO without initialized IPC"
 
-> > > > Maybe
-> > > > we could patch things up so that we could use SAFE_MACROS() in cleanup
-> > > > as well...
-> > > 
-> > > This should be doable with some flag we set in do_test_cleanup(), to skip
-> > > further calls.
-> > 
-> > I'm nearly finished with RFC patch. The main problem is the
-> > __attribute__((noreturn)) that has been added for various tst_brk*
-> > variants. So in the end it looks like only solution is to do the
-> > tst_brk_() redirection in the safe_macros.c, since we cannot return from
-> > tst_brkm_() since the return address is not stored on stack because it
-> > has noreturn attribute. And dropping the noreturn attribute from
-> > tst_brkm_() is not an option either, since that generates a ton of
-> > "control reaches end of non-void function" warnings.
-> 
-> Vast majority is from single header file:
-> 
-> $ grep "reaches end of non-void" log.txt | sort | uniq | wc -l
-> 328
-> 
-> $ grep "reaches end of non-void" log.txt | sort | uniq | grep compat_16.h | wc -l
-> 289
 
-That is still 39 occurences to fix all over the place plus the
-compat_16.h header. Have a look at the patch I've just send, I think
-that it's a bit easier than patching all the tests to avoids warnings...
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: ltp@lists.linux.it
+> Sent: Thursday, 9 February, 2017 3:44:44 PM
+> Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Redirect to tst_brk_() early
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> +#ifndef BRKM_REDIRECT_H__
+> +#define BRKM_REDIRECT_H__
+> +
+> +#include "ltp_priv.h"
+> +
+> +#ifdef tst_brkm
+> +# undef tst_brkm
+> +#endif
+> +
+> +#define tst_brkm(flags, cleanup, fmt, ...) do { \
+> +	if (tst_test) \
+> +		tst_brk_(__FILE__, __LINE__, flags, fmt, ##__VA_ARGS__); \
+> +	else \
+> +                tst_brkm_(__FILE__, __LINE__, flags, cleanup, fmt,
+> ##__VA_ARGS__); \
+> +	} while (0)
+
+Stil trying to wrap my head around all this, but after first look,..
+How does this related to "tst_brkm_" from lib/tst_res.c?
+Can it be simplified? It doesn't look like we can reach newlib branch
+now, because tst_test condition is now in tst_brkm macro.
+Did we loose the check for "Non-NULL cleanup in newlib"?
+
+> +
+> +#define tst_brkr(rval, flags, cleanup, fmt, ...) do { \
+> +		tst_brkm(flags, cleanup, fmt, ##__VA_ARGS__); \
+> +		return rval; \
+> +	} while (0)
+> +
+> +#define tst_brkv(flags, cleanup, fmt, ...) do { \
+> +		tst_brkm(flags, cleanup, fmt, ##__VA_ARGS__); \
+> +		return; \
+> +	} while (0)
+
+All variants of tst_brk_ are more and more tricky to remember.
+Would it be too much to ask people "when writing new safe function,
+take into account that tst_brkm can return" and leave it up to
+them how they do it. Maybe they'll see goto more fitting.
+
+Example:
+// stuff in your safe function
+if (bad) {
+    tst_brkm();
+    return;
+}
+// more stuff in your safe function
+
+> +
+> +#endif /* BRKM_REDIRECT_H__ */
+> diff --git a/lib/safe_file_ops.c b/lib/safe_file_ops.c
+> index 01f64ed..51853b4 100644
