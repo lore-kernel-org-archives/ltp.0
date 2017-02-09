@@ -1,12 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 9 Feb 2017 10:31:52 +0100
-Subject: [LTP] [PATCH 1/2] ltp-aiodio/dio_sparse: Fix write in
- dio_sparse()
-In-Reply-To: <589C2EA5.6040707@cn.fujitsu.com>
-References: <1484818349-30539-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20170124134057.GC29054@rei.lan> <58882AA5.90906@cn.fujitsu.com>
- <589C2EA5.6040707@cn.fujitsu.com>
-Message-ID: <20170209093152.GA12673@rei.lan>
+Date: Thu, 9 Feb 2017 10:35:48 +0100
+Subject: [LTP] [PATCH v2] ltp-aiodio/dio_sparse: Fix usleep in
+	read_sparse()
+In-Reply-To: <1486625035-31034-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <5888236A.1010702@cn.fujitsu.com>
+ <1486625035-31034-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170209093451.GB12673@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,44 +13,41 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> >>>  	memset(bufptr, 0, writesize);
-> >>>  	lseek(fd, offset, SEEK_SET);
-> >>> -	for (i = offset; i < filesize;) {
-> >>> +	for (i = 0; i < filesize;) {
-> >>>  		if ((w = write(fd, bufptr, writesize)) != writesize) {
-> >>>  			tst_resm(TBROK | TERRNO, "write() returned %d", w);
-> >>>  			close(fd);
-> >>
-> >> Hmm, it looks to me like the code actually does what it should have.
-> >> Since we pass a filesize and offset so the test should actually write
-> >> filesize - offset bytes. As far as I can tell the bug here is that the
-> >> test is not checking that filesize > offset before it starts.
-> > 
-> > Sorry, but shouldn't we write the whole "writesize" from the "offset"?
-> > ADSP080 ADSP081 ADSP082 ADSP083 did reproduce the BUG via above modification...
+> usleep(100000) sometimes leads to child process being too late
+> to do the read before being killed by parent process, tune it
+> to usleep(100) to make sure we do the real test in time.
 > 
-> I think we pass an "offset" is to make sure writing from the file offset,
-> but the actual write size should be just the "writesize" argument.
+> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+> ---
+>  testcases/kernel/io/ltp-aiodio/common_sparse.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> As the second case of kernel commit 9ecd10b says:
->     2. Direct writes starting from or beyong i_size (not inside i_size)
->        also could trigger block allocation and expose stale data.  For
->        example, consider a sparse file with i_size of 2k, and a write to
->        offset 2k or 3k into the file, with a filesystem block size of 4k.
->        (Thanks to Jeff Moyer for pointing this case out in his review.)
+> diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> index f7f4ef4..7297319 100644
+> --- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> +++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+> @@ -113,7 +113,7 @@ static void read_sparse(char *filename, int filesize)
+>  	/*
+>  	 * Wait for the file to appear.
+>  	 */
+> -	for (i = 0; i < 10000; i++) {
+> +	for (i = 0; i < 10000000; i++) {
+>  		fd = open(filename, O_RDONLY);
+>  
+>  		if (fd != -1)
+> @@ -123,7 +123,7 @@ static void read_sparse(char *filename, int filesize)
+>  			fprintf(stderr, "Child %i waits for '%s' to appear\n",
+>  			        getpid(), filename);
+>  
+> -		usleep(100000);
+> +		usleep(100);
+>  	}
 
-Ah, looking at the git log, the offset was just added recently, that's
-why the code is confusing, previously the filesize was size of the
-file...
-
-So what about we rename the writesize to blocksize and filesize to
-writesize so that it's clear what the function dio_sparse does.
-
-int dio_sparse(char *filename, int align, int blocksize, int writesize, int offset)
-
-Also shouldn't we truncate the file to offset + filesize rather than
-just filesize? And then pass the size to the children as offset +
-filesize as well?
+Looking at the code again, I see no reason why we can't open and
+truncate the file before we start the read_sparse() children, then we
+could drop this loop and just pass file descriptor to this function and
+to the dio_sparse() and aiodio_sparse() as well. Or did I miss
+something?
 
 -- 
 Cyril Hrubis
