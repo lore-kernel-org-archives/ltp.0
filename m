@@ -1,11 +1,11 @@
 From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 9 Feb 2017 16:56:05 +0800
-Subject: [LTP] [PATCH 1/2] ltp-aiodio/dio_sparse: Fix write in
-	dio_sparse()
-In-Reply-To: <58882AA5.90906@cn.fujitsu.com>
-References: <1484818349-30539-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20170124134057.GC29054@rei.lan> <58882AA5.90906@cn.fujitsu.com>
-Message-ID: <589C2EA5.6040707@cn.fujitsu.com>
+Date: Thu, 9 Feb 2017 17:00:52 +0800
+Subject: [LTP] [PATCH v2] syscalls/signal06: fix test for regression
+ with earlier version of gcc and kernel
+In-Reply-To: <1479284063-12968-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <20161010131529.GA1684@rei>
+ <1479284063-12968-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <589C2FC4.4080502@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -14,61 +14,106 @@ To: ltp@lists.linux.it
 
 Hi!
 
-On 01/25/2017 12:33 PM, Guangwen Feng wrote:
-> Hi Cyril,
-> 
-> Thanks for your review.
-> 
-> On 01/24/2017 09:40 PM, Cyril Hrubis wrote:
->> Hi!
->>> Current code looks buggy because when the offset is greater than
->>> or equal to the filesize, it will never happen to do the write
->>> in the loop, as a result, ADSP080..ADSP087 do not work actually.
->>> Fix it by making sure that we do write writesize bytes.
->>>
->>> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
->>> ---
->>>  testcases/kernel/io/ltp-aiodio/dio_sparse.c | 2 +-
->>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/testcases/kernel/io/ltp-aiodio/dio_sparse.c b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
->>> index 41b9929..3828ed7 100644
->>> --- a/testcases/kernel/io/ltp-aiodio/dio_sparse.c
->>> +++ b/testcases/kernel/io/ltp-aiodio/dio_sparse.c
->>> @@ -78,7 +78,7 @@ int dio_sparse(char *filename, int align, int writesize, int filesize, int offse
->>>  
->>>  	memset(bufptr, 0, writesize);
->>>  	lseek(fd, offset, SEEK_SET);
->>> -	for (i = offset; i < filesize;) {
->>> +	for (i = 0; i < filesize;) {
->>>  		if ((w = write(fd, bufptr, writesize)) != writesize) {
->>>  			tst_resm(TBROK | TERRNO, "write() returned %d", w);
->>>  			close(fd);
->>
->> Hmm, it looks to me like the code actually does what it should have.
->> Since we pass a filesize and offset so the test should actually write
->> filesize - offset bytes. As far as I can tell the bug here is that the
->> test is not checking that filesize > offset before it starts.
-> 
-> Sorry, but shouldn't we write the whole "writesize" from the "offset"?
-> ADSP080 ADSP081 ADSP082 ADSP083 did reproduce the BUG via above modification...
-
-I think we pass an "offset" is to make sure writing from the file offset,
-but the actual write size should be just the "writesize" argument.
-
-As the second case of kernel commit 9ecd10b says:
-    2. Direct writes starting from or beyong i_size (not inside i_size)
-       also could trigger block allocation and expose stale data.  For
-       example, consider a sparse file with i_size of 2k, and a write to
-       offset 2k or 3k into the file, with a filesystem block size of 4k.
-       (Thanks to Jeff Moyer for pointing this case out in his review.)
+Ping, thanks!
 
 
 Best Regards,
 Guangwen Feng
 
+On 11/16/2016 04:14 PM, Guangwen Feng wrote:
+> 1. Currently, following code is incorrect on some releases with
+>    earlier version of gcc(tested on RHEL5.11GA):
 > 
-> Best Regards,
-> Guangwen Feng
+> 	while (D == d && loop < LOOPS) {
+> 
+>    Because the argument in function test(double d) is used via (%rsp),
+>    but here we actually need a xmm register to trigger the fpu bug.
+>    So use global value instead to make sure to take use of xmm.
+> 
+> 2. Although this regression test is designed to trigger SIGSEGV
+>    intentionally, on some releases with old kernel(tested on RHEL5.11GA),
+>    this will still lead to segmentation fault that terminate the program
+>    and break the test even though compiling with -O2.  So slightly adjust
+>    the weight of the codes in child thread to depress SIGSEGV trigger's
+>    chance while increase LOOPS to ensure reproducible.
+> 
+> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+> ---
+>  testcases/kernel/syscalls/signal/signal06.c | 29 +++++++++++++++++------------
+>  1 file changed, 17 insertions(+), 12 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/signal/signal06.c b/testcases/kernel/syscalls/signal/signal06.c
+> index 75ef733..1f1b31c 100644
+> --- a/testcases/kernel/syscalls/signal/signal06.c
+> +++ b/testcases/kernel/syscalls/signal/signal06.c
+> @@ -31,8 +31,8 @@
+>   * 		Date:   Tue Sep 2 19:57:17 2014 +0200
+>   *
+>   *      commit 66463db4fc5605d51c7bb81d009d5bf30a783a2c
+> - *               Author: Oleg Nesterov <oleg@redhat.com>
+> - *               Date:   Tue Sep 2 19:57:13 2014 +0200
+> + *              Author: Oleg Nesterov <oleg@redhat.com>
+> + *              Date:   Tue Sep 2 19:57:13 2014 +0200
+>   *
+>   * Reproduce:
+>   *	Test-case (needs -O2).
+> @@ -55,20 +55,21 @@ int TST_TOTAL = 5;
+>  
+>  #if __x86_64__
+>  
+> -#define LOOPS 10000
+> +#define LOOPS 30000
+> +#define VALUE 123.456
+>  
+>  volatile double D;
+>  volatile int FLAGE;
+>  
+>  char altstack[4096 * 10] __attribute__((aligned(4096)));
+>  
+> -void test(double d)
+> +void test(void)
+>  {
+>  	int loop = 0;
+>  	int pid = getpid();
+>  
+> -	D = d;
+> -	while (D == d && loop < LOOPS) {
+> +	D = VALUE;
+> +	while (D == VALUE && loop < LOOPS) {
+>  		/* sys_tkill(pid, SIGHUP); asm to avoid save/reload
+>  		 * fp regs around c call */
+>  		asm ("" : : "a"(__NR_tkill), "D"(pid), "S"(SIGHUP));
+> @@ -94,12 +95,16 @@ void sigh(int sig LTP_ATTRIBUTE_UNUSED)
+>  
+>  void *tfunc(void *arg LTP_ATTRIBUTE_UNUSED)
+>  {
+> -	for (; ;) {
+> -		TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
+> -		if (TEST_RETURN == -1)
+> -			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+> +	int i;
+> +
+> +	for (i = -1; ; i *= -1) {
+> +		if (i == -1) {
+> +			TEST(mprotect(altstack, sizeof(altstack), PROT_READ));
+> +			if (TEST_RETURN == -1)
+> +				tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+> +		}
+>  
+> -		TEST(mprotect(altstack, sizeof(altstack), PROT_READ|PROT_WRITE));
+> +		TEST(mprotect(altstack, sizeof(altstack), PROT_READ | PROT_WRITE));
+>  		if (TEST_RETURN == -1)
+>  			tst_brkm(TBROK | TTERRNO, NULL, "mprotect failed");
+>  
+> @@ -148,7 +153,7 @@ int main(int ac, char **av)
+>  				tst_brkm(TBROK | TRERRNO, NULL,
+>  						"pthread_create failed");
+>  
+> -			test(123.456);
+> +			test();
+>  
+>  			TEST(pthread_join(pt, NULL));
+>  			if (TEST_RETURN)
+> 
 
 
