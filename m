@@ -1,19 +1,48 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 8 Feb 2017 16:16:23 +0100
-Subject: [LTP] [PATCH 1/1] travis: stop github forks spamming mailing
-	list
-In-Reply-To: <20170202154315.29693-1-pvorel@suse.cz>
-References: <20170202154315.29693-1-pvorel@suse.cz>
-Message-ID: <20170208151623.GA4618@rei.lan>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Thu, 9 Feb 2017 15:23:55 +0800
+Subject: [LTP] [PATCH v2] ltp-aiodio/dio_sparse: Fix usleep in read_sparse()
+In-Reply-To: <5888236A.1010702@cn.fujitsu.com>
+References: <5888236A.1010702@cn.fujitsu.com>
+Message-ID: <1486625035-31034-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed, thanks.
+usleep(100000) sometimes leads to child process being too late
+to do the read before being killed by parent process, tune it
+to usleep(100) to make sure we do the real test in time.
 
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ testcases/kernel/io/ltp-aiodio/common_sparse.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+index f7f4ef4..7297319 100644
+--- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
++++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+@@ -113,7 +113,7 @@ static void read_sparse(char *filename, int filesize)
+ 	/*
+ 	 * Wait for the file to appear.
+ 	 */
+-	for (i = 0; i < 10000; i++) {
++	for (i = 0; i < 10000000; i++) {
+ 		fd = open(filename, O_RDONLY);
+ 
+ 		if (fd != -1)
+@@ -123,7 +123,7 @@ static void read_sparse(char *filename, int filesize)
+ 			fprintf(stderr, "Child %i waits for '%s' to appear\n",
+ 			        getpid(), filename);
+ 
+-		usleep(100000);
++		usleep(100);
+ 	}
+ 
+ 	if (fd == -1) {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
+
+
