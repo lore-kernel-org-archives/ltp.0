@@ -1,123 +1,55 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 10 Feb 2017 10:38:57 +0100
-Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Redirect to tst_brk_() early
-In-Reply-To: <151709822.2486191.1486715702857.JavaMail.zimbra@redhat.com>
-References: <20170209144445.22737-1-chrubis@suse.cz>
- <1235532957.2260942.1486655806975.JavaMail.zimbra@redhat.com>
- <20170209161120.GA23109@rei>
- <1865245988.2484651.1486715227566.JavaMail.zimbra@redhat.com>
- <151709822.2486191.1486715702857.JavaMail.zimbra@redhat.com>
-Message-ID: <3c1b0f37-f237-d26a-0d92-c5b37dd5bbc4@redhat.com>
+Date: Fri, 10 Feb 2017 14:38:11 +0100
+Subject: [LTP] [PATCH] mmap16: extend checkpoint wait time during fs fill
+Message-ID: <793ef4af0e7bb8827b5d2bd04321267ad530ed55.1486733825.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-SNIP
+I'm seeing this test rarely failing on slower systems:
+mmap16      0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+mmap16      0  TINFO  :  Formatting /dev/loop0 with ext4 opts='-b 1024' extra opts='10240'
+mmap16      1  TBROK  :  tst_checkpoint.c:136: mmap16.c:223: tst_checkpoint_wait(0, 10000): errno=ETIMEDOUT(110): Connection timed out
+mmap16      2  TBROK  :  tst_checkpoint.c:136: Remaining cases broken
+mmap16      1  TBROK  :  tst_checkpoint.c:149: mmap16.c:125: tst_checkpoint_wake(0, 1, 10000): errno=ETIMEDOUT(110): Connection timed out
+mmap16      2  TBROK  :  tst_checkpoint.c:149: Remaining cases broken
 
-How about we provide different version of tst_brkm for library and different
-for tests? For library we obviously want to allow calls from both oldlib and
-newlib code, and redirect as needed. But for tests (users of library) we
-would allow only oldlib tests to call tst_brkm.
+duration=52 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=132
 
-So for tests tst_brkm_ stays the same - NORETURN, for library code, we
-use either tst_brk_ or tst_brkm_, which means we'll need to fix any
-potential warnings only in library.
+What appears to be happening is that filling entire fs with 1024 chunks
+takes longer than 10 seconds, so child hits TBROK while waiting for
+parent. Parent eventually finishes, but then is unable to wake
+child, which already finished.
 
-This also forbids usage of tst_brkm from newlib tests, previously
-it was OK if you didn't provide cleanup, now it would reject all
-calls from newlib tests.
+Based on output above it looks like it took ~30 seconds to fill the fs
+and then we hit 2 timeouts, making total of ~50 seconds. This patch
+extends this particular checkpoint wait to 60 seconds.
 
-$ grep -l tst_brkm -r include/
-include/old/safe_macros.h
-include/old/test.h
-include/tst_fs.h -> only comments
-include/tst_process_state.h -> only comments
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
+---
+ testcases/kernel/syscalls/mmap/mmap16.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-(compile-tested only)
-
-diff --git a/include/old/safe_macros.h b/include/old/safe_macros.h
-index 25001e806c12..96fb0c21876e 100644
---- a/include/old/safe_macros.h
-+++ b/include/old/safe_macros.h
-@@ -331,10 +331,10 @@ static inline int safe_setrlimit(const char *file, const int lineno,
-
- #define SAFE_IOCTL(cleanup_fn, fd, request, ...)             \
-        ({int ret = ioctl(fd, request, __VA_ARGS__);         \
--         ret < 0 ?                                          \
--          tst_brkm(TBROK | TERRNO, cleanup_fn,              \
--                   "ioctl(%i,%s,...) failed", fd, #request) \
--        : ret;})
-+         if (ret < 0)                                       \
-+             tst_brkm(TBROK | TERRNO, cleanup_fn,           \
-+                   "ioctl(%i,%s,...) failed", fd, #request); \
-+         ret;})
-
- #endif /* __SAFE_MACROS_H__ */
- #endif /* __TEST_H__ */
-diff --git a/include/old/test.h b/include/old/test.h
-index d49256073741..768c32d41609 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -153,9 +153,20 @@ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
- void tst_brkm_(const char *file, const int lineno, int ttype,
-        void (*func)(void), const char *arg_fmt, ...)
-        __attribute__ ((format (printf, 5, 6))) LTP_ATTRIBUTE_NORETURN;
--#define tst_brkm(ttype, func, arg_fmt, ...) \
--       tst_brkm_(__FILE__, __LINE__, (ttype), (func), \
--                 (arg_fmt), ##__VA_ARGS__)
+diff --git a/testcases/kernel/syscalls/mmap/mmap16.c b/testcases/kernel/syscalls/mmap/mmap16.c
+index 3f2676bdc2d2..b3f51fd18c92 100644
+--- a/testcases/kernel/syscalls/mmap/mmap16.c
++++ b/testcases/kernel/syscalls/mmap/mmap16.c
+@@ -220,7 +220,11 @@ static void do_child(void)
+ 	 * kernel writepage is called, that means data corruption.
+ 	 */
+ 	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
+-	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
 +
-+#ifdef LTPLIB
-+#include "ltp_priv.h"
-+# define tst_brkm(flags, cleanup, fmt, ...) do { \
-+               if (tst_test) \
-+                       tst_brk_(__FILE__, __LINE__, flags, fmt, ##__VA_ARGS__); \
-+               else \
-+                       tst_brkm_(__FILE__, __LINE__, flags, cleanup, fmt, ##__VA_ARGS__); \
-+               } while (0)
-+#else
-+# define tst_brkm(flags, cleanup, fmt, ...) do { \
-+                       tst_brkm_(__FILE__, __LINE__, flags, cleanup, fmt, ##__VA_ARGS__); \
-+               } while (0)
-+#endif
++	/* Give parent enough time to consume FS free blocks */
++	if (tst_checkpoint_wait(0, 60*1000))
++		tst_brkm(TBROK | TERRNO, cleanup,
++			"wait for parent to fill entire space");
+ 
+ 	for (offset = FS_BLOCKSIZE; offset < page_size; offset += FS_BLOCKSIZE)
+ 		addr[offset] = 'a';
+-- 
+1.8.3.1
 
- void tst_require_root(void);
- void tst_exit(void) LTP_ATTRIBUTE_NORETURN;
-diff --git a/lib/Makefile b/lib/Makefile
-index 663455ee31ad..6b3f6e1917fb 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -24,7 +24,7 @@ top_srcdir            ?= ..
-
- include $(top_srcdir)/include/mk/env_pre.mk
-
--CFLAGS                 += -I.
-+CFLAGS                 += -I. -DLTPLIB
-
- ifneq ($(ANDROID),1)
- FILTER_OUT_DIRS                += android_libpthread android_librt
-diff --git a/lib/tst_res.c b/lib/tst_res.c
-index 96f0c1f1dc07..2b0ffa706cb2 100644
---- a/lib/tst_res.c
-+++ b/lib/tst_res.c
-@@ -566,16 +566,10 @@ void tst_brkm_(const char *file, const int lineno, int ttype,
-
-        EXPAND_VAR_ARGS(tmesg, arg_fmt, USERMESG);
-
--       if (tst_test) {
--               if (func) {
--                       tst_brk_(file, lineno, TBROK,
--                                "Non-NULL cleanup in newlib!");
--               }
--
--               tst_brk_(file, lineno, ttype, "%s", tmesg);
--       } else {
-+       if (tst_test)
-+               tst_brk__(file, lineno, TBROK, NULL, "newlib test calls tst_brkm()");
-+       else
-                tst_brk__(file, lineno, ttype, func, "%s", tmesg);
--       }
-
-        /* Shouldn't be reached, but fixes build time warnings about noreturn. */
-        abort();
