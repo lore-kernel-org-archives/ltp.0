@@ -1,57 +1,31 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 13 Feb 2017 17:35:50 +0100
-Subject: [LTP] [COMMITTED] [PATCH 6/6] runltp,
-	tst_device: Bump minimal device size to 256MB
-In-Reply-To: <20170213163550.10967-1-chrubis@suse.cz>
-References: <20170213163550.10967-1-chrubis@suse.cz>
-Message-ID: <20170213163550.10967-6-chrubis@suse.cz>
+Date: Mon, 13 Feb 2017 17:39:33 +0100
+Subject: [LTP] [PATCH 4/6] test.sh: Remove tst_{acquire, release}_device,
+	tst_mkfs
+In-Reply-To: <1615801703.3823999.1487001835110.JavaMail.zimbra@redhat.com>
+References: <20170208110255.443-1-chrubis@suse.cz>
+ <20170208110255.443-4-chrubis@suse.cz>
+ <1615801703.3823999.1487001835110.JavaMail.zimbra@redhat.com>
+Message-ID: <20170213163933.GB10093@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Acked-by: Jan Stancek <jstancek@redhat.com>
----
- lib/tst_device.c | 3 ++-
- runltp           | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+Hi!
+> > There are not used by any test that uses test.sh library.
+> 
+> Not even this one? ./testcases/kernel/fs/fs_readonly/test_robind.sh
+> It sources test.sh and calls tst_mkfs.
 
-diff --git a/lib/tst_device.c b/lib/tst_device.c
-index 24e8c6f..4cefd60 100644
---- a/lib/tst_device.c
-+++ b/lib/tst_device.c
-@@ -41,6 +41,7 @@
- #define LOOP_CONTROL_FILE "/dev/loop-control"
- 
- #define DEV_FILE "test_dev.img"
-+#define DEV_SIZE_MB 256
- 
- static char dev_path[1024];
- static int device_acquired;
-@@ -204,7 +205,7 @@ const char *tst_acquire_device__(unsigned int size)
- 	unsigned int acq_dev_size;
- 	uint64_t ltp_dev_size;
- 
--	acq_dev_size = size > 150 ? size : 150;
-+	acq_dev_size = size > DEV_SIZE_MB ? size : DEV_SIZE_MB;
- 
- 	dev = getenv("LTP_DEV");
- 
-diff --git a/runltp b/runltp
-index f347f55..f081805 100755
---- a/runltp
-+++ b/runltp
-@@ -986,7 +986,7 @@ main()
- create_block()
- {
-     #create a block device
--    dd if=/dev/zero of=${TMP}/test.img bs=1024 count=153600 >/dev/null 2>&1
-+    dd if=/dev/zero of=${TMP}/test.img bs=1024 count=262144 >/dev/null 2>&1
-     if [ $? -ne 0 ]; then
-         echo "Failed to create loopback device image, please check disk space and re-run"
-         return 1
+I've readded the tst_mkfs() to that patch but forget to update the
+commit message, sorry. (that is what you get for pushing patches at the
+end of the day)
+
+Anyway, the patchset is pushed, I will continue to work on the safe
+macros in cleanup tomorrow.
+
 -- 
-2.10.2
-
+Cyril Hrubis
+chrubis@suse.cz
