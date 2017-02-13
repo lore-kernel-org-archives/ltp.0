@@ -1,15 +1,10 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 13 Feb 2017 08:30:02 -0500 (EST)
-Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Redirect to tst_brk_() early
-In-Reply-To: <20170213080929.GB16567@rei.suse.cz>
-References: <20170209144445.22737-1-chrubis@suse.cz>
- <1235532957.2260942.1486655806975.JavaMail.zimbra@redhat.com>
- <20170209161120.GA23109@rei>
- <1865245988.2484651.1486715227566.JavaMail.zimbra@redhat.com>
- <151709822.2486191.1486715702857.JavaMail.zimbra@redhat.com>
- <3c1b0f37-f237-d26a-0d92-c5b37dd5bbc4@redhat.com>
- <20170213080929.GB16567@rei.suse.cz>
-Message-ID: <1698464367.3738204.1486992602576.JavaMail.zimbra@redhat.com>
+Date: Mon, 13 Feb 2017 08:33:52 -0500 (EST)
+Subject: [LTP] [PATCH] mmap16: extend checkpoint wait time during fs fill
+In-Reply-To: <20170213100234.GD16973@rei.lan>
+References: <793ef4af0e7bb8827b5d2bd04321267ad530ed55.1486733825.git.jstancek@redhat.com>
+ <20170213100234.GD16973@rei.lan>
+Message-ID: <1957234398.3738860.1486992832599.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -17,140 +12,29 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 
-
 ----- Original Message -----
 > From: "Cyril Hrubis" <chrubis@suse.cz>
 > To: "Jan Stancek" <jstancek@redhat.com>
 > Cc: ltp@lists.linux.it
-> Sent: Monday, 13 February, 2017 9:09:29 AM
-> Subject: Re: [LTP] [PATCH 1/2] SAFE_MACROS: Redirect to tst_brk_() early
+> Sent: Monday, 13 February, 2017 11:02:34 AM
+> Subject: Re: [LTP] [PATCH] mmap16: extend checkpoint wait time during fs fill
 > 
 > Hi!
-> > How about we provide different version of tst_brkm for library and
-> > different
-> > for tests? For library we obviously want to allow calls from both oldlib
-> > and
-> > newlib code, and redirect as needed. But for tests (users of library) we
-> > would allow only oldlib tests to call tst_brkm.
-> > 
-> > So for tests tst_brkm_ stays the same - NORETURN, for library code, we
-> > use either tst_brk_ or tst_brkm_, which means we'll need to fix any
-> > potential warnings only in library.
-> > 
-> > This also forbids usage of tst_brkm from newlib tests, previously
-> > it was OK if you didn't provide cleanup, now it would reject all
-> > calls from newlib tests.
+> > +
+> > +	/* Give parent enough time to consume FS free blocks */
+> > +	if (tst_checkpoint_wait(0, 60*1000))
+> > +		tst_brkm(TBROK | TERRNO, cleanup,
+> > +			"wait for parent to fill entire space");
 > 
-> This sounds good. The only problem we could hit is some common code
-> outside the lib/ directory used in both newlib and oldlib tests. Which
-> was the original reason I put the redirection directly into the
-> tst_brkm_() code...
+> Hrm, I wonder why I hardcoded the timeout into the library. It would be
+> much better if we could have used the safe variant here.
+> 
+> What about we add TST_SAFE_CHECKPOINT_WAIT2() that would take a timeout
+> parameter. Pretty much the same as we do for WAKE2 that takes a number
+> of processes to wake as a paramter.
 
-Good point, I guess we'd have to do the same as for ltp/lib, that
-is add -DLTPLIB and deal with warnings.
-
----
-
-Or we don't make tst_brkm_ so strict, we keep it as it is,
-but we find way to prevent newlib users only direct usage
-of tst_brkm() macro:
-
-diff --git a/include/old/safe_macros.h b/include/old/safe_macros.h
-index 25001e806c12..96fb0c21876e 100644
---- a/include/old/safe_macros.h
-+++ b/include/old/safe_macros.h
-@@ -331,10 +331,10 @@ static inline int safe_setrlimit(const char *file, const int lineno,
- 
- #define SAFE_IOCTL(cleanup_fn, fd, request, ...)             \
-        ({int ret = ioctl(fd, request, __VA_ARGS__);         \
--         ret < 0 ?                                          \
--          tst_brkm(TBROK | TERRNO, cleanup_fn,              \
--                   "ioctl(%i,%s,...) failed", fd, #request) \
--        : ret;})
-+         if (ret < 0)                                       \
-+             tst_brkm(TBROK | TERRNO, cleanup_fn,           \
-+                   "ioctl(%i,%s,...) failed", fd, #request); \
-+         ret;})
- 
- #endif /* __SAFE_MACROS_H__ */
- #endif /* __TEST_H__ */
-diff --git a/include/old/test.h b/include/old/test.h
-index d49256073741..93d0c360dfca 100644
---- a/include/old/test.h
-+++ b/include/old/test.h
-@@ -34,6 +34,10 @@
- #ifndef __TEST_H__
- #define __TEST_H__
- 
-+#ifdef TST_TEST_H__
-+#error newlib already included
-+#endif
-+
- #include <stdio.h>
- #include <signal.h>
- #include <unistd.h>
-@@ -153,9 +157,19 @@ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
- void tst_brkm_(const char *file, const int lineno, int ttype,
-        void (*func)(void), const char *arg_fmt, ...)
-        __attribute__ ((format (printf, 5, 6))) LTP_ATTRIBUTE_NORETURN;
--#define tst_brkm(ttype, func, arg_fmt, ...) \
--       tst_brkm_(__FILE__, __LINE__, (ttype), (func), \
--                 (arg_fmt), ##__VA_ARGS__)
-+
-+#ifdef LTPLIB
-+#include "ltp_priv.h"
-+# define tst_brkm(flags, cleanup, fmt, ...) do { \
-+               if (tst_test) \
-+                       tst_brk_(__FILE__, __LINE__, flags, fmt, ##__VA_ARGS__); \
-+               else \
-+                       tst_brkm_(__FILE__, __LINE__, flags, cleanup, fmt, ##__VA_ARGS__); \
-+               } while (0)
-+#else
-+# define tst_brkm(flags, cleanup, fmt, ...) \
-+                       tst_brkm_(__FILE__, __LINE__, flags, cleanup, fmt, ##__VA_ARGS__)
-+#endif
- 
- void tst_require_root(void);
- void tst_exit(void) LTP_ATTRIBUTE_NORETURN;
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 7dc371ccf095..463418ab2de2 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -18,6 +18,10 @@
- #ifndef TST_TEST_H__
- #define TST_TEST_H__
- 
-+#ifdef __TEST_H__
-+#error oldlib already included
-+#endif
-+
- #include <unistd.h>
- 
- #include "tst_common.h"
-diff --git a/lib/Makefile b/lib/Makefile
-index 663455ee31ad..6b3f6e1917fb 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -24,7 +24,7 @@ top_srcdir            ?= ..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--CFLAGS                 += -I.
-+CFLAGS                 += -I. -DLTPLIB
- 
- ifneq ($(ANDROID),1)
- FILTER_OUT_DIRS                += android_libpthread android_librt
-
-
-> We would also need to sprinkle the library code with returns as a part
-> of the patch if I'm not mistaken.
-
-Agreed, after removing NORETURN there's no way around that.
-
---
-
-I keep thinking if we shouldn't do those ~30 trivial changes,
-and have one simple tst_brkm() macro for both library and tests.
+Fine by me. Can you push it?
+I can rebase & push patch using new TST_SAFE_CHECKPOINT_WAIT2().
 
 Regards,
 Jan
