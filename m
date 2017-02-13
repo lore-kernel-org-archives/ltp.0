@@ -1,141 +1,52 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 13 Feb 2017 15:07:30 +0100
-Subject: [LTP] [COMMITTED] [PATCH] checkpoints: Add
-	TST_SAFE_CHECKPOINT_WAIT2()
-Message-ID: <20170213140730.5748-1-chrubis@suse.cz>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 13 Feb 2017 15:16:03 +0100
+Subject: [LTP] [COMMITTED][PATCH] mmap16: extend checkpoint wait time during
+	fs fill
+Message-ID: <aa5252d455458cc553c0c475ed84b927dd07e3dc.1486995276.git.jstancek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The new macro allows user to pass timeout parameter as well.
+I'm seeing this test rarely failing on slower systems:
+mmap16      0  TINFO  :  Using test device LTP_DEV='/dev/loop0'
+mmap16      0  TINFO  :  Formatting /dev/loop0 with ext4 opts='-b 1024' extra opts='10240'
+mmap16      1  TBROK  :  tst_checkpoint.c:136: mmap16.c:223: tst_checkpoint_wait(0, 10000): errno=ETIMEDOUT(110): Connection timed out
+mmap16      2  TBROK  :  tst_checkpoint.c:136: Remaining cases broken
+mmap16      1  TBROK  :  tst_checkpoint.c:149: mmap16.c:125: tst_checkpoint_wake(0, 1, 10000): errno=ETIMEDOUT(110): Connection timed out
+mmap16      2  TBROK  :  tst_checkpoint.c:149: Remaining cases broken
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Acked-by: Jan Stancek <jstancek@redhat.com>
+duration=52 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=132
+
+What appears to be happening is that filling entire fs with 1024 chunks
+takes longer than 10 seconds, so child hits TBROK while waiting for
+parent. Parent eventually finishes, but then is unable to wake
+child, which already finished.
+
+Based on output above it looks like it took ~30 seconds to fill the fs
+and then we hit 2 timeouts, making total of ~50 seconds. This patch
+extends this particular checkpoint wait to 60 seconds.
+
+Signed-off-by: Jan Stancek <jstancek@redhat.com>
 ---
- doc/test-writing-guidelines.txt |  6 ++++--
- include/old/old_checkpoint.h    |  7 +++++--
- include/tst_checkpoint.h        |  7 +++++--
- include/tst_checkpoint_fn.h     |  3 ++-
- lib/tst_checkpoint.c            | 12 +++++++++---
- 5 files changed, 25 insertions(+), 10 deletions(-)
+ testcases/kernel/syscalls/mmap/mmap16.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index ee9e08e..41cee58 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -689,6 +689,8 @@ checkpoints before the 'test()' function is called.
+diff --git a/testcases/kernel/syscalls/mmap/mmap16.c b/testcases/kernel/syscalls/mmap/mmap16.c
+index 3f2676bdc2d2..52c291f45bcf 100644
+--- a/testcases/kernel/syscalls/mmap/mmap16.c
++++ b/testcases/kernel/syscalls/mmap/mmap16.c
+@@ -220,7 +220,7 @@ static void do_child(void)
+ 	 * kernel writepage is called, that means data corruption.
+ 	 */
+ 	TST_SAFE_CHECKPOINT_WAKE(NULL, 0);
+-	TST_SAFE_CHECKPOINT_WAIT(NULL, 0);
++	TST_SAFE_CHECKPOINT_WAIT2(NULL, 0, 60*1000);
  
- TST_CHECKPOINT_WAIT(id)
- 
-+TST_CHECKPOINT_WAIT2(id, msec_timeout)
-+
- TST_CHECKPOINT_WAKE(id)
- 
- TST_CHECKPOINT_WAKE2(id, nr_wake)
-@@ -701,8 +703,8 @@ unsigned integer which specifies checkpoint to wake/wait for. As a matter of
- fact it's an index to an array stored in a shared memory, so it starts on
- '0' and there should be enough room for at least of hundred of them.
- 
--The 'TST_CHECKPOINT_WAIT()' suspends process execution until it's woken
--up or until timeout is reached.
-+The 'TST_CHECKPOINT_WAIT()' and 'TST_CHECKPOINT_WAIT2()' suspends process
-+execution until it's woken up or until timeout is reached.
- 
- The 'TST_CHECKPOINT_WAKE()' wakes one process waiting on the checkpoint.
- If no process is waiting the function retries until it success or until
-diff --git a/include/old/old_checkpoint.h b/include/old/old_checkpoint.h
-index 37bdf92..c8ffc92 100644
---- a/include/old/old_checkpoint.h
-+++ b/include/old/old_checkpoint.h
-@@ -41,7 +41,10 @@
- 	tst_checkpoint_init(__FILE__, __LINE__, cleanup_fn)
- 
- #define TST_SAFE_CHECKPOINT_WAIT(cleanup_fn, id) \
--        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id);
-+        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, 0);
-+
-+#define TST_SAFE_CHECKPOINT_WAIT2(cleanup_fn, id, msec_timeout) \
-+        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, msec_timeout);
- 
- #define TST_SAFE_CHECKPOINT_WAKE(cleanup_fn, id) \
-         tst_safe_checkpoint_wake(__FILE__, __LINE__, cleanup_fn, id, 1);
-@@ -51,6 +54,6 @@
- 
- #define TST_SAFE_CHECKPOINT_WAKE_AND_WAIT(cleanup_fn, id) \
-         tst_safe_checkpoint_wake(__FILE__, __LINE__, cleanup_fn, id, 1); \
--        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id);
-+        tst_safe_checkpoint_wait(__FILE__, __LINE__, cleanup_fn, id, 0);
- 
- #endif /* OLD_CHECKPOINT__ */
-diff --git a/include/tst_checkpoint.h b/include/tst_checkpoint.h
-index ae5a68b..fdce2d6 100644
---- a/include/tst_checkpoint.h
-+++ b/include/tst_checkpoint.h
-@@ -21,7 +21,10 @@
- #include "tst_checkpoint_fn.h"
- 
- #define TST_CHECKPOINT_WAIT(id) \
--        tst_safe_checkpoint_wait(__FILE__, __LINE__, NULL, id);
-+        tst_safe_checkpoint_wait(__FILE__, __LINE__, NULL, id, 0);
-+
-+#define TST_CHECKPOINT_WAIT2(id, msec_timeout) \
-+        tst_safe_checkpoint_wait(__FILE__, __LINE__, NULL, id, msec_timeout);
- 
- #define TST_CHECKPOINT_WAKE(id) \
-         tst_safe_checkpoint_wake(__FILE__, __LINE__, NULL, id, 1);
-@@ -31,7 +34,7 @@
- 
- #define TST_CHECKPOINT_WAKE_AND_WAIT(id) \
-         tst_safe_checkpoint_wake(__FILE__, __LINE__, NULL, id, 1); \
--        tst_safe_checkpoint_wait(__FILE__, __LINE__, NULL, id);
-+        tst_safe_checkpoint_wait(__FILE__, __LINE__, NULL, id, 0);
- 
- extern const char *tst_ipc_path;
- extern char *const tst_ipc_envp[];
-diff --git a/include/tst_checkpoint_fn.h b/include/tst_checkpoint_fn.h
-index ebfd22b..0730fb0 100644
---- a/include/tst_checkpoint_fn.h
-+++ b/include/tst_checkpoint_fn.h
-@@ -45,7 +45,8 @@ int tst_checkpoint_wake(unsigned int id, unsigned int nr_wake,
-                         unsigned int msec_timeout);
- 
- void tst_safe_checkpoint_wait(const char *file, const int lineno,
--                              void (*cleanup_fn)(void), unsigned int id);
-+                              void (*cleanup_fn)(void), unsigned int id,
-+			      unsigned int msec_timeout);
- 
- void tst_safe_checkpoint_wake(const char *file, const int lineno,
-                               void (*cleanup_fn)(void), unsigned int id,
-diff --git a/lib/tst_checkpoint.c b/lib/tst_checkpoint.c
-index 5d12ac9..a23bd02 100644
---- a/lib/tst_checkpoint.c
-+++ b/lib/tst_checkpoint.c
-@@ -126,14 +126,20 @@ int tst_checkpoint_wake(unsigned int id, unsigned int nr_wake,
- }
- 
- void tst_safe_checkpoint_wait(const char *file, const int lineno,
--                              void (*cleanup_fn)(void), unsigned int id)
-+                              void (*cleanup_fn)(void), unsigned int id,
-+			      unsigned int msec_timeout)
- {
--	int ret = tst_checkpoint_wait(id, DEFAULT_MSEC_TIMEOUT);
-+	int ret;
-+
-+	if (!msec_timeout)
-+		msec_timeout = DEFAULT_MSEC_TIMEOUT;
-+
-+	ret = tst_checkpoint_wait(id, msec_timeout);
- 
- 	if (ret) {
- 		tst_brkm(TBROK | TERRNO, cleanup_fn,
- 		         "%s:%d: tst_checkpoint_wait(%u, %i)",
--		         file, lineno, id, DEFAULT_MSEC_TIMEOUT);
-+		         file, lineno, id, msec_timeout);
- 	}
- }
- 
+ 	for (offset = FS_BLOCKSIZE; offset < page_size; offset += FS_BLOCKSIZE)
+ 		addr[offset] = 'a';
 -- 
-2.10.2
+1.8.3.1
 
