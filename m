@@ -1,55 +1,156 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Mon, 13 Feb 2017 13:43:07 +0100
-Subject: [LTP] madvise07.c:72: FAIL: Did not receive SIGBUS
-In-Reply-To: <20170213090837.GA16973@rei.lan>
-References: <CAEemH2ddpwBet_2crzv+sOJ9P84fscFH1re4SCo1dD_PKGgsgA@mail.gmail.com>
- <20170213090837.GA16973@rei.lan>
-Message-ID: <20170213134307.0bb5fab0@linux-v3j5>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 13 Feb 2017 08:30:02 -0500 (EST)
+Subject: [LTP] [PATCH 1/2] SAFE_MACROS: Redirect to tst_brk_() early
+In-Reply-To: <20170213080929.GB16567@rei.suse.cz>
+References: <20170209144445.22737-1-chrubis@suse.cz>
+ <1235532957.2260942.1486655806975.JavaMail.zimbra@redhat.com>
+ <20170209161120.GA23109@rei>
+ <1865245988.2484651.1486715227566.JavaMail.zimbra@redhat.com>
+ <151709822.2486191.1486715702857.JavaMail.zimbra@redhat.com>
+ <3c1b0f37-f237-d26a-0d92-c5b37dd5bbc4@redhat.com>
+ <20170213080929.GB16567@rei.suse.cz>
+Message-ID: <1698464367.3738204.1486992602576.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hello Li & Metan,
 
-On Mon, 13 Feb 2017 10:08:37 +0100
-"Cyril Hrubis" <chrubis@suse.cz> wrote:
 
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: "Jan Stancek" <jstancek@redhat.com>
+> Cc: ltp@lists.linux.it
+> Sent: Monday, 13 February, 2017 9:09:29 AM
+> Subject: Re: [LTP] [PATCH 1/2] SAFE_MACROS: Redirect to tst_brk_() early
+> 
 > Hi!
-> > I'm trying to run ltp on upstream kernel-4.10.0-rc7, and found that
-> > madvise07 always failing with no SIGBUS received when mmap the PRIVATE
-> > memory. I hope to know if there're some relevant stuff about this
-> > issue.
-> > Any discussion or document for that?  
-> 
-> Looks like a plain old kernel bug to me.
-
-Sorry, I have to admit that I knew this fails, but did not follow it up before
-submitting the patch! don't know whether it is a bug, or if MADV_HWPOISON is
-not intended to work with private memory. I would assume that it is a bug
-judging by the man pages.
-
-> 
-> > # uname -r
-> > 4.10.0-rc7
+> > How about we provide different version of tst_brkm for library and
+> > different
+> > for tests? For library we obviously want to allow calls from both oldlib
+> > and
+> > newlib code, and redirect as needed. But for tests (users of library) we
+> > would allow only oldlib tests to call tst_brkm.
 > > 
-> > # ./madvise07
-> > tst_test.c:794: INFO: Timeout per run is 0h 05m 00s
-> > madvise07.c:57: INFO: madvise(0x7f25bdd7e000, 4096, MADV_HWPOISON)
-> > madvise07.c:72: FAIL: Did not receive SIGBUS after accessing
-> > MAP_PRIVATE memory marked with MADV_HWPOISON  
+> > So for tests tst_brkm_ stays the same - NORETURN, for library code, we
+> > use either tst_brk_ or tst_brkm_, which means we'll need to fix any
+> > potential warnings only in library.
+> > 
+> > This also forbids usage of tst_brkm from newlib tests, previously
+> > it was OK if you didn't provide cleanup, now it would reject all
+> > calls from newlib tests.
 > 
-> If you reach this TFAIL the child wasn't killed with a signal after it
-> accessed memory marked with MADV_HWPOISON.
-> 
-> What hardware is this?
-> 
-> > madvise07.c:57: INFO: madvise(0x7f25bdd7e000, 4096, MADV_HWPOISON)
-> > madvise07.c:90: PASS: madvise(..., MADV_HWPOISON) on MAP_SHARED memory  
-> 
+> This sounds good. The only problem we could hit is some common code
+> outside the lib/ directory used in both newlib and oldlib tests. Which
+> was the original reason I put the redirection directly into the
+> tst_brkm_() code...
 
-I know that it fails on x86_64 and ppc64le.
+Good point, I guess we'd have to do the same as for ltp/lib, that
+is add -DLTPLIB and deal with warnings.
 
-Thank you,
-Richard.
+---
+
+Or we don't make tst_brkm_ so strict, we keep it as it is,
+but we find way to prevent newlib users only direct usage
+of tst_brkm() macro:
+
+diff --git a/include/old/safe_macros.h b/include/old/safe_macros.h
+index 25001e806c12..96fb0c21876e 100644
+--- a/include/old/safe_macros.h
++++ b/include/old/safe_macros.h
+@@ -331,10 +331,10 @@ static inline int safe_setrlimit(const char *file, const int lineno,
+ 
+ #define SAFE_IOCTL(cleanup_fn, fd, request, ...)             \
+        ({int ret = ioctl(fd, request, __VA_ARGS__);         \
+-         ret < 0 ?                                          \
+-          tst_brkm(TBROK | TERRNO, cleanup_fn,              \
+-                   "ioctl(%i,%s,...) failed", fd, #request) \
+-        : ret;})
++         if (ret < 0)                                       \
++             tst_brkm(TBROK | TERRNO, cleanup_fn,           \
++                   "ioctl(%i,%s,...) failed", fd, #request); \
++         ret;})
+ 
+ #endif /* __SAFE_MACROS_H__ */
+ #endif /* __TEST_H__ */
+diff --git a/include/old/test.h b/include/old/test.h
+index d49256073741..93d0c360dfca 100644
+--- a/include/old/test.h
++++ b/include/old/test.h
+@@ -34,6 +34,10 @@
+ #ifndef __TEST_H__
+ #define __TEST_H__
+ 
++#ifdef TST_TEST_H__
++#error newlib already included
++#endif
++
+ #include <stdio.h>
+ #include <signal.h>
+ #include <unistd.h>
+@@ -153,9 +157,19 @@ void tst_resm_hexd_(const char *file, const int lineno, int ttype,
+ void tst_brkm_(const char *file, const int lineno, int ttype,
+        void (*func)(void), const char *arg_fmt, ...)
+        __attribute__ ((format (printf, 5, 6))) LTP_ATTRIBUTE_NORETURN;
+-#define tst_brkm(ttype, func, arg_fmt, ...) \
+-       tst_brkm_(__FILE__, __LINE__, (ttype), (func), \
+-                 (arg_fmt), ##__VA_ARGS__)
++
++#ifdef LTPLIB
++#include "ltp_priv.h"
++# define tst_brkm(flags, cleanup, fmt, ...) do { \
++               if (tst_test) \
++                       tst_brk_(__FILE__, __LINE__, flags, fmt, ##__VA_ARGS__); \
++               else \
++                       tst_brkm_(__FILE__, __LINE__, flags, cleanup, fmt, ##__VA_ARGS__); \
++               } while (0)
++#else
++# define tst_brkm(flags, cleanup, fmt, ...) \
++                       tst_brkm_(__FILE__, __LINE__, flags, cleanup, fmt, ##__VA_ARGS__)
++#endif
+ 
+ void tst_require_root(void);
+ void tst_exit(void) LTP_ATTRIBUTE_NORETURN;
+diff --git a/include/tst_test.h b/include/tst_test.h
+index 7dc371ccf095..463418ab2de2 100644
+--- a/include/tst_test.h
++++ b/include/tst_test.h
+@@ -18,6 +18,10 @@
+ #ifndef TST_TEST_H__
+ #define TST_TEST_H__
+ 
++#ifdef __TEST_H__
++#error oldlib already included
++#endif
++
+ #include <unistd.h>
+ 
+ #include "tst_common.h"
+diff --git a/lib/Makefile b/lib/Makefile
+index 663455ee31ad..6b3f6e1917fb 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -24,7 +24,7 @@ top_srcdir            ?= ..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-CFLAGS                 += -I.
++CFLAGS                 += -I. -DLTPLIB
+ 
+ ifneq ($(ANDROID),1)
+ FILTER_OUT_DIRS                += android_libpthread android_librt
+
+
+> We would also need to sprinkle the library code with returns as a part
+> of the patch if I'm not mistaken.
+
+Agreed, after removing NORETURN there's no way around that.
+
+--
+
+I keep thinking if we shouldn't do those ~30 trivial changes,
+and have one simple tst_brkm() macro for both library and tests.
+
+Regards,
+Jan
