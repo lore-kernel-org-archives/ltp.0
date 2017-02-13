@@ -1,71 +1,55 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 13 Feb 2017 13:28:26 +0100
-Subject: [LTP] [COMMITTED] [PATCH] Fix "missing terminating ' character"
-	warnings
-Message-ID: <20170213122826.30361-1-chrubis@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 13 Feb 2017 13:43:07 +0100
+Subject: [LTP] madvise07.c:72: FAIL: Did not receive SIGBUS
+In-Reply-To: <20170213090837.GA16973@rei.lan>
+References: <CAEemH2ddpwBet_2crzv+sOJ9P84fscFH1re4SCo1dD_PKGgsgA@mail.gmail.com>
+ <20170213090837.GA16973@rei.lan>
+Message-ID: <20170213134307.0bb5fab0@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The commit:
+Hello Li & Metan,
 
-commit 428936358a66163d564cd4de2eb36a0e2be76f2b
-Author: Steven Jackson <sj@oscode.net>
-Date:   Tue Jan 17 12:14:25 2017 +0000
+On Mon, 13 Feb 2017 10:08:37 +0100
+"Cyril Hrubis" <chrubis@suse.cz> wrote:
 
-Introduced warnings:
+> Hi!
+> > I'm trying to run ltp on upstream kernel-4.10.0-rc7, and found that
+> > madvise07 always failing with no SIGBUS received when mmap the PRIVATE
+> > memory. I hope to know if there're some relevant stuff about this
+> > issue.
+> > Any discussion or document for that?  
+> 
+> Looks like a plain old kernel bug to me.
 
- warning: missing terminating ' character
-  #warning DEV_BSIZE isn't defined, defaulting to 512
+Sorry, I have to admit that I knew this fails, but did not follow it up before
+submitting the patch! don't know whether it is a bug, or if MADV_HWPOISON is
+not intended to work with private memory. I would assume that it is a bug
+judging by the man pages.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- lib/bytes_by_prefix.c                   | 2 +-
- lib/write_log.c                         | 2 +-
- testcases/kernel/syscalls/read/read01.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> > # uname -r
+> > 4.10.0-rc7
+> > 
+> > # ./madvise07
+> > tst_test.c:794: INFO: Timeout per run is 0h 05m 00s
+> > madvise07.c:57: INFO: madvise(0x7f25bdd7e000, 4096, MADV_HWPOISON)
+> > madvise07.c:72: FAIL: Did not receive SIGBUS after accessing
+> > MAP_PRIVATE memory marked with MADV_HWPOISON  
+> 
+> If you reach this TFAIL the child wasn't killed with a signal after it
+> accessed memory marked with MADV_HWPOISON.
+> 
+> What hardware is this?
+> 
+> > madvise07.c:57: INFO: madvise(0x7f25bdd7e000, 4096, MADV_HWPOISON)
+> > madvise07.c:90: PASS: madvise(..., MADV_HWPOISON) on MAP_SHARED memory  
+> 
 
-diff --git a/lib/bytes_by_prefix.c b/lib/bytes_by_prefix.c
-index e93c70f..797442c 100644
---- a/lib/bytes_by_prefix.c
-+++ b/lib/bytes_by_prefix.c
-@@ -61,7 +61,7 @@
- #ifdef DEV_BSIZE
- #define B_MULT	DEV_BSIZE	/* block size */
- #else
--#warning DEV_BSIZE isn't defined, defaulting to 512
-+#warning DEV_BSIZE is not defined, defaulting to 512
- #define B_MULT	512
- #endif
- 
-diff --git a/lib/write_log.c b/lib/write_log.c
-index 6e4239e..e8ef9c7 100644
---- a/lib/write_log.c
-+++ b/lib/write_log.c
-@@ -77,7 +77,7 @@
- #ifdef DEV_BSIZE
- #define BSIZE DEV_BSIZE
- #else
--#warning DEV_BSIZE isn't defined, defaulting to 512
-+#warning DEV_BSIZE is not defined, defaulting to 512
- #define BSIZE 512
- #endif
- #endif
-diff --git a/testcases/kernel/syscalls/read/read01.c b/testcases/kernel/syscalls/read/read01.c
-index afe2a65..9abfdb8 100644
---- a/testcases/kernel/syscalls/read/read01.c
-+++ b/testcases/kernel/syscalls/read/read01.c
-@@ -123,7 +123,7 @@
- #ifdef DEV_BSIZE
- #define READ_BLOCK_SIZE DEV_BSIZE
- #else
--#warning DEV_BSIZE isn't defined, defaulting to 512
-+#warning DEV_BSIZE is not defined, defaulting to 512
- #define READ_BLOCK_SIZE 512
- #endif
- 
--- 
-2.10.2
+I know that it fails on x86_64 and ppc64le.
 
+Thank you,
+Richard.
