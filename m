@@ -1,87 +1,74 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 13 Feb 2017 17:35:48 +0100
-Subject: [LTP] [COMMITTED] [PATCH 4/6] test.sh: Remove tst_{acquire,
-	release}_device, tst_mkfs
+Date: Mon, 13 Feb 2017 17:35:49 +0100
+Subject: [LTP] [COMMITTED] [PATCH 5/6] tst_test.sh: Make use of tst_device
+	helper
 In-Reply-To: <20170213163550.10967-1-chrubis@suse.cz>
 References: <20170213163550.10967-1-chrubis@suse.cz>
-Message-ID: <20170213163550.10967-4-chrubis@suse.cz>
+Message-ID: <20170213163550.10967-5-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-There are not used by any test that uses test.sh library.
-
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 Acked-by: Jan Stancek <jstancek@redhat.com>
 ---
- testcases/lib/test.sh | 52 ---------------------------------------------------
- 1 file changed, 52 deletions(-)
+ testcases/lib/tst_test.sh | 31 +++++--------------------------
+ 1 file changed, 5 insertions(+), 26 deletions(-)
 
-diff --git a/testcases/lib/test.sh b/testcases/lib/test.sh
-index 48172d3..2e4d868 100644
---- a/testcases/lib/test.sh
-+++ b/testcases/lib/test.sh
-@@ -288,58 +288,6 @@ EXPECT_FAIL()
+diff --git a/testcases/lib/tst_test.sh b/testcases/lib/tst_test.sh
+index b9ac938..087adda 100644
+--- a/testcases/lib/tst_test.sh
++++ b/testcases/lib/tst_test.sh
+@@ -41,12 +41,8 @@ tst_do_exit()
  	fi
- }
  
--tst_acquire_device()
--{
--	local acq_dev_size=${1:-150}
+ 	if [ "$TST_NEEDS_DEVICE" = 1 -a "$TST_DEVICE_FLAG" = 1 ]; then
+-		losetup -a | grep -q "$TST_DEVICE"
+-		if [ $? -eq 0 ]; then
+-			losetup -d "$TST_DEVICE"
+-			if [ $? -ne 0 ]; then
+-				tst_res TWARN "'losetup -d $TST_DEVICE' failed"
+-			fi
++		if ! tst_device release "$TST_DEVICE"; then
++			tst_res TWARN "Failed to release device '$TST_DEVICE'"
+ 		fi
+ 	fi
+ 
+@@ -309,29 +305,12 @@ tst_run()
+ 			tst_brk "Use TST_NEEDS_TMPDIR must be set for TST_NEEDS_DEVICE"
+ 		fi
+ 
+-		if [ -n "${LTP_DEV}" ]; then
+-			tst_res TINFO "Using test device LTP_DEV='${LTP_DEV}'"
+-			if [ ! -b ${LTP_DEV} ]; then
+-				tst_brkm TBROK "${LTP_DEV} is not a block device"
+-			fi
 -
--	if [ -z ${TST_TMPDIR} ]; then
--		tst_brkm "Use 'tst_tmpdir' before 'tst_acquire_device'"
--	fi
+-			ROD_SILENT dd if=/dev/zero of="${LTP_DEV}" bs=1024 count=512
 -
--	ltp_dev_size=$((`blockdev --getsize64 $LTP_DEV`/1024/1024))
--
--	if [ -n "${LTP_DEV}" ] && [ ${acq_dev_size} -le ${ltp_dev_size} ]; then
--		tst_resm TINFO "Using test device LTP_DEV='${LTP_DEV}'"
--		if [ ! -b ${LTP_DEV} ]; then
--			tst_brkm TBROK "${LTP_DEV} is not a block device"
+-			TST_DEVICE=${LTP_DEV}
+-			TST_DEVICE_FLAG=0
+-			return
 -		fi
 -
--		ROD_SILENT dd if=/dev/zero of="${LTP_DEV}" bs=1024 count=512
+-		ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=153600
++		TST_DEVICE=$(tst_device acquire)
+ 
+-		TST_DEVICE=$(losetup -f)
+-		if [ $? -ne 0 ]; then
+-			tst_brk TBROK "Couldn't find free loop device"
++		if [ -z "$TST_DEVICE" ]; then
++			tst_brk "Failed to acquire device"
+ 		fi
+ 
+-		tst_res TINFO "Found free device '${TST_DEVICE}'"
 -
--		TST_DEVICE=${LTP_DEV}
--		TST_DEVICE_FLAG=0
--		return
--	fi
--
--	ROD_SILENT dd if=/dev/zero of=test_dev.img bs=1024 count=$((1024*$acq_dev_size))
--
--	TST_DEVICE=$(losetup -f)
--	if [ $? -ne 0 ]; then
--		tst_brkm TBROK "Couldn't find free loop device"
--	fi
--
--	tst_resm TINFO "Found free device '${TST_DEVICE}'"
--
--	ROD_SILENT losetup ${TST_DEVICE} test_dev.img
--
--	TST_DEVICE_FLAG=1
--}
--
--tst_release_device()
--{
--	if [ ${TST_DEVICE_FLAG} -eq 0 ]; then
--		return
--	fi
--
--	losetup -a | grep -q ${TST_DEVICE}
--	if [ $? -eq 0 ]; then
--		losetup -d ${TST_DEVICE}
--		if [ $? -ne 0 ];then
--			tst_resm TWARN "'losetup -d ${TST_DEVICE}' failed"
--		fi
--	fi
--}
--
- tst_mkfs()
- {
- 	local fs_type=$1
+-		ROD_SILENT losetup ${TST_DEVICE} test_dev.img
+ 		TST_DEVICE_FLAG=1
+ 	fi
+ 
 -- 
 2.10.2
 
