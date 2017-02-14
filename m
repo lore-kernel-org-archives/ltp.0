@@ -1,72 +1,45 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 14 Feb 2017 12:50:54 +0300
-Subject: [LTP] [PATCH v2 4/4] network: migrate rpc_test.sh to use
-	test_net.sh
-In-Reply-To: <20170208144500.27340-4-pvorel@suse.cz>
-References: <20170208144500.27340-1-pvorel@suse.cz>
- <20170208144500.27340-4-pvorel@suse.cz>
-Message-ID: <0995acb3-33c4-7b3c-2b4a-5c24b024e0bd@oracle.com>
+From: Travis CI <builds@travis-ci.org>
+Date: Tue, 14 Feb 2017 09:55:03 +0000
+Subject: [LTP] Passed: linux-test-project/ltp#81 (master - 65490b0)
+In-Reply-To: <linux-test-project/ltp+201446544+passed@travis-ci.org>
+Message-ID: <58a2d3f7629b1_43f9ea87d4bd88036d1@939a1afb-d1dc-45d0-871a-c97cd4de14a3.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 08.02.2017 17:45, Petr Vorel wrote:
-> This fixes missing LTPROOT environment variable.
->
-> Many tests are failing when using netns.
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-I tried to run this tests in netns, it seems that rpcbind (listening
-port)not available in netns as a results tests are failing. If we
-make the clientrun in network namespace, tests pass. Actually, I had
-only twofailures:
+Build: #81
+Status: Passed
 
-rpc_test.sh -c rpc_xprt_register
-[...]
-rpc_xprt_register 1 TBROK : 'rpc_xprt_register 10.0.0.2 536875000 '
-failed on '': 'rpc_xprt_register: svc_fd_create: could not retrieve
-local addr
-rpc_xprt_register: svc.c:96: xprt_register: Assertion `xprt != ((void
-*)0)' failed.
-sh: line 1: 20123 Aborted                 (core dumped)
-rpc_xprt_register 10.0.0.2 536875000'
+Duration: 7 minutes and 35 seconds
+Commit: 65490b0 (master)
+Author: Cyril Hrubis
+Message: lib: tst_mkfs: Fix typos
 
-and the similar one:
-rpc_test.sh -c rpc_xprt_unregister
+Fix typos caused by:
 
+commit b0a30feb08732bcaacd77a5457947af1d4f14fb4
+Author: Cyril Hrubis <chrubis@suse.cz>
+Date:   Mon Feb 13 17:15:38 2017 +0100
 
-What I did (above your patch):
+lib: tst_mkfs: Include __FILE__ and __LINE__ in tst_brkm messages
 
---- a/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-+++ b/testcases/network/rpc/rpc-tirpc/rpc_test.sh
-@@ -31,8 +31,8 @@ SERVER_STARTUP_SLEEP=1
- cleanup()
- {
-        if [ ! -z "$SERVER" ]; then
--               tst_rhost_run -c "killall -9 $SERVER"
--               tst_rhost_run -c "$CLEANER $PROGNUMNOSVC"
-+               killall -9 $SERVER
-+               $CLEANER $PROGNUMNOSVC
-        fi
- }
+Again sorry everyone.
 
-@@ -86,12 +86,11 @@ TST_CLEANUP=cleanup
- . test_net.sh
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
- if [ ! -z "$SERVER" ]; then
--       tst_rhost_run -b -c "$SERVER $PROGNUMNOSVC"
-+       $SERVER $PROGNUMNOSVC &
-        sleep "$SERVER_STARTUP_SLEEP"
- fi
+View the changeset: https://github.com/linux-test-project/ltp/compare/fc16fa65a40f...65490b0c74ab
 
--"$CLIENT" "$(tst_ipaddr rhost)" "$PROGNUMNOSVC" $CLIENT_EXTRA_OPTS
--ret=$?
-+tst_rhost_run -sc "$CLIENT $(tst_ipaddr) $PROGNUMNOSVC $CLIENT_EXTRA_OPTS"
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/201446544
 
-Note, last command would exit the test with TBROK if something bad
-happened, so we just need TPASS after that.
+--
 
-Best regards,
-Alexey
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
 
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170214/7150af84/attachment.html>
