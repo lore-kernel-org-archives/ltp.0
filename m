@@ -1,76 +1,46 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 14 Feb 2017 16:53:20 +0800
-Subject: [LTP] [PATCH 1/2] ltp-aiodio/dio_sparse: Fix write in
-	dio_sparse()
-In-Reply-To: <20170209093152.GA12673@rei.lan>
-References: <1484818349-30539-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20170124134057.GC29054@rei.lan> <58882AA5.90906@cn.fujitsu.com>
- <589C2EA5.6040707@cn.fujitsu.com> <20170209093152.GA12673@rei.lan>
-Message-ID: <58A2C580.7050401@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 14 Feb 2017 10:28:52 +0100
+Subject: [LTP] [COMMITED] [PATCH 1/3] lib/tst_tmpdir.c: fix compilation with
+	older libc
+Message-ID: <20170214092854.26536-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
 
-On 02/09/2017 05:31 PM, Cyril Hrubis wrote:
-> Hi!
->>>>>  	memset(bufptr, 0, writesize);
->>>>>  	lseek(fd, offset, SEEK_SET);
->>>>> -	for (i = offset; i < filesize;) {
->>>>> +	for (i = 0; i < filesize;) {
->>>>>  		if ((w = write(fd, bufptr, writesize)) != writesize) {
->>>>>  			tst_resm(TBROK | TERRNO, "write() returned %d", w);
->>>>>  			close(fd);
->>>>
->>>> Hmm, it looks to me like the code actually does what it should have.
->>>> Since we pass a filesize and offset so the test should actually write
->>>> filesize - offset bytes. As far as I can tell the bug here is that the
->>>> test is not checking that filesize > offset before it starts.
->>>
->>> Sorry, but shouldn't we write the whole "writesize" from the "offset"?
->>> ADSP080 ADSP081 ADSP082 ADSP083 did reproduce the BUG via above modification...
->>
->> I think we pass an "offset" is to make sure writing from the file offset,
->> but the actual write size should be just the "writesize" argument.
->>
->> As the second case of kernel commit 9ecd10b says:
->>     2. Direct writes starting from or beyong i_size (not inside i_size)
->>        also could trigger block allocation and expose stale data.  For
->>        example, consider a sparse file with i_size of 2k, and a write to
->>        offset 2k or 3k into the file, with a filesystem block size of 4k.
->>        (Thanks to Jeff Moyer for pointing this case out in his review.)
-> 
-> Ah, looking at the git log, the offset was just added recently, that's
-> why the code is confusing, previously the filesize was size of the
-> file...
+Compilation fails because of undefined __USE_GNU on RHEL5.11GA.
+So we need to define _GNU_SOURCE to make __USE_GNU defined.
 
-Yes, it seems that the code get confusing after the offset was added,
-and yes, previously the filesize was the size of the file, but sorry,
-according to my understanding it still represents the size of the file now.
+This has been broken by commmit:
 
-> 
-> So what about we rename the writesize to blocksize and filesize to
-> writesize so that it's clear what the function dio_sparse does.
-> 
-> int dio_sparse(char *filename, int align, int blocksize, int writesize, int offset)
-> 
-> Also shouldn't we truncate the file to offset + filesize rather than
-> just filesize? And then pass the size to the children as offset +
-> filesize as well?
+commit fc0c72a85a9de6a846587855c3c40394a6782616
+Author: Cyril Hrubis <chrubis@suse.cz>
+Date:   Mon Feb 13 15:35:09 2017 +0100
 
-In my humble opinion, there was no problem at all in the code before
-the offset was added, and look at the commit message of adding offset,
-the aim is to achieve the second case of kernel commit 9ecd10b above,
-make it to direct write from or beyond the end of the file.
+lib: Move rmobj() to tst_tmpdir.c
 
-So, I think the writesize, filesize and offset should be independent of
-each other, the "offset" here is not filesize's offset (i.e. filesize
-does not calculate with offset), but only to decide where we write start from.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Acked-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_tmpdir.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best Regards,
-Guangwen Feng 
-
+diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
+index 71ca3b9..405d377 100644
+--- a/lib/tst_tmpdir.c
++++ b/lib/tst_tmpdir.c
+@@ -56,7 +56,7 @@
+  *		Neither tst_tmpdir() or tst_rmdir() has a return value.
+  *
+  *********************************************************/
+-
++#define _GNU_SOURCE
+ #include <sys/mman.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-- 
+2.10.2
 
