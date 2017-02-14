@@ -1,183 +1,293 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 14 Feb 2017 16:26:37 +0100
-Subject: [LTP] [PATCH 1/3] tst_test: Handle device mkfs/mount int the library
-Message-ID: <20170214152639.11603-1-chrubis@suse.cz>
+Date: Tue, 14 Feb 2017 16:26:38 +0100
+Subject: [LTP] [PATCH 2/3] syscalls: Make use of format_device/mount_device
+	flags
+In-Reply-To: <20170214152639.11603-1-chrubis@suse.cz>
+References: <20170214152639.11603-1-chrubis@suse.cz>
+Message-ID: <20170214152639.11603-2-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This commit adds functionality to format and then mount the test device
-to the test library which:
-
-* Saves a few setup steps in most of the testcases that use test device
-
-* The device is umounted in the test library process now -> it will be
-  umounted even if the test process has segfaulted.
-
-+ docs
-
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- doc/test-writing-guidelines.txt | 14 ++++++++++++--
- include/tst_test.h              | 18 +++++++++++++++++-
- lib/newlib_tests/tst_device.c   |  4 ++--
- lib/tst_test.c                  | 39 +++++++++++++++++++++++++++++++++++++--
- 4 files changed, 68 insertions(+), 7 deletions(-)
+ testcases/kernel/syscalls/access/access04.c     | 18 +++---------------
+ testcases/kernel/syscalls/creat/creat06.c       | 20 +++-----------------
+ testcases/kernel/syscalls/quotactl/quotactl01.c | 19 ++++---------------
+ testcases/kernel/syscalls/quotactl/quotactl02.c | 20 ++++----------------
+ testcases/kernel/syscalls/umount/umount01.c     |  4 +---
+ testcases/kernel/syscalls/umount/umount02.c     |  3 +--
+ testcases/kernel/syscalls/umount/umount03.c     |  3 +--
+ 7 files changed, 17 insertions(+), 70 deletions(-)
 
-diff --git a/doc/test-writing-guidelines.txt b/doc/test-writing-guidelines.txt
-index a33efb1..4256427 100644
---- a/doc/test-writing-guidelines.txt
-+++ b/doc/test-writing-guidelines.txt
-@@ -911,8 +911,18 @@ structure is initialized with a path to a test device and default filesystem
- to be used.
+diff --git a/testcases/kernel/syscalls/access/access04.c b/testcases/kernel/syscalls/access/access04.c
+index f43c38c..820aab6 100644
+--- a/testcases/kernel/syscalls/access/access04.c
++++ b/testcases/kernel/syscalls/access/access04.c
+@@ -54,7 +54,6 @@
  
- You can also request minimal device size in megabytes by setting
--'.device_min_size' in the 'struct tst_test' structure. The device is
--guaranteed to have at least the requested size then.
-+'.dev_min_size' the device is guaranteed to have at least the requested size
-+then.
-+
-+If '.format_device' flag is set the device is formatted with a filesystem as
-+well. You can use '.dev_fs_type' to override the default filesystem type if
-+needed and pass additional options to mkfs via '.dev_fs_opts' and
-+'.dev_extra_opt' pointers.
-+
-+If '.mount_device' is set, the device is mounted at '.mntpoint' which is used
-+to pass a directory name that will be created and used as mount destination.
-+You can pass additional flags and data to the mount command via '.mnt_flags'
-+and '.mnt_data' pointers.
+ static uid_t uid;
+ static char longpathname[PATH_MAX + 2];
+-int mount_flag;
  
- [source,c]
- -------------------------------------------------------------------------------
-diff --git a/include/tst_test.h b/include/tst_test.h
-index 1ed39db..b196a7d 100644
---- a/include/tst_test.h
-+++ b/include/tst_test.h
-@@ -117,8 +117,24 @@ struct tst_test {
- 	int forks_child:1;
- 	int needs_device:1;
- 	int needs_checkpoints:1;
-+	int format_device:1;
-+	int mount_device:1;
+ static struct tcase {
+ 	const char *pathname;
+@@ -119,18 +118,6 @@ static void setup(void)
  
--	unsigned int device_min_size;
-+	/* Minimal device size in bytes */
-+	unsigned int dev_min_size;
-+
-+	/* Device filesystem type override NULL == default */
-+	const char *dev_fs_type;
-+
-+	/* Options passed to SAFE_MKFS() when format_device is set */
-+	struct tst_dev_opts *dev_opts;
-+	const char *const *dev_fs_opts;
-+	const char *dev_extra_opt;
-+
-+	/* Device mount options, used if mount_device is set */
-+	const char *mntpoint;
-+	unsigned int mnt_flags;
-+	void *mnt_data;
+ 	SAFE_SYMLINK(SNAME1, SNAME2);
+ 	SAFE_SYMLINK(SNAME2, SNAME1);
+-
+-	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
+-	SAFE_MKDIR(MNT_POINT, 0755);
+-	SAFE_MOUNT(tst_device->dev, MNT_POINT, tst_device->fs_type,
+-		MS_RDONLY, NULL);
+-	mount_flag = 1;
+-}
+-
+-static void cleanup(void)
+-{
+-	if (mount_flag)
+-		tst_umount(MNT_POINT);
+ }
  
- 	/* override default timeout per test run */
- 	unsigned int timeout;
-diff --git a/lib/newlib_tests/tst_device.c b/lib/newlib_tests/tst_device.c
-index 72c2033..9bcdce1 100644
---- a/lib/newlib_tests/tst_device.c
-+++ b/lib/newlib_tests/tst_device.c
-@@ -37,7 +37,7 @@ static void do_test(void)
- 	SAFE_IOCTL(fd, BLKGETSIZE64, &ltp_dev_size);
- 	SAFE_CLOSE(fd);
- 
--	if (ltp_dev_size/1024/1024 == 160)
-+	if (ltp_dev_size/1024/1024 == 300)
- 		tst_res(TPASS, "Got expected device size");
- 	else
- 		tst_res(TFAIL, "Got unexpected device size");
-@@ -47,6 +47,6 @@ static struct tst_test test = {
- 	.tid = "tst_device",
+ static struct tst_test test = {
+@@ -138,9 +125,10 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
  	.needs_tmpdir = 1,
- 	.needs_device = 1,
--	.device_min_size = 160,
-+	.dev_min_size = 300,
- 	.test_all = do_test,
+ 	.needs_root = 1,
+-	.needs_device = 1,
+ 	.forks_child = 1,
++	.mount_device = 1,
++	.mntpoint = MNT_POINT,
++	.mnt_flags = MS_RDONLY,
+ 	.setup = setup,
+-	.cleanup = cleanup,
+ 	.test = verify_access,
  };
-diff --git a/lib/tst_test.c b/lib/tst_test.c
-index f19f763..f87d9a9 100644
---- a/lib/tst_test.c
-+++ b/lib/tst_test.c
-@@ -40,6 +40,7 @@ struct tst_test *tst_test;
- static int iterations = 1;
- static float duration = -1;
- static pid_t main_pid, lib_pid;
-+static int device_mounted;
+diff --git a/testcases/kernel/syscalls/creat/creat06.c b/testcases/kernel/syscalls/creat/creat06.c
+index 73913cd..db0850a 100644
+--- a/testcases/kernel/syscalls/creat/creat06.c
++++ b/testcases/kernel/syscalls/creat/creat06.c
+@@ -71,7 +71,6 @@
+ #define	MODE2		0666
  
- struct results {
- 	int passed;
-@@ -644,6 +645,14 @@ static void do_setup(int argc, char *argv[])
- 	if (tst_test->min_kver)
- 		check_kver();
+ static void setup(void);
+-static void cleanup(void);
+ static void test6_setup(void);
+ static void test6_cleanup(void);
+ #if !defined(UCLINUX)
+@@ -80,7 +79,6 @@ static void bad_addr_setup(int);
  
-+	if (tst_test->format_device)
-+		tst_test->needs_device = 1;
-+
-+	if (tst_test->mount_device) {
-+		tst_test->needs_device = 1;
-+		tst_test->format_device = 1;
-+	}
-+
- 	parse_opts(argc, argv);
+ static struct passwd *ltpuser;
+ static char long_name[PATH_MAX+2];
+-static int mount_flag;
  
- 	setup_ipc();
-@@ -652,13 +661,36 @@ static void do_setup(int argc, char *argv[])
- 		tst_tmpdir();
+ static struct test_case_t {
+ 	char *fname;
+@@ -140,13 +138,6 @@ static void setup(void)
  
- 	if (tst_test->needs_device) {
--		tdev.dev = tst_acquire_device_(NULL, tst_test->device_min_size);
--		tdev.fs_type = tst_dev_fs_type();
-+		tdev.dev = tst_acquire_device_(NULL, tst_test->dev_min_size);
+ 	SAFE_SYMLINK(TEST7_FILE, "test_file_eloop2");
+ 	SAFE_SYMLINK("test_file_eloop2", TEST7_FILE);
+-
+-	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
+-
+-	SAFE_MKDIR("mntpoint", 0777);
+-	SAFE_MOUNT(tst_device->dev, "mntpoint", tst_device->fs_type,
+-	           MS_RDONLY, NULL);
+-	mount_flag = 1;
+ }
  
- 		if (!tdev.dev)
- 			tst_brk(TCONF, "Failed to acquire device");
+ #if !defined(UCLINUX)
+@@ -170,19 +161,14 @@ static void test6_cleanup(void)
+ 	SAFE_SETEUID(0);
+ }
  
- 		tst_device = &tdev;
-+
-+		if (tst_test->dev_fs_type)
-+			tdev.fs_type = tst_test->dev_fs_type;
-+		else
-+			tdev.fs_type = tst_dev_fs_type();
-+
-+		if (tst_test->format_device) {
-+			SAFE_MKFS(tdev.dev, tdev.fs_type,
-+			          tst_test->dev_fs_opts,
-+				  tst_test->dev_extra_opt);
-+		}
-+
-+		if (tst_test->mount_device) {
-+
-+			if (!tst_test->mntpoint) {
-+				tst_brk(TBROK,
-+					"tst_test->mntpoint must be set!");
-+			}
-+
-+			SAFE_MKDIR(tst_test->mntpoint, 0777);
-+			SAFE_MOUNT(tdev.dev, tst_test->mntpoint, tdev.fs_type,
-+				   tst_test->mnt_flags, tst_test->mnt_data);
-+			device_mounted = 1;
-+		}
- 	}
+-static void cleanup(void)
+-{
+-	if (mount_flag)
+-		tst_umount("mntpoint");
+-}
+-
+ static struct tst_test test = {
+ 	.tid = "creat06",
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.test = verify_creat,
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
+-	.needs_device = 1,
+-	.cleanup = cleanup,
++	.mount_device = 1,
++	.mntpoint = "mntpoint",
++	.mnt_flags = MS_RDONLY,
+ 	.setup = setup,
+ };
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl01.c b/testcases/kernel/syscalls/quotactl/quotactl01.c
+index e6baa2e..a994e95 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl01.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl01.c
+@@ -78,7 +78,6 @@
  
- 	if (tst_test->resource_files)
-@@ -678,6 +710,9 @@ static void do_test_setup(void)
+ # define MNTPOINT	"mntpoint"
  
- static void do_cleanup(void)
+-static int mount_flag;
+ static int32_t fmt_id = FMTID;
+ static int test_id;
+ static struct dqblk set_dq = {
+@@ -163,12 +162,6 @@ static void setup(void)
+ 	const char *const cmd[] = {"quotacheck", "-ug", MNTPOINT, NULL};
+ 	int ret;
+ 
+-	SAFE_MKDIR(MNTPOINT, 0755);
+-
+-	SAFE_MKFS(tst_device->dev, "ext4", NULL, NULL);
+-
+-	SAFE_MOUNT(tst_device->dev, MNTPOINT, "ext4", 0, "usrquota,grpquota");
+-	mount_flag = 1;
+ 
+ 	ret = tst_run_cmd(cmd, NULL, NULL, 1);
+ 	switch (ret) {
+@@ -189,12 +182,6 @@ static void setup(void)
+ 		tst_brk(TFAIL | TERRNO, "group quotafile didn't exist");
+ }
+ 
+-static void cleanup(void)
+-{
+-	if (mount_flag && tst_umount(MNTPOINT) < 0)
+-		tst_res(TWARN | TERRNO, "umount(2) failed");
+-}
+-
+ static void verify_quota(unsigned int n)
  {
-+	if (device_mounted)
-+		tst_umount(tst_test->mntpoint);
-+
- 	if (tst_test->needs_device && tdev.dev)
- 		tst_release_device(tdev.dev);
+ 	struct tcase *tc = &tcases[n];
+@@ -225,9 +212,11 @@ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.test = verify_quota,
+ 	.tcnt = ARRAY_SIZE(tcases),
+-	.needs_device = 1,
++	.mount_device = 1,
++	.dev_fs_type = "ext4",
++	.mntpoint = MNTPOINT,
++	.mnt_data = "usrquota,grpquota",
+ 	.setup = setup,
+-	.cleanup = cleanup
+ };
  
+ #else
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl02.c b/testcases/kernel/syscalls/quotactl/quotactl02.c
+index d3bd946..f7ae78b 100644
+--- a/testcases/kernel/syscalls/quotactl/quotactl02.c
++++ b/testcases/kernel/syscalls/quotactl/quotactl02.c
+@@ -47,7 +47,6 @@ static void check_qon(char *);
+ static void check_qlim(char *);
+ 
+ static int test_id;
+-static int mount_flag;
+ static struct fs_disk_quota set_dquota = {
+ 	.d_rtb_softlimit = 1000,
+ 	.d_fieldmask = FS_DQ_RTBSOFT
+@@ -138,22 +137,9 @@ static void check_qlim(char *desp)
+ 
+ static void setup(void)
+ {
+-	SAFE_MKDIR(mntpoint, 0755);
+-
+-	SAFE_MKFS(tst_device->dev, "xfs", NULL, NULL);
+-
+-	SAFE_MOUNT(tst_device->dev, mntpoint, "xfs", 0, "usrquota");
+-	mount_flag = 1;
+-
+ 	test_id = geteuid();
+ }
+ 
+-static void cleanup(void)
+-{
+-	if (mount_flag && tst_umount(mntpoint) < 0)
+-		tst_res(TWARN | TERRNO, "umount() failed");
+-}
+-
+ static void verify_quota(unsigned int n)
+ {
+ 	struct t_case *tc = &tcases[n];
+@@ -173,9 +159,11 @@ static struct tst_test test = {
+ 	.needs_root = 1,
+ 	.test = verify_quota,
+ 	.tcnt = ARRAY_SIZE(tcases),
+-	.needs_device = 1,
++	.mount_device = 1,
++	.dev_fs_type = "xfs",
++	.mntpoint = mntpoint,
++	.mnt_data = "usrquota",
+ 	.setup = setup,
+-	.cleanup = cleanup
+ };
+ #else
+ 	TST_TEST_TCONF("This system didn't support quota or xfs quota");
+diff --git a/testcases/kernel/syscalls/umount/umount01.c b/testcases/kernel/syscalls/umount/umount01.c
+index a8da4f4..3b5aeb9 100644
+--- a/testcases/kernel/syscalls/umount/umount01.c
++++ b/testcases/kernel/syscalls/umount/umount01.c
+@@ -55,8 +55,6 @@ static void verify_umount(void)
+ 
+ static void setup(void)
+ {
+-	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
+-
+ 	SAFE_MKDIR(MNTPOINT, 0775);
+ }
+ 
+@@ -70,7 +68,7 @@ static struct tst_test test = {
+ 	.tid = "umount01",
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
+-	.needs_device = 1,
++	.format_device = 1,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = verify_umount,
+diff --git a/testcases/kernel/syscalls/umount/umount02.c b/testcases/kernel/syscalls/umount/umount02.c
+index ecfad1b..690ba5f 100644
+--- a/testcases/kernel/syscalls/umount/umount02.c
++++ b/testcases/kernel/syscalls/umount/umount02.c
+@@ -76,7 +76,6 @@ static void setup(void)
+ {
+ 	memset(long_path, 'a', PATH_MAX + 1);
+ 
+-	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
+ 	SAFE_MKDIR(MNTPOINT, 0775);
+ 	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
+ 	mount_flag = 1;
+@@ -98,7 +97,7 @@ static struct tst_test test = {
+ 	.tcnt = ARRAY_SIZE(tcases),
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
+-	.needs_device = 1,
++	.format_device = 1,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test = verify_umount,
+diff --git a/testcases/kernel/syscalls/umount/umount03.c b/testcases/kernel/syscalls/umount/umount03.c
+index 4b13240..c1bcb05 100644
+--- a/testcases/kernel/syscalls/umount/umount03.c
++++ b/testcases/kernel/syscalls/umount/umount03.c
+@@ -52,7 +52,6 @@ static void setup(void)
+ {
+ 	struct passwd *pw;
+ 
+-	SAFE_MKFS(tst_device->dev, tst_device->fs_type, NULL, NULL);
+ 	SAFE_MKDIR(MNTPOINT, 0775);
+ 	SAFE_MOUNT(tst_device->dev, MNTPOINT, tst_device->fs_type, 0, NULL);
+ 	mount_flag = 1;
+@@ -74,7 +73,7 @@ static struct tst_test test = {
+ 	.tid = "umount03",
+ 	.needs_root = 1,
+ 	.needs_tmpdir = 1,
+-	.needs_device = 1,
++	.format_device = 1,
+ 	.setup = setup,
+ 	.cleanup = cleanup,
+ 	.test_all = verify_umount,
 -- 
 2.10.2
 
