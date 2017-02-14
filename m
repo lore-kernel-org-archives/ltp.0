@@ -1,44 +1,62 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 14 Feb 2017 11:09:29 +0800
-Subject: [LTP] [PATCH] lib/tst_tmpdir.c: fix compilation with older kernels
-Message-ID: <1487041769-14292-1-git-send-email-yangx.jy@cn.fujitsu.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Tue, 14 Feb 2017 11:20:50 +0800
+Subject: [LTP] [PATCH v2] ltp-aiodio/dio_sparse: Fix usleep in
+	read_sparse()
+In-Reply-To: <20170209093451.GB12673@rei.lan>
+References: <5888236A.1010702@cn.fujitsu.com>
+ <1486625035-31034-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+ <20170209093451.GB12673@rei.lan>
+Message-ID: <58A27792.2090306@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Compilation fails because of undefined __USE_GNU on RHEL5.11GA.
-So we need to define _GNU_SOURCE to make __USE_GNU defined.
+Hi!
 
-This has been broken by commmit:
+On 02/09/2017 05:35 PM, Cyril Hrubis wrote:
+> Hi!
+>> usleep(100000) sometimes leads to child process being too late
+>> to do the read before being killed by parent process, tune it
+>> to usleep(100) to make sure we do the real test in time.
+>>
+>> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+>> ---
+>>  testcases/kernel/io/ltp-aiodio/common_sparse.h | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+>> index f7f4ef4..7297319 100644
+>> --- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
+>> +++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
+>> @@ -113,7 +113,7 @@ static void read_sparse(char *filename, int filesize)
+>>  	/*
+>>  	 * Wait for the file to appear.
+>>  	 */
+>> -	for (i = 0; i < 10000; i++) {
+>> +	for (i = 0; i < 10000000; i++) {
+>>  		fd = open(filename, O_RDONLY);
+>>  
+>>  		if (fd != -1)
+>> @@ -123,7 +123,7 @@ static void read_sparse(char *filename, int filesize)
+>>  			fprintf(stderr, "Child %i waits for '%s' to appear\n",
+>>  			        getpid(), filename);
+>>  
+>> -		usleep(100000);
+>> +		usleep(100);
+>>  	}
+> 
+> Looking at the code again, I see no reason why we can't open and
+> truncate the file before we start the read_sparse() children, then we
+> could drop this loop and just pass file descriptor to this function and
+> to the dio_sparse() and aiodio_sparse() as well. Or did I miss
+> something?
 
-commit fc0c72a85a9de6a846587855c3c40394a6782616
-Author: Cyril Hrubis <chrubis@suse.cz>
-Date:   Mon Feb 13 15:35:09 2017 +0100
+Yes, you are right, it is a thoroghly solution to this issue,
+I will rewrite this according to your suggestion, thanks.
 
-	lib: Move rmobj() to tst_tmpdir.c
-
-Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
----
- lib/tst_tmpdir.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/lib/tst_tmpdir.c b/lib/tst_tmpdir.c
-index 71ca3b9..405d377 100644
---- a/lib/tst_tmpdir.c
-+++ b/lib/tst_tmpdir.c
-@@ -56,7 +56,7 @@
-  *		Neither tst_tmpdir() or tst_rmdir() has a return value.
-  *
-  *********************************************************/
--
-+#define _GNU_SOURCE
- #include <sys/mman.h>
- #include <sys/types.h>
- #include <sys/stat.h>
--- 
-1.8.3.1
-
+Best Regards,
+Guangwen Feng 
 
 
