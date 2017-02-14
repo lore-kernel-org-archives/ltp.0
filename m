@@ -1,36 +1,44 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 14 Feb 2017 16:28:56 +0100
-Subject: [LTP] [PATCH 1/3] tst_test: Handle device mkfs/mount int the
- library
-In-Reply-To: <20170214152639.11603-1-chrubis@suse.cz>
-References: <20170214152639.11603-1-chrubis@suse.cz>
-Message-ID: <20170214152856.GA18208@rei>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 14 Feb 2017 16:41:29 +0100
+Subject: [LTP] Is MADV_HWPOISON supposed to work only on faulted-in pages?
+Message-ID: <6a445beb-119c-9a9a-0277-07866afe4924@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +	/* Minimal device size in bytes */
-                                  ^
-				  This should be megabytes
-				  I will fix it in my tree
-> +	unsigned int dev_min_size;
-> +
-> +	/* Device filesystem type override NULL == default */
-> +	const char *dev_fs_type;
-> +
-> +	/* Options passed to SAFE_MKFS() when format_device is set */
-> +	struct tst_dev_opts *dev_opts;
-> +	const char *const *dev_fs_opts;
-> +	const char *dev_extra_opt;
-> +
-> +	/* Device mount options, used if mount_device is set */
-> +	const char *mntpoint;
-> +	unsigned int mnt_flags;
-> +	void *mnt_data;
+Hi,
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+code below (and LTP madvise07 [1]) doesn't produce SIGBUS,
+unless I touch/prefault page before call to madvise().
+
+Is this expected behavior?
+
+Thanks,
+Jan
+
+[1] https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/madvise/madvise07.c
+
+-------------------- 8< --------------------
+#include <stdlib.h>
+#include <sys/mman.h>
+#include <unistd.h>
+
+int main(void)
+{
+	void *mem = mmap(NULL, getpagesize(), PROT_READ | PROT_WRITE,
+			MAP_ANONYMOUS | MAP_PRIVATE /*| MAP_POPULATE*/,
+			-1, 0);
+
+	if (mem == MAP_FAILED)
+		exit(1);
+
+	if (madvise(mem, getpagesize(), MADV_HWPOISON) == -1)
+		exit(1);
+
+	*((char *)mem) = 'd';
+
+	return 0;
+}
+-------------------- 8< --------------------
