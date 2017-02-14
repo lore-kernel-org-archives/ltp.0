@@ -1,62 +1,38 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 14 Feb 2017 11:20:50 +0800
-Subject: [LTP] [PATCH v2] ltp-aiodio/dio_sparse: Fix usleep in
-	read_sparse()
-In-Reply-To: <20170209093451.GB12673@rei.lan>
-References: <5888236A.1010702@cn.fujitsu.com>
- <1486625035-31034-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20170209093451.GB12673@rei.lan>
-Message-ID: <58A27792.2090306@cn.fujitsu.com>
+From: Travis CI <builds@travis-ci.org>
+Date: Tue, 14 Feb 2017 06:57:29 +0000
+Subject: [LTP] Errored: linux-test-project/ltp#80 (master - fc16fa6)
+In-Reply-To: <linux-test-project/ltp+201407116+errored@travis-ci.org>
+Message-ID: <58a2aa59571d7_43ff9934c2bac329246@32e3d83a-e575-4c3a-a21d-566d81cb1f3f.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-On 02/09/2017 05:35 PM, Cyril Hrubis wrote:
-> Hi!
->> usleep(100000) sometimes leads to child process being too late
->> to do the read before being killed by parent process, tune it
->> to usleep(100) to make sure we do the real test in time.
->>
->> Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
->> ---
->>  testcases/kernel/io/ltp-aiodio/common_sparse.h | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/testcases/kernel/io/ltp-aiodio/common_sparse.h b/testcases/kernel/io/ltp-aiodio/common_sparse.h
->> index f7f4ef4..7297319 100644
->> --- a/testcases/kernel/io/ltp-aiodio/common_sparse.h
->> +++ b/testcases/kernel/io/ltp-aiodio/common_sparse.h
->> @@ -113,7 +113,7 @@ static void read_sparse(char *filename, int filesize)
->>  	/*
->>  	 * Wait for the file to appear.
->>  	 */
->> -	for (i = 0; i < 10000; i++) {
->> +	for (i = 0; i < 10000000; i++) {
->>  		fd = open(filename, O_RDONLY);
->>  
->>  		if (fd != -1)
->> @@ -123,7 +123,7 @@ static void read_sparse(char *filename, int filesize)
->>  			fprintf(stderr, "Child %i waits for '%s' to appear\n",
->>  			        getpid(), filename);
->>  
->> -		usleep(100000);
->> +		usleep(100);
->>  	}
-> 
-> Looking at the code again, I see no reason why we can't open and
-> truncate the file before we start the read_sparse() children, then we
-> could drop this loop and just pass file descriptor to this function and
-> to the dio_sparse() and aiodio_sparse() as well. Or did I miss
-> something?
+Build: #80
+Status: Errored
 
-Yes, you are right, it is a thoroghly solution to this issue,
-I will rewrite this according to your suggestion, thanks.
+Duration: 6 minutes and 49 seconds
+Commit: fc16fa6 (master)
+Author: Ngie Cooper
+Message: Minor update with respect to documentation bug for 2.6.33-rc1
 
-Best Regards,
-Guangwen Feng 
+- Change name from "Garrett" to "Ngie" (online handle)
+- Use their (gender neutral pronoun) instead of his/her for brevity
 
+Signed-off-by: Ngie Cooper <yaneurabeya@gmail.com>
 
+View the changeset: https://github.com/linux-test-project/ltp/compare/8967f960f820...fc16fa65a40f
+
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/201407116
+
+--
+
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170214/14db8a15/attachment.html>
