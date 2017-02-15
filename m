@@ -1,54 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 15 Feb 2017 16:24:06 +0100
-Subject: [LTP] [PATCH] syscalls/mq_open: fix limits for queues_max
-In-Reply-To: <1486384930-28588-1-git-send-email-yangx.jy@cn.fujitsu.com>
-References: <1486384930-28588-1-git-send-email-yangx.jy@cn.fujitsu.com>
-Message-ID: <20170215152406.GB29673@rei.lan>
+From: Travis CI <builds@travis-ci.org>
+Date: Wed, 15 Feb 2017 15:48:16 +0000
+Subject: [LTP] Fixed: linux-test-project/ltp#85 (master - a2a08f1)
+In-Reply-To: <linux-test-project/ltp+201907339+fixed@travis-ci.org>
+Message-ID: <58a478338727e_43f8df42dad181049867@a59b9552-4dc2-42ce-b113-5eb107c983d2.mail>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> This case fails on RHEL6.8GA and RHEL6.9Beta, because setting
-> queues_max to 0 is invalid.  the minimum value of queues_max
-> has been limitted to 1 on some distributions, Please see the
-> following kernel commit:
-> 
-> commit 5b5c4d1a1440e94994c73dddbad7be0676cd8b9a
-> Author: Doug Ledford <dledford@redhat.com>
-> Date:   Thu May 31 16:26:30 2012 -0700
-> 
-> 	ipc/mqueue: update maximums for the mqueue subsystem
-> 
-> We set queues_max to 1 instead of 0, so this case can work on RHEL6.
+Build Update for linux-test-project/ltp
+-------------------------------------
 
-First I think that you have wrong commit, the one that actually added
-the limits was:
+Build: #85
+Status: Fixed
 
-commit 93e6f119c0ce8a1bba6e81dc8dd97d67be360844
-Author: Doug Ledford <dledford@redhat.com>
-Date:   Thu May 31 16:26:28 2012 -0700
+Duration: 15 minutes and 19 seconds
+Commit: a2a08f1 (master)
+Author: Cyril Hrubis
+Message: move_pages12: Fix compilation without libnuma
 
-    ipc/mqueue: cleanup definition names and locations
+I've missed this obvious problem in the review.
 
-Since this commit changes the proc handler in sysctl table and adds the minimum
-and maximum values there.
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 
-Secondly these limits were removed in:
+View the changeset: https://github.com/linux-test-project/ltp/compare/7d4754f91e70...a2a08f11121b
 
-commit a5c5928b759d8c7382cccc7be36769a68046cc58
-Author: Joe Perches <joe@perches.com>
-Date:   Fri Jun 6 14:38:07 2014 -0700
+View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/201907339
 
-    ipc: convert use of typedef ctl_table to struct ctl_table
+--
 
+You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
 
-I'm not sure if this is worth the effort.
-
-Jan what do you think, should we apply this to fix the test on RHEL6?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170215/07ddeae3/attachment.html>
