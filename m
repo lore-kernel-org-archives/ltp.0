@@ -1,63 +1,46 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 16 Feb 2017 23:32:47 +0100
-Subject: [LTP] [PATCH v2 4/4] network: migrate rpc_test.sh to use
-	test_net.sh
-In-Reply-To: <0995acb3-33c4-7b3c-2b4a-5c24b024e0bd@oracle.com>
-References: <20170208144500.27340-1-pvorel@suse.cz>
- <20170208144500.27340-4-pvorel@suse.cz>
- <0995acb3-33c4-7b3c-2b4a-5c24b024e0bd@oracle.com>
-Message-ID: <20170216223247.e6xad5dnjdimcql7@dell5510>
+Date: Thu, 16 Feb 2017 23:37:18 +0100
+Subject: [LTP] [PATCH v3 1/4] network: Add 'net.' prefix to TI-RPC and
+	TS-RPC tests files
+Message-ID: <20170216223721.11493-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ runtest/{rpc_tests => net.rpc_tests}     | 0
+ runtest/{tirpc_tests => net.tirpc_tests} | 0
+ testcases/network/rpc/rpc-tirpc/README   | 4 ++--
+ 3 files changed, 2 insertions(+), 2 deletions(-)
+ rename runtest/{rpc_tests => net.rpc_tests} (100%)
+ rename runtest/{tirpc_tests => net.tirpc_tests} (100%)
 
-thanks for you review, I'll post v3 with your changes.
+diff --git a/runtest/rpc_tests b/runtest/net.rpc_tests
+similarity index 100%
+rename from runtest/rpc_tests
+rename to runtest/net.rpc_tests
+diff --git a/runtest/tirpc_tests b/runtest/net.tirpc_tests
+similarity index 100%
+rename from runtest/tirpc_tests
+rename to runtest/net.tirpc_tests
+diff --git a/testcases/network/rpc/rpc-tirpc/README b/testcases/network/rpc/rpc-tirpc/README
+index d87024c41..139162751 100644
+--- a/testcases/network/rpc/rpc-tirpc/README
++++ b/testcases/network/rpc/rpc-tirpc/README
+@@ -44,8 +44,8 @@ The sources here are modified a bit to use the LTP wrapper - rpc_test.sh -
+ instead of a bunch of scripts from the above web page.
+ 
+ The basic group of test cases can be executed from
+- * runtest/rpc_tests - for TS-RPC testing
+- * runtest/tirpc_tests - for TI-RPC testing
++ * runtest/net.rpc_tests - for TS-RPC testing
++ * runtest/net.tirpc_tests - for TI-RPC testing
+ using the LTP framework (ltp-pan, runltp and etc).
+ 
+ Additional test cases (like stress, complex and etc) are to be integrated.
+-- 
+2.11.0
 
-> > Many tests are failing when using netns.
-
-> I tried to run this tests in netns, it seems that rpcbind (listening
-> port)not available in netns as a results tests are failing. If we
-> make the clientrun in network namespace, tests pass. Actually, I had
-> only twofailures:
-
-> rpc_test.sh -c rpc_xprt_register
-> [...]
-> rpc_xprt_register 1 TBROK : 'rpc_xprt_register 10.0.0.2 536875000 '
-> failed on '': 'rpc_xprt_register: svc_fd_create: could not retrieve
-> local addr
-> rpc_xprt_register: svc.c:96: xprt_register: Assertion `xprt != ((void
-> *)0)' failed.
-> sh: line 1: 20123 Aborted                 (core dumped)
-> rpc_xprt_register 10.0.0.2 536875000'
-
-> and the similar one:
-> rpc_test.sh -c rpc_xprt_unregister
-
-I got these errors:
-* -c (TI-RPC tests)
-rpc_clnt_broadcast 1 TBROK: 'rpc_clnt_broadcast 10.0.0.2 536875000 ' failed on '': 'RPC: Timed out
-rpc_svc_destroy 1 TBROK: 'rpc_svc_destroy 10.0.0.2 536875000 ' failed on '': 'rpc_svc_destroy: svc_fd_create: could not retrieve local addr
-rpc_svcfd_create 1 TBROK: 'rpc_svcfd_create 10.0.0.2 536875000 ' failed on '': 'rpc_svcfd_create: svc_fd_create: could not retrieve local addr
-rpc_xprt_register 1 TBROK: 'rpc_xprt_register 10.0.0.2 536875000 ' failed on '': 'rpc_xprt_register: svc_fd_create: could not retrieve local addr
-rpc_xprt_unregister 1 TBROK: 'rpc_xprt_unregister 10.0.0.2 536875000 ' failed on '': 'rpc_xprt_unregister: svc_fd_create: could not retrieve local addr
-
-* -d (TS-RPC tests)
-tirpc_authdes_create 1 TBROK: 'tirpc_authdes_create 10.0.0.2 536875000 ' failed on '': '1'
-tirpc_authdes_seccreate 1 TBROK: 'tirpc_authdes_seccreate 10.0.0.2 536875000 ' failed on '': '1'
-
-I tested it with libtirpc3 1.0.1-3 from Tumbleweed and with libtirpc1 0.2.5-1.1 on Debian
-testing.
-I wonder whether 'svc_fd_create: could not retrieve local addr' which comes from libtirpc
-[1] is our bug or libtirpc bug or netns bug.
-BTW there is also another library called ntirpc, which might be useful to test [2].
-
-[1] http://git.linux-nfs.org/?p=steved/libtirpc.git;a=blob;f=src/svc_vc.c;h=97a76a357c7befcd2fae1a1e836506412abf0ae3;hb=HEAD#l232
-[2] https://github.com/linuxbox2/ntirpc
-
-
-Kind regards,
-Petr
