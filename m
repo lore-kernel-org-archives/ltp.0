@@ -1,76 +1,54 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Fri, 17 Feb 2017 01:03:45 +0100
-Subject: [LTP] [PATCH 2/2] color: Fix backslash-escape sequences for some
-	non-bash shells
-In-Reply-To: <20170217000345.18704-1-pvorel@suse.cz>
-References: <20170217000345.18704-1-pvorel@suse.cz>
-Message-ID: <20170217000345.18704-2-pvorel@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Fri, 17 Feb 2017 11:36:53 +0100
+Subject: [LTP] [PATCH 0/1] uname26 exploit regression test
+Message-ID: <20170217113653.595ce1b4@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This fixes at least for ksh and dash.
+Hi,
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- include/tst_ansi_color.h        | 12 ++++++------
- testcases/lib/tst_ansi_color.sh | 12 ++++++------
- 2 files changed, 12 insertions(+), 12 deletions(-)
+I have essentially rewritten the following expoit to be used in the LTP:
+https://www.exploit-db.com/exploits/37937/ (Metan's idea AFAIK). There are
+some issues which I came across while doing this, even though it is quite an
+easy exploit to recreate.
 
-diff --git a/include/tst_ansi_color.h b/include/tst_ansi_color.h
-index 0793b830c..fc158f2de 100644
---- a/include/tst_ansi_color.h
-+++ b/include/tst_ansi_color.h
-@@ -21,13 +21,13 @@
-  * NOTE: these colors should match colors defined in tst_flag2color() in
-  * testcases/lib/tst_ansi_color.sh
-  */
--#define ANSI_COLOR_BLUE		"\e[1;34m"
--#define ANSI_COLOR_GREEN	"\e[1;32m"
--#define ANSI_COLOR_MAGENTA	"\e[1;35m"
--#define ANSI_COLOR_RED		"\e[1;31m"
--#define ANSI_COLOR_YELLOW	"\e[1;33m"
-+#define ANSI_COLOR_BLUE		"\033[34;1m"
-+#define ANSI_COLOR_GREEN	"\033[32;1m"
-+#define ANSI_COLOR_MAGENTA	"\033[35;1m"
-+#define ANSI_COLOR_RED		"\033[31;1m"
-+#define ANSI_COLOR_YELLOW	"\033[33;1m"
- 
--#define ANSI_COLOR_RESET	"\e[00m"
-+#define ANSI_COLOR_RESET	"\033[0m"
- 
- char* tst_ttype2color(int ttype);
- int tst_color_enabled(int fd);
-diff --git a/testcases/lib/tst_ansi_color.sh b/testcases/lib/tst_ansi_color.sh
-index 987397144..1fcd7a4c9 100644
---- a/testcases/lib/tst_ansi_color.sh
-+++ b/testcases/lib/tst_ansi_color.sh
-@@ -21,11 +21,11 @@
- tst_flag2color()
- {
- 	# NOTE: these colors should match colors defined in include/tst_ansi_color.h
--	local ansi_color_blue='\e[1;34m'
--	local ansi_color_green='\e[1;32m'
--	local ansi_color_magenta='\e[1;35m'
--	local ansi_color_red='\e[1;31m'
--	local ansi_color_yellow='\e[1;33m'
-+	local ansi_color_blue='\033[34;1m'
-+	local ansi_color_green='\033[32;1m'
-+	local ansi_color_magenta='\033[35;1m'
-+	local ansi_color_red='\033[31;1m'
-+	local ansi_color_yellow='\033[33;1m'
- 
- 	case "$1" in
- 	TPASS) printf $ansi_color_green;;
-@@ -52,5 +52,5 @@ tst_print_colored()
- 
- 	[ "$color" = "1" ] && tst_flag2color "$1"
- 	printf "$2"
--	[ "$color" = "1" ] && printf '\e[00m'
-+	[ "$color" = "1" ] && printf '\033[0m'
- }
+1) How should we organise the exploit tests? I see Metan has added dirtyc0w
+   under that name in its own folder. Not all exploits have a fancy or unique
+   name however. I have just named the uname exploit with its CVE name and put
+   it in a new uname folder, but I'm not sure that is the best way either.
+
+2) What is the appropriate runtest file for security tests? I think they
+   should be separated from functional tests.
+
+3) The exploit code from the link is licensed under GPLv3. Although I rewrote
+   the LTP test from scratch, the fact I saw the exploit code raises the
+   question of whether my test is a derivative work. The easiest thing to do
+   would be to attribute the exploit code author and simply state that the
+   test is an adaptation, but then I believe the test would need to be GPLv3.
+   Of course, I can just ask the author to relicense the original under GPLv2,
+   but lets assume they don't consent or can't be contacted.
+
+4) This is maybe a question for a security/kernel mailing list, but which
+   exploits are most likely to be reintroduced to the kernel? I am not sure
+   that this exploit is at high risk of being reintroduced. At least not into
+   mainline or any of the major distro branches.
+
+Thank you,
+Richard.
+
+Richard Palethorpe (1):
+  security: Test for uname26 exploit cve-2012-0957
+
+ testcases/kernel/security/uname/.gitignore      |  1 +
+ testcases/kernel/security/uname/Makefile        | 20 ++++++
+ testcases/kernel/security/uname/cve-2012-0957.c | 86 +++++++++++++++++++++++++
+ 3 files changed, 107 insertions(+)
+ create mode 100644 testcases/kernel/security/uname/.gitignore
+ create mode 100644 testcases/kernel/security/uname/Makefile
+ create mode 100644 testcases/kernel/security/uname/cve-2012-0957.c
+
 -- 
 2.11.0
-
