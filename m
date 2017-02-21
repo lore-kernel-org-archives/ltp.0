@@ -1,34 +1,58 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 21 Feb 2017 12:18:10 +0100
-Subject: [LTP] test_net.sh: Require to redefine less variables
-In-Reply-To: <e793b0d9-7df2-e57a-5009-060f1704ecdd@oracle.com>
-References: <20170216230608.yjdkk2ix3ftleud6@dell5510>
- <7cbae912-5295-00d6-14e4-f1a9f1c4d197@oracle.com>
- <20170221080520.gachulbuwoeqva7a@x230>
- <12180579-3f44-e584-cb4a-4871e781f999@oracle.com>
- <e793b0d9-7df2-e57a-5009-060f1704ecdd@oracle.com>
-Message-ID: <20170221111810.qg6e4q4iykyiathn@dell5510>
+From: Jan Stancek <jstancek@redhat.com>
+Date: Tue, 21 Feb 2017 06:27:04 -0500 (EST)
+Subject: [LTP] [PATCH 1/3] tst_test: Handle device mkfs/mount int the
+ library
+In-Reply-To: <20170214152639.11603-1-chrubis@suse.cz>
+References: <20170214152639.11603-1-chrubis@suse.cz>
+Message-ID: <530294916.8516424.1487676424944.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
-
-> Ah, I see, we can run them with network.sh which source test_net.sh, OK.
-
-> Though, the left users of these functions are stress/tcp/udp/route and
-> multicast stress tests...I'll post updates for the first three soon.
-What exactly are you going to do?
-
-I suppose I should wait with this until you do you push your cleanup.
-> > So I'd keep all of these variables, just to calculate these with shell
-> > script or C binary:
-> > IPV{4,6}_NETWORK
-> > {L,R}HOST_IPV{4,6}_HOST
-> > IPV{4,6}_NET_REV
 
 
-Kind regards,
-Petr
+
+
+----- Original Message -----
+> From: "Cyril Hrubis" <chrubis@suse.cz>
+> To: ltp@lists.linux.it
+> Sent: Tuesday, 14 February, 2017 4:26:37 PM
+> Subject: [LTP] [PATCH 1/3] tst_test: Handle device mkfs/mount int the library
+> 
+> This commit adds functionality to format and then mount the test device
+> to the test library which:
+> 
+> * Saves a few setup steps in most of the testcases that use test device
+> 
+> * The device is umounted in the test library process now -> it will be
+>   umounted even if the test process has segfaulted.
+> 
+> + docs
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+
+Series looks good to me. One issue I ran into is that
+quotactl01 fails on RHEL5.6/6.0, but that doesn't seem
+to be related to your patch:
+
+# ./quotactl01 
+tst_device.c:120: INFO: Found free device '/dev/loop0'
+tst_mkfs.c:79: INFO: Formatting /dev/loop0 with ext4 opts='' extra opts=''
+mke2fs 1.41.12 (17-May-2010)
+tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
+quotacheck: Mountpoint (or device) /tmp/quoyk2cuB/mntpoint not found or has no quota enabled.
+quotacheck: Cannot find filesystem to check or filesystem not mounted with quota option.
+quotactl01.c:179: FAIL: user quotafile didn't exist: ENOENT
+
+RHEL6.0 man-page says:
+ext2
+       grpquota|noquota|quota|usrquota
+              These options are accepted but ignored.
+ext4
+       quota, noquota, grpquota, usrquota and
+       [no]bh are backwardly compatible with ext3 or ext2.
+
+Regards,
+Jan
