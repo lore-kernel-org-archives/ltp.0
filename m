@@ -1,40 +1,61 @@
-From: Han Pingtian <hanpt@linux.vnet.ibm.com>
-Date: Mon, 27 Feb 2017 14:51:03 +0800
-Subject: [LTP] [PATCH] doio/growfiles.c: show line number when test failed
-Message-ID: <20170227065103.GA30910@localhost.localdomain>
+From: Yisheng Xie <xieyisheng1@huawei.com>
+Date: Sat, 25 Feb 2017 10:28:15 +0800
+Subject: [LTP] Is MADV_HWPOISON supposed to work only on faulted-in
+	pages?
+In-Reply-To: <20170223032342.GA18740@hori1.linux.bs1.fc.nec.co.jp>
+References: <6a445beb-119c-9a9a-0277-07866afe4924@redhat.com>
+ <20170220050016.GA15533@hori1.linux.bs1.fc.nec.co.jp>
+ <20170223032342.GA18740@hori1.linux.bs1.fc.nec.co.jp>
+Message-ID: <1ba376aa-5e7c-915f-35d1-2d4eef0cad88@huawei.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Please review this patch. Thanks.
+hi Naoya,
 
-The original code always shows "growfiles.c:132: Test failed". With this
-patch, it will show the right line number where exit() be called.
----
- testcases/kernel/fs/doio/growfiles.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+On 2017/2/23 11:23, Naoya Horiguchi wrote:
+> On Mon, Feb 20, 2017 at 05:00:17AM +0000, Horiguchi Naoya(堀口 直也) wrote:
+>> On Tue, Feb 14, 2017 at 04:41:29PM +0100, Jan Stancek wrote:
+>>> Hi,
+>>>
+>>> code below (and LTP madvise07 [1]) doesn't produce SIGBUS,
+>>> unless I touch/prefault page before call to madvise().
+>>>
+>>> Is this expected behavior?
+>>
+>> Thank you for reporting.
+>>
+>> madvise(MADV_HWPOISON) triggers page fault when called on the address
+>> over which no page is faulted-in, so I think that SIGBUS should be
+>> called in such case.
+>>
+>> But it seems that memory error handler considers such a page as "reserved
+>> kernel page" and recovery action fails (see below.)
+>>
+>>   [  383.371372] Injecting memory failure for page 0x1f10 at 0x7efcdc569000
+>>   [  383.375678] Memory failure: 0x1f10: reserved kernel page still referenced by 1 users
+>>   [  383.377570] Memory failure: 0x1f10: recovery action for reserved kernel page: Failed
+>>
+>> I'm not sure how/when this behavior was introduced, so I try to understand.
+> 
+> I found that this is a zero page, which is not recoverable for memory
+> error now.
+> 
+>> IMO, the test code below looks valid to me, so no need to change.
+> 
+> I think that what the testcase effectively does is to test whether memory
+> handling on zero pages works or not.
+> And the testcase's failure seems acceptable, because it's simply not-implemented yet.
+> Maybe recovering from error on zero page is possible (because there's no data
+> loss for memory error,) but I'm not sure that code might be simple enough and/or
+> it's worth doing ...
+I question about it,  if a memory error happened on zero page, it will
+cause all of data read from zero page is error, I mean no-zero, right?
+And can we just use re-initial it with zero data maybe by memset ?
 
-diff --git a/testcases/kernel/fs/doio/growfiles.c b/testcases/kernel/fs/doio/growfiles.c
-index bbad230..6f25a54 100644
---- a/testcases/kernel/fs/doio/growfiles.c
-+++ b/testcases/kernel/fs/doio/growfiles.c
-@@ -125,11 +125,11 @@ char *TCID = "growfiles";	/* Default test program identifier.    */
- int TST_TOTAL = 1;		/* Total number of test cases. */
- 
- /* To avoid extensive modifications to the code, use this bodge */
--#define exit(x) myexit(x)
--void myexit(int x)
-+#define exit(x) myexit(__FILE__, __LINE__, x)
-+void myexit(const char *file, const int lineno, int x)
- {
- 	if (x)
--		tst_resm(TFAIL, "Test failed");
-+		tst_resm_(file, lineno, TFAIL, "Test failed");
- 	else
- 		tst_resm(TPASS, "Test passed");
- 	tst_exit();
--- 
-2.7.4
+Thanks
+Yisheng Xie.
+
 
