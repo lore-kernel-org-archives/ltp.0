@@ -1,21 +1,138 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 27 Feb 2017 14:28:54 +0300
-Subject: [LTP] [PATCH 1/3] test_net: add tst_icmp() which use
-	ns-icmpv4|6-sender
-In-Reply-To: <1486566458-18921-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1486566458-18921-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <57ca3344-6835-0c11-7dc2-c0b1d19b7cfb@oracle.com>
+From: Zi Yan <zi.yan@cs.rutgers.edu>
+Date: Mon, 27 Feb 2017 10:10:40 -0600
+Subject: [LTP] Is MADV_HWPOISON supposed to work only on faulted-in
+	pages?
+In-Reply-To: <20170227063308.GA14387@hori1.linux.bs1.fc.nec.co.jp>
+References: <6a445beb-119c-9a9a-0277-07866afe4924@redhat.com>
+ <20170220050016.GA15533@hori1.linux.bs1.fc.nec.co.jp>
+ <20170223032342.GA18740@hori1.linux.bs1.fc.nec.co.jp>
+ <1ba376aa-5e7c-915f-35d1-2d4eef0cad88@huawei.com>
+ <20170227012029.GA28934@hori1.linux.bs1.fc.nec.co.jp>
+ <22763879-C335-41E6-8102-2022EED75DAE@cs.rutgers.edu>
+ <20170227063308.GA14387@hori1.linux.bs1.fc.nec.co.jp>
+Message-ID: <687984BF-0EE0-42DB-B414-F93CACD72F27@cs.rutgers.edu>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-On 02/08/2017 06:07 PM, Alexey Kodanev wrote:
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-> ---
->  testcases/lib/test_net.sh |   42 ++++++++++++++++++++++++++++++++++++++++++
->  1 files changed, 42 insertions(+), 0 deletions(-)
+On 27 Feb 2017, at 0:33, Naoya Horiguchi wrote:
 
-Patch-set applied.
+> On Sun, Feb 26, 2017 at 10:27:02PM -0600, Zi Yan wrote:
+>> On 26 Feb 2017, at 19:20, Naoya Horiguchi wrote:
+>>
+>>> On Sat, Feb 25, 2017 at 10:28:15AM +0800, Yisheng Xie wrote:
+>>>> hi Naoya,
+>>>>
+>>>> On 2017/2/23 11:23, Naoya Horiguchi wrote:
+>>>>> On Mon, Feb 20, 2017 at 05:00:17AM +0000, Horiguchi Naoya(堀口 直也) wrote:
+>>>>>> On Tue, Feb 14, 2017 at 04:41:29PM +0100, Jan Stancek wrote:
+>>>>>>> Hi,
+>>>>>>>
+>>>>>>> code below (and LTP madvise07 [1]) doesn't produce SIGBUS,
+>>>>>>> unless I touch/prefault page before call to madvise().
+>>>>>>>
+>>>>>>> Is this expected behavior?
+>>>>>>
+>>>>>> Thank you for reporting.
+>>>>>>
+>>>>>> madvise(MADV_HWPOISON) triggers page fault when called on the address
+>>>>>> over which no page is faulted-in, so I think that SIGBUS should be
+>>>>>> called in such case.
+>>>>>>
+>>>>>> But it seems that memory error handler considers such a page as "reserved
+>>>>>> kernel page" and recovery action fails (see below.)
+>>>>>>
+>>>>>>   [  383.371372] Injecting memory failure for page 0x1f10 at 0x7efcdc569000
+>>>>>>   [  383.375678] Memory failure: 0x1f10: reserved kernel page still referenced by 1 users
+>>>>>>   [  383.377570] Memory failure: 0x1f10: recovery action for reserved kernel page: Failed
+>>>>>>
+>>>>>> I'm not sure how/when this behavior was introduced, so I try to understand.
+>>>>>
+>>>>> I found that this is a zero page, which is not recoverable for memory
+>>>>> error now.
+>>>>>
+>>>>>> IMO, the test code below looks valid to me, so no need to change.
+>>>>>
+>>>>> I think that what the testcase effectively does is to test whether memory
+>>>>> handling on zero pages works or not.
+>>>>> And the testcase's failure seems acceptable, because it's simply not-implemented yet.
+>>>>> Maybe recovering from error on zero page is possible (because there's no data
+>>>>> loss for memory error,) but I'm not sure that code might be simple enough and/or
+>>>>> it's worth doing ...
+>>>> I question about it,  if a memory error happened on zero page, it will
+>>>> cause all of data read from zero page is error, I mean no-zero, right?
+>>>
+>>> Hi Yisheng,
+>>>
+>>> Yes, the impact is serious (could affect many processes,) but it's possibility
+>>> is very low because there's only one page in a system that is used for zero page.
+>>> There are many other pages which are not recoverable for memory error like
+>>> slab pages, so I'm not sure how I prioritize it (maybe it's not a
+>>> top-priority thing, nor low-hanging fruit.)
+>>>
+>>>> And can we just use re-initial it with zero data maybe by memset ?
+>>>
+>>> Maybe it's not enoguh. Under a real hwpoison, we should isolate the error
+>>> page to prevent the access on the broken data.
+>>> But zero page is statically defined as an array of global variable, so
+>>> it's not trival to replace it with a new zero page at runtime.
+>>>
+>>> Anyway, it's in my todo list, so hopefully revisited in the future.
+>>>
+>>
+>> Hi Naoya,
+>>
+>> The test case tries to HWPOISON a range of virtual addresses that do not
+>> map to any physical pages.
+>>
+>
+> Hi Yan,
+>
+>> I expected either madvise should fail because HWPOISON does not work on
+>> non-existing physical pages or madvise_hwpoison() should populate
+>> some physical pages for that virtual address range and poison them.
+>
+> The latter is the current behavior. It just comes from get_user_pages_fast()
+> which not only finds the page and takes refcount, but also touch the page.
+>
+> madvise(MADV_HWPOISON) is a test feature, and calling it for address backed
+> by no page doesn't simulate anything real. IOW, the behavior is undefined.
+> So I don't have a strong opinion about how it should behave.
+>
+>>
+>> As I tested it on kernel v4.10, the test application exited at
+>> madvise, because madvise returns -1 and error message is
+>> "Device or resource busy". I think this is a proper behavior.
+>
+> yes, maybe we see the same thing, you can see in dmesg "recovery action
+> for reserved kernel page: Failed" message.
+>
+>>
+>> There might be some confusion in madvise's man page on MADV_HWPOISON.
+>> If you add some text saying madvise fails if any page is not mapped in
+>> the given address range, that can eliminate the confusion*
+>
+> Writing it down to man page makes readers think this behavior is a part of
+> specification, that might not be good now because the failure in error
+> handling of zero page is not the eventually fixed behavior.
+> I mean that if zero page handles hwpoison properly in the future, madvise
+> will succeed without any confusion.
+> So I feel that we don't have to update man page for this issue.
 
+You are right, I missed the part that get_user_pages_fast() will actually fault
+in the madvised pages with zero_page.
+
+Thanks for clarifying this.
+
+--
+Best Regards
+Yan Zi
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 496 bytes
+Desc: OpenPGP digital signature
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170227/e82273e9/attachment.sig>
