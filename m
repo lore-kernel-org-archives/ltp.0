@@ -1,67 +1,39 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 Feb 2017 12:11:27 +0100
-Subject: [LTP] [COMMITTED] [PATCH 05/23] syscalls/accept4_01: Make use of
-	tst_parse_opts()
-In-Reply-To: <20170228111145.3265-1-chrubis@suse.cz>
-References: <20170228111145.3265-1-chrubis@suse.cz>
-Message-ID: <20170228111145.3265-5-chrubis@suse.cz>
+From: Jakub Racek <jracek@redhat.com>
+Date: Tue, 28 Feb 2017 12:59:53 +0100
+Subject: [LTP] [PATCH 0/3] Added memfd_create() testsuite
+Message-ID: <1488283196-11397-1-git-send-email-jracek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
----
- testcases/kernel/syscalls/accept4/accept4_01.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
+memfd_create() is a syscall that creates an anonymous file. This syscall was
+originally introduced in "File Sealing & memfd_create()" patchset by
+David Herrmann <dh.herrmann@gmail.com>.
+My patchset is a port of memfd_create() testsuite to LTP, with lapi
+extended as necessary.
 
-diff --git a/testcases/kernel/syscalls/accept4/accept4_01.c b/testcases/kernel/syscalls/accept4/accept4_01.c
-index 6072bfa..a49b23c 100644
---- a/testcases/kernel/syscalls/accept4/accept4_01.c
-+++ b/testcases/kernel/syscalls/accept4/accept4_01.c
-@@ -200,14 +200,30 @@ static int create_listening_socket(int port_num)
- 	return lfd;
- }
- 
-+static char *opt_port;
-+
-+static option_t options[] = {
-+	{"p:", NULL, &opt_port},
-+	{NULL, NULL, NULL}
-+};
-+
-+static void usage(void)
-+{
-+	printf("  -p      Port\n");
-+}
-+
- int main(int argc, char *argv[])
- {
- 	struct sockaddr_in conn_addr;
- 	int lfd;
--	int port_num;
-+	int port_num = PORT_NUM;
-+
-+	tst_parse_opts(argc, argv, options, usage);
-+
-+	if (opt_port)
-+		port_num = atoi(opt_port);
- 
- 	setup();
--	port_num = (argc > 1) ? atoi(argv[1]) : PORT_NUM;
- 
- 	memset(&conn_addr, 0, sizeof(struct sockaddr_in));
- 	conn_addr.sin_family = AF_INET;
-@@ -220,7 +236,7 @@ int main(int argc, char *argv[])
- 	do_test(lfd, &conn_addr, SOCK_CLOEXEC, 0);
- 	do_test(lfd, &conn_addr, 0, SOCK_NONBLOCK);
- 	do_test(lfd, &conn_addr, SOCK_CLOEXEC, SOCK_NONBLOCK);
--	
-+
- 	close(lfd);
- 	cleanup();
- 	tst_exit();
+Jakub Racek (3):
+  Added memfd_create lapi flags
+  Added fcntl() and fallocate() lapi flags
+  Added port of memfd_create testsuite
+
+ include/lapi/fcntl.h                               |  49 +++
+ include/lapi/memfd_create.h                        |  30 ++
+ runtest/syscalls                                   |   2 +
+ testcases/kernel/syscalls/.gitignore               |   1 +
+ testcases/kernel/syscalls/memfd_create/Makefile    |  23 +
+ testcases/kernel/syscalls/memfd_create/fallocate.h |  43 ++
+ .../kernel/syscalls/memfd_create/memfd_create01.c  | 465 +++++++++++++++++++++
+ .../syscalls/memfd_create/memfd_create_common.h    | 424 +++++++++++++++++++
+ 8 files changed, 1037 insertions(+)
+ create mode 100644 include/lapi/memfd_create.h
+ create mode 100644 testcases/kernel/syscalls/memfd_create/Makefile
+ create mode 100644 testcases/kernel/syscalls/memfd_create/fallocate.h
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create01.c
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create_common.h
+
 -- 
-2.10.2
+1.8.3.1
 
