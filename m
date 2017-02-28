@@ -1,114 +1,82 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 Feb 2017 12:11:41 +0100
-Subject: [LTP] [COMMITTED] [PATCH 19/23] syscalls/ipc/semctl06: Small cleanup
+Date: Tue, 28 Feb 2017 12:11:40 +0100
+Subject: [LTP] [COMMITTED] [PATCH 18/23] syscalls/ptrace04,
+	ptrace05: Small cleanup
 In-Reply-To: <20170228111145.3265-1-chrubis@suse.cz>
 References: <20170228111145.3265-1-chrubis@suse.cz>
-Message-ID: <20170228111145.3265-19-chrubis@suse.cz>
+Message-ID: <20170228111145.3265-18-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* Get rid of UCLINUX ifdefs
+* Move tst_parse_opts() before tst_brkm() in ptrace04
 
-* Make use of tst_parse_opts()
+* Get rid of hacked up option parsion in ptrace05
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- testcases/kernel/syscalls/ipc/semctl/semctl06.c | 57 +------------------------
- 1 file changed, 1 insertion(+), 56 deletions(-)
+ testcases/kernel/syscalls/ptrace/ptrace04.c |  4 ++--
+ testcases/kernel/syscalls/ptrace/ptrace05.c | 27 +--------------------------
+ 2 files changed, 3 insertions(+), 28 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/ipc/semctl/semctl06.c b/testcases/kernel/syscalls/ipc/semctl/semctl06.c
-index 14af1af..b3af41f 100644
---- a/testcases/kernel/syscalls/ipc/semctl/semctl06.c
-+++ b/testcases/kernel/syscalls/ipc/semctl/semctl06.c
-@@ -90,27 +90,13 @@ static void term(int sig);
- static void dosemas(int id);
- static void dotest(key_t key);
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace04.c b/testcases/kernel/syscalls/ptrace/ptrace04.c
+index b2707c0..af35fb3 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace04.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace04.c
+@@ -99,11 +99,11 @@ void compare_registers(unsigned char poison)
  
--#ifdef UCLINUX
--static char *argv0;
--
--void do_child();
--static int id_uclinux;
--static char *maxsemstring;
--#endif
--
- int main(int argc, char **argv)
+ int main(int argc, char *argv[])
  {
- 	register int i, pid;
- 	int count, child, status, nwait;
++	tst_parse_opts(argc, argv, NULL, NULL);
++
+ 	if (ARRAY_SIZE(regs) == 0)
+ 		tst_brkm(TCONF, NULL, "test not supported for your arch (yet)");
  
--#ifdef UCLINUX
--	
- 	tst_parse_opts(argc, argv, NULL, NULL);
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+ 	make_a_baby(argc, argv);
  
--	argv0 = argv[0];
--	maybe_run_child(&do_child, "dS", &id_uclinux, &maxsemstring);
--#endif
--
- 	prog = argv[0];
- 	nwait = 0;
- 	setup();
-@@ -205,25 +191,8 @@ static void dotest(key_t key)
- 		if ((pid = FORK_OR_VFORK()) < 0) {
- 			tst_resm(TFAIL, "\tfork failed");
- 		}
--		if (pid == 0) {
--#ifdef UCLINUX
--			int j;
--			maxsemstring = "";
--			for (j = 0; j < NSEMS; j++) {
--				if (asprintf(&maxsemstring, "%s%s%d",
--					     maxsemstring, (j ? ":" : ""),
--					     maxsemvals[j]) < 0) {
--					tst_brkm(TBROK, NULL, "Could not serialize "
--						 "maxsemvals");
--				}
--			}
--			if (self_exec(argv0, "dS", id, maxsemstring) < 0) {
--				tst_resm(TFAIL, "\tself_exec failed");
--			}
--#else
-+		if (pid == 0)
- 			dosemas(id);
--#endif
--		}
- 		if (pid > 0) {
- 			kidarray[i] = pid;
- 			nwait++;
-@@ -285,30 +254,6 @@ static void dotest(key_t key)
- 		exit(1);
- }
+ 	/* first compare register states when execl() syscall starts */
+diff --git a/testcases/kernel/syscalls/ptrace/ptrace05.c b/testcases/kernel/syscalls/ptrace/ptrace05.c
+index f81d3d3..22261f3 100644
+--- a/testcases/kernel/syscalls/ptrace/ptrace05.c
++++ b/testcases/kernel/syscalls/ptrace/ptrace05.c
+@@ -60,32 +60,7 @@ int main(int argc, char **argv)
  
--#ifdef UCLINUX
--void do_child(void)
--{
--	int i;
--	char *tok;
--	char *endptr;
--
--	tok = strtok(maxsemstring, ":");
--	for (i = 0; i < NSEMS; i++) {
--		if (strlen(tok) == 0) {
--			tst_brkm(TBROK, NULL, "Invalid argument to -C option");
+ 	pid_t child;
+ 
+-	/* Parse the CLI args appropriately. */
+-	switch (argc) {
+-	case 3:
+-		end_signum = (int)strtol((const char *)*(argv + 2), NULL, 10);
+-		/* Parse the signal value. */
+-		if (end_signum == 0 && errno != 0) {
+-			tst_brkm(TBROK, NULL,
+-				 "argument (%s) isn't a valid number.\n",
+-				 *(argv + 2));
 -		}
--
--		maxsemvals[i] = strtol(tok, &endptr, 10);
--		if (*endptr != '\0') {
--			tst_brkm(TBROK, NULL, "Invalid argument to -C option");
+-		/* FALLTHROUGH */
+-	case 2:
+-		start_signum = (int)strtol((const char *)*(argv + 1), NULL, 10);
+-		/* Parse the signal value. */
+-		if (end_signum == 0 && errno != 0) {
+-			tst_brkm(TBROK, NULL,
+-				 "argument (%s) isn't a valid number.\n",
+-				 *(argv + 1));
 -		}
--		tok = strtok(NULL, ":");
+-		break;
+-	case 1:
+-		/* Do nothing. */
+-		break;
+-	default:
+-		return usage(basename(*argv));
 -	}
--
--	dosemas(id_uclinux);
--}
--#endif
--
- static void dosemas(int id)
- {
- 	int i, j;
++	tst_parse_opts(argc, argv, NULL, NULL);
+ 
+ 	if (start_signum == -1) {
+ 		start_signum = 0;
 -- 
 2.10.2
 
