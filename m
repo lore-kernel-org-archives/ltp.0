@@ -1,7 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 Feb 2017 15:29:12 +0100
-Subject: [LTP] runltp-ng hackweek experiment
-Message-ID: <20170228142912.GA13189@rei.lan>
+Date: Tue, 28 Feb 2017 16:41:50 +0100
+Subject: [LTP] [PATCH 1/3] Added memfd_create lapi flags
+In-Reply-To: <1488283196-11397-2-git-send-email-jracek@redhat.com>
+References: <1488283196-11397-1-git-send-email-jracek@redhat.com>
+ <1488283196-11397-2-git-send-email-jracek@redhat.com>
+Message-ID: <20170228154150.GA13574@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,57 +12,63 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-I've tried to experiment with a proof of concept for new LTP test
-execution framework during Hackweek[1]. And I've ended up with something
-that is more or less usable and has features missing in runltp + ltp-pan
-script we have now.
+> Signed-off-by: Jakub Racek <jracek@redhat.com>
+> ---
+>  include/lapi/memfd_create.h | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+>  create mode 100644 include/lapi/memfd_create.h
+                                   ^
+				   This should probably be named only
+				   memfd.h
 
-It's in the proof of concept state at this point and polishing it would
-require more work, but it looks promising at this point.
+> diff --git a/include/lapi/memfd_create.h b/include/lapi/memfd_create.h
+> new file mode 100644
+> index 0000000..47c4cb8
+> --- /dev/null
+> +++ b/include/lapi/memfd_create.h
+> @@ -0,0 +1,30 @@
+> +/*
+> + * Copyright (C) 2017  Red Hat, Inc.
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of version 2 of the GNU General Public
+> + * License as published by the Free Software Foundation.
 
-The key desing points are:
+We preffere GPLv2+ (with any later clausule) for any new code.
 
-* We use the ltp-wrapper[2] instead of ltp-pan, which runs oldlib and
-  openposix testcases from a test() function from a newlib test.
+> + * This program is distributed in the hope that it would be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+> + *
+> + * Further, this software is distributed without any warranty that it
+> + * is free of the rightful claim of any third person regarding
+> + * infringement or the like.  Any license provided herein, whether
+> + * implied or otherwise, applies only to this software file.  Patent
+> + * licenses, if any, provided herein do not apply to combinations of
+> + * this program with other software, or any other product whatsoever.
+> + */
+> +
+> +#ifndef __LAPI_MEMFD_H__
+> +#define __LAPI_MEMFD_H__
 
-  This provides us test timeouts and killing whole test process tree,
-  etc. basically for free.
+Identifiers starting with underscore are reserved for system libraries
+(mostly libc). We should not introduce new ones. And the old ones should
+be fixed.
 
-* The ltp-runner[3] then does the runtest files parsing, openposix test
-  discovery, test execution, writing test results, etc.
-
-  - The one intrusive change is that I've added code to both oldlib and
-    newlib to support '-q' flag, so that we can query test for details
-    i.e. if it's oldlib/newlib test, if it requires root, etc. This is
-    would be also needed for parallel test execution, where the test
-    would report if it can be executed in parallel and/or report what
-    kind of system resources it monopolizes. The bottom line is that
-    all testcases should understand the -q option and at least exit
-    without writing any output, which is not the case at the moment.
-
-  - The code is split into several modules, the parsers prepare list of
-    tests to be executed, then there is code to execute the tests and
-    store logs, then the output writers can produce logs in several
-    different formats. I've experimented a bit with a better html
-    output[4][5] (table sorting is not implemented yet, but planned).
-
-  - The code is prepared for parallel test execution which is not
-    implemented at the moment but basically boils down to marking
-    down testcases that cannot be executed concurently. As I wrote
-    I would like to keep this information inside the test code and
-    export it via the -q options.
-
-  - We miss random test execution and execute tests for defined amount
-    of time at this point, but other than that the basic features are
-    there.
-
-And as usuall any comments are welcomed ;-).
-
-[1] https://hackweek.suse.com/
-[2] https://github.com/metan-ucw/ltp/blob/master/tools/runltp-ng/bin/ltp-wrapper.c
-[3] https://github.com/metan-ucw/ltp/blob/master/tools/runltp-ng/bin/ltp-runner.c
-[4] http://metan.ucw.cz/outgoing/ltp-openposix.html
-[5] http://metan.ucw.cz/outgoing/ltp-syscalls.html
+> +/* flags for memfd_create(2) (unsigned int) */
+> +#ifndef MFD_CLOEXEC
+> +# define MFD_CLOEXEC             0x0001U
+> +#endif
+> +#ifndef MFD_ALLOW_SEALING
+> +# define MFD_ALLOW_SEALING       0x0002U
+> +#endif
+> +
+> +#endif
+> -- 
+> 1.8.3.1
+> 
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
 -- 
 Cyril Hrubis
