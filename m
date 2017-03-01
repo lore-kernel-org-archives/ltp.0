@@ -1,224 +1,66 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 1 Mar 2017 16:28:57 +0800
-Subject: [LTP] [PATCH v2] ltp/numa: add new test11
-In-Reply-To: <1486371038-24332-1-git-send-email-liwang@redhat.com>
-References: <1486371038-24332-1-git-send-email-liwang@redhat.com>
-Message-ID: <CAEemH2faFNsjKWMv9BinCX9E9xhJ6B+0TjnaJvbXbodHbj9ErA@mail.gmail.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 1 Mar 2017 11:11:49 +0100
+Subject: [LTP] runltp-ng hackweek experiment
+In-Reply-To: <20170228142912.GA13189@rei.lan>
+References: <20170228142912.GA13189@rei.lan>
+Message-ID: <20170301101149.5hlkduqfdvlxmpqx@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-ping
+Hi Cyril,
 
-On Mon, Feb 6, 2017 at 4:50 PM, Li Wang <liwang@redhat.com> wrote:
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> ---
->
-> Notes:
->     V1 --> V2
->
->     * tst_brk --> tst_res, we just hope the testcase11 skip but exit
->     * allocate '$Ori_hpgs + 1' hugepages then check if allocation success
->     * simplify arithmetic operation
->     * make sure 'hpsz != 0' before mmap() funciton in main()
->     * fprintf() --> perror()
->     * coding style correction
->
->  testcases/kernel/numa/README         |  2 ++
->  testcases/kernel/numa/numa01.sh      | 48 ++++++++++++++++++++++++++++++--
->  testcases/kernel/numa/support_numa.c | 53 ++++++++++++++++++++++++++++++++++--
->  3 files changed, 98 insertions(+), 5 deletions(-)
->
-> diff --git a/testcases/kernel/numa/README b/testcases/kernel/numa/README
-> index 57b12f7..a5c3f1b 100644
-> --- a/testcases/kernel/numa/README
-> +++ b/testcases/kernel/numa/README
-> @@ -54,6 +54,8 @@ Verifies the numa_node_size api with hardware checking.
->  TestCase10:
->  Verifieds the NUMA migratepages policy.
->
-> +TestCase11:
-> +Verifies the hugepage memory allocated from the node we specify.
->
->  Pre-requisites
->  ====================================================================================================================
-> diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-> index f0f6139..5793bf9 100755
-> --- a/testcases/kernel/numa/numa01.sh
-> +++ b/testcases/kernel/numa/numa01.sh
-> @@ -31,11 +31,12 @@
->  #               Test #8: Verifies memhog                                     #
->  #               Test #9: Verifies numa_node_size api                         #
->  #               Test #10:Verifies Migratepages                               #
-> +#               Test #11:Verifies hugepage alloacted on specified node       #
->  #                                                                            #
->  ##############################################################################
->
->  TST_ID="numa01"
-> -TST_CNT=10
-> +TST_CNT=11
->  TST_SETUP=setup
->  TST_TESTFUNC=test
->  TST_NEEDS_TMPDIR=1
-> @@ -83,11 +84,13 @@ setup()
->  {
->         export MB=$((1024*1024))
->         export PAGE_SIZE=$(getconf PAGE_SIZE)
-> +       export HPAGE_SIZE=$(cat /proc/meminfo  |grep "Hugepagesize:" |awk '{print $2}')
->
->         # arguments to memory exercise program support_numa.c
->         ALLOC_1MB=1
->         SHARE_1MB=2
-> -       PAUSE=3
-> +       HUGE_PAGE=3
-> +       PAUSE=4
->
->         total_nodes=0
->
-> @@ -399,4 +402,45 @@ test10()
->         tst_res TPASS "NUMA MIGRATEPAGES policy"
->  }
->
-> +# Verification of hugepage memory allocated on a node
-> +test11()
-> +{
-> +       Mem_huge=0
-> +
-> +       if [ ! -d "/sys/kernel/mm/hugepages/" ]; then
-> +               tst_res TCONF "hugepage is not supported"
-> +               return
-> +       fi
-> +
-> +       for node in $nodes_list; do
-> +               Ori_hpgs=$(cat /sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
-> +               New_hpgs=$((Ori_hpgs + 1))
-> +               echo $New_hpgs >/sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-> +
-> +               Chk_hpgs=$(cat /sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
-> +               if [ "$Chk_hpgs" -ne "$New_hpgs" ]; then
-> +                       tst_res TCONF "hugepage is not enough to test"
-> +                       return
-> +               fi
-> +
-> +               numactl --cpunodebind=$node --membind=$node support_numa $HUGE_PAGE &
-> +               pid=$!
-> +               wait_for_support_numa $pid
-> +
-> +               Mem_huge=$(echo $(numastat -p $pid |grep '^Huge' |awk '{print $'$((node+2))'}'))
-> +               Mem_huge=$((${Mem_huge%.*} * 1024))
-> +
-> +               if [ "$Mem_huge" -lt "$HPAGE_SIZE" ]; then
-> +                       tst_res TFAIL \
-> +                               "NUMA memory allocated in node$node is less than expected"
-> +                       return
-> +               fi
-> +
-> +               kill -CONT $pid >/dev/null 2>&1
-> +               echo $Ori_hpgs >/sys/devices/system/node/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-> +       done
-> +
-> +       tst_res TPASS "NUMA local node hugepage memory allocated"
-> +}
-> +
->  tst_run
-> diff --git a/testcases/kernel/numa/support_numa.c b/testcases/kernel/numa/support_numa.c
-> index eaf63e3..97f3008 100644
-> --- a/testcases/kernel/numa/support_numa.c
-> +++ b/testcases/kernel/numa/support_numa.c
-> @@ -22,7 +22,7 @@
->  /*                                                                            */
->  /* File:        support_numa.c                                                */
->  /*                                                                            */
-> -/* Description: Allocates 1MB of memory and touches it to verify numa         */
-> +/* Description: Allocates memory and touches it to verify numa                */
->  /*                                                                            */
->  /* Author:      Sivakumar Chinnaiah  Sivakumar.C@in.ibm.com                   */
->  /*                                                                            */
-> @@ -52,16 +52,43 @@ static void help(void)
->         printf("Input:  Describe input arguments to this program\n");
->         printf("        argv[1] == 1 then allocate 1MB of memory\n");
->         printf("        argv[1] == 2 then allocate 1MB of share memory\n");
-> -       printf("        argv[1] == 3 then pause the program to catch sigint\n");
-> +       printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
-> +       printf("        argv[1] == 4 then pause the program to catch sigint\n");
->         printf("Exit:   On failure - Exits with non-zero value\n");
->         printf("        On success - exits with 0 exit value\n");
->
->         exit(1);
->  }
->
-> +static int read_hugepagesize(void)
-> +{
-> +       FILE *fp;
-> +       char line[BUFSIZ], buf[BUFSIZ];
-> +       int val;
-> +
-> +       fp = fopen("/proc/meminfo", "r");
-> +       if (fp == NULL) {
-> +               fprintf(stderr, "Failed to open /proc/meminfo");
-> +               return 0;
-> +       }
-> +
-> +       while (fgets(line, BUFSIZ, fp) != NULL) {
-> +               if (sscanf(line, "%64s %d", buf, &val) == 2)
-> +                       if (strcmp(buf, "Hugepagesize:") == 0) {
-> +                               fclose(fp);
-> +                               return 1024 * val;
-> +                       }
-> +       }
-> +
-> +       fclose(fp);
-> +       fprintf(stderr, "can't find \"%s\" in %s", "Hugepagesize:", "/proc/meminfo");
-> +
-> +       return 0;
-> +}
-> +
->  int main(int argc, char *argv[])
->  {
-> -       int i, fd, rc;
-> +       int i, fd, rc, hpsz;
->         char *buf = NULL;
->         struct stat sb;
->
-> @@ -114,6 +141,26 @@ int main(int argc, char *argv[])
->                 remove(TEST_SFILE);
->                 break;
->         case 3:
-> +               hpsz = read_hugepagesize();
-> +               if (hpsz == 0)
-> +                       exit(1);
-> +
-> +               buf = mmap(NULL, hpsz, PROT_READ | PROT_WRITE,
-> +                               MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-> +                               -1, 0);
-> +
-> +               if (buf == MAP_FAILED) {
-> +                       perror("mmap failed");
-> +                       exit(1);
-> +               }
-> +
-> +               memset(buf, 'a', hpsz);
-> +
-> +               raise(SIGSTOP);
-> +
-> +               munmap(buf, hpsz);
-> +               break;
-> +       case 4:
->                 raise(SIGSTOP);
->                 break;
->         default:
-> --
-> 1.8.3.1
->
->
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> I've tried to experiment with a proof of concept for new LTP test
+> execution framework during Hackweek[1]. And I've ended up with something
+> that is more or less usable and has features missing in runltp + ltp-pan
+> script we have now.
+
+> It's in the proof of concept state at this point and polishing it would
+> require more work, but it looks promising at this point.
+
+It looks really interesting.
+
+BTW while Open Posix Testcases (-o switch) are working, "normal" tests doesn't. Do I miss
+something?
+
+$ /opt/ltp/bin/ltp-runner -S /opt/ltp/runtest/io
+
+Overall results:
+-------------------------------------
+
+Passed 0 out of 0
 
 
+And shouldn't there be a different check as otherwise it segfaults?
 
--- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
+$ /opt/ltp/bin/ltp-runner -S /opt/ltp/runtest/mm
+Segmentation fault (core dumped)
+
+--- tools/runltp-ng/bin/runner_test_filter.c
++++ tools/runltp-ng/bin/runner_test_filter.c
+@@ -100,7 +100,7 @@ static void trie_insert(const char *str)
+ 
+ 	str = trie_search(str, &node);
+ 
+-	while (*str) {
++	while (str) {
+ 		int key = char2key(*str);
+ 
+ 		if (key == -1)
+
+
+>   - The code is split into several modules, the parsers prepare list of
+>     tests to be executed, then there is code to execute the tests and
+>     store logs, then the output writers can produce logs in several
+>     different formats. I've experimented a bit with a better html
+>     output[4][5] (table sorting is not implemented yet, but planned).
+
+Tables looks very nice. I'd be for more features like hover highlighting a and slightly
+different color for odd and even rows, but thats a detail (see
+http://adminer.sourceforge.net/adminer.php?username=&db=a264133_6rgs7fa4 as example).
+
+
+Kind regards,
+Petr
