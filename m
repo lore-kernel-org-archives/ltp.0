@@ -1,68 +1,36 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 1 Mar 2017 16:57:34 +0100
-Subject: [LTP] [PATCH 0/1] uname26 exploit regression test
-In-Reply-To: <20170301161057.65753d4f@linux-v3j5>
-References: <20170217113653.595ce1b4@linux-v3j5>
- <20170220101116.GA8829@rei.lan>
- <20170301161057.65753d4f@linux-v3j5>
-Message-ID: <20170301155734.GA20855@rei.lan>
+From: Steve Ellcey <sellcey@cavium.com>
+Date: Wed,  1 Mar 2017 09:20:48 -0800
+Subject: [LTP] [PATCH] syscalls/fcntl14: Remove unneeded time() declaration.
+Message-ID: <1488388848-26891-1-git-send-email-sellcey@caviumnetworks.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Sounds reasonable. I guess that for some exploits there is no single
-> > syscall to blame so putting these into syscalls/ does not make much
-> > sense.
-> > 
-> > Maybe we can just put all these tests into an security/exploits or
-> > security/CVE directory or something.
-> 
-> Perhaps use security/CVE directory then list the exploits by CVE number is
-> best. Then if someone needs to find an exploit for a particular syscall they
-> will need to grep its name or they could look it up in a CVE database.
+The 'extern long time()' declaration conflicts with time.h which
+declares time() to be of type time_t which may or may not be long.
+This declaration causes a build failure on x86_64 if the file is
+compiled with the -mx32 flag.
 
-Agreed.
+Signed-off-by: Steve Ellcey <sellcey@caviumnetworks.com>
+---
+ testcases/kernel/syscalls/fcntl/fcntl14.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> Maybe you could add a field in the test struct for keywords and then at some
-> later date we could add an option to the test runner to search for tests with
-> some particular keywords or other meta data? (I am thinking about the -q
-> option you added for runltp-ng (good work btw :-))).
-
-I have something like that in mind, adding metadata to reference kernel
-commits for regression tests, tagging System V IPC tests with 'sysv_ipc'
-tag, etc. Could be done as simply as adding an array of strings (tags)
-to the test structure, then we just can just print them with "tag:"
-prefix for the -q option, however tagging ~1000 testcases will be quite
-time consuming...
-
-> > > 2) What is the appropriate runtest file for security tests? I think they
-> > >    should be separated from functional tests.  
-> > 
-> > If there is none we should start one. Something as runtest/security. I'm
-> > also wondering if we should add these into the runtest/syscalls as well,
-> > at least these that are directly related to a syscall of some kind.
-> 
-> This does mean we will end up unintentionally running some tests twice,
-> although maybe runltp stops that. In fact if all the tests are named cve-*
-> then it is easy to stop that.
-
-We have overlap in the runtest files at the moment, there are a few that
-are a subset of the syscalls runtest file. Tagging all the tests would
-fix that problem, since then we could filter tests by tags, but even if
-we decide to go this way, that will took us at least year to implement.
-
-> In any case some exploits are likely to run a long time or crash the system if
-> successful so I would either want to keep them seperate or have some way of
-> labeling them as dangerous or long running. For example I started running the
-> OOM killer tests separately in OpenQA from the other memory tests because they
-> are very good at causing freezes and stop the other tests from running.
-
-There are at least three syscall tests that can bring the machine down
-as well, mostly regresion tests for races in fs...
-
+diff --git a/testcases/kernel/syscalls/fcntl/fcntl14.c b/testcases/kernel/syscalls/fcntl/fcntl14.c
+index c61eb24..1799084 100644
+--- a/testcases/kernel/syscalls/fcntl/fcntl14.c
++++ b/testcases/kernel/syscalls/fcntl/fcntl14.c
+@@ -775,8 +775,6 @@ void dochild(void)
+ 
+ void run_test(int file_flag, int file_mode, int seek, int start, int end)
+ {
+-	extern long time();
+-
+ 	fail = 0;
+ 
+ 	for (test = start; test < end; test++) {
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.7.4
+
