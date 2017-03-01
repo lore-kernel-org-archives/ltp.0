@@ -1,34 +1,32 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 1 Mar 2017 12:55:44 +0100
-Subject: [LTP] runltp-ng hackweek experiment
-In-Reply-To: <20170301103513.GA17074@rei>
-References: <20170228142912.GA13189@rei.lan>
- <20170301101149.5hlkduqfdvlxmpqx@dell5510>
- <20170301103513.GA17074@rei>
-Message-ID: <20170301115544.stwy3uf3cu4arhga@dell5510>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 1 Mar 2017 13:46:20 +0100
+Subject: [LTP] [PATCH] Remove unneeded time() declaration.
+In-Reply-To: <1488317719-29809-1-git-send-email-sellcey@caviumnetworks.com>
+References: <1488317719-29809-1-git-send-email-sellcey@caviumnetworks.com>
+Message-ID: <20170301124620.GA32207@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+Hi!
+> The 'extern long time()' declaration conflicts with time.h which
+> declares time() to be of type time_t which may or may not be long.
+> This declaration causes a build failure on x86_64 if the file is
+> compiled with the -mx32 flag.  The time() function does not appear
+> to be used anywhere in fcntl14 so I am not sure why the declaration
+> is there anyway.
 
-> > Tables looks very nice. I'd be for more features like hover highlighting a and slightly
-> > different color for odd and even rows, but thats a detail (see
-> > http://adminer.sourceforge.net/adminer.php?username=&db=a264133_6rgs7fa4 as example).
+This is obviously correct, but the patch misses the Signed-of-by: line.
 
-> I have something like that in mind as well, the table was done in a half
-> of a day and I've spend most of the time looking into javascript
-> documentation...
-Sure, web UI development is a bit different from low level C code :-). This reporting
-feature is really nice.
+Also usually the first line of the patch describes what testcase it
+fixes so it should have been something like:
 
-> But I've managed to write a table sorting function yesterday evenning, I
-> will push that code into my github repo soon enough.
-Great.
+syscalls/fcntl14: Remove unneeded time() declaration.
 
+Can you please resend with fixed commit description?
 
-Kind regards,
-Petr
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
