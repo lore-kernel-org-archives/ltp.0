@@ -1,42 +1,41 @@
-From: Steve Ellcey <sellcey@caviumnetworks.com>
-Date: Wed, 01 Mar 2017 09:26:21 -0800
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 2 Mar 2017 13:41:59 +0100
 Subject: [LTP] [PATCH] Remove unneeded time() declaration.
-In-Reply-To: <20170301124620.GA32207@rei.lan>
+In-Reply-To: <1488389181.2866.256.camel@caviumnetworks.com>
 References: <1488317719-29809-1-git-send-email-sellcey@caviumnetworks.com>
  <20170301124620.GA32207@rei.lan>
-Message-ID: <1488389181.2866.256.camel@caviumnetworks.com>
+ <1488389181.2866.256.camel@caviumnetworks.com>
+Message-ID: <20170302123608.GA30493@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 2017-03-01 at 13:46 +0100, Cyril Hrubis wrote:
-> Hi!
-> > 
-> > The 'extern long time()' declaration conflicts with time.h which
-> > declares time() to be of type time_t which may or may not be long.
-> > This declaration causes a build failure on x86_64 if the file is
-> > compiled with the -mx32 flag.  The time() function does not appear
-> > to be used anywhere in fcntl14 so I am not sure why the declaration
-> > is there anyway.
-> This is obviously correct, but the patch misses the Signed-of-by:
-> line.
-> 
-> Also usually the first line of the patch describes what testcase it
-> fixes so it should have been something like:
-> 
-> syscalls/fcntl14: Remove unneeded time() declaration.
-> 
-> Can you please resend with fixed commit description?
+Hi!
+> I updated the comments and resent the patch using format-patch and
+> send-email. ??I am not sure if that is the right way to do it but I
+> don't see any way to use format-patch/send-email to resend the patch as
+> a response to your email so I sent it as a new email/thread. ??The
+> inability (as far as I know) to update the patch and send it as a
+> response to an existing email thread is one of the reasons I am not a
+> huge fan of those tools but if that is how you want it done, I will do
+> it that way.
 
-I updated the comments and resent the patch using format-patch and
-send-email.  I am not sure if that is the right way to do it but I
-don't see any way to use format-patch/send-email to resend the patch as
-a response to your email so I sent it as a new email/thread.  The
-inability (as far as I know) to update the patch and send it as a
-response to an existing email thread is one of the reasons I am not a
-huge fan of those tools but if that is how you want it done, I will do
-it that way.
+The usuall way is to send new version of a patchset as new thread,
+ideally adding vN to the subject where N is number that increases with
+each iteration.
 
-Steve Ellcey
+And yes, the git-send-email is tailored to specific workflow so as far
+as the workflow works for particular project, everything works great.
+
+But the same goes for GitHub, I do not like the workflow their tools are
+tailored for, but I still use them when needed. And quite possibly I do
+not like it since I'm still much more used to sending patches by
+email...
+
+Anyway all that matters in the end is that patches gets applied :-).
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
