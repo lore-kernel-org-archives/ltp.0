@@ -1,150 +1,42 @@
 From: Eryu Guan <eguan@redhat.com>
-Date: Thu,  2 Mar 2017 21:33:21 +0800
-Subject: [LTP] [PATCH 1/3] diotest: use user specified bufsize correctly
-Message-ID: <20170302133323.5262-1-eguan@redhat.com>
+Date: Thu,  2 Mar 2017 21:33:23 +0800
+Subject: [LTP] [PATCH 3/3] runtest/dio: enable dio29/30
+In-Reply-To: <20170302133323.5262-1-eguan@redhat.com>
+References: <20170302133323.5262-1-eguan@redhat.com>
+Message-ID: <20170302133323.5262-3-eguan@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-In diotestN, option b is used to specify the buffer size used in the
-tests, but some tests are overriding this user specified size with
-the default value (BUFSIZE).
+Not sure why dio29 and dio30 are commented out, I found a bug in
+4.10 kernel by running them, see this patch
 
-So always use 'bufsize' once it's initialized by user specified
-value.
+https://patchwork.kernel.org/patch/9598823/
+
+So let's enable them by default.
 
 Signed-off-by: Eryu Guan <eguan@redhat.com>
 ---
- testcases/kernel/io/direct_io/diotest2.c |  9 +++++----
- testcases/kernel/io/direct_io/diotest3.c |  1 -
- testcases/kernel/io/direct_io/diotest4.c | 10 +++++-----
- testcases/kernel/io/direct_io/diotest5.c |  2 +-
- testcases/kernel/io/direct_io/diotest6.c |  6 +++---
- 5 files changed, 14 insertions(+), 14 deletions(-)
+ runtest/dio | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/testcases/kernel/io/direct_io/diotest2.c b/testcases/kernel/io/direct_io/diotest2.c
-index 15ae932..c32dbeb 100644
---- a/testcases/kernel/io/direct_io/diotest2.c
-+++ b/testcases/kernel/io/direct_io/diotest2.c
-@@ -69,6 +69,10 @@ int TST_TOTAL = 3;		/* Total number of test conditions */
- #define WRITE_DIRECT 2
- #define RDWR_DIRECT 3
+diff --git a/runtest/dio b/runtest/dio
+index 97820e9..a26e001 100644
+--- a/runtest/dio
++++ b/runtest/dio
+@@ -40,8 +40,8 @@ dio27 diotest6 -b 8192 -o 1024000 -i 1000 -v 100
+ dio28 diotest6 -b 8192 -o 1024000 -i 1000 -v 200
  
-+int fd1 = -1;
-+char filename[LEN];
-+int bufsize = BUFSIZE;
-+
- /*
-  * runtest: write the data to the file. Read the data from the file and compare.
-  *	For each iteration, write data starting at offse+iter*bufsize
-@@ -78,7 +82,7 @@ int runtest(int fd_r, int fd_w, int iter, off64_t offset, int action)
- {
- 	char *buf1;
- 	char *buf2;
--	int i, bufsize = BUFSIZE;
-+	int i;
- 
- 	/* Allocate for buffers */
- 	if ((buf1 = valloc(bufsize)) == 0) {
-@@ -129,15 +133,12 @@ void prg_usage()
- 	exit(1);
- }
- 
--int fd1 = -1;
--char filename[LEN];
- static void setup(void);
- static void cleanup(void);
- 
- int main(int argc, char *argv[])
- {
- 	int iter = 100;		/* Iterations. Default 100 */
--	int bufsize = BUFSIZE;	/* Buffer size. Default 4k */
- 	off64_t offset = 0;	/* Offset. Default 0 */
- 	int i, action, fd_r, fd_w;
- 	int fail_count = 0, total = 0, failed = 0;
-diff --git a/testcases/kernel/io/direct_io/diotest3.c b/testcases/kernel/io/direct_io/diotest3.c
-index 5e204e7..efbc79d 100644
---- a/testcases/kernel/io/direct_io/diotest3.c
-+++ b/testcases/kernel/io/direct_io/diotest3.c
-@@ -96,7 +96,6 @@ int runtest(int fd_r, int fd_w, int childnum, int action)
- 	char *buf1;
- 	char *buf2;
- 	off_t seekoff;
--	int bufsize = BUFSIZE;
- 	int i;
- 
- 	/* Allocate for buffers */
-diff --git a/testcases/kernel/io/direct_io/diotest4.c b/testcases/kernel/io/direct_io/diotest4.c
-index e9a7ac4..d8a3a42 100644
---- a/testcases/kernel/io/direct_io/diotest4.c
-+++ b/testcases/kernel/io/direct_io/diotest4.c
-@@ -224,19 +224,19 @@ int main(int argc, char *argv[])
- 		tst_brkm(TBROK, cleanup, "open failed for %s: %s",
- 			 filename, strerror(errno));
- 	}
--	if ((buf0 = valloc(BUFSIZE)) == NULL) {
-+	if ((buf0 = valloc(bufsize)) == NULL) {
- 		tst_brkm(TBROK, cleanup, "valloc() buf0 failed: %s",
- 			 strerror(errno));
- 	}
- 	for (i = 1; i < fblocks; i++) {
--		fillbuf(buf0, BUFSIZE, (char)i);
--		if (write(fd, buf0, BUFSIZE) < 0) {
-+		fillbuf(buf0, bufsize, (char)i);
-+		if (write(fd, buf0, bufsize) < 0) {
- 			tst_brkm(TBROK, cleanup, "write failed for %s: %s",
- 				 filename, strerror(errno));
- 		}
- 	}
- 	close(fd);
--	if ((buf2 = valloc(BUFSIZE)) == NULL) {
-+	if ((buf2 = valloc(bufsize)) == NULL) {
- 		tst_brkm(TBROK, cleanup, "valloc() buf2 failed: %s",
- 			 strerror(errno));
- 	}
-@@ -284,7 +284,7 @@ int main(int argc, char *argv[])
- 	total++;
- 
- 	/* Test-4: Read beyond the file size */
--	offset = BUFSIZE * (fblocks + 10);
-+	offset = bufsize * (fblocks + 10);
- 	count = bufsize;
- 	if (lseek(fd, offset, SEEK_SET) < 0) {
- 		tst_resm(TFAIL, "lseek failed: %s", strerror(errno));
-diff --git a/testcases/kernel/io/direct_io/diotest5.c b/testcases/kernel/io/direct_io/diotest5.c
-index 2c3774a..dc4ecd1 100644
---- a/testcases/kernel/io/direct_io/diotest5.c
-+++ b/testcases/kernel/io/direct_io/diotest5.c
-@@ -84,7 +84,7 @@ static int fd1 = -1;
- */
- int runtest(int fd_r, int fd_w, int iter, off64_t offset, int action)
- {
--	int i, bufsize = BUFSIZE;
-+	int i;
- 	struct iovec *iov1, *iov2, *iovp;
- 
- 	/* Allocate for buffers and data pointers */
-diff --git a/testcases/kernel/io/direct_io/diotest6.c b/testcases/kernel/io/direct_io/diotest6.c
-index 42e1d34..5594e04 100644
---- a/testcases/kernel/io/direct_io/diotest6.c
-+++ b/testcases/kernel/io/direct_io/diotest6.c
-@@ -85,11 +85,11 @@ static void prg_usage(void)
- int runtest(int fd_r, int fd_w, int childnum, int action)
- {
- 	off64_t seekoff;
--	int i, bufsize = BUFSIZE;
-+	int i;
- 	char *buf1, *buf2;
- 
--	buf1 = valloc(BUFSIZE);
--	buf2 = valloc(BUFSIZE);
-+	buf1 = valloc(bufsize);
-+	buf2 = valloc(bufsize);
- 
- 	if (!buf1 || !buf2) {
- 		tst_resm(TBROK | TERRNO, "valloc() failed");
+ ### Run the tests with more children
+-#dio29 diotest3 -b 65536 -n 100 -i 1000 -o 1024000
+-#dio30 diotest6 -b 65536 -n 100 -i 1000 -o 1024000
++dio29 diotest3 -b 65536 -n 100 -i 1000 -o 1024000
++dio30 diotest6 -b 65536 -n 100 -i 1000 -o 1024000
+ #
+ # RAW DEVICE TEST SECTION
+ #   DEV1 and DEV2 should be exported prior to execution or
 -- 
 2.9.3
 
