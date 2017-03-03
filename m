@@ -1,201 +1,184 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri,  3 Mar 2017 15:34:49 +0800
-Subject: [LTP] [PATCH 1/2] ltp/numa: add new test11
-Message-ID: <1488526490-22120-1-git-send-email-liwang@redhat.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Fri, 3 Mar 2017 16:07:35 +0800
+Subject: [LTP] [PATCH v2] syscalls/keyctl02: Add new regression test
+In-Reply-To: <58B90A1A.7070509@cn.fujitsu.com>
+References: <58B90A1A.7070509@cn.fujitsu.com>
+Message-ID: <1488528455-28888-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Li Wang <liwang@redhat.com>
----
- testcases/kernel/numa/README         |  2 ++
- testcases/kernel/numa/numa01.sh      | 51 ++++++++++++++++++++++++++++++++--
- testcases/kernel/numa/support_numa.c | 53 ++++++++++++++++++++++++++++++++++--
- 3 files changed, 101 insertions(+), 5 deletions(-)
+Fixed by:
+commit b4a1b4f5047e4f54e194681125c74c0aa64d637d
+Author: David Howells <dhowells@redhat.com>
+Date:   Fri Dec 18 01:34:26 2015 +0000
 
-diff --git a/testcases/kernel/numa/README b/testcases/kernel/numa/README
-index 57b12f7..a5c3f1b 100644
---- a/testcases/kernel/numa/README
-+++ b/testcases/kernel/numa/README
-@@ -54,6 +54,8 @@ Verifies the numa_node_size api with hardware checking.
- TestCase10:
- Verifieds the NUMA migratepages policy.
+    KEYS: Fix race between read and revoke
+
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/.gitignore        |   1 +
+ testcases/kernel/syscalls/keyctl/Makefile   |   2 +
+ testcases/kernel/syscalls/keyctl/keyctl02.c | 108 ++++++++++++++++++++++++++++
+ 4 files changed, 112 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/keyctl/keyctl02.c
+
+diff --git a/runtest/syscalls b/runtest/syscalls
+index dc03c4c..cf29854 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -483,6 +483,7 @@ io_setup01 io_setup01
+ io_submit01 io_submit01
  
-+TestCase11:
-+Verifies the hugepage memory allocated from the node we specify.
+ keyctl01 keyctl01
++keyctl02 keyctl02
  
- Pre-requisites
- ====================================================================================================================
-diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
-index f0f6139..69e5357 100755
---- a/testcases/kernel/numa/numa01.sh
-+++ b/testcases/kernel/numa/numa01.sh
-@@ -31,11 +31,12 @@
- #               Test #8: Verifies memhog                                     #
- #               Test #9: Verifies numa_node_size api                         #
- #               Test #10:Verifies Migratepages                               #
-+#               Test #11:Verifies hugepage alloacted on specified node       #
- #                                                                            #
- ##############################################################################
+ kcmp01 kcmp01
+ kcmp02 kcmp02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 91dccef..e26acff 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -448,6 +448,7 @@
+ /ipc/shmget/shmget04
+ /ipc/shmget/shmget05
+ /keyctl/keyctl01
++/keyctl/keyctl02
+ /kcmp/kcmp01
+ /kcmp/kcmp02
+ /kcmp/kcmp03
+diff --git a/testcases/kernel/syscalls/keyctl/Makefile b/testcases/kernel/syscalls/keyctl/Makefile
+index 2ef86f0..8f732cb 100644
+--- a/testcases/kernel/syscalls/keyctl/Makefile
++++ b/testcases/kernel/syscalls/keyctl/Makefile
+@@ -18,6 +18,8 @@
  
- TST_ID="numa01"
--TST_CNT=10
-+TST_CNT=11
- TST_SETUP=setup
- TST_TESTFUNC=test
- TST_NEEDS_TMPDIR=1
-@@ -83,11 +84,13 @@ setup()
- {
- 	export MB=$((1024*1024))
- 	export PAGE_SIZE=$(getconf PAGE_SIZE)
-+	export HPAGE_SIZE=$(awk '/Hugepagesize:/ {print $2}' /proc/meminfo)
+ top_srcdir		?= ../../../..
  
- 	# arguments to memory exercise program support_numa.c
- 	ALLOC_1MB=1
- 	SHARE_1MB=2
--	PAUSE=3
-+	HUGE_PAGE=3
-+	PAUSE=4
++keyctl02: LDLIBS	+=-lpthread -lkeyutils
++
+ include $(top_srcdir)/include/mk/testcases.mk
  
- 	total_nodes=0
- 
-@@ -399,4 +402,48 @@ test10()
- 	tst_res TPASS "NUMA MIGRATEPAGES policy"
- }
- 
-+# Verification of hugepage memory allocated on a node
-+test11()
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl02.c b/testcases/kernel/syscalls/keyctl/keyctl02.c
+new file mode 100644
+index 0000000..704dc69
+--- /dev/null
++++ b/testcases/kernel/syscalls/keyctl/keyctl02.c
+@@ -0,0 +1,108 @@
++/*
++ * Copyright (c) 2017 Fujitsu Ltd.
++ *  Ported: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++ *
++ * This program is free software: you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation, either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program, if not, see <http://www.gnu.org/licenses/>.
++ */
++
++/*
++ * This is a regression test for the race between keyctl_read() and
++ * keyctl_revoke(), if the revoke happens between keyctl_read()
++ * checking the validity of a key and the key's semaphore being taken,
++ * then the key type read method will see a revoked key.
++ *
++ * This causes a problem for the user-defined key type because it
++ * assumes in its read method that there will always be a payload
++ * in a non-revoked key and doesn't check for a NULL pointer.
++ *
++ * This test can crash the buggy kernel, and the bug was fixed in:
++ *
++ *  commit b4a1b4f5047e4f54e194681125c74c0aa64d637d
++ *  Author: David Howells <dhowells@redhat.com>
++ *  Date:   Fri Dec 18 01:34:26 2015 +0000
++ *
++ *  KEYS: Fix race between read and revoke
++ */
++
++#include "config.h"
++#include <errno.h>
++#include <pthread.h>
++#include <sys/types.h>
++#ifdef HAVE_KEYUTILS_H
++#include <keyutils.h>
++#endif
++#include "tst_safe_pthread.h"
++#include "tst_test.h"
++
++#ifdef HAVE_KEYUTILS_H
++
++#define LOOPS	20000
++
++static void *do_read(void *arg)
 +{
-+	Mem_huge=0
-+	Sys_node=/sys/devices/system/node
++	key_serial_t key = (unsigned long)arg;
++	char buffer[4] = { 0 };
 +
-+	if [ ! -d "/sys/kernel/mm/hugepages/" ]; then
-+		tst_res TCONF "hugepage is not supported"
-+		return
-+	fi
++	keyctl(KEYCTL_READ, key, buffer, 4);
 +
-+	for node in $nodes_list; do
-+		Ori_hpgs=$(cat ${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
-+		New_hpgs=$((Ori_hpgs + 1))
-+		echo $New_hpgs >${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+
-+		Chk_hpgs=$(cat ${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
-+		if [ "$Chk_hpgs" -ne "$New_hpgs" ]; then
-+			tst_res TCONF "hugepage is not enough to test"
-+			return
-+		fi
-+
-+		numactl --cpunodebind=$node --membind=$node support_numa $HUGE_PAGE &
-+		pid=$!
-+		wait_for_support_numa $pid
-+
-+		Mem_huge=$(echo $(numastat -p $pid |awk '/Huge/ {print $'$((node+2))'}'))
-+		Mem_huge=$((${Mem_huge%.*} * 1024))
-+
-+		if [ "$Mem_huge" -lt "$HPAGE_SIZE" ]; then
-+			tst_res TFAIL \
-+				"NUMA memory allocated in node$node is less than expected"
-+			kill -CONT $pid >/dev/null 2>&1
-+			echo $Ori_hpgs >${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+			return
-+		fi
-+
-+		kill -CONT $pid >/dev/null 2>&1
-+		echo $Ori_hpgs >${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
-+	done
-+
-+	tst_res TPASS "NUMA local node hugepage memory allocated"
++	return NULL;
 +}
 +
- tst_run
-diff --git a/testcases/kernel/numa/support_numa.c b/testcases/kernel/numa/support_numa.c
-index eaf63e3..97f3008 100644
---- a/testcases/kernel/numa/support_numa.c
-+++ b/testcases/kernel/numa/support_numa.c
-@@ -22,7 +22,7 @@
- /*                                                                            */
- /* File:        support_numa.c                                                */
- /*                                                                            */
--/* Description: Allocates 1MB of memory and touches it to verify numa         */
-+/* Description: Allocates memory and touches it to verify numa                */
- /*                                                                            */
- /* Author:      Sivakumar Chinnaiah  Sivakumar.C@in.ibm.com                   */
- /*                                                                            */
-@@ -52,16 +52,43 @@ static void help(void)
- 	printf("Input:	Describe input arguments to this program\n");
- 	printf("	argv[1] == 1 then allocate 1MB of memory\n");
- 	printf("	argv[1] == 2 then allocate 1MB of share memory\n");
--	printf("	argv[1] == 3 then pause the program to catch sigint\n");
-+	printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
-+	printf("        argv[1] == 4 then pause the program to catch sigint\n");
- 	printf("Exit:	On failure - Exits with non-zero value\n");
- 	printf("	On success - exits with 0 exit value\n");
- 
- 	exit(1);
- }
- 
-+static int read_hugepagesize(void)
++static void *do_revoke(void *arg)
 +{
-+	FILE *fp;
-+	char line[BUFSIZ], buf[BUFSIZ];
-+	int val;
++	key_serial_t key = (unsigned long)arg;
 +
-+	fp = fopen("/proc/meminfo", "r");
-+	if (fp == NULL) {
-+		fprintf(stderr, "Failed to open /proc/meminfo");
-+		return 0;
-+	}
++	keyctl(KEYCTL_REVOKE, key);
 +
-+	while (fgets(line, BUFSIZ, fp) != NULL) {
-+		if (sscanf(line, "%64s %d", buf, &val) == 2)
-+			if (strcmp(buf, "Hugepagesize:") == 0) {
-+				fclose(fp);
-+				return 1024 * val;
-+			}
-+	}
-+
-+	fclose(fp);
-+	fprintf(stderr, "can't find \"%s\" in %s", "Hugepagesize:", "/proc/meminfo");
-+
-+	return 0;
++	return NULL;
 +}
 +
- int main(int argc, char *argv[])
- {
--	int i, fd, rc;
-+	int i, fd, rc, hpsz;
- 	char *buf = NULL;
- 	struct stat sb;
- 
-@@ -114,6 +141,26 @@ int main(int argc, char *argv[])
- 		remove(TEST_SFILE);
- 		break;
- 	case 3:
-+		hpsz = read_hugepagesize();
-+		if (hpsz == 0)
-+			exit(1);
++static void do_test(void)
++{
++	int i;
++	key_serial_t key;
++	pthread_t pth[4];
 +
-+		buf = mmap(NULL, hpsz, PROT_READ | PROT_WRITE,
-+				MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
-+				-1, 0);
++	for (i = 0; i < LOOPS; i++) {
++		key = add_key("user", "ltptestkey", "foo", 3,
++			KEY_SPEC_PROCESS_KEYRING);
++		if (key == -1)
++			tst_brk(TBROK, "Failed to add key");
 +
-+		if (buf == MAP_FAILED) {
-+			perror("mmap failed");
-+			exit(1);
-+		}
++		SAFE_PTHREAD_CREATE(&pth[0], NULL, do_read,
++			(void *)(unsigned long)key);
++		SAFE_PTHREAD_CREATE(&pth[1], NULL, do_revoke,
++			(void *)(unsigned long)key);
++		SAFE_PTHREAD_CREATE(&pth[2], NULL, do_read,
++			(void *)(unsigned long)key);
++		SAFE_PTHREAD_CREATE(&pth[3], NULL, do_revoke,
++			(void *)(unsigned long)key);
 +
-+		memset(buf, 'a', hpsz);
++		SAFE_PTHREAD_JOIN(pth[0], NULL);
++		SAFE_PTHREAD_JOIN(pth[1], NULL);
++		SAFE_PTHREAD_JOIN(pth[2], NULL);
++		SAFE_PTHREAD_JOIN(pth[3], NULL);
++	}
 +
-+		raise(SIGSTOP);
++	tst_res(TPASS, "Bug not reproduced");
++}
 +
-+		munmap(buf, hpsz);
-+		break;
-+	case 4:
- 		raise(SIGSTOP);
- 		break;
- 	default:
++static struct tst_test test = {
++	.tid = "keyctl02",
++	.test_all = do_test,
++};
++
++#else
++	TST_TEST_TCONF("keyutils.h does not exist");
++#endif /* HAVE_KEYUTILS_H */
 -- 
-1.8.3.1
+1.8.4.2
+
+
 
