@@ -1,56 +1,37 @@
 From: Hoang Nguyen <the_hoang0709@yahoo.com>
-Date: Fri, 3 Mar 2017 01:21:47 +0000 (UTC)
-Subject: [LTP] [PATCH v2] min_free_kbytes: Check panic_on_oom in advance
-In-Reply-To: <1488503881-1954-1-git-send-email-the_hoang0709@yahoo.com>
-References: <1488503881-1954-1-git-send-email-the_hoang0709@yahoo.com>
-Message-ID: <1109024670.904855.1488504107390@mail.yahoo.com>
+Date: Fri, 3 Mar 2017 01:26:00 +0000 (UTC)
+Subject: [LTP] memcg_stress on swap off system.
+In-Reply-To: <1992281802.879695.1486602784905@mail.yahoo.com>
+References: <1992281802.879695.1486602784905.ref@mail.yahoo.com>
+ <1992281802.879695.1486602784905@mail.yahoo.com>
+Message-ID: <1326520780.892477.1488504360084@mail.yahoo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi,
-Sorry I for spam. I missed LTP in the subject. Please ignore this. I sent another mail.
-Best regards,
-Hoang      From: "the_hoang0709@yahoo.com" <the_hoang0709@yahoo.com>
- To: ltp@lists.linux.it 
-Cc: the_hoang0709@yahoo.com
- Sent: Friday, 3 March 2017, 8:18
- Subject: [PATCH v2] min_free_kbytes: Check panic_on_oom in advance
+Hi, 
+On the ocassion of my last patch of panic_on_oom, ping this also.
+Thanks and regards,
+Hoang
+
+      From: Hoang Nguyen <the_hoang0709@yahoo.com>
+ To: LTP List <ltp@lists.linux.it> 
+ Sent: Thursday, 9 February 2017, 8:13
+ Subject: [LTP] memcg_stress on swap off system.
    
-From: Hoang Nguyen <the_hoang0709@yahoo.com>
-
-Testcase usually trigger reset if panic_on_oom is enabled by default.
-Add panic_on_oom checking before running.
-
-Signed-off-by: Hoang Nguyen <the_hoang0709@yahoo.com>
----
- testcases/kernel/mem/tunable/min_free_kbytes.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
-index cb00f40..1f6fc8f 100644
---- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-+++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-@@ -239,6 +239,11 @@ static void sighandler(int signo LTP_ATTRIBUTE_UNUSED)
- void setup(void)
- {
-     tst_require_root();
-+    if (get_sys_tune("panic_on_oom")) {
-+        tst_brkm(TCONF, NULL,
-+            "panic_on_oom is set, disable it to run these testcases");
-+    }
-+
-     tst_sig(FORK, DEF_HANDLER, cleanup);
-     TEST_PAUSE;
- 
--- 
-2.7.4
-
-
+Hi LTP team,
+I have this testcase run on my swap off system, and seem that the OOM restart it
+I'm not sure I understand the entirely purpose of the testcase.But it seems the testcases try to allocate all free memory remain on the system,keep it for a while, then the main process send the signal to kill child process
+   mem=$(( $mem_free + $swap_free / 2 ))   mem=$(( mem / 1024 ))
+In case we have no swap_free, all memory is allocated, and trigger the OOM.I've still concerned which should be correct appoarch on swap-off system ? (set panic_on_oom=0 to avoid restaring Or the testcase shouldcheck if swap_free = 0, then we margin 10% of the final $mem ?)
+(actullay pass/fail metric of this testcase is not so clear with me)
+Could anyone give me some hints ?
+Thanks a lot in advance
+Hoang
 
    
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170303/b2f44d97/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170303/f182a485/attachment.html>
