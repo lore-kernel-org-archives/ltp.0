@@ -1,7 +1,7 @@
 From: the_hoang0709@yahoo.com <the_hoang0709@yahoo.com>
-Date: Fri,  3 Mar 2017 08:18:01 +0700
-Subject: [LTP] [PATCH v2] min_free_kbytes: Check panic_on_oom in advance
-Message-ID: <1488503881-1954-1-git-send-email-the_hoang0709@yahoo.com>
+Date: Fri,  3 Mar 2017 08:20:25 +0700
+Subject: [LTP]  [PATCH v2] min_free_kbytes: Check panic_on_oom in advance
+Message-ID: <1488504025-2007-1-git-send-email-the_hoang0709@yahoo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
