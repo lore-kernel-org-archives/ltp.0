@@ -1,45 +1,66 @@
-From: Travis CI <builds@travis-ci.org>
-Date: Fri, 03 Mar 2017 12:56:30 +0000
-Subject: [LTP] Fixed: linux-test-project/ltp#105 (master - 4db6b7e)
-In-Reply-To: <linux-test-project/ltp+207344317+fixed@travis-ci.org>
-Message-ID: <58b967fe22154_43fab50ec49703518fb@bf31a8dc-5424-4bfb-8e65-3f4e4b19ce23.mail>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 3 Mar 2017 14:03:42 +0100
+Subject: [LTP] [PATCH v2 1/1] syscalls/mq_timedreceive: convert to new
+	API
+In-Reply-To: <20170301201331.22402-1-pvorel@suse.cz>
+References: <20170301201331.22402-1-pvorel@suse.cz>
+Message-ID: <20170303130342.GA16323@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Build Update for linux-test-project/ltp
--------------------------------------
+Hi!
+> -	/*
+> -	 * Prepare send message
+> -	 */
+> -	for (i = 0; i < tc->len; i++)
+> -		smsg[i] = i;
+> +	if (tc->ttype == SEND_SIGINT)
+> +		pid = create_sig_proc(SIGINT, 40, 200000);
+>  
+> -	/*
+> -	 * Send message
+> -	 */
+> -	switch (tc->ttype) {
+> -	case EMPTY_QUEUE:
+> -	case SEND_SIGINT:
+> -	case FD_NONE:
+> -	case FD_NOT_EXIST:
+> -	case FD_FILE:
+> -		break;
+> -	default:
+> -		TEST(rc = mq_timedsend(fd, smsg, tc->len, tc->prio, &ts));
+> -		if (TEST_RETURN < 0) {
+> -			tst_resm(TFAIL | TTERRNO, "mq_timedsend failed");
+> -			result = 1;
+> -			goto EXIT;
+> -		}
+> -		break;
+> -	}
+> +	for (j = 0; j < tc->len; j++)
+> +		smsg[j] = j;
+> +
+> +	/* send */
+> +	if ((tc->ttype == NORMAL || tc->ttype == INVALID_MSG_LEN)
+> +		&& mq_timedsend(fd, smsg, tc->len, tc->prio,
+> +			     &((struct timespec){0})) < 0)
+> +			tst_brk(TBROK | TERRNO, "mq_timedsend failed");
 
-Build: #105
-Status: Fixed
+This is still too ugly. Why can't we get rid of all of these special
+cases here and move the code that is specific for a given test to the
+test setup and cleanup functions?
 
-Duration: 13 minutes and 55 seconds
-Commit: 4db6b7e (master)
-Author: Cyril Hrubis
-Message: syscalls/keyctl: Fix build
+Apart from that we may as well open the fd pointing to file once in the
+test setup and close it once in the test cleanup.
 
-Fixes build without the keyutils devel library.
+Also we should use SAFE_OPEN() for opening the file. And we may as well
+add safe_posix_ipc.h with SAFE_MQ_OPEN().
 
-Introduced in:
+Oh, and we are adding signal handler twice in the test setup(), once via
+signal() and second time via sigaction().
 
-commit 91b515cae8cb954927e99a3732b2ee31bc4c15a2
-Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date:   Fri Mar 3 16:07:35 2017 +0800
-
-    syscalls/keyctl02: Add new regression test
-
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-
-View the changeset: https://github.com/linux-test-project/ltp/compare/91b515cae8cb...4db6b7efb14b
-
-View the full build log and details: https://travis-ci.org/linux-test-project/ltp/builds/207344317
-
---
-
-You can configure recipients for build notifications in your .travis.yml file. See https://docs.travis-ci.com/user/notifications
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170303/36dc3fe2/attachment.html>
+-- 
+Cyril Hrubis
+chrubis@suse.cz
