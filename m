@@ -1,49 +1,34 @@
 From: Hoang Nguyen <the_hoang0709@yahoo.com>
-Date: Sun, 5 Mar 2017 04:02:52 +0000 (UTC)
-Subject: [LTP] [PATCH v2] min_free_kbytes: Check panic_on_oom in advance
-In-Reply-To: <20170303094557.GB17012@rei.lan>
-References: <1488504025-2007-1-git-send-email-the_hoang0709@yahoo.com>
- <20170303094557.GB17012@rei.lan>
-Message-ID: <1266931552.2209064.1488686572310@mail.yahoo.com>
+Date: Sun, 5 Mar 2017 04:03:37 +0000 (UTC)
+Subject: [LTP] memcg_stress on swap off system.
+In-Reply-To: <20170303094117.GA17012@rei.lan>
+References: <1992281802.879695.1486602784905.ref@mail.yahoo.com>
+ <1992281802.879695.1486602784905@mail.yahoo.com>
+ <1326520780.892477.1488504360084@mail.yahoo.com>
+ <20170303094117.GA17012@rei.lan>
+Message-ID: <1305503262.2196613.1488686617089@mail.yahoo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi Cyril,
-Thanks. I'll fix it in new patch.
-Best regards,
+Thanks a lot for your information.
+Best regards.
 Hoang
 
       From: Cyril Hrubis <chrubis@suse.cz>
- To: the_hoang0709@yahoo.com 
-Cc: ltp@lists.linux.it
- Sent: Friday, 3 March 2017, 16:45
- Subject: Re: [LTP] [PATCH v2] min_free_kbytes: Check panic_on_oom in advance
+ To: Hoang Nguyen <the_hoang0709@yahoo.com> 
+Cc: LTP List <ltp@lists.linux.it>
+ Sent: Friday, 3 March 2017, 16:41
+ Subject: Re: [LTP] memcg_stress on swap off system.
    
 Hi!
-> Signed-off-by: Hoang Nguyen <the_hoang0709@yahoo.com>
-> ---
->  testcases/kernel/mem/tunable/min_free_kbytes.c | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> index cb00f40..1f6fc8f 100644
-> --- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-> +++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-> @@ -239,6 +239,11 @@ static void sighandler(int signo LTP_ATTRIBUTE_UNUSED)
->  void setup(void)
->  {
->      tst_require_root();
-> +    if (get_sys_tune("panic_on_oom")) {
-> +        tst_brkm(TCONF, NULL,
-> +            "panic_on_oom is set, disable it to run these testcases");
-> +    }
+The test does not work on swapless system, there was a discussion about
+this some time ago:
 
-Now the indentation is wrong, please make sure to use tabs. FYI you can
-use checkpatch.pl from kernel git repo to check patches before sending
-them for review.
+http://lists.linux.it/pipermail/ltp/2015-November/000470.html
 
 -- 
 Cyril Hrubis
@@ -53,4 +38,4 @@ chrubis@suse.cz
    
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170305/ffe7e7bf/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170305/0f3e409e/attachment.html>
