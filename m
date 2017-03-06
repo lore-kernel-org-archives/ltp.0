@@ -1,61 +1,93 @@
 From: Jakub Racek <jracek@redhat.com>
-Date: Mon,  6 Mar 2017 18:45:34 +0100
-Subject: [LTP] [PATCH v2 0/6] Added memfd_create() testsuite
-Message-ID: <1488822340-29259-1-git-send-email-jracek@redhat.com>
+Date: Mon,  6 Mar 2017 18:45:38 +0100
+Subject: [LTP] [PATCH v2 4/6] Added fallocate() flags and wrapper to lapi
+In-Reply-To: <1488822340-29259-1-git-send-email-jracek@redhat.com>
+References: <1488822340-29259-1-git-send-email-jracek@redhat.com>
+Message-ID: <1488822340-29259-5-git-send-email-jracek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-memfd_create() is a syscall that creates an anonymous file. This syscall was
-originally introduced in "File Sealing & memfd_create()" patchset by
-David Herrmann <dh.herrmann@gmail.com>.
-My patchset is a partial port of memfd_create() testsuite to LTP, with lapi
-extended as necessary.
-This is a V2 patchset. V1 was originally posted on 28/02/2017, but it had
-LTP style problems and didn't include syscall numbers.
-Code that runs _dup, _mmap and _open tests in multi-threaded environment was
-not ported yet.
-
-Jakub Racek (6):
-  Added syscall numbers for memfd_create
-  Added memfd_create() lapi flags
-  Added fcntl() lapi flags
-  Added fallocate() flags and wrapper to lapi
-  syscalls: added memfd_create dir and memfd_create/memfd_create01.c
-  syscalls/memfd_create02.c: added new test
-
- include/lapi/fallocate.h                           |  66 +++
- include/lapi/fcntl.h                               |  25 +
- include/lapi/memfd.h                               |  27 ++
- runtest/syscalls                                   |   3 +
- testcases/kernel/include/aarch64.in                |   1 +
- testcases/kernel/include/arm.in                    |   1 +
- testcases/kernel/include/hppa.in                   |   1 +
- testcases/kernel/include/i386.in                   |   1 +
- testcases/kernel/include/ia64.in                   |   1 +
- testcases/kernel/include/powerpc.in                |   1 +
- testcases/kernel/include/powerpc64.in              |   1 +
- testcases/kernel/include/s390.in                   |   1 +
- testcases/kernel/include/s390x.in                  |   1 +
- testcases/kernel/include/sh.in                     |   1 +
- testcases/kernel/include/sparc.in                  |   1 +
- testcases/kernel/include/sparc64.in                |   1 +
- testcases/kernel/include/x86_64.in                 |   1 +
- testcases/kernel/syscalls/.gitignore               |   2 +
- testcases/kernel/syscalls/memfd_create/Makefile    |  19 +
- .../kernel/syscalls/memfd_create/memfd_create01.c  | 303 ++++++++++++
- .../kernel/syscalls/memfd_create/memfd_create02.c  |  92 ++++
- .../syscalls/memfd_create/memfd_create_common.h    | 525 +++++++++++++++++++++
- 22 files changed, 1075 insertions(+)
+Signed-off-by: Jakub Racek <jracek@redhat.com>
+---
+ include/lapi/fallocate.h | 66 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
  create mode 100644 include/lapi/fallocate.h
- create mode 100644 include/lapi/memfd.h
- create mode 100644 testcases/kernel/syscalls/memfd_create/Makefile
- create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create01.c
- create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create02.c
- create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create_common.h
 
+diff --git a/include/lapi/fallocate.h b/include/lapi/fallocate.h
+new file mode 100644
+index 0000000..79d0b7b
+--- /dev/null
++++ b/include/lapi/fallocate.h
+@@ -0,0 +1,66 @@
++/*
++ * Copyright (c) International Business Machines  Corp., 2007
++ * Copyright (c) 2014 Fujitsu Ltd.
++ *
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Library General Public License for more details.
++ *
++ */
++
++#ifndef FALLOCATE_H
++#define FALLOCATE_H
++
++#include <sys/types.h>
++#include <endian.h>
++#include "config.h"
++#include "lapi/abisize.h"
++#include "linux_syscall_numbers.h"
++
++#ifndef SEEK_HOLE
++# define SEEK_HOLE 4
++#endif
++
++#ifndef FALLOC_FL_KEEP_SIZE
++# define FALLOC_FL_KEEP_SIZE 0x01
++#endif
++
++#ifndef FALLOC_FL_PUNCH_HOLE
++# define FALLOC_FL_PUNCH_HOLE 0x02
++#endif
++
++#ifndef FALLOC_FL_COLLAPSE_RANGE
++# define FALLOC_FL_COLLAPSE_RANGE 0x08
++#endif
++
++#ifndef FALLOC_FL_ZERO_RANGE
++# define FALLOC_FL_ZERO_RANGE 0x10
++#endif
++
++#ifndef FALLOC_FL_INSERT_RANGE
++# define FALLOC_FL_INSERT_RANGE 0x20
++#endif
++
++#if !defined(HAVE_FALLOCATE)
++static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
++{
++	/* Deal with 32bit ABIs that have 64bit syscalls. */
++# if LTP_USE_64_ABI
++	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
++# else
++	return (long)ltp_syscall(__NR_fallocate, fd, mode,
++				 __LONG_LONG_PAIR((off_t) (offset >> 32),
++						  (off_t) offset),
++				 __LONG_LONG_PAIR((off_t) (len >> 32),
++						  (off_t) len));
++# endif
++}
++#endif
++
++#endif /* FALLOCATE_H */
 -- 
 1.8.3.1
 
