@@ -1,30 +1,19 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Tue, 7 Mar 2017 16:09:39 +0100
-Subject: [LTP] Android build and pthread
-Message-ID: <20170307150938.eeddwzgjxlle4yus@x230>
+From: Steve Ellcey <sellcey@caviumnetworks.com>
+Date: Tue, 07 Mar 2017 10:40:47 -0800
+Subject: [LTP] Running LTP results in read-only filesystem
+Message-ID: <1488912047.22552.6.camel@caviumnetworks.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi Steven,
+Has anyone run into a problem where running the LTP tests as root
+results in a read-only filesystem?  I have been running LTP as root on
+an ubuntu 16.04 aarch64 system and it appears that when I do that my
+root filesystem gets set to read-only and then, when I reboot to try
+and fix the problem, the machine can't fsck itself and come back up
+without some human intervention.  Has anyone else seen this problem?
 
-just out of curiosity, your commit log 34a7c82a7abd0a72746c2369ebdbc34e267b2c44
-mentions stub library:
-
-    It implements s subset of libpthread and librt, but they'res contained
-    in libc. Rather than forcing existing and future tests to use a
-    conditional or variable to add -lpthread I've just created a stub
-    library.
-
-Also the code contains:
-+ifneq ($(ANDROID),1)
-+FILTER_OUT_DIRS		+= android_libpthread android_librt
-
-Where is that "stub library"? Is it meant to be android_libpthread and android_librt? BTW
-I haven't found android_libpthread neither android_librt in code. Am I missing something?
-
-
-Kind regards,
-Petr
+Steve Ellcey
+sellcey@cavium.com
