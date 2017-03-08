@@ -1,149 +1,67 @@
 From: Jakub Racek <jracek@redhat.com>
-Date: Wed,  8 Mar 2017 18:44:11 +0100
-Subject: [LTP] [PATCH v3 1/6] Added syscall numbers for memfd_create
-In-Reply-To: <1488995056-7705-1-git-send-email-jracek@redhat.com>
-References: <1488995056-7705-1-git-send-email-jracek@redhat.com>
-Message-ID: <1488995056-7705-2-git-send-email-jracek@redhat.com>
+Date: Wed,  8 Mar 2017 18:44:10 +0100
+Subject: [LTP] [PATCH v3 0/6] Added memfd_create() testsuite
+Message-ID: <1488995056-7705-1-git-send-email-jracek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Jakub Racek <jracek@redhat.com>
----
- testcases/kernel/include/aarch64.in   | 1 +
- testcases/kernel/include/arm.in       | 1 +
- testcases/kernel/include/hppa.in      | 1 +
- testcases/kernel/include/i386.in      | 1 +
- testcases/kernel/include/ia64.in      | 1 +
- testcases/kernel/include/powerpc.in   | 1 +
- testcases/kernel/include/powerpc64.in | 1 +
- testcases/kernel/include/s390.in      | 1 +
- testcases/kernel/include/s390x.in     | 1 +
- testcases/kernel/include/sh.in        | 1 +
- testcases/kernel/include/sparc.in     | 1 +
- testcases/kernel/include/sparc64.in   | 1 +
- testcases/kernel/include/x86_64.in    | 1 +
- 13 files changed, 13 insertions(+)
+memfd_create() is a syscall that creates an anonymous file. This syscall was
+originally introduced in "File Sealing & memfd_create()" patchset by
+David Herrmann <dh.herrmann@gmail.com>.
+My patchset is a partial port of memfd_create() testsuite to LTP, with lapi
+extended as necessary. Code that runs _dup, _mmap and _open tests in 
+multi-threaded environment was not ported yet.
 
-diff --git a/testcases/kernel/include/aarch64.in b/testcases/kernel/include/aarch64.in
-index cb3fe06..b81c068 100644
---- a/testcases/kernel/include/aarch64.in
-+++ b/testcases/kernel/include/aarch64.in
-@@ -255,3 +255,4 @@ setns 268
- sendmmsg 269
- kcmp 272
- getrandom 278
-+memfd_create 279
-diff --git a/testcases/kernel/include/arm.in b/testcases/kernel/include/arm.in
-index cee9718..0a5dde1 100644
---- a/testcases/kernel/include/arm.in
-+++ b/testcases/kernel/include/arm.in
-@@ -338,3 +338,4 @@ sched_setattr (__NR_SYSCALL_BASE+380)
- sched_getattr (__NR_SYSCALL_BASE+381)
- renameat2 (__NR_SYSCALL_BASE+382)
- getrandom (__NR_SYSCALL_BASE+384)
-+memfd_create (__NR_SYSCALL_BASE+385)
-diff --git a/testcases/kernel/include/hppa.in b/testcases/kernel/include/hppa.in
-index b784a2b..3946155 100644
---- a/testcases/kernel/include/hppa.in
-+++ b/testcases/kernel/include/hppa.in
-@@ -15,3 +15,4 @@ faccessat (__NR_openat + 12)
- splice 291
- tee 293
- vmsplice 294
-+memfd_create 340
-diff --git a/testcases/kernel/include/i386.in b/testcases/kernel/include/i386.in
-index 1f1cade..42c5e3f 100644
---- a/testcases/kernel/include/i386.in
-+++ b/testcases/kernel/include/i386.in
-@@ -338,3 +338,4 @@ sched_setattr 351
- sched_getattr 352
- renameat2 354
- getrandom 355
-+memfd_create 356
-diff --git a/testcases/kernel/include/ia64.in b/testcases/kernel/include/ia64.in
-index 846141f..dad25f4 100644
---- a/testcases/kernel/include/ia64.in
-+++ b/testcases/kernel/include/ia64.in
-@@ -294,3 +294,4 @@ fanotify_mark 1324
- prlimit64 1325
- renameat2 1338
- getrandom 1339
-+memfd_create 1340
-diff --git a/testcases/kernel/include/powerpc.in b/testcases/kernel/include/powerpc.in
-index 5ca42a6..10a6e5d 100644
---- a/testcases/kernel/include/powerpc.in
-+++ b/testcases/kernel/include/powerpc.in
-@@ -345,3 +345,4 @@ sched_setattr 355
- sched_getattr 356
- renameat2 357
- getrandom 359
-+memfd_create 360
-diff --git a/testcases/kernel/include/powerpc64.in b/testcases/kernel/include/powerpc64.in
-index 5ca42a6..10a6e5d 100644
---- a/testcases/kernel/include/powerpc64.in
-+++ b/testcases/kernel/include/powerpc64.in
-@@ -345,3 +345,4 @@ sched_setattr 355
- sched_getattr 356
- renameat2 357
- getrandom 359
-+memfd_create 360
-diff --git a/testcases/kernel/include/s390.in b/testcases/kernel/include/s390.in
-index afe94f5..770db7f 100644
---- a/testcases/kernel/include/s390.in
-+++ b/testcases/kernel/include/s390.in
-@@ -329,3 +329,4 @@ sched_setattr 345
- sched_getattr 346
- renameat2 347
- getrandom 349
-+memfd_create 350
-diff --git a/testcases/kernel/include/s390x.in b/testcases/kernel/include/s390x.in
-index afe94f5..770db7f 100644
---- a/testcases/kernel/include/s390x.in
-+++ b/testcases/kernel/include/s390x.in
-@@ -329,3 +329,4 @@ sched_setattr 345
- sched_getattr 346
- renameat2 347
- getrandom 349
-+memfd_create 350
-diff --git a/testcases/kernel/include/sh.in b/testcases/kernel/include/sh.in
-index 3cb7e21..0345f8d 100644
---- a/testcases/kernel/include/sh.in
-+++ b/testcases/kernel/include/sh.in
-@@ -362,3 +362,4 @@ fanotify_init 367
- fanotify_mark 368
- prlimit64 369
- kcmp 378
-+memfd_create 385
-diff --git a/testcases/kernel/include/sparc.in b/testcases/kernel/include/sparc.in
-index f266777..b84c844 100644
---- a/testcases/kernel/include/sparc.in
-+++ b/testcases/kernel/include/sparc.in
-@@ -334,3 +334,4 @@ prlimit64 331
- kcmp 341
- renameat2 345
- getrandom 347
-+memfd_create 348
-diff --git a/testcases/kernel/include/sparc64.in b/testcases/kernel/include/sparc64.in
-index cb91828..7e0be30 100644
---- a/testcases/kernel/include/sparc64.in
-+++ b/testcases/kernel/include/sparc64.in
-@@ -310,3 +310,4 @@ prlimit64 331
- kcmp 341
- renameat2 345
- getrandom 347
-+memfd_create 348
-diff --git a/testcases/kernel/include/x86_64.in b/testcases/kernel/include/x86_64.in
-index f54abf4..dec7742 100644
---- a/testcases/kernel/include/x86_64.in
-+++ b/testcases/kernel/include/x86_64.in
-@@ -305,3 +305,4 @@ sched_setattr 314
- sched_getattr 315
- renameat2 316
- getrandom 318
-+memfd_create 319
+V2: fixed LTP style problems, added syscall numbers for each arch
+V3: fixed more style problems, moved fallocate.h to include/lapi
+
+Jakub Racek (6):
+  Added syscall numbers for memfd_create
+  Added memfd_create() lapi flags
+  Added fcntl() lapi flags
+  move fallocate.h to lapi
+  syscalls: added memfd_create dir and memfd_create/memfd_create01.c
+  syscalls/memfd_create02.c: added new test
+
+ include/lapi/fallocate.h                           |  66 +++++
+ include/lapi/fcntl.h                               |  25 ++
+ include/lapi/memfd.h                               |  27 ++
+ runtest/syscalls                                   |   3 +
+ testcases/kernel/include/aarch64.in                |   1 +
+ testcases/kernel/include/arm.in                    |   1 +
+ testcases/kernel/include/hppa.in                   |   1 +
+ testcases/kernel/include/i386.in                   |   1 +
+ testcases/kernel/include/ia64.in                   |   1 +
+ testcases/kernel/include/powerpc.in                |   1 +
+ testcases/kernel/include/powerpc64.in              |   1 +
+ testcases/kernel/include/s390.in                   |   1 +
+ testcases/kernel/include/s390x.in                  |   1 +
+ testcases/kernel/include/sh.in                     |   1 +
+ testcases/kernel/include/sparc.in                  |   1 +
+ testcases/kernel/include/sparc64.in                |   1 +
+ testcases/kernel/include/x86_64.in                 |   1 +
+ testcases/kernel/syscalls/.gitignore               |   2 +
+ testcases/kernel/syscalls/fallocate/fallocate.h    |  70 -----
+ testcases/kernel/syscalls/fallocate/fallocate01.c  |   2 +-
+ testcases/kernel/syscalls/fallocate/fallocate02.c  |   2 +-
+ testcases/kernel/syscalls/fallocate/fallocate03.c  |   2 +-
+ testcases/kernel/syscalls/fallocate/fallocate04.c  |   2 +-
+ testcases/kernel/syscalls/memfd_create/Makefile    |  19 ++
+ .../kernel/syscalls/memfd_create/memfd_create01.c  | 284 ++++++++++++++++++
+ .../kernel/syscalls/memfd_create/memfd_create02.c  |  92 ++++++
+ .../syscalls/memfd_create/memfd_create_common.h    | 323 +++++++++++++++++++++
+ 27 files changed, 858 insertions(+), 74 deletions(-)
+ create mode 100644 include/lapi/fallocate.h
+ create mode 100644 include/lapi/memfd.h
+ delete mode 100644 testcases/kernel/syscalls/fallocate/fallocate.h
+ create mode 100644 testcases/kernel/syscalls/memfd_create/Makefile
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create01.c
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create02.c
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create_common.h
+
 -- 
 1.8.3.1
 
