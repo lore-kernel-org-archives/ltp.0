@@ -1,9 +1,9 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  8 Mar 2017 15:21:53 +0100
-Subject: [LTP] [PATCH v4 2/3] lib: SAFE_MQ_OPEN() macro
+Date: Wed,  8 Mar 2017 15:21:54 +0100
+Subject: [LTP] [PATCH v4 3/3] syscalls: use SAFE_MQ_OPEN() macro
 In-Reply-To: <20170308142154.25916-1-pvorel@suse.cz>
 References: <20170308142154.25916-1-pvorel@suse.cz>
-Message-ID: <20170308142154.25916-2-pvorel@suse.cz>
+Message-ID: <20170308142154.25916-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,98 +12,129 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- include/tst_safe_posix_ipc.h | 33 +++++++++++++++++++++++++++++++++
- lib/tst_safe_posix_ipc.c     | 41 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 74 insertions(+)
- create mode 100644 include/tst_safe_posix_ipc.h
- create mode 100644 lib/tst_safe_posix_ipc.c
+ testcases/kernel/syscalls/mq_notify/mq_notify01.c             |  7 ++-----
+ testcases/kernel/syscalls/mq_open/mq_open01.c                 |  9 +++------
+ testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c | 11 ++++-------
+ testcases/kernel/syscalls/mq_unlink/mq_unlink01.c             |  7 ++-----
+ 4 files changed, 11 insertions(+), 23 deletions(-)
 
-diff --git a/include/tst_safe_posix_ipc.h b/include/tst_safe_posix_ipc.h
-new file mode 100644
-index 000000000..3802e2783
---- /dev/null
-+++ b/include/tst_safe_posix_ipc.h
-@@ -0,0 +1,33 @@
-+/*
-+ * Copyright (C) 2017 Petr Vorel pvorel@suse.cz
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it would be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ *
-+ * Further, this software is distributed without any warranty that it is
-+ * free of the rightful claim of any third person regarding infringement
-+ * or the like.  Any license provided herein, whether implied or
-+ * otherwise, applies only to this software file.  Patent licenses, if
-+ * any, provided herein do not apply to combinations of this program with
-+ * other software, or any other product whatsoever.
-+ *
-+ * You should have received a copy of the GNU General Public License along
-+ * with this program; if not, write the Free Software Foundation, Inc.,
-+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-+ */
-+
-+#ifndef TST_SAFE_POSIX_IPC_H__
-+#define TST_SAFE_POSIX_IPC_H__
-+
-+#define SAFE_MQ_OPEN(pathname, oflags, ...) \
-+	safe_mq_open(__FILE__, __LINE__, (pathname), (oflags), ##__VA_ARGS__)
-+
-+int safe_mq_open(const char *file, const int lineno, const char *pathname,
-+	int oflags, ...);
-+
-+#endif /* TST_SAFE_POSIX_IPC_H__ */
-diff --git a/lib/tst_safe_posix_ipc.c b/lib/tst_safe_posix_ipc.c
-new file mode 100644
-index 000000000..5f9fda6ae
---- /dev/null
-+++ b/lib/tst_safe_posix_ipc.c
-@@ -0,0 +1,41 @@
-+#include <mqueue.h>
-+#include <stdarg.h>
-+
-+#define TST_NO_DEFAULT_MAIN
-+#include "tst_test.h"
+diff --git a/testcases/kernel/syscalls/mq_notify/mq_notify01.c b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+index 68fabffcf..99ec2edcc 100644
+--- a/testcases/kernel/syscalls/mq_notify/mq_notify01.c
++++ b/testcases/kernel/syscalls/mq_notify/mq_notify01.c
+@@ -28,6 +28,7 @@
+ #include <fcntl.h>
+ 
+ #include "tst_test.h"
 +#include "tst_safe_posix_ipc.h"
-+
-+int safe_mq_open(const char *file, const int lineno, const char *pathname,
-+	int oflags, ...)
-+{
-+	va_list ap;
-+	int rval;
-+	mode_t mode;
-+	struct mq_attr *attr;
-+
-+	mode = 0;
-+	attr = NULL;
-+
-+	va_start(ap, oflags);
-+
-+	/* Android's NDK's mode_t is smaller than an int, which results in
-+	 * SIGILL here when passing the mode_t type.
-+	 */
-+#ifndef ANDROID
-+	mode = va_arg(ap, mode_t);
-+#else
-+	mode = va_arg(ap, int);
-+#endif
-+
-+	attr = va_arg(ap, struct mq_attr *);
-+
-+	va_end(ap);
-+
-+	rval = mq_open(pathname, oflags, mode, attr);
-+	if (rval == -1) {
-+		tst_brk(TBROK | TERRNO, "%s:%d: mq_open(%s,%d,0%o,%p) failed",
-+			 file, lineno, pathname, oflags, mode, attr);
-+	}
-+
-+	return rval;
-+}
+ 
+ #define MAX_MSGSIZE     8192
+ #define MSG_SIZE	16
+@@ -162,11 +163,7 @@ static void do_test(unsigned int i)
+ 		}
+ 		break;
+ 	default:
+-		fd = mq_open(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+-		if (fd < 0) {
+-			tst_res(TBROK | TERRNO, "mq_open failed");
+-			goto CLEANUP;
+-		}
++		fd = SAFE_MQ_OPEN(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+ 	}
+ 
+ 	ev.sigev_notify = tc->notify;
+diff --git a/testcases/kernel/syscalls/mq_open/mq_open01.c b/testcases/kernel/syscalls/mq_open/mq_open01.c
+index 6324d921d..c2955d861 100644
+--- a/testcases/kernel/syscalls/mq_open/mq_open01.c
++++ b/testcases/kernel/syscalls/mq_open/mq_open01.c
+@@ -25,6 +25,7 @@
+ #include <pwd.h>
+ 
+ #include "tst_safe_file_ops.h"
++#include "tst_safe_posix_ipc.h"
+ #include "tst_test.h"
+ 
+ #define QUEUE_NAME	"/test_mqueue"
+@@ -155,9 +156,7 @@ static struct test_case tcase[] = {
+ 
+ static void create_queue(void)
+ {
+-	fd2 = mq_open(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+-	if (fd2 == -1)
+-		tst_brk(TBROK | TERRNO, "mq_open(" QUEUE_NAME ") failed");
++	fd2 = SAFE_MQ_OPEN(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+ 
+ 	SAFE_SETEUID(pw->pw_uid);
+ }
+@@ -209,9 +208,7 @@ static void setup(void)
+ 	pw = SAFE_GETPWNAM("nobody");
+ 	SAFE_GETRLIMIT(RLIMIT_NOFILE, &rlim);
+ 
+-	fd3 = mq_open(QUEUE_INIT, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+-	if (fd3 == -1)
+-		tst_brk(TBROK | TERRNO, "mq_open(%s) failed", QUEUE_INIT);
++	fd3 = SAFE_MQ_OPEN(QUEUE_INIT, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+ }
+ 
+ static void cleanup(void)
+diff --git a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+index ab46bc6b0..c1ffd0eb1 100644
+--- a/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
++++ b/testcases/kernel/syscalls/mq_timedreceive/mq_timedreceive01.c
+@@ -25,6 +25,7 @@
+ #include <mqueue.h>
+ 
+ #include "tst_sig_proc.h"
++#include "tst_safe_posix_ipc.h"
+ #include "tst_test.h"
+ 
+ static struct sigaction act;
+@@ -179,17 +180,13 @@ static void cleanup(void)
+ 
+ static void create_queue(void)
+ {
+-	fd = mq_open(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+-	if (fd == -1)
+-		tst_brk(TBROK | TERRNO, "mq_open(" QUEUE_NAME ") failed");
++	fd = SAFE_MQ_OPEN(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+ }
+ 
+ static void create_queue_nonblock(void)
+ {
+-	fd = mq_open(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR | O_NONBLOCK, S_IRWXU,
+-		     NULL);
+-	if (fd == -1)
+-		tst_brk(TBROK | TERRNO, "mq_open(" QUEUE_NAME ") failed");
++	fd = SAFE_MQ_OPEN(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR | O_NONBLOCK,
++		S_IRWXU, NULL);
+ }
+ 
+ static void create_queue_sig(void)
+diff --git a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
+index 9e0a2a7e3..03ce3f8a0 100644
+--- a/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
++++ b/testcases/kernel/syscalls/mq_unlink/mq_unlink01.c
+@@ -25,6 +25,7 @@
+ #include <mqueue.h>
+ 
+ #include "tst_test.h"
++#include "tst_safe_posix_ipc.h"
+ 
+ #define QUEUE_NAME	"/test_mqueue"
+ 
+@@ -94,11 +95,7 @@ static void do_test(unsigned int i)
+ 	mq_unlink(QUEUE_NAME);
+ 
+ 	/* prepare */
+-	fd = mq_open(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+-	if (fd == -1) {
+-		tst_res(TBROK | TERRNO, "mq_open failed");
+-		goto EXIT;
+-	}
++	fd = SAFE_MQ_OPEN(QUEUE_NAME, O_CREAT | O_EXCL | O_RDWR, S_IRWXU, NULL);
+ 
+ 	if (tc->as_nobody && seteuid(pw->pw_uid)) {
+ 		tst_res(TBROK | TERRNO, "seteuid failed");
 -- 
 2.12.0
 
