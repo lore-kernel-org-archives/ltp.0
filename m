@@ -1,10 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu,  9 Mar 2017 16:13:04 +0100
-Subject: [LTP] [COMMITTED] [PATCH 2/6] syscalls/gettimeofday02: Cleanup &
-	convert to new library.
+Date: Thu,  9 Mar 2017 16:13:07 +0100
+Subject: [LTP] [COMMITTED] [PATCH 5/6] syscalls/alarm06: Cleanup && convert
+	to new library.
 In-Reply-To: <20170309151308.17512-1-chrubis@suse.cz>
 References: <20170309151308.17512-1-chrubis@suse.cz>
-Message-ID: <20170309151308.17512-2-chrubis@suse.cz>
+Message-ID: <20170309151308.17512-5-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,198 +13,209 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 ---
- .../kernel/syscalls/gettimeofday/gettimeofday02.c  | 140 ++++++++++-----------
- 1 file changed, 65 insertions(+), 75 deletions(-)
+ testcases/kernel/syscalls/alarm/alarm06.c | 160 ++++++++----------------------
+ 1 file changed, 43 insertions(+), 117 deletions(-)
 
-diff --git a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-index 8cb1f54..5c2d5a9 100644
---- a/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-+++ b/testcases/kernel/syscalls/gettimeofday/gettimeofday02.c
-@@ -1,120 +1,110 @@
+diff --git a/testcases/kernel/syscalls/alarm/alarm06.c b/testcases/kernel/syscalls/alarm/alarm06.c
+index e31a834..60451b7 100644
+--- a/testcases/kernel/syscalls/alarm/alarm06.c
++++ b/testcases/kernel/syscalls/alarm/alarm06.c
+@@ -1,25 +1,23 @@
  /*
-- *   This program is free software;  you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-+ * Copyright (C) 2002 Andi Kleen
++ * Copyright (c) International Business Machines  Corp., 2001
 + * Copyright (C) 2017 Cyril Hrubis <chrubis@suse.cz>
   *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-- *   the GNU General Public License for more details.
+- *   Copyright (c) International Business Machines  Corp., 2001
 + * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
 + * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
   *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program;  if not, write to the Free Software
-- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+- *   This program is free software;  you can redistribute it and/or modify
+- *   it under the terms of the GNU General Public License as published by
+- *   the Free Software Foundation; either version 2 of the License, or
+- *   (at your option) any later version.
 + * This program is distributed in the hope that it will be useful,
 + * but WITHOUT ANY WARRANTY;  without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
 + * the GNU General Public License for more details.
-+ *
+  *
+- *   This program is distributed in the hope that it will be useful,
+- *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+- *   the GNU General Public License for more details.
+- *
+- *   You should have received a copy of the GNU General Public License
+- *   along with this program;  if not, write to the Free Software
+- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 + * You should have received a copy of the GNU General Public License
 + * along with this program;  if not, write to the Free Software Foundation,
 + * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
   */
  
  /*
-- * NAME
-- *	gettimeofday02.c
+- * Test Name: alarm06
 - *
-  * DESCRIPTION
-  *	Check if gettimeofday is monotonous
+  * Test Description:
+  *  Check the functionality of the Alarm system call when the time input
+  *  parameter is zero.
+@@ -28,40 +26,8 @@
+  *  The previously specified alarm request should be cancelled and the
+  *  SIGALRM should not be received.
   *
-  * ALGORITHM
-  *	Call gettimeofday() to get a t1 (fist value)
-- *	call it again to get t2, see if t2 < t1, set t2 = t1, repeat for 30 sec
+- * Algorithm:
+- *  Setup:
+- *   Setup signal handling.
+- *   Pause for SIGUSR1 if option specified.
 - *
-- * USAGE:  <for command-line>
-- *  gettimeofday02 [-c n] [-e] [-i n] [-I x] [-P x] [-t]
+- *  Test:
+- *   Loop if the proper options are given.
+- *   Execute system call
+- *   Check return code, if system call failed (return=-1)
+- *   	Log the errno and Issue a FAIL message.
+- *   Otherwise,
+- *   	Verify the Functionality of system call
+- *      if successful,
+- *      	Issue Functionality-Pass message.
+- *      Otherwise,
+- *		Issue Functionality-Fail message.
+- *  Cleanup:
+- *   Print errno log and/or timing stats if options given
+- *
+- * Usage:  <for command-line>
+- *  alarm06 [-c n] [-f] [-i n] [-I x] [-P x] [-t]
 - *     where,  -c n : Run n copies concurrently.
-- *             -e   : Turn on errno logging.
-- *             -i n : Execute test n times.
-- *             -I x : Execute test for x seconds.
-- *             -P x : Pause for x seconds between iterations.
-- *             -t   : Turn on syscall timing.
-- *             -T   : Seconds to test gettimeofday (default 30)
+- *             -f   : Turn off functionality Testing.
+- *	       -i n : Execute test n times.
+- *	       -I x : Execute test for x seconds.
+- *	       -P x : Pause for x seconds between iterations.
+- *	       -t   : Turn on syscall timing.
 - *
-- * HISTORY
-- *	05/2002 Written by Andi Kleen
+  * HISTORY
+  *	07/2001 Ported by Wayne Boyer
 - *
-+ *	call it again to get t2, see if t2 < t1, set t2 = t1, repeat for 10 sec
+- * RESTRICTIONS:
+- *  None.
+- *
   */
  
- #include <stdint.h>
--#include <stdio.h>
- #include <sys/time.h>
--#include <signal.h>
- #include <stdlib.h>
--#include "test.h"
- #include <sys/syscall.h>
- #include <unistd.h>
- #include <time.h>
- #include <errno.h>
+ #include <stdio.h>
+@@ -71,86 +37,46 @@
+ #include <string.h>
+ #include <signal.h>
  
--#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
+-#include "test.h"
+-
+-char *TCID = "alarm06";
+-int TST_TOTAL = 1;
+-int alarms_received = 0;
 +#include "tst_test.h"
  
--char *TCID = "gettimeofday02";
--int TST_TOTAL = 1;
--
--int Tflag;
--char *tlen = "30";
--
--sig_atomic_t done;
--
--option_t opts[] = { {"T:", &Tflag, &tlen}, {} };
-+#define gettimeofday(a,b)  syscall(__NR_gettimeofday,a,b)
- 
--void breakout(int sig)
--{
--	done = 1;
--}
-+static volatile sig_atomic_t done;
-+static char *str_rtime;
-+static int rtime = 30;
- 
--void cleanup(void)
--{
--}
-+static struct tst_option options[] = {
-+	{"T:", &str_rtime, "-T len   Test iteration runtime in seconds"},
-+	{NULL, NULL, NULL},
-+};
- 
--void help(void)
-+static void breakout(int sig)
- {
--	printf("  -T len  seconds to test gettimeofday (default %s)\n", tlen);
-+	done = sig;
- }
+-void setup();
+-void cleanup();
+-void sigproc(int sig);
++static volatile int alarms_received = 0;
  
 -int main(int ac, char **av)
-+static void verify_gettimeofday(void)
++static void sigproc(int sig)
  {
- 	struct timeval tv1, tv2;
-+	unsigned long long cnt = 0;
- 
--	tst_parse_opts(ac, av, opts, help);
-+	done = 0;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
-+	alarm(rtime);
- 
--	tst_resm(TINFO, "checking if gettimeofday is monotonous, takes %ss",
--		 tlen);
--	signal(SIGALRM, breakout);
--	alarm(atoi(tlen));
-+	if (gettimeofday(&tv1, NULL)) {
-+		tst_res(TBROK | TERRNO, "gettimeofday() failed");
-+		return;
-+	}
- 
--	if (gettimeofday(&tv1, NULL) != 0)
--		tst_brkm(TBROK, cleanup, "first gettimeofday() failed: %s\n",
--			 strerror(errno));
- 	while (!done) {
--		if (gettimeofday(&tv2, NULL) != 0)
--			tst_brkm(TBROK, cleanup,
--				 "loop gettimeofday() failed: %s\n",
--				 strerror(errno));
-+		if (gettimeofday(&tv2, NULL)) {
-+			tst_res(TBROK | TERRNO, "gettimeofday() failed");
-+			return;
-+		}
- 
- 		if (tv2.tv_sec < tv1.tv_sec ||
- 		    (tv2.tv_sec == tv1.tv_sec && tv2.tv_usec < tv1.tv_usec)) {
--			tst_resm(TFAIL,
--				 "Time is going backwards: old %jd.%jd vs new %jd.%jd!",
--				 (intmax_t) tv1.tv_sec, (intmax_t) tv1.tv_usec,
--				 (intmax_t) tv2.tv_sec, (intmax_t) tv2.tv_usec);
--			cleanup();
--			return 1;
-+			tst_res(TFAIL,
-+				"Time is going backwards: old %jd.%jd vs new %jd.%jd!",
-+				(intmax_t) tv1.tv_sec, (intmax_t) tv1.tv_usec,
-+				(intmax_t) tv2.tv_sec, (intmax_t) tv2.tv_usec);
-+			return;
- 		}
- 
- 		tv1 = tv2;
-+		cnt++;
- 	}
- 
--	tst_resm(TPASS, "gettimeofday monotonous in %s seconds", tlen);
+-	int lc;
+-	int time_sec1 = 10;	/* time for which 1st alarm is set */
+-	int time_sec2 = 0;	/* time for which 2nd alarm is set */
+-	int ret_val1, ret_val2;	/* return values for alarm() calls */
+-	int sleep_time1 = 5;	/* waiting time for the 1st signal */
+-	int sleep_time2 = 10;	/* waiting time for the 2nd signal */
+-
+-	tst_parse_opts(ac, av, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-
+-		tst_count = 0;
+-
+-		/*
+-		 * Call First alarm() with non-zero time parameter
+-		 * 'time_sec1' to send SIGALRM to the calling process.
+-		 */
+-		TEST(alarm(time_sec1));
+-		ret_val1 = TEST_RETURN;
+-
+-		sleep(sleep_time1);
+-
+-		TEST(alarm(time_sec2));
+-		ret_val2 = TEST_RETURN;
+-
+-		/* Wait for signal SIGALRM */
+-		sleep(sleep_time2);
+-
+-		/*
+-		 * Check whether the second alarm() call returned
+-		 * the amount of time (seconds) previously remaining in the
+-		 * alarm clock of the calling process, and
+-		 * sigproc() never executed as SIGALRM was not received by the
+-		 * process, the variable alarms_received remains unset.
+-		 */
+-		if ((alarms_received == 0) &&
+-		    (ret_val2 == (time_sec1 - sleep_time1)))
+-			tst_resm(TPASS, "Functionality of alarm(%u) "
+-				 "successful", time_sec2);
+-		else
+-			tst_resm(TFAIL, "alarm(%u) fails, returned %d, "
+-				 "alarms_received:%d",
+-				 time_sec2, ret_val2, alarms_received);
+-	}
++	if (sig == SIGALRM)
++		alarms_received++;
++}
  
 -	cleanup();
 -	tst_exit();
-+	tst_res(TINFO, "gettimeofday() called %llu times", cnt);
-+	tst_res(TPASS, "gettimeofday() monotonous in %i seconds", rtime);
- }
-+
 +static void setup(void)
 +{
-+	if (str_rtime) {
-+		rtime = atoi(str_rtime);
-+		if (rtime <= 0)
-+			tst_brk(TBROK, "Invalid runtime '%s'", str_rtime);
-+		tst_set_timeout(rtime + 60);
-+	}
-+
-+	SAFE_SIGNAL(SIGALRM, breakout);
-+}
++	SAFE_SIGNAL(SIGALRM, sigproc);
+ }
+ 
+-void setup(void)
++static void verify_alarm(void)
+ {
++	int ret;
+ 
+-	tst_sig(NOFORK, DEF_HANDLER, cleanup);
++	alarm(10);
++	sleep(5);
+ 
+-	TEST_PAUSE;
++	ret = alarm(0);
+ 
+-	/* Set the signal catching function */
+-	if (signal(SIGALRM, sigproc) == SIG_ERR)
+-		tst_brkm(TFAIL | TERRNO, cleanup, "signal(SIGALRM, ..) failed");
+-}
++	/* Wait for signal SIGALRM */
++	sleep(10);
+ 
+-void sigproc(int sig)
+-{
+-	alarms_received++;
+-}
++	if (alarms_received)
++		tst_res(TFAIL, "Received %i alarms", alarms_received);
++	else
++		tst_res(TPASS, "Received 0 alarms");
+ 
+-void cleanup(void)
+-{
++	if (ret == 5)
++		tst_res(TPASS, "alarm(0) returned 5");
++	else
++		tst_res(TFAIL, "alarm(0) returned %i, expected 5", ret);
+ }
 +
 +static struct tst_test test = {
-+	.tid = "gettimeofday02",
++	.tid = "alarm06",
 +	.setup = setup,
-+	.options = options,
-+	.test_all = verify_gettimeofday,
++	.test_all = verify_alarm,
 +};
 -- 
 2.10.2
