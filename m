@@ -1,38 +1,53 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 9 Mar 2017 17:43:00 +0100
-Subject: [LTP] [PATCH v2 1/1] cron: Rewrite and cleanup cron_tests.sh
- script
-In-Reply-To: <20170309123154.32018-1-pvorel@suse.cz>
-References: <20170309123154.32018-1-pvorel@suse.cz>
-Message-ID: <20170309164300.GC17980@rei.lan>
+From: the_hoang0709@yahoo.com <the_hoang0709@yahoo.com>
+Date: Fri, 10 Mar 2017 07:48:06 +0700
+Subject: [LTP]  [PATCH] mtest05/mmstress: Fix failure on read-only system
+Message-ID: <1489106886-4037-1-git-send-email-the_hoang0709@yahoo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Look for results into more possible log locations, look also into
-> journalctl output.
-> 
-> This fixes systems with different cron log (Debian, Ubuntu and their
-> derivates, see github issue #136) and systems which log into journalctl
-> only (openSUSE Tumbleweed).
+From: Hoang Nguyen <the_hoang0709@yahoo.com>
 
-Looks good, pushed, thanks.
+In order not to fail the test on read-only system, we used tst_tmpdir to
+create temporary folder to run the test. Then remove it with tst_rmdir
+after test finished (or test failed at the middle).
 
-> +	sleep 10
-> +
-> +	grep_logs 'crontab.*REPLACE' \
-> +		"cron activity not recorded" \
-> +		"cron activity logged"
+Fixes #87.
 
-We can improve the grep_logs function and instead of sleeping for 10
-seconds before we call it, we could grep the logs in a loop ten times,
-do 1s sleep at the end of the loop and exit with pass once the expected
-logs are found and with a failure once we are out of iterations. That
-should save ~20 seconds of the test runtime.
+Signed-off-by: Hoang Nguyen <the_hoang0709@yahoo.com>
+---
+ testcases/kernel/mem/mtest05/mmstress.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
+diff --git a/testcases/kernel/mem/mtest05/mmstress.c b/testcases/kernel/mem/mtest05/mmstress.c
+index 0240a83..cbbc181 100644
+--- a/testcases/kernel/mem/mtest05/mmstress.c
++++ b/testcases/kernel/mem/mtest05/mmstress.c
+@@ -832,6 +832,7 @@ int main(int argc,		/* number of command line parameters                     */
+ 	optarg = NULL;
+ 	opterr = 0;
+ 
++	tst_tmpdir();
+ 	if (argc < 2)
+ 		tst_resm(TINFO, "run %s -h for all options", argv[0]);
+ 
+@@ -937,6 +938,7 @@ int main(int argc,		/* number of command line parameters                     */
+ 
+ 		if (global_rc != SUCCESS) {
+ 			tst_resm(TFAIL, "Test Failed");
++			tst_rmdir();
+ 			exit(global_rc);
+ 		}
+ 
+@@ -947,5 +949,6 @@ int main(int argc,		/* number of command line parameters                     */
+ 	} else {
+ 		tst_resm(TPASS, "Test Passed");
+ 	}
++	tst_rmdir();
+ 	exit(global_rc);
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.7.4
+
