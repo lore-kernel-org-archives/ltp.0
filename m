@@ -1,118 +1,69 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 14 Mar 2017 14:20:23 +0100
-Subject: [LTP] Is MADV_HWPOISON supposed to work only on faulted-in
-	pages?
-In-Reply-To: <20170227063308.GA14387@hori1.linux.bs1.fc.nec.co.jp>
-References: <6a445beb-119c-9a9a-0277-07866afe4924@redhat.com>
- <20170220050016.GA15533@hori1.linux.bs1.fc.nec.co.jp>
- <20170223032342.GA18740@hori1.linux.bs1.fc.nec.co.jp>
- <1ba376aa-5e7c-915f-35d1-2d4eef0cad88@huawei.com>
- <20170227012029.GA28934@hori1.linux.bs1.fc.nec.co.jp>
- <22763879-C335-41E6-8102-2022EED75DAE@cs.rutgers.edu>
- <20170227063308.GA14387@hori1.linux.bs1.fc.nec.co.jp>
-Message-ID: <20170314132023.GA8206@rei.lan>
+Date: Tue, 14 Mar 2017 16:15:45 +0100
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/madvise06: Fix cleanup()
+Message-ID: <20170314151545.9137-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > >>>>> code below (and LTP madvise07 [1]) doesn't produce SIGBUS,
-> > >>>>> unless I touch/prefault page before call to madvise().
-> > >>>>>
-> > >>>>> Is this expected behavior?
-> > >>>>
-> > >>>> Thank you for reporting.
-> > >>>>
-> > >>>> madvise(MADV_HWPOISON) triggers page fault when called on the address
-> > >>>> over which no page is faulted-in, so I think that SIGBUS should be
-> > >>>> called in such case.
-> > >>>>
-> > >>>> But it seems that memory error handler considers such a page as "reserved
-> > >>>> kernel page" and recovery action fails (see below.)
-> > >>>>
-> > >>>>   [  383.371372] Injecting memory failure for page 0x1f10 at 0x7efcdc569000
-> > >>>>   [  383.375678] Memory failure: 0x1f10: reserved kernel page still referenced by 1 users
-> > >>>>   [  383.377570] Memory failure: 0x1f10: recovery action for reserved kernel page: Failed
-> > >>>>
-> > >>>> I'm not sure how/when this behavior was introduced, so I try to understand.
-> > >>>
-> > >>> I found that this is a zero page, which is not recoverable for memory
-> > >>> error now.
-> > >>>
-> > >>>> IMO, the test code below looks valid to me, so no need to change.
-> > >>>
-> > >>> I think that what the testcase effectively does is to test whether memory
-> > >>> handling on zero pages works or not.
-> > >>> And the testcase's failure seems acceptable, because it's simply not-implemented yet.
-> > >>> Maybe recovering from error on zero page is possible (because there's no data
-> > >>> loss for memory error,) but I'm not sure that code might be simple enough and/or
-> > >>> it's worth doing ...
-> > >> I question about it,  if a memory error happened on zero page, it will
-> > >> cause all of data read from zero page is error, I mean no-zero, right?
-> > >
-> > > Hi Yisheng,
-> > >
-> > > Yes, the impact is serious (could affect many processes,) but it's possibility
-> > > is very low because there's only one page in a system that is used for zero page.
-> > > There are many other pages which are not recoverable for memory error like
-> > > slab pages, so I'm not sure how I prioritize it (maybe it's not a
-> > > top-priority thing, nor low-hanging fruit.)
-> > >
-> > >> And can we just use re-initial it with zero data maybe by memset ?
-> > >
-> > > Maybe it's not enoguh. Under a real hwpoison, we should isolate the error
-> > > page to prevent the access on the broken data.
-> > > But zero page is statically defined as an array of global variable, so
-> > > it's not trival to replace it with a new zero page at runtime.
-> > >
-> > > Anyway, it's in my todo list, so hopefully revisited in the future.
-> > >
-> > 
-> > Hi Naoya,
-> > 
-> > The test case tries to HWPOISON a range of virtual addresses that do not
-> > map to any physical pages.
-> > 
-> 
-> Hi Yan,
-> 
-> > I expected either madvise should fail because HWPOISON does not work on
-> > non-existing physical pages or madvise_hwpoison() should populate
-> > some physical pages for that virtual address range and poison them.
-> 
-> The latter is the current behavior. It just comes from get_user_pages_fast()
-> which not only finds the page and takes refcount, but also touch the page.
-> 
-> madvise(MADV_HWPOISON) is a test feature, and calling it for address backed
-> by no page doesn't simulate anything real. IOW, the behavior is undefined.
-> So I don't have a strong opinion about how it should behave.
-> 
-> > 
-> > As I tested it on kernel v4.10, the test application exited at
-> > madvise, because madvise returns -1 and error message is
-> > "Device or resource busy". I think this is a proper behavior.
-> 
-> yes, maybe we see the same thing, you can see in dmesg "recovery action
-> for reserved kernel page: Failed" message.
-> 
-> > 
-> > There might be some confusion in madvise's man page on MADV_HWPOISON.
-> > If you add some text saying madvise fails if any page is not mapped in
-> > the given address range, that can eliminate the confusion*
-> 
-> Writing it down to man page makes readers think this behavior is a part of
-> specification, that might not be good now because the failure in error
-> handling of zero page is not the eventually fixed behavior.
-> I mean that if zero page handles hwpoison properly in the future, madvise
-> will succeed without any confusion.
-> So I feel that we don't have to update man page for this issue.
+If there not enough system RAM/swap the test produced warnings in
+cleanup:
 
-I still think that this is a worth of documenting in the manual page,
-since the call failed silently before 4.10 right? I guess that we may as
-well add a BUGS section and document at least that.
+...
+madvise06.c:71: CONF: System RAM is too small, skip test
+safe_file_ops.c:283: WARN: Failed to open FILE 'memory/tasks' for writing at madvise06.c:96: ENOENT
+safe_macros.c:184: WARN: madvise06.c:97: rmdir(memory/madvise06) failed: ENOENT
+safe_macros.c:724: WARN: madvise06.c:98: umount(memory) failed: ENOENT
 
+Which is because we attempted to umount and remove memory cgroup that
+wasn't mounted at all. Now attempt the cleanup only if the directory
+exitsts and if it's mounted (the tasks file exists).
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/madvise/madvise06.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/testcases/kernel/syscalls/madvise/madvise06.c b/testcases/kernel/syscalls/madvise/madvise06.c
+index 7e75f14..9b3e1f0 100644
+--- a/testcases/kernel/syscalls/madvise/madvise06.c
++++ b/testcases/kernel/syscalls/madvise/madvise06.c
+@@ -67,10 +67,14 @@ static void setup(void)
+ 	SAFE_FILE_PRINTF(drop_caches_fname, "3");
+ 
+ 	sysinfo(&sys_buf_start);
+-	if (sys_buf_start.freeram < 2 * CHUNK_SZ)
+-		tst_brk(TCONF, "System RAM is too small, skip test");
+-	if (sys_buf_start.freeswap < 2 * CHUNK_SZ)
+-		tst_brk(TCONF, "System swap is too small");
++	if (sys_buf_start.freeram < 2 * CHUNK_SZ) {
++		tst_brk(TCONF, "System RAM is too small (%li bytes needed)",
++			2 * CHUNK_SZ);
++	}
++	if (sys_buf_start.freeswap < 2 * CHUNK_SZ) {
++		tst_brk(TCONF, "System swap is too small (%li bytes needed)",
++			2 * CHUNK_SZ);
++	}
+ 
+ 	SAFE_MKDIR(MNT_NAME, 0700);
+ 	if (mount("memory", MNT_NAME, "cgroup", 0, "memory") == -1) {
+@@ -93,9 +97,11 @@ static void setup(void)
+ 
+ static void cleanup(void)
+ {
+-	SAFE_FILE_PRINTF(MNT_NAME"/tasks", "%d\n", getpid());
+-	SAFE_RMDIR(MNT_NAME"/"GROUP_NAME);
+-	SAFE_UMOUNT(MNT_NAME);
++	if (!access(MNT_NAME"/tasks", F_OK)) {
++		SAFE_FILE_PRINTF(MNT_NAME"/tasks", "%d\n", getpid());
++		SAFE_RMDIR(MNT_NAME"/"GROUP_NAME);
++		SAFE_UMOUNT(MNT_NAME);
++	}
+ }
+ 
+ static void dirty_pages(char *ptr, long size)
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.10.2
+
