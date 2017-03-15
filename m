@@ -1,207 +1,172 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Wed, 15 Mar 2017 15:04:49 +0300
-Subject: [LTP] [PATCH 1/2] netstress: add basic support for DCCP
-Message-ID: <1489579490-24154-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Wed, 15 Mar 2017 15:04:50 +0300
+Subject: [LTP] [PATCH 2/2] dccp: new test that compares DCCP and UDP
+In-Reply-To: <1489579490-24154-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1489579490-24154-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1489579490-24154-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Let's make an assumption based on empiric data that performance
+of DCCP is in the range from -100% till 100% against UDP under
+the same conditions.
+
+Results:
+  * on the same host getting about 40% performance loss,
+  * between two hosts over direct link about 10% perf. loss.
+
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/network/netstress/netstress.c |   81 ++++++++++++++++++++++++-------
- 1 files changed, 64 insertions(+), 17 deletions(-)
+ runtest/net.features             |    3 ++
+ testcases/lib/test_net.sh        |    7 ++--
+ testcases/network/dccp/Makefile  |   22 ++++++++++++++
+ testcases/network/dccp/dccp01.sh |   58 ++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 87 insertions(+), 3 deletions(-)
+ create mode 100644 testcases/network/dccp/Makefile
+ create mode 100755 testcases/network/dccp/dccp01.sh
 
-diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
-index 8184716..c1fb875 100644
---- a/testcases/network/netstress/netstress.c
-+++ b/testcases/network/netstress/netstress.c
-@@ -38,6 +38,19 @@
+diff --git a/runtest/net.features b/runtest/net.features
+index 6de9a9e..f7f4b87 100644
+--- a/runtest/net.features
++++ b/runtest/net.features
+@@ -11,6 +11,9 @@ busy_poll02_ipv6 busy_poll02.sh -6
+ busy_poll03 busy_poll03.sh
+ busy_poll03_ipv6 busy_poll03.sh -6
  
- static const int max_msg_len = (1 << 16) - 1;
- 
-+#ifndef SOCK_DCCP
-+#define SOCK_DCCP		6
-+#endif
-+#ifndef IPPROTO_DCCP
-+#define IPPROTO_DCCP		33
-+#endif
-+#ifndef SOL_DCCP
-+#define SOL_DCCP		269
-+#endif
-+#ifndef DCCP_SOCKOPT_SERVICE
-+#define DCCP_SOCKOPT_SERVICE	2
-+#endif
++dccp01 dccp01.sh
++dccp01_ipv6 dccp01.sh -6
 +
- /* TCP server requiers */
- #ifndef TCP_FASTOPEN
- #define TCP_FASTOPEN	23
-@@ -92,7 +105,11 @@ static int clients_num;
- static char *tcp_port		= "61000";
- static char *server_addr	= "localhost";
- static int busy_poll		= -1;
--static char *use_udp;
-+static char *use_udp, *use_dccp;
-+static int proto_type = SOCK_STREAM;
-+static int protocol;
-+static uint32_t service_code = 0xffff;
+ tcp_fastopen tcp_fastopen_run.sh
+ tcp_fastopen6 tcp_fastopen_run.sh -6
+ 
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index e4336d3..7b120f2 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -320,7 +320,7 @@ tst_netload()
+ 	local s_opts=
+ 
+ 	OPTIND=0
+-	while getopts :a:H:d:n:N:r:R:b:t:Ufe: opt; do
++	while getopts :a:H:d:n:N:r:R:b:t:UDfe: opt; do
+ 		case "$opt" in
+ 		a) c_num="$OPTARG" ;;
+ 		H) c_opts="${c_opts}-H $OPTARG " ;;
+@@ -332,6 +332,7 @@ tst_netload()
+ 		b) cs_opts="${cs_opts}-b $OPTARG " ;;
+ 		t) cs_opts="${cs_opts}-t $OPTARG " ;;
+ 		U) cs_opts="${cs_opts}-U " ;;
++		D) cs_opts="${cs_opts}-D " ;;
+ 		f) cs_opts="${cs_opts}-f " ;;
+ 
+ 		e) expect_res="$OPTARG" ;;
+@@ -357,9 +358,9 @@ tst_netload()
+ 	tst_resm TINFO "check that server port in 'LISTEN' state"
+ 	local sec_waited=
+ 	for sec_waited in $(seq 1 600); do
+-		tst_rhost_run -c "ss -lutn | grep -q $port" && break
++		tst_rhost_run -c "ss -ldutn | grep -q $port" && break
+ 		if [ $sec_waited -eq 600 ]; then
+-			tst_rhost_run -c "ss -utnp | grep $port"
++			tst_rhost_run -c "ss -dutnp | grep $port"
+ 			tst_brkm TFAIL "server not in LISTEN state"
+ 		fi
+ 		tst_sleep 100ms
+diff --git a/testcases/network/dccp/Makefile b/testcases/network/dccp/Makefile
+new file mode 100644
+index 0000000..23b7772
+--- /dev/null
++++ b/testcases/network/dccp/Makefile
+@@ -0,0 +1,22 @@
++# Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
 +
- /* server socket */
- static int sfd;
- 
-@@ -129,6 +146,11 @@ static void init_socket_opts(int sd)
- 		SAFE_SETSOCKOPT(sd, SOL_SOCKET, SO_BUSY_POLL,
- 			&busy_poll, sizeof(busy_poll));
- 	}
++top_srcdir		?= ../../..
 +
-+	if (proto_type == SOCK_DCCP) {
-+		SAFE_SETSOCKOPT(sd, SOL_DCCP, DCCP_SOCKOPT_SERVICE,
-+				&service_code, sizeof(uint32_t));
-+	}
- }
- 
- static void do_cleanup(void)
-@@ -227,7 +249,7 @@ static int client_recv(int *fd, char *buf)
- static int client_connect_send(const char *msg, int size)
- {
- 	int cfd = SAFE_SOCKET(remote_addrinfo->ai_family,
--			 remote_addrinfo->ai_socktype, 0);
-+			 remote_addrinfo->ai_socktype, protocol);
- 
- 	init_socket_opts(cfd);
- 
-@@ -264,7 +286,7 @@ void *client_fn(LTP_ATTRIBUTE_UNUSED void *arg)
- 	}
- 
- 	for (i = 1; i < client_max_requests; ++i) {
--		if (use_udp)
-+		if (proto_type == SOCK_DGRAM)
- 			goto send;
- 
- 		if (cfd == -1) {
-@@ -355,7 +377,7 @@ static void client_init(void)
- 	struct addrinfo hints;
- 	memset(&hints, 0, sizeof(struct addrinfo));
- 	hints.ai_family = AF_UNSPEC;
--	hints.ai_socktype = (use_udp) ? SOCK_DGRAM : SOCK_STREAM;
-+	hints.ai_socktype = proto_type;
- 	hints.ai_flags = 0;
- 	hints.ai_protocol = 0;
- 
-@@ -482,13 +504,15 @@ void *server_fn(void *cfd)
- 		 * It will tell client that server is going
- 		 * to close this connection.
- 		 */
--		if (!use_udp && ++num_requests >= server_max_requests)
-+		if (proto_type == SOCK_STREAM &&
-+		    ++num_requests >= server_max_requests)
- 			send_msg[0] = start_fin_byte;
- 
- 		SAFE_SENDTO(1, client_fd, send_msg, send_msg_size, MSG_NOSIGNAL,
- 			(struct sockaddr *)&remote_addr, remote_addr_len);
- 
--		if (!use_udp && num_requests >= server_max_requests) {
-+		if (proto_type == SOCK_STREAM &&
-+		    num_requests >= server_max_requests) {
- 			/* max reqs, close socket */
- 			shutdown(client_fd, SHUT_WR);
- 			break;
-@@ -516,7 +540,7 @@ static void server_init(void)
- 	struct addrinfo hints;
- 	memset(&hints, 0, sizeof(struct addrinfo));
- 	hints.ai_family = AF_INET6;
--	hints.ai_socktype = (use_udp) ? SOCK_DGRAM : SOCK_STREAM;
-+	hints.ai_socktype = proto_type;
- 	hints.ai_flags = AI_PASSIVE;
- 
- 	int err = getaddrinfo(NULL, tcp_port, &hints, &local_addrinfo);
-@@ -528,7 +552,7 @@ static void server_init(void)
- 		tst_brk(TBROK, "failed to get the address");
- 
- 	/* IPv6 socket is also able to access IPv4 protocol stack */
--	sfd = SAFE_SOCKET(AF_INET6, local_addrinfo->ai_socktype, 0);
-+	sfd = SAFE_SOCKET(AF_INET6, local_addrinfo->ai_socktype, protocol);
- 	const int flag = 1;
- 	SAFE_SETSOCKOPT(sfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
- 
-@@ -537,7 +561,7 @@ static void server_init(void)
- 
- 	freeaddrinfo(local_addrinfo);
- 
--	if (use_udp)
-+	if (proto_type == SOCK_DGRAM)
- 		return;
- 
- 	init_socket_opts(sfd);
-@@ -687,6 +711,11 @@ static void setup(void)
- 	if (busy_poll >= 0 && tst_kvercmp(3, 11, 0) < 0)
- 		tst_brk(TCONF, "Test must be run with kernel 3.11 or newer");
- 
-+	if (use_udp)
-+		proto_type = SOCK_DGRAM;
-+	else if (use_dccp)
-+		proto_type = SOCK_DCCP;
++include $(top_srcdir)/include/mk/env_pre.mk
 +
- 	if (client_mode) {
- 		tst_res(TINFO, "connection: addr '%s', port '%s'",
- 			server_addr, tcp_port);
-@@ -703,21 +732,38 @@ static void setup(void)
- 		tst_res(TINFO, "max requests '%d'",
- 			server_max_requests);
- 		net.init	= server_init;
--		net.run		= (use_udp) ? server_run_udp : server_run;
--		net.cleanup	= (use_udp) ? NULL : server_cleanup;
-+		switch (proto_type) {
-+		case SOCK_STREAM:
-+		case SOCK_DCCP:
-+			net.run		= server_run;
-+			net.cleanup	= server_cleanup;
-+		break;
-+		case SOCK_DGRAM:
-+			net.run		= server_run_udp;
-+			net.cleanup	= NULL;
-+		break;
-+		}
- 	}
- 
- 	remote_addr_len = sizeof(struct sockaddr_storage);
- 
--	if (use_udp) {
--		tst_res(TINFO, "using UDP");
--		fastopen_api = NULL;
--	} else {
-+	switch (proto_type) {
-+	case SOCK_STREAM:
- 		tst_res(TINFO, "TCP %s is using %s TCP API.",
- 			(client_mode) ? "client" : "server",
- 			(fastopen_api) ? "Fastopen" : "old");
--
- 		check_tfo_value();
-+	break;
-+	case SOCK_DCCP:
-+		tst_res(TINFO, "DCCP %s", (client_mode) ? "client" : "server");
-+		protocol = IPPROTO_DCCP;
-+		fastopen_api = NULL;
-+		service_code = htonl(service_code);
-+	break;
-+	case SOCK_DGRAM:
-+		tst_res(TINFO, "using UDP");
-+		fastopen_api = NULL;
-+	break;
- 	}
- 
- 	net.init();
-@@ -735,7 +781,8 @@ static struct tst_option options[] = {
- 
- 	{"g:", &tcp_port, "-g x     x - server port"},
- 	{"b:", &barg, "-b x     x - low latency busy poll timeout"},
--	{"U", &use_udp, "-U       Use UDP\n"},
-+	{"U", &use_udp, "-U       Use UDP"},
-+	{"D", &use_dccp, "-D       Use DCCP\n"},
- 
- 	{"H:", &server_addr, "Client:\n-H x     Server name or IP address"},
- 	{"l", &client_mode, "-l       Become client, default is server"},
++INSTALL_TARGETS		:= dccp01.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/network/dccp/dccp01.sh b/testcases/network/dccp/dccp01.sh
+new file mode 100755
+index 0000000..27027a5
+--- /dev/null
++++ b/testcases/network/dccp/dccp01.sh
+@@ -0,0 +1,58 @@
++#!/bin/sh
++# Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++#
++# Author: Alexey Kodanev <alexey.kodanev@oracle.com>
++
++TCID=dccp01
++TST_TOTAL=3
++TST_CLEANUP="cleanup"
++
++. test_net.sh
++
++cleanup()
++{
++	tst_rmdir
++}
++
++setup()
++{
++	tst_require_root
++	tst_tmpdir
++}
++
++test_run()
++{
++	tst_resm TINFO "compare UDP/DCCP performance"
++
++	tst_netload -H $(tst_ipaddr rhost) -U
++	local res0="$(cat tst_netload.res)"
++
++	tst_netload -H $(tst_ipaddr rhost) -D
++	local res1="$(cat tst_netload.res)"
++
++	local per=$(( $res0 * 100 / $res1 - 100 ))
++
++	if [ "$per" -gt "100" -o "$per" -lt "-100" ]; then
++		tst_resm TFAIL "dccp performance $per %"
++	else
++		tst_resm TPASS "dccp performance $per % in range -100 ... 100 %"
++	fi
++}
++
++setup
++test_run
++
++tst_exit
 -- 
 1.7.1
 
