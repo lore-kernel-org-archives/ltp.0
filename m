@@ -1,26 +1,43 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 15 Mar 2017 16:35:30 +0100
-Subject: [LTP] [PATCH v3] syscalls/recvmsg03.c: add new testcase
-In-Reply-To: <584FA846.5060407@cn.fujitsu.com>
-References: <20161115140446.GD13947@rei.lan>
- <1479274654-16592-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <584FA846.5060407@cn.fujitsu.com>
-Message-ID: <20170315153530.GD17618@rei.lan>
+Date: Wed, 15 Mar 2017 17:12:46 +0100
+Subject: [LTP] [COMMITTED] [PATCH] keyctl02: Require root
+Message-ID: <20170315161246.25162-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> ping:-)
-> 
-> When I built kernel with CONFIG_RDS enabled, I have tested it and
-> reproduced this bug on
-> v3.5 kernel without the fix patch.
+Otherwise add_key() fails with EDQUOT sooner or later.
 
-Pushed, thanks.
++ Print errno when add_key() fails
 
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ testcases/kernel/syscalls/keyctl/keyctl02.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/testcases/kernel/syscalls/keyctl/keyctl02.c b/testcases/kernel/syscalls/keyctl/keyctl02.c
+index 7145a5a..11d3af9 100644
+--- a/testcases/kernel/syscalls/keyctl/keyctl02.c
++++ b/testcases/kernel/syscalls/keyctl/keyctl02.c
+@@ -78,7 +78,7 @@ static void do_test(void)
+ 		key = add_key("user", "ltptestkey", "foo", 3,
+ 			KEY_SPEC_PROCESS_KEYRING);
+ 		if (key == -1)
+-			tst_brk(TBROK, "Failed to add key");
++			tst_brk(TBROK | TERRNO, "Failed to add key");
+ 
+ 		SAFE_PTHREAD_CREATE(&pth[0], NULL, do_read,
+ 			(void *)(unsigned long)key);
+@@ -100,6 +100,7 @@ static void do_test(void)
+ 
+ static struct tst_test test = {
+ 	.tid = "keyctl02",
++	.needs_root = 1,
+ 	.test_all = do_test,
+ };
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.10.2
+
