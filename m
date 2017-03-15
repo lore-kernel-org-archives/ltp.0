@@ -1,167 +1,207 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 15 Mar 2017 19:13:59 +0800
-Subject: [LTP] [PATCH] commands/keyctl01: Add new regression test
-Message-ID: <1489576439-15122-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Wed, 15 Mar 2017 15:04:49 +0300
+Subject: [LTP] [PATCH 1/2] netstress: add basic support for DCCP
+Message-ID: <1489579490-24154-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Fixed by:
-commit 38327424b40bcebe2de92d07312c89360ac9229a
-Author: Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Thu Jun 16 15:48:57 2016 +0100
-
-    KEYS: potential uninitialized variable
-
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- runtest/commands                      |  1 +
- testcases/commands/keyctl/Makefile    | 24 +++++++++
- testcases/commands/keyctl/keyctl01.sh | 91 +++++++++++++++++++++++++++++++++++
- 3 files changed, 116 insertions(+)
- create mode 100644 testcases/commands/keyctl/Makefile
- create mode 100644 testcases/commands/keyctl/keyctl01.sh
+ testcases/network/netstress/netstress.c |   81 ++++++++++++++++++++++++-------
+ 1 files changed, 64 insertions(+), 17 deletions(-)
 
-diff --git a/runtest/commands b/runtest/commands
-index fd51703..682deda 100644
---- a/runtest/commands
-+++ b/runtest/commands
-@@ -41,3 +41,4 @@ which01 which01.sh
- lsmod01 lsmod01.sh
- insmod01 insmod01.sh
- wc01 wc01.sh
-+keyctl01 keyctl01.sh
-diff --git a/testcases/commands/keyctl/Makefile b/testcases/commands/keyctl/Makefile
-new file mode 100644
-index 0000000..144beed
---- /dev/null
-+++ b/testcases/commands/keyctl/Makefile
-@@ -0,0 +1,24 @@
-+#
-+#    commands/keyctl testcases Makefile.
-+#
-+#    Copyright (c) 2017 Fujitsu Ltd.
-+#    Author:Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+#    This program is free software; you can redistribute it and/or modify
-+#    it under the terms of the GNU General Public License as published by
-+#    the Free Software Foundation; either version 2 of the License, or
-+#    (at your option) any later version.
-+#
-+#    This program is distributed in the hope that it will be useful,
-+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+#    GNU General Public License for more details.
-+#
+diff --git a/testcases/network/netstress/netstress.c b/testcases/network/netstress/netstress.c
+index 8184716..c1fb875 100644
+--- a/testcases/network/netstress/netstress.c
++++ b/testcases/network/netstress/netstress.c
+@@ -38,6 +38,19 @@
+ 
+ static const int max_msg_len = (1 << 16) - 1;
+ 
++#ifndef SOCK_DCCP
++#define SOCK_DCCP		6
++#endif
++#ifndef IPPROTO_DCCP
++#define IPPROTO_DCCP		33
++#endif
++#ifndef SOL_DCCP
++#define SOL_DCCP		269
++#endif
++#ifndef DCCP_SOCKOPT_SERVICE
++#define DCCP_SOCKOPT_SERVICE	2
++#endif
 +
-+top_srcdir		?= ../../..
+ /* TCP server requiers */
+ #ifndef TCP_FASTOPEN
+ #define TCP_FASTOPEN	23
+@@ -92,7 +105,11 @@ static int clients_num;
+ static char *tcp_port		= "61000";
+ static char *server_addr	= "localhost";
+ static int busy_poll		= -1;
+-static char *use_udp;
++static char *use_udp, *use_dccp;
++static int proto_type = SOCK_STREAM;
++static int protocol;
++static uint32_t service_code = 0xffff;
 +
-+include $(top_srcdir)/include/mk/env_pre.mk
+ /* server socket */
+ static int sfd;
+ 
+@@ -129,6 +146,11 @@ static void init_socket_opts(int sd)
+ 		SAFE_SETSOCKOPT(sd, SOL_SOCKET, SO_BUSY_POLL,
+ 			&busy_poll, sizeof(busy_poll));
+ 	}
 +
-+INSTALL_TARGETS		:= keyctl01.sh
++	if (proto_type == SOCK_DCCP) {
++		SAFE_SETSOCKOPT(sd, SOL_DCCP, DCCP_SOCKOPT_SERVICE,
++				&service_code, sizeof(uint32_t));
++	}
+ }
+ 
+ static void do_cleanup(void)
+@@ -227,7 +249,7 @@ static int client_recv(int *fd, char *buf)
+ static int client_connect_send(const char *msg, int size)
+ {
+ 	int cfd = SAFE_SOCKET(remote_addrinfo->ai_family,
+-			 remote_addrinfo->ai_socktype, 0);
++			 remote_addrinfo->ai_socktype, protocol);
+ 
+ 	init_socket_opts(cfd);
+ 
+@@ -264,7 +286,7 @@ void *client_fn(LTP_ATTRIBUTE_UNUSED void *arg)
+ 	}
+ 
+ 	for (i = 1; i < client_max_requests; ++i) {
+-		if (use_udp)
++		if (proto_type == SOCK_DGRAM)
+ 			goto send;
+ 
+ 		if (cfd == -1) {
+@@ -355,7 +377,7 @@ static void client_init(void)
+ 	struct addrinfo hints;
+ 	memset(&hints, 0, sizeof(struct addrinfo));
+ 	hints.ai_family = AF_UNSPEC;
+-	hints.ai_socktype = (use_udp) ? SOCK_DGRAM : SOCK_STREAM;
++	hints.ai_socktype = proto_type;
+ 	hints.ai_flags = 0;
+ 	hints.ai_protocol = 0;
+ 
+@@ -482,13 +504,15 @@ void *server_fn(void *cfd)
+ 		 * It will tell client that server is going
+ 		 * to close this connection.
+ 		 */
+-		if (!use_udp && ++num_requests >= server_max_requests)
++		if (proto_type == SOCK_STREAM &&
++		    ++num_requests >= server_max_requests)
+ 			send_msg[0] = start_fin_byte;
+ 
+ 		SAFE_SENDTO(1, client_fd, send_msg, send_msg_size, MSG_NOSIGNAL,
+ 			(struct sockaddr *)&remote_addr, remote_addr_len);
+ 
+-		if (!use_udp && num_requests >= server_max_requests) {
++		if (proto_type == SOCK_STREAM &&
++		    num_requests >= server_max_requests) {
+ 			/* max reqs, close socket */
+ 			shutdown(client_fd, SHUT_WR);
+ 			break;
+@@ -516,7 +540,7 @@ static void server_init(void)
+ 	struct addrinfo hints;
+ 	memset(&hints, 0, sizeof(struct addrinfo));
+ 	hints.ai_family = AF_INET6;
+-	hints.ai_socktype = (use_udp) ? SOCK_DGRAM : SOCK_STREAM;
++	hints.ai_socktype = proto_type;
+ 	hints.ai_flags = AI_PASSIVE;
+ 
+ 	int err = getaddrinfo(NULL, tcp_port, &hints, &local_addrinfo);
+@@ -528,7 +552,7 @@ static void server_init(void)
+ 		tst_brk(TBROK, "failed to get the address");
+ 
+ 	/* IPv6 socket is also able to access IPv4 protocol stack */
+-	sfd = SAFE_SOCKET(AF_INET6, local_addrinfo->ai_socktype, 0);
++	sfd = SAFE_SOCKET(AF_INET6, local_addrinfo->ai_socktype, protocol);
+ 	const int flag = 1;
+ 	SAFE_SETSOCKOPT(sfd, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag));
+ 
+@@ -537,7 +561,7 @@ static void server_init(void)
+ 
+ 	freeaddrinfo(local_addrinfo);
+ 
+-	if (use_udp)
++	if (proto_type == SOCK_DGRAM)
+ 		return;
+ 
+ 	init_socket_opts(sfd);
+@@ -687,6 +711,11 @@ static void setup(void)
+ 	if (busy_poll >= 0 && tst_kvercmp(3, 11, 0) < 0)
+ 		tst_brk(TCONF, "Test must be run with kernel 3.11 or newer");
+ 
++	if (use_udp)
++		proto_type = SOCK_DGRAM;
++	else if (use_dccp)
++		proto_type = SOCK_DCCP;
 +
-+include $(top_srcdir)/include/mk/generic_leaf_target.mk
-diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
-new file mode 100644
-index 0000000..f50f5f4
---- /dev/null
-+++ b/testcases/commands/keyctl/keyctl01.sh
-@@ -0,0 +1,91 @@
-+#!/bin/sh
-+#
-+# Copyright (c) 2017 Fujitsu Ltd.
-+# Ported: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-+#
-+# This program is free software; you can redistribute it and/or modify
-+# it under the terms of the GNU General Public License as published by
-+# the Free Software Foundation; either version 2 of the License, or
-+# (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program, if not, see <http://www.gnu.org/licenses/>.
-+#
-+# This is a regression test about potential uninitialized variable,
-+# the test can crash the buggy kernel, and the bug has been fixed in:
-+#
-+#   commit 38327424b40bcebe2de92d07312c89360ac9229a
-+#   Author: Dan Carpenter <dan.carpenter@oracle.com>
-+#   Date:   Thu Jun 16 15:48:57 2016 +0100
-+#
-+#   KEYS: potential uninitialized variable
-+#
-+
-+TST_ID="keyctl01"
-+TST_SETUP=setup
-+TST_CLEANUP=cleanup
-+TST_TESTFUNC=do_test
-+TST_NEEDS_ROOT=1
-+TST_NEEDS_TMPDIR=1
-+TST_NEEDS_CMDS="keyctl"
-+. tst_test.sh
-+
-+setup()
-+{
-+	if tst_kvcmp -le 2.6.33; then
-+		tst_brk TCONF "Kernel newer than 2.6.33 is needed"
-+	fi
-+
-+	PATH_KEYSTAT="/proc/key-users"
-+	PATH_KEYQUOTA="/proc/sys/kernel/keys/root_maxbytes"
-+
-+	if [ ! -f "$PATH_KEYSTAT" ] || [ ! -f "$PATH_KEYQUOTA" ]; then
-+		tst_brk TCONF "'${PATH_KEYSTAT}' or '${PATH_KEYQUOTA}' \
-+			does not exist"
-+	fi
-+
-+	ORIG_KEYSZ=`grep -w "0:" $PATH_KEYSTAT | awk '{print $5}' | \
-+		cut -d '/' -f1`
-+	ORIG_MAXKEYSZ=`cat $PATH_KEYQUOTA`
-+}
-+
-+cleanup()
-+{
-+	if [ -n "$ORIG_MAXKEYSZ" ]; then
-+		echo $ORIG_MAXKEYSZ >$PATH_KEYQUOTA
-+	fi
-+}
-+
-+do_test()
-+{
-+	local maxkeysz=$((ORIG_KEYSZ + 100))
-+
-+	while true
-+	do
-+		echo $maxkeysz >$PATH_KEYQUOTA
-+
-+		keyctl request2 user debug:fred negate @t >temp 2>&1
-+		grep -q -E "quota exceeded" temp
-+		if [ $? -eq 0 ]; then
-+			break
-+		fi
-+
-+		local key=`keyctl show | grep -w "debug:fred" | \
-+			awk '{print $1}'`
-+		if [ -n "$key" ]; then
-+			keyctl unlink $key @s >/dev/null
-+			tst_sleep 100ms
-+		fi
-+
-+		((maxkeysz -= 4))
-+	done
-+
-+	tst_res TPASS "Bug not reproduced"
-+}
-+
-+tst_run
+ 	if (client_mode) {
+ 		tst_res(TINFO, "connection: addr '%s', port '%s'",
+ 			server_addr, tcp_port);
+@@ -703,21 +732,38 @@ static void setup(void)
+ 		tst_res(TINFO, "max requests '%d'",
+ 			server_max_requests);
+ 		net.init	= server_init;
+-		net.run		= (use_udp) ? server_run_udp : server_run;
+-		net.cleanup	= (use_udp) ? NULL : server_cleanup;
++		switch (proto_type) {
++		case SOCK_STREAM:
++		case SOCK_DCCP:
++			net.run		= server_run;
++			net.cleanup	= server_cleanup;
++		break;
++		case SOCK_DGRAM:
++			net.run		= server_run_udp;
++			net.cleanup	= NULL;
++		break;
++		}
+ 	}
+ 
+ 	remote_addr_len = sizeof(struct sockaddr_storage);
+ 
+-	if (use_udp) {
+-		tst_res(TINFO, "using UDP");
+-		fastopen_api = NULL;
+-	} else {
++	switch (proto_type) {
++	case SOCK_STREAM:
+ 		tst_res(TINFO, "TCP %s is using %s TCP API.",
+ 			(client_mode) ? "client" : "server",
+ 			(fastopen_api) ? "Fastopen" : "old");
+-
+ 		check_tfo_value();
++	break;
++	case SOCK_DCCP:
++		tst_res(TINFO, "DCCP %s", (client_mode) ? "client" : "server");
++		protocol = IPPROTO_DCCP;
++		fastopen_api = NULL;
++		service_code = htonl(service_code);
++	break;
++	case SOCK_DGRAM:
++		tst_res(TINFO, "using UDP");
++		fastopen_api = NULL;
++	break;
+ 	}
+ 
+ 	net.init();
+@@ -735,7 +781,8 @@ static struct tst_option options[] = {
+ 
+ 	{"g:", &tcp_port, "-g x     x - server port"},
+ 	{"b:", &barg, "-b x     x - low latency busy poll timeout"},
+-	{"U", &use_udp, "-U       Use UDP\n"},
++	{"U", &use_udp, "-U       Use UDP"},
++	{"D", &use_dccp, "-D       Use DCCP\n"},
+ 
+ 	{"H:", &server_addr, "Client:\n-H x     Server name or IP address"},
+ 	{"l", &client_mode, "-l       Become client, default is server"},
 -- 
-1.8.4.2
-
-
+1.7.1
 
