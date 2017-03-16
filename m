@@ -1,24 +1,29 @@
-From: Laurent GONZALEZ <ltp@gezedo.com>
-Date: Thu, 16 Mar 2017 15:04:12 +0100
-Subject: [LTP] Access02 and use of system() library function
-Message-ID: <beacb487-181d-2d9c-380a-128b985b2250@gezedo.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 16 Mar 2017 18:01:34 +0100
+Subject: [LTP] [PATCH 1/1] gitignore: Cleanup
+Message-ID: <20170316170134.27191-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi list,
+tools/gethost.c was moved in 743f2fcd5 ("move gethost from tools to
+sendfile01")
 
-in order to check the actual executable mode of a file, access02 calls system() library function.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ tools/.gitignore | 1 -
+ 1 file changed, 1 deletion(-)
+ delete mode 100644 tools/.gitignore
 
-The test fails when the return value of system() is not 0. Shouldn't the return value being tested only for its sign instead (and even versus -1 only) ?
-
-The system() function returns -1 in case of error, and the return value of the command otherwise. Even in the case the command returns non-zero value, its execution is positively checked, but access02 fails because the return value is not 0.
-
-This corner case happens when the shell is busybox's hush. Hush uses execvp to execute the test_file3, this leads the kernel to return ENOEXEC (bad exec format). Then execvp tries to execute the shell "/bin/sh" with the name of the file "./test_file3" as argv[0]. Then busybox returns that no such an applet does exist, and terminates with error code 127.
-
-Thanks for comments.
-
-
+diff --git a/tools/.gitignore b/tools/.gitignore
+deleted file mode 100644
+index 68fed60a4..000000000
+--- a/tools/.gitignore
++++ /dev/null
+@@ -1 +0,0 @@
+-/gethost
+-- 
+2.12.0
 
