@@ -1,10 +1,9 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 20 Mar 2017 12:23:38 +0100
-Subject: [LTP] [RFC 1/1] Test for vulnerability cve-2016-7117 in
- recvmmsg error return path
-In-Reply-To: <20170317103911.1e9e0e25@linux-v3j5>
-References: <20170317103911.1e9e0e25@linux-v3j5>
-Message-ID: <20170320112338.GB3322@rei.lan>
+Date: Mon, 20 Mar 2017 12:36:24 +0100
+Subject: [LTP] Support for static builds
+In-Reply-To: <87y3w5nni4.fsf@linaro.org>
+References: <87y3w5nni4.fsf@linaro.org>
+Message-ID: <20170320113624.GC3322@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,235 +11,66 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> --- /dev/null
-> +++ b/testcases/cve/2016-7117/cve-2016-7117.c
+> I'm in the process of trying to package up an LTP build for QEMU's
+> various target architectures. For ease of testing I'd like to build all
+> the testcases as static binaries to avoid having to mess about with
+> chroots during the actual testing. However I've been running into
+> problems. I run configure as:
+> 
+>   ./configure CFLAGS=-pthread LDFLAGS=-static
+> 
+> This seems to avoid most of the linking problems I have (undefined
+> reference to `pthread_mutex_foo' etc). However it seems the convention
+> of passing CFLAGS down to sub-makes isn't uniform in the code base.
+> 
+> For example building on PowerPC I ran into this:
+> 
+>   gcc -pthread -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition  -I/ltp.git/testcases/kernel/include -I/ltp.git/testcases/network/tcp_cmds/sendfile/../include -I../../../../inc
+>   lude -I../../../../include -I../../../../include/old/ -static  -L../../../../lib  testsf_c.c   -lltp -o testsf_c
+>   gcc -pthread -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition  -I/ltp.git/testcases/kernel/include -I/ltp.git/testcases/network/tcp_cmds/sendfile/../include -I../../../../inc
+>   lude -I../../../../include -I../../../../include/old/ -static  -L../../../../lib  testsf_s.c   -lltp -o testsf_s
+>   gcc -static  -L../../../../lib  testsf_c6.o   -lltp -o testsf_c6
+>   gcc -static  -L../../../../lib  testsf_s6.o   -lltp -o testsf_s6
+>   ../../../../lib/libltp.a(safe_macros.o): In function `safe_getpwnam':
+>   /ltp.git/lib/safe_macros.c:119: warning: Using 'getpwnam' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
+>   testsf_s6.o: In function `main':
+>   /ltp.git/testcases/network/tcp_cmds/sendfile/testsf_s.c:59: warning: Using 'getaddrinfo' in statically linked applications requires at runtime the shared libraries from the glibc version used
+>    for linking
 
-Hmm, I would have just put this test directly into the cve/ directory,
-there is no point in having one directory per test here.
+This warnings are a known glibc problem, you cannot link certain
+functions (nss) statically with glibc.
 
-> @@ -0,0 +1,203 @@
-> +/*
-> + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-> + *
-> + * This program is free software: you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License as published by
-> + * the Free Software Foundation, either version 2 of the License, or
-> + * (at your option) any later version.
-> + *
-> + * This program is distributed in the hope that it will be useful,
-> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + * GNU General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program. If not, see <http://www.gnu.org/licenses/>.
-> + */
-> +/*
-> + * CVE-2016-7117
-> + *
-> + * This tests for a use after free caused by a race between recvmmsg() and
-> + * close(). The exit path for recvmmsg() in (a2e2725541f: net: Introduce
-> + * recvmmsg socket syscall) called fput() on the active file descriptor before
-> + * checking the error state and setting the socket's error field.
-> + *
-> + * If one or more messages are received by recvmmsg() followed by one which
-> + * fails, the socket's error field will be set. If just after recvmmsg() calls
-> + * fput(), a call to close() is made on the same file descriptor there is a
-> + * race between close() releasing the socket object and recvmmsg() setting its
-> + * error field.
-> + *
-> + * fput() does not release a file descriptor's resources (e.g. a socket)
-> + * immediatly, it queues them to be released just before a system call returns
-> + * to user land. So the close() system call must call fput() after it is
-> + * called in recvmmsg(), exit and release the resources all before the socket
-> + * error is set.
-> + *
-> + * Usually if the vulnerability is present the test will be killed with a
-> + * kernel null pointer exception. However this is not guaranteed to happen
-> + * every time. To maximise the chance of the race occuring the test tries to
-> + * align the exit times of the final close() and recvmmsg() plus an offset. It
-> + * takes a moving average and uses it to adjust a delay by nanosleep().
-> + *
-> + * The following was used for reference
-> + * https://blog.lizzie.io/notes-about-cve-2016-7117.html
-> + */
-> +
-> +#include <sys/wait.h>
-> +#include <sys/types.h>
-> +#include <sys/socket.h>
-> +#include <sys/syscall.h>
-> +#include <stdlib.h>
-> +#include <errno.h>
-> +
-> +#include "tst_test.h"
-> +#include "tst_safe_net.h"
-> +#include "tst_safe_pthread.h"
-> +#include "tst_timer.h"
-> +
-> +// The bug was present in the kernel before recvmmsg was exposed by glibc
-> +#ifndef __NR_recvmmsg
-> +#ifdef __i386__
-> +#define __NR_recvmmsg 337
-> +#elif defined(__x86_64__)
-> +#define __NR_recvmmsg 299
-> +#endif
-> +#endif
+>   ../../../../lib/libltp.a(tst_res.o): In function `tst_res__':
+>   /ltp.git/lib/tst_res.c:153: undefined reference to `pthread_mutex_lock'
+>   /ltp.git/lib/tst_res.c:199: undefined reference to `pthread_mutex_unlock'
+>   /ltp.git/lib/tst_res.c:199: undefined reference to `pthread_mutex_unlock'
 
-We have these for all architectures in autogenerated
-linux_syscall_numbers.h, just include that header instead of rolling
-your own definitions.
+Hmm, this should be covered by glibc pthread_mutex_* stubs, that are
+used when there is no -pthread in CFLAGS. But in this case you passed
+-pthread in cflags for build and it's missing from linking, which is
+most likely the reason why you get these kind of warnings.
 
-> +#ifndef CLOCK_MONOTONIC_RAW
-> +#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-> +#endif
-> +
-> +#define MSG "abcdefghijklmnop"
-> +#define RECV_TIMEOUT 1
-> +#define ATTEMPTS 0x1FFFFF
-> +#define TARGET_AVG_TDIFF (-1000.0d)
-> +#define ALPHA (0.25d)
-> +
-> +int socket_fds[2];
-> +struct mmsghdr msghdrs[2] = {
-> +	{
-> +		.msg_hdr = {
-> +			.msg_iov = &(struct iovec) {
-> +				.iov_len = sizeof(MSG),
-> +			},
-> +			.msg_iovlen = 1
-> +		}
-> +	},
-> +	{
-> +		.msg_hdr = {
-> +			.msg_iov = &(struct iovec) {
-> +				.iov_base = (void *)(0xbadadd),
-> +				.iov_len = ~0,
-> +			},
-> +			.msg_iovlen = 1
-> +		}
-> +	}
-> +};
-> +char rbuf[sizeof(MSG)] = {0};
+Looks like CFLAGS are not propagated correctly there for some reason.
+But first of all you shouldn't be passing -pthread to the top-level
+configure at all.
 
-There is no need to initialize global variables to 0. Also global
-variables should be declared static.
+> And when I looked at my host built x86_64 build which completed fine it
+> hadn't actually done what I asked:
+> 
+>   17:10 alex@zen/x86_64  [sendfile/master@origin] >file testsf_s6
+> testsf_s6: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=17a6b13234c805f7a5499acc714ebf5197a7c4ea, not stripped
+> 
+> So my questions:
+> 
+>   - is this the correct way to build a static-linked LTP?
 
-> +struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
-> +struct timespec close_exit;
-> +struct timespec recvmmsg_exit;
-> +
-> +void cleanup(void)
-> +{
-> +	close(socket_fds[0]);
-> +	close(socket_fds[1]);
-> +}
-> +
-> +struct timespec exit_time(void)
-> +{
-> +	struct timespec t;
-> +
-> +	clock_gettime(CLOCK_MONOTONIC_RAW, &t);
-> +	return t;
-> +}
-> +
-> +void *send_and_close(void *arg)
-> +{
-> +	struct timespec *delay = (struct timespec *)arg;
-> +
-> +	send(socket_fds[0], MSG, sizeof(MSG), 0);
-> +	send(socket_fds[0], MSG, sizeof(MSG), 0);
-> +
-> +	nanosleep(delay, 0);
-> +
-> +	close(socket_fds[0]);
-> +	close(socket_fds[1]);
-> +	close_exit = exit_time();
+Passing -static in LDFLAGS should do, unless the test uses functions
+from NSS, although as far as I can tell, static build is not tested at
+all.
 
-More usuall way of passing structures in C is by pointer, if you just
-did exit_time(&close_exit) here you could just pass the pointer to
-clock_gettime() call instead of copying the value on the stack...
+>   - is the testsf_06 failure because its not using the common build machinery?
 
-> +	return 0;
-> +}
-> +
-> +void run(void)
-> +{
-> +#ifndef __NR_recvmmsg
-> +	tst_brk(TCONF, "No definition for __NR_recvmmsg");
-> +#endif
-> +	pthread_t pt_send;
-> +	int i, stat, too_early_count = 0;
-> +	long tdiff = 0, delay = 0;
-> +	double avg_tdiff = 0;
-> +	struct timespec recv_delay = {0}, clos_delay = {0};
-> +
-> +	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
-> +
-> +	for (i = 1; i < ATTEMPTS; i++) {
-> +		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
-> +			tst_brk(TBROK | TERRNO, "Socket creation failed");
-> +
-> +		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, &clos_delay);
-> +
-> +		nanosleep(&recv_delay, 0);
-> +
-> +		stat = syscall(__NR_recvmmsg,
-> +			       socket_fds[1], msghdrs, 2, 0, &timeout);
-> +		recvmmsg_exit = exit_time();
-
-Here as well.
-
-> +		if (stat < 0 && errno == EBADF)
-> +			too_early_count++;
-> +		else if (stat == 0)
-> +			tst_res(TWARN, "No messages received, should be one");
-> +		else if (stat < 0)
-> +			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
-> +
-> +		SAFE_PTHREAD_JOIN(pt_send, 0);
-> +
-> +		tdiff = recvmmsg_exit.tv_nsec - close_exit.tv_nsec;
-> +		avg_tdiff = ALPHA * tdiff + (1.0d - ALPHA) * avg_tdiff;
-> +		if (!(i & 0xF)) {
-> +			if (avg_tdiff < TARGET_AVG_TDIFF)
-> +				delay++;
-> +			else if (avg_tdiff > TARGET_AVG_TDIFF)
-> +				delay--;
-> +
-> +			if (delay > 0) {
-> +				recv_delay.tv_nsec = delay;
-> +				clos_delay.tv_nsec = 1;
-> +			} else if (delay < 0) {
-> +				recv_delay.tv_nsec = 1;
-> +				clos_delay.tv_nsec = -delay;
-> +			} else {
-> +				recv_delay.tv_nsec = 1;
-> +				clos_delay.tv_nsec = 1;
-> +			}
-> +		}
-> +
-> +		if (!(i & 0x7FFFF)) {
-> +			tst_res(TINFO, "Early: %.1f%%, diff: %ldns, avg_tdiff: %.5gns",
-> +				100 * too_early_count / (float)i,
-> +				tdiff, avg_tdiff);
-> +			tst_res(TINFO, "Receive delay: %ldns, close delay: %ldns",
-> +				recv_delay.tv_nsec, clos_delay.tv_nsec);
-> +		}
-> +	}
-> +
-> +	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tid = "cve-2016-7117",
-> +	.test_all = run,
-> +	.cleanup = cleanup,
-> +	.min_kver = "2.6.33",
-> +};
-
-Otherwise the code looks fine.
-
-It's missing Makefile, runtest file and .gitignore record though...
+I doubt so.
 
 -- 
 Cyril Hrubis
