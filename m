@@ -1,39 +1,32 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 22 Mar 2017 20:54:49 +0100
-Subject: [LTP] [PATCH 1/1] open_posix_testsuite: Fix cross compilation of
-	tools
-Message-ID: <20170322195449.19552-1-pvorel@suse.cz>
+Date: Wed, 22 Mar 2017 21:28:20 +0100
+Subject: [LTP] [PATCH 1/1] rpc: Add missing header
+Message-ID: <20170322202820.15989-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-From: Petr Vorel <petr.vorel@gmail.com>
+This fixes: implicit declaration of function ‘pmap_unset’.
 
-by including config-openposix.mk which contains cross compilation setup.
-
-This fixes #144.
-
-Reported-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
-Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- testcases/open_posix_testsuite/tools/Makefile | 2 ++
- 1 file changed, 2 insertions(+)
+ testcases/network/rpc/basic_tests/rpc01/rpc_server.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/open_posix_testsuite/tools/Makefile b/testcases/open_posix_testsuite/tools/Makefile
-index 9a9f0481d..8500d4259 100644
---- a/testcases/open_posix_testsuite/tools/Makefile
-+++ b/testcases/open_posix_testsuite/tools/Makefile
-@@ -4,6 +4,8 @@
- # Ngie Cooper, June 2010
- #
+diff --git a/testcases/network/rpc/basic_tests/rpc01/rpc_server.c b/testcases/network/rpc/basic_tests/rpc01/rpc_server.c
+index db5865f94..6bf219607 100644
+--- a/testcases/network/rpc/basic_tests/rpc01/rpc_server.c
++++ b/testcases/network/rpc/basic_tests/rpc01/rpc_server.c
+@@ -6,6 +6,7 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <rpc/rpc.h>
++#include <rpc/pmap_clnt.h>
+ #include "librpc01.h"
  
-+include ../../../include/mk/config-openposix.mk
-+
- top_srcdir?=	..
- 
- srcdir=		$(top_srcdir)/tools
+ int debug = 0;
 -- 
-2.11.0
+2.12.0
 
