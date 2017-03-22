@@ -1,23 +1,86 @@
 From: Hoang Nguyen <the_hoang0709@yahoo.com>
-Date: Wed, 22 Mar 2017 02:44:42 +0000 (UTC)
-Subject: [LTP]  memcg_usage_in_bytes sometimes failed
-References: <260795063.109541.1490150682697.ref@mail.yahoo.com>
-Message-ID: <260795063.109541.1490150682697@mail.yahoo.com>
+Date: Wed, 22 Mar 2017 03:06:25 +0000 (UTC)
+Subject: [LTP] [PATCH] prot_hsymlinks: Fix failure on read-only machine
+In-Reply-To: <1489107284-4313-1-git-send-email-the_hoang0709@yahoo.com>
+References: <1489107284-4313-1-git-send-email-the_hoang0709@yahoo.com>
+Message-ID: <241709389.146541.1490151985827@mail.yahoo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi all, 
-I rarely meet this issue on embedded system, armv7l kernel 3.14, but not sure what's going wrong. It can pass on some boards, but fail sometimes on others with same config.
-Is there any aditional preparation to make this case always pass? Have anyone experienced on this ?
-Test: memcg_usage_in_bytes Testparm: memcg_usage_in_bytes_test.shmemcg_usage_in_bytes_test 1 TINFO: Starting test 1memcg_usage_in_bytes_test 1 TINFO: Running memcg_process --mmap-anon -s 4194304memcg_usage_in_bytes_test 1 TINFO: Warming up pid: 886memcg_usage_in_bytes_test 1 TINFO: Process is still here after warm up: 886memcg_usage_in_bytes_test 1 TPASS: memory.usage_in_bytes is 4194304 as expected/opt/ltp/testcases/bin/memcg_lib.sh: line 477: echo: write error: Device or resource busymemcg_usage_in_bytes_test 2 TINFO: restore  /dev/memcg/memory.use_hierarchy failedmemcg_usage_in_bytes_test 2 TINFO: Starting test 2memcg_usage_in_bytes_test 2 TINFO: Running memcg_process --mmap-anon -s 4194304memcg_usage_in_bytes_test 2 TINFO: Warming up pid: 906memcg_usage_in_bytes_test 2 TINFO: Process is still here after warm up: 906memcg_usage_in_bytes_test 2 TFAIL: memory.memsw.usage_in_bytes is 4325376, 4194304 expectedResult: 1
-
-Thanks and regards 
+Hi,
+Could you help to check, so that we can close the Issue ?
+Thanks and regards
 Hoang
 
+Sent from Yahoo Mail on Android 
+ 
+  On Fri, Mar 10, 2017 at 7:55, the_hoang0709@yahoo.com<the_hoang0709@yahoo.com> wrote:   From: Hoang Nguyen <the_hoang0709@yahoo.com>
 
+Return 32 if /etc/passwd is read-only.
+Also move tst_tmpdir before useradd in setup, to avoid "TESTDIR was
+NULL" in tst_rmdir in cleanup.
+
+Fixes #88
+
+Signed-off-by: Hoang Nguyen <the_hoang0709@yahoo.com>
+---
+ testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
+index b23064a..31ddefa 100644
+--- a/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
++++ b/testcases/kernel/security/prot_hsymlinks/prot_hsymlinks.c
+@@ -206,6 +206,8 @@ static void setup(int argc, char *argv[])
+ 
+     tst_sig(FORK, DEF_HANDLER, cleanup);
+ 
++    tst_tmpdir();
++
+     test_user_cmd("useradd");
+     /*
+     * enable hardlinks and symlinks restrictions,
+@@ -220,8 +222,6 @@ static void setup(int argc, char *argv[])
+         disable_protected_slinks = 1;
+     }
+ 
+-    tst_tmpdir();
+-
+     init_base_dirs();
+ 
+     init_files_dirs();
+@@ -273,7 +273,8 @@ static void cleanup(void)
+     if (skip_cleanup)
+         return;
+ 
+-    test_user_cmd("userdel -r");
++    if (!eaccess("/etc/passwd", W_OK))
++        test_user_cmd("userdel -r");
+ 
+     if (disable_protected_hlinks) {
+         tst_resm(TINFO, "Disable protected hardlinks mode back");
+@@ -316,8 +317,13 @@ static void test_user_cmd(const char *user_cmd)
+     char cmd[MAX_CMD_LEN];
+     snprintf(cmd, MAX_CMD_LEN, "%s %s", user_cmd, users[TEST_USER].name);
+     if (system(cmd) != 0) {
+-        tst_brkm(TBROK, cleanup, "Failed to run cmd: %s %s",
++        if (eaccess("/etc/passwd", W_OK)) {
++            tst_brkm(TCONF, cleanup,
++            "/etc/passwd is not accessible");
++        } else {
++            tst_brkm(TBROK, cleanup, "Failed to run cmd: %s %s",
+             user_cmd, users[TEST_USER].name);
++        }
+     }
+ }
+ 
+-- 
+2.7.4
+
+  
 -------------- next part --------------
 An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170322/7180ff00/attachment.html>
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170322/668fd6c7/attachment-0001.html>
