@@ -1,45 +1,53 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 22 Mar 2017 21:56:17 +0100
-Subject: [LTP] Building LTP without old rpc headers
-In-Reply-To: <201703221835.v2MIZm8t023461@sellcey-dt.caveonetworks.com>
-References: <201703221835.v2MIZm8t023461@sellcey-dt.caveonetworks.com>
-Message-ID: <20170322205617.oanie4igc3dzc324@dell5510>
+From: Steve Ellcey <sellcey@cavium.com>
+Date: Wed, 22 Mar 2017 15:17:05 -0700
+Subject: [LTP] Did it pass or did it fail
+Message-ID: <201703222217.v2MMH5ZX029117@sellcey-dt.caveonetworks.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+I have a question about BROK and LTP results.  When running LTP I see
+this in the log file under the results directory:
 
-> This may be a known issue but I have been using LTP to test some new glibc
-> versions that I build and I found that if I did not configure the glibc
-> that I build with "--enable-obsolete-rpc" then when I build LTP and link
-> it against that glibc (and its headers) I get this error during the LTP
-> build:
+madvise09                      FAIL       2
 
-
-> gcc -mabi=ilp32 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition  -I../../../../../../include -I../../../../../../include -I../../../../../../include/old/  -c -o librpc01.o librpc01.c
-> librpc01.c:19:10: fatal error: rpc/xdr.h: No such file or directory
->  #include <rpc/xdr.h>
->           ^~~~~~~~~~~
-> compilation terminated.
-> <builtin>: recipe for target 'librpc01.o' failed
-> make[6]: *** [librpc01.o] Error 1
-> make[6]: Leaving directory '/home/sellcey/ltp/src-32/ltp/testcases/network/rpc/basic_tests/rpc01/lib'
+Which would lead one to believe that the madvise09 test failed.
 
 
-> I did not see any way to configure LTP to disable its use of this obsolete
-> header file but it would be nice if there was one so that I did not need to
-> include it in my glibc builds.
 
-> Should I open an issue for this?
+But in the output from runltp I see this:
 
-Is it worth of checking it with AC_CHECK_HEADERS and #if HAVE_RPC_XDR_H?
+<<<test_start>>>
+tag=madvise09 stime=1490213376
+cmdline="madvise09"
+contacts=""
+analysis=exit
+<<<test_output>>>
+tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
+madvise09.c:181: PASS: MADV_FREE pages were not freed immediatelly
+madvise09.c:187: INFO: Setting memory limits to 8388608 16777216
+safe_file_ops.c:144: BROK: Failed to open FILE '/sys/fs/cgroup/memory/ltp_madvise09_20474//memory.memsw.limit_in_bytes' for reading at madvise09.c:190: ENOENT
+madvise09.c:289: BROK: Child exitted unexpectedly
 
-These headers have been disabled since glibc 2.14 [1].
+Summary:
+passed   1
+failed   0
+skipped  0
+warnings 0
+<<<execution_status>>>
+initiation_status="ok"
+duration=0 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
 
-Kind regards,
-Petr
 
-[1]: https://savannah.gnu.org/forum/forum.php?forum_id=7288
+This is less clear.  There is the passed line on the one hand and the
+'failed 0' line, but then there is the termination_id on the other hand and
+the BROK output as well.  Did the test pass or fail?  Is output of this type
+expected, where the log shows a FAIL but the stdout from runltp doesn't
+necessarily show a clear TFAIL or TPASS in the output?
+
+Steve Ellcey
+sellcey@cavium.com
