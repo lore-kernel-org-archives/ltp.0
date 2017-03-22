@@ -1,24 +1,34 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 22 Mar 2017 17:47:54 +0100
-Subject: [LTP] [PATCH] mtest05/mmstress: Fix failure on read-only system
-In-Reply-To: <1489106886-4037-1-git-send-email-the_hoang0709@yahoo.com>
-References: <1489106886-4037-1-git-send-email-the_hoang0709@yahoo.com>
-Message-ID: <20170322164754.GD4960@rei.lan>
+From: Steve Ellcey <sellcey@cavium.com>
+Date: Wed, 22 Mar 2017 11:35:48 -0700
+Subject: [LTP] Building LTP without old rpc headers
+Message-ID: <201703221835.v2MIZm8t023461@sellcey-dt.caveonetworks.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-This was broken for when the test was passed the -t option since in that
-case the alarm called exit(). Well the -t option was broken anyway,
-since it did exit(0) regardless of the result of the test functions.
+This may be a known issue but I have been using LTP to test some new glibc
+versions that I build and I found that if I did not configure the glibc
+that I build with "--enable-obsolete-rpc" then when I build LTP and link
+it against that glibc (and its headers) I get this error during the LTP
+build:
 
-So I've cleaned up the test a bit so that SIGALRM only sets a flag that
-causes the main loop to exit and also to call tst_exit() properly and
-then added the tst_tmpdir() and tst_rmdir() calls.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+gcc -mabi=ilp32 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition  -I../../../../../../include -I../../../../../../include -I../../../../../../include/old/  -c -o librpc01.o librpc01.c
+librpc01.c:19:10: fatal error: rpc/xdr.h: No such file or directory
+ #include <rpc/xdr.h>
+          ^~~~~~~~~~~
+compilation terminated.
+<builtin>: recipe for target 'librpc01.o' failed
+make[6]: *** [librpc01.o] Error 1
+make[6]: Leaving directory '/home/sellcey/ltp/src-32/ltp/testcases/network/rpc/basic_tests/rpc01/lib'
+
+
+I did not see any way to configure LTP to disable its use of this obsolete
+header file but it would be nice if there was one so that I did not need to
+include it in my glibc builds.
+
+Should I open an issue for this?
+
+Steve Ellcey
