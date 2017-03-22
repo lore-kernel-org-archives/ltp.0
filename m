@@ -1,34 +1,39 @@
-From: Steve Ellcey <sellcey@cavium.com>
-Date: Wed, 22 Mar 2017 11:35:48 -0700
-Subject: [LTP] Building LTP without old rpc headers
-Message-ID: <201703221835.v2MIZm8t023461@sellcey-dt.caveonetworks.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 22 Mar 2017 20:54:49 +0100
+Subject: [LTP] [PATCH 1/1] open_posix_testsuite: Fix cross compilation of
+	tools
+Message-ID: <20170322195449.19552-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-This may be a known issue but I have been using LTP to test some new glibc
-versions that I build and I found that if I did not configure the glibc
-that I build with "--enable-obsolete-rpc" then when I build LTP and link
-it against that glibc (and its headers) I get this error during the LTP
-build:
+From: Petr Vorel <petr.vorel@gmail.com>
 
+by including config-openposix.mk which contains cross compilation setup.
 
-gcc -mabi=ilp32 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition  -I../../../../../../include -I../../../../../../include -I../../../../../../include/old/  -c -o librpc01.o librpc01.c
-librpc01.c:19:10: fatal error: rpc/xdr.h: No such file or directory
- #include <rpc/xdr.h>
-          ^~~~~~~~~~~
-compilation terminated.
-<builtin>: recipe for target 'librpc01.o' failed
-make[6]: *** [librpc01.o] Error 1
-make[6]: Leaving directory '/home/sellcey/ltp/src-32/ltp/testcases/network/rpc/basic_tests/rpc01/lib'
+This fixes #144.
 
+Reported-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Signed-off-by: Petr Vorel <petr.vorel@gmail.com>
+---
+ testcases/open_posix_testsuite/tools/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-I did not see any way to configure LTP to disable its use of this obsolete
-header file but it would be nice if there was one so that I did not need to
-include it in my glibc builds.
+diff --git a/testcases/open_posix_testsuite/tools/Makefile b/testcases/open_posix_testsuite/tools/Makefile
+index 9a9f0481d..8500d4259 100644
+--- a/testcases/open_posix_testsuite/tools/Makefile
++++ b/testcases/open_posix_testsuite/tools/Makefile
+@@ -4,6 +4,8 @@
+ # Ngie Cooper, June 2010
+ #
+ 
++include ../../../include/mk/config-openposix.mk
++
+ top_srcdir?=	..
+ 
+ srcdir=		$(top_srcdir)/tools
+-- 
+2.11.0
 
-Should I open an issue for this?
-
-Steve Ellcey
