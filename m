@@ -1,9 +1,9 @@
 From: Jakub Racek <jracek@redhat.com>
-Date: Thu, 23 Mar 2017 19:15:55 +0100
-Subject: [LTP] [PATCH v5 4/6] move fallocate.h to lapi
+Date: Thu, 23 Mar 2017 19:15:57 +0100
+Subject: [LTP] [PATCH v5 6/6] syscalls/memfd_create02.c: added new test
 In-Reply-To: <1490292957-26941-1-git-send-email-jracek@redhat.com>
 References: <1490292957-26941-1-git-send-email-jracek@redhat.com>
-Message-ID: <1490292957-26941-5-git-send-email-jracek@redhat.com>
+Message-ID: <1490292957-26941-7-git-send-email-jracek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,216 +12,130 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Jakub Racek <jracek@redhat.com>
 ---
- include/lapi/fallocate.h                          | 66 +++++++++++++++++++++
- testcases/kernel/syscalls/fallocate/fallocate.h   | 70 -----------------------
- testcases/kernel/syscalls/fallocate/fallocate01.c |  2 +-
- testcases/kernel/syscalls/fallocate/fallocate02.c |  2 +-
- testcases/kernel/syscalls/fallocate/fallocate03.c |  2 +-
- testcases/kernel/syscalls/fallocate/fallocate04.c |  2 +-
- 6 files changed, 70 insertions(+), 74 deletions(-)
- create mode 100644 include/lapi/fallocate.h
- delete mode 100644 testcases/kernel/syscalls/fallocate/fallocate.h
+ runtest/syscalls                                   |  1 +
+ testcases/kernel/syscalls/.gitignore               |  1 +
+ .../kernel/syscalls/memfd_create/memfd_create02.c  | 94 ++++++++++++++++++++++
+ 3 files changed, 96 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/memfd_create/memfd_create02.c
 
-diff --git a/include/lapi/fallocate.h b/include/lapi/fallocate.h
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 2da5b48..1be9710 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1452,3 +1452,4 @@ futex_wait_bitset01 futex_wait_bitset01
+ futex_wait_bitset02 futex_wait_bitset02
+ 
+ memfd_create01 memfd_create01
++memfd_create02 memfd_create02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 905badc..9f07273 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -1119,3 +1119,4 @@
+ /perf_event_open/perf_event_open01
+ /perf_event_open/perf_event_open02
+ /memfd_create/memfd_create01
++/memfd_create/memfd_create02
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create02.c b/testcases/kernel/syscalls/memfd_create/memfd_create02.c
 new file mode 100644
-index 0000000..79d0b7b
+index 0000000..1c56156
 --- /dev/null
-+++ b/include/lapi/fallocate.h
-@@ -0,0 +1,66 @@
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create02.c
+@@ -0,0 +1,94 @@
 +/*
-+ * Copyright (c) International Business Machines  Corp., 2007
-+ * Copyright (c) 2014 Fujitsu Ltd.
++ * Copyright (C) 2017  Red Hat, Inc.
 + *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
 + *
-+ * This program is distributed in the hope that it will be useful,
++ * This program is distributed in the hope that it would be useful,
 + * but WITHOUT ANY WARRANTY; without even the implied warranty of
 + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU Library General Public License for more details.
++ * GNU General Public License for more details.
 + *
 + */
 +
-+#ifndef FALLOCATE_H
-+#define FALLOCATE_H
++ /*
++  *  Based on Linux/tools/testing/selftests/memfd/memfd_test.c
++  *  by David Herrmann <dh.herrmann@gmail.com>
++  *
++  *  24/02/2017   Port to LTP    <jracek@redhat.com>
++  */
 +
-+#include <sys/types.h>
-+#include <endian.h>
-+#include "config.h"
-+#include "lapi/abisize.h"
-+#include "linux_syscall_numbers.h"
++#define _GNU_SOURCE
 +
-+#ifndef SEEK_HOLE
-+# define SEEK_HOLE 4
-+#endif
++#include <errno.h>
 +
-+#ifndef FALLOC_FL_KEEP_SIZE
-+# define FALLOC_FL_KEEP_SIZE 0x01
-+#endif
++#include <tst_test.h>
 +
-+#ifndef FALLOC_FL_PUNCH_HOLE
-+# define FALLOC_FL_PUNCH_HOLE 0x02
-+#endif
++#include "memfd_create_common.h"
 +
-+#ifndef FALLOC_FL_COLLAPSE_RANGE
-+# define FALLOC_FL_COLLAPSE_RANGE 0x08
-+#endif
++static char buf[2048];
++static char term_buf[2048];
 +
-+#ifndef FALLOC_FL_ZERO_RANGE
-+# define FALLOC_FL_ZERO_RANGE 0x10
-+#endif
++static const struct tcase {
++	char *descr;
++	char *memfd_name;
++	int flags;
++	int memfd_create_exp_err;
++} tcases[] = {
++	/*
++	 * Test memfd_create() syscall
++	 * Verify syscall-argument validation, including name checks,
++	 * flag validation and more.
++	 */
++	{"invalid name fail 1",   NULL,     0,                      EFAULT },
++	{"invalid name fail 2",   buf,      0,                      EINVAL },
++	{"invalid name fail 3",   term_buf, 0,                      EINVAL },
 +
-+#ifndef FALLOC_FL_INSERT_RANGE
-+# define FALLOC_FL_INSERT_RANGE 0x20
-+#endif
++	{"invalid flags fail 1", "test",  -500,                     EINVAL },
++	{"invalid flags fail 2", "test",  0x0100,                   EINVAL },
++	{"invalid flags fail 3", "test",  ~MFD_CLOEXEC,             EINVAL },
++	{"invalid flags fail 4", "test",  ~MFD_ALLOW_SEALING,       EINVAL },
++	{"invalid flags fail 5", "test",  ~0,                       EINVAL },
++	{"invalid flags fail 6", "test",  0x80000000U,              EINVAL },
 +
-+#if !defined(HAVE_FALLOCATE)
-+static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
++	{"valid flags 1 pass", "test",  MFD_CLOEXEC,                     0 },
++	{"valid flags 2 pass", "test",  MFD_ALLOW_SEALING,               0 },
++	{"valid flags 3 pass", "test",  MFD_CLOEXEC | MFD_ALLOW_SEALING, 0 },
++	{"valid flags 4 pass", "test",  0,                               0 },
++	{"valid flags 5 pass", "",      0,                               0 },
++};
++
++static void setup(void)
 +{
-+	/* Deal with 32bit ABIs that have 64bit syscalls. */
-+# if LTP_USE_64_ABI
-+	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
-+# else
-+	return (long)ltp_syscall(__NR_fallocate, fd, mode,
-+				 __LONG_LONG_PAIR((off_t) (offset >> 32),
-+						  (off_t) offset),
-+				 __LONG_LONG_PAIR((off_t) (len >> 32),
-+						  (off_t) len));
-+# endif
-+}
-+#endif
++	ASSERT_HAVE_MEMFD_CREATE();
 +
-+#endif /* FALLOCATE_H */
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate.h b/testcases/kernel/syscalls/fallocate/fallocate.h
-deleted file mode 100644
-index 5119988..0000000
---- a/testcases/kernel/syscalls/fallocate/fallocate.h
-+++ /dev/null
-@@ -1,70 +0,0 @@
--/*
-- * Copyright (c) International Business Machines  Corp., 2007
-- * Copyright (c) 2014 Fujitsu Ltd.
-- *
-- * This program is free software;  you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License as published by
-- * the Free Software Foundation; either version 2 of the License, or
-- * (at your option) any later version.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU Library General Public License for more details.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write to the Free Software
-- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-- *
-- */
--
--#ifndef FALLOCATE_H
--#define FALLOCATE_H
--
--#include <sys/types.h>
--#include <endian.h>
--#include "config.h"
--#include "lapi/abisize.h"
--#include "linux_syscall_numbers.h"
--
--#ifndef SEEK_HOLE
--#define SEEK_HOLE 4
--#endif
--
--#ifndef FALLOC_FL_KEEP_SIZE
--#define FALLOC_FL_KEEP_SIZE 0x01
--#endif
--
--#ifndef FALLOC_FL_PUNCH_HOLE
--#define FALLOC_FL_PUNCH_HOLE 0x02
--#endif
--
--#ifndef FALLOC_FL_COLLAPSE_RANGE
--#define FALLOC_FL_COLLAPSE_RANGE 0x08
--#endif
--
--#ifndef FALLOC_FL_ZERO_RANGE
--#define FALLOC_FL_ZERO_RANGE 0x10
--#endif
--
--#ifndef FALLOC_FL_INSERT_RANGE
--#define FALLOC_FL_INSERT_RANGE 0x20
--#endif
--
--#if !defined(HAVE_FALLOCATE)
--static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
--{
--	/* Deal with 32bit ABIs that have 64bit syscalls. */
--# if LTP_USE_64_ABI
--	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
--# else
--	return (long)ltp_syscall(__NR_fallocate, fd, mode,
--				 __LONG_LONG_PAIR((off_t) (offset >> 32),
--						  (off_t) offset),
--				 __LONG_LONG_PAIR((off_t) (len >> 32),
--						  (off_t) len));
--# endif
--}
--#endif
--
--#endif /* FALLOCATE_H */
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate01.c b/testcases/kernel/syscalls/fallocate/fallocate01.c
-index c99e799..89ce996 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate01.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate01.c
-@@ -100,7 +100,7 @@
- #include <sys/utsname.h>
- 
- #include "test.h"
--#include "fallocate.h"
-+#include "lapi/fallocate.h"
- #include "lapi/fcntl.h"
- 
- #define BLOCKS_WRITTEN 12
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate02.c b/testcases/kernel/syscalls/fallocate/fallocate02.c
-index ba37796..bee0863 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate02.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate02.c
-@@ -39,7 +39,7 @@
- 
- #include "test.h"
- #include "safe_macros.h"
--#include "fallocate.h"
-+#include "lapi/fallocate.h"
- 
- #define BLOCKS_WRITTEN		12
- #ifdef TEST_DEFAULT
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate03.c b/testcases/kernel/syscalls/fallocate/fallocate03.c
-index 092d2bb..d73d07d 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate03.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate03.c
-@@ -96,7 +96,7 @@
- #include <sys/utsname.h>
- 
- #include "test.h"
--#include "fallocate.h"
-+#include "lapi/fallocate.h"
- 
- #define BLOCKS_WRITTEN 12
- #define HOLE_SIZE_IN_BLOCKS 12
-diff --git a/testcases/kernel/syscalls/fallocate/fallocate04.c b/testcases/kernel/syscalls/fallocate/fallocate04.c
-index f204188..a672916 100644
---- a/testcases/kernel/syscalls/fallocate/fallocate04.c
-+++ b/testcases/kernel/syscalls/fallocate/fallocate04.c
-@@ -32,7 +32,7 @@
- 
- #include "test.h"
- #include "safe_macros.h"
--#include "fallocate.h"
-+#include "lapi/fallocate.h"
- 
- char *TCID = "fallocate04";
- int TST_TOTAL = 5;
++	memset(buf, 0xff, sizeof(buf));
++
++	memset(term_buf, 0xff, sizeof(term_buf));
++	term_buf[sizeof(term_buf) - 1] = 0;
++}
++
++static void verify_memfd_create_errno(unsigned int n)
++{
++	const struct tcase *tc;
++
++	tc = &tcases[n];
++
++	TEST(sys_memfd_create(tc->memfd_name, tc->flags));
++	if (TEST_ERRNO != tc->memfd_create_exp_err)
++		tst_brk(TFAIL, "test '%s'", tc->descr);
++	else
++		tst_res(TPASS, "test '%s'", tc->descr);
++
++	if (TEST_RETURN > 0)
++		SAFE_CLOSE(TEST_RETURN);
++}
++
++static struct tst_test test = {
++	.tid = "memfd_create02",
++	.test = verify_memfd_create_errno,
++	.tcnt = ARRAY_SIZE(tcases),
++	.setup = setup,
++};
 -- 
 1.8.3.1
 
