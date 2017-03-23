@@ -1,149 +1,29 @@
-From: Jakub Racek <jracek@redhat.com>
-Date: Thu, 23 Mar 2017 19:15:52 +0100
-Subject: [LTP] [PATCH v5 1/6] Added syscall numbers for memfd_create
-In-Reply-To: <1490292957-26941-1-git-send-email-jracek@redhat.com>
-References: <1490292957-26941-1-git-send-email-jracek@redhat.com>
-Message-ID: <1490292957-26941-2-git-send-email-jracek@redhat.com>
+From: Steve East <sge@cray.com>
+Date: Thu, 23 Mar 2017 19:35:23 +0000
+Subject: [LTP] Out-of-tree build missing some data files.
+Message-ID: <BN6PR11MB2051C2F128C4DC206D611144CD3F0@BN6PR11MB2051.namprd11.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Jakub Racek <jracek@redhat.com>
----
- testcases/kernel/include/aarch64.in   | 1 +
- testcases/kernel/include/arm.in       | 1 +
- testcases/kernel/include/hppa.in      | 1 +
- testcases/kernel/include/i386.in      | 1 +
- testcases/kernel/include/ia64.in      | 1 +
- testcases/kernel/include/powerpc.in   | 1 +
- testcases/kernel/include/powerpc64.in | 1 +
- testcases/kernel/include/s390.in      | 1 +
- testcases/kernel/include/s390x.in     | 1 +
- testcases/kernel/include/sh.in        | 1 +
- testcases/kernel/include/sparc.in     | 1 +
- testcases/kernel/include/sparc64.in   | 1 +
- testcases/kernel/include/x86_64.in    | 1 +
- 13 files changed, 13 insertions(+)
+When I do an out-of-tree build I am missing some of the files from the datafiles sub-directories. The ones that get installed in testcases/data are:
 
-diff --git a/testcases/kernel/include/aarch64.in b/testcases/kernel/include/aarch64.in
-index cb3fe06..b81c068 100644
---- a/testcases/kernel/include/aarch64.in
-+++ b/testcases/kernel/include/aarch64.in
-@@ -255,3 +255,4 @@ setns 268
- sendmmsg 269
- kcmp 272
- getrandom 278
-+memfd_create 279
-diff --git a/testcases/kernel/include/arm.in b/testcases/kernel/include/arm.in
-index cee9718..0a5dde1 100644
---- a/testcases/kernel/include/arm.in
-+++ b/testcases/kernel/include/arm.in
-@@ -338,3 +338,4 @@ sched_setattr (__NR_SYSCALL_BASE+380)
- sched_getattr (__NR_SYSCALL_BASE+381)
- renameat2 (__NR_SYSCALL_BASE+382)
- getrandom (__NR_SYSCALL_BASE+384)
-+memfd_create (__NR_SYSCALL_BASE+385)
-diff --git a/testcases/kernel/include/hppa.in b/testcases/kernel/include/hppa.in
-index b784a2b..3946155 100644
---- a/testcases/kernel/include/hppa.in
-+++ b/testcases/kernel/include/hppa.in
-@@ -15,3 +15,4 @@ faccessat (__NR_openat + 12)
- splice 291
- tee 293
- vmsplice 294
-+memfd_create 340
-diff --git a/testcases/kernel/include/i386.in b/testcases/kernel/include/i386.in
-index 1f1cade..42c5e3f 100644
---- a/testcases/kernel/include/i386.in
-+++ b/testcases/kernel/include/i386.in
-@@ -338,3 +338,4 @@ sched_setattr 351
- sched_getattr 352
- renameat2 354
- getrandom 355
-+memfd_create 356
-diff --git a/testcases/kernel/include/ia64.in b/testcases/kernel/include/ia64.in
-index 846141f..dad25f4 100644
---- a/testcases/kernel/include/ia64.in
-+++ b/testcases/kernel/include/ia64.in
-@@ -294,3 +294,4 @@ fanotify_mark 1324
- prlimit64 1325
- renameat2 1338
- getrandom 1339
-+memfd_create 1340
-diff --git a/testcases/kernel/include/powerpc.in b/testcases/kernel/include/powerpc.in
-index 5ca42a6..10a6e5d 100644
---- a/testcases/kernel/include/powerpc.in
-+++ b/testcases/kernel/include/powerpc.in
-@@ -345,3 +345,4 @@ sched_setattr 355
- sched_getattr 356
- renameat2 357
- getrandom 359
-+memfd_create 360
-diff --git a/testcases/kernel/include/powerpc64.in b/testcases/kernel/include/powerpc64.in
-index 5ca42a6..10a6e5d 100644
---- a/testcases/kernel/include/powerpc64.in
-+++ b/testcases/kernel/include/powerpc64.in
-@@ -345,3 +345,4 @@ sched_setattr 355
- sched_getattr 356
- renameat2 357
- getrandom 359
-+memfd_create 360
-diff --git a/testcases/kernel/include/s390.in b/testcases/kernel/include/s390.in
-index afe94f5..770db7f 100644
---- a/testcases/kernel/include/s390.in
-+++ b/testcases/kernel/include/s390.in
-@@ -329,3 +329,4 @@ sched_setattr 345
- sched_getattr 346
- renameat2 347
- getrandom 349
-+memfd_create 350
-diff --git a/testcases/kernel/include/s390x.in b/testcases/kernel/include/s390x.in
-index afe94f5..770db7f 100644
---- a/testcases/kernel/include/s390x.in
-+++ b/testcases/kernel/include/s390x.in
-@@ -329,3 +329,4 @@ sched_setattr 345
- sched_getattr 346
- renameat2 347
- getrandom 349
-+memfd_create 350
-diff --git a/testcases/kernel/include/sh.in b/testcases/kernel/include/sh.in
-index 3cb7e21..0345f8d 100644
---- a/testcases/kernel/include/sh.in
-+++ b/testcases/kernel/include/sh.in
-@@ -362,3 +362,4 @@ fanotify_init 367
- fanotify_mark 368
- prlimit64 369
- kcmp 378
-+memfd_create 385
-diff --git a/testcases/kernel/include/sparc.in b/testcases/kernel/include/sparc.in
-index f266777..b84c844 100644
---- a/testcases/kernel/include/sparc.in
-+++ b/testcases/kernel/include/sparc.in
-@@ -334,3 +334,4 @@ prlimit64 331
- kcmp 341
- renameat2 345
- getrandom 347
-+memfd_create 348
-diff --git a/testcases/kernel/include/sparc64.in b/testcases/kernel/include/sparc64.in
-index cb91828..7e0be30 100644
---- a/testcases/kernel/include/sparc64.in
-+++ b/testcases/kernel/include/sparc64.in
-@@ -310,3 +310,4 @@ prlimit64 331
- kcmp 341
- renameat2 345
- getrandom 347
-+memfd_create 348
-diff --git a/testcases/kernel/include/x86_64.in b/testcases/kernel/include/x86_64.in
-index f54abf4..dec7742 100644
---- a/testcases/kernel/include/x86_64.in
-+++ b/testcases/kernel/include/x86_64.in
-@@ -305,3 +305,4 @@ sched_setattr 314
- sched_getattr 315
- renameat2 316
- getrandom 318
-+memfd_create 319
--- 
-1.8.3.1
+drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:50 ext4-ffsb/
+drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:48 file01/
+drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:50 ima_policy/
+drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:48 ldd01/
+drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:49 mc_member/
+drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:48 nm01/
+drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:49 rpc01/
+drwxr-xr-x 3 sge sdivmisc   80 Mar 22 12:50 stress_floppy/
+drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:48 unzip01/
+
+but I don't see the datafiles for ld and ar. In the case of ld, the data files are *.c files which I believe are supposed to be installed uncompiled. For ar, the data files are *.in which also need to be installed as is.
+
+This works for an in-tree build. Bug?
+
+Thanks,
+Steve.
 
