@@ -1,25 +1,54 @@
-From: Steve Ellcey <sellcey@caviumnetworks.com>
-Date: Thu, 23 Mar 2017 10:20:47 -0700
-Subject: [LTP] Did it pass or did it fail
-In-Reply-To: <20170323092823.GB351@rei.lan>
-References: <201703222217.v2MMH5ZX029117@sellcey-dt.caveonetworks.com>
- <20170323092823.GB351@rei.lan>
-Message-ID: <1490289647.19074.49.camel@caviumnetworks.com>
+From: Jakub Racek <jracek@redhat.com>
+Date: Thu, 23 Mar 2017 19:15:53 +0100
+Subject: [LTP] [PATCH v5 2/6] Added memfd_create() lapi flags
+In-Reply-To: <1490292957-26941-1-git-send-email-jracek@redhat.com>
+References: <1490292957-26941-1-git-send-email-jracek@redhat.com>
+Message-ID: <1490292957-26941-3-git-send-email-jracek@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, 2017-03-23 at 10:28 +0100, Cyril Hrubis wrote:
-> 
-> > '/sys/fs/cgroup/memory/ltp_madvise09_20474//memory.memsw.limit_in_b
-> > ytes' for reading at madvise09.c:190: ENOENT
-> > madvise09.c:289: BROK: Child exitted unexpectedly
-> This means that the test had an internal error. Looking at the message
-> it looks like memory cgroup file is missing. What kernel version do you
-> have?
+Signed-off-by: Jakub Racek <jracek@redhat.com>
+---
+ include/lapi/memfd.h | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+ create mode 100644 include/lapi/memfd.h
 
-I was testing a 4.5 kernel (with local modifications).
+diff --git a/include/lapi/memfd.h b/include/lapi/memfd.h
+new file mode 100644
+index 0000000..18ed40f
+--- /dev/null
++++ b/include/lapi/memfd.h
+@@ -0,0 +1,27 @@
++/*
++ * Copyright (C) 2017  Red Hat, Inc.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#ifndef LAPI_MEMFD_H
++#define LAPI_MEMFD_H
++
++/* flags for memfd_create(2) (unsigned int) */
++#ifndef MFD_CLOEXEC
++# define MFD_CLOEXEC             0x0001U
++#endif
++#ifndef MFD_ALLOW_SEALING
++# define MFD_ALLOW_SEALING       0x0002U
++#endif
++
++#endif
+-- 
+1.8.3.1
 
-Steve Ellcey
