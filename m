@@ -1,31 +1,40 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 23 Mar 2017 14:13:41 +0100
-Subject: [LTP] [PATCH 1/1] rpc: Add missing header
-In-Reply-To: <20170323130515.hgxdgqs6absurzjf@dell5510>
-References: <20170322202820.15989-1-pvorel@suse.cz>
- <20170323113530.GD351@rei.lan>
- <20170323130515.hgxdgqs6absurzjf@dell5510>
-Message-ID: <20170323131341.GF351@rei.lan>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Thu, 23 Mar 2017 16:26:20 +0100
+Subject: [LTP] [PATCH 0/4] CVE Exploit tests
+Message-ID: <20170323162620.546e7a52@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > Hmm, the man 3 rpc only states that <rpc/rpc.h> needs to be included,
-> > what distro this fails on?
-> Error is:
-> rpc_server.c: In function ???main???:
-> rpc_server.c:78:2: warning: implicit declaration of function ???pmap_unset??? [-Wimplicit-function-declaration]
->   pmap_unset(program, version);
-> 
-> But maybe I'm wrong, doing some mistake.
+Hi,
 
-Looks to me like glibc bug. Since the tirpc/rpc/rpc.h includes the
-rpc/pmap_clnt.h while the glibc equivalent does not. But I'm not expect
-on RPC either. I guess that we should better ask on the glibc ML.
+These are the first three exploit tests I have completed. I also have a
+working, but messy, test for CVE-2014-0196 which will follow sometime soon,
+hopefully along with a few others.
+
+Richard Palethorpe (4):
+  Test for vulnerability CVE-2016-7117 in recvmmsg error return path
+  Test for CVE-2016-4997 on setsockopt
+  Test for uname26 exploit CVE-2012-0957
+  Add CVE .gitignore, Makefile and runtest files
+
+ runtest/cve                   |   5 ++
+ runtest/syscalls              |   2 +
+ scenario_groups/default       |   1 +
+ testcases/cve/.gitignore      |   3 +
+ testcases/cve/Makefile        |  24 ++++++
+ testcases/cve/cve-2012-0957.c |  90 ++++++++++++++++++++
+ testcases/cve/cve-2016-4997.c |  87 +++++++++++++++++++
+ testcases/cve/cve-2016-7117.c | 191 ++++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 403 insertions(+)
+ create mode 100644 runtest/cve
+ create mode 100644 testcases/cve/.gitignore
+ create mode 100644 testcases/cve/Makefile
+ create mode 100644 testcases/cve/cve-2012-0957.c
+ create mode 100644 testcases/cve/cve-2016-4997.c
+ create mode 100644 testcases/cve/cve-2016-7117.c
 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.12.0
