@@ -1,117 +1,103 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 23 Mar 2017 16:26:38 +0100
-Subject: [LTP] [PATCH 3/4] Test for uname26 exploit CVE-2012-0957
-Message-ID: <20170323162638.6fea756b@linux-v3j5>
+Date: Thu, 23 Mar 2017 16:26:49 +0100
+Subject: [LTP] [PATCH 4/4] Add CVE .gitignore, Makefile and runtest files
+Message-ID: <20170323162649.33890c67@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Attempt to exploit the uname kernel memory leak which occurred when the
-UNAME26 personality was set.
-
 Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
- testcases/cve/cve-2012-0957.c | 90 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 90 insertions(+)
- create mode 100644 testcases/cve/cve-2012-0957.c
+ runtest/cve              |  5 +++++
+ runtest/syscalls         |  2 ++
+ scenario_groups/default  |  1 +
+ testcases/cve/.gitignore |  3 +++
+ testcases/cve/Makefile   | 24 ++++++++++++++++++++++++
+ 5 files changed, 35 insertions(+)
+ create mode 100644 runtest/cve
+ create mode 100644 testcases/cve/.gitignore
+ create mode 100644 testcases/cve/Makefile
 
-diff --git a/testcases/cve/cve-2012-0957.c b/testcases/cve/cve-2012-0957.c
+diff --git a/runtest/cve b/runtest/cve
 new file mode 100644
-index 000000000..3a2afe08e
+index 000000000..83b53d906
 --- /dev/null
-+++ b/testcases/cve/cve-2012-0957.c
-@@ -0,0 +1,90 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Copyright (c) 2012, Kees Cook <keescook@chromium.org>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/*
-+ * Check that memory after the string terminator in all the utsname fields has
-+ * been zeroed. cve-2012-0957 leaked kernel memory through the release field
-+ * when the UNAME26 personality was set.
-+ *
-+ * Thanks to Kees Cook for the original proof of concept:
-+ * http://www.securityfocus.com/bid/55855/info
-+ */
++++ b/runtest/cve
+@@ -0,0 +1,5 @@
++# Tests which check for vulnerabilities by CVE number
++cve-2012-0957 cve-2012-0957
++cve-2016-4997 cve-2016-4997
++cve-2016-5195 dirtyc0w
++cve-2016-7117 cve-2016-7117
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 84930caf7..16048db9b 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1138,6 +1138,7 @@ set_tid_address01 set_tid_address01
+ setsid01 setsid01
+ 
+ setsockopt01 setsockopt01
++cve-2016-4997 cve-2016-4997
+ 
+ settimeofday01 settimeofday01
+ settimeofday02 settimeofday02
+@@ -1349,6 +1350,7 @@ umask01 umask01
+ uname01 uname01
+ uname02 uname02
+ uname03 uname03
++cve-2012-0957 cve-2012-0957
+ 
+ unlink01 symlink01 -T unlink01
+ unlink05 unlink05
+diff --git a/scenario_groups/default b/scenario_groups/default
+index b0d770171..5658a618b 100644
+--- a/scenario_groups/default
++++ b/scenario_groups/default
+@@ -32,3 +32,4 @@ can
+ cpuhotplug
+ net.ipv6_lib
+ input
++cve
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+new file mode 100644
+index 000000000..9c24b83ec
+--- /dev/null
++++ b/testcases/cve/.gitignore
+@@ -0,0 +1,3 @@
++cve-2012-0957
++cve-2016-4997
++cve-2016-7117
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+new file mode 100644
+index 000000000..42225ac58
+--- /dev/null
++++ b/testcases/cve/Makefile
+@@ -0,0 +1,24 @@
++# Copyright (c) 2017 Linux Test Project
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
 +
-+#include <string.h>
-+#include <sys/utsname.h>
-+#include <sys/personality.h>
-+#include "tst_test.h"
++top_srcdir		?= ../..
 +
-+#define UNAME26 0x0020000
++include $(top_srcdir)/include/mk/testcases.mk
 +
-+static int check_field(char *bytes, size_t length, char *field)
-+{
-+	size_t i = strlen(bytes) + 1;
++CFLAGS			+= -D_GNU_SOURCE
 +
-+	for (; i < length; i++) {
-+		if (bytes[i]) {
-+			tst_res(TFAIL, "Bytes leaked in %s!", field);
-+			return 1;
-+		}
-+	}
-+	return 0;
-+}
++cve-2016-7117:	LDFLAGS += -lpthread
 +
-+
-+static void try_leak_bytes(void)
-+{
-+	struct utsname buf;
-+
-+	if (uname(&buf))
-+		tst_brk(TBROK | TERRNO, "Call to uname failed");
-+
-+#define CHECK_FIELD(field_name) \
-+	(check_field(buf.field_name, ARRAY_SIZE(buf.field_name), #field_name))
-+
-+	if (!(CHECK_FIELD(release) |
-+	    CHECK_FIELD(sysname) |
-+	    CHECK_FIELD(nodename) |
-+	    CHECK_FIELD(version) |
-+	    CHECK_FIELD(machine) |
-+#ifdef _GNU_SOURCE
-+	    CHECK_FIELD(domainname) |
-+#endif
-+		    0)) {
-+		tst_res(TPASS, "All fields zeroed after string terminator");
-+	}
-+#undef CHECK_FIELD
-+}
-+
-+static void run(unsigned int test_nr)
-+{
-+	if (!test_nr) {
-+		tst_res(TINFO, "Calling uname with default personality");
-+		try_leak_bytes();
-+	} else {
-+		if (personality(PER_LINUX | UNAME26) < 0)
-+			tst_brk(TCONF | TERRNO,
-+				"Could not change personality to UNAME26");
-+		tst_res(TINFO, "Calling uname with UNAME26 personality");
-+		try_leak_bytes();
-+	}
-+}
-+
-+static struct tst_test test = {
-+	.tid = "cve-2012-0957",
-+	.test = run,
-+	.tcnt = 2,
-+};
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
 -- 
 2.12.0
