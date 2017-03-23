@@ -1,111 +1,74 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 23 Mar 2017 16:26:33 +0100
-Subject: [LTP] [PATCH 2/4] Test for CVE-2016-4997 on setsockopt
-Message-ID: <20170323162633.7e49c7ae@linux-v3j5>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Thu, 23 Mar 2017 19:12:34 +0300
+Subject: [LTP] [PATCH v2 2/5] net: apply new usage of netstress tool with
+	'-T' option
+In-Reply-To: <1490285557-18122-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1490285557-18122-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1490285557-18122-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/cve/cve-2016-4997.c | 87 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
- create mode 100644 testcases/cve/cve-2016-4997.c
 
-diff --git a/testcases/cve/cve-2016-4997.c b/testcases/cve/cve-2016-4997.c
-new file mode 100644
-index 000000000..0a68ad307
---- /dev/null
-+++ b/testcases/cve/cve-2016-4997.c
-@@ -0,0 +1,87 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ * Based on repro-compatReleaseEntry.c by NCC group
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/*
-+ * Test for CVE-2016-4997
-+ *
-+ * For a full explanation of how the vulnerability works see:
-+ * https://github.com/nccgroup/TriforceLinuxSyscallFuzzer/tree/master/crash_reports/report_compatIpt
-+ *
-+ * The original vulnerability was present in the 32-bit compatibility system
-+ * call, so the test should be compiled with -m32 and run on a 64-bit kernel.
-+ * For simplicities sake the test requests root privliges instead of creating
-+ * a user namespace.
-+ */
-+
-+#include <sys/types.h>
-+#include <sys/socket.h>
-+#include <netinet/in.h>
-+#include <net/if.h>
-+#include <linux/netfilter_ipv4/ip_tables.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_net.h"
-+
-+
-+#define TOO_SMALL_OFFSET 74
-+#define OFFSET_OVERWRITE 0xFFFF
-+#define NEXT_OFFSET (sizeof(struct ipt_entry)		\
-+		     + sizeof(struct xt_entry_match)	\
-+		     + sizeof(struct xt_entry_target))
-+#define PADDING (OFFSET_OVERWRITE - NEXT_OFFSET)
-+
-+struct payload {
-+	struct ipt_replace repl;
-+	struct ipt_entry ent;
-+	struct xt_entry_match match;
-+	struct xt_entry_target targ;
-+	char padding[PADDING];
-+	struct xt_entry_target targ2;
-+};
-+
-+static void run(void)
-+{
-+	int ret, sock_fd;
-+	struct payload p = { 0 };
-+
-+	sock_fd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, 0);
-+
-+	strncpy(p.match.u.user.name, "icmp", sizeof(p.match.u.user.name));
-+	p.match.u.match_size = OFFSET_OVERWRITE;
-+
-+	p.ent.next_offset = NEXT_OFFSET;
-+	p.ent.target_offset = TOO_SMALL_OFFSET;
-+
-+	p.repl.num_entries = 2;
-+	p.repl.num_counters = 1;
-+	p.repl.size = sizeof(struct payload);
-+	p.repl.valid_hooks = 0;
-+
-+	ret = setsockopt(sock_fd, SOL_IP, IPT_SO_SET_REPLACE,
-+			 &p, sizeof(struct payload));
-+	tst_res(TPASS | TERRNO, "We didn't cause a crash, setsockopt returned %d", ret);
-+	if (sizeof(long) > 4)
-+		tst_res(TCONF,
-+			"The original vulnerability was only present in 32-bit compat mode");
-+}
-+
-+static struct tst_test test = {
-+	.tid = "cve-2016-4997",
-+	.min_kver = "2.6.32",
-+	.test_all = run,
-+	.needs_root = 1,
-+};
+v2: new patch in v2
+
+ testcases/lib/test_net.sh                  |    4 ++--
+ testcases/network/busy_poll/busy_poll03.sh |    2 +-
+ testcases/network/stress/udp/udp_ipsec.sh  |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index e4336d3..ca22083 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -320,7 +320,7 @@ tst_netload()
+ 	local s_opts=
+ 
+ 	OPTIND=0
+-	while getopts :a:H:d:n:N:r:R:b:t:Ufe: opt; do
++	while getopts :a:H:d:n:N:r:R:b:t:T:fe: opt; do
+ 		case "$opt" in
+ 		a) c_num="$OPTARG" ;;
+ 		H) c_opts="${c_opts}-H $OPTARG " ;;
+@@ -331,7 +331,7 @@ tst_netload()
+ 		R) s_replies="$OPTARG" ;;
+ 		b) cs_opts="${cs_opts}-b $OPTARG " ;;
+ 		t) cs_opts="${cs_opts}-t $OPTARG " ;;
+-		U) cs_opts="${cs_opts}-U " ;;
++		T) cs_opts="${cs_opts}-T $OPTARG " ;;
+ 		f) cs_opts="${cs_opts}-f " ;;
+ 
+ 		e) expect_res="$OPTARG" ;;
+diff --git a/testcases/network/busy_poll/busy_poll03.sh b/testcases/network/busy_poll/busy_poll03.sh
+index 4ab93dc..628b1b4 100755
+--- a/testcases/network/busy_poll/busy_poll03.sh
++++ b/testcases/network/busy_poll/busy_poll03.sh
+@@ -49,7 +49,7 @@ trap "tst_brkm TBROK 'test interrupted'" INT
+ for x in 50 0; do
+ 	tst_resm TINFO "set low latency busy poll to $x per socket"
+ 	set_busy_poll $x
+-	tst_netload -H $(tst_ipaddr rhost) -d res_$x -b $x -U
++	tst_netload -H $(tst_ipaddr rhost) -d res_$x -b $x -T udp
+ done
+ 
+ poll_cmp=$(( 100 - ($(cat res_50) * 100) / $(cat res_0) ))
+diff --git a/testcases/network/stress/udp/udp_ipsec.sh b/testcases/network/stress/udp/udp_ipsec.sh
+index 8e047a4..e4b0f52 100755
+--- a/testcases/network/stress/udp/udp_ipsec.sh
++++ b/testcases/network/stress/udp/udp_ipsec.sh
+@@ -38,7 +38,7 @@ do_test()
+ 	IPSEC_SIZE_ARRAY="${IPSEC_SIZE_ARRAY:-100 1000 65000}"
+ 
+ 	for p in $IPSEC_SIZE_ARRAY; do
+-		tst_netload -H $(tst_ipaddr rhost) -U -n $p -N $p \
++		tst_netload -H $(tst_ipaddr rhost) -T udp -n $p -N $p \
+ 			-r $client_requests
+ 	done
+ }
 -- 
-2.12.0
+1.7.1
+
