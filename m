@@ -1,114 +1,33 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Tue, 28 Mar 2017 14:46:26 +0800
-Subject: [LTP] [PATCH] commands/keyctl01: Add new regression test
-In-Reply-To: <20170327134232.GA21272@rei.lan>
-References: <1489576439-15122-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
- <20170327134232.GA21272@rei.lan>
-Message-ID: <58DA06C2.6050703@cn.fujitsu.com>
+From: Andi Kleen <andi@firstfloor.org>
+Date: Mon, 27 Mar 2017 16:54:42 -0700
+Subject: [LTP] Is MADV_HWPOISON supposed to work only on faulted-in
+	pages?
+In-Reply-To: <20170223032342.GA18740@hori1.linux.bs1.fc.nec.co.jp> (Naoya
+ Horiguchi's message of "Thu, 23 Feb 2017 03:23:49 +0000")
+References: <6a445beb-119c-9a9a-0277-07866afe4924@redhat.com>
+ <20170220050016.GA15533@hori1.linux.bs1.fc.nec.co.jp>
+ <20170223032342.GA18740@hori1.linux.bs1.fc.nec.co.jp>
+Message-ID: <87zig6uvgd.fsf@firstfloor.org>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
+Naoya Horiguchi <n-horiguchi@ah.jp.nec.com> writes:
+>
+> I think that what the testcase effectively does is to test whether memory
+> handling on zero pages works or not.
+> And the testcase's failure seems acceptable, because it's simply not-implemented yet.
+> Maybe recovering from error on zero page is possible (because there's no data
+> loss for memory error,) but I'm not sure that code might be simple enough and/or
+> it's worth doing ...
 
-Thanks for your review.
+I doubt it's worth doing, it's just too unlikely that a specific page
+is hit. Memory error handling is all about probabilities.
 
-On 03/27/2017 09:42 PM, Cyril Hrubis wrote:
-> Hi!
->> +	ORIG_KEYSZ=`grep -w "0:" $PATH_KEYSTAT | awk '{print $5}' | \
->> +		cut -d '/' -f1`
-> 
-> This looks too complicated for what it does, we can probably simplify
-> this by something as:
-> 
-> awk -F' +|/' '/0:/ {print $9}' /proc/key-users
->       ^        ^     ^
->       |        |     This prints last number in the line
->       |        This matches lines that contain 0:
->       This sets field separator to any sequence of spaces or single /
-> 
+The test is just broken and should be fixed.
 
-This is way much better than mine, thanks very much!
+mce-test had similar problems at some point, but they were all fixed.
 
-
-awk -F' +|/' '/ 0:/ {print $8}' /proc/key-users
-               ^            ^
-               |            Sorry, but here should be $8 I suppose
-               And here needs a space, to distinguish something like:
-
-    0:     6 5/5 3/200 115/20000
-  100:     3 3/3 3/200 84/20000
-
-> 
->> +	ORIG_MAXKEYSZ=`cat $PATH_KEYQUOTA`
->> +}
->> +
->> +cleanup()
->> +{
->> +	if [ -n "$ORIG_MAXKEYSZ" ]; then
->> +		echo $ORIG_MAXKEYSZ >$PATH_KEYQUOTA
->> +	fi
->> +}
->> +
->> +do_test()
->> +{
->> +	local maxkeysz=$((ORIG_KEYSZ + 100))
->> +
->> +	while true
->> +	do
->> +		echo $maxkeysz >$PATH_KEYQUOTA
->> +
->> +		keyctl request2 user debug:fred negate @t >temp 2>&1
->> +		grep -q -E "quota exceeded" temp
->> +		if [ $? -eq 0 ]; then
->> +			break
->> +		fi
->> +
->> +		local key=`keyctl show | grep -w "debug:fred" | \
->> +			awk '{print $1}'`
-> 
-> Here as well, simple awk '/debug:fred/ {print $1}' should do.
-> 
-
-OK, thanks.
-
->> +		if [ -n "$key" ]; then
->> +			keyctl unlink $key @s >/dev/null
->> +			tst_sleep 100ms
-> 
-> Is this sleep here necessary? For how much time the test takes?
-
-Yes, it is necessary, without the sleep, this test fails to
-reproduce the bug on RHEL7.2GA(buggy kernel), since I found
-that it actually takes some time to free the key.
-
-
-With 100ms sleep, the whole test takes about 2s.
-
-
-Best Regards,
-Guangwen Feng
-
-> 
->> +		fi
->> +
->> +		((maxkeysz -= 4))
->> +	done
->> +
->> +	tst_res TPASS "Bug not reproduced"
->> +}
->> +
->> +tst_run
->> -- 
->> 1.8.4.2
->>
->>
->>
->>
->> -- 
->> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
-
-
+-Andi
