@@ -1,282 +1,45 @@
-From: huangjh <huangjh.jy@cn.fujitsu.com>
-Date: Mon, 27 Mar 2017 17:18:43 +0800
-Subject: [LTP] [PATCH 2/2] syscalls/read01.c: Cleanup && convert to new API.
-In-Reply-To: <1490606323-17168-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-References: <1490606323-17168-1-git-send-email-huangjh.jy@cn.fujitsu.com>
-Message-ID: <1490606323-17168-2-git-send-email-huangjh.jy@cn.fujitsu.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Mon, 27 Mar 2017 14:08:37 +0200
+Subject: [LTP] Is MADV_HWPOISON supposed to work only on faulted-in
+ pages?
+In-Reply-To: <20170227063308.GA14387@hori1.linux.bs1.fc.nec.co.jp>
+References: <6a445beb-119c-9a9a-0277-07866afe4924@redhat.com>
+ <20170220050016.GA15533@hori1.linux.bs1.fc.nec.co.jp>
+ <20170223032342.GA18740@hori1.linux.bs1.fc.nec.co.jp>
+ <1ba376aa-5e7c-915f-35d1-2d4eef0cad88@huawei.com>
+ <20170227012029.GA28934@hori1.linux.bs1.fc.nec.co.jp>
+ <22763879-C335-41E6-8102-2022EED75DAE@cs.rutgers.edu>
+ <20170227063308.GA14387@hori1.linux.bs1.fc.nec.co.jp>
+Message-ID: <20170327140837.502b1296@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: huangjh <huangjh.jy@cn.fujitsu.com>
----
- testcases/kernel/syscalls/read/read01.c | 226 +++++---------------------------
- 1 file changed, 32 insertions(+), 194 deletions(-)
+Hi Naoya,
 
-diff --git a/testcases/kernel/syscalls/read/read01.c b/testcases/kernel/syscalls/read/read01.c
-index 9abfdb8..61770a5 100644
---- a/testcases/kernel/syscalls/read/read01.c
-+++ b/testcases/kernel/syscalls/read/read01.c
-@@ -1,5 +1,6 @@
- /*
-  * Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
-+ * Copyright (c) 2017 Fujitsu Ltd.
-  *
-  * This program is free software; you can redistribute it and/or modify it
-  * under the terms of version 2 of the GNU General Public License as
-@@ -28,217 +29,54 @@
-  * For further information regarding this notice, see:
-  *
-  * http://oss.sgi.com/projects/GenInfo/NoticeExplan/
-- *
-  */
--/* $Id: read01.c,v 1.8 2009/11/02 13:57:17 subrata_modak Exp $ */
--/**********************************************************
-- *
-- *    OS Test - Silicon Graphics, Inc.
-- *
-- *    TEST IDENTIFIER	: read01
-- *
-- *    EXECUTED BY	: anyone
-- *
-- *    TEST TITLE	: Basic test for read(2)
-- *
-- *    PARENT DOCUMENT	: usctpl01
-- *
-- *    TEST CASE TOTAL	: 1
-- *
-- *    WALL CLOCK TIME	: 1
-- *
-- *    CPU TYPES		: ALL
-- *
-- *    AUTHOR		: William Roske
-- *
-- *    CO-PILOT		: Dave Fenner
-- *
-- *    DATE STARTED	: 03/30/92
-- *
-- *    INITIAL RELEASE	: UNICOS 7.0
-- *
-- *    TEST CASES
-- *
-- * 	1.) read(2) returns...(See Description)
-- *
-- *    INPUT SPECIFICATIONS
-- * 	The standard options for system call tests are accepted.
-- *	(See the parse_opts(3) man page).
-- *
-- *    OUTPUT SPECIFICATIONS
-- *$
-- *    DURATION
-- * 	Terminates - with frequency and infinite modes.
-- *
-- *    SIGNALS
-- * 	Uses SIGUSR1 to pause before test if option set.
-- * 	(See the parse_opts(3) man page).
-- *
-- *    RESOURCES
-- * 	None
-- *
-- *    ENVIRONMENTAL NEEDS
-- *      No run-time environmental needs.
-- *
-- *    SPECIAL PROCEDURAL REQUIREMENTS
-- * 	None
-- *
-- *    INTERCASE DEPENDENCIES
-- * 	None
-- *
-- *    DETAILED DESCRIPTION
-- *	This is a Phase I test for the read(2) system call.  It is intended
-- *	to provide a limited exposure of the system call, for now.  It
-- *	should/will be extended when full functional tests are written for
-- *	read(2).
-- *
-- * 	Setup:
-- * 	  Setup signal handling.
-- *	  Pause for SIGUSR1 if option specified.
-- *
-- * 	Test:
-- *	 Loop if the proper options are given.
-- * 	  Execute system call
-- *	  Check return code, if system call failed (return=-1)
-- *		Log the errno and Issue a FAIL message.
-- *	  Otherwise, Issue a PASS message.
-- *
-- * 	Cleanup:
-- * 	  Print errno log and/or timing stats if options given
-- *
-- *
-- *#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#*#**/
- 
--#include <sys/types.h>
--#include <fcntl.h>
--#include <sys/param.h>
- #include <errno.h>
--#include <signal.h>
--#include <string.h>
--#include "test.h"
-+#include "tst_test.h"
- 
--/*
-- * Set READ_BLOCK_SIZE to the block size of the system.
-- */
--#ifdef DEV_BSIZE
--#define READ_BLOCK_SIZE DEV_BSIZE
--#else
--#warning DEV_BSIZE is not defined, defaulting to 512
--#define READ_BLOCK_SIZE 512
--#endif
-+#define SIZE 512
- 
--void setup();
--void cleanup();
-+static int fd;
-+static char buf[SIZE];
- 
--char *TCID = "read01";
--int TST_TOTAL = 1;
--
--char fname[255];
--int fd, i;
--int offset = 0;
--char *s;
--
--int main(int ac, char **av)
-+static void verify_read(void)
- {
--	int lc;
--
--    /***************************************************************
--     * parse standard options
--     ***************************************************************/
--	tst_parse_opts(ac, av, NULL, NULL);
--
--    /***************************************************************
--     * perform global setup for test
--     ***************************************************************/
--	setup();
--
--    /***************************************************************
--     * check looping state if -c option given
--     ***************************************************************/
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--
--		tst_count = 0;
--
--		if (write(fd, s, READ_BLOCK_SIZE) == -1) {
--			tst_brkm(TBROK, cleanup,
--				 "write(%s, %s, %d) Failed, errno=%d : %s",
--				 fname, s, READ_BLOCK_SIZE, errno,
--				 strerror(errno));
--		}
--		offset += READ_BLOCK_SIZE;
--		if (lseek(fd, (long)(offset - READ_BLOCK_SIZE), 0) == -1) {
--			tst_brkm(TBROK, cleanup,
--				 "lseek(%s, %ld, 0) Failed, errno=%d : %s",
--				 fname, (long)(offset - READ_BLOCK_SIZE), errno,
--				 strerror(errno));
--		}
--		/*
--		 * Call read(2)
--		 */
--		TEST(read(fd, s, READ_BLOCK_SIZE));
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
- 
--		/* check return code */
--		if (TEST_RETURN == -1) {
--			tst_resm(TFAIL,
--				 "read(fd, s, READ_BLOCK_SIZE) Failed, errno=%d : %s",
--				 TEST_ERRNO, strerror(TEST_ERRNO));
--		} else {
--			tst_resm(TPASS, "read(pfds) returned %ld",
--				 TEST_RETURN);
--		}
--
--	}
-+	TEST(read(fd, buf, SIZE));
- 
--	cleanup();
--	tst_exit();
-+	if (TEST_RETURN == -1)
-+		tst_res(TFAIL | TTERRNO, "read(2) failed");
-+	else
-+		tst_res(TPASS, "read(2) returned %ld", TEST_RETURN);
- }
- 
--/***************************************************************
-- * setup() - performs all ONE TIME setup for this test.
-- ***************************************************************/
--void setup(void)
-+static void setup(void)
- {
-+	int i;
- 
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--
--	tst_tmpdir();
--
--	if ((s = malloc(READ_BLOCK_SIZE)) == NULL) {
--		tst_brkm(TBROK, cleanup,
--			 "malloc(%d) Failed, errno=%d : %s",
--			 READ_BLOCK_SIZE, errno, strerror(errno));
--	}
--	(void)memset(s, '*', READ_BLOCK_SIZE);
--	for (i = 0; i < READ_BLOCK_SIZE; i++) {
--		if (s[i] != '*') {
--			tst_brkm(TBROK, cleanup,
--				 "File Data pattern not setup correctly : expected * at s[%d] : found %c",
--				 i, s[i]);
-+	memset(buf, '*', SIZE);
-+	for (i = 0; i < SIZE; i++) {
-+		if (buf[i] != '*') {
-+			tst_brk(TBROK, "buf setup failed: "
-+				"expected *@buf[%d], found %c", i, buf[i]);
- 		}
- 	}
--	sprintf(fname, "./tfile_%d", getpid());
--	if ((fd = open(fname, O_RDWR | O_CREAT, 0700)) == -1) {
--		tst_brkm(TBROK, cleanup,
--			 "open(%s, O_RDWR|O_CREAT,0700) Failed, errno=%d : %s",
--			 fname, errno, strerror(errno));
--	}
- 
-+	fd = SAFE_OPEN("testfile", O_RDWR | O_CREAT, 0700);
-+	SAFE_WRITE(1, fd, buf, SIZE);
- }
- 
--/***************************************************************
-- * cleanup() - performs all ONE TIME cleanup for this test at
-- *		completion or premature exit.
-- ***************************************************************/
--void cleanup(void)
-+static void cleanup(void)
- {
--
--	if (close(fd) == -1) {
--		tst_resm(TWARN, "close(%s) Failed, errno=%d : %s",
--			 fname, errno, strerror(errno));
--	}
--
--	tst_rmdir();
--
-+	if (fd > 0)
-+		SAFE_CLOSE(fd);
- }
-+
-+static struct tst_test test = {
-+	.tid = "read01",
-+	.test_all = verify_read,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_tmpdir = 1,
-+};
--- 
-1.8.3.1
+On Mon, 27 Feb 2017 06:33:09 +0000
+"Naoya Horiguchi" <n-horiguchi@ah.jp.nec.com> wrote:
 
+> 
+> > I expected either madvise should fail because HWPOISON does not work on
+> > non-existing physical pages or madvise_hwpoison() should populate
+> > some physical pages for that virtual address range and poison them.  
+> 
+> The latter is the current behavior. It just comes from get_user_pages_fast()
+> which not only finds the page and takes refcount, but also touch the page.
 
+To clarify, the current behaviour seems to be the following:
 
+1st madvise_hwpoison() -> EBUSY,
+2nd madvise_hwpoison() -> SUCCESS, but no SIGBUS when the memory is accessed.
+
+So it touches the zero page and madvise succeeds on the second attempt because
+it is now mapped, but still the memory is not poisoned.
+
+This means that when I modify the LTP test to accept EBUSY, it still fails if
+a user runs it twice. This is OK, but I will need to document it in the test.
+
+Thank you,
+Richard.
