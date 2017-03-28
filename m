@@ -1,72 +1,39 @@
-From: Steve Ellcey <sellcey@caviumnetworks.com>
-Date: Tue, 28 Mar 2017 08:42:23 -0700
-Subject: [LTP] Failing tests (aio01/aio02) show up in log file but not
- failed list
-In-Reply-To: <20170328122708.GE1045@rei>
-References: <201703272218.v2RMIp4R006418@sellcey-dt.caveonetworks.com>
- <20170328122708.GE1045@rei>
-Message-ID: <1490715743.19074.106.camel@caviumnetworks.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Tue, 28 Mar 2017 17:46:47 +0200
+Subject: [LTP] [RFC] [PATCH] lib32: Add support for linking 32bit
+ programs on 64bit
+In-Reply-To: <20170328153347.GJ1045@rei>
+References: <20170328100114.29730-1-chrubis@suse.cz>
+ <20170328165536.741d14e5@linux-v3j5> <20170328153347.GJ1045@rei>
+Message-ID: <20170328154647.GK1045@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Tue, 2017-03-28 at 14:27 +0200, Cyril Hrubis wrote:
-> Hi!
-> > 
-> > I noticed an odd thing when running LTP.  There are two tests that
-> > show up as FAIL in my results/LTP*.log file (aio01 and aio02) but
-> > are
-> > not listed in the LTP*.failed list in the output directory.
-> Can you post a snippet of the log that shows the failure?
+Hi!
+> > I added "cve-2016-4997: CFLAGS += -m32" and it still tried to look in
+> > "../../lib"
 > 
-> I glanced over the code, but there does not seem to be any obvious
-> mistakes.
+> Hmm, that is not easy to fix, since this is target specific variable and
+> we simply do not see the -m32 in the CFLAGS in the condition below.
 > 
-> > 
-> > Does anyone know why these tests don't get listed?  All my other
-> > failures show up in both places.
-> Without further debugging, no idea.
+> We would have to set the LDFLAGS per target and I'm not sure if we can
+> easily do that.
+> 
+> > > +ifeq ($(filter -m32,$(CFLAGS)),)
+> > >  LDFLAGS				+= -L$(top_builddir)/lib
+> > > +else
+> > > +LDFLAGS				+= -L$(top_builddir)/lib32
+> > > +endif
 
-Here is the output for aio01.  Is there an aio01 command that I am
-missing?  It looks like this is something that should have been built
-when I built LTP but I don't see it in the install directory and I
- don't see any reference to it in my build output.  I do see aio01.c
-and a Makefile for it in the source tree.
+Try with this condition instead of the above ifeqs:
 
-Steve Ellcey
+$(MAKE_TARGETS): LDFLAGS += -L$(top_builddir)/lib$(subst -m,,$(filter -m32,$(CFLAGS)))
 
+It's a bit hairy but seems to work.
 
-
-<<<execution_status>>>
-initiation_status="ok"
-duration=1983 termination_type=exited termination_id=0 corefile=no
-cutime=1646326 cstime=241114
-<<<test_end>>>
-<<<test_start>>>
-tag=aio01 stime=1490643879
-cmdline="aio01"
-contacts=""
-analysis=exit
-<<<test_output>>>
-<<<execution_status>>>
-initiation_status="pan(4455): execvp of 'aio01' (tag aio01)
-failed.  errno:2  No such file or directory"duration=0
-termination_type=exited termination_id=2 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-<<<test_start>>>
-tag=aio02 stime=1490643879
-cmdline="aio_tio"
-contacts=""
-analysis=exit
-<<<test_output>>>
-<<<execution_status>>>
-initiation_status="pan(4455): execvp of 'aio_tio' (tag aio02)
-failed.  errno:2  No such file or directory"
-duration=0 termination_type=exited termination_id=2 corefile=no
-cutime=0 cstime=0
-<<<test_end>>>
-
-
+-- 
+Cyril Hrubis
+chrubis@suse.cz
