@@ -1,9 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 Mar 2017 15:37:08 +0200
-Subject: [LTP] Out-of-tree build missing some data files.
-In-Reply-To: <BN6PR11MB2051C2F128C4DC206D611144CD3F0@BN6PR11MB2051.namprd11.prod.outlook.com>
-References: <BN6PR11MB2051C2F128C4DC206D611144CD3F0@BN6PR11MB2051.namprd11.prod.outlook.com>
-Message-ID: <20170328133708.GF1045@rei>
+Date: Tue, 28 Mar 2017 15:41:52 +0200
+Subject: [LTP] memcg_usage_in_bytes sometimes failed
+In-Reply-To: <260795063.109541.1490150682697@mail.yahoo.com>
+References: <260795063.109541.1490150682697.ref@mail.yahoo.com>
+ <260795063.109541.1490150682697@mail.yahoo.com>
+Message-ID: <20170328134152.GG1045@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,25 +12,14 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:50 ext4-ffsb/
-> drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:48 file01/
-> drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:50 ima_policy/
-> drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:48 ldd01/
-> drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:49 mc_member/
-> drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:48 nm01/
-> drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:49 rpc01/
-> drwxr-xr-x 3 sge sdivmisc   80 Mar 22 12:50 stress_floppy/
-> drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:48 unzip01/
-> 
-> but I don't see the datafiles for ld and ar. In the case of ld, the data files are *.c files which I believe are supposed to be installed uncompiled. For ar, the data files are *.in which also need to be installed as is.
-> 
-> This works for an in-tree build. Bug?
+> I rarely meet this issue on embedded system, armv7l kernel 3.14, but not sure what's going wrong. It can pass on some boards, but fail sometimes on others with same config.
+> Is there any aditional preparation to make this case always pass? Have anyone experienced on this ?
+> Test: memcg_usage_in_bytes Testparm: memcg_usage_in_bytes_test.shmemcg_usage_in_bytes_test 1 TINFO: Starting test 1memcg_usage_in_bytes_test 1 TINFO: Running memcg_process --mmap-anon -s 4194304memcg_usage_in_bytes_test 1 TINFO: Warming up pid: 886memcg_usage_in_bytes_test 1 TINFO: Process is still here after warm up: 886memcg_usage_in_bytes_test 1 TPASS: memory.usage_in_bytes is 4194304 as expected/opt/ltp/testcases/bin/memcg_lib.sh: line 477: echo: write error: Device or resource busymemcg_usage_in_bytes_test 2 TINFO: restore ??/dev/memcg/memory.use_hierarchy failedmemcg_usage_in_bytes_test 2 TINFO: Starting test 2memcg_usage_in_bytes_test 2 TINFO: Running memcg_process --mmap-anon -s 4194304memcg_usage_in_bytes_test 2 TINFO: Warming up pid: 906memcg_usage_in_bytes_test 2 TINFO: Process is still here after warm up: 906memcg_usage_in_bytes_test 2 TFAIL: memory.memsw.usage_in_bytes is 4325376, 4194304 expectedResult: 1
 
-Quite likely this is a problem with the $(wildcard *.c) and
-$(wildcard *.in) expressions since these are missing $(abs_srcdir).
+First of all, which LTP version are you using?
 
-Does this work if you change these to $(wildcard $(abs_srcdir)/*.in) and
-$(wildcard $(abs_srcdir)/*c) in the ld and ar datafiles/Makefile?
+Also please resend the log so that the text is not on a single line.
+It's nearly impossible to read it as it is.
 
 -- 
 Cyril Hrubis
