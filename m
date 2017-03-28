@@ -1,39 +1,58 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 Mar 2017 17:46:47 +0200
-Subject: [LTP] [RFC] [PATCH] lib32: Add support for linking 32bit
- programs on 64bit
-In-Reply-To: <20170328153347.GJ1045@rei>
-References: <20170328100114.29730-1-chrubis@suse.cz>
- <20170328165536.741d14e5@linux-v3j5> <20170328153347.GJ1045@rei>
-Message-ID: <20170328154647.GK1045@rei>
+From: Steve East <sge@cray.com>
+Date: Tue, 28 Mar 2017 18:03:06 +0000
+Subject: [LTP] Out-of-tree build missing some data files.
+In-Reply-To: <20170328133708.GF1045@rei>
+References: <BN6PR11MB2051C2F128C4DC206D611144CD3F0@BN6PR11MB2051.namprd11.prod.outlook.com>
+ <20170328133708.GF1045@rei>
+Message-ID: <BN6PR11MB20517B46C814B90AB73E3D43CD320@BN6PR11MB2051.namprd11.prod.outlook.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > I added "cve-2016-4997: CFLAGS += -m32" and it still tried to look in
-> > "../../lib"
+> -----Original Message-----
+> From: Cyril Hrubis [mailto:chrubis@suse.cz]
+> Sent: Tuesday, March 28, 2017 8:37 AM
+> To: Steve East <sge@cray.com>
+> Cc: ltp@lists.linux.it
+> Subject: Re: [LTP] Out-of-tree build missing some data files.
 > 
-> Hmm, that is not easy to fix, since this is target specific variable and
-> we simply do not see the -m32 in the CFLAGS in the condition below.
+> Hi!
+> > drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:50 ext4-ffsb/
+> > drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:48 file01/
+> > drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:50 ima_policy/
+> > drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:48 ldd01/
+> > drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:49 mc_member/
+> > drwxr-xr-x 2 sge sdivmisc 1024 Mar 22 12:48 nm01/
+> > drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:49 rpc01/
+> > drwxr-xr-x 3 sge sdivmisc   80 Mar 22 12:50 stress_floppy/
+> > drwxr-xr-x 2 sge sdivmisc   80 Mar 22 12:48 unzip01/
+> >
+> > but I don't see the datafiles for ld and ar. In the case of ld, the data files are
+> *.c files which I believe are supposed to be installed uncompiled. For ar, the
+> data files are *.in which also need to be installed as is.
+> >
+> > This works for an in-tree build. Bug?
 > 
-> We would have to set the LDFLAGS per target and I'm not sure if we can
-> easily do that.
+> Quite likely this is a problem with the $(wildcard *.c) and
+> $(wildcard *.in) expressions since these are missing $(abs_srcdir).
 > 
-> > > +ifeq ($(filter -m32,$(CFLAGS)),)
-> > >  LDFLAGS				+= -L$(top_builddir)/lib
-> > > +else
-> > > +LDFLAGS				+= -L$(top_builddir)/lib32
-> > > +endif
+> Does this work if you change these to $(wildcard $(abs_srcdir)/*.in) and
+> $(wildcard $(abs_srcdir)/*c) in the ld and ar datafiles/Makefile?
 
-Try with this condition instead of the above ifeqs:
+Unfortunately, this doesn't seem to have had any effect. Changes were...
 
-$(MAKE_TARGETS): LDFLAGS += -L$(top_builddir)/lib$(subst -m,,$(filter -m32,$(CFLAGS)))
+-INSTALL_TARGETS                := $(wildcard file*)
++INSTALL_TARGETS                := $(wildcard $(abs_srcdir)/*.in)
 
-It's a bit hairy but seems to work.
+-INSTALL_TARGETS                := $(wildcard *.c)
++INSTALL_TARGETS                := $(wildcard $(abs_srcdir)/*.c)
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Steve.
+
+
+
+Steve.
+
+
