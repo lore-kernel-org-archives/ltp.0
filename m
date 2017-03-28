@@ -1,54 +1,72 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 Mar 2017 17:33:47 +0200
-Subject: [LTP] [RFC] [PATCH] lib32: Add support for linking 32bit
- programs on 64bit
-In-Reply-To: <20170328165536.741d14e5@linux-v3j5>
-References: <20170328100114.29730-1-chrubis@suse.cz>
- <20170328165536.741d14e5@linux-v3j5>
-Message-ID: <20170328153347.GJ1045@rei>
+From: Steve Ellcey <sellcey@caviumnetworks.com>
+Date: Tue, 28 Mar 2017 08:42:23 -0700
+Subject: [LTP] Failing tests (aio01/aio02) show up in log file but not
+ failed list
+In-Reply-To: <20170328122708.GE1045@rei>
+References: <201703272218.v2RMIp4R006418@sellcey-dt.caveonetworks.com>
+ <20170328122708.GE1045@rei>
+Message-ID: <1490715743.19074.106.camel@caviumnetworks.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> > * The directory lib32 contains symlinks of minimal set of sources
-> >   needed to link newlib testcase + Makefile.
-> 
-> Apparently missing safe_socket which is required for cve-2016-4997.c, but that
-> is easy to fix I suppose.
-
-That is just one symlink away...
-
-> > * The testcases.mk builds 32bit library as well if
-> >   32bit compiler was installed (-m32 configure test was succesful)
+On Tue, 2017-03-28 at 14:27 +0200, Cyril Hrubis wrote:
+> Hi!
 > > 
-> > * And finally the env_post.mk switches between lib and lib32 depeding
-> >   on if -m32 was passed in the CFLAGS
+> > I noticed an odd thing when running LTP.  There are two tests that
+> > show up as FAIL in my results/LTP*.log file (aio01 and aio02) but
+> > are
+> > not listed in the LTP*.failed list in the output directory.
+> Can you post a snippet of the log that shows the failure?
 > 
-> I added "cve-2016-4997: CFLAGS += -m32" and it still tried to look in
-> "../../lib"
-
-Hmm, that is not easy to fix, since this is target specific variable and
-we simply do not see the -m32 in the CFLAGS in the condition below.
-
-We would have to set the LDFLAGS per target and I'm not sure if we can
-easily do that.
-
-> > +ifeq ($(filter -m32,$(CFLAGS)),)
-> >  LDFLAGS				+= -L$(top_builddir)/lib
-> > +else
-> > +LDFLAGS				+= -L$(top_builddir)/lib32
-> > +endif
+> I glanced over the code, but there does not seem to be any obvious
+> mistakes.
 > 
-> I was able to remove the if statement (i.e. put both dirs on the search path)
-> and the 64-bit tests still compiled fine and so did the 32-bit test, although
-> maybe not all linkers can be trusted to ignore libs with the wrong number of
-> bits.
+> > 
+> > Does anyone know why these tests don't get listed?  All my other
+> > failures show up in both places.
+> Without further debugging, no idea.
 
-While this works mostly fine it produces warnings I would like to avoid.
+Here is the output for aio01.  Is there an aio01 command that I am
+missing?  It looks like this is something that should have been built
+when I built LTP but I don't see it in the install directory and I
+ don't see any reference to it in my build output.  I do see aio01.c
+and a Makefile for it in the source tree.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Steve Ellcey
+
+
+
+<<<execution_status>>>
+initiation_status="ok"
+duration=1983 termination_type=exited termination_id=0 corefile=no
+cutime=1646326 cstime=241114
+<<<test_end>>>
+<<<test_start>>>
+tag=aio01 stime=1490643879
+cmdline="aio01"
+contacts=""
+analysis=exit
+<<<test_output>>>
+<<<execution_status>>>
+initiation_status="pan(4455): execvp of 'aio01' (tag aio01)
+failed.  errno:2  No such file or directory"duration=0
+termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+<<<test_start>>>
+tag=aio02 stime=1490643879
+cmdline="aio_tio"
+contacts=""
+analysis=exit
+<<<test_output>>>
+<<<execution_status>>>
+initiation_status="pan(4455): execvp of 'aio_tio' (tag aio02)
+failed.  errno:2  No such file or directory"
+duration=0 termination_type=exited termination_id=2 corefile=no
+cutime=0 cstime=0
+<<<test_end>>>
+
+
