@@ -1,7 +1,7 @@
 From: Li Wang <liwang@redhat.com>
-Date: Tue, 28 Mar 2017 11:22:37 +0800
-Subject: [LTP] [RFC PATCH 11/13] mem/cpuset: convert to new API
-In-Reply-To: <20170328032239.11917-11-liwang@redhat.com>
+Date: Tue, 28 Mar 2017 11:22:38 +0800
+Subject: [LTP] [RFC PATCH 12/13] mem/swapping: convert to new API
+In-Reply-To: <20170328032239.11917-12-liwang@redhat.com>
 References: <20170328032239.11917-1-liwang@redhat.com>
  <20170328032239.11917-2-liwang@redhat.com>
  <20170328032239.11917-3-liwang@redhat.com>
@@ -13,7 +13,8 @@ References: <20170328032239.11917-1-liwang@redhat.com>
  <20170328032239.11917-9-liwang@redhat.com>
  <20170328032239.11917-10-liwang@redhat.com>
  <20170328032239.11917-11-liwang@redhat.com>
-Message-ID: <20170328032239.11917-12-liwang@redhat.com>
+ <20170328032239.11917-12-liwang@redhat.com>
+Message-ID: <20170328032239.11917-13-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,44 +23,29 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/mem/cpuset/cpuset01.c | 155 ++++++++++++---------------------
- 1 file changed, 58 insertions(+), 97 deletions(-)
+ testcases/kernel/mem/swapping/swapping01.c | 94 ++++++++++--------------------
+ 1 file changed, 32 insertions(+), 62 deletions(-)
 
-diff --git a/testcases/kernel/mem/cpuset/cpuset01.c b/testcases/kernel/mem/cpuset/cpuset01.c
-index 558420f..80c2112 100644
---- a/testcases/kernel/mem/cpuset/cpuset01.c
-+++ b/testcases/kernel/mem/cpuset/cpuset01.c
-@@ -1,4 +1,16 @@
+diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
+index 171edb3..9d9e11d 100644
+--- a/testcases/kernel/mem/swapping/swapping01.c
++++ b/testcases/kernel/mem/swapping/swapping01.c
+@@ -1,24 +1,15 @@
  /*
-+ * Copyright (C) 2010-2017  Red Hat, Inc.
-+ *
+- * Copyright (C) 2012  Red Hat, Inc.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
++ * Copyright (C) 2012-2017  Red Hat, Inc.
+  *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 + * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
 + * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-  * Out Of Memory when changing cpuset's mems on NUMA. There was a
-  * problem reported upstream that the allocator may see an empty
-  * nodemask when changing cpuset's mems.
-@@ -6,55 +18,18 @@
-  * http://lkml.org/lkml/2010/5/4/79
-  * http://lkml.org/lkml/2010/5/4/80
-  * This test is based on the reproducers for the above issue.
-- *
-- * Copyright (C) 2010  Red Hat, Inc.
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of version 2 of the GNU General Public
-- * License as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
+  *
 - * Further, this software is distributed without any warranty that it
 - * is free of the rightful claim of any third person regarding
 - * infringement or the like.  Any license provided herein, whether
@@ -71,234 +57,156 @@ index 558420f..80c2112 100644
 - * along with this program; if not, write the Free Software
 - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 - * 02110-1301, USA.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
   */
-+
- #include "config.h"
--#include <sys/types.h>
--#include <sys/mman.h>
--#include <sys/mount.h>
--#include <sys/stat.h>
-+#include <stdio.h>
- #include <sys/wait.h>
--#include <ctype.h>
--#include <err.h>
--#include <errno.h>
--#include <fcntl.h>
--#include <math.h>
- #if HAVE_NUMAIF_H
- #include <numaif.h>
- #endif
--#include <signal.h>
--#include <stdarg.h>
--#include <stdio.h>
--#include <stdlib.h>
--#include <unistd.h>
- 
+ /*
+  * swapping01 - first time swap use results in heavy swapping
+@@ -53,12 +44,8 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
 -#include "test.h"
  #include "mem.h"
- #include "numa_helper.h"
  
--char *TCID = "cpuset01";
+-char *TCID = "swapping01";
 -int TST_TOTAL = 1;
 -
- #if HAVE_NUMA_H && HAVE_LINUX_MEMPOLICY_H && HAVE_NUMAIF_H \
- 	&& HAVE_MPOL_CONSTANTS
- volatile int end;
-@@ -62,32 +37,13 @@ static int *nodes;
- static int nnodes;
- static long ncpus;
- 
--static void testcpuset(void);
- static void sighandler(int signo LTP_ATTRIBUTE_UNUSED);
- static int mem_hog(void);
- static int mem_hog_cpuset(int ntasks);
- static long count_cpu(void);
+ /* allow swapping 1 * phy_mem in maximum */
+ #define COE_DELTA       1
+ /* will try to alloc 1.3 * phy_mem */
+@@ -74,41 +61,29 @@ static long mem_over;
+ static long mem_over_max;
+ static pid_t pid;
  
 -int main(int argc, char *argv[])
--{
++static void test_swapping(void)
+ {
+-	int lc;
 -
 -	tst_parse_opts(argc, argv, NULL, NULL);
 -
--	ncpus = count_cpu();
--	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
--		tst_brkm(TBROK | TERRNO, NULL, "get_allowed_nodes_arr");
--	if (nnodes <= 1)
--		tst_brkm(TCONF, NULL, "requires a NUMA system.");
--
--	setup();
--	testcpuset();
--	cleanup();
--	tst_exit();
--}
--
--static void testcpuset(void)
-+static void test_cpuset(void)
- {
--	int lc;
- 	int child, i, status;
- 	unsigned long nmask[MAXNODES / BITS_PER_LONG] = { 0 };
- 	char mems[BUFSIZ], buf[BUFSIZ];
-@@ -96,11 +52,11 @@ static void testcpuset(void)
- 	write_cpuset_files(CPATH_NEW, "cpus", buf);
- 	read_cpuset_files(CPATH, "mems", mems);
- 	write_cpuset_files(CPATH_NEW, "mems", mems);
--	SAFE_FILE_PRINTF(cleanup, CPATH_NEW "/tasks", "%d", getpid());
-+	SAFE_FILE_PRINTF(CPATH_NEW "/tasks", "%d", getpid());
+ #if __WORDSIZE == 32
+-	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
++	tst_brk(TCONF, "test is not designed for 32-bit system.");
+ #endif
  
- 	switch (child = fork()) {
- 	case -1:
--		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+		tst_brk(TBROK | TERRNO, "fork");
- 	case 0:
- 		for (i = 0; i < nnodes; i++) {
- 			if (nodes[i] >= MAXNODES)
-@@ -108,37 +64,36 @@ static void testcpuset(void)
- 			set_node(nmask, nodes[i]);
- 		}
- 		if (set_mempolicy(MPOL_BIND, nmask, MAXNODES) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "set_mempolicy");
-+			tst_brk(TBROK | TERRNO, "set_mempolicy");
- 		exit(mem_hog_cpuset(ncpus > 1 ? ncpus : 1));
- 	}
+-	setup();
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
--		snprintf(buf, BUFSIZ, "%d", nodes[0]);
--		write_cpuset_files(CPATH_NEW, "mems", buf);
--		snprintf(buf, BUFSIZ, "%d", nodes[1]);
--		write_cpuset_files(CPATH_NEW, "mems", buf);
--	}
-+
-+	snprintf(buf, BUFSIZ, "%d", nodes[0]);
-+	write_cpuset_files(CPATH_NEW, "mems", buf);
-+	snprintf(buf, BUFSIZ, "%d", nodes[1]);
-+	write_cpuset_files(CPATH_NEW, "mems", buf);
+-
+-		init_meminfo();
++	init_meminfo();
  
- 	if (waitpid(child, &status, WUNTRACED | WCONTINUED) == -1)
+-		switch (pid = fork()) {
++	switch (pid = fork()) {
+ 		case -1:
+-			tst_brkm(TBROK | TERRNO, cleanup, "fork");
++			tst_brk(TBROK | TERRNO, "fork");
+ 		case 0:
+ 			do_alloc();
+ 			exit(0);
+ 		default:
+ 			check_swapping();
+-		}
+ 	}
+-	cleanup();
+-	tst_exit();
+ }
+ 
+ static void init_meminfo(void)
+ {
+ 	swap_free_init = read_meminfo("SwapFree:");
+-	if (FILE_LINES_SCANF(cleanup, "/proc/meminfo", "MemAvailable: %ld",
++	if (FILE_LINES_SCANF("/proc/meminfo", "MemAvailable: %ld",
+ 		&mem_available_init)) {
+ 		mem_available_init = read_meminfo("MemFree:")
+ 			+ read_meminfo("Cached:");
+@@ -118,10 +93,10 @@ static void init_meminfo(void)
+ 
+ 	/* at least 10MB available physical memory needed */
+ 	if (mem_available_init < 10240)
+-		tst_brkm(TCONF, cleanup, "Not enough available mem to test.");
++		tst_brk(TCONF, "Not enough available mem to test.");
+ 
+ 	if (swap_free_init < mem_over_max)
+-		tst_brkm(TCONF, cleanup, "Not enough swap space to test.");
++		tst_brk(TCONF, "Not enough swap space to test.");
+ }
+ 
+ static void do_alloc(void)
+@@ -129,17 +104,17 @@ static void do_alloc(void)
+ 	long mem_count;
+ 	void *s;
+ 
+-	tst_resm(TINFO, "available physical memory: %ld MB",
++	tst_res(TINFO, "available physical memory: %ld MB",
+ 		mem_available_init / 1024);
+ 	mem_count = mem_available_init + mem_over;
+-	tst_resm(TINFO, "try to allocate: %ld MB", mem_count / 1024);
++	tst_res(TINFO, "try to allocate: %ld MB", mem_count / 1024);
+ 	s = malloc(mem_count * 1024);
+ 	if (s == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
++		tst_brk(TBROK | TERRNO, "malloc");
+ 	memset(s, 1, mem_count * 1024);
+-	tst_resm(TINFO, "memory allocated: %ld MB", mem_count / 1024);
++	tst_res(TINFO, "memory allocated: %ld MB", mem_count / 1024);
+ 	if (raise(SIGSTOP) == -1)
+-		tst_brkm(TBROK | TERRNO, tst_exit, "kill");
++		tst_brk(TBROK | TERRNO, "kill");
+ 	free(s);
+ }
+ 
+@@ -150,9 +125,9 @@ static void check_swapping(void)
+ 
+ 	/* wait child stop */
+ 	if (waitpid(pid, &status, WUNTRACED) == -1)
 -		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
--	if (WEXITSTATUS(status) != 0)
--		tst_resm(TFAIL, "child exit status is %d", WEXITSTATUS(status));
 +		tst_brk(TBROK | TERRNO, "waitpid");
-+	if (WEXITSTATUS(status) != 0) {
-+		tst_res(TFAIL, "child exit status is %d", WEXITSTATUS(status));
-+		return;
-+	}
-+
-+	tst_res(TPASS, "cpuset test pass");
+ 	if (!WIFSTOPPED(status))
+-		tst_brkm(TBROK, cleanup, "child was not stopped.");
++		tst_brk(TBROK, "child was not stopped.");
+ 
+ 	/* Still occupying memory, loop for a while */
+ 	i = 0;
+@@ -169,25 +144,20 @@ static void check_swapping(void)
+ 	swapped = swap_free_init - swap_free_now;
+ 	if (swapped > mem_over_max) {
+ 		kill(pid, SIGCONT);
+-		tst_brkm(TFAIL, cleanup, "heavy swapping detected: "
++		tst_brk(TFAIL, "heavy swapping detected: "
+ 				"%ld MB swapped.", swapped / 1024);
+ 	}
+ 
+-	tst_resm(TPASS, "no heavy swapping detected, %ld MB swapped.",
++	tst_res(TPASS, "no heavy swapping detected, %ld MB swapped.",
+ 		 swapped / 1024);
+ 	kill(pid, SIGCONT);
+ 	/* wait child exit */
+ 	if (waitpid(pid, &status, 0) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
++		tst_brk(TBROK | TERRNO, "waitpid");
  }
  
 -void setup(void)
-+static void setup(void)
- {
--	tst_require_root();
--
--	if (tst_kvercmp(2, 6, 32) < 0)
--		tst_brkm(TCONF, NULL, "2.6.32 or greater kernel required");
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
--
- 	mount_mem("cpuset", "cpuset", NULL, CPATH, CPATH_NEW);
-+	ncpus = count_cpu();
-+	if (get_allowed_nodes_arr(NH_MEMS | NH_CPUS, &nnodes, &nodes) < 0)
-+		tst_brk(TBROK | TERRNO, "get_allowed_nodes_arr");
-+	if (nnodes <= 1)
-+		tst_brk(TCONF, "requires a NUMA system.");
- }
- 
--void cleanup(void)
-+static void cleanup(void)
- {
- 	umount_mem(CPATH, CPATH_NEW);
- }
-@@ -160,7 +115,7 @@ static int mem_hog(void)
- 			    MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
- 		if (addr == MAP_FAILED) {
- 			ret = 1;
--			tst_resm(TFAIL | TERRNO, "mmap");
-+			tst_res(TFAIL | TERRNO, "mmap");
- 			break;
- 		}
- 		memset(addr, 0xF7, pagesize * 10);
-@@ -171,26 +126,26 @@ static int mem_hog(void)
- 
- static int mem_hog_cpuset(int ntasks)
- {
--	int i, lc, status, ret = 0;
-+	int i, status, ret = 0;
- 	struct sigaction sa;
- 	pid_t *pids;
- 
- 	if (ntasks <= 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "ntasks is small.");
-+		tst_brk(TBROK | TERRNO, "ntasks is small.");
- 	sa.sa_handler = sighandler;
- 	if (sigemptyset(&sa.sa_mask) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "sigemptyset");
-+		tst_brk(TBROK | TERRNO, "sigemptyset");
- 	sa.sa_flags = 0;
- 	if (sigaction(SIGUSR1, &sa, NULL) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "sigaction");
-+		tst_brk(TBROK | TERRNO, "sigaction");
- 
- 	pids = malloc(sizeof(pid_t) * ntasks);
- 	if (pids == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
-+		tst_brk(TBROK | TERRNO, "malloc");
- 	for (i = 0; i < ntasks; i++) {
- 		switch (pids[i] = fork()) {
- 		case -1:
--			tst_resm(TFAIL | TERRNO, "fork %d", pids[i]);
-+			tst_res(TFAIL | TERRNO, "fork %d", pids[i]);
- 			ret = 1;
- 			break;
- 		case 0:
-@@ -200,22 +155,22 @@ static int mem_hog_cpuset(int ntasks)
- 			break;
- 		}
- 	}
--	for (lc = 0; TEST_LOOPING(lc); lc++) ;
-+
- 	while (i--) {
- 		if (kill(pids[i], SIGUSR1) == -1) {
--			tst_resm(TFAIL | TERRNO, "kill %d", pids[i]);
-+			tst_res(TFAIL | TERRNO, "kill %d", pids[i]);
- 			ret = 1;
- 		}
- 	}
- 	while (waitpid(-1, &status, WUNTRACED | WCONTINUED) > 0) {
- 		if (WIFEXITED(status)) {
- 			if (WEXITSTATUS(status) != 0) {
--				tst_resm(TFAIL, "child exit status is %d",
-+				tst_res(TFAIL, "child exit status is %d",
- 					 WEXITSTATUS(status));
- 				ret = 1;
- 			}
- 		} else if (WIFSIGNALED(status)) {
--			tst_resm(TFAIL, "child caught signal %d",
-+			tst_res(TFAIL, "child caught signal %d",
- 				 WTERMSIG(status));
- 			ret = 1;
- 		}
-@@ -233,9 +188,15 @@ static long count_cpu(void)
- 	return ncpus;
- }
- 
-+static struct tst_test test = {
-+	.tid = "cpuset01",
-+	.needs_root = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = test_cpuset,
-+	.min_kver = "2.6.32",
-+};
-+
- #else /* no NUMA */
--int main(void)
 -{
--	tst_brkm(TCONF, NULL, "no NUMA development packages installed.");
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-
+-	TEST_PAUSE;
 -}
-+	TST_TEST_TCONF("no NUMA development packages installed.");
- #endif
+-
+-void cleanup(void)
+-{
+-}
++static struct tst_test test = {
++	.tid = "swapping01",
++	.needs_root = 1,
++	.test_all = test_swapping,
++};
 -- 
 2.9.3
 
