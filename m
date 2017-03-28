@@ -1,13 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Tue, 28 Mar 2017 10:25:06 +0200
-Subject: [LTP] Is MADV_HWPOISON supposed to work only on faulted-in
-	pages?
-In-Reply-To: <87zig6uvgd.fsf@firstfloor.org>
-References: <6a445beb-119c-9a9a-0277-07866afe4924@redhat.com>
- <20170220050016.GA15533@hori1.linux.bs1.fc.nec.co.jp>
- <20170223032342.GA18740@hori1.linux.bs1.fc.nec.co.jp>
- <87zig6uvgd.fsf@firstfloor.org>
-Message-ID: <20170328082506.GA30388@rei>
+Date: Tue, 28 Mar 2017 10:27:40 +0200
+Subject: [LTP] [PATCH 2/4] Test for CVE-2016-4997 on setsockopt
+In-Reply-To: <20170327180812.37a590ea@linux-v3j5>
+References: <20170323162633.7e49c7ae@linux-v3j5>
+ <20170327153439.GD21272@rei.lan>
+ <20170327180812.37a590ea@linux-v3j5>
+Message-ID: <20170328082740.GA1045@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -15,30 +13,26 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > I think that what the testcase effectively does is to test whether memory
-> > handling on zero pages works or not.
-> > And the testcase's failure seems acceptable, because it's simply not-implemented yet.
-> > Maybe recovering from error on zero page is possible (because there's no data
-> > loss for memory error,) but I'm not sure that code might be simple enough and/or
-> > it's worth doing ...
+> > > +static struct tst_test test = {
+> > > +	.tid = "cve-2016-4997",
+> > > +	.min_kver = "2.6.32",
+> > > +	.test_all = run,
+> > > +	.needs_root = 1,
+> > > +};  
+> > 
+> > I also wonder if we should compile the test with -m32 by default, we
+> > whould have to add a configure test if compilation with -m32 works
+> > though.
+> > 
 > 
-> I doubt it's worth doing, it's just too unlikely that a specific page
-> is hit. Memory error handling is all about probabilities.
-> 
-> The test is just broken and should be fixed.
-> 
-> mce-test had similar problems at some point, but they were all fixed.
+> Yes, I think that is best, but passing -m32 to the test's make target does not
+> cause the LTP library to be compiled with -m32 so linking fails. I'm not sure
+> how to get it to build both binaries.
 
-Well I disagree, the reason why the test fails is that MADV_HWPOISON on
-not-faulted private mappings fails silently, which is a bug, albeit
-minor one. If something is not implemented, it should report a failure,
-the usual error return would be EINVAL in this case.
-
-It appears that it fails with EBUSY on first try on newer kernels, but
-still fails silently when we try for a second time.
-
-Why can't we simply check if the page is faulted or not and return error
-in the latter case?
+Hmm, right, we would have to compile the test library for 32bit as well,
+that may be tricky bussines. On the other hand there are at least two
+other testcases that does not work when compiled for 64bits which would
+make use of this as well.
 
 -- 
 Cyril Hrubis
