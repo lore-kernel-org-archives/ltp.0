@@ -1,114 +1,68 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 29 Mar 2017 15:28:58 +0200
-Subject: [LTP] [PATCH] syscalls/madvise: Handle zero page poisoning
-Message-ID: <20170329152858.1da7d177@linux-v3j5>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 29 Mar 2017 15:31:56 +0200
+Subject: [LTP] Out-of-tree build missing some data files.
+In-Reply-To: <BN6PR11MB20517B46C814B90AB73E3D43CD320@BN6PR11MB2051.namprd11.prod.outlook.com>
+References: <BN6PR11MB2051C2F128C4DC206D611144CD3F0@BN6PR11MB2051.namprd11.prod.outlook.com>
+ <20170328133708.GF1045@rei>
+ <BN6PR11MB20517B46C814B90AB73E3D43CD320@BN6PR11MB2051.namprd11.prod.outlook.com>
+Message-ID: <20170329133156.GF7089@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Treat failures for an un-populated MAP_PRIVATE mapping as configuration
-failures because we are trying to do something which is not necessarily
-expected to work. I have included some documentation for what is happening
-with the zero page in this instance and what is likely to happen in the
-future.
+Hi!
+> Unfortunately, this doesn't seem to have had any effect. Changes were...
+> 
+> -INSTALL_TARGETS                := $(wildcard file*)
+> +INSTALL_TARGETS                := $(wildcard $(abs_srcdir)/*.in)
+> 
+> -INSTALL_TARGETS                := $(wildcard *.c)
+> +INSTALL_TARGETS                := $(wildcard $(abs_srcdir)/*.c)
 
-Also add a test case for MAP_PRIVATE with MAP_POPULATE, which is well defined,
-and make the test slightly more verbose to help identify which variant is
-running when there is an error.
+Looking into the build system env_post.mk these are prefixed with
+abs_srcdir automatically there so changing these to simply '*.c' or
+'*.in' fixes the problem.
 
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
----
- testcases/kernel/syscalls/madvise/madvise07.c | 38 ++++++++++++++++++++++-----
- 1 file changed, 31 insertions(+), 7 deletions(-)
+This patch fixes the installation for me:
+(I will push it along with a few more out-of-tree build fixes)
 
-diff --git a/testcases/kernel/syscalls/madvise/madvise07.c b/testcases/kernel/syscalls/madvise/madvise07.c
-index 2f8c42efc..2fa553a07 100644
---- a/testcases/kernel/syscalls/madvise/madvise07.c
-+++ b/testcases/kernel/syscalls/madvise/madvise07.c
-@@ -23,9 +23,18 @@
-  *	      mark memory with MADV_HWPOISON inside child process,
-  *	      access memory,
-  *	      if SIGBUS is delivered to child the test passes else it fails
-+ *
-+ * When MAP_PRIVATE is set (without MAP_POPULATE) madvise() may error with
-+ * EBUSY on the first attempt and succeed on the second, but without poisoning
-+ * any memory. A private mapping is only populated with pages once it is
-+ * accessed and poisoning an unmapped VM range is essentially undefined
-+ * behaviour. However madvise() itself causes the address to be mapped to the
-+ * zero page. If/when the zero page can be poisoned then the test may pass
-+ * without any error. For now we just consider it a configuration failure.
-  */
+diff --git a/testcases/commands/ar/datafiles/Makefile b/testcases/commands/ar/datafiles/Makefile
+index 09dc029..ef99bca 100644
+--- a/testcases/commands/ar/datafiles/Makefile
++++ b/testcases/commands/ar/datafiles/Makefile
+@@ -15,5 +15,5 @@ top_srcdir		?= ../../../..
  
- #include <stdlib.h>
-+#include <stdio.h>
- #include <sys/wait.h>
- #include <fcntl.h>
- #include <unistd.h>
-@@ -35,18 +44,24 @@
- #include "tst_test.h"
- #include "lapi/mmap.h"
+ include $(top_srcdir)/include/mk/env_pre.mk
+ INSTALL_DIR		:= testcases/data/ar01
+-INSTALL_TARGETS		:= $(wildcard file*)
++INSTALL_TARGETS		:= file*
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/file/datafiles/Makefile b/testcases/commands/file/datafiles/Makefile
+index 6769fc6..d3cb847 100644
+--- a/testcases/commands/file/datafiles/Makefile
++++ b/testcases/commands/file/datafiles/Makefile
+@@ -15,5 +15,5 @@ top_srcdir		?= ../../../..
  
--#define MAPTYPE(m) m == MAP_SHARED ? "MAP_SHARED" : "MAP_PRIVATE"
-+#define MAPTYPE(m) (m == MAP_SHARED ? "MAP_SHARED" :	\
-+		    (m == MAP_PRIVATE ? "MAP_PRIVATE" :	\
-+		     "MAP_PRIVATE | MAP_POPULATE"))
+ include $(top_srcdir)/include/mk/env_pre.mk
+ INSTALL_DIR		:= testcases/data/file01
+-INSTALL_TARGETS		:= $(wildcard in*)
++INSTALL_TARGETS		:= in*
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/ld/datafiles/Makefile b/testcases/commands/ld/datafiles/Makefile
+index 7b19207..4eb64ad 100644
+--- a/testcases/commands/ld/datafiles/Makefile
++++ b/testcases/commands/ld/datafiles/Makefile
+@@ -17,6 +17,6 @@ include $(top_srcdir)/include/mk/env_pre.mk
  
- static int maptypes[] = {
- 	MAP_PRIVATE,
-+	MAP_PRIVATE | MAP_POPULATE,
- 	MAP_SHARED
- };
+ INSTALL_DIR		:= testcases/data/ld01
+ MAKE_TARGETS		:=
+-INSTALL_TARGETS		:= $(wildcard *.c)
++INSTALL_TARGETS		:= *.c
  
- static void run_child(int maptype)
- {
--	const size_t msize = 4096;
-+	const size_t msize = getpagesize();
- 	void *mem = NULL;
-+	int first_attempt = 1;
- 
-+	tst_res(TINFO,
-+		"mmap(..., MAP_ANONYMOUS | %s, ...)", MAPTYPE(maptype));
- 	mem = SAFE_MMAP(NULL,
- 			msize,
- 			PROT_READ | PROT_WRITE,
-@@ -54,22 +69,31 @@ static void run_child(int maptype)
- 			-1,
- 			0);
- 
-+do_madvise:
- 	tst_res(TINFO, "madvise(%p, %zu, MADV_HWPOISON)", mem, msize);
- 	if (madvise(mem, msize, MADV_HWPOISON) == -1) {
- 		if (errno == EINVAL)
- 			tst_res(TCONF | TERRNO,
- 				"CONFIG_MEMORY_FAILURE probably not set in kconfig");
--		else
-+		else if (errno == EBUSY && maptype == MAP_PRIVATE) {
-+			tst_res(TCONF,
-+				"Madvise failed with EBUSY");
-+			if (first_attempt--)
-+				goto do_madvise;
-+		} else
- 			tst_res(TFAIL | TERRNO, "Could not poison memory");
- 		exit(0);
- 	}
- 
- 	*((char *)mem) = 'd';
- 
--	tst_res(TFAIL,
--		"Did not receive SIGBUS after accessing %s memory marked "
--		"with MADV_HWPOISON",
--		MAPTYPE(maptype));
-+	if (maptype == MAP_PRIVATE)
-+		tst_res(TCONF,
-+			"Zero page poisoning is probably not implemented");
-+	else
-+		tst_res(TFAIL,
-+			"Did not receive SIGBUS after accessing %s memory marked"
-+			" with MADV_HWPOISON", MAPTYPE(maptype));
- }
- 
- static void run(unsigned int n)
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+
 -- 
-2.12.0
+Cyril Hrubis
+chrubis@suse.cz
