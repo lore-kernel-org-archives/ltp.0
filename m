@@ -1,82 +1,167 @@
-From: Hoang Nguyen <the_hoang0709@yahoo.com>
-Date: Wed, 29 Mar 2017 01:06:48 +0000 (UTC)
-Subject: [LTP] memcg_usage_in_bytes sometimes failed
-In-Reply-To: <20170328134152.GG1045@rei>
-References: <260795063.109541.1490150682697.ref@mail.yahoo.com>
- <260795063.109541.1490150682697@mail.yahoo.com> <20170328134152.GG1045@rei>
-Message-ID: <1081797821.5060375.1490749608376@mail.yahoo.com>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 29 Mar 2017 10:09:31 +0800
+Subject: [LTP] [PATCH v2] commands/keyctl01: Add new regression test
+In-Reply-To: <58DA3CEA.5080109@cn.fujitsu.com>
+References: <58DA3CEA.5080109@cn.fujitsu.com>
+Message-ID: <1490753371-8405-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril,
-memcg_usage_in_bytes_test.sh is not changed for long time, so I think I alm=
-ost used the latest version of LTP
-I resend the log, some EOL issue when I send it with my phone. Sorry for in=
-convenience.
-Test:memcg_usage_in_bytes Testparm:memcg_usage_in_bytes_test.sh
-memcg_usage_in_bytes_test 1 TINFO: Starting test1
-memcg_usage_in_bytes_test 1 TINFO: Running memcg_process --mmap-anon -s4194=
-304
-memcg_usage_in_bytes_test 1 TINFO: Warming up pid:886
-memcg_usage_in_bytes_test 1 TINFO: Process is still here after warm up:886
-memcg_usage_in_bytes_test 1 TPASS: memory.usage_in_bytes is 4194304 asexpec=
-ted
-/opt/ltp/testcases/bin/memcg_lib.sh: line 477: echo: write error: Device or=
-resource busy
-memcg_usage_in_bytes_test 2 TINFO: restore=C2=A0/dev/memcg/memory.use_hiera=
-rchy failed
-memcg_usage_in_bytes_test 2 TINFO: Starting test2
-memcg_usage_in_bytes_test 2 TINFO: Running memcg_process --mmap-anon -s4194=
-304
-memcg_usage_in_bytes_test 2 TINFO: Warming up pid:906
-memcg_usage_in_bytes_test 2 TINFO: Process is still here after warm up:906
-memcg_usage_in_bytes_test 2 TFAIL: memory.memsw.usage_in_bytes is 4325376, =
-4194304expected
-Result: 1
-Best regards,
-Hoang
+Fixed by:
+commit 38327424b40bcebe2de92d07312c89360ac9229a
+Author: Dan Carpenter <dan.carpenter@oracle.com>
+Date:   Thu Jun 16 15:48:57 2016 +0100
 
-      From: Cyril Hrubis <chrubis@suse.cz>
- To: Hoang Nguyen <the_hoang0709@yahoo.com>=20
-Cc: LTP List <ltp@lists.linux.it>
- Sent: Tuesday, 28 March 2017, 20:44
- Subject: Re: [LTP] memcg_usage_in_bytes sometimes failed
-  =20
-Hi!
-> I rarely meet this issue on embedded system, armv7l kernel 3.14, but not =
-sure what's going wrong. It can pass on some boards, but fail sometimes on =
-others with same config.
-> Is there any aditional preparation to make this case always pass? Have an=
-yone experienced on this ?
-> Test: memcg_usage_in_bytes Testparm: memcg_usage_in_bytes_test.shmemcg_us=
-age_in_bytes_test 1 TINFO: Starting test 1memcg_usage_in_bytes_test 1 TINFO=
-: Running memcg_process --mmap-anon -s 4194304memcg_usage_in_bytes_test 1 T=
-INFO: Warming up pid: 886memcg_usage_in_bytes_test 1 TINFO: Process is stil=
-l here after warm up: 886memcg_usage_in_bytes_test 1 TPASS: memory.usage_in=
-_bytes is 4194304 as expected/opt/ltp/testcases/bin/memcg_lib.sh: line 477:=
- echo: write error: Device or resource busymemcg_usage_in_bytes_test 2 TINF=
-O: restore ??/dev/memcg/memory.use_hierarchy failedmemcg_usage_in_bytes_tes=
-t 2 TINFO: Starting test 2memcg_usage_in_bytes_test 2 TINFO: Running memcg_=
-process --mmap-anon -s 4194304memcg_usage_in_bytes_test 2 TINFO: Warming up=
- pid: 906memcg_usage_in_bytes_test 2 TINFO: Process is still here after war=
-m up: 906memcg_usage_in_bytes_test 2 TFAIL: memory.memsw.usage_in_bytes is =
-4325376, 4194304 expectedResult: 1
+    KEYS: potential uninitialized variable
 
-First of all, which LTP version are you using?
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ runtest/commands                      |  1 +
+ testcases/commands/keyctl/Makefile    | 24 ++++++++++
+ testcases/commands/keyctl/keyctl01.sh | 89 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 114 insertions(+)
+ create mode 100644 testcases/commands/keyctl/Makefile
+ create mode 100644 testcases/commands/keyctl/keyctl01.sh
 
-Also please resend the log so that the text is not on a single line.
-It's nearly impossible to read it as it is.
+diff --git a/runtest/commands b/runtest/commands
+index fd51703..682deda 100644
+--- a/runtest/commands
++++ b/runtest/commands
+@@ -41,3 +41,4 @@ which01 which01.sh
+ lsmod01 lsmod01.sh
+ insmod01 insmod01.sh
+ wc01 wc01.sh
++keyctl01 keyctl01.sh
+diff --git a/testcases/commands/keyctl/Makefile b/testcases/commands/keyctl/Makefile
+new file mode 100644
+index 0000000..144beed
+--- /dev/null
++++ b/testcases/commands/keyctl/Makefile
+@@ -0,0 +1,24 @@
++#
++#    commands/keyctl testcases Makefile.
++#
++#    Copyright (c) 2017 Fujitsu Ltd.
++#    Author:Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++#
++#    This program is free software; you can redistribute it and/or modify
++#    it under the terms of the GNU General Public License as published by
++#    the Free Software Foundation; either version 2 of the License, or
++#    (at your option) any later version.
++#
++#    This program is distributed in the hope that it will be useful,
++#    but WITHOUT ANY WARRANTY; without even the implied warranty of
++#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++#    GNU General Public License for more details.
++#
++
++top_srcdir		?= ../../..
++
++include $(top_srcdir)/include/mk/env_pre.mk
++
++INSTALL_TARGETS		:= keyctl01.sh
++
++include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/commands/keyctl/keyctl01.sh b/testcases/commands/keyctl/keyctl01.sh
+new file mode 100644
+index 0000000..076a130
+--- /dev/null
++++ b/testcases/commands/keyctl/keyctl01.sh
+@@ -0,0 +1,89 @@
++#!/bin/sh
++#
++# Copyright (c) 2017 Fujitsu Ltd.
++# Ported: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
++#
++# This program is free software; you can redistribute it and/or modify
++# it under the terms of the GNU General Public License as published by
++# the Free Software Foundation; either version 2 of the License, or
++# (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program, if not, see <http://www.gnu.org/licenses/>.
++#
++# This is a regression test about potential uninitialized variable,
++# the test can crash the buggy kernel, and the bug has been fixed in:
++#
++#   commit 38327424b40bcebe2de92d07312c89360ac9229a
++#   Author: Dan Carpenter <dan.carpenter@oracle.com>
++#   Date:   Thu Jun 16 15:48:57 2016 +0100
++#
++#   KEYS: potential uninitialized variable
++#
++
++TST_ID="keyctl01"
++TST_SETUP=setup
++TST_CLEANUP=cleanup
++TST_TESTFUNC=do_test
++TST_NEEDS_ROOT=1
++TST_NEEDS_TMPDIR=1
++TST_NEEDS_CMDS="keyctl"
++. tst_test.sh
++
++setup()
++{
++	if tst_kvcmp -le 2.6.33; then
++		tst_brk TCONF "Kernel newer than 2.6.33 is needed"
++	fi
++
++	PATH_KEYSTAT="/proc/key-users"
++	PATH_KEYQUOTA="/proc/sys/kernel/keys/root_maxbytes"
++
++	if [ ! -f "$PATH_KEYSTAT" ] || [ ! -f "$PATH_KEYQUOTA" ]; then
++		tst_brk TCONF "'${PATH_KEYSTAT}' or '${PATH_KEYQUOTA}' \
++			does not exist"
++	fi
++
++	ORIG_KEYSZ=`awk -F' +|/' '/ 0:/ {print $8}' $PATH_KEYSTAT`
++	ORIG_MAXKEYSZ=`cat $PATH_KEYQUOTA`
++}
++
++cleanup()
++{
++	if [ -n "$ORIG_MAXKEYSZ" ]; then
++		echo $ORIG_MAXKEYSZ >$PATH_KEYQUOTA
++	fi
++}
++
++do_test()
++{
++	local maxkeysz=$((ORIG_KEYSZ + 100))
++
++	while true
++	do
++		echo $maxkeysz >$PATH_KEYQUOTA
++
++		keyctl request2 user debug:fred negate @t >temp 2>&1
++		grep -q -E "quota exceeded" temp
++		if [ $? -eq 0 ]; then
++			break
++		fi
++
++		local key=`keyctl show | awk '/debug:fred/ {print $1}'`
++		if [ -n "$key" ]; then
++			keyctl unlink $key @s >/dev/null
++			tst_sleep 50ms
++		fi
++
++		((maxkeysz -= 4))
++	done
++
++	tst_res TPASS "Bug not reproduced"
++}
++
++tst_run
+-- 
+1.8.4.2
 
---=20
-Cyril Hrubis
-chrubis@suse.cz
 
 
-  =20
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170329/8ef3a1a3/att=
-achment-0001.html>
