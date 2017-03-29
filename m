@@ -1,11 +1,13 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 29 Mar 2017 11:12:50 +0200
-Subject: [LTP] [RFC] [PATCH] lib32: Add support for linking 32bit
- programs	on 64bit
-In-Reply-To: <1888940677.16511157.1490776585392.JavaMail.zimbra@redhat.com>
-References: <20170328100114.29730-1-chrubis@suse.cz>
- <1888940677.16511157.1490776585392.JavaMail.zimbra@redhat.com>
-Message-ID: <20170329091250.GC7089@rei.lan>
+Date: Wed, 29 Mar 2017 11:18:39 +0200
+Subject: [LTP] [PATCH v5 5/6] syscalls: added memfd_create dir and
+ memfd_create/memfd_create01.c
+In-Reply-To: <150812828.16512609.1490776963745.JavaMail.zimbra@redhat.com>
+References: <1490292957-26941-1-git-send-email-jracek@redhat.com>
+ <1490292957-26941-6-git-send-email-jracek@redhat.com>
+ <20170324152658.GB9961@rei.lan>
+ <150812828.16512609.1490776963745.JavaMail.zimbra@redhat.com>
+Message-ID: <20170329091839.GD7089@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,67 +15,44 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > * Configure test if compiler supports -m32
-> >   TODO: Does 32bit compiler accept -m32?
-> >         If so, we should fail the test on 32bit
-> > 	platforms by default.
-> > 
-> > * The directory lib32 contains symlinks of minimal set of sources
-> >   needed to link newlib testcase + Makefile.
-> > 
-> > * The testcases.mk builds 32bit library as well if
-> >   32bit compiler was installed (-m32 configure test was succesful)
-> > 
-> > * And finally the env_post.mk switches between lib and lib32 depeding
-> >   on if -m32 was passed in the CFLAGS
-> > 
+> build on distro that doesn't define HAVE_FALLOCATE is now failing
+> for me:
 > 
-> One issue I ran into is that configure checks can vary
-> between default and -m32. Here's one exception from RHEL5.6:
+> # git describe
+> 20170116-207-g16f4d56
 > 
-> # cat 1.c 
-> int main(void) {
->         int i = 0;
->         return __sync_add_and_fetch(&i, 1);
-> }
-> 
-> # gcc 1.c 
-> # gcc -m32 1.c 
-> /tmp/ccwrlcJi.o: In function `main':
-> 1.c:(.text+0x27): undefined reference to `__sync_add_and_fetch_4'
-> collect2: ld returned 1 exit status
+> # ./configure && make
+> ...
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/root/ltp/testcases/kernel/include -I../../../../include -I../../../../include -I../../../../include/old/  -c -o memfd_create01.o memfd_create01.c
+> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/root/ltp/testcases/kernel/include -I../../../../include -I../../../../include -I../../../../include/old/  -c -o memfd_create_common.o memfd_create_common.c
+> In file included from memfd_create_common.c:21:
+> ../../../../include/lapi/fallocate.h: In function ???fallocate???:
+> ../../../../include/lapi/fallocate.h:55: warning: implicit declaration of function ???syscall???
+> ../../../../include/lapi/fallocate.h:55: warning: implicit declaration of function ???tst_brkm???
+> ../../../../include/lapi/fallocate.h:55: error: ???TCONF??? undeclared (first use in this function)
+> ../../../../include/lapi/fallocate.h:55: error: (Each undeclared identifier is reported only once
+> ../../../../include/lapi/fallocate.h:55: error: for each function it appears in.)
+> In file included from memfd_create_common.c:28:
+> /usr/include/unistd.h: At top level:
+> /usr/include/unistd.h:1011: error: conflicting types for ???syscall???
+> ../../../../include/lapi/fallocate.h:55: error: previous implicit declaration of ???syscall??? was here
+> make[4]: *** [memfd_create_common.o] Error 1
+> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/memfd_create'
+> make[3]: *** [all] Error 2
+> make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
+> make[2]: *** [all] Error 2
+> make[2]: Leaving directory `/root/ltp/testcases/kernel'
+> make[1]: *** [all] Error 2
+> make[1]: Leaving directory `/root/ltp/testcases'
+> make: *** [testcases-all] Error 2
 
-Right, we would have to check for atomic operations with -m32 as well.
+Ah, right looks like we have the old API/new API mixed again. Sorry I
+should have caught that during the review.
 
-I guess that we can add -DUSE_M32 into the lib32/Makefile and add a few
-ifdefs into the tst_atomic.h something as:
-
-#if (defined(USE_M32) && HAVE_SYNC_AND_FETCH32 == 1) || \
-    (!defined(USE_M32) && HAVE_SYNC_AND_FETCH == 1)
-...
-#elif ...
-...
-
-> > TODO: Check if LTP works with -m32 in CFLAGS passed to configure as well
-> 
-> This fails for me on RHEL7:
-> 
-> # make
-> make[1]: Entering directory `/root/ltp/lib/newlib_tests'
-> gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -W -Wall  -I../../include -I../../include -I../../include/old/   -L../../lib32  test14.c   -lltp -o test14
-> /tmp/ccPZUDSr.o: In function `cleanup':
-> /root/ltp/lib/newlib_tests/test14.c:31: undefined reference to `safe_fopen'
-> /root/ltp/lib/newlib_tests/test14.c:32: undefined reference to `safe_socket'
-> collect2: error: ld returned 1 exit status
-> make[1]: *** [test14] Error 1
-> make[1]: Leaving directory `/root/ltp/lib/newlib_tests'
-> make: *** [all] Error 2
-
-This is likely because we try to link against lib32 since -m32 is passed
-in CFLAGS but lib32/ directory links only subset of the C sources. I
-would like to disable all the lib32 machinery either when we run on
-32bit machine or if -m32 was passed to the configure and use lib32 only
-in a case that we run on 64 bit machine and want to link 32 bit binary.
+Now easy fix would be switching on newlib/oldlib and
+tst_syscall()/ltp_syscall(). Bit better one would be to rewrite the
+fallocate tests to newlib and switch to tst_sycall() in the fallocate.h
+header.
 
 -- 
 Cyril Hrubis
