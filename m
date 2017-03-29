@@ -1,24 +1,45 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Wed, 29 Mar 2017 16:56:03 +0200
-Subject: [LTP] [RFC] [PATCH] lib32: Add support for linking 32bit
- programs on 64bit
-In-Reply-To: <20170329144800.3258e1a5@linux-v3j5>
-References: <20170328100114.29730-1-chrubis@suse.cz>
- <20170329144800.3258e1a5@linux-v3j5>
-Message-ID: <20170329165603.243f9495@linux-v3j5>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 29 Mar 2017 18:50:08 +0200
+Subject: [LTP] [RFC] [PATCH] lib: Fix undefined reference to `mq_open' build
+	failures
+Message-ID: <20170329165008.6396-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, 29 Mar 2017 14:48:00 +0200
-"Richard Palethorpe" <Richard.Palethorpe@suse.com> wrote:
-> 
-> Also it turns out that I am using some C syntax which is not accepted by GCC
-> 4.3.4. This is annoying considering the tests compile fine with -std=C99 on
-> GCC 6.
-> 
+It appears that since the addition of the tst_safe_posix_ipc.c to the
+test library random testcases (mostly ltp-aiodio seems to be triggering
+the issue) started to fail on linking with missing reference to mq_open.
 
-Spoke too soon, it is just missing struct definitions.
+The problem is that -lrt is needed for mq_open() so this commit adds a
+weak stub symbol that is used as fallback when we are compiling without
+-lrt.
+
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+---
+ lib/tst_safe_posix_ipc.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/lib/tst_safe_posix_ipc.c b/lib/tst_safe_posix_ipc.c
+index 7142a25..4c617c8 100644
+--- a/lib/tst_safe_posix_ipc.c
++++ b/lib/tst_safe_posix_ipc.c
+@@ -22,6 +22,13 @@
+ #include "tst_test.h"
+ #include "tst_safe_posix_ipc.h"
+ 
++mqd_t __attribute__((weak)) mq_open(const char *name __attribute__((unused)),
++				    int oflag __attribute__((unused)), ...)
++{
++	tst_brk(TBROK, "mq_open() stub called!");
++	return 0;
++}
++
+ int safe_mq_open(const char *file, const int lineno, const char *pathname,
+ 	int oflags, ...)
+ {
+-- 
+2.10.2
 
