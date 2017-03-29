@@ -1,65 +1,30 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Wed, 29 Mar 2017 15:23:18 +0800
-Subject: [LTP] [PATCH v3] syscalls/keyctl02: Fix insufficiency of default
-	key count quota
-In-Reply-To: <58DB6070.4080607@cn.fujitsu.com>
-References: <58DB6070.4080607@cn.fujitsu.com>
-Message-ID: <1490772198-30749-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 29 Mar 2017 10:30:30 +0200
+Subject: [LTP] Failing tests (aio01/aio02) show up in log file but not
+ failed list
+In-Reply-To: <1490715743.19074.106.camel@caviumnetworks.com>
+References: <201703272218.v2RMIp4R006418@sellcey-dt.caveonetworks.com>
+ <20170328122708.GE1045@rei>
+ <1490715743.19074.106.camel@caviumnetworks.com>
+Message-ID: <20170329083030.GA7089@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Adding and revoking keys rapidly in loops will take a significant
-number of key count quota, because it takes time to free the
-instantiated keys, so temporarily raise the quota when testing.
+Hi!
+> Here is the output for aio01. ??Is there an aio01 command that I am
+> missing? ??It looks like this is something that should have been built
+> when I built LTP but I don't see it in the install directory and I
+> ??don't see any reference to it in my build output. ??I do see aio01.c
+> and a Makefile for it in the source tree.
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- testcases/kernel/syscalls/keyctl/keyctl02.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+Looking into the testcases/kernel/io/Makefile the aio directories are
+skipped on compilation when there are no aio libs installed instead the
+more usual way where we build stubs binaries that report TCONF. May be
+worth of fixing but this is not very important.
 
-diff --git a/testcases/kernel/syscalls/keyctl/keyctl02.c b/testcases/kernel/syscalls/keyctl/keyctl02.c
-index 11d3af9..aa98822 100644
---- a/testcases/kernel/syscalls/keyctl/keyctl02.c
-+++ b/testcases/kernel/syscalls/keyctl/keyctl02.c
-@@ -48,6 +48,9 @@
- #ifdef HAVE_KEYUTILS_H
- 
- #define LOOPS	20000
-+#define PATH_KEY_COUNT_QUOTA	"/proc/sys/kernel/keys/root_maxkeys"
-+
-+static int orig_maxkeys;
- 
- static void *do_read(void *arg)
- {
-@@ -98,9 +101,23 @@ static void do_test(void)
- 	tst_res(TPASS, "Bug not reproduced");
- }
- 
-+static void setup(void)
-+{
-+	SAFE_FILE_SCANF(PATH_KEY_COUNT_QUOTA, "%d", &orig_maxkeys);
-+	SAFE_FILE_PRINTF(PATH_KEY_COUNT_QUOTA, "%d", orig_maxkeys + LOOPS);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (orig_maxkeys > 0)
-+		SAFE_FILE_PRINTF(PATH_KEY_COUNT_QUOTA, "%d", orig_maxkeys);
-+}
-+
- static struct tst_test test = {
- 	.tid = "keyctl02",
- 	.needs_root = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
- 	.test_all = do_test,
- };
- 
 -- 
-1.8.4.2
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
