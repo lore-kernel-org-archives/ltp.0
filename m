@@ -1,31 +1,24 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 29 Mar 2017 16:51:20 +0200
-Subject: [LTP] [PATCH 1/1] realtime: Fix include for out-of-tree build
-Message-ID: <20170329145120.1389-1-pvorel@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed, 29 Mar 2017 16:56:03 +0200
+Subject: [LTP] [RFC] [PATCH] lib32: Add support for linking 32bit
+ programs on 64bit
+In-Reply-To: <20170329144800.3258e1a5@linux-v3j5>
+References: <20170328100114.29730-1-chrubis@suse.cz>
+ <20170329144800.3258e1a5@linux-v3j5>
+Message-ID: <20170329165603.243f9495@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- testcases/realtime/lib/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, 29 Mar 2017 14:48:00 +0200
+"Richard Palethorpe" <Richard.Palethorpe@suse.com> wrote:
+> 
+> Also it turns out that I am using some C syntax which is not accepted by GCC
+> 4.3.4. This is annoying considering the tests compile fine with -std=C99 on
+> GCC 6.
+> 
 
-diff --git a/testcases/realtime/lib/Makefile b/testcases/realtime/lib/Makefile
-index 9a29ee7ce..71d73dd4b 100644
---- a/testcases/realtime/lib/Makefile
-+++ b/testcases/realtime/lib/Makefile
-@@ -25,7 +25,7 @@ top_srcdir		?= ../../..
- 
- include $(top_srcdir)/include/mk/env_pre.mk
- 
--CFLAGS			+= -D_GNU_SOURCE -I../include/
-+CFLAGS			+= -D_GNU_SOURCE -I$(top_srcdir)/testcases/realtime/include/ -I$(top_builddir)/testcases/realtime/include/
- 
- LDLIBS			+= -lpthread -lrt -lm
- 
--- 
-2.12.0
+Spoke too soon, it is just missing struct definitions.
 
