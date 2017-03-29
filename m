@@ -1,46 +1,31 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 29 Mar 2017 15:55:06 +0200
-Subject: [LTP] [COMMITTED] [PATCH 4/4] lib/tst_safe_posix_ipc.c: Add licence.
-In-Reply-To: <20170329135506.23901-1-chrubis@suse.cz>
-References: <20170329135506.23901-1-chrubis@suse.cz>
-Message-ID: <20170329135506.23901-4-chrubis@suse.cz>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed, 29 Mar 2017 16:51:20 +0200
+Subject: [LTP] [PATCH 1/1] realtime: Fix include for out-of-tree build
+Message-ID: <20170329145120.1389-1-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
 Signed-off-by: Petr Vorel <pvorel@suse.cz>
 ---
- lib/tst_safe_posix_ipc.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ testcases/realtime/lib/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/lib/tst_safe_posix_ipc.c b/lib/tst_safe_posix_ipc.c
-index d9fbf77..7142a25 100644
---- a/lib/tst_safe_posix_ipc.c
-+++ b/lib/tst_safe_posix_ipc.c
-@@ -1,3 +1,20 @@
-+/*
-+ * Copyright (c) 2017 Petr Vorel <pvorel@suse.cz>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
- #include <mqueue.h>
- #include <stdarg.h>
+diff --git a/testcases/realtime/lib/Makefile b/testcases/realtime/lib/Makefile
+index 9a29ee7ce..71d73dd4b 100644
+--- a/testcases/realtime/lib/Makefile
++++ b/testcases/realtime/lib/Makefile
+@@ -25,7 +25,7 @@ top_srcdir		?= ../../..
+ 
+ include $(top_srcdir)/include/mk/env_pre.mk
+ 
+-CFLAGS			+= -D_GNU_SOURCE -I../include/
++CFLAGS			+= -D_GNU_SOURCE -I$(top_srcdir)/testcases/realtime/include/ -I$(top_builddir)/testcases/realtime/include/
+ 
+ LDLIBS			+= -lpthread -lrt -lm
  
 -- 
-2.10.2
+2.12.0
 
