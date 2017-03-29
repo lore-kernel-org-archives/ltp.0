@@ -1,52 +1,68 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed, 29 Mar 2017 11:37:11 +0200
-Subject: [LTP] [RFC PATCH 0/2] Simplify network setup
-Message-ID: <20170329093713.28361-1-pvorel@suse.cz>
+Date: Wed, 29 Mar 2017 11:37:13 +0200
+Subject: [LTP] [RFC PATCH 2/2] network: Use setup_network_variables to set
+	up variables
+In-Reply-To: <20170329093713.28361-1-pvorel@suse.cz>
+References: <20170329093713.28361-1-pvorel@suse.cz>
+Message-ID: <20170329093713.28361-3-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+setup_network_variables simplifies setup as it only needs to have passed
+4 IP addresses (2 IPv4 and 2 IPv6).
 
-this patch simplifies network related setup a lot as with input of 2 IPv4 and 2 IPv6 addresses defines these variables:
-IPV4_NETWORK
-LHOST_IPV4_HOST
-RHOST_IPV4_HOST
-IPV4_NET_REV
-IPV6_NETWORK
-LHOST_IPV6_HOST
-RHOST_IPV6_HOST
-IPV6_NET_REV
-LHOST_IPV6_REV
-RHOST_IPV6_REV
-IPV4_NET16_UNUSED
-IPV6_NET32_UNUSED
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/test_net.sh | 33 ++++++++-------------------------
+ 1 file changed, 8 insertions(+), 25 deletions(-)
 
-Tool, written in C is not perfect, probably needs cleanup.
-Part of the code is borrowed from ipcalc [1], inet_ntop6_impl is based on
-inet_ntop() musl implementation [2], that's why I put their copyright.
-
-Any comments are highly appreciated.
-
-Kind regards,
-Petr
-
-[1] https://github.com/nmav/ipcalc/blob/master/ipcalc.c
-[2] https://github.com/bpowers/musl/blob/master/src/network/inet_ntop.c
-
-Petr Vorel (2):
-  network: Add tool for setup IP variables
-  network: Use setup_network_variables to set up variables
-
- testcases/lib/.gitignore                |  13 +-
- testcases/lib/Makefile                  |   4 +-
- testcases/lib/setup_network_variables.c | 602 ++++++++++++++++++++++++++++++++
- testcases/lib/test_net.sh               |  33 +-
- 4 files changed, 619 insertions(+), 33 deletions(-)
- create mode 100644 testcases/lib/setup_network_variables.c
-
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index f0e05b13d..4d5d1a9f4 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -487,31 +487,14 @@ export PASSWD="${PASSWD:-}"
+ # Don't use it in new tests, use tst_rhost_run() from test_net.sh instead.
+ export LTP_RSH="${LTP_RSH:-rsh -n}"
+ 
+-# Test Links
+-# Set first three octets of the network address, default is '10.0.0'
+-export IPV4_NETWORK="${IPV4_NETWORK:-10.0.0}"
+-# Set local host last octet, default is '2'
+-export LHOST_IPV4_HOST="${LHOST_IPV4_HOST:-2}"
+-# Set remote host last octet, default is '1'
+-export RHOST_IPV4_HOST="${RHOST_IPV4_HOST:-1}"
+-# Set the reverse of IPV4_NETWORK
+-export IPV4_NET_REV="${IPV4_NET_REV:-0.0.10}"
+-# Set first three octets of the network address, default is 'fd00:1:1:1'
+-export IPV6_NETWORK="${IPV6_NETWORK:-fd00:1:1:1}"
+-# Set local host last octet, default is '2'
+-export LHOST_IPV6_HOST="${LHOST_IPV6_HOST:-:2}"
+-# Set remote host last octet, default is '1'
+-export RHOST_IPV6_HOST="${RHOST_IPV6_HOST:-:1}"
+-# Reverse network portion of the IPv6 address
+-export IPV6_NET_REV="${IPV6_NET_REV:-1.0.0.0.1.0.0.0.1.0.0.0.0.0.d.f}"
+-# Reverse host portion of the IPv6 address of the local host
+-export LHOST_IPV6_REV="${LHOST_IPV6_REV:-2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0}"
+-# Reverse host portion of the IPv6 address of the remote host
+-export RHOST_IPV6_REV="${RHOST_IPV6_REV:-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0}"
+-
+-# Networks that aren't reachable through the test links
+-export IPV4_NET16_UNUSED="${IPV4_NET16_UNUSED:-10.23}"
+-export IPV6_NET32_UNUSED="${IPV6_NET32_UNUSED:-fd00:23}"
++# set test links + networks that aren't reachable through the test links
++IPV4_HOST="${IPV4_HOST:-10.0.0.1/24}"
++IPV4_HOST2="${IPV4_HOST2:-10.0.0.2/24}"
++eval `setup_network_variables $IPV4_HOST $IPV4_HOST2`
++
++IPV6_HOST="${IPV6_HOST:-fd00:1:1:1::1/64}"
++IPV6_HOST2="${IPV6_HOST2:-fd00:1:1:1::2/64}"
++eval `setup_network_variables $IPV6_HOST $IPV6_HOST2`
+ 
+ export HTTP_DOWNLOAD_DIR="${HTTP_DOWNLOAD_DIR:-/var/www/html}"
+ export FTP_DOWNLOAD_DIR="${FTP_DOWNLOAD_DIR:-/var/ftp}"
 -- 
 2.12.0
 
