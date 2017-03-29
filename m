@@ -1,75 +1,56 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Wed, 29 Mar 2017 04:36:25 -0400 (EDT)
-Subject: [LTP] [RFC] [PATCH] lib32: Add support for linking 32bit
- programs	on 64bit
-In-Reply-To: <20170328100114.29730-1-chrubis@suse.cz>
-References: <20170328100114.29730-1-chrubis@suse.cz>
-Message-ID: <1888940677.16511157.1490776585392.JavaMail.zimbra@redhat.com>
+Date: Wed, 29 Mar 2017 04:42:43 -0400 (EDT)
+Subject: [LTP] [PATCH v5 5/6] syscalls: added memfd_create dir and
+ memfd_create/memfd_create01.c
+In-Reply-To: <20170324152658.GB9961@rei.lan>
+References: <1490292957-26941-1-git-send-email-jracek@redhat.com>
+ <1490292957-26941-6-git-send-email-jracek@redhat.com>
+ <20170324152658.GB9961@rei.lan>
+Message-ID: <150812828.16512609.1490776963745.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
 
-
 ----- Original Message -----
-> From: "Cyril Hrubis" <chrubis@suse.cz>
-> To: ltp@lists.linux.it
-> Sent: Tuesday, 28 March, 2017 12:01:14 PM
-> Subject: [LTP] [RFC] [PATCH] lib32: Add support for linking 32bit programs	on 64bit
-> 
-> This is proof of concept for building 32bit testcases on 64bit platform.
-> 
-> What we do is:
-> 
-> * Configure test if compiler supports -m32
->   TODO: Does 32bit compiler accept -m32?
->         If so, we should fail the test on 32bit
-> 	platforms by default.
-> 
-> * The directory lib32 contains symlinks of minimal set of sources
->   needed to link newlib testcase + Makefile.
-> 
-> * The testcases.mk builds 32bit library as well if
->   32bit compiler was installed (-m32 configure test was succesful)
-> 
-> * And finally the env_post.mk switches between lib and lib32 depeding
->   on if -m32 was passed in the CFLAGS
-> 
+> Hi!
+> Patchset pushed with cosmetic chnages to this patch (see diff below),
+> thanks.
 
-One issue I ran into is that configure checks can vary
-between default and -m32. Here's one exception from RHEL5.6:
+Hi,
 
-# cat 1.c 
-int main(void) {
-        int i = 0;
-        return __sync_add_and_fetch(&i, 1);
-}
+build on distro that doesn't define HAVE_FALLOCATE is now failing
+for me:
 
-# gcc 1.c 
-# gcc -m32 1.c 
-/tmp/ccwrlcJi.o: In function `main':
-1.c:(.text+0x27): undefined reference to `__sync_add_and_fetch_4'
-collect2: ld returned 1 exit status
+# git describe
+20170116-207-g16f4d56
 
-> TODO: Check if LTP works with -m32 in CFLAGS passed to configure as well
-
-This fails for me on RHEL7:
-
-# make
-make[1]: Entering directory `/root/ltp/lib/newlib_tests'
-gcc -m32 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -W -Wall  -I../../include -I../../include -I../../include/old/   -L../../lib32  test14.c   -lltp -o test14
-/tmp/ccPZUDSr.o: In function `cleanup':
-/root/ltp/lib/newlib_tests/test14.c:31: undefined reference to `safe_fopen'
-/root/ltp/lib/newlib_tests/test14.c:32: undefined reference to `safe_socket'
-collect2: error: ld returned 1 exit status
-make[1]: *** [test14] Error 1
-make[1]: Leaving directory `/root/ltp/lib/newlib_tests'
-make: *** [all] Error 2
-
-I ran into one other problem, but I don't think that's relevant
-for this patch. I'll follow up in separate email thread.
+# ./configure && make
+...
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/root/ltp/testcases/kernel/include -I../../../../include -I../../../../include -I../../../../include/old/  -c -o memfd_create01.o memfd_create01.c
+gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/root/ltp/testcases/kernel/include -I../../../../include -I../../../../include -I../../../../include/old/  -c -o memfd_create_common.o memfd_create_common.c
+In file included from memfd_create_common.c:21:
+../../../../include/lapi/fallocate.h: In function ‘fallocate’:
+../../../../include/lapi/fallocate.h:55: warning: implicit declaration of function ‘syscall’
+../../../../include/lapi/fallocate.h:55: warning: implicit declaration of function ‘tst_brkm’
+../../../../include/lapi/fallocate.h:55: error: ‘TCONF’ undeclared (first use in this function)
+../../../../include/lapi/fallocate.h:55: error: (Each undeclared identifier is reported only once
+../../../../include/lapi/fallocate.h:55: error: for each function it appears in.)
+In file included from memfd_create_common.c:28:
+/usr/include/unistd.h: At top level:
+/usr/include/unistd.h:1011: error: conflicting types for ‘syscall’
+../../../../include/lapi/fallocate.h:55: error: previous implicit declaration of ‘syscall’ was here
+make[4]: *** [memfd_create_common.o] Error 1
+make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/memfd_create'
+make[3]: *** [all] Error 2
+make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
+make[2]: *** [all] Error 2
+make[2]: Leaving directory `/root/ltp/testcases/kernel'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/root/ltp/testcases'
+make: *** [testcases-all] Error 2
 
 Regards,
 Jan
