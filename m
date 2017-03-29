@@ -1,59 +1,76 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 29 Mar 2017 11:18:39 +0200
-Subject: [LTP] [PATCH v5 5/6] syscalls: added memfd_create dir and
- memfd_create/memfd_create01.c
-In-Reply-To: <150812828.16512609.1490776963745.JavaMail.zimbra@redhat.com>
-References: <1490292957-26941-1-git-send-email-jracek@redhat.com>
- <1490292957-26941-6-git-send-email-jracek@redhat.com>
- <20170324152658.GB9961@rei.lan>
- <150812828.16512609.1490776963745.JavaMail.zimbra@redhat.com>
-Message-ID: <20170329091839.GD7089@rei.lan>
+From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+Date: Wed, 29 Mar 2017 17:32:01 +0800
+Subject: [LTP] [PATCH] syscalls/memfd_create: Fix build fail when
+	HAVE_FALLOCATE not defined
+In-Reply-To: <20170329091839.GD7089@rei.lan>
+References: <20170329091839.GD7089@rei.lan>
+Message-ID: <1490779921-7162-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> build on distro that doesn't define HAVE_FALLOCATE is now failing
-> for me:
-> 
-> # git describe
-> 20170116-207-g16f4d56
-> 
-> # ./configure && make
-> ...
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/root/ltp/testcases/kernel/include -I../../../../include -I../../../../include -I../../../../include/old/  -c -o memfd_create01.o memfd_create01.c
-> gcc -g -O2 -g -O2 -fno-strict-aliasing -pipe -Wall -W -Wold-style-definition -D_FORTIFY_SOURCE=2 -I/root/ltp/testcases/kernel/include -I../../../../include -I../../../../include -I../../../../include/old/  -c -o memfd_create_common.o memfd_create_common.c
-> In file included from memfd_create_common.c:21:
-> ../../../../include/lapi/fallocate.h: In function ???fallocate???:
-> ../../../../include/lapi/fallocate.h:55: warning: implicit declaration of function ???syscall???
-> ../../../../include/lapi/fallocate.h:55: warning: implicit declaration of function ???tst_brkm???
-> ../../../../include/lapi/fallocate.h:55: error: ???TCONF??? undeclared (first use in this function)
-> ../../../../include/lapi/fallocate.h:55: error: (Each undeclared identifier is reported only once
-> ../../../../include/lapi/fallocate.h:55: error: for each function it appears in.)
-> In file included from memfd_create_common.c:28:
-> /usr/include/unistd.h: At top level:
-> /usr/include/unistd.h:1011: error: conflicting types for ???syscall???
-> ../../../../include/lapi/fallocate.h:55: error: previous implicit declaration of ???syscall??? was here
-> make[4]: *** [memfd_create_common.o] Error 1
-> make[4]: Leaving directory `/root/ltp/testcases/kernel/syscalls/memfd_create'
-> make[3]: *** [all] Error 2
-> make[3]: Leaving directory `/root/ltp/testcases/kernel/syscalls'
-> make[2]: *** [all] Error 2
-> make[2]: Leaving directory `/root/ltp/testcases/kernel'
-> make[1]: *** [all] Error 2
-> make[1]: Leaving directory `/root/ltp/testcases'
-> make: *** [testcases-all] Error 2
+Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+---
+ include/lapi/fallocate.h                                     | 12 ++++++++++++
+ testcases/kernel/syscalls/memfd_create/memfd_create_common.c |  4 ++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-Ah, right looks like we have the old API/new API mixed again. Sorry I
-should have caught that during the review.
-
-Now easy fix would be switching on newlib/oldlib and
-tst_syscall()/ltp_syscall(). Bit better one would be to rewrite the
-fallocate tests to newlib and switch to tst_sycall() in the fallocate.h
-header.
-
+diff --git a/include/lapi/fallocate.h b/include/lapi/fallocate.h
+index 79d0b7b..20ba40c 100644
+--- a/include/lapi/fallocate.h
++++ b/include/lapi/fallocate.h
+@@ -52,13 +52,25 @@ static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
+ {
+ 	/* Deal with 32bit ABIs that have 64bit syscalls. */
+ # if LTP_USE_64_ABI
++#ifdef __TEST_H__
+ 	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
++#else
++	return tst_syscall(__NR_fallocate, fd, mode, offset, len);
++#endif /* __TEST_H__ */
+ # else
++#ifdef __TEST_H__
+ 	return (long)ltp_syscall(__NR_fallocate, fd, mode,
+ 				 __LONG_LONG_PAIR((off_t) (offset >> 32),
+ 						  (off_t) offset),
+ 				 __LONG_LONG_PAIR((off_t) (len >> 32),
+ 						  (off_t) len));
++#else
++	return (long)tst_syscall(__NR_fallocate, fd, mode,
++				 __LONG_LONG_PAIR((off_t) (offset >> 32),
++						  (off_t) offset),
++				 __LONG_LONG_PAIR((off_t) (len >> 32),
++						  (off_t) len));
++#endif /* __TEST_H__ */
+ # endif
+ }
+ #endif
+diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
+index 8612db7..ddf9f05 100644
+--- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
++++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
+@@ -18,7 +18,6 @@
+ #include <sys/types.h>
+ #include <sys/syscall.h>
+ #include <sys/uio.h>
+-#include <lapi/fallocate.h>
+ #include <lapi/fcntl.h>
+ #include <lapi/memfd.h>
+ #include <errno.h>
+@@ -28,7 +27,8 @@
+ #include <unistd.h>
+ 
+ #define TST_NO_DEFAULT_MAIN
+-#include <tst_test.h>
++#include "tst_test.h"
++#include "lapi/fallocate.h"
+ 
+ #include "linux_syscall_numbers.h"
+ 
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+1.8.4.2
+
+
+
