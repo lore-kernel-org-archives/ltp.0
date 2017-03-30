@@ -1,111 +1,174 @@
-From: Alton L Pundt <apundt@us.ibm.com>
-Date: Wed, 29 Mar 2017 21:06:07 -0600
-Subject: [LTP] mc_cmds01 needs change from netstat command to ip maddr show
-	dev
-Message-ID: <OFEAC1E085.E5C67116-ON862580F3.00105817-862580F3.00110BF2@notes.na.collabserv.com>
+From: bxue@redhat.com <bxue@redhat.com>
+Date: Thu, 30 Mar 2017 15:32:34 +0800
+Subject: [LTP] [PATCH v1 1/1] syscalls/splice04: add test for splice() from
+	pipe to pipe
+Message-ID: <1490859154-10037-1-git-send-email-bxue@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-I opened a redhat 7.3 bug when mc_cmds01 testcase was failing.   It seems 
-that netstat only allows 10 characters for the interface.
-Bug 147530 - ISST-LTE:pVM:tuliplp3 RHEL 7.3 RC 1 mc_cmds01 testcase 
-failing 
+From: Boyang Xue <bxue@redhat.com>
 
+This test case covers pipe to pipe splice operation, which was introduced in
+kernel commit 7c77f0b3: "splice: implement pipe to pipe splicing".
 
-[root@tuliplp3 faillogs]# vi mc_cmds.1476283713.22063
-Getting ALL enabled interfaces which are configured !
-Testing ifconfig and netstat
-: doing ./mc_cmds01.
-: doing ./mc_cmds01.
-Test Failed: all-host-group for enP1p112s0f0 not joined
-print $4}'
-+ INTERFACE=10.33.22.161
-+ COUNT=1
-+ '[' 1 -le 20 ']'
-+ echo 'Testing ifconfig and netstat'
-+ ifconfig enP1p112s0f0
-+ grep -q MULTICAST
-+ '[' 0 '!=' 0 ']'
-+ netstat -gn
-+ grep -q 224.0.0.1
-+ grep enP1p112s0f0
-+ '[' 1 = 0 ']'
-+ end_testcase 'all-host-group for enP1p112s0f0 not joined'
-+ set -x
-+ echo ': doing ./mc_cmds01.'
-+ '[' ON = ON ']'
-+ do_cleanup
-+ set -x
-+ echo ': doing ./mc_cmds01.'
-+ rm -rf /tmp/mc_cmds_out.1476283713.22063
-+ '[' 1 = 0 ']'
-+ echo 'Test Failed: all-host-group for enP1p112s0f0 not joined'
-+ exit 1
+Signed-off-by: Boyang Xue <bxue@redhat.com>
+---
+ runtest/syscalls                            |   1 +
+ testcases/kernel/syscalls/splice/splice04.c | 130 ++++++++++++++++++++++++++++
+ 2 files changed, 131 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/splice/splice04.c
 
-The developer showed this in the netstat.c program:
-The problem, I believe is in netstat.c - in igmp_do_one()
+diff --git a/runtest/syscalls b/runtest/syscalls
+index 15ae66e..c95da04 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -1222,6 +1222,7 @@ sockioctl01 sockioctl01
+ splice01 splice01
+ splice02 seq 1 20000 | splice02 splice02-temp
+ splice03 splice03
++splice04 splice04 -l 65536
+ 
+ tee01 tee01
+ tee02 tee02
+diff --git a/testcases/kernel/syscalls/splice/splice04.c b/testcases/kernel/syscalls/splice/splice04.c
+new file mode 100644
+index 0000000..951c004
+--- /dev/null
++++ b/testcases/kernel/syscalls/splice/splice04.c
+@@ -0,0 +1,130 @@
++/*
++ * Copyright (C) 2017 Red Hat, Inc.
++ * Author: Boyang Xue <bxue@redhat.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of version 2 of the GNU General Public
++ * License as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it would be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ *
++ * Further, this software is distributed without any warranty that it
++ * is free of the rightful claim of any third person regarding
++ * infringement or the like.  Any license provided herein, whether
++ * implied or otherwise, applies only to this software file.  Patent
++ * licenses, if any, provided herein do not apply to combinations of
++ * this program with other software, or any other product whatsoever.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
++ * 02110-1301, USA.
++ */
++
++/*
++ * Functional test for splice(2): pipe to pipe
++ *
++ * This test case tests splice(2) from a pipe to another
++ */
++
++#define _GNU_SOURCE
++#include "tst_test.h"
++#include <stdio.h>
++#include <fcntl.h>
++#include <stdlib.h>
++
++#define MAX_DATA_LEN (64*1024)
++
++static void cleanup(void);
++static void setup(void);
++static void tc_dispatcher(unsigned int n);
++static int pipe_pipe(void);
++static int cmp_data(char *arr);
++
++static char *str_len_data;
++static int num_len_data;
++static char *arr_data;
++
++static struct tst_option options[] = {
++	{"l:", &str_len_data, "-l <num> Length of test data (in bytes)"},
++	{NULL, NULL, NULL},
++};
++
++static void cleanup(void){
++}
++
++static void setup(void){
++	int i;
++
++	if (tst_parse_int(str_len_data, &num_len_data, 1, MAX_DATA_LEN)){
++		tst_brk(TBROK, "Invalid length of test data: '%s'", str_len_data);
++	}
++	arr_data = (char *) SAFE_MALLOC(num_len_data);
++	for(i = 0; i < num_len_data; i++){
++		*(arr_data + i) = i & 0xff;
++	}
++}
++
++static void tc_dispatcher(unsigned int n){
++	int ret;
++
++	switch (n){
++		case 0:
++			ret = pipe_pipe();
++			if (ret < 0){
++				tst_res(TFAIL, "splice(2) from pipe to pipe fails.");
++			} else {
++				tst_res(TPASS, "splice(2) from pipe to pipe run pass.");
++			}
++			break;
++		default:
++			tst_res(TBROK, "No corresponding test case exists.");
++			break;
++	}
++}
++
++static int cmp_data(char *arr){
++	int i;
++
++	for (i = 0; i < num_len_data; i++){
++		if (*(arr_data + i) != *(arr + i)){
++			tst_res(TBROK, "Error in comparing original data with data after splice(2): data mismatch.");
++			free(arr);
++			return -1;
++		}
++	}
++	free(arr);
++	return 0;
++}
++
++static int pipe_pipe(void){
++	char *arr;
++	int pp1[2], pp2[2];
++
++	arr = (char *) SAFE_MALLOC(num_len_data);
++	SAFE_PIPE(pp1);
++	SAFE_PIPE(pp2);
++	SAFE_WRITE(1, pp1[1], arr_data, num_len_data);
++	splice(pp1[0], NULL, pp2[1], NULL, num_len_data, SPLICE_F_MOVE);
++	SAFE_READ(1, pp2[0], arr, num_len_data);
++
++	SAFE_CLOSE(pp1[1]);
++	SAFE_CLOSE(pp1[0]);
++	SAFE_CLOSE(pp2[1]);
++	SAFE_CLOSE(pp2[0]);
++
++	return cmp_data(arr);
++}
++
++static struct tst_test test = {
++	.tid = "splice04",
++	.needs_tmpdir = 0,
++	.test = tc_dispatcher,
++	.tcnt = 1,
++	.setup = setup,
++	.cleanup = cleanup,
++	.options = options,
++	.min_kver = "2.6.31"
++};
+-- 
+1.8.3.1
 
-    if (igmp6_flag) {    /* IPV6 */
-#if HAVE_AFINET6
-        num = sscanf( line, "%d %15s %64[0-9A-Fa-f] %d", &idx, device, 
-mcast_addr, &refcnt );
-        ...
-        printf("%-15s %-6d %s\n", device, refcnt, mcast_addr)
-    } else {    /* IPV4 */
-         .... 
-         if ((num = sscanf( line, "%d\t%10c", &idx, device)) < 2) {
-                     OR
-          if ( (num = sscanf( line, "%10c", device )) < 1 ) {
-        ...
-        printf("%-15s %-6d %s\n", device, refcnt, mcast_addr );
-}
-
-So in the IPv6 case the format width is 15 - so in our instances 
-(tuliplp3/tuliplp4), the total width of the interface names fit in that 
-and are printed fully.
-
-However, for the IPv4 case, we see that the format specifier is limited to 
-only 10 characters. In the case of tuliplp4, the interface names happen to 
-be exactly 10 characters long (enp128s0f0, for example) and hence are 
-printed properly.
-
-But on tuliplp3, the interface names are longer than 10 characters. Hence 
-it prints only 10 characters (enP1p112 four times instead of enP1p112f0, 
-enP1p112f1, etc.)
-
-and also showed that using netstat is obsolete:
-This is actually covered in the netstat(8) man page:
-
-===
-NOTES
-       This program is obsolete.  Replacement for netstat is ss. 
-Replacement
-       for  netstat -r is ip route.  Replacement for netstat -i is ip -s 
-link.
-       Replacement for netstat -g is ip maddr.
-===
-
-Have you tested with "ip maddr" instead?  For example, in your script,
-
-  netstat -gn | grep $IFNAME | grep -q 224.0.0.1
-
-would become:
-
-  ip maddr show dev $IFNAME | grep -q 224.0.0.1
-
-The extra benefit here is one less subshell and grep command to look for 
-the target multicast group.
-
-Thanks,
-A.P. Pundt
-sametime:apundt@us.ibm.com
-office:512-286-8093
-office: 45/3A-97
-IBM-Austin, Texas
-
--------------- next part --------------
-An HTML attachment was scrubbed...
-URL: <http://lists.linux.it/pipermail/ltp/attachments/20170329/3d6e1d16/attachment.html>
