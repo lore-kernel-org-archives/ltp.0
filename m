@@ -1,9 +1,11 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 30 Mar 2017 15:53:31 +0200
-Subject: [LTP] [PATCH 1/1] realtime: Fix include for out-of-tree build
-In-Reply-To: <20170329145120.1389-1-pvorel@suse.cz>
-References: <20170329145120.1389-1-pvorel@suse.cz>
-Message-ID: <20170330135331.GJ12095@rei.lan>
+Date: Thu, 30 Mar 2017 16:04:21 +0200
+Subject: [LTP] [PATCH v2] syscalls/memfd_create: Fix build failure when
+ HAVE_FALLOCATE not defined
+In-Reply-To: <1490870937-1160-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+References: <58DCD4B1.5060705@cn.fujitsu.com>
+ <1490870937-1160-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+Message-ID: <20170330140421.GK12095@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -11,23 +13,30 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> Signed-off-by: Petr Vorel <pvorel@suse.cz>
-> ---
->  testcases/realtime/lib/Makefile | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/testcases/realtime/lib/Makefile b/testcases/realtime/lib/Makefile
-> index 9a29ee7ce..71d73dd4b 100644
-> --- a/testcases/realtime/lib/Makefile
-> +++ b/testcases/realtime/lib/Makefile
-> @@ -25,7 +25,7 @@ top_srcdir		?= ../../..
->  
->  include $(top_srcdir)/include/mk/env_pre.mk
->  
-> -CFLAGS			+= -D_GNU_SOURCE -I../include/
-> +CFLAGS			+= -D_GNU_SOURCE -I$(top_srcdir)/testcases/realtime/include/ -I$(top_builddir)/testcases/realtime/include/
+Pushed with cosmetic changes and ack from Jan, thanks.
 
-I've fixed this line to be under 80 chars and pushed, thanks.
+> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
+> index 8612db7..ddf9f05 100644
+> --- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
+> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
+> @@ -18,7 +18,6 @@
+>  #include <sys/types.h>
+>  #include <sys/syscall.h>
+>  #include <sys/uio.h>
+> -#include <lapi/fallocate.h>
+>  #include <lapi/fcntl.h>
+>  #include <lapi/memfd.h>
+>  #include <errno.h>
+> @@ -28,7 +27,8 @@
+>  #include <unistd.h>
+>  
+>  #define TST_NO_DEFAULT_MAIN
+> -#include <tst_test.h>
+> +#include "tst_test.h"
+> +#include "lapi/fallocate.h"
+
+I've moved the rest of the lapi headers down here so they stay grouped
+toghether.
 
 -- 
 Cyril Hrubis
