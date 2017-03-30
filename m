@@ -1,43 +1,75 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 30 Mar 2017 16:04:21 +0200
-Subject: [LTP] [PATCH v2] syscalls/memfd_create: Fix build failure when
- HAVE_FALLOCATE not defined
-In-Reply-To: <1490870937-1160-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-References: <58DCD4B1.5060705@cn.fujitsu.com>
- <1490870937-1160-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
-Message-ID: <20170330140421.GK12095@rei.lan>
+From: Alton L Pundt <apundt@us.ibm.com>
+Date: Thu, 30 Mar 2017 08:15:49 -0600
+Subject: [LTP] mc_cmds01 needs change from netstat command to ip maddr
+	show dev
+In-Reply-To: <20170330133743.vvtdzu662t755b6u@dell5510>
+References: <OFEAC1E085.E5C67116-ON862580F3.00105817-862580F3.00110BF2@notes.na.collabserv.com>
+ <20170330133743.vvtdzu662t755b6u@dell5510>
+Message-ID: <OFE5AA8B6F.73052B3F-ON862580F3.004E361A-862580F3.004E5BC2@notes.na.collabserv.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-Pushed with cosmetic changes and ack from Jan, thanks.
+The last email I have from the guy that maintains our testcase repository 
+said:
 
-> diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-> index 8612db7..ddf9f05 100644
-> --- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-> +++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-> @@ -18,7 +18,6 @@
->  #include <sys/types.h>
->  #include <sys/syscall.h>
->  #include <sys/uio.h>
-> -#include <lapi/fallocate.h>
->  #include <lapi/fcntl.h>
->  #include <lapi/memfd.h>
->  #include <errno.h>
-> @@ -28,7 +27,8 @@
->  #include <unistd.h>
->  
->  #define TST_NO_DEFAULT_MAIN
-> -#include <tst_test.h>
-> +#include "tst_test.h"
-> +#include "lapi/fallocate.h"
+LTP testcase updated to 20170116 for ubuntu17.04
 
-I've moved the rest of the lapi headers down here so they stay grouped
-toghether.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+Thanks,
+A.P. Pundt
+sametime:apundt@us.ibm.com
+office:512-286-8093
+office: 45/3A-97
+IBM-Austin, Texas
+
+
+
+From:   Petr Vorel <pvorel@suse.cz>
+To:     Alton L Pundt/Austin/IBM@IBMUS
+Cc:     ltp@lists.linux.it
+Date:   03/30/2017 08:37 AM
+Subject:        Re: [LTP] mc_cmds01 needs change from netstat command to 
+ip maddr show dev
+
+
+
+Hi Alton,
+
+> Have you tested with "ip maddr" instead?  For example, in your script,
+
+>   netstat -gn | grep $IFNAME | grep -q 224.0.0.1
+
+> would become:
+
+>   ip maddr show dev $IFNAME | grep -q 224.0.0.1
+
+> The extra benefit here is one less subshell and grep command to look for 
+
+> the target multicast group.
+
+Which version of LTP do you use? netstat and ifconfig was replaced with ip 
+a while ago in
+commit 491423d9f695480a18abc2ad4167aad51b06be96 [1], released in LTP 
+20150420.
+
+Can you test it with recent release?
+
+
+Kind regards,
+Petr
+
+[1] 
+https://github.com/linux-test-project/ltp/commit/491423d9f695480a18abc2ad4167aad51b06be96
+
+
+
+
+
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170330/9ef424b6/attachment.html>
