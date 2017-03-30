@@ -1,73 +1,51 @@
-From: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
-Date: Thu, 30 Mar 2017 18:48:57 +0800
-Subject: [LTP] [PATCH v2] syscalls/memfd_create: Fix build failure when
-	HAVE_FALLOCATE not defined
-In-Reply-To: <58DCD4B1.5060705@cn.fujitsu.com>
-References: <58DCD4B1.5060705@cn.fujitsu.com>
-Message-ID: <1490870937-1160-1-git-send-email-fenggw-fnst@cn.fujitsu.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 30 Mar 2017 12:59:21 +0200
+Subject: [LTP] Out-of-tree build missing some data files.
+In-Reply-To: <CAEemH2cMoGycJxb13zDBP9xijMb5p2OfyTXsXUom-n8zJNFboQ@mail.gmail.com>
+References: <BN6PR11MB2051C2F128C4DC206D611144CD3F0@BN6PR11MB2051.namprd11.prod.outlook.com>
+ <20170328133708.GF1045@rei>
+ <BN6PR11MB20517B46C814B90AB73E3D43CD320@BN6PR11MB2051.namprd11.prod.outlook.com>
+ <20170329133156.GF7089@rei.lan>
+ <BN6PR11MB20512A7C76A7882343FFDE98CD350@BN6PR11MB2051.namprd11.prod.outlook.com>
+ <CAEemH2cMoGycJxb13zDBP9xijMb5p2OfyTXsXUom-n8zJNFboQ@mail.gmail.com>
+Message-ID: <20170330105920.GC12095@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
----
- include/lapi/fallocate.h                                     | 11 +++++++++--
- testcases/kernel/syscalls/memfd_create/memfd_create_common.c |  4 ++--
- 2 files changed, 11 insertions(+), 4 deletions(-)
+Hi!
+> I'm trying to build ltp out of tree but failed with errors like:
+> 
+> =========
+> make[2]: Leaving directory `/root/ltp-build/testcases/lib'
+> make[2]: Entering directory `/root/ltp-build/testcases/open_posix_testsuite'
+> /root/ltp/testcases/open_posix_testsuite/Makefile:38: Makefile.linux:
+> No such file or directory
+> make[2]: *** No rule to make target `Makefile.linux'.  Stop.
+> make[2]: Leaving directory `/root/ltp-build/testcases/open_posix_testsuite'
+> make[1]: *** [all] Error 2
+> =========
+> 
+> Two problems here:
+> 
+> 1. The open_posix_testuite is also compiling in this time, but I
+> remember I didn't pass any parameter to config that.
 
-diff --git a/include/lapi/fallocate.h b/include/lapi/fallocate.h
-index 79d0b7b..aa32ff3 100644
---- a/include/lapi/fallocate.h
-+++ b/include/lapi/fallocate.h
-@@ -48,13 +48,20 @@
- #endif
- 
- #if !defined(HAVE_FALLOCATE)
-+
-+#ifdef __TEST_H__
-+# define TST_SYSCALL_WRAPPER ltp_syscall
-+#else
-+# define TST_SYSCALL_WRAPPER tst_syscall
-+#endif /* __TEST_H__ */
-+
- static inline long fallocate(int fd, int mode, loff_t offset, loff_t len)
- {
- 	/* Deal with 32bit ABIs that have 64bit syscalls. */
- # if LTP_USE_64_ABI
--	return ltp_syscall(__NR_fallocate, fd, mode, offset, len);
-+	return TST_SYSCALL_WRAPPER(__NR_fallocate, fd, mode, offset, len);
- # else
--	return (long)ltp_syscall(__NR_fallocate, fd, mode,
-+	return (long)TST_SYSCALL_WRAPPER(__NR_fallocate, fd, mode,
- 				 __LONG_LONG_PAIR((off_t) (offset >> 32),
- 						  (off_t) offset),
- 				 __LONG_LONG_PAIR((off_t) (len >> 32),
-diff --git a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-index 8612db7..ddf9f05 100644
---- a/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-+++ b/testcases/kernel/syscalls/memfd_create/memfd_create_common.c
-@@ -18,7 +18,6 @@
- #include <sys/types.h>
- #include <sys/syscall.h>
- #include <sys/uio.h>
--#include <lapi/fallocate.h>
- #include <lapi/fcntl.h>
- #include <lapi/memfd.h>
- #include <errno.h>
-@@ -28,7 +27,8 @@
- #include <unistd.h>
- 
- #define TST_NO_DEFAULT_MAIN
--#include <tst_test.h>
-+#include "tst_test.h"
-+#include "lapi/fallocate.h"
- 
- #include "linux_syscall_numbers.h"
- 
+I noticed it as well, my guess is that this was broken by:
+
+https://github.com/linux-test-project/ltp/issues/143
+
+but I haven't had time to investigate yet.
+
+> 2. It obviously could not build open_posix_testsuite out of tree
+> successfully, should we fix this for LTP?
+
+Looks like somebody is already working on that:
+
+https://github.com/linux-test-project/ltp/pull/130
+
 -- 
-1.8.4.2
-
-
-
+Cyril Hrubis
+chrubis@suse.cz
