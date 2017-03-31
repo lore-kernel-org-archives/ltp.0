@@ -1,67 +1,42 @@
-From: charishma <charishm@linux.vnet.ibm.com>
-Date: Fri, 31 Mar 2017 15:59:54 +0530
-Subject: [LTP] [PATCH] Fix hugemmap05 failure on ppc32 architecture
-Message-ID: <ac20b5ca-62e5-1b26-d5f1-1bee214d8923@linux.vnet.ibm.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 31 Mar 2017 13:29:19 +0200
+Subject: [LTP] [COMMITTED] [PATCH] syscalls/access02: Fix test with busybox
+Message-ID: <20170331112919.19425-1-chrubis@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-hugemmap05 failed due to data type exceed to limit in 32 bit architectures.
+The problem here is that system executes '/bin/sh -c foo' then shell
+tries to execute the filename but kernel does not recognize the
+excutable format (of an empty file) hence libc fallbacks to
+execvp('/bin/sh', argv[0], foo, ...) and because the filename in argv[0]
+is passed as executable name it causes busybox return "applet does not
+exist" error.
 
-In hugemmap.c,
+Hence we write "!/bin/sh" shebang to the executable file which tells the
+shell that this is a shell script and we avoid running the execvp() in
+the first place.
 
-addr = mmap(ADDR, (long)(length / 2 * hugepagesize), PROTECTION,FLAGS, 
-fd, 0);
-
-In the above expression, mmap size data type is long, which execeeds the 
-limit in 32 bit while runing hugemmap05 tests, due to which 
-hugemap05,hugemmap05_1,hugemmap05_2,hugemmap05_3 is failing.
-
-Signed-off-by: Basavaraju< basava@linux.vnet.ibm.com >
+Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+Reported-by: Laurent GONZALEZ <ltp@gezedo.com>
 ---
-  testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c | 10 +++++-----
-  1 file changed, 5 insertions(+), 5 deletions(-)
+ testcases/kernel/syscalls/access/access02.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c 
-b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-index b127566..6ea397e 100644
---- a/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-+++ b/testcases/kernel/mem/hugetlb/hugemmap/hugemmap05.c
-@@ -161,7 +161,7 @@ static void overcommit(void)
-          fd = open(s, O_CREAT | O_RDWR, 0755);
-          if (fd == -1)
-              tst_brkm(TBROK | TERRNO, cleanup, "open");
--        addr = mmap(ADDR, (long)(length / 2 * hugepagesize), PROTECTION,
-+        addr = mmap(ADDR, (unsigned long)(length / 2 * hugepagesize), 
-PROTECTION,
-                  FLAGS, fd, 0);
-          if (addr == MAP_FAILED) {
-              close(fd);
-@@ -387,18 +387,18 @@ static void setup(void)
-
-  static void write_bytes(void *addr)
-  {
--    long i;
-+    unsigned long i;
-
--    for (i = 0; i < (long)(length / 2 * hugepagesize); i++)
-+    for (i = 0; i < (unsigned long)(length / 2 * hugepagesize); i++)
-          ((char *)addr)[i] = '\a';
-  }
-
-  static void read_bytes(void *addr)
-  {
--    long i;
-+    unsigned long i;
-
-      tst_resm(TINFO, "First hex is %x", *((unsigned int *)addr));
--    for (i = 0; i < (long)(length / 2 * hugepagesize); i++) {
-+    for (i = 0; i < (unsigned long)(length / 2 * hugepagesize); i++) {
-          if (((char *)addr)[i] != '\a') {
-              tst_resm(TFAIL, "mismatch@%ld", i);
-              break;
+diff --git a/testcases/kernel/syscalls/access/access02.c b/testcases/kernel/syscalls/access/access02.c
+index 779e81a..86e0342 100644
+--- a/testcases/kernel/syscalls/access/access02.c
++++ b/testcases/kernel/syscalls/access/access02.c
+@@ -187,6 +187,7 @@ static void setup(void)
+ 	SAFE_TOUCH(FNAME_R, 0444, NULL);
+ 	SAFE_TOUCH(FNAME_W, 0222, NULL);
+ 	SAFE_TOUCH(FNAME_X, 0555, NULL);
++	SAFE_FILE_PRINTF(FNAME_X, "#!/bin/sh\n");
+ 
+ 	SAFE_SYMLINK(FNAME_F, SNAME_F);
+ 	SAFE_SYMLINK(FNAME_R, SNAME_R);
 -- 
-2.5.5
+2.10.2
 
