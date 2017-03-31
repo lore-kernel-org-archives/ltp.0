@@ -1,56 +1,138 @@
-From: Laurent GONZALEZ <ltp@gezedo.com>
-Date: Fri, 31 Mar 2017 09:58:02 +0200
-Subject: [LTP] Access02 and use of system() library function
-In-Reply-To: <20170330141913.GA886@rei.lan>
-References: <beacb487-181d-2d9c-380a-128b985b2250@gezedo.com>
- <20170320111128.GA3322@rei.lan>
- <1e809374-8b45-aae8-69b2-14a0728fc2d6@gezedo.com>
- <20170330141913.GA886@rei.lan>
-Message-ID: <c5d9de57-9847-1471-210f-b4a053237ab1@gezedo.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 31 Mar 2017 10:40:24 +0200
+Subject: [LTP] [PATCH] syscalls/madvise: Handle zero page poisoning
+In-Reply-To: <20170329152858.1da7d177@linux-v3j5>
+References: <20170329152858.1da7d177@linux-v3j5>
+Message-ID: <20170331084024.GA17943@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 30/03/2017 16:19, Cyril Hrubis wrote:
-> Hi!
->>> What LTP version is this? The access02 test was rewritten some time ago and
->>> there is no test_file3 since commit:
->>>
->>> commit adb3e23d9de5f8ff54d2395112f79f25c36cf598
->>> Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
->>> Date:   Wed Jul 20 18:44:39 2016 +0800
->>>
->>>     syscalls/access02: reconstruct and convert to new API
->>>
->>> Which is included in last to stable releases....
->>>
->> You're right, i am using an old version of LTP (20160126).
->>
->> It does not change my remark anyway, newer test does X_OK test using
->> system() library function. The return value is checked against 0 for
->> success, whereas I suggest that it should check against any positive
->> value, or even against any value but -1.
-> Hmm, we can always write a shebang to the file then the file should be
-> recognized by shell, right?
->
-> Does this fixes the issue:
->
-> diff --git a/testcases/kernel/syscalls/access/access02.c b/testcases/kernel/syscalls/access/access02.c
-> index 779e81a..86e0342 100644
-> --- a/testcases/kernel/syscalls/access/access02.c
-> +++ b/testcases/kernel/syscalls/access/access02.c
-> @@ -187,6 +187,7 @@ static void setup(void)
->  	SAFE_TOUCH(FNAME_R, 0444, NULL);
->  	SAFE_TOUCH(FNAME_W, 0222, NULL);
->  	SAFE_TOUCH(FNAME_X, 0555, NULL);
-> +	SAFE_FILE_PRINTF(FNAME_X, "#!/bin/sh\n");
+On Wed, Mar 29, 2017 at 03:28:58PM +0200, Richard Palethorpe wrote:
+> Treat failures for an un-populated MAP_PRIVATE mapping as configuration
+> failures because we are trying to do something which is not necessarily
+> expected to work. I have included some documentation for what is happening
+> with the zero page in this instance and what is likely to happen in the
+> future.
+> 
+> Also add a test case for MAP_PRIVATE with MAP_POPULATE, which is well defined,
+> and make the test slightly more verbose to help identify which variant is
+> running when there is an error.
+> 
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>  testcases/kernel/syscalls/madvise/madvise07.c | 38 ++++++++++++++++++++++-----
+>  1 file changed, 31 insertions(+), 7 deletions(-)
+> 
+> diff --git a/testcases/kernel/syscalls/madvise/madvise07.c b/testcases/kernel/syscalls/madvise/madvise07.c
+> index 2f8c42efc..2fa553a07 100644
+> --- a/testcases/kernel/syscalls/madvise/madvise07.c
+> +++ b/testcases/kernel/syscalls/madvise/madvise07.c
+> @@ -23,9 +23,18 @@
+>   *	      mark memory with MADV_HWPOISON inside child process,
+>   *	      access memory,
+>   *	      if SIGBUS is delivered to child the test passes else it fails
+> + *
+> + * When MAP_PRIVATE is set (without MAP_POPULATE) madvise() may error with
+> + * EBUSY on the first attempt and succeed on the second, but without poisoning
+> + * any memory. A private mapping is only populated with pages once it is
+> + * accessed and poisoning an unmapped VM range is essentially undefined
+> + * behaviour. However madvise() itself causes the address to be mapped to the
+> + * zero page. If/when the zero page can be poisoned then the test may pass
+> + * without any error. For now we just consider it a configuration failure.
+>   */
 >  
->  	SAFE_SYMLINK(FNAME_F, SNAME_F);
->  	SAFE_SYMLINK(FNAME_R, SNAME_R);
->
-Yes it does, and the test passes.
+>  #include <stdlib.h>
+> +#include <stdio.h>
+>  #include <sys/wait.h>
+>  #include <fcntl.h>
+>  #include <unistd.h>
+> @@ -35,18 +44,24 @@
+>  #include "tst_test.h"
+>  #include "lapi/mmap.h"
+>  
+> -#define MAPTYPE(m) m == MAP_SHARED ? "MAP_SHARED" : "MAP_PRIVATE"
+> +#define MAPTYPE(m) (m == MAP_SHARED ? "MAP_SHARED" :	\
+> +		    (m == MAP_PRIVATE ? "MAP_PRIVATE" :	\
+> +		     "MAP_PRIVATE | MAP_POPULATE"))
 
-IMHO returning explicitely 0 (exit 0) will make the test even more robust, because 0 is the value returned by the system() library function call, and expected by the test.
+This is getting a bit out of hand, can we change this into a function
+instead?
 
+static const char *maptype(int mtype)
+{
+	switch (mtype) {
+	case MAP_SHARED:
+		return "MAP_SHARED";
+	...
+	default:
+		return "???";
+	}
+}
+
+>  static int maptypes[] = {
+>  	MAP_PRIVATE,
+> +	MAP_PRIVATE | MAP_POPULATE,
+>  	MAP_SHARED
+>  };
+>  
+>  static void run_child(int maptype)
+>  {
+> -	const size_t msize = 4096;
+> +	const size_t msize = getpagesize();
+>  	void *mem = NULL;
+> +	int first_attempt = 1;
+>  
+> +	tst_res(TINFO,
+> +		"mmap(..., MAP_ANONYMOUS | %s, ...)", MAPTYPE(maptype));
+>  	mem = SAFE_MMAP(NULL,
+>  			msize,
+>  			PROT_READ | PROT_WRITE,
+> @@ -54,22 +69,31 @@ static void run_child(int maptype)
+>  			-1,
+>  			0);
+>  
+> +do_madvise:
+>  	tst_res(TINFO, "madvise(%p, %zu, MADV_HWPOISON)", mem, msize);
+>  	if (madvise(mem, msize, MADV_HWPOISON) == -1) {
+>  		if (errno == EINVAL)
+>  			tst_res(TCONF | TERRNO,
+>  				"CONFIG_MEMORY_FAILURE probably not set in kconfig");
+> -		else
+> +		else if (errno == EBUSY && maptype == MAP_PRIVATE) {
+> +			tst_res(TCONF,
+> +				"Madvise failed with EBUSY");
+> +			if (first_attempt--)
+> +				goto do_madvise;
+> +		} else
+>  			tst_res(TFAIL | TERRNO, "Could not poison memory");
+>  		exit(0);
+>  	}
+>  
+>  	*((char *)mem) = 'd';
+>  
+> -	tst_res(TFAIL,
+> -		"Did not receive SIGBUS after accessing %s memory marked "
+> -		"with MADV_HWPOISON",
+> -		MAPTYPE(maptype));
+> +	if (maptype == MAP_PRIVATE)
+> +		tst_res(TCONF,
+> +			"Zero page poisoning is probably not implemented");
+> +	else
+> +		tst_res(TFAIL,
+> +			"Did not receive SIGBUS after accessing %s memory marked"
+> +			" with MADV_HWPOISON", MAPTYPE(maptype));
+>  }
+>  
+>  static void run(unsigned int n)
+> -- 
+> 2.12.0
+> 
+> -- 
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
