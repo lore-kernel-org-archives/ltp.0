@@ -1,32 +1,65 @@
 From: Li Wang <liwang@redhat.com>
-Date: Fri, 31 Mar 2017 14:01:15 +0800
-Subject: [LTP] [RFC PATCH 00/13] Convert LTP kernel/mem/testcase to New
-	API
-In-Reply-To: <20170330154358.GC886@rei.lan>
+Date: Fri, 31 Mar 2017 14:36:51 +0800
+Subject: [LTP] [RFC PATCH 01/13] mem/lib: convert to new API
+In-Reply-To: <20170330155503.GD886@rei.lan>
 References: <20170328032239.11917-1-liwang@redhat.com>
- <20170330154358.GC886@rei.lan>
-Message-ID: <CAEemH2cFcBz9QhZ8g+mZ2-z5RbCShU4eBcqnmwv1y+_=RWASrw@mail.gmail.com>
+ <20170328032239.11917-2-liwang@redhat.com>
+ <20170330155503.GD886@rei.lan>
+Message-ID: <CAEemH2cE4ceo0++ayfzgaXS0LOPd17nfibrGWdo1GfTRnJUXmQ@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Thu, Mar 30, 2017 at 11:43 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
-> Hi!
->> Seems the failed reason in oom02/5 is not testcase issue, it just because New API sets
->> test time in 5mins.
+On Thu, Mar 30, 2017 at 11:55 PM, Cyril Hrubis <chrubis@suse.cz> wrote:
+>>
+>> -     tst_brkm(TBROK, cleanup, "cannot find \"%s\" in %s",
+>> +     tst_brk(TBROK, "cannot find \"%s\" in %s",
+>>                item, PATH_MEMINFO);
+>>  }
 >
-> The test_test structure has .timeout variable that, if set, overrides
-> the default timeout. All you need to do is to to measure how long the
-> test takes, then multiply it by something as 2 to be on a safe side
-> and set the .timeout correspondingly.
+>
+> The read_meminfo() function body could be replaced with one call to
+> SAFE_FILE_LINES_SCANF().
+>
 
-Yes, but the problem we face is oom01 spend time is not the same on
-different memory size machines. So, I'm afraid it is meaningless to
-measure how long it takes on a fixed system.
+I saw this MACRO, but it doesn't work with too much pointers which
+transfered by multi level function.
 
-Or, how about we just set a big vague number (i.e ".timeout = 3600")?
+This test program is not work:
+=======================
+
+#include <stdio.h>
+#include "tst_test.h"
+
+long read_meminfo(char *item)
+{
+        long val;
+
+        SAFE_FILE_LINES_SCANF("/proc/meminfo", "%s %ld", item, &val);
+
+        return val;
+}
+
+
+static void do_test(void)
+{
+        long dummy;
+
+        dummy = read_meminfo("MemFree:");
+
+        tst_res(TPASS, "dummy = %ld", dummy);
+}
+
+static struct tst_test test = {
+        .tid = "tst_safe_fileops",
+        .test_all = do_test,
+};
+
+=================================
+
+And, no objection to the rest of comments.
 
 
 -- 
