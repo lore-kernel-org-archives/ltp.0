@@ -1,42 +1,32 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 31 Mar 2017 13:29:19 +0200
-Subject: [LTP] [COMMITTED] [PATCH] syscalls/access02: Fix test with busybox
-Message-ID: <20170331112919.19425-1-chrubis@suse.cz>
+Date: Fri, 31 Mar 2017 13:29:35 +0200
+Subject: [LTP] Access02 and use of system() library function
+In-Reply-To: <c5d9de57-9847-1471-210f-b4a053237ab1@gezedo.com>
+References: <beacb487-181d-2d9c-380a-128b985b2250@gezedo.com>
+ <20170320111128.GA3322@rei.lan>
+ <1e809374-8b45-aae8-69b2-14a0728fc2d6@gezedo.com>
+ <20170330141913.GA886@rei.lan>
+ <c5d9de57-9847-1471-210f-b4a053237ab1@gezedo.com>
+Message-ID: <20170331112935.GD17943@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-The problem here is that system executes '/bin/sh -c foo' then shell
-tries to execute the filename but kernel does not recognize the
-excutable format (of an empty file) hence libc fallbacks to
-execvp('/bin/sh', argv[0], foo, ...) and because the filename in argv[0]
-is passed as executable name it causes busybox return "applet does not
-exist" error.
+Hi!
+> Yes it does, and the test passes.
 
-Hence we write "!/bin/sh" shebang to the executable file which tells the
-shell that this is a shell script and we avoid running the execvp() in
-the first place.
+I've pushed the fix.
 
-Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
-Reported-by: Laurent GONZALEZ <ltp@gezedo.com>
----
- testcases/kernel/syscalls/access/access02.c | 1 +
- 1 file changed, 1 insertion(+)
+> IMHO returning explicitely 0 (exit 0) will make the test even more
+> robust, because 0 is the value returned by the system() library
+> function call, and expected by the test.
 
-diff --git a/testcases/kernel/syscalls/access/access02.c b/testcases/kernel/syscalls/access/access02.c
-index 779e81a..86e0342 100644
---- a/testcases/kernel/syscalls/access/access02.c
-+++ b/testcases/kernel/syscalls/access/access02.c
-@@ -187,6 +187,7 @@ static void setup(void)
- 	SAFE_TOUCH(FNAME_R, 0444, NULL);
- 	SAFE_TOUCH(FNAME_W, 0222, NULL);
- 	SAFE_TOUCH(FNAME_X, 0555, NULL);
-+	SAFE_FILE_PRINTF(FNAME_X, "#!/bin/sh\n");
- 
- 	SAFE_SYMLINK(FNAME_F, SNAME_F);
- 	SAFE_SYMLINK(FNAME_R, SNAME_R);
+The POSIX specification requires the sh to exit with zero if the input
+file is empty or consits solely of blank lines and comments. So I would
+say that file with just a shebang is robust enough.
+
 -- 
-2.10.2
-
+Cyril Hrubis
+chrubis@suse.cz
