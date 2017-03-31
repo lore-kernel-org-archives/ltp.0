@@ -1,62 +1,56 @@
-From: Li Wang <liwang@redhat.com>
-Date: Fri, 31 Mar 2017 15:34:10 +0800
-Subject: [LTP] [RFC PATCH 00/13] Convert LTP kernel/mem/testcase to New
-	API
-In-Reply-To: <1856913062.17824117.1490944194254.JavaMail.zimbra@redhat.com>
-References: <20170328032239.11917-1-liwang@redhat.com>
- <20170330154358.GC886@rei.lan>
- <1856913062.17824117.1490944194254.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2eP2KYkQCFxXQwZQ1Cjn16dk7zmqiHQde6DmcMrrvpyRQ@mail.gmail.com>
+From: Laurent GONZALEZ <ltp@gezedo.com>
+Date: Fri, 31 Mar 2017 09:58:02 +0200
+Subject: [LTP] Access02 and use of system() library function
+In-Reply-To: <20170330141913.GA886@rei.lan>
+References: <beacb487-181d-2d9c-380a-128b985b2250@gezedo.com>
+ <20170320111128.GA3322@rei.lan>
+ <1e809374-8b45-aae8-69b2-14a0728fc2d6@gezedo.com>
+ <20170330141913.GA886@rei.lan>
+Message-ID: <c5d9de57-9847-1471-210f-b4a053237ab1@gezedo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Mar 31, 2017 at 3:09 PM, Jan Stancek <jstancek@redhat.com> wrote:
->
->
->
->
-> ----- Original Message -----
->> From: "Cyril Hrubis" <chrubis@suse.cz>
->> To: "Li Wang" <liwang@redhat.com>
->> Cc: ltp@lists.linux.it
->> Sent: Thursday, 30 March, 2017 5:43:58 PM
->> Subject: Re: [LTP] [RFC PATCH 00/13] Convert LTP kernel/mem/testcase to New API
+On 30/03/2017 16:19, Cyril Hrubis wrote:
+> Hi!
+>>> What LTP version is this? The access02 test was rewritten some time ago and
+>>> there is no test_file3 since commit:
+>>>
+>>> commit adb3e23d9de5f8ff54d2395112f79f25c36cf598
+>>> Author: Guangwen Feng <fenggw-fnst@cn.fujitsu.com>
+>>> Date:   Wed Jul 20 18:44:39 2016 +0800
+>>>
+>>>     syscalls/access02: reconstruct and convert to new API
+>>>
+>>> Which is included in last to stable releases....
+>>>
+>> You're right, i am using an old version of LTP (20160126).
 >>
->> Hi!
->> > Seems the failed reason in oom02/5 is not testcase issue, it just because
->> > New API sets
->> > test time in 5mins.
->>
->> The test_test structure has .timeout variable that, if set, overrides
->> the default timeout. All you need to do is to to measure how long the
->> test takes, then multiply it by something as 2 to be on a safe side
->> and set the .timeout correspondingly.
+>> It does not change my remark anyway, newer test does X_OK test using
+>> system() library function. The return value is checked against 0 for
+>> success, whereas I suggest that it should check against any positive
+>> value, or even against any value but -1.
+> Hmm, we can always write a shebang to the file then the file should be
+> recognized by shell, right?
 >
-> OOM tests depend on amount of RAM+swap, so it's going to vary a lot.
-> I'd say safe side is in order of hours.
+> Does this fixes the issue:
 >
-> Other options that come to mind:
-> - formula based on amount of RAM and swap
-> - we measure how long it takes to fill 1GB of RAM/swap, and scale that up
-> - we run all OOM tests in mem cgroup with fixed mem/swap limit,
->   and set timeout according to worse case / slowest system
+> diff --git a/testcases/kernel/syscalls/access/access02.c b/testcases/kernel/syscalls/access/access02.c
+> index 779e81a..86e0342 100644
+> --- a/testcases/kernel/syscalls/access/access02.c
+> +++ b/testcases/kernel/syscalls/access/access02.c
+> @@ -187,6 +187,7 @@ static void setup(void)
+>  	SAFE_TOUCH(FNAME_R, 0444, NULL);
+>  	SAFE_TOUCH(FNAME_W, 0222, NULL);
+>  	SAFE_TOUCH(FNAME_X, 0555, NULL);
+> +	SAFE_FILE_PRINTF(FNAME_X, "#!/bin/sh\n");
+>  
+>  	SAFE_SYMLINK(FNAME_F, SNAME_F);
+>  	SAFE_SYMLINK(FNAME_R, SNAME_R);
+>
+Yes it does, and the test passes.
 
-This looks fine. But if we set all OOM tests in mem cgroup, that will
-make this test range is limited.
+IMHO returning explicitely 0 (exit 0) will make the test even more robust, because 0 is the value returned by the system() library function call, and expected by the test.
 
-How about divide it into two part:
-
-1. OOM test take original way on small (less than 100G) RAM, and we
-set the .timeout according to the spent time on 100G system.
-
-2. If system RAM large than 100G, we go to the cgroup limited way.
-
-
-
--- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
