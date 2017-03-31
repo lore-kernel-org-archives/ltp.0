@@ -1,37 +1,46 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Fri, 31 Mar 2017 02:46:01 -0400 (EDT)
-Subject: [LTP] [PATCH 1/1] gitignore: Add run.sh files from open posix
- testsuite
-In-Reply-To: <20170330220316.yemgtriv743wuj2k@x230>
-References: <20170329125346.8182-1-pvorel@suse.cz>
- <1316825081.17380595.1490879414688.JavaMail.zimbra@redhat.com>
- <20170330132405.GI12095@rei.lan> <20170330220316.yemgtriv743wuj2k@x230>
-Message-ID: <1741239594.17814876.1490942761228.JavaMail.zimbra@redhat.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Fri, 31 Mar 2017 08:46:46 +0200
+Subject: [LTP] [RFC PATCH 01/13] mem/lib: convert to new API
+In-Reply-To: <CAEemH2cE4ceo0++ayfzgaXS0LOPd17nfibrGWdo1GfTRnJUXmQ@mail.gmail.com>
+References: <20170328032239.11917-1-liwang@redhat.com>
+ <20170328032239.11917-2-liwang@redhat.com>
+ <20170330155503.GD886@rei.lan>
+ <CAEemH2cE4ceo0++ayfzgaXS0LOPd17nfibrGWdo1GfTRnJUXmQ@mail.gmail.com>
+Message-ID: <20170331064645.GA7552@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-
-
-
-
------ Original Message -----
-> From: "Petr Vorel" <pvorel@suse.cz>
-> To: "Cyril Hrubis" <chrubis@suse.cz>
-> Cc: "Jan Stancek" <jstancek@redhat.com>, ltp@lists.linux.it
-> Sent: Friday, 31 March, 2017 12:03:16 AM
-> Subject: Re: [LTP] [PATCH 1/1] gitignore: Add run.sh files from open posix testsuite
+Hi!
+> I saw this MACRO, but it doesn't work with too much pointers which
+> transfered by multi level function.
 > 
-> Hi!
-> > > Can't we add some pattern to topmost .gitignore to cover all these cases?
+> This test program is not work:
+> =======================
 > 
-> > +1
+> #include <stdio.h>
+> #include "tst_test.h"
 > 
-> Sure, good idea :-). Jan, please push your patch.
+> long read_meminfo(char *item)
+> {
+>         long val;
+> 
+>         SAFE_FILE_LINES_SCANF("/proc/meminfo", "%s %ld", item, &val);
 
-Pushed.
+This is because the item has to be part of the matching string and not a
+item to be matched the "%s %ld" string would match first line in the
+/proc/meminfo. The easiest solution would be turning this into a macro:
 
-Regards,
-Jan
+#define SAFE_READ_MEMINFO(item) \
+	({long tst_rval; \
+	  SAFE_FILE_LINES_SCANF("/proc/meminfo", item " %ld",
+	  &tst_rval); \
+
+This of course works only when item is compile time string constant, but
+I doubt that we use it with anything else.
+
+-- 
+Cyril Hrubis
+chrubis@suse.cz
