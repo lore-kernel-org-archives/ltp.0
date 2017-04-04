@@ -1,156 +1,53 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Mon, 3 Apr 2017 17:14:49 +0200
-Subject: [LTP] [PATCH v2 1/1] syscalls/splice04: add test for splice()
- from pipe to pipe
-In-Reply-To: <1490951934-17763-1-git-send-email-bxue@redhat.com>
-References: <1490951934-17763-1-git-send-email-bxue@redhat.com>
-Message-ID: <20170403151449.GA25596@rei.lan>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 4 Apr 2017 13:50:24 +0300
+Subject: [LTP] [RFC PATCH v2 2/3] network: Add tool for setup IP
+	variables
+In-Reply-To: <20170403123118.4p2xuzwzq34s46rv@x230>
+References: <20170403071428.11754-1-pvorel@suse.cz>
+ <20170403071428.11754-3-pvorel@suse.cz>
+ <7cdee769-8b90-a7d4-bb82-09cadce47f46@oracle.com>
+ <20170403123118.4p2xuzwzq34s46rv@x230>
+Message-ID: <ae28eabb-494f-ef35-d983-e0685f98deaa@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> +/*
-> + * Functional test for splice(2): pipe to pipe
-> + *
-> + * This test case tests splice(2) from a pipe to another
-> + */
-> +
-> +#define _GNU_SOURCE
-> +#include <stdio.h>
-> +#include <fcntl.h>
-> +#include <stdlib.h>
-> +#include "tst_test.h"
-> +
-> +#define MAX_DATA_LEN (64*1024)
-> +
-> +static void setup(void);
-> +static void cleanup(void);
-> +static void maintest(void);
-> +static int cmp_data(void);
-> +static int pipe_pipe(void);
+On 03.04.2017 15:31, Petr Vorel wrote:
+> ...
+>> Hmm, what are '0xff0d' and '0xaa10' prefixes? The first one seems to be a
+>> multicast group address...
+> These are really random values, an easy way to get valid but unused value. Do you want
+> different approach?
+Hi Petr,
 
-Nearly all of these are not needed, the only one is the pipe_pipe()
-called from maintest() and this wouldn't be needed if there is no
-maintest function anyway.
+No, we shouldn't do that, at least using such prefixes.  The much safer
+approach is to
+use the private address ranges.
 
-> +static char *str_len_data;
-> +static int num_len_data;
+For IPv6 it's a unique local address, i.e. fd00::/8 prefix. We could
+stick with default
+one and use another one (may be random) in case we got overlap with the
+predefined address, e.g.: "fd00:f00" and "fdaa:f00" (the same approach
+as yours).
 
-You can initialize the num_len_data to MAX_DATA_LEN here and drop the
-if (!num_len_data) condition from the setup()
+And for IPv4, e.g. 10.x/10.(x + 128).
 
-> +static char *arr_in;
-> +static char *arr_out;
-> +
-> +static struct tst_option options[] = {
-> +	{"l:", &str_len_data, "-l <num> Length of test data (in bytes)"},
-> +	{NULL, NULL, NULL},
-> +};
-> +
-> +static void setup(void)
-> +{
-> +	int i;
-> +
-> +	if (tst_parse_int(str_len_data, &num_len_data, 1, MAX_DATA_LEN))
-> +		tst_brk(TBROK, "Invalid length of data: '%s'", str_len_data);
-> +	if (!num_len_data)
-> +		num_len_data = MAX_DATA_LEN;
-> +
-> +	fprintf(stdout, "splice size = %d\n", num_len_data);
+> ...
+>> And why this limitation is needed?
+> I did it just to simplify the implementation.  IMHO both IPv4 and IPv6 require two nodes
+> on the same physical network have the same prefix so I didn't consider this as a real
+> limitation.
+>
+> But of course, there could be different prefixes, the smaller would be used as IPV6_NETWORK variable is
+> used for both hosts. Do you want me to change it this way?
 
-Use tst_res(TINFO, ) here.
+May be I misunderstood the 'prefix' variable there. If, for example,
+10.20.0.1/22 and 10.20.1.1/22 would result into 10.20 prefix, then it's
+fine,
+network variable is "10.20" and host variables are "0.1" and "1.1".
 
-> +	arr_in = SAFE_MALLOC(num_len_data);
-> +	arr_out = SAFE_MALLOC(num_len_data);
-> +	for (i = 0; i < num_len_data; i++)
-> +		*(arr_in + i) = i & 0xff;
-                 ^
-		 This is just more complicated way how to write
-		 arr_in[i] = ...
-> +}
-> +
-> +static void cleanup(void)
-> +{
-> +	if (arr_in != NULL)
-> +		free(arr_in);
-> +	if (arr_out != NULL)
-> +		free(arr_out);
+Thanks,
+Alexey
 
-Do just free(arr_in) and free(arr_out) here, free(NULL) is no-op.
-
-> +}
-> +
-> +static void maintest(void)
-> +{
-> +	if (pipe_pipe())
-> +		tst_res(TFAIL, "splice(2) from pipe to pipe fails.");
-> +	else
-> +		tst_res(TPASS, "splice(2) from pipe to pipe run pass.");
-
-Why do we need a separate function just to print the PASS/FAIL ?
-
-Why can't we just print PASS/FAIL in the cmp_data() function?
-
-> +}
-> +
-> +static int cmp_data(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < num_len_data; i++) {
-> +		if (*(arr_in + i) != *(arr_out + i)) {
-                       ^
-		       Again this is the same as arr_in[i] and arr_out[i]
-> +			tst_res(TBROK, "Data mismatch after splice operation.");
-                           ^
-			   This message here does not make sense, it's
-			   clear TFAIL.
-> +			return -1;
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
-> +static int pipe_pipe(void)
-> +{
-> +	int pp1[2], pp2[2];
-> +
-> +	SAFE_PIPE(pp1);
-> +	SAFE_PIPE(pp2);
-> +	SAFE_WRITE(1, pp1[1], arr_in, num_len_data);
-> +	splice(pp1[0], NULL, pp2[1], NULL, num_len_data, SPLICE_F_MOVE);
-
-You should really check the return value from the syscall you are
-supposed to test...
-
-> +	SAFE_READ(1, pp2[0], arr_out, num_len_data);
-> +
-> +	SAFE_CLOSE(pp1[1]);
-> +	SAFE_CLOSE(pp1[0]);
-> +	SAFE_CLOSE(pp2[1]);
-> +	SAFE_CLOSE(pp2[0]);
-> +
-> +	return cmp_data();
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tid = "splice04",
-> +	.test_all = maintest,
-> +	.setup = setup,
-> +	.cleanup = cleanup,
-> +	.options = options,
-> +	.min_kver = "2.6.31"
-> +};
-> -- 
-> 1.8.3.1
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
