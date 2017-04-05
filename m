@@ -1,56 +1,37 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 5 Apr 2017 19:29:06 +0200
-Subject: [LTP] [RFC] [PATCH] lib: Fix undefined reference to `mq_open'
- build failures
-In-Reply-To: <20170405113417.49876712@linux-v3j5>
-References: <20170329165008.6396-1-chrubis@suse.cz>
- <20170405113417.49876712@linux-v3j5>
-Message-ID: <20170405172906.GA16120@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Wed,  5 Apr 2017 22:44:16 +0200
+Subject: [LTP] [RFC PATCH v4 1/3] gitignore: Prefixing filenames
+In-Reply-To: <20170405204418.3240-1-pvorel@suse.cz>
+References: <20170405204418.3240-1-pvorel@suse.cz>
+Message-ID: <20170405204418.3240-2-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> > +mqd_t __attribute__((weak)) mq_open(const char *name __attribute__((unused)),
-> > +				    int oflag __attribute__((unused)), ...)
-> > +{
-> > +	tst_brk(TBROK, "mq_open() stub called!");
-> 
-> Maybe expand this to "mq_open() stub called! Add -lrt to linker flags".
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/.gitignore | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Good idea, I will add a hint that -lr is probably missing in LDFLAGS to
-the message.
-
-> If we start stubbing a lot of functions then we could have a TST_STUB macro
-> which takes the function name, arguments and linker switch (e.g. -lrt) and
-> produces a stub.
-
-That could end up quite complicated fast. For instance adding
-__attribute__((unused)) to each of the parametes would either need
-different version of the macro for each number of arguments or load of
-macro trickery...
-
-Let's keep it simple for now.
-
-> > +	return 0;
-> > +}
-> > +
-> >  int safe_mq_open(const char *file, const int lineno, const char *pathname,
-> >  	int oflags, ...)
-> >  {
-> 
-> I ran into this problem and the stub fixed it. I wonder why a test which never
-> calls SAFE_MQ_OPEN triggers it and others do not and why it does not happen
-> consistently. Perhaps the linker tries to do some relocation at a stage when
-> the library is not available and whether it tries to do the relocation is
-> effected by whatever libraries are available in the environment. I can't think
-> why else it would only try to resolve it some of the time?
-
-I do not understand why the problem manifests only rarely either, but I
-fear that understanding it would require a few days of research...
-
+diff --git a/testcases/lib/.gitignore b/testcases/lib/.gitignore
+index 920817cac..522889bed 100644
+--- a/testcases/lib/.gitignore
++++ b/testcases/lib/.gitignore
+@@ -1,6 +1,6 @@
+-tst_sleep
+-tst_random
+-tst_checkpoint
+-tst_rod
+-tst_kvcmp
+-tst_device
++/tst_sleep
++/tst_random
++/tst_checkpoint
++/tst_rod
++/tst_kvcmp
++/tst_device
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.12.0
+
