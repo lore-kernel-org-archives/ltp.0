@@ -1,123 +1,69 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  5 Apr 2017 10:58:21 +0200
-Subject: [LTP] [PATCH 2/2] travis: Add out-of-tree build
-In-Reply-To: <20170405085821.13121-1-pvorel@suse.cz>
-References: <20170405085821.13121-1-pvorel@suse.cz>
-Message-ID: <20170405085821.13121-2-pvorel@suse.cz>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Wed, 5 Apr 2017 11:34:17 +0200
+Subject: [LTP] [RFC] [PATCH] lib: Fix undefined reference to `mq_open'
+ build failures
+In-Reply-To: <20170329165008.6396-1-chrubis@suse.cz>
+References: <20170329165008.6396-1-chrubis@suse.cz>
+Message-ID: <20170405113417.49876712@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Signed-off-by: Petr Vorel <pvorel@suse.cz>
----
- .travis.yml | 11 +++++++++-
- build.sh    | 69 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 79 insertions(+), 1 deletion(-)
- create mode 100755 build.sh
+Hi Metan,
 
-diff --git a/.travis.yml b/.travis.yml
-index d937f9dcf..d030cc796 100644
---- a/.travis.yml
-+++ b/.travis.yml
-@@ -10,6 +10,15 @@ matrix:
-                   packages: ['gcc-4.6']
- 
-         - os: linux
-+          compiler: gcc-4.6
-+          addons:
-+              apt:
-+                  sources: ['ubuntu-toolchain-r-test']
-+                  packages: ['gcc-4.6']
-+          env:
-+              OUT_OF_TREE=true
-+
-+        - os: linux
-           compiler: gcc-4.7
-           addons:
-               apt:
-@@ -72,4 +81,4 @@ notifications:
-     email:
-         secure: "b/xcA/K5OyQvPPnd0PRahTH5LJu8lgz8goGHvhXpHo+ZPsPgTDXNFo5cX9fSOkMuFKeoW8iGl0wOgK2+ptc8mbYDw277K4RFIHRHeV/KIoE1EzjQnEFiL8J0oHCAvDj12o0AXeriTyY9gICXKbR31Br6Zh5eKViDJe2OAGeHeDU="
- 
--script: make autotools && ./configure --prefix $HOME/ltp --with-open-posix-testsuite --with-realtime-testsuite && make -j$(getconf _NPROCESSORS_ONLN) && make -j$(getconf _NPROCESSORS_ONLN) install
-+script: ./build.sh $OUT_OF_TREE
-diff --git a/build.sh b/build.sh
-new file mode 100755
-index 000000000..62fa4eb76
---- /dev/null
-+++ b/build.sh
-@@ -0,0 +1,69 @@
-+#!/bin/sh
-+#
-+# Copyright (c) Linux Test Project, 2017
-+#
-+# Script used for travis builds and for local test builds.
-+#
-+# TODO: Implement comparasion of installed files. List of installed files can
-+# be used only for local builds as Travis currently doesn't support sharing
-+# file between jobs, see [1].
-+# [1]: https://github.com/travis-ci/travis-ci/issues/6054
-+#
-+# Written by Petr Vorel <pvorel@suse.cz>
-+
-+set -e
-+
-+PREFIX="$HOME/ltp"
-+CONFIGURE_OPTS="--with-open-posix-testsuite --with-realtime-testsuite"
-+
-+in_tree_build()
-+{
-+    echo "===== IN TREE BUILD INTO $PREFIX ====="
-+
-+    make autotools
-+    ./configure $CONFIGURE_OPTS --prefix "$PREFIX"
-+    make -j$(getconf _NPROCESSORS_ONLN)
-+    make -j$(getconf _NPROCESSORS_ONLN) install
-+
-+    cd $PREFIX && find | sort > list.in-tree.txt
-+}
-+
-+out_tree_build()
-+{
-+    echo "===== OUT OF TREE BUILD INTO $PREFIX ====="
-+
-+    local ltp_git="$PWD"
-+    local ltp_out="$PWD/../ltp-build"
-+
-+    make autotools
-+
-+    mkdir -p $ltp_out
-+    cd $ltp_out
-+
-+    $ltp_git/configure --prefix="/`basename $PREFIX`" $CONFIGURE_OPTS
-+    make -C $ltp_out -f $ltp_git/Makefile top_srcdir=$ltp_git top_builddir=$ltp_out -j$(getconf _NPROCESSORS_ONLN)
-+    DESTDIR="`dirname $PREFIX`" make -C $ltp_out -f $ltp_git/Makefile top_srcdir=$ltp_git top_builddir=$ltp_out -j$(getconf _NPROCESSORS_ONLN) install
-+
-+    cd $PREFIX && find | sort > list.out-tree.txt
-+}
-+
-+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
-+    cat << EOF
-+USAGE:
-+in tree build:
-+$0
-+
-+out of tree build:
-+$0 any-string
-+EOF
-+    exit 0
-+fi
-+
-+rm -rf $PREFIX
-+if [ "$1" ]; then
-+    out_tree_build
-+else
-+    in_tree_build
-+fi
-+
-+# vim: set ft=sh ts=4 sts=4 sw=4 expandtab :
--- 
-2.12.0
+On Wed, 29 Mar 2017 18:50:08 +0200
+"Cyril Hrubis" <chrubis@suse.cz> wrote:
 
+> It appears that since the addition of the tst_safe_posix_ipc.c to the
+> test library random testcases (mostly ltp-aiodio seems to be triggering
+> the issue) started to fail on linking with missing reference to mq_open.
+> 
+> The problem is that -lrt is needed for mq_open() so this commit adds a
+> weak stub symbol that is used as fallback when we are compiling without
+> -lrt.
+> 
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  lib/tst_safe_posix_ipc.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/lib/tst_safe_posix_ipc.c b/lib/tst_safe_posix_ipc.c
+> index 7142a25..4c617c8 100644
+> --- a/lib/tst_safe_posix_ipc.c
+> +++ b/lib/tst_safe_posix_ipc.c
+> @@ -22,6 +22,13 @@
+>  #include "tst_test.h"
+>  #include "tst_safe_posix_ipc.h"
+>  
+> +mqd_t __attribute__((weak)) mq_open(const char *name __attribute__((unused)),
+> +				    int oflag __attribute__((unused)), ...)
+> +{
+> +	tst_brk(TBROK, "mq_open() stub called!");
+
+Maybe expand this to "mq_open() stub called! Add -lrt to linker flags".
+
+If we start stubbing a lot of functions then we could have a TST_STUB macro
+which takes the function name, arguments and linker switch (e.g. -lrt) and
+produces a stub.
+
+> +	return 0;
+> +}
+> +
+>  int safe_mq_open(const char *file, const int lineno, const char *pathname,
+>  	int oflags, ...)
+>  {
+
+I ran into this problem and the stub fixed it. I wonder why a test which never
+calls SAFE_MQ_OPEN triggers it and others do not and why it does not happen
+consistently. Perhaps the linker tries to do some relocation at a stage when
+the library is not available and whether it tries to do the relocation is
+effected by whatever libraries are available in the environment. I can't think
+why else it would only try to resolve it some of the time?
+
+Anyway, I have tried it on gcc6, clang and gcc4 without any problems. It seems
+like a good approach.
+
+Thank you,
+Richard.
