@@ -1,39 +1,68 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Wed,  5 Apr 2017 22:44:15 +0200
-Subject: [LTP] [RFC PATCH v4 0/3] Simplify network setup
-Message-ID: <20170405204418.3240-1-pvorel@suse.cz>
+Date: Wed,  5 Apr 2017 22:44:18 +0200
+Subject: [LTP] [RFC PATCH v4 3/3] network: Use tst_net_vars to set up IPv4
+	and IPv6 related variables
+In-Reply-To: <20170405204418.3240-1-pvorel@suse.cz>
+References: <20170405204418.3240-1-pvorel@suse.cz>
+Message-ID: <20170405204418.3240-4-pvorel@suse.cz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi,
+tst_net_vars simplifies setup as it only needs to have passed 4 IP
+addresses (2 IPv4 and 2 IPv6).
 
-hopefully last version.
-v3->v4:
-* Rewritten unused network generation. It uses 10.23 resp. fd00:23 as default,
-  in case of collision it's 10.x resp. fdxx:23, x is random value. BTW code in
-  previous version was wrong as it had the same size as network.
-* Forbidden prefixes are only 0 and 32 resp. 128, but they're rounded up by 8 resp. 16 anyway.
+Signed-off-by: Petr Vorel <pvorel@suse.cz>
+---
+ testcases/lib/test_net.sh | 33 ++++++++-------------------------
+ 1 file changed, 8 insertions(+), 25 deletions(-)
 
-Comments are highly appreciated.
-
-Kind regards,
-Petr
-
-Petr Vorel (3):
-  gitignore: Prefixing filenames
-  network: Add tool for setup IP variables
-  network: Use tst_net_vars to set up IPv4 and IPv6 related variables
-
- testcases/lib/.gitignore     |  13 +-
- testcases/lib/Makefile       |   2 +-
- testcases/lib/test_net.sh    |  33 +--
- testcases/lib/tst_net_vars.c | 616 +++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 632 insertions(+), 32 deletions(-)
- create mode 100644 testcases/lib/tst_net_vars.c
-
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index f0e05b13d..4540694c7 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -487,31 +487,14 @@ export PASSWD="${PASSWD:-}"
+ # Don't use it in new tests, use tst_rhost_run() from test_net.sh instead.
+ export LTP_RSH="${LTP_RSH:-rsh -n}"
+ 
+-# Test Links
+-# Set first three octets of the network address, default is '10.0.0'
+-export IPV4_NETWORK="${IPV4_NETWORK:-10.0.0}"
+-# Set local host last octet, default is '2'
+-export LHOST_IPV4_HOST="${LHOST_IPV4_HOST:-2}"
+-# Set remote host last octet, default is '1'
+-export RHOST_IPV4_HOST="${RHOST_IPV4_HOST:-1}"
+-# Set the reverse of IPV4_NETWORK
+-export IPV4_NET_REV="${IPV4_NET_REV:-0.0.10}"
+-# Set first three octets of the network address, default is 'fd00:1:1:1'
+-export IPV6_NETWORK="${IPV6_NETWORK:-fd00:1:1:1}"
+-# Set local host last octet, default is '2'
+-export LHOST_IPV6_HOST="${LHOST_IPV6_HOST:-:2}"
+-# Set remote host last octet, default is '1'
+-export RHOST_IPV6_HOST="${RHOST_IPV6_HOST:-:1}"
+-# Reverse network portion of the IPv6 address
+-export IPV6_NET_REV="${IPV6_NET_REV:-1.0.0.0.1.0.0.0.1.0.0.0.0.0.d.f}"
+-# Reverse host portion of the IPv6 address of the local host
+-export LHOST_IPV6_REV="${LHOST_IPV6_REV:-2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0}"
+-# Reverse host portion of the IPv6 address of the remote host
+-export RHOST_IPV6_REV="${RHOST_IPV6_REV:-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0}"
+-
+-# Networks that aren't reachable through the test links
+-export IPV4_NET16_UNUSED="${IPV4_NET16_UNUSED:-10.23}"
+-export IPV6_NET32_UNUSED="${IPV6_NET32_UNUSED:-fd00:23}"
++# set test links + networks that aren't reachable through the test links
++IPV4_LHOST="${IPV4_LHOST:-10.0.0.2/24}"
++IPV4_RHOST="${IPV4_RHOST:-10.0.0.1/24}"
++eval `tst_net_vars $IPV4_LHOST $IPV4_RHOST`
++
++IPV6_LHOST="${IPV6_LHOST:-fd00:1:1:1::2/64}"
++IPV6_RHOST="${IPV6_RHOST:-fd00:1:1:1::1/64}"
++eval `tst_net_vars $IPV6_LHOST $IPV6_RHOST`
+ 
+ export HTTP_DOWNLOAD_DIR="${HTTP_DOWNLOAD_DIR:-/var/www/html}"
+ export FTP_DOWNLOAD_DIR="${FTP_DOWNLOAD_DIR:-/var/ftp}"
 -- 
 2.12.0
 
