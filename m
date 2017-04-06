@@ -1,171 +1,113 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 6 Apr 2017 17:24:49 +0200
-Subject: [LTP] [PATCH 1/2] open_posix_testsuite: Fix recursive build
-In-Reply-To: <20170405085821.13121-1-pvorel@suse.cz>
-References: <20170405085821.13121-1-pvorel@suse.cz>
-Message-ID: <20170406152448.GA4977@rei.lan>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 6 Apr 2017 17:50:05 +0200
+Subject: [LTP] [RFC PATCH v4 0/3] Simplify network setup
+In-Reply-To: <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
+References: <20170405204418.3240-1-pvorel@suse.cz>
+ <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
+Message-ID: <20170406155005.smxqad2aqkcwecmz@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> -top_srcdir?=		.
-> +open_posix_srcdir := $(if $(top_srcdir),$(top_srcdir)/testcases/open_posix_testsuite,$(abspath .))
+Hi Alexey,
 
-I wonder if we want to be consistent with the rest of the LTP
-buildsystem define the top_srcdir ?= ../.. here so that we could use
-it below in both cases when the make is executed in the open posix
-directory or from the top level Makefile.
+thank you for your comments.
 
-Then we could define the open_posix_srcdir := $(top_srcdir)/testcases/open_posix_testsuite
+> I tried to run several examples and got wrong results, e.g.
 
-> -prefix?=		`$(top_srcdir)/scripts/print_prefix.sh`
-> +prefix?=		`$(open_posix_srcdir)/scripts/print_prefix.sh`
->  
->  datadir?=		$(prefix)/share
->  
-> @@ -35,13 +35,13 @@ exec_prefix?=		$(prefix)
->  all: conformance-all functional-all stress-all tools-all
->  
->  ifeq ($(shell uname -s), Linux)
-> -include Makefile.linux
-> +include $(open_posix_srcdir)/Makefile.linux
->  endif
->  
->  clean: $(CRITICAL_MAKEFILE)
->  	@rm -f $(LOGFILE)*
->  	@for dir in $(SUBDIRS) tools; do \
-> -	    $(MAKE) -C $$dir clean >/dev/null; \
-> +	    $(MAKE) -C $(open_posix_srcdir)/$$dir clean >/dev/null; \
->  	done
->  
->  distclean: distclean-makefiles
-> @@ -49,12 +49,12 @@ distclean: distclean-makefiles
->  # Clean out all of the generated Makefiles.
->  distclean-makefiles:
->  	@for dir in $(SUBDIRS); do \
-> -		$(MAKE) -C $$dir $@; \
-> +		$(MAKE) -C $(open_posix_srcdir)/$$dir $@; \
->  	done
->  
->  generate-makefiles: distclean-makefiles
-> -	@env top_srcdir=$(top_srcdir) \
-> -	    $(top_srcdir)/scripts/generate-makefiles.sh
-> +	@env top_srcdir=$(open_posix_srcdir) \
-> +	    $(open_posix_srcdir)/scripts/generate-makefiles.sh
+>  ./tst_net_vars fd00::1/64 fd00::2/64
+> export IPV6_NETWORK='fd00:'
+> export IPV6_NET_REV='0.0.0.0.0.0.0.0.0.0.0.0.0.0.d.f'
+> export LHOST_IPV6_HOST='1'
+> export LHOST_IPV6_REV='1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0'
+> export RHOST_IPV6_HOST='2'
+> export RHOST_IPV6_REV='2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0'
+> export IPV6_NET32_UNUSED='fdb4:23' <--- got random one
 
-Thinking of this, we still put the generated makefiles into the source
-directory. I wonder if it's a good idea to even try to put the makefiles
-into the build directory and overcomplicate the already overcomplicated
-makefile generator.
+> fd00:23::/32 should suffice for unused network because fd00::/64
+> not overlap with it.
+Ah, thanks. I didn't realized that check for overlap is meaningful for prefix 16
+(IPv4) and 32 (IPv6).
 
-And don't forget that the generate-makefile.sh script needs to get a
-path to the config-openposix.mk which is located in the build directory
-under include/mk/ otherwise the top level CFLAGS are not propagated.
+> ./tst_net_vars 10.2.0.1/22 10.2.1.1/22  <--- valid configuration
+> Please use the same network for both IP addresses
+Sorry, wrong fix in v4, I'll fix this.
 
-Looks like this is really can of worms...
+> If we look at how IPV4/6_NETWORK and LHOST_IPV4/6_HOST used
+> inside test_net.sh:
 
->  install: bin-install conformance-install functional-install stress-install
->  
-> @@ -63,47 +63,47 @@ test: conformance-test functional-test stress-test
->  # Test build and execution targets.
->  conformance-all: $(CRITICAL_MAKEFILE)
->  	@rm -f `if echo "$(LOGFILE)" | grep -q '^/'; then echo "$(LOGFILE)"; else echo "\`pwd\`/$(LOGFILE)"; fi`.$@
-> -	@$(BUILD_MAKE) -C conformance -j1 all
-> +	@$(BUILD_MAKE) -C $(open_posix_srcdir)/conformance -j1 all
->  
->  conformance-install:
-> -	@$(MAKE) -C conformance install
-> +	@$(MAKE) -C $(open_posix_srcdir)/conformance install
->  
->  conformance-test:
->  	@rm -f `if echo "$(LOGFILE)" | grep -q '^/'; then echo "$(LOGFILE)"; else echo "\`pwd\`/$(LOGFILE)"; fi`.$@
-> -	@$(TEST_MAKE) -C conformance test
-> +	@$(TEST_MAKE) -C $(open_posix_srcdir)/conformance test
->  
->  functional-all: $(CRITICAL_MAKEFILE)
->  	@rm -f `if echo "$(LOGFILE)" | grep -q '^/'; then echo "$(LOGFILE)"; else echo "\`pwd\`/$(LOGFILE)"; fi`.$@
-> -	@$(BUILD_MAKE) -C functional -j1 all
-> +	@$(BUILD_MAKE) -C $(open_posix_srcdir)/functional -j1 all
->  
->  functional-install:
-> -	@$(MAKE) -C functional install
-> +	@$(MAKE) -C $(open_posix_srcdir)/functional install
->  
->  functional-test:
->  	@rm -f `if echo "$(LOGFILE)" | grep -q '^/'; then echo "$(LOGFILE)"; else echo "\`pwd\`/$(LOGFILE)"; fi`.$@
-> -	@$(TEST_MAKE) -C functional test
-> +	@$(TEST_MAKE) -C $(open_posix_srcdir)/functional test
->  
->  stress-all: $(CRITICAL_MAKEFILE)
->  	@rm -f `if echo "$(LOGFILE)" | grep -q '^/'; then echo "$(LOGFILE)"; else echo "\`pwd\`/$(LOGFILE)"; fi`.$@
-> -	@$(BUILD_MAKE) -C stress -j1 all
-> +	@$(BUILD_MAKE) -C $(open_posix_srcdir)/stress -j1 all
->  
->  stress-install:
-> -	@$(MAKE) -C stress install
-> +	@$(MAKE) -C $(open_posix_srcdir)/stress install
->  
->  stress-test:
->  	@rm -f `if echo "$(LOGFILE)" | grep -q '^/'; then echo "$(LOGFILE)"; else echo "\`pwd\`/$(LOGFILE)"; fi`.$@
-> -	@$(TEST_MAKE) -C stress test
-> +	@$(TEST_MAKE) -C $(open_posix_srcdir)/stress test
->  
->  # Tools build and install targets.
->  bin-install:
-> -	@$(MAKE) -C bin install
-> +	@$(MAKE) -C $(open_posix_srcdir)/bin install
->  
->  tools-all:
-> -	@$(MAKE) -C tools all
-> +	@$(MAKE) -C $(open_posix_srcdir)/tools all top_srcdir=$(open_posix_srcdir)
->  
->  $(CRITICAL_MAKEFILE): \
-> -    $(top_srcdir)/scripts/generate-makefiles.sh	\
-> -    $(top_srcdir)/CFLAGS			\
-> -    $(top_srcdir)/LDFLAGS			\
-> -    $(top_srcdir)/LDLIBS
-> -	@$(MAKE) generate-makefiles
-> +    $(open_posix_srcdir)/scripts/generate-makefiles.sh	\
-> +    $(open_posix_srcdir)/CFLAGS			\
-> +    $(open_posix_srcdir)/LDFLAGS			\
-> +    $(open_posix_srcdir)/LDLIBS
-> +	@$(MAKE) -f $(open_posix_srcdir)/Makefile generate-makefiles
-> diff --git a/testcases/open_posix_testsuite/Makefile.linux b/testcases/open_posix_testsuite/Makefile.linux
-> index 77e20a958..adef565a8 100644
-> --- a/testcases/open_posix_testsuite/Makefile.linux
-> +++ b/testcases/open_posix_testsuite/Makefile.linux
-> @@ -8,7 +8,7 @@ cmd_disable = @set -e; \
->  
->  BROKEN :=
->  
-> -kver_cmp = $(shell $(top_srcdir)/scripts/tst_kvercmp.sh 2 6 22)
-> +kver_cmp = $(shell $(open_posix_srcdir)/scripts/tst_kvercmp.sh 2 6 22)
->  ifeq ($(kver_cmp), 1)
->  BROKEN += t_sigaction_16-1
->  endif
-> diff --git a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-> index 67a60c8cb..d50d517ae 100755
-> --- a/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-> +++ b/testcases/open_posix_testsuite/scripts/generate-makefiles.sh
-> @@ -22,7 +22,7 @@ generate_locate_test_makefile() {
->  
->  	echo "Generating $maketype Makefiles"
->  
-> -	locate-test --$maketype | sed -e 's,^./,,g' > make-gen.$maketype
-> +	locate-test --$maketype $top_srcdir | sed -e 's,^./,,g' > make-gen.$maketype
->  
->  	generate_makefiles make-gen.$maketype $*
->  
-> -- 
-> 2.12.0
-> 
-> 
-> -- 
-> Mailing list info: https://lists.linux.it/listinfo/ltp
+> tst_ipaddr()
+> {
+>         local type="${1:-lhost}"
+>         local ipv="${TST_IPV6:-4}"
+>         local tst_host=
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+>         if [ "$type" = "lhost" ]; then
+>                 eval "tst_host=\$LHOST_IPV${ipv}_HOST"
+>         else
+>                 eval "tst_host=\$RHOST_IPV${ipv}_HOST"
+>         fi
+
+>         if [ "$TST_IPV6" ]; then
+>                 echo "${IPV6_NETWORK}:${tst_host}"
+>         else
+>                 echo "${IPV4_NETWORK}.${tst_host}"
+>         fi
+> }
+
+> it is a simple concatenation of two variables. The only reason that
+> we didn't remove them is that we still have some old tests which are
+> using these variables in the same way.
+
+> Given that the number of such tests are really small (stress/route,
+> stress/multicast) and they don't source test_net.sh (only through
+> network.sh), may be it is time to get rid of these variables inside
+> test_net.sh and use just one, for reverse addresses as well?
+testcases/network/stress/dns/dns-stress sources test_net.sh. I suppose we can
+"fix it" by removing test_net.sh and setting necessary variables directly in
+the script like other scripts do (e.g.
+testcases/network/stress/route/route6-change-dst).
+I agree that this would simplify things greatly (tst_net_vars.c would be much
+smaller and use mainly glibc network related functions), but on the other hand I
+wanted all network tests using test_net.sh. I don't like the idea that part of
+the tests which are using the same variables, but their values are hardwired
+into the script.
+It's also confusing that you need to check whether script actually use
+test_net.sh or not.
+
+
+> Regarding the usage of subnet mask in IP_HOST, it should really be
+> optional or not used at all, only a few tests might require it:
+I use it for finding "the border" between network and host part.
+
+> * when configuring netns ltp_ns, default will be /24 and /64,
+Right, I'll make these default for tst_net_vars.c.
+
+> * grep tst_restore_ipaddr -r .
+> ./stress/interface/if4-addr-change:     tst_restore_ipaddr
+> ./stress/interface/if-lib.sh:   tst_restore_ipaddr || return $?
+> ./stress/interface/if-mtu-change:       tst_restore_ipaddr
+> ./stress/interface/if-mtu-change:       tst_restore_ipaddr rhost
+
+> Please also use checkpatch and fix any errors/warnings reported:
+>     total: 5 errors, 37 warnings
+
+> Got compiler errors as well:
+> tst_net_vars.c: In function ‘get_ipv4_host’:
+> tst_net_vars.c:317: error: ‘for’ loop initial declarations are only
+> allowed in C99 mode
+> tst_net_vars.c:317: note: use option -std=c99 or -std=gnu99 to compile
+> your code
+> tst_net_vars.c: In function ‘get_ipv4_net_rev’:
+> tst_net_vars.c:349: error: ‘for’ loop initial declarations are only
+> allowed in C99 mode
+> tst_net_vars.c: In function ‘get_ipv4_network’:
+> tst_net_vars.c:385: error: ‘for’ loop initial declarations are only
+> allowed in C99 mode
+Sure I will, thanks!
+
+
+Kind regards,
+Petr
