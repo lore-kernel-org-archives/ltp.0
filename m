@@ -1,113 +1,37 @@
-From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 6 Apr 2017 17:50:05 +0200
-Subject: [LTP] [RFC PATCH v4 0/3] Simplify network setup
-In-Reply-To: <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
-References: <20170405204418.3240-1-pvorel@suse.cz>
- <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
-Message-ID: <20170406155005.smxqad2aqkcwecmz@dell5510>
+From: Xiao Yang <yangx.jy@cn.fujitsu.com>
+Date: Fri, 7 Apr 2017 13:58:20 +0800
+Subject: [LTP] [PATCH] pan/ltp-pan.c: fix incorrect number of total tests
+Message-ID: <1491544700-6312-1-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Alexey,
+The number of total tests should indicate the number of tests
+which have been run, but it indicates the number of tests defined
+in command-file.
 
-thank you for your comments.
+Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
+---
+ pan/ltp-pan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> I tried to run several examples and got wrong results, e.g.
-
->  ./tst_net_vars fd00::1/64 fd00::2/64
-> export IPV6_NETWORK='fd00:'
-> export IPV6_NET_REV='0.0.0.0.0.0.0.0.0.0.0.0.0.0.d.f'
-> export LHOST_IPV6_HOST='1'
-> export LHOST_IPV6_REV='1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0'
-> export RHOST_IPV6_HOST='2'
-> export RHOST_IPV6_REV='2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0'
-> export IPV6_NET32_UNUSED='fdb4:23' <--- got random one
-
-> fd00:23::/32 should suffice for unused network because fd00::/64
-> not overlap with it.
-Ah, thanks. I didn't realized that check for overlap is meaningful for prefix 16
-(IPv4) and 32 (IPv6).
-
-> ./tst_net_vars 10.2.0.1/22 10.2.1.1/22  <--- valid configuration
-> Please use the same network for both IP addresses
-Sorry, wrong fix in v4, I'll fix this.
-
-> If we look at how IPV4/6_NETWORK and LHOST_IPV4/6_HOST used
-> inside test_net.sh:
-
-> tst_ipaddr()
-> {
->         local type="${1:-lhost}"
->         local ipv="${TST_IPV6:-4}"
->         local tst_host=
-
->         if [ "$type" = "lhost" ]; then
->                 eval "tst_host=\$LHOST_IPV${ipv}_HOST"
->         else
->                 eval "tst_host=\$RHOST_IPV${ipv}_HOST"
->         fi
-
->         if [ "$TST_IPV6" ]; then
->                 echo "${IPV6_NETWORK}:${tst_host}"
->         else
->                 echo "${IPV4_NETWORK}.${tst_host}"
->         fi
-> }
-
-> it is a simple concatenation of two variables. The only reason that
-> we didn't remove them is that we still have some old tests which are
-> using these variables in the same way.
-
-> Given that the number of such tests are really small (stress/route,
-> stress/multicast) and they don't source test_net.sh (only through
-> network.sh), may be it is time to get rid of these variables inside
-> test_net.sh and use just one, for reverse addresses as well?
-testcases/network/stress/dns/dns-stress sources test_net.sh. I suppose we can
-"fix it" by removing test_net.sh and setting necessary variables directly in
-the script like other scripts do (e.g.
-testcases/network/stress/route/route6-change-dst).
-I agree that this would simplify things greatly (tst_net_vars.c would be much
-smaller and use mainly glibc network related functions), but on the other hand I
-wanted all network tests using test_net.sh. I don't like the idea that part of
-the tests which are using the same variables, but their values are hardwired
-into the script.
-It's also confusing that you need to check whether script actually use
-test_net.sh or not.
+diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
+index 1614c70..beed623 100644
+--- a/pan/ltp-pan.c
++++ b/pan/ltp-pan.c
+@@ -645,7 +645,7 @@ int main(int argc, char **argv)
+ 				strerror(errno));
+ 		fprintf(logfile,
+ 			"\n-----------------------------------------------\n");
+-		fprintf(logfile, "Total Tests: %d\n", coll->cnt);
++		fprintf(logfile, "Total Tests: %d\n", (coll->cnt - starts));
+ 		fprintf(logfile, "Total Skipped Tests: %d\n", tconfcnt);
+ 		fprintf(logfile, "Total Failures: %d\n", failcnt);
+ 		fprintf(logfile, "Kernel Version: %s\n", unamebuf.release);
+-- 
+1.8.3.1
 
 
-> Regarding the usage of subnet mask in IP_HOST, it should really be
-> optional or not used at all, only a few tests might require it:
-I use it for finding "the border" between network and host part.
 
-> * when configuring netns ltp_ns, default will be /24 and /64,
-Right, I'll make these default for tst_net_vars.c.
-
-> * grep tst_restore_ipaddr -r .
-> ./stress/interface/if4-addr-change:     tst_restore_ipaddr
-> ./stress/interface/if-lib.sh:   tst_restore_ipaddr || return $?
-> ./stress/interface/if-mtu-change:       tst_restore_ipaddr
-> ./stress/interface/if-mtu-change:       tst_restore_ipaddr rhost
-
-> Please also use checkpatch and fix any errors/warnings reported:
->     total: 5 errors, 37 warnings
-
-> Got compiler errors as well:
-> tst_net_vars.c: In function ‘get_ipv4_host’:
-> tst_net_vars.c:317: error: ‘for’ loop initial declarations are only
-> allowed in C99 mode
-> tst_net_vars.c:317: note: use option -std=c99 or -std=gnu99 to compile
-> your code
-> tst_net_vars.c: In function ‘get_ipv4_net_rev’:
-> tst_net_vars.c:349: error: ‘for’ loop initial declarations are only
-> allowed in C99 mode
-> tst_net_vars.c: In function ‘get_ipv4_network’:
-> tst_net_vars.c:385: error: ‘for’ loop initial declarations are only
-> allowed in C99 mode
-Sure I will, thanks!
-
-
-Kind regards,
-Petr
