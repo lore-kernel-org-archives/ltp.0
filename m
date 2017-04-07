@@ -1,49 +1,57 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Fri, 7 Apr 2017 14:04:43 +0300
-Subject: [LTP] [RFC PATCH v4 0/3] Simplify network setup
-In-Reply-To: <20170406155005.smxqad2aqkcwecmz@dell5510>
-References: <20170405204418.3240-1-pvorel@suse.cz>
- <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
- <20170406155005.smxqad2aqkcwecmz@dell5510>
-Message-ID: <7ec9883c-7b9a-42ff-b49f-a5732d59a9fb@oracle.com>
+From: Richard Palethorpe <rpalethorpe@suse.com>
+Date: Fri, 7 Apr 2017 13:32:42 +0200
+Subject: [LTP] [RFC] [PATCH v2] lib32: Add support for linking 32bit
+ programs on 64bit
+In-Reply-To: <20170407091945.GA536@rei.lan>
+References: <20170406124641.30179-1-chrubis@suse.cz>
+ <20170407105832.6f9d811a@linux-v3j5> <20170407091945.GA536@rei.lan>
+Message-ID: <20170407133242.6dd04be2@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 06.04.2017 18:50, Petr Vorel wrote:
-> ...
->> Given that the number of such tests are really small (stress/route,
->> stress/multicast) and they don't source test_net.sh (only through
->> network.sh), may be it is time to get rid of these variables inside
->> test_net.sh and use just one, for reverse addresses as well?
-> testcases/network/stress/dns/dns-stress sources test_net.sh. I suppose we can
-> "fix it" by removing test_net.sh and setting necessary variables directly in
-> the script like other scripts do (e.g.
-> testcases/network/stress/route/route6-change-dst).
-> I agree that this would simplify things greatly (tst_net_vars.c would be much
-> smaller and use mainly glibc network related functions), but on the other hand I
-> wanted all network tests using test_net.sh. I don't like the idea that part of
-> the tests which are using the same variables, but their values are hardwired
-> into the script.
+Hi,
 
-And if we convert them to use test_net.sh and add missing interfaces
-like the ones
-needed for dns-stress tests, i.e. tst_ip_reverse(), etc., there would be
-no need to
-use them directly in the tests.
+On Fri, 7 Apr 2017 11:19:45 +0200
+"Cyril Hrubis" <chrubis@suse.cz> wrote:
 
-Actually, we can still update tst_ipaddr() to use IP_HOSTs variables
-without adding
-together two variables :)
+> Hi!
+> > > +ifeq ($(filter -m32,$(CFLAGS)),)
+> > > +$(MAKE_TARGETS): LDFLAGS += -L$(top_builddir)/lib$(subst -m,,$(filter -m32,$(CFLAGS)))
+> > > +else
+> > > +LDFLAGS			 += -L$(top_builddir)/lib
+> > > +endif  
+> > 
+> > I think this breaks the build if you do 'make CFLAGS+=-m32' or './configure
+> > CFLAGS=-m32' to build everything in compatability mode. Am I doing it wrong or
+> > is this an issue?  
+> 
+> If -m32 is in CFLAGS the $(filter -m32,$(CFLAGS)) is nonempty and we
+> will add -L$(top_builddir)/lib regardless. We will build the lib32 as
+> well but never use it.
+> 
+> And you have to pass LDLAGS=-m32 to the configure script as well, since
+> the implicit rule to build an executable from list of object files is:
+> 
+> $(CC) $(LDFLAGS) n.o $(LOADLIBES) $(LDLIBS)
+> 
+> Hence if you pass -m32 only to CFLAGS the compiler will fail to link the
+> ltp-pan binary.
+> 
+> Passing -m32 in CFLAGS only works for testcases though, since they are
+> compiled and linked in one try and hence use both LDFLAGS and CFLAGS.
+> 
 
-I guess subnet mask should be set as a separate variable, similar to
-stress/multicast
-tests (to support these tests), and if not provided, we can get it with
-getifaddr(), or at
-least set to predefined default value, for IPv6 it is almost always /64.
+OK, makes sense.
 
-Thanks,
-Alexey
+Build still fails however, because of missing 32-bit libraries, but that is
+just because the headers are present for the 64-bit lib and a lot of tests
+will try to build so long as the headers are there. I guess it would be better
+to also check that we can link as well, which some tests appear to do. I think
+it is quite a reasonable workaround to just install the libs though assuming
+that they will all usually be available if any 32-bit libs are.
 
+Thank you,
+Richard.
