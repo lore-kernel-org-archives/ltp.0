@@ -1,59 +1,302 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Fri, 7 Apr 2017 17:52:22 +0200
-Subject: [LTP] [RFC] [PATCH] lib: Fix undefined reference to `mq_open'
- build failures
-In-Reply-To: <20170406074544.GA18057@rei.lan>
-References: <20170329165008.6396-1-chrubis@suse.cz>
- <20170406074544.GA18057@rei.lan>
-Message-ID: <20170407155222.GA9310@rei>
+From: Zorro Lang <zlang@redhat.com>
+Date: Sat, 8 Apr 2017 22:14:16 +0800
+Subject: [LTP] [PATCH v2] lseek: functional SEEK_HOLE and SEEK_DATA test
+In-Reply-To: <20170404143312.GB9550@rei.lan>
+References: <1490980959-7576-1-git-send-email-zlang@redhat.com>
+ <20170404143312.GB9550@rei.lan>
+Message-ID: <20170408141416.GN21915@dhcp12-143.nay.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-And unfortunatelly this approach does not seem to work for static
-linking :-(
+On Tue, Apr 04, 2017 at 04:33:12PM +0200, Cyril Hrubis wrote:
+> Hi!
+> > diff --git a/testcases/kernel/syscalls/lseek/lseek11.c b/testcases/kernel/syscalls/lseek/lseek11.c
+> > new file mode 100644
+> > index 0000000..95f36c6
+> > --- /dev/null
+> > +++ b/testcases/kernel/syscalls/lseek/lseek11.c
+> > @@ -0,0 +1,243 @@
+> > +/*
+> > + *   Copyright (C) 2017 Red Hat, Inc.  All rights reserved.
+> > + *
+> > + *   The contents of this file may be used under the terms of the GNU
+> > + *   General Public License version 2 (the "GPL")
+> 
+> These two lines seems to be redundant and in contradiction with the
+> license below since they say GPLv2 while the license says GPLv2+.
 
-Seems I misunderstand how weak symbols are handled, since if the weak
-symbol is linked into the binary the linker does not even try to
-resolve it hence the strong symbol in librt.so is ignored.
+Hah, I don't understand this so much. So I'll delete these two lines
+directly.
 
-Basically what we wanted to have is the weak_import attribute that could
-be used on apple OSX.
+> 
+> > + *   This program is free software;  you can redistribute it and/or modify
+> > + *   it under the terms of the GNU General Public License as published by
+> > + *   the Free Software Foundation; either version 2 of the License, or
+> > + *   (at your option) any later version.
+> > + *
+> > + *   This program is distributed in the hope that it will be useful,
+> > + *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
+> > + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+> > + *   the GNU General Public License for more details.
+> > + *
+> > + *   You should have received a copy of the GNU General Public License
+> > + *   along with this program;  if not, write to the Free Software
+> > + *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+> > + *
+> > + *   AUTHOR: Zorro Lang <zlang@redhat.com>
+> > + *
+> > + *   DESCRIPTION
+> > + *     This case does functional SEEK_HOLE and SEEK_DATA of lseek(2) testing.
+> > + *
+> > + *     Since version 3.1, Linux supports the following additional values for
+> > + *     whence:
+> > + *
+> > + *     SEEK_DATA
+> > + *         Adjust the file offset to the next location in the file greater than
+> > + *         or  equal  to  offset  containing data.  If offset points to data,
+> > + *         then the file offset is set to offset.
+> > + *
+> > + *     SEEK_HOLE
+> > + *         Adjust the file offset to the next hole in the file greater than or
+> > + *         equal to offset.  If offset points into the middle of a hole, then
+> > + *         the file offset is set to offset. If there is no hole past offset,
+> > + *         then the file offset is adjusted to the end of the file (i.e., there
+> > + *         is an implicit hole at the end of any file).
+> > + */
+> > +
+> > +#define _GNU_SOURCE
+> > +#include <sys/types.h>
+> > +#include <unistd.h>
+> > +#include <fcntl.h>
+> > +#include <stdio.h>
+> > +#include <string.h>
+> > +
+> > +#include "tst_test.h"
+> > +#include "tst_safe_prw.h"
+> > +
+> > +/*
+> > + * This case create 3 holes and 4 data fields, every (data) is 12 bytes,
+> > + * every UNIT has UNIT_BLOCKS * block_size bytes. The structure as below:
+> > + *
+> > + * ----------------------------------------------------------------------------------------------
+> > + * data01suffix      (hole)      data02suffix      (hole)       data03suffix  (hole)  data04sufix
+> > + * ----------------------------------------------------------------------------------------------
+> > + * |<--- UNIT_BLOCKS blocks --->||<--- UNIT_BLOCKS blocks  --->||<---  UNIT_BLOCKS blocks   --->|
+> > + *
+> > + */
+> > +#define UNIT_COUNT   3
+> > +#define UNIT_BLOCKS  10
+> > +#define FILE_BLOCKS  (UNIT_BLOCKS * UNIT_COUNT)
+> > +
+> > +static int fd;
+> > +static blksize_t block_size;
+> > +
+> > +/*
+> > + * SEEK from "startblock * block_size - offset", "whence" as the directive
+> > + * whence.
+> > + * startblock * block_size - offset: as offset of lseek()
+> > + * whence: as whence of lseek()
+> > + * data: as the expected result read from file offset. NULL means expect
+> > + *       the end of file.
+> > + * count: as the count read from file
+> > + */
+> > +static struct tparam {
+> > +	off_t  startblock;
+> > +	off_t  offset;
+> > +	int    whence;
+> > +	char   *data;
+> > +	size_t count;
+> > +} tparams[] = {
+> > +	{0,               0,    SEEK_DATA, "data01",   6},    /* SEEK_DATA from starting of file*/
+> > +	{0,               4,    SEEK_DATA, "01suffix", 8},    /* SEEK_DATA from maddle of the first data */
+> > +	{0,               0,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from starting of file */
+> > +	{0,               4,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from maddle of the first data */
+> > +	{1,               0,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from the starting of the first hole */
+> > +	{1,               128,  SEEK_HOLE, "",         1023}, /* SEEK_HOLE from maddle of the first hole */
+> > +	{1,               0,    SEEK_DATA, "data02",   6},    /* SEEK_DATA from the starting of the first hole */
+> > +	{UNIT_BLOCKS,     -1,   SEEK_DATA, "data02",   6},    /* SEEK_DATA from the tail of the first hole */
+> > +	{UNIT_BLOCKS,     0,    SEEK_DATA, "data02",   6},    /* SEEK_DATA from the starting of the second data */
+> > +	{UNIT_BLOCKS,     4,    SEEK_DATA, "02suffix", 8},    /* SEEK_DATA from middle of the second data */
+> > +	{UNIT_BLOCKS,     0,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from the starting of the second data */
+> > +	{UNIT_BLOCKS,     4,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from middle of the second data */
+> > +	{UNIT_BLOCKS + 1, 128,  SEEK_HOLE, "",         1023}, /* SEEK_HOLE from middle of the second hole */
+> > +	{UNIT_BLOCKS + 1, 128,  SEEK_DATA, "data03",   6},    /* SEEK_DATA from middle of the second hole */
+> > +	{FILE_BLOCKS,    -128,  SEEK_HOLE, NULL,       0},    /* SEEK_HOLE from no hole pass offset*/
+> > +};
+> > +
+> > +static void cleanup(void)
+> > +{
+> > +	SAFE_CLOSE(fd);
+> > +}
+> > +
+> > +static void get_blocksize(void)
+> > +{
+> > +	off_t pos = 0, offset = 1;
+>                         ^
+> 			Maybe we can start with 128 or some minimal sane
+> 			value to speed up the discovery
+> 
+> Starting with 128 saves ~0.5s on the test run for me.
 
-Anyway possible solutions I can come up with:
+Hmm... ~0.5s? I never thought it takes so long time.
+OK, I don't mind changing it to 128.
 
+> 
+> > +	int shift;
+> > +	struct stat st;
+> > +
+> > +	SAFE_FSTAT(fd, &st);
+> > +
+> > +	/* try to discover the actual alloc size */
+> > +	while (pos == 0 && offset < (st.st_blksize * 2)) {
+> > +		offset <<= 1;
+> > +		SAFE_FTRUNCATE(fd, 0);
+> > +		SAFE_PWRITE(1, fd, "a", 1, offset);
+> > +		syncfs(fd);
+> > +		pos = SAFE_LSEEK(fd, 0, SEEK_DATA);
+> > +	}
+> > +
+> > +	/* bisect for double check */
+> > +	shift = offset >> 2;
+> > +	while (shift && offset < (st.st_blksize * 2)) {
+> > +		SAFE_FTRUNCATE(fd, 0);
+> > +		SAFE_PWRITE(1, fd, "a", 1, offset);
+> > +		syncfs(fd);
+> > +		pos = SAFE_LSEEK(fd, 0, SEEK_DATA);
+> > +		offset += pos ? -shift : shift;
+> > +		shift >>= 1;
+> > +	}
+> > +
+> > +	if (!shift)
+> > +		offset += pos ? 0 : 1;
+> > +	block_size = offset;
+> > +
+> > +	/*
+> > +	 * Due to some filesystems use generic_file_llseek(), e.g: CIFS,
+> > +	 * it thinks the entire file is data, only a virtual hole at the end
+> > +	 * of the file. This case can't test this situation, so if the minimum
+> > +	 * alloc size we got bigger then st.st_blksize, we think it's not
+> > +	 * a valid value.
+> > +	 */
+> > +	if (block_size > st.st_blksize)
+> > +		tst_brk(TBROK, \
+> > +		        "filesystem maybe use generic_file_llseek(), not support real SEEK_DATA/SEEK_HOLE");
+> 
+> I'm not sure about the TBROK here, if filesystem does not support holes
+> we should rather issue TCONF.
 
-* Switch to dynamic linking for libltp
+Sure
 
-  - may be worth the saving some megabytes on file size
+> 
+> > +}
+> > +
+> > +static void write_data(int fd, int num)
+> > +{
+> > +	char buf[64];
+> > +
+> > +	sprintf(buf, "data%02dsuffix", num);
+> > +	SAFE_WRITE(1, fd, buf, strlen(buf));
+> > +}
+> > +
+> > +static void setup(void)
+> > +{
+> > +	int i;
+> > +	off_t offset = 0;
+> > +	char fname[255];
+> > +
+> > +
+> > +	memset(fname, 0, sizeof(fname));
+> 
+> No need to memset the fname here.
 
-  - would require the dynamic library to be put in the correct path or
-    messing with LD_LIBRARY_PATH though
+OK
 
+> 
+> > +	sprintf(fname, "tfile_lseek_%d", getpid());
+> > +
+> > +	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0666);
+> > +
+> > +	get_blocksize();
+> > +	tst_res(TINFO, "The block size is %lu", block_size);
+> > +
+> > +	/*
+> > +	 * truncate to the expected file size directly, to keep away the effect
+> > +	 * of speculative preallocation of some filesystems (e.g. XFS)
+> > +	 */
+> > +	SAFE_FTRUNCATE(fd, FILE_BLOCKS * block_size);
+> > +
+> > +	for (i = 0; i < UNIT_COUNT; i++) {
+> > +		offset = UNIT_BLOCKS * block_size * i;
+> > +		SAFE_LSEEK(fd, offset, SEEK_SET);
+> > +		write_data(fd, i + 1);
+> > +	}
+> > +
+> > +	SAFE_LSEEK(fd, -128, SEEK_END);
+> > +	write_data(fd, i + 1);
+> > +
+> > +	syncfs(fd);
+> > +	SAFE_LSEEK(fd, 0, SEEK_SET);
+> > +}
+> > +
+> > +#if (!defined SEEK_DATA) || (!defined SEEK_HOLE)
+> > +static void test_lseek(void)
+> > +{
+> > +	tst_brk(TCONF, "SEEK_DATA or SEEK_HOLE is not defined.");
+> > +}
+> > +#else
+> > +static void test_lseek(unsigned int n)
+> > +{
+> > +	struct tparam *tp = &tparams[n];
+> > +	off_t offset;
+> > +	char buf[1024];
+> > +	int rc = 0;
+> > +
+> > +	memset(buf, 0, sizeof(buf));
+> > +	offset = (tp->startblock * block_size) + tp->offset;
+> > +	offset = SAFE_LSEEK(fd, offset, tp->whence);
+> > +	if (tp->data) {
+> > +		SAFE_READ(1, fd, buf, tp->count);
+> > +		rc = strcmp(buf, tp->data);
+> > +	} else {
+> > +		if (offset != SAFE_LSEEK(fd, 0, SEEK_END)) {
+> > +			rc = 1;
+> > +		}
+> > +
+> > +	}
+> > +
+> > +	if (rc != 0) {
+> > +		tst_res(TFAIL, \
+> > +		        "The %uth test failed: %s from startblock %ld offset %ld, expect \'%s\' return \'%s\'", \
+> > +		        n, (tp->whence == SEEK_DATA) ? "SEEK_DATA" : "SEEK_HOLE", \
+> > +		        tp->startblock, tp->offset, tp->data, buf);
+> 
+> We should probably handle the last case where tp->data is NULL here, at
+> least do tp->data ? tp->data : "".
 
-* Getting pointer to the mq_open() function via
-  dlysm(RTLD_DEFAULT, "mq_open") and TBROK if we get NULL
+I think printf a NULL will print (null). But yes, print \0 will be better.
 
-  - this requires the test linked with -ldl though
-    so this is not helping much
+> 
+> Also I'm not that sure how safe is printing the buffer we read from the
+> file, it will be filled with random garbage in case of file
+> corruption...
 
+I already tried to keep it safe. At first, make sure 'buf' filled with
+\0, then tp->count in SAFE_READ is fixed value, so it won't read things
+out of the 'buf' size.
 
-* Splitting the libltp.a into libltp.a and libltprt.a
+If you find more problems, feel free to tell me, I'll fix it ;)
 
-  - this is not elegant, but bullet-proof
+Thanks for you reviewing. I'll send V3 later.
 
+Thanks,
+Zorro
 
-* Hacking around build system and link the stub
-  only when -lrt is not in CFLAGS
-
-  - this is hackery, but would probably work fine
-
-
-* Anything else?
-
--- 
-Cyril Hrubis
-chrubis@suse.cz
+> 
+> Otherwise it looks good.
+> 
+> -- 
+> Cyril Hrubis
+> chrubis@suse.cz
