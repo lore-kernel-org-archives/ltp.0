@@ -1,348 +1,51 @@
-From: Zorro Lang <zlang@redhat.com>
-Date: Sat,  8 Apr 2017 22:40:11 +0800
-Subject: [LTP] [PATCH v3] lseek: functional SEEK_HOLE and SEEK_DATA test
-Message-ID: <1491662411-7720-1-git-send-email-zlang@redhat.com>
+From: Hoang Nguyen <the_hoang0709@yahoo.com>
+Date: Sun, 9 Apr 2017 08:29:32 +0000 (UTC)
+Subject: [LTP] [PATCH] prot_hsymlinks: Fix failure on read-only machine
+In-Reply-To: <c5bc7bac-4558-5fb8-8872-d827b182242d@oracle.com>
+References: <1489107284-4313-1-git-send-email-the_hoang0709@yahoo.com>
+ <c5bc7bac-4558-5fb8-8872-d827b182242d@oracle.com>
+Message-ID: <1016101328.2486923.1491726572781@mail.yahoo.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-This case does functional SEEK_HOLE and SEEK_DATA of lseek(2)
-testing.
-
-Since version 3.1, Linux supports the following additional values
-for whence:
-
-SEEK_DATA
-    Adjust the file offset to the next location in the file greater
-    than or  equal  to  offset  containing data.  If offset points
-    to data, then the file offset is set to offset.
-
-SEEK_HOLE
-    Adjust the file offset to the next hole in the file greater than
-    or equal to offset.  If offset points into the middle of a hole,
-    then the file offset is set to offset. If there is no hole past
-    offset, then the file offset is adjusted to the end of the file
-    (i.e., there is an implicit hole at the end of any file).
-
-This case will cover above description.
-
-Signed-off-by: Zorro Lang <zlang@redhat.com>
----
-
 Hi,
+Thanks Alexey, this would be much simpler. I'll send new patch. (also setpriority01 fails on my read-only system, I'll update it similiarly)
 
-V3 did below changes:
-1) change the description about GPLv2.
-2) change get_blocksize() function's offset initial value.
-3) change TBROK to TCONF, if filesystem doesn't support real
-   SEEK_DATA/SEEK_HOLE.
-4) change the print format in test_lseek().
+Thanks a lot for your help,
+Best regards,
+Hoang
+
+      From: Alexey Kodanev <alexey.kodanev@oracle.com>
+ To: the_hoang0709@yahoo.com; ltp@lists.linux.it 
+ Sent: Thursday, 6 April 2017, 0:25
+ Subject: Re: [LTP] [PATCH] prot_hsymlinks: Fix failure on read-only machine
+   
+Hi,
+On 10.03.2017 3:54, the_hoang0709@yahoo.com wrote:
+> ...
+>      if (disable_protected_hlinks) {
+>          tst_resm(TINFO, "Disable protected hardlinks mode back");
+> @@ -316,8 +317,13 @@ static void test_user_cmd(const char *user_cmd)
+>      char cmd[MAX_CMD_LEN];
+>      snprintf(cmd, MAX_CMD_LEN, "%s %s", user_cmd, users[TEST_USER].name);
+>      if (system(cmd) != 0) {
+> -        tst_brkm(TBROK, cleanup, "Failed to run cmd: %s %s",
+> +        if (eaccess("/etc/passwd", W_OK)) {
+> +            tst_brkm(TCONF, cleanup,
+> +            "/etc/passwd is not accessible");
+
+It would be better to add this check to the top of setup(), right after
+tst_kvercmp(), and exit without doing cleanup.
 
 Thanks,
-Zorro
+Alexey
 
- runtest/ltplite                           |   1 +
- runtest/stress.part3                      |   1 +
- runtest/syscalls                          |   1 +
- testcases/kernel/syscalls/.gitignore      |   1 +
- testcases/kernel/syscalls/lseek/lseek11.c | 238 ++++++++++++++++++++++++++++++
- 5 files changed, 242 insertions(+)
- create mode 100644 testcases/kernel/syscalls/lseek/lseek11.c
 
-diff --git a/runtest/ltplite b/runtest/ltplite
-index d4580ad..e895b93 100644
---- a/runtest/ltplite
-+++ b/runtest/ltplite
-@@ -415,6 +415,7 @@ lseek07 lseek07
- lseek08 lseek08
- lseek09 lseek09
- lseek10 lseek10
-+lseek11 lseek11
- 
- lstat01A symlink01 -T lstat01
- lstat01 lstat01
-diff --git a/runtest/stress.part3 b/runtest/stress.part3
-index 41f8b25..bd84752 100644
---- a/runtest/stress.part3
-+++ b/runtest/stress.part3
-@@ -341,6 +341,7 @@ lseek07 lseek07
- lseek08 lseek08
- lseek09 lseek09
- lseek10 lseek10
-+lseek11 lseek11
- 
- lstat01A symlink01 -T lstat01
- lstat01 lstat01
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 48f6492..7ac022c 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -548,6 +548,7 @@ lseek07 lseek07
- lseek08 lseek08
- lseek09 lseek09
- lseek10 lseek10
-+lseek11 lseek11
- 
- lstat01A symlink01 -T lstat01
- lstat01A_64 symlink01 -T lstat01_64
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index bebaa89..60f13df 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -500,6 +500,7 @@
- /lseek/lseek08
- /lseek/lseek09
- /lseek/lseek10
-+/lseek/lseek11
- /lstat/lstat01
- /lstat/lstat01_64
- /lstat/lstat02
-diff --git a/testcases/kernel/syscalls/lseek/lseek11.c b/testcases/kernel/syscalls/lseek/lseek11.c
-new file mode 100644
-index 0000000..eeaa072
---- /dev/null
-+++ b/testcases/kernel/syscalls/lseek/lseek11.c
-@@ -0,0 +1,238 @@
-+/*
-+ *   Copyright (C) 2017 Red Hat, Inc.  All rights reserved.
-+ *
-+ *   This program is free software;  you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ *   the GNU General Public License for more details.
-+ *
-+ *   You should have received a copy of the GNU General Public License
-+ *   along with this program;  if not, write to the Free Software
-+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
-+ *
-+ *   AUTHOR: Zorro Lang <zlang@redhat.com>
-+ *
-+ *   DESCRIPTION
-+ *     This case does functional SEEK_HOLE and SEEK_DATA of lseek(2) testing.
-+ *
-+ *     Since version 3.1, Linux supports the following additional values for
-+ *     whence:
-+ *
-+ *     SEEK_DATA
-+ *         Adjust the file offset to the next location in the file greater than
-+ *         or  equal  to  offset  containing data.  If offset points to data,
-+ *         then the file offset is set to offset.
-+ *
-+ *     SEEK_HOLE
-+ *         Adjust the file offset to the next hole in the file greater than or
-+ *         equal to offset.  If offset points into the middle of a hole, then
-+ *         the file offset is set to offset. If there is no hole past offset,
-+ *         then the file offset is adjusted to the end of the file (i.e., there
-+ *         is an implicit hole at the end of any file).
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <string.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_prw.h"
-+
-+/*
-+ * This case create 3 holes and 4 data fields, every (data) is 12 bytes,
-+ * every UNIT has UNIT_BLOCKS * block_size bytes. The structure as below:
-+ *
-+ * ----------------------------------------------------------------------------------------------
-+ * data01suffix      (hole)      data02suffix      (hole)       data03suffix  (hole)  data04sufix
-+ * ----------------------------------------------------------------------------------------------
-+ * |<--- UNIT_BLOCKS blocks --->||<--- UNIT_BLOCKS blocks  --->||<---  UNIT_BLOCKS blocks   --->|
-+ *
-+ */
-+#define UNIT_COUNT   3
-+#define UNIT_BLOCKS  10
-+#define FILE_BLOCKS  (UNIT_BLOCKS * UNIT_COUNT)
-+
-+static int fd;
-+static blksize_t block_size;
-+
-+/*
-+ * SEEK from "startblock * block_size - offset", "whence" as the directive
-+ * whence.
-+ * startblock * block_size - offset: as offset of lseek()
-+ * whence: as whence of lseek()
-+ * data: as the expected result read from file offset. NULL means expect
-+ *       the end of file.
-+ * count: as the count read from file
-+ */
-+static struct tparam {
-+	off_t  startblock;
-+	off_t  offset;
-+	int    whence;
-+	char   *data;
-+	size_t count;
-+} tparams[] = {
-+	{0,               0,    SEEK_DATA, "data01",   6},    /* SEEK_DATA from starting of file*/
-+	{0,               4,    SEEK_DATA, "01suffix", 8},    /* SEEK_DATA from maddle of the first data */
-+	{0,               0,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from starting of file */
-+	{0,               4,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from maddle of the first data */
-+	{1,               0,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from the starting of the first hole */
-+	{1,               128,  SEEK_HOLE, "",         1023}, /* SEEK_HOLE from maddle of the first hole */
-+	{1,               0,    SEEK_DATA, "data02",   6},    /* SEEK_DATA from the starting of the first hole */
-+	{UNIT_BLOCKS,     -1,   SEEK_DATA, "data02",   6},    /* SEEK_DATA from the tail of the first hole */
-+	{UNIT_BLOCKS,     0,    SEEK_DATA, "data02",   6},    /* SEEK_DATA from the starting of the second data */
-+	{UNIT_BLOCKS,     4,    SEEK_DATA, "02suffix", 8},    /* SEEK_DATA from middle of the second data */
-+	{UNIT_BLOCKS,     0,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from the starting of the second data */
-+	{UNIT_BLOCKS,     4,    SEEK_HOLE, "",         1023}, /* SEEK_HOLE from middle of the second data */
-+	{UNIT_BLOCKS + 1, 128,  SEEK_HOLE, "",         1023}, /* SEEK_HOLE from middle of the second hole */
-+	{UNIT_BLOCKS + 1, 128,  SEEK_DATA, "data03",   6},    /* SEEK_DATA from middle of the second hole */
-+	{FILE_BLOCKS,    -128,  SEEK_HOLE, NULL,       0},    /* SEEK_HOLE from no hole pass offset*/
-+};
-+
-+static void cleanup(void)
-+{
-+	SAFE_CLOSE(fd);
-+}
-+
-+static void get_blocksize(void)
-+{
-+	off_t pos = 0, offset = 128;
-+	int shift;
-+	struct stat st;
-+
-+	SAFE_FSTAT(fd, &st);
-+
-+	/* try to discover the actual alloc size */
-+	while (pos == 0 && offset < (st.st_blksize * 2)) {
-+		offset <<= 1;
-+		SAFE_FTRUNCATE(fd, 0);
-+		SAFE_PWRITE(1, fd, "a", 1, offset);
-+		syncfs(fd);
-+		pos = SAFE_LSEEK(fd, 0, SEEK_DATA);
-+	}
-+
-+	/* bisect for double check */
-+	shift = offset >> 2;
-+	while (shift && offset < (st.st_blksize * 2)) {
-+		SAFE_FTRUNCATE(fd, 0);
-+		SAFE_PWRITE(1, fd, "a", 1, offset);
-+		syncfs(fd);
-+		pos = SAFE_LSEEK(fd, 0, SEEK_DATA);
-+		offset += pos ? -shift : shift;
-+		shift >>= 1;
-+	}
-+
-+	if (!shift)
-+		offset += pos ? 0 : 1;
-+	block_size = offset;
-+
-+	/*
-+	 * Due to some filesystems use generic_file_llseek(), e.g: CIFS,
-+	 * it thinks the entire file is data, only a virtual hole at the end
-+	 * of the file. This case can't test this situation, so if the minimum
-+	 * alloc size we got bigger then st.st_blksize, we think it's not
-+	 * a valid value.
-+	 */
-+	if (block_size > st.st_blksize)
-+		tst_brk(TCONF, \
-+		        "filesystem maybe use generic_file_llseek(), not support real SEEK_DATA/SEEK_HOLE");
-+}
-+
-+static void write_data(int fd, int num)
-+{
-+	char buf[64];
-+
-+	sprintf(buf, "data%02dsuffix", num);
-+	SAFE_WRITE(1, fd, buf, strlen(buf));
-+}
-+
-+static void setup(void)
-+{
-+	int i;
-+	off_t offset = 0;
-+	char fname[255];
-+
-+	sprintf(fname, "tfile_lseek_%d", getpid());
-+
-+	fd = SAFE_OPEN(fname, O_RDWR | O_CREAT, 0666);
-+
-+	get_blocksize();
-+	tst_res(TINFO, "The block size is %lu", block_size);
-+
-+	/*
-+	 * truncate to the expected file size directly, to keep away the effect
-+	 * of speculative preallocation of some filesystems (e.g. XFS)
-+	 */
-+	SAFE_FTRUNCATE(fd, FILE_BLOCKS * block_size);
-+
-+	for (i = 0; i < UNIT_COUNT; i++) {
-+		offset = UNIT_BLOCKS * block_size * i;
-+		SAFE_LSEEK(fd, offset, SEEK_SET);
-+		write_data(fd, i + 1);
-+	}
-+
-+	SAFE_LSEEK(fd, -128, SEEK_END);
-+	write_data(fd, i + 1);
-+
-+	syncfs(fd);
-+	SAFE_LSEEK(fd, 0, SEEK_SET);
-+}
-+
-+#if (!defined SEEK_DATA) || (!defined SEEK_HOLE)
-+static void test_lseek(void)
-+{
-+	tst_brk(TCONF, "SEEK_DATA or SEEK_HOLE is not defined.");
-+}
-+#else
-+static void test_lseek(unsigned int n)
-+{
-+	struct tparam *tp = &tparams[n];
-+	off_t offset;
-+	char buf[1024];
-+	int rc = 0;
-+
-+	memset(buf, 0, sizeof(buf));
-+	offset = (tp->startblock * block_size) + tp->offset;
-+	offset = SAFE_LSEEK(fd, offset, tp->whence);
-+	if (tp->data) {
-+		SAFE_READ(1, fd, buf, tp->count);
-+		rc = strcmp(buf, tp->data);
-+	} else {
-+		if (offset != SAFE_LSEEK(fd, 0, SEEK_END)) {
-+			rc = 1;
-+		}
-+	}
-+
-+	if (rc != 0) {
-+		tst_res(TFAIL, \
-+		        "The %uth test failed: %s from startblock %ld offset %ld, expect \'%s\' return \'%s\'", \
-+		        n, (tp->whence == SEEK_DATA) ? "SEEK_DATA" : "SEEK_HOLE", \
-+		        tp->startblock, tp->offset, tp->data ? tp->data : "", buf);
-+	} else {
-+		tst_res(TPASS, \
-+		        "The %uth test passed: %s from startblock %ld offset %ld", \
-+		        n, (tp->whence == SEEK_DATA) ? "SEEK_DATA" : "SEEK_HOLE", \
-+		        tp->startblock, tp->offset);
-+	}
-+}
-+#endif
-+
-+static struct tst_test test = {
-+	.tid          = "lseek11",
-+#if (!defined SEEK_DATA) || (!defined SEEK_HOLE)
-+	.test_all     = test_lseek,
-+#else
-+	.tcnt         = ARRAY_SIZE(tparams),
-+	.test         = test_lseek,
-+	.setup        = setup,
-+	.cleanup      = cleanup,
-+	.needs_tmpdir = 1,
-+#endif
-+};
--- 
-2.7.4
 
+   
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170409/d764cf7c/attachment-0001.html>
