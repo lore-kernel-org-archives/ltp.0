@@ -1,9 +1,9 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 10 Apr 2017 18:05:55 +0800
-Subject: [LTP] [PATCH V2 13/14] mem/swapping: convert to new API
+Date: Mon, 10 Apr 2017 18:05:48 +0800
+Subject: [LTP] [PATCH V2 06/14] mem/hugetlb: convert to new API
 In-Reply-To: <20170410100556.4465-1-liwang@redhat.com>
 References: <20170410100556.4465-1-liwang@redhat.com>
-Message-ID: <20170410100556.4465-14-liwang@redhat.com>
+Message-ID: <20170410100556.4465-7-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -12,207 +12,119 @@ To: ltp@lists.linux.it
 
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/mem/swapping/swapping01.c | 106 +++++++++++------------------
- 1 file changed, 38 insertions(+), 68 deletions(-)
+ testcases/kernel/mem/hugetlb/lib/hugetlb.c | 19 ++++++++++---------
+ testcases/kernel/mem/hugetlb/lib/hugetlb.h |  9 +++++----
+ 2 files changed, 15 insertions(+), 13 deletions(-)
 
-diff --git a/testcases/kernel/mem/swapping/swapping01.c b/testcases/kernel/mem/swapping/swapping01.c
-index 171edb3..9390e8a 100644
---- a/testcases/kernel/mem/swapping/swapping01.c
-+++ b/testcases/kernel/mem/swapping/swapping01.c
-@@ -1,24 +1,15 @@
- /*
-- * Copyright (C) 2012  Red Hat, Inc.
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of version 2 of the GNU General Public
-- * License as published by the Free Software Foundation.
-+ * Copyright (C) 2012-2017  Red Hat, Inc.
-  *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-  *
-- * Further, this software is distributed without any warranty that it
-- * is free of the rightful claim of any third person regarding
-- * infringement or the like.  Any license provided herein, whether
-- * implied or otherwise, applies only to this software file.  Patent
-- * licenses, if any, provided herein do not apply to combinations of
-- * this program with other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-- * 02110-1301, USA.
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.c b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+index 4a9d489..7afc7d4 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.c
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.c
+@@ -32,6 +32,7 @@
+  *	rm_shm()
   */
+ 
++#define TST_NO_DEFAULT_MAIN
+ #include <sys/types.h>
+ #include <sys/ipc.h>
+ #include <sys/shm.h>
+@@ -42,14 +43,14 @@
+ void check_hugepage(void)
+ {
+ 	if (access(PATH_HUGEPAGES, F_OK))
+-		tst_brkm(TCONF, NULL, "Huge page is not supported.");
++		tst_brk(TCONF, "Huge page is not supported.");
+ }
+ 
  /*
-  * swapping01 - first time swap use results in heavy swapping
-@@ -53,12 +44,8 @@
- #include <stdlib.h>
- #include <string.h>
- #include <unistd.h>
+  * getipckey() - generates and returns a message key used by the "get"
+  *		 calls to create an IPC resource.
+  */
+-int getipckey(void (*cleanup_fn) (void))
++int getipckey(void)
+ {
+ 	const char a = 'a';
+ 	int ascii_a = (int)a;
+@@ -60,7 +61,7 @@ int getipckey(void (*cleanup_fn) (void))
+ 
+ 	curdir = getcwd(curdir, size);
+ 	if (curdir == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup_fn, "getcwd(curdir)");
++		tst_brk(TBROK | TERRNO, "getcwd(curdir)");
+ 
+ 	/*
+ 	 * Get a Sys V IPC key
+@@ -79,7 +80,7 @@ int getipckey(void (*cleanup_fn) (void))
+ 
+ 	ipc_key = ftok(curdir, ascii_a + random() % 26);
+ 	if (ipc_key == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup_fn, "ftok");
++		tst_brk(TBROK | TERRNO, __func__);
+ 
+ 	return ipc_key;
+ }
+@@ -87,13 +88,13 @@ int getipckey(void (*cleanup_fn) (void))
+ /*
+  * getuserid() - return the integer value for the "user" id
+  */
+-int getuserid(void (*cleanup_fn) (void), char *user)
++int getuserid(char *user)
+ {
+ 	struct passwd *ent;
+ 
+ 	ent = getpwnam(user);
+ 	if (ent == NULL)
+-		tst_brkm(TBROK | TERRNO, cleanup_fn, "getpwnam");
++		tst_brk(TBROK | TERRNO, "getpwnam");
+ 
+ 	return ent->pw_uid;
+ }
+@@ -110,8 +111,8 @@ void rm_shm(int shm_id)
+ 	 * check for # of attaches ?
+ 	 */
+ 	if (shmctl(shm_id, IPC_RMID, NULL) == -1) {
+-		tst_resm(TINFO, "WARNING: shared memory deletion failed.");
+-		tst_resm(TINFO, "This could lead to IPC resource problems.");
+-		tst_resm(TINFO, "id = %d", shm_id);
++		tst_res(TINFO, "WARNING: shared memory deletion failed.");
++		tst_res(TINFO, "This could lead to IPC resource problems.");
++		tst_res(TINFO, "id = %d", shm_id);
+ 	}
+ }
+diff --git a/testcases/kernel/mem/hugetlb/lib/hugetlb.h b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+index 6b5c61e..1b5cc73 100644
+--- a/testcases/kernel/mem/hugetlb/lib/hugetlb.h
++++ b/testcases/kernel/mem/hugetlb/lib/hugetlb.h
+@@ -24,11 +24,12 @@
+ #ifndef __HUGETLB_H
+ #define __HUGETLB_H
+ 
++#include <stdlib.h>
+ #include <sys/ipc.h>
+ #include <sys/shm.h>
+ #include <errno.h>
+ #include <sys/wait.h>
 -#include "test.h"
- #include "mem.h"
++#include "tst_test.h"
  
--char *TCID = "swapping01";
--int TST_TOTAL = 1;
--
- /* allow swapping 1 * phy_mem in maximum */
- #define COE_DELTA       1
- /* will try to alloc 1.3 * phy_mem */
-@@ -74,54 +61,42 @@ static long mem_over;
- static long mem_over_max;
- static pid_t pid;
+ #define SHM_RD	0400
+ #define SHM_WR	0200
+@@ -49,12 +50,12 @@ key_t shmkey;			/* an IPC key generated by ftok() */
  
--int main(int argc, char *argv[])
-+static void test_swapping(void)
- {
--	int lc;
--
--	tst_parse_opts(argc, argv, NULL, NULL);
--
- #if __WORDSIZE == 32
--	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
-+	tst_brk(TCONF, "test is not designed for 32-bit system.");
- #endif
+ void check_hugepage(void);
  
--	setup();
--
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		init_meminfo();
-+	init_meminfo();
+-int getipckey(void (*cleanup_fn) (void));
+-int getuserid(void (*cleanup_fn) (void), char *user);
++int getipckey(void);
++int getuserid(char *user);
+ void rm_shm(int shm_id);
  
--		switch (pid = fork()) {
-+	switch (pid = fork()) {
- 		case -1:
--			tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+			tst_brk(TBROK | TERRNO, "fork");
- 		case 0:
- 			do_alloc();
- 			exit(0);
- 		default:
- 			check_swapping();
--		}
- 	}
--	cleanup();
--	tst_exit();
- }
+ char *nr_opt;
+-int sflag;
++char *Hopt;
+ long orig_hugepages;
  
- static void init_meminfo(void)
- {
--	swap_free_init = read_meminfo("SwapFree:");
--	if (FILE_LINES_SCANF(cleanup, "/proc/meminfo", "MemAvailable: %ld",
-+	swap_free_init = SAFE_READ_MEMINFO("SwapFree:");
-+	if (FILE_LINES_SCANF("/proc/meminfo", "MemAvailable: %ld",
- 		&mem_available_init)) {
--		mem_available_init = read_meminfo("MemFree:")
--			+ read_meminfo("Cached:");
-+		mem_available_init = SAFE_READ_MEMINFO("MemFree:")
-+			+ SAFE_READ_MEMINFO("Cached:");
- 	}
- 	mem_over = mem_available_init * COE_SLIGHT_OVER;
- 	mem_over_max = mem_available_init * COE_DELTA;
- 
- 	/* at least 10MB available physical memory needed */
- 	if (mem_available_init < 10240)
--		tst_brkm(TCONF, cleanup, "Not enough available mem to test.");
-+		tst_brk(TCONF, "Not enough available mem to test.");
- 
- 	if (swap_free_init < mem_over_max)
--		tst_brkm(TCONF, cleanup, "Not enough swap space to test.");
-+		tst_brk(TCONF, "Not enough swap space to test.");
- }
- 
- static void do_alloc(void)
-@@ -129,17 +104,17 @@ static void do_alloc(void)
- 	long mem_count;
- 	void *s;
- 
--	tst_resm(TINFO, "available physical memory: %ld MB",
-+	tst_res(TINFO, "available physical memory: %ld MB",
- 		mem_available_init / 1024);
- 	mem_count = mem_available_init + mem_over;
--	tst_resm(TINFO, "try to allocate: %ld MB", mem_count / 1024);
-+	tst_res(TINFO, "try to allocate: %ld MB", mem_count / 1024);
- 	s = malloc(mem_count * 1024);
- 	if (s == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup, "malloc");
-+		tst_brk(TBROK | TERRNO, "malloc");
- 	memset(s, 1, mem_count * 1024);
--	tst_resm(TINFO, "memory allocated: %ld MB", mem_count / 1024);
-+	tst_res(TINFO, "memory allocated: %ld MB", mem_count / 1024);
- 	if (raise(SIGSTOP) == -1)
--		tst_brkm(TBROK | TERRNO, tst_exit, "kill");
-+		tst_brk(TBROK | TERRNO, "kill");
- 	free(s);
- }
- 
-@@ -150,44 +125,39 @@ static void check_swapping(void)
- 
- 	/* wait child stop */
- 	if (waitpid(pid, &status, WUNTRACED) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+		tst_brk(TBROK | TERRNO, "waitpid");
- 	if (!WIFSTOPPED(status))
--		tst_brkm(TBROK, cleanup, "child was not stopped.");
-+		tst_brk(TBROK, "child was not stopped.");
- 
- 	/* Still occupying memory, loop for a while */
- 	i = 0;
- 	while (i < 10) {
--		swap_free_now = read_meminfo("SwapFree:");
-+		swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
- 		sleep(1);
--		if (abs(swap_free_now - read_meminfo("SwapFree:")) < 512)
-+		if (abs(swap_free_now - SAFE_READ_MEMINFO("SwapFree:")) < 512)
- 			break;
- 
- 		i++;
- 	}
- 
--	swap_free_now = read_meminfo("SwapFree:");
-+	swap_free_now = SAFE_READ_MEMINFO("SwapFree:");
- 	swapped = swap_free_init - swap_free_now;
- 	if (swapped > mem_over_max) {
- 		kill(pid, SIGCONT);
--		tst_brkm(TFAIL, cleanup, "heavy swapping detected: "
-+		tst_brk(TFAIL, "heavy swapping detected: "
- 				"%ld MB swapped.", swapped / 1024);
- 	}
- 
--	tst_resm(TPASS, "no heavy swapping detected, %ld MB swapped.",
-+	tst_res(TPASS, "no heavy swapping detected, %ld MB swapped.",
- 		 swapped / 1024);
- 	kill(pid, SIGCONT);
- 	/* wait child exit */
- 	if (waitpid(pid, &status, 0) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+		tst_brk(TBROK | TERRNO, "waitpid");
- }
- 
--void setup(void)
--{
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--
--	TEST_PAUSE;
--}
--
--void cleanup(void)
--{
--}
-+static struct tst_test test = {
-+	.tid = "swapping01",
-+	.needs_root = 1,
-+	.test_all = test_swapping,
-+};
+ #endif /* hugetlb.h */
 -- 
 2.9.3
 
