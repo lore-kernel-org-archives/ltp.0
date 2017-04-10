@@ -1,53 +1,48 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 10 Apr 2017 20:49:59 +0300
-Subject: [LTP] [RFC PATCH v4 0/3] Simplify network setup
-In-Reply-To: <20170410125326.e35n77a7wfraupfg@dell5510>
-References: <20170405204418.3240-1-pvorel@suse.cz>
- <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
- <20170406155005.smxqad2aqkcwecmz@dell5510>
- <7ec9883c-7b9a-42ff-b49f-a5732d59a9fb@oracle.com>
- <20170410125326.e35n77a7wfraupfg@dell5510>
-Message-ID: <fc3fc497-6803-751f-fe16-140cefd7dd27@oracle.com>
+From: Steve Ellcey <sellcey@cavium.com>
+Date: Mon, 10 Apr 2017 13:21:18 -0700
+Subject: [LTP] time taken by memcg_stress_test
+In-Reply-To: <20170324155857.GC9961@rei.lan>
+References: <201703222258.v2MMwYJR030273@sellcey-dt.caveonetworks.com>
+ <20170324155857.GC9961@rei.lan>
+Message-ID: <1491855678.3139.47.camel@cavium.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
+On Fri, 2017-03-24 at 16:58 +0100, Cyril Hrubis wrote:
+> Hi!
+> > 
+> > I have a question about memcg_stress_test.  Looking at
+> > memcg_stress_test.sh
+> > I see that RUN_TIME is set to 3600 (60*60) which means that
+> > run_stress runs
+> > for an hour.  And this is run twice, once in testcase_1 and once in
+> > testcase_2.  That is a long time for one test, do we really think
+> > it needs
+> > to run that long for 'proper' testing?  I would love to see this
+> > cut in
+> > half or even down to 15 minutes.  I know I can just change the
+> > script locally,
+> > but I was wondering if makes sense to change the default value.
+> Two hours is excessive indeed however getting right balance between
+> runtime and stress test coverage is always tricky...
+> 
+> I guess that we can settle for 15 minutes, maybe shorten the interval
+> parameter that is currently set to 10 seconds to compensate for that.
+> 
+> Also running the two test separately (two records in the runtest file
+> that would call the script with a paramter selecting between the
+> tests)
+> would make it better as well.
 
-On 04/10/2017 03:53 PM, Petr Vorel wrote:
-> ...
-> IMHO it's not about what is in tst_ipaddr(), but that we need IPV{4,6}_NETWORK and
-> IPV{4,6}_NET_REV variables in some scripts:
->
-> * testcases/network/stress/dns/dns-stress (which already sources test_net.sh) needs
-> IPV{4,6}_NETWORK and IPV{4,6}_NET_REV variables. This is the only test which uses all
-> of these variables.
-> 	if [ "$TST_IPV6" ]; then
-> 		record="AAAA"
-> 		net="$IPV6_NETWORK"
-> 		net_rev="$IPV6_NET_REV"
-> 	else
-> 		record="A"
-> 		net="$IPV4_NETWORK"
-> 		net_rev="$IPV4_NET_REV"
-> 	fi
-> ...
-> 	zone "$net_rev.$ip_zone_opt.arpa" {
-> 		type master;
-> 		file "ltp-ns.rev";
-> 	};
+So would a patch that changed RUN_TIME to 15 minutes (15 * 60) and
+changed the timout value sent to run_stress from 10 to 5 be considered
+OK?  I can submit one if we think this is a reasonable change.  I am
+not sure why splitting the test in two would help, LTP doesn't run any
+tests in parallel does it?  I'd rather skip that part of the change as
+I am worried I might mess something up.  Change 60 to 15 and 10 to 5 on
+the other hand is completely straight forward.
 
-
-Looking at this test, there is no need to use IP4|6_NETWORK vars
-and *_L|RHOST_. We could just use "unused network" variables there.
-I'll prepare the patch... but still we need to get a reverse net,
-though these variables more or less static.
-
-If we want to automate it, may be create reverse IP program as
-a separate tool in LTP so it can be invoked inside tests, like
-dns-stress?
-
-Thanks,
-Alexey
-
+Steve Ellcey
