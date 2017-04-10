@@ -1,32 +1,43 @@
 From: Li Wang <liwang@redhat.com>
-Date: Mon, 10 Apr 2017 18:05:56 +0800
-Subject: [LTP] [PATCH V2 14/14] mem/tunable: convert to new API
+Date: Mon, 10 Apr 2017 18:05:47 +0800
+Subject: [LTP] [PATCH V2 05/14] mem/thp: convert to new API
 In-Reply-To: <20170410100556.4465-1-liwang@redhat.com>
 References: <20170410100556.4465-1-liwang@redhat.com>
-Message-ID: <20170410100556.4465-15-liwang@redhat.com>
+Message-ID: <20170410100556.4465-6-liwang@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Note: Skip min_free_kbytes on large(total_mem > 100G) system, since
-      .timeout is only set 1200s.
-
 Signed-off-by: Li Wang <liwang@redhat.com>
 ---
- testcases/kernel/mem/tunable/max_map_count.c     | 107 ++++++---------
- testcases/kernel/mem/tunable/min_free_kbytes.c   | 128 ++++++++----------
- testcases/kernel/mem/tunable/overcommit_memory.c | 164 +++++++++--------------
- 3 files changed, 156 insertions(+), 243 deletions(-)
+ runtest/mm                       |  2 +-
+ testcases/kernel/mem/thp/thp01.c | 85 +++++++++++++++----------------------
+ testcases/kernel/mem/thp/thp02.c | 89 ++++++++++++--------------------------
+ testcases/kernel/mem/thp/thp03.c | 92 +++++++++++++---------------------------
+ 4 files changed, 92 insertions(+), 176 deletions(-)
 
-diff --git a/testcases/kernel/mem/tunable/max_map_count.c b/testcases/kernel/mem/tunable/max_map_count.c
-index 75a5098..421e0ab 100644
---- a/testcases/kernel/mem/tunable/max_map_count.c
-+++ b/testcases/kernel/mem/tunable/max_map_count.c
+diff --git a/runtest/mm b/runtest/mm
+index d108d18..fd37f1c 100644
+--- a/runtest/mm
++++ b/runtest/mm
+@@ -81,7 +81,7 @@ oom05 oom05
+ 
+ swapping01 swapping01 -i 5
+ 
+-thp01 thp01 -I 120
++thp01 thp01 -I 10
+ thp02 thp02
+ thp03 thp03
+ 
+diff --git a/testcases/kernel/mem/thp/thp01.c b/testcases/kernel/mem/thp/thp01.c
+index e1eaa50..37124f6 100644
+--- a/testcases/kernel/mem/thp/thp01.c
++++ b/testcases/kernel/mem/thp/thp01.c
 @@ -1,4 +1,18 @@
  /*
-+ * Copyright (C) 2012-2017  Red Hat, Inc.
++ * Copyright (C) 2011-2017  Red Hat, Inc.
 + *
 + * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -40,17 +51,15 @@ index 75a5098..421e0ab 100644
 + *
 + * Description:
 + *
-  * The program is designed to test max_map_count tunable file
+  * This is a reproducer of CVE-2011-0999, which fixed by mainline commit
+  * a7d6e4ecdb7648478ddec76d30d87d03d6e22b31:
   *
-  * The kernel Documentation say that:
-@@ -24,32 +38,8 @@
-  * ffffffffff600000-ffffffffff601000 r-xp 00000000 00:00 0   [vsyscall]
-  *
-  * so we ignore this line during /proc/[pid]/maps reading.
+@@ -13,27 +27,6 @@
+  * invalid opcode: 0000 [#1] SMP
+  * last sysfs file: /sys/devices/system/cpu/cpu23/cache/index2/shared_cpu_map
+  * ....
 - *
-- * ********************************************************************
-- * Copyright (C) 2012 Red Hat, Inc.
-- *
+- * Copyright (C) 2011  Red Hat, Inc.
 - * This program is free software; you can redistribute it and/or
 - * modify it under the terms of version 2 of the GNU General Public
 - * License as published by the Free Software Foundation.
@@ -70,465 +79,114 @@ index 75a5098..421e0ab 100644
 - * along with this program; if not, write the Free Software
 - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 - * 02110-1301, USA.
-- *
-- * ********************************************************************
   */
-+
- #define _GNU_SOURCE
+ 
  #include <sys/types.h>
- #include <sys/mman.h>
-@@ -60,47 +50,19 @@
+@@ -41,11 +34,9 @@
+ #include <sys/wait.h>
  #include <stdio.h>
- #include <stdlib.h>
- #include <sys/utsname.h>
+ #include <string.h>
++#include <stdlib.h>
+ #include <unistd.h>
 -#include "test.h"
- #include "mem.h"
- 
- #define MAP_COUNT_DEFAULT	1024
- #define MAX_MAP_COUNT		65536L
- 
--char *TCID = "max_map_count";
+-
+-char *TCID = "thp01";
 -int TST_TOTAL = 1;
--
- static long old_max_map_count;
- static long old_overcommit;
- static struct utsname un;
++#include "mem.h"
  
--static long count_maps(pid_t pid);
--static void max_map_count_test(void);
+ #define ARRAY_SZ	256
+ 
+@@ -58,22 +49,12 @@ static struct rlimit rl = {
+ 	.rlim_max = RLIM_INFINITY,
+ };
+ 
+-static void setup(void);
+-static void cleanup(void);
 -
--int main(int argc, char *argv[])
-+static void setup(void)
+-int main(int argc, char **argv)
++static void thp_test(void)
  {
--	int lc;
--
+-	int i, lc, st;
++	int i, st;
+ 	pid_t pid;
+ 
 -	tst_parse_opts(argc, argv, NULL, NULL);
 -
 -	setup();
+-
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--		max_map_count_test();
--	}
--
--	cleanup();
--	tst_exit();
--}
--
--void setup(void)
--{
--	tst_require_root();
--
--	tst_sig(FORK, DEF_HANDLER, cleanup);
--	TEST_PAUSE;
--
- 	if (access(PATH_SYSVM "max_map_count", F_OK) != 0)
--		tst_brkm(TBROK | TERRNO, NULL,
-+		tst_brk(TBROK | TERRNO,
- 			 "Can't support to test max_map_count");
- 
- 	old_max_map_count = get_sys_tune("max_map_count");
-@@ -108,10 +70,10 @@ void setup(void)
- 	set_sys_tune("overcommit_memory", 2, 1);
- 
- 	if (uname(&un) != 0)
--		tst_brkm(TBROK | TERRNO, NULL, "uname error");
-+		tst_brk(TBROK | TERRNO, "uname error");
- }
- 
--void cleanup(void)
-+static void cleanup(void)
- {
- 	set_sys_tune("overcommit_memory", old_overcommit, 0);
- 	set_sys_tune("max_map_count", old_max_map_count, 0);
-@@ -162,7 +124,7 @@ static long count_maps(pid_t pid)
- 	snprintf(buf, BUFSIZ, "/proc/%d/maps", pid);
- 	fp = fopen(buf, "r");
- 	if (fp == NULL)
--		tst_brkm(TBROK | TERRNO, cleanup, "fopen %s", buf);
-+		tst_brk(TBROK | TERRNO, "fopen %s", buf);
- 	while (getline(&line, &len, fp) != -1) {
- 		/* exclude vdso and vsyscall */
- 		if (filter_map(line))
-@@ -200,7 +162,7 @@ static void max_map_count_test(void)
- 	 *    step 1) will be used first.
- 	 * Hope OOM-killer can be more stable oneday.
- 	 */
--	memfree = read_meminfo("CommitLimit:") - read_meminfo("Committed_AS:");
-+	memfree = SAFE_READ_MEMINFO("CommitLimit:") - SAFE_READ_MEMINFO("Committed_AS:");
- 	/* 64 used as a bias to make sure no overflow happen */
- 	max_iters = memfree / sysconf(_SC_PAGESIZE) * 1024 - 64;
- 	if (max_iters > MAX_MAP_COUNT)
-@@ -210,24 +172,22 @@ static void max_map_count_test(void)
- 	while (max_maps <= max_iters) {
- 		set_sys_tune("max_map_count", max_maps, 1);
- 
--		switch (pid = tst_fork()) {
+-		switch (pid = fork()) {
 -		case -1:
 -			tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+		switch (pid = SAFE_FORK()) {
- 		case 0:
- 			while (mmap(NULL, 1, PROT_READ,
- 				    MAP_SHARED | MAP_ANONYMOUS, -1, 0)
- 			       != MAP_FAILED) ;
- 			if (raise(SIGSTOP) != 0)
--				tst_brkm(TBROK | TERRNO, tst_exit, "raise");
-+				tst_brk(TBROK | TERRNO, "raise");
- 			exit(0);
- 		default:
- 			break;
- 		}
- 		/* wait child done mmap and stop */
- 		if (waitpid(pid, &status, WUNTRACED) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+			tst_brk(TBROK | TERRNO, "waitpid");
- 		if (!WIFSTOPPED(status))
--			tst_brkm(TBROK, cleanup, "child did not stopped");
-+			tst_brk(TBROK, "child did not stopped");
- 
- 		map_count = count_maps(pid);
- 		/* Note max_maps will be exceeded by one for
-@@ -236,18 +196,27 @@ static void max_map_count_test(void)
- 		 * writing this COMMENT!
- 		*/
- 		if (map_count == (max_maps + 1))
--			tst_resm(TPASS, "%ld map entries in total "
-+			tst_res(TPASS, "%ld map entries in total "
- 				 "as expected.", max_maps);
- 		else
--			tst_resm(TFAIL, "%ld map entries in total, but "
-+			tst_res(TFAIL, "%ld map entries in total, but "
- 				 "expected %ld entries", map_count, max_maps);
- 
- 		/* make child continue to exit */
- 		if (kill(pid, SIGCONT) != 0)
--			tst_brkm(TBROK | TERRNO, cleanup, "kill");
-+			tst_brk(TBROK | TERRNO, "kill");
- 		if (waitpid(pid, &status, 0) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+			tst_brk(TBROK | TERRNO, "waitpid");
- 
- 		max_maps = max_maps << 1;
- 	}
- }
-+
-+static struct tst_test test = {
-+	.tid = "max_map_count",
-+	.needs_root = 1,
-+	.forks_child = 1,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = max_map_count_test,
-+};
-diff --git a/testcases/kernel/mem/tunable/min_free_kbytes.c b/testcases/kernel/mem/tunable/min_free_kbytes.c
-index 493c37e..fe20154 100644
---- a/testcases/kernel/mem/tunable/min_free_kbytes.c
-+++ b/testcases/kernel/mem/tunable/min_free_kbytes.c
-@@ -1,4 +1,18 @@
- /*
-+ * Copyright (C) 2012-2017  Red Hat, Inc.
-+ *
-+ * This program is free software;  you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * Description:
-+ *
-  * The case is designed to test min_free_kbytes tunable.
-  *
-  * The tune is used to control free memory, and system always
-@@ -12,31 +26,6 @@
-  * a) default min_free_kbytes with all overcommit memory policy
-  * b) 2x default value with all overcommit memory policy
-  * c) 5% of MemFree or %2 MemTotal with all overcommit memory policy
-- *
-- ********************************************************************
-- * Copyright (C) 2012 Red Hat, Inc.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of version 2 of the GNU General Public
-- * License as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
-- * Further, this software is distributed without any warranty that it
-- * is free of the rightful claim of any third person regarding
-- * infringement or the like.  Any license provided herein, whether
-- * implied or otherwise, applies only to this software file.  Patent
-- * licenses, if any, provided herein do not apply to combinations of
-- * this program with other software, or any other product whatsoever.
-- *
-- * You should have received a copy of the GNU General Public License
-- * along with this program; if not, write the Free Software
-- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-- * 02110-1301, USA.
-- *
-- * ********************************************************************
-  */
- 
- #include <sys/types.h>
-@@ -47,14 +36,11 @@
- #include <signal.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include "test.h"
- #include "mem.h"
- 
- #define MAP_SIZE (1UL<<20)
- 
- volatile int end;
--char *TCID = "min_free_kbytes";
--int TST_TOTAL = 1;
- static unsigned long default_tune;
- static unsigned long orig_overcommit;
- static unsigned long total_mem;
-@@ -64,50 +50,38 @@ static int eatup_mem(unsigned long overcommit_policy);
- static void check_monitor(void);
- static void sighandler(int signo LTP_ATTRIBUTE_UNUSED);
- 
--int main(int argc, char *argv[])
-+static void min_free_kbytes_test(void)
- {
--	int lc, pid, status;
-+	int pid, status;
- 	struct sigaction sa;
- 
--	tst_parse_opts(argc, argv, NULL, NULL);
--
- 	sa.sa_handler = sighandler;
- 	if (sigemptyset(&sa.sa_mask) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "sigemptyset");
-+		tst_brk(TBROK | TERRNO, "sigemptyset");
- 	sa.sa_flags = 0;
- 	if (sigaction(SIGUSR1, &sa, NULL) < 0)
--		tst_brkm(TBROK | TERRNO, cleanup, "sigaction");
--
--	setup();
--
--	switch (pid = fork()) {
--	case -1:
--		tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+		tst_brk(TBROK | TERRNO, "sigaction");
- 
 +	switch (pid = SAFE_FORK()) {
- 	case 0:
- 		/* startup the check monitor */
- 		check_monitor();
- 		exit(0);
+ 		case 0:
+ 			memset(arg, 'c', length - 1);
+ 			arg[length - 1] = '\0';
+@@ -91,29 +72,31 @@ int main(int argc, char **argv)
+ 			}
+ 		default:
+ 			if (waitpid(pid, &st, 0) == -1)
+-				tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
++				tst_brk(TBROK | TERRNO, "waitpid");
+ 			if (!WIFEXITED(st) || WEXITSTATUS(st) != 0)
+-				tst_brkm(TBROK, cleanup,
+-					 "child exited abnormally");
+-		}
++				tst_brk(TBROK, "child exited abnormally");
  	}
- 
--	for (lc = 0; TEST_LOOPING(lc); lc++) {
--		tst_count = 0;
--
--		test_tune(2);
--		test_tune(0);
--		test_tune(1);
--	}
-+	test_tune(2);
-+	test_tune(0);
-+	test_tune(1);
- 
- 	if (kill(pid, SIGUSR1) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "kill %d", pid);
-+		tst_brk(TBROK | TERRNO, "kill %d", pid);
- 	if (waitpid(pid, &status, WUNTRACED | WCONTINUED) == -1)
--		tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+		tst_brk(TBROK | TERRNO, "waitpid");
- 	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
--		tst_resm(TFAIL,
-+		tst_res(TFAIL,
- 			 "check_monitor child exit with status: %d", status);
- 
+-	tst_resm(TPASS, "system didn't crash, pass.");
 -	cleanup();
 -	tst_exit();
-+	tst_res(TPASS, "min_free_kbytes test pass");
++
++	tst_res(TPASS, "system didn't crash, pass.");
  }
  
- static void test_tune(unsigned long overcommit_policy)
-@@ -128,8 +102,8 @@ static void test_tune(unsigned long overcommit_policy)
- 			set_sys_tune("min_free_kbytes", 2 * default_tune, 1);
- 			/* case3 */
- 		} else {
--			memfree = read_meminfo("MemFree:");
--			memtotal = read_meminfo("MemTotal:");
-+			memfree = SAFE_READ_MEMINFO("MemFree:");
-+			memtotal = SAFE_READ_MEMINFO("MemTotal:");
- 			tune = memfree / 20;
- 			if (tune > (memtotal / 50))
- 				tune = memtotal / 50;
-@@ -140,18 +114,18 @@ static void test_tune(unsigned long overcommit_policy)
- 		fflush(stdout);
- 		switch (pid[i] = fork()) {
- 		case -1:
--			tst_brkm(TBROK | TERRNO, cleanup, "fork");
-+			tst_brk(TBROK | TERRNO, "fork");
- 		case 0:
- 			ret = eatup_mem(overcommit_policy);
- 			exit(ret);
- 		}
- 
- 		if (waitpid(pid[i], &status, WUNTRACED | WCONTINUED) == -1)
--			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
-+			tst_brk(TBROK | TERRNO, "waitpid");
- 
- 		if (overcommit_policy == 2) {
- 			if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
--				tst_resm(TFAIL,
-+				tst_res(TFAIL,
- 					 "child unexpectedly failed: %d",
- 					 status);
- 		} else if (overcommit_policy == 1) {
-@@ -160,25 +134,25 @@ static void test_tune(unsigned long overcommit_policy)
- 			{
- 				if (total_mem < 3145728UL)
- #endif
--					tst_resm(TFAIL,
-+					tst_res(TFAIL,
- 						 "child unexpectedly failed: %d",
- 						 status);
- #if __WORDSIZE == 32
- 				/* in 32-bit system, a process allocate about 3Gb memory@most */
- 				else
--					tst_resm(TINFO, "Child can't allocate "
-+					tst_res(TINFO, "Child can't allocate "
- 						 ">3Gb memory in 32bit system");
- 			}
- #endif
- 		} else {
- 			if (WIFEXITED(status)) {
- 				if (WEXITSTATUS(status) != 0) {
--					tst_resm(TFAIL, "child unexpectedly "
-+					tst_res(TFAIL, "child unexpectedly "
- 						 "failed: %d", status);
- 				}
- 			} else if (!WIFSIGNALED(status) ||
- 				   WTERMSIG(status) != SIGKILL) {
--				tst_resm(TFAIL,
-+				tst_res(TFAIL,
- 					 "child unexpectedly failed: %d",
- 					 status);
- 			}
-@@ -192,7 +166,7 @@ static int eatup_mem(unsigned long overcommit_policy)
- 	unsigned long memfree;
- 	void *addrs;
- 
--	memfree = read_meminfo("MemFree:");
-+	memfree = SAFE_READ_MEMINFO("MemFree:");
- 	printf("memfree is %lu kB before eatup mem\n", memfree);
- 	while (1) {
- 		addrs = mmap(NULL, MAP_SIZE, PROT_READ | PROT_WRITE,
-@@ -206,7 +180,7 @@ static int eatup_mem(unsigned long overcommit_policy)
- 		}
- 		memset(addrs, 1, MAP_SIZE);
- 	}
--	memfree = read_meminfo("MemFree:");
-+	memfree = SAFE_READ_MEMINFO("MemFree:");
- 	printf("memfree is %lu kB after eatup mem\n", memfree);
- 
- 	return ret;
-@@ -218,13 +192,13 @@ static void check_monitor(void)
- 	unsigned long memfree;
- 
- 	while (end) {
--		memfree = read_meminfo("MemFree:");
-+		memfree = SAFE_READ_MEMINFO("MemFree:");
- 		tune = get_sys_tune("min_free_kbytes");
- 
- 		if (memfree < tune) {
--			tst_resm(TINFO, "MemFree is %lu kB, "
-+			tst_res(TINFO, "MemFree is %lu kB, "
- 				 "min_free_kbytes is %lu kB", memfree, tune);
--			tst_resm(TFAIL, "MemFree < min_free_kbytes");
-+			tst_res(TFAIL, "MemFree < min_free_kbytes");
- 		}
- 
- 		sleep(2);
-@@ -236,25 +210,31 @@ static void sighandler(int signo LTP_ATTRIBUTE_UNUSED)
- 	end = 1;
- }
- 
--void setup(void)
-+static void setup(void)
+ static void setup(void)
  {
--	tst_require_root();
- 	if (get_sys_tune("panic_on_oom")) {
--		tst_brkm(TCONF, NULL,
-+		tst_brk(TCONF,
- 			"panic_on_oom is set, disable it to run these testcases");
- 	}
- 
+ 	ps = sysconf(_SC_PAGESIZE);
+ 	length = 32 * ps;
+-	arg = malloc(length);
+-	if (arg == NULL)
+-		tst_brkm(TBROK | TERRNO, NULL, "malloc");
+-
 -	tst_sig(FORK, DEF_HANDLER, cleanup);
 -	TEST_PAUSE;
--
--	total_mem = read_meminfo("MemTotal:") + read_meminfo("SwapTotal:");
-+	total_mem = SAFE_READ_MEMINFO("MemTotal:") + SAFE_READ_MEMINFO("SwapTotal:");
- 
- 	default_tune = get_sys_tune("min_free_kbytes");
- 	orig_overcommit = get_sys_tune("overcommit_memory");
++	arg = SAFE_MALLOC(length);
  }
  
--void cleanup(void)
-+static void cleanup(void)
+ static void cleanup(void)
  {
- 	set_sys_tune("min_free_kbytes", default_tune, 0);
- 	set_sys_tune("overcommit_memory", orig_overcommit, 0);
++	free(arg);
  }
 +
 +static struct tst_test test = {
-+	.tid = "min_free_kbytes",
++	.tid = "thp01",
 +	.needs_root = 1,
 +	.forks_child = 1,
-+	.timeout = 1200,
 +	.setup = setup,
 +	.cleanup = cleanup,
-+	.test_all = min_free_kbytes_test,
++	.test_all = thp_test,
 +};
-diff --git a/testcases/kernel/mem/tunable/overcommit_memory.c b/testcases/kernel/mem/tunable/overcommit_memory.c
-index 79a3034..0b6d678 100644
---- a/testcases/kernel/mem/tunable/overcommit_memory.c
-+++ b/testcases/kernel/mem/tunable/overcommit_memory.c
-@@ -1,4 +1,18 @@
+diff --git a/testcases/kernel/mem/thp/thp02.c b/testcases/kernel/mem/thp/thp02.c
+index eb919aa..45cfbe5 100644
+--- a/testcases/kernel/mem/thp/thp02.c
++++ b/testcases/kernel/mem/thp/thp02.c
+@@ -1,24 +1,15 @@
  /*
-+ * Copyright (C) 2012-2017  Red Hat, Inc.
-+ *
+- * Copyright (C) 2011  Red Hat, Inc.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
++ * Copyright (C) 2011-2017  Red Hat, Inc.
+  *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 + * This program is free software;  you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
 + * the Free Software Foundation; either version 2 of the License, or
 + * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
-+ * the GNU General Public License for more details.
-+ *
-+ * Descriptions:
-+ *
-  * There are two tunables overcommit_memory and overcommit_ratio under
-  * /proc/sys/vm/, which can control memory overcommitment.
   *
-@@ -49,45 +63,24 @@
-  * References:
-  * - Documentation/sysctl/vm.txt
-  * - Documentation/vm/overcommit-accounting
-- *
-- * ********************************************************************
-- * Copyright (C) 2012 Red Hat, Inc.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of version 2 of the GNU General Public
-- * License as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it would be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-- *
 - * Further, this software is distributed without any warranty that it
 - * is free of the rightful claim of any third person regarding
 - * infringement or the like.  Any license provided herein, whether
@@ -540,230 +198,268 @@ index 79a3034..0b6d678 100644
 - * along with this program; if not, write the Free Software
 - * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 - * 02110-1301, USA.
-- *
-- * ********************************************************************
-  */
- 
- #include <errno.h>
- #include <stdio.h>
- #include <stdlib.h>
--#include "test.h"
--#include "safe_macros.h"
-+#include <limits.h>
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+  * thp02 - detect mremap bug when THP is enabled.
+  *
+@@ -52,36 +43,11 @@
+ #include <unistd.h>
  #include "mem.h"
  
- #define DEFAULT_OVER_RATIO	50L
- #define EXPECT_PASS		0
- #define EXPECT_FAIL		1
+-char *TCID = "thp02";
+-int TST_TOTAL = 1;
+-
+ #ifdef HAVE_MREMAP_FIXED
+ static int ps;
+ static long hps, size;
+ static void *p, *p2, *p3, *p4;
  
--char *TCID = "overcommit_memory";
-+char *R_opt;
-+static struct tst_option options[] = {
-+	{"R:", &R_opt, "  -R n    Percentage of overcommitting memory"},
-+	{NULL, NULL, NULL}
-+};
-+
- static long old_overcommit_memory;
- static long old_overcommit_ratio;
- static long overcommit_ratio;
-@@ -95,102 +88,64 @@ static long sum_total;
- static long free_total;
- static long commit_limit;
- static long commit_left;
--static int R_flag;
--static char *R_opt;
--option_t options[] = {
--	{"R:", &R_flag, &R_opt},
--	{NULL, NULL, NULL}
--};
- 
--static void overcommit_memory_test(void);
- static int heavy_malloc(long size);
- static void alloc_and_check(long size, int expect_result);
--static void usage(void);
- static void update_mem(void);
- 
--int main(int argc, char *argv[])
+-static void do_mremap(void);
+-
+-int main(int argc, char **argv)
 -{
 -	int lc;
 -
--	tst_parse_opts(argc, argv, options, &usage);
--
--#if __WORDSIZE == 32
--	tst_brkm(TCONF, NULL, "test is not designed for 32-bit system.");
--#endif
--
--	if (R_flag)
--		overcommit_ratio = SAFE_STRTOL(NULL, R_opt, 0, LONG_MAX);
--	else
--		overcommit_ratio = DEFAULT_OVER_RATIO;
+-	tst_parse_opts(argc, argv, NULL, NULL);
 -
 -	setup();
 -
 -	for (lc = 0; TEST_LOOPING(lc); lc++) {
 -		tst_count = 0;
 -
--		overcommit_memory_test();
+-		do_mremap();
 -	}
+-	tst_resm(TPASS, "Still alive.");
 -
 -	cleanup();
--
 -	tst_exit();
+-
 -}
 -
+ static void do_mremap(void)
+ {
+ 	int i;
+@@ -89,11 +55,11 @@ static void do_mremap(void)
+ 
+ 	for (i = 0; i < 4; i++) {
+ 		if (posix_memalign(&p, hps, size))
+-			tst_brkm(TBROK | TERRNO, cleanup, "memalign p");
++			tst_brk(TBROK | TERRNO, "memalign p");
+ 		if (posix_memalign(&p2, hps, size))
+-			tst_brkm(TBROK | TERRNO, cleanup, "memalign p2");
++			tst_brk(TBROK | TERRNO, "memalign p2");
+ 		if (posix_memalign(&p3, hps, size))
+-			tst_brkm(TBROK | TERRNO, cleanup, "memalign p3");
++			tst_brk(TBROK | TERRNO, "memalign p3");
+ 
+ 		memset(p, 0xff, size);
+ 		memset(p2, 0xff, size);
+@@ -108,37 +74,36 @@ static void do_mremap(void)
+ 		 */
+ 		old_addr = p + ps * (i >> 1);
+ 		new_addr = p3 + ps * (i & 1);
+-		tst_resm(TINFO, "mremap %p to %p", old_addr, new_addr);
++		tst_res(TINFO, "mremap %p to %p", old_addr, new_addr);
+ 
+ 		p4 = mremap(old_addr, size - ps, size - ps,
+ 			    MREMAP_FIXED | MREMAP_MAYMOVE, new_addr);
+ 		if (p4 == MAP_FAILED)
+-			tst_brkm(TBROK | TERRNO, cleanup, "mremap");
++			tst_brk(TBROK | TERRNO, "mremap");
+ 		if (memcmp(p4, p2, size - ps))
+-			tst_brkm(TBROK, cleanup, "mremap bug");
++			tst_brk(TBROK, "mremap bug");
+ 	}
++
++	tst_res(TPASS, "Still alive.");
+ }
+ 
 -void setup(void)
 +static void setup(void)
  {
- 	long mem_total, swap_total;
- 	struct rlimit lim;
- 
--	tst_require_root();
+ 	if (access(PATH_THP, F_OK) == -1)
+-		tst_brkm(TCONF, NULL, "THP not enabled in kernel?");
 -
--	tst_sig(NOFORK, DEF_HANDLER, cleanup);
--
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
 -	TEST_PAUSE;
--
- 	if (access(PATH_SYSVM "overcommit_memory", F_OK) == -1 ||
- 	    access(PATH_SYSVM "overcommit_ratio", F_OK) == -1)
--		tst_brkm(TCONF, NULL, "The system "
-+		tst_brk(TCONF, "The system "
- 			 "can't support to test %s", TCID);
++		tst_brk(TCONF, "THP not enabled in kernel?");
  
-+	if (R_opt)
-+		overcommit_ratio = SAFE_STRTOL(R_opt, 0, LONG_MAX);
-+	else
-+		overcommit_ratio = DEFAULT_OVER_RATIO;
-+
- 	old_overcommit_memory = get_sys_tune("overcommit_memory");
- 	old_overcommit_ratio = get_sys_tune("overcommit_ratio");
- 
--	mem_total = read_meminfo("MemTotal:");
--	tst_resm(TINFO, "MemTotal is %ld kB", mem_total);
--	swap_total = read_meminfo("SwapTotal:");
--	tst_resm(TINFO, "SwapTotal is %ld kB", swap_total);
-+	mem_total = SAFE_READ_MEMINFO("MemTotal:");
-+	tst_res(TINFO, "MemTotal is %ld kB", mem_total);
-+	swap_total = SAFE_READ_MEMINFO("SwapTotal:");
-+	tst_res(TINFO, "SwapTotal is %ld kB", swap_total);
- 	sum_total = mem_total + swap_total;
- 
--	commit_limit = read_meminfo("CommitLimit:");
--	tst_resm(TINFO, "CommitLimit is %ld kB", commit_limit);
-+	commit_limit = SAFE_READ_MEMINFO("CommitLimit:");
-+	tst_res(TINFO, "CommitLimit is %ld kB", commit_limit);
- 
--	SAFE_GETRLIMIT(NULL, RLIMIT_AS, &lim);
-+	SAFE_GETRLIMIT(RLIMIT_AS, &lim);
- 
- 	if (lim.rlim_cur != RLIM_INFINITY) {
- 		lim.rlim_cur = RLIM_INFINITY;
- 		lim.rlim_max = RLIM_INFINITY;
- 
--		tst_resm(TINFO, "Increasing RLIM_AS to INFINITY");
-+		tst_res(TINFO, "Increasing RLIM_AS to INFINITY");
- 
--		SAFE_SETRLIMIT(NULL, RLIMIT_AS, &lim);
-+		SAFE_SETRLIMIT(RLIMIT_AS, &lim);
- 	}
- 
- 	set_sys_tune("overcommit_ratio", overcommit_ratio, 1);
+ 	ps = sysconf(_SC_PAGESIZE);
+-	hps = read_meminfo("Hugepagesize:") * 1024;
++	hps = SAFE_READ_MEMINFO("Hugepagesize:") * 1024;
+ 	size = hps * 4;
  }
  
 -void cleanup(void)
-+static void cleanup(void)
- {
- 	set_sys_tune("overcommit_memory", old_overcommit_memory, 0);
- 	set_sys_tune("overcommit_ratio", old_overcommit_ratio, 0);
- }
- 
--static void usage(void)
 -{
--	printf("  -R n    Percentage of overcommitting memory\n");
+-}
++static struct tst_test test = {
++	.tid = "thp02",
++	.needs_root = 1,
++	.setup = setup,
++	.test_all = do_mremap,
++};
+ 
+ #else
+-int main(void)
+-{
+-	tst_brkm(TCONF, NULL, "MREMAP_FIXED not present in <sys/mman.h>");
+-}
++	TST_TEST_TCONF("MREMAP_FIXED not present in <sys/mman.h>");
+ #endif /* HAVE_MREMAP_FIXED */
+diff --git a/testcases/kernel/mem/thp/thp03.c b/testcases/kernel/mem/thp/thp03.c
+index 6b0f829..44541d9 100644
+--- a/testcases/kernel/mem/thp/thp03.c
++++ b/testcases/kernel/mem/thp/thp03.c
+@@ -1,24 +1,15 @@
+ /*
+- * Copyright (C) 2012  Red Hat, Inc.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of version 2 of the GNU General Public
+- * License as published by the Free Software Foundation.
++ * Copyright (C) 2012-2017  Red Hat, Inc.
+  *
+- * This program is distributed in the hope that it would be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ * This program is free software;  you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
+  *
+- * Further, this software is distributed without any warranty that it
+- * is free of the rightful claim of any third person regarding
+- * infringement or the like.  Any license provided herein, whether
+- * implied or otherwise, applies only to this software file.  Patent
+- * licenses, if any, provided herein do not apply to combinations of
+- * this program with other software, or any other product whatsoever.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write the Free Software
+- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+- * 02110-1301, USA.
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
++ * the GNU General Public License for more details.
+  *
+  * thp03 - Case for spliting unaligned memory.
+  *       - System will panic if failed.
+@@ -46,11 +37,6 @@
+ #include <string.h>
+ #include <errno.h>
+ #include "mem.h"
+-#include "safe_macros.h"
+-#include "test.h"
+-
+-char *TCID = "thp03";
+-int TST_TOTAL = 1;
+ 
+ #ifdef MADV_MERGEABLE
+ 
+@@ -60,24 +46,6 @@ static long hugepage_size;
+ static long unaligned_size;
+ static long page_size;
+ 
+-int main(int argc, char **argv)
+-{
+-	int lc;
+-
+-	tst_parse_opts(argc, argv, NULL, NULL);
+-
+-	setup();
+-
+-	for (lc = 0; TEST_LOOPING(lc); lc++) {
+-		tst_count = 0;
+-
+-		thp_test();
+-	}
+-	tst_resm(TPASS, "system didn't crash, pass.");
+-	cleanup();
+-	tst_exit();
 -}
 -
- static void overcommit_memory_test(void)
+ static void thp_test(void)
  {
-+
-+#if __WORDSIZE == 32
-+	tst_brk(TCONF, "test is not designed for 32-bit system.");
-+#endif
- 	/* start to test overcommit_memory=2 */
- 	set_sys_tune("overcommit_memory", 2, 1);
+ 	void *p;
+@@ -85,53 +53,53 @@ static void thp_test(void)
+ 	p = mmap(NULL, unaligned_size, PROT_READ | PROT_WRITE,
+ 		 MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+ 	if (p == MAP_FAILED)
+-		tst_brkm(TBROK | TERRNO, cleanup, "mmap");
++		tst_brk(TBROK | TERRNO, "mmap");
  
-@@ -224,11 +179,11 @@ static int heavy_malloc(long size)
+ 	memset(p, 0x00, unaligned_size);
+ 	if (mprotect(p, unaligned_size, PROT_NONE) == -1)
+-		tst_brkm(TBROK | TERRNO, cleanup, "mprotect");
++		tst_brk(TBROK | TERRNO, "mprotect");
  
- 	p = malloc(size * KB);
- 	if (p != NULL) {
--		tst_resm(TINFO, "malloc %ld kB successfully", size);
-+		tst_res(TINFO, "malloc %ld kB successfully", size);
- 		free(p);
- 		return 0;
- 	} else {
--		tst_resm(TINFO, "malloc %ld kB failed", size);
-+		tst_res(TINFO, "malloc %ld kB failed", size);
- 		return 1;
- 	}
- }
-@@ -243,18 +198,18 @@ static void alloc_and_check(long size, int expect_result)
- 	switch (expect_result) {
- 	case EXPECT_PASS:
- 		if (result == 0)
--			tst_resm(TPASS, "alloc passed as expected");
-+			tst_res(TPASS, "alloc passed as expected");
- 		else
--			tst_resm(TFAIL, "alloc failed, expected to pass");
-+			tst_res(TFAIL, "alloc failed, expected to pass");
- 		break;
- 	case EXPECT_FAIL:
- 		if (result != 0)
--			tst_resm(TPASS, "alloc failed as expected");
-+			tst_res(TPASS, "alloc failed as expected");
- 		else
--			tst_resm(TFAIL, "alloc passed, expected to fail");
-+			tst_res(TFAIL, "alloc passed, expected to fail");
- 		break;
- 	default:
--		tst_brkm(TBROK, cleanup, "Invaild numbler parameter: %d",
-+		tst_brk(TBROK, "Invaild numbler parameter: %d",
- 			 expect_result);
- 	}
- }
-@@ -264,20 +219,29 @@ static void update_mem(void)
- 	long mem_free, swap_free;
- 	long committed;
- 
--	mem_free = read_meminfo("MemFree:");
--	swap_free = read_meminfo("SwapFree:");
-+	mem_free = SAFE_READ_MEMINFO("MemFree:");
-+	swap_free = SAFE_READ_MEMINFO("SwapFree:");
- 	free_total = mem_free + swap_free;
--	commit_limit = read_meminfo("CommitLimit:");
-+	commit_limit = SAFE_READ_MEMINFO("CommitLimit:");
- 
- 	if (get_sys_tune("overcommit_memory") == 2) {
--		committed = read_meminfo("Committed_AS:");
-+		committed = SAFE_READ_MEMINFO("Committed_AS:");
- 		commit_left = commit_limit - committed;
- 
- 		if (commit_left < 0) {
--			tst_resm(TINFO, "CommitLimit is %ld, Committed_AS"
-+			tst_res(TINFO, "CommitLimit is %ld, Committed_AS"
- 				 " is %ld", commit_limit, committed);
--			tst_brkm(TBROK, cleanup, "Unexpected error: "
-+			tst_brk(TBROK, "Unexpected error: "
- 				 "CommitLimit < Committed_AS");
+ 	if (madvise(p + hugepage_size, page_size, MADV_MERGEABLE) == -1) {
+ 		if (errno == EINVAL) {
+-			tst_brkm(TCONF, cleanup,
++			tst_brk(TCONF,
+ 			         "MADV_MERGEABLE is not enabled/supported");
+ 		} else {
+-			tst_brkm(TBROK | TERRNO, cleanup, "madvise");
++			tst_brk(TBROK | TERRNO, "madvise");
  		}
  	}
- }
+ 
+-	switch (fork()) {
+-	case -1:
+-		tst_brkm(TBROK | TERRNO, cleanup, "fork");
++	switch (SAFE_FORK()) {
+ 	case 0:
+ 		exit(0);
+ 	default:
+ 		if (waitpid(-1, NULL, 0) == -1)
+-			tst_brkm(TBROK | TERRNO, cleanup, "waitpid");
++			tst_brk(TBROK | TERRNO, "waitpid");
+ 	}
 +
++	tst_res(TPASS, "system didn't crash, pass.");
++	munmap(p, unaligned_size);
+ }
+ 
+-void setup(void)
++static void setup(void)
+ {
+ 	if (access(PATH_THP, F_OK) == -1)
+-		tst_brkm(TCONF, NULL, "THP not enabled in kernel?");
++		tst_brk(TCONF, "THP not enabled in kernel?");
+ 
+-	hugepage_size = read_meminfo("Hugepagesize:") * KB;
++	hugepage_size = SAFE_READ_MEMINFO("Hugepagesize:") * KB;
+ 	unaligned_size = hugepage_size * 4 - 1;
+-	page_size = SAFE_SYSCONF(NULL, _SC_PAGESIZE);
+-
+-	tst_sig(FORK, DEF_HANDLER, cleanup);
+-	TEST_PAUSE;
++	page_size = SAFE_SYSCONF(_SC_PAGESIZE);
+ }
+ 
+-void cleanup(void)
+-{
+-}
 +static struct tst_test test = {
-+	.tid = "overcommit_memory",
++	.tid = "thp03",
 +	.needs_root = 1,
-+	.options = options,
++	.forks_child = 1,
 +	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = overcommit_memory_test,
++	.test_all = thp_test,
 +};
+ 
+ #else
+-int main(void)
+-{
+-	tst_brkm(TCONF, NULL, "Kernel doesn't support MADV_MERGEABLE"
++	TST_TEST_TCONF("Kernel doesn't support MADV_MERGEABLE"
+ 		 " or you need to update your glibc-headers");
+ }
+ #endif
 -- 
 2.9.3
 
