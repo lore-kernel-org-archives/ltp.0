@@ -1,180 +1,52 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 11 Apr 2017 11:44:59 +0300
-Subject: [LTP] [PATCH 2/2] dns-stress: check answer from dns server
-In-Reply-To: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1491900299-8615-2-git-send-email-alexey.kodanev@oracle.com>
+Date: Tue, 11 Apr 2017 11:50:18 +0300
+Subject: [LTP] [RFC PATCH v4 0/3] Simplify network setup
+In-Reply-To: <fc3fc497-6803-751f-fe16-140cefd7dd27@oracle.com>
+References: <20170405204418.3240-1-pvorel@suse.cz>
+ <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
+ <20170406155005.smxqad2aqkcwecmz@dell5510>
+ <7ec9883c-7b9a-42ff-b49f-a5732d59a9fb@oracle.com>
+ <20170410125326.e35n77a7wfraupfg@dell5510>
+ <fc3fc497-6803-751f-fe16-140cefd7dd27@oracle.com>
+Message-ID: <eaafd3c8-fa72-68ff-9dee-350298ad0740@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Add basic checks for query status and whether 'dig' received
-an answer from dns server. In case of any errors, print
-what was actually received.
+On 10.04.2017 20:49, Alexey Kodanev wrote:
+> On 04/10/2017 03:53 PM, Petr Vorel wrote:
+>> ...
+>> IMHO it's not about what is in tst_ipaddr(), but that we need IPV{4,6}_NETWORK and
+>> IPV{4,6}_NET_REV variables in some scripts:
+>>
+>> * testcases/network/stress/dns/dns-stress (which already sources test_net.sh) needs
+>> IPV{4,6}_NETWORK and IPV{4,6}_NET_REV variables. This is the only test which uses all
+>> of these variables.
+>> 	if [ "$TST_IPV6" ]; then
+>> 		record="AAAA"
+>> 		net="$IPV6_NETWORK"
+>> 		net_rev="$IPV6_NET_REV"
+>> 	else
+>> 		record="A"
+>> 		net="$IPV4_NETWORK"
+>> 		net_rev="$IPV4_NET_REV"
+>> 	fi
+>> ...
+>> 	zone "$net_rev.$ip_zone_opt.arpa" {
+>> 		type master;
+>> 		file "ltp-ns.rev";
+>> 	};
+>
+> Looking at this test, there is no need to use IP4|6_NETWORK vars
+> and *_L|RHOST_. We could just use "unused network" variables there.
+> I'll prepare the patch... but still we need to get a reverse net,
+> though these variables more or less static.
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- testcases/network/stress/dns/dns-stress-lib.sh |   41 ++++++++++++++++++++++++
- testcases/network/stress/dns/dns-stress01-rmt  |   18 ++++++----
- testcases/network/stress/dns/dns-stress02-rmt  |   20 +++++++----
- 3 files changed, 65 insertions(+), 14 deletions(-)
- create mode 100644 testcases/network/stress/dns/dns-stress-lib.sh
+Sent 'dns-stress' patch-set, with it the test is only using
+tst_ipaddr(), other vars defined inside setup().
 
-diff --git a/testcases/network/stress/dns/dns-stress-lib.sh b/testcases/network/stress/dns/dns-stress-lib.sh
-new file mode 100644
-index 0000000..d85f6e3
---- /dev/null
-+++ b/testcases/network/stress/dns/dns-stress-lib.sh
-@@ -0,0 +1,41 @@
-+#!/bin/sh
-+# Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
-+#
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public License as
-+# published by the Free Software Foundation; either version 2 of
-+# the License, or (at your option) any later version.
-+#
-+# This program is distributed in the hope that it would be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+# GNU General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public License
-+# along with this program. If not, see <http://www.gnu.org/licenses/>.
-+
-+. test.sh
-+
-+TST_CLEANUP=tst_rmdir
-+
-+dns_check_answer()
-+{
-+	local fname="$1"
-+
-+	if ! grep -q 'status: NOERROR' $fname; then
-+		cat $fname
-+		tst_brkm TFAIL "unexpected query status"
-+	fi
-+	if ! grep -q 'QUERY: 1, ANSWER: 1' $fname; then
-+		cat $fname
-+		tst_brkm TFAIL "unexpected number of query/answer"
-+	fi
-+}
-+
-+dns_check_send_requests()
-+{
-+	[ $num -eq $connect_quantity ] && return
-+	tst_brkm TFAIL "some requests failed: $num/$connect_quantity"
-+}
-+
-+tst_tmpdir
-diff --git a/testcases/network/stress/dns/dns-stress01-rmt b/testcases/network/stress/dns/dns-stress01-rmt
-index fcdb595..71b7d8d 100644
---- a/testcases/network/stress/dns/dns-stress01-rmt
-+++ b/testcases/network/stress/dns/dns-stress01-rmt
-@@ -1,6 +1,5 @@
- #!/bin/sh
--
--# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+# Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
- # Copyright (c) International Business Machines  Corp., 2005
- #
- # This program is free software; you can redistribute it and/or
-@@ -22,7 +21,7 @@
- TCID=dns-stress01-rmt
- TST_TOTAL=1
- 
--. test.sh
-+. dns-stress-lib.sh
- 
- # Check the arguments
- if [ $# -ne 7 ]; then
-@@ -49,21 +48,26 @@ case $ip_ver in
- esac
- 
- # Check the connectivity first
--dig @$srv_ipaddr -p $port node${min_id}.${domain} $record > /dev/null || \
-+dig @$srv_ipaddr -p $port node${min_id}.${domain} $record > ans.log 2>&1 || \
- 	tst_brkm TBROK "Failed to connect $srv_ipaddr"
-+dns_check_answer ans.log
- 
- # Loop for a large number of name lookup queries
- num=0
- id=$min_id
- while [ $num -lt $connect_quantity ]; do
--	dig @$srv_ipaddr -p $port node${id}.${domain} $record > /dev/null
-+	dig @$srv_ipaddr -p $port node${id}.${domain} $record \
-+		> /dev/null || break
- 	id=$(($id + 1))
- 	[ $id -gt $max_id ] && id=$min_id
- 	num=$(($num + 1))
- done
- 
- # Check the connectivity again
--dig @$srv_ipaddr -p $port node${min_id}.${domain} $record > /dev/null || \
--	tst_brkm TBROK "Failed to connect $srv_ipaddr. dns server seems down."
-+dig @$srv_ipaddr -p $port node${id}.${domain} $record > ans.log 2>&1 || \
-+	tst_brkm TBROK "Failed to connect $srv_ipaddr"
-+dns_check_answer ans.log
-+
-+dns_check_send_requests
- 
- tst_exit
-diff --git a/testcases/network/stress/dns/dns-stress02-rmt b/testcases/network/stress/dns/dns-stress02-rmt
-index 829f257..58fd60f 100644
---- a/testcases/network/stress/dns/dns-stress02-rmt
-+++ b/testcases/network/stress/dns/dns-stress02-rmt
-@@ -1,6 +1,5 @@
- #!/bin/sh
--
--# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
-+# Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
- # Copyright (c) International Business Machines  Corp., 2006
- #
- # This program is free software; you can redistribute it and/or
-@@ -22,7 +21,7 @@
- TCID=dns-stress02-rmt
- TST_TOTAL=1
- 
--. test.sh
-+. dns-stress-lib.sh
- 
- if [ $# -ne 7 ]; then
- 	tst_brkm TBROK "Usage: $0 ip_ver srv_ipaddr port net \
-@@ -52,21 +51,28 @@ case $ip_ver in
- esac
- 
- # Check the connectivity first
--dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${min_id} $record > /dev/null || \
-+dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${min_id} $record \
-+	> ans.log 2>&1 || \
- 	tst_brkm TBROK "Failed to connect $srv_ipaddr"
-+dns_check_answer ans.log
- 
- # Loop for a large number of reverse name lookup queries
- num=0
- id=$min_id
- while [ $num -lt $connect_quantity ]; do
--	dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${id} $record > /dev/null
-+	dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${id} $record \
-+		> /dev/null || break
- 	id=$(($id + 1))
- 	[ $id -gt $max_id ] && id=$min_id
- 	num=$(($num + 1))
- done
- 
- # Check the connectivity again
--dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${min_id} $record > /dev/null || \
--	tst_brkm TBROK "Failed to connect $srv_ipaddr. dns server seems down."
-+dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${min_id} $record \
-+	> ans.log 2>&1 || \
-+	tst_brkm TBROK "Failed to connect $srv_ipaddr"
-+dns_check_answer ans.log
-+
-+dns_check_send_requests
- 
- tst_exit
--- 
-1.7.1
+Thanks,
+Alexey
 
