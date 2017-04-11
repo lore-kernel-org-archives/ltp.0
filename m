@@ -1,65 +1,78 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 11 Apr 2017 11:44:58 +0300
-Subject: [LTP] [PATCH 1/2] dns-stress: fix test and use locally defined IP
-	addresses
-Message-ID: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
+Date: Tue, 11 Apr 2017 11:44:59 +0300
+Subject: [LTP] [PATCH 2/2] dns-stress: check answer from dns server
+In-Reply-To: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <1491900299-8615-2-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-* define IP addresses, which are used in DNS query/answer,
-  inside the test. It should be safe to use any network
-  as we run 'named' on a non-standard port
-
-* remove *_REV env variables from test_net.sh
-
-* remove useless ping test inside setup()
-
-* options section in conf provides directory path for 'named' that's
-  why we don't need to specify full path for named.pid file
-
-* remove 'client' A/AAAA records as they don't used in the test
-
-* fix calculation of IPv6 host part reverse address
-
-* remove TST_TMPDIR usage, use cwd
-
-* add printing port number on which 'named' is listening
-
-* sleep 100ms instead of 1sec when waiting for dns server
+Add basic checks for query status and whether 'dig' received
+an answer from dns server. In case of any errors, print
+what was actually received.
 
 Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
 ---
- testcases/lib/test_net.sh               |    6 ---
- testcases/network/stress/dns/dns-stress |   57 ++++++++++++++-----------------
- 2 files changed, 26 insertions(+), 37 deletions(-)
- mode change 100644 => 100755 testcases/network/stress/dns/dns-stress
+ testcases/network/stress/dns/dns-stress-lib.sh |   41 ++++++++++++++++++++++++
+ testcases/network/stress/dns/dns-stress01-rmt  |   18 ++++++----
+ testcases/network/stress/dns/dns-stress02-rmt  |   20 +++++++----
+ 3 files changed, 65 insertions(+), 14 deletions(-)
+ create mode 100644 testcases/network/stress/dns/dns-stress-lib.sh
 
-diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
-index 5ce2049..928b991 100644
---- a/testcases/lib/test_net.sh
-+++ b/testcases/lib/test_net.sh
-@@ -512,12 +512,6 @@ export IPV6_NETWORK="${IPV6_NETWORK:-fd00:1:1:1}"
- export LHOST_IPV6_HOST="${LHOST_IPV6_HOST:-:2}"
- # Set remote host last octet, default is '1'
- export RHOST_IPV6_HOST="${RHOST_IPV6_HOST:-:1}"
--# Reverse network portion of the IPv6 address
--export IPV6_NET_REV="${IPV6_NET_REV:-1.0.0.0.1.0.0.0.1.0.0.0.0.0.d.f}"
--# Reverse host portion of the IPv6 address of the local host
--export LHOST_IPV6_REV="${LHOST_IPV6_REV:-2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0}"
--# Reverse host portion of the IPv6 address of the remote host
--export RHOST_IPV6_REV="${RHOST_IPV6_REV:-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0}"
- 
- # Networks that aren't reachable through the test links
- export IPV4_NET16_UNUSED="${IPV4_NET16_UNUSED:-10.23}"
-diff --git a/testcases/network/stress/dns/dns-stress b/testcases/network/stress/dns/dns-stress
-old mode 100644
-new mode 100755
-index 7a6cba5..dd385fe
---- a/testcases/network/stress/dns/dns-stress
-+++ b/testcases/network/stress/dns/dns-stress
+diff --git a/testcases/network/stress/dns/dns-stress-lib.sh b/testcases/network/stress/dns/dns-stress-lib.sh
+new file mode 100644
+index 0000000..d85f6e3
+--- /dev/null
++++ b/testcases/network/stress/dns/dns-stress-lib.sh
+@@ -0,0 +1,41 @@
++#!/bin/sh
++# Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
++#
++# This program is free software; you can redistribute it and/or
++# modify it under the terms of the GNU General Public License as
++# published by the Free Software Foundation; either version 2 of
++# the License, or (at your option) any later version.
++#
++# This program is distributed in the hope that it would be useful,
++# but WITHOUT ANY WARRANTY; without even the implied warranty of
++# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++# GNU General Public License for more details.
++#
++# You should have received a copy of the GNU General Public License
++# along with this program. If not, see <http://www.gnu.org/licenses/>.
++
++. test.sh
++
++TST_CLEANUP=tst_rmdir
++
++dns_check_answer()
++{
++	local fname="$1"
++
++	if ! grep -q 'status: NOERROR' $fname; then
++		cat $fname
++		tst_brkm TFAIL "unexpected query status"
++	fi
++	if ! grep -q 'QUERY: 1, ANSWER: 1' $fname; then
++		cat $fname
++		tst_brkm TFAIL "unexpected number of query/answer"
++	fi
++}
++
++dns_check_send_requests()
++{
++	[ $num -eq $connect_quantity ] && return
++	tst_brkm TFAIL "some requests failed: $num/$connect_quantity"
++}
++
++tst_tmpdir
+diff --git a/testcases/network/stress/dns/dns-stress01-rmt b/testcases/network/stress/dns/dns-stress01-rmt
+index fcdb595..71b7d8d 100644
+--- a/testcases/network/stress/dns/dns-stress01-rmt
++++ b/testcases/network/stress/dns/dns-stress01-rmt
 @@ -1,6 +1,5 @@
  #!/bin/sh
 -
@@ -68,152 +81,100 @@ index 7a6cba5..dd385fe
  # Copyright (c) International Business Machines  Corp., 2005
  #
  # This program is free software; you can redistribute it and/or
-@@ -27,7 +26,7 @@ TST_CLEANUP="cleanup"
+@@ -22,7 +21,7 @@
+ TCID=dns-stress01-rmt
+ TST_TOTAL=1
  
- # Minimum host ID in the zone file.
- # The ID is used as the host portion of the address
--MIN_ID=3
-+MIN_ID=2
- # Maximum host ID in the zone file.
- MAX_ID=254
- # Domain name for testing
-@@ -49,19 +48,16 @@ common_setup()
+-. test.sh
++. dns-stress-lib.sh
  
- 	if [ "$TST_IPV6" ]; then
- 		record="AAAA"
--		net="$IPV6_NETWORK"
--		net_rev="$IPV6_NET_REV"
-+		net="fd00:cafe"
-+		net_rev="0.0.0.0.0.0.0.0.e.f.a.c.0.0.d.f"
- 	else
- 		record="A"
--		net="$IPV4_NETWORK"
--		net_rev="$IPV4_NET_REV"
-+		net="10.23.0"
-+		net_rev="0.23.10"
- 	fi
+ # Check the arguments
+ if [ $# -ne 7 ]; then
+@@ -49,21 +48,26 @@ case $ip_ver in
+ esac
  
- 	trap "tst_brkm TBROK 'test interrupted'" INT
+ # Check the connectivity first
+-dig @$srv_ipaddr -p $port node${min_id}.${domain} $record > /dev/null || \
++dig @$srv_ipaddr -p $port node${min_id}.${domain} $record > ans.log 2>&1 || \
+ 	tst_brkm TBROK "Failed to connect $srv_ipaddr"
++dns_check_answer ans.log
  
--	check_icmpv${ipver}_connectivity $(tst_iface) $(tst_ipaddr rhost) || \
--		tst_brkm TBROK "Failed to ping to $(tst_ipaddr rhost)"
+ # Loop for a large number of name lookup queries
+ num=0
+ id=$min_id
+ while [ $num -lt $connect_quantity ]; do
+-	dig @$srv_ipaddr -p $port node${id}.${domain} $record > /dev/null
++	dig @$srv_ipaddr -p $port node${id}.${domain} $record \
++		> /dev/null || break
+ 	id=$(($id + 1))
+ 	[ $id -gt $max_id ] && id=$min_id
+ 	num=$(($num + 1))
+ done
+ 
+ # Check the connectivity again
+-dig @$srv_ipaddr -p $port node${min_id}.${domain} $record > /dev/null || \
+-	tst_brkm TBROK "Failed to connect $srv_ipaddr. dns server seems down."
++dig @$srv_ipaddr -p $port node${id}.${domain} $record > ans.log 2>&1 || \
++	tst_brkm TBROK "Failed to connect $srv_ipaddr"
++dns_check_answer ans.log
++
++dns_check_send_requests
+ 
+ tst_exit
+diff --git a/testcases/network/stress/dns/dns-stress02-rmt b/testcases/network/stress/dns/dns-stress02-rmt
+index 829f257..58fd60f 100644
+--- a/testcases/network/stress/dns/dns-stress02-rmt
++++ b/testcases/network/stress/dns/dns-stress02-rmt
+@@ -1,6 +1,5 @@
+ #!/bin/sh
 -
- 	tst_tmpdir
+-# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
+ # Copyright (c) International Business Machines  Corp., 2006
+ #
+ # This program is free software; you can redistribute it and/or
+@@ -22,7 +21,7 @@
+ TCID=dns-stress02-rmt
+ TST_TOTAL=1
  
- 	ip6_opt=
-@@ -73,7 +69,7 @@ common_setup()
- 	cat << EOD > named.conf
- 	options {
- 		directory "$(pwd)";
--		pid-file "$(pwd)/named.pid";
-+		pid-file "named.pid";
- 		recursion no;
- 		$ip6_opt
- 	};
-@@ -100,23 +96,22 @@ EOD
- 	86400      ; dummy value
- )
- 	IN	NS	dns.$DOMAIN.
--dns	IN	$record	$(tst_ipaddr)
--client	IN	$record	$(tst_ipaddr rhost)
- EOD
- }
+-. test.sh
++. dns-stress-lib.sh
  
- setup_4()
- {
--	id=$MIN_ID
-+	printf "dns\tIN\tA\t$net.1\n" >> ltp-ns.zone
-+	local id=$MIN_ID
- 	while [ $id -le $MAX_ID ]; do
--		printf "node$id\tIN\tA\t$IPV4_NETWORK.$id\n" >> ltp-ns.zone
-+		printf "node$id\tIN\tA\t$net.$id\n" >> ltp-ns.zone
- 		id=$(($id + 1))
- 	done
+ if [ $# -ne 7 ]; then
+ 	tst_brkm TBROK "Usage: $0 ip_ver srv_ipaddr port net \
+@@ -52,21 +51,28 @@ case $ip_ver in
+ esac
  
- 	# reverse zone file
- 	cat << EOD > ltp-ns.rev
- \$TTL 10
--@	IN	SOA dns.$DOMAIN. root.$DOMAIN. (
-+@	IN	SOA $DOMAIN. root.$DOMAIN. (
- 	2005092701 ; serial
- 	3600       ; dummy value
- 	900        ; dummy value
-@@ -124,8 +119,6 @@ setup_4()
- 	86400      ; dummy value
- )
-         IN      NS      dns.$DOMAIN.
--$LHOST_IPV4_HOST	IN	PTR	dns.$DOMAIN.
--$RHOST_IPV4_HOST	IN	PTR	client.$DOMAIN.
- EOD
+ # Check the connectivity first
+-dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${min_id} $record > /dev/null || \
++dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${min_id} $record \
++	> ans.log 2>&1 || \
+ 	tst_brkm TBROK "Failed to connect $srv_ipaddr"
++dns_check_answer ans.log
  
- 	id=$MIN_ID
-@@ -137,16 +130,17 @@ EOD
+ # Loop for a large number of reverse name lookup queries
+ num=0
+ id=$min_id
+ while [ $num -lt $connect_quantity ]; do
+-	dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${id} $record > /dev/null
++	dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${id} $record \
++		> /dev/null || break
+ 	id=$(($id + 1))
+ 	[ $id -gt $max_id ] && id=$min_id
+ 	num=$(($num + 1))
+ done
  
- setup_6()
- {
--	id=$MIN_ID
-+	printf "dns\tIN\tAAAA\t$net::1\n" >> ltp-ns.zone
-+	local id=$MIN_ID
- 	while [ $id -le $MAX_ID ]; do
--		printf "node$id\tIN\tAAAA\t$IPV6_NETWORK::%x\n" $id >> ltp-ns.zone
-+		printf "node$id\tIN\tAAAA\t$net::%u\n" $id >> ltp-ns.zone
- 		id=$(($id + 1))
- 	done
+ # Check the connectivity again
+-dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${min_id} $record > /dev/null || \
+-	tst_brkm TBROK "Failed to connect $srv_ipaddr. dns server seems down."
++dig @$srv_ipaddr $opt -p $port -x ${net}${sep}${min_id} $record \
++	> ans.log 2>&1 || \
++	tst_brkm TBROK "Failed to connect $srv_ipaddr"
++dns_check_answer ans.log
++
++dns_check_send_requests
  
- 	# reverse zone file
- 	cat << EOD > ltp-ns.rev
- \$TTL 10
--@	IN	SOA dns.$DOMAIN. root.$DOMAIN. (
-+@	IN	SOA $DOMAIN. root.$DOMAIN. (
- 	2005092701 ; serial
- 	3600       ; dummy value
- 	900        ; dummy value
-@@ -154,34 +148,35 @@ setup_6()
- 	86400      ; dummy value
- )
-         IN      NS      dns.$DOMAIN.
--$LHOST_IPV6_REV	IN	PTR	dns.$DOMAIN.
--$RHOST_IPV6_REV	IN	PTR	client.$DOMAIN.
- EOD
- 
- 	id=$MIN_ID
-+	local rev_ip="0.0.0.0.0.0.0.0.0.0.0.0.0"
- 	while [ $id -le $MAX_ID ]; do
--		local rev_ip="0.0.0.0.0.0.0.0.0.0.0.0.0.0"
--		printf "%x.%x.$rev_ip\tIN\tPTR\tnode$id.$DOMAIN.\n" \
--			$(($id % 16)) $(($id / 16)) >> ltp-ns.rev
-+		local v1=$(( $id / 100 ))
-+		local v2=$(( $id / 10 - $v1 * 10 ))
-+		local v3=$(( $id - $v1 * 100 - $v2 * 10 ))
-+		printf "$v3.$v2.$v1.$rev_ip\tIN\tPTR\tnode$id.$DOMAIN.\n" \
-+			>> ltp-ns.rev
- 		id=$(($id + 1))
- 	done
- }
- 
- start_named()
- {
--	chmod 770 $TST_TMPDIR
--	chmod 660 $TST_TMPDIR/*
-+	chmod 770 .
-+	chmod 660 ./*
- 
--	port=$(tst_get_unused_port ipv${ipver} stream)
-+	port=$(tst_get_unused_port ipv${ipver} dgram)
- 
--	# Start named daemon
-+	tst_resm TINFO "Start named daemon, port $port"
- 	named -$ipver -c named.conf -p $port || \
- 		tst_brkm TBROK "Failed to run named daemon"
- 
- 	# Make sure named.pid is created.
- 	while true ; do
- 		test -s named.pid && break
--		sleep 1
-+		tst_sleep 100ms
- 	done
- }
- 
+ tst_exit
 -- 
 1.7.1
 
