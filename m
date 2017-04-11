@@ -1,58 +1,63 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Tue, 11 Apr 2017 11:36:43 +0800
-Subject: [LTP] [PATCH] pan/ltp-pan.c: fix incorrect number of total tests
-In-Reply-To: <20170410135021.GC23301@rei.lan>
-References: <1491544700-6312-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20170410135021.GC23301@rei.lan>
-Message-ID: <58EC4F4B.7040003@cn.fujitsu.com>
+From: charishma <charishm@linux.vnet.ibm.com>
+Date: Tue, 11 Apr 2017 12:02:28 +0530
+Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status
+ and prefix
+In-Reply-To: <757741255.7369133.1469193307743.JavaMail.zimbra@redhat.com>
+References: <1468479240-4975-1-git-send-email-shuang.qiu@oracle.com>
+ <757741255.7369133.1469193307743.JavaMail.zimbra@redhat.com>
+Message-ID: <51ca2a88-aaac-1ea1-22fc-30c0a99bcd1b@linux.vnet.ibm.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 2017/04/10 21:50, Cyril Hrubis wrote:
-> Hi!
->>   pan/ltp-pan.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/pan/ltp-pan.c b/pan/ltp-pan.c
->> index 1614c70..beed623 100644
->> --- a/pan/ltp-pan.c
->> +++ b/pan/ltp-pan.c
->> @@ -645,7 +645,7 @@ int main(int argc, char **argv)
->>   				strerror(errno));
->>   		fprintf(logfile,
->>   			"\n-----------------------------------------------\n");
->> -		fprintf(logfile, "Total Tests: %d\n", coll->cnt);
->> +		fprintf(logfile, "Total Tests: %d\n", (coll->cnt - starts));
-> This change does not make much sense to me. The coll->cnt is number of
-> tests loaded from the runtest file, right? The starts is basically
-> number of tests to be executed. The runltp script executes ltp-pan with
-> -S which means that starts is set to coll->cnt in the main() function
-> and so after this change it would print "Total Tests: 0" regardless.
+
+
+On 07/22/2016 06:45 PM, Jan Stancek wrote:
 >
-Hi Cyril
-
-Actually, the coll->cnt is number of tests loaded from the runtest file.
-However, starts is set to coll->cnt at first , and it reduces when=20
-completing one test.
-Please see the following code:
-cpid =3D
-run_child(coll->ary[c], running + i, quiet_mode,
-&failcnt, fmt_print, logfile);
-if (cpid !=3D -1)
-++num_active;
-if ((cpid !=3D -1 || sequential) && starts > 0)
---starts;
-
-I think that ltp-pan could indicate the number of tests which have been=20
-run when receiving one signal.
-I am not familiar with ltp-pan code=EF=BC=8Cso do you have some suggestions=
-=20
-about it?
-
-Thanks,
-Xiao Yang.
-
+>
+>
+> ----- Original Message -----
+>> From: "shuang qiu" <shuang.qiu@oracle.com>
+>> To: ltp@lists.linux.it
+>> Sent: Thursday, 14 July, 2016 8:54:00 AM
+>> Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status and	prefix
+>>
+>> From: Shuang Qiu <shuang.qiu@oracle.com>
+>>
+>> * Update to handle the env that cpuset subsystem is already mounted
+> I'm assuming motivation here are systemd distros, that have memory
+> cgroup already mounted.
+>
+I have tested with this patch on my RHEL7.3 system,and all tests passed.
+Can this patch be pulled to upstream ?
+>> * Similar with commit 6ce94db5bbff0be40813f3fdfe61a55b3186c49a,need to check
+>> for cpuset prefix
+>>
+>> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
+>> ---
+>>   .../cpuset_base_ops_testset.sh                     |   28 +-
+>>   .../cpuset_exclusive_test/cpuset_exclusive_test.sh |  168 ++++----
+>>   .../kernel/controllers/cpuset/cpuset_funcs.sh      |   39 +-
+>>   .../cpuset_hierarchy_test/cpuset_hierarchy_test.sh |  416
+>>   ++++++++++----------
+>>   .../cpuset_hotplug_test/cpuset_hotplug_test.sh     |    4 +-
+>>   .../cpuset_inherit_test/cpuset_inherit_testset.sh  |   12 +-
+>>   .../cpuset_memory_pressure_testset.sh              |   32 +-
+>>   .../cpuset_memory_spread_testset.sh                |    2 +-
+>>   .../cpuset_memory_test/cpuset_memory_testset.sh    |   22 +-
+>>   .../cpuset_syscall_test/cpuset_syscall_testset.sh  |    8 +-
+>>   10 files changed, 369 insertions(+), 362 deletions(-)
+> Looks OK to me. The changes look straight-forward, there's just
+> lot of them.
+>
+> I've ran it on RHEL7.3 and these passed. I tried also upstream
+> 4.7-rc7 and there were some failures, but that seems to be
+> because some input validation has changed on some files.
+> Can you also mention where/how you tested this change?
+>
+> Thanks,
+> Jan
+>
 
