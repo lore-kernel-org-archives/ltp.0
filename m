@@ -1,51 +1,25 @@
 From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Tue, 11 Apr 2017 11:50:18 +0300
-Subject: [LTP] [RFC PATCH v4 0/3] Simplify network setup
-In-Reply-To: <fc3fc497-6803-751f-fe16-140cefd7dd27@oracle.com>
-References: <20170405204418.3240-1-pvorel@suse.cz>
- <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
- <20170406155005.smxqad2aqkcwecmz@dell5510>
- <7ec9883c-7b9a-42ff-b49f-a5732d59a9fb@oracle.com>
- <20170410125326.e35n77a7wfraupfg@dell5510>
- <fc3fc497-6803-751f-fe16-140cefd7dd27@oracle.com>
-Message-ID: <eaafd3c8-fa72-68ff-9dee-350298ad0740@oracle.com>
+Date: Tue, 11 Apr 2017 12:46:13 +0300
+Subject: [LTP] [PATCH] setpriority01: Fix failure on read-only machine
+In-Reply-To: <1491727085-3873-2-git-send-email-the_hoang0709@yahoo.com>
+References: <1491727085-3873-1-git-send-email-the_hoang0709@yahoo.com>
+ <1491727085-3873-2-git-send-email-the_hoang0709@yahoo.com>
+Message-ID: <e624587a-7440-0df2-2884-c30b045f37ca@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On 10.04.2017 20:49, Alexey Kodanev wrote:
-> On 04/10/2017 03:53 PM, Petr Vorel wrote:
->> ...
->> IMHO it's not about what is in tst_ipaddr(), but that we need IPV{4,6}_NETWORK and
->> IPV{4,6}_NET_REV variables in some scripts:
->>
->> * testcases/network/stress/dns/dns-stress (which already sources test_net.sh) needs
->> IPV{4,6}_NETWORK and IPV{4,6}_NET_REV variables. This is the only test which uses all
->> of these variables.
->> 	if [ "$TST_IPV6" ]; then
->> 		record="AAAA"
->> 		net="$IPV6_NETWORK"
->> 		net_rev="$IPV6_NET_REV"
->> 	else
->> 		record="A"
->> 		net="$IPV4_NETWORK"
->> 		net_rev="$IPV4_NET_REV"
->> 	fi
->> ...
->> 	zone "$net_rev.$ip_zone_opt.arpa" {
->> 		type master;
->> 		file "ltp-ns.rev";
->> 	};
->
-> Looking at this test, there is no need to use IP4|6_NETWORK vars
-> and *_L|RHOST_. We could just use "unused network" variables there.
-> I'll prepare the patch... but still we need to get a reverse net,
-> though these variables more or less static.
+Hi,
+On 09.04.2017 11:38, the_hoang0709@yahoo.com wrote:
+> Return 32 if /etc/passwd is read-only.
+> Fixes: #137
+> See also: #88
 
-Sent 'dns-stress' patch-set, with it the test is only using
-tst_ipaddr(), other vars defined inside setup().
+Applied both patches, thanks! Modified the last one a little bit:
+added __GNU_SOURCE foreaccess() and renamed tst_brkm() to
+tst_brk() as the test converted to newer LTP API.
 
 Thanks,
 Alexey
