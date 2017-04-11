@@ -1,63 +1,219 @@
-From: charishma <charishm@linux.vnet.ibm.com>
-Date: Tue, 11 Apr 2017 12:02:28 +0530
-Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status
- and prefix
-In-Reply-To: <757741255.7369133.1469193307743.JavaMail.zimbra@redhat.com>
-References: <1468479240-4975-1-git-send-email-shuang.qiu@oracle.com>
- <757741255.7369133.1469193307743.JavaMail.zimbra@redhat.com>
-Message-ID: <51ca2a88-aaac-1ea1-22fc-30c0a99bcd1b@linux.vnet.ibm.com>
+From: Alexey Kodanev <alexey.kodanev@oracle.com>
+Date: Tue, 11 Apr 2017 11:44:58 +0300
+Subject: [LTP] [PATCH 1/2] dns-stress: fix test and use locally defined IP
+	addresses
+Message-ID: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+* define IP addresses, which are used in DNS query/answer,
+  inside the test. It should be safe to use any network
+  as we run 'named' on a non-standard port
 
+* remove *_REV env variables from test_net.sh
 
-On 07/22/2016 06:45 PM, Jan Stancek wrote:
->
->
->
-> ----- Original Message -----
->> From: "shuang qiu" <shuang.qiu@oracle.com>
->> To: ltp@lists.linux.it
->> Sent: Thursday, 14 July, 2016 8:54:00 AM
->> Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status and	prefix
->>
->> From: Shuang Qiu <shuang.qiu@oracle.com>
->>
->> * Update to handle the env that cpuset subsystem is already mounted
-> I'm assuming motivation here are systemd distros, that have memory
-> cgroup already mounted.
->
-I have tested with this patch on my RHEL7.3 system,and all tests passed.
-Can this patch be pulled to upstream ?
->> * Similar with commit 6ce94db5bbff0be40813f3fdfe61a55b3186c49a,need to check
->> for cpuset prefix
->>
->> Signed-off-by: Shuang Qiu <shuang.qiu@oracle.com>
->> ---
->>   .../cpuset_base_ops_testset.sh                     |   28 +-
->>   .../cpuset_exclusive_test/cpuset_exclusive_test.sh |  168 ++++----
->>   .../kernel/controllers/cpuset/cpuset_funcs.sh      |   39 +-
->>   .../cpuset_hierarchy_test/cpuset_hierarchy_test.sh |  416
->>   ++++++++++----------
->>   .../cpuset_hotplug_test/cpuset_hotplug_test.sh     |    4 +-
->>   .../cpuset_inherit_test/cpuset_inherit_testset.sh  |   12 +-
->>   .../cpuset_memory_pressure_testset.sh              |   32 +-
->>   .../cpuset_memory_spread_testset.sh                |    2 +-
->>   .../cpuset_memory_test/cpuset_memory_testset.sh    |   22 +-
->>   .../cpuset_syscall_test/cpuset_syscall_testset.sh  |    8 +-
->>   10 files changed, 369 insertions(+), 362 deletions(-)
-> Looks OK to me. The changes look straight-forward, there's just
-> lot of them.
->
-> I've ran it on RHEL7.3 and these passed. I tried also upstream
-> 4.7-rc7 and there were some failures, but that seems to be
-> because some input validation has changed on some files.
-> Can you also mention where/how you tested this change?
->
-> Thanks,
-> Jan
->
+* remove useless ping test inside setup()
+
+* options section in conf provides directory path for 'named' that's
+  why we don't need to specify full path for named.pid file
+
+* remove 'client' A/AAAA records as they don't used in the test
+
+* fix calculation of IPv6 host part reverse address
+
+* remove TST_TMPDIR usage, use cwd
+
+* add printing port number on which 'named' is listening
+
+* sleep 100ms instead of 1sec when waiting for dns server
+
+Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+---
+ testcases/lib/test_net.sh               |    6 ---
+ testcases/network/stress/dns/dns-stress |   57 ++++++++++++++-----------------
+ 2 files changed, 26 insertions(+), 37 deletions(-)
+ mode change 100644 => 100755 testcases/network/stress/dns/dns-stress
+
+diff --git a/testcases/lib/test_net.sh b/testcases/lib/test_net.sh
+index 5ce2049..928b991 100644
+--- a/testcases/lib/test_net.sh
++++ b/testcases/lib/test_net.sh
+@@ -512,12 +512,6 @@ export IPV6_NETWORK="${IPV6_NETWORK:-fd00:1:1:1}"
+ export LHOST_IPV6_HOST="${LHOST_IPV6_HOST:-:2}"
+ # Set remote host last octet, default is '1'
+ export RHOST_IPV6_HOST="${RHOST_IPV6_HOST:-:1}"
+-# Reverse network portion of the IPv6 address
+-export IPV6_NET_REV="${IPV6_NET_REV:-1.0.0.0.1.0.0.0.1.0.0.0.0.0.d.f}"
+-# Reverse host portion of the IPv6 address of the local host
+-export LHOST_IPV6_REV="${LHOST_IPV6_REV:-2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0}"
+-# Reverse host portion of the IPv6 address of the remote host
+-export RHOST_IPV6_REV="${RHOST_IPV6_REV:-1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0}"
+ 
+ # Networks that aren't reachable through the test links
+ export IPV4_NET16_UNUSED="${IPV4_NET16_UNUSED:-10.23}"
+diff --git a/testcases/network/stress/dns/dns-stress b/testcases/network/stress/dns/dns-stress
+old mode 100644
+new mode 100755
+index 7a6cba5..dd385fe
+--- a/testcases/network/stress/dns/dns-stress
++++ b/testcases/network/stress/dns/dns-stress
+@@ -1,6 +1,5 @@
+ #!/bin/sh
+-
+-# Copyright (c) 2015 Oracle and/or its affiliates. All Rights Reserved.
++# Copyright (c) 2015-2017 Oracle and/or its affiliates. All Rights Reserved.
+ # Copyright (c) International Business Machines  Corp., 2005
+ #
+ # This program is free software; you can redistribute it and/or
+@@ -27,7 +26,7 @@ TST_CLEANUP="cleanup"
+ 
+ # Minimum host ID in the zone file.
+ # The ID is used as the host portion of the address
+-MIN_ID=3
++MIN_ID=2
+ # Maximum host ID in the zone file.
+ MAX_ID=254
+ # Domain name for testing
+@@ -49,19 +48,16 @@ common_setup()
+ 
+ 	if [ "$TST_IPV6" ]; then
+ 		record="AAAA"
+-		net="$IPV6_NETWORK"
+-		net_rev="$IPV6_NET_REV"
++		net="fd00:cafe"
++		net_rev="0.0.0.0.0.0.0.0.e.f.a.c.0.0.d.f"
+ 	else
+ 		record="A"
+-		net="$IPV4_NETWORK"
+-		net_rev="$IPV4_NET_REV"
++		net="10.23.0"
++		net_rev="0.23.10"
+ 	fi
+ 
+ 	trap "tst_brkm TBROK 'test interrupted'" INT
+ 
+-	check_icmpv${ipver}_connectivity $(tst_iface) $(tst_ipaddr rhost) || \
+-		tst_brkm TBROK "Failed to ping to $(tst_ipaddr rhost)"
+-
+ 	tst_tmpdir
+ 
+ 	ip6_opt=
+@@ -73,7 +69,7 @@ common_setup()
+ 	cat << EOD > named.conf
+ 	options {
+ 		directory "$(pwd)";
+-		pid-file "$(pwd)/named.pid";
++		pid-file "named.pid";
+ 		recursion no;
+ 		$ip6_opt
+ 	};
+@@ -100,23 +96,22 @@ EOD
+ 	86400      ; dummy value
+ )
+ 	IN	NS	dns.$DOMAIN.
+-dns	IN	$record	$(tst_ipaddr)
+-client	IN	$record	$(tst_ipaddr rhost)
+ EOD
+ }
+ 
+ setup_4()
+ {
+-	id=$MIN_ID
++	printf "dns\tIN\tA\t$net.1\n" >> ltp-ns.zone
++	local id=$MIN_ID
+ 	while [ $id -le $MAX_ID ]; do
+-		printf "node$id\tIN\tA\t$IPV4_NETWORK.$id\n" >> ltp-ns.zone
++		printf "node$id\tIN\tA\t$net.$id\n" >> ltp-ns.zone
+ 		id=$(($id + 1))
+ 	done
+ 
+ 	# reverse zone file
+ 	cat << EOD > ltp-ns.rev
+ \$TTL 10
+-@	IN	SOA dns.$DOMAIN. root.$DOMAIN. (
++@	IN	SOA $DOMAIN. root.$DOMAIN. (
+ 	2005092701 ; serial
+ 	3600       ; dummy value
+ 	900        ; dummy value
+@@ -124,8 +119,6 @@ setup_4()
+ 	86400      ; dummy value
+ )
+         IN      NS      dns.$DOMAIN.
+-$LHOST_IPV4_HOST	IN	PTR	dns.$DOMAIN.
+-$RHOST_IPV4_HOST	IN	PTR	client.$DOMAIN.
+ EOD
+ 
+ 	id=$MIN_ID
+@@ -137,16 +130,17 @@ EOD
+ 
+ setup_6()
+ {
+-	id=$MIN_ID
++	printf "dns\tIN\tAAAA\t$net::1\n" >> ltp-ns.zone
++	local id=$MIN_ID
+ 	while [ $id -le $MAX_ID ]; do
+-		printf "node$id\tIN\tAAAA\t$IPV6_NETWORK::%x\n" $id >> ltp-ns.zone
++		printf "node$id\tIN\tAAAA\t$net::%u\n" $id >> ltp-ns.zone
+ 		id=$(($id + 1))
+ 	done
+ 
+ 	# reverse zone file
+ 	cat << EOD > ltp-ns.rev
+ \$TTL 10
+-@	IN	SOA dns.$DOMAIN. root.$DOMAIN. (
++@	IN	SOA $DOMAIN. root.$DOMAIN. (
+ 	2005092701 ; serial
+ 	3600       ; dummy value
+ 	900        ; dummy value
+@@ -154,34 +148,35 @@ setup_6()
+ 	86400      ; dummy value
+ )
+         IN      NS      dns.$DOMAIN.
+-$LHOST_IPV6_REV	IN	PTR	dns.$DOMAIN.
+-$RHOST_IPV6_REV	IN	PTR	client.$DOMAIN.
+ EOD
+ 
+ 	id=$MIN_ID
++	local rev_ip="0.0.0.0.0.0.0.0.0.0.0.0.0"
+ 	while [ $id -le $MAX_ID ]; do
+-		local rev_ip="0.0.0.0.0.0.0.0.0.0.0.0.0.0"
+-		printf "%x.%x.$rev_ip\tIN\tPTR\tnode$id.$DOMAIN.\n" \
+-			$(($id % 16)) $(($id / 16)) >> ltp-ns.rev
++		local v1=$(( $id / 100 ))
++		local v2=$(( $id / 10 - $v1 * 10 ))
++		local v3=$(( $id - $v1 * 100 - $v2 * 10 ))
++		printf "$v3.$v2.$v1.$rev_ip\tIN\tPTR\tnode$id.$DOMAIN.\n" \
++			>> ltp-ns.rev
+ 		id=$(($id + 1))
+ 	done
+ }
+ 
+ start_named()
+ {
+-	chmod 770 $TST_TMPDIR
+-	chmod 660 $TST_TMPDIR/*
++	chmod 770 .
++	chmod 660 ./*
+ 
+-	port=$(tst_get_unused_port ipv${ipver} stream)
++	port=$(tst_get_unused_port ipv${ipver} dgram)
+ 
+-	# Start named daemon
++	tst_resm TINFO "Start named daemon, port $port"
+ 	named -$ipver -c named.conf -p $port || \
+ 		tst_brkm TBROK "Failed to run named daemon"
+ 
+ 	# Make sure named.pid is created.
+ 	while true ; do
+ 		test -s named.pid && break
+-		sleep 1
++		tst_sleep 100ms
+ 	done
+ }
+ 
+-- 
+1.7.1
 
