@@ -1,49 +1,54 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 12 Apr 2017 17:31:31 +0200
-Subject: [LTP] [PATCH] pan/ltp-pan.c: fix incorrect number of total tests
-In-Reply-To: <58EC4F4B.7040003@cn.fujitsu.com>
-References: <1491544700-6312-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20170410135021.GC23301@rei.lan> <58EC4F4B.7040003@cn.fujitsu.com>
-Message-ID: <20170412153131.GD25790@rei>
+From: Steve Ellcey <sellcey@cavium.com>
+Date: Wed, 12 Apr 2017 10:33:08 -0700
+Subject: [LTP] [PATCH] memcg_stress_test.sh: Reduce runtime
+Message-ID: <1492018388-3968-1-git-send-email-sellcey@caviumnetworks.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi!
-> Actually, the coll->cnt is number of tests loaded from the runtest file.
-> However, starts is set to coll->cnt at first , and it reduces when 
-> completing one test.
-> Please see the following code:
-> cpid =
-> run_child(coll->ary[c], running + i, quiet_mode,
-> &failcnt, fmt_print, logfile);
-> if (cpid != -1)
-> ++num_active;
-> if ((cpid != -1 || sequential) && starts > 0)
-> --starts;
-> 
-> I think that ltp-pan could indicate the number of tests which have been 
-> run when receiving one signal.
+Change the RUN_TIME from 60 minutes to 15 minutes so the LTP suite does not
+take so long.  stress_test is run twice so the overall test still takes 30
+minutes (but not 2 hours).  Reduce the interval between memory touches from
+10 seconds to 5 seconds so we still get a reasonable amount of activity during
+the test.
 
-Hmm, ok, so unless starts is set to -1, which means "execute the testrun
-until interrupted" this would result in the number of executed tests, if
-starts is -1 the result is incorrect anyway.
+Signed-off-by: Steve Ellcey <sellcey@caviumnetworks.com>
+---
+ testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-But to get it really correct we should rather add a counter and count
-each started test child or something.
-
-> I am not familiar with ltp-pan code???so do you have some suggestions 
-> about it?
-
-Well the ltp-pan code is messy and the tool is in a maintenance mode,
-which means that we only do bugfixes. This looks like a bug so I'm not
-against fixing it but at the same time I do not think that this is
-important enough. So my suggestion would be to wait for the new LTP
-test runner that I started to work on some time ago and keep up with
-ltp-pan.c as it is until then.
-
+diff --git a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+index dc610f1..af1a708 100755
+--- a/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
++++ b/testcases/kernel/controllers/memcg/stress/memcg_stress_test.sh
+@@ -37,7 +37,7 @@ if [ "x$(grep -w memory /proc/cgroups | cut -f4)" != "x1" ]; then
+         exit 0
+ fi
+ 
+-RUN_TIME=$(( 60 * 60 ))
++RUN_TIME=$(( 15 * 60 ))
+ 
+ cleanup()
+ {
+@@ -96,14 +96,14 @@ run_stress()
+ 
+ testcase_1()
+ {
+-	run_stress 150 $(( ($mem-150) / 150 )) 10 $RUN_TIME
++	run_stress 150 $(( ($mem-150) / 150 )) 5 $RUN_TIME
+ 
+ 	tst_resm TPASS "stress test 1 passed"
+ }
+ 
+ testcase_2()
+ {
+-	run_stress 1 $mem 10 $RUN_TIME
++	run_stress 1 $mem 5 $RUN_TIME
+ 
+ 	tst_resm TPASS "stress test 2 passed"
+ }
 -- 
-Cyril Hrubis
-chrubis@suse.cz
+2.7.4
+
