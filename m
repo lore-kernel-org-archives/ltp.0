@@ -1,11 +1,10 @@
 From: Cyril Hrubis <chrubis@suse.cz>
-Date: Wed, 12 Apr 2017 15:15:31 +0200
-Subject: [LTP] time taken by memcg_stress_test
-In-Reply-To: <1491855678.3139.47.camel@cavium.com>
-References: <201703222258.v2MMwYJR030273@sellcey-dt.caveonetworks.com>
- <20170324155857.GC9961@rei.lan>
- <1491855678.3139.47.camel@cavium.com>
-Message-ID: <20170412131530.GC25790@rei>
+Date: Wed, 12 Apr 2017 17:31:31 +0200
+Subject: [LTP] [PATCH] pan/ltp-pan.c: fix incorrect number of total tests
+In-Reply-To: <58EC4F4B.7040003@cn.fujitsu.com>
+References: <1491544700-6312-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <20170410135021.GC23301@rei.lan> <58EC4F4B.7040003@cn.fujitsu.com>
+Message-ID: <20170412153131.GD25790@rei>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,35 +12,37 @@ Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
 Hi!
-> > Two hours is excessive indeed however getting right balance between
-> > runtime and stress test coverage is always tricky...
-> > 
-> > I guess that we can settle for 15 minutes, maybe shorten the interval
-> > parameter that is currently set to 10 seconds to compensate for that.
-> > 
-> > Also running the two test separately (two records in the runtest file
-> > that would call the script with a paramter selecting between the
-> > tests)
-> > would make it better as well.
+> Actually, the coll->cnt is number of tests loaded from the runtest file.
+> However, starts is set to coll->cnt at first , and it reduces when 
+> completing one test.
+> Please see the following code:
+> cpid =
+> run_child(coll->ary[c], running + i, quiet_mode,
+> &failcnt, fmt_print, logfile);
+> if (cpid != -1)
+> ++num_active;
+> if ((cpid != -1 || sequential) && starts > 0)
+> --starts;
 > 
-> So would a patch that changed RUN_TIME to 15 minutes (15 * 60) and
-> changed the timout value sent to run_stress from 10 to 5 be considered
-> OK?
+> I think that ltp-pan could indicate the number of tests which have been 
+> run when receiving one signal.
 
-Looks reasonable to me.
+Hmm, ok, so unless starts is set to -1, which means "execute the testrun
+until interrupted" this would result in the number of executed tests, if
+starts is -1 the result is incorrect anyway.
 
-> ??I can submit one if we think this is a reasonable change. ??I am
-> not sure why splitting the test in two would help, LTP doesn't run any
-> tests in parallel does it? ??I'd rather skip that part of the change as
-> I am worried I might mess something up. ??Change 60 to 15 and 10 to 5 on
-> the other hand is completely straight forward.
+But to get it really correct we should rather add a counter and count
+each started test child or something.
 
-We can always do the split in a separate patch.
+> I am not familiar with ltp-pan code???so do you have some suggestions 
+> about it?
 
-There are several reason why test should be split into resasonably small
-portions. The most important is that if big long running test fails you
-have no idea which part has failed and rerunning it to figure it out
-takes a lot of time...
+Well the ltp-pan code is messy and the tool is in a maintenance mode,
+which means that we only do bugfixes. This looks like a bug so I'm not
+against fixing it but at the same time I do not think that this is
+important enough. So my suggestion would be to wait for the new LTP
+test runner that I started to work on some time ago and keep up with
+ltp-pan.c as it is until then.
 
 -- 
 Cyril Hrubis
