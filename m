@@ -1,29 +1,62 @@
 From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Wed, 12 Apr 2017 12:04:51 +0800
-Subject: [LTP] [PATCH v2 1/2] syscalls/quotactl02.c: add Q_XGETNEXTQUOTA
-	flag test
-In-Reply-To: <20170411143050.GA3998@rei.lan>
+Date: Wed, 12 Apr 2017 12:04:52 +0800
+Subject: [LTP] [PATCH v2 2/2] syscalls/quotactl03.c: add new regression test
+In-Reply-To: <1491969892-6918-1-git-send-email-yangx.jy@cn.fujitsu.com>
 References: <20170411143050.GA3998@rei.lan>
-Message-ID: <1491969892-6918-1-git-send-email-yangx.jy@cn.fujitsu.com>
+ <1491969892-6918-1-git-send-email-yangx.jy@cn.fujitsu.com>
+Message-ID: <1491969892-6918-2-git-send-email-yangx.jy@cn.fujitsu.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+This kernel bug of xfs has been fixed in:
+
+commit 657bdfb7f5e68ca5e2ed009ab473c429b0d6af85
+Author: Eric Sandeen <sandeen@redhat.com>
+Date:   Tue Jan 17 11:43:38 2017 -0800
+
+	xfs: don't wrap ID in xfs_dq_get_next_id
+
 Signed-off-by: Xiao Yang <yangx.jy@cn.fujitsu.com>
 ---
- include/lapi/quotactl.h                         | 26 +++++++++++++
- testcases/kernel/syscalls/quotactl/quotactl02.c | 52 +++++++++++++++++--------
- 2 files changed, 61 insertions(+), 17 deletions(-)
- create mode 100644 include/lapi/quotactl.h
+ runtest/syscalls                                |   1 +
+ testcases/kernel/syscalls/.gitignore            |   1 +
+ testcases/kernel/syscalls/quotactl/quotactl03.c | 101 ++++++++++++++++++++++++
+ 3 files changed, 103 insertions(+)
+ create mode 100644 testcases/kernel/syscalls/quotactl/quotactl03.c
 
-diff --git a/include/lapi/quotactl.h b/include/lapi/quotactl.h
+diff --git a/runtest/syscalls b/runtest/syscalls
+index b5d12ca..5909456 100644
+--- a/runtest/syscalls
++++ b/runtest/syscalls
+@@ -850,6 +850,7 @@ pwritev02_64 pwritev02_64
+ 
+ quotactl01 quotactl01
+ quotactl02 quotactl02
++quotactl03 quotactl03
+ 
+ read01 read01
+ read02 read02
+diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
+index 6804e18..d5985cd 100644
+--- a/testcases/kernel/syscalls/.gitignore
++++ b/testcases/kernel/syscalls/.gitignore
+@@ -714,6 +714,7 @@
+ /pwritev/pwritev02_64
+ /quotactl/quotactl01
+ /quotactl/quotactl02
++/quotactl/quotactl03
+ /read/read01
+ /read/read02
+ /read/read03
+diff --git a/testcases/kernel/syscalls/quotactl/quotactl03.c b/testcases/kernel/syscalls/quotactl/quotactl03.c
 new file mode 100644
-index 0000000..729472f
+index 0000000..8c2cde5
 --- /dev/null
-+++ b/include/lapi/quotactl.h
-@@ -0,0 +1,26 @@
++++ b/testcases/kernel/syscalls/quotactl/quotactl03.c
+@@ -0,0 +1,101 @@
 +/*
 + * Copyright (c) 2017 Fujitsu Ltd.
 + * Author: Xiao Yang <yangx.jy@cn.fujitsu.com>
@@ -39,152 +72,92 @@ index 0000000..729472f
 + * GNU General Public License for more details.
 + *
 + * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
++ * along with this program, if not, see <http://www.gnu.org/licenses/>.
 + */
 +
-+#ifndef LAPI_QUOTACTL_H__
-+# define LAPI_QUOTACTL_H__
++/*
++ * Test Name: quotactl03
++ *
++ * Description:
++ * quotactl(2) with XGETNEXTQUOTA looks for the next active quota for an user
++ * equal or higher to a given ID, in this test the ID is specified to a value
++ * close to UINT_MAX(max value of unsigned int). When reaching the upper limit
++ * and finding no active quota, it should return -1 and set errno to ENOENT.
++ * Actually, quotactl(2) overflows and and return 0 as the "next" active id.
++ *
++ * This kernel bug of xfs has been fixed in:
++ *
++ * commit 657bdfb7f5e68ca5e2ed009ab473c429b0d6af85
++ * Author: Eric Sandeen <sandeen@redhat.com>
++ * Date:   Tue Jan 17 11:43:38 2017 -0800
++ *
++ *     xfs: don't wrap ID in xfs_dq_get_next_id
++ */
 +
-+# ifndef Q_XGETNEXTQUOTA
-+#  define Q_XGETNEXTQUOTA XQM_CMD(9)
-+# endif
++#define _GNU_SOURCE
++#include <errno.h>
++#include <unistd.h>
++#include <stdio.h>
++#include <sys/quota.h>
++#include "config.h"
 +
-+#endif /* LAPI_QUOTACTL_H__ */
-diff --git a/testcases/kernel/syscalls/quotactl/quotactl02.c b/testcases/kernel/syscalls/quotactl/quotactl02.c
-index f7ae78b..ec5c7a0 100644
---- a/testcases/kernel/syscalls/quotactl/quotactl02.c
-+++ b/testcases/kernel/syscalls/quotactl/quotactl02.c
-@@ -22,7 +22,10 @@
-  * This testcase checks basic flags of quotactl(2) for an XFS file system:
-  * 1) quotactl(2) succeeds to turn off xfs quota and get xfs quota off status.
-  * 2) quotactl(2) succeeds to turn on xfs quota and get xfs quota on status.
-- * 3) quotactl(2) succeeds to set and get xfs disk quota limits.
-+ * 3) quotactl(2) succeeds to set and use Q_XGETQUOTA to get xfs disk quota
-+ *    limits.
-+ * 4) quotactl(2) succeeds to set and use Q_XGETNEXTQUOTA to get xfs disk
-+ *    quota limits.
-  */
- #define _GNU_SOURCE
- #include <errno.h>
-@@ -40,13 +43,14 @@
- #endif
- 
- #include "tst_test.h"
++#if defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1)
++# include <sys/quota.h>
++#endif
++
++#if defined(HAVE_XFS_QUOTA)
++# include <xfs/xqm.h>
++#endif
++
++#include "tst_test.h"
 +#include "lapi/quotactl.h"
- 
- #if defined(HAVE_XFS_QUOTA) && (defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1))
--static void check_qoff(char *);
--static void check_qon(char *);
--static void check_qlim(char *);
-+static void check_qoff(int, char *);
-+static void check_qon(int, char *);
-+static void check_qlim(int, char *);
- 
--static int test_id;
-+static uint32_t test_id;
- static struct fs_disk_quota set_dquota = {
- 	.d_rtb_softlimit = 1000,
- 	.d_fieldmask = FS_DQ_RTBSOFT
-@@ -58,22 +62,25 @@ static struct t_case {
- 	int cmd;
- 	void *addr;
- 	void (*func_check)();
-+	int check_subcmd;
- 	char *des;
- } tcases[] = {
--	{QCMD(Q_XQUOTAOFF, USRQUOTA), &qflag, check_qoff,
-+	{QCMD(Q_XQUOTAOFF, USRQUOTA), &qflag, check_qoff, Q_XGETQSTAT,
- 	"turn off xfs quota and get xfs quota off status"},
--	{QCMD(Q_XQUOTAON, USRQUOTA), &qflag, check_qon,
-+	{QCMD(Q_XQUOTAON, USRQUOTA), &qflag, check_qon, Q_XGETQSTAT,
- 	"turn on xfs quota and get xfs quota on status"},
--	{QCMD(Q_XSETQLIM, USRQUOTA), &set_dquota, check_qlim,
--	"set and get xfs disk quota limits"},
-+	{QCMD(Q_XSETQLIM, USRQUOTA), &set_dquota, check_qlim, Q_XGETQUOTA,
-+	"Q_XGETQUOTA"},
-+	{QCMD(Q_XSETQLIM, USRQUOTA), &set_dquota, check_qlim, Q_XGETNEXTQUOTA,
-+	"Q_XGETNEXTQUOTA"},
- };
- 
--static void check_qoff(char *desp)
-+static void check_qoff(int subcmd, char *desp)
- {
- 	int res;
- 	struct fs_quota_stat res_qstat;
- 
--	res = quotactl(QCMD(Q_XGETQSTAT, USRQUOTA), tst_device->dev,
-+	res = quotactl(QCMD(subcmd, USRQUOTA), tst_device->dev,
- 	               test_id, (void*) &res_qstat);
- 	if (res == -1) {
- 		tst_res(TFAIL | TERRNO,
-@@ -89,12 +96,12 @@ static void check_qoff(char *desp)
- 	tst_res(TPASS, "quoactl() succeeded to %s", desp);
- }
- 
--static void check_qon(char *desp)
-+static void check_qon(int subcmd, char *desp)
- {
- 	int res;
- 	struct fs_quota_stat res_qstat;
- 
--	res = quotactl(QCMD(Q_XGETQSTAT, USRQUOTA), tst_device->dev,
-+	res = quotactl(QCMD(subcmd, USRQUOTA), tst_device->dev,
- 	               test_id, (void*) &res_qstat);
- 	if (res == -1) {
- 		tst_res(TFAIL | TERRNO,
-@@ -110,21 +117,31 @@ static void check_qon(char *desp)
- 	tst_res(TPASS, "quoactl() succeeded to %s", desp);
- }
- 
--static void check_qlim(char *desp)
-+static void check_qlim(int subcmd, char *desp)
- {
- 	int res;
- 	static struct fs_disk_quota res_dquota;
- 
- 	res_dquota.d_rtb_softlimit = 0;
- 
--	res = quotactl(QCMD(Q_XGETQUOTA, USRQUOTA), tst_device->dev,
-+	res = quotactl(QCMD(subcmd, USRQUOTA), tst_device->dev,
- 	               test_id, (void*) &res_dquota);
- 	if (res == -1) {
-+		if (errno == EINVAL) {
-+			tst_brk(TCONF | TERRNO,
-+				"%s wasn't supported in quotactl()", desp);
-+		}
- 		tst_res(TFAIL | TERRNO,
- 			"quotactl() failed to get xfs disk quota limits");
- 		return;
- 	}
- 
-+	if (res_dquota.d_id != test_id) {
-+		tst_res(TFAIL, "quotactl() got unexpected user id %u,"
-+			" expected %u", res_dquota.d_id, test_id);
++
++#if defined(HAVE_XFS_QUOTA) && (defined(HAVE_QUOTAV2) || defined(HAVE_QUOTAV1))
++
++static const char mntpoint[] = "mnt_point";
++static uint32_t test_id = 0xfffffffc;
++
++static void verify_quota(void)
++{
++	struct fs_disk_quota res_dquota;
++
++	res_dquota.d_id = 1;
++
++	TEST(quotactl(QCMD(Q_XGETNEXTQUOTA, USRQUOTA), tst_device->dev,
++		test_id, (void *)&res_dquota));
++	if (TEST_RETURN != -1) {
++		tst_res(TFAIL, "quotactl() found the next active ID:"
++			" %u unexpectedly", res_dquota.d_id);
 +		return;
 +	}
 +
- 	if (res_dquota.d_rtb_hardlimit != set_dquota.d_rtb_hardlimit) {
- 		tst_res(TFAIL, "quotactl() got unexpected rtb soft limit %llu,"
- 			" expected %llu", res_dquota.d_rtb_hardlimit,
-@@ -132,7 +149,8 @@ static void check_qlim(char *desp)
- 		return;
- 	}
- 
--	tst_res(TPASS, "quoactl() succeeded to %s", desp);
-+	tst_res(TPASS, "quoactl() succeeded to set and use %s to get xfs disk "
-+		"quota limits", desp);
- }
- 
- static void setup(void)
-@@ -150,7 +168,7 @@ static void verify_quota(unsigned int n)
- 		return;
- 	}
- 
--	tc->func_check(tc->des);
-+	tc->func_check(tc->check_subcmd, tc->des);
- }
- 
- static struct tst_test test = {
++	if (TEST_ERRNO == EINVAL) {
++		tst_brk(TCONF | TTERRNO,
++			"Q_XGETNEXTQUOTA wasn't supported in quotactl()");
++	}
++
++	if (TEST_ERRNO != ENOENT) {
++		tst_res(TFAIL | TTERRNO, "quotaclt() failed unexpectedly with"
++			" %s expected ENOENT", tst_strerrno(TEST_ERRNO));
++	} else {
++		tst_res(TPASS, "quotaclt() failed with ENOENT as expected");
++	}
++}
++
++static struct tst_test test = {
++	.tid = "quotactl03",
++	.needs_tmpdir = 1,
++	.needs_root = 1,
++	.test_all = verify_quota,
++	.mount_device = 1,
++	.dev_fs_type = "xfs",
++	.mntpoint = mntpoint,
++	.mnt_data = "usrquota",
++};
++
++#else
++	TST_TEST_TCONF("This system didn't support quota or xfs quota");
++#endif
 -- 
 1.8.3.1
 
