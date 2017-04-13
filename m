@@ -1,10 +1,15 @@
 From: Petr Vorel <pvorel@suse.cz>
-Date: Thu, 13 Apr 2017 11:32:03 +0200
-Subject: [LTP] [PATCH 1/2] dns-stress: fix test and use locally defined
- IP addresses
-In-Reply-To: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <20170413093203.2nghwk4xb53ff6s5@dell5510>
+Date: Thu, 13 Apr 2017 11:33:48 +0200
+Subject: [LTP] [RFC PATCH v4 0/3] Simplify network setup
+In-Reply-To: <eaafd3c8-fa72-68ff-9dee-350298ad0740@oracle.com>
+References: <20170405204418.3240-1-pvorel@suse.cz>
+ <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
+ <20170406155005.smxqad2aqkcwecmz@dell5510>
+ <7ec9883c-7b9a-42ff-b49f-a5732d59a9fb@oracle.com>
+ <20170410125326.e35n77a7wfraupfg@dell5510>
+ <fc3fc497-6803-751f-fe16-140cefd7dd27@oracle.com>
+ <eaafd3c8-fa72-68ff-9dee-350298ad0740@oracle.com>
+Message-ID: <20170413093348.fv2nw6eji3quxrxz@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -13,31 +18,9 @@ To: ltp@lists.linux.it
 
 Hi Alexey,
 
-
-> * define IP addresses, which are used in DNS query/answer,
->   inside the test. It should be safe to use any network
->   as we run 'named' on a non-standard port
-
-> * remove *_REV env variables from test_net.sh
-
-> * remove useless ping test inside setup()
-
-> * options section in conf provides directory path for 'named' that's
->   why we don't need to specify full path for named.pid file
-
-> * remove 'client' A/AAAA records as they don't used in the test
-
-> * fix calculation of IPv6 host part reverse address
-
-> * remove TST_TMPDIR usage, use cwd
-
-> * add printing port number on which 'named' is listening
-
-> * sleep 100ms instead of 1sec when waiting for dns server
-
-> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
-
-LGTM :-). Thanks for simplifying the stuff for my patch simplifying network setup.
+> Sent 'dns-stress' patch-set, with it the test is only using
+> tst_ipaddr(), other vars defined inside setup().
+Great, thanks. I'll remove now unnecessary code and fix the other issues.
 
 
 Kind regards,
