@@ -1,57 +1,44 @@
-From: Xiao Yang <yangx.jy@cn.fujitsu.com>
-Date: Thu, 13 Apr 2017 10:47:54 +0800
-Subject: [LTP] [PATCH] pan/ltp-pan.c: fix incorrect number of total tests
-In-Reply-To: <20170412153131.GD25790@rei>
-References: <1491544700-6312-1-git-send-email-yangx.jy@cn.fujitsu.com>
- <20170410135021.GC23301@rei.lan> <58EC4F4B.7040003@cn.fujitsu.com>
- <20170412153131.GD25790@rei>
-Message-ID: <58EEE6DA.6010505@cn.fujitsu.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Thu, 13 Apr 2017 11:32:03 +0200
+Subject: [LTP] [PATCH 1/2] dns-stress: fix test and use locally defined
+ IP addresses
+In-Reply-To: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
+References: <1491900299-8615-1-git-send-email-alexey.kodanev@oracle.com>
+Message-ID: <20170413093203.2nghwk4xb53ff6s5@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Hi Cyril
-
-Thanks for your explanation. :-)
-Agreed.  I would be to wait for the new LTP test runner.
-
-Thanks,
-Xiao Yang
-
-On 2017/04/12 23:31, Cyril Hrubis wrote:
-> Hi!
->> Actually, the coll->cnt is number of tests loaded from the runtest file.
->> However, starts is set to coll->cnt at first , and it reduces when
->> completing one test.
->> Please see the following code:
->> cpid =
->> run_child(coll->ary[c], running + i, quiet_mode,
->> &failcnt, fmt_print, logfile);
->> if (cpid != -1)
->> ++num_active;
->> if ((cpid != -1 || sequential)&&  starts>  0)
->> --starts;
->>
->> I think that ltp-pan could indicate the number of tests which have been
->> run when receiving one signal.
-> Hmm, ok, so unless starts is set to -1, which means "execute the testrun
-> until interrupted" this would result in the number of executed tests, if
-> starts is -1 the result is incorrect anyway.
->
-> But to get it really correct we should rather add a counter and count
-> each started test child or something.
->
->> I am not familiar with ltp-pan code???so do you have some suggestions
->> about it?
-> Well the ltp-pan code is messy and the tool is in a maintenance mode,
-> which means that we only do bugfixes. This looks like a bug so I'm not
-> against fixing it but at the same time I do not think that this is
-> important enough. So my suggestion would be to wait for the new LTP
-> test runner that I started to work on some time ago and keep up with
-> ltp-pan.c as it is until then.
->
+Hi Alexey,
 
 
+> * define IP addresses, which are used in DNS query/answer,
+>   inside the test. It should be safe to use any network
+>   as we run 'named' on a non-standard port
 
+> * remove *_REV env variables from test_net.sh
+
+> * remove useless ping test inside setup()
+
+> * options section in conf provides directory path for 'named' that's
+>   why we don't need to specify full path for named.pid file
+
+> * remove 'client' A/AAAA records as they don't used in the test
+
+> * fix calculation of IPv6 host part reverse address
+
+> * remove TST_TMPDIR usage, use cwd
+
+> * add printing port number on which 'named' is listening
+
+> * sleep 100ms instead of 1sec when waiting for dns server
+
+> Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
+
+LGTM :-). Thanks for simplifying the stuff for my patch simplifying network setup.
+
+
+Kind regards,
+Petr
