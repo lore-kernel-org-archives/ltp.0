@@ -1,32 +1,81 @@
 From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 18 Apr 2017 06:00:21 -0400 (EDT)
-Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status
- and prefix
-In-Reply-To: <51ca2a88-aaac-1ea1-22fc-30c0a99bcd1b@linux.vnet.ibm.com>
-References: <1468479240-4975-1-git-send-email-shuang.qiu@oracle.com>
- <757741255.7369133.1469193307743.JavaMail.zimbra@redhat.com>
- <51ca2a88-aaac-1ea1-22fc-30c0a99bcd1b@linux.vnet.ibm.com>
-Message-ID: <2114709909.28213922.1492509621766.JavaMail.zimbra@redhat.com>
+Date: Tue, 18 Apr 2017 08:06:33 -0400 (EDT)
+Subject: [LTP] [PATCH] syscalls: add new test for copy_file_range(2)
+In-Reply-To: <20170417054839.24444-1-liwang@redhat.com>
+References: <20170417054839.24444-1-liwang@redhat.com>
+Message-ID: <1294959175.28252852.1492517193554.JavaMail.zimbra@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-> >> * Update to handle the env that cpuset subsystem is already mounted
-> > I'm assuming motivation here are systemd distros, that have memory
-> > cgroup already mounted.
-> >
-> I have tested with this patch on my RHEL7.3 system,and all tests passed.
-> Can this patch be pulled to upstream ?
 
-Cyril,
 
-any objections to the patch?
+----- Original Message -----
 
-I noticed one issue, but it's not related to this patch:
- /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 131: tst_kvercmp2: command not found
- /opt/ltp/testcases/bin/cpuset_base_ops_testset.sh: line 167: tst_kvercmp2: command not found
+<snip>
+
+> +static void copy_file_range_verify(void)
+> +{
+> +	int fd_in, fd_out;
+> +	struct stat stat;
+> +	loff_t len;
+> +
+> +	fd_in = SAFE_OPEN(TEST_FILE_1, O_RDONLY);
+> +	SAFE_FSTAT(fd_in, &stat);
+> +	len = stat.st_size;
+> +	fd_out = SAFE_OPEN(TEST_FILE_2, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+> +
+> +	/*
+> +	 * copy_file_range() will return the number of bytes copied between files.
+> +	 * This could be less than the length originally requested.
+> +	 */
+> +	do {
+> +		TEST(copy_file_range(fd_in, NULL, fd_out, NULL, len, 0));
+> +		if (TEST_RETURN == -1)
+> +			tst_res(TFAIL | TTERRNO, "copy_file_range() failed");
+
+break here? Otherwise this will loop for a while (until len overflows).
+
+> +
+> +		len -= TEST_RETURN;
+> +	} while (len > 0);
+> +
+> +	tst_res(TPASS, "copy_file_range() returned %ld", TEST_RETURN);
+
+This currently doesn't check anything. How about we at least check:
+- that file offset is adjusted in both files by same amount
+- compare that data in fd_out equals to original data
+
+Or better, define interesting values for each parameter
+and test all combinations. For example:
+
+off_in: NULL, 1, getpagesize()-1, getpagesize(), getpagesize()+1
+off_out: NULL, 1, getpagesize()-1, getpagesize(), getpagesize()+1
+len: 0, 1, getpagesize()-1, getpagesize(), getpagesize()+1
+
+And for each combination check that file offsets have expected value
+and file contents match.
 
 Regards,
 Jan
+
+> +
+> +	SAFE_CLOSE(fd_in);
+> +	SAFE_CLOSE(fd_out);
+> +}
+> +
+> +static struct tst_test test = {
+> +	.tid = "copy_file_range01",
+> +	.setup = setup,
+> +	.needs_tmpdir = 1,
+> +	.test_all = copy_file_range_verify,
+> +};
+> --
+> 2.9.3
+> 
+> 
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
+> 
