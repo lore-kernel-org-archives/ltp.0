@@ -1,160 +1,216 @@
-From: Alexey Kodanev <alexey.kodanev@oracle.com>
-Date: Mon, 17 Apr 2017 18:44:54 +0300
-Subject: [LTP] [PATCH 3/3] clone09: add a test for CLONE_NEWNET flag
-In-Reply-To: <1492443894-3127-1-git-send-email-alexey.kodanev@oracle.com>
-References: <1492443894-3127-1-git-send-email-alexey.kodanev@oracle.com>
-Message-ID: <1492443894-3127-3-git-send-email-alexey.kodanev@oracle.com>
+From: Li Wang <liwang@redhat.com>
+Date: Tue, 18 Apr 2017 10:36:57 +0800
+Subject: [LTP] [PATCH 1/2] ltp/numa: add new test11
+In-Reply-To: <1488526490-22120-1-git-send-email-liwang@redhat.com>
+References: <1488526490-22120-1-git-send-email-liwang@redhat.com>
+Message-ID: <CAEemH2d-pXiyso8_tX7LokdWS_sX-rPLUo2ex-kF9JaqKOM-pg@mail.gmail.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Verify that a new thread has new network namespace by
-checking interface tag value parameter for lo interface
-(/proc/sys/net/ipv4/conf/lo/tag). Change the value in
-parent before clone() and then compare with the value saved
-inside the thread.
+ping for these two patch~
 
-Signed-off-by: Alexey Kodanev <alexey.kodanev@oracle.com>
----
- runtest/syscalls                          |    1 +
- testcases/kernel/syscalls/.gitignore      |    1 +
- testcases/kernel/syscalls/clone/clone09.c |  101 +++++++++++++++++++++++++++++
- 3 files changed, 103 insertions(+), 0 deletions(-)
- create mode 100644 testcases/kernel/syscalls/clone/clone09.c
+On Fri, Mar 3, 2017 at 3:34 PM, Li Wang <liwang@redhat.com> wrote:
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> ---
+>  testcases/kernel/numa/README         |  2 ++
+>  testcases/kernel/numa/numa01.sh      | 51 ++++++++++++++++++++++++++++++++--
+>  testcases/kernel/numa/support_numa.c | 53 ++++++++++++++++++++++++++++++++++--
+>  3 files changed, 101 insertions(+), 5 deletions(-)
+>
+> diff --git a/testcases/kernel/numa/README b/testcases/kernel/numa/README
+> index 57b12f7..a5c3f1b 100644
+> --- a/testcases/kernel/numa/README
+> +++ b/testcases/kernel/numa/README
+> @@ -54,6 +54,8 @@ Verifies the numa_node_size api with hardware checking.
+>  TestCase10:
+>  Verifieds the NUMA migratepages policy.
+>
+> +TestCase11:
+> +Verifies the hugepage memory allocated from the node we specify.
+>
+>  Pre-requisites
+>  ====================================================================================================================
+> diff --git a/testcases/kernel/numa/numa01.sh b/testcases/kernel/numa/numa01.sh
+> index f0f6139..69e5357 100755
+> --- a/testcases/kernel/numa/numa01.sh
+> +++ b/testcases/kernel/numa/numa01.sh
+> @@ -31,11 +31,12 @@
+>  #               Test #8: Verifies memhog                                     #
+>  #               Test #9: Verifies numa_node_size api                         #
+>  #               Test #10:Verifies Migratepages                               #
+> +#               Test #11:Verifies hugepage alloacted on specified node       #
+>  #                                                                            #
+>  ##############################################################################
+>
+>  TST_ID="numa01"
+> -TST_CNT=10
+> +TST_CNT=11
+>  TST_SETUP=setup
+>  TST_TESTFUNC=test
+>  TST_NEEDS_TMPDIR=1
+> @@ -83,11 +84,13 @@ setup()
+>  {
+>         export MB=$((1024*1024))
+>         export PAGE_SIZE=$(getconf PAGE_SIZE)
+> +       export HPAGE_SIZE=$(awk '/Hugepagesize:/ {print $2}' /proc/meminfo)
+>
+>         # arguments to memory exercise program support_numa.c
+>         ALLOC_1MB=1
+>         SHARE_1MB=2
+> -       PAUSE=3
+> +       HUGE_PAGE=3
+> +       PAUSE=4
+>
+>         total_nodes=0
+>
+> @@ -399,4 +402,48 @@ test10()
+>         tst_res TPASS "NUMA MIGRATEPAGES policy"
+>  }
+>
+> +# Verification of hugepage memory allocated on a node
+> +test11()
+> +{
+> +       Mem_huge=0
+> +       Sys_node=/sys/devices/system/node
+> +
+> +       if [ ! -d "/sys/kernel/mm/hugepages/" ]; then
+> +               tst_res TCONF "hugepage is not supported"
+> +               return
+> +       fi
+> +
+> +       for node in $nodes_list; do
+> +               Ori_hpgs=$(cat ${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
+> +               New_hpgs=$((Ori_hpgs + 1))
+> +               echo $New_hpgs >${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
+> +
+> +               Chk_hpgs=$(cat ${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages)
+> +               if [ "$Chk_hpgs" -ne "$New_hpgs" ]; then
+> +                       tst_res TCONF "hugepage is not enough to test"
+> +                       return
+> +               fi
+> +
+> +               numactl --cpunodebind=$node --membind=$node support_numa $HUGE_PAGE &
+> +               pid=$!
+> +               wait_for_support_numa $pid
+> +
+> +               Mem_huge=$(echo $(numastat -p $pid |awk '/Huge/ {print $'$((node+2))'}'))
+> +               Mem_huge=$((${Mem_huge%.*} * 1024))
+> +
+> +               if [ "$Mem_huge" -lt "$HPAGE_SIZE" ]; then
+> +                       tst_res TFAIL \
+> +                               "NUMA memory allocated in node$node is less than expected"
+> +                       kill -CONT $pid >/dev/null 2>&1
+> +                       echo $Ori_hpgs >${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
+> +                       return
+> +               fi
+> +
+> +               kill -CONT $pid >/dev/null 2>&1
+> +               echo $Ori_hpgs >${Sys_node}/node${node}/hugepages/hugepages-${HPAGE_SIZE}kB/nr_hugepages
+> +       done
+> +
+> +       tst_res TPASS "NUMA local node hugepage memory allocated"
+> +}
+> +
+>  tst_run
+> diff --git a/testcases/kernel/numa/support_numa.c b/testcases/kernel/numa/support_numa.c
+> index eaf63e3..97f3008 100644
+> --- a/testcases/kernel/numa/support_numa.c
+> +++ b/testcases/kernel/numa/support_numa.c
+> @@ -22,7 +22,7 @@
+>  /*                                                                            */
+>  /* File:        support_numa.c                                                */
+>  /*                                                                            */
+> -/* Description: Allocates 1MB of memory and touches it to verify numa         */
+> +/* Description: Allocates memory and touches it to verify numa                */
+>  /*                                                                            */
+>  /* Author:      Sivakumar Chinnaiah  Sivakumar.C@in.ibm.com                   */
+>  /*                                                                            */
+> @@ -52,16 +52,43 @@ static void help(void)
+>         printf("Input:  Describe input arguments to this program\n");
+>         printf("        argv[1] == 1 then allocate 1MB of memory\n");
+>         printf("        argv[1] == 2 then allocate 1MB of share memory\n");
+> -       printf("        argv[1] == 3 then pause the program to catch sigint\n");
+> +       printf("        argv[1] == 3 then allocate 1HUGE PAGE SIZE of memory\n");
+> +       printf("        argv[1] == 4 then pause the program to catch sigint\n");
+>         printf("Exit:   On failure - Exits with non-zero value\n");
+>         printf("        On success - exits with 0 exit value\n");
+>
+>         exit(1);
+>  }
+>
+> +static int read_hugepagesize(void)
+> +{
+> +       FILE *fp;
+> +       char line[BUFSIZ], buf[BUFSIZ];
+> +       int val;
+> +
+> +       fp = fopen("/proc/meminfo", "r");
+> +       if (fp == NULL) {
+> +               fprintf(stderr, "Failed to open /proc/meminfo");
+> +               return 0;
+> +       }
+> +
+> +       while (fgets(line, BUFSIZ, fp) != NULL) {
+> +               if (sscanf(line, "%64s %d", buf, &val) == 2)
+> +                       if (strcmp(buf, "Hugepagesize:") == 0) {
+> +                               fclose(fp);
+> +                               return 1024 * val;
+> +                       }
+> +       }
+> +
+> +       fclose(fp);
+> +       fprintf(stderr, "can't find \"%s\" in %s", "Hugepagesize:", "/proc/meminfo");
+> +
+> +       return 0;
+> +}
+> +
+>  int main(int argc, char *argv[])
+>  {
+> -       int i, fd, rc;
+> +       int i, fd, rc, hpsz;
+>         char *buf = NULL;
+>         struct stat sb;
+>
+> @@ -114,6 +141,26 @@ int main(int argc, char *argv[])
+>                 remove(TEST_SFILE);
+>                 break;
+>         case 3:
+> +               hpsz = read_hugepagesize();
+> +               if (hpsz == 0)
+> +                       exit(1);
+> +
+> +               buf = mmap(NULL, hpsz, PROT_READ | PROT_WRITE,
+> +                               MAP_PRIVATE | MAP_ANONYMOUS | MAP_HUGETLB,
+> +                               -1, 0);
+> +
+> +               if (buf == MAP_FAILED) {
+> +                       perror("mmap failed");
+> +                       exit(1);
+> +               }
+> +
+> +               memset(buf, 'a', hpsz);
+> +
+> +               raise(SIGSTOP);
+> +
+> +               munmap(buf, hpsz);
+> +               break;
+> +       case 4:
+>                 raise(SIGSTOP);
+>                 break;
+>         default:
+> --
+> 1.8.3.1
+>
+>
+> --
+> Mailing list info: https://lists.linux.it/listinfo/ltp
 
-diff --git a/runtest/syscalls b/runtest/syscalls
-index 5909456..6f3ba35 100644
---- a/runtest/syscalls
-+++ b/runtest/syscalls
-@@ -84,6 +84,7 @@ clone05 clone05
- clone06 clone06
- clone07 clone07
- clone08 clone08
-+clone09 clone09
- 
- close01 close01
- close02 close02
-diff --git a/testcases/kernel/syscalls/.gitignore b/testcases/kernel/syscalls/.gitignore
-index d5985cd..39b9044 100644
---- a/testcases/kernel/syscalls/.gitignore
-+++ b/testcases/kernel/syscalls/.gitignore
-@@ -62,6 +62,7 @@
- /clone/clone06
- /clone/clone07
- /clone/clone08
-+/clone/clone09
- /close/close01
- /close/close02
- /close/close08
-diff --git a/testcases/kernel/syscalls/clone/clone09.c b/testcases/kernel/syscalls/clone/clone09.c
-new file mode 100644
-index 0000000..a1beda1
---- /dev/null
-+++ b/testcases/kernel/syscalls/clone/clone09.c
-@@ -0,0 +1,101 @@
-+/*
-+ * Copyright (c) 2017 Oracle and/or its affiliates. All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License as
-+ * published by the Free Software Foundation; either version 2 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it would be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <sched.h>
-+#include <stdlib.h>
-+#include <errno.h>
-+
-+#include "tst_test.h"
-+#include "clone_platform.h"
-+#include "linux_syscall_numbers.h"
-+
-+static void *child_stack;
-+static int sysctl_net = -1;
-+static int sysctl_net_new = -1;
-+static const char sysctl_path[] = "/proc/sys/net/ipv4/conf/lo/tag";
-+static const char sysctl_path_def[] = "/proc/sys/net/ipv4/conf/default/tag";
-+static int flags = CLONE_NEWNET | CLONE_VM | SIGCHLD;
-+
-+static void setup(void)
-+{
-+	child_stack = SAFE_MALLOC(CHILD_STACK_SIZE);
-+}
-+
-+static void cleanup(void)
-+{
-+	if (sysctl_net != -1)
-+		SAFE_FILE_PRINTF(sysctl_path, "%d", sysctl_net);
-+
-+	free(child_stack);
-+}
-+
-+static int newnet(void *arg LTP_ATTRIBUTE_UNUSED)
-+{
-+	SAFE_FILE_SCANF(sysctl_path, "%d", &sysctl_net_new);
-+	tst_syscall(__NR_exit, 0);
-+	return 0;
-+}
-+
-+static long clone_child(void)
-+{
-+	TEST(ltp_clone(flags, newnet, NULL, CHILD_STACK_SIZE, child_stack));
-+
-+	if (TEST_RETURN == -1 && TTERRNO == EINVAL)
-+		tst_brk(TCONF, "CLONE_NEWNET not supported, CONFIG_NET_NS?");
-+
-+	if (TEST_RETURN == -1)
-+		tst_brk(TBROK | TTERRNO, "clone(CLONE_NEWNET) failed");
-+
-+	return TEST_RETURN;
-+}
-+
-+static void do_test(void)
-+{
-+	int def_val;
-+	pid_t child;
-+
-+	tst_res(TINFO, "create clone in a new netns with 'CLONE_NEWNET' flag");
-+
-+	SAFE_FILE_SCANF(sysctl_path, "%d", &sysctl_net);
-+	SAFE_FILE_PRINTF(sysctl_path, "%d", sysctl_net + 1);
-+
-+	child = clone_child();
-+	tst_reap_children();
-+
-+	if (sysctl_net_new == (sysctl_net + 1)) {
-+		tst_res(TFAIL, "sysctl params equal: %s=%d",
-+			sysctl_path, sysctl_net_new);
-+	}
-+
-+	SAFE_FILE_SCANF(sysctl_path_def, "%d", &def_val);
-+
-+	if (sysctl_net_new != def_val) {
-+		tst_res(TFAIL, "netns param init to non-default value %d",
-+			sysctl_net_new);
-+	}
-+
-+	tst_res(TPASS, "sysctl params differ in new netns");
-+}
-+
-+static struct tst_test test = {
-+	.tid = "clone09",
-+	.test_all = do_test,
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.needs_root = 1,
-+};
+
+
 -- 
-1.7.1
-
+Regards,
+Li Wang
+Email: liwang@redhat.com
