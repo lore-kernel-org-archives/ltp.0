@@ -1,81 +1,27 @@
-From: Jan Stancek <jstancek@redhat.com>
-Date: Tue, 18 Apr 2017 08:06:33 -0400 (EDT)
-Subject: [LTP] [PATCH] syscalls: add new test for copy_file_range(2)
-In-Reply-To: <20170417054839.24444-1-liwang@redhat.com>
-References: <20170417054839.24444-1-liwang@redhat.com>
-Message-ID: <1294959175.28252852.1492517193554.JavaMail.zimbra@redhat.com>
+From: Petr Vorel <pvorel@suse.cz>
+Date: Tue, 18 Apr 2017 18:34:57 +0200
+Subject: [LTP] [RFC PATCH v4 0/3] Simplify network setup
+In-Reply-To: <fc3fc497-6803-751f-fe16-140cefd7dd27@oracle.com>
+References: <20170405204418.3240-1-pvorel@suse.cz>
+ <5d196274-519f-fb5c-f971-29ece892330d@oracle.com>
+ <20170406155005.smxqad2aqkcwecmz@dell5510>
+ <7ec9883c-7b9a-42ff-b49f-a5732d59a9fb@oracle.com>
+ <20170410125326.e35n77a7wfraupfg@dell5510>
+ <fc3fc497-6803-751f-fe16-140cefd7dd27@oracle.com>
+Message-ID: <20170418163457.qoaeju4bllih4xqw@dell5510>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi Alexey,
+
+> If we want to automate it, may be create reverse IP program as
+> a separate tool in LTP so it can be invoked inside tests, like
+> dns-stress?
+Good idea. I'll prepare this patch after I finish tst_net_vars.
 
 
------ Original Message -----
-
-<snip>
-
-> +static void copy_file_range_verify(void)
-> +{
-> +	int fd_in, fd_out;
-> +	struct stat stat;
-> +	loff_t len;
-> +
-> +	fd_in = SAFE_OPEN(TEST_FILE_1, O_RDONLY);
-> +	SAFE_FSTAT(fd_in, &stat);
-> +	len = stat.st_size;
-> +	fd_out = SAFE_OPEN(TEST_FILE_2, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-> +
-> +	/*
-> +	 * copy_file_range() will return the number of bytes copied between files.
-> +	 * This could be less than the length originally requested.
-> +	 */
-> +	do {
-> +		TEST(copy_file_range(fd_in, NULL, fd_out, NULL, len, 0));
-> +		if (TEST_RETURN == -1)
-> +			tst_res(TFAIL | TTERRNO, "copy_file_range() failed");
-
-break here? Otherwise this will loop for a while (until len overflows).
-
-> +
-> +		len -= TEST_RETURN;
-> +	} while (len > 0);
-> +
-> +	tst_res(TPASS, "copy_file_range() returned %ld", TEST_RETURN);
-
-This currently doesn't check anything. How about we at least check:
-- that file offset is adjusted in both files by same amount
-- compare that data in fd_out equals to original data
-
-Or better, define interesting values for each parameter
-and test all combinations. For example:
-
-off_in: NULL, 1, getpagesize()-1, getpagesize(), getpagesize()+1
-off_out: NULL, 1, getpagesize()-1, getpagesize(), getpagesize()+1
-len: 0, 1, getpagesize()-1, getpagesize(), getpagesize()+1
-
-And for each combination check that file offsets have expected value
-and file contents match.
-
-Regards,
-Jan
-
-> +
-> +	SAFE_CLOSE(fd_in);
-> +	SAFE_CLOSE(fd_out);
-> +}
-> +
-> +static struct tst_test test = {
-> +	.tid = "copy_file_range01",
-> +	.setup = setup,
-> +	.needs_tmpdir = 1,
-> +	.test_all = copy_file_range_verify,
-> +};
-> --
-> 2.9.3
-> 
-> 
-> --
-> Mailing list info: https://lists.linux.it/listinfo/ltp
-> 
+Kind regards,
+Petr
