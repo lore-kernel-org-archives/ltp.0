@@ -1,492 +1,108 @@
-From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 20 Apr 2017 13:41:59 +0200
-Subject: [LTP] [PATCH 1/1] Add cve-2017-7277 SOF_TIMESTAMPING_OPT_STATS
-Message-ID: <20170420134159.418930a9@linux-v3j5>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Thu, 20 Apr 2017 14:11:21 +0200
+Subject: [LTP] [PATCH] controllers/cpuset:check for cpuset mount status
+ and prefix
+In-Reply-To: <1468479240-4975-1-git-send-email-shuang.qiu@oracle.com>
+References: <1468479240-4975-1-git-send-email-shuang.qiu@oracle.com>
+Message-ID: <20170420121121.GA10246@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
----
- runtest/cve                   |   1 +
- testcases/cve/.gitignore      |   1 +
- testcases/cve/cve-2017-7277.c | 449 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 451 insertions(+)
- create mode 100644 testcases/cve/cve-2017-7277.c
+Hi!
+> diff --git a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+> index cd7000e..72bf8e3 100755
+> --- a/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+> +++ b/testcases/kernel/controllers/cpuset/cpuset_funcs.sh
+> @@ -35,8 +35,10 @@ fi
+>  N_NODES=${N_NODES#*-*}
+>  N_NODES=$(($N_NODES + 1))
+>  
+> -CPUSET="/dev/cpuset"
+> +CPUSET=`grep -w cpuset /proc/mounts | cut -f 2 | cut -d " " -f2`
 
-diff --git a/runtest/cve b/runtest/cve
-index ee0614a9c..359958ca9 100644
---- a/runtest/cve
-+++ b/runtest/cve
-@@ -6,3 +6,4 @@ cve-2016-5195 dirtyc0w
- cve-2016-7117 cve-2016-7117
- cve-2017-5669 cve-2017-5669
- cve-2017-6951 cve-2017-6951
-+cve-2017-7277 cve-2017-7277
-diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
-index 979d18369..516ea62a5 100644
---- a/testcases/cve/.gitignore
-+++ b/testcases/cve/.gitignore
-@@ -4,3 +4,4 @@ cve-2016-4997
- cve-2016-7117
- cve-2017-5669
- cve-2017-6951
-+cve-2017-7277
-diff --git a/testcases/cve/cve-2017-7277.c b/testcases/cve/cve-2017-7277.c
-new file mode 100644
-index 000000000..983c097d8
---- /dev/null
-+++ b/testcases/cve/cve-2017-7277.c
-@@ -0,0 +1,449 @@
-+/*
-+ * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
-+ *
-+ * This program is free software: you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation, either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+/*
-+ * Test for CVE-2017-7277
-+ *
-+ * There are two bugs:
-+ *
-+ *   1) __sock_recv_timestamp does not expect SOF_TIMESTAMPING_RX_* to be set
-+ *      with SOF_TIMESTAMPING_OPT_STATS. So just assumes it is handling a
-+ *      packet from the error queue which will contain TX stats if the socket
-+ *      option SOF_TIMESTAMPING_OPT_STATS is set. However if RX timestamping
-+ *      is enabled then although there may be an RX timestamp there will be no
-+ *      TX stats, so the kernel ends up copying whatever is in the socket
-+ *      buffer which could be private or invalid data. Fixed by commit
-+ *      8605330aac5a5785630aec8f64378a54891937cc
-+ *
-+ *   2) __sock_recv_timestamp only checks the socket's
-+ *      SOF_TIMESTAMPING_OPT_STATS flag which may be enabled while timestamp
-+ *      error packets without stats are still in the pipeline. Fixed by commit
-+ *      4ef1b2869447411ad3ef91ad7d4891a83c1a509a
-+ *
-+ * To detect the first bug we receive some packets on a socket with
-+ * SOF_TIMESTAMPING_OPT_STATS set and check the control messages to see if
-+ * they contain the message data or malformed timestamp stats.
-+ *
-+ * To detect the second bug we transmit some packets while toggling
-+ * timestamping on and off. Then we check the error message queue for control
-+ * messages with malformed timestamp stats. Unfortunately this does not appear
-+ * to replicate the bug on my computer, but I have left it in anyway to
-+ * provide some coverage for timestamping.
-+ *
-+ * Feature was introduced by commit 1c885808e45601b2b6f68b30ac1d999e10b6f606
-+ * For more information see https://lkml.org/lkml/2017/3/15/485
-+ *
-+ * The test works with both TCP and UDP which can be changed at compile
-+ * time. It probably works with other protocols as well.
-+ */
-+#include <errno.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <signal.h>
-+#include <sys/wait.h>
-+#include <sys/socket.h>
-+#include <linux/socket.h>
-+#include <linux/tcp.h>
-+#include <linux/netlink.h>
-+#include <arpa/inet.h>
-+#include <netinet/in.h>
-+#include <netinet/ip.h>
-+
-+#include "tst_test.h"
-+#include "tst_safe_net.h"
-+
-+#define MSG_STR "This is not a control message"
-+#define MSG_SIZE sizeof(MSG_STR)
-+#define PROT SOCK_STREAM
-+#define STATS_LEN ((NLA_HDRLEN + NLA_ALIGN(sizeof(__u64))) * 3)
-+
-+#ifndef SCM_TIMESTAMPING_OPT_STATS
-+
-+#if defined(__sparc__)
-+#define SCM_TIMESTAMPING_OPT_STATS 0x0038
-+#elif defined(__hppa__)
-+#define SCM_TIMESTAMPING_OPT_STATS 0x402F
-+#else
-+#define SCM_TIMESTAMPING_OPT_STATS 54
-+#endif
-+
-+/* From <linux/tcp.h> */
-+enum {
-+	TCP_NLA_PAD,
-+	TCP_NLA_BUSY,		/* Time (usec) busy sending data */
-+	TCP_NLA_RWND_LIMITED,	/* Time (usec) limited by receive window */
-+	TCP_NLA_SNDBUF_LIMITED,	/* Time (usec) limited by send buffer */
-+};
-+#endif	/* ifndef SCM_TIMESTAMPING_OPT_STATS */
-+
-+/* From <linux/net_tstamp.h> */
-+enum {
-+	SOF_TIMESTAMPING_TX_HARDWARE = (1<<0),
-+	SOF_TIMESTAMPING_TX_SOFTWARE = (1<<1),
-+	SOF_TIMESTAMPING_RX_HARDWARE = (1<<2),
-+	SOF_TIMESTAMPING_RX_SOFTWARE = (1<<3),
-+	SOF_TIMESTAMPING_SOFTWARE = (1<<4),
-+	SOF_TIMESTAMPING_RAW_HARDWARE = (1<<6),
-+	SOF_TIMESTAMPING_OPT_ID = (1<<7),
-+	SOF_TIMESTAMPING_TX_SCHED = (1<<8),
-+	SOF_TIMESTAMPING_TX_ACK = (1<<9),
-+	SOF_TIMESTAMPING_OPT_CMSG = (1<<10),
-+	SOF_TIMESTAMPING_OPT_TSONLY = (1<<11),
-+	SOF_TIMESTAMPING_OPT_STATS = (1<<12),
-+};
-+
-+struct sockaddr_in srv_addr = {
-+	.sin_family = AF_INET,
-+	.sin_port = 0,
-+	.sin_addr = { 0 },
-+};
-+
-+static char buf[MSG_SIZE];
-+static int srv_lsn_sock;
-+
-+static void setup(void)
-+{
-+	socklen_t addr_len = (socklen_t)sizeof(srv_addr);
-+
-+	srv_addr.sin_addr = (struct in_addr){
-+		htonl(INADDR_LOOPBACK)
-+	};
-+	srv_lsn_sock = SAFE_SOCKET(AF_INET, PROT, 0);
-+	SAFE_BIND(srv_lsn_sock,
-+		  (struct sockaddr *)&srv_addr, addr_len);
-+	SAFE_GETSOCKNAME(srv_lsn_sock,
-+			 (struct sockaddr *)&srv_addr, &addr_len);
-+	if ((socklen_t)sizeof(srv_addr) < addr_len)
-+		tst_brk(TBROK, "ABI breakage?");
-+
-+	if (PROT == SOCK_STREAM) {
-+		SAFE_LISTEN(srv_lsn_sock, 1);
-+		tst_res(TINFO, "Listening on 127.0.0.1:%d",
-+			ntohs(srv_addr.sin_port));
-+	} else {
-+		tst_res(TINFO, "Bound to 127.0.0.1:%d",
-+			ntohs(srv_addr.sin_port));
-+	}
-+
-+	strcpy(buf, MSG_STR);
-+}
-+
-+static void cleanup(void)
-+{
-+	close(srv_lsn_sock);
-+	srv_addr.sin_port = 0;
-+}
-+
-+static struct nlattr *nla_next(struct nlattr *nla, int *remaining)
-+{
-+	int len = NLA_ALIGN(nla->nla_len);
-+
-+	*remaining -= len;
-+	if (*remaining < NLA_HDRLEN)
-+		return 0;
-+
-+	return (struct nlattr *)((char *)nla + len);
-+}
-+
-+static int check_cmsg(struct msghdr *msgh)
-+{
-+	struct cmsghdr *cmsg;
-+	char *data;
-+	struct nlattr *nla;
-+	int remaining;
-+
-+	for (cmsg = CMSG_FIRSTHDR(msgh);
-+	     cmsg != NULL;
-+	     cmsg = CMSG_NXTHDR(msgh, cmsg)) {
-+
-+		data = (char *)CMSG_DATA(cmsg);
-+		if (!strncmp(data, MSG_STR, cmsg->cmsg_len))
-+			return TFAIL;
-+
-+		if (cmsg->cmsg_type != SCM_TIMESTAMPING_OPT_STATS)
-+			continue;
-+
-+		if (cmsg->cmsg_len < STATS_LEN) {
-+			tst_res(TFAIL,
-+				"Control message is not big enough to contain stats");
-+			continue;
-+		}
-+
-+		nla = (struct nlattr *)CMSG_DATA(cmsg);
-+		if (nla->nla_type != TCP_NLA_BUSY) {
-+			tst_res(TFAIL,
-+				"First nlattr should be TCP_NLA_BUSY");
-+			continue;
-+		}
-+
-+		remaining = cmsg->cmsg_len;
-+		nla = nla_next(nla, &remaining);
-+		if (!nla) {
-+			tst_res(TFAIL, "TCP_NLA_BUSY length is too long");
-+			continue;
-+		}
-+		if (nla->nla_type != TCP_NLA_RWND_LIMITED) {
-+			tst_res(TFAIL,
-+				"Second nlattr should be TCP_NLA_RWND_LIMITED");
-+			continue;
-+		}
-+
-+		nla = nla_next(nla, &remaining);
-+		if (!nla) {
-+			tst_res(TFAIL,
-+				"TCP_NLA_RWND_LIMITED length is too long");
-+			continue;
-+		}
-+		if (nla->nla_type != TCP_NLA_SNDBUF_LIMITED)
-+			tst_res(TFAIL,
-+				"Third nlattr should be TCP_NLA_SNDBUF_LIMITED");
-+	}
-+
-+	return TPASS;
-+}
-+
-+static ssize_t write_read(int sock,
-+			  int flags,
-+			  struct sockaddr_in *peer_addr,
-+			  int check)
-+{
-+	static char cbuf[CMSG_ALIGN(4096)];
-+	ssize_t sstat, total = 0;
-+	struct iovec vec = {
-+		.iov_base = (void *)buf,
-+		.iov_len = sizeof(buf)
-+	};
-+	struct msghdr msg = {
-+		.msg_iov = &vec,
-+		.msg_iovlen = 1,
-+		.msg_control = (void *)cbuf,
-+		.msg_controllen = sizeof(cbuf)
-+	};
-+
-+	if (peer_addr != 0) {
-+		msg.msg_name = (void *)peer_addr;
-+		msg.msg_namelen = (socklen_t)sizeof(struct sockaddr_in);
-+	}
-+
-+	do {
-+		sstat = recvmsg(sock, &msg, flags);
-+		if (sstat < 0 && errno != EAGAIN) {
-+			sstat = -errno;
-+			tst_res(TINFO | TERRNO, "recv(%d, %d, %p) < 0",
-+				sock, flags, (void *)peer_addr);
-+			return sstat;
-+		}
-+		total += sstat;
-+		if (check && check_cmsg(&msg) == TFAIL)
-+			tst_res(TFAIL, "Receive msg has bad control message");
-+	} while ((size_t)total < MSG_SIZE * 2 && !(flags & MSG_DONTWAIT));
-+
-+	msg.msg_controllen = 0;
-+
-+	do {
-+		sstat = sendmsg(sock, &msg, flags);
-+		if (sstat < 0 && peer_addr != 0 && errno == EDESTADDRREQ)
-+			break;
-+		if (sstat < 0 && errno != EAGAIN) {
-+			sstat = -errno;
-+			tst_res(TINFO | TERRNO, "send(%d, %d, %p) < 0",
-+				sock, flags, (void *)peer_addr);
-+			return sstat;
-+		}
-+		total += sstat;
-+		if (check && check_cmsg(&msg) == TFAIL)
-+			tst_res(TFAIL, "Transmit msg has bad control message");
-+	} while ((size_t)total < MSG_SIZE && !(flags & MSG_DONTWAIT));
-+
-+	return total;
-+}
-+
-+static void server(void)
-+{
-+	int srv_sock;
-+	struct sockaddr_in cln_addr;
-+	socklen_t addr_len = (socklen_t)sizeof(cln_addr);
-+	ssize_t sstat;
-+
-+	if (PROT == SOCK_STREAM) {
-+		srv_sock = accept(srv_lsn_sock,
-+				  (struct sockaddr *)&cln_addr, &addr_len);
-+		if (srv_sock < 0)
-+			tst_brk(TBROK | TERRNO, "Accept failed");
-+		tst_res(TINFO,
-+			"Server accepted connection, on sock %d", srv_sock);
-+	} else {
-+		srv_sock = srv_lsn_sock;
-+	}
-+
-+	while (1) {
-+		if (PROT == SOCK_STREAM)
-+			sstat = write_read(srv_sock, 0, 0, 0);
-+		else
-+			sstat = write_read(srv_sock, 0, &cln_addr, 0);
-+		if (sstat < 0) {
-+			close(srv_sock);
-+			if (sstat != -ECONNRESET)
-+				exit(TBROK);
-+			else
-+				exit(0);
-+		}
-+	}
-+}
-+
-+static int inspect_timestamps(int cln_sock)
-+{
-+	char cbuf[CMSG_ALIGN(4096)];
-+	struct sockaddr_in addr;
-+	ssize_t sstat;
-+	struct msghdr errq_msg = { 0 };
-+
-+	errq_msg.msg_name = (void *)&addr;
-+	errq_msg.msg_namelen = (socklen_t)sizeof(addr);
-+	errq_msg.msg_control = (void *)cbuf;
-+	errq_msg.msg_controllen = sizeof(cbuf);
-+
-+	while (1) {
-+		sstat = recvmsg(cln_sock, &errq_msg,
-+				MSG_ERRQUEUE | MSG_DONTWAIT);
-+		if (sstat < 0 && errno == EAGAIN)
-+			break;
-+		else if (sstat < 0) {
-+			tst_res(TBROK | TERRNO,
-+				"recvmsg(cln_sock,... , MSG_ERRQUEUE) == -1");
-+			return -1;
-+		}
-+
-+		if (check_cmsg(&errq_msg) == TFAIL) {
-+			tst_res(TFAIL,
-+				"Error queue contains bad control message");
-+			break;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void client(void)
-+{
-+	const unsigned int tsopts_no_stats =
-+		SOF_TIMESTAMPING_TX_SOFTWARE
-+		| SOF_TIMESTAMPING_TX_SCHED
-+		| SOF_TIMESTAMPING_RX_SOFTWARE
-+		| SOF_TIMESTAMPING_SOFTWARE
-+		| SOF_TIMESTAMPING_TX_HARDWARE
-+		| SOF_TIMESTAMPING_RX_HARDWARE
-+		| SOF_TIMESTAMPING_RAW_HARDWARE
-+		| SOF_TIMESTAMPING_OPT_TSONLY;
-+	const unsigned int tsopts_stats =
-+		tsopts_no_stats
-+		| SOF_TIMESTAMPING_OPT_STATS;
-+	int cln_sock;
-+	int i, stat;
-+	void *which_opts;
-+	pid_t chld;
-+
-+	cln_sock = SAFE_SOCKET(AF_INET, PROT, 0);
-+	tst_res(TINFO, "Created client socket %d", cln_sock);
-+	stat = setsockopt(cln_sock, SOL_SOCKET, SO_TIMESTAMPING,
-+			  (void *)&tsopts_stats, sizeof(tsopts_stats));
-+	if (stat < 0 && errno == EINVAL) {
-+		tst_res(TCONF, "SOF_TIMESTAMPING_OPT_STATS not supported");
-+		close(cln_sock);
-+		exit(0);
-+	} else if (stat < 0) {
-+		tst_res(TBROK | TERRNO,
-+			"setsockopt(cln_sock, SOL_SOCKET, SO_TIMESTAMPING,...) == -1");
-+		close(cln_sock);
-+		exit(TBROK);
-+	}
-+
-+	stat = connect(cln_sock,
-+		       (struct sockaddr *)&srv_addr,
-+		       (socklen_t)sizeof(srv_addr));
-+	if (stat < 0) {
-+		tst_res(TBROK | TERRNO,
-+			"connect(cln_sock, srv_addr, ...) < 0");
-+		goto error;
-+	}
-+
-+	if (write_read(cln_sock, MSG_DONTWAIT, 0, 1) < 0)
-+		goto error;
-+
-+	chld = SAFE_FORK();
-+	if (chld == 0) {
-+		for (i = 0; i < 0xFFF; i++) {
-+			if (i & 1)
-+				which_opts = &tsopts_no_stats;
-+			else
-+				which_opts = &tsopts_stats;
-+			SAFE_SETSOCKOPT(cln_sock, SOL_SOCKET, SO_TIMESTAMPING,
-+					which_opts, sizeof(tsopts_stats));
-+		}
-+		exit(0);
-+	}
-+
-+	for (i = 0; i < 0xFFF; i++)
-+		write_read(cln_sock, MSG_DONTWAIT, 0, 0);
-+
-+	SAFE_WAITPID(chld, &stat, 0);
-+
-+	if (inspect_timestamps(cln_sock) < 0)
-+		goto error;
-+
-+	close(cln_sock);
-+	exit(0);
-+error:
-+	close(cln_sock);
-+	exit(TBROK);
-+}
-+
-+static void run(void)
-+{
-+	pid_t srv_pid, cln_pid, trm_pid;
-+	int stat, brok;
-+
-+	srv_pid = SAFE_FORK();
-+	if (srv_pid == 0)
-+		server();
-+
-+	cln_pid = SAFE_FORK();
-+	if (cln_pid == 0)
-+		client();
-+
-+	trm_pid = SAFE_WAITPID(-1, &stat, 0);
-+	brok = WIFEXITED(stat) && WEXITSTATUS(stat) != 0;
-+	if (trm_pid == srv_pid)
-+		SAFE_KILL(cln_pid, SIGTERM);
-+	else
-+		SAFE_KILL(srv_pid, SIGTERM);
-+
-+	trm_pid = SAFE_WAITPID(-1, &stat, 0);
-+	brok |= WIFEXITED(stat) && WEXITSTATUS(stat) != 0;
-+
-+	if (brok)
-+		tst_brk(TBROK, "Propogating child TBROK");
-+	else
-+		tst_res(TPASS, "We didn't crash");
-+}
-+
-+static struct tst_test test = {
-+	.tid = "cve-2017-7277",
-+	.setup = setup,
-+	.cleanup = cleanup,
-+	.test_all = run,
-+	.forks_child = 1,
-+};
+The 'cut -f 2' does not seem to have any efect here, moreover single awk
+command should do the same:
+
+CPUSET=$(awk '/cpuset/ {print $2}' /proc/mounts)
+
+> +[ "$CPUSET" == "" ] && CPUSET="/dev/cpuset"
+>  CPUSET_TMP="/tmp/cpuset_tmp"
+> +[ -e "$CPUSET/cpuset.cpus" ] && PREFIX="cpuset."
+
+Shouldn't we do this check in the setup after we mounted the cpuset (in
+a case that it wasn't mounted)?
+
+>  HOTPLUG_CPU="1"
+>  
+> @@ -121,19 +123,23 @@ check()
+>  # clean any group created eralier (if any)
+>  setup()
+>  {
+> -	if [ -e "$CPUSET" ]
+> -	then
+> -		tst_resm TWARN "$CPUSET already exist.. overwriting"
+> -		cleanup || tst_brkm TFAIL "Can't cleanup... Exiting"
+> -	fi
+> -
+> +	try_mount=0
+>  	mkdir -p "$CPUSET_TMP"
+> -	mkdir "$CPUSET"
+> -	mount -t cpuset cpuset "$CPUSET" 2> /dev/null
+> -	if [ $? -ne 0 ]; then
+> -		cleanup
+> -		tst_brkm TFAIL "Could not mount cgroup filesystem with"\
+> +	if [ "$CPUSET" = "/dev/cpuset" ];then
+> +		if [ -e "$CPUSET" ]
+> +		then
+> +			tst_resm TWARN "$CPUSET already exist.. overwriting"
+> +			cleanup || tst_brkm TFAIL "Can't cleanup... Exiting"
+> +		fi
+
+The coding style in this part is inconsistent, ideally you should stick
+to the style used in the rest of the file and consistently use:
+
+	if foo; then
+		...
+	fi
+
+> +		try_mount=1
+> +		mkdir "$CPUSET"
+> +		mount -t cpuset cpuset "$CPUSET" 2> /dev/null
+> +		if [ $? -ne 0 ]; then
+> +			cleanup
+> +			tst_brkm TFAIL "Could not mount cgroup filesystem with"\
+>  					" cpuset on $CPUSET..Exiting test"
+> +		fi
+
+We should set the try_mount after the mount here since otherwise we will
+try to umount it in the cleanup if the mount here has failed.
+
+Also it try_mount is not a good name for the flag. It should be rather
+called moutned instead.
+
+>  	fi
+>  }
+>  
+> @@ -162,13 +168,14 @@ cleanup()
+>  		fi
+>  	done
+>  
+> +	rm -rf "$CPUSET_TMP" > /dev/null 2>&1
+> +	[ "$try_mount" -ne 1 ] && return
+>  	umount "$CPUSET"
+>  	if [ $? -ne 0 ]; then
+>  		tst_brkm TFAIL "Couldn't umount cgroup filesystem with"\
+>  					" cpuset on $CPUSET..Exiting test"
+>  	fi
+>  	rmdir "$CPUSET" > /dev/null 2>&1
+> -	rm -rf "$CPUSET_TMP" > /dev/null 2>&1
+>  }
+
+The rest of the patchset looks obviously correct.
+
 -- 
-2.12.2
+Cyril Hrubis
+chrubis@suse.cz
