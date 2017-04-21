@@ -1,39 +1,43 @@
-From: Eryu Guan <eguan@redhat.com>
-Date: Fri, 21 Apr 2017 19:19:39 +0800
-Subject: [LTP] [PATCH v3] diotest6: test readv/writev not read/write
-In-Reply-To: <20170421130809.19664890@linux-v3j5>
-References: <20170316085141.16354-1-eguan@redhat.com>
- <20170421130809.19664890@linux-v3j5>
-Message-ID: <20170421111939.GD26397@eguan.usersys.redhat.com>
+From: Eric Biggers <ebiggers3@gmail.com>
+Date: Thu, 20 Apr 2017 21:43:04 -0700
+Subject: [LTP] [lkp-robot] [KEYS]  bdf7c0f8bf: ltp.add_key02.fail
+In-Reply-To: <20170420125750.GD10246@rei.lan>
+References: <20170401213428.17097-1-ebiggers3@gmail.com>
+ <20170417062641.GN31394@yexl-desktop>
+ <20170417172955.GA31469@gmail.com> <20170420125750.GD10246@rei.lan>
+Message-ID: <20170421044304.GB626@zzz>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Fri, Apr 21, 2017 at 01:08:09PM +0200, Richard Palethorpe wrote:
-> Hello Eryu,
-> 
-> On Thu, 16 Mar 2017 16:51:41 +0800
-> "Eryu Guan" <eguan@redhat.com> wrote:
-> 
-> > According to the comments in diotest6, it's supposed to test
-> > readv/writev syscalls not read/write, which are tested by diotest3.
+Hi Cyril,
+
+On Thu, Apr 20, 2017 at 02:57:50PM +0200, Cyril Hrubis wrote:
 > > 
-> > Update the case to test readv/writev.
+> > In my opinion this is a valid behavior, and the test is just weird; it's passing
+> > in *both* an unaddressable payload and an invalid description, so it's not clear
+> > which case it's meant to be testing.  (Generally, if a syscall will fail for
+> > more than one reason, it's not guaranteed which error code you'll get.)
 > 
-> It seems that since this change, the test now takes a lot longer to complete
-> on SUSE Enterprise and OpenSUSE. Before the change it took a few minutes at
-> most, now it takes over an hour.
+> That is quite common problem with LTP testcases. Do you care to send a
+> patch or should I fix that?
 > 
-> Have you observed this on RHEL and is it expected?
 
-No, I didn't see a longer run time of diotest6 itself on RHEL6/7.
+I'll plan to send a patch.  Also, it looks like the testing that LTP does of
+add_key() is very sparse, so I'll try to extend it a bit.
 
-But I enabled dio30, which runs "diotest6 -b 65536 -n 100 -i 1000 -o
-1024000" and takes longer time (from 10 minutes to 1 hour, depends on
-your host configuration), see commit 71f253f7d74d ("runtest/dio: enable
-dio29/30"). Is this your case?
+> > In any case, once we have a fix merged, it would be nice for there to be an ltp
+> > test added for the "NULL payload with nonzero length" case with one of the key
+> > types that crashed the kernel.
+> 
+> Here as well, feel free to send a patch or at least point us to a
+> reproducer that could be turned into a testcase.
+> 
+
+I'll plan to send a patch for that as well.
 
 Thanks,
-Eryu
+
+Eric
