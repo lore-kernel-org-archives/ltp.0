@@ -1,113 +1,250 @@
-From: Li Wang <liwang@redhat.com>
-Date: Mon, 24 Apr 2017 18:46:58 +0800
+From: Jan Stancek <jstancek@redhat.com>
+Date: Mon, 24 Apr 2017 14:23:41 +0200
 Subject: [LTP] [PATCH v3] syscalls: add new test for copy_file_range(2)
-In-Reply-To: <CAEemH2fKm5nrMj=ubnE1_D=o5M+1f0deBrstoAjyR9ASN1VLjA@mail.gmail.com>
+In-Reply-To: <CAEemH2fPXez4K=hY+8hC3jMOfGkqL14PkhKF0VmrtsayzQASQw@mail.gmail.com>
 References: <20170420082416.25508-1-liwang@redhat.com>
  <917701187.946745.1493024025288.JavaMail.zimbra@redhat.com>
  <CAEemH2fKm5nrMj=ubnE1_D=o5M+1f0deBrstoAjyR9ASN1VLjA@mail.gmail.com>
-Message-ID: <CAEemH2fPXez4K=hY+8hC3jMOfGkqL14PkhKF0VmrtsayzQASQw@mail.gmail.com>
+ <CAEemH2fPXez4K=hY+8hC3jMOfGkqL14PkhKF0VmrtsayzQASQw@mail.gmail.com>
+Message-ID: <a98697fc-9a64-1d4a-7875-d010f0b21ac2@redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Apr 24, 2017 at 5:53 PM, Li Wang <liwang@redhat.com> wrote:
-> On Mon, Apr 24, 2017 at 4:53 PM, Jan Stancek <jstancek@redhat.com> wrote:
->>
->>
->> ----- Original Message -----
->>> +
->>> +#define _GNU_SOURCE
->>> +#include <stdio.h>
->>> +#include <errno.h>
->>> +#include "tst_test.h"
->>> +#include "tst_safe_stdio.h"
->>> +#include "linux_syscall_numbers.h"
->>> +
->>> +#define TEST_FILE_1 "copy_file_range_ltp01.txt"
->>> +#define TEST_FILE_2 "copy_file_range_ltp02.txt"
->>> +#define STR "abcdefghijklmnopqrstuvwxyz12345\n"
->>> +
->>> +static off_t len1 = 1;   /* 1 */
->>> +static off_t len2;       /* stat.st_size */
->>> +static off_t len3;       /* stat.st_size - 1 */
->>> +static off_t page_size1; /* pagesize - 1 */
->>> +static off_t page_size2; /* pagesize     */
->>> +static off_t page_size3; /* pagesize + 1 */
->>> +
->>> +static struct tcase {
->>> +     off_t *off_in;
->>> +     off_t *off_out;
->>> +     off_t *len;
->>> +} tcases[] = {
->>> +     {NULL,  NULL,  &len1}, /* NULL, NULL, 1 */
->>> +     {NULL,  NULL,  &len2}, /* NULL, NULL, stat.st_size */
->>> +     {&len3, &len3, &len1}, /* stat.st_size - 1, stat.st_size - 1, 1 */
->>> +     {&page_size1, &page_size1, &page_size1}, /* pagesize - 1, pagesize - 1,
->>> pagesize - 1 */
->>> +     {&page_size2, &page_size2, &page_size2}, /* pagesize,     pagesize,
->>> pagesize */
->>> +     {&page_size3, &page_size3, &page_size3}, /* pagesize + 1, pagesize + 1,
->>> pagesize + 1 */
->>> +};
->>
->> Hi,
->>
->> These variables names are a bit confusing. But larger problem is
+On 04/24/2017 12:46 PM, Li Wang wrote:
+>>> These variables names are a bit confusing. But larger problem is
+> 
+> Currently have no idea to improve the confusing issue.
+> 
 
-Currently have no idea to improve the confusing issue.
+I'm attaching copy_file_range01.c, that I made from your v3 version.
+It doesn't use static list of parameters, but instead iterates
+over possible values for len/off_in/off_out in all possible combinations.
 
->> that the values are not stable between iterations. Try:
->>
->> $ ./copy_file_range01 -i 5
->>
->> ^^ this hangs for me.
->
-> That's because variables have been changed in each loop. A simple way
-> to solve that is re-run setup() function before the test.
->
-> something like:
->
-> --- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> +++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-> @@ -66,6 +66,9 @@ static void setup(void)
->
->  static void copy_file_range_verify(unsigned int i)
->  {
-> +       if (i > 0)
-> +               setup();
-> +
+Let me know what you think about this approach.
 
-Repeat setup() when i > 0 is not wise, after thinking over, a better
-fix come to mind:
-
---- a/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-+++ b/testcases/kernel/syscalls/copy_file_range/copy_file_range01.c
-@@ -134,7 +134,7 @@ static void copy_file_range_verify(unsigned int i)
-                        else
-                                tst_res(TFAIL, "file offset are not same");
-                } else {
--                       if (*(tc->off_in) == (off_in_ori + len_ori))
-+                       if (*(tc->off_in) == *(tc->off_out) &&
-*(tc->off_in) == (off_in_ori + len_ori))
-                                tst_res(TPASS, "file off_in changed correctly");
-                        else
-                                tst_res(TFAIL, "file off_in changed
-incorrectly");
-@@ -147,6 +147,10 @@ static void copy_file_range_verify(unsigned int i)
-        SAFE_FCLOSE(fp2);
-        SAFE_CLOSE(fd_in);
-        SAFE_CLOSE(fd_out);
-+
-+       /* Reset the test values between iterations */
-+       if (i == test.tcnt - 1)
-+               setup();
- }
-
-
-
--- 
 Regards,
-Li Wang
-Email: liwang@redhat.com
+Jan
+
+-------------- next part --------------
+/*
+ * Copyright (c) Linux Test Project, 2017
+ *
+ * This program is free software;  you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY;  without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See
+ * the GNU General Public License for more details.
+ */
+
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <errno.h>
+#include "tst_test.h"
+#include "tst_safe_stdio.h"
+#include "linux_syscall_numbers.h"
+
+#define TEST_FILE_1 "copy_file_range_ltp01.txt"
+#define TEST_FILE_2 "copy_file_range_ltp02.txt"
+#define STR "abcdefghijklmnopqrstuvwxyz12345\n"
+
+#define verbose 0
+
+static size_t *len_arr;
+static loff_t **off_arr;
+static int len_sz, off_sz;
+
+static void setup(void)
+{
+	int i, fd, page_size;
+
+	page_size = getpagesize();
+
+	fd = SAFE_OPEN(TEST_FILE_1, O_RDWR | O_CREAT, 0664);
+	/* Writing page_size * 4 of data into test file */
+	for (i = 0; i < (int)(page_size * 4); i++)
+		SAFE_WRITE(1, fd, STR, strlen(STR));
+	SAFE_CLOSE(fd);
+
+	len_sz = 4;
+	len_arr = malloc(sizeof(size_t) * len_sz);
+	len_arr[0] = 11;
+	len_arr[1] = page_size - 1;
+	len_arr[2] = page_size;
+	len_arr[3] = page_size + 1;
+
+	off_sz = 6;
+	off_arr = malloc(sizeof(loff_t *) * off_sz);
+	for (i = 1; i < off_sz; i++)
+		off_arr[i] = malloc(sizeof(loff_t));
+
+	off_arr[0] = NULL;
+	*off_arr[1] = 0;
+	*off_arr[2] = 17;
+	*off_arr[3] = page_size - 1;
+	*off_arr[4] = page_size;
+	*off_arr[5] = page_size + 1;
+}
+
+static int check_file_content(const char *fname1, const char *fname2,
+	loff_t *off1, loff_t *off2, size_t len)
+{
+	FILE *fp1, *fp2;
+	int ch1, ch2;
+	size_t count = 0;
+
+	fp1 = SAFE_FOPEN(fname1, "r");
+	if (off1 && fseek(fp1, *off1, SEEK_SET))
+		tst_brk(TBROK | TERRNO, "fseek() failed");
+
+	fp2 = SAFE_FOPEN(fname2, "r");
+	if (off2 && fseek(fp2, *off2, SEEK_SET))
+		tst_brk(TBROK | TERRNO, "fseek() failed");
+
+	do {
+		ch1 = getc(fp1);
+		ch2 = getc(fp2);
+		count++;
+	} while ((count < len) && (ch1 == ch2));
+
+	SAFE_FCLOSE(fp1);
+	SAFE_FCLOSE(fp2);
+
+	return !(ch1 == ch2);
+}
+
+static int check_file_offset(const char *m, int fd, loff_t len,
+	loff_t *off_ori, loff_t *off_after)
+{
+	int ret = 0;
+
+	if (off_ori) {
+		/* FD should stay untouched, and off_in/out is updated */
+		loff_t fd_off = SAFE_LSEEK(fd, 0, SEEK_CUR);
+
+		if (fd_off == 0) {
+			if (verbose)
+				tst_res(TPASS, "%s FD offset unchanged", m);
+		} else {
+			tst_res(TFAIL, "%s FD offset changed: %ld",
+				m, (long)fd_off);
+			ret = 1;
+		}
+
+		if (!off_after) {
+			tst_res(TFAIL, "%s offset is NULL", m);
+			ret = 1;
+		}
+
+		if ((off_after) && (*off_ori + len == *off_after)) {
+			if (verbose) {
+				tst_res(TPASS, "%s offset advanced as"
+					" expected: %ld", m, (long)*off_after);
+			}
+		} else {
+			tst_res(TFAIL, "%s offset unexpected value: %ld",
+				m, (long)*off_after);
+			ret = 1;
+		}
+	} else {
+		/* FD offset is advanced by len */
+		loff_t fd_off = SAFE_LSEEK(fd, 0, SEEK_CUR);
+
+		if (fd_off == len) {
+			if (verbose) {
+				tst_res(TPASS, "%s FD offset changed as"
+					" expected: %ld", m, (long)fd_off);
+			}
+		} else {
+			tst_res(TFAIL, "%s FD offset unexpected value: %ld",
+				m, (long)fd_off);
+			ret = 1;
+		}
+	}
+
+	return ret;
+}
+
+static void test_one(size_t len, loff_t *off_in, loff_t *off_out)
+{
+	size_t to_copy = len;
+	int fd_in, fd_out, ret;
+	loff_t *off_in_ori = off_in;
+	loff_t *off_out_ori = off_out;
+	loff_t off_in_copy;
+	loff_t off_out_copy;
+	char str_off_in[32], str_off_out[32];
+
+	if (off_in) {
+		off_in_copy = *off_in;
+		off_in = &off_in_copy;
+		sprintf(str_off_in, "%ld", (long)*off_in);
+	} else {
+		strcpy(str_off_in, "NULL");
+	}
+
+	if (off_out) {
+		off_out_copy = *off_out;
+		off_out = &off_out_copy;
+		sprintf(str_off_out, "%ld", (long)*off_out);
+	} else {
+		strcpy(str_off_out, "NULL");
+	}
+
+	fd_in = SAFE_OPEN(TEST_FILE_1, O_RDONLY);
+	fd_out = SAFE_OPEN(TEST_FILE_2, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+
+	/*
+	 * copy_file_range() will return the number of bytes copied between
+	 * files. This could be less than the length originally requested.
+	 */
+	do {
+		TEST(tst_syscall(__NR_copy_file_range, fd_in, off_in, fd_out,
+			off_out, to_copy, 0));
+		if (TEST_RETURN == -1) {
+			tst_res(TFAIL | TTERRNO, "copy_file_range() failed");
+			SAFE_CLOSE(fd_in);
+			SAFE_CLOSE(fd_out);
+			return;
+		}
+
+		to_copy -= TEST_RETURN;
+	} while (to_copy > 0);
+
+	ret = check_file_content(TEST_FILE_1, TEST_FILE_2,
+		off_in_ori, off_out_ori, len);
+	if (ret)
+		tst_res(TFAIL, "file contents do not match");
+
+	ret |= check_file_offset("(in)", fd_in, len, off_in_ori, off_in);
+	ret |= check_file_offset("(out)", fd_out, len, off_out_ori, off_out);
+
+	tst_res(ret == 0 ? TPASS : TFAIL, "off_in: %s, off_out: %s, len: %ld",
+			str_off_in, str_off_out, (long)len);
+
+	SAFE_CLOSE(fd_in);
+	SAFE_CLOSE(fd_out);
+}
+
+static void copy_file_range_verify(void)
+{
+	int i, j, k;
+
+	for (i = 0; i < len_sz; i++)
+		for (j = 0; j < off_sz; j++)
+			for (k = 0; k < off_sz; k++)
+				test_one(len_arr[i], off_arr[j], off_arr[k]);
+}
+
+static struct tst_test test = {
+	.tid = "copy_file_range01",
+	.setup = setup,
+	.needs_tmpdir = 1,
+	.test_all = copy_file_range_verify,
+};
