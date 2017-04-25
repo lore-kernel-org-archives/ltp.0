@@ -1,55 +1,27 @@
-From: Li Wang <liwang@redhat.com>
-Date: Tue, 25 Apr 2017 11:26:11 +0800
-Subject: [LTP] [PATCH v3] syscalls: add new test for copy_file_range(2)
-In-Reply-To: <a98697fc-9a64-1d4a-7875-d010f0b21ac2@redhat.com>
-References: <20170420082416.25508-1-liwang@redhat.com>
- <917701187.946745.1493024025288.JavaMail.zimbra@redhat.com>
- <CAEemH2fKm5nrMj=ubnE1_D=o5M+1f0deBrstoAjyR9ASN1VLjA@mail.gmail.com>
- <CAEemH2fPXez4K=hY+8hC3jMOfGkqL14PkhKF0VmrtsayzQASQw@mail.gmail.com>
- <a98697fc-9a64-1d4a-7875-d010f0b21ac2@redhat.com>
-Message-ID: <CAEemH2cx63BoV+iTm86WCCXstY8SdQx6fVA0U7Rt3VCDwugF_Q@mail.gmail.com>
+From: Eryu Guan <eguan@redhat.com>
+Date: Tue, 25 Apr 2017 11:42:33 +0800
+Subject: [LTP] LTP release
+In-Reply-To: <20170424162534.GA13616@rei.lan>
+References: <20170424162534.GA13616@rei.lan>
+Message-ID: <20170425034233.GR26397@eguan.usersys.redhat.com>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Mon, Apr 24, 2017 at 02:23:41PM +0200, Jan Stancek wrote:
-> On 04/24/2017 12:46 PM, Li Wang wrote:
-> >>> These variables names are a bit confusing. But larger problem is
-> >
-> > Currently have no idea to improve the confusing issue.
-> >
->
-> I'm attaching copy_file_range01.c, that I made from your v3 version.
-> It doesn't use static list of parameters, but instead iterates
-> over possible values for len/off_in/off_out in all possible combinations.
->
-> Let me know what you think about this approach.
+Hi Cyril,
 
-To split data structure into arrays is more clear than before, and involve
-the different function make things simple too. I agree to use this approach.
+On Mon, Apr 24, 2017 at 06:25:34PM +0200, Cyril Hrubis wrote:
+> Hi!
+> It's about a time we should prepare for another release, hence as
+> usuall, lets start with pointing out any patches that should be part of
+> it and I would like to start with pre-release testing at the end of this
+> week. Does that sound OK to everyone?
 
-> static void setup(void)
-> {
->       int i, fd, page_size;
->
->       page_size = getpagesize();
->
->       fd = SAFE_OPEN(TEST_FILE_1, O_RDWR | O_CREAT, 0664);
->       /* Writing page_size * 4 of data into test file */
->       for (i = 0; i < (int)(page_size * 4); i++)
->               SAFE_WRITE(1, fd, STR, strlen(STR));
->       SAFE_CLOSE(fd);
->
->       len_sz = 4;
->       len_arr = malloc(sizeof(size_t) * len_sz);
->       len_arr[0] = 11;
-> ...
->       *off_arr[2] = 17;
+Any chance to get these new splice(2) syscall tests in?
 
-These two values(11, 17) are just randomized or have special means here?
+http://lists.linux.it/pipermail/ltp/2017-April/004311.html
 
-
-Regards,
-Li Wang
+Thanks,
+Eryu
