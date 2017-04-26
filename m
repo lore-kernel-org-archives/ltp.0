@@ -1,30 +1,23 @@
-From: Steve Ellcey <sellcey@cavium.com>
-Date: Wed, 26 Apr 2017 08:33:16 -0700
-Subject: [LTP] LTP release
-In-Reply-To: <mailman.23773.1493091760.712.ltp@lists.linux.it>
-References: <mailman.23773.1493091760.712.ltp@lists.linux.it>
-Message-ID: <1493220796.3139.193.camel@cavium.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 26 Apr 2017 17:52:27 +0200
+Subject: [LTP] [PATCH] mtest01.c: Increase max_pids and check for array
+ overflow.
+In-Reply-To: <1492105560-10287-1-git-send-email-sellcey@caviumnetworks.com>
+References: <1492105560-10287-1-git-send-email-sellcey@caviumnetworks.com>
+Message-ID: <20170426155227.GB6165@rei.suse.de>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
+Hi!
+Applied, thanks.
 
-> Hi!
-> It's about a time we should prepare for another release, hence as
-> usuall, lets start with pointing out any patches that should be part of
-> it and I would like to start with pre-release testing at the end of this
-> week. Does that sound OK to everyone?
->=20
-> --=C2=A0
-> Cyril Hrubis
-> chrubis@suse.cz
+While we could have fixed this more elegantly (this patch is band-aid
+like fix) it's good enough to fix the memory corruption expecially since
+we want to produce another release soon enough...
 
-I would like to see these patches included:
-
-http://lists.linux.it/pipermail/ltp/2017-April/004300.html
-http://lists.linux.it/pipermail/ltp/2017-April/004309.html
-
-Steve Ellcey
-sellcey@cavium.com
+-- 
+Cyril Hrubis
+chrubis@suse.cz
