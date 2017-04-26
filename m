@@ -1,48 +1,48 @@
-From: Li Wang <liwang@redhat.com>
-Date: Wed, 26 Apr 2017 15:26:31 +0800
-Subject: [LTP] [PATCH v3] syscalls: add new test for copy_file_range(2)
-In-Reply-To: <1437131164.2599351.1493190346623.JavaMail.zimbra@redhat.com>
-References: <20170420082416.25508-1-liwang@redhat.com>
- <917701187.946745.1493024025288.JavaMail.zimbra@redhat.com>
- <CAEemH2fKm5nrMj=ubnE1_D=o5M+1f0deBrstoAjyR9ASN1VLjA@mail.gmail.com>
- <CAEemH2fPXez4K=hY+8hC3jMOfGkqL14PkhKF0VmrtsayzQASQw@mail.gmail.com>
- <a98697fc-9a64-1d4a-7875-d010f0b21ac2@redhat.com>
- <CAEemH2cx63BoV+iTm86WCCXstY8SdQx6fVA0U7Rt3VCDwugF_Q@mail.gmail.com>
- <1437131164.2599351.1493190346623.JavaMail.zimbra@redhat.com>
-Message-ID: <CAEemH2fitknhoBXcY6s_uxSvvoC1bqoiLixZhpmrrtY==0QTew@mail.gmail.com>
+From: Cyril Hrubis <chrubis@suse.cz>
+Date: Wed, 26 Apr 2017 11:08:05 +0200
+Subject: [LTP] LTP release
+In-Reply-To: <CAEemH2fOjPpfHrNy73q69whA8vX7ozN0ea=Hufr7CB-UZos6Lg@mail.gmail.com>
+References: <20170424162534.GA13616@rei.lan>
+ <CAEemH2fOjPpfHrNy73q69whA8vX7ozN0ea=Hufr7CB-UZos6Lg@mail.gmail.com>
+Message-ID: <20170426090805.GA16024@rei.lan>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-On Wed, Apr 26, 2017 at 3:05 PM, Jan Stancek <jstancek@redhat.com> wrote:
->
->
-> ----- Original Message -----
->> On Mon, Apr 24, 2017 at 02:23:41PM +0200, Jan Stancek wrote:
->> > On 04/24/2017 12:46 PM, Li Wang wrote:
->> > >>> These variables names are a bit confusing. But larger problem is
->> > >
->> > > Currently have no idea to improve the confusing issue.
->> > >
->> >
->> > I'm attaching copy_file_range01.c, that I made from your v3 version.
->> > It doesn't use static list of parameters, but instead iterates
->> > over possible values for len/off_in/off_out in all possible combinations.
->> >
->> > Let me know what you think about this approach.
->>
->> To split data structure into arrays is more clear than before, and involve
->> the different function make things simple too. I agree to use this approach.
->
-> OK, can this wait after release?
+Hi!
+> > It's about a time we should prepare for another release, hence as
+> > usuall, lets start with pointing out any patches that should be part of
+> > it and I would like to start with pre-release testing at the end of this
+> > week. Does that sound OK to everyone?
+> 
+> ioctl06 always failed on aarch64(others PASS) with upstream
+> kernel-4.11-rc[1-7]. Not sure if it is a bug or not, since i'm still
+> on debugging way. Just report here to let you know this.
+> 
+> # uname -rm
+> 4.11.0-rc7 aarch64
+> 
+> # ./ioctl06
+> tst_device.c:82: INFO: Found free device '/dev/loop1'
+> tst_test.c:847: INFO: Timeout per run is 0h 05m 00s
+> ioctl06.c:37: INFO: BLKRAGET original value 256
+> ioctl06.c:44: PASS: BLKRASET 0 read back correctly
+> ioctl06.c:46: FAIL: BLKRASET 64 read back 0
+> ioctl06.c:44: PASS: BLKRASET 128 read back correctly
+> ioctl06.c:46: FAIL: BLKRASET 192 read back 128
+> ioctl06.c:44: PASS: BLKRASET 256 read back correctly
+> ioctl06.c:46: FAIL: BLKRASET 320 read back 256
+> ioctl06.c:44: PASS: BLKRASET 384 read back correctly
+> ioctl06.c:46: FAIL: BLKRASET 448 read back 384
+> ioctl06.c:44: PASS: BLKRASET 512 read back correctly
+> ioctl06.c:49: INFO: BLKRASET restoring original value 256
 
-Yes, It's OK to me.
-
-
+Looks like the value is rounded to be multiple of 128, that may be just
+intentional limitation, but we should better check with the kernel
+source or ask kernel devs.
 
 -- 
-Regards,
-Li Wang
-Email: liwang@redhat.com
+Cyril Hrubis
+chrubis@suse.cz
