@@ -1,69 +1,33 @@
-From: Cyril Hrubis <chrubis@suse.cz>
-Date: Thu, 27 Apr 2017 15:01:52 +0200
-Subject: [LTP] [RFC] [PATCH] tst_kvcmp: Add support for extra kernel
-	versions
-In-Reply-To: <1624205915.3497140.1493281707439.JavaMail.zimbra@redhat.com>
-References: <20170421155244.29773-1-chrubis@suse.cz>
- <343130515.905228.1493020687050.JavaMail.zimbra@redhat.com>
- <20170426150641.GA6165@rei.suse.de>
- <1624205915.3497140.1493281707439.JavaMail.zimbra@redhat.com>
-Message-ID: <20170427130152.GA14404@rei.lan>
+From: Liu, Wenlong <liuwl.fnst@cn.fujitsu.com>
+Date: Thu, 27 Apr 2017 13:03:41 +0000
+Subject: [LTP] About the testcase "dma_thread_diotest" of LTP
+Message-ID: <F40213214988A94A9DDBFC5F7146FC5E0121D2D033@G08CNEXMBPEKD01.g08.fujitsu.local>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 To: ltp@lists.linux.it
 
-Hi!
-> +static int compare_kver(const char *cur_kver, char *kver)
-> +{
-> +        const char *ver, *exver;
-> +        const char *distname = tst_kvcmp_distname(cur_kver);
-> +        int v1, v2, v3;
-> +
-> +        ver = strtok(kver, " ");
-> +
-> +        while ((exver = strtok(NULL, " "))) {
-> +                char *exkver = strchr(exver, ':');
-> +
-> +                if (!exkver) {
-> +                        fprintf(stderr, "Invalid extra version '%s'\n", exver);
-> +                        exit(2);
-> +                }
-> +
-> +                *(exkver++) = '\0';
-> +
-> +                if (!distname || strcmp(distname, exver))
-> +                        continue;
-> +
-> +                return tst_kvexcmp(exkver, cur_kver);
-> +        }
-> 
-> If distname != NULL, that means that this is a distro we recognize.
-> And if we reached here, after while loop, that means we didn't
-> match any distro specified in "kver", correct?
+Hello all,
 
-Correct.
+I am doing the LTP test for aarch64 platform.
+But there is something troubled me recently, which is mainly about the dma_thread_diotest.
+Those testcases were failed on the target board(Board: Renesas M3 Starter Kit Pro), which has 2 CPUs.
 
-> So, is it OK to make conclusion, that there is a problem in kver?
+I have seen the description of this testcase, and someone told me that:
+This test suite was created by this LTP commit:https://github.com/linux-test-project/ltp/commit/52de6e2616951ddafc760138f99a1195295bbfdc.
+Once there was already a discussion in kernel mm community in 2008, please see this url:http://thread.gmane.org/gmane.linux.file-systems/27358.
+But unfortunately this bug was not fixed and it still exists in the latest upstream kernel. Some engineers from mm community think it's one whose fix would cause more troulbe than it's worth and MADV_DONTFORK is a good enough workaround. I will follow up this discussion to try to reach a conclusion whether it's worth to fix this issue.
 
-Not at all. Even if we recognize the distro and the distname is non-NULL
-we can have any subset of distribution specific kernel versions
-(including empty one) in the input string. Hence if the loop does not
-mach any extra version against the currently detected distribution we
-simply fall back to the generic kernel version that should be at the
-start of the string.
+But I wonder whether this bug have been fixed and what I can do except‘don't do this test’.
+Looking for your reply at your convenience.
+Thanks in advance.
 
-Think about the distribution specific versions as of overrides that
-apply only if the distribution version is matched, otherwise we use the
-generic kernel version to make the decision.
+B.R.
+Liu
 
-The only thing that should probably be validated here are the
-distribution names passed in the kver string. As it is everything that
-is not matched is skipped including possible typos. Hence I was speaking
-about adding a function that would check if given distribution name is
-valid (known to the library code).
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+
+-------------- next part --------------
+An HTML attachment was scrubbed...
+URL: <http://lists.linux.it/pipermail/ltp/attachments/20170427/3defa6b2/attachment.html>
